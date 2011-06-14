@@ -70,7 +70,7 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
 void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item)
 {
   CVariant data;
-  Announce(flag, sender, message, data);
+  Announce(flag, sender, message, item, data);
 }
 
 void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, const char *message, CFileItemPtr item, CVariant &data)
@@ -83,19 +83,24 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
   if (item->HasVideoInfoTag())
   {
     CVideoDatabase::VideoContentTypeToString((VIDEODB_CONTENT_TYPE)item->GetVideoContentType(), type);
+
     id = item->GetVideoInfoTag()->m_iDbId;
   }
   else if (item->HasMusicInfoTag())
   {
-    type = "music";
+    if (item->IsAlbum())
+      type = "album";
+    else
+      type = "song";
+
     id = item->GetMusicInfoTag()->GetDatabaseId();
   }
+  else
+    type = "unknown";
 
+  object["type"] = type;
   if (id > 0)
-  {
-    type += "id";
-    object[type] = id;
-  }
+    object["id"] = id;
 
   Announce(flag, sender, message, object);
 }

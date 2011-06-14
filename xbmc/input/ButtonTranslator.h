@@ -96,7 +96,9 @@ public:
 
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
-  std::map<int, buttonMap> translatorMap;       // mapping of windows to button maps
+  
+  std::map<CStdString, std::map<int, buttonMap> > deviceMappings;
+  std::map<CStdString, std::map<int, buttonMap> >::iterator GetActiveButtonMap();
   int GetActionCode(int window, const CKey &key, CStdString &strAction);
 
   static uint32_t TranslateGamepadString(const char *szButton);
@@ -105,6 +107,8 @@ private:
 
   static uint32_t TranslateKeyboardString(const char *szButton);
   static uint32_t TranslateKeyboardButton(TiXmlElement *pButton);
+
+  static uint32_t TranslateMouseCommand(const char *szButton);
 
   static uint32_t TranslateAppCommand(const char *szButton);
 

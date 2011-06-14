@@ -7,8 +7,8 @@ SUBDIRS := \
 	liblzo2 freetype2 fontconfig \
 	openssl libssh2 curl \
 	jpeg tiff libpng libogg \
-	libvorbis libflac libmad fribidi libwavpack libmpeg2 \
-	libass libcdio libsamplerate librtmp libcrystalhd \
+	libvorbis libflac libmad fribidi libmpeg2 \
+	libass libcdio libsamplerate librtmp libcrystalhd libnfs \
 	libGLEW libsdl libsdl_mixer libsdl_image \
 	libmicrohttpd libmodplug libbluray libyajl \
 	samba python26 mysqlclient boost \
@@ -31,8 +31,20 @@ $(SUBDIRS):
 	$(MAKE) -C $@
 
 clean:
-	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
-	for d in $(SUBDIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+	for d in $(SUBDIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+
+cleanbuildtools:
+	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+
+cleanbuilddepends:
+	for d in $(SUBDIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+
+cleantoolchain:
+	rm -rf $(TOOLCHAIN)
+
+cleanprefix:
+	rm -rf $(PREFIX)
 
 distclean::
 	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done

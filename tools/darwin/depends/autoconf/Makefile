@@ -26,7 +26,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); $(CONFIGURE)
 
 $(APP): $(SOURCE)
-	make -C $(SOURCE)
+	make -j $(MAKE_JOBS) -C $(SOURCE)
 
 $(APPBIN):
 	make $(APP)

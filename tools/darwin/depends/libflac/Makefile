@@ -29,7 +29,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	fi
 
 $(LIBDYLIB): $(SOURCE)
-	make -C $(SOURCE)
+	make -j $(MAKE_JOBS) -C $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install

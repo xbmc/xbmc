@@ -199,9 +199,6 @@
     <Filter Include="libs\sqlite">
       <UniqueIdentifier>{c9d35dd5-e25d-4b76-bcbe-e8c855de58e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libs\jsoncpp">
-      <UniqueIdentifier>{b27f9ce9-0b2e-4456-9bce-8313af739c2d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="libs\tinyxml">
       <UniqueIdentifier>{b084bece-821c-445c-951d-0aa4ea804076}</UniqueIdentifier>
     </Filter>
@@ -255,6 +252,9 @@
     </Filter>
     <Filter Include="pvr\addons">
       <UniqueIdentifier>{dbfd4898-7df3-4393-8b04-ab0cc1265c33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\SlingboxLib">
+      <UniqueIdentifier>{dfa70c36-927b-4540-b505-35919e64eb3d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -538,9 +538,6 @@
       <Filter>cores\paplayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\WAVcodec.cpp">
-      <Filter>cores\paplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\paplayer\WAVPackcodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\paplayer\YMCodec.cpp">
@@ -1847,6 +1844,12 @@
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp">
       <Filter>settings</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\WIN32USBScan.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\KeymapLoader.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp">
       <Filter>storage</Filter>
     </ClCompile>
@@ -2231,15 +2234,6 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogCache.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_reader.cpp">
-      <Filter>libs\jsoncpp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_value.cpp">
-      <Filter>libs\jsoncpp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_writer.cpp">
-      <Filter>libs\jsoncpp</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\Builtins.cpp">
       <Filter>interfaces</Filter>
     </ClCompile>
@@ -2609,6 +2603,12 @@
     <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp">
+      <Filter>libs\SlingboxLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\Slingbox.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -2639,6 +2639,18 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\input\XBMC_keytable.cpp">
       <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\JSONVariantParser.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\JSONVariantWriter.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\AppParamParser.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3005,9 +3017,6 @@
     <ClInclude Include="..\..\lib\DllVorbisfile.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\DllWAVPack.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\DVDPlayerCodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
@@ -3051,9 +3060,6 @@
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\WAVcodec.h">
-      <Filter>cores\paplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\paplayer\WAVPackcodec.h">
       <Filter>cores\paplayer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\YMCodec.h">
@@ -4474,6 +4480,12 @@
     <ClInclude Include="..\..\xbmc\settings\VideoSettings.h">
       <Filter>settings</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\WIN32USBScan.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\KeymapLoader.h">
+      <Filter>input</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\storage\AutorunMediaJob.h">
       <Filter>storage</Filter>
     </ClInclude>
@@ -5219,6 +5231,12 @@
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksPVR.h">
       <Filter>addons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h">
+      <Filter>libs\SlingboxLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\Slingbox.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\CacheCircular.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -5246,6 +5264,18 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\XBMC_keytable.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\JSONVariantParser.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\JSONVariantWriter.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\AppParamParser.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonVersion.h">
+      <Filter>addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

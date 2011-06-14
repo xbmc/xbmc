@@ -221,7 +221,7 @@
 					<width>150</width>
 					<height>30</height>
 					<aspectratio>keep</aspectratio>
-					<texture>CenterRating/$INFO[ListItem.StarRating]</texture>
+					<texture>$INFO[ListItem.StarRating,CenterRating/]</texture>
 				</control>
 			</control>
 		</control>
@@ -435,7 +435,7 @@
 					<width>160</width>
 					<height>32</height>
 					<aspectratio>keep</aspectratio>
-					<texture>LeftRating/$INFO[ListItem.StarRating]</texture>
+					<texture>$INFO[ListItem.StarRating,LeftRating/]</texture>
 				</control>
 				<control type="textbox">
 					<description>Description Value for Album</description>

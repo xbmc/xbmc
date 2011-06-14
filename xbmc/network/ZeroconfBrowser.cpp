@@ -58,6 +58,7 @@ CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection),m_started
   AddServiceType("_ftp._tcp.");
   AddServiceType("_htsp._tcp.");
   AddServiceType("_daap._tcp.");
+  AddServiceType("_webdav._tcp.");
 }
 
 CZeroconfBrowser::~CZeroconfBrowser()

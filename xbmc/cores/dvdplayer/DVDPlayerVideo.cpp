@@ -449,6 +449,7 @@ void CDVDPlayerVideo::Process()
       CDVDMsgVideoCodecChange* msg(static_cast<CDVDMsgVideoCodecChange*>(pMsg));
       OpenStream(msg->m_hints, msg->m_codec);
       msg->m_codec = NULL;
+      picture.iFlags &= ~DVP_FLAG_ALLOCATED;
     }
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))

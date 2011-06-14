@@ -35,6 +35,7 @@
 #define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth-@ARCH@.so"
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
+#define DLL_PATH_LIBNFS        "@NFS_SONAME@"
 
 #ifndef DLL_PATH_LIBCURL
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"

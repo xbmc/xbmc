@@ -76,6 +76,9 @@
 #define KEY_ASCII           0xF100 // a printable character in the range of TRUE ASCII (from 0 to 127) // FIXME make it clean and pure unicode! remove the need for KEY_ASCII
 #define KEY_UNICODE         0xF200 // another printable character whose range is not included in this KEY code
 
+// 0xE000 -> 0xE0FF is reserved for mouse actions
+#define KEY_MOUSE           0xE000
+
 // 0xD000 -> 0xD0FF is reserved for WM_APPCOMMAND messages
 #define KEY_APPCOMMAND      0xD000
 
@@ -294,6 +297,11 @@
 
 #define ACTION_PLAYER_PLAYPAUSE       227 // Play/pause. If playing it pauses, if paused it plays.
 
+// The NOOP action can be specified to disable an input event. This is
+// useful in user keyboard.xml etc to disable actions specified in the
+// system mappings.
+#define ACTION_NOOP                   999
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000
@@ -444,7 +452,7 @@ class CAction
 public:
   CAction(int actionID, float amount1 = 1.0f, float amount2 = 0.0f, const CStdString &name = "");
   CAction(int actionID, wchar_t unicode);
-  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY);
+  CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name = "");
   CAction(int actionID, const CStdString &name, const CKey &key);
 
   /*! \brief Identifier of the action

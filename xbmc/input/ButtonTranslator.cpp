@@ -45,7 +45,8 @@ typedef struct
 } ActionMapping;
 
 static const ActionMapping actions[] =
-       {{"left"              , ACTION_MOVE_LEFT },
+{
+        {"left"              , ACTION_MOVE_LEFT },
         {"right"             , ACTION_MOVE_RIGHT},
         {"up"                , ACTION_MOVE_UP   },
         {"down"              , ACTION_MOVE_DOWN },
@@ -194,7 +195,21 @@ static const ActionMapping actions[] =
         {"yellow"            , ACTION_TELETEXT_YELLOW},
         {"blue"              , ACTION_TELETEXT_BLUE},
         {"increasepar"       , ACTION_INCREASE_PAR},
-        {"decreasepar"       , ACTION_DECREASE_PAR}};
+        {"decreasepar"       , ACTION_DECREASE_PAR},
+
+        // Mouse actions
+        {"leftclick"         , ACTION_MOUSE_LEFT_CLICK},
+        {"rightclick"        , ACTION_MOUSE_RIGHT_CLICK},
+        {"middleclick"       , ACTION_MOUSE_MIDDLE_CLICK},
+        {"doubleclick"       , ACTION_MOUSE_DOUBLE_CLICK},
+        {"wheelup"           , ACTION_MOUSE_WHEEL_UP},
+        {"wheeldown"         , ACTION_MOUSE_WHEEL_DOWN},
+        {"mousedrag"         , ACTION_MOUSE_DRAG},
+        {"mousemove"         , ACTION_MOUSE_MOVE},
+
+        // Do nothing action
+        { "noop"             , ACTION_NOOP}
+};
 
 static const ActionMapping windows[] =
        {{"home"                     , WINDOW_HOME},
@@ -314,6 +329,18 @@ static const ActionMapping windows[] =
         {"startwindow"              , WINDOW_START},
         {"startup"                  , WINDOW_STARTUP_ANIM}};
 
+static const ActionMapping mousecommands[] =
+{
+  { "leftclick",   ACTION_MOUSE_LEFT_CLICK },
+  { "rightclick",  ACTION_MOUSE_RIGHT_CLICK },
+  { "middleclick", ACTION_MOUSE_MIDDLE_CLICK },
+  { "doubleclick", ACTION_MOUSE_DOUBLE_CLICK },
+  { "wheelup",     ACTION_MOUSE_WHEEL_UP },
+  { "wheeldown",   ACTION_MOUSE_WHEEL_DOWN },
+  { "mousedrag",   ACTION_MOUSE_DRAG },
+  { "mousemove",   ACTION_MOUSE_MOVE }
+};
+
 #ifdef WIN32
 static const ActionMapping appcommands[] =
 {
@@ -334,7 +361,11 @@ static const ActionMapping appcommands[] =
   { "launch_mail",         APPCOMMAND_LAUNCH_MAIL },
   { "launch_media_select", APPCOMMAND_LAUNCH_MEDIA_SELECT },
   { "launch_app1",         APPCOMMAND_LAUNCH_APP1 },
-  { "launch_app2",         APPCOMMAND_LAUNCH_APP2 }
+  { "launch_app2",         APPCOMMAND_LAUNCH_APP2 },
+  { "play",                APPCOMMAND_MEDIA_PLAY },
+  { "pause",               APPCOMMAND_MEDIA_PAUSE },
+  { "fastforward",         APPCOMMAND_MEDIA_FAST_FORWARD },
+  { "rewind",              APPCOMMAND_MEDIA_REWIND }
 };
 #endif
 
@@ -352,7 +383,7 @@ CButtonTranslator::~CButtonTranslator()
 
 bool CButtonTranslator::Load()
 {
-  translatorMap.clear();
+  deviceMappings.clear();
 
   //directories to search for keymaps
   //they're applied in this order,
@@ -774,11 +805,21 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   return action;
 }
 
+std::map<CStdString, std::map<int, CButtonTranslator::buttonMap> >::iterator CButtonTranslator::GetActiveButtonMap()
+{
+  std::map<CStdString, std::map<int, buttonMap> >::iterator activeMapIt = deviceMappings.find(g_settings.m_activeKeyboardMapping);
+  if (activeMapIt == deviceMappings.end())
+    return deviceMappings.find("default");
+  return activeMapIt;
+}
+
 int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &strAction)
 {
   uint32_t code = key.GetButtonCode();
-  map<int, buttonMap>::iterator it = translatorMap.find(window);
-  if (it == translatorMap.end())
+
+  std::map<int, buttonMap> deviceMap = (*GetActiveButtonMap()).second;
+  map<int, buttonMap>::iterator it = deviceMap.find(window);
+  if (it == deviceMap.end())
     return 0;
   buttonMap::iterator it2 = (*it).second.find(code);
   int action = 0;
@@ -836,23 +877,40 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
 {
   if (!pWindow || windowID == WINDOW_INVALID) 
     return;
-  buttonMap map;
-  std::map<int, buttonMap>::iterator it = translatorMap.find(windowID);
-  if (it != translatorMap.end())
-  {
-    map = it->second;
-    translatorMap.erase(it);
-  }
+
   TiXmlNode* pDevice;
 
-  const char* types[] = {"gamepad", "remote", "universalremote", "keyboard", "appcommand", NULL};
+  const char* types[] = {"gamepad", "remote", "universalremote", "keyboard", "mouse", "appcommand", NULL};
   for (int i = 0; types[i]; ++i)
   {
     CStdString type(types[i]);
     if (HasDeviceType(pWindow, type))
     {
       pDevice = pWindow->FirstChild(type);
+      TiXmlElement *pDeviceElement = pDevice->ToElement();
+      CStdString deviceName;
+      //check if exists, if not use "default"
+      deviceName = pDeviceElement->Attribute("name");
+      if (deviceName.empty())
+        deviceName = "default";
+
+      std::map<CStdString, std::map<int, buttonMap> >::iterator deviceMapIt = deviceMappings.find(deviceName);
+      if (deviceMapIt == deviceMappings.end())
+      {
+        //First time encountering this device, lets initialise the buttonMap for it.
+        deviceMapIt = deviceMappings.insert(pair<CStdString, std::map<int, buttonMap> >(deviceName, std::map<int, buttonMap>())).first;
+      }
+      
+      std::map<int, buttonMap>::iterator windowIt = deviceMapIt->second.find(windowID);
+      if (windowIt == deviceMapIt->second.end())
+      {
+        //add it now
+        windowIt = deviceMapIt->second.insert(pair<int, buttonMap>(windowID, buttonMap())).first;
+      }
+      buttonMap& windowMap = windowIt->second;
+
       TiXmlElement *pButton = pDevice->FirstChildElement();
+
       while (pButton)
       {
         uint32_t buttonCode=0;
@@ -864,15 +922,18 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
             buttonCode = TranslateUniversalRemoteString(pButton->Value());
         else if (type == "keyboard")
             buttonCode = TranslateKeyboardButton(pButton);
+        else if (type == "mouse")
+            buttonCode = TranslateMouseCommand(pButton->Value());
         else if (type == "appcommand")
             buttonCode = TranslateAppCommand(pButton->Value());
 
         if (buttonCode && pButton->FirstChild())
-          MapAction(buttonCode, pButton->FirstChild()->Value(), map);
+          MapAction(buttonCode, pButton->FirstChild()->Value(), windowMap);
         pButton = pButton->NextSiblingElement();
       }
     }
   }
+
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)
   if ((pDevice = pWindow->FirstChild("joystick")) != NULL)
   {
@@ -884,9 +945,6 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     }
   }
 #endif
-  // add our map to our table
-  if (map.size() > 0)
-    translatorMap.insert(pair<int, buttonMap>( windowID, map));
 }
 
 bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
@@ -896,9 +954,6 @@ bool CButtonTranslator::TranslateActionString(const char *szAction, int &action)
   strAction.ToLower();
   if (CBuiltins::HasCommand(strAction)) 
     action = ACTION_BUILT_IN_FUNCTION;
-
-  if (strAction.Equals("noop"))
-    return true;
 
   for (unsigned int index=0;index < sizeof(actions)/sizeof(actions[0]);++index)
   {
@@ -1170,9 +1225,23 @@ uint32_t CButtonTranslator::TranslateAppCommand(const char *szButton)
   return 0;
 }
 
+uint32_t CButtonTranslator::TranslateMouseCommand(const char *szButton)
+{
+  CStdString strMouseCommand = szButton;
+  strMouseCommand.ToLower();
+
+  for (unsigned int i = 0; i < sizeof(mousecommands)/sizeof(mousecommands[0]); i++)
+    if (strMouseCommand.Equals(mousecommands[i].name))
+      return mousecommands[i].action | KEY_MOUSE;
+
+  CLog::Log(LOGERROR, "%s: Can't find mouse command %s", __FUNCTION__, szButton);
+
+  return 0;
+}
+
 void CButtonTranslator::Clear()
 {
-  translatorMap.clear();
+  deviceMappings.clear();
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   lircRemotesMap.clear();
 #endif

@@ -137,6 +137,8 @@ void CSettings::Initialize()
   m_usingLoginScreen = false;
   m_lastUsedProfile = 0;
   m_currentProfile = 0;
+
+  m_activeKeyboardMapping = "default";
 }
 
 CSettings::~CSettings(void)

@@ -29,8 +29,4 @@ class CGUIDialogBusy: public CGUIDialog
 public:
   CGUIDialogBusy(void);
   virtual ~CGUIDialogBusy(void);
-
-  virtual bool OnMessage(CGUIMessage& message);
-
-protected:
 };

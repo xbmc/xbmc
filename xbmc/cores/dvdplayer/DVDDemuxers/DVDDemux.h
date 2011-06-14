@@ -27,6 +27,11 @@
 
 class CDVDInputStream;
 
+#ifndef __GNUC__
+#pragma warning(push)
+#pragma warning(disable:4244)
+#endif
+
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
@@ -46,6 +51,11 @@ extern "C" {
 #endif
 }
 #endif
+
+#ifndef __GNUC__
+#pragma warning(pop)
+#endif
+
 enum AVDiscard;
 
 enum StreamType

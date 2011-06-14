@@ -851,8 +851,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                          g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") == CStdString::npos);
     }
 #ifdef HAS_WEB_SERVER
-    else if (strSetting.Equals("services.webserverport") ||
-             strSetting.Equals("services.webserverusername") ||
+    else if (strSetting.Equals("services.webserverusername") ||
              strSetting.Equals("services.webserverpassword"))
     {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
@@ -2395,7 +2394,8 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
   pControl->Clear();
 
   CStdString strScreen;
-  pControl->AddLabel(g_localizeStrings.Get(242), -1);
+  if (g_advancedSettings.m_canWindowed)
+    pControl->AddLabel(g_localizeStrings.Get(242), -1);
 
   for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {

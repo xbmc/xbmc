@@ -250,6 +250,7 @@
 #ifdef _WIN32
 #include <shlobj.h>
 #include "win32util.h"
+#include "win32/WIN32USBScan.h"
 #endif
 #ifdef HAS_XRANDR
 #include "windowing/X11/XRandR.h"
@@ -481,6 +482,7 @@ bool CApplication::Create()
   /* install win32 exception translator, win32 exceptions
    * can now be caught using c++ try catch */
   win32_exception::install_handler();
+
 #endif
 
   // only the InitDirectories* for the current platform should return true
@@ -614,6 +616,10 @@ bool CApplication::Create()
   }
 
   g_powerManager.Initialize();
+
+#ifdef _WIN32
+  CWIN32USBScan();
+#endif
 
   CLog::Log(LOGNOTICE, "load settings...");
 
@@ -2759,6 +2765,15 @@ bool CApplication::OnAction(const CAction &action)
     CGUIControlProfiler::Instance().Start();
     return true;
   }
+  if (action.GetID() == ACTION_SHOW_PLAYLIST)
+  {
+    int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
+    if (iPlaylist == PLAYLIST_VIDEO)
+      g_windowManager.ActivateWindow(WINDOW_VIDEO_PLAYLIST);
+    else if (iPlaylist == PLAYLIST_MUSIC)
+      g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
+    return true;
+  }
   return false;
 }
 
@@ -2950,13 +2965,49 @@ bool CApplication::ProcessMouse()
   if (!g_Mouse.IsActive() || !m_AppFocused)
     return false;
 
+  // Update the pointer position here so it gets updated even for ACTION_NOOP
+  m_guiPointer.SetPosition((float) g_Mouse.GetX(), (float) g_Mouse.GetY());
+
   // Reset the screensaver and idle timers
   m_idleTimer.StartZero();
   ResetScreenSaver();
   if (WakeUpScreenSaverAndDPMS())
     return true;
 
-  return OnAction(g_Mouse.GetAction());
+  // Get the mouse command ID
+  uint32_t mousecommand = g_Mouse.GetAction();
+
+  // Retrieve the corresponding action
+  int iWin;
+  CKey key(mousecommand | KEY_MOUSE, (unsigned int) 0);
+  if (g_windowManager.HasModalDialog())
+    iWin = g_windowManager.GetTopMostModalDialogID() & WINDOW_ID_MASK;
+  else
+    iWin = g_windowManager.GetActiveWindow() & WINDOW_ID_MASK;
+  CAction mouseaction = CButtonTranslator::GetInstance().GetAction(iWin, key);
+
+  // If we couldn't find an action return false to indicate we have not
+  // handled this mouse action
+  if (!mouseaction.GetID())
+  {
+    CLog::Log(LOGDEBUG, "%s: unknown mouse command %d", __FUNCTION__, mousecommand);
+    return false;
+  }
+
+  // Process the appcommand
+  CAction newmouseaction = CAction(mouseaction.GetID(), 
+                                  g_Mouse.GetHold(MOUSE_LEFT_BUTTON), 
+                                  (float)g_Mouse.GetX(), 
+                                  (float)g_Mouse.GetY(), 
+                                  (float)g_Mouse.GetDX(), 
+                                  (float)g_Mouse.GetDY(),
+                                  mouseaction.GetName());
+
+  // Log mouse actions except for move and noop
+  if (newmouseaction.GetID() != ACTION_MOUSE_MOVE && newmouseaction.GetID() != ACTION_NOOP)
+    CLog::Log(LOGDEBUG, "%s: trying mouse action %s", __FUNCTION__, newmouseaction.GetName().c_str());
+
+  return OnAction(newmouseaction);
 }
 
 void  CApplication::CheckForTitleChange()
@@ -3336,7 +3387,7 @@ void CApplication::Stop(int exitCode)
 {
   try
   {
-    CAnnouncementManager::Announce(System, "xbmc", "ApplicationStop");
+    CAnnouncementManager::Announce(System, "xbmc", "OnQuit");
 
     // cancel any jobs from the jobmanager
     CJobManager::GetInstance().CancelJobs();
@@ -3934,7 +3985,7 @@ void CApplication::OnPlayBackEnded()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackEnded;1");
 #endif
 
-  CAnnouncementManager::Announce(Player, "xbmc", "PlaybackEnded");
+  CAnnouncementManager::Announce(Player, "xbmc", "OnStop");
 
   if (IsPlayingAudio())
   {
@@ -3963,7 +4014,9 @@ void CApplication::OnPlayBackStarted()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
-  CAnnouncementManager::Announce(Player, "xbmc", "PlaybackStarted", m_itemCurrentFile);
+  CVariant param;
+  param["speed"] = 1;
+  CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
@@ -3982,8 +4035,6 @@ void CApplication::OnQueueNextItem()
   if (g_settings.m_HttpApiBroadcastLevel>=1)
     getApplicationMessenger().HttpApi("broadcastlevel; OnQueueNextItem;1");
 #endif
-
-  CAnnouncementManager::Announce(Player, "xbmc", "QueueNextItem");
 
   if(IsPlayingAudio())
   {
@@ -4012,7 +4063,7 @@ void CApplication::OnPlayBackStopped()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStopped;1");
 #endif
 
-  CAnnouncementManager::Announce(Player, "xbmc", "PlaybackStopped", m_itemCurrentFile);
+  CAnnouncementManager::Announce(Player, "xbmc", "OnStop", m_itemCurrentFile);
 
   CLastfmScrobbler::GetInstance()->SubmitQueue();
   CLibrefmScrobbler::GetInstance()->SubmitQueue();
@@ -4033,7 +4084,7 @@ void CApplication::OnPlayBackPaused()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
-  CAnnouncementManager::Announce(Player, "xbmc", "PlaybackPaused", m_itemCurrentFile);
+  CAnnouncementManager::Announce(Player, "xbmc", "OnPause", m_itemCurrentFile);
 }
 
 void CApplication::OnPlayBackResumed()
@@ -4048,7 +4099,9 @@ void CApplication::OnPlayBackResumed()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackResumed;1");
 #endif
 
-  CAnnouncementManager::Announce(Player, "xbmc", "PlaybackResumed", m_itemCurrentFile);
+  CVariant param;
+  param["speed"] = 1;
+  CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSpeedChanged(int iSpeed)
@@ -4069,7 +4122,7 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 
   CVariant param;
   param["speed"] = iSpeed;
-  CAnnouncementManager::Announce(Player, "xbmc", "PlaybackSpeedChanged", m_itemCurrentFile, param);
+  CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
@@ -4091,7 +4144,7 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
   CVariant param;
   param["time"] = iTime;
   param["seekoffset"] = seekOffset;
-  CAnnouncementManager::Announce(Player, "xbmc", "PlaybackSeek", param);
+  CAnnouncementManager::Announce(Player, "xbmc", "OnSeek", param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
@@ -4110,10 +4163,6 @@ void CApplication::OnPlayBackSeekChapter(int iChapter)
     getApplicationMessenger().HttpApi(tmp);
   }
 #endif
-
-  CVariant param;
-  param["chapter"] = iChapter;
-  CAnnouncementManager::Announce(Player, "xbmc", "PlaybackSeekChapter", param);
 }
 
 bool CApplication::IsPlaying() const
@@ -4280,6 +4329,11 @@ void CApplication::ResetScreenSaverTimer()
   Cocoa_UpdateSystemActivity();
 #endif
   m_screenSaverTimer.StartZero();
+}
+
+void CApplication::StopScreenSaverTimer()
+{
+  m_screenSaverTimer.Stop();
 }
 
 bool CApplication::ToggleDPMS(bool manual)

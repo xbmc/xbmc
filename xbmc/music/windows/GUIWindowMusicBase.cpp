@@ -97,12 +97,6 @@ bool CGUIWindowMusicBase::OnAction(const CAction& action)
     }
   }
 
-  if (action.GetID() == ACTION_SHOW_PLAYLIST)
-  {
-    g_windowManager.ActivateWindow(WINDOW_MUSIC_PLAYLIST);
-    return true;
-  }
-
   return CGUIMediaWindow::OnAction(action);
 }
 
@@ -861,7 +855,7 @@ bool CGUIWindowMusicBase::FindArtistInfo(const CStdString& strArtist, CMusicArti
   while (needsRefresh || bCanceled);
 
   m_musicdatabase.GetArtistInfo(idArtist,artist.GetArtist());
-  artist.SetLoaded(true);
+  artist.SetLoaded();
   return true;
 }
 
