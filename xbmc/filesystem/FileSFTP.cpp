@@ -190,35 +190,46 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
 
 bool CSFTPSession::Exists(const char *path)
 {
+  bool exists = false;
   CSingleLock lock(m_critSect);
-  sftp_attributes attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
-  bool exists = attributes != NULL;
+  if(m_connected)
+  {
+    sftp_attributes attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
+    exists = attributes != NULL;
 
-  if (attributes)
-    sftp_attributes_free(attributes);
-
+    if (attributes)
+      sftp_attributes_free(attributes);
+  }
   return exists;
 }
 
 int CSFTPSession::Stat(const char *path, struct __stat64* buffer)
 {
   CSingleLock lock(m_critSect);
-  m_LastActive = CTimeUtils::GetTimeMS();
-  sftp_attributes attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
-
-  if (attributes)
+  if(m_connected)
   {
-    memset(buffer, 0, sizeof(struct __stat64));
-    buffer->st_size = attributes->size;
-    buffer->st_mtime = attributes->mtime;
-    buffer->st_atime = attributes->atime;
+    m_LastActive = CTimeUtils::GetTimeMS();
+    sftp_attributes attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
 
-    sftp_attributes_free(attributes);
-    return 0;
+    if (attributes)
+    {
+      memset(buffer, 0, sizeof(struct __stat64));
+      buffer->st_size = attributes->size;
+      buffer->st_mtime = attributes->mtime;
+      buffer->st_atime = attributes->atime;
+
+      sftp_attributes_free(attributes);
+      return 0;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "SFTPSession: STAT - Failed to get attributes");
+      return -1;
+    }
   }
   else
   {
-    CLog::Log(LOGERROR, "SFTPSession: STAT - Failed to get attributes");
+    CLog::Log(LOGERROR, "SFTPSession: STAT - Not connected");
     return -1;
   }
 }
