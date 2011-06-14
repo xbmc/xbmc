@@ -90,6 +90,7 @@ public:
   static int SP_CALLCONV cb_musicDelivery(sp_session *session, const sp_audioformat *format, const void *frames, int num_frames);
   static void SP_CALLCONV cb_imageLoaded(sp_image *image, void *userdata);
 
+  static void SP_CALLCONV pc_loaded(sp_playlistcontainer *pc, void *userdata);
   static void SP_CALLCONV pl_state_change(sp_playlist *pl, void *userdata);
 
   bool getDirectory(const CStdString &strPath, CFileItemList &items);

@@ -174,6 +174,16 @@ void SpotifyInterface::pl_state_change(sp_playlist *pl, void *userdata)
     CLog::Log( LOGDEBUG, "Spotifylog: playlist state changed");
 }
 
+void SpotifyInterface::pc_loaded(sp_playlistcontainer *pc, void *userdata){
+
+    CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+    CStdString dir;
+    dir.Format("%s","musicdb://spotify/menu/playlists/");
+    message.SetStringParam(dir);
+    g_windowManager.SendThreadMessage(message);
+    CLog::Log( LOGDEBUG, "Spotifylog: playlist container loaded");
+}
+
 //load the tracks from a playlist
 bool SpotifyInterface::getPlaylistTracks(CFileItemList &items, int playlist)
 {
@@ -732,7 +742,7 @@ SpotifyInterface::SpotifyInterface()
 
   m_pcCallbacks.playlist_added = 0;
   m_pcCallbacks.playlist_removed = 0;
-  m_pcCallbacks.container_loaded =  0;
+  m_pcCallbacks.container_loaded =  &pc_loaded;
 
   m_plCallbacks.tracks_added = 0;
   m_plCallbacks.tracks_removed = 0;
@@ -1443,8 +1453,11 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
   CMediaSource share;
   sp_playlistcontainer *pc = sp_session_playlistcontainer(m_session);
 
+  CLog::Log( LOGDEBUG, "Spotifylog: getPlaylistItems 1");
   if(!sp_playlistcontainer_is_loaded(pc))
     return;
+
+  CLog::Log( LOGDEBUG, "Spotifylog: getPlaylistItems 2");
 
   sp_playlistcontainer_add_ref(pc);
 
