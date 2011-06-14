@@ -160,7 +160,7 @@ AddonPtr CScraper::Clone(const AddonPtr &self) const
 }
 
 CScraper::CScraper(const CScraper &rhs, const AddonPtr &self)
-  : CAddon(rhs, self)
+  : CAddon(rhs, self), m_fLoaded(false)
 {
   m_pathContent = rhs.m_pathContent;
   m_persistence = rhs.m_persistence;
