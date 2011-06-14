@@ -597,7 +597,6 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
     spInt->m_progressDialog->SetPercentage(50);
     spInt->m_progressDialog->Progress();
 
-CLog::Log( LOGDEBUG, "Spotifylog: search 1");
     //get the artists
     for (int index=0; index < sp_search_num_artists(search); index++)
     {
@@ -609,7 +608,6 @@ CLog::Log( LOGDEBUG, "Spotifylog: search 1");
     spInt->m_progressDialog->SetPercentage(60);
     spInt->m_progressDialog->Progress();
 
-CLog::Log( LOGDEBUG, "Spotifylog: search 2");
     //albums
     CMusicDatabase *musicdatabase = new CMusicDatabase;
     musicdatabase->Open();
@@ -646,7 +644,6 @@ CLog::Log( LOGDEBUG, "Spotifylog: search 2");
       }
     }
     delete musicdatabase;
-CLog::Log( LOGDEBUG, "Spotifylog: search 3");
     spInt->m_progressDialog->SetPercentage(80);
     spInt->m_progressDialog->Progress();
 
@@ -662,7 +659,6 @@ CLog::Log( LOGDEBUG, "Spotifylog: search 3");
         spInt->m_searchTrackVector.Add(pItem);
       }
     }
-CLog::Log( LOGDEBUG, "Spotifylog: search 4");
     spInt->m_progressDialog->SetPercentage(99);
     spInt->m_progressDialog->Progress();
     spInt->m_isSearching = false;
@@ -714,6 +710,10 @@ SpotifyInterface::SpotifyInterface()
   m_callbacks.stop_playback = 0;
   m_callbacks.get_audio_buffer_stats = 0;
   m_callbacks.offline_status_updated = 0;
+
+  m_pcCallbacks.playlist_added = 0;
+  m_pcCallbacks.playlist_removed = 0;
+  m_pcCallbacks.container_loaded =  0;
 
 
   m_thumbDir.Format("special://temp/spotify/thumbs/");
@@ -768,18 +768,20 @@ bool SpotifyInterface::connect(bool forceNewUser)
 
     m_error = sp_session_create(&m_config, &m_session);
     
+    if (SP_ERROR_OK != m_error) {
+      CLog::Log( LOGERROR, "Spotifylog: failed to create session: error: %s", sp_error_message(m_error));
+      m_session = NULL;
+      return false;
+    }
+    
+    sp_playlistcontainer_add_callbacks(sp_session_playlistcontainer(m_session),&m_pcCallbacks,NULL);
+    
     //set high bitrate
     if (g_advancedSettings.m_spotifyUseHighBitrate)
       sp_session_preferred_bitrate(m_session, SP_BITRATE_320k);
     
     sp_session_set_connection_type(m_session, SP_CONNECTION_TYPE_WIRED);
     sp_session_set_connection_rules(m_session, SP_CONNECTION_RULE_NETWORK);
-    
-    if (SP_ERROR_OK != m_error) {
-      CLog::Log( LOGERROR, "Spotifylog: failed to create session: error: %s", sp_error_message(m_error));
-      m_session = NULL;
-      return false;
-    }
   }
 
   if (forceNewUser)
@@ -1161,8 +1163,8 @@ bool SpotifyInterface::getDirectory(const CStdString &strPath, CFileItemList &it
     playListNr.Delete(0, 34);
     URIUtils::RemoveSlashAtEnd(playListNr);
     getPlaylistTracks(items,atoi(playListNr.c_str()));
-    if (items.IsEmpty())
-      return false;
+    //if (items.IsEmpty())
+    //  return false;
     return true;
   }
   if (strPath.Left(37) == "musicdb://spotify/tracks/albumbrowse/")
@@ -1408,13 +1410,20 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
   CMediaSource share;
   sp_playlistcontainer *pc = sp_session_playlistcontainer(m_session);
 
+  while(!sp_playlistcontainer_is_loaded(pc)){
+    clock_t goal = 10 + clock();     
+    while (goal > clock());
+    CLog::Log( LOGDEBUG, "Spotifylog: waiting for playlistscontainer" );
+    processEvents();
+  }
+
   for (int i=0; i < sp_playlistcontainer_num_playlists(pc); i++)
   {
     sp_playlist* pl = sp_playlistcontainer_playlist(pc, i);
     while(!sp_playlist_is_loaded(pl)){
       clock_t goal = 10 + clock();
       while (goal > clock());
-      //CLog::Log( LOGNOTICE, "Spotifylog: waiting for playlists" );
+      CLog::Log( LOGDEBUG, "Spotifylog: waiting for playlists" );
       processEvents();
     }
 
@@ -1422,17 +1431,16 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
     share.strName.Format("%s",sp_playlist_name(pl));
 
     CFileItemPtr pItem(new CFileItem(share));
-    CStdString thumb = "DefaultPlaylist.png";
+
     //ask for a thumbnail
-    byte image[20]; 
-  
+    byte image[20];   
     if (sp_playlist_get_image(pl, image)){
       char no[10];
       itoa(i,no,10);
       requestThumb((unsigned char*)image,no,pItem, PLAYLIST_TRACK);
     }else{
-      pItem->SetThumbnailImage("DefaultMusicPlaylists.png"); 
-      if ( sp_playlist_num_tracks(pl) > 0)
+      //disable for now, seems to be some kind of problem with spotify servers at the moment
+      /*if ( sp_playlist_num_tracks(pl) > 0)
       {
         sp_track *spTrack = sp_playlist_track(pl,0);
         if (!sp_track_is_local(m_session, spTrack)){
@@ -1443,10 +1451,11 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
           sp_link_as_string (spLink,spotify_uri,256);
           sp_link_release(spLink);
           Uri.Format("%s", spotify_uri);
-          CLog::Log( LOGDEBUG, "Spotifylog: searchmenu thumb:%s", Uri.c_str());
+          CLog::Log( LOGDEBUG, "Spotifylog: playlist thumb from album:%s", Uri.c_str());
           requestThumb((unsigned char*)sp_album_cover(spAlbum),Uri, pItem, PLAYLIST_TRACK);
         }
-      }
+      }else*/
+	pItem->SetThumbnailImage("DefaultMusicPlaylists.png"); 
     }
     waitForThumbs();
     items.Add(pItem);
@@ -1706,7 +1715,6 @@ CFileItemPtr SpotifyInterface::spAlbumToItem(sp_album *spAlbum, SPOTIFY_TYPE typ
   album.iYear = sp_album_year(spAlbum);
 
   CFileItemPtr pItem(new CFileItem(path, album));
-  pItem->SetThumbnailImage("DefaultMusicAlbums.png");
   requestThumb((unsigned char*)sp_album_cover(spAlbum),Uri,pItem, type);
   return pItem;
 }
@@ -1970,7 +1978,7 @@ void SpotifyInterface::showDisclaimer()
 }
 
 void SpotifyInterface::waitForThumbs(){
-  int i = 300;
+  int i = 3000;
   int startThumbs = m_noWaitingThumbs;
   while(m_noWaitingThumbs > 0 && i > 0){
     clock_t goal = 1000 + clock();

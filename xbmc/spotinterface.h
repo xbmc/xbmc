@@ -100,6 +100,7 @@ private:
   sp_session_config m_config;
   sp_error m_error;
   sp_session_callbacks m_callbacks;
+  sp_playlistcontainer_callbacks m_pcCallbacks;
   bool m_showDisclaimer;
   int m_nextEvent;
   const char *m_uri;

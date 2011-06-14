@@ -82,14 +82,14 @@ bool SpotifyCodec::Init(const CStdString &strFile1, unsigned int filecache)
 
     sp_link *spLink = sp_link_create_from_string(uri.c_str());
     m_currentTrack = sp_link_as_track(spLink);
-    if (!sp_track_is_available(getSession(),m_currentTrack))
+    /* if (!sp_track_is_available(getSession(),m_currentTrack))
     {
       CLog::Log(LOGERROR, "Spotifylog: track is not available in this region");
       m_currentPlayer = 0;
       playerIsFree = true;
       sp_link_release(spLink);
       return false;
-    }
+    }*/
     sp_track_add_ref(m_currentTrack);
     sp_link_release(spLink);
     m_totalTime = 0.001 * sp_track_duration(m_currentTrack);
