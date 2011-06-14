@@ -318,7 +318,7 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
   
   if (m_pFileHandle == NULL || gNfsConnection.GetNfsContext()==NULL ) return 0;
 
-  //read chunked since nfs will only give 16kb at once
+  //read chunked since nfs will only give server specific packet sizes at once
   while(bytesLeft)
   {
     //last chunk could be smaller then chunk size

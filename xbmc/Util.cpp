@@ -1865,7 +1865,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
 
 bool CUtil::SupportsFileOperations(const CStdString& strPath)
 {
-  // currently only hd and smb and nfssupport delete and rename
+  // currently only hd, smb and nfs support delete and rename
   if (URIUtils::IsHD(strPath))
     return true;
   if (URIUtils::IsSmb(strPath))
