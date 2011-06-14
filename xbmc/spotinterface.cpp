@@ -175,7 +175,7 @@ bool SpotifyInterface::getPlaylistTracks(CFileItemList &items, int playlist)
     for (int index=0; index < sp_playlist_num_tracks(pl); index++)
     {
       CFileItemPtr pItem;
-      pItem = spTrackToItem(sp_playlist_track(pl,index), PLAYLIST_TRACK, true);
+      pItem = spTrackToItem(sp_playlist_track(pl,index), PLAYLIST_TRACK, sp_track_index(sp_playlist_track(pl,index)),true);
 //      pItem->SetContentType("audio/spotify");
       items.Add(pItem);
     }
@@ -194,7 +194,7 @@ void SpotifyInterface::cb_albumBrowseComplete(sp_albumbrowse *result, void *user
 
     //the first track, load it with thumbnail
     CFileItemPtr pItem;
-    pItem = spInt->spTrackToItem(sp_albumbrowse_track(result, 0), ALBUMBROWSE_TRACK, true);
+    pItem = spInt->spTrackToItem(sp_albumbrowse_track(result, 0), ALBUMBROWSE_TRACK, sp_track_index(sp_albumbrowse_track(result, 0)),true);
 //    pItem->SetContentType("audio/spotify");
     spInt->m_browseAlbumVector.Add(pItem);
 
@@ -203,6 +203,18 @@ void SpotifyInterface::cb_albumBrowseComplete(sp_albumbrowse *result, void *user
     newThumb.Format("%s%s", spInt->m_currentPlayingDir, URIUtils::GetFileName(oldThumb));
     CPicture::CacheThumb(oldThumb ,newThumb);
     pItem->SetThumbnailImage(newThumb);
+
+    //the rest of the tracks
+    for (int index=1; index < sp_albumbrowse_num_tracks(result); index++)
+    {
+      CFileItemPtr pItem2;
+      pItem2 = spInt->spTrackToItem(sp_albumbrowse_track(result, index), ALBUMBROWSE_TRACK, sp_track_index(sp_albumbrowse_track(result, index)),true);
+//      pItem2->SetContentType("audio/spotify");
+      pItem2->SetThumbnailImage(newThumb);
+      spInt->m_browseAlbumVector.Add(pItem2);
+    }
+
+    spInt->waitForThumbs();
 
     //add the "add to library" item
     CMusicDatabase *musicdatabase = new CMusicDatabase;
@@ -225,18 +237,6 @@ void SpotifyInterface::cb_albumBrowseComplete(sp_albumbrowse *result, void *user
 
     musicdatabase->Close();
     delete musicdatabase;
-
-    //the rest of the tracks
-    for (int index=1; index < sp_albumbrowse_num_tracks(result); index++)
-    {
-      CFileItemPtr pItem2;
-      pItem2 = spInt->spTrackToItem(sp_albumbrowse_track(result, index), ALBUMBROWSE_TRACK, true);
-//      pItem2->SetContentType("audio/spotify");
-      pItem2->SetThumbnailImage(newThumb);
-      spInt->m_browseAlbumVector.Add(pItem2);
-    }
-
-    spInt->waitForThumbs();
 
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
     CStdString dir;
@@ -389,7 +389,7 @@ void SpotifyInterface::cb_topListTracksComplete(sp_toplistbrowse *result, void *
       if ( sp_track_is_available(g_spotifyInterface->m_session, spTrack))
       {
         CFileItemPtr pItem;
-        pItem = spInt->spTrackToItem(spTrack,TOPLIST_TRACK,true);
+        pItem = spInt->spTrackToItem(spTrack,TOPLIST_TRACK,index + 1,true);
 //        pItem->SetContentType("audio/spotify");
         spInt->m_browseToplistTracksVector.Add(pItem);
       }
@@ -654,7 +654,7 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
       if ( sp_track_is_available(g_spotifyInterface->m_session, spTrack))
       {
         CFileItemPtr pItem;
-        pItem = spInt->spTrackToItem(spTrack,SEARCH_TRACK,true);
+        pItem = spInt->spTrackToItem(spTrack,SEARCH_TRACK,sp_track_index(spTrack),true);
 //        pItem->SetContentType("audio/spotify");
         spInt->m_searchTrackVector.Add(pItem);
       }
@@ -1719,7 +1719,7 @@ CFileItemPtr SpotifyInterface::spAlbumToItem(sp_album *spAlbum, SPOTIFY_TYPE typ
   return pItem;
 }
 
-CFileItemPtr SpotifyInterface::spTrackToItem(sp_track *spTrack, SPOTIFY_TYPE type, bool loadthumb)
+CFileItemPtr SpotifyInterface::spTrackToItem(sp_track *spTrack, SPOTIFY_TYPE type,int trackIndex, bool loadthumb)
 {
   sp_album *spAlbum = sp_track_album(spTrack);
   sp_artist *spArtist = sp_track_artist(spTrack, 0);
@@ -1742,7 +1742,7 @@ CFileItemPtr SpotifyInterface::spTrackToItem(sp_track *spTrack, SPOTIFY_TYPE typ
   song.strFileName = path.c_str();
 
   song.iDuration = 0.001 * sp_track_duration(spTrack);
-  song.iTrack = sp_track_index(spTrack);
+  song.iTrack = trackIndex;
 
   song.strAlbum = sp_album_name(spAlbum);
   song.strAlbumArtist = sp_artist_name(albumArtist);

@@ -191,7 +191,7 @@ private:
   //converting functions
   CFileItemPtr spArtistToItem(sp_artist *spArtist);
   CFileItemPtr spAlbumToItem(sp_album *spAlbum, SPOTIFY_TYPE type);
-  CFileItemPtr spTrackToItem(sp_track *spTrack, SPOTIFY_TYPE type, bool loadthumb = false);
+  CFileItemPtr spTrackToItem(sp_track *spTrack, SPOTIFY_TYPE type, int trackIndex, bool loadthumb = false);
 
   //thumbnail handling
   typedef std::pair<sp_image*,CFileItemPtr> imageItemPair;
