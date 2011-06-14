@@ -28,7 +28,6 @@ SRCS=AddonsDirectory.cpp \
      FileISO.cpp \
      FileLastFM.cpp \
      FileMusicDatabase.cpp \
-     FileNFS.cpp \
      FileRTV.cpp \
      FileShoutcast.cpp \
      FileSFTP.cpp \
@@ -58,7 +57,6 @@ SRCS=AddonsDirectory.cpp \
      MythFile.cpp \
      MythSession.cpp \
      NptXbmcFile.cpp \
-     NFSDirectory.cpp \
      NSFFileDirectory.cpp \
      OGGFileDirectory.cpp \
      PlaylistDirectory.cpp \
@@ -93,6 +91,11 @@ ifeq (@HAVE_XBMC_NONFREE@,1)
 SRCS+=FileRar.cpp \
       RarDirectory.cpp \
       RarManager.cpp \
+
+endif
+ifeq (@USE_LIBNFS@,1)
+SRCS+=FileNFS.cpp \
+      NFSDirectory.cpp \
 
 endif
 
