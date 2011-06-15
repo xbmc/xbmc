@@ -29,7 +29,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	  -DCMAKE_CXX_FLAGS:STRING="$(CPPFLAGS) $(CXXFLAGS)" \
 	  -DCMAKE_INCLUDE_PATH=$(PREFIX)/include             \
 	  -DCMAKE_LIBRARY_PATH=$(PREFIX)/lib                 \
-	  -DCMAKE_INSTALL_NAME_DIR=$(PREFIX)                 \
+	  -DCMAKE_INSTALL_NAME_DIR=$(PREFIX)/lib             \
       	  -DCMAKE_INSTALL_PREFIX=$(PREFIX) ..
 
 $(LIBDYLIB): $(SOURCE)
@@ -40,8 +40,7 @@ $(LIBDYLIB): $(SOURCE)
 	touch $@
 
 clean:
-	make -C $(SOURCE)/build clean
-	rm -f .installed
+	rm -rf $(SOURCE) .installed
 
 distclean::
 	rm -rf $(SOURCE) .installed
