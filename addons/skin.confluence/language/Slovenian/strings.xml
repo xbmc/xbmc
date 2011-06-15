@@ -162,8 +162,21 @@
   <string id="31406">[B]PRILAGODITE NASTAVITVE SISTEMA[/B][CR][CR]Nastavite in prilagodite zaslon • Nastavite zvočni izhod • Nastavite oddaljeno upravljanje[CR]Nastavite varčevanje z energijo • Vključite razhroščevanje • Določite glavno geslo</string>
   <string id="31407">[B]PRILAGODITE NASTAVITVE PREOBLEKE[/B][CR][CR]Nastavite preobleko Confluence • Dodajte in odstranite elemente na domačem oknu[CR]Spremenite ozadja preobleke</string>
   <string id="31408">[B]PRILAGODITE DODATKE[/B][CR][CR]Upravljajte nameščene dodatke • Brskajte in namestite nove dodatke iz xbmc.org[CR]Nastavite dodatke</string>
+  <string id="31409">[B]PRILAGODITE NASTAVITVE TV[/B][CR][CR]Spremenite informacije v celozaslonskem načinu • Upravljajte z nastavitvami EPG</string>
 
   <string id="31421">Izberite vaš XBMC uporabniški profil[CR]za prijavo in nadaljujte</string>
+
+  <!-- Extra Unified PVR labels -->
+  <string id="31500">Časovniki snemanja</string>
+  <string id="31501">Nastavljen čas</string>
+  <string id="31502">TV v živo</string>
+  <string id="31503">Dodaj skupino</string>
+  <string id="31504">Preimenuj skupino</string>
+  <string id="31505">Izbriši skupino</string>
+  <string id="31506">Skupina[CR]na razpolago</string>
+  <string id="31509">Skupina programov</string>
+  <string id="31510">Nastavljen časovnik</string>
+  <string id="31511">Možnosti programa</string>
   
   <!-- Weather plugin -->
   <string id="31900">Vremenska slika</string>
