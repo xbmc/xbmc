@@ -63,8 +63,8 @@ public:
 
   virtual ILiveTVInterface * GetLiveTV()                     { return (ILiveTVInterface *)this; }
 
-  virtual bool NextChannel(bool preview = false);
-  virtual bool PrevChannel(bool preview = false);
+  virtual bool NextChannel(bool bPreview = false); // TODO bPreview is not implemented
+  virtual bool PrevChannel(bool bPreview = false); // TODO bPreview is not implemented
   virtual bool SelectChannel(unsigned int uiChannel);
 
 protected:

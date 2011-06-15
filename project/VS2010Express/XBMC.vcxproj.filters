@@ -226,9 +226,6 @@
     <Filter Include="guilib\Rendering\GL">
       <UniqueIdentifier>{9592a005-d33b-48d1-8462-d95c42c383c2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="libs\SlingboxLib">
-      <UniqueIdentifier>{dfa70c36-927b-4540-b505-35919e64eb3d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="pvr">
       <UniqueIdentifier>{5d07f015-2e93-4085-bda3-2be566fb07a8}</UniqueIdentifier>
     </Filter>
@@ -255,6 +252,9 @@
     </Filter>
     <Filter Include="pvr\addons">
       <UniqueIdentifier>{dbfd4898-7df3-4393-8b04-ab0cc1265c33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libs\SlingboxLib">
+      <UniqueIdentifier>{dfa70c36-927b-4540-b505-35919e64eb3d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1844,6 +1844,12 @@
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp">
       <Filter>settings</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\WIN32USBScan.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\KeymapLoader.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp">
       <Filter>storage</Filter>
     </ClCompile>
@@ -2558,12 +2564,6 @@
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\RenderCapture.cpp">
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp">
-      <Filter>libs\SlingboxLib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\filesystem\Slingbox.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\windows\GUIViewStatePVR.cpp">
       <Filter>pvr\windows</Filter>
     </ClCompile>
@@ -2603,6 +2603,12 @@
     <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\lib\SlingboxLib\SlingboxLib.cpp">
+      <Filter>libs\SlingboxLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\Slingbox.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogPlayEject.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -2639,6 +2645,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\JSONVariantWriter.cpp">
       <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\AppParamParser.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp">
+      <Filter>addons</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4468,6 +4480,12 @@
     <ClInclude Include="..\..\xbmc\settings\VideoSettings.h">
       <Filter>settings</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\WIN32USBScan.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\KeymapLoader.h">
+      <Filter>input</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\storage\AutorunMediaJob.h">
       <Filter>storage</Filter>
     </ClInclude>
@@ -5198,12 +5216,6 @@
     <ClInclude Include="..\..\xbmc\utils\GlobalsHandling.h">
       <Filter>utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h">
-      <Filter>libs\SlingboxLib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\Slingbox.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\addons\PVRClients.h">
       <Filter>pvr\addons</Filter>
     </ClInclude>
@@ -5218,6 +5230,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\AddonCallbacksPVR.h">
       <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h">
+      <Filter>libs\SlingboxLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\Slingbox.h">
+      <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\CacheCircular.h">
       <Filter>filesystem</Filter>
@@ -5252,6 +5270,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\JSONVariantWriter.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\AppParamParser.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonVersion.h">
+      <Filter>addons</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

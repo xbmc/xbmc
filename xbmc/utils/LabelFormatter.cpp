@@ -304,7 +304,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       value.Format("%i kbps", item->m_dwSize);
     break;
    case 'W': // Listeners
-    if( !item->m_bIsFolder && music->GetListeners() != 0 )
+    if( !item->m_bIsFolder && music && music->GetListeners() != 0 )
      value.Format("%i %s", music->GetListeners(), g_localizeStrings.Get(music->GetListeners() == 1 ? 20454 : 20455));
     break;    
   }

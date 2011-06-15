@@ -679,7 +679,7 @@ bool URIUtils::IsLiveTV(const CStdString& strFile)
   return IsTuxBox(strFileWithoutSlash) ||
       IsVTP(strFileWithoutSlash) ||
       IsHDHomeRun(strFileWithoutSlash) ||
-      IsSlingbox(strFile) ||
+      IsSlingbox(strFileWithoutSlash) ||
       IsHTSP(strFileWithoutSlash) ||
       strFileWithoutSlash.Left(4).Equals("sap:") ||
       (strFileWithoutSlash.Right(4).Equals(".pvr") && !strFileWithoutSlash.Left(16).Equals("pvr://recordings")) ||

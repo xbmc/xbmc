@@ -683,6 +683,7 @@
 							</item>
 							<item id="12">
 								<label>31502</label>
+								<label2>Home_Custom_Back_TV_Folder</label2>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/tv.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_TV_Folder)]</thumb>
@@ -798,66 +799,6 @@
 							<onright>300</onright>
 							<onup>304</onup>
 							<ondown>304</ondown>
-						</control>
-						<control type="group">
-							<visible>Container(9003).HasFocus(12)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_TV_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_TV_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_TV_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
 						</control>
 					</control>
 					<control type="multiimage">

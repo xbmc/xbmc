@@ -752,8 +752,8 @@
 				</control>
 				<control type="grouplist" id="9014">
 					<include>HomeSubMenuCommonValues</include>
-					<onleft>9013</onleft>
-					<onright>9013</onright>
+					<onleft>9014</onleft>
+					<onright>9014</onright>
 					<visible>Container(9000).HasFocus(4)</visible>
 					<include>HomeSubMenuPictures</include> <!-- Buttons for the grouplist -->
 				</control>

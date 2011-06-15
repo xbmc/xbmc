@@ -969,7 +969,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon))
       {
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
-        if (plugin && plugin->Provides(CPluginSource::AUDIO))
+        if (plugin && plugin->Provides(CPluginSource::AUDIO) && pItem->IsAudio())
         {
           iPlaylist = PLAYLIST_MUSIC;
           autoplay = g_guiSettings.GetBool("musicplayer.autoplaynextitem");

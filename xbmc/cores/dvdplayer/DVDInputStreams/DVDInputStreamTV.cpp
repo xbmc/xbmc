@@ -21,8 +21,8 @@
 
 #include "DVDInputStreamTV.h"
 #include "filesystem/MythFile.h"
-#include "filesystem/VTPFile.h"
 #include "filesystem/Slingbox.h"
+#include "filesystem/VTPFile.h"
 #include "pvr/channels/PVRChannel.h"
 #include "URL.h"
 
