@@ -47,7 +47,7 @@
 #endif
 
 //five secs timeout for SFTP
-#DEFINE SFTP_TIMEOUT 5
+#define SFTP_TIMEOUT 5
 
 class CSFTPSession
 {
