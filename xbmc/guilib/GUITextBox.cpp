@@ -100,7 +100,7 @@ void CGUITextBox::UpdateInfo(const CGUIListItem *item)
   m_scrollOffset = 0;
   ResetAutoScrolling();
 
-  m_itemHeight = m_font->GetLineHeight();
+  m_itemHeight = m_font ? m_font->GetLineHeight() : 10;
   m_itemsPerPage = (unsigned int)(m_height / m_itemHeight);
 
   UpdatePageControl();
