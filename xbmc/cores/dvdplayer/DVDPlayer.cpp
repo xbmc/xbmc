@@ -1447,6 +1447,20 @@ void CDVDPlayer::HandlePlaySpeed()
       CLog::Log(LOGDEBUG, "set caching from pvr to done. audio (%d) = %d. video (%d) = %d", bGotAudio, m_dvdPlayerAudio.m_messageQueue.GetLevel(),
                                                                                             bGotVideo, m_dvdPlayerVideo.m_messageQueue.GetLevel());
       caching = CACHESTATE_DONE;
+      SAFE_RELEASE(m_CurrentAudio.startsync);
+      SAFE_RELEASE(m_CurrentVideo.startsync);
+    }
+
+    // handle situation that we get no data on one stream
+    if(m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0)
+    {
+      if ((!m_dvdPlayerAudio.AcceptsData() && !m_CurrentVideo.started)
+      ||  (!m_dvdPlayerVideo.AcceptsData() && !m_CurrentAudio.started))
+      {
+        caching = CACHESTATE_DONE;
+        SAFE_RELEASE(m_CurrentAudio.startsync);
+        SAFE_RELEASE(m_CurrentVideo.startsync);
+      }
     }
   }
 
