@@ -96,7 +96,7 @@ public:
 
 protected:
   CDVDInputStream* m_pInput;
-
+  #define MAX_STREAMS 100
   CDemuxStream* m_streams[MAX_STREAMS]; // maximum number of streams that ffmpeg can handle
 
 private:
