@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="win32">
@@ -2219,6 +2219,9 @@
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp">
       <Filter>windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowDebugInfo.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowFileManager.cpp">
       <Filter>windows</Filter>
     </ClCompile>
@@ -2463,6 +2466,13 @@
     <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp">
       <Filter>addons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionSolvers.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4678,6 +4688,9 @@
     <ClInclude Include="..\..\xbmc\windows\GUIMediaWindow.h">
       <Filter>windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowDebugInfo.h">
+      <Filter>windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowFileManager.h">
       <Filter>windows</Filter>
     </ClInclude>
@@ -4930,6 +4943,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\AddonVersion.h">
       <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h">
+      <Filter>guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

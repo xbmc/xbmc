@@ -21,28 +21,27 @@
  *
  */
 
-#include "guilib/GUIWindow.h"
+#include "guilib/GUIDialog.h"
+#ifdef _LINUX
+#include "linux/LinuxResourceCounter.h"
+#endif
 
-class CGUIWindowSettingsScreenCalibration : public CGUIWindow
+class CGUITextLayout;
+
+class CGUIWindowDebugInfo :
+      public CGUIDialog
 {
 public:
-  CGUIWindowSettingsScreenCalibration(void);
-  virtual ~CGUIWindowSettingsScreenCalibration(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void FrameMove();
+  CGUIWindowDebugInfo();
+  virtual ~CGUIWindowDebugInfo();
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
-  virtual void AllocResources(bool forceLoad = false);
-  virtual void FreeResources(bool forceUnLoad = false);
-
+  virtual bool OnMessage(CGUIMessage &message);
 protected:
-  void NextControl();
-  void ResetControls();
-  void EnableControl(int iControl);
-  void UpdateFromControl(int iControl);
-  UINT m_iCurRes;
-  std::vector<RESOLUTION> m_Res;
-  int m_iControl;
-  float m_fPixelRatioBoxHeight;
+  virtual void UpdateVisibility();
+private:
+  CGUITextLayout *m_layout;
+#ifdef _LINUX
+  CLinuxResourceCounter m_resourceCounter;
+#endif
 };

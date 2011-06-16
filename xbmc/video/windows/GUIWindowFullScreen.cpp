@@ -842,6 +842,15 @@ void CGUIWindowFullScreen::FrameMove()
   }
 }
 
+void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &dirtyregion)
+{
+  // TODO: This isn't quite optimal - ideally we'd only be dirtying up the actual video render rect
+  //       which is probably the job of the renderer as it can more easily track resizing etc.
+  MarkDirtyRegion();
+  CGUIWindow::Process(currentTime, dirtyregion);
+  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
+}
+
 void CGUIWindowFullScreen::Render()
 {
   if (g_application.m_pPlayer)

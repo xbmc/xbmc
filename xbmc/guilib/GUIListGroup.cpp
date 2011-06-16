@@ -61,20 +61,22 @@ void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
   CGUIControlGroup::AddControl(control, position);
 }
 
+void CGUIListGroup::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  CGUIControlGroup::Process(currentTime, dirtyregions);
+  m_item = NULL;
+}
+
 void CGUIListGroup::Render()
 {
   g_graphicsContext.SetOrigin(m_posX, m_posY);
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
-    GUIPROFILER_VISIBILITY_BEGIN(control);
-    control->UpdateVisibility(m_item);
-    GUIPROFILER_VISIBILITY_END(control);
-    control->DoRender(m_renderTime);
+    control->DoRender();
   }
   CGUIControl::Render();
   g_graphicsContext.RestoreOrigin();
-  m_item = NULL;
 }
 
 void CGUIListGroup::ResetAnimation(ANIMATION_TYPE type)
@@ -108,6 +110,16 @@ void CGUIListGroup::UpdateInfo(const CGUIListItem *item)
           CGUIListLabel::CheckAndCorrectOverlap(*(CGUIListLabel *)m_children[i], *(CGUIListLabel *)m_children[j]);
       }
     }
+  }
+}
+
+void CGUIListGroup::SetInvalid()
+{
+  if (!m_bInvalidated)
+  { // this can be triggered by an item change, so all children need invalidating rather than just the group
+    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+      (*it)->SetInvalid();
+    CGUIControlGroup::SetInvalid();
   }
 }
 

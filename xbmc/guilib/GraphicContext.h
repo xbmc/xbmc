@@ -170,13 +170,20 @@ public:
       m_groupTransform.pop();
     m_groupTransform.push(m_guiTransform);
   }
-  inline void AddTransform(const TransformMatrix &matrix)
+  inline TransformMatrix AddTransform(const TransformMatrix &matrix)
   {
     ASSERT(m_groupTransform.size());
-    if (m_groupTransform.size())
-      m_groupTransform.push(m_groupTransform.top() * matrix);
-    else
-      m_groupTransform.push(matrix);
+    TransformMatrix absoluteMatrix = m_groupTransform.size() ? m_groupTransform.top() * matrix : matrix;
+    m_groupTransform.push(absoluteMatrix);
+    UpdateFinalTransform(m_groupTransform.top());
+    return absoluteMatrix;
+  }
+  inline void SetTransform(const TransformMatrix &matrix)
+  {
+    // TODO: We only need to add it to the group transform as other transforms may be added on top of this one later on
+    //       Once all transforms are cached then this can be removed and UpdateFinalTransform can be called directly
+    ASSERT(m_groupTransform.size());
+    m_groupTransform.push(matrix);
     UpdateFinalTransform(m_groupTransform.top());
   }
   inline void RemoveTransform()
@@ -189,6 +196,8 @@ public:
     else
       UpdateFinalTransform(TransformMatrix());
   }
+
+  CRect generateAABB(const CRect &rect) const;
 
 protected:
   std::stack<CRect> m_viewStack;

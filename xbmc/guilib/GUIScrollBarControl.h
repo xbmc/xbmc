@@ -49,6 +49,7 @@ public:
   virtual ~CGUIScrollBar(void);
   virtual CGUIScrollBar *Clone() const { return new CGUIScrollBar(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void AllocResources();
@@ -64,8 +65,8 @@ public:
 protected:
   virtual bool HitTest(const CPoint &point) const;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual void UpdateColors();
-  void UpdateBarSize();
+  virtual bool UpdateColors();
+  bool UpdateBarSize();
   bool Move(int iNumSteps);
   virtual void SetFromPosition(const CPoint &point);
 

@@ -61,6 +61,7 @@ CGUIControl::CGUIControl()
   m_hasCamera = false;
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
+  m_controlIsDirty = true;
 }
 
 CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, float width, float height)
@@ -132,13 +133,54 @@ void CGUIControl::DynamicResourceAlloc(bool bOnOff)
 
 }
 
+// the main processing routine.
+// 1. animate and set animation transform
+// 2. if visible, process
+// 3. reset the animation transform
+void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  CRect dirtyRegion = m_renderRegion;
+
+  bool changed = m_bInvalidated;
+
+  changed |= Animate(currentTime);
+
+  m_cachedTransform = g_graphicsContext.AddTransform(m_transform);
+  if (m_hasCamera)
+    g_graphicsContext.SetCameraPosition(m_camera);
+
+  if (IsVisible())
+    Process(currentTime, dirtyregions);
+
+  changed |=  m_controlIsDirty;
+
+  if (changed)
+  {
+    dirtyRegion.Union(m_renderRegion);
+    dirtyregions.push_back(dirtyRegion);
+  }
+
+  if (m_hasCamera)
+    g_graphicsContext.RestoreCameraPosition();
+  g_graphicsContext.RemoveTransform();
+
+  m_bInvalidated = false;
+  m_controlIsDirty = false;
+}
+
+void CGUIControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  // update our render region
+  m_renderRegion = g_graphicsContext.generateAABB(CalcRenderRegion());
+}
+
 // the main render routine.
-// 1. animate and set the animation transform
+// 1. set the animation transform
 // 2. if visible, paint
 // 3. reset the animation transform
-void CGUIControl::DoRender(unsigned int currentTime)
+void CGUIControl::DoRender()
 {
-  Animate(currentTime);
+  g_graphicsContext.SetTransform(m_cachedTransform);
   if (m_hasCamera)
     g_graphicsContext.SetCameraPosition(m_camera);
   if (IsVisible())
@@ -351,23 +393,12 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
       break;
 
     case GUI_MSG_VISIBLE:
-      if (m_visibleCondition)
-        m_visible = g_infoManager.GetBool(m_visibleCondition, m_parentID) ? VISIBLE : HIDDEN;
-      else
-        m_visible = VISIBLE;
-      m_forceHidden = false;
+      SetVisible(true, true);
       return true;
       break;
 
     case GUI_MSG_HIDDEN:
-      m_forceHidden = true;
-      // reset any visible animations that are in process
-      if (IsAnimating(ANIM_TYPE_VISIBLE))
-      {
-//        CLog::Log(LOGDEBUG, "Resetting visible animation on control %i (we are %s)", m_controlID, m_visible ? "visible" : "hidden");
-        CAnimation *visibleAnim = GetAnimation(ANIM_TYPE_VISIBLE);
-        if (visibleAnim) visibleAnim->ResetAnimation();
-      }
+      SetVisible(false);
       return true;
 
       // Note that the skin <enable> tag will override these messages
@@ -377,6 +408,11 @@ bool CGUIControl::OnMessage(CGUIMessage& message)
 
     case GUI_MSG_DISABLED:
       SetEnabled(false);
+      return true;
+
+    case GUI_MSG_WINDOW_RESIZE:
+      // invalidate controls to get them to recalculate sizing information
+      SetInvalid();
       return true;
     }
   }
@@ -403,7 +439,11 @@ bool CGUIControl::IsDisabled() const
 
 void CGUIControl::SetEnabled(bool bEnable)
 {
-  m_enabled = bEnable;
+  if (bEnable != m_enabled)
+  {
+    m_enabled = bEnable;
+    SetInvalid();
+  }
 }
 
 void CGUIControl::SetEnableCondition(int condition)
@@ -415,16 +455,21 @@ void CGUIControl::SetPosition(float posX, float posY)
 {
   if ((m_posX != posX) || (m_posY != posY))
   {
+    MarkDirtyRegion();
+
     m_hitRect += CPoint(posX - m_posX, posY - m_posY);
     m_posX = posX;
     m_posY = posY;
+
     SetInvalid();
   }
 }
 
-void CGUIControl::SetColorDiffuse(const CGUIInfoColor &color)
+bool CGUIControl::SetColorDiffuse(const CGUIInfoColor &color)
 {
+  bool changed = m_diffuseColor != color;
   m_diffuseColor = color;
+  return changed;
 }
 
 float CGUIControl::GetXPosition() const
@@ -445,6 +490,19 @@ float CGUIControl::GetWidth() const
 float CGUIControl::GetHeight() const
 {
   return m_height;
+}
+
+void CGUIControl::MarkDirtyRegion()
+{
+  m_controlIsDirty = true;
+}
+
+CRect CGUIControl::CalcRenderRegion() const
+{
+  CPoint tl(GetXPosition(), GetYPosition());
+  CPoint br(tl.x + GetWidth(), tl.y + GetHeight());
+
+  return CRect(tl.x, tl.y, br.x, br.y);
 }
 
 void CGUIControl::SetNavigation(int up, int down, int left, int right)
@@ -474,6 +532,7 @@ void CGUIControl::SetWidth(float width)
 {
   if (m_width != width)
   {
+    MarkDirtyRegion();
     m_width = width;
     m_hitRect.x2 = m_hitRect.x1 + width;
     SetInvalid();
@@ -484,25 +543,43 @@ void CGUIControl::SetHeight(float height)
 {
   if (m_height != height)
   {
+    MarkDirtyRegion();
     m_height = height;
     m_hitRect.y2 = m_hitRect.y1 + height;
     SetInvalid();
   }
 }
 
-void CGUIControl::SetVisible(bool bVisible)
+void CGUIControl::SetVisible(bool bVisible, bool setVisState)
 {
-  // just force to hidden if necessary
-  m_forceHidden = !bVisible;
-/*
-  if (m_visibleCondition)
-    bVisible = g_infoManager.GetBool(m_visibleCondition, m_parentID);
-  if (m_bVisible != bVisible)
+  if (bVisible && setVisState)
+  {  // TODO: currently we only update m_visible from GUI_MSG_VISIBLE (SET_CONTROL_VISIBLE)
+     //       otherwise we just set m_forceHidden
+    GUIVISIBLE visible = m_visible;
+    if (m_visibleCondition)
+      visible = g_infoManager.GetBool(m_visibleCondition, m_parentID) ? VISIBLE : HIDDEN;
+    else
+      visible = VISIBLE;
+    if (visible != m_visible)
+    {
+      m_visible = visible;
+      SetInvalid();
+    }
+  }
+  if (m_forceHidden == bVisible)
   {
-    m_visible = bVisible;
-    m_visibleFromSkinCondition = bVisible;
+    m_forceHidden = !bVisible;
     SetInvalid();
-  }*/
+  }
+  if (m_forceHidden)
+  { // reset any visible animations that are in process
+    if (IsAnimating(ANIM_TYPE_VISIBLE))
+    {
+//        CLog::Log(LOGDEBUG, "Resetting visible animation on control %i (we are %s)", m_controlID, m_visible ? "visible" : "hidden");
+      CAnimation *visibleAnim = GetAnimation(ANIM_TYPE_VISIBLE);
+      if (visibleAnim) visibleAnim->ResetAnimation();
+    }
+  }
 }
 
 bool CGUIControl::HitTest(const CPoint &point) const
@@ -561,18 +638,24 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   }
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
+  bool enabled = m_enabled;
   if (m_enableCondition)
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_parentID, item);
+
+  if (m_enabled != enabled)
+    MarkDirtyRegion();
+
   m_allowHiddenFocus.Update(m_parentID, item);
-  UpdateColors();
+  if (UpdateColors())
+    MarkDirtyRegion();
   // and finally, update our control information (if not pushed)
   if (!m_pushedUpdates)
     UpdateInfo(item);
 }
 
-void CGUIControl::UpdateColors()
+bool CGUIControl::UpdateColors()
 {
-  m_diffuseColor.Update();
+  return m_diffuseColor.Update();
 }
 
 void CGUIControl::SetInitialVisibility()
@@ -599,6 +682,8 @@ void CGUIControl::SetInitialVisibility()
     m_enabled = g_infoManager.GetBool(m_enableCondition, m_parentID);
   m_allowHiddenFocus.Update(m_parentID);
   UpdateColors();
+
+  MarkDirtyRegion();
 }
 
 void CGUIControl::SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus)
@@ -610,10 +695,13 @@ void CGUIControl::SetVisibleCondition(int visible, const CGUIInfoBool &allowHidd
 void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
 {
   m_animations = animations;
+  MarkDirtyRegion();
 }
 
 void CGUIControl::ResetAnimation(ANIMATION_TYPE type)
 {
+  MarkDirtyRegion();
+
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     if (m_animations[i].GetType() == type)
@@ -623,8 +711,12 @@ void CGUIControl::ResetAnimation(ANIMATION_TYPE type)
 
 void CGUIControl::ResetAnimations()
 {
+  MarkDirtyRegion();
+
   for (unsigned int i = 0; i < m_animations.size(); i++)
     m_animations[i].ResetAnimation();
+
+  MarkDirtyRegion();
 }
 
 bool CGUIControl::CheckAnimation(ANIMATION_TYPE animType)
@@ -654,6 +746,7 @@ bool CGUIControl::CheckAnimation(ANIMATION_TYPE animType)
 
 void CGUIControl::QueueAnimation(ANIMATION_TYPE animType)
 {
+  MarkDirtyRegion();
   if (!CheckAnimation(animType))
     return;
   CAnimation *reverseAnim = GetAnimation((ANIMATION_TYPE)-animType, false);
@@ -757,11 +850,14 @@ void CGUIControl::UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentPro
   }
 }
 
-void CGUIControl::Animate(unsigned int currentTime)
+bool CGUIControl::Animate(unsigned int currentTime)
 {
   // check visible state outside the loop, as it could change
   GUIVISIBLE visible = m_visible;
+
   m_transform.Reset();
+  bool changed = false;
+
   CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
@@ -770,6 +866,7 @@ void CGUIControl::Animate(unsigned int currentTime)
     // Update the control states (such as visibility)
     UpdateStates(anim.GetType(), anim.GetProcess(), anim.GetState());
     // and render the animation effect
+    changed |= (anim.GetProcess() != ANIM_PROCESS_NONE);
     anim.RenderAnimation(m_transform, center);
 
 /*    // debug stuff
@@ -787,7 +884,8 @@ void CGUIControl::Animate(unsigned int currentTime)
       }
     }*/
   }
-  g_graphicsContext.AddTransform(m_transform);
+
+  return changed;
 }
 
 bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)

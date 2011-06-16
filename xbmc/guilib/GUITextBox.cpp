@@ -81,37 +81,12 @@ CGUITextBox::~CGUITextBox(void)
   m_autoScrollRepeatAnim = NULL;
 }
 
-void CGUITextBox::DoRender(unsigned int currentTime)
+bool CGUITextBox::UpdateColors()
 {
-  m_renderTime = currentTime;
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
 
-  // render the repeat anim as appropriate
-  if (m_autoScrollRepeatAnim)
-  {
-    m_autoScrollRepeatAnim->Animate(m_renderTime, true);
-    TransformMatrix matrix;
-    m_autoScrollRepeatAnim->RenderAnimation(matrix);
-    g_graphicsContext.AddTransform(matrix);
-  }
-
-  CGUIControl::DoRender(currentTime);
-  // if not visible, we reset the autoscroll timer and positioning
-  if (!IsVisible() && m_autoScrollTime)
-  {
-    ResetAutoScrolling();
-    m_lastRenderTime = 0;
-    m_offset = 0;
-    m_scrollOffset = 0;
-    m_scrollSpeed = 0;
-  }
-  if (m_autoScrollRepeatAnim)
-    g_graphicsContext.RemoveTransform();
-}
-
-void CGUITextBox::UpdateColors()
-{
-  m_label.UpdateColors();
-  CGUIControl::UpdateColors();
+  return changed;
 }
 
 void CGUITextBox::UpdateInfo(const CGUIListItem *item)
@@ -129,6 +104,53 @@ void CGUITextBox::UpdateInfo(const CGUIListItem *item)
   m_itemsPerPage = (unsigned int)(m_height / m_itemHeight);
 
   UpdatePageControl();
+}
+
+void CGUITextBox::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  m_renderTime = currentTime;
+
+  // render the repeat anim as appropriate
+  if (m_autoScrollRepeatAnim)
+  {
+    m_autoScrollRepeatAnim->Animate(m_renderTime, true);
+    m_autoScrollRepeatAnim->RenderAnimation(m_textMatrix);
+    m_cachedTextMatrix = g_graphicsContext.AddTransform(m_textMatrix);
+  }
+
+  CGUIControl::DoProcess(currentTime, dirtyregions);
+
+  // if not visible, we reset the autoscroll timer and positioning
+  if (!IsVisible() && m_autoScrollTime)
+  {
+    ResetAutoScrolling();
+    m_lastRenderTime = 0;
+    m_offset = 0;
+    m_scrollOffset = 0;
+    m_scrollSpeed = 0;
+  }
+  if (m_autoScrollRepeatAnim)
+    g_graphicsContext.RemoveTransform();
+}
+
+void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
+void CGUITextBox::DoRender()
+{
+  // render the repeat anim as appropriate
+  if (m_autoScrollRepeatAnim)
+    g_graphicsContext.SetTransform(m_cachedTextMatrix);
+
+  CGUIControl::DoRender();
+
+  if (m_autoScrollRepeatAnim)
+    g_graphicsContext.RemoveTransform();
 }
 
 void CGUITextBox::Render()

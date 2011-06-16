@@ -78,7 +78,7 @@ public:
   bool HasTextChangeActions() { return m_textChangeActions.size() > 0; };
 
 protected:
-  virtual void RenderText();
+  virtual void ProcessText(unsigned int currentTime);
   CStdStringW GetDisplayedText() const;
   void RecalcLabelPosition();
   void ValidateCursor();
@@ -115,5 +115,6 @@ protected:
 
   static const char*        smsLetters[10];
   static const unsigned int smsDelay;
+  CStdStringW m_lastRenderedText; ///< last rendered text
 };
 #endif

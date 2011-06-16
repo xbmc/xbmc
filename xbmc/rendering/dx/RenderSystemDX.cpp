@@ -26,6 +26,7 @@
 #include "RenderSystemDX.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/MathUtils.h"
 #include "guilib/GUIWindowManager.h"
 #include "threads/SingleLock.h"
 #include "guilib/D3DResource.h"
@@ -912,6 +913,34 @@ void CRenderSystemDX::SetViewPort(CRect& viewPort)
   newviewport.Width  = (DWORD)(viewPort.x2 - viewPort.x1);
   newviewport.Height = (DWORD)(viewPort.y2 - viewPort.y1);
   m_pD3DDevice->SetViewport(&newviewport);
+}
+
+void CRenderSystemDX::SetScissors(const CRect& rect)
+{
+  if (!m_bRenderCreated)
+    return;
+
+  RECT scissor;
+  scissor.left = MathUtils::round_int(rect.x1);
+  scissor.top = MathUtils::round_int(rect.y1);
+  scissor.right = MathUtils::round_int(rect.x2);
+  scissor.bottom = MathUtils::round_int(rect.y2);
+  m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
+  m_pD3DDevice->SetScissorRect(&scissor);
+}
+
+void CRenderSystemDX::ResetScissors()
+{
+  if (!m_bRenderCreated)
+    return;
+
+  RECT scissor;
+  scissor.left = 0;
+  scissor.top = 0;
+  scissor.right = m_nBackBufferWidth;
+  scissor.bottom = m_nBackBufferHeight;
+  m_pD3DDevice->SetScissorRect(&scissor);
+  m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, FALSE);
 }
 
 void CRenderSystemDX::Register(ID3DResource *resource)

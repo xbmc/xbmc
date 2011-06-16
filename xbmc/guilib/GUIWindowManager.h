@@ -32,6 +32,7 @@
 #include "GUIWindow.h"
 #include "IWindowManagerCallback.h"
 #include "IMsgTargetCallback.h"
+#include "DirtyRegionTracker.h"
 
 class CGUIDialog;
 
@@ -67,6 +68,16 @@ public:
   // currently focused window(s).  Returns true only if the message is handled.
   bool OnAction(const CAction &action);
 
+  /*! \brief Process active controls allowing them to animate before rendering.
+   */
+  void Process(unsigned int currentTime);
+
+  /*! \brief Mark a region of the screen as dirty - used by the mouse and dim/black screensavers currently
+      Ideally this would be removed and a technique for marking the screen as dirty implemented for ssavers
+      in addition to moving the mouse rendering into the manager.
+   */
+  void MarkDirty(const CDirtyRegion &rect);
+
   /*! \brief Rendering of the current window and any dialogs
    Render is called every frame to draw the current window and any dialogs.
    It should only be called from the application thread.
@@ -87,7 +98,7 @@ public:
   bool Initialized() const { return m_initialized; };
 
   CGUIWindow* GetWindow(int id) const;
-  void Process(bool renderOnly = false);
+  void ProcessRenderLoop(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
 
@@ -104,7 +115,6 @@ public:
   int GetFocusedWindow() const;
   bool HasModalDialog() const;
   bool HasDialogOnScreen() const;
-  void UpdateModelessVisibility();
   bool IsWindowActive(int id, bool ignoreClosing = true) const;
   bool IsWindowVisible(int id) const;
   bool IsWindowTopMost(int id) const;
@@ -118,6 +128,8 @@ public:
   void DumpTextureUse();
 #endif
 private:
+  void RenderPass();
+
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
   void HideOverlay(CGUIWindow::OVERLAY_STATE state);
@@ -148,6 +160,8 @@ private:
   bool m_bShowOverlay;
   int  m_iNested;
   bool m_initialized;
+
+  CDirtyRegionTracker m_tracker;
 };
 
 /*!
