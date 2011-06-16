@@ -64,19 +64,23 @@ void CGUIWindowHome::Announce(EAnnouncementFlag flag, const char *sender, const 
   {
     if ((strcmp(message, "OnUpdate") == 0) ||
         (strcmp(message, "OnRemove") == 0))
+    {
       if (data.isMember("playcount"))
         ra_flag |= Totals;
       else
         ra_flag |= (Video | Totals);
+    }
   }
   else if (flag & AudioLibrary)
   {
     if ((strcmp(message, "OnUpdate") == 0) ||
         (strcmp(message, "OnRemove") == 0))
+    {
       if (data.isMember("playcount"))
         ra_flag |= Totals;
       else
         ra_flag |= ( Audio | Totals );
+    }
   }
 
   // add the job immediatedly if the home window is active
