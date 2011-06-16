@@ -52,7 +52,9 @@
 #include "input/ButtonTranslator.h"
 
 #include <stdio.h>
-
+#ifdef __APPLE__
+#include "linux/LinuxResourceCounter.h"
+#endif
 
 #define BLUE_BAR                          0
 #define LABEL_ROW1                       10
