@@ -30,7 +30,7 @@ namespace ADDON
   class AddonVersion : public boost::totally_ordered<AddonVersion> {
   public:
     AddonVersion() : mEpoch(0), mUpstream(NULL), mRevision(NULL) {}
-    AddonVersion(const AddonVersion& other) { *this = other; }
+    AddonVersion(const AddonVersion& other) : mUpstream(NULL), mRevision(NULL) { *this = other; }
     explicit AddonVersion(const CStdString& version);
     ~AddonVersion();
 
@@ -72,10 +72,12 @@ namespace ADDON
 
   inline AddonVersion& AddonVersion::operator=(const AddonVersion& other)
   {
+    free(mUpstream);
+    free(mRevision);
     mEpoch = other.Epoch();
     mUpstream = strdup(other.Upstream());
     mRevision = strdup(other.Revision());
-    m_originalVersion = other.c_str();
+    m_originalVersion = other.m_originalVersion;
     return *this;
   }
 }
