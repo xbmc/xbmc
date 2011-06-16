@@ -293,6 +293,7 @@ bool CSFTPSession::VerifyKnownHost(ssh_session session)
 
 bool CSFTPSession::Connect(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password)
 {
+  int timeout     = SFTP_TIMEOUT;
   m_connected     = false;
   m_session       = NULL;
   m_sftp_session  = NULL;
@@ -324,7 +325,7 @@ bool CSFTPSession::Connect(const CStdString &host, unsigned int port, const CStd
   }
 
   ssh_options_set(m_session, SSH_OPTIONS_LOG_VERBOSITY, 0);
-
+  ssh_options_set(m_session, SSH_OPTIONS_TIMEOUT, &timeout);  
 #else
   SSH_OPTIONS* options = ssh_options_new();
 
@@ -345,6 +346,8 @@ bool CSFTPSession::Connect(const CStdString &host, unsigned int port, const CStd
     CLog::Log(LOGERROR, "SFTPSession: Failed to set port '%d' for session", port);
     return false;
   }
+  
+  ssh_options_set_timeout(options, timeout,0);
 
   ssh_options_set_log_verbosity(options, 0);
 
