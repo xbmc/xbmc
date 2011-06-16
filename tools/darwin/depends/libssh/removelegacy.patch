@@ -1,0 +1,10 @@
+--- src/CMakeLists.txt	2011-06-16 19:04:44.000000000 +0200
++++ src/CMakeLists.txt	2011-06-16 19:03:40.000000000 +0200
+@@ -94,7 +94,6 @@
+   keyfiles.c
+   keys.c
+   known_hosts.c
+-  legacy.c
+   libcrypto.c
+   libgcrypt.c
+   log.c
