@@ -176,7 +176,7 @@ void AddonProps::BuildDependencies(const cp_plugin_info_t *plugin)
     return;
   for (unsigned int i = 0; i < plugin->num_imports; ++i)
     dependencies.insert(make_pair(CStdString(plugin->imports[i].plugin_id),
-                        make_pair(AddonVersion(plugin->imports[i].version), plugin->imports[i].optional != 0)));
+                        make_pair(AddonVersion(version), plugin->imports[i].optional != 0)));
 }
 
 /**

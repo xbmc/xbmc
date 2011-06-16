@@ -31,7 +31,7 @@ namespace ADDON
   public:
     AddonVersion() : mEpoch(0), mUpstream(NULL), mRevision(NULL) {}
     AddonVersion(const AddonVersion& other) { *this = other; }
-    explicit AddonVersion(CStdString version);
+    explicit AddonVersion(const CStdString& version);
     ~AddonVersion();
 
     int Epoch() const { return mEpoch; }
@@ -75,6 +75,7 @@ namespace ADDON
     mEpoch = other.Epoch();
     mUpstream = strdup(other.Upstream());
     mRevision = strdup(other.Revision());
+    m_originalVersion = other.c_str();
     return *this;
   }
 }
