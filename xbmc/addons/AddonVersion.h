@@ -29,7 +29,6 @@ namespace ADDON
 {
   class AddonVersion : public boost::totally_ordered<AddonVersion> {
   public:
-    AddonVersion() : mEpoch(0), mUpstream(NULL), mRevision(NULL) {}
     AddonVersion(const AddonVersion& other) : mUpstream(NULL), mRevision(NULL) { *this = other; }
     explicit AddonVersion(const CStdString& version);
     ~AddonVersion();
@@ -37,11 +36,6 @@ namespace ADDON
     int Epoch() const { return mEpoch; }
     const char *Upstream() const { return mUpstream; }
     const char *Revision() const { return mRevision; }
-
-    void Epoch(int new_epoch) { mEpoch = new_epoch; }
-    void Upstream(const char *new_upstream) { free(mUpstream); mUpstream = strdup(new_upstream); }
-    void Revision(const char *new_revision) { free(mRevision); mRevision = strdup(new_revision); }
-    void ClearRevision() { Revision("0"); }
 
     AddonVersion& operator=(const AddonVersion& other);
     bool operator<(const AddonVersion& other) const;
