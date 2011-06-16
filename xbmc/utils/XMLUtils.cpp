@@ -159,6 +159,30 @@ bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
 }
 
 /*!
+  Parses the XML for multiple tags of the given name.
+  Does not clear the array to support chaining.
+*/
+bool XMLUtils::GetStringArray(const TiXmlNode* pRootNode, const char* strTag, std::vector<std::string>& arrayValue, bool clear /* = false */)
+{
+  CStdString strTemp;
+  const TiXmlElement* node = pRootNode->FirstChildElement(strTag);
+  bool bResult=false;
+  if (node && node->FirstChild() && clear)
+    arrayValue.clear();
+  while (node)
+  {
+    if (node->FirstChild())
+    {
+      bResult = true;
+      arrayValue.push_back(node->FirstChild()->Value());
+    }
+    node = node->NextSiblingElement(strTag);
+  }
+
+  return bResult;
+}
+
+/*!
   Returns true if the encoding of the document is other then UTF-8.
   /param strEncoding Returns the encoding of the document. Empty if UTF-8
 */
@@ -214,6 +238,12 @@ void XMLUtils::SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const
   StringUtils::SplitString(strValue,strSeparator,list);
   for (unsigned int i=0;i<list.size() && !list[i].IsEmpty();++i)
     SetString(pRootNode,strTag,list[i]);
+}
+
+void XMLUtils::SetStringArray(TiXmlNode* pRootNode, const char *strTag, const std::vector<std::string>& arrayValue)
+{
+  for (unsigned int i = 0; i < arrayValue.size(); i++)
+    SetString(pRootNode, strTag, arrayValue.at(i));
 }
 
 void XMLUtils::SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue)

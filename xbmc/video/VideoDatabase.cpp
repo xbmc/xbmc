@@ -1742,6 +1742,9 @@ CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min,
     case VIDEODB_TYPE_FLOAT:
       sql += PrepareSQL("c%02d='%f',", i, *(float*)(((char*)&details)+offsets[i].offset));
       break;
+    case VIDEODB_TYPE_STRINGARRAY:
+      sql += PrepareSQL("c%02d='%s',", i, StringUtils::Join(*((std::vector<std::string>*)(((char*)&details)+offsets[i].offset)), g_advancedSettings.m_videoItemSeparator).c_str());
+      break;
     }
   }
   sql.TrimRight(',');
@@ -2699,6 +2702,9 @@ void CVideoDatabase::GetDetailsFromDB(auto_ptr<Dataset> &pDS, int min, int max, 
       break;
     case VIDEODB_TYPE_FLOAT:
       *(float*)(((char*)&details)+offsets[i].offset) = pDS->fv(i+idxOffset).get_asFloat();
+      break;
+    case VIDEODB_TYPE_STRINGARRAY:
+      *(std::vector<std::string>*)(((char*)&details)+offsets[i].offset) = StringUtils::Split(pDS->fv(i+idxOffset).get_asString(), g_advancedSettings.m_videoItemSeparator);
       break;
     }
   }

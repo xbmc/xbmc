@@ -53,6 +53,7 @@ public:
    \param clear       if true, clears the string prior to adding tags, if tags are available. Defaults to false.
    */
   static bool GetAdditiveString(const TiXmlNode* rootNode, const char* tag, const CStdString& separator, CStdString& value, bool clear = false);
+  static bool GetStringArray(const TiXmlNode* rootNode, const char* tag, std::vector<std::string>& arrayValue, bool clear = false);
   static bool GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding);
   static bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value, const float min, const float max);
@@ -60,6 +61,7 @@ public:
 
   static void SetString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strValue);
   static void SetAdditiveString(TiXmlNode* pRootNode, const char *strTag, const CStdString& strSeparator, const CStdString& strValue);
+  static void SetStringArray(TiXmlNode* pRootNode, const char *strTag, const std::vector<std::string>& arrayValue);
   static void SetInt(TiXmlNode* pRootNode, const char *strTag, int value);
   static void SetFloat(TiXmlNode* pRootNode, const char *strTag, float value);
   static void SetBoolean(TiXmlNode* pRootNode, const char *strTag, bool value);
