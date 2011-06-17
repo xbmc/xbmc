@@ -121,35 +121,23 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
           continue;
         if (attributes)
         {
+          CStdString itemName = attributes->name;
           CStdString localPath = folder;
-          localPath.append(attributes->name);
+          localPath.append(itemName);
 
           if (attributes->type == SSH_FILEXFER_TYPE_SYMLINK)
           {
             CSingleLock lock(m_critSect);
             sftp_attributes_free(attributes);
-            char *realpath = sftp_readlink(m_sftp_session, CorrectPath(localPath).c_str());
-            if(realpath == NULL)
-              continue;
-            attributes = sftp_stat(m_sftp_session, realpath);
-#ifdef _MSC_VER
-            // hack since api doesn't expose any method to free
-            // the memory alloced here, we cheat and use a
-            // function that does a standard free inside the library
-            string_free((ssh_string)realpath);
-#else
-            free(realpath);
-#endif
+            attributes = sftp_stat(m_sftp_session, CorrectPath(localPath).c_str());
             if (attributes == NULL)
-              continue;
-            if (attributes && (attributes->name == NULL || strcmp(attributes->name, "..") == 0 || strcmp(attributes->name, ".") == 0))
               continue;
           }
 
           CFileItemPtr pItem(new CFileItem);
-          pItem->SetLabel(attributes->name);
+          pItem->SetLabel(itemName);
 
-          if (attributes->name[0] == '.')
+          if (itemName[0] == '.')
             pItem->SetProperty("file:hidden", true);
 
           if (attributes->flags & SSH_FILEXFER_ATTR_ACMODTIME)
