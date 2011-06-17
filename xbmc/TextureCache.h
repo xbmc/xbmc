@@ -52,14 +52,25 @@ public:
    */
   void Deinitialize();
 
+  /*! \brief Check whether we already have this image cached
+
+   Check and return URL to cached image if it exists; If not, return empty string.
+   If the image is cached, return URL (for original image or .dds version if requested)
+   Created .dds of image if requested as per settings.
+
+   \param image url of the image to check
+   \param returnDDS if we're allowed to return a DDS version, defaults to true
+   \return cached url of this image
+   \sa GetCachedImage
+   */ 
+   CStdString CheckCachedImage(const CStdString &image, bool returnDDS = true);
+
   /*! \brief check whether we have this image cached, and change it's url if so
 
-   Checks firstly whether the image should be cached (i.e. is the image a .dds file?).
-   If the image isn't a .dds file, we lookup the database for a cached version and use
-   that if available. If the image is not yet in the database it is cached and added
-   to the database.
+   Checks firstly whether an image is already cached, and return URL if so.
+   If the image is not yet in the database it is cached and added to the database.
 
-   \param image url of the image to cache
+   \param image url of the image to check and cache
    \param returnDDS if we're allowed to return a DDS version, defaults to true
    \return cached url of this image
    \sa GetCachedImage

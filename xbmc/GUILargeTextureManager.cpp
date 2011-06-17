@@ -47,26 +47,37 @@ CImageLoader::~CImageLoader()
 
 bool CImageLoader::DoWork()
 {
-  CFileItem file(m_path, false);
-  if (file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ())) // ignore non-pictures
-  { // check for filename only (i.e. lookup in skin/media/)
-    CStdString loadPath = g_TextureManager.GetTexturePath(m_path);
+  CStdString texturePath = g_TextureManager.GetTexturePath(m_path);
+  CStdString loadPath = CTextureCache::Get().CheckCachedImage(texturePath); 
+  
+  // If empty, then go on to validate and cache image as appropriate
+  // If hit, continue down and load image
+  if (loadPath.IsEmpty())
+  {
+    CFileItem file(m_path, false);
 
-    // cache the image if necessary
-    loadPath = CTextureCache::Get().CheckAndCacheImage(loadPath);
-    if (loadPath.IsEmpty())
-      return false;
-
-    m_texture = new CTexture();
-    DWORD start = CTimeUtils::GetTimeMS();
-    if (!m_texture->LoadFromFile(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080), g_guiSettings.GetBool("pictures.useexifrotation")))
-    {
-      delete m_texture;
-      m_texture = NULL;
+    // Validate file URL to see if it is an image
+    if ((file.IsPicture() && !(file.IsZIP() || file.IsRAR() || file.IsCBR() || file.IsCBZ() )) 
+       || file.GetMimeType().Left(6).Equals("image/")) // ignore non-pictures
+    { 
+      // Cache the image if necessary
+      loadPath = CTextureCache::Get().CheckAndCacheImage(texturePath);
+      if (loadPath.IsEmpty())
+        return false;
     }
-    else if (CTimeUtils::GetTimeMS() - start > 100)
-      CLog::Log(LOGDEBUG, "%s - took %d ms to load %s", __FUNCTION__, CTimeUtils::GetTimeMS() - start, loadPath.c_str());
+    else
+      return true;
   }
+ 
+  m_texture = new CTexture();
+  DWORD start = CTimeUtils::GetTimeMS();
+  if (!m_texture->LoadFromFile(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080), g_guiSettings.GetBool("pictures.useexifrotation")))
+  {
+    delete m_texture;
+    m_texture = NULL;
+  }
+  else if (CTimeUtils::GetTimeMS() - start > 100)
+    CLog::Log(LOGDEBUG, "%s - took %d ms to load %s", __FUNCTION__, CTimeUtils::GetTimeMS() - start, loadPath.c_str());
 
   return true;
 }

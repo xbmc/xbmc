@@ -176,7 +176,7 @@ CStdString CTextureCache::GetWrappedThumbURL(const CStdString &image)
   return URIUtils::AddFileToFolder("thumb://" + url, URIUtils::GetFileName(image));
 }
 
-CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnDDS)
+CStdString CTextureCache::CheckCachedImage(const CStdString &url, bool returnDDS)
 {
   CStdString path(GetCachedImage(url));
   if (!path.IsEmpty())
@@ -189,6 +189,16 @@ CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnD
       if (g_advancedSettings.m_useDDSFanart)
         AddJob(new CDDSJob(path));
     }
+    return path;
+  }
+  return "";
+}
+
+CStdString CTextureCache::CheckAndCacheImage(const CStdString &url, bool returnDDS)
+{
+  CStdString path(CheckCachedImage(url,returnDDS));
+  if (!path.IsEmpty())
+  {
     return path;
   }
 
