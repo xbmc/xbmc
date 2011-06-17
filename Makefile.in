@@ -159,7 +159,7 @@ CXXFLAGS=@CXXFLAGS@
 LDFLAGS=@LDFLAGS@
 INCLUDES=$(sort @INCLUDES@)
 
-CLEAN_FILES=xbmc.bin xbmc-xrandr
+CLEAN_FILES=libxbmc.so xbmc.bin xbmc-xrandr
 
 DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
         tools/Linux/xbmc-standalone.sh autom4te.cache config.h.in~ \
@@ -195,12 +195,13 @@ else
 skins:
 endif
 
+MAIN = xbmc/xbmc.o
 
 xbmc/guilib/guilib.a: force
 	$(MAKE) -C xbmc/guilib
 lib/tinyXML/tinyxml.a: force
 	$(MAKE) -C lib/tinyXML
-xbmc/xbmc.a: force
+xbmc/xbmc.a $(MAIN): force
 	$(MAKE) -C xbmc
 xbmc/cdrip/cdrip.a: force
 	$(MAKE) -C xbmc/cdrip
@@ -551,11 +552,18 @@ DYNOBJSXBMC= \
 
 LIBS += @PYTHON_LDFLAGS@
 
-xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
+libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
+	$(CXX) $(LDFLAGS) -shared -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) -rdynamic
 else
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) -rdynamic
+	$(CXX) $(CXXFLAGS) -shared $(LDFLAGS) -o $@ -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive -rdynamic
+endif
+
+xbmc.bin: libxbmc.so $(MAIN)
+ifeq ($(findstring osx,@ARCH@), osx)
+	$(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC libxbmc.so $(MAIN) $(LIBS) -rdynamic -Wl,-rpath,$(DESTDIR)$(libdir)/xbmc
+else
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive libxbmc.so $(MAIN) -Wl,--no-whole-archive $(LIBS) -rdynamic -Wl,-rpath,$(DESTDIR)$(libdir)/xbmc
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
@@ -578,9 +586,9 @@ tools/TexturePacker/TexturePacker: xbmc/guilib/guilib.a lib/libsquish/libsquish.
 	$(MAKE) -C tools/TexturePacker/
 
 
-install-bin: xbmc.bin # developement convenience target
+install-bin: libxbmc.so xbmc.bin # developement convenience target
 	sudo install -d $(DESTDIR)$(libdir)
-	sudo install xbmc.bin $(DESTDIR)$(libdir)/xbmc
+	sudo install libxbmc.so xbmc.bin $(DESTDIR)$(libdir)/xbmc
 
 ifeq ($(findstring osx,@ARCH@), osx)
 	# TODO: add osx install
@@ -590,6 +598,7 @@ install: install-binaries install-arch install-datas
 install-binaries: install-scripts
 	@echo "Copying XBMC binary to $(DESTDIR)$(libdir)/xbmc/xbmc.bin"
 	@install -d $(DESTDIR)$(libdir)/xbmc
+	@install libxbmc.so $(DESTDIR)$(libdir)/xbmc/libxbmc.so
 	@install xbmc.bin $(DESTDIR)$(libdir)/xbmc/xbmc.bin
 ifeq (1,@USE_XRANDR@)
 	@install xbmc-xrandr $(DESTDIR)$(libdir)/xbmc/xbmc-xrandr
@@ -683,7 +692,7 @@ reallyclean:
 	 fi
 
 clean-xbmc.bin:
-	rm -f xbmc.bin
+	rm -f libxbmc.so xbmc.bin
 	for d in $(BIN_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
 clean-eventclients:
 	for d in $(EC_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
