@@ -930,6 +930,7 @@ if test -z "$PYTHON_VERSION"; then
   AC_MSG_ERROR([Can't find a Python version.])
 else
   AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
+  LIBS="$LIBS $PYTHON_LDFLAGS"
 fi
 
 # VDPAU

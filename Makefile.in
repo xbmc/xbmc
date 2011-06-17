@@ -550,8 +550,6 @@ DYNOBJSXBMC= \
 	xbmc/video/video.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
-LIBS += @PYTHON_LDFLAGS@
-
 libxbmc.so: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(CXX) $(LDFLAGS) -shared -o $@ -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) -rdynamic
