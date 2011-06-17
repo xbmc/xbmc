@@ -96,8 +96,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
   CStdString strProtocol = url.GetProtocol();
   strProtocol.MakeLower();
 
-  if (strProtocol == "archive") return new CFileArchive();
-  else if (strProtocol == "zip") return new CFileZip();
+  if (strProtocol == "zip") return new CFileZip();
+#ifdef HAVE_LIBARCHIVE
+  else if (strProtocol == "archive") return new CFileArchive();
+#endif
 #ifdef HAS_FILESYSTEM_RAR
   else if (strProtocol == "rar") return new CFileRar();
 #endif

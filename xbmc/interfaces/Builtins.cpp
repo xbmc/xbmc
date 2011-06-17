@@ -416,10 +416,12 @@ int CBuiltins::Execute(const CStdString& execString)
 
     URIUtils::AddSlashAtEnd(strDestDirect);
 
-    if (URIUtils::IsArchive(params[0]))
-      g_archiveManager.ExtractArchive(params[0],strDestDirect,"");
-    else if (URIUtils::IsZIP(params[0]))
+    if (URIUtils::IsZIP(params[0]))
       g_ZipManager.ExtractArchive(params[0],strDestDirect);
+#ifdef HAVE_LIBARCHIVE
+    else if (URIUtils::IsArchive(params[0]))
+      g_archiveManager.ExtractArchive(params[0],strDestDirect,"");
+#endif
 #ifdef HAS_FILESYSTEM_RAR
     else if (URIUtils::IsRAR(params[0]))
       g_RarManager.ExtractArchive(params[0],strDestDirect);

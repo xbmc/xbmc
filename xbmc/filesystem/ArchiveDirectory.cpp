@@ -19,6 +19,12 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
+#ifdef HAVE_LIBARCHIVE
+
 #include "ArchiveDirectory.h"
 #include "utils/log.h"
 #include "utils/CharsetConverter.h"
@@ -146,3 +152,5 @@ namespace XFILE
     return false;
   }
 }
+
+#endif // HAVE_LIBARCHIVE

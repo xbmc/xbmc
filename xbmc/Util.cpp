@@ -2469,7 +2469,11 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
     else if (URIUtils::GetExtension(strPathInArchive).Equals(".zip"))
       URIUtils::CreateArchivePath(strEmbeddedArchive, "zip", strArchivePath, strPathInArchive);
     else
+#ifdef HAVE_LIBARCHIVE
       URIUtils::CreateArchivePath(strEmbeddedArchive, "archive", strArchivePath, strPathInArchive);
+#else
+      continue;
+#endif
     ScanArchiveForSubtitles(strEmbeddedArchive,strMovieFileNameNoExt,vecSubtitles);
    }
    // done checking if this is an embedded archive

@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -698,7 +701,11 @@ bool CFileItem::IsBDFile() const
 
 bool CFileItem::IsArchive() const
 {
+#ifdef HAVE_LIBARCHIVE
   return URIUtils::IsArchive(m_strPath);
+#else
+  return false;
+#endif
 }
 
 bool CFileItem::IsRAR() const
@@ -713,7 +720,11 @@ bool CFileItem::IsZIP() const
 
 bool CFileItem::IsCBArchive() const
 {
+#ifdef HAVE_LIBARCHIVE
   return URIUtils::GetExtension(m_strPath).Equals(".cbt", false);
+#else
+  return false;
+#endif
 }
 
 bool CFileItem::IsCBZ() const

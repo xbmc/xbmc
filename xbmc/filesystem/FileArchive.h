@@ -22,6 +22,12 @@
 #ifndef FILE_ARCHIVE_H_
 #define FILE_ARCHIVE_H_
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
+#ifdef HAVE_LIBARCHIVE
+
 #include "IFile.h"
 #include "utils/log.h"
 #include "File.h"
@@ -50,5 +56,7 @@ namespace XFILE
     CArchiveEntry m_archiveItem;
   };
 }
+
+#endif
 
 #endif

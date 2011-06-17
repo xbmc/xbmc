@@ -19,6 +19,12 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
+#ifdef HAVE_LIBARCHIVE
+
 #include "FileArchive.h"
 #include "URL.h"
 #include "utils/URIUtils.h"
@@ -124,3 +130,5 @@ void CFileArchive::Close()
 {
   mFile.Close();
 }
+
+#endif // HAVE_LIBARCHIVE

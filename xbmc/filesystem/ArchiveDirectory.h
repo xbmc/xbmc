@@ -22,6 +22,12 @@
 #ifndef ARCHIVEDIRECTORY_H_
 #define ARCHIVEDIRECTORY_H_
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
+#ifdef HAVE_LIBARCHIVE
+
 #include "IFileDirectory.h"
 #include "ArchiveManager.h"
 
@@ -37,5 +43,7 @@ namespace XFILE
     virtual DIR_CACHE_TYPE GetCacheType(const CStdString& strPath) const { return DIR_CACHE_ALWAYS; };
   };
 }
+
+#endif // HAVE_LIBARCHIVE
 
 #endif

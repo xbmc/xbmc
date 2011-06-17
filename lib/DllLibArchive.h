@@ -24,6 +24,9 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #endif
+
+#ifdef HAVE_LIBARCHIVE
+
 #include "DynamicDll.h"
 #include "utils/log.h"
 
@@ -122,3 +125,5 @@ class DllLibArchive : public DllDynamic, DllLibArchiveInterface
     RESOLVE_METHOD(archive_entry_stat)
   END_METHOD_RESOLVE()
 };
+
+#endif // HAVE_LIBARCHIVE

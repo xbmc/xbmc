@@ -19,6 +19,12 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
+#ifdef HAVE_LIBARCHIVE
+
 #include "system.h"
 #include "ArchiveManager.h"
 #include "filesystem/File.h"
@@ -369,3 +375,5 @@ bool CArchiveManager::libarchive_list(const CStdString &strPath,
   m_archiveMap.insert(pair<CStdString,deque<CArchiveEntry> >(strPath, items));
   return true;
 }
+
+#endif // HAVE_LIBARCHIVE

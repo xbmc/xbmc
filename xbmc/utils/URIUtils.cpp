@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "URIUtils.h"
 #include "Application.h"
 #include "FileItem.h"
@@ -493,6 +496,7 @@ bool URIUtils::IsStack(const CStdString& strFile)
 
 bool URIUtils::IsArchive(const CStdString& strFile)
 {
+#ifdef HAVE_LIBARCHIVE
   CStdString strExtension;
   GetExtension(strFile,strExtension);
 
@@ -501,6 +505,7 @@ bool URIUtils::IsArchive(const CStdString& strFile)
     || strExtension.CompareNoCase(".bz") == 0
     || strExtension.CompareNoCase(".bz2") == 0)
     return true;
+#endif
 
   return false;
 }
@@ -524,9 +529,13 @@ bool URIUtils::IsRAR(const CStdString& strFile)
 
 bool URIUtils::IsInArchive(const CStdString &strFile)
 {
+#ifdef HAVE_LIBARCHIVE
   CURL url(strFile);
 
   return url.GetProtocol() == "archive" && url.GetFileName() != "";
+#else
+  return false;
+#endif
 }
 
 bool URIUtils::IsInZIP(const CStdString& strFile)

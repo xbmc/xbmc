@@ -22,6 +22,12 @@
 #ifndef ARCHIVE_MANAGER_H_
 #define ARCHIVE_MANAGER_H_
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
+#ifdef HAVE_LIBARCHIVE
+
 #include "utils/StdString.h"
 #include "DllLibArchive.h"
 #include "threads/CriticalSection.h"
@@ -72,5 +78,7 @@ private:
 };
 
 extern CArchiveManager g_archiveManager;
+
+#endif // HAVE_LIBARCHIVE
 
 #endif

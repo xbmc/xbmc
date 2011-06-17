@@ -113,6 +113,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     return new CRSSDirectory();
 
 #endif
+#ifdef HAVE_LIBARCHIVE
   if (strExtension.Equals(".tar")
     || strExtension.Equals(".gz")
     || strExtension.Equals(".bz")
@@ -137,6 +138,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     }
     return NULL;
   }
+#endif
   if (strExtension.Equals(".zip"))
   {
     CStdString strUrl;
