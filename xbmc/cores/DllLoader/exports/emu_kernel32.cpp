@@ -891,7 +891,11 @@ extern "C" int WINAPI dllMultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCST
     destinationBuffer = (LPWSTR)malloc(destinationBufferSize * sizeof(WCHAR));
   }
 
+#ifdef _WIN32
   int ret = MultiByteToWideChar(CodePage, dwFlags, lpMultiByteStr, cbMultiByte, destinationBuffer, destinationBufferSize);
+#else
+  int ret = 0;
+#endif
 
   if (ret > 0)
   {
@@ -929,7 +933,11 @@ extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWS
     destinationBuffer = (LPSTR)malloc(destinationBufferSize * sizeof(char));
   }
 
+#ifdef _WIN32
   int ret = WideCharToMultiByte(CodePage, dwFlags, lpWideCharStr, cchWideChar, destinationBuffer, destinationBufferSize, lpDefaultChar, lpUsedDefaultChar);
+#else
+  int ret = 0;
+#endif
 
   if (ret > 0)
   {

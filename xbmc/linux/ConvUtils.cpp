@@ -38,35 +38,6 @@ LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand)
   return result;
 }
 
-int WideCharToMultiByte(
-  UINT CodePage,
-  DWORD dwFlags,
-  LPCWSTR lpWideCharStr,
-  int cchWideChar,
-  LPSTR lpMultiByteStr,
-  int cbMultiByte,
-  LPCSTR lpDefaultChar,
-  LPBOOL lpUsedDefaultChar
-) {
-
-  // TODO: need to implement WideCharToMultiByte
-  return 0;
-}
-
-int MultiByteToWideChar(
-  UINT CodePage,
-  DWORD dwFlags,
-  LPCSTR lpMultiByteStr,
-  int cbMultiByte,
-  LPWSTR lpWideCharStr,
-  int cchWideChar
-) {
-
-  // TODO: need to implement MultiByteToWideChar
-  return 0;
-
-}
-
 DWORD GetLastError()
 {
   return errno;
