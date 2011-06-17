@@ -159,6 +159,11 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
           {
             localPath.append("/");
             pItem->m_bIsFolder = true;
+            pItem->m_dwSize = 0;
+          }
+          else
+          {
+            pItem->m_dwSize = attributes->size;
           }
 
           pItem->m_strPath = base;
