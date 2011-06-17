@@ -118,7 +118,12 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
         }
 
         if (attributes && (attributes->name == NULL || strcmp(attributes->name, "..") == 0 || strcmp(attributes->name, ".") == 0))
+        {
+          CSingleLock lock(m_critSect);
+          sftp_attributes_free(attributes);
           continue;
+        }
+        
         if (attributes)
         {
           CStdString itemName = attributes->name;
