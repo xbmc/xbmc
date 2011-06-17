@@ -590,7 +590,6 @@ typedef struct _D3DMATRIX {
 
 
 // String
-char *itoa(int i, char *a, int r);
 void strlwr(char* string);
 void strupr(char* string);
 
