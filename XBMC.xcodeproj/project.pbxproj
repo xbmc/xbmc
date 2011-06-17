@@ -1155,6 +1155,12 @@
 		F55110820F5C424700955236 /* net_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = F551107B0F5C424700955236 /* net_posix.c */; };
 		F558F25613ABCF7800631E12 /* WinEventsOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = F558F25513ABCF7800631E12 /* WinEventsOSX.mm */; };
 		F558F25713ABCF7800631E12 /* WinEventsOSX.mm in Sources */ = {isa = PBXBuildFile; fileRef = F558F25513ABCF7800631E12 /* WinEventsOSX.mm */; };
+		F558F27B13ABD56600631E12 /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27913ABD56600631E12 /* DirtyRegionSolvers.cpp */; };
+		F558F27C13ABD56600631E12 /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27913ABD56600631E12 /* DirtyRegionSolvers.cpp */; };
+		F558F27F13ABD57400631E12 /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */; };
+		F558F28013ABD57400631E12 /* DirtyRegionTracker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */; };
+		F558F29613ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F29413ABD7DF00631E12 /* GUIWindowDebugInfo.cpp */; };
+		F558F29713ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F29413ABD7DF00631E12 /* GUIWindowDebugInfo.cpp */; };
 		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F56C8CE2131F5DAF000AD0F6 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CE1131F5DAF000AD0F6 /* libc.dylib */; };
@@ -3655,6 +3661,13 @@
 		F551107B0F5C424700955236 /* net_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = net_posix.c; sourceTree = "<group>"; };
 		F558F25413ABCF7800631E12 /* WinEventsOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinEventsOSX.h; sourceTree = "<group>"; };
 		F558F25513ABCF7800631E12 /* WinEventsOSX.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WinEventsOSX.mm; sourceTree = "<group>"; };
+		F558F27813ABD56600631E12 /* DirtyRegion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegion.h; sourceTree = "<group>"; };
+		F558F27913ABD56600631E12 /* DirtyRegionSolvers.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirtyRegionSolvers.cpp; sourceTree = "<group>"; };
+		F558F27A13ABD56600631E12 /* DirtyRegionSolvers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegionSolvers.h; sourceTree = "<group>"; };
+		F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DirtyRegionTracker.cpp; sourceTree = "<group>"; };
+		F558F27E13ABD57400631E12 /* DirtyRegionTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegionTracker.h; sourceTree = "<group>"; };
+		F558F29413ABD7DF00631E12 /* GUIWindowDebugInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowDebugInfo.cpp; sourceTree = "<group>"; };
+		F558F29513ABD7DF00631E12 /* GUIWindowDebugInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowDebugInfo.h; sourceTree = "<group>"; };
 		F56579AD13060D1E0085ED7F /* RenderCapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCapture.cpp; sourceTree = "<group>"; };
 		F56579AE13060D1E0085ED7F /* RenderCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCapture.h; sourceTree = "<group>"; };
 		F56A08490F4A18FB003F9F87 /* karaokewindowbackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = karaokewindowbackground.h; sourceTree = "<group>"; };
@@ -4001,6 +4014,9 @@
 				18B7C6F81294222D009E7A26 /* D3DResource.h */,
 				18B7C6F91294222D009E7A26 /* DDSImage.h */,
 				18B7C6FA1294222D009E7A26 /* DirectXGraphics.h */,
+				F558F27813ABD56600631E12 /* DirtyRegion.h */,
+				F558F27A13ABD56600631E12 /* DirtyRegionSolvers.h */,
+				F558F27E13ABD57400631E12 /* DirtyRegionTracker.h */,
 				18B7C6FB1294222D009E7A26 /* FrameBufferObject.h */,
 				18B7C6FC1294222D009E7A26 /* Geometry.h */,
 				18B7C6FD1294222D009E7A26 /* GraphicContext.h */,
@@ -4095,6 +4111,8 @@
 				18B7C7561294222E009E7A26 /* D3DResource.cpp */,
 				18B7C7571294222E009E7A26 /* DDSImage.cpp */,
 				18B7C7581294222E009E7A26 /* DirectXGraphics.cpp */,
+				F558F27913ABD56600631E12 /* DirtyRegionSolvers.cpp */,
+				F558F27D13ABD57400631E12 /* DirtyRegionTracker.cpp */,
 				18B7C7591294222E009E7A26 /* FrameBufferObject.cpp */,
 				18B7C75A1294222E009E7A26 /* GraphicContext.cpp */,
 				18B7C75B1294222E009E7A26 /* GUIAudioManager.cpp */,
@@ -4667,6 +4685,8 @@
 			children = (
 				E38E17F00D25F9FA00618676 /* GUIMediaWindow.cpp */,
 				E38E17F10D25F9FA00618676 /* GUIMediaWindow.h */,
+				F558F29413ABD7DF00631E12 /* GUIWindowDebugInfo.cpp */,
+				F558F29513ABD7DF00631E12 /* GUIWindowDebugInfo.h */,
 				E38E18030D25F9FA00618676 /* GUIWindowFileManager.cpp */,
 				E38E18040D25F9FA00618676 /* GUIWindowFileManager.h */,
 				E38E18090D25F9FA00618676 /* GUIWindowHome.cpp */,
@@ -8040,6 +8060,9 @@
 				18B7006113A697270009C1AF /* KeymapLoader.cpp in Sources */,
 				18B700E113A6A5750009C1AF /* AddonVersion.cpp in Sources */,
 				F558F25613ABCF7800631E12 /* WinEventsOSX.mm in Sources */,
+				F558F27B13ABD56600631E12 /* DirtyRegionSolvers.cpp in Sources */,
+				F558F27F13ABD57400631E12 /* DirtyRegionTracker.cpp in Sources */,
+				F558F29613ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8931,6 +8954,9 @@
 				18B7006213A697270009C1AF /* KeymapLoader.cpp in Sources */,
 				18B700E213A6A5750009C1AF /* AddonVersion.cpp in Sources */,
 				F558F25713ABCF7800631E12 /* WinEventsOSX.mm in Sources */,
+				F558F27C13ABD56600631E12 /* DirtyRegionSolvers.cpp in Sources */,
+				F558F28013ABD57400631E12 /* DirtyRegionTracker.cpp in Sources */,
+				F558F29713ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
