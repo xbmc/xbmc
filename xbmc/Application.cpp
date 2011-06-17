@@ -2827,6 +2827,10 @@ bool CApplication::ProcessMouse()
   // Get the mouse command ID
   uint32_t mousecommand = g_Mouse.GetAction();
 
+  // don't map mouse movement
+  if(mousecommand == ACTION_MOUSE_MOVE)
+    return true;
+
   // Retrieve the corresponding action
   int iWin;
   CKey key(mousecommand | KEY_MOUSE, (unsigned int) 0);
