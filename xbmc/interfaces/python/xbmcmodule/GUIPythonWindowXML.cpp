@@ -344,10 +344,10 @@ void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
   CGUIMediaWindow::FreeResources(forceUnLoad);
 }
 
-void CGUIPythonWindowXML::Render()
+void CGUIPythonWindowXML::Process(unsigned int currentTime, CDirtyRegionList &regions)
 {
   g_TextureManager.AddTexturePath(m_mediaDir);
-  CGUIMediaWindow::Render();
+  CGUIMediaWindow::Process(currentTime, regions);
   g_TextureManager.RemoveTexturePath(m_mediaDir);
 }
 

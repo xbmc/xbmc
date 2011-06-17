@@ -37,7 +37,7 @@ public:
   virtual bool      OnAction(const CAction &action);
   virtual void      AllocResources(bool forceLoad = false);
   virtual void      FreeResources(bool forceUnLoad = false);
-  virtual void      Render();
+  void              Process(unsigned int currentTime, CDirtyRegionList &regions);
   void              WaitForActionEvent(unsigned int timeout);
   void              PulseActionEvent();
   void              AddItem(CFileItemPtr fileItem,int itemPosition);
