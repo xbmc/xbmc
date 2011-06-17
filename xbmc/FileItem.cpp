@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -608,6 +611,7 @@ bool CFileItem::IsFileFolder() const
   return (
     IsSmartPlayList() ||
    (IsPlayList() && g_advancedSettings.m_playlistAsFolders) ||
+    IsArchive() ||
     IsZIP() ||
     IsRAR() ||
     IsRSS() ||
@@ -695,6 +699,15 @@ bool CFileItem::IsBDFile() const
   return (strFileName.Equals("index.bdmv"));
 }
 
+bool CFileItem::IsArchive() const
+{
+#ifdef HAVE_LIBARCHIVE
+  return URIUtils::IsArchive(m_strPath);
+#else
+  return false;
+#endif
+}
+
 bool CFileItem::IsRAR() const
 {
   return URIUtils::IsRAR(m_strPath);
@@ -703,6 +716,15 @@ bool CFileItem::IsRAR() const
 bool CFileItem::IsZIP() const
 {
   return URIUtils::IsZIP(m_strPath);
+}
+
+bool CFileItem::IsCBArchive() const
+{
+#ifdef HAVE_LIBARCHIVE
+  return URIUtils::GetExtension(m_strPath).Equals(".cbt", false);
+#else
+  return false;
+#endif
 }
 
 bool CFileItem::IsCBZ() const
@@ -942,7 +964,7 @@ void CFileItem::FillInDefaultIcon()
   {
     if (URIUtils::IsInRAR(m_strPath))
       SetOverlayImage(CGUIListItem::ICON_OVERLAY_RAR);
-    else if (URIUtils::IsInZIP(m_strPath))
+    else if (URIUtils::IsInZIP(m_strPath) || URIUtils::IsInArchive(m_strPath))
       SetOverlayImage(CGUIListItem::ICON_OVERLAY_ZIP);
   }
 }
@@ -1999,6 +2021,7 @@ void CFileItemList::Stack()
       // 1. rars and zips may be on slow sources? is this supposed to be allowed?
       if( !item->IsRemote()
         || item->IsSmb()
+        || URIUtils::IsInArchive(item->m_strPath)
         || URIUtils::IsInRAR(item->m_strPath)
         || URIUtils::IsInZIP(item->m_strPath)
         )

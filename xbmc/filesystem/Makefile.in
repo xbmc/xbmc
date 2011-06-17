@@ -35,6 +35,7 @@ SRCS=AddonsDirectory.cpp \
      FileSpecialProtocol.cpp \
      FileTuxBox.cpp \
      FileUDF.cpp \
+     FileArchive.cpp \
      FileZip.cpp \
      FTPDirectory.cpp \
      FTPParse.cpp \
@@ -84,6 +85,8 @@ SRCS=AddonsDirectory.cpp \
      VTPFile.cpp \
      VTPSession.cpp \
      ZeroconfDirectory.cpp \
+     ArchiveDirectory.cpp \
+     ArchiveManager.cpp \
      ZipDirectory.cpp \
      ZipManager.cpp \
 

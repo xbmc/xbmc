@@ -375,7 +375,7 @@ int CVideoDatabase::GetPathId(const CStdString& strPath)
     if (NULL == m_pDS.get()) return -1;
 
     CStdString strPath1(strPath);
-    if (URIUtils::IsStack(strPath) || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
+    if (URIUtils::IsStack(strPath) || strPath.Mid(0,10).Equals("archive://") || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
       URIUtils::GetParentPath(strPath,strPath1);
 
     URIUtils::AddSlashAtEnd(strPath1);
@@ -541,7 +541,7 @@ int CVideoDatabase::AddPath(const CStdString& strPath)
     if (NULL == m_pDS.get()) return -1;
 
     CStdString strPath1(strPath);
-    if (URIUtils::IsStack(strPath) || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
+    if (URIUtils::IsStack(strPath) || strPath.Mid(0,10).Equals("archive://") || strPath.Mid(0,6).Equals("rar://") || strPath.Mid(0,6).Equals("zip://"))
       URIUtils::GetParentPath(strPath,strPath1);
 
     URIUtils::AddSlashAtEnd(strPath1);
@@ -7658,7 +7658,7 @@ void CVideoDatabase::ConstructPath(CStdString& strDest, const CStdString& strPat
 
 void CVideoDatabase::SplitPath(const CStdString& strFileNameAndPath, CStdString& strPath, CStdString& strFileName)
 {
-  if (URIUtils::IsStack(strFileNameAndPath) || strFileNameAndPath.Mid(0,6).Equals("rar://") || strFileNameAndPath.Mid(0,6).Equals("zip://"))
+  if (URIUtils::IsStack(strFileNameAndPath) || strFileNameAndPath.Mid(0,10).Equals("archive://") || strFileNameAndPath.Mid(0,6).Equals("rar://") || strFileNameAndPath.Mid(0,6).Equals("zip://"))
   {
     URIUtils::GetParentPath(strFileNameAndPath,strPath);
     strFileName = strFileNameAndPath;

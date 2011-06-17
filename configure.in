@@ -305,6 +305,12 @@ AC_ARG_WITH([lirc-device],
   [lirc_device=/dev/lircd])
 AC_DEFINE_UNQUOTED([LIRC_DEVICE], ["$lirc_device"], [Default LIRC device])
 
+AC_ARG_ENABLE([libarchive],
+  [AS_HELP_STRING([--enable-libarchive],
+  [enable libarchive support (default is auto)])],
+  [use_libarchive=$enableval],
+  [use_libarchive=auto])
+
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
   [AS_HELP_STRING([--enable-external-libraries],
@@ -654,6 +660,24 @@ AS_CASE([x$use_libbluray],
     AC_SUBST([HAVE_LIBBLURAY], 0)
   ]
 )
+
+# check for libarchive
+AS_CASE([x$use_libarchive],
+  [xyes],[
+    AC_CHECK_LIB([archive], [main],, AC_MSG_ERROR($missing_library))
+  ],
+  [xauto],[
+    AC_CHECK_LIB([archive], [main], [use_libarchive="yes"], [use_libarchive="no"])
+  ])
+
+if [[ "$use_libarchive" = "yes" ]]; then
+  XB_FIND_SONAME([ARCHIVE], [archive])
+  AC_DEFINE([HAVE_LIBARCHIVE], 1, [System has libarchive library])
+  AC_SUBST([HAVE_LIBARCHIVE], 1)
+else
+  AC_SUBST([HAVE_LIBARCHIVE], 0)
+  AC_MSG_NOTICE(libarchive use disabled)
+fi
 
 # platform dependent libraries
 if test "$host_vendor" = "apple" ; then

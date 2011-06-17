@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "system.h"
 #include "GUIDialogAudioSubtitleSettings.h"
 #include "dialogs/GUIDialogFileBrowser.h"
@@ -286,9 +289,13 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
     else
       strPath = g_application.CurrentFileItem().m_strPath;
 
-    CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
+    CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.tar|.gz|.bz|.bz2|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)
+#ifdef HAVE_LIBARCHIVE
+      strMask = ".srt|.tar|.gz|.bz|.bz2|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
+#else
       strMask = ".srt|.rar|.zip|.ifo|.smi|.sub|.idx|.ass|.ssa|.txt";
+#endif
     VECSOURCES shares(g_settings.m_videoSources);
     if (g_settings.iAdditionalSubtitleDirectoryChecked != -1 && !g_guiSettings.GetString("subtitles.custompath").IsEmpty())
     {

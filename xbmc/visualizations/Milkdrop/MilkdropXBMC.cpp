@@ -19,6 +19,9 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
 #include "vis_milkdrop/Plugin.h"
 #include "../../addons/include/xbmc_vis_dll.h"
 #include "XmlDocument.h"
@@ -40,8 +43,23 @@ bool lastLockedStatus = false;
 // Sets a new preset file or directory and make it active. Also recovers last state of the preset if it is the same as last time
 void SetPresetDir(const char *pack)
 {
+  /* TODO: code below needs refactoring */
   int len = strlen(pack);
+#ifdef HAVE_LIBARCHIVE
+  if ((len >= 4 && strcmp(pack + len - 4, ".tar") == 0)
+    || (len >= 3 && strcmp(pack + len - 3, ".gz") == 0)
+    || (len >= 3 && strcmp(pack + len - 3, ".bz") == 0)
+    || (len >= 4 && strcmp(pack + len - 4, ".bz2") == 0))
+  {
+    // Archive file
+    strcpy(g_plugin->m_szPresetDir, PRESETS_DIR);
+    strcat(g_plugin->m_szPresetDir,  pack);
+    strcat(g_plugin->m_szPresetDir, "/");
+  }
+  else if (len >= 4 && strcmp(pack + len - 4, ".zip") == 0)
+#else
   if (len >= 4 && strcmp(pack + len - 4, ".zip") == 0)
+#endif
   {
     // Zip file
     strcpy(g_plugin->m_szPresetDir, PRESETS_DIR);

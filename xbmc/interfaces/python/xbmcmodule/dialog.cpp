@@ -19,6 +19,10 @@
  *
  */
 
+#if (defined HAVE_CONFIG_H) && (!defined WIN32)
+  #include "config.h"
+#endif
+
 #include "dialog.h"
 
 #include "Application.h"
@@ -185,7 +189,11 @@ namespace PYXBMC
     if (!shares) return NULL;
 
     if (useFileDirectories && !utf8Line[2].size() == 0)
+#ifdef HAVE_LIBARCHIVE
+      utf8Line[2] += "|.tar|.gz|.bz|.bz2|.rar|.zip";
+#else
       utf8Line[2] += "|.rar|.zip";
+#endif
 
     value = cDefault;
 
