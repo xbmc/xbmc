@@ -590,7 +590,6 @@ typedef struct _D3DMATRIX {
 
 
 // String
-void strlwr(char* string);
 void strupr(char* string);
 
 // Audio stuff

@@ -31,15 +31,6 @@ void OutputDebugString(LPCTSTR lpOuputString)
 {
 }
 
-void strlwr( char* string )
-{
-  while ( *string )
-  {
-    *string = (char)tolower( *string );
-    string++;
-  }
-}
-
 void strupr( char* string )
 {
   while ( *string )
