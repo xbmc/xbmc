@@ -1,5 +1,7 @@
+#pragma once
+
 /*
-*      Copyright (C) 2005-2008 Team XBMC
+*      Copyright (C) 2011 Team XBMC
 *      http://www.xbmc.org
 *
 *  This Program is free software; you can redistribute it and/or modify
@@ -19,41 +21,16 @@
 *
 */
 
-#ifndef WINDOW_EVENTS_H
-#define WINDOW_EVENTS_H
+#include "windowing/WinEvents.h"
 
-#pragma once
-
-#include "utils/StdString.h"
-#include "XBMC_events.h"
-
-typedef bool (* PHANDLE_EVENT_FUNC)(XBMC_Event& newEvent);
-
-class CWinEventsBase
+class CWinEventsOSX : public CWinEventsBase
 {
 public:
-  static PHANDLE_EVENT_FUNC m_pEventFunc;
+  CWinEventsOSX();
+  ~CWinEventsOSX();
+
+  static bool MessagePump();
+private:
+  void Initialize(void);
+
 };
-
-#ifdef _WIN32
-#include "windows/WinEventsWin32.h"
-#define CWinEvents CWinEventsWin32
-#endif
-
-#ifdef _LINUX
-#if defined(__APPLE__)
-#if defined(__arm__)
-#include "osx/WinEventsIOS.h"
-#define CWinEvents CWinEventsIOS
-#else
-#include "osx/WinEventsOSX.h"
-#define CWinEvents CWinEventsOSX
-#endif
-#else
-#include "WinEventsSDL.h"
-#define CWinEvents CWinEventsSDL
-#endif
-#endif
-
-
-#endif // WINDOW_EVENTS_H
