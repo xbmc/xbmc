@@ -31,15 +31,6 @@ void OutputDebugString(LPCTSTR lpOuputString)
 {
 }
 
-void strupr( char* string )
-{
-  while ( *string )
-  {
-    *string = (char)toupper( *string );
-    string++;
-  }
-}
-
 LONGLONG Int32x32To64(LONG Multiplier, LONG Multiplicand)
 {
   LONGLONG result = Multiplier;
