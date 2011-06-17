@@ -545,7 +545,7 @@ unsigned int CFileSFTP::Read(void* lpBuf, int64_t uiBufSize)
   {
     int rc = m_session->Read(m_sftp_handle, lpBuf, (size_t)uiBufSize);
 
-    if (rc > 0)
+    if (rc >= 0)
       return rc;
     else
       CLog::Log(LOGERROR, "SFTPFile: Failed to read %i", rc);
