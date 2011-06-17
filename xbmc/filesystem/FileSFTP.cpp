@@ -352,7 +352,7 @@ bool CSFTPSession::Connect(const CStdString &host, unsigned int port, const CStd
     return false;
   }
   
-  ssh_options_set_timeout(options, timeout,0);
+  ssh_options_set_timeout(options, timeout, 0);
 
   ssh_options_set_log_verbosity(options, 0);
 
