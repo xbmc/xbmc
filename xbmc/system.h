@@ -64,6 +64,11 @@
 #define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
 
+#ifdef HAVE_LIBNFS
+  #define HAS_FILESYSTEM_NFS
+#endif
+
+
 /**********************
  * Non-free Components
  **********************/
