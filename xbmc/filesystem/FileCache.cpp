@@ -78,7 +78,7 @@ private:
 };
 
 
-CFileCache::CFileCache()
+CFileCache::CFileCache() : m_seekEvent(false,true)
 {
    m_bDeleteCache = true;
    m_nSeekResult = 0;
@@ -243,11 +243,8 @@ void CFileCache::Process()
       CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");
       m_pCache->EndOfInput();
 
-      // since there is no more to read - wait either for seek or close
-      // WaitForSingleObject is CThread::WaitForSingleObject that will also listen to the
-      // end thread event.
-      int nRet = CThread::WaitForSingleObject(m_seekEvent.GetHandle(), INFINITE);
-      if (nRet == WAIT_OBJECT_0)
+      // The thread event will now also cause the wait of an event to return a false.
+      if (m_seekEvent.Wait())
       {
         m_pCache->ClearEndOfInput();
         m_seekEvent.Set(); // hack so that later we realize seek is needed

@@ -1,9 +1,11 @@
 SRCS=Atomics.cpp \
      Condition.cpp \
      Event.cpp \
+     Interruptible.cpp \
      LockFree.cpp \
      Semaphore.cpp \
      Thread.cpp \
+     ThreadLocal.cpp \
 
 LIB=threads.a
 
