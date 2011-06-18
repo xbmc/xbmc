@@ -54,6 +54,7 @@ protected:
   friend class CCoreAudioAEHALOSX;
   CCoreAudioAEHALOSX  *HAL;
 #endif
+  bool m_Use16BitAudio;
   
 public:
   /* this should NEVER be called directly, use CAEFactory */
@@ -99,7 +100,8 @@ public:
   virtual void FreeSound(IAESound *sound);
   virtual void PlaySound(IAESound *sound);
   virtual void StopSound(IAESound *sound);
-  void MixSounds(float *buffer, unsigned int samples);
+  void MixSounds32(float *buffer, unsigned int samples);
+  void MixSounds16(int16_t *buffer, unsigned int samples);
 
   /* free's sounds that have expired */
   virtual void GarbageCollect();
@@ -140,6 +142,8 @@ private:
   int               m_StreamBufferSize;
   bool              m_guiSoundWhilePlayback;
   
+  CAEConvert::AEConvertFrFn m_convertFn;
+
   enum AEChannel    *m_RemapChannelLayout;
   
   bool OpenCoreAudio(unsigned int sampleRate = 44100, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);

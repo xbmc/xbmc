@@ -41,10 +41,28 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"
+#include "utils/SystemInfo.h"
+#include "MathUtils.h"
+#include "utils/EndianSwap.h"
 
 #define DELAY_FRAME_TIME  20
 #define BUFFERSIZE        16416
 #define SPEAKER_COUNT     9
+
+#define INT16_MAX         0x7fff
+
+static inline int safeRound(double f)
+{
+  /* if the value is larger then we can handle, then clamp it */
+  if (f >= INT_MAX) return INT_MAX;
+  if (f <= INT_MIN) return INT_MIN;
+  
+  /* if the value is out of the MathUtils::round_int range, then round it normally */
+  if (f <= static_cast<double>(INT_MIN / 2) - 1.0 || f >= static_cast <double>(INT_MAX / 2) + 1.0)
+    return floor(f+0.5);
+  
+  return MathUtils::round_int(f);
+}
 
 static enum AEChannel CoreAudioChannelMap[] = {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
@@ -54,7 +72,8 @@ CCoreAudioAE::CCoreAudioAE() :
   m_RemapChannelLayout(NULL),
   m_volume(1.0f),
   m_guiSoundWhilePlayback(true),
-  m_EngineLock(false)
+  m_EngineLock(false),
+  m_convertFn(NULL)
 {
   /* Allocate internal buffers */
   m_OutputBuffer      = (float *)_aligned_malloc(BUFFERSIZE, 16);
@@ -71,7 +90,8 @@ CCoreAudioAE::CCoreAudioAE() :
 #else
   HAL = new CCoreAudioAEHALOSX;
 #endif
-  
+ 
+  m_Use16BitAudio = g_sysinfo.IsAppleTV();
 }
 
 CCoreAudioAE::~CCoreAudioAE()
@@ -241,7 +261,18 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
   {
     m_format.m_sampleRate       = sampleRate;
     m_format.m_channelCount     = CAEUtil::GetChLayoutCount(m_format.m_channelLayout);
-    m_format.m_dataFormat       = AE_FMT_FLOAT;
+
+    if(m_Use16BitAudio)
+    {
+      m_format.m_dataFormat     = AE_FMT_S16NE;
+      m_convertFn               = CAEConvert::FrFloat(m_format.m_dataFormat);
+    }
+    else 
+    {      
+      m_format.m_dataFormat     = AE_FMT_FLOAT;
+    }
+
+
   }
 
   if (m_outputDevice.IsEmpty())
@@ -605,7 +636,7 @@ void CCoreAudioAE::FreeSound(IAESound *sound)
   SDL_mutexV(m_Mutex);
 }
 
-void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
+void CCoreAudioAE::MixSounds32(float *buffer, unsigned int samples)
 {
   if(!m_Initialized)
     return;
@@ -631,6 +662,47 @@ void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
     
     for(unsigned int i = 0; i < mixSamples; ++i)
       buffer[i] = (buffer[i] + ss->samples[i]) * volume;
+    
+    ss->sampleCount -= mixSamples;
+    ss->samples     += mixSamples;
+    
+    ++itt;
+  }
+}
+
+void CCoreAudioAE::MixSounds16(int16_t *buffer, unsigned int samples)
+{
+  if(!m_Initialized)
+    return;
+  
+  std::list<SoundState>::iterator itt;
+  
+  //SingleLock lock(m_lock);
+  for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
+  {
+    SoundState *ss = &(*itt);
+    
+    /* no more frames, so remove it from the list */
+    if (ss->sampleCount == 0)
+    {
+      ss->owner->ReleaseSamples();
+      itt = m_playing_sounds.erase(itt);
+      continue;
+    }
+    
+    unsigned int mixSamples = std::min(ss->sampleCount, samples);
+    
+    float volume = ss->owner->GetVolume() * m_volume;
+    
+    for(unsigned int i = 0; i < mixSamples; ++i)
+    {
+      float f_sound = ss->samples[i] * volume;
+      
+      buffer[i] = buffer[i] + safeRound(f_sound * ((float)INT16_MAX+.5f));
+#ifdef __BIG_ENDIAN__
+      buffer[i] = Endian_Swap16(buffer[i]);
+#endif
+    }
     
     ss->sampleCount -= mixSamples;
     ss->samples     += mixSamples;
@@ -706,9 +778,11 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
 {
   SDL_mutexP(m_Mutex);  
 
-  unsigned int rSamples = inNumberFrames * m_format.m_channelCount;
-  int size = inNumberFrames * HAL->m_BytesPerFrame;
-  unsigned int readframes = inNumberFrames;
+  UInt32 frames = inNumberFrames;
+
+  unsigned int rSamples = frames * m_format.m_channelCount;
+  int size = frames * HAL->m_BytesPerFrame;
+  unsigned int readframes = frames;
   
   if(!m_Initialized || m_EngineLock)
   {
@@ -780,14 +854,19 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
     
     if(m_guiSoundWhilePlayback)
     {
-      MixSounds(m_OutputBuffer, rSamples);
+      if(m_format.m_dataFormat == AE_FMT_S16NE)
+        MixSounds16((int16_t *)m_OutputBuffer, rSamples);
+      else
+        MixSounds32(m_OutputBuffer, rSamples);
     }
     else if(bPlayGuiSound) 
     {
-      MixSounds(m_OutputBuffer, rSamples);      
+      if(m_format.m_dataFormat == AE_FMT_S16NE)
+        MixSounds16((int16_t *)m_OutputBuffer, rSamples);
+      else
+        MixSounds32(m_OutputBuffer, rSamples);      
     }
 
-    
     if (!m_streams.empty()) 
     {
       std::list<CCoreAudioAEStream*>::iterator itt;
@@ -797,23 +876,6 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
       {
         CCoreAudioAEStream *stream = *itt;
         
-        /* skip streams that are flagged for deletion */
-        /*
-        if (stream->IsDestroyed())
-        {
-          if (!stream->IsBusy())
-          {
-            itt = m_streams.erase(itt);
-            RemoveStream(stream);
-            delete stream;
-          }
-          else
-            ++itt;
-          
-          continue;
-        }
-        */
-         
         /* dont process streams that are paused */
         if (stream->IsPaused())
         {
@@ -821,9 +883,20 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
           continue;
         }
         
-        size = stream->GetFrames((uint8_t *)m_StreamBuffer, size);
-        
-        readframes = size / HAL->m_BytesPerFrame;
+        /* AE stream is internal float. */
+        if(m_format.m_dataFormat == AE_FMT_S16NE)
+        {
+          size = frames * m_format.m_channelCount * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3);
+          CheckOutputBufferSize((void **)&m_StreamBuffer, &m_StreamBufferSize, size);
+          CheckOutputBufferSize((void **)&m_OutputBuffer, &m_OutputBufferSize, size);
+          size = stream->GetFrames((uint8_t *)m_StreamBuffer, size);
+          readframes = size / (m_format.m_channelCount * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
+        }
+        else
+        {
+          size = stream->GetFrames((uint8_t *)m_StreamBuffer, size);
+          readframes = size / HAL->m_BytesPerFrame;
+        }
         
         if (!readframes)
         {
@@ -841,23 +914,47 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
         
         UInt32 j;
         
-        float *src    = (float *)m_StreamBuffer;
-        float *dst    = m_OutputBuffer;
-  
-
         float volume = stream->GetVolume() * stream->GetReplayGain() * m_volume;
-
-        for(j = 0; j < readframes; j++)
-        {          
-          unsigned int i;
-          for(i = 0; i < m_format.m_channelCount; i++)
-          {
-            dst[i] += src[i] * volume;
-          }
-          src += m_format.m_channelCount;
-          dst += m_format.m_channelCount;
-        }
         
+        if(m_format.m_dataFormat == AE_FMT_S16NE)
+        {
+          float *src    = (float *)m_StreamBuffer;
+          int16_t *dst    = (int16_t *)m_OutputBuffer;
+          
+          for(j = 0; j < readframes; j++)
+          {          
+            unsigned int i;
+            for(i = 0; i < m_format.m_channelCount; i++)
+            {
+              float f_sound = src[i] * volume;
+              
+              dst[i] = dst[i] + safeRound(f_sound * ((float)INT16_MAX+.5f));
+#ifdef __BIG_ENDIAN__
+              dst[i] = Endian_Swap16(dst[i]);
+#endif
+            }
+            src += m_format.m_channelCount;
+            dst += m_format.m_channelCount;
+          }
+          size = readframes * m_format.m_channelCount * (CAEUtil::DataFormatToBits(AE_FMT_S16NE) >> 3);
+        }
+        else 
+        {          
+          float *src    = (float *)m_StreamBuffer;
+          float *dst    = m_OutputBuffer;
+          
+          for(j = 0; j < readframes; j++)
+          {          
+            unsigned int i;
+            for(i = 0; i < m_format.m_channelCount; i++)
+            {
+              dst[i] += src[i] * volume;
+            }
+            src += m_format.m_channelCount;
+            dst += m_format.m_channelCount;
+          }
+        }
+
         ++itt;
         
       }

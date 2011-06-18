@@ -31,7 +31,6 @@
 #include "AEUtil.h"
 #include "AEFactory.h"
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioHardware
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1478,7 +1477,7 @@ CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
   m_AUOutput      = new CAUOutputDevice;
   m_MixerUnit     = new CCoreAudioUnit;
   m_AudioDevice   = new CCoreAudioDevice;
-  m_OutputStream  = new CCoreAudioStream; 
+  m_OutputStream  = new CCoreAudioStream;
 }
 
 CCoreAudioAEHALOSX::~CCoreAudioAEHALOSX()
@@ -1508,7 +1507,7 @@ bool CCoreAudioAEHALOSX::InitializePCM(AEAudioFormat &format, CStdString &device
       inputFormat.mFormatFlags |= kAudioFormatFlagIsSignedInteger;
       break;
   }
-  
+
 #ifdef __BIG_ENDIAN__
   inputFormat.mFormatFlags |= kLinearPCMFormatFlagIsBigEndian;
 #endif

@@ -108,11 +108,10 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
   
   m_OutputFormat = outputFormat;
 
-  
   if(COREAUDIO_IS_RAW(m_StreamFormat.m_dataFormat))
   {
     m_StreamBytesPerSample        = (CAEUtil::DataFormatToBits(m_OutputFormat.m_dataFormat) >> 3);
-    m_StreamFormat.m_frameSize    = m_OutputFormat.m_channelCount;
+    m_StreamFormat.m_frameSize    = m_OutputFormat.m_frameSize;
   }
   else
   {
@@ -164,7 +163,7 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
     if (!m_convertFn)
       m_valid         = false;
   }
-
+  
   /* if we need to resample, set it up */
   if (m_resample)
   {
@@ -176,7 +175,7 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
   }
 
   m_AvgBytesPerSec =  m_OutputFormat.m_frameSize * m_OutputFormat.m_sampleRate;
-     
+
   if(m_Buffer)
     delete m_Buffer;
   
@@ -262,8 +261,8 @@ void CCoreAudioAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
 
 unsigned int CCoreAudioAEStream::GetFrameSize()
 {
-  return (m_OutputFormat.m_frameSize > m_StreamFormat.m_frameSize) ? m_OutputFormat.m_frameSize : m_StreamFormat.m_frameSize;
-  //return m_OutputFormat.m_frameSize;
+  //return (m_OutputFormat.m_frameSize > m_StreamFormat.m_frameSize) ? m_OutputFormat.m_frameSize : m_StreamFormat.m_frameSize;
+  return m_OutputFormat.m_frameSize;
 }
 
 unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
@@ -333,12 +332,14 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 
   if (!COREAUDIO_IS_RAW(m_StreamFormat.m_dataFormat))
   {
-    CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, frames * m_OutputFormat.m_frameSize);
+    addsize = frames * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3) * m_OutputFormat.m_channelCount;
+
+    CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, addsize);
     
     // downmix/remap the data
     m_remap.Remap((float *)adddata, (float *)m_remapBuffer, frames);
     adddata   = (uint8_t *)m_remapBuffer;
-    addsize   = frames * m_OutputFormat.m_frameSize;
+    //addsize   = frames * m_OutputFormat.m_frameSize;
   }
 
   //unsigned int copy = std::min(addsize, room);
@@ -352,7 +353,6 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   else 
   {
     m_Buffer->Write(adddata, addsize);
-    
   }
 
   //SDL_mutexV(m_MutexStream);
