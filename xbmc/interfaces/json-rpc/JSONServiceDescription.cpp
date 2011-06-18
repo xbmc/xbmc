@@ -194,6 +194,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioLibrary.GetAlbumDetails",                 CAudioLibrary::GetAlbumDetails },
   { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs },
   { "AudioLibrary.GetSongDetails",                  CAudioLibrary::GetSongDetails },
+  { "AudioLibrary.GetRecentlyAddedAlbums",          CAudioLibrary::GetRecentlyAddedAlbums },
+  { "AudioLibrary.GetRecentlyAddedSongs",           CAudioLibrary::GetRecentlyAddedSongs },
   { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres },
   { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent },
 
