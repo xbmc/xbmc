@@ -56,6 +56,16 @@ CGUISliderControl::~CGUISliderControl(void)
 {
 }
 
+void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+  m_guiBackground.Process(currentTime);
+  m_guiMidFocus.Process(currentTime);
+  m_guiMid.Process(currentTime);
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
 void CGUISliderControl::Render()
 {
   m_guiBackground.SetPosition( m_posX, m_posY );
@@ -380,12 +390,14 @@ CStdString CGUISliderControl::GetDescription() const
   return description;
 }
 
-void CGUISliderControl::UpdateColors()
+bool CGUISliderControl::UpdateColors()
 {
-  CGUIControl::UpdateColors();
-  m_guiBackground.SetDiffuseColor(m_diffuseColor);
-  m_guiMid.SetDiffuseColor(m_diffuseColor);
-  m_guiMidFocus.SetDiffuseColor(m_diffuseColor);
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_guiBackground.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiMid.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiMidFocus.SetDiffuseColor(m_diffuseColor);
+
+  return changed;
 }
 
 float CGUISliderControl::GetProportion() const

@@ -27,6 +27,7 @@
 #include "FileItem.h"
 #include "filesystem/File.h"
 #include "utils/URIUtils.h"
+#include "utils/TimeUtils.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/TextureManager.h"
 #include "settings/GUISettings.h"
@@ -1523,7 +1524,7 @@ void CGUIAddonWindowDialog::Show_Internal(bool show /* = true */)
 
     while (m_bRunning && !g_application.m_bStop)
     {
-      g_windowManager.Process();
+      g_windowManager.Process(CTimeUtils::GetFrameTime());
     }
   }
   else // hide

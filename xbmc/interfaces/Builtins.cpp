@@ -189,6 +189,7 @@ const BUILT_IN commands[] = {
   { "Addon.Default.Set",          true,   "Open a select dialog to allow choosing the default addon of the given type" },
   { "Addon.OpenSettings",         true,   "Open a settings dialog for the addon of the given id" },
   { "UpdateAddonRepos",           false,  "Check add-on repositories for updates" },
+  { "UpdateLocalAddons",          false,  "Check for local add-on changes" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
@@ -1440,6 +1441,10 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("updateaddonrepos"))
   {
     CAddonInstaller::Get().UpdateRepos(true);
+  }
+  else if (execute.Equals("updatelocaladdons"))
+  {
+    CAddonMgr::Get().FindAddons();
   }
   else if (execute.Equals("toggledpms"))
   {

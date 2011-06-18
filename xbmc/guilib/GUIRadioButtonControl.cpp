@@ -63,6 +63,7 @@ bool CGUIRadioButtonControl::OnAction(const CAction &action)
   if (action.GetID() == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
+    MarkDirtyRegion();
   }
   return CGUIButtonControl::OnAction(action);
 }
@@ -150,10 +151,12 @@ CStdString CGUIRadioButtonControl::GetDescription() const
   return strLabel;
 }
 
-void CGUIRadioButtonControl::UpdateColors()
+bool CGUIRadioButtonControl::UpdateColors()
 {
-  CGUIButtonControl::UpdateColors();
-  m_imgRadioOn.SetDiffuseColor(m_diffuseColor);
-  m_imgRadioOff.SetDiffuseColor(m_diffuseColor);
+  bool changed = CGUIButtonControl::UpdateColors();
+  changed |= m_imgRadioOn.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgRadioOff.SetDiffuseColor(m_diffuseColor);
+
+  return changed;
 }
 

@@ -304,6 +304,9 @@ class CAdvancedSettings
     DatabaseSettings m_databaseTV;    // advanced tv database setup
     DatabaseSettings m_databaseEpg;   /*!< advanced EPG database setup */
 
+    bool m_guiVisualizeDirtyRegions;
+    int  m_guiAlgorithmDirtyRegions;
+
     unsigned int m_cacheMemBufferSize;
 
     bool m_jsonOutputCompact;

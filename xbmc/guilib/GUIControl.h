@@ -33,6 +33,7 @@
 #include "VisibleEffect.h"  // needed for the CAnimation members
 #include "GUIInfoTypes.h"   // needed for CGUIInfoColor to handle infolabel'ed colors
 #include "GUIActionDescriptor.h"
+#include "DirtyRegion.h"
 
 class CGUIListItem; // forward
 class CAction;
@@ -75,8 +76,11 @@ public:
   virtual ~CGUIControl(void);
   virtual CGUIControl *Clone() const=0;
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void DoRender();
   virtual void Render();
+
   bool HasRendered() const { return m_hasRendered; };
 
   // OnAction() is called by our window when we are the focused control.
@@ -153,12 +157,23 @@ public:
   virtual void SetPosition(float posX, float posY);
   virtual void SetHitRect(const CRect &rect);
   virtual void SetCamera(const CPoint &camera);
-  void SetColorDiffuse(const CGUIInfoColor &color);
+  bool SetColorDiffuse(const CGUIInfoColor &color);
   CPoint GetRenderPosition() const;
   virtual float GetXPosition() const;
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
   virtual float GetHeight() const;
+
+  void MarkDirtyRegion();
+
+  /*! \brief return the render region in screen coordinates of this control
+   */
+  const CRect &GetRenderRegion() const { return m_renderRegion; };
+  /*! \brief calculate the render region in parentcontrol coordinates of this control
+   Called during process to update m_renderRegion
+   */
+  virtual CRect CalcRenderRegion() const;
+
   virtual void SetNavigation(int up, int down, int left, int right);
   virtual void SetTabNavigation(int next, int prev);
 
@@ -182,7 +197,7 @@ public:
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
-  virtual void SetVisible(bool bVisible);
+  virtual void SetVisible(bool bVisible, bool setVisState = false);
   void SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus);
   int GetVisibleCondition() const { return m_visibleCondition; };
   void SetEnableCondition(int condition);
@@ -282,8 +297,8 @@ protected:
    */
   virtual bool CanFocusFromPoint(const CPoint &point) const;
 
-  virtual void UpdateColors();
-  virtual void Animate(unsigned int currentTime);
+  virtual bool UpdateColors();
+  virtual bool Animate(unsigned int currentTime);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);
@@ -337,6 +352,10 @@ protected:
   CPoint m_camera;
   bool m_hasCamera;
   TransformMatrix m_transform;
+  TransformMatrix m_cachedTransform; // Contains the absolute transform the control
+
+  bool  m_controlIsDirty;
+  CRect m_renderRegion;         // In screen coordinates
 };
 
 #endif

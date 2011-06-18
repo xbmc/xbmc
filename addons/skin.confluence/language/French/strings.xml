@@ -7,8 +7,9 @@
   <string id="31003">Options d'alimentation</string>
   <string id="31004">En cours...</string>
   <string id="31005">Cacher INFO</string>
-
+  <string id="31006">Options d'Affichage</string>
   <string id="31007">Plugins</string>
+  <string id="31008">Plein Ecran</string>
 
   <string id="31020">Récemment ajouté</string>
   <string id="31021">Vidéo - Fichiers</string>
@@ -38,7 +39,8 @@
   <string id="31047">Préréglage Actuel</string>
   <string id="31048">Préréglages Visualisation</string>
   <string id="31049">Echéance</string>
-
+  <string id="31050">Tri : Ascendant</string>
+  <string id="31051">Tri : Descendant</string>
 
   <!-- Playlist Editor labels -->
   <string id="31055">Ouvrir playlist</string>
@@ -133,6 +135,7 @@
   <string id="31328">Récemment ajouté</string>
   <string id="31329">[B]Réglage minuterie ![/B] [COLOR=grey2] - Fermer le système automatiquement dans[/COLOR]</string>
   <string id="31330">Cliquer sur le bouton pour voir[CR][CR]le trailer du film</string>
+  <string id="31331">Détails de l'Album</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Pause</string>
@@ -158,6 +161,31 @@
   <string id="31406">[B]CONFIGURATION DES PARAMÈTRES SYSTÈME[/B][CR][CR]Configurer les sorties vidéo et audio · Configurer les périphériques de contrôle[CR]Définir les options de gestion d'énergie · Activer le débogage · Configurer la sécurité</string>
   <string id="31407">[B]CONFIGURATION DES PARAMÈTRES THÈME[/B][CR][CR]Configuration du skin Confluence · Ajouter et supprimer des éléments du menu d'accueil[CR]Changer les arrière-plans du skin</string>
   <string id="31408">[B]CONFIGURATION DES ADD-ONS[/B][CR][CR]Gérer les Add-ons installés· Recherche et installation d'Add-ons depuis xbmc.org[CR]Modifier les paramètres Add-on</string>
+  <string id="31409">[B]CONFIGURATION DES PARAMÈTRES TV[/B][CR][CR]Changer l'affichage plein écran · Gestion des paramètres de l'EPG</string>
   
   <string id="31421">Sélectionnez un profil d'utilisateur[CR]pour vous connecter et continuer</string>
+  
+  <!-- Extra Unified PVR labels -->
+  <string id="31500">Programmations</string>
+  <string id="31501">Date/Heure</string>
+  <string id="31502">TV</string>
+  <string id="31503">Ajouter un Groupe</string>
+  <string id="31504">Renommer le Groupe</string>
+  <string id="31505">Supprimer le Groupe</string>
+  <string id="31506">Groupes[CR]Disponibles</string>
+  <string id="31509">Groupe de chaînes</string>
+  <string id="31510">Programmer</string>
+  <string id="31511">Paramètres de la chaîne</string>
+  
+  <!-- Weather plugin -->
+  <string id="31900">Cartes Météo</string>
+  <string id="31901">Prévisions sur 36 Heures</string>
+  <string id="31902">Prévisions Heure par Heure</string>
+  <string id="31903">Prévisions pour le Weekend</string>
+  <string id="31904">Prévisions sur 10 Jours</string>
+  <string id="31905">Prévisions</string>
+  <string id="31906">Cartes &amp; Vidéo</string>
+  <string id="31907">Bulletin vidéo [COLOR=grey2](affichage en plein écran)[/COLOR]</string>
+  <string id="31908">Risque de pluie</string>
+  <string id="31909">Récupération des prévisions météo...</string>
 </strings>

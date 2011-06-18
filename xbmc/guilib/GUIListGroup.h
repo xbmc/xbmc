@@ -42,10 +42,11 @@ public:
 
   virtual void AddControl(CGUIControl *control, int position = -1);
 
-  virtual void Render();
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void ResetAnimation(ANIMATION_TYPE type);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void UpdateInfo(const CGUIListItem *item);
+  virtual void SetInvalid();
 
   void EnlargeWidth(float difference);
   void EnlargeHeight(float difference);

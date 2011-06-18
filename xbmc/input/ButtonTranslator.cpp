@@ -805,23 +805,23 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   return action;
 }
 
-std::map<CStdString, std::map<int, CButtonTranslator::buttonMap> >::iterator CButtonTranslator::GetActiveButtonMap()
+const std::map<int, CButtonTranslator::buttonMap> &CButtonTranslator::GetDeviceMap() const
 {
-  std::map<CStdString, std::map<int, buttonMap> >::iterator activeMapIt = deviceMappings.find(g_settings.m_activeKeyboardMapping);
+  std::map<CStdString, std::map<int, buttonMap> >::const_iterator activeMapIt = deviceMappings.find(g_settings.m_activeKeyboardMapping);
   if (activeMapIt == deviceMappings.end())
-    return deviceMappings.find("default");
-  return activeMapIt;
+    return deviceMappings.find("default")->second;
+  return activeMapIt->second;
 }
 
-int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &strAction)
+int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &strAction) const
 {
   uint32_t code = key.GetButtonCode();
 
-  std::map<int, buttonMap> deviceMap = (*GetActiveButtonMap()).second;
-  map<int, buttonMap>::iterator it = deviceMap.find(window);
+  const std::map<int, buttonMap> &deviceMap = GetDeviceMap();
+  map<int, buttonMap>::const_iterator it = deviceMap.find(window);
   if (it == deviceMap.end())
     return 0;
-  buttonMap::iterator it2 = (*it).second.find(code);
+  buttonMap::const_iterator it2 = (*it).second.find(code);
   int action = 0;
   while (it2 != (*it).second.end())
   {
@@ -835,7 +835,7 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &st
   {
     CLog::Log(LOGDEBUG, "%s: Trying Hardy keycode for %#04x", __FUNCTION__, code);
     code &= ~0x0F00;
-    buttonMap::iterator it2 = (*it).second.find(code);
+    buttonMap::const_iterator it2 = (*it).second.find(code);
     while (it2 != (*it).second.end())
     {
       action = (*it2).second.id;

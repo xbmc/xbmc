@@ -90,7 +90,7 @@ namespace JSONRPC
       "\"uniqueItems\": true,"
       "\"items\": { \"type\": \"string\", \"enum\": [ \"title\", \"thumbnail\" ] }"
     "}",
-    "\"Library.Details.Genres\": {"
+    "\"Library.Details.Genre\": {"
       "\"type\": \"object\","
       "\"properties\": {"
         "\"genreid\": { \"$ref\": \"Library.Id\", \"required\": true },"

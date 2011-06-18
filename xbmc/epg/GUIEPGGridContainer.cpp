@@ -191,7 +191,7 @@ void CGUIEPGGridContainer::Render()
     item->SetLayout(layout);
   }
   if (item->GetLayout())
-    item->GetLayout()->Render(item.get(), m_parentID, m_renderTime);
+    item->GetLayout()->Render(item.get(), m_parentID);
   g_graphicsContext.RestoreOrigin();
 
   int cacheBeforeRuler, cacheAfterRuler;
@@ -251,7 +251,7 @@ void CGUIEPGGridContainer::Render()
       item->SetLayout(layout);
     }
     if (item->GetLayout())
-      item->GetLayout()->Render(item.get(), m_parentID, m_renderTime);
+      item->GetLayout()->Render(item.get(), m_parentID);
     g_graphicsContext.RestoreOrigin();
 
     rulerOffset += m_rulerUnit;
@@ -396,7 +396,7 @@ void CGUIEPGGridContainer::RenderChannelItem(float posX, float posY, CGUIListIte
           subItem = m_lastChannel->GetFocusedLayout()->GetFocusedItem();
         item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
-      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID);
     }
     m_lastChannel = item;
   }
@@ -410,9 +410,9 @@ void CGUIEPGGridContainer::RenderChannelItem(float posX, float posY, CGUIListIte
       item->SetLayout(layout);
     }
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
-      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID);
     else if (item->GetLayout())
-      item->GetLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetLayout()->Render(item, m_parentID);
   }
   g_graphicsContext.RestoreOrigin();
 }
@@ -458,7 +458,7 @@ void CGUIEPGGridContainer::RenderProgrammeItem(float posX, float posY, float wid
           subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
         item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
       }
-      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID);
     }
     m_lastItem = item;
   }
@@ -483,9 +483,9 @@ void CGUIEPGGridContainer::RenderProgrammeItem(float posX, float posY, float wid
       item->SetLayout(layout);
     }
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
-      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID);
     else if (item->GetLayout())
-      item->GetLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetLayout()->Render(item, m_parentID);
   }
   g_graphicsContext.RestoreOrigin();
 }
@@ -1331,7 +1331,7 @@ void CGUIEPGGridContainer::SetFocus(bool bOnOff)
 void CGUIEPGGridContainer::DoRender(unsigned int currentTime)
 {
   m_renderTime = currentTime;
-  CGUIControl::DoRender(currentTime);
+  CGUIControl::DoRender();
   m_wasReset = false;
 }
 

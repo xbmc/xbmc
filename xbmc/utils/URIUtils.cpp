@@ -691,6 +691,17 @@ bool URIUtils::IsMusicDb(const CStdString& strFile)
   return strFile.Left(8).Equals("musicdb:");
 }
 
+bool URIUtils::IsNfs(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+  
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+  
+  return strFile2.Left(4).Equals("nfs:");
+}
+
+
 bool URIUtils::IsVideoDb(const CStdString& strFile)
 {
   return strFile.Left(8).Equals("videodb:");

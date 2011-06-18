@@ -65,6 +65,10 @@
 #ifdef HAS_FILESYSTEM_SFTP
 #include "FileSFTP.h"
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+#include "FileNFS.h"
+#endif
+
 #include "FileMusicDatabase.h"
 #include "FileSpecialProtocol.h"
 #include "MultiPathFile.h"
@@ -160,6 +164,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_PVRCLIENTS
     else if (strProtocol == "pvr") return new CPVRFile();
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+    else if (strProtocol == "nfs") return new CFileNFS();
+#endif
+    
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );

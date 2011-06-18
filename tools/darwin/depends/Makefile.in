@@ -5,7 +5,7 @@ BUILDTOOLS = gas-preprocessor help2man autoconf automake libtool pkg-config yasm
 SUBDIRS := \
 	Backrow pcre expat gettext readline sqlite3 \
 	liblzo2 freetype2 fontconfig \
-	openssl libssh2 curl \
+	openssl libssh libssh2 curl \
 	jpeg tiff libpng libogg \
 	libvorbis libflac libmad fribidi libmpeg2 \
 	libass libcdio libsamplerate librtmp libcrystalhd libnfs \
