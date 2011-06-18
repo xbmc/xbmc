@@ -921,10 +921,10 @@ void CRenderSystemDX::SetScissors(const CRect& rect)
     return;
 
   RECT scissor;
-  scissor.left = MathUtils::round_int(rect.x1);
-  scissor.top = MathUtils::round_int(rect.y1);
-  scissor.right = MathUtils::round_int(rect.x2);
-  scissor.bottom = MathUtils::round_int(rect.y2);
+  scissor.left   = std::max(0, MathUtils::round_int(rect.x1));
+  scissor.top    = std::max(0, MathUtils::round_int(rect.y1));
+  scissor.right  = std::min(static_cast<int>(m_nBackBufferWidth), MathUtils::round_int(rect.x2));
+  scissor.bottom = std::min(static_cast<int>(m_nBackBufferHeight), MathUtils::round_int(rect.y2));
   m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
   m_pD3DDevice->SetScissorRect(&scissor);
 }
