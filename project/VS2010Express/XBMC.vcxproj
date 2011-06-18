@@ -829,7 +829,6 @@
     <ClCompile Include="..\..\xbmc\win32\WINFileSMB.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WINSMBDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\win32\XBMC_PC.cpp" />
-    <ClCompile Include="..\..\xbmc\win32\XCriticalSection.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DummyVideoPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDAudio.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDClock.cpp" />
@@ -1675,7 +1674,6 @@
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h" />
     <ClInclude Include="..\..\xbmc\win32\WINFileSMB.h" />
     <ClInclude Include="..\..\xbmc\win32\WINSMBDirectory.h" />
-    <ClInclude Include="..\..\xbmc\win32\XCriticalSection.h" />
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\dvd_config.h" />
