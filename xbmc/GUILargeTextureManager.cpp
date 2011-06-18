@@ -61,7 +61,7 @@ bool CImageLoader::DoWork()
        || file.GetMimeType().Left(6).Equals("image/")) // ignore non-pictures
     { 
       // Cache the image if necessary
-      loadPath = CTextureCache::Get().CheckAndCacheImage(texturePath);
+      loadPath = CTextureCache::Get().CacheImageFile(texturePath);
       if (loadPath.IsEmpty())
         return false;
     }

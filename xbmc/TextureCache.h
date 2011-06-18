@@ -65,18 +65,28 @@ public:
    */ 
    CStdString CheckCachedImage(const CStdString &image, bool returnDDS = true);
 
-  /*! \brief check whether we have this image cached, and change it's url if so
-
-   Checks firstly whether an image is already cached, and return URL if so.
-   If the image is not yet in the database it is cached and added to the database.
+  /*! \brief This function is a wrapper around CheckCacheImage and CacheImageFile.
+  
+   Checks firstly whether an image is already cached, and return URL if so [see CheckCacheImage]
+   If the image is not yet in the database it is cached and added to the database [see CacheImageFile]
 
    \param image url of the image to check and cache
    \param returnDDS if we're allowed to return a DDS version, defaults to true
    \return cached url of this image
-   \sa GetCachedImage
+   \sa CheckCacheImage
    */
   CStdString CheckAndCacheImage(const CStdString &image, bool returnDDS = true);
 
+  /*! \brief Take image URL and add it to image cache
+
+   Takes the URL to an image. Caches and adds to the database.
+
+   \param image url of the image to cache
+   \return cached url of this image
+   \sa CCacheJob::CacheImage
+   */  
+  CStdString CacheImageFile(const CStdString &url);
+  
   /*! \brief retrieve the cached version of the given image (if it exists)
    \param image url of the image
    \return cached url of this image, empty if none exists
