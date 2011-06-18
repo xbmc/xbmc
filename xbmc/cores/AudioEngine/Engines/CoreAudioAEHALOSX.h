@@ -226,6 +226,7 @@ protected:
   CCoreAudioStream *m_OutputStream;
   bool              m_Initialized;
   bool              m_Passthrough;
+  bool              m_ATV1;
 public:
 
   AEAudioFormat     m_format;
