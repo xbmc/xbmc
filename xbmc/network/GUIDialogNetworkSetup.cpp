@@ -141,7 +141,9 @@ void CGUIDialogNetworkSetup::OnInitWindow()
   pSpin->AddLabel(g_localizeStrings.Get(20174), NET_PROTOCOL_DAAP);
   pSpin->AddLabel(g_localizeStrings.Get(20175), NET_PROTOCOL_UPNP);
   pSpin->AddLabel(g_localizeStrings.Get(20304), NET_PROTOCOL_RSS);
+#ifdef HAS_FILESYSTEM_NFS
   pSpin->AddLabel(g_localizeStrings.Get(20259), NET_PROTOCOL_NFS);
+#endif
 
   pSpin->SetValue(m_protocol);
   OnProtocolChange();
