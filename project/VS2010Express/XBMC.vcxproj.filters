@@ -2108,6 +2108,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlcheckmark.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controledit.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlfadelabel.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
