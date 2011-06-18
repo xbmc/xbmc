@@ -721,12 +721,9 @@
     <ClCompile Include="..\..\xbmc\TextureCache.cpp" />
     <ClCompile Include="..\..\xbmc\TextureDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\CriticalSection.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Mutex.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\SharedSection.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\SingleLock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp" />

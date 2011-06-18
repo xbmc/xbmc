@@ -1841,9 +1841,6 @@
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp">
       <Filter>threads</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\CriticalSection.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\Event.cpp">
       <Filter>threads</Filter>
     </ClCompile>
@@ -1851,12 +1848,6 @@
       <Filter>threads</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\Mutex.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\SharedSection.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\SingleLock.cpp">
       <Filter>threads</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp">
