@@ -119,8 +119,6 @@ protected:
 
   int ReadFrame(AVPacket *packet);
   void AddStream(int iId);
-  //  void Lock()   { EnterCriticalSection(&m_critSection); }
-  //  void Unlock() { LeaveCriticalSection(&m_critSection); }
 
   double ConvertTimestamp(int64_t pts, int den, int num);
   void UpdateCurrentPTS();

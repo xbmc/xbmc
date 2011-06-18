@@ -39,22 +39,19 @@ VOID CDownloadQueueManager::Initialize()
 TICKET CDownloadQueueManager::RequestContent(const CStdString& aUrl, IDownloadQueueObserver* aObserver)
 {
   CSingleLock lock(m_critical);
-  TICKET ticket = GetNextDownloadQueue()->RequestContent(aUrl, aObserver);
-  return ticket;
+  return GetNextDownloadQueue()->RequestContent(aUrl, aObserver);
 }
 
 TICKET CDownloadQueueManager::RequestFile(const CStdString& aUrl, const CStdString& aFilePath, IDownloadQueueObserver* aObserver)
 {
   CSingleLock lock(m_critical);
-  TICKET ticket = GetNextDownloadQueue()->RequestFile(aUrl, aFilePath, aObserver);
-  return ticket;
+  return GetNextDownloadQueue()->RequestFile(aUrl, aFilePath, aObserver);
 }
 
 TICKET CDownloadQueueManager::RequestFile(const CStdString& aUrl, IDownloadQueueObserver* aObserver)
 {
   CSingleLock lock(m_critical);
-  TICKET ticket = GetNextDownloadQueue()->RequestFile(aUrl, aObserver);
-  return ticket;
+  return GetNextDownloadQueue()->RequestFile(aUrl, aObserver);
 }
 
 void CDownloadQueueManager::CancelRequests(IDownloadQueueObserver *aObserver)
