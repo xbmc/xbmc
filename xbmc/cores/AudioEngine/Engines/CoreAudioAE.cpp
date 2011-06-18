@@ -91,7 +91,7 @@ CCoreAudioAE::CCoreAudioAE() :
   HAL = new CCoreAudioAEHALOSX;
 #endif
  
-  m_Use16BitAudio     = g_sysinfo.IsAppleTV();
+  m_Use16BitAudio     = false; //g_sysinfo.IsAppleTV();
 }
 
 CCoreAudioAE::~CCoreAudioAE()
