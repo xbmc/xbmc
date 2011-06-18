@@ -2460,6 +2460,9 @@
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\Condition.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4936,6 +4939,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h">
       <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\Condition.h">
+      <Filter>threads</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
