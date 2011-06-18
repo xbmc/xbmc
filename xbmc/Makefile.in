@@ -34,6 +34,8 @@ SRCS=Application.cpp \
 
 LIB=xbmc.a
 
+.PHONY: all
+
 all: $(LIB) xbmc.o
 
 CLEAN_FILES=xbmc.o xbmc.P
