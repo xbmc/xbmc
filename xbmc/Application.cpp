@@ -1923,7 +1923,7 @@ bool CApplication::WaitFrame(unsigned int timeout)
   while(m_frameCount > 0)
   {
     ConditionVariable::TimedWaitResponse result = m_frameCond.wait(lock, dwRemainingTime);
-    if (result == ConditionVariable::OK)
+    if (result == ConditionVariable::TW_OK)
     {
       //fix time to wait because of spurious wakeups
       DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
@@ -1935,11 +1935,11 @@ bool CApplication::WaitFrame(unsigned int timeout)
       else
       {
         //ran out of time
-        result = ConditionVariable::TIMEDOUT;
+        result = ConditionVariable::TW_TIMEDOUT;
       }
     }
 
-    if(result == ConditionVariable::TIMEDOUT)
+    if(result == ConditionVariable::TW_TIMEDOUT)
       break;
     if(result < 0)
       CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
@@ -2002,7 +2002,7 @@ void CApplication::Render()
       while(m_frameCount == 0)
       {
         ConditionVariable::TimedWaitResponse result = m_frameCond.wait(lock, dwRemainingTime);
-        if (result == ConditionVariable::OK)
+        if (result == ConditionVariable::TW_OK)
         {
           //fix time to wait because of spurious wakeups
           DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
@@ -2014,11 +2014,11 @@ void CApplication::Render()
           else
           {
             //ran out of time
-            result = ConditionVariable::TIMEDOUT;
+            result = ConditionVariable::TW_TIMEDOUT;
           }
         }
 
-        if(result == ConditionVariable::TIMEDOUT)
+        if(result == ConditionVariable::TW_TIMEDOUT)
           break;
         if(result < 0)
           CLog::Log(LOGWARNING, "CApplication::Render - error from conditional wait");

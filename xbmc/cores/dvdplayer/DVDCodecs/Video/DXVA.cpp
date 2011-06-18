@@ -587,9 +587,9 @@ bool CDecoder::OpenProcessor()
 {
   m_state = DXVA_OPEN;
 
-  { CSingleExit leave(m_section);
+  {
+    CSingleExit leave(m_section);
     CProcessor* processor = new CProcessor();
-    leave.Restore();
     m_processor = processor;
   }
 

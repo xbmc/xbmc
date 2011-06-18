@@ -43,7 +43,7 @@ namespace XbmcThreads
   public:
     inline ConditionVariable() {}
 
-    enum TimedWaitResponse { OK = 0, TIMEDOUT = 1, INTERRUPTED=-1, ERROR=-2 };
+    enum TimedWaitResponse { TW_OK = 0, TW_TIMEDOUT = 1, TW_INTERRUPTED=-1, TW_ERROR=-2 };
 
     inline void wait(CSingleLock& lock) { impl.wait(lock); }
     inline void wait(CCriticalSection& mutex) { impl.wait(mutex); }

@@ -64,7 +64,7 @@ bool CEvent::WaitMSec(unsigned int milliSeconds)
     if (setState)
       return true;
 
-    if (resp == XbmcThreads::ConditionVariable::TIMEDOUT)
+    if (resp == XbmcThreads::ConditionVariable::TW_TIMEDOUT)
       return false;
 
     unsigned int elapsedTimeMillis = CTimeUtils::GetTimeMS() - startTime;

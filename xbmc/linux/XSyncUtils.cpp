@@ -172,7 +172,7 @@ void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer)
 static DWORD WINAPI WaitForEvent(HANDLE hHandle, CSingleLock& lock, DWORD dwMilliseconds)
 {
   DWORD dwRet = 0;
-  ConditionVariable::TimedWaitResponse nRet = ConditionVariable::OK;
+  ConditionVariable::TimedWaitResponse nRet = ConditionVariable::TW_OK;
   // something like the following would be nice,
   // but I can't figure a wait to check if a mutex is locked:
   // assert(hHandle->m_hMutex.IsLocked());
@@ -180,7 +180,7 @@ static DWORD WINAPI WaitForEvent(HANDLE hHandle, CSingleLock& lock, DWORD dwMill
   {
     if (dwMilliseconds == 0)
     {
-      nRet = ConditionVariable::TIMEDOUT;
+      nRet = ConditionVariable::TW_TIMEDOUT;
     }
     else if (dwMilliseconds == INFINITE)
     {
@@ -188,7 +188,7 @@ static DWORD WINAPI WaitForEvent(HANDLE hHandle, CSingleLock& lock, DWORD dwMill
       while( hHandle->m_bEventSet == false )
       {
         hHandle->m_hCond->wait(lock);
-        nRet = ConditionVariable::OK;
+        nRet = ConditionVariable::TW_OK;
       }
     }
     else
@@ -211,7 +211,7 @@ static DWORD WINAPI WaitForEvent(HANDLE hHandle, CSingleLock& lock, DWORD dwMill
         else
         {
           //ran out of time
-          nRet = ConditionVariable::TIMEDOUT;
+          nRet = ConditionVariable::TW_TIMEDOUT;
           break;
         }
       }
@@ -222,9 +222,9 @@ static DWORD WINAPI WaitForEvent(HANDLE hHandle, CSingleLock& lock, DWORD dwMill
     hHandle->m_bEventSet = false;
 
   // Translate return code.
-  if (nRet == ConditionVariable::OK)
+  if (nRet == ConditionVariable::TW_OK)
     dwRet = WAIT_OBJECT_0;
-  else if (nRet == ConditionVariable::TIMEDOUT)
+  else if (nRet == ConditionVariable::TW_TIMEDOUT)
     dwRet = WAIT_TIMEOUT;
   else
     dwRet = WAIT_FAILED;

@@ -26,36 +26,36 @@ namespace XbmcThreads
 
   ConditionVariable::TimedWaitResponse ConditionVariable::wait(CSingleLock& lock, int milliseconds)
   {
-    ConditionVariable::TimedWaitResponse ret = OK;
+    ConditionVariable::TimedWaitResponse ret = TW_OK;
     try
     {
-      ret = (impl.timed_wait(lock, boost::posix_time::milliseconds(milliseconds))) ? OK : TIMEDOUT;
+      ret = (impl.timed_wait(lock, boost::posix_time::milliseconds(milliseconds))) ? TW_OK : TW_TIMEDOUT;
     }
-    catch (boost::thread_interrupted exception)
+    catch (boost::thread_interrupted )
     {
-      ret = INTERRUPTED;
+      ret = TW_INTERRUPTED;
     }
     catch (...)
     {
-      ret = ERROR;
+      ret = TW_ERROR;
     }
     return ret;
   }
 
   ConditionVariable::TimedWaitResponse ConditionVariable::wait(CCriticalSection& mutex, int milliseconds)
   {
-    ConditionVariable::TimedWaitResponse ret = OK;
+    ConditionVariable::TimedWaitResponse ret = TW_OK;
     try
     {
-      ret = (impl.timed_wait(mutex, boost::posix_time::milliseconds(milliseconds))) ? OK : TIMEDOUT;
+      ret = (impl.timed_wait(mutex, boost::posix_time::milliseconds(milliseconds))) ? TW_OK : TW_TIMEDOUT;
     }
-    catch (boost::thread_interrupted exception)
+    catch (boost::thread_interrupted )
     {
-      ret = INTERRUPTED;
+      ret = TW_INTERRUPTED;
     }
     catch (...)
     {
-      ret = ERROR;
+      ret = TW_ERROR;
     }
     return ret;
   }
