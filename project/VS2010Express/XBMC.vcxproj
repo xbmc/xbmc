@@ -723,7 +723,6 @@
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\Mutex.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp" />
@@ -1561,7 +1560,6 @@
     <ClInclude Include="..\..\xbmc\threads\CriticalSection.h" />
     <ClInclude Include="..\..\xbmc\threads\Event.h" />
     <ClInclude Include="..\..\xbmc\threads\LockFree.h" />
-    <ClInclude Include="..\..\xbmc\threads\Mutex.h" />
     <ClInclude Include="..\..\xbmc\threads\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\threads\SingleLock.h" />
     <ClInclude Include="..\..\xbmc\threads\Thread.h" />

@@ -1847,9 +1847,6 @@
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp">
       <Filter>threads</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\Mutex.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp">
       <Filter>threads</Filter>
     </ClCompile>
@@ -4325,9 +4322,6 @@
       <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\LockFree.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\Mutex.h">
       <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\SharedSection.h">
