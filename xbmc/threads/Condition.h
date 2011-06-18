@@ -21,26 +21,29 @@
 
 #pragma once
 
-/**
- * This is a thin wrapper around boost::condition_variable (I
- * would prefer to use it directly but ...) and will be replacing
- * existing WaitForSingleObject, SDL_cond, etc.
- */
 #include <boost/thread/condition_variable.hpp>
 
 #include "threads/SingleLock.h"
 
 namespace XbmcThreads
 {
-  // Did I meantion it was a 'thin' wrapper?
+  /**
+   * This is a thin wrapper around boost::condition_variable (I
+   * would prefer to use it directly but ...) and will be replacing
+   * existing WaitForSingleObject, SDL_cond, etc.
+   */
   class ConditionVariable
   {
   private:
     boost::condition_variable_any impl;
 
+    // explicitly deny copying
+    inline ConditionVariable(const ConditionVariable& other) {}
+    inline ConditionVariable& operator=(ConditionVariable& other) { return *this; }
   public:
+    inline ConditionVariable() {}
 
-    enum TimedWaitResponse { OK = 0, TIMEDOUT, INTERRUPTED=-1, ERROR=-2 };
+    enum TimedWaitResponse { OK = 0, TIMEDOUT = 1, INTERRUPTED=-1, ERROR=-2 };
 
     inline void wait(CSingleLock& lock) { impl.wait(lock); }
     inline void wait(CCriticalSection& mutex) { impl.wait(mutex); }
