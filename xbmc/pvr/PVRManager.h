@@ -407,12 +407,6 @@ namespace PVR
      */
     virtual void Process(void);
 
-    /*!
-     * @brief Disable the pvrmanager if no clients are enabled or active.
-     * @return True if no clients are enabled, false otherwise.
-     */
-    bool DisableIfNoClients(void);
-
   private:
 
     void Cleanup(void);

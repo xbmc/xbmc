@@ -139,9 +139,6 @@ bool CPVRManager::StartUpdateThreads(void)
   StopUpdateThreads();
   CLog::Log(LOGNOTICE, "PVRManager - starting up");
 
-  /* show the busy dialog while loading */
-  ShowBusyDialog(true);
-
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
   Create();
   SetName("XBMC PVRManager");
@@ -173,39 +170,32 @@ void CPVRManager::Cleanup(void)
 
 bool CPVRManager::Load(void)
 {
-  if (m_bLoaded)
-    return true;
-
   /* load at least one client */
-  while (!m_addons->HasActiveClients())
-  {
+  while (!m_addons->HasActiveClients() && !m_bStop)
     m_addons->TryLoadClients(1);
 
-    if (m_addons->HasActiveClients())
-    {
-      CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
+  if (m_addons->HasActiveClients() && !m_bLoaded && !m_bStop)
+  {
+    CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
+    ShowBusyDialog(true);
 
-      /* load all channels and groups */
+    /* load all channels and groups */
+    if (!m_bStop)
       m_channelGroups->Load();
 
-      /* get timers from the backends */
+    /* get timers from the backends */
+    if (!m_bStop)
       m_timers->Load();
 
-      /* get recordings from the backend */
+    /* get recordings from the backend */
+    if (!m_bStop)
       m_recordings->Load();
-    }
 
-    /* check if there are (still) any enabled addons */
-    if (DisableIfNoClients())
-    {
-      CLog::Log(LOGDEBUG, "PVRManager - %s - no clients could be found. aborting startup", __FUNCTION__);
-      return false;
-    }
+    ShowBusyDialog(false);
+    m_bLoaded = true;
   }
 
-  m_bLoaded = true;
-
-  return true;
+  return m_bLoaded;
 }
 
 void CPVRManager::ShowBusyDialog(bool bShow)
@@ -230,8 +220,6 @@ void CPVRManager::Process(void)
   /* load the pvr data from the db and clients if it's not already loaded */
   if (!Load())
   {
-    /* close the busy dialog */
-    ShowBusyDialog(false);
     CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data", __FUNCTION__);
     return;
   }
@@ -272,13 +260,15 @@ void CPVRManager::Process(void)
       m_addons->TryLoadClients(1);
 
     /* execute the next pending jobs if there are any */
-    ExecutePendingJobs();
+    if (m_addons->HasActiveClients())
+      ExecutePendingJobs();
 
     /* check if the (still) are any enabled addons */
-    if (DisableIfNoClients())
+    if (!m_addons->HasActiveClients())
     {
-      CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled. disabling PVR functionality", __FUNCTION__);
+      CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
       Stop();
+      Start();
       return;
     }
 
@@ -372,24 +362,6 @@ void CPVRManager::ResetProperties(void)
   for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
     delete m_pendingUpdates.at(iJobPtr);
   m_pendingUpdates.clear();
-}
-
-bool CPVRManager::DisableIfNoClients(void)
-{
-  bool bReturn(false);
-
-  if (!m_addons->HasClients())
-  {
-    g_guiSettings.SetBool("pvrmanager.enabled", false);
-    CLog::Log(LOGNOTICE,"PVRManager - no clients enabled. pvrmanager disabled.");
-
-    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dialog)
-      dialog->ShowAndGetInput(257,0,19223,0);
-    bReturn = true;
-  }
-
-  return bReturn;
 }
 
 void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
