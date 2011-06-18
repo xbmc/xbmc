@@ -20,10 +20,14 @@
  *
  */
 
+#include "system.h"
+#include "Variant.h"
+
 #include <yajl/yajl_parse.h>
 #include <yajl/yajl_gen.h>
-
-#include "Variant.h"
+#ifdef HAVE_YAJL_YAJL_VERSION_H
+#include <yajl/yajl_version.h>
+#endif
 
 class IParseCallback
 {
@@ -56,11 +60,23 @@ public:
 private:
   static int ParseNull(void * ctx);
   static int ParseBoolean(void * ctx, int boolean);
+#if YAJL_MAJOR == 2
+  static int ParseInteger(void * ctx, long long integerVal);
+#else
   static int ParseInteger(void * ctx, long integerVal);
+#endif
   static int ParseDouble(void * ctx, double doubleVal);
+#if YAJL_MAJOR == 2
+  static int ParseString(void * ctx, const unsigned char * stringVal, size_t stringLen);
+#else
   static int ParseString(void * ctx, const unsigned char * stringVal, unsigned int stringLen);
+#endif
   static int ParseMapStart(void * ctx);
+#if YAJL_MAJOR == 2
+  static int ParseMapKey(void * ctx, const unsigned char * stringVal, size_t stringLen);
+#else
   static int ParseMapKey(void * ctx, const unsigned char * stringVal, unsigned int stringLen);
+#endif
   static int ParseMapEnd(void * ctx);
   static int ParseArrayStart(void * ctx);
   static int ParseArrayEnd(void * ctx);

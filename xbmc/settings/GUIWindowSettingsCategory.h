@@ -36,6 +36,7 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual void FrameMove();
   virtual void Render();
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual int GetID() const { return CGUIWindow::GetID() + m_iScreen; };
 
 protected:

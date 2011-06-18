@@ -61,19 +61,25 @@ void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
   CGUIControlGroup::AddControl(control, position);
 }
 
-void CGUIListGroup::Render()
+void CGUIListGroup::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  CPoint pos(GetPosition());
   g_graphicsContext.SetOrigin(m_posX, m_posY);
+
+  CRect rect;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
-    GUIPROFILER_VISIBILITY_BEGIN(control);
     control->UpdateVisibility(m_item);
-    GUIPROFILER_VISIBILITY_END(control);
-    control->DoRender(m_renderTime);
+    unsigned int oldDirty = dirtyregions.size();
+    control->DoProcess(currentTime, dirtyregions);
+    if (control->IsVisible() || (oldDirty != dirtyregions.size())) // visible or dirty (was visible?)
+      rect.Union(control->GetRenderRegion());
   }
-  CGUIControl::Render();
+
   g_graphicsContext.RestoreOrigin();
+  CGUIControl::Process(currentTime, dirtyregions);
+  m_renderRegion = rect;
   m_item = NULL;
 }
 
@@ -153,6 +159,16 @@ void CGUIListGroup::EnlargeHeight(float difference)
     }
   }
   SetInvalid();
+}
+
+void CGUIListGroup::SetInvalid()
+{
+  if (!m_bInvalidated)
+  { // this can be triggered by an item change, so all children need invalidating rather than just the group
+    for (iControls it = m_children.begin(); it != m_children.end(); ++it)
+      (*it)->SetInvalid();
+    CGUIControlGroup::SetInvalid();
+  }
 }
 
 void CGUIListGroup::SetFocusedItem(unsigned int focus)

@@ -48,6 +48,7 @@ public:
   virtual ~CGUIButtonControl(void);
   virtual CGUIButtonControl *Clone() const { return new CGUIButtonControl(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
@@ -77,13 +78,16 @@ public:
   virtual void OnClick();
   bool HasClickActions() { return m_clickActions.size() > 0; };
 
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
+
+  virtual CRect CalcRenderRegion() const;
+
 protected:
   friend class CGUISpinControlEx;
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   void OnFocus();
   void OnUnFocus();
-  virtual void RenderText();
+  virtual void ProcessText(unsigned int currentTime);
   CGUILabel::COLOR GetTextColor() const;
 
   CGUITexture m_imgFocus;

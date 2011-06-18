@@ -26,6 +26,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
+#include "utils/Variant.h"
 
 using namespace ANNOUNCEMENT;
 
@@ -61,21 +62,25 @@ void CGUIWindowHome::Announce(EAnnouncementFlag flag, const char *sender, const 
 
   if (flag & VideoLibrary)
   {
-    if ((strcmp(message, "UpdateVideo") == 0) ||
-        (strcmp(message, "RemoveVideo") == 0))
-      ra_flag |= (Video | Totals);
-
-    if (strcmp(message, "NewPlayCount") == 0)
-      ra_flag |= Totals;
+    if ((strcmp(message, "OnUpdate") == 0) ||
+        (strcmp(message, "OnRemove") == 0))
+    {
+      if (data.isMember("playcount"))
+        ra_flag |= Totals;
+      else
+        ra_flag |= (Video | Totals);
+    }
   }
   else if (flag & AudioLibrary)
   {
-    if ((strcmp(message, "UpdateAudio") == 0) ||
-        (strcmp(message, "RemoveAudio") == 0))
-      ra_flag |= ( Audio | Totals );
-
-    if (strcmp(message, "NewPlayCount") == 0)
-      ra_flag |= Totals;
+    if ((strcmp(message, "OnUpdate") == 0) ||
+        (strcmp(message, "OnRemove") == 0))
+    {
+      if (data.isMember("playcount"))
+        ra_flag |= Totals;
+      else
+        ra_flag |= ( Audio | Totals );
+    }
   }
 
   // add the job immediatedly if the home window is active

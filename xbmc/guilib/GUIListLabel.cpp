@@ -60,10 +60,25 @@ void CGUIListLabel::SetFocus(bool focus)
     SetScrolling(false);
 }
 
-void CGUIListLabel::UpdateColors()
+CRect CGUIListLabel::CalcRenderRegion() const
 {
-  m_label.UpdateColors();
-  CGUIControl::UpdateColors();
+  return m_label.GetRenderRect();
+}
+
+bool CGUIListLabel::UpdateColors()
+{
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
+
+  return changed;
+}
+
+void CGUIListLabel::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (m_label.Process(currentTime))
+    MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
 void CGUIListLabel::Render()

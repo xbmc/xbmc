@@ -367,6 +367,8 @@
     <ClCompile Include="..\..\xbmc\guilib\D3DResource.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DDSImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\DirectXGraphics.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionSolvers.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\FrameBufferObject.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIAudioManager.cpp" />
@@ -1200,6 +1202,7 @@
     <ClCompile Include="..\..\xbmc\windowing\WinEventsSDL.cpp" />
     <ClCompile Include="..\..\xbmc\windowing\WinSystem.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp" />
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowDebugInfo.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowFileManager.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowHome.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowLoginScreen.cpp" />
@@ -1317,6 +1320,9 @@
     <ClInclude Include="..\..\xbmc\guilib\D3DResource.h" />
     <ClInclude Include="..\..\xbmc\guilib\DDSImage.h" />
     <ClInclude Include="..\..\xbmc\guilib\DirectXGraphics.h" />
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h" />
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h" />
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h" />
     <ClInclude Include="..\..\xbmc\guilib\FrameBufferObject.h" />
     <ClInclude Include="..\..\xbmc\guilib\Geometry.h" />
     <ClInclude Include="..\..\xbmc\guilib\GraphicContext.h" />
@@ -2089,6 +2095,7 @@
     <ClInclude Include="..\..\xbmc\windowing\WinSystem.h" />
     <ClInclude Include="..\..\xbmc\windowing\XBMC_events.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIMediaWindow.h" />
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowDebugInfo.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowFileManager.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowHome.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowLoginScreen.h" />

@@ -48,6 +48,7 @@ public:
   virtual ~CGUIProgressControl(void);
   virtual CGUIProgressControl *Clone() const { return new CGUIProgressControl(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool CanFocus() const;
   virtual void AllocResources();
@@ -63,12 +64,14 @@ public:
   float GetPercentage() const;
   CStdString GetDescription() const;
 protected:
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   CGUITexture m_guiBackground;
   CGUITexture m_guiLeft;
   CGUITexture m_guiMid;
   CGUITexture m_guiRight;
   CGUITexture m_guiOverlay;
+  CRect m_guiMidClipRect;
+
   int m_iInfoCode;
   float m_fPercent;
   bool m_bReveal;

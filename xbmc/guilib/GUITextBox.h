@@ -49,7 +49,9 @@ public:
   virtual ~CGUITextBox(void);
   virtual CGUITextBox *Clone() const { return new CGUITextBox(*this); };
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void DoRender();
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
 
@@ -65,7 +67,7 @@ public:
 
 protected:
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
   void UpdatePageControl();
   void ScrollToOffset(int offset, bool autoScroll = false);
@@ -83,6 +85,9 @@ protected:
   unsigned int m_lastRenderTime;
 
   CLabelInfo m_label;
+
+  TransformMatrix m_textMatrix;
+  TransformMatrix m_cachedTextMatrix;
 
   // autoscrolling
   int          m_autoScrollCondition;

@@ -23,6 +23,7 @@
 #include "GUIWindowManager.h"
 #include "GUILabelControl.h"
 #include "GUIAudioManager.h"
+#include "GUIInfoManager.h"
 #include "threads/SingleLock.h"
 #include "utils/TimeUtils.h"
 #include "Application.h"
@@ -32,6 +33,7 @@ CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
 {
   m_bModal = true;
   m_bRunning = false;
+  m_wasRunning = false;
   m_dialogClosing = false;
   m_renderOrder = 1;
   m_autoClosing = false;
@@ -112,6 +114,31 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
+void CGUIDialog::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  UpdateVisibility();
+
+  // if we were running but now we're not, mark us dirty
+  if (!m_bRunning && m_wasRunning)
+    dirtyregions.push_back(m_renderRegion);
+
+  if (m_bRunning)
+    CGUIWindow::DoProcess(currentTime, dirtyregions);
+
+  m_wasRunning = m_bRunning;
+}
+
+void CGUIDialog::UpdateVisibility()
+{
+  if (m_visibleCondition)
+  {
+    if (g_infoManager.GetBool(m_visibleCondition, g_windowManager.GetActiveWindow()))
+      Show();
+    else
+      Close();
+  }
+}
+
 void CGUIDialog::Close_Internal(bool forceClose /*= false*/)
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
@@ -175,7 +202,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
 
   while (m_bRunning && !g_application.m_bStop)
   {
-    g_windowManager.Process();
+    g_windowManager.ProcessRenderLoop();
   }
 }
 
@@ -234,12 +261,6 @@ void CGUIDialog::Show()
   g_application.getApplicationMessenger().Show(this);
 }
 
-bool CGUIDialog::RenderAnimation(unsigned int time)
-{
-  CGUIWindow::RenderAnimation(time);
-  return m_bRunning;
-}
-
 void CGUIDialog::FrameMove()
 {
   if (m_autoClosing && m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_dialogClosing)
@@ -249,6 +270,9 @@ void CGUIDialog::FrameMove()
 
 void CGUIDialog::Render()
 {
+  if (!m_bRunning)
+    return;
+
   CGUIWindow::Render();
   // Check to see if we should close at this point
   // We check after the controls have finished rendering, as we may have to close due to

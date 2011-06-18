@@ -830,6 +830,7 @@ if test "$use_libnfs" != "no"; then
   AC_CHECK_HEADERS([nfsc/libnfs.h],,
    [if test "$use_libnfs" = "yes"; then
       AC_MSG_ERROR($libnfs_not_found)
+      USE_LIBNFS=0
     elif test "$use_libnfs" != "no"; then
       AC_MSG_NOTICE($libnfs_not_found)
       use_libnfs="no"
@@ -840,8 +841,10 @@ if test "$use_libnfs" != "no"; then
   fi
   if test "$use_libnfs" != "no"; then
     AC_DEFINE([HAVE_LIBNFS], [1], [Whether to use libnfs library.])
+    USE_LIBNFS=1
   fi
 else
+  USE_LIBNFS=0
   AC_MSG_NOTICE($libnfs_disabled)
 fi
 
@@ -1078,6 +1081,11 @@ else
     USE_OPENMAX=0
   fi
 fi
+
+# yajl version check (yajl_version.h was added in yajl 2.0)
+AC_CHECK_HEADERS([yajl/yajl_version.h], [], [
+AC_DEFINE(YAJL_MAJOR, 1, [yajl version 1])
+], [])
 
 # platform specific bin utilities
 if test "$host_vendor" != "apple" ; then
@@ -1493,6 +1501,7 @@ AC_SUBST(USE_OPENGLES)
 AC_SUBST(USE_VDPAU)
 AC_SUBST(USE_VAAPI)
 AC_SUBST(USE_CRYSTALHD)
+AC_SUBST(USE_LIBNFS)
 AC_SUBST(USE_VDA)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
