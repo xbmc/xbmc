@@ -40,6 +40,7 @@
 #include "boost/shared_ptr.hpp"
 #include "utils/AutoPtrHandle.h"
 #include "settings/AdvancedSettings.h"
+#include "threads/Atomics.h"
 
 #define ALLOW_ADDING_SURFACES 0
 
