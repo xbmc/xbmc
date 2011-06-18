@@ -18,12 +18,14 @@
  *
  */
 
-#if defined TSREADER
 
+#include "os-dependent.h"
 #include "client.h" //for XBMC->Log
 #include "utils.h"
 #include "fortherecordrpc.h"
 #include "KeepAliveThread.h"
+
+#if defined TSREADER
 
 CKeepAliveThread::CKeepAliveThread()
 {
@@ -48,4 +50,32 @@ void CKeepAliveThread::ThreadProc()
   XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread stopped:%d", GetCurrentThreadId());
   return;
 }
+
+#else
+
+CKeepAliveThread::CKeepAliveThread()
+{
+  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: constructor");
+}
+
+CKeepAliveThread::~CKeepAliveThread()
+{
+  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: destructor");
+}
+
+void CKeepAliveThread::ThreadProc()
+{
+  bool retval;
+
+  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread started:%d", GetCurrentThreadId());
+  while (!ThreadIsStopping(0))
+  {
+    retval = ForTheRecord::KeepLiveStreamAlive();
+    XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: KeepLiveStreamAlive returned %i", (int) retval);
+    usleep(20000000); //15 sec
+  }
+  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread stopped:%d", GetCurrentThreadId());
+  return;
+}
+
 #endif

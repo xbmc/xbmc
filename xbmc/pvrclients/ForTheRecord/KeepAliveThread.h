@@ -16,6 +16,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// TODO: find alternative thread construction for non TsReader version
 #if defined TSREADER
 
 #include "lib/tsreader/TSThread.h"
@@ -28,6 +29,24 @@ class CKeepAliveThread: public TSThread
 
   private:
     virtual void ThreadProc();
+};
+
+#else
+
+class CKeepAliveThread
+{
+public:
+  CKeepAliveThread();
+  virtual ~CKeepAliveThread(void);
+
+  bool IsThreadRunning() { return false; }
+  long StopThread(unsigned long dwTimeoutMilliseconds  = 1000) { return S_OK; }
+  long StartThread(void) { return S_OK; }
+  bool ThreadIsStopping(unsigned long dwTimeoutMilliseconds = 10) { return false; }
+
+
+private:
+  virtual void ThreadProc();
 };
 
 #endif

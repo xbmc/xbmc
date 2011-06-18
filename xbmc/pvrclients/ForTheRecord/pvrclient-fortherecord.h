@@ -28,9 +28,9 @@
 #include "recording.h"
 #include "guideprogram.h"
 
+#include "KeepAliveThread.h"
 #ifdef TSREADER
 //#include "lib/tsreader/TSReader.h"
-#include "KeepAliveThread.h"
 class CTsReader;
 #endif
 
@@ -118,7 +118,7 @@ private:
 //  CURL*                   m_curl;
 #ifdef TSREADER
   CTsReader*              m_tsreader;
-  CKeepAliveThread        m_keepalive;
 #endif //TSREADER
+  CKeepAliveThread        m_keepalive;
 
 };

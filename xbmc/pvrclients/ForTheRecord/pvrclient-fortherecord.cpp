@@ -45,7 +45,9 @@ cPVRClientForTheRecord::cPVRClientForTheRecord()
   m_bTimeShiftStarted      = false;
   m_BackendUTCoffset       = 0;
   m_BackendTime            = 0;
+#if defined TSREADER
   m_tsreader               = NULL;
+#endif
   m_channel_id_offset      = 0;
   m_epg_id_offset          = 0;
   m_iCurrentChannel        = 0;
