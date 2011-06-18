@@ -76,6 +76,11 @@ void CAEStreamWrapper::Initialize()
 {
   CExclusiveLock lock(m_lock);
 
+  IAE* ae = AE.GetEngine();
+  
+  if(!ae)
+    return;
+  
   m_stream = AE.GetEngine()->GetStream(m_dataFormat, m_sampleRate, m_channelCount, m_channelLayout, m_options);
   if (m_stream)
   {
@@ -136,7 +141,7 @@ void CAEStreamWrapper::AlterStream(enum AEDataFormat dataFormat, unsigned int sa
   m_options       = options;
 
   IAE* ae = AE.GetEngine();
-  if (m_stream)
+  if (ae && m_stream)
     m_stream = ae->AlterStream(m_stream, dataFormat, sampleRate, channelCount, channelLayout, options);
 }
 
@@ -145,7 +150,7 @@ void CAEStreamWrapper::FreeStream()
   CExclusiveLock lock(m_lock);
 
   IAE* ae = AE.GetEngine();
-  if (m_stream)
+  if (ae && m_stream)
     m_stream = ae->FreeStream(m_stream);
 }
 
