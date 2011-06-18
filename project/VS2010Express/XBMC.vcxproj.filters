@@ -2463,6 +2463,12 @@
     <ClCompile Include="..\..\xbmc\threads\Condition.cpp">
       <Filter>threads</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\Interruptible.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4941,6 +4947,12 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\Condition.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\Interruptible.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h">
       <Filter>threads</Filter>
     </ClInclude>
   </ItemGroup>
