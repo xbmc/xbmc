@@ -1004,10 +1004,7 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         }
         st->iWidth = pStream->codec->width;
         st->iHeight = pStream->codec->height;
-        if (pStream->sample_aspect_ratio.num == 0)
-          st->fAspect = 0.0;
-        else
-          st->fAspect = av_q2d(pStream->sample_aspect_ratio) * pStream->codec->width / pStream->codec->height;
+		st->fAspect = 0.0;
         st->iLevel = pStream->codec->level;
         st->iProfile = pStream->codec->profile;
 
