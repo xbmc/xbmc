@@ -24,6 +24,8 @@
 		7C99B7BE1340730000FC2B16 /* GUIDialogPlayEject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C99B7BC1340730000FC2B16 /* GUIDialogPlayEject.cpp */; };
 		C80711AD135DB85F002F601B /* InputOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C80711AB135DB85F002F601B /* InputOperations.cpp */; };
 		C8EC5D26136953E100CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */; };
+		DF0DF17F13A3AF9F008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17B13A3AF9F008ED511 /* FileNFS.cpp */; };
+		DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */; };
 		F54D9E8112B713F8006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8012B713F8006870F9 /* libc.dylib */; };
 		F56B143412CAF279009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B143312CAF279009B4C96 /* CoreVideo.framework */; };
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
@@ -958,6 +960,10 @@
 		C80711AE135DB865002F601B /* AnnouncementUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementUtils.h; sourceTree = "<group>"; };
 		C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_keytable.cpp; sourceTree = "<group>"; };
 		C8EC5D25136953E100CCC10D /* XBMC_keytable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_keytable.h; sourceTree = "<group>"; };
+		DF0DF17B13A3AF9F008ED511 /* FileNFS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileNFS.cpp; sourceTree = "<group>"; };
+		DF0DF17C13A3AF9F008ED511 /* FileNFS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileNFS.h; sourceTree = "<group>"; };
+		DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
+		DF0DF17E13A3AF9F008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
 		F54D9E8012B713F8006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F56B143312CAF279009B4C96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		F56B14A412CAF523009B4C96 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -4283,6 +4289,10 @@
 		F56C8378131F42E8000AD0F6 /* filesystem */ = {
 			isa = PBXGroup;
 			children = (
+				DF0DF17B13A3AF9F008ED511 /* FileNFS.cpp */,
+				DF0DF17C13A3AF9F008ED511 /* FileNFS.h */,
+				DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */,
+				DF0DF17E13A3AF9F008ED511 /* NFSDirectory.h */,
 				F57A1DB61329FAF700498CC7 /* SourcesDirectory.cpp */,
 				F57A1DB71329FAF700498CC7 /* SourcesDirectory.h */,
 				F56C8379131F42E8000AD0F6 /* SpecialProtocol.cpp */,
@@ -6737,6 +6747,8 @@
 				7C0A7F9D13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp in Sources */,
 				7C0A7FB213A9E72E00AFC2BD /* DirtyRegionSolvers.cpp in Sources */,
 				7C0A7FB313A9E72E00AFC2BD /* DirtyRegionTracker.cpp in Sources */,
+				DF0DF17F13A3AF9F008ED511 /* FileNFS.cpp in Sources */,
+				DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

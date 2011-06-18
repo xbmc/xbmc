@@ -93,6 +93,11 @@ SRCS+=FileRar.cpp \
       RarManager.cpp \
 
 endif
+ifeq (@USE_LIBNFS@,1)
+SRCS+=FileNFS.cpp \
+      NFSDirectory.cpp \
+
+endif
 
 INCLUDES+=-I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Core \
           -I@abs_top_srcdir@/lib/libUPnP/Platinum/Source/Platinum \

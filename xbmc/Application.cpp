@@ -99,6 +99,9 @@
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
 #include "filesystem/SMBDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+#include "filesystem/FileNFS.h"
+#endif
 #ifdef HAS_FILESYSTEM_SFTP
 #include "filesystem/FileSFTP.h"
 #endif
@@ -4795,6 +4798,10 @@ void CApplication::ProcessSlow()
 
 #if defined(_LINUX) && defined(HAS_FILESYSTEM_SMB)
   smb.CheckIfIdle();
+#endif
+  
+#ifdef HAS_FILESYSTEM_NFS
+  gNfsConnection.CheckIfIdle();
 #endif
 
 #ifdef HAS_FILESYSTEM_SFTP

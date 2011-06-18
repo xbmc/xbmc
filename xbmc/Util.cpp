@@ -1145,8 +1145,8 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // return true if directory already exist
   if (CDirectory::Exists(strPath)) return true;
 
-  // we currently only allow HD and smb paths
-  if (!URIUtils::IsHD(strPath) && !URIUtils::IsSmb(strPath))
+  // we currently only allow HD and smb and nfs paths
+  if (!URIUtils::IsHD(strPath) && !URIUtils::IsSmb(strPath) && !URIUtils::IsNfs(strPath))
   {
     CLog::Log(LOGERROR,"%s called with an unsupported path: %s", __FUNCTION__, strPath.c_str());
     return false;
@@ -1865,10 +1865,12 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
 
 bool CUtil::SupportsFileOperations(const CStdString& strPath)
 {
-  // currently only hd and smb support delete and rename
+  // currently only hd, smb and nfs support delete and rename
   if (URIUtils::IsHD(strPath))
     return true;
   if (URIUtils::IsSmb(strPath))
+    return true;
+  if (URIUtils::IsNfs(strPath))
     return true;
   if (URIUtils::IsMythTV(strPath))
   {
