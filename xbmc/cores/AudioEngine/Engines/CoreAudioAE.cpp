@@ -91,7 +91,7 @@ CCoreAudioAE::CCoreAudioAE() :
   HAL = new CCoreAudioAEHALOSX;
 #endif
  
-  m_Use16BitAudio = false; //g_sysinfo.IsAppleTV();
+  m_Use16BitAudio     = g_sysinfo.IsAppleTV();
 }
 
 CCoreAudioAE::~CCoreAudioAE()
@@ -304,6 +304,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
   CLog::Log(LOGINFO, "  Channel Layout: %s", CAEUtil::GetChLayoutStr(m_format.m_channelLayout).c_str());
   CLog::Log(LOGINFO, "  Frame Size    : %d", m_format.m_frameSize);
   CLog::Log(LOGINFO, "  Volume Level  : %f", m_volume);
+  CLog::Log(LOGINFO, "  Passthrough   : %d", m_rawPassthrough);
   
   if(m_format.m_channelCount > SPEAKER_COUNT)
     m_format.m_channelCount = SPEAKER_COUNT;

@@ -333,8 +333,12 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   if (!COREAUDIO_IS_RAW(m_StreamFormat.m_dataFormat))
   {
     addsize = frames * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3) * m_OutputFormat.m_channelCount;
-
-    CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, addsize);
+    unsigned int remap_size = frames * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3) * 
+                              ((m_OutputFormat.m_channelCount > m_StreamFormat.m_channelCount) ?
+                              m_OutputFormat.m_channelCount : m_StreamFormat.m_channelCount);
+    CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, remap_size);
+    
+    //CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, frames * m_OutputFormat.m_frameSize);
     
     // downmix/remap the data
     m_remap.Remap((float *)adddata, (float *)m_remapBuffer, frames);
