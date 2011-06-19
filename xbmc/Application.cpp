@@ -302,7 +302,8 @@ using namespace ANNOUNCEMENT;
 #define MAX_FFWD_SPEED 5
 
 //extern IDirectSoundRenderer* m_pAudioDecoder;
-CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
+CApplication::CApplication() : m_grfxa(grfxaNil),
+  m_itemCurrentFile(new CFileItem), m_progressTrackingItem(new CFileItem)
 {
   m_iPlaySpeed = 1;
   m_pPlayer = NULL;
@@ -345,7 +346,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bSystemScreenSaverEnable = false;
 }
 
-CApplication::~CApplication(void)
+CApplication::~CApplication()
 {
   delete m_currentStack;
 
@@ -407,7 +408,7 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
 void CApplication::FatalErrorHandler(bool WindowSystemInitialized, bool MapDrives, bool InitNetwork)
 {
   fprintf(stderr, "Fatal error encountered, aborting\n");
-  fprintf(stderr, "Error log at %sxbmc.log\n", g_settings.m_logFolder.c_str());
+  fprintf(stderr, "Error log at %s%s.log\n", g_settings.m_logFolder.c_str(), m_sLogName.c_str());
   abort();
 }
 
@@ -431,6 +432,8 @@ static void CopyUserDataIfNeeded(const CStdString &strPath, const CStdString &fi
 
 void CApplication::Preflight()
 {
+  if (!(m_grfxa & fxaServices))
+    return;
 #ifdef HAS_DBUS
   // call 'dbus_threads_init_default' before any other dbus calls in order to
   // avoid race conditions with other threads using dbus connections
@@ -450,10 +453,15 @@ void CApplication::Preflight()
 
 bool CApplication::Create()
 {
+  ASSERT(!m_sLogName.empty());
+
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
-  m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
-  g_Windowing.EnableSystemScreenSaver(false);
+  if (m_grfxa & fxaGui)
+  {
+    m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
+    g_Windowing.EnableSystemScreenSaver(false);
+  }
 
 #ifdef _LINUX
   tzset();   // Initialize timezone information variables
@@ -469,7 +477,6 @@ bool CApplication::Create()
   /* install win32 exception translator, win32 exceptions
    * can now be caught using c++ try catch */
   win32_exception::install_handler();
-
 #endif
 
   // only the InitDirectories* for the current platform should return true
@@ -486,7 +493,7 @@ bool CApplication::Create()
   CopyUserDataIfNeeded("special://masterprofile/", "Lircmap.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "LCD.xml");
 
-  if (!CLog::Init(_P(g_settings.m_logFolder).c_str()))
+  if (!CLog::Init(_P(g_settings.m_logFolder).c_str(), m_sLogName.c_str()))
   {
     fprintf(stderr,"Could not init logging classes. Permission errors on ~/.xbmc?\n");
     return false;
@@ -512,14 +519,14 @@ bool CApplication::Create()
 
   CStdString executable = CUtil::ResolveExecutablePath();
   CLog::Log(LOGNOTICE, "The executable running is: %s", executable.c_str());
-  CLog::Log(LOGNOTICE, "Log File is located: %sxbmc.log", g_settings.m_logFolder.c_str());
+  CLog::Log(LOGNOTICE, "Log File is located: %s%s.log", g_settings.m_logFolder.c_str(), m_sLogName.c_str());
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 
   CStdString strExecutablePath;
   CUtil::GetHomePath(strExecutablePath);
 
   // if we are running from DVD our UserData location will be TDATA
-  if (URIUtils::IsDVD(strExecutablePath))
+  if (m_grfxa & fxaServices && URIUtils::IsDVD(strExecutablePath))
   {
     // TODO: Should we copy over any UserData folder from the DVD?
     if (!CFile::Exists("special://masterprofile/guisettings.xml")) // first run - cache userdata folder
@@ -533,56 +540,58 @@ bool CApplication::Create()
   }
 
 #ifdef HAS_XRANDR
-  g_xrandr.LoadCustomModeLinesToAllOutputs();
+  if (m_grfxa & fxaGui)
+    g_xrandr.LoadCustomModeLinesToAllOutputs();
 #endif
 
   // Init our DllLoaders emu env
   init_emu_environ();
 
-
+  if (m_grfxa & fxaGui)
+  {
 #ifdef HAS_SDL
-  CLog::Log(LOGNOTICE, "Setup SDL");
+    CLog::Log(LOGNOTICE, "Setup SDL");
 
-  /* Clean up on exit, exit on window close and interrupt */
-  atexit(SDL_Quit);
+    /* Clean up on exit, exit on window close and interrupt */
+    atexit(SDL_Quit);
 
-  uint32_t sdlFlags = 0;
+    uint32_t sdlFlags = 0;
 
 #if defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)
-  sdlFlags |= SDL_INIT_VIDEO;
+    sdlFlags |= SDL_INIT_VIDEO;
 #endif
 
 #ifdef HAS_SDL_AUDIO
-  sdlFlags |= SDL_INIT_AUDIO;
+    sdlFlags |= SDL_INIT_AUDIO;
 #endif
 
 #ifdef HAS_SDL_JOYSTICK
-  sdlFlags |= SDL_INIT_JOYSTICK;
+    sdlFlags |= SDL_INIT_JOYSTICK;
 #endif
 
-  //depending on how it's compiled, SDL periodically calls XResetScreenSaver when it's fullscreen
-  //this might bring the monitor out of standby, so we have to disable it explicitly
-  //by passing 0 for overwrite to setsenv, the user can still override this by setting the environment variable
+    //depending on how it's compiled, SDL periodically calls XResetScreenSaver when it's fullscreen
+    //this might bring the monitor out of standby, so we have to disable it explicitly
+    //by passing 0 for overwrite to setsenv, the user can still override this by setting the environment variable
 #if defined(_LINUX) && !defined(__APPLE__)
-  setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", 0);
+    setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", 0);
 #endif
-
 #endif // HAS_SDL
 
 #ifdef _LINUX
-  // for nvidia cards - vsync currently ALWAYS enabled.
-  // the reason is that after screen has been setup changing this env var will make no difference.
-  setenv("__GL_SYNC_TO_VBLANK", "1", 0);
-  setenv("__GL_YIELD", "USLEEP", 0);
+    // for nvidia cards - vsync currently ALWAYS enabled.
+    // the reason is that after screen has been setup changing this env var will make no difference.
+    setenv("__GL_SYNC_TO_VBLANK", "1", 0);
+    setenv("__GL_YIELD", "USLEEP", 0);
 #endif
 
 #ifdef HAS_SDL
-  if (SDL_Init(sdlFlags) != 0)
-  {
-    CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
-    return false;
-  }
+    if (SDL_Init(sdlFlags) != 0)
+    {
+      CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
+      return false;
+    }
 #endif
+  }
 
   // for python scripts that check the OS
 #ifdef __APPLE__
@@ -596,7 +605,7 @@ bool CApplication::Create()
   // Initialize core peripheral port support. Note: If these parameters
   // are 0 and NULL, respectively, then the default number and types of
   // controllers will be initialized.
-  if (!g_Windowing.InitWindowSystem())
+  if (m_grfxa & fxaGui && !g_Windowing.InitWindowSystem())
   {
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to init windowing system");
     return false;
@@ -655,88 +664,91 @@ bool CApplication::Create()
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
-  g_Mouse.Initialize();
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
+  if (m_grfxa & fxaGui)
+  {
+    g_Mouse.Initialize();
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
 
-  g_Keyboard.Initialize();
+    g_Keyboard.Initialize();
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  g_RemoteControl.Initialize();
+    g_RemoteControl.Initialize();
 #endif
 #ifdef HAS_SDL_JOYSTICK
-  g_Joystick.Initialize();
+    g_Joystick.Initialize();
 #endif
 
 #if defined(__APPLE__) && !defined(__arm__)
-  // Configure and possible manually start the helper.
-  XBMCHelper::GetInstance().Configure();
+    // Configure and possible manually start the helper.
+    XBMCHelper::GetInstance().Configure();
 #endif
 
-  // update the window resolution
-  g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
+    // update the window resolution
+    g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
 
-  if (g_advancedSettings.m_startFullScreen && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
-    g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
+    if (g_advancedSettings.m_startFullScreen && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
+      g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
 
-  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
-  {
-    // Oh uh - doesn't look good for starting in their wanted screenmode
-    CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
-  }
+    if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+    {
+      // Oh uh - doesn't look good for starting in their wanted screenmode
+      CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
+      g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
+    }
 
 #ifdef __APPLE__
-  // force initial window creation to be windowed, if fullscreen, it will switch to it below
-  // fixes the white screen of death if starting fullscreen and switching to windowed.
-  bool bFullScreen = false;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
-    return false;
-  }
+    // force initial window creation to be windowed, if fullscreen, it will switch to it below
+    // fixes the white screen of death if starting fullscreen and switching to windowed.
+    bool bFullScreen = false;
+    if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
+    {
+      CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
+      return false;
+    }
 #else
-  bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
-    return false;
-  }
+    bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
+    if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
+    {
+      CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
+      return false;
+    }
 #endif
 
-  if (!g_Windowing.InitRenderSystem())
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to init rendering system");
-    return false;
-  }
-
-  // set GUI res and force the clear of the screen
-  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
-
-  if (g_advancedSettings.m_splashImage)
-  {
-    CStdString strUserSplash = "special://home/media/Splash.png";
-    if (CFile::Exists(strUserSplash))
+    if (!g_Windowing.InitRenderSystem())
     {
-      CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strUserSplash).c_str());
-      m_splash = new CSplash(strUserSplash);
+      CLog::Log(LOGFATAL, "CApplication::Create: Unable to init rendering system");
+      return false;
     }
-    else
+
+    // set GUI res and force the clear of the screen
+    g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+
+    if (g_advancedSettings.m_splashImage)
     {
-      CLog::Log(LOGINFO, "load default splash image: %s", CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png").c_str());
-      m_splash = new CSplash("special://xbmc/media/Splash.png");
+      CStdString strUserSplash = "special://home/media/Splash.png";
+      if (CFile::Exists(strUserSplash))
+      {
+        CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strUserSplash).c_str());
+        m_splash = new CSplash(strUserSplash);
+      }
+      else
+      {
+        CLog::Log(LOGINFO, "load default splash image: %s", CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png").c_str());
+        m_splash = new CSplash("special://xbmc/media/Splash.png");
+      }
+      m_splash->Show();
     }
-    m_splash->Show();
+
+    CLog::Log(LOGINFO, "load keymapping");
+    if (!CButtonTranslator::GetInstance().Load())
+      FatalErrorHandler(false, false, true);
+
+    int iResolution = g_graphicsContext.GetVideoResolution();
+    CLog::Log(LOGINFO, "GUI format %ix%i %s",
+              g_settings.m_ResInfo[iResolution].iWidth,
+              g_settings.m_ResInfo[iResolution].iHeight,
+              g_settings.m_ResInfo[iResolution].strMode.c_str());
+    g_windowManager.Initialize();
   }
-
-  CLog::Log(LOGINFO, "load keymapping");
-  if (!CButtonTranslator::GetInstance().Load())
-    FatalErrorHandler(false, false, true);
-
-  int iResolution = g_graphicsContext.GetVideoResolution();
-  CLog::Log(LOGINFO, "GUI format %ix%i %s",
-            g_settings.m_ResInfo[iResolution].iWidth,
-            g_settings.m_ResInfo[iResolution].iHeight,
-            g_settings.m_ResInfo[iResolution].strMode.c_str());
-  g_windowManager.Initialize();
 
   CUtil::InitRandomSeed();
 
@@ -779,7 +791,10 @@ bool CApplication::InitDirectoriesLinux()
     userHome = "/root";
 
   CStdString xbmcBinPath, xbmcPath;
-  CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
+  if (m_grfxa & fxaPrimary)
+    CUtil::GetHomePath(xbmcBinPath, "XBMC_BIN_HOME");
+  else
+    xbmcBinPath = BIN_INSTALL_PATH;
   xbmcPath = getenv("XBMC_HOME");
 
   if (xbmcPath.IsEmpty())
@@ -1034,152 +1049,157 @@ bool CApplication::Initialize()
     CDirectory::Create("special://xbmc/sounds");
   }
 
-  StartServices();
+  if (m_grfxa & fxaServices)
+    StartServices();
 
-  // Init DPMS, before creating the corresponding setting control.
-  m_dpms = new DPMSSupport();
-  g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(m_dpms->IsSupported());
+  if (m_grfxa & fxaGui)
+  {
+    // Init DPMS, before creating the corresponding setting control.
+    m_dpms = new DPMSSupport();
+    g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(m_dpms->IsSupported());
 
-  g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
-  g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
-  g_windowManager.Add(new CGUIWindowPictures);                 // window id = 2
-  g_windowManager.Add(new CGUIWindowFileManager);      // window id = 3
-  g_windowManager.Add(new CGUIWindowSettings);                 // window id = 4
-  g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
-#ifdef HAS_GL
-  g_windowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
-#endif
-#ifdef HAS_DX
-  g_windowManager.Add(new CGUIWindowTestPatternDX);      // window id = 8
-#endif
-  g_windowManager.Add(new CGUIDialogTeletext);               // window id =
-  g_windowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
-  g_windowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
-  g_windowManager.Add(new CGUIWindowVideoNav);                 // window id = 36
-  g_windowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
-  g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
-  g_windowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
-  g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
-  g_windowManager.Add(new CGUIWindowDebugInfo);            // window id = 98
-  g_windowManager.Add(new CGUIWindowPointer);            // window id = 99
-  g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
-  g_windowManager.Add(new CGUIDialogProgress);           // window id = 101
-  g_windowManager.Add(new CGUIDialogKeyboard);           // window id = 103
-  g_windowManager.Add(&m_guiDialogVolumeBar);          // window id = 104
-  g_windowManager.Add(&m_guiDialogSeekBar);            // window id = 115
-  g_windowManager.Add(new CGUIDialogSubMenu);            // window id = 105
-  g_windowManager.Add(new CGUIDialogContextMenu);        // window id = 106
-  g_windowManager.Add(&m_guiDialogKaiToast);           // window id = 107
-  g_windowManager.Add(new CGUIDialogNumeric);            // window id = 109
-  g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
-  g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
-  g_windowManager.Add(new CGUIDialogMusicScan);          // window id = 112
-  g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
+    g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
+    g_windowManager.Add(new CGUIWindowPrograms);                 // window id = 1
+    g_windowManager.Add(new CGUIWindowPictures);                 // window id = 2
+    g_windowManager.Add(new CGUIWindowFileManager);      // window id = 3
+    g_windowManager.Add(new CGUIWindowSettings);                 // window id = 4
+    g_windowManager.Add(new CGUIWindowSystemInfo);               // window id = 7
+  #ifdef HAS_GL
+    g_windowManager.Add(new CGUIWindowTestPatternGL);      // window id = 8
+  #endif
+  #ifdef HAS_DX
+    g_windowManager.Add(new CGUIWindowTestPatternDX);      // window id = 8
+  #endif
+    g_windowManager.Add(new CGUIDialogTeletext);               // window id =
+    g_windowManager.Add(new CGUIWindowSettingsScreenCalibration); // window id = 11
+    g_windowManager.Add(new CGUIWindowSettingsCategory);         // window id = 12 slideshow:window id 2007
+    g_windowManager.Add(new CGUIWindowVideoNav);                 // window id = 36
+    g_windowManager.Add(new CGUIWindowVideoPlaylist);            // window id = 28
+    g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
+    g_windowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
+    g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
+    g_windowManager.Add(new CGUIWindowDebugInfo);            // window id = 98
+    g_windowManager.Add(new CGUIWindowPointer);            // window id = 99
+    g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
+    g_windowManager.Add(new CGUIDialogProgress);           // window id = 101
+    g_windowManager.Add(new CGUIDialogKeyboard);           // window id = 103
+    g_windowManager.Add(&m_guiDialogVolumeBar);          // window id = 104
+    g_windowManager.Add(&m_guiDialogSeekBar);            // window id = 115
+    g_windowManager.Add(new CGUIDialogSubMenu);            // window id = 105
+    g_windowManager.Add(new CGUIDialogContextMenu);        // window id = 106
+    g_windowManager.Add(&m_guiDialogKaiToast);           // window id = 107
+    g_windowManager.Add(new CGUIDialogNumeric);            // window id = 109
+    g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
+    g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
+    g_windowManager.Add(new CGUIDialogMusicScan);          // window id = 112
+    g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
 #ifdef HAS_KARAOKE
-  g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
-  g_windowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
+    g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
+    g_windowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
 #endif
-  g_windowManager.Add(new CGUIDialogSlider);             // window id = 145
-  g_windowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
-  g_windowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
-  g_windowManager.Add(new CGUIDialogVideoSettings);             // window id = 123
-  g_windowManager.Add(new CGUIDialogAudioSubtitleSettings);     // window id = 124
-  g_windowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
-  // Don't add the filebrowser dialog - it's created and added when it's needed
-  g_windowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
-  g_windowManager.Add(new CGUIDialogMediaSource);   // window id = 129
-  g_windowManager.Add(new CGUIDialogProfileSettings); // window id = 130
-  g_windowManager.Add(new CGUIDialogVideoScan);      // window id = 133
-  g_windowManager.Add(new CGUIDialogFavourites);     // window id = 134
-  g_windowManager.Add(new CGUIDialogSongInfo);       // window id = 135
-  g_windowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
-  g_windowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
-  g_windowManager.Add(new CGUIDialogBusy);      // window id = 138
-  g_windowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
-  g_windowManager.Add(new CGUIDialogAddonInfo);
-  g_windowManager.Add(new CGUIDialogAddonSettings);      // window id = 140
+    g_windowManager.Add(new CGUIDialogSlider);             // window id = 145
+    g_windowManager.Add(new CGUIDialogMusicOSD);           // window id = 120
+    g_windowManager.Add(new CGUIDialogVisualisationPresetList);   // window id = 122
+    g_windowManager.Add(new CGUIDialogVideoSettings);             // window id = 123
+    g_windowManager.Add(new CGUIDialogAudioSubtitleSettings);     // window id = 124
+    g_windowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
+    // Don't add the filebrowser dialog - it's created and added when it's needed
+    g_windowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
+    g_windowManager.Add(new CGUIDialogMediaSource);   // window id = 129
+    g_windowManager.Add(new CGUIDialogProfileSettings); // window id = 130
+    g_windowManager.Add(new CGUIDialogVideoScan);      // window id = 133
+    g_windowManager.Add(new CGUIDialogFavourites);     // window id = 134
+    g_windowManager.Add(new CGUIDialogSongInfo);       // window id = 135
+    g_windowManager.Add(new CGUIDialogSmartPlaylistEditor);       // window id = 136
+    g_windowManager.Add(new CGUIDialogSmartPlaylistRule);       // window id = 137
+    g_windowManager.Add(new CGUIDialogBusy);      // window id = 138
+    g_windowManager.Add(new CGUIDialogPictureInfo);      // window id = 139
+    g_windowManager.Add(new CGUIDialogAddonInfo);
+    g_windowManager.Add(new CGUIDialogAddonSettings);      // window id = 140
 #ifdef HAS_LINUX_NETWORK
-  g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
+    g_windowManager.Add(new CGUIDialogAccessPoints);      // window id = 141
 #endif
 
-  g_windowManager.Add(new CGUIDialogLockSettings); // window id = 131
+    g_windowManager.Add(new CGUIDialogLockSettings); // window id = 131
 
-  g_windowManager.Add(new CGUIDialogContentSettings);        // window id = 132
+    g_windowManager.Add(new CGUIDialogContentSettings);        // window id = 132
 
-  g_windowManager.Add(new CGUIDialogPlayEject);
+    g_windowManager.Add(new CGUIDialogPlayEject);
 
-  g_windowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
-  g_windowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
-  g_windowManager.Add(new CGUIWindowMusicNav);               // window id = 502
-  g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
+    g_windowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
+    g_windowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
+    g_windowManager.Add(new CGUIWindowMusicNav);               // window id = 502
+    g_windowManager.Add(new CGUIWindowMusicPlaylistEditor);    // window id = 503
 
-  g_windowManager.Add(new CGUIDialogSelect);             // window id = 2000
-  g_windowManager.Add(new CGUIDialogMusicInfo);          // window id = 2001
-  g_windowManager.Add(new CGUIDialogOK);                 // window id = 2002
-  g_windowManager.Add(new CGUIDialogVideoInfo);          // window id = 2003
-  g_windowManager.Add(new CGUIDialogTextViewer);
-  g_windowManager.Add(new CGUIWindowFullScreen);         // window id = 2005
-  g_windowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
-  g_windowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
-  g_windowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
+    g_windowManager.Add(new CGUIDialogSelect);             // window id = 2000
+    g_windowManager.Add(new CGUIDialogMusicInfo);          // window id = 2001
+    g_windowManager.Add(new CGUIDialogOK);                 // window id = 2002
+    g_windowManager.Add(new CGUIDialogVideoInfo);          // window id = 2003
+    g_windowManager.Add(new CGUIDialogTextViewer);
+    g_windowManager.Add(new CGUIWindowFullScreen);         // window id = 2005
+    g_windowManager.Add(new CGUIWindowVisualisation);      // window id = 2006
+    g_windowManager.Add(new CGUIWindowSlideShow);          // window id = 2007
+    g_windowManager.Add(new CGUIDialogFileStacking);       // window id = 2008
 #ifdef HAS_KARAOKE
-  g_windowManager.Add(new CGUIWindowKaraokeLyrics);      // window id = 2009
+    g_windowManager.Add(new CGUIWindowKaraokeLyrics);      // window id = 2009
 #endif
 
-  g_windowManager.Add(new CGUIDialogVideoOSD);           // window id = 2901
-  g_windowManager.Add(new CGUIDialogMusicOverlay);       // window id = 2903
-  g_windowManager.Add(new CGUIDialogVideoOverlay);       // window id = 2904
-  g_windowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
-  g_windowManager.Add(new CGUIWindowWeather);            // window id = 2600 WEATHER
-  g_windowManager.Add(new CGUIWindowStartup);            // startup window (id 2999)
+    g_windowManager.Add(new CGUIDialogVideoOSD);           // window id = 2901
+    g_windowManager.Add(new CGUIDialogMusicOverlay);       // window id = 2903
+    g_windowManager.Add(new CGUIDialogVideoOverlay);       // window id = 2904
+    g_windowManager.Add(new CGUIWindowScreensaver);        // window id = 2900 Screensaver
+    g_windowManager.Add(new CGUIWindowWeather);            // window id = 2600 WEATHER
+    g_windowManager.Add(new CGUIWindowStartup);            // startup window (id 2999)
 
-  /* window id's 3000 - 3100 are reserved for python */
+    /* window id's 3000 - 3100 are reserved for python */
 
-  // Make sure we have at least the default skin
-  if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")) && !LoadSkin(DEFAULT_SKIN))
-  {
-      CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
-      FatalErrorHandler(true, true, true);
+    // Make sure we have at least the default skin
+    if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")) && !LoadSkin(DEFAULT_SKIN))
+    {
+        CLog::Log(LOGERROR, "Default skin '%s' not found! Terminating..", DEFAULT_SKIN);
+        FatalErrorHandler(true, true, true);
+    }
+
+    if (g_advancedSettings.m_splashImage)
+      SAFE_DELETE(m_splash);
+
+    if (g_guiSettings.GetBool("masterlock.startuplock") &&
+        g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
+       !g_settings.GetMasterProfile().getLockCode().IsEmpty())
+    {
+       g_passwordManager.CheckStartUpLock();
+    }
+
+    // check if we should use the login screen
+    if (g_settings.UsingLoginScreen())
+      g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
+    else
+      g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
   }
 
-  if (g_advancedSettings.m_splashImage)
-    SAFE_DELETE(m_splash);
-
-  if (g_guiSettings.GetBool("masterlock.startuplock") &&
-      g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE &&
-     !g_settings.GetMasterProfile().getLockCode().IsEmpty())
-  {
-     g_passwordManager.CheckStartUpLock();
-  }
-
-  // check if we should use the login screen
-  if (g_settings.UsingLoginScreen())
-    g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
-  else
-    g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
-
-  g_sysinfo.Refresh();
+  if (m_grfxa & fxaServices)
+    g_sysinfo.Refresh();
 
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
 
   //  Show mute symbol
-  if (g_settings.m_nVolumeLevel == VOLUME_MINIMUM)
+  if (m_grfxa & fxaGui && g_settings.m_nVolumeLevel == VOLUME_MINIMUM)
     Mute();
 
   // if the user shutoff the xbox during music scan
   // restore the settings
-  if (g_settings.m_bMyMusicIsScanning)
+  if (m_grfxa & fxaPrimary && g_settings.m_bMyMusicIsScanning)
   {
     CLog::Log(LOGWARNING,"System rebooted during music scan! ... restoring UseTags and FindRemoteThumbs");
     RestoreMusicScanSettings();
   }
 
-  if (!g_settings.UsingLoginScreen())
+  if (m_grfxa & fxaPrimary && !g_settings.UsingLoginScreen())
   {
     UpdateLibraries();
 #ifdef HAS_PYTHON
-  g_pythonParser.m_bLogin = true;
+    g_pythonParser.m_bLogin = true;
 #endif
   }
 
@@ -1192,7 +1212,8 @@ bool CApplication::Initialize()
   CCrystalHD::GetInstance();
 #endif
 
-  CAddonMgr::Get().StartServices(false);
+  if (m_grfxa & fxaServices)
+    CAddonMgr::Get().StartServices(false);
 
   CLog::Log(LOGNOTICE, "initialize done");
 

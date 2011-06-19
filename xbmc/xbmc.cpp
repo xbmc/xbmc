@@ -45,9 +45,10 @@
 #include "input/linux/LIRC.h"
 #endif
 
-int main(int argc, char* argv[])
+bool XBMC_Init(GRFXA grfxa, const char *sLogName, int argc, const char** argv)
 {
-  int status = -1;
+  g_application.Configure(grfxa, sLogName);
+
   //this can't be set from CAdvancedSettings::Initialize() because it will overwrite
   //the loglevel set with the --debug flag
 #ifdef _DEBUG
@@ -78,27 +79,19 @@ int main(int argc, char* argv[])
   g_advancedSettings.Initialize();
   
 #ifndef _WIN32
-  CAppParamParser appParamParser;
-  appParamParser.Parse((const char **)argv, argc);
+  if (grfxa & fxaPrimary && argc > 0 && argv != NULL)
+  {
+    CAppParamParser appParamParser;
+    appParamParser.Parse(argv, argc);
+  }
 #endif
   g_application.Preflight();
   if (!g_application.Create())
   {
     fprintf(stderr, "ERROR: Unable to create application. Exiting\n");
-    return status;
+    return false;
   }
-
-  try
-  {
-    status = g_application.Run();
-  }
-  catch(...)
-  {
-    fprintf(stderr, "ERROR: Exception caught on main loop. Exiting\n");
-    status = -1;
-  }
-
-  return status;
+  return true;
 }
 
 extern "C"

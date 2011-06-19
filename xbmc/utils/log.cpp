@@ -128,7 +128,7 @@ void CLog::Log(int loglevel, const char *format, ... )
   }
 }
 
-bool CLog::Init(const char* path)
+bool CLog::Init(const char* path, const char* name)
 {
   CSingleLock waitLock(critSec);
   if (!m_file)
@@ -137,8 +137,8 @@ bool CLog::Init(const char* path)
     // and changed in CApplication::Create()
     CStdString strLogFile, strLogFileOld;
 
-    strLogFile.Format("%sxbmc.log", path);
-    strLogFileOld.Format("%sxbmc.old.log", path);
+    strLogFile.Format("%s%s.log", path, name);
+    strLogFileOld.Format("%s%s.old.log", path, name);
 
     struct stat64 info;
     if (stat64_utf8(strLogFileOld.c_str(),&info) == 0 &&

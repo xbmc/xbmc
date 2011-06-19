@@ -195,7 +195,7 @@ else
 skins:
 endif
 
-MAIN = xbmc/xbmc.o
+MAIN = xbmc/main.o
 
 xbmc/guilib/guilib.a: force
 	$(MAKE) -C xbmc/guilib

@@ -71,7 +71,7 @@ public:
   static void Close();
   static void Log(int loglevel, const char *format, ... ) ATTRIB_LOG_FORMAT;
   static void MemDump(char *pData, int length);
-  static bool Init(const char* path);
+  static bool Init(const char* path, const char *name);
   static void SetLogLevel(int level);
   static int  GetLogLevel();
 private:
