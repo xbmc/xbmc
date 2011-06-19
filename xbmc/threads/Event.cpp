@@ -39,12 +39,12 @@ bool CEvent::Wait()
   interrupted = false;
   Guard g(interruptible ? this : NULL);
 
-  while (!setState && !interrupted)
+  while (!signaled && !interrupted)
     condVar.wait(mutex);
 
-  bool ret = setState;
+  bool ret = signaled;
   if (!manualReset)
-    setState = false;
+    signaled = false;
 
   return ret;
 }
@@ -57,11 +57,11 @@ bool CEvent::WaitMSec(unsigned int milliSeconds)
 
   unsigned int startTime = CTimeUtils::GetTimeMS();
   unsigned int remainingTime = milliSeconds;
-  while(!setState && !interrupted)
+  while(!signaled && !interrupted)
   {
     XbmcThreads::ConditionVariable::TimedWaitResponse resp = condVar.wait(mutex,remainingTime);
 
-    if (setState)
+    if (signaled)
       return true;
 
     if (resp == XbmcThreads::ConditionVariable::TW_TIMEDOUT)
@@ -74,9 +74,9 @@ bool CEvent::WaitMSec(unsigned int milliSeconds)
     remainingTime = milliSeconds - elapsedTimeMillis;
   }
 
-  bool ret = setState;
+  bool ret = signaled;
   if (!manualReset)
-    setState = false;
+    signaled = false;
 
   return ret;
 }

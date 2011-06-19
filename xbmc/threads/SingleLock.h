@@ -51,7 +51,7 @@ protected:
 class CSingleTryLock : public CSingleLock
 {
 public:
-  CSingleTryLock(CCriticalSection& cs) : CSingleLock(cs,true) {}
+  inline CSingleTryLock(CCriticalSection& cs) : CSingleLock(cs,true) {}
 
   inline bool IsOwner() const { return owns_lock(); }
 };

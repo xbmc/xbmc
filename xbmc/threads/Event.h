@@ -36,7 +36,7 @@
 class CEvent : public XbmcThreads::IInterruptible
 {
   bool manualReset;
-  bool setState;
+  bool signaled;
   bool interrupted;
   bool interruptible;
   XbmcThreads::ConditionVariable condVar;
@@ -48,9 +48,9 @@ class CEvent : public XbmcThreads::IInterruptible
 public:
 
   inline CEvent(bool manual = false, bool interruptible_ = false) : 
-    manualReset(manual), setState(false), interrupted(false), interruptible(interruptible_) {}
-  inline void Reset() { CSingleLock lock(mutex); setState = false; }
-  inline void Set() { CSingleLock lock(mutex); setState = true; condVar.notifyAll(); }
+    manualReset(manual), signaled(false), interrupted(false), interruptible(interruptible_) {}
+  inline void Reset() { CSingleLock lock(mutex); signaled = false; }
+  inline void Set() { CSingleLock lock(mutex); signaled = true; condVar.notifyAll(); }
 
   virtual void Interrupt();
   inline bool wasInterrupted() { CSingleLock lock(mutex); return interrupted; }
