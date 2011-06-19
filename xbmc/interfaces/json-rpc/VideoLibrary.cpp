@@ -188,7 +188,7 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
     return InternalError;
 
   CFileItemList items;
-  if (videodatabase.GetEpisodesNav("videodb://", items, -1, -1, -1, -1, tvshowID, season))
+  if (videodatabase.GetEpisodesNav("videodb://2/2/-1/-1/", items, -1, -1, -1, -1, tvshowID, season))
   {
     bool additionalInfo = false;
     for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
@@ -227,8 +227,11 @@ JSON_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITranspor
     videodatabase.Close();
     return InvalidParams;
   }
+  CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
+  // We need to set the correct base path to get the valid fanart
+  pItem->m_strPath.Format("videodb://2/2/%ld/%ld/%ld", videodatabase.GetTvShowForEpisode(id), infos.m_iSeason, id);
 
-  HandleFileItem("episodeid", true, "episodedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("episodeid", true, "episodedetails", pItem, parameterObject, parameterObject["fields"], result, false);
 
   videodatabase.Close();
   return OK;
