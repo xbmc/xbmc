@@ -62,7 +62,7 @@
     "uniqueItems": true,
     "items": { "type": "string", "enum": [ "title", "thumbnail" ] }
   },
-  "Library.Details.Genres": {
+  "Library.Details.Genre": {
     "type": "object",
     "properties": {
       "genreid": { "$ref": "Library.Id", "required": true },
@@ -470,6 +470,11 @@
   "Files.Media": {
     "type": "string",
     "enum": [ "video", "music", "pictures", "files", "programs" ]
+  },
+  "List.Amount": {
+    "type": "integer",
+    "default": -1,
+    "minimum": 0
   },
   "List.Limits": {
     "type": "object",

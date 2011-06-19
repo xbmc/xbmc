@@ -351,17 +351,17 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &method,
 
 JSON_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-   CStdString media = parameterObject["type"].asString();
+  CStdString media = parameterObject["type"].asString();
   media = media.ToLower();
-  int idContent;
+  int idContent = -1;
 
   /* select which video content to get genres from*/
   if (media.Equals("movie"))
- 	   idContent = VIDEODB_CONTENT_MOVIES;
-   else if (media.Equals("tvshow"))
- 	  idContent = VIDEODB_CONTENT_TVSHOWS;
-   else if (media.Equals("musicvideo"))
- 	  idContent = VIDEODB_CONTENT_MUSICVIDEOS;
+    idContent = VIDEODB_CONTENT_MOVIES;
+  else if (media.Equals("tvshow"))
+    idContent = VIDEODB_CONTENT_TVSHOWS;
+  else if (media.Equals("musicvideo"))
+    idContent = VIDEODB_CONTENT_MUSICVIDEOS;
  
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

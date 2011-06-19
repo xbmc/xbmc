@@ -2219,6 +2219,9 @@
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp">
       <Filter>windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowDebugInfo.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowFileManager.cpp">
       <Filter>windows</Filter>
     </ClCompile>
@@ -2462,6 +2465,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp">
       <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionSolvers.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
+      <Filter>guilib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3578,9 +3587,6 @@
     <ClInclude Include="..\..\xbmc\filesystem\ILiveTV.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\zconf.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ZeroconfDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -4678,6 +4684,9 @@
     <ClInclude Include="..\..\xbmc\windows\GUIMediaWindow.h">
       <Filter>windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowDebugInfo.h">
+      <Filter>windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowFileManager.h">
       <Filter>windows</Filter>
     </ClInclude>
@@ -4930,6 +4939,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\addons\AddonVersion.h">
       <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h">
+      <Filter>guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

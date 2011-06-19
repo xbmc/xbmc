@@ -375,30 +375,34 @@ void CGUIWindowSettingsScreenCalibration::FrameMove()
   CGUIWindow::FrameMove();
 }
 
+void CGUIWindowSettingsScreenCalibration::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  MarkDirtyRegion();
+
+  for (int i = CONTROL_TOP_LEFT; i <= CONTROL_PIXEL_RATIO; i++)
+    SET_CONTROL_HIDDEN(i);
+
+  m_needsScaling = true;
+  CGUIWindow::DoProcess(currentTime, dirtyregions);
+  m_needsScaling = false;
+
+  g_graphicsContext.SetRenderingResolution(m_Res[m_iCurRes], false);
+  g_graphicsContext.ResetWindowTransform();
+
+  // process the movers etc.
+  for (int i = CONTROL_TOP_LEFT; i <= CONTROL_PIXEL_RATIO; i++)
+  {
+    SET_CONTROL_VISIBLE(i);
+    CGUIControl *control = (CGUIControl *)GetControl(i);
+    if (control)
+      control->DoProcess(currentTime, dirtyregions);
+  }
+}
+
 void CGUIWindowSettingsScreenCalibration::Render()
 {
-  SET_CONTROL_HIDDEN(CONTROL_TOP_LEFT);
-  SET_CONTROL_HIDDEN(CONTROL_BOTTOM_RIGHT);
-  SET_CONTROL_HIDDEN(CONTROL_SUBTITLES);
-  SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
-
   // we set that we need scaling here to render so that anything else on screen scales correctly
   m_needsScaling = true;
   CGUIWindow::Render();
   m_needsScaling = false;
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, false);
-
-  SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
-  SET_CONTROL_VISIBLE(CONTROL_BOTTOM_RIGHT);
-  SET_CONTROL_VISIBLE(CONTROL_SUBTITLES);
-  SET_CONTROL_VISIBLE(CONTROL_PIXEL_RATIO);
-
-  // render the movers etc.
-  for (int i = CONTROL_TOP_LEFT; i <= CONTROL_PIXEL_RATIO; i++)
-  {
-    CGUIControl *control = (CGUIControl *)GetControl(i);
-    if (control)
-      control->Render();
-  }
-
 }
