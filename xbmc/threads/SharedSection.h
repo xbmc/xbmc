@@ -39,9 +39,9 @@ class CSharedSection : public CountingLockable<boost::shared_mutex>
 {
 public:
 
-  inline void lock_shared() { m.lock_shared(); }
-  inline bool try_lock_shared() { return m.try_lock_shared(); }
-  inline void unlock_shared() { return m.unlock_shared(); }
+  inline void lock_shared() { mutex.lock_shared(); }
+  inline bool try_lock_shared() { return mutex.try_lock_shared(); }
+  inline void unlock_shared() { return mutex.unlock_shared(); }
 };
 
 class CSharedLock : public boost::shared_lock<CSharedSection>

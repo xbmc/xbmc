@@ -153,39 +153,38 @@ void CDownloadQueue::Process()
 
       // now re-grab the item as we may have cancelled our download
       // while we were working
+      { CSingleLock lock2(m_critical); // open lock2 scope
+
+      request = m_queue.front();
+      m_queue.pop();
+
+      // if the request has been cancelled our observer will be NULL
+      if (NULL != request.observer)
       {
-        CSingleLock lock2(m_critical);
-
-        request = m_queue.front();
-        m_queue.pop();
-
-        // if the request has been cancelled our observer will be NULL
-        if (NULL != request.observer)
+        try
         {
-          try
+          if (bFileRequest)
           {
-            if (bFileRequest)
-            {
-              request.observer->OnFileComplete(request.ticket, request.content, dwSize,
-                                               bSuccess ? IDownloadQueueObserver::Succeeded : IDownloadQueueObserver::Failed );
-            }
-            else
-            {
-              request.observer->OnContentComplete(request.ticket, request.content,
-                                                  bSuccess ? IDownloadQueueObserver::Succeeded : IDownloadQueueObserver::Failed );
-            }
+            request.observer->OnFileComplete(request.ticket, request.content, dwSize,
+                                             bSuccess ? IDownloadQueueObserver::Succeeded : IDownloadQueueObserver::Failed );
           }
-          catch (...)
+          else
           {
-            CLog::Log(LOGERROR, "exception while updating download observer.");
+            request.observer->OnContentComplete(request.ticket, request.content,
+                                                bSuccess ? IDownloadQueueObserver::Succeeded : IDownloadQueueObserver::Failed );
+          }
+        }
+        catch (...)
+        {
+          CLog::Log(LOGERROR, "exception while updating download observer.");
 
-            if (bFileRequest)
-            {
-              CFile::Delete(request.content);
-            }
+          if (bFileRequest)
+          {
+            CFile::Delete(request.content);
           }
         }
       }
+      } // close lock2 scope
     }
 
     Sleep(500);

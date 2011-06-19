@@ -52,16 +52,16 @@
 template<class L> class CountingLockable
 {
 protected:
-  L m;
+  L mutex;
   unsigned int count;
 
 public:
   inline CountingLockable() : count(0) {}
 
   // boost::thread Lockable concept
-  inline void lock() { m.lock(); count++; }
-  inline bool try_lock() { return m.try_lock() ? count++, true : false; }
-  inline void unlock() { count--; m.unlock(); }
+  inline void lock() { mutex.lock(); count++; }
+  inline bool try_lock() { return mutex.try_lock() ? count++, true : false; }
+  inline void unlock() { count--; mutex.unlock(); }
 
   /**
    * This implements the "exitable" behavior mentioned above.
@@ -70,15 +70,14 @@ public:
   { 
     // it's possibe we don't actually own the lock
     // so we will try it.
-    unsigned int ret = count; 
+    unsigned int ret = 0;
     if (try_lock())
     {
-      unlock(); // unlock the try_lock
-      for (unsigned int i = 0; i < ret; i++) 
+      ret = count - 1;  // The -1 is because we don't want 
+                        //  to count the try_lock increment.
+      while (count > 0) // This will also unlock the try_lock.
         unlock();
     }
-    else
-      ret = 0;
 
     return ret; 
   }

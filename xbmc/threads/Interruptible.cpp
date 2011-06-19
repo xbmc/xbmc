@@ -42,8 +42,7 @@ namespace XbmcThreads
 
       {
         CSingleLock lock(staticMutexForLockingTheListOfIInterruptiblesForCallingInterrupt);
-        for (iter=interruptibles->begin(); iter != interruptibles->end(); iter++)
-          list.push_back(*(iter));
+        list = *interruptibles;
       }
 
       for (iter=list.begin(); iter != list.end(); iter++)
