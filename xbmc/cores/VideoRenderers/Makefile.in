@@ -6,7 +6,7 @@ SRCS=BaseRenderer.cpp \
      RenderManager.cpp \
 
 ifeq ($(findstring arm,@ARCH@),arm)
-     yuv2rgb.neon.S \
+SRCS+= yuv2rgb.neon.S \
 
 endif
 
