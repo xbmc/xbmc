@@ -620,7 +620,7 @@ CStdString CSysInfo::GetLinuxDistro()
                                         "/etc/arch-release",
                                         NULL };
 
-  FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; lsb_release -d | cut -f2", "r");
+  FILE* pipe = popen("unset PYTHONHOME; unset PYTHONPATH; lsb_release -d 2>/dev/null | cut -f2", "r");
   
   for (int i = 0; !pipe && release_file[i]; i++)
   {
