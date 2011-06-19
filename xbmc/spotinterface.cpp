@@ -215,6 +215,7 @@ bool SpotifyInterface::getPlaylistTracks(CFileItemList &items, int playlist)
 //browse and search callbacks
 void SpotifyInterface::cb_albumBrowseComplete(sp_albumbrowse *result, void *userdata)
 {
+  CLog::Log( LOGDEBUG, "Spotifylog: browsing album callback");
   SpotifyInterface *spInt = g_spotifyInterface;
   if (result && SP_ERROR_OK == sp_albumbrowse_error(result) && sp_albumbrowse_num_tracks > 0)
   {
@@ -243,8 +244,6 @@ void SpotifyInterface::cb_albumBrowseComplete(sp_albumbrowse *result, void *user
       spInt->m_browseAlbumVector.Add(pItem2);
     }
 
-    spInt->waitForThumbs();
-
     //add the "add to library" item
     CMusicDatabase *musicdatabase = new CMusicDatabase;
     musicdatabase->Open();
@@ -267,11 +266,15 @@ void SpotifyInterface::cb_albumBrowseComplete(sp_albumbrowse *result, void *user
     musicdatabase->Close();
     delete musicdatabase;
 
+    spInt->waitForThumbs();
+
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
     CStdString dir;
     dir.Format("%s",spInt->m_albumBrowseStr);
     message.SetStringParam(dir);
     g_windowManager.SendThreadMessage(message);
+
+    sp_albumbrowse_release(result);
   }
   else
     CLog::Log( LOGERROR, "Spotifylog: browse failed!");
@@ -314,6 +317,8 @@ void SpotifyInterface::cb_topListAritstsComplete(sp_toplistbrowse *result, void 
     dir.Format("musicdb://spotify/artists/toplist/");
     message.SetStringParam(dir);
     g_windowManager.SendThreadMessage(message);
+    
+    sp_toplistbrowse_release(result);
   }
   else
     CLog::Log( LOGERROR, "Spotifylog: toplistartist failed!");
@@ -398,6 +403,8 @@ void SpotifyInterface::cb_topListAlbumsComplete(sp_toplistbrowse *result, void *
     dir.Format("musicdb://spotify/albums/toplist/");
     message.SetStringParam(dir);
     g_windowManager.SendThreadMessage(message);
+
+    sp_toplistbrowse_release(result);
   }
   else
     CLog::Log( LOGERROR, "Spotifylog: toplist album failed!");
@@ -445,6 +452,8 @@ void SpotifyInterface::cb_topListTracksComplete(sp_toplistbrowse *result, void *
     dir.Format("musicdb://spotify/tracks/toplist/");
     message.SetStringParam(dir);
     g_windowManager.SendThreadMessage(message);
+
+    sp_toplistbrowse_release(result);
   }
   else
     CLog::Log( LOGERROR, "Spotifylog: toplist track failed!");
@@ -459,7 +468,6 @@ void SpotifyInterface::cb_artistBrowseComplete(sp_artistbrowse *result, void *us
     spInt->m_progressDialog->SetPercentage(50);
     spInt->m_progressDialog->Progress();
     CLog::Log( LOGDEBUG, "Spotifylog: artistbrowse results are done!");
-    //sp_album *tempalbum = 0;
 
     CMusicDatabase *musicdatabase = new CMusicDatabase;
     musicdatabase->Open();
@@ -467,13 +475,6 @@ void SpotifyInterface::cb_artistBrowseComplete(sp_artistbrowse *result, void *us
     int progress = 50;
     int progressCounter = 0;
 
-    //if you are using spotifylib (not openspotifylib) 0.0.3, use the iterate over the tracks instead
-    //  for (int index=0; index < sp_artistbrowse_num_tracks(result); index++)
-    //{
-    //sp_track *spTrack = sp_artistbrowse_track(result, index);
-    //sp_album *spAlbum = sp_track_album(spTrack);
-    //we want to populate the list with albums, but spotify returns tracks
-    //if ( tempalbum != spAlbum && sp_album_is_available(spAlbum))
     for (int index = 0; index < sp_artistbrowse_num_albums(result); index++)
     {
       sp_album *spAlbum = sp_artistbrowse_album(result, index);
@@ -532,10 +533,10 @@ void SpotifyInterface::cb_artistBrowseComplete(sp_artistbrowse *result, void *us
     CStdString thumb;
     thumb.Format("DefaultMusicArtists.png");
     sp_artist *spArtist = sp_artistbrowse_artist(result);
-    //CStdString artistUri;
-    //char spotify_artist_uri[256];
-    //sp_link_as_string(sp_link_create_from_artist(sp_artistbrowse_artist(result)),spotify_artist_uri,256);
-    //artistUri.Format("%s", spotify_artist_uri);
+    CStdString artistUri;
+    char spotify_artist_uri[256];
+    sp_link_as_string(sp_link_create_from_artist(sp_artistbrowse_artist(result)),spotify_artist_uri,256);
+    artistUri.Format("%s", spotify_artist_uri);
 
     CMediaSource share;
     CURL url(spInt->m_artistBrowseStr);
@@ -572,8 +573,8 @@ void SpotifyInterface::cb_artistBrowseComplete(sp_artistbrowse *result, void *us
 
     if (sp_artistbrowse_num_portraits(result) > 0)
     {
-      //    spInt->requestThumb((unsigned char*)sp_artistbrowse_portrait(result,0),artistUri,pItem3, ARTISTBROWSE_ARTIST);
-      //    spInt->requestThumb((unsigned char*)sp_artistbrowse_portrait(result,0),artistUri,pItem4, ARTISTBROWSE_ARTIST);
+       spInt->requestThumb((unsigned char*)sp_artistbrowse_portrait(result,0),artistUri,pItem3, ARTISTBROWSE_ARTIST);
+       spInt->requestThumb((unsigned char*)sp_artistbrowse_portrait(result,0),artistUri,pItem4, ARTISTBROWSE_ARTIST);
     }
 
     spInt->waitForThumbs();
@@ -583,6 +584,8 @@ void SpotifyInterface::cb_artistBrowseComplete(sp_artistbrowse *result, void *us
     dir.Format("%s",spInt->m_artistBrowseStr);
     message.SetStringParam(dir);
     g_windowManager.SendThreadMessage(message);
+
+    sp_artistbrowse_release(result);
   }
   else
     CLog::Log( LOGERROR, "Spotifylog: artistbrowse failed!");
@@ -612,6 +615,7 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
       m_yesNoDialog->DoModal();
       if (m_yesNoDialog->IsConfirmed())
       {
+        sp_search_release(search);
         spInt->search(newSearch);
         return;
       }
@@ -622,7 +626,7 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
         spInt->showProgressDialog(message);
       }
     }
-
+    CLog::Log( LOGNOTICE, "Spotifylog: search results are done! 2");
     spInt->m_progressDialog->SetPercentage(50);
     spInt->m_progressDialog->Progress();
 
@@ -636,7 +640,7 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
     }
     spInt->m_progressDialog->SetPercentage(60);
     spInt->m_progressDialog->Progress();
-
+    CLog::Log( LOGNOTICE, "Spotifylog: search results are done! 3");
     //albums
     CMusicDatabase *musicdatabase = new CMusicDatabase;
     musicdatabase->Open();
@@ -672,6 +676,7 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
         }
       }
     }
+    CLog::Log( LOGNOTICE, "Spotifylog: search results are done!4");
     delete musicdatabase;
     spInt->m_progressDialog->SetPercentage(80);
     spInt->m_progressDialog->Progress();
@@ -688,19 +693,25 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
         spInt->m_searchTrackVector.Add(pItem);
       }
     }
+    CLog::Log( LOGNOTICE, "Spotifylog: search results are done! 5");
     spInt->m_progressDialog->SetPercentage(99);
     spInt->m_progressDialog->Progress();
-    spInt->m_isSearching = false;
-
-    //this crashes libspotify sometimes, ignore and let the memmory fill up for now!
-    //if (sp_search_is_loaded(search))
-    //  sp_search_release(search);
 
     spInt->waitForThumbs();
+    spInt->m_isSearching = false;
 
     CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
     message.SetStringParam("musicdb://spotify/menu/search/");
     g_windowManager.SendThreadMessage(message);
+    CLog::Log( LOGNOTICE, "Spotifylog: search results are done!6");
+    //this crashes libspotify sometimes, ignore and let the memmory fill up for now!
+    if (search){
+CLog::Log( LOGNOTICE, "Spotifylog: search results are done!if 1");
+     if (sp_search_is_loaded(search)){
+    sp_search_release(search);
+    CLog::Log( LOGNOTICE, "Spotifylog: search results are done!7");
+}
+}
 
   }else
     CLog::Log( LOGERROR, "Spotifylog: search failed!");
@@ -934,9 +945,10 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
       m_artistWaitingThumbs.pop_back();
     }*/
 
-    if (m_artistBrowse && sp_artistbrowse_is_loaded(m_artistBrowse))
-      sp_artistbrowse_release(m_artistBrowse);
-    m_artistBrowse = 0;
+    //crashes sometimes, lets leak
+    //if (m_artistBrowse && sp_artistbrowse_is_loaded(m_artistBrowse))
+      //sp_artistbrowse_release(m_artistBrowse);
+    //m_artistBrowse = 0;
     m_artistBrowseStr = "";
     m_browseArtistMenuVector.Clear();
     m_browseArtistAlbumVector.Clear();
@@ -946,9 +958,11 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
   CLog::Log(LOGDEBUG, "Spotifylog: clean albumbrowse");
   if (albumbrowse)
   {
-    if (m_albumBrowse && sp_albumbrowse_is_loaded(m_albumBrowse))
-      sp_albumbrowse_release(m_albumBrowse);
-    m_albumBrowse = 0;
+
+    //crashes sometimes, lets leak
+    //if (m_albumBrowse && sp_albumbrowse_is_loaded(m_albumBrowse))
+    //  sp_albumbrowse_release(m_albumBrowse);
+    //m_albumBrowse = 0;
 
     m_albumBrowseStr = "";
     m_browseAlbumVector.Clear();
@@ -984,18 +998,18 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
       m_toplistWaitingThumbs.pop_back();
     }*/
 
-    
-    if (m_toplistArtistsBrowse)
-      sp_toplistbrowse_release(m_toplistArtistsBrowse);
-    m_toplistArtistsBrowse = 0;
+    //crashes sometimes, lets leak
+    //if (m_toplistArtistsBrowse)
+    //  sp_toplistbrowse_release(m_toplistArtistsBrowse);
+    //m_toplistArtistsBrowse = 0;
 
-    if (m_toplistAlbumsBrowse)
-      sp_toplistbrowse_release(m_toplistAlbumsBrowse);
-    m_toplistAlbumsBrowse = 0;
+    //if (m_toplistAlbumsBrowse)
+    //  sp_toplistbrowse_release(m_toplistAlbumsBrowse);
+    //m_toplistAlbumsBrowse = 0;
 
-    if (m_toplistTracksBrowse)
-      sp_toplistbrowse_release(m_toplistTracksBrowse);
-    m_toplistTracksBrowse = 0;
+    //if (m_toplistTracksBrowse)
+    //  sp_toplistbrowse_release(m_toplistTracksBrowse);
+    //m_toplistTracksBrowse = 0;
 
     m_browseToplistArtistsVector.Clear();
     m_browseToplistAlbumVector.Clear();
@@ -1589,7 +1603,8 @@ bool SpotifyInterface::browseArtist(CStdString strPath)
       message.Format("Browsing albums from %s", sp_artist_name(spArtist));
       showProgressDialog(message);
       CLog::Log( LOGDEBUG, "Spotifylog: browsing artist %s", sp_artist_name(spArtist));
-      m_artistBrowse = sp_artistbrowse_create(m_session, spArtist, &cb_artistBrowseComplete, 0);
+      //m_artistBrowse = 
+      sp_artistbrowse_create(m_session, spArtist, &cb_artistBrowseComplete, 0);
       m_artistBrowseStr = strPath;
       sp_link_release(spLink);
       return true;
@@ -1626,7 +1641,8 @@ bool SpotifyInterface::getBrowseAlbumTracks(CStdString strPath, CFileItemList &i
         message.Format("Browsing tracks from %s", sp_album_name(spAlbum));
         showProgressDialog(message);
         CLog::Log( LOGDEBUG, "Spotifylog: browsing album");
-        m_albumBrowse = sp_albumbrowse_create(m_session, spAlbum, &cb_albumBrowseComplete, spAlbum);
+        //m_albumBrowse = 
+        sp_albumbrowse_create(m_session, spAlbum, &cb_albumBrowseComplete, spAlbum);
         m_albumBrowseStr = strPath;
         sp_link_release(spLink);
         return true;
@@ -1651,8 +1667,8 @@ bool SpotifyInterface::getBrowseToplistArtists(CFileItemList &items)
       CStdString message;
       message.Format("Browsing top artists");
       showProgressDialog(message);
-      m_toplistArtistsBrowse = 
-        sp_toplistbrowse_create(m_session, 
+      //m_toplistArtistsBrowse = 
+      sp_toplistbrowse_create(m_session, 
                                 SP_TOPLIST_TYPE_ARTISTS,
                                 (sp_toplistregion)sp_session_user_country(m_session),
                                 getUsername(),
@@ -1678,8 +1694,8 @@ bool SpotifyInterface::getBrowseToplistAlbums(CFileItemList &items)
       CStdString message;
       message.Format("Browsing top albums");
       showProgressDialog(message);
-      m_toplistAlbumsBrowse = 
-        sp_toplistbrowse_create(m_session,
+      //m_toplistAlbumsBrowse = 
+      sp_toplistbrowse_create(m_session,
                                 SP_TOPLIST_TYPE_ALBUMS,
                                 (sp_toplistregion)sp_session_user_country(m_session),
                                 getUsername(),
@@ -1705,7 +1721,7 @@ bool SpotifyInterface::getBrowseToplistTracks(CFileItemList &items)
       CStdString message;
       message.Format("Browsing top tracks");
       showProgressDialog(message);
-      m_toplistTracksBrowse =
+      //m_toplistTracksBrowse =
       sp_toplistbrowse_create(m_session,
                               SP_TOPLIST_TYPE_TRACKS,
                               (sp_toplistregion)sp_session_user_country(m_session),
