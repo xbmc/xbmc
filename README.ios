@@ -50,7 +50,7 @@ The preferred version is Xcode 3.2.5 and iOS SDK 4.2.
 -----------------------------------------------------------------------------
 
  $ cd $HOME/XBMC
- $ sudo mkdir -p /usr/local/bin; sudo cp tools/osx/ios-depends/gas-preprocessor/gas-preprocessor.pl /usr/local/bin/
+ $ sudo mkdir -p /usr/local/bin; sudo cp tools/darwin/depends/gas-preprocessor/gas-preprocessor.pl /usr/local/bin/
  $ cd tools/darwin/depends
  $ ./bootstrap
  $ ./configure --with-darwin=ios
