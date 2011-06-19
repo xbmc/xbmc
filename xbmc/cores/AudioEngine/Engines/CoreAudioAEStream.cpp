@@ -336,7 +336,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
     unsigned int remap_size = frames * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3) * 
                               ((m_OutputFormat.m_channelCount > m_StreamFormat.m_channelCount) ?
                               m_OutputFormat.m_channelCount : m_StreamFormat.m_channelCount);
-    CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, remap_size);
+    CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, remap_size * 2);
     
     //CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, frames * m_OutputFormat.m_frameSize);
     
