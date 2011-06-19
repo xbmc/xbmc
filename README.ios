@@ -14,7 +14,7 @@ TOC
 -----------------------------------------------------------------------------
 
 This is a platform port of XBMC for the Apple iOS operating system. 
-The current build system is Xcode 3.2.5 and iOS SDK 4.2 
+The current build system is Xcode 3.x and iOS SDK 4.2/4.3 
 There are two ways to build XBMC for Mac.
 
 1) command-line or
@@ -51,7 +51,10 @@ The preferred version is Xcode 3.2.5 and iOS SDK 4.2.
 
  $ cd $HOME/XBMC
  $ sudo mkdir -p /usr/local/bin; sudo cp tools/osx/ios-depends/gas-preprocessor/gas-preprocessor.pl /usr/local/bin/
- $ make -C tools/osx/ios-depends
+ $ cd tools/darwin/depends
+ $ ./bootstrap
+ $ ./configure --with-darwin=ios
+ $ make
 
 -----------------------------------------------------------------------------
 4. How to compile
@@ -60,7 +63,7 @@ Both Xcode and Terminal compilation require that build environment be setup
 from the step 3.1.
 
  $ cd $HOME/XBMC
- $ make -C tools/osx/ios-depends/xbmc
+ $ make -C tools/darwin/depends/xbmc
  $ make clean
  $ make xcode_depends
 
