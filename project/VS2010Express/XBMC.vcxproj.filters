@@ -4940,6 +4940,9 @@
     <ClInclude Include="..\..\xbmc\addons\AddonVersion.h">
       <Filter>addons</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\lib\DllAvFilter.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
       <Filter>guilib</Filter>
     </ClInclude>

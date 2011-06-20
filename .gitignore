@@ -371,6 +371,7 @@ project/Win32BuildSetup/dependencies/libcdio-10.dll
 /system/players/dvdplayer/avcore-0.dll
 /system/players/dvdplayer/avformat-52.dll
 /system/players/dvdplayer/avutil-50.dll
+/system/players/dvdplayer/avfilter-1.dll
 /system/players/dvdplayer/freetype6.dll
 /system/players/dvdplayer/libass.dll
 /system/players/dvdplayer/libdvdcss-2.dll

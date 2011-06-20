@@ -56,6 +56,8 @@
 #include "VAAPI.h"
 #endif
 
+CCriticalSection DllAvFilter::m_critSection;
+
 using namespace boost;
 
 enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
