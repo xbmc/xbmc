@@ -45,8 +45,6 @@ CXHandle::CXHandle(const CXHandle &src)
   CLog::Log(LOGWARNING,"%s, copy handle.", __FUNCTION__);
 
   Init();
-  if (src.m_pSem)
-    m_pSem = new CSemaphore(*src.m_pSem);
 
   if (m_threadValid)
   {
@@ -82,8 +80,6 @@ CXHandle::~CXHandle()
     assert(false);
   }
   
-  delete m_pSem;
-
   if (m_hMutex) {
     delete m_hMutex;
   }
@@ -109,7 +105,6 @@ CXHandle::~CXHandle()
 void CXHandle::Init()
 {
   fd=0;
-  m_pSem=NULL;
   m_hMutex=NULL;
   m_threadValid=false;
   m_hCond=NULL;

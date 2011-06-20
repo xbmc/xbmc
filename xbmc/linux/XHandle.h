@@ -29,7 +29,6 @@
 
 #include "PlatformDefs.h"
 #include "XHandlePublic.h"
-#include "threads/Semaphore.hpp"
 #include "threads/Condition.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
@@ -48,7 +47,6 @@ public:
   inline HandleType GetType() { return m_type; }
   void ChangeType(HandleType newType);
 
-  CSemaphore            *m_pSem;
   ThreadIdentifier      m_hThread;
   bool                  m_threadValid;
   XbmcThreads::ConditionVariable     *m_hCond;

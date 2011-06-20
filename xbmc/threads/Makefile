@@ -3,7 +3,6 @@ SRCS=Atomics.cpp \
      Event.cpp \
      Interruptible.cpp \
      LockFree.cpp \
-     Semaphore.cpp \
      Thread.cpp \
      ThreadLocal.cpp \
 
