@@ -72,7 +72,7 @@ public:
    */
   void Process(unsigned int currentTime);
 
-  /*! \brief Mark a the screen as dirty, forcing a redraw at the next Render()
+  /*! \brief Mark the screen as dirty, forcing a redraw at the next Render()
    */
   void MarkDirty();
 
