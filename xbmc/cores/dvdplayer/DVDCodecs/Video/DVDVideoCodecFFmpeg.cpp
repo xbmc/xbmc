@@ -512,19 +512,40 @@ void CDVDVideoCodecFFmpeg::Reset()
 
 bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 {
-  GetVideoAspect(m_pCodecContext, pDvdVideoPicture->iDisplayWidth, pDvdVideoPicture->iDisplayHeight);
+  pDvdVideoPicture->iWidth = m_pCodecContext->width;
+  pDvdVideoPicture->iHeight = m_pCodecContext->height;
 
-  if(m_pCodecContext->coded_width  && m_pCodecContext->coded_width  < m_pCodecContext->width
-                                   && m_pCodecContext->coded_width  > m_pCodecContext->width  - 10)
+  /* crop of 10 pixels if demuxer asked it */
+  if(m_pCodecContext->coded_width  && m_pCodecContext->coded_width  < (int)pDvdVideoPicture->iWidth
+                                   && m_pCodecContext->coded_width  > (int)pDvdVideoPicture->iWidth  - 10)
     pDvdVideoPicture->iWidth = m_pCodecContext->coded_width;
-  else
-    pDvdVideoPicture->iWidth = m_pCodecContext->width;
 
-  if(m_pCodecContext->coded_height && m_pCodecContext->coded_height < m_pCodecContext->height
-                                   && m_pCodecContext->coded_height > m_pCodecContext->height - 10)
+  if(m_pCodecContext->coded_height && m_pCodecContext->coded_height < (int)pDvdVideoPicture->iHeight
+                                   && m_pCodecContext->coded_height > (int)pDvdVideoPicture->iHeight - 10)
     pDvdVideoPicture->iHeight = m_pCodecContext->coded_height;
+
+  double aspect_ratio;
+
+  /* use variable in the frame */
+  AVRational pixel_aspect = m_pCodecContext->sample_aspect_ratio;
+
+  if (pixel_aspect.num == 0)
+    aspect_ratio = 0;
   else
-    pDvdVideoPicture->iHeight = m_pCodecContext->height;
+    aspect_ratio = av_q2d(pixel_aspect) * pDvdVideoPicture->iWidth / pDvdVideoPicture->iHeight;
+
+  if (aspect_ratio <= 0.0)
+    aspect_ratio = (float)pDvdVideoPicture->iWidth / (float)pDvdVideoPicture->iHeight;
+
+  /* XXX: we suppose the screen has a 1.0 pixel ratio */ // CDVDVideo will compensate it.
+  pDvdVideoPicture->iDisplayHeight = pDvdVideoPicture->iHeight;
+  pDvdVideoPicture->iDisplayWidth  = ((int)RINT(pDvdVideoPicture->iHeight * aspect_ratio)) & -3;
+  if (pDvdVideoPicture->iDisplayWidth > pDvdVideoPicture->iWidth)
+  {
+    pDvdVideoPicture->iDisplayWidth  = pDvdVideoPicture->iWidth;
+    pDvdVideoPicture->iDisplayHeight = ((int)RINT(pDvdVideoPicture->iWidth / aspect_ratio)) & -3;
+  }
+
 
   pDvdVideoPicture->pts = DVD_NOPTS_VALUE;
 
@@ -595,29 +616,6 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
 
   return true;
-}
-
-/*
- * Calculate the height and width this video should be displayed in
- */
-void CDVDVideoCodecFFmpeg::GetVideoAspect(AVCodecContext* pCodecContext, unsigned int& iWidth, unsigned int& iHeight)
-{
-  double aspect_ratio;
-
-  /* XXX: use variable in the frame */
-  if (pCodecContext->sample_aspect_ratio.num == 0) aspect_ratio = 0;
-  else aspect_ratio = av_q2d(pCodecContext->sample_aspect_ratio) * pCodecContext->width / pCodecContext->height;
-
-  if (aspect_ratio <= 0.0) aspect_ratio = (float)pCodecContext->width / (float)pCodecContext->height;
-
-  /* XXX: we suppose the screen has a 1.0 pixel ratio */ // CDVDVideo will compensate it.
-  iHeight = pCodecContext->height;
-  iWidth = ((int)RINT(pCodecContext->height * aspect_ratio)) & -3;
-  if (iWidth > (unsigned int)pCodecContext->width)
-  {
-    iWidth = pCodecContext->width;
-    iHeight = ((int)RINT(pCodecContext->width / aspect_ratio)) & -3;
-  }
 }
 
 unsigned CDVDVideoCodecFFmpeg::GetConvergeCount()
