@@ -64,7 +64,7 @@
 #define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-52.dll"
 #define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-50.dll"
 #define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-51.dll"
-#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-0.6.1.dll"
+#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-0.dll"
 
 /* cdrip */
 #define DLL_PATH_LAME_ENC      "special://xbmcbin/system/cdrip/lame_enc.dll"
