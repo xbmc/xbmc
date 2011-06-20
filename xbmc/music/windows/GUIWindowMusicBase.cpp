@@ -60,6 +60,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "ThumbnailCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -1201,7 +1202,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     saveDirThumb = false;
   }
 
-  CStdString albumThumb(CUtil::GetCachedAlbumThumb(album.strAlbum, album.strArtist));
+  CStdString albumThumb(CThumbnailCache::GetAlbumThumb(album));
 
   // Update the thumb in the music database (songs + albums)
   CStdString albumPath(path);
@@ -1249,7 +1250,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     CStdString album, artist;
     if (CMusicInfoScanner::HasSingleAlbum(songs, album, artist))
     { // can cache as the folder thumb
-      CStdString folderThumb(CUtil::GetCachedMusicThumb(albumPath));
+      CStdString folderThumb(CThumbnailCache::GetMusicThumb(albumPath));
       CFile::Cache(albumThumb, folderThumb);
     }
   }
