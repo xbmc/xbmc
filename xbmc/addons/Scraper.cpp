@@ -389,19 +389,25 @@ CScraperUrl CScraper::NfoUrl(const CStdString &sNfoContent)
 
   // parse returned XML: either <error> element on error, blank on failure,
   // or <url>...</url> or <TAG><url>...</url><id>...</id></TAG> (for any TAG) on success
-  TiXmlDocument doc;
-  doc.Parse(vcsOut[0], 0, TIXML_ENCODING_UTF8);
-  CheckScraperError(doc.RootElement());
-
-  if (doc.RootElement())
+  for (unsigned int i=0; i < vcsOut.size(); ++i)
   {
-    XMLUtils::GetString(doc.RootElement(), "id", scurlRet.strId);
+    TiXmlDocument doc;
+    doc.Parse(vcsOut[i], 0, TIXML_ENCODING_UTF8);
+    CheckScraperError(doc.RootElement());
 
-    TiXmlElement* pxeUrl = doc.FirstChildElement("url");
-    if (pxeUrl)
-      scurlRet.ParseElement(pxeUrl);
-    else if (!strcmp(doc.RootElement()->Value(), "url"))
-      scurlRet.ParseElement(doc.RootElement());
+    if (doc.RootElement())
+    {
+      XMLUtils::GetString(doc.RootElement(), "id", scurlRet.strId);
+
+      TiXmlElement* pxeUrl = doc.FirstChildElement("url");
+      if (pxeUrl)
+        scurlRet.ParseElement(pxeUrl);
+      else if (!strcmp(doc.RootElement()->Value(), "url"))
+        scurlRet.ParseElement(doc.RootElement());
+      else
+        continue;
+      break;
+    }
   }
   return scurlRet;
 }
