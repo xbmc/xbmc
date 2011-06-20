@@ -37,7 +37,7 @@ namespace XbmcThreads
    *  public:
    *     virtual void Interrupt();
    *
-   *     void blockingMethodCall() { XbmcThreads::IInterruptible::Guard g(*this); ... do blocking; }
+   *     void blockingMethodCall() { XbmcThreads::IInterruptible::Guard g(this); ... do blocking; }
    *  };
    *
    * See CEvent as an example
@@ -48,13 +48,13 @@ namespace XbmcThreads
     virtual void Interrupt() = 0;
 
     /**
-     * Calling InterruptAll will invoke interrup on all IInterruptibles
+     * Calling InterruptAll will invoke interrupt on all IInterruptibles
      *  currently in a wait state
      */
     static void InterruptAll();
 
     /**
-     * Calling InterruptThreadSpecific will invoke interrup on all IInterruptibles
+     * Calling InterruptThreadSpecific will invoke interrupt on all IInterruptibles
      *  currently in a wait state in this thread only.
      */
     static void InterruptThreadSpecific();
