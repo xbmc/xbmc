@@ -37,7 +37,7 @@ public:
   virtual ~CGUIMultiSelectTextControl(void);
   virtual CGUIMultiSelectTextControl *Clone() const { return new CGUIMultiSelectTextControl(*this); };
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
 
   virtual bool OnAction(const CAction &action);
@@ -62,7 +62,7 @@ public:
   virtual void SetFocus(bool focus);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   void AddString(const CStdString &text, bool selectable, const CStdString &clickAction = "");
   void PositionButtons();
   unsigned int GetNumSelectable() const;

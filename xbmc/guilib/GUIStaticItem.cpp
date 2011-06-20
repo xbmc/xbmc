@@ -22,11 +22,15 @@
 #include "GUIStaticItem.h"
 #include "utils/XMLUtils.h"
 #include "GUIControlFactory.h"
+#include "GUIInfoManager.h"
 
 using namespace std;
 
 CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileItem()
 {
+  m_visCondition = 0;
+  m_visState = false;
+
   assert(item);
 
   // check whether we're using the more verbose method...
@@ -62,7 +66,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     if (!thumb.IsConstant())  m_info.push_back(make_pair(thumb, "thumb"));
     if (!icon.IsConstant())   m_info.push_back(make_pair(icon, "icon"));
     m_iprogramCount = id ? atoi(id) : 0;
-    m_idepth = visibleCondition;
+    m_visCondition = visibleCondition;
     // add any properties
     const TiXmlElement *property = item->FirstChildElement("property");
     while (property)
@@ -92,7 +96,6 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, parentID, true));
     SetIconImage(CGUIInfoLabel::GetLabel(icon, parentID, true));
     m_iprogramCount = id ? atoi(id) : 0;
-    m_idepth = 0;  // no visibility condition
   }
 }
     
@@ -115,4 +118,24 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
     else
       SetProperty(name, value);
   }
+}
+
+bool CGUIStaticItem::UpdateVisibility(int contextWindow)
+{
+  if (!m_visCondition)
+    return false;
+  bool state = g_infoManager.GetBool(m_visCondition, contextWindow);
+  if (state != m_visState)
+  {
+    m_visState = state;
+    return true;
+  }
+  return false;
+}
+
+bool CGUIStaticItem::IsVisible() const
+{
+  if (m_visCondition)
+    return m_visState;
+  return true;
 }

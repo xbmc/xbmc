@@ -39,16 +39,24 @@ CGUILabel::~CGUILabel(void)
 {
 }
 
-void CGUILabel::SetScrolling(bool scrolling)
+bool CGUILabel::SetScrolling(bool scrolling)
 {
+  bool changed = m_scrolling != scrolling;
+
   m_scrolling = scrolling;
   if (!m_scrolling)
     m_scrollInfo.Reset();
+
+  return changed;
 }
 
-void CGUILabel::SetColor(CGUILabel::COLOR color)
+bool CGUILabel::SetColor(CGUILabel::COLOR color)
 {
+  bool changed = m_color != color;
+
   m_color = color;
+
+  return changed;
 }
 
 color_t CGUILabel::GetColor() const
@@ -65,6 +73,14 @@ color_t CGUILabel::GetColor() const
       break;
   }
   return m_label.textColor;
+}
+
+bool CGUILabel::Process(unsigned int currentTime)
+{
+  // TODO Add the correct processing
+
+  bool overFlows = (m_renderRect.Width() + 0.5f < m_textLayout.GetTextWidth()); // 0.5f to deal with floating point rounding issues
+  return (overFlows && m_scrolling);
 }
 
 void CGUILabel::Render()
@@ -103,39 +119,51 @@ void CGUILabel::SetInvalid()
   m_invalid = true;
 }
 
-void CGUILabel::UpdateColors()
+bool CGUILabel::UpdateColors()
 {
-  m_label.UpdateColors();
+  return m_label.UpdateColors();
 }
 
-void CGUILabel::SetMaxRect(float x, float y, float w, float h)
+bool CGUILabel::SetMaxRect(float x, float y, float w, float h)
 {
+  CRect oldRect = m_maxRect;
+
   m_maxRect.SetRect(x, y, x + w, y + h);
   UpdateRenderRect();
+
+  return oldRect != m_maxRect;
 }
 
-void CGUILabel::SetAlign(uint32_t align)
+bool CGUILabel::SetAlign(uint32_t align)
 {
+  bool changed = m_label.align != align;
+
   m_label.align = align;
   UpdateRenderRect();
+
+  return changed;
 }
 
-void CGUILabel::SetText(const CStdString &label)
+bool CGUILabel::SetText(const CStdString &label)
 {
   if (m_textLayout.Update(label, m_maxRect.Width(), m_invalid))
   { // needed an update - reset scrolling and update our text layout
     m_scrollInfo.Reset();
     UpdateRenderRect();
     m_invalid = false;
+    return true;
   }
+  else
+    return false;
 }
 
-void CGUILabel::SetTextW(const CStdStringW &label)
+bool CGUILabel::SetTextW(const CStdStringW &label)
 {
   m_textLayout.SetText(label);
   m_scrollInfo.Reset();
   UpdateRenderRect();
   m_invalid = false;
+  return true;
 }
 
 void CGUILabel::UpdateRenderRect()
@@ -164,11 +192,11 @@ float CGUILabel::GetMaxWidth() const
   return m_maxRect.Width() - 2*m_label.offsetX;
 }
 
-void CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
+bool CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
 {
   CRect rect(label1.m_renderRect);
   if (rect.Intersect(label2.m_renderRect).IsEmpty())
-    return; // nothing to do (though it could potentially encroach on the min_space requirement)
+    return false; // nothing to do (though it could potentially encroach on the min_space requirement)
   
   static const float min_space = 10;
   // overlap vertically and horizontally - check alignment
@@ -186,5 +214,7 @@ void CGUILabel::CheckAndCorrectOverlap(CGUILabel &label1, CGUILabel &label2)
       chopPoint = left.m_renderRect.x2 + min_space;
     left.m_renderRect.x2 = chopPoint - min_space;
     right.m_renderRect.x1 = chopPoint + min_space;
+    return true;
   }
+  return false;
 }

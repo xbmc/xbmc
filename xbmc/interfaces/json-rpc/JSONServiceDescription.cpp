@@ -194,6 +194,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioLibrary.GetAlbumDetails",                 CAudioLibrary::GetAlbumDetails },
   { "AudioLibrary.GetSongs",                        CAudioLibrary::GetSongs },
   { "AudioLibrary.GetSongDetails",                  CAudioLibrary::GetSongDetails },
+  { "AudioLibrary.GetRecentlyAddedAlbums",          CAudioLibrary::GetRecentlyAddedAlbums },
+  { "AudioLibrary.GetRecentlyAddedSongs",           CAudioLibrary::GetRecentlyAddedSongs },
   { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres },
   { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent },
 
@@ -1084,7 +1086,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
     std::map<std::string, JSONSchemaTypeDefinition>::const_iterator iter = m_types.find(refType);
     if (refType.length() <= 0 || iter == m_types.end())
     {
-      CLog::Log(LOGDEBUG, "JSONRPC: JSON schema type %s references an unknown type %s", type.name.c_str(), refType.c_str());
+      CLog::Log(LOGWARNING, "JSONRPC: JSON schema type %s references an unknown type %s", type.name.c_str(), refType.c_str());
       return false;
     }
     

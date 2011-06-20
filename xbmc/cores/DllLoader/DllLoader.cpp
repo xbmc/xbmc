@@ -40,13 +40,6 @@ typedef struct _UNICODE_STRING {
 } UNICODE_STRING, *PUNICODE_STRING;
 #include "utils/Win32Exception.h"
 
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
-
 #define DLL_PROCESS_DETACH   0
 #define DLL_PROCESS_ATTACH   1
 #define DLL_THREAD_ATTACH    2

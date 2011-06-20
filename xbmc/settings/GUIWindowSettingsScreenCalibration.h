@@ -30,6 +30,7 @@ public:
   virtual ~CGUIWindowSettingsScreenCalibration(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void FrameMove();
   virtual void Render();
   virtual void AllocResources(bool forceLoad = false);

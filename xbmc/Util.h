@@ -20,17 +20,9 @@
  *
  */
 
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
-
 #include <climits>
 #include <cmath>
 #include <vector>
-#include <limits>
 #include <string.h>
 #include <stdint.h>
 
@@ -150,6 +142,7 @@ public:
 
 #ifdef UNIT_TESTING
   static bool TestSplitExec();
+  static bool TestGetQualifiedFilename();
 #endif
 
   static void InitRandomSeed();

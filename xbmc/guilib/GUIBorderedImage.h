@@ -34,10 +34,13 @@ public:
   virtual ~CGUIBorderedImage(void);
   virtual CGUIBorderedImage *Clone() const { return new CGUIBorderedImage(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual void AllocResources();
   virtual void FreeResources(bool immediately = false);
   virtual void DynamicResourceAlloc(bool bOnOff);
+  
+  virtual CRect CalcRenderRegion() const;
 
 protected:
   CGUITexture m_borderImage;
