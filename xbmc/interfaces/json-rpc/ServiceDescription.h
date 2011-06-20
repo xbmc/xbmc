@@ -265,7 +265,8 @@ namespace JSONRPC
       "\"items\": { \"type\": \"object\","
         "\"properties\": {"
           "\"name\": { \"type\": \"string\", \"required\": true },"
-          "\"role\": { \"type\": \"string\", \"required\": true }"
+          "\"role\": { \"type\": \"string\", \"required\": true },"
+          "\"thumbnail\": { \"type\": \"string\" }"
         "}"
       "}"
     "}",
