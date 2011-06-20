@@ -222,7 +222,7 @@ bool SpotifyInterface::getPlaylistTracks(CFileItemList &items, int playlist)
       }
 	
       CFileItemPtr pItem;
-      pItem = spTrackToItem(spTrack, PLAYLIST_TRACK, sp_track_index(sp_playlist_track(pl,index)),true);
+      pItem = spTrackToItem(spTrack, PLAYLIST_TRACK, index +1,true);
 //      pItem->SetContentType("audio/spotify");
       items.Add(pItem);
     }
@@ -685,7 +685,7 @@ void SpotifyInterface::cb_searchComplete(sp_search *search, void *userdata)
       if ( sp_track_is_available(g_spotifyInterface->m_session, spTrack))
       {
         CFileItemPtr pItem;
-        pItem = spInt->spTrackToItem(spTrack,SEARCH_TRACK,sp_track_index(spTrack),true);
+        pItem = spInt->spTrackToItem(spTrack,SEARCH_TRACK,index + 1,true);
 //        pItem->SetContentType("audio/spotify");
         spInt->m_searchTrackVector.Add(pItem);
       }
