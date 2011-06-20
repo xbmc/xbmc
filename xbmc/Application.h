@@ -91,7 +91,7 @@ public:
   virtual bool Initialize();
   virtual void FrameMove();
   virtual void Render();
-  virtual void RenderNoPresent();
+  virtual bool RenderNoPresent();
   virtual void Preflight();
   virtual bool Create();
   virtual bool Cleanup();

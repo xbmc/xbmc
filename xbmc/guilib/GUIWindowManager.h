@@ -81,8 +81,9 @@ public:
   /*! \brief Rendering of the current window and any dialogs
    Render is called every frame to draw the current window and any dialogs.
    It should only be called from the application thread.
+   Returns true only if it has rendered something.
    */
-  void Render();
+  bool Render();
 
   /*! \brief Per-frame updating of the current window and any dialogs
    FrameMove is called every frame to update the current window and any dialogs
