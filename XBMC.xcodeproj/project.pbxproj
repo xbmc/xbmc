@@ -383,7 +383,6 @@
 		32E6488213AFB0EB007C0723 /* AEWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6484713AFB0EB007C0723 /* AEWrapper.cpp */; };
 		32E6488313AFB0EB007C0723 /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6484A13AFB0EB007C0723 /* AEEncoderFFmpeg.cpp */; };
 		32E6488413AFB0EB007C0723 /* CoreAudioAE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6484E13AFB0EB007C0723 /* CoreAudioAE.cpp */; };
-		32E6488513AFB0EB007C0723 /* CoreAudioAEHALIOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6485113AFB0EB007C0723 /* CoreAudioAEHALIOS.cpp */; };
 		32E6488613AFB0EB007C0723 /* CoreAudioAEHALOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6485313AFB0EB007C0723 /* CoreAudioAEHALOSX.cpp */; };
 		32E6488713AFB0EB007C0723 /* CoreAudioAESound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6485513AFB0EB007C0723 /* CoreAudioAESound.cpp */; };
 		32E6488813AFB0EB007C0723 /* CoreAudioAEStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6485713AFB0EB007C0723 /* CoreAudioAEStream.cpp */; };
@@ -401,7 +400,6 @@
 		32E648A013AFB0EB007C0723 /* AEWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6484713AFB0EB007C0723 /* AEWrapper.cpp */; };
 		32E648A113AFB0EB007C0723 /* AEEncoderFFmpeg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6484A13AFB0EB007C0723 /* AEEncoderFFmpeg.cpp */; };
 		32E648A213AFB0EB007C0723 /* CoreAudioAE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6484E13AFB0EB007C0723 /* CoreAudioAE.cpp */; };
-		32E648A313AFB0EB007C0723 /* CoreAudioAEHALIOS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6485113AFB0EB007C0723 /* CoreAudioAEHALIOS.cpp */; };
 		32E648A413AFB0EB007C0723 /* CoreAudioAEHALOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6485313AFB0EB007C0723 /* CoreAudioAEHALOSX.cpp */; };
 		32E648A513AFB0EB007C0723 /* CoreAudioAESound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6485513AFB0EB007C0723 /* CoreAudioAESound.cpp */; };
 		32E648A613AFB0EB007C0723 /* CoreAudioAEStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6485713AFB0EB007C0723 /* CoreAudioAEStream.cpp */; };
@@ -2296,8 +2294,6 @@
 		32E6484B13AFB0EB007C0723 /* AEEncoderFFmpeg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEEncoderFFmpeg.h; sourceTree = "<group>"; };
 		32E6484E13AFB0EB007C0723 /* CoreAudioAE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAE.cpp; sourceTree = "<group>"; };
 		32E6485013AFB0EB007C0723 /* CoreAudioAE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAE.h; sourceTree = "<group>"; };
-		32E6485113AFB0EB007C0723 /* CoreAudioAEHALIOS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAEHALIOS.cpp; sourceTree = "<group>"; };
-		32E6485213AFB0EB007C0723 /* CoreAudioAEHALIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAEHALIOS.h; sourceTree = "<group>"; };
 		32E6485313AFB0EB007C0723 /* CoreAudioAEHALOSX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAEHALOSX.cpp; sourceTree = "<group>"; };
 		32E6485413AFB0EB007C0723 /* CoreAudioAEHALOSX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreAudioAEHALOSX.h; sourceTree = "<group>"; };
 		32E6485513AFB0EB007C0723 /* CoreAudioAESound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CoreAudioAESound.cpp; sourceTree = "<group>"; };
@@ -4466,8 +4462,6 @@
 			children = (
 				32E6484E13AFB0EB007C0723 /* CoreAudioAE.cpp */,
 				32E6485013AFB0EB007C0723 /* CoreAudioAE.h */,
-				32E6485113AFB0EB007C0723 /* CoreAudioAEHALIOS.cpp */,
-				32E6485213AFB0EB007C0723 /* CoreAudioAEHALIOS.h */,
 				32E6485313AFB0EB007C0723 /* CoreAudioAEHALOSX.cpp */,
 				32E6485413AFB0EB007C0723 /* CoreAudioAEHALOSX.h */,
 				32E6485513AFB0EB007C0723 /* CoreAudioAESound.cpp */,
@@ -8149,7 +8143,6 @@
 				32E6488213AFB0EB007C0723 /* AEWrapper.cpp in Sources */,
 				32E6488313AFB0EB007C0723 /* AEEncoderFFmpeg.cpp in Sources */,
 				32E6488413AFB0EB007C0723 /* CoreAudioAE.cpp in Sources */,
-				32E6488513AFB0EB007C0723 /* CoreAudioAEHALIOS.cpp in Sources */,
 				32E6488613AFB0EB007C0723 /* CoreAudioAEHALOSX.cpp in Sources */,
 				32E6488713AFB0EB007C0723 /* CoreAudioAESound.cpp in Sources */,
 				32E6488813AFB0EB007C0723 /* CoreAudioAEStream.cpp in Sources */,
@@ -9055,7 +9048,6 @@
 				32E648A013AFB0EB007C0723 /* AEWrapper.cpp in Sources */,
 				32E648A113AFB0EB007C0723 /* AEEncoderFFmpeg.cpp in Sources */,
 				32E648A213AFB0EB007C0723 /* CoreAudioAE.cpp in Sources */,
-				32E648A313AFB0EB007C0723 /* CoreAudioAEHALIOS.cpp in Sources */,
 				32E648A413AFB0EB007C0723 /* CoreAudioAEHALOSX.cpp in Sources */,
 				32E648A513AFB0EB007C0723 /* CoreAudioAESound.cpp in Sources */,
 				32E648A613AFB0EB007C0723 /* CoreAudioAEStream.cpp in Sources */,
