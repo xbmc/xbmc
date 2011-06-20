@@ -276,14 +276,8 @@ CRect CGUIImage::CalcRenderRegion() const
 {
   CRect region = m_texture.GetRenderRect();
 
-  if (m_fadingTextures.size())  // have some fading images
-  {
-    for (vector<CFadingTexture *>::const_iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end();)
-    {
-      region.Union( (*itr)->m_texture->GetRenderRect() );
-      itr++;
-    }
-  }
+  for (vector<CFadingTexture *>::const_iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); itr++)
+    region.Union( (*itr)->m_texture->GetRenderRect() );
 
   return CGUIControl::CalcRenderRegion().Intersect(region);
 }
