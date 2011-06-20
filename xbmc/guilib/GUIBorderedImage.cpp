@@ -65,7 +65,8 @@ void CGUIBorderedImage::Render()
 
 CRect CGUIBorderedImage::CalcRenderRegion() const
 {
-  return m_borderImage.GetRenderRect();
+  // have to union the image as well as fading images may still exist that are bigger than our current border image
+  return CGUIImage::CalcRenderRegion().Union(m_borderImage.GetRenderRect());
 }
 
 void CGUIBorderedImage::AllocResources()
