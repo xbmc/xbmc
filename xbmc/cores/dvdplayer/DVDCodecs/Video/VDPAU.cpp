@@ -1175,7 +1175,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     {
       if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
       || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
-      || avctx->hurry_up)
+      || avctx->skip_frame == AVDISCARD_NONREF)
         m_mixerstep = 0;
       else
         m_mixerstep = 1;
@@ -1195,7 +1195,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   else if(m_mixerstep == 1)
   { // no new frame given, output second field of old frame
 
-    if(avctx->hurry_up)
+    if(avctx->skip_frame == AVDISCARD_NONREF)
     {
       ClearUsedForRender(&past[1]);
       m_DVDVideoPics.pop();

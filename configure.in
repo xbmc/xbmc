@@ -349,9 +349,11 @@ MAKE="${MAKE:-make}"
 case $host in
   i*86*-linux-gnu*)
      ARCH="i486-linux"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
   x86_64-*-linux-gnu*)
      ARCH="x86_64-linux"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
      ;;
   arm-apple-darwin*)
      use_joystick=no
@@ -377,6 +379,7 @@ case $host in
      PYTHON_CPPFLAGS="-I${prefix}/include/python2.6"
      PYTHON_SITE_PKG="${prefix}/lib/python2.6/site-packages"
      PYTHON_NOVERSIONCHECK="no-check"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_IOS -D_LINUX")
      ;;
   i386-apple-darwin*)
      use_joystick=no
@@ -386,6 +389,7 @@ case $host in
      ARCH="x86-osx"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
   powerpc-apple-darwin*)
      use_joystick=no
@@ -396,20 +400,21 @@ case $host in
      use_arch="ppc"
      export MACOSX_DEPLOYMENT_TARGET=10.4
      SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
   powerpc-*-linux-gnu*)
      ARCH="powerpc-linux"
-     AC_SUBST(ARCH_DEFINES, "-D_POWERPC")
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_POWERPC")
      ;;
   powerpc64-*-linux-gnu*)
      ARCH="powerpc64-linux"
-     AC_SUBST(ARCH_DEFINES, "-D_POWERPC64")
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_POWERPC64")
      ;;
   arm*-*-linux-gnu*)
      use_texturepacker=no
      ARCH="arm"
      use_arch="arm"
-     AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_ARMEL")
      ;;
   *)
      AC_MSG_ERROR(unsupported host ($host))
@@ -840,6 +845,7 @@ if test "$use_libnfs" != "no"; then
   AC_CHECK_HEADERS([nfsc/libnfs.h],,
    [if test "$use_libnfs" = "yes"; then
       AC_MSG_ERROR($libnfs_not_found)
+      USE_LIBNFS=0
     elif test "$use_libnfs" != "no"; then
       AC_MSG_NOTICE($libnfs_not_found)
       use_libnfs="no"
@@ -850,8 +856,10 @@ if test "$use_libnfs" != "no"; then
   fi
   if test "$use_libnfs" != "no"; then
     AC_DEFINE([HAVE_LIBNFS], [1], [Whether to use libnfs library.])
+    USE_LIBNFS=1
   fi
 else
+  USE_LIBNFS=0
   AC_MSG_NOTICE($libnfs_disabled)
 fi
 
@@ -1088,6 +1096,11 @@ else
     USE_OPENMAX=0
   fi
 fi
+
+# yajl version check (yajl_version.h was added in yajl 2.0)
+AC_CHECK_HEADERS([yajl/yajl_version.h], [], [
+AC_DEFINE(YAJL_MAJOR, 1, [yajl version 1])
+], [])
 
 # platform specific bin utilities
 if test "$host_vendor" != "apple" ; then
@@ -1501,6 +1514,7 @@ AC_SUBST(USE_OPENGLES)
 AC_SUBST(USE_VDPAU)
 AC_SUBST(USE_VAAPI)
 AC_SUBST(USE_CRYSTALHD)
+AC_SUBST(USE_LIBNFS)
 AC_SUBST(USE_VDA)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)

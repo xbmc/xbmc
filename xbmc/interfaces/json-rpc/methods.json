@@ -914,13 +914,14 @@
       }
     }
   },
-  "AudioLibrary.GetGenres": {
+  "AudioLibrary.GetRecentlyAddedAlbums": {
     "type": "method",
-    "description": "Retrieve all genres",
+    "description": "Retrieve recently added albums",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "fields", "$ref": "Audio.Fields.Genre" },
+      { "name": "albums", "$ref": "List.Amount" },
+      { "name": "fields", "$ref": "Audio.Fields.Album" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -928,7 +929,50 @@
       "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "genres": { "$ref": "Library.Genres", "required": true }
+        "albums": { "type": "array",
+          "items": { "$ref": "Audio.Details.Album" }
+        }
+      }
+    }
+  },
+  "AudioLibrary.GetRecentlyAddedSongs": {
+    "type": "method",
+    "description": "Retrieve recently added songs",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "albums", "$ref": "List.Amount", "description": "The amount of recently added albums from which to return the songs" },
+      { "name": "fields", "$ref": "Audio.Fields.Song" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "songs": { "type": "array",
+          "items": { "$ref": "Audio.Details.Song" }
+        }
+      }
+    }
+  },
+  "AudioLibrary.GetGenres": {
+    "type": "method",
+    "description": "Retrieve all genres",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "fields", "$ref": "Library.Fields.Genre" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "genres": { "type": "array", "required": true,
+          "items": { "$ref": "Library.Details.Genre" }
+        }
       }
     }
   },
@@ -1206,6 +1250,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "type", "type": "string", "required": true, "enum": [ "movie", "tvshow", "musicvideo"] },
+      { "name": "fields", "$ref": "Library.Fields.Genre" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -1213,8 +1258,8 @@
       "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "genres": { "type": "array",
-          "items": { "$ref": "Video.Details.Genre" }
+        "genres": { "type": "array", "required": true,
+          "items": { "$ref": "Library.Details.Genre" }
         }
       }
     }

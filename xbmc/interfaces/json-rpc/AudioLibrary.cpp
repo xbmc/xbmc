@@ -123,10 +123,8 @@ JSON_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITransportL
   CStdString path;
   musicdatabase.GetAlbumPath(albumID, path);
 
-  CFileItemPtr m_albumItem( new CFileItem(path, album) );
-  m_albumItem->SetLabel(album.strAlbum);
-  CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem, album);
-  m_albumItem->SetMusicThumb();
+  CFileItemPtr m_albumItem;
+  FillAlbumItem(album, path, m_albumItem);
   HandleFileItem("albumid", false, "albumdetails", m_albumItem, parameterObject, parameterObject["fields"], result, false);
 
   musicdatabase.Close();
@@ -172,21 +170,71 @@ JSON_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLa
   return OK;
 }
 
+JSON_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  int amount = (int)parameterObject["albums"].asInteger();
+  if (amount < 0)
+    amount = 0;
+
+  VECALBUMS albums;
+  if (musicdatabase.GetRecentlyAddedAlbums(albums, (unsigned int)amount))
+  {
+    CFileItemList items;
+
+    for (unsigned int index = 0; index < albums.size(); index++)
+    {
+      CStdString path;
+      path.Format("musicdb://6/%i/", albums[index].idAlbum);
+
+      CFileItemPtr item;
+      FillAlbumItem(albums[index], path, item);
+      items.Add(item);
+    }
+
+    HandleFileItemList("albumid", false, "albums", items, parameterObject, result);
+  }
+
+  musicdatabase.Close();
+  return OK;
+}
+
+JSON_STATUS CAudioLibrary::GetRecentlyAddedSongs(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CMusicDatabase musicdatabase;
+  if (!musicdatabase.Open())
+    return InternalError;
+
+  int amount = (int)parameterObject["albums"].asInteger();
+  if (amount < 0)
+    amount = 0;
+
+  CFileItemList items;
+  if (musicdatabase.GetRecentlyAddedAlbumSongs("musicdb://", items, (unsigned int)amount))
+    HandleFileItemList("songid", true, "songs", items, parameterObject, result);
+
+  musicdatabase.Close();
+  return OK;
+}
+
 JSON_STATUS CAudioLibrary::GetGenres(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())
     return InternalError;
 
-  // Add "genre" to "fields" array by default
-  CVariant param = parameterObject;
-  if (!param.isMember("fields"))
-    param["fields"] = CVariant(CVariant::VariantTypeArray);
-  param["fields"].append("genre");
-
   CFileItemList items;
   if (musicdatabase.GetGenresNav("", items))
-    HandleFileItemList("genreid", false, "genres", items, param, result);
+  {
+    /* need to set strTitle in each item*/
+    for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
+      items[i]->GetMusicInfoTag()->SetTitle(items[i]->GetLabel());
+
+    HandleFileItemList("genreid", false, "genres", items, parameterObject, result);
+  }
 
   musicdatabase.Close();
   return OK;
@@ -254,4 +302,10 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   }
 
   return success;
+}
+
+void CAudioLibrary::FillAlbumItem(const CAlbum &album, const CStdString &path, CFileItemPtr &item)
+{
+  item = CFileItemPtr(new CFileItem(path, album));
+  item->SetMusicThumb();
 }

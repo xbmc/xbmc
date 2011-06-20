@@ -176,7 +176,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
       if(pCodec->id == hints.codec
       && pCodec->capabilities & CODEC_CAP_HWACCEL_VDPAU)
       {
-        if ((pCodec->id == CODEC_ID_MPEG4 || pCodec->id == CODEC_ID_XVID) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
+        if ((pCodec->id == CODEC_ID_MPEG4) && !g_advancedSettings.m_videoAllowMpeg4VDPAU)
           continue;
 
         CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i, %d)",hints.width, hints.height, hints.codec);
@@ -252,7 +252,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   // set any special options
   for(CDVDCodecOptions::iterator it = options.begin(); it != options.end(); it++)
   {
-    m_dllAvCodec.av_set_string(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str());
+    m_dllAvUtil.av_set_string3(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0, NULL);
   }
 
 #if defined(__APPLE__) && defined(__arm__)
@@ -326,20 +326,15 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
     //  2 seem to be to high.. it causes video to be ruined on following images
     if( bDrop )
     {
-      // TODO: 'hurry_up' has been deprecated in favor of the skip_* variables
-      // Use those instead.
-
-      m_pCodecContext->hurry_up = 1;
-      //m_pCodecContext->skip_frame = AVDISCARD_NONREF;
-      //m_pCodecContext->skip_idct = AVDISCARD_NONREF;
-      //m_pCodecContext->skip_loop_filter = AVDISCARD_NONREF;
+      m_pCodecContext->skip_frame = AVDISCARD_NONREF;
+      m_pCodecContext->skip_idct = AVDISCARD_NONREF;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_NONREF;
     }
     else
     {
-      m_pCodecContext->hurry_up = 0;
-      //m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
-      //m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
-      //m_pCodecContext->skip_loop_filter = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_frame = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_idct = AVDISCARD_DEFAULT;
+      m_pCodecContext->skip_loop_filter = AVDISCARD_DEFAULT;
     }
   }
 }
@@ -412,7 +407,7 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
     return VC_ERROR;
   }
 
-  if (len != iSize && !m_pCodecContext->hurry_up)
+  if (len != iSize && m_pCodecContext->skip_frame != AVDISCARD_NONREF)
     CLog::Log(LOGWARNING, "%s - avcodec_decode_video didn't consume the full packet. size: %d, consumed: %d", __FUNCTION__, iSize, len);
 
   if (!iGotPicture)
