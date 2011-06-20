@@ -515,9 +515,9 @@ void CGUIWindowManager::Process(unsigned int currentTime)
     m_tracker.MarkDirtyRegion(*itr);
 }
 
-void CGUIWindowManager::MarkDirty(const CDirtyRegion &rect)
+void CGUIWindowManager::MarkDirty()
 {
-  m_tracker.MarkDirtyRegion(rect);
+  m_tracker.MarkDirtyRegion(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
 }
 
 void CGUIWindowManager::RenderPass()
