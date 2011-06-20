@@ -494,6 +494,17 @@ void CDVDPlayerVideo::Process()
       // decoder still needs to provide an empty image structure, with correct flags
       m_pVideoCodec->SetDropState(bRequestDrop);
 
+      // ask codec to do deinterlacing if possible
+      EINTERLACEMETHOD mInt = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+      unsigned int     mFilters = 0;
+
+      if(mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
+      else if(mInt == VS_INTERLACEMETHOD_AUTO)
+        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
+
+      mFilters = m_pVideoCodec->SetFilters(mFilters);
+
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
 
       // buffer packets so we can recover should decoder flush for some reason
@@ -585,14 +596,16 @@ void CDVDPlayerVideo::Process()
 
             //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
             //this video
-            EINTERLACEMETHOD mInt = g_settings.m_currentVideoSettings.m_InterlaceMethod;
-            if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
-            || (mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)
-                                                && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)))
+            if(!(mFilters & CDVDVideoCodec::FILTER_DEINTERLACE_ANY))
             {
-              if (!sPostProcessType.empty())
-                sPostProcessType += ",";
-              sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
+              if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+              || (mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)
+                                                  && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)))
+              {
+                if (!sPostProcessType.empty())
+                  sPostProcessType += ",";
+                sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
+              }
             }
 
             if (g_settings.m_currentVideoSettings.m_PostProcess)
