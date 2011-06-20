@@ -114,9 +114,9 @@ void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 
 void CEvent::removeGroup(XbmcThreads::CEventGroup* group)
 {
+  CSingleLock lock(mutex);
   if (groups)
   {
-    CSingleLock lock(mutex);
     for (std::vector<XbmcThreads::CEventGroup*>::iterator iter = groups->begin(); iter != groups->end(); iter++)
     {
       if ((*iter) == group)
