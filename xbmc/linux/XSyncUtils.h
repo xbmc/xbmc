@@ -38,9 +38,6 @@
 
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer);
 
-DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds );
-DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  DWORD dwMilliseconds);
-
 #endif
 
 #endif

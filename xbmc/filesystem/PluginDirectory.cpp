@@ -47,14 +47,12 @@ CCriticalSection CPluginDirectory::m_handleLock;
 
 CPluginDirectory::CPluginDirectory()
 {
-  m_fetchComplete = CreateEvent(NULL, false, false, NULL);
   m_listItems = new CFileItemList;
   m_fileResult = new CFileItem;
 }
 
 CPluginDirectory::~CPluginDirectory(void)
 {
-  CloseHandle(m_fetchComplete);
   delete m_listItems;
   delete m_fileResult;
 }
@@ -93,7 +91,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
 
   CStdString basePath(url.Get());
   // reset our wait event, and grab a new handle
-  ResetEvent(m_fetchComplete);
+  m_fetchComplete.Reset();
   int handle = getNewHandle(this);
 
   // clear out our status variables
@@ -207,7 +205,7 @@ void CPluginDirectory::EndOfDirectory(int handle, bool success, bool replaceList
     dir->m_listItems->AddSortMethod(SORT_METHOD_NONE, 552, LABEL_MASKS("%L", "%D"));
 
   // set the event to mark that we're done
-  SetEvent(dir->m_fetchComplete);
+  dir->m_fetchComplete.Set();
 }
 
 void CPluginDirectory::AddSortMethod(int handle, SORT_METHOD sortMethod, const CStdString &label2Mask)
@@ -457,7 +455,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     {
       CSingleExit ex(g_graphicsContext);
       // check if the python script is finished
-      if (WaitForSingleObject(m_fetchComplete, 20) == WAIT_OBJECT_0)
+      if (m_fetchComplete.WaitMSec(20))
       { // python has returned
         CLog::Log(LOGDEBUG, "%s- plugin returned %s", __FUNCTION__, m_success ? "successfully" : "failure");
         break;
@@ -468,7 +466,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     if (!g_pythonParser.isRunning(g_pythonParser.getScriptId(scriptPath.c_str())))
 #endif
     { // check whether we exited normally
-      if (WaitForSingleObject(m_fetchComplete, 0) == WAIT_TIMEOUT)
+      if (!m_fetchComplete.WaitMSec(0))
       { // python didn't return correctly
         CLog::Log(LOGDEBUG, " %s - plugin exited prematurely - terminating", __FUNCTION__);
         m_success = false;
@@ -557,7 +555,7 @@ void CPluginDirectory::SetResolvedUrl(int handle, bool success, const CFileItem 
   *dir->m_fileResult = *resultItem;
 
   // set the event to mark that we're done
-  SetEvent(dir->m_fetchComplete);
+  dir->m_fetchComplete.Set();
 }
 
 CStdString CPluginDirectory::GetSetting(int handle, const CStdString &strID)

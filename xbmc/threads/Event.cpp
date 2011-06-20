@@ -22,6 +22,14 @@
 
 #include "Event.h"
 
+class CountGuard
+{
+  unsigned int& count;
+public:
+  inline CountGuard(unsigned int& count_) : count(count_) { count++; }
+  inline ~CountGuard() { count--; }
+};
+
 void CEvent::Interrupt() 
 { 
   CSingleLock lock(mutex);
@@ -32,19 +40,18 @@ void CEvent::Interrupt()
 bool CEvent::Wait()
 {
   CSingleLock lock(mutex);
-  numWaits++;
-  interrupted = false;
-  Guard g(interruptible ? this : NULL);
+  { CountGuard cg(numWaits);
+    interrupted = false;
+    Guard g(interruptible ? this : NULL);
 
-  while (!signaled && !interrupted)
-    condVar.wait(mutex);
+    while (!signaled && !interrupted)
+      condVar.wait(mutex);
+  }
 
   bool ret = signaled;
 
-  numWaits--;
   if (!manualReset && numWaits == 0)
     signaled = false;
-
   return ret;
 }
 
@@ -52,35 +59,34 @@ bool CEvent::WaitMSec(unsigned int milliSeconds)
 {
 
   CSingleLock lock(mutex);
-  numWaits++;
-  interrupted = false;
-  Guard g(interruptible ? this : NULL);
+  { CountGuard cg(numWaits);
+    interrupted = false;
+    Guard g(interruptible ? this : NULL);
 
-  long remainingTime = (long)milliSeconds;
+    long remainingTime = (long)milliSeconds;
 
-  boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(milliSeconds);
+    boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(milliSeconds);
 
-  while(!signaled && !interrupted)
-  {
-    XbmcThreads::ConditionVariable::TimedWaitResponse resp = condVar.wait(mutex,(unsigned int)remainingTime);
+    while(!signaled && !interrupted)
+    {
+      XbmcThreads::ConditionVariable::TimedWaitResponse resp = condVar.wait(mutex,(unsigned int)remainingTime);
 
-    if (signaled)
-      return true;
+      if (signaled)
+        return true;
 
-    if (resp == XbmcThreads::ConditionVariable::TW_TIMEDOUT)
-      return false;
+      if (resp == XbmcThreads::ConditionVariable::TW_TIMEDOUT)
+        return false;
 
-    boost::posix_time::time_duration diff = timeout - boost::get_system_time();
+      boost::posix_time::time_duration diff = timeout - boost::get_system_time();
 
-    remainingTime = diff.total_milliseconds();
+      remainingTime = diff.total_milliseconds();
 
-    if (remainingTime <= 0)
-      return false;
+      if (remainingTime <= 0)
+        return false;
+    }
   }
 
   bool ret = signaled;
-
-  numWaits--;
   if (!manualReset && numWaits == 0)
     signaled = false;
 
@@ -175,12 +181,45 @@ namespace XbmcThreads
   CEvent* CEventGroup::wait()
   {
     CSingleLock lock(mutex);
-    numWaits++;
-    while (!signaled)
-      condVar.wait(mutex);
+    { CountGuard cg(numWaits);
+      while (!signaled)
+        condVar.wait(mutex);
+    }
+    CEvent* ret = signaled;
+    if (numWaits == 0)
+      signaled = NULL;
+
+    return ret;
+  }
+
+  CEvent* CEventGroup::wait(unsigned int milliSeconds)
+  {
+    CSingleLock lock(mutex);
+    { CountGuard cg(numWaits);
+      long remainingTime = (long)milliSeconds;
+
+      boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(milliSeconds);
+
+      while(!signaled)
+      {
+        XbmcThreads::ConditionVariable::TimedWaitResponse resp = condVar.wait(mutex,(unsigned int)remainingTime);
+
+        if (signaled)
+          return signaled;
+
+        if (resp == XbmcThreads::ConditionVariable::TW_TIMEDOUT)
+          return NULL;
+
+        boost::posix_time::time_duration diff = timeout - boost::get_system_time();
+
+        remainingTime = diff.total_milliseconds();
+
+        if (remainingTime <= 0)
+          return NULL;
+      }
+    }
 
     CEvent* ret = signaled;
-    numWaits--;
     if (numWaits == 0)
       signaled = NULL;
 

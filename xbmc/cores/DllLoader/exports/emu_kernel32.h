@@ -682,19 +682,6 @@ extern "C" int WINAPI dllSetUnhandledExceptionFilter(void* filter);
 extern "C" int WINAPI dllSetEnvironmentVariableA(const char *name, const char *value);
 extern "C" int WINAPI dllCreateDirectoryA(const char *pathname, void *sa);
 
-extern "C" DWORD WINAPI dllWaitForSingleObject(HANDLE hHandle, DWORD dwMiliseconds);
-
-// in linux we didnt define the handle array -  const.
-// the reason is that in linux we implement it as
-// a pointer to an object and the wait function does change it.
-// so - to avoid conversions we change the spec of the function.
-// come to think about it - it makes more senes that it wont be const.
-#ifdef _LINUX
-extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds);
-#else
-extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds);
-#endif
-
 extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProcessAffinityMask, LPDWORD lpSystemAffinityMask);
 
 extern "C" HGLOBAL WINAPI dllLoadResource(HMODULE module, HRSRC res);

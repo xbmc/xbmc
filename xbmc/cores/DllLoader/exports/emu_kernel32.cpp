@@ -821,27 +821,6 @@ extern "C" int WINAPI dllCreateDirectoryA(const char *pathname, void *sa)
   return 1;
 }
 
-extern "C" DWORD WINAPI dllWaitForSingleObject(HANDLE hHandle, DWORD dwMiliseconds)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "WaitForSingleObject(0x%x, %d)", hHandle, dwMiliseconds);
-#endif
-  return WaitForSingleObject(hHandle, dwMiliseconds);
-}
-
-#ifdef _LINUX
-extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds)
-#else
-extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds)
-#endif
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "WaitForMultipleObjects(..)");
-#endif
-
-  return WaitForMultipleObjects(nCount, lpHandles, fWaitAll, dwMilliseconds);
-}
-
 extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProcessAffinityMask, LPDWORD lpSystemAffinityMask)
 {
   CLog::Log(LOGDEBUG, "GetProcessAffinityMask(%p, %p, %p) => 1\n",
