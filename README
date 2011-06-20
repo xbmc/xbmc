@@ -1,6 +1,6 @@
 spotyXBMC - Spotify in XBMC
 
-Until the possibility to create and use binary add-ons in XBMC the only way to use spotyxbmc is to apply a patch and modify the xbmc source.
+Until the possibility to create and use binary add-ons in XBMC the only way to use spotyxbmc is download a patched version of XBMC source.
 
 Spotify is not allowing clients based on despotify to connect to their servers anymore. 
 And there is a license conflict between xbmc and spotifylib; therefore the precompiled versions are useless for now. 
