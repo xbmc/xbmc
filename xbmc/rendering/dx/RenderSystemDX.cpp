@@ -241,7 +241,7 @@ void CRenderSystemDX::BuildPresentParameters()
 
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
   m_D3DPP.Windowed           = m_useWindowedDX;
-  m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
+  m_D3DPP.SwapEffect         = D3DSWAPEFFECT_FLIP;
   m_D3DPP.BackBufferCount    = 2;
 
   if(m_useD3D9Ex && (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1 || osvi.dwMajorVersion > 6))
