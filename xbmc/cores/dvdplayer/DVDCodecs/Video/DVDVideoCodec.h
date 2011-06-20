@@ -207,6 +207,7 @@ public:
 
   enum EFilterFlags {
     FILTER_NONE                =  0x0,
+    FILTER_DEINTERLACE_YADIF   =  0x1,  /* use first deinterlace mode */
     FILTER_DEINTERLACE_ANY     =  0xf,  /* use any deinterlace mode */
     FILTER_DEINTERLACE_FLAGGED = 0x10,  /* only deinterlace flagged frames */
     FILTER_DEINTERLACE_HALFED  = 0x20,  /* do half rate deinterlacing */

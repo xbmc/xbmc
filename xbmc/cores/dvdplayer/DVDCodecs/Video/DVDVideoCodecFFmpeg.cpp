@@ -139,6 +139,10 @@ CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
   m_pCodecContext = NULL;
   m_pConvertFrame = NULL;
   m_pFrame = NULL;
+  m_pFilterGraph  = NULL;
+  m_pFilterIn     = NULL;
+  m_pFilterOut    = NULL;
+  m_pFilterLink   = NULL;
 
   m_iPictureWidth = 0;
   m_iPictureHeight = 0;
@@ -161,9 +165,14 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 {
   AVCodec* pCodec;
 
-  if (!m_dllAvUtil.Load() || !m_dllAvCodec.Load() || !m_dllSwScale.Load()) return false;
+  if(!m_dllAvUtil.Load()
+  || !m_dllAvCodec.Load()
+  || !m_dllSwScale.Load()
+  || !m_dllAvFilter.Load()
+  ) return false;
 
   m_dllAvCodec.avcodec_register_all();
+  m_dllAvFilter.avfilter_register_all();
 
   m_bSoftware     = hints.software;
   m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
@@ -313,8 +322,11 @@ void CDVDVideoCodecFFmpeg::Dispose()
   }
   SAFE_RELEASE(m_pHardware);
 
+  FilterClose();
+
   m_dllAvCodec.Unload();
   m_dllAvUtil.Unload();
+  m_dllAvFilter.Unload();
 }
 
 void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
@@ -344,6 +356,34 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
       m_pCodecContext->skip_loop_filter = AVDISCARD_DEFAULT;
     }
   }
+}
+
+unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
+{
+  if(m_pHardware)
+    return false;
+
+  CStdString filters;
+  if(flags & FILTER_DEINTERLACE_YADIF)
+  {
+    if(flags & FILTER_DEINTERLACE_HALFED)
+      filters = "yadif=0:-1";
+    else
+      filters = "yadif=1:-1";
+    flags &= ~FILTER_DEINTERLACE_ANY | FILTER_DEINTERLACE_YADIF;
+  }
+
+  if (!m_filters.Equals(filters))
+  {
+    m_filters = filters;
+
+    if(FilterOpen(filters.c_str()) < 0)
+    {
+      FilterClose();
+      return 0;
+    }
+  }
+  return flags;
 }
 
 union pts_union
@@ -389,6 +429,15 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
     else
       result = m_pHardware->Decode(m_pCodecContext, NULL);
 
+    if(result)
+      return result;
+  }
+
+  if(m_pFilterGraph)
+  {
+    int result = 0;
+    if(pData == NULL)
+      result = FilterProcess(NULL);
     if(result)
       return result;
   }
@@ -484,6 +533,8 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   int result;
   if(m_pHardware)
     result = m_pHardware->Decode(m_pCodecContext, m_pFrame);
+  else if(m_pFilterGraph)
+    result = FilterProcess(m_pFrame);
   else
     result = VC_PICTURE | VC_BUFFER;
 
@@ -515,6 +566,12 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->iWidth = m_pCodecContext->width;
   pDvdVideoPicture->iHeight = m_pCodecContext->height;
 
+  if(m_pFilterLink)
+  {
+    pDvdVideoPicture->iWidth  = m_pFilterLink->cur_buf->video->w;
+    pDvdVideoPicture->iHeight = m_pFilterLink->cur_buf->video->h;
+  }
+
   /* crop of 10 pixels if demuxer asked it */
   if(m_pCodecContext->coded_width  && m_pCodecContext->coded_width  < (int)pDvdVideoPicture->iWidth
                                    && m_pCodecContext->coded_width  > (int)pDvdVideoPicture->iWidth  - 10)
@@ -528,6 +585,10 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 
   /* use variable in the frame */
   AVRational pixel_aspect = m_pCodecContext->sample_aspect_ratio;
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(1,75,0)
+  if (m_pFilterLink)
+    pixel_aspect = m_pFilterLink->cur_buf->video->sample_aspect_ratio;
+#endif
 
   if (pixel_aspect.num == 0)
     aspect_ratio = 0;
@@ -616,6 +677,170 @@ bool CDVDVideoCodecFFmpeg::GetPicture(DVDVideoPicture* pDvdVideoPicture)
   pDvdVideoPicture->format = DVDVideoPicture::FMT_YUV420P;
 
   return true;
+}
+
+int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
+{
+  int result;
+
+  if (m_pFilterGraph)
+    FilterClose();
+
+  m_filters = filters;
+
+  if (!(m_pFilterGraph = m_dllAvFilter.avfilter_graph_alloc()))
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - unable to alloc filter graph");
+    return -1;
+  }
+
+  // CrHasher HACK (if an alternative becomes available use it!): In order to display the output
+  // produced by a combination of filters we insert "nullsink" as the last filter and we use
+  // its input pin as our output pin.
+  //
+  // input --> .. --> last_filter --> [in] nullsink [null]     [in] --> output
+  //                                   |                        |
+  //                                   |                        |
+  //                                   +------------------------+
+  //
+  AVFilter* srcFilter = m_dllAvFilter.avfilter_get_by_name("buffer");
+  AVFilter* outFilter = m_dllAvFilter.avfilter_get_by_name("nullsink"); // should be last filter in the graph for now
+
+  CStdString args;
+
+  args.Format("%d:%d:%d:%d:%d:%d:%d",
+    m_pCodecContext->width,
+    m_pCodecContext->height,
+    m_pCodecContext->pix_fmt,
+    m_pCodecContext->time_base.num,
+    m_pCodecContext->time_base.den,
+    m_pCodecContext->sample_aspect_ratio.num,
+    m_pCodecContext->sample_aspect_ratio.den);
+
+  if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterIn, srcFilter, "src", args, NULL, m_pFilterGraph)) < 0)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_create_filter: src");
+    return result;
+  }
+
+  if ((result = m_dllAvFilter.avfilter_graph_create_filter(&m_pFilterOut, outFilter, "out", NULL, NULL/*nullsink=>NULL*/, m_pFilterGraph)) < 0)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_create_filter: out");
+    return result;
+  }
+
+  if (!filters.empty())
+  {
+    AVFilterInOut* outputs = (AVFilterInOut*)m_dllAvUtil.av_mallocz(sizeof(AVFilterInOut));
+    AVFilterInOut* inputs  = (AVFilterInOut*)m_dllAvUtil.av_mallocz(sizeof(AVFilterInOut));
+
+    outputs->name    = m_dllAvUtil.av_strdup("in");
+    outputs->filter_ctx = m_pFilterIn;
+    outputs->pad_idx = 0;
+    outputs->next    = NULL;
+
+    inputs->name    = m_dllAvUtil.av_strdup("out");
+    inputs->filter_ctx = m_pFilterOut;
+    inputs->pad_idx = 0;
+    inputs->next    = NULL;
+
+    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), inputs, outputs, NULL)) < 0)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_parse");
+      return result;
+    }
+  }
+  else
+  {
+    if ((result = m_dllAvFilter.avfilter_link(m_pFilterIn, 0, m_pFilterOut, 0)) < 0)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_link");
+      return result;
+    }
+  }
+
+  if ((result = m_dllAvFilter.avfilter_graph_config(m_pFilterGraph, NULL)) < 0)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_config");
+    return result;
+  }
+
+  return result;
+}
+
+void CDVDVideoCodecFFmpeg::FilterClose()
+{
+  if (m_pFilterGraph)
+  {
+    m_dllAvFilter.avfilter_graph_free(m_pFilterGraph);
+    m_dllAvUtil.av_freep(&m_pFilterGraph);
+
+    // Disposed by above code
+    m_pFilterIn   = NULL;
+    m_pFilterOut  = NULL;
+    m_pFilterLink = NULL;
+  }
+}
+
+int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
+{
+  int result, frames;
+
+  m_pFilterLink = m_pFilterOut->inputs[0];
+
+  if (frame)
+  {
+    if ((result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, frame->pts, m_pCodecContext->sample_aspect_ratio)) < 0)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_vsrc_buffer_add_frame");
+      return VC_ERROR;
+    }
+  }
+
+  if ((frames = m_dllAvFilter.avfilter_poll_frame(m_pFilterLink)) < 0)
+  {
+    CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - avfilter_poll_frame");
+    return VC_ERROR;
+  }
+
+  if (frames > 0)
+  {
+    if (m_pFilterLink->cur_buf)
+    {
+      m_dllAvFilter.avfilter_unref_buffer(m_pFilterLink->cur_buf);
+      m_pFilterLink->cur_buf = NULL;
+    }
+
+    if ((result = m_dllAvFilter.avfilter_request_frame(m_pFilterLink)) < 0)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - avfilter_request_frame");
+      return VC_ERROR;
+    }
+
+    if (!m_pFilterLink->cur_buf)
+    {
+      CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - cur_buf");
+      return VC_ERROR;
+    }
+
+    if(frame == NULL)
+      m_pFrame->reordered_opaque = 0;
+    else
+      m_pFrame->repeat_pict      = -(frames - 1);
+
+    m_pFrame->interlaced_frame = m_pFilterLink->cur_buf->video->interlaced;
+    m_pFrame->top_field_first  = m_pFilterLink->cur_buf->video->top_field_first;
+
+    memcpy(m_pFrame->linesize, m_pFilterLink->cur_buf->linesize, 4*sizeof(int));
+    memcpy(m_pFrame->data    , m_pFilterLink->cur_buf->data    , 4*sizeof(uint8_t*));
+
+    if(frames > 1)
+      return VC_PICTURE;
+    else
+      return VC_PICTURE | VC_BUFFER;
+  }
+
+  return VC_BUFFER;
 }
 
 unsigned CDVDVideoCodecFFmpeg::GetConvergeCount()
