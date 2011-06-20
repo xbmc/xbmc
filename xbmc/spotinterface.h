@@ -119,7 +119,8 @@ private:
   bool search();
   bool search(CStdString searchstring);
   bool hasSearchResults() { return (!m_searchArtistVector.IsEmpty() || !m_searchAlbumVector.IsEmpty() || !m_searchTrackVector.IsEmpty()); }
-  void waitForThumbs();
+  void waitForThumbs(CStdString pathToUpdate);
+  void stopWaitForThumbs();
 
   //menus
   void getMainMenuItems(CFileItemList &items);
@@ -191,6 +192,7 @@ private:
 
   //playlists
   CFileItemList m_playlistItems;
+  bool m_isPlaylistsLoaded;
 
   //converting functions
   CFileItemPtr spArtistToItem(sp_artist *spArtist);
@@ -204,6 +206,9 @@ private:
   std::vector<imageItemPair> m_playlistWaitingThumbs;
   std::vector<imageItemPair> m_toplistWaitingThumbs;
   int m_noWaitingThumbs;
+  int m_startNoThumbs;
+  bool m_waitForThumbs;
+  CStdString m_updatePath;
   bool requestThumb(unsigned char *imageId, CStdString Uri, CFileItemPtr pItem, SPOTIFY_TYPE type);
 };
 
