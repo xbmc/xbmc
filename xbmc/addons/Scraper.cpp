@@ -444,7 +444,6 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CFileCurl &fcurl, const CStd
     CLog::Log(LOGDEBUG, "%s: CreateSearchUrl failed", __FUNCTION__);
     return vcscurl;
   }
-  CLog::Log(LOGDEBUG, "%s: CreateSearchUrl returned '%s'", __FUNCTION__, vcsOut[0].c_str());
   scurl.ParseString(vcsOut[0]);
 
   // do the search, and parse the result into a list
