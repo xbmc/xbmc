@@ -671,7 +671,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       }
     case WM_PAINT:
       //some other app has painted over our window, mark everything as dirty
-      g_windowManager.MarkDirty(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
+      g_windowManager.MarkDirty();
       break;
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));

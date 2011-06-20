@@ -1914,7 +1914,7 @@ void CApplication::RenderScreenSaver()
   {
     color_t color = ((color_t)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
     CRect rect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
-    g_windowManager.MarkDirty(rect);
+    g_windowManager.MarkDirty();
     CGUITexture::DrawQuad(rect, color);
   }
 }

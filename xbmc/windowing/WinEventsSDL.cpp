@@ -372,11 +372,8 @@ bool CWinEventsSDL::MessagePump()
         break;
       }
       case SDL_VIDEOEXPOSE:
-      {
-        //some other app has painted over our window, mark everything as dirty
-        CRect rect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
-        g_windowManager.MarkDirty(rect);
-      }
+        g_windowManager.MarkDirty();
+        break;
     }
     memset(&event, 0, sizeof(XBMC_Event));
   }
