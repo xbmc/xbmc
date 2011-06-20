@@ -329,9 +329,11 @@ SectionEnd
 ;DirectX webinstaller Section
 
 !if "${xbmc_target}" == "dx"
+!define DXVERSIONDLL "$SYSDIR\D3DX9_43.dll"
+
 Section "DirectX Install" SEC_DIRECTX
  
-  SectionIn 1 2 RO
+  SectionIn 1 2
 
   DetailPrint "Running DirectX Setup..."
 
@@ -353,8 +355,15 @@ SectionEnd
 
 Section "-Check DirectX installation" SEC_DIRECTXCHECK
 
-  IfFileExists $SYSDIR\D3DX9_43.dll +2 0
+  IfFileExists ${DXVERSIONDLL} +2 0
     MessageBox MB_OK|MB_ICONSTOP|MB_TOPMOST|MB_SETFOREGROUND "DirectX9 wasn't installed properly.$\nPlease download the DirectX End-User Runtime from Microsoft and install it again."
 
 SectionEnd
+
+Function .onInit
+  # set section 'SEC_DIRECTX' as selected and read-only if required dx version not found
+  IfFileExists ${DXVERSIONDLL} +3 0
+  IntOp $0 ${SF_SELECTED} | ${SF_RO}
+  SectionSetFlags ${SEC_DIRECTX} $0
+FunctionEnd
 !endif
