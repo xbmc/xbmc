@@ -1242,7 +1242,7 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
         output += closeTag+openTag+"Director:" + aMovieRec.m_strDirector;
         output += closeTag+openTag+"Title:" + aMovieRec.m_strTitle;
         output += closeTag+openTag+"Plot:" + aMovieRec.m_strPlot;
-        output += closeTag+openTag+"Genre:" + aMovieRec.m_strGenre;
+        output += closeTag+openTag+"Genre:" + StringUtils::Join(aMovieRec.m_genre, g_advancedSettings.m_videoItemSeparator);
         CStdString strRating;
         strRating.Format("%3.3f", aMovieRec.m_fRating);
         if (strRating=="") strRating="0.0";
@@ -1397,8 +1397,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
         if (justChange && !changed)
           return SetResponse(openTag+"Changed:False");
         //if still here, continue collecting info
-        if (!tagVal->m_strGenre.IsEmpty())
-          output+=closeTag+openTag+"Genre"+tag+":"+tagVal->m_strGenre;
+        if (!tagVal->m_genre.empty())
+          output+=closeTag+openTag+"Genre"+tag+":"+StringUtils::Join(tagVal->m_genre, g_advancedSettings.m_videoItemSeparator);
         if (!tagVal->m_strStudio.IsEmpty())
           output+=closeTag+openTag+"Studio"+tag+":"+tagVal->m_strStudio;
         if (tagVal && !tagVal->m_strDirector.IsEmpty())

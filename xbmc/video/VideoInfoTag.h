@@ -78,7 +78,7 @@ public:
   int m_parentPathID;      // the parent path id where the base path of the video lies
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
-  CStdString m_strGenre;
+  std::vector<std::string> m_genre;
   CStdString m_strCountry;
   CStdString m_strTagLine;
   CStdString m_strPlotOutline;

@@ -364,7 +364,7 @@ void SSortFileItem::ByGenre(CFileItemPtr &item)
   if (item->HasMusicInfoTag())
     item->SetSortLabel(item->GetMusicInfoTag()->GetGenre());
   else
-    item->SetSortLabel(item->GetVideoInfoTag()->m_strGenre);
+    item->SetSortLabel(StringUtils::Join(item->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator));
 }
 
 void SSortFileItem::ByCountry(CFileItemPtr &item)

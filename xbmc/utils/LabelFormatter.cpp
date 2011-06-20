@@ -21,6 +21,7 @@
 
 #include "LabelFormatter.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #include "RegExp.h"
 #include "Util.h"
 #include "video/VideoInfoTag.h"
@@ -186,8 +187,8 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
   case 'G':
     if (music && music->GetGenre().size())
       value = music->GetGenre();
-    if (movie && movie->m_strGenre.size())
-      value = movie->m_strGenre;
+    if (movie && movie->m_genre.size())
+      value = StringUtils::Join(movie->m_genre, g_advancedSettings.m_videoItemSeparator);
     break;
   case 'Y':
     if (music)

@@ -533,7 +533,7 @@
     "extends": "Video.Details.File",
     "properties": {
       "movieid": { "$ref": "Library.Id", "required": true },
-      "genre": { "type": "string" },
+      "genre": { "$ref": "Array.String" },
       "year": { "type": "integer" },
       "rating": { "type": "number" },
       "trailer": { "type": "string" },
@@ -574,7 +574,7 @@
     "extends": "Video.Details.Item",
     "properties": {
       "tvshowid": { "$ref": "Library.Id", "required": true },
-      "genre": { "type": "string" },
+      "genre": { "$ref": "Array.String" },
       "year": { "type": "integer" },
       "rating": { "type": "number" },
       "originaltitle": { "type": "string" },
@@ -626,7 +626,7 @@
       "year": { "type": "integer" },
       "album": { "type": "string" },
       "artist": { "type": "string" },
-      "genre": { "type": "string" },
+      "genre": { "$ref": "Array.String" },
       "track": { "type": "integer" }
     }
   },

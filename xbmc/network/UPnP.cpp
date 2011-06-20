@@ -528,7 +528,8 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
     if(object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
 
-    object.m_Affiliation.genre = NPT_String(tag.m_strGenre.c_str()).Split(" / ");
+    for (unsigned int index = 0; index < tag.m_genre.size(); index++)
+      object.m_Affiliation.genre.Add(tag.m_genre.at(index).c_str());
 
     for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
@@ -739,7 +740,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   else
                     container->m_Date = tag.m_strFirstAired;
 
-                  container->m_Affiliation.genre = NPT_String(tag.m_strGenre.c_str()).Split(" / ");
+                  for (unsigned int index = 0; index < tag.m_genre.size(); index++)
+                    container->m_Affiliation.genre.Add(tag.m_genre.at(index).c_str());
 
                   for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
                       container->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
@@ -2426,7 +2428,8 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
         tag.m_strPremiered = date.GetAsLocalizedDate();
     }
     tag.m_iYear       = date.GetYear();
-    tag.m_strGenre    = JoinString(object.m_Affiliation.genre, " / ");
+    for (unsigned int index = 0; index < object.m_Affiliation.genre.GetItemCount(); index++)
+      tag.m_genre.push_back(object.m_Affiliation.genre.GetItem(index)->GetChars());
     tag.m_strDirector = object.m_People.director;
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
