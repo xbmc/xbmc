@@ -7,6 +7,7 @@ rem dx for directx build
 rem clean to force a full rebuild
 rem noclean to force a build without clean
 rem noprompt to avoid all prompts
+rem nomingwlibs to skip building all libs built with mingw
 CLS
 COLOR 1B
 TITLE XBMC for Windows Build Script
