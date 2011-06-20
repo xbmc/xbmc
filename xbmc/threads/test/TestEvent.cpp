@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(TestEventCase)
   waiter w1(event,result);
   boost::thread waitThread(w1);
 
-  Sleep(100);
+  Sleep(50);
 
   BOOST_CHECK(!result);
 
@@ -100,7 +100,7 @@ BOOST_AUTO_TEST_CASE(TestEvent2WaitsCase)
   boost::thread waitThread1(w1);
   boost::thread waitThread2(w2);
 
-  Sleep(100);
+  Sleep(50);
 
   BOOST_CHECK(!result1);
   BOOST_CHECK(!result2);
@@ -135,14 +135,14 @@ BOOST_AUTO_TEST_CASE(TestEventTimedWaitsTimeoutCase)
 {
   CEvent event;
   int result1 = 10;
-  timed_waiter w1(event,result1,100);
+  timed_waiter w1(event,result1,50);
   boost::thread waitThread1(w1);
 
   Sleep(10);
 
   BOOST_CHECK(result1 == 0);
 
-  Sleep(150);
+  Sleep(80);
 
   BOOST_CHECK(result1 == -1);
 }
@@ -165,7 +165,7 @@ BOOST_AUTO_TEST_CASE(TestEventGroupCase)
   boost::thread waitThread2(boost::ref(w2));
   boost::thread waitThread3(boost::ref(w3));
 
-  Sleep(100);
+  Sleep(10);
 
   BOOST_CHECK(!result1);
   BOOST_CHECK(!result2);
@@ -186,7 +186,7 @@ BOOST_AUTO_TEST_CASE(TestEventGroupCase)
 
   event2.Set();
 
-  Sleep(100);
+  Sleep(50);
 }
 
 BOOST_AUTO_TEST_CASE(TestEventGroupLimitedGroupScopeCase)
@@ -208,7 +208,7 @@ BOOST_AUTO_TEST_CASE(TestEventGroupLimitedGroupScopeCase)
     boost::thread waitThread2(boost::ref(w2));
     boost::thread waitThread3(boost::ref(w3));
 
-    Sleep(100);
+    Sleep(10);
 
     BOOST_CHECK(!result1);
     BOOST_CHECK(!result2);
@@ -230,7 +230,7 @@ BOOST_AUTO_TEST_CASE(TestEventGroupLimitedGroupScopeCase)
 
   event2.Set();
 
-  Sleep(100);
+  Sleep(50);
 }
 
 BOOST_AUTO_TEST_CASE(TestEvent2GroupsCase)
@@ -254,15 +254,15 @@ BOOST_AUTO_TEST_CASE(TestEvent2GroupsCase)
   boost::thread waitThread3(boost::ref(w3));
   boost::thread waitThread4(boost::ref(w4));
 
-  Sleep(100);
+  Sleep(10);
 
   BOOST_CHECK(!result1);
   BOOST_CHECK(!result2);
 
   BOOST_CHECK(w3.waiting);
-  BOOST_CHECK(w3.result == NULL);
+  BOOST_CHECK_EQUAL(w3.result,(void*)NULL);
   BOOST_CHECK(w4.waiting);
-  BOOST_CHECK(w4.result == NULL);
+  BOOST_CHECK_EQUAL(w4.result,(void*)NULL);
 
   event1.Set();
 
@@ -279,5 +279,41 @@ BOOST_AUTO_TEST_CASE(TestEvent2GroupsCase)
 
   event2.Set();
 
-  Sleep(100);
+  Sleep(50);
+}
+
+BOOST_AUTO_TEST_CASE(TestEventAutoResetBehavior)
+{
+  CEvent event;
+
+  BOOST_CHECK(!event.WaitMSec(1));
+
+  event.Set(); // event will remain signaled if there are no waits
+
+  BOOST_CHECK(event.WaitMSec(1));
+}
+
+BOOST_AUTO_TEST_CASE(TestEventManualResetCase)
+{
+  CEvent event(true);
+  bool result = false;
+  waiter w1(event,result);
+  boost::thread waitThread(w1);
+
+  Sleep(10);
+
+  BOOST_CHECK(!result);
+
+  event.Set();
+
+  Sleep(10);
+
+  BOOST_CHECK(result);
+
+  // with manual reset, the state should remain signaled
+  BOOST_CHECK(event.WaitMSec(1));
+
+  event.Reset();
+
+  BOOST_CHECK(!event.WaitMSec(1));
 }

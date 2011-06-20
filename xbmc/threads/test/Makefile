@@ -2,12 +2,15 @@ SRCS=TestEvent.cpp
 
 LIB=threadTest.a
 
-bin : threadTest .PHONY
+CLEAN_FILES=testMain
+
+runtest: testMain
+	./testMain
 
 include ../../../Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
-threadTest: $(LIB)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o threadTest $(LIB) ../threads.a ../../utils/utils.a -lboost_unit_test_framework -lboost_thread
+testMain: $(LIB) ../threads.a
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o testMain $(LIB) ../threads.a -lboost_unit_test_framework -lboost_thread
 
 
