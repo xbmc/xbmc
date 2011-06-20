@@ -1813,7 +1813,7 @@ bool CApplication::LoadUserWindows()
   return true;
 }
 
-void CApplication::RenderNoPresent()
+bool CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
@@ -1841,7 +1841,7 @@ void CApplication::RenderNoPresent()
 
   }
 
-  g_windowManager.Render();
+  bool hasRendered = g_windowManager.Render();
 
   // if we're recording an audio stream then show blinking REC
   if (!g_graphicsContext.IsFullScreenVideo())
@@ -1867,6 +1867,8 @@ void CApplication::RenderNoPresent()
   RenderScreenSaver();
 
   g_graphicsContext.Unlock();
+
+  return hasRendered;
 }
 
 static int screenSaverFadeAmount = 0;
@@ -1982,6 +1984,7 @@ void CApplication::Render()
   MEASURE_FUNCTION;
 
   bool decrement = false;
+  bool hasRendered = false;
 
   { // frame rate limiter (really bad, but it does the trick :p)
     static unsigned int lastFrameTime = 0;
@@ -2036,6 +2039,7 @@ void CApplication::Render()
       m_bPresentFrame = true;
 #endif
       decrement = m_bPresentFrame;
+      hasRendered = true;
     }
     else
     {
@@ -2084,7 +2088,9 @@ void CApplication::Render()
   if(!g_Windowing.BeginRender())
     return;
 
-  RenderNoPresent();
+  if (RenderNoPresent())
+    hasRendered = true;
+
   g_Windowing.EndRender();
 
   g_TextureManager.FreeUnusedTextures();
@@ -2096,7 +2102,10 @@ void CApplication::Render()
 
   lock.Leave();
 
-  g_graphicsContext.Flip();
+  if (hasRendered)
+    g_graphicsContext.Flip();
+  else
+    Sleep(16);
 
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();

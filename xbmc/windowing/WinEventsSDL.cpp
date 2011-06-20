@@ -23,6 +23,7 @@
 #include "WinEvents.h"
 #include "WinEventsSDL.h"
 #include "Application.h"
+#include "guilib/GUIWindowManager.h"
 #ifdef HAS_SDL_JOYSTICK
 #include "input/SDLJoystick.h"
 #endif
@@ -369,6 +370,12 @@ bool CWinEventsSDL::MessagePump()
         newEvent.user.code = event.user.code;
         ret |= g_application.OnEvent(newEvent);
         break;
+      }
+      case SDL_VIDEOEXPOSE:
+      {
+        //some other app has painted over our window, mark everything as dirty
+        CRect rect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
+        g_windowManager.MarkDirty(rect);
       }
     }
     memset(&event, 0, sizeof(XBMC_Event));
