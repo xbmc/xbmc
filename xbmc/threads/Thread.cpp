@@ -55,7 +55,9 @@ static void MakeTlsKeys()
 {
   pthread_key_create(&tlsLocalThread, NULL);
 }
-
+#elif _LINUX
+#include <sys/syscall.h>
+#include "Semaphore.hpp"
 #endif
 
 //////////////////////////////////////////////////////////////////////
@@ -167,6 +169,12 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
 #else
 #if !defined(__APPLE__) && !defined(__FreeBSD__)
   pLocalThread = pThread;
+
+  // store LWP id for use in setpriority
+  pThread->m_pSem->Wait();
+  pThread->m_ThreadHandle->m_hLwp = syscall(SYS_gettid);
+  SetThreadPriority(pThread->m_ThreadHandle, pThread->m_ThreadHandle->m_iPriority);
+  delete pThread->m_pSem;
 #endif
   struct sigaction action;
   action.sa_handler = term_handler;
@@ -280,12 +288,21 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   m_bStop = false;
   ::ResetEvent(m_StopEvent);
 
+#ifdef _LINUX
+#ifndef __APPLE__
+  m_pSem = new CSemaphore(0);
+#endif
+#endif
+
   m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, &m_ThreadId);
 
 #ifdef _LINUX
   if (m_ThreadHandle && m_ThreadHandle->m_threadValid && m_bAutoDelete)
     // FIXME: WinAPI can truncate 64bit pthread ids
     pthread_detach(m_ThreadHandle->m_hThread);
+#ifndef __APPLE
+  m_pSem->Post();
+#endif
 #endif
 }
 

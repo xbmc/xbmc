@@ -37,6 +37,8 @@
 #include "Event.h"
 #include "utils/StdString.h"
 
+class CSemaphore;
+
 class IRunnable
 {
 public:
@@ -90,6 +92,7 @@ protected:
 
   volatile bool m_bStop;
   HANDLE m_ThreadHandle;
+  CSemaphore *m_pSem;
 
 private:
   CStdString GetTypeName(void);

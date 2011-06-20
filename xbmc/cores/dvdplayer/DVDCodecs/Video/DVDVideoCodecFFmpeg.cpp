@@ -401,7 +401,17 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   /* We lie, but this flag is only used by pngdec.c.
    * Setting it correctly would allow CorePNG decoding. */
   avpkt.flags = AV_PKT_FLAG_KEY;
+  // prevent ffmpeg from dropping frames when using vdpau
+  // vdpau has pics in a queue and dropping should not be done in the middle
+#ifdef HAVE_LIBVDPAU
+  int drop = m_pCodecContext->hurry_up;
+  if (m_pHardware && !m_pHardware->AllowDecoderDrop())
+    m_pCodecContext->hurry_up = 0;
+#endif
   len = m_dllAvCodec.avcodec_decode_video2(m_pCodecContext, m_pFrame, &iGotPicture, &avpkt);
+#ifdef HAVE_LIBVDPAU
+  m_pCodecContext->hurry_up = drop;
+#endif
 
   if(m_iLastKeyframe < m_pCodecContext->has_b_frames + 1)
     m_iLastKeyframe = m_pCodecContext->has_b_frames + 1;

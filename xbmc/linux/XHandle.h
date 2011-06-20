@@ -49,6 +49,8 @@ public:
 
   CSemaphore            *m_pSem;
   ThreadIdentifier      m_hThread;
+  LwpIdentifier         m_hLwp;
+  int                   m_iPriority;
   bool                  m_threadValid;
   SDL_cond              *m_hCond;
   std::list<CXHandle*>  m_hParents;

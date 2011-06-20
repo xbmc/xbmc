@@ -44,6 +44,7 @@
 #include <numeric>
 #include <iterator>
 #include "utils/log.h"
+#include "DVDCodecs/Video/VDPAU.h"
 
 using namespace std;
 
@@ -438,6 +439,14 @@ void CDVDPlayerVideo::Process()
       m_speed = static_cast<CDVDMsgInt*>(pMsg)->m_value;
       if(m_speed == DVD_PLAYSPEED_PAUSE)
         m_iNrOfPicturesNotToSkip = 0;
+
+      if (m_pVideoCodec)
+      {
+        if (m_speed == DVD_PLAYSPEED_NORMAL)
+    	  m_pVideoCodec->NormalSpeed(true);
+        else
+    	  m_pVideoCodec->NormalSpeed(false);
+      }
     }
     else if (pMsg->IsType(CDVDMsg::PLAYER_STARTED))
     {
@@ -510,10 +519,13 @@ void CDVDPlayerVideo::Process()
       // picture from a demux packet, this should be reasonable
       // for libavformat as a demuxer as it normally packetizes
       // pictures when they come from demuxer
-      if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_BUFFER) && !(iDecoderState & VC_PICTURE))
+      // returning VC_BUFFER and no pic is no clear indicator for having dropped a pic
+      if(bRequestDrop && !bPacketDrop && (iDecoderState & VC_DROPPED) && !(iDecoderState & VC_PICTURE))
       {
         m_iDroppedFrames++;
         iDropped++;
+        // need to reset flag or next next frame will dropped as well
+        bRequestDrop = false;
       }
 
       // loop while no error
@@ -924,8 +936,12 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     g_renderManager.AddProcessor(pSource->proc, pSource->proc_id);
 #endif
 #ifdef HAVE_LIBVDPAU
-  else if(pSource->format == DVDVideoPicture::FMT_VDPAU)
+  else if(pSource->format == DVDVideoPicture::FMT_VDPAU || pSource->format == DVDVideoPicture::FMT_VDPAU_420)
+  {
+    if (pSource->vdpau)
+      pSource->vdpau->Present();
     g_renderManager.AddProcessor(pSource->vdpau);
+  }
 #endif
 #ifdef HAVE_LIBOPENMAX
   else if(pSource->format == DVDVideoPicture::FMT_OMXEGL)
@@ -1009,6 +1025,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
         flags |= CONF_FLAGS_FORMAT_VDPAU;
         formatstr = "VDPAU";
         break;
+      case DVDVideoPicture::FMT_VDPAU_420:
+        flags |= CONF_FLAGS_FORMAT_VDPAU_420;
+        formatstr = "VDPAU_420";
+        break;
       case DVDVideoPicture::FMT_DXVA:
         flags |= CONF_FLAGS_FORMAT_DXVA;
         formatstr = "DXVA";
@@ -1058,6 +1078,14 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
     return EOS_ABORT;
   }
   maxfps = g_renderManager.GetMaximumFPS();
+
+  if (pPicture->format == DVDVideoPicture::FMT_VDPAU || pPicture->format == DVDVideoPicture::FMT_VDPAU_420)
+  {
+    if (!g_renderManager.WaitVdpauFlip(100))
+    {
+      return EOS_DROPPED;
+    }
+  }
 
   // check if our output will limit speed
   if(m_fFrameRate * abs(m_speed) / DVD_PLAYSPEED_NORMAL > maxfps*0.9)
@@ -1228,7 +1256,13 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // tell the renderer that we've finished with the image (so it can do any
   // post processing before FlipPage() is called.)
   g_renderManager.ReleaseImage(index);
-  g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, -1, mDisplayField);
+
+  if (pPicture->format == DVDVideoPicture::FMT_VDPAU || pPicture->format == DVDVideoPicture::FMT_VDPAU_420)
+  {
+    g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, index, mDisplayField, true);
+  }
+  else
+    g_renderManager.FlipPage(CThread::m_bStop, (iCurrentClock + iSleepTime) / DVD_TIME_BASE, index, mDisplayField);
 
   return result;
 #else
@@ -1242,7 +1276,8 @@ void CDVDPlayerVideo::AutoCrop(DVDVideoPicture *pPicture)
   if ((pPicture->format == DVDVideoPicture::FMT_YUV420P) ||
      (pPicture->format == DVDVideoPicture::FMT_NV12) ||
      (pPicture->format == DVDVideoPicture::FMT_YUY2) ||
-     (pPicture->format == DVDVideoPicture::FMT_UYVY))
+     (pPicture->format == DVDVideoPicture::FMT_UYVY) ||
+     (pPicture->format == DVDVideoPicture::FMT_VDPAU_420))
   {
     RECT crop;
 
