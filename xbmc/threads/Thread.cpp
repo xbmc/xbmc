@@ -51,11 +51,6 @@ static XbmcThreads::ThreadLocal<CThread> currentThread;
 
 CThread::CThread(const char* ThreadName) : m_StopEvent(true)
 {
-#if defined(__APPLE__) || defined(__FreeBSD__)
-  // Initialize thread local storage and local thread pointer.
-  pthread_once(&keyOnce, MakeTlsKeys);
-#endif
-
   m_bStop = false;
 
   m_bAutoDelete = false;
@@ -73,11 +68,6 @@ CThread::CThread(const char* ThreadName) : m_StopEvent(true)
 
 CThread::CThread(IRunnable* pRunnable, const char* ThreadName) : m_StopEvent(true)
 {
-#if defined(__APPLE__) || defined(__FreeBSD__)
-  // Initialize thread local storage and local thread pointer.
-  pthread_once(&keyOnce, MakeTlsKeys);
-#endif
-
   m_bStop = false;
 
   m_bAutoDelete = false;
