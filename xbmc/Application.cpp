@@ -742,6 +742,8 @@ bool CApplication::Create()
 
   g_mediaManager.Initialize();
 
+  m_lastFrameTime = CTimeUtils::GetTimeMS();
+
   return Initialize();
 }
 
@@ -1985,18 +1987,16 @@ void CApplication::Render()
 
   bool decrement = false;
   bool hasRendered = false;
+  bool limitFrames = false;
+  unsigned int singleFrameTime = 10; // default limit 100 fps
 
-  { // frame rate limiter (really bad, but it does the trick :p)
-    static unsigned int lastFrameTime = 0;
-    unsigned int currentTime = CTimeUtils::GetTimeMS();
-    int nDelayTime = 0;
+  {
     // Less fps in DPMS or Black screensaver
     bool lowfps = (m_dpmsIsActive
                    || (m_bScreenSave && m_screenSaver && (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
                        && (screenSaverFadeAmount >= 100)));
     // Whether externalplayer is playing and we're unfocused
     bool extPlayerActive = m_eCurrentPlayer >= EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
-    unsigned int singleFrameTime = 10; // default limit 100 fps
 
     m_bPresentFrame = false;
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !IsPaused())
@@ -2044,13 +2044,13 @@ void CApplication::Render()
     else
     {
       // engage the frame limiter as needed
-      bool limitFrames = lowfps || extPlayerActive;
+      limitFrames = lowfps || extPlayerActive;
       // DXMERGE - we checked for g_videoConfig.GetVSyncMode() before this
       //           perhaps allowing it to be set differently than the UI option??
       if (g_guiSettings.GetInt("videoscreen.vsync") == VSYNC_DISABLED ||
           g_guiSettings.GetInt("videoscreen.vsync") == VSYNC_VIDEO)
         limitFrames = true; // not using vsync.
-      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
+      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000 / singleFrameTime)
         limitFrames = true; // using vsync, but it isn't working.
 
       if (limitFrames)
@@ -2062,15 +2062,10 @@ void CApplication::Render()
         }
         else if (lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
-
-        if (lastFrameTime + singleFrameTime > currentTime)
-          nDelayTime = lastFrameTime + singleFrameTime - currentTime;
-        Sleep(nDelayTime);
       }
+
       decrement = true;
     }
-
-    lastFrameTime = CTimeUtils::GetTimeMS();
   }
 
   CSingleLock lock(g_graphicsContext);
@@ -2102,10 +2097,22 @@ void CApplication::Render()
 
   lock.Leave();
 
+  //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
+  if (limitFrames || !hasRendered)
+  {
+    if (!limitFrames)
+      singleFrameTime = 40; //if nothing is rendered, loop at 25 fps
+
+    unsigned int now = CTimeUtils::GetTimeMS();
+    unsigned int frameTime = now - m_lastFrameTime;
+    if (frameTime < singleFrameTime)
+      Sleep(singleFrameTime - frameTime);
+  }
+  m_lastFrameTime = CTimeUtils::GetTimeMS();
+
+  //only flip if we have rendered dirty regions
   if (hasRendered)
     g_graphicsContext.Flip();
-  else
-    Sleep(16);
 
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();

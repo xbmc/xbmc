@@ -341,6 +341,7 @@ protected:
   int m_nextPlaylistItem;
 
   bool m_bPresentFrame;
+  unsigned int m_lastFrameTime;
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
