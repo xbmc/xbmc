@@ -32,7 +32,7 @@ $ cd xbmc
 
 5. Spotify API key
    Get your own spotify API key from http://developer.spotify.com/en/libspotify/application-key/
-   Download the appkey.c and put it in the xbmc source root folder. (where this readme is located)
+   Click on c-code and copy the content to a new file called appkey.c placed in the xbmc source root folder. (where this readme is located).
 
 6. Install all XBMC dependencies listed in the corresponding readme file.
    For ubuntu run:
