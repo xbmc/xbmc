@@ -2063,8 +2063,6 @@ void CApplication::Render()
         else if (lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
       }
-      else //if vsync is on and we have nothing to render, loop at 25 fps
-        singleFrameTime = 40;
 
       decrement = true;
     }
@@ -2102,6 +2100,9 @@ void CApplication::Render()
   //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
   if (limitFrames || !hasRendered)
   {
+    if (!limitFrames)
+      singleFrameTime = 40; //if nothing is rendered, loop at 25 fps
+
     unsigned int now = CTimeUtils::GetTimeMS();
     unsigned int frameTime = now - m_lastFrameTime;
     if (frameTime < singleFrameTime)
