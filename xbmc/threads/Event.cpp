@@ -22,77 +22,6 @@
 
 #include "Event.h"
 
-class CountGuard
-{
-  unsigned int& count;
-public:
-  inline CountGuard(unsigned int& count_) : count(count_) { count++; }
-  inline ~CountGuard() { count--; }
-};
-
-void CEvent::Interrupt() 
-{ 
-  CSingleLock lock(mutex);
-  interrupted = true;
-  condVar.notifyAll(); 
-}
-
-bool CEvent::Wait()
-{
-  CSingleLock lock(mutex);
-  { CountGuard cg(numWaits);
-    interrupted = false;
-    Guard g(interruptible ? this : NULL);
-
-    while (!signaled && !interrupted)
-      condVar.wait(mutex);
-  }
-
-  bool ret = signaled;
-
-  if (!manualReset && numWaits == 0)
-    signaled = false;
-  return ret;
-}
-
-bool CEvent::WaitMSec(unsigned int milliSeconds)
-{
-
-  CSingleLock lock(mutex);
-  { CountGuard cg(numWaits);
-    interrupted = false;
-    Guard g(interruptible ? this : NULL);
-
-    long remainingTime = (long)milliSeconds;
-
-    boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(milliSeconds);
-
-    while(!signaled && !interrupted)
-    {
-      XbmcThreads::ConditionVariable::TimedWaitResponse resp = condVar.wait(mutex,(unsigned int)remainingTime);
-
-      if (signaled)
-        return true;
-
-      if (resp == XbmcThreads::ConditionVariable::TW_TIMEDOUT)
-        return false;
-
-      boost::posix_time::time_duration diff = timeout - boost::get_system_time();
-
-      remainingTime = diff.total_milliseconds();
-
-      if (remainingTime <= 0)
-        return false;
-    }
-  }
-
-  bool ret = signaled;
-  if (!manualReset && numWaits == 0)
-    signaled = false;
-
-  return ret;
-}
-
 void CEvent::groupSet()
 {
   if (groups)
@@ -136,7 +65,7 @@ void CEvent::removeGroup(XbmcThreads::CEventGroup* group)
 
 namespace XbmcThreads
 {
-  CEventGroup::CEventGroup(int num, CEvent* v1, ...) : signaled(NULL), numWaits(0)
+  CEventGroup::CEventGroup(int num, CEvent* v1, ...) : signaled(NULL), condVar(signaled), numWaits(0)
   {
     va_list ap;
 
@@ -154,7 +83,7 @@ namespace XbmcThreads
       (*iter)->addGroup(this);
   }
 
-  CEventGroup::CEventGroup(CEvent* v1, ...) : signaled(NULL), numWaits(0)
+  CEventGroup::CEventGroup(CEvent* v1, ...) : signaled(NULL), condVar(signaled), numWaits(0)
   {
     va_list ap;
 
@@ -178,54 +107,6 @@ namespace XbmcThreads
       (*iter)->addGroup(this);
   }
 
-  CEvent* CEventGroup::wait()
-  {
-    CSingleLock lock(mutex);
-    { CountGuard cg(numWaits);
-      while (!signaled)
-        condVar.wait(mutex);
-    }
-    CEvent* ret = signaled;
-    if (numWaits == 0)
-      signaled = NULL;
-
-    return ret;
-  }
-
-  CEvent* CEventGroup::wait(unsigned int milliSeconds)
-  {
-    CSingleLock lock(mutex);
-    { CountGuard cg(numWaits);
-      long remainingTime = (long)milliSeconds;
-
-      boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(milliSeconds);
-
-      while(!signaled)
-      {
-        XbmcThreads::ConditionVariable::TimedWaitResponse resp = condVar.wait(mutex,(unsigned int)remainingTime);
-
-        if (signaled)
-          return signaled;
-
-        if (resp == XbmcThreads::ConditionVariable::TW_TIMEDOUT)
-          return NULL;
-
-        boost::posix_time::time_duration diff = timeout - boost::get_system_time();
-
-        remainingTime = diff.total_milliseconds();
-
-        if (remainingTime <= 0)
-          return NULL;
-      }
-    }
-
-    CEvent* ret = signaled;
-    if (numWaits == 0)
-      signaled = NULL;
-
-    return ret;
-  }
-
   CEventGroup::~CEventGroup()
   {
     // we preping for a wait, so we need to set the group value on
@@ -235,10 +116,4 @@ namespace XbmcThreads
       (*iter)->removeGroup(this);
   }
 
-  void CEventGroup::Set(CEvent* child)
-  {
-    CSingleLock lock(mutex);
-    signaled = child;
-    condVar.notifyAll();
-  }
 }

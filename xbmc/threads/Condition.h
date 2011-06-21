@@ -28,9 +28,9 @@
 namespace XbmcThreads
 {
   /**
-   * This is a thin wrapper around boost::condition_variable (I
-   * would prefer to use it directly but ...) and will be replacing
-   * existing WaitForSingleObject, SDL_cond, etc.
+   * This is a thin wrapper around boost::condition_variable. It is subject
+   *  to "spurious returns" as it is built on boost which is built on posix
+   *  on many of our platforms.
    */
   class ConditionVariable
   {
@@ -45,14 +45,55 @@ namespace XbmcThreads
 
     enum TimedWaitResponse { TW_OK = 0, TW_TIMEDOUT = 1, TW_INTERRUPTED=-1, TW_ERROR=-2 };
 
-    inline void wait(CSingleLock& lock) { impl.wait(lock); }
-    inline void wait(CCriticalSection& mutex) { impl.wait(mutex); }
+    template<typename L> inline void wait(L& lock) { impl.wait(lock); }
 
-    TimedWaitResponse wait(CSingleLock& lock, int milliseconds);
-    TimedWaitResponse wait(CCriticalSection& mutex, int milliseconds);
+    template<typename L> inline TimedWaitResponse wait(L& lock, int milliseconds)
+    {
+      ConditionVariable::TimedWaitResponse ret = TW_OK;
+      try { ret = (impl.timed_wait(lock, boost::posix_time::milliseconds(milliseconds))) ? TW_OK : TW_TIMEDOUT; }
+      catch (boost::thread_interrupted ) { ret = TW_INTERRUPTED; }
+      catch (...) { ret = TW_ERROR; }
+      return ret;
+    }
 
     inline void notifyAll() { impl.notify_all(); }
     inline void notify() { impl.notify_one(); }
+  };
+
+  /**
+   * This is a condition variable along with its predicate. This allows the use of a 
+   *  condition variable without the spurious returns since the state being monitored
+   *  is also part of the condition.
+   *
+   * L should be either a CSingleLock or a CCriticalSection.
+   *
+   * The requirements on P are that it can act as a predicate (that is, I can use
+   *  it in an 'while(!predicate){...}' where 'predicate' is of type 'P').
+   */
+  template <typename L, typename P> class TightConditionVariable
+  {
+    ConditionVariable cond;
+    P predicate;
+  public:
+    inline TightConditionVariable(P predicate_) : predicate(predicate_) {}
+    inline void wait(L& lock) { while(!predicate) cond.wait(lock); }
+
+    inline ConditionVariable::TimedWaitResponse wait(L& lock, int milliseconds)
+    {
+      ConditionVariable::TimedWaitResponse ret = ConditionVariable::TW_OK;
+      boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(milliseconds);
+      while ((!predicate) && ret != ConditionVariable::TW_TIMEDOUT)
+      {
+        ret = cond.wait(lock,milliseconds);
+
+        if (!predicate && boost::get_system_time() > timeout)
+          ret = ConditionVariable::TW_TIMEDOUT;
+      }
+      return ret;
+    }
+
+    inline void notifyAll() { cond.notifyAll(); }
+    inline void notify() { cond.notify(); }
   };
 }
 

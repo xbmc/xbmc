@@ -78,7 +78,7 @@ private:
 };
 
 
-CFileCache::CFileCache() : m_seekEvent(false,true)
+CFileCache::CFileCache()
 {
    m_bDeleteCache = true;
    m_nSeekResult = 0;
@@ -244,7 +244,8 @@ void CFileCache::Process()
       m_pCache->EndOfInput();
 
       // The thread event will now also cause the wait of an event to return a false.
-      if (m_seekEvent.Wait())
+      XbmcThreads::CEventGroup group(&m_seekEvent, getStopEvent(), NULL);
+      if (group.wait() == &m_seekEvent)
       {
         m_pCache->ClearEndOfInput();
         m_seekEvent.Set(); // hack so that later we realize seek is needed

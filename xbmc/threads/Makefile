@@ -1,7 +1,5 @@
 SRCS=Atomics.cpp \
-     Condition.cpp \
      Event.cpp \
-     Interruptible.cpp \
      LockFree.cpp \
      Thread.cpp \
      ThreadLocal.cpp \
