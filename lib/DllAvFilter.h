@@ -25,6 +25,7 @@
 #endif
 #include "DynamicDll.h"
 #include "DllAvCore.h"
+#include "DllAvCodec.h"
 #include "utils/log.h"
 
 extern "C" {
@@ -83,17 +84,17 @@ public:
   virtual ~DllAvFilter();
   virtual int avfilter_open(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name)
   {
-    CSingleLock lock(DllAvFilter::m_critSection);
+    CSingleLock lock(DllAvCodec::m_critSection);
     return ::avfilter_open(filter_ctx, filter, inst_name);
   }
   virtual int avfilter_free(AVFilterContext *filter)
   {
-    CSingleLock lock(DllAvFilter::m_critSection);
+    CSingleLock lock(DllAvCodec::m_critSection);
     return ::avfilter_free(filter);
   }
   virtual int avfilter_graph_free(AVFilterGraph *graph)
   {
-    CSingleLock lock(DllAvFilter::m_critSection);
+    CSingleLock lock(DllAvCodec::m_critSection);
     return ::avfilter_graph_free(graph);
   }
   virtual int avfilter_open_dont_call(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name) { *(int *)0x0 = 0; return 0; }
@@ -169,25 +170,24 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   // DllAvUtil loaded implicitely by m_dllAvCore
 
 public:
-  static CCriticalSection m_critSection;
   int avfilter_open(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name)
   {
-    CSingleLock lock(DllAvFilter::m_critSection);
+    CSingleLock lock(DllAvCodec::m_critSection);
     return avfilter_open_dont_call(filter_ctx, filter, inst_name);
   }
   void avfilter_free(AVFilterContext *filter)
   {
-    CSingleLock lock(DllAvFilter::m_critSection);
+    CSingleLock lock(DllAvCodec::m_critSection);
     avfilter_free_dont_call(filter);
   }
   void avfilter_graph_free(AVFilterGraph *graph)
   {
-    CSingleLock lock(DllAvFilter::m_critSection);
+    CSingleLock lock(DllAvCodec::m_critSection);
     avfilter_graph_free_dont_call(graph);
   }
   void avfilter_register_all()
   {
-    CSingleLock lock(DllAvFilter::m_critSection);
+    CSingleLock lock(DllAvCodec::m_critSection);
     avfilter_register_all_dont_call();
   }
   virtual bool Load()
