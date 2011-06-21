@@ -86,6 +86,7 @@ protected:
 
   AVPicture* m_pConvertFrame;
   CStdString       m_filters;
+  CStdString       m_filters_next;
   AVFilterGraph*   m_pFilterGraph;
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;

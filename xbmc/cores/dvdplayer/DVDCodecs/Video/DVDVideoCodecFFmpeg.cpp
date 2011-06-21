@@ -354,28 +354,17 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
 unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
 {
   if(m_pHardware)
-    return false;
+    return 0;
 
-  CStdString filters;
   if(flags & FILTER_DEINTERLACE_YADIF)
   {
     if(flags & FILTER_DEINTERLACE_HALFED)
-      filters = "yadif=0:-1";
+      m_filters_next = "yadif=0:-1";
     else
-      filters = "yadif=1:-1";
+      m_filters_next = "yadif=1:-1";
     flags &= ~FILTER_DEINTERLACE_ANY | FILTER_DEINTERLACE_YADIF;
   }
 
-  if (!m_filters.Equals(filters))
-  {
-    m_filters = filters;
-
-    if(FilterOpen(filters.c_str()) < 0)
-    {
-      FilterClose();
-      return 0;
-    }
-  }
   return flags;
 }
 
@@ -523,6 +512,14 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
     }
   }
 
+  // try to setup new filters
+  if (!m_filters.Equals(m_filters_next))
+  {
+    m_filters = m_filters_next;
+    if(FilterOpen(m_filters) < 0)
+      FilterClose();
+  }
+
   int result;
   if(m_pHardware)
     result = m_pHardware->Decode(m_pCodecContext, m_pFrame);
@@ -552,6 +549,8 @@ void CDVDVideoCodecFFmpeg::Reset()
     m_dllAvUtil.av_free(m_pConvertFrame);
     m_pConvertFrame = NULL;
   }
+  m_filters = "";
+  FilterClose();
 }
 
 bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
@@ -679,7 +678,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
   if (m_pFilterGraph)
     FilterClose();
 
-  m_filters = filters;
+  if (filters.IsEmpty())
+    return 0;
 
   if (!(m_pFilterGraph = m_dllAvFilter.avfilter_graph_alloc()))
   {
