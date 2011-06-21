@@ -22,6 +22,7 @@
  */
 
 #include "threads/CriticalSection.h"
+#include "threads/Condition.h"
 #include <boost/thread/shared_mutex.hpp>
 
 /**
@@ -35,13 +36,24 @@
  * try_lock_shared()
  * unlock_shared()
  */
-class CSharedSection : public CountingLockable<boost::shared_mutex>
+class CSharedSection
 {
-public:
+  CCriticalSection sec;
+  XbmcThreads::TightConditionVariable<CSingleLock,bool&> cond;
 
-  inline void lock_shared() { mutex.lock_shared(); }
-  inline bool try_lock_shared() { return mutex.try_lock_shared(); }
-  inline void unlock_shared() { return mutex.unlock_shared(); }
+  unsigned int sharedCount;
+  bool noShared;
+
+public:
+  inline CSharedSection() : cond(noShared), sharedCount(0), noShared(true) {}
+
+  inline void lock() { CSingleLock l(sec); if (sharedCount) cond.wait(l); sec.lock(); }
+  inline bool try_lock() { return (sec.try_lock() ? ((sharedCount == 0) ? true : (sec.unlock(), false)) : false); }
+  inline void unlock() { sec.unlock(); }
+
+  inline void lock_shared() { CSingleLock l(sec); sharedCount++; noShared = false; }
+  inline bool try_lock_shared() { return (sec.try_lock() ? sharedCount++, noShared = false, sec.unlock(), true : false); }
+  inline void unlock_shared() { CSingleLock l(sec); sharedCount--; if (!sharedCount) { noShared = true; cond.notifyAll(); } }
 };
 
 class CSharedLock : public boost::shared_lock<CSharedSection>
