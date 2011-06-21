@@ -375,6 +375,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   }
   
   unsigned int readsize = m_Buffer->GetReadSize();
+  unsigned int ret = 0;
   
   /* we are draining */
   if (m_draining)
@@ -392,13 +393,14 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     //SDL_mutexV(m_MutexStream);
     //return 0;
   }
-  else if(readsize < size)
+  else /*if(readsize < size)*/
   {
     /* otherwise ask for more data */
     if (m_cbDataFunc && !m_disableCallbacks)
     {
       m_inDataFunc = true;
-      readsize = m_Buffer->GetWriteSize() / m_StreamBytesPerSample / 4;
+      unsigned int frameSize = (m_StreamFormat.m_frameSize > m_OutputFormat.m_frameSize) ? m_StreamFormat.m_frameSize : m_OutputFormat.m_frameSize;      
+      readsize = m_Buffer->GetWriteSize() / frameSize;
       //SDL_mutexV(m_MutexStream);
       m_cbDataFunc(this, m_cbDataArg, readsize);
       //SDL_mutexP(m_MutexStream);
@@ -406,9 +408,9 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     }
   }
 
-  readsize = std::min(m_Buffer->GetReadSize(), size);  
+  ret = std::min(m_Buffer->GetReadSize(), size);  
 
-  m_Buffer->Read(buffer, readsize);
+  m_Buffer->Read(buffer, ret);
   
   /* if we are draining */
 #if 0
@@ -431,9 +433,10 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     if (m_cbDataFunc && !m_disableCallbacks && !m_delete && !m_draining)
     {
       m_inDataFunc = true;
-      space = m_Buffer->GetWriteSize() / m_OutputBytesPerFrame;
+      unsigned int frameSize = (m_StreamFormat.m_frameSize > m_OutputFormat.m_frameSize) ? m_StreamFormat.m_frameSize : m_OutputFormat.m_frameSize;      
+      readsize = m_Buffer->GetWriteSize() / frameSize;
       //SDL_mutexV(m_MutexStream);
-      m_cbDataFunc(this, m_cbDataArg, space);
+      m_cbDataFunc(this, m_cbDataArg, readsize);
       //SDL_mutexP(m_MutexStream);
       m_inDataFunc = false;
     }
@@ -461,7 +464,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
 #endif
   
   //SDL_mutexV(m_MutexStream);  
-  return readsize;  
+  return ret;  
 }
 
 float CCoreAudioAEStream::GetDelay()
