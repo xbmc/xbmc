@@ -119,6 +119,7 @@ extern YUVCOEF yuv_coef_smtp240m;
 class DllSwScale;
 struct SwsContext;
 
+class CEvent;
 
 class CLinuxRendererGLES : public CBaseRenderer
 {
