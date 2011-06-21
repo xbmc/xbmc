@@ -1530,7 +1530,7 @@ namespace JSONRPC
     "}",
     "\"Files.Download\": {"
       "\"type\": \"method\","
-      "\"transport\": \"FileDownload\","
+      "\"transport\": [ \"Response\", \"FileDownload\" ],"
       "\"permission\": \"ReadData\","
       "\"params\": ["
         "{ \"name\": \"path\", \"type\": \"string\", \"required\": true }"

@@ -444,7 +444,7 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
 
       CJsonRpcMethodMap::JsonRpcMethodIterator methodIterator = m_actionMap.find(name);
       if (methodIterator != m_actionMap.end() &&
-         (clientPermissions & methodIterator->second.permission) != 0 && ((transportCapabilities & methodIterator->second.transportneed) != 0 || !filterByTransport))
+         (clientPermissions & methodIterator->second.permission) != 0 && ((transportCapabilities & methodIterator->second.transportneed) == methodIterator->second.transportneed || !filterByTransport))
         methods.add(methodIterator->second);
       else
         return InvalidParams;
@@ -460,7 +460,7 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
       {
         // Check if the given name is at the very beginning of the method name
         if (methodIterator->first.find(name) == 0 &&
-           (clientPermissions & methodIterator->second.permission) != 0 && ((transportCapabilities & methodIterator->second.transportneed) != 0 || !filterByTransport))
+           (clientPermissions & methodIterator->second.permission) != 0 && ((transportCapabilities & methodIterator->second.transportneed) == methodIterator->second.transportneed || !filterByTransport))
           methods.add(methodIterator->second);
       }
 
@@ -543,7 +543,7 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
   CJsonRpcMethodMap::JsonRpcMethodIterator methodIteratorEnd = methods.end();
   for (methodIterator = methods.begin(); methodIterator != methodIteratorEnd; methodIterator++)
   {
-    if ((clientPermissions & methodIterator->second.permission) == 0 || ((transportCapabilities & methodIterator->second.transportneed) == 0 && filterByTransport))
+    if ((clientPermissions & methodIterator->second.permission) == 0 || ((transportCapabilities & methodIterator->second.transportneed) != methodIterator->second.transportneed && filterByTransport))
       continue;
 
     CVariant currentMethod = CVariant(CVariant::VariantTypeObject);
@@ -1025,7 +1025,16 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
 bool CJSONServiceDescription::parseMethod(const CVariant &value, JsonRpcMethod &method)
 {
   // Parse XBMC specific information about the method
-  method.transportneed = StringToTransportLayer(value.isMember("transport") ? value["transport"].asString() : "");
+  if (value.isMember("transport") && value["transport"].isArray())
+  {
+    int transport = 0;
+    for (unsigned int index = 0; index < value["transport"].size(); index++)
+      transport |= StringToTransportLayer(value["transport"][index].asString());
+
+    method.transportneed = (TransportLayerCapability)transport;
+  }
+  else
+    method.transportneed = StringToTransportLayer(value.isMember("transport") ? value["transport"].asString() : "");
   method.permission = StringToPermission(value.isMember("permission") ? value["permission"].asString() : "");
   method.description = GetString(value["description"], "");
 
