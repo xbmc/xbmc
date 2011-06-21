@@ -71,8 +71,8 @@ class CEvent
   inline CEvent(const CEvent& other): condVar(signaled) {}
 
 public:
-  inline CEvent(bool manual = false) : 
-    manualReset(manual), signaled(false), numWaits(0), groups(NULL), condVar(signaled) {}
+  inline CEvent(bool manual = false, bool signaled_ = false) : 
+    manualReset(manual), signaled(signaled_), numWaits(0), groups(NULL), condVar(signaled) {}
 
   inline void Reset() { CSingleLock lock(mutex); signaled = false; }
   inline void Set() { CSingleLock lock(mutex); signaled = true; condVar.notifyAll(); groupSet(); }

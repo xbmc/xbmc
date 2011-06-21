@@ -69,7 +69,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_textureTarget = GL_TEXTURE_2D;
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
-    m_eventTexturesDone[i] = new CEvent;
+    m_eventTexturesDone[i] = new CEvent(false,true);
 #if defined(HAVE_LIBOPENMAX)
     m_buffers[i].openMaxBuffer = 0;
 #endif

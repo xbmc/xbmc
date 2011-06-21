@@ -315,3 +315,16 @@ BOOST_AUTO_TEST_CASE(TestEventManualResetCase)
 
   BOOST_CHECK(!event.WaitMSec(1));
 }
+
+BOOST_AUTO_TEST_CASE(TestEventInitValCase)
+{
+  CEvent event(false,true);
+  BOOST_CHECK(event.WaitMSec(50));
+}
+
+BOOST_AUTO_TEST_CASE(TestEventSimpleTimeoutCase)
+{
+  CEvent event;
+  BOOST_CHECK(!event.WaitMSec(50));
+}
+

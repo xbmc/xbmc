@@ -132,7 +132,7 @@ CLinuxRendererGL::CLinuxRendererGL()
 {
   m_textureTarget = GL_TEXTURE_2D;
   for (int i = 0; i < NUM_BUFFERS; i++)
-    m_eventTexturesDone[i] = new CEvent;
+    m_eventTexturesDone[i] = new CEvent(false,true);
 
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
