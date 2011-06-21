@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Translator: Kristján Bjarni Guðmundsson-->
 <!--Email: kristjanbjarni@gmail.com-->
-<!--Date of translation: 2011-01-19-->
+<!--Date of translation: 2011-06-08-->
 <!--$Revision$-->
 <!--Based on english strings version 35672-->
 <strings>
@@ -91,12 +91,12 @@
   <string id="31131"/> <!-- blanked 2010-12-23 -->
   <string id="31132">Viðbót fyrir lagatexta</string>
   <string id="31133">Viðbót fyrir þýðingartexta</string>
-  <string id="31134">Undirvalmynd myndbandaheimasíðu</string>
-  <string id="31135">Undirvalmynd tónlistarheimasíðu</string>
-  <string id="31136">Undirvalmynd ljósmyndaheimasíðu</string>
+  <string id="31134">Undirvalmynd myndbandasíðu</string>
+  <string id="31135">Undirvalmynd tónlistarsíðu</string>
+  <string id="31136">Undirvalmynd ljósmyndaasíðu</string>
 
-  <string id="31140">Tónlist</string>
-  <string id="31141">Myndefni</string>
+  <string id="31140">Tónlistarskjár</string>
+  <string id="31141">Myndbandaskjár</string>
 
   <!-- Script labels -->
   <string id="31200">Flýtileiðir</string>

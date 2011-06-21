@@ -144,6 +144,9 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 #ifdef HAS_FILESYSTEM_NFS
   pSpin->AddLabel(g_localizeStrings.Get(20259), NET_PROTOCOL_NFS);
 #endif
+#ifdef HAS_FILESYSTEM_SFTP
+  pSpin->AddLabel(g_localizeStrings.Get(20260), NET_PROTOCOL_SFTP);
+#endif
 
   pSpin->SetValue(m_protocol);
   OnProtocolChange();
@@ -210,6 +213,8 @@ void CGUIDialogNetworkSetup::OnProtocolChange()
     m_port = "6543";
   else if (m_protocol == NET_PROTOCOL_NFS)
     m_port = "2049";
+  else if (m_protocol == NET_PROTOCOL_SFTP)
+    m_port = "22";
 
   UpdateButtons();
 }
@@ -244,6 +249,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
       m_protocol == NET_PROTOCOL_RSS ||
       m_protocol == NET_PROTOCOL_DAV ||
       m_protocol == NET_PROTOCOL_DAVS||
+      m_protocol == NET_PROTOCOL_SFTP||
       m_protocol == NET_PROTOCOL_NFS)
   {
     SET_CONTROL_LABEL(CONTROL_REMOTE_PATH, 1011);  // Remote Path
@@ -276,6 +282,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                    m_protocol == NET_PROTOCOL_MYTH ||
                                                    m_protocol == NET_PROTOCOL_RSS ||
                                                    m_protocol == NET_PROTOCOL_DAAP ||
+                                                   m_protocol == NET_PROTOCOL_SFTP ||
                                                    m_protocol == NET_PROTOCOL_NFS);
 
   SendMessage(GUI_MSG_SET_TYPE, CONTROL_PORT_NUMBER, CGUIEditControl::INPUT_TYPE_NUMBER, 1018);
@@ -302,6 +309,7 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                                               m_protocol == NET_PROTOCOL_VTP ||
                                                                               m_protocol == NET_PROTOCOL_MYTH ||
                                                                               m_protocol == NET_PROTOCOL_TUXBOX||
+                                                                              m_protocol == NET_PROTOCOL_SFTP ||
                                                                               m_protocol == NET_PROTOCOL_NFS));
 }
 
@@ -336,6 +344,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("myth");
   else if (m_protocol == NET_PROTOCOL_NFS)
     url.SetProtocol("nfs");
+  else if (m_protocol == NET_PROTOCOL_SFTP)
+    url.SetProtocol("sftp");
     
   if (!m_username.IsEmpty())
   {
@@ -356,6 +366,7 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
        (m_protocol == NET_PROTOCOL_VTP) ||
        (m_protocol == NET_PROTOCOL_MYTH) ||
        (m_protocol == NET_PROTOCOL_TUXBOX) ||
+       (m_protocol == NET_PROTOCOL_SFTP) ||
        (m_protocol == NET_PROTOCOL_NFS))
       && !m_port.IsEmpty() && atoi(m_port.c_str()) > 0)
   {
@@ -398,6 +409,8 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_RSS;
   else if (protocol == "nfs")
     m_protocol = NET_PROTOCOL_NFS;
+  else if (protocol == "sftp" || protocol == "ssh")
+    m_protocol = NET_PROTOCOL_SFTP;
   else
     m_protocol = NET_PROTOCOL_SMB;  // default to smb
   m_username = url.GetUserName();

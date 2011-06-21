@@ -532,7 +532,7 @@ namespace VIDEO
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
-    if (useLocal)
+    if (useLocal && (!pURL || pURL->m_xml.IsEmpty()))
       result = CheckForNFOFile(pItem.get(), bDirNames, info2, scrUrl);
     if (result == CNfoFile::FULL_NFO)
     {

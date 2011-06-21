@@ -41,6 +41,7 @@ public:
                       NET_PROTOCOL_VTP,
                       NET_PROTOCOL_MYTH,
                       NET_PROTOCOL_TUXBOX,
+                      NET_PROTOCOL_SFTP,
                       NET_PROTOCOL_NFS};
   CGUIDialogNetworkSetup(void);
   virtual ~CGUIDialogNetworkSetup(void);

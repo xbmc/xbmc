@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--Translator: Kristján Bjarni Guðmundsson-->
 <!--Email: kristjanbjarni@gmail.com-->
-<!--Date of translation: 2011-01-19-->
+<!--Date of translation: 2011-06-08-->
 <!--$Revision$-->
 <!--Based on english strings version 35715-->
 <strings>
@@ -380,8 +380,8 @@
   <string id="415">Sæki smámynd...</string>
   <string id="416">Ekki til</string>
   <string id="417">Sjá sem: Stór tákn</string>
-  <string id="418">Lægst</string>
-  <string id="419">Hæst</string>
+  <string id="418">Lágt</string>
+  <string id="419">Hátt</string>
   <string id="420">HDMI</string>
 
   <string id="422">Eyða hljómplötuupplýsingum</string>
@@ -396,7 +396,7 @@
   <string id="431">Ekkert biðminni</string>
   <string id="432">Eyða kvikmynd úr safni</string>
   <string id="433">Viltu fjarlægja '%s'?</string>
-  <string id="434">Frá %s með %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
+  <string id="434">Frá %s á %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
 
   <string id="437">Færanlegur diskur</string>
   <string id="438">Opna skrá</string>
@@ -468,7 +468,7 @@
   <string id="512">Ræsi gluggi</string>
   <string id="513">Heima gluggi</string>
   <string id="514">Handvirkar stillingar</string>
-  <string id="515">Tegund</string>
+  <string id="515">Flokkur</string>
 
   <string id="517">Nýlega spilaðar hljómplötur</string>
   <string id="518">Keyra</string>
@@ -484,7 +484,7 @@
   <string id="528">Sláðu inn titil</string>
   <string id="529">Villa: Titill þegar til</string>
   <string id="530">Veldu flokk</string>
-  <string id="531">Ný tegund</string>
+  <string id="531">Nýr flokkur</string>
   <string id="532">Handvirk viðbót</string>
   <string id="533">Sláðu inn flokk</string>
   <string id="534">Sýn: %s</string>
@@ -510,8 +510,8 @@
   <string id="554">Lag</string>
   <string id="555">Tíma</string>
   <string id="556">Titli</string>
-  <string id="557">Listamaður</string>
-  <string id="558">Plata</string>
+  <string id="557">Tónlistarmanni</string>
+  <string id="558">Hljómplata</string>
   <string id="559">Lagalista</string>
   <string id="560">Auðkenni</string>
   <string id="561">Skrá</string>
@@ -519,10 +519,10 @@
   <string id="563">Einkunn</string>
   <string id="564">Tegund</string>
   <string id="565">Notkun</string>
-  <string id="566">Flytjandi</string>
+  <string id="566">Tónlistarmaður</string>
   <string id="567">Fjöldi spilana</string>
   <string id="568">Síðast spilað</string>
-  <string id="569">Athugas.</string>
+  <string id="569">Athugasemd</string>
   <string id="570">Bætt við dags</string>
   <string id="571">Sjálfgefið</string>
   <string id="572">Stúdíó</string>
@@ -599,7 +599,7 @@
   <string id="655">Finna forrit</string>
   <string id="656">Finna lagalista</string>
   <string id="657">Finna möppu</string>
-  <string id="658">Upplýsingar um lag</string>
+  <string id="658">Lagaupplýsingar</string>
   <string id="659">Ólínuleg teygja</string>
 
   <string id="660">Mögnun Hljóðstyrks</string>
@@ -746,13 +746,13 @@
   <string id="1034">Undirvalmynd</string>
   <string id="1035">Virkja undirvalmyndar takka</string>
   <string id="1036">Uppáhalds</string>
-  <string id="1037">Viðbætur fyrir myndefni</string>
-  <string id="1038">Viðbætur fyrir tónlist</string>
-  <string id="1039">Viðbætur fyrir ljósmyndir</string>
+  <string id="1037">Myndefnisviðbætur</string>
+  <string id="1038">Tónlistaviðbætur</string>
+  <string id="1039">Ljósmyndaviðbætur</string>
   <string id="1040">Hleð inn möppu</string>
   <string id="1041">Náði í %i hluti</string>
   <string id="1042">Náði í %i af %i hlutum</string>
-  <string id="1043">Viðbætur fyrir forrit</string>
+  <string id="1043">Forritsviðbætur</string>
   <string id="1044">Setja viðbótar smámynd</string>
   <string id="1045">Stilling viðbóta</string>
   <string id="1046">Aðgangsstaðir</string>
@@ -902,7 +902,7 @@
   <string id="10517">Í spilun - Tónlist</string>
 
   <string id="10522">Í spilun - Myndefni</string>
-  <string id="10523">Uppl. hljómplötu</string>
+  <string id="10523">Hljómplötuupplýsingar</string>
   <string id="10524">Kvikmyndaupplýsingar</string>
 
   <string id="12000">Valskilti</string>
@@ -1036,7 +1036,7 @@
   <string id="13121">VDPAU HQ stækkunargildi</string>
   <string id="13122">VDPAU Studio litabreytingargildi</string>
 
-  <string id="13130">Slökkva á öðrum skjám</string>
+  <string id="13130">Tæma aðra skjái</string>
   <string id="13131">Óvirkt</string>
   <string id="13132">Tómur skjár</string>
 
@@ -1582,7 +1582,7 @@ fyrir þessa myndskreytingu</string>
   <string id="20060">Upplýsingar</string>
   <string id="20061">Aðskilja</string>
   <string id="20062">Geymslur með sjálfval</string>
-  <string id="20063">Geymslur með sjálfval (skrifvarið)</string>
+  <string id="20063">Geymslur með sjálfval (aðeins lesa)</string>
   <string id="20064">Afrita sjálfval</string>
   <string id="20065">Notandamynd</string>
   <string id="20066">Læsa kjörstillingum</string>
@@ -2047,7 +2047,7 @@ fyrir þessa myndskreytingu</string>
   <string id="21883">Afritaðir tónlistardiskar</string>
   <string id="21884">Leita að upplýsingum fyrir alla tónlistarmenn</string>
   <string id="21885">Hleð niður upplýsingum um hljómplötu</string>
-  <string id="21886">Hleð niður upplýsingum um tónlistarmann</string>
+  <string id="21886">Hleð niður upplýsingum um listamann</string>
   <string id="21887">Æviágrip</string>
   <string id="21888">Safnplata</string>
   <string id="21889">Leita að tónlistarmönnum</string>

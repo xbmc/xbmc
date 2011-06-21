@@ -241,7 +241,7 @@ void CRenderSystemDX::BuildPresentParameters()
 
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
   m_D3DPP.Windowed           = m_useWindowedDX;
-  m_D3DPP.SwapEffect         = D3DSWAPEFFECT_DISCARD;
+  m_D3DPP.SwapEffect         = D3DSWAPEFFECT_FLIP;
   m_D3DPP.BackBufferCount    = 2;
 
   if(m_useD3D9Ex && (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1 || osvi.dwMajorVersion > 6))
@@ -921,10 +921,10 @@ void CRenderSystemDX::SetScissors(const CRect& rect)
     return;
 
   RECT scissor;
-  scissor.left   = std::max(0, MathUtils::round_int(rect.x1));
-  scissor.top    = std::max(0, MathUtils::round_int(rect.y1));
-  scissor.right  = std::min(static_cast<int>(m_nBackBufferWidth), MathUtils::round_int(rect.x2));
-  scissor.bottom = std::min(static_cast<int>(m_nBackBufferHeight), MathUtils::round_int(rect.y2));
+  scissor.left   = MathUtils::round_int(rect.x1);
+  scissor.top    = MathUtils::round_int(rect.y1);
+  scissor.right  = MathUtils::round_int(rect.x2);
+  scissor.bottom = MathUtils::round_int(rect.y2);
   m_pD3DDevice->SetRenderState(D3DRS_SCISSORTESTENABLE, TRUE);
   m_pD3DDevice->SetScissorRect(&scissor);
 }
