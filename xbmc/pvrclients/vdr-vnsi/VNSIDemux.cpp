@@ -228,7 +228,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
 
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_AC3;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
@@ -245,7 +245,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
 
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_MP2;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
@@ -262,7 +262,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
 
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_AAC;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
@@ -279,7 +279,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
 
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_DTS;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
@@ -296,7 +296,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
 
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_EAC3;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
@@ -311,7 +311,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
     {
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_VIDEO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_VIDEO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_MPEG2VIDEO;
       m_Streams.stream[m_Streams.iStreamCount].iFPSScale   = resp->extract_U32();
       m_Streams.stream[m_Streams.iStreamCount].iFPSRate    = resp->extract_U32();
@@ -329,7 +329,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
     {
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_VIDEO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_VIDEO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_H264;
       m_Streams.stream[m_Streams.iStreamCount].iFPSScale   = resp->extract_U32();
       m_Streams.stream[m_Streams.iStreamCount].iFPSRate    = resp->extract_U32();
@@ -351,7 +351,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
 
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_SUBTITLE;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_SUBTITLE;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_DVB_SUBTITLE;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
@@ -368,7 +368,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
 
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_SUBTITLE;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_SUBTITLE;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_TEXT;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= language[0];
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= language[1];
@@ -383,7 +383,7 @@ void cVNSIDemux::StreamChange(cResponsePacket *resp)
     {
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex         = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId     = index;
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_SUBTITLE;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_SUBTITLE;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_DVB_TELETEXT;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[0]= 0;
       m_Streams.stream[m_Streams.iStreamCount].strLanguage[1]= 0;
@@ -439,7 +439,7 @@ bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
     uint32_t index = resp->extract_U32();
     if (index == m_Streams.stream[i].iPhysicalId)
     {
-      if (m_Streams.stream[i].iCodecType == CODEC_TYPE_AUDIO)
+      if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_AUDIO)
       {
         const char *language = resp->extract_String();
 
@@ -455,7 +455,7 @@ bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
 
         delete[] language;
       }
-      else if (m_Streams.stream[i].iCodecType == CODEC_TYPE_VIDEO)
+      else if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_VIDEO)
       {
         m_Streams.stream[i].iFPSScale         = resp->extract_U32();
         m_Streams.stream[i].iFPSRate          = resp->extract_U32();
@@ -463,7 +463,7 @@ bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
         m_Streams.stream[i].iWidth            = resp->extract_U32();
         m_Streams.stream[i].fAspect           = resp->extract_Double();
       }
-      else if (m_Streams.stream[i].iCodecType == CODEC_TYPE_SUBTITLE)
+      else if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_SUBTITLE)
       {
         const char *language    = resp->extract_String();
         uint32_t composition_id = resp->extract_U32();

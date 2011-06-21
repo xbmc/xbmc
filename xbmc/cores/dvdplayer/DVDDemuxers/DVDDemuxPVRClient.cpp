@@ -161,7 +161,7 @@ void CDVDDemuxPVRClient::RequestStreams()
 
   for (unsigned int i = 0; i < props->iStreamCount; ++i)
   {
-    if (props->stream[i].iCodecType == CODEC_TYPE_AUDIO)
+    if (props->stream[i].iCodecType == AVMEDIA_TYPE_AUDIO)
     {
       CDemuxStreamAudioPVRClient* st = new CDemuxStreamAudioPVRClient(this);
       st->iChannels       = props->stream[i].iChannels;
@@ -171,7 +171,7 @@ void CDVDDemuxPVRClient::RequestStreams()
       st->iBitsPerSample  = props->stream[i].iBitsPerSample;
       m_streams[props->stream[i].iStreamIndex] = st;
     }
-    else if (props->stream[i].iCodecType == CODEC_TYPE_VIDEO)
+    else if (props->stream[i].iCodecType == AVMEDIA_TYPE_VIDEO)
     {
       CDemuxStreamVideoPVRClient* st = new CDemuxStreamVideoPVRClient(this);
       st->iFpsScale       = props->stream[i].iFPSScale;
@@ -185,7 +185,7 @@ void CDVDDemuxPVRClient::RequestStreams()
     {
       m_streams[props->stream[i].iStreamIndex] = new CDemuxStreamTeletext();
     }
-    else if (props->stream[i].iCodecType == CODEC_TYPE_SUBTITLE)
+    else if (props->stream[i].iCodecType == AVMEDIA_TYPE_SUBTITLE)
     {
       CDemuxStreamSubtitlePVRClient* st = new CDemuxStreamSubtitlePVRClient(this);
       st->identifier      = props->stream[i].iIdentifier;
