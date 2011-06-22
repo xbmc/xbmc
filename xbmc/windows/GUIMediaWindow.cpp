@@ -753,6 +753,8 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
     pItem->SetIconImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
+    pItem->m_bIsFolder = true;
+    pItem->SetSpecialSort(SORT_ON_BOTTOM);
     m_vecItems->Add(pItem);
   }
   m_iLastControl = GetFocusedControlID();

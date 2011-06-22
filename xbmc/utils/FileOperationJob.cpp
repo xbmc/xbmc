@@ -152,7 +152,11 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
 
       CStdString strnewDestFile;
       if(!strDestFile.IsEmpty()) // only do this if we have a destination
+      {
         URIUtils::AddFileToFolder(strDestFile, strFileName, strnewDestFile);
+        // URL Decode for cases where source uses URL encoding and target does not 
+        CURL::Decode(strnewDestFile);
+      }
 
       if (pItem->m_bIsFolder)
       {
@@ -225,14 +229,14 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
     case ActionCopy:
     case ActionReplace:
     {
-      CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", m_strFileA.c_str(), m_strFileB.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: copy %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
 
       bResult = CFile::Cache(m_strFileA, m_strFileB, this, &data);
     }
     break;
     case ActionMove:
     {
-      CLog::Log(LOGDEBUG,"FileManager: move %s->%s\n", m_strFileA.c_str(), m_strFileB.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: move %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
 
       if (CanBeRenamed(m_strFileA, m_strFileB))
         bResult = CFile::Rename(m_strFileA, m_strFileB);
