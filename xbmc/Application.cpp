@@ -1985,6 +1985,8 @@ void CApplication::Render()
 
   MEASURE_FUNCTION;
 
+  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
+
   bool decrement = false;
   bool hasRendered = false;
   bool limitFrames = false;
@@ -2047,8 +2049,7 @@ void CApplication::Render()
       limitFrames = lowfps || extPlayerActive;
       // DXMERGE - we checked for g_videoConfig.GetVSyncMode() before this
       //           perhaps allowing it to be set differently than the UI option??
-      if (g_guiSettings.GetInt("videoscreen.vsync") == VSYNC_DISABLED ||
-          g_guiSettings.GetInt("videoscreen.vsync") == VSYNC_VIDEO)
+      if (vsync_mode == VSYNC_DISABLED || vsync_mode == VSYNC_VIDEO)
         limitFrames = true; // not using vsync.
       else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000 / singleFrameTime)
         limitFrames = true; // using vsync, but it isn't working.
@@ -2072,7 +2073,6 @@ void CApplication::Render()
   CTimeUtils::UpdateFrameTime();
   g_infoManager.UpdateFPS();
 
-  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
     g_Windowing.SetVSync(true);
   else if (vsync_mode == VSYNC_ALWAYS)
