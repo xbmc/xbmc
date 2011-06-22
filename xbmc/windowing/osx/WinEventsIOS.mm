@@ -27,7 +27,7 @@
 #include "WindowingFactory.h"
 #include "threads/CriticalSection.h"
 
-static CCriticalSection *g_inputCond = NULL;
+static CCriticalSection g_inputCond;
 
 PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
 
@@ -35,19 +35,15 @@ static std::vector<XBMC_Event> events;
 
 void CWinEventsIOS::DeInit()
 {
-  if (g_inputCond)
-    delete g_inputCond;
-  g_inputCond = NULL;
 }
 
 void CWinEventsIOS::Init()
 {
-  g_inputCond = new CCriticalSection();
 }
 
 void CWinEventsIOS::MessagePush(XBMC_Event *newEvent)
 {
-  CSingleLock lock(*g_inputCond);
+  CSingleLock lock(g_inputCond);
 
   events.push_back(*newEvent);
 }
@@ -58,7 +54,7 @@ bool CWinEventsIOS::MessagePump()
   bool gotEvent = false;
   XBMC_Event pumpEvent;
 
-  CSingleLock lock(*g_inputCond);
+  CSingleLock lock(g_inputCond);
   for (vector<XBMC_Event>::iterator it = events.begin(); it!=events.end(); ++it)
   {
     memcpy(&pumpEvent, (XBMC_Event *)&*it, sizeof(XBMC_Event));
