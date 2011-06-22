@@ -148,7 +148,13 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   DEFINE_FUNC_ALIGNED1(int, __cdecl, avfilter_poll_frame, AVFilterLink *)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, avfilter_request_frame, AVFilterLink*)
 #endif
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,7,0)
+  DEFINE_METHOD4(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2))
+#elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53,3,0)
+  DEFINE_METHOD4(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2, int64_t p3))
+#else
   DEFINE_METHOD4(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2, int64_t p3, AVRational p4))
+#endif
   DEFINE_METHOD4(AVFilterBufferRef*, avfilter_get_video_buffer, (AVFilterLink *p1, int p2, int p3, int p4))
   DEFINE_METHOD1(void, avfilter_unref_buffer, (AVFilterBufferRef *p1))
   DEFINE_METHOD4(int, avfilter_link, (AVFilterContext *p1, unsigned p2, AVFilterContext *p3, unsigned p4))
