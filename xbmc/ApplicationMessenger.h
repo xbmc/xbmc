@@ -90,6 +90,8 @@ class CGUIDialog;
 
 #define TMSG_CALLBACK             800
 
+#define TMSG_VOLUME_SHOW          900
+
 typedef struct
 {
   DWORD dwMessage;
@@ -187,6 +189,8 @@ public:
 
   void OpticalMount(CStdString device, bool bautorun=false);
   void OpticalUnMount(CStdString device);
+
+  void ShowVolumeBar(bool up);
 
 private:
   void ProcessMessage(ThreadMessage *pMsg);

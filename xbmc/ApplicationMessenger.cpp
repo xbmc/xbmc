@@ -710,6 +710,11 @@ case TMSG_POWERDOWN:
         callback->callback(callback->userptr);
       }
 #endif
+    case TMSG_VOLUME_SHOW:
+      {
+        CAction action((int)pMsg->dwParam1);
+        g_application.ShowVolumeBar(&action);
+      }
   }
 }
 
@@ -1106,5 +1111,12 @@ void CApplicationMessenger::OpticalUnMount(CStdString device)
 {
   ThreadMessage tMsg = {TMSG_OPTICAL_UNMOUNT};
   tMsg.strParam = device;
+  SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::ShowVolumeBar(bool up)
+{
+  ThreadMessage tMsg = {TMSG_VOLUME_SHOW};
+  tMsg.dwParam1 = up ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN;
   SendMessage(tMsg, false);
 }

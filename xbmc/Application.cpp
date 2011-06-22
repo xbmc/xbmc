@@ -2601,8 +2601,7 @@ bool CApplication::OnAction(const CAction &action)
   #endif
     }
     // show visual feedback of volume change...
-    m_guiDialogVolumeBar.Show();
-    m_guiDialogVolumeBar.OnAction(action);
+    ShowVolumeBar(&action);
     return true;
   }
   // Check for global seek control
@@ -4915,6 +4914,13 @@ CFileItem& CApplication::CurrentFileItem()
   return *m_itemCurrentFile;
 }
 
+void CApplication::ShowVolumeBar(const CAction *action)
+{
+  m_guiDialogVolumeBar.Show();
+  if (action)
+    m_guiDialogVolumeBar.OnAction(*action);
+}
+
 void CApplication::Mute(void)
 {
   if (g_settings.m_bMute)
@@ -4929,7 +4935,7 @@ void CApplication::Mute(void)
       SetVolume(g_settings.m_iPreMuteVolumeLevel);
       g_settings.m_iPreMuteVolumeLevel = 0;
     }
-    m_guiDialogVolumeBar.Show();
+    ShowVolumeBar();
   }
   else
   { // mute

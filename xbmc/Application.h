@@ -168,6 +168,7 @@ public:
   int GetVolume() const;
   void SetVolume(int iPercent);
   void Mute(void);
+  void ShowVolumeBar(const CAction *action = NULL);
   int GetPlaySpeed() const;
   int GetSubtitleDelay() const;
   int GetAudioDelay() const;
