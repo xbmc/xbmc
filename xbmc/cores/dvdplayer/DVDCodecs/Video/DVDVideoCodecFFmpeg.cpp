@@ -765,8 +765,7 @@ void CDVDVideoCodecFFmpeg::FilterClose()
 {
   if (m_pFilterGraph)
   {
-    m_dllAvFilter.avfilter_graph_free(m_pFilterGraph);
-    m_dllAvUtil.av_freep(&m_pFilterGraph);
+    m_dllAvFilter.avfilter_graph_free(&m_pFilterGraph);
 
     // Disposed by above code
     m_pFilterIn   = NULL;
