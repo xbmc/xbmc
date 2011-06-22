@@ -851,7 +851,7 @@ fi
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
-  FFMPEG_LIBNAMES="libavcodec libavformat libavutil libpostproc libswscale"
+  FFMPEG_LIBNAMES="libavcodec libavfilter libavformat libavutil libpostproc libswscale"
 
   # libavcore is optional
   PKG_CHECK_EXISTS([libavcore], FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libavcore")
@@ -872,8 +872,8 @@ if test "$use_external_ffmpeg" = "yes"; then
   CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 
   # Possible places the ffmpeg headers may be
-  AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
-  [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
+  AC_CHECK_HEADERS([libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
+  [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avfilter.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
   [AC_MSG_ERROR($missing_headers)])])
 
   # optional
