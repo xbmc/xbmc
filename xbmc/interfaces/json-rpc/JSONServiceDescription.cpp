@@ -199,6 +199,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres },
   { "AudioLibrary.Scan",                            CAudioLibrary::Scan },
   { "AudioLibrary.Export",                          CAudioLibrary::Export },
+  { "AudioLibrary.Clean",                           CAudioLibrary::Clean },
 
 // Video Library
   { "VideoLibrary.GetGenres",                       CVideoLibrary::GetGenres },
@@ -218,6 +219,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.GetRecentlyAddedMusicVideos",     CVideoLibrary::GetRecentlyAddedMusicVideos },
   { "VideoLibrary.Scan",                            CVideoLibrary::Scan },
   { "VideoLibrary.Export",                          CVideoLibrary::Export },
+  { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
 
 // System operations
   { "System.Shutdown",                              CSystemOperations::Shutdown },

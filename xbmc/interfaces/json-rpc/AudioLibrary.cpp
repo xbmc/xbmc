@@ -267,6 +267,12 @@ JSON_STATUS CAudioLibrary::Export(const CStdString &method, ITransportLayer *tra
   return ACK;
 }
 
+JSON_STATUS CAudioLibrary::Clean(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  g_application.getApplicationMessenger().ExecBuiltIn("cleanlibrary(music)");
+  return ACK;
+}
+
 bool CAudioLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
 {
   CMusicDatabase musicdatabase;

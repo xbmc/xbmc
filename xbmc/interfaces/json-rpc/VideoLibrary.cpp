@@ -412,6 +412,12 @@ JSON_STATUS CVideoLibrary::Export(const CStdString &method, ITransportLayer *tra
   return ACK;
 }
 
+JSON_STATUS CVideoLibrary::Clean(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  g_application.getApplicationMessenger().ExecBuiltIn("cleanlibrary(video)");
+  return ACK;
+}
+
 bool CVideoLibrary::FillFileItem(const CStdString &strFilename, CFileItem &item)
 {
   CVideoDatabase videodatabase;

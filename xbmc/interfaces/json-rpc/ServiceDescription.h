@@ -1754,6 +1754,14 @@ namespace JSONRPC
       "],"
       "\"returns\": \"string\""
     "}",
+    "\"AudioLibrary.Clean\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Cleans the audio library from non-existent items\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ScanLibrary\","
+      "\"params\": [ ],"
+      "\"returns\": \"string\""
+    "}",
     "\"VideoLibrary.GetMovies\": {"
       "\"type\": \"method\","
       "\"description\": \"Retrieve all movies\","
@@ -2054,6 +2062,14 @@ namespace JSONRPC
         "{ \"name\": \"overwrite\", \"type\": \"boolean\", \"default\": false, \"description\": \"Whether to overwrite existing exported files\" },"
         "{ \"name\": \"path\", \"type\": \"string\", \"default\": \"\", \"description\": \"Path to the directory to where the data should be exported\" }"
       "],"
+      "\"returns\": \"string\""
+    "}",
+    "\"VideoLibrary.Clean\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Cleans the video library from non-existent items\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ScanLibrary\","
+      "\"params\": [ ],"
       "\"returns\": \"string\""
     "}",
     "\"System.Shutdown\": {"
