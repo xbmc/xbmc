@@ -229,6 +229,7 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
         if (value)
           rotate = value - 1;
       }
+      CFRelease(imagePropertiesDictionary);
     }
   }
 
