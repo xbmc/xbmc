@@ -459,6 +459,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CFileCurl &fcurl, const CStd
 
   bool fSort(true);
   std::set<CStdString> stsDupeCheck;
+  bool fResults(false);
   for (CStdStringArray::const_iterator i = vcsOut.begin(); i != vcsOut.end(); ++i)
   {
     TiXmlDocument doc;
@@ -475,6 +476,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CFileCurl &fcurl, const CStd
     TiXmlHandle xhResults = xhDoc.FirstChild("results");
     if (!xhResults.Element())
       continue;
+    fResults = true;  // even if empty
 
     // we need to sort if returned results don't specify 'sorted="yes"'
     if (fSort)
@@ -529,6 +531,9 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CFileCurl &fcurl, const CStd
       }
     }
   }
+
+  if (!fResults)
+    throw CScraperError();  // scraper aborted
 
   if (fSort)
     std::sort(vcscurl.begin(), vcscurl.end(), RelevanceSortFunction);
