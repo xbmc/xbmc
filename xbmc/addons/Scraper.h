@@ -146,6 +146,10 @@ private:
                               const CScraperUrl& url,
                               XFILE::CFileCurl& http,
                               const std::vector<CStdString>* extras = NULL);
+  std::vector<CStdString> RunNoThrow(const CStdString& function,
+                              const CScraperUrl& url,
+                              XFILE::CFileCurl& http,
+                              const std::vector<CStdString>* extras = NULL);
   CStdString InternalRun(const CStdString& function,
                          const CScraperUrl& url,
                          XFILE::CFileCurl& http,
