@@ -87,15 +87,15 @@ public:
     CSingleLock lock(DllAvCodec::m_critSection);
     return ::avfilter_open(filter_ctx, filter, inst_name);
   }
-  virtual int avfilter_free(AVFilterContext *filter)
+  virtual void avfilter_free(AVFilterContext *filter)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
-    return ::avfilter_free(filter);
+    ::avfilter_free(filter);
   }
-  virtual int avfilter_graph_free(AVFilterGraph *graph)
+  virtual void avfilter_graph_free(AVFilterGraph *graph)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
-    return ::avfilter_graph_free(graph);
+    ::avfilter_graph_free(graph);
   }
   virtual int avfilter_open_dont_call(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name) { *(int *)0x0 = 0; return 0; }
   virtual void avfilter_free_dont_call(AVFilterContext *filter) { *(int *)0x0 = 0; }
