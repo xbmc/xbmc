@@ -172,7 +172,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     }
   }
 
-  if (hasThumbnailField && !item->GetThumbnailImage().IsEmpty())
+  if (hasThumbnailField)
     object["thumbnail"] = item->GetThumbnailImage().c_str();
 
   if (item->HasVideoInfoTag())
