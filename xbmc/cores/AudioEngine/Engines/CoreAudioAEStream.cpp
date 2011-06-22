@@ -179,8 +179,7 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
   if(m_Buffer)
     delete m_Buffer;
   
-  /* two seconds buffer */
-  m_Buffer = new CoreAudioRingBuffer(m_AvgBytesPerSec * 2);
+  m_Buffer = new CoreAudioRingBuffer(m_AvgBytesPerSec);
   
   SDL_mutexV(m_MutexStream);
   m_valid = true;
@@ -259,12 +258,6 @@ void CCoreAudioAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
   SDL_mutexV(m_MutexStream);
 }
 
-unsigned int CCoreAudioAEStream::GetFrameSize()
-{
-  //return (m_OutputFormat.m_frameSize > m_StreamFormat.m_frameSize) ? m_OutputFormat.m_frameSize : m_StreamFormat.m_frameSize;
-  return m_OutputFormat.m_frameSize;
-}
-
 unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 {
   unsigned int frames   = size / m_StreamFormat.m_frameSize;
@@ -337,9 +330,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
                               ((m_OutputFormat.m_channelCount > m_StreamFormat.m_channelCount) ?
                               m_OutputFormat.m_channelCount : m_StreamFormat.m_channelCount);
     CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, remap_size * 2);
-    
-    //CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, frames * m_OutputFormat.m_frameSize);
-    
+        
     // downmix/remap the data
     m_remap.Remap((float *)adddata, (float *)m_remapBuffer, frames);
     adddata   = (uint8_t *)m_remapBuffer;
@@ -465,6 +456,11 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   
   //SDL_mutexV(m_MutexStream);  
   return ret;  
+}
+
+unsigned int CCoreAudioAEStream::GetFrameSize()
+{
+  return m_OutputFormat.m_frameSize;
 }
 
 float CCoreAudioAEStream::GetDelay()
