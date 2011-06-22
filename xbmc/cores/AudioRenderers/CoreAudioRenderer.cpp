@@ -845,7 +845,7 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
   if (allowMixing && channelMap)
   {
     // Convert XBMC input channel layout format to CoreAudio layout format
-    AudioChannelLayout* pInLayout = pInLayout = (AudioChannelLayout*)malloc(sizeof(AudioChannelLayout) + sizeof(AudioChannelDescription) * channels);
+    AudioChannelLayout* pInLayout = (AudioChannelLayout*)malloc(sizeof(AudioChannelLayout) + sizeof(AudioChannelDescription) * channels);
     pInLayout->mChannelLayoutTag = kAudioChannelLayoutTag_UseChannelDescriptions;
     pInLayout->mChannelBitmap = 0;
     pInLayout->mNumberChannelDescriptions = channels;

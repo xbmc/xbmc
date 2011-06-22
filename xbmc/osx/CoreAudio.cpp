@@ -99,7 +99,8 @@ CCoreAudioChannelLayout::CCoreAudioChannelLayout() :
   
 }
 
-CCoreAudioChannelLayout::CCoreAudioChannelLayout(AudioChannelLayout& layout)
+CCoreAudioChannelLayout::CCoreAudioChannelLayout(AudioChannelLayout& layout) :
+  m_pLayout(NULL)
 {
   CopyLayout(layout);
 }
@@ -114,6 +115,7 @@ bool CCoreAudioChannelLayout::CopyLayout(AudioChannelLayout& layout)
 {
   if (m_pLayout)
     free(m_pLayout);
+  m_pLayout = NULL;
   
   // This method always produces a layout with a ChannelDescriptions structure
   
