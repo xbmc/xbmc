@@ -342,6 +342,7 @@ protected:
 
   bool m_bPresentFrame;
   unsigned int m_lastFrameTime;
+  unsigned int m_lastRenderTime;
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;

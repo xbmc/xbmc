@@ -743,6 +743,7 @@ bool CApplication::Create()
   g_mediaManager.Initialize();
 
   m_lastFrameTime = CTimeUtils::GetTimeMS();
+  m_lastRenderTime = m_lastFrameTime;
 
   return Initialize();
 }
@@ -2097,21 +2098,26 @@ void CApplication::Render()
 
   lock.Leave();
 
+  unsigned int now = CTimeUtils::GetTimeMS();
+  if (hasRendered)
+    m_lastRenderTime = now;
+
+  //only flip when something has been rendered in the last second
+  bool flip = now - m_lastRenderTime < 1000;
+
   //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
-  if (limitFrames || !hasRendered)
+  if (limitFrames || !flip)
   {
     if (!limitFrames)
-      singleFrameTime = 40; //if nothing is rendered, loop at 25 fps
+      singleFrameTime = 40; //if not flipping, loop at 25 fps
 
-    unsigned int now = CTimeUtils::GetTimeMS();
     unsigned int frameTime = now - m_lastFrameTime;
     if (frameTime < singleFrameTime)
       Sleep(singleFrameTime - frameTime);
   }
   m_lastFrameTime = CTimeUtils::GetTimeMS();
 
-  //only flip if we have rendered dirty regions
-  if (hasRendered)
+  if (flip)
     g_graphicsContext.Flip();
 
   g_renderManager.UpdateResolution();
