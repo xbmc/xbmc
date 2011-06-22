@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -18,11 +18,10 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-
-#if !defined(__arm__)
 #ifndef __COREAUDIO_RENDERER_H__
 #define __COREAUDIO_RENDERER_H__
 
+#if !defined(__arm__)
 #include <osx/CoreAudio.h>
 #include "IAudioRenderer.h"
 #include <threads/LockFree.h>
@@ -99,74 +98,100 @@ protected:
   UInt32 m_WatchdogPreroll;
 };
 
-class CCoreAudioRenderer : public IAudioRenderer
-  {
-  public:
-    CCoreAudioRenderer();
-    virtual ~CCoreAudioRenderer();
-    virtual unsigned int GetChunkLen();
-    virtual float GetDelay();
-    virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false);
-    virtual bool Deinitialize();
-    virtual unsigned int AddPackets(const void* data, unsigned int len);
-    virtual unsigned int GetSpace();
-    virtual float GetCacheTime();
-    virtual float GetCacheTotal();
-    virtual bool Pause();
-    virtual bool Stop();
-    virtual bool Resume();
+class CCoreAudioMixMap
+{
+public:
+  CCoreAudioMixMap();
+  CCoreAudioMixMap(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout);
+  virtual ~CCoreAudioMixMap();
+  operator Float32*() const {return m_pMap;} 
+  const Float32* GetBuffer() {return m_pMap;}
+  UInt32 GetInputChannels() {return m_inChannels;}
+  UInt32 GetOutputChannels() {return m_outChannels;}  
+  bool IsValid() {return m_isValid;}
+  void Rebuild(AudioChannelLayout& inLayout, AudioChannelLayout& outLayout);
+private:
+  Float32* m_pMap;
+  UInt32 m_inChannels;
+  UInt32 m_outChannels;
+  bool m_isValid;
+};
 
-    virtual long GetCurrentVolume() const;
-    virtual void Mute(bool bMute);
-    virtual bool SetCurrentVolume(long nVolume);
-    virtual void WaitCompletion();
-
-    // Unimplemented IAudioRenderer methods
-    virtual int SetPlaySpeed(int iSpeed) {return 0;};
-    virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers) {};
-    virtual void UnRegisterAudioCallback() {};
-    virtual void RegisterAudioCallback(IAudioCallback* pCallback) {};
-
-    static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough) {};
-  private:
-    OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
-    static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
-    static OSStatus DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData);
-    bool InitializeEncoded(AudioDeviceID outputDevice, UInt32 sampleRate);
-    bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample, enum PCMChannels *channelMap);
-    bool InitializePCMEncoded(UInt32 sampleRate);
-
-    bool m_Pause;
-    bool m_Initialized; // Prevent multiple init/deinit
-
-    long m_CurrentVolume; // Courtesy of the jerk that made GetCurrentVolume a const...
-    unsigned int m_ChunkLen; // Minimum amount of data accepted by AddPackets
-    char* m_RemapBuffer; // Temporary buffer for channel remapping
-    CSliceQueue* m_pCache;
-    size_t m_MaxCacheLen; // Maximum number of bytes to be cached by the renderer.
-
-    CAUOutputDevice m_AUOutput;
-    CCoreAudioUnit m_MixerUnit;
-    CCoreAudioDevice m_AudioDevice;
-    CCoreAudioStream m_OutputStream;
-    UInt32 m_OutputBufferIndex;
-
-    bool m_Passthrough;
-    bool m_EnableVolumeControl;
-
-    // Stream format
-    size_t m_AvgBytesPerSec;
-    size_t m_BytesPerFrame; // Input frame size
-    UInt32 m_NumLatencyFrames;
-
+class CCoreAudioRenderer : public IAudioRenderer, public ICoreAudioSource
+{
+public:
+  CCoreAudioRenderer();
+  virtual ~CCoreAudioRenderer();
+  virtual unsigned int GetChunkLen();
+  virtual float GetDelay();
+  virtual bool Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false, bool bPassthrough = false);
+  virtual bool Deinitialize();
+  virtual unsigned int AddPackets(const void* data, unsigned int len);
+  virtual unsigned int GetSpace();
+  virtual float GetCacheTime();
+  virtual float GetCacheTotal();
+  virtual bool Pause();
+  virtual bool Stop();
+  virtual bool Resume();
+  
+  virtual long GetCurrentVolume() const;
+  virtual void Mute(bool bMute);
+  virtual bool SetCurrentVolume(long nVolume);
+  virtual void WaitCompletion();
+  
+  // Unimplemented IAudioRenderer methods
+  virtual int SetPlaySpeed(int iSpeed) {return 0;};
+  virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers) {};
+  virtual void UnRegisterAudioCallback() {};
+  virtual void RegisterAudioCallback(IAudioCallback* pCallback) {};
+  
+  static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough) {};
+  
+  // AudioUnit Rendering Connection Point (called by down-stream sinks)
+  virtual OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList);
+  
+private:
+  OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
+  static OSStatus DirectRenderCallback(AudioDeviceID inDevice, const AudioTimeStamp* inNow, const AudioBufferList* inInputData, const AudioTimeStamp* inInputTime, AudioBufferList* outOutputData, const AudioTimeStamp* inOutputTime, void* inClientData);
+  bool InitializeEncoded(AudioDeviceID outputDevice, UInt32 sampleRate);
+  bool InitializePCM(UInt32 channels, UInt32 samplesPerSecond, UInt32 bitsPerSample, enum PCMChannels *channelMap, bool allowMixing = true);
+  bool InitializePCMEncoded(UInt32 sampleRate);
+  
+  bool CreateMixMap();
+  
+  bool m_Pause;
+  bool m_Initialized; // Prevent multiple init/deinit
+  
+  long m_CurrentVolume; // Courtesy of the jerk that made GetCurrentVolume a const...
+  unsigned int m_ChunkLen; // Minimum amount of data accepted by AddPackets
+  //    char* m_RemapBuffer; // Temporary buffer for channel remapping
+  CSliceQueue* m_pCache;
+  size_t m_MaxCacheLen; // Maximum number of bytes to be cached by the renderer.
+  
+  CAUOutputDevice m_AUOutput;
+  CAUMatrixMixer m_MixerUnit;
+  CCoreAudioDevice m_AudioDevice;
+  CCoreAudioStream m_OutputStream;
+  UInt32 m_OutputBufferIndex;
+  
+  CAUGenericSource m_AUConverter;
+  
+  bool m_Passthrough;
+  bool m_EnableVolumeControl;
+  
+  // Stream format
+  size_t m_AvgBytesPerSec;
+  size_t m_BytesPerFrame; // Input frame size
+  UInt32 m_NumLatencyFrames;
+  
 #ifdef _DEBUG
-    // Performace Monitoring
-    CCoreAudioPerformance m_PerfMon;
+  // Performace Monitoring
+  CCoreAudioPerformance m_PerfMon;
 #endif
-    // Thread synchronization
-    MPEventID m_RunoutEvent;
-    long m_DoRunout;
-  };
+  // Thread synchronization
+  MPEventID m_RunoutEvent;
+  long m_DoRunout;
+};
 
 #endif
 #endif

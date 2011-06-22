@@ -25,7 +25,7 @@
 #if !defined(__arm__)
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
-#include <utils/StdString.h>
+#include <StdString.h>
 #include <list>
 #include <vector>
 
@@ -64,8 +64,23 @@ public:
 // kAudioDevicePropertyTransportType
 
 typedef std::list<AudioStreamID> AudioStreamIdList;
-typedef std::vector<SInt32> CoreAudioChannelList;
 typedef std::list<UInt32> CoreAudioDataSourceList;
+typedef std::vector<SInt32> CoreAudioChannelList;
+
+class CCoreAudioChannelLayout
+{
+public:
+  CCoreAudioChannelLayout();
+  CCoreAudioChannelLayout(AudioChannelLayout& layout);
+  virtual ~CCoreAudioChannelLayout();
+  operator AudioChannelLayout*() {return m_pLayout;}
+  bool CopyLayout(AudioChannelLayout& layout);
+  static UInt32 GetChannelCountForLayout(AudioChannelLayout& layout);
+  static const char* ChannelLabelToString(UInt32 label);
+  static const char* ChannelLayoutToString(AudioChannelLayout& layout, CStdString& str);
+protected:
+  AudioChannelLayout* m_pLayout;
+};
 
 class CCoreAudioDevice
 {
@@ -91,11 +106,13 @@ public:
   pid_t GetHogStatus();
   bool SetMixingSupport(bool mix);
   bool GetMixingSupport();
-  bool GetPreferredChannelLayout(CoreAudioChannelList* pChannelMap);
+  bool GetPreferredChannelLayout(CCoreAudioChannelLayout& layout);
   bool GetDataSources(CoreAudioDataSourceList* pList);
   Float64 GetNominalSampleRate();
   bool SetNominalSampleRate(Float64 sampleRate);
   UInt32 GetNumLatencyFrames();
+  UInt32 GetBufferSize();
+  bool SetBufferSize(UInt32 size);
 protected:
   AudioDeviceID m_DeviceId;
   bool m_Started;
@@ -103,6 +120,7 @@ protected:
   int m_MixerRestore;
   AudioDeviceIOProc m_IoProc;
   Float64 m_SampleRateRestore;
+  UInt32 m_BufferSizeRestore;
 };
 
 typedef std::list<AudioStreamRangedDescription> StreamFormatList;
@@ -126,12 +144,21 @@ public:
   bool SetPhysicalFormat(AudioStreamBasicDescription* pDesc);
   bool GetAvailableVirtualFormats(StreamFormatList* pList);
   bool GetAvailablePhysicalFormats(StreamFormatList* pList);
-
+  
 protected:
   AudioStreamID m_StreamId;
   AudioStreamBasicDescription m_OriginalVirtualFormat;  
   AudioStreamBasicDescription m_OriginalPhysicalFormat;  
 };
+
+class ICoreAudioSource
+{
+public:
+  // Function to request rendered data from a data source
+  virtual OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList) = 0;
+};
+
+typedef std::list<AudioChannelLayoutTag> AudioChannelLayoutList;
 
 class CCoreAudioUnit
 {
@@ -139,22 +166,36 @@ public:
   CCoreAudioUnit();
   virtual ~CCoreAudioUnit();
   
-  bool Open(ComponentDescription desc);
-  bool Open(OSType type, OSType subType, OSType manufacturer);
-  void Attach(AudioUnit audioUnit) {m_Component = audioUnit;}
-  AudioUnit GetComponent(){return m_Component;}
-  void Close();
-  bool Initialize();
-  bool IsInitialized() {return m_Initialized;}
-  bool SetRenderProc(AURenderCallback callback, void* pClientData);
-  bool GetInputFormat(AudioStreamBasicDescription* pDesc);
-  bool GetOutputFormat(AudioStreamBasicDescription* pDesc);    
-  bool SetInputFormat(AudioStreamBasicDescription* pDesc);
-  bool SetOutputFormat(AudioStreamBasicDescription* pDesc);
-  bool SetMaxFramesPerSlice(UInt32 maxFrames);
+  virtual bool Open(ComponentDescription desc);
+  virtual bool Open(OSType type, OSType subType, OSType manufacturer);
+  virtual void Attach(AudioUnit audioUnit) {m_Component = audioUnit;}
+  virtual AudioUnit GetComponent(){return m_Component;}
+  virtual void Close();
+  virtual bool Initialize();
+  virtual bool IsInitialized() {return m_Initialized;}
+  virtual bool SetInputSource(ICoreAudioSource* pSource);
+  virtual bool GetInputFormat(AudioStreamBasicDescription* pDesc);
+  virtual bool GetOutputFormat(AudioStreamBasicDescription* pDesc);    
+  virtual bool SetInputFormat(AudioStreamBasicDescription* pDesc);
+  virtual bool SetOutputFormat(AudioStreamBasicDescription* pDesc);
+  virtual bool SetMaxFramesPerSlice(UInt32 maxFrames);
+  virtual bool GetSupportedChannelLayouts(AudioChannelLayoutList* pLayouts);
 protected:
+  bool SetRenderProc(AURenderCallback callback, void* pClientData);
+  static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
+  virtual OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
+  
+  ICoreAudioSource* m_pSource;
   AudioUnit m_Component;
   bool m_Initialized;
+};
+
+class CAUGenericSource : public CCoreAudioUnit, public ICoreAudioSource
+{
+public:
+  CAUGenericSource();
+  virtual ~CAUGenericSource();
+  virtual OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList);
 };
 
 class CAUOutputDevice : public CCoreAudioUnit
@@ -163,24 +204,41 @@ public:
   CAUOutputDevice();
   virtual ~CAUOutputDevice();
   bool SetCurrentDevice(AudioDeviceID deviceId);
-  bool GetInputChannelMap(CoreAudioChannelList* pChannelMap);
-  bool SetInputChannelMap(CoreAudioChannelList* pChannelMap);
+  bool GetChannelMap(CoreAudioChannelList* pChannelMap);
+  bool SetChannelMap(CoreAudioChannelList* pChannelMap);
   UInt32 GetBufferFrameSize();
   
   void Start();
   void Stop();
   bool IsRunning();
-
+  
   Float32 GetCurrentVolume();
   bool SetCurrentVolume(Float32 vol);  
 protected:
+  virtual OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
 };
 
-class CAUMatrixMixer : public CCoreAudioUnit
+class CAUMatrixMixer : public CAUGenericSource
 {
 public:
   CAUMatrixMixer();
   virtual ~CAUMatrixMixer();
+  bool Open(OSType type, OSType subType, OSType manufacturer);
+  bool Open();
+  OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList);
+  bool Initialize();
+  
+  UInt32 GetInputBusCount();
+  bool SetInputBusCount(UInt32 busCount);
+  UInt32 GetOutputBusCount();
+  bool SetOutputBusCount(UInt32 busCount);
+  
+  Float32 GetGlobalVolume();
+  bool SetGlobalVolume(Float32 vol);
+  Float32 GetInputVolume(UInt32 element);
+  bool SetInputVolume(UInt32 element, Float32 vol);
+  Float32 GetOutputVolume(UInt32 element);
+  bool SetOutputVolume(UInt32 element, Float32 vol);
 protected:
 };
 
@@ -190,5 +248,5 @@ const char* StreamDescriptionToString(AudioStreamBasicDescription desc, CStdStri
 
 #define CONVERT_OSSTATUS(x) UInt32ToFourCC((UInt32*)&ret)
 
-#endif
+#endif // __arm__
 #endif // __COREAUDIO_H__
