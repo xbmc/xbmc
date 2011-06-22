@@ -310,18 +310,26 @@ SectionEnd
 ;--------------------------------
 ;vs redist installer Section
 
-Section "Microsoft Visual C++ 2010 Redistributable Package (x86)" SEC_VCREDIST
+Section "Microsoft Visual C++ 2008/2010 Redistributable Package (x86)" SEC_VCREDIST
 
   SectionIn 1 2
   
-  SetOutPath "$TEMP"
-  File "${xbmc_root}\Xbmc\vcredist_x86.exe"
   DetailPrint "Running VS Redist Setup..."
-  ExecWait '"$TEMP\vcredist_x86.exe" /q' $VSRedistSetupError
+
+  ;vc90 for python
+  SetOutPath "$TEMP\vc2008"
+  File "${xbmc_root}\..\dependencies\vcredist\2008\vcredist_x86.exe"
+  ExecWait '"$TEMP\vc2008\vcredist_x86.exe" /q' $VSRedistSetupError
+  RMDir /r "$TEMP\vc2008"
+  
+  ;vc100
+  SetOutPath "$TEMP\vc2010"
+  File "${xbmc_root}\..\dependencies\vcredist\2010\vcredist_x86.exe"
+  DetailPrint "Running VS Redist Setup..."
+  ExecWait '"$TEMP\vc2010\vcredist_x86.exe" /q' $VSRedistSetupError
+  RMDir /r "$TEMP\vc2010"
+ 
   DetailPrint "Finished VS Redist Setup"
- 
-  Delete "$TEMP\vcredist_x86.exe"
- 
   SetOutPath "$INSTDIR"
 SectionEnd
 
