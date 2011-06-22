@@ -557,10 +557,10 @@ void CGUIWindowManager::Render()
       if (i->IsEmpty())
         continue;
 
-      g_Windowing.SetScissors(*i);
+      g_graphicsContext.SetScissors(*i);
       RenderPass();
     }
-    g_Windowing.ResetScissors();
+    g_graphicsContext.ResetScissors();
   }
 
   if (g_advancedSettings.m_guiVisualizeDirtyRegions)

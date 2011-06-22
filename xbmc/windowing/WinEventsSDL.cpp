@@ -21,6 +21,7 @@
 
 #include "system.h"
 #include "WinEvents.h"
+#include "WinEventsSDL.h"
 #include "Application.h"
 #ifdef HAS_SDL_JOYSTICK
 #include "input/SDLJoystick.h"

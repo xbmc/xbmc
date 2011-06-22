@@ -93,6 +93,9 @@
 #ifdef HAS_FILESYSTEM_SFTP
 #include "SFTPDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+#include "NFSDirectory.h"
+#endif
 
 using namespace XFILE;
 
@@ -184,6 +187,10 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_ZEROCONF
     if (strProtocol == "zeroconf") return new CZeroconfDirectory();
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+    if (strProtocol == "nfs") return new CNFSDirectory();
+#endif
+    
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );

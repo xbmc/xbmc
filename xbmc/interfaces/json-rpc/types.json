@@ -471,6 +471,11 @@
     "type": "string",
     "enum": [ "video", "music", "pictures", "files", "programs" ]
   },
+  "List.Amount": {
+    "type": "integer",
+    "default": -1,
+    "minimum": 0
+  },
   "List.Limits": {
     "type": "object",
     "properties": {

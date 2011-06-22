@@ -62,6 +62,10 @@
 #ifdef HAS_FILESYSTEM_SFTP
 #include "FileSFTP.h"
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+#include "FileNFS.h"
+#endif
+
 #include "FileMusicDatabase.h"
 #include "FileSpecialProtocol.h"
 #include "MultiPathFile.h"
@@ -154,6 +158,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_FILESYSTEM_VTP
     else if (strProtocol == "vtp") return new CVTPFile();
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+    else if (strProtocol == "nfs") return new CFileNFS();
+#endif
+    
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );

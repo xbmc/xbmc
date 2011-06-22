@@ -118,38 +118,31 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
         }
 
         if (attributes && (attributes->name == NULL || strcmp(attributes->name, "..") == 0 || strcmp(attributes->name, ".") == 0))
+        {
+          CSingleLock lock(m_critSect);
+          sftp_attributes_free(attributes);
           continue;
+        }
+        
         if (attributes)
         {
+          CStdString itemName = attributes->name;
           CStdString localPath = folder;
-          localPath.append(attributes->name);
+          localPath.append(itemName);
 
           if (attributes->type == SSH_FILEXFER_TYPE_SYMLINK)
           {
             CSingleLock lock(m_critSect);
             sftp_attributes_free(attributes);
-            char *realpath = sftp_readlink(m_sftp_session, CorrectPath(localPath).c_str());
-            if(realpath == NULL)
-              continue;
-            attributes = sftp_stat(m_sftp_session, realpath);
-#ifdef _MSC_VER
-            // hack since api doesn't expose any method to free
-            // the memory alloced here, we cheat and use a
-            // function that does a standard free inside the library
-            string_free((ssh_string)realpath);
-#else
-            free(realpath);
-#endif
+            attributes = sftp_stat(m_sftp_session, CorrectPath(localPath).c_str());
             if (attributes == NULL)
-              continue;
-            if (attributes && (attributes->name == NULL || strcmp(attributes->name, "..") == 0 || strcmp(attributes->name, ".") == 0))
               continue;
           }
 
           CFileItemPtr pItem(new CFileItem);
-          pItem->SetLabel(attributes->name);
+          pItem->SetLabel(itemName);
 
-          if (attributes->name[0] == '.')
+          if (itemName[0] == '.')
             pItem->SetProperty("file:hidden", true);
 
           if (attributes->flags & SSH_FILEXFER_ATTR_ACMODTIME)
@@ -159,6 +152,11 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
           {
             localPath.append("/");
             pItem->m_bIsFolder = true;
+            pItem->m_dwSize = 0;
+          }
+          else
+          {
+            pItem->m_dwSize = attributes->size;
           }
 
           pItem->m_strPath = base;
@@ -347,7 +345,7 @@ bool CSFTPSession::Connect(const CStdString &host, unsigned int port, const CStd
     return false;
   }
   
-  ssh_options_set_timeout(options, timeout,0);
+  ssh_options_set_timeout(options, timeout, 0);
 
   ssh_options_set_log_verbosity(options, 0);
 
@@ -540,7 +538,7 @@ unsigned int CFileSFTP::Read(void* lpBuf, int64_t uiBufSize)
   {
     int rc = m_session->Read(m_sftp_handle, lpBuf, (size_t)uiBufSize);
 
-    if (rc > 0)
+    if (rc >= 0)
       return rc;
     else
       CLog::Log(LOGERROR, "SFTPFile: Failed to read %i", rc);

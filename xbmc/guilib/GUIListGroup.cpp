@@ -63,20 +63,24 @@ void CGUIListGroup::AddControl(CGUIControl *control, int position /*= -1*/)
 
 void CGUIListGroup::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  CGUIControlGroup::Process(currentTime, dirtyregions);
-  m_item = NULL;
-}
-
-void CGUIListGroup::Render()
-{
+  CPoint pos(GetPosition());
   g_graphicsContext.SetOrigin(m_posX, m_posY);
+
+  CRect rect;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
   {
     CGUIControl *control = *it;
-    control->DoRender();
+    control->UpdateVisibility(m_item);
+    unsigned int oldDirty = dirtyregions.size();
+    control->DoProcess(currentTime, dirtyregions);
+    if (control->IsVisible() || (oldDirty != dirtyregions.size())) // visible or dirty (was visible?)
+      rect.Union(control->GetRenderRegion());
   }
-  CGUIControl::Render();
+
   g_graphicsContext.RestoreOrigin();
+  CGUIControl::Process(currentTime, dirtyregions);
+  m_renderRegion = rect;
+  m_item = NULL;
 }
 
 void CGUIListGroup::ResetAnimation(ANIMATION_TYPE type)

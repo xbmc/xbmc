@@ -1727,6 +1727,8 @@
   <string id="20256">HTS Tvheadend client</string>
   <string id="20257">VDR Streamdev client</string>
   <string id="20258">MythTV client</string>
+  <string id="20259">Network Filesystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>

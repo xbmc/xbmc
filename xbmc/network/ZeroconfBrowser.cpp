@@ -206,6 +206,17 @@ void CZeroconfBrowser::ZeroconfService::SetPort(int f_port)
   m_port = f_port;
 }
 
+void CZeroconfBrowser::ZeroconfService::SetTxtRecords(const tTxtRecordMap& txt_records)
+{
+  m_txtrecords_map = txt_records;
+  
+  CLog::Log(LOGDEBUG,"CZeroconfBrowser: dump txt-records");
+  for(tTxtRecordMap::const_iterator it = m_txtrecords_map.begin(); it != m_txtrecords_map.end(); ++it)
+  {
+    CLog::Log(LOGDEBUG,"CZeroconfBrowser:  key: %s value: %s",it->first.c_str(), it->second.c_str());
+  }
+}
+
 CStdString CZeroconfBrowser::ZeroconfService::toPath(const ZeroconfService& fcr_service)
 {
   return CStdString(fcr_service.m_type + "@" + fcr_service.m_domain + "@" + fcr_service.m_name);

@@ -53,6 +53,47 @@ namespace
     return myString;
   }
   
+  //helper for getting a the txt-records list
+  //returns true on success, false if nothing found or error
+  CZeroconfBrowser::ZeroconfService::tTxtRecordMap GetTxtRecords(CFNetServiceRef serviceRef)  
+  {
+    CFIndex idx = 0;
+    CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap;
+    CFDataRef data = NULL;
+
+    data=CFNetServiceGetTXTData(serviceRef);
+    if( data != NULL )
+    {
+      CFDictionaryRef dict = NULL;
+      dict = CFNetServiceCreateDictionaryWithTXTData(kCFAllocatorDefault, data);
+
+      if( dict != NULL )
+      {
+        CFIndex numValues = 0;
+        numValues = CFDictionaryGetCount(dict);
+        if( numValues > 0)
+        {
+          CFStringRef keys[numValues];
+          CFDataRef values[numValues];
+
+          CFDictionaryGetKeysAndValues(dict, (const void **)&keys,  (const void **)&values);
+
+          for(idx = 0; idx < numValues; idx++)
+          {
+            recordMap.insert(
+              std::make_pair(
+                CFStringToCStdString(keys[idx]),
+                CStdString((const char *)CFDataGetBytePtr(values[idx]))
+              )
+            );
+          }
+        }
+        CFRelease(dict);
+      }
+    }
+    return recordMap;
+  }
+
   //helper to get (first) IP and port from a resolved service
   //returns true on success, false on if none was found
   bool CopyFirstIPv4Address(CFNetServiceRef serviceRef, CStdString& fr_address, int& fr_port)
@@ -313,6 +354,8 @@ bool CZeroconfBrowserOSX::doResolveService(CZeroconfBrowser::ZeroconfService& fr
     ret = CopyFirstIPv4Address(service, ip, port);
     fr_service.SetIP(ip);
     fr_service.SetPort(port);
+    //get txt-record list
+    fr_service.SetTxtRecords(GetTxtRecords(service));
   }
   CFRelease(type);
   CFRelease(name);
