@@ -75,7 +75,8 @@ $(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.dyli
 
 $(SYSDIR)/avfilter-1-$(ARCH).so: $(WRAPPER) ffmpeg/libavfilter/libavfilter.dylib
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
-		$(WRAPPER) ffmpeg/libavfilter/*.o $(BUNDLE1_O)
+		$(WRAPPER) ffmpeg/libavfilter/$(ARCH_DIR)/*.o \
+		ffmpeg/libavfilter/*.o $(BUNDLE1_O)
 
 ifneq ($(findstring arm,$(ARCH)), arm)
 $(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.dylib
