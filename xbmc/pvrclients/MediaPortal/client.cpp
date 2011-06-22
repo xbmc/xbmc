@@ -72,11 +72,18 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
+  {
+    delete_null(XBMC);
     return ADDON_STATUS_UNKNOWN;
+  }
 
   PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
+  {
+    delete_null(PVR);
+    delete_null(XBMC);
     return ADDON_STATUS_UNKNOWN;
+  }
 
 #ifdef TSREADER
   XBMC->Log(LOG_DEBUG, "Creating MediaPortal PVR-Client (TSReader version)");
@@ -208,6 +215,9 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   /* Create connection to MediaPortal XBMC TV client */
   if (!g_client->Connect())
   {
+    delete_null(g_client);
+    delete_null(PVR);
+    delete_null(XBMC);
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
   }
   else

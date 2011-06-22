@@ -236,6 +236,13 @@ void cPVRClientMediaPortal::Disconnect()
 
     if (result.find("True") != std::string::npos )
     {
+#ifdef TSREADER
+      if (m_tsreader)
+      {
+        m_tsreader->Close();
+        delete_null(m_tsreader);
+      }
+#endif
       result = SendCommand("StopTimeshift:\n");
     }
   }
