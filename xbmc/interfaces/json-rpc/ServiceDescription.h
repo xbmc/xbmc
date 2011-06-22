@@ -1733,7 +1733,7 @@ namespace JSONRPC
         "}"
       "}"
     "}",
-    "\"AudioLibrary.ScanForContent\": {"
+    "\"AudioLibrary.Scan\": {"
       "\"type\": \"method\","
       "\"description\": \"Scans the audio sources for new library items\","
       "\"transport\": \"Response\","
@@ -2034,7 +2034,7 @@ namespace JSONRPC
         "}"
       "}"
     "}",
-    "\"VideoLibrary.ScanForContent\": {"
+    "\"VideoLibrary.Scan\": {"
       "\"type\": \"method\","
       "\"description\": \"Scans the video sources for new library items\","
       "\"transport\": \"Response\","
