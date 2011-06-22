@@ -453,7 +453,20 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="label" id="206">
+					<control type="radiobutton" id="206">
+						<description>Videos Goes to Files</description>
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<label>$LOCALIZE[31105]</label>
+						<onclick>Skin.ToggleSetting(HomeVideostoFiles)</onclick>
+						<selected>Skin.HasSetting(HomeVideostoFiles)</selected>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+					</control>
+					<control type="label" id="220">
 						<width>750</width>
 						<height>45</height>
 						<font>font13_title</font>
@@ -463,7 +476,7 @@
 						<align>left</align>
 						<aligny>center</aligny>
 					</control>
-					<control type="radiobutton" id="207">
+					<control type="radiobutton" id="221">
 						<description>Hide Videos Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -476,7 +489,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="217">
+					<control type="radiobutton" id="222">
 						<description>Hide Movies Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -490,7 +503,7 @@
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 						<enable>Library.HasContent(Movies)</enable>
 					</control>
-					<control type="radiobutton" id="218">
+					<control type="radiobutton" id="223">
 						<description>Hide TV Shows Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -504,7 +517,7 @@
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 						<enable>Library.HasContent(TVShows)</enable>
 					</control>
-					<control type="radiobutton" id="208">
+					<control type="radiobutton" id="224">
 						<description>Hide Music Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -517,7 +530,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="209">
+					<control type="radiobutton" id="225">
 						<description>Hide Pictures Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -530,7 +543,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="210">
+					<control type="radiobutton" id="226">
 						<description>Hide Programs Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -543,7 +556,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="212">
+					<control type="radiobutton" id="228">
 						<description>Hide Weather Button</description>
 						<width>750</width>
 						<height>40</height>
