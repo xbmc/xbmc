@@ -1,7 +1,8 @@
 SRCS=	\
 	TestMain.cpp \
 	TestEvent.cpp \
-	TestSharedSection.cpp
+	TestSharedSection.cpp \
+	TestAtomics.cpp
 
 
 LIB=threadTest.a
