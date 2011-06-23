@@ -199,7 +199,8 @@ bool CWinRenderer::UpdateRenderMethod()
 bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
 {
   if(m_sourceWidth  != width
-  || m_sourceHeight != height)
+  || m_sourceHeight != height
+  || m_fps          != fps)
   {
     m_sourceWidth       = width;
     m_sourceHeight      = height;

@@ -298,6 +298,8 @@ void CDVDPlayerVideo::Process()
   CPulldownCorrection pulldown;
   CDVDVideoPPFFmpeg mPostProcess("");
   CStdString sPostProcessType;
+  unsigned int mPrevFilters = 0;
+  unsigned int mPicFlags = 0;
 
   memset(&picture, 0, sizeof(DVDVideoPicture));
 
@@ -498,12 +500,26 @@ void CDVDPlayerVideo::Process()
       EINTERLACEMETHOD mInt = g_settings.m_currentVideoSettings.m_InterlaceMethod;
       unsigned int     mFilters = 0;
 
-      if(mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+      if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+      || (mInt == VS_INTERLACEMETHOD_AUTO && (mPicFlags & DVP_FLAG_INTERLACED)
+                                          && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)))
         mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
-      else if(mInt == VS_INTERLACEMETHOD_AUTO)
-        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
+      else
+        mFilters = CDVDVideoCodec::FILTER_NONE;
 
       mFilters = m_pVideoCodec->SetFilters(mFilters);
+      if ((mFilters & CDVDVideoCodec::FILTER_DEINTERLACE_ANY) != (mPrevFilters & CDVDVideoCodec::FILTER_DEINTERLACE_ANY))
+      {
+        // When changing decoder based 2x fps deinterlacers, restart fps calculation instantly
+        if (m_hints.fpsrate && m_hints.fpsscale)
+          m_fFrameRate = DVD_TIME_BASE / CDVDCodecUtils::NormalizeFrameduration((double)DVD_TIME_BASE * m_hints.fpsscale / m_hints.fpsrate) * (mFilters & CDVDVideoCodec::FILTER_DEINTERLACE_ANY ? 2 : 1);
+        else
+          m_fFrameRate = 25;
+        ResetFrameRateCalc();
+        if( m_fFrameRate > 100 || m_fFrameRate < 5 )
+          m_fFrameRate = 25;
+        mPrevFilters = mFilters;
+      }
 
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
 
@@ -596,6 +612,7 @@ void CDVDPlayerVideo::Process()
 
             //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
             //this video
+            mPicFlags = picture.iFlags;
             if(!(mFilters & CDVDVideoCodec::FILTER_DEINTERLACE_ANY))
             {
               if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
