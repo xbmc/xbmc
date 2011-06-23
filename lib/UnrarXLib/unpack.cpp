@@ -410,9 +410,9 @@ void Unpack::Unpack29(bool Solid)
 
   if (UnpIO->UnpackToMemorySize > -1)
   {
-    SetEvent(UnpIO->hBufferEmpty);
-    while (WaitForSingleObject(UnpIO->hBufferFilled,1) != WAIT_OBJECT_0)
-      if (WaitForSingleObject(UnpIO->hQuit,1) == WAIT_OBJECT_0)
+    UnpIO->hBufferEmpty->Set();
+    while (UnpIO->hBufferFilled->WaitMSec(1))
+      if (UnpIO->hQuit->WaitMSec(1))
         return;
   }
 }

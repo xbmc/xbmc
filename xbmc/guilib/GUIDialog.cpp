@@ -243,9 +243,8 @@ void CGUIDialog::Close(bool forceClose /* = false */)
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
-    int nCount = ExitCriticalSection(g_graphicsContext);
+    CSingleExit leaveIt(g_graphicsContext);
     g_application.getApplicationMessenger().Close(this, forceClose);
-    RestoreCriticalSection(g_graphicsContext, nCount);
   }
   else
     g_application.getApplicationMessenger().Close(this, forceClose);

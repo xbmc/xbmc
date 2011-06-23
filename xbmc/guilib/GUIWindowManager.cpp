@@ -343,9 +343,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& 
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
-    int nCount = ExitCriticalSection(g_graphicsContext);
+    CSingleExit leaveIt(g_graphicsContext);
     g_application.getApplicationMessenger().ActivateWindow(iWindowID, params, swappingWindows);
-    RestoreCriticalSection(g_graphicsContext, nCount);
   }
   else
     ActivateWindow_Internal(iWindowID, params, swappingWindows);

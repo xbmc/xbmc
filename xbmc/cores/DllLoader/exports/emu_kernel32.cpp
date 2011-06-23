@@ -226,91 +226,9 @@ struct SThreadWrapper
   PCHAR lpDLL;
 };
 
-#ifdef _DEBUG
-#define MS_VC_EXCEPTION 0x406d1388
-typedef struct tagTHREADNAME_INFO
-{
-  DWORD dwType; // must be 0x1000
-  LPCSTR szName; // pointer to name (in same addr space)
-  DWORD dwThreadID; // thread ID (-1 caller thread)
-  DWORD dwFlags; // reserved for future use, most be zero
-} THREADNAME_INFO;
-#endif
-
-#ifdef _LINUX
-int dllThreadWrapper(LPVOID lpThreadParameter)
-#else
-unsigned int __stdcall dllThreadWrapper(LPVOID lpThreadParameter)
-#endif
-{
-  SThreadWrapper *param = (SThreadWrapper*)lpThreadParameter;
-  DWORD result;
-
-#if defined(_DEBUG) && !defined(_LINUX)
-  THREADNAME_INFO info;
-  info.dwType = 0x1000;
-  info.szName = "DLL";
-  info.dwThreadID = ::GetCurrentThreadId();
-  info.dwFlags = 0;
-  __try
-  {
-    RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(DWORD), (DWORD *)&info);
-  }
-  __except (EXCEPTION_CONTINUE_EXECUTION)
-  {
-  }
-#endif
-
-  __try
-  {
-    result = param->lpStartAddress(param->lpParameter);
-  }
-  __except (EXCEPTION_EXECUTE_HANDLER)
-  {
-    CLog::Log(LOGERROR, "DLL:%s - Unhandled exception in thread created by dll", param->lpDLL );
-    result = 0;
-  }
-
-  delete param;
-  return result;
-
-}
-
-extern "C" HANDLE WINAPI dllCreateThread(
-  LPSECURITY_ATTRIBUTES lpThreadAttributes, // SD
-  DWORD dwStackSize,                        // initial stack size
-  LPTHREAD_START_ROUTINE lpStartAddress,    // thread function
-  LPVOID lpParameter,                       // thread argument
-  DWORD dwCreationFlags,                    // creation option
-  LPDWORD lpThreadId                        // thread identifier
-)
-{
-  uintptr_t loc = (uintptr_t)_ReturnAddress();
-
-  SThreadWrapper *param = new SThreadWrapper;
-  param->lpStartAddress = lpStartAddress;
-  param->lpParameter = lpParameter;
-  param->lpDLL = tracker_getdllname(loc);
-
-  return (HANDLE)_beginthreadex(lpThreadAttributes, dwStackSize, dllThreadWrapper, param, dwCreationFlags, (unsigned int *)lpThreadId);
-}
-
-
-extern "C" BOOL WINAPI dllTerminateThread(HANDLE tHread, DWORD dwExitCode)
-{
-  not_implement("kernel32.dll fake function TerminateThread called\n");  //warning
-  return TRUE;
-}
-
 extern "C" void WINAPI dllSleep(DWORD dwTime)
 {
   return ::Sleep(dwTime);
-}
-
-extern "C" HANDLE WINAPI dllGetCurrentThread(void)
-{
-  HANDLE retval = GetCurrentThread();
-  return retval;
 }
 
 extern "C" DWORD WINAPI dllGetCurrentProcessId(void)
@@ -412,65 +330,6 @@ extern "C" UINT WINAPI dllGetPrivateProfileIntA(
 {
   not_implement("kernel32.dll fake function GetPrivateProfileIntA called\n"); //warning
   return nDefault;
-}
-
-//globals for memory leak hack, no need for well-behaved dlls call init/del in pair
-//We can free the sections if applications does not call deletecriticalsection
-//need to initialize the list head NULL at mplayer_open_file, and free memory at close file.
-std::map<LPCRITICAL_SECTION, LPCRITICAL_SECTION> g_mapCriticalSection;
-
-extern "C" void WINAPI dllDeleteCriticalSection(LPCRITICAL_SECTION cs)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "DeleteCriticalSection(0x%x)", cs);
-#endif
-  if (g_mapCriticalSection.find(cs) != g_mapCriticalSection.end())
-  {
-    LPCRITICAL_SECTION cs_new = g_mapCriticalSection[cs];
-    DeleteCriticalSection(cs_new);
-    delete cs_new;
-    g_mapCriticalSection.erase(cs);
-  }
-}
-
-extern "C" void WINAPI dllInitializeCriticalSection(LPCRITICAL_SECTION cs)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "InitializeCriticalSection(0x%x)", cs);
-#endif
-  LPCRITICAL_SECTION cs_new = new CRITICAL_SECTION;
-  memset(cs_new, 0, sizeof(CRITICAL_SECTION));
-  InitializeCriticalSection(cs_new);
-
-  // just take the first member of the CRITICAL_SECTION to save ourdata in, this will be used to
-  // get fast access to the new critial section in dllLeaveCriticalSection and dllEnterCriticalSection
-  ((LPCRITICAL_SECTION*)cs)[0] = cs_new;
-  g_mapCriticalSection[cs] = cs_new;
-}
-
-extern "C" void WINAPI dllLeaveCriticalSection(LPCRITICAL_SECTION cs)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "LeaveCriticalSection(0x%x) %p\n", ((LPCRITICAL_SECTION*)cs)[0]);
-#endif
-  LeaveCriticalSection(((LPCRITICAL_SECTION*)cs)[0]);
-}
-
-extern "C" void WINAPI dllEnterCriticalSection(LPCRITICAL_SECTION cs)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "EnterCriticalSection(0x%x) %p\n", cs, ((LPCRITICAL_SECTION*)cs)[0]);
-#endif
-#ifndef _LINUX
-  if (!(LPCRITICAL_SECTION)cs->OwningThread)
-  {
-#ifdef API_DEBUG
-    CLog::Log(LOGDEBUG, "entered uninitialized critisec!\n");
-#endif
-    dllInitializeCriticalSection(cs);
-  }
-#endif
-  EnterCriticalSection(((LPCRITICAL_SECTION*)cs)[0]);
 }
 
 extern "C" DWORD WINAPI dllGetVersion()
@@ -962,27 +821,6 @@ extern "C" int WINAPI dllCreateDirectoryA(const char *pathname, void *sa)
   return 1;
 }
 
-extern "C" DWORD WINAPI dllWaitForSingleObject(HANDLE hHandle, DWORD dwMiliseconds)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "WaitForSingleObject(0x%x, %d)", hHandle, dwMiliseconds);
-#endif
-  return WaitForSingleObject(hHandle, dwMiliseconds);
-}
-
-#ifdef _LINUX
-extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds)
-#else
-extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds)
-#endif
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "WaitForMultipleObjects(..)");
-#endif
-
-  return WaitForMultipleObjects(nCount, lpHandles, fWaitAll, dwMilliseconds);
-}
-
 extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProcessAffinityMask, LPDWORD lpSystemAffinityMask)
 {
   CLog::Log(LOGDEBUG, "GetProcessAffinityMask(%p, %p, %p) => 1\n",
@@ -1126,91 +964,6 @@ extern "C" UINT WINAPI dllSetConsoleCtrlHandler(PHANDLER_ROUTINE HandlerRoutine,
   return 0;
 #endif
 }
-
-typedef struct _SFlsSlot
-{
-  LONG lInUse;
-  PVOID	pData;
-  PFLS_CALLBACK_FUNCTION pCallback;
-}
-SFlsSlot, *LPSFlsSlot;
-
-#define FLS_NUM_SLOTS 5
-#if defined (_LINUX)
-#define FLS_OUT_OF_INDEXES (DWORD)0xFFFFFFFF
-#endif
-SFlsSlot flsSlots[FLS_NUM_SLOTS] = { { false, NULL, NULL } };
-
-extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback)
-{
-  DWORD i;
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "FlsAlloc(0x%x)\n", lpCallback);
-#endif
-  for (i = 0; i < FLS_NUM_SLOTS; i++) {
-    if( InterlockedCompareExchange(&flsSlots[i].lInUse, 1, 0) == 0 ) {
-      flsSlots[i].pData = NULL;
-      flsSlots[i].pCallback = lpCallback;
-      return i;
-    }
-  }
-  SetLastError(ERROR_INVALID_PARAMETER);
-  CLog::Log(LOGERROR, " - Out of fls slots");
-  return FLS_OUT_OF_INDEXES; // "
-}
-
-static LPSFlsSlot FlsGetSlot(DWORD dwFlsIndex)
-{
-  if (dwFlsIndex >= FLS_NUM_SLOTS) {
-    SetLastError(ERROR_INVALID_PARAMETER);
-    return NULL;
-  }
-  if (flsSlots[dwFlsIndex].lInUse != 1) {
-    SetLastError(ERROR_INVALID_PARAMETER); // actually ERROR_NO_MEMORY would be correct
-    return NULL;
-  }
-  return &(flsSlots[dwFlsIndex]);
-}
-
-extern "C" BOOL WINAPI dllFlsSetValue(DWORD dwFlsIndex, PVOID lpFlsData)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "FlsSetValue(%d, 0x%x) => 0x%x\n", dwFlsIndex, lpFlsData);
-#endif
-  LPSFlsSlot slot = FlsGetSlot(dwFlsIndex);
-  if (slot == NULL)
-    return false;
-  slot->pData = lpFlsData;
-  return true;
-}
-
-extern "C" PVOID WINAPI dllFlsGetValue(DWORD dwFlsIndex)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "FlsGetValue(%d)\n", dwFlsIndex);
-#endif
-  LPSFlsSlot slot = FlsGetSlot(dwFlsIndex);
-  return (slot == NULL) ? NULL : slot->pData;
-}
-
-extern "C" BOOL WINAPI dllFlsFree(DWORD dwFlsIndex)
-{
-#ifdef API_DEBUG
-  CLog::Log(LOGDEBUG, "FlsFree(%d)\n", dwFlsIndex);
-#endif
-  LPSFlsSlot slot = FlsGetSlot(dwFlsIndex);
-  if (slot == NULL)
-    return false;
-
-  if( slot->pCallback )
-    slot->pCallback(slot->pData);
-
-  slot->pData = NULL;
-  slot->lInUse = 0;
-
-  return true;
-}
-
 
 extern "C" PVOID WINAPI dllEncodePointer(PVOID ptr)
 {

@@ -67,7 +67,6 @@ XBPython::XBPython()
   m_bLogin            = false;
   m_nextid            = 0;
   m_mainThreadState   = NULL;
-  m_globalEvent       = CreateEvent(NULL, false, false, (char*)"pythonGlobalEvent");
   m_ThreadId          = CThread::GetCurrentThreadId();
   m_iDllScriptCounter = 0;
   m_vecPlayerCallbackList.clear();
@@ -75,7 +74,6 @@ XBPython::XBPython()
 
 XBPython::~XBPython()
 {
-  CloseHandle(m_globalEvent);
 }
 
 // message all registered callbacks that xbmc stopped playing
@@ -674,15 +672,15 @@ int XBPython::GetPythonScriptId(int scriptPosition)
 
 void XBPython::PulseGlobalEvent()
 {
-  SetEvent(m_globalEvent);
+  m_globalEvent.Set();
 }
 
-void XBPython::WaitForEvent(HANDLE hEvent, unsigned int timeout)
+void XBPython::WaitForEvent(CEvent& hEvent, unsigned int timeout)
 {
   // wait for either this event our our global event
-  HANDLE handles[2] = { hEvent, m_globalEvent };
-  WaitForMultipleObjects(2, handles, FALSE, timeout);
-  ResetEvent(m_globalEvent);
+  XbmcThreads::CEventGroup eventGroup(&hEvent, &m_globalEvent, NULL);
+  eventGroup.wait(timeout);
+  m_globalEvent.Reset();
 }
 
 // execute script, returns -1 if script doesn't exist

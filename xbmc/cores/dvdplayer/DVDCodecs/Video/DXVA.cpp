@@ -40,6 +40,7 @@
 #include "boost/shared_ptr.hpp"
 #include "utils/AutoPtrHandle.h"
 #include "settings/AdvancedSettings.h"
+#include "threads/Atomics.h"
 
 #define ALLOW_ADDING_SURFACES 0
 
@@ -586,9 +587,9 @@ bool CDecoder::OpenProcessor()
 {
   m_state = DXVA_OPEN;
 
-  { CSingleExit leave(m_section);
+  {
+    CSingleExit leave(m_section);
     CProcessor* processor = new CProcessor();
-    leave.Restore();
     m_processor = processor;
   }
 
@@ -1104,13 +1105,13 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
 
 CProcessor* CProcessor::Acquire()
 {
-  InterlockedIncrement(&m_references);
+  AtomicIncrement(&m_references);
   return this;
 }
 
 long CProcessor::Release()
 {
-  long count = InterlockedDecrement(&m_references);
+  long count = AtomicDecrement(&m_references);
   ASSERT(count >= 0);
   if (count == 0) delete this;
   return count;

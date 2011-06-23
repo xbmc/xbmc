@@ -10,7 +10,6 @@ SRCS=ConvUtils.cpp \
      LinuxResourceCounter.cpp \
      LinuxTimezone.cpp \
      PosixMountProvider.cpp \
-     XCriticalSection.cpp \
      XEventUtils.cpp \
      XFileUtils.cpp \
      XHandle.cpp \

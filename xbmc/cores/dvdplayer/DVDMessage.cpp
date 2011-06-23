@@ -44,7 +44,7 @@ void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, DWORD source)
   /* if we are not requested to wait on this object just return, reference count will be decremented */
   if (source && !(m_sources & source)) return;
 
-  InterlockedIncrement(&m_objects);
+  AtomicIncrement(&m_objects);
 
   DWORD timeout = CTimeUtils::GetTimeMS() + m_timeout;
 

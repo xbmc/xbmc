@@ -52,7 +52,8 @@ void CGUIDialogProgress::SetCanCancel(bool bCanCancel)
 {
   m_bCanCancel = bCanCancel;
   CGUIMessage msg(bCanCancel ? GUI_MSG_VISIBLE : GUI_MSG_HIDDEN, GetID(), CONTROL_CANCEL_BUTTON);
-  if(OwningCriticalSection(g_graphicsContext))
+  CSingleTryLock tryLock(g_graphicsContext);
+  if(tryLock.IsOwner())
     OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());
@@ -196,7 +197,8 @@ bool CGUIDialogProgress::Abort()
 void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
 {
   CGUIMessage msg(bOnOff ? GUI_MSG_VISIBLE : GUI_MSG_HIDDEN, GetID(), CONTROL_PROGRESS_BAR);
-  if(OwningCriticalSection(g_graphicsContext))
+  CSingleTryLock tryLock(g_graphicsContext);
+  if(tryLock.IsOwner())
     OnMessage(msg);
   else
     g_windowManager.SendThreadMessage(msg, GetID());

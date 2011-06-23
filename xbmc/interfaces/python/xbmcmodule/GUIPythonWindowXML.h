@@ -23,6 +23,7 @@
 
 #include "GUIPythonWindow.h"
 #include "windows/GUIMediaWindow.h"
+#include "threads/Event.h"
 
 int Py_XBMC_Event_OnClick(void* arg);
 int Py_XBMC_Event_OnFocus(void* arg);
@@ -60,7 +61,7 @@ protected:
   void             SetupShares();
   void*            pCallbackWindow;
   void*            m_threadState;
-  HANDLE           m_actionEvent;
+  CEvent           m_actionEvent;
   bool             m_bRunning;
   CStdString       m_scriptPath;
   CStdString       m_mediaDir;
