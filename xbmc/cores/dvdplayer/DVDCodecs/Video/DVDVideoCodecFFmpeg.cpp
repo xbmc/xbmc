@@ -354,6 +354,8 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
 
 unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
 {
+  m_filters_next.Empty();
+
   if(m_pHardware)
     return 0;
 
