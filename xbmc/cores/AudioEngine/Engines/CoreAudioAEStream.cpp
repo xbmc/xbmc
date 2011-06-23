@@ -142,7 +142,7 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
   {
     if (
       !m_remap.Initialize(m_StreamFormat.m_channelLayout, m_OutputFormat.m_channelLayout, false) ||
-      !m_vizRemap.Initialize(m_StreamFormat.m_channelLayout, CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true))
+      !m_vizRemap.Initialize(m_OutputFormat.m_channelLayout, CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true))
     {
       m_valid = false;
       SDL_mutexV(m_MutexStream);
@@ -435,19 +435,23 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
 #endif
   
   /* we have a frame, if we have a viz we need to hand the data to it.
-     On iOS we do not have vizualisation */
+     On iOS we do not have vizualisation. Keep in mind that our buffer
+     is already in output format. So we remap output format to viz format !!!*/
 #ifndef __arm__
-  if(!COREAUDIO_IS_RAW(m_StreamFormat.m_dataFormat))
+  if(!COREAUDIO_IS_RAW(m_StreamFormat.m_dataFormat) && (m_OutputFormat.m_dataFormat == AE_FMT_FLOAT))
   {
     // TODO : Why the hell is vizdata limited ?
-    unsigned int frames = readsize / (m_OutputFormat.m_channelCount * m_StreamBytesPerSample);
-    // Viz channel count is 2.0
-    CheckOutputBufferSize((void **)&m_vizRemapBuffer, &m_vizRemapBufferSize, frames * 2 * sizeof(float));
+    unsigned int samples   = ret / (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3);
+    unsigned int frames    = samples / m_StreamFormat.m_channelCount;
 
-    int samples  = ((readsize / m_StreamBytesPerSample) > 512) ? 512 : readsize / m_StreamBytesPerSample;
+    // Viz channel count is 2
+    CheckOutputBufferSize((void **)&m_vizRemapBuffer, &m_vizRemapBufferSize, 
+                          frames * 2 * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
+
+    samples  = (samples > 512) ? 512 : samples;
 
     m_vizRemap.Remap((float*)buffer, (float*)m_vizRemapBuffer, frames);
-    if (m_audioCallback && readsize)
+    if (m_audioCallback && ret)
     {
       m_audioCallback->OnAudioData((float *)m_vizRemapBuffer, samples);
     }
