@@ -160,8 +160,8 @@ public:
   void ProcessSlow();
   void ResetScreenSaver();
   int GetVolume() const;
-  void SetVolume(int iPercent);
-  void Mute(void);
+  void SetVolume(long iValue, bool isPercentage = true);
+  void ToggleMute(void);
   void ShowVolumeBar(const CAction *action = NULL);
   int GetPlaySpeed() const;
   int GetSubtitleDelay() const;
@@ -344,6 +344,9 @@ protected:
   CCriticalSection m_frameMutex;
   XbmcThreads::ConditionVariable  m_frameCond;
 #endif
+
+  void Mute();
+  void UnMute();
 
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
