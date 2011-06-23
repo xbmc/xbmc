@@ -382,7 +382,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
       m_inDrainFunc = false;
     }
     //SDL_mutexV(m_MutexStream);
-    //return 0;
+    return 0;
   }
   else /*if(readsize < size)*/
   {
@@ -442,18 +442,20 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   {
     // TODO : Why the hell is vizdata limited ?
     unsigned int samples   = ret / (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3);
-    unsigned int frames    = samples / m_StreamFormat.m_channelCount;
+    unsigned int frames    = samples / m_OutputFormat.m_channelCount;
 
-    // Viz channel count is 2
-    CheckOutputBufferSize((void **)&m_vizRemapBuffer, &m_vizRemapBufferSize, 
-                          frames * 2 * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
-
-    samples  = (samples > 512) ? 512 : samples;
-
-    m_vizRemap.Remap((float*)buffer, (float*)m_vizRemapBuffer, frames);
-    if (m_audioCallback && ret)
-    {
-      m_audioCallback->OnAudioData((float *)m_vizRemapBuffer, samples);
+    if(samples) {
+      // Viz channel count is 2
+      CheckOutputBufferSize((void **)&m_vizRemapBuffer, &m_vizRemapBufferSize, 
+                            frames * 2 * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
+      
+      samples  = (samples > 512) ? 512 : samples;
+      
+      m_vizRemap.Remap((float*)buffer, (float*)m_vizRemapBuffer, frames);
+      if (m_audioCallback)
+      {
+        m_audioCallback->OnAudioData((float *)m_vizRemapBuffer, samples);
+      }
     }
   }
 #endif
