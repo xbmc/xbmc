@@ -364,8 +364,6 @@ unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
       m_filters_next = "yadif=1:-1";
     flags &= ~FILTER_DEINTERLACE_ANY | FILTER_DEINTERLACE_YADIF;
   }
-  else if(flags == FILTER_NONE)
-    m_filters_next = "";
 
   return flags;
 }
@@ -518,8 +516,6 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
   if (!m_filters.Equals(m_filters_next))
   {
     m_filters = m_filters_next;
-    if(m_filters == "")
-      FilterClose();
     if(FilterOpen(m_filters) < 0)
       FilterClose();
   }
@@ -831,6 +827,9 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
       m_pFrame->reordered_opaque = 0;
     else
       m_pFrame->repeat_pict      = -(frames - 1);
+
+    m_pFrame->interlaced_frame = m_pFilterLink->cur_buf->video->interlaced;
+    m_pFrame->top_field_first  = m_pFilterLink->cur_buf->video->top_field_first;
 
     memcpy(m_pFrame->linesize, m_pFilterLink->cur_buf->linesize, 4*sizeof(int));
     memcpy(m_pFrame->data    , m_pFilterLink->cur_buf->data    , 4*sizeof(uint8_t*));
