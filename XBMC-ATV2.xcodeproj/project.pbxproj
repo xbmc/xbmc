@@ -27,8 +27,6 @@
 		DF0DF16D13A3AF82008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */; };
 		F54D9E0712B65FFF006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E0612B65FFF006870F9 /* libc.dylib */; };
 		F54D9E8E12B71457006870F9 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8D12B71457006870F9 /* CoreAudio.framework */; };
-		F558F66913AFE7F300631E12 /* Condition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F66713AFE7F300631E12 /* Condition.cpp */; };
-		F558F66B13AFE80000631E12 /* Interruptible.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F66A13AFE80000631E12 /* Interruptible.cpp */; };
 		F558F66F13AFE81500631E12 /* ThreadLocal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F66D13AFE81500631E12 /* ThreadLocal.cpp */; };
 		F56B15FB12CD6922009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15FA12CD6922009B4C96 /* CoreVideo.framework */; };
 		F56B15FD12CD6930009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15FC12CD6930009B4C96 /* AudioToolbox.framework */; };
@@ -961,10 +959,7 @@
 		DF0DF16B13A3AF82008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
 		F54D9E0612B65FFF006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F54D9E8D12B71457006870F9 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
-		F558F66713AFE7F300631E12 /* Condition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Condition.cpp; sourceTree = "<group>"; };
 		F558F66813AFE7F300631E12 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
-		F558F66A13AFE80000631E12 /* Interruptible.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Interruptible.cpp; sourceTree = "<group>"; };
-		F558F66C13AFE80800631E12 /* Interruptible.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Interruptible.h; sourceTree = "<group>"; };
 		F558F66D13AFE81500631E12 /* ThreadLocal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadLocal.cpp; sourceTree = "<group>"; };
 		F558F66E13AFE81500631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		F56B15FA12CD6922009B4C96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -4981,13 +4976,10 @@
 			children = (
 				F56C76F8131EC153000AD0F6 /* Atomics.cpp */,
 				F56C76F9131EC153000AD0F6 /* Atomics.h */,
-				F558F66713AFE7F300631E12 /* Condition.cpp */,
 				F558F66813AFE7F300631E12 /* Condition.h */,
 				F56C76FB131EC153000AD0F6 /* CriticalSection.h */,
 				F56C76FC131EC153000AD0F6 /* Event.cpp */,
 				F56C76FD131EC153000AD0F6 /* Event.h */,
-				F558F66A13AFE80000631E12 /* Interruptible.cpp */,
-				F558F66C13AFE80800631E12 /* Interruptible.h */,
 				F56C76FF131EC153000AD0F6 /* LockFree.cpp */,
 				F56C7700131EC153000AD0F6 /* LockFree.h */,
 				F56C7706131EC153000AD0F6 /* SharedSection.h */,
@@ -6695,8 +6687,6 @@
 				7C0A7FCC13A9E76E00AFC2BD /* GUIWindowDebugInfo.cpp in Sources */,
 				DF0DF16C13A3AF82008ED511 /* FileNFS.cpp in Sources */,
 				DF0DF16D13A3AF82008ED511 /* NFSDirectory.cpp in Sources */,
-				F558F66913AFE7F300631E12 /* Condition.cpp in Sources */,
-				F558F66B13AFE80000631E12 /* Interruptible.cpp in Sources */,
 				F558F66F13AFE81500631E12 /* ThreadLocal.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
