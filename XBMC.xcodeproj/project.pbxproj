@@ -1162,10 +1162,6 @@
 		F558F3D113AE663A00631E12 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */; };
 		F558F51E13AF03AD00631E12 /* ThreadLocal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F51C13AF03AD00631E12 /* ThreadLocal.cpp */; };
 		F558F51F13AF03AD00631E12 /* ThreadLocal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F51C13AF03AD00631E12 /* ThreadLocal.cpp */; };
-		F558F52213AF03D100631E12 /* Interruptible.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F52013AF03D100631E12 /* Interruptible.cpp */; };
-		F558F52313AF03D100631E12 /* Interruptible.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F52013AF03D100631E12 /* Interruptible.cpp */; };
-		F558F54E13AF091000631E12 /* Condition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F54C13AF091000631E12 /* Condition.cpp */; };
-		F558F54F13AF091000631E12 /* Condition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F54C13AF091000631E12 /* Condition.cpp */; };
 		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F56C8CE2131F5DAF000AD0F6 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CE1131F5DAF000AD0F6 /* libc.dylib */; };
@@ -3662,9 +3658,6 @@
 		F558F29513ABD7DF00631E12 /* GUIWindowDebugInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowDebugInfo.h; sourceTree = "<group>"; };
 		F558F51C13AF03AD00631E12 /* ThreadLocal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadLocal.cpp; sourceTree = "<group>"; };
 		F558F51D13AF03AD00631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
-		F558F52013AF03D100631E12 /* Interruptible.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Interruptible.cpp; sourceTree = "<group>"; };
-		F558F52113AF03D100631E12 /* Interruptible.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Interruptible.h; sourceTree = "<group>"; };
-		F558F54C13AF091000631E12 /* Condition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Condition.cpp; sourceTree = "<group>"; };
 		F558F54D13AF091000631E12 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		F56579AD13060D1E0085ED7F /* RenderCapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCapture.cpp; sourceTree = "<group>"; };
 		F56579AE13060D1E0085ED7F /* RenderCapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RenderCapture.h; sourceTree = "<group>"; };
@@ -4697,13 +4690,10 @@
 			children = (
 				83E0B2480F7C95FF0091643F /* Atomics.cpp */,
 				83E0B2470F7C95FF0091643F /* Atomics.h */,
-				F558F54C13AF091000631E12 /* Condition.cpp */,
 				F558F54D13AF091000631E12 /* Condition.h */,
 				E38E1E2E0D25F9FD00618676 /* CriticalSection.h */,
 				E38E1E350D25F9FD00618676 /* Event.cpp */,
 				E38E1E360D25F9FD00618676 /* Event.h */,
-				F558F52013AF03D100631E12 /* Interruptible.cpp */,
-				F558F52113AF03D100631E12 /* Interruptible.h */,
 				83A72B950FBC8E3B00171871 /* LockFree.cpp */,
 				83A72B960FBC8E3B00171871 /* LockFree.h */,
 				E38E1E7A0D25F9FD00618676 /* SharedSection.h */,
@@ -8043,8 +8033,6 @@
 				DF0DF15B13A3ADA7008ED511 /* FileNFS.cpp in Sources */,
 				DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */,
 				F558F51E13AF03AD00631E12 /* ThreadLocal.cpp in Sources */,
-				F558F52213AF03D100631E12 /* Interruptible.cpp in Sources */,
-				F558F54E13AF091000631E12 /* Condition.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8935,8 +8923,6 @@
 				F558F3D013AE663300631E12 /* FileNFS.cpp in Sources */,
 				F558F3D113AE663A00631E12 /* NFSDirectory.cpp in Sources */,
 				F558F51F13AF03AD00631E12 /* ThreadLocal.cpp in Sources */,
-				F558F52313AF03D100631E12 /* Interruptible.cpp in Sources */,
-				F558F54F13AF091000631E12 /* Condition.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
