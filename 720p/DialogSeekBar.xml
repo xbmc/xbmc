@@ -1,32 +1,27 @@
+<?xml version="1.0"?>
 <window id="115">
-  <defaultcontrol>1</defaultcontrol>
-  <visible>Player.Seeking | Player.DisplayAfterSeek | Player.ShowCodec | [Player.ShowInfo + Window.IsActive(FullScreenVideo)] | Window.IsActive(VideoOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
-
-  <controls>
-
-    <control type="group">
-      <posx>48</posx>
-      <posy>657</posy>
-      <visible>!Player.HasAudio + Window.IsActive(FullScreenVideo)</visible>
-      <include>VideoOSDSlide</include>
-
-      <control type="progress" id="23">
-        <description>Progress Bar</description>
-        <width>1184</width>
-        <info>Player.Progress</info>
-      </control>
-
-      <control type="group">
-        <visible>Player.Seeking</visible>
-        <animation effect="fade" end="100" time="400" delay="0">Visible</animation>
-        <animation effect="fade" end="0" time="200">Hidden</animation>
-
-        <control type="slider" id="401">
-          <description>Seek Slider</description>
-          <width>1184</width>
-        </control>
-      </control>
-    </control>
-
-  </controls>
+	<defaultcontrol>1</defaultcontrol>
+	<visible>Player.Seeking | Player.DisplayAfterSeek | Player.ShowCodec | [Player.ShowInfo + Window.IsActive(FullScreenVideo)] | Window.IsActive(VideoOSD) | Player.Paused | Player.Forwarding | Player.Rewinding</visible>
+	<controls>
+		<control type="group">
+			<posx>48</posx>
+			<posy>657</posy>
+			<visible>!Player.HasAudio + Window.IsActive(FullScreenVideo)</visible>
+			<include>VideoOSDSlide</include>
+			<control type="progress" id="23">
+				<description>Progress Bar</description>
+				<width>1184</width>
+				<info>Player.Progress</info>
+			</control>
+			<control type="group">
+				<visible>Player.Seeking</visible>
+				<animation effect="fade" end="100" time="400" delay="0">Visible</animation>
+				<animation effect="fade" end="0" time="200">Hidden</animation>
+				<control type="slider" id="401">
+					<description>Seek Slider</description>
+					<width>1184</width>
+				</control>
+			</control>
+		</control>
+	</controls>
 </window>

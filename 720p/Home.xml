@@ -1770,7 +1770,7 @@
 						<onright>-</onright>
 						<onleft>300</onleft>
 						<posx>-14</posx>
-						<posy>0</posy>
+						<posy>8</posy>
 						<width>880</width>
 						<height>400</height>
 						<itemlayout width="140" height="230">
@@ -1841,6 +1841,52 @@
 									<textcolor>FFdddddd</textcolor>
 									<wrapmultiline>false</wrapmultiline>
 									<visible>ListItem.Type(album)</visible>
+								</control>
+							</control>
+							<!-- photos -->
+							<control type="group">
+								<!-- drop shadow -->
+								<control type="image">
+									<posx>28</posx>
+									<posy>43</posy>
+									<width>134</width>
+									<height>134</height>
+									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+									<visible>ListItem.Type(photo)</visible>
+								</control>
+								<control type="image">
+									<posx>37</posx>
+									<posy>53</posy>
+									<width>116</width>
+									<height>116</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Icon]</texture>
+									<visible>ListItem.Type(photo)</visible>
+								</control>
+								<control type="image">
+									<posx>35</posx>
+									<posy>181</posy>
+									<width>120</width>
+									<height>30</height>
+									<texture border="10">whitewiderounded.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+									<visible>ListItem.Type(photo)</visible>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>194</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$INFO[ListItem.Title]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFdddddd</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>ListItem.Type(photo)</visible>
+									<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 								</control>
 							</control>
 							<!-- tv show episode when both lists are visible -->
@@ -2163,6 +2209,20 @@
 									<wrapmultiline>false</wrapmultiline>
 									<visible>ListItem.Type(album)</visible>
 									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+								</control>
+							</control>
+							<!-- photos -->
+							<control type="group">
+								<control type="image">
+									<posx>34</posx>
+									<posy>50</posy>
+									<width>122</width>
+									<height>122</height>
+									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
+									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<visible>ListItem.Type(photo)</visible>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
 								</control>
 							</control>
 							<!-- tv show episode when both lists are visible -->
@@ -2516,6 +2576,17 @@
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="200">auto</width>
 							<visible>ControlGroup(7001).HasFocus + Container(11000).ListItem(0).Type(album) + !IsEmpty(Container(11000).ListItem(0).Year)</visible>
+						</control>
+						<!-- photos-->
+						<control type="label">
+							<align>left</align>
+							<label>$INFO[Container(11000).ListItem(0).Title]</label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="300">auto</width>
+							<visible>ControlGroup(7001).HasFocus + [Container(11000).ListItem(0).Type(photo)]</visible>
 						</control>
 						<!-- general -->
 						<control type="label">
