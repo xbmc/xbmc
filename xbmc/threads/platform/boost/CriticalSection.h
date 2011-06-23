@@ -21,5 +21,16 @@
 
 #pragma once
 
-#include "threads/platform/ThreadLocal.h"
+#include "threads/Lockables.h"
+
+#include <boost/thread/recursive_mutex.hpp>
+
+/**
+ * A CCriticalSection is a CountingLockable whose implementation is a boost
+ *  recursive_mutex.
+ *
+ * This is not a typedef because of a number of "class CCriticalSection;" 
+ *  forward declarations in the code that break when it's done that way.
+ */
+class CCriticalSection : public XbmcThreads::CountingLockable<boost::recursive_mutex> {};
 

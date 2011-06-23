@@ -140,3 +140,51 @@ BOOST_AUTO_TEST_CASE(TestSharedSection2Case)
   }
 }
 
+BOOST_AUTO_TEST_CASE(TestMultipleSharedSectionCase)
+{
+  CSharedSection sec;
+
+  locker<CSharedLock> l1(sec,20);
+
+  {
+    CSharedLock lock(sec);
+    boost::thread waitThread1(boost::ref(l1));
+
+    Sleep(10);
+    BOOST_CHECK(l1.haslock);
+
+    waitThread1.join();
+  }
+
+  locker<CSharedLock> l2(sec,50);
+  locker<CSharedLock> l3(sec,50);
+  locker<CSharedLock> l4(sec,50);
+  locker<CSharedLock> l5(sec,50);
+  {
+    CExclusiveLock lock(sec);
+    boost::thread waitThread1(boost::ref(l2));
+    boost::thread waitThread2(boost::ref(l3));
+    boost::thread waitThread3(boost::ref(l4));
+    boost::thread waitThread4(boost::ref(l5));
+
+    Sleep(5);
+    BOOST_CHECK(!l2.haslock);
+    BOOST_CHECK(!l3.haslock);
+    BOOST_CHECK(!l4.haslock);
+    BOOST_CHECK(!l5.haslock);
+
+    lock.Leave();
+
+    Sleep(5);
+    BOOST_CHECK(l2.haslock);
+    BOOST_CHECK(l3.haslock);
+    BOOST_CHECK(l4.haslock);
+    BOOST_CHECK(l5.haslock);
+    
+    waitThread1.join();
+    waitThread2.join();
+    waitThread3.join();
+    waitThread4.join();
+  }
+}
+

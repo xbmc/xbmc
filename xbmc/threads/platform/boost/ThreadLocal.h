@@ -19,9 +19,24 @@
 *
 */
 
-#include "threads/ThreadLocal.h"
+#pragma once
+
+#include <boost/thread/tss.hpp>
 
 namespace XbmcThreads
 {
-  void ThreadLocalNoCleanup(void*) {}
+  /**
+   * A thin wrapper around boost::thread_specific_ptr
+   */
+  template <typename T> class ThreadLocal
+  {
+    boost::thread_specific_ptr<T> value;
+
+    typedef void (*cleanupFunction)(T*);
+  public:
+    inline ThreadLocal() : value((cleanupFunction)NULL) {}
+    inline void set(T* val) { value.reset(val); }
+    inline T* get() { return value.get(); }
+  };
 }
+

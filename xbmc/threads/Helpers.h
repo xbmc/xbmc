@@ -21,5 +21,29 @@
 
 #pragma once
 
-#include "threads/platform/ThreadLocal.h"
+#include <sys/time.h>
+#include <assert.h>
 
+namespace XbmcThreads
+{
+  /**
+   * Any class that inherits from NonCopyable will ... not be copyable (Duh!)
+   */
+  class NonCopyable
+  {
+    inline NonCopyable(const NonCopyable& ) {}
+    inline NonCopyable& operator=(const NonCopyable& ) { return *this; }
+  public:
+    inline NonCopyable() {}
+  };
+
+  inline unsigned long long currentTimeMillis()
+  {
+    struct timeval tv;
+    int result = gettimeofday(&tv,NULL);
+    assert(result == 0);
+    unsigned long long ret = (unsigned long long)tv.tv_sec * (unsigned long long)1000;
+    ret += (unsigned long long)tv.tv_usec / (unsigned long long)1000;
+    return ret;
+  }
+}

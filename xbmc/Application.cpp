@@ -1880,32 +1880,10 @@ bool CApplication::WaitFrame(unsigned int timeout)
   // Wait for all other frames to be presented
   CSingleLock lock(m_frameMutex);
   //wait until event is set, but modify remaining time
-  DWORD dwStartTime = CTimeUtils::GetTimeMS();
-  DWORD dwRemainingTime = timeout;
-  while(m_frameCount > 0)
-  {
-    ConditionVariable::TimedWaitResponse result = m_frameCond.wait(lock, dwRemainingTime);
-    if (result == ConditionVariable::TW_OK)
-    {
-      //fix time to wait because of spurious wakeups
-      DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
-      if(dwElapsed < dwRemainingTime)
-      {
-        dwRemainingTime -= dwElapsed;
-        continue;
-      }
-      else
-      {
-        //ran out of time
-        result = ConditionVariable::TW_TIMEDOUT;
-      }
-    }
 
-    if(result == ConditionVariable::TW_TIMEDOUT)
-      break;
-    if(result < 0)
-      CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
-  }
+  NotFrameCount nfc(this);
+  TightConditionVariable<NotFrameCount&> cv(m_frameCond, nfc);
+  cv.wait(lock,timeout);
   done = m_frameCount == 0;
 
   return done;
@@ -1955,34 +1933,8 @@ void CApplication::Render()
     {
       CSingleLock lock(m_frameMutex);
 
-      //wait until event is set, but modify remaining time
-      DWORD dwStartTime = CTimeUtils::GetTimeMS();
-      DWORD dwRemainingTime = 100;
-      // If we have frames or if we get notified of one, consume it.
-      while(m_frameCount == 0)
-      {
-        ConditionVariable::TimedWaitResponse result = m_frameCond.wait(lock, dwRemainingTime);
-        if (result == ConditionVariable::TW_OK)
-        {
-          //fix time to wait because of spurious wakeups
-          DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
-          if(dwElapsed < dwRemainingTime)
-          {
-            dwRemainingTime -= dwElapsed;
-            continue;
-          }
-          else
-          {
-            //ran out of time
-            result = ConditionVariable::TW_TIMEDOUT;
-          }
-        }
-
-        if(result == ConditionVariable::TW_TIMEDOUT)
-          break;
-        if(result < 0)
-          CLog::Log(LOGWARNING, "CApplication::Render - error from conditional wait");
-      }
+      TightConditionVariable<int&> cv(m_frameCond,m_frameCount);
+      cv.wait(lock,100);
 
       m_bPresentFrame = m_frameCount > 0;
       decrement = m_bPresentFrame;

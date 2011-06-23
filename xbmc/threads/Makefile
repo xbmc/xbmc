@@ -2,7 +2,7 @@ SRCS=Atomics.cpp \
      Event.cpp \
      LockFree.cpp \
      Thread.cpp \
-     ThreadLocal.cpp \
+     platform/Implementation.cpp
 
 LIB=threads.a
 

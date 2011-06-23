@@ -1,0 +1,10 @@
+
+#pragma once
+
+/**
+ * Eventually there should be c-preprocessor logic here that selects the 
+ * platform implementation based on some compiler flags or config settings
+ */
+
+#define USE_BOOST_LOCKING
+

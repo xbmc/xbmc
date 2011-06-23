@@ -21,5 +21,12 @@
 
 #pragma once
 
-#include "threads/platform/ThreadLocal.h"
+#include "threads/platform/platform.select"
+
+#ifdef USE_BOOST_LOCKING
+#include "threads/platform/boost/ThreadLocal.h"
+#else
+#error "No platform specified for the CriticalSection definition."
+#endif
+
 
