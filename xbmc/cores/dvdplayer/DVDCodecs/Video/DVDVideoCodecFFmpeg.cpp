@@ -365,6 +365,10 @@ unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
       m_filters_next = "yadif=0:-1";
     else
       m_filters_next = "yadif=1:-1";
+
+    if(flags & FILTER_DEINTERLACE_FLAGGED)
+      m_filters_next += ":1";
+
     flags &= ~FILTER_DEINTERLACE_ANY | FILTER_DEINTERLACE_YADIF;
   }
 
