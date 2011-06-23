@@ -31,6 +31,8 @@
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 
+#include "threads/Event.h"
+
 class CRenderCapture;
 
 class CVDPAU;
@@ -293,7 +295,7 @@ protected:
   GLuint             m_rgbPbo;
   struct SwsContext *m_context;
 
-  HANDLE m_eventTexturesDone[NUM_BUFFERS];
+  CEvent* m_eventTexturesDone[NUM_BUFFERS];
 
   void BindPbo(YUVBUFFER& buff);
   void UnBindPbo(YUVBUFFER& buff);

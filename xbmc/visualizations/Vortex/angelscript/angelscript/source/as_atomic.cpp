@@ -97,13 +97,13 @@ BEGIN_AS_NAMESPACE
 
 asDWORD asCAtomic::atomicInc()
 {
-	return InterlockedIncrement((LONG*)&value);
+	return AtomicIncrement((LONG*)&value);
 }
 
 asDWORD asCAtomic::atomicDec()
 {
 	asASSERT(value > 0);
-	return InterlockedDecrement((LONG*)&value);
+	return AtomicDecrement((LONG*)&value);
 }
 
 #elif defined(AS_LINUX) || defined(AS_BSD)

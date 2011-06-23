@@ -36,6 +36,7 @@
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "boost/shared_ptr.hpp"
+#include "threads/Atomics.h"
 
 #ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -120,13 +121,13 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 
 CDVDVideoCodecFFmpeg::IHardwareDecoder*  CDVDVideoCodecFFmpeg::IHardwareDecoder::Acquire()
 {
-  InterlockedIncrement(&m_references);
+  AtomicIncrement(&m_references);
   return this;
 }
 
 long CDVDVideoCodecFFmpeg::IHardwareDecoder::Release()
 {
-  long count = InterlockedDecrement(&m_references);
+  long count = AtomicDecrement(&m_references);
   ASSERT(count >= 0);
   if (count == 0) delete this;
   return count;

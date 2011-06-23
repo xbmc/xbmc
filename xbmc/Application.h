@@ -25,6 +25,7 @@
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
+#include "threads/Condition.h"
 
 class CFileItem;
 class CFileItemList;
@@ -64,8 +65,6 @@ namespace ADDON
 #ifdef HAS_WEB_SERVER
 #include "network/WebServer.h"
 #endif
-
-#include "threads/XBMC_mutex.h"
 
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
@@ -351,8 +350,8 @@ protected:
   
 #if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   int        m_frameCount;
-  SDL_mutex* m_frameMutex;
-  SDL_cond*  m_frameCond;
+  CCriticalSection m_frameMutex;
+  XbmcThreads::ConditionVariable  m_frameCond;
 #endif
 
   void SetHardwareVolume(long hardwareVolume);

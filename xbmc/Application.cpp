@@ -295,6 +295,8 @@ using namespace JSONRPC;
 #endif
 using namespace ANNOUNCEMENT;
 
+using namespace XbmcThreads;
+
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
 #define USE_RELEASE_LIBS
@@ -331,11 +333,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 #endif
   m_currentStack = new CFileItemList;
 
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   m_frameCount = 0;
-  m_frameMutex = SDL_CreateMutex();
-  m_frameCond = SDL_CreateCond();
-#endif
 
   m_bPresentFrame = false;
   m_bPlatformDirectories = true;
@@ -353,13 +351,6 @@ CApplication::~CApplication(void)
   delete m_pKaraokeMgr;
 #endif
 
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
-  if (m_frameMutex)
-    SDL_DestroyMutex(m_frameMutex);
-
-  if (m_frameCond)
-    SDL_DestroyCond(m_frameCond);
-#endif
   delete m_dpms;
 }
 
@@ -1923,16 +1914,16 @@ void CApplication::RenderScreenSaver()
 bool CApplication::WaitFrame(unsigned int timeout)
 {
   bool done = false;
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
+
   // Wait for all other frames to be presented
-  SDL_mutexP(m_frameMutex);
+  CSingleLock lock(m_frameMutex);
   //wait until event is set, but modify remaining time
   DWORD dwStartTime = CTimeUtils::GetTimeMS();
   DWORD dwRemainingTime = timeout;
   while(m_frameCount > 0)
   {
-    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, dwRemainingTime);
-    if (result == 0)
+    ConditionVariable::TimedWaitResponse result = m_frameCond.wait(lock, dwRemainingTime);
+    if (result == ConditionVariable::TW_OK)
     {
       //fix time to wait because of spurious wakeups
       DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
@@ -1944,31 +1935,29 @@ bool CApplication::WaitFrame(unsigned int timeout)
       else
       {
         //ran out of time
-        result = SDL_MUTEX_TIMEDOUT;
+        result = ConditionVariable::TW_TIMEDOUT;
       }
     }
 
-    if(result == SDL_MUTEX_TIMEDOUT)
+    if(result == ConditionVariable::TW_TIMEDOUT)
       break;
     if(result < 0)
       CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
   }
   done = m_frameCount == 0;
-  SDL_mutexV(m_frameMutex);
-#endif
+
   return done;
 }
 
 void CApplication::NewFrame()
 {
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   // We just posted another frame. Keep track and notify.
-  SDL_mutexP(m_frameMutex);
-  m_frameCount++;
-  SDL_mutexV(m_frameMutex);
+  {
+    CSingleLock lock(m_frameMutex);
+    m_frameCount++;
+  }
 
-  SDL_CondBroadcast(m_frameCond);
-#endif
+  m_frameCond.notifyAll();
 }
 
 void CApplication::Render()
@@ -2004,8 +1993,7 @@ void CApplication::Render()
     m_bPresentFrame = false;
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
-      SDL_mutexP(m_frameMutex);
+      CSingleLock lock(m_frameMutex);
 
       //wait until event is set, but modify remaining time
       DWORD dwStartTime = CTimeUtils::GetTimeMS();
@@ -2013,8 +2001,8 @@ void CApplication::Render()
       // If we have frames or if we get notified of one, consume it.
       while(m_frameCount == 0)
       {
-        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, dwRemainingTime);
-        if (result == 0)
+        ConditionVariable::TimedWaitResponse result = m_frameCond.wait(lock, dwRemainingTime);
+        if (result == ConditionVariable::TW_OK)
         {
           //fix time to wait because of spurious wakeups
           DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
@@ -2026,21 +2014,17 @@ void CApplication::Render()
           else
           {
             //ran out of time
-            result = SDL_MUTEX_TIMEDOUT;
+            result = ConditionVariable::TW_TIMEDOUT;
           }
         }
 
-        if(result == SDL_MUTEX_TIMEDOUT)
+        if(result == ConditionVariable::TW_TIMEDOUT)
           break;
         if(result < 0)
           CLog::Log(LOGWARNING, "CApplication::Render - error from conditional wait");
       }
 
       m_bPresentFrame = m_frameCount > 0;
-      SDL_mutexV(m_frameMutex);
-#else
-      m_bPresentFrame = true;
-#endif
       decrement = m_bPresentFrame;
       hasRendered = true;
     }
@@ -2123,13 +2107,12 @@ void CApplication::Render()
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
 
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
-  SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0 && decrement)
-    m_frameCount--;
-  SDL_mutexV(m_frameMutex);
-  SDL_CondBroadcast(m_frameCond);
-#endif
+  {
+    CSingleLock lock(m_frameMutex);
+    if(m_frameCount > 0 && decrement)
+      m_frameCount--;
+  }
+  m_frameCond.notifyAll();
 }
 
 void CApplication::SetStandAlone(bool value)
@@ -5226,12 +5209,11 @@ bool CApplication::SwitchToFullScreen()
   // See if we're playing a video, and are in GUI mode
   if ( IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
   {
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
     // Reset frame count so that timing is FPS will be correct.
-    SDL_mutexP(m_frameMutex);
-    m_frameCount = 0;
-    SDL_mutexV(m_frameMutex);
-#endif
+    {
+      CSingleLock lock(m_frameMutex);
+      m_frameCount = 0;
+    }
 
     // then switch to fullscreen mode
     g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
@@ -5403,15 +5385,10 @@ bool CApplication::IsCurrentThread() const
 
 bool CApplication::IsPresentFrame()
 {
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
-  SDL_mutexP(m_frameMutex);
+  CSingleLock lock(m_frameMutex);
   bool ret = m_bPresentFrame;
-  SDL_mutexV(m_frameMutex);
 
   return ret;
-#else
-  return false;
-#endif
 }
 
 #if defined(HAS_LINUX_NETWORK)

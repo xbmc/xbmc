@@ -1,7 +1,6 @@
-
 /*
- *      Copyright (C) 2010 Team XBMC
- *      http://xbmc.org
+ *      Copyright (C) 2005-2011 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,29 +19,7 @@
  *
  */
 
-#ifndef ISEMAPHORE_H__
-#define ISEMAPHORE_H__
-
-#include <stdint.h>
-
-enum SEM_GRAB
-{
-  SEM_GRAB_SUCCESS,
-  SEM_GRAB_FAILED,
-  SEM_GRAB_TIMEOUT
-};
-
-class ISemaphore
-{
-  public:
-                      ISemaphore()  {}
-    virtual           ~ISemaphore() {}
-    virtual bool      Wait()                      = 0;
-    virtual SEM_GRAB  TimedWait(uint32_t millis)  = 0;
-    virtual bool      TryWait()                   = 0;
-    virtual bool      Post()                      = 0;
-    virtual int       GetCount() const            = 0;
-};
-
-#endif // ISEMAPHORE_H__
+#define BOOST_TEST_DYN_LINK
+#define BOOST_TEST_MODULE "ThreadingTest"
+#include <boost/test/unit_test.hpp>
 

@@ -45,18 +45,16 @@ using namespace std;
 using namespace PYXBMC;
 
 CGUIPythonWindowXML::CGUIPythonWindowXML(int id, CStdString strXML, CStdString strFallBackPath)
-: CGUIMediaWindow(id, strXML)
+  : CGUIMediaWindow(id, strXML), m_actionEvent(true)
 {
   pCallbackWindow = NULL;
   m_threadState = NULL;
-  m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
   m_scriptPath = strFallBackPath;
 }
 
 CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
 {
-  CloseHandle(m_actionEvent);
 }
 
 bool CGUIPythonWindowXML::Update(const CStdString &strPath)
@@ -263,12 +261,12 @@ void CGUIPythonWindowXML::ClearList()
 void CGUIPythonWindowXML::WaitForActionEvent(unsigned int timeout)
 {
   g_pythonParser.WaitForEvent(m_actionEvent, timeout);
-  ResetEvent(m_actionEvent);
+  m_actionEvent.Reset();
 }
 
 void CGUIPythonWindowXML::PulseActionEvent()
 {
-  SetEvent(m_actionEvent);
+  m_actionEvent.Set();
 }
 
 void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
