@@ -1077,6 +1077,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
   g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   g_windowManager.Add(new CGUIDialogMusicScan);          // window id = 112
+  g_windowManager.Add(&m_guiDialogMuteBug);            // window id = 113
   g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
 #ifdef HAS_KARAOKE
   g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
@@ -1709,12 +1710,6 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 
   g_windowManager.DeInitialize();
   CTextureCache::Get().Deinitialize();
-
-  //These windows are not handled by the windowmanager (why not?) so we should unload them manually
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-  m_guiDialogMuteBug.OnMessage(msg);
-  m_guiDialogMuteBug.ResetControlStates();
-  m_guiDialogMuteBug.FreeResources(true);
 
   // remove the skin-dependent window
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
