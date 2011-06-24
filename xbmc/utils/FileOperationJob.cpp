@@ -152,11 +152,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
 
       CStdString strnewDestFile;
       if(!strDestFile.IsEmpty()) // only do this if we have a destination
-      {
         URIUtils::AddFileToFolder(strDestFile, strFileName, strnewDestFile);
-        // URL Decode for cases where source uses URL encoding and target does not 
-        CURL::Decode(strnewDestFile);
-      }
 
       if (pItem->m_bIsFolder)
       {
