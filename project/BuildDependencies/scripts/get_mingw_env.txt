@@ -20,3 +20,7 @@ xasm-3.0.2-windows.zip                      http://mirrors.xbmc.org/build-deps/w
 libintl-0.17-1-mingw32-dll-8.tar.lzma       http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/gettext/gettext-0.17-1/
 libiconv-1.13.1-1-mingw32-dll-2.tar.lzma    http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/libiconv/libiconv-1.13.1-1/
 libiconv-1.13.1-1-mingw32-dev.tar.lzma      http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/mingw/files/MinGW/libiconv/libiconv-1.13.1-1/
+plibc-0.1.5.zip                             http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://sourceforge.net/projects/plibc/files/plibc/0.1.5/
+pthreads-w32-2.8.0-3-mingw32-dev.tar.lzma   http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/pthreads-w32/pthreads-w32-2.8.0-3/pthreads-w32-2.8.0-3-mingw32-dev.tar.lzma
+gnutls-dev_2.4.2-1_win32.zip                http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://ftp.acc.umu.se/pub/gnome/binaries/win32/dependencies/gnutls-dev-2.2.5.zip
+gettext-0.17-1-mingw32-dev.tar.lzma         http://mirrors.xbmc.org/build-deps/win32/mingw-msys/        http://downloads.sourceforge.net/project/mingw/MinGW/gettext/gettext-0.17-1/gettext-0.17-1-mingw32-dev.tar.lzma
