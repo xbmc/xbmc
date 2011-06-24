@@ -65,20 +65,20 @@ namespace XbmcThreads
    *  condition variable without the spurious returns since the state being monitored
    *  is also part of the condition.
    *
-   * L should be either a CSingleLock or a CCriticalSection.
+   * L should implement the Lockable concept
    *
    * The requirements on P are that it can act as a predicate (that is, I can use
    *  it in an 'while(!predicate){...}' where 'predicate' is of type 'P').
    */
-  template <typename L, typename P> class TightConditionVariable
+  template <typename P> class TightConditionVariable
   {
     ConditionVariable cond;
     P predicate;
   public:
     inline TightConditionVariable(P predicate_) : predicate(predicate_) {}
-    inline void wait(L& lock) { while(!predicate) cond.wait(lock); }
+    template <typename L> inline void wait(L& lock) { while(!predicate) cond.wait(lock); }
 
-    inline ConditionVariable::TimedWaitResponse wait(L& lock, int milliseconds)
+    template <typename L> inline ConditionVariable::TimedWaitResponse wait(L& lock, int milliseconds)
     {
       ConditionVariable::TimedWaitResponse ret = ConditionVariable::TW_OK;
       boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(milliseconds);

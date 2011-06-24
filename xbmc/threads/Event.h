@@ -54,7 +54,7 @@ class CEvent
    *  predicate being monitored to include both the signaled and interrupted
    *  states.
    */
-  XbmcThreads::TightConditionVariable<CCriticalSection,bool&> condVar;
+  XbmcThreads::TightConditionVariable<bool&> condVar;
   CCriticalSection mutex;
 
   friend class XbmcThreads::CEventGroup;
@@ -80,10 +80,7 @@ public:
   /**
    * This will wait up to 'milliSeconds' milliseconds for the Event
    *  to be triggered. The method will return 'true' if the Event
-   *  was triggered. If it was either interrupted, or it timed out
-   *  it will return false. To determine if it was interrupted you can
-   *  use 'wasInterrupted()' call prior to any further call to a 
-   *  Wait* method.
+   *  was triggered. Otherwise it will return false.
    */
   inline bool WaitMSec(unsigned int milliSeconds) 
   { CSingleLock lock(mutex); numWaits++; condVar.wait(mutex,milliSeconds); numWaits--; return prepReturn(); }
@@ -91,8 +88,7 @@ public:
   /**
    * This will wait for the Event to be triggered. The method will return 
    * 'true' if the Event was triggered. If it was either interrupted
-   * it will return false. To determine if it was interrupted you can
-   * use 'wasInterrupted()' call prior to any further call to a Wait* method.
+   * it will return false. Otherwise it will return false.
    */
   inline bool Wait()
   { CSingleLock lock(mutex); numWaits++; condVar.wait(mutex); numWaits--; return prepReturn(); }
@@ -103,14 +99,14 @@ namespace XbmcThreads
 {
   /**
    * CEventGroup is a means of grouping CEvents to wait on them together.
-   * It is equivalent to WaitOnMultipleObject with that returns when "any"
+   * It is equivalent to WaitOnMultipleObject that returns when "any" Event
    * in the group signaled.
    */
   class CEventGroup
   {
     std::vector<CEvent*> events;
     CEvent* signaled;
-    XbmcThreads::TightConditionVariable<CCriticalSection,CEvent*&> condVar;
+    XbmcThreads::TightConditionVariable<CEvent*&> condVar;
     CCriticalSection mutex;
 
     unsigned int numWaits;

@@ -26,20 +26,24 @@
 #include <boost/thread/shared_mutex.hpp>
 
 /**
- * A CSharedSection is a CountingLockable whose implementation is a boost
- *  shared_mutex.
+ * A CSharedSection is a mutex that satisfies the "shared lockable" concept
+ * Something that implements the "Shared Lockable" concept has all of the methods
+ * required by the Lockable concept and also:
  *
- * It implemented boost's shared Locakable concept which requires the 
- *  additional implementation of:
+ * void lock_shared();
+ * bool try_lock_shared();
+ * void unlock_shared();
  *
- * lock_shared()
- * try_lock_shared()
- * unlock_shared()
+ * In a nutshell a "shared lockable" satisfies the read/write lock semantics
+ * where many readers can own the lock at the same time, but a writer must
+ * have exclusive access. A reader would obtain "shared access" using a 
+ * CSharedLock while a writer would obtain "exclusive access." using a 
+ * CExclusiveLock.
  */
 class CSharedSection
 {
   CCriticalSection sec;
-  XbmcThreads::TightConditionVariable<CSingleLock,bool&> cond;
+  XbmcThreads::TightConditionVariable<bool&> cond;
 
   unsigned int sharedCount;
   bool noShared;
