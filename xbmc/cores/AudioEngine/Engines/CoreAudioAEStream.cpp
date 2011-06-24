@@ -416,6 +416,9 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
       m_cbDataFunc(this, m_cbDataArg, samples);
 
       /* readsize still to small, request more data */
+      
+      /* TODO: This a workaound. The underlaying player functinality
+         needs fixing to delive the requested data size */
       if(m_Buffer->GetReadSize() < size)
       {
         readsize = size - m_Buffer->GetReadSize();
