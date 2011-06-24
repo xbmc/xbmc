@@ -78,7 +78,7 @@ public:
 class DllAvFilter : public DllDynamic, DllAvFilterInterface
 {
 public:
-  virtual ~DllAvFilter();
+  virtual ~DllAvFilter() {}
   virtual int avfilter_open(AVFilterContext **filter_ctx, AVFilter *filter, const char *inst_name)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
@@ -99,6 +99,11 @@ public:
     *graph = NULL;
 #endif
   }
+  void avfilter_register_all()
+  {
+    CSingleLock lock(DllAvCodec::m_critSection);
+    ::avfilter_register_all();
+  }
   virtual int avfilter_graph_create_filter(AVFilterContext **filt_ctx, AVFilter *filt, const char *name, const char *args, void *opaque, AVFilterGraph *graph_ctx) { return ::avfilter_graph_create_filter(filt_ctx, filt, name, args, opaque, graph_ctx); }
   virtual AVFilter *avfilter_get_by_name(const char *name) { return ::avfilter_get_by_name(name); }
   virtual AVFilterGraph *avfilter_graph_alloc() { return ::avfilter_graph_alloc(); }
@@ -106,7 +111,13 @@ public:
   virtual int avfilter_graph_config(AVFilterGraph *graphctx, AVClass *log_ctx) { return ::avfilter_graph_config(graphctx, log_ctx); }
   virtual int avfilter_poll_frame(AVFilterLink *link) { return ::avfilter_poll_frame(link); }
   virtual int avfilter_request_frame(AVFilterLink *link) { return ::avfilter_request_frame(link); }
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,7,0)
+  virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame); }
+#elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53,3,0)
+  virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int64_t pts) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame, pts); }
+#else
   virtual int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter, AVFrame *frame, int64_t pts, AVRational pixel_aspect) { return ::av_vsrc_buffer_add_frame(buffer_filter, frame, pts, pixel_aspect); }
+#endif
   virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h) { return ::avfilter_get_video_buffer(link, perms, w, h); }
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref) { ::avfilter_unref_buffer(ref); }
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad) { return ::avfilter_link(src, srcpad, dst, dstpad); }
