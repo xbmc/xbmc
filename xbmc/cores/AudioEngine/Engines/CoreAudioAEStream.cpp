@@ -361,7 +361,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
       
   if(addsize > room)
   {
-    CLog::Log(LOGDEBUG, "CCoreAudioAEStream::AddData failed : free size %d add size %d", room, addsize);
+    //CLog::Log(LOGDEBUG, "CCoreAudioAEStream::AddData failed : free size %d add size %d", room, addsize);
     size = 0;
   }
   else 
