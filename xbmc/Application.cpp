@@ -2086,8 +2086,13 @@ void CApplication::Render()
   if (hasRendered)
     m_lastRenderTime = now;
 
-  //only flip when something has been rendered in the last second
-  bool flip = now - m_lastRenderTime < 1000;
+  //when nothing has been rendered for m_guiDirtyRegionNoFlipTimeout milliseconds,
+  //we don't call g_graphicsContext.Flip() anymore, this saves gpu and cpu usage
+  bool flip;
+  if (g_advancedSettings.m_guiDirtyRegionNoFlipTimeout >= 0)
+    flip = hasRendered || now - m_lastRenderTime < (unsigned int)g_advancedSettings.m_guiDirtyRegionNoFlipTimeout;
+  else
+    flip = true;
 
   //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
   if (limitFrames || !flip)
