@@ -390,50 +390,29 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     if (m_cbDataFunc && !m_disableCallbacks)
     {
       m_inDataFunc = true;
-      unsigned int frameSize = (m_StreamFormat.m_frameSize > m_OutputFormat.m_frameSize) ? m_StreamFormat.m_frameSize : m_OutputFormat.m_frameSize;      
-      readsize = m_Buffer->GetWriteSize() / frameSize;
+      readsize = m_Buffer->GetWriteSize() / m_StreamFormat.m_frameSize;
       //SDL_mutexV(m_MutexStream);
+      
       m_cbDataFunc(this, m_cbDataArg, readsize);
+      
+      readsize = m_Buffer->GetWriteSize() / m_StreamFormat.m_frameSize;
+      
+      if((m_Buffer->GetReadSize() / m_StreamFormat.m_frameSize) < (size / m_StreamFormat.m_frameSize))
+        m_cbDataFunc(this, m_cbDataArg, readsize);
+      
       //SDL_mutexP(m_MutexStream);
       m_inDataFunc = false;
     }
   }
+  
+  readsize = m_Buffer->GetReadSize();
+  if(readsize < size)
+    return 0;
 
   ret = std::min(m_Buffer->GetReadSize(), size);  
-
+  
   m_Buffer->Read(buffer, ret);
-  
-  /* if we are draining */
-#if 0
-  if (m_draining)
-  {
-    /* if we have drained trigger the callback function */
-    if (m_Buffer->GetReadSize() == 0 && m_cbDrainFunc && !m_disableCallbacks)
-    {
-      m_inDrainFunc = true;
-      //SDL_mutexV(m_MutexStream);
-      m_cbDrainFunc(this, m_cbDrainArg, 0);
-      //SDL_mutexP(m_MutexStream);
-      m_cbDrainFunc = NULL;
-      m_inDrainFunc = false;
-    }
-  }
-  else
-  {
-    /* if the buffer is low, fill up again */ 
-    if (m_cbDataFunc && !m_disableCallbacks && !m_delete && !m_draining)
-    {
-      m_inDataFunc = true;
-      unsigned int frameSize = (m_StreamFormat.m_frameSize > m_OutputFormat.m_frameSize) ? m_StreamFormat.m_frameSize : m_OutputFormat.m_frameSize;      
-      readsize = m_Buffer->GetWriteSize() / frameSize;
-      //SDL_mutexV(m_MutexStream);
-      m_cbDataFunc(this, m_cbDataArg, readsize);
-      //SDL_mutexP(m_MutexStream);
-      m_inDataFunc = false;
-    }
-  }
-#endif
-  
+    
   /* we have a frame, if we have a viz we need to hand the data to it.
      On iOS we do not have vizualisation. Keep in mind that our buffer
      is already in output format. So we remap output format to viz format !!!*/
