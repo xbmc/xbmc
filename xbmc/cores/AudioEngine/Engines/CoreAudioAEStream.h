@@ -103,6 +103,7 @@ private:
   AEAudioFormat           m_OutputFormat;
   AEAudioFormat           m_StreamFormat;
   unsigned int            m_StreamBytesPerSample;
+  unsigned int            m_OutputBytesPerSample;
 
   bool                    m_forceResample; /* true if we are to force resample even when the rates match */
   bool                    m_resample;      /* true if the audio needs to be resampled  */

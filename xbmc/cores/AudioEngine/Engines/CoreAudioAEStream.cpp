@@ -108,6 +108,8 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
   
   m_OutputFormat = outputFormat;
 
+  m_OutputBytesPerSample          = (CAEUtil::DataFormatToBits(m_OutputFormat.m_dataFormat) >> 3);
+
   if(COREAUDIO_IS_RAW(m_StreamFormat.m_dataFormat))
   {
     m_StreamBytesPerSample        = (CAEUtil::DataFormatToBits(m_OutputFormat.m_dataFormat) >> 3);
@@ -180,7 +182,26 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
     delete m_Buffer;
   
   m_Buffer = new CoreAudioRingBuffer(m_AvgBytesPerSec);
+
+  /* print input output channels */
+  CLog::Log(LOGDEBUG, "==[Stream input channels]==");
+  CStdString s;
+  for(int i = 0; m_StreamFormat.m_channelLayout[i] != AE_CH_NULL; i++)
+  {
+    s.append(CAEUtil::GetChName( m_StreamFormat.m_channelLayout[i]) + CStdString(" ,"));
+  }
+  CLog::Log(LOGDEBUG, "%s", s.substr(0, s.length() - 1).c_str());
+  CLog::Log(LOGDEBUG, "====================\n");
   
+  CLog::Log(LOGDEBUG, "==[Stream output channels]==");
+  s = "";
+  for(int i = 0; m_OutputFormat.m_channelLayout[i] != AE_CH_NULL; i++)
+  {
+    s.append(CAEUtil::GetChName( m_OutputFormat.m_channelLayout[i]) + CStdString(" ,"));
+  }
+  CLog::Log(LOGDEBUG, "%s", s.substr(0, s.length() - 1).c_str());
+  CLog::Log(LOGDEBUG, "====================\n");
+
   SDL_mutexV(m_MutexStream);
   m_valid = true;
 }
@@ -325,11 +346,9 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 
   if (!COREAUDIO_IS_RAW(m_StreamFormat.m_dataFormat))
   {
-    addsize = frames * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3) * m_OutputFormat.m_channelCount;
-    unsigned int remap_size = frames * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3) * 
-                              ((m_OutputFormat.m_channelCount > m_StreamFormat.m_channelCount) ?
-                              m_OutputFormat.m_channelCount : m_StreamFormat.m_channelCount);
-    CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, remap_size * 2);
+    addsize = frames * m_OutputBytesPerSample * m_OutputFormat.m_channelCount;
+    
+    CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, addsize);
         
     // downmix/remap the data
     m_remap.Remap((float *)adddata, (float *)m_remapBuffer, frames);
@@ -342,14 +361,14 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
       
   if(addsize > room)
   {
-    //CLog::Log(LOGDEBUG, "CCoreAudioAEStream::AddData failed : free %d add %d", room, addsize);
+    CLog::Log(LOGDEBUG, "CCoreAudioAEStream::AddData failed : free size %d add size %d", room, addsize);
     size = 0;
   }
   else 
   {
     m_Buffer->Write(adddata, addsize);
   }
-
+  
   //SDL_mutexV(m_MutexStream);
   return size;    
 }
@@ -364,10 +383,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     //SDL_mutexV(m_MutexStream);
     return 0;
   }
-  
-  unsigned int readsize = m_Buffer->GetReadSize();
-  unsigned int ret = 0;
-  
+    
   /* we are draining */
   if (m_draining)
   {
@@ -384,34 +400,40 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     //SDL_mutexV(m_MutexStream);
     return 0;
   }
-  else /*if(readsize < size)*/
+  
+  unsigned int readsize = m_Buffer->GetReadSize();
+  if(readsize < size)
   {
     /* otherwise ask for more data */
     if (m_cbDataFunc && !m_disableCallbacks)
     {
       m_inDataFunc = true;
-      readsize = m_Buffer->GetWriteSize() / m_StreamFormat.m_frameSize;
+      /* first data read, mximum size * 4 */
+      unsigned int samples = ((m_Buffer->GetWriteSize() > (size * 4)) ? (size * 4) : m_Buffer->GetWriteSize())
+                             / m_StreamBytesPerSample;
+      
       //SDL_mutexV(m_MutexStream);
-      
-      m_cbDataFunc(this, m_cbDataArg, readsize);
-      
-      readsize = m_Buffer->GetWriteSize() / m_StreamFormat.m_frameSize;
-      
-      if((m_Buffer->GetReadSize() / m_StreamFormat.m_frameSize) < (size / m_StreamFormat.m_frameSize))
-        m_cbDataFunc(this, m_cbDataArg, readsize);
+      m_cbDataFunc(this, m_cbDataArg, samples);
+
+      /* readsize still to small, request more data */
+      if(m_Buffer->GetReadSize() < size)
+      {
+        readsize = size - m_Buffer->GetReadSize();
+        samples = readsize / m_StreamBytesPerSample;
+        m_cbDataFunc(this, m_cbDataArg, samples);
+      }
       
       //SDL_mutexP(m_MutexStream);
       m_inDataFunc = false;
     }
   }
   
-  readsize = m_Buffer->GetReadSize();
-  if(readsize < size)
-    return 0;
-
-  ret = std::min(m_Buffer->GetReadSize(), size);  
+  readsize = std::min(m_Buffer->GetReadSize(), size);  
   
-  m_Buffer->Read(buffer, ret);
+  if(readsize < size)
+    CLog::Log(LOGDEBUG, "CCoreAudioAEStream::GetFrames reqested data size %d smaler than readsize %d", size, readsize);
+  
+  m_Buffer->Read(buffer, readsize);
     
   /* we have a frame, if we have a viz we need to hand the data to it.
      On iOS we do not have vizualisation. Keep in mind that our buffer
@@ -420,13 +442,12 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   if(!COREAUDIO_IS_RAW(m_StreamFormat.m_dataFormat) && (m_OutputFormat.m_dataFormat == AE_FMT_FLOAT))
   {
     // TODO : Why the hell is vizdata limited ?
-    unsigned int samples   = ret / (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3);
+    unsigned int samples   = readsize / m_OutputBytesPerSample;
     unsigned int frames    = samples / m_OutputFormat.m_channelCount;
 
     if(samples) {
       // Viz channel count is 2
-      CheckOutputBufferSize((void **)&m_vizRemapBuffer, &m_vizRemapBufferSize, 
-                            frames * 2 * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
+      CheckOutputBufferSize((void **)&m_vizRemapBuffer, &m_vizRemapBufferSize, frames * 2 * sizeof(float));
       
       samples  = (samples > 512) ? 512 : samples;
       
@@ -440,7 +461,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
 #endif
   
   //SDL_mutexV(m_MutexStream);  
-  return ret;  
+  return readsize;  
 }
 
 unsigned int CCoreAudioAEStream::GetFrameSize()
