@@ -119,14 +119,29 @@ namespace xbmcutil
   template <class T> class GlobalsSingleton
   {
     /**
+     * This thing just deletes the shared_ptr when the 'instance'
+     * goes out of scope (when the bss segment of the compilation unit
+     * that 'instance' is sitting in is deinitialized). See the comment
+     * on 'instance' for more information.
+     */
+    template <class K> class Deleter
+    {
+    public:
+      K* guarded;
+      inline ~Deleter() { delete guarded; }
+    };
+
+    /**
      * Is it possible that getInstance can be called prior to the shared_ptr 'instance'
      *  being initialized as a global? If so, then the shared_ptr constructor would 
      *  effectively 'reset' the shared pointer after it had been set by the prior 
      *  getInstance call, and a second instance would be created. We really don't 
      *  want this to happen so 'instance' is a pointer to a smart pointer so that
-     *  we can deterministally handle its construction.
+     *  we can deterministally handle its construction. It is guarded by the 
+     *  Deleter class above so that when the bss segment that this static is
+     *  sitting in is deinitialized, the shared_ptr pointer will be cleaned up.
      */
-    static boost::shared_ptr<T>* instance; 
+    static Deleter<boost::shared_ptr<T> > instance; 
 
     /**
      * See 'getQuick' below.
@@ -140,13 +155,13 @@ namespace xbmcutil
      */
     inline static boost::shared_ptr<T> getInstance()
     {
-      if (!instance)
+      if (!instance.guarded)
       {
         if (!quick)
           quick = new T;
-        instance = new boost::shared_ptr<T>(quick);
+        instance.guarded = new boost::shared_ptr<T>(quick);
       }
-      return *instance;
+      return *(instance.guarded);
     }
 
     /**
@@ -166,7 +181,7 @@ namespace xbmcutil
 
   };
 
-  template <class T> boost::shared_ptr<T>* GlobalsSingleton<T>::instance;
+  template <class T> GlobalsSingleton<T>::Deleter<boost::shared_ptr<T> > GlobalsSingleton<T>::instance;
   template <class T> T* GlobalsSingleton<T>::quick;
 }
 
