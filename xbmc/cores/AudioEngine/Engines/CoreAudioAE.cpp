@@ -852,23 +852,7 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
         ++itt;
       }
     }
-
     
-    if(m_guiSoundWhilePlayback)
-    {
-      if(m_format.m_dataFormat == AE_FMT_S16NE)
-        MixSounds16((int16_t *)m_OutputBuffer, rSamples);
-      else
-        MixSounds32(m_OutputBuffer, rSamples);
-    }
-    else if(bPlayGuiSound) 
-    {
-      if(m_format.m_dataFormat == AE_FMT_S16NE)
-        MixSounds16((int16_t *)m_OutputBuffer, rSamples);
-      else
-        MixSounds32(m_OutputBuffer, rSamples);      
-    }
-
     if (!m_streams.empty()) 
     {
       std::list<CCoreAudioAEStream*>::iterator itt;
@@ -893,11 +877,13 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
           CheckOutputBufferSize((void **)&m_OutputBuffer, &m_OutputBufferSize, size);
           size = stream->GetFrames((uint8_t *)m_StreamBuffer, size);
           readframes = size / (m_format.m_channelCount * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
+          rSamples = readframes * m_format.m_channelCount;
         }
         else
         {
           size = stream->GetFrames((uint8_t *)m_StreamBuffer, size);
           readframes = size / HAL->m_BytesPerFrame;
+          rSamples = readframes * m_format.m_channelCount;
         }
         
         if (!readframes)
@@ -961,6 +947,22 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
         
       }
     }
+  
+    if(m_guiSoundWhilePlayback)
+    {
+      if(m_format.m_dataFormat == AE_FMT_S16NE)
+        MixSounds16((int16_t *)m_OutputBuffer, rSamples);
+      else
+        MixSounds32(m_OutputBuffer, rSamples);
+    }
+    else if(bPlayGuiSound) 
+    {
+      if(m_format.m_dataFormat == AE_FMT_S16NE)
+        MixSounds16((int16_t *)m_OutputBuffer, rSamples);
+      else
+        MixSounds32(m_OutputBuffer, rSamples);      
+    }
+   
   }
 
   if(!m_rawPassthrough && m_format.m_channelCount == 8)

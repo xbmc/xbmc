@@ -409,12 +409,17 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     {
       m_inDataFunc = true;
       /* first data read, mximum size * 4 */
+      /*
       unsigned int samples = ((m_Buffer->GetWriteSize() > (size * 4)) ? (size * 4) : m_Buffer->GetWriteSize())
                              / m_StreamBytesPerSample;
+      */
+      unsigned int samples = (m_Buffer->GetWriteSize() > size  ? size : m_Buffer->GetWriteSize())
+                              / m_StreamBytesPerSample;
       
       //SDL_mutexV(m_MutexStream);
       m_cbDataFunc(this, m_cbDataArg, samples);
 
+#if 0
       /* readsize still to small, request more data */
       
       /* TODO: This a workaound. The underlaying player functinality
@@ -425,7 +430,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
         samples = readsize / m_StreamBytesPerSample;
         m_cbDataFunc(this, m_cbDataArg, samples);
       }
-      
+#endif      
       //SDL_mutexP(m_MutexStream);
       m_inDataFunc = false;
     }
@@ -434,7 +439,10 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   readsize = std::min(m_Buffer->GetReadSize(), size);  
   
   if(readsize < size)
-    CLog::Log(LOGDEBUG, "CCoreAudioAEStream::GetFrames reqested data size %d smaler than readsize %d", size, readsize);
+  {
+    //CLog::Log(LOGDEBUG, "CCoreAudioAEStream::GetFrames reqested data size %d smaler than readsize %d", size, readsize);
+    return 0;
+  }
   
   m_Buffer->Read(buffer, readsize);
     
