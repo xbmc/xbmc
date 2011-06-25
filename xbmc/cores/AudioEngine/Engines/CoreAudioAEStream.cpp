@@ -408,7 +408,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     if (m_cbDataFunc && !m_disableCallbacks)
     {
       m_inDataFunc = true;
-      unsigned int samples = m_Buffer->GetWriteSize() / m_StreamBytesPerSample;
+      unsigned int samples = m_Buffer->GetWriteSize() / m_StreamBytesPerSample / 2;
       //SDL_mutexV(m_MutexStream);
       m_cbDataFunc(this, m_cbDataArg, samples);
       //SDL_mutexP(m_MutexStream);
@@ -426,7 +426,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     if (m_cbDataFunc && !m_disableCallbacks)
     {
       m_inDataFunc = true;
-      unsigned int samples = m_Buffer->GetWriteSize() / m_StreamBytesPerSample;
+      unsigned int samples = m_Buffer->GetWriteSize() / m_StreamBytesPerSample / 2;
       //SDL_mutexV(m_MutexStream);
       m_cbDataFunc(this, m_cbDataArg, samples);
       //SDL_mutexP(m_MutexStream);
