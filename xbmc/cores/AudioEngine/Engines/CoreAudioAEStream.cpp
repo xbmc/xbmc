@@ -408,29 +408,9 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     if (m_cbDataFunc && !m_disableCallbacks)
     {
       m_inDataFunc = true;
-      /* first data read, mximum size * 4 */
-      /*
-      unsigned int samples = ((m_Buffer->GetWriteSize() > (size * 4)) ? (size * 4) : m_Buffer->GetWriteSize())
-                             / m_StreamBytesPerSample;
-      */
-      unsigned int samples = (m_Buffer->GetWriteSize() > size  ? size : m_Buffer->GetWriteSize())
-                              / m_StreamBytesPerSample;
-      
+      unsigned int samples = m_Buffer->GetWriteSize() / m_StreamBytesPerSample;
       //SDL_mutexV(m_MutexStream);
       m_cbDataFunc(this, m_cbDataArg, samples);
-
-#if 0
-      /* readsize still to small, request more data */
-      
-      /* TODO: This a workaound. The underlaying player functinality
-         needs fixing to delive the requested data size */
-      if(m_Buffer->GetReadSize() < size)
-      {
-        readsize = size - m_Buffer->GetReadSize();
-        samples = readsize / m_StreamBytesPerSample;
-        m_cbDataFunc(this, m_cbDataArg, samples);
-      }
-#endif      
       //SDL_mutexP(m_MutexStream);
       m_inDataFunc = false;
     }
@@ -438,14 +418,22 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   
   readsize = std::min(m_Buffer->GetReadSize(), size);  
   
-  if(readsize < size)
+  m_Buffer->Read(buffer, readsize);
+  
+  if(!m_draining && (readsize < size))
   {
-    //CLog::Log(LOGDEBUG, "CCoreAudioAEStream::GetFrames reqested data size %d smaler than readsize %d", size, readsize);
-    return 0;
+    /* otherwise ask for more data */
+    if (m_cbDataFunc && !m_disableCallbacks)
+    {
+      m_inDataFunc = true;
+      unsigned int samples = m_Buffer->GetWriteSize() / m_StreamBytesPerSample;
+      //SDL_mutexV(m_MutexStream);
+      m_cbDataFunc(this, m_cbDataArg, samples);
+      //SDL_mutexP(m_MutexStream);
+      m_inDataFunc = false;
+    }
   }
   
-  m_Buffer->Read(buffer, readsize);
-    
   /* we have a frame, if we have a viz we need to hand the data to it.
      On iOS we do not have vizualisation. Keep in mind that our buffer
      is already in output format. So we remap output format to viz format !!!*/
