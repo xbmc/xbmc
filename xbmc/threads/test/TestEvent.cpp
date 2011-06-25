@@ -349,3 +349,36 @@ BOOST_AUTO_TEST_CASE(TestEventSimpleTimeoutCase)
   BOOST_CHECK(!event.WaitMSec(50));
 }
 
+BOOST_AUTO_TEST_CASE(TestEventGroupChildSet)
+{
+  CEvent event1(true);
+  CEvent event2;
+
+  event1.Set();
+  CEventGroup group(&event1,&event2,NULL);
+
+  bool result1 = false;
+  bool result2 = false;
+
+  waiter w1(event1,result1);
+  waiter w2(event2,result2);
+  group_wait w3(group);
+
+  boost::thread waitThread1(boost::ref(w1));
+  boost::thread waitThread2(boost::ref(w2));
+  boost::thread waitThread3(boost::ref(w3));
+
+  Sleep(10);
+
+  BOOST_CHECK(result1);
+  BOOST_CHECK(!result2);
+
+  BOOST_CHECK(!w3.waiting);
+  BOOST_CHECK(w3.result == &event1);
+
+  Sleep(10);
+
+  event2.Set();
+
+  Sleep(50);
+}

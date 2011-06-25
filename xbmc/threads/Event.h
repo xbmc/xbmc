@@ -116,6 +116,7 @@ namespace XbmcThreads
     friend class ::CEvent;
 
     inline CEvent* prepReturn() { CEvent* ret = signaled; if (numWaits == 0) signaled = NULL; return ret; }
+    CEvent* anyEventsSignaled();
 
   public:
 
@@ -141,7 +142,14 @@ namespace XbmcThreads
      * signaled at which point a pointer to that CEvents will be 
      * returned.
      */
-    inline CEvent* wait() { CSingleLock lock(mutex); numWaits++; condVar.wait(mutex); numWaits--; return prepReturn(); }
+    inline CEvent* wait() 
+    { CSingleLock lock(mutex); 
+      numWaits++; 
+      signaled = anyEventsSignaled(); 
+      if (!signaled) condVar.wait(mutex); 
+      numWaits--; 
+      return prepReturn(); 
+    }
 
     /**
      * This will block until any one of the CEvents in the group are
@@ -149,6 +157,13 @@ namespace XbmcThreads
      * it will return a pointer to that CEvent, otherwise it will return
      * NULL.
      */
-    inline CEvent* wait(unsigned int milliseconds)  { CSingleLock lock(mutex); numWaits++; condVar.wait(mutex,milliseconds); numWaits--; return prepReturn(); }
+    inline CEvent* wait(unsigned int milliseconds)  
+    { CSingleLock lock(mutex);
+      numWaits++; 
+      signaled = anyEventsSignaled(); 
+      if(!signaled) condVar.wait(mutex,milliseconds); 
+      numWaits--; 
+      return prepReturn(); 
+    }
   };
 }

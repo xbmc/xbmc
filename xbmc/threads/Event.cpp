@@ -116,4 +116,15 @@ namespace XbmcThreads
       (*iter)->removeGroup(this);
   }
 
+  CEvent* CEventGroup::anyEventsSignaled()
+  {
+    for (std::vector<CEvent*>::iterator iter = events.begin();
+         iter != events.end(); iter++)
+    {
+      CEvent* cur = *iter;
+      if (cur->signaled) return cur;
+    }
+    return NULL;
+  }
+
 }
