@@ -224,10 +224,6 @@ lib/cmyth/Makefile
 /lib/libass/m4/ltversion.m4
 /lib/libass/m4/lt~obsolete.m4
 
-# /lib/libcdio
-/lib/libcdio/Debug
-/lib/libcdio/Release
-
 # /lib/libiconv
 /lib/libiconv/libiconv_win32/Debug
 /lib/libiconv/libiconv_win32/Release
@@ -301,7 +297,7 @@ lib/cmyth/Makefile
 /project/Win32BuildSetup/dependencies/pcre.dll
 /project/Win32BuildSetup/dependencies/pcrecpp.dll
 /project/Win32BuildSetup/dependencies/python26.dll
-/project/Win32BuildSetup/dependencies/libcdio-10.dll
+/project/Win32BuildSetup/dependencies/libcdio-12.dll
 /project/Win32BuildSetup/dependencies/vcredist
 
 # /project/Win32BuildSetup/
