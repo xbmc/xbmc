@@ -20,6 +20,8 @@
 */
 
 #include "system.h"
+#ifdef HAS_SDL_WIN_EVENTS
+
 #include "WinEvents.h"
 #include "WinEventsSDL.h"
 #include "Application.h"
@@ -39,8 +41,6 @@
 #include "input/XBMC_keysym.h"
 #include "utils/log.h"
 #endif
-
-#ifdef HAS_SDL_WIN_EVENTS
 
 PHANDLE_EVENT_FUNC CWinEventsBase::m_pEventFunc = NULL;
 
