@@ -49,19 +49,6 @@
 #define BUFFERSIZE        16416
 #define SPEAKER_COUNT     9
 
-static inline int safeRound(double f)
-{
-  /* if the value is larger then we can handle, then clamp it */
-  if (f >= INT_MAX) return INT_MAX;
-  if (f <= INT_MIN) return INT_MIN;
-  
-  /* if the value is out of the MathUtils::round_int range, then round it normally */
-  if (f <= static_cast<double>(INT_MIN / 2) - 1.0 || f >= static_cast <double>(INT_MAX / 2) + 1.0)
-    return floor(f+0.5);
-  
-  return MathUtils::round_int(f);
-}
-
 static enum AEChannel CoreAudioChannelMap[] = {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
 CCoreAudioAE::CCoreAudioAE() :
