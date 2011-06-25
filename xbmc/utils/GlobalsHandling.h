@@ -115,8 +115,10 @@ namespace xbmcutil
     {
     public:
       K* guarded;
-      inline ~Deleter() { if (guarded) delete guarded; }
+      ~Deleter();
     };
+
+    template <class K> Deleter<K>::~Deleter() { if (guarded) delete guarded; }
   }
 
   /**
