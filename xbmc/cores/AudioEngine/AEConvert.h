@@ -26,7 +26,7 @@
 /* note: always converts to machine byte endian */
 
 class CAEConvert{
-private:
+private:  
   static unsigned int U8_Float    (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S8_Float    (uint8_t *data, const unsigned int samples, float   *dest);
   static unsigned int S16LE_Float (uint8_t *data, const unsigned int samples, float   *dest);
