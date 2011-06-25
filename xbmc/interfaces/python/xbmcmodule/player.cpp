@@ -37,12 +37,6 @@ using namespace MUSIC_INFO;
 
 // player callback class
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -651,12 +645,6 @@ namespace PYXBMC
     "         : - xbmc.PLAYER_CORE_PAPLAYER\n");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
   PyTypeObject Player_Type;
 
