@@ -49,8 +49,6 @@
 #define BUFFERSIZE        16416
 #define SPEAKER_COUNT     9
 
-#define INT16_MAX         0x7fff
-
 static inline int safeRound(double f)
 {
   /* if the value is larger then we can handle, then clamp it */
@@ -214,7 +212,9 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
   
   m_guiSoundWhilePlayback = g_guiSettings.GetBool("audiooutput.guisoundwhileplayback");
 
+  /* on iOS devices we set fixed to two channels. */
   enum AEStdChLayout m_stdChLayout = AE_CH_LAYOUT_2_0;
+#if !defined(__arm__)
   switch(g_guiSettings.GetInt("audiooutput.channellayout"))
   {
     default:
@@ -230,7 +230,8 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
     case  9: m_stdChLayout = AE_CH_LAYOUT_7_0; break;
     case 10: m_stdChLayout = AE_CH_LAYOUT_7_1; break;
   }
-
+#endif
+  
   /* setup the desired format */
   m_format.m_channelLayout = CAEUtil::GetStdChLayout(m_stdChLayout);    
  
