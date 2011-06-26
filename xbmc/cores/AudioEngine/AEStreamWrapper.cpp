@@ -105,7 +105,8 @@ void CAEStreamWrapper::Initialize()
       m_stream->SetDrainCallback(StaticStreamOnDrain, this);
 
     /* we need to know when the stream is freed as we need to free too */
-    m_stream->SetFreeCallback(StaticStreamOnFree, this);
+    //m_stream->SetFreeCallback(StaticStreamOnFree, this);
+    m_stream->SetFreeCallback(NULL, NULL);
   }
 }
 
@@ -152,6 +153,9 @@ void CAEStreamWrapper::FreeStream()
 
   if (m_ae && m_stream)
     m_stream = m_ae->FreeStream(m_stream);
+  
+  lock.Leave();
+  delete this;
 }
 
 void CAEStreamWrapper::Destroy()
