@@ -29,7 +29,6 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
-#include "DirtyRegion.h"
 
 using namespace std;
 

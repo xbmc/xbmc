@@ -23,7 +23,7 @@
 #include "threads/CriticalSection.h"
 #include "guilib/gui3d.h"
 #include "utils/StdString.h"
-#include "DirtyRegion.h"
+#include "guilib/DirtyRegion.h"
 
 typedef uint32_t color_t;
 
