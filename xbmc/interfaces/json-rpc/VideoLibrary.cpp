@@ -190,24 +190,7 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
 
   CFileItemList items;
   if (videodatabase.GetEpisodesNav("videodb://2/2/-1/-1/", items, -1, -1, -1, -1, tvshowID, season))
-  {
-    bool additionalInfo = false;
-    for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
-    {
-      CStdString fieldValue = itr->asString();
-      if (fieldValue == "cast")
-        additionalInfo = true;
-    }
-
-    if (additionalInfo)
-    {
-      for (int index = 0; index < items.Size(); index++)
-      {
-        videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      }
-    }
-    HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result);
-  }
+    GetAdditionalEpisodeDetails(parameterObject, items, result);
 
   videodatabase.Close();
   return OK;
@@ -249,7 +232,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
 
   CFileItemList items;
   if (videodatabase.GetMusicVideosNav("videodb://", items, -1, -1, artistID, -1, -1, albumID))
-    HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result);
+    GetAdditionalMusicVideoDetails(parameterObject, items, result);
 
   videodatabase.Close();
   return OK;
@@ -285,24 +268,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMovies(const CStdString &method, ITra
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedMoviesNav("videodb://", items))
-  {
-    bool additionalInfo = false;
-    for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
-    {
-      CStdString fieldValue = itr->asString();
-      if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink")
-        additionalInfo = true;
-    }
-
-    if (additionalInfo)
-    {
-      for (int index = 0; index < items.Size(); index++)
-      {
-        videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      }
-    }
-    HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
-  }
+    GetAdditionalMovieDetails(parameterObject, items, result);
 
   videodatabase.Close();
   return OK;
@@ -316,24 +282,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const CStdString &method, IT
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://", items))
-  {
-    bool additionalInfo = false;
-    for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
-    {
-      CStdString fieldValue = itr->asString();
-      if (fieldValue == "cast")
-        additionalInfo = true;
-    }
-
-    if (additionalInfo)
-    {
-      for (int index = 0; index < items.Size(); index++)
-      {
-        videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      }
-    }
-    HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result);
-  }
+    GetAdditionalEpisodeDetails(parameterObject, items, result);
 
   videodatabase.Close();
   return OK;
@@ -347,7 +296,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &method,
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedMusicVideosNav("videodb://", items))
-    HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result);
+    GetAdditionalMusicVideoDetails(parameterObject, items, result);
 
   videodatabase.Close();
   return OK;
@@ -502,18 +451,64 @@ JSON_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &parameterOb
   for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink")
+    if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink" || fieldValue == "resume")
       additionalInfo = true;
   }
 
   if (additionalInfo)
   {
     for (int index = 0; index < items.Size(); index++)
-    {
       videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-    }
   }
   HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
+
+  return OK;
+}
+
+JSON_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result)
+{
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  bool additionalInfo = false;
+  for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
+  {
+    CStdString fieldValue = itr->asString();
+    if (fieldValue == "cast" || fieldValue == "resume")
+      additionalInfo = true;
+  }
+
+  if (additionalInfo)
+  {
+    for (int index = 0; index < items.Size(); index++)
+      videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+  }
+  HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result);
+
+  return OK;
+}
+
+JSON_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result)
+{
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  bool additionalInfo = false;
+  for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
+  {
+    CStdString fieldValue = itr->asString();
+    if (fieldValue == "resume")
+      additionalInfo = true;
+  }
+
+  if (additionalInfo)
+  {
+    for (int index = 0; index < items.Size(); index++)
+      videodatabase.GetMusicVideoInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+  }
+  HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result);
 
   return OK;
 }

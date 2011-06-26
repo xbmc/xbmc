@@ -175,13 +175,13 @@
     "type": "array",
     "uniqueItems": true,
     "items": { "type": "string",
-      "description": "Requesting the cast, set and/or showlink field will result in increased response times",
+      "description": "Requesting the cast, set, showling and/or resume field will result in increased response times",
       "enum": [ "title", "genre", "year", "rating", "director", "trailer",
                 "tagline", "plot", "plotoutline", "originaltitle", "lastplayed",
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "premiered", "productioncode", "runtime", "set",
                 "showlink", "streamDetails", "top250", "votes",
-                "fanart", "thumbnail", "file", "sorttitle" ]
+                "fanart", "thumbnail", "file", "sorttitle", "resume" ]
     }
   },
   "Video.Fields.MovieSet": {
@@ -214,22 +214,23 @@
     "type": "array",
     "uniqueItems": true,
     "items": { "type": "string",
-      "description": "Requesting the cast field will result in increased response times",
+      "description": "Requesting the cast and/or resume field will result in increased response times",
       "enum": [ "title", "plot", "votes", "rating", "writer",
                 "firstaired", "playcount", "runtime", "director",
                 "productioncode", "season", "episode", "originaltitle",
                 "showtitle", "cast", "streamDetails", "lastplayed", "fanart",
-                "thumbnail", "file" ]
+                "thumbnail", "file", "resume"  ]
     }
   },
   "Video.Fields.MusicVideo": {
     "type": "array",
     "uniqueItems": true,
     "items": { "type": "string",
+      "description": "Requesting the resume field will result in increased response times",
       "enum": [ "title", "playcount", "runtime", "director",
                 "studio", "year", "plot", "album", "artist",
                 "genre", "track", "streamDetails", "lastplayed",
-                "fanart", "thumbnail", "file" ]
+                "fanart", "thumbnail", "file", "resume" ]
     }
   },
   "Video.Cast": {
@@ -274,6 +275,13 @@
       }
     }
   },
+  "Video.Resume": {
+    "type": "object",
+    "properties": {
+      "position": { "type": "number", "minimum": 0 },
+      "total": { "type": "number", "minimum": 0 }
+    }
+  },
   "Video.Details.Movie": {
     "type": "object",
     "properties": {
@@ -308,7 +316,8 @@
       "showlink": { "type": "string" },
       "streamDetails": { "$ref": "Video.Streams" },
       "top250": { "type": "integer" },
-      "votes": { "type": "string" }
+      "votes": { "type": "string" },
+      "resume": { "$ref": "Video.Resume" }
     }
   },
   "Video.Details.MovieSet": {
@@ -399,7 +408,8 @@
       "showtitle": { "type": "string" },
       "cast": { "$ref": "Video.Cast" },
       "streamDetails": { "$ref": "Video.Streams" },
-      "lastplayed": { "type": "string" }
+      "lastplayed": { "type": "string" },
+      "resume": { "$ref": "Video.Resume" }
     }
   },
   "Video.Details.MusicVideo": {
@@ -422,7 +432,8 @@
       "genre": { "type": "string" },
       "track": { "type": "integer" },
       "streamDetails": { "$ref": "Video.Streams" },
-      "lastplayed": { "type": "string" }
+      "lastplayed": { "type": "string" },
+      "resume": { "$ref": "Video.Resume" }
     }
   },
   "Playlist.Id": {
@@ -516,7 +527,7 @@
                 "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
                 "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
                 "runtime", "set", "showlink", "streamDetails", "top250", "votes",
-                "firstaired", "season", "episode", "showtitle", "thumbnail", "file" ]
+                "firstaired", "season", "episode", "showtitle", "thumbnail", "file", "resume" ]
     }
   },
   "List.Fields.Video": {
@@ -529,7 +540,7 @@
                   "mpaa", "country", "imdbnumber", "premiered", "productioncode",
                   "runtime", "showlink", "streamDetails", "top250", "votes",
                   "firstaired", "season", "episode", "showtitle",
-                  "thumbnail", "file", "sorttitle", "episodeguide" ]
+                  "thumbnail", "file", "sorttitle", "episodeguide", "resume" ]
     }
   },
   "List.Items.All": {
@@ -582,7 +593,8 @@
         "firstaired": { "type": "string" },
         "season": { "type": "integer" },
         "episode": { "type": "integer" },
-        "showtitle": { "type": "string" }
+        "showtitle": { "type": "string" },
+        "resume": { "$ref": "Video.Resume" }
       }
     }
   },
@@ -722,7 +734,8 @@
         "firstaired": { "type": "string" },
         "season": { "type": "integer" },
         "episode": { "type": "integer" },
-        "showtitle": { "type": "string" }
+        "showtitle": { "type": "string" },
+        "resume": { "$ref": "Video.Resume" }
       }
     }
   }
