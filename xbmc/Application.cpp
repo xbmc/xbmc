@@ -174,6 +174,7 @@
 #include "windows/GUIWindowPointer.h"
 #include "windows/GUIWindowSystemInfo.h"
 #include "windows/GUIWindowScreensaver.h"
+#include "windows/GUIWindowScreensaverDim.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "windows/GUIWindowStartup.h"
 #include "video/windows/GUIWindowFullScreen.h"
@@ -1054,6 +1055,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   g_windowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
   g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
+  g_windowManager.Add(new CGUIWindowScreensaverDim);            // window id = 97  
   g_windowManager.Add(new CGUIWindowDebugInfo);            // window id = 98
   g_windowManager.Add(new CGUIWindowPointer);            // window id = 99
   g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
@@ -1855,60 +1857,21 @@ bool CApplication::RenderNoPresent()
     }
   }
 
-  // reset image scaling and effect states
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
-
-  RenderScreenSaver();
-
   g_graphicsContext.Unlock();
 
   return hasRendered;
 }
 
-static int screenSaverFadeAmount = 0;
-
-void CApplication::RenderScreenSaver()
+float CApplication::GetDimScreenSaverLevel() const
 {
-  if (!m_screenSaver)
-    return;
+  if (!m_bScreenSave || !m_screenSaver ||
+      (m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" &&
+       m_screenSaver->ID() != "screensaver.xbmc.builtin.black"))
+    return 0;
 
-  if (m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" &&
-      m_screenSaver->ID() != "screensaver.xbmc.builtin.black" &&
-      m_screenSaver->ID() != "screensaver.xbmc.builtin.slideshow")
-    return; // nothing to do
-
-  float amount = 1.0f;
   if (!m_screenSaver->GetSetting("level").IsEmpty())
-    amount = 1.0f - 0.01f * (float)atof(m_screenSaver->GetSetting("level"));
-
-  // special case for dim screensaver
-  bool draw = false;
-  if (amount > 0.f)
-  {
-    if (m_bScreenSave)
-    {
-      draw = true;
-      if (screenSaverFadeAmount < 100)
-      {
-        screenSaverFadeAmount = std::min(100, screenSaverFadeAmount + 2);  // around a second to fade
-      }
-    }
-    else
-    {
-      if (screenSaverFadeAmount > 0)
-      {
-        draw = true;
-        screenSaverFadeAmount = std::max(0, screenSaverFadeAmount - 4);  // around a half second to unfade
-      }
-    }
-  }
-  if (draw)
-  {
-    color_t color = ((color_t)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-    CRect rect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
-    g_windowManager.MarkDirty();
-    CGUITexture::DrawQuad(rect, color);
-  }
+    return 100.0f - (float)atof(m_screenSaver->GetSetting("level"));
+  return 100.0f;
 }
 
 bool CApplication::WaitFrame(unsigned int timeout)
@@ -1983,10 +1946,8 @@ void CApplication::Render()
   unsigned int singleFrameTime = 10; // default limit 100 fps
 
   {
-    // Less fps in DPMS or Black screensaver
-    bool lowfps = (m_dpmsIsActive
-                   || (m_bScreenSave && m_screenSaver && (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
-                       && (screenSaverFadeAmount >= 100)));
+    // Less fps in DPMS
+    bool lowfps = m_dpmsIsActive;
     // Whether externalplayer is playing and we're unfocused
     bool extPlayerActive = m_eCurrentPlayer >= EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
 

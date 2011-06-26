@@ -1155,6 +1155,7 @@
     <ClCompile Include="..\..\xbmc\windows\GUIWindowLoginScreen.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowPointer.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowScreensaver.cpp" />
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowScreensaverDim.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowStartup.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowSystemInfo.cpp" />
     <ClCompile Include="..\..\xbmc\windows\GUIWindowWeather.cpp" />
@@ -1995,6 +1996,7 @@
     <ClInclude Include="..\..\xbmc\windows\GUIWindowLoginScreen.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowPointer.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowScreensaver.h" />
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowScreensaverDim.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowStartup.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowSystemInfo.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowWeather.h" />
