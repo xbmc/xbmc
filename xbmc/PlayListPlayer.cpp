@@ -156,15 +156,8 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   int iSong = GetNextSong(offset);
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 
-  // stop playing
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
-  {
-    CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-    g_windowManager.SendThreadMessage(msg);
-    Reset();
-    m_iCurrentPlayList = PLAYLIST_NONE;
     return false;
-  }
 
   if (bAutoPlay)
     CFileItemPtr item = playlist[iSong];
