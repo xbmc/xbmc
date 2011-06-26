@@ -23,8 +23,20 @@
 #include "filesystem/File.h"
 #include "threads/SingleLock.h"
 
+#include "FileItem.h"
+#include "video/VideoInfoTag.h"
+#include "video/VideoDatabase.h"
+#include "music/tags/MusicInfoTag.h"
+#include "music/Album.h"
+#include "music/Artist.h"
+#include "settings/Settings.h"
+#include "URIUtils.h"
+#include "Crc32.h"
+#include "filesystem/StackDirectory.h"
+
 using namespace std;
 using namespace XFILE;
+using namespace MUSIC_INFO;
 
 CThumbnailCache* CThumbnailCache::m_pCacheInstance = NULL;
 
@@ -96,4 +108,158 @@ void CThumbnailCache::Add(const CStdString& strFileName, bool bExists)
     it->second = bExists;
   else
     m_Cache.insert(pair<CStdString, bool>(strFileName, bExists));
+}
+
+CStdString CThumbnailCache::GetAlbumThumb(const CFileItem &item)
+{
+  return GetAlbumThumb(item.GetMusicInfoTag());
+}
+
+CStdString CThumbnailCache::GetAlbumThumb(const CMusicInfoTag *musicInfo)
+{
+  if (!musicInfo)
+    return CStdString();
+
+  return GetAlbumThumb(musicInfo->GetAlbum(), !musicInfo->GetArtist().empty() ? musicInfo->GetArtist() : musicInfo->GetAlbumArtist());
+}
+
+CStdString CThumbnailCache::GetAlbumThumb(const CAlbum &album)
+{
+  return GetAlbumThumb(album.strAlbum, album.strArtist);
+}
+
+CStdString CThumbnailCache::GetAlbumThumb(const CStdString& album, const CStdString& artist)
+{
+  if (album.IsEmpty())
+    return GetMusicThumb("unknown" + artist);
+  if (artist.IsEmpty())
+    return GetMusicThumb(album + "unknown");
+  return GetMusicThumb(album + artist);
+}
+
+CStdString CThumbnailCache::GetArtistThumb(const CFileItem &item)
+{
+  return GetArtistThumb(item.GetLabel());
+}
+
+CStdString CThumbnailCache::GetArtistThumb(const CArtist &artist)
+{
+  return GetArtistThumb(artist.strArtist);
+}
+
+CStdString CThumbnailCache::GetArtistThumb(const CStdString &label)
+{
+  return GetThumb("artist" + label, g_settings.GetMusicArtistThumbFolder());
+}
+
+CStdString CThumbnailCache::GetActorThumb(const CFileItem &item)
+{
+  return GetActorThumb(item.GetLabel());
+}
+
+CStdString CThumbnailCache::GetActorThumb(const CStdString &label)
+{
+  return GetThumb("actor" + label, g_settings.GetVideoThumbFolder(), true);
+}
+
+CStdString CThumbnailCache::GetSeasonThumb(const CFileItem &item)
+{
+  return GetSeasonThumb(item.GetLabel(), item.GetVideoInfoTag());
+}
+
+CStdString CThumbnailCache::GetSeasonThumb(const CStdString &label, const CVideoInfoTag *videoInfo /* = NULL */)
+{
+  CStdString seasonPath;
+  if (videoInfo)
+    seasonPath = videoInfo->m_strPath;
+
+  return GetThumb("season" + seasonPath + label, g_settings.GetVideoThumbFolder(), true);
+}
+
+CStdString CThumbnailCache::GetEpisodeThumb(const CFileItem &item)
+{
+  if (!item.HasVideoInfoTag())
+    return CStdString();
+
+  return GetEpisodeThumb(item.GetVideoInfoTag());
+}
+
+CStdString CThumbnailCache::GetEpisodeThumb(const CVideoInfoTag* videoInfo)
+{
+  // get the locally cached thumb
+  CStdString strCRC;
+  strCRC.Format("%sepisode%i", videoInfo->m_strFileNameAndPath.c_str(), videoInfo->m_iEpisode);
+  return GetThumb(strCRC, g_settings.GetVideoThumbFolder(), true);
+}
+
+CStdString CThumbnailCache::GetVideoThumb(const CFileItem &item)
+{
+  if (item.IsStack())
+    return GetThumb(CStackDirectory::GetFirstStackedFile(item.m_strPath), g_settings.GetVideoThumbFolder(), true);
+  else if (item.IsVideoDb() && item.HasVideoInfoTag())
+  {
+    if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.IsEmpty())
+      return GetThumb(item.GetVideoInfoTag()->m_strPath, g_settings.GetVideoThumbFolder(), true);
+    else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+      return GetThumb(item.GetVideoInfoTag()->m_strFileNameAndPath, g_settings.GetVideoThumbFolder(), true);
+  }
+  return GetThumb(item.m_strPath, g_settings.GetVideoThumbFolder(), true);
+}
+
+CStdString CThumbnailCache::GetFanart(const CFileItem &item)
+{
+  // get the locally cached thumb
+  if (item.IsVideoDb())
+  {
+    if (!item.HasVideoInfoTag())
+      return "";
+    if (!item.GetVideoInfoTag()->m_strArtist.IsEmpty())
+      return GetThumb(item.GetVideoInfoTag()->m_strArtist,g_settings.GetMusicFanartFolder());
+    if (!item.m_bIsFolder && !item.GetVideoInfoTag()->m_strShowTitle.IsEmpty())
+    {
+      CVideoDatabase database;
+      database.Open();
+      int iShowId = database.GetTvShowId(item.GetVideoInfoTag()->m_strPath);
+      CStdString showPath;
+      database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
+      return GetThumb(showPath,g_settings.GetVideoFanartFolder());
+    }
+    return GetThumb(item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath : item.GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());
+  }
+  if (item.HasMusicInfoTag())
+    return GetThumb(item.GetMusicInfoTag()->GetArtist(),g_settings.GetMusicFanartFolder());
+
+  return GetThumb(item.m_strPath,g_settings.GetVideoFanartFolder());
+}
+
+CStdString CThumbnailCache::GetThumb(const CStdString &path, const CStdString &path2, bool split /* = false */)
+{
+  // get the locally cached thumb
+  Crc32 crc;
+  crc.ComputeFromLowerCase(path);
+
+  CStdString thumb;
+  if (split)
+  {
+    CStdString hex;
+    hex.Format("%08x", (__int32)crc);
+    thumb.Format("%c\\%08x.tbn", hex[0], (unsigned __int32)crc);
+  }
+  else
+    thumb.Format("%08x.tbn", (unsigned __int32)crc);
+
+  return URIUtils::AddFileToFolder(path2, thumb);
+}
+
+CStdString CThumbnailCache::GetMusicThumb(const CStdString& path)
+{
+  Crc32 crc;
+  CStdString noSlashPath(path);
+  URIUtils::RemoveSlashAtEnd(noSlashPath);
+  crc.ComputeFromLowerCase(noSlashPath);
+  CStdString hex;
+  hex.Format("%08x", (unsigned __int32) crc);
+  CStdString thumb;
+  thumb.Format("%c/%s.tbn", hex[0], hex.c_str());
+  return URIUtils::AddFileToFolder(g_settings.GetMusicThumbFolder(), thumb);
 }
