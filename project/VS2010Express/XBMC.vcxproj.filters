@@ -2222,6 +2222,9 @@
     <ClCompile Include="..\..\xbmc\windows\GUIWindowScreensaver.cpp">
       <Filter>windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowScreensaverDim.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowStartup.cpp">
       <Filter>windows</Filter>
     </ClCompile>
@@ -4682,6 +4685,9 @@
       <Filter>windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowScreensaver.h">
+      <Filter>windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowScreensaverDim.h">
       <Filter>windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowStartup.h">
