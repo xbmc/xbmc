@@ -8085,7 +8085,6 @@
 				F558F29613ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */,
 				DF0DF15B13A3ADA7008ED511 /* FileNFS.cpp in Sources */,
 				DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */,
-<<<<<<< HEAD
 				32E6487813AFB0EB007C0723 /* AEConvert.cpp in Sources */,
 				32E6487913AFB0EB007C0723 /* AEFactory.cpp in Sources */,
 				32E6487A13AFB0EB007C0723 /* AEPackIEC958.cpp in Sources */,
@@ -8104,9 +8103,7 @@
 				32E6488813AFB0EB007C0723 /* CoreAudioAEStream.cpp in Sources */,
 				32E6489113AFB0EB007C0723 /* AEPPAnimationFade.cpp in Sources */,
 				32E648B613AFB156007C0723 /* DVDAudioCodecPassthrough.cpp in Sources */,
-=======
 				F558F51E13AF03AD00631E12 /* ThreadLocal.cpp in Sources */,
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8987,7 +8984,6 @@
 				F558F29713ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */,
 				F558F3D013AE663300631E12 /* FileNFS.cpp in Sources */,
 				F558F3D113AE663A00631E12 /* NFSDirectory.cpp in Sources */,
-<<<<<<< HEAD
 				32E6489613AFB0EB007C0723 /* AEConvert.cpp in Sources */,
 				32E6489713AFB0EB007C0723 /* AEFactory.cpp in Sources */,
 				32E6489813AFB0EB007C0723 /* AEPackIEC958.cpp in Sources */,
@@ -9006,9 +9002,7 @@
 				32E648A613AFB0EB007C0723 /* CoreAudioAEStream.cpp in Sources */,
 				32E648AF13AFB0EC007C0723 /* AEPPAnimationFade.cpp in Sources */,
 				32E648B713AFB156007C0723 /* DVDAudioCodecPassthrough.cpp in Sources */,
-=======
 				F558F51F13AF03AD00631E12 /* ThreadLocal.cpp in Sources */,
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

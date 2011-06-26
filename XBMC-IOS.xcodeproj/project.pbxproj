@@ -1431,16 +1431,6 @@
 		F56C81F3131F42E6000AD0F6 /* EncoderWav.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderWav.cpp; sourceTree = "<group>"; };
 		F56C81F4131F42E6000AD0F6 /* EncoderWav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderWav.h; sourceTree = "<group>"; };
 		F56C81F6131F42E6000AD0F6 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
-<<<<<<< HEAD
-=======
-		F56C81FF131F42E6000AD0F6 /* IOSAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IOSAudioRenderer.cpp; path = AudioRenderers/IOSAudioRenderer.cpp; sourceTree = "<group>"; };
-		F56C8200131F42E6000AD0F6 /* IOSAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRenderer.h; path = AudioRenderers/IOSAudioRenderer.h; sourceTree = "<group>"; };
-		F56C8201131F42E6000AD0F6 /* IAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAudioRenderer.h; path = AudioRenderers/IAudioRenderer.h; sourceTree = "<group>"; };
-		F56C8202131F42E6000AD0F6 /* AudioRendererFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioRendererFactory.h; path = AudioRenderers/AudioRendererFactory.h; sourceTree = "<group>"; };
-		F56C8203131F42E6000AD0F6 /* AudioRendererFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioRendererFactory.cpp; path = AudioRenderers/AudioRendererFactory.cpp; sourceTree = "<group>"; };
-		F56C8204131F42E6000AD0F6 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = AudioRenderers/NullDirectSound.cpp; sourceTree = "<group>"; };
-		F56C8205131F42E6000AD0F6 /* NullDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NullDirectSound.h; path = AudioRenderers/NullDirectSound.h; sourceTree = "<group>"; };
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 		F56C8207131F42E6000AD0F6 /* coff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = coff.cpp; sourceTree = "<group>"; };
 		F56C8208131F42E6000AD0F6 /* coff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coff.h; sourceTree = "<group>"; };
 		F56C8209131F42E6000AD0F6 /* coffldr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coffldr.h; sourceTree = "<group>"; };
@@ -6778,7 +6768,6 @@
 				7C0A7FB313A9E72E00AFC2BD /* DirtyRegionTracker.cpp in Sources */,
 				DF0DF17F13A3AF9F008ED511 /* FileNFS.cpp in Sources */,
 				DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */,
-<<<<<<< HEAD
 				32E649A313AFB9C4007C0723 /* AEConvert.cpp in Sources */,
 				32E649A413AFB9C4007C0723 /* AEFactory.cpp in Sources */,
 				32E649A513AFB9C4007C0723 /* AEPackIEC958.cpp in Sources */,
@@ -6797,9 +6786,7 @@
 				32E649B313AFB9C4007C0723 /* CoreAudioAEStream.cpp in Sources */,
 				32E649BD13AFB9C4007C0723 /* AEPPAnimationFade.cpp in Sources */,
 				32E64A1413AFD057007C0723 /* DVDAudioCodecPassthrough.cpp in Sources */,
-=======
 				F558F61113AFDC3000631E12 /* ThreadLocal.cpp in Sources */,
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

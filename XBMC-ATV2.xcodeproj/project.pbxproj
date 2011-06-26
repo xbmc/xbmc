@@ -801,11 +801,6 @@
 		F56C7BE3131EC3F3000AD0F6 /* RenderSystemGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BE0131EC3F3000AD0F6 /* RenderSystemGLES.cpp */; };
 		F56C7BE6131EC455000AD0F6 /* LinuxRendererGLES.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BE4131EC455000AD0F6 /* LinuxRendererGLES.cpp */; };
 		F56C7BE9131EC46E000AD0F6 /* yuv2rgb.neon.S in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BE7131EC46E000AD0F6 /* yuv2rgb.neon.S */; };
-<<<<<<< HEAD
-		F56C7BF2131EC4CE000AD0F6 /* XBMC_mutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BEF131EC4CE000AD0F6 /* XBMC_mutex.cpp */; };
-=======
-		F56C7BEC131EC495000AD0F6 /* IOSAudioRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BEA131EC495000AD0F6 /* IOSAudioRenderer.cpp */; };
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 		F56C7BF5131EC4E8000AD0F6 /* fastmemcpy-arm.S in Sources */ = {isa = PBXBuildFile; fileRef = F56C7BF3131EC4E8000AD0F6 /* fastmemcpy-arm.S */; };
 		F56C7D83131EF8D9000AD0F6 /* NptZip.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CB2131EF8D8000AD0F6 /* NptZip.cpp */; };
 		F56C7D84131EF8D9000AD0F6 /* NptStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7CB4131EF8D8000AD0F6 /* NptStreams.cpp */; };
@@ -2649,13 +2644,6 @@
 		F56C7BE5131EC455000AD0F6 /* LinuxRendererGLES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinuxRendererGLES.h; sourceTree = "<group>"; };
 		F56C7BE7131EC46E000AD0F6 /* yuv2rgb.neon.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = yuv2rgb.neon.S; sourceTree = "<group>"; };
 		F56C7BE8131EC46E000AD0F6 /* yuv2rgb.neon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = yuv2rgb.neon.h; sourceTree = "<group>"; };
-<<<<<<< HEAD
-		F56C7BEF131EC4CE000AD0F6 /* XBMC_mutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_mutex.cpp; sourceTree = "<group>"; };
-		F56C7BF0131EC4CE000AD0F6 /* XBMC_mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_mutex.h; sourceTree = "<group>"; };
-=======
-		F56C7BEA131EC495000AD0F6 /* IOSAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IOSAudioRenderer.cpp; path = AudioRenderers/IOSAudioRenderer.cpp; sourceTree = "<group>"; };
-		F56C7BEB131EC495000AD0F6 /* IOSAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRenderer.h; path = AudioRenderers/IOSAudioRenderer.h; sourceTree = "<group>"; };
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 		F56C7BF3131EC4E8000AD0F6 /* fastmemcpy-arm.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = "fastmemcpy-arm.S"; sourceTree = "<group>"; };
 		F56C7BF4131EC4E8000AD0F6 /* fastmemcpy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fastmemcpy.h; sourceTree = "<group>"; };
 		F56C7CA6131EF8D8000AD0F6 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.txt; path = Neptune/README.txt; sourceTree = "<group>"; };
@@ -6642,11 +6630,6 @@
 				F56C7BE3131EC3F3000AD0F6 /* RenderSystemGLES.cpp in Sources */,
 				F56C7BE6131EC455000AD0F6 /* LinuxRendererGLES.cpp in Sources */,
 				F56C7BE9131EC46E000AD0F6 /* yuv2rgb.neon.S in Sources */,
-<<<<<<< HEAD
-				F56C7BF2131EC4CE000AD0F6 /* XBMC_mutex.cpp in Sources */,
-=======
-				F56C7BEC131EC495000AD0F6 /* IOSAudioRenderer.cpp in Sources */,
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 				F56C7BF5131EC4E8000AD0F6 /* fastmemcpy-arm.S in Sources */,
 				F56C7D83131EF8D9000AD0F6 /* NptZip.cpp in Sources */,
 				F56C7D84131EF8D9000AD0F6 /* NptStreams.cpp in Sources */,
@@ -6770,7 +6753,6 @@
 				7C0A7FCC13A9E76E00AFC2BD /* GUIWindowDebugInfo.cpp in Sources */,
 				DF0DF16C13A3AF82008ED511 /* FileNFS.cpp in Sources */,
 				DF0DF16D13A3AF82008ED511 /* NFSDirectory.cpp in Sources */,
-<<<<<<< HEAD
 				32E648C613AFB875007C0723 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				32E6492A13AFB8A7007C0723 /* AEConvert.cpp in Sources */,
 				32E6492B13AFB8A7007C0723 /* AEFactory.cpp in Sources */,
@@ -6789,9 +6771,7 @@
 				32E6493913AFB8A7007C0723 /* CoreAudioAESound.cpp in Sources */,
 				32E6493A13AFB8A7007C0723 /* CoreAudioAEStream.cpp in Sources */,
 				32E6494413AFB8A7007C0723 /* AEPPAnimationFade.cpp in Sources */,
-=======
 				F558F66F13AFE81500631E12 /* ThreadLocal.cpp in Sources */,
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
