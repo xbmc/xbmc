@@ -30,8 +30,8 @@
 #include "music/Album.h"
 #include "music/Artist.h"
 #include "settings/Settings.h"
-#include "URIUtils.h"
-#include "Crc32.h"
+#include "utils/URIUtils.h"
+#include "utils/Crc32.h"
 #include "filesystem/StackDirectory.h"
 
 using namespace std;
