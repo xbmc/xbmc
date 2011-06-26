@@ -571,15 +571,10 @@ void CAnimation::QueueAnimation(ANIMATION_PROCESS process)
   m_queuedProcess = process;
 }
 
-CAnimation *CAnimation::CreateFader(float start, float end, unsigned int delay, unsigned int length)
+CAnimation CAnimation::CreateFader(float start, float end, unsigned int delay, unsigned int length)
 {
-  CAnimation *anim = new CAnimation();
-  if (anim)
-  {
-    CFadeEffect *effect = new CFadeEffect(start, end, delay, length);
-    if (effect)
-      anim->AddEffect(effect);
-  }
+  CAnimation anim;
+  anim.AddEffect(new CFadeEffect(start, end, delay, length));
   return anim;
 }
 
