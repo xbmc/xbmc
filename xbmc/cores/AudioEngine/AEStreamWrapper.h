@@ -20,10 +20,12 @@
  *
  */
 
+#include "AE.h"
 #include "AEStream.h"
 #include "threads/SharedSection.h"
 #include <list>
 
+class IAE;
 class IAEStream;
 
 class CAEStreamWrapper : public IAEStream
@@ -72,7 +74,7 @@ public:
   virtual void UnRegisterAudioCallback();
 
 private:
-  IAE               *m_ae;
+  IAE              *m_ae;
   enum AEDataFormat m_dataFormat;
   unsigned int      m_sampleRate;
   unsigned int      m_channelCount;
