@@ -415,7 +415,8 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   readsize = std::min(m_Buffer->GetReadSize(), size);  
   
   m_Buffer->Read(buffer, readsize);
-  
+ 
+#if 0
   if(!m_draining && (readsize < size))
   {
     /* otherwise ask for more data */
@@ -427,7 +428,8 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
       m_inDataFunc = false;
     }
   }
-  
+#endif
+
   /* we have a frame, if we have a viz we need to hand the data to it.
      On iOS we do not have vizualisation. Keep in mind that our buffer
      is already in output format. So we remap output format to viz format !!!*/

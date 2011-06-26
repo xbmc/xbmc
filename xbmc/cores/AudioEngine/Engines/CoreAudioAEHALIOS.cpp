@@ -593,7 +593,7 @@ bool CCoreAudioAEHALIOS::Initialize(IAE *ae, bool passThrough, AEAudioFormat &fo
     return false;
   }
   
-  UInt32 m_PacketSize = 64;
+  UInt32 m_PacketSize = 256;
   m_AudioDevice->FramesPerSlice(m_PacketSize);
   
   // set the format parameters
