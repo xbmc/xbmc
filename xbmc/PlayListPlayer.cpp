@@ -159,9 +159,6 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
     return false;
 
-  if (bAutoPlay)
-    CFileItemPtr item = playlist[iSong];
-
   return Play(iSong, bAutoPlay);
 }
 
