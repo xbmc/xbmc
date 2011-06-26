@@ -4924,29 +4924,6 @@ void CApplication::ShowVolumeBar(const CAction *action)
     m_guiDialogVolumeBar.OnAction(*action);
 }
 
-void CApplication::Mute(void)
-{
-  if (g_settings.m_bMute)
-  { // muted - unmute.
-    // In case our premutevolume is 0, return to 100% volume
-    if( g_settings.m_iPreMuteVolumeLevel == 0 )
-    {
-      SetVolume(100);
-    }
-    else
-    {
-      SetVolume(g_settings.m_iPreMuteVolumeLevel);
-      g_settings.m_iPreMuteVolumeLevel = 0;
-    }
-    ShowVolumeBar();
-  }
-  else
-  { // mute
-    g_settings.m_iPreMuteVolumeLevel = GetVolume();
-    SetVolume(0);
-  }
-}
-
 void CApplication::SetVolume(int iPercent)
 {
   float hardwareVolume = (float)iPercent / 100.0f;
