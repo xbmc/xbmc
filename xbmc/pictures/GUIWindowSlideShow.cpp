@@ -272,7 +272,7 @@ void CGUIWindowSlideShow::StartSlideShow(bool screensaver)
   m_bScreensaver = screensaver;
 }
 
-void CGUIWindowSlideShow::Render()
+void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &regions)
 {
   // reset the screensaver if we're in a slideshow
   // (unless we are the screensaver!)
@@ -335,10 +335,11 @@ void CGUIWindowSlideShow::Render()
       // else just drop through - there's nothing we can do (error message will be displayed)
     }
   }
+
   if (m_bErrorMessage)
-  {
-    RenderErrorMessage();
-    return ;
+  { // hack, just mark it all
+    regions.push_back(CRect(0.0f, 0.0f, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
+    return;
   }
 
   if (!m_Image[m_iCurrentPic].IsLoaded() && !m_pBackgroundLoader->IsLoading())
@@ -405,7 +406,7 @@ void CGUIWindowSlideShow::Render()
   {
     m_Image[m_iCurrentPic].SetInSlideshow(m_bSlideShow);
     m_Image[m_iCurrentPic].Pause(m_bPause);
-    m_Image[m_iCurrentPic].Render();
+    m_Image[m_iCurrentPic].Process(currentTime, regions);
   }
 
   if (m_slides->Get(m_iCurrentSlide)->IsVideo() && bSlideShow)
@@ -441,7 +442,7 @@ void CGUIWindowSlideShow::Render()
       // set the appropriate transistion time
       m_Image[1 - m_iCurrentPic].SetTransistionTime(0, m_Image[m_iCurrentPic].GetTransistionTime(1));
       m_Image[1 - m_iCurrentPic].Pause(m_bPause);
-      m_Image[1 - m_iCurrentPic].Render();
+      m_Image[1 - m_iCurrentPic].Process(currentTime, regions);
     }
     else // next pic isn't loaded.  We should hang around if it is in progress
     {
@@ -468,13 +469,22 @@ void CGUIWindowSlideShow::Render()
     m_iRotate = 0;
   }
 
-  RenderPause();
-
   if (m_Image[m_iCurrentPic].IsLoaded())
     g_infoManager.SetCurrentSlide(*m_slides->Get(m_iCurrentSlide));
 
-  RenderErrorMessage();
+  RenderPause();
+  CGUIWindow::Process(currentTime, regions);
+}
 
+void CGUIWindowSlideShow::Render()
+{
+  if (m_Image[m_iCurrentPic].IsLoaded())
+    m_Image[m_iCurrentPic].Render();
+
+  if (m_Image[m_iCurrentPic].DrawNextImage() && m_Image[1 - m_iCurrentPic].IsLoaded())
+    m_Image[1 - m_iCurrentPic].Render();
+
+  RenderErrorMessage();
   CGUIWindow::Render();
 }
 

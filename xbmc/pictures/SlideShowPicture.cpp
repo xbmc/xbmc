@@ -29,6 +29,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#include "DirtyRegion.h"
 
 using namespace std;
 
@@ -69,6 +70,7 @@ void CSlideShowPic::Close()
   m_bIsFinished = false;
   m_bDrawNextImage = false;
   m_bTransistionImmediately = false;
+  m_bIsDirty = true;
 }
 
 void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY_EFFECT dispEffect, TRANSISTION_EFFECT transEffect)
@@ -80,6 +82,7 @@ void CSlideShowPic::SetTexture(int iSlideNumber, CBaseTexture* pTexture, DISPLAY
   m_bTransistionImmediately = false;
   m_iSlideNumber = iSlideNumber;
 
+  m_bIsDirty = true;
   m_pImage = pTexture;
   m_fWidth = (float)pTexture->GetWidth();
   m_fHeight = (float)pTexture->GetHeight();
@@ -181,9 +184,34 @@ void CSlideShowPic::UpdateTexture(CBaseTexture* pTexture)
   m_pImage = pTexture;
   m_fWidth = (float)pTexture->GetWidth();
   m_fHeight = (float)pTexture->GetHeight();
+  m_bIsDirty = true;
 }
 
-void CSlideShowPic::Process()
+static CRect GetRectangle(const float x[4], const float y[4])
+{
+  CRect rect;
+  rect.x1 = *std::min_element(x, x+4);
+  rect.y1 = *std::min_element(y, y+4);
+  rect.x2 = *std::max_element(x, x+4);
+  rect.y2 = *std::max_element(y, y+4);
+  return rect;
+}
+
+void CSlideShowPic::UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions)
+{
+  const size_t count = sizeof(float)*4;
+  if(memcmp(cur_x, new_x, count)
+  || memcmp(cur_y, new_y, count)
+  || m_bIsDirty)
+  {
+    dirtyregions.push_back(GetRectangle(cur_x, cur_y));
+    dirtyregions.push_back(GetRectangle(new_x, new_y));
+    memcpy(cur_x, new_x, count);
+    memcpy(cur_y, new_y, count);
+  }
+}
+
+void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (!m_pImage || !m_bIsLoaded || m_bIsFinished) return ;
   if (m_iCounter <= m_transistionStart.length)
@@ -315,100 +343,7 @@ void CSlideShowPic::Process()
   }
   if (m_iCounter > m_transistionEnd.start + m_transistionEnd.length)
     m_bIsFinished = true;
-}
 
-void CSlideShowPic::Keep()
-{
-  // this is called if we need to keep the current pic on screen
-  // to wait for the next pic to load
-  if (!m_bDrawNextImage) return ; // don't need to keep pic
-  // hold off the start of the next frame
-  m_transistionEnd.start = m_iCounter;
-}
-
-bool CSlideShowPic::StartTransistion()
-{
-  // this is called if we need to start transistioning immediately to the new picture
-  if (m_bDrawNextImage) return false; // don't need to do anything as we are already transistioning
-  // decrease the number of display frame
-  m_transistionEnd.start = m_iCounter;
-  m_bTransistionImmediately = true;
-  return true;
-}
-
-void CSlideShowPic::Pause(bool bPause)
-{
-  if (!m_bDrawNextImage)
-    m_bPause = bPause;
-}
-
-void CSlideShowPic::SetInSlideshow(bool slideshow)
-{
-  if (slideshow && m_displayEffect == EFFECT_NO_TIMEOUT)
-    m_displayEffect = EFFECT_NONE;
-}
-
-int CSlideShowPic::GetTransistionTime(int iType) const
-{
-  if (iType == 0) // start transistion
-    return m_transistionStart.length;
-  else // iType == 1 // end transistion
-    return m_transistionEnd.length;
-}
-
-void CSlideShowPic::SetTransistionTime(int iType, int iTime)
-{
-  if (iType == 0) // start transistion
-    m_transistionStart.length = iTime;
-  else // iType == 1 // end transistion
-    m_transistionEnd.length = iTime;
-}
-
-void CSlideShowPic::Rotate(int iRotate)
-{
-  if (m_bDrawNextImage) return ;
-  if (m_transistionTemp.type == TRANSISTION_ZOOM) return ;
-  m_transistionTemp.type = TRANSISTION_ROTATE;
-  m_transistionTemp.start = m_iCounter;
-  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
-  m_fTransistionAngle = (float)(iRotate - m_fAngle) / (float)m_transistionTemp.length;
-  // reset the timer
-  m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
-}
-
-void CSlideShowPic::Zoom(int iZoom, bool immediate /*= false*/)
-{
-  if (m_bDrawNextImage) return ;
-  if (m_transistionTemp.type == TRANSISTION_ROTATE) return ;
-  if (immediate)
-  {
-    m_fZoomAmount = zoomamount[iZoom - 1];
-    return;
-  }
-  m_transistionTemp.type = TRANSISTION_ZOOM;
-  m_transistionTemp.start = m_iCounter;
-  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
-  m_fTransistionZoom = (float)(zoomamount[iZoom - 1] - m_fZoomAmount) / (float)m_transistionTemp.length;
-  // reset the timer
-  m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
-  // turn off the render effects until we're back down to normal zoom
-  m_bNoEffect = true;
-}
-
-void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
-{
-  m_fZoomLeft += fDeltaX;
-  m_fZoomTop += fDeltaY;
-  // reset the timer
- // m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
-}
-
-void CSlideShowPic::Render()
-{
-  CSingleLock lock(m_textureAccess);
-  if (!m_pImage || !m_bIsLoaded || m_bIsFinished) return ;
-  // update the image
-  Process();
   // calculate where we should render (and how large it should be)
   // calculate aspect ratio correction factor
   RESOLUTION iRes = g_graphicsContext.GetVideoResolution();
@@ -518,11 +453,19 @@ void CSlideShowPic::Render()
     x[i] += m_fPosX * m_fWidth * fScale;
     y[i] += m_fPosY * m_fHeight * fScale;
   }
-  // and render
-  Render(x, y, m_pImage, (m_alpha << 24) | 0xFFFFFF);
+
+  UpdateVertices(m_ax, m_ay, x, y, dirtyregions);
 
   // now render the image in the top right corner if we're zooming
-  if (m_fZoomAmount == 1 || m_bIsComic) return ;
+  if (m_fZoomAmount == 1 || m_bIsComic)
+  {
+    const float empty[4] = {0};
+    UpdateVertices(m_bx, m_by, empty, empty, dirtyregions);
+    UpdateVertices(m_sx, m_sy, empty, empty, dirtyregions);
+    UpdateVertices(m_ox, m_oy, empty, empty, dirtyregions);
+    m_bIsDirty = false;
+    return;
+  }
 
   float sx[4], sy[4];
   sx[0] = -m_fWidth * co + m_fHeight * si;
@@ -569,8 +512,8 @@ void CSlideShowPic::Render()
   fSmallX -= fSmallWidth * 0.5f;
   fSmallY -= fSmallHeight * 0.5f;
 
-  Render(bx, by, NULL, PICTURE_VIEW_BOX_BACKGROUND);
-  Render(sx, sy, m_pImage, 0xFFFFFFFF);
+  UpdateVertices(m_bx, m_by, bx, by, dirtyregions);
+  UpdateVertices(m_sx, m_sy, sx, sy, dirtyregions);
 
   // now we must render the wireframe image of the view window
   // work out the direction of the top of pic vector
@@ -598,7 +541,108 @@ void CSlideShowPic::Render()
     if (oy[i] > fSmallY + fSmallHeight) oy[i] = fSmallY + fSmallHeight;
   }
 
-  Render(ox, oy, NULL, PICTURE_VIEW_BOX_COLOR);
+  UpdateVertices(m_ox, m_oy, ox, oy, dirtyregions);
+  m_bIsDirty = false;
+}
+
+void CSlideShowPic::Keep()
+{
+  // this is called if we need to keep the current pic on screen
+  // to wait for the next pic to load
+  if (!m_bDrawNextImage) return ; // don't need to keep pic
+  // hold off the start of the next frame
+  m_transistionEnd.start = m_iCounter;
+}
+
+bool CSlideShowPic::StartTransistion()
+{
+  // this is called if we need to start transistioning immediately to the new picture
+  if (m_bDrawNextImage) return false; // don't need to do anything as we are already transistioning
+  // decrease the number of display frame
+  m_transistionEnd.start = m_iCounter;
+  m_bTransistionImmediately = true;
+  return true;
+}
+
+void CSlideShowPic::Pause(bool bPause)
+{
+  if (!m_bDrawNextImage)
+    m_bPause = bPause;
+}
+
+void CSlideShowPic::SetInSlideshow(bool slideshow)
+{
+  if (slideshow && m_displayEffect == EFFECT_NO_TIMEOUT)
+    m_displayEffect = EFFECT_NONE;
+}
+
+int CSlideShowPic::GetTransistionTime(int iType) const
+{
+  if (iType == 0) // start transistion
+    return m_transistionStart.length;
+  else // iType == 1 // end transistion
+    return m_transistionEnd.length;
+}
+
+void CSlideShowPic::SetTransistionTime(int iType, int iTime)
+{
+  if (iType == 0) // start transistion
+    m_transistionStart.length = iTime;
+  else // iType == 1 // end transistion
+    m_transistionEnd.length = iTime;
+}
+
+void CSlideShowPic::Rotate(int iRotate)
+{
+  if (m_bDrawNextImage) return ;
+  if (m_transistionTemp.type == TRANSISTION_ZOOM) return ;
+  m_transistionTemp.type = TRANSISTION_ROTATE;
+  m_transistionTemp.start = m_iCounter;
+  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
+  m_fTransistionAngle = (float)(iRotate - m_fAngle) / (float)m_transistionTemp.length;
+  // reset the timer
+  m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
+}
+
+void CSlideShowPic::Zoom(int iZoom, bool immediate /*= false*/)
+{
+  if (m_bDrawNextImage) return ;
+  if (m_transistionTemp.type == TRANSISTION_ROTATE) return ;
+  if (immediate)
+  {
+    m_fZoomAmount = zoomamount[iZoom - 1];
+    return;
+  }
+  m_transistionTemp.type = TRANSISTION_ZOOM;
+  m_transistionTemp.start = m_iCounter;
+  m_transistionTemp.length = IMMEDIATE_TRANSISTION_TIME;
+  m_fTransistionZoom = (float)(zoomamount[iZoom - 1] - m_fZoomAmount) / (float)m_transistionTemp.length;
+  // reset the timer
+  m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
+  // turn off the render effects until we're back down to normal zoom
+  m_bNoEffect = true;
+}
+
+void CSlideShowPic::Move(float fDeltaX, float fDeltaY)
+{
+  m_fZoomLeft += fDeltaX;
+  m_fZoomTop += fDeltaY;
+  // reset the timer
+ // m_transistionEnd.start = m_iCounter + m_transistionStart.length + (int)(g_graphicsContext.GetFPS() * g_guiSettings.GetInt("slideshow.staytime"));
+}
+
+void CSlideShowPic::Render()
+{
+  CSingleLock lock(m_textureAccess);
+
+  Render(m_ax, m_ay, m_pImage, (m_alpha << 24) | 0xFFFFFF);
+
+  // now render the image in the top right corner if we're zooming
+  if (m_fZoomAmount == 1 || m_bIsComic) return ;
+
+  Render(m_bx, m_by, NULL, PICTURE_VIEW_BOX_BACKGROUND);
+  Render(m_sx, m_sy, m_pImage, 0xFFFFFFFF);
+  Render(m_ox, m_oy, NULL, PICTURE_VIEW_BOX_COLOR);
 }
 
 void CSlideShowPic::Render(float *x, float *y, CBaseTexture* pTexture, color_t color)
