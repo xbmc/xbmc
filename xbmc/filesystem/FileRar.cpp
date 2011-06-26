@@ -85,7 +85,7 @@ void CFileRarExtractThread::OnExit()
 
 void CFileRarExtractThread::Process()
 {
-  while (hQuit.WaitMSec(1))
+  while (!hQuit.WaitMSec(1))
   {
     if (hRestart.WaitMSec(1))
     {
