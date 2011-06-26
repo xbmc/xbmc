@@ -4917,8 +4917,6 @@ CFileItem& CApplication::CurrentFileItem()
   return *m_itemCurrentFile;
 }
 
-<<<<<<< HEAD
-=======
 void CApplication::ShowVolumeBar(const CAction *action)
 {
   m_guiDialogVolumeBar.Show();
@@ -4949,7 +4947,6 @@ void CApplication::Mute(void)
   }
 }
 
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 void CApplication::SetVolume(int iPercent)
 {
   float hardwareVolume = (float)iPercent / 100.0f;
