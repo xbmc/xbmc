@@ -100,9 +100,11 @@ private:
   void Zoom(int iZoom);
   void Move(float fX, float fY);
   void GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight);
+  int  GetNextSlide();
 
   int m_iCurrentSlide;
   int m_iNextSlide;
+  int m_iDirection;
   int m_iRotate;
   int m_iZoomFactor;
 
