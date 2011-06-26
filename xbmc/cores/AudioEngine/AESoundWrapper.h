@@ -30,7 +30,8 @@ protected:
   friend class CAEWrapper;
   CAESoundWrapper(const CStdString &filename);
   virtual ~CAESoundWrapper();
-
+  IAE     *m_ae;
+  
   /* Un/Load the sound object, called when the AE is changed */ 
   void UnLoad();
   void Load();

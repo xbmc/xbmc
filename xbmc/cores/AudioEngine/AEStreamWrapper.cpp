@@ -21,6 +21,7 @@
 
 #include "AEStreamWrapper.h"
 #include "AEFactory.h"
+#include "utils/log.h"
 
 CAEStreamWrapper::CAEStreamWrapper(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
   m_dataFormat      (dataFormat   ),
@@ -48,6 +49,7 @@ CAEStreamWrapper::CAEStreamWrapper(enum AEDataFormat dataFormat, unsigned int sa
 CAEStreamWrapper::~CAEStreamWrapper()
 {
   AE.RemoveStreamWrapper(this);
+
   if (m_freeCallback)
     m_freeCallback(this, m_freeCallbackArg, 0);
 }
@@ -76,12 +78,12 @@ void CAEStreamWrapper::Initialize()
 {
   CExclusiveLock lock(m_lock);
 
-  IAE* ae = AE.GetEngine();
+  m_ae = AE.GetEngine();
   
-  if(!ae)
+  if(!m_ae)
     return;
   
-  m_stream = AE.GetEngine()->GetStream(m_dataFormat, m_sampleRate, m_channelCount, m_channelLayout, m_options);
+  m_stream = m_ae->GetStream(m_dataFormat, m_sampleRate, m_channelCount, m_channelLayout, m_options);
   if (m_stream)
   {
     m_stream->SetVolume       (m_volume       );
@@ -140,45 +142,38 @@ void CAEStreamWrapper::AlterStream(enum AEDataFormat dataFormat, unsigned int sa
   m_channelLayout = channelLayout;
   m_options       = options;
 
-  IAE* ae = AE.GetEngine();
-  if (ae && m_stream)
-    m_stream = ae->AlterStream(m_stream, dataFormat, sampleRate, channelCount, channelLayout, options);
+  if (m_ae && m_stream)
+    m_stream = m_ae->AlterStream(m_stream, dataFormat, sampleRate, channelCount, channelLayout, options);
 }
 
 void CAEStreamWrapper::FreeStream()
 {
   CExclusiveLock lock(m_lock);
 
-  IAE* ae = AE.GetEngine();
-  if (ae && m_stream)
-    m_stream = ae->FreeStream(m_stream);
+  if (m_ae && m_stream)
+    m_stream = m_ae->FreeStream(m_stream);
 }
 
 void CAEStreamWrapper::Destroy()
 {
-  CSharedLock lock(m_lock);
-  if (m_stream)
-  {
-    m_stream->Destroy();
-    m_stream = NULL;
-  }
+  CLog::Log(LOGERROR, "CAEStreamWrapper::Destroy Error. This function should be never called direct. Use CAEStreamWrapper::FreeStream.");
 }
 
 void CAEStreamWrapper::DisableCallbacks(bool free /* = true */)
 {
   CSharedLock lock(m_lock);
-  m_stream->DisableCallbacks(free);
+  
+  if (m_stream)
+    m_stream->DisableCallbacks(free);
 }
 
 void CAEStreamWrapper::SetDataCallback(AECBFunc *cbFunc, void *arg)
 {
-  {
-    CExclusiveLock lock(m_lock);
-    m_dataCallback    = cbFunc;
-    m_dataCallbackArg = arg;
-  }
+  CExclusiveLock lock(m_lock);
 
-  CSharedLock lock(m_lock);
+  m_dataCallback    = cbFunc;
+  m_dataCallbackArg = arg;
+
   if (m_stream)
   {
     if (m_dataCallback)
@@ -190,13 +185,11 @@ void CAEStreamWrapper::SetDataCallback(AECBFunc *cbFunc, void *arg)
 
 void CAEStreamWrapper::SetDrainCallback(AECBFunc *cbFunc, void *arg)
 {
-  {
-    CExclusiveLock lock(m_lock);
-    m_drainCallback    = cbFunc;
-    m_drainCallbackArg = arg;
-  }
+  CExclusiveLock lock(m_lock);
 
-  CSharedLock lock(m_lock);
+  m_drainCallback    = cbFunc;
+  m_drainCallbackArg = arg;
+
   if (m_stream)
   {
     if (m_drainCallback)
@@ -209,6 +202,7 @@ void CAEStreamWrapper::SetDrainCallback(AECBFunc *cbFunc, void *arg)
 void CAEStreamWrapper::SetFreeCallback(AECBFunc *cbFunc, void *arg)
 {
   CExclusiveLock lock(m_lock);
+  
   m_freeCallback    = cbFunc;
   m_freeCallbackArg = arg;
 }
@@ -217,6 +211,7 @@ unsigned int CAEStreamWrapper::AddData(void *data, unsigned int size)
 {
   CSharedLock lock(m_lock);
   unsigned int ret = size;
+  
   if (m_stream)
     ret = m_stream->AddData(data, size);
 
@@ -227,6 +222,7 @@ float CAEStreamWrapper::GetDelay()
 {
   CSharedLock lock(m_lock);
   float ret = 0;
+  
   if (m_stream)
     ret = m_stream->GetDelay();
 
@@ -237,6 +233,7 @@ float CAEStreamWrapper::GetCacheTime()
 {
   CSharedLock lock(m_lock);
   float ret = 0;
+  
   if (m_stream)
     ret = m_stream->GetCacheTime();
 
@@ -247,6 +244,7 @@ float CAEStreamWrapper::GetCacheTotal()
 {
   CSharedLock lock(m_lock);
   float ret = 0;
+  
   if (m_stream)
     ret = m_stream->GetCacheTotal();
 
@@ -256,6 +254,7 @@ float CAEStreamWrapper::GetCacheTotal()
 void CAEStreamWrapper::Pause()
 {
   CSharedLock lock(m_lock);
+  
   if (m_stream)
     m_stream->Pause();
 }
@@ -263,6 +262,7 @@ void CAEStreamWrapper::Pause()
 void CAEStreamWrapper::Resume()
 {
   CSharedLock lock(m_lock);
+  
   if (m_stream)
     m_stream->Resume();
 }
@@ -270,6 +270,7 @@ void CAEStreamWrapper::Resume()
 void CAEStreamWrapper::Drain()
 {
   CSharedLock lock(m_lock);
+  
   if (m_stream)
     m_stream->Drain();
 }
@@ -278,6 +279,7 @@ bool CAEStreamWrapper::IsDraining()
 {
   CSharedLock lock(m_lock);
   bool ret = false;
+  
   if (m_stream)
     ret = m_stream->IsDraining();
 
@@ -287,6 +289,7 @@ bool CAEStreamWrapper::IsDraining()
 void CAEStreamWrapper::Flush()
 {
   CSharedLock lock(m_lock);
+  
   if (m_stream)
     m_stream->Flush();
 }
@@ -294,6 +297,7 @@ void CAEStreamWrapper::Flush()
 float CAEStreamWrapper::GetVolume()
 {
   CSharedLock lock(m_lock);
+  
   if (m_stream)
     m_volume = m_stream->GetVolume();
 
@@ -303,6 +307,7 @@ float CAEStreamWrapper::GetVolume()
 void CAEStreamWrapper::SetVolume(float volume)
 {
   CSharedLock lock(m_lock);
+
   m_volume = volume;
   if (m_stream)
     m_stream->SetVolume(volume);
@@ -311,6 +316,7 @@ void CAEStreamWrapper::SetVolume(float volume)
 float CAEStreamWrapper::GetReplayGain()
 {
   CSharedLock lock(m_lock);
+
   if (m_stream)
     m_replayGain = m_stream->GetReplayGain();
 
@@ -320,6 +326,7 @@ float CAEStreamWrapper::GetReplayGain()
 void  CAEStreamWrapper::SetReplayGain(float factor)
 {
   CSharedLock lock(m_lock);
+
   m_replayGain = factor;
   if (m_stream)
     m_stream->SetReplayGain(factor);
@@ -365,6 +372,7 @@ unsigned int CAEStreamWrapper::GetFrameSize()
 {
   CSharedLock lock(m_lock);
   unsigned int ret = 0;
+
   if (m_stream) 
     ret = m_stream->GetFrameSize();
 
@@ -374,6 +382,7 @@ unsigned int CAEStreamWrapper::GetFrameSize()
 unsigned int CAEStreamWrapper::GetChannelCount()
 {
   CSharedLock lock(m_lock);
+
   if (m_stream)
     m_channelCount = m_stream->GetChannelCount();
 
@@ -383,6 +392,7 @@ unsigned int CAEStreamWrapper::GetChannelCount()
 unsigned int CAEStreamWrapper::GetSampleRate()
 {
   CSharedLock lock(m_lock);
+
   if (m_stream)
     m_sampleRate = m_stream->GetSampleRate();
 
@@ -392,6 +402,7 @@ unsigned int CAEStreamWrapper::GetSampleRate()
 enum AEDataFormat CAEStreamWrapper::GetDataFormat()
 {
   CSharedLock lock(m_lock);
+
   if (m_stream)
     m_dataFormat = m_stream->GetDataFormat();
 
@@ -408,6 +419,7 @@ double CAEStreamWrapper::GetResampleRatio()
 void CAEStreamWrapper::SetResampleRatio(double ratio)
 {
   CSharedLock lock(m_lock);
+
   m_resampleRatio = ratio;
   if (m_stream)
     m_stream->SetResampleRatio(m_streamRatio * m_resampleRatio);
@@ -416,6 +428,7 @@ void CAEStreamWrapper::SetResampleRatio(double ratio)
 void CAEStreamWrapper::RegisterAudioCallback(IAudioCallback* pCallback)
 {
   CSharedLock lock(m_lock);
+
   m_callback = pCallback;
   if (m_stream)
     m_stream->RegisterAudioCallback(pCallback);
@@ -424,6 +437,7 @@ void CAEStreamWrapper::RegisterAudioCallback(IAudioCallback* pCallback)
 void CAEStreamWrapper::UnRegisterAudioCallback()
 {
   CSharedLock lock(m_lock);
+
   m_callback = NULL;
   if (m_stream)
     m_stream->UnRegisterAudioCallback();

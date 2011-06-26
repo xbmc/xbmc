@@ -72,6 +72,7 @@ public:
   virtual void UnRegisterAudioCallback();
 
 private:
+  IAE               *m_ae;
   enum AEDataFormat m_dataFormat;
   unsigned int      m_sampleRate;
   unsigned int      m_channelCount;
