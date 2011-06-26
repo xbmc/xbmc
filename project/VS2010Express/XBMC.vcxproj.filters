@@ -1174,9 +1174,6 @@
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMediaSource.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\dialogs\GUIDialogMuteBug.cpp">
-      <Filter>dialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\dialogs\GUIDialogNumeric.cpp">
       <Filter>dialogs</Filter>
     </ClCompile>
@@ -3540,9 +3537,6 @@
       <Filter>dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMediaSource.h">
-      <Filter>dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\dialogs\GUIDialogMuteBug.h">
       <Filter>dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\dialogs\GUIDialogNumeric.h">

@@ -1077,7 +1077,6 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
   g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   g_windowManager.Add(new CGUIDialogMusicScan);          // window id = 112
-  g_windowManager.Add(&m_guiDialogMuteBug);            // window id = 113
   g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
 #ifdef HAS_KARAOKE
   g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
@@ -1661,7 +1660,6 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   m_guiDialogVolumeBar.AllocResources(true);
   m_guiDialogSeekBar.AllocResources(true);
   m_guiDialogKaiToast.AllocResources(true);
-  m_guiDialogMuteBug.AllocResources(true);
   g_windowManager.AddMsgTarget(this);
   g_windowManager.AddMsgTarget(&g_playlistPlayer);
   g_windowManager.AddMsgTarget(&g_infoManager);
@@ -4992,17 +4990,9 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
 
   // update mute state
   if(!g_settings.m_bMute && hardwareVolume <= VOLUME_MINIMUM)
-  {
     g_settings.m_bMute = true;
-    if (!m_guiDialogMuteBug.IsDialogRunning())
-      m_guiDialogMuteBug.Show();
-  }
   else if(g_settings.m_bMute && hardwareVolume > VOLUME_MINIMUM)
-  {
     g_settings.m_bMute = false;
-    if (m_guiDialogMuteBug.IsDialogRunning())
-      m_guiDialogMuteBug.Close();
-  }
 
   // and tell our player to update the volume
   if (m_pPlayer)
