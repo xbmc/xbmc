@@ -31,10 +31,15 @@ SRCS=Application.cpp \
      ViewDatabase.cpp \
      XBApplicationEx.cpp \
      XBDateTime.cpp \
-     xbmc.cpp \
+     xbmc.cpp
 
 LIB=xbmc.a
 
+.PHONY: all
+
+all: $(LIB) main.o
+
+CLEAN_FILES=main.o main.P
 DISTCLEAN_FILES=DllPaths_generated.h
 
 include @abs_top_srcdir@/Makefile.include

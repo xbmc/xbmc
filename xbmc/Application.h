@@ -82,11 +82,20 @@ protected:
   int       m_iPlayList;
 };
 
+typedef unsigned long GRFXA;  // application flags
+const GRFXA grfxaNil      = 0;
+const GRFXA fxaPrimary    = 0x1;  // XBMC application
+const GRFXA fxaGui        = 0x2;  // initialize GUI services
+const GRFXA fxaServices   = 0x4;  // start services: dbus, web, etc.
+const GRFXA grfxaXBMC     = fxaPrimary | fxaGui | fxaServices;
+
 class CApplication : public CXBApplicationEx, public IPlayerCallback, public IMsgTargetCallback
 {
 public:
-  CApplication(void);
-  virtual ~CApplication(void);
+  CApplication();
+  virtual ~CApplication();
+  void Configure(GRFXA grfxa, const char *sLogName)
+    { m_grfxa = grfxa; m_sLogName = sLogName; }
   virtual bool Initialize();
   virtual void FrameMove();
   virtual void Render();
@@ -288,7 +297,11 @@ public:
 
   void Minimize();
   bool ToggleDPMS(bool manual);
+
 protected:
+  GRFXA m_grfxa;  // application options
+  CStdString m_sLogName;
+
   void RenderScreenSaver();
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);

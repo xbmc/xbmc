@@ -573,6 +573,10 @@ AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
 if test $MYSQL_CONFIG = "yes"; then
   INCLUDES="$INCLUDES `mysql_config --include`"
   MYSQL_LIBS=`mysql_config --libs`
+  # fix unclosed -Wl,--as-needed in library specification
+  if echo $MYSQL_LIBS | awk '{ exit !/-Wl,--as-needed/ || /-Wl,--no-as-needed/ }'; then
+    MYSQL_LIBS+=" -Wl,--no-as-needed"
+  fi
   LIBS="$LIBS $MYSQL_LIBS"
   AC_SUBST(MYSQL_LIBS)
 else
@@ -928,6 +932,7 @@ if test -z "$PYTHON_VERSION"; then
   AC_MSG_ERROR([Can't find a Python version.])
 else
   AC_MSG_NOTICE([Using Python $PYTHON_VERSION])
+  LIBS="$LIBS $PYTHON_LDFLAGS"
 fi
 
 # VDPAU
