@@ -1892,28 +1892,6 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
   return false;
 }
 
-CStdString CUtil::GetCachedAlbumThumb(const CStdString& album, const CStdString& artist)
-{
-  if (album.IsEmpty())
-    return GetCachedMusicThumb("unknown"+artist);
-  if (artist.IsEmpty())
-    return GetCachedMusicThumb(album+"unknown");
-  return GetCachedMusicThumb(album+artist);
-}
-
-CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
-{
-  Crc32 crc;
-  CStdString noSlashPath(path);
-  URIUtils::RemoveSlashAtEnd(noSlashPath);
-  crc.ComputeFromLowerCase(noSlashPath);
-  CStdString hex;
-  hex.Format("%08x", (unsigned __int32) crc);
-  CStdString thumb;
-  thumb.Format("%c/%s.tbn", hex[0], hex.c_str());
-  return URIUtils::AddFileToFolder(g_settings.GetMusicThumbFolder(), thumb);
-}
-
 CStdString CUtil::GetDefaultFolderThumb(const CStdString &folderThumb)
 {
   if (g_TextureManager.HasTexture(folderThumb))

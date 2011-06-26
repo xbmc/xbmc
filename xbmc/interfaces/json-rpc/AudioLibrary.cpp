@@ -76,8 +76,7 @@ JSON_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransport
   m_artistItem->GetMusicInfoTag()->SetArtist(m_artistItem->GetLabel());
   m_artistItem->GetMusicInfoTag()->SetDatabaseId(artistID);
   CMusicDatabase::SetPropertiesFromArtist(*m_artistItem, artist);
-  if (CFile::Exists(m_artistItem->GetCachedArtistThumb()))
-    m_artistItem->SetThumbnailImage(m_artistItem->GetCachedArtistThumb());
+  m_artistItem->SetCachedArtistThumb();
   HandleFileItem("artistid", false, "artistdetails", m_artistItem, parameterObject, parameterObject["fields"], result, false);
 
   musicdatabase.Close();
