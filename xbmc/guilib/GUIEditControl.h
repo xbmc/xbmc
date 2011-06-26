@@ -115,6 +115,5 @@ protected:
 
   static const char*        smsLetters[10];
   static const unsigned int smsDelay;
-  CStdStringW m_lastRenderedText; ///< last rendered text
 };
 #endif
