@@ -23,9 +23,10 @@
 #define __COREAUDIOAESOUND_H__
 
 #include "utils/StdString.h"
-#include "threads/XBMC_mutex.h"
 #include "AESound.h"
 #include "AEWAVLoader.h"
+#include "threads/CriticalSection.h"
+#include "threads/SharedSection.h"
 
 class CWAVLoader;
 class CCoreAudioAESound : public IAESound
@@ -55,7 +56,7 @@ public:
   virtual float* GetSamples    ();
   void           ReleaseSamples();
 private:
-  SDL_mutex       *m_MutexSound;
+  CCriticalSection m_MutexSound;
   CStdString       m_filename;
   CAEWAVLoader     m_wavLoader;
   float            m_volume;

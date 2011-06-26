@@ -54,16 +54,11 @@ CCoreAudioAESound::CCoreAudioAESound(const CStdString &filename) :
   m_locked         (false)
 {
   m_filename = filename;
-  m_MutexSound = SDL_CreateMutex();
 }
 
 CCoreAudioAESound::~CCoreAudioAESound()
 {
   DeInitialize();
-  
-  if (m_MutexSound)
-    SDL_DestroyMutex(m_MutexSound);  
-  m_MutexSound = NULL;
 }
 
 void CCoreAudioAESound::DeInitialize()
@@ -98,11 +93,14 @@ float CCoreAudioAESound::GetVolume()
 
 unsigned int CCoreAudioAESound::GetSampleCount()
 {
-  SDL_mutexP(m_MutexSound);
+  CSingleLock SoundLock(m_MutexSound);
+
   int sampleCount = 0;
   if (m_wavLoader.IsValid())
     sampleCount = m_wavLoader.GetSampleCount();
-  SDL_mutexV(m_MutexSound);
+
+  SoundLock.Leave();
+  
   return sampleCount;
 }
 
@@ -110,7 +108,6 @@ void CCoreAudioAESound::Lock()
 {
   if(!m_locked)
   {
-    SDL_mutexP(m_MutexSound);
     m_locked = true;
   }
 }
@@ -120,36 +117,35 @@ void CCoreAudioAESound::UnLock()
   if(m_locked)
   {
     m_locked = false;
-    SDL_mutexV(m_MutexSound);
   }
 }
 
 float* CCoreAudioAESound::GetSamples()
 {
-  SDL_mutexP(m_MutexSound);
+  CSingleLock SoundLock(m_MutexSound);
   if (!m_wavLoader.IsValid())
   {
-    SDL_mutexV(m_MutexSound);
+    SoundLock.Leave();
     return NULL;
   }
 
   ++m_inUse;
-  SDL_mutexV(m_MutexSound);
+  SoundLock.Leave();
   return m_wavLoader.GetSamples();
 }
 
 void CCoreAudioAESound::ReleaseSamples()
 {
-  SDL_mutexP(m_MutexSound);
+  CSingleLock SoundLock(m_MutexSound);
   --m_inUse;
-  SDL_mutexV(m_MutexSound);
+  SoundLock.Leave();
 }
 
 bool CCoreAudioAESound::IsPlaying()
 {
-  SDL_mutexP(m_MutexSound);
+  CSingleLock SoundLock(m_MutexSound);
   bool playing = m_inUse > 0;
-  SDL_mutexV(m_MutexSound);
+  SoundLock.Leave();
 
   return playing;
 }

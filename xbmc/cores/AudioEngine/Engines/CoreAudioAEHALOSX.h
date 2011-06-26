@@ -28,10 +28,6 @@
 
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
-<<<<<<< HEAD
-=======
-#include <StdString.h>
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 #include <list>
 #include <vector>
 #include "utils/StdString.h"
@@ -78,23 +74,8 @@ public:
 // kAudioDevicePropertyTransportType
 
 typedef std::list<AudioStreamID> AudioStreamIdList;
-typedef std::list<UInt32> CoreAudioDataSourceList;
 typedef std::vector<SInt32> CoreAudioChannelList;
-
-class CCoreAudioChannelLayout
-{
-public:
-  CCoreAudioChannelLayout();
-  CCoreAudioChannelLayout(AudioChannelLayout& layout);
-  virtual ~CCoreAudioChannelLayout();
-  operator AudioChannelLayout*() {return m_pLayout;}
-  bool CopyLayout(AudioChannelLayout& layout);
-  static UInt32 GetChannelCountForLayout(AudioChannelLayout& layout);
-  static const char* ChannelLabelToString(UInt32 label);
-  static const char* ChannelLayoutToString(AudioChannelLayout& layout, CStdString& str);
-protected:
-  AudioChannelLayout* m_pLayout;
-};
+typedef std::list<UInt32> CoreAudioDataSourceList;
 
 class CCoreAudioDevice
 {
@@ -140,17 +121,11 @@ public:
   bool SetHogStatus(bool hog);
   bool SetMixingSupport(UInt32 mix);
   bool GetMixingSupport();
-<<<<<<< HEAD
   bool GetPreferredChannelLayout(CoreAudioChannelList *pChannelMap);
-=======
-  bool GetPreferredChannelLayout(CCoreAudioChannelLayout& layout);
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
   bool GetDataSources(CoreAudioDataSourceList* pList);
   Float64 GetNominalSampleRate();
   bool SetNominalSampleRate(Float64 sampleRate);
   UInt32 GetNumLatencyFrames();
-  UInt32 GetBufferSize();
-  bool SetBufferSize(UInt32 size);
 protected:
   AudioDeviceID m_DeviceId;
   bool m_Started;
@@ -159,11 +134,7 @@ protected:
   AudioObjectPropertyListenerProc m_ObjectListenerProc;
   
   Float64 m_SampleRateRestore;
-<<<<<<< HEAD
   pid_t m_HogPid;
-=======
-  UInt32 m_BufferSizeRestore;
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 };
 
 typedef std::list<AudioStreamRangedDescription> StreamFormatList;
@@ -194,22 +165,12 @@ protected:
   AudioStreamBasicDescription m_OriginalPhysicalFormat;  
 };
 
-class ICoreAudioSource
-{
-public:
-  // Function to request rendered data from a data source
-  virtual OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList) = 0;
-};
-
-typedef std::list<AudioChannelLayoutTag> AudioChannelLayoutList;
-
 class CCoreAudioUnit
 {
 public:
   CCoreAudioUnit();
   virtual ~CCoreAudioUnit();
   
-<<<<<<< HEAD
   bool Open(ComponentDescription desc);
   bool Open(OSType type, OSType subType, OSType manufacturer);
   void Attach(AudioUnit audioUnit) {m_Component = audioUnit;}
@@ -221,38 +182,9 @@ public:
   bool GetFormat(AudioStreamBasicDescription* pDesc, AudioUnitScope scope, AudioUnitElement bus);    
   bool SetFormat(AudioStreamBasicDescription* pDesc, AudioUnitScope scope, AudioUnitElement bus);
   bool SetMaxFramesPerSlice(UInt32 maxFrames);
-=======
-  virtual bool Open(ComponentDescription desc);
-  virtual bool Open(OSType type, OSType subType, OSType manufacturer);
-  virtual void Attach(AudioUnit audioUnit) {m_Component = audioUnit;}
-  virtual AudioUnit GetComponent(){return m_Component;}
-  virtual void Close();
-  virtual bool Initialize();
-  virtual bool IsInitialized() {return m_Initialized;}
-  virtual bool SetInputSource(ICoreAudioSource* pSource);
-  virtual bool GetInputFormat(AudioStreamBasicDescription* pDesc);
-  virtual bool GetOutputFormat(AudioStreamBasicDescription* pDesc);    
-  virtual bool SetInputFormat(AudioStreamBasicDescription* pDesc);
-  virtual bool SetOutputFormat(AudioStreamBasicDescription* pDesc);
-  virtual bool SetMaxFramesPerSlice(UInt32 maxFrames);
-  virtual bool GetSupportedChannelLayouts(AudioChannelLayoutList* pLayouts);
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 protected:
-  bool SetRenderProc(AURenderCallback callback, void* pClientData);
-  static OSStatus RenderCallback(void *inRefCon, AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
-  virtual OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
-  
-  ICoreAudioSource* m_pSource;
   AudioUnit m_Component;
   bool m_Initialized;
-};
-
-class CAUGenericSource : public CCoreAudioUnit, public ICoreAudioSource
-{
-public:
-  CAUGenericSource();
-  virtual ~CAUGenericSource();
-  virtual OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList);
 };
 
 class CAUOutputDevice : public CCoreAudioUnit
@@ -261,14 +193,9 @@ public:
   CAUOutputDevice();
   virtual ~CAUOutputDevice();
   bool SetCurrentDevice(AudioDeviceID deviceId);
-<<<<<<< HEAD
   bool GetInputChannelMap(std::list<SInt32> &pChannelMap);
   bool SetInputChannelMap(std::list<SInt32> &pChannelMap);
   bool SetOutputChannelMap(std::list<SInt32> &pChannelMap);
-=======
-  bool GetChannelMap(CoreAudioChannelList* pChannelMap);
-  bool SetChannelMap(CoreAudioChannelList* pChannelMap);
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
   UInt32 GetBufferFrameSize();
   UInt32 SetBufferFrameSize(UInt32 frames);
   
@@ -279,34 +206,14 @@ public:
   Float32 GetCurrentVolume();
   bool SetCurrentVolume(Float32 vol);  
 protected:
-<<<<<<< HEAD
   AudioDeviceID m_DeviceId;
-=======
-  virtual OSStatus OnRender(AudioUnitRenderActionFlags *ioActionFlags, const AudioTimeStamp *inTimeStamp, UInt32 inBusNumber, UInt32 inNumberFrames, AudioBufferList *ioData);
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 };
 
-class CAUMatrixMixer : public CAUGenericSource
+class CAUMatrixMixer : public CCoreAudioUnit
 {
 public:
   CAUMatrixMixer();
   virtual ~CAUMatrixMixer();
-  bool Open(OSType type, OSType subType, OSType manufacturer);
-  bool Open();
-  OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList);
-  bool Initialize();
-  
-  UInt32 GetInputBusCount();
-  bool SetInputBusCount(UInt32 busCount);
-  UInt32 GetOutputBusCount();
-  bool SetOutputBusCount(UInt32 busCount);
-  
-  Float32 GetGlobalVolume();
-  bool SetGlobalVolume(Float32 vol);
-  Float32 GetInputVolume(UInt32 element);
-  bool SetInputVolume(UInt32 element, Float32 vol);
-  Float32 GetOutputVolume(UInt32 element);
-  bool SetOutputVolume(UInt32 element, Float32 vol);
 protected:
 };
 
@@ -343,10 +250,5 @@ public:
   virtual float GetDelay();
 };
 
-<<<<<<< HEAD
 #endif
 #endif
-=======
-#endif // __arm__
-#endif // __COREAUDIO_H__
->>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db

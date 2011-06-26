@@ -30,7 +30,7 @@
 #include "AE.h"
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
-#include "threads/XBMC_mutex.h"
+#include "threads/CriticalSection.h"
 
 #ifdef __arm__
 #include "CoreAudioAEHALIOS.h"
@@ -117,9 +117,9 @@ public:
   void UnlockEngine();
   
 private:
-  SDL_mutex *m_MutexLockEngine;
-  bool       m_EngineLock;
-  SDL_mutex *m_Mutex;
+  CCriticalSection  m_Mutex;
+  CCriticalSection  m_MutexLockEngine;
+  bool              m_EngineLock;
   
   std::list<CCoreAudioAEStream*> m_streams;
   std::list<CCoreAudioAESound* > m_sounds;

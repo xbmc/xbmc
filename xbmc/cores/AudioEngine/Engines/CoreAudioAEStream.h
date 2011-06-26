@@ -25,14 +25,13 @@
 #include <samplerate.h>
 #include <list>
 
-#include "threads/XBMC_mutex.h"
-
 #include "AEStream.h"
 #include "AEAudioFormat.h"
 #include "AEConvert.h"
 #include "AERemap.h"
 #include "AEPostProc.h"
 #include "CoreAudioRingBuffer.h"
+#include "threads/CriticalSection.h"
 
 class IAEPostProc;
 class CCoreAudioAEStream : public IAEStream
@@ -98,7 +97,7 @@ public:
 private:
   void InternalFlush();
 
-  SDL_mutex              *m_MutexStream;
+  CCriticalSection        m_MutexStream;
 
   AEAudioFormat           m_OutputFormat;
   AEAudioFormat           m_StreamFormat;

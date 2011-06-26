@@ -78,12 +78,33 @@ CCoreAudioAEStream::CCoreAudioAEStream(enum AEDataFormat dataFormat, unsigned in
   m_resampleBuffer                = (float*)_aligned_malloc(m_resampleBufferSize,16);
   m_remapBuffer                   = (uint8_t *)_aligned_malloc(m_remapBufferSize,16); 
   m_vizRemapBuffer                = (uint8_t*)_aligned_malloc(m_vizRemapBufferSize,16); 
-  m_MutexStream                   = SDL_CreateMutex();
+}
+
+CCoreAudioAEStream::~CCoreAudioAEStream()
+{
+  CSingleLock StreamLock(m_MutexStream);
+
+  InternalFlush();
+  
+  _aligned_free(m_convertBuffer);
+  _aligned_free(m_resampleBuffer);
+  _aligned_free(m_remapBuffer);
+  _aligned_free(m_vizRemapBuffer);
+  
+  if (m_cbFreeFunc)
+    m_cbFreeFunc(this, m_cbFreeArg, 0);
+  
+  if(m_Buffer)
+    delete m_Buffer;
+  
+  StreamLock.Leave();
+    
+  CLog::Log(LOGDEBUG, "CCoreAudioAEStream::~CCoreAudioAEStream - Destructed");
 }
 
 void CCoreAudioAEStream::InitializeRemap()
 {
-  SDL_mutexP(m_MutexStream);
+  CSingleLock StreamLock(m_MutexStream);
   
   m_OutputFormat = AE.GetAudioFormat();
   
@@ -95,12 +116,13 @@ void CCoreAudioAEStream::InitializeRemap()
 
     InternalFlush();
   }
-  SDL_mutexV(m_MutexStream);
+  
+  StreamLock.Leave();
 }
 
 void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
 {
-  SDL_mutexP(m_MutexStream);
+  CSingleLock StreamLock(m_MutexStream);
   if (m_valid)
   {
     InternalFlush();
@@ -124,7 +146,7 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
       if (!m_StreamFormat.m_channelLayout)
       {
         m_valid = false;
-        SDL_mutexV(m_MutexStream);
+        StreamLock.Leave();
         return;
       }
     }
@@ -147,7 +169,7 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
       !m_vizRemap.Initialize(m_OutputFormat.m_channelLayout, CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true))
     {
       m_valid = false;
-      SDL_mutexV(m_MutexStream);
+      StreamLock.Leave();
       return;
     }
   }
@@ -202,43 +224,19 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
   CLog::Log(LOGDEBUG, "%s", s.substr(0, s.length() - 1).c_str());
   CLog::Log(LOGDEBUG, "====================\n");
 
-  SDL_mutexV(m_MutexStream);
+  StreamLock.Leave();
   m_valid = true;
 }
 
 void CCoreAudioAEStream::Destroy()
 {
-  SDL_mutexP(m_MutexStream);
+  CSingleLock StreamLock(m_MutexStream);
+
   m_valid       = false;
   m_delete      = true;
   InternalFlush();
-  SDL_mutexV(m_MutexStream);
-}
-
-CCoreAudioAEStream::~CCoreAudioAEStream()
-{
-  SDL_mutexP(m_MutexStream);
-
-  //InternalFlush();
   
-  _aligned_free(m_convertBuffer);
-  _aligned_free(m_resampleBuffer);
-  _aligned_free(m_remapBuffer);
-  _aligned_free(m_vizRemapBuffer);
-  
-  if (m_cbFreeFunc)
-    m_cbFreeFunc(this, m_cbFreeArg, 0);
-  
-  if(m_Buffer)
-    delete m_Buffer;
-  
-  SDL_mutexV(m_MutexStream);
-  
-  if (m_MutexStream)
-    SDL_DestroyMutex(m_MutexStream);  
-  m_MutexStream = NULL;
-
-  CLog::Log(LOGDEBUG, "CCoreAudioAEStream::~CCoreAudioAEStream - Destructed");
+  StreamLock.Leave();
 }
 
 void CCoreAudioAEStream::DisableCallbacks(bool free /* = true */)
@@ -247,36 +245,44 @@ void CCoreAudioAEStream::DisableCallbacks(bool free /* = true */)
   while(IsBusy())
     Sleep(100);
 
-  SDL_mutexP(m_MutexStream);
+  CSingleLock StreamLock(m_MutexStream);
+
   m_cbDataFunc  = NULL;
   m_cbDrainFunc = NULL;
   if (free)
     m_cbFreeFunc = NULL;
-  SDL_mutexV(m_MutexStream);
+  
+  StreamLock.Leave();
 }
 
 void CCoreAudioAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
 {
-  SDL_mutexP(m_MutexStream);
+  CSingleLock StreamLock(m_MutexStream);
+
   m_cbDataFunc = cbFunc;
   m_cbDataArg  = arg;
-  SDL_mutexV(m_MutexStream);
+  
+  StreamLock.Leave();
 }
 
 void CCoreAudioAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
 {
-  SDL_mutexP(m_MutexStream);
+  CSingleLock StreamLock(m_MutexStream);
+
   m_cbDrainFunc = cbFunc;
   m_cbDrainArg  = arg;
-  SDL_mutexV(m_MutexStream);
+
+  StreamLock.Leave();
 }
 
 void CCoreAudioAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
 {
-  SDL_mutexP(m_MutexStream);
+  CSingleLock StreamLock(m_MutexStream);
+
   m_cbFreeFunc = cbFunc;
   m_cbFreeArg  = arg;
-  SDL_mutexV(m_MutexStream);
+  
+  StreamLock.Leave();
 }
 
 unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
@@ -286,19 +292,18 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   uint8_t     *adddata  = (uint8_t *)data;
   unsigned int addsize  = size;
 
-  //SDL_mutexP(m_MutexStream);  
   if (!m_valid || size == 0 || data == NULL || m_draining || m_delete || !m_Buffer)
   {
-    //SDL_mutexV(m_MutexStream);
     return 0; 
   }
 
+  //CSingleLock StreamLock(m_MutexStream);
   unsigned int room = m_Buffer->GetWriteSize();
      
   /* convert the data if we need to */
   if (m_convert)
   {
-    CheckOutputBufferSize((void **)&m_convertBuffer, &m_convertBufferSize, frames * m_StreamFormat.m_channelCount * sizeof(float));
+    CheckOutputBufferSize((void **)&m_convertBuffer, &m_convertBufferSize, frames * m_StreamFormat.m_channelCount * sizeof(float) * 2);
 
     samples     = m_convertFn(adddata, size / m_StreamBytesPerSample, m_convertBuffer);
     adddata     = (uint8_t *)m_convertBuffer;
@@ -311,7 +316,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 
   if (samples == 0)
   {
-    //SDL_mutexV(m_MutexStream);
+    //StreamLock.Leave();
     return 0;
   }
   
@@ -321,7 +326,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
     unsigned int resample_frames = samples / m_StreamFormat.m_channelCount;
     
     CheckOutputBufferSize((void **)&m_resampleBuffer, &m_resampleBufferSize, 
-                          resample_frames * MathUtils::ceil_int(m_ssrcData.src_ratio) * sizeof(float));
+                          resample_frames * MathUtils::ceil_int(m_ssrcData.src_ratio) * sizeof(float) * 2);
     
     m_ssrcData.input_frames   = resample_frames;
     m_ssrcData.output_frames  = resample_frames * MathUtils::ceil_int(m_ssrcData.src_ratio);
@@ -330,7 +335,6 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
         
     if (src_process(m_ssrc, &m_ssrcData) != 0) 
     {
-      //SDL_mutexV(m_MutexStream);
       return 0;
     }
     
@@ -348,7 +352,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   {
     addsize = frames * m_OutputBytesPerSample * m_OutputFormat.m_channelCount;
     
-    CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, addsize);
+    CheckOutputBufferSize((void **)&m_remapBuffer, &m_remapBufferSize, addsize * 2);
         
     // downmix/remap the data
     m_remap.Remap((float *)adddata, (float *)m_remapBuffer, frames);
@@ -368,19 +372,16 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   {
     m_Buffer->Write(adddata, addsize);
   }
-  
-  //SDL_mutexV(m_MutexStream);
+  //StreamLock.Leave();
+
   return size;    
 }
 
 unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
-{
-  //SDL_mutexP(m_MutexStream);
-  
+{  
   /* if we have been deleted */
   if (!m_valid || m_delete || !m_Buffer)
   {
-    //SDL_mutexV(m_MutexStream);
     return 0;
   }
     
@@ -391,13 +392,10 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     if (m_cbDrainFunc && !m_disableCallbacks)
     {
       m_inDrainFunc = true;
-      //SDL_mutexV(m_MutexStream);
       m_cbDrainFunc(this, m_cbDrainArg, 0);
-      //SDL_mutexP(m_MutexStream);
       m_cbDrainFunc = NULL;
       m_inDrainFunc = false;
     }
-    //SDL_mutexV(m_MutexStream);
     return 0;
   }
   
@@ -409,9 +407,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     {
       m_inDataFunc = true;
       unsigned int samples = m_Buffer->GetWriteSize() / m_StreamBytesPerSample / 2;
-      //SDL_mutexV(m_MutexStream);
       m_cbDataFunc(this, m_cbDataArg, samples);
-      //SDL_mutexP(m_MutexStream);
       m_inDataFunc = false;
     }
   }
@@ -427,9 +423,7 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
     {
       m_inDataFunc = true;
       unsigned int samples = m_Buffer->GetWriteSize() / m_StreamBytesPerSample / 2;
-      //SDL_mutexV(m_MutexStream);
       m_cbDataFunc(this, m_cbDataArg, samples);
-      //SDL_mutexP(m_MutexStream);
       m_inDataFunc = false;
     }
   }
@@ -459,7 +453,6 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   }
 #endif
   
-  //SDL_mutexV(m_MutexStream);  
   return readsize;  
 }
 
@@ -528,16 +521,12 @@ void CCoreAudioAEStream::Resume()
 
 void CCoreAudioAEStream::Drain()
 {
-  //SDL_mutexP(m_MutexStream);
   m_draining = true;
-  //SDL_mutexV(m_MutexStream);
 }
 
 void CCoreAudioAEStream::Flush()
 {
-  //SDL_mutexP(m_MutexStream);
   InternalFlush();
-  //SDL_mutexV(m_MutexStream);
 }
 
 float CCoreAudioAEStream::GetVolume()
@@ -609,9 +598,7 @@ double CCoreAudioAEStream::GetResampleRatio()
   if (!m_resample)
     return 1.0f;
 
-  //SDL_mutexP(m_MutexStream);
   double ret = m_ssrcData.src_ratio;
-  //SDL_mutexV(m_MutexStream);
   return ret;
 }
 
@@ -620,26 +607,24 @@ void CCoreAudioAEStream::SetResampleRatio(double ratio)
   if (!m_resample)
     return;
 
-  //SDL_mutexP(m_MutexStream);
   src_set_ratio(m_ssrc, ratio);
   m_ssrcData.src_ratio = ratio;
-  //SDL_mutexV(m_MutexStream);
 }
 
 void CCoreAudioAEStream::RegisterAudioCallback(IAudioCallback* pCallback)
 {
-  //SDL_mutexP(m_MutexStream);
   m_audioCallback = pCallback;
   if (m_audioCallback)
     m_audioCallback->OnInitialize(2, m_StreamFormat.m_sampleRate, 32);
-  //SDL_mutexV(m_MutexStream);
 }
 
 void CCoreAudioAEStream::UnRegisterAudioCallback()
 {
-  SDL_mutexP(m_MutexStream);
+  CSingleLock StreamLock(m_MutexStream);
+
   m_audioCallback = NULL;
-  SDL_mutexV(m_MutexStream);
+  
+  StreamLock.Leave();
 }
 
 void CCoreAudioAEStream::SetFreeOnDrain()
