@@ -67,18 +67,20 @@ namespace JSONRPC
   */
   enum OperationPermission
   {
-    ReadData = 0x1,
-    ControlPlayback = 0x2,
-    ControlNotify = 0x4,
-    ControlPower = 0x8,
-    Logging = 0x10,
-    ScanLibrary = 0x20,
-    Navigate = 0x40
+    ReadData        =   0x1,
+    ControlPlayback =   0x2,
+    ControlNotify   =   0x4,
+    ControlPower    =   0x8,
+    Logging         =  0x10,
+    UpdateData      =  0x20,
+    RemoveData      =  0x40,
+    Navigate        =  0x80,
+    WriteFile       = 0x100
   };
 
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary | Navigate);
+  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | UpdateData | RemoveData | Navigate | WriteFile);
 
-  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary | Navigate);
+  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | UpdateData | RemoveData | Navigate | WriteFile);
 
   /*!
    \brief Possible value types of a parameter or return type
@@ -194,10 +196,14 @@ namespace JSONRPC
         return "ControlPower";
       case Logging:
         return "Logging";
-      case ScanLibrary:
-        return "ScanLibrary";
+      case UpdateData:
+        return "UpdateData";
+      case RemoveData:
+        return "RemoveData";
       case Navigate:
         return "Navigate";
+      case WriteFile:
+        return "WriteFile";
       default:
         return "Unknown";
       }
@@ -219,10 +225,14 @@ namespace JSONRPC
         return ControlPower;
       if (permission.compare("Logging") == 0)
         return Logging;
-      if (permission.compare("ScanLibrary") == 0)
-        return ScanLibrary;
+      if (permission.compare("UpdateData") == 0)
+        return UpdateData;
+      if (permission.compare("RemoveData") == 0)
+        return RemoveData;
       if (permission.compare("Navigate") == 0)
         return Navigate;
+      if (permission.compare("WriteFile") == 0)
+        return WriteFile;
 
       return ReadData;
     }

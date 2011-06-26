@@ -24,7 +24,6 @@
 #include "XEventUtils.h"
 #include "XHandle.h"
 #include "utils/log.h"
-#include "threads/XBMC_mutex.h"
 
 using namespace std;
 
@@ -32,8 +31,8 @@ HANDLE WINAPI CreateEvent(void *pDummySec, bool bManualReset, bool bInitialState
 {
   CXHandle *pHandle = new CXHandle(CXHandle::HND_EVENT);
   pHandle->m_bManualEvent = bManualReset;
-  pHandle->m_hCond = SDL_CreateCond();
-  pHandle->m_hMutex = SDL_CreateMutex();
+  pHandle->m_hCond = new XbmcThreads::ConditionVariable();
+  pHandle->m_hMutex = new CCriticalSection();
   pHandle->m_bEventSet = false;
 
   if (bInitialState)
@@ -57,7 +56,7 @@ bool WINAPI SetEvent(HANDLE hEvent)
   if (hEvent == NULL || hEvent->m_hCond == NULL || hEvent->m_hMutex == NULL)
     return false;
 
-  SDL_mutexP(hEvent->m_hMutex);
+  CSingleLock lock(*(hEvent->m_hMutex));
   hEvent->m_bEventSet = true;
 
   // we must guarantee that these handle's won't be deleted, until we are done
@@ -65,7 +64,7 @@ bool WINAPI SetEvent(HANDLE hEvent)
   for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
     DuplicateHandle(GetCurrentProcess(), *it, GetCurrentProcess(), NULL, 0, FALSE, DUPLICATE_SAME_ACCESS);
 
-  SDL_mutexV(hEvent->m_hMutex);
+  lock.Leave();
 
   for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
   {
@@ -76,9 +75,9 @@ bool WINAPI SetEvent(HANDLE hEvent)
   DuplicateHandle(GetCurrentProcess(), hEvent, GetCurrentProcess(), NULL, 0, FALSE, DUPLICATE_SAME_ACCESS);
 
   if (hEvent->m_bManualEvent == true)
-    SDL_CondBroadcast(hEvent->m_hCond);
+    hEvent->m_hCond->notifyAll();
   else
-    SDL_CondSignal(hEvent->m_hCond);
+    hEvent->m_hCond->notify();
 
   CloseHandle(hEvent);
 
@@ -90,9 +89,8 @@ bool WINAPI ResetEvent(HANDLE hEvent)
   if (hEvent == NULL || hEvent->m_hCond == NULL || hEvent->m_hMutex == NULL)
     return false;
 
-  SDL_mutexP(hEvent->m_hMutex);
+  CSingleLock lock(*(hEvent->m_hMutex));
   hEvent->m_bEventSet = false;
-  SDL_mutexV(hEvent->m_hMutex);
 
   return true;
 }
@@ -102,7 +100,7 @@ bool WINAPI PulseEvent(HANDLE hEvent)
   if (hEvent == NULL || hEvent->m_hCond == NULL || hEvent->m_hMutex == NULL)
     return false;
 
-  SDL_mutexP(hEvent->m_hMutex);
+  CSingleLock lock(*(hEvent->m_hMutex));
   // we must guarantee that these handle's won't be deleted, until we are done
   list<CXHandle*> events = hEvent->m_hParents;
   for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
@@ -114,7 +112,7 @@ bool WINAPI PulseEvent(HANDLE hEvent)
     hEvent->m_bEventSet = true;
   }
 
-  SDL_mutexV(hEvent->m_hMutex);
+  lock.Leave();
 
   for(list<CXHandle*>::iterator it = events.begin();it != events.end();it++)
   {
@@ -130,14 +128,15 @@ bool WINAPI PulseEvent(HANDLE hEvent)
     Sleep(10);
 
   // we should always unset the event on pulse
-  SDL_mutexP(hEvent->m_hMutex);
-  hEvent->m_bEventSet = false;
-  SDL_mutexV(hEvent->m_hMutex);
+  {
+    CSingleLock lock2(*(hEvent->m_hMutex));
+    hEvent->m_bEventSet = false;
+  }
 
   if (hEvent->m_bManualEvent == true)
-    SDL_CondBroadcast(hEvent->m_hCond);
+    hEvent->m_hCond->notifyAll();
   else
-    SDL_CondSignal(hEvent->m_hCond);
+    hEvent->m_hCond->notify();
 
   return true;
 }

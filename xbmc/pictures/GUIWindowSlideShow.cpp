@@ -70,14 +70,12 @@ static float zoomamount[10] = { 1.0f, 1.2f, 1.5f, 2.0f, 2.8f, 4.0f, 6.0f, 9.0f, 
 CBackgroundPicLoader::CBackgroundPicLoader()
 {
   m_pCallback = NULL;
-  m_loadPic = CreateEvent(NULL,false,false,NULL);
   m_isLoading = false;
 }
 
 CBackgroundPicLoader::~CBackgroundPicLoader()
 {
   StopThread();
-  CloseHandle(m_loadPic);
 }
 
 void CBackgroundPicLoader::Create(CGUIWindowSlideShow *pCallback)
@@ -93,7 +91,7 @@ void CBackgroundPicLoader::Process()
   unsigned int count = 0;
   while (!m_bStop)
   { // loop around forever, waiting for the app to call LoadPic
-    if (WaitForSingleObject(m_loadPic, 10) == WAIT_OBJECT_0)
+    if (m_loadPic.WaitMSec(10))
     {
       if (m_pCallback)
       {
@@ -134,7 +132,7 @@ void CBackgroundPicLoader::LoadPic(int iPic, int iSlideNumber, const CStdString 
   m_maxWidth = maxWidth;
   m_maxHeight = maxHeight;
   m_isLoading = true;
-  SetEvent(m_loadPic);
+  m_loadPic.Set();
 }
 
 CGUIWindowSlideShow::CGUIWindowSlideShow(void)
@@ -168,6 +166,7 @@ void CGUIWindowSlideShow::Reset()
   m_bReloadImage = false;
   m_bScreensaver = false;
   m_Image[0].UnLoad();
+  m_Image[0].Close();
 
   m_iRotate = 0;
   m_iZoomFactor = 1;

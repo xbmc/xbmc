@@ -30,16 +30,12 @@
 #define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth.dll"
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun.dll"
 #define DLL_PATH_LIBCURL       "special://xbmcbin/system/libcurl.dll"
-#define DLL_PATH_LIBMICROHTTP  "special://xbmcbin/system/webserver/libmicrohttpd-5.dll"
+#define DLL_PATH_LIBMICROHTTP  "special://xbmcbin/system/webserver/libmicrohttpd-10.dll"
 
 /* paplayer */
 #define DLL_PATH_ADPCM_CODEC   "special://xbmcbin/system/players/paplayer/adpcm.dll"
-#define DLL_PATH_ADPLUG_CODEC  "special://xbmcbin/system/players/paplayer/adplug.dll"
-#define DLL_PATH_APE_CODEC     "special://xbmcbin/system/players/paplayer/MACDll.dll"
 #define DLL_PATH_ASAP_CODEC    "special://xbmcbin/system/players/paplayer/xbmc_asap.dll"
-#define DLL_PATH_DCA_CODEC     "special://xbmcbin/system/players/paplayer/dcacodec.dll"
 #define DLL_PATH_FLAC_CODEC    "special://xbmcbin/system/players/paplayer/libFLAC.dll"
-#define DLL_PATH_GYM_CODEC     "special://xbmcbin/system/players/paplayer/gensapu.dll"
 #define DLL_PATH_MAD_CODEC     "special://xbmcbin/system/players/dvdplayer/libmad.dll"
 #define DLL_PATH_MID_CODEC     "special://xbmcbin/system/players/paplayer/timidity.dll"
 #define DLL_PATH_NSF_CODEC     "special://xbmcbin/system/players/paplayer/nosefart.dll"
@@ -63,8 +59,9 @@
 #define DLL_PATH_LIBAVCORE     "special://xbmcbin/system/players/dvdplayer/avcore-0.dll"
 #define DLL_PATH_LIBAVFORMAT   "special://xbmcbin/system/players/dvdplayer/avformat-52.dll"
 #define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-50.dll"
+#define DLL_PATH_LIBAVFILTER   "special://xbmcbin/system/players/dvdplayer/avfilter-1.dll"
 #define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-51.dll"
-#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-0.6.1.dll"
+#define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-0.dll"
 
 /* cdrip */
 #define DLL_PATH_LAME_ENC      "special://xbmcbin/system/cdrip/lame_enc.dll"

@@ -3952,7 +3952,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       else
         URIUtils::GetParentPath(item->m_strPath, path);
       path = CURL(path).GetWithoutUserDetails();
-      if (info==CONTAINER_FOLDERNAME)
+      if (info==LISTITEM_FOLDERNAME)
       {
         URIUtils::RemoveSlashAtEnd(path);
         path=URIUtils::GetFileName(path);

@@ -296,8 +296,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_pSubtitleDemuxer = NULL;
   m_pInputStream = NULL;
 
-  InitializeCriticalSection(&m_critStreamSection);
-
   m_dvd.Clear();
   m_State.Clear();
   m_UpdateApplication = 0;
@@ -316,7 +314,6 @@ CDVDPlayer::~CDVDPlayer()
 {
   CloseFile();
 
-  DeleteCriticalSection(&m_critStreamSection);
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.DeInit();
 #endif
@@ -1120,7 +1117,7 @@ void CDVDPlayer::Process()
 void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
     /* process packet if it belongs to selected stream. for dvd's don't allow automatic opening of streams*/
-    LockStreams();
+    StreamLock lock(this);
 
     try
     {
@@ -1143,7 +1140,6 @@ void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
       CLog::Log(LOGERROR, "%s - Exception thrown when processing demux packet", __FUNCTION__);
     }
 
-    UnlockStreams();
 }
 
 void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
@@ -1874,7 +1870,7 @@ void CDVDPlayer::OnExit()
 void CDVDPlayer::HandleMessages()
 {
   CDVDMsg* pMsg;
-  LockStreams();
+  StreamLock lock(this);
 
   while (m_messenger.Get(&pMsg, 0) == MSGQ_OK)
   {
@@ -2121,7 +2117,6 @@ void CDVDPlayer::HandleMessages()
 
     pMsg->Release();
   }
-  UnlockStreams();
 
 }
 
@@ -2452,9 +2447,8 @@ float CDVDPlayer::GetSubTitleDelay()
 // priority: 1: libdvdnav, 2: external subtitles, 3: muxed subtitles
 int CDVDPlayer::GetSubtitleCount()
 {
-  LockStreams();
+  StreamLock lock(this);
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
-  UnlockStreams();
   return m_SelectionStreams.Count(STREAM_SUBTITLE);
 }
 
@@ -2503,9 +2497,8 @@ void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 
 int CDVDPlayer::GetAudioStreamCount()
 {
-  LockStreams();
+  StreamLock lock(this);
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
-  UnlockStreams();
   return m_SelectionStreams.Count(STREAM_AUDIO);
 }
 
@@ -2672,7 +2665,7 @@ bool CDVDPlayer::OpenVideoStream(int iStream, int source)
     if(aspect != 0.0)
       hint.aspect = aspect;
     hint.software = true;
-    hint.stills   = true;
+    hint.stills   = static_cast<CDVDInputStreamNavigator*>(m_pInputStream)->IsInMenu();
   }
 
   if(m_CurrentVideo.id    < 0

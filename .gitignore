@@ -1,4 +1,5 @@
 # global patterns
+testMain
 
 # commonly used editors
 # vim
@@ -223,10 +224,6 @@ lib/cmyth/Makefile
 /lib/libass/m4/ltversion.m4
 /lib/libass/m4/lt~obsolete.m4
 
-# /lib/libcdio
-/lib/libcdio/Debug
-/lib/libcdio/Release
-
 # /lib/libiconv
 /lib/libiconv/libiconv_win32/Debug
 /lib/libiconv/libiconv_win32/Release
@@ -300,7 +297,8 @@ lib/cmyth/Makefile
 /project/Win32BuildSetup/dependencies/pcre.dll
 /project/Win32BuildSetup/dependencies/pcrecpp.dll
 /project/Win32BuildSetup/dependencies/python26.dll
-project/Win32BuildSetup/dependencies/libcdio-10.dll
+/project/Win32BuildSetup/dependencies/libcdio-12.dll
+/project/Win32BuildSetup/dependencies/vcredist
 
 # /project/Win32BuildSetup/
 /project/Win32BuildSetup/BuildLog.htm
@@ -371,6 +369,7 @@ project/Win32BuildSetup/dependencies/libcdio-10.dll
 /system/players/dvdplayer/avcore-0.dll
 /system/players/dvdplayer/avformat-52.dll
 /system/players/dvdplayer/avutil-50.dll
+/system/players/dvdplayer/avfilter-1.dll
 /system/players/dvdplayer/freetype6.dll
 /system/players/dvdplayer/libass.dll
 /system/players/dvdplayer/libdvdcss-2.dll
@@ -379,7 +378,7 @@ project/Win32BuildSetup/dependencies/libcdio-10.dll
 /system/players/dvdplayer/libfontconfig-1.dll
 /system/players/dvdplayer/librtmp.dll
 /system/players/dvdplayer/postproc-51.dll
-/system/players/dvdplayer/swscale-0.6.1.dll
+/system/players/dvdplayer/swscale-0.dll
 /system/players/dvdplayer/libbluray.dll
 /system/players/dvdplayer/libmpeg2-0.dll
 /system/players/dvdplayer/libmad.dll

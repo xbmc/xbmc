@@ -64,6 +64,7 @@
 #include "emu_kernel32.h"
 #include "util/EmuFileWrapper.h"
 #include "utils/log.h"
+#include "threads/SingleLock.h"
 #ifndef _LINUX
 #include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
@@ -109,13 +110,12 @@ static char *dll__environ_imp[EMU_MAX_ENVIRONMENT_ITEMS + 1];
 extern "C" char **dll__environ;
 char **dll__environ = dll__environ_imp;
 
-CRITICAL_SECTION dll_cs_environ;
+CCriticalSection dll_cs_environ;
 
 #define dll_environ    (*dll___p__environ())   /* pointer to environment table */
 
 extern "C" void __stdcall init_emu_environ()
 {
-  InitializeCriticalSection(&dll_cs_environ);
   memset(dll__environ, 0, EMU_MAX_ENVIRONMENT_ITEMS + 1);
 
   // python
@@ -1705,22 +1705,6 @@ extern "C"
     return 0;
   }
 
-  uintptr_t dll_beginthread(
-    void( *start_address )( void * ),
-    unsigned stack_size,
-    void *arglist
-  )
-  {
-    return _beginthread(start_address, stack_size, arglist);
-  }
-
-  HANDLE dll_beginthreadex(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize,
-                           LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags,
-                           LPDWORD lpThreadId)
-  {
-    return dllCreateThread(lpThreadAttributes, dwStackSize, lpStartAddress, lpParameter, dwCreationFlags, lpThreadId);
-  }
-
   //SLOW CODE SHOULD BE REVISED
   int dll_stat(const char *path, struct stat *buffer)
   {
@@ -1957,44 +1941,45 @@ extern "C"
         if (size)
           value[size - 1] = '\0';
 
-        EnterCriticalSection(&dll_cs_environ);
-
-        char** free_position = NULL;
-        for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && free_position == NULL; i++)
         {
-          if (dll__environ[i] != NULL)
+          CSingleLock lock(dll_cs_environ);
+
+          char** free_position = NULL;
+          for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && free_position == NULL; i++)
           {
-            // we only support overwriting the old values
-            if (strnicmp(dll__environ[i], var, strlen(var)) == 0)
+            if (dll__environ[i] != NULL)
             {
-              // free it first
-              free(dll__environ[i]);
-              dll__environ[i] = NULL;
+              // we only support overwriting the old values
+              if (strnicmp(dll__environ[i], var, strlen(var)) == 0)
+              {
+                // free it first
+                free(dll__environ[i]);
+                dll__environ[i] = NULL;
+                free_position = &dll__environ[i];
+              }
+            }
+            else
+            {
               free_position = &dll__environ[i];
             }
           }
-          else
-          {
-            free_position = &dll__environ[i];
-          }
-        }
 
-        if (free_position != NULL)
-        {
-          // free position, copy value
-          size = strlen(var) + strlen(value) + 2;
-          *free_position = (char*)malloc(size); // for '=' and 0 termination
-          if ((*free_position))
+          if (free_position != NULL)
           {
-            strncpy(*free_position, var, size);
-            (*free_position)[size - 1] = '\0';
-            strncat(*free_position, "=", size - strlen(*free_position));
-            strncat(*free_position, value, size - strlen(*free_position));
-            added = true;
+            // free position, copy value
+            size = strlen(var) + strlen(value) + 2;
+            *free_position = (char*)malloc(size); // for '=' and 0 termination
+            if ((*free_position))
+            {
+              strncpy(*free_position, var, size);
+              (*free_position)[size - 1] = '\0';
+              strncat(*free_position, "=", size - strlen(*free_position));
+              strncat(*free_position, value, size - strlen(*free_position));
+              added = true;
+            }
           }
-        }
 
-        LeaveCriticalSection(&dll_cs_environ);
+        }
 
         free(value);
       }
@@ -2009,23 +1994,23 @@ extern "C"
   {
     char* value = NULL;
 
-    EnterCriticalSection(&dll_cs_environ);
-
-    update_emu_environ();//apply any changes
-
-    for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && value == NULL; i++)
     {
-      if (dll__environ[i])
+      CSingleLock lock(dll_cs_environ);
+
+      update_emu_environ();//apply any changes
+
+      for (int i = 0; i < EMU_MAX_ENVIRONMENT_ITEMS && value == NULL; i++)
       {
-        if (strnicmp(dll__environ[i], szKey, strlen(szKey)) == 0)
+        if (dll__environ[i])
         {
-          // found it
-          value = dll__environ[i] + strlen(szKey) + 1;
+          if (strnicmp(dll__environ[i], szKey, strlen(szKey)) == 0)
+          {
+            // found it
+            value = dll__environ[i] + strlen(szKey) + 1;
+          }
         }
       }
     }
-
-    LeaveCriticalSection(&dll_cs_environ);
 
     if (value != NULL)
     {

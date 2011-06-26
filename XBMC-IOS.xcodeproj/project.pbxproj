@@ -45,6 +45,7 @@
 		DF0DF17F13A3AF9F008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17B13A3AF9F008ED511 /* FileNFS.cpp */; };
 		DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */; };
 		F54D9E8112B713F8006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8012B713F8006870F9 /* libc.dylib */; };
+		F558F61113AFDC3000631E12 /* ThreadLocal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F60F13AFDC3000631E12 /* ThreadLocal.cpp */; };
 		F56B143412CAF279009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B143312CAF279009B4C96 /* CoreVideo.framework */; };
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
 		F56B15D512CD67A9009B4C96 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15D412CD67A9009B4C96 /* CoreGraphics.framework */; };
@@ -622,7 +623,6 @@
 		F56C8A5B131F42ED000AD0F6 /* XBPyThread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8584131F42EA000AD0F6 /* XBPyThread.cpp */; };
 		F56C8A5C131F42ED000AD0F6 /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8586131F42EA000AD0F6 /* AnnouncementManager.cpp */; };
 		F56C8A5D131F42ED000AD0F6 /* Builtins.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8588131F42EA000AD0F6 /* Builtins.cpp */; };
-		F56C8A5E131F42ED000AD0F6 /* XCriticalSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C858E131F42EA000AD0F6 /* XCriticalSection.cpp */; };
 		F56C8A5F131F42ED000AD0F6 /* ConvUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8590131F42EA000AD0F6 /* ConvUtils.cpp */; };
 		F56C8A60131F42ED000AD0F6 /* LinuxResourceCounter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8592131F42EA000AD0F6 /* LinuxResourceCounter.cpp */; };
 		F56C8A61131F42ED000AD0F6 /* LinuxTimezone.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8594131F42EA000AD0F6 /* LinuxTimezone.cpp */; };
@@ -767,17 +767,10 @@
 		F56C8AF3131F42ED000AD0F6 /* IoSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86D9131F42EB000AD0F6 /* IoSupport.cpp */; };
 		F56C8AF4131F42ED000AD0F6 /* MediaManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86DB131F42EB000AD0F6 /* MediaManager.cpp */; };
 		F56C8AF5131F42ED000AD0F6 /* cdioSupport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86DD131F42EB000AD0F6 /* cdioSupport.cpp */; };
-		F56C8AF6131F42ED000AD0F6 /* SemaphoreDarwin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86E1131F42EB000AD0F6 /* SemaphoreDarwin.cpp */; };
 		F56C8AF7131F42ED000AD0F6 /* Atomics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86E3131F42EB000AD0F6 /* Atomics.cpp */; };
-		F56C8AF8131F42ED000AD0F6 /* CriticalSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86E5131F42EB000AD0F6 /* CriticalSection.cpp */; };
 		F56C8AF9131F42ED000AD0F6 /* Event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86E7131F42EB000AD0F6 /* Event.cpp */; };
 		F56C8AFA131F42ED000AD0F6 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86EA131F42EB000AD0F6 /* LockFree.cpp */; };
-		F56C8AFB131F42ED000AD0F6 /* Mutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86EC131F42EB000AD0F6 /* Mutex.cpp */; };
-		F56C8AFC131F42ED000AD0F6 /* Semaphore.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86EE131F42EB000AD0F6 /* Semaphore.cpp */; };
-		F56C8AFD131F42ED000AD0F6 /* SharedSection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86F0131F42EB000AD0F6 /* SharedSection.cpp */; };
-		F56C8AFE131F42ED000AD0F6 /* SingleLock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86F2131F42EB000AD0F6 /* SingleLock.cpp */; };
 		F56C8AFF131F42ED000AD0F6 /* Thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86F4131F42EB000AD0F6 /* Thread.cpp */; };
-		F56C8B01131F42ED000AD0F6 /* XBMC_mutex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86F8131F42EB000AD0F6 /* XBMC_mutex.cpp */; };
 		F56C8B02131F42ED000AD0F6 /* GLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86FC131F42EB000AD0F6 /* GLUtils.cpp */; };
 		F56C8B03131F42ED000AD0F6 /* XMLUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C86FF131F42EB000AD0F6 /* XMLUtils.cpp */; };
 		F56C8B04131F42ED000AD0F6 /* StringUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8701131F42EB000AD0F6 /* StringUtils.cpp */; };
@@ -1020,6 +1013,9 @@
 		DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF17E13A3AF9F008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
 		F54D9E8012B713F8006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
+		F558F60613AFDC1700631E12 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
+		F558F60F13AFDC3000631E12 /* ThreadLocal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadLocal.cpp; sourceTree = "<group>"; };
+		F558F61013AFDC3000631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		F56B143312CAF279009B4C96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		F56B14A412CAF523009B4C96 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		F56B15D412CD67A9009B4C96 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1435,6 +1431,16 @@
 		F56C81F3131F42E6000AD0F6 /* EncoderWav.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = EncoderWav.cpp; sourceTree = "<group>"; };
 		F56C81F4131F42E6000AD0F6 /* EncoderWav.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EncoderWav.h; sourceTree = "<group>"; };
 		F56C81F6131F42E6000AD0F6 /* lame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lame.h; sourceTree = "<group>"; };
+<<<<<<< HEAD
+=======
+		F56C81FF131F42E6000AD0F6 /* IOSAudioRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IOSAudioRenderer.cpp; path = AudioRenderers/IOSAudioRenderer.cpp; sourceTree = "<group>"; };
+		F56C8200131F42E6000AD0F6 /* IOSAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRenderer.h; path = AudioRenderers/IOSAudioRenderer.h; sourceTree = "<group>"; };
+		F56C8201131F42E6000AD0F6 /* IAudioRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IAudioRenderer.h; path = AudioRenderers/IAudioRenderer.h; sourceTree = "<group>"; };
+		F56C8202131F42E6000AD0F6 /* AudioRendererFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AudioRendererFactory.h; path = AudioRenderers/AudioRendererFactory.h; sourceTree = "<group>"; };
+		F56C8203131F42E6000AD0F6 /* AudioRendererFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = AudioRendererFactory.cpp; path = AudioRenderers/AudioRendererFactory.cpp; sourceTree = "<group>"; };
+		F56C8204131F42E6000AD0F6 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = AudioRenderers/NullDirectSound.cpp; sourceTree = "<group>"; };
+		F56C8205131F42E6000AD0F6 /* NullDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NullDirectSound.h; path = AudioRenderers/NullDirectSound.h; sourceTree = "<group>"; };
+>>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 		F56C8207131F42E6000AD0F6 /* coff.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = coff.cpp; sourceTree = "<group>"; };
 		F56C8208131F42E6000AD0F6 /* coff.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coff.h; sourceTree = "<group>"; };
 		F56C8209131F42E6000AD0F6 /* coffldr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = coffldr.h; sourceTree = "<group>"; };
@@ -2283,8 +2289,6 @@
 		F56C858A131F42EA000AD0F6 /* IAnnouncer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAnnouncer.h; sourceTree = "<group>"; };
 		F56C858C131F42EA000AD0F6 /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
 		F56C858D131F42EA000AD0F6 /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
-		F56C858E131F42EA000AD0F6 /* XCriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XCriticalSection.cpp; sourceTree = "<group>"; };
-		F56C858F131F42EA000AD0F6 /* XCriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XCriticalSection.h; sourceTree = "<group>"; };
 		F56C8590131F42EA000AD0F6 /* ConvUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConvUtils.cpp; sourceTree = "<group>"; };
 		F56C8591131F42EA000AD0F6 /* ConvUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConvUtils.h; sourceTree = "<group>"; };
 		F56C8592131F42EA000AD0F6 /* LinuxResourceCounter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxResourceCounter.cpp; sourceTree = "<group>"; };
@@ -2582,29 +2586,17 @@
 		F56C86DC131F42EB000AD0F6 /* MediaManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaManager.h; sourceTree = "<group>"; };
 		F56C86DD131F42EB000AD0F6 /* cdioSupport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = cdioSupport.cpp; sourceTree = "<group>"; };
 		F56C86DE131F42EB000AD0F6 /* cdioSupport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cdioSupport.h; sourceTree = "<group>"; };
-		F56C86E1131F42EB000AD0F6 /* SemaphoreDarwin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SemaphoreDarwin.cpp; sourceTree = "<group>"; };
-		F56C86E2131F42EB000AD0F6 /* SemaphoreDarwin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SemaphoreDarwin.h; sourceTree = "<group>"; };
 		F56C86E3131F42EB000AD0F6 /* Atomics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Atomics.cpp; sourceTree = "<group>"; };
 		F56C86E4131F42EB000AD0F6 /* Atomics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Atomics.h; sourceTree = "<group>"; };
-		F56C86E5131F42EB000AD0F6 /* CriticalSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CriticalSection.cpp; sourceTree = "<group>"; };
 		F56C86E6131F42EB000AD0F6 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
 		F56C86E7131F42EB000AD0F6 /* Event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Event.cpp; sourceTree = "<group>"; };
 		F56C86E8131F42EB000AD0F6 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
-		F56C86E9131F42EB000AD0F6 /* ISemaphore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISemaphore.h; sourceTree = "<group>"; };
 		F56C86EA131F42EB000AD0F6 /* LockFree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LockFree.cpp; sourceTree = "<group>"; };
 		F56C86EB131F42EB000AD0F6 /* LockFree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LockFree.h; sourceTree = "<group>"; };
-		F56C86EC131F42EB000AD0F6 /* Mutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Mutex.cpp; sourceTree = "<group>"; };
-		F56C86ED131F42EB000AD0F6 /* Mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Mutex.h; sourceTree = "<group>"; };
-		F56C86EE131F42EB000AD0F6 /* Semaphore.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Semaphore.cpp; sourceTree = "<group>"; };
-		F56C86EF131F42EB000AD0F6 /* Semaphore.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Semaphore.hpp; sourceTree = "<group>"; };
-		F56C86F0131F42EB000AD0F6 /* SharedSection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SharedSection.cpp; sourceTree = "<group>"; };
 		F56C86F1131F42EB000AD0F6 /* SharedSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedSection.h; sourceTree = "<group>"; };
-		F56C86F2131F42EB000AD0F6 /* SingleLock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SingleLock.cpp; sourceTree = "<group>"; };
 		F56C86F3131F42EB000AD0F6 /* SingleLock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleLock.h; sourceTree = "<group>"; };
 		F56C86F4131F42EB000AD0F6 /* Thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Thread.cpp; sourceTree = "<group>"; };
 		F56C86F5131F42EB000AD0F6 /* Thread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Thread.h; sourceTree = "<group>"; };
-		F56C86F8131F42EB000AD0F6 /* XBMC_mutex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMC_mutex.cpp; sourceTree = "<group>"; };
-		F56C86F9131F42EB000AD0F6 /* XBMC_mutex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMC_mutex.h; sourceTree = "<group>"; };
 		F56C86FB131F42EB000AD0F6 /* GlobalsHandling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalsHandling.h; sourceTree = "<group>"; };
 		F56C86FC131F42EB000AD0F6 /* GLUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLUtils.cpp; sourceTree = "<group>"; };
 		F56C86FD131F42EB000AD0F6 /* GLUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLUtils.h; sourceTree = "<group>"; };
@@ -4963,8 +4955,6 @@
 			children = (
 				F56C858C131F42EA000AD0F6 /* stat_utf8.h */,
 				F56C858D131F42EA000AD0F6 /* stdio_utf8.h */,
-				F56C858E131F42EA000AD0F6 /* XCriticalSection.cpp */,
-				F56C858F131F42EA000AD0F6 /* XCriticalSection.h */,
 				F56C8590131F42EA000AD0F6 /* ConvUtils.cpp */,
 				F56C8591131F42EA000AD0F6 /* ConvUtils.h */,
 				F56C8592131F42EA000AD0F6 /* LinuxResourceCounter.cpp */,
@@ -5439,39 +5429,22 @@
 		F56C86DF131F42EB000AD0F6 /* threads */ = {
 			isa = PBXGroup;
 			children = (
-				F56C86E0131F42EB000AD0F6 /* darwin */,
 				F56C86E3131F42EB000AD0F6 /* Atomics.cpp */,
 				F56C86E4131F42EB000AD0F6 /* Atomics.h */,
-				F56C86E5131F42EB000AD0F6 /* CriticalSection.cpp */,
+				F558F60613AFDC1700631E12 /* Condition.h */,
 				F56C86E6131F42EB000AD0F6 /* CriticalSection.h */,
 				F56C86E7131F42EB000AD0F6 /* Event.cpp */,
 				F56C86E8131F42EB000AD0F6 /* Event.h */,
-				F56C86E9131F42EB000AD0F6 /* ISemaphore.h */,
 				F56C86EA131F42EB000AD0F6 /* LockFree.cpp */,
 				F56C86EB131F42EB000AD0F6 /* LockFree.h */,
-				F56C86EC131F42EB000AD0F6 /* Mutex.cpp */,
-				F56C86ED131F42EB000AD0F6 /* Mutex.h */,
-				F56C86EE131F42EB000AD0F6 /* Semaphore.cpp */,
-				F56C86EF131F42EB000AD0F6 /* Semaphore.hpp */,
-				F56C86F0131F42EB000AD0F6 /* SharedSection.cpp */,
 				F56C86F1131F42EB000AD0F6 /* SharedSection.h */,
-				F56C86F2131F42EB000AD0F6 /* SingleLock.cpp */,
 				F56C86F3131F42EB000AD0F6 /* SingleLock.h */,
 				F56C86F4131F42EB000AD0F6 /* Thread.cpp */,
 				F56C86F5131F42EB000AD0F6 /* Thread.h */,
-				F56C86F8131F42EB000AD0F6 /* XBMC_mutex.cpp */,
-				F56C86F9131F42EB000AD0F6 /* XBMC_mutex.h */,
+				F558F60F13AFDC3000631E12 /* ThreadLocal.cpp */,
+				F558F61013AFDC3000631E12 /* ThreadLocal.h */,
 			);
 			path = threads;
-			sourceTree = "<group>";
-		};
-		F56C86E0131F42EB000AD0F6 /* darwin */ = {
-			isa = PBXGroup;
-			children = (
-				F56C86E1131F42EB000AD0F6 /* SemaphoreDarwin.cpp */,
-				F56C86E2131F42EB000AD0F6 /* SemaphoreDarwin.h */,
-			);
-			path = darwin;
 			sourceTree = "<group>";
 		};
 		F56C86FA131F42EB000AD0F6 /* utils */ = {
@@ -6505,7 +6478,6 @@
 				F56C8A5B131F42ED000AD0F6 /* XBPyThread.cpp in Sources */,
 				F56C8A5C131F42ED000AD0F6 /* AnnouncementManager.cpp in Sources */,
 				F56C8A5D131F42ED000AD0F6 /* Builtins.cpp in Sources */,
-				F56C8A5E131F42ED000AD0F6 /* XCriticalSection.cpp in Sources */,
 				F56C8A5F131F42ED000AD0F6 /* ConvUtils.cpp in Sources */,
 				F56C8A60131F42ED000AD0F6 /* LinuxResourceCounter.cpp in Sources */,
 				F56C8A61131F42ED000AD0F6 /* LinuxTimezone.cpp in Sources */,
@@ -6650,17 +6622,10 @@
 				F56C8AF3131F42ED000AD0F6 /* IoSupport.cpp in Sources */,
 				F56C8AF4131F42ED000AD0F6 /* MediaManager.cpp in Sources */,
 				F56C8AF5131F42ED000AD0F6 /* cdioSupport.cpp in Sources */,
-				F56C8AF6131F42ED000AD0F6 /* SemaphoreDarwin.cpp in Sources */,
 				F56C8AF7131F42ED000AD0F6 /* Atomics.cpp in Sources */,
-				F56C8AF8131F42ED000AD0F6 /* CriticalSection.cpp in Sources */,
 				F56C8AF9131F42ED000AD0F6 /* Event.cpp in Sources */,
 				F56C8AFA131F42ED000AD0F6 /* LockFree.cpp in Sources */,
-				F56C8AFB131F42ED000AD0F6 /* Mutex.cpp in Sources */,
-				F56C8AFC131F42ED000AD0F6 /* Semaphore.cpp in Sources */,
-				F56C8AFD131F42ED000AD0F6 /* SharedSection.cpp in Sources */,
-				F56C8AFE131F42ED000AD0F6 /* SingleLock.cpp in Sources */,
 				F56C8AFF131F42ED000AD0F6 /* Thread.cpp in Sources */,
-				F56C8B01131F42ED000AD0F6 /* XBMC_mutex.cpp in Sources */,
 				F56C8B02131F42ED000AD0F6 /* GLUtils.cpp in Sources */,
 				F56C8B03131F42ED000AD0F6 /* XMLUtils.cpp in Sources */,
 				F56C8B04131F42ED000AD0F6 /* StringUtils.cpp in Sources */,
@@ -6813,6 +6778,7 @@
 				7C0A7FB313A9E72E00AFC2BD /* DirtyRegionTracker.cpp in Sources */,
 				DF0DF17F13A3AF9F008ED511 /* FileNFS.cpp in Sources */,
 				DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */,
+<<<<<<< HEAD
 				32E649A313AFB9C4007C0723 /* AEConvert.cpp in Sources */,
 				32E649A413AFB9C4007C0723 /* AEFactory.cpp in Sources */,
 				32E649A513AFB9C4007C0723 /* AEPackIEC958.cpp in Sources */,
@@ -6831,6 +6797,9 @@
 				32E649B313AFB9C4007C0723 /* CoreAudioAEStream.cpp in Sources */,
 				32E649BD13AFB9C4007C0723 /* AEPPAnimationFade.cpp in Sources */,
 				32E64A1413AFD057007C0723 /* DVDAudioCodecPassthrough.cpp in Sources */,
+=======
+				F558F61113AFDC3000631E12 /* ThreadLocal.cpp in Sources */,
+>>>>>>> 86890028e480e37ebb95c2ec62661dad1512b3db
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6925,6 +6894,7 @@
 					"-lmicrohttpd",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lboost_thread",
 					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
@@ -7016,6 +6986,7 @@
 					"-lmicrohttpd",
 					"-lsmbclient",
 					"-lpython2.6",
+					"-lboost_thread",
 					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",

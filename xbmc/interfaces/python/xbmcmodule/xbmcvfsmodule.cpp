@@ -30,12 +30,6 @@ using namespace std;
 using namespace XFILE;
 using namespace PYXBMC;
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"

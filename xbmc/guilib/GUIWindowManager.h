@@ -72,17 +72,16 @@ public:
    */
   void Process(unsigned int currentTime);
 
-  /*! \brief Mark a region of the screen as dirty - used by the mouse and dim/black screensavers currently
-      Ideally this would be removed and a technique for marking the screen as dirty implemented for ssavers
-      in addition to moving the mouse rendering into the manager.
+  /*! \brief Mark the screen as dirty, forcing a redraw at the next Render()
    */
-  void MarkDirty(const CDirtyRegion &rect);
+  void MarkDirty();
 
   /*! \brief Rendering of the current window and any dialogs
    Render is called every frame to draw the current window and any dialogs.
    It should only be called from the application thread.
+   Returns true only if it has rendered something.
    */
-  void Render();
+  bool Render();
 
   /*! \brief Per-frame updating of the current window and any dialogs
    FrameMove is called every frame to update the current window and any dialogs

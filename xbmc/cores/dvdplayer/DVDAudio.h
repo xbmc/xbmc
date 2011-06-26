@@ -26,6 +26,7 @@
 #endif
 #include "cores/IAudioCallback.h"
 #include "threads/CriticalSection.h"
+#include "PlatformDefs.h"
 
 #include "cores/AudioEngine/AEStream.h"
 

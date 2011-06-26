@@ -102,7 +102,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>
@@ -125,7 +125,7 @@
       <AdditionalDependencies>SDL.lib;opengl32.lib;DSound.lib;glew32.lib;glu32.lib;winmm.lib;ws2_32.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;yajl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)XBMC.exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\libSDL-WIN32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libc;msvcrt;libci;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libc;msvcrt;libci;msvcprt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <DelayLoadDLLs>dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;libsamplerate-0.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)XBMC.pdb</ProgramDatabaseFile>
@@ -146,7 +146,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\libflac\flac-1.2.1\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\cores;..\..\xbmc\cores\dvdplayer;..\..\xbmc\dialogs;..\..\xbmc\FileSystem;..\..\xbmc\guilib\;..\..\xbmc\utils;..\..\xbmc\win32;..\..\xbmc\windowing;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\libflac\flac-1.2.1\include;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;D3D_DEBUG_INFO;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -160,16 +160,17 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ShowIncludes>false</ShowIncludes>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>SDL.lib;D3D9.lib;D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;ws2_32.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;strmiids.lib;dxguid.lib;mfuuid.lib;comctl32.lib;yajl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)XBMC.exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\libSDL-WIN32\lib;..\..\xbmc\cores\DSPlayer\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libc;msvcrt;libcmt;msvcrtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libc;msvcrt;libcmt;msvcrtd;msvcprtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
-      <DelayLoadDLLs>dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;libsamplerate-0.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>dwmapi.dll;libmicrohttpd-10.dll;ssh.dll;sqlite3.dll;libsamplerate-0.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)XBMC.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -192,7 +193,7 @@
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;_WINDOWS;_MSVC;WIN32;NDEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_DX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>false</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
@@ -208,14 +209,15 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ShowIncludes>false</ShowIncludes>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /IGNORE:4089 /ignore:4254 %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>SDL.lib;D3D9.lib;D3dx9.lib;DInput8.lib;DSound.lib;winmm.lib;ws2_32.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;strmiids.lib;mfuuid.lib;comctl32.lib;yajl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)XBMC.exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\libSDL-WIN32\lib;..\..\xbmc\cores\DSPlayer\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libc;msvcrt;libci;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <DelayLoadDLLs>dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;libsamplerate-0.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <IgnoreSpecificDefaultLibraries>libc;msvcrt;libci;msvcprt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <DelayLoadDLLs>dwmapi.dll;libmicrohttpd-10.dll;ssh.dll;sqlite3.dll;libsamplerate-0.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)XBMC.pdb</ProgramDatabaseFile>
       <SubSystem>Windows</SubSystem>
@@ -235,7 +237,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\boost;..\..\lib\win32\libmicrohttpd_win32\include;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;..\..\xbmc\;..\..\xbmc\win32\;..\..\xbmc\cores\dvdplayer;..\..\lib;..\..\lib\ffmpeg;..\..\lib\ffmpeg\include-xbmc-win32;..\..\lib\liblame\include;..\..\lib\libUPnP\Platinum\Source\Devices\MediaRenderer;..\..\lib\libUPnP\Platinum\Source\Devices\MediaConnect;..\..\lib\libUPnP\Platinum\Source\Devices\MediaServer;..\..\lib\libUPnP\Platinum\Source\Platinum;..\..\lib\libUPnP\Platinum\Source\Core;..\..\lib\libUPnP\Neptune\Source\Core;..\..\lib\libUPnP\Neptune\Source\System\Win32;..\..\lib\win32\pcre;..\..\lib\win32</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;_WINDOWS;_MSVC;WIN32;_DEBUG;_WIN32_WINNT=0x0501;NTDDI_VERSION=0x05010300;NOMINMAX;_USE_32BIT_TIME_T;HAS_GL;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -255,7 +257,7 @@
       <AdditionalDependencies>SDL.lib;D3D9.lib;D3DX9.lib;DInput8.lib;DSound.lib;winmm.lib;ws2_32.lib;Mpr.lib;Iphlpapi.lib;PowrProf.lib;setupapi.lib;dwmapi.lib;yajl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)XBMC.exe</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib\libSDL-WIN32\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libc;msvcrt;libcmt;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>libc;msvcrt;libcmt;msvcprtd;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <ModuleDefinitionFile>
       </ModuleDefinitionFile>
       <DelayLoadDLLs>dwmapi.dll;libmicrohttpd-5.dll;ssh.dll;sqlite3.dll;libsamplerate-0.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -721,13 +723,10 @@
     <ClCompile Include="..\..\xbmc\TextureCache.cpp" />
     <ClCompile Include="..\..\xbmc\TextureDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\CriticalSection.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\Mutex.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\SharedSection.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\SingleLock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp" />
     <ClCompile Include="..\..\xbmc\URL.cpp" />
@@ -830,7 +829,6 @@
     <ClCompile Include="..\..\xbmc\win32\WINFileSMB.cpp" />
     <ClCompile Include="..\..\xbmc\win32\WINSMBDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\win32\XBMC_PC.cpp" />
-    <ClCompile Include="..\..\xbmc\win32\XCriticalSection.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DummyVideoPlayer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDAudio.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDClock.cpp" />
@@ -1163,6 +1161,7 @@
     <ClCompile Include="..\..\xbmc\xbmc.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\lib\DllAvFilter.h" />
     <ClInclude Include="..\..\lib\ffmpeg\include-xbmc-win32\libavutil\avconfig.h" />
     <ClInclude Include="..\..\lib\SlingboxLib\SlingboxLib.h" />
     <ClInclude Include="..\..\lib\tinyXML\tinystr.h" />
@@ -1560,13 +1559,14 @@
     <ClInclude Include="..\..\xbmc\TextureCache.h" />
     <ClInclude Include="..\..\xbmc\TextureDatabase.h" />
     <ClInclude Include="..\..\xbmc\threads\Atomics.h" />
+    <ClInclude Include="..\..\xbmc\threads\Condition.h" />
     <ClInclude Include="..\..\xbmc\threads\CriticalSection.h" />
     <ClInclude Include="..\..\xbmc\threads\Event.h" />
     <ClInclude Include="..\..\xbmc\threads\LockFree.h" />
-    <ClInclude Include="..\..\xbmc\threads\Mutex.h" />
     <ClInclude Include="..\..\xbmc\threads\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\threads\SingleLock.h" />
     <ClInclude Include="..\..\xbmc\threads\Thread.h" />
+    <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h" />
     <ClInclude Include="..\..\xbmc\ThumbLoader.h" />
     <ClInclude Include="..\..\xbmc\ThumbnailCache.h" />
     <ClInclude Include="..\..\xbmc\URL.h" />
@@ -1673,7 +1673,6 @@
     <ClInclude Include="..\..\xbmc\win32\WindowHelper.h" />
     <ClInclude Include="..\..\xbmc\win32\WINFileSMB.h" />
     <ClInclude Include="..\..\xbmc\win32\WINSMBDirectory.h" />
-    <ClInclude Include="..\..\xbmc\win32\XCriticalSection.h" />
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\IPlayer.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\dvd_config.h" />

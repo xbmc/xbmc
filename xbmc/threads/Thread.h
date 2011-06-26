@@ -59,8 +59,6 @@ public:
   virtual ~CThread();
   void Create(bool bAutoDelete = false, unsigned stacksize = 0);
   bool WaitForThreadExit(unsigned int milliseconds);
-  DWORD WaitForSingleObject(HANDLE hHandle, unsigned int milliseconds);
-  DWORD WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, unsigned int milliseconds);
   void Sleep(unsigned int milliseconds);
   bool SetPriority(const int iPriority);
   void SetPrioritySched_RR(void);
@@ -84,12 +82,10 @@ protected:
   virtual void OnException(){} // signal termination handler
   virtual void Process();
 
-#ifdef _LINUX
-  static void term_handler (int signum);
-#endif
-
   volatile bool m_bStop;
   HANDLE m_ThreadHandle;
+
+  inline CEvent* getStopEvent() { return &m_StopEvent; }
 
 private:
   CStdString GetTypeName(void);
@@ -97,7 +93,7 @@ private:
 private:
   ThreadIdentifier ThreadId() const;
   bool m_bAutoDelete;
-  HANDLE m_StopEvent;
+  CEvent m_StopEvent;
   unsigned m_ThreadId; // This value is unreliable on platforms using pthreads
                        // Use m_ThreadHandle->m_hThread instead
   IRunnable* m_pRunnable;
@@ -108,12 +104,17 @@ private:
 
   CStdString m_ThreadName;
 
-private:
+#ifdef _LINUX
+  static void term_handler (int signum);
+#endif
+
 #ifndef _WIN32
   static int staticThread(void* data);
 #else
   static DWORD WINAPI staticThread(LPVOID* data);
 #endif
+
+private:
 };
 
 #endif // !defined(AFX_THREAD_H__ACFB7357_B961_4AC1_9FB2_779526219817__INCLUDED_)

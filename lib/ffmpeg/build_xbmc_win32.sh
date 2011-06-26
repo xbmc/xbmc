@@ -35,6 +35,7 @@ OPTIONS="
 --enable-encoder=ac3 \
 --enable-encoder=aac \
 --enable-runtime-cpudetect \
+--enable-avfilter \
 --disable-debug \
 --disable-doc"
 
@@ -42,10 +43,10 @@ OPTIONS="
  
 make &&
 cp lib*/*.dll .libs/ &&
-mv .libs/swscale-0.dll .libs/swscale-0.6.1.dll &&
 cp .libs/avcodec-52.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avcore-0.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avformat-52.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avutil-50.dll /xbmc/system/players/dvdplayer/ &&
+cp .libs/avfilter-1.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/postproc-51.dll /xbmc/system/players/dvdplayer/ &&
-cp .libs/swscale-0.6.1.dll /xbmc/system/players/dvdplayer/
+cp .libs/swscale-0.dll /xbmc/system/players/dvdplayer/

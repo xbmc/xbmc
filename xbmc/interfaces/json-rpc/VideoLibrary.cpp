@@ -23,6 +23,7 @@
 #include "JSONUtils.h"
 #include "video/VideoDatabase.h"
 #include "Util.h"
+#include "utils/URIUtils.h"
 #include "Application.h"
 
 using namespace JSONRPC;
@@ -384,9 +385,36 @@ JSON_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSON_STATUS CVideoLibrary::Scan(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(video)");
+  return ACK;
+}
+
+JSON_STATUS CVideoLibrary::Export(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CStdString path = parameterObject["path"].asString();
+  bool singleFile = parameterObject["singlefile"].asBoolean();
+
+  if (!singleFile && path.IsEmpty())
+    return InvalidParams;
+
+  CStdString cmd;
+  if (singleFile)
+    cmd.Format("exportlibrary(video, true, %s, %s, %s)",
+      parameterObject["images"].asBoolean() ? "true" : "false",
+      parameterObject["overwrite"].asBoolean() ? "true" : "false",
+      parameterObject["actorthumbs"].asBoolean() ? "true" : "false");
+  else
+    cmd.Format("exportlibrary(video, false, %s)", path);
+
+  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
+  return ACK;
+}
+
+JSON_STATUS CVideoLibrary::Clean(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  g_application.getApplicationMessenger().ExecBuiltIn("cleanlibrary(video)");
   return ACK;
 }
 

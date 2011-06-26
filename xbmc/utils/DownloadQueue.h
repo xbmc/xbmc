@@ -23,6 +23,7 @@
 
 #include <queue>
 #include "threads/Thread.h"
+#include "threads/CriticalSection.h"
 #include "StdString.h"
 
 struct TICKET
@@ -76,7 +77,7 @@ protected:
 
   typedef std::queue<Command> COMMANDQUEUE;
   COMMANDQUEUE m_queue;
-  CRITICAL_SECTION m_critical;
+  CCriticalSection m_critical;
 
   WORD m_wQueueId;
   DWORD m_dwNextItemId;

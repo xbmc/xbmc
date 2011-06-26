@@ -751,7 +751,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
       }
 
       if (DataIO.UnpackToMemorySize > -1)
-        if (WaitForSingleObject(DataIO.hQuit,1) == WAIT_OBJECT_0)
+        if (DataIO.hQuit->WaitMSec(1))
         {
           return false;
         }
@@ -841,14 +841,14 @@ void CmdExtract::UnstoreFile(ComprDataIO &DataIO,Int64 DestUnpSize)
   {
     while (1)
     {
-      if (WaitForSingleObject(DataIO.hQuit,1) == WAIT_OBJECT_0)
+      if (DataIO.hQuit->WaitMSec(1))
       {
         return;
       }
       int Code=DataIO.UnpRead(&Buffer[0],Buffer.Size());
       if (DataIO.UnpackToMemorySize > -1 && !DataIO.NextVolumeMissing)
       {
-        if (WaitForSingleObject(DataIO.hSeek,1) == WAIT_OBJECT_0)
+        if (DataIO.hSeek->WaitMSec(1))
           continue;
       }
       if (Code > 0)
@@ -861,14 +861,14 @@ void CmdExtract::UnstoreFile(ComprDataIO &DataIO,Int64 DestUnpSize)
       else 
       {
         if (DataIO.NextVolumeMissing)
-          SetEvent(DataIO.hSeekDone);
+          DataIO.hSeekDone->Set();
         else 
-        if (WaitForSingleObject(DataIO.hSeek,1) == WAIT_OBJECT_0)
+          if (DataIO.hSeek->WaitMSec(1))
            continue;
-        ResetEvent(DataIO.hBufferFilled);
-        SetEvent(DataIO.hBufferEmpty);
-        while (WaitForSingleObject(DataIO.hBufferFilled,1) != WAIT_OBJECT_0)
-          if (WaitForSingleObject(DataIO.hQuit,1) == WAIT_OBJECT_0)
+        DataIO.hBufferFilled->Reset();
+        DataIO.hBufferEmpty->Set();
+        while (DataIO.hBufferFilled->WaitMSec(1))
+          if (DataIO.hQuit->WaitMSec(1))
             return;
       }
     }

@@ -3966,6 +3966,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        pItem->GetVideoInfoTag()->m_strPath = pItem->m_strPath;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         {
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
@@ -3988,6 +3989,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         strDir.Format("%ld/", m_pDS->fv("sets.idSet").get_asInt());
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        pItem->GetVideoInfoTag()->m_strPath = pItem->m_strPath;
         pItem->SetLabelPreformated(true);
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent==VIDEODB_CONTENT_MUSICVIDEOS)
         {

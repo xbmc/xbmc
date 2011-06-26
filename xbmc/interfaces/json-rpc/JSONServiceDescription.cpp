@@ -197,7 +197,9 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioLibrary.GetRecentlyAddedAlbums",          CAudioLibrary::GetRecentlyAddedAlbums },
   { "AudioLibrary.GetRecentlyAddedSongs",           CAudioLibrary::GetRecentlyAddedSongs },
   { "AudioLibrary.GetGenres",                       CAudioLibrary::GetGenres },
-  { "AudioLibrary.ScanForContent",                  CAudioLibrary::ScanForContent },
+  { "AudioLibrary.Scan",                            CAudioLibrary::Scan },
+  { "AudioLibrary.Export",                          CAudioLibrary::Export },
+  { "AudioLibrary.Clean",                           CAudioLibrary::Clean },
 
 // Video Library
   { "VideoLibrary.GetGenres",                       CVideoLibrary::GetGenres },
@@ -215,7 +217,9 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.GetRecentlyAddedMovies",          CVideoLibrary::GetRecentlyAddedMovies },
   { "VideoLibrary.GetRecentlyAddedEpisodes",        CVideoLibrary::GetRecentlyAddedEpisodes },
   { "VideoLibrary.GetRecentlyAddedMusicVideos",     CVideoLibrary::GetRecentlyAddedMusicVideos },
-  { "VideoLibrary.ScanForContent",                  CVideoLibrary::ScanForContent },
+  { "VideoLibrary.Scan",                            CVideoLibrary::Scan },
+  { "VideoLibrary.Export",                          CVideoLibrary::Export },
+  { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
 
 // System operations
   { "System.Shutdown",                              CSystemOperations::Shutdown },
@@ -444,7 +448,7 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
 
       CJsonRpcMethodMap::JsonRpcMethodIterator methodIterator = m_actionMap.find(name);
       if (methodIterator != m_actionMap.end() &&
-         (clientPermissions & methodIterator->second.permission) != 0 && ((transportCapabilities & methodIterator->second.transportneed) != 0 || !filterByTransport))
+         (clientPermissions & methodIterator->second.permission) == methodIterator->second.permission && ((transportCapabilities & methodIterator->second.transportneed) == methodIterator->second.transportneed || !filterByTransport))
         methods.add(methodIterator->second);
       else
         return InvalidParams;
@@ -460,7 +464,7 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
       {
         // Check if the given name is at the very beginning of the method name
         if (methodIterator->first.find(name) == 0 &&
-           (clientPermissions & methodIterator->second.permission) != 0 && ((transportCapabilities & methodIterator->second.transportneed) != 0 || !filterByTransport))
+           (clientPermissions & methodIterator->second.permission) == methodIterator->second.permission && ((transportCapabilities & methodIterator->second.transportneed) == methodIterator->second.transportneed || !filterByTransport))
           methods.add(methodIterator->second);
       }
 
@@ -543,7 +547,7 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
   CJsonRpcMethodMap::JsonRpcMethodIterator methodIteratorEnd = methods.end();
   for (methodIterator = methods.begin(); methodIterator != methodIteratorEnd; methodIterator++)
   {
-    if ((clientPermissions & methodIterator->second.permission) == 0 || ((transportCapabilities & methodIterator->second.transportneed) == 0 && filterByTransport))
+    if ((clientPermissions & methodIterator->second.permission) != methodIterator->second.permission || ((transportCapabilities & methodIterator->second.transportneed) != methodIterator->second.transportneed && filterByTransport))
       continue;
 
     CVariant currentMethod = CVariant(CVariant::VariantTypeObject);
@@ -553,7 +557,17 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
       currentMethod["description"] = methodIterator->second.description;
     if (printMetadata)
     {
-      currentMethod["permission"] = PermissionToString(methodIterator->second.permission);
+      CVariant permissions(CVariant::VariantTypeArray);
+      for (int i = ReadData; i <= OPERATION_PERMISSION_ALL; i *= 2)
+      {
+        if ((methodIterator->second.permission & i) == i)
+          permissions.push_back(PermissionToString((OperationPermission)i));
+      }
+
+      if (permissions.size() == 1)
+        currentMethod["permission"] = permissions[0];
+      else
+        currentMethod["permission"] = permissions;
     }
 
     currentMethod["params"] = CVariant(CVariant::VariantTypeArray);
@@ -583,7 +597,7 @@ JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const C
   CJsonRpcMethodMap::JsonRpcMethodIterator iter = m_actionMap.find(method);
   if (iter != m_actionMap.end())
   {
-    if (client != NULL && (client->GetPermissionFlags() & iter->second.permission) && (!notification || (iter->second.permission & OPERATION_PERMISSION_NOTIFICATION)))
+    if (client != NULL && (client->GetPermissionFlags() & iter->second.permission) == iter->second.permission && (!notification || (iter->second.permission & OPERATION_PERMISSION_NOTIFICATION) == iter->second.permission))
     {
       methodCall = iter->second.method;
 
@@ -1025,8 +1039,28 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
 bool CJSONServiceDescription::parseMethod(const CVariant &value, JsonRpcMethod &method)
 {
   // Parse XBMC specific information about the method
-  method.transportneed = StringToTransportLayer(value.isMember("transport") ? value["transport"].asString() : "");
-  method.permission = StringToPermission(value.isMember("permission") ? value["permission"].asString() : "");
+  if (value.isMember("transport") && value["transport"].isArray())
+  {
+    int transport = 0;
+    for (unsigned int index = 0; index < value["transport"].size(); index++)
+      transport |= StringToTransportLayer(value["transport"][index].asString());
+
+    method.transportneed = (TransportLayerCapability)transport;
+  }
+  else
+    method.transportneed = StringToTransportLayer(value.isMember("transport") ? value["transport"].asString() : "");
+
+  if (value.isMember("permission") && value["permission"].isArray())
+  {
+    int permissions = 0;
+    for (unsigned int index = 0; index < value["permission"].size(); index++)
+      permissions |= StringToPermission(value["permission"][index].asString());
+
+    method.permission = (OperationPermission)permissions;
+  }
+  else
+    method.permission = StringToPermission(value.isMember("permission") ? value["permission"].asString() : "");
+
   method.description = GetString(value["description"], "");
 
   // Check whether there are parameters defined
