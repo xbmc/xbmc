@@ -191,7 +191,7 @@ namespace PYXBMC
     "value          : string or unicode - text string.\n"
     "\n"
     "example:\n"
-    "  - self.edit.setValue('online')\n");
+    "  - self.edit.setText('online')\n");
 
   PyObject* ControlEdit_SetText(ControlLabel *self, PyObject *args)
   {
