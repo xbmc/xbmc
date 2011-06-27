@@ -9,8 +9,8 @@
   </requires>
   <extension
     point="xbmc.pvrclient"
-    library_wingl="XBMC_ForTheRecord_win32.pvr"
-    library_windx="XBMC_ForTheRecord_win32.pvr"/>
+    library_wingl="XBMC_ForTheRecord_rtsp_win32.pvr"
+    library_windx="XBMC_ForTheRecord_rtsp_win32.pvr"/>
   <extension point="xbmc.addon.metadata">
     <summary>XBMC frontend for the ForTheRecord Argus tuner/recorder</summary>
     <description>ForTheRecord Argus tuner/recorder frontend. Supports streaming of Live TV &amp; Recordings, listening to Radio channels, EPG and schedules.</description>

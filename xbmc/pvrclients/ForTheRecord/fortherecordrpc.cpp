@@ -449,8 +449,11 @@ namespace ForTheRecord
           XBMC->Log(LOG_DEBUG, "No LiveStream received from server.");
           return E_FAILED;
         }
+#ifdef TSREADER
         stream = g_current_livestream["TimeshiftFile"].asString();
-        //stream = g_current_livestream["RtspUrl"].asString();
+#else
+        stream = g_current_livestream["RtspUrl"].asString();
+#endif
         XBMC->Log(LOG_DEBUG, "Tuned live stream: %s\n", stream.c_str());
       }
       else
@@ -489,6 +492,17 @@ namespace ForTheRecord
     {
       return E_FAILED;
     }
+  }
+
+  const char *GetLiveStreamURL(void)
+  {
+    std::string stream = "";
+
+    if(!g_current_livestream.empty())
+    {
+      stream = g_current_livestream["RtspUrl"].asString();
+    }
+    return stream.c_str();
   }
 
 

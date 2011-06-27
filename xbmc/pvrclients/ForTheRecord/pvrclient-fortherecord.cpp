@@ -331,8 +331,17 @@ PVR_ERROR cPVRClientForTheRecord::GetChannels(PVR_HANDLE handle, bool bRadio)
         tag.bIsRadio = (channel.Type() == ForTheRecord::Radio ? true : false);
         tag.bIsHidden = false;
         //Use OpenLiveStream to read from the timeshift .ts file or an rtsp stream
+#ifdef TSREADER
         tag.strStreamURL = "";
         tag.strInputFormat = "mpegts";
+#else
+        //Use GetLiveStreamURL to fetch an rtsp stream
+        if(bRadio)
+          tag.strStreamURL = "pvr://stream/radio/%i.ts"; //stream.c_str();
+        else
+          tag.strStreamURL = "pvr://stream/tv/%i.ts"; //stream.c_str();
+        tag.strInputFormat = "";
+#endif
 
         if (!tag.bIsRadio)
         {
@@ -1033,5 +1042,5 @@ int cPVRClientForTheRecord::ReadRecordedStream(unsigned char* pBuffer, unsigned 
  */
 const char* cPVRClientForTheRecord::GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
-  return false;
+  return ForTheRecord::GetLiveStreamURL();
 }
