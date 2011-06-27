@@ -123,7 +123,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, unsigned int channel
     (*sitt)->Lock();
 
   /* lock the sink so the thread gets held up */
-  m_sinkLock.EnterExclusive();
+  CExclusiveLock lock(m_sinkLock);
+  //m_sinkLock.EnterExclusive();
   LoadSettings();
 
   /* remove any deleted streams */
@@ -330,7 +331,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, unsigned int channel
     for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
       (*sitt)->UnLock();
 
-    m_sinkLock.LeaveExclusive();
+    lock.Leave();
     return true;
   }
 
@@ -349,7 +350,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, unsigned int channel
   streamLock.Leave();
 
   bool valid = m_sink != NULL;
-  m_sinkLock.LeaveExclusive();
+  lock.Leave();
 
   return valid;
 }
@@ -706,7 +707,7 @@ float CSoftAE::GetDelay()
   if (!m_running)
     return 0.0f;
 
-  m_sinkLock.EnterShared();
+  m_sinkLock.lock();
 
   float delay = 0.0f;
   if (m_sink)
@@ -718,7 +719,7 @@ float CSoftAE::GetDelay()
   unsigned int buffered = m_bufferSamples / m_channelCount;
   delay += (float)buffered / (float)m_sinkFormat.m_sampleRate;
 
-  m_sinkLock.LeaveShared();
+  m_sinkLock.unlock();
 
   return delay;
 }
@@ -748,7 +749,7 @@ void CSoftAE::Run()
   unsigned int channelCount = m_channelCount;
   size_t size               = m_frameSize;
 
-  m_sinkLock.EnterShared();
+  m_sinkLock.lock();
   while(m_running)
   {
     m_reOpened = false;
@@ -760,7 +761,7 @@ void CSoftAE::Run()
       RunOutputStage();
 
     /* unlock the sink, we don't need it anymore */
-    m_sinkLock.LeaveShared();
+    m_sinkLock.unlock();
 
     /* make sure we have enough room to fetch a frame */
     if(size > outSize)
@@ -800,7 +801,7 @@ void CSoftAE::Run()
     }
 
     /* re-lock the sink for the next loop */
-    m_sinkLock.EnterShared();
+    m_sinkLock.lock();
 
     /* update the save values */
     channelCount = m_channelCount;
