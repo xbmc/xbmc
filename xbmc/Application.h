@@ -39,7 +39,6 @@ namespace ADDON
 #include "dialogs/GUIDialogSeekBar.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogVolumeBar.h"
-#include "dialogs/GUIDialogMuteBug.h"
 
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -216,7 +215,6 @@ public:
   CGUIDialogVolumeBar m_guiDialogVolumeBar;
   CGUIDialogSeekBar m_guiDialogSeekBar;
   CGUIDialogKaiToast m_guiDialogKaiToast;
-  CGUIDialogMuteBug m_guiDialogMuteBug;
 
 #ifdef HAS_DVD_DRIVE
   MEDIA_DETECT::CAutorun m_Autorun;

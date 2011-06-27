@@ -1653,7 +1653,6 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   m_guiDialogVolumeBar.AllocResources(true);
   m_guiDialogSeekBar.AllocResources(true);
   m_guiDialogKaiToast.AllocResources(true);
-  m_guiDialogMuteBug.AllocResources(true);
   g_windowManager.AddMsgTarget(this);
   g_windowManager.AddMsgTarget(&g_playlistPlayer);
   g_windowManager.AddMsgTarget(&g_infoManager);
@@ -1702,12 +1701,6 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 
   g_windowManager.DeInitialize();
   CTextureCache::Get().Deinitialize();
-
-  //These windows are not handled by the windowmanager (why not?) so we should unload them manually
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-  m_guiDialogMuteBug.OnMessage(msg);
-  m_guiDialogMuteBug.ResetControlStates();
-  m_guiDialogMuteBug.FreeResources(true);
 
   // remove the skin-dependent window
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
@@ -4946,17 +4939,9 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
 
   // update mute state
   if(!g_settings.m_bMute && hardwareVolume <= VOLUME_MINIMUM)
-  {
     g_settings.m_bMute = true;
-    if (!m_guiDialogMuteBug.IsDialogRunning())
-      m_guiDialogMuteBug.Show();
-  }
   else if(g_settings.m_bMute && hardwareVolume > VOLUME_MINIMUM)
-  {
     g_settings.m_bMute = false;
-    if (m_guiDialogMuteBug.IsDialogRunning())
-      m_guiDialogMuteBug.Close();
-  }
 
   // and tell our player to update the volume
   if (m_pPlayer)

@@ -252,7 +252,6 @@ static const ActionMapping windows[] =
         {"gamepadinput"             , WINDOW_DIALOG_GAMEPAD},
         {"shutdownmenu"             , WINDOW_DIALOG_BUTTON_MENU},
         {"musicscan"                , WINDOW_DIALOG_MUSIC_SCAN},
-        {"mutebug"                  , WINDOW_DIALOG_MUTE_BUG},
         {"playercontrols"           , WINDOW_DIALOG_PLAYER_CONTROLS},
         {"seekbar"                  , WINDOW_DIALOG_SEEK_BAR},
         {"musicosd"                 , WINDOW_DIALOG_MUSIC_OSD},
