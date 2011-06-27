@@ -1933,7 +1933,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
                   :g_application.getApplicationMessenger().MediaPlay((const char*)uri);
     }
 
-    if (g_application.IsPlaying() && g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+    if (g_application.IsPlaying() || g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
         NPT_AutoLock lock(m_state);
         service->SetStateVariable("TransportState", "PLAYING");
         service->SetStateVariable("TransportStatus", "OK");
