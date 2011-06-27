@@ -1460,6 +1460,7 @@ private:
     NPT_Result PlayMedia(const char* uri,
                          const char* metadata = NULL,
                          PLT_Action* action = NULL);
+    NPT_Mutex m_state;
 };
 
 /*----------------------------------------------------------------------
@@ -1637,10 +1638,18 @@ CUPnPRenderer::ProcessHttpRequest(NPT_HttpRequest&              request,
 void
 CUPnPRenderer::UpdateState()
 {
+    NPT_AutoLock lock(m_state);
+
     PLT_Service *avt, *rct;
     if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
         return;
     if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
+        return;
+
+    /* don't update state while transitioning */
+    NPT_String state;
+    avt->GetStateVariableValue("TransportState", state);
+    if(state == "TRANSITIONING")
         return;
 
     CStdString buffer;
@@ -1843,9 +1852,10 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
     PLT_Service* service;
     NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
 
-    service->SetStateVariable("TransportState", "TRANSITIONING");
-    service->SetStateVariable("TransportStatus", "OK");
-    service->SetStateVariable("TransportPlaySpeed", "1");
+    { NPT_AutoLock lock(m_state);
+      service->SetStateVariable("TransportState", "TRANSITIONING");
+      service->SetStateVariable("TransportStatus", "OK");
+    }
 
     PLT_MediaObjectListReference list;
     PLT_MediaObject*             object = NULL;
@@ -1899,12 +1909,16 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
                   :g_application.getApplicationMessenger().MediaPlay((const char*)uri);
     }
 
-    if (!g_application.IsPlaying()) {
-        service->SetStateVariable("TransportState", "STOPPED");
-        service->SetStateVariable("TransportStatus", "ERROR_OCCURRED");
-    } else {
+    if (g_application.IsPlaying()) {
+        NPT_AutoLock lock(m_state);
+        service->SetStateVariable("TransportState", "PLAYING");
+        service->SetStateVariable("TransportStatus", "OK");
         service->SetStateVariable("AVTransportURI", uri);
         service->SetStateVariable("AVTransportURIMetaData", meta);
+    } else {
+        NPT_AutoLock lock(m_state);
+        service->SetStateVariable("TransportState", "STOPPED");
+        service->SetStateVariable("TransportStatus", "ERROR_OCCURRED");
     }
 
     if (action) {
