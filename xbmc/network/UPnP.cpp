@@ -1682,7 +1682,6 @@ CUPnPRenderer::UpdateState()
 
         buffer = g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS);
         avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
-        buffer = StringUtils::SecondsToTimeString((long)g_infoManager.GetTotalPlayTime(), TIME_FORMAT_HH_MM_SS);
         avt->SetStateVariable("AbsoluteTimePosition", buffer.c_str());
 
         buffer = g_infoManager.GetDuration(TIME_FORMAT_HH_MM_SS);
