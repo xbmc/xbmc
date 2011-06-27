@@ -40,7 +40,7 @@
 #endif
 
 #include "AEAudioFormat.h"
-#include "MathUtils.h"
+#include "utils/MathUtils.h"
 
 /* note: always converts to machine byte endian */
 
