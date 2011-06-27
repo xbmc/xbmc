@@ -22,7 +22,6 @@
 #include "system.h"
 #ifdef HAS_HAL
 #include "HALManager.h"
-#include "Application.h"
 #include "interfaces/Builtins.h"
 #include <libhal-storage.h>
 #include "threads/SingleLock.h"
@@ -30,6 +29,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "powermanagement/PowerManager.h"
 #include "settings/AdvancedSettings.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 #ifdef HAS_SDL_JOYSTICK
 #include <SDL/SDL.h>
@@ -396,7 +396,7 @@ void CHALManager::UpdateDevice(const char *udi)
         if (g_advancedSettings.m_handleMounting)  // If the device was mounted by XBMC before it's still mounted by XBMC.
             dev.MountedByXBMC = m_Volumes[i].MountedByXBMC;
         if (!dev.Mounted && m_Volumes[i].Mounted)
-          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023), dev.FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023), dev.FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
         m_Volumes[i] = dev;
 
         break;
@@ -462,7 +462,7 @@ void CHALManager::HandleNewVolume(CStorageDevice *dev)
         {
           CLog::Log(LOGINFO, "HAL: mounted %s on %s", dev->FriendlyName.c_str(), dev->MountPoint.c_str());
           if (m_Notifications)
-            g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), dev->FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
+            CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), dev->FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
         }
       }
       libhal_free_string_array(capability);
@@ -525,7 +525,7 @@ void CHALManager::AddDevice(const char *udi)
 
           g_Joystick.Initialize();
           if (m_Notifications)
-            g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13024), dev.FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
+            CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13024), dev.FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
         }
       }
     }
@@ -561,7 +561,7 @@ bool CHALManager::RemoveDevice(const char *udi)
         if (g_advancedSettings.m_handleMounting)
           UnMount(m_Volumes[i]);
         if (m_Notifications)
-          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022), m_Volumes[i].FriendlyName.c_str());
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022), m_Volumes[i].FriendlyName.c_str());
         CLog::Log(LOGNOTICE, "HAL: Unsafe drive removal");
       }
       m_Volumes.erase(m_Volumes.begin() + i);
@@ -589,7 +589,7 @@ bool CHALManager::RemoveDevice(const char *udi)
         }
 
         g_Joystick.Initialize();
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13025), m_Joysticks[i].FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13025), m_Joysticks[i].FriendlyName.c_str(), TOAST_DISPLAY_TIME, false);
       }
       m_Joysticks.erase(m_Joysticks.begin() + i);
       return true;

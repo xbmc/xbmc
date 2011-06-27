@@ -21,9 +21,9 @@
 
 #include "NullDirectSound.h"
 #include "guilib/AudioContext.h"
-#include "Application.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 #define BUFFER CHUNKLEN * 20
 #define CHUNKLEN 512
@@ -51,7 +51,7 @@ bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
 
-  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Failed to initialize audio device", "Check your audiosettings", TOAST_DISPLAY_TIME, false);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to initialize audio device", "Check your audiosettings", TOAST_DISPLAY_TIME, false);
   m_timePerPacket = 1.0f / (float)(iChannels*(uiBitsPerSample/8) * uiSamplesPerSec);
   m_packetsSent = 0;
   m_paused = 0;

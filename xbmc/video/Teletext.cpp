@@ -31,6 +31,7 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/GraphicContext.h"
 
 #ifndef HAS_SDL
 #define SDL_memset4(dst, val, len) memset(dst, val, (len)*4)
