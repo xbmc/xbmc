@@ -21,6 +21,7 @@
 
 #include "GUIDialogMuteBug.h"
 #include "GUIUserMessages.h"
+#include "settings/Settings.h"
 
 // the MuteBug is a true modeless dialog
 
@@ -33,3 +34,10 @@ CGUIDialogMuteBug::CGUIDialogMuteBug(void)
 CGUIDialogMuteBug::~CGUIDialogMuteBug(void)
 {}
 
+void CGUIDialogMuteBug::UpdateVisibility()
+{
+  if (g_settings.m_bMute)
+    Show();
+  else
+    Close();
+}
