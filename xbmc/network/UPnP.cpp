@@ -42,6 +42,8 @@
 #include "NptNetwork.h"
 #include "NptConsole.h"
 #include "music/tags/MusicInfoTag.h"
+#include "pictures/PictureInfoTag.h"
+#include "pictures/GUIWindowSlideShow.h"
 #include "filesystem/Directory.h"
 #include "URL.h"
 #include "settings/GUISettings.h"
@@ -1704,6 +1706,27 @@ CUPnPRenderer::UpdateState()
         }
         avt->SetStateVariable("CurrentTrackMetadata", metadata);
         avt->SetStateVariable("AVTransportURIMetaData", metadata);
+    } else if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        avt->SetStateVariable("TransportState", "PLAYING");
+
+        avt->SetStateVariable("AVTransportURI" , g_infoManager.GetPictureLabel(SLIDE_FILE_PATH));
+        avt->SetStateVariable("CurrentTrackURI", g_infoManager.GetPictureLabel(SLIDE_FILE_PATH));
+        avt->SetStateVariable("TransportPlaySpeed", "1");
+
+        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        if (slideshow)
+        {
+          CStdString index;
+          index.Format("%d", slideshow->NumSlides());
+          avt->SetStateVariable("NumberOfTracks", index.c_str());
+          index.Format("%d", slideshow->CurrentSlide());
+          avt->SetStateVariable("CurrentTrack", index.c_str());
+
+        }
+
+        avt->SetStateVariable("CurrentTrackMetadata", "");
+        avt->SetStateVariable("AVTransportURIMetaData", "");
+
     } else {
         avt->SetStateVariable("TransportState", "STOPPED");
         avt->SetStateVariable("TransportPlaySpeed", "1");
@@ -1776,7 +1799,9 @@ CUPnPRenderer::OnPause(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPlay(PLT_ActionReference& action)
 {
-    if (g_application.IsPaused()) {
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        return NPT_SUCCESS;
+    } else if (g_application.IsPaused()) {
       g_application.getApplicationMessenger().MediaPause();
     } else if (!g_application.IsPlaying()) {
         NPT_String uri, meta;
@@ -1827,7 +1852,7 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 
     // if not playing already, just keep around uri & metadata
     // and wait for play command
-    if (!g_application.IsPlaying()) {
+    if (!g_application.IsPlaying() && g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW) {
         service->SetStateVariable("TransportState", "STOPPED");
         service->SetStateVariable("TransportStatus", "OK");
         service->SetStateVariable("TransportPlaySpeed", "1");
@@ -1908,7 +1933,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
                   :g_application.getApplicationMessenger().MediaPlay((const char*)uri);
     }
 
-    if (g_application.IsPlaying()) {
+    if (g_application.IsPlaying() && g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
         NPT_AutoLock lock(m_state);
         service->SetStateVariable("TransportState", "PLAYING");
         service->SetStateVariable("TransportStatus", "OK");
