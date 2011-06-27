@@ -24,6 +24,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "threads/SingleLock.h"
 #include "log.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 using namespace std;
 
@@ -69,7 +70,7 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
   strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60);
 
   if(!bSilent)
-     g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
+     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
 
   event.watch.StartZero();
   CSingleLock lock(m_events);
@@ -108,7 +109,7 @@ void CAlarmClock::Stop(const CStdString& strName, bool bSilent /* false */)
   if (iter->second.m_strCommand.IsEmpty() || iter->second.m_fSecs > iter->second.watch.GetElapsedSeconds())
   {
     if(!bSilent)
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
   }
   else
     g_application.getApplicationMessenger().ExecBuiltIn(iter->second.m_strCommand);

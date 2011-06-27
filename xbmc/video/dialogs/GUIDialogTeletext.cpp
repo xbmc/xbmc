@@ -27,6 +27,7 @@
 #include "guilib/Texture.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 using namespace std;
 
@@ -65,7 +66,7 @@ bool CGUIDialogTeletext::OnMessage(CGUIMessage& message)
     if (!g_application.m_pPlayer->GetTeletextCache())
     {
       Close();
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(23049), "", 1500, false);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(23049), "", 1500, false);
       return true;
     }
   }

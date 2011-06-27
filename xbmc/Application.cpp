@@ -201,6 +201,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "video/dialogs/GUIDialogFileStacking.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogGamepad.h"
@@ -1065,7 +1066,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(&m_guiDialogSeekBar);            // window id = 115
   g_windowManager.Add(new CGUIDialogSubMenu);            // window id = 105
   g_windowManager.Add(new CGUIDialogContextMenu);        // window id = 106
-  g_windowManager.Add(&m_guiDialogKaiToast);           // window id = 107
+  g_windowManager.Add(new CGUIDialogKaiToast);           // window id = 107
   g_windowManager.Add(new CGUIDialogNumeric);            // window id = 109
   g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
   g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
@@ -1652,7 +1653,6 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   CLog::Log(LOGINFO, "  initialize new skin...");
   m_guiDialogVolumeBar.AllocResources(true);
   m_guiDialogSeekBar.AllocResources(true);
-  m_guiDialogKaiToast.AllocResources(true);
   m_guiDialogMuteBug.AllocResources(true);
   g_windowManager.AddMsgTarget(this);
   g_windowManager.AddMsgTarget(&g_playlistPlayer);
@@ -2641,11 +2641,12 @@ void CApplication::FrameMove()
 
   g_graphicsContext.Lock();
   // check if there are notifications to display
-  if (m_guiDialogKaiToast.DoWork())
+  CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+  if (toast && toast->DoWork())
   {
-    if (!m_guiDialogKaiToast.IsDialogRunning())
+    if (!toast->IsDialogRunning())
     {
-      m_guiDialogKaiToast.Show();
+      toast->Show();
     }
   }
   g_graphicsContext.Unlock();
