@@ -22,7 +22,6 @@
 #ifdef HAS_DX
 
 #include "WinRenderer.h"
-#include "Application.h"
 #include "Util.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
@@ -37,6 +36,7 @@
 #include "VideoShaders/WinVideoFilter.h"
 #include "DllSwScale.h"
 #include "guilib/LocalizeStrings.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 typedef struct {
   RenderMethod  method;
@@ -154,7 +154,7 @@ void CWinRenderer::SelectRenderMethod()
           else
           {
             CLog::Log(LOGNOTICE, "D3D: unable to load test shader - D3D installation is most likely incomplete");
-            g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
+            CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
             shader->Release();
           }
         }
@@ -551,7 +551,7 @@ void CWinRenderer::UpdatePSVideoFilter()
     if (!m_scalerShader->Create(m_scalingMethod))
     {
       SAFE_RELEASE(m_scalerShader);
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
       m_bUseHQScaler = false;
     }
   }
