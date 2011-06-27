@@ -109,18 +109,8 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SELECTLOCATION);
         g_windowManager.SendMessage(msg);
-        m_iCurWeather = msg.GetParam1();
 
-        CStdString strLabel=g_weatherManager.GetLocation(m_iCurWeather);
-        int iPos = strLabel.ReverseFind(", ");
-        if (iPos)
-        {
-          CStdString strLabel2(strLabel);
-          strLabel = strLabel2.substr(0,iPos);
-        }
-
-        SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
-        Refresh();
+        SetLocation(msg.GetParam1());
       }
     }
     break;
@@ -146,6 +136,26 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       {
         CGUIDialogOK::ShowAndGetInput(8,21451,20022,20022);
         g_windowManager.PreviousWindow();
+        return true;
+      }
+    }
+    break;
+  case GUI_MSG_ITEM_SELECT:
+    {
+      if (message.GetSenderId() == 0) //handle only message from builtin
+      {
+        SetLocation(message.GetParam1());
+        return true;
+      }
+    }
+    break;
+  case GUI_MSG_MOVE_OFFSET:
+    {
+      if (message.GetSenderId() == 0) //handle only message from builtin
+      {
+        int v = (message.GetParam1() + (int)m_iCurWeather) % MAX_LOCATION;
+        if (v < 0) v+= MAX_LOCATION;
+        SetLocation(v);
         return true;
       }
     }
@@ -255,6 +265,21 @@ void CGUIWindowWeather::FrameMove()
   }
 
   CGUIWindow::FrameMove();
+}
+
+void CGUIWindowWeather::SetLocation(int loc)
+{
+  if (loc < 0 || loc >= MAX_LOCATION)
+    return;
+
+  m_iCurWeather = loc;
+  CStdString strLabel=g_weatherManager.GetLocation(m_iCurWeather);
+  int iPos = strLabel.ReverseFind(", ");
+  if (iPos)
+    strLabel = strLabel.substr(0,iPos);
+
+  SET_CONTROL_LABEL(CONTROL_SELECTLOCATION,strLabel);
+  Refresh();
 }
 
 //Do a complete download, parse and update
