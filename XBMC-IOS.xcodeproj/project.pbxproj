@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1830219E13B8E37300770920 /* controledit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1830219D13B8E37300770920 /* controledit.cpp */; };
 		18404DD31396C3D200863BBA /* SlingboxLib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 18404DD21396C3D200863BBA /* SlingboxLib.a */; };
 		18404DD61396C3F300863BBA /* Slingbox.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18404DD41396C3F300863BBA /* Slingbox.cpp */; };
 		1840B77A1399616D007C848B /* JSONVariantParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1840B7761399616D007C848B /* JSONVariantParser.cpp */; };
@@ -920,6 +921,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1830219D13B8E37300770920 /* controledit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controledit.cpp; sourceTree = "<group>"; };
 		18404DD21396C3D200863BBA /* SlingboxLib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = SlingboxLib.a; path = lib/SlingboxLib/SlingboxLib.a; sourceTree = "<group>"; };
 		18404DD41396C3F300863BBA /* Slingbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Slingbox.cpp; sourceTree = "<group>"; };
 		18404DD51396C3F300863BBA /* Slingbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Slingbox.h; sourceTree = "<group>"; };
@@ -4818,6 +4820,7 @@
 				F56C8553131F42E9000AD0F6 /* control.h */,
 				F56C8554131F42E9000AD0F6 /* controlbutton.cpp */,
 				F56C8555131F42E9000AD0F6 /* controlcheckmark.cpp */,
+				1830219D13B8E37300770920 /* controledit.cpp */,
 				F56C8556131F42E9000AD0F6 /* controlfadelabel.cpp */,
 				F56C8557131F42E9000AD0F6 /* controlgroup.cpp */,
 				F56C8558131F42E9000AD0F6 /* controlimage.cpp */,
@@ -6709,6 +6712,7 @@
 				DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */,
 				F558F61113AFDC3000631E12 /* ThreadLocal.cpp in Sources */,
 				7C89628013B7031E003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
+				1830219E13B8E37300770920 /* controledit.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
