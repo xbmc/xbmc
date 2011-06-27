@@ -29,4 +29,5 @@ public:
   CGUIDialogMuteBug(void);
   virtual ~CGUIDialogMuteBug(void);
 protected:
+  virtual void UpdateVisibility();
 };
