@@ -419,12 +419,7 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     }
 
     changed |= m_label2.SetMaxRect(posX + m_textOffset, m_posY, maxTextWidth - m_textOffset, m_height);
-    if (text != m_lastRenderedText)
-    {
-      m_label2.SetTextW(text);
-      m_lastRenderedText = text;
-      changed = true;
-    }
+    changed |= m_label2.SetTextW(text);
     changed |= m_label2.SetAlign(align);
     changed |= m_label2.SetColor(GetTextColor());
     changed |= m_label2.Process(currentTime);
