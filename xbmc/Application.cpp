@@ -4949,19 +4949,9 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
 
   // update mute state
   if(!g_settings.m_bMute && hardwareVolume <= VOLUME_MINIMUM)
-  {
     g_settings.m_bMute = true;
-    CGUIDialog *muteBug = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUTE_BUG);
-    if (muteBug && !muteBug->IsDialogRunning())
-      muteBug->Show();
-  }
   else if(g_settings.m_bMute && hardwareVolume > VOLUME_MINIMUM)
-  {
     g_settings.m_bMute = false;
-    CGUIDialog *muteBug = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_MUTE_BUG);
-    if (muteBug && muteBug->IsDialogRunning())
-      muteBug->Close();
-  }
 
   // and tell our player to update the volume
   if (m_pPlayer)
