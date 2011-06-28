@@ -91,7 +91,7 @@ void CBackgroundPicLoader::Process()
   unsigned int count = 0;
   while (!m_bStop)
   { // loop around forever, waiting for the app to call LoadPic
-    if (m_loadPic.WaitMSec(10))
+    if (AbortableWait(m_loadPic,10) == WAIT_SIGNALED)
     {
       if (m_pCallback)
       {
