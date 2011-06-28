@@ -1708,7 +1708,13 @@ set -x
       -DINCLUDE_INSTALL_DIR:PATH="${includedir}"         \
       -DLIB_INSTALL_DIR:PATH="${libdir}"                 \
       -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}"         \
-      -DSHARE_INSTALL_PREFIX:PATH="${datadir}" .
+      -DSHARE_INSTALL_PREFIX:PATH="${datadir}" . &&
+    if test "$host_vendor" = "apple" ; then
+      # cmake has hardcoded paths to macports which bork our darwin depends cross/ppc, remove them
+      sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/link.txt
+      sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/flags.make
+      sed -i "" -e "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
+    fi
 set +x
 fi
 ], [0])
