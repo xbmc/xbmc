@@ -1866,7 +1866,8 @@ float CApplication::GetDimScreenSaverLevel() const
 {
   if (!m_bScreenSave || !m_screenSaver ||
       (m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" &&
-       m_screenSaver->ID() != "screensaver.xbmc.builtin.black"))
+       m_screenSaver->ID() != "screensaver.xbmc.builtin.black" &&
+       m_screenSaver->ID() != "screensaver.xbmc.builtin.slideshow"))
     return 0;
 
   if (!m_screenSaver->GetSetting("level").IsEmpty())
