@@ -1778,7 +1778,15 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
 NPT_Result
 CUPnPRenderer::OnNext(PLT_ActionReference& action)
 {
-    g_application.getApplicationMessenger().PlayListPlayerNext();
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        if (slideshow == NULL) {
+            return NPT_FAILURE;
+        }
+        slideshow->ShowNext();
+    } else {
+        g_application.getApplicationMessenger().PlayListPlayerNext();
+    }
     return NPT_SUCCESS;
 }
 
@@ -1823,7 +1831,15 @@ CUPnPRenderer::OnPlay(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPrevious(PLT_ActionReference& action)
 {
-    g_application.getApplicationMessenger().PlayListPlayerPrevious();
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        if (slideshow == NULL) {
+            return NPT_FAILURE;
+        }
+        slideshow->ShowPrevious();
+    } else {
+        g_application.getApplicationMessenger().PlayListPlayerPrevious();
+    }
     return NPT_SUCCESS;
 }
 
@@ -1833,7 +1849,11 @@ CUPnPRenderer::OnPrevious(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnStop(PLT_ActionReference& action)
 {
-    g_application.getApplicationMessenger().MediaStop();
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        g_windowManager.PreviousWindow();
+    } else {
+        g_application.getApplicationMessenger().MediaStop();
+    }
     return NPT_SUCCESS;
 }
 

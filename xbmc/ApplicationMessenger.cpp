@@ -337,7 +337,7 @@ case TMSG_POWERDOWN:
         g_application.WakeUpScreenSaverAndDPMS();
 
         g_graphicsContext.Lock();
-        pSlideShow->Reset();
+
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
           g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
         if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
@@ -352,6 +352,7 @@ case TMSG_POWERDOWN:
           CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
           if (items.Size() > 0)
           {
+            pSlideShow->Reset();
             for (int i=0;i<items.Size();++i)
             {
               pSlideShow->Add(items[i].get());

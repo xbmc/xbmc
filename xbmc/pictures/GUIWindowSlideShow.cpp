@@ -238,11 +238,9 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
     const CFileItemPtr item = m_slides->Get(i);
     if (item->m_strPath == strPicture)
     {
-      m_iCurrentSlide = i;
-      m_iNextSlide = m_iCurrentSlide + 1;
-      if (m_iNextSlide >= m_slides->Size())
-        m_iNextSlide = 0;
-      m_iDirection    = 1;
+      m_iNextSlide = i;
+      m_iDirection = 1;
+      m_bLoadNextPic = true;
       return ;
     }
   }
