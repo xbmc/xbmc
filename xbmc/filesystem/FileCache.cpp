@@ -244,8 +244,7 @@ void CFileCache::Process()
       m_pCache->EndOfInput();
 
       // The thread event will now also cause the wait of an event to return a false.
-      XbmcThreads::CEventGroup group(&m_seekEvent, getStopEvent(), NULL);
-      if (group.wait() == &m_seekEvent)
+      if (AbortableWait(m_seekEvent) == WAIT_SIGNALED)
       {
         m_pCache->ClearEndOfInput();
         m_seekEvent.Set(); // hack so that later we realize seek is needed

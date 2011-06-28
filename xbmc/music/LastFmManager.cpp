@@ -606,7 +606,7 @@ void CLastFmManager::Process()
 
   while (!m_bStop)
   {
-    m_hWorkerEvent.Wait();
+    AbortableWait(m_hWorkerEvent);
     if (m_bStop)
       break;
     int iNrCachedTracks = m_RadioTrackQueue->size();
