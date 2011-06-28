@@ -1,3 +1,4 @@
+#pragma once
 /*
  *      Copyright (C) 2005-2011 Team XBMC
  *      http://xbmc.org
@@ -22,16 +23,14 @@
 #include <map>
 #include "utils/StdString.h"
 
-static std::map<CStdString, CStdString> deviceMappings;
-static bool parsedMappings;
-
 class CKeymapLoader
 {
   public:
-    CKeymapLoader();
-    void DeviceRemoved(CStdString deviceID);
-    void DeviceAdded(CStdString deviceID);
+    static void DeviceRemoved(const CStdString& deviceID);
+    static void DeviceAdded(const CStdString& deviceID);
+    static CStdString ParseWin32HIDName(const CStdString& deviceLongName);
   private:
-    void ParseDeviceMappings();
-    bool FindMappedDevice(CStdString deviceId, CStdString& keymapName);
+    static void ParseDeviceMappings();
+    static bool FindMappedDevice(const CStdString& deviceId, CStdString& keymapName);
+    static bool parsedMappings;
 };

@@ -32,6 +32,7 @@
 #include "windowing/WindowingFactory.h"
 #include <dbt.h>
 #include "guilib/LocalizeStrings.h"
+#include "input/KeymapLoader.h"
 #include "input/KeyboardStat.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIControl.h"       // for EVENT_RESULT
@@ -653,7 +654,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       {
         PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
         CStdString dbcc_name(b->dbcc_name);
-        dbcc_name = dbcc_name.Mid(dbcc_name.find_last_of('\\')+1, dbcc_name.find_last_of('#') - dbcc_name.find_last_of('\\'));
+        dbcc_name = CKeymapLoader::ParseWin32HIDName(b->dbcc_name);
         switch (wParam)
         {
           case DBT_DEVICEARRIVAL:
