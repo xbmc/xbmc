@@ -20,6 +20,7 @@
 */
 
 #include "spotinterface.h"
+#include "ThumbnailCache.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "music/MusicDatabase.h"
@@ -1832,7 +1833,7 @@ bool SpotifyInterface::addAlbumToLibrary()
       if (albumId != -1 && !cachedThumb.IsEmpty())
       {
         //yes it did, so add the thumb to the database
-        CStdString thumb = CUtil::GetCachedAlbumThumb(albumname,artistname);
+        CStdString thumb = CThumbnailCache::GetAlbumThumb(albumname,artistname);
         CPicture::CacheThumb(cachedThumb,thumb);
         db.SaveAlbumThumb(albumId, thumb);
       }
