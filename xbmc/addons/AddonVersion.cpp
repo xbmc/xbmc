@@ -72,40 +72,37 @@ namespace ADDON
    */
   int AddonVersion::CompareComponent(const char *a, const char *b)
   {
-    while (*a && *b) {
-
-      while (*a && *b && !isdigit(*a) && !isdigit(*b)) {
-        if (*a != *b) {
-          if (*a == '~') return -1;
-          if (*b == '~') return 1;
-          return *a < *b ? -1 : 1;
+    long iA, iB;
+    while (*a || *b)
+    {
+      iA = iB = 0;
+      if (*a)
+      {
+        if (!isdigit(*a))
+          a++;
+        else
+        {
+          char *next;
+          iA = strtol(a, &next, 10);
+          a = next;
         }
-        a++;
-        b++;
       }
-      if (*a && *b && (!isdigit(*a) || !isdigit(*b))) {
-        if (*a == '~') return -1;
-        if (*b == '~') return 1;
-        return isdigit(*a) ? -1 : 1;
+      if (*b)
+      {
+        if (!isdigit(*b))
+          b++;
+        else
+        {
+          char *next;
+          iB = strtol(b, &next, 10);
+          b = next;
+        }
       }
-
-      char *next_a, *next_b;
-      long int num_a = strtol(a, &next_a, 10);
-      long int num_b = strtol(b, &next_b, 10);
-      if (num_a != num_b) {
-        return num_a < num_b ? -1 : 1;
-      }
-      a = next_a;
-      b = next_b;
-
+    
+      if (iA != iB)
+        return iA < iB ? -1 : 1;
     }
-    if (!*a && !*b) {
-      return 0;
-    } else if (*a) {
-      return *a == '~' ? -1 : 1;
-    } else {
-      return *b == '~' ? 1 : -1;
-    }
+    return 0;
   }
 
   bool AddonVersion::operator<(const AddonVersion& other) const
