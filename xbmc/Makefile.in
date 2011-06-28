@@ -1,5 +1,4 @@
-SRCS=../appkey.c \
-     spotinterface.cpp \
+SRCS=spotinterface.cpp \
      Application.cpp \
      ApplicationMessenger.cpp \
      Autorun.cpp \
