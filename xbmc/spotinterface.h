@@ -38,6 +38,7 @@ using namespace spotify;
 #include <stdint.h>
 #include <cstdlib>
 #include <vector>
+#include "../appkey.h"
 #include "utils/StringUtils.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogOK.h"

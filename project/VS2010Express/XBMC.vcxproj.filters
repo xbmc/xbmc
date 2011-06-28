@@ -229,6 +229,9 @@
     <Filter Include="libs\SlingboxLib">
       <UniqueIdentifier>{dfa70c36-927b-4540-b505-35919e64eb3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="spotyxbmc">
+      <UniqueIdentifier>{4e5d8fdd-8f8a-47b0-8c7e-1451bec434e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2465,6 +2468,12 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp">
       <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\paplayer\spotifyCodec.cpp">
+      <Filter>cores\paplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\spotinterface.cpp">
+      <Filter>spotyxbmc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4948,6 +4957,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h">
       <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\paplayer\spotifyCodec.h">
+      <Filter>cores\paplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\spotinterface.h">
+      <Filter>spotyxbmc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\appkey.h">
+      <Filter>spotyxbmc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

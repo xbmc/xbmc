@@ -6,9 +6,9 @@ Spotify is not allowing clients based on despotify to connect to their servers a
 And there is a license conflict between xbmc and spotifylib; therefore the precompiled versions are useless for now. 
 To use spotyxbmc you have to compile it yourself.
 
-
+-----------------------------------------
 BUILD SPOTYXBMC YOURSELF LINUX 32/64
---------------------------------
+-----------------------------------------
 1. Download libSpotify
 
 For 32 bit:
@@ -32,7 +32,7 @@ $ cd xbmc
 
 5. Spotify API key
    Get your own spotify API key from http://developer.spotify.com/en/libspotify/application-key/
-   Click on c-code and copy the content to a new file called appkey.c placed in the xbmc source root folder. (where this readme is located).
+   Click on c-code and copy the content to a new file called appkey.h placed in the xbmc source root folder. (where this readme is located).
 
 6. Install all XBMC dependencies listed in the corresponding readme file.
    For ubuntu run:
@@ -58,7 +58,7 @@ $ gedit ~/.xbmc/userdata/advancedsettings.xml
 Possible settings for the advancedsettings.xml are in full:
 
 <advancedsettings>
-	<spotify>!
+	<spotify>
 		<enable>true</enable>
 		<username>USERNAME</username>
 		<password>SECRETPASSWORD</password>
@@ -80,9 +80,51 @@ With default skin: got to music, press left key to open the menu, select "librar
 
 Done!
 
+---------------------------------------------
+BUILD SPOTYXBMC YOURSELF WINDOWS 32/64
+---------------------------------------------
 
+1. Follow the instructions here: 
+http://wiki.xbmc.org/index.php?title=HOW-TO_compile_XBMC_for_Windows_from_source_code
+
+But instead of the official XBMC repo use this one: 
+git://github.com/akezeke/xbmc.git
+
+2. And before you build:
+Get your own spotify API key from http://developer.spotify.com/en/libspotify/application-key/
+Click on c-code and copy the content to a new file called appkey.h placed in the xbmc source root folder. (where this readme is located).
+
+3. Create a advancedsettings file and save your spotify credentials
+
+Create advancedsettings.xml in "C:\Users\!!YOUR USER!!\AppData\Roaming\XBMC\userdata"
+
+Possible settings for the advancedsettings.xml are in full:
+
+<advancedsettings>
+	<spotify>
+		<enable>true</enable>
+		<username>USERNAME</username>
+		<password>SECRETPASSWORD</password>
+		<cachefolder>/home/YOURUSER/.cache/spotify/</cachefolder>
+                <highbitrate>true</highbitrate>
+		<maxsearchartists>30</maxsearchartists>
+		<maxsearchalbums>30</maxsearchalbums>
+		<maxsearchtracks>150</maxsearchtracks>
+	</spotify>
+</advancedsettings>
+
+4. Start xbmc
+
+5. Enable music library
+With default skin: got to music, press left key to open the menu, select "library mode" and press enter
+
+6. Enjoy spotify music inside xbmc
+
+Done!
+
+---------
 CONTACT
---------------------------------
+---------
 http://github.com/akezeke/xbmc 
 http://forum.xbmc.org/showthread.php?t=67012
 david.erenger@gmail.com
