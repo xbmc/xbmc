@@ -1410,8 +1410,8 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
         share.strName.Format("Loading playlist...");
       }
       CFileItemPtr pItem(new CFileItem(share));
-      CStdString thumb = "DefaultPlaylist.png";
-
+      pItem->SetThumbnailImage("DefaultMusicPlaylists.png");
+ 
       //ask for a thumbnail
       byte image[20];   
       if (sp_playlist_get_image(pl, image)){
@@ -1420,19 +1420,20 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
         requestThumb((unsigned char*)image,no,pItem, PLAYLIST_TRACK);
       }else if ( sp_playlist_num_tracks(pl) > 0){
         sp_track *spTrack = sp_playlist_track(pl,0);
-        if (sp_track_is_loaded(spTrack) && !sp_track_is_local(m_session, spTrack)){
+        if (sp_track_is_loaded(spTrack)){
           sp_album *spAlbum = sp_track_album(spTrack);
-          sp_link *spLink  = sp_link_create_from_album(spAlbum);
-          CStdString Uri = "";
-          char spotify_uri[256];
-          sp_link_as_string (spLink,spotify_uri,256);
-          sp_link_release(spLink);
-          Uri.Format("%s", spotify_uri);
-          CLog::Log( LOGDEBUG, "Spotifylog: playlist thumb from album:%s", Uri.c_str());
-          requestThumb((unsigned char*)sp_album_cover(spAlbum),Uri, pItem, PLAYLIST_TRACK);
+          if (spAlbum != 0){
+            sp_link *spLink  = sp_link_create_from_album(spAlbum);
+            CStdString Uri = "";
+            char spotify_uri[256];
+            sp_link_as_string (spLink,spotify_uri,256);
+            sp_link_release(spLink);
+            Uri.Format("%s", spotify_uri);
+            CLog::Log( LOGDEBUG, "Spotifylog: playlist thumb from album:%s", Uri.c_str());
+            requestThumb((unsigned char*)sp_album_cover(spAlbum),Uri, pItem, PLAYLIST_TRACK);
+          }
         }
-      }else
-        pItem->SetThumbnailImage("DefaultMusicPlaylists.png");
+      }
       m_playlistItems.Add(pItem);
     }
   m_isPlaylistsLoaded = true;
@@ -1713,13 +1714,13 @@ CFileItemPtr SpotifyInterface::spTrackToItem(sp_track *spTrack, SPOTIFY_TYPE typ
   Uri.Format("%s", spotify_uri);
   path.Format("%s.spotify", Uri);
 
-   CSong song;
-   song.strTitle = sp_track_name(spTrack);
-   if (!sp_track_is_available(m_session, spTrack))
- {
-   song.strTitle.Format("NOT PLAYABLE, %s", sp_track_name(spTrack));
-   path.Format("unplayable%s.unplayable", Uri);
- }
+  CSong song;
+  song.strTitle = sp_track_name(spTrack);
+  if (!sp_track_is_available(m_session, spTrack))
+  {
+    song.strTitle.Format("NOT AVAILABLE, %s", sp_track_name(spTrack));
+    path.Format("unplayable%s.unplayable", Uri);
+  }
   song.strFileName = path.c_str();
 
   song.iDuration = 0.001 * sp_track_duration(spTrack);
