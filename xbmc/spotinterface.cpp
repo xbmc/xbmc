@@ -125,32 +125,36 @@ void SpotifyInterface::cb_imageLoaded(sp_image *image, void *userdata)
   CLog::Log( LOGDEBUG, "Spotifylog: fetching thumb"); 
     try{
       CFileItem *item = (CFileItem*)userdata;
-      CStdString fileName;
-      fileName.Format("%s", item->GetExtraInfo());    
-      CFile file;
+      if (item != 0){
+        spInt->m_noWaitingThumbs--;  
+        
+        CStdString fileName;
+        fileName.Format("%s", item->GetExtraInfo());    
+        CFile file;
 
-      //if there is a wierd name, something is wrong, or do we allready have the image, return
-      if (XFILE::CFile::Exists(fileName)) 
-      {
-        item->SetThumbnailImage(fileName);
-      }
-      else if (fileName.Left(10) == "special://" && file.OpenForWrite(fileName,true))
-      {
-        const void *buf;
-        size_t len, written;
-
-        buf = sp_image_data(image, &len);
-        written = file.Write(buf, len);
-        if (written != len)
-        {
-          CLog::Log( LOGERROR, "Spotifylog: error creating thumb %s", fileName.c_str());
-          file.Close();
-          file.Delete(fileName);
-        }
-        else
+        //if there is a wierd name, something is wrong, or do we allready have the image, return
+        if (XFILE::CFile::Exists(fileName)) 
         {
           item->SetThumbnailImage(fileName);
-          file.Close();
+        }
+        else if (fileName.Left(10) == "special://" && file.OpenForWrite(fileName,true))
+        {
+          const void *buf;
+          size_t len, written;
+
+          buf = sp_image_data(image, &len);
+          written = file.Write(buf, len);
+          if (written != len)
+          {
+            CLog::Log( LOGERROR, "Spotifylog: error creating thumb %s", fileName.c_str());
+            file.Close();
+            file.Delete(fileName);
+          }
+          else
+          {
+            item->SetThumbnailImage(fileName);
+            file.Close();
+          }
         }
       }
     }catch(...)
@@ -1397,6 +1401,10 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
 
     for (int i=0; i < sp_playlistcontainer_num_playlists(pc); i++)
     {
+      sp_playlist_type spType = sp_playlistcontainer_playlist_type(pc, i);
+      if (spType != SP_PLAYLIST_TYPE_PLAYLIST)
+        continue;
+      
       sp_playlist* pl = sp_playlistcontainer_playlist(pc, i);
       sp_playlist_add_callbacks(pl,&m_plCallbacks,0);
       if (sp_playlist_is_loaded(pl))
