@@ -332,7 +332,7 @@ void CGUITextBox::SetAutoScrolling(const TiXmlNode *node)
       m_autoScrollCondition = g_infoManager.TranslateString(scroll->FirstChild()->ValueStr());
     int repeatTime;
     if (scroll->Attribute("repeat", &repeatTime))
-      m_autoScrollRepeatAnim = CAnimation::CreateFader(100, 0, repeatTime, 1000);
+      m_autoScrollRepeatAnim = new CAnimation(CAnimation::CreateFader(100, 0, repeatTime, 1000));
   }
 }
 

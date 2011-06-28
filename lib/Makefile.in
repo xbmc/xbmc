@@ -73,9 +73,16 @@ $(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.dyli
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
 		$(WRAPPER) ffmpeg/libavformat/*.o $(BUNDLE1_O)
 
+ifeq ($(findstring x86,$(ARCH_DIR)), x86)
+$(SYSDIR)/avfilter-1-$(ARCH).so: $(WRAPPER) ffmpeg/libavfilter/libavfilter.dylib
+	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+		$(WRAPPER) ffmpeg/libavfilter/$(ARCH_DIR)/*.o \
+		ffmpeg/libavfilter/*.o $(BUNDLE1_O)
+else # No libavfilter/ppc or libavfilter/arm
 $(SYSDIR)/avfilter-1-$(ARCH).so: $(WRAPPER) ffmpeg/libavfilter/libavfilter.dylib
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
 		$(WRAPPER) ffmpeg/libavfilter/*.o $(BUNDLE1_O)
+endif
 
 ifneq ($(findstring arm,$(ARCH)), arm)
 $(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.dylib

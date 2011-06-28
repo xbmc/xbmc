@@ -25,6 +25,7 @@
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
+#include "threads/Condition.h"
 
 class CFileItem;
 class CFileItemList;
@@ -65,8 +66,6 @@ namespace ADDON
 #include "network/WebServer.h"
 #endif
 
-#include "threads/XBMC_mutex.h"
-
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
 class DPMSSupport;
@@ -91,7 +90,7 @@ public:
   virtual bool Initialize();
   virtual void FrameMove();
   virtual void Render();
-  virtual void RenderNoPresent();
+  virtual bool RenderNoPresent();
   virtual void Preflight();
   virtual bool Create();
   virtual bool Cleanup();
@@ -168,6 +167,7 @@ public:
   int GetVolume() const;
   void SetVolume(int iPercent);
   void Mute(void);
+  void ShowVolumeBar(const CAction *action = NULL);
   int GetPlaySpeed() const;
   int GetSubtitleDelay() const;
   int GetAudioDelay() const;
@@ -288,8 +288,9 @@ public:
 
   void Minimize();
   bool ToggleDPMS(bool manual);
+
+  float GetDimScreenSaverLevel() const;
 protected:
-  void RenderScreenSaver();
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
@@ -340,6 +341,8 @@ protected:
   int m_nextPlaylistItem;
 
   bool m_bPresentFrame;
+  unsigned int m_lastFrameTime;
+  unsigned int m_lastRenderTime;
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
@@ -348,8 +351,8 @@ protected:
   
 #if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   int        m_frameCount;
-  SDL_mutex* m_frameMutex;
-  SDL_cond*  m_frameCond;
+  CCriticalSection m_frameMutex;
+  XbmcThreads::ConditionVariable  m_frameCond;
 #endif
 
   void SetHardwareVolume(long hardwareVolume);

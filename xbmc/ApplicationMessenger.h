@@ -25,6 +25,7 @@
 #include "utils/StdString.h"
 #include "guilib/Key.h"
 #include "threads/Thread.h"
+#include "threads/Event.h"
 
 #include <queue>
 
@@ -90,6 +91,8 @@ class CGUIDialog;
 
 #define TMSG_CALLBACK             800
 
+#define TMSG_VOLUME_SHOW          900
+
 typedef struct
 {
   DWORD dwMessage;
@@ -97,7 +100,7 @@ typedef struct
   DWORD dwParam2;
   CStdString strParam;
   std::vector<CStdString> params;
-  HANDLE hWaitEvent;
+  CEvent* hWaitEvent;
   LPVOID lpVoid;
 }
 ThreadMessage;
@@ -187,6 +190,8 @@ public:
 
   void OpticalMount(CStdString device, bool bautorun=false);
   void OpticalUnMount(CStdString device);
+
+  void ShowVolumeBar(bool up);
 
 private:
   void ProcessMessage(ThreadMessage *pMsg);

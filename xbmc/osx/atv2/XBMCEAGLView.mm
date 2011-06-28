@@ -240,8 +240,8 @@
 - (void) runAnimation:(id) arg
 {
   CCocoaAutoPool outerpool;
-
-  //[NSThread setThreadPriority:1]
+  [NSThread setThreadPriority:1.0];
+/*
   // Changing to SCHED_RR is safe under OSX, you don't need elevated privileges and the
   // OSX scheduler will monitor SCHED_RR threads and drop to SCHED_OTHER if it detects
   // the thread running away. OSX automatically does this with the CoreAudio audio
@@ -261,7 +261,7 @@
   // change from default SCHED_OTHER to SCHED_RR
   policy = SCHED_RR;
   result = pthread_setschedparam(pthread_self(), policy, &param );
-
+*/
   // signal we are alive
   NSConditionLock* myLock = arg;
   [myLock lock];

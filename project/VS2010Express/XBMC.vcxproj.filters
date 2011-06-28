@@ -255,9 +255,6 @@
     <ClCompile Include="..\..\xbmc\win32\XBMC_PC.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\XCriticalSection.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DummyVideoPlayer.cpp">
       <Filter>cores</Filter>
     </ClCompile>
@@ -1841,22 +1838,10 @@
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp">
       <Filter>threads</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\CriticalSection.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\Event.cpp">
       <Filter>threads</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\Mutex.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\SharedSection.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\SingleLock.cpp">
       <Filter>threads</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp">
@@ -2108,6 +2093,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlcheckmark.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controledit.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlfadelabel.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
@@ -2235,6 +2223,9 @@
       <Filter>windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowScreensaver.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowScreensaverDim.cpp">
       <Filter>windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowStartup.cpp">
@@ -2472,6 +2463,9 @@
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -2493,9 +2487,6 @@
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\WINSMBDirectory.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\XCriticalSection.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h">
@@ -4336,9 +4327,6 @@
     <ClInclude Include="..\..\xbmc\threads\LockFree.h">
       <Filter>threads</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\Mutex.h">
-      <Filter>threads</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\SharedSection.h">
       <Filter>threads</Filter>
     </ClInclude>
@@ -4702,6 +4690,9 @@
     <ClInclude Include="..\..\xbmc\windows\GUIWindowScreensaver.h">
       <Filter>windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowScreensaverDim.h">
+      <Filter>windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowStartup.h">
       <Filter>windows</Filter>
     </ClInclude>
@@ -4951,6 +4942,12 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h">
       <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\Condition.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h">
+      <Filter>threads</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

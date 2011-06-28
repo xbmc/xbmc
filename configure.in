@@ -532,6 +532,7 @@ AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have
 # Checks for boost headers using CXX instead of CC
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([boost/thread.hpp],, AC_MSG_ERROR($missing_library))
 AC_LANG_POP([C++])
 
 # Checks for platforms libraries.
@@ -606,6 +607,7 @@ AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitab
 AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
 AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([boost_thread],[main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -853,7 +855,7 @@ fi
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
-  FFMPEG_LIBNAMES="libavcodec libavformat libavutil libpostproc libswscale"
+  FFMPEG_LIBNAMES="libavcodec libavfilter libavformat libavutil libpostproc libswscale"
 
   # libavcore is optional
   PKG_CHECK_EXISTS([libavcore], FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libavcore")
@@ -874,12 +876,12 @@ if test "$use_external_ffmpeg" = "yes"; then
   CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 
   # Possible places the ffmpeg headers may be
-  AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
-  [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
+  AC_CHECK_HEADERS([libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
+  [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avfilter.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
   [AC_MSG_ERROR($missing_headers)])])
 
   # optional
-  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h libavutil/samplefmt.h])
+  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h libavutil/mem.h libavutil/samplefmt.h])
 
   # old FFmpeg have this in libavcodec/opt.h instead:
   AC_CHECK_HEADERS([libavutil/opt.h])
@@ -1703,11 +1705,22 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
 if test "$use_gl" = "no"; then :; else
 set -x
-    rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
-      -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}" -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
-      -DCMAKE_INSTALL_PREFIX="${prefix}" -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}" \
-      -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${libdir}" \
-      -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}" -DSHARE_INSTALL_PREFIX:PATH="${datadir}" .
+    rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake    \
+      -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF        \
+      -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}"     \
+      -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
+      -DCMAKE_INSTALL_PREFIX="${prefix}"                 \
+      -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}"            \
+      -DINCLUDE_INSTALL_DIR:PATH="${includedir}"         \
+      -DLIB_INSTALL_DIR:PATH="${libdir}"                 \
+      -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}"         \
+      -DSHARE_INSTALL_PREFIX:PATH="${datadir}" . &&
+    if test "$host_vendor" = "apple" ; then
+      # cmake has hardcoded paths to macports which bork our darwin depends cross/ppc, remove them
+      sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/link.txt
+      sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/flags.make
+      sed -i "" -e "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
+    fi
 set +x
 fi
 ], [0])

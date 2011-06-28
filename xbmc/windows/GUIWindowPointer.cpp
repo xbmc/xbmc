@@ -31,7 +31,7 @@ CGUIWindowPointer::CGUIWindowPointer(void)
   m_loadOnDemand = false;
   m_needsScaling = false;
   m_active = false;
-  m_renderOrder = INT_MAX;
+  m_renderOrder = INT_MAX - 1;
 }
 
 CGUIWindowPointer::~CGUIWindowPointer(void)
@@ -72,7 +72,7 @@ void CGUIWindowPointer::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
   DynamicResourceAlloc(false);
   m_pointer = 0;
-  m_renderOrder = INT_MAX;
+  m_renderOrder = INT_MAX - 1;
 }
 
 void CGUIWindowPointer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)

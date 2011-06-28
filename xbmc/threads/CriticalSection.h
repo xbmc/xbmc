@@ -1,24 +1,5 @@
-//////////////////////////////////////////////////////////////////////
-//
-// CriticalSection.h: interface for the CCriticalSection class.
-//
-//////////////////////////////////////////////////////////////////////
-#ifndef _CRITICAL_SECTION_H_
-#define _CRITICAL_SECTION_H_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-#ifdef _LINUX
-#include "PlatformDefs.h"
-#include "linux/XSyncUtils.h"
-#include "XCriticalSection.h"
-#else
-#include "win32/XCriticalSection.h"
-#endif
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -38,37 +19,87 @@
  *
  */
 
-class CCriticalSection
+#pragma once
+
+#include <boost/thread/recursive_mutex.hpp>
+
+namespace XbmcThreads
 {
-public:
-  // Constructor/destructor.
-  CCriticalSection();
-  virtual ~CCriticalSection();
+  /**
+   * This template will take any implementation of the "Lockable" concept
+   * and allow it to be used as an "Exitable Lockable."
+   *
+   * Something that implements the "Lockable concept" simply means that 
+   * it has the three methods:
+   *
+   *   lock();
+   *   try_lock();
+   *   unlock();
+   *
+   * "Exitable" specifially means that, no matter how deep the recursion
+   * on the mutex/critical section, we can exit from it and then restore
+   * the state.
+   *
+   * This requires us to extend the Lockable so that we can keep track of the
+   * number of locks that have been recursively acquired so that we can
+   * undo it, and then restore that (See class CSingleExit).
+   *
+   * All xbmc code expects Lockables to be recursive.
+   */
+  template<class L> class CountingLockable
+  {
+  protected:
+    L mutex;
+    unsigned int count;
 
-  XCriticalSection& getCriticalSection() { return m_criticalSection; }
+  public:
+    inline CountingLockable() : count(0) {}
 
-private:
-  XCriticalSection m_criticalSection;
+    // boost::thread Lockable concept
+    inline void lock() { mutex.lock(); count++; }
+    inline bool try_lock() { return mutex.try_lock() ? count++, true : false; }
+    inline void unlock() { count--; mutex.unlock(); }
 
-  //don't allow copying a CCriticalSection
-  CCriticalSection(const CCriticalSection& section) {}
-  CCriticalSection& operator=(const CCriticalSection& section) {return *this;}
-};
+    /**
+     * This implements the "exitable" behavior mentioned above.
+     */
+    inline unsigned int exit() 
+    { 
+      // it's possibe we don't actually own the lock
+      // so we will try it.
+      unsigned int ret = 0;
+      if (try_lock())
+      {
+        ret = count - 1;  // The -1 is because we don't want 
+        //  to count the try_lock increment.
+        while (count > 0) // This will also unlock the try_lock.
+          unlock();
+      }
 
-// The CCritical section overloads.
-void InitializeCriticalSection(CCriticalSection* section);
-void DeleteCriticalSection(CCriticalSection* section);
-BOOL OwningCriticalSection(CCriticalSection* section);
-DWORD ExitCriticalSection(CCriticalSection* section);
-void RestoreCriticalSection(CCriticalSection* section, DWORD count);
-void EnterCriticalSection(CCriticalSection* section);
-void LeaveCriticalSection(CCriticalSection* section);
+      return ret; 
+    }
 
-// And a few special ones.
-void EnterCriticalSection(CCriticalSection& section);
-void LeaveCriticalSection(CCriticalSection& section);
-BOOL OwningCriticalSection(CCriticalSection& section);
-DWORD ExitCriticalSection(CCriticalSection& section);
-void RestoreCriticalSection(CCriticalSection& section, DWORD count);
+    /**
+     * Restore a previous exit to the provided level.
+     */
+    inline void restore(unsigned int restoreCount)
+    {
+      for (unsigned int i = 0; i < restoreCount; i++) 
+        lock();
+    }
 
-#endif
+    inline unsigned int getCount() { return count; }
+
+    inline L& getLockable() { return mutex; }
+  };
+}
+
+/**
+ * A CCriticalSection is a CountingLockable whose implementation is a boost
+ *  recursive_mutex.
+ *
+ * This is not a typedef because of a number of "class CCriticalSection;" 
+ *  forward declarations in the code that break when it's done that way.
+ */
+class CCriticalSection : public XbmcThreads::CountingLockable<boost::recursive_mutex> {};
+

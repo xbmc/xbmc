@@ -199,19 +199,17 @@ void CEventClient::ProcessEvents()
 
 bool CEventClient::GetNextAction(CEventAction &action)
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
   if (m_actionQueue.size() > 0)
   {
     // grab the next action in line
     action = m_actionQueue.front();
     m_actionQueue.pop();
-    LeaveCriticalSection(&m_critSection);
     return true;
   }
   else
   {
     // we got nothing
-    LeaveCriticalSection(&m_critSection);
     return false;
   }
 }
@@ -650,9 +648,10 @@ bool CEventClient::OnPacketACTION(CEventPacket *packet)
   {
   case AT_EXEC_BUILTIN:
   case AT_BUTTON:
-    EnterCriticalSection(&m_critSection);
-    m_actionQueue.push(CEventAction(actionString.c_str(), actionType));
-    LeaveCriticalSection(&m_critSection);
+    {
+      CSingleLock lock(m_critSection);
+      m_actionQueue.push(CEventAction(actionString.c_str(), actionType));
+    }
     break;
 
   default:

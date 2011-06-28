@@ -29,6 +29,9 @@
 #include <vector>
 #include "threads/CriticalSection.h"
 #include "addons/IAddon.h"
+#include "PlatformDefs.h"
+
+#include "threads/Event.h"
 
 class CURL;
 class CFileItemList;
@@ -71,7 +74,7 @@ private:
 
   CFileItemList* m_listItems;
   CFileItem*     m_fileResult;
-  HANDLE         m_fetchComplete;
+  CEvent         m_fetchComplete;
 
   bool          m_cancelled;    // set to true when we are cancelled
   bool          m_success;      // set by script in EndOfDirectory

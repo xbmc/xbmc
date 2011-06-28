@@ -343,9 +343,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& 
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
-    int nCount = ExitCriticalSection(g_graphicsContext);
+    CSingleExit leaveIt(g_graphicsContext);
     g_application.getApplicationMessenger().ActivateWindow(iWindowID, params, swappingWindows);
-    RestoreCriticalSection(g_graphicsContext, nCount);
   }
   else
     ActivateWindow_Internal(iWindowID, params, swappingWindows);
@@ -515,9 +514,9 @@ void CGUIWindowManager::Process(unsigned int currentTime)
     m_tracker.MarkDirtyRegion(*itr);
 }
 
-void CGUIWindowManager::MarkDirty(const CDirtyRegion &rect)
+void CGUIWindowManager::MarkDirty()
 {
-  m_tracker.MarkDirtyRegion(rect);
+  m_tracker.MarkDirtyRegion(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
 }
 
 void CGUIWindowManager::RenderPass()
@@ -540,16 +539,20 @@ void CGUIWindowManager::RenderPass()
   }
 }
 
-void CGUIWindowManager::Render()
+bool CGUIWindowManager::Render()
 {
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
 
   CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
 
+  bool hasRendered = false;
   // If we visualize the regions we will always render the entire viewport
   if (g_advancedSettings.m_guiVisualizeDirtyRegions || g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_NONE)
+  {
     RenderPass();
+    hasRendered = true;
+  }
   else
   {
     for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
@@ -559,6 +562,7 @@ void CGUIWindowManager::Render()
 
       g_graphicsContext.SetScissors(*i);
       RenderPass();
+      hasRendered = true;
     }
     g_graphicsContext.ResetScissors();
   }
@@ -574,6 +578,8 @@ void CGUIWindowManager::Render()
   }
 
   m_tracker.CleanMarkedRegions();
+
+  return hasRendered;
 }
 
 void CGUIWindowManager::FrameMove()

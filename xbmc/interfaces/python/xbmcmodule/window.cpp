@@ -29,6 +29,7 @@
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUICheckMarkControl.h"
 #include "guilib/GUIRadioButtonControl.h"
+#include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "Application.h"
@@ -38,12 +39,6 @@ using namespace std;
 
 #define ACTIVE_WINDOW g_windowManager.GetActiveWindow()
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 /**
  * A CSingleLock that will relinquish the GIL during the time
@@ -268,6 +263,21 @@ namespace PYXBMC
       ((ControlRadioButton*)pControl)->shadowColor   = li.shadowColor;
       if (li.font) ((ControlRadioButton*)pControl)->strFont = li.font->GetFontName();
       ((ControlRadioButton*)pControl)->align = li.align;
+      break;
+    case CGUIControl::GUICONTROL_EDIT:
+      pControl = (Control*)ControlEdit_Type.tp_alloc(&ControlEdit_Type, 0);
+      new(&((ControlEdit*)pControl)->strFont) string();
+      new(&((ControlEdit*)pControl)->strText) string();
+      new(&((ControlEdit*)pControl)->strTextureFocus) string();
+      new(&((ControlEdit*)pControl)->strTextureNoFocus) string();
+
+      li = ((CGUIEditControl *)pGUIControl)->GetLabelInfo();
+
+      // note: conversion from infocolors -> plain colors here
+      ((ControlEdit*)pControl)->disabledColor = li.disabledColor;
+      ((ControlEdit*)pControl)->textColor  = li.textColor;
+      if (li.font) ((ControlEdit*)pControl)->strFont = li.font->GetFontName();
+      ((ControlButton*)pControl)->align = li.align;
       break;
     default:
       break;
@@ -619,6 +629,8 @@ namespace PYXBMC
     else if (ControlRadioButton_Check(pControl))
       ControlRadioButton_Create((ControlRadioButton*)pControl);
 
+    else if (ControlEdit_Check(pControl))
+      ControlEdit_Create((ControlEdit*)pControl);
     //unknown control type to add, should not happen
     else
     {
@@ -1044,12 +1056,6 @@ namespace PYXBMC
     "and resets (not delete) all controls that are associated with this window.");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
   PyTypeObject Window_Type;
 

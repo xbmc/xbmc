@@ -650,22 +650,28 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
       }
       break;
     case WM_DEVICECHANGE:
-      PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
-      CStdString dbcc_name(b->dbcc_name);
-      dbcc_name = dbcc_name.Mid(dbcc_name.find_last_of('\\')+1, dbcc_name.find_last_of('#') - dbcc_name.find_last_of('\\'));
-      switch (wParam)
       {
-        case DBT_DEVICEARRIVAL:
-          CKeymapLoader().DeviceAdded(dbcc_name);
-          break;
-        case DBT_DEVICEREMOVECOMPLETE:
-          CKeymapLoader().DeviceRemoved(dbcc_name);
-          break;
-        case DBT_DEVNODES_CHANGED:
-          //CLog::Log(LOGDEBUG, "HID Device Changed");
-          //We generally don't care about Change notifications, only need to know if a device is removed or added to rescan the device list
-          break;
+        PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
+        CStdString dbcc_name(b->dbcc_name);
+        dbcc_name = dbcc_name.Mid(dbcc_name.find_last_of('\\')+1, dbcc_name.find_last_of('#') - dbcc_name.find_last_of('\\'));
+        switch (wParam)
+        {
+          case DBT_DEVICEARRIVAL:
+            CKeymapLoader().DeviceAdded(dbcc_name);
+            break;
+          case DBT_DEVICEREMOVECOMPLETE:
+            CKeymapLoader().DeviceRemoved(dbcc_name);
+            break;
+          case DBT_DEVNODES_CHANGED:
+            //CLog::Log(LOGDEBUG, "HID Device Changed");
+            //We generally don't care about Change notifications, only need to know if a device is removed or added to rescan the device list
+            break;
+        }
+        break;
       }
+    case WM_PAINT:
+      //some other app has painted over our window, mark everything as dirty
+      g_windowManager.MarkDirty();
       break;
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));

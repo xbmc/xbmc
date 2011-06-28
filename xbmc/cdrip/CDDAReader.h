@@ -30,6 +30,7 @@
 
 #include "FileItem.h"
 #include "filesystem/File.h"
+#include "threads/Event.h"
 
 struct RipBuffer
 {
@@ -57,8 +58,8 @@ protected:
   RipBuffer m_sRipBuffer[2]; // hold space for 2 buffers
   int m_iCurrentBuffer;   // 0 or 1
 
-  HANDLE m_hReadEvent;       // data is fetched
-  HANDLE m_hDataReadyEvent;  // data is ready to be fetched
+  CEvent m_hReadEvent;       // data is fetched
+  CEvent m_hDataReadyEvent;  // data is ready to be fetched
 
   bool m_iInitialized;
 

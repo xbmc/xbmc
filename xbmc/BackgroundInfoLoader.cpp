@@ -116,7 +116,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   if (items.Size() == 0)
     return;
 
-  EnterCriticalSection(m_lock);
+  CSingleLock lock(m_lock);
 
   for (int nItem=0; nItem < items.Size(); nItem++)
     m_vecItems.push_back(items[nItem]);
@@ -144,7 +144,6 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
     m_workers.push_back(pThread);
   }
 
-  LeaveCriticalSection(m_lock);
 }
 
 void CBackgroundInfoLoader::StopAsync()

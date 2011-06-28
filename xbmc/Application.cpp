@@ -177,6 +177,7 @@
 #include "windows/GUIWindowPointer.h"
 #include "windows/GUIWindowSystemInfo.h"
 #include "windows/GUIWindowScreensaver.h"
+#include "windows/GUIWindowScreensaverDim.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "windows/GUIWindowStartup.h"
 #include "video/windows/GUIWindowFullScreen.h"
@@ -298,6 +299,8 @@ using namespace JSONRPC;
 #endif
 using namespace ANNOUNCEMENT;
 
+using namespace XbmcThreads;
+
 // uncomment this if you want to use release libs in the debug build.
 // Atm this saves you 7 mb of memory
 #define USE_RELEASE_LIBS
@@ -334,11 +337,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 #endif
   m_currentStack = new CFileItemList;
 
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   m_frameCount = 0;
-  m_frameMutex = SDL_CreateMutex();
-  m_frameCond = SDL_CreateCond();
-#endif
 
   m_bPresentFrame = false;
   m_bPlatformDirectories = true;
@@ -356,13 +355,6 @@ CApplication::~CApplication(void)
   delete m_pKaraokeMgr;
 #endif
 
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
-  if (m_frameMutex)
-    SDL_DestroyMutex(m_frameMutex);
-
-  if (m_frameCond)
-    SDL_DestroyCond(m_frameCond);
-#endif
   delete m_dpms;
 }
 
@@ -745,6 +737,9 @@ bool CApplication::Create()
 
   g_mediaManager.Initialize();
 
+  m_lastFrameTime = CTimeUtils::GetTimeMS();
+  m_lastRenderTime = m_lastFrameTime;
+
   return Initialize();
 }
 
@@ -1063,6 +1058,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   g_windowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
   g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
+  g_windowManager.Add(new CGUIWindowScreensaverDim);            // window id = 97  
   g_windowManager.Add(new CGUIWindowDebugInfo);            // window id = 98
   g_windowManager.Add(new CGUIWindowPointer);            // window id = 99
   g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
@@ -1824,7 +1820,7 @@ bool CApplication::LoadUserWindows()
   return true;
 }
 
-void CApplication::RenderNoPresent()
+bool CApplication::RenderNoPresent()
 {
   MEASURE_FUNCTION;
 
@@ -1852,7 +1848,7 @@ void CApplication::RenderNoPresent()
 
   }
 
-  g_windowManager.Render();
+  bool hasRendered = g_windowManager.Render();
 
   // if we're recording an audio stream then show blinking REC
   if (!g_graphicsContext.IsFullScreenVideo())
@@ -1872,73 +1868,36 @@ void CApplication::RenderNoPresent()
     }
   }
 
-  // reset image scaling and effect states
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
-
-  RenderScreenSaver();
-
   g_graphicsContext.Unlock();
+
+  return hasRendered;
 }
 
-static int screenSaverFadeAmount = 0;
-
-void CApplication::RenderScreenSaver()
+float CApplication::GetDimScreenSaverLevel() const
 {
-  if (!m_screenSaver)
-    return;
+  if (!m_bScreenSave || !m_screenSaver ||
+      (m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" &&
+       m_screenSaver->ID() != "screensaver.xbmc.builtin.black"))
+    return 0;
 
-  if (m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" &&
-      m_screenSaver->ID() != "screensaver.xbmc.builtin.black" &&
-      m_screenSaver->ID() != "screensaver.xbmc.builtin.slideshow")
-    return; // nothing to do
-
-  float amount = 1.0f;
   if (!m_screenSaver->GetSetting("level").IsEmpty())
-    amount = 1.0f - 0.01f * (float)atof(m_screenSaver->GetSetting("level"));
-
-  // special case for dim screensaver
-  bool draw = false;
-  if (amount > 0.f)
-  {
-    if (m_bScreenSave)
-    {
-      draw = true;
-      if (screenSaverFadeAmount < 100)
-      {
-        screenSaverFadeAmount = std::min(100, screenSaverFadeAmount + 2);  // around a second to fade
-      }
-    }
-    else
-    {
-      if (screenSaverFadeAmount > 0)
-      {
-        draw = true;
-        screenSaverFadeAmount = std::max(0, screenSaverFadeAmount - 4);  // around a half second to unfade
-      }
-    }
-  }
-  if (draw)
-  {
-    color_t color = ((color_t)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-    CRect rect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
-    g_windowManager.MarkDirty(rect);
-    CGUITexture::DrawQuad(rect, color);
-  }
+    return 100.0f - (float)atof(m_screenSaver->GetSetting("level"));
+  return 100.0f;
 }
 
 bool CApplication::WaitFrame(unsigned int timeout)
 {
   bool done = false;
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
+
   // Wait for all other frames to be presented
-  SDL_mutexP(m_frameMutex);
+  CSingleLock lock(m_frameMutex);
   //wait until event is set, but modify remaining time
   DWORD dwStartTime = CTimeUtils::GetTimeMS();
   DWORD dwRemainingTime = timeout;
   while(m_frameCount > 0)
   {
-    int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, dwRemainingTime);
-    if (result == 0)
+    ConditionVariable::TimedWaitResponse result = m_frameCond.wait(lock, dwRemainingTime);
+    if (result == ConditionVariable::TW_OK)
     {
       //fix time to wait because of spurious wakeups
       DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
@@ -1950,31 +1909,29 @@ bool CApplication::WaitFrame(unsigned int timeout)
       else
       {
         //ran out of time
-        result = SDL_MUTEX_TIMEDOUT;
+        result = ConditionVariable::TW_TIMEDOUT;
       }
     }
 
-    if(result == SDL_MUTEX_TIMEDOUT)
+    if(result == ConditionVariable::TW_TIMEDOUT)
       break;
     if(result < 0)
       CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
   }
   done = m_frameCount == 0;
-  SDL_mutexV(m_frameMutex);
-#endif
+
   return done;
 }
 
 void CApplication::NewFrame()
 {
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   // We just posted another frame. Keep track and notify.
-  SDL_mutexP(m_frameMutex);
-  m_frameCount++;
-  SDL_mutexV(m_frameMutex);
+  {
+    CSingleLock lock(m_frameMutex);
+    m_frameCount++;
+  }
 
-  SDL_CondBroadcast(m_frameCond);
-#endif
+  m_frameCond.notifyAll();
 }
 
 void CApplication::Render()
@@ -1992,25 +1949,23 @@ void CApplication::Render()
 
   MEASURE_FUNCTION;
 
-  bool decrement = false;
+  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
 
-  { // frame rate limiter (really bad, but it does the trick :p)
-    static unsigned int lastFrameTime = 0;
-    unsigned int currentTime = CTimeUtils::GetTimeMS();
-    int nDelayTime = 0;
-    // Less fps in DPMS or Black screensaver
-    bool lowfps = (m_dpmsIsActive
-                   || (m_bScreenSave && m_screenSaver && (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
-                       && (screenSaverFadeAmount >= 100)));
+  bool decrement = false;
+  bool hasRendered = false;
+  bool limitFrames = false;
+  unsigned int singleFrameTime = 10; // default limit 100 fps
+
+  {
+    // Less fps in DPMS
+    bool lowfps = m_dpmsIsActive;
     // Whether externalplayer is playing and we're unfocused
     bool extPlayerActive = m_eCurrentPlayer >= EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
-    unsigned int singleFrameTime = 10; // default limit 100 fps
 
     m_bPresentFrame = false;
     if (!extPlayerActive && g_graphicsContext.IsFullScreenVideo() && !IsPaused())
     {
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
-      SDL_mutexP(m_frameMutex);
+      CSingleLock lock(m_frameMutex);
 
       //wait until event is set, but modify remaining time
       DWORD dwStartTime = CTimeUtils::GetTimeMS();
@@ -2018,8 +1973,8 @@ void CApplication::Render()
       // If we have frames or if we get notified of one, consume it.
       while(m_frameCount == 0)
       {
-        int result = SDL_CondWaitTimeout(m_frameCond, m_frameMutex, dwRemainingTime);
-        if (result == 0)
+        ConditionVariable::TimedWaitResponse result = m_frameCond.wait(lock, dwRemainingTime);
+        if (result == ConditionVariable::TW_OK)
         {
           //fix time to wait because of spurious wakeups
           DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
@@ -2031,33 +1986,29 @@ void CApplication::Render()
           else
           {
             //ran out of time
-            result = SDL_MUTEX_TIMEDOUT;
+            result = ConditionVariable::TW_TIMEDOUT;
           }
         }
 
-        if(result == SDL_MUTEX_TIMEDOUT)
+        if(result == ConditionVariable::TW_TIMEDOUT)
           break;
         if(result < 0)
           CLog::Log(LOGWARNING, "CApplication::Render - error from conditional wait");
       }
 
       m_bPresentFrame = m_frameCount > 0;
-      SDL_mutexV(m_frameMutex);
-#else
-      m_bPresentFrame = true;
-#endif
       decrement = m_bPresentFrame;
+      hasRendered = true;
     }
     else
     {
       // engage the frame limiter as needed
-      bool limitFrames = lowfps || extPlayerActive;
+      limitFrames = lowfps || extPlayerActive;
       // DXMERGE - we checked for g_videoConfig.GetVSyncMode() before this
       //           perhaps allowing it to be set differently than the UI option??
-      if (g_guiSettings.GetInt("videoscreen.vsync") == VSYNC_DISABLED ||
-          g_guiSettings.GetInt("videoscreen.vsync") == VSYNC_VIDEO)
+      if (vsync_mode == VSYNC_DISABLED || vsync_mode == VSYNC_VIDEO)
         limitFrames = true; // not using vsync.
-      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000/singleFrameTime)
+      else if ((g_infoManager.GetFPS() > g_graphicsContext.GetFPS() + 10) && g_infoManager.GetFPS() > 1000 / singleFrameTime)
         limitFrames = true; // using vsync, but it isn't working.
 
       if (limitFrames)
@@ -2069,22 +2020,16 @@ void CApplication::Render()
         }
         else if (lowfps)
           singleFrameTime = 200;  // 5 fps, <=200 ms latency to wake up
-
-        if (lastFrameTime + singleFrameTime > currentTime)
-          nDelayTime = lastFrameTime + singleFrameTime - currentTime;
-        Sleep(nDelayTime);
       }
+
       decrement = true;
     }
-
-    lastFrameTime = CTimeUtils::GetTimeMS();
   }
 
   CSingleLock lock(g_graphicsContext);
   CTimeUtils::UpdateFrameTime();
   g_infoManager.UpdateFPS();
 
-  int vsync_mode = g_guiSettings.GetInt("videoscreen.vsync");
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
     g_Windowing.SetVSync(true);
   else if (vsync_mode == VSYNC_ALWAYS)
@@ -2095,7 +2040,9 @@ void CApplication::Render()
   if(!g_Windowing.BeginRender())
     return;
 
-  RenderNoPresent();
+  if (RenderNoPresent())
+    hasRendered = true;
+
   g_Windowing.EndRender();
 
   g_TextureManager.FreeUnusedTextures();
@@ -2107,18 +2054,42 @@ void CApplication::Render()
 
   lock.Leave();
 
-  g_graphicsContext.Flip();
+  unsigned int now = CTimeUtils::GetTimeMS();
+  if (hasRendered)
+    m_lastRenderTime = now;
+
+  //when nothing has been rendered for m_guiDirtyRegionNoFlipTimeout milliseconds,
+  //we don't call g_graphicsContext.Flip() anymore, this saves gpu and cpu usage
+  bool flip;
+  if (g_advancedSettings.m_guiDirtyRegionNoFlipTimeout >= 0)
+    flip = hasRendered || now - m_lastRenderTime < (unsigned int)g_advancedSettings.m_guiDirtyRegionNoFlipTimeout;
+  else
+    flip = true;
+
+  //fps limiter, make sure each frame lasts at least singleFrameTime milliseconds
+  if (limitFrames || !flip)
+  {
+    if (!limitFrames)
+      singleFrameTime = 40; //if not flipping, loop at 25 fps
+
+    unsigned int frameTime = now - m_lastFrameTime;
+    if (frameTime < singleFrameTime)
+      Sleep(singleFrameTime - frameTime);
+  }
+  m_lastFrameTime = CTimeUtils::GetTimeMS();
+
+  if (flip)
+    g_graphicsContext.Flip();
 
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
 
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
-  SDL_mutexP(m_frameMutex);
-  if(m_frameCount > 0 && decrement)
-    m_frameCount--;
-  SDL_mutexV(m_frameMutex);
-  SDL_CondBroadcast(m_frameCond);
-#endif
+  {
+    CSingleLock lock(m_frameMutex);
+    if(m_frameCount > 0 && decrement)
+      m_frameCount--;
+  }
+  m_frameCond.notifyAll();
 }
 
 void CApplication::SetStandAlone(bool value)
@@ -2612,8 +2583,7 @@ bool CApplication::OnAction(const CAction &action)
   #endif
     }
     // show visual feedback of volume change...
-    m_guiDialogVolumeBar.Show();
-    m_guiDialogVolumeBar.OnAction(action);
+    ShowVolumeBar(&action);
     return true;
   }
   // Check for global seek control
@@ -4932,6 +4902,13 @@ CFileItem& CApplication::CurrentFileItem()
   return *m_itemCurrentFile;
 }
 
+void CApplication::ShowVolumeBar(const CAction *action)
+{
+  m_guiDialogVolumeBar.Show();
+  if (action)
+    m_guiDialogVolumeBar.OnAction(*action);
+}
+
 void CApplication::Mute(void)
 {
   if (g_settings.m_bMute)
@@ -4946,7 +4923,7 @@ void CApplication::Mute(void)
       SetVolume(g_settings.m_iPreMuteVolumeLevel);
       g_settings.m_iPreMuteVolumeLevel = 0;
     }
-    m_guiDialogVolumeBar.Show();
+    ShowVolumeBar();
   }
   else
   { // mute
@@ -5215,12 +5192,11 @@ bool CApplication::SwitchToFullScreen()
   // See if we're playing a video, and are in GUI mode
   if ( IsPlayingVideo() && g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO)
   {
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
     // Reset frame count so that timing is FPS will be correct.
-    SDL_mutexP(m_frameMutex);
-    m_frameCount = 0;
-    SDL_mutexV(m_frameMutex);
-#endif
+    {
+      CSingleLock lock(m_frameMutex);
+      m_frameCount = 0;
+    }
 
     // then switch to fullscreen mode
     g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
@@ -5392,15 +5368,10 @@ bool CApplication::IsCurrentThread() const
 
 bool CApplication::IsPresentFrame()
 {
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
-  SDL_mutexP(m_frameMutex);
+  CSingleLock lock(m_frameMutex);
   bool ret = m_bPresentFrame;
-  SDL_mutexV(m_frameMutex);
 
   return ret;
-#else
-  return false;
-#endif
 }
 
 #if defined(HAS_LINUX_NETWORK)

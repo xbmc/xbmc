@@ -25,6 +25,7 @@
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
+#include "threads/Atomics.h"
 
 using namespace std;
 
@@ -150,13 +151,13 @@ bool CDVDSubtitlesLibass::CreateTrack(char* buf)
 
 long CDVDSubtitlesLibass::Acquire()
 {
-  long count = InterlockedIncrement(&m_references);
+  long count = AtomicIncrement(&m_references);
   return count;
 }
 
 long CDVDSubtitlesLibass::Release()
 {
-  long count = InterlockedDecrement(&m_references);
+  long count = AtomicDecrement(&m_references);
   if (count == 0)
     delete this;
 
