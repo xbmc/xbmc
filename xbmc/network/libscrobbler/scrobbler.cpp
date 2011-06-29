@@ -636,10 +636,9 @@ void CScrobbler::Process()
     if (!(m_pHttp = new XFILE::CFileCurl))
       return;
   }
-  XbmcThreads::CEventGroup eventGroup(&m_hEvent, getStopEvent(), NULL);
   while (!m_bStop)
   {
-    eventGroup.wait();
+    AbortableWait(m_hEvent);
     if (m_bStop)
       break;
     

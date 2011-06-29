@@ -180,7 +180,7 @@ public:
     ASSERT(m_groupTransform.size());
     TransformMatrix absoluteMatrix = m_groupTransform.size() ? m_groupTransform.top() * matrix : matrix;
     m_groupTransform.push(absoluteMatrix);
-    UpdateFinalTransform(m_groupTransform.top());
+    UpdateFinalTransform(absoluteMatrix);
     return absoluteMatrix;
   }
   inline void SetTransform(const TransformMatrix &matrix)
