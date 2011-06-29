@@ -22,34 +22,53 @@
 #include "KeymapLoader.h"
 #include "filesystem/File.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "utils/XMLUtils.h"
+#ifdef TARGET_WINDOWS
+#include "windowing/windows/WinEventsWin32.h"
+#endif
 
 using namespace std;
 using namespace XFILE;
 
-static std::map<CStdString, CStdString> deviceMappings;
+static std::map<CStdString, CKeymapLoader::KeyMapProfile> deviceMappings;
 bool CKeymapLoader::parsedMappings = false;
+static bool m_bDefaultEnableMultimediaKeys = false;
 
 void CKeymapLoader::DeviceAdded(const CStdString& deviceId)
 {
   ParseDeviceMappings();
-  CStdString keymapName;
-  if (CKeymapLoader::FindMappedDevice(deviceId, keymapName))
+  KeyMapProfile keymapProfile;
+  if (FindMappedDevice(deviceId, keymapProfile))
   {
-    CLog::Log(LOGDEBUG, "Switching Active Keymapping to: %s", keymapName.c_str());
-    g_settings.m_activeKeyboardMapping = keymapName;
+    if (g_settings.m_activeKeyboardMapping != keymapProfile.KeymapName)
+    {
+      CLog::Log(LOGDEBUG, "Switching Active Keymapping to: %s", keymapProfile.KeymapName.c_str());
+      g_settings.m_activeKeyboardMapping = keymapProfile.KeymapName;
+      g_advancedSettings.m_enableMultimediaKeys = keymapProfile.UseMultimediaKeys;
+#ifdef TARGET_WINDOWS
+      CWinEventsWin32::DIB_InitOSKeymap();
+#endif
+    }
   }
 }
 
 void CKeymapLoader::DeviceRemoved(const CStdString& deviceId)
 {
   ParseDeviceMappings();
-  CStdString keymapName;
-  if (FindMappedDevice(deviceId, keymapName))
+  KeyMapProfile keymapProfile;
+  if (FindMappedDevice(deviceId, keymapProfile))
   {
-    CLog::Log(LOGDEBUG, "Switching Active Keymapping to: default");
-    g_settings.m_activeKeyboardMapping = "default";
+    if (g_settings.m_activeKeyboardMapping == keymapProfile.KeymapName)
+    {
+      CLog::Log(LOGDEBUG, "Switching Active Keymapping to: default");
+      g_settings.m_activeKeyboardMapping = "default";
+      g_advancedSettings.m_enableMultimediaKeys = m_bDefaultEnableMultimediaKeys;
+#ifdef TARGET_WINDOWS
+      CWinEventsWin32::DIB_InitOSKeymap();
+#endif
+    }
   }
 }
 
@@ -57,6 +76,7 @@ void CKeymapLoader::ParseDeviceMappings()
 {
   if (!parsedMappings)
   {
+    m_bDefaultEnableMultimediaKeys = g_advancedSettings.m_enableMultimediaKeys;
     parsedMappings = true;
     CStdString file("special://xbmc/system/deviceidmappings.xml");
     TiXmlDocument deviceXML;
@@ -71,22 +91,28 @@ void CKeymapLoader::ParseDeviceMappings()
     while (pDevice)
     {
       CStdString deviceId(pDevice->Attribute("id"));
-      CStdString keymap(pDevice->Attribute("keymap"));
-      if (!deviceId.empty() && !keymap.empty())
-        deviceMappings.insert(pair<CStdString, CStdString>(deviceId.ToUpper(), keymap));
+      CStdString keymapName(pDevice->Attribute("keymap"));
+      if (!deviceId.empty() && !keymapName.empty())
+      {
+        CStdString useMultimediaKeys(pDevice->Attribute("usemultimediakeys"));
+        KeyMapProfile profile;
+        profile.KeymapName = keymapName;
+        profile.UseMultimediaKeys = useMultimediaKeys && useMultimediaKeys == "true";
+        deviceMappings.insert(pair<CStdString, KeyMapProfile>(deviceId.ToUpper(), profile));
+      }
       pDevice = pDevice->NextSiblingElement("device");
     }
   }
 }
 
-bool CKeymapLoader::FindMappedDevice(const CStdString& deviceId, CStdString& keymapName)
+bool CKeymapLoader::FindMappedDevice(const CStdString& deviceId, KeyMapProfile& keymapProfile)
 {
   CStdString deviceIdTemp = deviceId;
-  std::map<CStdString, CStdString>::iterator deviceIdIt = deviceMappings.find(deviceIdTemp.ToUpper());
+  std::map<CStdString, KeyMapProfile>::iterator deviceIdIt = deviceMappings.find(deviceIdTemp.ToUpper());
   if (deviceIdIt == deviceMappings.end())
     return false;
 
-  keymapName = deviceIdIt->second;
+  keymapProfile = deviceIdIt->second;
   return true;
 }
 
