@@ -2,7 +2,7 @@
 <addon id="plugin.music.spotyXBMC"
        name="spotyXBMC"
        version="0.0.1"
-       provider-name="TheCollective">
+       provider-name="David Erenger">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
 	<import addon="script.module.beautifulsoup" version="3.0.8"/>
