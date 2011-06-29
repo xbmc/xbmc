@@ -52,9 +52,7 @@ public:
   static TransformMatrix CreateTranslation(float transX, float transY, float transZ = 0)
   {
     TransformMatrix translation;
-    translation.m[0][3] = transX;
-    translation.m[1][3] = transY;
-    translation.m[2][3] = transZ;
+    translation.SetTranslation(transX, transY, transZ);
     return translation;
   }
   void SetTranslation(float transX, float transY, float transZ)
@@ -102,10 +100,8 @@ public:
   static TransformMatrix CreateZRotation(float angle, float x, float y, float ar = 1.0f)
   { // angle about the Z axis, centered at x,y where our coordinate system has aspect ratio ar.
     // Trans(x,y,0)*Scale(1/ar,1,1)*RotateZ(angle)*Scale(ar,1,1)*Trans(-x,-y,0)
-    float c = cos(angle); float s = sin(angle);
     TransformMatrix rot;
-    rot.m[0][0] = c;    rot.m[0][1] = -s/ar; rot.m[0][3] = -x*c + s*y/ar + x;
-    rot.m[1][0] = s*ar; rot.m[1][1] = c;     rot.m[1][3] = -ar*x*s - c*y + y;
+    rot.SetZRotation(angle, x, y, ar);
     return rot;
   }
   void SetZRotation(float angle, float x, float y, float ar = 1.0f)
@@ -120,7 +116,7 @@ public:
   static TransformMatrix CreateFader(float a)
   {
     TransformMatrix fader;
-    fader.alpha = a;
+    fader.SetFader(a);
     return fader;
   }
   void SetFader(float a)
