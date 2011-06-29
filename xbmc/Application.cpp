@@ -3133,7 +3133,6 @@ bool CApplication::Cleanup()
     CAddonMgr::Get().DeInit();
 
     CLog::Log(LOGNOTICE, "unload sections");
-    CSectionLoader::UnloadAll();
 
 #ifdef HAS_PERFORMANCE_SAMPLE
     CLog::Log(LOGNOTICE, "performance statistics");
