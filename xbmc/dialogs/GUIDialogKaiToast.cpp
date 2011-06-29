@@ -37,6 +37,9 @@ CGUIDialogKaiToast::CGUIDialogKaiToast(void)
 {
   m_defaultIcon = "";
   m_loadOnDemand = false;
+  m_timer = 0;
+  m_toastDisplayTime = 0;
+  m_toastMessageTime = 0;
 }
 
 CGUIDialogKaiToast::~CGUIDialogKaiToast(void)
