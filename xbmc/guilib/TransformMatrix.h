@@ -130,16 +130,6 @@ public:
     m[2][0] = 0.0f; m[2][1] = 0.0f; m[2][2] = 1.0f; m[2][3] = 0.0f;
     alpha = a;
   }
-  // assignment operator
-  const TransformMatrix &operator =(const TransformMatrix &right)
-  {
-    if (this != &right)
-    {
-      memcpy(m, right.m, 12*sizeof(float));
-      alpha = right.alpha;
-    }
-    return *this;
-  }
 
   // multiplication operators
   const TransformMatrix &operator *=(const TransformMatrix &right)
