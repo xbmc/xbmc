@@ -86,7 +86,7 @@ public:
     m[0][0] = ar;    m[0][1] = 0.0f;  m[0][2] = 0.0f;   m[0][3] = 0.0f;
     m[1][0] = 0.0f;  m[1][1] = c/ar;  m[1][2] = -s/ar;  m[1][3] = (-y*c+s*z)/ar + y;
     m[2][0] = 0.0f;  m[2][1] = s;     m[2][2] = c;      m[2][3] = (-y*s-c*z) + z;
-    angle = 1.0f;
+    alpha = 1.0f;
   }
   void SetYRotation(float angle, float x, float z, float ar = 1.0f)
   { // angle about the Y axis, centered at x,z where our coordinate system has aspect ratio ar.
@@ -95,7 +95,7 @@ public:
     m[0][0] = c;     m[0][1] = 0.0f;  m[0][2] = -s/ar;  m[0][3] = -x*c + s*z/ar + x;
     m[1][0] = 0.0f;  m[1][1] = 1.0f;  m[1][2] = 0.0f;   m[1][3] = 0.0f;
     m[2][0] = ar*s;  m[2][1] = 0.0f;  m[2][2] = c;      m[2][3] = -ar*x*s - c*z + z;
-    angle = 1.0f;
+    alpha = 1.0f;
   }
   static TransformMatrix CreateZRotation(float angle, float x, float y, float ar = 1.0f)
   { // angle about the Z axis, centered at x,y where our coordinate system has aspect ratio ar.
@@ -111,7 +111,7 @@ public:
     m[0][0] = c;     m[0][1] = -s/ar;  m[0][2] = 0.0f;  m[0][3] = -x*c + s*y/ar + x;
     m[1][0] = s*ar;  m[1][1] = c;      m[1][2] = 0.0f;  m[1][3] = -ar*x*s - c*y + y;
     m[2][0] = 0.0f;  m[2][1] = 0.0f;   m[2][2] = 1.0f;  m[2][3] = 0.0f;
-    angle = 1.0f;
+    alpha = 1.0f;
   }
   static TransformMatrix CreateFader(float a)
   {
