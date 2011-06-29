@@ -4890,7 +4890,7 @@ void CApplication::ToggleMute(void)
 
 void CApplication::Mute()
 {
-  g_settings.m_iPreMuteVolumeLevel = GetVolume();
+  g_settings.m_iPreMuteVolumeLevel = (int)GetVolume();
   SetVolume(0);
   g_settings.m_bMute = true;
 }
@@ -4945,10 +4945,13 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
   }
 }
 
-int CApplication::GetVolume() const
+float CApplication::GetVolume(bool percentage /* = true */) const
 {
-  // converts the hardware volume (in mB) to a percentage
-  return int(((float)(g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
+  if (percentage)
+    // converts the hardware volume (in mB) to a percentage
+    return (float)int(((float)(g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f);
+
+  return (g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel) * 0.01f;
 }
 
 int CApplication::GetSubtitleDelay() const

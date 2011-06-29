@@ -1661,7 +1661,7 @@ CUPnPRenderer::UpdateState()
         volume = g_settings.m_iPreMuteVolumeLevel;
     } else {
         rct->SetStateVariable("Mute", "0");
-        volume = g_application.GetVolume();
+        volume = (int)g_application.GetVolume();
     }
 
     buffer.Format("%d", volume);

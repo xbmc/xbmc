@@ -75,8 +75,11 @@ void CGUIDialogAudioSubtitleSettings::CreateSettings()
   // clear out any old settings
   m_settings.clear();
   // create our settings
-  m_volume = g_settings.m_nVolumeLevel * 0.01f;
-  AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, FormatDecibel, false);
+  m_volume = (float)g_application.GetVolume(g_guiSettings.GetInt("audiooutput.volumeunit") == VOLUME_UNIT_PERCENTAGE);
+  if (g_guiSettings.GetInt("audiooutput.volumeunit") == VOLUME_UNIT_PERCENTAGE)
+    AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, 0.0f, 1.0f, 100.0f, FormatVolume, false);
+  else
+    AddSlider(AUDIO_SETTINGS_VOLUME, 13376, &m_volume, VOLUME_MINIMUM * 0.01f, (VOLUME_MAXIMUM - VOLUME_MINIMUM) * 0.0001f, VOLUME_MAXIMUM * 0.01f, FormatVolume, false);
   if (g_application.m_pPlayer && g_application.m_pPlayer->IsPassthrough())
     EnableSettings(AUDIO_SETTINGS_VOLUME,false);
 #if 0
@@ -207,8 +210,10 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   // check and update anything that needs it
   if (setting.id == AUDIO_SETTINGS_VOLUME)
   {
-    g_settings.m_nVolumeLevel = (long)(m_volume * 100.0f);
-    g_application.SetVolume(int(((float)(g_settings.m_nVolumeLevel - VOLUME_MINIMUM)) / (VOLUME_MAXIMUM - VOLUME_MINIMUM)*100.0f + 0.5f));
+    if (g_guiSettings.GetInt("audiooutput.volumeunit") == VOLUME_UNIT_PERCENTAGE)
+      g_application.SetVolume((int)m_volume);
+    else
+      g_application.SetVolume((long)(m_volume * 100.0f), false);
   }
   else if (setting.id == AUDIO_SETTINGS_VOLUME_AMPLIFICATION)
   {
@@ -345,7 +350,7 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
 
 void CGUIDialogAudioSubtitleSettings::FrameMove()
 {
-  m_volume = g_settings.m_nVolumeLevel * 0.01f;
+  m_volume = (float)g_application.GetVolume(g_guiSettings.GetInt("audiooutput.volumeunit") == VOLUME_UNIT_PERCENTAGE);
   UpdateSetting(AUDIO_SETTINGS_VOLUME);
   if (g_application.m_pPlayer)
   {
@@ -357,10 +362,13 @@ void CGUIDialogAudioSubtitleSettings::FrameMove()
   CGUIDialogSettings::FrameMove();
 }
 
-CStdString CGUIDialogAudioSubtitleSettings::FormatDecibel(float value, float interval)
+CStdString CGUIDialogAudioSubtitleSettings::FormatVolume(float value, float interval)
 {
   CStdString text;
-  text.Format("%2.1f dB", value);
+  if (g_guiSettings.GetInt("audiooutput.volumeunit") == VOLUME_UNIT_PERCENTAGE)
+    text.Format("%.0f %%", value);
+  else
+    text.Format("%2.1f dB", value);
   return text;
 }
 

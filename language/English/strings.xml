@@ -498,7 +498,7 @@
   <string id="546">Passthrough output device</string>
   <string id="547">No biography for this artist</string>
   <string id="548">Downmix multichannel audio to stereo</string>
-
+  <string id="549">Displayed volume unit</string>
   <string id="550">Sort by: %s</string>
   <string id="551">Name</string>
   <string id="552">Date</string>

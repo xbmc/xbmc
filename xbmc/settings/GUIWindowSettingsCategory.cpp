@@ -577,6 +577,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInAudioDevices(pSetting,true);
     }
+    else if (strSetting.Equals("audiooutput.volumeunit"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel("dB", VOLUME_UNIT_DECIBEL);
+      pControl->AddLabel("%", VOLUME_UNIT_PERCENTAGE);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;

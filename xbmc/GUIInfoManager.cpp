@@ -1063,7 +1063,10 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     strLabel.Format("%02.2f", m_fps);
     break;
   case PLAYER_VOLUME:
-    strLabel.Format("%2.1f dB", (float)(g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel) * 0.01f);
+    if (g_guiSettings.GetInt("audiooutput.volumeunit") == VOLUME_UNIT_PERCENTAGE)
+      strLabel.Format("%d %%", g_application.GetVolume());
+    else
+      strLabel.Format("%2.1f dB", (float)g_application.GetVolume(false));
     break;
   case PLAYER_SUBTITLE_DELAY:
     strLabel.Format("%2.3f s", g_settings.m_currentVideoSettings.m_SubtitleDelay);
@@ -1632,7 +1635,7 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
   switch( info )
   {
     case PLAYER_VOLUME:
-      return g_application.GetVolume();
+      return (int)g_application.GetVolume();
     case PLAYER_SUBTITLE_DELAY:
       return g_application.GetSubtitleDelay();
     case PLAYER_AUDIO_DELAY:

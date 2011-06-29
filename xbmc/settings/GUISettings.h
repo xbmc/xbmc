@@ -187,6 +187,12 @@ enum VideoSelectAction
   SELECT_ACTION_MORE,
   SELECT_ACTION_PLAY
 };
+ 
+enum VolumeUnit
+{
+  VOLUME_UNIT_DECIBEL,
+  VOLUME_UNIT_PERCENTAGE
+};
 
 // replay gain settings struct for quick access by the player multiple
 // times per second (saves doing settings lookup)

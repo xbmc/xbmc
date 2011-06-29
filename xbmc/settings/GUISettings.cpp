@@ -472,6 +472,7 @@ void CGUISettings::Initialize()
 #elif defined(_WIN32)
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
 #endif
+  AddInt(ao, "audiooutput.volumeunit", 549, VOLUME_UNIT_DECIBEL, VOLUME_UNIT_DECIBEL, 1, VOLUME_UNIT_PERCENTAGE, SPIN_CONTROL_TEXT);
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
 #if defined(__APPLE__)

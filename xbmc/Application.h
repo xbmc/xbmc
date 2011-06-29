@@ -159,7 +159,7 @@ public:
   virtual void Process();
   void ProcessSlow();
   void ResetScreenSaver();
-  int GetVolume() const;
+  float GetVolume(bool percentage = true) const;
   void SetVolume(long iValue, bool isPercentage = true);
   void ToggleMute(void);
   void ShowVolumeBar(const CAction *action = NULL);
