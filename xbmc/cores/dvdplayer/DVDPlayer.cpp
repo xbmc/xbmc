@@ -65,6 +65,7 @@
 #include "utils/StreamDetails.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
 
@@ -1336,7 +1337,7 @@ void CDVDPlayer::HandlePlaySpeed()
     {
       if(level  < 0.0)
       {
-        g_application.m_guiDialogKaiToast.QueueNotification("Cache full", "Cache filled before reaching required amount for continous playback");
+        CGUIDialogKaiToast::QueueNotification("Cache full", "Cache filled before reaching required amount for continous playback");
         caching = CACHESTATE_INIT;
       }
       if(level >= 1.0)

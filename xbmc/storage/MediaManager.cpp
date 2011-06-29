@@ -43,7 +43,7 @@
 #include "tinyXML/tinyxml.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
-#include "Application.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "utils/JobManager.h"
 #include "AutorunMediaJob.h"
 #include "settings/GUISettings.h"
@@ -479,15 +479,15 @@ void CMediaManager::OnStorageAdded(const CStdString &label, const CStdString &pa
   if (g_guiSettings.GetBool("audiocds.autorun") || g_guiSettings.GetBool("dvds.autorun"))
     CJobManager::GetInstance().AddJob(new CAutorunMediaJob(label, path), this, CJob::PRIORITY_HIGH);
   else
-    g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), label, TOAST_DISPLAY_TIME, false);
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13021), label, TOAST_DISPLAY_TIME, false);
 }
 
 void CMediaManager::OnStorageSafelyRemoved(const CStdString &label)
 {
-  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023), label, TOAST_DISPLAY_TIME, false);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(13023), label, TOAST_DISPLAY_TIME, false);
 }
 
 void CMediaManager::OnStorageUnsafelyRemoved(const CStdString &label)
 {
-  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022), label);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13022), label);
 }
