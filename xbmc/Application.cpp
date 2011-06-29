@@ -596,16 +596,16 @@ bool CApplication::Create()
 
   g_powerManager.Initialize();
 
-#ifdef _WIN32
-  CWIN32USBScan();
-#endif
-
   CLog::Log(LOGNOTICE, "load settings...");
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
+
+#ifdef _WIN32
+  CWIN32USBScan();
+#endif
 
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
