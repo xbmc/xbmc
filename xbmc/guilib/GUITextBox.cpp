@@ -114,8 +114,9 @@ void CGUITextBox::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
   if (m_autoScrollRepeatAnim)
   {
     m_autoScrollRepeatAnim->Animate(m_renderTime, true);
-    m_autoScrollRepeatAnim->RenderAnimation(m_textMatrix);
-    m_cachedTextMatrix = g_graphicsContext.AddTransform(m_textMatrix);
+    TransformMatrix matrix;
+    m_autoScrollRepeatAnim->RenderAnimation(matrix);
+    m_cachedTextMatrix = g_graphicsContext.AddTransform(matrix);
   }
 
   CGUIControl::DoProcess(currentTime, dirtyregions);

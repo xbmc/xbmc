@@ -86,7 +86,6 @@ protected:
 
   CLabelInfo m_label;
 
-  TransformMatrix m_textMatrix;
   TransformMatrix m_cachedTextMatrix;
 
   // autoscrolling
