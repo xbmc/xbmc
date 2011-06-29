@@ -201,6 +201,10 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogSeekBar.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogVolumeBar.h"
+#include "dialogs/GUIDialogMuteBug.h"
 #include "video/dialogs/GUIDialogFileStacking.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogGamepad.h"
@@ -1061,16 +1065,17 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
   g_windowManager.Add(new CGUIDialogProgress);           // window id = 101
   g_windowManager.Add(new CGUIDialogKeyboard);           // window id = 103
-  g_windowManager.Add(&m_guiDialogVolumeBar);          // window id = 104
-  g_windowManager.Add(&m_guiDialogSeekBar);            // window id = 115
+  g_windowManager.Add(new CGUIDialogVolumeBar);          // window id = 104
+  g_windowManager.Add(new CGUIDialogSeekBar);            // window id = 115
   g_windowManager.Add(new CGUIDialogSubMenu);            // window id = 105
   g_windowManager.Add(new CGUIDialogContextMenu);        // window id = 106
-  g_windowManager.Add(&m_guiDialogKaiToast);           // window id = 107
+  g_windowManager.Add(new CGUIDialogKaiToast);           // window id = 107
   g_windowManager.Add(new CGUIDialogNumeric);            // window id = 109
   g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
   g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   g_windowManager.Add(new CGUIDialogMusicScan);          // window id = 112
-  g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
+  g_windowManager.Add(new CGUIDialogMuteBug);            // window id = 113
+  g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 114
 #ifdef HAS_KARAOKE
   g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
   g_windowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
@@ -1650,10 +1655,6 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end - start) / freq);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
-  m_guiDialogVolumeBar.AllocResources(true);
-  m_guiDialogSeekBar.AllocResources(true);
-  m_guiDialogKaiToast.AllocResources(true);
-  m_guiDialogMuteBug.AllocResources(true);
   g_windowManager.AddMsgTarget(this);
   g_windowManager.AddMsgTarget(&g_playlistPlayer);
   g_windowManager.AddMsgTarget(&g_infoManager);
@@ -1702,12 +1703,6 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 
   g_windowManager.DeInitialize();
   CTextureCache::Get().Deinitialize();
-
-  //These windows are not handled by the windowmanager (why not?) so we should unload them manually
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-  m_guiDialogMuteBug.OnMessage(msg);
-  m_guiDialogMuteBug.ResetControlStates();
-  m_guiDialogMuteBug.FreeResources(true);
 
   // remove the skin-dependent window
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
@@ -2580,7 +2575,9 @@ bool CApplication::OnAction(const CAction &action)
   if (IsPlaying() && action.GetAmount() && (action.GetID() == ACTION_ANALOG_SEEK_FORWARD || action.GetID() == ACTION_ANALOG_SEEK_BACK))
   {
     if (!m_pPlayer->CanSeek()) return false;
-    m_guiDialogSeekBar.OnAction(action);
+    CGUIWindow *seekBar = g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+    if (seekBar)
+      seekBar->OnAction(action);
     return true;
   }
   if (action.GetID() == ACTION_GUIPROFILE_BEGIN)
@@ -2642,11 +2639,12 @@ void CApplication::FrameMove()
 
   g_graphicsContext.Lock();
   // check if there are notifications to display
-  if (m_guiDialogKaiToast.DoWork())
+  CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+  if (toast && toast->DoWork())
   {
-    if (!m_guiDialogKaiToast.IsDialogRunning())
+    if (!toast->IsDialogRunning())
     {
-      m_guiDialogKaiToast.Show();
+      toast->Show();
     }
   }
   g_graphicsContext.Unlock();
@@ -4888,9 +4886,13 @@ CFileItem& CApplication::CurrentFileItem()
 
 void CApplication::ShowVolumeBar(const CAction *action)
 {
-  m_guiDialogVolumeBar.Show();
-  if (action)
-    m_guiDialogVolumeBar.OnAction(*action);
+  CGUIDialog *volumeBar = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
+  if (volumeBar)
+  {
+    volumeBar->Show();
+    if (action)
+      volumeBar->OnAction(*action);
+  }
 }
 
 void CApplication::Mute(void)
@@ -4947,17 +4949,9 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
 
   // update mute state
   if(!g_settings.m_bMute && hardwareVolume <= VOLUME_MINIMUM)
-  {
     g_settings.m_bMute = true;
-    if (!m_guiDialogMuteBug.IsDialogRunning())
-      m_guiDialogMuteBug.Show();
-  }
   else if(g_settings.m_bMute && hardwareVolume > VOLUME_MINIMUM)
-  {
     g_settings.m_bMute = false;
-    if (m_guiDialogMuteBug.IsDialogRunning())
-      m_guiDialogMuteBug.Close();
-  }
 
   // and tell our player to update the volume
   if (m_pPlayer)

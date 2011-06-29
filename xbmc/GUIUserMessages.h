@@ -73,10 +73,6 @@
 
 #define GUI_MSG_SCAN_FINISHED           GUI_MSG_USER + 13
 
-//  Mute activated by the user
-#define GUI_MSG_MUTE_ON                 GUI_MSG_USER + 14
-#define GUI_MSG_MUTE_OFF                GUI_MSG_USER + 15
-
 //  Player has requested the next item for caching purposes (PAPlayer)
 #define GUI_MSG_QUEUE_NEXT_ITEM         GUI_MSG_USER + 16
 
