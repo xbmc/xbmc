@@ -5343,7 +5343,6 @@ bool CApplication::ChangePowerStateAfterPlaybackEnded()
         canChangePowerState &= g_powerManager.CanPowerdown();
         if (canChangePowerState)
         {
-          g_application.Stop(EXITCODE_POWERDOWN);
           g_application.getApplicationMessenger().Powerdown();
         }
       }
