@@ -213,20 +213,21 @@ void CSlideShowPic::UpdateVertices(float cur_x[4], float cur_y[4], const float n
 void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   if (!m_pImage || !m_bIsLoaded || m_bIsFinished) return ;
+  color_t alpha = m_alpha;
   if (m_iCounter <= m_transistionStart.length)
   { // do start transistion
     if (m_transistionStart.type == CROSSFADE)
     { // fade in at 1x speed
-      m_alpha = (color_t)((float)m_iCounter / (float)m_transistionStart.length * 255.0f);
+      alpha = (color_t)((float)m_iCounter / (float)m_transistionStart.length * 255.0f);
     }
     else if (m_transistionStart.type == FADEIN_FADEOUT)
     { // fade in at 2x speed, then keep solid
-      m_alpha = (color_t)((float)m_iCounter / (float)m_transistionStart.length * 255.0f * 2);
-      if (m_alpha > 255) m_alpha = 255;
+      alpha = (color_t)((float)m_iCounter / (float)m_transistionStart.length * 255.0f * 2);
+      if (alpha > 255) alpha = 255;
     }
     else // m_transistionEffect == TRANSISTION_NONE
     {
-      m_alpha = 0xFF; // opaque
+      alpha = 0xFF; // opaque
     }
   }
   bool bPaused = m_bPause | (m_fZoomAmount != 1.0f);
@@ -320,17 +321,22 @@ void CSlideShowPic::Process(unsigned int currentTime, CDirtyRegionList &dirtyreg
     m_bDrawNextImage = true;
     if (m_transistionEnd.type == CROSSFADE)
     { // fade out at 1x speed
-      m_alpha = 255 - (color_t)((float)(m_iCounter - m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f);
+      alpha = 255 - (color_t)((float)(m_iCounter - m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f);
     }
     else if (m_transistionEnd.type == FADEIN_FADEOUT)
     { // keep solid, then fade out at 2x speed
-      m_alpha = (color_t)((float)(m_transistionEnd.length - m_iCounter + m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f * 2);
-      if (m_alpha > 255) m_alpha = 255;
+      alpha = (color_t)((float)(m_transistionEnd.length - m_iCounter + m_transistionEnd.start) / (float)m_transistionEnd.length * 255.0f * 2);
+      if (alpha > 255) alpha = 255;
     }
     else // m_transistionEffect == TRANSISTION_NONE
     {
-      m_alpha = 0xFF; // opaque
+      alpha = 0xFF; // opaque
     }
+  }
+  if (alpha != m_alpha)
+  {
+    m_alpha = alpha;
+    m_bIsDirty = true;
   }
   if (m_displayEffect != EFFECT_NO_TIMEOUT || m_iCounter < m_transistionStart.length || m_iCounter >= m_transistionEnd.start || (m_iCounter >= m_transistionTemp.start && m_iCounter < m_transistionTemp.start + m_transistionTemp.length))
   {
