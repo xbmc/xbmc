@@ -339,11 +339,9 @@ protected:
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
   
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   int        m_frameCount;
   CCriticalSection m_frameMutex;
   XbmcThreads::ConditionVariable  m_frameCond;
-#endif
 
   void Mute();
   void UnMute();
