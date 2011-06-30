@@ -78,7 +78,7 @@ protected:
   CScrollInfo m_scrollInfo;
   CGUITextLayout m_textLayout;
   CAnimation m_fadeAnim;
-  unsigned int m_renderTime;
+  TransformMatrix m_fadeMatrix;
   unsigned int m_scrollSpeed;
   bool m_resetOnLabelChange;
 };
