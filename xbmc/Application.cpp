@@ -4200,6 +4200,8 @@ bool CApplication::WakeUpScreenSaver()
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
+    CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverDeactivated");
+
     if (m_screenSaver->ID() == "visualization" || m_screenSaver->ID() == "screensaver.xbmc.builtin.slideshow")
     {
       // we can just continue as usual from vis mode
@@ -4282,6 +4284,8 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (g_lcd && g_advancedSettings.m_lcdDimOnScreenSave)
     g_lcd->SetBackLight(0);
 #endif
+
+  CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverActivated");
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
