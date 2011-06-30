@@ -1,12 +1,35 @@
 <keymap>
   <global>
-    <keyboard name="Motorola Nyxboard Hybrid">
+	<appcommand name="Motorola Nyxboard Hybrid">
+	  <volume_mute>Mute</volume_mute>
+	  <volume_down>VolumeDown</volume_down>
+      <volume_up>VolumeUp</volume_up>
+	  <next_track>SkipNext</next_track>
+	  <prev_track>SkipPrevious</prev_track>
+	  <stop>Stop</stop>
+	  <play_pause>Play</play_pause>
+	  <play>Play</play>
+	  <pause>Pause</pause>
+	  <fastforward>FastForward</fastforward>
+	  <rewind>Rewind</rewind>
+	</appcommand>
+    <mouse name="Motorola Nyxboard Hybrid">
+      <leftclick>leftclick</leftclick>
+      <middleclick>middleclick</middleclick>
+      <rightclick>rightclick</rightclick>
+      <doubleclick>doubleclick</doubleclick>
+      <wheeldown>wheeldown</wheeldown>
+      <wheelup>wheelup</wheelup>
+      <mousedrag>mousedrag</mousedrag>
+      <mousemove>mousemove</mousemove>
+    </mouse>
+	<keyboard name="Motorola Nyxboard Hybrid">
       <p>Play</p>
       <q>Queue</q>
-      <f>FastForward</f>
-      <r>Rewind</r>
-      <left>Right</left>
-      <right>Left</right>
+      <f mod="ctrl,shift">FastForward</f>
+      <b mod="ctrl,shift">Rewind</b>
+      <left>Left</left>
+      <right>Right</right>
       <up>Up</up>
       <down>Down</down>
       <left mod="ctrl">analogseekback</left>
@@ -20,6 +43,7 @@
       <s>ActivateWindow(shutdownmenu)</s>
       <escape>PreviousMenu</escape>
       <i>Info</i>
+	  <f9>Info</f9>
       <menu>ContextMenu</menu>
       <c>ContextMenu</c>
       <space>Pause</space>
@@ -54,16 +78,7 @@
       <numpadeight>Number8</numpadeight>
       <numpadnine>Number9</numpadnine>
       <backslash>ToggleFullScreen</backslash>
-      <home>FirstPage</home>
-      <end>LastPage</end>
-      <!-- Multimedia keyboard keys -->
-      <browser_back>ParentDir</browser_back>
-      <browser_forward/>
-      <browser_refresh/>
-      <browser_stop/>
-      <browser_search/>
-      <browser_favorites>ActivateWindow(Favourites)</browser_favorites>
-      <browser_home>XBMC.ActivateWindow(Home)</browser_home>
+      <home>XBMC.ActivateWindow(Home)</home>
       <volume_mute>Mute</volume_mute>
       <volume_down>VolumeDown</volume_down>
       <volume_up>VolumeUp</volume_up>
@@ -71,38 +86,16 @@
       <prev_track>SkipPrevious</prev_track>
       <stop>Stop</stop>
       <play_pause>Pause</play_pause>
-      <launch_mail></launch_mail>
-      <launch_media_select>XBMC.ActivateWindow(MyMusic)</launch_media_select>
-      <launch_app1_pc_icon>ActivateWindow(MyPrograms)</launch_app1_pc_icon>
-      <launch_app2_pc_icon>ActivateWindow(MyPrograms)</launch_app2_pc_icon>
-      <launch_file_browser/>
-      <launch_media_center/>
-      <!-- ****************************************************** -->
-      <!-- MS Media Center keyboard shortcuts sent by MCE remotes -->
-      <!-- See http://msdn.microsoft.com/en-us/library/bb189249.aspx -->
-      <p mod="ctrl,shift">Play</p>        <!-- Play -->
-      <s mod="ctrl,shift">Stop</s>        <!-- Stop -->
-      <p mod="ctrl">Pause</p>             <!-- Pause -->
-      <f mod="ctrl,shift">FastForward</f> <!-- Fwd -->
-      <b mod="ctrl,shift">Rewind</b>      <!-- Rew -->
-      <f mod="ctrl">SkipNext</f>          <!-- Skip -->
-      <b mod="ctrl">SkipPrevious</b>      <!-- Replay -->
-      <d mod="ctrl">Info</d>              <!-- MCE Details -->
-      <f10>VolumeUp</f10>                 <!-- MCE Vol up -->
-      <f9>VolumeDown</f9>                 <!-- MCE Vol down -->
-      <f8>Mute</f8>                       <!-- MCE mute -->
-      <g mod="ctrl">OSD</g>               <!-- MCE Guide -->
-      <m mod="ctrl">ActivateWindow(music)</m>    <!-- MCE My music -->
-      <i mod="ctrl">ActivateWindow(pictures)</i> <!-- MCE My pictures -->
-      <e mod="ctrl">ActivateWindow(video)</e>    <!-- MCE videos -->
-      <!-- MCE keypresses without an obvious use in XBMC -->
-      <o mod="ctrl">Notification(MCEKeypress, Recorded TV, 3)</o>
-      <t mod="ctrl">Notification(MCEKeypress, Live TV, 3)</t>
-      <t mod="ctrl,shift">Notification(MCEKeypress, My TV, 3)</t>
-      <a mod="ctrl">Notification(MCEKeypress, Radio, 3)</a>
-      <m mod="ctrl,shift">Notification(MCEKeypress, DVD menu, 3)</m>
-      <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
-      <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
+	  <!--
+	  <f3>RED</f3>
+	  <f4>GREEN</f4>
+	  <f5>YELLOW</f5>
+	  <f6>BLUE</f6>
+	  <f7>EPG</f7>
+	  <f12>ActivateSearch</f12>
+	  <f11>CloseSearch</f11>
+	  -->
+	  <f10>ContextMenu</f10>
     </keyboard>
   </global>
   <LoginScreen>
@@ -113,6 +106,7 @@
   <Home>
     <keyboard name="Motorola Nyxboard Hybrid">
       <i>info</i>
+	  <home>noop</home>
       <end>XBMC.ShutDown()</end>
     </keyboard>
   </Home>
