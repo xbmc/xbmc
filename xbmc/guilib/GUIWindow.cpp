@@ -294,7 +294,7 @@ void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregi
   CGUIControlGroup::DoProcess(currentTime, dirtyregions);
 }
 
-void CGUIWindow::Render()
+void CGUIWindow::DoRender()
 {
   // If we're rendering from a different thread, then we should wait for the main
   // app thread to finish AllocResources(), as dynamic resources (images in particular)
@@ -305,7 +305,7 @@ void CGUIWindow::Render()
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
   g_graphicsContext.ResetWindowTransform();
-  CGUIControlGroup::Render();
+  CGUIControlGroup::DoRender();
 
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }
