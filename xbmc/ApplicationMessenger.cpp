@@ -582,6 +582,16 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_PLAYLISTPLAYER_SWAP:
+      if (pMsg->lpVoid)
+      {
+        vector<int> *indexes = (vector<int> *)pMsg->lpVoid;
+        if (indexes->size() == 2)
+          g_playlistPlayer.Swap(pMsg->dwParam1, indexes->at(0), indexes->at(1));
+        delete indexes;
+      }
+      break;
+
     // Window messages below here...
     case TMSG_DIALOG_DOMODAL:  //doModel of window
       {
@@ -929,6 +939,17 @@ void CApplicationMessenger::PlayListPlayerGetItems(int playlist, CFileItemList &
   ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_GET_ITEMS};
   tMsg.dwParam1 = playlist;
   tMsg.lpVoid = (void *)&list;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlayListPlayerSwap(int playlist, int indexItem1, int indexItem2)
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_SWAP};
+  tMsg.dwParam1 = playlist;
+  vector<int> *indexes = new vector<int>();
+  indexes->push_back(indexItem1);
+  indexes->push_back(indexItem2);
+  tMsg.lpVoid = (void *)indexes;
   SendMessage(tMsg, true);
 }
 
