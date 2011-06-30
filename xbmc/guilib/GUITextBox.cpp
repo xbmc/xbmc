@@ -94,6 +94,7 @@ void CGUITextBox::UpdateInfo(const CGUIListItem *item)
     return; // nothing changed
 
   // needed update, so reset to the top of the textbox and update our sizing/page control
+  SetInvalid();
   m_offset = 0;
   m_scrollOffset = 0;
   ResetAutoScrolling();
