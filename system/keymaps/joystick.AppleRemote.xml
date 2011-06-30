@@ -226,6 +226,11 @@
       <button id="6">Close</button>
     </joystick>
   </OSDVideoSettings>
+  <VideoMisc>
+    <joystick name="AppleRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </VideoMisc>
   <OSDAudioSettings>
     <joystick name="AppleRemote">
       <button id="6">Close</button>

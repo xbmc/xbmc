@@ -191,6 +191,7 @@
 #include "video/dialogs/GUIDialogVideoSettings.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #include "video/dialogs/GUIDialogVideoBookmarks.h"
+#include "video/dialogs/GUIDialogVideoMisc.h"
 #include "settings/GUIDialogProfileSettings.h"
 #include "settings/GUIDialogLockSettings.h"
 #include "settings/GUIDialogContentSettings.h"
@@ -1086,6 +1087,7 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIDialogVideoSettings);             // window id = 123
   g_windowManager.Add(new CGUIDialogAudioSubtitleSettings);     // window id = 124
   g_windowManager.Add(new CGUIDialogVideoBookmarks);      // window id = 125
+  g_windowManager.Add(new CGUIDialogVideoMisc);      // window id = 126
   // Don't add the filebrowser dialog - it's created and added when it's needed
   g_windowManager.Add(new CGUIDialogNetworkSetup);  // window id = 128
   g_windowManager.Add(new CGUIDialogMediaSource);   // window id = 129
@@ -3062,6 +3064,7 @@ bool CApplication::Cleanup()
     g_windowManager.Delete(WINDOW_DIALOG_NETWORK_SETUP);
     g_windowManager.Delete(WINDOW_DIALOG_MEDIA_SOURCE);
     g_windowManager.Delete(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
+    g_windowManager.Delete(WINDOW_DIALOG_VIDEO_MISC);
     g_windowManager.Delete(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
     g_windowManager.Delete(WINDOW_DIALOG_VIDEO_BOOKMARKS);
     g_windowManager.Delete(WINDOW_DIALOG_VIDEO_SCAN);
@@ -4537,6 +4540,11 @@ bool CApplication::OnMessage(CGUIMessage& message)
         g_windowManager.PreviousWindow();
       }
 
+      if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
+      {
+        ChangePowerStateAfterPlaybackEnded();
+      }
+
       if (IsEnableTestMode()) g_application.getApplicationMessenger().Quit();
       return true;
     }
@@ -5319,6 +5327,51 @@ bool CApplication::AlwaysProcess(const CAction& action)
   }
 
   return false;
+}
+
+bool CApplication::ChangePowerStateAfterPlaybackEnded()
+{
+  bool canChangePowerState = g_application.m_pPlayer->HasAutoPowerStateSupport() && g_settings.m_currentVideoSettings.m_AutoPowerStateAfterPlayback;
+
+  if (canChangePowerState)
+  {
+    PowerState guiAutoPowerStateMode = (PowerState)g_settings.m_currentVideoSettings.m_AutoPowerStateMode;
+    switch (guiAutoPowerStateMode)
+    {
+    case POWERSTATE_SHUTDOWN:
+      {
+        canChangePowerState &= g_powerManager.CanPowerdown();
+        if (canChangePowerState)
+        {
+          g_application.Stop(EXITCODE_POWERDOWN);
+          g_application.getApplicationMessenger().Powerdown();
+        }
+      }
+      break;
+    case POWERSTATE_HIBERNATE:
+      {
+        canChangePowerState &= g_powerManager.CanHibernate();
+        if (canChangePowerState)
+        {
+          g_application.getApplicationMessenger().Hibernate();
+        }
+      }
+      break;
+    case POWERSTATE_SUSPEND:
+      {
+        canChangePowerState &= g_powerManager.CanSuspend();
+        if (canChangePowerState)
+        {
+          g_application.getApplicationMessenger().Suspend();
+        }
+      }
+      break;
+    default:
+      canChangePowerState = FALSE;
+    }
+  }
+
+  return canChangePowerState;
 }
 
 CApplicationMessenger& CApplication::getApplicationMessenger()

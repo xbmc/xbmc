@@ -109,7 +109,8 @@ public:
   int m_CropBottom;
   int m_CropLeft;
   int m_CropRight;
-
+  int m_AutoPowerStateMode;
+  bool m_AutoPowerStateAfterPlayback;
 private:
 };
 

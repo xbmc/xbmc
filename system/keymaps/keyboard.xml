@@ -390,6 +390,12 @@
       <o>CodecInfo</o>
     </keyboard>
   </OSDVideoSettings>
+  <VideoMisc>
+    <keyboard>
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </VideoMisc>
   <OSDAudioSettings>
     <keyboard>
       <backspace>Close</backspace>

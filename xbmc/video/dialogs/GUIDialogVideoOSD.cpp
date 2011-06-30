@@ -41,6 +41,7 @@ void CGUIDialogVideoOSD::FrameMove()
     // check for movement of mouse or a submenu open
     if (g_Mouse.IsActive() || g_windowManager.IsWindowActive(WINDOW_DIALOG_AUDIO_OSD_SETTINGS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_OSD_SETTINGS)
+                           || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_MISC)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_VIDEO_BOOKMARKS)
                            || g_windowManager.IsWindowActive(WINDOW_DIALOG_OSD_TELETEXT))
       SetAutoClose(100); // enough for 10fps
@@ -90,6 +91,8 @@ bool CGUIDialogVideoOSD::OnMessage(CGUIMessage& message)
       CGUIDialog *pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD_SETTINGS);
       if (pDialog && pDialog->IsDialogRunning())
         pDialog->Close(true);
+      pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_MISC);
+      if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_AUDIO_OSD_SETTINGS);
       if (pDialog && pDialog->IsDialogRunning()) pDialog->Close(true);
       pDialog = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_BOOKMARKS);

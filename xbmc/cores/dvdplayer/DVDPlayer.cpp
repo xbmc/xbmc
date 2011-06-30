@@ -68,6 +68,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
+#include "powermanagement/PowerManager.h"
 
 using namespace std;
 
@@ -3409,6 +3410,11 @@ bool CDVDPlayer::HasMenu()
     return true;
   else
     return false;
+}
+
+bool CDVDPlayer::HasAutoPowerStateSupport()
+{
+  return (g_powerManager.CanPowerdown() || g_powerManager.CanHibernate() || g_powerManager.CanSuspend());
 }
 
 bool CDVDPlayer::GetCurrentSubtitle(CStdString& strSubtitle)

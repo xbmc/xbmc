@@ -376,6 +376,7 @@
 #define WINDOW_DIALOG_ADDON_INFO          10146
 #define WINDOW_DIALOG_TEXT_VIEWER         10147
 #define WINDOW_DIALOG_PLAY_EJECT          10148
+#define WINDOW_DIALOG_VIDEO_MISC          10149
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

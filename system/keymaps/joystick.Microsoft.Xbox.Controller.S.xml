@@ -286,6 +286,18 @@
       <button id="19">Close</button>
     </joystick>
   </OSDVideoSettings>
+  <VideoMisc>
+    <joystick name="Microsoft Xbox Controller S">
+      <altname>Mad Catz MicroCON</altname>
+      <altname>Logitech Xbox Cordless Controller</altname>
+      <altname>Microsoft X-Box pad (Japan)</altname> 
+      <button id="4"/>
+      <button id="5">AspectRatio</button>
+      <button id="2">Close</button>
+      <button id="17">Close</button>
+      <button id="19">Close</button>
+    </joystick>
+  </VideoMisc>
   <OSDAudioSettings>
     <joystick name="Microsoft Xbox Controller S">
       <altname>Mad Catz MicroCON</altname>

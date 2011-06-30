@@ -1002,6 +1002,8 @@
   <string id="13014">Minimize</string>
   <string id="13015">Power button action</string>
   <string id="13016">Power off System</string>
+  <string id="13017">Auto power state after playback</string>
+  <string id="13018">Power state</string>
 
   <string id="13020">Is another session active, perhaps over ssh?</string>
   <string id="13021">Mounted removable harddrive</string>

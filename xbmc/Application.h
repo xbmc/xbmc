@@ -286,6 +286,8 @@ protected:
 
   bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
 
+  bool ChangePowerStateAfterPlaybackEnded();
+
   friend class CApplicationMessenger;
 #if defined(__APPLE__) && defined(__arm__)
   friend class CWinEventsIOS;

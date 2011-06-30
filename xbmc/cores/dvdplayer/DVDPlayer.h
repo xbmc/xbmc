@@ -203,6 +203,7 @@ public:
   virtual void ToFFRW(int iSpeed);
   virtual bool OnAction(const CAction &action);
   virtual bool HasMenu();
+  virtual bool HasAutoPowerStateSupport();
   virtual int GetAudioBitrate();
   virtual int GetVideoBitrate();
   virtual int GetSourceBitrate();
