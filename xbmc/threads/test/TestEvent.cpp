@@ -73,16 +73,21 @@ public:
 class group_wait
 {
   CEventGroup& event;
+  int timeout;
 public:
   CEvent* result;
   bool waiting;
 
-  group_wait(CEventGroup& o) : event(o), result(NULL), waiting(false) {}
+  group_wait(CEventGroup& o) : event(o), timeout(-1), result(NULL), waiting(false) {}
+  group_wait(CEventGroup& o, int timeout_) : event(o), timeout(timeout_), result(NULL), waiting(false) {}
 
   void operator()()
   {
     waiting = true;
-    result = event.wait();
+    if (timeout == -1)
+      result = event.wait();
+    else
+      result = event.wait((unsigned int)timeout);
     waiting = false;
   }
 };
@@ -382,3 +387,124 @@ BOOST_AUTO_TEST_CASE(TestEventGroupChildSet)
 
   Sleep(50);
 }
+
+BOOST_AUTO_TEST_CASE(TestEventGroupChildSet2)
+{
+  CEvent event1(true,true);
+  CEvent event2;
+
+  CEventGroup group(&event1,&event2,NULL);
+
+  bool result1 = false;
+  bool result2 = false;
+
+  waiter w1(event1,result1);
+  waiter w2(event2,result2);
+  group_wait w3(group);
+
+  boost::thread waitThread1(boost::ref(w1));
+  boost::thread waitThread2(boost::ref(w2));
+  boost::thread waitThread3(boost::ref(w3));
+
+  Sleep(10);
+
+  BOOST_CHECK(result1);
+  BOOST_CHECK(!result2);
+
+  BOOST_CHECK(!w3.waiting);
+  BOOST_CHECK(w3.result == &event1);
+
+  Sleep(10);
+
+  event2.Set();
+
+  Sleep(50);
+}
+
+BOOST_AUTO_TEST_CASE(TestEventGroupWaitResetsChild)
+{
+  CEvent event1;
+  CEvent event2;
+
+  CEventGroup group(&event1,&event2,NULL);
+
+  group_wait w3(group);
+
+  boost::thread waitThread3(boost::ref(w3));
+
+  Sleep(10);
+
+  BOOST_CHECK(w3.waiting);
+  BOOST_CHECK(w3.result == NULL);
+
+  Sleep(10);
+
+  event2.Set();
+
+  Sleep(10);
+
+  BOOST_CHECK(!w3.waiting);
+  BOOST_CHECK(w3.result == &event2);
+  // event2 should have been reset.
+  BOOST_CHECK(event2.WaitMSec(1) == false); 
+  Sleep(50);
+}
+
+BOOST_AUTO_TEST_CASE(TestEventGroupTimedWait)
+{
+  CEvent event1;
+  CEvent event2;
+  CEventGroup group(&event1,&event2,NULL);
+
+  bool result1 = false;
+  bool result2 = false;
+
+  waiter w1(event1,result1);
+  waiter w2(event2,result2);
+
+  boost::thread waitThread1(boost::ref(w1));
+  boost::thread waitThread2(boost::ref(w2));
+
+  BOOST_CHECK(group.wait(20) == NULL); // waited ... got nothing
+
+  Sleep(10);
+
+  group_wait w3(group,50);
+  boost::thread waitThread3(boost::ref(w3));
+
+  Sleep(10);
+
+  BOOST_CHECK(!result1);
+  BOOST_CHECK(!result2);
+
+  BOOST_CHECK(w3.waiting);
+  BOOST_CHECK(w3.result == NULL);
+
+  Sleep(100);
+
+  BOOST_CHECK(!w3.waiting);
+  BOOST_CHECK(w3.result == NULL);
+
+  group_wait w4(group,50);
+  boost::thread waitThread4(boost::ref(w4));
+
+  Sleep(10);
+
+  BOOST_CHECK(w4.waiting);
+  BOOST_CHECK(w4.result == NULL);
+
+  event1.Set();
+
+  Sleep(10);
+
+  BOOST_CHECK(result1);
+  BOOST_CHECK(!result2);
+
+  BOOST_CHECK(!w4.waiting);
+  BOOST_CHECK(w4.result == &event1);
+
+  event2.Set();
+
+  Sleep(50);
+}
+

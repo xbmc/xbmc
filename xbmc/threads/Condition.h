@@ -84,9 +84,10 @@ namespace XbmcThreads
       boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(milliseconds);
       while ((!predicate) && ret != ConditionVariable::TW_TIMEDOUT)
       {
-        ret = cond.wait(lock,milliseconds);
+        ret = milliseconds ? cond.wait(lock,milliseconds) : 
+          ((!predicate) ? ConditionVariable::TW_TIMEDOUT : ConditionVariable::TW_OK);
 
-        if (!predicate && boost::get_system_time() > timeout)
+        if (((!predicate) && boost::get_system_time() > timeout) || (milliseconds == 0))
           ret = ConditionVariable::TW_TIMEDOUT;
       }
       return ret;

@@ -63,8 +63,63 @@ void CEvent::removeGroup(XbmcThreads::CEventGroup* group)
   }
 }
 
+#define XB_MAX_UNSIGNED_INT ((unsigned int)-1)
+
+
 namespace XbmcThreads
 {
+  /**
+   * This will block until any one of the CEvents in the group are
+   * signaled at which point a pointer to that CEvents will be 
+   * returned.
+   */
+  CEvent* CEventGroup::wait() 
+  { 
+    return wait(XB_MAX_UNSIGNED_INT);
+  }
+
+  /**
+   * This will block until any one of the CEvents in the group are
+   * signaled or the timeout is reachec. If an event is signaled then
+   * it will return a pointer to that CEvent, otherwise it will return
+   * NULL.
+   */
+  CEvent* CEventGroup::wait(unsigned int milliseconds)  
+  { 
+    CSingleLock lock(mutex);
+    numWaits++; 
+    signaled = anyEventsSignaled(); 
+    if(!signaled)
+    {
+      if (milliseconds == XB_MAX_UNSIGNED_INT)
+        condVar.wait(mutex); 
+      else
+        condVar.wait(mutex,milliseconds); 
+    }
+    numWaits--; 
+
+    // signaled should have been set by a call to CEventGroup::Set
+    CEvent* ret = signaled;
+    if (numWaits == 0) 
+    {
+      if (signaled)
+        signaled->WaitMSec(0); // reset the event if needed
+      signaled = NULL;  // clear the signaled if all the waiters are gone
+    }
+
+    // there is a very small chance that Set was called from a second
+    // child event that will need resetting
+    for (std::vector<CEvent*>::iterator iter = events.begin();
+         iter != events.end(); iter++)
+    {
+      CEvent* cur = *iter;
+      if (cur != signaled)
+        cur->WaitMSec(0); // reset child if necessary
+    }
+
+    return ret;
+  }
+
   CEventGroup::CEventGroup(int num, CEvent* v1, ...) : signaled(NULL), condVar(signaled), numWaits(0)
   {
     va_list ap;
