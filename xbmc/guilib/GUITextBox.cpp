@@ -130,6 +130,7 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
         m_autoScrollDelayTime += currentTime - m_lastRenderTime;
       if (m_autoScrollDelayTime > (unsigned int)m_autoScrollDelay && m_scrollSpeed == 0)
       { // delay is finished - start scrolling
+        MarkDirtyRegion();
         if (m_offset < (int)m_lines.size() - m_itemsPerPage)
           ScrollToOffset(m_offset + 1, true);
         else
@@ -155,6 +156,8 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
   // render the repeat anim as appropriate
   if (m_autoScrollRepeatAnim)
   {
+    if (m_autoScrollRepeatAnim->GetProcess() != ANIM_PROCESS_NONE)
+      MarkDirtyRegion();
     m_autoScrollRepeatAnim->Animate(currentTime, true);
     TransformMatrix matrix;
     m_autoScrollRepeatAnim->RenderAnimation(matrix);
@@ -162,6 +165,9 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
   }
 
   // update our scroll position as necessary
+  if (m_scrollSpeed != 0)
+    MarkDirtyRegion();
+
   if (m_lastRenderTime)
     m_scrollOffset += m_scrollSpeed * (currentTime - m_lastRenderTime);
   if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_itemHeight) ||
@@ -177,7 +183,6 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
     CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, MathUtils::round_int(m_scrollOffset / m_itemHeight));
     SendWindowMessage(msg);
   }
-  MarkDirtyRegion();
 
   CGUIControl::Process(currentTime, dirtyregions);
 
