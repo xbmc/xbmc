@@ -50,10 +50,10 @@ CGUIWindowManager::~CGUIWindowManager(void)
 
 void CGUIWindowManager::Initialize()
 {
-  LoadNotOnDemandWindows();
   m_tracker.SelectAlgorithm();
-
   m_initialized = true;
+
+  LoadNotOnDemandWindows();
 }
 
 bool CGUIWindowManager::SendMessage(int message, int senderID, int destID, int param1, int param2)
