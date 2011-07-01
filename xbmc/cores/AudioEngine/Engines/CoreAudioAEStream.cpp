@@ -57,7 +57,8 @@ CCoreAudioAEStream::CCoreAudioAEStream(enum AEDataFormat dataFormat, unsigned in
   m_inDataFunc      (false),
   m_inDrainFunc     (false),
   m_audioCallback   (NULL ),
-  m_AvgBytesPerSec  (0),
+  m_cbFreeFunc      (NULL ),
+  m_AvgBytesPerSec  (0    ),
   m_Buffer          (NULL)
 {
   m_ssrcData.data_out             = NULL;

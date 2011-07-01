@@ -101,8 +101,8 @@ CCoreAudioAE::~CCoreAudioAE()
   while(!m_streams.empty())
   {
     CCoreAudioAEStream *s = m_streams.front();
-    /* note: the stream will call RemoveStream via it's dtor */
     RemoveStream(s);
+    m_sounds.pop_front();
     delete s;
   }
   
@@ -525,25 +525,22 @@ IAEStream *CCoreAudioAE::FreeStream(IAEStream *stream)
 
   m_EngineLock = true;
   CSingleLock AELock(m_Mutex);
-
-  CCoreAudioAEStream *istream = (CCoreAudioAEStream *)stream;
   
   RemoveStream(stream);
+  delete (CCoreAudioAEStream *)stream;
 
   AELock.Leave();
 
   m_EngineLock = false;
-
+  
   EngineLock.Leave();
-
+  
   /* When we have been in passthrough mode, reinit the hardware to come back to anlog out */
   if(m_streams.empty()/* && m_rawPassthrough*/)
   {
     Initialize();
     CLog::Log(LOGINFO, "CCoreAudioAE::FreeStream Reinit, no streams left" );
   }
-
-  delete istream;
 
   return NULL;
 }
@@ -621,7 +618,7 @@ void CCoreAudioAE::FreeSound(IAESound *sound)
   if (!sound) return;
 
   CSingleLock AELock(m_Mutex);
-  sound->Stop();
+
   for(std::list<CCoreAudioAESound*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
     if (*itt == sound)
     {
