@@ -25,10 +25,15 @@
 
 enum AEEngine
 {
-  AE_ENGINE_NULL ,
-  AE_ENGINE_SOFT ,
-  AE_ENGINE_PULSE , 
-  AE_ENGINE_COREAUDIO
+#ifndef __APPLE__
+  AE_ENGINE_NULL,
+  AE_ENGINE_SOFT,
+#else
+  AE_ENGINE_COREAUDIO,
+#endif
+#ifdef HAS_PULSEAUDIO
+  AE_ENGINE_PULSE,
+#endif
 };
 
 class CAEWrapper;

@@ -34,18 +34,14 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
 {
   switch(engine)
   {
-#ifndef __APPLE__
-    case AE_ENGINE_NULL : return AE.SetEngine(NULL);
-#endif
-      
 #ifdef __APPLE__
-    case AE_ENGINE_COREAUDIO : return AE.SetEngine(new CCoreAudioAE ());
+    case AE_ENGINE_COREAUDIO: return AE.SetEngine(new CCoreAudioAE());
 #else
-    case AE_ENGINE_SOFT : return AE.SetEngine(new CSoftAE ());
+    case AE_ENGINE_NULL     : return AE.SetEngine(NULL);
+    case AE_ENGINE_SOFT     : return AE.SetEngine(new CSoftAE());
 #endif
-
 #ifdef HAS_PULSEAUDIO
-    case AE_ENGINE_PULSE: return AE.SetEngine(new CPulseAE());
+    case AE_ENGINE_PULSE    : return AE.SetEngine(new CPulseAE());
 #endif
   }
 
