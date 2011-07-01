@@ -31,7 +31,6 @@ CAESoundWrapper::CAESoundWrapper(const CStdString &filename) :
   m_freeCallbackArg(NULL    )
 {
   m_filename = filename;
-  
   Load();
 }
 
@@ -46,22 +45,22 @@ void CAESoundWrapper::UnLoad()
   CExclusiveLock lock(m_lock);
 
   if (!m_sound) return;
-  if (m_ae)
+  IAE *ae = AE.GetEngine();
+  if (ae)
   {
     m_sound->SetFreeCallback(NULL, NULL);
-    m_ae->FreeSound(m_sound);
+    ae->FreeSound(m_sound);
   }
   m_sound = NULL;
-  m_ae    = NULL;
+
 }
 
 void CAESoundWrapper::Load()
 {
   CExclusiveLock lock(m_lock);
 
-  m_ae = AE.GetEngine();
-  
-  if (m_ae   ) m_sound = m_ae->GetSound(m_filename);
+  IAE *ae = AE.GetEngine();
+  if (ae     ) m_sound = ae->GetSound(m_filename);
   if (m_sound)
   {
     m_sound->SetVolume(m_volume);
@@ -80,16 +79,18 @@ void CAESoundWrapper::StaticSoundOnFree(IAESound *sender, void *arg)
 void CAESoundWrapper::Play()
 {
   CSharedLock lock(m_lock);
-  if (m_ae && m_sound)
-    m_ae->PlaySound(m_sound);
+  IAE *ae = AE.GetEngine();
+  if (ae && m_sound)
+    ae->PlaySound(m_sound);
 }
 
 void CAESoundWrapper::Stop()
 {
   CSharedLock lock(m_lock);
 
-  if (m_ae && m_sound)
-    m_ae->StopSound(m_sound);
+  IAE *ae = AE.GetEngine();
+  if (ae && m_sound)
+    ae->StopSound(m_sound);
 }
 
 bool CAESoundWrapper::IsPlaying()
