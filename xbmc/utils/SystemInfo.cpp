@@ -711,7 +711,11 @@ bool CSysInfo::IsAppleTV()
 
 bool CSysInfo::IsAppleTV2()
 {
+#if defined(__APPLE__)
   return DarwinIsAppleTV2();
+#else
+  return false;
+#endif
 }
 
 bool CSysInfo::HasVideoToolBoxDecoder()

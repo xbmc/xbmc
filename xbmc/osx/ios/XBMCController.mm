@@ -132,7 +132,7 @@ XBMCEAGLView  *m_glView;
   UITapGestureRecognizer *doubleFingerDTap = [[UITapGestureRecognizer alloc]
                                               initWithTarget:self action:@selector(handleDoubleFingerDoubleTap:)];  
   doubleFingerDTap.delaysTouchesBegan = YES;
-  doubleFingerDTap.numberOfTapsRequired = 2;
+  doubleFingerDTap.numberOfTapsRequired = 1;
   doubleFingerDTap.numberOfTouchesRequired = 2;
   [self.view addGestureRecognizer:doubleFingerDTap];
   [doubleFingerDTap release];

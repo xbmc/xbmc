@@ -47,17 +47,17 @@ bool DarwinIsAppleTV2(void)
   {
     char        buffer[512];
     size_t      len = 512;
-    result = false;    
+    result = 0;    
     std::string hw_machine = "unknown";
 
     if (sysctlbyname("hw.machine", &buffer, &len, NULL, 0) == 0)
       hw_machine = buffer;
 
     if (hw_machine.find("AppleTV2,1") != std::string::npos)
-      result = true;   
+      result = 1;   
   }
 #endif
-  return result;
+  return (result == 1);
 }
 
 float GetIOSVersion(void)
