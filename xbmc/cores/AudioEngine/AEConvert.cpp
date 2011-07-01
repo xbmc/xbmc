@@ -24,8 +24,22 @@
 #include "AEUtil.h"
 #include "utils/EndianSwap.h"
 
+static float m_LookupU8[UINT8_MAX + 1];
+
 CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
 {
+  /* build lookup tables if we need them */
+  switch(dataFormat)
+  {
+    case AE_FMT_U8:
+    case AE_FMT_S8:
+      for(int i = 0; i < UINT8_MAX; ++i)
+        m_LookupU8[i] = ((float)i / UINT8_MAX) * 2.0f - 1.0f;
+      break;
+    default:
+      break;
+  }
+
   switch(dataFormat)
   {
     case AE_FMT_U8    : return &U8_Float;
@@ -83,19 +97,17 @@ CAEConvert::AEConvertFrFn CAEConvert::FrFloat(enum AEDataFormat dataFormat)
 unsigned int CAEConvert::U8_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
   unsigned int i;
-  
-  for (i = 0; i < samples; i++)
-    dest[i] = (((data[i]-0.5f)/ (float)(INT8_MAX)) - 1);
-  
-  return samples;  
+  for(i = 0; i < samples; ++i, ++data, ++dest)
+    *dest = m_LookupU8[*data];
+
+  return samples;
 }
 
 unsigned int CAEConvert::S8_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
   unsigned int i;
-  
-  for (i = 0; i < samples; i++)
-    dest[i] = *data++ / (float)(INT8_MAX + 1);
+  for(i = 0; i < samples; ++i, ++data, ++dest)
+    *dest = m_LookupU8[(int8_t)*data - INT8_MAX];
 
   return samples;
 }
