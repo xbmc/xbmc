@@ -103,6 +103,10 @@ void SpotifyInterface::cb_loggedIn(sp_session *session, sp_error error)
   sp_playlistcontainer_add_callbacks(sp_session_playlistcontainer(session),&g_spotifyInterface->m_pcCallbacks,NULL);
 
   g_spotifyInterface->hideReconectingDialog();
+  g_spotifyInterface->m_isWaitingForLogin = false;
+  CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
+  message.SetStringParam("musicdb://spotify/menu/main/");
+  g_windowManager.SendThreadMessage(message);
 }
 
 void SpotifyInterface::cb_loggedOut(sp_session *session)
@@ -202,10 +206,19 @@ void SpotifyInterface::pl_state_change(sp_playlist *pl, void *userdata)
 
 void SpotifyInterface::pc_loaded(sp_playlistcontainer *pc, void *userdata)
 {
+  sp_playlistcontainer_add_ref(pc);
+  
+  for (int i=0; i < sp_playlistcontainer_num_playlists(pc); i++)
+  {
+    if (sp_playlistcontainer_playlist_type(pc, i) != SP_PLAYLIST_TYPE_PLAYLIST)
+      sp_playlist_add_callbacks(sp_playlistcontainer_playlist(pc, i),&g_spotifyInterface->m_plCallbacks,0);
+  }
+
+  g_spotifyInterface->m_isWaitingForPlaylists = false;
   g_spotifyInterface->m_isPlaylistsLoaded = false;
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
   CStdString dir;
-  dir.Format("%s","musicdb://spotify/menu/playlists/");
+  dir.Format("%s","musicdb://spotify/menu/main/");
   message.SetStringParam(dir);
   g_windowManager.SendThreadMessage(message);
   CLog::Log( LOGDEBUG, "Spotifylog: playlist container loaded");
@@ -730,7 +743,10 @@ SpotifyInterface::SpotifyInterface()
   m_startNoThumbs = 0;
   CStdString m_updatePath = "";
   m_isWaitingForLogout = false;
+  m_isWaitingForLogin = true;
   m_isPlaylistsLoaded = false;
+  m_noPlaylists = 0;
+  m_isWaitingForPlaylists = true;
 
   m_callbacks.connection_error = &cb_connectionError;
   m_callbacks.logged_out = &cb_loggedOut;
@@ -855,6 +871,7 @@ bool SpotifyInterface::connect(bool forceNewUser)
     CStdString username = getUsername();
     CStdString password = getPassword();
     sp_session_login(m_session, username.c_str(), password.c_str() );
+    m_isWaitingForLogin = true;
     return false;
   }
   return true;
@@ -943,6 +960,9 @@ void SpotifyInterface::clean(bool search, bool artistbrowse, bool albumbrowse, b
 
   if (playlists)
   {
+    m_isPlaylistsLoaded = false;
+    m_noPlaylists = 0;
+    m_isWaitingForPlaylists = true;
     m_playlistItems.Clear();
   }
 
@@ -1208,6 +1228,16 @@ XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE SpotifyInterface::getChildType(const CS
 
 void SpotifyInterface::getMainMenuItems(CFileItemList &items)
 {
+  if (m_isWaitingForLogin)
+  {
+    CMediaSource share;
+    share.strPath.Format("musicdb://spotify/menu/main/");
+    share.strName.Format("Logging in...");
+    CFileItemPtr pItem(new CFileItem(share));
+    items.Add(pItem);
+    return;
+  }
+  
   //search
   CMediaSource share;
   share.strPath.Format("musicdb://spotify/menu/search/");
@@ -1216,12 +1246,22 @@ void SpotifyInterface::getMainMenuItems(CFileItemList &items)
   //pItem->SetThumbnailImage(CUtil::GetDefaultFolderThumb("special://xbmc/media/spotify_core_logo.png"));
   items.Add(pItem);
 
-  //playlists
-  share.strPath.Format("musicdb://spotify/menu/playlists/");
-  share.strName.Format("Playlists");
-  CFileItemPtr pItem2(new CFileItem(share));
-  //pItem2->SetThumbnailImage(CUtil::GetDefaultFolderThumb("special://xbmc/media/spotify_core_logo.png"));
-  items.Add(pItem2);
+
+  if (m_isWaitingForPlaylists)
+  {
+    share.strPath.Format("musicdb://spotify/menu/main/");
+    share.strName.Format("Waiting for playlists...");
+    CFileItemPtr pItem2(new CFileItem(share));
+    items.Add(pItem2);
+  }else
+  { 
+    //playlists
+    share.strPath.Format("musicdb://spotify/menu/playlists/");
+    share.strName.Format("Playlists");
+    CFileItemPtr pItem2(new CFileItem(share));
+    //pItem2->SetThumbnailImage(CUtil::GetDefaultFolderThumb("special://xbmc/media/spotify_core_logo.png"));
+    items.Add(pItem2);
+   }
 
   //toplists
   share.strPath.Format("musicdb://spotify/menu/toplists/");
@@ -1383,14 +1423,6 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
     CMediaSource share;
     sp_playlistcontainer *pc = sp_session_playlistcontainer(m_session);
 
-    CLog::Log( LOGDEBUG, "Spotifylog: getPlaylistItems 1");
-    if(!sp_playlistcontainer_is_loaded(pc))
-      return;
-
-    CLog::Log( LOGDEBUG, "Spotifylog: getPlaylistItems 2");
-
-    sp_playlistcontainer_add_ref(pc);
-
     for (int i=0; i < sp_playlistcontainer_num_playlists(pc); i++)
     {
       sp_playlist_type spType = sp_playlistcontainer_playlist_type(pc, i);
@@ -1438,7 +1470,6 @@ void SpotifyInterface::getPlaylistItems(CFileItemList &items)
   m_isPlaylistsLoaded = true;
   waitForThumbs("musicdb://spotify/menu/playlists/");
   }
-  
 }
 
 bool SpotifyInterface::search()

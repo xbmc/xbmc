@@ -100,6 +100,7 @@ public:
 private:
   sp_session *m_session;
   bool m_isWaitingForLogout;
+  bool m_isWaitingForLogin;
   CGUIDialogProgress *searchProgress;
   sp_session_config m_config;
   sp_error m_error;
@@ -125,7 +126,6 @@ private:
 
   //menus
   void getMainMenuItems(CFileItemList &items);
-  void getSettingsMenuItems(CFileItemList &items);
   void getSearchMenuItems(CFileItemList &items);
   void getPlaylistItems(CFileItemList &items);
 
@@ -194,6 +194,8 @@ private:
 
   //playlists
   CFileItemList m_playlistItems;
+  int m_noPlaylists;
+  bool m_isWaitingForPlaylists;
   bool m_isPlaylistsLoaded;
 
   //converting functions
