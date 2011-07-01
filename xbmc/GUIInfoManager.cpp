@@ -3174,22 +3174,22 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return m_currentFile->GetVideoInfoTag()->m_strPlotOutline;
     case VIDEOPLAYER_EPISODE:
       {
-        CStdString strYear;
+        CStdString strEpisode;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
-          strYear.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode);
+          strEpisode.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode);
         else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0)
-          strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
-        return strYear;
+          strEpisode.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
+        return strEpisode;
       }
       break;
     case VIDEOPLAYER_SEASON:
       {
-        CStdString strYear;
+        CStdString strSeason;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason > 0)
-          strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason);
+          strSeason.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSpecialSortSeason);
         else if(m_currentFile->GetVideoInfoTag()->m_iSeason > 0)
-          strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSeason);
-        return strYear;
+          strSeason.Format("%i", m_currentFile->GetVideoInfoTag()->m_iSeason);
+        return strSeason;
       }
       break;
     case VIDEOPLAYER_TVSHOW:
