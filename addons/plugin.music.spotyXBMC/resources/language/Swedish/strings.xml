@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30001">spotyXBMC</string>
+
+    <string id="30400">Allmänt</string>
+    <string id="30401">Användarnamn</string>
+    <string id="30402">Lösenord</string>
+    <string id="30403">Cache-placering</string>
+    <string id="30404">Använd hög bitrate</string>
+    <string id="30405">Aktivera</string>
+
+    <string id="30420">Sökresultat</string>
+    <string id="30421">Max antal artister</string>
+    <string id="30422">Max antal album</string>
+    <string id="30423">Max antal låtar</string>
+
+    <string id="30430">Topplistor</string>
+    <string id="30431">Visa listor för region</string>
+    <string id="30432">Everywhere</string>
+    <string id="30433">Your country</string>
+</strings>
