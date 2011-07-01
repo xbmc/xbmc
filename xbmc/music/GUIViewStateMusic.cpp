@@ -558,16 +558,11 @@ void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
   //spotify, only if we do use spotify
   CLog::Log(LOGDEBUG,"Adding spotify share");
-  if (g_advancedSettings.m_spotifyEnable)
-  {
-    CMediaSource share;
-    share.strName="Spotify"; // main menu
-    share.strPath = "musicdb://spotify/menu/main/";
-    //share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("special://xbmc/media/spotify_core_logo.png");
-   share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    m_sources.push_back(share);
-  }
-
+  CMediaSource share;
+  share.strName="Spotify"; // main menu
+  share.strPath = "musicdb://spotify/menu/main/";
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  m_sources.push_back(share);
 
   if (!g_advancedSettings.m_bVirtualShares) return;
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)

@@ -46,37 +46,13 @@ $ ./configure
 $ make
 $ sudo make install
 
-8. OPTIONAL, create a advancedsettings file and save your spotify credentials
-
-No need for a advancedsettings, spotify is now enabled by default but if you don’t want to enter your
-spotify username and password on every XBMC session this is the only way to do it.
-
-Ubuntu: Create advancedsettings.xml in ~/.xbmc/userdata/
-
-$ gedit ~/.xbmc/userdata/advancedsettings.xml
-
-Possible settings for the advancedsettings.xml are in full:
-
-<advancedsettings>
-	<spotify>
-		<enable>true</enable>
-		<username>USERNAME</username>
-		<password>SECRETPASSWORD</password>
-		<cachefolder>/home/YOURUSER/.cache/spotify/</cachefolder>
-                <highbitrate>true</highbitrate>
-		<maxsearchartists>30</maxsearchartists>
-		<maxsearchalbums>30</maxsearchalbums>
-		<maxsearchtracks>150</maxsearchtracks>
-	</spotify>
-</advancedsettings>
-
-9. Start xbmc
+8. Start xbmc
 $ xbmc
 
-10. Enable music library
-With default skin: got to music, press left key to open the menu, select "library mode" and press enter
+9. Start spotyXBMC
+start the preinstalled music addon spotyXBMC and set the settings
 
-11. Enjoy spotify music inside xbmc
+10. Enjoy spotify music inside xbmc
 
 Done!
 
@@ -94,31 +70,14 @@ git://github.com/akezeke/xbmc.git
 Get your own spotify API key from http://developer.spotify.com/en/libspotify/application-key/
 Click on c-code and copy the content to a new file called appkey.h placed in the xbmc source root folder. (where this readme is located).
 
-3. Create a advancedsettings file and save your spotify credentials
+3. Start xbmc
 
-Create advancedsettings.xml in "C:\Users\!!YOUR USER!!\AppData\Roaming\XBMC\userdata"
+4. Start spotyXBMC
+start the preinstalled music addon spotyXBMC and set the settings
 
-Possible settings for the advancedsettings.xml are in full:
+MAKE SURE THAT YOU CHANGE THE CACHE PATH TO A LEGIT WINDOWS PATH!
 
-<advancedsettings>
-	<spotify>
-		<enable>true</enable>
-		<username>USERNAME</username>
-		<password>SECRETPASSWORD</password>
-		<cachefolder>/home/YOURUSER/.cache/spotify/</cachefolder>
-                <highbitrate>true</highbitrate>
-		<maxsearchartists>30</maxsearchartists>
-		<maxsearchalbums>30</maxsearchalbums>
-		<maxsearchtracks>150</maxsearchtracks>
-	</spotify>
-</advancedsettings>
-
-4. Start xbmc
-
-5. Enable music library
-With default skin: got to music, press left key to open the menu, select "library mode" and press enter
-
-6. Enjoy spotify music inside xbmc
+5. Enjoy spotify music inside xbmc
 
 Done!
 

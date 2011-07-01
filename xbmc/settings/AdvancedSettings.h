@@ -83,16 +83,6 @@ class CAdvancedSettings
     float m_audioPlayCountMinimumPercent;
     bool m_dvdplayerIgnoreDTSinWAV;
 
-    //Spotify
-    bool m_spotifyEnable;
-    bool m_spotifyUseHighBitrate;
-    CStdString m_spotifyUsername;
-    CStdString m_spotifyPassword;
-    CStdString m_spotifyCacheFolder;
-    int m_spotifyMaxSearchArtists;
-    int m_spotifyMaxSearchAlbums;
-    int m_spotifyMaxSearchTracks;
-
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
     int m_videoSmallStepBackSeconds;
@@ -310,3 +300,4 @@ class CAdvancedSettings
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
+

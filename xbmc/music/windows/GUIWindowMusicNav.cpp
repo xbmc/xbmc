@@ -104,10 +104,6 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
       if (!CGUIWindowMusicBase::OnMessage(message))
         return false;
-
-      //spotify  we still want a library view if we have spotify enabled
-      if (g_advancedSettings.m_spotifyEnable)
-        return true;
       
       //  base class has opened the database, do our check
       DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);

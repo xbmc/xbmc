@@ -34,8 +34,6 @@
 #include "addons/Visualisation.h"
 #include "input/ButtonTranslator.h"
 #include "utils/AlarmClock.h"
-// spotify
-#include "settings/AdvancedSettings.h"
 #ifdef HAS_LCD
 #include "utils/LCD.h"
 #endif
@@ -4400,11 +4398,7 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
       CMusicDatabase db;
       if (db.Open())
       {
-        //spotify
-        if (g_advancedSettings.m_spotifyEnable)
-          m_libraryHasMusic = 1;
-        else
-          m_libraryHasMusic = (db.GetSongsCount() > 0) ? 1 : 0;
+        m_libraryHasMusic = (db.GetSongsCount() > 0) ? 1 : 0;
         db.Close();
       }
     }

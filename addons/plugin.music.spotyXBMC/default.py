@@ -9,7 +9,6 @@ __settings__ = xbmcaddon.Addon(id='plugin.music.spotyXBMC')
 __language__ = __settings__.getLocalizedString
 
 def startPlugin():	
-        xbmc.executebuiltin('XBMC.ReplaceWindow(10005,"musicdb://spotify/menu/main/")')
-	xbmcplugin.endOfDirectory(handle=int(sys.argv[1]))
+    xbmc.executebuiltin('XBMC.ReplaceWindow(10005,"musicdb://spotify/menu/main/")')
 
 startPlugin()

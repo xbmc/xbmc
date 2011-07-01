@@ -205,7 +205,7 @@ int SpotifyCodec::cb_musicDelivery(sp_session *session, const sp_audioformat *fo
   }
   m_currentPlayer->m_channels = format->channels;
   m_currentPlayer->m_sampleRate = format->sample_rate;
-  m_currentPlayer->m_bitrate = g_advancedSettings.m_spotifyUseHighBitrate ? 320 : 160;
+  m_currentPlayer->m_bitrate = 320;
   memcpy (m_currentPlayer->m_buffer + m_currentPlayer->m_bufferPos, frames, amountToMove);
   m_currentPlayer->m_bufferPos += amountToMove;
 

@@ -100,10 +100,8 @@ INT CXBApplicationEx::Run()
 #endif
 
       //spotify, advance the spotifyAPI
-      if (g_advancedSettings.m_spotifyEnable)
-      {
-        g_spotifyInterface->processEvents();
-      }
+      g_spotifyInterface->processEvents();
+
 
       Process();
       //reset exception count

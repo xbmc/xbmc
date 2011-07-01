@@ -23,7 +23,6 @@
 
 #include "spotinterface.h"
 #include "CachingCodec.h"
-#include "settings/AdvancedSettings.h"
 
 class SpotifyCodec : public CachingCodec
 {

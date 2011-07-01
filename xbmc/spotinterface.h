@@ -152,9 +152,10 @@ private:
   CGUIDialogProgress *m_reconectingDialog;
   CGUIDialogProgress *m_progressDialog;
 
-  //dialog functions
+  //helper functions
   CStdString getUsername();
   CStdString getPassword();
+  CStdString getAddonSetting(CStdString key);
   void showDisclaimer();
   bool m_isShowingReconnect;
   void showReconectingDialog();
