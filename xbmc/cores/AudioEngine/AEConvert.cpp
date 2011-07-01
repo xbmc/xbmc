@@ -50,9 +50,6 @@
 #define INT24_MAX (0x7FFFFF)
 #endif
 
-float *CAEConvert::m_LookupU8  = NULL;
-float *CAEConvert::m_LookupS16 = NULL;
-
 static inline int safeRound(double f)
 {
   /* if the value is larger then we can handle, then clamp it */
@@ -68,34 +65,6 @@ static inline int safeRound(double f)
 
 CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
 {
-  /* build lookup tables if we need them */
-  switch(dataFormat)
-  {
-    case AE_FMT_U8:
-    case AE_FMT_S8:
-      if (!m_LookupU8)
-      {
-        m_LookupU8 = new float[UINT8_MAX + 1];
-        for(int i = 0; i <= UINT8_MAX; ++i)
-          m_LookupU8[i] = ((float)i / UINT8_MAX) * 2.0f - 1.0f;
-      }
-      break;
-
-    case AE_FMT_S16NE:
-    case AE_FMT_S16LE:
-    case AE_FMT_S16BE:
-      if (!m_LookupS16)
-      {
-        m_LookupS16 = new float[UINT16_MAX + 1];
-        for(int i = 0; i <= UINT16_MAX; ++i)
-          m_LookupS16[i] = ((float)i / ((float)INT16_MAX+.5f)) - 1.0f;
-      }
-      break;
-
-    default:
-      break;
-  }
-
   switch(dataFormat)
   {
     case AE_FMT_U8    : return &U8_Float;
@@ -152,32 +121,35 @@ CAEConvert::AEConvertFrFn CAEConvert::FrFloat(enum AEDataFormat dataFormat)
 
 unsigned int CAEConvert::U8_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
-  unsigned int i;
-  for(i = 0; i < samples; ++i, ++data, ++dest)
-    *dest = m_LookupU8[*data];
+  const float mul = 1.0f / UINT8_MAX;
+
+  for(unsigned int i = 0; i < samples; ++i, ++data, ++dest)
+    *dest = (*(uint8_t*)data * mul) * 2.0f - 1.0f;
 
   return samples;
 }
 
 unsigned int CAEConvert::S8_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
-  unsigned int i;
-  for(i = 0; i < samples; ++i, ++data, ++dest)
-    *dest = m_LookupU8[(int8_t)*data + INT8_MAX];
+  const float mul = 1.0f / (INT8_MAX + 0.5f);
+
+  for(unsigned int i = 0; i < samples; ++i, ++data, ++dest)
+    *dest = *(int8_t*)data * mul;
 
   return samples;
 }
 
 unsigned int CAEConvert::S16LE_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
-  unsigned int i;
-  for(i = 0; i < samples; ++i, data += 2, ++dest)
+  const float mul = 1.0f / (INT16_MAX + 0.5f);
+
+  for(unsigned int i = 0; i < samples; ++i, data += 2, ++dest)
   {
 #ifndef __BIG_ENDIAN__
-    *dest = m_LookupS16[*(int16_t*)data + INT16_MAX];
+    *dest = *(int16_t*)data * mul;
 #else
     int16_t value = Endian_Swap16(*(int16_t*)data);
-    *dest = m_LookupS16[value + INT16_MAX];
+    *dest = value * mul;
 #endif
   }
 
@@ -186,14 +158,16 @@ unsigned int CAEConvert::S16LE_Float(uint8_t *data, const unsigned int samples, 
 
 unsigned int CAEConvert::S16BE_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
+  const float mul = 1.0f / (INT16_MAX + 0.5f);
+
   unsigned int i;
   for(i = 0; i < samples; ++i, data += 2, ++dest)
   {
 #ifdef __BIG_ENDIAN__
-    *dest = m_LookupS16[*(int16_t*)data + INT16_MAX];
+    *dest = *(int16_t*)data * mul;
 #else
     int16_t value = Endian_Swap16(*(int16_t*)data);
-    *dest = m_LookupS16[value + INT16_MAX];
+    *dest = value * mul;
 #endif
   }
 
