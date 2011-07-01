@@ -47,8 +47,8 @@ public:
   unsigned int GetSampleCount();
 
   /* must be called before initialize to be sure we have exclusive access to our samples */
-  void Lock()   { m_sampleLock.lock(); }
-  void UnLock() { m_sampleLock.unlock(); }
+  void Lock()   { m_sampleLock.EnterExclusive(); }
+  void UnLock() { m_sampleLock.LeaveExclusive(); }
 
   /* ReleaseSamples must be called for each time GetSamples has been called */
   virtual float* GetSamples    ();
