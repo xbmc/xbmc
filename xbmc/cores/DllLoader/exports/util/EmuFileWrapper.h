@@ -26,8 +26,7 @@
 #include <stdio.h>
 
 #include "system.h"
-
-class CMutex;
+#include "threads/CriticalSection.h"
 
 #if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
 #define _file _fileno
@@ -46,7 +45,7 @@ typedef struct stEmuFileObject
   bool    used;
   FILE    file_emu;
   XFILE::CFile*  file_xbmc;
-  CMutex *file_lock;
+  CCriticalSection *file_lock;
   int mode;
 } EmuFileObject;
 
@@ -77,7 +76,7 @@ public:
   bool StreamIsEmulatedFile(FILE* stream);
 private:
   EmuFileObject m_files[MAX_EMULATED_FILES];
-  CRITICAL_SECTION m_criticalSection;
+  CCriticalSection m_criticalSection;
   bool m_initialized;
 };
 

@@ -48,13 +48,12 @@ public:
     m[1][0] = m[1][2] = m[1][3] = 0.0f; m[1][1] = 1.0f;
     m[2][0] = m[2][1] = m[2][3] = 0.0f; m[2][2] = 1.0f;
     alpha = 1.0f;
+    identity = true;
   };
   static TransformMatrix CreateTranslation(float transX, float transY, float transZ = 0)
   {
     TransformMatrix translation;
-    translation.m[0][3] = transX;
-    translation.m[1][3] = transY;
-    translation.m[2][3] = transZ;
+    translation.SetTranslation(transX, transY, transZ);
     return translation;
   }
   void SetTranslation(float transX, float transY, float transZ)
@@ -63,6 +62,7 @@ public:
     m[1][0] = m[1][2] = 0.0f; m[1][1] = 1.0f; m[1][3] = transY;
     m[2][0] = m[2][1] = 0.0f; m[2][2] = 1.0f; m[2][3] = transZ;
     alpha = 1.0f;
+    identity = (transX == 0 && transY == 0 && transZ == 0);
   }
   static TransformMatrix CreateScaler(float scaleX, float scaleY, float scaleZ = 1.0f)
   {
@@ -70,6 +70,7 @@ public:
     scaler.m[0][0] = scaleX;
     scaler.m[1][1] = scaleY;
     scaler.m[2][2] = scaleZ;
+    scaler.identity = (scaleX == 1 && scaleY == 1 && scaleZ == 1);
     return scaler;
   };
   void SetScaler(float scaleX, float scaleY, float centerX, float centerY)
@@ -80,6 +81,7 @@ public:
     m[1][0] = 0.0f;    m[1][1] = scaleY;  m[1][2] = 0.0f;    m[1][3] = centerY*(1-scaleY);
     m[2][0] = 0.0f;    m[2][1] = 0.0f;    m[2][2] = scaleZ;  m[2][3] = centerZ*(1-scaleZ);
     alpha = 1.0f;
+    identity = (scaleX == 1 && scaleY == 1);
   };
   void SetXRotation(float angle, float y, float z, float ar = 1.0f)
   { // angle about the X axis, centered at y,z where our coordinate system has aspect ratio ar.
@@ -88,7 +90,8 @@ public:
     m[0][0] = ar;    m[0][1] = 0.0f;  m[0][2] = 0.0f;   m[0][3] = 0.0f;
     m[1][0] = 0.0f;  m[1][1] = c/ar;  m[1][2] = -s/ar;  m[1][3] = (-y*c+s*z)/ar + y;
     m[2][0] = 0.0f;  m[2][1] = s;     m[2][2] = c;      m[2][3] = (-y*s-c*z) + z;
-    angle = 1.0f;
+    alpha = 1.0f;
+    identity = (angle == 0);
   }
   void SetYRotation(float angle, float x, float z, float ar = 1.0f)
   { // angle about the Y axis, centered at x,z where our coordinate system has aspect ratio ar.
@@ -97,15 +100,14 @@ public:
     m[0][0] = c;     m[0][1] = 0.0f;  m[0][2] = -s/ar;  m[0][3] = -x*c + s*z/ar + x;
     m[1][0] = 0.0f;  m[1][1] = 1.0f;  m[1][2] = 0.0f;   m[1][3] = 0.0f;
     m[2][0] = ar*s;  m[2][1] = 0.0f;  m[2][2] = c;      m[2][3] = -ar*x*s - c*z + z;
-    angle = 1.0f;
+    alpha = 1.0f;
+    identity = (angle == 0);
   }
   static TransformMatrix CreateZRotation(float angle, float x, float y, float ar = 1.0f)
   { // angle about the Z axis, centered at x,y where our coordinate system has aspect ratio ar.
     // Trans(x,y,0)*Scale(1/ar,1,1)*RotateZ(angle)*Scale(ar,1,1)*Trans(-x,-y,0)
-    float c = cos(angle); float s = sin(angle);
     TransformMatrix rot;
-    rot.m[0][0] = c;    rot.m[0][1] = -s/ar; rot.m[0][3] = -x*c + s*y/ar + x;
-    rot.m[1][0] = s*ar; rot.m[1][1] = c;     rot.m[1][3] = -ar*x*s - c*y + y;
+    rot.SetZRotation(angle, x, y, ar);
     return rot;
   }
   void SetZRotation(float angle, float x, float y, float ar = 1.0f)
@@ -115,12 +117,13 @@ public:
     m[0][0] = c;     m[0][1] = -s/ar;  m[0][2] = 0.0f;  m[0][3] = -x*c + s*y/ar + x;
     m[1][0] = s*ar;  m[1][1] = c;      m[1][2] = 0.0f;  m[1][3] = -ar*x*s - c*y + y;
     m[2][0] = 0.0f;  m[2][1] = 0.0f;   m[2][2] = 1.0f;  m[2][3] = 0.0f;
-    angle = 1.0f;
+    alpha = 1.0f;
+    identity = (angle == 0);
   }
   static TransformMatrix CreateFader(float a)
   {
     TransformMatrix fader;
-    fader.alpha = a;
+    fader.SetFader(a);
     return fader;
   }
   void SetFader(float a)
@@ -129,21 +132,19 @@ public:
     m[1][0] = 0.0f; m[1][1] = 1.0f; m[1][2] = 0.0f; m[1][3] = 0.0f;
     m[2][0] = 0.0f; m[2][1] = 0.0f; m[2][2] = 1.0f; m[2][3] = 0.0f;
     alpha = a;
-  }
-  // assignment operator
-  const TransformMatrix &operator =(const TransformMatrix &right)
-  {
-    if (this != &right)
-    {
-      memcpy(m, right.m, 12*sizeof(float));
-      alpha = right.alpha;
-    }
-    return *this;
+    identity = (a == 1.0f);
   }
 
   // multiplication operators
   const TransformMatrix &operator *=(const TransformMatrix &right)
   {
+    if (right.identity)
+      return *this;
+    if (identity)
+    {
+      *this = right;
+      return *this;
+    }
     float t00 = m[0][0] * right.m[0][0] + m[0][1] * right.m[1][0] + m[0][2] * right.m[2][0];
     float t01 = m[0][0] * right.m[0][1] + m[0][1] * right.m[1][1] + m[0][2] * right.m[2][1];
     float t02 = m[0][0] * right.m[0][2] + m[0][1] * right.m[1][2] + m[0][2] * right.m[2][2];
@@ -160,11 +161,16 @@ public:
     m[2][3] = m[2][0] * right.m[0][3] + m[2][1] * right.m[1][3] + m[2][2] * right.m[2][3] + m[2][3];
     m[2][0] = t00; m[2][1] = t01; m[2][2] = t02;
     alpha *= right.alpha;
+    identity = false;
     return *this;
   }
 
   TransformMatrix operator *(const TransformMatrix &right) const
   {
+    if (right.identity)
+      return *this;
+    if (identity)
+      return right;
     TransformMatrix result;
     result.m[0][0] = m[0][0] * right.m[0][0] + m[0][1] * right.m[1][0] + m[0][2] * right.m[2][0];
     result.m[0][1] = m[0][0] * right.m[0][1] + m[0][1] * right.m[1][1] + m[0][2] * right.m[2][1];
@@ -179,6 +185,7 @@ public:
     result.m[2][2] = m[2][0] * right.m[0][2] + m[2][1] * right.m[1][2] + m[2][2] * right.m[2][2];
     result.m[2][3] = m[2][0] * right.m[0][3] + m[2][1] * right.m[1][3] + m[2][2] * right.m[2][3] + m[2][3];
     result.alpha = alpha * right.alpha;
+    result.identity = false;
     return result;
   }
 
@@ -237,4 +244,5 @@ public:
 
   float m[3][4];
   float alpha;
+  bool identity;
 };

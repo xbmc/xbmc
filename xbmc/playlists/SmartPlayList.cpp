@@ -248,6 +248,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_PLAYCOUNT);
     fields.push_back(FIELD_PATH);
     fields.push_back(FIELD_STUDIO);
+    fields.push_back(FIELD_MPAA);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "episodes")
@@ -534,6 +535,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
       query = "idShow" + negate + " in (select idShow from actorlinktvshow join actors on actors.idActor=actorlinktvshow.idActor where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_STUDIO)
       query = "idShow" + negate + " IN (SELECT idShow FROM tvshowview WHERE " + GetDatabaseField(m_field, strType) + parameter + ")";
+    else if (m_field == FIELD_MPAA)
+      query = "idShow" + negate + " IN (SELECT idShow FROM tvshowview WHERE " + GetDatabaseField(m_field, strType) + parameter + ")";
   }
   else if (strType == "episodes")
   {
@@ -702,6 +705,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_RATING) result.Format("c%02d", VIDEODB_ID_TV_RATING);
     else if (field == FIELD_YEAR) result.Format("c%02d", VIDEODB_ID_TV_PREMIERED);
     else if (field == FIELD_GENRE) result.Format("c%02d", VIDEODB_ID_TV_GENRE);
+    else if (field == FIELD_MPAA) result.Format("c%02d", VIDEODB_ID_TV_MPAA);
     else if (field == FIELD_DIRECTOR) result = "cant_order_by_director"; // join required
     else if (field == FIELD_ACTOR) result = "cant_order_by_actor";    // join required
     else if (field == FIELD_NUMEPISODES) result = "totalcount";

@@ -65,6 +65,7 @@
 #include "utils/StreamDetails.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
 
@@ -296,8 +297,6 @@ CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
   m_pSubtitleDemuxer = NULL;
   m_pInputStream = NULL;
 
-  InitializeCriticalSection(&m_critStreamSection);
-
   m_dvd.Clear();
   m_State.Clear();
   m_UpdateApplication = 0;
@@ -316,7 +315,6 @@ CDVDPlayer::~CDVDPlayer()
 {
   CloseFile();
 
-  DeleteCriticalSection(&m_critStreamSection);
 #ifdef DVDDEBUG_MESSAGE_TRACKER
   g_dvdMessageTracker.DeInit();
 #endif
@@ -1120,7 +1118,7 @@ void CDVDPlayer::Process()
 void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
 {
     /* process packet if it belongs to selected stream. for dvd's don't allow automatic opening of streams*/
-    LockStreams();
+    StreamLock lock(this);
 
     try
     {
@@ -1143,7 +1141,6 @@ void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
       CLog::Log(LOGERROR, "%s - Exception thrown when processing demux packet", __FUNCTION__);
     }
 
-    UnlockStreams();
 }
 
 void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
@@ -1340,7 +1337,7 @@ void CDVDPlayer::HandlePlaySpeed()
     {
       if(level  < 0.0)
       {
-        g_application.m_guiDialogKaiToast.QueueNotification("Cache full", "Cache filled before reaching required amount for continous playback");
+        CGUIDialogKaiToast::QueueNotification("Cache full", "Cache filled before reaching required amount for continous playback");
         caching = CACHESTATE_INIT;
       }
       if(level >= 1.0)
@@ -1874,7 +1871,7 @@ void CDVDPlayer::OnExit()
 void CDVDPlayer::HandleMessages()
 {
   CDVDMsg* pMsg;
-  LockStreams();
+  StreamLock lock(this);
 
   while (m_messenger.Get(&pMsg, 0) == MSGQ_OK)
   {
@@ -2121,7 +2118,6 @@ void CDVDPlayer::HandleMessages()
 
     pMsg->Release();
   }
-  UnlockStreams();
 
 }
 
@@ -2452,9 +2448,8 @@ float CDVDPlayer::GetSubTitleDelay()
 // priority: 1: libdvdnav, 2: external subtitles, 3: muxed subtitles
 int CDVDPlayer::GetSubtitleCount()
 {
-  LockStreams();
+  StreamLock lock(this);
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
-  UnlockStreams();
   return m_SelectionStreams.Count(STREAM_SUBTITLE);
 }
 
@@ -2503,9 +2498,8 @@ void CDVDPlayer::SetSubtitleVisible(bool bVisible)
 
 int CDVDPlayer::GetAudioStreamCount()
 {
-  LockStreams();
+  StreamLock lock(this);
   m_SelectionStreams.Update(m_pInputStream, m_pDemuxer);
-  UnlockStreams();
   return m_SelectionStreams.Count(STREAM_AUDIO);
 }
 

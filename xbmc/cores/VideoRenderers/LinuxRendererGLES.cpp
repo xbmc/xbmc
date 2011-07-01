@@ -28,7 +28,6 @@
 #include <locale.h>
 #include "guilib/MatrixGLES.h"
 #include "LinuxRendererGLES.h"
-#include "Application.h"
 #include "utils/MathUtils.h"
 #include "utils/GLUtils.h"
 #include "settings/Settings.h"
@@ -38,6 +37,7 @@
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
 #include "lib/DllSwScale.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
@@ -69,7 +69,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_textureTarget = GL_TEXTURE_2D;
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
-    m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
+    m_eventTexturesDone[i] = new CEvent(false,true);
 #if defined(HAVE_LIBOPENMAX)
     m_buffers[i].openMaxBuffer = 0;
 #endif
@@ -107,7 +107,7 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
 {
   UnInit();
   for (int i = 0; i < NUM_BUFFERS; i++)
-    CloseHandle(m_eventTexturesDone[i]);
+    delete m_eventTexturesDone[i];
 
   if (m_rgbBuffer != NULL) {
     delete [] m_rgbBuffer;
@@ -215,7 +215,7 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
     im.flags |= IMAGE_FLAG_READING;
   else
   {
-    if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
+    if( !m_eventTexturesDone[source]->WaitMSec(500) )
       CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, source);
 
     im.flags |= IMAGE_FLAG_WRITING;
@@ -243,7 +243,7 @@ void CLinuxRendererGLES::ReleaseImage(int source, bool preserve)
   YV12Image &im = m_buffers[source].image;
 
   if( im.flags & IMAGE_FLAG_WRITING )
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
@@ -372,7 +372,7 @@ void CLinuxRendererGLES::Reset()
     /* reset all image flags, this will cleanup textures later */
     m_buffers[i].image.flags = 0;
     /* reset texture locks, a bit ugly, could result in tearing */
-    SetEvent(m_eventTexturesDone[i]);
+    m_eventTexturesDone[i]->Set();
   }
 }
 
@@ -409,7 +409,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   g_graphicsContext.BeginPaint();
 
-  if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
+  if( !m_eventTexturesDone[index]->WaitMSec(500))
   {
     CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, index);
 
@@ -522,7 +522,7 @@ unsigned int CLinuxRendererGLES::DrawSlice(unsigned char *src[], int stride[], i
     }
   }
 
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
   return 0;
 }
 
@@ -596,7 +596,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     break;
   }
 
-  g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CGUIDialogKaiToast::QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
@@ -1337,7 +1337,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   if (!(im->flags&IMAGE_FLAG_READY))
 #endif
   {
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
     return;
   }
 
@@ -1459,7 +1459,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
                , im->stride[2], im->plane[2] );
     }
   }
-  SetEvent(m_eventTexturesDone[source]);
+  m_eventTexturesDone[source]->Set();
 
   CalculateTextureSourceRects(source, 3);
 
@@ -1604,7 +1604,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
     }
   }
   glDisable(m_textureTarget);
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
   return true;
 }
 
@@ -1664,7 +1664,7 @@ void CLinuxRendererGLES::UploadCVRefTexture(int index)
     plane.flipindex = m_buffers[index].flipindex;
   }
 
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 #endif
 }
 void CLinuxRendererGLES::DeleteCVRefTexture(int index)
@@ -1737,7 +1737,7 @@ bool CLinuxRendererGLES::CreateCVRefTexture(int index)
   glBindTexture(m_textureTarget, 0);
   glDisable(m_textureTarget);
 
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 #endif
   return true;
 }

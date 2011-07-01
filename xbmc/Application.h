@@ -25,6 +25,7 @@
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
+#include "threads/Condition.h"
 
 class CFileItem;
 class CFileItemList;
@@ -34,11 +35,6 @@ namespace ADDON
   class IAddon;
   typedef boost::shared_ptr<IAddon> AddonPtr;
 }
-
-#include "dialogs/GUIDialogSeekBar.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogVolumeBar.h"
-#include "dialogs/GUIDialogMuteBug.h"
 
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -64,8 +60,6 @@ namespace ADDON
 #ifdef HAS_WEB_SERVER
 #include "network/WebServer.h"
 #endif
-
-#include "threads/XBMC_mutex.h"
 
 class CKaraokeLyricsManager;
 class CApplicationMessenger;
@@ -166,8 +160,8 @@ public:
   void ProcessSlow();
   void ResetScreenSaver();
   int GetVolume() const;
-  void SetVolume(int iPercent);
-  void Mute(void);
+  void SetVolume(long iValue, bool isPercentage = true);
+  void ToggleMute(void);
   void ShowVolumeBar(const CAction *action = NULL);
   int GetPlaySpeed() const;
   int GetSubtitleDelay() const;
@@ -213,11 +207,6 @@ public:
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
 #endif
-
-  CGUIDialogVolumeBar m_guiDialogVolumeBar;
-  CGUIDialogSeekBar m_guiDialogSeekBar;
-  CGUIDialogKaiToast m_guiDialogKaiToast;
-  CGUIDialogMuteBug m_guiDialogMuteBug;
 
 #ifdef HAS_DVD_DRIVE
   MEDIA_DETECT::CAutorun m_Autorun;
@@ -289,8 +278,9 @@ public:
 
   void Minimize();
   bool ToggleDPMS(bool manual);
+
+  float GetDimScreenSaverLevel() const;
 protected:
-  void RenderScreenSaver();
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
@@ -349,11 +339,12 @@ protected:
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
   
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   int        m_frameCount;
-  SDL_mutex* m_frameMutex;
-  SDL_cond*  m_frameCond;
-#endif
+  CCriticalSection m_frameMutex;
+  XbmcThreads::ConditionVariable  m_frameCond;
+
+  void Mute();
+  void UnMute();
 
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();

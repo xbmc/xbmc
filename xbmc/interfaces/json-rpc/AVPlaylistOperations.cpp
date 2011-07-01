@@ -163,6 +163,14 @@ JSON_STATUS CAVPlaylistOperations::UnShuffle(const CStdString &method, ITranspor
   return ACK;
 }
 
+JSON_STATUS CAVPlaylistOperations::Swap(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  g_application.getApplicationMessenger().PlayListPlayerSwap(GetPlaylist(method), (int)parameterObject["item1"].asInteger(), (int)parameterObject["item2"].asInteger());
+
+  NotifyAll();
+  return ACK;
+}
+
 int CAVPlaylistOperations::GetPlaylist(const CStdString &method)
 {
   CStdString methodStart = method.Left(5);

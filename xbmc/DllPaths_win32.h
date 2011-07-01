@@ -34,12 +34,8 @@
 
 /* paplayer */
 #define DLL_PATH_ADPCM_CODEC   "special://xbmcbin/system/players/paplayer/adpcm.dll"
-#define DLL_PATH_ADPLUG_CODEC  "special://xbmcbin/system/players/paplayer/adplug.dll"
-#define DLL_PATH_APE_CODEC     "special://xbmcbin/system/players/paplayer/MACDll.dll"
 #define DLL_PATH_ASAP_CODEC    "special://xbmcbin/system/players/paplayer/xbmc_asap.dll"
-#define DLL_PATH_DCA_CODEC     "special://xbmcbin/system/players/paplayer/dcacodec.dll"
 #define DLL_PATH_FLAC_CODEC    "special://xbmcbin/system/players/paplayer/libFLAC.dll"
-#define DLL_PATH_GYM_CODEC     "special://xbmcbin/system/players/paplayer/gensapu.dll"
 #define DLL_PATH_MAD_CODEC     "special://xbmcbin/system/players/dvdplayer/libmad.dll"
 #define DLL_PATH_MID_CODEC     "special://xbmcbin/system/players/paplayer/timidity.dll"
 #define DLL_PATH_NSF_CODEC     "special://xbmcbin/system/players/paplayer/nosefart.dll"

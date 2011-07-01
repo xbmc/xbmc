@@ -50,10 +50,10 @@ CGUIWindowManager::~CGUIWindowManager(void)
 
 void CGUIWindowManager::Initialize()
 {
-  LoadNotOnDemandWindows();
   m_tracker.SelectAlgorithm();
-
   m_initialized = true;
+
+  LoadNotOnDemandWindows();
 }
 
 bool CGUIWindowManager::SendMessage(int message, int senderID, int destID, int param1, int param2)
@@ -343,9 +343,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& 
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
-    int nCount = ExitCriticalSection(g_graphicsContext);
+    CSingleExit leaveIt(g_graphicsContext);
     g_application.getApplicationMessenger().ActivateWindow(iWindowID, params, swappingWindows);
-    RestoreCriticalSection(g_graphicsContext, nCount);
   }
   else
     ActivateWindow_Internal(iWindowID, params, swappingWindows);
@@ -526,7 +525,7 @@ void CGUIWindowManager::RenderPass()
   if (pWindow)
   {
     pWindow->ClearBackground();
-    pWindow->Render();
+    pWindow->DoRender();
   }
 
   // we render the dialogs based on their render order.
@@ -536,7 +535,7 @@ void CGUIWindowManager::RenderPass()
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
     if ((*it)->IsDialogRunning())
-      (*it)->Render();
+      (*it)->DoRender();
   }
 }
 

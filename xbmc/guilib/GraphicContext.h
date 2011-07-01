@@ -100,8 +100,8 @@ public:
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
   void ResetScreenParameters(RESOLUTION res);
-  void Lock() { EnterCriticalSection(*this); }
-  void Unlock() { LeaveCriticalSection(*this); }
+  void Lock() { lock(); }
+  void Unlock() { unlock(); }
   float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
   void ApplyStateBlock();
@@ -180,7 +180,7 @@ public:
     ASSERT(m_groupTransform.size());
     TransformMatrix absoluteMatrix = m_groupTransform.size() ? m_groupTransform.top() * matrix : matrix;
     m_groupTransform.push(absoluteMatrix);
-    UpdateFinalTransform(m_groupTransform.top());
+    UpdateFinalTransform(absoluteMatrix);
     return absoluteMatrix;
   }
   inline void SetTransform(const TransformMatrix &matrix)

@@ -2,6 +2,7 @@ SRCS=action.cpp \
      control.cpp \
      controlbutton.cpp \
      controlcheckmark.cpp \
+     controledit.cpp \
      controlfadelabel.cpp \
      controlgroup.cpp \
      controlimage.cpp \

@@ -36,6 +36,7 @@
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "boost/shared_ptr.hpp"
+#include "threads/Atomics.h"
 
 #ifndef _LINUX
 #define RINT(x) ((x) >= 0 ? ((int)((x) + 0.5)) : ((int)((x) - 0.5)))
@@ -120,13 +121,13 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
 
 CDVDVideoCodecFFmpeg::IHardwareDecoder*  CDVDVideoCodecFFmpeg::IHardwareDecoder::Acquire()
 {
-  InterlockedIncrement(&m_references);
+  AtomicIncrement(&m_references);
   return this;
 }
 
 long CDVDVideoCodecFFmpeg::IHardwareDecoder::Release()
 {
-  long count = InterlockedDecrement(&m_references);
+  long count = AtomicDecrement(&m_references);
   ASSERT(count >= 0);
   if (count == 0) delete this;
   return count;
@@ -353,6 +354,8 @@ void CDVDVideoCodecFFmpeg::SetDropState(bool bDrop)
 
 unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
 {
+  m_filters_next.Empty();
+
   if(m_pHardware)
     return 0;
 
@@ -362,6 +365,10 @@ unsigned int CDVDVideoCodecFFmpeg::SetFilters(unsigned int flags)
       m_filters_next = "yadif=0:-1";
     else
       m_filters_next = "yadif=1:-1";
+
+    if(flags & FILTER_DEINTERLACE_FLAGGED)
+      m_filters_next += ":1";
+
     flags &= ~FILTER_DEINTERLACE_ANY | FILTER_DEINTERLACE_YADIF;
   }
 
@@ -577,9 +584,11 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 
   /* use variable in the frame */
   AVRational pixel_aspect = m_pCodecContext->sample_aspect_ratio;
-#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(1,75,0)
   if (m_pFilterLink)
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,4,0)
     pixel_aspect = m_pFilterLink->cur_buf->video->sample_aspect_ratio;
+#else
+    pixel_aspect = m_pFilterLink->cur_buf->video->pixel_aspect;
 #endif
 
   if (pixel_aspect.num == 0)

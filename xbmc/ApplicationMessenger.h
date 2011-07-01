@@ -25,6 +25,7 @@
 #include "utils/StdString.h"
 #include "guilib/Key.h"
 #include "threads/Thread.h"
+#include "threads/Event.h"
 
 #include <queue>
 
@@ -54,6 +55,7 @@ class CGUIDialog;
 #define TMSG_PLAYLISTPLAYER_PLAY_SONG_ID 217
 #define TMSG_PLAYLISTPLAYER_INSERT 218
 #define TMSG_PLAYLISTPLAYER_REMOVE 219
+#define TMSG_PLAYLISTPLAYER_SWAP 223
 
 #define TMSG_PICTURE_SHOW         220
 #define TMSG_PICTURE_SLIDESHOW    221
@@ -99,7 +101,7 @@ typedef struct
   DWORD dwParam2;
   CStdString strParam;
   std::vector<CStdString> params;
-  HANDLE hWaitEvent;
+  CEvent* hWaitEvent;
   LPVOID lpVoid;
 }
 ThreadMessage;
@@ -154,6 +156,7 @@ public:
   void PlayListPlayerInsert(int playlist, const CFileItem &item, int position); 
   void PlayListPlayerInsert(int playlist, const CFileItemList &list, int position);
   void PlayListPlayerRemove(int playlist, int position);
+  void PlayListPlayerSwap(int playlist, int indexItem1, int indexItem2);
 
   void PlayFile(const CFileItem &item, bool bRestart = false); // thread safe version of g_application.PlayFile()
   void PictureShow(std::string filename);

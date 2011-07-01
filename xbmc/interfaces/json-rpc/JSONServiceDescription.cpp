@@ -157,6 +157,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle },
   { "VideoPlaylist.UnShuffle",                      CAVPlaylistOperations::UnShuffle },
   { "VideoPlaylist.Remove",                         CAVPlaylistOperations::Remove },
+  { "VideoPlaylist.Swap",                           CAVPlaylistOperations::Swap },
 
 // AudioPlaylist
   { "AudioPlaylist.Play",                           CAVPlaylistOperations::Play },
@@ -169,6 +170,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle },
   { "AudioPlaylist.UnShuffle",                      CAVPlaylistOperations::UnShuffle },
   { "AudioPlaylist.Remove",                         CAVPlaylistOperations::Remove },
+  { "AudioPlaylist.Swap",                           CAVPlaylistOperations::Swap },
 
 // Playlist
   { "Playlist.Create",                              CPlaylistOperations::Create },

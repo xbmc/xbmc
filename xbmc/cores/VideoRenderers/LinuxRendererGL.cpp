@@ -35,6 +35,7 @@
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
 #include "threads/SingleLock.h"
 #include "DllSwScale.h"
@@ -132,7 +133,7 @@ CLinuxRendererGL::CLinuxRendererGL()
 {
   m_textureTarget = GL_TEXTURE_2D;
   for (int i = 0; i < NUM_BUFFERS; i++)
-    m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
+    m_eventTexturesDone[i] = new CEvent(false,true);
 
   m_renderMethod = RENDER_GLSL;
   m_renderQuality = RQ_SINGLEPASS;
@@ -164,7 +165,7 @@ CLinuxRendererGL::~CLinuxRendererGL()
 {
   UnInit();
   for (int i = 0; i < NUM_BUFFERS; i++)
-    CloseHandle(m_eventTexturesDone[i]);
+    delete m_eventTexturesDone[i];
 
   if (m_rgbPbo)
   {
@@ -314,7 +315,7 @@ int CLinuxRendererGL::GetImage(YV12Image *image, int source, bool readonly)
     im.flags |= IMAGE_FLAG_READING;
   else
   {
-    if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
+    if( ! m_eventTexturesDone[source]->WaitMSec(500))
       CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, source);
 
     im.flags |= IMAGE_FLAG_WRITING;
@@ -342,7 +343,7 @@ void CLinuxRendererGL::ReleaseImage(int source, bool preserve)
   YV12Image &im = m_buffers[source].image;
 
   if( im.flags & IMAGE_FLAG_WRITING )
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
@@ -470,7 +471,7 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
 
   if (!(im->flags&IMAGE_FLAG_READY))
   {
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
     return;
   }
 
@@ -533,7 +534,7 @@ void CLinuxRendererGL::UploadYV12Texture(int source)
              , im->stride[2], im->plane[2] );
   }
 
-  SetEvent(m_eventTexturesDone[source]);
+  m_eventTexturesDone[source]->Set();
 
   VerifyGLState();
 
@@ -549,7 +550,7 @@ void CLinuxRendererGL::Reset()
     /* reset all image flags, this will cleanup textures later */
     m_buffers[i].image.flags = 0;
     /* reset texture locks, a bit ugly, could result in tearing */
-    SetEvent(m_eventTexturesDone[i]);
+    m_eventTexturesDone[i]->Set();
   }
 }
 
@@ -577,7 +578,7 @@ void CLinuxRendererGL::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   g_graphicsContext.BeginPaint();
 
-  if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
+  if( !m_eventTexturesDone[index]->WaitMSec(500))
   {
     CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, index);
 
@@ -766,7 +767,7 @@ unsigned int CLinuxRendererGL::DrawSlice(unsigned char *src[], int stride[], int
     }
   }
 
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
   return 0;
 }
 
@@ -912,7 +913,7 @@ void CLinuxRendererGL::UpdateVideoFilter()
     break;
   }
 
-  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
@@ -1926,7 +1927,7 @@ bool CLinuxRendererGL::CreateYV12Texture(int index)
     }
   }
   glDisable(m_textureTarget);
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
   return true;
 }
 
@@ -1941,7 +1942,7 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
 
   if (!(im->flags & IMAGE_FLAG_READY))
   {
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
     return;
   }
 
@@ -1992,7 +1993,7 @@ void CLinuxRendererGL::UploadNV12Texture(int source)
              , im->stride[1]/2, im->plane[1] );
   }
 
-  SetEvent(m_eventTexturesDone[source]);
+  m_eventTexturesDone[source]->Set();
 
   VerifyGLState();
 
@@ -2156,7 +2157,7 @@ bool CLinuxRendererGL::CreateNV12Texture(int index)
     }
   }
   glDisable(m_textureTarget);
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 
   return true;
 }
@@ -2247,7 +2248,7 @@ bool CLinuxRendererGL::CreateVDPAUTexture(int index)
 
   glGenTextures(1, &plane.id);
 
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 #endif
   return true;
 }
@@ -2255,7 +2256,7 @@ bool CLinuxRendererGL::CreateVDPAUTexture(int index)
 void CLinuxRendererGL::UploadVDPAUTexture(int index)
 {
 #ifdef HAVE_LIBVDPAU
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
   glPixelStorei(GL_UNPACK_ALIGNMENT,1); //what's this for?
 #endif
 }
@@ -2317,7 +2318,7 @@ bool CLinuxRendererGL::CreateVAAPITexture(int index)
   glTexImage2D(m_textureTarget, 0, GL_RGBA, plane.texwidth, plane.texheight, 0, GL_BGRA, GL_UNSIGNED_BYTE, NULL);
   glBindTexture(m_textureTarget, 0);
   glDisable(m_textureTarget);
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 #endif
   return true;
 }
@@ -2402,7 +2403,7 @@ void CLinuxRendererGL::UploadVAAPITexture(int index)
   if(status != VA_STATUS_SUCCESS)
     CLog::Log(LOGERROR, "CLinuxRendererGL::UploadVAAPITexture - failed to copy surface to glx %d - %s", status, vaErrorStr(status));
 
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 #endif
 }
 
@@ -2414,7 +2415,7 @@ void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
 
   if (!(im->flags & IMAGE_FLAG_READY))
   {
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
     return;
   }
 
@@ -2448,7 +2449,7 @@ void CLinuxRendererGL::UploadYUV422PackedTexture(int source)
              , im->stride[0] / 4, im->plane[0] );
   }
 
-  SetEvent(m_eventTexturesDone[source]);
+  m_eventTexturesDone[source]->Set();
 
   VerifyGLState();
 
@@ -2645,7 +2646,7 @@ bool CLinuxRendererGL::CreateYUV422PackedTexture(int index)
     VerifyGLState();
   }
   glDisable(m_textureTarget);
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 
   return true;
 }
@@ -2848,7 +2849,7 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
 
   if (!(im->flags&IMAGE_FLAG_READY))
   {
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
     return;
   }
 
@@ -2866,7 +2867,7 @@ void CLinuxRendererGL::UploadRGBTexture(int source)
   else
     ToRGBFrame(im, fields[FIELD_FULL][0].flipindex, buf.flipindex);
 
-  SetEvent(m_eventTexturesDone[source]);
+  m_eventTexturesDone[source]->Set();
 
   static int imaging = -1;
   if (imaging==-1)
