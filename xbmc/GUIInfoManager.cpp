@@ -3176,7 +3176,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       {
         CStdString strYear;
         if (m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode > 0)
-          strYear.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
+          strYear.Format("S%i", m_currentFile->GetVideoInfoTag()->m_iSpecialSortEpisode);
         else if(m_currentFile->GetVideoInfoTag()->m_iEpisode > 0)
           strYear.Format("%i", m_currentFile->GetVideoInfoTag()->m_iEpisode);
         return strYear;
