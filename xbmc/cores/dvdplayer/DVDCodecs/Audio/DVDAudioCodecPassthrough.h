@@ -27,7 +27,7 @@
 #include "DVDAudioCodec.h"
 #include "cores/AudioEngine/AEAudioFormat.h"
 #include "cores/AudioEngine/AEStreamInfo.h"
-#include "cores/AudioEngine/AEPackIEC958.h"
+#include "cores/AudioEngine/AEPackIEC61937.h"
 
 class CDVDAudioCodecPassthrough : public CDVDAudioCodec
 {
@@ -60,6 +60,6 @@ private:
   uint8_t      *m_trueHD;
 
   unsigned int  m_dataSize;
-  uint8_t       m_packedBuffer[MAX_IEC958_PACKET];
+  uint8_t       m_packedBuffer[MAX_IEC61937_PACKET];
 };
 

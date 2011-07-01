@@ -192,7 +192,7 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
   if (size)
   {
     /* FIXME: this should be moved into a MAT packer class */
-    /* we need to pack 24 TrueHD audio units into the unknown MAT format before packing into IEC958 */
+    /* we need to pack 24 TrueHD audio units into the unknown MAT format before packing into IEC61937 */
     if (m_info.GetDataType() == CAEStreamInfo::STREAM_TYPE_TRUEHD)
     {
       /* magic MAT format values, meaning is unknown at this point */
@@ -224,13 +224,13 @@ int CDVDAudioCodecPassthrough::Decode(BYTE* pData, int iSize)
       if (++m_trueHDPos == 24)
       {
         m_trueHDPos = 0;
-        m_dataSize  = CAEPackIEC958::PackTrueHD(m_trueHD, MAT_FRAME_SIZE, m_packedBuffer);
+        m_dataSize  = CAEPackIEC61937::PackTrueHD(m_trueHD, MAT_FRAME_SIZE, m_packedBuffer);
       }
     }
     else
     {
-      /* pack the data into an IEC958 frame */
-      CAEPackIEC958::PackFunc pack = m_info.GetPackFunc();
+      /* pack the data into an IEC61937 frame */
+      CAEPackIEC61937::PackFunc pack = m_info.GetPackFunc();
       if (pack)
         m_dataSize = pack(m_buffer, size, m_packedBuffer);
     }
