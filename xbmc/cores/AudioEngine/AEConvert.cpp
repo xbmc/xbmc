@@ -176,8 +176,7 @@ unsigned int CAEConvert::S16LE_Float(uint8_t *data, const unsigned int samples, 
 #ifndef __BIG_ENDIAN__
     *dest = m_LookupS16[*(int16_t*)data + INT16_MAX];
 #else
-    int16_t value;
-    swab((char *)data, (char *)&value, 2);
+    int16_t value = Endian_Swap16(*(int16_t*)data);
     *dest = m_LookupS16[value + INT16_MAX];
 #endif
   }
@@ -193,8 +192,7 @@ unsigned int CAEConvert::S16BE_Float(uint8_t *data, const unsigned int samples, 
 #ifdef __BIG_ENDIAN__
     *dest = m_LookupS16[*(int16_t*)data + INT16_MAX];
 #else
-    int16_t value;
-    swab((char *)data, (char *)&value, 2);
+    int16_t value = Endian_Swap16(*(int16_t*)data);
     *dest = m_LookupS16[value + INT16_MAX];
 #endif
   }
