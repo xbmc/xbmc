@@ -274,6 +274,12 @@
       <!-- menu       	-->      <button id="6">Close</button>
     </joystick>
   </OSDVideoSettings>
+  <VideoMisc>
+    <joystick name="Harmony">
+      <!-- Prev		-->      <button id="32">Close</button>
+      <!-- menu       	-->      <button id="6">Close</button>
+    </joystick>
+  </VideoMisc>
   <OSDAudioSettings>
     <joystick name="Harmony">
       <!-- Prev		-->      <button id="32">Close</button>

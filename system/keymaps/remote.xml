@@ -274,6 +274,13 @@
       <start>Close</start>
     </remote>
   </OSDVideoSettings>
+  <VideoMisc>
+    <remote>
+      <back>Close</back>
+      <menu>Close</menu>
+      <start>Close</start>
+    </remote>
+  </VideoMisc>
   <OSDAudioSettings>
     <remote>
       <back>Close</back>

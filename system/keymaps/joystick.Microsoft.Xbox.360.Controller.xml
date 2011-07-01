@@ -226,6 +226,15 @@
       <button id="19">Close</button>
     </joystick>
   </OSDVideoSettings>
+  <VideoMisc>
+    <joystick name="Xbox 360 Wireless Receiver">
+      <button id="4"/>
+      <button id="5">AspectRatio</button>
+      <button id="2">Close</button>
+      <button id="17">Close</button>
+      <button id="19">Close</button>
+    </joystick>
+  </VideoMisc>
   <OSDAudioSettings>
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="4"/>

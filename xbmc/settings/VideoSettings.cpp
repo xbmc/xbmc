@@ -24,6 +24,7 @@
 
 #include "VideoSettings.h"
 #include "Settings.h"
+#include "settings/GUISettings.h"
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -58,6 +59,8 @@ CVideoSettings::CVideoSettings()
   m_CropBottom = 0;
   m_CropLeft = 0;
   m_CropRight = 0;
+  m_AutoPowerStateAfterPlayback = false;
+  m_AutoPowerStateMode = POWERSTATE_SHUTDOWN;
 }
 
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
@@ -89,5 +92,6 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_CropBottom != right.m_CropBottom) return true;
   if (m_CropLeft != right.m_CropLeft) return true;
   if (m_CropRight != right.m_CropRight) return true;
+  if (m_AutoPowerStateAfterPlayback != right.m_AutoPowerStateAfterPlayback) return true;
   return false;
 }

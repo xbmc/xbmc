@@ -189,6 +189,11 @@
       <button id="6">Close</button>
     </joystick>
   </OSDVideoSettings>
+  <VideoMisc>
+    <joystick name="WiiRemote">
+      <button id="6">Close</button>
+    </joystick>
+  </VideoMisc>
   <OSDAudioSettings>
     <joystick name="WiiRemote">
       <button id="6">Close</button>

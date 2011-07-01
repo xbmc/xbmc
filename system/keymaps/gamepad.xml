@@ -249,6 +249,17 @@
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
   </OSDVideoSettings>
+  <VideoMisc>
+    <gamepad>
+      <X/>
+      <Y>AspectRatio</Y>
+      <B>Close</B>
+      <back>Close</back>
+      <start>Close</start>
+      <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
+      <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
+    </gamepad>
+  </VideoMisc>
   <OSDAudioSettings>
     <gamepad>
       <X/>

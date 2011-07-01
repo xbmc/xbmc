@@ -2466,6 +2466,9 @@
     <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp">
       <Filter>threads</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\video\dialogs\GUIDialogVideoMisc.cpp">
+      <Filter>video\dialogs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4948,6 +4951,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h">
       <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\video\dialogs\GUIDialogVideoMisc.h">
+      <Filter>video\dialogs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

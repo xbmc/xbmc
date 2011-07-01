@@ -557,6 +557,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
     else if (strTest.Equals("videoplayer.isfullscreen")) ret = VIDEOPLAYER_ISFULLSCREEN;
     else if (strTest.Equals("videoplayer.hasmenu")) ret = VIDEOPLAYER_HASMENU;
+    else if (strTest.Equals("videoplayer.hasautopowerstatesupport")) ret = VIDEOPLAYER_POWERSTATESUPPORT;
     else if (strTest.Equals("videoplayer.playlistlength")) ret = VIDEOPLAYER_PLAYLISTLEN;
     else if (strTest.Equals("videoplayer.playlistposition")) ret = VIDEOPLAYER_PLAYLISTPOS;
     else if (strTest.Equals("videoplayer.plot")) ret = VIDEOPLAYER_PLOT;
@@ -2023,6 +2024,9 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     break;
     case VIDEOPLAYER_HASMENU:
       bReturn = g_application.m_pPlayer->HasMenu();
+    break;
+    case VIDEOPLAYER_POWERSTATESUPPORT:
+      bReturn = g_application.m_pPlayer->HasAutoPowerStateSupport();
     break;
     case PLAYLIST_ISRANDOM:
       bReturn = g_playlistPlayer.IsShuffled(g_playlistPlayer.GetCurrentPlaylist());

@@ -157,6 +157,8 @@ public:
   virtual bool IsInMenu() const {return false;};
   virtual bool HasMenu() { return false; };
 
+  virtual bool HasAutoPowerStateSupport() { return false; };
+
   virtual void DoAudioWork(){};
   virtual bool OnAction(const CAction &action) { return false; };
 

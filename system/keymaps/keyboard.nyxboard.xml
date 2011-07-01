@@ -348,6 +348,12 @@
       <o>CodecInfo</o>
     </keyboard>
   </OSDVideoSettings>
+  <VideoMisc>
+    <keyboard name="Motorola Nyxboard Hybrid">
+      <backspace>Close</backspace>
+      <escape>Close</escape>
+    </keyboard>
+  </VideoMisc>
   <OSDAudioSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
       <backspace>Close</backspace>

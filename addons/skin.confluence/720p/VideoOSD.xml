@@ -24,7 +24,7 @@
 			<onup>100</onup>
 			<ondown>100</ondown>
 			<animation effect="fade" time="200">VisibleChange</animation>
-			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
+			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(VideoMisc) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 		</control>
 		<control type="slider" id="87">
 			<description>Seek Slider</description>
@@ -39,13 +39,13 @@
 			<textureslidernib>osd_slider_nibNF.png</textureslidernib>
 			<textureslidernibfocus>osd_slider_nib.png</textureslidernibfocus>
 			<animation effect="fade" time="200">VisibleChange</animation>
-			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
+			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(VideoMisc) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 		</control>
 		<control type="group" id="100">
 			<posx>325</posx>
 			<posy>50r</posy>
 			<animation effect="fade" time="200">VisibleChange</animation>
-			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
+			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(VideoMisc) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 			<control type="button" id="600">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -142,10 +142,10 @@
 			</control>
 		</control>
 		<control type="group">
-			<posx>250r</posx>
+			<posx>295r</posx>
 			<posy>50r</posy>
 			<animation effect="fade" time="200">VisibleChange</animation>
-			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
+			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(VideoMisc) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
 			<control type="togglebutton" id="701">
 				<posx>0</posx>
 				<posy>0</posy>
@@ -223,12 +223,29 @@
 				<texturefocus>OSDDvdFO.png</texturefocus>
 				<texturenofocus>OSDDvdNF.png</texturenofocus>
 				<onleft>704</onleft>
-				<onright>600</onright>
+				<onright>706</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>PlayerControl(ShowVideoMenu)</onclick>
 				<enable>VideoPlayer.HasMenu</enable>
 				<animation effect="fade" start="100" end="50" time="100" condition="!VideoPlayer.HasMenu">Conditional</animation>
+			</control>
+			<control type="button" id="706">
+				<posx>225</posx>
+				<posy>0</posy>
+				<width>45</width>
+				<height>45</height>
+				<label>13017</label>
+				<font>-</font>
+				<texturefocus>OSDSystemFO.png</texturefocus>
+				<texturenofocus>OSDSystemNF.png</texturenofocus>
+				<onleft>705</onleft>
+				<onright>600</onright>
+				<onup>1000</onup>
+				<ondown>1000</ondown>
+				<onclick>ActivateWindow(VideoMisc)</onclick>
+				<enable>VideoPlayer.HasAutoPowerStateSupport</enable>
+				<animation effect="fade" start="100" end="50" time="100" condition="!VideoPlayer.HasAutoPowerStateSupport">Conditional</animation>
 			</control>
 		</control>
 	</controls>
