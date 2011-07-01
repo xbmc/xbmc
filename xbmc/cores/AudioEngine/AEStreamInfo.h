@@ -20,7 +20,7 @@
  *
  */
 
-#include "AEPackIEC958.h"
+#include "AEPackIEC61937.h"
 #include <stdint.h>
 #include <list>
 
@@ -55,26 +55,26 @@ public:
   unsigned int            GetFrameSize  () { return m_fsize     ; }
   enum DataType           GetDataType   () { return m_dataType  ; }
   bool                    IsLittleEndian() { return m_dataIsLE  ; }
-  CAEPackIEC958::PackFunc GetPackFunc   () { return m_packFunc  ; }
+  CAEPackIEC61937::PackFunc GetPackFunc   () { return m_packFunc  ; }
 private:
   DllAvUtil m_dllAvUtil;
 
-  uint8_t      m_buffer[MAX_IEC958_PACKET];
+  uint8_t      m_buffer[MAX_IEC61937_PACKET];
   unsigned int m_bufferSize;
   unsigned int m_skipBytes;
 
   typedef unsigned int (CAEStreamInfo::*ParseFunc)(uint8_t *data, unsigned int size);
 
-  ParseFunc               m_syncFunc;
-  bool                    m_hasSync;
-  unsigned int            m_sampleRate;
-  unsigned int            m_fsize;
-  unsigned int            m_repeat;
-  int                     m_substreams;       /* used for TrueHD  */
-  AVCRC                   m_crcTrueHD[1024];  /* TrueHD crc table */
-  DataType                m_dataType;
-  bool                    m_dataIsLE;
-  CAEPackIEC958::PackFunc m_packFunc;
+  ParseFunc                 m_syncFunc;
+  bool                      m_hasSync;
+  unsigned int              m_sampleRate;
+  unsigned int              m_fsize;
+  unsigned int              m_repeat;
+  int                       m_substreams;       /* used for TrueHD  */
+  AVCRC                     m_crcTrueHD[1024];  /* TrueHD crc table */
+  DataType                  m_dataType;
+  bool                      m_dataIsLE;
+  CAEPackIEC61937::PackFunc m_packFunc;
 
   void GetPacket(uint8_t **buffer, unsigned int *bufferSize);
   unsigned int DetectType(uint8_t *data, unsigned int size);

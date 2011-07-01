@@ -18,7 +18,7 @@ SRCS = \
 	AERemap.cpp \
 	AEUtil.cpp \
 	AEStreamInfo.cpp \
-	AEPackIEC958.cpp \
+	AEPackIEC61937.cpp \
 	AEWAVLoader.cpp \
 	PostProc/AEPPAnimationFade.cpp \
 	\

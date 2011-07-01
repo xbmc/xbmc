@@ -31,8 +31,8 @@
   #define E_PACK __pragma(pack(pop))
 #endif
 
-#define MAX_IEC958_PACKET  61440
-#define IEC958_DATA_OFFSET 8
+#define MAX_IEC61937_PACKET  61440
+#define IEC61937_DATA_OFFSET 8
 
 #define DTS1_FRAME_SIZE   512
 #define DTS2_FRAME_SIZE   1024
@@ -45,7 +45,7 @@
 #define OUT_CHANNELS 2
 #define OUT_FRAMESTOBYTES(a) ((a) * OUT_CHANNELS * (OUT_SAMPLESIZE>>3))
 
-class CAEPackIEC958
+class CAEPackIEC61937
 {
 public:
   typedef int (*PackFunc)(uint8_t *data, unsigned int size, uint8_t *dest);
@@ -57,26 +57,26 @@ public:
   static int PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest);
   static int PackTrueHD  (uint8_t *data, unsigned int size, uint8_t *dest);
 private:
-  enum IEC958DataType
+  enum IEC61937DataType
   {
-    IEC958_TYPE_NULL   = 0x00,
-    IEC958_TYPE_AC3    = 0x01,
-    IEC958_TYPE_DTS1   = 0x0B, /*  512 samples */
-    IEC958_TYPE_DTS2   = 0x0C, /* 1024 samples */
-    IEC958_TYPE_DTS3   = 0x0D, /* 2048 samples */
-    IEC958_TYPE_DTSHD  = 0x11,
-    IEC958_TYPE_EAC3   = 0x15,
-    IEC958_TYPE_TRUEHD = 0x16
+    IEC61937_TYPE_NULL   = 0x00,
+    IEC61937_TYPE_AC3    = 0x01,
+    IEC61937_TYPE_DTS1   = 0x0B, /*  512 samples */
+    IEC61937_TYPE_DTS2   = 0x0C, /* 1024 samples */
+    IEC61937_TYPE_DTS3   = 0x0D, /* 2048 samples */
+    IEC61937_TYPE_DTSHD  = 0x11,
+    IEC61937_TYPE_EAC3   = 0x15,
+    IEC61937_TYPE_TRUEHD = 0x16
   };
 
   S_PACK
-  struct IEC958Packet
+  struct IEC61937Packet
   {
     uint16_t m_preamble1;
     uint16_t m_preamble2;
     uint16_t m_type;
     uint16_t m_length;
-    uint8_t  m_data[MAX_IEC958_PACKET - IEC958_DATA_OFFSET];
+    uint8_t  m_data[MAX_IEC61937_PACKET - IEC61937_DATA_OFFSET];
   };
   E_PACK
 };

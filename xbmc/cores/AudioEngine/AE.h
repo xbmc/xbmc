@@ -132,8 +132,8 @@ public:
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough) = 0;
 
   /**
-   * Returns true if the AudioEngine supports AE_FMT_RAW streams for use with formats such as IEC958
-   * @see CAEPackIEC958::CAEPackIEC958()
+   * Returns true if the AudioEngine supports AE_FMT_RAW streams for use with formats such as IEC61937
+   * @see CAEPackIEC61937::CAEPackIEC61937()
    * @returns true if the AudioEngine is capable of RAW output
    */
   virtual bool SupportsRaw() { return false; }

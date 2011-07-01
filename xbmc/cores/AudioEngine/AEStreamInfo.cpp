@@ -21,8 +21,8 @@
 
 #include "AEStreamInfo.h"
 
-#define IEC958_PREAMBLE1  0xF872
-#define IEC958_PREAMBLE2  0x4E1F
+#define IEC61937_PREAMBLE1  0xF872
+#define IEC61937_PREAMBLE2  0x4E1F
 #define DTS_PREAMBLE_14BE 0x1FFFE800
 #define DTS_PREAMBLE_14LE 0xFF1F00E8
 #define DTS_PREAMBLE_16BE 0x7FFE8001
@@ -302,7 +302,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_hasSync  = true;
       m_syncFunc = &CAEStreamInfo::SyncAC3;
       m_dataType = STREAM_TYPE_AC3;
-      m_packFunc = &CAEPackIEC958::PackAC3;
+      m_packFunc = &CAEPackIEC61937::PackAC3;
       m_repeat   = 1;
 
       CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - AC3 stream detected (%dHz)", m_sampleRate);
@@ -343,7 +343,7 @@ unsigned int CAEStreamInfo::SyncAC3(uint8_t *data, unsigned int size)
       m_hasSync  = true;
       m_syncFunc = &CAEStreamInfo::SyncAC3;
       m_dataType = STREAM_TYPE_EAC3;
-      m_packFunc = &CAEPackIEC958::PackEAC3;
+      m_packFunc = &CAEPackIEC61937::PackEAC3;
 
       CLog::Log(LOGINFO, "CAEStreamInfo::SyncAC3 - E-AC3 stream detected (%dHz)", m_sampleRate);
       return skip;
@@ -429,9 +429,9 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
     DataType dataType;
     switch(blocks << 5)
     {
-      case 512 : dataType = STREAM_TYPE_DTS_512 ; m_packFunc = &CAEPackIEC958::PackDTS_512 ; break;
-      case 1024: dataType = STREAM_TYPE_DTS_1024; m_packFunc = &CAEPackIEC958::PackDTS_1024; break;
-      case 2048: dataType = STREAM_TYPE_DTS_2048; m_packFunc = &CAEPackIEC958::PackDTS_2048; break;
+      case 512 : dataType = STREAM_TYPE_DTS_512 ; m_packFunc = &CAEPackIEC61937::PackDTS_512 ; break;
+      case 1024: dataType = STREAM_TYPE_DTS_1024; m_packFunc = &CAEPackIEC61937::PackDTS_1024; break;
+      case 2048: dataType = STREAM_TYPE_DTS_2048; m_packFunc = &CAEPackIEC61937::PackDTS_2048; break;
       default:
         invalid = true;
         break;
@@ -504,7 +504,7 @@ unsigned int CAEStreamInfo::SyncTrueHD(uint8_t *data, unsigned int size)
       m_fsize      = length;
       m_dataType   = STREAM_TYPE_TRUEHD;
       m_syncFunc   = &CAEStreamInfo::SyncTrueHD;
-      m_packFunc   = &CAEPackIEC958::PackTrueHD;
+      m_packFunc   = &CAEPackIEC61937::PackTrueHD;
       m_repeat     = 1;
       return skip;
     }
