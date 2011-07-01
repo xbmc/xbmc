@@ -86,15 +86,18 @@ void CGUISliderControl::Render()
   // would overflow the background image
   CGUITexture &nib = (m_bHasFocus && !IsDisabled()) ? m_guiMidFocus : m_guiMid;
 
-  float offset = GetProportion() * m_guiBackground.GetTextureWidth() - nib.GetTextureWidth()/2;
-  if (offset > m_guiBackground.GetTextureWidth() - nib.GetTextureWidth())
-    offset = m_guiBackground.GetTextureWidth() - nib.GetTextureWidth();
+  nib.SetHeight(nib.GetTextureHeight() * fScaleY);
+  nib.SetWidth(nib.GetHeight() * 2);
+  CAspectRatio ratio(CAspectRatio::AR_KEEP); ratio.align = ASPECT_ALIGN_LEFT | ASPECT_ALIGNY_CENTER;
+  nib.SetAspectRatio(ratio);
+  CRect rect = nib.GetRenderRect();
+
+  float offset = GetProportion() * m_width - rect.Width() / 2;
+  if (offset > m_width - rect.Width())
+    offset = m_width - rect.Width();
   if (offset < 0)
     offset = 0;
-
-  nib.SetPosition(m_guiBackground.GetXPosition() + offset * fScaleX, m_guiBackground.GetYPosition() );
-  nib.SetWidth(nib.GetTextureWidth() * fScaleX);
-  nib.SetHeight(nib.GetTextureHeight() * fScaleY);
+  nib.SetPosition(m_guiBackground.GetXPosition() + offset, m_guiBackground.GetYPosition() );
   nib.Render();
 
   CGUIControl::Render();
