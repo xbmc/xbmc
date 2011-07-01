@@ -38,6 +38,28 @@
 #import "AutoPool.h"
 #import "DarwinUtils.h"
 
+
+bool DarwinIsAppleTV2(void)
+{
+  static int result = -1;
+#if defined(__APPLE__) && defined(__arm__)
+  if( result == -1 )
+  {
+    char        buffer[512];
+    size_t      len = 512;
+    result = false;    
+    std::string hw_machine = "unknown";
+
+    if (sysctlbyname("hw.machine", &buffer, &len, NULL, 0) == 0)
+      hw_machine = buffer;
+
+    if (hw_machine.find("AppleTV2,1") != std::string::npos)
+      result = true;   
+  }
+#endif
+  return result;
+}
+
 float GetIOSVersion(void)
 {
   CCocoaAutoPool pool;
