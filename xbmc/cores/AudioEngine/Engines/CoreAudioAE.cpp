@@ -28,6 +28,8 @@
  which would break future multi-channels playback.
  */
 
+#define __STDC_LIMIT_MACROS
+
 #include "system.h"
 
 #include "CoreAudioAE.h"
