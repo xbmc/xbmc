@@ -126,21 +126,21 @@ XBMCEAGLView  *m_glView;
 - (void)createGestureRecognizers 
 {
   
-  //2 finger double tab - right mouse
+  //2 finger single tab - right mouse
   //single finger double tab delays single finger single tab - so we
   //go for 2 fingers here - so single finger single tap is instant
-  UITapGestureRecognizer *doubleFingerDTap = [[UITapGestureRecognizer alloc]
-                                              initWithTarget:self action:@selector(handleDoubleFingerDoubleTap:)];  
-  doubleFingerDTap.delaysTouchesBegan = YES;
-  doubleFingerDTap.numberOfTapsRequired = 1;
-  doubleFingerDTap.numberOfTouchesRequired = 2;
-  [self.view addGestureRecognizer:doubleFingerDTap];
-  [doubleFingerDTap release];
+  UITapGestureRecognizer *doubleFingerSingleTap = [[UITapGestureRecognizer alloc]
+                                              initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
+  doubleFingerSingleTap.delaysTouchesBegan = NO;
+  doubleFingerSingleTap.numberOfTapsRequired = 1;
+  doubleFingerSingleTap.numberOfTouchesRequired = 2;
+  [self.view addGestureRecognizer:doubleFingerSingleTap];
+  [doubleFingerSingleTap release];
   
   //double finger swipe left for backspace ... i like this fast backspace feature ;)
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
                                          initWithTarget:self action:@selector(handleSwipeLeft:)];
-  swipeLeft.delaysTouchesBegan = YES;
+  swipeLeft.delaysTouchesBegan = NO;
   swipeLeft.numberOfTouchesRequired = 2;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
   [self.view addGestureRecognizer:swipeLeft];
@@ -152,7 +152,7 @@ XBMCEAGLView  *m_glView;
   [self sendKey:XBMCK_BACKSPACE];
 }
 //--------------------------------------------------------------
-- (IBAction)handleDoubleFingerDoubleTap:(UIGestureRecognizer *)sender 
+- (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender 
 {
   CGPoint point = [sender locationOfTouch:0 inView:m_glView];
   
