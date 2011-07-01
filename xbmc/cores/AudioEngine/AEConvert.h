@@ -20,57 +20,10 @@
  *
  */
 
-#include <stdlib.h>
-#include <limits.h>
 #include <stdint.h>
-
-#ifndef _WIN32
-#include <unistd.h>
-#endif
-#include <math.h>
-#include <string.h>
-
-#ifdef __SSE__
-#include <xmmintrin.h>
-#include <emmintrin.h>
-#endif
-
-#ifdef __ARM_NEON__
-#include <arm_neon.h>
-#endif
-
 #include "AEAudioFormat.h"
-#include "utils/MathUtils.h"
 
 /* note: always converts to machine byte endian */
-
-#ifdef CLAMP
-#undef CLAMP
-#endif
-#define CLAMP(x) std::min(-1.0f, std::max(1.0f, (float)(x)))
-
-#ifdef  INT24_MAX
-#undef  INT24_MAX 
-#endif
-#define INT24_MAX 0x7FFFFF
-
-#ifdef  INT16_MAX
-#undef  INT16_MAX
-#endif
-#define INT16_MAX 0x7FFF
-
-static inline int safeRound(double f)
-{
-  /* if the value is larger then we can handle, then clamp it */
-  if (f >= INT_MAX) return INT_MAX;
-  if (f <= INT_MIN) return INT_MIN;
-  
-  /* if the value is out of the MathUtils::round_int range, then round it normally */
-  if (f <= static_cast<double>(INT_MIN / 2) - 1.0 || f >= static_cast <double>(INT_MAX / 2) + 1.0)
-    return floor(f+0.5);
-  
-  return MathUtils::round_int(f);
-}
 
 class CAEConvert{
 private:  
