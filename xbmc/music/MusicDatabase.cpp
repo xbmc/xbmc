@@ -1885,7 +1885,7 @@ bool CMusicDatabase::CleanupSongsByIds(const CStdString &strSongIds)
       }
 
       //spotify, dont delete it if its a spotify song
-      if (URIUtils::GetExtension(strFileName) !=".spotify" && !CFile::Exists(strFileName))
+      if (strExtension !=".spotify" && !CFile::Exists(strFileName))
       { // file no longer exists, so add to deletion list
         strSongsToDelete += m_pDS->fv("song.idSong").get_asString() + ",";
       }
