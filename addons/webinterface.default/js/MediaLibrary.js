@@ -18,11 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-function sleep(delay)
-{
-    var start = new Date().getTime();
-    while (new Date().getTime() < start + delay);
-}
+
 var MediaLibrary = function() {
 		this.init();
 		return true;
@@ -385,10 +381,8 @@ MediaLibrary.prototype = {
 				movieDetails.append($('<p>').addClass('director').html('<strong>Directed By:</strong> ' + event.data.movie.director));
 			}
 			this.activeCover = movieDetails;
-			$('body').append(movieDetails);
-			                        this.updatePlayButtonLocation();
-$('#overlay').show();
-			sleep(10);
+			$('body').append(movieDetails);			                        
+                        $('#overlay').show();			
                         this.updatePlayButtonLocation();
 		},
 		playTrack: function(event) {
