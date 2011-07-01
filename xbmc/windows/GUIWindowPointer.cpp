@@ -56,10 +56,13 @@ void CGUIWindowPointer::SetPointer(int pointer)
 
 void CGUIWindowPointer::UpdateVisibility()
 {
+//no mouse pointer for ios devices (they are all touchy)
+#ifndef TARGET_DARWIN_IOS
   if (g_Mouse.IsActive())
     Show();
   else
     Close();
+#endif//TARGET_DARWIN_IOS
 }
 
 void CGUIWindowPointer::OnWindowLoaded()
