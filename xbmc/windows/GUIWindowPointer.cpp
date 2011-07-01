@@ -21,6 +21,7 @@
 
 #include "GUIWindowPointer.h"
 #include "input/MouseStat.h"
+#include "windowing/WindowingFactory.h"
 #include <climits>
 #define ID_POINTER 10
 
@@ -56,13 +57,13 @@ void CGUIWindowPointer::SetPointer(int pointer)
 
 void CGUIWindowPointer::UpdateVisibility()
 {
-//no mouse pointer for ios devices (they are all touchy)
-#ifndef TARGET_DARWIN_IOS
-  if (g_Mouse.IsActive())
-    Show();
-  else
-    Close();
-#endif//TARGET_DARWIN_IOS
+  if(g_Windowing.HasCursor())
+  {
+    if (g_Mouse.IsActive())
+      Show();
+    else
+      Close();
+  }
 }
 
 void CGUIWindowPointer::OnWindowLoaded()
