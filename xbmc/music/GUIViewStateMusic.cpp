@@ -23,6 +23,8 @@
 #include "PlayListPlayer.h"
 #include "guilib/GUIBaseContainer.h" // for VIEW_TYPE_*
 #include "video/VideoDatabase.h"
+//spotify
+#include "music/MusicDatabase.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -554,6 +556,14 @@ void CGUIViewStateWindowMusicNav::SaveViewState()
 
 void CGUIViewStateWindowMusicNav::AddOnlineShares()
 {
+  //spotify, only if we do use spotify
+  CLog::Log(LOGDEBUG,"Adding spotify share");
+  CMediaSource share;
+  share.strName="Spotify"; // main menu
+  share.strPath = "musicdb://spotify/menu/main/";
+  share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
+  m_sources.push_back(share);
+
   if (!g_advancedSettings.m_bVirtualShares) return;
   for (int i = 0; i < (int)g_settings.m_musicSources.size(); ++i)
   {

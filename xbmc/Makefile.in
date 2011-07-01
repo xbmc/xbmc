@@ -1,4 +1,5 @@
-SRCS=Application.cpp \
+SRCS=spotinterface.cpp \
+     Application.cpp \
      ApplicationMessenger.cpp \
      Autorun.cpp \
      AutoSwitch.cpp \

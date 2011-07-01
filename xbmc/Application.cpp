@@ -19,6 +19,7 @@
  *
  */
 
+#include "spotinterface.h"
 #include "system.h"
 #include "Application.h"
 #include "interfaces/Builtins.h"
@@ -88,6 +89,8 @@
 
 #include "input/KeyboardStat.h"
 #include "input/MouseStat.h"
+
+
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
 #include "filesystem/FileDAAP.h"
@@ -1158,6 +1161,12 @@ bool CApplication::Initialize()
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
   else
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
+
+  //spotify
+  g_spotifyInterface = new SpotifyInterface;
+  g_spotifyInterface->connect(false);
+
+
 
   g_sysinfo.Refresh();
 
@@ -3299,6 +3308,9 @@ void CApplication::Stop(int exitCode)
       g_lcd=NULL;
     }
 #endif
+    //spotify
+    delete g_spotifyInterface;
+    g_spotifyInterface = 0;
 
     g_Windowing.DestroyRenderSystem();
     g_Windowing.DestroyWindow();
