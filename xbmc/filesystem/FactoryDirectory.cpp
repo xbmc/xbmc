@@ -82,6 +82,7 @@
 #endif
 #include "DirectoryTuxBox.h"
 #include "HDHomeRun.h"
+#include "Slingbox.h"
 #include "MythDirectory.h"
 #include "FileItem.h"
 #include "URL.h"
@@ -91,6 +92,9 @@
 #endif
 #ifdef HAS_FILESYSTEM_SFTP
 #include "SFTPDirectory.h"
+#endif
+#ifdef HAS_FILESYSTEM_NFS
+#include "NFSDirectory.h"
 #endif
 
 using namespace XFILE;
@@ -167,6 +171,7 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
     if (strProtocol == "upnp") return new CUPnPDirectory();
 #endif
     if (strProtocol == "hdhomerun") return new CDirectoryHomeRun();
+    if (strProtocol == "sling") return new CSlingboxDirectory();
     if (strProtocol == "myth") return new CMythDirectory();
     if (strProtocol == "cmyth") return new CMythDirectory();
     if (strProtocol == "rss") return new CRSSDirectory();
@@ -182,6 +187,10 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_ZEROCONF
     if (strProtocol == "zeroconf") return new CZeroconfDirectory();
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+    if (strProtocol == "nfs") return new CNFSDirectory();
+#endif
+    
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );

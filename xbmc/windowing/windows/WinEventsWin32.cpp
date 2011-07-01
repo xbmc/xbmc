@@ -27,6 +27,7 @@
 #include "Application.h"
 #include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
+#include "input/KeymapLoader.h"
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include <dbt.h>
@@ -36,6 +37,8 @@
 #include "guilib/GUIControl.h"       // for EVENT_RESULT
 #include "powermanagement/windows/Win32PowerSyscall.h"
 #include "Shlobj.h"
+#include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 
 #ifdef _WIN32
 
@@ -49,6 +52,8 @@
 static XBMCKey VK_keymap[XBMCK_LAST];
 static HKL hLayoutUS = NULL;
 static XBMCKey Arrows_keymap[4];
+
+static GUID USB_HID_GUID = { 0x4D1E55B2, 0xF16F, 0x11CF, { 0x88, 0xCB, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30 } };
 
 uint32_t g_uQueryCancelAutoPlay = 0;
 
@@ -199,24 +204,29 @@ void DIB_InitOSKeymap()
   VK_keymap[VK_CANCEL] = XBMCK_BREAK;
   VK_keymap[VK_APPS] = XBMCK_MENU;
 
-  VK_keymap[VK_BROWSER_BACK]        = XBMCK_BROWSER_BACK;
-  VK_keymap[VK_BROWSER_FORWARD]     = XBMCK_BROWSER_FORWARD;
-  VK_keymap[VK_BROWSER_REFRESH]     = XBMCK_BROWSER_REFRESH;
-  VK_keymap[VK_BROWSER_STOP]        = XBMCK_BROWSER_STOP;
-  VK_keymap[VK_BROWSER_SEARCH]      = XBMCK_BROWSER_SEARCH;
-  VK_keymap[VK_BROWSER_FAVORITES]   = XBMCK_BROWSER_FAVORITES;
-  VK_keymap[VK_BROWSER_HOME]        = XBMCK_BROWSER_HOME;
-  VK_keymap[VK_VOLUME_MUTE]         = XBMCK_VOLUME_MUTE;
-  VK_keymap[VK_VOLUME_DOWN]         = XBMCK_VOLUME_DOWN;
-  VK_keymap[VK_VOLUME_UP]           = XBMCK_VOLUME_UP;
-  VK_keymap[VK_MEDIA_NEXT_TRACK]    = XBMCK_MEDIA_NEXT_TRACK;
-  VK_keymap[VK_MEDIA_PREV_TRACK]    = XBMCK_MEDIA_PREV_TRACK;
-  VK_keymap[VK_MEDIA_STOP]          = XBMCK_MEDIA_STOP;
-  VK_keymap[VK_MEDIA_PLAY_PAUSE]    = XBMCK_MEDIA_PLAY_PAUSE;
-  VK_keymap[VK_LAUNCH_MAIL]         = XBMCK_LAUNCH_MAIL;
-  VK_keymap[VK_LAUNCH_MEDIA_SELECT] = XBMCK_LAUNCH_MEDIA_SELECT;
-  VK_keymap[VK_LAUNCH_APP1]         = XBMCK_LAUNCH_APP1;
-  VK_keymap[VK_LAUNCH_APP2]         = XBMCK_LAUNCH_APP2;
+  // Only include the multimedia keys if they have been enabled in the
+  // advanced settings
+  if (g_advancedSettings.m_enableMultimediaKeys)
+  {
+    VK_keymap[VK_BROWSER_BACK]        = XBMCK_BROWSER_BACK;
+    VK_keymap[VK_BROWSER_FORWARD]     = XBMCK_BROWSER_FORWARD;
+    VK_keymap[VK_BROWSER_REFRESH]     = XBMCK_BROWSER_REFRESH;
+    VK_keymap[VK_BROWSER_STOP]        = XBMCK_BROWSER_STOP;
+    VK_keymap[VK_BROWSER_SEARCH]      = XBMCK_BROWSER_SEARCH;
+    VK_keymap[VK_BROWSER_FAVORITES]   = XBMCK_BROWSER_FAVORITES;
+    VK_keymap[VK_BROWSER_HOME]        = XBMCK_BROWSER_HOME;
+    VK_keymap[VK_VOLUME_MUTE]         = XBMCK_VOLUME_MUTE;
+    VK_keymap[VK_VOLUME_DOWN]         = XBMCK_VOLUME_DOWN;
+    VK_keymap[VK_VOLUME_UP]           = XBMCK_VOLUME_UP;
+    VK_keymap[VK_MEDIA_NEXT_TRACK]    = XBMCK_MEDIA_NEXT_TRACK;
+    VK_keymap[VK_MEDIA_PREV_TRACK]    = XBMCK_MEDIA_PREV_TRACK;
+    VK_keymap[VK_MEDIA_STOP]          = XBMCK_MEDIA_STOP;
+    VK_keymap[VK_MEDIA_PLAY_PAUSE]    = XBMCK_MEDIA_PLAY_PAUSE;
+    VK_keymap[VK_LAUNCH_MAIL]         = XBMCK_LAUNCH_MAIL;
+    VK_keymap[VK_LAUNCH_MEDIA_SELECT] = XBMCK_LAUNCH_MEDIA_SELECT;
+    VK_keymap[VK_LAUNCH_APP1]         = XBMCK_LAUNCH_APP1;
+    VK_keymap[VK_LAUNCH_APP2]         = XBMCK_LAUNCH_APP2;
+  }
 
   Arrows_keymap[3] = (XBMCKey)0x25;
   Arrows_keymap[2] = (XBMCKey)0x26;
@@ -349,6 +359,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 {
   XBMC_Event newEvent;
   ZeroMemory(&newEvent, sizeof(newEvent));
+  static HDEVNOTIFY hDeviceNotify;
 
   if (uMsg == WM_CREATE)
   {
@@ -359,6 +370,7 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     shcne.fRecursive = TRUE;
     long fEvents = SHCNE_DRIVEADD | SHCNE_DRIVEREMOVED | SHCNE_MEDIAREMOVED | SHCNE_MEDIAINSERTED;
     SHChangeNotifyRegister(hWnd, SHCNRF_ShellLevel | SHCNRF_NewDelivery, fEvents, WM_MEDIA_CHANGE, 1, &shcne);
+    RegisterDeviceInterfaceToHwnd(USB_HID_GUID, hWnd, &hDeviceNotify);
     return 0;
   }
 
@@ -500,47 +512,11 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     {
       CLog::Log(LOGDEBUG, "WinEventsWin32.cpp: APPCOMMAND %d", GET_APPCOMMAND_LPARAM(lParam));
       newEvent.appcommand.type = XBMC_APPCOMMAND;
-      newEvent.appcommand.action = 0;
-
-      switch (GET_APPCOMMAND_LPARAM(lParam))
-      {
-        case APPCOMMAND_MEDIA_PLAY:
-          newEvent.appcommand.action = ACTION_PLAYER_PLAY;
-          break;
-        case APPCOMMAND_MEDIA_PLAY_PAUSE:
-          newEvent.appcommand.action = ACTION_PLAYER_PLAYPAUSE;
-          break;
-        case APPCOMMAND_MEDIA_PAUSE:
-          newEvent.appcommand.action = ACTION_PAUSE;
-          break;
-        case APPCOMMAND_BROWSER_BACKWARD:
-          newEvent.appcommand.action = ACTION_PARENT_DIR;
-          break;
-        case APPCOMMAND_MEDIA_STOP:
-          newEvent.appcommand.action = ACTION_STOP;
-          break;
-        case APPCOMMAND_MEDIA_PREVIOUSTRACK:
-          newEvent.appcommand.action = ACTION_PREV_ITEM;
-          break;
-        case APPCOMMAND_MEDIA_NEXTTRACK:
-          newEvent.appcommand.action = ACTION_NEXT_ITEM;
-          break;
-        case APPCOMMAND_MEDIA_REWIND:
-          newEvent.appcommand.action = ACTION_PLAYER_REWIND;
-          break;
-        case APPCOMMAND_MEDIA_FAST_FORWARD:
-          newEvent.appcommand.action = ACTION_PLAYER_FORWARD;
-          break;
-        case APPCOMMAND_LAUNCH_MEDIA_SELECT:
-          // disable launch of external media players
-          return 1;
-      }
-      if (newEvent.appcommand.action != 0)
-      {
-        m_pEventFunc(newEvent);
-        return 1; // should return TRUE if application handled the event
-      }
-      break;
+      newEvent.appcommand.action = GET_APPCOMMAND_LPARAM(lParam);
+      if (m_pEventFunc(newEvent))
+        return TRUE;
+      else
+        return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
     case WM_GESTURENOTIFY:
     {
@@ -673,9 +649,48 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         CWin32PowerSyscall::SetOnResume();
       }
       break;
-
+    case WM_DEVICECHANGE:
+      {
+        PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
+        CStdString dbcc_name(b->dbcc_name);
+        dbcc_name = dbcc_name.Mid(dbcc_name.find_last_of('\\')+1, dbcc_name.find_last_of('#') - dbcc_name.find_last_of('\\'));
+        switch (wParam)
+        {
+          case DBT_DEVICEARRIVAL:
+            CKeymapLoader().DeviceAdded(dbcc_name);
+            break;
+          case DBT_DEVICEREMOVECOMPLETE:
+            CKeymapLoader().DeviceRemoved(dbcc_name);
+            break;
+          case DBT_DEVNODES_CHANGED:
+            //CLog::Log(LOGDEBUG, "HID Device Changed");
+            //We generally don't care about Change notifications, only need to know if a device is removed or added to rescan the device list
+            break;
+        }
+        break;
+      }
+    case WM_PAINT:
+      //some other app has painted over our window, mark everything as dirty
+      g_windowManager.MarkDirty();
+      break;
   }
   return(DefWindowProc(hWnd, uMsg, wParam, lParam));
+}
+
+void CWinEventsWin32::RegisterDeviceInterfaceToHwnd(GUID InterfaceClassGuid, HWND hWnd, HDEVNOTIFY *hDeviceNotify)
+{
+  DEV_BROADCAST_DEVICEINTERFACE NotificationFilter;
+
+  ZeroMemory( &NotificationFilter, sizeof(NotificationFilter) );
+  NotificationFilter.dbcc_size = sizeof(DEV_BROADCAST_DEVICEINTERFACE);
+  NotificationFilter.dbcc_devicetype = DBT_DEVTYP_DEVICEINTERFACE;
+  NotificationFilter.dbcc_classguid = InterfaceClassGuid;
+
+  *hDeviceNotify = RegisterDeviceNotification( 
+      hWnd,                       // events recipient
+      &NotificationFilter,        // type of device
+      DEVICE_NOTIFY_WINDOW_HANDLE // type of recipient handle
+      );
 }
 
 void CWinEventsWin32::WindowFromScreenCoords(HWND hWnd, POINT *point)

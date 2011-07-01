@@ -22,80 +22,10 @@
 #define __STDC_LIMIT_MACROS
 #include "AEConvert.h"
 #include "AEUtil.h"
-#include "MathUtils.h"
 #include "utils/EndianSwap.h"
-
-#include <stdlib.h>
-#include <limits.h>
-#include <stdint.h>
-
-#ifndef _WIN32
-#include <unistd.h>
-#endif
-#include <math.h>
-#include <string.h>
-
-#ifdef __SSE__
-#include <xmmintrin.h>
-#include <emmintrin.h>
-#endif
-
-#ifdef __ARM_NEON__
-#include <arm_neon.h>
-#endif
-
-#define CLAMP(x) std::min(-1.0f, std::max(1.0f, (float)(x)))
-
-#ifndef INT24_MAX
-#define INT24_MAX (0x7FFFFF)
-#endif
-
-float *CAEConvert::m_LookupU8  = NULL;
-float *CAEConvert::m_LookupS16 = NULL;
-
-static inline int safeRound(double f)
-{
-  /* if the value is larger then we can handle, then clamp it */
-  if (f >= INT_MAX) return INT_MAX;
-  if (f <= INT_MIN) return INT_MIN;
-
-  /* if the value is out of the MathUtils::round_int range, then round it normally */
-  if (f <= static_cast<double>(INT_MIN / 2) - 1.0 || f >= static_cast <double>(INT_MAX / 2) + 1.0)
-    return floor(f+0.5);
-
-  return MathUtils::round_int(f);
-}
 
 CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
 {
-  /* build lookup tables if we need them */
-  switch(dataFormat)
-  {
-    case AE_FMT_U8:
-    case AE_FMT_S8:
-      if (!m_LookupU8)
-      {
-        m_LookupU8 = new float[UINT8_MAX + 1];
-        for(int i = 0; i < UINT8_MAX; ++i)
-          m_LookupU8[i] = ((float)i / UINT8_MAX) * 2.0f - 1.0f;
-      }
-      break;
-
-    case AE_FMT_S16NE:
-    case AE_FMT_S16LE:
-    case AE_FMT_S16BE:
-      if (!m_LookupS16)
-      {
-        m_LookupS16 = new float[UINT16_MAX + 1];
-        for(int i = 0; i < UINT16_MAX; ++i)
-          m_LookupS16[i] = ((float)i / ((float)INT16_MAX+.5f)) - 1.0f;
-      }
-      break;
-
-    default:
-      break;
-  }
-
   switch(dataFormat)
   {
     case AE_FMT_U8    : return &U8_Float;
@@ -153,52 +83,61 @@ CAEConvert::AEConvertFrFn CAEConvert::FrFloat(enum AEDataFormat dataFormat)
 unsigned int CAEConvert::U8_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
   unsigned int i;
-  for(i = 0; i < samples; ++i, ++data, ++dest)
-    *dest = m_LookupU8[*data];
-
-  return samples;
+  
+  for (i = 0; i < samples; i++)
+    dest[i] = (((data[i]-0.5f)/ (float)(INT8_MAX)) - 1);
+  
+  return samples;  
 }
 
 unsigned int CAEConvert::S8_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
   unsigned int i;
-  for(i = 0; i < samples; ++i, ++data, ++dest)
-    *dest = m_LookupU8[(int8_t)*data - INT8_MAX];
+  
+  for (i = 0; i < samples; i++)
+    dest[i] = *data++ / (float)(INT8_MAX + 1);
 
   return samples;
 }
+
+#ifdef __BIG_ENDIAN__
+#define INT16_FROM(x) ( (int16_t) ( ((uint16_t) (x) >> 8) | ((uint16_t) (x) << 8) ) )
+#else
+#define INT16_FROM(x) ((int16_t)(x))
+#endif
 
 unsigned int CAEConvert::S16LE_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
-  unsigned int i;
-  for(i = 0; i < samples; ++i, data += 2, ++dest)
+  int16_t *src = (int16_t *)data;
+  
+  for(unsigned int n = samples; n > 0; n--)
   {
-#ifndef __BIG_ENDIAN__
-    *dest = m_LookupS16[*(int16_t*)data + INT16_MAX];
+#ifdef __BIG_ENDIAN__
+    int16_t s = *(src++);
+    *(dest++) = ((float) INT16_SWAP(s))/(float) INT16_MAX;
 #else
-    int16_t value;
-    swab((char *)data, (char *)&value, 2);
-    *dest = m_LookupS16[value + INT16_MAX];
+    *(dest++) = ((float) (*(src++)))/(float) INT16_MAX;
 #endif
   }
-
+  
   return samples;
 }
 
+
 unsigned int CAEConvert::S16BE_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
-  unsigned int i;
-  for(i = 0; i < samples; ++i, data += 2, ++dest)
+  int16_t *src = (int16_t *)data;
+  
+  for(unsigned int n = samples; n > 0; n--)
   {
 #ifdef __BIG_ENDIAN__
-    *dest = m_LookupS16[*(int16_t*)data + INT16_MAX];
+    int16_t s = *(src++);
+    *(dest++) = ((float) INT16_SWAP(s))/(float) INT16_MAX;
 #else
-    int16_t value;
-    swab((char *)data, (char *)&value, 2);
-    *dest = m_LookupS16[value + INT16_MAX];
+    *(dest++) = ((float) (*(src++)))/(float) INT16_MAX;
 #endif
   }
-
+  
   return samples;
 }
 

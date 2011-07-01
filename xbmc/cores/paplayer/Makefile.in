@@ -21,7 +21,6 @@ SRCS=ADPCMCodec.cpp \
      TimidityCodec.cpp \
      VGMCodec.cpp \
      WAVcodec.cpp \
-     WAVPackcodec.cpp \
      YMCodec.cpp \
 
 ifeq (@USE_ASAP_CODEC@,1)

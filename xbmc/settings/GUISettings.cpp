@@ -41,6 +41,9 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #include "cores/AudioEngine/AEAudioFormat.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
+#if defined __APPLE__ && !defined __arm__
+#include "CoreAudioAEHALOSX.h"
+#endif
 #if defined(__APPLE__)
   #include "osx/DarwinUtils.h"
 #endif
@@ -436,20 +439,24 @@ void CGUISettings::Initialize()
   map<int,int> channelLayout;
   for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
     channelLayout.insert(make_pair(34100+layout, layout));
+#if (defined(__APPLE__) && defined(__arm__))
+  AddInt(NULL, "audiooutput.channellayout", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+#else
   AddInt(ao, "audiooutput.channellayout", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+#endif
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
 
 #if (defined(__APPLE__) && defined(__arm__))
-  if (g_sysinfo.IsAppleTV2())
-  {
+  //if (g_sysinfo.IsAppleTV2())
+  //{
     AddBool(ao, "audiooutput.ac3passthrough", 364, false);
     AddBool(ao, "audiooutput.dtspassthrough", 254, false);
-  }
-  else
-  {
-    AddBool(NULL, "audiooutput.ac3passthrough", 364, false);
-    AddBool(NULL, "audiooutput.dtspassthrough", 254, false);
-  }
+  //}
+  //else
+  //{
+  //  AddBool(NULL, "audiooutput.ac3passthrough", 364, false);
+  //  AddBool(NULL, "audiooutput.dtspassthrough", 254, false);
+  //}
 #else
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);
   AddBool(ao, "audiooutput.dtspassthrough", 254, true);
@@ -459,11 +466,24 @@ void CGUISettings::Initialize()
   AddBool(NULL, "audiooutput.passthroughmp2", 301, false);
   AddBool(NULL, "audiooutput.passthroughmp3", 302, false);
 
+#if defined __APPLE__
+  AddBool(NULL, "audiooutput.multichannellpcm", 348, false);
+  AddBool(NULL, "audiooutput.truehdpassthrough", 349, false);
+#else
   AddBool(ao, "audiooutput.multichannellpcm", 348, true);
   AddBool(ao, "audiooutput.truehdpassthrough", 349, true);
+#endif
 
-#ifdef __APPLE__
-  AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
+#if defined __APPLE__
+#if defined __arm__
+  CStdString defaultDeviceName = "Default";
+#else
+  CStdString defaultDeviceName;
+  CCoreAudioHardware::GetOutputDeviceName(defaultDeviceName);
+#endif
+  
+  AddString(ao, "audiooutput.audiodevice", 545, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
+  AddString(NULL, "audiooutput.passthroughdevice", 546, defaultDeviceName.c_str(), SPIN_CONTROL_TEXT);
 #elif defined(_LINUX)
   AddSeparator(ao, "audiooutput.sep1");
   AddString(ao, "audiooutput.audiodevice", 545, "default", SPIN_CONTROL_TEXT);
@@ -479,6 +499,8 @@ void CGUISettings::Initialize()
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
   AddString(ao, "audiooutput.passthroughdevice", 546, "Default", SPIN_CONTROL_TEXT);
 #endif
+
+  AddBool(ao, "audiooutput.guisoundwhileplayback", 34120, true);
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
 #if defined(__APPLE__)

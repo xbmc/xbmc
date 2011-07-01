@@ -40,7 +40,8 @@ namespace PYXBMC
     // Extract a reference to the function "func_name"
     // from the global dictionary
     PyObject* pyid = PyDict_GetItemString(global_dict, "__xbmcaddonid__");
-    id = PyString_AsString(pyid);
+    if(pyid)
+      id = PyString_AsString(pyid);
     return id;
   }
 
@@ -59,12 +60,6 @@ namespace PYXBMC
 
 }
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -364,12 +359,6 @@ namespace PYXBMC
     " - self.Addon = xbmcaddon.Addon(id='script.recentlyadded')\n");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
   PyTypeObject Addon_Type;
 

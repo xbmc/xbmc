@@ -491,7 +491,7 @@ bool CFileItem::IsVideo() const
   if (HasMusicInfoTag()) return false;
   if (HasPictureInfoTag()) return false;
 
-  if (IsHDHomeRun() || IsTuxBox() || URIUtils::IsDVD(m_strPath))
+  if (IsHDHomeRun() || IsTuxBox() || URIUtils::IsDVD(m_strPath) || IsSlingbox())
     return true;
 
   CStdString extension;
@@ -759,6 +759,11 @@ bool CFileItem::IsOnDVD() const
   return URIUtils::IsOnDVD(m_strPath) || m_iDriveType == CMediaSource::SOURCE_TYPE_DVD;
 }
 
+bool CFileItem::IsNfs() const
+{
+  return URIUtils::IsNfs(m_strPath);
+}
+
 bool CFileItem::IsOnLAN() const
 {
   return URIUtils::IsOnLAN(m_strPath);
@@ -802,6 +807,11 @@ bool CFileItem::IsMythTV() const
 bool CFileItem::IsHDHomeRun() const
 {
   return URIUtils::IsHDHomeRun(m_strPath);
+}
+
+bool CFileItem::IsSlingbox() const
+{
+  return URIUtils::IsSlingbox(m_strPath);
 }
 
 bool CFileItem::IsVTP() const
@@ -1994,6 +2004,7 @@ void CFileItemList::Stack()
       // 1. rars and zips may be on slow sources? is this supposed to be allowed?
       if( !item->IsRemote()
         || item->IsSmb()
+        || item->IsNfs() 
         || URIUtils::IsInRAR(item->m_strPath)
         || URIUtils::IsInZIP(item->m_strPath)
         )

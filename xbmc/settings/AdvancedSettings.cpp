@@ -135,7 +135,7 @@ void CAdvancedSettings::Initialize()
 
   m_videoCleanDateTimeRegExp = "(.*[^ _\\,\\.\\(\\)\\[\\]\\-])[ _\\.\\(\\)\\[\\]\\-]+(19[0-9][0-9]|20[0-1][0-9])([ _\\,\\.\\(\\)\\[\\]\\-]|[^0-9]$)";
 
-  m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
+  m_videoCleanStringRegExps.push_back("[ _\\,\\.\\(\\)\\[\\]\\-](ac3|dts|custom|dc|remastered|divx|divx5|dsr|dsrip|dutch|dvd|dvd5|dvd9|dvdrip|dvdscr|dvdscreener|screener|dvdivx|cam|fragment|fs|hdtv|hdrip|hdtvrip|internal|limited|multisubs|ntsc|ogg|ogm|pal|pdtv|proper|repack|rerip|retail|r3|r5|bd5|se|svcd|swedish|german|read.nfo|nfofix|unrated|extended|ws|telesync|ts|telecine|tc|brrip|bdrip|480p|480i|576p|576i|720p|720i|1080p|1080i|3d|hrhd|hrhdtv|hddvd|bluray|x264|h264|xvid|xvidvd|xxx|www.www|cd[1-9]|\\[.*\\])([ _\\,\\.\\(\\)\\[\\]\\-]|$)");
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
@@ -278,6 +278,13 @@ void CAdvancedSettings::Initialize()
 
   m_jsonOutputCompact = true;
   m_jsonTcpPort = 9090;
+
+  m_enableMultimediaKeys = false;
+
+  m_canWindowed = true;
+  m_guiVisualizeDirtyRegions = false;
+  m_guiAlgorithmDirtyRegions = 0;
+  m_guiDirtyRegionNoFlipTimeout = -1;
 }
 
 bool CAdvancedSettings::Load()
@@ -286,37 +293,44 @@ bool CAdvancedSettings::Load()
   //       it should instead use the versions of GetString/Integer/Float that
   //       don't take defaults in.  Defaults are set in the constructor above
   Initialize(); // In case of profile switch.
-  CStdString advancedSettingsXML;
-  advancedSettingsXML  = g_settings.GetUserDataItem("advancedsettings.xml");
+  ParseSettingsFile("special://xbmc/system/advancedsettings.xml");
+  for (unsigned int i = 0; i < m_settingsFiles.size(); i++)
+    ParseSettingsFile(m_settingsFiles[i]);
+  ParseSettingsFile(g_settings.GetUserDataItem("advancedsettings.xml"));
+  return true;
+}
+
+void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
+{
   TiXmlDocument advancedXML;
-  if (!CFile::Exists(advancedSettingsXML))
-  { // tell the user it doesn't exist
-    CLog::Log(LOGNOTICE, "No advancedsettings.xml to load (%s)", advancedSettingsXML.c_str());
-    return false;
+  if (!CFile::Exists(file))
+  {
+    CLog::Log(LOGNOTICE, "No settings file to load to load (%s)", file.c_str());
+    return;
   }
 
-  if (!advancedXML.LoadFile(advancedSettingsXML))
+  if (!advancedXML.LoadFile(file))
   {
-    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", advancedSettingsXML.c_str(), advancedXML.ErrorRow(), advancedXML.ErrorDesc());
-    return false;
+    CLog::Log(LOGERROR, "Error loading %s, Line %d\n%s", file.c_str(), advancedXML.ErrorRow(), advancedXML.ErrorDesc());
+    return;
   }
 
   TiXmlElement *pRootElement = advancedXML.RootElement();
   if (!pRootElement || strcmpi(pRootElement->Value(),"advancedsettings") != 0)
   {
-    CLog::Log(LOGERROR, "Error loading %s, no <advancedsettings> node", advancedSettingsXML.c_str());
-    return false;
+    CLog::Log(LOGERROR, "Error loading %s, no <advancedsettings> node", file.c_str());
+    return;
   }
 
   // succeeded - tell the user it worked
-  CLog::Log(LOGNOTICE, "Loaded advancedsettings.xml from %s", advancedSettingsXML.c_str());
+  CLog::Log(LOGNOTICE, "Loaded settings file from %s", file.c_str());
 
   // Dump contents of AS.xml to debug log
   TiXmlPrinter printer;
   printer.SetLineBreak("\n");
   printer.SetIndent("  ");
   advancedXML.Accept(&printer);
-  CLog::Log(LOGNOTICE, "Contents of %s are...\n%s", advancedSettingsXML.c_str(), printer.CStr());
+  CLog::Log(LOGNOTICE, "Contents of %s are...\n%s", file.c_str(), printer.CStr());
 
   TiXmlElement *pElement = pRootElement->FirstChildElement("audio");
   if (pElement)
@@ -641,6 +655,7 @@ bool CAdvancedSettings::Load()
 #endif
   XMLUtils::GetBoolean(pRootElement, "splash", m_splashImage);
   XMLUtils::GetBoolean(pRootElement, "showexitbutton", m_showExitButton);
+  XMLUtils::GetBoolean(pRootElement, "canwindowed", m_canWindowed);
 
   XMLUtils::GetInt(pRootElement, "songinfoduration", m_songInfoDuration, 0, INT_MAX);
   XMLUtils::GetInt(pRootElement, "busydialogdelay", m_busyDialogDelay, 0, 5000);
@@ -879,10 +894,22 @@ bool CAdvancedSettings::Load()
     XMLUtils::GetString(pDatabase, "name", m_databaseMusic.name);
   }
 
+  pElement = pRootElement->FirstChildElement("enablemultimediakeys");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pRootElement, "enablemultimediakeys", m_enableMultimediaKeys);
+  }
+  
+  pElement = pRootElement->FirstChildElement("gui");
+  if (pElement)
+  {
+    XMLUtils::GetBoolean(pElement, "visualizedirtyregions", m_guiVisualizeDirtyRegions);
+    XMLUtils::GetInt(pElement, "algorithmdirtyregions",     m_guiAlgorithmDirtyRegions);
+    XMLUtils::GetInt(pElement, "nofliptimeout",             m_guiDirtyRegionNoFlipTimeout);
+  }
+
   // load in the GUISettings overrides:
   g_guiSettings.LoadXML(pRootElement, true);  // true to hide the settings we read in
-
-  return true;
 }
 
 void CAdvancedSettings::Clear()
@@ -1004,3 +1031,7 @@ void CAdvancedSettings::GetCustomExtensions(TiXmlElement *pRootElement, CStdStri
   }
 }
 
+void CAdvancedSettings::AddSettingsFile(const CStdString &filename)
+{
+  m_settingsFiles.push_back(filename);
+}

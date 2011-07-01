@@ -58,7 +58,7 @@
   <string id="31102">Background</string>
   <string id="31103">Show "Paused" in picture slide show</string>
   <string id="31104">Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">"Videos" button always goes to video "Files"</string>
   <string id="31106">Miscellaneous options</string>
   <string id="31107">Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Hide Main Menu Buttons</string>
@@ -164,4 +164,17 @@
   <string id="31408">[B]CONFIGURE ADD-ONS[/B][CR][CR]Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org[CR]Modify Add-on settings</string>
 
   <string id="31421">Select your XBMC user Profile[CR]to login and continue</string>
-</strings>
+  
+  <!-- Weather plugin -->
+  <string id="31900">Weather Maps</string>
+  <string id="31901">36 Hour Forecast</string>
+  <string id="31902">Hourly Forecast</string>
+  <string id="31903">Weekend Forecast</string>
+  <string id="31904">10 Day Forecast</string>
+  <string id="31905">Forecast</string>
+  <string id="31906">Maps &amp; Video</string>
+  <string id="31907">Video Forecast [COLOR=grey2](Fullscreen Playback)[/COLOR]</string>
+  <string id="31908">Chance of Precipitation</string>
+  <string id="31909">Fetching forecast info...</string>
+
+  </strings>

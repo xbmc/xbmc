@@ -247,6 +247,8 @@ CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
   CStdString strHMS;
   if (format & TIME_FORMAT_HH)
     strHMS.AppendFormat("%02.2i", hh);
+  else if (format & TIME_FORMAT_H)
+    strHMS.AppendFormat("%i", hh);
   if (format & TIME_FORMAT_MM)
     strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", mm);
   if (format & TIME_FORMAT_SS)

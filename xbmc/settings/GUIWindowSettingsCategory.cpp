@@ -70,12 +70,7 @@
 #endif
 #endif
 #if defined(__APPLE__) 
-#if defined(__arm__)
-#include "IOSCoreAudio.h"
-#else
-#include "CoreAudio.h"
 #include "XBMCHelper.h"
-#endif
 #endif
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"
@@ -826,13 +821,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
 #endif
 #ifdef HAS_WEB_SERVER
-    else if (strSetting.Equals("services.webserverusername"))
-    {
-      CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
-      if (pControl)
-        pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
-    }
-    else if (strSetting.Equals("services.webserverpassword"))
+    else if (strSetting.Equals("services.webserverusername") ||
+             strSetting.Equals("services.webserverpassword"))
     {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (pControl)
@@ -1302,6 +1292,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     g_guiSettings.m_replayGain.iNoGainPreAmp = g_guiSettings.GetInt("musicplayer.replaygainnogainpreamp");
     g_guiSettings.m_replayGain.bAvoidClipping = g_guiSettings.GetBool("musicplayer.replaygainavoidclipping");
   }
+  /*
   else if (strSetting.Equals("audiooutput.audiodevice"))
   {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
@@ -1322,6 +1313,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #endif
   }
 #endif
+  */
 #ifdef HAS_LCD
   else if (strSetting.Equals("videoscreen.haslcd"))
   {
@@ -1908,6 +1900,20 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
     CUtil::DeleteVideoDatabaseDirectoryCache();
   }
+  /*
+  else if (strSetting.Equals("audiooutput.audiodevice"))
+  {
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+		g_guiSettings.SetString("audiooutput.audiodevice",pControl->GetCurrentLabel());
+    AE.OnSettingsChange(strSetting);
+	}
+	else if (strSetting.Equals("audiooutput.passthroughdevice"))
+	{
+		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
+		g_guiSettings.SetString("audiooutput.passthroughdevice",pControl->GetCurrentLabel());
+    AE.OnSettingsChange(strSetting);
+	}
+  */
   else if (strSetting.find_first_of("audiooutput.") == 0)
   {
     if (strSetting.Equals("audiooutput.audiodevice"))
@@ -1928,7 +1934,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       g_guiSettings.SetString("audiooutput.passthroughdevice", pControl->GetCurrentLabel());
 #endif
     }
-
+    
     AE.OnSettingsChange(strSetting);
   }
 
@@ -2046,7 +2052,7 @@ void CGUIWindowSettingsCategory::FrameMove()
   CGUIWindow::FrameMove();
 }
 
-void CGUIWindowSettingsCategory::Render()
+void CGUIWindowSettingsCategory::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // update alpha status of current button
   bool bAlphaFaded = false;
@@ -2066,7 +2072,7 @@ void CGUIWindowSettingsCategory::Render()
       bAlphaFaded = true;
     }
   }
-  CGUIWindow::Render();
+  CGUIWindow::DoProcess(currentTime, dirtyregions);
   if (bAlphaFaded)
   {
     control->SetFocus(false);
@@ -2075,6 +2081,11 @@ void CGUIWindowSettingsCategory::Render()
     else
       ((CGUIButtonControl *)control)->SetSelected(false);
   }
+}
+
+void CGUIWindowSettingsCategory::Render()
+{
+  CGUIWindow::Render();
   // render the error message if necessary
   if (m_strErrorMessage.size())
   {
@@ -2355,7 +2366,8 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
   pControl->Clear();
 
   CStdString strScreen;
-  pControl->AddLabel(g_localizeStrings.Get(242), -1);
+  if (g_advancedSettings.m_canWindowed)
+    pControl->AddLabel(g_localizeStrings.Get(242), -1);
 
   for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {
@@ -2857,78 +2869,26 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Passthrough)
 {
-#if defined(__APPLE__)
-  #if defined(__arm__)
-    if (Passthrough)
-      return;
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-    pControl->Clear();
-
-    IOSCoreAudioDeviceList deviceList;
-    CIOSCoreAudioHardware::GetOutputDevices(&deviceList);
-
-    // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
-    if (CIOSCoreAudioHardware::GetDefaultOutputDevice())
-      pControl->AddLabel("Default Output Device", 0);
-
-    int activeDevice = 0;
-    CStdString deviceName;
-    for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
-    {
-      CIOSCoreAudioDevice device(deviceList.front());
-      pControl->AddLabel(device.GetName(deviceName), i);
-
-      // Tag this one
-      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
-        activeDevice = i; 
-
-      deviceList.pop_front();
-    }
-    pControl->SetValue(activeDevice);
-  #else
-    if (Passthrough)
-      return;
-    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-    pControl->Clear();
-
-    CoreAudioDeviceList deviceList;
-    CCoreAudioHardware::GetOutputDevices(&deviceList);
-
-    // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
-    if (CCoreAudioHardware::GetDefaultOutputDevice())
-      pControl->AddLabel("Default Output Device", 0);
-
-    int activeDevice = 0;
-    CStdString deviceName;
-    for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
-    {
-      CCoreAudioDevice device(deviceList.front());
-      pControl->AddLabel(device.GetName(deviceName), i);
-
-      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
-        activeDevice = i; // Tag this one
-
-      deviceList.pop_front();
-    }
-    pControl->SetValue(activeDevice);
-  #endif
-#else
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
   CStdString currentDevice = Passthrough ? g_guiSettings.GetString("audiooutput.passthroughdevice") : g_guiSettings.GetString("audiooutput.audiodevice");
-
+	
   if (Passthrough)
   {
     m_DigitalAudioSinkMap.clear();
+#if !defined(__APPLE__)
     m_DigitalAudioSinkMap["Error - no devices found"] = "null:";
     m_DigitalAudioSinkMap[g_localizeStrings.Get(636)] = "custom";
+#endif
   }
   else
   {
     m_AnalogAudioSinkMap.clear();
+#if !defined(__APPLE__)
     m_AnalogAudioSinkMap["Error - no devices found"] = "null:";
     m_AnalogAudioSinkMap[g_localizeStrings.Get(636)] = "custom";
+#endif
   }
 
   int numberSinks = 0;
@@ -2936,6 +2896,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   int selectedValue = -1;
   AEDeviceList sinkList;
   AE.EnumerateOutputDevices(sinkList, Passthrough);
+#if !defined(__APPLE__)
   if (sinkList.size()==0)
   {
     pControl->AddLabel("Error - no devices found", 0);
@@ -2944,6 +2905,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   }
   else
   {
+#endif
     AEDeviceList::const_iterator iter = sinkList.begin();
     for (int i=0; iter != sinkList.end(); iter++)
     {
@@ -2958,14 +2920,15 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
         m_DigitalAudioSinkMap[label] = sink;
       else
         m_AnalogAudioSinkMap[label] = sink;
-
       i++;
     }
 
     numberSinks = sinkList.size();
+#if !defined(__APPLE__)
   }
+#endif
 
-#ifdef _LINUX
+#if defined _LINUX && !defined(__APPLE__)
   if (currentDevice.Equals("custom"))
     selectedValue = numberSinks;
 
@@ -2980,7 +2943,6 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
   }
   else
     pControl->SetValue(selectedValue);
-#endif
 }
 
 void CGUIWindowSettingsCategory::NetworkInterfaceChanged(void)

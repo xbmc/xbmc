@@ -36,6 +36,48 @@ using namespace XFILE;
 
 #define READ_CACHE_CHUNK_SIZE (64*1024)
 
+class CWriteRate
+{
+public:
+  CWriteRate()
+  {
+    m_stamp = CTimeUtils::GetTimeMS();
+    m_pos   = 0;
+    m_pause = 0;
+  }
+
+  void Reset(int64_t pos)
+  {
+    m_stamp = CTimeUtils::GetTimeMS();
+    m_pos   = pos;
+  }
+
+  unsigned Rate(int64_t pos, unsigned int time_bias = 0)
+  {
+    const unsigned ts = CTimeUtils::GetTimeMS() + time_bias;
+    if(ts == m_stamp)
+      return 0;
+    return (unsigned)(1000 * (pos - m_pos) / (ts - m_stamp));
+  }
+
+  void Pause()
+  {
+    m_pause = CTimeUtils::GetTimeMS();
+  }
+
+  void Resume()
+  {
+    m_stamp += CTimeUtils::GetTimeMS() - m_pause;
+    m_pause  = 0;
+  }
+
+private:
+  unsigned m_stamp;
+  int64_t  m_pos;
+  unsigned m_pause;
+};
+
+
 CFileCache::CFileCache()
 {
    m_bDeleteCache = true;
@@ -46,9 +88,10 @@ CFileCache::CFileCache()
    if(g_advancedSettings.m_cacheMemBufferSize == 0)
      m_pCache = new CSimpleFileCache();
    else
-     m_pCache = new CCacheCircular(std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024)
-                                 , g_advancedSettings.m_cacheMemBufferSize);
+     m_pCache = new CCacheCircular(g_advancedSettings.m_cacheMemBufferSize
+                                 , std::max<unsigned int>( g_advancedSettings.m_cacheMemBufferSize / 4, 1024 * 1024));
    m_seekPossible = 0;
+   m_cacheFull = false;
 }
 
 CFileCache::CFileCache(CCacheStrategy *pCache, bool bDeleteCache)
@@ -119,6 +162,8 @@ bool CFileCache::Open(const CURL& url)
   m_readPos = 0;
   m_writePos = 0;
   m_writeRate = 1024 * 1024;
+  m_writeRateActual = 0;
+  m_cacheFull = false;
   m_seekEvent.Reset();
   m_seekEnded.Reset();
 
@@ -145,8 +190,8 @@ void CFileCache::Process()
     return;
   }
 
-  unsigned fill_time = CTimeUtils::GetTimeMS();
-  int64_t  fill_data = 0;
+  CWriteRate limiter;
+  CWriteRate average;
 
   while(!m_bStop)
   {
@@ -164,10 +209,11 @@ void CFileCache::Process()
       else
       {
         m_pCache->Reset(m_seekPos);
-        fill_time = CTimeUtils::GetTimeMS();
-        fill_data = m_seekPos;
+        average.Reset(m_seekPos);
+        limiter.Reset(m_seekPos);
         m_writePos = m_seekPos;
         m_readPos = m_seekPos;
+        m_cacheFull = false;
       }
 
       m_seekEnded.Set();
@@ -175,21 +221,13 @@ void CFileCache::Process()
 
     while(m_writeRate)
     {
-      unsigned timestamp = CTimeUtils::GetTimeMS();
       if(m_writePos - m_readPos < m_writeRate)
       {
-        fill_time = timestamp;
-        fill_data = m_writePos;
+        limiter.Reset(m_writePos);
         break;
       }
 
-      int64_t  count = m_writePos - fill_data;
-      unsigned delay = timestamp  - fill_time;
-
-      if(delay == 0)
-        break;
-
-      if(count * 1000 / delay < m_writeRate)
+      if(limiter.Rate(m_writePos) < m_writeRate)
         break;
 
       if(m_seekEvent.WaitMSec(100))
@@ -205,11 +243,9 @@ void CFileCache::Process()
       CLog::Log(LOGINFO, "CFileCache::Process - Hit eof.");
       m_pCache->EndOfInput();
 
-      // since there is no more to read - wait either for seek or close
-      // WaitForSingleObject is CThread::WaitForSingleObject that will also listen to the
-      // end thread event.
-      int nRet = CThread::WaitForSingleObject(m_seekEvent.GetHandle(), INFINITE);
-      if (nRet == WAIT_OBJECT_0)
+      // The thread event will now also cause the wait of an event to return a false.
+      XbmcThreads::CEventGroup group(&m_seekEvent, getStopEvent(), NULL);
+      if (group.wait() == &m_seekEvent)
       {
         m_pCache->ClearEndOfInput();
         m_seekEvent.Set(); // hack so that later we realize seek is needed
@@ -235,7 +271,14 @@ void CFileCache::Process()
         break;
       }
       else if (iWrite == 0)
+      {
+        m_cacheFull = true;
+        average.Pause();
         m_pCache->m_space.WaitMSec(5);
+        average.Resume();
+      }
+      else
+        m_cacheFull = false;
 
       iTotalWrite += iWrite;
 
@@ -246,7 +289,12 @@ void CFileCache::Process()
         break;
       }
     }
+
     m_writePos += iTotalWrite;
+
+    // under estimate write rate by a second, to
+    // avoid uncertainty at start of caching
+    m_writeRateActual = average.Rate(m_writePos, 1000);
   }
 }
 
@@ -397,6 +445,8 @@ int CFileCache::IoControl(EIoControl request, void* param)
     SCacheStatus* status = (SCacheStatus*)param;
     status->forward = m_pCache->WaitForData(0, 0);
     status->maxrate = m_writeRate;
+    status->currate = m_writeRateActual;
+    status->full    = m_cacheFull;
     return 0;
   }
 

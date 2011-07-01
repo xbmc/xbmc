@@ -1,6 +1,8 @@
 SRCS=AnimatedGif.cpp \
      DDSImage.cpp \
      DirectXGraphics.cpp \
+     DirtyRegionSolvers.cpp \
+     DirtyRegionTracker.cpp \
      FrameBufferObject.cpp \
      GraphicContext.cpp \
      GUIAudioManager.cpp \

@@ -165,4 +165,16 @@
   <string id="31408">[B]设置扩展功能[/B][CR][CR]管理你安装的扩展功能 · 在xbmc.org浏览并安装扩展功能 · 修改扩展功能设置</string>
 
   <string id="31421">选择您的用户配置文件[CR]登录并继续</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">气象图</string>
+  <string id="31901">36小时预报</string>
+  <string id="31902">每小时预报</string>
+  <string id="31903">一周预报</string>
+  <string id="31904">10日预报</string>
+  <string id="31905">天气预报</string>
+  <string id="31906">图像 &amp; 视频</string>
+  <string id="31907">视频预报 [COLOR=grey2]（全屏播放）[/COLOR]</string>
+  <string id="31908">降雨概率</string>
+  <string id="31909">获取天气信息...</string>
 </strings>

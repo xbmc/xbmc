@@ -11,7 +11,7 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 ifeq ($(OSTYPE),Darwin)
-include ../../../tools/osx/osx-depends/config.mk
+include ../../../tools/darwin/depends/config.site.mk
 PYTHON=$(prefix_path)/bin/python
 else
 PYTHON=@PYTHON@

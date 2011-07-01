@@ -193,7 +193,7 @@ CAction::CAction(int actionID, float amount1 /* = 1.0f */, float amount2 /* = 0.
   m_holdTime = 0;
 }
 
-CAction::CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY)
+CAction::CAction(int actionID, unsigned int state, float posX, float posY, float offsetX, float offsetY, const CStdString &name)
 {
   m_id = actionID;
   m_amount[0] = posX;
@@ -202,6 +202,7 @@ CAction::CAction(int actionID, unsigned int state, float posX, float posY, float
   m_amount[3] = offsetY;
   for (unsigned int i = 4; i < max_amounts; i++)
     m_amount[i] = 0;  
+  m_name = name;
   m_repeat = 0;
   m_buttonCode = 0;
   m_unicode = 0;

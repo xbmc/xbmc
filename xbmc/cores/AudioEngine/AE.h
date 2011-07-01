@@ -120,6 +120,18 @@ public:
   virtual void FreeSound(IAESound *sound) = 0;
 
   /**
+   * Play the supplied IAESound object
+   * @param sound The IAESound object to play
+   */
+  virtual void PlaySound(IAESound *sound) = 0;
+
+  /**
+   * Stop play the supplied IAESound object
+   * @param sound The IAESound object to stop playing
+   */
+  virtual void StopSound(IAESound *sound) = 0;
+
+  /**
    * Callback by CApplication for Garbage Collection. This method is called by CApplication every 500ms and can be used to clean up and free no-longer used resources.
    */
   virtual void GarbageCollect() = 0;

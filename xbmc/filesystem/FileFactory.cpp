@@ -62,6 +62,10 @@
 #ifdef HAS_FILESYSTEM_SFTP
 #include "FileSFTP.h"
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+#include "FileNFS.h"
+#endif
+
 #include "FileMusicDatabase.h"
 #include "FileSpecialProtocol.h"
 #include "MultiPathFile.h"
@@ -69,6 +73,7 @@
 #include "FileUDF.h"
 #include "MythFile.h"
 #include "HDHomeRun.h"
+#include "Slingbox.h"
 #include "Application.h"
 #include "URL.h"
 #include "utils/log.h"
@@ -129,6 +134,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
     else if (strProtocol == "lastfm") return new CFileLastFM();
     else if (strProtocol == "tuxbox") return new CFileTuxBox();
     else if (strProtocol == "hdhomerun") return new CFileHomeRun();
+    else if (strProtocol == "sling") return new CSlingboxFile();
     else if (strProtocol == "myth") return new CMythFile();
     else if (strProtocol == "cmyth") return new CMythFile();
 #ifdef HAS_FILESYSTEM_SMB
@@ -152,6 +158,10 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_FILESYSTEM_VTP
     else if (strProtocol == "vtp") return new CVTPFile();
 #endif
+#ifdef HAS_FILESYSTEM_NFS
+    else if (strProtocol == "nfs") return new CFileNFS();
+#endif
+    
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );

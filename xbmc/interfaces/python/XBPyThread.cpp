@@ -43,13 +43,8 @@
 
 #include "xbmcmodule/pyutil.h"
 #include "xbmcmodule/pythreadstate.h"
+#include "utils/CharsetConverter.h"
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -93,11 +88,23 @@ XBPyThread::~XBPyThread()
   }
 }
 
+void XBPyThread::setSource(const CStdString &src)
+{
+#ifdef TARGET_WINDOWS
+  CStdString strsrc = src;
+  g_charsetConverter.utf8ToStringCharset(strsrc);
+  m_source  = new char[strsrc.GetLength()+1];
+  strcpy(m_source, strsrc);
+#else
+  m_source  = new char[src.GetLength()+1];
+  strcpy(m_source, src);
+#endif
+}
+
 int XBPyThread::evalFile(const CStdString &src)
 {
   m_type    = 'F';
-  m_source  = new char[src.GetLength()+1];
-  strcpy(m_source, src);
+  setSource(src);
   Create();
   return 0;
 }
@@ -105,8 +112,7 @@ int XBPyThread::evalFile(const CStdString &src)
 int XBPyThread::evalString(const CStdString &src)
 {
   m_type    = 'S';
-  m_source  = new char[src.GetLength()+1];
-  strcpy(m_source, src);
+  setSource(src);
   Create();
   return 0;
 }

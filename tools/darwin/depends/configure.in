@@ -11,7 +11,7 @@ AC_ARG_WITH([darwin],
   [AS_HELP_STRING([--with-darwin],
   [build depend libs for darwin osx (default) or ios.])],
   [use_darwin=$withval],
-  [use_darwin="osx"])
+  [use_darwin=missing])
 
 AC_ARG_WITH([arch],
   [AS_HELP_STRING([--with-arch],
@@ -32,9 +32,11 @@ case $use_darwin in
      if test "$use_arch" = "armv7"; then
        AC_MSG_ERROR(error in configure of --with-arch=$use_arch)
      fi
-     if test "$use_sdk" != "10.4"; then
+     case $use_sdk in
+     10.*);;
+     *)
        AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-     fi
+     esac
      CONFIG_SITE=" [config.site:config.site_osx.in]"
      MK_CONFIG_SITE=" [config.site.mk:config.site_osx.mk.in]"
      ;;
@@ -44,20 +46,23 @@ case $use_darwin in
      use_sdk="${use_sdk:-$found_sdk}"
      # this is an issue. if we set prefix according to ${use_sdk}_${use_arch}, 
      # then XBMC_DEPENDS prefix location in xcode must match but xcode uses its
-     # own defines for build. So just hardcode to 4.2_arm7 for now until we
+     # own defines for build. So just hardcode to 4.2_${use_arch} for now until we
      # can figure out a better way.
-     use_prefix=${use_staging}/${use_darwin}-4.2_arm7
+     use_prefix=${use_staging}/${use_darwin}-4.2_${use_arch}
      if test "$use_arch" != "armv7"; then
        AC_MSG_ERROR(error in configure of --with-arch=$use_arch)
      fi
-     if test "$use_sdk" != "4.2"; then
+     case $use_sdk in
+     4.*);;
+     *)
        AC_MSG_ERROR(error in configure of --with-sdk=$use_sdk)
-     fi
+     esac
      CONFIG_SITE=" [config.site:config.site_ios.in]"
      MK_CONFIG_SITE=" [config.site.mk:config.site_ios.mk.in]"
      ;;
   *)
-     AC_MSG_ERROR(error in configure of ($host))
+     AC_MSG_ERROR([error in configure, missing or incorrect --with-darwin arg])
+     ;;
 esac
 
 AC_MSG_RESULT(configuring for darwin $use_darwin-$use_sdk-$use_arch)

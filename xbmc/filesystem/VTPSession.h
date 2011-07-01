@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include <netinet/in.h>
 
 #include "system.h" // for SOCKET
 

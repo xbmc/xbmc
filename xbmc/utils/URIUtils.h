@@ -56,6 +56,7 @@ public:
   static bool IsFTP(const CStdString& strFile);
   static bool IsHD(const CStdString& strFileName);
   static bool IsHDHomeRun(const CStdString& strFile);
+  static bool IsSlingbox(const CStdString& strFile);
   static bool IsHTSP(const CStdString& strFile);
   static bool IsInArchive(const CStdString& strFile);
   static bool IsInRAR(const CStdString& strFile);
@@ -67,6 +68,7 @@ public:
   static bool IsMultiPath(const CStdString& strPath);
   static bool IsMusicDb(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
+  static bool IsNfs(const CStdString& strFile);  
   static bool IsOnDVD(const CStdString& strFile);
   static bool IsOnLAN(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile);

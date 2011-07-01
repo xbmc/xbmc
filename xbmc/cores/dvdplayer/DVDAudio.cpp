@@ -48,11 +48,10 @@ CDVDAudio::CDVDAudio(volatile bool &bStop)
 CDVDAudio::~CDVDAudio()
 {
   CSingleLock lock (m_critSection);
+
   if (m_pAudioStream)
-  {
-    //m_pAudioStream->Destroy();
     AE.FreeStream(m_pAudioStream);
-  }
+
   free(m_pBuffer);
 }
 
@@ -99,10 +98,8 @@ void CDVDAudio::Destroy()
   CSingleLock lock (m_critSection);
 
   if (m_pAudioStream)
-  {
-    //m_pAudioStream->Destroy();
     AE.FreeStream(m_pAudioStream);
-  }
+
   free(m_pBuffer);
   m_pBuffer = NULL;
   m_dwPacketSize = 0;
@@ -219,7 +216,7 @@ void CDVDAudio::Finish()
   if(silence > 0 && m_iBufferSize > 0)
   {
     CLog::Log(LOGDEBUG, "CDVDAudio::Drain - adding %d bytes of silence, buffer size: %d, chunk size: %d", silence, m_iBufferSize, m_dwPacketSize);
-    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_dwPacketSize);
+    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + silence);
     memset(m_pBuffer+m_iBufferSize, 0, silence);
     m_iBufferSize += silence;
   }

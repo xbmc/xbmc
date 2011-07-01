@@ -82,17 +82,21 @@ const CGUIInfoColor &CGUIInfoColor::operator=(const CGUIInfoColor &color)
   return *this;
 }
 
-void CGUIInfoColor::Update()
+bool CGUIInfoColor::Update()
 {
   if (!m_info)
-    return; // no infolabel
+    return false; // no infolabel
 
   // Expand the infolabel, and then convert it to a color
   CStdString infoLabel(g_infoManager.GetLabel(m_info));
-  if (!infoLabel.IsEmpty())
-    m_color = g_colorManager.GetColor(infoLabel.c_str());
+  color_t color = !infoLabel.IsEmpty() ? g_colorManager.GetColor(infoLabel.c_str()) : 0;
+  if (m_color != color)
+  {
+    m_color = color;
+    return true;
+  }
   else
-    m_color = 0;
+    return false;
 }
 
 void CGUIInfoColor::Parse(const CStdString &label)
@@ -139,11 +143,7 @@ CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage) const
       if (infoLabel.IsEmpty())
         infoLabel = g_infoManager.GetLabel(portion.m_info, contextWindow);
       if (!infoLabel.IsEmpty())
-      {
-        label += portion.m_prefix;
-        label += infoLabel;
-        label += portion.m_postfix;
-      }
+        label += portion.GetLabel(infoLabel);
     }
     else
     { // no info, so just append the prefix
@@ -170,11 +170,7 @@ CStdString CGUIInfoLabel::GetItemLabel(const CGUIListItem *item, bool preferImag
       else
         infoLabel = g_infoManager.GetItemLabel((const CFileItem *)item, portion.m_info);
       if (!infoLabel.IsEmpty())
-      {
-        label += portion.m_prefix;
-        label += infoLabel;
-        label += portion.m_postfix;
-      }
+        label += portion.GetLabel(infoLabel);
     }
     else
     { // no info, so just append the prefix
@@ -261,6 +257,13 @@ void CGUIInfoLabel::Parse(const CStdString &label)
   work = ReplaceAddonStrings(work);
   // Step 3: Find all $INFO[info,prefix,postfix] blocks
   int pos1 = work.Find("$INFO[");
+  int pos2 = work.Find("$ESCINFO[");
+  bool escaped = false;
+  if (pos2 >= 0 && (pos1 < 0 || pos2 < pos1))
+  {
+    escaped = true;
+    pos1 = pos2;
+  }
   while (pos1 >= 0)
   {
     // output the first block (contents before first $INFO)
@@ -268,11 +271,12 @@ void CGUIInfoLabel::Parse(const CStdString &label)
       m_info.push_back(CInfoPortion(0, work.Left(pos1), ""));
 
     // ok, now decipher the $INFO block
-    int pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + 6);
+    int len = escaped ? 9 : 6;
+    pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + len);
     if (pos2 > pos1)
     {
       // decipher the block
-      CStdString block = work.Mid(pos1 + 6, pos2 - pos1 - 6);
+      CStdString block = work.Mid(pos1 + len, pos2 - pos1 - len);
       CStdStringArray params;
       StringUtils::SplitString(block, ",", params);
       int info = g_infoManager.TranslateString(params[0]);
@@ -281,7 +285,7 @@ void CGUIInfoLabel::Parse(const CStdString &label)
         prefix = params[1];
       if (params.size() > 2)
         postfix = params[2];
-      m_info.push_back(CInfoPortion(info, prefix, postfix));
+      m_info.push_back(CInfoPortion(info, prefix, postfix, escaped));
       // and delete it from our work string
       work = work.Mid(pos2 + 1);
     }
@@ -291,22 +295,41 @@ void CGUIInfoLabel::Parse(const CStdString &label)
       return;
     }
     pos1 = work.Find("$INFO[");
+    pos2 = work.Find("$ESCINFO[");
+    escaped = false;
+    if (pos2 >= 0 && (pos1 < 0 || pos2 < pos1))
+    {
+      escaped = true;
+      pos1 = pos2;
+    }
   }
   // add any last block
   if (!work.IsEmpty())
     m_info.push_back(CInfoPortion(0, work, ""));
 }
 
-CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix)
+CGUIInfoLabel::CInfoPortion::CInfoPortion(int info, const CStdString &prefix, const CStdString &postfix, bool escaped)
 {
   m_info = info;
   m_prefix = prefix;
   m_postfix = postfix;
+  m_escaped = escaped;
   // filter our prefix and postfix for comma's
   m_prefix.Replace("$COMMA", ",");
   m_postfix.Replace("$COMMA", ",");
   m_prefix.Replace("$LBRACKET", "["); m_prefix.Replace("$RBRACKET", "]");
   m_postfix.Replace("$LBRACKET", "["); m_postfix.Replace("$RBRACKET", "]");
+}
+
+CStdString CGUIInfoLabel::CInfoPortion::GetLabel(const CStdString &info) const
+{
+  CStdString label = m_prefix + info + m_postfix;
+  if (m_escaped) // escape all quotes, then quote
+  {
+    label.Replace("\"", "\\\"");
+    return "\"" + label + "\"";
+  }
+  return label;
 }
 
 CStdString CGUIInfoLabel::GetLabel(const CStdString &label, int contextWindow, bool preferImage)

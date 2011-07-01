@@ -164,4 +164,17 @@
   <string id="31408">[B]CONFIGUREU ELS COMPLEMENTS[/B][CR][CR]Gestioneu els complements instal·lats · Cerqueu i instal·leu complements des de xbmc.org[CR]Modifiqueu els paràmetres dels complements</string>
 
   <string id="31421">Seleccioneu el vostre perfil d'usuari[CR]per iniciar la sessió i continuar</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">Mapes del temps</string>
+  <string id="31901">Predicció a 36 hores</string>
+  <string id="31902">Predicció per hores</string>
+  <string id="31903">Predicció del cap de setmana</string>
+  <string id="31904">Predicció a 10 dies</string>
+  <string id="31905">Predicció</string>
+  <string id="31906">Mapes i vídeo</string>
+  <string id="31907">Vídeo de la predicció [COLOR=grey2](Reproducció a pantalla completa)[/COLOR]</string>
+  <string id="31908">Possibilitat de precipitació</string>
+  <string id="31909">S'està obtenint la informació de la predicció...</string>
+
 </strings>

@@ -32,6 +32,7 @@
 #include "utils/GLUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
+#include "utils/MathUtils.h"
 
 static const char* ShaderNames[SM_ESHADERCOUNT] =
     {"guishader_frag_default.glsl",
@@ -475,7 +476,7 @@ void CRenderSystemGLES::GetViewPort(CRect& viewPort)
     return;
   
   GLint glvp[4];
-  glGetIntegerv(GL_SCISSOR_BOX, glvp);
+  glGetIntegerv(GL_VIEWPORT, glvp);
   
   viewPort.x1 = glvp[0];
   viewPort.y1 = m_height - glvp[1] - glvp[3];
@@ -491,6 +492,22 @@ void CRenderSystemGLES::SetViewPort(CRect& viewPort)
 
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+}
+
+void CRenderSystemGLES::SetScissors(const CRect &rect)
+{
+  if (!m_bRenderCreated)
+    return;
+  GLint x1 = MathUtils::round_int(rect.x1);
+  GLint y1 = MathUtils::round_int(rect.y1);
+  GLint x2 = MathUtils::round_int(rect.x2);
+  GLint y2 = MathUtils::round_int(rect.y2);
+  glScissor(x1, m_height - y2, x2-x1, y2-y1);
+}
+
+void CRenderSystemGLES::ResetScissors()
+{
+  SetScissors(CRect(0, 0, (float)m_width, (float)m_height));
 }
 
 void CRenderSystemGLES::InitialiseGUIShader()

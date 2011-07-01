@@ -50,10 +50,10 @@ Build-Depends: debhelper (>= 7.0.50~), python-support, cmake,
  libavahi-common-dev, libavahi-client-dev, libxrandr-dev, libavcodec-dev,
  libavformat-dev, libavutil-dev, libpostproc-dev, libswscale-dev,
  libmpeg2-4-dev, libass-dev (>= 0.9.8), libmpcdec-dev, libflac-dev,
- libwavpack-dev, python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
- libbluetooth-dev, zlib1g-dev, libsmbclient-dev,
+ python-dev, gawk, gperf, nasm [!amd64], libcwiid1-dev,
+ libbluetooth-dev, zlib1g-dev, libsmbclient-dev, libboost-thread-dev
  libiso9660-dev, libssl-dev, lsb-release, libvdpau-dev, libmicrohttpd-dev,
- libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl, python-dev
+ libmodplug-dev, librtmp-dev, libcrystalhd-dev, curl, python-dev, libyajl-dev
 
 *** For developers and anyone else who compiles frequently it is recommended to
 use ccache

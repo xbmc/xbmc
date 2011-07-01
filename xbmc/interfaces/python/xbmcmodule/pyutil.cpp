@@ -24,6 +24,7 @@
 #include <wchar.h>
 #include <vector>
 #include "addons/Skin.h"
+#include "utils/log.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/CharsetConverter.h"
 #include "threads/CriticalSection.h"
@@ -34,12 +35,6 @@ using namespace std;
 
 static TiXmlDocument pySkinReferences;
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 namespace PYXBMC
 {
@@ -197,7 +192,22 @@ void _PyXBMC_MakePendingCalls()
     g_callQueue.erase(iter);
     lock.Leave();
     if (p.func)
+    {
       p.func(p.args);
+
+      // Since the callback is likely to make it into python, and since
+      // not all of the callback functions handle errors, the error state
+      // may remain set from the previous call. As a result subsequent calls
+      // to callback functions exhibit odd behavior difficult to debug.
+      if (PyErr_Occurred())
+      {
+        CLog::Log(LOGERROR,"Exception in python script callback execution");
+
+        // This clears the python error state and prints it to the log
+        PyErr_Print();
+      }
+
+    }
     //(*((*iter).first))((*iter).second);
     lock.Enter();
     iter = g_callQueue.begin();

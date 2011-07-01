@@ -186,6 +186,10 @@ CStdString CUtil::GetTitleFromPath(const CStdString& strFileNameAndPath, bool bI
   else if (url.GetProtocol() == "hdhomerun" && strFilename.IsEmpty())
     strFilename = "HDHomerun Devices";
 
+  // Slingbox Devices
+  else if (url.GetProtocol() == "sling")
+    strFilename = "Slingbox";
+
   // ReplayTV Devices
   else if (url.GetProtocol() == "rtv")
     strFilename = "ReplayTV Devices";
@@ -399,70 +403,58 @@ void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strF
 {
   //Make sure you have a full path in the filename, otherwise adds the base path before.
   CURL plItemUrl(strFilename);
-  CURL plBaseUrl(strBasePath);
-  int iDotDotLoc, iBeginCut, iEndCut;
 
-  if (plBaseUrl.IsLocal()) //Base in local directory
-  {
-    if (plItemUrl.IsLocal() ) //Filename is local or not qualified
-    {
+  if (!plItemUrl.IsLocal())
+    return; // non-local path, don't do anything
+  else if (strFilename.size() > 1)
+  { // local path - see if it's fully qualified
 #ifdef _LINUX
-      if (!( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') ) ) //Filename not fully qualified
+    if ( (strFilename[1] == ':') || (strFilename[0] == '/') )
 #else
-      if (!( strFilename.c_str()[1] == ':')) //Filename not fully qualified
+    if ( strFilename[1] == ':' )
 #endif
-      {
-        if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || URIUtils::HasSlashAtEnd(strBasePath))
-        {
-          strFilename = strBasePath + strFilename;
-          strFilename.Replace('/', '\\');
-        }
-        else
-        {
-          strFilename = strBasePath + '\\' + strFilename;
-          strFilename.Replace('/', '\\');
-        }
-      }
-    }
-    strFilename.Replace("\\.\\", "\\");
-    while ((iDotDotLoc = strFilename.Find("\\..\\")) > 0)
-    {
-      iEndCut = iDotDotLoc + 4;
-      iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('\\') + 1;
-      strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
-    }
+      return;
   }
-  else //Base is remote
-  {
-    if (plItemUrl.IsLocal()) //Filename is local
-    {
-#ifdef _LINUX
-      if ( (strFilename.c_str()[1] == ':') || (strFilename.c_str()[0] == '/') )  //Filename not fully qualified
-#else
-      if (strFilename[1] == ':') // already fully qualified
-#endif
-        return;
-      if (strFilename.c_str()[0] == '/' || strFilename.c_str()[0] == '\\' || URIUtils::HasSlashAtEnd(strBasePath)) //Begins with a slash.. not good.. but we try to make the best of it..
 
-      {
-        strFilename = strBasePath + strFilename;
-        strFilename.Replace('\\', '/');
-      }
-      else
-      {
-        strFilename = strBasePath + '/' + strFilename;
-        strFilename.Replace('\\', '/');
-      }
-    }
-    strFilename.Replace("/./", "/");
-    while ((iDotDotLoc = strFilename.Find("/../")) > 0)
-    {
-      iEndCut = iDotDotLoc + 4;
-      iBeginCut = strFilename.Left(iDotDotLoc).ReverseFind('/') + 1;
-      strFilename.Delete(iBeginCut, iEndCut - iBeginCut);
-    }
+  // add to base path and then clean
+  strFilename = URIUtils::AddFileToFolder(strBasePath, strFilename);
+
+  // get rid of any /./ or \.\ that happen to be there
+  strFilename.Replace("\\.\\", "\\");
+  strFilename.Replace("/./", "/");
+
+  // now find any "\\..\\" and remove them via GetParentPath
+  int pos;
+  while ((pos = strFilename.Find("/../")) > 0)
+  {
+    CStdString basePath = strFilename.Left(pos+1);
+    strFilename = strFilename.Mid(pos+4);
+    basePath = URIUtils::GetParentPath(basePath);
+    strFilename = URIUtils::AddFileToFolder(basePath, strFilename);
+  }
+  while ((pos = strFilename.Find("\\..\\")) > 0)
+  {
+    CStdString basePath = strFilename.Left(pos+1);
+    strFilename = strFilename.Mid(pos+4);
+    basePath = URIUtils::GetParentPath(basePath);
+    strFilename = URIUtils::AddFileToFolder(basePath, strFilename);
   }
 }
+
+#ifdef UNIT_TESTING
+bool CUtil::TestGetQualifiedFilename()
+{
+  CStdString file = "../foo"; GetQualifiedFilename("smb://", file);
+  if (file != "foo") return false;
+  file = "C:\\foo\\bar"; GetQualifiedFilename("smb://", file);
+  if (file != "C:\\foo\\bar") return false;
+  file = "../foo/./bar"; GetQualifiedFilename("smb://my/path", file);
+  if (file != "smb://my/foo/bar") return false;
+  file = "smb://foo/bar/"; GetQualifiedFilename("upnp://", file);
+  if (file != "smb://foo/bar/") return false;
+  return true;
+}
+#endif
 
 void CUtil::RunShortcut(const char* szShortcutPath)
 {
@@ -1153,8 +1145,8 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // return true if directory already exist
   if (CDirectory::Exists(strPath)) return true;
 
-  // we currently only allow HD and smb paths
-  if (!URIUtils::IsHD(strPath) && !URIUtils::IsSmb(strPath))
+  // we currently only allow HD and smb and nfs paths
+  if (!URIUtils::IsHD(strPath) && !URIUtils::IsSmb(strPath) && !URIUtils::IsNfs(strPath))
   {
     CLog::Log(LOGERROR,"%s called with an unsupported path: %s", __FUNCTION__, strPath.c_str());
     return false;
@@ -1304,6 +1296,9 @@ bool CUtil::TestSplitExec()
   CUtil::SplitExecFunction("SetProperty(Foo,\"\")", function, params);
   if (function != "SetProperty" || params.size() != 2 || params[0] != "Foo" || params[1] != "")
    return false;
+  CUtil::SplitExecFunction("SetProperty(foo,ba(\"ba black )\",sheep))", function, params);
+  if (function != "SetProperty" || params.size() != 2 || params[0] != "foo" || params[1] != "ba(\"ba black )\",sheep)")
+    return false;
   return true;
 }
 #endif
@@ -1344,7 +1339,6 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
       if (ch == '\"' && !escaped)
       { // finished a quote - no need to add the end quote to our string
         inQuotes = false;
-        continue;
       }
     }
     else
@@ -1352,7 +1346,6 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
       if (ch == '\"' && !escaped)
       { // start of quote - no need to add the quote to our string
         inQuotes = true;
-        continue;
       }
       if (inFunction && ch == ')')
       { // end of a function
@@ -1366,6 +1359,9 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
       { // not in a function, so a comma signfies the end of this parameter
         if (whiteSpacePos)
           parameter = parameter.Left(whiteSpacePos);
+        // trim off start and end quotes
+        if (parameter.GetLength() > 1 && parameter[0] == '\"' && parameter[parameter.GetLength() - 1] == '\"')
+          parameter = parameter.Mid(1,parameter.GetLength() - 2);
         parameters.push_back(parameter);
         parameter.Empty();
         whiteSpacePos = 0;
@@ -1393,6 +1389,9 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
     CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, execString.c_str());
   if (whiteSpacePos)
     parameter = parameter.Left(whiteSpacePos);
+  // trim off start and end quotes
+  if (parameter.GetLength() > 1 && parameter[0] == '\"' && parameter[parameter.GetLength() - 1] == '\"')
+    parameter = parameter.Mid(1,parameter.GetLength() - 2);
   if (!parameter.IsEmpty() || parameters.size())
     parameters.push_back(parameter);
 }
@@ -1866,10 +1865,12 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
 
 bool CUtil::SupportsFileOperations(const CStdString& strPath)
 {
-  // currently only hd and smb support delete and rename
+  // currently only hd, smb and nfs support delete and rename
   if (URIUtils::IsHD(strPath))
     return true;
   if (URIUtils::IsSmb(strPath))
+    return true;
+  if (URIUtils::IsNfs(strPath))
     return true;
   if (URIUtils::IsMythTV(strPath))
   {
@@ -2249,6 +2250,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
   CFileItem item(strMovie, false);
   if (item.IsInternetStream()) return ;
   if (item.IsHDHomeRun()) return ;
+  if (item.IsSlingbox()) return ;
   if (item.IsPlayList()) return ;
   if (!item.IsVideo()) return ;
   

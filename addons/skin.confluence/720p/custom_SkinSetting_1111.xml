@@ -323,7 +323,7 @@
 						<focusedcolor>white</focusedcolor>
 						<label>15311</label>
 						<label2>$INFO[Skin.String(Startup_Playlist_Path)]</label2>
-						<onclick>Skin.SetFile(Startup_Playlist_Path,.m3u,t:\playlists\music\)</onclick>
+						<onclick>Skin.SetFile(Startup_Playlist_Path,,special://MusicPlaylists/)</onclick>
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 						<enable>Skin.HasSetting(Use_Startup_Playlist)</enable>
@@ -453,7 +453,20 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="label" id="206">
+					<control type="radiobutton" id="206">
+						<description>Videos Goes to Files</description>
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<label>$LOCALIZE[31105]</label>
+						<onclick>Skin.ToggleSetting(HomeVideostoFiles)</onclick>
+						<selected>Skin.HasSetting(HomeVideostoFiles)</selected>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+					</control>
+					<control type="label" id="220">
 						<width>750</width>
 						<height>45</height>
 						<font>font13_title</font>
@@ -463,7 +476,7 @@
 						<align>left</align>
 						<aligny>center</aligny>
 					</control>
-					<control type="radiobutton" id="207">
+					<control type="radiobutton" id="221">
 						<description>Hide Videos Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -476,7 +489,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="217">
+					<control type="radiobutton" id="222">
 						<description>Hide Movies Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -490,7 +503,7 @@
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 						<enable>Library.HasContent(Movies)</enable>
 					</control>
-					<control type="radiobutton" id="218">
+					<control type="radiobutton" id="223">
 						<description>Hide TV Shows Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -504,7 +517,7 @@
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 						<enable>Library.HasContent(TVShows)</enable>
 					</control>
-					<control type="radiobutton" id="208">
+					<control type="radiobutton" id="224">
 						<description>Hide Music Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -517,7 +530,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="209">
+					<control type="radiobutton" id="225">
 						<description>Hide Pictures Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -530,7 +543,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="210">
+					<control type="radiobutton" id="226">
 						<description>Hide Programs Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -543,7 +556,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="212">
+					<control type="radiobutton" id="228">
 						<description>Hide Weather Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -704,12 +717,14 @@
 						<content>
 							<item id="1">
 								<label>3</label>
+								<label2>Home_Custom_Back_Video_Folder</label2>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/videos.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
 							</item>
 							<item id="10">
 								<label>20342</label>
+								<label2>Home_Custom_Back_Movies_Folder</label2>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/videos.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Movies_Folder)]</thumb>
@@ -717,6 +732,7 @@
 							</item>
 							<item id="11">
 								<label>20343</label>
+								<label2>Home_Custom_Back_TVShow_Folder</label2>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/videos.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_TVShow_Folder)]</thumb>
@@ -724,36 +740,42 @@
 							</item>
 							<item id="2">
 								<label>2</label>
+								<label2>Home_Custom_Back_Music_Folder</label2>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/music.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Music_Folder)]</thumb>
 							</item>
 							<item id="3">
 								<label>1</label>
+								<label2>Home_Custom_Back_Pictures_Folder</label2>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/pictures.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Pictures_Folder)]</thumb>
 							</item>
 							<item id="4">
 								<label>0</label>
+								<label2>Home_Custom_Back_Programs_Folder</label2>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/programs.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Programs_Folder)]</thumb>
 							</item>
 							<item id="5">
 								<label>8</label>
+								<label2>Home_Custom_Back_Weather_Folder</label2>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/weather.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
 							</item>
 							<item id="7">
 								<label>13000</label>
+								<label2>Home_Custom_Back_Settings_Folder</label2>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/settings.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Settings_Folder)]</thumb>
 							</item>
 							<item id="8">
 								<label>24001</label>
+								<label2>Home_Custom_Back_Addons_Folder</label2>
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/Addons.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Addons_Folder)]</thumb>
@@ -770,545 +792,62 @@
 					<control type="group">
 						<posx>95</posx>
 						<posy>110</posy>
-						<control type="group">
-							<visible>Container(9003).HasFocus(1)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_Video_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_Video_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_Video_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
+						<control type="button" id="300">
+							<description>Single Image button</description>
+							<posx>5</posx>
+							<posy>0</posy>
+							<width>180</width>
+							<height>40</height>
+							<label>31113</label>
+							<font>font12_title</font>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<align>center</align>
+							<texturenofocus border="5">button-nofocus.png</texturenofocus>
+							<texturefocus border="5">button-focus.png</texturefocus>
+							<onclick>Skin.SetImage($INFO[Container(9003).ListItem.Label2])</onclick>
+							<onleft>302</onleft>
+							<onright>301</onright>
+							<onup>304</onup>
+							<ondown>304</ondown>
 						</control>
-						<control type="group">
-							<visible>Container(9003).HasFocus(2)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_Music_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_Music_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_Music_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
+						<control type="button" id="301">
+							<description>Multi Image button</description>
+							<posx>190</posx>
+							<posy>0</posy>
+							<width>180</width>
+							<height>40</height>
+							<label>31114</label>
+							<font>font12_title</font>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<align>center</align>
+							<texturenofocus border="5">button-nofocus.png</texturenofocus>
+							<texturefocus border="5">button-focus.png</texturefocus>
+							<onclick>Skin.SetPath($INFO[Container(9003).ListItem.Label2])</onclick>
+							<onleft>300</onleft>
+							<onright>302</onright>
+							<onup>304</onup>
+							<ondown>304</ondown>
 						</control>
-						<control type="group">
-							<visible>Container(9003).HasFocus(3)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_Pictures_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_Pictures_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_Pictures_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-						</control>
-						<control type="group">
-							<visible>Container(9003).HasFocus(4)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_Programs_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_Programs_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_Programs_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-						</control>
-						<control type="group">
-							<visible>Container(9003).HasFocus(5)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_Weather_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_Weather_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_Weather_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-						</control>
-						<control type="group">
-							<visible>Container(9003).HasFocus(7)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_Settings_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_Settings_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_Settings_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-						</control>
-						<control type="group">
-							<visible>Container(9003).HasFocus(8)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_Addons_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_Addons_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_Addons_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-						</control>
-						<control type="group">
-							<visible>Container(9003).HasFocus(10)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_Movies_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_Movies_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_Movies_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-						</control>
-						<control type="group">
-							<visible>Container(9003).HasFocus(11)</visible>
-							<control type="button" id="300">
-								<description>Single Image button</description>
-								<posx>5</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31113</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetImage(Home_Custom_Back_TVShow_Folder)</onclick>
-								<onleft>302</onleft>
-								<onright>301</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="301">
-								<description>Multi Image button</description>
-								<posx>190</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>31114</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.SetPath(Home_Custom_Back_TVShow_Folder)</onclick>
-								<onleft>300</onleft>
-								<onright>302</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
-							<control type="button" id="302">
-								<description>Default Image button</description>
-								<posx>375</posx>
-								<posy>0</posy>
-								<width>180</width>
-								<height>40</height>
-								<label>571</label>
-								<font>font12_title</font>
-								<textcolor>grey2</textcolor>
-								<focusedcolor>white</focusedcolor>
-								<align>center</align>
-								<texturenofocus border="5">button-nofocus.png</texturenofocus>
-								<texturefocus border="5">button-focus.png</texturefocus>
-								<onclick>Skin.Reset(Home_Custom_Back_TVShow_Folder)</onclick>
-								<onleft>301</onleft>
-								<onright>300</onright>
-								<onup>304</onup>
-								<ondown>304</ondown>
-							</control>
+						<control type="button" id="302">
+							<description>Default Image button</description>
+							<posx>375</posx>
+							<posy>0</posy>
+							<width>180</width>
+							<height>40</height>
+							<label>571</label>
+							<font>font12_title</font>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<align>center</align>
+							<texturenofocus border="5">button-nofocus.png</texturenofocus>
+							<texturefocus border="5">button-focus.png</texturefocus>
+							<onclick>Skin.Reset($INFO[Container(9003).ListItem.Label2])</onclick>
+							<onleft>301</onleft>
+							<onright>300</onright>
+							<onup>304</onup>
+							<ondown>304</ondown>
 						</control>
 					</control>
 					<control type="multiimage">
@@ -1347,6 +886,52 @@
 						<onright>61</onright>
 						<onup>9004</onup>
 						<ondown>9004</ondown>
+						<control type="label" id="453">
+							<width>750</width>
+							<height>45</height>
+							<font>font13_title</font>
+							<label>31140</label>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="button" id="455">
+							<width>750</width>
+							<height>35</height>
+							<font>font12</font>
+							<label>$LOCALIZE[31132]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(LyricScript_Path))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
+						</control>
+
+						<control type="label" id="456">
+							<width>750</width>
+							<height>45</height>
+							<font>font13_title</font>
+							<label>31141</label>
+							<textcolor>blue</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+						</control>
+						<control type="button" id="458">
+							<width>750</width>
+							<height>35</height>
+							<font>font12</font>
+							<label>$LOCALIZE[31133]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(SubtitleScript_Path))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(SubtitleScript_Path,xbmc.python.subtitles)</onclick>
+						</control>
+
 						<control type="label" id="410">
 							<width>750</width>
 							<height>45</height>
@@ -1392,6 +977,30 @@
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(HomeVideosButton3,xbmc.addon.video)</onclick>
+						</control>
+						<control type="button" id="414">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]4[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeVideosButton4))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomeVideosButton4,xbmc.addon.video)</onclick>
+						</control>
+						<control type="button" id="415">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]5[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeVideosButton5))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomeVideosButton5,xbmc.addon.video)</onclick>
 						</control>
 
 						<control type="label" id="420">
@@ -1439,6 +1048,30 @@
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(HomeMusicButton3,xbmc.addon.audio)</onclick>
+						</control>
+						<control type="button" id="424">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]4[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeMusicButton4))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomeMusicButton4,xbmc.addon.audio)</onclick>
+						</control>
+						<control type="button" id="425">
+							<width>750</width>
+							<height>40</height>
+							<font>font13</font>
+							<label>$LOCALIZE[24000] [B]5[/B]</label>
+							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomeMusicButton5))][/COLOR]</label2>
+							<textcolor>grey2</textcolor>
+							<focusedcolor>white</focusedcolor>
+							<texturefocus>MenuItemFO.png</texturefocus>
+							<texturenofocus>MenuItemNF.png</texturenofocus>
+							<onclick>Skin.SetAddon(HomeMusicButton5,xbmc.addon.audio)</onclick>
 						</control>
 
 						<control type="label" id="430">
@@ -1510,18 +1143,6 @@
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(HomePictureButton5,xbmc.addon.image)</onclick>
-						</control>
-						<control type="button" id="436">
-							<width>750</width>
-							<height>40</height>
-							<font>font13</font>
-							<label>$LOCALIZE[24000] [B]6[/B]</label>
-							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(HomePictureButton6))][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(HomePictureButton6,xbmc.addon.image)</onclick>
 						</control>
 
 						<control type="label" id="440">
@@ -1605,52 +1226,6 @@
 							<texturefocus>MenuItemFO.png</texturefocus>
 							<texturenofocus>MenuItemNF.png</texturenofocus>
 							<onclick>Skin.SetAddon(HomeProgramButton6,xbmc.addon.executable)</onclick>
-						</control>
-
-						<control type="label" id="453">
-							<width>750</width>
-							<height>45</height>
-							<font>font13_title</font>
-							<label>31140</label>
-							<textcolor>blue</textcolor>
-							<shadowcolor>black</shadowcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-						</control>
-						<control type="button" id="455">
-							<width>750</width>
-							<height>35</height>
-							<font>font12</font>
-							<label>$LOCALIZE[31132]</label>
-							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(LyricScript_Path))][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)</onclick>
-						</control>
-
-						<control type="label" id="456">
-							<width>750</width>
-							<height>45</height>
-							<font>font13_title</font>
-							<label>31141</label>
-							<textcolor>blue</textcolor>
-							<shadowcolor>black</shadowcolor>
-							<align>left</align>
-							<aligny>center</aligny>
-						</control>
-						<control type="button" id="458">
-							<width>750</width>
-							<height>35</height>
-							<font>font12</font>
-							<label>$LOCALIZE[31133]</label>
-							<label2>[COLOR=selected]$INFO[system.addontitle(Skin.String(SubtitleScript_Path))][/COLOR]</label2>
-							<textcolor>grey2</textcolor>
-							<focusedcolor>white</focusedcolor>
-							<texturefocus>MenuItemFO.png</texturefocus>
-							<texturenofocus>MenuItemNF.png</texturenofocus>
-							<onclick>Skin.SetAddon(SubtitleScript_Path,xbmc.python.subtitles)</onclick>
 						</control>
 					</control>
 				</control>

@@ -27,13 +27,11 @@
 #ifdef _WIN32
   #include "Sinks/AESinkWASAPI.h"
   #include "Sinks/AESinkDirectSound.h"
-#elif defined _LINUX
+#elif defined _LINUX && !defined __APPLE__
   #ifdef HAS_ALSA
     #include "Sinks/AESinkALSA.h"
   #endif
   #include "Sinks/AESinkOSS.h"
-#elif defined __APPLE__
-  #include "Sinks/AESinkCoreAudio.h"
 #else
   #pragma message("NOTICE: No audio sink for target platform.  Audio output will not be available.")
 #endif
@@ -55,9 +53,11 @@
 
 IAESink *CAESinkFactory::Create(CStdString &driver, CStdString &device, AEAudioFormat &desiredFormat, bool rawPassthrough)
 {
+#if !defined __APPLE__
   AEAudioFormat  tmpFormat;
-  CStdString     tmpDevice;
   IAESink        *sink;
+#endif
+  CStdString     tmpDevice;
 
 #ifdef _WIN32
   if(driver == "WASAPI")
@@ -69,7 +69,7 @@ IAESink *CAESinkFactory::Create(CStdString &driver, CStdString &device, AEAudioF
     TRY_SINK(WASAPI)
   else
     TRY_SINK(DirectSound)
-#elif defined _LINUX
+#elif defined _LINUX && !defined __APPLE__
 #ifdef HAS_ALSA
   if (driver == "ALSA")
     TRY_SINK(ALSA)
@@ -83,8 +83,6 @@ IAESink *CAESinkFactory::Create(CStdString &driver, CStdString &device, AEAudioF
 #endif
   if(driver != "OSS" )
     TRY_SINK(OSS)
-#elif defined __APPLE__
-  //TRY_SINK(CoreAudio);
 #endif
 
   //Complete failure.
@@ -100,16 +98,12 @@ void CAESinkFactory::Enumerate(AEDeviceList &devices, bool passthrough)
   else
     CAESinkDirectSound::EnumerateDevices(devices, passthrough);
     
-#elif defined _LINUX
+#elif defined _LINUX && !defined __APPLE__
 
 #ifdef HAS_ALSA
   CAESinkALSA::EnumerateDevices(devices, passthrough);
 #endif
   CAESinkOSS ::EnumerateDevices(devices, passthrough);
-
-#elif defined __APPLE__
-
-  CAESinkCoreAudio::EnumerateDevices(devices, false);
 
 #endif
 }

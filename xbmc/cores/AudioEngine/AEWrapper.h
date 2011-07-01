@@ -53,6 +53,8 @@ public:
   virtual IAEStream *FreeStream(IAEStream *stream);
   virtual IAESound *GetSound(CStdString file);
   virtual void FreeSound(IAESound *sound);
+  virtual void PlaySound(IAESound *sound) {};
+  virtual void StopSound(IAESound *sound) {};
   virtual void GarbageCollect();
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual bool SupportsRaw();

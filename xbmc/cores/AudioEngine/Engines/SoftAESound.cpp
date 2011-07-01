@@ -77,20 +77,20 @@ bool CSoftAESound::Initialize()
 
 unsigned int CSoftAESound::GetSampleCount()
 {
-  m_sampleLock.EnterShared();
+  m_sampleLock.lock();
   int sampleCount = 0;
   if (m_wavLoader.IsValid())
     sampleCount = m_wavLoader.GetSampleCount();
-  m_sampleLock.LeaveShared();
+  m_sampleLock.unlock();
   return sampleCount;
 }
 
 float* CSoftAESound::GetSamples()
 {
-  m_sampleLock.EnterShared();
+  m_sampleLock.lock();
   if (!m_wavLoader.IsValid())
   {
-    m_sampleLock.LeaveShared();
+    m_sampleLock.unlock();
     return NULL;
   }
 
@@ -101,14 +101,14 @@ float* CSoftAESound::GetSamples()
 void CSoftAESound::ReleaseSamples()
 {
   --m_inUse;
-  m_sampleLock.LeaveShared();
+  m_sampleLock.unlock();
 }
 
 bool CSoftAESound::IsPlaying()
 {
-  m_sampleLock.EnterShared();
+  m_sampleLock.lock();
   bool playing = m_inUse > 0;
-  m_sampleLock.LeaveShared();
+  m_sampleLock.unlock();
 
   return playing;
 }

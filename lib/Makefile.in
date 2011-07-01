@@ -30,6 +30,7 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 	avcore-0-$(ARCH).so \
 	avformat-52-$(ARCH).so \
 	postproc-51-$(ARCH).so \
+	avfilter-1-$(ARCH).so \
 	swscale-0-$(ARCH).so
 endif
 
@@ -72,6 +73,17 @@ $(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.dyli
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
 		$(WRAPPER) ffmpeg/libavformat/*.o $(BUNDLE1_O)
 
+ifeq ($(findstring x86,$(ARCH_DIR)), x86)
+$(SYSDIR)/avfilter-1-$(ARCH).so: $(WRAPPER) ffmpeg/libavfilter/libavfilter.dylib
+	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+		$(WRAPPER) ffmpeg/libavfilter/$(ARCH_DIR)/*.o \
+		ffmpeg/libavfilter/*.o $(BUNDLE1_O)
+else # No libavfilter/ppc or libavfilter/arm
+$(SYSDIR)/avfilter-1-$(ARCH).so: $(WRAPPER) ffmpeg/libavfilter/libavfilter.dylib
+	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
+		$(WRAPPER) ffmpeg/libavfilter/*.o $(BUNDLE1_O)
+endif
+
 ifneq ($(findstring arm,$(ARCH)), arm)
 $(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.dylib
 	$(LD) $(LDFLAGS) -alias_list $(WRAPPER_MACH_ALIAS)  -o $@ \
@@ -91,6 +103,7 @@ ffmpeg/libavutil/libavutil.dylib     : ffmpeg;
 ffmpeg/libavcodec/libavcodec.dylib   : ffmpeg;
 ffmpeg/libavcore/libavcore.dylib     : ffmpeg;
 ffmpeg/libavformat/libavformat.dylib : ffmpeg;
+ffmpeg/libavformat/libavfilter.dylib : ffmpeg;
 ffmpeg/libswscale/libswscale.dylib   : ffmpeg;
 ffmpeg/libpostproc/libpostproc.dylib : ffmpeg;
 ffmpeg:
@@ -110,6 +123,9 @@ $(SYSDIR)/avcore-0-$(ARCH).so: $(WRAPPER) ffmpeg/libavcore/libavcore.so
 $(SYSDIR)/avformat-52-$(ARCH).so: $(WRAPPER) ffmpeg/libavformat/libavformat.so
 	cp ffmpeg/libavformat/libavformat.so $@
 
+$(SYSDIR)/avfilter-1-$(ARCH).so: $(WRAPPER) ffmpeg/libavfilter/libavfilter.so
+	cp ffmpeg/libavfilter/libavfilter.so $@
+
 ifneq ($(ARCH), arm)
 $(SYSDIR)/swscale-0-$(ARCH).so: $(WRAPPER) ffmpeg/libswscale/libswscale.so
 	cp ffmpeg/libswscale/libswscale.so $@
@@ -127,6 +143,7 @@ ffmpeg/libavutil/libavutil.so     : ffmpeg;
 ffmpeg/libavcodec/libavcodec.so   : ffmpeg;
 ffmpeg/libavcore/libavcore.so     : ffmpeg;
 ffmpeg/libavformat/libavformat.so : ffmpeg;
+ffmpeg/libavfilter/libavfilter.so : ffmpeg;
 ffmpeg/libswscale/libswscale.so   : ffmpeg;
 ffmpeg/libpostproc/libpostproc.so : ffmpeg;
 ffmpeg:

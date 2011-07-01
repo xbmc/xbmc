@@ -26,8 +26,9 @@
 #include "interfaces/IAnnouncer.h"
 #include "interfaces/AnnouncementUtils.h"
 #include "ITransportLayer.h"
-#include "jsoncpp/include/json/json.h"
 #include "utils/Variant.h"
+#include "utils/JSONVariantWriter.h"
+#include "utils/JSONVariantParser.h"
 
 
 namespace JSONRPC
@@ -54,7 +55,7 @@ namespace JSONRPC
   /*!
    \brief Function pointer for json rpc methods
    */
-  typedef JSON_STATUS (*MethodCall) (const CStdString &method, ITransportLayer *transport, IClient *client, const Json::Value& parameterObject, Json::Value &result);
+  typedef JSON_STATUS (*MethodCall) (const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result);
 
   /*!
    \ingroup jsonrpc
@@ -66,18 +67,20 @@ namespace JSONRPC
   */
   enum OperationPermission
   {
-    ReadData = 0x1,
-    ControlPlayback = 0x2,
-    ControlNotify = 0x4,
-    ControlPower = 0x8,
-    Logging = 0x10,
-    ScanLibrary = 0x20,
-    Navigate = 0x40
+    ReadData        =   0x1,
+    ControlPlayback =   0x2,
+    ControlNotify   =   0x4,
+    ControlPower    =   0x8,
+    Logging         =  0x10,
+    UpdateData      =  0x20,
+    RemoveData      =  0x40,
+    Navigate        =  0x80,
+    WriteFile       = 0x100
   };
 
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary | Navigate);
+  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | UpdateData | RemoveData | Navigate | WriteFile);
 
-  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | ScanLibrary | Navigate);
+  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | UpdateData | RemoveData | Navigate | WriteFile);
 
   /*!
    \brief Possible value types of a parameter or return type
@@ -112,7 +115,7 @@ namespace JSONRPC
      the given object is not an array) or for a parameter at the 
      given position (if the given object is an array).
      */
-    static inline bool ParameterExists(const Json::Value &parameterObject, std::string key, unsigned int position) { return IsValueMember(parameterObject, key) || (parameterObject.isArray() && parameterObject.size() > position); }
+    static inline bool ParameterExists(const CVariant &parameterObject, std::string key, unsigned int position) { return IsValueMember(parameterObject, key) || (parameterObject.isArray() && parameterObject.size() > position); }
 
     /*!
      \brief Checks if the given object contains a value
@@ -122,7 +125,7 @@ namespace JSONRPC
      \return True if the given object contains a member with 
      the given key otherwise false
      */
-    static inline bool IsValueMember(const Json::Value &value, std::string key) { return value.isObject() && value.isMember(key); }
+    static inline bool IsValueMember(const CVariant &value, std::string key) { return value.isObject() && value.isMember(key); }
     
     /*!
      \brief Returns the json value of a parameter
@@ -136,7 +139,7 @@ namespace JSONRPC
      the given object is not an array) or of the parameter at the 
      given position (if the given object is an array).
      */
-    static inline Json::Value GetParameter(const Json::Value &parameterObject, std::string key, unsigned int position) { return IsValueMember(parameterObject, key) ? parameterObject[key] : parameterObject[position]; }
+    static inline CVariant GetParameter(const CVariant &parameterObject, std::string key, unsigned int position) { return IsValueMember(parameterObject, key) ? parameterObject[key] : parameterObject[position]; }
     
     /*!
      \brief Returns the json value of a parameter or the given
@@ -153,7 +156,7 @@ namespace JSONRPC
      given position (if the given object is an array). If the
      parameter does not exist the given default value is returned.
      */
-    static inline Json::Value GetParameter(const Json::Value &parameterObject, std::string key, unsigned int position, Json::Value fallback) { return IsValueMember(parameterObject, key) ? parameterObject[key] : ((parameterObject.isArray() && parameterObject.size() > position) ? parameterObject[position] : fallback); }
+    static inline CVariant GetParameter(const CVariant &parameterObject, std::string key, unsigned int position, CVariant fallback) { return IsValueMember(parameterObject, key) ? parameterObject[key] : ((parameterObject.isArray() && parameterObject.size() > position) ? parameterObject[position] : fallback); }
     
     /*!
      \brief Returns the given json value as a string
@@ -162,7 +165,7 @@ namespace JSONRPC
      \return String value of the given json value or the default value
      if the given json value is no string
      */
-    static inline std::string GetString(const Json::Value &value, const char* defaultValue)
+    static inline std::string GetString(const CVariant &value, const char* defaultValue)
     {
       std::string str = defaultValue;
       if (value.isString())
@@ -193,10 +196,14 @@ namespace JSONRPC
         return "ControlPower";
       case Logging:
         return "Logging";
-      case ScanLibrary:
-        return "ScanLibrary";
+      case UpdateData:
+        return "UpdateData";
+      case RemoveData:
+        return "RemoveData";
       case Navigate:
         return "Navigate";
+      case WriteFile:
+        return "WriteFile";
       default:
         return "Unknown";
       }
@@ -218,10 +225,14 @@ namespace JSONRPC
         return ControlPower;
       if (permission.compare("Logging") == 0)
         return Logging;
-      if (permission.compare("ScanLibrary") == 0)
-        return ScanLibrary;
+      if (permission.compare("UpdateData") == 0)
+        return UpdateData;
+      if (permission.compare("RemoveData") == 0)
+        return RemoveData;
       if (permission.compare("Navigate") == 0)
         return Navigate;
+      if (permission.compare("WriteFile") == 0)
+        return WriteFile;
 
       return ReadData;
     }
@@ -335,9 +346,9 @@ namespace JSONRPC
      \param valueTye json schema type(s)
      \param jsonObject json object into which the json schema type(s) are stored
      */
-    static inline void SchemaValueTypeToJson(JSONSchemaType valueType, Json::Value &jsonObject)
+    static inline void SchemaValueTypeToJson(JSONSchemaType valueType, CVariant &jsonObject)
     {
-      jsonObject = Json::Value(Json::arrayValue);
+      jsonObject = CVariant(CVariant::VariantTypeArray);
       for (unsigned int value = 0x01; value <= (unsigned int)AnyValue; value *= 2)
       {
         if (HasType(valueType, (JSONSchemaType)value))
@@ -348,24 +359,25 @@ namespace JSONRPC
         jsonObject = jsonObject[0];
     }
 
-    static inline const char *ValueTypeToString(Json::ValueType valueType)
+    static inline const char *ValueTypeToString(CVariant::VariantType valueType)
     {
       switch (valueType)
       {
-      case Json::stringValue:
+      case CVariant::VariantTypeString:
         return "string";
-      case Json::realValue:
+      case CVariant::VariantTypeDouble:
         return "number";
-      case Json::intValue:
-      case Json::uintValue:
+      case CVariant::VariantTypeInteger:
+      case CVariant::VariantTypeUnsignedInteger:
         return "integer";
-      case Json::booleanValue:
+      case CVariant::VariantTypeBoolean:
         return "boolean";
-      case Json::arrayValue:
+      case CVariant::VariantTypeArray:
         return "array";
-      case Json::objectValue:
+      case CVariant::VariantTypeObject:
         return "object";
-      case Json::nullValue:
+      case CVariant::VariantTypeNull:
+      case CVariant::VariantTypeConstNull:
         return "null";
       default:
         return "unknown";
@@ -381,12 +393,12 @@ namespace JSONRPC
      \param valueType Expected type of the parameter
      \return True if the specific parameter is of the given type otherwise false
      */
-    static inline bool IsParameterType(const Json::Value &parameterObject, const char *key, unsigned int position, JSONSchemaType valueType)
+    static inline bool IsParameterType(const CVariant &parameterObject, const char *key, unsigned int position, JSONSchemaType valueType)
     {
       if ((valueType & AnyValue) == AnyValue)
         return true;
 
-      Json::Value parameter;
+      CVariant parameter;
       if (IsValueMember(parameterObject, key))
         parameter = parameterObject[key];
       else if(parameterObject.isArray() && parameterObject.size() > position)
@@ -401,17 +413,17 @@ namespace JSONRPC
      \param valueType Expected type of the json value
      \return True if the given json value is of the given type otherwise false
     */
-    static inline bool IsType(const Json::Value &value, JSONSchemaType valueType)
+    static inline bool IsType(const CVariant &value, JSONSchemaType valueType)
     {
       if (HasType(valueType, AnyValue))
         return true;
       if (HasType(valueType, StringValue) && value.isString())
         return true;
-      if (HasType(valueType, NumberValue) && (value.isInt() || value.isUInt() || value.isDouble()))
+      if (HasType(valueType, NumberValue) && (value.isInteger() || value.isUnsignedInteger() || value.isDouble()))
         return true;
-      if (HasType(valueType, IntegerValue) && (value.isInt() || value.isUInt()))
+      if (HasType(valueType, IntegerValue) && (value.isInteger() || value.isUnsignedInteger()))
         return true;
-      if (HasType(valueType, BooleanValue) && value.isBool())
+      if (HasType(valueType, BooleanValue) && value.isBoolean())
         return true;
       if (HasType(valueType, ArrayValue) && value.isArray())
         return true;
@@ -427,112 +439,48 @@ namespace JSONRPC
      \param value Json value to be set
      \param valueType Type of the default value
      */
-    static inline void SetDefaultValue(Json::Value &value, JSONSchemaType valueType)
+    static inline void SetDefaultValue(CVariant &value, JSONSchemaType valueType)
     {
       switch (valueType)
       {
         case StringValue:
-          value = Json::Value("");
+          value = CVariant("");
           break;
         case NumberValue:
-          value = Json::Value(Json::realValue);
+          value = CVariant(CVariant::VariantTypeDouble);
           break;
         case IntegerValue:
-          value = Json::Value(Json::intValue);
+          value = CVariant(CVariant::VariantTypeInteger);
           break;
         case BooleanValue:
-          value = Json::Value(Json::booleanValue);
+          value = CVariant(CVariant::VariantTypeBoolean);
           break;
         case ArrayValue:
-          value = Json::Value(Json::arrayValue);
+          value = CVariant(CVariant::VariantTypeArray);
           break;
         case ObjectValue:
-          value = Json::Value(Json::objectValue);
+          value = CVariant(CVariant::VariantTypeObject);
           break;
         default:
-          value = Json::Value(Json::nullValue);
+          value = CVariant(CVariant::VariantTypeConstNull);
       }
     }
 
     static inline bool HasType(JSONSchemaType typeObject, JSONSchemaType type) { return (typeObject & type) == type; }
 
-    static inline int Compare(const Json::Value &value, const Json::Value &other)
-    {
-      if (value.type() != other.type())
-        return other.type() - value.type();
-
-      int result = 0;
-      Json::Value::Members members, otherMembers;
-
-      switch (value.type())
-      {
-      case Json::nullValue:
-        return 0;
-      case Json::intValue:
-        return other.asInt() - value.asInt();
-      case Json::uintValue:
-        return other.asUInt() - value.asUInt();
-      case Json::realValue:
-        return (int)(other.asDouble() - value.asDouble());
-      case Json::booleanValue:
-        return other.asBool() - value.asBool();
-      case Json::stringValue:
-        return other.asString().compare(value.asString());
-      case Json::arrayValue:
-        if (other.size() != value.size())
-          return other.size() - value.size();
-
-        for (unsigned int i = 0; i < other.size(); i++)
-        {
-          if ((result = Compare(value[i], other[i])) != 0)
-            return result;
-        }
-
-        return 0;
-      case Json::objectValue:
-        members = value.getMemberNames();
-        otherMembers = other.getMemberNames();
-
-        if (members.size() != otherMembers.size())
-          return otherMembers.size() - members.size();
-
-        for (unsigned int i = 0; i < members.size(); i++)
-        {
-          if (!other.isMember(members.at(i)))
-            return -1;
-
-          if ((result = Compare(value[members.at(i)], other[members.at(i)])) != 0)
-            return result;
-        }
-
-        return 0;
-      }
-
-      return -1;  // unreachable
-    }
-
     static std::string AnnouncementToJSON(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *method, const CVariant &data, bool compactOutput)
     {
-      Json::Value root;
+      CVariant root;
       root["jsonrpc"] = "2.0";
 
       CStdString namespaceMethod;
       namespaceMethod.Format("%s.%s", ANNOUNCEMENT::CAnnouncementUtils::AnnouncementFlagToString(flag), method);
       root["method"]  = namespaceMethod.c_str();
 
-      if (data.isObject())
-        data.toJsonValue(root["params"]);
+      root["params"]["data"] = data;
       root["params"]["sender"] = sender;
 
-      Json::Writer *writer;
-      if (compactOutput)
-        writer = new Json::FastWriter();
-      else
-        writer = new Json::StyledWriter();
-
-      std::string str = writer->write(root);
-      delete writer;
-      return str;
+      return CJSONVariantWriter::Write(root, compactOutput);
     }
   };
 }

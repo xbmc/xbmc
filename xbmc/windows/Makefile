@@ -1,4 +1,5 @@
 SRCS=GUIMediaWindow.cpp \
+     GUIWindowDebugInfo.cpp \
      GUIWindowFileManager.cpp \
      GUIWindowHome.cpp \
      GUIWindowLoginScreen.cpp \

@@ -1536,7 +1536,7 @@ CDVDVideoCodecVideoToolBox::DestroyVTSession(void)
   if (m_vt_session)
   {
     VTDecompressionSessionInvalidate((VTDecompressionSessionRef)m_vt_session);
-    VTDecompressionSessionRelease((VTDecompressionSessionRef)m_vt_session);
+    CFRelease((VTDecompressionSessionRef)m_vt_session);
     m_vt_session = NULL;
   }
 }

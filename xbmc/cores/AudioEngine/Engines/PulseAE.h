@@ -57,6 +57,8 @@ public:
   /* returns a new sound object */
   virtual IAESound *GetSound(CStdString file);
   virtual void FreeSound(IAESound *sound);
+  virtual void PlaySound(IAESound *sound);
+  virtual void StopSound(IAESound *sound);
 
   /* free's sounds that have expired */
   virtual void GarbageCollect();

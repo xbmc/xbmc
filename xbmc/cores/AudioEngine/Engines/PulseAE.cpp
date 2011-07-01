@@ -239,6 +239,20 @@ void CPulseAE::FreeSound(IAESound *sound)
   delete (CPulseAESound*)sound;
 }
 
+void CPulseAE::PlaySound(IAESound *sound)
+{
+  CSingleLock lock(m_lock);
+  if(sound)
+    sound->Play();
+}
+
+void CPulseAE::StopSound(IAESound *sound)
+{
+  CSingleLock lock(m_lock);
+  if(sound)
+    sound->Stop();
+}
+
 void CPulseAE::GarbageCollect()
 {
   CSingleLock lock(m_lock);

@@ -68,6 +68,7 @@ SRCS=AddonsDirectory.cpp \
      SAPFile.cpp \
      SFTPDirectory.cpp \
      SIDFileDirectory.cpp \
+     Slingbox.cpp \
      SmartPlaylistDirectory.cpp \
      SMBDirectory.cpp \
      SourcesDirectory.cpp \
@@ -90,6 +91,11 @@ ifeq (@HAVE_XBMC_NONFREE@,1)
 SRCS+=FileRar.cpp \
       RarDirectory.cpp \
       RarManager.cpp \
+
+endif
+ifeq (@USE_LIBNFS@,1)
+SRCS+=FileNFS.cpp \
+      NFSDirectory.cpp \
 
 endif
 

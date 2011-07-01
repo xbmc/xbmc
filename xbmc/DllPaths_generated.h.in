@@ -35,6 +35,7 @@
 #define DLL_PATH_LIBCMYTH      "special://xbmcbin/system/libcmyth-@ARCH@.so"
 
 #define DLL_PATH_LIBRTMP       "@RTMP_SONAME@"
+#define DLL_PATH_LIBNFS        "@NFS_SONAME@"
 
 #ifndef DLL_PATH_LIBCURL
 #define DLL_PATH_LIBCURL       "@CURL_SONAME@"
@@ -75,6 +76,7 @@
 #define DLL_PATH_LIBAVUTIL     "special://xbmcbin/system/players/dvdplayer/avutil-50-@ARCH@.so"
 #define DLL_PATH_LIBPOSTPROC   "special://xbmcbin/system/players/dvdplayer/postproc-51-@ARCH@.so"
 #define DLL_PATH_LIBSWSCALE    "special://xbmcbin/system/players/dvdplayer/swscale-0-@ARCH@.so"
+#define DLL_PATH_LIBAVFILTER   "special://xbmcbin/system/players/dvdplayer/avfilter-1-@ARCH@.so"
 
 /* cdrip */
 #if defined(_LINUX) && !defined(__APPLE__)

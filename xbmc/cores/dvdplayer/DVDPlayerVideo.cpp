@@ -449,6 +449,7 @@ void CDVDPlayerVideo::Process()
       CDVDMsgVideoCodecChange* msg(static_cast<CDVDMsgVideoCodecChange*>(pMsg));
       OpenStream(msg->m_hints, msg->m_codec);
       msg->m_codec = NULL;
+      picture.iFlags &= ~DVP_FLAG_ALLOCATED;
     }
 
     if (pMsg->IsType(CDVDMsg::DEMUXER_PACKET))
@@ -492,6 +493,17 @@ void CDVDPlayerVideo::Process()
       // both frames will be dropped in that case instead of just the first
       // decoder still needs to provide an empty image structure, with correct flags
       m_pVideoCodec->SetDropState(bRequestDrop);
+
+      // ask codec to do deinterlacing if possible
+      EINTERLACEMETHOD mInt = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+      unsigned int     mFilters = 0;
+
+      if(mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
+      else if(mInt == VS_INTERLACEMETHOD_AUTO)
+        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
+
+      mFilters = m_pVideoCodec->SetFilters(mFilters);
 
       int iDecoderState = m_pVideoCodec->Decode(pPacket->pData, pPacket->iSize, pPacket->dts, pPacket->pts);
 
@@ -584,14 +596,16 @@ void CDVDPlayerVideo::Process()
 
             //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
             //this video
-            EINTERLACEMETHOD mInt = g_settings.m_currentVideoSettings.m_InterlaceMethod;
-            if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
-            || (mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)
-                                                && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)))
+            if(!(mFilters & CDVDVideoCodec::FILTER_DEINTERLACE_ANY))
             {
-              if (!sPostProcessType.empty())
-                sPostProcessType += ",";
-              sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
+              if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+              || (mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)
+                                                  && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)))
+              {
+                if (!sPostProcessType.empty())
+                  sPostProcessType += ",";
+                sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
+              }
             }
 
             if (g_settings.m_currentVideoSettings.m_PostProcess)
@@ -864,41 +878,42 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     }
   }
 
-  m_pOverlayContainer->Lock();
-
-  VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
-  VecOverlaysIter it = pVecOverlays->begin();
-
-  //Check all overlays and render those that should be rendered, based on time and forced
-  //Both forced and subs should check timeing, pts == 0 in the stillframe case
-  while (it != pVecOverlays->end())
   {
-    CDVDOverlay* pOverlay = *it++;
-    if(!pOverlay->bForced && !m_bRenderSubs)
-      continue;
+    CSingleLock lock(*m_pOverlayContainer);
 
-    if(pOverlay->iGroupId != pSource->iGroupId)
-      continue;
+    VecOverlays* pVecOverlays = m_pOverlayContainer->GetOverlays();
+    VecOverlaysIter it = pVecOverlays->begin();
 
-    double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
-
-    if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
+    //Check all overlays and render those that should be rendered, based on time and forced
+    //Both forced and subs should check timeing, pts == 0 in the stillframe case
+    while (it != pVecOverlays->end())
     {
-      if (render == OVERLAY_GPU)
-        g_renderManager.AddOverlay(pOverlay, pts2);
+      CDVDOverlay* pOverlay = *it++;
+      if(!pOverlay->bForced && !m_bRenderSubs)
+        continue;
 
-      if(pSource->format == DVDVideoPicture::FMT_YUV420P)
+      if(pOverlay->iGroupId != pSource->iGroupId)
+        continue;
+
+      double pts2 = pOverlay->bForced ? pts : pts - m_iSubtitleDelay;
+
+      if((pOverlay->iPTSStartTime <= pts2 && (pOverlay->iPTSStopTime > pts2 || pOverlay->iPTSStopTime == 0LL)) || pts == 0)
       {
-        if     (render == OVERLAY_BUF)
-          CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts2);
-        else if(render == OVERLAY_VID)
-          CDVDOverlayRenderer::Render(pDest, pOverlay, pts2);
+        if (render == OVERLAY_GPU)
+          g_renderManager.AddOverlay(pOverlay, pts2);
+
+        if(pSource->format == DVDVideoPicture::FMT_YUV420P)
+        {
+          if     (render == OVERLAY_BUF)
+            CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts2);
+          else if(render == OVERLAY_VID)
+            CDVDOverlayRenderer::Render(pDest, pOverlay, pts2);
+        }
+
       }
-
     }
-  }
 
-  m_pOverlayContainer->Unlock();
+  }
 
   if(pSource->format == DVDVideoPicture::FMT_YUV420P)
   {
