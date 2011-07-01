@@ -1992,7 +1992,7 @@ CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
     NPT_String mute;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredMute",mute));
     if((mute == "1") ^ g_settings.m_bMute)
-        g_application.Mute();
+        g_application.ToggleMute();
     return NPT_SUCCESS;
 }
 

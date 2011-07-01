@@ -6491,7 +6491,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
 
     // Add any files that don't have a valid idPath entry to the filesToDelete list.
     sql = "select files.idFile from files where idPath not in (select idPath from path)";
-    m_pDS->exec(sql.c_str());
+    m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
       filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";

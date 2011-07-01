@@ -652,6 +652,17 @@
     "params": [ ],
     "returns": "string"
   },
+  "VideoPlaylist.Swap": {
+    "type": "method",
+    "description": "Swap items in the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "item1", "$ref": "Playlist.Item.Position", "required": true },
+      { "name": "item2", "$ref": "Playlist.Item.Position", "required": true }
+    ],
+    "returns": "string"
+  },
   "AudioPlaylist.Play": {
     "type": "method",
     "description": "Play current or a specific item",
@@ -754,6 +765,17 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [ ],
+    "returns": "string"
+  },
+  "AudioPlaylist.Swap": {
+    "type": "method",
+    "description": "Swap items in the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "item1", "$ref": "Playlist.Item.Position", "required": true },
+      { "name": "item2", "$ref": "Playlist.Item.Position", "required": true }
+    ],
     "returns": "string"
   },
   "Files.GetSources": {

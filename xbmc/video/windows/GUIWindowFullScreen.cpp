@@ -904,6 +904,9 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       float y = g_settings.m_ResInfo[res].iSubtitles - textHeight;
 
       m_subsLayout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, maxWidth);
+
+      // reset rendering resolution
+      g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
     }
   }
 }

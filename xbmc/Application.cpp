@@ -1174,7 +1174,7 @@ bool CApplication::Initialize()
   CUtil::RemoveTempFiles();
 
   //  Show mute symbol
-  if (g_settings.m_nVolumeLevel == VOLUME_MINIMUM)
+  if (g_settings.m_bMute)
     Mute();
 
   // if the user shutoff the xbox during music scan
@@ -2511,7 +2511,7 @@ bool CApplication::OnAction(const CAction &action)
   }
   if (action.GetID() == ACTION_MUTE)
   {
-    Mute();
+    ToggleMute();
     return true;
   }
 
@@ -2539,7 +2539,14 @@ bool CApplication::OnAction(const CAction &action)
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
       // increase or decrease the volume
-      int volume = g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel;
+      int volume;
+      if (g_settings.m_bMute)
+      {
+        volume = (int)((float)g_settings.m_iPreMuteVolumeLevel * 0.01f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM);
+        UnMute();
+      }
+      else
+        volume = g_settings.m_nVolumeLevel + g_settings.m_dynamicRangeCompressionLevel;
 
       // calculate speed so that a full press will equal 1 second from min to max
       float speed = float(VOLUME_MAXIMUM - VOLUME_MINIMUM);
@@ -2547,34 +2554,13 @@ bool CApplication::OnAction(const CAction &action)
         speed *= action.GetRepeat();
       else
         speed /= 50; //50 fps
-      if (g_settings.m_bMute)
-      {
-        // only unmute if volume is to be increased, otherwise leave muted
-        if (action.GetID() == ACTION_VOLUME_DOWN)
-          return true;
-          
-        if (g_settings.m_iPreMuteVolumeLevel == 0)
-          SetVolume(1);
-        else
-          // In muted, unmute
-          Mute();
-        return true;
-      }
-      if (action.GetID() == ACTION_VOLUME_UP)
-      {
-        volume += (int)((float)fabs(action.GetAmount()) * action.GetAmount() * speed);
-      }
-      else
-      {
-        volume -= (int)((float)fabs(action.GetAmount()) * action.GetAmount() * speed);
-      }
 
-      SetHardwareVolume(volume);
-  #ifndef HAS_SDL_AUDIO
-      g_audioManager.SetVolume(g_settings.m_nVolumeLevel);
-  #else
-      g_audioManager.SetVolume((int)(128.f * (g_settings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
-  #endif
+      if (action.GetID() == ACTION_VOLUME_UP)
+        volume += (int)((float)fabs(action.GetAmount()) * action.GetAmount() * speed);
+      else
+        volume -= (int)((float)fabs(action.GetAmount()) * action.GetAmount() * speed);
+
+      SetVolume(volume, false);
     }
     // show visual feedback of volume change...
     ShowVolumeBar(&action);
@@ -3142,7 +3128,6 @@ bool CApplication::Cleanup()
     CAddonMgr::Get().DeInit();
 
     CLog::Log(LOGNOTICE, "unload sections");
-    CSectionLoader::UnloadAll();
 
 #ifdef HAS_PERFORMANCE_SAMPLE
     CLog::Log(LOGNOTICE, "performance statistics");
@@ -4227,6 +4212,8 @@ bool CApplication::WakeUpScreenSaver()
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
+    CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverDeactivated");
+
     if (m_screenSaver->ID() == "visualization" || m_screenSaver->ID() == "screensaver.xbmc.builtin.slideshow")
     {
       // we can just continue as usual from vis mode
@@ -4309,6 +4296,8 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (g_lcd && g_advancedSettings.m_lcdDimOnScreenSave)
     g_lcd->SetBackLight(0);
 #endif
+
+  CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverActivated");
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
@@ -4907,35 +4896,40 @@ void CApplication::ShowVolumeBar(const CAction *action)
   }
 }
 
-void CApplication::Mute(void)
+void CApplication::ToggleMute(void)
 {
   if (g_settings.m_bMute)
-  { // muted - unmute.
-    // In case our premutevolume is 0, return to 100% volume
-    if( g_settings.m_iPreMuteVolumeLevel == 0 )
-    {
-      SetVolume(100);
-    }
-    else
-    {
-      SetVolume(g_settings.m_iPreMuteVolumeLevel);
-      g_settings.m_iPreMuteVolumeLevel = 0;
-    }
-    ShowVolumeBar();
-  }
+    UnMute();
   else
-  { // mute
-    g_settings.m_iPreMuteVolumeLevel = GetVolume();
-    SetVolume(0);
-  }
+    Mute();
 }
 
-void CApplication::SetVolume(int iPercent)
+void CApplication::Mute()
+{
+  g_settings.m_iPreMuteVolumeLevel = GetVolume();
+  SetVolume(0);
+  g_settings.m_bMute = true;
+}
+
+void CApplication::UnMute()
+{
+  SetVolume(g_settings.m_iPreMuteVolumeLevel);
+  g_settings.m_iPreMuteVolumeLevel = 0;
+  g_settings.m_bMute = false;
+}
+
+void CApplication::SetVolume(long iValue, bool isPercentage /* = true */)
 {
   // convert the percentage to a mB (milliBell) value (*100 for dB)
-  long hardwareVolume = (long)((float)iPercent * 0.01f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM);
-  SetHardwareVolume(hardwareVolume);
-  g_audioManager.SetVolume(iPercent);
+  if (isPercentage)
+    iValue = (long)((float)iValue * 0.01f * (VOLUME_MAXIMUM - VOLUME_MINIMUM) + VOLUME_MINIMUM);
+
+  SetHardwareVolume(iValue);
+#ifndef HAS_SDL_AUDIO
+  g_audioManager.SetVolume(g_settings.m_nVolumeLevel);
+#else
+  g_audioManager.SetVolume((int)(128.f * (g_settings.m_nVolumeLevel - VOLUME_MINIMUM) / (float)(VOLUME_MAXIMUM - VOLUME_MINIMUM)));
+#endif
 }
 
 void CApplication::SetHardwareVolume(long hardwareVolume)
@@ -4944,9 +4938,8 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
   if (hardwareVolume >= VOLUME_MAXIMUM) // + VOLUME_DRC_MAXIMUM
     hardwareVolume = VOLUME_MAXIMUM;// + VOLUME_DRC_MAXIMUM;
   if (hardwareVolume <= VOLUME_MINIMUM)
-  {
     hardwareVolume = VOLUME_MINIMUM;
-  }
+
   // update our settings
   if (hardwareVolume > VOLUME_MAXIMUM)
   {
@@ -4958,12 +4951,6 @@ void CApplication::SetHardwareVolume(long hardwareVolume)
     g_settings.m_dynamicRangeCompressionLevel = 0;
     g_settings.m_nVolumeLevel = hardwareVolume;
   }
-
-  // update mute state
-  if(!g_settings.m_bMute && hardwareVolume <= VOLUME_MINIMUM)
-    g_settings.m_bMute = true;
-  else if(g_settings.m_bMute && hardwareVolume > VOLUME_MINIMUM)
-    g_settings.m_bMute = false;
 
   // and tell our player to update the volume
   if (m_pPlayer)

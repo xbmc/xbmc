@@ -37,7 +37,6 @@
 CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
     : CGUIDialog(98, "")
 {
-  m_loadOnDemand = false;
   m_needsScaling = false;
   m_layout = NULL;
   m_renderOrder = INT_MAX - 2;

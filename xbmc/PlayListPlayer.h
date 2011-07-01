@@ -154,6 +154,7 @@ public:
   void Insert(int iPlaylist, const CFileItemPtr &pItem, int iIndex);
   void Insert(int iPlaylist, CFileItemList& items, int iIndex);
   void Remove(int iPlaylist, int iPosition);
+  void Swap(int iPlaylist, int indexItem1, int indexItem2);
 protected:
   /*! \brief Returns true if the given is set to repeat all
    \param playlist Playlist to be query

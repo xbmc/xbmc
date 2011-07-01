@@ -123,6 +123,11 @@ void CGUILabelControl::Process(unsigned int currentTime, CDirtyRegionList &dirty
   CGUIControl::Process(currentTime, dirtyregions);
 }
 
+CRect CGUILabelControl::CalcRenderRegion() const
+{
+  return m_label.GetRenderRect();
+}
+
 void CGUILabelControl::Render()
 {
   m_label.Render();

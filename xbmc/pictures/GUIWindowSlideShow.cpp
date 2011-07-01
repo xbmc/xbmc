@@ -279,6 +279,10 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   int iSlides = m_slides->Size();
   if (!iSlides) return ;
 
+  // if we haven't rendered yet, we should mark the whole screen
+  if (!m_hasRendered)
+    regions.push_back(CRect(0.0f, 0.0f, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
+
   if (m_iNextSlide < 0 || m_iNextSlide >= m_slides->Size())
     m_iNextSlide = 0;
   if (m_iCurrentSlide < 0 || m_iCurrentSlide >= m_slides->Size())

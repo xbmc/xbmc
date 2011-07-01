@@ -39,7 +39,6 @@ CGUITextBox::CGUITextBox(int parentID, int controlID, float posX, float posY, fl
   m_itemHeight = 10;
   ControlType = GUICONTROL_TEXTBOX;
   m_pageControl = 0;
-  m_renderTime = 0;
   m_lastRenderTime = 0;
   m_scrollTime = scrollTime;
   m_autoScrollCondition = 0;
@@ -69,7 +68,6 @@ CGUITextBox::CGUITextBox(const CGUITextBox &from)
   m_scrollSpeed = 0;
   m_itemsPerPage = 10;
   m_itemHeight = 10;
-  m_renderTime = 0;
   m_lastRenderTime = 0;
   m_autoScrollDelayTime = 0;
   ControlType = GUICONTROL_TEXTBOX;
@@ -96,6 +94,7 @@ void CGUITextBox::UpdateInfo(const CGUIListItem *item)
     return; // nothing changed
 
   // needed update, so reset to the top of the textbox and update our sizing/page control
+  SetInvalid();
   m_offset = 0;
   m_scrollOffset = 0;
   ResetAutoScrolling();
@@ -108,16 +107,6 @@ void CGUITextBox::UpdateInfo(const CGUIListItem *item)
 
 void CGUITextBox::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  m_renderTime = currentTime;
-
-  // render the repeat anim as appropriate
-  if (m_autoScrollRepeatAnim)
-  {
-    m_autoScrollRepeatAnim->Animate(m_renderTime, true);
-    m_autoScrollRepeatAnim->RenderAnimation(m_textMatrix);
-    m_cachedTextMatrix = g_graphicsContext.AddTransform(m_textMatrix);
-  }
-
   CGUIControl::DoProcess(currentTime, dirtyregions);
 
   // if not visible, we reset the autoscroll timer and positioning
@@ -129,31 +118,9 @@ void CGUITextBox::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
     m_scrollOffset = 0;
     m_scrollSpeed = 0;
   }
-  if (m_autoScrollRepeatAnim)
-    g_graphicsContext.RemoveTransform();
 }
 
 void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
-{
-  // TODO Proper processing which marks when its actually changed. Just mark always for now.
-  MarkDirtyRegion();
-
-  CGUIControl::Process(currentTime, dirtyregions);
-}
-
-void CGUITextBox::DoRender()
-{
-  // render the repeat anim as appropriate
-  if (m_autoScrollRepeatAnim)
-    g_graphicsContext.SetTransform(m_cachedTextMatrix);
-
-  CGUIControl::DoRender();
-
-  if (m_autoScrollRepeatAnim)
-    g_graphicsContext.RemoveTransform();
-}
-
-void CGUITextBox::Render()
 {
   // update our auto-scrolling as necessary
   if (m_autoScrollTime && m_lines.size() > m_itemsPerPage)
@@ -161,9 +128,10 @@ void CGUITextBox::Render()
     if (!m_autoScrollCondition || g_infoManager.GetBool(m_autoScrollCondition, m_parentID))
     {
       if (m_lastRenderTime)
-        m_autoScrollDelayTime += m_renderTime - m_lastRenderTime;
+        m_autoScrollDelayTime += currentTime - m_lastRenderTime;
       if (m_autoScrollDelayTime > (unsigned int)m_autoScrollDelay && m_scrollSpeed == 0)
       { // delay is finished - start scrolling
+        MarkDirtyRegion();
         if (m_offset < (int)m_lines.size() - m_itemsPerPage)
           ScrollToOffset(m_offset + 1, true);
         else
@@ -186,23 +154,54 @@ void CGUITextBox::Render()
       ResetAutoScrolling();  // conditional is false, so reset the autoscrolling
   }
 
+  // render the repeat anim as appropriate
+  if (m_autoScrollRepeatAnim)
+  {
+    if (m_autoScrollRepeatAnim->GetProcess() != ANIM_PROCESS_NONE)
+      MarkDirtyRegion();
+    m_autoScrollRepeatAnim->Animate(currentTime, true);
+    TransformMatrix matrix;
+    m_autoScrollRepeatAnim->RenderAnimation(matrix);
+    m_cachedTextMatrix = g_graphicsContext.AddTransform(matrix);
+  }
+
   // update our scroll position as necessary
+  if (m_scrollSpeed != 0)
+    MarkDirtyRegion();
+
   if (m_lastRenderTime)
-    m_scrollOffset += m_scrollSpeed * (m_renderTime - m_lastRenderTime);
+    m_scrollOffset += m_scrollSpeed * (currentTime - m_lastRenderTime);
   if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_itemHeight) ||
       (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_itemHeight))
   {
     m_scrollOffset = m_offset * m_itemHeight;
     m_scrollSpeed = 0;
   }
-  m_lastRenderTime = m_renderTime;
+  m_lastRenderTime = currentTime;
 
-  int offset = (int)(m_scrollOffset / m_itemHeight);
+  if (m_pageControl)
+  {
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, MathUtils::round_int(m_scrollOffset / m_itemHeight));
+    SendWindowMessage(msg);
+  }
+
+  CGUIControl::Process(currentTime, dirtyregions);
+
+  if (m_autoScrollRepeatAnim)
+    g_graphicsContext.RemoveTransform();
+}
+
+void CGUITextBox::Render()
+{
+  // render the repeat anim as appropriate
+  if (m_autoScrollRepeatAnim)
+    g_graphicsContext.SetTransform(m_cachedTextMatrix);
 
   if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
   {
     // we offset our draw position to take into account scrolling and whether or not our focused
     // item is offscreen "above" the list.
+    int offset = (int)(m_scrollOffset / m_itemHeight);
     float posX = m_posX;
     float posY = m_posY + offset * m_itemHeight - m_scrollOffset;
 
@@ -230,12 +229,8 @@ void CGUITextBox::Render()
 
     g_graphicsContext.RestoreClipRegion();
   }
-
-  if (m_pageControl)
-  {
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, MathUtils::round_int(m_scrollOffset / m_itemHeight));
-    SendWindowMessage(msg);
-  }
+  if (m_autoScrollRepeatAnim)
+    g_graphicsContext.RemoveTransform();
   CGUIControl::Render();
 }
 

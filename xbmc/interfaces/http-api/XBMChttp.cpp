@@ -1586,7 +1586,7 @@ int CXbmcHttp::xbmcSeekPercentage(int numParas, CStdString paras[], bool relativ
 
 int CXbmcHttp::xbmcMute()
 {
-  g_application.Mute();
+  g_application.ToggleMute();
   return SetResponse(openTag+"OK");
 }
 

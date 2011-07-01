@@ -592,3 +592,16 @@ void CPlayListPlayer::Clear()
   if (m_PlaylistEmpty)
     m_PlaylistEmpty->Clear();
 }
+
+void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return;
+
+  CPlayList& list = GetPlaylist(iPlaylist);
+  list.Swap(indexItem1, indexItem2);
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+  g_windowManager.SendMessage(msg);
+}
