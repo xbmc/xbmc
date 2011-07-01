@@ -65,6 +65,7 @@ private:
 
   typedef unsigned int (CAEStreamInfo::*ParseFunc)(uint8_t *data, unsigned int size);
 
+  unsigned int              m_needBytes;
   ParseFunc                 m_syncFunc;
   bool                      m_hasSync;
   unsigned int              m_sampleRate;

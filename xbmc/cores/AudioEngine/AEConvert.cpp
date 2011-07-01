@@ -121,10 +121,10 @@ CAEConvert::AEConvertFrFn CAEConvert::FrFloat(enum AEDataFormat dataFormat)
 
 unsigned int CAEConvert::U8_Float(uint8_t *data, const unsigned int samples, float *dest)
 {
-  const float mul = 1.0f / UINT8_MAX;
+  const float mul = 2.0f / UINT8_MAX;
 
   for(unsigned int i = 0; i < samples; ++i, ++data, ++dest)
-    *dest = (*(uint8_t*)data * mul) * 2.0f - 1.0f;
+    *dest = *(uint8_t*)data * mul - 1.0f;
 
   return samples;
 }
