@@ -76,7 +76,7 @@ CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
       if (!m_LookupU8)
       {
         m_LookupU8 = new float[UINT8_MAX + 1];
-        for(int i = 0; i < UINT8_MAX; ++i)
+        for(int i = 0; i <= UINT8_MAX; ++i)
           m_LookupU8[i] = ((float)i / UINT8_MAX) * 2.0f - 1.0f;
       }
       break;
@@ -87,7 +87,7 @@ CAEConvert::AEConvertToFn CAEConvert::ToFloat(enum AEDataFormat dataFormat)
       if (!m_LookupS16)
       {
         m_LookupS16 = new float[UINT16_MAX + 1];
-        for(int i = 0; i < UINT16_MAX; ++i)
+        for(int i = 0; i <= UINT16_MAX; ++i)
           m_LookupS16[i] = ((float)i / ((float)INT16_MAX+.5f)) - 1.0f;
       }
       break;
@@ -163,7 +163,7 @@ unsigned int CAEConvert::S8_Float(uint8_t *data, const unsigned int samples, flo
 {
   unsigned int i;
   for(i = 0; i < samples; ++i, ++data, ++dest)
-    *dest = m_LookupU8[(int8_t)*data - INT8_MAX];
+    *dest = m_LookupU8[(int8_t)*data + INT8_MAX];
 
   return samples;
 }
