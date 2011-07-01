@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <string id="30001">spotyXBMC</string>
+
+    <string id="30400">General</string>
+    <string id="30401">Username</string>
+    <string id="30402">Password</string>
+    <string id="30403">Cache location</string>
+    <string id="30404">Use high bitrate</string>
+    <string id="30405">Enable</string>
+
+    <string id="30420">Search results</string>
+    <string id="30421">Max number of artists</string>
+    <string id="30422">Max number of albums</string>
+    <string id="30423">Max number of tracks</string>
+
+    <string id="30430">Top lists</string>
+    <string id="30431">Show lists for region</string>
+    <string id="30432">Everywhere</string>
+    <string id="30433">Your country</string>
+</strings>

@@ -1030,3 +1030,4 @@ void CAdvancedSettings::AddSettingsFile(const CStdString &filename)
 {
   m_settingsFiles.push_back(filename);
 }
+

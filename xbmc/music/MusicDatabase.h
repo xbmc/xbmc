@@ -116,6 +116,10 @@ public:
   void EmptyCache();
   void Clean();
   int  Cleanup(CGUIDialogProgress *pDlgProgress=NULL);
+
+
+  //spotify, we need a new function to remove albums from the database
+  bool RemoveAlbum(CStdString albumPath);
   void DeleteAlbumInfo();
   bool LookupCDDBInfo(bool bRequery=false);
   void DeleteCDDBInfo();

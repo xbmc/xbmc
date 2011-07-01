@@ -26,7 +26,6 @@
 #include "File.h"
 #include "settings/Settings.h"
 #include "guilib/TextureManager.h"
-#include "storage/MediaManager.h"
 
 using namespace XFILE;
 
@@ -45,13 +44,11 @@ bool CSourcesDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   CURL url(strPath);
   CStdString type(url.GetHostName());
 
-  VECSOURCES sources = *g_settings.GetSourcesFromType(url.GetHostName());
-  g_mediaManager.GetRemovableDrives(sources);
-
-  if (sources.empty())
+  VECSOURCES *sources = g_settings.GetSourcesFromType(url.GetHostName());
+  if (!sources)
     return false;
 
-  return GetDirectory(sources, items);
+  return GetDirectory(*sources, items);
 }
 
 bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &items)

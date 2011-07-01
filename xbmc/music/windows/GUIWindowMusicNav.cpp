@@ -104,7 +104,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
 
       if (!CGUIWindowMusicBase::OnMessage(message))
         return false;
-
+      
       //  base class has opened the database, do our check
       DisplayEmptyDatabaseMessage(m_musicdatabase.GetSongsCount() <= 0);
 
@@ -479,6 +479,10 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
       if (strcmp(g_settings.m_defaultMusicLibSource, ""))
         buttons.Add(CONTEXT_BUTTON_CLEAR_DEFAULT, 13403); // clear default
     }
+
+    //spotify add the remove album button
+    buttons.Add(CONTEXT_BUTTON_SPOTIFY_REMOVE_ALBUM,"Remove album");
+
     NODE_TYPE childtype = dir.GetDirectoryChildType(item->m_strPath);
     if (childtype == NODE_TYPE_ALBUM               ||
         childtype == NODE_TYPE_ARTIST              ||
@@ -545,8 +549,22 @@ bool CGUIWindowMusicNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
 
+  CSongMap songMap;
+  CMusicDatabase db;
   switch (button)
   {
+
+    
+  //spotify remove the album
+    case CONTEXT_BUTTON_SPOTIFY_REMOVE_ALBUM:
+      db.Open();
+      db.BeginTransaction();
+      db.RemoveAlbum(item->m_strPath);
+      db.CommitTransaction();
+      db.Close();
+      Update(m_history.GetParentPath());
+      return true;
+      
   case CONTEXT_BUTTON_INFO:
     {
       if (!item->IsVideoDb())

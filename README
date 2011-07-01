@@ -1,0 +1,91 @@
+spotyXBMC - Spotify in XBMC
+
+Until the possibility to create and use binary add-ons in XBMC the only way to use spotyxbmc is download a patched version of XBMC source.
+
+Spotify is not allowing clients based on despotify to connect to their servers anymore. 
+And there is a license conflict between xbmc and spotifylib; therefore the precompiled versions are useless for now. 
+To use spotyxbmc you have to compile it yourself.
+
+-----------------------------------------
+BUILD SPOTYXBMC YOURSELF LINUX 32/64
+-----------------------------------------
+1. Download libSpotify
+
+For 32 bit:
+$ wget http://developer.spotify.com/download/libspotify/libspotify-0.0.8-linux6-i686.tar.gz
+
+64 bit OS:
+$ wget http://developer.spotify.com/download/libspotify/libspotify-0.0.8-linux6-x86_64.tar.gz
+
+2. Untar:
+$ tar xzf libspotify-*.tar.gz
+
+3. Install libspotify
+$ cd libspotify-0.0.8...
+$ sudo make install
+
+4. Obtain spotyXBMC source 
+   Make sure you have git installed, if not and in ubuntu install with "sudo apt-get install git-core"
+$ cd ..
+$ git clone git://github.com/akezeke/xbmc.git
+$ cd xbmc
+
+5. Spotify API key
+   Get your own spotify API key from http://developer.spotify.com/en/libspotify/application-key/
+   Click on c-code and copy the content to a new file called appkey.h placed in the xbmc source root folder. (where this readme is located).
+
+6. Install all XBMC dependencies listed in the corresponding readme file.
+   For ubuntu run:
+
+$ sudo apt-get install git-core make g++ gcc gawk pmount libtool nasm yasm automake cmake gperf zip unzip bison libsdl-dev libsdl-image1.2-dev libsdl-gfx1.2-dev libsdl-mixer1.2-dev libfribidi-dev liblzo2-dev libfreetype6-dev libsqlite3-dev libogg-dev libasound-dev python-sqlite libglew-dev libcurl3 libcurl4-gnutls-dev libxrandr-dev libxrender-dev libmad0-dev libogg-dev libvorbisenc2 libsmbclient-dev libmysqlclient-dev libpcre3-dev libdbus-1-dev libhal-dev libhal-storage-dev libjasper-dev libfontconfig-dev libbz2-dev libboost-dev libenca-dev libxt-dev libxmu-dev libpng-dev libjpeg-dev libpulse-dev mesa-utils libcdio-dev libsamplerate-dev libmpeg3-dev libflac-dev libiso9660-dev libass-dev libssl-dev fp-compiler gdc libmpeg2-4-dev libmicrohttpd-dev libmodplug-dev libssh-dev gettext cvs python-dev libyajl-dev libboost-thread-dev autopoint
+
+
+7. Configure, make and install xbmc
+$ ./bootstrap
+$ ./configure
+$ make
+$ sudo make install
+
+8. Start xbmc
+$ xbmc
+
+9. Start spotyXBMC
+start the preinstalled music addon spotyXBMC and set the settings
+
+10. Enjoy spotify music inside xbmc
+
+Done!
+
+---------------------------------------------
+BUILD SPOTYXBMC YOURSELF WINDOWS 32/64
+---------------------------------------------
+
+1. Follow the instructions here: 
+http://wiki.xbmc.org/index.php?title=HOW-TO_compile_XBMC_for_Windows_from_source_code
+
+But instead of the official XBMC repo use this one: 
+git://github.com/akezeke/xbmc.git
+
+2. And before you build:
+Get your own spotify API key from http://developer.spotify.com/en/libspotify/application-key/
+Click on c-code and copy the content to a new file called appkey.h placed in the xbmc source root folder. (where this readme is located).
+
+3. Start xbmc
+
+4. Start spotyXBMC
+start the preinstalled music addon spotyXBMC and set the settings
+
+MAKE SURE THAT YOU CHANGE THE CACHE PATH TO A LEGIT WINDOWS PATH!
+
+5. Enjoy spotify music inside xbmc
+
+Done!
+
+---------
+CONTACT
+---------
+http://github.com/akezeke/xbmc 
+http://forum.xbmc.org/showthread.php?t=67012
+david.erenger@gmail.com
+
+/David

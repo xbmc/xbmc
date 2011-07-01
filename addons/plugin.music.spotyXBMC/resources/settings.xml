@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+
+  <!-- General -->
+  <category label="30400">
+    <setting id="enable" type="bool" label="30405" default="false" />
+    <setting id="username" type="text" enable="eq(-1,true)" label="30401" default="" />
+    <setting id="password" type="text" enable="eq(-2,true)" option="hidden" label="30402" default="" />
+    <setting type="sep" />
+    <setting id="cachePath" type="folder" enable="eq(-4,true)" label="30403" default="~/.cache/spotyXBMC" />
+    <setting id="highBitrate" type="bool" enable="eq(-5,true)" label="30404" default="true" />
+  </category>
+  <category label="30420">
+    <setting id="searchNoArtists" type="enum" label="30421" values="10|20|30|40|50|60" default="1" />
+    <setting id="searchNoAlbums" type="enum" label="30422" values="10|20|30|40|50|60" default="1" />
+    <setting id="searchNoTracks" type="enum" label="30423" values="10|20|30|40|50|60" default="1" />
+  </category>
+  <category label="30430">
+    <setting id="topListRegion" type="enum" label="30431" lvalues="30433|30432" default="0" />
+  </category>
+
+</settings>

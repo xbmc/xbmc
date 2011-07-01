@@ -4,7 +4,7 @@ ARCH=@ARCH@
 
 CFLAGS+=-DHAS_ALSA
 
-SRCS=ADPCMCodec.cpp \
+SRCS=spotifyCodec.cpp ADPCMCodec.cpp \
      AudioDecoder.cpp \
      CDDAcodec.cpp \
      CodecFactory.cpp \

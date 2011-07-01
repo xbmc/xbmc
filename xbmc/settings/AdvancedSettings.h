@@ -300,3 +300,4 @@ class CAdvancedSettings
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);
+

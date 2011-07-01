@@ -19,6 +19,7 @@
  *
  */
 
+#include "spotinterface.h"
 #include "MusicDatabaseDirectory.h"
 #include "utils/URIUtils.h"
 #include "MusicDatabaseDirectory/QueryParams.h"
@@ -44,6 +45,13 @@ CMusicDatabaseDirectory::~CMusicDatabaseDirectory(void)
 
 bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
+
+  //spotify 
+  if (strPath.Left(18) == "musicdb://spotify/")
+  {
+    return g_spotifyInterface->getDirectory(strPath, items);
+  }
+
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
 
   if (!pNode.get())
@@ -67,6 +75,12 @@ bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
 
 NODE_TYPE CMusicDatabaseDirectory::GetDirectoryChildType(const CStdString& strPath)
 {
+
+  //spotify
+  if (strPath.Left(18) == "musicdb://spotify/")
+  {
+    return g_spotifyInterface->getChildType(strPath);
+  }
   auto_ptr<CDirectoryNode> pNode(CDirectoryNode::ParseURL(strPath));
 
   if (!pNode.get())

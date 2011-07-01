@@ -568,6 +568,8 @@ else
   fi
 fi
 
+
+
 # platform common libraries
 AC_CHECK_PROG(MYSQL_CONFIG, mysql_config, "yes", "no")
 if test $MYSQL_CONFIG = "yes"; then
@@ -957,6 +959,10 @@ else
   USE_VDPAU=0
   AC_MSG_NOTICE($vdpau_disabled)
 fi
+
+
+# spotify
+LIBS="-lspotify $LIBS"
 
 # VAAPI
 if test "x$use_vaapi" != "xno"; then
