@@ -54,7 +54,7 @@ void CGUIWindowScreensaverDim::UpdateVisibility()
 void CGUIWindowScreensaverDim::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   CGUIDialog::Process(currentTime, dirtyregions);
-  m_renderRegion.SetRect(0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight());
+  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 }
 
 void CGUIWindowScreensaverDim::Render()

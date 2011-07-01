@@ -772,5 +772,5 @@ void CGUIDialogKeyboard::SetHeading(const CVariant &heading)
   if (heading.isString())
     m_strHeading = heading.asString();
   else if (heading.isInteger() && heading.asInteger())
-    m_strHeading = g_localizeStrings.Get(heading.asInteger());
+    m_strHeading = g_localizeStrings.Get((uint32_t)heading.asInteger());
 }
