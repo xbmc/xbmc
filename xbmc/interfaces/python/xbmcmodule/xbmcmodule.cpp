@@ -151,22 +151,6 @@ namespace PYXBMC
     return Py_None;
   }
 
-  // dashboard() method
-  PyDoc_STRVAR(dashboard__doc__,
-    "dashboard() -- Boot to dashboard as set in My Pograms/General.\n"
-    "\n"
-    "example:\n"
-    "  - xbmc.dashboard()\n");
-
-  PyObject* XBMC_Dashboard(PyObject *self, PyObject *args)
-  {
-    ThreadMessage tMsg = {TMSG_DASHBOARD};
-    g_application.getApplicationMessenger().SendMessage(tMsg);
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
   // restart() method
   PyDoc_STRVAR(restart__doc__,
     "restart() -- Restart the xbox.\n"
@@ -947,7 +931,6 @@ namespace PYXBMC
 
     {(char*)"sleep", (PyCFunction)XBMC_Sleep, METH_VARARGS, sleep__doc__},
     {(char*)"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
-    {(char*)"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, dashboard__doc__},
     {(char*)"restart", (PyCFunction)XBMC_Restart, METH_VARARGS, restart__doc__},
     {(char*)"getSkinDir", (PyCFunction)XBMC_GetSkinDir, METH_VARARGS, getSkinDir__doc__},
     {(char*)"getLocalizedString", (PyCFunction)XBMC_GetLocalizedString, METH_VARARGS, getLocalizedString__doc__},
