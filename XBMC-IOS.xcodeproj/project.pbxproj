@@ -14,10 +14,10 @@
 		18ACF8FD13597B5700B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8FB13597B5700B67371 /* RecentlyAddedJob.cpp */; };
 		18B700F313A6A7510009C1AF /* KeymapLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B700F113A6A7510009C1AF /* KeymapLoader.cpp */; };
 		18B700F613A6A7850009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B700F413A6A7850009C1AF /* AddonVersion.cpp */; };
+		3243039413BE255700C7807E /* AEPackIEC61937.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3243039213BE255700C7807E /* AEPackIEC61937.cpp */; };
 		3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255316512B2D02400837CD2 /* CoreAudio.framework */; };
 		32E649A313AFB9C4007C0723 /* AEConvert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6495B13AFB9C4007C0723 /* AEConvert.cpp */; };
 		32E649A413AFB9C4007C0723 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6495E13AFB9C4007C0723 /* AEFactory.cpp */; };
-		32E649A513AFB9C4007C0723 /* AEPackIEC958.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6496013AFB9C4007C0723 /* AEPackIEC958.cpp */; };
 		32E649A613AFB9C4007C0723 /* AERemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6496313AFB9C4007C0723 /* AERemap.cpp */; };
 		32E649A713AFB9C4007C0723 /* AESinkFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6496613AFB9C4007C0723 /* AESinkFactory.cpp */; };
 		32E649A813AFB9C4007C0723 /* AESoundWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E6496913AFB9C4007C0723 /* AESoundWrapper.cpp */; };
@@ -941,6 +941,8 @@
 		18B700F213A6A7510009C1AF /* KeymapLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeymapLoader.h; sourceTree = "<group>"; };
 		18B700F413A6A7850009C1AF /* AddonVersion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonVersion.cpp; sourceTree = "<group>"; };
 		18B700F513A6A7850009C1AF /* AddonVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonVersion.h; sourceTree = "<group>"; };
+		3243039213BE255700C7807E /* AEPackIEC61937.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEPackIEC61937.cpp; sourceTree = "<group>"; };
+		3243039313BE255700C7807E /* AEPackIEC61937.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPackIEC61937.h; sourceTree = "<group>"; };
 		3255316512B2D02400837CD2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		32E6495913AFB9C4007C0723 /* AE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AE.h; sourceTree = "<group>"; };
 		32E6495A13AFB9C4007C0723 /* AEAudioFormat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEAudioFormat.h; sourceTree = "<group>"; };
@@ -949,8 +951,6 @@
 		32E6495D13AFB9C4007C0723 /* AEEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEEncoder.h; sourceTree = "<group>"; };
 		32E6495E13AFB9C4007C0723 /* AEFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEFactory.cpp; sourceTree = "<group>"; };
 		32E6495F13AFB9C4007C0723 /* AEFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEFactory.h; sourceTree = "<group>"; };
-		32E6496013AFB9C4007C0723 /* AEPackIEC958.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEPackIEC958.cpp; sourceTree = "<group>"; };
-		32E6496113AFB9C4007C0723 /* AEPackIEC958.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPackIEC958.h; sourceTree = "<group>"; };
 		32E6496213AFB9C4007C0723 /* AEPostProc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPostProc.h; sourceTree = "<group>"; };
 		32E6496313AFB9C4007C0723 /* AERemap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AERemap.cpp; sourceTree = "<group>"; };
 		32E6496413AFB9C4007C0723 /* AERemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AERemap.h; sourceTree = "<group>"; };
@@ -2953,6 +2953,8 @@
 		32E6495813AFB9C4007C0723 /* AudioEngine */ = {
 			isa = PBXGroup;
 			children = (
+				3243039213BE255700C7807E /* AEPackIEC61937.cpp */,
+				3243039313BE255700C7807E /* AEPackIEC61937.h */,
 				32E6495913AFB9C4007C0723 /* AE.h */,
 				32E6495A13AFB9C4007C0723 /* AEAudioFormat.h */,
 				32E6495B13AFB9C4007C0723 /* AEConvert.cpp */,
@@ -2960,8 +2962,6 @@
 				32E6495D13AFB9C4007C0723 /* AEEncoder.h */,
 				32E6495E13AFB9C4007C0723 /* AEFactory.cpp */,
 				32E6495F13AFB9C4007C0723 /* AEFactory.h */,
-				32E6496013AFB9C4007C0723 /* AEPackIEC958.cpp */,
-				32E6496113AFB9C4007C0723 /* AEPackIEC958.h */,
 				32E6496213AFB9C4007C0723 /* AEPostProc.h */,
 				32E6496313AFB9C4007C0723 /* AERemap.cpp */,
 				32E6496413AFB9C4007C0723 /* AERemap.h */,
@@ -6770,7 +6770,6 @@
 				DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */,
 				32E649A313AFB9C4007C0723 /* AEConvert.cpp in Sources */,
 				32E649A413AFB9C4007C0723 /* AEFactory.cpp in Sources */,
-				32E649A513AFB9C4007C0723 /* AEPackIEC958.cpp in Sources */,
 				32E649A613AFB9C4007C0723 /* AERemap.cpp in Sources */,
 				32E649A713AFB9C4007C0723 /* AESinkFactory.cpp in Sources */,
 				32E649A813AFB9C4007C0723 /* AESoundWrapper.cpp in Sources */,
@@ -6787,6 +6786,7 @@
 				32E649BD13AFB9C4007C0723 /* AEPPAnimationFade.cpp in Sources */,
 				32E64A1413AFD057007C0723 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				F558F61113AFDC3000631E12 /* ThreadLocal.cpp in Sources */,
+				3243039413BE255700C7807E /* AEPackIEC61937.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -14,10 +14,10 @@
 		18ACF8E313597B0000B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */; };
 		18B7013C13A6ABBA0009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7013A13A6ABBA0009C1AF /* AddonVersion.cpp */; };
 		18B7013F13A6ABD20009C1AF /* KeymapLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7013D13A6ABD20009C1AF /* KeymapLoader.cpp */; };
+		3243038813BE253200C7807E /* AEPackIEC61937.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3243038613BE253200C7807E /* AEPackIEC61937.cpp */; };
 		32E648C613AFB875007C0723 /* DVDAudioCodecPassthrough.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E648C413AFB875007C0723 /* DVDAudioCodecPassthrough.cpp */; };
 		32E6492A13AFB8A7007C0723 /* AEConvert.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E648E213AFB8A7007C0723 /* AEConvert.cpp */; };
 		32E6492B13AFB8A7007C0723 /* AEFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E648E513AFB8A7007C0723 /* AEFactory.cpp */; };
-		32E6492C13AFB8A7007C0723 /* AEPackIEC958.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E648E713AFB8A7007C0723 /* AEPackIEC958.cpp */; };
 		32E6492D13AFB8A7007C0723 /* AERemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E648EA13AFB8A7007C0723 /* AERemap.cpp */; };
 		32E6492E13AFB8A7007C0723 /* AESinkFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E648ED13AFB8A7007C0723 /* AESinkFactory.cpp */; };
 		32E6492F13AFB8A7007C0723 /* AESoundWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32E648F013AFB8A7007C0723 /* AESoundWrapper.cpp */; };
@@ -941,6 +941,8 @@
 		18B7013B13A6ABBA0009C1AF /* AddonVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonVersion.h; sourceTree = "<group>"; };
 		18B7013D13A6ABD20009C1AF /* KeymapLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeymapLoader.cpp; sourceTree = "<group>"; };
 		18B7013E13A6ABD20009C1AF /* KeymapLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeymapLoader.h; sourceTree = "<group>"; };
+		3243038613BE253200C7807E /* AEPackIEC61937.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEPackIEC61937.cpp; sourceTree = "<group>"; };
+		3243038713BE253200C7807E /* AEPackIEC61937.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPackIEC61937.h; sourceTree = "<group>"; };
 		32E648C413AFB875007C0723 /* DVDAudioCodecPassthrough.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDAudioCodecPassthrough.cpp; sourceTree = "<group>"; };
 		32E648C513AFB875007C0723 /* DVDAudioCodecPassthrough.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDAudioCodecPassthrough.h; sourceTree = "<group>"; };
 		32E648E013AFB8A7007C0723 /* AE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AE.h; sourceTree = "<group>"; };
@@ -950,8 +952,6 @@
 		32E648E413AFB8A7007C0723 /* AEEncoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEEncoder.h; sourceTree = "<group>"; };
 		32E648E513AFB8A7007C0723 /* AEFactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEFactory.cpp; sourceTree = "<group>"; };
 		32E648E613AFB8A7007C0723 /* AEFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEFactory.h; sourceTree = "<group>"; };
-		32E648E713AFB8A7007C0723 /* AEPackIEC958.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AEPackIEC958.cpp; sourceTree = "<group>"; };
-		32E648E813AFB8A7007C0723 /* AEPackIEC958.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPackIEC958.h; sourceTree = "<group>"; };
 		32E648E913AFB8A7007C0723 /* AEPostProc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AEPostProc.h; sourceTree = "<group>"; };
 		32E648EA13AFB8A7007C0723 /* AERemap.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AERemap.cpp; sourceTree = "<group>"; };
 		32E648EB13AFB8A7007C0723 /* AERemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AERemap.h; sourceTree = "<group>"; };
@@ -2953,6 +2953,8 @@
 		32E648DF13AFB8A7007C0723 /* AudioEngine */ = {
 			isa = PBXGroup;
 			children = (
+				3243038613BE253200C7807E /* AEPackIEC61937.cpp */,
+				3243038713BE253200C7807E /* AEPackIEC61937.h */,
 				32E648E013AFB8A7007C0723 /* AE.h */,
 				32E648E113AFB8A7007C0723 /* AEAudioFormat.h */,
 				32E648E213AFB8A7007C0723 /* AEConvert.cpp */,
@@ -2960,8 +2962,6 @@
 				32E648E413AFB8A7007C0723 /* AEEncoder.h */,
 				32E648E513AFB8A7007C0723 /* AEFactory.cpp */,
 				32E648E613AFB8A7007C0723 /* AEFactory.h */,
-				32E648E713AFB8A7007C0723 /* AEPackIEC958.cpp */,
-				32E648E813AFB8A7007C0723 /* AEPackIEC958.h */,
 				32E648E913AFB8A7007C0723 /* AEPostProc.h */,
 				32E648EA13AFB8A7007C0723 /* AERemap.cpp */,
 				32E648EB13AFB8A7007C0723 /* AERemap.h */,
@@ -6756,7 +6756,6 @@
 				32E648C613AFB875007C0723 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				32E6492A13AFB8A7007C0723 /* AEConvert.cpp in Sources */,
 				32E6492B13AFB8A7007C0723 /* AEFactory.cpp in Sources */,
-				32E6492C13AFB8A7007C0723 /* AEPackIEC958.cpp in Sources */,
 				32E6492D13AFB8A7007C0723 /* AERemap.cpp in Sources */,
 				32E6492E13AFB8A7007C0723 /* AESinkFactory.cpp in Sources */,
 				32E6492F13AFB8A7007C0723 /* AESoundWrapper.cpp in Sources */,
@@ -6772,6 +6771,7 @@
 				32E6493A13AFB8A7007C0723 /* CoreAudioAEStream.cpp in Sources */,
 				32E6494413AFB8A7007C0723 /* AEPPAnimationFade.cpp in Sources */,
 				F558F66F13AFE81500631E12 /* ThreadLocal.cpp in Sources */,
+				3243038813BE253200C7807E /* AEPackIEC61937.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
