@@ -54,7 +54,7 @@ CDVDClock::~CDVDClock()
 {}
 
 // Returns the current absolute clock in units of DVD_TIME_BASE (usually microseconds).
-double CDVDClock::GetAbsoluteClock()
+double CDVDClock::GetAbsoluteClock(bool interpolated /*= true*/)
 {
   CSingleLock lock(m_systemsection);
 
@@ -62,17 +62,20 @@ double CDVDClock::GetAbsoluteClock()
     m_systemFrequency = g_VideoReferenceClock.GetFrequency();
 
   if(!m_systemOffset)
-    m_systemOffset = g_VideoReferenceClock.GetTime();
+    m_systemOffset = g_VideoReferenceClock.GetTime(interpolated);
 
   int64_t current;
-  current = g_VideoReferenceClock.GetTime();
+  current = g_VideoReferenceClock.GetTime(interpolated);
   current -= m_systemOffset;
 
 #if _DEBUG
-  static int64_t old;
-  if(old > current)
-    CLog::Log(LOGWARNING, "CurrentHostCounter() moving backwords by %"PRId64" ticks with freq of %"PRId64, old - current, m_systemFrequency);
-  old = current;
+  if (interpolated) //only compare interpolated time, clock might go backwards otherwise
+  {
+    static int64_t old;
+    if(old > current)
+      CLog::Log(LOGWARNING, "CurrentHostCounter() moving backwords by %"PRId64" ticks with freq of %"PRId64, old - current, m_systemFrequency);
+    old = current;
+  }
 #endif
 
   return DVD_TIME_BASE * (double)current / m_systemFrequency;
@@ -101,14 +104,14 @@ double CDVDClock::WaitAbsoluteClock(double target)
   return (double)systemtarget / freq * DVD_TIME_BASE;
 }
 
-double CDVDClock::GetClock()
+double CDVDClock::GetClock(bool interpolated /*= true*/)
 {
   CSharedLock lock(m_critSection);
   int64_t current;
 
   if (m_bReset)
   {
-    m_startClock = g_VideoReferenceClock.GetTime();
+    m_startClock = g_VideoReferenceClock.GetTime(interpolated);
     m_systemUsed = m_systemFrequency;
     m_pauseClock = 0;
     m_iDisc = 0;
@@ -118,7 +121,7 @@ double CDVDClock::GetClock()
   if (m_pauseClock)
     current = m_pauseClock;
   else
-    current = g_VideoReferenceClock.GetTime();
+    current = g_VideoReferenceClock.GetTime(interpolated);
 
   current -= m_startClock;
   return DVD_TIME_BASE * (double)current / m_systemUsed + m_iDisc;

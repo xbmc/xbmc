@@ -42,7 +42,7 @@ public:
   CDVDClock();
   ~CDVDClock();
 
-  double GetClock();
+  double GetClock(bool interpolated = true);
 
   void Discontinuity(double currentPts = 0LL);
 
@@ -57,7 +57,7 @@ public:
 
   bool   SetMaxSpeedAdjust(double speed);
 
-  static double GetAbsoluteClock();
+  static double GetAbsoluteClock(bool interpolated = true);
   static double GetFrequency() { return (double)m_systemFrequency ; }
   static double WaitAbsoluteClock(double target);
 
