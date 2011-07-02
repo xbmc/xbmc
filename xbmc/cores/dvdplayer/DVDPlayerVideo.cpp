@@ -1099,8 +1099,8 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   // calculate the time we need to delay this picture before displaying
   double iSleepTime, iClockSleep, iFrameSleep, iCurrentClock, iFrameDuration;
 
-  iCurrentClock = m_pClock->GetAbsoluteClock(); // snapshot current clock
-  iClockSleep = pts - m_pClock->GetClock();  //sleep calculated by pts to clock comparison
+  iCurrentClock = m_pClock->GetAbsoluteClock(false); // snapshot current clock
+  iClockSleep = pts - m_pClock->GetClock(false);  //sleep calculated by pts to clock comparison
   iFrameSleep = m_FlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
   iFrameDuration = pPicture->iDuration;
 
@@ -1228,7 +1228,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
 
   // video device might not be done yet
   while (index < 0 && !CThread::m_bStop &&
-         CDVDClock::GetAbsoluteClock() < iCurrentClock + iSleepTime + DVD_MSEC_TO_TIME(500) )
+         CDVDClock::GetAbsoluteClock(false) < iCurrentClock + iSleepTime + DVD_MSEC_TO_TIME(500) )
   {
     Sleep(1);
     index = g_renderManager.GetImage(&image);

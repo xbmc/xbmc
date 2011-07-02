@@ -111,7 +111,7 @@ CXBMCRenderManager::~CXBMCRenderManager()
 /* These is based on CurrentHostCounter() */
 double CXBMCRenderManager::GetPresentTime()
 {
-  return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
+  return CDVDClock::GetAbsoluteClock(false) / DVD_TIME_BASE;
 }
 
 static double wrap(double x, double minimum, double maximum)
