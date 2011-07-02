@@ -34,10 +34,6 @@ cRecording::cRecording()
   m_Index           = -1;
 }
 
-//cRecording::cRecording(const PVR_RECORDING *Recording)
-//{
-//
-//}
 
 cRecording::~cRecording()
 {
@@ -136,7 +132,7 @@ bool cRecording::ParseLine(const std::string& data)
     }
 
 
-    if (fields.size() >= 10) // Since 1.0.8.0
+    if (fields.size() >= 10) // Since TVServerXBMC 1.0.8.0
     {
       m_originalurl = fields[9];
     }
@@ -145,7 +141,7 @@ bool cRecording::ParseLine(const std::string& data)
       m_originalurl = fields[6];
     }
 
-    if (fields.size() >= 16) // Since 1.1.x.105
+    if (fields.size() >= 16) // Since TVServerXBMC 1.1.x.105
     {
       m_keepUntil = atoi( fields[10].c_str() );
       m_episodeName = fields[11];

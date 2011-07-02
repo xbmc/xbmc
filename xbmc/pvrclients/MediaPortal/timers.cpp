@@ -44,6 +44,8 @@ cTimer::cTimer()
   m_canceled           = cUndefinedDate;
   m_series             = false;
 }
+
+
 cTimer::cTimer(const PVR_TIMER& timerinfo)
 {
   m_index = timerinfo.iClientIndex;

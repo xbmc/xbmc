@@ -35,8 +35,6 @@
 #include "lib/tsreader/TSReader.h"
 #endif
 
-#define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
-
 using namespace std;
 
 /* Globals */
@@ -216,6 +214,7 @@ bool cPVRClientMediaPortal::Connect()
     }
   }
 
+  /* Store connection string */
   char buffer[512];
   snprintf(buffer, 512, "%s:%i", g_szHostname.c_str(), g_iPort);
   m_ConnectionString = buffer;
