@@ -35,3 +35,9 @@ std::wstring StringToWString(const std::string& s);
 std::string WStringToString(const std::wstring& s);
 std::string lowercase(const std::string& s);
 bool stringtobool(const std::string& s);
+
+/**
+ * @brief Converts a C# DateTime string into a time_t value
+ * Assumes the usage of somedatetimeval.ToString("u") in C#
+ */
+time_t DateTimeToTimeT(const std::string& datetime);

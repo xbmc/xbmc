@@ -131,11 +131,6 @@ void cEpg::Reset()
 
 bool cEpg::ParseLine(string& data)
 {
-  struct tm timeinfo;
-  int year, month ,day;
-  int hour, minute, second;
-  int count;
-
   try
   {
     vector<string> epgfields;
@@ -161,23 +156,7 @@ bool cEpg::ParseLine(string& data)
       // field 13 = starRating (int)
       // field 14 = parentalRating (int)
 
-      count = sscanf(epgfields[0].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
-
-      if( count != 6)
-        return false;
-
-      timeinfo.tm_hour = hour;
-      timeinfo.tm_min = minute;
-      timeinfo.tm_sec = second;
-      timeinfo.tm_year = year - 1900;
-      timeinfo.tm_mon = month - 1;
-      timeinfo.tm_mday = day;
-      // Make the other fields empty:
-      timeinfo.tm_isdst = -1;
-      timeinfo.tm_wday = 0;
-      timeinfo.tm_yday = 0;
-
-      m_StartTime = mktime (&timeinfo);
+      m_StartTime = DateTimeToTimeT(epgfields[0]);
 
       if(m_StartTime < 0)
       {
@@ -185,27 +164,11 @@ bool cEpg::ParseLine(string& data)
         return false;
       }
 
-      count = sscanf(epgfields[1].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
-
-      if(count != 6)
-        return false;
-
-      timeinfo.tm_hour = hour;
-      timeinfo.tm_min = minute;
-      timeinfo.tm_sec = second;
-      timeinfo.tm_year = year - 1900;
-      timeinfo.tm_mon = month - 1;
-      timeinfo.tm_mday = day;
-      // Make the other fields empty:
-      timeinfo.tm_isdst = -1;
-      timeinfo.tm_wday = 0;
-      timeinfo.tm_yday = 0;
-
-      m_EndTime = mktime (&timeinfo);// + m_UTCdiff; //m_EndTime should be localtime, MP TV returns UTC
+      m_EndTime = DateTimeToTimeT(epgfields[1]);
 
       if( m_EndTime < 0)
       {
-        XBMC->Log(LOG_ERROR, "cEpg::ParseLine: Unable to convert end time '%s' into date+time", epgfields[0].c_str());
+        XBMC->Log(LOG_ERROR, "cEpg::ParseLine: Unable to convert end time '%s' into date+time", epgfields[1].c_str());
         return false;
       }
 
@@ -228,23 +191,13 @@ bool cEpg::ParseLine(string& data)
         m_parentalRating = atoi(epgfields[14].c_str());
 
         //originalAirDate
-        count = sscanf(epgfields[11].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
+        m_originalAirDate = DateTimeToTimeT(epgfields[11]);
 
-        if(count != 6)
+        if(  m_originalAirDate < 0)
+        {
+          XBMC->Log(LOG_ERROR, "cEpg::ParseLine: Unable to convert original air date '%s' into date+time", epgfields[11].c_str());
           return false;
-
-        timeinfo.tm_hour = hour;
-        timeinfo.tm_min = minute;
-        timeinfo.tm_sec = second;
-        timeinfo.tm_year = year - 1900;
-        timeinfo.tm_mon = month - 1;
-        timeinfo.tm_mday = day;
-        // Make the other fields empty:
-        timeinfo.tm_isdst = -1;
-        timeinfo.tm_wday = 0;
-        timeinfo.tm_yday = 0;
-
-        m_originalAirDate = mktime (&timeinfo);
+        }
       }
 
       return true;

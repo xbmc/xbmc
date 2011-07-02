@@ -81,3 +81,35 @@ bool stringtobool(const std::string& s)
   else
     return true;
 }
+
+time_t DateTimeToTimeT(const std::string& datetime)
+{
+  struct tm timeinfo;
+  int year, month ,day;
+  int hour, minute, second;
+  int count;
+  time_t retval;
+
+  count = sscanf(datetime.c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
+
+  if(count != 6)
+    return -1;
+
+  timeinfo.tm_hour = hour;
+  timeinfo.tm_min = minute;
+  timeinfo.tm_sec = second;
+  timeinfo.tm_year = year - 1900;
+  timeinfo.tm_mon = month - 1;
+  timeinfo.tm_mday = day;
+  // Make the other fields empty:
+  timeinfo.tm_isdst = -1;
+  timeinfo.tm_wday = 0;
+  timeinfo.tm_yday = 0;
+
+  retval = mktime (&timeinfo);
+
+  if(retval < 0)
+    retval = 0;
+
+  return retval;
+}
