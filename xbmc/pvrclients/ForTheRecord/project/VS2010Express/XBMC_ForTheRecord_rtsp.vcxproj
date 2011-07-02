@@ -53,8 +53,8 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\;..\..\lib\jsoncpp\include;..\..\..\MediaPortal;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\lib\curl-7.21.4\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\;..\..\lib\jsoncpp\include;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\lib\curl-7.21.4\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;_WINSOCKAPI_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -65,7 +65,7 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libcurld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcurld.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2d.lib;$(SolutionDir)\libs\libPlatform\$(Configuration)\libPlatform.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\..\..\..\addons\pvr.fortherecord.argus-rtsp\XBMC_ForTheRecord_rtsp_win32.pvr</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -117,7 +117,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\RTSPClient.cpp" />
-    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\TSThread.cpp" />
+    <ClCompile Include="..\..\thread.cpp" />
+    <ClCompile Include="..\..\tools.cpp" />
     <ClCompile Include="..\..\\activerecording.cpp" />
     <ClCompile Include="..\..\\channel.cpp" />
     <ClCompile Include="..\..\\client.cpp" />
@@ -139,7 +140,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\RTSPClient.h" />
-    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\TSThread.h" />
+    <ClInclude Include="..\..\thread.h" />
+    <ClInclude Include="..\..\tools.h" />
     <ClInclude Include="..\..\\activerecording.h" />
     <ClInclude Include="..\..\\channel.h" />
     <ClInclude Include="..\..\\client.h" />
@@ -147,7 +149,6 @@
     <ClInclude Include="..\..\\fortherecordrpc.h" />
     <ClInclude Include="..\..\\guideprogram.h" />
     <ClInclude Include="..\..\\KeepAliveThread.h" />
-    <ClInclude Include="..\..\\os-dependent.h" />
     <ClInclude Include="..\..\\pvrclient-fortherecord.h" />
     <ClInclude Include="..\..\\recording.h" />
     <ClInclude Include="..\..\\recordinggroup.h" />

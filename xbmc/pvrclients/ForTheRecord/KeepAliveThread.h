@@ -33,20 +33,21 @@ class CKeepAliveThread: public TSThread
 
 #else
 
-class CKeepAliveThread
+#include "thread.h"
+
+class CKeepAliveThread : cThread
 {
 public:
   CKeepAliveThread();
   virtual ~CKeepAliveThread(void);
 
-  bool IsThreadRunning() { return false; }
-  long StopThread(unsigned long dwTimeoutMilliseconds  = 1000) { return S_OK; }
-  long StartThread(void) { return S_OK; }
-  bool ThreadIsStopping(unsigned long dwTimeoutMilliseconds = 10) { return false; }
+  bool IsThreadRunning() { return Active(); }
+  long StopThread(unsigned long dwTimeoutMilliseconds  = 1000) { Cancel(dwTimeoutMilliseconds / 1000); return S_OK; }
+  long StartThread(void) { Start(); return S_OK; }
 
 
 private:
-  virtual void ThreadProc();
+  virtual void Action();
 };
 
 #endif

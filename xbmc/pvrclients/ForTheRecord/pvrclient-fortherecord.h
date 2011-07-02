@@ -16,8 +16,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+#ifdef TSREADER
 #include "os-dependent.h"
+#else
+#include "libPlatform/os-dependent.h"
+#endif 
 
 #include <vector>
 

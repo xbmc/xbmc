@@ -25,6 +25,7 @@
  */
 
 #include <stdio.h>
+#include "libPlatform/os-dependent.h"
 #include "curl/curl.h"
 #include "client.h"
 #include "pvrclient-fortherecord.h"
