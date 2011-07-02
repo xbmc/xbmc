@@ -25,6 +25,7 @@ using namespace std;
 #include "recordings.h"
 #include "utils.h"
 #include "timers.h"
+#include "client.h"
 
 cRecording::cRecording()
 {
@@ -45,10 +46,6 @@ cRecording::~cRecording()
 bool cRecording::ParseLine(const std::string& data)
 {
   time_t endtime;
-  struct tm timeinfo;
-  int year, month ,day;
-  int hour, minute, second;
-  int count;
   string filePath;
 
   vector<string> fields;
@@ -75,48 +72,21 @@ bool cRecording::ParseLine(const std::string& data)
     //[15] scheduleID (int)
 
     m_Index = atoi(fields[0].c_str());
-
-    count = sscanf(fields[1].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
-
-    if (count != 6)
-      return false;
-
-    timeinfo.tm_hour = hour;
-    timeinfo.tm_min = minute;
-    timeinfo.tm_sec = second;
-    timeinfo.tm_year = year - 1900;
-    timeinfo.tm_mon = month - 1;
-    timeinfo.tm_mday = day;
-    // Make the other fields empty:
-    timeinfo.tm_isdst = 0;
-    timeinfo.tm_wday = 0;
-    timeinfo.tm_yday = 0;
-
-    m_StartTime = mktime (&timeinfo);
+    m_StartTime = DateTimeToTimeT(fields[1]);
 
     if (m_StartTime < 0)
+    {
+      XBMC->Log(LOG_ERROR, "%s: Unable to convert start time '%s' into date+time", __FUNCTION__, fields[1].c_str());
       return false;
+    }
 
-    count = sscanf(fields[2].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
-
-    if (count != 6)
-      return false;
-
-    timeinfo.tm_hour = hour;
-    timeinfo.tm_min = minute;
-    timeinfo.tm_sec = second;
-    timeinfo.tm_year = year - 1900;
-    timeinfo.tm_mon = month - 1;
-    timeinfo.tm_mday = day;
-    // Make the other fields empty:
-    timeinfo.tm_isdst = 0;
-    timeinfo.tm_wday = 0;
-    timeinfo.tm_yday = 0;
-
-    endtime = mktime (&timeinfo);
+    endtime = DateTimeToTimeT(fields[2]);
 
     if (endtime < 0)
+    {
+      XBMC->Log(LOG_ERROR, "%s: Unable to convert end time '%s' into date+time", __FUNCTION__, fields[2].c_str());
       return false;
+    }
 
     m_Duration = endtime - m_StartTime;
 
@@ -137,25 +107,9 @@ bool cRecording::ParseLine(const std::string& data)
     // low disk space. The special value 99 means that this recording will live
     // forever, and a value of 0 means that this recording can be deleted any
     // time if a recording with a higher priority needs disk space."
-    count = sscanf(fields[8].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
+    m_keepUntilDate = DateTimeToTimeT(fields[8]);
 
-    if (count != 6)
-      return false;
-
-    timeinfo.tm_hour = hour;
-    timeinfo.tm_min = minute;
-    timeinfo.tm_sec = second;
-    timeinfo.tm_year = year - 1900;
-    timeinfo.tm_mon = month - 1;
-    timeinfo.tm_mday = day;
-    // Make the other fields empty:
-    timeinfo.tm_isdst = 0;
-    timeinfo.tm_wday = 0;
-    timeinfo.tm_yday = 0;
-
-    m_keepUntilDate = mktime (&timeinfo);
-
-    if (m_keepUntilDate == -1)
+    if (m_keepUntilDate < 0)
     {
       // invalid date (or outside time_t boundaries)
       m_keepUntilDate = cUndefinedDate;

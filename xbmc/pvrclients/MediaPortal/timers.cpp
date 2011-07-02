@@ -136,11 +136,6 @@ time_t cTimer::EndTime(void) const
 
 bool cTimer::ParseLine(const char *s)
 {
-  struct tm timeinfo;
-  int year, month ,day;
-  int hour, minute, second;
-  int count;
-
   vector<string> schedulefields;
   string data = s;
   uri::decode(data);
@@ -169,45 +164,12 @@ bool cTimer::ParseLine(const char *s)
     // field 17 = isrecording (True/False)
 
     m_index = atoi(schedulefields[0].c_str());
-
-    count = sscanf(schedulefields[1].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
-
-    if(count != 6)
-      return false;
-
-    timeinfo.tm_hour = hour;
-    timeinfo.tm_min = minute;
-    timeinfo.tm_sec = second;
-    timeinfo.tm_year = year - 1900;
-    timeinfo.tm_mon = month - 1;
-    timeinfo.tm_mday = day;
-    // Make the other fields empty:
-    timeinfo.tm_isdst = -1;
-    timeinfo.tm_wday = 0;
-    timeinfo.tm_yday = 0;
-
-    m_starttime = mktime (&timeinfo);
+    m_starttime = DateTimeToTimeT(schedulefields[1]);
 
     if( m_starttime < 0)
       return false;
 
-    count = sscanf(schedulefields[2].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
-
-    if( count != 6)
-      return false;
-
-    timeinfo.tm_hour = hour;
-    timeinfo.tm_min = minute;
-    timeinfo.tm_sec = second;
-    timeinfo.tm_year = year - 1900;
-    timeinfo.tm_mon = month - 1;
-    timeinfo.tm_mday = day;
-    // Make the other fields empty:
-    timeinfo.tm_isdst = -1;
-    timeinfo.tm_wday = 0;
-    timeinfo.tm_yday = 0;
-
-    m_endtime = mktime (&timeinfo);
+    m_endtime = DateTimeToTimeT(schedulefields[2]);
 
     if( m_endtime < 0)
       return false;
@@ -226,24 +188,7 @@ bool cTimer::ParseLine(const char *s)
     {
       //TVServerXBMC build >= 100
       m_keepmethod = (KeepMethodType) atoi(schedulefields[11].c_str());
-
-      count = sscanf(schedulefields[12].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
-
-      if(count != 6)
-        return false;
-
-      timeinfo.tm_hour = hour;
-      timeinfo.tm_min = minute;
-      timeinfo.tm_sec = second;
-      timeinfo.tm_year = year - 1900;
-      timeinfo.tm_mon = month - 1;
-      timeinfo.tm_mday = day;
-      // Make the other fields empty:
-      timeinfo.tm_isdst = -1;
-      timeinfo.tm_wday = 0;
-      timeinfo.tm_yday = 0;
-
-      m_keepdate = mktime (&timeinfo);
+      m_keepdate = DateTimeToTimeT(schedulefields[12]);
 
       if( m_keepdate < 0)
         return false;
@@ -259,22 +204,7 @@ bool cTimer::ParseLine(const char *s)
       }
       else
       {
-        count = sscanf(schedulefields[15].c_str(), "%d-%d-%d %d:%d:%d", &year, &month, &day, &hour, &minute, &second);
-
-        if(count != 6)
-          return false;
-
-        timeinfo.tm_hour = hour;
-        timeinfo.tm_min = minute;
-        timeinfo.tm_sec = second;
-        timeinfo.tm_year = year - 1900;
-        timeinfo.tm_mon = month - 1;
-        timeinfo.tm_mday = day;
-        // Make the other fields empty:
-        timeinfo.tm_isdst = -1;
-        timeinfo.tm_wday = 0;
-        timeinfo.tm_yday = 0;
-
+        m_canceled = DateTimeToTimeT(schedulefields[15]);
         m_active = false;
       }
 
