@@ -52,6 +52,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/FileUtils.h"
 #include "pythreadstate.h"
+#include "utils/log.h"
 
 // include for constants
 #include "pyutil.h"
@@ -74,53 +75,6 @@ namespace PYXBMC
 /*****************************************************************
  * start of xbmc methods
  *****************************************************************/
-
-  // output() method
-  PyDoc_STRVAR(output__doc__,
-    "output(msg[, level]) -- Write a string to XBMC's log file and the debug window.\n"
-    "\n"
-    "msg            : string - text to output.\n"
-    "level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n"
-    "\n"
-    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
-    "       Once you use a keyword, all following arguments require the keyword.\n"
-    "\n"
-    "       Text is written to the log for the following conditions.\n"
-    "         XBMC loglevel == -1 (NONE, nothing at all is logged)"
-    "         XBMC loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)"
-    "         XBMC loglevel == 1 (DEBUG, shows all)"
-    "       See pydocs for valid values for level.\n"
-    "\n"
-    "example:\n"
-    "  - xbmc.output(msg='This is a test string.', level=xbmc.LOGDEBUG)\n");
-
-  PyObject* XBMC_Output(PyObject *self, PyObject *args, PyObject *kwds)
-  {
-    static const char *keywords[] = {
-      "msg",
-      "level",
-      NULL};
-
-    char *s_line = NULL;
-    int iLevel = LOGNOTICE;
-    if (!PyArg_ParseTupleAndKeywords(
-      args,
-      kwds,
-      (char*)"s|i",
-      (char**)keywords,
-      &s_line,
-      &iLevel))
-    {
-      return NULL;
-    }
-    // check for a valid loglevel
-    if (iLevel < LOGDEBUG || iLevel > LOGNONE)
-      iLevel = LOGNOTICE;
-    CLog::Log(iLevel, "%s", s_line);
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
 
   // log() method
   PyDoc_STRVAR(log__doc__,
@@ -170,6 +124,17 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // output() method
+  PyDoc_STRVAR(output__doc__,
+               "'xbmc.output()' is depreciated and will be removed in future releases,\n"
+               "please use 'xbmc.log()' instead");
+  
+  PyObject* XBMC_Output(PyObject *self, PyObject *args, PyObject *kwds)
+  {
+    CLog::Log(LOGWARNING,"'xbmc.output()' is depreciated and will be removed in future releases, please use 'xbmc.log()' instead");
+    return XBMC_Log(self, args, kwds);
+  }
+  
   // shutdown() method
   PyDoc_STRVAR(shutdown__doc__,
     "shutdown() -- Shutdown the xbox.\n"
@@ -180,22 +145,6 @@ namespace PYXBMC
   PyObject* XBMC_Shutdown(PyObject *self, PyObject *args)
   {
     ThreadMessage tMsg = {TMSG_SHUTDOWN};
-    g_application.getApplicationMessenger().SendMessage(tMsg);
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
-  // dashboard() method
-  PyDoc_STRVAR(dashboard__doc__,
-    "dashboard() -- Boot to dashboard as set in My Pograms/General.\n"
-    "\n"
-    "example:\n"
-    "  - xbmc.dashboard()\n");
-
-  PyObject* XBMC_Dashboard(PyObject *self, PyObject *args)
-  {
-    ThreadMessage tMsg = {TMSG_DASHBOARD};
     g_application.getApplicationMessenger().SendMessage(tMsg);
 
     Py_INCREF(Py_None);
@@ -982,7 +931,6 @@ namespace PYXBMC
 
     {(char*)"sleep", (PyCFunction)XBMC_Sleep, METH_VARARGS, sleep__doc__},
     {(char*)"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
-    {(char*)"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, dashboard__doc__},
     {(char*)"restart", (PyCFunction)XBMC_Restart, METH_VARARGS, restart__doc__},
     {(char*)"getSkinDir", (PyCFunction)XBMC_GetSkinDir, METH_VARARGS, getSkinDir__doc__},
     {(char*)"getLocalizedString", (PyCFunction)XBMC_GetLocalizedString, METH_VARARGS, getLocalizedString__doc__},

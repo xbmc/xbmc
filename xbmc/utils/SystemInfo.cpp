@@ -711,19 +711,11 @@ bool CSysInfo::IsAppleTV()
 
 bool CSysInfo::IsAppleTV2()
 {
-  bool        result = false;
-#if defined(__APPLE__) && defined(__arm__)
-  char        buffer[512];
-  size_t      len = 512;
-  std::string hw_machine = "unknown";
-
-  if (sysctlbyname("hw.machine", &buffer, &len, NULL, 0) == 0)
-    hw_machine = buffer;
-
-  if (hw_machine.find("AppleTV2,1") != std::string::npos)
-    result = true;
+#if defined(__APPLE__)
+  return DarwinIsAppleTV2();
+#else
+  return false;
 #endif
-  return result;
 }
 
 bool CSysInfo::HasVideoToolBoxDecoder()

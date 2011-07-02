@@ -489,7 +489,7 @@ case TMSG_POWERDOWN:
           break;
 
         case 3:
-          g_application.getApplicationMessenger().RebootToDashBoard();
+          g_application.getApplicationMessenger().Quit();
           break;
 
         case 4:
@@ -1016,12 +1016,6 @@ void CApplicationMessenger::Reset()
 void CApplicationMessenger::RestartApp()
 {
   ThreadMessage tMsg = {TMSG_RESTARTAPP};
-  SendMessage(tMsg);
-}
-
-void CApplicationMessenger::RebootToDashBoard()
-{
-  ThreadMessage tMsg = {TMSG_DASHBOARD};
   SendMessage(tMsg);
 }
 

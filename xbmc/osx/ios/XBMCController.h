@@ -32,17 +32,19 @@
   int m_screensaverTimeout;
 	
   /* Touch handling */
-  CGPoint firstTouch;
-  CGPoint lastTouch;
   CGSize screensize;
+  CGPoint lastGesturePoint;
+  int lastAllowedGestures;
+  bool touchBeginSignaled;
 	
   UIInterfaceOrientation orientation;
 
   XBMC_Event lastEvent;
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
-@property CGPoint firstTouch;
-@property CGPoint lastTouch;
+@property CGPoint lastGesturePoint;
+@property int lastAllowedGestures;
+@property bool touchBeginSignaled;
 @property CGSize screensize;
 @property XBMC_Event lastEvent;
 

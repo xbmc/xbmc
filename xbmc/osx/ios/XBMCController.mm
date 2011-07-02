@@ -31,6 +31,7 @@
 #include "Application.h"
 #include "MouseStat.h"
 #include "WindowingFactory.h"
+#include "guilib/GUIWindowManager.h"
 #include "VideoReferenceClock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
@@ -62,9 +63,10 @@ XBMCEAGLView  *m_glView;
 @end
 
 @implementation XBMCController
-@synthesize firstTouch;
-@synthesize lastTouch;
+@synthesize lastGesturePoint;
 @synthesize lastEvent;
+@synthesize lastAllowedGestures;
+@synthesize touchBeginSignaled;
 @synthesize screensize;
 
 //--------------------------------------------------------------
@@ -87,7 +89,7 @@ XBMCEAGLView  *m_glView;
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
   orientation = toInterfaceOrientation;
-
+  
   CGRect rect;
   CGRect srect = [[UIScreen mainScreen] bounds];
   
@@ -110,13 +112,13 @@ XBMCEAGLView  *m_glView;
 {
   XBMC_Event newEvent;
   memset(&newEvent, 0, sizeof(newEvent));
-
+  
   //newEvent.key.keysym.unicode = key;
   newEvent.key.keysym.sym = key;
-
+  
   newEvent.type = XBMC_KEYDOWN;
   CWinEventsIOS::MessagePush(&newEvent);
-
+  
   newEvent.type = XBMC_KEYUP;
   CWinEventsIOS::MessagePush(&newEvent);
 }
@@ -124,70 +126,35 @@ XBMCEAGLView  *m_glView;
 - (void)createGestureRecognizers 
 {
   
-  UITapGestureRecognizer *singleFingerDTap = [[UITapGestureRecognizer alloc]
-                                              initWithTarget:self action:@selector(handleSingleDoubleTap:)];  
-  singleFingerDTap.delaysTouchesBegan = YES;
-  singleFingerDTap.numberOfTapsRequired = 2;
-  [self.view addGestureRecognizer:singleFingerDTap];
-  [singleFingerDTap release];
-
+  //2 finger single tab - right mouse
+  //single finger double tab delays single finger single tab - so we
+  //go for 2 fingers here - so single finger single tap is instant
+  UITapGestureRecognizer *doubleFingerSingleTap = [[UITapGestureRecognizer alloc]
+                                              initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
+  doubleFingerSingleTap.delaysTouchesBegan = NO;
+  doubleFingerSingleTap.numberOfTapsRequired = 1;
+  doubleFingerSingleTap.numberOfTouchesRequired = 2;
+  [self.view addGestureRecognizer:doubleFingerSingleTap];
+  [doubleFingerSingleTap release];
+  
+  //double finger swipe left for backspace ... i like this fast backspace feature ;)
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
-                                              initWithTarget:self action:@selector(handleSwipeLeft:)];
+                                         initWithTarget:self action:@selector(handleSwipeLeft:)];
+  swipeLeft.delaysTouchesBegan = NO;
+  swipeLeft.numberOfTouchesRequired = 2;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
-  swipeLeft.delaysTouchesBegan = YES;
   [self.view addGestureRecognizer:swipeLeft];
   [swipeLeft release];
-  
-  UISwipeGestureRecognizer *swipeRight = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipeRight:)];
-  swipeRight.direction = UISwipeGestureRecognizerDirectionRight;
-  swipeRight.delaysTouchesBegan = YES;
-  [self.view addGestureRecognizer:swipeRight];
-  [swipeRight release];
-
-  UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc]
-											initWithTarget:self action:@selector(handleSwipeUp:)];
-  swipeUp.direction = UISwipeGestureRecognizerDirectionUp;
-  swipeUp.delaysTouchesBegan = YES;
-  [self.view addGestureRecognizer:swipeUp];
-  [swipeUp release];
-
-  UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc]
-										 initWithTarget:self action:@selector(handleSwipeDown:)];
-  swipeDown.direction = UISwipeGestureRecognizerDirectionDown;
-  swipeDown.delaysTouchesBegan = YES;
-  [self.view addGestureRecognizer:swipeDown];
-  [swipeDown release];
 }
 //--------------------------------------------------------------
 - (IBAction)handleSwipeLeft:(UISwipeGestureRecognizer *)sender 
 {
-  //NSLog(@"%s swipeLeft", __PRETTY_FUNCTION__);
   [self sendKey:XBMCK_BACKSPACE];
 }
 //--------------------------------------------------------------
-- (IBAction)handleSwipeRight:(UISwipeGestureRecognizer *)sender 
+- (IBAction)handleDoubleFingerSingleTap:(UIGestureRecognizer *)sender 
 {
-  //NSLog(@"%s swipeRight", __PRETTY_FUNCTION__);
-  [self sendKey:XBMCK_TAB];
-}
-//--------------------------------------------------------------
-- (IBAction)handleSwipeUp:(UISwipeGestureRecognizer *)sender 
-{
-	//NSLog(@"%s swipeUp", __PRETTY_FUNCTION__);
-	[self sendKey:XBMCK_UP];
-}
-//--------------------------------------------------------------
-- (IBAction)handleSwipeDown:(UISwipeGestureRecognizer *)sender 
-{
-	//NSLog(@"%s swipeDown", __PRETTY_FUNCTION__);
-	[self sendKey:XBMCK_DOWN];
-}
-//--------------------------------------------------------------
-- (IBAction)handleSingleDoubleTap:(UIGestureRecognizer *)sender 
-{
-  firstTouch = [sender locationOfTouch:0 inView:m_glView];
-  lastTouch = [sender locationOfTouch:0 inView:m_glView];
+  CGPoint point = [sender locationOfTouch:0 inView:m_glView];
   
   //NSLog(@"%s toubleTap", __PRETTY_FUNCTION__);
   
@@ -197,11 +164,11 @@ XBMCEAGLView  *m_glView;
   newEvent.type = XBMC_MOUSEBUTTONDOWN;
   newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
   newEvent.button.button = XBMC_BUTTON_RIGHT;
-  newEvent.button.x = lastTouch.x;
-  newEvent.button.y = lastTouch.y;
+  newEvent.button.x = point.x;
+  newEvent.button.y = point.y;
   
   CWinEventsIOS::MessagePush(&newEvent);    
-
+  
   newEvent.type = XBMC_MOUSEBUTTONUP;
   newEvent.button.type = XBMC_MOUSEBUTTONUP;
   CWinEventsIOS::MessagePush(&newEvent);    
@@ -213,82 +180,90 @@ XBMCEAGLView  *m_glView;
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event 
 {
   UITouch *touch = [touches anyObject];
-  firstTouch = [touch locationInView:m_glView];
-  lastTouch = [touch locationInView:m_glView];
-  
-  //NSLog(@"%s touchesBegan x=%f, y=%f count=%d", __PRETTY_FUNCTION__, lastTouch.x, lastTouch.y, [touch tapCount]);
-
-  XBMC_Event newEvent;
-  memset(&newEvent, 0, sizeof(newEvent));
-
-  newEvent.type = XBMC_MOUSEBUTTONDOWN;
-  newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
-  newEvent.button.x = lastTouch.x;
-  newEvent.button.y = lastTouch.y;  
-  newEvent.button.button = XBMC_BUTTON_LEFT;
-  CWinEventsIOS::MessagePush(&newEvent);
-  
-  /* Store the tap action for later */
-  memcpy(&lastEvent, &newEvent, sizeof(XBMC_Event));
+  CGPoint point = [touch locationInView:m_glView];  
+  CGUIMessage message(GUI_MSG_GESTURE_NOTIFY, 0, 0, point.x, point.y);
+  if (g_windowManager.SendMessage(message))
+  {
+    lastAllowedGestures = message.GetParam1();
+    touchBeginSignaled = false;
+    lastGesturePoint = point;
+  }
 }
 //--------------------------------------------------------------
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event 
 {
+  bool bNotify = false;
   UITouch *touch = [touches anyObject];
-  lastTouch = [touch locationInView:m_glView];
-
-  //NSLog(@"%s touchesMoved x=%f, y=%f count=%d", __PRETTY_FUNCTION__, lastTouch.x, lastTouch.y, touch.tapCount);
-
-  static int nCount = 0;
+  CGPoint point = [touch locationInView:m_glView];  
+  CGFloat yMovement=point.y - lastGesturePoint.y;
+  CGFloat xMovement=point.x - lastGesturePoint.x;
   
-  /* Only process move when we are not in right click state */
-  if(nCount == 4) {
-    
-    XBMC_Event newEvent;
-    memcpy(&newEvent, &lastEvent, sizeof(XBMC_Event));
-    
-    newEvent.motion.x = lastTouch.x;
-    newEvent.motion.y = lastTouch.y;
-    
-    CWinEventsIOS::MessagePush(&newEvent);
-    
-    nCount = 0;
-    
-  } else {
-    
-    nCount++;
-    
+  if( xMovement && (lastAllowedGestures & EVENT_RESULT_PAN_HORIZONTAL) )
+  {
+    bNotify = true;
+  }
+
+  if( yMovement && (lastAllowedGestures & EVENT_RESULT_PAN_VERTICAL) )
+  {
+    bNotify = true;
+  }
+
+  if( bNotify )
+  {
+    if( !touchBeginSignaled )
+    {
+      g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_BEGIN, 0, (float)point.x, (float)point.y, 
+                                                        0, 0), WINDOW_INVALID);
+      touchBeginSignaled = true;
+    }    
+  
+    g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_PAN, 0, (float)point.x, (float)point.y,
+                                                      xMovement, yMovement), WINDOW_INVALID);
+    lastGesturePoint = point;
   }
 }
 //--------------------------------------------------------------
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event 
 {
   UITouch *touch = [touches anyObject];
-  lastTouch = [touch locationInView:m_glView];
+  CGPoint point = [touch locationInView:m_glView];  
   
-  //NSLog(@"%s touchesEnded x=%f, y=%f count=%d", __PRETTY_FUNCTION__, lastTouch.x, lastTouch.y, [touch tapCount]);
-
-  XBMC_Event newEvent;
-  memcpy(&newEvent, &lastEvent, sizeof(XBMC_Event));
-
-  newEvent.type = XBMC_MOUSEBUTTONUP;
-  newEvent.button.type = XBMC_MOUSEBUTTONUP;
-  newEvent.button.x = lastTouch.x;
-  newEvent.button.y = lastTouch.y;
-  CWinEventsIOS::MessagePush(&newEvent);    
-  
-  memset(&lastEvent, 0x0, sizeof(XBMC_Event));         
-  
+  if( [touch tapCount] == 1 )
+  {
+    XBMC_Event newEvent;
+    memset(&newEvent, 0, sizeof(newEvent));
+    
+    newEvent.type = XBMC_MOUSEBUTTONDOWN;
+    newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
+    newEvent.button.button = XBMC_BUTTON_LEFT;
+    newEvent.button.x = point.x;
+    newEvent.button.y = point.y;
+    
+    CWinEventsIOS::MessagePush(&newEvent);    
+    
+    newEvent.type = XBMC_MOUSEBUTTONUP;
+    newEvent.button.type = XBMC_MOUSEBUTTONUP;
+    CWinEventsIOS::MessagePush(&newEvent);    
+    
+    memset(&lastEvent, 0x0, sizeof(XBMC_Event));     
+  }
+  else
+  {
+    //TODO some inertial emulation here... threaded - should stop immediatly if touchesBegan is called
+    g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_END),WINDOW_INVALID);
+    touchBeginSignaled = false;
+    lastAllowedGestures = 0;
+  }
 }
 //--------------------------------------------------------------
 - (id)initWithFrame:(CGRect)frame
 { 
   //NSLog(@"%s", __PRETTY_FUNCTION__);
-
+  
   self = [super init];
   if ( !self )
     return ( nil );
-
+  
   NSNotificationCenter *center;
   center = [NSNotificationCenter defaultCenter];
   [center addObserver: self
@@ -303,13 +278,13 @@ XBMCEAGLView  *m_glView;
   
   m_glView = [[XBMCEAGLView alloc] initWithFrame: srect];
   [m_glView setMultipleTouchEnabled:YES];
-
+  
   //[self setView: m_glView];
-
+  
   [self.view addSubview: m_glView];
   
   [self createGestureRecognizers];
-
+  
   g_xbmcController = self;
   
   return self;
@@ -324,24 +299,24 @@ XBMCEAGLView  *m_glView;
 {
   [m_glView stopAnimation];
   [m_glView release];
-
+  
   NSNotificationCenter *center;
   // take us off the default center for our app
   center = [NSNotificationCenter defaultCenter];
   [center removeObserver: self];
-
+  
   [super dealloc];
 }
 //--------------------------------------------------------------
 - (void)viewWillAppear:(BOOL)animated
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
-
+  
   // move this later into CocoaPowerSyscall
   [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
-
+  
   [self resumeAnimation];
-
+  
   [super viewWillAppear:animated];
 }
 //--------------------------------------------------------------
@@ -404,7 +379,7 @@ XBMCEAGLView  *m_glView;
 {
   // Releases the view if it doesn't have a superview.
   [super didReceiveMemoryWarning];
-
+  
   // Release any cached data, images, etc. that aren't in use.
 }
 //--------------------------------------------------------------
@@ -449,7 +424,7 @@ XBMCEAGLView  *m_glView;
   newEvent.appcommand.type = XBMC_APPCOMMAND;
   newEvent.appcommand.action = ACTION_PLAYER_PLAY;
   CWinEventsIOS::MessagePush(&newEvent);    
-    
+  
   [m_glView resumeAnimation];
 }
 //--------------------------------------------------------------
