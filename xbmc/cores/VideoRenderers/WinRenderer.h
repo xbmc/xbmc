@@ -29,6 +29,7 @@
 #include "guilib/D3DResource.h"
 #include "RenderCapture.h"
 #include "settings/VideoSettings.h"
+#include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING
@@ -149,6 +150,11 @@ struct SVideoPlane
 
 struct YUVBuffer : SVideoBuffer
 {
+  YUVBuffer()
+  {
+    proc = NULL;
+    id   = 0;
+  }
   ~YUVBuffer();
   bool Create(BufferFormat format, unsigned int width, unsigned int height);
   virtual void Release();
@@ -158,27 +164,14 @@ struct YUVBuffer : SVideoBuffer
   unsigned int GetActivePlanes() { return m_activeplanes; }
 
   SVideoPlane planes[MAX_PLANES];
+  DXVA::CProcessor* proc;
+  int64_t           id;
 
 private:
   unsigned int     m_width;
   unsigned int     m_height;
   BufferFormat     m_format;
   unsigned int     m_activeplanes;
-};
-
-struct DXVABuffer : SVideoBuffer
-{
-  DXVABuffer()
-  {
-    proc = NULL;
-    id   = 0;
-  }
-  ~DXVABuffer();
-  virtual void Release();
-  virtual void StartDecode();
-
-  DXVA::CProcessor* proc;
-  int64_t           id;
 };
 
 class CWinRenderer : public CBaseRenderer
@@ -197,7 +190,7 @@ public:
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void         AddProcessor(DXVA::CProcessor* processor, int64_t id);
+  virtual void         AddProcessor(DVDVideoPicture* picture, bool still);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();

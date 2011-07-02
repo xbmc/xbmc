@@ -494,13 +494,15 @@ void CDVDPlayerVideo::Process()
       // decoder still needs to provide an empty image structure, with correct flags
       m_pVideoCodec->SetDropState(bRequestDrop);
 
-      // ask codec to do deinterlacing if possible
+      // ask codec to do deinterlacing if possible and renderer does not support deinterlace
       EINTERLACEMETHOD mInt = g_settings.m_currentVideoSettings.m_InterlaceMethod;
       unsigned int     mFilters = 0;
 
       if(mInt == VS_INTERLACEMETHOD_DEINTERLACE)
         mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
-      else if(mInt == VS_INTERLACEMETHOD_AUTO)
+      else if(mInt == VS_INTERLACEMETHOD_AUTO
+         && !(g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB) || g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_BOB))
+         &&   g_renderManager.IsConfigured())
         mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
 
       mFilters = m_pVideoCodec->SetFilters(mFilters);
@@ -600,7 +602,8 @@ void CDVDPlayerVideo::Process()
             {
               if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
               || (mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)
-                                                  && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)))
+                                                  && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)
+                                                  && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_BOB)))
               {
                 if (!sPostProcessType.empty())
                   sPostProcessType += ",";
@@ -848,6 +851,10 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     }
   }
 
+#ifdef HAS_DX
+  g_renderManager.AddProcessor(pSource, m_stalled);
+#endif
+
   if(pSource->format == DVDVideoPicture::FMT_YUV420P)
   {
     if(render == OVERLAY_BUF)
@@ -933,10 +940,6 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     AutoCrop(pSource);
     CDVDCodecUtils::CopyYUV422PackedPicture(pDest, pSource);
   }
-#ifdef HAS_DX
-  else if(pSource->format == DVDVideoPicture::FMT_DXVA)
-    g_renderManager.AddProcessor(pSource->proc, pSource->proc_id);
-#endif
 #ifdef HAVE_LIBVDPAU
   else if(pSource->format == DVDVideoPicture::FMT_VDPAU)
     g_renderManager.AddProcessor(pSource->vdpau);
@@ -966,7 +969,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
    || m_output.dwidth != pPicture->iDisplayWidth
    || m_output.dheight != pPicture->iDisplayHeight
    || m_output.framerate != m_fFrameRate
-   || m_output.color_format != (unsigned int)pPicture->format
+   || ( m_output.color_format != (unsigned int)pPicture->format && pPicture->format != DVDVideoPicture::FMT_DXVA )
    || ( m_output.color_matrix != pPicture->color_matrix && pPicture->color_matrix != 0 ) // don't reconfigure on unspecified
    || m_output.color_range != pPicture->color_range)
   {
@@ -1023,7 +1026,7 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
         flags |= CONF_FLAGS_FORMAT_VDPAU;
         formatstr = "VDPAU";
         break;
-      case DVDVideoPicture::FMT_DXVA:
+      case DVDVideoPicture::FMT_DXPICT:
         flags |= CONF_FLAGS_FORMAT_DXVA;
         formatstr = "DXVA";
         break;

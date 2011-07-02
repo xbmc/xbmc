@@ -20,17 +20,14 @@
  */
 #pragma once
 
+#include "settings/VideoSettings.h"
 #include "DllAvCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "guilib/D3DResource.h"
 #include "threads/Event.h"
 #include <dxva2api.h>
-#include <deque>
-#include <vector>
 
 namespace DXVA {
-
-class CProcessor;
 
 class CDecoder
   : public CDVDVideoCodecFFmpeg::IHardwareDecoder
@@ -38,7 +35,7 @@ class CDecoder
 {
 public:
   CDecoder();
- ~CDecoder();
+  ~CDecoder();
   virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
@@ -46,14 +43,15 @@ public:
   virtual void Close();
   virtual const std::string Name() { return "dxva2"; }
 
-  bool  OpenProcessor();
-  bool  OpenTarget(const GUID &guid);
-  bool  OpenDecoder();
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
   void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
 
-  static bool      Supports(enum PixelFormat fmt);
+  static bool Supports(enum PixelFormat fmt);
 
+  virtual void OnCreateDevice()  {}
+  virtual void OnDestroyDevice() { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
+  virtual void OnLostDevice()    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
+  virtual void OnResetDevice()   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
 
 protected:
   enum EDeviceState
@@ -62,36 +60,21 @@ protected:
   , DXVA_LOST
   } m_state;
 
-  virtual void OnCreateDevice()  {}
-  virtual void OnDestroyDevice() { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
-  virtual void OnLostDevice()    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
-  virtual void OnResetDevice()   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
-
-  struct SVideoBuffer
-  {
-    SVideoBuffer();
-   ~SVideoBuffer();
-    void Clear();
-
-    IDirect3DSurface9* surface;
-    bool               used;
-    int                age;
-  };
+  bool  OpenTarget(const GUID &guid);
 
   IDirectXVideoDecoderService* m_service;
-  IDirectXVideoDecoder*        m_decoder;
-  HANDLE                       m_device;
   GUID                         m_input;
   DXVA2_VideoDesc              m_format;
-  static const unsigned        m_buffer_max = 32;
-  SVideoBuffer                 m_buffer[m_buffer_max];
-  unsigned                     m_buffer_count;
-  unsigned                     m_buffer_age;
-  int                          m_refs;
+
+  LPDIRECT3DSURFACE9*          m_surfaces;
+  unsigned                     m_read;
+  unsigned                     m_write;
+
+  unsigned                     m_level;
+
+  unsigned                     m_refs;
 
   struct dxva_context*         m_context;
-
-  CProcessor*                  m_processor;
 
   CCriticalSection             m_section;
   CEvent                       m_event;
@@ -102,26 +85,49 @@ class CProcessor
 {
 public:
   CProcessor();
- ~CProcessor();
+  ~CProcessor();
 
-  bool           Open(const DXVA2_VideoDesc& dsc);
+  bool           Create();
+  bool           Open(UINT width, UINT height);
+  bool           Open(UINT width, UINT height, D3DFORMAT format);
+  bool           CreateSurfaces();
+  bool           LockSurfaces(LPDIRECT3DSURFACE9* surfaces, unsigned count);
   void           Close();
-  void           HoldSurface(IDirect3DSurface9* surface);
-  REFERENCE_TIME Add(IDirect3DSurface9* source);
-  bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
-  int            Size() { return m_size; }
+
+  bool           IsOpened() { return m_opened; }
+  unsigned       GetSize() { return m_size; }
+
+  void           StillFrame();
+  bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time, int fieldflag);
+
+  bool           ProcessPicture(DVDVideoPicture* picture);
 
   CProcessor* Acquire();
   long        Release();
 
   virtual void OnCreateDevice()  {}
-  virtual void OnDestroyDevice() { CSingleLock lock(m_section); Close(); }
-  virtual void OnLostDevice()    { CSingleLock lock(m_section); Close(); }
-  virtual void OnResetDevice()   { CSingleLock lock(m_section); Close(); }
+  virtual void OnDestroyDevice() { Close(); }
+  virtual void OnLostDevice()    { Close(); }
+  virtual void OnResetDevice()   { Close(); }
+
+protected:
+  bool           SelectProcessor();
+  REFERENCE_TIME Add(IDirect3DSurface9* source);
+
+  GUID                           m_progdevice;
+  GUID                           m_bobdevice;
+  GUID                           m_hqdevice;
+
+  GUID                           m_device;
+
+  GUID                           m_default;
 
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
-  GUID                           m_device;
+
+  EINTERLACEMETHOD             m_CurrInterlaceMethod;
+  unsigned                     m_StreamSampleFormat;
+  int                          m_BFF;
 
   DXVA2_VideoProcessorCaps m_caps;
   DXVA2_VideoDesc  m_desc;
@@ -130,17 +136,26 @@ public:
   DXVA2_ValueRange m_contrast;
   DXVA2_ValueRange m_hue;
   DXVA2_ValueRange m_saturation;
-  REFERENCE_TIME   m_time;
-  unsigned         m_size;
-
-  typedef std::deque<DXVA2_VideoSample> SSamples;
-  SSamples          m_sample;
 
   CCriticalSection  m_section;
   long              m_references;
 
-protected:
-  std::vector<IDirect3DSurface9*> m_heldsurfaces;
+  LPDIRECT3DSURFACE9* m_surfaces;
+  unsigned            m_count;
+
+  struct VideoSample
+  {
+	  REFERENCE_TIME Time;
+	  IDirect3DSurface9* SrcSurface;
+  };
+
+  VideoSample* m_samples;
+  unsigned m_index;
+  unsigned m_size;
+
+  REFERENCE_TIME m_time;
+
+  bool m_opened;
 };
 
 };

@@ -42,8 +42,6 @@
 #include "settings/AdvancedSettings.h"
 #include "threads/Atomics.h"
 
-#define ALLOW_ADDING_SURFACES 0
-
 using namespace DXVA;
 using namespace AUTOPTR;
 using namespace std;
@@ -121,9 +119,53 @@ static const dxva2_mode_t dxva2_modes[] = {
     { NULL, NULL, 0 }
 };
 
+DEFINE_GUID(DXVA2_VideoProcATIVectorAdaptiveDevice,   0x3C5323C1,0x6fb7,0x44f5,0x90,0x81,0x05,0x6b,0xf2,0xee,0x44,0x9d);
+DEFINE_GUID(DXVA2_VideoProcATIMotionAdaptiveDevice,   0x552C0DAD,0xccbc,0x420b,0x83,0xc8,0x74,0x94,0x3c,0xf9,0xf1,0xa6);
+DEFINE_GUID(DXVA2_VideoProcATIAdaptiveDevice,         0x6E8329FF,0xb642,0x418b,0xbc,0xf0,0xbc,0xb6,0x59,0x1e,0x25,0x5f);
+DEFINE_GUID(DXVA2_VideoProcNVidiaAdaptiveDevice,      0x6CB69578,0x7617,0x4637,0x91,0xE5,0x1C,0x02,0xDB,0x81,0x02,0x85);
+DEFINE_GUID(DXVA2_VideoProcIntelEdgeDevice,           0xBF752EF6,0x8CC4,0x457A,0xBE,0x1B,0x08,0xBD,0x1C,0xAE,0xEE,0x9F);
+
+typedef struct {
+  const char   *name;
+  const GUID   *guid;
+  int          score;
+} dxva2_device_t;
+
+// List of all known DXVA2 processor devices and their deinterlace scores (0 = progressive or standard bob)
+static const dxva2_device_t dxva2_devices[] = {
+  { "Vector adaptive device (ATI)",       &DXVA2_VideoProcATIVectorAdaptiveDevice,   100 },
+  { "Motion adaptive device (ATI)",       &DXVA2_VideoProcATIMotionAdaptiveDevice,    90 },
+  { "Adaptive device (ATI)",              &DXVA2_VideoProcATIAdaptiveDevice,          80 },
+  { "Spatial-temporal device (nVidia)",   &DXVA2_VideoProcNVidiaAdaptiveDevice,      100 },
+  { "Edge directed device (Intel)",       &DXVA2_VideoProcIntelEdgeDevice,           100 },
+  { "Bob device (DXVA standard)",         &DXVA2_VideoProcBobDevice,                   0 },
+  { "Progressive device (DXVA standard)", &DXVA2_VideoProcProgressiveDevice,           0 },
+  { NULL, NULL, 0 }
+};
+
+typedef struct {
+  const char   *name;
+  unsigned     deinterlacetech_flag;
+  int          score;
+} dxva2_deinterlacetech_t;
+
+// List of all considered DXVA2 deinterlace technology flags and their scores for unknown processor devices, preferred must come first
+static const dxva2_deinterlacetech_t dxva2_deinterlacetechs[] = {
+  { "Motion vector steered",              DXVA2_DeinterlaceTech_MotionVectorSteered,     100 },
+  { "Pixel adaptive",                     DXVA2_DeinterlaceTech_PixelAdaptive,            90 },
+  { "Field adaptive",                     DXVA2_DeinterlaceTech_FieldAdaptive,            80 },
+  { "Edge filtering",                     DXVA2_DeinterlaceTech_EdgeFiltering,            70 },
+  { "Median filtering",                   DXVA2_DeinterlaceTech_MedianFiltering,          60 },
+  { "Bob vertical stretch 4-tap",         DXVA2_DeinterlaceTech_BOBVerticalStretch4Tap,   50 },
+  { "Bob vertical stretch",               DXVA2_DeinterlaceTech_BOBVerticalStretch,       40 },
+  { "Bob line replicate",                 DXVA2_DeinterlaceTech_BOBLineReplicate,         30 },
+  { NULL, 0, 0 }
+};
+
 // List of PCI Device ID of ATI cards with UVD or UVD+ decoding block.
 static DWORD UVDDeviceID [] = {
   0x95C0, // ATI Radeon HD 3400 Series (and others)
+  0x95C4, // ATI Radeon HD 3400 Series (and others)
   0x95C5, // ATI Radeon HD 3400 Series (and others)
   0x94C3, // ATI Radeon HD 3410
   0x9589, // ATI Radeon HD 3600 Series (and others)
@@ -208,26 +250,9 @@ static const dxva2_mode_t *dxva2_find(const GUID *guid)
     return NULL;
 }
 
+#define SCOPE(type, var) boost::shared_ptr<type> var##_holder(var, CoTaskMemFree)
 
-#define SCOPE(type, var) boost::shared_ptr<type> var##_holder(var, CoTaskMemFree);
-
-CDecoder::SVideoBuffer::SVideoBuffer()
-{
-  surface = NULL;
-  Clear();
-}
-
-CDecoder::SVideoBuffer::~SVideoBuffer()
-{
-  Clear();
-}
-
-void CDecoder::SVideoBuffer::Clear()
-{
-  SAFE_RELEASE(surface);
-  age     = 0;
-  used    = 0;
-}
+#define NEWMAX(a, b, c) if ((a + b) > c) c = a + b
 
 CDecoder::CDecoder()
  : m_event(true)
@@ -235,16 +260,17 @@ CDecoder::CDecoder()
   m_event.Set();
   m_state     = DXVA_OPEN;
   m_service   = NULL;
-  m_device    = NULL;
-  m_decoder   = NULL;
-  m_processor = NULL;
-  m_buffer_count = 0;
-  m_buffer_age   = 0;
-  m_refs         = 0;
-  memset(&m_format, 0, sizeof(m_format));
   m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
   m_context->cfg     = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
-  m_context->surface = (IDirect3DSurface9**)calloc(m_buffer_max, sizeof(IDirect3DSurface9*));
+  m_context->surface = NULL;
+  m_context->decoder = NULL;
+
+  m_surfaces = NULL;
+  m_read = 0;
+  m_write = 0;
+
+  m_level = 0;
+
   g_Windowing.Register(this);
 }
 
@@ -252,7 +278,6 @@ CDecoder::~CDecoder()
 {
   g_Windowing.Unregister(this);
   Close();
-  free(m_context->surface);
   free(const_cast<DXVA2_ConfigPictureDecode*>(m_context->cfg)); // yes this is foobar
   free(m_context);
 }
@@ -260,21 +285,21 @@ CDecoder::~CDecoder()
 void CDecoder::Close()
 {
   CSingleLock lock(m_section);
-  SAFE_RELEASE(m_decoder);
-  SAFE_RELEASE(m_service);
-  SAFE_RELEASE(m_processor);
-  for(unsigned i = 0; i < m_buffer_count; i++)
-    m_buffer[i].Clear();
-  m_buffer_count = 0;
-  memset(&m_format, 0, sizeof(m_format));
-  CProcessor* proc = m_processor;
-  m_processor = NULL;
-  lock.Leave();
 
-  if(proc)
+  SAFE_RELEASE(m_context->decoder);
+  SAFE_RELEASE(m_service);
+
+  if (m_context->surface)
   {
-    CSingleExit leave(m_section);
-    proc->Release();
+    free(m_context->surface);
+    m_context->surface = NULL;
+  }
+
+  if (m_surfaces)
+  {
+    for (unsigned i = 0; i < m_context->surface_count; i++) SAFE_RELEASE(m_surfaces[i]);
+    free(m_surfaces);
+    m_surfaces = NULL;
   }
 }
 
@@ -286,7 +311,7 @@ do { \
     CLog::Log(LOGERROR, "DXVA - failed executing "#a" at line %d with error %x", __LINE__, res); \
     return false; \
   } \
-} while(0);
+} while(0)
 
 static bool CheckH264L41(AVCodecContext *avctx)
 {
@@ -364,14 +389,16 @@ static bool CheckCompatibility(AVCodecContext *avctx)
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
+  if (!g_Windowing.m_processor->Create())
+    return false;
+
   if (!CheckCompatibility(avctx))
     return false;
 
   if(!LoadDXVA())
     return false;
 
-  CSingleLock lock(m_section);
-  Close();
+    CSingleLock lock(m_section);
 
   if(m_state == DXVA_LOST)
   {
@@ -379,12 +406,20 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     return false;
   }
 
-  CHECK(g_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoDecoderService, (void**)&m_service))
+  // Only one instance for hardware decoder (this fixes problems creating VC-1 decoder)
+  IHardwareDecoder* decoder = ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetHardware();
+  if (decoder != NULL)
+  {
+    decoder->Release();
+    ((CDVDVideoCodecFFmpeg*)avctx->opaque)->SetHardware(this);
+  }
+
+  CHECK(g_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoDecoderService, (void**)&m_service));
 
   UINT  input_count;
   GUID *input_list;
 
-  CHECK(m_service->GetDecoderDeviceGuids(&input_count, &input_list))
+  CHECK(m_service->GetDecoderDeviceGuids(&input_count, &input_list));
   SCOPE(GUID, input_list);
 
   for(unsigned i = 0; i < input_count; i++)
@@ -396,6 +431,8 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
     else
       CLog::Log(LOGDEBUG, "DXVA - supports %s", GUIDToString(*g).c_str());
   }
+
+  memset(&m_format, 0, sizeof(DXVA2_VideoDesc));
 
   m_format.Format = D3DFMT_UNKNOWN;
   for(const dxva2_mode_t* mode = dxva2_modes; mode->name && m_format.Format == D3DFMT_UNKNOWN; mode++)
@@ -422,10 +459,10 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
   m_format.SampleWidth  = avctx->width;
   m_format.SampleHeight = avctx->height;
-  m_format.SampleFormat.SampleFormat           = DXVA2_SampleProgressiveFrame;
-  m_format.SampleFormat.VideoLighting          = DXVA2_VideoLighting_dim;
+  m_format.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+  m_format.SampleFormat.VideoLighting = DXVA2_VideoLighting_dim;
 
-  if     (avctx->color_range == AVCOL_RANGE_JPEG)
+  if(avctx->color_range == AVCOL_RANGE_JPEG)
     m_format.SampleFormat.NominalRange = DXVA2_NominalRange_0_255;
   else if(avctx->color_range == AVCOL_RANGE_MPEG)
     m_format.SampleFormat.NominalRange = DXVA2_NominalRange_16_235;
@@ -513,12 +550,10 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   } 
   m_format.OutputFrameFreq = m_format.InputSampleFreq;
   m_format.UABProtectionLevel = FALSE;
-  m_format.Reserved = 0;
 
-  if(avctx->refs > m_refs)
-    m_refs = avctx->refs;
-
-  if(m_refs == 0)
+  // create decoding surfaces
+  m_refs = avctx->refs;
+  if (m_refs == 0)
   {
     if(avctx->codec_id == CODEC_ID_H264)
       m_refs = 16;
@@ -527,6 +562,33 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   }
   CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
 
+  unsigned count = 0;
+
+  // Open DXVA video processor
+  if (!g_Windowing.m_processor->Open(m_format.SampleWidth, m_format.SampleHeight, m_format.Format))
+    return false;
+  count = g_Windowing.m_processor->GetSize();
+
+  m_context->surface_count = m_refs + 1 + 1 + count; // refs + 1 decode + 1 libavcodec safety + processor buffer
+  
+  CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count);
+  
+  m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_context->surface_count, sizeof(LPDIRECT3DSURFACE9));
+  CHECK(m_service->CreateSurface( (m_format.SampleWidth + 15) & ~15
+                                , (m_format.SampleHeight + 15) & ~15
+                                , m_context->surface_count - 1
+                                , m_format.Format
+                                , D3DPOOL_DEFAULT
+                                , 0
+                                , DXVA2_VideoDecoderRenderTarget
+                                , m_surfaces, NULL ));
+
+  g_Windowing.m_processor->LockSurfaces(m_surfaces, m_context->surface_count);
+
+  m_context->surface = (LPDIRECT3DSURFACE9*)calloc(m_context->surface_count, sizeof(LPDIRECT3DSURFACE9));
+  for (unsigned i = 0; i < m_context->surface_count; i++)
+    m_context->surface[i] = m_surfaces[i];
+
   // find what decode configs are available
   UINT                       cfg_count = 0;
   DXVA2_ConfigPictureDecode *cfg_list  = NULL;
@@ -534,10 +596,11 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
                                           , &m_format
                                           , NULL
                                           , &cfg_count
-                                          , &cfg_list))
+                                          , &cfg_list));
   SCOPE(DXVA2_ConfigPictureDecode, cfg_list);
 
   DXVA2_ConfigPictureDecode config = {};
+  config.ConfigBitstreamRaw = 0;
 
   unsigned bitstream = 2; // ConfigBitstreamRaw = 2 is required for Poulsbo and handles skipping better with nVidia
   for(unsigned i = 0; i< cfg_count; i++)
@@ -559,22 +622,16 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 
   if(!config.ConfigBitstreamRaw)
   {
-    CLog::Log(LOGDEBUG, "DXVA - failed to find a raw input bitstream");
+    CLog::Log(LOGWARNING, "DXVA - failed to find a raw input bitstream");
     return false;
   }
   *const_cast<DXVA2_ConfigPictureDecode*>(m_context->cfg) = config;
 
-  if(!OpenProcessor())
-    return false;
-
-  if(!OpenDecoder())
-    return false;
-
-  // The front buffer seems to be the only one required and it seems to always be m_buffer[0] on ATI and nVidia
-  // but how reliable is that information?
-  // Not adding refs causes a crash at the end of playback because the surfaces are released with the decoder, despite the >0 D3D ref count.
-  for(unsigned i = 0; i < m_buffer_count; i++)
-    m_processor->HoldSurface(m_buffer[i].surface);
+  CHECK(m_service->CreateVideoDecoder(m_input, &m_format
+                                    , m_context->cfg
+                                    , m_context->surface
+                                    , m_context->surface_count
+                                    , &m_context->decoder));
 
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
@@ -583,59 +640,37 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   return true;
 }
 
-bool CDecoder::OpenProcessor()
-{
-  m_state = DXVA_OPEN;
-
-  {
-    CSingleExit leave(m_section);
-    CProcessor* processor = new CProcessor();
-    m_processor = processor;
-  }
-
-  if(m_state != DXVA_OPEN)
-  {
-    CLog::Log(LOGERROR, "DXVA - device was lost while trying to create a processor");
-    return false;
-  }
-
-  if(!m_processor->Open(m_format))
-    return false;
-
-  return true;
-}
-
 int CDecoder::Decode(AVCodecContext* avctx, AVFrame* frame)
 {
   CSingleLock lock(m_section);
+
   int result = Check(avctx);
   if(result)
     return result;
 
   if(frame)
   {
-    for(unsigned i = 0; i < m_buffer_count; i++)
+    for(unsigned i = 0; i < m_context->surface_count; i++)
     {
-      if(m_buffer[i].surface == (IDirect3DSurface9*)frame->data[3])
+      if (m_context->surface[i] == (IDirect3DSurface9*)frame->data[3])
         return VC_BUFFER | VC_PICTURE;
     }
     CLog::Log(LOGWARNING, "DXVA - ignoring invalid surface");
     return VC_BUFFER;
   }
-  else
-    return 0;
+
+  return 0;
 }
 
 bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
   ((CDVDVideoCodecFFmpeg*)avctx->opaque)->GetPictureCommon(picture);
+
   CSingleLock lock(m_section);
-  picture->format = DVDVideoPicture::FMT_DXVA;
-  picture->proc   = m_processor;
-  if(picture->iFlags & DVP_FLAG_DROPPED)
-    picture->proc_id = 0;
-  else
-    picture->proc_id = m_processor->Add((IDirect3DSurface9*)frame->data[3]);
+
+  picture->data[3] = frame->data[3];
+  picture->format = DVDVideoPicture::FMT_DXPICT;
+
   return true;
 }
 
@@ -643,8 +678,13 @@ int CDecoder::Check(AVCodecContext* avctx)
 {
   CSingleLock lock(m_section);
 
+  bool reset = false;
+
   if(m_state == DXVA_RESET)
+  {
     Close();
+    reset = true;
+  }
 
   if(m_state == DXVA_LOST)
   {
@@ -657,22 +697,10 @@ int CDecoder::Check(AVCodecContext* avctx)
       CLog::Log(LOGERROR, "CDecoder::Check - device didn't reset in reasonable time");
       return VC_ERROR;
     }
+    reset = true;
   }
 
-  if(avctx->refs > m_refs)
-  {
-    CLog::Log(LOGWARNING, "CDecoder::Check - number of required reference frames increased, recreating decoder");
-#if ALLOW_ADDING_SURFACES
-    if(!OpenDecoder())
-      return VC_ERROR;
-#else
-    Close();
-    return VC_FLUSHED;
-#endif
-  }
-
-  if(m_format.SampleWidth  == 0
-  || m_format.SampleHeight == 0)
+  if (reset)
   {
     if(!Open(avctx, avctx->pix_fmt))
     {
@@ -680,6 +708,13 @@ int CDecoder::Check(AVCodecContext* avctx)
       Close();
       return VC_ERROR;
     }
+    return VC_FLUSHED;
+  }
+
+  if((unsigned)avctx->refs > m_refs)
+  {
+    CLog::Log(LOGWARNING, "CDecoder::Check - number of required reference frames increased, recreating decoder");
+    Close();
     return VC_FLUSHED;
   }
 
@@ -701,7 +736,7 @@ int CDecoder::Check(AVCodecContext* avctx)
   data.pPrivateOutputData    = &status;
   data.PrivateOutputDataSize = avctx->codec_id == CODEC_ID_H264 ? sizeof(DXVA_Status_H264) : sizeof(DXVA_Status_VC1);
   HRESULT hr;
-  if(FAILED( hr = m_decoder->Execute(&params)))
+  if(FAILED( hr = m_context->decoder->Execute(&params)))
   {
     CLog::Log(LOGWARNING, "DXVA - failed to get decoder status - 0x%08X", hr);
     return VC_ERROR;
@@ -717,14 +752,16 @@ int CDecoder::Check(AVCodecContext* avctx)
     if(status.vc1.bStatus)
       CLog::Log(LOGWARNING, "DXVA - decoder problem of status %d with %d", status.vc1.bStatus, status.vc1.bBufType);
   }
+
   return 0;
 }
 
 bool CDecoder::OpenTarget(const GUID &guid)
 {
+  bool       output_found = false;
   UINT       output_count = 0;
   D3DFORMAT *output_list  = NULL;
-  CHECK(m_service->GetDecoderRenderTargets(guid, &output_count, &output_list))
+  CHECK(m_service->GetDecoderRenderTargets(guid, &output_count, &output_list));
   SCOPE(D3DFORMAT, output_list);
 
   for(unsigned k = 0; k < output_count; k++)
@@ -734,76 +771,43 @@ bool CDecoder::OpenTarget(const GUID &guid)
     {
       m_input         = guid;
       m_format.Format = output_list[k];
-      return true;
+      if (output_list[k] == MAKEFOURCC('N','V','1','2'))
+        return true;
+      else
+        output_found = true;
     }
   }
-  return false;
-}
-
-bool CDecoder::OpenDecoder()
-{
-  SAFE_RELEASE(m_decoder);
-
-  m_context->surface_count = m_refs + 1 + 1 + m_processor->Size(); // refs + 1 decode + 1 libavcodec safety + processor buffer
-
-  if(m_context->surface_count > m_buffer_count)
-  {
-    CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count - m_buffer_count);
-
-    CHECK(m_service->CreateSurface( (m_format.SampleWidth  + 15) & ~15
-                                  , (m_format.SampleHeight + 15) & ~15
-                                  , m_context->surface_count - 1 - m_buffer_count
-                                  , m_format.Format
-                                  , D3DPOOL_DEFAULT
-                                  , 0
-                                  , DXVA2_VideoDecoderRenderTarget
-                                  , m_context->surface + m_buffer_count, NULL ));
-
-    for(unsigned i = m_buffer_count; i < m_context->surface_count; i++)
-      m_buffer[i].surface = m_context->surface[i];
-
-    m_buffer_count = m_context->surface_count;
-  }
-
-  CHECK(m_service->CreateVideoDecoder(m_input, &m_format
-                                    , m_context->cfg
-                                    , m_context->surface
-                                    , m_context->surface_count
-                                    , &m_decoder))
-
-  m_context->decoder = m_decoder;
-
-  return true;
+  return output_found;
 }
 
 bool CDecoder::Supports(enum PixelFormat fmt)
 {
   if(fmt == PIX_FMT_DXVA2_VLD)
     return true;
+
   return false;
 }
 
 void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   CSingleLock lock(m_section);
-  IDirect3DSurface9* surface = (IDirect3DSurface9*)pic->data[3];
 
-  for(unsigned i = 0; i < m_buffer_count; i++)
+  if (m_level > 0)
   {
-    if(m_buffer[i].surface == surface)
-    {
-      m_buffer[i].used = false;
-      m_buffer[i].age  = ++m_buffer_age;
-      break;
-    }
-  }
-  for(unsigned i = 0; i < 4; i++)
+    m_surfaces[m_write] = (IDirect3DSurface9*)pic->data[3];
+    m_write = (m_write + 1) % m_context->surface_count;
+
+    m_level--;
+
+    for(unsigned i = 0; i < 4; i++)
     pic->data[i] = NULL;
+  }
 }
 
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   CSingleLock lock(m_section);
+
   if(avctx->width  != m_format.SampleWidth
   || avctx->height != m_format.SampleHeight)
   {
@@ -815,50 +819,27 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
     }
   }
 
-  int           count = 0;
-  SVideoBuffer* buf   = NULL;
-  for(unsigned i = 0; i < m_buffer_count; i++)
+  if(m_level > m_refs+2)
   {
-    if(m_buffer[i].used)
-      count++;
-    else
-    {
-      if(!buf || buf->age > m_buffer[i].age)
-        buf = m_buffer+i;
-    }
-  }
-
-  if(count >= m_refs+2)
-  {
-    m_refs++;
-#if ALLOW_ADDING_SURFACES
-    if(!OpenDecoder())
-      return -1;
-    return GetBuffer(avctx, pic);
-#else
+    CLog::Log(LOGERROR, "DXVA - number of used surfaces exceeded");
     Close();
     return -1;
-#endif
   }
 
-  if(!buf)
-  {
-    CLog::Log(LOGERROR, "DXVA - unable to find new unused buffer");
-    return -1;
-  }
+  IDirect3DSurface9* surface = m_surfaces[m_read];
+  m_read = (m_read + 1) % m_context->surface_count;
+
+  m_level++;
 
   pic->reordered_opaque = avctx->reordered_opaque;
   pic->type = FF_BUFFER_TYPE_USER;
   pic->age  = 256*256*256*64; // as everybody else, i've got no idea about this one
-  for(unsigned i = 0; i < 4; i++)
-  {
-    pic->data[i] = NULL;
-    pic->linesize[i] = 0;
-  }
-
-  pic->data[0] = (uint8_t*)buf->surface;
-  pic->data[3] = (uint8_t*)buf->surface;
-  buf->used = true;
+  
+  for (unsigned i = 0; i < 4; i++) pic->linesize[i] = 0;
+  pic->data[0] = (uint8_t*)surface;
+  pic->data[1] = NULL;
+  pic->data[2] = NULL;
+  pic->data[3] = (uint8_t*)surface;
 
   return 0;
 }
@@ -873,9 +854,13 @@ CProcessor::CProcessor()
 {
   m_service = NULL;
   m_process = NULL;
-  m_time    = 0;
   m_references = 1;
   g_Windowing.Register(this);
+
+  m_surfaces = NULL;
+
+  m_samples = NULL;
+  m_index = 0;
 }
 
 CProcessor::~CProcessor()
@@ -888,113 +873,432 @@ CProcessor::~CProcessor()
 void CProcessor::Close()
 {
   CSingleLock lock(m_section);
+
   SAFE_RELEASE(m_process);
   SAFE_RELEASE(m_service);
-  for(unsigned i = 0; i < m_sample.size(); i++)
-    SAFE_RELEASE(m_sample[i].SrcSurface);
-  m_sample.clear();
-  for (vector<IDirect3DSurface9*>::iterator it = m_heldsurfaces.begin(); it != m_heldsurfaces.end(); it++)
-    SAFE_RELEASE(*it);
+
+  if (m_samples)
+  {
+    free(m_samples);
+    m_samples = NULL;
+  }
+  
+  if (m_surfaces)
+  {
+    for (unsigned i = 0; i < m_count; i++) SAFE_RELEASE(m_surfaces[i]);
+    free(m_surfaces);
+    m_surfaces = NULL;
+  }
+
+  m_opened = false;
 }
 
-bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
+bool CProcessor::Create()
 {
+  Close();
+
   if(!LoadDXVA())
     return false;
 
   CSingleLock lock(m_section);
-  m_desc = dsc;
 
   CHECK(g_DXVA2CreateVideoService(g_Windowing.Get3DDevice(), IID_IDirectXVideoProcessorService, (void**)&m_service));
 
-  GUID*    guid_list;
-  unsigned guid_count;
-  CHECK(m_service->GetVideoProcessorDeviceGuids(&m_desc, &guid_count, &guid_list));
-  SCOPE(GUID, guid_list);
-
-  if(guid_count == 0)
-  {
-    CLog::Log(LOGDEBUG, "DXVA - unable to find any processors");
-    return false;
-  }
-
-  m_device = guid_list[0];
-  for(unsigned i = 0; i < guid_count; i++)
-  {
-    GUID* g = &guid_list[i];
-    CLog::Log(LOGDEBUG, "DXVA - processor found %s", GUIDToString(*g).c_str());
-
-    if(IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
-      m_device = *g;
-  }
-
-  CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
-
-  CHECK(m_service->GetVideoProcessorCaps(m_device, &m_desc, D3DFMT_X8R8G8B8, &m_caps))
-
-  if (m_caps.DeviceCaps & DXVA2_VPDev_SoftwareDevice)
-    CLog::Log(LOGDEBUG, "DXVA - processor is software device");
-
-  if (m_caps.DeviceCaps & DXVA2_VPDev_EmulatedDXVA1)
-    CLog::Log(LOGDEBUG, "DXVA - processor is emulated dxva1");
-
-  CLog::Log(LOGDEBUG, "DXVA - processor requires %d past frames and %d future frames", m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples);
-  m_size = 3 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
-
-  D3DFORMAT output = m_desc.Format;
-  if(FAILED(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process)))
-  {
-    CLog::Log(LOGDEBUG, "DXVA - unable to use source format, use RGB output instead\n");
-    output = D3DFMT_X8R8G8B8;
-    CHECK(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process));
-  }
-
-  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Brightness, &m_brightness));
-  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Contrast  , &m_contrast));
-  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Hue       , &m_hue));
-  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Saturation, &m_saturation));
-
-  m_time = 0;
+  m_opened = false;
 
   return true;
 }
 
-void CProcessor::HoldSurface(IDirect3DSurface9* surface)
+bool CProcessor::Open(UINT width, UINT height)
 {
-  surface->AddRef();
-  m_heldsurfaces.push_back(surface);
+  // Only NV12 software colorspace conversion is implemented for now
+  if (Open(width, height, (D3DFORMAT)MAKEFOURCC('N','V','1','2')))
+    return true;
+
+  // Future...
+  //if (Open(width, height, (D3DFORMAT)MAKEFOURCC('Y','U','Y','2')))
+  //  return true;
+
+  //if (Open(width, height, (D3DFORMAT)MAKEFOURCC('U','Y','V','Y')))
+  //  return true;
+
+  return false;
+}
+
+bool CProcessor::Open(UINT width, UINT height, D3DFORMAT format)
+{
+  CSingleLock lock(m_section);
+
+  memset(&m_desc, 0, sizeof(DXVA2_VideoDesc));
+  m_desc.SampleWidth = width;
+  m_desc.SampleHeight = height;
+  m_desc.Format  = format;
+  m_desc.UABProtectionLevel = FALSE;
+
+  m_StreamSampleFormat = DXVA2_SampleUnknown;
+  
+  // Reset detected processors
+  m_progdevice  = GUID_NULL;
+  m_bobdevice   = GUID_NULL;
+  m_hqdevice    = GUID_NULL;
+
+  m_device      = GUID_NULL;
+
+  GUID*           deint_guid_list;
+  GUID*           prog_guid_list;
+  unsigned        guid_count;
+
+  // Find deinterlacing processors
+  m_desc.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedOddFirst;
+  CHECK(m_service->GetVideoProcessorDeviceGuids(&m_desc, &guid_count, &deint_guid_list));
+  SCOPE(GUID, deint_guid_list);
+
+  if (guid_count == 0)
+    CLog::Log(LOGDEBUG, "DXVA - unable to find any processors with deinterlace capabilities");
+  else
+  {
+    GUID knownhqdevice = GUID_NULL;
+    GUID unknownhqdevice = GUID_NULL;
+    int  knownhqdevicescore = 0;
+    int  unknownhqdevicescore = 0;
+
+    for (unsigned i = 0; i < guid_count; i++)
+    {
+      GUID* g = &deint_guid_list[i];
+      int   j;
+
+      // Lookup known devices
+      for (j = 0; dxva2_devices[j].name; j++ )
+      {
+        if (IsEqualGUID(*g, *dxva2_devices[j].guid))
+        {
+          CLog::Log(LOGDEBUG, "DXVA - known processor found: %s, deinterlace quality score: %d, guid: %s", dxva2_devices[j].name, dxva2_devices[j].score, GUIDToString(*g).c_str());
+          if (dxva2_devices[j].score > knownhqdevicescore)
+          {
+            knownhqdevice = *g;
+            knownhqdevicescore = dxva2_devices[j].score;
+          }
+          break;
+        }
+        else if (IsEqualGUID(*g, DXVA2_VideoProcBobDevice))
+          m_bobdevice = *g;
+      }
+
+      // Check unknown device deinterlace capabilities
+      if (!dxva2_devices[j].name)
+      {
+        CHECK(m_service->GetVideoProcessorCaps(*g, &m_desc, D3DFMT_X8R8G8B8, &m_caps));
+        for (j = 0; dxva2_deinterlacetechs[j].name; j++)
+        {
+          if (m_caps.DeinterlaceTechnology & dxva2_deinterlacetechs[j].deinterlacetech_flag)
+          {
+            int score = dxva2_deinterlacetechs[j].score * 100 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
+            CLog::Log(LOGDEBUG, "DXVA - unknown processor found, deinterlace technology: %s, deinterlace quality score: %d, guid: %s", dxva2_deinterlacetechs[j].name, score, GUIDToString(*g).c_str());
+            if (dxva2_deinterlacetechs[j].score > score)
+            {
+              unknownhqdevice = *g;
+              unknownhqdevicescore = score;
+            }
+            break;
+          }
+        }
+
+        if (!dxva2_deinterlacetechs[j].name)
+          CLog::Log(LOGDEBUG, "DXVA - unknown processor found (not considered), guid: %s", GUIDToString(*g).c_str());
+      }
+    }
+
+    if (knownhqdevice != GUID_NULL) m_hqdevice = knownhqdevice;
+    else if (unknownhqdevice != GUID_NULL) m_hqdevice = unknownhqdevice;
+  }
+
+  // Find progressive processor
+  m_desc.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+  CHECK(m_service->GetVideoProcessorDeviceGuids(&m_desc, &guid_count, &prog_guid_list));
+  SCOPE(GUID, prog_guid_list);
+
+  m_default = GUID_NULL;
+
+  if (guid_count > 0)
+  {
+    m_default = prog_guid_list[0];
+    for (unsigned i = 0; i < guid_count; i++)
+    {
+      GUID* g = &prog_guid_list[i];
+      if (IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
+        m_progdevice = *g;
+    }
+  }
+
+  if (m_default == GUID_NULL)
+  {
+    CLog::Log(LOGERROR, "DXVA - unable to find default processor device, DXVA will not be used");
+    return false;
+  }
+
+  // This should never happen according to DXVA2 specification...
+  if (m_hqdevice == GUID_NULL && m_bobdevice == GUID_NULL && m_progdevice == GUID_NULL)
+  {
+    CLog::Log(LOGDEBUG, "DXVA - unable to find a suitable processor, falling back to default, guid: %s", GUIDToString(m_default).c_str());
+    m_progdevice = m_default;
+  }
+
+  // Save max. required number of reference samples
+  m_size = 0;
+  if (m_hqdevice != GUID_NULL)
+  {
+    CHECK(m_service->GetVideoProcessorCaps(m_hqdevice, &m_desc, D3DFMT_X8R8G8B8, &m_caps));
+    CLog::Log(LOGDEBUG, "DXVA - HQ processor requires %d past frames and %d future frames", m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples);
+    NEWMAX(m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples, m_size);
+  }
+  if (m_bobdevice != GUID_NULL)
+  {
+    CHECK(m_service->GetVideoProcessorCaps(m_bobdevice, &m_desc, D3DFMT_X8R8G8B8, &m_caps));
+    CLog::Log(LOGDEBUG, "DXVA - Bob processor requires %d past frames and %d future frames", m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples);
+    NEWMAX(m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples, m_size);
+  }
+  if (m_progdevice != GUID_NULL)
+  {
+    CHECK(m_service->GetVideoProcessorCaps(m_progdevice, &m_desc, D3DFMT_X8R8G8B8, &m_caps));
+    CLog::Log(LOGDEBUG, "DXVA - Progressive processor requires %d past frames and %d future frames", m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples);
+    NEWMAX(m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples, m_size);
+  }
+
+  m_size += 3;  // safety frames
+
+  m_samples = (VideoSample*)calloc(m_size, sizeof(VideoSample));
+  for (unsigned i = 0; i < m_size; i++)
+  {
+    m_samples[i].Time = 0;
+    m_samples[i].SrcSurface = NULL;
+  }
+
+  m_time = 0;
+
+  if (!SelectProcessor()) return false;
+
+  m_opened = true;
+
+  return true;
+}
+
+bool CProcessor::CreateSurfaces()
+{
+  CSingleLock lock(m_section);
+
+  m_count = m_size;
+  m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_count, sizeof(LPDIRECT3DSURFACE9));
+  CHECK(m_service->CreateSurface((m_desc.SampleWidth + 15) & ~15,
+                                 (m_desc.SampleHeight + 15) & ~15,
+                                  m_count - 1,
+                                  m_desc.Format,
+                                  D3DPOOL_DEFAULT,
+                                  0,
+                                  DXVA2_VideoSoftwareRenderTarget,
+                                  m_surfaces,
+                                  NULL));
+
+  return true;
+}
+
+bool CProcessor::LockSurfaces(LPDIRECT3DSURFACE9* surfaces, unsigned count)
+{
+  CSingleLock lock(m_section);
+
+  m_count = count;
+
+  m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_count, sizeof(LPDIRECT3DSURFACE9));
+  for (unsigned i = 0; i < m_count; i++)
+  {
+    m_surfaces[i] = surfaces[i];
+    m_surfaces[i]->AddRef();
+  }
+
+  return true;
+}
+
+bool CProcessor::SelectProcessor()
+{
+  if (!m_service) return false;
+
+  m_CurrInterlaceMethod = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+  bool useautobob = (((m_desc.SampleWidth > g_advancedSettings.m_DXVADeintAutoMaxWidth) || (m_desc.SampleHeight > g_advancedSettings.m_DXVADeintAutoMaxHeight))
+                  && ((float)m_desc.InputSampleFreq.Denominator > g_advancedSettings.m_DXVADeintAutoMaxFps * (float)m_desc.InputSampleFreq.Numerator));
+
+  // Synchronize sample type and render deinterlace method
+  EINTERLACEMETHOD deint = m_CurrInterlaceMethod;
+  switch (m_CurrInterlaceMethod)
+  {
+    case VS_INTERLACEMETHOD_NONE:
+      m_desc.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+      break;
+    case VS_INTERLACEMETHOD_DXVA_BOB:
+    case VS_INTERLACEMETHOD_DXVA_HQ:
+      m_desc.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+      break;
+    case VS_INTERLACEMETHOD_DXVA_BOB_INVERTED:
+    case VS_INTERLACEMETHOD_DXVA_HQ_INVERTED:
+      m_desc.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedOddFirst;
+      break;
+    case VS_INTERLACEMETHOD_AUTO:
+  default:
+      m_desc.SampleFormat.SampleFormat = m_StreamSampleFormat;
+      if (m_desc.SampleFormat.SampleFormat == DXVA2_SampleFieldInterleavedOddFirst) deint = useautobob ? VS_INTERLACEMETHOD_DXVA_BOB_INVERTED : VS_INTERLACEMETHOD_DXVA_HQ_INVERTED;
+      else if (m_desc.SampleFormat.SampleFormat == DXVA2_SampleFieldInterleavedEvenFirst) deint = useautobob? VS_INTERLACEMETHOD_DXVA_BOB : VS_INTERLACEMETHOD_DXVA_HQ;
+      else deint = VS_INTERLACEMETHOD_NONE;
+      break;
+  }
+  m_BFF = (m_desc.SampleFormat.SampleFormat == DXVA2_SampleFieldInterleavedOddFirst ? true : false);
+
+  // Find out which processor to use based on render deinterlace method
+  GUID device = m_default;
+  switch (deint)
+  {
+    case VS_INTERLACEMETHOD_NONE:
+      // Fallback: progressive -> bob -> hq
+      if (m_progdevice != GUID_NULL) device = m_progdevice;
+      else if (m_bobdevice != GUID_NULL) device = m_bobdevice;
+      else if (m_hqdevice != GUID_NULL) device = m_hqdevice;
+      break;
+    case VS_INTERLACEMETHOD_DXVA_BOB:
+    case VS_INTERLACEMETHOD_DXVA_BOB_INVERTED:
+      // Fallback: bob -> hq -> progressive
+      if (m_bobdevice != GUID_NULL) device = m_bobdevice;
+      else if (m_hqdevice != GUID_NULL) device = m_hqdevice;
+      else if (m_progdevice != GUID_NULL) device = m_progdevice;
+      break;
+    case VS_INTERLACEMETHOD_DXVA_HQ:
+    case VS_INTERLACEMETHOD_DXVA_HQ_INVERTED:
+      // Fallback: hq -> bob -> progressive
+      if (m_hqdevice != GUID_NULL) device = m_hqdevice;
+      else if (m_bobdevice != GUID_NULL) device = m_bobdevice;
+      else if (m_progdevice != GUID_NULL) device = m_progdevice;
+      break;
+  }
+
+  if (!IsEqualGUID(device, m_device))
+  {
+    // Try to switch processor mid-stream
+    m_device = device;
+    CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
+    CHECK(m_service->GetVideoProcessorCaps(m_device, &m_desc, D3DFMT_X8R8G8B8, &m_caps));
+    if (m_caps.DeviceCaps & DXVA2_VPDev_SoftwareDevice)
+      CLog::Log(LOGDEBUG, "DXVA - processor is software device");
+    if (m_caps.DeviceCaps & DXVA2_VPDev_EmulatedDXVA1)
+      CLog::Log(LOGDEBUG, "DXVA - processor is emulated dxva1");
+    CLog::Log(LOGDEBUG, "DXVA - processor requires %d past frames and %d future frames", m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples);
+
+    // Release old processor and try to initialize new one
+    SAFE_RELEASE(m_process);
+    D3DFORMAT output = m_desc.Format;
+    if(FAILED(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process)))
+    {
+      CLog::Log(LOGDEBUG, "DXVA - unable to use source format, use RGB output instead\n");
+      output = D3DFMT_X8R8G8B8;
+      CHECK(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process));
+    }
+
+    CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Brightness, &m_brightness));
+    CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Contrast  , &m_contrast));
+    CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Hue       , &m_hue));
+    CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Saturation, &m_saturation));
+  }
+
+  return true;
+}
+
+void CProcessor::StillFrame()
+{
+  CSingleLock lock(m_section);
+
+  IDirect3DSurface9* surface = m_samples[(m_index + m_size - 1) % m_size].SrcSurface;
+
+  // we make sure to present the same frame even if deinterlacing is on
+  for (unsigned i = 0; i < m_size; i++)
+    m_samples[i].SrcSurface = surface;
 }
 
 REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source)
 {
-  CSingleLock lock(m_section);
-
-  m_time += 2;
-
-  DXVA2_VideoSample vs = {};
-  vs.Start          = m_time;
-  vs.End            = 0; 
-  vs.SampleFormat   = m_desc.SampleFormat;
-  vs.SrcRect.left   = 0;
-  vs.SrcRect.right  = m_desc.SampleWidth;
-  vs.SrcRect.top    = 0;
-  vs.SrcRect.bottom = m_desc.SampleHeight;
-  vs.PlanarAlpha    = DXVA2_Fixed32OpaqueAlpha();
-  vs.SampleData     = 0;
-  vs.SrcSurface     = source;
-  vs.SrcSurface->AddRef();
-
-  if(!m_sample.empty())
-    m_sample.back().End = vs.Start;
-
-  m_sample.push_back(vs);
-  if(m_sample.size() > m_size)
+  do
   {
-    SAFE_RELEASE(m_sample.front().SrcSurface);
-    m_sample.pop_front();
+    m_time += 2;
+    
+    m_samples[m_index].Time = m_time;
+    m_samples[m_index].SrcSurface = source;
+    
+    m_index = (m_index + 1) % m_size;
   }
+  while (m_samples[m_index].SrcSurface == NULL);  // workaround to present a frame without past or future reference frames
 
   return m_time;
+}
+
+bool CProcessor::ProcessPicture(DVDVideoPicture* picture)
+{
+  CSingleLock lock(m_section);
+
+  IDirect3DSurface9* surface = NULL;
+  m_StreamSampleFormat = picture->iFlags & DVP_FLAG_INTERLACED ? (picture->iFlags & DVP_FLAG_TOP_FIELD_FIRST ? DXVA2_SampleFieldInterleavedEvenFirst : DXVA2_SampleFieldInterleavedOddFirst) : DXVA2_SampleProgressiveFrame;
+
+  switch (picture->format)
+  {
+    case DVDVideoPicture::FMT_DXVA:
+      return true;
+
+    case DVDVideoPicture::FMT_DXPICT:
+      surface = (IDirect3DSurface9*)picture->data[3];
+      break;
+
+    case DVDVideoPicture::FMT_YUV420P:
+      surface = m_surfaces[m_index];
+  
+      D3DLOCKED_RECT rectangle;
+      CHECK(surface->LockRect(&rectangle, NULL, 0));
+
+      // copy luma
+      uint8_t *s = picture->data[0];
+      uint8_t* bits = (uint8_t*)(rectangle.pBits);
+      for (unsigned y = 0; y < picture->iHeight; y++)
+      {
+        memcpy(bits, s, picture->iWidth);
+        s += picture->iLineSize[0];
+        bits += rectangle.Pitch;
+      }
+
+      D3DSURFACE_DESC desc;
+      CHECK(surface->GetDesc(&desc));
+
+      //copy chroma
+      uint8_t *s_u, *s_v, *d_uv;
+      for (unsigned y = 0; y < picture->iHeight/2; y++)
+      {
+        s_u = picture->data[1] + (y * picture->iLineSize[1]);
+        s_v = picture->data[2] + (y * picture->iLineSize[2]);
+        d_uv = ((uint8_t*)(rectangle.pBits)) + (desc.Height + y) * rectangle.Pitch;
+        for (unsigned x = 0; x < picture->iWidth/2; x++)
+        {
+          *d_uv++ = *s_u++;
+          *d_uv++ = *s_v++;
+        }
+      }
+  
+      CHECK(surface->UnlockRect());
+      break;
+  }
+
+  if (!surface)
+  {
+    CLog::Log(LOGWARNING, "DXVA - colorspace not supported by processor");
+    return false;
+  }
+  
+  picture->proc = this;
+  picture->proc_id = picture->iFlags & DVP_FLAG_DROPPED ? 0 : Add(surface);
+  
+  picture->format = DVDVideoPicture::FMT_DXVA;
+
+  return true;
 }
 
 static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int min, int max, int def)
@@ -1003,81 +1307,72 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
     return DXVA2FloatToFixed( DXVA2FixedToFloat(range.DefaultValue)
                             + (DXVA2FixedToFloat(range.MaxValue) - DXVA2FixedToFloat(range.DefaultValue))
                             * (value - def) / (max - def) );
-  else if(value < def)
+  if(value < def)
     return DXVA2FloatToFixed( DXVA2FixedToFloat(range.DefaultValue)
                             + (DXVA2FixedToFloat(range.MinValue) - DXVA2FixedToFloat(range.DefaultValue)) 
                             * (value - def) / (min - def) );
-  else
-    return range.DefaultValue;
+  return range.DefaultValue;
 }
 
-bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TIME time)
+bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TIME time, int fieldflag)
 {
   CSingleLock lock(m_section);
 
-  if(m_sample.empty())
-    return false;
-
-  /* add a delay given number of forward references */
-  time -= m_caps.NumForwardRefSamples * 2;
-
-  /* find oldest needed frame */
-  SSamples::iterator it = m_sample.begin();
-  for(; it != m_sample.end(); it++)
+  // If deinterlace method or stream interlace format has changed, switch to another DXVA processor
+  if (m_CurrInterlaceMethod != g_settings.m_currentVideoSettings.m_InterlaceMethod)
   {
-    if(it->Start >= time - m_caps.NumBackwardRefSamples * 2)
-      break;
+    CLog::Log(LOGDEBUG,"CProcessor::Render - deinterlace method changed, switching DXVA processor");
+    if (!SelectProcessor()) return false;
   }
-
-  if(it == m_sample.end())
+  if (m_CurrInterlaceMethod == VS_INTERLACEMETHOD_AUTO && m_desc.SampleFormat.SampleFormat != m_StreamSampleFormat)
   {
-    CLog::Log(LOGERROR, "DXVA - failed to find image, all images newer or no images");
+    CLog::Log(LOGDEBUG,"CProcessor::Render - stream interlace format changed, switching DXVA processor");
+    if (!SelectProcessor()) return false;
+  }
+  if (!m_process || !m_samples)
+  {
+    CLog::Log(LOGWARNING, "CProcessor::Render - processor not properly set up, skipping frame");
     return false;
   }
 
-  /* erase anything older than this */
-  for(SSamples::iterator it2 = m_sample.begin(); it2 != it; it2++)
-    SAFE_RELEASE(it2->SrcSurface);
-  it = m_sample.erase(m_sample.begin(), it);
+  if ((time > m_time) || (time - (m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples) * 2 <= m_time - m_size * 2))
+  {
+    CLog::Log(LOGDEBUG, "CProcessor::Render - Samples required to render frame %d not present in sample buffer, skipping frame", time);
+    return false;
+  }
 
+  unsigned count = 1 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
+  unsigned index = (m_index + m_size - ((m_time - time) >> 1) - count) % m_size;
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
 
-  int count = 1 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
-  int valid = 0;
+  RECT dest = dst, src = { 0, 0, m_desc.SampleWidth, m_desc.SampleHeight };
+  CWinRenderer::CropSource(src, dest, desc);
 
-  auto_aptr<DXVA2_VideoSample> samp(new DXVA2_VideoSample[count]);
-  for(; it != m_sample.end() && valid < count; it++, valid++)
+  auto_aptr<DXVA2_VideoSample> samples(new DXVA2_VideoSample[count]);
+  for (unsigned i = 0; i < count; i++)
   {
-    DXVA2_VideoSample& vs = samp[valid];
-    vs = *it;
-    vs.DstRect = dst;
-    if(vs.End == 0)
-      vs.End = vs.Start + 2;
-    CWinRenderer::CropSource(vs.SrcRect, vs.DstRect, desc);
+    samples[i].Start = m_samples[index].Time;
+    samples[i].End = m_samples[index].Time + 2;
+    samples[i].SampleFormat.SampleFormat = m_desc.SampleFormat.SampleFormat;
+    samples[i].SrcSurface = m_samples[index].SrcSurface;
+    samples[i].SrcRect = src;
+    samples[i].DstRect = dest;
+    samples[i].PlanarAlpha = DXVA2_Fixed32OpaqueAlpha();
+    samples[i].SampleData = 0;
+    index = (index + 1) % m_size;
   }
-
-  if(time >= samp[valid-1].End)
-  {
-    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %l64d is after last sample %l64d", time, samp[valid-1].End);
-    time = samp[valid-1].Start;
-  }
-  
-  if(time < samp[0].Start)
-  {
-    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %l64d is before first sample %l64d", time, samp[0].Start);
-    time = samp[0].Start;
-  }  
 
   DXVA2_VideoProcessBltParams blt = {};
-  blt.TargetFrame = time;
-  blt.TargetRect  = samp[0].DstRect;
-  blt.ConstrictionSize.cx = 0;
-  blt.ConstrictionSize.cy = 0;
+  blt.TargetFrame = time - m_caps.NumForwardRefSamples * 2 + (m_BFF ? 1 - fieldflag : fieldflag);
+  blt.TargetRect.left     = 0;
+  blt.TargetRect.top      = 0;
+  blt.TargetRect.right    = desc.Width;
+  blt.TargetRect.bottom   = desc.Height;
 
   blt.DestFormat.VideoTransferFunction = DXVA2_VideoTransFunc_sRGB;
-  blt.DestFormat.SampleFormat          = DXVA2_SampleProgressiveFrame;
+  blt.DestFormat.SampleFormat          = m_desc.SampleFormat.SampleFormat;
   blt.DestFormat.NominalRange          = DXVA2_NominalRange_0_255;
   blt.Alpha = DXVA2_Fixed32OpaqueAlpha();
 
@@ -1099,7 +1394,8 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   float verts[2][3]= {};
   g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 1, verts, 3*sizeof(float));
 
-  CHECK(m_process->VideoProcessBlt(target, &blt, samp.get(), valid, NULL));
+  CHECK(m_process->VideoProcessBlt(target, &blt, samples.get(), count, NULL));
+
   return true;
 }
 

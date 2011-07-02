@@ -27,6 +27,7 @@
 #include <vector>
 #include "rendering/RenderSystem.h"
 #include "threads/CriticalSection.h"
+#include "DVDCodecs/Video/DXVA.h"
 
 enum PCI_Vendors
 {
@@ -103,6 +104,8 @@ public:
   void Unregister(ID3DResource *resource);
 
   static CStdString GetErrorDescription(HRESULT hr);
+
+  DXVA::CProcessor* m_processor;
 
 protected:
   bool CreateDevice();

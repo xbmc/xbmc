@@ -106,6 +106,7 @@ struct DVDVideoPicture
     FMT_VAAPI,
     FMT_OMXEGL,
     FMT_CVBREF,
+    FMT_DXPICT
   } format;
 };
 
