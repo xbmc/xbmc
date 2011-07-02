@@ -25,6 +25,7 @@
 
 /* Local includes */
 #include "Socket.h"
+#include "Cards.h"
 
 /* Use a forward declaration here. Including RTSPClient.h via TSReader.h at this point gives compile errors */
 class CTsReader;
@@ -109,6 +110,7 @@ private:
   std::string             m_BackendVersion;
   time_t                  m_BackendUTCoffset;
   time_t                  m_BackendTime;
+  CCards                  m_cCards;
 #ifdef TSREADER
   CTsReader*              m_tsreader;
 

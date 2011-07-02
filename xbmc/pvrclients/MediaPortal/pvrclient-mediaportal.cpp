@@ -43,8 +43,8 @@ int g_iTVServerXBMCBuild = 0;
 /* TVServerXBMC plugin supported versions */
 #define TVSERVERXBMC_MIN_VERSION_STRING         "1.1.0.70"
 #define TVSERVERXBMC_MIN_VERSION_BUILD          70
-#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.105"
-#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  105
+#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.106"
+#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  106
 
 /************************************************************/
 /** Class interface */
@@ -218,6 +218,18 @@ bool cPVRClientMediaPortal::Connect()
   char buffer[512];
   snprintf(buffer, 512, "%s:%i", g_szHostname.c_str(), g_iPort);
   m_ConnectionString = buffer;
+
+  /* Retrieve card settings (needed for Live TV and recordings folders) */
+  if ( g_iTVServerXBMCBuild >= 106 )
+  {
+    int code;
+    vector<string> lines;
+
+    if ( SendCommand2("GetCardSettings\n", code, lines) )
+    {
+      m_cCards.ParseLines(lines);
+    }
+  }
 
   m_bConnected = true;
   return true;
@@ -1162,6 +1174,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
     //[0] = rtsp url
     //[1] = original (unresolved) rtsp url
     //[2] = timeshift buffer filename
+    //[3] = card id (TVServerXBMC build >= 106)
 
     XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", timeshiftfields[0].c_str(), timeshiftfields[2].c_str());
     m_iCurrentChannel = channel;

@@ -117,6 +117,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Cards.cpp" />
     <ClCompile Include="..\..\channels.cpp" />
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
@@ -129,6 +130,7 @@
     <ClCompile Include="..\..\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Cards.h" />
     <ClInclude Include="..\..\channels.h" />
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
