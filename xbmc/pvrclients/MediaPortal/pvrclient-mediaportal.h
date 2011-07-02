@@ -25,6 +25,7 @@
 
 /* Local includes */
 #include "Socket.h"
+#include "Cards.h"
 
 class cPVRClientMediaPortal
 {
@@ -106,7 +107,7 @@ private:
   std::string             m_BackendVersion;
   time_t                  m_BackendUTCoffset;
   time_t                  m_BackendTime;
-
+  CCards                  m_cCards;
   void Close();
 
   //Used for TV Server communication:
