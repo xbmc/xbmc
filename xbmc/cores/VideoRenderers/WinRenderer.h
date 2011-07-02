@@ -30,6 +30,7 @@
 #include "RenderCapture.h"
 #include "settings/VideoSettings.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING
@@ -235,6 +236,7 @@ protected:
   bool                 m_bConfigured;
   SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
   RenderMethod         m_renderMethod;
+  DXVA::CProcessor*    m_processor;
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   DllAvUtil           *m_dllAvUtil;

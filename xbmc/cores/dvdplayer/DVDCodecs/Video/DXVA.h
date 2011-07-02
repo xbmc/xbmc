@@ -61,6 +61,8 @@ protected:
   } m_state;
 
   bool  OpenTarget(const GUID &guid);
+  bool  OpenProcessor();
+  bool  OpenDecoder();
 
   IDirectXVideoDecoderService* m_service;
   GUID                         m_input;
@@ -72,6 +74,7 @@ protected:
 
   unsigned                     m_level;
 
+  CProcessor*                  m_processor;
   unsigned                     m_refs;
 
   struct dxva_context*         m_context;
@@ -95,12 +98,12 @@ public:
   void           Close();
 
   bool           IsOpened() { return m_opened; }
-  unsigned       GetSize() { return m_size; }
+  unsigned       Size() { return m_size; }
 
   void           StillFrame();
   bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time, int fieldflag);
 
-  bool           ProcessPicture(DVDVideoPicture* picture);
+  bool           ProcessPicture(DVDVideoPicture* picture, bool still);
 
   CProcessor* Acquire();
   long        Release();

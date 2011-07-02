@@ -32,7 +32,6 @@
 #include "utils/log.h"
 #include "filesystem/File.h"
 #include "utils/MathUtils.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
 #include "VideoShaders/WinVideoFilter.h"
 #include "DllSwScale.h"
 #include "guilib/LocalizeStrings.h"
@@ -80,6 +79,7 @@ CWinRenderer::CWinRenderer()
 
   m_sw_scale_ctx = NULL;
   m_dllSwScale = NULL;
+  m_processor = NULL;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -143,9 +143,12 @@ void CWinRenderer::SelectRenderMethod()
       case RENDER_METHOD_DXVA:
         if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)
         {
-          if (g_Windowing.m_processor->Create()
-           && g_Windowing.m_processor->Open(m_sourceWidth, m_sourceHeight)
-           && g_Windowing.m_processor->CreateSurfaces())
+          if (m_processor == NULL)
+            m_processor = new DXVA::CProcessor();
+
+          if (m_processor->Create()
+           && m_processor->Open(m_sourceWidth, m_sourceHeight)
+           && m_processor->CreateSurfaces())
           {
             m_renderMethod = RENDER_DXVA;
             break;
@@ -251,16 +254,15 @@ void CWinRenderer::AddProcessor(DVDVideoPicture* picture, bool still)
 {
   if (m_renderMethod == RENDER_DXVA)
   {
-    if (still)
-      g_Windowing.m_processor->StillFrame();
-    g_Windowing.m_processor->ProcessPicture(picture);
+    DXVA::CProcessor* processor = (CONF_FLAGS_FORMAT_MASK(m_flags) != CONF_FLAGS_FORMAT_DXVA) ? m_processor : picture->proc;
+    processor->ProcessPicture(picture, still);
 
     int source = NextYV12Texture();
     if(source < 0)
       return;
     YUVBuffer *buf = (YUVBuffer*)m_VideoBuffers[source];
     SAFE_RELEASE(buf->proc);
-    buf->proc = picture->proc->Acquire();
+    buf->proc = processor->Acquire();
     buf->id   = picture->proc_id;
   }
 }
@@ -442,7 +444,12 @@ void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
 
-  g_Windowing.m_processor->Close();
+  if (m_processor)
+  {
+    m_processor->Close();
+    SAFE_RELEASE(m_processor);
+    m_processor = NULL;
+  }
 
   if (m_SWTarget.Get())
     m_SWTarget.Release();

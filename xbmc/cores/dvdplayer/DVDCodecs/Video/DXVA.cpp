@@ -260,6 +260,7 @@ CDecoder::CDecoder()
   m_event.Set();
   m_state     = DXVA_OPEN;
   m_service   = NULL;
+  m_processor = NULL;
   m_context          = (dxva_context*)calloc(1, sizeof(dxva_context));
   m_context->cfg     = (DXVA2_ConfigPictureDecode*)calloc(1, sizeof(DXVA2_ConfigPictureDecode));
   m_context->surface = NULL;
@@ -288,6 +289,7 @@ void CDecoder::Close()
 
   SAFE_RELEASE(m_context->decoder);
   SAFE_RELEASE(m_service);
+  SAFE_RELEASE(m_processor);
 
   if (m_context->surface)
   {
@@ -300,6 +302,16 @@ void CDecoder::Close()
     for (unsigned i = 0; i < m_context->surface_count; i++) SAFE_RELEASE(m_surfaces[i]);
     free(m_surfaces);
     m_surfaces = NULL;
+  }
+
+  CProcessor* proc = m_processor;
+  m_processor = NULL;
+  lock.Leave();
+
+  if(proc)
+  {
+    CSingleExit leave(m_section);
+    proc->Release();
   }
 }
 
@@ -389,16 +401,13 @@ static bool CheckCompatibility(AVCodecContext *avctx)
 
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
 {
-  if (!g_Windowing.m_processor->Create())
-    return false;
-
   if (!CheckCompatibility(avctx))
     return false;
 
   if(!LoadDXVA())
     return false;
 
-    CSingleLock lock(m_section);
+  CSingleLock lock(m_section);
 
   if(m_state == DXVA_LOST)
   {
@@ -562,33 +571,6 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   }
   CLog::Log(LOGDEBUG, "DXVA - source requires %d references", avctx->refs);
 
-  unsigned count = 0;
-
-  // Open DXVA video processor
-  if (!g_Windowing.m_processor->Open(m_format.SampleWidth, m_format.SampleHeight, m_format.Format))
-    return false;
-  count = g_Windowing.m_processor->GetSize();
-
-  m_context->surface_count = m_refs + 1 + 1 + count; // refs + 1 decode + 1 libavcodec safety + processor buffer
-  
-  CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count);
-  
-  m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_context->surface_count, sizeof(LPDIRECT3DSURFACE9));
-  CHECK(m_service->CreateSurface( (m_format.SampleWidth + 15) & ~15
-                                , (m_format.SampleHeight + 15) & ~15
-                                , m_context->surface_count - 1
-                                , m_format.Format
-                                , D3DPOOL_DEFAULT
-                                , 0
-                                , DXVA2_VideoDecoderRenderTarget
-                                , m_surfaces, NULL ));
-
-  g_Windowing.m_processor->LockSurfaces(m_surfaces, m_context->surface_count);
-
-  m_context->surface = (LPDIRECT3DSURFACE9*)calloc(m_context->surface_count, sizeof(LPDIRECT3DSURFACE9));
-  for (unsigned i = 0; i < m_context->surface_count; i++)
-    m_context->surface[i] = m_surfaces[i];
-
   // find what decode configs are available
   UINT                       cfg_count = 0;
   DXVA2_ConfigPictureDecode *cfg_list  = NULL;
@@ -627,15 +609,40 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   }
   *const_cast<DXVA2_ConfigPictureDecode*>(m_context->cfg) = config;
 
-  CHECK(m_service->CreateVideoDecoder(m_input, &m_format
-                                    , m_context->cfg
-                                    , m_context->surface
-                                    , m_context->surface_count
-                                    , &m_context->decoder));
+  if (!OpenProcessor())
+    return false;
+
+  if (!OpenDecoder())
+    return false;
 
   avctx->get_buffer      = GetBufferS;
   avctx->release_buffer  = RelBufferS;
   avctx->hwaccel_context = m_context;
+
+  return true;
+}
+
+bool CDecoder::OpenProcessor()
+{
+  m_state = DXVA_OPEN;
+
+  {
+    CSingleExit leave(m_section);
+    CProcessor* processor = new CProcessor();
+    m_processor = processor;
+  }
+
+  if(m_state != DXVA_OPEN)
+  {
+    CLog::Log(LOGERROR, "DXVA - device was lost while trying to create a processor");
+    return false;
+  }
+
+  if (!m_processor->Create())
+    return false;
+
+  if (!m_processor->Open(m_format.SampleWidth, m_format.SampleHeight, m_format.Format))
+    return false;
 
   return true;
 }
@@ -668,8 +675,9 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
 
   CSingleLock lock(m_section);
 
+  picture->format  = DVDVideoPicture::FMT_DXPICT;
+  picture->proc    = m_processor;
   picture->data[3] = frame->data[3];
-  picture->format = DVDVideoPicture::FMT_DXPICT;
 
   return true;
 }
@@ -778,6 +786,39 @@ bool CDecoder::OpenTarget(const GUID &guid)
     }
   }
   return output_found;
+}
+
+bool CDecoder::OpenDecoder()
+{
+  SAFE_RELEASE(m_context->decoder);
+
+  m_context->surface_count = m_refs + 1 + 1 + m_processor->Size(); // refs + 1 decode + 1 libavcodec safety + processor buffer
+
+  CLog::Log(LOGDEBUG, "DXVA - allocating %d surfaces", m_context->surface_count);
+
+  m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_context->surface_count, sizeof(LPDIRECT3DSURFACE9));
+  CHECK(m_service->CreateSurface( (m_format.SampleWidth  + 15) & ~15
+                                , (m_format.SampleHeight + 15) & ~15
+                                , m_context->surface_count - 1
+                                , m_format.Format
+                                , D3DPOOL_DEFAULT
+                                , 0
+                                , DXVA2_VideoDecoderRenderTarget
+                                , m_surfaces, NULL ));
+
+  m_processor->LockSurfaces(m_surfaces, m_context->surface_count);
+
+  m_context->surface = (LPDIRECT3DSURFACE9*)calloc(m_context->surface_count, sizeof(LPDIRECT3DSURFACE9));
+  for (unsigned i = 0; i < m_context->surface_count; i++)
+    m_context->surface[i] = m_surfaces[i];
+
+  CHECK(m_service->CreateVideoDecoder(m_input, &m_format
+                                    , m_context->cfg
+                                    , m_context->surface
+                                    , m_context->surface_count
+                                    , &m_context->decoder));
+
+  return true;
 }
 
 bool CDecoder::Supports(enum PixelFormat fmt)
@@ -1234,9 +1275,12 @@ REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source)
   return m_time;
 }
 
-bool CProcessor::ProcessPicture(DVDVideoPicture* picture)
+bool CProcessor::ProcessPicture(DVDVideoPicture* picture, bool still)
 {
   CSingleLock lock(m_section);
+
+  if (still)
+    StillFrame();
 
   IDirect3DSurface9* surface = NULL;
   m_StreamSampleFormat = picture->iFlags & DVP_FLAG_INTERLACED ? (picture->iFlags & DVP_FLAG_TOP_FIELD_FIRST ? DXVA2_SampleFieldInterleavedEvenFirst : DXVA2_SampleFieldInterleavedOddFirst) : DXVA2_SampleProgressiveFrame;

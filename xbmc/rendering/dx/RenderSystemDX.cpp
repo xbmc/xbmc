@@ -140,8 +140,6 @@ bool CRenderSystemDX::InitRenderSystem()
   if(CreateDevice()==false)
     return false;
 
-  m_processor = new DXVA::CProcessor();
-
   return true;
 }
 

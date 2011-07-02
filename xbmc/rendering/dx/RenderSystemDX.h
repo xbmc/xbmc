@@ -105,8 +105,6 @@ public:
 
   static CStdString GetErrorDescription(HRESULT hr);
 
-  DXVA::CProcessor* m_processor;
-
 protected:
   bool CreateDevice();
   void DeleteDevice();
