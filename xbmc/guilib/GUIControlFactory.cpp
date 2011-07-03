@@ -361,7 +361,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int 
   {
     const char *hidden = node->Attribute("allowhiddenfocus");
     if (hidden)
-      allowHiddenFocus.Parse(hidden);
+      allowHiddenFocus.Parse(hidden, 0);
     // add to our condition string
     if (!node->NoChildren())
       conditions.push_back(node->FirstChild()->Value());
