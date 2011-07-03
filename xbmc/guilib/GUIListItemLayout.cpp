@@ -183,18 +183,18 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
 }
 
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
-void CGUIListItemLayout::CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, int nofocusCondition, int focusCondition)
+void CGUIListItemLayout::CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, const CStdString &nofocusCondition, const CStdString &focusCondition)
 {
   m_width = width;
   m_height = height;
   m_focused = focused;
   CGUIImage *tex = new CGUIImage(0, 0, 0, 0, width, texHeight, texture);
-  tex->SetVisibleCondition(nofocusCondition, false);
+  tex->SetVisibleCondition(nofocusCondition);
   m_group.AddControl(tex);
   if (focused)
   {
     CGUIImage *tex = new CGUIImage(0, 0, 0, 0, width, texHeight, textureFocus);
-    tex->SetVisibleCondition(focusCondition, false);
+    tex->SetVisibleCondition(focusCondition);
     m_group.AddControl(tex);
   }
   CGUIImage *image = new CGUIImage(0, 0, 8, 0, iconWidth, texHeight, CTextureInfo(""));

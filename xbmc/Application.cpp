@@ -1821,7 +1821,7 @@ bool CApplication::LoadUserWindows()
             if (pType && pType->FirstChild())
               id = atol(pType->FirstChild()->Value());
           }
-          int visibleCondition = 0;
+          CStdString visibleCondition;
           CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
           if (strType.Equals("dialog"))
@@ -1844,7 +1844,7 @@ bool CApplication::LoadUserWindows()
             delete pWindow;
             continue;
           }
-          pWindow->SetVisibleCondition(visibleCondition, false);
+          pWindow->SetVisibleCondition(visibleCondition);
           g_windowManager.AddCustomWindow(pWindow);
         }
       }
