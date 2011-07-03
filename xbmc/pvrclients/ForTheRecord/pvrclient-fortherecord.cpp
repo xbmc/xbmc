@@ -1042,5 +1042,6 @@ int cPVRClientForTheRecord::ReadRecordedStream(unsigned char* pBuffer, unsigned 
  */
 const char* cPVRClientForTheRecord::GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
-  return ForTheRecord::GetLiveStreamURL();
+  m_PlaybackURL = ForTheRecord::GetLiveStreamURL();
+  return m_PlaybackURL.c_str();
 }

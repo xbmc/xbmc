@@ -157,7 +157,6 @@
     <ClInclude Include="..\..\\uri.h" />
     <ClInclude Include="..\..\\utils.h" />
     <ClInclude Include="..\..\lib\jsoncpp\src\lib_json\json_batchallocator.h" />
-    <ClInclude Include="..\..\windows\os_windows.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\lib\jsoncpp\src\lib_json\json_internalarray.inl" />

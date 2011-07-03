@@ -118,7 +118,7 @@ namespace ForTheRecord
   /**
    * \brief Returns the URL of the current live stream
    */
-  const char *GetLiveStreamURL(void);
+  std::string GetLiveStreamURL(void);
 
   /**
    * \brief Tell the recorder/tuner we are still showing this stream and to keep it alive. Call this every 30 seconds or so.

@@ -110,6 +110,7 @@ private:
   bool                    m_bConnected;
   //bool                    m_bStop;
   bool                    m_bTimeShiftStarted;
+  std::string             m_PlaybackURL;
   std::string             m_BackendName;
   int                     m_BackendVersion;
   time_t                  m_BackendUTCoffset;

@@ -11,9 +11,6 @@
     <Filter Include="Source Files\tsreader">
       <UniqueIdentifier>{2dbfc35d-6a3f-4a52-b99d-b0d9a830fe6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\windows">
-      <UniqueIdentifier>{894f1306-d6d3-4792-9faf-24d1ba26f901}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
@@ -23,9 +20,6 @@
     </Filter>
     <Filter Include="Header Files\tsreader">
       <UniqueIdentifier>{f37aa152-f1e2-4d22-a1b1-34c708ae8562}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\windows">
-      <UniqueIdentifier>{4f400d21-b2fa-4145-849f-8a733901fdad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -96,9 +90,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\lib\jsoncpp\src\lib_json\json_batchallocator.h">
       <Filter>Header Files\libjsoncpp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\windows\os_windows.h">
-      <Filter>Header Files\windows</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\RTSPClient.h">
       <Filter>Header Files\tsreader</Filter>

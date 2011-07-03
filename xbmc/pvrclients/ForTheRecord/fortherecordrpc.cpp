@@ -495,7 +495,7 @@ namespace ForTheRecord
     }
   }
 
-  const char *GetLiveStreamURL(void)
+  std::string GetLiveStreamURL(void)
   {
     std::string stream = "";
 
@@ -503,7 +503,7 @@ namespace ForTheRecord
     {
       stream = g_current_livestream["RtspUrl"].asString();
     }
-    return stream.c_str();
+    return stream;
   }
 
 
