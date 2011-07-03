@@ -802,8 +802,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(AUDIO_IS_BITSTREAM(g_guiSettings.GetInt("audiooutput.mode")));
     }
     else if (
-             strSetting.Equals("audiooutput.multichannellpcm") ||
-             strSetting.Equals("audiooutput.truehdpassthrough"))
+             strSetting.Equals("audiooutput.multichannellpcm" ) ||
+             strSetting.Equals("audiooutput.truehdpassthrough") ||
+             strSetting.Equals("audiooutput.dtshdpassthrough" ))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
