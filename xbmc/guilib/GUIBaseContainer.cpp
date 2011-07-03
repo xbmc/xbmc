@@ -815,8 +815,8 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     return; // no need to update the content if we're not visible
 
   // check whether we need to update our layouts
-  if ((m_layout && m_layout->GetCondition() && !g_infoManager.GetBool(m_layout->GetCondition(), GetParentID())) ||
-      (m_focusedLayout && m_focusedLayout->GetCondition() && !g_infoManager.GetBool(m_focusedLayout->GetCondition(), GetParentID())))
+  if ((m_layout && m_layout->GetCondition() && !g_infoManager.GetBoolValue(m_layout->GetCondition())) ||
+      (m_focusedLayout && m_focusedLayout->GetCondition() && !g_infoManager.GetBoolValue(m_focusedLayout->GetCondition())))
   {
     // and do it
     int item = GetSelectedItem();
@@ -972,7 +972,7 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false);
     m_layouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("itemlayout");
   }
@@ -980,7 +980,7 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, true);
+    itemLayout.LoadLayout(itemElement, GetParentID(), true);
     m_focusedLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
@@ -1095,8 +1095,8 @@ void CGUIBaseContainer::GetCurrentLayouts()
   m_layout = NULL;
   for (unsigned int i = 0; i < m_layouts.size(); i++)
   {
-    int condition = m_layouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    unsigned int condition = m_layouts[i].GetCondition();
+    if (!condition || g_infoManager.GetBoolValue(condition))
     {
       m_layout = &m_layouts[i];
       break;
@@ -1108,8 +1108,8 @@ void CGUIBaseContainer::GetCurrentLayouts()
   m_focusedLayout = NULL;
   for (unsigned int i = 0; i < m_focusedLayouts.size(); i++)
   {
-    int condition = m_focusedLayouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    unsigned int condition = m_focusedLayouts[i].GetCondition();
+    if (!condition || g_infoManager.GetBoolValue(condition))
     {
       m_focusedLayout = &m_focusedLayouts[i];
       break;

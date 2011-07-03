@@ -147,14 +147,14 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
   }
 }
 
-void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
+void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focused)
 {
   m_focused = focused;
   layout->QueryFloatAttribute("width", &m_width);
   layout->QueryFloatAttribute("height", &m_height);
   const char *condition = layout->Attribute("condition");
   if (condition)
-    m_condition = g_infoManager.TranslateString(condition);
+    m_condition = g_infoManager.Register(condition, context);
   TiXmlElement *child = layout->FirstChildElement("control");
   m_group.SetWidth(m_width);
   m_group.SetHeight(m_height);
