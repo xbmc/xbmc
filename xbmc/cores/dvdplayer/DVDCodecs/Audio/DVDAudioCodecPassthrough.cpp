@@ -303,18 +303,20 @@ void CDVDAudioCodecPassthrough::PackDTSHD(uint8_t* data, int size)
       return;
   }
 
-  m_dataSize = period << 2;
-  if (!m_dtsHD || m_dataSize > m_dtsHDSize)
+  unsigned int dataSize = period << 2;
+  if (!m_dtsHD || dataSize > m_dtsHDSize)
   {
     if (m_dtsHD)
       delete[] m_dtsHD;
-    m_dtsHDSize = m_dataSize;
-    m_dtsHD = new uint8_t[m_dataSize];
+    m_dtsHDSize = dataSize;
+    m_dtsHD = new uint8_t[dataSize];
   }
 
-  memset(m_dtsHD, 0, m_dataSize);
+  memset(m_dtsHD, 0, dataSize);
   memcpy(m_dtsHD, dtshd_start_code, sizeof(dtshd_start_code));
   m_dtsHD[sizeof(dtshd_start_code) + 0] = (uint16_t)size & 0xFF00 >> 8;
   m_dtsHD[sizeof(dtshd_start_code) + 1] = (uint16_t)size & 0x00FF;
   memcpy(m_dtsHD + sizeof(dtshd_start_code) + 2, data, size);
+
+  m_dataSize = CAEPackIEC61937::PackDTSHD(m_dtsHD, dataSize, m_packedBuffer, subtype);
 }
