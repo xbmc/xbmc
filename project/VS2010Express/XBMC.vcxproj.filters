@@ -262,6 +262,9 @@
     <Filter Include="threads\platform\win">
       <UniqueIdentifier>{1f49caed-1c84-46a1-83fc-b1fa6cfd749e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="interfaces\info">
+      <UniqueIdentifier>{cea579fc-bdd7-499e-a6a6-07d681d1ab24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2670,6 +2673,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\platform\win\FairMonitor.cpp">
       <Filter>threads\platform\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp">
+      <Filter>interfaces\info</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5341,6 +5347,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\SystemClock.h">
       <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h">
+      <Filter>interfaces\info</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

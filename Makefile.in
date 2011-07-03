@@ -55,6 +55,7 @@ BIN_DIRS=	\
 	lib/libhts \
 	xbmc/interfaces \
 	xbmc/interfaces/http-api \
+	xbmc/interfaces/info \
 	xbmc/interfaces/json-rpc \
 	xbmc/interfaces/python \
 	xbmc/interfaces/python/xbmcmodule \
@@ -336,6 +337,8 @@ lib/libhts/libhts.a: force
 	$(MAKE) -C lib/libhts
 xbmc/interfaces/interfaces.a: force
 	$(MAKE) -C xbmc/interfaces
+xbmc/interfaces/info/info.a: force
+	$(MAKE) -C xbmc/interfaces/info
 xbmc/interfaces/python/python.a: force
 	$(MAKE) -C xbmc/interfaces/python
 xbmc/interfaces/python/xbmcmodule/xbmcmodule.a: force
@@ -532,6 +535,7 @@ OBJSXBMC=	\
 	xbmc/cdrip/cdrip.a \
 	xbmc/interfaces/json-rpc/json-rpc.a \
 	xbmc/interfaces/http-api/http-api.a \
+	xbmc/interfaces/info/info.a \
 	xbmc/dbwrappers/dbwrappers.a \
 	lib/libsquish/libsquish.a \
 	lib/SlingboxLib/SlingboxLib.a \
