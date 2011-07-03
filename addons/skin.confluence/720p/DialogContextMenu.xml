@@ -30,6 +30,7 @@
 			<onright>2</onright>
 			<onup>2</onup>
 			<ondown>2</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
 		<control type="image" id="999">
 			<description>background image</description>
