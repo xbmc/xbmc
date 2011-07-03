@@ -696,7 +696,7 @@ case TMSG_POWERDOWN:
         {
           vector<bool> *infoLabels = (vector<bool> *)pMsg->lpVoid;
           for (unsigned int i = 0; i < pMsg->params.size(); i++)
-            infoLabels->push_back(g_infoManager.GetBool(g_infoManager.TranslateString(pMsg->params[i])));
+            infoLabels->push_back(g_infoManager.EvaluateBool(pMsg->params[i]));
         }
       }
       break;
