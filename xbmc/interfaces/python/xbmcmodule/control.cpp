@@ -292,7 +292,7 @@ namespace PYXBMC
     PyXBMCGUILock();
     if (self->pGUIControl)
     {
-      CGUIControlFactory::GetAnimations(pRoot, animRect, animations);
+      CGUIControlFactory::GetAnimations(pRoot, animRect, self->iParentId, animations);
       self->pGUIControl->SetAnimations(animations);
     }
     PyXBMCGUIUnlock();
