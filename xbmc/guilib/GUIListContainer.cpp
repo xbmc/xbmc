@@ -289,13 +289,13 @@ CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, fl
 : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, VERTICAL, 200, 0)
 {
   CGUIListItemLayout layout;
-  layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, 0, 0);
+  layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, "", "");
   m_layouts.push_back(layout);
   CStdString condition;
   condition.Format("control.hasfocus(%i)", controlID);
   CStdString condition2 = "!" + condition;
   CGUIListItemLayout focusLayout;
-  focusLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, g_infoManager.TranslateString(condition2), g_infoManager.TranslateString(condition));
+  focusLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, condition2, condition);
   m_focusedLayouts.push_back(focusLayout);
   m_height = floor(m_height / (textureHeight + spaceBetweenItems)) * (textureHeight + spaceBetweenItems);
   ControlType = GUICONTAINER_LIST;

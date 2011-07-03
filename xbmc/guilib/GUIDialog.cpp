@@ -131,7 +131,7 @@ void CGUIDialog::UpdateVisibility()
 {
   if (m_visibleCondition)
   {
-    if (g_infoManager.GetBool(m_visibleCondition, g_windowManager.GetActiveWindow()))
+    if (g_infoManager.GetBoolValue(m_visibleCondition))
       Show();
     else
       Close();
