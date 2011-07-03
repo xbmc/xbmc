@@ -169,8 +169,22 @@ int CAEPackIEC61937::PackTrueHD(uint8_t *data, unsigned int size, uint8_t *dest)
   return OUT_FRAMESTOBYTES(TRUEHD_FRAME_SIZE);
 }
 
-int CAEPackIEC61937::PackDTSHD(uint8_t *data, unsigned int size, uint8_t *dest, unsigned int subtype)
+int CAEPackIEC61937::PackDTSHD(uint8_t *data, unsigned int size, uint8_t *dest, unsigned int period)
 {
+  unsigned int subtype;
+  switch(period)
+  {
+    case   512: subtype = 0; break;
+    case  1024: subtype = 1; break;
+    case  2048: subtype = 2; break;
+    case  4096: subtype = 3; break;
+    case  8192: subtype = 4; break;
+    case 16384: subtype = 5; break;
+
+    default:
+      return 0;
+  }
+
   struct IEC61937Packet *packet = (struct IEC61937Packet*)dest;
   packet->m_preamble1 = IEC61937_PREAMBLE1;
   packet->m_preamble2 = IEC61937_PREAMBLE2;
@@ -186,7 +200,8 @@ int CAEPackIEC61937::PackDTSHD(uint8_t *data, unsigned int size, uint8_t *dest, 
   SwapEndian((uint16_t*)packet->m_data, (uint16_t*)data, size >> 1);
 #endif
 
-  memset(packet->m_data + size, 0, OUT_FRAMESTOBYTES(TRUEHD_FRAME_SIZE) - IEC61937_DATA_OFFSET - size);
-  return size; 
+  unsigned int burstsize = period << 2;
+  memset(packet->m_data + size, 0, burstsize - IEC61937_DATA_OFFSET - size);
+  return burstsize;
 }
 

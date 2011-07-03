@@ -103,8 +103,7 @@ int CDVDAudioCodecPassthrough::GetSampleRate()
         return 192000;
       return 176400;
 
-    case CAEStreamInfo::STREAM_TYPE_DTSHD :
-      /* FIXME: this needs to be detected depending on HR or MA */
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
       return 192000;
 
     default:
@@ -149,7 +148,10 @@ int CDVDAudioCodecPassthrough::GetChannels()
   switch(m_info.GetDataType())
   {
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
-    case CAEStreamInfo::STREAM_TYPE_DTSHD :
+      return 8;
+
+    /* FIXME: this needs to be detected depending on HR or MA */
+    case CAEStreamInfo::STREAM_TYPE_DTSHD:
       return 8;
 
     default:
@@ -286,37 +288,21 @@ void CDVDAudioCodecPassthrough::PackTrueHD(uint8_t* data, int size)
 void CDVDAudioCodecPassthrough::PackDTSHD(uint8_t* data, int size)
 {
   static const uint8_t dtshd_start_code[10] = { 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xfe, 0xfe };
+  unsigned int period   = (GetSampleRate() * (GetChannels() / 2)) * (m_info.GetDTSBlocks() << 5) / m_info.GetSampleRate();
+  unsigned int dataSize = sizeof(dtshd_start_code) + 2 + size;
 
-  unsigned int period = GetSampleRate() * (m_info.GetDTSBlocks() >> 5) / m_info.GetSampleRate();
-  unsigned int subtype;
-  switch(period)
-  {
-    case   512: subtype = 0; break;
-    case  1024: subtype = 1; break;
-    case  2048: subtype = 3; break;
-    case  4096: subtype = 4; break;
-    case  8192: subtype = 5; break;
-    case 16384: subtype = 6; break;
-
-    default:
-      m_dataSize = 0;
-      return;
-  }
-
-  unsigned int dataSize = period << 2;
   if (!m_dtsHD || dataSize > m_dtsHDSize)
   {
     if (m_dtsHD)
       delete[] m_dtsHD;
     m_dtsHDSize = dataSize;
     m_dtsHD = new uint8_t[dataSize];
+    memcpy(m_dtsHD, dtshd_start_code, sizeof(dtshd_start_code));
   }
 
-  memset(m_dtsHD, 0, dataSize);
-  memcpy(m_dtsHD, dtshd_start_code, sizeof(dtshd_start_code));
-  m_dtsHD[sizeof(dtshd_start_code) + 0] = (uint16_t)size & 0xFF00 >> 8;
-  m_dtsHD[sizeof(dtshd_start_code) + 1] = (uint16_t)size & 0x00FF;
+  m_dtsHD[sizeof(dtshd_start_code) + 0] = ((uint16_t)size & 0xFF00) >> 8;
+  m_dtsHD[sizeof(dtshd_start_code) + 1] = ((uint16_t)size & 0x00FF);
   memcpy(m_dtsHD + sizeof(dtshd_start_code) + 2, data, size);
 
-  m_dataSize = CAEPackIEC61937::PackDTSHD(m_dtsHD, dataSize, m_packedBuffer, subtype);
+  m_dataSize = CAEPackIEC61937::PackDTSHD(m_dtsHD, dataSize, m_packedBuffer, period);
 }
