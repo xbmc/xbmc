@@ -59,6 +59,7 @@ CAEStreamInfo::CAEStreamInfo() :
   m_bufferSize(0),
   m_skipBytes (0),
   m_coreOnly  (false),
+  m_needBytes (0),
   m_syncFunc  (&CAEStreamInfo::DetectType),
   m_hasSync   (false),
   m_dataType  (STREAM_TYPE_NULL),
@@ -126,10 +127,10 @@ int CAEStreamInfo::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* 
 
       if (m_needBytes > m_bufferSize)
         continue;
-      else
-        m_needBytes = 0;
 
-      offset = (this->*m_syncFunc)(m_buffer, m_bufferSize);
+      m_needBytes = 0;
+      offset      = (this->*m_syncFunc)(m_buffer, m_bufferSize);
+
       if (m_hasSync || m_needBytes) break;
       else
       {
@@ -464,7 +465,7 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
     if (size - skip < m_fsize + 10)
     {
       /* we can assume DTS sync at this point */
-      m_syncFunc = &CAEStreamInfo::SyncDTS;
+      m_syncFunc  = &CAEStreamInfo::SyncDTS;
       m_needBytes = m_fsize + 10;
       m_fsize     = 0;
 
