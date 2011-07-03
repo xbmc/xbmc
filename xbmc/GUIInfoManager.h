@@ -719,10 +719,6 @@ protected:
   int m_nextWindowID;
   int m_prevWindowID;
 
-  // routines for caching the bool results
-  bool IsCached(int condition, int contextWindow, bool &result) const;
-  void CacheBool(int condition, int contextWindow, bool result);
-  std::map<int, bool> m_boolCache;
   std::vector<INFO::InfoBool*> m_bools;
   unsigned int m_updateTime;
 
