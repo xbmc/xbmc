@@ -67,7 +67,7 @@ public:
   };
   float x;
   float y;
-  int condition;
+  unsigned int condition;
 };
 
 /*!
