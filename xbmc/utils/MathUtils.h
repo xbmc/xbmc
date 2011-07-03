@@ -50,12 +50,12 @@ namespace MathUtils
     i = floor(x + round_to_nearest);
 #elif defined(__arm__)
     __asm__ __volatile__ (
-                          "vmov.F64 d1,%[rnd_val]             \n\t" // Copy 0.5 into a working register 
-                          "vadd.F64 %P[value],%P[value],d1    \n\t" // Add round_to_nearest to the working register
+                          "vmov.F64 d1,%[rnd_val]             \n\t" // Copy round_to_nearest into a working register 
+                          "vadd.F64 %P[value],%P[value],d1    \n\t" // Add round_to_nearest to value
                           "vcvt.S32.F64 %[result],%P[value]   \n\t" // Truncate(round towards zero) and store the result
-                          : [result] "=w"(i), [value] "+w"(x)  /* Outputs  */
-                          : [rnd_val] "Da" (round_to_nearest)
-                          );
+                          : [result] "=w"(i), [value] "+w"(x)  // Outputs
+                          : [rnd_val] "Dv" (round_to_nearest)  // Inputs
+                          : "d1");                             // Clobbers
 #else
     __asm__ __volatile__ (
                           "fadd %%st\n\t"
