@@ -99,10 +99,13 @@ int CDVDAudioCodecPassthrough::GetSampleRate()
   {
     case CAEStreamInfo::STREAM_TYPE_TRUEHD:
     case CAEStreamInfo::STREAM_TYPE_EAC3  :
-    case CAEStreamInfo::STREAM_TYPE_DTSHD :
       if (rate == 48000 || rate == 96000 || rate == 192000)
         return 192000;
       return 176400;
+
+    case CAEStreamInfo::STREAM_TYPE_DTSHD :
+      /* FIXME: this needs to be detected depending on HR or MA */
+      return 768000;
 
     default:
       return rate;
@@ -156,7 +159,8 @@ int CDVDAudioCodecPassthrough::GetChannels()
 
 int CDVDAudioCodecPassthrough::GetEncodedChannels()
 {
-  return m_channels;
+  return GetChannels();
+  //return m_channels;
 }
 
 AEChLayout CDVDAudioCodecPassthrough::GetChannelMap()
@@ -283,13 +287,34 @@ void CDVDAudioCodecPassthrough::PackDTSHD(uint8_t* data, int size)
 {
   static const uint8_t dtshd_start_code[10] = { 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xfe, 0xfe };
 
-  unsigned int needed = sizeof(dtshd_start_code) + 2 + size;
-  if (!m_dtsHD || needed > m_dtsHDSize)
+  unsigned int period = GetSampleRate() * (m_info.GetDTSBlocks() >> 5) / m_info.GetSampleRate();
+  unsigned int subtype;
+  switch(period)
+  {
+    case   512: subtype = 0; break;
+    case  1024: subtype = 1; break;
+    case  2048: subtype = 3; break;
+    case  4096: subtype = 4; break;
+    case  8192: subtype = 5; break;
+    case 16384: subtype = 6; break;
+
+    default:
+      m_dataSize = 0;
+      return;
+  }
+
+  m_dataSize = period << 2;
+  if (!m_dtsHD || m_dataSize > m_dtsHDSize)
   {
     if (m_dtsHD)
       delete[] m_dtsHD;
-    m_dtsHDSize = needed;
-    m_dtsHD = new uint8_t[needed];
-    memcpy(m_dtsHD, dtshd_start_code, sizeof(dtshd_start_code));
+    m_dtsHDSize = m_dataSize;
+    m_dtsHD = new uint8_t[m_dataSize];
   }
+
+  memset(m_dtsHD, 0, m_dataSize);
+  memcpy(m_dtsHD, dtshd_start_code, sizeof(dtshd_start_code));
+  m_dtsHD[sizeof(dtshd_start_code) + 0] = (uint16_t)size & 0xFF00 >> 8;
+  m_dtsHD[sizeof(dtshd_start_code) + 1] = (uint16_t)size & 0x00FF;
+  memcpy(m_dtsHD + sizeof(dtshd_start_code) + 2, data, size);
 }

@@ -62,6 +62,7 @@ CAEStreamInfo::CAEStreamInfo() :
   m_needBytes (0),
   m_syncFunc  (&CAEStreamInfo::DetectType),
   m_hasSync   (false),
+  m_dtsBlocks (0),
   m_dataType  (STREAM_TYPE_NULL),
   m_packFunc  (NULL)
 {
@@ -385,7 +386,6 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
     unsigned int header = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
     unsigned int hd_sync = 0;
     bool match = true;
-    unsigned int blocks;
     unsigned int srate_code;
 
     switch(header)
@@ -397,10 +397,10 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
           match = false;
           break;
         }
-        blocks     = (((data[5] & 0x7) << 4) | (data[6] & 0x3C) >> 2) + 1;
-        m_fsize    = (((data[6] & 0x3) << 12) | (data[7] << 4) | (data[8] & 0x3C) >> 2) + 1;
-        srate_code = data[9] & 0xf;
-        m_dataIsLE = false;
+        m_dtsBlocks = (((data[5] & 0x7) << 4) | (data[6] & 0x3C) >> 2) + 1;
+        m_fsize     = (((data[6] & 0x3) << 12) | (data[7] << 4) | (data[8] & 0x3C) >> 2) + 1;
+        srate_code  = data[9] & 0xf;
+        m_dataIsLE  = false;
         break;
 
       /* 14bit LE */
@@ -410,28 +410,28 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
           match = false;
           break;
         }
-        blocks     = (((data[4] & 0x7) << 4) | (data[7] & 0x3C) >> 2) + 1;
-        m_fsize    = (((data[7] & 0x3) << 12) | (data[6] << 4) | (data[9] & 0x3C) >> 2) + 1;
-        srate_code = data[8] & 0xf;
-        m_dataIsLE = true;
+        m_dtsBlocks = (((data[4] & 0x7) << 4) | (data[7] & 0x3C) >> 2) + 1;
+        m_fsize     = (((data[7] & 0x3) << 12) | (data[6] << 4) | (data[9] & 0x3C) >> 2) + 1;
+        srate_code  = data[8] & 0xf;
+        m_dataIsLE  = true;
         break;
 
       /* 16bit BE */
       case DTS_PREAMBLE_16BE:
-        m_dataIsLE = false;
-        blocks     = ((data[5] >> 2) & 0x7f) + 1;
-        m_fsize    = ((((data[5] & 0x3) << 8 | data[6]) << 4) | ((data[7] & 0xF0) >> 4)) + 1;
-        srate_code = (data[8] & 0x3C) >> 2;
-        m_dataIsLE = false;
+        m_dataIsLE  = false;
+        m_dtsBlocks = ((data[5] >> 2) & 0x7f) + 1;
+        m_fsize     = ((((data[5] & 0x3) << 8 | data[6]) << 4) | ((data[7] & 0xF0) >> 4)) + 1;
+        srate_code  = (data[8] & 0x3C) >> 2;
+        m_dataIsLE  = false;
         break;
 
       /* 16bit LE */
       case DTS_PREAMBLE_16LE:
-        m_dataIsLE = true;
-        blocks     = ((data[4] >> 2) & 0x7f) + 1;
-        m_fsize    = ((((data[4] & 0x3) << 8 | data[7]) << 4) | ((data[6] & 0xF0) >> 4)) + 1;
-        srate_code = (data[9] & 0x3C) >> 2;
-        m_dataIsLE = true;
+        m_dataIsLE  = true;
+        m_dtsBlocks = ((data[4] >> 2) & 0x7f) + 1;
+        m_fsize     = ((((data[4] & 0x3) << 8 | data[7]) << 4) | ((data[6] & 0xF0) >> 4)) + 1;
+        srate_code  = (data[9] & 0x3C) >> 2;
+        m_dataIsLE  = true;
         break;
 
 
@@ -448,7 +448,7 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
 
     bool invalid = false;
     DataType dataType;
-    switch(blocks << 5)
+    switch(m_dtsBlocks << 5)
     {
       case 512 : dataType = STREAM_TYPE_DTS_512 ; m_packFunc = &CAEPackIEC61937::PackDTS_512 ; break;
       case 1024: dataType = STREAM_TYPE_DTS_1024; m_packFunc = &CAEPackIEC61937::PackDTS_1024; break;

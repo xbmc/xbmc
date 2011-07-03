@@ -55,6 +55,7 @@ public:
   unsigned int            IsValid       () { return m_hasSync   ; }
   unsigned int            GetSampleRate () { return m_sampleRate; }
   unsigned int            GetFrameSize  () { return m_fsize     ; }
+  unsigned int            GetDTSBlocks  () { return m_dtsBlocks ; }
   enum DataType           GetDataType   () { return m_dataType  ; }
   bool                    IsLittleEndian() { return m_dataIsLE  ; }
   CAEPackIEC61937::PackFunc GetPackFunc   () { return m_packFunc  ; }
@@ -73,6 +74,7 @@ private:
   bool                      m_hasSync;
   unsigned int              m_sampleRate;
   unsigned int              m_coreSize;         /* core size for dtsHD */
+  unsigned int              m_dtsBlocks;
   unsigned int              m_fsize;
   unsigned int              m_repeat;
   int                       m_substreams;       /* used for TrueHD  */
