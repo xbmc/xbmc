@@ -44,7 +44,7 @@ void CGUIToggleButtonControl::Process(unsigned int currentTime, CDirtyRegionList
   // ask our infoManager whether we are selected or not...
   bool selected = m_bSelected;
   if (m_toggleSelect)
-    selected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
+    selected = g_infoManager.GetBoolValue(m_toggleSelect);
   if (selected != m_bSelected)
   {
     MarkDirtyRegion();
@@ -167,4 +167,9 @@ void CGUIToggleButtonControl::OnClick()
     m_selectButton.OnClick();
   else
     CGUIButtonControl::OnClick();
+}
+
+void CGUIToggleButtonControl::SetToggleSelect(const CStdString &toggleSelect)
+{
+  m_toggleSelect = g_infoManager.Register(toggleSelect, GetParentID());
 }
