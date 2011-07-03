@@ -47,6 +47,7 @@ class CEvent
   bool signaled;
   unsigned int numWaits;
 
+  CCriticalSection groupListMutex;
   std::vector<XbmcThreads::CEventGroup*> * groups;
 
   /**
@@ -63,6 +64,17 @@ class CEvent
   void addGroup(XbmcThreads::CEventGroup* group);
   void removeGroup(XbmcThreads::CEventGroup* group);
 
+  void lockGroups();
+  void unlockGroups();
+
+  class GroupLock
+  {
+    CEvent* ths;
+  public:
+    inline GroupLock(CEvent* ths_) : ths(ths_) { ths->lockGroups(); }
+    inline ~GroupLock() { ths->unlockGroups(); }
+  };
+
   // helper for the two wait methods
   inline bool prepReturn() { bool ret = signaled; if (!manualReset && numWaits == 0) signaled = false; return ret; }
 
@@ -75,7 +87,7 @@ public:
     manualReset(manual), signaled(signaled_), numWaits(0), groups(NULL), condVar(signaled) {}
 
   inline void Reset() { CSingleLock lock(mutex); signaled = false; }
-  inline void Set() { CSingleLock lock(mutex); signaled = true; condVar.notifyAll(); groupSet(); }
+  inline void Set() { GroupLock gl(this); CSingleLock lock(mutex); signaled = true; condVar.notifyAll(); groupSet(); }
 
   /**
    * This will wait up to 'milliSeconds' milliseconds for the Event
@@ -111,7 +123,7 @@ namespace XbmcThreads
 
     unsigned int numWaits;
 
-    inline void Set(CEvent* child) { CSingleLock lock(mutex); signaled = child; condVar.notifyAll(); }
+    inline void Set(CEvent* child) { signaled = child; condVar.notifyAll(); }
 
     friend class ::CEvent;
 
