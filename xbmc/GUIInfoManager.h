@@ -636,7 +636,6 @@ public:
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
   void ResetCache();
-  void ResetPersistentCache();
 
   CStdString GetItemLabel(const CFileItem *item, int info) const;
   CStdString GetItemImage(const CFileItem *item, int info) const;
@@ -738,13 +737,11 @@ protected:
 
   // routines for caching the bool results
   bool IsCached(int condition, int contextWindow, bool &result) const;
-  void CacheBool(int condition, int contextWindow, bool result, bool persistent=false);
+  void CacheBool(int condition, int contextWindow, bool result);
   std::map<int, bool> m_boolCache;
   std::vector<INFO::InfoBool*> m_bools;
   unsigned int m_updateTime;
 
-  // persistent cache
-  std::map<int, bool> m_persistentBoolCache;
   int m_libraryHasMusic;
   int m_libraryHasMovies;
   int m_libraryHasTVShows;
