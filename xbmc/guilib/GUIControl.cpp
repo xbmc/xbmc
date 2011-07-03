@@ -645,7 +645,7 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   if (m_enabled != enabled)
     MarkDirtyRegion();
 
-  m_allowHiddenFocus.Update(m_parentID, item);
+  m_allowHiddenFocus.Update(item);
   if (UpdateColors())
     MarkDirtyRegion();
   // and finally, update our control information (if not pushed)
