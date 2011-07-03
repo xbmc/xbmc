@@ -397,7 +397,9 @@ CScraperUrl CScraper::NfoUrl(const CStdString &sNfoContent)
 
     if (doc.RootElement())
     {
-      XMLUtils::GetString(doc.RootElement(), "id", scurlRet.strId);
+      TiXmlElement* pId = doc.FirstChildElement("id");
+      if (pId && pId->FirstChild())
+        scurlRet.strId = pId->FirstChild()->Value();
 
       TiXmlElement* pxeUrl = doc.FirstChildElement("url");
       if (pxeUrl)
