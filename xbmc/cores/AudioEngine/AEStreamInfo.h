@@ -40,6 +40,7 @@ public:
     STREAM_TYPE_DTS_1024,
     STREAM_TYPE_DTS_2048,
     STREAM_TYPE_DTSHD,
+    STREAM_TYPE_DTSHD_CORE,
     STREAM_TYPE_EAC3,
     STREAM_TYPE_MLP,
     STREAM_TYPE_TRUEHD
@@ -50,6 +51,7 @@ public:
 
   int AddData(uint8_t *data, unsigned int size, uint8_t **buffer = NULL, unsigned int *bufferSize = 0);
 
+  void                    SetCoreOnly   (bool value) { m_coreOnly = value; }
   unsigned int            IsValid       () { return m_hasSync   ; }
   unsigned int            GetSampleRate () { return m_sampleRate; }
   unsigned int            GetFrameSize  () { return m_fsize     ; }
@@ -65,10 +67,12 @@ private:
 
   typedef unsigned int (CAEStreamInfo::*ParseFunc)(uint8_t *data, unsigned int size);
 
+  bool                      m_coreOnly;
   unsigned int              m_needBytes;
   ParseFunc                 m_syncFunc;
   bool                      m_hasSync;
   unsigned int              m_sampleRate;
+  unsigned int              m_coreSize;         /* core size for dtsHD */
   unsigned int              m_fsize;
   unsigned int              m_repeat;
   int                       m_substreams;       /* used for TrueHD  */

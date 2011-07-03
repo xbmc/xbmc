@@ -369,6 +369,7 @@
   <string id="404">Wind</string>
   <string id="405">Dew point</string>
   <string id="406">Humidity</string>
+  <string id="407">- dtsHD capable receiver</string>
 
   <string id="409">Defaults</string>
   <string id="410">Accessing weather service</string>

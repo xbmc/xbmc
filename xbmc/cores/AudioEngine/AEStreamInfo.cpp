@@ -58,6 +58,7 @@ static const uint32_t DTSSampleRates[DTS_SRATE_COUNT] =
 CAEStreamInfo::CAEStreamInfo() :
   m_bufferSize(0),
   m_skipBytes (0),
+  m_coreOnly  (false),
   m_syncFunc  (&CAEStreamInfo::DetectType),
   m_hasSync   (false),
   m_dataType  (STREAM_TYPE_NULL),
@@ -146,7 +147,7 @@ int CAEStreamInfo::AddData(uint8_t *data, unsigned int size, uint8_t **buffer/* 
           memmove(m_buffer, m_buffer + offset, m_bufferSize);
         }
       }
-    }   
+    }
 
     /* if we got here, we acquired sync on the buffer */
 
@@ -185,16 +186,22 @@ void CAEStreamInfo::GetPacket(uint8_t **buffer, unsigned int *bufferSize)
       *buffer = new uint8_t[m_fsize];
     }
 
+    /* if it is dtsHD and we only want the core, just fetch that */
+    unsigned int size = m_fsize;
+    if (m_dataType == STREAM_TYPE_DTSHD_CORE)
+      size = m_coreSize;
+
     /* copy the data into the buffer and update the size */
-    memcpy(*buffer, m_buffer, m_fsize);
+    memcpy(*buffer, m_buffer, size);
     if (bufferSize)
-      *bufferSize = m_fsize;
+      *bufferSize = size;
   }
 
   /* remove the parsed data from the buffer */
   m_bufferSize -= m_fsize;
   memmove(m_buffer, m_buffer + m_fsize, m_bufferSize);
   m_fsize = 0;
+  m_coreSize = 0;
 }
 
 /* SYNC FUNCTIONS */
@@ -474,8 +481,13 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
            hd_size = (((data[m_fsize + 6] & 0x01) << 19) | (data[m_fsize + 7] << 11) | (data[m_fsize + 8] << 3) | ((data[m_fsize + 9] & 0xe0) >> 5)) + 1;
       else hd_size = (((data[m_fsize + 6] & 0x1f) << 11) | (data[m_fsize + 7] << 3) | ((data[m_fsize + 8] & 0xe0) >> 5)) + 1;
 
-      m_fsize += hd_size;
-      dataType = STREAM_TYPE_DTSHD;
+      /* set the type according to core or not */
+      if (m_coreOnly)
+           dataType = STREAM_TYPE_DTSHD_CORE;
+      else dataType = STREAM_TYPE_DTSHD;
+
+      m_coreSize = m_fsize;
+      m_fsize   += hd_size;
     }
 
     unsigned int sampleRate = DTSSampleRates[srate_code];
@@ -487,10 +499,12 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
       m_syncFunc   = &CAEStreamInfo::SyncDTS;
       m_repeat     = 1;
 
-      if (dataType == STREAM_TYPE_DTSHD)
-        CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - DTSHD stream detected (%dHz)", m_sampleRate);
-      else
-        CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - DTS stream detected (%dHz)", m_sampleRate);
+      switch(dataType)
+      {
+        case STREAM_TYPE_DTSHD     : CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - dtsHD stream detected (%dHz)", m_sampleRate); break;
+        case STREAM_TYPE_DTSHD_CORE: CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - dtsHD stream detected (%dHz), only using core (dts)", m_sampleRate); break;
+        default                    : CLog::Log(LOGINFO, "CAEStreamInfo::SyncDTS - dts stream detected (%dHz)", m_sampleRate);
+      }
     }
 
     return skip;
