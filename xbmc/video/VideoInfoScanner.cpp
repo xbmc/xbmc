@@ -423,7 +423,7 @@ namespace VIDEO
     if(pDlgProgress)
       pDlgProgress->ShowProgressBar(false);
 
-    g_infoManager.ResetPersistentCache();
+    g_infoManager.ResetLibraryBools();
     m_database.Close();
     return FoundSomeInfo;
   }

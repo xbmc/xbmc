@@ -4606,22 +4606,13 @@ void CGUIInfoManager::ResetCache()
   m_updateTime++;
 }
 
-void CGUIInfoManager::ResetPersistentCache()
-{
-  CSingleLock lock(m_critInfo);
-  m_persistentBoolCache.clear();
-}
-
-inline void CGUIInfoManager::CacheBool(int condition, int contextWindow, bool result, bool persistent)
+inline void CGUIInfoManager::CacheBool(int condition, int contextWindow, bool result)
 {
   // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
   // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
   CSingleLock lock(m_critInfo);
   int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
-  if (persistent)
-    m_persistentBoolCache.insert(pair<int, bool>(hash, result));
-  else
-    m_boolCache.insert(pair<int, bool>(hash, result));
+  m_boolCache.insert(pair<int, bool>(hash, result));
 }
 
 bool CGUIInfoManager::IsCached(int condition, int contextWindow, bool &result) const
@@ -4633,12 +4624,6 @@ bool CGUIInfoManager::IsCached(int condition, int contextWindow, bool &result) c
   int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
   map<int, bool>::const_iterator it = m_boolCache.find(hash);
   if (it != m_boolCache.end())
-  {
-    result = (*it).second;
-    return true;
-  }
-  it = m_persistentBoolCache.find(hash);
-  if (it != m_persistentBoolCache.end())
   {
     result = (*it).second;
     return true;
