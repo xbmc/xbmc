@@ -55,6 +55,7 @@
 #include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"
 #include "utils/md5.h"
+#include "guilib/Key.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -1779,11 +1780,8 @@ NPT_Result
 CUPnPRenderer::OnNext(PLT_ActionReference& action)
 {
     if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
-        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-        if (slideshow == NULL) {
-            return NPT_FAILURE;
-        }
-        slideshow->ShowNext();
+        CAction action(ACTION_NEXT_PICTURE);
+        g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
     } else {
         g_application.getApplicationMessenger().PlayListPlayerNext();
     }
@@ -1796,7 +1794,10 @@ CUPnPRenderer::OnNext(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPause(PLT_ActionReference& action)
 {
-    if (!g_application.IsPaused())
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        CAction action(ACTION_PAUSE);
+        g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
+    } else if (!g_application.IsPaused())
       g_application.getApplicationMessenger().MediaPause();
     return NPT_SUCCESS;
 }
@@ -1832,11 +1833,8 @@ NPT_Result
 CUPnPRenderer::OnPrevious(PLT_ActionReference& action)
 {
     if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
-        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-        if (slideshow == NULL) {
-            return NPT_FAILURE;
-        }
-        slideshow->ShowPrevious();
+        CAction action(ACTION_PREV_PICTURE);
+        g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
     } else {
         g_application.getApplicationMessenger().PlayListPlayerPrevious();
     }
@@ -1850,7 +1848,8 @@ NPT_Result
 CUPnPRenderer::OnStop(PLT_ActionReference& action)
 {
     if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
-        g_windowManager.PreviousWindow();
+        CAction action(ACTION_STOP);
+        g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
     } else {
         g_application.getApplicationMessenger().MediaStop();
     }
