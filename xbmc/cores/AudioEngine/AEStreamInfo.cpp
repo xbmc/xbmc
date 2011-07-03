@@ -180,17 +180,17 @@ void CAEStreamInfo::GetPacket(uint8_t **buffer, unsigned int *bufferSize)
   /* if the caller wants the packet */
   if (buffer)
   {
-    /* make sure the buffer is allocated and big enough */
-    if (!*buffer || !bufferSize || *bufferSize < m_fsize)
-    {
-      delete[] *buffer;
-      *buffer = new uint8_t[m_fsize];
-    }
-
     /* if it is dtsHD and we only want the core, just fetch that */
     unsigned int size = m_fsize;
     if (m_dataType == STREAM_TYPE_DTSHD_CORE)
       size = m_coreSize;
+
+    /* make sure the buffer is allocated and big enough */
+    if (!*buffer || !bufferSize || *bufferSize < size)
+    {
+      delete[] *buffer;
+      *buffer = new uint8_t[size];
+    }
 
     /* copy the data into the buffer and update the size */
     memcpy(*buffer, m_buffer, size);
@@ -487,8 +487,8 @@ unsigned int CAEStreamInfo::SyncDTS(uint8_t *data, unsigned int size)
            dataType = STREAM_TYPE_DTSHD_CORE;
       else dataType = STREAM_TYPE_DTSHD;
 
-      m_coreSize = m_fsize;
-      m_fsize   += hd_size;
+      m_coreSize  = m_fsize;
+      m_fsize    += hd_size;
     }
 
     unsigned int sampleRate = DTSSampleRates[srate_code];
