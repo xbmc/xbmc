@@ -56,6 +56,7 @@ public:
   static int PackDTS_1024(uint8_t *data, unsigned int size, uint8_t *dest);
   static int PackDTS_2048(uint8_t *data, unsigned int size, uint8_t *dest);
   static int PackTrueHD  (uint8_t *data, unsigned int size, uint8_t *dest);
+  static int PackDTSHD   (uint8_t *data, unsigned int size, uint8_t *dest, unsigned int period);
 private:
   enum IEC61937DataType
   {
