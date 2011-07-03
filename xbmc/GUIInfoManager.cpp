@@ -1792,11 +1792,7 @@ bool CGUIInfoManager::GetBoolValue(unsigned int expression, const CGUIListItem *
 // for toggle button controls and visibility of images.
 bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListItem *item)
 {
-  // check our cache
   bool bReturn = false;
-  if (!item && IsCached(condition1, contextWindow, bReturn)) // never use cache for list items
-    return bReturn;
-
   int condition = abs(condition1);
 
   if (item && condition >= LISTITEM_START && condition < LISTITEM_END)
@@ -1894,11 +1890,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   }
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
-    // cache return value
-    bool result = GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
-    if (!item)
-      CacheBool(condition1, contextWindow, result);
-    return result;
+    return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
   }
   else if (condition == SYSTEM_HASLOCKS)
     bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
@@ -2151,12 +2143,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = GetInt(condition) != 0;
     }
   }
-  // cache return value
-  if (condition1 < 0) bReturn = !bReturn;
-
-  if (!item) // don't cache item properties
-    CacheBool(condition1, contextWindow, bReturn);
-
+  if (condition1 < 0)
+    bReturn = !bReturn;
   return bReturn;
 }
 
@@ -4433,37 +4421,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
 
 void CGUIInfoManager::ResetCache()
 {
-  CSingleLock lock(m_critInfo);
-  m_boolCache.clear();
   // reset any animation triggers as well
   m_containerMoves.clear();
   m_updateTime++;
-}
-
-inline void CGUIInfoManager::CacheBool(int condition, int contextWindow, bool result)
-{
-  // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
-  // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
-  CSingleLock lock(m_critInfo);
-  int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
-  m_boolCache.insert(pair<int, bool>(hash, result));
-}
-
-bool CGUIInfoManager::IsCached(int condition, int contextWindow, bool &result) const
-{
-  // windows have id's up to 13100 or thereabouts (ie 2^14 needed)
-  // conditionals have id's up to 100000 or thereabouts (ie 2^18 needed)
-
-  CSingleLock lock(m_critInfo);
-  int hash = ((contextWindow & 0x3fff) << 18) | (condition & 0x3ffff);
-  map<int, bool>::const_iterator it = m_boolCache.find(hash);
-  if (it != m_boolCache.end())
-  {
-    result = (*it).second;
-    return true;
-  }
-
-  return false;
 }
 
 // Called from tuxbox service thread to update current status
