@@ -54,10 +54,6 @@ namespace INFO
 #define WINDOW_CONDITION_HAS_LIST_ITEMS  1
 #define WINDOW_CONDITION_IS_MEDIA_WINDOW 2
 
-#define OPERATOR_NOT  3
-#define OPERATOR_AND  2
-#define OPERATOR_OR   1
-
 #define PLAYER_HAS_MEDIA              1
 #define PLAYER_HAS_AUDIO              2
 #define PLAYER_HAS_VIDEO              3
@@ -722,21 +718,6 @@ protected:
   std::map<int, int> m_containerMoves;  // direction of list moving
   int m_nextWindowID;
   int m_prevWindowID;
-
-  class CCombinedValue
-  {
-  public:
-    CStdString m_info;    // the text expression
-    int m_id;             // the id used to identify this expression
-    std::list<int> m_postfix;  // the postfix binary expression
-    CCombinedValue& operator=(const CCombinedValue& mSrc);
-  };
-
-  int GetOperator(const char ch);
-  int TranslateBooleanExpression(const CStdString &expression);
-  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, int contextWindow, const CGUIListItem *item=NULL);
-
-  std::vector<CCombinedValue> m_CombinedValues;
 
   // routines for caching the bool results
   bool IsCached(int condition, int contextWindow, bool &result) const;

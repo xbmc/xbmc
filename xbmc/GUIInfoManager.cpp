@@ -83,14 +83,6 @@ using namespace std;
 using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace ADDON;
-
-CGUIInfoManager::CCombinedValue& CGUIInfoManager::CCombinedValue::operator =(const CGUIInfoManager::CCombinedValue& mSrc)
-{
-  this->m_info = mSrc.m_info;
-  this->m_id = mSrc.m_id;
-  this->m_postfix = mSrc.m_postfix;
-  return *this;
-}
 using namespace INFO;
 
 CGUIInfoManager::CGUIInfoManager(void)
@@ -142,25 +134,8 @@ int CGUIInfoManager::TranslateString(const CStdString &condition)
 {
   // translate $LOCALIZE as required
   CStdString strCondition(CGUIInfoLabel::ReplaceLocalize(condition));
-  if (strCondition.find_first_of("|") != strCondition.npos ||
-      strCondition.find_first_of("+") != strCondition.npos ||
-      strCondition.find_first_of("[") != strCondition.npos ||
-      strCondition.find_first_of("]") != strCondition.npos)
-  {
-    // Have a boolean expression
-    // Check if this was added before
-    vector<CCombinedValue>::iterator it;
-    for(it = m_CombinedValues.begin(); it != m_CombinedValues.end(); it++)
-    {
-      if(strCondition.CompareNoCase(it->m_info) == 0)
-        return it->m_id;
-    }
-    return TranslateBooleanExpression(strCondition);
-  }
-  //Just single command.
   return TranslateSingleString(strCondition);
 }
-
 
 /// \brief Translates a string as given by the skin into an int that we use for more
 /// efficient retrieval of data.
@@ -1677,13 +1652,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 
   int condition = abs(condition1);
 
-  if(condition >= COMBINED_VALUES_START && (condition - COMBINED_VALUES_START) < (int)(m_CombinedValues.size()) )
-  {
-    const CCombinedValue &comb = m_CombinedValues[condition - COMBINED_VALUES_START];
-    if (!EvaluateBooleanExpression(comb, bReturn, contextWindow, item))
-      bReturn = false;
-  }
-  else if (item && condition >= LISTITEM_START && condition < LISTITEM_END)
+  if (item && condition >= LISTITEM_START && condition < LISTITEM_END)
     bReturn = GetItemBool(item, condition);
   // Ethernet Link state checking
   // Will check if the Xbox has a Ethernet Link connection! [Cable in!]
@@ -3473,141 +3442,6 @@ CStdString CGUIInfoManager::GetAudioScrobblerLabel(int item)
   }
 
   return "";
-}
-
-int CGUIInfoManager::GetOperator(const char ch)
-{
-  if (ch == '[')
-    return 5;
-  else if (ch == ']')
-    return 4;
-  else if (ch == '!')
-    return OPERATOR_NOT;
-  else if (ch == '+')
-    return OPERATOR_AND;
-  else if (ch == '|')
-    return OPERATOR_OR;
-  else
-    return 0;
-}
-
-bool CGUIInfoManager::EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, int contextWindow, const CGUIListItem *item)
-{
-  // stack to save our bool state as we go
-  stack<bool> save;
-
-  for (list<int>::const_iterator it = expression.m_postfix.begin(); it != expression.m_postfix.end(); ++it)
-  {
-    int expr = *it;
-    if (expr == -OPERATOR_NOT)
-    { // NOT the top item on the stack
-      if (save.size() < 1) return false;
-      bool expr = save.top();
-      save.pop();
-      save.push(!expr);
-    }
-    else if (expr == -OPERATOR_AND)
-    { // AND the top two items on the stack
-      if (save.size() < 2) return false;
-      bool right = save.top(); save.pop();
-      bool left = save.top(); save.pop();
-      save.push(left && right);
-    }
-    else if (expr == -OPERATOR_OR)
-    { // OR the top two items on the stack
-      if (save.size() < 2) return false;
-      bool right = save.top(); save.pop();
-      bool left = save.top(); save.pop();
-      save.push(left || right);
-    }
-    else  // operator
-      save.push(GetBool(expr, contextWindow, item));
-  }
-  if (save.size() != 1) return false;
-  result = save.top();
-  return true;
-}
-
-int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
-{
-  CCombinedValue comb;
-  comb.m_info = expression;
-  comb.m_id = COMBINED_VALUES_START + m_CombinedValues.size();
-
-  // operator stack
-  stack<char> save;
-
-  CStdString operand;
-
-  for (unsigned int i = 0; i < expression.size(); i++)
-  {
-    if (GetOperator(expression[i]))
-    {
-      // cleanup any operand, translate and put into our expression list
-      if (!operand.IsEmpty())
-      {
-        int iOp = TranslateSingleString(operand);
-        if (iOp)
-          comb.m_postfix.push_back(iOp);
-        operand.clear();
-      }
-      // handle closing parenthesis
-      if (expression[i] == ']')
-      {
-        while (save.size())
-        {
-          char oper = save.top();
-          save.pop();
-
-          if (oper == '[')
-            break;
-
-          comb.m_postfix.push_back(-GetOperator(oper));
-        }
-      }
-      else
-      {
-        // all other operators we pop off the stack any operator
-        // that has a higher priority than the one we have.
-        while (!save.empty() && GetOperator(save.top()) > GetOperator(expression[i]))
-        {
-          // only handle parenthesis once they're closed.
-          if (save.top() == '[' && expression[i] != ']')
-            break;
-
-          comb.m_postfix.push_back(-GetOperator(save.top()));  // negative denotes operator
-          save.pop();
-        }
-        save.push(expression[i]);
-      }
-    }
-    else
-    {
-      operand += expression[i];
-    }
-  }
-
-  if (!operand.empty())
-  {
-    int op = TranslateSingleString(operand);
-    if (op)
-      comb.m_postfix.push_back(op);
-  }
-
-  // finish up by adding any operators
-  while (!save.empty())
-  {
-    comb.m_postfix.push_back(-GetOperator(save.top()));
-    save.pop();
-  }
-
-  // test evaluate
-  bool test;
-  if (!EvaluateBooleanExpression(comb, test, WINDOW_INVALID))
-    CLog::Log(LOGERROR, "Error evaluating boolean expression %s", expression.c_str());
-  // success - add to our combined values
-  m_CombinedValues.push_back(comb);
-  return comb.m_id;
 }
 
 void CGUIInfoManager::Clear()
