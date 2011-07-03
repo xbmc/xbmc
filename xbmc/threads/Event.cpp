@@ -24,6 +24,7 @@
 
 void CEvent::groupSet()
 {
+  // no locking, the lock should already be held
   if (groups)
   {
     for (std::vector<XbmcThreads::CEventGroup*>::iterator iter = groups->begin(); 
@@ -34,7 +35,7 @@ void CEvent::groupSet()
 
 void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 {
-  CSingleLock lock(mutex);
+  CSingleLock lock(groupListMutex);
   if (groups == NULL)
     groups = new std::vector<XbmcThreads::CEventGroup*>();
 
@@ -43,7 +44,7 @@ void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 
 void CEvent::removeGroup(XbmcThreads::CEventGroup* group)
 {
-  CSingleLock lock(mutex);
+  CSingleLock lock(groupListMutex);
   if (groups)
   {
     for (std::vector<XbmcThreads::CEventGroup*>::iterator iter = groups->begin(); iter != groups->end(); iter++)
@@ -63,8 +64,27 @@ void CEvent::removeGroup(XbmcThreads::CEventGroup* group)
   }
 }
 
-#define XB_MAX_UNSIGNED_INT ((unsigned int)-1)
+void CEvent::lockGroups()
+{
+  CSingleLock lock(groupListMutex);
+  if (groups)
+  {
+    for (std::vector<XbmcThreads::CEventGroup*>::iterator iter = groups->begin(); iter != groups->end(); iter++)
+      (*iter)->mutex.lock();
+  }
+}
 
+void CEvent::unlockGroups()
+{
+  CSingleLock lock(groupListMutex);
+  if (groups)
+  {
+    for (std::vector<XbmcThreads::CEventGroup*>::iterator iter = groups->begin(); iter != groups->end(); iter++)
+      (*iter)->mutex.unlock();
+  }
+}
+
+#define XB_MAX_UNSIGNED_INT ((unsigned int)-1)
 
 namespace XbmcThreads
 {
