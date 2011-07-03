@@ -951,6 +951,8 @@
 		7C99B73E133D372300FC2B16 /* CacheCircular.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CacheCircular.h; sourceTree = "<group>"; };
 		7C99B7A8134072CD00FC2B16 /* GUIDialogPlayEject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPlayEject.cpp; sourceTree = "<group>"; };
 		7C99B7A9134072CD00FC2B16 /* GUIDialogPlayEject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPlayEject.h; sourceTree = "<group>"; };
+		8316267613B670FF004AED87 /* README.ios */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.ios; sourceTree = "<group>"; };
+		8316348F13BAADC6004AED87 /* XBMCATV2-Info copy.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "XBMCATV2-Info copy.plist"; sourceTree = "<group>"; };
 		8D576316048677EA00EA77CD /* XBMC.frappliance */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XBMC.frappliance; sourceTree = BUILT_PRODUCTS_DIR; };
 		A192FD47135E46C800D92E9B /* IOSAudioRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRingBuffer.h; path = AudioRenderers/IOSAudioRingBuffer.h; sourceTree = "<group>"; };
 		C807119D135DB842002F601B /* InputOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InputOperations.cpp; sourceTree = "<group>"; };
@@ -2905,6 +2907,7 @@
 		089C166AFE841209C02AAC07 /* XBMC-frapp */ = {
 			isa = PBXGroup;
 			children = (
+				8316267513B670D7004AED87 /* Documentation */,
 				F56C704E131EC150000AD0F6 /* Source */,
 				F589AE6D12890B6700D8079E /* Internal Libs */,
 				F5899DC91287212700D8079E /* System Libs and Frameworks */,
@@ -2919,6 +2922,14 @@
 				8D576316048677EA00EA77CD /* XBMC.frappliance */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8316267513B670D7004AED87 /* Documentation */ = {
+			isa = PBXGroup;
+			children = (
+				8316267613B670FF004AED87 /* README.ios */,
+			);
+			name = Documentation;
 			sourceTree = "<group>";
 		};
 		F56C704E131EC150000AD0F6 /* Source */ = {
@@ -5250,6 +5261,7 @@
 				F56C7BC7131EC2DB000AD0F6 /* XBMCEAGLView.mm */,
 				F56C7BC8131EC2DB000AD0F6 /* XBMCDebugHelpers.h */,
 				F56C7BCE131EC301000AD0F6 /* XBMCATV2-Info.plist */,
+				8316348F13BAADC6004AED87 /* XBMCATV2-Info copy.plist */,
 			);
 			path = atv2;
 			sourceTree = "<group>";
@@ -6747,6 +6759,7 @@
 					HAVE_CONFIG_H,
 					HAS_SPC_CODEC,
 				);
+				GCC_THUMB_SUPPORT = YES;
 				HEADER_SEARCH_PATHS = (
 					$SRCROOT,
 					xbmc,
