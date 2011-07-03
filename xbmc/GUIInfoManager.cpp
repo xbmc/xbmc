@@ -75,6 +75,7 @@
 #include "utils/log.h"
 
 #include "addons/AddonManager.h"
+#include "interfaces/info/InfoBool.h"
 
 #define SYSHEATUPDATEINTERVAL 60000
 
@@ -90,6 +91,7 @@ CGUIInfoManager::CCombinedValue& CGUIInfoManager::CCombinedValue::operator =(con
   this->m_postfix = mSrc.m_postfix;
   return *this;
 }
+using namespace INFO;
 
 CGUIInfoManager::CGUIInfoManager(void)
 {
@@ -107,6 +109,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_currentSlide = new CFileItem;
   m_frameCounter = 0;
   m_lastFPSTime = 0;
+  m_updateTime = 0;
   ResetLibraryBools();
 }
 
@@ -1602,6 +1605,67 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
   }
   return 0;
 }
+
+unsigned int CGUIInfoManager::Register(const CStdString &expression, int context)
+{
+  CStdString condition(CGUIInfoLabel::ReplaceLocalize(expression));
+  condition.TrimLeft(" \t\r\n");
+  condition.TrimRight(" \t\r\n");
+
+  if (condition.IsEmpty())
+    return 0;
+
+  CSingleLock lock(m_critInfo);
+  // do we have the boolean expression already registered?
+  InfoBool test(condition, context);
+  for (unsigned int i = 0; i < m_bools.size(); ++i)
+  {
+    if (*m_bools[i] == test)
+      return i+1;
+  }
+
+  if (condition.find_first_of("|+[]!") != condition.npos)
+    m_bools.push_back(new InfoExpression(condition, context));
+  else
+    m_bools.push_back(new InfoSingle(condition, context));
+
+  return m_bools.size();
+}
+
+bool CGUIInfoManager::EvaluateBool(const CStdString &expression, int contextWindow)
+{
+  bool result = false;
+  unsigned int info = Register(expression, contextWindow);
+  if (info)
+    result = GetBoolValue(info);
+  return result;
+}
+
+/*
+ TODO: what to do with item-based infobools...
+ these crop up:
+ 1. if condition is between LISTITEM_START and LISTITEM_END
+ 2. if condition is STRING_IS_EMPTY, STRING_COMPARE, STRING_STR, INTEGER_GREATER_THAN and the
+    corresponding label is between LISTITEM_START and LISTITEM_END
+
+ In both cases they shouldn't be in our cache as they depend on items outside of our control atm.
+
+ We only pass a listitem object in for controls inside a listitemlayout, so I think it's probably OK
+ to not cache these, as they're "pushed" out anyway.
+
+ The problem is how do we avoid these?  The only thing we have to go on is the expression here, so I
+ guess what we have to do is call through via Update.  One thing we don't handle, however, is that the
+ majority of conditions (even inside lists) don't depend on the listitem at all.
+
+ Advantage is that we know this at creation time I think, so could perhaps signal it in IsDirty()?
+ */
+bool CGUIInfoManager::GetBoolValue(unsigned int expression, const CGUIListItem *item)
+{
+  if (expression && --expression < m_bools.size())
+    return m_bools[expression]->Get(m_updateTime, item);
+  return false;
+}
+
 // checks the condition and returns it as necessary.  Currently used
 // for toggle button controls and visibility of images.
 bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListItem *item)
@@ -3548,7 +3612,10 @@ int CGUIInfoManager::TranslateBooleanExpression(const CStdString &expression)
 
 void CGUIInfoManager::Clear()
 {
-  m_CombinedValues.clear();
+  CSingleLock lock(m_critInfo);
+  for (unsigned int i = 0; i < m_bools.size(); ++i)
+    delete m_bools[i];
+  m_bools.clear();
 }
 
 void CGUIInfoManager::UpdateFPS()
@@ -4051,6 +4118,7 @@ void CGUIInfoManager::ResetCache()
   m_boolCache.clear();
   // reset any animation triggers as well
   m_containerMoves.clear();
+  m_updateTime++;
 }
 
 void CGUIInfoManager::ResetPersistentCache()

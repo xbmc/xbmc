@@ -44,6 +44,10 @@ class CVideoInfoTag;
 class CFileItem;
 class CGUIListItem;
 class CDateTime;
+namespace INFO
+{
+  class InfoBool;
+}
 
 // conditions for window retrieval
 #define WINDOW_CONDITION_HAS_LIST_ITEMS  1
@@ -540,6 +544,34 @@ public:
   void Clear();
   virtual bool OnMessage(CGUIMessage &message);
 
+  /*! \brief Register a boolean condition/expression
+   This routine allows controls or other clients of the info manager to register
+   to receive updates of particular expressions, in a particular context (currently windows).
+
+   In the future, it will allow clients to receive pushed callbacks when the expression changes.
+
+   \param expression the boolean condition or expression
+   \param context the context window
+   \return an identifier used to reference this expression
+
+   \sa GetBoolValue
+   */
+  unsigned int Register(const CStdString &expression, int context = 0);
+
+  /*! \brief Get a previously registered boolean expression's value
+   Checks the cache and evaluates the boolean expression if required.
+   \sa Register
+   */
+  bool GetBoolValue(unsigned int expression, const CGUIListItem *item = NULL);
+
+  /*! \brief Evaluate a boolean expression
+   \param expression the expression to evaluate
+   \param context the context in which to evaluate the expression (currently windows)
+   \return the value of the evaluated expression.
+   \sa Register, GetBoolValue
+   */
+  bool EvaluateBool(const CStdString &expression, int context = 0);
+
   int TranslateString(const CStdString &strCondition);
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
   int GetInt(int info, int contextWindow = 0) const;
@@ -628,6 +660,8 @@ public:
   void ResetLibraryBools();
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
 
+  int TranslateSingleString(const CStdString &strCondition);
+
 protected:
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
@@ -635,7 +669,6 @@ protected:
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
-  int TranslateSingleString(const CStdString &strCondition);
   int TranslateListItem(const CStdString &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
@@ -707,6 +740,8 @@ protected:
   bool IsCached(int condition, int contextWindow, bool &result) const;
   void CacheBool(int condition, int contextWindow, bool result, bool persistent=false);
   std::map<int, bool> m_boolCache;
+  std::vector<INFO::InfoBool*> m_bools;
+  unsigned int m_updateTime;
 
   // persistent cache
   std::map<int, bool> m_persistentBoolCache;
