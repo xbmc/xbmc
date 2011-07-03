@@ -134,7 +134,8 @@ int CNfoFile::Scrape(ScraperPtr& scraper)
   catch (const CScraperError &sce)
   {
     CVideoInfoDownloader::ShowErrorDialog(sce);
-    return 2;
+    if (!sce.FAborted())
+      return 2;
   }
 
   if (!m_scurl.m_url.empty())
