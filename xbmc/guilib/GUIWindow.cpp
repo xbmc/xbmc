@@ -196,7 +196,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
         originElement->QueryFloatAttribute("x", &origin.x);
         originElement->QueryFloatAttribute("y", &origin.y);
         if (originElement->FirstChild())
-          origin.condition = g_infoManager.TranslateString(originElement->FirstChild()->Value());
+          origin.condition = g_infoManager.Register(originElement->FirstChild()->Value(), GetID());
         m_origins.push_back(origin);
         originElement = originElement->NextSiblingElement("origin");
       }
@@ -379,7 +379,7 @@ CPoint CGUIWindow::GetPosition() const
   for (unsigned int i = 0; i < m_origins.size(); i++)
   {
     // no condition implies true
-    if (!m_origins[i].condition || g_infoManager.GetBool(m_origins[i].condition, GetID()))
+    if (!m_origins[i].condition || g_infoManager.GetBoolValue(m_origins[i].condition))
     { // found origin
       return CPoint(m_origins[i].x, m_origins[i].y);
     }
