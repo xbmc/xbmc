@@ -105,7 +105,7 @@ int CDVDAudioCodecPassthrough::GetSampleRate()
 
     case CAEStreamInfo::STREAM_TYPE_DTSHD :
       /* FIXME: this needs to be detected depending on HR or MA */
-      return 768000;
+      return 192000;
 
     default:
       return rate;
