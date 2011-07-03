@@ -19,6 +19,7 @@
 */
 
 #include <stdarg.h>
+#include <limits>
 
 #include "Event.h"
 
@@ -95,7 +96,7 @@ namespace XbmcThreads
    */
   CEvent* CEventGroup::wait() 
   { 
-    return wait(XB_MAX_UNSIGNED_INT);
+    return wait(std::numeric_limits<unsigned int>::max());
   }
 
   /**
@@ -111,7 +112,7 @@ namespace XbmcThreads
     signaled = anyEventsSignaled(); 
     if(!signaled)
     {
-      if (milliseconds == XB_MAX_UNSIGNED_INT)
+      if (milliseconds == std::numeric_limits<unsigned int>::max())
         condVar.wait(mutex); 
       else
         condVar.wait(mutex,milliseconds); 
