@@ -138,6 +138,12 @@ config.log
 
 # /lib/asap/
 /lib/asap/Makefile
+/lib/asap/players.h
+/lib/asap/players/*.obx
+/lib/asap/win32/xbmc_asap.dll
+/lib/asap/win32/xbmc_asap.lib
+/lib/asap/xbmc/xbmc_asap.res
+
 
 # /lib/cmyth/
 lib/cmyth/Makefile
@@ -298,6 +304,7 @@ lib/cmyth/Makefile
 /project/Win32BuildSetup/dependencies/pcrecpp.dll
 /project/Win32BuildSetup/dependencies/python26.dll
 /project/Win32BuildSetup/dependencies/libcdio-12.dll
+/project/Win32BuildSetup/dependencies/libcdio-10.dll
 /project/Win32BuildSetup/dependencies/vcredist
 
 # /project/Win32BuildSetup/
@@ -336,6 +343,7 @@ lib/cmyth/Makefile
 /project/VS2010Express/libs
 /project/VS2010Express/objs
 /project/VS2010Express/ipch
+/project/VS2010Express/*.vsp
 
 # /skin/
 /skin/Confluence/media/Textures.xbt
@@ -394,6 +402,7 @@ lib/cmyth/Makefile
 /system/players/paplayer/timidity.dll
 /system/players/paplayer/libFLAC.dll
 /system/players/paplayer/xbmc_asap.dll
+/system/players/paplayer/wavpack.dll
 
 # /system/players/dsplayer
 /system/players/dsplayer/libsubs.dll
@@ -650,6 +659,7 @@ lib/cmyth/Makefile
 /lib/libmpeg2/libtool
 /lib/libmpeg2/configure.lineno
 /lib/libmpeg2/Makefile
+/lib/libmpeg2/src/*.exe
 
 # /lib/libmpeg2/doc/
 /lib/libmpeg2/doc/Makefile
