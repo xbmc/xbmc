@@ -1429,6 +1429,7 @@ typedef struct AVCodecContext {
 #define FF_BUG_DC_CLIP          4096
 #define FF_BUG_MS               8192 ///< Work around various bugs in Microsoft's broken decoders.
 #define FF_BUG_TRUNCATED       16384
+#define FF_BUG_DXVA2_SCALING_LIST_ZIGZAG 32768 ///< Work around for DXVA2 and old UVD/UVD+ ATI video cards
 //#define FF_BUG_FAKE_SCALABILITY 16 //Autodetection should work 100%.
 
     /**
