@@ -572,10 +572,10 @@ namespace PYXBMC
     PyXBMCGUILock();
     int id = g_windowManager.GetTopMostModalDialogID();
     if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
+    bool ret = g_infoManager.EvaluateBool(cLine,id);
     PyXBMCGUIUnlock();
 
-    int ret = g_infoManager.TranslateString(cLine);
-    return Py_BuildValue((char*)"b", g_infoManager.GetBool(ret,id));
+    return Py_BuildValue((char*)"b", ret);
   }
 
   // getGlobalIdleTime() method
