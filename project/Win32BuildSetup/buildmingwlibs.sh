@@ -6,6 +6,7 @@ TOUCH=/bin/touch
 RM=/bin/rm
 NOPROMPT=0
 MAKECLEAN=""
+MAKEFLAGS=""
 
 function throwerror ()
 {
@@ -48,6 +49,10 @@ if [ -f $MAKECLEANFILE ]; then
   MAKECLEAN="clean"
 fi
 
+if [ $NUMBER_OF_PROCESSORS > 1 ]; then
+  MAKEFLAGS=-j$NUMBER_OF_PROCESSORS
+fi
+
 # compile our mingw dlls
 echo "################################"
 echo "## compiling mingw libs"
@@ -81,7 +86,7 @@ cd /xbmc/lib/timidity/
 if  [ "$MAKECLEAN" == "clean" ]; then
   make -f Makefile.win32 clean
 fi
-make -f Makefile.win32
+make -f Makefile.win32 $MAKEFLAGS
 setfilepath /xbmc/system/players/paplayer
 checkfiles timidity.dll
 echo "##### building of timidity dlls done #####"
