@@ -268,8 +268,8 @@ void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
       m_genre_type = EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE;
     } else {
       //XBMC->Log(LOG_DEBUG, "epg::setgenre: TODO mapping of MPTV's '%s' genre.", Genre.c_str());
-      m_genre_type     = genreType;
-      m_genre_subtype  = genreSubType;
+      m_genre_type     = EPG_GENRE_USE_STRING;
+      m_genre_subtype  = 0;
     }
   } else {
     m_genre_type = 0;

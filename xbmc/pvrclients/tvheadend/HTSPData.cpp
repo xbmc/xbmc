@@ -225,24 +225,25 @@ PVR_ERROR CHTSPData::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_
         EPG_TAG broadcast;
         memset(&broadcast, 0, sizeof(EPG_TAG));
 
-        broadcast.iUniqueBroadcastId = event.id;
-        broadcast.strTitle           = event.title.c_str();
-        broadcast.iChannelNumber     = event.chan_id >= 0 ? event.chan_id : channel.iUniqueId;
-        broadcast.startTime          = event.start;
-        broadcast.endTime            = event.stop;
-        broadcast.strPlotOutline     = ""; // unused
-        broadcast.strPlot            = event.descs.c_str();
-        broadcast.strIconPath        = ""; // unused
-        broadcast.iGenreType         = (event.content & 0x0F) << 4;
-        broadcast.iGenreSubType      = event.content & 0xF0;
-        broadcast.firstAired         = 0;  // unused
-        broadcast.iParentalRating    = 0;  // unused
-        broadcast.iStarRating        = 0;  // unused
-        broadcast.bNotify            = false;
-        broadcast.iSeriesNumber      = 0;  // unused
-        broadcast.iEpisodeNumber     = 0;  // unused
-        broadcast.iEpisodePartNumber = 0;  // unused
-        broadcast.strEpisodeName     = ""; // unused
+        broadcast.iUniqueBroadcastId  = event.id;
+        broadcast.strTitle            = event.title.c_str();
+        broadcast.iChannelNumber      = event.chan_id >= 0 ? event.chan_id : channel.iUniqueId;
+        broadcast.startTime           = event.start;
+        broadcast.endTime             = event.stop;
+        broadcast.strPlotOutline      = ""; // unused
+        broadcast.strPlot             = event.descs.c_str();
+        broadcast.strIconPath         = ""; // unused
+        broadcast.iGenreType          = (event.content & 0x0F) << 4;
+        broadcast.iGenreSubType       = event.content & 0xF0;
+        broadcast.strGenreDescription = "";
+        broadcast.firstAired          = 0;  // unused
+        broadcast.iParentalRating     = 0;  // unused
+        broadcast.iStarRating         = 0;  // unused
+        broadcast.bNotify             = false;
+        broadcast.iSeriesNumber       = 0;  // unused
+        broadcast.iEpisodeNumber      = 0;  // unused
+        broadcast.iEpisodePartNumber  = 0;  // unused
+        broadcast.strEpisodeName      = ""; // unused
 
         PVR->TransferEpgEntry(handle, &broadcast);
 

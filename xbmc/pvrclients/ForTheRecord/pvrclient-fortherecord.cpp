@@ -198,24 +198,25 @@ PVR_ERROR cPVRClientForTheRecord::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &c
           if (epg.Parse(response[index]))
           {
             m_epg_id_offset++;
-            broadcast.iUniqueBroadcastId = m_epg_id_offset;
-            broadcast.strTitle           = epg.Title();
-            broadcast.iChannelNumber     = channel.iChannelNumber;
-            broadcast.startTime          = epg.StartTime();
-            broadcast.endTime            = epg.EndTime();
-            broadcast.strPlotOutline     = epg.Subtitle();
-            broadcast.strPlot            = epg.Description();
-            broadcast.strIconPath        = "";
-            broadcast.iGenreType         = 0;
-            broadcast.iGenreSubType      = 0;
-            broadcast.firstAired         = 0;
-            broadcast.iParentalRating    = 0;
-            broadcast.iStarRating        = 0;
-            broadcast.bNotify            = false;
-            broadcast.iSeriesNumber      = 0;
-            broadcast.iEpisodeNumber     = 0;
-            broadcast.iEpisodePartNumber = 0;
-            broadcast.strEpisodeName     = "";
+            broadcast.iUniqueBroadcastId  = m_epg_id_offset;
+            broadcast.strTitle            = epg.Title();
+            broadcast.iChannelNumber      = channel.iChannelNumber;
+            broadcast.startTime           = epg.StartTime();
+            broadcast.endTime             = epg.EndTime();
+            broadcast.strPlotOutline      = epg.Subtitle();
+            broadcast.strPlot             = epg.Description();
+            broadcast.strIconPath         = "";
+            broadcast.iGenreType          = 0;
+            broadcast.iGenreSubType       = 0;
+            broadcast.strGenreDescription = "";
+            broadcast.firstAired          = 0;
+            broadcast.iParentalRating     = 0;
+            broadcast.iStarRating         = 0;
+            broadcast.bNotify             = false;
+            broadcast.iSeriesNumber       = 0;
+            broadcast.iEpisodeNumber      = 0;
+            broadcast.iEpisodePartNumber  = 0;
+            broadcast.strEpisodeName      = "";
 
             PVR->TransferEpgEntry(handle, &broadcast);
           }
