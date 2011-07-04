@@ -893,12 +893,12 @@ namespace PYXBMC
   }
   
   PyDoc_STRVAR(subHashAndFileSize__doc__,
-    "subHashAndFileSize(file)\n"
+    "subHashAndFileSize(file) -- Calculate subtitle hash and size.\n"
     "\n"
-    "file        : file to calculate subtitle hash and size for"
+    "file        : file to calculate subtitle hash and size for\n"
     "\n"
     "example:\n"
-    " size,hash = xbmcvfs.subHashAndFileSize(file)\n"); 
+    " - size,hash = xbmcvfs.subHashAndFileSize(file)\n"); 
   PyObject* XBMC_subHashAndFileSize(PyObject *self, PyObject *args, PyObject *kwds)
   {
     PyObject *f_line;
