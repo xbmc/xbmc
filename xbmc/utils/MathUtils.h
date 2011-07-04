@@ -35,7 +35,7 @@ namespace MathUtils
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
     const float round_to_nearest = 0.5f;
     int i;
-    
+
 #ifndef _LINUX
     __asm
     {
@@ -50,7 +50,7 @@ namespace MathUtils
     i = floor(x + round_to_nearest);
 #elif defined(__arm__)
     __asm__ __volatile__ (
-                          "vmov.F64 d1,%[rnd_val]             \n\t" // Copy round_to_nearest into a working register 
+                          "vmov.F64 d1,%[rnd_val]             \n\t" // Copy round_to_nearest into a working register
                           "vadd.F64 %P[value],%P[value],d1    \n\t" // Add round_to_nearest to value
                           "vcvt.S32.F64 %[result],%P[value]   \n\t" // Truncate(round towards zero) and store the result
                           : [result] "=w"(i), [value] "+w"(x)  // Outputs
@@ -68,17 +68,17 @@ namespace MathUtils
 #endif
     return (i);
   }
-  
+
   inline int truncate_int(double x)
   {
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
-    
+
 #if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
     const float round_towards_m_i = -0.5f;
 #endif
     int i;
-    
+
 #ifndef _LINUX
     __asm
     {
@@ -107,12 +107,12 @@ namespace MathUtils
       i = -i;
     return (i);
   }
-  
+
   inline int64_t abs(int64_t a)
   {
     return (a < 0) ? -a : a;
   }
-  
+
   inline void hack()
   {
     // stupid hack to keep compiler from dropping these
