@@ -229,7 +229,7 @@ namespace EPG
      * @param iID The genre type ID.
      * @param iSubID The genre subtype ID.
      */
-    void SetGenre(int iID, int iSubID);
+    void SetGenre(int iID, int iSubID, const char* strGenre);
 
     /*!
      * @brief Get the first air date of this event.
