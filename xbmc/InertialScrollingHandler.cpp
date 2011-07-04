@@ -102,12 +102,12 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
       //CLog::Log(LOGDEBUG,"velocity: %f dec: %f time: %f", m_iFlickVelocity.y, m_inertialDeacceleration.y, absolutInertialTime);      
       
       //check if the signs are equal - which would mean we deaccelerated to long and reversed the direction
-      if( m_inertialDeacceleration.y < 0 == m_iFlickVelocity.y < 0 )
+      if( (m_inertialDeacceleration.y < 0) == (m_iFlickVelocity.y < 0) )
       {
         m_iFlickVelocity.y = 0;
       }
       
-      if( m_inertialDeacceleration.x < 0 == m_iFlickVelocity.x < 0 )
+      if( (m_inertialDeacceleration.x < 0) == (m_iFlickVelocity.x < 0) )
       {
         m_iFlickVelocity.x = 0;
       }      

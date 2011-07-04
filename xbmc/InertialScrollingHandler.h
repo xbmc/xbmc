@@ -21,8 +21,8 @@
  *
  */
 
-#include "Geometry.h"
-#include "Key.h"
+#include "guilib/Geometry.h"
+#include "guilib/Key.h"
 
 //time for reaching velocitiy 0 in secs
 #define TIME_TO_ZERO_SPEED 1.0
