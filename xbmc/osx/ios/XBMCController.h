@@ -36,6 +36,7 @@
   CGPoint lastGesturePoint;
   int lastAllowedGestures;
   bool touchBeginSignaled;
+  bool inertialScrollAborted;
 	
   UIInterfaceOrientation orientation;
 
@@ -45,14 +46,15 @@
 @property CGPoint lastGesturePoint;
 @property int lastAllowedGestures;
 @property bool touchBeginSignaled;
+@property bool inertialScrollAborted;
 @property CGSize screensize;
 @property XBMC_Event lastEvent;
 
 // message from which our instance is obtained
-- (void)pauseAnimation;
-- (void)resumeAnimation;
-- (void)startAnimation;
-- (void)stopAnimation;
+- (void) pauseAnimation;
+- (void) resumeAnimation;
+- (void) startAnimation;
+- (void) stopAnimation;
 - (void) sendKey: (XBMCKey) key;
 - (void) observeDefaultCenterStuff: (NSNotification *) notification;
 - (void) initDisplayLink;
