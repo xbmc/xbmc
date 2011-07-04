@@ -130,11 +130,9 @@ JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer 
     if (additionalInfo)
     {
       for (int index = 0; index < items.Size(); index++)
-      {
         videodatabase.GetTvShowInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      }
     }
-    HandleFileItemList("tvshowid", false, "tvshows", items, parameterObject, result);
+    HandleFileItemList("tvshowid", true, "tvshows", items, parameterObject, result);
   }
 
   videodatabase.Close();
