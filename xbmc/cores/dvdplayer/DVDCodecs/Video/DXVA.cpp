@@ -313,14 +313,6 @@ static bool IsL41LimitedATI()
   return false;
 }
 
-static bool HasZigZagScalingBug()
-{
-  D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
-  if(AIdentifier.VendorId == PCIV_ATI)
-    return true;
-  return false;
-}
-
 static bool HasVP3WidthBug(AVCodecContext *avctx)
 {
   // Some nVidia VP3 hardware cannot do certain macroblock widths
@@ -589,10 +581,10 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   avctx->release_buffer  = RelBufferS;
   avctx->hwaccel_context = m_context;
 
-  if (HasZigZagScalingBug())
+  if (IsL41LimitedATI())
   {
-#ifdef FF_BUG_DXVA2_SCALING_LIST_ZIGZAG
-    avctx->workaround_bugs |= FF_BUG_DXVA2_SCALING_LIST_ZIGZAG;
+#ifdef FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG
+    m_context->workaround |= FF_BUG_DXVA2_SCALING_LIST_ZIGZAG;
 #else
     CLog::Log(LOGWARNING, "DXVA - video card with different scaling list zigzag order detected, but no support in libavcodec");
 #endif
