@@ -62,6 +62,7 @@ namespace ADDON
 #endif
 
 class CKaraokeLyricsManager;
+class CInertialScrollingHandler;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
@@ -195,7 +196,7 @@ public:
 
   static bool OnEvent(XBMC_Event& newEvent);
 
-
+  CInertialScrollingHandler* getInertialScrollingHandler();
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux& getNetwork();
@@ -369,6 +370,7 @@ protected:
   bool InitDirectoriesWin32();
   void CreateUserDirs();
 
+  CInertialScrollingHandler *m_pInertialScrollingHandler;
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux m_network;
