@@ -78,7 +78,7 @@ void PVR::CPVREpgInfoTag::Update(const EPG_TAG &tag)
   SetTitle(tag.strTitle);
   SetPlotOutline(tag.strPlotOutline);
   SetPlot(tag.strPlot);
-  SetGenre(tag.iGenreType, tag.iGenreSubType);
+  SetGenre(tag.iGenreType, tag.iGenreSubType, tag.strGenreDescription);
   SetParentalRating(tag.iParentalRating);
   SetUniqueBroadcastID(tag.iUniqueBroadcastId);
   SetNotify(tag.bNotify);
