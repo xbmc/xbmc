@@ -126,130 +126,6 @@ void CLinuxRenderer::CopyAlpha(int w, int h, unsigned char* src, unsigned char *
   }
 }
 
-void CLinuxRenderer::DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride)
-{
-  // OSD is drawn after draw_slice / put_image
-  // this means that the buffer has already been handed off to the RGB converter
-  // solution: have separate OSD textures
-
-  // if it's down the bottom, use sub alpha blending
-  //  m_SubsOnOSD = (y0 > (int)(m_sourceRect.bottom - m_sourceRect.top) * 4 / 5);
-
-  //Sometimes happens when switching between fullscreen and small window
-  if( w == 0 || h == 0 )
-  {
-    CLog::Log(LOGINFO, "Zero dimensions specified to DrawAlpha, skipping");
-    return;
-  }
-
-  //use temporary rect for calculation to avoid messing with module-rect while other functions might be using it.
-  DRAWRECT osdRect;
-  RESOLUTION res = GetResolution();
-
-  if (w > m_iOSDTextureWidth)
-  {
-    //delete osdtextures so they will be recreated with the correct width
-    for (int i = 0; i < 2; ++i)
-    {
-      DeleteOSDTextures(i);
-    }
-    m_iOSDTextureWidth = w;
-  }
-  else
-  {
-    // clip to buffer
-    if (w > m_iOSDTextureWidth) w = m_iOSDTextureWidth;
-    if (h > g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top)
-    {
-      h = g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top;
-    }
-  }
-
-  // scale to fit screen
-  const CRect rv = g_graphicsContext.GetViewWindow();
-
-  // Vobsubs are defined to be 720 wide.
-  // NOTE: This will not work nicely if we are allowing mplayer to render text based subs
-  //       as it'll want to render within the pixel width it is outputting.
-
-  float xscale;
-  float yscale;
-
-  if(true /*isvobsub*/) // xbox_video.cpp is fixed to 720x576 osd, so this should be fine
-  { // vobsubs are given to us unscaled
-    // scale them up to the full output, assuming vobsubs have same
-    // pixel aspect ratio as the movie, and are 720 pixels wide
-
-    float pixelaspect = m_fSourceFrameRatio * m_sourceHeight / m_sourceWidth;
-    xscale = rv.Width() / 720.0f;
-    yscale = xscale * g_settings.m_ResInfo[res].fPixelRatio / pixelaspect;
-  }
-  else
-  { // text subs/osd assume square pixels, but will render to full size of view window
-    // if mplayer could be fixed to use monitorpixelaspect when rendering it's osd
-    // this would give perfect output, however monitorpixelaspect currently doesn't work
-    // that way
-    xscale = 1.0f;
-    yscale = 1.0f;
-  }
-
-  // horizontal centering, and align to bottom of subtitles line
-  osdRect.left = rv.x1 + (rv.Width() - (float)w * xscale) / 2.0f;
-  osdRect.right = osdRect.left + (float)w * xscale;
-  float relbottom = ((float)(g_settings.m_ResInfo[res].iSubtitles - g_settings.m_ResInfo[res].Overscan.top)) / (g_settings.m_ResInfo[res].Overscan.bottom - g_settings.m_ResInfo[res].Overscan.top);
-  osdRect.bottom = rv.y1 + rv.Height() * relbottom;
-  osdRect.top = osdRect.bottom - (float)h * yscale;
-
-  int iOSDBuffer = (m_iOSDRenderBuffer + 1) % m_NumOSDBuffers;
-
-  //if new height is heigher than current osd-texture height, recreate the textures with new height.
-  if (h > m_iOSDTextureHeight[iOSDBuffer])
-  {
-    CSingleLock lock(g_graphicsContext);
-
-    DeleteOSDTextures(iOSDBuffer);
-    m_iOSDTextureHeight[iOSDBuffer] = h;
-    // Create osd textures for this buffer with new size
-    m_pOSDYTexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer],
-		32, RMASK, GMASK, BMASK, AMASK);
-
-    m_pOSDATexture[iOSDBuffer] = SDL_CreateRGBSurface(SDL_HWSURFACE, m_iOSDTextureWidth, m_iOSDTextureHeight[iOSDBuffer],
-		32, RMASK, GMASK, BMASK, AMASK);
-
-    if (m_pOSDYTexture[iOSDBuffer] == NULL || m_pOSDATexture[iOSDBuffer] == NULL)
-    {
-      CLog::Log(LOGERROR, "Could not create OSD/Sub textures");
-      DeleteOSDTextures(iOSDBuffer);
-      return;
-    }
-    else
-    {
-      CLog::Log(LOGDEBUG, "Created OSD textures (%i)", iOSDBuffer);
-    }
-  }
-
-  //We know the resources have been used at this point (or they are the second buffer, wich means they aren't in use anyways)
-  //reset these so the gpu doesn't try to block on these
-  if (SDL_LockSurface(m_pOSDYTexture[iOSDBuffer]) == 0 &&
-      SDL_LockSurface(m_pOSDATexture[iOSDBuffer]) == 0)
-  {
-    //clear the textures
-    memset(m_pOSDYTexture[iOSDBuffer]->pixels, 0, m_pOSDYTexture[iOSDBuffer]->pitch*m_iOSDTextureHeight[iOSDBuffer]);
-    memset(m_pOSDATexture[iOSDBuffer]->pixels, 0, m_pOSDATexture[iOSDBuffer]->pitch*m_iOSDTextureHeight[iOSDBuffer]);
-
-    //draw the osd/subs
-    CopyAlpha(w, h, src, srca, stride, (BYTE*)m_pOSDYTexture[iOSDBuffer]->pixels, (BYTE*)m_pOSDATexture[iOSDBuffer]->pixels, m_pOSDYTexture[iOSDBuffer]->pitch);
-  }
-  SDL_UnlockSurface(m_pOSDYTexture[iOSDBuffer]);
-  SDL_UnlockSurface(m_pOSDATexture[iOSDBuffer]);
-
-  //set module variables to calculated values
-  m_OSDRect = osdRect;
-  m_OSDWidth = (float)w;
-  m_OSDHeight = (float)h;
-  m_OSDRendered = true;
-}
-
 //********************************************************************************************************
 void CLinuxRenderer::RenderOSD()
 {
@@ -505,7 +381,6 @@ void CLinuxRenderer::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
 void CLinuxRenderer::FlipPage(int source)
 {
-// TODO: if image buffer changed (due to DrawSlice) than re-copy its content (convert from YUV).
 
   // copy back buffer to screen buffer
 #ifndef USE_SDL_OVERLAY
@@ -515,53 +390,6 @@ void CLinuxRenderer::FlipPage(int source)
 #endif
 
   return;
-}
-
-
-unsigned int CLinuxRenderer::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
-{
-  BYTE *s;
-  BYTE *d;
-  int i, p;
-
-  YV12Image &im = m_image;
-  // copy Y
-  p = 0;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
-  }
-
-  w >>= im.cshift_x; h >>= im.cshift_y;
-  x >>= im.cshift_x; y >>= im.cshift_y;
-
-  // copy U
-  p = 1;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
-  }
-
-  // copy V
-  p = 2;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
-  }
-
-  return 0;
 }
 
 unsigned int CLinuxRenderer::PreInit()

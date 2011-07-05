@@ -135,8 +135,6 @@ public:
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
-  virtual void         DrawAlpha(int x0, int y0, int w, int h, unsigned char *src, unsigned char *srca, int stride);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();

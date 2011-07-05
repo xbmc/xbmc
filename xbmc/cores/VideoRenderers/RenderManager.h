@@ -85,13 +85,6 @@ public:
     if (m_pRenderer)
       m_pRenderer->ReleaseImage(source, preserve);
   }
-  inline unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->DrawSlice(src, stride, w, h, x, y);
-    return 0;
-  }
 
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
