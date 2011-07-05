@@ -961,7 +961,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.cpp" />
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.cpp" />
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.cpp" />
@@ -1830,7 +1829,6 @@
     <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\emu_socket\emu_socket.h" />
     <ClInclude Include="..\..\xbmc\cores\DllLoader\exports\util\EmuFileWrapper.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.h" />
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRenderer.h" />
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\OverlayRendererDX.h" />
