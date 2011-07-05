@@ -584,7 +584,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
   if (IsL41LimitedATI())
   {
 #ifdef FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG
-    m_context->workaround |= FF_BUG_DXVA2_SCALING_LIST_ZIGZAG;
+    m_context->workaround |= FF_DXVA2_WORKAROUND_SCALING_LIST_ZIGZAG;
 #else
     CLog::Log(LOGWARNING, "DXVA - video card with different scaling list zigzag order detected, but no support in libavcodec");
 #endif
