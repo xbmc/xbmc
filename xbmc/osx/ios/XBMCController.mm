@@ -66,9 +66,7 @@ XBMCEAGLView  *m_glView;
 @implementation XBMCController
 @synthesize lastGesturePoint;
 @synthesize lastEvent;
-@synthesize lastAllowedGestures;
 @synthesize touchBeginSignaled;
-@synthesize inertialScrollAborted;
 @synthesize screensize;
 
 //--------------------------------------------------------------
@@ -164,13 +162,8 @@ XBMCEAGLView  *m_glView;
     if( [sender state] == UIGestureRecognizerStateBegan )
     {
       CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
-      CGUIMessage message(GUI_MSG_GESTURE_NOTIFY, 0, 0, point.x, point.y);
-      if (g_windowManager.SendMessage(message))
-      {
-        lastAllowedGestures = message.GetParam1();
-        touchBeginSignaled = false;
-        lastGesturePoint = point;
-      }
+      touchBeginSignaled = false;
+      lastGesturePoint = point;
     }
     
     if( [sender state] == UIGestureRecognizerStateChanged )
@@ -180,12 +173,12 @@ XBMCEAGLView  *m_glView;
       CGFloat yMovement=point.y - lastGesturePoint.y;
       CGFloat xMovement=point.x - lastGesturePoint.x;
       
-      if( xMovement && (lastAllowedGestures & EVENT_RESULT_PAN_HORIZONTAL) )
+      if( xMovement )
       {
         bNotify = true;
       }
       
-      if( yMovement && (lastAllowedGestures & EVENT_RESULT_PAN_VERTICAL) )
+      if( yMovement )
       {
         bNotify = true;
       }
@@ -195,12 +188,12 @@ XBMCEAGLView  *m_glView;
         if( !touchBeginSignaled )
         {
           g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_BEGIN, 0, (float)point.x, (float)point.y, 
-                                                            0, 0), WINDOW_INVALID);
+                                                            0, 0), WINDOW_INVALID,false);
           touchBeginSignaled = true;
         }    
         
         g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_PAN, 0, (float)point.x, (float)point.y,
-                                                          xMovement, yMovement), WINDOW_INVALID);
+                                                          xMovement, yMovement), WINDOW_INVALID,false);
         lastGesturePoint = point;
       }
     }
@@ -209,9 +202,8 @@ XBMCEAGLView  *m_glView;
     {
       CGPoint velocity = [sender velocityInView:m_glView];
       //signal end of pan - this will start inertial scrolling with deacceleration in CApplication
-      g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_END, 0, (float)velocity.x, (float)velocity.y, (int)lastGesturePoint.x, (int)lastGesturePoint.y),WINDOW_INVALID);
+      g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_END, 0, (float)velocity.x, (float)velocity.y, (int)lastGesturePoint.x, (int)lastGesturePoint.y),WINDOW_INVALID,false);
       touchBeginSignaled = false;
-      lastAllowedGestures = 0;
     }
   }
 }
@@ -252,28 +244,22 @@ XBMCEAGLView  *m_glView;
   {
     UITouch *touch = [touches anyObject];
     
-    if( g_application.getInertialScrollingHandler()->IsScrolling() )
+    if( [touches count] == 1 && [touch tapCount] == 1)
     {
-      g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_ABORT_SCROLL),WINDOW_INVALID);
-      inertialScrollAborted = true;
+      lastGesturePoint = [touch locationInView:m_glView];    
+      XBMC_Event newEvent;
+      memset(&newEvent, 0, sizeof(newEvent));
+      
+      newEvent.type = XBMC_MOUSEBUTTONDOWN;
+      newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
+      newEvent.button.button = XBMC_BUTTON_LEFT;
+      newEvent.button.x = lastGesturePoint.x;
+      newEvent.button.y = lastGesturePoint.y;  
+      CWinEventsIOS::MessagePush(&newEvent);    
+      
+      /* Store the tap action for later */
+      lastEvent = newEvent;
     }
-    else
-      if( [touches count] == 1 && [touch tapCount] == 1)
-      {
-        lastGesturePoint = [touch locationInView:m_glView];    
-        XBMC_Event newEvent;
-        memset(&newEvent, 0, sizeof(newEvent));
-        
-        newEvent.type = XBMC_MOUSEBUTTONDOWN;
-        newEvent.button.type = XBMC_MOUSEBUTTONDOWN;
-        newEvent.button.button = XBMC_BUTTON_LEFT;
-        newEvent.button.x = lastGesturePoint.x;
-        newEvent.button.y = lastGesturePoint.y;  
-        CWinEventsIOS::MessagePush(&newEvent);    
-        
-        /* Store the tap action for later */
-        lastEvent = newEvent;
-      }
   }
 }
 //--------------------------------------------------------------
@@ -286,17 +272,8 @@ XBMCEAGLView  *m_glView;
 {
   UITouch *touch = [touches anyObject];
   
-  if( [touch tapCount] == 1 )
+  if( [touches count] == 1 && [touch tapCount] == 1 )
   {
-    
-    //if this tap has aborted the scroll
-    //don't issue a mouse click!
-    if( inertialScrollAborted )
-    {
-      inertialScrollAborted = false;
-      return;
-    }
-    
     XBMC_Event newEvent = lastEvent;
     
     newEvent.type = XBMC_MOUSEBUTTONUP;

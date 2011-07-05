@@ -23,10 +23,19 @@
 #include "InertialScrollingHandler.h"
 #include "Application.h"
 #include "utils/TimeUtils.h"
+#include "guilib/Key.h"
+
+//time for reaching velocitiy 0 in secs
+#define TIME_TO_ZERO_SPEED 1.0
+//time for decreasing the deaccelleration (for doing a smooth stop) in secs
+#define TIME_FOR_DEACELLERATION_DECREASE 0.5
+//the factor for decreasing the deacceleration
+#define DEACELLERATION_DECREASE_FACTOR 0.9
+
 
 CInertialScrollingHandler::CInertialScrollingHandler()
 : m_bScrolling(false)
-, m_bScrollingAborted(false) //flag indicating an abort of scrolling
+, m_bAborting(false)
 , m_iFlickVelocity(CPoint(0,0))
 , m_iLastGesturePoint(CPoint(0,0))
 , m_inertialDeacceleration(CPoint(0,0))
@@ -34,31 +43,40 @@ CInertialScrollingHandler::CInertialScrollingHandler()
 {
 }
 
-bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction& action)
+bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
 {
   bool ret = false;//return value - false no inertial scrolling - true - inertial scrolling
   
   //reset screensaver during pan
-  if( action.GetID() == ACTION_GESTURE_PAN )
+  if( action->GetID() == ACTION_GESTURE_PAN )
   {
     g_application.ResetScreenSaver();
     return false;
   }
+    
+  //mouse click aborts scrolling
+  if( m_bScrolling && action->GetID() == ACTION_MOUSE_LEFT_CLICK )
+  {
+    ret = true;
+    m_bAborting = true;//lets abort
+  }
   
   //on begin/tap stop all inertial scrolling
-  if ( m_bScrolling && action.GetID() == ACTION_GESTURE_ABORT_SCROLL )
+  if ( action->GetID() == ACTION_GESTURE_BEGIN )
   {
-    m_bScrollingAborted = true;
-    ret = true;
+    m_bScrolling = false;
+    //wakeup screensaver on pan begin
+    g_application.ResetScreenSaver();    
+    g_application.WakeUpScreenSaverAndDPMS();    
   }
   else//do we need to animate inertial scrolling?
   {
-    if (action.GetID() == ACTION_GESTURE_END && ( action.GetAmount(0) || action.GetAmount(1) ) )
+    if (action->GetID() == ACTION_GESTURE_END && ( action->GetAmount(0) || action->GetAmount(1) ) )
     {
-      m_iFlickVelocity.x = action.GetAmount(0);//in pixels per sec
-      m_iFlickVelocity.y = action.GetAmount(1);//in pixels per sec     
-      m_iLastGesturePoint.x = action.GetAmount(2);//last gesture point x
-      m_iLastGesturePoint.y = action.GetAmount(3);//last gesture point y
+      m_iFlickVelocity.x = action->GetAmount(0);//in pixels per sec
+      m_iFlickVelocity.y = action->GetAmount(1);//in pixels per sec     
+      m_iLastGesturePoint.x = action->GetAmount(2);//last gesture point x
+      m_iLastGesturePoint.y = action->GetAmount(3);//last gesture point y
       
       //calc deacceleration for fullstop in TIME_TO_ZERO_SPEED secs
       //v = a*t + v0 -> set v = 0 because we want to stop scrolling
@@ -67,7 +85,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction& action)
       m_inertialDeacceleration.y = -1*m_iFlickVelocity.y/TIME_TO_ZERO_SPEED;
       
       //CLog::Log(LOGDEBUG, "initial vel: %f dec: %f", m_iFlickVelocity.y, m_inertialDeacceleration.y);
-      m_inertialStartTime = CTimeUtils::GetTimeMS();//start time of inertial scrolling
+      m_inertialStartTime = CTimeUtils::GetFrameTime();//start time of inertial scrolling
       ret = true;
       m_bScrolling = true;//activate the inertial scrolling animation
     }
@@ -132,19 +150,19 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
     }   
     else//no movement -> done
     {
-      m_bScrollingAborted = true;
+      m_bAborting = true;//we are done
     }
   }
   
   //if we are done - or we where aborted
-  if( m_bScrollingAborted )
+  if( m_bAborting )
   {
-    m_bScrolling = false; //stop scrolling
-    m_bScrollingAborted = false;
-    m_iFlickVelocity.x = 0;
-    m_iFlickVelocity.y = 0;      
     //fire gesture end action
     g_application.OnAction(CAction(ACTION_GESTURE_END, 0, (float)0.0, (float)0.0, (float)0.0, (float)0.0));
+    m_bAborting = false;
+    m_bScrolling = false; //stop scrolling
+    m_iFlickVelocity.x = 0;
+    m_iFlickVelocity.y = 0;      
   }
   
   return true;

@@ -34,9 +34,7 @@
   /* Touch handling */
   CGSize screensize;
   CGPoint lastGesturePoint;
-  int lastAllowedGestures;
   bool touchBeginSignaled;
-  bool inertialScrollAborted;
 	
   UIInterfaceOrientation orientation;
 
@@ -44,9 +42,7 @@
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
 @property CGPoint lastGesturePoint;
-@property int lastAllowedGestures;
 @property bool touchBeginSignaled;
-@property bool inertialScrollAborted;
 @property CGSize screensize;
 @property XBMC_Event lastEvent;
 

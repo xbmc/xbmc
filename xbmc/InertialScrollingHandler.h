@@ -22,15 +22,9 @@
  */
 
 #include "guilib/Geometry.h"
-#include "guilib/Key.h"
 
-//time for reaching velocitiy 0 in secs
-#define TIME_TO_ZERO_SPEED 1.0
-//time for decreasing the deaccelleration (for doing a smooth stop) in secs
-#define TIME_FOR_DEACELLERATION_DECREASE 0.5
-//the factor for decreasing the deacceleration
-#define DEACELLERATION_DECREASE_FACTOR 0.9
 class CApplication;
+class CAction;
 
 class CInertialScrollingHandler
 {
@@ -41,12 +35,12 @@ class CInertialScrollingHandler
     bool IsScrolling(){return m_bScrolling;}    
     
   private:
-    bool CheckForInertialScrolling(const CAction& action);
+    bool CheckForInertialScrolling(const CAction* action);
     bool ProcessInertialScroll(float frameTime);
   
     //-------------------------------------------vars for inertial scrolling animation with gestures
     bool          m_bScrolling;        //flag indicating that we currently do the inertial scrolling emulation
-    bool          m_bScrollingAborted; //flag indicating an abort of scrolling
+    bool          m_bAborting;         //flag indicating an abort of scrolling
     CPoint        m_iFlickVelocity;
     CPoint        m_iLastGesturePoint;
     CPoint        m_inertialDeacceleration;

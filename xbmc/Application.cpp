@@ -2311,7 +2311,7 @@ bool CApplication::OnAction(const CAction &action)
 
   //if the action would start or stop inertial scrolling
   //by gesture - bypass the normal OnAction handler of current window
-  if( !m_pInertialScrollingHandler->CheckForInertialScrolling(action) )
+  if( !m_pInertialScrollingHandler->CheckForInertialScrolling(&action) )
   {
     // in normal case
     // just pass the action to the current window and let it handle it
@@ -5328,11 +5328,6 @@ bool CApplication::AlwaysProcess(const CAction& action)
   }
 
   return false;
-}
-
-CInertialScrollingHandler* CApplication::getInertialScrollingHandler()
-{
-   return m_pInertialScrollingHandler;
 }
 
 CApplicationMessenger& CApplication::getApplicationMessenger()

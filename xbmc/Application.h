@@ -196,7 +196,6 @@ public:
 
   static bool OnEvent(XBMC_Event& newEvent);
 
-  CInertialScrollingHandler* getInertialScrollingHandler();
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux& getNetwork();
