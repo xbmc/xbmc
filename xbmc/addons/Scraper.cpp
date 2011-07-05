@@ -417,6 +417,13 @@ CScraperUrl CScraper::NfoUrl(const CStdString &sNfoContent)
 
     if (doc.RootElement())
     {
+      /*
+       NOTE: Scrapers might return invalid xml with some loose
+       elements (eg. '<url>http://some.url</url><id>123</id>').
+       Since XMLUtils::GetString() is assuming well formed xml
+       with start and end-tags we're not able to use it.
+       Check for the desired Elements instead.
+      */
       TiXmlElement* pId = doc.FirstChildElement("id");
       if (pId && pId->FirstChild())
         scurlRet.strId = pId->FirstChild()->Value();
