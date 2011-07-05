@@ -4,7 +4,7 @@
       <altname>Logitech Cordless RumblePad 2</altname>
       <button id="1">FullScreen</button>
       <button id="2">Select</button>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
       <button id="7">FullScreen</button>
       <button id="8">ContextMenu</button>
       <button id="10">XBMC.ActivateWindow(Home)</button>

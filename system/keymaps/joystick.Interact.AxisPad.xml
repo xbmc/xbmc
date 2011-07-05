@@ -42,12 +42,12 @@
       <button id="3">Select</button>  <!--x --> 
       <button id="4">ParentDir</button>   <!--circle --> 
       <button id="2">Queue</button> <!-- tri -->
-      <button id="5">PreviousMenu</button> <!-- l1 -->
+      <button id="5">ParentDir</button> <!-- l1 -->
       <button id="7"></button>  <!-- l2 -->      
       <button id="9">Screenshot</button> <!-- l3 - left analog -->
       <button id="6"></button>    <!-- r1 -->      
       <button id="8"></button>  <!-- r2 -->
-      <button id="10">PreviousMenu</button> <!-- R3 - right analog -->      
+      <button id="10">ParentDir</button> <!-- R3 - right analog -->      
       <button id="11"></button>  <!-- select/Escape -->      
       <button id="12">XBMC.ActivateWindow(PlayerControls)</button>  <!-- start/enter --> 
       <button id="20"></button> <!-- Toggle Switch-->

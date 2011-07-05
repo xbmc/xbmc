@@ -44,7 +44,7 @@
       <button id="2">Select</button>  <!--x --> 
       <button id="3">ParentDir</button>   <!--circle --> 
       <button id="4">Queue</button> <!-- tri -->
-      <button id="6">PreviousMenu</button> <!-- l1 -->
+      <button id="6">ParentDir</button> <!-- l1 -->
       <button id="7"></button>  <!-- l2 -->      
       <button id="11">Screenshot</button> <!-- l3 - left analog -->
       <button id="5"></button>    <!-- r1 -->      

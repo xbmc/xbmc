@@ -95,6 +95,7 @@
 #define ACTION_SELECT_ITEM             7
 #define ACTION_HIGHLIGHT_ITEM          8
 #define ACTION_PARENT_DIR              9
+// ACTION_PREVIOUS_MENU is being deprecated in favour of ACTION_PARENT_DIR as the 'back' action'.
 #define ACTION_PREVIOUS_MENU          10
 #define ACTION_SHOW_INFO              11
 

@@ -54,7 +54,7 @@
       <backspace>ParentDir</backspace>
       <m>ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
-      <escape>PreviousMenu</escape>
+      <escape>ParentDir</escape>
       <i>Info</i>
       <menu>ContextMenu</menu>
       <c>ContextMenu</c>
@@ -331,7 +331,7 @@
       <plus>ZoomIn</plus>
       <minus>ZoomOut</minus>
       <r>Rotate</r>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </SlideShow>
   <ScreenCalibration>
@@ -379,7 +379,7 @@
       <escape>Fullscreen</escape>
       <return>Select</return>
       <enter>Select</enter>      <!-- backspace>Fullscreen</backspace -->
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </VideoMenu>
   <OSDVideoSettings>
@@ -452,74 +452,74 @@
   </Scripts>
   <Weather>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
-      <key id='65446'>PreviousMenu</key>
+      <backspace>ParentDir</backspace>
+      <key id='65446'>ParentDir</key>
     </keyboard>
   </Weather>
   <Settings>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </Settings>
   <MyPicturesSettings>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </MyPicturesSettings>
   <MyProgramsSettings>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </MyProgramsSettings>
   <MyWeatherSettings>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </MyWeatherSettings>
   <MyMusicSettings>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </MyMusicSettings>
   <SystemSettings>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </SystemSettings>
   <MyVideosSettings>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </MyVideosSettings>
   <NetworkSettings>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </NetworkSettings>
   <AppearanceSettings>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </AppearanceSettings>
   <Profiles>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </Profiles>
   <systeminfo>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </systeminfo>
   <shutdownmenu>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
       <s>Close</s>  
     </keyboard>
   </shutdownmenu>
   <submenu>
     <keyboard>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </submenu>
   <MusicInformation>
@@ -555,13 +555,13 @@
   <LockSettings>
     <keyboard>
       <escape>Close</escape>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </LockSettings>
   <ProfileSettings>
     <keyboard>
       <escape>Close</escape>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </ProfileSettings>
   <PictureInfo>

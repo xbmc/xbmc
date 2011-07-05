@@ -60,7 +60,7 @@
       <!-- Prev		-->      <button id="32">ParentDir</button>
       <!-- Guide  	-->      <button id="65">FullScreen</button>
       <!-- Info  	-->      <button id="31">Info</button>
-      <!-- Exit 	-->      <button id="51">PreviousMenu</button>
+      <!-- Exit 	-->      <button id="51">ParentDir</button>
       <!-- Channel Up  	-->      <button id="71">PageUp</button>
       <!-- Channel Down -->      <button id="72">PageDown</button>
       <!-- looks like buttons below are duplicates of those above
@@ -258,13 +258,13 @@
     <joystick name="Harmony">
       <!-- menu       	-->      <button id="6">Close</button>
       <!-- Exit 	-->      <button id="51">Close</button>
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
     <joystick name="Harmony">
       <!-- menu       	-->      <button id="6">OSD</button>
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
       <!-- Info  	-->      <button id="31">Info</button>
     </joystick>
   </VideoMenu>
@@ -377,72 +377,72 @@
   </NumericInput>
   <Weather>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </Weather>
   <Settings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </Settings>
   <MyPicturesSettings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </MyPicturesSettings>
   <MyProgramsSettings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </MyProgramsSettings>
   <MyWeatherSettings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </MyWeatherSettings>
   <MyMusicSettings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </MyMusicSettings>
   <SystemSettings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </SystemSettings>
   <MyVideosSettings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </MyVideosSettings>
   <NetworkSettings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </NetworkSettings>
   <AppearanceSettings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </AppearanceSettings>
   <Profiles>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </Profiles>
   <systeminfo>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </systeminfo>
   <shutdownmenu>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </shutdownmenu>
   <submenu>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </submenu>
   <MusicInformation>
@@ -460,13 +460,13 @@
   <LockSettings>
     <joystick name="Harmony">
       <!-- menu       	-->      <button id="6">Close</button>
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </LockSettings>
   <ProfileSettings>
     <joystick name="Harmony">
       <!-- menu       	-->      <button id="6">Close</button>
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- Prev		-->      <button id="32">ParentDir</button>
     </joystick>
   </ProfileSettings>
   <PictureInfo>
