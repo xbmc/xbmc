@@ -51,13 +51,13 @@
       <pageplus>PageUp</pageplus>
       <pageminus>PageDown</pageminus>
       <back>ParentDir</back>
-      <menu>PreviousMenu</menu>
+      <menu>ParentDir</menu>
       <title>ContextMenu</title>
       <info>Info</info>
       <skipplus>SkipNext</skipplus>
       <skipminus>SkipPrevious</skipminus>
       <display>FullScreen</display>
-      <start>PreviousMenu</start>
+      <start>ParentDir</start>
       <record>Screenshot</record>
       <volumeplus>VolumeUp</volumeplus>
       <volumeminus>VolumeDown</volumeminus>
@@ -219,7 +219,7 @@
       <skipminus>PreviousPicture</skipminus>
       <title>Info</title>
       <select>Rotate</select>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </SlideShow>
   <ScreenCalibration>
@@ -243,7 +243,7 @@
   </SelectDialog>
   <VideoOSD>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
       <menu>Close</menu>
       <start>Close</start>
     </remote>
@@ -251,7 +251,7 @@
   <VideoMenu>
     <remote>
       <menu>OSD</menu>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
       <info>Info</info>
       <title>CodecInfo</title>
       <zero>Number0</zero>
@@ -362,12 +362,12 @@
   </NumericInput>
   <Weather>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </Weather>
   <Settings>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </Settings>
   <AddonBrowser>
@@ -391,62 +391,62 @@
   </TextViewer>
   <MyPicturesSettings>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </MyPicturesSettings>
   <MyProgramsSettings>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </MyProgramsSettings>
   <MyWeatherSettings>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </MyWeatherSettings>
   <MyMusicSettings>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </MyMusicSettings>
   <SystemSettings>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </SystemSettings>
   <MyVideosSettings>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </MyVideosSettings>
   <NetworkSettings>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </NetworkSettings>
   <AppearanceSettings>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </AppearanceSettings>
   <Profiles>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </Profiles>
   <systeminfo>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </systeminfo>
   <shutdownmenu>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </shutdownmenu>
   <submenu>
     <remote>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </submenu>
   <MusicInformation>
@@ -464,13 +464,13 @@
   <LockSettings>
     <remote>
       <menu>Close</menu>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </LockSettings>
   <ProfileSettings>
     <remote>
       <menu>Close</menu>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
     </remote>
   </ProfileSettings>
   <PictureInfo>

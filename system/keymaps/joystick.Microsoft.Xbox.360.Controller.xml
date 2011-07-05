@@ -53,7 +53,7 @@
       <button id="14">Right</button>
       <button id="15"></button>
       <button id="16"></button>
-      <button id="17">PreviousMenu</button>
+      <button id="17">ParentDir</button>
       <axis limit="-1" id="5">VolumeUp</axis>
       <axis limit="+1" id="5">VolumeDown</axis>
       <axis limit="-1" id="4">AnalogSeekBack</axis>
@@ -184,7 +184,7 @@
       <button id="1">NextCalibration</button>
       <button id="3">ResetCalibration</button>
       <button id="6">NextResolution</button>
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </ScreenCalibration>
   <GUICalibration>
@@ -192,7 +192,7 @@
       <button id="1">NextCalibration</button>
       <button id="3">ResetCalibration</button>
       <button id="6">NextResolution</button>
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </GUICalibration>
   <SelectDialog>
@@ -203,8 +203,8 @@
   <VideoOSD>
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="9">Close</button>
-      <button id="17">PreviousMenu</button>
-      <button id="2">PreviousMenu</button>
+      <button id="17">ParentDir</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
@@ -212,7 +212,7 @@
       <button id="5">AspectRatio</button>
       <button id="2">Stop</button>
       <button id="9">OSD</button>
-      <button id="17">PreviousMenu</button>
+      <button id="17">ParentDir</button>
       <button id="6">Info</button>
       <button id="3">CodecInfo</button>
     </joystick>
@@ -295,12 +295,12 @@
   </GamepadInput>
   <Weather>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </Weather>
   <Settings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </Settings>
   <AddonInformation>
@@ -320,62 +320,62 @@
   </TextViewer>
   <MyPicturesSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </MyPicturesSettings>
   <MyProgramsSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </MyProgramsSettings>
   <MyWeatherSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </MyWeatherSettings>
   <MyMusicSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </MyMusicSettings>
   <SystemSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </SystemSettings>
   <MyVideosSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </MyVideosSettings>
   <NetworkSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </NetworkSettings>
   <AppearanceSettings>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </AppearanceSettings>
   <Profiles>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </Profiles>
   <systeminfo>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </systeminfo>
   <shutdownmenu>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </shutdownmenu>
   <submenu>
     <joystick name="Xbox 360 Wireless Receiver">
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </submenu>
   <MusicInformation>
@@ -391,15 +391,15 @@
   <LockSettings>
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="9">Close</button>
-      <button id="2">PreviousMenu</button>
-      <button id="17">PreviousMenu</button>
+      <button id="2">ParentDir</button>
+      <button id="17">ParentDir</button>
     </joystick>
   </LockSettings>
   <ProfileSettings>
     <joystick name="Xbox 360 Wireless Receiver">
       <button id="9">Close</button>
-      <button id="2">PreviousMenu</button>
-      <button id="17">PreviousMenu</button>
+      <button id="2">ParentDir</button>
+      <button id="17">ParentDir</button>
     </joystick>
   </ProfileSettings>
 </keymap>

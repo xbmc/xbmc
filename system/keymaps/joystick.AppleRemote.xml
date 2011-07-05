@@ -35,7 +35,7 @@
       <!-- left       -->      <button id="3">Left</button>
       <!-- right      -->      <button id="4">Right</button>
       <!-- center     -->      <button id="5">Select</button>
-      <!-- menu       -->      <button id="6">PreviousMenu</button>
+      <!-- menu       -->      <button id="6">ParentDir</button>
       <!-- hold center-->      <button id="7">Fullscreen</button>
       <!-- hold menu  -->      <button id="8">ContextMenu</button>
 

@@ -44,7 +44,7 @@
       <white>ContextMenu</white>
       <black/>
       <start>XBMC.ActivateWindow(PlayerControls)</start>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
       <dpadleft>Left</dpadleft>
       <dpadright>Right</dpadright>
       <dpadup>Up</dpadup>
@@ -197,7 +197,7 @@
       <A>NextCalibration</A>
       <black>ResetCalibration</black>
       <white>NextResolution</white>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </ScreenCalibration>
   <GUICalibration>
@@ -205,7 +205,7 @@
       <leftthumbstick>AnalogMove</leftthumbstick>
       <A>NextCalibration</A>
       <black>ResetCalibration</black>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </GUICalibration>
   <SelectDialog>
@@ -216,8 +216,8 @@
   <VideoOSD>
     <gamepad>
       <start>Close</start>
-      <back>PreviousMenu</back>
-      <B>PreviousMenu</B>
+      <back>ParentDir</back>
+      <B>ParentDir</B>
       <black>CodecInfo</black>
       <white>Info</white>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
@@ -229,7 +229,7 @@
       <Y>AspectRatio</Y>
       <B>Stop</B>
       <start>OSD</start>
-      <back>PreviousMenu</back>
+      <back>ParentDir</back>
       <white>Info</white>
       <black>CodecInfo</black>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
@@ -328,12 +328,12 @@
   </GamepadInput>
   <Weather>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </Weather>
   <Settings>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </Settings>
   <AddonInformation>
@@ -353,62 +353,62 @@
   </TextViewer>
   <MyPicturesSettings>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </MyPicturesSettings>
   <MyProgramsSettings>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </MyProgramsSettings>
   <MyWeatherSettings>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </MyWeatherSettings>
   <MyMusicSettings>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </MyMusicSettings>
   <SystemSettings>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </SystemSettings>
   <MyVideosSettings>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </MyVideosSettings>
   <NetworkSettings>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </NetworkSettings>
   <AppearanceSettings>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </AppearanceSettings>
   <Profiles>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </Profiles>
   <systeminfo>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </systeminfo>
   <shutdownmenu>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </shutdownmenu>
   <submenu>
     <gamepad>
-      <B>PreviousMenu</B>
+      <B>ParentDir</B>
     </gamepad>
   </submenu>
   <MusicInformation>
@@ -424,15 +424,15 @@
   <LockSettings>
     <gamepad>
       <start>Close</start>
-      <B>PreviousMenu</B>
-      <back>PreviousMenu</back>
+      <B>ParentDir</B>
+      <back>ParentDir</back>
     </gamepad>
   </LockSettings>
   <ProfileSettings>
     <gamepad>
       <start>Close</start>
-      <B>PreviousMenu</B>
-      <back>PreviousMenu</back>
+      <B>ParentDir</B>
+      <back>ParentDir</back>
     </gamepad>
   </ProfileSettings>
   <PictureInfo>

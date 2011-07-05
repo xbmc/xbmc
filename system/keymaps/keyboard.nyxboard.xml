@@ -41,7 +41,7 @@
       <backspace>ParentDir</backspace>
       <m>ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
-      <escape>PreviousMenu</escape>
+      <escape>ParentDir</escape>
       <i>Info</i>
 	  <f9>Info</f9>
       <menu>ContextMenu</menu>
@@ -289,7 +289,7 @@
       <plus>ZoomIn</plus>
       <minus>ZoomOut</minus>
       <r>Rotate</r>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </SlideShow>
   <ScreenCalibration>
@@ -337,7 +337,7 @@
       <escape>Fullscreen</escape>
       <return>Select</return>
       <enter>Select</enter>      <!-- backspace>Fullscreen</backspace -->
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </VideoMenu>
   <OSDVideoSettings>
@@ -410,74 +410,74 @@
   </Scripts>
   <Weather>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
-      <key id='65446'>PreviousMenu</key>
+      <backspace>ParentDir</backspace>
+      <key id='65446'>ParentDir</key>
     </keyboard>
   </Weather>
   <Settings>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </Settings>
   <MyPicturesSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </MyPicturesSettings>
   <MyProgramsSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </MyProgramsSettings>
   <MyWeatherSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </MyWeatherSettings>
   <MyMusicSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </MyMusicSettings>
   <SystemSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </SystemSettings>
   <MyVideosSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </MyVideosSettings>
   <NetworkSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </NetworkSettings>
   <AppearanceSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </AppearanceSettings>
   <Profiles>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </Profiles>
   <systeminfo>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </systeminfo>
   <shutdownmenu>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
       <s>Close</s>  
     </keyboard>
   </shutdownmenu>
   <submenu>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </submenu>
   <MusicInformation>
@@ -513,13 +513,13 @@
   <LockSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
       <escape>Close</escape>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </LockSettings>
   <ProfileSettings>
     <keyboard name="Motorola Nyxboard Hybrid">
       <escape>Close</escape>
-      <backspace>PreviousMenu</backspace>
+      <backspace>ParentDir</backspace>
     </keyboard>
   </ProfileSettings>
   <PictureInfo>

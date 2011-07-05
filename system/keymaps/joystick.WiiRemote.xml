@@ -42,7 +42,7 @@
       <button id="3">Left</button>
       <button id="4">Right</button>
       <button id="5">Select</button>
-      <button id="6">PreviousMenu</button>
+      <button id="6">ParentDir</button>
       <button id="7">VolumeDown</button>
       <button id="8">XBMC.ActivateWindow(Home)</button>
       <button id="9">VolumeUp</button>

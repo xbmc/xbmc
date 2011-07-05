@@ -149,7 +149,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </shutdownmenu>
   
@@ -157,7 +157,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </submenu>
 
@@ -165,7 +165,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </Settings>
 
@@ -197,7 +197,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </MyPicturesSettings>
 
@@ -205,7 +205,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </MyProgramsSettings>
 
@@ -213,7 +213,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </MyWeatherSettings>
 
@@ -221,7 +221,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </MyMusicSettings>
 
@@ -229,7 +229,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </SystemSettings>
 
@@ -237,7 +237,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </MyVideosSettings>
 
@@ -245,7 +245,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </NetworkSettings>
 
@@ -253,7 +253,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="32">PreviousMenu</button>
+      <button id="32">ParentDir</button>
     </joystick>
   </AppearanceSettings>
 
@@ -261,7 +261,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </Profiles>
 
@@ -269,7 +269,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </systeminfo>
 
@@ -293,7 +293,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </LockSettings>
 
@@ -301,7 +301,7 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
+      <button id="3">ParentDir</button>
     </joystick>
   </ProfileSettings>
 

@@ -56,7 +56,7 @@
       <button id="14">Right</button>
       <button id="15">Down</button>
       <button id="16">Left</button>
-      <button id="17">PreviousMenu</button>
+      <button id="17">ParentDir</button>
       <axis limit="-1" id="5">VolumeDown</axis>
       <axis limit="+1" id="5">VolumeUp</axis>
       <axis limit="-1" id="4">AnalogSeekBack</axis>
@@ -229,7 +229,7 @@
       <button id="1">NextCalibration</button>
       <button id="3">ResetCalibration</button>
       <button id="6">NextResolution</button>
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </ScreenCalibration>
   <GUICalibration>
@@ -240,7 +240,7 @@
       <button id="1">NextCalibration</button>
       <button id="3">ResetCalibration</button>
       <button id="6">NextResolution</button>
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </GUICalibration>
   <SelectDialog>
@@ -257,8 +257,8 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
       <button id="9">Close</button>
-      <button id="17">PreviousMenu</button>
-      <button id="2">PreviousMenu</button>
+      <button id="17">ParentDir</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
@@ -269,7 +269,7 @@
       <button id="5">AspectRatio</button>
       <button id="2">Stop</button>
       <button id="9">OSD</button>
-      <button id="17">PreviousMenu</button>
+      <button id="17">ParentDir</button>
       <button id="6">Info</button>
       <button id="3">CodecInfo</button>
     </joystick>
@@ -388,7 +388,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </Weather>
   <Settings>
@@ -396,7 +396,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </Settings>
   <AddonInformation>
@@ -428,7 +428,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </MyPicturesSettings>
   <MyProgramsSettings>
@@ -436,7 +436,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </MyProgramsSettings>
   <MyWeatherSettings>
@@ -444,7 +444,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </MyWeatherSettings>
   <MyMusicSettings>
@@ -452,7 +452,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </MyMusicSettings>
   <SystemSettings>
@@ -460,7 +460,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </SystemSettings>
   <MyVideosSettings>
@@ -468,7 +468,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </MyVideosSettings>
   <NetworkSettings>
@@ -476,7 +476,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </NetworkSettings>
   <AppearanceSettings>
@@ -484,7 +484,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </AppearanceSettings>
   <Profiles>
@@ -492,7 +492,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </Profiles>
   <systeminfo>
@@ -500,7 +500,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </systeminfo>
   <shutdownmenu>
@@ -508,7 +508,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </shutdownmenu>
   <submenu>
@@ -516,7 +516,7 @@
       <altname>Mad Catz MicroCON</altname>
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
-      <button id="2">PreviousMenu</button>
+      <button id="2">ParentDir</button>
     </joystick>
   </submenu>
   <MusicInformation>
@@ -541,8 +541,8 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
       <button id="9">Close</button>
-      <button id="2">PreviousMenu</button>
-      <button id="17">PreviousMenu</button>
+      <button id="2">ParentDir</button>
+      <button id="17">ParentDir</button>
     </joystick>
   </LockSettings>
   <ProfileSettings>
@@ -551,8 +551,8 @@
       <altname>Logitech Xbox Cordless Controller</altname>
       <altname>Microsoft X-Box pad (Japan)</altname> 
       <button id="9">Close</button>
-      <button id="2">PreviousMenu</button>
-      <button id="17">PreviousMenu</button>
+      <button id="2">ParentDir</button>
+      <button id="17">ParentDir</button>
     </joystick>
   </ProfileSettings>
 </keymap>
