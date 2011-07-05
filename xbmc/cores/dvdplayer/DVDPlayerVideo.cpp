@@ -823,33 +823,22 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
   enum EOverlay
   { OVERLAY_AUTO // select mode auto
   , OVERLAY_GPU  // render osd using gpu
-  , OVERLAY_VID  // render osd directly on video memory
   , OVERLAY_BUF  // render osd on buffer
   } render = OVERLAY_AUTO;
 
-  if(render == OVERLAY_AUTO)
+  if(pSource->format == DVDVideoPicture::FMT_YUV420P)
   {
-    render = OVERLAY_GPU;
-
 #ifdef _LINUX
     // for now use cpu for ssa overlays as it currently allocates and
     // frees textures for each frame this causes a hugh memory leak
     // on some mesa intel drivers
-    if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) && pSource->format == DVDVideoPicture::FMT_YUV420P)
-      render = OVERLAY_VID;
+
+    if(m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU)
+    || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE)
+    || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) )
+      render = OVERLAY_BUF;
 #endif
 
-    if(render == OVERLAY_VID)
-    {
-      if( m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SPU)
-       || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_IMAGE)
-       || m_pOverlayContainer->ContainsOverlayType(DVDOVERLAY_TYPE_SSA) )
-        render = OVERLAY_BUF;
-    }
-  }
-
-  if(pSource->format == DVDVideoPicture::FMT_YUV420P)
-  {
     if(render == OVERLAY_BUF)
     {
       // rendering spu overlay types directly on video memory costs a lot of processing power.
@@ -878,6 +867,9 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
     }
   }
 
+  if(render == OVERLAY_AUTO)
+    render = OVERLAY_GPU;
+
   {
     CSingleLock lock(*m_pOverlayContainer);
 
@@ -902,14 +894,8 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest
         if (render == OVERLAY_GPU)
           g_renderManager.AddOverlay(pOverlay, pts2);
 
-        if(pSource->format == DVDVideoPicture::FMT_YUV420P)
-        {
-          if     (render == OVERLAY_BUF)
-            CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts2);
-          else if(render == OVERLAY_VID)
-            CDVDOverlayRenderer::Render(pDest, pOverlay, pts2);
-        }
-
+        if (render == OVERLAY_BUF)
+          CDVDOverlayRenderer::Render(m_pTempOverlayPicture, pOverlay, pts2);
       }
     }
 
