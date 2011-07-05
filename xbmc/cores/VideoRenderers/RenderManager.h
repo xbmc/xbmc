@@ -43,6 +43,7 @@ class CRenderCapture;
 namespace DXVA { class CProcessor; }
 namespace VAAPI { class CSurfaceHolder; }
 class CVDPAU;
+struct DVDVideoPicture;
 
 #define ERRORBUFFSIZE 30
 
@@ -70,70 +71,11 @@ public:
   bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
   bool IsConfigured();
 
-  // a call to GetImage must be followed by a call to releaseimage if getimage was successfull
-  // failure to do so will result in deadlock
-  inline int GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      return m_pRenderer->GetImage(image, source, readonly);
-    return -1;
-  }
-  inline void ReleaseImage(int source = AUTOSOURCE, bool preserve = false)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->ReleaseImage(source, preserve);
-  }
+  int AddVideoPicture(DVDVideoPicture& picture);
 
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
-
-#ifdef HAS_DX
-  void AddProcessor(DXVA::CProcessor* processor, int64_t id)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->AddProcessor(processor, id);
-  }
-#endif
-
-#ifdef HAVE_LIBVDPAU
-  void AddProcessor(CVDPAU* vdpau)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->AddProcessor(vdpau);
-  }
-#endif
-
-#ifdef HAVE_LIBOPENMAX
-  void AddProcessor(COpenMax *openmax, DVDVideoPicture *picture)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->AddProcessor(openmax, picture);
-  }
-#endif
-
-#ifdef HAVE_LIBVA
-  void AddProcessor(VAAPI::CHolder& holder)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->AddProcessor(holder);
-  }
-#endif
-
-#ifdef HAVE_VIDEOTOOLBOXDECODER
-  void AddProcessor(CDVDVideoCodecVideoToolBox* vtb, DVDVideoPicture *picture)
-  {
-    CSharedLock lock(m_sharedSection);
-    if (m_pRenderer)
-      m_pRenderer->AddProcessor(vtb, picture);
-  }
-#endif
 
   void AddOverlay(CDVDOverlay* o, double pts)
   {
