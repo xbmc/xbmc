@@ -63,11 +63,13 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "utils/StreamDetails.h"
+#include "utils/StreamUtils.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
+#include "LangInfo.h"
 
 using namespace std;
 
@@ -263,6 +265,9 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
       s.flags    = stream->flags;
       s.filename = demuxer->GetFileName();
       stream->GetStreamName(s.name);
+      CStdString codec;
+      demuxer->GetStreamCodecName(stream->iId, codec);
+      s.codec = codec;
       if(stream->type == STREAM_AUDIO)
       {
         std::string type;
@@ -597,6 +602,46 @@ void CDVDPlayer::OpenDefaultStreams()
     }
 
     if(!valid
+    && count > 1 && g_guiSettings.GetBool("audiooutput.autoselectaudio" ))
+    {
+      /*
+       * If there is more than one audio stream and a valid one is not chosen yet, select the one
+       * with the maximum number of channels for the DVD language specified in settings.
+       */
+      int max_channels = -1;
+      int max_codec_priority = -1;
+      int max_stream_id = -1;
+      for(int i = 0; i < count; i++)
+      {
+        CStdString language(m_SelectionStreams.Get(STREAM_AUDIO, i).language); // ISO639-2 code (3 characters)
+
+        if(m_SelectionStreams.Get(STREAM_AUDIO, i).source == STREAM_SOURCE_DEMUX // Only demux streams
+        && StreamUtils::IsSameLanguage(language, g_langInfo.GetDVDAudioLanguage())) // Same language
+        {
+          int channels = m_pDemuxer->GetStreamFromAudioId(i)->iChannels;
+          int codec_priority = StreamUtils::GetCodecPriority(m_SelectionStreams.Get(STREAM_AUDIO, i).codec);
+          if(channels > max_channels
+          ||(channels == max_channels && codec_priority > max_codec_priority))
+          {
+            max_channels = channels;
+            max_codec_priority = codec_priority;
+            max_stream_id = i;
+          }
+        }
+      }
+      if(max_stream_id >= 0)
+      {
+        SelectionStream& s = m_SelectionStreams.Get(STREAM_AUDIO, max_stream_id);
+        if(OpenAudioStream(s.id, s.source))
+        {
+          valid = true;
+          CLog::Log(LOGDEBUG, "%s - Using automatically selected audio stream '%i' based on language '%s' and maximum number of channels '%i'",
+                    __FUNCTION__, max_stream_id, g_langInfo.GetDVDAudioLanguage().c_str(), max_channels);
+        }
+      }
+    }
+
+    if(!valid
     && m_SelectionStreams.Get(STREAM_AUDIO, CDemuxStream::FLAG_DEFAULT, st))
     {
       if(OpenAudioStream(st.id, st.source))
@@ -642,6 +687,39 @@ void CDVDPlayer::OpenDefaultStreams()
       valid = true;
     else
       CLog::Log(LOGWARNING, "%s - failed to restore selected subtitle stream (%d)", __FUNCTION__, g_settings.m_currentVideoSettings.m_SubtitleStream);
+  }
+
+  /*
+   * If there is more than one subtitle stream and a valid one is not chosen yet, select the one
+   * with the DVD subtitle language specified in settings.
+   */
+  if(!valid
+  && count > 1 && g_guiSettings.GetBool("audiooutput.autoselectaudio"))
+  {
+    int stream_id = -1;
+    for(int i = 0; i < count; i++)
+    {
+      CStdString language(m_SelectionStreams.Get(STREAM_SUBTITLE, i).language); // ISO639-2 code (3 characters)
+      if(StreamUtils::IsSameLanguage(language, g_langInfo.GetDVDSubtitleLanguage()))
+      {
+        stream_id = i;
+        if(m_SelectionStreams.Get(STREAM_SUBTITLE, i).flags & CDemuxStream::FLAG_FORCED) // Forced subtitle
+        {
+          force = true;
+          break; // Don't look any further, this is the highest match.
+        }
+      }
+    }
+    if(stream_id >= 0)
+    {
+      SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, stream_id);
+      if(OpenSubtitleStream(s.id, s.source))
+      {
+        valid = true;
+        CLog::Log(LOGDEBUG, "%s - Using automatically selected subtitle stream '%i' based on language '%s'",
+                  __FUNCTION__, stream_id, g_langInfo.GetDVDSubtitleLanguage().c_str());
+      }
+    }
   }
 
   // select default

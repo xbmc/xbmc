@@ -98,9 +98,12 @@ public:
   void SetCurrentRegion(const CStdString& strName);
   const CStdString& GetCurrentRegion() const;
 
+  CStdString ConvertIso6392ToIso6391(const CStdString& language);
+
   static void LoadTokens(const TiXmlNode* pTokens, std::vector<CStdString>& vecTokens);
 protected:
   void SetDefaults();
+  void SetIsoLangMap();
 
 protected:
 
@@ -141,6 +144,10 @@ protected:
   MAPREGIONS m_regions;
   CRegion* m_currentRegion; // points to the current region
   CRegion m_defaultRegion; // default, will be used if no region available via langinfo.xml
+
+  typedef std::map<const CStdString, CStdString> MAPSTRINGS;
+  typedef std::map<const CStdString, CStdString>::iterator ITMAPSTRINGS;
+  MAPSTRINGS m_isoLangMap;
 };
 
 

@@ -191,6 +191,7 @@ void CLangInfo::CRegion::SetGlobalLocale()
 CLangInfo::CLangInfo()
 {
   SetDefaults();
+  SetIsoLangMap();
 }
 
 CLangInfo::~CLangInfo()
@@ -362,6 +363,213 @@ void CLangInfo::SetDefaults()
   m_currentRegion=&m_defaultRegion;
 }
 
+void CLangInfo::SetIsoLangMap()
+{
+  m_isoLangMap["aar"] = "aa";
+  m_isoLangMap["abk"] = "ab";
+  m_isoLangMap["ave"] = "ae";
+  m_isoLangMap["afr"] = "af";
+  m_isoLangMap["aka"] = "ak";
+  m_isoLangMap["amh"] = "am";
+  m_isoLangMap["arg"] = "an";
+  m_isoLangMap["ara"] = "ar";
+  m_isoLangMap["asm"] = "as";
+  m_isoLangMap["ava"] = "av";
+  m_isoLangMap["aym"] = "ay";
+  m_isoLangMap["aze"] = "az";
+  m_isoLangMap["bak"] = "ba";
+  m_isoLangMap["bel"] = "be";
+  m_isoLangMap["bul"] = "bg";
+  m_isoLangMap["bih"] = "bh";
+  m_isoLangMap["bis"] = "bi";
+  m_isoLangMap["bam"] = "bm";
+  m_isoLangMap["ben"] = "bn";
+  m_isoLangMap["bod"] = "bo";
+  m_isoLangMap["tib"] = "bo"; // Alternate.
+  m_isoLangMap["bre"] = "br";
+  m_isoLangMap["bos"] = "bs";
+  m_isoLangMap["cat"] = "ca";
+  m_isoLangMap["che"] = "ce";
+  m_isoLangMap["cha"] = "ch";
+  m_isoLangMap["cos"] = "co";
+  m_isoLangMap["cre"] = "cr";
+  m_isoLangMap["ces"] = "cs";
+  m_isoLangMap["cze"] = "cs";
+  m_isoLangMap["chu"] = "cu";
+  m_isoLangMap["chv"] = "cv";
+  m_isoLangMap["cym"] = "cy";
+  m_isoLangMap["wel"] = "cy"; // Alternate.
+  m_isoLangMap["dan"] = "da";
+  m_isoLangMap["deu"] = "de";
+  m_isoLangMap["ger"] = "de"; // Alternate.
+  m_isoLangMap["div"] = "dv";
+  m_isoLangMap["dzo"] = "dz";
+  m_isoLangMap["ewe"] = "ee";
+  m_isoLangMap["ell"] = "el";
+  m_isoLangMap["gre"] = "el"; // Alternate.
+  m_isoLangMap["eng"] = "en";
+  m_isoLangMap["epo"] = "eo";
+  m_isoLangMap["spa"] = "es";
+  m_isoLangMap["est"] = "et";
+  m_isoLangMap["eus"] = "eu";
+  m_isoLangMap["baq"] = "eu"; // Alternate.
+  m_isoLangMap["fas"] = "fa";
+  m_isoLangMap["per"] = "fa"; // Alternate.
+  m_isoLangMap["ful"] = "ff";
+  m_isoLangMap["fin"] = "fi";
+  m_isoLangMap["fij"] = "fj";
+  m_isoLangMap["fao"] = "fo";
+  m_isoLangMap["fra"] = "fr";
+  m_isoLangMap["fre"] = "fr"; // Alternate.
+  m_isoLangMap["fry"] = "fy";
+  m_isoLangMap["gle"] = "ga";
+  m_isoLangMap["gla"] = "gd";
+  m_isoLangMap["glg"] = "gl";
+  m_isoLangMap["grn"] = "gn";
+  m_isoLangMap["guj"] = "gu";
+  m_isoLangMap["glv"] = "gv";
+  m_isoLangMap["hau"] = "ha";
+  m_isoLangMap["heb"] = "he";
+  m_isoLangMap["hin"] = "hi";
+  m_isoLangMap["hmo"] = "ho";
+  m_isoLangMap["hrv"] = "hr";
+  m_isoLangMap["hat"] = "ht";
+  m_isoLangMap["hun"] = "hu";
+  m_isoLangMap["hye"] = "hy";
+  m_isoLangMap["arm"] = "hy"; // Alternate.
+  m_isoLangMap["her"] = "hz";
+  m_isoLangMap["ina"] = "ia";
+  m_isoLangMap["ind"] = "id";
+  m_isoLangMap["ile"] = "ie";
+  m_isoLangMap["ibo"] = "ig";
+  m_isoLangMap["iii"] = "ii";
+  m_isoLangMap["ipk"] = "ik";
+  m_isoLangMap["ido"] = "io";
+  m_isoLangMap["isl"] = "is";
+  m_isoLangMap["ice"] = "is";
+  m_isoLangMap["ita"] = "it";
+  m_isoLangMap["iku"] = "iu";
+  m_isoLangMap["jpn"] = "ja";
+  m_isoLangMap["jav"] = "jv";
+  m_isoLangMap["kat"] = "ka";
+  m_isoLangMap["geo"] = "ka";
+  m_isoLangMap["kon"] = "kg";
+  m_isoLangMap["kik"] = "ki";
+  m_isoLangMap["kua"] = "kj";
+  m_isoLangMap["kaz"] = "kk";
+  m_isoLangMap["kal"] = "kl";
+  m_isoLangMap["khm"] = "km";
+  m_isoLangMap["kan"] = "kn";
+  m_isoLangMap["kor"] = "ko";
+  m_isoLangMap["kau"] = "kr";
+  m_isoLangMap["kas"] = "ks";
+  m_isoLangMap["kur"] = "ku";
+  m_isoLangMap["kom"] = "kv";
+  m_isoLangMap["cor"] = "kw";
+  m_isoLangMap["kir"] = "ky";
+  m_isoLangMap["lat"] = "la";
+  m_isoLangMap["ltz"] = "lb";
+  m_isoLangMap["lug"] = "lg";
+  m_isoLangMap["lim"] = "li";
+  m_isoLangMap["lin"] = "ln";
+  m_isoLangMap["lao"] = "lo";
+  m_isoLangMap["lit"] = "lt";
+  m_isoLangMap["lub"] = "lu";
+  m_isoLangMap["lav"] = "lv";
+  m_isoLangMap["mlg"] = "mg";
+  m_isoLangMap["mah"] = "mh";
+  m_isoLangMap["mri"] = "mi";
+  m_isoLangMap["mao"] = "mi"; // Alternate.
+  m_isoLangMap["mkd"] = "mk";
+  m_isoLangMap["mac"] = "mk"; // Alternate.
+  m_isoLangMap["mal"] = "ml";
+  m_isoLangMap["mon"] = "mn";
+  m_isoLangMap["mar"] = "mr";
+  m_isoLangMap["msa"] = "ms";
+  m_isoLangMap["may"] = "ms"; // Alternate.
+  m_isoLangMap["mlt"] = "mt";
+  m_isoLangMap["mya"] = "my";
+  m_isoLangMap["bur"] = "my"; // Alternate.
+  m_isoLangMap["nau"] = "na";
+  m_isoLangMap["nob"] = "nb";
+  m_isoLangMap["nde"] = "nd";
+  m_isoLangMap["nep"] = "ne";
+  m_isoLangMap["ndo"] = "ng";
+  m_isoLangMap["nld"] = "nl";
+  m_isoLangMap["dut"] = "nl"; // Alternate.
+  m_isoLangMap["nno"] = "nn";
+  m_isoLangMap["nor"] = "no";
+  m_isoLangMap["nbl"] = "nr";
+  m_isoLangMap["nav"] = "nv";
+  m_isoLangMap["nya"] = "ny";
+  m_isoLangMap["oci"] = "oc";
+  m_isoLangMap["oji"] = "oj";
+  m_isoLangMap["orm"] = "om";
+  m_isoLangMap["ori"] = "or";
+  m_isoLangMap["oss"] = "os";
+  m_isoLangMap["pan"] = "pa";
+  m_isoLangMap["pli"] = "pi";
+  m_isoLangMap["pol"] = "pl";
+  m_isoLangMap["pus"] = "ps";
+  m_isoLangMap["por"] = "pt";
+  m_isoLangMap["que"] = "qu";
+  m_isoLangMap["roh"] = "rm";
+  m_isoLangMap["run"] = "rn";
+  m_isoLangMap["ron"] = "ro";
+  m_isoLangMap["rum"] = "ro"; // Alternate.
+  m_isoLangMap["rus"] = "ru";
+  m_isoLangMap["kin"] = "rw";
+  m_isoLangMap["san"] = "sa";
+  m_isoLangMap["srd"] = "sc";
+  m_isoLangMap["snd"] = "sd";
+  m_isoLangMap["sme"] = "se";
+  m_isoLangMap["sag"] = "sg";
+  m_isoLangMap["sin"] = "si";
+  m_isoLangMap["slk"] = "sk";
+  m_isoLangMap["slo"] = "sk"; // Alternate.
+  m_isoLangMap["slv"] = "sl";
+  m_isoLangMap["smo"] = "sm";
+  m_isoLangMap["sna"] = "sn";
+  m_isoLangMap["som"] = "so";
+  m_isoLangMap["sqi"] = "sq";
+  m_isoLangMap["srp"] = "sr";
+  m_isoLangMap["ssw"] = "ss";
+  m_isoLangMap["sot"] = "st";
+  m_isoLangMap["sun"] = "su";
+  m_isoLangMap["swe"] = "sv";
+  m_isoLangMap["swa"] = "sw";
+  m_isoLangMap["tam"] = "ta";
+  m_isoLangMap["tel"] = "te";
+  m_isoLangMap["tgk"] = "tg";
+  m_isoLangMap["tha"] = "th";
+  m_isoLangMap["tir"] = "ti";
+  m_isoLangMap["tuk"] = "tk";
+  m_isoLangMap["tgl"] = "tl";
+  m_isoLangMap["tsn"] = "tn";
+  m_isoLangMap["ton"] = "to";
+  m_isoLangMap["tur"] = "tr";
+  m_isoLangMap["tso"] = "ts";
+  m_isoLangMap["tat"] = "tt";
+  m_isoLangMap["twi"] = "tw";
+  m_isoLangMap["tah"] = "ty";
+  m_isoLangMap["uig"] = "ug";
+  m_isoLangMap["ukr"] = "uk";
+  m_isoLangMap["urd"] = "ur";
+  m_isoLangMap["uzb"] = "uz";
+  m_isoLangMap["ven"] = "ve";
+  m_isoLangMap["vie"] = "vi";
+  m_isoLangMap["vol"] = "vo";
+  m_isoLangMap["wln"] = "wa";
+  m_isoLangMap["wol"] = "wo";
+  m_isoLangMap["xho"] = "xh";
+  m_isoLangMap["yid"] = "yi";
+  m_isoLangMap["yor"] = "yo";
+  m_isoLangMap["zha"] = "za";
+  m_isoLangMap["zho"] = "zh";
+  m_isoLangMap["chi"] = "zh"; // Alternate.
+  m_isoLangMap["zul"] = "zu";
+}
+
 CStdString CLangInfo::GetGuiCharSet() const
 {
   CStdString strCharSet;
@@ -488,4 +696,16 @@ CLangInfo::SPEED_UNIT CLangInfo::GetSpeedUnit() const
 const CStdString& CLangInfo::GetSpeedUnitString() const
 {
   return g_localizeStrings.Get(SPEED_UNIT_STRINGS+m_currentRegion->m_speedUnit);
+}
+
+CStdString CLangInfo::ConvertIso6392ToIso6391(const CStdString& language)
+{
+  ITMAPSTRINGS it = m_isoLangMap.find(language);
+  if (it != m_isoLangMap.end())
+  {
+    CStdString converted(it->second);
+    return converted;
+  }
+
+  return "";
 }

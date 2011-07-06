@@ -472,6 +472,7 @@ void CGUISettings::Initialize()
 #elif defined(_WIN32)
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
 #endif
+  AddBool(ao, "audiooutput.autoselectaudio", 549, false);
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
 #if defined(__APPLE__)
