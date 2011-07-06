@@ -24,6 +24,7 @@
 #include "threads/Event.h"
 
 #include <boost/thread/thread.hpp>
+#include <boost/shared_array.hpp>
 #include <stdio.h>
 
 using namespace XbmcThreads;
@@ -508,3 +509,74 @@ BOOST_AUTO_TEST_CASE(TestEventGroupTimedWait)
   Sleep(50);
 }
 
+#define TESTNUM 100000l
+#define NUMTHREADS 100l
+
+CEvent g_event;
+
+class mass_waiter
+{
+public:
+  CEvent& event;
+  bool result;
+
+  volatile bool waiting;
+
+  mass_waiter() : event(g_event), waiting(false) {}
+  
+  void operator()()
+  {
+    waiting = true;
+    result = event.Wait();
+    waiting = false;
+  }
+};
+
+class poll_mass_waiter
+{
+public:
+  CEvent& event;
+  bool result;
+
+  volatile bool waiting;
+
+  poll_mass_waiter() : event(g_event), waiting(false) {}
+  
+  void operator()()
+  {
+    waiting = true;
+    while ((result = event.WaitMSec(0)) == false);
+    waiting = false;
+  }
+};
+
+
+BOOST_AUTO_TEST_CASE(TestMassEvent)
+{
+  CEvent e02;
+  CEventGroup group(&g_event,&e02,NULL);
+
+  boost::shared_array<poll_mass_waiter> m;
+  m.reset(new poll_mass_waiter[NUMTHREADS]);
+
+  boost::shared_array<boost::thread> t;
+  t.reset(new boost::thread[NUMTHREADS]);
+  for(size_t i=0; i<NUMTHREADS; i++)
+    t[i] = boost::thread(boost::ref(m[i]));
+
+  Sleep(50);
+  for(size_t i=0; i<NUMTHREADS; i++)
+  {
+    BOOST_CHECK(m[i].waiting);
+  }
+
+  g_event.Set();
+  Sleep(500);
+
+  for(size_t i=0; i<NUMTHREADS; i++)
+  {
+    BOOST_CHECK(!m[i].waiting);
+    BOOST_CHECK(m[i].result);
+  }
+
+}
