@@ -2466,6 +2466,7 @@
     <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp">
       <Filter>threads</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\InertialScrollingHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4949,6 +4950,7 @@
     <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h">
       <Filter>threads</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\InertialScrollingHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">

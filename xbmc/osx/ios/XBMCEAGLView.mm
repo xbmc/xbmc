@@ -54,6 +54,7 @@
 
 @implementation XBMCEAGLView
 @synthesize animating;
+@synthesize xbmcAlive;
 @synthesize pause;
 
 // You must implement this method
@@ -90,6 +91,7 @@
     [aContext release];
 
     animating = FALSE;
+    xbmcAlive = FALSE;
     pause = FALSE;
     [self setContext:context];
     [self createFramebuffer];
@@ -310,6 +312,7 @@
   g_application.Preflight();
   if (g_application.Create())
   {
+    xbmcAlive = TRUE;
     try
     {
       CCocoaAutoPool innerpool;
