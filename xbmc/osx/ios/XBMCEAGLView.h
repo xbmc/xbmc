@@ -41,6 +41,7 @@
 	GLfloat rotz;
 	
 	BOOL animating;
+  BOOL xbmcAlive;
   BOOL pause;
   NSConditionLock* animationThreadLock;
   NSThread* animationThread;
@@ -52,6 +53,7 @@
 	BOOL displayLinkSupported;
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
+@property (readonly, nonatomic, getter=isXBMCAlive) BOOL xbmcAlive;
 @property (readonly, nonatomic, getter=isPause) BOOL pause;
 
 - (void) initDisplayLink;
