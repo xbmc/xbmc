@@ -92,7 +92,7 @@ static const ActionMapping actions[] =
         {"resetcalibration"  , ACTION_CALIBRATE_RESET},
         {"analogmove"        , ACTION_ANALOG_MOVE},
         {"rotate"            , ACTION_ROTATE_PICTURE},
-        {"close"             , ACTION_CLOSE_DIALOG},
+        {"close"             , ACTION_NAV_BACK}, // backwards compatibility
         {"subtitledelayminus", ACTION_SUBTITLE_DELAY_MIN},
         {"subtitledelay"     , ACTION_SUBTITLE_DELAY},
         {"subtitledelayplus" , ACTION_SUBTITLE_DELAY_PLUS},

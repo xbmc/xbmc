@@ -72,7 +72,7 @@ bool CGUIDialogGamepad::OnAction(const CAction &action)
     SetLine(2, strHiddenInput);
     return true;
   }
-  else if (action.GetButtonCode() == KEY_BUTTON_BACK || action.GetID() == ACTION_CLOSE_DIALOG || action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
+  else if (action.GetButtonCode() == KEY_BUTTON_BACK || action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
   {
     m_bConfirmed = false;
     m_bCanceled = true;

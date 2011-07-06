@@ -2180,7 +2180,7 @@ bool CApplication::OnKey(const CKey& key)
               action.GetID() == ACTION_SELECT_ITEM ||
               action.GetID() == ACTION_ENTER ||
               action.GetID() == ACTION_PREVIOUS_MENU ||
-              action.GetID() == ACTION_CLOSE_DIALOG))
+              action.GetID() == ACTION_NAV_BACK))
         {
           // the action isn't plain navigation - check for a keyboard-specific keymap
           action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
