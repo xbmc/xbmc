@@ -152,12 +152,10 @@ CFileItemPtr CGUIMediaWindow::GetCurrentListItem(int offset)
 
 bool CGUIMediaWindow::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR ||
+     (action.GetID() == ACTION_NAV_BACK && !(m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->m_strPath == m_startDirectory)))
   {
-    if ((m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->m_strPath == m_startDirectory) && g_advancedSettings.m_bUseEvilB)
-      g_windowManager.PreviousWindow();
-    else
-      GoParentFolder();
+    GoParentFolder();
     return true;
   }
 

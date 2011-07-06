@@ -74,7 +74,7 @@ bool CGUIDialog::OnAction(const CAction &action)
   if (!action.IsMouse() && m_autoClosing)
     SetAutoClose(m_showDuration);
 
-  if (action.GetID() == ACTION_CLOSE_DIALOG || action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_CLOSE_DIALOG || action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
   {
     Close();
     return true;

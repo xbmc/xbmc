@@ -34,13 +34,7 @@ CGUIStandardWindow::~CGUIStandardWindow(void)
 
 bool CGUIStandardWindow::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-
-  if (action.GetID() == ACTION_PARENT_DIR && g_advancedSettings.m_bUseEvilB)
+  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
   {
     g_windowManager.PreviousWindow();
     return true;

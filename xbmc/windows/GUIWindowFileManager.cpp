@@ -164,12 +164,10 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.GetID() == ACTION_PARENT_DIR)
+    if (action.GetID() == ACTION_PARENT_DIR ||
+       (action.GetID() == ACTION_NAV_BACK && !m_vecItems[list]->IsVirtualDirectoryRoot()))
     {
-      if (m_vecItems[list]->IsVirtualDirectoryRoot())
-        g_windowManager.PreviousWindow();
-      else
-        GoParentFolder(list);
+      GoParentFolder(list);
       return true;
     }
     if (action.GetID() == ACTION_PLAYER_PLAY)

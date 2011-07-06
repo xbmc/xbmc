@@ -84,7 +84,7 @@ JSON_STATUS CInputOperations::Select(const CStdString &method, ITransportLayer *
 
 JSON_STATUS CInputOperations::Back(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return sendAction(ACTION_PARENT_DIR);  
+  return sendAction(ACTION_NAV_BACK);  
 }
 
 JSON_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

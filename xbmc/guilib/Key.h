@@ -183,6 +183,7 @@
 #define ACTION_VOLUME_UP            88
 #define ACTION_VOLUME_DOWN          89
 #define ACTION_MUTE                 91
+#define ACTION_NAV_BACK             92
 
 #define ACTION_MOUSE_START            100
 #define ACTION_MOUSE_LEFT_CLICK       100

@@ -322,12 +322,24 @@ bool CGUIWindow::OnAction(const CAction &action)
 
   CGUIControl *focusedControl = GetFocusedControl();
   if (focusedControl)
-    return focusedControl->OnAction(action);
+  {
+    if (focusedControl->OnAction(action))
+      return true;
+  }
+  else
+  {
+    // no control has focus?
+    // set focus to the default control then
+    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_defaultControl);
+    OnMessage(msg);
+  }
 
-  // no control has focus?
-  // set focus to the default control then
-  CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_defaultControl);
-  OnMessage(msg);
+  // default implementations
+  if (action.GetID() == ACTION_NAV_BACK)
+  {
+    g_windowManager.PreviousWindow();
+    return true;
+  }
   return false;
 }
 

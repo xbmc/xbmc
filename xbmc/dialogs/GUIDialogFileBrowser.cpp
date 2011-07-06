@@ -81,12 +81,10 @@ CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
 
 bool CGUIDialogFileBrowser::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR ||
+     (action.GetID() == ACTION_NAV_BACK && !m_vecItems->IsVirtualDirectoryRoot()))
   {
-    if (m_vecItems->IsVirtualDirectoryRoot() && g_advancedSettings.m_bUseEvilB)
-      Close();
-    else
-      GoParentFolder();
+    GoParentFolder();
     return true;
   }
   if ((action.GetID() == ACTION_CONTEXT_MENU || action.GetID() == ACTION_MOUSE_RIGHT_CLICK) && m_Directory->m_strPath.IsEmpty())

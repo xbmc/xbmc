@@ -55,6 +55,7 @@ static const ActionMapping actions[] =
         {"select"            , ACTION_SELECT_ITEM},
         {"highlight"         , ACTION_HIGHLIGHT_ITEM},
         {"parentdir"         , ACTION_PARENT_DIR},
+        {"back"              , ACTION_NAV_BACK},
         {"previousmenu"      , ACTION_PREVIOUS_MENU},
         {"info"              , ACTION_SHOW_INFO},
         {"pause"             , ACTION_PAUSE},
