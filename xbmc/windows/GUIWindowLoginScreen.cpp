@@ -92,7 +92,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
           return bResult;
         }
-        else if (iAction == ACTION_PREVIOUS_MENU) // oh no u don't
+        else if (iAction == ACTION_PREVIOUS_MENU || iAction == ACTION_NAV_BACK) // oh no u don't
           return false;
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {

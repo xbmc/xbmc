@@ -142,7 +142,8 @@ bool CGUIDialogSongInfo::OnAction(const CAction &action)
       SetRating(rating - 1);
     return true;
   }
-  else if (action.GetID() == ACTION_PREVIOUS_MENU)
+  else if (action.GetID() == ACTION_PREVIOUS_MENU ||
+           action.GetID() == ACTION_NAV_BACK)
     m_cancelled = true;
   return CGUIDialog::OnAction(action);
 }
