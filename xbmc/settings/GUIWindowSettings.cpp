@@ -21,7 +21,6 @@
 
 #include "system.h"
 #include "GUIWindowSettings.h"
-#include "guilib/GUIWindowManager.h"
 #include "guilib/Key.h"
 
 CGUIWindowSettings::CGUIWindowSettings(void)
@@ -32,15 +31,3 @@ CGUIWindowSettings::CGUIWindowSettings(void)
 CGUIWindowSettings::~CGUIWindowSettings(void)
 {
 }
-
-bool CGUIWindowSettings::OnAction(const CAction &action)
-{
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-
-  return CGUIWindow::OnAction(action);
-}
-

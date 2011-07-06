@@ -159,12 +159,6 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
     return true;
   }
 
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-
   // the non-contextual menu can be called at any time
   if (action.GetID() == ACTION_CONTEXT_MENU && !m_viewControl.HasControl(GetFocusedControlID()))
   {

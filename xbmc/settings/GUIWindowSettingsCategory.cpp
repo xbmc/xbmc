@@ -168,8 +168,6 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
       return true;
     }
     m_lastControlID = 0; // don't save the control as we go to a different window each time
-    g_windowManager.PreviousWindow();
-    return true;
   }
   return CGUIWindow::OnAction(action);
 }

@@ -80,16 +80,6 @@ CGUIWindowWeather::CGUIWindowWeather(void)
 CGUIWindowWeather::~CGUIWindowWeather(void)
 {}
 
-bool CGUIWindowWeather::OnAction(const CAction &action)
-{
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-  return CGUIWindow::OnAction(action);
-}
-
 bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )

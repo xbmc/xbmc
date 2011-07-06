@@ -178,11 +178,6 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
 #endif
     }
   }
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
   return CGUIWindow::OnAction(action);
 }
 

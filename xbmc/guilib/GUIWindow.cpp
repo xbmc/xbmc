@@ -335,7 +335,7 @@ bool CGUIWindow::OnAction(const CAction &action)
   }
 
   // default implementations
-  if (action.GetID() == ACTION_NAV_BACK)
+  if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
   {
     g_windowManager.PreviousWindow();
     return true;

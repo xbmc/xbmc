@@ -54,17 +54,6 @@ CGUIWindowSettingsProfile::~CGUIWindowSettingsProfile(void)
   delete m_listItems;
 }
 
-bool CGUIWindowSettingsProfile::OnAction(const CAction &action)
-{
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-
-  return CGUIWindow::OnAction(action);
-}
-
 int CGUIWindowSettingsProfile::GetSelectedItem()
 {
   CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), CONTROL_PROFILES);
