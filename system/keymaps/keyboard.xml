@@ -233,14 +233,14 @@
       <r>Rewind</r>
       <period>StepForward</period>
       <o>CodecInfo</o>
-      <i>Close</i>
-      <d mod="ctrl">Close</d>
+      <i>Back</i>
+      <d mod="ctrl">Back</d>
       <m>OSD</m>
     </keyboard>
   </FullscreenInfo>
   <PlayerControls>
     <keyboard>
-      <m>close</m>
+      <m>Back</m>
     </keyboard>
   </PlayerControls>
   <Visualisation>
@@ -271,7 +271,7 @@
       <r>Rewind</r>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
-      <m>Close</m>
+      <m>Back</m>
       <i>Info</i>
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
@@ -285,11 +285,11 @@
       <r>Rewind</r>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
-      <m>Close</m>
+      <m>Back</m>
       <i>Info</i>
       <o>CodecInfo</o>
       <p>ActivateWindow(VisualisationPresetList)</p>
-      <v>Close</v>
+      <v>Back</v>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </VisualisationSettings>
@@ -299,11 +299,11 @@
       <r>Rewind</r>
       <period>SkipNext</period>
       <comma>SkipPrevious</comma>
-      <m>Close</m>
+      <m>Back</m>
       <i>Info</i>
       <o>CodecInfo</o>
-      <p>Close</p>
-      <v>Close</v>
+      <p>Back</p>
+      <v>Back</v>
       <n>ActivateWindow(MusicPlaylist)</n>
     </keyboard>
   </VisualisationPresetList>
@@ -345,8 +345,8 @@
   </GUICalibration>
   <VideoOSD>
     <keyboard>
-      <m>Close</m>
-      <g mod="ctrl">close</g> <!-- MCE Guide button -->
+      <m>Back</m>
+      <g mod="ctrl">Back</g> <!-- MCE Guide button -->
       <i>Info</i>
       <o>CodecInfo</o>
     </keyboard>
@@ -413,8 +413,8 @@
   </MyPictures>
   <ContextMenu>
     <keyboard>
-      <c>Close</c>
-      <menu>Close</menu>
+      <c>Back</c>
+      <menu>Back</menu>
     </keyboard>
   </ContextMenu>
   <Scripts>
@@ -424,28 +424,28 @@
   </Scripts>
   <MusicInformation>
     <keyboard>
-      <i>Close</i>
-      <d mod="ctrl">Close</d>
+      <i>Back</i>
+      <d mod="ctrl">Back</d>
     </keyboard>
   </MusicInformation>
   <MovieInformation>
     <keyboard>
-      <i>Close</i>
+      <i>Back</i>
     </keyboard>
   </MovieInformation>
   <PictureInfo>
     <keyboard>
       <period>NextPicture</period>
       <comma>PreviousPicture</comma>
-      <i>Close</i>
-      <d mod="ctrl">Close</d>
-      <o>Close</o>
+      <i>Back</i>
+      <d mod="ctrl">Back</d>
+      <o>Back</o>
       <space>Pause</space>
     </keyboard>
   </PictureInfo>
   <Teletext>
     <keyboard>
-      <v>Close</v>
+      <v>Back</v>
     </keyboard>
   </Teletext>
   <FileBrowser>
