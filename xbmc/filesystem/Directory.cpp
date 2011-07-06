@@ -91,10 +91,10 @@ public:
   {
     CSingleLock l(m_lock);
 
-    m_result = success;
-    
     if(!m_event)
       return;
+    
+    m_result = success;
     
     m_event->Set();
   }
@@ -116,15 +116,15 @@ public:
     return true;
   }
 
-  bool              m_result;
-  CFileItemList     m_list;
-  CEvent           *m_event;
-  CCriticalSection  m_lock;
+  bool                      m_result;
+  CFileItemList             m_list;
+  CEvent                   *m_event;
+  static CCriticalSection   m_lock;
   
   unsigned int  m_id;
 };
 
-
+CCriticalSection CGetDirectory::m_lock;
 
 
 
