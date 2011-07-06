@@ -51,7 +51,8 @@
       <pagedown>PageDown</pagedown>
       <return>Select</return>
       <enter>Select</enter>
-      <backspace>ParentDir</backspace>
+      <backspace>Back</backspace>
+      <key id='65446'>Back</key>
       <m>ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
       <escape>PreviousMenu</escape>
@@ -93,7 +94,7 @@
       <home>FirstPage</home>
       <end>LastPage</end>
       <!-- Multimedia keyboard keys -->
-      <browser_back>ParentDir</browser_back>
+      <browser_back>Back</browser_back>
       <browser_forward/>
       <browser_refresh/>
       <browser_stop/>
@@ -171,7 +172,6 @@
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
-      <backspace>Playlist</backspace>      <!-- Close playlist -->
     </keyboard>
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
@@ -232,7 +232,6 @@
       <f>FastForward</f>
       <r>Rewind</r>
       <period>StepForward</period>
-      <backspace>Close</backspace>
       <o>CodecInfo</o>
       <i>Close</i>
       <d mod="ctrl">Close</d>
@@ -241,7 +240,6 @@
   </FullscreenInfo>
   <PlayerControls>
     <keyboard>
-      <escape>Close</escape>
       <m>close</m>
     </keyboard>
   </PlayerControls>
@@ -269,7 +267,6 @@
   </Visualisation>
   <MusicOSD>
     <keyboard>
-      <escape>Close</escape>
       <f>FastForward</f>
       <r>Rewind</r>
       <period>SkipNext</period>
@@ -284,7 +281,6 @@
   </MusicOSD>
   <VisualisationSettings>
     <keyboard>
-      <escape>Close</escape>
       <f>FastForward</f>
       <r>Rewind</r>
       <period>SkipNext</period>
@@ -299,7 +295,6 @@
   </VisualisationSettings>
   <VisualisationPresetList>
     <keyboard>
-      <escape>Close</escape>
       <f>FastForward</f>
       <r>Rewind</r>
       <period>SkipNext</period>
@@ -331,7 +326,6 @@
       <plus>ZoomIn</plus>
       <minus>ZoomOut</minus>
       <r>Rotate</r>
-      <backspace>PreviousMenu</backspace>
     </keyboard>
   </SlideShow>
   <ScreenCalibration>
@@ -349,16 +343,8 @@
       <d>ResetCalibration</d>
     </keyboard>
   </GUICalibration>
-  <SelectDialog>
-    <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
-    </keyboard>
-  </SelectDialog>
   <VideoOSD>
     <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
       <m>Close</m>
       <g mod="ctrl">close</g> <!-- MCE Guide button -->
       <i>Info</i>
@@ -379,29 +365,22 @@
       <escape>Fullscreen</escape>
       <return>Select</return>
       <enter>Select</enter>      <!-- backspace>Fullscreen</backspace -->
-      <backspace>PreviousMenu</backspace>
     </keyboard>
   </VideoMenu>
   <OSDVideoSettings>
     <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
       <i>Info</i>
       <o>CodecInfo</o>
     </keyboard>
   </OSDVideoSettings>
   <OSDAudioSettings>
     <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
       <i>Info</i>
       <o>CodecInfo</o>
     </keyboard>
   </OSDAudioSettings>
   <VideoBookmarks>
     <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
       <delete>Delete</delete>
     </keyboard>
   </VideoBookmarks>
@@ -421,7 +400,6 @@
   </MyVideoFiles>
   <MyVideoPlaylist>
     <keyboard>
-      <backspace>Playlist</backspace>      <!-- Close playlist -->
       <space>Playlist</space>      <!-- Close playlist -->
       <delete>Delete</delete>
       <u>MoveItemUp</u>
@@ -437,133 +415,24 @@
     <keyboard>
       <c>Close</c>
       <menu>Close</menu>
-      <backspace>Close</backspace>
     </keyboard>
   </ContextMenu>
-  <FileStackingDialog>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </FileStackingDialog>
   <Scripts>
     <keyboard>
       <i>info</i>
     </keyboard>
   </Scripts>
-  <Weather>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-      <key id='65446'>PreviousMenu</key>
-    </keyboard>
-  </Weather>
-  <Settings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </Settings>
-  <MyPicturesSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </MyPicturesSettings>
-  <MyProgramsSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </MyProgramsSettings>
-  <MyWeatherSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </MyWeatherSettings>
-  <MyMusicSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </MyMusicSettings>
-  <SystemSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </SystemSettings>
-  <MyVideosSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </MyVideosSettings>
-  <NetworkSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </NetworkSettings>
-  <AppearanceSettings>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </AppearanceSettings>
-  <Profiles>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </Profiles>
-  <systeminfo>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </systeminfo>
-  <shutdownmenu>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-      <s>Close</s>  
-    </keyboard>
-  </shutdownmenu>
-  <submenu>
-    <keyboard>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </submenu>
   <MusicInformation>
     <keyboard>
-      <backspace>Close</backspace>
       <i>Close</i>
       <d mod="ctrl">Close</d>
-      <key id='65446'>Close</key>
     </keyboard>
   </MusicInformation>
   <MovieInformation>
     <keyboard>
-      <backspace>Close</backspace>
       <i>Close</i>
-      <key id='65446'>Close</key>
     </keyboard>
   </MovieInformation>
-  <AddonInformation>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </AddonInformation>
-  <AddonSettings>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </AddonSettings>
-  <TextViewer>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </TextViewer>
-  <LockSettings>
-    <keyboard>
-      <escape>Close</escape>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </LockSettings>
-  <ProfileSettings>
-    <keyboard>
-      <escape>Close</escape>
-      <backspace>PreviousMenu</backspace>
-    </keyboard>
-  </ProfileSettings>
   <PictureInfo>
     <keyboard>
       <period>NextPicture</period>
@@ -571,27 +440,14 @@
       <i>Close</i>
       <d mod="ctrl">Close</d>
       <o>Close</o>
-      <backspace>Close</backspace>
       <space>Pause</space>
     </keyboard>
   </PictureInfo>
   <Teletext>
     <keyboard>
-      <backspace>Close</backspace>
-      <escape>Close</escape>
       <v>Close</v>
     </keyboard>
   </Teletext>
-  <Favourites>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </Favourites>
-  <NumericInput>
-    <keyboard>
-      <backspace>Close</backspace>
-    </keyboard>
-  </NumericInput>
   <FileBrowser>
     <keyboard>
       <space>Highlight</space>
