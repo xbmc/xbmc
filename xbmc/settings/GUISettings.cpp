@@ -458,6 +458,7 @@ void CGUISettings::Initialize()
   AddBool(NULL, "audiooutput.passthroughmp1", 300, false);
   AddBool(NULL, "audiooutput.passthroughmp2", 301, false);
   AddBool(NULL, "audiooutput.passthroughmp3", 302, false);
+  AddBool(ao, "audiooutput.autoselectaudio", 549, false);
 
 #ifdef __APPLE__
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
@@ -472,7 +473,6 @@ void CGUISettings::Initialize()
 #elif defined(_WIN32)
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
 #endif
-  AddBool(ao, "audiooutput.autoselectaudio", 549, false);
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
 #if defined(__APPLE__)
