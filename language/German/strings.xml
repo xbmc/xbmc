@@ -1764,6 +1764,8 @@
   <string id="20255">Erster Login: Bearbeite dein Profil.</string>
   <string id="20256">HTS Tvheadend Client</string>
   <string id="20257">VDR Streamdev Client</string>
+  
+  <string id="20259">Netzwerk Dateisystem (NFS)</string> 
 
   <string id="20300">Webserver-Verzeichnis (HTTP)</string>
   <string id="20301">Webserver-Verzeichnis (HTTPS)</string>
@@ -1919,6 +1921,8 @@
   <string id="20451">Länder</string>
   <string id="20452">Episode</string>
   <string id="20453">Episoden</string>
+
+  <string id="20456">Filmset Fanart setzen</string>
 
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>

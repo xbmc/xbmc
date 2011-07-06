@@ -43,14 +43,9 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID, int controlID, floa
 CGUIRadioButtonControl::~CGUIRadioButtonControl(void)
 {}
 
-
 void CGUIRadioButtonControl::Render()
 {
   CGUIButtonControl::Render();
-
-  // ask our infoManager whether we are selected or not...
-  if (m_toggleSelect)
-    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
 
   if ( IsSelected() && !IsDisabled() )
     m_imgRadioOn.Render();
@@ -58,11 +53,32 @@ void CGUIRadioButtonControl::Render()
     m_imgRadioOff.Render();
 }
 
+void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (m_toggleSelect)
+  {
+    // ask our infoManager whether we are selected or not...
+    bool selected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
+
+    if (selected != m_bSelected)
+    {
+      MarkDirtyRegion();
+      m_bSelected = selected;
+    }
+  }
+
+  m_imgRadioOn.Process(currentTime);
+  m_imgRadioOff.Process(currentTime);
+
+  CGUIButtonControl::Process(currentTime, dirtyregions);
+}
+
 bool CGUIRadioButtonControl::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SELECT_ITEM)
   {
     m_bSelected = !m_bSelected;
+    MarkDirtyRegion();
   }
   return CGUIButtonControl::OnAction(action);
 }
@@ -150,10 +166,12 @@ CStdString CGUIRadioButtonControl::GetDescription() const
   return strLabel;
 }
 
-void CGUIRadioButtonControl::UpdateColors()
+bool CGUIRadioButtonControl::UpdateColors()
 {
-  CGUIButtonControl::UpdateColors();
-  m_imgRadioOn.SetDiffuseColor(m_diffuseColor);
-  m_imgRadioOff.SetDiffuseColor(m_diffuseColor);
+  bool changed = CGUIButtonControl::UpdateColors();
+  changed |= m_imgRadioOn.SetDiffuseColor(m_diffuseColor);
+  changed |= m_imgRadioOff.SetDiffuseColor(m_diffuseColor);
+
+  return changed;
 }
 

@@ -439,7 +439,11 @@ void CGUISettings::Initialize()
   map<int,int> channelLayout;
   for(int layout = AE_CH_LAYOUT_2_0; layout < AE_CH_LAYOUT_MAX; ++layout)
     channelLayout.insert(make_pair(34100+layout, layout));
+#if (defined(__APPLE__) && defined(__arm__))
+  AddInt(NULL, "audiooutput.channellayout", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+#else
   AddInt(ao, "audiooutput.channellayout", 34100, AE_CH_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
+#endif
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
 
 #if (defined(__APPLE__) && defined(__arm__))
@@ -465,9 +469,11 @@ void CGUISettings::Initialize()
 #if defined __APPLE__
   AddBool(NULL, "audiooutput.multichannellpcm", 348, false);
   AddBool(NULL, "audiooutput.truehdpassthrough", 349, false);
+  AddBool(NULL, "audiooutput.dtshdpassthrough", 407, false);
 #else
   AddBool(ao, "audiooutput.multichannellpcm", 348, true);
   AddBool(ao, "audiooutput.truehdpassthrough", 349, true);
+  AddBool(ao, "audiooutput.dtshdpassthrough", 407, true);
 #endif
 
 #if defined __APPLE__
@@ -1163,6 +1169,7 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   CLog::Log(LOGINFO, "MP3 pass through is %s" , GetBool("audiooutput.passthroughmp3") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "Multichannel LPCM is %s", GetBool("audiooutput.multichannellpcm") ? "enabled" : "disabled");
   CLog::Log(LOGINFO, "TrueHD pass through is %s", GetBool("audiooutput.truehdpassthrough") ? "enabled" : "disabled");
+  CLog::Log(LOGINFO, "dtsHD pass through is %s", GetBool("audiooutput.dtshdpassthrough") ? "enabled" : "disabled");
 
   g_guiSettings.m_LookAndFeelResolution = GetResolution();
 #ifdef __APPLE__

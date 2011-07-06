@@ -369,6 +369,7 @@
   <string id="404">Wind</string>
   <string id="405">Dew point</string>
   <string id="406">Humidity</string>
+  <string id="407">- dtsHD capable receiver</string>
 
   <string id="409">Defaults</string>
   <string id="410">Accessing weather service</string>
@@ -1730,6 +1731,8 @@
   <string id="20256">HTS Tvheadend client</string>
   <string id="20257">VDR Streamdev client</string>
   <string id="20258">MythTV client</string>
+  <string id="20259">Network Filesystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
@@ -1880,6 +1883,7 @@
   <string id="20453">episodes</string>
   <string id="20454">Listener</string>
   <string id="20455">Listeners</string>
+  <string id="20456">Set movieset fanart</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

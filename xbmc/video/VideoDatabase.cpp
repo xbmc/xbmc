@@ -262,9 +262,6 @@ bool CVideoDatabase::CreateTables()
     columns += ")";
     m_pDS->exec(columns.c_str());
 
-    // create views
-    CreateViews();
-
     m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_1 on musicvideo (idMVideo, idFile)");
     m_pDS->exec("CREATE UNIQUE INDEX ix_musicvideo_file_2 on musicvideo (idFile, idMVideo)");
 
@@ -307,6 +304,9 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE INDEX ixMusicVideoBasePath ON musicvideo ( c14(12) )");
     m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c19(12) )");
     m_pDS->exec("CREATE INDEX ixTVShowBasePath on tvshow ( c17(12) )");
+
+    // we create views last to ensure all indexes are rolled in
+    CreateViews();
   }
   catch (...)
   {
@@ -3346,6 +3346,9 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
   BeginTransaction();
 
+  // when adding/removing an index or altering the table ensure that you call
+  // CreateViews() after all modifications.
+
   try
   {
     if (iVersion < 43)
@@ -3482,6 +3485,10 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       UpdateBasePathID("musicvideo", "idMVideo", VIDEODB_ID_MUSICVIDEO_BASEPATH, VIDEODB_ID_MUSICVIDEO_PARENTPATHID);
       UpdateBasePathID("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_PARENTPATHID);
       UpdateBasePathID("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, VIDEODB_ID_TV_PARENTPATHID);
+    }
+    if ( iVersion < 53 )
+    {
+      CreateViews();
     }
   }
   catch (...)
@@ -3959,6 +3966,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        pItem->GetVideoInfoTag()->m_strPath = pItem->m_strPath;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         {
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
@@ -3981,6 +3989,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         strDir.Format("%ld/", m_pDS->fv("sets.idSet").get_asInt());
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        pItem->GetVideoInfoTag()->m_strPath = pItem->m_strPath;
         pItem->SetLabelPreformated(true);
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent==VIDEODB_CONTENT_MUSICVIDEOS)
         {

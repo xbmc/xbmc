@@ -77,6 +77,15 @@ inline unsigned int CAESinkALSA::GetChannelCount(const AEAudioFormat format)
 
 CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdString device, bool passthrough)
 {
+  int pos;
+  CStdString cardName;
+  
+  pos = device.find_first_of(':');
+  if (pos > 0)
+    cardName = device.substr(pos + 1, device.length() - pos - 1);
+  else
+    cardName.Empty();
+
   if (AE_IS_RAW(format.m_dataFormat) || passthrough)
   {
     if (device == "default")
@@ -89,7 +98,10 @@ CStdString CAESinkALSA::GetDeviceUse(const AEAudioFormat format, CStdString devi
 
 //    if (device == "iec958")
     {
-      device += ":AES0=0x06,AES1=0x82,AES2=0x00";
+      if (cardName.IsEmpty())
+        device += ":AES0=0x06,AES1=0x82,AES2=0x00";
+      else
+        device += ",AES0=0x06,AES1=0x82,AES2=0x00";
            if (format.m_sampleRate == 192000) device += ",AES3=0x0e";
       else if (format.m_sampleRate == 176400) device += ",AES3=0x0c";
       else if (format.m_sampleRate ==  96000) device += ",AES3=0x0a";
@@ -164,7 +176,8 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   /* set the channelLayout and the output device */
   memcpy(format.m_channelLayout, ALSAChannelMap, format.m_channelCount * sizeof(enum AEChannel));
   format.m_channelLayout[format.m_channelCount] = AE_CH_NULL;
-  m_device = device      = GetDeviceUse(format, device, m_passthrough);
+  m_device = device = GetDeviceUse(format, device, m_passthrough);
+  CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Attempting to open device %s", device.c_str());
 
   /* get the sound config */
   snd_config_t *config;

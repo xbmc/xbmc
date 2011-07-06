@@ -24,7 +24,7 @@ export AS=@use_toolchain@/bin/gas-preprocessor.pl ${CC}
 export CCAS=--tag CC @use_toolchain@/bin/gas-preprocessor.pl ${CC}
 export STRIP=${platform_path}/usr/bin/strip
 export RANLIB=${platform_path}/usr/bin/ranlib
-export ACLOCAL=aclocal -I ${PREFIX}/share/aclocal -I @use_toolchain@/share/aclocal -I ${platform_path}/usr/share/aclocal
+export ACLOCAL=aclocal -I ${PREFIX}/share/aclocal -I @use_toolchain@/share/aclocal -I /Developer/usr/share/aclocal
 export LIBTOOL=@use_toolchain@/bin/glibtool
 export LIBTOOLIZE=@use_toolchain@/bin/glibtoolize
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
@@ -32,4 +32,5 @@ export PATH:=@use_toolchain@/bin:${PREFIX}/bin:${platform_path}/usr/bin:/Develop
 
 # tweaks for boost
 bjam_args=toolset=darwin-${platform_gcc_version} --architecture=arm target-os=iphone macosx-version=iphone-${platform_sdk_version} define=_LITTLE_ENDIAN
-boost_flags=${platform_sdk_path} -arch @use_arch@
+# arm uses non-thread-safe compare-and-swap instruction so use posix thread primitives
+boost_flags=${platform_sdk_path} -arch @use_arch@ -DBOOST_AC_USE_PTHREADS -DBOOST_SP_USE_PTHREADS

@@ -40,7 +40,9 @@
         "ControlNotify": { "type": "boolean", "required": true },
         "ControlPower": { "type": "boolean", "required": true },
         "Logging": { "type": "boolean", "required": true },
-        "ScanLibrary": { "type": "boolean", "required": true }
+        "UpdateData": { "type": "boolean", "required": true },
+        "RemoveData": { "type": "boolean", "required": true },
+        "WriteFile": { "type": "boolean", "required": true }
       }
     }
   },
@@ -69,7 +71,8 @@
       { "name": "Playback", "type": "boolean", "default": false },
       { "name": "GUI", "type": "boolean", "default": false },
       { "name": "System", "type": "boolean", "default": false },
-      { "name": "Library", "type": "boolean", "default": false },
+      { "name": "AudioLibrary", "type": "boolean", "default": false },
+      { "name": "VideoLibrary", "type": "boolean", "default": false },
       { "name": "Other", "type": "boolean", "default": false }
     ],
     "returns": { "$ref": "Notification.Flags" }
@@ -773,7 +776,7 @@
   },
   "Files.Download": {
     "type": "method",
-    "transport": "FileDownload",
+    "transport": [ "Response", "FileDownload" ],
     "permission": "ReadData",
     "params": [
       { "name": "path", "type": "string", "required": true }
@@ -914,13 +917,14 @@
       }
     }
   },
-  "AudioLibrary.GetGenres": {
+  "AudioLibrary.GetRecentlyAddedAlbums": {
     "type": "method",
-    "description": "Retrieve all genres",
+    "description": "Retrieve recently added albums",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "fields", "$ref": "Audio.Fields.Genre" },
+      { "name": "albums", "$ref": "List.Amount" },
+      { "name": "fields", "$ref": "Audio.Fields.Album" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -928,16 +932,80 @@
       "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "genres": { "$ref": "Library.Genres", "required": true }
+        "albums": { "type": "array",
+          "items": { "$ref": "Audio.Details.Album" }
+        }
       }
     }
   },
-  "AudioLibrary.ScanForContent": {
+  "AudioLibrary.GetRecentlyAddedSongs": {
+    "type": "method",
+    "description": "Retrieve recently added songs",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "albums", "$ref": "List.Amount", "description": "The amount of recently added albums from which to return the songs" },
+      { "name": "fields", "$ref": "Audio.Fields.Song" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "songs": { "type": "array",
+          "items": { "$ref": "Audio.Details.Song" }
+        }
+      }
+    }
+  },
+  "AudioLibrary.GetGenres": {
+    "type": "method",
+    "description": "Retrieve all genres",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "fields", "$ref": "Library.Fields.Genre" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "genres": { "type": "array", "required": true,
+          "items": { "$ref": "Library.Details.Genre" }
+        }
+      }
+    }
+  },
+  "AudioLibrary.Scan": {
     "type": "method",
     "description": "Scans the audio sources for new library items",
     "transport": "Response",
-    "permission": "ScanLibrary",
+    "permission": "UpdateData",
     "params": [],
+    "returns": "string"
+  },
+  "AudioLibrary.Export": {
+    "type": "method",
+    "description": "Exports all items from the audio library",
+    "transport": "Response",
+    "permission": "WriteFile",
+    "params": [
+      { "name": "singlefile", "type": "boolean", "default": true, "description": "Whether to export the data into one or multiple files" },
+      { "name": "images", "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
+      { "name": "overwrite", "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
+      { "name": "path", "type": "string", "default": "", "description": "Path to the directory to where the data should be exported" }
+    ],
+    "returns": "string"
+  },
+  "AudioLibrary.Clean": {
+    "type": "method",
+    "description": "Cleans the audio library from non-existent items",
+    "transport": "Response",
+    "permission": "RemoveData",
+    "params": [ ],
     "returns": "string"
   },
   "VideoLibrary.GetMovies": {
@@ -1206,6 +1274,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "type", "type": "string", "required": true, "enum": [ "movie", "tvshow", "musicvideo"] },
+      { "name": "fields", "$ref": "Library.Fields.Genre" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -1213,18 +1282,40 @@
       "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "genres": { "type": "array",
-          "items": { "$ref": "Video.Details.Genre" }
+        "genres": { "type": "array", "required": true,
+          "items": { "$ref": "Library.Details.Genre" }
         }
       }
     }
   },
-  "VideoLibrary.ScanForContent": {
+  "VideoLibrary.Scan": {
     "type": "method",
     "description": "Scans the video sources for new library items",
     "transport": "Response",
-    "permission": "ScanLibrary",
+    "permission": "UpdateData",
     "params": [],
+    "returns": "string"
+  },
+  "VideoLibrary.Export": {
+    "type": "method",
+    "description": "Exports all items from the video library",
+    "transport": "Response",
+    "permission": "WriteFile",
+    "params": [
+      { "name": "singlefile", "type": "boolean", "default": true, "description": "Whether to export the data into one or multiple files" },
+      { "name": "images", "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
+      { "name": "actorthumbs", "type": "boolean", "default": false, "description": "Whether to export actor thumbnails" },
+      { "name": "overwrite", "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
+      { "name": "path", "type": "string", "default": "", "description": "Path to the directory to where the data should be exported" }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.Clean": {
+    "type": "method",
+    "description": "Cleans the video library from non-existent items",
+    "transport": "Response",
+    "permission": "RemoveData",
+    "params": [ ],
     "returns": "string"
   },
   "System.Shutdown": {

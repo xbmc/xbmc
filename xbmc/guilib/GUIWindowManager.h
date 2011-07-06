@@ -32,6 +32,7 @@
 #include "GUIWindow.h"
 #include "IWindowManagerCallback.h"
 #include "IMsgTargetCallback.h"
+#include "DirtyRegionTracker.h"
 
 class CGUIDialog;
 
@@ -67,11 +68,20 @@ public:
   // currently focused window(s).  Returns true only if the message is handled.
   bool OnAction(const CAction &action);
 
+  /*! \brief Process active controls allowing them to animate before rendering.
+   */
+  void Process(unsigned int currentTime);
+
+  /*! \brief Mark the screen as dirty, forcing a redraw at the next Render()
+   */
+  void MarkDirty();
+
   /*! \brief Rendering of the current window and any dialogs
    Render is called every frame to draw the current window and any dialogs.
    It should only be called from the application thread.
+   Returns true only if it has rendered something.
    */
-  void Render();
+  bool Render();
 
   /*! \brief Per-frame updating of the current window and any dialogs
    FrameMove is called every frame to update the current window and any dialogs
@@ -87,7 +97,7 @@ public:
   bool Initialized() const { return m_initialized; };
 
   CGUIWindow* GetWindow(int id) const;
-  void Process(bool renderOnly = false);
+  void ProcessRenderLoop(bool renderOnly = false);
   void SetCallback(IWindowManagerCallback& callback);
   void DeInitialize();
 
@@ -104,7 +114,6 @@ public:
   int GetFocusedWindow() const;
   bool HasModalDialog() const;
   bool HasDialogOnScreen() const;
-  void UpdateModelessVisibility();
   bool IsWindowActive(int id, bool ignoreClosing = true) const;
   bool IsWindowVisible(int id) const;
   bool IsWindowTopMost(int id) const;
@@ -118,6 +127,8 @@ public:
   void DumpTextureUse();
 #endif
 private:
+  void RenderPass();
+
   void LoadNotOnDemandWindows();
   void UnloadNotOnDemandWindows();
   void HideOverlay(CGUIWindow::OVERLAY_STATE state);
@@ -148,6 +159,8 @@ private:
   bool m_bShowOverlay;
   int  m_iNested;
   bool m_initialized;
+
+  CDirtyRegionTracker m_tracker;
 };
 
 /*!

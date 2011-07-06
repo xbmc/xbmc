@@ -30,7 +30,7 @@
 #include "CoreAudioAE.h"
 #include "AEUtil.h"
 #include "AEFactory.h"
-
+#include "utils/SystemInfo.h"
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CCoreAudioHardware
@@ -1473,12 +1473,14 @@ CCoreAudioAEHALOSX::CCoreAudioAEHALOSX() :
   m_BytesPerFrame(0),
   m_BytesPerSec(0),
   m_NumLatencyFrames(0),
-  m_OutputBufferIndex(0)
+  m_OutputBufferIndex(0),
+  m_ATV1(false)
 {
   m_AUOutput      = new CAUOutputDevice;
   m_MixerUnit     = new CCoreAudioUnit;
   m_AudioDevice   = new CCoreAudioDevice;
-  m_OutputStream  = new CCoreAudioStream; 
+  m_OutputStream  = new CCoreAudioStream;
+  m_ATV1          = g_sysinfo.IsAppleTV();
 }
 
 CCoreAudioAEHALOSX::~CCoreAudioAEHALOSX()
@@ -1498,7 +1500,7 @@ bool CCoreAudioAEHALOSX::InitializePCM(AEAudioFormat &format, CStdString &device
   // Set the input stream format for the AudioUnit (this is what is being sent to us)
   AudioStreamBasicDescription inputFormat;
   inputFormat.mFormatID = kAudioFormatLinearPCM;                  //  Data encoding format
-  inputFormat.mFormatFlags = /*kAudioFormatFlagsNativeEndian | */ kLinearPCMFormatFlagIsPacked;
+  inputFormat.mFormatFlags = /*kAudioFormatFlagsNativeEndian | */kLinearPCMFormatFlagIsPacked;
   
   switch(format.m_dataFormat) {
     case AE_FMT_FLOAT:
@@ -1508,7 +1510,7 @@ bool CCoreAudioAEHALOSX::InitializePCM(AEAudioFormat &format, CStdString &device
       inputFormat.mFormatFlags |= kAudioFormatFlagIsSignedInteger;
       break;
   }
-  
+
 #ifdef __BIG_ENDIAN__
   inputFormat.mFormatFlags |= kLinearPCMFormatFlagIsBigEndian;
 #endif
@@ -1516,25 +1518,23 @@ bool CCoreAudioAEHALOSX::InitializePCM(AEAudioFormat &format, CStdString &device
   inputFormat.mChannelsPerFrame = format.m_channelCount;          // Number of interleaved audiochannels
   inputFormat.mSampleRate = (Float64)format.m_sampleRate;         //  the sample rate of the audio stream
   inputFormat.mBitsPerChannel =  bps;                             // Number of bits per sample, per channel
-  inputFormat.mBytesPerFrame = (bps>>3) * format.m_channelCount;    // Size of a frame == 1 sample per channel    
+  inputFormat.mBytesPerFrame = (bps>>3) * format.m_channelCount;  // Size of a frame == 1 sample per channel    
   inputFormat.mFramesPerPacket = 1;                               // The smallest amount of indivisible data. Always 1 for uncompressed audio   
   inputFormat.mBytesPerPacket = inputFormat.mBytesPerFrame * inputFormat.mFramesPerPacket;
   inputFormat.mReserved = 0;
   
-  AudioStreamBasicDescription inputDesc_end;
-  CStdString formatString;
-  
-  m_AUOutput->GetFormat(&inputDesc_end, kAudioUnitScope_Output, kInputBus);
-  
   if (!m_AUOutput->SetFormat(&inputFormat, kAudioUnitScope_Input, kOutputBus))
     return false;
   
-  if (!m_AUOutput->SetFormat(&inputFormat, kAudioUnitScope_Output, kInputBus))
-    return false;
+  if(!m_ATV1)
+  {
+    if (!m_AUOutput->SetFormat(&inputFormat, kAudioUnitScope_Output, kInputBus))
+      return false;
+  }
   
   m_BytesPerFrame = inputFormat.mBytesPerFrame;
   m_BytesPerSec = inputFormat.mSampleRate * inputFormat.mBytesPerFrame;      // 1 sample per channel per frame
-  
+
   return true;
 }
 

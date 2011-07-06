@@ -118,7 +118,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   {
     m_CodecName = "DTS";
     m_CodecID   = CODEC_ID_DTS;
-    m_PackFunc  = &CAEPackIEC958::PackDTS_1024;
+    m_PackFunc  = &CAEPackIEC61937::PackDTS_1024;
     m_BitRate   = DTS_ENCODE_BITRATE;
     codec = m_dllAvCodec.avcodec_find_encoder(m_CodecID);
   }
@@ -129,7 +129,7 @@ bool CAEEncoderFFmpeg::Initialize(AEAudioFormat &format)
   {
     m_CodecName = "AC3";
     m_CodecID   = CODEC_ID_AC3;
-    m_PackFunc  = &CAEPackIEC958::PackAC3;
+    m_PackFunc  = &CAEPackIEC61937::PackAC3;
     m_BitRate   = AC3_ENCODE_BITRATE;
     codec = m_dllAvCodec.avcodec_find_encoder(m_CodecID);
   }
@@ -250,7 +250,7 @@ int CAEEncoderFFmpeg::Encode(float *data, unsigned int frames)
     return 0;
 
   /* encode it */
-  int size = m_dllAvCodec.avcodec_encode_audio(m_CodecCtx, m_Buffer + IEC958_DATA_OFFSET, FF_MIN_BUFFER_SIZE, (short*)data);
+  int size = m_dllAvCodec.avcodec_encode_audio(m_CodecCtx, m_Buffer + IEC61937_DATA_OFFSET, FF_MIN_BUFFER_SIZE, (short*)data);
 
   /* pack it into an IEC958 frame */
   m_BufferSize = m_PackFunc(NULL, size, m_Buffer);

@@ -255,9 +255,6 @@
     <ClCompile Include="..\..\xbmc\win32\XBMC_PC.cpp">
       <Filter>win32</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\XCriticalSection.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\DummyVideoPlayer.cpp">
       <Filter>cores</Filter>
     </ClCompile>
@@ -853,9 +850,6 @@
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\VirtualDirectory.cpp">
-      <Filter>filesystem</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\FileSystem\VirtualPathDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\FileSystem\VTPDirectory.cpp">
@@ -1820,6 +1814,12 @@
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp">
       <Filter>settings</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\win32\WIN32USBScan.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\input\KeymapLoader.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp">
       <Filter>storage</Filter>
     </ClCompile>
@@ -1838,22 +1838,10 @@
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp">
       <Filter>threads</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\CriticalSection.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\Event.cpp">
       <Filter>threads</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\Mutex.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\SharedSection.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\SingleLock.cpp">
       <Filter>threads</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp">
@@ -2216,6 +2204,9 @@
     <ClCompile Include="..\..\xbmc\windows\GUIMediaWindow.cpp">
       <Filter>windows</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowDebugInfo.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowFileManager.cpp">
       <Filter>windows</Filter>
     </ClCompile>
@@ -2454,6 +2445,21 @@
     <ClCompile Include="..\..\xbmc\utils\JSONVariantWriter.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\settings\AppParamParser.cpp">
+      <Filter>settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\addons\AddonVersion.cpp">
+      <Filter>addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionSolvers.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp">
+      <Filter>threads</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -2475,9 +2481,6 @@
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\win32\WINSMBDirectory.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\XCriticalSection.h">
       <Filter>win32</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\DummyVideoPlayer.h">
@@ -3179,9 +3182,6 @@
     <ClInclude Include="..\..\xbmc\FileSystem\VideoDatabaseDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\FileSystem\VirtualPathDirectory.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\FileSystem\VTPDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
@@ -3570,9 +3570,6 @@
       <Filter>dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ILiveTV.h">
-      <Filter>filesystem</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\filesystem\zconf.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\ZeroconfDirectory.h">
@@ -4288,6 +4285,12 @@
     <ClInclude Include="..\..\xbmc\settings\VideoSettings.h">
       <Filter>settings</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\win32\WIN32USBScan.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\input\KeymapLoader.h">
+      <Filter>input</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\storage\AutorunMediaJob.h">
       <Filter>storage</Filter>
     </ClInclude>
@@ -4316,9 +4319,6 @@
       <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\LockFree.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\Mutex.h">
       <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\SharedSection.h">
@@ -4666,6 +4666,9 @@
     <ClInclude Include="..\..\xbmc\windows\GUIMediaWindow.h">
       <Filter>windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowDebugInfo.h">
+      <Filter>windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowFileManager.h">
       <Filter>windows</Filter>
     </ClInclude>
@@ -4912,6 +4915,30 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\JSONVariantWriter.h">
       <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\settings\AppParamParser.h">
+      <Filter>settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\addons\AddonVersion.h">
+      <Filter>addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\DllAvFilter.h">
+      <Filter>cores\dvdplayer\DVDHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionTracker.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegion.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h">
+      <Filter>guilib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\Condition.h">
+      <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h">
+      <Filter>threads</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

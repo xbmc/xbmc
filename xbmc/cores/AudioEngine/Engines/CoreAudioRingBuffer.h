@@ -67,7 +67,7 @@ public:
 #ifdef RING_BUFFER_DEBUG
     CLog::Log(LOGDEBUG, "CoreAudioRingBuffer::~CoereAudioRingBuffer: Deleting buffer.");
 #endif
-    delete[] m_Buffer;
+    _aligned_free(m_Buffer);
   }
 
   /**
@@ -77,7 +77,7 @@ public:
    */
   bool Create(int size)
   {
-    m_Buffer = new unsigned char[ size ];
+    m_Buffer =  (unsigned char*)_aligned_malloc(size,16);
     if ( m_Buffer )
     {
       m_iSize = size;
@@ -208,7 +208,7 @@ public:
    */
   void Dump()
   {
-    unsigned char* bufferContents = new unsigned char[m_iSize + 1];
+    unsigned char* bufferContents =  (unsigned char *)_aligned_malloc(m_iSize + 1,16);
     for (unsigned int i=0; i<m_iSize; i++) {
       if (i >= m_iReadPos && i<m_iWritePos)
         bufferContents[i] = m_Buffer[i];
@@ -217,7 +217,7 @@ public:
     }
     bufferContents[m_iSize] = '\0';
     CLog::Log(LOGDEBUG, "CoereAudioRingBuffer::Dump()\n%s",bufferContents);
-    delete[] bufferContents;
+    _aligned_free(bufferContents);
   }
 
   /**

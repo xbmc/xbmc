@@ -50,14 +50,14 @@
 			<height>250</height>
 			<colordiffuse>AAFFFFFF</colordiffuse>
 			<texture>HomeNowPlayingBack.png</texture>
-			<visible>[Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)] | [Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)] | [Container(9000).HasFocus(2) + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
+			<visible>[Player.HasAudio + !Skin.HasSetting(homepageMusicinfo)] | [Player.HasVideo + !Skin.HasSetting(homepageVideoinfo)] | [Container(9000).HasFocus(2) + Skin.HasSetting(homepageShowRecentlyAdded)] | [Container(9000).HasFocus(10) + Skin.HasSetting(homepageShowRecentlyAdded)] | [Container(9000).HasFocus(11) + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
 			<include>Window_OpenClose_Animation</include>
 		</control>
 		<!-- Music Info -->
 		<control type="group">
 			<posx>0</posx>
 			<posy>20</posy>
-			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo) + ![Container(9000).HasFocus(2) + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
+			<visible>Player.HasAudio + !Skin.HasSetting(homepageMusicinfo) + ![Container(9000).HasFocus(2) + ![Skin.HasSetting(HomeMenuNoMoviesButton) | Skin.HasSetting(HomeMenuNoTVShowsButton)] + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="image">
@@ -115,7 +115,7 @@
 		<control type="group">
 			<posx>0</posx>
 			<posy>20</posy>
-			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo) + ![Container(9000).HasFocus(2) + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
+			<visible>Player.HasVideo + !Skin.HasSetting(homepageVideoinfo) + ![Container(9000).HasFocus(2) + ![Skin.HasSetting(HomeMenuNoMoviesButton) | Skin.HasSetting(HomeMenuNoTVShowsButton)] + Skin.HasSetting(homepageShowRecentlyAdded)]</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<control type="group">
@@ -457,6 +457,20 @@
 					<visible>Container(9000).HasFocus(2)</visible>
 					<include>HomeSubMenuVideos</include> <!-- Buttons for the grouplist -->
 				</control>
+				<control type="grouplist" id="9016">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9016</onleft>
+					<onright>9016</onright>
+					<visible>Container(9000).HasFocus(10)</visible>
+					<include>HomeSubMenuMovies</include> <!-- Buttons for the grouplist -->
+				</control>
+				<control type="grouplist" id="9017">
+					<include>HomeSubMenuCommonValues</include>
+					<onleft>9017</onleft>
+					<onright>9017</onright>
+					<visible>Container(9000).HasFocus(11)</visible>
+					<include>HomeSubMenuTVShows</include> <!-- Buttons for the grouplist -->
+				</control>
 				<control type="grouplist" id="9011">
 					<include>HomeSubMenuCommonValues</include>
 					<onleft>9011</onleft>
@@ -590,6 +604,28 @@
 						<icon>special://skin/backgrounds/videos.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoVideosButton)</visible>
+						<visible>!Skin.HasSetting(HomeVideostoFiles)</visible>
+					</item>
+					<item id="2">
+						<label>3</label>
+						<onclick>ActivateWindow(Videos,Files,Return)</onclick>
+						<icon>special://skin/backgrounds/videos.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
+						<visible>Skin.HasSetting(HomeVideostoFiles)</visible>
+					</item>
+					<item id="10">
+						<label>20342</label>
+						<onclick>ActivateWindow(Videos,MovieTitles,return)</onclick>
+						<icon>special://skin/backgrounds/videos.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_Movies_Folder)]</thumb>
+						<visible>Skin.HasSetting(HomeMenuNoMoviesButton) + Library.HasContent(Movies)</visible>
+					</item>
+					<item id="11">
+						<label>20343</label>
+						<onclick>ActivateWindow(Videos,TVShowTitles,return)</onclick>
+						<icon>special://skin/backgrounds/videos.jpg</icon>
+						<thumb>$INFO[Skin.String(Home_Custom_Back_TVShow_Folder)]</thumb>
+						<visible>Skin.HasSetting(HomeMenuNoTVShowsButton) + Library.HasContent(TVShows)</visible>
 					</item>
 					<item id="3">
 						<label>2</label>

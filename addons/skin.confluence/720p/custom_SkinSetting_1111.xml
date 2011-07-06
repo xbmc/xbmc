@@ -453,7 +453,20 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="label" id="206">
+					<control type="radiobutton" id="206">
+						<description>Videos Goes to Files</description>
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<label>$LOCALIZE[31105]</label>
+						<onclick>Skin.ToggleSetting(HomeVideostoFiles)</onclick>
+						<selected>Skin.HasSetting(HomeVideostoFiles)</selected>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+					</control>
+					<control type="label" id="220">
 						<width>750</width>
 						<height>45</height>
 						<font>font13_title</font>
@@ -463,7 +476,7 @@
 						<align>left</align>
 						<aligny>center</aligny>
 					</control>
-					<control type="radiobutton" id="207">
+					<control type="radiobutton" id="221">
 						<description>Hide Videos Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -476,7 +489,35 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="208">
+					<control type="radiobutton" id="222">
+						<description>Hide Movies Button</description>
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<label>$LOCALIZE[31111] - $LOCALIZE[20342] [COLOR=grey3] ($LOCALIZE[20314])[/COLOR]</label>
+						<onclick>Skin.ToggleSetting(HomeMenuNoMoviesButton)</onclick>
+						<selected>!Skin.HasSetting(HomeMenuNoMoviesButton)</selected>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<enable>Library.HasContent(Movies)</enable>
+					</control>
+					<control type="radiobutton" id="223">
+						<description>Hide TV Shows Button</description>
+						<width>750</width>
+						<height>40</height>
+						<font>font13</font>
+						<textcolor>grey2</textcolor>
+						<focusedcolor>white</focusedcolor>
+						<label>$LOCALIZE[31111] - $LOCALIZE[20343] [COLOR=grey3] ($LOCALIZE[20314])[/COLOR]</label>
+						<onclick>Skin.ToggleSetting(HomeMenuNoTVShowsButton)</onclick>
+						<selected>!Skin.HasSetting(HomeMenuNoTVShowsButton)</selected>
+						<texturefocus>MenuItemFO.png</texturefocus>
+						<texturenofocus>MenuItemNF.png</texturenofocus>
+						<enable>Library.HasContent(TVShows)</enable>
+					</control>
+					<control type="radiobutton" id="224">
 						<description>Hide Music Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -489,7 +530,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="209">
+					<control type="radiobutton" id="225">
 						<description>Hide Pictures Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -502,7 +543,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="210">
+					<control type="radiobutton" id="226">
 						<description>Hide Programs Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -515,7 +556,7 @@
 						<texturefocus>MenuItemFO.png</texturefocus>
 						<texturenofocus>MenuItemNF.png</texturenofocus>
 					</control>
-					<control type="radiobutton" id="212">
+					<control type="radiobutton" id="228">
 						<description>Hide Weather Button</description>
 						<width>750</width>
 						<height>40</height>
@@ -680,6 +721,22 @@
 								<onclick>-</onclick>
 								<icon>special://skin/backgrounds/videos.jpg</icon>
 								<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
+							</item>
+							<item id="10">
+								<label>20342</label>
+								<label2>Home_Custom_Back_Movies_Folder</label2>
+								<onclick>-</onclick>
+								<icon>special://skin/backgrounds/videos.jpg</icon>
+								<thumb>$INFO[Skin.String(Home_Custom_Back_Movies_Folder)]</thumb>
+								<visible>Skin.HasSetting(HomeMenuNoMoviesButton) + Library.HasContent(Movies)</visible>
+							</item>
+							<item id="11">
+								<label>20343</label>
+								<label2>Home_Custom_Back_TVShow_Folder</label2>
+								<onclick>-</onclick>
+								<icon>special://skin/backgrounds/videos.jpg</icon>
+								<thumb>$INFO[Skin.String(Home_Custom_Back_TVShow_Folder)]</thumb>
+								<visible>Skin.HasSetting(HomeMenuNoTVShowsButton) + Library.HasContent(TVShows)</visible>
 							</item>
 							<item id="2">
 								<label>2</label>

@@ -35,6 +35,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE);autoreconf -vif;$(CONFIGURE)
+	cd $(SOURCE); patch -p0 < ../printf.patch
 
 $(SO_NAME): $(SOURCE)
 	make -C $(SOURCE)

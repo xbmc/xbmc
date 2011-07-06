@@ -39,5 +39,10 @@ namespace JSONRPC
     static JSON_STATUS Back(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
     static JSON_STATUS Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    
+  private:
+    static JSON_STATUS sendAction(int actionID);
+    static JSON_STATUS activateWindow(int windowID);
+    static bool        handleScreenSaver();
   };
 }

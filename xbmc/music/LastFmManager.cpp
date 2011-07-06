@@ -70,14 +70,12 @@ CLastFmManager* CLastFmManager::m_pInstance=NULL;
 
 CLastFmManager::CLastFmManager()
 {
-  m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
   m_RadioTrackQueue = new CPlayList;
 }
 
 CLastFmManager::~CLastFmManager()
 {
   StopRadio(true);
-  CloseHandle(m_hWorkerEvent);
   StopThread();
   CLog::Log(LOGINFO,"lastfm destroyed");
   delete m_RadioTrackQueue;
@@ -250,7 +248,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
   CacheTrackThumb(XBMC_LASTFM_MINTRACKS);
   AddToPlaylist(XBMC_LASTFM_MINTRACKS);
   Create(); //start thread
-  SetEvent(m_hWorkerEvent); //kickstart the thread
+  m_hWorkerEvent.Set(); //kickstart the thread
 
   CSingleLock lock(m_lockPlaylist);
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
@@ -536,7 +534,7 @@ void CLastFmManager::Update()
       //get more tracks
       if (ThreadHandle() != NULL)
       {
-        SetEvent(m_hWorkerEvent);
+        m_hWorkerEvent.Set();
       }
     }
   }
@@ -608,7 +606,7 @@ void CLastFmManager::Process()
 
   while (!m_bStop)
   {
-    WaitForSingleObject(m_hWorkerEvent, INFINITE);
+    m_hWorkerEvent.Wait();
     if (m_bStop)
       break;
     int iNrCachedTracks = m_RadioTrackQueue->size();
@@ -636,7 +634,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
   if (m_ThreadHandle)
   {
     m_bStop = true;
-    SetEvent(m_hWorkerEvent);
+    m_hWorkerEvent.Set();
     StopThread();
   }
   m_CurrentSong.CurrentSong = NULL;

@@ -28,6 +28,8 @@
  which would break future multi-channels playback.
  */
 
+#define __STDC_LIMIT_MACROS
+
 #include "system.h"
 
 #include "CoreAudioAE.h"
@@ -41,10 +43,26 @@
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"
+#include "utils/SystemInfo.h"
+#include "MathUtils.h"
+#include "utils/EndianSwap.h"
 
 #define DELAY_FRAME_TIME  20
 #define BUFFERSIZE        16416
 #define SPEAKER_COUNT     9
+
+static inline int safeRound(double f)
+{
+  /* if the value is larger then we can handle, then clamp it */
+  if (f >= INT_MAX) return INT_MAX;
+  if (f <= INT_MIN) return INT_MIN;
+  
+  /* if the value is out of the MathUtils::round_int range, then round it normally */
+  if (f <= static_cast<double>(INT_MIN / 2) - 1.0 || f >= static_cast <double>(INT_MAX / 2) + 1.0)
+    return floor(f+0.5);
+  
+  return MathUtils::round_int(f);
+}
 
 static enum AEChannel CoreAudioChannelMap[] = {AE_CH_FL, AE_CH_FR, AE_CH_FC, AE_CH_LFE, AE_CH_BL, AE_CH_BR, AE_CH_SL, AE_CH_SR, AE_CH_NULL};
 
@@ -54,15 +72,13 @@ CCoreAudioAE::CCoreAudioAE() :
   m_RemapChannelLayout(NULL),
   m_volume(1.0f),
   m_guiSoundWhilePlayback(true),
-  m_EngineLock(false)
+  m_EngineLock(false),
+  m_convertFn(NULL)
 {
   /* Allocate internal buffers */
   m_OutputBuffer      = (float *)_aligned_malloc(BUFFERSIZE, 16);
   m_StreamBuffer      = (uint8_t *)_aligned_malloc(BUFFERSIZE, 16);
   m_StreamBufferSize  = m_OutputBufferSize = BUFFERSIZE;
-  
-  m_Mutex             = SDL_CreateMutex();
-  m_MutexLockEngine   = SDL_CreateMutex();
   
   m_volume            = g_settings.m_fVolumeLevel;
   
@@ -71,7 +87,8 @@ CCoreAudioAE::CCoreAudioAE() :
 #else
   HAL = new CCoreAudioAEHALOSX;
 #endif
-  
+ 
+  m_Use16BitAudio     = false; //g_sysinfo.IsAppleTV();
 }
 
 CCoreAudioAE::~CCoreAudioAE()
@@ -84,8 +101,8 @@ CCoreAudioAE::~CCoreAudioAE()
   while(!m_streams.empty())
   {
     CCoreAudioAEStream *s = m_streams.front();
-    /* note: the stream will call RemoveStream via it's dtor */
     RemoveStream(s);
+    m_sounds.pop_front();
     delete s;
   }
   
@@ -101,12 +118,6 @@ CCoreAudioAE::~CCoreAudioAE()
   if(m_StreamBuffer)
     _aligned_free(m_StreamBuffer);
 
-  if (m_Mutex)
-    SDL_DestroyMutex(m_Mutex);  
-
-  if (m_MutexLockEngine)
-    SDL_DestroyMutex(m_MutexLockEngine);  
-
 #ifndef __arm__
   CCoreAudioHardware::ResetAudioDevices();
 #endif
@@ -116,29 +127,33 @@ CCoreAudioAE::~CCoreAudioAE()
 
 void CCoreAudioAE::LockEngine()
 {
-  SDL_mutexP(m_MutexLockEngine);
+  CSingleLock EngineLock(m_MutexLockEngine);
+
   m_EngineLock = true;
-  SDL_mutexV(m_MutexLockEngine);
+  
+  EngineLock.Leave();
 }
 
 void CCoreAudioAE::UnlockEngine()
 {
-  SDL_mutexP(m_MutexLockEngine);
+  CSingleLock EngineLock(m_MutexLockEngine);
+
   m_EngineLock = false;
-  SDL_mutexV(m_MutexLockEngine);
+
+  EngineLock.Leave();
 }
 
 bool CCoreAudioAE::Initialize()
 {
   Stop();
   
-  SDL_mutexP(m_Mutex);
+  CSingleLock AELock(m_Mutex);
 
   Deinitialize();
   
   bool ret = OpenCoreAudio();
  
-  SDL_mutexV(m_Mutex);
+  AELock.Leave();
   
   Start();
   
@@ -194,7 +209,9 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
   
   m_guiSoundWhilePlayback = g_guiSettings.GetBool("audiooutput.guisoundwhileplayback");
 
+  /* on iOS devices we set fixed to two channels. */
   enum AEStdChLayout m_stdChLayout = AE_CH_LAYOUT_2_0;
+#if !defined(__arm__)
   switch(g_guiSettings.GetInt("audiooutput.channellayout"))
   {
     default:
@@ -210,7 +227,8 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
     case  9: m_stdChLayout = AE_CH_LAYOUT_7_0; break;
     case 10: m_stdChLayout = AE_CH_LAYOUT_7_1; break;
   }
-
+#endif
+  
   /* setup the desired format */
   m_format.m_channelLayout = CAEUtil::GetStdChLayout(m_stdChLayout);    
  
@@ -241,7 +259,18 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
   {
     m_format.m_sampleRate       = sampleRate;
     m_format.m_channelCount     = CAEUtil::GetChLayoutCount(m_format.m_channelLayout);
-    m_format.m_dataFormat       = AE_FMT_FLOAT;
+
+    if(m_Use16BitAudio)
+    {
+      m_format.m_dataFormat     = AE_FMT_S16NE;
+      m_convertFn               = CAEConvert::FrFloat(m_format.m_dataFormat);
+    }
+    else 
+    {      
+      m_format.m_dataFormat     = AE_FMT_FLOAT;
+    }
+
+
   }
 
   if (m_outputDevice.IsEmpty())
@@ -273,6 +302,7 @@ bool CCoreAudioAE::OpenCoreAudio(unsigned int sampleRate, bool forceRaw, enum AE
   CLog::Log(LOGINFO, "  Channel Layout: %s", CAEUtil::GetChLayoutStr(m_format.m_channelLayout).c_str());
   CLog::Log(LOGINFO, "  Frame Size    : %d", m_format.m_frameSize);
   CLog::Log(LOGINFO, "  Volume Level  : %f", m_volume);
+  CLog::Log(LOGINFO, "  Passthrough   : %d", m_rawPassthrough);
   
   if(m_format.m_channelCount > SPEAKER_COUNT)
     m_format.m_channelCount = SPEAKER_COUNT;
@@ -333,12 +363,13 @@ void CCoreAudioAE::OnSettingsChange(CStdString setting)
   if (setting == "audiooutput.dontnormalizelevels")
   {
     /* re-init streams reampper */
-    SDL_mutexP(m_Mutex);
+    CSingleLock AELock(m_Mutex);
     
     std::list<CCoreAudioAEStream*>::iterator itt;
     for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       (*itt)->InitializeRemap();
-    SDL_mutexV(m_Mutex);  
+    
+    AELock.Leave();  
   }
   
   if (setting == "audiooutput.passthroughdevice" ||
@@ -417,13 +448,13 @@ IAEStream *CCoreAudioAE::GetStream(enum AEDataFormat dataFormat,
             CAEUtil::GetChLayoutStr(channelLayout).c_str()
             );
 
-  SDL_mutexV(m_MutexLockEngine);
+  CSingleLock EngineLock(m_MutexLockEngine);
 
   m_EngineLock = true;
   
   Stop();
   
-  SDL_mutexP(m_Mutex);
+  CSingleLock AELock(m_Mutex);
   
   bool wasEmpty = m_streams.empty();
   
@@ -446,11 +477,11 @@ IAEStream *CCoreAudioAE::GetStream(enum AEDataFormat dataFormat,
   if (!stream->IsValid())
     stream->Initialize(m_format);
 
-  SDL_mutexV(m_Mutex);
+  AELock.Leave();
 
   m_EngineLock = false;
 
-  SDL_mutexV(m_MutexLockEngine);
+  EngineLock.Leave();
   
   Start();
 
@@ -467,9 +498,9 @@ IAEStream *CCoreAudioAE::AlterStream(IAEStream *stream,
   /* TODO: reconfigure the stream */
   ((CCoreAudioAEStream*)stream)->SetFreeOnDrain();
 
-  SDL_mutexP(m_Mutex);
+  CSingleLock AELock(m_Mutex);
   stream->Drain();
-  SDL_mutexV(m_Mutex);
+  AELock.Leave();
   
   return GetStream(dataFormat, sampleRate, channelCount, channelLayout, options);
 }
@@ -477,9 +508,7 @@ IAEStream *CCoreAudioAE::AlterStream(IAEStream *stream,
 void CCoreAudioAE::RemoveStream(IAEStream *stream)
 {
   std::list<CCoreAudioAEStream*>::iterator itt;
-  
-  m_streams.remove((CCoreAudioAEStream *)stream);
-  
+    
   for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     if (*itt == stream)
@@ -492,22 +521,20 @@ void CCoreAudioAE::RemoveStream(IAEStream *stream)
 
 IAEStream *CCoreAudioAE::FreeStream(IAEStream *stream)
 {
-  SDL_mutexV(m_MutexLockEngine);  
+  CSingleLock EngineLock(m_MutexLockEngine);
+
   m_EngineLock = true;
-  SDL_mutexP(m_Mutex);
-
+  CSingleLock AELock(m_Mutex);
+  
   RemoveStream(stream);
+  delete (CCoreAudioAEStream *)stream;
 
-  CCoreAudioAEStream *istream = (CCoreAudioAEStream *)stream;
-
-  delete istream;
-
-  SDL_mutexV(m_Mutex);
+  AELock.Leave();
 
   m_EngineLock = false;
-
-  SDL_mutexV(m_MutexLockEngine);
-
+  
+  EngineLock.Leave();
+  
   /* When we have been in passthrough mode, reinit the hardware to come back to anlog out */
   if(m_streams.empty()/* && m_rawPassthrough*/)
   {
@@ -531,14 +558,14 @@ void CCoreAudioAE::PlaySound(IAESound *sound)
     ((CCoreAudioAESound*)sound)->GetSampleCount()
   };
 
-  SDL_mutexP(m_Mutex);
+  CSingleLock AELock(m_Mutex);
   m_playing_sounds.push_back(ss);
-  SDL_mutexV(m_Mutex);
+  AELock.Leave();
 }
 
 void CCoreAudioAE::StopSound(IAESound *sound)
 {
-  SDL_mutexP(m_Mutex);
+  CSingleLock AELock(m_Mutex);
   std::list<SoundState>::iterator itt;
   for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
   {
@@ -549,7 +576,7 @@ void CCoreAudioAE::StopSound(IAESound *sound)
     }
     else ++itt;
   }
-  SDL_mutexV(m_Mutex);
+  AELock.Leave();
 }
 
 IAESound *CCoreAudioAE::GetSound(CStdString file)
@@ -561,9 +588,9 @@ IAESound *CCoreAudioAE::GetSound(CStdString file)
     return NULL;
   }
 
-  SDL_mutexP(m_Mutex);  
+  CSingleLock AELock(m_Mutex);
   m_sounds.push_back(sound);
-  SDL_mutexV(m_Mutex);
+  AELock.Leave();
   
   return sound;
 }
@@ -590,8 +617,8 @@ void CCoreAudioAE::FreeSound(IAESound *sound)
 {
   if (!sound) return;
 
-  SDL_mutexP(m_Mutex);
-  sound->Stop();
+  CSingleLock AELock(m_Mutex);
+
   for(std::list<CCoreAudioAESound*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
     if (*itt == sound)
     {
@@ -602,10 +629,10 @@ void CCoreAudioAE::FreeSound(IAESound *sound)
   RemovePlayingSound(sound);
   
   delete (CCoreAudioAESound*)sound;
-  SDL_mutexV(m_Mutex);
+  AELock.Leave();
 }
 
-void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
+void CCoreAudioAE::MixSounds32(float *buffer, unsigned int samples)
 {
   if(!m_Initialized)
     return;
@@ -631,6 +658,47 @@ void CCoreAudioAE::MixSounds(float *buffer, unsigned int samples)
     
     for(unsigned int i = 0; i < mixSamples; ++i)
       buffer[i] = (buffer[i] + ss->samples[i]) * volume;
+    
+    ss->sampleCount -= mixSamples;
+    ss->samples     += mixSamples;
+    
+    ++itt;
+  }
+}
+
+void CCoreAudioAE::MixSounds16(int16_t *buffer, unsigned int samples)
+{
+  if(!m_Initialized)
+    return;
+  
+  std::list<SoundState>::iterator itt;
+  
+  //SingleLock lock(m_lock);
+  for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
+  {
+    SoundState *ss = &(*itt);
+    
+    /* no more frames, so remove it from the list */
+    if (ss->sampleCount == 0)
+    {
+      ss->owner->ReleaseSamples();
+      itt = m_playing_sounds.erase(itt);
+      continue;
+    }
+    
+    unsigned int mixSamples = std::min(ss->sampleCount, samples);
+    
+    float volume = ss->owner->GetVolume() * m_volume;
+    
+    for(unsigned int i = 0; i < mixSamples; ++i)
+    {
+      float f_sound = ss->samples[i] * volume;
+      
+      buffer[i] = buffer[i] + safeRound(f_sound * ((float)INT16_MAX+.5f));
+#ifdef __BIG_ENDIAN__
+      buffer[i] = Endian_Swap16(buffer[i]);
+#endif
+    }
     
     ss->sampleCount -= mixSamples;
     ss->samples     += mixSamples;
@@ -704,11 +772,13 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
                                             UInt32 inNumberFrames, 
                                             AudioBufferList *ioData)
 {
-  SDL_mutexP(m_Mutex);  
+  CSingleLock AELock(m_Mutex);
 
-  unsigned int rSamples = inNumberFrames * m_format.m_channelCount;
-  int size = inNumberFrames * HAL->m_BytesPerFrame;
-  unsigned int readframes = inNumberFrames;
+  UInt32 frames = inNumberFrames;
+
+  unsigned int rSamples = frames * m_format.m_channelCount;
+  int size = frames * HAL->m_BytesPerFrame;
+  unsigned int readframes = frames;
   
   if(!m_Initialized || m_EngineLock)
   {
@@ -776,17 +846,6 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
         ++itt;
       }
     }
-
-    
-    if(m_guiSoundWhilePlayback)
-    {
-      MixSounds(m_OutputBuffer, rSamples);
-    }
-    else if(bPlayGuiSound) 
-    {
-      MixSounds(m_OutputBuffer, rSamples);      
-    }
-
     
     if (!m_streams.empty()) 
     {
@@ -797,23 +856,6 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
       {
         CCoreAudioAEStream *stream = *itt;
         
-        /* skip streams that are flagged for deletion */
-        /*
-        if (stream->IsDestroyed())
-        {
-          if (!stream->IsBusy())
-          {
-            itt = m_streams.erase(itt);
-            RemoveStream(stream);
-            delete stream;
-          }
-          else
-            ++itt;
-          
-          continue;
-        }
-        */
-         
         /* dont process streams that are paused */
         if (stream->IsPaused())
         {
@@ -821,9 +863,22 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
           continue;
         }
         
-        size = stream->GetFrames((uint8_t *)m_StreamBuffer, size);
-        
-        readframes = size / HAL->m_BytesPerFrame;
+        /* AE stream is internal float. */
+        if(m_format.m_dataFormat == AE_FMT_S16NE)
+        {
+          size = frames * m_format.m_channelCount * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3);
+          CheckOutputBufferSize((void **)&m_StreamBuffer, &m_StreamBufferSize, size);
+          CheckOutputBufferSize((void **)&m_OutputBuffer, &m_OutputBufferSize, size);
+          size = stream->GetFrames((uint8_t *)m_StreamBuffer, size);
+          readframes = size / (m_format.m_channelCount * (CAEUtil::DataFormatToBits(AE_FMT_FLOAT) >> 3));
+          rSamples = readframes * m_format.m_channelCount;
+        }
+        else
+        {
+          size = stream->GetFrames((uint8_t *)m_StreamBuffer, size);
+          readframes = size / HAL->m_BytesPerFrame;
+          rSamples = readframes * m_format.m_channelCount;
+        }
         
         if (!readframes)
         {
@@ -841,27 +896,67 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
         
         UInt32 j;
         
-        float *src    = (float *)m_StreamBuffer;
-        float *dst    = m_OutputBuffer;
-  
-
         float volume = stream->GetVolume() * stream->GetReplayGain() * m_volume;
-
-        for(j = 0; j < readframes; j++)
-        {          
-          unsigned int i;
-          for(i = 0; i < m_format.m_channelCount; i++)
-          {
-            dst[i] += src[i] * volume;
-          }
-          src += m_format.m_channelCount;
-          dst += m_format.m_channelCount;
-        }
         
+        if(m_format.m_dataFormat == AE_FMT_S16NE)
+        {
+          float *src    = (float *)m_StreamBuffer;
+          int16_t *dst    = (int16_t *)m_OutputBuffer;
+          
+          for(j = 0; j < readframes; j++)
+          {          
+            unsigned int i;
+            for(i = 0; i < m_format.m_channelCount; i++)
+            {
+              float f_sound = src[i] * volume;
+              
+              dst[i] = dst[i] + safeRound(f_sound * ((float)INT16_MAX+.5f));
+#ifdef __BIG_ENDIAN__
+              dst[i] = Endian_Swap16(dst[i]);
+#endif
+            }
+            src += m_format.m_channelCount;
+            dst += m_format.m_channelCount;
+          }
+          size = readframes * m_format.m_channelCount * (CAEUtil::DataFormatToBits(AE_FMT_S16NE) >> 3);
+        }
+        else 
+        {          
+          float *src    = (float *)m_StreamBuffer;
+          float *dst    = m_OutputBuffer;
+          
+          for(j = 0; j < readframes; j++)
+          {          
+            unsigned int i;
+            for(i = 0; i < m_format.m_channelCount; i++)
+            {
+              dst[i] += src[i] * volume;
+            }
+            src += m_format.m_channelCount;
+            dst += m_format.m_channelCount;
+          }
+        }
+
         ++itt;
         
       }
     }
+  
+    if(m_guiSoundWhilePlayback)
+    {
+      if(m_format.m_dataFormat == AE_FMT_S16NE)
+        MixSounds16((int16_t *)m_OutputBuffer, rSamples);
+      else
+        MixSounds32(m_OutputBuffer, rSamples);
+    }
+    else if(bPlayGuiSound) 
+    {
+      if(m_format.m_dataFormat == AE_FMT_S16NE)
+        MixSounds16((int16_t *)m_OutputBuffer, rSamples);
+      else
+        MixSounds32(m_OutputBuffer, rSamples);      
+    }
+   
   }
 
   if(!m_rawPassthrough && m_format.m_channelCount == 8)
@@ -871,7 +966,7 @@ OSStatus CCoreAudioAE::OnRenderCallback(AudioUnitRenderActionFlags *ioActionFlag
   ioData->mBuffers[0].mDataByteSize = size;
 
 out:
-  SDL_mutexV(m_Mutex);
+  AELock.Leave();
 
   return noErr;
 }
@@ -896,8 +991,8 @@ OSStatus CCoreAudioAE::OnRenderCallbackDirect( AudioDeviceID inDevice,
                                                   const AudioTimeStamp * inOutputTime,
                                                   void * threadGlobals )
 {
-  SDL_mutexP(m_Mutex);
-
+  CSingleLock AELock(m_Mutex);
+  
   if(!m_Initialized || m_EngineLock)
   {
     outOutputData->mBuffers[HAL->m_OutputBufferIndex].mDataByteSize = 0;
@@ -949,7 +1044,7 @@ OSStatus CCoreAudioAE::OnRenderCallbackDirect( AudioDeviceID inDevice,
   }
   
 out:
-  SDL_mutexV(m_Mutex);
+  AELock.Leave();
 
   return noErr;    
 }

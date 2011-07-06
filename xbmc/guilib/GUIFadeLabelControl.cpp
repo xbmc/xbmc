@@ -76,16 +76,22 @@ void CGUIFadeLabelControl::AddLabel(const string &label)
   m_infoLabels.push_back(CGUIInfoLabel(label));
 }
 
-void CGUIFadeLabelControl::DoRender(unsigned int currentTime)
+void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  // TODO Proper processing which marks when its actually changed. Just mark always for now.
+  MarkDirtyRegion();
+
   m_renderTime = currentTime;
-  CGUIControl::DoRender(currentTime);
+
+  CGUIControl::Process(currentTime, dirtyregions);
 }
 
-void CGUIFadeLabelControl::UpdateColors()
+bool CGUIFadeLabelControl::UpdateColors()
 {
-  m_label.UpdateColors();
-  CGUIControl::UpdateColors();
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
+
+  return changed;
 }
 
 void CGUIFadeLabelControl::Render()

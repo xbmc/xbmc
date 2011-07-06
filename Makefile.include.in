@@ -39,13 +39,12 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 endif
 INCLUDES+=-I@abs_top_srcdir@/xbmc/linux
 DEFINES+= \
-	-D_LINUX \
+	@ARCH_DEFINES@ \
 	-D_FILE_DEFINED \
 	-D__STDC_CONSTANT_MACROS \
 	-DBIN_INSTALL_PATH="\"$(libdir)/xbmc\"" \
 	-DINSTALL_PATH="\"$(datarootdir)/xbmc\"" \
 	@SDL_DEFINES@ \
-	@ARCH_DEFINES@ \
 	@DEFS@ \
 
 ifeq ($(findstring osx,$(ARCH)), osx)

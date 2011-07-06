@@ -30,7 +30,7 @@
 #include "AE.h"
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
-#include "threads/XBMC_mutex.h"
+#include "threads/CriticalSection.h"
 
 #ifdef __arm__
 #include "CoreAudioAEHALIOS.h"
@@ -54,6 +54,7 @@ protected:
   friend class CCoreAudioAEHALOSX;
   CCoreAudioAEHALOSX  *HAL;
 #endif
+  bool m_Use16BitAudio;
   
 public:
   /* this should NEVER be called directly, use CAEFactory */
@@ -99,7 +100,8 @@ public:
   virtual void FreeSound(IAESound *sound);
   virtual void PlaySound(IAESound *sound);
   virtual void StopSound(IAESound *sound);
-  void MixSounds(float *buffer, unsigned int samples);
+  void MixSounds32(float *buffer, unsigned int samples);
+  void MixSounds16(int16_t *buffer, unsigned int samples);
 
   /* free's sounds that have expired */
   virtual void GarbageCollect();
@@ -115,9 +117,9 @@ public:
   void UnlockEngine();
   
 private:
-  SDL_mutex *m_MutexLockEngine;
-  bool       m_EngineLock;
-  SDL_mutex *m_Mutex;
+  CCriticalSection  m_Mutex;
+  CCriticalSection  m_MutexLockEngine;
+  bool              m_EngineLock;
   
   std::list<CCoreAudioAEStream*> m_streams;
   std::list<CCoreAudioAESound* > m_sounds;
@@ -140,6 +142,8 @@ private:
   int               m_StreamBufferSize;
   bool              m_guiSoundWhilePlayback;
   
+  CAEConvert::AEConvertFrFn m_convertFn;
+
   enum AEChannel    *m_RemapChannelLayout;
   
   bool OpenCoreAudio(unsigned int sampleRate = 44100, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);

@@ -4,7 +4,11 @@ SRCS=BaseRenderer.cpp \
      OverlayRendererUtil.cpp \
      RenderCapture.cpp \
      RenderManager.cpp \
-     yuv2rgb.neon.S \
+
+ifeq ($(findstring arm,@ARCH@),arm)
+SRCS+= yuv2rgb.neon.S \
+
+endif
 
 ifeq (@USE_OPENGL@,1)
 SRCS+= LinuxRendererGL.cpp \

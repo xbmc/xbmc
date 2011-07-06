@@ -20,10 +20,12 @@
  *
  */
 
+#include "AE.h"
 #include "AEStream.h"
 #include "threads/SharedSection.h"
 #include <list>
 
+class IAE;
 class IAEStream;
 
 class CAEStreamWrapper : public IAEStream
