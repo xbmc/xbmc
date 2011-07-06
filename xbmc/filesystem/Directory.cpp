@@ -71,31 +71,42 @@ private:
 public:
 
   CGetDirectory(IDirectory& imp, const CStdString& dir)
-    : m_event(true)
   {
     m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, dir, m_list)
                                            , this
                                            , CJob::PRIORITY_HIGH);
+    m_event = new CEvent(true);
   }
  ~CGetDirectory()
   {
+    CSingleLock l(m_lock);
+    
+    delete m_event;
+    m_event = NULL;
+    
     CJobManager::GetInstance().CancelJob(m_id);
   }
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job)
   {
+    CSingleLock l(m_lock);
+
     m_result = success;
-    m_event.Set();
+    
+    if(!m_event)
+      return;
+    
+    m_event->Set();
   }
 
   bool Wait(unsigned int timeout)
   {
-    return m_event.WaitMSec(timeout);
+    return m_event->WaitMSec(timeout);
   }
 
   bool GetDirectory(CFileItemList& list)
   {
-    m_event.Wait();
+    m_event->Wait();
     if(!m_result)
     {
       list.Clear();
@@ -105,9 +116,11 @@ public:
     return true;
   }
 
-  bool          m_result;
-  CFileItemList m_list;
-  CEvent        m_event;
+  bool              m_result;
+  CFileItemList     m_list;
+  CEvent           *m_event;
+  CCriticalSection  m_lock;
+  
   unsigned int  m_id;
 };
 
