@@ -73,8 +73,6 @@ public:
   int m_iChannels;
   CStdString m_strCodec;
   CStdString m_strLanguage;
-private:
-  int GetCodecPriority() const;
 };
 
 class CStreamDetailSubtitle : public CStreamDetail

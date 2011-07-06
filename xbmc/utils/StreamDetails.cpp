@@ -21,6 +21,7 @@
 
 #include <math.h>
 #include "StreamDetails.h"
+#include "StreamUtils.h"
 #include "Variant.h"
 
 void CStreamDetail::Archive(CArchive &ar)
@@ -104,27 +105,6 @@ void CStreamDetailAudio::Serialize(CVariant& value)
   value["channels"] = m_iChannels;
 }
 
-int CStreamDetailAudio::GetCodecPriority() const
-{
-  // technically, truehd, dtshd_ma, and flac are equivalently good (they're all lossless)
-  // however, ffmpeg can't decode dtshd_ma losslessy yet
-  if (m_strCodec == "flac")
-    return 7;
-  if (m_strCodec == "truehd")
-    return 6;
-  if (m_strCodec == "dtshd_ma")
-    return 5;
-  if (m_strCodec == "dtshd_hra")
-    return 4;
-  if (m_strCodec == "eac3")
-    return 3;
-  if (m_strCodec == "dca")
-    return 2;
-  if (m_strCodec == "ac3")
-    return 1;
-  return 0;
-}
-
 bool CStreamDetailAudio::IsWorseThan(CStreamDetail *that)
 {
   if (that->m_eType != CStreamDetail::AUDIO)
@@ -137,8 +117,8 @@ bool CStreamDetailAudio::IsWorseThan(CStreamDetail *that)
   if (m_iChannels > sda->m_iChannels)
     return false;
 
-  // In case of a tie, flac > eac3 > dts > ac3 > all else.
-  return sda->GetCodecPriority() > GetCodecPriority();
+  // In case of a tie, revert to codec priority
+  return StreamUtils::GetCodecPriority(sda->m_strCodec) > StreamUtils::GetCodecPriority(m_strCodec);
 }
 
 CStreamDetailSubtitle::CStreamDetailSubtitle() :
@@ -171,10 +151,10 @@ bool CStreamDetailSubtitle::IsWorseThan(CStreamDetail *that)
   // the preferred subtitle should be the one in the user's language
   if (m_pParent)
   {
-    if (m_pParent->m_strLanguage == m_strLanguage)
+    if (StreamUtils::IsSameLanguage(m_pParent->m_strLanguage, m_strLanguage))
       return false;  // already the best
     else
-      return (m_pParent->m_strLanguage == ((CStreamDetailSubtitle *)that)->m_strLanguage);
+      return StreamUtils::IsSameLanguage(m_pParent->m_strLanguage, ((CStreamDetailSubtitle *)that)->m_strLanguage);
   }
   return false;
 }
