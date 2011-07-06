@@ -31,7 +31,8 @@
 #define TIME_FOR_DEACELLERATION_DECREASE 0.5
 //the factor for decreasing the deacceleration
 #define DEACELLERATION_DECREASE_FACTOR 0.9
-
+//minimum speed for doing inertial scroll is 50 pixels / s
+#define MINIMUM_SPEED_FOR_INERTIA 50
 
 CInertialScrollingHandler::CInertialScrollingHandler()
 : m_bScrolling(false)
@@ -71,7 +72,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
   }
   else//do we need to animate inertial scrolling?
   {
-    if (action->GetID() == ACTION_GESTURE_END && ( action->GetAmount(0) || action->GetAmount(1) ) )
+    if (action->GetID() == ACTION_GESTURE_END && ( fabs(action->GetAmount(0)) > MINIMUM_SPEED_FOR_INERTIA || fabs(action->GetAmount(1)) > MINIMUM_SPEED_FOR_INERTIA ) )
     {
       m_iFlickVelocity.x = action->GetAmount(0);//in pixels per sec
       m_iFlickVelocity.y = action->GetAmount(1);//in pixels per sec     
