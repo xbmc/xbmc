@@ -68,7 +68,8 @@ public:
   static bool IsMasterClock()                    { return m_ismasterclock;          }
 
 protected:
-  static void CheckSystemClock();
+  static void   CheckSystemClock();
+  static double SystemToAbsolute(int64_t system);
 
   CSharedSection m_critSection;
   int64_t m_systemUsed;
