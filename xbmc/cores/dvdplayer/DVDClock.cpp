@@ -58,7 +58,6 @@ double CDVDClock::GetAbsoluteClock(bool interpolated /*= true*/)
 
   int64_t current;
   current = g_VideoReferenceClock.GetTime(interpolated);
-  current -= m_systemOffset;
 
 #if _DEBUG
   if (interpolated) //only compare interpolated time, clock might go backwards otherwise
@@ -70,7 +69,7 @@ double CDVDClock::GetAbsoluteClock(bool interpolated /*= true*/)
   }
 #endif
 
-  return DVD_TIME_BASE * (double)current / m_systemFrequency;
+  return SystemToAbsolute(current);
 }
 
 double CDVDClock::WaitAbsoluteClock(double target)
@@ -223,5 +222,10 @@ void CDVDClock::CheckSystemClock()
 
   if(!m_systemOffset)
     m_systemOffset = g_VideoReferenceClock.GetTime();
+}
+
+double CDVDClock::SystemToAbsolute(int64_t system)
+{
+  return DVD_TIME_BASE * (double)(system - m_systemOffset) / m_systemFrequency;
 }
 
