@@ -159,7 +159,7 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
 
 bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
   {
     g_settings.Save();
     if (m_iWindowBeforeJump!=WINDOW_INVALID)
@@ -168,8 +168,6 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
       return true;
     }
     m_lastControlID = 0; // don't save the control as we go to a different window each time
-    g_windowManager.PreviousWindow();
-    return true;
   }
   return CGUIWindow::OnAction(action);
 }

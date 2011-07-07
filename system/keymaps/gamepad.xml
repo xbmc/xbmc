@@ -38,7 +38,7 @@
   <global>
     <gamepad>
       <A>Select</A>
-      <B>ParentDir</B>
+      <B>Back</B>
       <X>FullScreen</X>
       <Y>Queue</Y>
       <white>ContextMenu</white>
@@ -72,9 +72,7 @@
   <MyMusicPlaylist>
     <gamepad>
       <Y>Delete</Y>
-      <black>Playlist</black>      <!-- Close playlist -->
-      <back>Playlist</back>      <!-- Close playlist -->
-      <B>Playlist</B>      <!-- Close playlist -->
+      <black>Back</black>
     </gamepad>
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
@@ -113,18 +111,16 @@
   </FullscreenVideo>
   <FullscreenInfo>
     <gamepad>
-      <B>Close</B>
       <start>OSD</start>
       <black>CodecInfo</black>
-      <white>Close</white>
+      <white>Back</white>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
   </FullscreenInfo>
   <PlayerControls>
     <gamepad>
-      <back>Close</back>
-      <start>Close</start>
+      <start>Back</start>
     </gamepad>
   </PlayerControls>
   <Visualisation>
@@ -146,8 +142,7 @@
   </Visualisation>
   <MusicOSD>
     <gamepad>
-      <back>Close</back>
-      <start>Close</start>
+      <start>Back</start>
       <black>CodecInfo</black>
       <white>Info</white>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
@@ -156,19 +151,15 @@
   </MusicOSD>
   <VisualisationSettings>
     <gamepad>
-      <B>Close</B>
-      <back>Close</back>
-      <start>Close</start>
+      <start>Back</start>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
   </VisualisationSettings>
   <VisualisationPresetList>
     <gamepad>
-      <B>Close</B>
-      <back>Close</back>
-      <start>Close</start>
-      <Y>Close</Y>
+      <start>Back</start>
+      <Y>Back</Y>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
@@ -197,7 +188,6 @@
       <A>NextCalibration</A>
       <black>ResetCalibration</black>
       <white>NextResolution</white>
-      <B>PreviousMenu</B>
     </gamepad>
   </ScreenCalibration>
   <GUICalibration>
@@ -205,19 +195,11 @@
       <leftthumbstick>AnalogMove</leftthumbstick>
       <A>NextCalibration</A>
       <black>ResetCalibration</black>
-      <B>PreviousMenu</B>
     </gamepad>
   </GUICalibration>
-  <SelectDialog>
-    <gamepad>
-      <back>Close</back>
-    </gamepad>
-  </SelectDialog>
   <VideoOSD>
     <gamepad>
-      <start>Close</start>
-      <back>PreviousMenu</back>
-      <B>PreviousMenu</B>
+      <start>Back</start>
       <black>CodecInfo</black>
       <white>Info</white>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
@@ -229,7 +211,6 @@
       <Y>AspectRatio</Y>
       <B>Stop</B>
       <start>OSD</start>
-      <back>PreviousMenu</back>
       <white>Info</white>
       <black>CodecInfo</black>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
@@ -240,9 +221,7 @@
     <gamepad>
       <X/>
       <Y>AspectRatio</Y>
-      <B>Close</B>
-      <back>Close</back>
-      <start>Close</start>
+      <start>Back</start>
       <black>CodecInfo</black>
       <white>Info</white>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
@@ -253,9 +232,7 @@
     <gamepad>
       <X/>
       <Y>AspectRatio</Y>
-      <B>Close</B>
-      <back>Close</back>
-      <start>Close</start>
+      <start>Back</start>
       <black>CodecInfo</black>
       <white>Info</white>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
@@ -266,9 +243,7 @@
     <gamepad>
       <X/>
       <Y>Delete</Y>
-      <B>Close</B>
-      <back>Close</back>
-      <start>Close</start>
+      <start>Back</start>
       <leftanalogtrigger>AnalogRewind</leftanalogtrigger>
       <rightanalogtrigger>AnalogFastForward</rightanalogtrigger>
     </gamepad>
@@ -287,9 +262,7 @@
   <MyVideoPlaylist>
     <gamepad>
       <Y>Delete</Y>
-      <black>Playlist</black>      <!-- Close playlist -->
-      <back>Playlist</back>      <!-- Close playlist -->
-      <B>Playlist</B>
+      <black>Back</black>
     </gamepad>
   </MyVideoPlaylist>
   <VirtualKeyboard>
@@ -304,8 +277,7 @@
   </VirtualKeyboard>
   <ContextMenu>
     <gamepad>
-      <white>Close</white>
-      <B>Close</B>
+      <white>Back</white>
     </gamepad>
   </ContextMenu>
   <Scripts>
@@ -326,120 +298,20 @@
       <start>Stop</start>      <!-- Enter Password -->
     </gamepad>
   </GamepadInput>
-  <Weather>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </Weather>
-  <Settings>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </Settings>
-  <AddonInformation>
-    <gamepad>
-      <b>Close</b>
-    </gamepad>
-  </AddonInformation>
-  <AddonSettings>
-    <gamepad>
-      <b>Close</b>
-    </gamepad>
-  </AddonSettings>
-  <TextViewer>
-    <gamepad>
-      <b>Close</b>
-    </gamepad>
-  </TextViewer>
-  <MyPicturesSettings>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </MyPicturesSettings>
-  <MyProgramsSettings>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </MyProgramsSettings>
-  <MyWeatherSettings>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </MyWeatherSettings>
-  <MyMusicSettings>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </MyMusicSettings>
-  <SystemSettings>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </SystemSettings>
-  <MyVideosSettings>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </MyVideosSettings>
-  <NetworkSettings>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </NetworkSettings>
-  <AppearanceSettings>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </AppearanceSettings>
-  <Profiles>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </Profiles>
-  <systeminfo>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </systeminfo>
-  <shutdownmenu>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </shutdownmenu>
-  <submenu>
-    <gamepad>
-      <B>PreviousMenu</B>
-    </gamepad>
-  </submenu>
-  <MusicInformation>
-    <gamepad>
-      <B>Close</B>
-    </gamepad>
-  </MusicInformation>
-  <MovieInformation>
-    <gamepad>
-      <B>Close</B>
-    </gamepad>
-  </MovieInformation>
   <LockSettings>
     <gamepad>
-      <start>Close</start>
-      <B>PreviousMenu</B>
-      <back>PreviousMenu</back>
+      <start>Back</start>
     </gamepad>
   </LockSettings>
   <ProfileSettings>
     <gamepad>
-      <start>Close</start>
-      <B>PreviousMenu</B>
-      <back>PreviousMenu</back>
+      <start>Back</start>
     </gamepad>
   </ProfileSettings>
   <PictureInfo>
     <gamepad>
       <dpadleft>PreviousPicture</dpadleft>
       <dpadright>NextPicture</dpadright>
-      <black>Close</black>
     </gamepad>
   </PictureInfo>
 </keymap>

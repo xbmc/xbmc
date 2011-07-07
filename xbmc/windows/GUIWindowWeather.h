@@ -30,7 +30,6 @@ public:
   CGUIWindowWeather(void);
   virtual ~CGUIWindowWeather(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
   virtual void FrameMove();
 
 protected:

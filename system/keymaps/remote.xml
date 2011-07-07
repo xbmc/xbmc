@@ -50,7 +50,7 @@
       <enter>FullScreen</enter> 
       <pageplus>PageUp</pageplus>
       <pageminus>PageDown</pageminus>
-      <back>ParentDir</back>
+      <back>Back</back>
       <menu>PreviousMenu</menu>
       <title>ContextMenu</title>
       <info>Info</info>
@@ -100,7 +100,6 @@
   </MyFiles>
   <MyMusicPlaylist>
     <remote>
-      <back>Playlist</back>      <!-- Close playlist -->
       <clear>Delete</clear>
       <zero>Delete</zero>
     </remote>
@@ -160,13 +159,13 @@
   <FullscreenInfo>
     <remote>
       <title>CodecInfo</title>
-      <info>Close</info>
+      <info>Back</info>
       <menu>OSD</menu>
     </remote>
   </FullscreenInfo>
   <PlayerControls>
     <remote>
-      <menu>Close</menu>
+      <menu>Back</menu>
     </remote>
   </PlayerControls>
   <Visualisation>
@@ -185,21 +184,19 @@
   </Visualisation>
   <MusicOSD>
     <remote>
-      <menu>Close</menu>
+      <menu>Back</menu>
       <title>Info</title>
       <info>CodecInfo</info>
     </remote>
   </MusicOSD>
   <VisualisationSettings>
     <remote>
-      <menu>Close</menu>
-      <back>Close</back>
+      <menu>Back</menu>
     </remote>
   </VisualisationSettings>
   <VisualisationPresetList>
     <remote>
-      <menu>Close</menu>
-      <back>Close</back>
+      <menu>Back</menu>
     </remote>
   </VisualisationPresetList>
   <SlideShow>
@@ -219,7 +216,6 @@
       <skipminus>PreviousPicture</skipminus>
       <title>Info</title>
       <select>Rotate</select>
-      <back>PreviousMenu</back>
     </remote>
   </SlideShow>
   <ScreenCalibration>
@@ -236,22 +232,15 @@
       <zero>ResetCalibration</zero>
     </remote>
   </GUICalibration>
-  <SelectDialog>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </SelectDialog>
   <VideoOSD>
     <remote>
-      <back>PreviousMenu</back>
-      <menu>Close</menu>
-      <start>Close</start>
+      <menu>Back</menu>
+      <start>Back</start>
     </remote>
   </VideoOSD>
   <VideoMenu>
     <remote>
       <menu>OSD</menu>
-      <back>PreviousMenu</back>
       <info>Info</info>
       <title>CodecInfo</title>
       <zero>Number0</zero>
@@ -269,23 +258,20 @@
   </VideoMenu>
   <OSDVideoSettings>
     <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-      <start>Close</start>
+      <menu>Back</menu>
+      <start>Back</start>
     </remote>
   </OSDVideoSettings>
   <OSDAudioSettings>
     <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-      <start>Close</start>
+      <menu>Back</menu>
+      <start>Back</start>
     </remote>
   </OSDAudioSettings>
   <VideoBookmarks>
     <remote>
-      <back>Close</back>
-      <menu>Close</menu>
-      <start>Close</start>
+      <menu>Back</menu>
+      <start>Back</start>
       <zero>Delete</zero>
     </remote>
   </VideoBookmarks>
@@ -303,7 +289,6 @@
   </MyVideoFiles>
   <MyVideoPlaylist>
     <remote>
-      <back>Playlist</back>      <!-- Close playlist -->
       <clear>Delete</clear>
       <zero>Delete</zero>
     </remote>
@@ -330,15 +315,9 @@
   </VirtualKeyboard>
   <ContextMenu>
     <remote>
-      <title>Close</title>
-      <back>Close</back>
+      <title>Back</title>
     </remote>
   </ContextMenu>
-  <FileStackingDialog>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </FileStackingDialog>
   <Scripts>
     <remote>
       <info>info</info>
@@ -360,125 +339,31 @@
       <back>BackSpace</back>
     </remote>
   </NumericInput>
-  <Weather>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </Weather>
-  <Settings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </Settings>
-  <AddonBrowser>
-    <remote>
-    </remote>
-  </AddonBrowser>
-  <AddonInformation>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </AddonInformation>
-  <AddonSettings>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </AddonSettings>
-  <TextViewer>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </TextViewer>
-  <MyPicturesSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyPicturesSettings>
-  <MyProgramsSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyProgramsSettings>
-  <MyWeatherSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyWeatherSettings>
-  <MyMusicSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyMusicSettings>
-  <SystemSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </SystemSettings>
-  <MyVideosSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </MyVideosSettings>
-  <NetworkSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </NetworkSettings>
-  <AppearanceSettings>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </AppearanceSettings>
-  <Profiles>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </Profiles>
-  <systeminfo>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </systeminfo>
-  <shutdownmenu>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </shutdownmenu>
-  <submenu>
-    <remote>
-      <back>PreviousMenu</back>
-    </remote>
-  </submenu>
   <MusicInformation>
     <remote>
-      <back>Close</back>
-      <info>Close</info>
+      <info>Back</info>
     </remote>
   </MusicInformation>
   <MovieInformation>
     <remote>
-      <info>Close</info>
-      <back>Close</back>
+      <info>Back</info>
     </remote>
   </MovieInformation>
   <LockSettings>
     <remote>
-      <menu>Close</menu>
-      <back>PreviousMenu</back>
+      <menu>Back</menu>
     </remote>
   </LockSettings>
   <ProfileSettings>
     <remote>
-      <menu>Close</menu>
-      <back>PreviousMenu</back>
+      <menu>Back</menu>
     </remote>
   </ProfileSettings>
   <PictureInfo>
     <remote>
       <skipplus>NextPicture</skipplus>
       <skipminus>PreviousPicture</skipminus>
-      <info>Close</info>
-      <back>Close</back>
+      <info>Back</info>
     </remote>
   </PictureInfo>
   <Teletext>
@@ -498,15 +383,9 @@
       <yellow>Yellow</yellow>
       <blue>Blue</blue>
       <info>Info</info>
-      <back>Close</back>
-      <menu>Close</menu>
-      <start>Close</start>
-      <teletext>Close</teletext>
+      <menu>Back</menu>
+      <start>Back</start>
+      <teletext>Back</teletext>
     </remote>
   </Teletext>
-  <Favourites>
-    <remote>
-      <back>Close</back>
-    </remote>
-  </Favourites>
 </keymap>

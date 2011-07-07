@@ -521,6 +521,7 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     }
     break;
   case ACTION_PREVIOUS_MENU:
+  case ACTION_NAV_BACK:
   case ACTION_STOP:
     g_windowManager.PreviousWindow();
     break;

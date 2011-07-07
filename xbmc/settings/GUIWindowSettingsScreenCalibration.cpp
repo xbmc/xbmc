@@ -59,13 +59,6 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-  case ACTION_PREVIOUS_MENU:
-    {
-      g_windowManager.PreviousWindow();
-      return true;
-    }
-    break;
-
   case ACTION_CALIBRATE_SWAP_ARROWS:
     {
       NextControl();

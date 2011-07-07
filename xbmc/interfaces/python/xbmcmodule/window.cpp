@@ -472,16 +472,16 @@ namespace PYXBMC
     "\n"
     "This method will recieve all actions that the main program will send\n"
     "to this window.\n"
-    "By default, only the PREVIOUS_MENU action is handled.\n"
+    "By default, only the PREVIOUS_MENU and NAV_BACK actions are handled.\n"
     "Overwrite this method to let your script handle all actions.\n"
-    "Don't forget to capture ACTION_PREVIOUS_MENU, else the user can't close this window.");
+    "Don't forget to capture ACTION_PREVIOUS_MENU or ACTION_NAV_BACK, else the user can't close this window.");
 
   PyObject* Window_OnAction(Window *self, PyObject *args)
   {
     Action* action;
     if (!PyArg_ParseTuple(args, (char*)"O", &action)) return NULL;
 
-    if(action->id == ACTION_PREVIOUS_MENU)
+    if(action->id == ACTION_PREVIOUS_MENU || action->id == ACTION_NAV_BACK)
     {
       Window_Close(self, args);
     }
