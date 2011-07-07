@@ -32,7 +32,6 @@
 #include "utils/log.h"
 #include "filesystem/File.h"
 #include "utils/MathUtils.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
 #include "VideoShaders/WinVideoFilter.h"
 #include "DllSwScale.h"
 #include "guilib/LocalizeStrings.h"
@@ -80,6 +79,7 @@ CWinRenderer::CWinRenderer()
 
   m_sw_scale_ctx = NULL;
   m_dllSwScale = NULL;
+  m_processor = NULL;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -140,6 +140,21 @@ void CWinRenderer::SelectRenderMethod()
     switch(requestedMethod)
     {
       case RENDER_METHOD_AUTO:
+      case RENDER_METHOD_DXVA:
+        if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)
+        {
+          if (m_processor == NULL)
+            m_processor = new DXVA::CProcessor();
+
+          if (m_processor->Create()
+           && m_processor->Open(m_sourceWidth, m_sourceHeight)
+           && m_processor->CreateSurfaces())
+          {
+            m_renderMethod = RENDER_DXVA;
+            break;
+          }
+        }
+      // Drop through to pixel shader
       case RENDER_METHOD_D3D_PS:
         // Try the pixel shaders support
         if (m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0))
@@ -235,15 +250,21 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
-void CWinRenderer::AddProcessor(DXVA::CProcessor* processor, int64_t id)
+void CWinRenderer::AddProcessor(DVDVideoPicture* picture, bool still)
 {
-  int source = NextYV12Texture();
-  if(source < 0)
-    return;
-  DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
-  SAFE_RELEASE(buf->proc);
-  buf->proc = processor->Acquire();
-  buf->id   = id;
+  if (m_renderMethod == RENDER_DXVA)
+  {
+    DXVA::CProcessor* processor = (CONF_FLAGS_FORMAT_MASK(m_flags) != CONF_FLAGS_FORMAT_DXVA) ? m_processor : picture->proc;
+    processor->ProcessPicture(picture, still);
+
+    int source = NextYV12Texture();
+    if(source < 0)
+      return;
+    YUVBuffer *buf = (YUVBuffer*)m_VideoBuffers[source];
+    SAFE_RELEASE(buf->proc);
+    buf->proc = processor->Acquire();
+    buf->id   = picture->proc_id;
+  }
 }
 
 int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
@@ -422,6 +443,13 @@ unsigned int CWinRenderer::PreInit()
 void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
+
+  if (m_processor)
+  {
+    m_processor->Close();
+    SAFE_RELEASE(m_processor);
+    m_processor = NULL;
+  }
 
   if (m_SWTarget.Get())
     m_SWTarget.Release();
@@ -661,7 +689,7 @@ void CWinRenderer::CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc)
 
 void CWinRenderer::Render(DWORD flags)
 {
-  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  if (m_renderMethod == RENDER_DXVA)
   {
     CWinRenderer::RenderProcessor(flags);
     return;
@@ -946,7 +974,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
   rect.left   = m_destRect.x1;
   rect.right  = m_destRect.x2;
 
-  DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
+  YUVBuffer *image = (YUVBuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
   if(image->proc == NULL)
     return;
 
@@ -957,7 +985,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  image->proc->Render(rect, target, image->id);
+  image->proc->Render(rect, target, image->id, flags == RENDER_FLAG_BOT ? 1 : 0);
 
   target->Release();
 }
@@ -1011,25 +1039,15 @@ bool CWinRenderer::CreateYV12Texture(int index)
   CSingleLock lock(g_graphicsContext);
   DeleteYV12Texture(index);
 
-  if (m_renderMethod == RENDER_DXVA)
+  YUVBuffer *buf = new YUVBuffer();
+  BufferFormat format = (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA) ? YV12 : BufferFormatFromFlags(m_flags);
+
+  if (!buf->Create(format, m_sourceWidth, m_sourceHeight))
   {
-    m_VideoBuffers[index] = new DXVABuffer();
+    CLog::Log(LOGERROR, __FUNCTION__" - Unable to create YV12 video texture %i", index);
+    return false;
   }
-  else
-  {
-    YUVBuffer *buf = new YUVBuffer();
-
-    BufferFormat format = BufferFormatFromFlags(m_flags);
-
-    if (!buf->Create(format, m_sourceWidth, m_sourceHeight))
-    {
-      CLog::Log(LOGERROR, __FUNCTION__" - Unable to create YV12 video texture %i", index);
-      return false;
-    }
-    m_VideoBuffers[index] = buf;
-  }
-
-  SVideoBuffer *buf = m_VideoBuffers[index];
+  m_VideoBuffers[index] = buf;
 
   buf->StartDecode();
   buf->Clear();
@@ -1043,10 +1061,20 @@ bool CWinRenderer::CreateYV12Texture(int index)
 
 bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 {
-  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  if(m_renderMethod == RENDER_DXVA)
   {
-    if(method == VS_INTERLACEMETHOD_NONE)
+    if(method == VS_INTERLACEMETHOD_NONE
+    || method == VS_INTERLACEMETHOD_DXVA_BOB
+    || method == VS_INTERLACEMETHOD_DXVA_BOB_INVERTED
+    || method == VS_INTERLACEMETHOD_DXVA_HQ
+    || method == VS_INTERLACEMETHOD_DXVA_HQ_INVERTED
+    || method == VS_INTERLACEMETHOD_AUTO)
       return true;
+
+    if(method == VS_INTERLACEMETHOD_DEINTERLACE
+    && CONF_FLAGS_FORMAT_MASK(m_flags) != CONF_FLAGS_FORMAT_DXVA)
+      return true;
+
     return false;
   }
 
@@ -1175,6 +1203,8 @@ void YUVBuffer::Release()
     planes[i].texture.Release();
     memset(&planes[i].rect, 0, sizeof(planes[i].rect));
   }
+  SAFE_RELEASE(proc);
+  id = 0;
 }
 
 void YUVBuffer::StartRender()
@@ -1199,6 +1229,8 @@ void YUVBuffer::StartDecode()
       CLog::Log(LOGERROR, __FUNCTION__" - failed to lock texture %d into memory", i);
     }
   }
+  SAFE_RELEASE(proc);
+  id = 0;
 }
 
 void YUVBuffer::Clear()
@@ -1235,21 +1267,4 @@ void YUVBuffer::Clear()
   }
 }
 
-//==================================
-
-DXVABuffer::~DXVABuffer()
-{
-  Release();
-}
-
-void DXVABuffer::Release()
-{
-  SAFE_RELEASE(proc);
-  id = 0;
-}
-
-void DXVABuffer::StartDecode()
-{
-  Release();
-}
 #endif

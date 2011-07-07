@@ -27,6 +27,7 @@
 #include <vector>
 #include "rendering/RenderSystem.h"
 #include "threads/CriticalSection.h"
+#include "DVDCodecs/Video/DXVA.h"
 
 enum PCI_Vendors
 {

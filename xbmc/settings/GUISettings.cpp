@@ -569,6 +569,7 @@ void CGUISettings::Initialize()
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
 
 #ifdef HAS_DX
+  if (g_sysinfo.IsVistaOrHigher()) renderers.insert(make_pair(16319, RENDER_METHOD_DXVA));
   renderers.insert(make_pair(13431, RENDER_METHOD_D3D_PS));
   renderers.insert(make_pair(13419, RENDER_METHOD_SOFTWARE));
 #endif

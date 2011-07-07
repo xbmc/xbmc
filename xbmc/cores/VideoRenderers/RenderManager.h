@@ -98,11 +98,11 @@ public:
   void UnInit();
 
 #ifdef HAS_DX
-  void AddProcessor(DXVA::CProcessor* processor, int64_t id)
+  void AddProcessor(DVDVideoPicture* picture, bool still)
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
-      m_pRenderer->AddProcessor(processor, id);
+      m_pRenderer->AddProcessor(picture, still);
   }
 #endif
 
@@ -224,9 +224,9 @@ public:
 
 protected:
 
-  void PresentSingle();
+  void PresentSingle(bool clear, DWORD flags, DWORD alpha);
   void PresentWeave();
-  void PresentBob();
+  void PresentBob(bool clear, DWORD flags, DWORD alpha);
   void PresentBlend();
 
   bool m_bPauseDrawing;   // true if we should pause rendering
