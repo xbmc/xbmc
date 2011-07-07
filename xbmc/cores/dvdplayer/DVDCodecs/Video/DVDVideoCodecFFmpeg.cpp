@@ -791,7 +791,9 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if (frame)
   {
-#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,7,0)
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,13,0)
+    result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, 0);
+#elif LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,7,0)
     result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame);
 #elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53,3,0)
     result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, frame->pts);
