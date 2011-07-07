@@ -401,6 +401,7 @@
 		43348AAE1077486D00F859CF /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AA81077486D00F859CF /* PlayerCoreFactory.cpp */; };
 		43348AAF1077486D00F859CF /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */; };
 		43352CEE1071634600706B8A /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
+		43B0A5D013C64DF900B2382A /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF27E26C13C23D12002514FE /* InertialScrollingHandler.cpp */; };
 		43BF08EB1080C6BA00E25290 /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A41080C6B900E25290 /* Neptune.cpp */; };
 		43BF08EC1080C6BA00E25290 /* NptBase64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A71080C6B900E25290 /* NptBase64.cpp */; };
 		43BF08ED1080C6BA00E25290 /* NptBufferedStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A91080C6B900E25290 /* NptBufferedStreams.cpp */; };
@@ -8933,6 +8934,7 @@
 				F558F51F13AF03AD00631E12 /* ThreadLocal.cpp in Sources */,
 				7C89619313B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
 				1830212913B8E2DC00770920 /* controledit.cpp in Sources */,
+				43B0A5D013C64DF900B2382A /* InertialScrollingHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
