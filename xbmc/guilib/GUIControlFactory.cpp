@@ -1072,6 +1072,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       parentID, id, posX, posY, width, height, textureFocus, textureNoFocus,
       labelInfo, strLabel);
 
+    CGUIInfoLabel hint_text;
+    GetInfoLabel(pControlNode, "hinttext", hint_text);
+    ((CGUIEditControl *) control)->SetHint(hint_text);
+
     if (bPassword)
       ((CGUIEditControl *) control)->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD, 0);
     ((CGUIEditControl *) control)->SetTextChangeActions(textChangeActions);

@@ -419,7 +419,10 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
     }
 
     changed |= m_label2.SetMaxRect(posX + m_textOffset, m_posY, maxTextWidth - m_textOffset, m_height);
-    changed |= m_label2.SetTextW(text);
+    if (text.IsEmpty())
+      changed |= m_label2.SetText(m_hintInfo.GetLabel(GetParentID()));
+    else
+      changed |= m_label2.SetTextW(text);
     changed |= m_label2.SetAlign(align);
     changed |= m_label2.SetColor(GetTextColor());
     changed |= m_label2.Process(currentTime);
@@ -427,6 +430,11 @@ void CGUIEditControl::ProcessText(unsigned int currentTime)
   }
   if (changed)
     MarkDirtyRegion();
+}
+
+void CGUIEditControl::SetHint(const CGUIInfoLabel& hint)
+{
+  m_hintInfo = hint;
 }
 
 CStdStringW CGUIEditControl::GetDisplayedText() const
