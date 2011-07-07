@@ -34,11 +34,8 @@ bool CDVDClock::m_ismasterclock;
 
 CDVDClock::CDVDClock()
 {
-  if(!m_systemFrequency)
-    m_systemFrequency = g_VideoReferenceClock.GetFrequency();
-
-  if(!m_systemOffset)
-    m_systemOffset = g_VideoReferenceClock.GetTime();
+  CSingleLock lock(m_systemsection);
+  CheckSystemClock();
 
   m_systemUsed = m_systemFrequency;
   m_pauseClock = 0;
@@ -57,12 +54,7 @@ CDVDClock::~CDVDClock()
 double CDVDClock::GetAbsoluteClock(bool interpolated /*= true*/)
 {
   CSingleLock lock(m_systemsection);
-
-  if(!m_systemFrequency)
-    m_systemFrequency = g_VideoReferenceClock.GetFrequency();
-
-  if(!m_systemOffset)
-    m_systemOffset = g_VideoReferenceClock.GetTime(interpolated);
+  CheckSystemClock();
 
   int64_t current;
   current = g_VideoReferenceClock.GetTime(interpolated);
@@ -84,14 +76,9 @@ double CDVDClock::GetAbsoluteClock(bool interpolated /*= true*/)
 double CDVDClock::WaitAbsoluteClock(double target)
 {
   CSingleLock lock(m_systemsection);
+  CheckSystemClock();
 
   int64_t systemtarget, freq, offset;
-  if(!m_systemFrequency)
-    m_systemFrequency = g_VideoReferenceClock.GetFrequency();
-
-  if(!m_systemOffset)
-    m_systemOffset = g_VideoReferenceClock.GetTime();
-
   freq   = m_systemFrequency;
   offset = m_systemOffset;
 
@@ -228,3 +215,13 @@ int CDVDClock::UpdateFramerate(double fps, double* interval /*= NULL*/)
 
   return rate;
 }
+
+void CDVDClock::CheckSystemClock()
+{
+  if(!m_systemFrequency)
+    m_systemFrequency = g_VideoReferenceClock.GetFrequency();
+
+  if(!m_systemOffset)
+    m_systemOffset = g_VideoReferenceClock.GetTime();
+}
+
