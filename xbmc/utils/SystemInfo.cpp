@@ -104,7 +104,7 @@ CStdString CSysInfoJob::GetVideoEncoder()
 
 CStdString CSysInfoJob::GetBatteryLevel()
 {
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)  
   CStdString strVal;
   strVal.Format("%d%%", DarwinGetBatteryLevel());
   return strVal;

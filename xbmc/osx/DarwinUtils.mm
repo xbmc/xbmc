@@ -224,8 +224,10 @@ bool DarwinHasVideoToolboxDecoder(void)
 
 int DarwinGetBatteryLevel(void)
 {
-  float batteryLevel = [[UIDevice currentDevice] batteryLevel];
-  
+  float batteryLevel = 0;
+#if defined(TARGET_DARWIN_IOS)  
+  batteryLevel = [[UIDevice currentDevice] batteryLevel];  
+#endif
   return batteryLevel * 100;
 }
 

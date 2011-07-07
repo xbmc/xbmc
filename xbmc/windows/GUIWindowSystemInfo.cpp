@@ -29,9 +29,6 @@
 #include "utils/SystemInfo.h"
 #endif
 #include "storage/MediaManager.h"
-#if defined __APPLE__ && defined __arm__
-#include "osx/DarwinUtils.h"
-#endif
 
 #define CONTROL_BT_STORAGE  94
 #define CONTROL_BT_DEFAULT  95
