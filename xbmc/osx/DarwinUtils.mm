@@ -226,7 +226,8 @@ int DarwinGetBatteryLevel(void)
 {
   float batteryLevel = 0;
 #if defined(TARGET_DARWIN_IOS)  
-  batteryLevel = [[UIDevice currentDevice] batteryLevel];  
+  if(!DarwinIsAppleTV2())
+    batteryLevel = [[UIDevice currentDevice] batteryLevel];  
 #endif
   return batteryLevel * 100;
 }
