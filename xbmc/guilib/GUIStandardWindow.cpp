@@ -31,20 +31,3 @@ CGUIStandardWindow::CGUIStandardWindow(int id, const CStdString &xmlFile) : CGUI
 CGUIStandardWindow::~CGUIStandardWindow(void)
 {
 }
-
-bool CGUIStandardWindow::OnAction(const CAction &action)
-{
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-
-  if (action.GetID() == ACTION_PARENT_DIR && g_advancedSettings.m_bUseEvilB)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-
-  return CGUIWindow::OnAction(action);
-}
