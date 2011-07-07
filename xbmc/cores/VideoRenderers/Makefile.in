@@ -1,5 +1,4 @@
 SRCS=BaseRenderer.cpp \
-     LinuxRenderer.cpp \
      OverlayRenderer.cpp \
      OverlayRendererUtil.cpp \
      RenderCapture.cpp \
