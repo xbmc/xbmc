@@ -29,6 +29,9 @@
 #include "utils/SystemInfo.h"
 #endif
 #include "storage/MediaManager.h"
+#if defined __APPLE__ && defined __arm__
+#include "osx/DarwinUtils.h"
+#endif
 
 #define CONTROL_BT_STORAGE  94
 #define CONTROL_BT_DEFAULT  95
@@ -95,6 +98,7 @@ void CGUIWindowSystemInfo::FrameMove()
 #endif
     SetControlLabel(i++, "%s: %s", 12390, SYSTEM_UPTIME);
     SetControlLabel(i++, "%s: %s", 12394, SYSTEM_TOTALUPTIME);
+    SetControlLabel(i++, "%s: %s", 12395, SYSTEM_BATTERY_LEVEL);
   }
   else if (m_section == CONTROL_BT_STORAGE)
   {

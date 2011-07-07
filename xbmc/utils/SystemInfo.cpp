@@ -59,6 +59,7 @@ bool CSysInfoJob::DoWork()
   m_info.cpuFrequency      = GetCPUFreqInfo();
   m_info.kernelVersion     = CSysInfo::GetKernelVersion();
   m_info.macAddress        = GetMACAddress();
+  m_info.batteryLevel      = GetBatteryLevel();
   return true;
 }
 
@@ -99,6 +100,17 @@ CStdString CSysInfoJob::GetMACAddress()
 CStdString CSysInfoJob::GetVideoEncoder()
 {
   return "GPU: " + g_Windowing.GetRenderRenderer();
+}
+
+CStdString CSysInfoJob::GetBatteryLevel()
+{
+#if defined(__APPLE__) && defined(__arm__)
+  CStdString strVal;
+  strVal.Format("%d%%", DarwinGetBatteryLevel());
+  return strVal;
+#else
+  return ""
+#endif 
 }
 
 double CSysInfoJob::GetCPUFrequency()
@@ -188,6 +200,8 @@ CStdString CSysInfo::TranslateInfo(int info) const
       return g_localizeStrings.Get(13274);
     else
       return g_localizeStrings.Get(13297);
+  case SYSTEM_BATTERY_LEVEL:
+    return m_info.batteryLevel;
   default:
     return "";
   }
