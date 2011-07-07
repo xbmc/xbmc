@@ -39,6 +39,7 @@ protected:
   void UpdateLocations();
   void SetProperties();
   void CallScript();
+  void SetLocation(int loc);
 
   void Refresh();
 

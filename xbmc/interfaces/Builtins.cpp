@@ -192,6 +192,10 @@ const BUILT_IN commands[] = {
   { "UpdateAddonRepos",           false,  "Check add-on repositories for updates" },
   { "UpdateLocalAddons",          false,  "Check for local add-on changes" },
   { "ToggleDPMS",                 false,  "Toggle DPMS mode manually"},
+  { "Weather.Refresh",            false,  "Force weather data refresh"},
+  { "Weather.LocationNext",       false,  "Switch to next weather location"},
+  { "Weather.LocationPrevious",   false,  "Switch to previous weather location"},
+  { "Weather.LocationSet",        true,   "Switch to given weather location (parameter can be 1-3)"},
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   { "LIRC.Stop",                  false,  "Removes XBMC as LIRC client" },
   { "LIRC.Start",                 false,  "Adds XBMC as LIRC client" },
@@ -1484,6 +1488,27 @@ int CBuiltins::Execute(const CStdString& execString)
     g_lcd->Resume();
   }
 #endif
+  else if (execute.Equals("weather.locationset"))
+  {
+    int loc = atoi(params[0]);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, 0, 0, loc - 1);
+    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
+  }
+  else if (execute.Equals("weather.locationnext"))
+  {
+    CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, 1);
+    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
+  }
+  else if (execute.Equals("weather.locationprevious"))
+  {
+    CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, -1);
+    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
+  }
+  else if (execute.Equals("weather.refresh"))
+  {
+    CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, 0);
+    g_windowManager.SendMessage(msg, WINDOW_WEATHER);
+  }
   else
     return -1;
   return 0;
