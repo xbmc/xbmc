@@ -421,9 +421,10 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
                 m_stackingAvailable);
 
   CFileItemList dbItems;
-  if (content.IsEmpty())
-    m_database.GetPlayCounts(items);
-  else
+  /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
+           we won't need the m_fetchedPlayCounts code, and can "simply" do this directly on absense of content. */
+  bool m_fetchedPlayCounts = false;
+  if (!content.IsEmpty())
   {
     m_database.GetItemsForPath(content, items.m_strPath, dbItems);
     dbItems.SetFastLookup(true);
@@ -461,9 +462,17 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       }
     }
     else
-    { // set the watched overlay (note: items in a folder with content set that aren't in the db
-      //                                won't get picked up here - in the future all items will be returned)
+    { // set the watched overlay
       // and clean the label
+
+      /* NOTE: Currently we GetPlayCounts on our items regardless of whether content is set
+               as if content is set, GetItemsForPaths doesn't return anything not in the content tables.
+               This code can be removed once the content tables are always filled */
+      if (!pItem->m_bIsFolder && !m_fetchedPlayCounts)
+      {
+        m_database.GetPlayCounts(items);
+        m_fetchedPlayCounts = true;
+      }
       if (pItem->HasVideoInfoTag())
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
       if (clean)
