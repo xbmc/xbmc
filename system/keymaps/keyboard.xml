@@ -168,7 +168,7 @@
   </MyFiles>
   <MyMusicPlaylist>
     <keyboard>
-      <space>Playlist</space>      <!-- Close playlist -->
+      <space>Back</space>
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>
@@ -400,7 +400,7 @@
   </MyVideoFiles>
   <MyVideoPlaylist>
     <keyboard>
-      <space>Playlist</space>      <!-- Close playlist -->
+      <space>Back</space>
       <delete>Delete</delete>
       <u>MoveItemUp</u>
       <d>MoveItemDown</d>

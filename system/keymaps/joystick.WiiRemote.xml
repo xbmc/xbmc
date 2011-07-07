@@ -42,7 +42,7 @@
       <button id="3">Left</button>
       <button id="4">Right</button>
       <button id="5">Select</button>
-      <button id="6">PreviousMenu</button>
+      <button id="6">Back</button>
       <button id="7">VolumeDown</button>
       <button id="8">XBMC.ActivateWindow(Home)</button>
       <button id="9">VolumeUp</button>
@@ -59,7 +59,6 @@
   </Home>
   <MyFiles>
     <joystick name="WiiRemote">
-      <button id="6">ParentDir</button>
       <button id="7">Move</button>
       <button id="9">Copy</button>
       <button id="11">Highlight</button>
@@ -67,7 +66,6 @@
   </MyFiles>
   <MyMusicPlaylist>
     <joystick name="WiiRemote">
-      <button id="6">Playlist</button>
       <button id="7">MoveItemUp</button>
       <button id="9">MoveItemDown</button>
       <button id="11">Delete</button>
@@ -75,7 +73,6 @@
   </MyMusicPlaylist>
   <MyMusicPlaylistEditor>
     <joystick name="WiiRemote">
-      <button id="6">Playlist</button>
       <button id="7">MoveItemUp</button>
       <button id="9">MoveItemDown</button>
       <button id="11">Delete</button>
@@ -83,13 +80,11 @@
   </MyMusicPlaylistEditor>
   <MyMusicFiles>
     <joystick name="WiiRemote">
-      <button id="6">ParentDir</button>
       <button id="11">Playlist</button>
     </joystick>
   </MyMusicFiles>
   <MyMusicLibrary>
     <joystick name="WiiRemote">
-      <button id="6">ParentDir</button>
       <button id="11">Playlist</button>
     </joystick>
   </MyMusicLibrary>
@@ -108,14 +103,8 @@
   <FullscreenInfo>
     <joystick name="WiiRemote">
       <button id="5">CodecInfo</button>
-      <button id="6">Close</button>
     </joystick>
   </FullscreenInfo>
-  <PlayerControls>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </PlayerControls>
   <Visualisation>
     <joystick name="WiiRemote">
       <button id="1">Pause</button>
@@ -131,23 +120,16 @@
   </Visualisation>
   <MusicOSD>
     <joystick name="WiiRemote">
-      <button id="6">Close</button>
       <button id="10">CodecInfo</button>
       <button id="11">Info</button>
     </joystick>
   </MusicOSD>
   <VisualisationSettings>
     <joystick name="WiiRemote">
-      <button id="6">Close</button>
       <button id="10">XBMC.ActivateWindow(VisualisationPresetList)</button>
       <button id="11">XBMC.ActivateWindow(MusicPlaylist)</button>
     </joystick>
   </VisualisationSettings>
-  <VisualisationPresetList>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </VisualisationPresetList>
   <SlideShow>
     <joystick name="WiiRemote">
       <button id="1">Pause</button>
@@ -167,16 +149,6 @@
       <button id="11">ResetResolution</button>
     </joystick>
   </ScreenCalibration>
-  <SelectDialog>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </SelectDialog>
-  <VideoOSD>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </VideoOSD>
   <VideoMenu>
     <joystick name="WiiRemote">
       <button id="5">Select</button>
@@ -184,37 +156,23 @@
       <button id="11">AspectRatio</button>
     </joystick>
   </VideoMenu>
-  <OSDVideoSettings>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </OSDVideoSettings>
-  <OSDAudioSettings>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </OSDAudioSettings>
   <VideoBookmarks>
     <joystick name="WiiRemote">
-      <button id="6">Close</button>
       <button id="11">Delete</button>
     </joystick>
   </VideoBookmarks>
   <MyVideoLibrary>
     <joystick name="WiiRemote">
-      <button id="6">ParentDir</button>
       <button id="11">Playlist</button>
     </joystick>
   </MyVideoLibrary>
   <MyVideoFiles>
     <joystick name="WiiRemote">
-      <button id="6">ParentDir</button>
       <button id="11">Playlist</button>
     </joystick>
   </MyVideoFiles>
   <MyVideoPlaylist>
     <joystick name="WiiRemote">
-      <button id="6">Playlist</button>
       <button id="7">MoveItemDown</button>
       <button id="9">MoveItemUp</button>
       <button id="11">Delete</button>
@@ -229,11 +187,6 @@
       <button id="11">BackSpace</button>
     </joystick>
   </VirtualKeyboard>
-  <ContextMenu>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </ContextMenu>
   <Scripts>
     <joystick name="WiiRemote">
       <button id="11">info</button>
@@ -247,46 +200,10 @@
       <button id="11">BackSpace</button>
     </joystick>
   </NumericInput>
-  <MusicInformation>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </MusicInformation>
-  <MovieInformation>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </MovieInformation>
   <PictureInfo>
     <joystick name="WiiRemote">
       <button id="3">PreviousPicture</button>
       <button id="4">NextPicture</button>
-      <button id="6">Close</button>
     </joystick>
   </PictureInfo>
-  <MyPictures>
-    <joystick name="WiiRemote">
-      <button id="6">ParentDir</button>
-    </joystick>
-  </MyPictures>
-  <AddonBrowser>
-    <joystick name="WiiRemote">
-      <button id="6">ParentDir</button>
-    </joystick>
-  </AddonBrowser>
-  <AddonInformation>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </AddonInformation>
-  <AddonSettings>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </AddonSettings>
-  <TextViewer>
-    <joystick name="WiiRemote">
-      <button id="6">Close</button>
-    </joystick>
-  </TextViewer>
 </keymap>

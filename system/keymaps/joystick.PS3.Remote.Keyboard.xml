@@ -41,7 +41,7 @@
       <altname>MoSart PS3 Remote Keyboard</altname>
       <button id="1">Info</button>
       <button id="2">Select</button>
-      <button id="3">ParentDir</button>
+      <button id="3">Back</button>
       <button id="4">ContextMenu</button>
       <button id="5">SkipPrevious</button>
       <button id="6">SkipNext</button>
@@ -82,19 +82,10 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="4">Close</button>
-      <button id="3">Close</button>
+      <button id="4">Back</button>
     </joystick>
   </MusicOSD>
 
-  <FullscreenInfo>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
-    </joystick>
-  </FullscreenInfo>
-  
   <FullscreenVideo>
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
@@ -116,200 +107,14 @@
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
       <button id="1">Info</button>
-      <button id="3">Close</button>
       <button id="4">OSD</button>
     </joystick>
   </VideoOSD>
   
-   <OSDVideoSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
-    </joystick>
-  </OSDVideoSettings>
-  
-  <OSDAudioSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
-    </joystick>
-  </OSDAudioSettings>
-  
-  <ContextMenu>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
-    </joystick>
-  </ContextMenu>
-
-  <shutdownmenu>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </shutdownmenu>
-  
-  <submenu>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </submenu>
-
-    <Settings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </Settings>
-
-  <AddonInformation>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
-    </joystick>
-  </AddonInformation>
-
-  <AddonSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
-    </joystick>
-  </AddonSettings>
-
-  <TextViewer>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
-    </joystick>
-  </TextViewer>
-
-  <MyPicturesSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </MyPicturesSettings>
-
-  <MyProgramsSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </MyProgramsSettings>
-
-  <MyWeatherSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </MyWeatherSettings>
-
-  <MyMusicSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </MyMusicSettings>
-
-  <SystemSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </SystemSettings>
-
-  <MyVideosSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </MyVideosSettings>
-
-  <NetworkSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </NetworkSettings>
-
-  <AppearanceSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="32">PreviousMenu</button>
-    </joystick>
-  </AppearanceSettings>
-
-  <Profiles>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </Profiles>
-
-  <systeminfo>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </systeminfo>
-
-  <MusicInformation>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
-    </joystick>
-  </MusicInformation>
-
-  <MovieInformation>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
-    </joystick>
-  </MovieInformation>
-
-  <LockSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </LockSettings>
-
-  <ProfileSettings>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">PreviousMenu</button>
-    </joystick>
-  </ProfileSettings>
-
   <PictureInfo>
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
       <hat    id="1" position="left">PreviousPicture</hat>
       <hat    id="1" position="right">NextPicture</hat>
     </joystick>
@@ -319,16 +124,9 @@
     <joystick name="PLAYSTATION(R)3 Remote Keyboard">
       <altname>PS3 Remote Keyboard</altname>
       <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="1">Close</button>
+      <button id="1">Back</button>
       <button id="4">OSD</button>
     </joystick>
   </FullscreenInfo>
 
-  <NumericInput>
-    <joystick name="PLAYSTATION(R)3 Remote Keyboard">
-      <altname>PS3 Remote Keyboard</altname>
-      <altname>MoSart PS3 Remote Keyboard</altname>
-      <button id="3">Close</button>
-    </joystick>
-  </NumericInput>
 </keymap>
