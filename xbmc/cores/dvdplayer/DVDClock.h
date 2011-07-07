@@ -43,6 +43,7 @@ public:
   ~CDVDClock();
 
   double GetClock(bool interpolated = true);
+  double GetClock(double& absolute, bool interpolated = true);
 
   void Discontinuity(double currentPts = 0LL);
 
