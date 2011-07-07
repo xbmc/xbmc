@@ -93,24 +93,7 @@ double CDVDClock::WaitAbsoluteClock(double target)
 double CDVDClock::GetClock(bool interpolated /*= true*/)
 {
   CSharedLock lock(m_critSection);
-  int64_t current;
-
-  if (m_bReset)
-  {
-    m_startClock = g_VideoReferenceClock.GetTime(interpolated);
-    m_systemUsed = m_systemFrequency;
-    m_pauseClock = 0;
-    m_iDisc = 0;
-    m_bReset = false;
-  }
-
-  if (m_pauseClock)
-    current = m_pauseClock;
-  else
-    current = g_VideoReferenceClock.GetTime(interpolated);
-
-  current -= m_startClock;
-  return DVD_TIME_BASE * (double)current / m_systemUsed + m_iDisc;
+  return SystemToPlaying(g_VideoReferenceClock.GetTime(interpolated));
 }
 
 void CDVDClock::SetSpeed(int iSpeed)
@@ -227,5 +210,26 @@ void CDVDClock::CheckSystemClock()
 double CDVDClock::SystemToAbsolute(int64_t system)
 {
   return DVD_TIME_BASE * (double)(system - m_systemOffset) / m_systemFrequency;
+}
+
+double CDVDClock::SystemToPlaying(int64_t system)
+{
+  int64_t current;
+
+  if (m_bReset)
+  {
+    m_startClock = system;
+    m_systemUsed = m_systemFrequency;
+    m_pauseClock = 0;
+    m_iDisc = 0;
+    m_bReset = false;
+  }
+  
+  if (m_pauseClock)
+    current = m_pauseClock;
+  else
+    current = system;
+
+  return DVD_TIME_BASE * (double)(current - m_startClock) / m_systemUsed + m_iDisc;
 }
 
