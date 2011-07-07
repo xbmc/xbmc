@@ -225,7 +225,6 @@
 		F56C7941131EC154000AD0F6 /* AudioRendererFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C733A131EC151000AD0F6 /* AudioRendererFactory.cpp */; };
 		F56C7942131EC154000AD0F6 /* NullDirectSound.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C733B131EC151000AD0F6 /* NullDirectSound.cpp */; };
 		F56C7943131EC154000AD0F6 /* BaseRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C733E131EC151000AD0F6 /* BaseRenderer.cpp */; };
-		F56C7944131EC154000AD0F6 /* LinuxRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7340131EC151000AD0F6 /* LinuxRenderer.cpp */; };
 		F56C7946131EC154000AD0F6 /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7344131EC151000AD0F6 /* OverlayRendererGL.cpp */; };
 		F56C7947131EC154000AD0F6 /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7346131EC151000AD0F6 /* OverlayRenderer.cpp */; };
 		F56C7948131EC154000AD0F6 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7348131EC151000AD0F6 /* OverlayRendererUtil.cpp */; };
@@ -1456,8 +1455,6 @@
 		F56C733C131EC151000AD0F6 /* NullDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NullDirectSound.h; path = AudioRenderers/NullDirectSound.h; sourceTree = "<group>"; };
 		F56C733E131EC151000AD0F6 /* BaseRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BaseRenderer.cpp; sourceTree = "<group>"; };
 		F56C733F131EC151000AD0F6 /* BaseRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseRenderer.h; sourceTree = "<group>"; };
-		F56C7340131EC151000AD0F6 /* LinuxRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxRenderer.cpp; sourceTree = "<group>"; };
-		F56C7341131EC151000AD0F6 /* LinuxRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinuxRenderer.h; sourceTree = "<group>"; };
 		F56C7344131EC151000AD0F6 /* OverlayRendererGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererGL.cpp; sourceTree = "<group>"; };
 		F56C7345131EC151000AD0F6 /* OverlayRendererGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererGL.h; sourceTree = "<group>"; };
 		F56C7346131EC151000AD0F6 /* OverlayRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRenderer.cpp; sourceTree = "<group>"; };
@@ -1475,7 +1472,6 @@
 		F56C7353131EC151000AD0F6 /* YUV2RGBShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YUV2RGBShader.cpp; sourceTree = "<group>"; };
 		F56C7354131EC151000AD0F6 /* YUV2RGBShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YUV2RGBShader.h; sourceTree = "<group>"; };
 		F56C7355131EC151000AD0F6 /* WinRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinRenderer.h; sourceTree = "<group>"; };
-		F56C7356131EC151000AD0F6 /* WinRenderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinRenderManager.h; sourceTree = "<group>"; };
 		F56C7358131EC151000AD0F6 /* Database.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Database.cpp; sourceTree = "<group>"; };
 		F56C7359131EC151000AD0F6 /* Database.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Database.h; sourceTree = "<group>"; };
 		F56C735A131EC151000AD0F6 /* dataset.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dataset.cpp; sourceTree = "<group>"; };
@@ -3816,8 +3812,6 @@
 			children = (
 				F56C733E131EC151000AD0F6 /* BaseRenderer.cpp */,
 				F56C733F131EC151000AD0F6 /* BaseRenderer.h */,
-				F56C7340131EC151000AD0F6 /* LinuxRenderer.cpp */,
-				F56C7341131EC151000AD0F6 /* LinuxRenderer.h */,
 				F56C7BE4131EC455000AD0F6 /* LinuxRendererGLES.cpp */,
 				F56C7BE5131EC455000AD0F6 /* LinuxRendererGLES.h */,
 				F56C7344131EC151000AD0F6 /* OverlayRendererGL.cpp */,
@@ -3832,7 +3826,6 @@
 				F56C734D131EC151000AD0F6 /* RenderManager.h */,
 				F56C734E131EC151000AD0F6 /* VideoShaders */,
 				F56C7355131EC151000AD0F6 /* WinRenderer.h */,
-				F56C7356131EC151000AD0F6 /* WinRenderManager.h */,
 				F56C7BE7131EC46E000AD0F6 /* yuv2rgb.neon.S */,
 				F56C7BE8131EC46E000AD0F6 /* yuv2rgb.neon.h */,
 			);
@@ -6020,7 +6013,6 @@
 				F56C7941131EC154000AD0F6 /* AudioRendererFactory.cpp in Sources */,
 				F56C7942131EC154000AD0F6 /* NullDirectSound.cpp in Sources */,
 				F56C7943131EC154000AD0F6 /* BaseRenderer.cpp in Sources */,
-				F56C7944131EC154000AD0F6 /* LinuxRenderer.cpp in Sources */,
 				F56C7946131EC154000AD0F6 /* OverlayRendererGL.cpp in Sources */,
 				F56C7947131EC154000AD0F6 /* OverlayRenderer.cpp in Sources */,
 				F56C7948131EC154000AD0F6 /* OverlayRendererUtil.cpp in Sources */,
