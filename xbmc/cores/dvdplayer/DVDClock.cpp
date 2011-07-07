@@ -96,6 +96,23 @@ double CDVDClock::GetClock(bool interpolated /*= true*/)
   return SystemToPlaying(g_VideoReferenceClock.GetTime(interpolated));
 }
 
+double CDVDClock::DistanceToPts(double pts, double& absolute, bool interpolated /*= true*/)
+{
+  int64_t current = g_VideoReferenceClock.GetTime(interpolated);
+
+  double clock;
+  {
+    CSharedLock lock(m_critSection);
+    clock = SystemToPlaying(current);
+  }
+  {
+    CSingleLock lock(m_systemsection);
+    absolute = SystemToAbsolute(current);
+  }
+
+  return pts - clock;
+}
+
 void CDVDClock::SetSpeed(int iSpeed)
 {
   // this will sometimes be a little bit of due to rounding errors, ie clock might jump abit when changing speed
