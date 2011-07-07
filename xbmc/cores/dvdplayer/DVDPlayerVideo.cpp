@@ -1097,9 +1097,10 @@ int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
   pts += m_iVideoDelay;
 
   // calculate the time we need to delay this picture before displaying
-  double iSleepTime, iClockSleep, iFrameSleep, iCurrentClock, iFrameDuration;
+  double iSleepTime, iClockSleep, iFrameSleep, iPlayingClock, iCurrentClock, iFrameDuration;
 
-  iClockSleep = m_pClock->DistanceToPts(pts, iCurrentClock, false); //sleep calculated by pts to clock comparison
+  iPlayingClock = m_pClock->GetClock(iCurrentClock, false); // snapshot current clock
+  iClockSleep = pts - iPlayingClock; //sleep calculated by pts to clock comparison
   iFrameSleep = m_FlipTimeStamp - iCurrentClock; // sleep calculated by duration of frame
   iFrameDuration = pPicture->iDuration;
 
