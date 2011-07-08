@@ -100,7 +100,7 @@ bool CEncoderFlac::Init(const char* strFile, int iInChannels, int iInRate, int i
   if (ok)
   {
     FLAC__StreamEncoderInitStatus init_status;
-    init_status = m_dll.FLAC__stream_encoder_init_stream(m_encoder, write_callback, seek_callback, tell_callback, 0, this);
+    init_status = m_dll.FLAC__stream_encoder_init_stream(m_encoder, write_callback, NULL, NULL, NULL, this);
     if (init_status != FLAC__STREAM_ENCODER_INIT_STATUS_OK)
 	  {
       CLog::Log(LOGERROR, "FLAC encoder initializing error");
@@ -174,22 +174,4 @@ FLAC__StreamEncoderWriteStatus CEncoderFlac::write_callback(const FLAC__StreamEn
   if (pThis->FileWrite(buffer, bytes) != (int)bytes)
     return FLAC__STREAM_ENCODER_WRITE_STATUS_FATAL_ERROR;
   return FLAC__STREAM_ENCODER_WRITE_STATUS_OK;
-}
-
-FLAC__StreamEncoderSeekStatus CEncoderFlac::seek_callback(const FLAC__StreamEncoder *encoder, FLAC__uint64 absolute_byte_offset, void *client_data)
-{
-  CEncoderFlac *pThis = (CEncoderFlac *)client_data;
-  if (pThis->m_file->Seek(absolute_byte_offset, FILE_BEGIN) < 0)
-    return FLAC__STREAM_ENCODER_SEEK_STATUS_ERROR;
-  return FLAC__STREAM_ENCODER_SEEK_STATUS_OK;
-}
-
-FLAC__StreamEncoderTellStatus CEncoderFlac::tell_callback(const FLAC__StreamEncoder *encoder, FLAC__uint64 *absolute_byte_offset, void *client_data)
-{
-  CEncoderFlac *pThis = (CEncoderFlac *)client_data;
-  int64_t off = pThis->m_file->GetLength();
-  if (off < 0)
-    return FLAC__STREAM_ENCODER_TELL_STATUS_ERROR;
-  *absolute_byte_offset = off;
-  return FLAC__STREAM_ENCODER_TELL_STATUS_OK;
 }
