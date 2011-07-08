@@ -27,6 +27,7 @@
 CEncoderFlac::CEncoderFlac() : m_encoder(0), m_samplesBuf(new FLAC__int32[SAMPLES_BUF_SIZE])
 {
   m_metadata[0] = 0;
+  m_metadata[1] = 0;
 }
 
 CEncoderFlac::~CEncoderFlac()
@@ -71,6 +72,7 @@ bool CEncoderFlac::Init(const char* strFile, int iInChannels, int iInRate, int i
   {
     if (
       (m_metadata[0] = m_dll.FLAC__metadata_object_new(FLAC__METADATA_TYPE_VORBIS_COMMENT)) == NULL ||
+      (m_metadata[1] = m_dll.FLAC__metadata_object_new(FLAC__METADATA_TYPE_PADDING)) == NULL ||
       !m_dll.FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&entry, "ARTIST", m_strArtist.c_str()) ||
       !m_dll.FLAC__metadata_object_vorbiscomment_append_comment(m_metadata[0], entry, false) ||
       !m_dll.FLAC__metadata_object_vorbiscomment_entry_from_name_value_pair(&entry, "ALBUM", m_strAlbum.c_str()) ||
@@ -94,7 +96,8 @@ bool CEncoderFlac::Init(const char* strFile, int iInChannels, int iInRate, int i
     }
     else
     {
-      ok = m_dll.FLAC__stream_encoder_set_metadata(m_encoder, m_metadata, 1);
+      m_metadata[1]->length = 4096;
+      ok = m_dll.FLAC__stream_encoder_set_metadata(m_encoder, m_metadata, 2);
     }
   }
 
@@ -160,6 +163,8 @@ bool CEncoderFlac::Close()
     // now that encoding is finished, the metadata can be freed
     if (m_metadata[0])
       m_dll.FLAC__metadata_object_delete(m_metadata[0]);
+    if (m_metadata[1])
+      m_dll.FLAC__metadata_object_delete(m_metadata[1]);
 
     // delete encoder
     m_dll.FLAC__stream_encoder_delete(m_encoder);
