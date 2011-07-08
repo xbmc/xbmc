@@ -52,6 +52,7 @@ public:
   void SetAlbumArtist(const CStdString& str) { m_strAlbumArtist = str; }
   void SetGenre(const CStdString& str) { m_strGenre = str; }
   void SetTrack(const CStdString& str) { m_strTrack = str; }
+  void SetTrackLength(int length) { m_iTrackLength = length; }
   void SetYear(const CStdString& str) { m_strYear = str; }
 
 protected:
@@ -71,6 +72,7 @@ protected:
   CStdString m_strGenre;
   CStdString m_strTrack;
   CStdString m_strYear;
+  int m_iTrackLength;
 
   CStdString m_strFile;
 

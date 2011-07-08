@@ -58,9 +58,11 @@ bool CEncoderFlac::Init(const char* strFile, int iInChannels, int iInRate, int i
 
   FLAC__bool ok = 1;
 
+  ok &= m_dll.FLAC__stream_encoder_set_verify(m_encoder, true);
   ok &= m_dll.FLAC__stream_encoder_set_channels(m_encoder, 2);
   ok &= m_dll.FLAC__stream_encoder_set_bits_per_sample(m_encoder, 16);
   ok &= m_dll.FLAC__stream_encoder_set_sample_rate(m_encoder, 44100);
+  ok &= m_dll.FLAC__stream_encoder_set_total_samples_estimate(m_encoder, m_iTrackLength / 4);
   ok &= m_dll.FLAC__stream_encoder_set_compression_level(m_encoder, g_guiSettings.GetInt("audiocds.compressionlevel"));
 
   // now add some metadata

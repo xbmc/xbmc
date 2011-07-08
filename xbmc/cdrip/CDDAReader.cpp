@@ -88,6 +88,11 @@ int CCDDAReader::GetPercent()
   return (int)((m_fileCdda.GetPosition()*100) / m_fileCdda.GetLength());
 }
 
+int CCDDAReader::GetTrackLength()
+{
+  return (int)m_fileCdda.GetLength();
+}
+
 int CCDDAReader::ReadChunk()
 {
   // Read data
