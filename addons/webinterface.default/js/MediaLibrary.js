@@ -193,27 +193,27 @@ MediaLibrary.prototype = {
 							}
 							$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 						}
-						var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2);
+						var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2).bind('click', { album: event.data.album, itmnbr: i }, jQuery.proxy(this.playTrack,this));
 						var trackNumberTD = $('<td>')
 							.html(item.track)
-							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							
 						trackRow.append(trackNumberTD);
 						var trackTitleTD = $('<td>')
 							.html(item.title);
-							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							
 						trackRow.append(trackTitleTD);
 						var trackDurationTD = $('<td>')
 							.addClass('time')
 							.html(durationToString(item.duration));
-							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							
 						trackRow.append(trackDurationTD);
 						var trackArtistTD = $('<td>')
 							.html(item.artist);
-							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							
 						trackRow.append(trackArtistTD);
 						var trackGenreTD = $('<td>')
 							.html(item.genre);
-							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							
 						trackRow.append(trackGenreTD);
 						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 					}, this));
@@ -378,7 +378,7 @@ MediaLibrary.prototype = {
 				//check that clear worked.
 				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Add", "params": { "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}', jQuery.proxy(function(data) {
 					//play specific song in playlist
-					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Play", "params": { "item": { "file": ' + event.data.song.file + ' } }, "id": 1}', function() {}, 'json');
+					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Play", "params": { "item": '+ event.data.itmnbr + ' }, "id": 1}', function() {}, 'json');
 				}, this), 'json');
 			}, this), 'json');
 		},
