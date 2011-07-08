@@ -528,7 +528,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CFileCurl &fcurl, const CStd
         // calculate the relavance of this hit
         CStdString sCompareTitle = scurlMovie.strTitle;
         sCompareTitle.ToLower();
-        CStdString sMatchTitle = sMovie;
+        CStdString sMatchTitle = sTitle;
         sMatchTitle.ToLower();
 
         /*
