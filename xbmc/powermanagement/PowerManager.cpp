@@ -169,7 +169,10 @@ bool CPowerManager::CanReboot()
 {
   return m_instance->CanReboot();
 }
-
+int CPowerManager::BatteryLevel()
+{
+  return m_instance->BatteryLevel();
+}
 void CPowerManager::ProcessEvents()
 {
   m_instance->PumpPowerEvents(this);

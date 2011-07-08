@@ -222,4 +222,14 @@ bool DarwinHasVideoToolboxDecoder(void)
   return bDecoderAvailable;
 }
 
+int DarwinBatteryLevel(void)
+{
+  float batteryLevel = 0;
+#if defined(TARGET_DARWIN_IOS)
+  if(!DarwinIsAppleTV2())
+    batteryLevel = [[UIDevice currentDevice] batteryLevel];
+#endif
+  return batteryLevel * 100;  
+}
+
 #endif

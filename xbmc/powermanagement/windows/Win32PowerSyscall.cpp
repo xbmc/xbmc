@@ -73,6 +73,11 @@ bool CWin32PowerSyscall::CanReboot()
   return true;
 }
 
+int CWin32PowerSyscall::BatteryLevel()
+{
+  return 0;
+}
+
 bool CWin32PowerSyscall::PumpPowerEvents(IPowerEventsCallback *callback)
 {
   if (m_OnSuspend)

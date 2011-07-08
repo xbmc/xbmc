@@ -1270,6 +1270,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case SYSTEM_INTERNET_STATE:
   case SYSTEM_UPTIME:
   case SYSTEM_TOTALUPTIME:
+  case SYSTEM_BATTERY_LEVEL:
     return g_sysinfo.GetInfo(info);
     break;
 
