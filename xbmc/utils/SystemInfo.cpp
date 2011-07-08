@@ -43,6 +43,7 @@
 #include "osx/DarwinUtils.h"
 #include "osx/CocoaInterface.h"
 #endif
+#include "powermanagement/PowerManager.h"
 
 CSysInfo g_sysinfo;
 
@@ -104,13 +105,9 @@ CStdString CSysInfoJob::GetVideoEncoder()
 
 CStdString CSysInfoJob::GetBatteryLevel()
 {
-#if defined(TARGET_DARWIN_IOS)  
   CStdString strVal;
-  strVal.Format("%d%%", DarwinGetBatteryLevel());
+  strVal.Format("%d%%", g_powerManager.BatteryLevel());
   return strVal;
-#else
-  return ""
-#endif 
 }
 
 double CSysInfoJob::GetCPUFrequency()

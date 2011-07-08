@@ -32,7 +32,7 @@ extern "C"
   int   GetDarwinFrameworkPath(bool forPython, char* path, uint32_t *pathsize);
   int   GetDarwinExecutablePath(char* path, uint32_t *pathsize);
   bool  DarwinHasVideoToolboxDecoder(void);
-  int   DarwinGetBatteryLevel();  
+  int   DarwinBatteryLevel(void);
 #ifdef __cplusplus
 }
 #endif

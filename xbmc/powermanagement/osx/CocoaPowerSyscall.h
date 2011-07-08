@@ -48,6 +48,7 @@ public:
   virtual bool CanHibernate(void);
   virtual bool CanReboot(void);
           bool HasBattery(void);
+  virtual int  BatteryLevel(void);
 
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
 private:
