@@ -70,12 +70,11 @@ private:
 
 public:
 
-  CGetDirectory(IDirectory& imp, const CStdString& dir)
+  CGetDirectory(IDirectory& imp, const CStdString& dir) : m_event(new CEvent(true))
   {
     m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, dir, m_list)
                                            , this
                                            , CJob::PRIORITY_HIGH);
-    m_event = new CEvent(true);
   }
  ~CGetDirectory()
   {
