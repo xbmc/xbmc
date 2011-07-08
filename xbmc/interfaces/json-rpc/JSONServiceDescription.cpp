@@ -147,6 +147,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "PicturePlayer.Rotate",                         CPicturePlayerOperations::Rotate },
 
 // Video Playlist
+  { "VideoPlaylist.State",                          CAVPlaylistOperations::State },
   { "VideoPlaylist.Play",                           CAVPlaylistOperations::Play },
   { "VideoPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious },
   { "VideoPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext },
@@ -161,6 +162,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoPlaylist.Swap",                           CAVPlaylistOperations::Swap },
 
 // AudioPlaylist
+  { "AudioPlaylist.State",                          CAVPlaylistOperations::State },
   { "AudioPlaylist.Play",                           CAVPlaylistOperations::Play },
   { "AudioPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious },
   { "AudioPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext },

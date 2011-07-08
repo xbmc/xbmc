@@ -31,6 +31,17 @@ using namespace JSONRPC;
 using namespace PLAYLIST;
 using namespace std;
 
+JSON_STATUS CAVPlaylistOperations::State(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  int playlist = GetPlaylist(method);
+  if (g_playlistPlayer.GetCurrentPlaylist() != playlist)
+    return FailedToExecute;
+
+  GetState(playlist, result);
+
+  return OK;
+}
+
 JSON_STATUS CAVPlaylistOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   bool status = true;
@@ -85,11 +96,8 @@ JSON_STATUS CAVPlaylistOperations::GetItems(const CStdString &method, ITransport
   HandleFileItemList("id", true, "items", list, parameterObject, result);
 
   if (g_playlistPlayer.GetCurrentPlaylist() == GetPlaylist(method))
-  {
-    result["state"]["current"] = g_playlistPlayer.GetCurrentSong();
-    result["state"]["playing"] = g_application.IsPlaying();
-    result["state"]["paused"] = g_application.IsPaused();
-  }
+    GetState(playlist, result["state"]);
+
   return OK;
 }
 
@@ -201,4 +209,24 @@ void CAVPlaylistOperations::NotifyAll()
 {
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
+}
+
+void CAVPlaylistOperations::GetState(int playlist, CVariant &result)
+{
+  result["current"] = g_playlistPlayer.GetCurrentSong();
+  result["playing"] = g_application.IsPlaying();
+  result["paused"] = g_application.IsPaused();
+  switch (g_playlistPlayer.GetRepeat(playlist))
+  {
+  case REPEAT_ONE:
+    result["repeat"] = "one";
+    break;
+  case REPEAT_ALL:
+    result["repeat"] = "all";
+    break;
+  default:
+    result["repeat"] = "off";
+    break;
+  }
+  result["shuffled"] = g_playlistPlayer.IsShuffled(playlist);
 }

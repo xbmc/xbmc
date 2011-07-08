@@ -485,7 +485,9 @@ namespace JSONRPC
       "\"properties\": {"
         "\"current\": { \"type\": \"integer\", \"required\": true },"
         "\"playing\": { \"type\": \"boolean\", \"required\": true },"
-        "\"paused\": { \"type\": \"boolean\", \"required\": true }"
+        "\"paused\": { \"type\": \"boolean\", \"required\": true },"
+        "\"repeat\": { \"$ref\": \"Playlist.Repeat\", \"required\": true },"
+        "\"shuffled\": { \"type\": \"boolean\", \"required\": true }"
       "}"
     "}",
     "\"Playlist.Video.Item\": {"
@@ -1324,6 +1326,14 @@ namespace JSONRPC
       "],"
       "\"returns\": \"string\""
     "}",
+    "\"VideoPlaylist.State\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Provides information about the current state of the playlist\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": [ ],"
+      "\"returns\":  { \"$ref\": \"Playlist.State\", \"required\": true }"
+    "}",
     "\"VideoPlaylist.Play\": {"
       "\"type\": \"method\","
       "\"description\": \"Play current or a specific item\","
@@ -1447,6 +1457,14 @@ namespace JSONRPC
         "{ \"name\": \"item2\", \"$ref\": \"Playlist.Item.Position\", \"required\": true }"
       "],"
       "\"returns\": \"string\""
+    "}",
+    "\"AudioPlaylist.State\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Provides information about the current state of the playlist\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": [ ],"
+      "\"returns\":  { \"$ref\": \"Playlist.State\", \"required\": true }"
     "}",
     "\"AudioPlaylist.Play\": {"
       "\"type\": \"method\","

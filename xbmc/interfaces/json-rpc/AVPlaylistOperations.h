@@ -30,6 +30,7 @@ namespace JSONRPC
   class CAVPlaylistOperations : public CFileItemHandler
   {
   public:
+    static JSON_STATUS State(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSON_STATUS Play(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSON_STATUS SkipPrevious(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSON_STATUS SkipNext(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
@@ -46,5 +47,6 @@ namespace JSONRPC
   private:
     static inline int  GetPlaylist(const CStdString &method);
     static inline void NotifyAll();
+    static void GetState(int playlist, CVariant &result);
   };
 }
