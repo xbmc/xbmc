@@ -163,6 +163,21 @@ JSON_STATUS CAVPlaylistOperations::UnShuffle(const CStdString &method, ITranspor
   return ACK;
 }
 
+JSON_STATUS CAVPlaylistOperations::Repeat(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  REPEAT_STATE state = REPEAT_NONE;
+  std::string strState = parameterObject["state"].asString();
+  if (strState.compare("one") == 0)
+    state = REPEAT_ONE;
+  else if (strState.compare("all") == 0)
+    state = REPEAT_ALL;
+
+  g_application.getApplicationMessenger().PlayListPlayerRepeat(GetPlaylist(method), state);
+
+  NotifyAll();
+  return ACK;
+}
+
 JSON_STATUS CAVPlaylistOperations::Swap(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().PlayListPlayerSwap(GetPlaylist(method), (int)parameterObject["item1"].asInteger(), (int)parameterObject["item2"].asInteger());

@@ -476,6 +476,10 @@ namespace JSONRPC
       "\"minimum\": 0,"
       "\"default\": -1"
     "}",
+    "\"Playlist.Repeat\": {"
+      "\"type\": \"string\","
+      "\"enum\": [ \"off\", \"one\", \"all\" ]"
+    "}",
     "\"Playlist.State\": {"
       "\"type\": \"object\","
       "\"properties\": {"
@@ -1423,6 +1427,16 @@ namespace JSONRPC
       "\"params\": [ ],"
       "\"returns\": \"string\""
     "}",
+    "\"VideoPlaylist.Repeat\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Set the repeat mode of the playlist\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ControlPlayback\","
+      "\"params\": ["
+        "{ \"name\": \"state\", \"$ref\": \"Playlist.Repeat\", \"required\": true }"
+      "],"
+      "\"returns\": \"string\""
+    "}",
     "\"VideoPlaylist.Swap\": {"
       "\"type\": \"method\","
       "\"description\": \"Swap items in the playlist\","
@@ -1536,6 +1550,16 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ControlPlayback\","
       "\"params\": [ ],"
+      "\"returns\": \"string\""
+    "}",
+    "\"AudioPlaylist.Repeat\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Set the repeat mode of the playlist\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ControlPlayback\","
+      "\"params\": ["
+        "{ \"name\": \"state\", \"$ref\": \"Playlist.Repeat\", \"required\": true }"
+      "],"
       "\"returns\": \"string\""
     "}",
     "\"AudioPlaylist.Swap\": {"

@@ -652,6 +652,16 @@
     "params": [ ],
     "returns": "string"
   },
+  "VideoPlaylist.Repeat": {
+    "type": "method",
+    "description": "Set the repeat mode of the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "state", "$ref": "Playlist.Repeat", "required": true }
+    ],
+    "returns": "string"
+  },
   "VideoPlaylist.Swap": {
     "type": "method",
     "description": "Swap items in the playlist",
@@ -765,6 +775,16 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [ ],
+    "returns": "string"
+  },
+  "AudioPlaylist.Repeat": {
+    "type": "method",
+    "description": "Set the repeat mode of the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "state", "$ref": "Playlist.Repeat", "required": true }
+    ],
     "returns": "string"
   },
   "AudioPlaylist.Swap": {

@@ -448,6 +448,10 @@
     "minimum": 0,
     "default": -1
   },
+  "Playlist.Repeat": {
+    "type": "string",
+    "enum": [ "off", "one", "all" ]
+  },
   "Playlist.State": {
     "type": "object",
     "properties": {

@@ -571,6 +571,10 @@ case TMSG_POWERDOWN:
       g_playlistPlayer.SetShuffle(pMsg->dwParam1, pMsg->dwParam2 > 0);
       break;
 
+    case TMSG_PLAYLISTPLAYER_REPEAT:
+      g_playlistPlayer.SetRepeat(pMsg->dwParam1, (PLAYLIST::REPEAT_STATE)pMsg->dwParam2);
+      break;
+
     case TMSG_PLAYLISTPLAYER_GET_ITEMS:
       if (pMsg->lpVoid)
       {
@@ -950,6 +954,14 @@ void CApplicationMessenger::PlayListPlayerSwap(int playlist, int indexItem1, int
   indexes->push_back(indexItem1);
   indexes->push_back(indexItem2);
   tMsg.lpVoid = (void *)indexes;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlayListPlayerRepeat(int playlist, int repeatState)
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REPEAT};
+  tMsg.dwParam1 = playlist;
+  tMsg.dwParam2 = repeatState;
   SendMessage(tMsg, true);
 }
 
