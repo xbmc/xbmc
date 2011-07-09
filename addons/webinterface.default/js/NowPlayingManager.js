@@ -39,21 +39,26 @@ NowPlayingManager.prototype = {
 				type: 'POST', 
 				url: JSON_RPC + '?UpdateState', 
 				data: '{"jsonrpc": "2.0", "method": "Player.GetActivePlayers", "id": 1}', 
-				timeout: 2000,
+				timeout: 3000,
 				success: jQuery.proxy(function(data) {
 					if (data && data.result) {
 						if (data.result.audio && this.activePlayer != 'Audio') {
 							this.activePlayer = 'Audio';
 							this.stopVideoPlaylistUpdate();
 							this.displayAudioNowPlaying();
+							this.showFooter();
 							this.stopRefreshTime();
 						} else if (data.result.video && this.activePlayer != 'Video') {
 							this.activePlayer = 'Video';
 							this.stopAudioPlaylistUpdate();
 							this.displayVideoNowPlaying();
+							this.showFooter();							
 							this.stopRefreshTime();
+						} else if (data.result.video || data.result.audio) {
+							this.showFooter();							
 						} else if (!data.result.audio && !data.result.video) {
 							this.stopRefreshTime();
+							this.hideFooter();
 						}
 					}
 					setTimeout(jQuery.proxy(this.updateState, this), 1000);
@@ -80,6 +85,14 @@ NowPlayingManager.prototype = {
 			$('#nextText').html('Next: ');
 			$('#nowPlayingPlaylist').hide();
 			return false;
+		},
+		hideFooter: function() {
+			$('#footerPopover').hide();
+			$('#overlay').css('bottom','0px');			
+		},
+		showFooter: function() {
+			$('#footerPopover').show();
+			$('#overlay').css('bottom','150px');		
 		},
 		nextTrack: function() {
 			if (this.activePlayer) {
@@ -332,7 +345,7 @@ NowPlayingManager.prototype = {
 		refreshVideoData: function() {
 			if (this.autoRefreshVideoData && !this.videoRefreshTimer) {
 				this.videoRefreshTimer = 1;
-				setTimeout(jQuery.proxy(this.refreshVideoDataLoop, this), 1000);
+				setTimeout(jQuery.proxy(this.refreshVideoDataLoop, this), 1500);
 			}
 			if (this.playing && !this.paused) {
 				this.trackBaseTime++;
@@ -350,10 +363,6 @@ NowPlayingManager.prototype = {
 						imgPath = (this.activePlaylistItem.thumbnail.startsWith('special://') ? '/vfs/' : 'images/') + this.activePlaylistItem.thumbnail;
 					}
 					$('#videoCoverArt').html('<img src="' + imgPath + '" alt="' + this.activePlaylistItem.title + ' cover art">');
-					var imgWidth = $('#videoCoverArt img').width();
-					$('#progressBar').width(365 - (imgWidth - 100));
-					$('#videoTrackWrap').width(365 - (imgWidth - 100));
-					$('#videoTitle').width(365 - (imgWidth - 100));
 					$('#videoShowTitle').html(this.activePlaylistItem.showtitle||'&nbsp;');
 					var extra = '';
 					if (this.activePlaylistItem.season >= 0 && this.activePlaylistItem.episode >= 0) {
@@ -412,7 +421,7 @@ NowPlayingManager.prototype = {
 			jQuery.ajax({
 				type: 'POST', 
 				url: JSON_RPC + '?updateVideoPlaylist', 
-				data: '{"jsonrpc": "2.0", "method": "VideoPlaylist.GetItems", "params": { "fields": ["title", "season", "episode", "plot", "runtime", "showtitle"] }, "id": 1}', 
+				data: '{"jsonrpc": "2.0", "method": "VideoPlaylist.GetItems", "params": { "fields": ["title", "season", "episode", "plot", "runtime", "showtitle","thumbnail"] }, "id": 1}', 
 				success: jQuery.proxy(function(data) {
 					if (data && data.result && data.result.items && data.result.limits.total > 0) {
 						//Compare new playlist to active playlist, only redraw if a change is noticed.
