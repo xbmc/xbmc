@@ -81,8 +81,8 @@ static void LoadTexture(GLenum target
 
     int bytesPerLine = bytesPerPixel * width;
 
-    pixelVector = (char *)malloc(width * height * bytesPerLine);
-    
+    pixelVector = (char *)malloc(bytesPerLine * height);
+
     const char *src = (const char*)pixels;
     char *dst = pixelVector;
     for (int y = 0;y < height;++y)
