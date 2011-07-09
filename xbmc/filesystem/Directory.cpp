@@ -44,36 +44,46 @@ using namespace XFILE;
 #define TIME_TO_BUSY_DIALOG 500
 
 class CGetDirectory
-  : IJobCallback
 {
 private:
+
+  struct CResult
+  {
+    CResult(const CStdString& dir) : m_event(true), m_result(false), m_dir(dir) {}
+    CEvent        m_event;
+    CFileItemList m_list;
+    CStdString    m_dir;
+    bool          m_result;
+  };
+
   struct CGetJob
     : CJob
   {
-    CGetJob(IDirectory& imp
-          , const CStdString& dir
-          , CFileItemList& list)
-      : m_dir(dir)
-      , m_list(list)
+    CGetJob(boost::shared_ptr<IDirectory>& imp
+          , boost::shared_ptr<CResult>& result)
+      : m_result(result)
       , m_imp(imp)
     {}
   public:
     virtual bool DoWork()
     {
-      m_list.m_strPath = m_dir;
-      return m_imp.GetDirectory(m_dir, m_list);
+      m_result->m_list.m_strPath = m_result->m_dir;
+      m_result->m_result         = m_imp->GetDirectory(m_result->m_dir, m_result->m_list);
+      m_result->m_event.Set();
+      return m_result->m_result;
     }
-    CStdString     m_dir;
-    CFileItemList& m_list;
-    IDirectory&    m_imp;
+
+    boost::shared_ptr<CResult>    m_result;
+    boost::shared_ptr<IDirectory> m_imp;
   };
 
 public:
 
-  CGetDirectory(IDirectory& imp, const CStdString& dir) : m_event(new CEvent(true))
+  CGetDirectory(boost::shared_ptr<IDirectory>& imp, const CStdString& dir) 
+    : m_result(new CResult(dir))
   {
-    m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, dir, m_list)
-                                           , this
+    m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, m_result)
+                                           , NULL
                                            , CJob::PRIORITY_HIGH);
   }
  ~CGetDirectory()
@@ -81,34 +91,25 @@ public:
     CJobManager::GetInstance().CancelJob(m_id);
   }
 
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job)
-  {
-    m_result = success;
-    boost::shared_ptr<CEvent> ev(m_event); /* event must live until Set() has completed */
-    ev->Set();
-  }
-
   bool Wait(unsigned int timeout)
   {
-    return m_event->WaitMSec(timeout);
+    return m_result->m_event.WaitMSec(timeout);
   }
 
   bool GetDirectory(CFileItemList& list)
   {
-    m_event->Wait();
-    if(!m_result)
+    /* if it was not finished or failed, return failure */
+    if(!m_result->m_event.WaitMSec(0) || !m_result->m_result)
     {
       list.Clear();
       return false;
     }
-    list.Copy(m_list);
+
+    list.Copy(m_result->m_list);
     return true;
   }
-
-  bool                      m_result;
-  CFileItemList             m_list;
-  boost::shared_ptr<CEvent> m_event;
-  unsigned int  m_id;
+  boost::shared_ptr<CResult> m_result;
+  unsigned int               m_id;
 };
 
 
@@ -123,7 +124,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
   try
   {
     CStdString realPath = Translate(strPath);
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
+    boost::shared_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
     if (!pDirectory.get())
       return false;
 
@@ -149,7 +150,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
         {
           CSingleExit ex(g_graphicsContext);
 
-          CGetDirectory get(*pDirectory, realPath);
+          CGetDirectory get(pDirectory, realPath);
           if(!get.Wait(TIME_TO_BUSY_DIALOG))
           {
             CGUIDialogBusy* dialog = NULL;
