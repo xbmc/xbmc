@@ -170,7 +170,11 @@ bool CEncoderFlac::Close()
     m_dll.FLAC__stream_encoder_delete(m_encoder);
   }
 
+  FlushStream();
   FileClose();
+
+  // unload the flac dll
+  m_dll.Unload();
 
   return ok ? true : false;
 }
