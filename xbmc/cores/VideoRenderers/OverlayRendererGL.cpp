@@ -97,14 +97,19 @@ static void LoadTexture(GLenum target
   }
 #else
   glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-  if(externalFormat == GL_RGBA
-  || externalFormat == GL_BGRA)
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
-  else if(externalFormat == GL_RGB
-       || externalFormat == GL_BGR)
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
-  else
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+  switch(externalFormat)
+  {
+    case GL_RGBA:
+    case GL_BGRA:
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
+      break;
+    case GL_RGB:
+    case GL_BGR:
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
+      break;
+    default:
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+  }
 #endif
 
   glTexImage2D   (target, 0, internalFormat
