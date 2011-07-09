@@ -188,6 +188,12 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     if (strName.length() == 0)
       strName = "Unnamed";
 
+    CStdString strLanguage;
+    g_application.m_pPlayer->GetSubtitleLanguage(i, strLanguage);
+
+    if (strName != strLanguage)
+      strName.Format("%s [%s]", strName.c_str(), strLanguage.c_str());
+
     strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
 
     setting.entry.push_back(make_pair(setting.entry.size(), strItem));
