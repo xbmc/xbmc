@@ -101,7 +101,7 @@ typedef struct
   DWORD dwParam2;
   CStdString strParam;
   std::vector<CStdString> params;
-  CEvent* hWaitEvent;
+  boost::shared_ptr<CEvent> waitEvent;
   LPVOID lpVoid;
 }
 ThreadMessage;
