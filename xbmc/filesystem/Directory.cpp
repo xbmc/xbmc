@@ -55,7 +55,7 @@ private:
           , CFileItemList& list)
       : m_dir(dir)
       , m_list(list)
-      , m_imp(imp)      
+      , m_imp(imp)
     {}
   public:
     virtual bool DoWork()
@@ -78,24 +78,14 @@ public:
   }
  ~CGetDirectory()
   {
-    CSingleLock l(m_lock);
-    
-    delete m_event;
-    m_event = NULL;
-    
     CJobManager::GetInstance().CancelJob(m_id);
   }
 
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job)
   {
-    CSingleLock l(m_lock);
-
-    if(!m_event)
-      return;
-    
     m_result = success;
-    
-    m_event->Set();
+    boost::shared_ptr<CEvent> ev(m_event); /* event must live until Set() has completed */
+    ev->Set();
   }
 
   bool Wait(unsigned int timeout)
@@ -117,14 +107,9 @@ public:
 
   bool                      m_result;
   CFileItemList             m_list;
-  CEvent                   *m_event;
-  static CCriticalSection   m_lock;
-  
+  boost::shared_ptr<CEvent> m_event;
   unsigned int  m_id;
 };
-
-CCriticalSection CGetDirectory::m_lock;
-
 
 
 CDirectory::CDirectory()
