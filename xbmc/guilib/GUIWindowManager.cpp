@@ -33,7 +33,7 @@
 #include "addons/Skin.h"
 #include "GUITexture.h"
 #include "windowing/WindowingFactory.h"
-#include "TimeUtils.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 
