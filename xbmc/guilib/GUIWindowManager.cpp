@@ -33,6 +33,7 @@
 #include "addons/Skin.h"
 #include "GUITexture.h"
 #include "windowing/WindowingFactory.h"
+#include "TimeUtils.h"
 
 using namespace std;
 
@@ -632,6 +633,8 @@ void CGUIWindowManager::ProcessRenderLoop(bool renderOnly /*= false*/)
     {
       m_pCallback->Process();
       m_pCallback->FrameMove();
+    } else {
+      Process(CTimeUtils::GetFrameTime());
     }
     m_pCallback->Render();
     m_iNested--;
