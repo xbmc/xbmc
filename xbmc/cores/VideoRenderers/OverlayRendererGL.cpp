@@ -60,10 +60,10 @@ static void LoadTexture(GLenum target
   int width2  = NP2(width);
   int height2 = NP2(height);
   char *pixelVector = NULL;
+  const GLvoid *pixelData = pixels;
 
 #ifdef HAS_GLES
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
-  const GLvoid *pixelData = pixels;
   if (stride != width)
   {
     int bytesPerPixel;
@@ -105,8 +105,6 @@ static void LoadTexture(GLenum target
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
   else
     glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
-
-  const GLvoid *pixelData = pixels;
 #endif
 
   glTexImage2D   (target, 0, internalFormat
