@@ -21,6 +21,7 @@
  *
  */
 
+#include <assert.h>
 #include "threads/Atomics.h"
 
 template<typename T> struct IDVDResourceCounted
@@ -35,7 +36,7 @@ template<typename T> struct IDVDResourceCounted
   virtual long Release()
   {
     long count = AtomicDecrement(&m_refs);
-    ASSERT(count >= 0);
+    assert(count >= 0);
     if (count == 0) delete (T*)this;
     return count;
   }
