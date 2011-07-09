@@ -541,8 +541,8 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CFileCurl &fcurl, const CStd
         XMLUtils::GetString(pxeMovie, "year", sCompareYear);
 
         double yearScore = 0;
-        if (!sTitleYear.empty() && !sCompareYear.empty())
-          yearScore = std::max(0.0, 1-0.5*abs(atoi(sTitleYear)-atoi(sCompareYear)));
+        if (!sYear.empty() && !sCompareYear.empty())
+          yearScore = std::max(0.0, 1-0.5*abs(atoi(sYear)-atoi(sCompareYear)));
 
         scurlMovie.relevance = fstrcmp(sMatchTitle.c_str(), sCompareTitle.c_str(), 0.0) + yearScore;
 
