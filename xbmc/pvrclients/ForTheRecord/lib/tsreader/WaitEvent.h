@@ -1,6 +1,7 @@
 #pragma once
 /*
- *      Copyright (C) 2010 Marcel Groothuis
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,20 +17,23 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "thread.h"
+#ifdef TSREADER
 
-class CKeepAliveThread : cThread
+#include "libPlatform/os-dependent.h"
+typedef HANDLE wait_event_t;
+//#include "os-dependent.h"
+
+class CWaitEvent
 {
-public:
-  CKeepAliveThread();
-  virtual ~CKeepAliveThread(void);
+  public:
+    CWaitEvent(LPSECURITY_ATTRIBUTES lpEventAttributes, int bManualReset, int bInitialState, const char* lpName);
+    virtual ~CWaitEvent(void);
+    bool Wait();
+    void SetEvent();
+    void ResetEvent();
 
-  bool IsThreadRunning() { return Active(); }
-  long StopThread(unsigned long dwTimeoutMilliseconds  = 1000) { Cancel(dwTimeoutMilliseconds / 1000); return S_OK; }
-  long StartThread(void) { Start(); return S_OK; }
-
-
-private:
-  virtual void Action();
+  protected:
+    wait_event_t m_waitevent;
 };
 
+#endif //TSREADER

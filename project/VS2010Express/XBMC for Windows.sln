@@ -111,6 +111,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_fortherecord_libc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_fortherecord_rtsp", "..\..\xbmc\pvrclients\ForTheRecord\project\VS2010Express\XBMC_ForTheRecord_rtsp.vcxproj", "{F853B255-7B27-47A2-8097-1EB17CC45500}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pvrclient_fortherecord", "..\..\xbmc\pvrclients\ForTheRecord\project\VS2010Express\XBMC_ForTheRecord.vcxproj", "{897FF040-CCA8-4573-8785-FB1747BCC8E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug (DirectX)|Win32 = Debug (DirectX)|Win32
@@ -693,6 +695,18 @@ Global
 		{F853B255-7B27-47A2-8097-1EB17CC45500}.Release (OpenGL)|Win32.Build.0 = Release|Win32
 		{F853B255-7B27-47A2-8097-1EB17CC45500}.Release|Win32.ActiveCfg = Release|Win32
 		{F853B255-7B27-47A2-8097-1EB17CC45500}.Release|Win32.Build.0 = Release|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Debug (DirectX)|Win32.ActiveCfg = Debug|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Debug (DirectX)|Win32.Build.0 = Debug|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Debug (OpenGL)|Win32.ActiveCfg = Debug|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Debug (OpenGL)|Win32.Build.0 = Debug|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Debug|Win32.Build.0 = Debug|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Release (DirectX)|Win32.ActiveCfg = Release|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Release (DirectX)|Win32.Build.0 = Release|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Release (OpenGL)|Win32.ActiveCfg = Release|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Release (OpenGL)|Win32.Build.0 = Release|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Release|Win32.ActiveCfg = Release|Win32
+		{897FF040-CCA8-4573-8785-FB1747BCC8E6}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

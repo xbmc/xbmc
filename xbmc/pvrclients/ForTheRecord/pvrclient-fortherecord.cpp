@@ -1002,7 +1002,10 @@ bool cPVRClientForTheRecord::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
   XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channelinfo.iUniqueId);
 
-  //CloseLiveStream();
+#ifndef TSREADER
+  CloseLiveStream();
+  usleep(10000000);
+#endif
   return OpenLiveStream(channelinfo);
 }
 
@@ -1042,6 +1045,8 @@ int cPVRClientForTheRecord::ReadRecordedStream(unsigned char* pBuffer, unsigned 
  */
 const char* cPVRClientForTheRecord::GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
+  // sigh, the only reason to use a class member here is to have storage for the const char *
+  // pointing to the std::string when this method returns (and locals would go out of scope)
   m_PlaybackURL = ForTheRecord::GetLiveStreamURL();
   return m_PlaybackURL.c_str();
 }

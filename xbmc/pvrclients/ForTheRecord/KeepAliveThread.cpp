@@ -18,47 +18,16 @@
  *
  */
 
-#ifdef TSREADER
-#include "os-dependent.h"
-#else
 #include "libPlatform/os-dependent.h"
-#endif
 #include "client.h" //for XBMC->Log
 #include "utils.h"
 #include "fortherecordrpc.h"
 #include "KeepAliveThread.h"
 
-#if defined TSREADER
-
-CKeepAliveThread::CKeepAliveThread()
-{
-}
-
-CKeepAliveThread::~CKeepAliveThread()
-{
-  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: destructor");
-}
-
-void CKeepAliveThread::ThreadProc()
-{
-  bool retval;
-
-  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread started:%d", GetCurrentThreadId());
-  while (!ThreadIsStopping(0))
-  {
-    retval = ForTheRecord::KeepLiveStreamAlive();
-    XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: KeepLiveStreamAlive returned %i", (int) retval);
-    usleep(20000000); //15 sec
-  }
-  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread stopped:%d", GetCurrentThreadId());
-  return;
-}
-
-#else
-
 CKeepAliveThread::CKeepAliveThread()
 {
   XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: constructor");
+  SetDescription("Keep-alive Thread");
 }
 
 CKeepAliveThread::~CKeepAliveThread()
@@ -75,10 +44,8 @@ void CKeepAliveThread::Action()
   {
     retval = ForTheRecord::KeepLiveStreamAlive();
     XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: KeepLiveStreamAlive returned %i", (int) retval);
-    usleep(20000000); //15 sec
+    cCondWait::SleepMs(20000);
   }
   XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread stopped:%d", GetCurrentThreadId());
   return;
 }
-
-#endif

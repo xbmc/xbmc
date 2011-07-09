@@ -1,6 +1,7 @@
 #pragma once
 /*
- *      Copyright (C) 2010 Marcel Groothuis
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,20 +17,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "thread.h"
+#include "CritSec.h"
 
-class CKeepAliveThread : cThread
+class  CAutoLock  
 {
-public:
-  CKeepAliveThread();
-  virtual ~CKeepAliveThread(void);
-
-  bool IsThreadRunning() { return Active(); }
-  long StopThread(unsigned long dwTimeoutMilliseconds  = 1000) { Cancel(dwTimeoutMilliseconds / 1000); return S_OK; }
-  long StartThread(void) { Start(); return S_OK; }
-
-
-private:
-  virtual void Action();
+  public:
+    CAutoLock(CCritSec* pCritSec);
+    ~CAutoLock();
+  protected:
+    CCritSec* m_pAutoLock;
 };
-

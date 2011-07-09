@@ -17,7 +17,8 @@
  *
  */
 #ifdef TSREADER
-#include "os-dependent.h"
+//#include "os-dependent.h"
+#include "libPlatform/os-dependent.h"
 #else
 #include "libPlatform/os-dependent.h"
 #endif 

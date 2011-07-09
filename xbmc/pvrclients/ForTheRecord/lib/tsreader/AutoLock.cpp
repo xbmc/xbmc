@@ -1,6 +1,6 @@
-#pragma once
 /*
- *      Copyright (C) 2010 Marcel Groothuis
+ *      Copyright (C) 2005-2010 Team XBMC
+ *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,20 +16,22 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "thread.h"
+#ifdef TSREADER
 
-class CKeepAliveThread : cThread
+#include "AutoLock.h"
+
+/*
+ * \brief CAutoLock constructor
+ * \param pCritSec
+ */
+CAutoLock::CAutoLock(CCritSec* pCritSec)
 {
-public:
-  CKeepAliveThread();
-  virtual ~CKeepAliveThread(void);
+  m_pAutoLock = pCritSec;
+  m_pAutoLock->Lock();
+}
 
-  bool IsThreadRunning() { return Active(); }
-  long StopThread(unsigned long dwTimeoutMilliseconds  = 1000) { Cancel(dwTimeoutMilliseconds / 1000); return S_OK; }
-  long StartThread(void) { Start(); return S_OK; }
-
-
-private:
-  virtual void Action();
-};
-
+CAutoLock::~CAutoLock()
+{
+  m_pAutoLock->Unlock();
+}
+#endif //TSREADER

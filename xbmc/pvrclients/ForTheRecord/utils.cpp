@@ -20,11 +20,11 @@
 
 #include "utils.h"
 #include "client.h" //For XBMC->Log
-#ifdef TSREADER
-#include "os-dependent.h"
-#else
+//#ifdef TSREADER
+//#include "os-dependent.h"
+//#else
 #include "libPlatform/os-dependent.h"
-#endif
+//#endif
 #include <string>
 #include <algorithm> // sort
 
