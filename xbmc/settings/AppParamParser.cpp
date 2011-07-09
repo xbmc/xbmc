@@ -21,6 +21,7 @@
 
 #include "AppParamParser.h"
 #include "AdvancedSettings.h"
+#include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
 #include "FileItem.h"
 #include "Application.h"
@@ -66,6 +67,13 @@ void CAppParamParser::Parse(const char* argv[], int nArgs)
   PlayPlaylist();
 }
 
+void CAppParamParser::DisplayVersion()
+{
+  printf("XBMC Media Center %s\n", g_infoManager.GetVersion().c_str());
+  printf("Copyright (C) 2005-2011 Team XBMC - http://www.xbmc.org\n");
+  exit(0);
+}
+
 void CAppParamParser::DisplayHelp()
 {
   printf("Usage: xbmc [OPTION]... [FILE]...\n\n");
@@ -81,6 +89,7 @@ void CAppParamParser::DisplayHelp()
   printf("  -n or --nolirc\tdo not use Lirc, i.e. no remote input.\n");
 #endif
   printf("  --debug\t\tEnable debug logging\n");
+  printf("  --version\t\tPrint version information\n");
   printf("  --test\t\tEnable test mode. [FILE] required.\n");
   printf("  --settings=<filename>\t\tLoads specified file after advancedsettings.xml replacing any settings specified\n");
   printf("  \t\t\t\tspecified file must exist in special://xbmc/system/\n");
@@ -100,6 +109,8 @@ void CAppParamParser::ParseArg(const CStdString &arg)
     g_advancedSettings.m_startFullScreen = true;
   else if (arg == "-h" || arg == "--help")
     DisplayHelp();
+  else if (arg == "-v" || arg == "--version")
+    DisplayVersion();
   else if (arg == "--standalone")
     g_application.SetStandAlone(true);
   else if (arg == "-p" || arg  == "--portable")
