@@ -38,6 +38,7 @@ ifneq (@USE_EXTERNAL_FFMPEG@,1)
 	INCLUDES+=-I@abs_top_srcdir@/lib/ffmpeg
 endif
 INCLUDES+=-I@abs_top_srcdir@/xbmc/linux
+INCLUDES+=-I@abs_top_srcdir@/xbmc/cores/dvdplayer
 DEFINES+= \
 	@ARCH_DEFINES@ \
 	-D_FILE_DEFINED \
