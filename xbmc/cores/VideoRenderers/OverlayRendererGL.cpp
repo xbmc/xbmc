@@ -96,7 +96,6 @@ static void LoadTexture(GLenum target
     stride = width;
   }
 #else
-  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
   switch(externalFormat)
   {
     case GL_RGBA:
@@ -111,6 +110,8 @@ static void LoadTexture(GLenum target
       glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
   }
 #endif
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   glTexImage2D   (target, 0, internalFormat
                 , width2, height2, 0
