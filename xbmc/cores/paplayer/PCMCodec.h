@@ -33,6 +33,4 @@ public:
 	virtual int ReadPCM(BYTE *pBuffer, int size, int *actualsize);
 	virtual bool CanInit();
 	virtual void SetMimeParams(const CStdString& strMimeParams);
-private:
-	int iBytesPerSecond;
 };

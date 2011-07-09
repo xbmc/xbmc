@@ -30,8 +30,7 @@ PCMCodec::PCMCodec()
 	m_SampleRate = 44100;
 	m_Channels = 2;
 	m_BitsPerSample = 16;
-	m_Bitrate = m_SampleRate * m_Channels * m_BitsPerSample;
-	iBytesPerSecond = m_Bitrate / 8;
+	m_Bitrate = m_SampleRate*m_Channels*m_BitsPerSample;
 }
 
 PCMCodec::~PCMCodec()
@@ -47,9 +46,11 @@ bool PCMCodec::Init(const CStdString &strFile, unsigned int filecache)
 		CLog::Log(LOGERROR, "PCMCodec::Init - Failed to open file");
 		return false;
 	}
+
 	int64_t length = m_file.GetLength();
-	m_TotalTime = (int)(((float)length / iBytesPerSecond) * 1000);
+	m_TotalTime = (int)(((float)length / (m_Bitrate / 8)) * 1000);
 	m_file.Seek(0, SEEK_SET);
+
 	return true;
 }
 
@@ -60,16 +61,23 @@ void PCMCodec::DeInit()
 
 __int64 PCMCodec::Seek(__int64 iSeekTime)
 {
-	m_file.Seek((iSeekTime / 1000) * iBytesPerSecond);
+	m_file.Seek((iSeekTime/1000)*(m_Bitrate/8));
 	return iSeekTime;
 }
 
 int PCMCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
 	*actualsize = 0;
+	
 	int iAmountRead = m_file.Read(pBuffer, size);
 	if (iAmountRead > 0)
 	{
+		WORD *x, *first;
+		first = (WORD*)pBuffer;
+
+		for (x = first; x < (first + (iAmountRead/2)); x++)
+			*x = ((*x << 8) | (*x >> 8));
+
 		*actualsize = iAmountRead;
 		return READ_SUCCESS;
 	}
@@ -85,9 +93,9 @@ void PCMCodec::SetMimeParams(const CStdString& strMimeParams)
 {
 	if (strMimeParams.Find("rate=48000") > 0)
 		m_SampleRate = 48000;
+
 	if (strMimeParams.Find("channels=1") > 0)
 		m_Channels = 1;
 
-	m_Bitrate = m_SampleRate * m_Channels * m_BitsPerSample;
-	iBytesPerSecond = m_Bitrate / 8;
+	m_Bitrate = m_SampleRate*m_Channels*m_BitsPerSample;
 }
