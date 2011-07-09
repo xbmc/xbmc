@@ -526,7 +526,9 @@
   <string id="574">Country</string>
   <string id="575">In progress</string>
   <string id="576">Times played</string>
-
+  <string id="577">Languages</string>
+  <string id="578">Prefered Audio Language</string>
+  <string id="579">Prefered Subtitle Language</string>
   <string id="580">Sort direction</string>
   <string id="581">Sort method</string>
   <string id="582">View mode</string>

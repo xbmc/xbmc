@@ -103,6 +103,7 @@
 #include "LangInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/LangCodeExpander.h"
 #include "windowing/WindowingFactory.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -569,6 +570,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("audiooutput.audiodevice"))
     {
+      CLog::Log(LOGDEBUG,"***Filling In Audio Devices***");
       FillInAudioDevices(pSetting);
     }
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
@@ -612,6 +614,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13508), RESAMPLE_HIGH);
       pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
       pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("preferedlanguage.audio"))
+    {
+      FillInLanguagesAudio(pSetting);
+    }
+    else if (strSetting.Equals("preferedlanguage.subtitle"))
+    {
+      FillInLanguagesSubtitle(pSetting);
     }
   }
 
@@ -2100,6 +2110,84 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
        g_guiSettings.SetString("network.gateway", m_strNetworkGateway);
        g_guiSettings.SetString("network.dns", m_strNetworkDNS);*/
   }
+}
+
+void CGUIWindowSettingsCategory::FillInLanguagesAudio(CSetting *pSetting)
+{
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  CFileItemList langs;
+  CVideoDatabase videodatabase;
+  videodatabase.Open();
+  videodatabase.GetLanguagesAudio(langs);
+  videodatabase.Close();
+
+  int iCurrentLanguage = 0;
+  int iLanguage = 0;
+  vector<CStdString> vecLanguages;
+  for (int i = 0; i < langs.Size(); ++i)
+  {
+    CFileItemPtr pItem = langs[i];
+    CStdString langCode = pItem->GetLabel();
+    CStdString language;
+    CLangCodeExpander langcode;
+    if (langcode.Lookup(language, langCode))
+    {
+      vecLanguages.push_back(language);
+    }
+  }
+  sort(vecLanguages.begin(), vecLanguages.end(), sortstringbyname());
+  for (int i = 0; i < (int) vecLanguages.size(); ++i)
+  {
+    CStdString strLanguage = vecLanguages[i];
+    if (strcmpi(strLanguage.c_str(), g_guiSettings.GetString("defaultlanguage.audio").c_str()) == 0)
+    {
+      iCurrentLanguage = iLanguage;
+    }
+    pControl->AddLabel(strLanguage, iLanguage++);
+  }
+  pControl->SetValue(iCurrentLanguage);
+  return ;
+}
+
+void CGUIWindowSettingsCategory::FillInLanguagesSubtitle(CSetting *pSetting)
+{
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  CFileItemList langs;
+  CVideoDatabase videodatabase;
+  videodatabase.Open();
+  videodatabase.GetLanguagesSubtitle(langs);
+  videodatabase.Close();
+
+  int iCurrentLanguage = 0;
+  int iLanguage = 0;
+  vector<CStdString> vecLanguages;
+  for (int i = 0; i < langs.Size(); ++i)
+  {
+    CFileItemPtr pItem = langs[i];
+    CStdString langCode = pItem->GetLabel();
+    CStdString language;
+    CLangCodeExpander langcode;
+    if (langcode.Lookup(language, langCode))
+    {
+      vecLanguages.push_back(language);
+    }
+  }
+  sort(vecLanguages.begin(), vecLanguages.end(), sortstringbyname());
+  for (int i = 0; i < (int) vecLanguages.size(); ++i)
+  {
+    CStdString strLanguage = vecLanguages[i];
+    if (strcmpi(strLanguage.c_str(), g_guiSettings.GetString("defaultlanguage.audio").c_str()) == 0)
+    {
+      iCurrentLanguage = iLanguage;
+    }
+    pControl->AddLabel(strLanguage, iLanguage++);
+  }
+  pControl->SetValue(iCurrentLanguage);
+  return ;
 }
 
 void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
