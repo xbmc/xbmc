@@ -118,21 +118,6 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 }
 
-
-CDVDVideoCodecFFmpeg::IHardwareDecoder*  CDVDVideoCodecFFmpeg::IHardwareDecoder::Acquire()
-{
-  AtomicIncrement(&m_references);
-  return this;
-}
-
-long CDVDVideoCodecFFmpeg::IHardwareDecoder::Release()
-{
-  long count = AtomicDecrement(&m_references);
-  ASSERT(count >= 0);
-  if (count == 0) delete this;
-  return count;
-}
-
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
   m_pCodecContext = NULL;
