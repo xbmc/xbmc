@@ -2141,7 +2141,7 @@ void CGUIWindowSettingsCategory::FillInLanguagesAudio(CSetting *pSetting)
   for (int i = 0; i < (int) vecLanguages.size(); ++i)
   {
     CStdString strLanguage = vecLanguages[i];
-    if (strcmpi(strLanguage.c_str(), g_guiSettings.GetString("defaultlanguage.audio").c_str()) == 0)
+    if (strcmpi(strLanguage.c_str(), g_guiSettings.GetString("preferedlanguage.audio").c_str()) == 0)
     {
       iCurrentLanguage = iLanguage;
     }
@@ -2180,7 +2180,7 @@ void CGUIWindowSettingsCategory::FillInLanguagesSubtitle(CSetting *pSetting)
   for (int i = 0; i < (int) vecLanguages.size(); ++i)
   {
     CStdString strLanguage = vecLanguages[i];
-    if (strcmpi(strLanguage.c_str(), g_guiSettings.GetString("defaultlanguage.audio").c_str()) == 0)
+    if (strcmpi(strLanguage.c_str(), g_guiSettings.GetString("preferedlanguage.audio").c_str()) == 0)
     {
       iCurrentLanguage = iLanguage;
     }
