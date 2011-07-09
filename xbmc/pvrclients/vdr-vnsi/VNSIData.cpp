@@ -292,17 +292,18 @@ bool cVNSIData::GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, 
     EPG_TAG tag;
     memset(&tag, 0 , sizeof(tag));
 
-    tag.iChannelNumber     = channel.iChannelNumber;
-    tag.iUniqueBroadcastId = vresp->extract_U32();
-    tag.startTime          = vresp->extract_U32();
-    tag.endTime            = tag.startTime + vresp->extract_U32();
-    uint32_t content       = vresp->extract_U32();
-    tag.iGenreType         = content & 0xF0;
-    tag.iGenreSubType      = content & 0x0F;
-    tag.iParentalRating    = vresp->extract_U32();
-    tag.strTitle           = vresp->extract_String();
-    tag.strPlotOutline     = vresp->extract_String();
-    tag.strPlot            = vresp->extract_String();
+    tag.iChannelNumber      = channel.iChannelNumber;
+    tag.iUniqueBroadcastId  = vresp->extract_U32();
+    tag.startTime           = vresp->extract_U32();
+    tag.endTime             = tag.startTime + vresp->extract_U32();
+    uint32_t content        = vresp->extract_U32();
+    tag.iGenreType          = content & 0xF0;
+    tag.iGenreSubType       = content & 0x0F;
+    tag.strGenreDescription = "";
+    tag.iParentalRating     = vresp->extract_U32();
+    tag.strTitle            = vresp->extract_String();
+    tag.strPlotOutline      = vresp->extract_String();
+    tag.strPlot             = vresp->extract_String();
 
     PVR->TransferEpgEntry(handle, &tag);
     delete[] tag.strTitle;
