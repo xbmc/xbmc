@@ -32,7 +32,6 @@ typedef struct LCENTRY
   long code;
   const char *name;
 } LCENTRY;
-
 extern const struct LCENTRY g_iso639_1[143];
 extern const struct LCENTRY g_iso639_2[536];
 
