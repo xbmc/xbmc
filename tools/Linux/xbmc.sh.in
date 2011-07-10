@@ -107,6 +107,12 @@ print_crash_report()
   echo "Crash report available at $FILE"
 }
 
+if [ -n "${DISPLAY:-x}" ]; then
+	# take an optimistic chance and warn about it :)
+	echo "xbmc: no DISPLAY variable set, setting it to :0"
+	export DISPLAY=:0
+fi
+
 python @datadir@/xbmc/FEH.py $SAVED_ARGS
 RET=$?
 if [ $RET -ne 0 ]; then
