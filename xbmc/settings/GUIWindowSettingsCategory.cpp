@@ -570,7 +570,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("audiooutput.audiodevice"))
     {
-      CLog::Log(LOGDEBUG,"***Filling In Audio Devices***");
       FillInAudioDevices(pSetting);
     }
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
