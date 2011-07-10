@@ -120,6 +120,11 @@ bool CConsoleUPowerSyscall::CanReboot()
   return m_CanReboot;
 }
 
+int CConsoleUPowerSyscall::BatteryLevel()
+{
+  return 0;
+}
+
 bool CConsoleUPowerSyscall::HasDeviceConsoleKit()
 {
   bool hasConsoleKitManager = false;
