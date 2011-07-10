@@ -570,7 +570,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("audiooutput.audiodevice"))
     {
-      CLog::Log(LOGDEBUG,"***Filling In Audio Devices***");
       FillInAudioDevices(pSetting);
     }
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
@@ -617,11 +616,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("preferedlanguage.audio"))
     {
-      FillInLanguagesAudio(pSetting);
+      FillInAudioLanguages(pSetting);
     }
     else if (strSetting.Equals("preferedlanguage.subtitle"))
     {
-      FillInLanguagesSubtitle(pSetting);
+      FillInSubtitleLanguages(pSetting);
     }
   }
 
@@ -2112,7 +2111,7 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
   }
 }
 
-void CGUIWindowSettingsCategory::FillInLanguagesAudio(CSetting *pSetting)
+void CGUIWindowSettingsCategory::FillInAudioLanguages(CSetting *pSetting)
 {
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
@@ -2151,7 +2150,7 @@ void CGUIWindowSettingsCategory::FillInLanguagesAudio(CSetting *pSetting)
   return ;
 }
 
-void CGUIWindowSettingsCategory::FillInLanguagesSubtitle(CSetting *pSetting)
+void CGUIWindowSettingsCategory::FillInSubtitleLanguages(CSetting *pSetting)
 {
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();

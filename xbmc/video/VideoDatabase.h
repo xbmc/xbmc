@@ -615,8 +615,9 @@ public:
     }
   }
 
-  // List all languages found in audio and subtitle tracks
-  // for use in auto-selection.
+  /* List all languages found in audio and subtitle tracks
+   for use in auto-selection.
+   */
   bool GetLanguagesAudio(CFileItemList& items);
   bool GetLanguagesSubtitle(CFileItemList& items);
 

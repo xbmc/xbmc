@@ -7906,7 +7906,6 @@ bool CVideoDatabase::GetLanguagesAudio(CFileItemList& items)
 
     CStdString strSQL = "SELECT DISTINCT strAudioLanguage FROM streamdetails";
     int iRowsFound = RunQuery(strSQL);
-//    CLog::Log(LOGDEBUG,"***Found %s Audio Languages in DB***", iRowsFound);
     if (iRowsFound <= 0)
       return iRowsFound == 0;
     while (!m_pDS->eof())
