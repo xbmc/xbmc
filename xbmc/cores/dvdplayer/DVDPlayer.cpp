@@ -2488,13 +2488,16 @@ void CDVDPlayer::GetSubtitleLanguage(int iStream, CStdString &strStreamLang)
       CStdString strStreamFilename = URIUtils::GetFileName(s.filename).substr(strBase.length() + 1);
       int iPos = strStreamFilename.ReverseFind(".");
       if (iPos > 0)
+      {
         strStreamFilename = strStreamFilename.Left(iPos);
-      
-      if (strStreamFilename.length() > 0)
-        if (!g_LangCodeExpander.Lookup(strStreamLang, strStreamFilename))
-          strStreamLang = strStreamFilename;
+        if (strStreamFilename.length() > 0)
+        {
+          if (!g_LangCodeExpander.Lookup(strStreamLang, strStreamFilename))
+            strStreamLang = strStreamFilename;
+        }
+      }
     }
-    else
+    if (!strStreamLang.length() > 0)
       strStreamLang = g_localizeStrings.Get(13205); // Unknown
   }
 }
