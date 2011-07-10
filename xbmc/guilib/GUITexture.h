@@ -79,6 +79,8 @@ public:
   int        orientation; // orientation of the texture (0 - 7 == EXIForientation - 1)
   CStdString diffuse;     // diffuse overlay texture
   CStdString filename;    // main texture file
+  CStdString colorDiffuse; //main diffuse color
+  CStdString borderDiffuse; //diffuse color for border
 };
 
 class CGUITextureBase
