@@ -49,7 +49,7 @@ private:
 
   struct CResult
   {
-    CResult(const CStdString& dir) : m_event(true), m_result(false), m_dir(dir) {}
+    CResult(const CStdString& dir) : m_event(true), m_dir(dir), m_result(false) {}
     CEvent        m_event;
     CFileItemList m_list;
     CStdString    m_dir;
