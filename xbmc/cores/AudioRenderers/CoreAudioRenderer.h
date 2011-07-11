@@ -24,7 +24,8 @@
 #if !defined(__arm__)
 #include <osx/CoreAudio.h>
 #include "IAudioRenderer.h"
-#include <threads/LockFree.h>
+#include "threads/Event.h"
+#include "threads/LockFree.h"
 
 struct audio_slice
 {
@@ -189,7 +190,7 @@ private:
   CCoreAudioPerformance m_PerfMon;
 #endif
   // Thread synchronization
-  MPEventID m_RunoutEvent;
+  CEvent m_RunoutEvent;
   long m_DoRunout;
 };
 

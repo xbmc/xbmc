@@ -43,6 +43,7 @@ public:
   ~CDVDClock();
 
   double GetClock(bool interpolated = true);
+  double GetClock(double& absolute, bool interpolated = true);
 
   void Discontinuity(double currentPts = 0LL);
 
@@ -68,6 +69,10 @@ public:
   static bool IsMasterClock()                    { return m_ismasterclock;          }
 
 protected:
+  static void   CheckSystemClock();
+  static double SystemToAbsolute(int64_t system);
+  double        SystemToPlaying(int64_t system);
+
   CSharedSection m_critSection;
   int64_t m_systemUsed;
   int64_t m_startClock;

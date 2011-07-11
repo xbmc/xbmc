@@ -258,9 +258,14 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
     {
       g_settings.m_currentVideoSettings.m_SubtitleOn = !g_settings.m_currentVideoSettings.m_SubtitleOn;
       g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-      CStdString sub;
+      CStdString sub, lang;
       if (g_settings.m_currentVideoSettings.m_SubtitleOn)
+      {
         g_application.m_pPlayer->GetSubtitleName(g_application.m_pPlayer->GetSubtitle(),sub);
+        g_application.m_pPlayer->GetSubtitleLanguage(g_application.m_pPlayer->GetSubtitle(),lang);
+        if (sub != lang)
+          sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+      }
       else
         sub = g_localizeStrings.Get(1223);
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
@@ -305,9 +310,14 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_application.m_pPlayer->SetSubtitleVisible(true);
       }
 
-      CStdString sub;
+      CStdString sub, lang;
       if (g_settings.m_currentVideoSettings.m_SubtitleOn)
+      {
         g_application.m_pPlayer->GetSubtitleName(g_settings.m_currentVideoSettings.m_SubtitleStream,sub);
+        g_application.m_pPlayer->GetSubtitleLanguage(g_settings.m_currentVideoSettings.m_SubtitleStream,lang);
+        if (sub != lang)
+          sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+      }
       else
         sub = g_localizeStrings.Get(1223);
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);

@@ -95,6 +95,18 @@ bool CRenderSystemGLES::InitRenderSystem()
     m_renderCaps |= RENDER_CAPS_NPOT;
   }
 
+  if (IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+  {
+    m_renderCaps |= RENDER_CAPS_BGRA;
+  }
+
+  if (IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+  {
+    m_renderCaps |= RENDER_CAPS_BGRA_APPLE;
+  }
+
+
+
   m_bRenderCreated = true;
   
   InitialiseGUIShader();

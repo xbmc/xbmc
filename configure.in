@@ -365,7 +365,6 @@ case $host in
      fi
      ARCH="arm-osx"
      use_arch="arm"
-     SYSROOT="-miphoneos-version-min=4.1 -isysroot $SDKROOT"
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
      PYTHON_VERSION="2.6"
      PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.6"
@@ -374,14 +373,12 @@ case $host in
      PYTHON_NOVERSIONCHECK="no-check"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_IOS -D_LINUX")
      ;;
-  i386-apple-darwin*)
+  *86-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
      use_texturepacker_native=yes
      USE_TEXTUREPACKER_NATIVE_ROOT="$prefix"
      ARCH="x86-osx"
-     export MACOSX_DEPLOYMENT_TARGET=10.4
-     SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
   powerpc-apple-darwin*)
@@ -391,8 +388,6 @@ case $host in
      use_crystalhd=no
      ARCH="powerpc-osx"
      use_arch="ppc"
-     export MACOSX_DEPLOYMENT_TARGET=10.4
-     SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
   powerpc-*-linux-gnu*)
@@ -1470,7 +1465,6 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
 AC_SUBST(LDFLAGS)
-AC_SUBST(SYSROOT)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(DISABLE_GOOM)

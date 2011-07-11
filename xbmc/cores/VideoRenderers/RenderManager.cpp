@@ -49,6 +49,8 @@
 
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
+#include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "../dvdplayer/DVDCodecs/DVDCodecUtils.h"
 
 #define MAXPRESENTDELAY 0.500
 
@@ -683,4 +685,55 @@ void CXBMCRenderManager::UpdateResolution()
     }
     m_bReconfigured = false;
   }
+}
+
+
+int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
+{
+  CSharedLock lock(m_sharedSection);
+  if (!m_pRenderer)
+    return -1;
+
+  YV12Image image;
+  int index = m_pRenderer->GetImage(&image);
+
+  if(index < 0)
+    return index;
+
+  if(pic.format == DVDVideoPicture::FMT_YUV420P)
+  {
+    CDVDCodecUtils::CopyPicture(&image, &pic);
+  }
+  else if(pic.format == DVDVideoPicture::FMT_NV12)
+  {
+    CDVDCodecUtils::CopyNV12Picture(&image, &pic);
+  }
+  else if(pic.format == DVDVideoPicture::FMT_YUY2
+       || pic.format == DVDVideoPicture::FMT_UYVY)
+  {
+    CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
+  }
+#ifdef HAS_DX
+  else if(pic.format == DVDVideoPicture::FMT_DXVA)
+    m_pRenderer->AddProcessor(pic.proc, pic.proc_id);
+#endif
+#ifdef HAVE_LIBVDPAU
+  else if(pic.format == DVDVideoPicture::FMT_VDPAU)
+    m_pRenderer->AddProcessor(pic.vdpau);
+#endif
+#ifdef HAVE_LIBOPENMAX
+  else if(pic.format == DVDVideoPicture::FMT_OMXEGL)
+    m_pRenderer->AddProcessor(pic.openMax, &pic);
+#endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  else if(pic.format == DVDVideoPicture::FMT_CVBREF)
+    m_pRenderer->AddProcessor(pic.vtb, &pic);
+#endif
+#ifdef HAVE_LIBVA
+  else if(pic.format == DVDVideoPicture::FMT_VAAPI)
+    m_pRenderer->AddProcessor(*pic.vaapi);
+#endif
+  m_pRenderer->ReleaseImage(index, false);
+
+  return index;
 }

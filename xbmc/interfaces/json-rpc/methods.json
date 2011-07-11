@@ -549,6 +549,14 @@
     ],
     "returns": "string"
   },
+  "VideoPlaylist.State": {
+    "type": "method",
+    "description": "Provides information about the current state of the playlist",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [ ],
+    "returns":  { "$ref": "Playlist.State", "required": true }
+  },
   "VideoPlaylist.Play": {
     "type": "method",
     "description": "Play current or a specific item",
@@ -652,6 +660,16 @@
     "params": [ ],
     "returns": "string"
   },
+  "VideoPlaylist.Repeat": {
+    "type": "method",
+    "description": "Set the repeat mode of the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "state", "$ref": "Playlist.Repeat", "required": true }
+    ],
+    "returns": "string"
+  },
   "VideoPlaylist.Swap": {
     "type": "method",
     "description": "Swap items in the playlist",
@@ -662,6 +680,14 @@
       { "name": "item2", "$ref": "Playlist.Item.Position", "required": true }
     ],
     "returns": "string"
+  },
+  "AudioPlaylist.State": {
+    "type": "method",
+    "description": "Provides information about the current state of the playlist",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [ ],
+    "returns":  { "$ref": "Playlist.State", "required": true }
   },
   "AudioPlaylist.Play": {
     "type": "method",
@@ -765,6 +791,16 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [ ],
+    "returns": "string"
+  },
+  "AudioPlaylist.Repeat": {
+    "type": "method",
+    "description": "Set the repeat mode of the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "state", "$ref": "Playlist.Repeat", "required": true }
+    ],
     "returns": "string"
   },
   "AudioPlaylist.Swap": {

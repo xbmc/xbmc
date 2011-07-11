@@ -49,7 +49,9 @@ enum
 {
   RENDER_CAPS_DXT      = (1 << 0),
   RENDER_CAPS_NPOT     = (1 << 1),
-  RENDER_CAPS_DXT_NPOT = (1 << 2)
+  RENDER_CAPS_DXT_NPOT = (1 << 2),
+  RENDER_CAPS_BGRA     = (1 << 3),
+  RENDER_CAPS_BGRA_APPLE = (1 << 4)
 };
 
 class CRenderSystemBase
@@ -94,6 +96,8 @@ public:
   const CStdString& GetRenderRenderer() const { return m_RenderRenderer; }
   const CStdString& GetRenderVersionString() const { return m_RenderVersion; }
   bool SupportsDXT() const;
+  bool SupportsBGRA() const;
+  bool SupportsBGRAApple() const;
   bool SupportsNPOT(bool dxt) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
