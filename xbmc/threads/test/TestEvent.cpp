@@ -93,8 +93,21 @@ public:
   }
 };
 
-static void Sleep(unsigned int millis) { boost::thread::sleep(boost::get_system_time() + boost::posix_time::milliseconds(millis)); }
+#define BOOST_MILLIS(x) (boost::get_system_time() + boost::posix_time::milliseconds(x))
 
+static void Sleep(unsigned int millis) { boost::thread::sleep(BOOST_MILLIS(millis)); }
+
+template<class E> bool waitForWaiters(E& event, int numWaiters, int milliseconds)
+{
+  for( int i = 0; i < milliseconds; i++)
+  {
+    if (event.getNumWaits() == numWaiters)
+      return true;
+    Sleep(1);
+  }
+  return false;
+}
+  
 //=============================================================================
 
 BOOST_AUTO_TEST_CASE(TestEventCase)
@@ -104,13 +117,13 @@ BOOST_AUTO_TEST_CASE(TestEventCase)
   waiter w1(event,result);
   boost::thread waitThread(w1);
 
-  Sleep(50);
+  BOOST_CHECK(waitForWaiters(event,1,10000));
 
   BOOST_CHECK(!result);
 
   event.Set();
 
-  Sleep(10);
+  BOOST_CHECK(waitThread.timed_join(BOOST_MILLIS(10000)));
 
   BOOST_CHECK(result);
 }
@@ -125,17 +138,19 @@ BOOST_AUTO_TEST_CASE(TestEvent2WaitsCase)
   boost::thread waitThread1(w1);
   boost::thread waitThread2(w2);
 
-  Sleep(50);
+  BOOST_CHECK(waitForWaiters(event,2,10000));
 
   BOOST_CHECK(!result1);
   BOOST_CHECK(!result2);
 
   event.Set();
 
-  Sleep(10);
+  BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
+  BOOST_CHECK(waitThread2.timed_join(BOOST_MILLIS(10000)));
 
   BOOST_CHECK(result1);
   BOOST_CHECK(result2);
+
 }
 
 BOOST_AUTO_TEST_CASE(TestEventTimedWaitsCase)
@@ -145,13 +160,13 @@ BOOST_AUTO_TEST_CASE(TestEventTimedWaitsCase)
   timed_waiter w1(event,result1,100);
   boost::thread waitThread1(w1);
 
-  Sleep(10);
+  BOOST_CHECK(waitForWaiters(event,1,10000));
 
   BOOST_CHECK(result1 == 0);
 
   event.Set();
 
-  Sleep(10);
+  BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
 
   BOOST_CHECK(result1 == 1);
 }
@@ -163,11 +178,11 @@ BOOST_AUTO_TEST_CASE(TestEventTimedWaitsTimeoutCase)
   timed_waiter w1(event,result1,50);
   boost::thread waitThread1(w1);
 
-  Sleep(10);
+  BOOST_CHECK(waitForWaiters(event,1,10000));
 
   BOOST_CHECK(result1 == 0);
 
-  Sleep(80);
+  BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
 
   BOOST_CHECK(result1 == -1);
 }
@@ -190,7 +205,9 @@ BOOST_AUTO_TEST_CASE(TestEventGroupCase)
   boost::thread waitThread2(boost::ref(w2));
   boost::thread waitThread3(boost::ref(w3));
 
-  Sleep(10);
+  BOOST_CHECK(waitForWaiters(event1,1,10000));
+  BOOST_CHECK(waitForWaiters(event2,1,10000));
+  BOOST_CHECK(waitForWaiters(group,1,10000));
 
   BOOST_CHECK(!result1);
   BOOST_CHECK(!result2);
@@ -200,6 +217,8 @@ BOOST_AUTO_TEST_CASE(TestEventGroupCase)
 
   event1.Set();
 
+  BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
+  BOOST_CHECK(waitThread3.timed_join(BOOST_MILLIS(10000)));
   Sleep(10);
 
   BOOST_CHECK(result1);
@@ -211,7 +230,8 @@ BOOST_AUTO_TEST_CASE(TestEventGroupCase)
 
   event2.Set();
 
-  Sleep(50);
+  BOOST_CHECK(waitThread2.timed_join(BOOST_MILLIS(10000)));
+
 }
 
 BOOST_AUTO_TEST_CASE(TestEventGroupLimitedGroupScopeCase)
@@ -233,7 +253,9 @@ BOOST_AUTO_TEST_CASE(TestEventGroupLimitedGroupScopeCase)
     boost::thread waitThread2(boost::ref(w2));
     boost::thread waitThread3(boost::ref(w3));
 
-    Sleep(10);
+    BOOST_CHECK(waitForWaiters(event1,1,10000));
+    BOOST_CHECK(waitForWaiters(event2,1,10000));
+    BOOST_CHECK(waitForWaiters(group,1,10000));
 
     BOOST_CHECK(!result1);
     BOOST_CHECK(!result2);
@@ -243,6 +265,8 @@ BOOST_AUTO_TEST_CASE(TestEventGroupLimitedGroupScopeCase)
 
     event1.Set();
 
+    BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
+    BOOST_CHECK(waitThread3.timed_join(BOOST_MILLIS(10000)));
     Sleep(10);
 
     BOOST_CHECK(result1);
@@ -255,7 +279,7 @@ BOOST_AUTO_TEST_CASE(TestEventGroupLimitedGroupScopeCase)
 
   event2.Set();
 
-  Sleep(50);
+  Sleep(50); // give thread 2 a chance to exit
 }
 
 BOOST_AUTO_TEST_CASE(TestEvent2GroupsCase)
@@ -279,7 +303,10 @@ BOOST_AUTO_TEST_CASE(TestEvent2GroupsCase)
   boost::thread waitThread3(boost::ref(w3));
   boost::thread waitThread4(boost::ref(w4));
 
-  Sleep(10);
+  BOOST_CHECK(waitForWaiters(event1,1,10000));
+  BOOST_CHECK(waitForWaiters(event2,1,10000));
+  BOOST_CHECK(waitForWaiters(group1,1,10000));
+  BOOST_CHECK(waitForWaiters(group2,1,10000));
 
   BOOST_CHECK(!result1);
   BOOST_CHECK(!result2);
@@ -291,6 +318,9 @@ BOOST_AUTO_TEST_CASE(TestEvent2GroupsCase)
 
   event1.Set();
 
+  BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
+  BOOST_CHECK(waitThread3.timed_join(BOOST_MILLIS(10000)));
+  BOOST_CHECK(waitThread4.timed_join(BOOST_MILLIS(10000)));
   Sleep(10);
 
   BOOST_CHECK(result1);
@@ -304,7 +334,7 @@ BOOST_AUTO_TEST_CASE(TestEvent2GroupsCase)
 
   event2.Set();
 
-  Sleep(50);
+  BOOST_CHECK(waitThread2.timed_join(BOOST_MILLIS(10000)));
 }
 
 BOOST_AUTO_TEST_CASE(TestEventAutoResetBehavior)
@@ -325,13 +355,13 @@ BOOST_AUTO_TEST_CASE(TestEventManualResetCase)
   waiter w1(event,result);
   boost::thread waitThread(w1);
 
-  Sleep(10);
+  BOOST_CHECK(waitForWaiters(event,1,10000));
 
   BOOST_CHECK(!result);
 
   event.Set();
 
-  Sleep(10);
+  BOOST_CHECK(waitThread.timed_join(BOOST_MILLIS(10000)));
 
   BOOST_CHECK(result);
 
@@ -374,6 +404,9 @@ BOOST_AUTO_TEST_CASE(TestEventGroupChildSet)
   boost::thread waitThread2(boost::ref(w2));
   boost::thread waitThread3(boost::ref(w3));
 
+  BOOST_CHECK(waitForWaiters(event2,1,10000));
+  BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
+  BOOST_CHECK(waitThread3.timed_join(BOOST_MILLIS(10000)));
   Sleep(10);
 
   BOOST_CHECK(result1);
@@ -382,11 +415,9 @@ BOOST_AUTO_TEST_CASE(TestEventGroupChildSet)
   BOOST_CHECK(!w3.waiting);
   BOOST_CHECK(w3.result == &event1);
 
-  Sleep(10);
-
   event2.Set();
 
-  Sleep(50);
+  BOOST_CHECK(waitThread2.timed_join(BOOST_MILLIS(10000)));
 }
 
 BOOST_AUTO_TEST_CASE(TestEventGroupChildSet2)
@@ -407,6 +438,9 @@ BOOST_AUTO_TEST_CASE(TestEventGroupChildSet2)
   boost::thread waitThread2(boost::ref(w2));
   boost::thread waitThread3(boost::ref(w3));
 
+  BOOST_CHECK(waitForWaiters(event2,1,10000));
+  BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
+  BOOST_CHECK(waitThread3.timed_join(BOOST_MILLIS(10000)));
   Sleep(10);
 
   BOOST_CHECK(result1);
@@ -415,11 +449,9 @@ BOOST_AUTO_TEST_CASE(TestEventGroupChildSet2)
   BOOST_CHECK(!w3.waiting);
   BOOST_CHECK(w3.result == &event1);
 
-  Sleep(10);
-
   event2.Set();
 
-  Sleep(50);
+  BOOST_CHECK(waitThread2.timed_join(BOOST_MILLIS(10000)));
 }
 
 BOOST_AUTO_TEST_CASE(TestEventGroupWaitResetsChild)
@@ -433,22 +465,19 @@ BOOST_AUTO_TEST_CASE(TestEventGroupWaitResetsChild)
 
   boost::thread waitThread3(boost::ref(w3));
 
-  Sleep(10);
+  BOOST_CHECK(waitForWaiters(group,1,10000));
 
   BOOST_CHECK(w3.waiting);
   BOOST_CHECK(w3.result == NULL);
 
-  Sleep(10);
-
   event2.Set();
 
-  Sleep(10);
+  BOOST_CHECK(waitThread3.timed_join(BOOST_MILLIS(10000)));
 
   BOOST_CHECK(!w3.waiting);
   BOOST_CHECK(w3.result == &event2);
   // event2 should have been reset.
   BOOST_CHECK(event2.WaitMSec(1) == false); 
-  Sleep(50);
 }
 
 BOOST_AUTO_TEST_CASE(TestEventGroupTimedWait)
@@ -466,14 +495,15 @@ BOOST_AUTO_TEST_CASE(TestEventGroupTimedWait)
   boost::thread waitThread1(boost::ref(w1));
   boost::thread waitThread2(boost::ref(w2));
 
-  BOOST_CHECK(group.wait(20) == NULL); // waited ... got nothing
+  BOOST_CHECK(waitForWaiters(event1,1,10000));
+  BOOST_CHECK(waitForWaiters(event2,1,10000));
 
-  Sleep(10);
+  BOOST_CHECK(group.wait(20) == NULL); // waited ... got nothing
 
   group_wait w3(group,50);
   boost::thread waitThread3(boost::ref(w3));
 
-  Sleep(10);
+  BOOST_CHECK(waitForWaiters(group,1,10000));
 
   BOOST_CHECK(!result1);
   BOOST_CHECK(!result2);
@@ -481,7 +511,8 @@ BOOST_AUTO_TEST_CASE(TestEventGroupTimedWait)
   BOOST_CHECK(w3.waiting);
   BOOST_CHECK(w3.result == NULL);
 
-  Sleep(100);
+  // this should end given the wait is for only 50 millis
+  BOOST_CHECK(waitThread3.timed_join(BOOST_MILLIS(100)));
 
   BOOST_CHECK(!w3.waiting);
   BOOST_CHECK(w3.result == NULL);
@@ -489,13 +520,15 @@ BOOST_AUTO_TEST_CASE(TestEventGroupTimedWait)
   group_wait w4(group,50);
   boost::thread waitThread4(boost::ref(w4));
 
-  Sleep(10);
+  BOOST_CHECK(waitForWaiters(group,1,10000));
 
   BOOST_CHECK(w4.waiting);
   BOOST_CHECK(w4.result == NULL);
 
   event1.Set();
 
+  BOOST_CHECK(waitThread1.timed_join(BOOST_MILLIS(10000)));
+  BOOST_CHECK(waitThread4.timed_join(BOOST_MILLIS(10000)));
   Sleep(10);
 
   BOOST_CHECK(result1);
@@ -506,13 +539,13 @@ BOOST_AUTO_TEST_CASE(TestEventGroupTimedWait)
 
   event2.Set();
 
-  Sleep(50);
+  BOOST_CHECK(waitThread2.timed_join(BOOST_MILLIS(10000)));
 }
 
 #define TESTNUM 100000l
 #define NUMTHREADS 100l
 
-CEvent g_event;
+CEvent g_event(true);
 
 class mass_waiter
 {
@@ -553,25 +586,30 @@ public:
 
 BOOST_AUTO_TEST_CASE(TestMassEvent)
 {
-  CEvent e02;
-  CEventGroup group(&g_event,&e02,NULL);
-
-  boost::shared_array<poll_mass_waiter> m;
-  m.reset(new poll_mass_waiter[NUMTHREADS]);
+  boost::shared_array<mass_waiter> m;
+  m.reset(new mass_waiter[NUMTHREADS]);
 
   boost::shared_array<boost::thread> t;
   t.reset(new boost::thread[NUMTHREADS]);
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i] = boost::thread(boost::ref(m[i]));
 
-  Sleep(50);
+  for(size_t i=0; i<NUMTHREADS; i++)
+  {
+    BOOST_CHECK(waitForWaiters(g_event,NUMTHREADS,10000));
+  }
+
   for(size_t i=0; i<NUMTHREADS; i++)
   {
     BOOST_CHECK(m[i].waiting);
   }
 
   g_event.Set();
-  Sleep(500);
+
+  for(size_t i=0; i<NUMTHREADS; i++)
+  {
+    BOOST_CHECK(t[i].timed_join(BOOST_MILLIS(10000)));
+  }
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
