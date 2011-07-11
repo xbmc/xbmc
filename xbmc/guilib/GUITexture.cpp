@@ -32,8 +32,6 @@ CTextureInfo::CTextureInfo()
 {
   orientation = 0;
   useLarge = false;
-  colorDiffuse = "";
-  borderDiffuse = "";
 }
 
 CTextureInfo::CTextureInfo(const CStdString &file)
@@ -41,8 +39,6 @@ CTextureInfo::CTextureInfo(const CStdString &file)
   orientation = 0;
   useLarge = false;
   filename = file;
-  colorDiffuse = "";
-  borderDiffuse = "";
 }
 
 CTextureInfo& CTextureInfo::operator=(const CTextureInfo &right)
@@ -182,19 +178,15 @@ void CGUITextureBase::Render()
 
   // set our draw color
   #define MIX_ALPHA(a,c) (((a * (c >> 24)) / 255) << 24) | (c & 0x00ffffff)
-  if (m_info.colorDiffuse != "")
+  if (m_info.colorDiffuse)
   {
-	  CGUIInfoColor attrdiffuse;
-	  attrdiffuse.Parse(m_info.colorDiffuse);
-	  m_diffuseColor = attrdiffuse;
+	  m_diffuseColor = m_info.colorDiffuse;
   }
   color_t color = m_diffuseColor;
   color_t bordercolor;
-  if (m_info.borderDiffuse != "")
+  if (m_info.borderDiffuse)
   {
-	  CGUIInfoColor attrborderdiffuse;
-	  attrborderdiffuse.Parse(m_info.borderDiffuse);
-	  bordercolor = attrborderdiffuse;
+	  bordercolor = m_info.borderDiffuse;
   }
   else
   {
