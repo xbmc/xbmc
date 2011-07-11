@@ -236,8 +236,8 @@ void Cocoa_DoAppleScriptFile(const char* filePath)
 
 const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconName)
 {
-  NSString* bundlePath = [NSString stringWithCString:_bundlePath];
-  NSString* iconName = [NSString stringWithCString:_iconName];
+  NSString* bundlePath = [NSString stringWithUTF8String:_bundlePath];
+  NSString* iconName = [NSString stringWithUTF8String:_iconName];
   NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
   NSString* iconPath = [bundle pathForResource:iconName ofType:@"icns"];
   NSString* bundleIdentifier = [bundle bundleIdentifier];
@@ -336,7 +336,7 @@ bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volum
   }
 
   NSString *volumename = [dd objectForKey:(NSString*)kDADiskDescriptionVolumeNameKey];
-  volumeName = [volumename cString];
+  volumeName = [volumename UTF8String];
 
   CFRelease(session);		        
   CFRelease(disk);		        
