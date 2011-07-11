@@ -25,6 +25,8 @@
 #include "utils/TimeUtils.h"
 #include "guilib/Key.h"
 
+#include <cmath>
+
 //time for reaching velocitiy 0 in secs
 #define TIME_TO_ZERO_SPEED 1.0f
 //time for decreasing the deaccelleration (for doing a smooth stop) in secs
