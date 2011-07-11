@@ -25,8 +25,11 @@ $(TARBALLS_LOCATION)/$(ARCHIVE):
 	if test "$(DARWIN)" = "ios"; then \
 		mv $(PREFIX)/lib/libboost_thread.so.$(LIBVERSION) $(PREFIX)/lib/libboost_thread.dylib; \
 		rm $(PREFIX)/lib/libboost_thread.so; \
+		mv $(PREFIX)/lib/libboost_date_time.so.$(LIBVERSION) $(PREFIX)/lib/libboost_date_time.dylib; \
+		rm $(PREFIX)/lib/libboost_date_time.so; \
 	fi
 	install_name_tool -id $(PREFIX)/lib/libboost_thread.dylib $(PREFIX)/lib/libboost_thread.dylib
+	install_name_tool -id $(PREFIX)/lib/libboost_date_time.dylib $(PREFIX)/lib/libboost_date_time.dylib
 	touch .installed
 
 clean:
