@@ -234,31 +234,30 @@ int DarwinBatteryLevel(void)
   if(!DarwinIsAppleTV2())
     batteryLevel = [[UIDevice currentDevice] batteryLevel];
 #else
-	CFTypeRef powerSourceInfo = IOPSCopyPowerSourcesInfo();
-	CFArrayRef powerSources = IOPSCopyPowerSourcesList(powerSourceInfo);
-	
-	CFDictionaryRef powerSource = NULL;
-	const void *powerSourceVal;
-	
-	for (int i = 0 ; i < CFArrayGetCount(powerSources) ; i++)
-	{
-		powerSource = IOPSGetPowerSourceDescription(powerSourceInfo, CFArrayGetValueAtIndex(powerSources, i));
-		if (!powerSource) break;
-		
-		powerSourceVal = (CFStringRef)CFDictionaryGetValue(powerSource, CFSTR(kIOPSNameKey));
-		
-		int curLevel = 0;
-		int maxLevel = 0;
-		
-		powerSourceVal = CFDictionaryGetValue(powerSource, CFSTR(kIOPSCurrentCapacityKey));
-		CFNumberGetValue((CFNumberRef)powerSourceVal, kCFNumberSInt32Type, &curLevel);
-		
-		powerSourceVal = CFDictionaryGetValue(powerSource, CFSTR(kIOPSMaxCapacityKey));
-		CFNumberGetValue((CFNumberRef)powerSourceVal, kCFNumberSInt32Type, &maxLevel);
-		
-		batteryLevel = (int)((double)curLevel/(double)maxLevel);
-		
-	}
+  CFTypeRef powerSourceInfo = IOPSCopyPowerSourcesInfo();
+  CFArrayRef powerSources = IOPSCopyPowerSourcesList(powerSourceInfo);
+
+  CFDictionaryRef powerSource = NULL;
+  const void *powerSourceVal;
+
+  for (int i = 0 ; i < CFArrayGetCount(powerSources) ; i++)
+  {
+    powerSource = IOPSGetPowerSourceDescription(powerSourceInfo, CFArrayGetValueAtIndex(powerSources, i));
+    if (!powerSource) break;
+
+    powerSourceVal = (CFStringRef)CFDictionaryGetValue(powerSource, CFSTR(kIOPSNameKey));
+
+    int curLevel = 0;
+    int maxLevel = 0;
+
+    powerSourceVal = CFDictionaryGetValue(powerSource, CFSTR(kIOPSCurrentCapacityKey));
+    CFNumberGetValue((CFNumberRef)powerSourceVal, kCFNumberSInt32Type, &curLevel);
+
+    powerSourceVal = CFDictionaryGetValue(powerSource, CFSTR(kIOPSMaxCapacityKey));
+    CFNumberGetValue((CFNumberRef)powerSourceVal, kCFNumberSInt32Type, &maxLevel);
+
+    batteryLevel = (int)((double)curLevel/(double)maxLevel);
+  }
 #endif
   return batteryLevel * 100;  
 }
