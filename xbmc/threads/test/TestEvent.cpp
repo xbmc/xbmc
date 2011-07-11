@@ -22,6 +22,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "threads/Event.h"
+#include "threads/Atomics.h"
 
 #include <boost/thread/thread.hpp>
 #include <boost/shared_array.hpp>
@@ -97,7 +98,7 @@ public:
 
 static void Sleep(unsigned int millis) { boost::thread::sleep(BOOST_MILLIS(millis)); }
 
-template<class E> bool waitForWaiters(E& event, int numWaiters, int milliseconds)
+template<class E> static bool waitForWaiters(E& event, int numWaiters, int milliseconds)
 {
   for( int i = 0; i < milliseconds; i++)
   {
@@ -178,7 +179,7 @@ BOOST_AUTO_TEST_CASE(TestEventTimedWaitsTimeoutCase)
   timed_waiter w1(event,result1,50);
   boost::thread waitThread1(w1);
 
-  BOOST_CHECK(waitForWaiters(event,1,10000));
+  BOOST_CHECK(waitForWaiters(event,1,100));
 
   BOOST_CHECK(result1 == 0);
 
@@ -542,10 +543,19 @@ BOOST_AUTO_TEST_CASE(TestEventGroupTimedWait)
   BOOST_CHECK(waitThread2.timed_join(BOOST_MILLIS(10000)));
 }
 
+class AtomicGuard
+{
+  volatile long* val;
+public:
+  inline AtomicGuard(volatile long* val_) : val(val_) { if (val) AtomicIncrement(val); }
+  inline ~AtomicGuard() { if (val) AtomicDecrement(val); }
+};
+
 #define TESTNUM 100000l
 #define NUMTHREADS 100l
 
-CEvent g_event(true);
+CEvent* g_event = NULL;
+volatile long g_mutex;
 
 class mass_waiter
 {
@@ -555,11 +565,12 @@ public:
 
   volatile bool waiting;
 
-  mass_waiter() : event(g_event), waiting(false) {}
+  mass_waiter() : event(*g_event), waiting(false) {}
   
   void operator()()
   {
     waiting = true;
+    AtomicGuard g(&g_mutex);
     result = event.Wait();
     waiting = false;
   }
@@ -573,38 +584,54 @@ public:
 
   volatile bool waiting;
 
-  poll_mass_waiter() : event(g_event), waiting(false) {}
+  poll_mass_waiter() : event(*g_event), waiting(false) {}
   
   void operator()()
   {
     waiting = true;
+    AtomicGuard g(&g_mutex);
     while ((result = event.WaitMSec(0)) == false);
     waiting = false;
   }
 };
 
-
-BOOST_AUTO_TEST_CASE(TestMassEvent)
+static bool waitForThread(volatile long& mutex, int numWaiters, int milliseconds)
 {
-  boost::shared_array<mass_waiter> m;
-  m.reset(new mass_waiter[NUMTHREADS]);
+  CCriticalSection sec;
+  for( int i = 0; i < milliseconds; i++)
+  {
+    if (mutex == (long)numWaiters)
+      return true;
 
+    {
+      CSingleLock tmplock(sec); // kick any memory syncs
+    }
+    Sleep(1);
+  }
+  return false;
+}
+
+template <class W> void RunMassEventTest(boost::shared_array<W>& m, bool canWaitOnEvent)
+{
   boost::shared_array<boost::thread> t;
   t.reset(new boost::thread[NUMTHREADS]);
   for(size_t i=0; i<NUMTHREADS; i++)
     t[i] = boost::thread(boost::ref(m[i]));
 
-  for(size_t i=0; i<NUMTHREADS; i++)
+  BOOST_CHECK(waitForThread(g_mutex,NUMTHREADS,10000));
+  if (canWaitOnEvent)
   {
-    BOOST_CHECK(waitForWaiters(g_event,NUMTHREADS,10000));
+    BOOST_CHECK(waitForWaiters(*g_event,NUMTHREADS,10000));
   }
+
+  Sleep(100);// give them a little more time
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
     BOOST_CHECK(m[i].waiting);
   }
 
-  g_event.Set();
+  g_event->Set();
 
   for(size_t i=0; i<NUMTHREADS; i++)
   {
@@ -616,5 +643,27 @@ BOOST_AUTO_TEST_CASE(TestMassEvent)
     BOOST_CHECK(!m[i].waiting);
     BOOST_CHECK(m[i].result);
   }
+}
 
+
+BOOST_AUTO_TEST_CASE(TestMassEvent)
+{
+  g_event = new CEvent();
+
+  boost::shared_array<mass_waiter> m;
+  m.reset(new mass_waiter[NUMTHREADS]);
+
+  RunMassEventTest(m,true);
+  delete g_event;
+}
+
+BOOST_AUTO_TEST_CASE(TestMassEventPolling)
+{
+  g_event = new CEvent(true); // polling needs to avoid the auto-reset
+
+  boost::shared_array<poll_mass_waiter> m;
+  m.reset(new poll_mass_waiter[NUMTHREADS]);
+
+  RunMassEventTest(m,false);
+  delete g_event;
 }
