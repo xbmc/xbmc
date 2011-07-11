@@ -25,8 +25,19 @@
 
 #ifdef USE_BOOST_LOCKING
 #include "threads/platform/boost/Condition.h"
-#else
+#define LOCKING_IMPL_SET
+#endif
+
+#ifdef USE_PTHREADS_LOCKING
+#ifdef LOCKING_IMPL_SET
+#error "Cannot set two USE_*_LOCKING flags"
+#endif
+#include "threads/platform/pthreads/Condition.h"
+#define LOCKING_IMPL_SET
+#endif
+
+#ifndef LOCKING_IMPL_SET
 #error "No platform specified for the CriticalSection definition."
 #endif
 
-
+#undef LOCKING_IMPL_SET

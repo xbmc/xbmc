@@ -22,6 +22,10 @@
 #pragma once
 
 #include "threads/platform/Condition.h"
+
+#include <boost/date_time/microsec_time_clock.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
+
 #include <stdio.h>
 
 namespace XbmcThreads
@@ -41,28 +45,31 @@ namespace XbmcThreads
   {
     ConditionVariable& cond;
     P predicate;
+
+    typedef boost::posix_time::ptime system_time;
+
+    inline static unsigned long timeLeft(const system_time& endtime)
+    {
+      long diff = (long)(endtime - boost::date_time::microsec_clock<system_time>::universal_time()).total_milliseconds();
+      return diff < 0 ? 0 : (unsigned long)diff;
+    }
+
   public:
     inline TightConditionVariable(ConditionVariable& cv, P predicate_) : cond(cv), predicate(predicate_) {}
 
     template <typename L> inline void wait(L& lock) { while(!predicate) cond.wait(lock); }
-    template <typename L> inline bool wait(L& lock, int milliseconds)
+    template <typename L> inline bool wait(L& lock, unsigned long milliseconds)
     {
       bool ret = true;
-      unsigned long long timeout = XbmcThreads::currentTimeMillis() + milliseconds;
-      while ((!predicate) && ret == true)
+      if (!predicate)
       {
-        cond.wait(lock,milliseconds);
-        if (milliseconds)
+        system_time const endtime = boost::date_time::microsec_clock<system_time>::universal_time() + boost::posix_time::milliseconds(milliseconds);
+        bool notdone = true;
+        while (notdone && ret == true)
         {
-          unsigned long long curTime = XbmcThreads::currentTimeMillis();
-          if ((!predicate) && curTime > timeout)
-          {
-            ret = false;
-            milliseconds = timeout - curTime;
-          }
+          cond.wait(lock,milliseconds);
+          ret = (notdone = (!predicate)) ? ((milliseconds = timeLeft(endtime)) != 0) : true;
         }
-        else
-          ret = (!predicate) ? false : true;
       }
       return ret;
     }

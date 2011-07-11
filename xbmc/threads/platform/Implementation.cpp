@@ -19,25 +19,23 @@
  *
  */
 
-#pragma once
-
 #include "threads/platform/platform.select"
 
 #ifdef USE_BOOST_LOCKING
-#include "threads/platform/boost/CriticalSection.h"
 #define LOCKING_IMPL_SET
+// There is no boost implementation cpp file
 #endif
 
 #ifdef USE_PTHREADS_LOCKING
 #ifdef LOCKING_IMPL_SET
 #error "Cannot set two USE_*_LOCKING flags"
 #endif
-#include "threads/platform/pthreads/CriticalSection.h"
 #define LOCKING_IMPL_SET
+#include "threads/platform/pthreads/Implementation.cpp"
 #endif
 
 #ifndef LOCKING_IMPL_SET
-#error "No platform specified for the CriticalSection definition."
+#error "No platform specified for the implemenation code."
 #endif
 
 #undef LOCKING_IMPL_SET

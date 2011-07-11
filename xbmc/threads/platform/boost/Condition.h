@@ -40,9 +40,9 @@ namespace XbmcThreads
   public:
     template<typename L> inline void wait(L& lock) { impl.wait(lock); }
 
-    template<typename L> inline bool wait(L& lock, int milliseconds)
+    template<typename L> inline bool wait(L& lock, unsigned long milliseconds)
     {
-      return (impl.timed_wait(lock, boost::posix_time::milliseconds(milliseconds)));
+      return (impl.timed_wait(lock, boost::posix_time::milliseconds((long)milliseconds)));
     }
 
     inline void notifyAll() { impl.notify_all(); }
