@@ -2116,15 +2116,16 @@ void CGUIWindowSettingsCategory::FillInAudioLanguages(CSetting *pSetting)
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();
 
+  int iCurrentLanguage = 0;
+  int iLanguage = 0;
+  vector<CStdString> vecLanguages;
+  /*
+  // To get only languages in the database
   CFileItemList langs;
   CVideoDatabase videodatabase;
   videodatabase.Open();
   videodatabase.GetAllAudioLanguages(langs);
   videodatabase.Close();
-
-  int iCurrentLanguage = 0;
-  int iLanguage = 0;
-  vector<CStdString> vecLanguages;
   for (int i = 0; i < langs.Size(); ++i)
   {
     CFileItemPtr pItem = langs[i];
@@ -2136,6 +2137,24 @@ void CGUIWindowSettingsCategory::FillInAudioLanguages(CSetting *pSetting)
       vecLanguages.push_back(language);
     }
   }
+  */
+
+  // To get the list of iso639_1 languages from LangCodeExpander.cpp
+  CLangCodeExpander langcode;
+  for (int i = 0; i < sizeof(langcode.g_iso639_1) / sizeof(langcode.g_iso639_1[0]); i++)
+  {
+    vecLanguages.push_back(langcode.g_iso639_1[i].name);
+  }
+
+  /*
+  // To get the list of iso639_2 languages from LangCodeExpander.cpp
+  CLangCodeExpander langcode;
+  for (int i = 0; i < sizeof(langcode.g_iso639_2) / sizeof(langcode.g_iso639_2[0]); i++)
+  {
+    vecLanguages.push_back(langcode.g_iso639_2[i].name);
+  }
+  */
+
   sort(vecLanguages.begin(), vecLanguages.end(), sortstringbyname());
   for (int i = 0; i < (int) vecLanguages.size(); ++i)
   {
@@ -2164,6 +2183,13 @@ void CGUIWindowSettingsCategory::FillInSubtitleLanguages(CSetting *pSetting)
   int iCurrentLanguage = 0;
   int iLanguage = 0;
   vector<CStdString> vecLanguages;
+  /*
+  // To get only languages in the database
+  CFileItemList langs;
+  CVideoDatabase videodatabase;
+  videodatabase.Open();
+  videodatabase.GetAllAudioLanguages(langs);
+  videodatabase.Close();
   for (int i = 0; i < langs.Size(); ++i)
   {
     CFileItemPtr pItem = langs[i];
@@ -2175,6 +2201,24 @@ void CGUIWindowSettingsCategory::FillInSubtitleLanguages(CSetting *pSetting)
       vecLanguages.push_back(language);
     }
   }
+  */
+
+  // To get the list of iso639_1 languages from LangCodeExpander.cpp
+  for (int i = 0; i < 143; i++)
+  {
+    CLangCodeExpander langcode;
+    vecLanguages.push_back(langcode.g_iso639_1[i].name);
+  }
+
+  /*
+  // To get the list of iso639_2 languages from LangCodeExpander.cpp
+  for (int i = 0; i < 536; i++)
+  {
+    CLangCodeExpander langcode;
+    vecLanguages.push_back(langcode.g_iso639_2[i].name);
+  }
+  */
+
   sort(vecLanguages.begin(), vecLanguages.end(), sortstringbyname());
   for (int i = 0; i < (int) vecLanguages.size(); ++i)
   {

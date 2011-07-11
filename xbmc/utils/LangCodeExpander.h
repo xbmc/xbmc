@@ -32,6 +32,14 @@ public:
   CLangCodeExpander(void);
   ~CLangCodeExpander(void);
 
+  typedef struct LCENTRY
+  {
+    long code;
+    const char *name;
+  } LCENTRY;
+  static LCENTRY g_iso639_1[143];
+  static LCENTRY g_iso639_2[536];
+  
   bool Lookup(CStdString& desc, const CStdString& code);
   bool Lookup(CStdString& desc, const int code);
 #ifdef _WIN32
