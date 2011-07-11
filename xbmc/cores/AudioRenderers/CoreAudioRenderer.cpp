@@ -21,6 +21,8 @@
  */
 
 #if !defined(__arm__)
+#include <CoreServices/CoreServices.h>
+
 #include "CoreAudioRenderer.h"
 #include "guilib/AudioContext.h"
 #include "settings/GUISettings.h"
@@ -399,7 +401,6 @@ CCoreAudioRenderer::CCoreAudioRenderer() :
   m_EnableVolumeControl(true),
   m_OutputBufferIndex(0),
   m_pCache(NULL),
-  m_RunoutEvent(kInvalidID),
   m_DoRunout(0)
 {
   SInt32 major,  minor;
@@ -438,7 +439,9 @@ return x
 
 bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic /*Useless Legacy Parameter*/, bool bPassthrough)
 {
-  if (m_Initialized) // Have to clean house before we start again. TODO: Should we return failure instead?
+  // Have to clean house before we start again.
+  // TODO: Should we return failure instead?
+  if (m_Initialized)
     Deinitialize();
   
   if(bPassthrough)
@@ -450,11 +453,15 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
   
   // Attempt to find the configured output device
   AudioDeviceID outputDevice = CCoreAudioHardware::FindAudioDevice(g_guiSettings.GetString("audiooutput.audiodevice"));
-  if (!outputDevice) // Fall back to the default device if no match is found
+  // Fall back to the default device if no match is found
+  if (!outputDevice)
   {
-    CLog::Log(LOGWARNING, "CoreAudioRenderer::Initialize: Unable to locate configured device, falling-back to the system default.");
+    CLog::Log(LOGWARNING, "CoreAudioRenderer::Initialize: "
+      "Unable to locate configured device, falling-back to the system default.");
     outputDevice = CCoreAudioHardware::GetDefaultOutputDevice();
-    if (!outputDevice) // Not a lot to be done with no device. TODO: Should we just grab the first existing device?
+    // Not a lot to be done with no device.
+    // TODO: Should we just grab the first existing device?
+    if (!outputDevice)
       return false;
   }
   
@@ -488,7 +495,8 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     bool configured = false;
     if (bPassthrough)
     {
-      CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: No suitable AC3 output format found. Attempting DD-Wav.");
+      CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: "
+        "No suitable AC3 output format found. Attempting DD-Wav.");
       configured = InitializePCMEncoded(uiSamplesPerSec);
       // TODO: wait for audio device startup
       Sleep(100);
@@ -501,16 +509,19 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
       Sleep(100);
     }
     
-    if (!configured) // No suitable output format was able to be configured
+    // No suitable output format was able to be configured
+    if (!configured)
       return false;
     
     // Configure the maximum number of frames that the AudioUnit will ask to process at one time.
-    // If this is not called, there is no guarantee that the callback will ever be called.
-    UInt32 bufferFrames = m_AUOutput.GetBufferFrameSize(); // Size of the output buffer, in Frames
+    //  If this is not called, there is no guarantee that the callback will ever be called.
+    // Size of the output buffer, in Frames
+    UInt32 bufferFrames = m_AUOutput.GetBufferFrameSize();
     if (!m_AUOutput.SetMaxFramesPerSlice(bufferFrames))
       return false;
     
-    m_ChunkLen = bufferFrames * m_BytesPerFrame;  // This is the minimum amount of data that we will accept from a client
+    // This is the minimum amount of data that we will accept from a client
+    m_ChunkLen = bufferFrames * m_BytesPerFrame;
     
     // Setup the callback function that the AudioUnit will use to request data	
     ICoreAudioSource* pSource = this;
@@ -528,25 +539,33 @@ bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString&
     CStdString formatString;
     m_AUOutput.GetInputFormat(&inputDesc_end);
     m_AUOutput.GetOutputFormat(&outputDesc_end);
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Input Stream Format %s", StreamDescriptionToString(inputDesc_end, formatString));
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Output Stream Format % s", StreamDescriptionToString(outputDesc_end, formatString));
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Input Stream Format %s",
+      StreamDescriptionToString(inputDesc_end, formatString));
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Output Stream Format %s",
+      StreamDescriptionToString(outputDesc_end, formatString));
   }
   
   m_NumLatencyFrames = m_AudioDevice.GetNumLatencyFrames();
-  m_MaxCacheLen = m_AvgBytesPerSec;     // Set the max cache size to 1 second of data. TODO: Make this more intelligent
-  m_Pause = true;                       // Suspend rendering. We will start once we have some data.
-  m_pCache = new CSliceQueue(m_ChunkLen); // Initialize our incoming data cache
+  // Set the max cache size to 1 second of data. TODO: Make this more intelligent
+  m_MaxCacheLen = m_AvgBytesPerSec;
+  // Suspend rendering. We will start once we have some data.
+  m_Pause = true;
+  // Initialize our incoming data cache
+  m_pCache = new CSliceQueue(m_ChunkLen);
 #ifdef _DEBUG
-  m_PerfMon.Init(m_AvgBytesPerSec, 1000, CCoreAudioPerformance::FlagDefault); // Set up the performance monitor
-  m_PerfMon.SetPreroll(2.0f); // Disable underrun detection for the first 2 seconds (after start and after resume)
+  // Set up the performance monitor
+  m_PerfMon.Init(m_AvgBytesPerSec, 1000, CCoreAudioPerformance::FlagDefault);
+  // Disable underrun detection for the first 2 seconds (after start and after resume)
+  m_PerfMon.SetPreroll(2.0f);
 #endif
   m_Initialized = true;
-  MPCreateEvent(&m_RunoutEvent); // Create a waitable event for use by clients when draining the cache
   m_DoRunout = 0;
   
   SetCurrentVolume(g_settings.m_nVolumeLevel);
   
-  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: Renderer Configuration - Chunk Len: %u, Max Cache: %lu (%0.0fms).", m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
+  CLog::Log(LOGDEBUG, "CoreAudioRenderer::Initialize: "
+    "Renderer Configuration - Chunk Len: %u, Max Cache: %lu (%0.0fms).",
+    m_ChunkLen, m_MaxCacheLen, 1000.0 *(float)m_MaxCacheLen/(float)m_AvgBytesPerSec);
   CLog::Log(LOGINFO, "CoreAudioRenderer::Initialize: Successfully configured audio output.");
   
   return true;
@@ -573,8 +592,6 @@ bool CCoreAudioRenderer::Deinitialize()
   delete m_pCache;
   m_pCache = NULL;
   m_Initialized = false;
-  MPDeleteEvent(m_RunoutEvent);
-  m_RunoutEvent = kInvalidID;
   m_DoRunout = 0;
   m_EnableVolumeControl = true;
   
@@ -739,33 +756,28 @@ void CCoreAudioRenderer::WaitCompletion()
 {
   VERIFY_INIT();
   
-  if (m_pCache->GetTotalBytes() == 0) // The cache is already empty. There is nothing to wait for.
+  // The cache is already empty. There is nothing to wait for.
+  if (m_pCache->GetTotalBytes() == 0)
     return;
   
-  if (m_RunoutEvent != kInvalidID)
+  // Signal that we are waiting
+  AtomicIncrement(&m_DoRunout);
+  // Signal that a buffer underrun is OK
+  m_DoRunout = 1;
+  // TODO: Should we pad the wait time to allow for preemption?
+  // This is how much time 'should' be in the cache (plus 10ms for preemption hedge)
+  UInt32 delay = (UInt32)(GetDelay() * 1000.0f) + 10; 
+  if (delay)
   {
-    AtomicIncrement(&m_DoRunout); // Signal that we are waiting
-    m_DoRunout = 1; // Signal that a buffer underrun is OK
-    // TODO: Should we pad the wait time to allow for preemption?
-    UInt32 delay =  (UInt32)(GetDelay() * 1000.0f) + 10; // This is how much time 'should' be in the cache ( plus 10ms for preemption hedge)
-    if (delay)
+    // Wait for the callback thread to process the whole cache,
+    //  but only wait as long as we expect it to take.
+    m_RunoutEvent.WaitMSec(delay);
+    if (!m_RunoutEvent.WaitMSec(delay))
     {
-      OSStatus ret = MPWaitForEvent(m_RunoutEvent, NULL, kDurationMillisecond * delay); // Wait for the callback thread to process the whole cache, but only wait as long as we expect it to take
-      switch (ret)
-      {
-        case kMPTimeoutErr:
-          if (m_pCache->GetTotalBytes()) //See if there is still some data left in the cache that didn't get played
-            CLog::Log(LOGERROR, "CCoreAudioRenderer::WaitCompletion: Timed-out waiting for runout. Remaining data will be truncated.");
-          break;
-        case noErr:
-          break;
-        default:
-          CLog::Log(LOGERROR, "CCoreAudioRenderer::WaitCompletion: An unknown error occurred while waiting for runout. Remaining data will be truncated. Error = 0x%08X [%4.4s]", ret, UInt32ToFourCC((UInt32*)&ret));
-      }
+      CLog::Log(LOGERROR, "CCoreAudioRenderer::WaitCompletion: "
+        "Timed-out waiting for runout. Remaining data will be truncated.");
     }
   }
-  else
-    CLog::Log(LOGERROR, "CCoreAudioRenderer::WaitCompletion: Invalid runout event. Remaining data will be truncated.");
   
   Stop();
 }
@@ -785,13 +797,18 @@ OSStatus CCoreAudioRenderer::OnRender(AudioUnitRenderActionFlags *ioActionFlags,
     CLog::Log(LOGERROR, "CCoreAudioRenderer::OnRender: Callback to de/unitialized renderer.");
   
   // Process the request
-  UInt32 bytesRequested = m_BytesPerFrame * inNumberFrames; // Data length requested, based on the input data format
+  // Data length requested, based on the input data format
+  UInt32 bytesRequested = m_BytesPerFrame * inNumberFrames; 
   UInt32 bytesRead = (UInt32)m_pCache->GetData(ioData->mBuffers[m_OutputBufferIndex].mData, bytesRequested);
   if (bytesRead < bytesRequested)
   {
-    Pause(); // Stop further requests until we have more data.  The AddPackets method will resume playback
-    MPSetEvent(m_RunoutEvent, 1); // Tell anyone who cares that the cache is empty
-    if (m_DoRunout) // We were waiting for a runout. This is not an error.
+    // Stop further requests until we have more data.
+    // The AddPackets method will resume playback
+    Pause(); 
+    // Tell anyone who cares that the cache is empty
+    m_RunoutEvent.Set();
+    // We were waiting for a runout. This is not an error.
+    if (m_DoRunout)
     {
       //CLog::Log(LOGDEBUG, "CCoreAudioRenderer::OnRender: Runout complete");
       m_DoRunout = 0;
@@ -900,7 +917,7 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
 
     // Try to construct a mapping matrix for the mixer. Work through the layout candidates and see if any will work
     CCoreAudioMixMap mixMap;
-    for(AudioChannelLayout** pLayout = layoutCandidates; pLayout != NULL; pLayout++)
+    for(AudioChannelLayout** pLayout = layoutCandidates; *pLayout != NULL; pLayout++)
     {
       mixMap.Rebuild(*sourceLayout, **pLayout);
       if (mixMap.IsValid())
@@ -954,13 +971,16 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
       {
         for (UInt32 j = 0; j < fmt.mChannelsPerFrame; ++j) 
         {
-          AudioUnitSetParameter(m_MixerUnit.GetComponent(), kMatrixMixerParam_Volume, kAudioUnitScope_Global, (i<<16) | j, *val++, 0);
-          CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: \t[%d][%d][%0.1f]", i, j, *(val-1));
+          AudioUnitSetParameter(m_MixerUnit.GetComponent(),
+            kMatrixMixerParam_Volume, kAudioUnitScope_Global, (i<<16) | j, *val++, 0);
+          CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: \t[%d][%d][%0.1f]",
+            (int)i, (int)j, *(val-1));
         }
       }
       
-      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: Mixer Output Format: %d channels, %0.1f kHz, %d bits, %d bytes per frame", fmt.mChannelsPerFrame, 
-                fmt.mSampleRate / 1000.0f, fmt.mBitsPerChannel, fmt.mBytesPerFrame);
+      CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: "
+        "Mixer Output Format: %d channels, %0.1f kHz, %d bits, %d bytes per frame",
+        (int)fmt.mChannelsPerFrame, fmt.mSampleRate / 1000.0f, (int)fmt.mBitsPerChannel, (int)fmt.mBytesPerFrame);
       
       // Copy format for the Output AU
       outputFormat = fmt;
@@ -1020,10 +1040,11 @@ bool CCoreAudioRenderer::InitializeEncoded(AudioDeviceID outputDevice, UInt32 sa
     stream.Open(streams.front());
     streams.pop_front(); // We copied it, now we are done with it
     
-    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: Found %s stream - id: 0x%04X, Terminal Type: 0x%04lX",
-              stream.GetDirection() ? "Input" : "Output",
-              stream.GetId(),
-              stream.GetTerminalType());
+    CLog::Log(LOGDEBUG, "CoreAudioRenderer::InitializeEncoded: "
+      "Found %s stream - id: 0x%04X, Terminal Type: 0x%04lX",
+      stream.GetDirection() ? "Input" : "Output",
+      (int)stream.GetId(),
+      stream.GetTerminalType());
     
     // Probe physical formats
     StreamFormatList physicalFormats;

@@ -476,12 +476,18 @@ namespace JSONRPC
       "\"minimum\": 0,"
       "\"default\": -1"
     "}",
+    "\"Playlist.Repeat\": {"
+      "\"type\": \"string\","
+      "\"enum\": [ \"off\", \"one\", \"all\" ]"
+    "}",
     "\"Playlist.State\": {"
       "\"type\": \"object\","
       "\"properties\": {"
         "\"current\": { \"type\": \"integer\", \"required\": true },"
         "\"playing\": { \"type\": \"boolean\", \"required\": true },"
-        "\"paused\": { \"type\": \"boolean\", \"required\": true }"
+        "\"paused\": { \"type\": \"boolean\", \"required\": true },"
+        "\"repeat\": { \"$ref\": \"Playlist.Repeat\", \"required\": true },"
+        "\"shuffled\": { \"type\": \"boolean\", \"required\": true }"
       "}"
     "}",
     "\"Playlist.Video.Item\": {"
@@ -1320,6 +1326,14 @@ namespace JSONRPC
       "],"
       "\"returns\": \"string\""
     "}",
+    "\"VideoPlaylist.State\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Provides information about the current state of the playlist\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": [ ],"
+      "\"returns\":  { \"$ref\": \"Playlist.State\", \"required\": true }"
+    "}",
     "\"VideoPlaylist.Play\": {"
       "\"type\": \"method\","
       "\"description\": \"Play current or a specific item\","
@@ -1423,6 +1437,16 @@ namespace JSONRPC
       "\"params\": [ ],"
       "\"returns\": \"string\""
     "}",
+    "\"VideoPlaylist.Repeat\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Set the repeat mode of the playlist\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ControlPlayback\","
+      "\"params\": ["
+        "{ \"name\": \"state\", \"$ref\": \"Playlist.Repeat\", \"required\": true }"
+      "],"
+      "\"returns\": \"string\""
+    "}",
     "\"VideoPlaylist.Swap\": {"
       "\"type\": \"method\","
       "\"description\": \"Swap items in the playlist\","
@@ -1433,6 +1457,14 @@ namespace JSONRPC
         "{ \"name\": \"item2\", \"$ref\": \"Playlist.Item.Position\", \"required\": true }"
       "],"
       "\"returns\": \"string\""
+    "}",
+    "\"AudioPlaylist.State\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Provides information about the current state of the playlist\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": [ ],"
+      "\"returns\":  { \"$ref\": \"Playlist.State\", \"required\": true }"
     "}",
     "\"AudioPlaylist.Play\": {"
       "\"type\": \"method\","
@@ -1536,6 +1568,16 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ControlPlayback\","
       "\"params\": [ ],"
+      "\"returns\": \"string\""
+    "}",
+    "\"AudioPlaylist.Repeat\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Set the repeat mode of the playlist\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ControlPlayback\","
+      "\"params\": ["
+        "{ \"name\": \"state\", \"$ref\": \"Playlist.Repeat\", \"required\": true }"
+      "],"
       "\"returns\": \"string\""
     "}",
     "\"AudioPlaylist.Swap\": {"

@@ -1,5 +1,7 @@
+#pragma once
+
 /*
- *      Copyright (C) 2010 Team XBMC
+ *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,13 +21,24 @@
  *
  */
 
-precision mediump   float;
-uniform   sampler2D m_samp0;
-varying   vec4      m_cord0;
-varying   lowp vec4 m_colour;
+#include <assert.h>
+#include "threads/Atomics.h"
 
-// SM_TEXTURE shader
-void main ()
+template<typename T> struct IDVDResourceCounted
 {
-  gl_FragColor.rgba = vec4(texture2D(m_samp0, m_cord0.xy).rgba * m_colour);
-}
+  IDVDResourceCounted() : m_refs(1) {}
+  virtual T*   Acquire()
+  {
+    AtomicIncrement(&m_refs);
+    return (T*)this;
+  }
+
+  virtual long Release()
+  {
+    long count = AtomicDecrement(&m_refs);
+    assert(count >= 0);
+    if (count == 0) delete (T*)this;
+    return count;
+  }
+  long m_refs;
+};

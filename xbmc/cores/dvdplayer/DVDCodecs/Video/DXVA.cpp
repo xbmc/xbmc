@@ -40,7 +40,6 @@
 #include "boost/shared_ptr.hpp"
 #include "utils/AutoPtrHandle.h"
 #include "settings/AdvancedSettings.h"
-#include "threads/Atomics.h"
 
 #define ALLOW_ADDING_SURFACES 0
 
@@ -884,14 +883,12 @@ CProcessor::CProcessor()
   m_service = NULL;
   m_process = NULL;
   m_time    = 0;
-  m_references = 1;
   g_Windowing.Register(this);
 }
 
 CProcessor::~CProcessor()
 {
   g_Windowing.Unregister(this);
-  ASSERT(m_references == 0);
   Close();
 }
 
@@ -1111,20 +1108,6 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
 
   CHECK(m_process->VideoProcessBlt(target, &blt, samp.get(), valid, NULL));
   return true;
-}
-
-CProcessor* CProcessor::Acquire()
-{
-  AtomicIncrement(&m_references);
-  return this;
-}
-
-long CProcessor::Release()
-{
-  long count = AtomicDecrement(&m_references);
-  ASSERT(count >= 0);
-  if (count == 0) delete this;
-  return count;
 }
 
 #endif

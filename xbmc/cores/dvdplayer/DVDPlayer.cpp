@@ -39,6 +39,9 @@
 
 #include "DVDFileInfo.h"
 
+#include "utils/LangCodeExpander.h"
+#include "guilib/LocalizeStrings.h"
+
 #include "utils/URIUtils.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -2465,10 +2468,17 @@ void CDVDPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
   if(s.name.length() > 0)
     strStreamName = s.name;
   else
-    strStreamName = "Unknown";
+    strStreamName = g_localizeStrings.Get(13205); // Unknown
 
   if(s.type == STREAM_NONE)
     strStreamName += "(Invalid)";
+}
+
+void CDVDPlayer::GetSubtitleLanguage(int iStream, CStdString &strStreamLang)
+{
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
+  if (!g_LangCodeExpander.Lookup(strStreamLang, s.language))
+    strStreamLang = g_localizeStrings.Get(13205); // Unknown
 }
 
 void CDVDPlayer::SetSubtitle(int iStream)

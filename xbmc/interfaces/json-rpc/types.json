@@ -448,12 +448,18 @@
     "minimum": 0,
     "default": -1
   },
+  "Playlist.Repeat": {
+    "type": "string",
+    "enum": [ "off", "one", "all" ]
+  },
   "Playlist.State": {
     "type": "object",
     "properties": {
       "current": { "type": "integer", "required": true },
       "playing": { "type": "boolean", "required": true },
-      "paused": { "type": "boolean", "required": true }
+      "paused": { "type": "boolean", "required": true },
+      "repeat": { "$ref": "Playlist.Repeat", "required": true },
+      "shuffled": { "type": "boolean", "required": true }
     }
   },
   "Playlist.Video.Item": {

@@ -440,9 +440,15 @@ typedef struct _MEMORYSTATUS
 #ifndef NOERROR
 #define NOERROR           (0L)
 #endif
+#ifndef S_OK
 #define S_OK            (0L)
+#endif
+#ifndef E_FAIL
 #define E_FAIL            (0x80004005L)
+#endif
+#ifndef E_OUTOFMEMORY
 #define E_OUTOFMEMORY         (0x8007000EL)
+#endif
 #define FAILED(Status)            ((HRESULT)(Status)<0)
 
 // Basic D3D stuff

@@ -1,5 +1,4 @@
 ARCH=@ARCH@
-SYSROOT=@SYSROOT@
 
 LD=@LD@
 CC=@CC@
