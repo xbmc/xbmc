@@ -7897,7 +7897,7 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   return items.Size() > 0;
 }
 
-bool CVideoDatabase::GetLanguagesAudio(CFileItemList& items)
+bool CVideoDatabase::GetAllAudioLanguages(CFileItemList& items)
 {
   try
   {
@@ -7925,7 +7925,7 @@ bool CVideoDatabase::GetLanguagesAudio(CFileItemList& items)
   return false;
 }
 
-bool CVideoDatabase::GetLanguagesSubtitle(CFileItemList& items)
+bool CVideoDatabase::GetAllSubtitleLanguages(CFileItemList& items)
 {
   try
   {
