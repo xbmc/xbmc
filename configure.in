@@ -373,7 +373,7 @@ case $host in
      PYTHON_NOVERSIONCHECK="no-check"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_IOS -D_LINUX")
      ;;
-  i386-apple-darwin*)
+  *86-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
      use_texturepacker_native=yes
