@@ -2119,7 +2119,7 @@ void CGUIWindowSettingsCategory::FillInAudioLanguages(CSetting *pSetting)
   CFileItemList langs;
   CVideoDatabase videodatabase;
   videodatabase.Open();
-  videodatabase.GetLanguagesAudio(langs);
+  videodatabase.GetAllAudioLanguages(langs);
   videodatabase.Close();
 
   int iCurrentLanguage = 0;
@@ -2158,7 +2158,7 @@ void CGUIWindowSettingsCategory::FillInSubtitleLanguages(CSetting *pSetting)
   CFileItemList langs;
   CVideoDatabase videodatabase;
   videodatabase.Open();
-  videodatabase.GetLanguagesSubtitle(langs);
+  videodatabase.GetAllSubtitleLanguages(langs);
   videodatabase.Close();
 
   int iCurrentLanguage = 0;
