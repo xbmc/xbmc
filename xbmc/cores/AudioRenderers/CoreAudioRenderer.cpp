@@ -900,7 +900,7 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
 
     // Try to construct a mapping matrix for the mixer. Work through the layout candidates and see if any will work
     CCoreAudioMixMap mixMap;
-    for(AudioChannelLayout** pLayout = layoutCandidates; pLayout != NULL; pLayout++)
+    for(AudioChannelLayout** pLayout = layoutCandidates; *pLayout != NULL; pLayout++)
     {
       mixMap.Rebuild(*sourceLayout, **pLayout);
       if (mixMap.IsValid())
