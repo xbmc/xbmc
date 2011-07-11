@@ -19,12 +19,13 @@
 *
 */
 
+#define BOOL XBMC_BOOL
 #include "system.h"
-
 #include "utils/log.h"
 #include "input/KeymapLoader.h"
 #include "windowing/WinEventsSDL.h"
 #include "windowing/osx/WinEventsOSX.h"
+#undef BOOL
 
 #import <CoreFoundation/CFNumber.h>
 #import <IOKit/IOKitLib.h>
