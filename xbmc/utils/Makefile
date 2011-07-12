@@ -43,6 +43,7 @@ SRCS=AlarmClock.cpp \
      Splash.cpp \
      ssrc.cpp \
      Stopwatch.cpp \
+     StreamUtils.cpp \
      StreamDetails.cpp \
      StringUtils.cpp \
      SystemInfo.cpp \
