@@ -30,7 +30,6 @@ class CGUIPythonWindowXMLDialog : public CGUIPythonWindowXML
   public:
     CGUIPythonWindowXMLDialog(int id, CStdString strXML, CStdString strFallBackPath);
     virtual ~CGUIPythonWindowXMLDialog(void);
-    void            Show(bool show = true);
     virtual bool    OnMessage(CGUIMessage &message);
     virtual bool    IsDialogRunning() const { return m_bRunning; }
     virtual bool    IsDialog() const { return true;};
