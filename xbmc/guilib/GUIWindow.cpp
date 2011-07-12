@@ -432,23 +432,6 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
     RunUnloadActions();
   }
 
-  if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
-  {
-    // Dialog animations are handled in Close() rather than here
-    if (HasAnimation(ANIM_TYPE_WINDOW_CLOSE) && !IsDialog() && IsActive())
-    {
-      // Perform the window out effect
-      QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
-      while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-      {
-        // TODO This shouldn't be handled like this
-        // The processing should be done from WindowManager and deinit
-        // should probably be called from there.
-        g_windowManager.Process(CTimeUtils::GetFrameTime());
-        g_windowManager.ProcessRenderLoop(true);
-      }
-    }
-  }
   SaveControlStates();
 }
 

@@ -60,6 +60,7 @@ public:
   void ChangeActiveWindow(int iNewID, const CStdString &strPath = "");
   void ActivateWindow(int iWindowID, const std::vector<CStdString>& params, bool swappingWindows = false);
   void PreviousWindow();
+  void DeinitWindow(CGUIWindow* window, int nextWindowID = 0, bool needRenderLoop = true, bool enableSound = true);
 
   void CloseDialogs(bool forceClose = false);
 

@@ -2573,8 +2573,7 @@ void CGUIWindowSettingsCategory::JumpToSection(int windowId, const CStdString &s
       iSection = i;
   if (iSection == -1) return;
 
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
-  OnMessage(msg);
+  g_windowManager.DeinitWindow(this, 0, true, false);
   m_iSectionBeforeJump=m_iSection;
   m_iControlBeforeJump=m_lastControlID;
   m_iWindowBeforeJump=GetID();
@@ -2589,8 +2588,7 @@ void CGUIWindowSettingsCategory::JumpToSection(int windowId, const CStdString &s
 
 void CGUIWindowSettingsCategory::JumpToPreviousSection()
 {
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
-  OnMessage(msg);
+  g_windowManager.DeinitWindow(this, 0, true, false);
   m_iSection=m_iSectionBeforeJump;
   m_lastControlID=m_iControlBeforeJump;
   CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, m_iWindowBeforeJump);
