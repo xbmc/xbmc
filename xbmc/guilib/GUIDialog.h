@@ -65,8 +65,8 @@ protected:
   virtual void UpdateVisibility();
 
   friend class CApplicationMessenger;
-  void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
-  void Show_Internal(); // modeless
+  virtual void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
+  virtual void Show_Internal(); // modeless
   void Close_Internal(bool forceClose = false);
 
   bool m_bRunning;
