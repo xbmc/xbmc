@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <!-- Misc labels -->
   <string id="31000">Aanpassen</string>
@@ -7,8 +7,10 @@
   <string id="31003">Energiebeheer</string>
   <string id="31004">Bezig...</string>
   <string id="31005">Info verbergen</string> <!-- slaat niet op .NFO-bestand, wel op oa. plot, acteurs, etc.-->
-
+  
+<string id="31006">Weergave Opties</string>
   <string id="31007">Plugins</string>
+  <string id="31008">Volledig scherm</string>
 
   <string id="31020">Hoofdstuktitel</string>
   <string id="31021">Video - Bestanden</string>
@@ -38,6 +40,9 @@
   <string id="31047">Huidige instelling</string>
   <string id="31048">Visualisatiestijl</string>
   <string id="31049">Eindigt om</string>
+
+  <string id="31050">Sorteren: Oplopend</string>
+  <string id="31051">Sorteren: Aflopend</string>
 
 
   <!-- Playlist Editor labels -->
@@ -84,6 +89,12 @@
   <string id="31130"></string>
   <string id="31131"></string>
 
+  <string id="31132">Liedtekst Add-on</string>
+  <string id="31133">Ondertiteling Add-on</string>
+  <string id="31134">Begin Scherm Videos Submenu</string>
+  <string id="31135">Begin Scherm Music Submenu</string>
+  <string id="31136">Begin Scherm Pictures Submenu</string>
+
   <string id="31140">Muziek-OSD</string>
   <string id="31141">Video-OSD</string>
 
@@ -92,8 +103,8 @@
   <string id="31201">Categorieën</string>
   <string id="31202">Toon cast</string>
   <string id="31203">Kies uw nummer</string>
-  <string id="31204">Sectielinks</string>
-  <string id="31205">Songtekstbron</string>
+  <string id="31204">Sectie links</string>
+  <string id="31205">Liedtekst bron</string>
 
   <!-- Extra labels -->
   <string id="31300">Huidige temperatuur</string> <!--Voldoende ruimte in de layout van het weerscherm om temperatuur voluit te schrijven-->
@@ -128,6 +139,9 @@
   <string id="31329">[B]Timer geconfigureerd![/B] [COLOR=grey2] - Systeem schakelt automatisch uit in[/COLOR]</string>
   <string id="31330">Klik op de knop om af te spelen[CR][CR]Filmtrailer</string>
 
+  <string id="31331">Album Details</string>
+
+  
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Pauze</string>
   <string id="31352">Stop</string>
@@ -154,4 +168,17 @@
   <string id="31408">[B]ADD-ONS CONFIGUREREN[/B][CR][CR]Beheer uw geïnstalleerde Add-ons · Zoek en installeer Add-ons via xbmc.org · Wijzig Add-oninstellingen</string>
 
   <string id="31421">Selecteer uw XBMC-gebruikersprofiel[CR]om in te loggen</string>
+  
+  <!-- Weather plugin -->
+  <string id="31900">Weer Kaarten</string>
+  <string id="31901">36 Uur Voorspelling</string>
+  <string id="31902">Per Uur Voorspelling</string>
+  <string id="31903">Weekend Voorspelling</string>
+  <string id="31904">10 Dagen Voorspelling</string>
+  <string id="31905">Voorspelling</string>
+  <string id="31906">Kaarten en Video</string>
+  <string id="31907">Video voorspelling [COLOR=grey2](Volledig scherm Afspelen)[/COLOR]</string>
+  <string id="31908">Kans Op Neerslag</string>
+  <string id="31909">Weersvoorspelling ophalen...</string>
+  
 </strings>
