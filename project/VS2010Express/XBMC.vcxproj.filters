@@ -229,6 +229,12 @@
     <Filter Include="libs\SlingboxLib">
       <UniqueIdentifier>{dfa70c36-927b-4540-b505-35919e64eb3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads\platform">
+      <UniqueIdentifier>{2165ba63-177d-4746-b1c6-e5e425c9f0a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="threads\platform\boost">
+      <UniqueIdentifier>{596bfc31-872d-4de6-b123-5e1ca79c5816}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -2466,10 +2472,10 @@
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\InertialScrollingHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp">
+      <Filter>threads\platform</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4957,10 +4963,31 @@
       <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\InertialScrollingHandler.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\Condition.h">
+      <Filter>threads\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h">
+      <Filter>threads\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h">
+      <Filter>threads\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\boost\Condition.h">
+      <Filter>threads\platform\boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\boost\CriticalSection.h">
+      <Filter>threads\platform\boost</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\boost\ThreadLocal.h">
+      <Filter>threads\platform\boost</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">
       <Filter>win32</Filter>
+    </None>
+    <None Include="..\..\xbmc\threads\platform\platform.select">
+      <Filter>threads\platform</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
