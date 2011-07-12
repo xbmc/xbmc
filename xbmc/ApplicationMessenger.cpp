@@ -638,13 +638,21 @@ case TMSG_POWERDOWN:
       {
         CGUIDialog *dialog = (CGUIDialog *)pMsg->lpVoid;
         if (dialog)
-          dialog->Close_Internal(pMsg->dwParam1 > 0);
+          g_windowManager.DeinitWindow(dialog, 0, false, dialog->SoundEnabled());
       }
       break;
 
     case TMSG_GUI_ACTIVATE_WINDOW:
       {
         g_windowManager.ActivateWindow(pMsg->dwParam1, pMsg->params, pMsg->dwParam2 > 0);
+      }
+      break;
+
+    case TMSG_GUI_DEINIT:
+      {
+        CGUIWindow *pWindow = (CGUIWindow *)pMsg->lpVoid;
+        if (pWindow)
+          g_windowManager.DeinitWindow(pWindow, pMsg->dwParam1, pMsg->dwParam2 & 0x1 ? true : false, pMsg->dwParam2 & 0x2 ? true : false);
       }
       break;
 
@@ -1103,6 +1111,13 @@ void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
   tMsg.params = params;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::DeinitWindow(CGUIWindow *pWindow, int nextWindowID /*= 0*/, bool blockContext /*= true*/, bool enableSound /*= true*/)
+{
+  ThreadMessage tMsg = {TMSG_GUI_DEINIT, nextWindowID, (DWORD)blockContext | (DWORD)enableSound << 1};
+  tMsg.lpVoid = pWindow;
   SendMessage(tMsg, true);
 }
 

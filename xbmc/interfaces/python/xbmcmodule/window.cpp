@@ -383,9 +383,6 @@ namespace PYXBMC
       ++it;
     }
 
-    if (self->bIsPythonWindow)
-      g_windowManager.Delete(self->pWindow->GetID());
-
     lock.Leave();
     self->vecControls.clear();
     self->vecControls.~vector();

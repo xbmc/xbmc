@@ -95,6 +95,7 @@ public:
    \sa FrameMove
    */
   virtual void DoRender();
+  virtual void Render();
   
   /*! \brief Main update function, called every frame prior to rendering
    Any window that requires updating on a frame by frame basis (such as to maintain
@@ -219,6 +220,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
+  virtual void OnWindowDeinited();
   EVENT_RESULT OnMouseAction(const CAction &action);
   virtual bool Animate(unsigned int currentTime);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
@@ -256,6 +258,7 @@ protected:
   bool m_windowLoaded;  // true if the window's xml file has been loaded
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
   bool m_isDialog;      // true if we have a dialog, false otherwise.
+  bool m_bClosing;      // true if window is closing
   bool m_dynamicResourceAlloc;
   CGUIInfoColor m_clearBackground; // colour to clear the window
 

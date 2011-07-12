@@ -39,6 +39,7 @@ class CGUIPythonWindowXMLDialog : public CGUIPythonWindowXML
   protected:
     friend class CApplicationMessenger;
     void Show_Internal(bool show = true);
+    virtual void OnWindowDeinited();
   private:
     bool             m_bRunning;
 };

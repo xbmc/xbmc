@@ -303,9 +303,7 @@ void CGUIWindowManager::PreviousWindow()
   HideOverlay(pNewWindow->GetOverlayState());
 
   // deinitialize our window
-  g_audioManager.PlayWindowSound(pCurrentWindow->GetID(), SOUND_DEINIT);
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-  pCurrentWindow->OnMessage(msg);
+  DeinitWindow(pCurrentWindow);
 
   g_infoManager.SetNextWindow(WINDOW_INVALID);
   g_infoManager.SetPreviousWindow(currentWindow);
@@ -321,6 +319,42 @@ void CGUIWindowManager::PreviousWindow()
 
   g_infoManager.SetPreviousWindow(WINDOW_INVALID);
   return;
+}
+
+void CGUIWindowManager::DeinitWindow(CGUIWindow* window, int nextWindowID /*= 0*/, bool blockContext /*= true*/, bool enableSound /*= true*/)
+{
+  if (!g_application.IsCurrentThread())
+  {
+    // make sure graphics lock is not held
+    CSingleExit leaveIt(g_graphicsContext);
+    g_application.getApplicationMessenger().DeinitWindow(window, nextWindowID, blockContext, enableSound);
+  }
+  else
+    DeinitWindow_Internal(window, nextWindowID, blockContext, enableSound);
+}
+
+void CGUIWindowManager::DeinitWindow_Internal(CGUIWindow* window, int nextWindowID /*= 0*/, bool blockContext /*= true*/, bool enableSound /*= true*/)
+{
+  if (!window || !window->IsActive())
+    return;
+
+  if (enableSound)
+    g_audioManager.PlayWindowSound(window->GetID(), SOUND_DEINIT);
+
+  if (nextWindowID != WINDOW_FULLSCREEN_VIDEO && window->HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
+    window->QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
+
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, nextWindowID);
+  window->OnMessage(msg);
+
+  if (blockContext)
+  {
+    while (window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    {
+      Process(CTimeUtils::GetFrameTime());
+      ProcessRenderLoop(true);
+    }
+  }
 }
 
 void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strPath)
@@ -412,9 +446,7 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
   if (pWindow)
   {
     //  Play the window specific deinit sound
-    g_audioManager.PlayWindowSound(pWindow->GetID(), SOUND_DEINIT);
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, iWindowID);
-    pWindow->OnMessage(msg);
+    DeinitWindow(pWindow, iWindowID);
   }
   g_infoManager.SetNextWindow(WINDOW_INVALID);
 
@@ -655,8 +687,7 @@ void CGUIWindowManager::DeInitialize()
     if (IsWindowActive(it->first))
     {
       pWindow->DisableAnimations();
-      CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-      pWindow->OnMessage(msg);
+      DeinitWindow(pWindow, 0, true, false);
     }
     pWindow->ResetControlStates();
     pWindow->FreeResources(true);

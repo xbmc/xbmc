@@ -78,10 +78,14 @@ void CGUIPythonWindowDialog::Show_Internal(bool show /* = true */)
   }
   else // hide
   {
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
-    OnMessage(msg);
-
-    g_windowManager.RemoveDialog(GetID());
-    m_bRunning = false;
+    g_windowManager.DeinitWindow(this, 0, false);
   }
+}
+
+void CGUIPythonWindowDialog::OnWindowDeinited()
+{
+  g_windowManager.RemoveDialog(GetID());
+  m_bRunning = false;
+  CGUIWindow::OnWindowDeinited();
+  g_windowManager.Delete(GetID());
 }

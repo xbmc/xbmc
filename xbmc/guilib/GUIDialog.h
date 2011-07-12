@@ -54,25 +54,23 @@ public:
   virtual bool IsDialog() const { return true;};
   virtual bool IsModalDialog() const { return m_bModal; };
 
-  virtual bool IsAnimating(ANIMATION_TYPE animType);
-
   void SetAutoClose(unsigned int timeoutMs);
   void SetSound(bool OnOff) { m_enableSound = OnOff; };
+  bool SoundEnabled() { return m_enableSound; };
 
 protected:
   virtual void SetDefaults();
   virtual void OnWindowLoaded();
+  virtual void OnWindowDeinited();
   virtual void UpdateVisibility();
 
   friend class CApplicationMessenger;
   void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   void Show_Internal(); // modeless
-  void Close_Internal(bool forceClose = false);
 
   bool m_bRunning;
   bool m_wasRunning; ///< \brief true if we were running during the last DoProcess()
   bool m_bModal;
-  bool m_dialogClosing;
   bool m_autoClosing;
   bool m_enableSound;
   unsigned int m_showStartTime;

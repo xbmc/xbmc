@@ -32,6 +32,7 @@
 class CFileItem;
 class CFileItemList;
 class CGUIDialog;
+class CGUIWindow;
 
 // defines here
 #define TMSG_DIALOG_DOMODAL       100
@@ -80,6 +81,7 @@ class CGUIDialog;
 
 #define TMSG_GUI_DO_MODAL             600
 #define TMSG_GUI_SHOW                 601
+#define TMSG_GUI_DEINIT               602
 #define TMSG_GUI_ACTIVATE_WINDOW      604
 #define TMSG_GUI_PYTHON_DIALOG        605
 #define TMSG_GUI_DIALOG_CLOSE         606
@@ -186,6 +188,7 @@ public:
   void Show(CGUIDialog *pDialog);
   void Close(CGUIDialog *pDialog, bool forceClose, bool waitResult=true);
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
+  void DeinitWindow(CGUIWindow *pWindow, int nextWindowID = 0, bool blockContext = true, bool enableSound = true);
   void SendAction(const CAction &action, int windowID = WINDOW_INVALID, bool waitResult=true);
   std::vector<CStdString> GetInfoLabels(const std::vector<CStdString> &properties);
   std::vector<bool> GetInfoBooleans(const std::vector<CStdString> &properties);

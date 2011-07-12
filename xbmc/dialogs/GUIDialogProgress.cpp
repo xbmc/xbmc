@@ -72,7 +72,7 @@ void CGUIDialogProgress::StartModal()
   // a thread message though IMO)
   m_bRunning = true;
   m_bModal = true;
-  m_dialogClosing = false;
+  m_bClosing = false;
   g_windowManager.RouteToWindow(this);
 
   // active this window...

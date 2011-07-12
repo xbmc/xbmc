@@ -64,6 +64,7 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_manualRunActions = false;
   m_exclusiveMouseControl = 0;
   m_clearBackground = 0xff000000; // opaque black -> always clear
+  m_bClosing = false;
 }
 
 CGUIWindow::~CGUIWindow(void)
@@ -310,6 +311,17 @@ void CGUIWindow::DoRender()
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }
 
+void CGUIWindow::Render()
+{
+  CGUIControlGroup::Render();
+  // Check to see if we should close at this point
+  // We check after the controls have finished rendering, as we may have to close due to
+  // the controls rendering after the window has finished it's animation
+  // we call the base class instead of this class so that we can find the change
+  if (m_bClosing && !CGUIControlGroup::IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    OnWindowDeinited();
+}
+
 void CGUIWindow::Close(bool forceClose)
 {
   CLog::Log(LOGERROR,"%s - should never be called on the base class!", __FUNCTION__);
@@ -401,6 +413,7 @@ void CGUIWindow::OnInitWindow()
 {
   // set our rendered state
   m_hasRendered = false;
+  m_bClosing = false;
   ResetAnimations();  // we need to reset our animations as those windows that don't dynamically allocate
                       // need their anims reset. An alternative solution is turning off all non-dynamic
                       // allocation (which in some respects may be nicer, but it kills hdd spindown and the like)
@@ -427,29 +440,20 @@ void CGUIWindow::OnInitWindow()
 // Override this function and call the base class before doing any dynamic memory freeing
 void CGUIWindow::OnDeinitWindow(int nextWindowID)
 {
+  m_bClosing = true;
   if (!m_manualRunActions)
   {
     RunUnloadActions();
   }
 
-  if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
-  {
-    // Dialog animations are handled in Close() rather than here
-    if (HasAnimation(ANIM_TYPE_WINDOW_CLOSE) && !IsDialog() && IsActive())
-    {
-      // Perform the window out effect
-      QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
-      while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-      {
-        // TODO This shouldn't be handled like this
-        // The processing should be done from WindowManager and deinit
-        // should probably be called from there.
-        g_windowManager.Process(CTimeUtils::GetFrameTime());
-        g_windowManager.ProcessRenderLoop(true);
-      }
-    }
-  }
   SaveControlStates();
+}
+
+void CGUIWindow::OnWindowDeinited()
+{
+  // now free the window
+  if (m_dynamicResourceAlloc) FreeResources();
+  m_bClosing = false;
 }
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
@@ -469,8 +473,6 @@ bool CGUIWindow::OnMessage(CGUIMessage& message)
     {
       CLog::Log(LOGDEBUG, "------ Window Deinit (%s) ------", GetProperty("xmlfile").c_str());
       OnDeinitWindow(message.GetParam1());
-      // now free the window
-      if (m_dynamicResourceAlloc) FreeResources();
       return true;
     }
     break;
@@ -675,6 +677,8 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 {
   if (!m_animationsEnabled)
     return false;
+  if (animType == ANIM_TYPE_WINDOW_CLOSE)
+    return m_bClosing;
   return CGUIControlGroup::IsAnimating(animType);
 }
 
