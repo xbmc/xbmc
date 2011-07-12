@@ -2834,6 +2834,8 @@ bool CApplication::ProcessMouse()
   if (newmouseaction.GetID() != ACTION_MOUSE_MOVE && newmouseaction.GetID() != ACTION_NOOP)
     CLog::Log(LOGDEBUG, "%s: trying mouse action %s", __FUNCTION__, newmouseaction.GetName().c_str());
 
+  g_audioManager.PlayActionSound(newmouseaction);
+
   return OnAction(newmouseaction);
 }
 

@@ -54,6 +54,14 @@
       <file>click.wav</file>
     </action>
     <action>
+      <name>leftclick</name>
+      <file>click.wav</file>
+    </action>
+    <action>
+      <name>rightclick</name>
+      <file>click.wav</file>
+    </action>
+    <action>
       <name>parentdir</name>
       <file>back.wav</file>
     </action>
