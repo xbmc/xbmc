@@ -192,26 +192,27 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   /* Allocate the helper function class to allow crosstalk over
      helper libraries */
   m_pHelpers = new CAddonCallbacks(this);
+  m_initialized = true;
 
   /* Call Create to make connections, initializing data or whatever is
      needed to become the AddOn running */
   try
   {
     ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
-    if (status == ADDON_STATUS_OK)
-      m_initialized = true;
-    else if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
+    if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
     {
       m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS);
-      if (TransferSettings() == ADDON_STATUS_OK)
-        m_initialized = true;
-      else
+      if (TransferSettings() != ADDON_STATUS_OK)
+      {
         new CAddonStatusHandler(ID(), status, "", false);
+        return false;
+      }
     }
     else
     { // Addon failed initialization
       CLog::Log(LOGERROR, "ADDON: Dll %s - Client returned bad status (%i) from Create and is not usable", Name().c_str(), status);
       new CAddonStatusHandler(ID(), status, "", false);
+      return false;
     }
   }
   catch (std::exception &e)
