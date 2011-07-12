@@ -549,6 +549,10 @@ namespace VIDEO
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
       pURL = &scrUrl;
 
+    // use the scraper from Nfofile
+    if (useLocal)
+      info2 = m_nfoReader.GetScraperInfo();
+
     CScraperUrl url;
     int retVal = 0;
     if (pURL)
