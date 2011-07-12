@@ -638,7 +638,7 @@ case TMSG_POWERDOWN:
       {
         CGUIDialog *dialog = (CGUIDialog *)pMsg->lpVoid;
         if (dialog)
-          dialog->Close_Internal(pMsg->dwParam1 > 0);
+          g_windowManager.DeinitWindow(dialog, 0, false, dialog->SoundEnabled());
       }
       break;
 
