@@ -33,6 +33,7 @@
 #include "addons/Skin.h"
 #include "GUITexture.h"
 #include "windowing/WindowingFactory.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 
@@ -50,10 +51,10 @@ CGUIWindowManager::~CGUIWindowManager(void)
 
 void CGUIWindowManager::Initialize()
 {
-  LoadNotOnDemandWindows();
   m_tracker.SelectAlgorithm();
-
   m_initialized = true;
+
+  LoadNotOnDemandWindows();
 }
 
 bool CGUIWindowManager::SendMessage(int message, int senderID, int destID, int param1, int param2)
@@ -525,7 +526,7 @@ void CGUIWindowManager::RenderPass()
   if (pWindow)
   {
     pWindow->ClearBackground();
-    pWindow->Render();
+    pWindow->DoRender();
   }
 
   // we render the dialogs based on their render order.
@@ -535,7 +536,7 @@ void CGUIWindowManager::RenderPass()
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
     if ((*it)->IsDialogRunning())
-      (*it)->Render();
+      (*it)->DoRender();
   }
 }
 
@@ -632,6 +633,8 @@ void CGUIWindowManager::ProcessRenderLoop(bool renderOnly /*= false*/)
     {
       m_pCallback->Process();
       m_pCallback->FrameMove();
+    } else {
+      Process(CTimeUtils::GetFrameTime());
     }
     m_pCallback->Render();
     m_iNested--;

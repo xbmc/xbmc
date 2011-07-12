@@ -161,7 +161,7 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition)
   // check if seek is inside the current buffer
   if (iFilePosition >= m_nStartPosition && iFilePosition < m_nStartPosition + m_buffer.getMaxReadSize())
   {
-    unsigned int nOffset = (iFilePosition - m_nStartPosition);
+    unsigned int nOffset = (unsigned int)(iFilePosition - m_nStartPosition);
     // copy to history so we can seek back
     if (m_HistoryBuffer.getMaxWriteSize() < nOffset)
       m_HistoryBuffer.SkipBytes(nOffset);

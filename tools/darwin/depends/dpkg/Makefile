@@ -10,7 +10,8 @@ ARCHIVE=$(SOURCE).tar.gz
 export LIBTOOL=builds/unix/libtool
 export PATH:=$(TOOLCHAIN)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(TOOLCHAIN) \
-  --enable-static --disable-shared
+  --enable-static --disable-shared \
+  ac_cv_header_libintl_h=no
 
 APPBIN=$(TOOLCHAIN)/bin/dpkg-deb
 

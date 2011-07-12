@@ -41,6 +41,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "TextureCache.h"
+#include "ThumbnailCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -318,7 +319,7 @@ void CGUIDialogMusicInfo::RefreshThumb()
     if (m_bArtistInfo)
       thumbImage = m_albumItem->GetCachedArtistThumb();
     else
-      thumbImage = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
+      thumbImage = CThumbnailCache::GetAlbumThumb(m_album);
 
     if (!CFile::Exists(thumbImage))
     {
@@ -442,7 +443,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
   if (m_bArtistInfo)
     cachedThumb = m_albumItem->GetCachedArtistThumb();
   else
-    cachedThumb = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
+    cachedThumb = CThumbnailCache::GetAlbumThumb(m_album);
 
   CTextureCache::Get().ClearCachedImage(cachedThumb, true);
   if (result.Left(14) == "thumb://Remote")
@@ -480,7 +481,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
 {
   CFileItemList items;
 
-  CStdString cachedThumb(CFileItem::GetCachedThumb(m_artist.strArtist,g_settings.GetMusicFanartFolder()));
+  CStdString cachedThumb(CThumbnailCache::GetThumb(m_artist.strArtist,g_settings.GetMusicFanartFolder()));
   if (CFile::Exists(cachedThumb))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));

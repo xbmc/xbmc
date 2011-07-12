@@ -38,6 +38,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1830212813B8E2DC00770920 /* controledit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1830212713B8E2DC00770920 /* controledit.cpp */; };
+		1830212913B8E2DC00770920 /* controledit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1830212713B8E2DC00770920 /* controledit.cpp */; };
 		183C454D130C4D55006AA317 /* xbmcvfsmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */; settings = {COMPILER_FLAGS = "-I$XBMC_DEPENDS/include/python2.6"; }; };
 		183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		183FDF8B11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
@@ -427,6 +429,7 @@
 		43348AAE1077486D00F859CF /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AA81077486D00F859CF /* PlayerCoreFactory.cpp */; };
 		43348AAF1077486D00F859CF /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */; };
 		43352CEE1071634600706B8A /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
+		43B0A5D013C64DF900B2382A /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF27E26C13C23D12002514FE /* InertialScrollingHandler.cpp */; };
 		43BF08EB1080C6BA00E25290 /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A41080C6B900E25290 /* Neptune.cpp */; };
 		43BF08EC1080C6BA00E25290 /* NptBase64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A71080C6B900E25290 /* NptBase64.cpp */; };
 		43BF08ED1080C6BA00E25290 /* NptBufferedStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A91080C6B900E25290 /* NptBufferedStreams.cpp */; };
@@ -562,6 +565,8 @@
 		7C7B2B311134F36400713D6D /* mysqldataset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C7B2B2E1134F36400713D6D /* mysqldataset.cpp */; };
 		7C84A59E12FA3C1600CD1714 /* SourcesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */; };
 		7C84A59F12FA3C1600CD1714 /* SourcesDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */; };
+		7C89619213B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */; };
+		7C89619313B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */; };
 		7C8A14561154CB2600E5FCFA /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
 		7C8A14571154CB2600E5FCFA /* TextureCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A14541154CB2600E5FCFA /* TextureCache.cpp */; };
 		7C8A187C115B2A8200E5FCFA /* TextureDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */; };
@@ -630,6 +635,7 @@
 		C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		DF0DF15B13A3ADA7008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15713A3ADA7008ED511 /* FileNFS.cpp */; };
 		DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */; };
+		DF27E26E13C23D12002514FE /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF27E26C13C23D12002514FE /* InertialScrollingHandler.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
@@ -731,7 +737,6 @@
 		E38E1FDC0D25F9FD00618676 /* WAVcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16390D25F9FA00618676 /* WAVcodec.cpp */; };
 		E38E1FDF0D25F9FD00618676 /* YMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16410D25F9FA00618676 /* YMCodec.cpp */; };
 		E38E1FE50D25F9FD00618676 /* ssrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16560D25F9FA00618676 /* ssrc.cpp */; };
-		E38E1FE70D25F9FD00618676 /* LinuxRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E165B0D25F9FA00618676 /* LinuxRenderer.cpp */; };
 		E38E1FE90D25F9FD00618676 /* LinuxRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E165F0D25F9FA00618676 /* LinuxRendererGL.cpp */; };
 		E38E1FEC0D25F9FD00618676 /* RenderManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16650D25F9FA00618676 /* RenderManager.cpp */; };
 		E38E1FF00D25F9FD00618676 /* VideoFilterShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E166F0D25F9FA00618676 /* VideoFilterShader.cpp */; };
@@ -1319,7 +1324,6 @@
 		F5A1C92C0F6B06CF00A96ABD /* WAVcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16390D25F9FA00618676 /* WAVcodec.cpp */; };
 		F5A1C92F0F6B06CF00A96ABD /* YMCodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16410D25F9FA00618676 /* YMCodec.cpp */; };
 		F5A1C9310F6B06CF00A96ABD /* ssrc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16560D25F9FA00618676 /* ssrc.cpp */; };
-		F5A1C9320F6B06CF00A96ABD /* LinuxRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E165B0D25F9FA00618676 /* LinuxRenderer.cpp */; };
 		F5A1C9340F6B06CF00A96ABD /* LinuxRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E165F0D25F9FA00618676 /* LinuxRendererGL.cpp */; };
 		F5A1C9350F6B06CF00A96ABD /* RenderManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E16650D25F9FA00618676 /* RenderManager.cpp */; };
 		F5A1C9360F6B06CF00A96ABD /* VideoFilterShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E38E166F0D25F9FA00618676 /* VideoFilterShader.cpp */; };
@@ -1899,6 +1903,7 @@
 
 /* Begin PBXFileReference section */
 		09AB6884FE841BABC02AAC07 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = ../../../System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		1830212713B8E2DC00770920 /* controledit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controledit.cpp; sourceTree = "<group>"; };
 		18308CB41303370800AA309E /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
 		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
 		183FDF8811AF0B0500B81E9C /* PluginSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginSource.cpp; sourceTree = "<group>"; };
@@ -2471,6 +2476,8 @@
 		7C7B2B2F1134F36400713D6D /* mysqldataset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mysqldataset.h; sourceTree = "<group>"; };
 		7C84A59C12FA3C1600CD1714 /* SourcesDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SourcesDirectory.cpp; path = xbmc/filesystem/SourcesDirectory.cpp; sourceTree = SOURCE_ROOT; };
 		7C84A59D12FA3C1600CD1714 /* SourcesDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SourcesDirectory.h; path = xbmc/filesystem/SourcesDirectory.h; sourceTree = SOURCE_ROOT; };
+		7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowScreensaverDim.cpp; sourceTree = "<group>"; };
+		7C89619113B6A16F003631FE /* GUIWindowScreensaverDim.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowScreensaverDim.h; sourceTree = "<group>"; };
 		7C8A14541154CB2600E5FCFA /* TextureCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureCache.cpp; sourceTree = "<group>"; };
 		7C8A14551154CB2600E5FCFA /* TextureCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextureCache.h; sourceTree = "<group>"; };
 		7C8A187A115B2A8200E5FCFA /* TextureDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TextureDatabase.cpp; sourceTree = "<group>"; };
@@ -2566,6 +2573,8 @@
 		DF0DF15813A3ADA7008ED511 /* FileNFS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileNFS.h; sourceTree = "<group>"; };
 		DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF15A13A3ADA7008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
+		DF27E26C13C23D12002514FE /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
+		DF27E26D13C23D12002514FE /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
@@ -2803,8 +2812,6 @@
 		E38E16420D25F9FA00618676 /* YMCodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YMCodec.h; sourceTree = "<group>"; };
 		E38E16560D25F9FA00618676 /* ssrc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ssrc.cpp; sourceTree = "<group>"; };
 		E38E16570D25F9FA00618676 /* ssrc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssrc.h; sourceTree = "<group>"; };
-		E38E165B0D25F9FA00618676 /* LinuxRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxRenderer.cpp; sourceTree = "<group>"; };
-		E38E165C0D25F9FA00618676 /* LinuxRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinuxRenderer.h; sourceTree = "<group>"; };
 		E38E165F0D25F9FA00618676 /* LinuxRendererGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = LinuxRendererGL.cpp; sourceTree = "<group>"; };
 		E38E16600D25F9FA00618676 /* LinuxRendererGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LinuxRendererGL.h; sourceTree = "<group>"; };
 		E38E16650D25F9FA00618676 /* RenderManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderManager.cpp; sourceTree = "<group>"; };
@@ -2814,7 +2821,6 @@
 		E38E16710D25F9FA00618676 /* YUV2RGBShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = YUV2RGBShader.cpp; sourceTree = "<group>"; };
 		E38E16720D25F9FA00618676 /* YUV2RGBShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YUV2RGBShader.h; sourceTree = "<group>"; };
 		E38E16740D25F9FA00618676 /* WinRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinRenderer.h; sourceTree = "<group>"; };
-		E38E16760D25F9FA00618676 /* WinRenderManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WinRenderManager.h; sourceTree = "<group>"; };
 		E38E167E0D25F9FA00618676 /* CueDocument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CueDocument.cpp; sourceTree = "<group>"; };
 		E38E167F0D25F9FA00618676 /* CueDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CueDocument.h; sourceTree = "<group>"; };
 		E38E16800D25F9FA00618676 /* Database.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Database.cpp; sourceTree = "<group>"; };
@@ -4790,6 +4796,8 @@
 				E38E18220D25F9FA00618676 /* GUIWindowPointer.h */,
 				E38E18250D25F9FA00618676 /* GUIWindowScreensaver.cpp */,
 				E38E18260D25F9FA00618676 /* GUIWindowScreensaver.h */,
+				7C89619013B6A16F003631FE /* GUIWindowScreensaverDim.cpp */,
+				7C89619113B6A16F003631FE /* GUIWindowScreensaverDim.h */,
 				E38E18370D25F9FA00618676 /* GUIWindowStartup.cpp */,
 				E38E18380D25F9FA00618676 /* GUIWindowStartup.h */,
 				E38E18390D25F9FA00618676 /* GUIWindowSystemInfo.cpp */,
@@ -5078,6 +5086,8 @@
 				E38E17F80D25F9FA00618676 /* GUIViewControl.h */,
 				E38E17F90D25F9FA00618676 /* GUIViewState.cpp */,
 				E38E17FA0D25F9FA00618676 /* GUIViewState.h */,
+				DF27E26C13C23D12002514FE /* InertialScrollingHandler.cpp */,
+				DF27E26D13C23D12002514FE /* InertialScrollingHandler.h */,
 				E38E184F0D25F9FA00618676 /* IProgressCallback.h */,
 				E38E18580D25F9FA00618676 /* LangInfo.cpp */,
 				E38E18590D25F9FA00618676 /* LangInfo.h */,
@@ -5544,8 +5554,6 @@
 			children = (
 				7CAA204F1079C8160096DE39 /* BaseRenderer.cpp */,
 				7CAA20501079C8160096DE39 /* BaseRenderer.h */,
-				E38E165B0D25F9FA00618676 /* LinuxRenderer.cpp */,
-				E38E165C0D25F9FA00618676 /* LinuxRenderer.h */,
 				E38E165F0D25F9FA00618676 /* LinuxRendererGL.cpp */,
 				E38E16600D25F9FA00618676 /* LinuxRendererGL.h */,
 				F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */,
@@ -5560,7 +5568,6 @@
 				E38E16660D25F9FA00618676 /* RenderManager.h */,
 				E38E166B0D25F9FA00618676 /* VideoShaders */,
 				E38E16740D25F9FA00618676 /* WinRenderer.h */,
-				E38E16760D25F9FA00618676 /* WinRenderManager.h */,
 			);
 			path = VideoRenderers;
 			sourceTree = "<group>";
@@ -5949,6 +5956,7 @@
 				E38E19DE0D25F9FB00618676 /* control.h */,
 				E38E25800D263CE000618676 /* controlbutton.cpp */,
 				E38E25810D263CE000618676 /* controlcheckmark.cpp */,
+				1830212713B8E2DC00770920 /* controledit.cpp */,
 				E38E25820D263CE000618676 /* controlfadelabel.cpp */,
 				E38E25830D263CE000618676 /* controlgroup.cpp */,
 				E38E25840D263CE000618676 /* controlimage.cpp */,
@@ -7296,7 +7304,6 @@
 				E38E1FDC0D25F9FD00618676 /* WAVcodec.cpp in Sources */,
 				E38E1FDF0D25F9FD00618676 /* YMCodec.cpp in Sources */,
 				E38E1FE50D25F9FD00618676 /* ssrc.cpp in Sources */,
-				E38E1FE70D25F9FD00618676 /* LinuxRenderer.cpp in Sources */,
 				E38E1FE90D25F9FD00618676 /* LinuxRendererGL.cpp in Sources */,
 				E38E1FEC0D25F9FD00618676 /* RenderManager.cpp in Sources */,
 				E38E1FF00D25F9FD00618676 /* VideoFilterShader.cpp in Sources */,
@@ -8104,6 +8111,9 @@
 				32E6489113AFB0EB007C0723 /* AEPPAnimationFade.cpp in Sources */,
 				32E648B613AFB156007C0723 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				F558F51E13AF03AD00631E12 /* ThreadLocal.cpp in Sources */,
+				7C89619213B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
+				1830212813B8E2DC00770920 /* controledit.cpp in Sources */,
+				DF27E26E13C23D12002514FE /* InertialScrollingHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8197,7 +8207,6 @@
 				F5A1C92C0F6B06CF00A96ABD /* WAVcodec.cpp in Sources */,
 				F5A1C92F0F6B06CF00A96ABD /* YMCodec.cpp in Sources */,
 				F5A1C9310F6B06CF00A96ABD /* ssrc.cpp in Sources */,
-				F5A1C9320F6B06CF00A96ABD /* LinuxRenderer.cpp in Sources */,
 				F5A1C9340F6B06CF00A96ABD /* LinuxRendererGL.cpp in Sources */,
 				F5A1C9350F6B06CF00A96ABD /* RenderManager.cpp in Sources */,
 				F5A1C9360F6B06CF00A96ABD /* VideoFilterShader.cpp in Sources */,
@@ -9003,6 +9012,9 @@
 				32E648AF13AFB0EC007C0723 /* AEPPAnimationFade.cpp in Sources */,
 				32E648B713AFB156007C0723 /* DVDAudioCodecPassthrough.cpp in Sources */,
 				F558F51F13AF03AD00631E12 /* ThreadLocal.cpp in Sources */,
+				7C89619313B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
+				1830212913B8E2DC00770920 /* controledit.cpp in Sources */,
+				43B0A5D013C64DF900B2382A /* InertialScrollingHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9097,7 +9109,6 @@
 					"-lsamplerate",
 					"-lmicrohttpd",
 					"-lyajl",
-					"-lssh",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
@@ -9194,7 +9205,6 @@
 					"-lsamplerate",
 					"-lmicrohttpd",
 					"-lyajl",
-					"-lssh",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
@@ -9327,7 +9337,7 @@
 					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/lib/SlingboxLib\"",
+					"$(SRCROOT)/lib/SlingboxLib",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9345,12 +9355,13 @@
 					"-lsqlite3",
 					"-lsamplerate",
 					"-lmicrohttpd",
+					"-lyajl",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
-					"-lyajl",
+					"-lboost_thread",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9420,7 +9431,7 @@
 					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/lib/SlingboxLib\"",
+					"$(SRCROOT)/lib/SlingboxLib",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9438,12 +9449,13 @@
 					"-lsqlite3",
 					"-lsamplerate",
 					"-lmicrohttpd",
+					"-lyajl",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
-					"-lyajl",
+					"-lboost_thread",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);

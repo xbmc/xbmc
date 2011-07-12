@@ -1,10 +1,15 @@
 #!/bin/sh
 
 MAKECLEAN=0
+MAKEFLAGS=""
 
 if [ "$1" == "clean" ]
 then
 MAKECLEAN=1
+fi
+
+if [ $NUMBER_OF_PROCESSORS > 1 ]; then
+  MAKEFLAGS=-j$NUMBER_OF_PROCESSORS
 fi
 
 #libdvdcss
@@ -21,7 +26,7 @@ sh bootstrap
       --disable-doc \
       --enable-static \
       --with-pic
-make
+make $MAKEFLAGS
 strip -S src/.libs/libdvdcss-2.dll
 cd ..
 mkdir -p includes/dvdcss
@@ -43,7 +48,7 @@ echo "***** Building libdvdread *****"
       --disable-debug
 mkdir -p ../includes/dvdread
 cp ../libdvdread/src/*.h ../includes/dvdread
-make
+make $MAKEFLAGS
 cd ..
 
 #libdvdnav
@@ -60,7 +65,7 @@ echo "***** Building libdvdnav *****"
       --extra-cflags="-D_XBMC -DNDEBUG -I`pwd`/../includes" \
       --with-dvdread-config="`pwd`/../libdvdread/obj/dvdread-config" \
       --disable-debug
-make
+make $MAKEFLAGS
 gcc \
       -shared \
       -o obj/libdvdnav.dll \

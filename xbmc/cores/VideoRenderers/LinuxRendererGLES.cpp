@@ -28,7 +28,6 @@
 #include <locale.h>
 #include "guilib/MatrixGLES.h"
 #include "LinuxRendererGLES.h"
-#include "Application.h"
 #include "utils/MathUtils.h"
 #include "utils/GLUtils.h"
 #include "settings/Settings.h"
@@ -38,6 +37,7 @@
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
 #include "lib/DllSwScale.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
@@ -470,62 +470,6 @@ void CLinuxRendererGLES::FlipPage(int source)
   return;
 }
 
-
-unsigned int CLinuxRendererGLES::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
-{
-  BYTE *s;
-  BYTE *d;
-  int i, p;
-
-  int index = NextYV12Texture();
-  if( index < 0 )
-    return -1;
-
-  YV12Image &im = m_buffers[index].image;
-  // copy Y
-  p = 0;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
-  }
-
-  w >>= im.cshift_x; h >>= im.cshift_y;
-  x >>= im.cshift_x; y >>= im.cshift_y;
-
-  // copy U
-  p = 1;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
-  }
-
-  // copy V
-  p = 2;
-  // check for valid yv12, nv12 does not use the third plane.
-  if(im.plane[p] && src[p])
-  {
-    d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-    s = src[p];
-    for (i = 0;i < h;i++)
-    {
-      memcpy(d, s, w);
-      s += stride[p];
-      d += im.stride[p];
-    }
-  }
-
-  m_eventTexturesDone[index]->Set();
-  return 0;
-}
-
 unsigned int CLinuxRendererGLES::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
@@ -596,7 +540,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     break;
   }
 
-  g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CGUIDialogKaiToast::QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {

@@ -662,6 +662,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     m_scrollOffset -= (m_orientation == HORIZONTAL) ? event.m_offsetX : event.m_offsetY;
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
     int offset = (int)MathUtils::round_int(m_scrollOffset / size);
+    m_scrollTimer.Start();
     SetOffset(offset);
     ValidateOffset();
     return EVENT_RESULT_HANDLED;

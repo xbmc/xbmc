@@ -73,7 +73,7 @@ CDelayedMessage::CDelayedMessage(ThreadMessage& msg, unsigned int delay)
   m_msg.dwMessage  = msg.dwMessage;
   m_msg.dwParam1   = msg.dwParam1;
   m_msg.dwParam2   = msg.dwParam2;
-  m_msg.hWaitEvent = msg.hWaitEvent;
+  m_msg.waitEvent  = msg.waitEvent;
   m_msg.lpVoid     = msg.lpVoid;
   m_msg.strParam   = msg.strParam;
   m_msg.params     = msg.params;
@@ -102,8 +102,8 @@ void CApplicationMessenger::Cleanup()
   {
     ThreadMessage* pMsg = m_vecMessages.front();
 
-    if (pMsg->hWaitEvent)
-      pMsg->hWaitEvent->Set();
+    if (pMsg->waitEvent)
+      pMsg->waitEvent->Set();
 
     delete pMsg;
     m_vecMessages.pop();
@@ -113,8 +113,8 @@ void CApplicationMessenger::Cleanup()
   {
     ThreadMessage* pMsg = m_vecWindowMessages.front();
 
-    if (pMsg->hWaitEvent)
-      pMsg->hWaitEvent->Set();
+    if (pMsg->waitEvent)
+      pMsg->waitEvent->Set();
 
     delete pMsg;
     m_vecWindowMessages.pop();
@@ -123,12 +123,16 @@ void CApplicationMessenger::Cleanup()
 
 void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 {
-  message.hWaitEvent = NULL;
+  message.waitEvent.reset();
+  boost::shared_ptr<CEvent> waitEvent;
   if (wait)
   { // check that we're not being called from our application thread, else we'll be waiting
     // forever!
     if (!g_application.IsCurrentThread())
-      message.hWaitEvent = new CEvent(true);
+    {
+      message.waitEvent.reset(new CEvent(true));
+      waitEvent = message.waitEvent;
+    }
     else
     {
       //OutputDebugString("Attempting to wait on a SendMessage() from our application thread will cause lockup!\n");
@@ -142,11 +146,8 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
 
   if (g_application.m_bStop)
   {
-    if (message.hWaitEvent)
-    {
-      delete message.hWaitEvent;
-      message.hWaitEvent = NULL;
-    }
+    if (message.waitEvent)
+      message.waitEvent.reset();
     return;
   }
 
@@ -154,7 +155,7 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
   msg->dwMessage = message.dwMessage;
   msg->dwParam1 = message.dwParam1;
   msg->dwParam2 = message.dwParam2;
-  msg->hWaitEvent = message.hWaitEvent;
+  msg->waitEvent = message.waitEvent;
   msg->lpVoid = message.lpVoid;
   msg->strParam = message.strParam;
   msg->params = message.params;
@@ -163,14 +164,18 @@ void CApplicationMessenger::SendMessage(ThreadMessage& message, bool wait)
     m_vecWindowMessages.push(msg);
   else
     m_vecMessages.push(msg);
-  lock.Leave();
-
-  if (message.hWaitEvent)
-  { // ensure the thread doesn't hold the graphics lock
+  lock.Leave();  // this releases the lock on the vec of messages and
+                 //   allows the ProcessMessage to execute and therefore
+                 //   delete the message itself. Therefore any accesss
+                 //   of the message itself after this point consittutes
+                 //   a race condition (yarc - "yet another race condition")
+                 //
+  if (waitEvent) // ... it just so happens we have a spare reference to the
+                 //  waitEvent ... just for such contingencies :)
+  { 
+    // ensure the thread doesn't hold the graphics lock
     CSingleExit exit(g_graphicsContext);
-    message.hWaitEvent->Wait();
-    delete message.hWaitEvent;
-    message.hWaitEvent = NULL;
+    waitEvent->Wait();
   }
 }
 
@@ -186,11 +191,13 @@ void CApplicationMessenger::ProcessMessages()
 
     //Leave here as the message might make another
     //thread call processmessages or sendmessage
-    lock.Leave();
+
+    boost::shared_ptr<CEvent> waitEvent = pMsg->waitEvent; 
+    lock.Leave(); // <- see the large comment in SendMessage ^
 
     ProcessMessage(pMsg);
-    if (pMsg->hWaitEvent)
-      pMsg->hWaitEvent->Set();
+    if (waitEvent)
+      waitEvent->Set();
     delete pMsg;
 
     lock.Enter();
@@ -337,7 +344,7 @@ case TMSG_POWERDOWN:
         g_application.WakeUpScreenSaverAndDPMS();
 
         g_graphicsContext.Lock();
-        pSlideShow->Reset();
+
         if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
           g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
         if (URIUtils::IsZIP(pMsg->strParam) || URIUtils::IsRAR(pMsg->strParam)) // actually a cbz/cbr
@@ -352,6 +359,7 @@ case TMSG_POWERDOWN:
           CUtil::GetRecursiveListing(strPath, items, g_settings.m_pictureExtensions);
           if (items.Size() > 0)
           {
+            pSlideShow->Reset();
             for (int i=0;i<items.Size();++i)
             {
               pSlideShow->Add(items[i].get());
@@ -488,7 +496,7 @@ case TMSG_POWERDOWN:
           break;
 
         case 3:
-          g_application.getApplicationMessenger().RebootToDashBoard();
+          g_application.getApplicationMessenger().Quit();
           break;
 
         case 4:
@@ -570,6 +578,10 @@ case TMSG_POWERDOWN:
       g_playlistPlayer.SetShuffle(pMsg->dwParam1, pMsg->dwParam2 > 0);
       break;
 
+    case TMSG_PLAYLISTPLAYER_REPEAT:
+      g_playlistPlayer.SetRepeat(pMsg->dwParam1, (PLAYLIST::REPEAT_STATE)pMsg->dwParam2);
+      break;
+
     case TMSG_PLAYLISTPLAYER_GET_ITEMS:
       if (pMsg->lpVoid)
       {
@@ -578,6 +590,16 @@ case TMSG_POWERDOWN:
 
         for (int i = 0; i < playlist.size(); i++)
           list->Add(CFileItemPtr(new CFileItem(*playlist[i])));
+      }
+      break;
+
+    case TMSG_PLAYLISTPLAYER_SWAP:
+      if (pMsg->lpVoid)
+      {
+        vector<int> *indexes = (vector<int> *)pMsg->lpVoid;
+        if (indexes->size() == 2)
+          g_playlistPlayer.Swap(pMsg->dwParam1, indexes->at(0), indexes->at(1));
+        delete indexes;
       }
       break;
 
@@ -729,11 +751,13 @@ void CApplicationMessenger::ProcessWindowMessages()
     m_vecWindowMessages.pop();
 
     // leave here in case we make more thread messages from this one
-    lock.Leave();
+
+    boost::shared_ptr<CEvent> waitEvent = pMsg->waitEvent;
+    lock.Leave(); // <- see the large comment in SendMessage ^
 
     ProcessMessage(pMsg);
-    if (pMsg->hWaitEvent)
-      pMsg->hWaitEvent->Set();
+    if (waitEvent)
+      waitEvent->Set();
     delete pMsg;
 
     lock.Enter();
@@ -931,6 +955,25 @@ void CApplicationMessenger::PlayListPlayerGetItems(int playlist, CFileItemList &
   SendMessage(tMsg, true);
 }
 
+void CApplicationMessenger::PlayListPlayerSwap(int playlist, int indexItem1, int indexItem2)
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_SWAP};
+  tMsg.dwParam1 = playlist;
+  vector<int> *indexes = new vector<int>();
+  indexes->push_back(indexItem1);
+  indexes->push_back(indexItem2);
+  tMsg.lpVoid = (void *)indexes;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::PlayListPlayerRepeat(int playlist, int repeatState)
+{
+  ThreadMessage tMsg = {TMSG_PLAYLISTPLAYER_REPEAT};
+  tMsg.dwParam1 = playlist;
+  tMsg.dwParam2 = repeatState;
+  SendMessage(tMsg, true);
+}
+
 void CApplicationMessenger::PictureShow(string filename)
 {
   ThreadMessage tMsg = {TMSG_PICTURE_SHOW};
@@ -994,12 +1037,6 @@ void CApplicationMessenger::Reset()
 void CApplicationMessenger::RestartApp()
 {
   ThreadMessage tMsg = {TMSG_RESTARTAPP};
-  SendMessage(tMsg);
-}
-
-void CApplicationMessenger::RebootToDashBoard()
-{
-  ThreadMessage tMsg = {TMSG_DASHBOARD};
   SendMessage(tMsg);
 }
 

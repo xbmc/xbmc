@@ -68,49 +68,14 @@ namespace MathUtils
     return (i);
   }
 
-  inline int ceil_int (double x)
-  {
-    assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
-    assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
-
-    #if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
-        const float round_towards_p_i = -0.5f;
-    #endif
-    int i;
-
-#ifndef _LINUX
-    __asm
-    {
-      fld x
-      fadd st, st (0)
-      fsubr round_towards_p_i
-      fistp i
-      sar i, 1
-    }
-#else
-    #if defined(__powerpc__) || defined(__ppc__) || defined(__arm__)
-        return (int)ceil(x);
-    #else
-        __asm__ __volatile__ (
-            "fadd %%st\n\t"
-            "fsubr %%st(1)\n\t"
-            "fistpl %0\n\t"
-            "sarl $1, %0\n"
-            : "=m"(i) : "u"(round_towards_p_i), "t"(x) : "st"
-        );
-    #endif
-#endif
-    return (-i);
-  }
-
   inline int truncate_int(double x)
   {
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
     assert(x < static_cast <double>(INT_MAX / 2) + 1.0);
 
-    #if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
-        const float round_towards_m_i = -0.5f;
-    #endif
+#if !defined(__powerpc__) && !defined(__ppc__) && !defined(__arm__)
+    const float round_towards_m_i = -0.5f;
+#endif
     int i;
 
 #ifndef _LINUX
@@ -124,18 +89,18 @@ namespace MathUtils
       sar i, 1
     }
 #else
-    #if defined(__powerpc__) || defined(__ppc__) || defined(__arm__)
-        return (int)x;
-    #else
-        __asm__ __volatile__ (
-            "fadd %%st\n\t"
-            "fabs\n\t"
-            "fadd %%st(1)\n\t"
-            "fistpl %0\n\t"
-            "sarl $1, %0\n"
-            : "=m"(i) : "u"(round_towards_m_i), "t"(x) : "st"
-        );
-    #endif
+#if defined(__powerpc__) || defined(__ppc__) || defined(__arm__)
+    return (int)x;
+#else
+    __asm__ __volatile__ (
+                          "fadd %%st\n\t"
+                          "fabs\n\t"
+                          "fadd %%st(1)\n\t"
+                          "fistpl %0\n\t"
+                          "sarl $1, %0\n"
+                          : "=m"(i) : "u"(round_towards_m_i), "t"(x) : "st"
+                          );
+#endif
 #endif
     if (x < 0)
       i = -i;
@@ -153,7 +118,6 @@ namespace MathUtils
     // functions as unused
     MathUtils::round_int(0.0);
     MathUtils::truncate_int(0.0);
-    MathUtils::ceil_int(0.0);
     MathUtils::abs(0);
   }
 } // namespace MathUtils

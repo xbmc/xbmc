@@ -58,5 +58,7 @@ namespace JSONRPC
 
   private:
     static JSON_STATUS GetAdditionalMovieDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result);
+    static JSON_STATUS GetAdditionalEpisodeDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result);
+    static JSON_STATUS GetAdditionalMusicVideoDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result);
   };
 }

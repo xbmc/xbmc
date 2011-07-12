@@ -88,7 +88,7 @@ void ReadConfig()
 	int argc = args.size() + 1;
 	char** argv = new char*[argc + 1];
 	int i = 0;
-	argv[i++] = "XBMCHelper";
+	argv[i++] = (char*)"XBMCHelper";
   
 	for (vector<string>::iterator it = args.begin(); it != args.end(); ){
     //fixup the arguments, here: remove '"' like bash would normally do
@@ -174,11 +174,11 @@ void ConfigureHelper(){
   [gp_xbmchelper enableVerboseMode:g_verbose_mode];
   
   //set apppath to startup when pressing Menu
-  [gp_xbmchelper setApplicationPath:[NSString stringWithCString:g_app_path.c_str()]];    
+  [gp_xbmchelper setApplicationPath:[NSString stringWithUTF8String:g_app_path.c_str()]];    
   //set apppath to startup when pressing Menu
-  [gp_xbmchelper setApplicationHome:[NSString stringWithCString:g_app_home.c_str()]];
+  [gp_xbmchelper setApplicationHome:[NSString stringWithUTF8String:g_app_home.c_str()]];
   //connect to specified server
-  [gp_xbmchelper connectToServer:[NSString stringWithCString:g_server_address.c_str()] onPort:g_server_port withMode:g_mode withTimeout: g_universal_timeout];  
+  [gp_xbmchelper connectToServer:[NSString stringWithUTF8String:g_server_address.c_str()] onPort:g_server_port withMode:g_mode withTimeout: g_universal_timeout];  
 }
 
 //----------------------------------------------------------------------------

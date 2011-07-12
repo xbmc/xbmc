@@ -61,17 +61,20 @@ CStdString TranslateContent(const CONTENT_TYPE &content, bool pretty=false);
 CONTENT_TYPE TranslateContent(const CStdString &string);
 TYPE ScraperTypeFromContent(const CONTENT_TYPE &content);
 
-// thrown as exception to show error dialog
+// thrown as exception to signal abort or show error dialog
 class CScraperError
 {
 public:
+  CScraperError() : m_fAborted(true) {}
   CScraperError(const CStdString &sTitle, const CStdString &sMessage) :
-    m_sTitle(sTitle), m_sMessage(sMessage) {}
+    m_fAborted(false), m_sTitle(sTitle), m_sMessage(sMessage) {}
 
+  bool FAborted() const { return m_fAborted; }
   const CStdString &Title() const { return m_sTitle; }
   const CStdString &Message() const { return m_sMessage; }
 
 private:
+  bool m_fAborted;
   CStdString m_sTitle;
   CStdString m_sMessage;
 };
@@ -140,6 +143,10 @@ private:
 
   bool Load();
   std::vector<CStdString> Run(const CStdString& function,
+                              const CScraperUrl& url,
+                              XFILE::CFileCurl& http,
+                              const std::vector<CStdString>* extras = NULL);
+  std::vector<CStdString> RunNoThrow(const CStdString& function,
                               const CScraperUrl& url,
                               XFILE::CFileCurl& http,
                               const std::vector<CStdString>* extras = NULL);

@@ -135,9 +135,6 @@ public:
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
   static bool SupportsFileOperations(const CStdString& strPath);
-
-  static CStdString GetCachedMusicThumb(const CStdString &path);
-  static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
 
 #ifdef UNIT_TESTING

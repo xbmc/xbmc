@@ -236,11 +236,11 @@ void XBPython::UnloadExtensionLibs()
         "\tdef __init__(self, loglevel=xbmc.LOGNOTICE):\n" \
         "\t\tself.ll=loglevel\n" \
         "\tdef write(self, data):\n" \
-        "\t\txbmc.output(data,self.ll)\n" \
+        "\t\txbmc.log(data,self.ll)\n" \
         "\tdef close(self):\n" \
-        "\t\txbmc.output('.')\n" \
+        "\t\txbmc.log('.')\n" \
         "\tdef flush(self):\n" \
-        "\t\txbmc.output('.')\n" \
+        "\t\txbmc.log('.')\n" \
         "import sys\n" \
         "sys.stdout = xbmcout()\n" \
         "sys.stderr = xbmcout(xbmc.LOGERROR)\n"

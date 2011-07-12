@@ -53,7 +53,8 @@ CGUIDialogNetworkSetup::~CGUIDialogNetworkSetup()
 
 bool CGUIDialogNetworkSetup::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU ||
+      action.GetID() == ACTION_NAV_BACK)
     m_confirmed = false;
   return CGUIDialog::OnAction(action);
 }

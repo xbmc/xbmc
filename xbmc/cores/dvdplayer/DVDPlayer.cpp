@@ -39,6 +39,9 @@
 
 #include "DVDFileInfo.h"
 
+#include "utils/LangCodeExpander.h"
+#include "guilib/LocalizeStrings.h"
+
 #include "utils/URIUtils.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
@@ -65,6 +68,7 @@
 #include "utils/StreamDetails.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
 #include "Util.h"
 
@@ -1336,7 +1340,7 @@ void CDVDPlayer::HandlePlaySpeed()
     {
       if(level  < 0.0)
       {
-        g_application.m_guiDialogKaiToast.QueueNotification("Cache full", "Cache filled before reaching required amount for continous playback");
+        CGUIDialogKaiToast::QueueNotification("Cache full", "Cache filled before reaching required amount for continous playback");
         caching = CACHESTATE_INIT;
       }
       if(level >= 1.0)
@@ -2464,10 +2468,17 @@ void CDVDPlayer::GetSubtitleName(int iStream, CStdString &strStreamName)
   if(s.name.length() > 0)
     strStreamName = s.name;
   else
-    strStreamName = "Unknown";
+    strStreamName = g_localizeStrings.Get(13205); // Unknown
 
   if(s.type == STREAM_NONE)
     strStreamName += "(Invalid)";
+}
+
+void CDVDPlayer::GetSubtitleLanguage(int iStream, CStdString &strStreamLang)
+{
+  SelectionStream& s = m_SelectionStreams.Get(STREAM_SUBTITLE, iStream);
+  if (!g_LangCodeExpander.Lookup(strStreamLang, s.language))
+    strStreamLang = g_localizeStrings.Get(13205); // Unknown
 }
 
 void CDVDPlayer::SetSubtitle(int iStream)
@@ -3241,6 +3252,7 @@ bool CDVDPlayer::OnAction(const CAction &action)
         g_infoManager.SetDisplayAfterSeek();
         return true;
       case ACTION_PREVIOUS_MENU:
+      case ACTION_NAV_BACK:
         {
           THREAD_ACTION(action);
           CLog::Log(LOGDEBUG, " - menu back");

@@ -87,7 +87,7 @@ public:
   
   float GetTextWidth(const CStdStringW &text) const;
   bool Update(const CStdString &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
-  void SetText(const CStdStringW &text, float maxWidth = 0, bool forceLTRReadingOrder = false);
+  bool UpdateW(const CStdStringW &text, float maxWidth = 0, bool forceUpdate = false, bool forceLTRReadingOrder = false);
 
   unsigned int GetTextLength() const;
   void GetFirstText(vecText &text) const;
@@ -122,7 +122,7 @@ protected:
   // the default color (may differ from the font objects defaults)
   color_t m_textColor;
 
-  CStdString m_lastText;
+  CStdStringW m_lastText;
   float m_textWidth;
   float m_textHeight;
 private:

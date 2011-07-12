@@ -412,6 +412,19 @@ unsigned int CBaseTexture::PadPow2(unsigned int x)
   return ++x;
 }
 
+bool CBaseTexture::SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements, unsigned int offset)
+{
+  if (!pixels) return false;
+  unsigned char *dst = pixels;
+  for (unsigned int y = 0; y < height; y++)
+  {
+    dst = pixels + (y * pitch);
+    for (unsigned int x = 0; x < pitch; x+=elements)
+      std::swap(dst[x+offset], dst[x+2+offset]);
+  }
+  return true;
+}
+
 unsigned int CBaseTexture::GetPitch(unsigned int width) const
 {
   switch (m_format)

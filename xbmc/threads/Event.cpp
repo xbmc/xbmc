@@ -19,22 +19,13 @@
 */
 
 #include <stdarg.h>
+#include <limits>
 
 #include "Event.h"
 
-void CEvent::groupSet()
-{
-  if (groups)
-  {
-    for (std::vector<XbmcThreads::CEventGroup*>::iterator iter = groups->begin(); 
-         iter != groups->end(); iter++)
-      (*iter)->Set(this);
-  }
-}
-
 void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 {
-  CSingleLock lock(mutex);
+  CSingleLock lock(groupListMutex);
   if (groups == NULL)
     groups = new std::vector<XbmcThreads::CEventGroup*>();
 
@@ -43,7 +34,7 @@ void CEvent::addGroup(XbmcThreads::CEventGroup* group)
 
 void CEvent::removeGroup(XbmcThreads::CEventGroup* group)
 {
-  CSingleLock lock(mutex);
+  CSingleLock lock(groupListMutex);
   if (groups)
   {
     for (std::vector<XbmcThreads::CEventGroup*>::iterator iter = groups->begin(); iter != groups->end(); iter++)
@@ -63,8 +54,90 @@ void CEvent::removeGroup(XbmcThreads::CEventGroup* group)
   }
 }
 
+// locking is ALWAYS done in this order:
+//  CEvent::groupListMutex -> CEventGroup::mutex -> CEvent::mutex
+void CEvent::Set()
+{
+  // no locking necessary
+  signaled = true; 
+  condVar.notifyAll();
+
+  CSingleLock l(groupListMutex);
+  if (groups)
+  {
+    for (std::vector<XbmcThreads::CEventGroup*>::iterator iter = groups->begin(); 
+         iter != groups->end(); iter++)
+      (*iter)->Set(this);
+  }
+}
+
 namespace XbmcThreads
 {
+  /**
+   * This will block until any one of the CEvents in the group are
+   * signaled at which point a pointer to that CEvents will be 
+   * returned.
+   */
+  CEvent* CEventGroup::wait() 
+  { 
+    return wait(std::numeric_limits<unsigned int>::max());
+  }
+
+  /**
+   * This will block until any one of the CEvents in the group are
+   * signaled or the timeout is reachec. If an event is signaled then
+   * it will return a pointer to that CEvent, otherwise it will return
+   * NULL.
+   */
+  // locking is ALWAYS done in this order:
+  //  CEvent::groupListMutex -> CEventGroup::mutex -> CEvent::mutex
+  //
+  // Notice that this method doesn't grab the CEvent::groupListMutex at all. This
+  // is fine. It just grabs the CEventGroup::mutex and THEN the individual 
+  // CEvent::mutex's
+  CEvent* CEventGroup::wait(unsigned int milliseconds)  
+  { 
+    CSingleLock lock(mutex); // grab CEventGroup::mutex
+    numWaits++; 
+
+    // ==================================================
+    // This block checks to see if any child events are 
+    // signaled and sets 'signaled' to the first one it
+    // finds.
+    // ==================================================
+    signaled = NULL;
+    for (std::vector<CEvent*>::iterator iter = events.begin();
+         signaled == NULL && iter != events.end(); iter++)
+    {
+      CEvent* cur = *iter;
+      if (cur->signaled) 
+        signaled = cur;
+    }
+    // ==================================================
+
+    if(!signaled)
+    {
+      // both of these release the CEventGroup::mutex
+      if (milliseconds == std::numeric_limits<unsigned int>::max())
+        condVar.wait(mutex); 
+      else
+        condVar.wait(mutex,milliseconds); 
+    } // at this point the CEventGroup::mutex is reacquired
+    numWaits--; 
+
+    // signaled should have been set by a call to CEventGroup::Set
+    CEvent* ret = signaled;
+    if (numWaits == 0) 
+    {
+      if (signaled)
+        // This acquires and releases the CEvent::mutex. This is fine since the
+        //  CEventGroup::mutex is already being held
+        signaled->WaitMSec(0); // reset the event if needed
+      signaled = NULL;  // clear the signaled if all the waiters are gone
+    }
+    return ret;
+  }
+
   CEventGroup::CEventGroup(int num, CEvent* v1, ...) : signaled(NULL), condVar(signaled), numWaits(0)
   {
     va_list ap;
@@ -109,22 +182,8 @@ namespace XbmcThreads
 
   CEventGroup::~CEventGroup()
   {
-    // we preping for a wait, so we need to set the group value on
-    // all of the CEvents. 
     for (std::vector<CEvent*>::iterator iter = events.begin();
          iter != events.end(); iter++)
       (*iter)->removeGroup(this);
   }
-
-  CEvent* CEventGroup::anyEventsSignaled()
-  {
-    for (std::vector<CEvent*>::iterator iter = events.begin();
-         iter != events.end(); iter++)
-    {
-      CEvent* cur = *iter;
-      if (cur->signaled) return cur;
-    }
-    return NULL;
-  }
-
 }
