@@ -183,7 +183,7 @@ void CGUIProgressControl::Render()
         if (restore)
           g_graphicsContext.RestoreClipRegion();
       }
-      else if (m_guiMid.GetWidth() > 0)
+      else if (!m_bReveal && m_guiMid.GetWidth() > 0)
         m_guiMid.Render();
     }
     else
@@ -197,7 +197,7 @@ void CGUIProgressControl::Render()
         if (restore)
           g_graphicsContext.RestoreClipRegion();
       }
-      else if (m_guiMid.GetWidth() > 0)
+      else if (!m_bReveal && m_guiMid.GetWidth() > 0)
         m_guiMid.Render();
 
       m_guiRight.Render();
