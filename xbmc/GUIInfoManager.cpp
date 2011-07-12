@@ -439,6 +439,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int compareString = ConditionalStringParameter(label);
       return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_ICON : SYSTEM_ADDON_ICON, compareString, 1));
     }
+    else if (strTest.Equals("system.batterylevel")) ret = SYSTEM_BATTERY_LEVEL;
   }
   // library test conditions
   else if (strTest.Left(7).Equals("library"))
