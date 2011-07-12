@@ -54,14 +54,13 @@ public:
   virtual bool IsDialog() const { return true;};
   virtual bool IsModalDialog() const { return m_bModal; };
 
-  virtual bool IsAnimating(ANIMATION_TYPE animType);
-
   void SetAutoClose(unsigned int timeoutMs);
   void SetSound(bool OnOff) { m_enableSound = OnOff; };
 
 protected:
   virtual void SetDefaults();
   virtual void OnWindowLoaded();
+  virtual void OnWindowDeinited();
   virtual void UpdateVisibility();
 
   friend class CApplicationMessenger;
@@ -72,7 +71,6 @@ protected:
   bool m_bRunning;
   bool m_wasRunning; ///< \brief true if we were running during the last DoProcess()
   bool m_bModal;
-  bool m_dialogClosing;
   bool m_autoClosing;
   bool m_enableSound;
   unsigned int m_showStartTime;

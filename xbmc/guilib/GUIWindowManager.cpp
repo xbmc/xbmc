@@ -332,6 +332,9 @@ void CGUIWindowManager::DeinitWindow(CGUIWindow* window, int nextWindowID /*= 0*
   if (nextWindowID != WINDOW_FULLSCREEN_VIDEO && window->HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
     window->QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
 
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, nextWindowID);
+  window->OnMessage(msg);
+
   if (blockContext)
   {
     while (window->IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
@@ -340,9 +343,6 @@ void CGUIWindowManager::DeinitWindow(CGUIWindow* window, int nextWindowID /*= 0*
       ProcessRenderLoop(true);
     }
   }
-
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, nextWindowID);
-  window->OnMessage(msg);
 }
 
 void CGUIWindowManager::ChangeActiveWindow(int newWindow, const CStdString& strPath)
