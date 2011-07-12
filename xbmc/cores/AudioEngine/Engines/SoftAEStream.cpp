@@ -26,7 +26,7 @@
 #include "DllAvCore.h"
 
 #include "AEFactory.h"
-#include "AEUtil.h"
+#include "Utils/AEUtil.h"
 
 #include "SoftAE.h"
 #include "SoftAEStream.h"

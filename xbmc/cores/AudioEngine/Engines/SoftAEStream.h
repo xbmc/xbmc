@@ -27,8 +27,8 @@
 
 #include "AEStream.h"
 #include "AEAudioFormat.h"
-#include "AEConvert.h"
-#include "AERemap.h"
+#include "Utils/AEConvert.h"
+#include "Utils/AERemap.h"
 #include "AEPostProc.h"
 
 class IAEPostProc;

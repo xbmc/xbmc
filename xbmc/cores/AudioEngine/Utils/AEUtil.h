@@ -20,7 +20,7 @@
  *
  */
 
-#include "AEAudioFormat.h"
+#include "../AEAudioFormat.h"
 #include "utils/StdString.h"
 #include <math.h>
 

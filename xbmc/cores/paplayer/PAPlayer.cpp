@@ -34,7 +34,7 @@
 
 #include "threads/SingleLock.h"
 
-#include "cores/AudioEngine/AEUtil.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds */
 #define FAST_XFADE_TIME         2000 /* 2 seconds */

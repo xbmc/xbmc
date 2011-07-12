@@ -28,9 +28,9 @@
 
 #include "AEFactory.h"
 #include "AEAudioFormat.h"
-#include "AEConvert.h"
-#include "AERemap.h"
-#include "AEUtil.h"
+#include "Utils/AEConvert.h"
+#include "Utils/AERemap.h"
+#include "Utils/AEUtil.h"
 #include "DllAvCore.h"
 
 #include "SoftAE.h"

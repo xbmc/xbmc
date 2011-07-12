@@ -23,7 +23,7 @@
 #define DTS_ENCODE_BITRATE 1411200
 
 #include "AEEncoderFFmpeg.h"
-#include "AEUtil.h"
+#include "Utils/AEUtil.h"
 #include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"

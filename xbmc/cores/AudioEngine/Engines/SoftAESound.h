@@ -24,7 +24,7 @@
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 #include "AESound.h"
-#include "AEWAVLoader.h"
+#include "Utils/AEWAVLoader.h"
 
 class CWAVLoader;
 class CSoftAESound : public IAESound

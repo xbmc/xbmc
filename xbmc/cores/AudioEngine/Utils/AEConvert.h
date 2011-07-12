@@ -21,7 +21,7 @@
  */
 
 #include <stdint.h>
-#include "AEAudioFormat.h"
+#include "../AEAudioFormat.h"
 
 /* note: always converts to machine byte endian */
 

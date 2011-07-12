@@ -21,7 +21,7 @@
 
 #include "DVDPlayerCodec.h"
 #include "Util.h"
-#include "cores/AudioEngine/AEUtil.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #include "cores/dvdplayer/DVDInputStreams/DVDFactoryInputStream.h"
 #include "cores/dvdplayer/DVDDemuxers/DVDFactoryDemuxer.h"

@@ -29,8 +29,8 @@
 #include "threads/SharedSection.h"
 
 #include "ThreadedAE.h"
-#include "AEConvert.h"
-#include "AERemap.h"
+#include "Utils/AEConvert.h"
+#include "Utils/AERemap.h"
 #include "AESink.h"
 #include "AEAudioFormat.h"
 #include "AEEncoder.h"
