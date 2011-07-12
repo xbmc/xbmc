@@ -27,15 +27,6 @@
   #define USE_BOOST_THREADING 1
 #endif
 
-// currently just hack it
-//#define USE_BOOST_THREADING 1
-#define USE_PTHREADS_THREADING 1
-
-/**
- * Eventually there should be c-preprocessor logic here that selects the 
- * platform implementation based on some compiler flags or config settings
- */
-
 #ifdef USE_BOOST_THREADING
 #define USE_BOOST_LOCKING 1
 #define USE_BOOST_TLS 1

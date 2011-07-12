@@ -318,6 +318,12 @@ AC_ARG_ENABLE([external-ffmpeg],
   [use_external_ffmpeg=$enableval],
   [use_external_ffmpeg=$use_external_libraries])
 
+AC_ARG_ENABLE([pthreads],
+  [AS_HELP_STRING([--enable-pthreads],
+  [prefer the use of pthreads over boost (default is to use boost for threading) 'Linux only'])],
+  [use_pthreads=$enableval],
+  [use_pthreads=no])
+
 ### End of external library options
 
 if test "x$host_vendor" != "xapple"; then
@@ -527,7 +533,6 @@ AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have
 # Checks for boost headers using CXX instead of CC
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
-AC_CHECK_HEADER([boost/thread.hpp],, AC_MSG_ERROR($missing_library))
 AC_LANG_POP([C++])
 
 # Checks for platforms libraries.
@@ -600,7 +605,19 @@ AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitab
 AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
 AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
-AC_CHECK_LIB([boost_thread],[main],, AC_MSG_ERROR($missing_library))
+AC_LANG_PUSH([C++])
+if test "$use_pthreads" = "no"; then
+   AC_CHECK_HEADER([boost/thread.hpp],, AC_MSG_ERROR($missing_library))
+   AC_CHECK_LIB([boost_thread],[main],, AC_MSG_ERROR($missing_library))
+   AC_DEFINE([USE_BOOST_THREADING], [1], [Whether to use boost as the threading implementation.])
+  final_message="$final_message\n  Threading:\tBoost"
+else
+   AC_CHECK_HEADER([boost/thread.hpp],AC_CHECK_LIB([boost_thread],[main],,), [Missing the boost threading libraries. Using pthreads])
+   AC_DEFINE([USE_PTHREADS_THREADING], [1], [Whether to use pthreads as the threading implementation.])
+  final_message="$final_message\n  Threading:\tpthreads"
+fi
+AC_LANG_POP([C++])
+
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
   AC_MSG_ERROR($missing_library))
