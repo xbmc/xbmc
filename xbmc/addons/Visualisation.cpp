@@ -28,7 +28,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/URIUtils.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/AudioEngine/AEConvert.h"
+#include "cores/AudioEngine/Utils/AEConvert.h"
 #ifdef _LINUX
 #include <dlfcn.h>
 #include "filesystem/SpecialProtocol.h"

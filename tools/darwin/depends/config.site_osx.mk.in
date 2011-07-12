@@ -12,7 +12,7 @@ else
   platform_sdk_version=@use_sdk@
 endif
 
-platform_min_version=macosx-version-min=@use_sdk@
+platform_min_version=macosx-version-min=10.4
 platform_path=/Developer
 platform_os_cflags=-arch @use_arch@ -no_compact_linkedit
 platform_os_ldflags=-arch @use_arch@ -no_compact_linkedit
@@ -37,7 +37,7 @@ export LIBTOOL=@use_toolchain@/bin/glibtool
 export LIBTOOLIZE=@use_toolchain@/bin/glibtoolize
 export PKG_CONFIG_PATH=${PREFIX}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
 export PATH:=@use_toolchain@/bin:${PREFIX}/bin:${platform_path}/usr/bin:/Developer/usr/bin:${PATH}
-export MACOSX_DEPLOYMENT_TARGET=@use_sdk@
+export MACOSX_DEPLOYMENT_TARGET=10.4
 
 # tweaks for boost
 ifeq ("@use_arch@", "ppc")
@@ -45,5 +45,5 @@ ifeq ("@use_arch@", "ppc")
 else
   boost_architecture=x86
 endif
-bjam_args=toolset=darwin-${platform_gcc_version} --architecture=${boost_architecture} address-model=32 target-os=darwin macosx-version=@use_sdk@ macosx-version-min=@use_sdk@ --link=static
+bjam_args=toolset=darwin-${platform_gcc_version} --architecture=${boost_architecture} address-model=32 target-os=darwin --link=static
 boost_flags=${platform_sdk_path} -arch @use_arch@

@@ -21,7 +21,7 @@
  */
 
 #include <stdint.h>
-#include "AESink.h"
+#include "Interfaces/AESink.h"
 
 class CAESinkFactory
 {

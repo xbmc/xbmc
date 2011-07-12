@@ -52,6 +52,7 @@
 #include "network/libscrobbler/lastfmscrobbler.h"
 #include "network/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
+#include "InertialScrollingHandler.h"
 #include "ApplicationMessenger.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
@@ -174,6 +175,7 @@
 #include "windows/GUIWindowPointer.h"
 #include "windows/GUIWindowSystemInfo.h"
 #include "windows/GUIWindowScreensaver.h"
+#include "windows/GUIWindowScreensaverDim.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "windows/GUIWindowStartup.h"
 #include "video/windows/GUIWindowFullScreen.h"
@@ -200,6 +202,10 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "dialogs/GUIDialogSeekBar.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "dialogs/GUIDialogVolumeBar.h"
+#include "dialogs/GUIDialogMuteBug.h"
 #include "video/dialogs/GUIDialogFileStacking.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogGamepad.h"
@@ -339,6 +345,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bStandalone = false;
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
+  m_pInertialScrollingHandler = new CInertialScrollingHandler();
 }
 
 CApplication::~CApplication(void)
@@ -350,6 +357,7 @@ CApplication::~CApplication(void)
 #endif
 
   delete m_dpms;
+  delete m_pInertialScrollingHandler;
 }
 
 bool CApplication::OnEvent(XBMC_Event& newEvent)
@@ -1069,21 +1077,23 @@ bool CApplication::Initialize()
   g_windowManager.Add(new CGUIWindowLoginScreen);            // window id = 29
   g_windowManager.Add(new CGUIWindowSettingsProfile);          // window id = 34
   g_windowManager.Add(new CGUIWindowAddonBrowser);          // window id = 40
+  g_windowManager.Add(new CGUIWindowScreensaverDim);            // window id = 97  
   g_windowManager.Add(new CGUIWindowDebugInfo);            // window id = 98
   g_windowManager.Add(new CGUIWindowPointer);            // window id = 99
   g_windowManager.Add(new CGUIDialogYesNo);              // window id = 100
   g_windowManager.Add(new CGUIDialogProgress);           // window id = 101
   g_windowManager.Add(new CGUIDialogKeyboard);           // window id = 103
-  g_windowManager.Add(&m_guiDialogVolumeBar);          // window id = 104
-  g_windowManager.Add(&m_guiDialogSeekBar);            // window id = 115
+  g_windowManager.Add(new CGUIDialogVolumeBar);          // window id = 104
+  g_windowManager.Add(new CGUIDialogSeekBar);            // window id = 115
   g_windowManager.Add(new CGUIDialogSubMenu);            // window id = 105
   g_windowManager.Add(new CGUIDialogContextMenu);        // window id = 106
-  g_windowManager.Add(&m_guiDialogKaiToast);           // window id = 107
+  g_windowManager.Add(new CGUIDialogKaiToast);           // window id = 107
   g_windowManager.Add(new CGUIDialogNumeric);            // window id = 109
   g_windowManager.Add(new CGUIDialogGamepad);            // window id = 110
   g_windowManager.Add(new CGUIDialogButtonMenu);         // window id = 111
   g_windowManager.Add(new CGUIDialogMusicScan);          // window id = 112
-  g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 113
+  g_windowManager.Add(new CGUIDialogMuteBug);            // window id = 113
+  g_windowManager.Add(new CGUIDialogPlayerControls);     // window id = 114
 #ifdef HAS_KARAOKE
   g_windowManager.Add(new CGUIDialogKaraokeSongSelectorSmall); // window id 143
   g_windowManager.Add(new CGUIDialogKaraokeSongSelectorLarge); // window id 144
@@ -1150,7 +1160,7 @@ bool CApplication::Initialize()
 #else
   CAEFactory::LoadEngine(AE_ENGINE_SOFT);
 #endif
-  SetHardwareVolume(AE.GetVolume());
+  SetHardwareVolume(CAEFactory::AE->GetVolume());
 
   // Make sure we have at least the default skin
   if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")) && !LoadSkin(DEFAULT_SKIN))
@@ -1667,10 +1677,6 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   CLog::Log(LOGDEBUG,"Load Skin XML: %.2fms", 1000.f * (end - start) / freq);
 
   CLog::Log(LOGINFO, "  initialize new skin...");
-  m_guiDialogVolumeBar.AllocResources(true);
-  m_guiDialogSeekBar.AllocResources(true);
-  m_guiDialogKaiToast.AllocResources(true);
-  m_guiDialogMuteBug.AllocResources(true);
   g_windowManager.AddMsgTarget(this);
   g_windowManager.AddMsgTarget(&g_playlistPlayer);
   g_windowManager.AddMsgTarget(&g_infoManager);
@@ -1719,12 +1725,6 @@ void CApplication::UnloadSkin(bool forReload /* = false */)
 
   g_windowManager.DeInitialize();
   CTextureCache::Get().Deinitialize();
-
-  //These windows are not handled by the windowmanager (why not?) so we should unload them manually
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-  m_guiDialogMuteBug.OnMessage(msg);
-  m_guiDialogMuteBug.ResetControlStates();
-  m_guiDialogMuteBug.FreeResources(true);
 
   // remove the skin-dependent window
   g_windowManager.Delete(WINDOW_DIALOG_FULLSCREEN_INFO);
@@ -1874,60 +1874,22 @@ bool CApplication::RenderNoPresent()
     }
   }
 
-  // reset image scaling and effect states
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
-
-  RenderScreenSaver();
-
   g_graphicsContext.Unlock();
 
   return hasRendered;
 }
 
-static int screenSaverFadeAmount = 0;
-
-void CApplication::RenderScreenSaver()
+float CApplication::GetDimScreenSaverLevel() const
 {
-  if (!m_screenSaver)
-    return;
+  if (!m_bScreenSave || !m_screenSaver ||
+      (m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" &&
+       m_screenSaver->ID() != "screensaver.xbmc.builtin.black" &&
+       m_screenSaver->ID() != "screensaver.xbmc.builtin.slideshow"))
+    return 0;
 
-  if (m_screenSaver->ID() != "screensaver.xbmc.builtin.dim" &&
-      m_screenSaver->ID() != "screensaver.xbmc.builtin.black" &&
-      m_screenSaver->ID() != "screensaver.xbmc.builtin.slideshow")
-    return; // nothing to do
-
-  float amount = 1.0f;
   if (!m_screenSaver->GetSetting("level").IsEmpty())
-    amount = 1.0f - 0.01f * (float)atof(m_screenSaver->GetSetting("level"));
-
-  // special case for dim screensaver
-  bool draw = false;
-  if (amount > 0.f)
-  {
-    if (m_bScreenSave)
-    {
-      draw = true;
-      if (screenSaverFadeAmount < 100)
-      {
-        screenSaverFadeAmount = std::min(100, screenSaverFadeAmount + 2);  // around a second to fade
-      }
-    }
-    else
-    {
-      if (screenSaverFadeAmount > 0)
-      {
-        draw = true;
-        screenSaverFadeAmount = std::max(0, screenSaverFadeAmount - 4);  // around a half second to unfade
-      }
-    }
-  }
-  if (draw)
-  {
-    color_t color = ((color_t)(screenSaverFadeAmount * amount * 2.55f) & 0xff) << 24;
-    CRect rect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
-    g_windowManager.MarkDirty();
-    CGUITexture::DrawQuad(rect, color);
-  }
+    return 100.0f - (float)atof(m_screenSaver->GetSetting("level"));
+  return 100.0f;
 }
 
 bool CApplication::WaitFrame(unsigned int timeout)
@@ -2002,10 +1964,8 @@ void CApplication::Render()
   unsigned int singleFrameTime = 10; // default limit 100 fps
 
   {
-    // Less fps in DPMS or Black screensaver
-    bool lowfps = (m_dpmsIsActive
-                   || (m_bScreenSave && m_screenSaver && (m_screenSaver->ID() == "screensaver.xbmc.builtin.black")
-                       && (screenSaverFadeAmount >= 100)));
+    // Less fps in DPMS
+    bool lowfps = m_dpmsIsActive;
     // Whether externalplayer is playing and we're unfocused
     bool extPlayerActive = m_eCurrentPlayer >= EPC_EXTPLAYER && IsPlaying() && !m_AppFocused;
 
@@ -2242,7 +2202,7 @@ bool CApplication::OnKey(const CKey& key)
               action.GetID() == ACTION_SELECT_ITEM ||
               action.GetID() == ACTION_ENTER ||
               action.GetID() == ACTION_PREVIOUS_MENU ||
-              action.GetID() == ACTION_CLOSE_DIALOG))
+              action.GetID() == ACTION_NAV_BACK))
         {
           // the action isn't plain navigation - check for a keyboard-specific keymap
           action = CButtonTranslator::GetInstance().GetAction(WINDOW_DIALOG_KEYBOARD, key, false);
@@ -2368,13 +2328,18 @@ bool CApplication::OnAction(const CAction &action)
       return OnAction(CAction(ACTION_PLAYER_PLAY));
   }
 
-// in normal case
-  // just pass the action to the current window and let it handle it
-  if (g_windowManager.OnAction(action))
+  //if the action would start or stop inertial scrolling
+  //by gesture - bypass the normal OnAction handler of current window
+  if( !m_pInertialScrollingHandler->CheckForInertialScrolling(&action) )
   {
-    m_navigationTimer.StartZero();
-    return true;
-  }
+    // in normal case
+    // just pass the action to the current window and let it handle it
+    if (g_windowManager.OnAction(action))
+    {
+      m_navigationTimer.StartZero();
+      return true;
+    }
+  } 
 
   // handle extra global presses
 
@@ -2564,7 +2529,7 @@ bool CApplication::OnAction(const CAction &action)
   }
   if (action.GetID() == ACTION_MUTE)
   {
-    Mute();
+    ToggleMute();
     return true;
   }
 
@@ -2591,8 +2556,7 @@ bool CApplication::OnAction(const CAction &action)
   {
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
-      // increase or decrease the volume
-      float volume = AE.GetVolume();
+      float volume = CAEFactory::AE->GetVolume();
 
       // calculate speed so that a full press will equal 1 second from min to max
       float speed = VOLUME_MAXIMUM - VOLUME_MINIMUM;
@@ -2615,7 +2579,9 @@ bool CApplication::OnAction(const CAction &action)
   if (IsPlaying() && action.GetAmount() && (action.GetID() == ACTION_ANALOG_SEEK_FORWARD || action.GetID() == ACTION_ANALOG_SEEK_BACK))
   {
     if (!m_pPlayer->CanSeek()) return false;
-    m_guiDialogSeekBar.OnAction(action);
+    CGUIWindow *seekBar = g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
+    if (seekBar)
+      seekBar->OnAction(action);
     return true;
   }
   if (action.GetID() == ACTION_GUIPROFILE_BEGIN)
@@ -2677,11 +2643,12 @@ void CApplication::FrameMove()
 
   g_graphicsContext.Lock();
   // check if there are notifications to display
-  if (m_guiDialogKaiToast.DoWork())
+  CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+  if (toast && toast->DoWork())
   {
-    if (!m_guiDialogKaiToast.IsDialogRunning())
+    if (!toast->IsDialogRunning())
     {
-      m_guiDialogKaiToast.Show();
+      toast->Show();
     }
   }
   g_graphicsContext.Unlock();
@@ -2699,6 +2666,7 @@ void CApplication::FrameMove()
   ProcessRemote(frameTime);
   ProcessGamepad(frameTime);
   ProcessEventServer(frameTime);
+  m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
 
   // Process events and animate controls
   if (!m_bStop)
@@ -3170,7 +3138,6 @@ bool CApplication::Cleanup()
     CAddonMgr::Get().DeInit();
 
     CLog::Log(LOGNOTICE, "unload sections");
-    CSectionLoader::UnloadAll();
 
 #ifdef HAS_PERFORMANCE_SAMPLE
     CLog::Log(LOGNOTICE, "performance statistics");
@@ -3856,10 +3823,6 @@ void CApplication::OnPlayBackStarted()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackStarted;1");
 #endif
 
-  CVariant param;
-  param["speed"] = 1;
-  CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
-
   CGUIMessage msg(GUI_MSG_PLAYBACK_STARTED, 0, 0);
   g_windowManager.SendThreadMessage(msg);
 }
@@ -4251,6 +4214,8 @@ bool CApplication::WakeUpScreenSaver()
     m_iScreenSaveLock = 0;
     ResetScreenSaverTimer();
 
+    CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverDeactivated");
+
     if (m_screenSaver->ID() == "visualization" || m_screenSaver->ID() == "screensaver.xbmc.builtin.slideshow")
     {
       // we can just continue as usual from vis mode
@@ -4333,6 +4298,8 @@ void CApplication::ActivateScreenSaver(bool forceType /*= false */)
   if (g_lcd && g_advancedSettings.m_lcdDimOnScreenSave)
     g_lcd->SetBackLight(0);
 #endif
+
+  CAnnouncementManager::Announce(GUI, "xbmc", "OnScreensaverActivated");
 
   // disable screensaver lock from the login screen
   m_iScreenSaveLock = g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN ? 1 : 0;
@@ -4449,6 +4416,10 @@ bool CApplication::OnMessage(CGUIMessage& message)
       g_infoManager.SetCurrentItem(*m_itemCurrentFile);
       CLastFmManager::GetInstance()->OnSongChange(*m_itemCurrentFile);
       g_partyModeManager.OnSongChange(true);
+
+      CVariant param;
+      param["speed"] = 1;
+      CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 
       DimLCDOnPlayback(true);
 
@@ -4709,6 +4680,7 @@ void CApplication::Process()
     ProcessSlow();
   }
 
+  g_cpuInfo.getUsedPercentage(); // must call it to recalculate pct values
 }
 
 // We get called every 500ms
@@ -4830,7 +4802,7 @@ void CApplication::ProcessSlow()
   if (!IsPlayingVideo())
     CAddonInstaller::Get().UpdateRepos();
 
-  AE.GarbageCollect();
+  CAEFactory::AE->GarbageCollect();
 }
 
 // Global Idle Time in Seconds
@@ -4919,45 +4891,53 @@ CFileItem& CApplication::CurrentFileItem()
 
 void CApplication::ShowVolumeBar(const CAction *action)
 {
-  m_guiDialogVolumeBar.Show();
-  if (action)
-    m_guiDialogVolumeBar.OnAction(*action);
+  CGUIDialog *volumeBar = (CGUIDialog *)g_windowManager.GetWindow(WINDOW_DIALOG_VOLUME_BAR);
+  if (volumeBar)
+  {
+    volumeBar->Show();
+    if (action)
+      volumeBar->OnAction(*action);
+  }
 }
 
-void CApplication::SetVolume(int iPercent)
+void CApplication::ToggleMute(void)
 {
-  float hardwareVolume = (float)iPercent / 100.0f;
-  SetHardwareVolume(hardwareVolume);
+  if (g_settings.m_bMute)
+    UnMute();
+  else
+    Mute();
 }
 
 void CApplication::Mute()
 {
+  g_settings.m_fVolumeLevel = CAEFactory::AE->GetVolume();
+  CAEFactory::AE->SetVolume(0.0f);
   g_settings.m_bMute = true;
-  if (!m_guiDialogMuteBug.IsDialogRunning())
-    m_guiDialogMuteBug.Show();
+}
+
+void CApplication::UnMute()
+{
+  CAEFactory::AE->SetVolume(g_settings.m_fVolumeLevel);
+  g_settings.m_fVolumeLevel = 1.0f;
+  g_settings.m_bMute = false;
+}
+
+void CApplication::SetVolume(long iValue)
+{
+  float hardwareVolume = (float)iValue / 100.0f;
+  SetHardwareVolume(hardwareVolume);
 }
 
 void CApplication::SetHardwareVolume(float hardwareVolume)
 {
   hardwareVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, hardwareVolume));
-  AE.SetVolume(hardwareVolume);
-  g_settings.m_bMute = hardwareVolume == 0;
-  if (g_settings.m_bMute)
-  {
-    if (!m_guiDialogMuteBug.IsDialogRunning())
-      m_guiDialogMuteBug.Show();
-  }
-  else
-  {
-    if (m_guiDialogMuteBug.IsDialogRunning())
-      m_guiDialogMuteBug.Close();
-  }
+  CAEFactory::AE->SetVolume(hardwareVolume);
 }
 
 int CApplication::GetVolume() const
 {
   // converts the hardware volume (in mB) to a percentage
-  return AE.GetVolume() * 100.0f;
+  return CAEFactory::AE->GetVolume() * 100.0f;
 }
 
 int CApplication::GetSubtitleDelay() const

@@ -302,7 +302,7 @@ IAESound* CGUIAudioManager::LoadSound(const CStdString &filename)
     return it->second.sound;
   }
 
-  IAESound *sound = AE.GetSound(filename);
+  IAESound *sound = CAEFactory::AE->GetSound(filename);
   if (!sound)
     return NULL;
 
@@ -320,7 +320,7 @@ void CGUIAudioManager::FreeSound(IAESound *sound)
   for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it) {
     if (it->second.sound == sound) {
       if (--it->second.usage == 0) {     
-        AE.FreeSound(sound);
+        CAEFactory::AE->FreeSound(sound);
         m_soundCache.erase(it);
       }
       return;

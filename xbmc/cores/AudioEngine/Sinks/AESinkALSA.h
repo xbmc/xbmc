@@ -23,7 +23,7 @@
 #include "system.h"
 #ifdef HAS_ALSA
 
-#include "AESink.h"
+#include "Interfaces/AESink.h"
 #include <stdint.h>
 
 #define ALSA_PCM_NEW_HW_PARAMS_API

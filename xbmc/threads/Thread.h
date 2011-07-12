@@ -85,7 +85,28 @@ protected:
   volatile bool m_bStop;
   HANDLE m_ThreadHandle;
 
-  inline CEvent* getStopEvent() { return &m_StopEvent; }
+  enum WaitResponse { WAIT_INTERRUPTED = -1, WAIT_SIGNALED = 0, WAIT_TIMEDOUT = 1 };
+
+  /**
+   * This call will wait on a CEvent in an interruptible way such that if
+   *  stop is called on the thread the wait will return with a respone
+   *  indicating what happened.
+   */
+  inline WaitResponse AbortableWait(CEvent& event, int timeoutMillis)
+  {
+    XbmcThreads::CEventGroup group(&event, &m_StopEvent, NULL);
+    CEvent* result = group.wait(timeoutMillis);
+    return  result == &event ? WAIT_SIGNALED : 
+      (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
+  }
+
+  inline WaitResponse AbortableWait(CEvent& event)
+  {
+    XbmcThreads::CEventGroup group(&event, &m_StopEvent, NULL);
+    CEvent* result = group.wait();
+    return  result == &event ? WAIT_SIGNALED : 
+      (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
+  }
 
 private:
   CStdString GetTypeName(void);

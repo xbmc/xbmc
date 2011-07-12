@@ -20,9 +20,9 @@
  *
  */
 
-#include "AEEncoder.h"
-#include "AERemap.h"
-#include "AEPackIEC61937.h"
+#include "Interfaces/AEEncoder.h"
+#include "Utils/AERemap.h"
+#include "Utils/AEPackIEC61937.h"
 
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict

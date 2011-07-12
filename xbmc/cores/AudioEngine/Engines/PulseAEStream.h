@@ -22,7 +22,7 @@
 
 #ifdef HAS_PULSEAUDIO
 
-#include "AEStream.h"
+#include "Interfaces/AEStream.h"
 #include "PulseAEEventThread.h"
 #include <pulse/pulseaudio.h>
 

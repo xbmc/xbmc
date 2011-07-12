@@ -25,11 +25,11 @@
 
 #include "threads/CriticalSection.h"
 
-#include "AEStream.h"
 #include "AEAudioFormat.h"
-#include "AEConvert.h"
-#include "AERemap.h"
-#include "AEPostProc.h"
+#include "Interfaces/AEStream.h"
+#include "Interfaces/AEPostProc.h"
+#include "Utils/AEConvert.h"
+#include "Utils/AERemap.h"
 
 class IAEPostProc;
 class CSoftAEStream : public IAEStream

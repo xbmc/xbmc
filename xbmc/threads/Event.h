@@ -44,9 +44,10 @@ namespace XbmcThreads
 class CEvent
 {
   bool manualReset;
-  bool signaled;
+  volatile bool signaled;
   unsigned int numWaits;
 
+  CCriticalSection groupListMutex; // lock for the groups list
   std::vector<XbmcThreads::CEventGroup*> * groups;
 
   /**
@@ -54,12 +55,11 @@ class CEvent
    *  predicate being monitored to include both the signaled and interrupted
    *  states.
    */
-  XbmcThreads::TightConditionVariable<bool&> condVar;
+  XbmcThreads::TightConditionVariable<volatile bool&> condVar;
   CCriticalSection mutex;
 
   friend class XbmcThreads::CEventGroup;
 
-  void groupSet();
   void addGroup(XbmcThreads::CEventGroup* group);
   void removeGroup(XbmcThreads::CEventGroup* group);
 
@@ -75,7 +75,7 @@ public:
     manualReset(manual), signaled(signaled_), numWaits(0), groups(NULL), condVar(signaled) {}
 
   inline void Reset() { CSingleLock lock(mutex); signaled = false; }
-  inline void Set() { CSingleLock lock(mutex); signaled = true; condVar.notifyAll(); groupSet(); }
+  void Set();
 
   /**
    * This will wait up to 'milliSeconds' milliseconds for the Event
@@ -111,12 +111,10 @@ namespace XbmcThreads
 
     unsigned int numWaits;
 
-    inline void Set(CEvent* child) { CSingleLock lock(mutex); signaled = child; condVar.notifyAll(); }
+    // This is ONLY called from CEvent::Set.
+    inline void Set(CEvent* child) { CSingleLock l(mutex); signaled = child; condVar.notifyAll(); }
 
     friend class ::CEvent;
-
-    inline CEvent* prepReturn() { CEvent* ret = signaled; if (numWaits == 0) signaled = NULL; return ret; }
-    CEvent* anyEventsSignaled();
 
   public:
 
@@ -142,14 +140,7 @@ namespace XbmcThreads
      * signaled at which point a pointer to that CEvents will be 
      * returned.
      */
-    inline CEvent* wait() 
-    { CSingleLock lock(mutex); 
-      numWaits++; 
-      signaled = anyEventsSignaled(); 
-      if (!signaled) condVar.wait(mutex); 
-      numWaits--; 
-      return prepReturn(); 
-    }
+    CEvent* wait();
 
     /**
      * This will block until any one of the CEvents in the group are
@@ -157,13 +148,6 @@ namespace XbmcThreads
      * it will return a pointer to that CEvent, otherwise it will return
      * NULL.
      */
-    inline CEvent* wait(unsigned int milliseconds)  
-    { CSingleLock lock(mutex);
-      numWaits++; 
-      signaled = anyEventsSignaled(); 
-      if(!signaled) condVar.wait(mutex,milliseconds); 
-      numWaits--; 
-      return prepReturn(); 
-    }
+    CEvent* wait(unsigned int milliseconds);
   };
 }

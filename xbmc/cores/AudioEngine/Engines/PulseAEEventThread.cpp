@@ -23,7 +23,7 @@
 #ifdef HAS_PULSEAUDIO
 
 #include "PulseAEEventThread.h"
-#include "AEUtil.h"
+#include "Utils/AEUtil.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
 

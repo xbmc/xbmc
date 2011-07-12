@@ -23,7 +23,7 @@
 #include "system.h"
 #ifdef HAS_PULSEAUDIO
 
-#include "AE.h"
+#include "Interfaces/AE.h"
 #include "PulseAEStream.h"
 #include "PulseAESound.h"
 #include "threads/CriticalSection.h"

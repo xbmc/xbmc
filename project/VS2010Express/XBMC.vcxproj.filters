@@ -570,9 +570,6 @@
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.cpp">
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.cpp">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.cpp">
       <Filter>cores\VideoRenderers</Filter>
     </ClCompile>
@@ -2093,6 +2090,9 @@
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlcheckmark.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controledit.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\controlfadelabel.cpp">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClCompile>
@@ -2220,6 +2220,9 @@
       <Filter>windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowScreensaver.cpp">
+      <Filter>windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\windows\GUIWindowScreensaverDim.cpp">
       <Filter>windows</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\windows\GUIWindowStartup.cpp">
@@ -2460,6 +2463,7 @@
     <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp">
       <Filter>threads</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\InertialScrollingHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -2928,9 +2932,6 @@
       <Filter>cores\DllLoader\exports\util</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\BaseRenderer.h">
-      <Filter>cores\VideoRenderers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\cores\VideoRenderers\LinuxRenderer.h">
       <Filter>cores\VideoRenderers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\VideoRenderers\LinuxRendererGL.h">
@@ -4684,6 +4685,9 @@
     <ClInclude Include="..\..\xbmc\windows\GUIWindowScreensaver.h">
       <Filter>windows</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\windows\GUIWindowScreensaverDim.h">
+      <Filter>windows</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\windows\GUIWindowStartup.h">
       <Filter>windows</Filter>
     </ClInclude>
@@ -4940,6 +4944,7 @@
     <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h">
       <Filter>threads</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\InertialScrollingHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">

@@ -60,10 +60,10 @@ static void LoadTexture(GLenum target
   int width2  = NP2(width);
   int height2 = NP2(height);
   char *pixelVector = NULL;
+  const GLvoid *pixelData = pixels;
 
 #ifdef HAS_GLES
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
-  const GLvoid *pixelData = pixels;
   if (stride != width)
   {
     int bytesPerPixel;
@@ -81,8 +81,8 @@ static void LoadTexture(GLenum target
 
     int bytesPerLine = bytesPerPixel * width;
 
-    pixelVector = (char *)malloc(width * height * bytesPerLine);
-    
+    pixelVector = (char *)malloc(bytesPerLine * height);
+
     const char *src = (const char*)pixels;
     char *dst = pixelVector;
     for (int y = 0;y < height;++y)
@@ -96,18 +96,22 @@ static void LoadTexture(GLenum target
     stride = width;
   }
 #else
-  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-  if(externalFormat == GL_RGBA
-  || externalFormat == GL_BGRA)
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
-  else if(externalFormat == GL_RGB
-       || externalFormat == GL_BGR)
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
-  else
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
-
-  const GLvoid *pixelData = pixels;
+  switch(externalFormat)
+  {
+    case GL_RGBA:
+    case GL_BGRA:
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
+      break;
+    case GL_RGB:
+    case GL_BGR:
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
+      break;
+    default:
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+  }
 #endif
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   glTexImage2D   (target, 0, internalFormat
                 , width2, height2, 0

@@ -24,7 +24,7 @@
 #include "threads/CriticalSection.h"
 #include "utils/log.h"
 #include "utils/StdString.h"
-#include "cores/AudioEngine/AESound.h"
+#include "cores/AudioEngine/Interfaces/AESound.h"
 
 #include <map>
 

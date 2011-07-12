@@ -118,21 +118,6 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 }
 
-
-CDVDVideoCodecFFmpeg::IHardwareDecoder*  CDVDVideoCodecFFmpeg::IHardwareDecoder::Acquire()
-{
-  AtomicIncrement(&m_references);
-  return this;
-}
-
-long CDVDVideoCodecFFmpeg::IHardwareDecoder::Release()
-{
-  long count = AtomicDecrement(&m_references);
-  ASSERT(count >= 0);
-  if (count == 0) delete this;
-  return count;
-}
-
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
   m_pCodecContext = NULL;
@@ -584,9 +569,11 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 
   /* use variable in the frame */
   AVRational pixel_aspect = m_pCodecContext->sample_aspect_ratio;
-#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(1,75,0)
   if (m_pFilterLink)
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,4,0)
     pixel_aspect = m_pFilterLink->cur_buf->video->sample_aspect_ratio;
+#else
+    pixel_aspect = m_pFilterLink->cur_buf->video->pixel_aspect;
 #endif
 
   if (pixel_aspect.num == 0)
@@ -789,7 +776,9 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if (frame)
   {
-#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,7,0)
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,13,0)
+    result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, 0);
+#elif LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,7,0)
     result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame);
 #elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53,3,0)
     result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, frame->pts);

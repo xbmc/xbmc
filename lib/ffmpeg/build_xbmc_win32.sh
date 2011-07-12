@@ -1,5 +1,7 @@
 #!/bin/bash
 
+MAKEFLAGS=""
+
 if [ "$1" == "clean" ]
 then
   if [ -d .libs ]
@@ -7,6 +9,10 @@ then
     rm -r .libs
   fi
   make distclean
+fi
+
+if [ $NUMBER_OF_PROCESSORS > 1 ]; then
+  MAKEFLAGS=-j$NUMBER_OF_PROCESSORS
 fi
 
 if [ ! -d .libs ]; then
@@ -41,7 +47,7 @@ OPTIONS="
 
 ./configure --extra-cflags="-fno-common -Iinclude-xbmc-win32/dxva2" --extra-ldflags="-L/xbmc/system/players/dvdplayer" ${OPTIONS} &&
  
-make &&
+make $MAKEFLAGS &&
 cp lib*/*.dll .libs/ &&
 cp .libs/avcodec-52.dll /xbmc/system/players/dvdplayer/ &&
 cp .libs/avcore-0.dll /xbmc/system/players/dvdplayer/ &&

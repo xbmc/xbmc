@@ -156,18 +156,8 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   int iSong = GetNextSong(offset);
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 
-  // stop playing
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
-  {
-    CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-    g_windowManager.SendThreadMessage(msg);
-    Reset();
-    m_iCurrentPlayList = PLAYLIST_NONE;
     return false;
-  }
-
-  if (bAutoPlay)
-    CFileItemPtr item = playlist[iSong];
 
   return Play(iSong, bAutoPlay);
 }
@@ -601,4 +591,17 @@ void CPlayListPlayer::Clear()
     m_PlaylistVideo->Clear();
   if (m_PlaylistEmpty)
     m_PlaylistEmpty->Clear();
+}
+
+void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return;
+
+  CPlayList& list = GetPlaylist(iPlaylist);
+  list.Swap(indexItem1, indexItem2);
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+  g_windowManager.SendMessage(msg);
 }

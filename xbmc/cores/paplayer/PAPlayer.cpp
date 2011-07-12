@@ -34,7 +34,7 @@
 
 #include "threads/SingleLock.h"
 
-#include "cores/AudioEngine/AEUtil.h"
+#include "cores/AudioEngine/Utils/AEUtil.h"
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds */
 #define FAST_XFADE_TIME         2000 /* 2 seconds */
@@ -99,7 +99,7 @@ void PAPlayer::StopStream(StreamInfo *si)
   si->m_stream->Drain();
   si->m_stream->Flush();
 
-  AE.FreeStream(si->m_stream);
+  CAEFactory::AE->FreeStream(si->m_stream);
 }
 
 void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
@@ -285,7 +285,7 @@ bool PAPlayer::QueueNextFile(const CFileItem &file)
   si->m_bytesPerSample = CAEUtil::DataFormatToBits(dataFormat) >> 3;
   si->m_snippetEnd     = (sampleRate * channels) / (m_iSpeed > 1 ? m_iSpeed : -m_iSpeed);
 
-  si->m_stream = AE.GetStream(
+  si->m_stream = CAEFactory::AE->GetStream(
     dataFormat,
     sampleRate,
     channels,

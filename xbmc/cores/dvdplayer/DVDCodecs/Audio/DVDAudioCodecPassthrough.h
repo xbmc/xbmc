@@ -26,8 +26,8 @@
 #include "system.h"
 #include "DVDAudioCodec.h"
 #include "cores/AudioEngine/AEAudioFormat.h"
-#include "cores/AudioEngine/AEStreamInfo.h"
-#include "cores/AudioEngine/AEPackIEC61937.h"
+#include "cores/AudioEngine/Utils/AEStreamInfo.h"
+#include "cores/AudioEngine/Utils/AEPackIEC61937.h"
 
 class CDVDAudioCodecPassthrough : public CDVDAudioCodec
 {

@@ -19,7 +19,7 @@
  *
  */
 
-#include "AESound.h"
+#include "Interfaces/AESound.h"
 
 #include <samplerate.h>
 #include "threads/SingleLock.h"
@@ -28,16 +28,16 @@
 
 #include "AEFactory.h"
 #include "AEAudioFormat.h"
-#include "AEConvert.h"
-#include "AERemap.h"
-#include "AEUtil.h"
+#include "Utils/AEConvert.h"
+#include "Utils/AERemap.h"
+#include "Utils/AEUtil.h"
 #include "DllAvCore.h"
 
 #include "SoftAE.h"
 #include "SoftAESound.h"
 
 /* typecast AE to CSoftAE */
-#define AE (*(CSoftAE*)AE.GetEngine())
+#define AE (*((CSoftAE*)CAEFactory::AE))
 
 typedef struct
 {

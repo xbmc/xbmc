@@ -84,7 +84,7 @@ bool CPulseAESound::Initialize()
       return false;
   }
 
-  m_maxVolume     = AE.GetVolume();
+  m_maxVolume     = CAEFactory::AE->GetVolume();
   m_volume        = 1.0f;
   float useVolume = m_volume * m_maxVolume;
 

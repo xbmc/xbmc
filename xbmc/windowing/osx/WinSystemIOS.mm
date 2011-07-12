@@ -40,6 +40,7 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import "XBMCController.h"
+#include "osx/DarwinUtils.h"
 #import <dlfcn.h>
 
 CWinSystemIOS::CWinSystemIOS() : CWinSystemBase()
@@ -198,6 +199,18 @@ void CWinSystemIOS::SetVSyncImpl(bool enable)
 
 void CWinSystemIOS::ShowOSMouse(bool show)
 {
+}
+
+bool CWinSystemIOS::HasCursor()
+{
+  if( DarwinIsAppleTV2() )
+  {
+    return true;
+  }
+  else//apple touch devices
+  {
+    return false;
+  }
 }
 
 void CWinSystemIOS::NotifyAppActiveChange(bool bActivated)

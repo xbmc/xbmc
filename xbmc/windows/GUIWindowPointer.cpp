@@ -21,6 +21,7 @@
 
 #include "GUIWindowPointer.h"
 #include "input/MouseStat.h"
+#include "windowing/WindowingFactory.h"
 #include <climits>
 #define ID_POINTER 10
 
@@ -31,7 +32,7 @@ CGUIWindowPointer::CGUIWindowPointer(void)
   m_loadOnDemand = false;
   m_needsScaling = false;
   m_active = false;
-  m_renderOrder = INT_MAX;
+  m_renderOrder = INT_MAX - 1;
 }
 
 CGUIWindowPointer::~CGUIWindowPointer(void)
@@ -56,10 +57,13 @@ void CGUIWindowPointer::SetPointer(int pointer)
 
 void CGUIWindowPointer::UpdateVisibility()
 {
-  if (g_Mouse.IsActive())
-    Show();
-  else
-    Close();
+  if(g_Windowing.HasCursor())
+  {
+    if (g_Mouse.IsActive())
+      Show();
+    else
+      Close();
+  }
 }
 
 void CGUIWindowPointer::OnWindowLoaded()
@@ -72,7 +76,7 @@ void CGUIWindowPointer::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
   DynamicResourceAlloc(false);
   m_pointer = 0;
-  m_renderOrder = INT_MAX;
+  m_renderOrder = INT_MAX - 1;
 }
 
 void CGUIWindowPointer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)

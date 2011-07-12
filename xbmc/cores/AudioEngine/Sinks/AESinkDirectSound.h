@@ -20,7 +20,7 @@
  *
  */
 
-#include "AESink.h"
+#include "Interfaces/AESink.h"
 #include <stdint.h>
 #include <dsound.h>
 
