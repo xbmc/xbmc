@@ -28,11 +28,11 @@
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\responsepacket.h" />
     <ClInclude Include="..\..\VNSIChannelScan.h" />
+    <ClInclude Include="..\..\vnsicommand.h" />
     <ClInclude Include="..\..\VNSIData.h" />
     <ClInclude Include="..\..\VNSIDemux.h" />
     <ClInclude Include="..\..\VNSIRecording.h" />
     <ClInclude Include="..\..\VNSISession.h" />
-    <ClInclude Include="..\..\vdrcommand.h" />
     <ClInclude Include="..\..\thread.h" />
     <ClInclude Include="..\..\tools.h" />
   </ItemGroup>
