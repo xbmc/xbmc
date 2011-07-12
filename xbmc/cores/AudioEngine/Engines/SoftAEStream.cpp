@@ -55,6 +55,7 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_disableCallbacks(false),
   m_cbDataFunc      (NULL ),
   m_cbDrainFunc     (NULL ),
+  m_cbFreeFunc      (NULL ),
   m_cbDataArg       (NULL ),
   m_cbDrainArg      (NULL ),
   m_inDataFunc      (false),

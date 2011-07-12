@@ -87,9 +87,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec, bool need
   else
     m_SecondsPerByte = 0.0;
 
-  if (m_pBuffer) free(m_pBuffer);
-  m_pBuffer = (BYTE*)malloc(m_dwPacketSize);
-
+  m_iBufferSize = 0;
   return true;
 }
 
@@ -114,12 +112,6 @@ void CDVDAudio::Destroy()
 
 DWORD CDVDAudio::AddPacketsRenderer(unsigned char* data, DWORD len, CSingleLock &lock)
 {
-  //Since we write same data size each time, we can drop full chunks to simulate a specific playback speed
-  //m_iSpeedStep = (m_iSpeedStep+1) % m_iSpeed;
-  //if( m_iSpeedStep )
-  //  return m_dwPacketSize;
-  //else
-
   if(!m_pAudioStream)
     return 0;
 
@@ -169,12 +161,15 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
 
   if (m_iBufferSize > 0) // See if there are carryover bytes from the last call. need to add them 1st.
   {
-    copied = std::min(m_dwPacketSize - m_iBufferSize, len); // Smaller of either the data provided or the leftover data
-
-    memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
-    data += copied; // Move forward in caller's data
-    len -= copied; // Decrease amount of data available from caller
-    m_iBufferSize += copied; // Increase amount of data available in buffer
+    copied = std::min(m_dwPacketSize - m_iBufferSize % m_dwPacketSize, len); // Smaller of either the data provided or the leftover data
+    if (copied)
+    {
+      m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + copied);
+      memcpy(m_pBuffer + m_iBufferSize, data, copied); // Tack the caller's data onto the end of the buffer
+      data += copied; // Move forward in caller's data
+      len -= copied; // Decrease amount of data available from caller
+      m_iBufferSize += copied; // Increase amount of data available in buffer
+    }
 
     if(m_iBufferSize < m_dwPacketSize) // If we don't have enough data to give to the renderer, wait until next time
       return copied;
