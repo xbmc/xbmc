@@ -21,7 +21,6 @@
 #include "system.h"
 
 #include "AEFactory.h"
-#include "AE.h"
 #ifdef __APPLE__
 # include "Engines/CoreAudioAE.h"
 #else

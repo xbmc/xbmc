@@ -26,7 +26,7 @@
 #include "system.h"
 #include "threads/CriticalSection.h"
 
-#include "AEAudioFormat.h"
+#include "../AEAudioFormat.h"
 #include "AEStream.h"
 #include "AESound.h"
 

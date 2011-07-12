@@ -23,7 +23,7 @@
 #include "utils/StdString.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
-#include "AESound.h"
+#include "Interfaces/AESound.h"
 #include "Utils/AEWAVLoader.h"
 
 class CWAVLoader;

@@ -30,7 +30,7 @@
 
 #include "cores/IAudioCallback.h"
 #include "cores/AudioEngine/AEFactory.h"
-#include "cores/AudioEngine/AEStream.h"
+#include "cores/AudioEngine/Interfaces/AEStream.h"
 #include "cores/AudioEngine/PostProc/AEPPAnimationFade.h"
 
 class CFileItem;

@@ -20,7 +20,7 @@
  *
  */
 
-#include "AEEncoder.h"
+#include "Interfaces/AEEncoder.h"
 #include "Utils/AERemap.h"
 #include "Utils/AEPackIEC61937.h"
 

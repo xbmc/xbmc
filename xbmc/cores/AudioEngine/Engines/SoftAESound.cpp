@@ -19,7 +19,7 @@
  *
  */
 
-#include "AESound.h"
+#include "Interfaces/AESound.h"
 
 #include <samplerate.h>
 #include "threads/SingleLock.h"

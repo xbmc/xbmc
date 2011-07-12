@@ -35,7 +35,7 @@
 #include "SoftAESound.h"
 #include "SoftAEStream.h"
 #include "AESinkFactory.h"
-#include "AESink.h"
+#include "Interfaces/AESink.h"
 #include "Utils/AEUtil.h"
 #include "Encoders/AEEncoderFFmpeg.h"
 

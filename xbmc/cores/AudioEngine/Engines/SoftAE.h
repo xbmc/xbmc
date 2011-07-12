@@ -28,12 +28,12 @@
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 
-#include "ThreadedAE.h"
+#include "Interfaces/ThreadedAE.h"
+#include "Interfaces/AESink.h"
+#include "Interfaces/AEEncoder.h"
 #include "Utils/AEConvert.h"
 #include "Utils/AERemap.h"
-#include "AESink.h"
 #include "AEAudioFormat.h"
-#include "AEEncoder.h"
 
 #include "SoftAEStream.h"
 #include "SoftAESound.h"
