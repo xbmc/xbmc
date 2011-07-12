@@ -36,7 +36,7 @@
 #include "MathUtils.h"
 
 /* typecast AE to CCoreAudioAE */
-#define AE (*(CCoreAudioAE*)AE.GetEngine())
+#define AE (*(CCoreAudioAE*)CAEFactory::AE)
 
 using namespace std;
 
@@ -327,10 +327,10 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
     unsigned int resample_frames = samples / m_StreamFormat.m_channelCount;
     
     CheckOutputBufferSize((void **)&m_resampleBuffer, &m_resampleBufferSize, 
-                          resample_frames * MathUtils::ceil_int(m_ssrcData.src_ratio) * sizeof(float) * 2);
+                          resample_frames * std::ceil(m_ssrcData.src_ratio) * sizeof(float) * 2);
     
     m_ssrcData.input_frames   = resample_frames;
-    m_ssrcData.output_frames  = resample_frames * MathUtils::ceil_int(m_ssrcData.src_ratio);
+    m_ssrcData.output_frames  = resample_frames * std::ceil(m_ssrcData.src_ratio);
     m_ssrcData.data_in        = (float *)adddata;
     m_ssrcData.data_out       = m_resampleBuffer;
         
