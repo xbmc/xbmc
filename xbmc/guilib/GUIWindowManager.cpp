@@ -323,6 +323,18 @@ void CGUIWindowManager::PreviousWindow()
 
 void CGUIWindowManager::DeinitWindow(CGUIWindow* window, int nextWindowID /*= 0*/, bool blockContext /*= true*/, bool enableSound /*= true*/)
 {
+  if (!g_application.IsCurrentThread())
+  {
+    // make sure graphics lock is not held
+    CSingleExit leaveIt(g_graphicsContext);
+    g_application.getApplicationMessenger().DeinitWindow(window, nextWindowID, blockContext, enableSound);
+  }
+  else
+    DeinitWindow_Internal(window, nextWindowID, blockContext, enableSound);
+}
+
+void CGUIWindowManager::DeinitWindow_Internal(CGUIWindow* window, int nextWindowID /*= 0*/, bool blockContext /*= true*/, bool enableSound /*= true*/)
+{
   if (!window || !window->IsActive())
     return;
 

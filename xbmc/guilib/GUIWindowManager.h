@@ -139,6 +139,7 @@ private:
 
   friend class CApplicationMessenger;
   void ActivateWindow_Internal(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
+  void DeinitWindow_Internal(CGUIWindow* window, int nextWindowID = 0, bool needRenderLoop = true, bool enableSound = true);
 
   typedef std::map<int, CGUIWindow *> WindowMap;
   WindowMap m_mapWindows;

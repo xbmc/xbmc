@@ -648,6 +648,14 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_GUI_DEINIT:
+      {
+        CGUIWindow *pWindow = (CGUIWindow *)pMsg->lpVoid;
+        if (pWindow)
+          g_windowManager.DeinitWindow(pWindow, pMsg->dwParam1, pMsg->dwParam2 & 0x1 ? true : false, pMsg->dwParam2 & 0x2 ? true : false);
+      }
+      break;
+
     case TMSG_GUI_PYTHON_DIALOG:
       {
         if (pMsg->lpVoid)
@@ -1103,6 +1111,13 @@ void CApplicationMessenger::ActivateWindow(int windowID, const vector<CStdString
 {
   ThreadMessage tMsg = {TMSG_GUI_ACTIVATE_WINDOW, windowID, swappingWindows ? 1 : 0};
   tMsg.params = params;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::DeinitWindow(CGUIWindow *pWindow, int nextWindowID /*= 0*/, bool blockContext /*= true*/, bool enableSound /*= true*/)
+{
+  ThreadMessage tMsg = {TMSG_GUI_DEINIT, nextWindowID, (DWORD)blockContext | (DWORD)enableSound << 1};
+  tMsg.lpVoid = pWindow;
   SendMessage(tMsg, true);
 }
 
