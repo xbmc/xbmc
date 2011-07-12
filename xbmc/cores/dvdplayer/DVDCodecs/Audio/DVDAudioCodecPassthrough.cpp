@@ -49,7 +49,7 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
 bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   /* dont open if AE doesnt support RAW */
-  if (!AE.SupportsRaw())
+  if (!CAEFactory::AE->SupportsRaw())
     return false;
 
   bool bSupportsAC3Out    = false;

@@ -1906,13 +1906,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
 		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 		g_guiSettings.SetString("audiooutput.audiodevice",pControl->GetCurrentLabel());
-    AE.OnSettingsChange(strSetting);
+    CAEFactory::AE->OnSettingsChange(strSetting);
 	}
 	else if (strSetting.Equals("audiooutput.passthroughdevice"))
 	{
 		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 		g_guiSettings.SetString("audiooutput.passthroughdevice",pControl->GetCurrentLabel());
-    AE.OnSettingsChange(strSetting);
+    CAEFactory::AE->OnSettingsChange(strSetting);
 	}
   */
   else if (strSetting.find_first_of("audiooutput.") == 0)
@@ -1936,7 +1936,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #endif
     }
     
-    AE.OnSettingsChange(strSetting);
+    CAEFactory::AE->OnSettingsChange(strSetting);
   }
 
   UpdateSettings();
@@ -2896,7 +2896,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
 
   int selectedValue = -1;
   AEDeviceList sinkList;
-  AE.EnumerateOutputDevices(sinkList, Passthrough);
+  CAEFactory::AE->EnumerateOutputDevices(sinkList, Passthrough);
 #if !defined(__APPLE__)
   if (sinkList.size()==0)
   {

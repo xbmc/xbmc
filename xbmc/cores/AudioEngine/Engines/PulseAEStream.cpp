@@ -136,7 +136,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
       case AE_CH_TBC : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_CENTER      ; break;
     }
 
-  m_MaxVolume     = AE.GetVolume();
+  m_MaxVolume     = CAEFactory::AE->GetVolume();
   m_Volume        = 1.0f;
   float useVolume = m_Volume * m_MaxVolume;
 

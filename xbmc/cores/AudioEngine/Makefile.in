@@ -11,7 +11,7 @@ endif
 
 SRCS = \
 	AEFactory.cpp \
-  AESinkFactory.cpp \
+	AESinkFactory.cpp \
 	Sinks/AESinkALSA.cpp \
 	Sinks/AESinkOSS.cpp \
 	AEConvert.cpp \
@@ -22,9 +22,6 @@ SRCS = \
 	AEWAVLoader.cpp \
 	PostProc/AEPPAnimationFade.cpp \
 	\
-	AEWrapper.cpp \
-	AEStreamWrapper.cpp \
-	AESoundWrapper.cpp \
 	Engines/SoftAE.cpp \
 	Engines/SoftAEStream.cpp \
 	Engines/SoftAESound.cpp \

@@ -44,7 +44,7 @@ class IAEPacketizer;
 class IAE
 {
 protected:
-  friend class CAEWrapper;
+  friend class CAEFactory;
 
   IAE() {}
   virtual ~IAE() {}

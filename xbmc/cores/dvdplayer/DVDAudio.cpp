@@ -50,7 +50,7 @@ CDVDAudio::~CDVDAudio()
   CSingleLock lock (m_critSection);
 
   if (m_pAudioStream)
-    AE.FreeStream(m_pAudioStream);
+    CAEFactory::AE->FreeStream(m_pAudioStream);
 
   free(m_pBuffer);
 }
@@ -67,7 +67,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec, bool need
 
   // if passthrough isset do something else
   CSingleLock lock(m_critSection);
-  m_pAudioStream = AE.GetStream(
+  m_pAudioStream = CAEFactory::AE->GetStream(
     audioframe.data_format,
     audioframe.passthrough ? audioframe.encoded_sample_rate   : audioframe.sample_rate,
     audioframe.passthrough ? audioframe.encoded_channel_count : audioframe.channel_count,
@@ -98,7 +98,7 @@ void CDVDAudio::Destroy()
   CSingleLock lock (m_critSection);
 
   if (m_pAudioStream)
-    AE.FreeStream(m_pAudioStream);
+    CAEFactory::AE->FreeStream(m_pAudioStream);
 
   free(m_pBuffer);
   m_pBuffer = NULL;

@@ -1150,7 +1150,7 @@ bool CApplication::Initialize()
 #else
   CAEFactory::LoadEngine(AE_ENGINE_SOFT);
 #endif
-  SetHardwareVolume(AE.GetVolume());
+  SetHardwareVolume(CAEFactory::AE->GetVolume());
 
   // Make sure we have at least the default skin
   if (!LoadSkin(g_guiSettings.GetString("lookandfeel.skin")) && !LoadSkin(DEFAULT_SKIN))
@@ -2592,7 +2592,7 @@ bool CApplication::OnAction(const CAction &action)
     if (!m_pPlayer || !m_pPlayer->IsPassthrough())
     {
       // increase or decrease the volume
-      float volume = AE.GetVolume();
+      float volume = CAEFactory::AE->GetVolume();
 
       // calculate speed so that a full press will equal 1 second from min to max
       float speed = VOLUME_MAXIMUM - VOLUME_MINIMUM;
@@ -4830,7 +4830,7 @@ void CApplication::ProcessSlow()
   if (!IsPlayingVideo())
     CAddonInstaller::Get().UpdateRepos();
 
-  AE.GarbageCollect();
+  CAEFactory::AE->GarbageCollect();
 }
 
 // Global Idle Time in Seconds
@@ -4940,7 +4940,7 @@ void CApplication::Mute()
 void CApplication::SetHardwareVolume(float hardwareVolume)
 {
   hardwareVolume = std::max(VOLUME_MINIMUM, std::min(VOLUME_MAXIMUM, hardwareVolume));
-  AE.SetVolume(hardwareVolume);
+  CAEFactory::AE->SetVolume(hardwareVolume);
   g_settings.m_bMute = hardwareVolume == 0;
   if (g_settings.m_bMute)
   {
@@ -4957,7 +4957,7 @@ void CApplication::SetHardwareVolume(float hardwareVolume)
 int CApplication::GetVolume() const
 {
   // converts the hardware volume (in mB) to a percentage
-  return AE.GetVolume() * 100.0f;
+  return CAEFactory::AE->GetVolume() * 100.0f;
 }
 
 int CApplication::GetSubtitleDelay() const

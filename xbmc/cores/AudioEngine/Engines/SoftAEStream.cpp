@@ -34,7 +34,7 @@
 #define SOFTAE_FRAMES 256
 
 /* typecast AE to CSoftAE */
-#define AE (*(CSoftAE*)AE.GetEngine())
+#define AE (*((CSoftAE*)CAEFactory::AE))
 
 using namespace std;
 
