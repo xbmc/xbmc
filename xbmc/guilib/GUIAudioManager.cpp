@@ -63,14 +63,14 @@ void CGUIAudioManager::Stop()
   CSingleLock lock(m_cs);
   for (windowSoundMap::iterator it = m_windowSoundMap.begin(); it != m_windowSoundMap.end(); ++it)
   {
-    if (it->second.initSound  ) it->second.initSound  ->Stop();
-    if (it->second.deInitSound) it->second.deInitSound->Stop();
+    if (it->second.initSound  ) CAEFactory::AE->StopSound(it->second.initSound);
+    if (it->second.deInitSound) CAEFactory::AE->StopSound(it->second.deInitSound);
   }
 
   for (pythonSoundsMap::iterator it = m_pythonSounds.begin(); it != m_pythonSounds.end(); ++it)
   {
     IAESound* sound = it->second;
-    sound->Stop();
+    CAEFactory::AE->StopSound(sound);
   }
 }
 
@@ -88,7 +88,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
     return;
 
   if (it->second)
-    it->second->Play();
+    CAEFactory::AE->PlaySound(it->second);
 }
 
 // \brief Play a sound associated with a window and its event
@@ -120,7 +120,7 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
   if (!sound)
     return;
 
-  sound->Play();
+  CAEFactory::AE->PlaySound(sound);
 }
 
 // \brief Play a sound given by filename
@@ -137,7 +137,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   if (itsb != m_pythonSounds.end())
   {
     IAESound* sound = itsb->second;
-    sound->Play();
+    CAEFactory::AE->PlaySound(sound);
     return;
   }
 
@@ -146,7 +146,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
     return;
 
   m_pythonSounds.insert(pair<const CStdString, IAESound*>(strFileName, sound));
-  sound->Play();
+  CAEFactory::AE->PlaySound(sound);
 }
 
 void CGUIAudioManager::UnLoad()
