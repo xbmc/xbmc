@@ -27,14 +27,12 @@
 #define MAKECODE(a, b, c, d)  ((((long)(a))<<24) | (((long)(b))<<16) | (((long)(c))<<8) | (long)(d))
 #define MAKETWOCHARCODE(a, b) ((((long)(a))<<8) | (long)(b)) 
 
+
 typedef struct LCENTRY
 {
   long code;
   const char *name;
 } LCENTRY;
-
-extern const struct LCENTRY g_iso639_1[143];
-extern const struct LCENTRY g_iso639_2[536];
 
 struct CharCodeConvertionWithHack
 {
@@ -254,7 +252,7 @@ bool CLangCodeExpander::LookupInDb(CStdString& desc, const CStdString& code)
   return false;
 }
 
-extern const LCENTRY g_iso639_1[143] =
+CLangCodeExpander::LCENTRY CLangCodeExpander::g_iso639_1[143] =
 {
   { MAKECODE('\0','\0','c','c'), "Closed Caption" },
   { MAKECODE('\0','\0','a','a'), "Afar" },
@@ -401,7 +399,7 @@ extern const LCENTRY g_iso639_1[143] =
   { MAKECODE('\0','\0','z','u'), "Zulu" },
 };
 
-extern const LCENTRY g_iso639_2[536] =
+CLangCodeExpander::LCENTRY CLangCodeExpander::g_iso639_2[536] =
 {
     { MAKECODE('\0','a','b','k'), "Abkhazian" },
   { MAKECODE('\0','a','c','e'), "Achinese" },

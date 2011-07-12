@@ -103,6 +103,7 @@
 #include "LangInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/LangCodeExpander.h"
 #include "windowing/WindowingFactory.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -612,6 +613,14 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13508), RESAMPLE_HIGH);
       pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
       pControl->SetValue(pSettingInt->GetData());
+    }
+    else if (strSetting.Equals("preferedlanguage.audio"))
+    {
+      FillInAudioLanguages(pSetting);
+    }
+    else if (strSetting.Equals("preferedlanguage.subtitle"))
+    {
+      FillInSubtitleLanguages(pSetting);
     }
   }
 
@@ -2100,6 +2109,128 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
        g_guiSettings.SetString("network.gateway", m_strNetworkGateway);
        g_guiSettings.SetString("network.dns", m_strNetworkDNS);*/
   }
+}
+
+void CGUIWindowSettingsCategory::FillInAudioLanguages(CSetting *pSetting)
+{
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  int iCurrentLanguage = 0;
+  int iLanguage = 0;
+  vector<CStdString> vecLanguages;
+  /*
+  // To get only languages in the database
+  CFileItemList langs;
+  CVideoDatabase videodatabase;
+  videodatabase.Open();
+  videodatabase.GetAllAudioLanguages(langs);
+  videodatabase.Close();
+  for (int i = 0; i < langs.Size(); ++i)
+  {
+    CFileItemPtr pItem = langs[i];
+    CStdString langCode = pItem->GetLabel();
+    CStdString language;
+    CLangCodeExpander langcode;
+    if (langcode.Lookup(language, langCode))
+    {
+      vecLanguages.push_back(language);
+    }
+  }
+  */
+
+  // To get the list of iso639_1 languages from LangCodeExpander.cpp
+  CLangCodeExpander langcode;
+  for (int i = 0; i < sizeof(langcode.g_iso639_1) / sizeof(langcode.g_iso639_1[0]); i++)
+  {
+    vecLanguages.push_back(langcode.g_iso639_1[i].name);
+  }
+
+  /*
+  // To get the list of iso639_2 languages from LangCodeExpander.cpp
+  CLangCodeExpander langcode;
+  for (int i = 0; i < sizeof(langcode.g_iso639_2) / sizeof(langcode.g_iso639_2[0]); i++)
+  {
+    vecLanguages.push_back(langcode.g_iso639_2[i].name);
+  }
+  */
+
+  sort(vecLanguages.begin(), vecLanguages.end(), sortstringbyname());
+  for (int i = 0; i < (int) vecLanguages.size(); ++i)
+  {
+    CStdString strLanguage = vecLanguages[i];
+    if (strcmpi(strLanguage.c_str(), g_guiSettings.GetString("preferedlanguage.audio").c_str()) == 0)
+    {
+      iCurrentLanguage = iLanguage;
+    }
+    pControl->AddLabel(strLanguage, iLanguage++);
+  }
+  pControl->SetValue(iCurrentLanguage);
+  return ;
+}
+
+void CGUIWindowSettingsCategory::FillInSubtitleLanguages(CSetting *pSetting)
+{
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  CFileItemList langs;
+  CVideoDatabase videodatabase;
+  videodatabase.Open();
+  videodatabase.GetAllSubtitleLanguages(langs);
+  videodatabase.Close();
+
+  int iCurrentLanguage = 0;
+  int iLanguage = 0;
+  vector<CStdString> vecLanguages;
+  /*
+  // To get only languages in the database
+  CFileItemList langs;
+  CVideoDatabase videodatabase;
+  videodatabase.Open();
+  videodatabase.GetAllAudioLanguages(langs);
+  videodatabase.Close();
+  for (int i = 0; i < langs.Size(); ++i)
+  {
+    CFileItemPtr pItem = langs[i];
+    CStdString langCode = pItem->GetLabel();
+    CStdString language;
+    CLangCodeExpander langcode;
+    if (langcode.Lookup(language, langCode))
+    {
+      vecLanguages.push_back(language);
+    }
+  }
+  */
+
+  // To get the list of iso639_1 languages from LangCodeExpander.cpp
+  for (int i = 0; i < 143; i++)
+  {
+    CLangCodeExpander langcode;
+    vecLanguages.push_back(langcode.g_iso639_1[i].name);
+  }
+
+  /*
+  // To get the list of iso639_2 languages from LangCodeExpander.cpp
+  for (int i = 0; i < 536; i++)
+  {
+    CLangCodeExpander langcode;
+    vecLanguages.push_back(langcode.g_iso639_2[i].name);
+  }
+  */
+
+  sort(vecLanguages.begin(), vecLanguages.end(), sortstringbyname());
+  for (int i = 0; i < (int) vecLanguages.size(); ++i)
+  {
+    CStdString strLanguage = vecLanguages[i];
+    if (strcmpi(strLanguage.c_str(), g_guiSettings.GetString("preferedlanguage.audio").c_str()) == 0)
+    {
+      iCurrentLanguage = iLanguage;
+    }
+    pControl->AddLabel(strLanguage, iLanguage++);
+  }
+  pControl->SetValue(iCurrentLanguage);
+  return ;
 }
 
 void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)

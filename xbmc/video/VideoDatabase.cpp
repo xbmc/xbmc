@@ -7896,3 +7896,59 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
     items[i]->m_strPath = items[i]->GetVideoInfoTag()->m_basePath;
   return items.Size() > 0;
 }
+
+bool CVideoDatabase::GetAllAudioLanguages(CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get());
+    if (NULL == m_pDS.get());
+
+    CStdString strSQL = "SELECT DISTINCT strAudioLanguage FROM streamdetails";
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
+    while (!m_pDS->eof())
+    {
+      CStdString lang = m_pDS->fv("strAudioLanguage").get_asString();
+      CFileItemPtr pItem(new CFileItem(lang));
+      items.Add(pItem);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;  
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+bool CVideoDatabase::GetAllSubtitleLanguages(CFileItemList& items)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = "SELECT DISTINCT strSubtitleLanguage FROM streamdetails";
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
+    while (!m_pDS->eof())
+    {
+      CStdString lang = m_pDS->fv("strSubtitleLanguage").get_asString();
+      CFileItemPtr pItem(new CFileItem(lang));
+      items.Add(pItem);
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;  
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}

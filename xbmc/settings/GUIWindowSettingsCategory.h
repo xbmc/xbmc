@@ -43,6 +43,8 @@ protected:
   virtual void OnInitWindow();
 
   void CheckNetworkSettings();
+  void FillInAudioLanguages(CSetting* pSetting);
+  void FillInSubtitleLanguages(CSetting* pSetting);
   void FillInSubtitleHeights(CSetting *pSetting);
   void FillInSubtitleFonts(CSetting *pSetting);
   void FillInCharSets(CSetting *pSetting);

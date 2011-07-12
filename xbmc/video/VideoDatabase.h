@@ -615,6 +615,12 @@ public:
     }
   }
 
+  /* List all languages found in audio and subtitle tracks
+   for use in auto-selection.
+   */
+  bool GetAllAudioLanguages(CFileItemList& items);
+  bool GetAllSubtitleLanguages(CFileItemList& items);
+
 protected:
   int GetMovieId(const CStdString& strFilenameAndPath);
   int GetMusicVideoId(const CStdString& strFilenameAndPath);
