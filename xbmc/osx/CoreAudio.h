@@ -23,9 +23,10 @@
 #define __COREAUDIO_H__
 
 #if !defined(__arm__)
+#include "utils/StdString.h"
+
 #include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
-#include <StdString.h>
 #include <list>
 #include <vector>
 
