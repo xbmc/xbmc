@@ -32,8 +32,7 @@
 #ifdef TLS_IMPL_SET
 #error "Cannot set two USE_*_TLS flags"
 #endif
-#include "threads/platform/boost/ThreadLocal.h"
-//#include "threads/platform/pthreads/ThreadLocal.h"
+#include "threads/platform/pthreads/ThreadLocal.h"
 #define TLS_IMPL_SET
 #endif
 
