@@ -532,7 +532,7 @@ namespace VIDEO
     CNfoFile::NFOResult result=CNfoFile::NO_NFO;
     CScraperUrl scrUrl;
     // handle .nfo files
-    if (useLocal && (!pURL || pURL->m_xml.IsEmpty()))
+    if (useLocal)
       result = CheckForNFOFile(pItem.get(), bDirNames, info2, scrUrl);
     if (result == CNfoFile::FULL_NFO)
     {
@@ -548,10 +548,6 @@ namespace VIDEO
     }
     if (result == CNfoFile::URL_NFO || result == CNfoFile::COMBINED_NFO)
       pURL = &scrUrl;
-
-    // use the scraper from Nfofile
-    if (useLocal)
-      info2 = m_nfoReader.GetScraperInfo();
 
     CScraperUrl url;
     int retVal = 0;
