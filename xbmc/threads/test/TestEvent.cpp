@@ -24,7 +24,8 @@
 #include "threads/Event.h"
 #include "threads/Atomics.h"
 
-#include <boost/thread/thread.hpp>
+#include "threads/test/TestHelpers.h"
+
 #include <boost/shared_array.hpp>
 #include <stdio.h>
 
@@ -94,21 +95,6 @@ public:
   }
 };
 
-#define BOOST_MILLIS(x) (boost::get_system_time() + boost::posix_time::milliseconds(x))
-
-static void Sleep(unsigned int millis) { boost::thread::sleep(BOOST_MILLIS(millis)); }
-
-template<class E> static bool waitForWaiters(E& event, int numWaiters, int milliseconds)
-{
-  for( int i = 0; i < milliseconds; i++)
-  {
-    if (event.getNumWaits() == numWaiters)
-      return true;
-    Sleep(1);
-  }
-  return false;
-}
-  
 //=============================================================================
 
 BOOST_AUTO_TEST_CASE(TestEventCase)
@@ -543,14 +529,6 @@ BOOST_AUTO_TEST_CASE(TestEventGroupTimedWait)
   BOOST_CHECK(waitThread2.timed_join(BOOST_MILLIS(10000)));
 }
 
-class AtomicGuard
-{
-  volatile long* val;
-public:
-  inline AtomicGuard(volatile long* val_) : val(val_) { if (val) AtomicIncrement(val); }
-  inline ~AtomicGuard() { if (val) AtomicDecrement(val); }
-};
-
 #define TESTNUM 100000l
 #define NUMTHREADS 100l
 
@@ -594,22 +572,6 @@ public:
     waiting = false;
   }
 };
-
-static bool waitForThread(volatile long& mutex, int numWaiters, int milliseconds)
-{
-  CCriticalSection sec;
-  for( int i = 0; i < milliseconds; i++)
-  {
-    if (mutex == (long)numWaiters)
-      return true;
-
-    {
-      CSingleLock tmplock(sec); // kick any memory syncs
-    }
-    Sleep(1);
-  }
-  return false;
-}
 
 template <class W> void RunMassEventTest(boost::shared_array<W>& m, bool canWaitOnEvent)
 {

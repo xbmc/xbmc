@@ -25,52 +25,13 @@
 #include "threads/SingleLock.h"
 #include "threads/Event.h"
 #include "threads/Atomics.h"
+#include "threads/test/TestHelpers.h"
 
-#include <boost/thread/thread.hpp>
 #include <stdio.h>
 
 //=============================================================================
 // Helper classes
 //=============================================================================
-
-#define BOOST_MILLIS(x) (boost::get_system_time() + boost::posix_time::milliseconds(x))
-
-static void Sleep(unsigned int millis) { boost::thread::sleep(boost::get_system_time() + boost::posix_time::milliseconds(millis)); }
-
-static bool waitForThread(volatile long& mutex, int numWaiters, int milliseconds)
-{
-  CCriticalSection sec;
-  for( int i = 0; i < milliseconds; i++)
-  {
-    if (mutex == (long)numWaiters)
-      return true;
-
-    {
-      CSingleLock tmplock(sec); // kick any memory syncs
-    }
-    Sleep(1);
-  }
-  return false;
-}
-
-template<class E> static bool waitForWaiters(E& event, int numWaiters, int milliseconds)
-{
-  for( int i = 0; i < milliseconds; i++)
-  {
-    if (event.getNumWaits() == numWaiters)
-      return true;
-    Sleep(1);
-  }
-  return false;
-}
-
-class AtomicGuard
-{
-  volatile long* val;
-public:
-  inline AtomicGuard(volatile long* val_) : val(val_) { if (val) AtomicIncrement(val); }
-  inline ~AtomicGuard() { if (val) AtomicDecrement(val); }
-};
 
 template<class L>
 class locker
