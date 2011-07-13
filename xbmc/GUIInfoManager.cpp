@@ -1708,6 +1708,8 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
       }
     case SYSTEM_CPU_USAGE:
       return g_cpuInfo.getUsedPercentage();
+    case SYSTEM_BATTERY_LEVEL:
+      return g_powerManager.BatteryLevel();
   }
   return 0;
 }
