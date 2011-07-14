@@ -375,6 +375,7 @@ protected:
       dts           = DVD_NOPTS_VALUE;
       player_state  = "";
       chapter       = 0;
+      chapter_name  = "";
       chapter_count = 0;
       canrecord     = false;
       recording     = false;
