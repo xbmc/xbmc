@@ -15,6 +15,7 @@
 		18ACF8FD13597B5700B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8FB13597B5700B67371 /* RecentlyAddedJob.cpp */; };
 		18B700F313A6A7510009C1AF /* KeymapLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B700F113A6A7510009C1AF /* KeymapLoader.cpp */; };
 		18B700F613A6A7850009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B700F413A6A7850009C1AF /* AddonVersion.cpp */; };
+		18ECC99D13CF17D200A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC99B13CF17D200A9ED6C /* StreamUtils.cpp */; };
 		3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255316512B2D02400837CD2 /* CoreAudio.framework */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
 		7C0A7EDE13A5DC2800AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */; };
@@ -935,6 +936,8 @@
 		18B700F213A6A7510009C1AF /* KeymapLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeymapLoader.h; sourceTree = "<group>"; };
 		18B700F413A6A7850009C1AF /* AddonVersion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonVersion.cpp; sourceTree = "<group>"; };
 		18B700F513A6A7850009C1AF /* AddonVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonVersion.h; sourceTree = "<group>"; };
+		18ECC99B13CF17D200A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
+		18ECC99C13CF17D200A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
 		3255316512B2D02400837CD2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
@@ -5471,6 +5474,8 @@
 				F56C8754131F42EC000AD0F6 /* Stopwatch.h */,
 				F56C8755131F42EC000AD0F6 /* StreamDetails.cpp */,
 				F56C8756131F42EC000AD0F6 /* StreamDetails.h */,
+				18ECC99B13CF17D200A9ED6C /* StreamUtils.cpp */,
+				18ECC99C13CF17D200A9ED6C /* StreamUtils.h */,
 				F56C8757131F42EC000AD0F6 /* SystemInfo.cpp */,
 				F56C8758131F42EC000AD0F6 /* SystemInfo.h */,
 				F56C8759131F42EC000AD0F6 /* TimeUtils.cpp */,
@@ -6721,6 +6726,7 @@
 				7C89628013B7031E003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
 				1830219E13B8E37300770920 /* controledit.cpp in Sources */,
 				DF27E23613C23CAC002514FE /* InertialScrollingHandler.cpp in Sources */,
+				18ECC99D13CF17D200A9ED6C /* StreamUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
