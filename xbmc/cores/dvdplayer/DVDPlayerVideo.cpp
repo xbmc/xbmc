@@ -500,6 +500,8 @@ void CDVDPlayerVideo::Process()
 
       if(mInt == VS_INTERLACEMETHOD_DEINTERLACE)
         mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
+      else if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
       else if(mInt == VS_INTERLACEMETHOD_AUTO)
         mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
 

@@ -2997,7 +2997,8 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
   if(m_renderMethod & RENDER_VAAPI)
     return false;
 
-  if(method == VS_INTERLACEMETHOD_DEINTERLACE)
+  if(method == VS_INTERLACEMETHOD_DEINTERLACE
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
     return true;
 
   if((method == VS_INTERLACEMETHOD_RENDER_BLEND

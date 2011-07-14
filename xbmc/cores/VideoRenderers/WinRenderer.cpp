@@ -980,7 +980,8 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
   if(method == VS_INTERLACEMETHOD_NONE
   || method == VS_INTERLACEMETHOD_AUTO
-  || method == VS_INTERLACEMETHOD_DEINTERLACE)
+  || method == VS_INTERLACEMETHOD_DEINTERLACE
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
     return true;
 
   return false;
