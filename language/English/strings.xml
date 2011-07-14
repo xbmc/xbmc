@@ -2318,4 +2318,6 @@
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
 
+  <string id="34201">Can't find a next item to play</string>
+  <string id="34202">Can't find a previous item to play</string>
 </strings>
