@@ -1015,6 +1015,7 @@
 
   <string id="13100">Flicker filter</string>
   <string id="13101">Let driver choose (requires restart)</string>
+  
   <string id="13105">Vertical blank sync</string>
   <string id="13106">Disabled</string>
   <string id="13107">Enabled during video playback</string>
@@ -1062,9 +1063,11 @@
 
   <string id="13200">Profiles</string>
   <string id="13201">Delete profile '%s'?</string>
+  
   <string id="13204">Last loaded profile:</string>
   <string id="13205">Unknown</string>
   <string id="13206">Overwrite</string>
+  
   <string id="13208">Alarm clock</string>
   <string id="13209">Alarm clock interval (in minutes)</string>
   <string id="13210">Started, alarm in %im</string>
@@ -1165,6 +1168,7 @@
   <string id="13359">Set artist thumb</string>
   <string id="13360">Automatically generate thumbnails</string>
   <string id="13361">Enable voice</string>
+  
   <string id="13375">Enable device</string>
   <string id="13376">Volume</string>
   <string id="13377">Default view mode</string>
