@@ -2313,5 +2313,7 @@
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
     <!-- 34112-34200 reserved for future use -->
-    
+ 
+  <string id="34201">Kan volgende item niet vinden om af te spelen</string> 
+  <string id="34202">Kan vorige item niet vinden om af te spelen</string> 
 </strings>
