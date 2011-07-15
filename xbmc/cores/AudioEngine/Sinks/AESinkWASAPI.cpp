@@ -28,7 +28,7 @@
 #include <Mmreg.h>
 #include <stdint.h>
 
-#include "AEUtil.h"
+#include "../Utils/AEUtil.h"
 #include "settings/GUISettings.h"
 #include "StdString.h"
 #include "utils/log.h"
