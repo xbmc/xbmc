@@ -69,9 +69,13 @@ CGUIPythonWindow::~CGUIPythonWindow(void)
 
 bool CGUIPythonWindow::OnAction(const CAction &action)
 {
+  bool ret = false;
+  // if we don't have callback window or we don't want to close window
   // do the base class window first, and the call to python after this
-  bool ret = CGUIWindow::OnAction(action);
-
+  if (!pCallbackWindow || !(action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU))
+    ret = CGUIWindow::OnAction(action);
+  else
+    ret = true;
   // workaround - for scripts which try to access the active control (focused) when there is none.
   // for example - the case when the mouse enters the screen.
   CGUIControl *pControl = GetFocusedControl();
