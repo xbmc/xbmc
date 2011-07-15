@@ -40,7 +40,9 @@ bool CAEFactory::LoadEngine(enum AEEngine engine)
 
   switch(engine)
   {
+#ifndef __APPLE__
     case AE_ENGINE_NULL     :
+#endif
 #ifdef __APPLE__
     case AE_ENGINE_COREAUDIO: AE = new CCoreAudioAE(); break;
 #else

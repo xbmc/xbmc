@@ -37,7 +37,7 @@
 #include "CoreAudioAESound.h"
 
 /* typecast AE to CCoreAudioAE */
-#define AE (*(CCoreAudioAE*)AE.GetEngine())
+#define AE (*(CCoreAudioAE*)CAEFactory::AE)
 
 typedef struct
 {
