@@ -100,8 +100,16 @@ void CRenderCaptureGL::BeginRender()
     if (!m_pbo)
       glGenBuffersARB(1, &m_pbo);
 
+    //only use a query when not capturing immediately
     if (!m_query && !(m_flags & CAPTUREFLAG_IMMEDIATELY))
+    {
       glGenQueriesARB(1, &m_query);
+    }
+    else if (m_query && (m_flags & CAPTUREFLAG_IMMEDIATELY))
+    { //clean up any old query if the previous capture was not immediately
+      glDeleteQueriesARB(1, &m_query);
+      m_query = 0;
+    }
 
     //start the occlusion query
     if (m_query)
