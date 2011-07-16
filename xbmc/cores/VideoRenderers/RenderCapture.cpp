@@ -81,7 +81,7 @@ void CRenderCaptureGL::BeginRender()
     {
       if (!g_Windowing.IsExtSupported("GL_ARB_occlusion_query"))
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_occlusion_query not supported, performance might suffer");
-      if (!g_Windowing.IsExtSupported("GL_ARB_occlusion_query"))
+      if (!g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object"))
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_pixel_buffer_object not supported, performance might suffer");
     }
 #endif
