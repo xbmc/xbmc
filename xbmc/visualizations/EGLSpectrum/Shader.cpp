@@ -21,7 +21,8 @@
 
 #include "system.h"
 
-#if defined(HAS_GL) || HAS_GLES == 2
+#if HAS_GLES == 2
+
 #include "Shader.h"
 #include "utils/GLUtils.h"
 

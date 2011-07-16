@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">Mode</string>
+    <string id="30001">Rempli</string>
+    <string id="30002">Fil de fer</string>
+    <string id="30003">Points</string>
+    <string id="30004">Hauteur de barre</string>
+    <string id="30005">Petit</string>
+    <string id="30006">Défaut</string>
+    <string id="30007">Grand</string>
+    <string id="30008">Très Grand</string>
+    <string id="30009">Vitesse</string>
+    <string id="30010">Très Lent</string>
+    <string id="30011">Lent</string>
+    <string id="30012">Défaut</string>
+    <string id="30013">Rapide</string>
+    <string id="30014">Très Rapide</string>
+</strings>

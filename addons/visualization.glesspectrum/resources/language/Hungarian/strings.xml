@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- beállítás feliratok -->
+    <string id="30000">Mód</string>
+    <string id="30001">Kitöltött</string>
+    <string id="30002">Drótváz</string>
+    <string id="30003">Pontok</string>
+    <string id="30004">Oszlopmagasság</string>
+    <string id="30005">Alacsony</string>
+    <string id="30006">Alapérték</string>
+    <string id="30007">Nagy</string>
+    <string id="30008">Nagyon nagy</string>
+    <string id="30009">Sebesség</string>
+    <string id="30010">Nagyon lassú</string>
+    <string id="30011">Lassú</string>
+    <string id="30012">Alapérték</string>
+    <string id="30013">Gyors</string>
+    <string id="30014">Nagyon gyors</string>
+</strings>

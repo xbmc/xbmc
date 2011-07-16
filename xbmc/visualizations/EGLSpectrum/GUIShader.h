@@ -26,6 +26,8 @@
 
 #include "Shader.h"
 
+#if HAS_GLES == 2
+
 using namespace Shaders;
 
 class CGUIShader : public CGLSLShaderProgram
@@ -54,5 +56,6 @@ protected:
   GLfloat *m_proj;
   GLfloat *m_model;
 };
+#endif
 
 #endif // GUI_SHADER_H

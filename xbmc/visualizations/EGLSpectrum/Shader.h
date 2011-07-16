@@ -24,6 +24,8 @@
 
 #include "system.h" // for HAS_GL/HAS_GLES
 
+#if HAS_GLES == 2
+
 #include <vector>
 #include <string>
 
@@ -201,5 +203,6 @@ namespace Shaders {
 
 
 } // close namespace
+#endif
 
 #endif //__SHADER_H__

@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">模式</string>
+    <string id="30001">填充</string>
+    <string id="30002">线框</string>
+    <string id="30003">点</string>
+    <string id="30004">柱高</string>
+    <string id="30005">小</string>
+    <string id="30006">默认</string>
+    <string id="30007">大</string>
+    <string id="30008">很大</string>
+    <string id="30009">速度</string>
+    <string id="30010">很慢</string>
+    <string id="30011">慢</string>
+    <string id="30012">默认</string>
+    <string id="30013">快</string>
+    <string id="30014">很快</string>
+</strings>

@@ -22,6 +22,8 @@
 
 #include "system.h"
 
+#if HAS_GLES == 2
+
 #include "GUIShader.h"
 #include "MatrixGLES.h"
 #include "utils/log.h"
@@ -79,3 +81,5 @@ void CGUIShader::Free()
   // Do Cleanup here
   CGLSLShaderProgram::Free();
 }
+
+#endif
