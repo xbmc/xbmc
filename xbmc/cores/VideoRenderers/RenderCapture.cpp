@@ -23,6 +23,7 @@
 #include "utils/log.h"
 #include "windowing/WindowingFactory.h"
 #include "utils/fastmemcpy.h"
+#include "settings/GUISettings.h"
 
 CRenderCaptureBase::CRenderCaptureBase()
 {
@@ -75,7 +76,10 @@ void CRenderCaptureGL::BeginRender()
   if (!m_asyncChecked)
   {
 #ifndef HAS_GLES
-    m_asyncSupported = g_Windowing.IsExtSupported("GL_ARB_occlusion_query") && g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object");
+    bool usePbo = g_guiSettings.GetBool("videoplayer.usepbo");
+    m_asyncSupported = g_Windowing.IsExtSupported("GL_ARB_occlusion_query") &&
+                       g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object") &&
+                       usePbo;
 
     if (m_flags & CAPTUREFLAG_CONTINUOUS)
     {
@@ -83,6 +87,8 @@ void CRenderCaptureGL::BeginRender()
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_occlusion_query not supported, performance might suffer");
       if (!g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object"))
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_pixel_buffer_object not supported, performance might suffer");
+      if (!usePbo)
+        CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_pixel_buffer_object disabled, performance might suffer");
     }
 #endif
     m_asyncChecked = true;
