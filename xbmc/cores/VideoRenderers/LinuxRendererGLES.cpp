@@ -1255,54 +1255,19 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
 
-  // OpenGLES returns byte in RGBA order but CRenderCapture needs BGRA order
-  /*
-  unsigned int pitch = capture->GetWidth() * 4;
-  unsigned char *dst, *pixels = (unsigned char*)capture->GetRenderBuffer();
-  for (unsigned int y = 0; y < capture->GetHeight(); y++)
+  // OpenGLES returns in RGBA order but CRenderCapture needs BGRA order
+  // XOR Swap RGBA -> BGRA
+  unsigned char* pixels = (unsigned char*)capture->GetRenderBuffer();
+  for (int i = 0; i < capture->GetWidth() * capture->GetHeight(); i++, pixels+=4)
   {
-    dst = pixels + (y * pitch);
-    for (unsigned int x = 0; x < pitch; x+=4)
-      std::swap(dst[x], dst[x+2]);
-  }
-  */
-  // flip top/bottom and swap RGBA to BGRA. 
-  // we should NOT have to do this as the matrix transform 
-  // should take care of this. TODO: figure out why.
-  {
-    int top = 0;
-    int bot = capture->GetHeight() - 1;
-    int rowbytes = capture->GetWidth() * 4;
-    unsigned char *base_ptr  = (unsigned char*)capture->GetRenderBuffer();
-    unsigned char *rowbuffer = (unsigned char*)malloc(rowbytes);
-    unsigned char *t1_ptr, *b1_ptr, *b2_ptr, *rb_ptr;
-    while ( top < bot )
+    if (pixels[0] != pixels[2])
     {
-      t1_ptr = base_ptr + (rowbytes * top++);
-      b2_ptr = b1_ptr = base_ptr + (rowbytes * bot--);
-
-      // save out top line.
-      fast_memcpy(rowbuffer, t1_ptr, rowbytes);
-      // copy bottom line to top, swapping from RGBA to BGRA
-      for (int x = 0; x < rowbytes; x+=4, b1_ptr+=4)
-      {
-        *t1_ptr++ = b1_ptr[2];
-        *t1_ptr++ = b1_ptr[1];
-        *t1_ptr++ = b1_ptr[0];
-        *t1_ptr++ = b1_ptr[3];
-      }
-      // copy saved top line to bottom, swapping from RGBA to BGRA
-      rb_ptr = rowbuffer;
-      for (int x = 0; x < rowbytes; x+=4, rb_ptr+=4)
-      {
-        *b2_ptr++ = rb_ptr[2];
-        *b2_ptr++ = rb_ptr[1];
-        *b2_ptr++ = rb_ptr[0];
-        *b2_ptr++ = rb_ptr[3];
-      }
+      pixels[0] ^= pixels[2];
+      pixels[2] ^= pixels[0];
+      pixels[0] ^= pixels[2];
     }
-    free(rowbuffer);
   }
+
   capture->EndRender();
 
   // revert model view matrix
