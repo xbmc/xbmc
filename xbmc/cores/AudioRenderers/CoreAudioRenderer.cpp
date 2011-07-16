@@ -861,6 +861,7 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
   // Configure up/down mixing if necessary, if caller allows it (and provides enough information to complete it)
   if (allowMixing && channelMap)
   {
+    bool hasLFE = false;
     // Convert XBMC input channel layout format to CoreAudio layout format
     AudioChannelLayout* pInLayout = (AudioChannelLayout*)malloc(sizeof(AudioChannelLayout) + sizeof(AudioChannelDescription) * channels);
     pInLayout->mChannelLayoutTag = kAudioChannelLayoutTag_UseChannelDescriptions;
@@ -874,6 +875,32 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
       pDesc->mCoordinates[0] = 0.0f;
       pDesc->mCoordinates[1] = 0.0f;
       pDesc->mCoordinates[2] = 0.0f;
+      if (pDesc->mChannelLabel == kAudioChannelLabel_LFEScreen)
+        hasLFE = true;
+    }
+    
+    // HACK: Fix broken channel layouts coming from some aac sources that include rear channel but no side channels.
+    // 5.1 streams should include front and side channels. Rear channels are added by 6.1 and 7.1, so any 5.1 
+    // source that claims to have rear channels is wrong.
+    if (inputFormat.mChannelsPerFrame == 6 && hasLFE) // Check for 5.1 configuration (as best we can without getting too silly)
+    {
+      for (unsigned int chan=0; chan < inputFormat.mChannelsPerFrame; chan++)
+      {
+        AudioChannelDescription* pDesc = &pInLayout->mChannelDescriptions[chan];
+        if (pDesc->mChannelLabel == kAudioChannelLabel_LeftSurround || pDesc->mChannelLabel == kAudioChannelLabel_LeftSurround)
+          break; // Required condition cannot be true
+        
+        if (pDesc->mChannelLabel == kAudioChannelLabel_LeftSurroundDirect)
+        {
+          pDesc->mChannelLabel = kAudioChannelLabel_LeftSurround; // Change [Back Left] to [Side Left]
+          CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: Detected faulty input channel map...fixing(Back Left-->Side Left)");
+        }
+        if (pDesc->mChannelLabel == kAudioChannelLabel_RightSurroundDirect)
+        {
+          pDesc->mChannelLabel = kAudioChannelLabel_RightSurround; // Change [Back Left] to [Side Left]
+          CLog::Log(LOGDEBUG, "CCoreAudioRenderer::InitializePCM: Detected faulty input channel map...fixing(Back Right-->Side Right)");
+        }
+      }
     }
 
     CCoreAudioChannelLayout sourceLayout(*pInLayout);
