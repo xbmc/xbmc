@@ -100,11 +100,12 @@ void CRenderCaptureGL::BeginRender()
     if (!m_pbo)
       glGenBuffersARB(1, &m_pbo);
 
-    if (!m_query)
+    if (!m_query && !(m_flags & CAPTUREFLAG_IMMEDIATELY))
       glGenQueriesARB(1, &m_query);
 
     //start the occlusion query
-    glBeginQueryARB(GL_SAMPLES_PASSED_ARB, m_query);
+    if (m_query)
+      glBeginQueryARB(GL_SAMPLES_PASSED_ARB, m_query);
 
     //allocate data on the pbo and pixel buffer
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, m_pbo);
@@ -134,7 +135,9 @@ void CRenderCaptureGL::EndRender()
   if (m_asyncSupported)
   {
     glBindBufferARB(GL_PIXEL_PACK_BUFFER_ARB, 0);
-    glEndQueryARB(GL_SAMPLES_PASSED_ARB);
+
+    if (m_query)
+      glEndQueryARB(GL_SAMPLES_PASSED_ARB);
 
     if (m_flags & CAPTUREFLAG_IMMEDIATELY)
       PboToBuffer();
@@ -171,8 +174,10 @@ void CRenderCaptureGL::ReadOut()
     //when it is, the write into the pbo is probably done as well,
     //so it can be mapped and read without a busy wait
 
-    GLuint readout;
-    glGetQueryObjectuivARB(m_query, GL_QUERY_RESULT_AVAILABLE_ARB, &readout);
+    GLuint readout = 1;
+    if (m_query)
+      glGetQueryObjectuivARB(m_query, GL_QUERY_RESULT_AVAILABLE_ARB, &readout);
+
     if (readout)
       PboToBuffer();
   }
