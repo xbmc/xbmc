@@ -178,6 +178,9 @@ bool CPlayListPlayer::PlayPrevious()
   if (!RepeatedOne(m_iCurrentPlayList))
     iSong--;
 
+  if (iSong < 0 && Repeated(m_iCurrentPlayList))
+    iSong = playlist.size() - 1;
+
   if (iSong < 0 || playlist.size() <= 0)
   {
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34202));
