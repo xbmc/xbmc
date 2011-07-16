@@ -334,7 +334,7 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
     char *dst = pixelVector;
     for (int y = 0;y < height;++y)
     {
-      memcpy(dst, src, width);
+      fast_memcpy(dst, src, width);
       src += stride;
       dst += width;
     }
