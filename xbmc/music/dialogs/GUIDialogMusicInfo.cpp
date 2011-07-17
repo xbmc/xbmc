@@ -328,7 +328,12 @@ void CGUIDialogMusicInfo::RefreshThumb()
     }
   }
   if (!CFile::Exists(thumbImage) )
-    thumbImage.Empty();
+  {
+    if (m_bArtistInfo)
+      thumbImage = "DefaultArtist.png";
+    else
+      thumbImage = "DefaultAlbumCover.png";
+  }
 
   m_albumItem->SetThumbnailImage(thumbImage);
 }

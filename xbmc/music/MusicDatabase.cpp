@@ -2947,6 +2947,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
         int idAlbum = m_pDS->fv("idAlbum").get_asInt();
         strDir.Format("%s%ld/", baseDir.c_str(), idAlbum);
         CFileItemPtr pItem(new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get())));
+        pItem->SetIconImage("DefaultAlbumCover.png");
         items.Add(pItem);
         m_pDS->next();
       }

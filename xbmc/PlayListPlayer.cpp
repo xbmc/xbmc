@@ -160,11 +160,13 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
 
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
   {
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34201));
+    if(!bAutoPlay)
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34201));
+
     return false;
   }
 
-  return Play(iSong, bAutoPlay);
+  return Play(iSong, false);
 }
 
 bool CPlayListPlayer::PlayPrevious()
@@ -177,6 +179,9 @@ bool CPlayListPlayer::PlayPrevious()
 
   if (!RepeatedOne(m_iCurrentPlayList))
     iSong--;
+
+  if (iSong < 0 && Repeated(m_iCurrentPlayList))
+    iSong = playlist.size() - 1;
 
   if (iSong < 0 || playlist.size() <= 0)
   {
