@@ -1578,6 +1578,9 @@
     <ClInclude Include="..\..\xbmc\threads\platform\Condition.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\Condition.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h" />
     <ClInclude Include="..\..\xbmc\threads\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\threads\SingleLock.h" />
     <ClInclude Include="..\..\xbmc\threads\Thread.h" />
@@ -2016,7 +2019,9 @@
     <ClInclude Include="..\..\xbmc\XBApplicationEx.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\xbmc\threads\platform\platform.select" />
+    <ClInclude Include="..\..\xbmc\threads\platform\platform.select">
+      <FileType>Document</FileType>
+    </ClInclude>
     <None Include="..\..\xbmc\win32\XBMC.ico" />
   </ItemGroup>
   <ItemGroup>

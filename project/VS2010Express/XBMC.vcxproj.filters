@@ -235,6 +235,9 @@
     <Filter Include="threads\platform\boost">
       <UniqueIdentifier>{596bfc31-872d-4de6-b123-5e1ca79c5816}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads\platform\win">
+      <UniqueIdentifier>{1f49caed-1c84-46a1-83fc-b1fa6cfd749e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -4981,13 +4984,22 @@
     <ClInclude Include="..\..\xbmc\threads\platform\boost\ThreadLocal.h">
       <Filter>threads\platform\boost</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\win\Condition.h">
+      <Filter>threads\platform\win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h">
+      <Filter>threads\platform\win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h">
+      <Filter>threads\platform\win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\platform.select">
+      <Filter>threads\platform</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\xbmc\win32\XBMC.ico">
       <Filter>win32</Filter>
-    </None>
-    <None Include="..\..\xbmc\threads\platform\platform.select">
-      <Filter>threads\platform</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

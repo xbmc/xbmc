@@ -24,8 +24,8 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #else
-  #ifndef USE_WIN_THREADING
-    #define USE_BOOST_THREADING 1
+  #ifndef USE_BOOST_THREADING
+    #define USE_WIN_THREADING 1
   #endif
 #endif
 
