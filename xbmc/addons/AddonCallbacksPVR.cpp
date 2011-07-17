@@ -23,6 +23,7 @@
 #include "AddonCallbacksPVR.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 #include "pvr/epg/PVREpg.h"
 #include "pvr/PVRManager.h"
@@ -239,7 +240,7 @@ void CAddonCallbacksPVR::PVRRecording(void *addonData, const char *strName, cons
     strLine2 = "";
 
   /* display a notification for 5 seconds */
-  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000, false);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strLine1, strLine2, 5000, false);
 
   CLog::Log(LOGDEBUG, "CAddonCallbacksPVR - %s - recording %s on client '%s'. name='%s' filename='%s'",
       __FUNCTION__, bOnOff ? "started" : "finished", addonHelper->m_addon->Name().c_str(), strName, strFileName);

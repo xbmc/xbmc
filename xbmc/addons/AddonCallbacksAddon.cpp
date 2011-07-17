@@ -24,6 +24,7 @@
 #include "AddonCallbacksAddon.h"
 #include "utils/log.h"
 #include "LangInfo.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 namespace ADDON
 {
@@ -106,18 +107,18 @@ void CAddonCallbacksAddon::QueueNotification(void *addonData, const queue_msg_t 
     switch (type)
     {
       case QUEUE_WARNING:
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, addonHelper->m_addon->Name(), strMessage, 3000, true);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, addonHelper->m_addon->Name(), strMessage, 3000, true);
         CLog::Log(LOGDEBUG, "CAddonCallbacksAddon - %s - %s - Warning Message: '%s'", __FUNCTION__, addonHelper->m_addon->Name().c_str(), strMessage);
         break;
 
       case QUEUE_ERROR:
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, addonHelper->m_addon->Name(), strMessage, 3000, true);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, addonHelper->m_addon->Name(), strMessage, 3000, true);
         CLog::Log(LOGDEBUG, "CAddonCallbacksAddon - %s - %s - Error Message : '%s'", __FUNCTION__, addonHelper->m_addon->Name().c_str(), strMessage);
         break;
 
       case QUEUE_INFO:
       default:
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, addonHelper->m_addon->Name(), strMessage, 3000, false);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, addonHelper->m_addon->Name(), strMessage, 3000, false);
         CLog::Log(LOGDEBUG, "CAddonCallbacksAddon - %s - %s - Info Message : '%s'", __FUNCTION__, addonHelper->m_addon->Name().c_str(), strMessage);
         break;
     }

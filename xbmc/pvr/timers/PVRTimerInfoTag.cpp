@@ -542,6 +542,6 @@ void CPVRTimerInfoTag::QueueNotification(void) const
     }
 
     if (!strMessage.IsEmpty())
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
   }
 }
