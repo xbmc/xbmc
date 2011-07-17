@@ -76,7 +76,7 @@ bool CGUIDialogPVRChannelManager::OnActionClose(const CAction &action)
 {
   bool bReturn(false);
   int iActionId = action.GetID();
-  if (iActionId == ACTION_PREVIOUS_MENU || iActionId == ACTION_CLOSE_DIALOG)
+  if (iActionId == ACTION_PREVIOUS_MENU || iActionId == ACTION_PARENT_DIR)
   {
     Close();
     bReturn = true;
