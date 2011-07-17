@@ -72,12 +72,14 @@ typedef sem_t waitevent_t;
 
 #define PATH_SEPARATOR_CHAR '/'
 
+#ifndef __APPLE__
 static inline uint64_t getcurrenttime(void)
 {
 	struct timeval t;
 	gettimeofday(&t, NULL);
 	return ((uint64_t)t.tv_sec * 1000) + (t.tv_usec / 1000);
 }
+#endif
 
 static inline int setsocktimeout(int s, int level, int optname, uint64_t timeout)
 {
