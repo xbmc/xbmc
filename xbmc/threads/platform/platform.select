@@ -24,15 +24,31 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #else
-  #define USE_BOOST_THREADING 1
+  #ifndef USE_WIN_THREADING
+    #define USE_BOOST_THREADING 1
+  #endif
 #endif
 
 #ifdef USE_BOOST_THREADING
-#define USE_BOOST_LOCKING 1
-#define USE_BOOST_TLS 1
+  #define XBMC_THREADING_IMPL_SET 1
 #endif
 
 #ifdef USE_PTHREADS_THREADING
-#define USE_PTHREADS_LOCKING 1
-#define USE_PTHREADS_TLS 1
+  #ifdef XBMC_THREADING_IMPL_SET
+    #error "Cannot define both USE_PTHREADS_THREADING and another USE_*_THREADING"
+  #endif
+  #define XBMC_THREADING_IMPL_SET 1
 #endif
+
+#ifdef USE_WIN_THREADING
+  #ifdef XBMC_THREADING_IMPL_SET
+    #error "Cannot define both USE_WIN_THREADING and another USE_*_THREADING"
+  #endif
+  #define XBMC_THREADING_IMPL_SET 1
+#endif
+
+#ifndef XBMC_THREADING_IMPL_SET
+  #error "No threading implementation selected."
+#endif
+
+#undef XBMC_THREADING_IMPL_SET

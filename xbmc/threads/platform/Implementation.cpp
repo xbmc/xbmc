@@ -21,21 +21,10 @@
 
 #include "threads/platform/platform.select"
 
-#ifdef USE_BOOST_LOCKING
-#define LOCKING_IMPL_SET
-// There is no boost implementation cpp file
-#endif
-
-#ifdef USE_PTHREADS_LOCKING
-#ifdef LOCKING_IMPL_SET
-#error "Cannot set two USE_*_LOCKING flags"
-#endif
-#define LOCKING_IMPL_SET
+#ifdef USE_BOOST_THREADING
+// boost has no need of an Implementation.cpp
+#elif (defined USE_PTHREADS_THREADING)
 #include "threads/platform/pthreads/Implementation.cpp"
+#elif (defined USE_WIN_THREADING)
+// win has no need of an Implementation.cpp
 #endif
-
-#ifndef LOCKING_IMPL_SET
-#error "No platform specified for the implemenation code."
-#endif
-
-#undef LOCKING_IMPL_SET

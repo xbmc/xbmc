@@ -23,24 +23,10 @@
 
 #include "threads/platform/platform.select"
 
-#ifdef USE_BOOST_TLS
+#ifdef USE_BOOST_THREADING
 #include "threads/platform/boost/ThreadLocal.h"
-#define TLS_IMPL_SET
-#endif
-
-#ifdef USE_PTHREADS_TLS
-#ifdef TLS_IMPL_SET
-#error "Cannot set two USE_*_TLS flags"
-#endif
+#elif (defined USE_PTHREADS_THREADING)
 #include "threads/platform/pthreads/ThreadLocal.h"
-#define TLS_IMPL_SET
+#elif (defined USE_WIN_THREADING)
+#include "threads/platform/win/ThreadLocal.h"
 #endif
-
-#ifndef TLS_IMPL_SET
-#error "No platform specified for the CriticalSection definition."
-#endif
-
-#undef TLS_IMPL_SET
-
-
-
