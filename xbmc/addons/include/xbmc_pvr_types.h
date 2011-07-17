@@ -63,6 +63,10 @@ struct DemuxPacket;
 
 /*! @name PVR entry content event types */
 //@{
+/* These IDs come from the DVB-SI EIT table "content descriptor"
+ * Also known under the name "E-book genre assignments"
+ */
+#define EPG_EVENT_CONTENTMASK_UNDEFINED                0x00
 #define EPG_EVENT_CONTENTMASK_MOVIEDRAMA               0x10
 #define EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS       0x20
 #define EPG_EVENT_CONTENTMASK_SHOW                     0x30
@@ -76,7 +80,8 @@ struct DemuxPacket;
 #define EPG_EVENT_CONTENTMASK_SPECIAL                  0xB0
 #define EPG_EVENT_CONTENTMASK_USERDEFINED              0xF0
 //@}
-
+/* Set EPGTAG.iGenreType to EPG_GENRE_USE_STRING to transfer genre strings to XBMC */
+#define EPG_GENRE_USE_STRING                          0x100
 
 /* using the default avformat's MAX_STREAMS value to be safe */
 #define PVR_STREAM_MAX_STREAMS 20
@@ -252,6 +257,7 @@ extern "C" {
     const char *  strIconPath;         /*!< @brief (optional) icon path */
     int           iGenreType;          /*!< @brief (optional) genre type */
     int           iGenreSubType;       /*!< @brief (optional) genre sub type */
+    const char *  strGenreDescription; /*!< @brief (optional) genre. Will be used only when iGenreType = EPG_GENRE_USE_STRING */
     time_t        firstAired;          /*!< @brief (optional) first aired in UTC */
     int           iParentalRating;     /*!< @brief (optional) parental rating */
     int           iStarRating;         /*!< @brief (optional) star rating */

@@ -452,25 +452,25 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
 
           if (isEnd && epg.StartTime() != 0)
           {
-            broadcast.iUniqueBroadcastId = epg.UniqueId();
-            broadcast.strTitle           = epg.Title();
-            broadcast.iChannelNumber     = channel.iChannelNumber;
-            broadcast.startTime          = epg.StartTime();
-            broadcast.endTime            = epg.EndTime();
-            broadcast.strPlotOutline     = epg.ShortText();
-            broadcast.strPlot            = epg.Description();
-            broadcast.strIconPath        = "";
-            broadcast.iGenreType         = epg.GenreType();
-            broadcast.iGenreSubType      = epg.GenreSubType();
-            //broadcast.genre_text       = epg.Genre();
-            broadcast.firstAired         = epg.OriginalAirDate();
-            broadcast.iParentalRating    = epg.ParentalRating();
-            broadcast.iStarRating        = epg.StarRating();
-            broadcast.bNotify            = false;
-            broadcast.iSeriesNumber      = epg.SeriesNumber();
-            broadcast.iEpisodeNumber     = epg.EpisodeNumber();
-            broadcast.iEpisodePartNumber = atoi(epg.EpisodePart());
-            broadcast.strEpisodeName     = epg.EpisodeName();
+            broadcast.iUniqueBroadcastId  = epg.UniqueId();
+            broadcast.strTitle            = epg.Title();
+            broadcast.iChannelNumber      = channel.iChannelNumber;
+            broadcast.startTime           = epg.StartTime();
+            broadcast.endTime             = epg.EndTime();
+            broadcast.strPlotOutline      = epg.ShortText();
+            broadcast.strPlot             = epg.Description();
+            broadcast.strIconPath         = "";
+            broadcast.iGenreType          = epg.GenreType();
+            broadcast.iGenreSubType       = epg.GenreSubType();
+            broadcast.strGenreDescription = epg.Genre();
+            broadcast.firstAired          = epg.OriginalAirDate();
+            broadcast.iParentalRating     = epg.ParentalRating();
+            broadcast.iStarRating         = epg.StarRating();
+            broadcast.bNotify             = false;
+            broadcast.iSeriesNumber       = epg.SeriesNumber();
+            broadcast.iEpisodeNumber      = epg.EpisodeNumber();
+            broadcast.iEpisodePartNumber  = atoi(epg.EpisodePart());
+            broadcast.strEpisodeName      = epg.EpisodeName();
 
             PVR->TransferEpgEntry(handle, &broadcast);
           }

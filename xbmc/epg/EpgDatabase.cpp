@@ -23,6 +23,7 @@
 #include "settings/AdvancedSettings.h"
 #include "settings/VideoSettings.h"
 #include "utils/log.h"
+#include "addons/include/xbmc_pvr_types.h"
 
 #include "EpgDatabase.h"
 #include "EpgContainer.h"
@@ -70,6 +71,7 @@ bool CEpgDatabase::CreateTables(void)
           "iEndTime        integer, "
           "iGenreType      integer, "
           "iGenreSubType   integer, "
+          "sGenre          varchar(128), "
           "iFirstAired     integer, "
           "iParentalRating integer, "
           "iStarRating     integer, "
@@ -110,13 +112,33 @@ bool CEpgDatabase::CreateTables(void)
 
 bool CEpgDatabase::UpdateOldVersion(int iVersion)
 {
-  if (iVersion < GetMinVersion())
+  bool bReturn = true;
+
+  if (iVersion < 4)
   {
-    CLog::Log(LOGERROR, "EpgDB - %s - updating old table versions not supported. please delete '%s'", __FUNCTION__, GetBaseDBName());
+    CLog::Log(LOGERROR, "EpgDB - %s - updating from table versions < 4 not supported. please delete '%s'", __FUNCTION__, GetBaseDBName());
     return false;
   }
 
-  return true;
+  BeginTransaction();
+
+  try
+  {
+    if (iVersion < 5)
+      m_pDS->exec("ALTER TABLE epgtags ADD sGenre varchar(128);");
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "Error attempting to update the database version!");
+    bReturn = false;
+  }
+
+  if (bReturn)
+    CommitTransaction();
+  else
+    RollbackTransaction();
+
+  return bReturn;
 }
 
 bool CEpgDatabase::DeleteEpg(void)
@@ -253,6 +275,7 @@ int CEpgDatabase::Get(CEpg &epg)
         newTag.m_strPlot            = m_pDS->fv("sPlot").get_asString().c_str();
         newTag.m_iGenreType         = m_pDS->fv("iGenreType").get_asInt();
         newTag.m_iGenreSubType      = m_pDS->fv("iGenreSubType").get_asInt();
+        newTag.m_strGenre           = m_pDS->fv("sGenre").get_asString().c_str();
         newTag.m_iParentalRating    = m_pDS->fv("iParentalRating").get_asInt();
         newTag.m_iStarRating        = m_pDS->fv("iStarRating").get_asInt();
         newTag.m_bNotify            = m_pDS->fv("bNotify").get_asBool();
@@ -367,16 +390,19 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   }
 
   CStdString strQuery;
+  
+  /* Only store the genre string when needed */
+  CStdString strGenre = (tag.GenreType() == EPG_GENRE_USE_STRING) ? tag.Genre() : "";
 
   if (iBroadcastId < 0)
   {
     strQuery = FormatSQL("INSERT INTO epgtags (idEpg, iStartTime, "
-        "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, "
+        "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, sGenre, "
         "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i);",
         iEpgId, iStartTime, iEndTime,
-        tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
+        tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         iFirstAired, tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID());
@@ -384,12 +410,12 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   else
   {
     strQuery = FormatSQL("REPLACE INTO epgtags (idEpg, iStartTime, "
-        "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, "
+        "iEndTime, sTitle, sPlotOutline, sPlot, iGenreType, iGenreSubType, sGenre, "
         "iFirstAired, iParentalRating, iStarRating, bNotify, iSeriesId, "
         "iEpisodeId, iEpisodePart, sEpisodeName, iBroadcastUid, idBroadcast) "
-        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
+        "VALUES (%u, %u, %u, '%s', '%s', '%s', %i, %i, '%s', %u, %i, %i, %i, %i, %i, %i, '%s', %i, %i);",
         iEpgId, iStartTime, iEndTime,
-        tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(),
+        tag.Title().c_str(), tag.PlotOutline().c_str(), tag.Plot().c_str(), tag.GenreType(), tag.GenreSubType(), strGenre.c_str(),
         tag.FirstAiredAsUTC().GetAsDBDateTime().c_str(), tag.ParentalRating(), tag.StarRating(), tag.Notify(),
         tag.SeriesNum(), tag.EpisodeNum(), tag.EpisodePart(), tag.EpisodeName().c_str(),
         tag.UniqueBroadcastID(), iBroadcastId);
