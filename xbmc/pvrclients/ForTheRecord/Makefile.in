@@ -22,8 +22,9 @@ SRCS   = utils.cpp \
         lib/jsoncpp/src/lib_json/json_reader.cpp \
         lib/jsoncpp/src/lib_json/json_writer.cpp \
         lib/jsoncpp/src/lib_json/json_value.cpp \
-        fortherecordrpc.cpp
-
+        fortherecordrpc.cpp \
+        pvrclient-fortherecord.cpp \
+        client.cpp
 
 include ../Makefile.include
 
