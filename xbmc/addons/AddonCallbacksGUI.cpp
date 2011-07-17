@@ -1229,9 +1229,9 @@ CGUIAddonWindow::CGUIAddonWindow(int id, CStdString strXML, CAddon* addon)
  , m_iOldWindowId(0)
  , m_bModal(false)
  , m_bIsDialog(false)
+ , m_actionEvent(true)
  , m_addon(addon)
 {
-  m_actionEvent   = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand  = false;
   CBOnInit        = NULL;
   CBOnFocus       = NULL;
@@ -1241,7 +1241,6 @@ CGUIAddonWindow::CGUIAddonWindow(int id, CStdString strXML, CAddon* addon)
 
 CGUIAddonWindow::~CGUIAddonWindow(void)
 {
-  CloseHandle(m_actionEvent);
 }
 
 bool CGUIAddonWindow::OnAction(const CAction &action)
@@ -1444,13 +1443,13 @@ void CGUIAddonWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
 
 void CGUIAddonWindow::WaitForActionEvent(unsigned int timeout)
 {
-  WaitForSingleObject(m_actionEvent, timeout);
-  ResetEvent(m_actionEvent);
+  m_actionEvent.WaitMSec(timeout);
+  m_actionEvent.Reset();
 }
 
 void CGUIAddonWindow::PulseActionEvent()
 {
-  SetEvent(m_actionEvent);
+  m_actionEvent.Set();
 }
 
 void CGUIAddonWindow::ClearAddonStrings()
