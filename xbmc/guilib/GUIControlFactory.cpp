@@ -452,6 +452,21 @@ bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
   return false;
 }
 
+bool CGUIControlFactory::GetScroller(const TiXmlNode *control, const CStdString &scrollerTag, CScroller& scroller)
+{
+  const TiXmlElement* node = control->FirstChildElement(scrollerTag);
+  if (node)
+  {
+    unsigned int scrollTime;
+    if (XMLUtils::GetUInt(control, scrollerTag, scrollTime))
+    {
+      scroller = CScroller(scrollTime, CAnimEffect::GetTweener(node));
+      return true;
+    }
+  }
+  return false;
+}
+
 bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, color_t &value)
 {
   const TiXmlElement* node = control->FirstChildElement(strTag);
