@@ -9,7 +9,21 @@ LIBS   = -ldl -lpthread
 LIBDIR = @abs_top_srcdir@/addons/pvr.fortherecord.argus-rtsp
 LIB    = @abs_top_srcdir@/addons/pvr.fortherecord.argus-rtsp/XBMC_ForTheRecord.pvr
 
-SRCS   = utils.cpp
+SRCS   = utils.cpp \
+        activerecording.cpp \
+        channel.cpp \
+        epg.cpp \
+        recording.cpp \
+        recordingsummary.cpp \
+        thread.cpp \
+        tools.cpp \
+        upcomingrecording.cpp \
+        uri.cpp \
+        lib/jsoncpp/src/lib_json/json_reader.cpp \
+        lib/jsoncpp/src/lib_json/json_writer.cpp \
+        lib/jsoncpp/src/lib_json/json_value.cpp \
+        fortherecordrpc.cpp
+
 
 include ../Makefile.include
 

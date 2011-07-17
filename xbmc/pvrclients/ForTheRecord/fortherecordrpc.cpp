@@ -35,8 +35,8 @@
 #include "AutoLock.h"
 
 // Some version dependent API strings
-#define FTR_GETEPG_40 "ForTheRecord/Guide/Programs/%s/%i-%02i-%02iT%02i:%02i:%02i%/%i-%02i-%02iT%02i:%02i:%02i"
-#define FTR_GETEPG_45 "ForTheRecord/Guide/FullPrograms/%s/%i-%02i-%02iT%02i:%02i:%02i%/%i-%02i-%02iT%02i:%02i:%02i/false"
+#define FTR_GETEPG_40 "ForTheRecord/Guide/Programs/%s/%i-%02i-%02iT%02i:%02i:%02i/%i-%02i-%02iT%02i:%02i:%02i"
+#define FTR_GETEPG_45 "ForTheRecord/Guide/FullPrograms/%s/%i-%02i-%02iT%02i:%02i:%02i/%i-%02i-%02iT%02i:%02i:%02i/false"
 
 
 // set l_logCurl to true to enable detailed protocol info logging by CURL
@@ -77,6 +77,9 @@ static int my_curl_debug_callback(CURL* curl, curl_infotype infotype, char* data
     break;
   case CURLINFO_DATA_IN:
     XBMC->Log(LOG_DEBUG, "CURL data-in : %s", pch);
+    break;
+  default:
+    // do nothing
     break;
   }
   delete [] pch;
@@ -384,13 +387,13 @@ namespace ForTheRecord
     {
       if (response.type() == Json::arrayValue)
       {
-        int size = response.size();
+        // int size = response.size();
 
         // parse live stream list
-        for ( int index =0; index < size; ++index )
-        {
-          printf("Found live stream %i: %s\n", index, response["LiveStream"]["RtspUrl"]);
-        }
+        // for ( int index =0; index < size; ++index )
+        // {
+        // printf("Found live stream %i: %s\n", index, response["LiveStream"]["RtspUrl"].asString.c_str());
+        // }
       }
     }
     return retval;
@@ -805,7 +808,7 @@ namespace ForTheRecord
 
     //Format: ForTheRecord/Scheduler/CancelUpcomingProgram/{scheduleId}/{channelId}/{startTime}?guideProgramId={guideProgramId}
     char command[256];
-    snprintf(command, 256, "ForTheRecord/Scheduler/CancelUpcomingProgram/%s/%s/%i-%02i-%02iT%02i:%02i:%02i%?guideProgramId=%s" ,
+    snprintf(command, 256, "ForTheRecord/Scheduler/CancelUpcomingProgram/%s/%s/%i-%02i-%02iT%02i:%02i:%02i?guideProgramId=%s" ,
       scheduleid.c_str(), channelid.c_str(),
       tm_start.tm_year + 1900, tm_start.tm_mon + 1, tm_start.tm_mday,
       tm_start.tm_hour, tm_start.tm_min, tm_start.tm_sec,
@@ -1029,7 +1032,7 @@ namespace ForTheRecord
       iOffset = (iOffset / 36);
 
       char ticks[15], offset[8];
-      snprintf(ticks, sizeof(ticks), "%010i", utctime);
+      snprintf(ticks, sizeof(ticks), "%010i", (int) utctime);
       snprintf(offset, sizeof(offset), "%s%04i", iOffset < 0 ? "-" : "+", abs(iOffset));
       char result[29];
       snprintf(result, sizeof(result), "\\/Date(%s000%s)\\/", ticks, offset );

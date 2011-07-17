@@ -25,8 +25,8 @@ public:
   virtual ~CKeepAliveThread(void);
 
   bool IsThreadRunning() { return Active(); }
-  long StopThread(unsigned long dwTimeoutMilliseconds  = 1000) { Cancel(dwTimeoutMilliseconds / 1000); return S_OK; }
-  long StartThread(void) { Start(); return S_OK; }
+  long StopThread(unsigned long dwTimeoutMilliseconds  = 1000) { Cancel(dwTimeoutMilliseconds / 1000); return 0; }
+  long StartThread(void) { Start(); return 0; }
 
 
 private:
