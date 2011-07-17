@@ -989,6 +989,8 @@ fi
 
 # CrystalHD
 if test "x$use_crystalhd" != "xno"; then
+  SAVE_CFLAGS="$CFLAGS"
+  CFLAGS="-D__LINUX_USER__"
   AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h], [],
     [ if test "x$use_crystalhd" = "xyes"; then
         AC_MSG_ERROR($crystalhd_not_found)
@@ -997,18 +999,17 @@ if test "x$use_crystalhd" != "xno"; then
         AC_MSG_RESULT($crystalhd_not_found)
       fi
       USE_CRYSTALHD=0
-    ],
-    [#define __LINUX_USER__])
+    ])
+    CFLAGS="$SAVE_CFLAGS"
     if test "$host_vendor" != "apple"; then
       XB_FIND_SONAME([CRYSTALHD], [crystalhd], [use_crystalhd])
     fi
     if test "x$use_crystalhd" != "xno"; then
       SAVE_CFLAGS="$CFLAGS"
-      CFLAGS="-llibcrystalhd"
+      CFLAGS="-D__LINUX_USER__ -llibcrystalhd"
       # check for new crystalhd lib
       AC_COMPILE_IFELSE(
-        [AC_LANG_SOURCE([ #define __LINUX_USER__
-          #include <libcrystalhd/bc_dts_types.h>
+        [AC_LANG_SOURCE([#include <libcrystalhd/bc_dts_types.h>
           #include <libcrystalhd/bc_dts_defs.h>
           PBC_INFO_CRYSTAL bCrystalInfo;])],
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
