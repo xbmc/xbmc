@@ -314,6 +314,33 @@ void CZeroconfBrowserAvahi::browseCallback (
   }
 }
 
+CZeroconfBrowser::ZeroconfService::tTxtRecordMap GetTxtRecords(AvahiStringList *txt)
+{
+  AvahiStringList *i = NULL;
+  CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap;
+  
+  for( i = txt; i; i = i->next )
+  {
+    char *key, *value;
+
+    if( avahi_string_list_get_pair( i, &key, &value, NULL ) < 0 )
+      continue;
+
+    recordMap.insert(
+      std::make_pair(
+        CStdString(key),
+        CStdString(value)
+      )
+    );
+    
+    if( key )
+      avahi_free(key);
+    if( value )
+      avahi_free(value);
+  }
+  return recordMap;
+}
+
 void CZeroconfBrowserAvahi::resolveCallback(
   AvahiServiceResolver *r, AvahiIfIndex interface, AvahiProtocol protocol, AvahiResolverEvent event,
   const char *name, const char *type, const char *domain, const char *host_name,
@@ -335,6 +362,8 @@ void CZeroconfBrowserAvahi::resolveCallback(
       avahi_address_snprint ( a, sizeof ( a ), address );
       p_instance->m_resolving_service.SetIP(a);
       p_instance->m_resolving_service.SetPort(port);
+      //get txt-record list
+      p_instance->m_resolving_service.SetTxtRecords(GetTxtRecords(txt));
       break;
     }
   }

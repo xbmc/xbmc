@@ -40,7 +40,9 @@
         "ControlNotify": { "type": "boolean", "required": true },
         "ControlPower": { "type": "boolean", "required": true },
         "Logging": { "type": "boolean", "required": true },
-        "ScanLibrary": { "type": "boolean", "required": true }
+        "UpdateData": { "type": "boolean", "required": true },
+        "RemoveData": { "type": "boolean", "required": true },
+        "WriteFile": { "type": "boolean", "required": true }
       }
     }
   },
@@ -69,7 +71,8 @@
       { "name": "Playback", "type": "boolean", "default": false },
       { "name": "GUI", "type": "boolean", "default": false },
       { "name": "System", "type": "boolean", "default": false },
-      { "name": "Library", "type": "boolean", "default": false },
+      { "name": "AudioLibrary", "type": "boolean", "default": false },
+      { "name": "VideoLibrary", "type": "boolean", "default": false },
       { "name": "Other", "type": "boolean", "default": false }
     ],
     "returns": { "$ref": "Notification.Flags" }
@@ -546,6 +549,14 @@
     ],
     "returns": "string"
   },
+  "VideoPlaylist.State": {
+    "type": "method",
+    "description": "Provides information about the current state of the playlist",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [ ],
+    "returns":  { "$ref": "Playlist.State", "required": true }
+  },
   "VideoPlaylist.Play": {
     "type": "method",
     "description": "Play current or a specific item",
@@ -648,6 +659,35 @@
     "permission": "ControlPlayback",
     "params": [ ],
     "returns": "string"
+  },
+  "VideoPlaylist.Repeat": {
+    "type": "method",
+    "description": "Set the repeat mode of the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "state", "$ref": "Playlist.Repeat", "required": true }
+    ],
+    "returns": "string"
+  },
+  "VideoPlaylist.Swap": {
+    "type": "method",
+    "description": "Swap items in the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "item1", "$ref": "Playlist.Item.Position", "required": true },
+      { "name": "item2", "$ref": "Playlist.Item.Position", "required": true }
+    ],
+    "returns": "string"
+  },
+  "AudioPlaylist.State": {
+    "type": "method",
+    "description": "Provides information about the current state of the playlist",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [ ],
+    "returns":  { "$ref": "Playlist.State", "required": true }
   },
   "AudioPlaylist.Play": {
     "type": "method",
@@ -753,6 +793,27 @@
     "params": [ ],
     "returns": "string"
   },
+  "AudioPlaylist.Repeat": {
+    "type": "method",
+    "description": "Set the repeat mode of the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "state", "$ref": "Playlist.Repeat", "required": true }
+    ],
+    "returns": "string"
+  },
+  "AudioPlaylist.Swap": {
+    "type": "method",
+    "description": "Swap items in the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "item1", "$ref": "Playlist.Item.Position", "required": true },
+      { "name": "item2", "$ref": "Playlist.Item.Position", "required": true }
+    ],
+    "returns": "string"
+  },
   "Files.GetSources": {
     "type": "method",
     "description": "Get the sources of the media windows",
@@ -773,7 +834,7 @@
   },
   "Files.Download": {
     "type": "method",
-    "transport": "FileDownload",
+    "transport": [ "Response", "FileDownload" ],
     "permission": "ReadData",
     "params": [
       { "name": "path", "type": "string", "required": true }
@@ -914,6 +975,48 @@
       }
     }
   },
+  "AudioLibrary.GetRecentlyAddedAlbums": {
+    "type": "method",
+    "description": "Retrieve recently added albums",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "albums", "$ref": "List.Amount" },
+      { "name": "fields", "$ref": "Audio.Fields.Album" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "albums": { "type": "array",
+          "items": { "$ref": "Audio.Details.Album" }
+        }
+      }
+    }
+  },
+  "AudioLibrary.GetRecentlyAddedSongs": {
+    "type": "method",
+    "description": "Retrieve recently added songs",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "albums", "$ref": "List.Amount", "description": "The amount of recently added albums from which to return the songs" },
+      { "name": "fields", "$ref": "Audio.Fields.Song" },
+      { "name": "limits", "$ref": "List.Limits" },
+      { "name": "sort", "$ref": "List.Sort" }
+    ],
+    "returns": {
+      "type": "object",
+      "properties": {
+        "limits": { "$ref": "List.LimitsReturned", "required": true },
+        "songs": { "type": "array",
+          "items": { "$ref": "Audio.Details.Song" }
+        }
+      }
+    }
+  },
   "AudioLibrary.GetGenres": {
     "type": "method",
     "description": "Retrieve all genres",
@@ -934,12 +1037,33 @@
       }
     }
   },
-  "AudioLibrary.ScanForContent": {
+  "AudioLibrary.Scan": {
     "type": "method",
     "description": "Scans the audio sources for new library items",
     "transport": "Response",
-    "permission": "ScanLibrary",
+    "permission": "UpdateData",
     "params": [],
+    "returns": "string"
+  },
+  "AudioLibrary.Export": {
+    "type": "method",
+    "description": "Exports all items from the audio library",
+    "transport": "Response",
+    "permission": "WriteFile",
+    "params": [
+      { "name": "singlefile", "type": "boolean", "default": true, "description": "Whether to export the data into one or multiple files" },
+      { "name": "images", "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
+      { "name": "overwrite", "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
+      { "name": "path", "type": "string", "default": "", "description": "Path to the directory to where the data should be exported" }
+    ],
+    "returns": "string"
+  },
+  "AudioLibrary.Clean": {
+    "type": "method",
+    "description": "Cleans the audio library from non-existent items",
+    "transport": "Response",
+    "permission": "RemoveData",
+    "params": [ ],
     "returns": "string"
   },
   "VideoLibrary.GetMovies": {
@@ -1222,12 +1346,34 @@
       }
     }
   },
-  "VideoLibrary.ScanForContent": {
+  "VideoLibrary.Scan": {
     "type": "method",
     "description": "Scans the video sources for new library items",
     "transport": "Response",
-    "permission": "ScanLibrary",
+    "permission": "UpdateData",
     "params": [],
+    "returns": "string"
+  },
+  "VideoLibrary.Export": {
+    "type": "method",
+    "description": "Exports all items from the video library",
+    "transport": "Response",
+    "permission": "WriteFile",
+    "params": [
+      { "name": "singlefile", "type": "boolean", "default": true, "description": "Whether to export the data into one or multiple files" },
+      { "name": "images", "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
+      { "name": "actorthumbs", "type": "boolean", "default": false, "description": "Whether to export actor thumbnails" },
+      { "name": "overwrite", "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
+      { "name": "path", "type": "string", "default": "", "description": "Path to the directory to where the data should be exported" }
+    ],
+    "returns": "string"
+  },
+  "VideoLibrary.Clean": {
+    "type": "method",
+    "description": "Cleans the video library from non-existent items",
+    "transport": "Response",
+    "permission": "RemoveData",
+    "params": [ ],
     "returns": "string"
   },
   "System.Shutdown": {

@@ -50,6 +50,7 @@ void CGUIControlGroupList::Process(unsigned int currentTime, CDirtyRegionList &d
 {
   if (m_scrollSpeed != 0)
   {
+    MarkDirtyRegion();
     m_offset += m_scrollSpeed * (currentTime - m_scrollLastTime);
     if ((m_scrollSpeed < 0 && m_offset < m_scrollOffset) ||
         (m_scrollSpeed > 0 && m_offset > m_scrollOffset))
@@ -332,6 +333,8 @@ void CGUIControlGroupList::ScrollTo(float offset)
 {
   m_scrollOffset = offset;
   m_scrollSpeed = (m_scrollOffset - m_offset) / m_scrollTime;
+  if (m_scrollSpeed)
+    SetInvalid();
 }
 
 EVENT_RESULT CGUIControlGroupList::SendMouseEvent(const CPoint &point, const CMouseEvent &event)

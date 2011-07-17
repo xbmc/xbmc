@@ -236,6 +236,19 @@ void CGraphicContext::RestoreViewPort()
   UpdateCameraPosition(m_cameras.top());
 }
 
+void CGraphicContext::SetScissors(const CRect &rect)
+{
+  m_scissors = rect;
+  m_scissors.Intersect(CRect(0,0,(float)m_iScreenWidth, (float)m_iScreenHeight));
+  g_Windowing.SetScissors(m_scissors);
+}
+
+void CGraphicContext::ResetScissors()
+{
+  m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
+  g_Windowing.ResetScissors(); // SetScissors(m_scissors) instead?
+}
+
 const CRect CGraphicContext::GetViewWindow() const
 {
   if (m_bCalibrating || m_bFullScreenVideo)
@@ -352,6 +365,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   m_iScreenWidth  = g_settings.m_ResInfo[res].iWidth;
   m_iScreenHeight = g_settings.m_ResInfo[res].iHeight;
   m_iScreenId     = g_settings.m_ResInfo[res].iScreen;
+  m_scissors.SetRect(0, 0, (float)m_iScreenWidth, (float)m_iScreenHeight);
   m_Resolution    = res;
 
   //tell the videoreferenceclock that we're about to change the refreshrate

@@ -625,12 +625,14 @@ void CMusicDatabase::AddExtraGenres(const CStdStringArray &vecGenres, int idSong
   }
 }
 
-int CMusicDatabase::AddPath(const CStdString& strPath)
+int CMusicDatabase::AddPath(const CStdString& strPath1)
 {
   CStdString strSQL;
   try
   {
-    ASSERT(URIUtils::HasSlashAtEnd(strPath));
+    CStdString strPath(strPath1);
+    if (!URIUtils::HasSlashAtEnd(strPath))
+      URIUtils::AddSlashAtEnd(strPath);
 
     if (NULL == m_pDB.get()) return -1;
     if (NULL == m_pDS.get()) return -1;
@@ -1543,11 +1545,13 @@ bool CMusicDatabase::IncrTop100CounterByFileName(const CStdString& strFileName)
   return false;
 }
 
-bool CMusicDatabase::GetSongsByPath(const CStdString& strPath, CSongMap& songs, bool bAppendToMap)
+bool CMusicDatabase::GetSongsByPath(const CStdString& strPath1, CSongMap& songs, bool bAppendToMap)
 {
+  CStdString strPath(strPath1);
   try
   {
-    ASSERT(URIUtils::HasSlashAtEnd(strPath));
+    if (!URIUtils::HasSlashAtEnd(strPath))
+      URIUtils::AddSlashAtEnd(strPath);
 
     if (!bAppendToMap)
       songs.Clear();
@@ -2943,6 +2947,7 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
         int idAlbum = m_pDS->fv("idAlbum").get_asInt();
         strDir.Format("%s%ld/", baseDir.c_str(), idAlbum);
         CFileItemPtr pItem(new CFileItem(strDir, GetAlbumFromDataset(m_pDS.get())));
+        pItem->SetIconImage("DefaultAlbumCover.png");
         items.Add(pItem);
         m_pDS->next();
       }
@@ -3735,7 +3740,7 @@ bool CMusicDatabase::GetPathHash(const CStdString &path, CStdString &hash)
   return false;
 }
 
-bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs, bool exact)
+bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path1, CSongMap &songs, bool exact)
 {
   // We need to remove all songs from this path, as their tags are going
   // to be re-read.  We need to remove all songs from the song table + all links to them
@@ -3763,10 +3768,11 @@ bool CMusicDatabase::RemoveSongsFromPath(const CStdString &path, CSongMap &songs
 
   // Note: when used to remove all songs from a path and its subpath (exact=false), this
   // does miss archived songs.
+  CStdString path(path1);
   try
   {
     if (!URIUtils::HasSlashAtEnd(path))
-      CLog::Log(LOGWARNING,"%s: called on path without a trailing slash [%s]",__FUNCTION__,path.c_str());
+      URIUtils::AddSlashAtEnd(path);
 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;

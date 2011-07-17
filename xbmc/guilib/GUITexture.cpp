@@ -130,12 +130,8 @@ bool CGUITextureBase::AllocateOnDemand()
 {
   if (m_visible)
   { // visible, so make sure we're allocated
-    ALLOCATE_TYPE old = m_isAllocated;
     if (!IsAllocated() || (m_isAllocated == LARGE && !m_texture.size()))
-    {
-      AllocResources();
-      return old != m_isAllocated;
-    }
+      return AllocResources();
   }
   else
   { // hidden, so deallocate as applicable
@@ -287,19 +283,20 @@ void CGUITextureBase::Render(float left, float top, float right, float bottom, f
   Draw(x, y, z, texture, diffuse, orientation);
 }
 
-void CGUITextureBase::AllocResources()
+bool CGUITextureBase::AllocResources()
 {
   if (m_info.filename.IsEmpty())
-    return;
+    return false;
 
   if (m_texture.size())
-    return; // already have our texture
+    return false; // already have our texture
 
   // reset our animstate
   m_frameCounter = 0;
   m_currentFrame = 0;
   m_currentLoop = 0;
 
+  bool changed = false;
   bool useLarge = m_info.useLarge || !g_TextureManager.CanLoad(m_info.filename);
   if (useLarge)
   { // we want to use the large image loader, but we first check for bundled textures
@@ -310,6 +307,7 @@ void CGUITextureBase::AllocResources()
       {
         m_isAllocated = NORMAL;
         m_texture = g_TextureManager.GetTexture(m_info.filename);
+        changed = true;
       }
     }
     if (m_isAllocated != NORMAL)
@@ -320,9 +318,10 @@ void CGUITextureBase::AllocResources()
         m_isAllocated = LARGE;
 
         if (!texture.size()) // not ready as yet
-          return;
+          return false;
 
         m_texture = texture;
+        changed = true;
       }
       else
         m_isAllocated = LARGE_FAILED;
@@ -336,9 +335,10 @@ void CGUITextureBase::AllocResources()
     // us hitting the disk every frame
     m_isAllocated = images ? NORMAL : NORMAL_FAILED;
     if (!images)
-      return;
+      return false;
 
     m_texture = g_TextureManager.GetTexture(m_info.filename);
+    changed = true;
   }
   m_frameWidth = (float)m_texture.m_width;
   m_frameHeight = (float)m_texture.m_height;
@@ -354,6 +354,8 @@ void CGUITextureBase::AllocResources()
 
   // call our implementation
   Allocate();
+
+  return changed;
 }
 
 bool CGUITextureBase::CalculateSize()

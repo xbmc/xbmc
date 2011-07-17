@@ -34,6 +34,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "URL.h"
 #include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
@@ -70,14 +71,12 @@ CLastFmManager* CLastFmManager::m_pInstance=NULL;
 
 CLastFmManager::CLastFmManager()
 {
-  m_hWorkerEvent = CreateEvent(NULL, false, false, NULL);
   m_RadioTrackQueue = new CPlayList;
 }
 
 CLastFmManager::~CLastFmManager()
 {
   StopRadio(true);
-  CloseHandle(m_hWorkerEvent);
   StopThread();
   CLog::Log(LOGINFO,"lastfm destroyed");
   delete m_RadioTrackQueue;
@@ -250,7 +249,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
   CacheTrackThumb(XBMC_LASTFM_MINTRACKS);
   AddToPlaylist(XBMC_LASTFM_MINTRACKS);
   Create(); //start thread
-  SetEvent(m_hWorkerEvent); //kickstart the thread
+  m_hWorkerEvent.Set(); //kickstart the thread
 
   CSingleLock lock(m_lockPlaylist);
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
@@ -536,7 +535,7 @@ void CLastFmManager::Update()
       //get more tracks
       if (ThreadHandle() != NULL)
       {
-        SetEvent(m_hWorkerEvent);
+        m_hWorkerEvent.Set();
       }
     }
   }
@@ -608,7 +607,7 @@ void CLastFmManager::Process()
 
   while (!m_bStop)
   {
-    WaitForSingleObject(m_hWorkerEvent, INFINITE);
+    AbortableWait(m_hWorkerEvent);
     if (m_bStop)
       break;
     int iNrCachedTracks = m_RadioTrackQueue->size();
@@ -636,7 +635,7 @@ void CLastFmManager::StopRadio(bool bKillSession /*= true*/)
   if (m_ThreadHandle)
   {
     m_bStop = true;
-    SetEvent(m_hWorkerEvent);
+    m_hWorkerEvent.Set();
     StopThread();
   }
   m_CurrentSong.CurrentSong = NULL;
@@ -811,13 +810,13 @@ bool CLastFmManager::Love(bool askConfirmation)
         if (Love(*infoTag))
         {
           strMessage.Format(g_localizeStrings.Get(15289), strTitle);
-          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(15200), strMessage, 7000, false);
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(15200), strMessage, 7000, false);
           return true;
         }
         else
         {
           strMessage.Format(g_localizeStrings.Get(15290), strTitle);
-          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(15200), strMessage, 7000, false);
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(15200), strMessage, 7000, false);
           return false;
         }
       }
@@ -844,13 +843,13 @@ bool CLastFmManager::Ban(bool askConfirmation)
         if (Ban(*infoTag))
         {
           strMessage.Format(g_localizeStrings.Get(15291), strTitle);
-          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(15200), strMessage, 7000, false);
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(15200), strMessage, 7000, false);
           return true;
         }
         else
         {
           strMessage.Format(g_localizeStrings.Get(15292), strTitle);
-          g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(15200), strMessage, 7000, false);
+          CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(15200), strMessage, 7000, false);
           return false;
         }
       }

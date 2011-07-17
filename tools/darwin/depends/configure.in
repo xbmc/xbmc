@@ -46,9 +46,9 @@ case $use_darwin in
      use_sdk="${use_sdk:-$found_sdk}"
      # this is an issue. if we set prefix according to ${use_sdk}_${use_arch}, 
      # then XBMC_DEPENDS prefix location in xcode must match but xcode uses its
-     # own defines for build. So just hardcode to 4.2_arm7 for now until we
+     # own defines for build. So just hardcode to 4.2_${use_arch} for now until we
      # can figure out a better way.
-     use_prefix=${use_staging}/${use_darwin}-4.2_arm7
+     use_prefix=${use_staging}/${use_darwin}-4.2_${use_arch}
      if test "$use_arch" != "armv7"; then
        AC_MSG_ERROR(error in configure of --with-arch=$use_arch)
      fi

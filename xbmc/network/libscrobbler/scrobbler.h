@@ -26,6 +26,7 @@
 #include "utils/StdString.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
 
 #define SCROBBLER_USER_ERROR_BADAUTH  1
 #define SCROBBLER_USER_ERROR_BANNED   2
@@ -132,7 +133,7 @@ protected:
   CStdString m_strSubmissionURL;
   CStdString m_strHandshakeTimeStamp;
   SubmissionJournalEntry m_CurrentTrack;
-  HANDLE m_hEvent;
+  CEvent m_hEvent;
   XFILE::CFileCurl  *m_pHttp;
   CCriticalSection  m_queueLock;
   CCriticalSection  m_actionLock;

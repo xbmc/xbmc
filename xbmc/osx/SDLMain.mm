@@ -462,7 +462,7 @@ int main(int argc, char *argv[])
   status = SDL_main(gArgc, gArgv);
 
   [xbmc_delegate release];
-  [pool release];
+  [pool drain];
 
   return status;
 }

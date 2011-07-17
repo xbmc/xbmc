@@ -43,19 +43,34 @@ CGUIRadioButtonControl::CGUIRadioButtonControl(int parentID, int controlID, floa
 CGUIRadioButtonControl::~CGUIRadioButtonControl(void)
 {}
 
-
 void CGUIRadioButtonControl::Render()
 {
   CGUIButtonControl::Render();
-
-  // ask our infoManager whether we are selected or not...
-  if (m_toggleSelect)
-    m_bSelected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
 
   if ( IsSelected() && !IsDisabled() )
     m_imgRadioOn.Render();
   else
     m_imgRadioOff.Render();
+}
+
+void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (m_toggleSelect)
+  {
+    // ask our infoManager whether we are selected or not...
+    bool selected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
+
+    if (selected != m_bSelected)
+    {
+      MarkDirtyRegion();
+      m_bSelected = selected;
+    }
+  }
+
+  m_imgRadioOn.Process(currentTime);
+  m_imgRadioOff.Process(currentTime);
+
+  CGUIButtonControl::Process(currentTime, dirtyregions);
 }
 
 bool CGUIRadioButtonControl::OnAction(const CAction &action)

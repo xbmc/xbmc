@@ -204,6 +204,20 @@ public:
    */
   virtual void SetDropState(bool bDrop) = 0;
 
+
+  enum EFilterFlags {
+    FILTER_NONE                =  0x0,
+    FILTER_DEINTERLACE_YADIF   =  0x1,  /* use first deinterlace mode */
+    FILTER_DEINTERLACE_ANY     =  0xf,  /* use any deinterlace mode */
+    FILTER_DEINTERLACE_FLAGGED = 0x10,  /* only deinterlace flagged frames */
+    FILTER_DEINTERLACE_HALFED  = 0x20,  /* do half rate deinterlacing */
+  };
+
+  /*
+   * set the type of filters that should be applied at decoding stage if possible
+   */
+  virtual unsigned int SetFilters(unsigned int filters) { return 0u; }
+
   /*
    *
    * should return codecs name

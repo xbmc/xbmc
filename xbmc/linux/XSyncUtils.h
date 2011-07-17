@@ -22,7 +22,7 @@
  *
  */
 
-#include "XCriticalSection.h"
+#include "PlatformDefs.h"
 #include "XHandlePublic.h"
 
 #ifdef _LINUX
@@ -36,28 +36,7 @@
 #define WAIT_ABANDONED         ((STATUS_ABANDONED_WAIT_0 ) + 0 )
 #define WAIT_ABANDONED_0       ((STATUS_ABANDONED_WAIT_0 ) + 0 )
 
-HANDLE  WINAPI CreateMutex( LPSECURITY_ATTRIBUTES lpMutexAttributes,  BOOL bInitialOwner,  LPCTSTR lpName );
-bool  InitializeRecursiveMutex(HANDLE hMutex, BOOL bInitialOwner);
-bool  DestroyRecursiveMutex(HANDLE hMutex);
-bool  WINAPI ReleaseMutex( HANDLE hMutex );
-
 void GlobalMemoryStatus(LPMEMORYSTATUS lpBuffer);
-
-DWORD WINAPI WaitForSingleObject( HANDLE hHandle, DWORD dwMilliseconds );
-DWORD WINAPI WaitForMultipleObjects( DWORD nCount, HANDLE* lpHandles, BOOL bWaitAll,  DWORD dwMilliseconds);
-
-LONG InterlockedIncrement(  LONG * Addend );
-LONG InterlockedDecrement(  LONG * Addend );
-LONG InterlockedCompareExchange(
-  LONG * Destination,
-  LONG Exchange,
-  LONG Comparand
-);
-
-LONG InterlockedExchange(
-  LONG volatile* Target,
-  LONG Value
-);
 
 #endif
 

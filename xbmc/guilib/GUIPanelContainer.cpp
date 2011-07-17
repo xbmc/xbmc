@@ -470,7 +470,7 @@ int CGUIPanelContainer::GetCursorFromPoint(const CPoint &point, CPoint *itemPoin
     }
     posY -= sizeY;
   }
-  return false;
+  return -1;
 }
 
 bool CGUIPanelContainer::SelectItemFromPoint(const CPoint &point)

@@ -28,6 +28,7 @@
 #include "File.h"
 #include "UnrarXLib/rar.hpp"
 #include "threads/Thread.h"
+#include "threads/Event.h"
 
 namespace XFILE
 {
@@ -44,9 +45,9 @@ namespace XFILE
     virtual void OnExit();
     virtual void Process();
 
-    HANDLE hRunning;
-    HANDLE hRestart;
-    HANDLE hQuit;
+    CEvent hRunning;
+    CEvent hRestart;
+    CEvent hQuit;
 
   protected:
     Archive* m_pArc;

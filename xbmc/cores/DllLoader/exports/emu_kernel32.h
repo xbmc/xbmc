@@ -598,10 +598,6 @@ extern "C" BOOL WINAPI dllFindClose(HANDLE hFile);
 extern "C" UINT WINAPI dllGetAtomNameA( ATOM nAtom, LPTSTR lpBuffer, int nSize);
 extern "C" ATOM WINAPI dllFindAtomA( LPCTSTR lpString);
 extern "C" ATOM WINAPI dllAddAtomA( LPCTSTR lpString);
-extern "C" HANDLE WINAPI dllCreateThread(LPSECURITY_ATTRIBUTES lpThreadAttributes, DWORD dwStackSize, LPTHREAD_START_ROUTINE lpStartAddress, LPVOID lpParameter, DWORD dwCreationFlags, LPDWORD lpThreadId);
-extern "C" BOOL WINAPI dllTerminateThread(HANDLE tHread, DWORD dwExitCode);
-extern "C" HANDLE WINAPI dllGetCurrentThread(void);
-extern "C" DWORD WINAPI dllGetCurrentThreadId(VOID);
 extern "C" DWORD WINAPI dllGetCurrentProcessId(void);
 extern "C" BOOL WINAPI dllDisableThreadLibraryCalls(HMODULE);
 
@@ -620,11 +616,6 @@ extern "C" void WINAPI dllGetSystemInfo(LPSYSTEM_INFO lpSystemInfo);
 //Current just a dummy function
 extern "C" UINT WINAPI dllGetPrivateProfileIntA(LPCSTR lpAppName, LPCSTR lpKeyName,
       INT nDefault, LPCSTR lpFileName);
-
-extern "C" void WINAPI dllDeleteCriticalSection(LPCRITICAL_SECTION cs);
-extern "C" void WINAPI dllInitializeCriticalSection(LPCRITICAL_SECTION cs);
-extern "C" void WINAPI dllLeaveCriticalSection(LPCRITICAL_SECTION cs);
-extern "C" void WINAPI dllEnterCriticalSection(LPCRITICAL_SECTION cs);
 
 extern "C" BOOL WINAPI dllGetVersionExA(LPOSVERSIONINFO lpVersionInfo);
 extern "C" BOOL WINAPI dllGetVersionExW(LPOSVERSIONINFOW lpVersionInfo);
@@ -691,19 +682,6 @@ extern "C" int WINAPI dllSetUnhandledExceptionFilter(void* filter);
 extern "C" int WINAPI dllSetEnvironmentVariableA(const char *name, const char *value);
 extern "C" int WINAPI dllCreateDirectoryA(const char *pathname, void *sa);
 
-extern "C" DWORD WINAPI dllWaitForSingleObject(HANDLE hHandle, DWORD dwMiliseconds);
-
-// in linux we didnt define the handle array -  const.
-// the reason is that in linux we implement it as
-// a pointer to an object and the wait function does change it.
-// so - to avoid conversions we change the spec of the function.
-// come to think about it - it makes more senes that it wont be const.
-#ifdef _LINUX
-extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds);
-#else
-extern "C" DWORD WINAPI dllWaitForMultipleObjects(DWORD nCount, CONST HANDLE *lpHandles, BOOL fWaitAll, DWORD dwMilliseconds);
-#endif
-
 extern "C" BOOL WINAPI dllGetProcessAffinityMask(HANDLE hProcess, LPDWORD lpProcessAffinityMask, LPDWORD lpSystemAffinityMask);
 
 extern "C" HGLOBAL WINAPI dllLoadResource(HMODULE module, HRSRC res);
@@ -718,12 +696,6 @@ extern "C" void WINAPI dllSleep(DWORD dwTime);
 extern "C" PVOID WINAPI dllEncodePointer(PVOID ptr);
 extern "C" PVOID WINAPI dllDecodePointer(PVOID ptr);
 
-typedef VOID (WINAPI *PFLS_CALLBACK_FUNCTION) (IN PVOID lpFlsData);
-
-extern "C" DWORD WINAPI dllFlsAlloc(PFLS_CALLBACK_FUNCTION lpCallback);
-extern "C" BOOL WINAPI dllFlsSetValue(DWORD dwFlsIndex, PVOID lpFlsData);
-extern "C" PVOID WINAPI dllFlsGetValue(DWORD dwFlsIndex);
-extern "C" BOOL WINAPI dllFlsFree(DWORD dwFlsIndex);
 extern "C" int WINAPI dllMultiByteToWideChar(UINT CodePage, DWORD dwFlags, LPCSTR lpMultiByteStr, int cbMultiByte, LPWSTR lpWideCharStr, int cchWideChar);
 extern "C" int WINAPI dllWideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWSTR lpWideCharStr, int cchWideChar, LPSTR lpMultiByteStr, int cbMultiByte, LPCSTR lpDefaultChar, LPBOOL lpUsedDefaultChar);
 

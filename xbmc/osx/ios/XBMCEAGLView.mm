@@ -54,6 +54,7 @@
 
 @implementation XBMCEAGLView
 @synthesize animating;
+@synthesize xbmcAlive;
 @synthesize pause;
 
 // You must implement this method
@@ -90,6 +91,7 @@
     [aContext release];
 
     animating = FALSE;
+    xbmcAlive = FALSE;
     pause = FALSE;
     [self setContext:context];
     [self createFramebuffer];
@@ -149,8 +151,12 @@
     [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
-    
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+
+    glGenRenderbuffers(1, &depthRenderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, framebufferWidth, framebufferHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
     
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
       NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
@@ -174,6 +180,12 @@
     {
       glDeleteRenderbuffers(1, &colorRenderbuffer);
       colorRenderbuffer = 0;
+    }
+
+    if (depthRenderbuffer)
+    {
+      glDeleteRenderbuffers(1, &depthRenderbuffer);
+      depthRenderbuffer = 0;
     }
   }
 }
@@ -263,7 +275,6 @@
 {
   CCocoaAutoPool outerpool;
 
-  //[NSThread setThreadPriority:1]
   // Changing to SCHED_RR is safe under OSX, you don't need elevated privileges and the
   // OSX scheduler will monitor SCHED_RR threads and drop to SCHED_OTHER if it detects
   // the thread running away. OSX automatically does this with the CoreAudio audio
@@ -311,6 +322,7 @@
   g_application.Preflight();
   if (g_application.Create())
   {
+    xbmcAlive = TRUE;
     try
     {
       CCocoaAutoPool innerpool;

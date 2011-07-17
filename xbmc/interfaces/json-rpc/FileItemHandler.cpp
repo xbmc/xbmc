@@ -127,8 +127,13 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
   if (allowFile && hasFileField)
   {
-    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-      object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
+    if (item->HasVideoInfoTag())
+    {
+      if (!item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+        object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
+      else if (!item->GetVideoInfoTag()->m_strPath.IsEmpty())
+        object["file"] = item->GetVideoInfoTag()->m_strPath.c_str();
+    }
     if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
       object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
 
@@ -172,7 +177,7 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     }
   }
 
-  if (hasThumbnailField && !item->GetThumbnailImage().IsEmpty())
+  if (hasThumbnailField)
     object["thumbnail"] = item->GetThumbnailImage().c_str();
 
   if (item->HasVideoInfoTag())

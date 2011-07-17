@@ -39,13 +39,6 @@ bool CGUIWindowTestPattern::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-  case ACTION_PREVIOUS_MENU:
-    {
-      g_windowManager.PreviousWindow();
-      return true;
-    }
-    break;
-
   case ACTION_MOVE_UP:
   case ACTION_MOVE_LEFT:
      m_pattern = m_pattern > 0 ? m_pattern - 1 : TEST_PATTERNS_COUNT - 1;

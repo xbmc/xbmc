@@ -56,10 +56,7 @@ CGUIDialogNumeric::~CGUIDialogNumeric(void)
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)
 {
-  if (action.GetID() >= ACTION_MOVE_LEFT &&  action.GetID() <= ACTION_MOVE_DOWN)
-    m_autoClosing = false;
-
-  if (action.GetID() == ACTION_CLOSE_DIALOG || action.GetID() == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
     OnCancel();
   else if (action.GetID() == ACTION_NEXT_ITEM)
     OnNext();

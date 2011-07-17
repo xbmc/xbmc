@@ -33,6 +33,7 @@
 #include "addons/Skin.h"
 #include "GUITexture.h"
 #include "windowing/WindowingFactory.h"
+#include "utils/TimeUtils.h"
 
 using namespace std;
 
@@ -50,10 +51,10 @@ CGUIWindowManager::~CGUIWindowManager(void)
 
 void CGUIWindowManager::Initialize()
 {
-  LoadNotOnDemandWindows();
   m_tracker.SelectAlgorithm();
-
   m_initialized = true;
+
+  LoadNotOnDemandWindows();
 }
 
 bool CGUIWindowManager::SendMessage(int message, int senderID, int destID, int param1, int param2)
@@ -343,9 +344,8 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& 
   if (!g_application.IsCurrentThread())
   {
     // make sure graphics lock is not held
-    int nCount = ExitCriticalSection(g_graphicsContext);
+    CSingleExit leaveIt(g_graphicsContext);
     g_application.getApplicationMessenger().ActivateWindow(iWindowID, params, swappingWindows);
-    RestoreCriticalSection(g_graphicsContext, nCount);
   }
   else
     ActivateWindow_Internal(iWindowID, params, swappingWindows);
@@ -515,9 +515,9 @@ void CGUIWindowManager::Process(unsigned int currentTime)
     m_tracker.MarkDirtyRegion(*itr);
 }
 
-void CGUIWindowManager::MarkDirty(const CDirtyRegion &rect)
+void CGUIWindowManager::MarkDirty()
 {
-  m_tracker.MarkDirtyRegion(rect);
+  m_tracker.MarkDirtyRegion(CRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight()));
 }
 
 void CGUIWindowManager::RenderPass()
@@ -526,7 +526,7 @@ void CGUIWindowManager::RenderPass()
   if (pWindow)
   {
     pWindow->ClearBackground();
-    pWindow->Render();
+    pWindow->DoRender();
   }
 
   // we render the dialogs based on their render order.
@@ -536,20 +536,24 @@ void CGUIWindowManager::RenderPass()
   for (iDialog it = renderList.begin(); it != renderList.end(); ++it)
   {
     if ((*it)->IsDialogRunning())
-      (*it)->Render();
+      (*it)->DoRender();
   }
 }
 
-void CGUIWindowManager::Render()
+bool CGUIWindowManager::Render()
 {
   assert(g_application.IsCurrentThread());
   CSingleLock lock(g_graphicsContext);
 
   CDirtyRegionList dirtyRegions = m_tracker.GetDirtyRegions();
 
+  bool hasRendered = false;
   // If we visualize the regions we will always render the entire viewport
   if (g_advancedSettings.m_guiVisualizeDirtyRegions || g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_NONE)
+  {
     RenderPass();
+    hasRendered = true;
+  }
   else
   {
     for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
@@ -557,10 +561,11 @@ void CGUIWindowManager::Render()
       if (i->IsEmpty())
         continue;
 
-      g_Windowing.SetScissors(*i);
+      g_graphicsContext.SetScissors(*i);
       RenderPass();
+      hasRendered = true;
     }
-    g_Windowing.ResetScissors();
+    g_graphicsContext.ResetScissors();
   }
 
   if (g_advancedSettings.m_guiVisualizeDirtyRegions)
@@ -574,6 +579,8 @@ void CGUIWindowManager::Render()
   }
 
   m_tracker.CleanMarkedRegions();
+
+  return hasRendered;
 }
 
 void CGUIWindowManager::FrameMove()
@@ -626,6 +633,8 @@ void CGUIWindowManager::ProcessRenderLoop(bool renderOnly /*= false*/)
     {
       m_pCallback->Process();
       m_pCallback->FrameMove();
+    } else {
+      Process(CTimeUtils::GetFrameTime());
     }
     m_pCallback->Render();
     m_iNested--;

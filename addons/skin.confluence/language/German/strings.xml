@@ -8,8 +8,8 @@
   <string id="31005">Verberge Info</string>
   <string id="31006">Ansichtsoptionen</string>
 
-  <string id="31008">Vollbild</string>
   <string id="31007">Plugins</string>
+  <string id="31008">Vollbild</string>
 
   <string id="31020">Kürzlich hinzugefügt</string>
   <string id="31021">Video - Dateien</string>
@@ -53,7 +53,7 @@
   <string id="31102">Hintergrund</string>
   <string id="31103">Zeige "Pause" in Bilder Diaschau</string>
   <string id="31104">Trailer im Fenster wiedergeben [COLOR=grey3](Video Information Dialog)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">"Videos" Button geht immer zu Video "Dateien"</string>
   <string id="31106">Sonstige Optionen</string>
   <string id="31107">Flags von Dateinamen ausblenden [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Verstecke Hauptmenü Buttons</string>
@@ -80,6 +80,12 @@
   <string id="31129"></string>
   <string id="31130"></string>
   <string id="31131"></string>
+  <string id="31132">Songtext Add-on</string>
+  <string id="31133">Untertitel Add-on</string>
+  <string id="31134">Homefenster Videos-Untermenü</string>
+  <string id="31135">Homefenster Musik-Untermenü</string>
+  <string id="31136">Homefenster Bilder-Untermenü</string>
+
 
   <string id="31133">Untertitel Add-on</string>
 
@@ -116,8 +122,8 @@
   <string id="31320">Letzte Anmeldung</string>
   <string id="31321">Karaoke Song Selector</string>
   <string id="31322">Gesendet</string>
-  <string id="31323">Letzter Film</string>
-  <string id="31324">Letzte Episode</string>
+  <string id="31323">Letzte Filme</string>
+  <string id="31324">Letzte Episoden</string>
   <string id="31325">Wiedergabeliste Optionen</string>
   <string id="31326">Erstellt</string>
   <string id="31327">Auflösung</string>

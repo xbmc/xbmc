@@ -46,6 +46,30 @@ long cas(volatile long *pAddr, long expectedVal, long swapVal)
   return prev;
 }
 
+#elif defined(__arm__)
+
+long cas(volatile long* pAddr, long expectedVal, long swapVal)
+{
+  register long prev;
+  asm volatile (
+                "1:                      \n"
+                "ldrex    %0, [%1]       \n" /* Load the current value of *pAddr(%1) into prev (%0) and lock pAddr,  */
+                "cmp      %0,  %2        \n" /* Verify that the current value (%0) == old value (%2) */
+                "bne      2f             \n" /* Bail if the two values are not equal [not as expected] */
+                "strex    r1,  %3, [%1]  \n"
+                "cmp      r1,  #0        \n"                
+                "bne      1b             \n"
+                "2:                        "
+                : "=&r" (prev)
+                : "r"(pAddr), "r"(expectedVal),"r"(swapVal)
+                : "r1"
+                );
+  return prev;
+}
+
+#elif defined(__mips__)
+// TODO:
+
 #elif defined(WIN32)
 
 long cas(volatile long* pAddr, long expectedVal, long swapVal)
@@ -69,14 +93,6 @@ long cas(volatile long* pAddr, long expectedVal, long swapVal)
   return prev;
 }
 
-#elif defined(__arm__)
-
-long cas(volatile long* pAddr, long expectedVal, long swapVal)
-{
-  // __sync_val_compare_and_swap -> GCC >= 401
-  return __sync_val_compare_and_swap(pAddr, expectedVal, swapVal); 
-}
-
 #else // Linux / OSX86 (GCC)
 
 long cas(volatile long* pAddr,long expectedVal, long swapVal)
@@ -98,9 +114,9 @@ long cas(volatile long* pAddr,long expectedVal, long swapVal)
 // 64-bit atomic compare-and-swap
 // Returns previous value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__)  // PowerPC & ARM
+#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__) || defined(__mips__) // PowerPC, ARM, and MIPS
 
-// Not available
+// Not available/required
 
 #elif defined(WIN32)
 
@@ -171,6 +187,28 @@ long AtomicIncrement(volatile long* pAddr)
   return val;
 }
 
+#elif defined(__arm__)
+
+long AtomicIncrement(volatile long* pAddr)
+{
+  register long val;
+  asm volatile (
+                "1:                     \n" 
+                "ldrex   %0, [%1]       \n" // (val = *pAddr)
+                "add     %0,  #1        \n" // (val += 1)
+                "strex   r1,  %0, [%1]	\n"
+                "cmp     r1,   #0       \n"
+                "bne     1b             \n"
+                : "=&r" (val)
+                : "r"(pAddr)
+                : "r1"
+                );
+  return val;
+}
+
+#elif defined(__mips__)
+// TODO:
+
 #elif defined(WIN32)
 
 long AtomicIncrement(volatile long* pAddr)
@@ -186,14 +224,6 @@ long AtomicIncrement(volatile long* pAddr)
   return val;
 }
 
-#elif defined(__arm__)
-
-long AtomicIncrement(volatile long* pAddr)
-{
-  // __sync_fetch_and_add -> GCC >= 401
-  return __sync_fetch_and_add(pAddr, 1);
-}
-
 #else // Linux / OSX86 (GCC)
 
 long AtomicIncrement(volatile long* pAddr)
@@ -207,7 +237,6 @@ long AtomicIncrement(volatile long* pAddr)
                         : "memory" );
   return reg;
 }
-
 
 #endif
 
@@ -235,6 +264,28 @@ long AtomicAdd(volatile long* pAddr, long amount)
   return val;
 }
 
+#elif defined(__arm__)
+
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+  register long val;
+  asm volatile (
+                "1:                     \n" 
+                "ldrex   %0, [%1]       \n" // (val = *pAddr)
+                "add     %0,  %2        \n" // (val += amount)
+                "strex   r1,  %0, [%1]	\n"
+                "cmp     r1,   #0       \n"
+                "bne     1b             \n"
+                : "=&r" (val)
+                : "r"(pAddr), "r"(amount)
+                : "r1"
+                );
+  return val;
+}
+
+#elif defined(__mips__)
+// TODO:
+
 #elif defined(WIN32)
 
 long AtomicAdd(volatile long* pAddr, long amount)
@@ -248,14 +299,6 @@ long AtomicAdd(volatile long* pAddr, long amount)
     mov amount, ebx;
   }
   return amount;
-}
-
-#elif defined(__arm__)
-
-long AtomicAdd(volatile long* pAddr, long amount)
-{
-  // TODO: ARM Assembler
-  return 0;
 }
 
 #else // Linux / OSX86 (GCC)
@@ -297,6 +340,28 @@ long AtomicDecrement(volatile long* pAddr)
   return val;
 }
 
+#elif defined(__arm__)
+
+long AtomicDecrement(volatile long* pAddr)
+{
+  register long val;
+  asm volatile (
+                "1:                     \n" 
+                "ldrex   %0, [%1]       \n" // (val = *pAddr)
+                "sub     %0,  #1        \n" // (val -= 1)
+                "strex   r1,  %0, [%1]	\n"
+                "cmp     r1,   #0       \n"
+                "bne     1b             \n"
+                : "=&r" (val)
+                : "r"(pAddr)
+                : "r1"
+                );
+  
+  return val;
+}
+
+#elif defined(__mips__)
+// TODO:
 
 #elif defined(WIN32)
 
@@ -313,14 +378,6 @@ long AtomicDecrement(volatile long* pAddr)
   return val;
 }
 
-#elif defined(__arm__)
-
-long AtomicDecrement(volatile long* pAddr)
-{
-  // __sync_fetch_and_add -> GCC >= 401
-  return __sync_fetch_and_add(pAddr, -1);
-}
-
 #else // Linux / OSX86 (GCC)
 
 long AtomicDecrement(volatile long* pAddr)
@@ -334,7 +391,6 @@ long AtomicDecrement(volatile long* pAddr)
                         : "memory" );
   return reg;
 }
-
 
 #endif
 
@@ -362,6 +418,29 @@ long AtomicSubtract(volatile long* pAddr, long amount)
   return val;
 }
 
+#elif defined(__arm__)
+
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+  register long val;
+  asm volatile (
+                "1:                     \n" 
+                "ldrex   %0, [%1]       \n" // (val = *pAddr)
+                "sub     %0,  %2        \n" // (val -= amount)
+                "strex   r1,  %0, [%1]	\n"
+                "cmp     r1,   #0       \n"
+                "bne     1b             \n"
+                : "=&r" (val)
+                : "r"(pAddr), "r"(amount)
+                : "r1"
+                );
+  
+  return val;
+}
+
+#elif defined(__mips__)
+// TODO:
+
 #elif defined(WIN32)
 
 long AtomicSubtract(volatile long* pAddr, long amount)
@@ -376,14 +455,6 @@ long AtomicSubtract(volatile long* pAddr, long amount)
     mov amount, ebx;
   }
   return amount;
-}
-
-#elif defined(__arm__)
-
-long AtomicSubtract(volatile long* pAddr, long amount)
-{
-  // TODO: ARM Assembler
-  return 0;
 }
 
 #else // Linux / OSX86 (GCC)

@@ -2,13 +2,6 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-#if !defined(AFX_SINGLELOCK_H__50A43114_6A71_4FBD_BF51_D1F2DD3A60FA__INCLUDED_)
-#define AFX_SINGLELOCK_H__50A43114_6A71_4FBD_BF51_D1F2DD3A60FA__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-#endif // _MSC_VER > 1000
-
 /*
  * XBMC Media Center
  * Copyright (c) 2002 Frodo
@@ -29,40 +22,54 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#pragma once
+
+#include <boost/thread/locks.hpp>
 #include "CriticalSection.h"
-class CSingleLock
+
+/**
+ * This implements a "guard" pattern for a CCriticalSection that
+ *  borrows most of it's functionality from boost's unique_lock.
+ */
+class CSingleLock : public boost::unique_lock<CCriticalSection>
 {
 public:
-  CSingleLock(CCriticalSection& cs);
-  CSingleLock(const CCriticalSection& cs);
-  virtual ~CSingleLock();
+  inline CSingleLock(CCriticalSection& cs) : boost::unique_lock<CCriticalSection>(cs) {}
+  inline CSingleLock(const CCriticalSection& cs) : boost::unique_lock<CCriticalSection> ((CCriticalSection&)cs) {}
 
-  bool IsOwner() const;
-  bool Enter();
-  void Leave();
-
-private:
-  CSingleLock(const CSingleLock& src);
-  CSingleLock& operator=(const CSingleLock& src);
-
-  // Reference to critical section object
-  CCriticalSection& m_cs;
-  // Ownership flag
-  bool m_bIsOwner;
+  inline void Leave() { unlock(); }
+  inline void Enter() { lock(); }
+protected:
+  inline CSingleLock(CCriticalSection& cs, bool dicrim) : boost::unique_lock<CCriticalSection>(cs,boost::try_to_lock) {}
 };
 
+/**
+ * This implements a "guard" pattern for a CCriticalSection that
+ *  works like a CSingleLock but only "try"s the lock and so
+ *  it's possible it doesn't actually get it..
+ */
+class CSingleTryLock : public CSingleLock
+{
+public:
+  inline CSingleTryLock(CCriticalSection& cs) : CSingleLock(cs,true) {}
+
+  inline bool IsOwner() const { return owns_lock(); }
+};
+
+/**
+ * This implements a "guard" pattern for exiting all locks
+ *  currently being held by the current thread and restoring
+ *  those locks on destruction.
+ *
+ * This class can be used on a CCriticalSection that isn't owned
+ *  by this thread in which case it will do nothing.
+ */
 class CSingleExit
 {
+  CCriticalSection& sec;
+  unsigned int count;
 public:
-  CSingleExit(CCriticalSection& cs);
-  CSingleExit(const CCriticalSection& cs);
-  virtual ~CSingleExit();
-
-  void Exit();
-  void Restore();
-
-  CCriticalSection& m_cs;
-  unsigned int      m_count;
+  inline CSingleExit(CCriticalSection& cs) : sec(cs), count(cs.exit()) { }
+  inline ~CSingleExit() { sec.restore(count); }
 };
 
-#endif // !defined(AFX_SINGLELOCK_H__50A43114_6A71_4FBD_BF51_D1F2DD3A60FA__INCLUDED_)

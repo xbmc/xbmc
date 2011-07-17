@@ -13,7 +13,7 @@ else
   platform_sdk_version=@use_sdk@
 fi
 
-platform_min_version=macosx-version-min=@use_sdk@
+platform_min_version=macosx-version-min=10.4
 platform_path="/Developer"
 platform_os_cflags="-arch @use_arch@ -no_compact_linkedit"
 platform_os_ldflags="-arch @use_arch@ -Wl,-arch,@use_arch@ -no_compact_linkedit"
@@ -38,7 +38,7 @@ export LIBTOOL=@use_toolchain@/bin/glibtool
 export LIBTOOLIZE=@use_toolchain@/bin/glibtoolize
 export PKG_CONFIG_PATH=${prefix}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
 export PATH="@use_toolchain@/bin:${prefix}/bin:${platform_path}/usr/bin:/Developer/usr/bin:${PATH}"
-export MACOSX_DEPLOYMENT_TARGET=@use_sdk@
+export MACOSX_DEPLOYMENT_TARGET=10.4
 
 # tweaks for samba
 if test "${PACKAGE_NAME}" = "Samba" ; then

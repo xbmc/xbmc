@@ -22,6 +22,7 @@
  */
 
 #include "DVDOverlay.h"
+#include "PlatformDefs.h"
 
 #include <string>
 

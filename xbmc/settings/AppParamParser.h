@@ -33,6 +33,7 @@ class CAppParamParser
     CFileItemList m_playlist;
     void ParseArg(const CStdString &arg);
     void DisplayHelp();
+    void DisplayVersion();
     void EnableDebugMode();
     void PlayPlaylist();
 };

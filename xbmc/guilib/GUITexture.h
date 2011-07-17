@@ -92,7 +92,7 @@ public:
   void Render();
 
   void DynamicResourceAlloc(bool bOnOff);
-  void AllocResources();
+  bool AllocResources();
   void FreeResources(bool immediately = false);
   void SetInvalid();
 

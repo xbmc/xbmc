@@ -22,7 +22,6 @@
 #ifdef HAS_DX
 
 #include "WinRenderer.h"
-#include "Application.h"
 #include "Util.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
@@ -37,6 +36,7 @@
 #include "VideoShaders/WinVideoFilter.h"
 #include "DllSwScale.h"
 #include "guilib/LocalizeStrings.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 typedef struct {
   RenderMethod  method;
@@ -154,7 +154,7 @@ void CWinRenderer::SelectRenderMethod()
           else
           {
             CLog::Log(LOGNOTICE, "D3D: unable to load test shader - D3D installation is most likely incomplete");
-            g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
+            CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
             shader->Release();
           }
         }
@@ -332,78 +332,6 @@ void CWinRenderer::FlipPage(int source)
   return;
 }
 
-
-unsigned int CWinRenderer::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
-{
-  /*
-  BYTE *s;
-  BYTE *d;
-  int i, p;
-
-  int index = NextYV12Texture();
-  if( index < 0 )
-    return -1;
-
-  D3DLOCKED_RECT rect;
-  RECT target;
-
-  target.left = x;
-  target.right = x+w;
-  target.top = y;
-  target.bottom = y+h;
-
-  YUVPLANES &planes = m_YUVTexture[index];
-
-  // copy Y
-  p = 0;
-  planes[p]->LockRect(0, &rect, &target, D3DLOCK_DISCARD);
-  d = (BYTE*)rect.pBits;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += rect.Pitch;
-  }
-  planes[p]->UnlockRect(0);
-
-  w >>= 1; h >>= 1;
-  x >>= 1; y >>= 1;
-  target.top>>=1;
-  target.bottom>>=1;
-  target.left>>=1;
-  target.right>>=1;
-
-  // copy U
-  p = 1;
-  planes[p]->LockRect(0, &rect, &target, D3DLOCK_DISCARD);
-  d = (BYTE*)rect.pBits;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += rect.Pitch;
-  }
-  planes[p]->UnlockRect(0);
-
-  // copy V
-  p = 2;
-  planes[p]->LockRect(0, &rect, &target, D3DLOCK_DISCARD);
-  d = (BYTE*)rect.pBits;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += rect.Pitch;
-  }
-  planes[p]->UnlockRect(0);
-  */
-
-  return 0;
-}
-
 unsigned int CWinRenderer::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
@@ -551,7 +479,7 @@ void CWinRenderer::UpdatePSVideoFilter()
     if (!m_scalerShader->Create(m_scalingMethod))
     {
       SAFE_RELEASE(m_scalerShader);
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
       m_bUseHQScaler = false;
     }
   }
@@ -1052,7 +980,8 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
   if(method == VS_INTERLACEMETHOD_NONE
   || method == VS_INTERLACEMETHOD_AUTO
-  || method == VS_INTERLACEMETHOD_DEINTERLACE)
+  || method == VS_INTERLACEMETHOD_DEINTERLACE
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
     return true;
 
   return false;

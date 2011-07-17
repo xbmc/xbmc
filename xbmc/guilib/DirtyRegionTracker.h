@@ -23,7 +23,9 @@
 #include "IDirtyRegionSolver.h"
 #include "DirtyRegionSolvers.h"
 
-#ifdef _WIN32
+#if defined(TARGET_DARWIN_IOS)
+#define DEFAULT_BUFFERING 4
+#elif defined(_WIN32)
 #define DEFAULT_BUFFERING 3
 #else
 #define DEFAULT_BUFFERING 2
