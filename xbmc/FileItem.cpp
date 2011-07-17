@@ -135,6 +135,7 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
     m_bIsFolder = false;
   }
   *GetVideoInfoTag() = movie;
+  if (movie.m_iSeason == 0) SetProperty("isspecial", "true");
   FillInDefaultIcon();
   SetCachedVideoThumb();
 }

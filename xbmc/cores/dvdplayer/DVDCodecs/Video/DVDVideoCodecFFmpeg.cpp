@@ -570,7 +570,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   /* use variable in the frame */
   AVRational pixel_aspect = m_pCodecContext->sample_aspect_ratio;
   if (m_pFilterLink)
-#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,4,0)
+#ifdef HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO
     pixel_aspect = m_pFilterLink->cur_buf->video->sample_aspect_ratio;
 #else
     pixel_aspect = m_pFilterLink->cur_buf->video->pixel_aspect;
