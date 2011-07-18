@@ -178,7 +178,7 @@ bool CPVRManager::Load(void)
   if (m_addons->HasActiveClients() && !m_bLoaded && !m_bStop)
   {
     CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
-    ShowBusyDialog(true);
+//    TODO ShowBusyDialog(true);
 
     /* load all channels and groups */
     if (!m_bStop)
@@ -192,7 +192,7 @@ bool CPVRManager::Load(void)
     if (!m_bStop)
       m_recordings->Load();
 
-    ShowBusyDialog(false);
+//    TODO ShowBusyDialog(false);
     m_bLoaded = true;
   }
 
@@ -241,7 +241,7 @@ void CPVRManager::Process(void)
     ContinueLastChannel();
 
   /* close the busy dialog */
-  ShowBusyDialog(false);
+//  TODO ShowBusyDialog(false);
 
   /* signal to window that clients are loaded */
   if (pWindow)
