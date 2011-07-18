@@ -1970,6 +1970,9 @@
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TimeUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -4482,6 +4485,9 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\SystemInfo.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\TimeSmoother.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\TimeUtils.h">
