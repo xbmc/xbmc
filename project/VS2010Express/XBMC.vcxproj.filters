@@ -372,6 +372,9 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecText.cpp">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.cpp">
+      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.c">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay\libspucc</Filter>
     </ClCompile>
@@ -2638,6 +2641,9 @@
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecText.h">
+      <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.h">
       <Filter>cores\dvdplayer\DVDCodecs\Overlay</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayImage.h">

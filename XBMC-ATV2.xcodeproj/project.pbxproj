@@ -919,6 +919,7 @@
 		F5AE41131341751E0004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE41061341751E0004BD79 /* XBMCOperations.cpp */; };
 		F5AE453B134D2E720004BD79 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4539134D2E720004BD79 /* JSONServiceDescription.cpp */; };
 		F5B13E0113344F310045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13E0013344F310045076D /* DarwinUtils.mm */; };
+		F5CEE72C13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE72B13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2868,6 +2869,8 @@
 		F5AE453A134D2E720004BD79 /* JSONServiceDescription.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONServiceDescription.h; sourceTree = "<group>"; };
 		F5B13DFF13344F2A0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13E0013344F310045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
+		F5CEE72B13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
+		F5CEE72D13D3F9B300225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -3583,6 +3586,8 @@
 				F56C7276131EC151000AD0F6 /* DVDOverlayCodecFFmpeg.h */,
 				F56C7277131EC151000AD0F6 /* DVDOverlayCodecText.cpp */,
 				F56C7278131EC151000AD0F6 /* DVDOverlayCodecText.h */,
+				F5CEE72B13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp */,
+				F5CEE72D13D3F9B300225F72 /* DVDOverlayCodecTX3G.h */,
 				F56C7279131EC151000AD0F6 /* DVDOverlayImage.h */,
 				F56C727A131EC151000AD0F6 /* DVDOverlaySpu.h */,
 				F56C727B131EC151000AD0F6 /* DVDOverlayText.h */,
@@ -6712,6 +6717,7 @@
 				1830216013B8E35300770920 /* controledit.cpp in Sources */,
 				DF27E25C13C23CCA002514FE /* InertialScrollingHandler.cpp in Sources */,
 				18ECC9AA13CF17EB00A9ED6C /* StreamUtils.cpp in Sources */,
+				F5CEE72C13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

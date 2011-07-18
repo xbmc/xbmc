@@ -1817,6 +1817,8 @@
 		F5BDB81B1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
 		F5BDB820120203C200F0B710 /* AutoPtrHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB81F120203C200F0B710 /* AutoPtrHandle.cpp */; };
 		F5BDB821120203C200F0B710 /* AutoPtrHandle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB81F120203C200F0B710 /* AutoPtrHandle.cpp */; };
+		F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */; };
+		F5CEE60A13D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */; };
 		F5D8D732102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
 		F5D8D733102BB3B1004A11AB /* OverlayRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D731102BB3B1004A11AB /* OverlayRenderer.cpp */; };
 		F5D8D734102BB3B1004A11AB /* OverlayRendererGL.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */; };
@@ -3777,6 +3779,8 @@
 		F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleTagMicroDVD.cpp; sourceTree = "<group>"; };
 		F5BDB81E120203C200F0B710 /* AutoPtrHandle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoPtrHandle.h; sourceTree = "<group>"; };
 		F5BDB81F120203C200F0B710 /* AutoPtrHandle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AutoPtrHandle.cpp; sourceTree = "<group>"; };
+		F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
+		F5CEE60813D3C89700225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
 		F5D8D72E102BB3B1004A11AB /* OverlayRendererGL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRendererGL.h; sourceTree = "<group>"; };
 		F5D8D72F102BB3B1004A11AB /* OverlayRendererGL.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = OverlayRendererGL.cpp; sourceTree = "<group>"; };
 		F5D8D730102BB3B1004A11AB /* OverlayRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverlayRenderer.h; sourceTree = "<group>"; };
@@ -5241,6 +5245,8 @@
 				E38E152E0D25F9F900618676 /* DVDOverlayCodecFFmpeg.h */,
 				E38E152F0D25F9F900618676 /* DVDOverlayCodecText.cpp */,
 				E38E15300D25F9F900618676 /* DVDOverlayCodecText.h */,
+				F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */,
+				F5CEE60813D3C89700225F72 /* DVDOverlayCodecTX3G.h */,
 				E38E15310D25F9F900618676 /* DVDOverlayImage.h */,
 				E38E15320D25F9F900618676 /* DVDOverlaySpu.h */,
 				E38E15330D25F9F900618676 /* DVDOverlayText.h */,
@@ -8050,6 +8056,7 @@
 				1830212813B8E2DC00770920 /* controledit.cpp in Sources */,
 				DF27E26E13C23D12002514FE /* InertialScrollingHandler.cpp in Sources */,
 				18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */,
+				F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8943,6 +8950,7 @@
 				1830212913B8E2DC00770920 /* controledit.cpp in Sources */,
 				43B0A5D013C64DF900B2382A /* InertialScrollingHandler.cpp in Sources */,
 				18ECC96313CF178D00A9ED6C /* StreamUtils.cpp in Sources */,
+				F5CEE60A13D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

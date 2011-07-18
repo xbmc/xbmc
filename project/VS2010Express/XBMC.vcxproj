@@ -875,6 +875,7 @@
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecSSA.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecText.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\libspucc\cc_decoder.c">
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (DirectX)|Win32'">CompileAsCpp</CompileAs>
       <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug (OpenGL)|Win32'">CompileAsCpp</CompileAs>
@@ -1732,6 +1733,7 @@
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecFFmpeg.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecSSA.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecText.h" />
+    <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayCodecTX3G.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlayImage.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlaySpu.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Overlay\DVDOverlaySSA.h" />
