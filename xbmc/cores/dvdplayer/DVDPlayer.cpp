@@ -2266,6 +2266,11 @@ void CDVDPlayer::HandleMessages()
               SetCaching(CACHESTATE_PVR);
             }
           }
+          else
+          {
+            CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
+            CloseFile();
+          }
         }
       }
       else if (pMsg->IsType(CDVDMsg::GENERAL_GUI_ACTION))

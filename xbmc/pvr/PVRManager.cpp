@@ -676,12 +676,14 @@ void CPVRManager::SetPlayingGroup(CPVRChannelGroup *group)
 
 CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 {
-  CSingleLock lock(m_critSection);
-
-  if (bRadio && !m_currentRadioGroup)
-    SetPlayingGroup((CPVRChannelGroup *) m_channelGroups->GetGroupAllRadio());
-  else if (!bRadio &&!m_currentTVGroup)
-    SetPlayingGroup((CPVRChannelGroup *) m_channelGroups->GetGroupAllTV());
+  CSingleTryLock tryLock(m_critSection);
+  if(tryLock.IsOwner())
+  {
+    if (bRadio && !m_currentRadioGroup)
+      SetPlayingGroup((CPVRChannelGroup *) m_channelGroups->GetGroupAllRadio());
+    else if (!bRadio &&!m_currentTVGroup)
+      SetPlayingGroup((CPVRChannelGroup *) m_channelGroups->GetGroupAllTV());
+  }
 
   return bRadio ? m_currentRadioGroup : m_currentTVGroup;
 }
