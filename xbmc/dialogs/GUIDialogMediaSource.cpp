@@ -245,6 +245,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strName = g_localizeStrings.Get(20171);
     extraShares.push_back(share1);
 
+#ifdef HAS_FILESYSTEM_NFS
+    share1.strPath = "nfs://";
+    share1.strName = g_localizeStrings.Get(20259);
+    extraShares.push_back(share1);
+#endif// HAS_FILESYSTEM_NFS
+
     share1.strPath = "upnp://";
     share1.strName = "UPnP Devices";
     extraShares.push_back(share1);
@@ -287,6 +293,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strName = g_localizeStrings.Get(20171);
     extraShares.push_back(share1);
 
+#ifdef HAS_FILESYSTEM_NFS
+    share1.strPath = "nfs://";
+    share1.strName = g_localizeStrings.Get(20259);
+    extraShares.push_back(share1);
+#endif// HAS_FILESYSTEM_NFS
+
     share1.strPath = "hdhomerun://";
     share1.strName = "HDHomerun Devices";
     extraShares.push_back(share1);
@@ -317,6 +329,12 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strPath = "smb://";
     share1.strName = g_localizeStrings.Get(20171);
     extraShares.push_back(share1);
+
+#ifdef HAS_FILESYSTEM_NFS
+    share1.strPath = "nfs://";
+    share1.strName = g_localizeStrings.Get(20259);
+    extraShares.push_back(share1);
+#endif// HAS_FILESYSTEM_NFS
 
     share1.strPath = "upnp://";
     share1.strName = "UPnP Devices";
