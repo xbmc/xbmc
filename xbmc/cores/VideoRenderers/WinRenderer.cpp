@@ -235,7 +235,7 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
-void CWinRenderer::AddProcessor(DXVA::CProcessor* processor, int64_t id, unsigned picture_flags)
+void CWinRenderer::AddProcessor(DXVA::CProcessor* processor, int64_t id)
 {
   int source = NextYV12Texture();
   if(source < 0)
@@ -244,7 +244,6 @@ void CWinRenderer::AddProcessor(DXVA::CProcessor* processor, int64_t id, unsigne
   SAFE_RELEASE(buf->proc);
   buf->proc = processor->Acquire();
   buf->id   = id;
-  processor->SetStreamSampleFormat(picture_flags & DVP_FLAG_INTERLACED ? (picture_flags & DVP_FLAG_TOP_FIELD_FIRST ? DXVA2_SampleFieldInterleavedEvenFirst : DXVA2_SampleFieldInterleavedOddFirst) : DXVA2_SampleProgressiveFrame);
 }
 
 int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
