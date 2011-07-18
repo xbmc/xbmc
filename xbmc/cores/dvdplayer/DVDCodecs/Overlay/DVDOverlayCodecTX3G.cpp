@@ -23,6 +23,7 @@
 #include "DVDOverlayCodecTX3G.h"
 #include "DVDOverlayText.h"
 #include "DVDStreamInfo.h"
+#include "DVDCodecs/DVDCodecs.h"
 #include "utils/log.h"
 
 // 3GPP/TX3G (aka MPEG-4 Timed Text) Subtitle support
