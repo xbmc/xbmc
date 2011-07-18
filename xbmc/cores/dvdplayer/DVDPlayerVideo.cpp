@@ -588,8 +588,7 @@ void CDVDPlayerVideo::Process()
             EINTERLACEMETHOD mInt = g_settings.m_currentVideoSettings.m_InterlaceMethod;
             if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
             || (mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)
-                                                && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)
-                                                && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_BOB)))
+                                                && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)))
             {
               if (!sPostProcessType.empty())
                 sPostProcessType += ",";
