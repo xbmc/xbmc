@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
-    <!-- settings labels -->
+  <!-- settings labels -->
+
+  <string id="30000">Visualisation</string>
+  <string id="30001">3D Spectrum</string>
+  <string id="30002">Waveform</string>
+
+  <!--
     <string id="30000">Mode</string>
     <string id="30001">Filled</string>
     <string id="30002">Wireframe</string>
@@ -16,4 +22,5 @@
     <string id="30012">Default</string>
     <string id="30013">Fast</string>
     <string id="30014">Very Fast</string>
+  -->
 </strings>

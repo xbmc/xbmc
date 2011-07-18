@@ -56,10 +56,17 @@ GLfloat x_angle = 20.0f, x_speed = 0.0f;
 GLfloat y_angle = 45.0f, y_speed = 0.5f;
 GLfloat z_angle = 0.0f, z_speed = 0.0f;
 GLfloat heights[16][16], cHeights[16][16], scale;
-GLfloat hSpeed = 0.05f;
+GLfloat hSpeed = 0.025f;
 GLenum  g_mode = GL_TRIANGLES;
-GLfloat col[4][4];
-GLfloat ver[4][3];
+float g_fWaveform[2][512];
+
+enum VIS
+{
+  VIS_3D_SPECTRUM = 0,
+  VIS_WAVEFORM,
+};
+
+VIS g_vis = VIS_3D_SPECTRUM;
 
 std::string frag = "precision mediump float; \n"
                    "varying lowp vec4 m_colour; \n"
@@ -301,10 +308,87 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   return ADDON_STATUS_NEED_SETTINGS;
 }
 
-//-- Render -------------------------------------------------------------------
-// Called once per frame. Do all rendering here.
-//-----------------------------------------------------------------------------
-extern "C" void Render()
+void render_waveform()
+{
+  GLfloat col[256][3];
+  GLfloat ver[256][3];
+  GLubyte idx[256];
+
+  glDisable(GL_BLEND);
+
+  g_matricesSpectrum.MatrixMode(MM_PROJECTION);
+  g_matricesSpectrum.PushMatrix();
+  g_matricesSpectrum.LoadIdentity();
+  //g_matricesSpectrum.Frustum(-1.0f, 1.0f, -1.0f, 1.0f, 1.5f, 10.0f);
+  g_matricesSpectrum.MatrixMode(MM_MODELVIEW);
+  g_matricesSpectrum.PushMatrix();
+  g_matricesSpectrum.LoadIdentity();
+
+  g_matricesSpectrum.PushMatrix();
+  g_matricesSpectrum.Translatef(0.0f ,0.0f ,-1.0f);
+  g_matricesSpectrum.Rotatef(0.0f, 1.0f, 0.0f, 0.0f);
+  g_matricesSpectrum.Rotatef(0.0f, 0.0f, 1.0f, 0.0f);
+  g_matricesSpectrum.Rotatef(0.0f, 0.0f, 0.0f, 1.0f);
+
+  m_shader->Enable();
+
+  GLint   posLoc = m_shader->GetPosLoc();
+  GLint   colLoc = m_shader->GetColLoc();
+
+  glVertexAttribPointer(colLoc, 3, GL_FLOAT, 0, 0, col);
+  glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, ver);
+
+  glEnableVertexAttribArray(posLoc);
+  glEnableVertexAttribArray(colLoc);
+
+  for (int i = 0; i < 256; i++)
+  {
+    col[i][0] = 128;
+    col[i][1] = 128;
+    col[i][2] = 128;
+    //ver[i][0] = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
+    //ver[i][1] = g_viewport.Y + g_viewport.Height * 0.33f + (g_fWaveform[0][i] * g_viewport.Height * 0.15f);
+    ver[i][0] = -1.0f + ((i / 255.0f) * 2.0f);
+    ver[i][1] = 0.5f + (g_fWaveform[0][i] * 0.000015f);
+    ver[i][2] = 1.0f;
+    idx[i] = i;
+  }
+
+  glDrawElements(GL_LINE_STRIP, 256, GL_UNSIGNED_BYTE, idx);
+
+  // Right channel
+  for (int i = 0; i < 256; i++)
+  {
+    col[i][0] = 128;
+    col[i][1] = 128;
+    col[i][2] = 128;
+    //ver[i][0] = g_viewport.X + ((i / 255.0f) * g_viewport.Width);
+    //ver[i][1] = g_viewport.Y + g_viewport.Height * 0.66f + (g_fWaveform[1][i] * g_viewport.Height * 0.15f);
+    ver[i][0] = -1.0f + ((i / 255.0f) * 2.0f);
+    ver[i][1] = -0.5f + (g_fWaveform[1][i] * 0.000015f);
+    ver[i][2] = 1.0f;
+    idx[i] = i;
+
+  }
+
+  glDrawElements(GL_LINE_STRIP, 256, GL_UNSIGNED_BYTE, idx);
+
+  glDisableVertexAttribArray(posLoc);
+  glDisableVertexAttribArray(colLoc);
+
+  m_shader->Disable();
+
+  g_matricesSpectrum.PopMatrix();
+
+  g_matricesSpectrum .PopMatrix();
+  g_matricesSpectrum.MatrixMode(MM_PROJECTION);
+  g_matricesSpectrum.PopMatrix();
+
+  glEnable(GL_BLEND);
+  
+}
+
+void render_3d_spectrum()
 {
   glDisable(GL_BLEND);
 
@@ -363,6 +447,21 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
   z_angle = 0.0f;
 }
 
+//-- Render -------------------------------------------------------------------
+// Called once per frame. Do all rendering here.
+//-----------------------------------------------------------------------------
+extern "C" void Render()
+{
+  switch(g_vis)
+  {
+    case VIS_3D_SPECTRUM:
+      render_3d_spectrum();
+      break;
+    case VIS_WAVEFORM:
+      render_waveform();
+      break;
+  }
+}
 extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   int i,c;
@@ -371,33 +470,52 @@ extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *
 
   int xscale[] = {0, 1, 2, 3, 5, 7, 10, 14, 20, 28, 40, 54, 74, 101, 137, 187, 255};
 
-  for(y = 15; y > 0; y--)
+  if(g_vis == VIS_WAVEFORM) 
   {
-    for(i = 0; i < 16; i++)
-    {
-      heights[y][i] = heights[y - 1][i];
-    }
-  }
+    int ipos=0;
 
-  for(i = 0; i < NUM_BANDS; i++)
-  {
-    for(c = xscale[i], y = 0; c < xscale[i + 1]; c++)
+    while (ipos < 512)
     {
-      if (c<iAudioDataLength)
+      for (int i=0; i < iAudioDataLength; i+=2)
       {
-        if(pAudioData[c] > y)
-          y = (int)(pAudioData[c] * (INT16_MAX+.5f));
-          //y = (int)(pAudioData[c];
+        g_fWaveform[0][ipos] = (int)(pAudioData[i  ] * (INT16_MAX+.5f)); // left channel
+        g_fWaveform[1][ipos] = (int)(pAudioData[i+1] * (INT16_MAX+.5f)); // right channel
+        //g_fWaveform[0][ipos] = pAudioData[i  ]; // left channel
+        //g_fWaveform[1][ipos] = pAudioData[i+1]; // right channel
+        ipos++;
+        if (ipos >= 512) break;
       }
-      else
-        continue;
     }
-    y >>= 7;
-    if(y > 0)
-      val = (logf(y) * scale);
-    else
-      val = 0;
-    heights[0][i] = val;
+
+  } else if(g_vis == VIS_3D_SPECTRUM) {
+    for(y = 15; y > 0; y--)
+    {
+      for(i = 0; i < 16; i++)
+      {
+        heights[y][i] = heights[y - 1][i];
+      }
+    }
+
+    for(i = 0; i < NUM_BANDS; i++)
+    {
+      for(c = xscale[i], y = 0; c < xscale[i + 1]; c++)
+      {
+        if (c<iAudioDataLength)
+        {
+          if(pAudioData[c] > y)
+            y = (int)(pAudioData[c] * (INT16_MAX+.5f));
+            //y = (int)(pAudioData[c];
+        }
+        else
+          continue;
+      }
+      y >>= 7;
+      if(y > 0)
+        val = (logf(y) * scale);
+      else
+        val = 0;
+      heights[0][i] = val;
+    }
   }
 }
 
@@ -519,7 +637,21 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* val
   if (!strSetting || !value)
     return ADDON_STATUS_UNKNOWN;
 
-  if (strcmp(strSetting, "mode")==0)
+  if (strcmp(strSetting, "vis")==0)
+  {
+    switch (*(int*) value)
+    {
+      case 1:
+        g_vis = VIS_WAVEFORM;
+        break;
+      default:
+        g_vis = VIS_3D_SPECTRUM;
+        break;
+    }
+    return ADDON_STATUS_OK;
+  } 
+  /*
+  else if (strcmp(strSetting, "mode")==0)
   {
     switch (*(int*) value)
     {
@@ -592,6 +724,7 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* val
     }
     return ADDON_STATUS_OK;
   }
+  */
 
   return ADDON_STATUS_UNKNOWN;
 }
