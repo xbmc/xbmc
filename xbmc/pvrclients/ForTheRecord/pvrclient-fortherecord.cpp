@@ -192,7 +192,7 @@ PVR_ERROR cPVRClientForTheRecord::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &c
         EPG_TAG broadcast;
         cEpg epg;
 
-        memset(&broadcast, NULL, sizeof(EPG_TAG));
+        memset(&broadcast, 0, sizeof(EPG_TAG));
 
         // parse channel list
         for ( int index =0; index < size; ++index )

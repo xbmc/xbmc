@@ -39,13 +39,13 @@ void CKeepAliveThread::Action()
 {
   bool retval;
 
-  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread started:%d", GetCurrentThreadId());
+  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread started:%d", ThreadId());
   while (Running())
   {
     retval = ForTheRecord::KeepLiveStreamAlive();
     XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: KeepLiveStreamAlive returned %i", (int) retval);
     cCondWait::SleepMs(20000);
   }
-  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread stopped:%d", GetCurrentThreadId());
+  XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: thread stopped:%d", ThreadId());
   return;
 }
