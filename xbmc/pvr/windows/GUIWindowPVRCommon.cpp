@@ -180,7 +180,7 @@ bool CGUIWindowPVRCommon::OnAction(const CAction &action)
 {
   bool bReturn = false;
 
-  if (action.GetID() == ACTION_PREVIOUS_MENU ||
+  if (action.GetID() == ACTION_NAV_BACK ||
       action.GetID() == ACTION_PARENT_DIR)
   {
     g_windowManager.PreviousWindow();
