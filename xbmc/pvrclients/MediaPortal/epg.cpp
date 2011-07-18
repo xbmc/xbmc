@@ -23,8 +23,8 @@
 
 using namespace std;
 
-#include "xbmc_pvr_types.h"
 #include "epg.h"
+#include "xbmc_pvr_types.h"
 #include "utils.h"
 #include "client.h"
 

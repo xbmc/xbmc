@@ -72,7 +72,9 @@ typedef sem_t waitevent_t;
 
 #define PATH_SEPARATOR_CHAR '/'
 
-#ifndef __APPLE__
+// re-definition error on Linux and OSX, therefore currently
+// excluded
+#if 0
 static inline uint64_t getcurrenttime(void)
 {
 	struct timeval t;
