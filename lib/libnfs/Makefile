@@ -18,7 +18,8 @@ ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
-CONFIGURE=./configure
+#FIX THE PREFIX TO SOMETHING LOCAL IN XBMC - CONFIGURE HAS TO FIND IT!
+CONFIGURE=./configure --prefix=/usr
 
 SO_NAME=$(SOURCE)/lib/libnfs.so
 
