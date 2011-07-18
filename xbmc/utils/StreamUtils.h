@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,21 +20,12 @@
  *
  */
 
-#include "guilib/GUIDialog.h"
+#include "StreamUtils.h"
 
+#include "StdString.h"
 
-class CGUIDialogBusy: public CGUIDialog
+class StreamUtils
 {
 public:
-  CGUIDialogBusy(void);
-  virtual ~CGUIDialogBusy(void);
-  virtual bool OnAction(const CAction &action);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-
-  bool IsCanceled() { return m_bCanceled; }
-protected:
-  virtual void Show_Internal(); // modeless'ish
-  bool m_bCanceled;
-  bool m_bLastVisible;
+  static int GetCodecPriority(const CStdString &codec);
 };

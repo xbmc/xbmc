@@ -28,6 +28,7 @@
 #include "winxml.h"
 #include "pyutil.h"
 #include "action.h"
+#include "utils/log.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIListItem.h"
 
@@ -44,31 +45,26 @@ namespace PYXBMC
 {
   // lock() method
   PyDoc_STRVAR(lock__doc__,
-    "lock() -- Lock the gui until xbmcgui.unlock() is called.\n"
-    "\n"
-    "*Note, This will improve performance when doing a lot of gui manipulation at once.\n"
-    "       The main program (xbmc itself) will freeze until xbmcgui.unlock() is called.\n"
-    "\n"
-    "example:\n"
-    "  - xbmcgui.lock()\n");
+    "'xbmcgui.lock()' is depreciated and serves no purpose anymore,\n"
+    "\n"           
+    "it will be removed in future releases\n");
 
   PyObject* XBMCGUI_Lock(PyObject *self, PyObject *args)
   {
-    PyXBMCGUILock();
+    CLog::Log(LOGWARNING,"'xbmcgui.lock()' is depreciated and serves no purpose anymore, it will be removed in future releases");
     Py_INCREF(Py_None);
     return Py_None;
   }
 
   // unlock() method
   PyDoc_STRVAR(unlock__doc__,
-    "unlock() -- Unlock the gui from a lock() call.\n"
-    "\n"
-    "example:\n"
-    "  - xbmcgui.unlock()\n");
+    "'xbmcgui.unlock()' is depreciated and serves no purpose anymore,\n"
+    "\n"           
+    "it will be removed in future releases\n");
 
   PyObject* XBMCGUI_Unlock(PyObject *self, PyObject *args)
   {
-    PyXBMCGUIUnlock();
+    CLog::Log(LOGWARNING,"'xbmcgui.unlock()' is depreciated and serves no purpose anymore, it will be removed in future releases");
     Py_INCREF(Py_None);
     return Py_None;
   }

@@ -143,6 +143,9 @@ public:
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };
   virtual void SetInitialVisibility();
+  virtual bool IsVisible() const { return true; }; // windows are always considered visible as they implement their own
+                                                   // versions of UpdateVisibility, and are deemed visible if they're in
+                                                   // the window manager's active list.
 
   enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
 

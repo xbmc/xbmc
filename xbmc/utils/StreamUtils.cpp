@@ -1,7 +1,5 @@
-#pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,21 +19,27 @@
  *
  */
 
-#include "guilib/GUIDialog.h"
+#include "StreamUtils.h"
 
-
-class CGUIDialogBusy: public CGUIDialog
+int StreamUtils::GetCodecPriority(const CStdString &codec)
 {
-public:
-  CGUIDialogBusy(void);
-  virtual ~CGUIDialogBusy(void);
-  virtual bool OnAction(const CAction &action);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
-
-  bool IsCanceled() { return m_bCanceled; }
-protected:
-  virtual void Show_Internal(); // modeless'ish
-  bool m_bCanceled;
-  bool m_bLastVisible;
-};
+  /*
+   * Technically flac, truehd, and dtshd_ma are equivalently good as they're all lossless. However,
+   * ffmpeg can't decode dtshd_ma losslessy yet.
+   */
+  if (codec == "flac") // Lossless FLAC
+    return 7;
+  if (codec == "truehd") // Dolby TrueHD
+    return 6;
+  if (codec == "dtshd_ma") // DTS-HD Master Audio (previously known as DTS++)
+    return 5;
+  if (codec == "dtshd_hra") // DTS-HD High Resolution Audio
+    return 4;
+  if (codec == "eac3") // Dolby Digital Plus
+    return 3;
+  if (codec == "dca") // DTS
+    return 2;
+  if (codec == "ac3") // Dolby Digital
+    return 1;
+  return 0;
+}

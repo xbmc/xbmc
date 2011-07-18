@@ -238,8 +238,14 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
     const CFileItemPtr item = m_slides->Get(i);
     if (item->m_strPath == strPicture)
     {
-      m_iNextSlide = i;
       m_iDirection = 1;
+      if (IsActive())
+        m_iNextSlide = i;
+      else
+      {
+        m_iCurrentSlide = i;
+        m_iNextSlide = GetNextSlide();
+      }
       m_bLoadNextPic = true;
       return ;
     }
@@ -697,10 +703,10 @@ bool CGUIWindowSlideShow::OnMessage(CGUIMessage& message)
     }
     break;
     case GUI_MSG_PLAYBACK_STARTED:
-    {     
-      //only bring the fullscreen on front if we are not in a slideshow
-      if(!m_bSlideShow)
+    {
+      if(m_bSlideShow && m_bPlayingVideo)
         g_windowManager.ActivateWindow(WINDOW_FULLSCREEN_VIDEO);
+      m_bPlayingVideo = false;
     }
     break;
     case GUI_MSG_PLAYBACK_STOPPED:

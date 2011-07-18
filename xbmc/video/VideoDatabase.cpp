@@ -4628,6 +4628,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetProperty("numepisodes", it->second.numEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", it->second.numWatched);
         pItem->SetProperty("unwatchedepisodes", it->second.numEpisodes - it->second.numWatched);
+        if (iSeason == 0) pItem->SetProperty("isspecial", "true");
         pItem->GetVideoInfoTag()->m_playCount = (it->second.numEpisodes == it->second.numWatched) ? 1 : 0;
         pItem->SetCachedSeasonThumb();
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
@@ -4664,6 +4665,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", watchedEpisodes);
         pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
+        if (iSeason == 0) pItem->SetProperty("isspecial", "true");
         pItem->GetVideoInfoTag()->m_playCount = (totalEpisodes == watchedEpisodes) ? 1 : 0;
         pItem->SetCachedSeasonThumb();
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
@@ -5086,7 +5088,6 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
         pItem->m_strPath.Format("%s%ld/%ld/%ld",strBaseDir.c_str(), idShow, movie.m_iSeason,idEpisode);
       else
         pItem->m_strPath.Format("%s%ld",strBaseDir.c_str(), idEpisode);
-
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
       pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
       pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();

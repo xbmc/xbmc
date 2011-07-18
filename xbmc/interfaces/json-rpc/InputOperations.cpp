@@ -31,9 +31,11 @@ bool CInputOperations::handleScreenSaver()
 {
   bool screenSaverBroken = false; //true if screensaver was active and we did reset him
 
+  g_application.ResetScreenSaver();
+  
   if(g_application.IsInScreenSaver())
   {
-    g_application.ResetScreenSaver();
+    g_application.WakeUpScreenSaverAndDPMS();
     screenSaverBroken = true;
   }
   return screenSaverBroken;

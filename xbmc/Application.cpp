@@ -779,7 +779,7 @@ bool CApplication::InitDirectoriesLinux()
 
   if (xbmcPath.IsEmpty())
   {
-    xbmcPath = INSTALL_PATH;
+    xbmcPath = xbmcBinPath;
     /* Check if xbmc binaries and arch independent data files are being kept in
      * separate locations. */
     if (!CFile::Exists(URIUtils::AddFileToFolder(xbmcPath, "language")))
@@ -3139,6 +3139,11 @@ bool CApplication::Cleanup()
 
     CAddonMgr::Get().DeInit();
 
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+    CLog::Log(LOGNOTICE, "closing down remote control service");
+    g_RemoteControl.Disconnect();
+#endif
+
     CLog::Log(LOGNOTICE, "unload sections");
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -4515,10 +4520,7 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
-        // sending true to PlayNext() effectively passes bRestart to PlayFile()
-        // which is not generally what we want (except for stacks, which are
-        // handled above)
-        g_playlistPlayer.PlayNext();
+        g_playlistPlayer.PlayNext(1, true);
       }
       else
       {

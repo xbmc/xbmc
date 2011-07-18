@@ -215,12 +215,14 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
     if (message.GetMessage() == GUI_MSG_LABEL_ADD)
     {
       AddLabel(message.GetLabel());
+      return true;
     }
     if (message.GetMessage() == GUI_MSG_LABEL_RESET)
     {
       m_lastLabel = -1;
       m_infoLabels.clear();
       m_scrollInfo.Reset();
+      return true;
     }
     if (message.GetMessage() == GUI_MSG_LABEL_SET)
     {
@@ -228,6 +230,7 @@ bool CGUIFadeLabelControl::OnMessage(CGUIMessage& message)
       m_infoLabels.clear();
       m_scrollInfo.Reset();
       AddLabel(message.GetLabel());
+      return true;
     }
   }
   return CGUIControl::OnMessage(message);

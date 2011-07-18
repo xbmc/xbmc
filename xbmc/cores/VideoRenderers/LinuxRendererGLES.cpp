@@ -28,6 +28,7 @@
 #include <locale.h>
 #include "guilib/MatrixGLES.h"
 #include "LinuxRendererGLES.h"
+#include "utils/fastmemcpy.h"
 #include "utils/MathUtils.h"
 #include "utils/GLUtils.h"
 #include "settings/Settings.h"
@@ -333,7 +334,7 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
     char *dst = pixelVector;
     for (int y = 0;y < height;++y)
     {
-      memcpy(dst, src, width);
+      fast_memcpy(dst, src, width);
       src += stride;
       dst += width;
     }
@@ -1241,10 +1242,11 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   // clear framebuffer and invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
+
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PushMatrix();
-  g_matrices.Translatef(0, capture->GetHeight(), 0);
-  g_matrices.Scalef(1.0, -1.0f, 1.0f);
+  g_matrices.Translatef(0.0f, capture->GetHeight(), 0.0f);
+  g_matrices.Scalef(1.0f, -1.0f, 1.0f);
 
   capture->BeginRender();
 
@@ -1252,6 +1254,19 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   // read pixels
   glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
+
+  // OpenGLES returns in RGBA order but CRenderCapture needs BGRA order
+  // XOR Swap RGBA -> BGRA
+  unsigned char* pixels = (unsigned char*)capture->GetRenderBuffer();
+  for (int i = 0; i < capture->GetWidth() * capture->GetHeight(); i++, pixels+=4)
+  {
+    if (pixels[0] != pixels[2])
+    {
+      pixels[0] ^= pixels[2];
+      pixels[2] ^= pixels[0];
+      pixels[0] ^= pixels[2];
+    }
+  }
 
   capture->EndRender();
 

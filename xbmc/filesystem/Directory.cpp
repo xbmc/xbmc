@@ -143,8 +143,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       pDirectory->SetUseFileDirectories(bUseFileDirectories);
       pDirectory->SetExtFileInfo(extFileInfo);
 
-      bool result = false;
-      while (!result)
+      bool result = false, cancel = false;
+      while (!result && !cancel)
       {
         if (g_application.IsCurrentThread() && allowThreads && !URIUtils::IsSpecial(strPath))
         {
@@ -153,30 +153,19 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
           CGetDirectory get(pDirectory, realPath);
           if(!get.Wait(TIME_TO_BUSY_DIALOG))
           {
-            CGUIDialogBusy* dialog = NULL;
+            CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+            dialog->Show();
+
             while(!get.Wait(10))
             {
               CSingleLock lock(g_graphicsContext);
-              if(g_windowManager.IsWindowVisible(WINDOW_DIALOG_PROGRESS)
-              || g_windowManager.IsWindowVisible(WINDOW_DIALOG_LOCK_SETTINGS))
+
+              if(dialog->IsCanceled())
               {
-                if(dialog)
-                {
-                  dialog->Close();
-                  dialog = NULL;
-                }
-                g_windowManager.ProcessRenderLoop(false);
+                cancel = true;
+                break;
               }
-              else
-              {
-                if(dialog == NULL)
-                {
-                  dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-                  if(dialog)
-                    dialog->Show();
-                }
-                g_windowManager.ProcessRenderLoop(true);
-              }
+              g_windowManager.ProcessRenderLoop(false);
             }
             if(dialog)
               dialog->Close();
@@ -191,7 +180,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 
         if (!result)
         {
-          if (g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
+          if (!cancel && g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
             continue;
           CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
           return false;

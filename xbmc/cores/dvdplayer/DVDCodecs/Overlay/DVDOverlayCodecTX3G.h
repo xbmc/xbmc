@@ -21,21 +21,22 @@
  *
  */
 
-#include "guilib/GUIDialog.h"
+#include "DVDOverlayCodec.h"
 
+class CDVDOverlayText;
 
-class CGUIDialogBusy: public CGUIDialog
+class CDVDOverlayCodecTX3G : public CDVDOverlayCodec
 {
 public:
-  CGUIDialogBusy(void);
-  virtual ~CGUIDialogBusy(void);
-  virtual bool OnAction(const CAction &action);
-  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void Render();
+  CDVDOverlayCodecTX3G();
+  virtual ~CDVDOverlayCodecTX3G();
+  virtual bool Open(CDVDStreamInfo &hints, CDVDCodecOptions &options);
+  virtual void Dispose();
+  virtual int Decode(BYTE* data, int size, double pts, double duration);
+  virtual void Reset();
+  virtual void Flush();
+  virtual CDVDOverlay* GetOverlay();
 
-  bool IsCanceled() { return m_bCanceled; }
-protected:
-  virtual void Show_Internal(); // modeless'ish
-  bool m_bCanceled;
-  bool m_bLastVisible;
+private:
+  CDVDOverlayText* m_pOverlay;
 };
