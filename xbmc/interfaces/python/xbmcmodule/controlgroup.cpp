@@ -26,12 +26,6 @@
 #include "control.h"
 #include "pyutil.h"
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C"
@@ -108,12 +102,6 @@ extern "C"
         "  - self.group = xbmcgui.ControlGroup(100, 250, 125, 75)\n");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
     PyTypeObject ControlGroup_Type;
 

@@ -28,7 +28,7 @@
 #include <locale.h>
 #include "guilib/MatrixGLES.h"
 #include "LinuxRendererGLES.h"
-#include "Application.h"
+#include "utils/fastmemcpy.h"
 #include "utils/MathUtils.h"
 #include "utils/GLUtils.h"
 #include "settings/Settings.h"
@@ -38,6 +38,7 @@
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
 #include "lib/DllSwScale.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
@@ -69,7 +70,7 @@ CLinuxRendererGLES::CLinuxRendererGLES()
   m_textureTarget = GL_TEXTURE_2D;
   for (int i = 0; i < NUM_BUFFERS; i++)
   {
-    m_eventTexturesDone[i] = CreateEvent(NULL,FALSE,TRUE,NULL);
+    m_eventTexturesDone[i] = new CEvent(false,true);
 #if defined(HAVE_LIBOPENMAX)
     m_buffers[i].openMaxBuffer = 0;
 #endif
@@ -107,7 +108,7 @@ CLinuxRendererGLES::~CLinuxRendererGLES()
 {
   UnInit();
   for (int i = 0; i < NUM_BUFFERS; i++)
-    CloseHandle(m_eventTexturesDone[i]);
+    delete m_eventTexturesDone[i];
 
   if (m_rgbBuffer != NULL) {
     delete [] m_rgbBuffer;
@@ -215,7 +216,7 @@ int CLinuxRendererGLES::GetImage(YV12Image *image, int source, bool readonly)
     im.flags |= IMAGE_FLAG_READING;
   else
   {
-    if( WaitForSingleObject(m_eventTexturesDone[source], 500) == WAIT_TIMEOUT )
+    if( !m_eventTexturesDone[source]->WaitMSec(500) )
       CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, source);
 
     im.flags |= IMAGE_FLAG_WRITING;
@@ -243,7 +244,7 @@ void CLinuxRendererGLES::ReleaseImage(int source, bool preserve)
   YV12Image &im = m_buffers[source].image;
 
   if( im.flags & IMAGE_FLAG_WRITING )
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
 
   im.flags &= ~IMAGE_FLAG_INUSE;
   im.flags |= IMAGE_FLAG_READY;
@@ -333,7 +334,7 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
     char *dst = pixelVector;
     for (int y = 0;y < height;++y)
     {
-      memcpy(dst, src, width);
+      fast_memcpy(dst, src, width);
       src += stride;
       dst += width;
     }
@@ -372,7 +373,7 @@ void CLinuxRendererGLES::Reset()
     /* reset all image flags, this will cleanup textures later */
     m_buffers[i].image.flags = 0;
     /* reset texture locks, a bit ugly, could result in tearing */
-    SetEvent(m_eventTexturesDone[i]);
+    m_eventTexturesDone[i]->Set();
   }
 }
 
@@ -409,7 +410,7 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
 
   g_graphicsContext.BeginPaint();
 
-  if( WaitForSingleObject(m_eventTexturesDone[index], 500) == WAIT_TIMEOUT )
+  if( !m_eventTexturesDone[index]->WaitMSec(500))
   {
     CLog::Log(LOGWARNING, "%s - Timeout waiting for texture %d", __FUNCTION__, index);
 
@@ -468,62 +469,6 @@ void CLinuxRendererGLES::FlipPage(int source)
   m_buffers[m_iYV12RenderBuffer].flipindex = ++m_flipindex;
 
   return;
-}
-
-
-unsigned int CLinuxRendererGLES::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
-{
-  BYTE *s;
-  BYTE *d;
-  int i, p;
-
-  int index = NextYV12Texture();
-  if( index < 0 )
-    return -1;
-
-  YV12Image &im = m_buffers[index].image;
-  // copy Y
-  p = 0;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
-  }
-
-  w >>= im.cshift_x; h >>= im.cshift_y;
-  x >>= im.cshift_x; y >>= im.cshift_y;
-
-  // copy U
-  p = 1;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
-  }
-
-  // copy V
-  p = 2;
-  // check for valid yv12, nv12 does not use the third plane.
-  if(im.plane[p] && src[p])
-  {
-    d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-    s = src[p];
-    for (i = 0;i < h;i++)
-    {
-      memcpy(d, s, w);
-      s += stride[p];
-      d += im.stride[p];
-    }
-  }
-
-  SetEvent(m_eventTexturesDone[index]);
-  return 0;
 }
 
 unsigned int CLinuxRendererGLES::PreInit()
@@ -596,7 +541,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     break;
   }
 
-  g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CGUIDialogKaiToast::QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
@@ -1297,10 +1242,11 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   // clear framebuffer and invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
+
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PushMatrix();
-  g_matrices.Translatef(0, capture->GetHeight(), 0);
-  g_matrices.Scalef(1.0, -1.0f, 1.0f);
+  g_matrices.Translatef(0.0f, capture->GetHeight(), 0.0f);
+  g_matrices.Scalef(1.0f, -1.0f, 1.0f);
 
   capture->BeginRender();
 
@@ -1308,6 +1254,19 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   // read pixels
   glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
+
+  // OpenGLES returns in RGBA order but CRenderCapture needs BGRA order
+  // XOR Swap RGBA -> BGRA
+  unsigned char* pixels = (unsigned char*)capture->GetRenderBuffer();
+  for (int i = 0; i < capture->GetWidth() * capture->GetHeight(); i++, pixels+=4)
+  {
+    if (pixels[0] != pixels[2])
+    {
+      pixels[0] ^= pixels[2];
+      pixels[2] ^= pixels[0];
+      pixels[0] ^= pixels[2];
+    }
+  }
 
   capture->EndRender();
 
@@ -1337,7 +1296,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
   if (!(im->flags&IMAGE_FLAG_READY))
 #endif
   {
-    SetEvent(m_eventTexturesDone[source]);
+    m_eventTexturesDone[source]->Set();
     return;
   }
 
@@ -1459,7 +1418,7 @@ void CLinuxRendererGLES::UploadYV12Texture(int source)
                , im->stride[2], im->plane[2] );
     }
   }
-  SetEvent(m_eventTexturesDone[source]);
+  m_eventTexturesDone[source]->Set();
 
   CalculateTextureSourceRects(source, 3);
 
@@ -1604,7 +1563,7 @@ bool CLinuxRendererGLES::CreateYV12Texture(int index)
     }
   }
   glDisable(m_textureTarget);
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
   return true;
 }
 
@@ -1664,7 +1623,7 @@ void CLinuxRendererGLES::UploadCVRefTexture(int index)
     plane.flipindex = m_buffers[index].flipindex;
   }
 
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 #endif
 }
 void CLinuxRendererGLES::DeleteCVRefTexture(int index)
@@ -1737,7 +1696,7 @@ bool CLinuxRendererGLES::CreateCVRefTexture(int index)
   glBindTexture(m_textureTarget, 0);
   glDisable(m_textureTarget);
 
-  SetEvent(m_eventTexturesDone[index]);
+  m_eventTexturesDone[index]->Set();
 #endif
   return true;
 }

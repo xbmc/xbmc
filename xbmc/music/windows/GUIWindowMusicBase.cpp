@@ -60,6 +60,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "ThumbnailCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -87,7 +88,8 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 /// \param action Action that can be reacted on.
 bool CGUIWindowMusicBase::OnAction(const CAction& action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU ||
+      action.GetID() == ACTION_NAV_BACK)
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && !musicScan->IsDialogRunning())
@@ -1201,7 +1203,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     saveDirThumb = false;
   }
 
-  CStdString albumThumb(CUtil::GetCachedAlbumThumb(album.strAlbum, album.strArtist));
+  CStdString albumThumb(CThumbnailCache::GetAlbumThumb(album));
 
   // Update the thumb in the music database (songs + albums)
   CStdString albumPath(path);
@@ -1249,7 +1251,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     CStdString album, artist;
     if (CMusicInfoScanner::HasSingleAlbum(songs, album, artist))
     { // can cache as the folder thumb
-      CStdString folderThumb(CUtil::GetCachedMusicThumb(albumPath));
+      CStdString folderThumb(CThumbnailCache::GetMusicThumb(albumPath));
       CFile::Cache(albumThumb, folderThumb);
     }
   }

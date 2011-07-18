@@ -1,7 +1,7 @@
 <keymap>
   <global>
     <appcommand>
-      <browser_back>ParentDir</browser_back>
+      <browser_back>Back</browser_back>
       <browser_forward/>
       <browser_refresh/>
       <browser_stop>Stop</browser_stop>

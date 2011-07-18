@@ -173,9 +173,9 @@ AC_ARG_ENABLE([vtbdecoder],
 
 AC_ARG_ENABLE([openmax],
   [AS_HELP_STRING([--enable-openmax],
-  [enable OpenMax decoding (default is yes)])],
+  [enable OpenMax decoding (default is auto, requires OpenGLES)])],
   [use_openmax=$enableval],
-  [use_openmax=yes])
+  [use_openmax=auto])
 
 AC_ARG_ENABLE([tegra],
   [AS_HELP_STRING([--enable-tegra],
@@ -365,7 +365,6 @@ case $host in
      fi
      ARCH="arm-osx"
      use_arch="arm"
-     SYSROOT="-miphoneos-version-min=4.1 -isysroot $SDKROOT"
      AC_SUBST(ARCH_DEFINES, "-D_ARMEL")
      PYTHON_VERSION="2.6"
      PYTHON_LDFLAGS="-L${prefix}/lib -lpython2.6"
@@ -374,14 +373,12 @@ case $host in
      PYTHON_NOVERSIONCHECK="no-check"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_IOS -D_LINUX")
      ;;
-  i386-apple-darwin*)
+  *86-apple-darwin*)
      use_joystick=no
      use_vtbdecoder=no
      use_texturepacker_native=yes
      USE_TEXTUREPACKER_NATIVE_ROOT="$prefix"
      ARCH="x86-osx"
-     export MACOSX_DEPLOYMENT_TARGET=10.4
-     SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
   powerpc-apple-darwin*)
@@ -391,8 +388,6 @@ case $host in
      use_crystalhd=no
      ARCH="powerpc-osx"
      use_arch="ppc"
-     export MACOSX_DEPLOYMENT_TARGET=10.4
-     SYSROOT="-mmacosx-version-min=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
   powerpc-*-linux-gnu*)
@@ -532,6 +527,7 @@ AC_CHECK_HEADER([sys/inotify.h], AC_DEFINE([HAVE_INOTIFY],[1],[Define if we have
 # Checks for boost headers using CXX instead of CC
 AC_LANG_PUSH([C++])
 AC_CHECK_HEADER([boost/shared_ptr.hpp],, AC_MSG_ERROR($missing_library))
+AC_CHECK_HEADER([boost/thread.hpp],, AC_MSG_ERROR($missing_library))
 AC_LANG_POP([C++])
 
 # Checks for platforms libraries.
@@ -604,6 +600,7 @@ AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitab
 AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
 AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
+AC_CHECK_LIB([boost_thread],[main],, AC_MSG_ERROR($missing_library))
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
   [INCLUDES="$INCLUDES $FONTCONFIG_CFLAGS"; LIBS="$LIBS $FONTCONFIG_LIBS"],
   AC_MSG_ERROR($missing_library))
@@ -851,7 +848,7 @@ fi
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
-  FFMPEG_LIBNAMES="libavcodec libavformat libavutil libpostproc libswscale"
+  FFMPEG_LIBNAMES="libavcodec libavfilter libavformat libavutil libpostproc libswscale"
 
   # libavcore is optional
   PKG_CHECK_EXISTS([libavcore], FFMPEG_LIBNAMES="$FFMPEG_LIBNAMES libavcore")
@@ -872,12 +869,12 @@ if test "$use_external_ffmpeg" = "yes"; then
   CPPFLAGS="$CPPFLAGS $FFMPEG_CFLAGS"
 
   # Possible places the ffmpeg headers may be
-  AC_CHECK_HEADERS([libavcodec/avcodec.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
-  [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
+  AC_CHECK_HEADERS([libavcodec/avcodec.h libavfilter/avfilter.h libavformat/avformat.h libavutil/avutil.h libpostproc/postprocess.h libswscale/swscale.h],,
+  [AC_CHECK_HEADERS([ffmpeg/avcodec.h ffmpeg/avfilter.h ffmpeg/avformat.h ffmpeg/avutil.h postproc/postprocess.h ffmpeg/swscale.h],,
   [AC_MSG_ERROR($missing_headers)])])
 
   # optional
-  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h libavutil/samplefmt.h])
+  AC_CHECK_HEADERS([libavcore/avcore.h libavcore/samplefmt.h libavutil/mem.h libavutil/samplefmt.h])
 
   # old FFmpeg have this in libavcodec/opt.h instead:
   AC_CHECK_HEADERS([libavutil/opt.h])
@@ -885,6 +882,20 @@ if test "$use_external_ffmpeg" = "yes"; then
   # We'll support the use of rgb2rgb.h if it exists.
   AC_CHECK_HEADERS([libswscale/rgb2rgb.h],,)
   AC_CHECK_HEADERS([ffmpeg/rgb2rgb.h],,)
+
+  # Check if AVFilterBufferRefVideoProps AVRational member is named
+  # 'pixel_aspect' or 'sample_aspect_ratio'.
+  AC_CHECK_MEMBER([AVFilterBufferRefVideoProps.sample_aspect_ratio],
+    [AC_DEFINE([HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO],
+    [1],
+    [Define to 1 if AVFilterBufferRefVideoProps has member sample_aspect_ratio.])],
+      [AC_CHECK_MEMBER([AVFilterBufferRefVideoProps.sample_aspect_ratio],
+      [AC_DEFINE([HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO],
+      [1],
+      [Define to 1 if AVFilterBufferRefVideoProps has member sample_aspect_ratio.])],
+      ,
+      [[#include <ffmpeg/avfilter.h>]])],
+    [[#include <libavfilter/avfilter.h>]])
 
   AC_MSG_NOTICE($external_ffmpeg_enabled)
   USE_EXTERNAL_FFMPEG=1
@@ -992,7 +1003,9 @@ fi
 
 # CrystalHD
 if test "x$use_crystalhd" != "xno"; then
-  AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h], [], 
+  SAVE_CFLAGS="$CFLAGS"
+  CFLAGS="-D__LINUX_USER__"
+  AC_CHECK_HEADER([libcrystalhd/libcrystalhd_if.h], [],
     [ if test "x$use_crystalhd" = "xyes"; then
         AC_MSG_ERROR($crystalhd_not_found)
       else
@@ -1000,18 +1013,17 @@ if test "x$use_crystalhd" != "xno"; then
         AC_MSG_RESULT($crystalhd_not_found)
       fi
       USE_CRYSTALHD=0
-    ],
-    [#define __LINUX_USER__])
+    ])
+    CFLAGS="$SAVE_CFLAGS"
     if test "$host_vendor" != "apple"; then
       XB_FIND_SONAME([CRYSTALHD], [crystalhd], [use_crystalhd])
     fi
     if test "x$use_crystalhd" != "xno"; then
       SAVE_CFLAGS="$CFLAGS"
-      CFLAGS="-llibcrystalhd"
+      CFLAGS="-D__LINUX_USER__ -llibcrystalhd"
       # check for new crystalhd lib
       AC_COMPILE_IFELSE(
-        [AC_LANG_SOURCE([ #define __LINUX_USER__
-          #include <libcrystalhd/bc_dts_types.h>
+        [AC_LANG_SOURCE([#include <libcrystalhd/bc_dts_types.h>
           #include <libcrystalhd/bc_dts_defs.h>
           PBC_INFO_CRYSTAL bCrystalInfo;])],
         [ AC_DEFINE([HAVE_LIBCRYSTALHD], [2], [Define to 2 if you have the 'New Broadcom Crystal HD' library.]) ], 
@@ -1068,16 +1080,17 @@ if test "$host_vendor" = "apple" ; then
   USE_OPENMAX=0
   AC_MSG_NOTICE($openmax_disabled)
 else
-  if test "$use_openmax" = "yes"; then
-    AC_CHECK_HEADER([OpenMAX/IL/OMX_Types.h],
-      AC_DEFINE([HAVE_LIBOPENMAX], [1], [Define to 1 if you have the 'OpenMax' library.]),
-      use_openmax=no;USE_OPENMAX=0;AC_MSG_RESULT($openmax_not_found))
-    if test "$use_openmax" = "yes"; then
-      INCLUDES="$INCLUDES -I/usr/include/OpenMAX/IL"
-      USE_OPENMAX=1
-    fi
+  if test "$use_gles" = "yes" && test "$use_openmax" = "auto"; then
+    PKG_CHECK_MODULES([OPENMAX], [libomxil-bellagio],
+                      USE_OPENMAX=1;[INCLUDES="$INCLUDES $OPENMAX_CFLAGS"; LIBS="$LIBS $OPENMAX_LIBS"],
+                      use_openmax=no;USE_OPENMAX=0;AC_MSG_RESULT($openmax_not_found))
+  elif test "$use_gles" = "yes" && test "$use_openmax" = "yes"; then
+    PKG_CHECK_MODULES([OPENMAX], [libomxil-bellagio],
+                      USE_OPENMAX=1;[INCLUDES="$INCLUDES $OPENMAX_CFLAGS"; LIBS="$LIBS $OPENMAX_LIBS"],
+                      AC_MSG_ERROR($openmax_not_found))
   else
     AC_MSG_NOTICE($openmax_disabled)
+    use_openmax=no
     USE_OPENMAX=0
   fi
 fi
@@ -1476,7 +1489,6 @@ AC_SUBST(CFLAGS)
 AC_SUBST(CXXFLAGS)
 AC_SUBST(INCLUDES)
 AC_SUBST(LDFLAGS)
-AC_SUBST(SYSROOT)
 AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(DISABLE_GOOM)
@@ -1705,11 +1717,22 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
 if test "$use_gl" = "no"; then :; else
 set -x
-    rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF \
-      -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}" -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
-      -DCMAKE_INSTALL_PREFIX="${prefix}" -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}" \
-      -DINCLUDE_INSTALL_DIR:PATH="${includedir}" -DLIB_INSTALL_DIR:PATH="${libdir}" \
-      -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}" -DSHARE_INSTALL_PREFIX:PATH="${datadir}" .
+    rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake    \
+      -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF        \
+      -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}"     \
+      -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
+      -DCMAKE_INSTALL_PREFIX="${prefix}"                 \
+      -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}"            \
+      -DINCLUDE_INSTALL_DIR:PATH="${includedir}"         \
+      -DLIB_INSTALL_DIR:PATH="${libdir}"                 \
+      -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}"         \
+      -DSHARE_INSTALL_PREFIX:PATH="${datadir}" . &&
+    if test "$host_vendor" = "apple" ; then
+      # cmake has hardcoded paths to macports which bork our darwin depends cross/ppc, remove them
+      sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/link.txt
+      sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/flags.make
+      sed -i "" -e "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
+    fi
 set +x
 fi
 ], [0])

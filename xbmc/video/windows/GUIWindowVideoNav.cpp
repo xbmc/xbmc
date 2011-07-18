@@ -49,6 +49,7 @@
 #include "storage/MediaManager.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "pictures/Picture.h"
 #include "TextureCache.h"
 
 using namespace XFILE;
@@ -420,9 +421,10 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
                 m_stackingAvailable);
 
   CFileItemList dbItems;
-  if (content.IsEmpty())
-    m_database.GetPlayCounts(items);
-  else
+  /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
+           we won't need the fetchedPlayCounts code, and can "simply" do this directly on absense of content. */
+  bool fetchedPlayCounts = false;
+  if (!content.IsEmpty())
   {
     m_database.GetItemsForPath(content, items.m_strPath, dbItems);
     dbItems.SetFastLookup(true);
@@ -460,9 +462,17 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       }
     }
     else
-    { // set the watched overlay (note: items in a folder with content set that aren't in the db
-      //                                won't get picked up here - in the future all items will be returned)
+    { // set the watched overlay
       // and clean the label
+
+      /* NOTE: Currently we GetPlayCounts on our items regardless of whether content is set
+               as if content is set, GetItemsForPaths doesn't return anything not in the content tables.
+               This code can be removed once the content tables are always filled */
+      if (!pItem->m_bIsFolder && !fetchedPlayCounts)
+      {
+        m_database.GetPlayCounts(items);
+        fetchedPlayCounts = true;
+      }
       if (pItem->HasVideoInfoTag())
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
       if (clean)
@@ -990,6 +1000,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
         {
           buttons.Add(CONTEXT_BUTTON_EDIT, 16105);
           buttons.Add(CONTEXT_BUTTON_SET_MOVIESET_THUMB, 20435);
+          buttons.Add(CONTEXT_BUTTON_SET_MOVIESET_FANART, 20456);
           buttons.Add(CONTEXT_BUTTON_DELETE, 646);
         }
 
@@ -1221,6 +1232,67 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       g_windowManager.SendMessage(msg);
       Update(m_vecItems->m_strPath);
 
+      return true;
+    }
+  case CONTEXT_BUTTON_SET_MOVIESET_FANART:
+    {
+      CFileItemList items;
+      CStdString cachedFanart(item->GetCachedFanart());
+
+      if (CFile::Exists(cachedFanart))
+      {
+        CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));
+        itemCurrent->SetThumbnailImage(cachedFanart);
+        itemCurrent->SetLabel(g_localizeStrings.Get(20440));
+        items.Add(itemCurrent);
+      }
+
+      CStdString localFanart(item->GetLocalFanart());
+      if (!localFanart.IsEmpty())
+      {
+        CFileItemPtr itemLocal(new CFileItem("fanart://Local",false));
+        itemLocal->SetThumbnailImage(localFanart);
+        itemLocal->SetLabel(g_localizeStrings.Get(20438));
+        CTextureCache::Get().ClearCachedImage(localFanart);
+        items.Add(itemLocal);
+      }
+      else
+      {
+        CFileItemPtr itemNone(new CFileItem("fanart://None", false));
+        itemNone->SetIconImage("DefaultVideo.png");
+        itemNone->SetLabel(g_localizeStrings.Get(20439));
+        items.Add(itemNone);
+      }
+
+      CStdString result;
+      VECSOURCES sources(g_settings.m_videoSources);
+      g_mediaManager.GetLocalDrives(sources);
+      bool flip=false;
+      if (!CGUIDialogFileBrowser::ShowAndGetImage(items, sources, g_localizeStrings.Get(20437), result, &flip, 20445) || result.Equals("fanart://Current"))
+        return false;
+
+      CTextureCache::Get().ClearCachedImage(cachedFanart, true);
+
+      if (result.Equals("fanart://Local"))
+        result = localFanart;
+
+      if (CFile::Exists(result))
+      {
+        if (flip)
+          CPicture::ConvertFile(result, cachedFanart,0,1920,-1,100,true);
+        else
+          CPicture::CacheFanart(result, cachedFanart);
+      }
+
+      // clear view cache and reload images
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+
+      if (CFile::Exists(cachedFanart))
+        item->SetProperty("fanart_image", cachedFanart);
+      else
+        item->ClearProperty("fanart_image");
+
+      Update(m_vecItems->m_strPath);
       return true;
     }
   case CONTEXT_BUTTON_UPDATE_LIBRARY:

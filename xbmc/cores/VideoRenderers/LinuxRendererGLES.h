@@ -119,6 +119,7 @@ extern YUVCOEF yuv_coef_smtp240m;
 class DllSwScale;
 struct SwsContext;
 
+class CEvent;
 
 class CLinuxRendererGLES : public CBaseRenderer
 {
@@ -136,7 +137,6 @@ public:
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
@@ -267,7 +267,7 @@ protected:
   BYTE	      *m_rgbBuffer;  // if software scale is used, this will hold the result image
   unsigned int m_rgbBufferSize;
 
-  HANDLE m_eventTexturesDone[NUM_BUFFERS];
+  CEvent* m_eventTexturesDone[NUM_BUFFERS];
 
 };
 

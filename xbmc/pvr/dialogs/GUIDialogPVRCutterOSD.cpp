@@ -37,7 +37,7 @@ CGUIDialogPVRCutterOSD::~CGUIDialogPVRCutterOSD()
 
 bool CGUIDialogPVRCutterOSD::OnAction(const CAction& action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_CLOSE_DIALOG)
+  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_PARENT_DIR)
   {
     Close();
     return true;

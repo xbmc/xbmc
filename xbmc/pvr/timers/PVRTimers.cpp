@@ -180,7 +180,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
       {
         CStdString strMessage;
         strMessage.Format("%s: '%s'", g_localizeStrings.Get(19228), timer->m_strTitle.c_str());
-        g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
       }
 
       CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) at(iTimerPtr)->m_epgInfo;

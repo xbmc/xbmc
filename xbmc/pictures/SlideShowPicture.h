@@ -23,6 +23,7 @@
 #include "threads/CriticalSection.h"
 #include "guilib/gui3d.h"
 #include "utils/StdString.h"
+#include "guilib/DirtyRegion.h"
 
 typedef uint32_t color_t;
 
@@ -49,6 +50,7 @@ public:
 
   bool IsLoaded() const { return m_bIsLoaded;};
   void UnLoad() {m_bIsLoaded = false;};
+  void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render();
   void Close();
   bool IsFinished() const { return m_bIsFinished;};
@@ -78,8 +80,7 @@ public:
 
   bool m_bIsComic;
 private:
-  void Process();
-
+  void UpdateVertices(float cur_x[4], float cur_y[4], const float new_x[4], const float new_y[4], CDirtyRegionList &dirtyregions);
   void Render(float *x, float *y, CBaseTexture* pTexture, color_t color);
   CBaseTexture *m_pImage;
 
@@ -89,6 +90,7 @@ private:
   bool m_bIsLoaded;
   bool m_bIsFinished;
   bool m_bDrawNextImage;
+  bool m_bIsDirty;
   CStdString m_strFileName;
   float m_fWidth;
   float m_fHeight;
@@ -103,6 +105,11 @@ private:
   float m_fZoomAmount;
   float m_fZoomLeft;
   float m_fZoomTop;
+  float m_ax[4], m_ay[4];
+  float m_sx[4], m_sy[4];
+  float m_bx[4], m_by[4];
+  float m_ox[4], m_oy[4];
+
   // transistion and display effects
   DISPLAY_EFFECT m_displayEffect;
   TRANSISTION m_transistionStart;

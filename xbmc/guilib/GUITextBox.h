@@ -51,7 +51,6 @@ public:
 
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
-  virtual void DoRender();
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
 
@@ -81,12 +80,10 @@ protected:
   int   m_scrollTime;
   unsigned int m_itemsPerPage;
   float m_itemHeight;
-  unsigned int m_renderTime;
   unsigned int m_lastRenderTime;
 
   CLabelInfo m_label;
 
-  TransformMatrix m_textMatrix;
   TransformMatrix m_cachedTextMatrix;
 
   // autoscrolling

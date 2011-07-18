@@ -90,11 +90,11 @@ public:
   
   /*! \brief Main render function, called every frame.
    Window classes should override this only if they need to alter how something is rendered.
-   General updating on a per-frame basis should be handled in FrameMove instead, as Render
+   General updating on a per-frame basis should be handled in FrameMove instead, as DoRender
    is not necessarily re-entrant.
    \sa FrameMove
    */
-  virtual void Render();
+  virtual void DoRender();
   
   /*! \brief Main update function, called every frame prior to rendering
    Any window that requires updating on a frame by frame basis (such as to maintain

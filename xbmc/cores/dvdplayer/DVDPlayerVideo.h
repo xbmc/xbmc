@@ -118,7 +118,7 @@ protected:
 
   int OutputPicture(DVDVideoPicture* pPicture, double pts);
 #ifdef HAS_VIDEO_PLAYBACK
-  void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts);
+  void ProcessOverlays(DVDVideoPicture* pSource, double pts);
 #endif
   void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);
 

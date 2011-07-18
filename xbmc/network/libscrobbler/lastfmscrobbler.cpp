@@ -20,12 +20,12 @@
  */
 
 #include "lastfmscrobbler.h"
-#include "Application.h"
 #include "threads/Atomics.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "utils/URIUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 long CLastfmScrobbler::m_instanceLock = 0;
 CLastfmScrobbler *CLastfmScrobbler::m_pInstance = NULL;
@@ -85,13 +85,13 @@ void CLastfmScrobbler::NotifyUser(int error)
       strText = g_localizeStrings.Get(15206);
       m_bBadAuth = true;
       strAudioScrobbler = g_localizeStrings.Get(15200);  // AudioScrobbler
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, strAudioScrobbler, strText, 10000);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strAudioScrobbler, strText, 10000);
       break;
     case SCROBBLER_USER_ERROR_BANNED:
       strText = g_localizeStrings.Get(15205);
       m_bBanned = true;
       strAudioScrobbler = g_localizeStrings.Get(15200);  // AudioScrobbler
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, strAudioScrobbler, strText, 10000);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, strAudioScrobbler, strText, 10000);
       break;
     default:
       break;

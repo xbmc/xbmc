@@ -45,12 +45,6 @@
 #include "xbmcmodule/pythreadstate.h"
 #include "utils/CharsetConverter.h"
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);

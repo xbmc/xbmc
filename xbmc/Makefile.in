@@ -7,6 +7,7 @@ SRCS=Application.cpp \
      DynamicDll.cpp \
      Favourites.cpp \
      FileItem.cpp \
+     InertialScrollingHandler.cpp \
      LangInfo.cpp \
      GUIInfoManager.cpp \
      GUILargeTextureManager.cpp \

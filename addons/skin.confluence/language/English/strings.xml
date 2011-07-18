@@ -58,7 +58,7 @@
   <string id="31102">Background</string>
   <string id="31103">Show "Paused" in picture slide show</string>
   <string id="31104">Play Trailers in a window [COLOR=grey3](Video Information Dialog Only)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">"Videos" button always goes to video "Files"</string>
   <string id="31106">Miscellaneous options</string>
   <string id="31107">Hide Flagging read from video filenames [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Hide Main Menu Buttons</string>
@@ -86,7 +86,7 @@
   <string id="31129"></string>  <!-- blanked 2010-11-12 -->
   <string id="31130"></string>  <!-- blanked 2010-11-12 -->
   
-  <string id="31131"></string> <!-- blanked 2010-12-23 -->
+<string id="31131"></string> <!-- blanked 2010-12-23 -->
   <string id="31132">Lyrics Add-on</string>
   <string id="31133">Subtitle Add-on</string>
   <string id="31134">Home Page Videos Submenu</string>

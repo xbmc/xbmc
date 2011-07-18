@@ -45,18 +45,16 @@ using namespace std;
 using namespace PYXBMC;
 
 CGUIPythonWindowXML::CGUIPythonWindowXML(int id, CStdString strXML, CStdString strFallBackPath)
-: CGUIMediaWindow(id, strXML)
+  : CGUIMediaWindow(id, strXML), m_actionEvent(true)
 {
   pCallbackWindow = NULL;
   m_threadState = NULL;
-  m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
   m_scriptPath = strFallBackPath;
 }
 
 CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
 {
-  CloseHandle(m_actionEvent);
 }
 
 bool CGUIPythonWindowXML::Update(const CStdString &strPath)
@@ -66,8 +64,13 @@ bool CGUIPythonWindowXML::Update(const CStdString &strPath)
 
 bool CGUIPythonWindowXML::OnAction(const CAction &action)
 {
+  bool ret = false;
+  // if we don't have callback window or we don't want to close window
   // do the base class window first, and the call to python after this
-  bool ret = CGUIWindow::OnAction(action);  // we don't currently want the mediawindow actions here
+  if (!pCallbackWindow || !(action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU))
+    ret = CGUIWindow::OnAction(action);  // we don't currently want the mediawindow actions here
+  else
+    ret = true;
   if(pCallbackWindow)
   {
     PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
@@ -263,12 +266,12 @@ void CGUIPythonWindowXML::ClearList()
 void CGUIPythonWindowXML::WaitForActionEvent(unsigned int timeout)
 {
   g_pythonParser.WaitForEvent(m_actionEvent, timeout);
-  ResetEvent(m_actionEvent);
+  m_actionEvent.Reset();
 }
 
 void CGUIPythonWindowXML::PulseActionEvent()
 {
-  SetEvent(m_actionEvent);
+  m_actionEvent.Set();
 }
 
 void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)

@@ -21,7 +21,6 @@
 
 #include "MusicFileDirectory.h"
 #include "FileItem.h"
-#include "URL.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/URIUtils.h"
 
@@ -39,7 +38,6 @@ CMusicFileDirectory::~CMusicFileDirectory(void)
 bool CMusicFileDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items)
 {
   CStdString strPath=strPath1;
-  CURL url(strPath);
 
   CStdString strFileName;
   strFileName = URIUtils::GetFileName(strPath);

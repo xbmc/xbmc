@@ -335,7 +335,7 @@
   <string id="369">Títol</string>
   <string id="370">Tempestes</string>
   <string id="371">Parcialment</string>
-  <string id="372">Majorment</string>
+  <string id="372">Principalment</string>
   <string id="373">Assolellat</string>
   <string id="374">Ennuvolat</string>
   <string id="375">Neu</string>
@@ -365,7 +365,7 @@
   <string id="399">Unitats de velocitat</string>
   <string id="400">El temps</string>
   <string id="401">Temperatura</string>
-  <string id="402">Sensació tèrmica</string>
+  <string id="402">Sen. tèrmica</string>
   <string id="403">Índex UV</string>
   <string id="404">Vent</string>
   <string id="405">Rosada</string>
@@ -380,8 +380,8 @@
   <string id="415">S'està baixant la miniatura...</string>
   <string id="416">No disponible</string>
   <string id="417">Vista: Icones grans</string>
-  <string id="418">Baix</string>
-  <string id="419">Alt</string>
+  <string id="418">Mín</string>
+  <string id="419">Màx</string>
   <string id="420">HDMI</string>
 
   <string id="422">Esborra la informació de l'àlbum</string>
@@ -590,7 +590,7 @@
   <string id="645">Need to unpack a big file. Continue?</string>
   <string id="646">Elimina de la biblioteca</string>
   <string id="647">Exporta la biblioteca de vídeo</string>
-  <string id="648">Importa la llibreria de vídeo</string>
+  <string id="648">Importa la biblioteca de vídeo</string>
   <string id="649">S'està important</string>
   <string id="650">S'està exportant</string>
   <string id="651">Cerca la biblioteca</string>
@@ -738,7 +738,7 @@
   <string id="1023">Cerca un recurs compartit nou</string>
   <string id="1024">Navega</string>
   <string id="1025">No s'ha pogut recuperar la informació del directori.</string>
-  <string id="1026">Afegeix la font</string>
+  <string id="1026">Afegeix una font</string>
   <string id="1027">Edita la font</string>
   <string id="1028">Edita la font %s</string>
   <string id="1029">Introduïu la nova etiqueta</string>
@@ -1017,7 +1017,7 @@
   <string id="13050">La càrrega de la bateria és baixa</string>
 
   <string id="13100">Filtre de parpelleig</string>
-  <string id="13101">Permetre triar al dispositiu (requereix reiniciar)</string>
+  <string id="13101">Permet triar al dispositiu (requereix reiniciar)</string>
   <string id="13105">Vertical blank sync</string>
   <string id="13106">Desactivat</string>
   <string id="13107">Activat durant la reproducció de vídeo</string>
@@ -1205,7 +1205,7 @@
   <string id="13409">Top 250</string>
   <string id="13410">Connecta't a Last.fm</string>
   <string id="13411">Velocitat mínima del ventilador</string>
-  <string id="13412">Play from here</string>
+  <string id="13412">Reprodueix des d'aquí</string>
   <string id="13413">S'està baixant</string>
   <string id="13414">Inclou els artistes que només apareixen en les compilacions</string>
   <string id="13415">Mètode de renderitzat</string>
@@ -1225,7 +1225,7 @@
   <string id="13429">Permet l'acceleració per maquinari (VDADecoder)</string>
   <string id="13430">Permet l'acceleració per maquinari (OpenMax)</string>
   <string id="13431">Ombrejadors de píxels</string>
-  <string id="13432">Allow hardware acceleration (VideoToolbox)</string>
+  <string id="13432">Permet l'acceleració per maquinari (VideoToolbox)</string>
 
   <string id="13500">Mètode de sincronització d'A/V</string>
   <string id="13501">Rellotge d'àudio</string>
@@ -1247,7 +1247,7 @@
   <string id="13600">Apple remote</string>
 
   <string id="13602">Permet l'inici de l'XBMC amb el control remot</string>
-  <string id="13603">Sequence delay time</string>
+  <string id="13603">Temps de retard de la seqüència</string>
 
   <string id="13610">Desactivat</string>
   <string id="13611">Estàndard</string>
@@ -1345,7 +1345,7 @@
   <string id="14089">Font to use for text subtitles</string>
   <string id="14090">Internacional</string>
   <string id="14091">Joc de caràcters</string>
-  <string id="14092">S'està depurant</string>
+  <string id="14092">Depuració</string>
   <string id="14093">Seguretat</string>
   <string id="14094">Dispositius d'entrada</string>
   <string id="14095">Estalvi d'energia</string>
@@ -1991,30 +1991,30 @@
   <string id="21800">Nom del fitxer</string>
   <string id="21801">Cami del fitxer</string>
   <string id="21802">Mida del fitxer</string>
-  <string id="21803">Data/Hora del fitxer</string>
+  <string id="21803">Data/Hora fitxer</string>
   <string id="21804">Slide index</string>
   <string id="21805">Resolució</string>
   <string id="21806">Comentari</string>
-  <string id="21807">Color/Blanc i negre</string>
+  <string id="21807">Color - B/N</string>
   <string id="21808">Processat JPEG</string>
 
   <string id="21820">Data/Hora</string>
   <string id="21821">Descripció</string>
-  <string id="21822">Marca de la càmera</string>
-  <string id="21823">Model de la càmera</string>
+  <string id="21822">Marca càmera</string>
+  <string id="21823">Model càmera</string>
   <string id="21824">Comentari EXIF</string>
   <string id="21825">Microprogramari</string>
   <string id="21826">Obertura</string>
   <string id="21827">Longitud focal</string>
   <string id="21828">Distància focal</string>
   <string id="21829">Exposició</string>
-  <string id="21830">Temps d'exposició</string>
+  <string id="21830">Temps exposició</string>
   <string id="21831">Compensació d'exposició</string>
-  <string id="21832">Mode d'exposició</string>
+  <string id="21832">Mode exposició</string>
   <string id="21833">Flaix disparat</string>
-  <string id="21834">Balanç de blancs</string>
+  <string id="21834">Balanç blancs</string>
   <string id="21835">Font de llum</string>
-  <string id="21836">Mode de mesura</string>
+  <string id="21836">Mode mesura</string>
   <string id="21837">ISO</string>
   <string id="21838">Zoom digital</string>
   <string id="21839">Amplada del CCD</string>
@@ -2117,7 +2117,7 @@
   <string id="22083">Reproduir totes</string>
 
   <string id="23049">Teletext no disponible</string>
-  <string id="23050">Activar el teletext</string>
+  <string id="23050">Activa el teletext</string>
   <string id="23051">Part %i</string>
   <string id="23052">S'està emplenant la memòria intermèdia amb %i bytes</string>
   <string id="23053">S'està parant</string>
@@ -2165,7 +2165,7 @@
   <string id="24037">Desinstal·la</string>
   <string id="24038">Instal·la</string>
   <string id="24039">Complements desactivats</string>
-  <string id="24040">(Esborrar la configuració actual)</string>
+  <string id="24040">(Esborra la configuració actual)</string>
   <string id="24041">Instal·lar desde fitxer zip</string>
   <string id="24042">S'està baixant %i%%</string>
   <string id="24043">Actualitzacions disponibles</string>
@@ -2286,6 +2286,11 @@
   <string id="33081">Aquest fitxer està agrupat, seleccioneu la part que desitgeu reproduir.</string>
   <string id="33082">Camí al script</string>
   <string id="33083">Activa el botó d'scripts personalitzats</string>
+
+  <string id="33100">No s'ha pogut iniciar</string>
+  <string id="33101">Webserver</string>
+  <string id="33102">Servidor d'esdeveniments</string>
+  <string id="33103">Servidor remot de comunicació</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>

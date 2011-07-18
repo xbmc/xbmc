@@ -327,7 +327,7 @@ void CEventServer::ProcessEvents()
 
 bool CEventServer::ExecuteNextAction()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   CEventAction actionEvent;
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
@@ -337,7 +337,7 @@ bool CEventServer::ExecuteNextAction()
     if (iter->second->GetNextAction(actionEvent))
     {
       // Leave critical section before processing action
-      LeaveCriticalSection(&m_critSection);
+      lock.Leave();
       switch(actionEvent.actionType)
       {
       case AT_EXEC_BUILTIN:
@@ -358,7 +358,7 @@ bool CEventServer::ExecuteNextAction()
     }
     iter++;
   }
-  LeaveCriticalSection(&m_critSection);
+
   return false;
 }
 

@@ -23,6 +23,7 @@
 #include "JSONUtils.h"
 #include "video/VideoDatabase.h"
 #include "Util.h"
+#include "utils/URIUtils.h"
 #include "Application.h"
 
 using namespace JSONRPC;
@@ -129,11 +130,9 @@ JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer 
     if (additionalInfo)
     {
       for (int index = 0; index < items.Size(); index++)
-      {
         videodatabase.GetTvShowInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      }
     }
-    HandleFileItemList("tvshowid", false, "tvshows", items, parameterObject, result);
+    HandleFileItemList("tvshowid", true, "tvshows", items, parameterObject, result);
   }
 
   videodatabase.Close();
@@ -188,25 +187,8 @@ JSON_STATUS CVideoLibrary::GetEpisodes(const CStdString &method, ITransportLayer
     return InternalError;
 
   CFileItemList items;
-  if (videodatabase.GetEpisodesNav("videodb://", items, -1, -1, -1, -1, tvshowID, season))
-  {
-    bool additionalInfo = false;
-    for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
-    {
-      CStdString fieldValue = itr->asString();
-      if (fieldValue == "cast")
-        additionalInfo = true;
-    }
-
-    if (additionalInfo)
-    {
-      for (int index = 0; index < items.Size(); index++)
-      {
-        videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      }
-    }
-    HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result);
-  }
+  if (videodatabase.GetEpisodesNav("videodb://2/2/-1/-1/", items, -1, -1, -1, -1, tvshowID, season))
+    GetAdditionalEpisodeDetails(parameterObject, items, result);
 
   videodatabase.Close();
   return OK;
@@ -227,8 +209,11 @@ JSON_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITranspor
     videodatabase.Close();
     return InvalidParams;
   }
+  CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
+  // We need to set the correct base path to get the valid fanart
+  pItem->m_strPath.Format("videodb://2/2/%ld/%ld/%ld", videodatabase.GetTvShowForEpisode(id), infos.m_iSeason, id);
 
-  HandleFileItem("episodeid", true, "episodedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("episodeid", true, "episodedetails", pItem, parameterObject, parameterObject["fields"], result, false);
 
   videodatabase.Close();
   return OK;
@@ -245,7 +230,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideos(const CStdString &method, ITransportLa
 
   CFileItemList items;
   if (videodatabase.GetMusicVideosNav("videodb://", items, -1, -1, artistID, -1, -1, albumID))
-    HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result);
+    GetAdditionalMusicVideoDetails(parameterObject, items, result);
 
   videodatabase.Close();
   return OK;
@@ -281,24 +266,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMovies(const CStdString &method, ITra
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedMoviesNav("videodb://", items))
-  {
-    bool additionalInfo = false;
-    for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
-    {
-      CStdString fieldValue = itr->asString();
-      if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink")
-        additionalInfo = true;
-    }
-
-    if (additionalInfo)
-    {
-      for (int index = 0; index < items.Size(); index++)
-      {
-        videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      }
-    }
-    HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
-  }
+    GetAdditionalMovieDetails(parameterObject, items, result);
 
   videodatabase.Close();
   return OK;
@@ -312,24 +280,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedEpisodes(const CStdString &method, IT
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedEpisodesNav("videodb://", items))
-  {
-    bool additionalInfo = false;
-    for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
-    {
-      CStdString fieldValue = itr->asString();
-      if (fieldValue == "cast")
-        additionalInfo = true;
-    }
-
-    if (additionalInfo)
-    {
-      for (int index = 0; index < items.Size(); index++)
-      {
-        videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-      }
-    }
-    HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result);
-  }
+    GetAdditionalEpisodeDetails(parameterObject, items, result);
 
   videodatabase.Close();
   return OK;
@@ -343,7 +294,7 @@ JSON_STATUS CVideoLibrary::GetRecentlyAddedMusicVideos(const CStdString &method,
 
   CFileItemList items;
   if (videodatabase.GetRecentlyAddedMusicVideosNav("videodb://", items))
-    HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result);
+    GetAdditionalMusicVideoDetails(parameterObject, items, result);
 
   videodatabase.Close();
   return OK;
@@ -381,9 +332,36 @@ JSON_STATUS CVideoLibrary::GetGenres(const CStdString &method, ITransportLayer *
   return OK;
 }
 
-JSON_STATUS CVideoLibrary::ScanForContent(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSON_STATUS CVideoLibrary::Scan(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().ExecBuiltIn("updatelibrary(video)");
+  return ACK;
+}
+
+JSON_STATUS CVideoLibrary::Export(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CStdString path = parameterObject["path"].asString();
+  bool singleFile = parameterObject["singlefile"].asBoolean();
+
+  if (!singleFile && path.IsEmpty())
+    return InvalidParams;
+
+  CStdString cmd;
+  if (singleFile)
+    cmd.Format("exportlibrary(video, true, %s, %s, %s)",
+      parameterObject["images"].asBoolean() ? "true" : "false",
+      parameterObject["overwrite"].asBoolean() ? "true" : "false",
+      parameterObject["actorthumbs"].asBoolean() ? "true" : "false");
+  else
+    cmd.Format("exportlibrary(video, false, %s)", path);
+
+  g_application.getApplicationMessenger().ExecBuiltIn(cmd);
+  return ACK;
+}
+
+JSON_STATUS CVideoLibrary::Clean(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  g_application.getApplicationMessenger().ExecBuiltIn("cleanlibrary(video)");
   return ACK;
 }
 
@@ -471,18 +449,64 @@ JSON_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &parameterOb
   for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink")
+    if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink" || fieldValue == "resume")
       additionalInfo = true;
   }
 
   if (additionalInfo)
   {
     for (int index = 0; index < items.Size(); index++)
-    {
       videodatabase.GetMovieInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
-    }
   }
   HandleFileItemList("movieid", true, "movies", items, parameterObject, result);
+
+  return OK;
+}
+
+JSON_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result)
+{
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  bool additionalInfo = false;
+  for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
+  {
+    CStdString fieldValue = itr->asString();
+    if (fieldValue == "cast" || fieldValue == "resume")
+      additionalInfo = true;
+  }
+
+  if (additionalInfo)
+  {
+    for (int index = 0; index < items.Size(); index++)
+      videodatabase.GetEpisodeInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+  }
+  HandleFileItemList("episodeid", true, "episodes", items, parameterObject, result);
+
+  return OK;
+}
+
+JSON_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &parameterObject, CFileItemList &items, CVariant &result)
+{
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+
+  bool additionalInfo = false;
+  for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
+  {
+    CStdString fieldValue = itr->asString();
+    if (fieldValue == "resume")
+      additionalInfo = true;
+  }
+
+  if (additionalInfo)
+  {
+    for (int index = 0; index < items.Size(); index++)
+      videodatabase.GetMusicVideoInfo("", *(items[index]->GetVideoInfoTag()), items[index]->GetVideoInfoTag()->m_iDbId);
+  }
+  HandleFileItemList("musicvideoid", true, "musicvideos", items, parameterObject, result);
 
   return OK;
 }

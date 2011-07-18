@@ -57,7 +57,7 @@
       <!-- Rew       	-->      <button id="41">Rewind</button>
       <!-- Fwd  	-->      <button id="42">FastForward</button>
       <!-- Pause	-->      <button id="26">Pause</button>
-      <!-- Prev		-->      <button id="32">ParentDir</button>
+      <!-- Prev		-->      <button id="32">Back</button>
       <!-- Guide  	-->      <button id="65">FullScreen</button>
       <!-- Info  	-->      <button id="31">Info</button>
       <!-- Exit 	-->      <button id="51">PreviousMenu</button>
@@ -79,7 +79,7 @@
       <!-- 8 		-->      <button id="34">Number8</button>
       <!-- 9 		-->      <button id="43">Number9</button>
       <!-- 0 		-->      <button id="44">Number0</button>
-      <!-- * clear 	-->      <button id="45">ParentDir</button>
+      <!-- * clear 	-->      <button id="45">Back</button>
       <!-- # enter 	-->      <button id="36">Select</button>
       <!-- Mute		-->      <button id="25">Mute</button>
       <!-- Aspect	-->      <button id="61">AspectRatio</button>
@@ -127,7 +127,6 @@
   </MyFiles>
   <MyMusicPlaylist>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Playlist</button>
       <!-- * clear 	-->      <button id="45">Delete</button>
       <!-- Channel Up  	-->      <button id="71">MoveItemUp</button>
       <!-- Channel Down -->      <button id="72">MoveItemDown</button>
@@ -175,12 +174,12 @@
   </FullscreenVideo>
   <FullscreenInfo>
     <joystick name="Harmony">
-      <!-- Info  	-->      <button id="31">Close</button>
+      <!-- Info  	-->      <button id="31">Back</button>
     </joystick>
   </FullscreenInfo>
   <PlayerControls>
     <joystick name="Harmony">
-      <!-- menu       	-->      <button id="6">Close</button>
+      <!-- menu       	-->      <button id="6">Back</button>
     </joystick>
   </PlayerControls>
   <Visualisation>
@@ -198,21 +197,18 @@
   </Visualisation>
   <MusicOSD>
     <joystick name="Harmony">
-      <!-- menu       	-->      <button id="6">Close</button>
+      <!-- menu       	-->      <button id="6">Back</button>
       <!-- Info  	-->      <button id="31">CodecInfo</button>
-      <!-- Exit 	-->      <button id="51">Close</button>
     </joystick>
   </MusicOSD>
   <VisualisationSettings>
     <joystick name="Harmony">
-      <!-- menu       	-->      <button id="6">Close</button>
-      <!-- Exit 	-->      <button id="51">Close</button>
+      <!-- menu       	-->      <button id="6">Back</button>
     </joystick>
   </VisualisationSettings>
   <VisualisationPresetList>
     <joystick name="Harmony">
-      <!-- menu       	-->      <button id="6">Close</button>
-      <!-- Exit 	-->      <button id="51">Close</button>
+      <!-- menu       	-->      <button id="6">Back</button>
     </joystick>
   </VisualisationPresetList>
   <SlideShow>
@@ -248,44 +244,30 @@
       <!-- # enter 	-->      <button id="36">NextCalibration</button>
     </joystick>
   </GUICalibration>
-  <SelectDialog>
-    <joystick name="Harmony">
-      <!-- Exit 	-->      <button id="51">Close</button>
-      <!-- Prev		-->      <button id="32">Close</button>
-    </joystick>
-  </SelectDialog>
   <VideoOSD>
     <joystick name="Harmony">
-      <!-- menu       	-->      <button id="6">Close</button>
-      <!-- Exit 	-->      <button id="51">Close</button>
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- menu       	-->      <button id="6">Back</button>
     </joystick>
   </VideoOSD>
   <VideoMenu>
     <joystick name="Harmony">
       <!-- menu       	-->      <button id="6">OSD</button>
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
       <!-- Info  	-->      <button id="31">Info</button>
     </joystick>
   </VideoMenu>
   <OSDVideoSettings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Close</button>
-      <!-- menu       	-->      <button id="6">Close</button>
+      <!-- menu       	-->      <button id="6">Back</button>
     </joystick>
   </OSDVideoSettings>
   <OSDAudioSettings>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Close</button>
-      <!-- menu       	-->      <button id="6">Close</button>
-      <!-- Exit 	-->      <button id="51">Close</button>
+      <!-- menu       	-->      <button id="6">Back</button>
     </joystick>
   </OSDAudioSettings>
   <VideoBookmarks>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Close</button>
-      <!-- menu       	-->      <button id="6">Close</button>
-      <!-- Exit 	-->      <button id="51">Close</button>
+      <!-- menu       	-->      <button id="6">Back</button>
       <!-- * clear 	-->      <button id="45">Delete</button>
     </joystick>
   </VideoBookmarks>
@@ -320,7 +302,6 @@
   </MyVideoFiles>
   <MyVideoPlaylist>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Playlist</button>      <!-- Close playlist -->
       <!-- * clear 	-->      <button id="45">Delete</button>
       <!-- Channel Up  	-->      <button id="71">MoveItemUp</button>
       <!-- Channel Down -->      <button id="72">MoveItemDown</button>
@@ -345,16 +326,6 @@
       <!-- Fwd  	-->      <button id="42">CursorRight</button>
     </joystick>
   </VirtualKeyboard>
-  <ContextMenu>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Close</button>
-    </joystick>
-  </ContextMenu>
-  <FileStackingDialog>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Close</button>
-    </joystick>
-  </FileStackingDialog>
   <Scripts>
     <joystick name="Harmony">
       <!-- Info  	-->      <button id="31">info</button>
@@ -375,121 +346,31 @@
       <!-- Prev		-->      <button id="32">BackSpace</button>
     </joystick>
   </NumericInput>
-  <Weather>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </Weather>
-  <Settings>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </Settings>
-  <MyPicturesSettings>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </MyPicturesSettings>
-  <MyProgramsSettings>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </MyProgramsSettings>
-  <MyWeatherSettings>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </MyWeatherSettings>
-  <MyMusicSettings>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </MyMusicSettings>
-  <SystemSettings>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </SystemSettings>
-  <MyVideosSettings>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </MyVideosSettings>
-  <NetworkSettings>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </NetworkSettings>
-  <AppearanceSettings>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </AppearanceSettings>
-  <Profiles>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </Profiles>
-  <systeminfo>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </systeminfo>
-  <shutdownmenu>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </shutdownmenu>
-  <submenu>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
-    </joystick>
-  </submenu>
   <MusicInformation>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Close</button>
-      <!-- menu       	-->      <button id="6">Close</button>
+      <!-- menu       	-->      <button id="6">Back</button>
     </joystick>
   </MusicInformation>
   <MovieInformation>
     <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Close</button>
-      <!-- menu       	-->      <button id="6">Close</button>
+      <!-- menu       	-->      <button id="6">Back</button>
     </joystick>
   </MovieInformation>
   <LockSettings>
     <joystick name="Harmony">
-      <!-- menu       	-->      <button id="6">Close</button>
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- menu       	-->      <button id="6">Back</button>
     </joystick>
   </LockSettings>
   <ProfileSettings>
     <joystick name="Harmony">
-      <!-- menu       	-->      <button id="6">Close</button>
-      <!-- Prev		-->      <button id="32">PreviousMenu</button>
+      <!-- menu       	-->      <button id="6">Back</button>
     </joystick>
   </ProfileSettings>
   <PictureInfo>
     <joystick name="Harmony">
       <!-- Replay       -->      <button id="91">PreviousPicture</button>
       <!-- Skip      	-->      <button id="92">NextPicture</button>
-      <!-- Info  	-->      <button id="31">Close</button>
-      <!-- Prev		-->      <button id="32">Close</button>
+      <!-- Info  	-->      <button id="31">Back</button>
     </joystick>
   </PictureInfo>
-  <AddonInformation>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Close</button>
-    </joystick>
-  </AddonInformation>
-  <AddonSettings>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Close</button>
-    </joystick>
-  </AddonSettings>
-  <TextViewer>
-    <joystick name="Harmony">
-      <!-- Prev		-->      <button id="32">Close</button>
-    </joystick>
-  </TextViewer>
 </keymap>

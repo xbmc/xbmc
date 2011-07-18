@@ -62,6 +62,7 @@ CPVRManager::CPVRManager(void) :
     m_database(NULL),
     m_bFirstStart(true),
     m_bLoaded(false),
+    m_triggerEvent(true),
     m_loadingBusyDialog(NULL),
     m_currentRadioGroup(NULL),
     m_currentTVGroup(NULL)
@@ -165,7 +166,7 @@ void CPVRManager::Cleanup(void)
   delete m_channelGroups;      m_channelGroups = NULL;
   delete m_addons;             m_addons = NULL;
   delete m_database;           m_database = NULL;
-  CloseHandle(m_triggerEvent); m_triggerEvent = NULL;
+  m_triggerEvent.Set();
 }
 
 bool CPVRManager::Load(void)
@@ -272,7 +273,7 @@ void CPVRManager::Process(void)
       return;
     }
 
-    WaitForSingleObject(m_triggerEvent, 1000);
+    m_triggerEvent.WaitMSec(1000);
   }
 
 }
@@ -342,7 +343,6 @@ bool CPVRManager::ContinueLastChannel(void)
 
 void CPVRManager::ResetProperties(void)
 {
-  if (!m_triggerEvent)  m_triggerEvent  = CreateEvent(NULL, TRUE, TRUE, NULL);
   if (!m_database)      m_database      = new CPVRDatabase;
   if (!m_addons)        m_addons        = new CPVRClients;
   if (!m_channelGroups) m_channelGroups = new CPVRChannelGroupsContainer;
@@ -1111,7 +1111,7 @@ void CPVRManager::TriggerRecordingsUpdate(void)
   m_pendingUpdates.push_back(new CPVRRecordingsUpdateJob());
 
   lock.Leave();
-  SetEvent(m_triggerEvent);
+  m_triggerEvent.Set();
 }
 
 void CPVRManager::TriggerTimersUpdate(void)
@@ -1126,7 +1126,7 @@ void CPVRManager::TriggerTimersUpdate(void)
   m_pendingUpdates.push_back(new CPVRTimersUpdateJob());
 
   lock.Leave();
-  SetEvent(m_triggerEvent);
+  m_triggerEvent.Set();
 }
 
 void CPVRManager::TriggerChannelsUpdate(void)
@@ -1141,7 +1141,7 @@ void CPVRManager::TriggerChannelsUpdate(void)
   m_pendingUpdates.push_back(new CPVRChannelsUpdateJob());
 
   lock.Leave();
-  SetEvent(m_triggerEvent);
+  m_triggerEvent.Set();
 }
 
 void CPVRManager::TriggerChannelGroupsUpdate(void)
@@ -1156,7 +1156,7 @@ void CPVRManager::TriggerChannelGroupsUpdate(void)
   m_pendingUpdates.push_back(new CPVRChannelGroupsUpdateJob());
 
   lock.Leave();
-  SetEvent(m_triggerEvent);
+  m_triggerEvent.Set();
 }
 
 void CPVRManager::TriggerSaveChannelSettings(void)
@@ -1171,7 +1171,7 @@ void CPVRManager::TriggerSaveChannelSettings(void)
   m_pendingUpdates.push_back(new CPVRChannelSettingsSaveJob());
 
   lock.Leave();
-  SetEvent(m_triggerEvent);
+  m_triggerEvent.Set();
 }
 
 void CPVRManager::ExecutePendingJobs(void)
@@ -1190,5 +1190,5 @@ void CPVRManager::ExecutePendingJobs(void)
     lock.Enter();
   }
 
-  ResetEvent(m_triggerEvent);
+  m_triggerEvent.Reset();
 }

@@ -49,6 +49,7 @@
 #include "addons/AddonInstaller.h"
 #include "interfaces/AnnouncementManager.h"
 #include "dbwrappers/dataset.h"
+#include "ThumbnailCache.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -91,7 +92,7 @@ bool CVideoDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create bookmark table");
     m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
-    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
+    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
 
     CLog::Log(LOGINFO, "create settings table");
     m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool,"
@@ -2804,6 +2805,32 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
 
   return retVal;
 }
+ 
+bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag) const
+{
+  bool match = false;
+
+  try
+  {
+    CStdString strSQL=PrepareSQL("select timeInSeconds, totalTimeInSeconds from bookmark where idFile=%i and type=%i order by timeInSeconds", tag.m_iFileId, CBookmark::RESUME);
+    m_pDS2->query( strSQL.c_str() );
+    if (!m_pDS2->eof())
+    {
+      tag.m_resumePoint.timeInSeconds = m_pDS2->fv(0).get_asDouble();
+      tag.m_resumePoint.totalTimeInSeconds = m_pDS2->fv(1).get_asDouble();
+      tag.m_resumePoint.type = CBookmark::RESUME;
+
+      match = true;
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, tag.m_strFileNameAndPath.c_str());
+  }
+
+  return match;
+}
 
 CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
@@ -2823,6 +2850,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
 
   if (needsCast)
   {
+    GetResumePoint(details);
+
     // create cast string
     CStdString strSQL = PrepareSQL("SELECT actors.strActor,actorlinkmovie.strRole,actors.strThumb FROM actorlinkmovie,actors WHERE actorlinkmovie.idMovie=%i AND actorlinkmovie.idActor=actors.idActor ORDER BY actorlinkmovie.iOrder",idMovie);
     m_pDS2->query(strSQL.c_str());
@@ -2929,6 +2958,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
 
   if (needsCast)
   {
+    GetResumePoint(details);
+
     set<int> actors;
     set<int>::iterator it;
 
@@ -2990,6 +3021,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
   movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
 
   GetStreamDetails(details);
+  GetResumePoint(details);
 
   details.m_strPictureURL.Parse();
   return details;
@@ -3490,6 +3522,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     {
       CreateViews();
     }
+    if (iVersion < 54)
+    { // Change INDEX for bookmark table
+      m_pDS->dropIndex("bookmark", "ix_bookmark");
+      m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
+    }
   }
   catch (...)
   {
@@ -3966,6 +4003,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         strDir.Format("%ld/", it->first);
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        pItem->GetVideoInfoTag()->m_strPath = pItem->m_strPath;
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent == VIDEODB_CONTENT_MUSICVIDEOS)
         {
           pItem->GetVideoInfoTag()->m_playCount = it->second.second;
@@ -3988,6 +4026,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
         strDir.Format("%ld/", m_pDS->fv("sets.idSet").get_asInt());
         pItem->m_strPath=strBaseDir + strDir;
         pItem->m_bIsFolder=true;
+        pItem->GetVideoInfoTag()->m_strPath = pItem->m_strPath;
         pItem->SetLabelPreformated(true);
         if (idContent == VIDEODB_CONTENT_MOVIES || idContent==VIDEODB_CONTENT_MUSICVIDEOS)
         {
@@ -4097,7 +4136,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           if (!items.Contains(pItem->m_strPath))
           {
             pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
-            CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),pItem->GetVideoInfoTag()->m_strArtist);
+            CStdString strThumb = CThumbnailCache::GetAlbumThumb(*pItem);
             if (CFile::Exists(strThumb))
               pItem->SetThumbnailImage(strThumb);
             items.Add(pItem);
@@ -4120,7 +4159,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           if (!items.Contains(pItem->m_strPath))
           {
             pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
-            CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),m_pDS->fv(2).get_asString());
+            CStdString strThumb = CThumbnailCache::GetAlbumThumb(pItem->GetLabel(), m_pDS->fv(2).get_asString());
             if (CFile::Exists(strThumb))
               pItem->SetThumbnailImage(strThumb);
             items.Add(pItem);
@@ -4589,6 +4628,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetProperty("numepisodes", it->second.numEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", it->second.numWatched);
         pItem->SetProperty("unwatchedepisodes", it->second.numEpisodes - it->second.numWatched);
+        if (iSeason == 0) pItem->SetProperty("isspecial", "true");
         pItem->GetVideoInfoTag()->m_playCount = (it->second.numEpisodes == it->second.numWatched) ? 1 : 0;
         pItem->SetCachedSeasonThumb();
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
@@ -4625,6 +4665,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", watchedEpisodes);
         pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
+        if (iSeason == 0) pItem->SetProperty("isspecial", "true");
         pItem->GetVideoInfoTag()->m_playCount = (totalEpisodes == watchedEpisodes) ? 1 : 0;
         pItem->SetCachedSeasonThumb();
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
@@ -5047,7 +5088,6 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
         pItem->m_strPath.Format("%s%ld/%ld/%ld",strBaseDir.c_str(), idShow, movie.m_iSeason,idEpisode);
       else
         pItem->m_strPath.Format("%s%ld",strBaseDir.c_str(), idEpisode);
-
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
       pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
       pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
@@ -6488,7 +6528,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
 
     // Add any files that don't have a valid idPath entry to the filesToDelete list.
     sql = "select files.idFile from files where idPath not in (select idPath from path)";
-    m_pDS->exec(sql.c_str());
+    m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
       filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";

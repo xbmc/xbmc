@@ -85,6 +85,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BOB_INVERTED  , 16022));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BOB           , 16021));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_DEINTERLACE          , 16020));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_DEINTERLACE_HALF     , 16036));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_INVERSE_TELECINE     , 16314));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL     , 16311));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_TEMPORAL             , 16310));

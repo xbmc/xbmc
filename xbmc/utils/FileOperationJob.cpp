@@ -225,14 +225,14 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
     case ActionCopy:
     case ActionReplace:
     {
-      CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", m_strFileA.c_str(), m_strFileB.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: copy %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
 
       bResult = CFile::Cache(m_strFileA, m_strFileB, this, &data);
     }
     break;
     case ActionMove:
     {
-      CLog::Log(LOGDEBUG,"FileManager: move %s->%s\n", m_strFileA.c_str(), m_strFileB.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: move %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
 
       if (CanBeRenamed(m_strFileA, m_strFileB))
         bResult = CFile::Rename(m_strFileA, m_strFileB);

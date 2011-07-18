@@ -52,6 +52,7 @@ public:
   virtual CStdString GetDescription() const;
   virtual float GetWidth() const;
   virtual void SetWidth(float width);
+  virtual CRect CalcRenderRegion() const;
  
   const CLabelInfo& GetLabelInfo() const { return m_label.GetLabelInfo(); };
   void SetLabel(const std::string &strLabel);

@@ -20,8 +20,10 @@
  *
  */
 
+
 #include "AddonCallbacks.h"
 #include "windows/GUIMediaWindow.h"
+#include "threads/Event.h"
 
 class CGUISpinControlEx;
 class CGUIButtonControl;
@@ -153,7 +155,7 @@ protected:
   bool m_bIsDialog;
 
 private:
-  HANDLE           m_actionEvent;
+  CEvent           m_actionEvent;
   CAddon          *m_addon;
   CStdString       m_mediaDir;
 };

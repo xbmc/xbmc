@@ -39,6 +39,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "TextureCache.h"
 #include "music/Album.h"
+#include "ThumbnailCache.h"
 
 using namespace XFILE;
 
@@ -141,7 +142,8 @@ bool CGUIDialogSongInfo::OnAction(const CAction &action)
       SetRating(rating - 1);
     return true;
   }
-  else if (action.GetID() == ACTION_PREVIOUS_MENU)
+  else if (action.GetID() == ACTION_PREVIOUS_MENU ||
+           action.GetID() == ACTION_NAV_BACK)
     m_cancelled = true;
   return CGUIDialog::OnAction(action);
 }
@@ -284,7 +286,7 @@ void CGUIDialogSongInfo::OnGetThumb()
   // delete the thumbnail if that's what the user wants, else overwrite with the
   // new thumbnail
 
-  CStdString cachedThumb(CUtil::GetCachedAlbumThumb(m_song->GetMusicInfoTag()->GetAlbum(), m_song->GetMusicInfoTag()->GetArtist()));
+  CStdString cachedThumb(CThumbnailCache::GetAlbumThumb(m_song->GetMusicInfoTag()));
 
   CTextureCache::Get().ClearCachedImage(cachedThumb, true);
   if (result == "thumb://None")

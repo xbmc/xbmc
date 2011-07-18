@@ -81,6 +81,11 @@ public:
   void SetMediaDir(const CStdString& strMediaDir);
   bool SetViewPort(float fx, float fy , float fwidth, float fheight, bool intersectPrevious = false);
   void RestoreViewPort();
+
+  void SetScissors(const CRect &rect);
+  void ResetScissors();
+  const CRect &GetScissors() const { return m_scissors; }
+
   const CRect GetViewWindow() const;
   void SetViewWindow(float left, float top, float right, float bottom);
   bool IsFullScreenRoot() const;
@@ -95,8 +100,8 @@ public:
   void ResetOverscan(RESOLUTION res, OVERSCAN &overscan);
   void ResetOverscan(RESOLUTION_INFO &resinfo);
   void ResetScreenParameters(RESOLUTION res);
-  void Lock() { EnterCriticalSection(*this); }
-  void Unlock() { LeaveCriticalSection(*this); }
+  void Lock() { lock(); }
+  void Unlock() { unlock(); }
   float GetPixelRatio(RESOLUTION iRes) const;
   void CaptureStateBlock();
   void ApplyStateBlock();
@@ -175,7 +180,7 @@ public:
     ASSERT(m_groupTransform.size());
     TransformMatrix absoluteMatrix = m_groupTransform.size() ? m_groupTransform.top() * matrix : matrix;
     m_groupTransform.push(absoluteMatrix);
-    UpdateFinalTransform(m_groupTransform.top());
+    UpdateFinalTransform(absoluteMatrix);
     return absoluteMatrix;
   }
   inline void SetTransform(const TransformMatrix &matrix)
@@ -225,6 +230,8 @@ private:
   TransformMatrix m_guiTransform;
   TransformMatrix m_finalTransform;
   std::stack<TransformMatrix> m_groupTransform;
+
+  CRect m_scissors;
 };
 
 /*!

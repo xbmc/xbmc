@@ -102,7 +102,8 @@ void CGUIImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions
   if (m_crossFadeTime)
   {
     // make sure our texture has started allocating
-    m_texture.AllocResources();
+    if (m_texture.AllocResources())
+      MarkDirtyRegion();
 
     // compute the frame time
     unsigned int frameTime = 0;
@@ -177,6 +178,7 @@ bool CGUIImage::ProcessFading(CGUIImage::CFadingTexture *texture, unsigned int f
   assert(texture);
   if (texture->m_fadeTime <= frameTime)
   { // time to kill off the texture
+    MarkDirtyRegion();
     delete texture;
     return false;
   }
@@ -274,14 +276,8 @@ CRect CGUIImage::CalcRenderRegion() const
 {
   CRect region = m_texture.GetRenderRect();
 
-  if (m_fadingTextures.size())  // have some fading images
-  {
-    for (vector<CFadingTexture *>::const_iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end();)
-    {
-      region.Union( (*itr)->m_texture->GetRenderRect() );
-      itr++;
-    }
-  }
+  for (vector<CFadingTexture *>::const_iterator itr = m_fadingTextures.begin(); itr != m_fadingTextures.end(); itr++)
+    region.Union( (*itr)->m_texture->GetRenderRect() );
 
   return CGUIControl::CalcRenderRegion().Intersect(region);
 }

@@ -31,6 +31,8 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "music/tags/MusicInfoTag.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/LocalizeStrings.h"
 
 using namespace PLAYLIST;
 
@@ -156,20 +158,15 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
   int iSong = GetNextSong(offset);
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
 
-  // stop playing
   if ((iSong < 0) || (iSong >= playlist.size()) || (playlist.GetPlayable() <= 0))
   {
-    CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
-    g_windowManager.SendThreadMessage(msg);
-    Reset();
-    m_iCurrentPlayList = PLAYLIST_NONE;
+    if(!bAutoPlay)
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34201));
+
     return false;
   }
 
-  if (bAutoPlay)
-    CFileItemPtr item = playlist[iSong];
-
-  return Play(iSong, bAutoPlay);
+  return Play(iSong, false);
 }
 
 bool CPlayListPlayer::PlayPrevious()
@@ -178,15 +175,19 @@ bool CPlayListPlayer::PlayPrevious()
     return false;
 
   CPlayList& playlist = GetPlaylist(m_iCurrentPlayList);
-  if (playlist.size() <= 0) 
-    return false;
   int iSong = m_iCurrentSong;
 
   if (!RepeatedOne(m_iCurrentPlayList))
     iSong--;
 
-  if (iSong < 0)
+  if (iSong < 0 && Repeated(m_iCurrentPlayList))
     iSong = playlist.size() - 1;
+
+  if (iSong < 0 || playlist.size() <= 0)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34202));
+    return false;
+  }
 
   return Play(iSong, false, true);
 }
@@ -601,4 +602,17 @@ void CPlayListPlayer::Clear()
     m_PlaylistVideo->Clear();
   if (m_PlaylistEmpty)
     m_PlaylistEmpty->Clear();
+}
+
+void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
+{
+  if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
+    return;
+
+  CPlayList& list = GetPlaylist(iPlaylist);
+  list.Swap(indexItem1, indexItem2);
+
+  // its likely that the playlist changed
+  CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);
+  g_windowManager.SendMessage(msg);
 }

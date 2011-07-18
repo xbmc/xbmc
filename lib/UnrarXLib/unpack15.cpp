@@ -67,7 +67,7 @@ void Unpack::Unpack15(bool Solid)
 
   while (DestUnpSize>=0)
   {
-    if (WaitForSingleObject(UnpIO->hQuit,1) == WAIT_OBJECT_0)
+    if (UnpIO->hQuit->WaitMSec(1))
       return;
 
     UnpPtr&=MAXWINMASK;

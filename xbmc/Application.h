@@ -25,6 +25,7 @@
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
+#include "threads/Condition.h"
 
 class CFileItem;
 class CFileItemList;
@@ -34,11 +35,6 @@ namespace ADDON
   class IAddon;
   typedef boost::shared_ptr<IAddon> AddonPtr;
 }
-
-#include "dialogs/GUIDialogSeekBar.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogVolumeBar.h"
-#include "dialogs/GUIDialogMuteBug.h"
 
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -65,9 +61,8 @@ namespace ADDON
 #include "network/WebServer.h"
 #endif
 
-#include "threads/XBMC_mutex.h"
-
 class CKaraokeLyricsManager;
+class CInertialScrollingHandler;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
@@ -91,7 +86,7 @@ public:
   virtual bool Initialize();
   virtual void FrameMove();
   virtual void Render();
-  virtual void RenderNoPresent();
+  virtual bool RenderNoPresent();
   virtual void Preflight();
   virtual bool Create();
   virtual bool Cleanup();
@@ -168,8 +163,9 @@ public:
   void ProcessSlow();
   void ResetScreenSaver();
   int GetVolume() const;
-  void SetVolume(int iPercent);
-  void Mute(void);
+  void SetVolume(long iValue, bool isPercentage = true);
+  void ToggleMute(void);
+  void ShowVolumeBar(const CAction *action = NULL);
   int GetPlaySpeed() const;
   int GetSubtitleDelay() const;
   int GetAudioDelay() const;
@@ -202,7 +198,6 @@ public:
 
   static bool OnEvent(XBMC_Event& newEvent);
 
-
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux& getNetwork();
@@ -214,11 +209,6 @@ public:
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
 #endif
-
-  CGUIDialogVolumeBar m_guiDialogVolumeBar;
-  CGUIDialogSeekBar m_guiDialogSeekBar;
-  CGUIDialogKaiToast m_guiDialogKaiToast;
-  CGUIDialogMuteBug m_guiDialogMuteBug;
 
 #ifdef HAS_DVD_DRIVE
   MEDIA_DETECT::CAutorun m_Autorun;
@@ -290,8 +280,9 @@ public:
 
   void Minimize();
   bool ToggleDPMS(bool manual);
+
+  float GetDimScreenSaverLevel() const;
 protected:
-  void RenderScreenSaver();
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
@@ -342,17 +333,20 @@ protected:
   int m_nextPlaylistItem;
 
   bool m_bPresentFrame;
+  unsigned int m_lastFrameTime;
+  unsigned int m_lastRenderTime;
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
   
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   int        m_frameCount;
-  SDL_mutex* m_frameMutex;
-  SDL_cond*  m_frameCond;
-#endif
+  CCriticalSection m_frameMutex;
+  XbmcThreads::ConditionVariable  m_frameCond;
+
+  void Mute();
+  void UnMute();
 
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
@@ -377,6 +371,7 @@ protected:
   bool InitDirectoriesWin32();
   void CreateUserDirs();
 
+  CInertialScrollingHandler *m_pInertialScrollingHandler;
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux m_network;

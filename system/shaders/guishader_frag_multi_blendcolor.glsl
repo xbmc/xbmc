@@ -29,5 +29,5 @@ varying   lowp vec4 m_colour;
 // SM_MULTI shader
 void main ()
 {
-  gl_FragColor.rgba = (texture2D(m_samp0, m_cord0.xy) * texture2D(m_samp1, m_cord1.xy)).bgra * m_colour;
+  gl_FragColor.rgba = (texture2D(m_samp0, m_cord0.xy) * texture2D(m_samp1, m_cord1.xy)).rgba * m_colour;
 }

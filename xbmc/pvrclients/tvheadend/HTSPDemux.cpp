@@ -340,32 +340,32 @@ void CHTSPDemux::SubscriptionStart(htsmsg_t *m)
 
     if(!strcmp(type, "AC3"))
     {
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_AC3;
     }
     else if(!strcmp(type, "EAC3"))
     {
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_EAC3;
     }
     else if(!strcmp(type, "MPEG2AUDIO"))
     {
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_MP2;
     }
     else if(!strcmp(type, "AAC"))
     {
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_AUDIO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_AUDIO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_AAC;
     }
     else if(!strcmp(type, "MPEG2VIDEO"))
     {
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_VIDEO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_VIDEO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_MPEG2VIDEO;
     }
     else if(!strcmp(type, "H264"))
     {
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_VIDEO;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_VIDEO;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_H264;
     }
     else if(!strcmp(type, "DVBSUB"))
@@ -374,20 +374,20 @@ void CHTSPDemux::SubscriptionStart(htsmsg_t *m)
       htsmsg_get_u32(sub, "composition_id", &composition_id);
       htsmsg_get_u32(sub, "ancillary_id"  , &ancillary_id);
 
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType  = CODEC_TYPE_SUBTITLE;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType  = AVMEDIA_TYPE_SUBTITLE;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId    = CODEC_ID_DVB_SUBTITLE;
       m_Streams.stream[m_Streams.iStreamCount].iIdentifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
       HTSPSetDemuxStreamInfoLanguage(m_Streams.stream[m_Streams.iStreamCount], sub);
     }
     else if(!strcmp(type, "TEXTSUB"))
     {
-      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_SUBTITLE;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_SUBTITLE;
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_TEXT;
       HTSPSetDemuxStreamInfoLanguage(m_Streams.stream[m_Streams.iStreamCount], sub);
     }
 //    else if(!strcmp(type, "TELETEXT"))
 //    {
-//      m_Streams.stream[m_Streams.iStreamCount].iCodecType = CODEC_TYPE_SUBTITLE;
+//      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_SUBTITLE;
 //      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_DVB_TELETEXT;
 //    }
     else
@@ -399,12 +399,12 @@ void CHTSPDemux::SubscriptionStart(htsmsg_t *m)
     {
       m_Streams.stream[m_Streams.iStreamCount].iStreamIndex = m_Streams.iStreamCount;
       m_Streams.stream[m_Streams.iStreamCount].iPhysicalId  = index;
-      if (m_Streams.stream[m_Streams.iStreamCount].iCodecType == CODEC_TYPE_AUDIO)
+      if (m_Streams.stream[m_Streams.iStreamCount].iCodecType == AVMEDIA_TYPE_AUDIO)
       {
         HTSPSetDemuxStreamInfoAudio(m_Streams.stream[m_Streams.iStreamCount], sub);
         HTSPSetDemuxStreamInfoLanguage(m_Streams.stream[m_Streams.iStreamCount], sub);
       }
-      else if (m_Streams.stream[m_Streams.iStreamCount].iCodecType == CODEC_TYPE_VIDEO)
+      else if (m_Streams.stream[m_Streams.iStreamCount].iCodecType == AVMEDIA_TYPE_VIDEO)
         HTSPSetDemuxStreamInfoVideo(m_Streams.stream[m_Streams.iStreamCount], sub);
       ++m_Streams.iStreamCount;
     }

@@ -28,6 +28,8 @@
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 
+#include "threads/SingleLock.h"
+
 #include <arpa/inet.h>
 
 #define UDPCLIENT_DEBUG_LEVEL LOGDEBUG
@@ -42,8 +44,6 @@ CUdpClient::~CUdpClient(void)
 bool CUdpClient::Create(void)
 {
   m_bStop = false;
-
-  InitializeCriticalSection(&critical_section);
 
   CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT: Creating UDP socket...");
 
@@ -81,7 +81,6 @@ void CUdpClient::Destroy()
 {
   StopThread();
   closesocket(client_socket);
-  DeleteCriticalSection(&critical_section);
 }
 
 void CUdpClient::OnStartup()
@@ -91,7 +90,7 @@ void CUdpClient::OnStartup()
 
 bool CUdpClient::Broadcast(int aPort, CStdString& aMessage)
 {
-  EnterCriticalSection(&critical_section);
+  CSingleLock lock(critical_section);
 
   SOCKADDR_IN addr;
   addr.sin_family = AF_INET;
@@ -102,14 +101,13 @@ bool CUdpClient::Broadcast(int aPort, CStdString& aMessage)
   UdpCommand broadcast = {addr, aMessage, NULL, 0};
   commands.push_back(broadcast);
 
-  LeaveCriticalSection(&critical_section);
   return true;
 }
 
 
 bool CUdpClient::Send(CStdString aIpAddress, int aPort, CStdString& aMessage)
 {
-  EnterCriticalSection(&critical_section);
+  CSingleLock lock(critical_section);
 
   SOCKADDR_IN addr;
   addr.sin_family = AF_INET;
@@ -120,29 +118,26 @@ bool CUdpClient::Send(CStdString aIpAddress, int aPort, CStdString& aMessage)
   UdpCommand transmit = {addr, aMessage, NULL, 0};
   commands.push_back(transmit);
 
-  LeaveCriticalSection(&critical_section);
   return true;
 }
 
 bool CUdpClient::Send(SOCKADDR_IN aAddress, CStdString& aMessage)
 {
-  EnterCriticalSection(&critical_section);
+  CSingleLock lock(critical_section);
 
   UdpCommand transmit = {aAddress, aMessage, NULL, 0};
   commands.push_back(transmit);
 
-  LeaveCriticalSection(&critical_section);
   return true;
 }
 
 bool CUdpClient::Send(SOCKADDR_IN aAddress, LPBYTE pMessage, DWORD dwSize)
 {
-  EnterCriticalSection(&critical_section);
+  CSingleLock lock(critical_section);
 
   UdpCommand transmit = {aAddress, "", pMessage, dwSize};
   commands.push_back(transmit);
 
-  LeaveCriticalSection(&critical_section);
   return true;
 }
 
@@ -229,18 +224,17 @@ void CUdpClient::Process()
 
 bool CUdpClient::DispatchNextCommand()
 {
-  EnterCriticalSection(&critical_section);
-
-  if (commands.size() <= 0)
+  UdpCommand command;
   {
-    LeaveCriticalSection(&critical_section);
-    return false;
-  }
+    CSingleLock lock(critical_section);
 
-  COMMANDITERATOR it = commands.begin();
-  UdpCommand command = *it;
-  commands.erase(it);
-  LeaveCriticalSection(&critical_section);
+    if (commands.size() <= 0)
+      return false;
+
+    COMMANDITERATOR it = commands.begin();
+    command = *it;
+    commands.erase(it);
+  }
 
   int ret;
   if (command.binarySize > 0)

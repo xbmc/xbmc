@@ -54,10 +54,16 @@ extern "C" {
   #else
     #include <ffmpeg/opt.h>
   #endif
+  #if defined(HAVE_LIBAVUTIL_MEM_H)
+    #include <libavutil/mem.h>
+  #else
+    #include <ffmpeg/mem.h>
+  #endif
 #else
   #include "libavutil/avutil.h"
   #include "libavutil/crc.h"
   #include "libavutil/opt.h"
+  #include "libavutil/mem.h"
   #include "libavutil/fifo.h"
 #endif
 }
@@ -90,6 +96,7 @@ public:
   virtual int av_fifo_size(AVFifoBuffer *f) = 0;
   virtual int av_fifo_generic_read(AVFifoBuffer *f, void *dest, int buf_size, void (*func)(void*, void*, int)) = 0;
   virtual int av_fifo_generic_write(AVFifoBuffer *f, void *src, int size, int (*func)(void*, void*, int)) = 0;
+  virtual char *av_strdup(const char *s)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -124,6 +131,7 @@ public:
     { return ::av_fifo_generic_read(f, dest, buf_size, func); }
   virtual int av_fifo_generic_write(AVFifoBuffer *f, void *src, int size, int (*func)(void*, void*, int))
     { return ::av_fifo_generic_write(f, src, size, func); }
+  virtual char *av_strdup(const char *s) { return ::av_strdup(s); }
 
    // DLL faking.
    virtual bool ResolveExports() { return true; }
@@ -159,6 +167,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
   DEFINE_METHOD1(int, av_fifo_size, (AVFifoBuffer *p1))
   DEFINE_METHOD4(int, av_fifo_generic_read, (AVFifoBuffer *p1, void *p2, int p3, void (*p4)(void*, void*, int)))
   DEFINE_METHOD4(int, av_fifo_generic_write, (AVFifoBuffer *p1, void *p2, int p3, int (*p4)(void*, void*, int)))
+  DEFINE_METHOD1(char*, av_strdup, (const char *p1))
 
   public:
   BEGIN_METHOD_RESOLVE()
@@ -179,6 +188,7 @@ class DllAvUtilBase : public DllDynamic, DllAvUtilInterface
     RESOLVE_METHOD(av_fifo_size)
     RESOLVE_METHOD(av_fifo_generic_read)
     RESOLVE_METHOD(av_fifo_generic_write)
+    RESOLVE_METHOD(av_strdup)
   END_METHOD_RESOLVE()
 };
 
