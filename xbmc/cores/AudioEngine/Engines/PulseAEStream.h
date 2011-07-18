@@ -41,11 +41,11 @@ public:
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
   virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg); /* called when the stream is deleted */
 
+  virtual unsigned int GetSpace();
   virtual unsigned int AddData(void *data, unsigned int size);
   virtual float GetDelay();
   virtual float GetCacheTime () {return 0.0f;} /* FIXME */
   virtual float GetCacheTotal() {return 0.0f;} /* FIXME */
-  int GetSpace();
 
   virtual bool IsPaused     ();
   virtual bool IsDraining   ();
@@ -61,10 +61,6 @@ public:
   virtual float GetReplayGain();
   virtual void  SetVolume    (float volume);
   virtual void  SetReplayGain(float factor);
-
-  virtual void AppendPostProc (IAEPostProc *pp);
-  virtual void PrependPostProc(IAEPostProc *pp);
-  virtual void RemovePostProc (IAEPostProc *pp);
 
   virtual unsigned int      GetFrameSize   ();
   virtual unsigned int      GetChannelCount();

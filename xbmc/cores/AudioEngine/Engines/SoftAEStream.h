@@ -27,7 +27,6 @@
 
 #include "AEAudioFormat.h"
 #include "Interfaces/AEStream.h"
-#include "Interfaces/AEPostProc.h"
 #include "Utils/AEConvert.h"
 #include "Utils/AERemap.h"
 
@@ -44,11 +43,11 @@ public:
   void InitializeRemap();
   virtual void Destroy();
   virtual void DisableCallbacks(bool free = true); /* disable all callbacks */
-  virtual void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
   virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
   virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg); /* called when the stream is deleted */
 
   virtual unsigned int GetFrameSize() {return m_format.m_frameSize;}
+  virtual unsigned int GetSpace();
   virtual unsigned int AddData(void *data, unsigned int size);
   uint8_t* GetFrame();
   virtual float GetDelay();
@@ -71,10 +70,6 @@ public:
   virtual void  SetVolume    (float volume) { m_volume = std::max( 0.0f, std::min(1.0f, volume)); }
   virtual void  SetReplayGain(float factor) { m_rgain  = std::max(-1.0f, std::max(1.0f, factor)); }
 
-  virtual void AppendPostProc (IAEPostProc *pp);
-  virtual void PrependPostProc(IAEPostProc *pp);
-  virtual void RemovePostProc (IAEPostProc *pp);
-
   unsigned int              GetFrameSamples() { return m_format.m_frameSamples;     }
   virtual unsigned int      GetChannelCount() { return m_initChannelCount;          }
   virtual unsigned int      GetSampleRate()   { return m_initSampleRate;            }
@@ -87,6 +82,9 @@ public:
 
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
+
+  virtual void FadeVolume(float from, float to, unsigned int time);
+  virtual bool IsFading();
 
   void SetFreeOnDrain() { m_freeOnDrain = true; }
 
@@ -122,8 +120,6 @@ private:
   float                   m_volume;        /* the volume level */
   float                   m_rgain;         /* replay gain level */
   bool                    m_freeOnDrain;   /* true to free the stream when it has drained */
-  std::list<IAEPostProc*> m_postProc;      /* post processing objects */
-  bool                    m_ownsPostProc;  /* true if the stream should free post-proc filters */
   unsigned int            m_waterLevel;    /* the fill level to fall below before calling the data callback */
   unsigned int            m_refillBuffer;  /* how many frames that need to be buffered before we return any frames */
 
@@ -150,14 +146,21 @@ private:
 
   /* callback hook for more data */
   bool          m_disableCallbacks;
-  AECBFunc     *m_cbDataFunc, *m_cbDrainFunc, *m_cbFreeFunc;
-  void         *m_cbDataArg , *m_cbDrainArg , *m_cbFreeArg;
-  bool          m_inDataFunc,  m_inDrainFunc,  m_inFreeFunc;
+  AECBFunc     *m_cbDrainFunc, *m_cbFreeFunc;
+  void         *m_cbDrainArg , *m_cbFreeArg;
+  bool          m_inDrainFunc,  m_inFreeFunc;
 
   /* vizualization internals */
   CAERemap           m_vizRemap;
   float              m_vizBuffer[512];
   unsigned int       m_vizBufferSamples;
   IAudioCallback    *m_audioCallback;
+
+  /* fade values */
+  bool               m_fadeRunning;
+  bool               m_fadeDirUp;
+  float              m_fadeStep;
+  float              m_fadeTarget;
+  unsigned int       m_fadeTime;
 };
 

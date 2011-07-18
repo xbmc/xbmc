@@ -53,15 +53,13 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_vizPacketPos    (NULL ),
   m_draining        (false),
   m_disableCallbacks(false),
-  m_cbDataFunc      (NULL ),
   m_cbDrainFunc     (NULL ),
   m_cbFreeFunc      (NULL ),
-  m_cbDataArg       (NULL ),
   m_cbDrainArg      (NULL ),
-  m_inDataFunc      (false),
   m_inDrainFunc     (false),
   m_vizBufferSamples(0    ),
-  m_audioCallback   (NULL )
+  m_audioCallback   (NULL ),
+  m_fadeRunning     (false)
 {
   m_ssrcData.data_out = NULL;
 
@@ -70,7 +68,6 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_initChannelCount  = channelCount;
   m_initChannelLayout = channelLayout;
   m_freeOnDrain       = (options & AESTREAM_FREE_ON_DRAIN) != 0;
-  m_ownsPostProc      = (options & AESTREAM_OWNS_POST_PROC) != 0;
   m_forceResample     = (options & AESTREAM_FORCE_RESAMPLE) != 0;
   m_paused            = (options & AESTREAM_PAUSED) != 0;
 }
@@ -205,24 +202,6 @@ void CSoftAEStream::Initialize()
     m_ssrcData.end_of_input  = 0;
   }
 
-  /* re-initialize post-proc objects */
-  if (!AE_IS_RAW(m_initDataFormat))
-  {
-    list<IAEPostProc*>::iterator pitt;
-    for(pitt = m_postProc.begin(); pitt != m_postProc.end();)
-    {
-      IAEPostProc *pp = *pitt;
-      if (!pp->Initialize(this))
-      {
-        CLog::Log(LOGERROR, "CSoftAEStream::CSoftAEStream - Failed to re-initialize post-proc filter: %s", pp->GetName());
-        pitt = m_postProc.erase(pitt);
-        continue;
-      }
-
-      ++pitt;
-    }
-  }
-
   m_valid = true;
 }
 
@@ -237,15 +216,6 @@ CSoftAEStream::~CSoftAEStream()
 {
   ((CSoftAE*)&AE)->RemoveStream(this);
   CSingleLock lock(m_critSection);
-
-  /* de-init/free post-proc objects */
-  while(!m_postProc.empty())
-  {
-    IAEPostProc *pp = m_postProc.front();
-    m_postProc.pop_front();
-    pp->DeInitialize();
-    if (m_ownsPostProc) delete pp;
-  }
 
   InternalFlush();
   _aligned_free(m_frameBuffer);
@@ -274,17 +244,9 @@ void CSoftAEStream::DisableCallbacks(bool free /* = true */)
     Sleep(100);
 
   CSingleLock lock(m_critSection);
-  m_cbDataFunc  = NULL;
   m_cbDrainFunc = NULL;
   if (free)
     m_cbFreeFunc = NULL;
-}
-
-void CSoftAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
-{
-  CSingleLock lock(m_critSection);
-  m_cbDataFunc = cbFunc;
-  m_cbDataArg  = arg;
 }
 
 void CSoftAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
@@ -299,6 +261,17 @@ void CSoftAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
   CSingleLock lock(m_critSection);
   m_cbFreeFunc = cbFunc;
   m_cbFreeArg  = arg;
+}
+
+unsigned int CSoftAEStream::GetSpace()
+{
+  CSingleLock lock(m_critSection);
+  if (!m_valid || m_draining) return 0;  
+
+  if (m_framesBuffered >= m_waterLevel)
+    return 0;
+
+  return (m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize;
 }
 
 unsigned int CSoftAEStream::AddData(void *data, unsigned int size)
@@ -357,14 +330,6 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
 
   if (samples == 0)
     return 0;
-
-  /* post-process the data */
-  if (!AE_IS_RAW(m_initDataFormat))
-  {
-    list<IAEPostProc*>::iterator pitt;
-    for(pitt = m_postProc.begin(); pitt != m_postProc.end(); ++pitt)
-      (*pitt)->Process((float*)data, samples / m_format.m_channelCount);
-  }
 
   /* resample it if we need to */
   if (m_resample)
@@ -483,24 +448,9 @@ uint8_t* CSoftAEStream::GetFrame()
       }
       else
       {
-        /* otherwise ask for more data */
-        if (m_cbDataFunc && !m_disableCallbacks)
-        {
-          m_inDataFunc = true;
-          unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
-          lock.Leave();
-          m_cbDataFunc(this, m_cbDataArg, space);
-          lock.Enter();
-          m_inDataFunc = false;
-          if (m_outBuffer.empty())
-            return NULL;
-        }
-        else
-        {
-          /* underrun, we need to refill our buffers */
-          m_refillBuffer = m_waterLevel;
-          return NULL;
-        }
+        /* underrun, we need to refill our buffers */
+        m_refillBuffer = m_waterLevel;
+        return NULL;
       }
     }
 
@@ -524,6 +474,23 @@ uint8_t* CSoftAEStream::GetFrame()
     m_packetPos += m_aeChannelCount * sizeof(float);
     if(vizData)
       m_vizPacketPos += 2;
+
+    /* if we are fading */
+    if (m_fadeRunning)
+    {
+      m_volume += m_fadeStep;
+      m_volume = std::min(1.0f, std::max(0.0f, m_volume));
+      if (m_fadeDirUp)
+      {
+        if (m_volume >= m_fadeTarget)
+          m_fadeRunning = false;
+      }
+      else
+      {
+        if (m_volume <= m_fadeTarget)
+          m_fadeRunning = false;
+      }
+    }
   }
 
   --m_framesBuffered;
@@ -540,19 +507,6 @@ uint8_t* CSoftAEStream::GetFrame()
       m_cbDrainFunc = NULL;
       lock.Enter();
       m_inDrainFunc = false;
-    }
-  }
-  else
-  {
-    /* if the buffer is low, fill up again */ 
-    if (m_cbDataFunc && !m_disableCallbacks && !m_delete && !m_draining && m_framesBuffered < m_waterLevel)
-    {
-      m_inDataFunc = true;
-      unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
-      lock.Leave();
-      m_cbDataFunc(this, m_cbDataArg, space);
-      lock.Enter();
-      m_inDataFunc = false;
     }
   }
 
@@ -632,42 +586,9 @@ void CSoftAEStream::InternalFlush()
     p.data    = NULL;
     p.vizData = NULL;
   };
-
-  /* flush any post-proc objects */
-  list<IAEPostProc*>::iterator ppi;
-  for(ppi = m_postProc.begin(); ppi != m_postProc.end(); ++ppi)
-    (*ppi)->Flush();
-  
+ 
   /* reset our counts */
   m_framesBuffered = 0;
-}
-
-void CSoftAEStream::AppendPostProc(IAEPostProc *pp)
-{
-  if (pp->Initialize(this))
-  {
-    CSingleLock lock(m_critSection);
-    m_postProc.push_back(pp);
-  }
-  else
-    CLog::Log(LOGERROR, "Failed to initialize post-proc filter: %s", pp->GetName());
-}
-
-void CSoftAEStream::PrependPostProc(IAEPostProc *pp)
-{
-  if (pp->Initialize(this))
-  {
-    CSingleLock lock(m_critSection);
-    m_postProc.push_front(pp);
-  }
-  else
-    CLog::Log(LOGERROR, "Failed to initialize post-proc filter: %s", pp->GetName());
-}
-
-void CSoftAEStream::RemovePostProc(IAEPostProc *pp)
-{
-  CSingleLock lock(m_critSection);
-  m_postProc.remove(pp);
 }
 
 double CSoftAEStream::GetResampleRatio()
@@ -716,7 +637,21 @@ void CSoftAEStream::UnRegisterAudioCallback()
   m_vizBufferSamples = 0;
 }
 
+void CSoftAEStream::FadeVolume(float from, float target, unsigned int time)
+{
+  float delta   = target - from;
+  m_fadeDirUp   = target > from;
+  m_fadeTarget  = target;
+  m_fadeStep    = delta / (((float)AE.GetSampleRate() / 1000.0f) * (float)time);
+  m_fadeRunning = true;
+}
+
+bool CSoftAEStream::IsFading()
+{
+  return m_fadeRunning;
+}
+
 bool CSoftAEStream::IsBusy()
 {
-  return (m_inDataFunc || m_inDrainFunc);
+  return m_inDrainFunc;
 }

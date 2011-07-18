@@ -29,11 +29,9 @@
 #include "AEAudioFormat.h"
 #include "AEConvert.h"
 #include "AERemap.h"
-#include "AEPostProc.h"
 #include "CoreAudioRingBuffer.h"
 #include "threads/CriticalSection.h"
 
-class IAEPostProc;
 class CCoreAudioAEStream : public IAEStream
 {
 protected:
@@ -72,10 +70,6 @@ public:
   virtual float GetReplayGain();
   virtual void  SetVolume(float volume);
   virtual void  SetReplayGain(float factor);
-
-  virtual void AppendPostProc (IAEPostProc *pp);
-  virtual void PrependPostProc(IAEPostProc *pp);
-  virtual void RemovePostProc (IAEPostProc *pp);
 
   virtual unsigned int      GetChannelCount();
   virtual unsigned int      GetSampleRate();

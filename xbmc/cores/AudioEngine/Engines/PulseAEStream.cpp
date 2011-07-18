@@ -270,6 +270,18 @@ void CPulseAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
   m_AudioFreeThread->SetCallback(cbFunc, arg);
 }
 
+unsigned int CPulseAEStream::GetSpace()
+{
+  if (!m_Initialized)
+    return 0;
+
+  pa_threaded_mainloop_lock(m_MainLoop);
+  unsigned int size = pa_stream_writable_size(m_Stream);
+  pa_threaded_mainloop_unlock(m_MainLoop);
+
+  return size;
+}
+
 unsigned int CPulseAEStream::AddData(void *data, unsigned int size)
 {
   if (!m_Initialized)
@@ -309,18 +321,6 @@ float CPulseAEStream::GetDelay()
 
   pa_threaded_mainloop_unlock(m_MainLoop);
   return (float)((float)latency / 1000000.0f);
-}
-
-int CPulseAEStream::GetSpace()
-{
-  if (!m_Initialized)
-    return 0;
-
-  pa_threaded_mainloop_lock(m_MainLoop);
-  int space = pa_stream_writable_size(m_Stream);
-  pa_threaded_mainloop_unlock(m_MainLoop);
-
-  return space / m_frameSize;
 }
 
 bool CPulseAEStream::IsPaused()
@@ -426,18 +426,6 @@ void CPulseAEStream::UpdateVolume(float max)
 }
 
 void CPulseAEStream::SetReplayGain(float factor)
-{
-}
-
-void CPulseAEStream::AppendPostProc(IAEPostProc *pp)
-{
-}
-
-void CPulseAEStream::PrependPostProc(IAEPostProc *pp)
-{
-}
-
-void CPulseAEStream::RemovePostProc(IAEPostProc *pp)
 {
 }
 

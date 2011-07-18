@@ -31,30 +31,8 @@
 #include "cores/IAudioCallback.h"
 #include "cores/AudioEngine/AEFactory.h"
 #include "cores/AudioEngine/Interfaces/AEStream.h"
-#include "cores/AudioEngine/PostProc/AEPPAnimationFade.h"
 
 class CFileItem;
-#ifndef _LINUX
-#define PACKET_COUNT  20 // number of packets of size PACKET_SIZE (defined in AudioDecoder.h)
-#else
-#define PACKET_COUNT  1
-#endif
-
-#define STATUS_NO_FILE  0
-#define STATUS_QUEUING  1
-#define STATUS_QUEUED   2
-#define STATUS_PLAYING  3
-#define STATUS_ENDING   4
-#define STATUS_ENDED    5
-
-struct AudioPacket
-{
-  BYTE *packet;
-  DWORD length;
-  DWORD status;
-  int   stream;
-};
-
 class PAPlayer : public IPlayer, public CThread
 {
 public:
@@ -67,9 +45,9 @@ public:
   virtual bool QueueNextFile(const CFileItem &file);
   virtual void OnNothingToQueueNotify();
   virtual bool CloseFile();
-  virtual bool IsPlaying() const { return m_current || !m_streams.empty(); }
+  virtual bool IsPlaying() const;
   virtual void Pause();
-  virtual bool IsPaused() const { return m_isPaused; }
+  virtual bool IsPaused() const;
   virtual bool HasVideo() const { return false; }
   virtual bool HasAudio() const { return true; }
   virtual bool CanSeek();
@@ -101,37 +79,38 @@ protected:
   virtual void OnExit();
 
 private:
-  IAudioCallback    *m_audioCallback;
-  CSharedSection     m_lock;
-
-  typedef struct
-  {
-    CAudioDecoder       m_decoder;        /* the decoder instance */
-    PAPlayer           *m_player;         /* the PAPlayer instance */
-    IAEStream          *m_stream;         /* the audio stream */
-    unsigned int        m_sent;           /* frames sent */
-    unsigned int        m_change;         /* frame to start xfade at */
-    unsigned int        m_prepare;        /* frame to prepare next file at */
-    bool                m_triggered;      /* if the queue callback has been called */
-    unsigned int        m_bytesPerSample; /* bytes per audio sample */
-    unsigned int        m_snippetEnd;     /* frame to perform the next FF/RW */
+  typedef struct {
+    CAudioDecoder     m_decoder;            /* the stream decoder */
+    unsigned int      m_channels;           /* number of channels in the stream */
+    unsigned int      m_sampleRate;         /* sample rate of the stream */
+    enum AEDataFormat m_dataFormat;         /* data format of the samples */
+    unsigned int      m_bytesPerSample;     /* number of bytes per audio sample */
+    
+    bool              m_started;            /* if playback of this stream has been started */
+    bool              m_finishing;          /* if this stream is finishing */
+    unsigned int      m_framesSent;         /* number of frames sent to the stream */
+    unsigned int      m_prepareNextAtFrame; /* when to prepare the next stream */
+    bool              m_prepareTriggered;   /* if the next stream has been prepared */
+    unsigned int      m_playNextAtFrame;    /* when to start playing the next stream */
+    bool              m_playNextTriggered;  /* if this stream has started the next one */
+    bool              m_fadeOutTriggered;   /* if the stream has been told to fade out */
+    IAEStream*        m_stream;             /* the playback stream */
   } StreamInfo;
 
-  std::list<StreamInfo*>  m_streams;    /* queued streams */
-  std::list<StreamInfo*>  m_finishing;  /* finishing streams */
-  StreamInfo             *m_current;    /* the current playing stream */
-  bool                    m_isPlaying;
-  bool                    m_isPaused;
-  int                     m_iSpeed;
-  bool                    m_fastOpen;
-  bool                    m_queueFailed;
-  bool                    m_playOnQueue;
+  typedef std::list<StreamInfo*> StreamList;
 
-  void StopStream(StreamInfo *si);
-  bool PlayNextStream();
+  CCriticalSection       m_threadLock;
+  bool                   m_isPlaying;
+  unsigned int           m_crossFadeTime;   /* how long the crossfade is */
+  CEvent                 m_startEvent;      /* event for playback start */
+  StreamInfo*            m_currentStream;   /* the current playing stream */
+  CSharedSection         m_streamsLock;     /* lock for the stream list */
+  StreamList             m_streams;         /* playing streams */
 
-  static void StaticStreamOnData(IAEStream *sender, void *arg, unsigned int needed);
-  static void StaticStreamOnFree(IAEStream *sender, void *arg, unsigned int unused);
-  static void StaticFadeOnDone   (CAEPPAnimationFade *sender, void *arg);
+  bool QueueNextFileEx(const CFileItem &file, bool fadeIn = true);
+  void CloseAllStreams(bool fade = true);
+  void ProcessStreams();
+  bool PrepareStream(StreamInfo *si);
+  bool ProcessStream(StreamInfo *si);  
 };
 

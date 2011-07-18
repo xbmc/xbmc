@@ -564,18 +564,6 @@ void CCoreAudioAEStream::InternalFlush()
     m_Buffer->Reset();
 }
 
-void CCoreAudioAEStream::AppendPostProc(IAEPostProc *pp)
-{
-}
-
-void CCoreAudioAEStream::PrependPostProc(IAEPostProc *pp)
-{
-}
-
-void CCoreAudioAEStream::RemovePostProc(IAEPostProc *pp)
-{
-}
-
 unsigned int CCoreAudioAEStream::GetChannelCount()
 {
   return m_StreamFormat.m_channelCount;

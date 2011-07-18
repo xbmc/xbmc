@@ -29,13 +29,9 @@
  */
 enum AEStreamOptions {
   AESTREAM_FREE_ON_DRAIN  = 0x01, /* auto free the stream when it has drained */
-  AESTREAM_OWNS_POST_PROC = 0x02, /* free postproc filters on stream free */
-  AESTREAM_FORCE_RESAMPLE = 0x04, /* force resample even if rates match */
-  AESTREAM_PAUSED         = 0x08  /* create the stream paused */
+  AESTREAM_FORCE_RESAMPLE = 0x02, /* force resample even if rates match */
+  AESTREAM_PAUSED         = 0x04  /* create the stream paused */
 };
-
-class IAEPostProc;
-class CAEStreamWrapper;
 
 /**
  * IAEStream Stream Interface for streaming audio
@@ -70,13 +66,6 @@ public:
   virtual void DisableCallbacks(bool free = true) = 0;  
 
   /**
-   * Set the callback function to call when more data is required, this is called when there is at-least one full frame of audio free.
-   * @param cbFunc The callback function
-   * @param arg Pointer to pass to the callback function (eg, this)   
-   */
-  virtual void SetDataCallback (AECBFunc *cbFunc, void *arg) = 0;
-
-  /**
    * Set the callback function to call when the stream has completed draining
    * @param cbFunc The callback function
    * @param arg Pointer to pass to the callback function (eg, this)
@@ -89,6 +78,12 @@ public:
    * @param arg Pointer to pass to the callback function (eg, this)
    */
   virtual void SetFreeCallback(AECBFunc *cbFunc, void *arg) = 0;
+
+  /**
+   * Returns the amount of space available in the stream
+   * @return The number of bytes AddData will consume
+   */
+  virtual unsigned int GetSpace() = 0;
 
   /**
    * Add interleaved PCM data to the stream
@@ -167,24 +162,6 @@ public:
   virtual void  SetReplayGain(float factor) = 0;
 
   /**
-   * Appends a post-processor filter to the stream
-   * @param pp The post-processor to append
-   */
-  virtual void AppendPostProc (IAEPostProc *pp) = 0;
-
-  /**
-   * Prepends a post-processor filter to the stream
-   * @param pp The post-processor to prepend
-   */
-  virtual void PrependPostProc(IAEPostProc *pp) = 0;
-
-  /**
-   * Removes a post-processor filter from the stream
-   * @param pp The post-processor to remove
-   */
-  virtual void RemovePostProc (IAEPostProc *pp) = 0;
-
-  /**
    * Returns the size of one audio frame in bytes (channelCount * resolution)
    * @return The size in bytes of one frame
   */
@@ -233,5 +210,20 @@ public:
    * Unregisters the current audio callback
    */
   virtual void UnRegisterAudioCallback() = 0;
+
+  /**
+    * Fade the volume level over the specified time
+    * @param from The volume level to fade from (0.0f-1.0f) - See notes
+    * @param target The volume level to fade to (0.0f-1.0f)
+    * @param time The amount of time in milliseconds for the fade to occur
+    * @note The from parameter does not set the streams volume, it is only used to calculate the fade time properly 
+    */
+  virtual void FadeVolume(float from, float target, unsigned int time) {} /* FIXME: once all the engines have these new methods */
+
+  /**
+   * Returns if a fade is still running
+   * @return true if a fade is in progress, otherwise false
+   */
+  virtual bool IsFading() { return false; }
 };
 
