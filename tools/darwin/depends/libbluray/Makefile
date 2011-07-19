@@ -1,5 +1,4 @@
 include ../Makefile.include
-include ../config.site.mk
 
 # lib name, version
 LIBNAME=libblueray
@@ -11,7 +10,7 @@ ARCHIVE=$(SOURCE).tgz
 CONFIGURE=./configure --prefix=$(PREFIX) --exec-prefix=$(PREFIX) \
   --disable-examples --disable-doxygen-doc
 
-LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
+LIBDYLIB=$(SOURCE)/src/.libs/$(LIBNAME).dylib
 
 all: $(LIBDYLIB) .installed
 
@@ -23,6 +22,9 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	mkdir $(SOURCE)
 	cd $(SOURCE); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	# libbluray has bored Makefile.am with respect to CFLAGS, remove the offending line
+	sed -i -e "s|CFLAGS=\$(shell test|#CFLAGS=\$(shell test|" $(SOURCE)/src/Makefile.am
+	sed -i -e "s|CFLAGS=\$(shell test|#CFLAGS=\$(shell test|" $(SOURCE)/src/examples/Makefile.am
 	cd $(SOURCE); ./bootstrap
 	cd $(SOURCE); $(CONFIGURE)
 
