@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "RssReader.h"
 #include "utils/HTMLUtil.h"
 #include "Application.h"
@@ -140,10 +141,10 @@ void CRssReader::Process()
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
     else
     {
-      unsigned int starttime = CTimeUtils::GetTimeMS();
+      unsigned int starttime = XbmcThreads::SystemClockMillis();
       while ( (!m_bStop) && (nRetries > 0) )
       {
-        unsigned int currenttimer = CTimeUtils::GetTimeMS() - starttime;
+        unsigned int currenttimer = XbmcThreads::SystemClockMillis() - starttime;
         if (currenttimer > 15000)
         {
           CLog::Log(LOGERROR,"Timeout whilst retrieving %s", strUrl.c_str());

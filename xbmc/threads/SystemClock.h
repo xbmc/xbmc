@@ -31,5 +31,5 @@ namespace XbmcThreads
    *
    * Of course, on windows it just calls timeGetTime, so you're on your own.
    */
-  unsigned int currentClockMillis();
+  unsigned int SystemClockMillis();
 }

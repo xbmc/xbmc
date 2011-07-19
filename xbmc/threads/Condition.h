@@ -23,7 +23,7 @@
 
 #include "threads/platform/Condition.h"
 
-#include "threads/Time.h"
+#include "threads/SystemClock.h"
 #include <stdio.h>
 
 namespace XbmcThreads
@@ -46,7 +46,7 @@ namespace XbmcThreads
 
     inline static unsigned long timeLeft(unsigned int endtime)
     {
-      unsigned int cur = currentClockMillis();
+      unsigned int cur = SystemClockMillis();
       return endtime <= cur ? 0 : (endtime - cur);
     }
 
@@ -59,7 +59,7 @@ namespace XbmcThreads
       bool ret = true;
       if (!predicate)
       {
-        unsigned int endtime = currentClockMillis() + milliseconds;
+        unsigned int endtime = SystemClockMillis() + milliseconds;
         bool notdone = true;
         while (notdone && ret == true)
         {

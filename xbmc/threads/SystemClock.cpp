@@ -37,7 +37,7 @@
 
 namespace XbmcThreads
 {
-  unsigned int currentClockMillis()
+  unsigned int SystemClockMillis()
   {
     uint64_t now_time;
     static uint64_t start_time = 0;

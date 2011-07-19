@@ -21,7 +21,7 @@
 
 #include "TimeUtils.h"
 #include "XBDateTime.h"
-#include "threads/Time.h"
+#include "threads/SystemClock.h"
 
 #ifdef __APPLE__
 #if defined(__ppc__) || defined(__arm__)
@@ -70,17 +70,12 @@ unsigned int CTimeUtils::frameTime = 0;
 
 void CTimeUtils::UpdateFrameTime()
 {
-  frameTime = GetTimeMS();
+  frameTime = XbmcThreads::SystemClockMillis();
 }
 
 unsigned int CTimeUtils::GetFrameTime()
 {
   return frameTime;
-}
-
-unsigned int CTimeUtils::GetTimeMS()
-{
-  return XbmcThreads::currentClockMillis();
 }
 
 CDateTime CTimeUtils::GetLocalTime(time_t time)

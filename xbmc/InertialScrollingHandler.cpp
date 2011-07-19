@@ -20,6 +20,7 @@
  */
 
 
+#include "threads/SystemClock.h"
 #include "InertialScrollingHandler.h"
 #include "Application.h"
 #include "utils/TimeUtils.h"
@@ -106,7 +107,7 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
     
     //decrease based on negativ acceleration
     //calc the overall inertial scrolling time in secs
-    float absolutInertialTime = (CTimeUtils::GetTimeMS() - m_inertialStartTime)/(float)1000;
+    float absolutInertialTime = (XbmcThreads::SystemClockMillis() - m_inertialStartTime)/(float)1000;
     
     //as long as we aren't over the overall inertial scroll time - do the deacceleration
     if ( absolutInertialTime < TIME_TO_ZERO_SPEED + TIME_FOR_DEACELLERATION_DECREASE )

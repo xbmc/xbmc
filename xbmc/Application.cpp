@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "Application.h"
 #include "interfaces/Builtins.h"
@@ -741,7 +742,7 @@ bool CApplication::Create()
 
   g_mediaManager.Initialize();
 
-  m_lastFrameTime = CTimeUtils::GetTimeMS();
+  m_lastFrameTime = XbmcThreads::SystemClockMillis();
   m_lastRenderTime = m_lastFrameTime;
 
   return Initialize();
@@ -1994,7 +1995,7 @@ void CApplication::Render()
 
   lock.Leave();
 
-  unsigned int now = CTimeUtils::GetTimeMS();
+  unsigned int now = XbmcThreads::SystemClockMillis();
   if (hasRendered)
     m_lastRenderTime = now;
 
@@ -2016,7 +2017,7 @@ void CApplication::Render()
     if (frameTime < singleFrameTime)
       Sleep(singleFrameTime - frameTime);
   }
-  m_lastFrameTime = CTimeUtils::GetTimeMS();
+  m_lastFrameTime = XbmcThreads::SystemClockMillis();
 
   if (flip)
     g_graphicsContext.Flip();
@@ -2554,7 +2555,7 @@ void CApplication::UpdateLCD()
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
     lTimeOut = 0;
-  if ( ((long)CTimeUtils::GetTimeMS() - lTickCount) >= lTimeOut)
+  if ( ((long)XbmcThreads::SystemClockMillis() - lTickCount) >= lTimeOut)
   {
     if (g_application.NavigationIdleTime() < 5)
       g_lcd->Render(ILCD::LCD_MODE_NAVIGATION);
@@ -2568,7 +2569,7 @@ void CApplication::UpdateLCD()
       g_lcd->Render(ILCD::LCD_MODE_GENERAL);
 
     // reset tick count
-    lTickCount = CTimeUtils::GetTimeMS();
+    lTickCount = XbmcThreads::SystemClockMillis();
   }
 #endif
 }

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "FileItem.h"
 #include "VideoInfoScanner.h"
 #include "addons/AddonManager.h"
@@ -71,7 +72,7 @@ namespace VIDEO
   {
     try
     {
-      unsigned int tick = CTimeUtils::GetTimeMS();
+      unsigned int tick = XbmcThreads::SystemClockMillis();
 
       m_database.Open();
 
@@ -121,7 +122,7 @@ namespace VIDEO
 
       m_database.Close();
 
-      tick = CTimeUtils::GetTimeMS() - tick;
+      tick = XbmcThreads::SystemClockMillis() - tick;
       CLog::Log(LOGNOTICE, "VideoInfoScanner: Finished scan. Scanning for video info took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
 
       m_bRunning = false;

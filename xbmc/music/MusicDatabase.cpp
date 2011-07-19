@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "MusicDatabase.h"
 #include "network/cddb.h"
@@ -1596,21 +1597,21 @@ void CMusicDatabase::EmptyCache()
 
 bool CMusicDatabase::Search(const CStdString& search, CFileItemList &items)
 {
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   // first grab all the artists that match
   SearchArtists(search, items);
   CLog::Log(LOGDEBUG, "%s Artist search in %i ms",
-            __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+            __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
 
   // then albums that match
   SearchAlbums(search, items);
   CLog::Log(LOGDEBUG, "%s Album search in %i ms",
-            __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+            __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
 
   // and finally songs
   SearchSongs(search, items);
   CLog::Log(LOGDEBUG, "%s Songs search in %i ms",
-            __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+            __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
   return true;
 }
 
@@ -2130,7 +2131,7 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
   if (NULL == m_pDB.get()) return ERROR_DATABASE;
   if (NULL == m_pDS.get()) return ERROR_DATABASE;
 
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   CLog::Log(LOGNOTICE, "%s: Starting musicdatabase cleanup ..", __FUNCTION__);
 
   // first cleanup any songs with invalid paths
@@ -2215,7 +2216,7 @@ int CMusicDatabase::Cleanup(CGUIDialogProgress *pDlgProgress)
     pDlgProgress->SetPercentage(100);
     pDlgProgress->Progress();
   }
-  time = CTimeUtils::GetTimeMS() - time;
+  time = XbmcThreads::SystemClockMillis() - time;
   CLog::Log(LOGNOTICE, "%s: Cleaning musicdatabase done. Operation took %s", __FUNCTION__, StringUtils::SecondsToTimeString(time / 1000).c_str());
 
   if (!Compress(false))
@@ -2626,7 +2627,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    unsigned int time = CTimeUtils::GetTimeMS();
+    unsigned int time = XbmcThreads::SystemClockMillis();
 
     CStdString strSQL = "select * from artist where (idArtist IN ";
 
@@ -2756,7 +2757,7 @@ bool CMusicDatabase::GetArtistsNav(const CStdString& strBaseDir, CFileItemList& 
 
       m_pDS->next();
     }
-    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %i", CTimeUtils::GetTimeMS() - time);
+    CLog::Log(LOGDEBUG,"Time to retrieve artists from dataset = %i", XbmcThreads::SystemClockMillis() - time);
 
     // cleanup
     m_pDS->close();
@@ -2924,10 +2925,10 @@ bool CMusicDatabase::GetAlbumsByWhere(const CStdString &baseDir, const CStdStrin
 
     CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, sql.c_str());
     // run query
-    unsigned int time = CTimeUtils::GetTimeMS();
+    unsigned int time = XbmcThreads::SystemClockMillis();
     if (!m_pDS->query(sql.c_str())) return false;
     CLog::Log(LOGDEBUG, "%s - query took %i ms",
-              __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+              __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
 
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -2977,7 +2978,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
 
   try
   {
-    unsigned int time = CTimeUtils::GetTimeMS();
+    unsigned int time = XbmcThreads::SystemClockMillis();
     // We don't use PrepareSQL here, as the WHERE clause is already formatted.
     CStdString strSQL = "select * from songview " + whereClause;
     CLog::Log(LOGDEBUG, "%s query = %s", __FUNCTION__, strSQL.c_str());
@@ -3015,7 +3016,7 @@ bool CMusicDatabase::GetSongsByWhere(const CStdString &baseDir, const CStdString
     }
     // cleanup
     m_pDS->close();
-    CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, whereClause.c_str(), CTimeUtils::GetTimeMS() - time);
+    CLog::Log(LOGDEBUG, "%s(%s) - took %d ms", __FUNCTION__, whereClause.c_str(), XbmcThreads::SystemClockMillis() - time);
     return true;
   }
   catch (...)
