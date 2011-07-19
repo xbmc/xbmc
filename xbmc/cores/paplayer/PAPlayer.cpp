@@ -351,7 +351,7 @@ inline void PAPlayer::ProcessStreams(float &delay)
     if (!m_currentStream && !si->m_started)
       m_currentStream = si;
         
-    if ((si->m_fadeOutTriggered && !si->m_stream->IsFading()) || !PrepareStream(si) || !ProcessStream(si, delay))
+    if ((si->m_fadeOutTriggered && si->m_stream && !si->m_stream->IsFading()) || !PrepareStream(si) || !ProcessStream(si, delay))
     {
       /* if the stream is finshed */
       sharedLock.Leave();
