@@ -718,8 +718,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
 
   if (!filters.empty())
   {
-    AVFilterInOut* outputs = (AVFilterInOut*)m_dllAvUtil.av_mallocz(sizeof(AVFilterInOut));
-    AVFilterInOut* inputs  = (AVFilterInOut*)m_dllAvUtil.av_mallocz(sizeof(AVFilterInOut));
+    AVFilterInOut* outputs = m_dllAvFilter.avfilter_inout_alloc();
+    AVFilterInOut* inputs  = m_dllAvFilter.avfilter_inout_alloc();
 
     outputs->name    = m_dllAvUtil.av_strdup("in");
     outputs->filter_ctx = m_pFilterIn;
@@ -731,11 +731,15 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
     inputs->pad_idx = 0;
     inputs->next    = NULL;
 
-    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), inputs, outputs, NULL)) < 0)
+    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), &inputs, &outputs, NULL)) < 0)
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_parse");
       return result;
     }
+
+    // for avfilter version lower then 2.17.0 will only set pointer(s) to NULL
+    m_dllAvFilter.avfilter_inout_free(&outputs);
+    m_dllAvFilter.avfilter_inout_free(&inputs);
   }
   else
   {
