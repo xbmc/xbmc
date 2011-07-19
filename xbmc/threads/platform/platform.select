@@ -24,19 +24,12 @@
 #if (defined HAVE_CONFIG_H) && (!defined WIN32)
   #include "config.h"
 #else
-  #ifndef USE_BOOST_THREADING
+  #ifdef WIN32
     #define USE_WIN_THREADING 1
   #endif
 #endif
 
-#ifdef USE_BOOST_THREADING
-  #define XBMC_THREADING_IMPL_SET 1
-#endif
-
 #ifdef USE_PTHREADS_THREADING
-  #ifdef XBMC_THREADING_IMPL_SET
-    #error "Cannot define both USE_PTHREADS_THREADING and another USE_*_THREADING"
-  #endif
   #define XBMC_THREADING_IMPL_SET 1
 #endif
 

@@ -21,9 +21,7 @@
 
 #include "threads/platform/platform.select"
 
-#ifdef USE_BOOST_THREADING
-// boost has no need of an Implementation.cpp
-#elif (defined USE_PTHREADS_THREADING)
+#if (defined USE_PTHREADS_THREADING)
 #include "threads/platform/pthreads/Implementation.cpp"
 #elif (defined USE_WIN_THREADING)
 // win has no need of an Implementation.cpp

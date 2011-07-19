@@ -23,9 +23,7 @@
 
 #include "threads/platform/platform.select"
 
-#ifdef USE_BOOST_THREADING
-#include "threads/platform/boost/CriticalSection.h"
-#elif (defined USE_PTHREADS_THREADING)
+#if (defined USE_PTHREADS_THREADING)
 #include "threads/platform/pthreads/CriticalSection.h"
 #elif (defined USE_WIN_THREADING)
 #include "threads/platform/win/CriticalSection.h"
