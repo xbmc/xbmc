@@ -307,7 +307,7 @@ void PAPlayer::Process()
 
   while(m_isPlaying)
   {
-    float delay = 0.1f;
+    float delay = 1.0f;
     ProcessStreams(delay);
 
     /* try to keep the buffer 75% full */
