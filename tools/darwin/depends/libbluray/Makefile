@@ -23,8 +23,8 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	# libbluray has bored Makefile.am with respect to CFLAGS, remove the offending line
-	sed -i -e "s|CFLAGS=\$(shell test|#CFLAGS=\$(shell test|" $(SOURCE)/src/Makefile.am
-	sed -i -e "s|CFLAGS=\$(shell test|#CFLAGS=\$(shell test|" $(SOURCE)/src/examples/Makefile.am
+	sed -i -e "s|CFLAGS=|#CFLAGS=|" $(SOURCE)/src/Makefile.am
+	sed -i -e "s|CFLAGS=|#CFLAGS=|" $(SOURCE)/src/examples/Makefile.am
 	cd $(SOURCE); ./bootstrap
 	cd $(SOURCE); $(CONFIGURE)
 
