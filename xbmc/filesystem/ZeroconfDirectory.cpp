@@ -54,6 +54,9 @@ namespace
       return "iTunes Music Sharing";
     else if(fcr_service_type == "_webdav._tcp.")
       return "WebDAV";   
+    else if(fcr_service_type == "_nfs._tcp.")
+      return "NFS";   
+      
     //fallback, just return the received type
     return fcr_service_type;
   }
@@ -69,6 +72,8 @@ namespace
       fr_protocol = "daap";
     else if(fcr_service_type == "_webdav._tcp.")
       fr_protocol = "dav";
+    else if(fcr_service_type == "_nfs._tcp.")
+      fr_protocol = "nfs";      
     else
       return false;
     return true;

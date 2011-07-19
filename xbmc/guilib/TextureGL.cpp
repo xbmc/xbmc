@@ -130,8 +130,15 @@ void CGLTexture::LoadToGPU()
   // All incoming textures are BGRA, which GLES does not necessarily support.
   // Some (most?) hardware supports BGRA textures via an extension.
   // If not, we convert to RGBA first to avoid having to swizzle in shaders.
+  // Explicitly define GL_BGRA_EXT here in the case that it's not defined by
+  // system headers, and trust the extension list instead.
+#ifndef GL_BGRA_EXT
+#define GL_BGRA_EXT 0x80E1
+#endif
+
   GLint internalformat;
   GLenum pixelformat;
+
   if (g_Windowing.SupportsBGRA())
   {
     internalformat = pixelformat = GL_BGRA_EXT;
