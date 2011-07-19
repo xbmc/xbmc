@@ -26,7 +26,7 @@
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 
-class CPulseAEStream;
+class CCoreAudioAE;
 class CCoreAudioAEEventThread : public IRunnable
 {
 public:
