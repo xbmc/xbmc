@@ -32,7 +32,6 @@
     #include "Sinks/AESinkALSA.h"
   #endif
   #include "Sinks/AESinkOSS.h"
-#include <visualizations/Goom/goom2k4-0/src/filter_test/mmx.h>
 #else
   #pragma message("NOTICE: No audio sink for target platform.  Audio output will not be available.")
 #endif
