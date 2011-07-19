@@ -43,7 +43,7 @@
 // First one being nullsoft's nsv audio decoder format
 
 PAPlayer::PAPlayer(IPlayerCallback& callback) :
-  IPlayer::IPlayer(callback),
+  IPlayer         (callback),
   m_isPlaying     (false),
   m_isPaused      (false),
   m_isFinished    (false),
