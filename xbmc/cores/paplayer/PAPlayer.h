@@ -94,7 +94,9 @@ private:
     unsigned int      m_playNextAtFrame;    /* when to start playing the next stream */
     bool              m_playNextTriggered;  /* if this stream has started the next one */
     bool              m_fadeOutTriggered;   /* if the stream has been told to fade out */
+    
     IAEStream*        m_stream;             /* the playback stream */
+    float             m_volume;             /* the initial volume level to set the stream to on creation */
   } StreamInfo;
 
   typedef std::list<StreamInfo*> StreamList;
@@ -106,8 +108,10 @@ private:
   unsigned int           m_crossFadeTime;   /* how long the crossfade is */
   CEvent                 m_startEvent;      /* event for playback start */
   StreamInfo*            m_currentStream;   /* the current playing stream */
+  
   CSharedSection         m_streamsLock;     /* lock for the stream list */
-  StreamList             m_streams;         /* playing streams */
+  StreamList             m_streams;         /* playing streams */  
+  StreamList             m_finishing;       /* finishing streams */
 
   bool QueueNextFileEx(const CFileItem &file, bool fadeIn = true);
   void SoftStart(bool wait = false);

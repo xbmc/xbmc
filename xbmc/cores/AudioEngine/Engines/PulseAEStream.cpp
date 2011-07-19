@@ -333,11 +333,6 @@ bool CPulseAEStream::IsDraining()
   return m_draining;
 }
 
-bool CPulseAEStream::IsFreeOnDrain()
-{
-  return m_options & AESTREAM_FREE_ON_DRAIN;
-}
-
 bool CPulseAEStream::IsDestroyed()
 {
   return m_Destroyed;
@@ -506,9 +501,6 @@ void CPulseAEStream::StreamDrainComplete(pa_stream *s, int success, void *userda
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
   if (stream->m_AudioDrainThread)
     stream->m_AudioDrainThread->Trigger();
-
-  if (stream->IsFreeOnDrain())
-    stream->Destroy();
 }
 
 inline bool CPulseAEStream::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")

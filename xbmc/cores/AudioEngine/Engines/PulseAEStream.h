@@ -49,7 +49,6 @@ public:
 
   virtual bool IsPaused     ();
   virtual bool IsDraining   ();
-  virtual bool IsFreeOnDrain();
   virtual bool IsDestroyed  ();
 
   virtual void Pause   ();
@@ -74,8 +73,6 @@ public:
   /* vizualization callback register function */
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
-
-  void SetFreeOnDrain() { m_options |= AESTREAM_FREE_ON_DRAIN; }
 
   /* trigger the stream to update its volume relative to AE */
   void UpdateVolume(float max);

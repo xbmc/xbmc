@@ -54,10 +54,9 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
 
 PAPlayer::~PAPlayer()
 {
-  if (m_isPaused)
-    CloseAllStreams(false);
-  else
+  if (!m_isPaused)
     SoftStop(true, true);
+  CloseAllStreams(false);  
   
   /* wait for the thread to terminate */
   m_isPlaying = false;
@@ -181,10 +180,19 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       m_streams.pop_front();
       
       if (si->m_stream)
-      {
-	si->m_stream->Drain();
-	si->m_stream->Flush();
-      }
+        si->m_stream->Destroy();
+      
+      si->m_decoder.Destroy();
+      delete si;
+    }
+    
+    while(!m_finishing.empty())
+    {
+      StreamInfo* si = m_finishing.front();
+      m_finishing.pop_front();
+      
+      if (si->m_stream)
+        si->m_stream->Destroy();
       
       si->m_decoder.Destroy();
       delete si;
@@ -228,28 +236,25 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
   {
     delete si;
+    m_callback.OnQueueNextItem();
     return false;
   }
   
   /* init the streaminfo struct */
   si->m_decoder.GetDataFormat(&si->m_channels, &si->m_sampleRate, &si->m_dataFormat);
-  si->m_bytesPerSample = CAEUtil::DataFormatToBits(si->m_dataFormat) >> 3;
-  si->m_started        = false;
-  si->m_finishing      = false;
-  si->m_framesSent     = 0;
-  si->m_stream         = NULL;
-
-  /* prepare the stream for playback */
-  if (!PrepareStream(si))
-  {
-    delete si;
-    return false;
-  }
- 
-  /* mute the stream for fade if we are using xfade */
-  if (fadeIn && m_crossFadeTime)
-    si->m_stream->SetVolume(0.0f); 
   
+  si->m_bytesPerSample     = CAEUtil::DataFormatToBits(si->m_dataFormat) >> 3;
+  si->m_started            = false;
+  si->m_finishing          = false;
+  si->m_framesSent         = 0;
+  si->m_stream             = NULL;
+  si->m_volume             = (fadeIn && m_crossFadeTime) ? 0.0f : 1.0f;
+  
+  si->m_prepareNextAtFrame = (si->m_decoder.TotalTime() - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * (si->m_sampleRate * si->m_channels) / 1000.0f;
+  si->m_prepareTriggered   = false;
+  si->m_playNextAtFrame    = (si->m_decoder.TotalTime() - m_crossFadeTime) * (si->m_sampleRate * si->m_channels) / 1000.0f;
+  si->m_playNextTriggered  = false;
+   
   /* add the stream to the list */
   CExclusiveLock lock(m_streamsLock);
   m_streams.push_back(si);
@@ -257,7 +262,7 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   return true;
 }
 
-bool PAPlayer::PrepareStream(StreamInfo *si)
+inline bool PAPlayer::PrepareStream(StreamInfo *si)
 {
   /* if we have a stream we are already prepared */
   if (si->m_stream)
@@ -269,7 +274,7 @@ bool PAPlayer::PrepareStream(StreamInfo *si)
     si->m_sampleRate,
     si->m_channels,
     NULL, /* FIXME: channelLayout */
-    AESTREAM_FREE_ON_DRAIN | AESTREAM_PAUSED
+    AESTREAM_PAUSED
   );
 
   if (!si->m_stream)
@@ -277,12 +282,10 @@ bool PAPlayer::PrepareStream(StreamInfo *si)
     CLog::Log(LOGDEBUG, "PAPlayer::PrepareStream - Failed to get IAEStream");
     return false;
   }
-
+  
+  si->m_stream->SetVolume    (si->m_volume);
   si->m_stream->SetReplayGain(si->m_decoder.GetReplayGain());
-  si->m_prepareNextAtFrame = (si->m_decoder.TotalTime() - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * (si->m_sampleRate * si->m_channels) / 1000.0f;
-  si->m_prepareTriggered   = false;
-  si->m_playNextAtFrame    = (si->m_decoder.TotalTime() - m_crossFadeTime) * (si->m_sampleRate * si->m_channels) / 1000.0f;
-  si->m_playNextTriggered  = false;
+  si->m_decoder.Start();
   
   CLog::Log(LOGINFO, "PAPlayer::PrepareStream - Ready");
   return true;
@@ -327,14 +330,28 @@ inline void PAPlayer::ProcessStreams(float &delay)
     m_isPlaying = false;
     return;
   }
-  
+
+  /* destroy any drained streams */
+  for(StreamList::iterator itt = m_finishing.begin(); itt != m_finishing.end();)
+  {
+    StreamInfo* si = *itt;
+    if (si->m_stream->IsDrained())
+    {
+      si->m_stream->Destroy();
+      delete si;
+      itt = m_finishing.erase(itt);
+    }
+    else
+      ++itt;
+  }
+
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
     if (!m_currentStream && !si->m_started)
       m_currentStream = si;
-    
-    if ((si->m_fadeOutTriggered && !si->m_stream->IsFading()) || !ProcessStream(si, delay))
+        
+    if ((si->m_fadeOutTriggered && !si->m_stream->IsFading()) || !PrepareStream(si) || !ProcessStream(si, delay))
     {
       /* if the stream is finshed */
       sharedLock.Leave();
@@ -344,25 +361,27 @@ inline void PAPlayer::ProcessStreams(float &delay)
       itt = m_streams.erase(itt);	
       if (si == m_currentStream)
       {
-	/* if it was the last stream */
-	if (itt == m_streams.end())
-	{
-	  /* if it didnt trigger the next queue item */
-	  if (!si->m_prepareTriggered)
-	  {
-	    m_callback.OnQueueNextItem();
-	    si->m_prepareTriggered = true;
-	  }
-	  
-	  m_currentStream = NULL;
-	}
-	else
-	  m_currentStream = *itt;
+        /* if it was the last stream */
+        if (itt == m_streams.end())
+        {
+          /* if it didnt trigger the next queue item */
+          if (!si->m_prepareTriggered)
+          {
+            m_callback.OnQueueNextItem();
+            si->m_prepareTriggered = true;
+          }
+    
+          m_currentStream = NULL;
+        }
+        else
+        {
+          m_currentStream = *itt;
+        }
       }
-      
-      si->m_decoder.Destroy();
+        
+      m_finishing.push_back(si);
+      si->m_decoder.Destroy();      
       si->m_stream->Drain();
-      delete si;
       return;
     }
     
@@ -394,7 +413,6 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay)
   if (si == m_currentStream && !si->m_started)
   {
     si->m_started = true;
-    si->m_decoder.Start();
     si->m_stream->Resume();
     si->m_stream->FadeVolume(0.0f, 1.0f, m_crossFadeTime);
     m_callback.OnPlayBackStarted();
@@ -488,7 +506,8 @@ __int64 PAPlayer::GetTime()
   if (m_currentStream)
   {
     float time = (float)m_currentStream->m_framesSent / (float)(m_currentStream->m_sampleRate * m_currentStream->m_channels) * 1000.0f;
-    time -= m_currentStream->m_stream->GetDelay();
+    if (m_currentStream->m_stream)
+      time -= m_currentStream->m_stream->GetDelay();
     return time;
   }
   return 0;

@@ -174,10 +174,7 @@ IAEStream *CPulseAE::GetStream(enum AEDataFormat dataFormat, unsigned int sample
 
 IAEStream *CPulseAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
 {
-  /* FIXME: Pulse can alter a stream I think */
-  ((CPulseAEStream*)stream)->SetFreeOnDrain();
-  stream->Drain();
-
+  stream->Destroy();
   return GetStream(dataFormat, sampleRate, channelCount, channelLayout, options);
 }
 

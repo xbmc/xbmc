@@ -67,7 +67,6 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_initSampleRate    = sampleRate;
   m_initChannelCount  = channelCount;
   m_initChannelLayout = channelLayout;
-  m_freeOnDrain       = (options & AESTREAM_FREE_ON_DRAIN) != 0;
   m_forceResample     = (options & AESTREAM_FORCE_RESAMPLE) != 0;
   m_paused            = (options & AESTREAM_PAUSED) != 0;
 }
@@ -548,6 +547,12 @@ void CSoftAEStream::Drain()
 {
   CSingleLock lock(m_critSection);
   m_draining = true;
+}
+
+bool CSoftAEStream::IsDrained()
+{
+  CSingleLock lock(m_critSection);  
+  return (!m_packet.samples && m_outBuffer.empty());
 }
 
 void CSoftAEStream::Flush()

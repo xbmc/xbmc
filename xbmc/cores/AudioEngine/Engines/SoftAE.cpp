@@ -559,10 +559,7 @@ IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleR
 
 IAEStream *CSoftAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options/* = 0 */)
 {
-  /* TODO: reconfigure the stream */
-  ((CSoftAEStream*)stream)->SetFreeOnDrain();
-  stream->Drain();
-
+  stream->Destroy();
   return GetStream(dataFormat, sampleRate, channelCount, channelLayout, options);
 }
 
@@ -1039,14 +1036,6 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
     float *frame = (float*)stream->GetFrame();
     if (!frame)
     {
-      /* if the stream is drained and is set to free on drain */
-      if (stream->IsDraining() && stream->IsFreeOnDrain())
-      {
-        itt = m_streams.erase(itt);
-        delete stream;
-        continue;
-      }
-
       ++itt;
       continue;
     }

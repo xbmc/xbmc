@@ -56,7 +56,7 @@ public:
 
   bool IsPaused     () { return m_paused;      }
   virtual bool IsDraining   () { return m_draining;    }
-  bool IsFreeOnDrain() { return m_freeOnDrain; }
+  virtual bool IsDrained    ();
   bool IsDestroyed  () { return m_delete;      }
   bool IsValid() { return m_valid; }
 
@@ -85,8 +85,6 @@ public:
 
   virtual void FadeVolume(float from, float to, unsigned int time);
   virtual bool IsFading();
-
-  void SetFreeOnDrain() { m_freeOnDrain = true; }
 
   /* returns true if the stream is in a callback function */
   bool IsBusy();
@@ -119,7 +117,6 @@ private:
   CAERemap                m_remap;         /* the remapper */
   float                   m_volume;        /* the volume level */
   float                   m_rgain;         /* replay gain level */
-  bool                    m_freeOnDrain;   /* true to free the stream when it has drained */
   unsigned int            m_waterLevel;    /* the fill level to fall below before calling the data callback */
   unsigned int            m_refillBuffer;  /* how many frames that need to be buffered before we return any frames */
 

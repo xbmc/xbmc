@@ -28,9 +28,8 @@
  * Bit options to pass to IAE::GetStream and IAE::AlterStream
  */
 enum AEStreamOptions {
-  AESTREAM_FREE_ON_DRAIN  = 0x01, /* auto free the stream when it has drained */
-  AESTREAM_FORCE_RESAMPLE = 0x02, /* force resample even if rates match */
-  AESTREAM_PAUSED         = 0x04  /* create the stream paused */
+  AESTREAM_FORCE_RESAMPLE = 0x01, /* force resample even if rates match */
+  AESTREAM_PAUSED         = 0x02  /* create the stream paused */
 };
 
 /**
@@ -132,6 +131,11 @@ public:
    */
   virtual bool IsDraining() = 0;
 
+  /**
+   * Returns true if the is stream has finished draining
+   */
+  virtual bool IsDrained() { return true; } /*FIXME: this should = 0 when done */
+  
   /**
    * Flush all buffers dropping the audio data
    */
