@@ -21,6 +21,7 @@
 
 #include "TimeUtils.h"
 #include "XBDateTime.h"
+#include "threads/Time.h"
 
 #ifdef __APPLE__
 #if defined(__ppc__) || defined(__arm__)
@@ -79,22 +80,7 @@ unsigned int CTimeUtils::GetFrameTime()
 
 unsigned int CTimeUtils::GetTimeMS()
 {
-#ifdef _LINUX
-  uint64_t now_time;
-  static  uint64_t start_time = 0;
-#if defined(__APPLE__) && (defined(__ppc__) || defined(__arm__))
-    now_time = CVGetCurrentHostTime() *  1000 / CVGetHostClockFrequency();
-#else
-    struct timespec ts = {};
-    clock_gettime(CLOCK_MONOTONIC, &ts);
-    now_time = (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000);
-#endif
-    if (start_time == 0)
-      start_time = now_time;
-    return (now_time - start_time);
-#else
-  return timeGetTime();
-#endif
+  return XbmcThreads::currentClockMillis();
 }
 
 CDateTime CTimeUtils::GetLocalTime(time_t time)

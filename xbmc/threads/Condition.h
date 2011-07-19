@@ -23,9 +23,7 @@
 
 #include "threads/platform/Condition.h"
 
-#include <boost/date_time/microsec_time_clock.hpp>
-#include <boost/date_time/posix_time/posix_time_types.hpp>
-
+#include "threads/Time.h"
 #include <stdio.h>
 
 namespace XbmcThreads
@@ -46,12 +44,10 @@ namespace XbmcThreads
     ConditionVariable& cond;
     P predicate;
 
-    typedef boost::posix_time::ptime system_time;
-
-    inline static unsigned long timeLeft(const system_time& endtime)
+    inline static unsigned long timeLeft(unsigned int endtime)
     {
-      long diff = (long)(endtime - boost::date_time::microsec_clock<system_time>::universal_time()).total_milliseconds();
-      return diff < 0 ? 0 : (unsigned long)diff;
+      unsigned int cur = currentClockMillis();
+      return endtime <= cur ? 0 : (endtime - cur);
     }
 
   public:
@@ -63,7 +59,7 @@ namespace XbmcThreads
       bool ret = true;
       if (!predicate)
       {
-        system_time const endtime = boost::date_time::microsec_clock<system_time>::universal_time() + boost::posix_time::milliseconds(milliseconds);
+        unsigned int endtime = currentClockMillis() + milliseconds;
         bool notdone = true;
         while (notdone && ret == true)
         {
