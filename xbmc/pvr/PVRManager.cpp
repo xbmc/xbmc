@@ -58,11 +58,11 @@ CPVRManager::CPVRManager(void) :
     m_timers(NULL),
     m_addons(NULL),
     m_guiInfo(NULL),
+    m_triggerEvent(true),
     m_currentFile(NULL),
     m_database(NULL),
     m_bFirstStart(true),
     m_bLoaded(false),
-    m_triggerEvent(true),
     m_loadingBusyDialog(NULL),
     m_currentRadioGroup(NULL),
     m_currentTVGroup(NULL)
