@@ -103,7 +103,7 @@ private:
   CThread *m_thread;
 
   void LoadSettings();
-  bool OpenSink(unsigned int sampleRate = 44100, unsigned int channels = 2, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);
+  bool OpenSink(unsigned int sampleRate = 48000, unsigned int channels = 2, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);
   void ResetEncoder();
   bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();
@@ -118,8 +118,8 @@ private:
   void RemoveStream(IAEStream *stream);
 
   enum AEStdChLayout m_stdChLayout;
-  CStdString m_device, m_driver;
-  CStdString m_passthroughDevice, m_passthroughDriver;
+  CStdString m_device;
+  CStdString m_passthroughDevice;
 
   /* internal vars */
   bool m_running, m_reOpened;

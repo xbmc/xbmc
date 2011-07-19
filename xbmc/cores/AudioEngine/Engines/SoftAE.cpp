@@ -95,22 +95,11 @@ CSoftAE::~CSoftAE()
 IAESink *CSoftAE::GetSink(AEAudioFormat &newFormat, bool passthrough, CStdString &device)
 {
   device = passthrough ? m_passthroughDevice : m_device;
-  CStdString driver = passthrough ? m_passthroughDriver : m_driver;
-
-  IAESink *sink = CAESinkFactory::Create(driver, device, newFormat, passthrough);
-
-  if (sink)
-  {
-    if (passthrough)
-      m_passthroughDriver = sink->GetName();
-    else
-      m_driver = sink->GetName();
-  }
-
+  IAESink *sink = CAESinkFactory::Create(device, newFormat, passthrough);
   return sink;
 }
 
-bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, unsigned int channels/* = 2*/, bool forceRaw/* = false */, enum AEDataFormat rawFormat/* = AE_FMT_RAW */)
+bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channels/* = 2*/, bool forceRaw/* = false */, enum AEDataFormat rawFormat/* = AE_FMT_RAW */)
 {
   /* save off our raw/passthrough mode for checking */
   bool wasTranscode      = m_transcode;
@@ -154,15 +143,13 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, unsigned int channel
 
   CStdString device, driver;
   if (m_transcode || m_rawPassthrough)
-  {
     device = m_passthroughDevice;
-    driver = m_passthroughDriver;
-  }
   else
-  {
     device = m_device;
-    driver = m_driver;
-  }
+  
+  CAESinkFactory::ParseDevice(device, driver);
+  if (driver.IsEmpty() && m_sink)
+    driver = m_sink->GetName();
 
        if (m_rawPassthrough) CLog::Log(LOGINFO, "CSoftAE::OpenSink - RAW passthrough enabled");
   else if (m_transcode     ) CLog::Log(LOGINFO, "CSoftAE::OpenSink - Transcode passthrough enabled");
@@ -193,7 +180,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, unsigned int channel
   newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? rawFormat : AE_FMT_FLOAT;
 
   /* only re-open the sink if its not compatible with what we need */
-  if (!m_sink || !m_sink->IsCompatible(newFormat, device))
+  if (!m_sink || ((CStdString)m_sink->GetName()).ToUpper() != driver || !m_sink->IsCompatible(newFormat, device))
   {
     /* let the thread know we have re-opened the sink */
     m_reOpened = true;
@@ -207,6 +194,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 44100*/, unsigned int channel
       m_sink = NULL;
     }
 
+    /* if we already have a driver, prepend it to the device string */
+    if (!driver.IsEmpty())
+      device = driver + ":" + device;
+    
     /* create the new sink */
     m_sink = GetSink(newFormat, m_transcode || m_rawPassthrough, device);
     if (!m_sink)
@@ -427,8 +418,6 @@ void CSoftAE::OnSettingsChange(CStdString setting)
 
 void CSoftAE::LoadSettings()
 {
-  int pos;
-
   /* load the configuration */
   m_stdChLayout = AE_CH_LAYOUT_2_0;
   switch(g_guiSettings.GetInt("audiooutput.channellayout"))
@@ -454,32 +443,12 @@ void CSoftAE::LoadSettings()
   if (m_passthroughDevice.IsEmpty())
     m_passthroughDevice = g_guiSettings.GetString("audiooutput.audiodevice");
 
-  pos = m_passthroughDevice.find_first_of(':');
-  if (pos > 0)
-  {
-    m_passthroughDriver = m_passthroughDevice.substr(0, pos);
-    m_passthroughDriver = m_passthroughDriver.ToUpper();
-    m_passthroughDevice = m_passthroughDevice.substr(pos + 1, m_passthroughDevice.length() - pos - 1);
-  }
-  else
-    m_passthroughDriver.Empty();
-
   if (m_passthroughDevice.IsEmpty())
     m_passthroughDevice = "default";
 
   m_device = g_guiSettings.GetString("audiooutput.audiodevice");
   if (m_device == "custom")
     m_device = g_guiSettings.GetString("audiooutput.customdevice");
-
-  pos = m_device.find_first_of(':');
-  if (pos > 0)
-  {
-    m_driver = m_device.substr(0, pos);
-    m_driver = m_driver.ToUpper();
-    m_device = m_device.substr(pos + 1, m_device.length() - pos - 1);
-  }
-  else
-    m_driver.Empty();
 
   if (m_device.IsEmpty())
     m_device = "default";
