@@ -46,6 +46,7 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer::IPlayer(callback),
   m_isPlaying     (false),
   m_isPaused      (false),
+  m_isFinished    (false),
   m_currentStream (NULL)
 {
   m_startEvent.Reset();
@@ -320,8 +321,14 @@ void PAPlayer::Process()
 }
 
 void PAPlayer::ProcessStreams()
-{
+{  
   CSharedLock sharedLock(m_streamsLock);
+  if (m_isFinished && m_streams.empty())
+  {
+    m_isPlaying = false;
+    return;
+  }
+  
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
@@ -343,9 +350,10 @@ void PAPlayer::ProcessStreams()
 	{
 	  /* if it didnt trigger the next queue item */
 	  if (!si->m_prepareTriggered)
+	  {
 	    m_callback.OnQueueNextItem();
-	  else
-	    m_isPlaying = false;
+	    si->m_prepareTriggered = true;
+	  }
 	  
 	  m_currentStream = NULL;
 	}
@@ -369,11 +377,14 @@ void PAPlayer::ProcessStreams()
     /* it is time to start playing the next stream? */
     if (!si->m_playNextTriggered && si->m_framesSent >= si->m_playNextAtFrame)
     {
-      if (m_crossFadeTime)
-	si->m_stream->FadeVolume(1.0f, 0.0f, m_crossFadeTime);
+      if (!m_isFinished)
+      {
+        if (m_crossFadeTime)
+	  si->m_stream->FadeVolume(1.0f, 0.0f, m_crossFadeTime);
+	m_currentStream = NULL;
+      }
       
-      si->m_playNextTriggered = true;
-      m_currentStream = NULL;
+      si->m_playNextTriggered = true;      
     }
   }
 }
@@ -426,7 +437,7 @@ void PAPlayer::UnRegisterAudioCallback()
 
 void PAPlayer::OnNothingToQueueNotify()
 {
-
+  m_isFinished = true;
 }
 
 bool PAPlayer::IsPlaying() const
@@ -472,7 +483,11 @@ __int64 PAPlayer::GetTime()
 {
   CSharedLock lock(m_streamsLock);
   if (m_currentStream)
-    return (float)m_currentStream->m_framesSent / (float)(m_currentStream->m_sampleRate * m_currentStream->m_channels) * 1000.0f;
+  {
+    float time = (float)m_currentStream->m_framesSent / (float)(m_currentStream->m_sampleRate * m_currentStream->m_channels) * 1000.0f;
+    time -= m_currentStream->m_stream->GetDelay();
+    return time;
+  }
   return 0;
 }
 

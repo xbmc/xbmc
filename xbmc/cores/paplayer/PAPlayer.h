@@ -100,7 +100,9 @@ private:
   typedef std::list<StreamInfo*> StreamList;
 
   CCriticalSection       m_threadLock;
-  bool                   m_isPlaying, m_isPaused;
+  bool                   m_isPlaying;
+  bool                   m_isPaused;
+  bool                   m_isFinished;      /* if there are no more songs in the queue */
   unsigned int           m_crossFadeTime;   /* how long the crossfade is */
   CEvent                 m_startEvent;      /* event for playback start */
   StreamInfo*            m_currentStream;   /* the current playing stream */
