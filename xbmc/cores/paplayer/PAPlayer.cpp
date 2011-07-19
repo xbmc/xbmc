@@ -307,21 +307,20 @@ void PAPlayer::Process()
 
   while(m_isPlaying)
   {
-    if (IsPaused())
-    {
-      Sleep(10);
-      continue;
-    }
+    float delay = 0.1f;
+    ProcessStreams(delay);
 
-    ProcessStreams();
-    Sleep(1);
+    /* try to keep the buffer 75% full */
+    const float mul = 13.333333333f;
+    delay = delay * mul;    
+    Sleep(MathUtils::round_int(delay));
   }
   
   m_callback.OnPlayBackEnded();
 }
 
-void PAPlayer::ProcessStreams()
-{  
+inline void PAPlayer::ProcessStreams(float &delay)
+{
   CSharedLock sharedLock(m_streamsLock);
   if (m_isFinished && m_streams.empty())
   {
@@ -335,7 +334,7 @@ void PAPlayer::ProcessStreams()
     if (!m_currentStream && !si->m_started)
       m_currentStream = si;
     
-    if ((si->m_fadeOutTriggered && !si->m_stream->IsFading()) || !ProcessStream(si))
+    if ((si->m_fadeOutTriggered && !si->m_stream->IsFading()) || !ProcessStream(si, delay))
     {
       /* if the stream is finshed */
       sharedLock.Leave();
@@ -389,7 +388,7 @@ void PAPlayer::ProcessStreams()
   }
 }
 
-bool PAPlayer::ProcessStream(StreamInfo *si)
+inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay)
 {
   /* if playback needs to start on this stream, do it */
   if (si == m_currentStream && !si->m_started)
@@ -402,13 +401,16 @@ bool PAPlayer::ProcessStream(StreamInfo *si)
   }
   
   /* if the decoder is finished, or we cant read more samples */  
-  int status = si->m_decoder.GetStatus();
-  if (status == STATUS_ENDED   ||
-      status == STATUS_NO_FILE ||
-      si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+  while(si->m_decoder.GetDataSize() == 0)
   {
-    CLog::Log(LOGINFO, "PAPlayer::ProcessStream - Stream Finished");
-    return false;
+    int status = si->m_decoder.GetStatus();
+    if (status == STATUS_ENDED   ||
+        status == STATUS_NO_FILE ||
+        si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+    {
+      CLog::Log(LOGINFO, "PAPlayer::ProcessStream - Stream Finished");
+      return false;
+    }
   }
 
   /* give the stream the data */
@@ -416,7 +418,8 @@ bool PAPlayer::ProcessStream(StreamInfo *si)
   void*        data = si->m_decoder.GetData(size);
   si->m_stream->AddData(data, size * si->m_bytesPerSample);
   si->m_framesSent += size;
-    
+  delay = std::min(delay, si->m_stream->GetCacheTime());
+  
   return true;
 }
 
@@ -459,8 +462,8 @@ void PAPlayer::Pause()
   }
   else
   {
+    m_isPaused = true;    
     SoftStop(true, false);
-    m_isPaused = true;
   }
 }
 

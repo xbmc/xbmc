@@ -31,7 +31,7 @@
 #include "SoftAE.h"
 #include "SoftAEStream.h"
 
-#define SOFTAE_FRAMES 256
+#define SOFTAE_FRAMES 1024
 
 /* typecast AE to CSoftAE */
 #define AE (*((CSoftAE*)CAEFactory::AE))
