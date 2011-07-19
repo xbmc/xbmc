@@ -737,7 +737,6 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
       return result;
     }
 
-    // for avfilter version lower then 2.17.0 will only set pointer(s) to NULL
     m_dllAvFilter.avfilter_inout_free(&outputs);
     m_dllAvFilter.avfilter_inout_free(&inputs);
   }
