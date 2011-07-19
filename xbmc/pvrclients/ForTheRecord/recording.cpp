@@ -123,6 +123,15 @@ bool cRecording::Parse(const Json::Value& data)
   thumbnailfilename = data["ThumbnailFileName"].asString();
   title = data["Title"].asString();
   videoaspect = (ForTheRecord::VideoAspectRatio) data["VideoAspect"].asInt();
+  std::string CIFSname = recordingfilename;
+  size_t found;
+  while ((found = CIFSname.find("\\")) != std::string::npos)
+  {
+    CIFSname.replace(found, 1, "/");
+  }
+  CIFSname.erase(0,2);
+  CIFSname.insert(0, "smb://Guest@");
+  cifsrecordingfilename = CIFSname;  
 
   return true;
 }

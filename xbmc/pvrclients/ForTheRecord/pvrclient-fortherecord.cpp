@@ -569,7 +569,11 @@ PVR_ERROR cPVRClientForTheRecord::GetRecordings(PVR_HANDLE handle)
               {
                 tag.strDirectory = "";
               }
+#ifdef _WIN32
               tag.strStreamURL   = recording.RecordingFileName();
+#else
+              tag.strStreamURL   = recording.CIFSRecordingFileName();
+#endif
               PVR->TransferRecordingEntry(handle, &tag);
               iNumRecordings++;
             }
