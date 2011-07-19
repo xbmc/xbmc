@@ -380,6 +380,8 @@
 		18CCEAEF1112F5B800615FC6 /* PCMRemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */; };
 		18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
 		18ECC96313CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
+		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
+		3802709B13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
 		38F4E57213CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
@@ -2248,17 +2250,17 @@
 		18CCEAED1112F5B800615FC6 /* PCMRemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMRemap.h; sourceTree = "<group>"; };
 		18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC96113CF178D00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
+		3802709713D5A62D009493DD /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		3802709813D5A653009493DD /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
+		3802709913D5A653009493DD /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
 		384718D61325BA04000486D6 /* XBDateTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBDateTime.cpp; sourceTree = "<group>"; };
 		384718D71325BA04000486D6 /* XBDateTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBDateTime.h; sourceTree = "<group>"; };
 		38B2BBD013131B4A00F83309 /* GlobalsHandling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalsHandling.h; sourceTree = "<group>"; };
 		38F4E55E13CCCB3B00664821 /* Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Helpers.h; sourceTree = "<group>"; };
 		38F4E55F13CCCB3B00664821 /* Lockables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lockables.h; sourceTree = "<group>"; };
-		38F4E56213CCCB3B00664821 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
-		38F4E56313CCCB3B00664821 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
-		38F4E56413CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		38F4E56513CCCB3B00664821 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		38F4E56613CCCB3B00664821 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
-		38F4E56813CCCB3B00664821 /* platform.select */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform.select; sourceTree = "<group>"; };
+		38F4E56813CCCB3B00664821 /* platform.select */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = platform.select; sourceTree = "<group>"; };
 		38F4E56A13CCCB3B00664821 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		38F4E56B13CCCB3B00664821 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
 		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
@@ -4376,7 +4378,6 @@
 		38F4E56013CCCB3B00664821 /* platform */ = {
 			isa = PBXGroup;
 			children = (
-				38F4E56113CCCB3B00664821 /* boost */,
 				38F4E56513CCCB3B00664821 /* Condition.h */,
 				38F4E56613CCCB3B00664821 /* CriticalSection.h */,
 				38F4E56813CCCB3B00664821 /* platform.select */,
@@ -4387,19 +4388,10 @@
 			path = platform;
 			sourceTree = "<group>";
 		};
-		38F4E56113CCCB3B00664821 /* boost */ = {
-			isa = PBXGroup;
-			children = (
-				38F4E56213CCCB3B00664821 /* Condition.h */,
-				38F4E56313CCCB3B00664821 /* CriticalSection.h */,
-				38F4E56413CCCB3B00664821 /* ThreadLocal.h */,
-			);
-			path = boost;
-			sourceTree = "<group>";
-		};
 		38F4E56913CCCB3B00664821 /* pthreads */ = {
 			isa = PBXGroup;
 			children = (
+				3802709713D5A62D009493DD /* ThreadLocal.h */,
 				38F4E56A13CCCB3B00664821 /* Condition.h */,
 				38F4E56B13CCCB3B00664821 /* CriticalSection.h */,
 				38F4E56C13CCCB3B00664821 /* Implementation.cpp */,
@@ -4750,6 +4742,8 @@
 		43D8300612D64DEF00B38489 /* threads */ = {
 			isa = PBXGroup;
 			children = (
+				3802709813D5A653009493DD /* SystemClock.cpp */,
+				3802709913D5A653009493DD /* SystemClock.h */,
 				38F4E55E13CCCB3B00664821 /* Helpers.h */,
 				38F4E55F13CCCB3B00664821 /* Lockables.h */,
 				38F4E56013CCCB3B00664821 /* platform */,
@@ -8105,6 +8099,7 @@
 				18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */,
 				F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */,
+				3802709A13D5A653009493DD /* SystemClock.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8999,6 +8994,7 @@
 				18ECC96313CF178D00A9ED6C /* StreamUtils.cpp in Sources */,
 				F5CEE60A13D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				38F4E57213CCCB3B00664821 /* Implementation.cpp in Sources */,
+				3802709B13D5A653009493DD /* SystemClock.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
