@@ -79,6 +79,8 @@ public:
 
   static bool GetCrystalHDLibraryPath(CStdString &strPath);
   
+  static bool GetFocussedProcess(CStdString &strProcessFile);
+
 private:
 #if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);

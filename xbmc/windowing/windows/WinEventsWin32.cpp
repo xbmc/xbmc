@@ -424,6 +424,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_KILLFOCUS:
       g_application.m_AppFocused = uMsg == WM_SETFOCUS;
       g_Windowing.NotifyAppFocusChange(g_application.m_AppFocused);
+      if (uMsg == WM_KILLFOCUS)
+      {
+        CStdString procfile;
+        if (CWIN32Util::GetFocussedProcess(procfile))
+          CLog::Log(LOGDEBUG, __FUNCTION__": Focus switched to process %s", procfile.c_str());
+      }
       break;
     case WM_SYSKEYDOWN:
       switch (wParam)
