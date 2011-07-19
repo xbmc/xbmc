@@ -44,39 +44,10 @@ protected:
 
 public:
   /**
-   * Callback prototye for Drain and Data callbacks
-   * @see SetDataCallback(), SetDrainCallback()
-   * @param stream The calling stream
-   * @param arg The user supplied pointer
-   * @param samples The number of samples (only used for the Data callback, otherwise this value is unspecified)
-   */
-  typedef void (AECBFunc)(IAEStream*stream, void *arg, unsigned int samples);
-
-  /**
    * Call this to destroy the stream
    * @note Do not use delete
    */
   virtual void Destroy() = 0;
-
-  /**
-   * Disable the callbacks and block until they have finished
-   * @param free Disable the free callback too
-   */
-  virtual void DisableCallbacks(bool free = true) = 0;  
-
-  /**
-   * Set the callback function to call when the stream has completed draining
-   * @param cbFunc The callback function
-   * @param arg Pointer to pass to the callback function (eg, this)
-   */
-  virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg) = 0;
-
-  /**
-   * Set the callback function to call when the stream is about to be freed
-   * @param cbFunc The callback function
-   * @param arg Pointer to pass to the callback function (eg, this)
-   */
-  virtual void SetFreeCallback(AECBFunc *cbFunc, void *arg) = 0;
 
   /**
    * Returns the amount of space available in the stream

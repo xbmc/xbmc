@@ -23,10 +23,7 @@
 #ifdef HAS_PULSEAUDIO
 
 #include "Interfaces/AEStream.h"
-#include "PulseAEEventThread.h"
 #include <pulse/pulseaudio.h>
-
-class CPulseAEEventThread;
 
 class CPulseAEStream : public IAEStream
 {
@@ -36,10 +33,6 @@ public:
   virtual ~CPulseAEStream();
 
   virtual void Destroy();
-  virtual void DisableCallbacks(bool free = true) {}; /* FIXME */
-  virtual void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
-  virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
-  virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg); /* called when the stream is deleted */
 
   virtual unsigned int GetSpace();
   virtual unsigned int AddData(void *data, unsigned int size);
@@ -100,10 +93,6 @@ private:
   pa_threaded_mainloop *m_MainLoop;
 
   IAudioCallback* m_AudioCallback;
-
-  CPulseAEEventThread      *m_AudioDataThread;
-  CPulseAEEventThread      *m_AudioDrainThread;
-  CPulseAEEventThread      *m_AudioFreeThread;
 
   enum AEDataFormat m_format;
   unsigned int m_sampleRate;

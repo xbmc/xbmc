@@ -48,10 +48,7 @@ static const char *StreamStateToString(pa_stream_state s)
   }
 }
 
-CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
-  m_AudioDataThread (NULL),
-  m_AudioDrainThread(NULL),
-  m_AudioFreeThread(NULL)
+CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
 {
   m_Destroyed = false;
   m_Initialized = false;
@@ -203,11 +200,6 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
 CPulseAEStream::~CPulseAEStream()
 {
-  delete m_AudioDataThread;
-  delete m_AudioDrainThread;
-  m_AudioDataThread  = NULL;
-  m_AudioDrainThread = NULL;
-
   if (!m_Initialized)
     return;
 
@@ -224,13 +216,6 @@ CPulseAEStream::~CPulseAEStream()
 
   printf("delete 3\n");
   pa_threaded_mainloop_unlock(m_MainLoop);
-
-  if (m_AudioFreeThread)
-  {
-    m_AudioFreeThread->Trigger();
-    delete m_AudioFreeThread;
-    m_AudioFreeThread = NULL;
-  }
 }
 
 /*
@@ -242,32 +227,8 @@ void CPulseAEStream::Destroy()
   if (m_Destroyed)
     return;
 
-  if (m_AudioDataThread ) m_AudioDataThread ->SetCallback(NULL, NULL);
-  if (m_AudioDrainThread) m_AudioDrainThread->SetCallback(NULL, NULL);
-
   /* signal CPulseAE to free us */
   m_Destroyed = true;
-}
-
-void CPulseAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
-{
-  if (!m_AudioDataThread)
-    m_AudioDataThread = new CPulseAEEventThread(this);
-  m_AudioDataThread->SetCallback(cbFunc, arg);
-}
-
-void CPulseAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
-{
-  if (!m_AudioDrainThread)
-    m_AudioDrainThread = new CPulseAEEventThread(this);
-  m_AudioDrainThread->SetCallback(cbFunc, arg);
-}
-
-void CPulseAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
-{
-  if (!m_AudioFreeThread)
-    m_AudioFreeThread = new CPulseAEEventThread(this);
-  m_AudioFreeThread->SetCallback(cbFunc, arg);
 }
 
 unsigned int CPulseAEStream::GetSpace()
@@ -466,10 +427,7 @@ void CPulseAEStream::UnRegisterAudioCallback()
 void CPulseAEStream::StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 {
   CPulseAEStream *stream = (CPulseAEStream *)userdata;
-
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
-  if (stream->m_AudioDataThread)
-    stream->m_AudioDataThread->Trigger();
 }
 
 void CPulseAEStream::StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
@@ -499,8 +457,6 @@ void CPulseAEStream::StreamDrainComplete(pa_stream *s, int success, void *userda
 {
   CPulseAEStream *stream = (CPulseAEStream *)userdata;
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
-  if (stream->m_AudioDrainThread)
-    stream->m_AudioDrainThread->Trigger();
 }
 
 inline bool CPulseAEStream::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")

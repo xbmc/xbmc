@@ -52,11 +52,6 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_framesBuffered  (0    ),
   m_vizPacketPos    (NULL ),
   m_draining        (false),
-  m_disableCallbacks(false),
-  m_cbDrainFunc     (NULL ),
-  m_cbFreeFunc      (NULL ),
-  m_cbDrainArg      (NULL ),
-  m_inDrainFunc     (false),
   m_vizBufferSamples(0    ),
   m_audioCallback   (NULL ),
   m_fadeRunning     (false)
@@ -230,36 +225,7 @@ CSoftAEStream::~CSoftAEStream()
 
   _aligned_free(m_newPacket.data);
 
-  if (m_cbFreeFunc)
-    m_cbFreeFunc(this, m_cbFreeArg, 0);
-
   CLog::Log(LOGDEBUG, "CSoftAEStream::~CSoftAEStream - Destructed");
-}
-
-void CSoftAEStream::DisableCallbacks(bool free /* = true */)
-{
-  m_disableCallbacks = true;
-  while(IsBusy())
-    Sleep(100);
-
-  CSingleLock lock(m_critSection);
-  m_cbDrainFunc = NULL;
-  if (free)
-    m_cbFreeFunc = NULL;
-}
-
-void CSoftAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
-{
-  CSingleLock lock(m_critSection);
-  m_cbDrainFunc = cbFunc;
-  m_cbDrainArg  = arg;
-}
-
-void CSoftAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
-{
-  CSingleLock lock(m_critSection);
-  m_cbFreeFunc = cbFunc;
-  m_cbFreeArg  = arg;
 }
 
 unsigned int CSoftAEStream::GetSpace()
@@ -432,19 +398,7 @@ uint8_t* CSoftAEStream::GetFrame()
     if (m_outBuffer.empty())
     {
       if (m_draining)
-      {
-        /* if we are draining trigger the callback function */
-        if (m_cbDrainFunc && !m_disableCallbacks)
-        {
-          m_inDrainFunc = true;
-          lock.Leave();
-          m_cbDrainFunc(this, m_cbDrainArg, 0);
-          m_cbDrainFunc = NULL;
-          lock.Enter();
-          m_inDrainFunc = false;
-        }
         return NULL;
-      }
       else
       {
         /* underrun, we need to refill our buffers */
@@ -493,21 +447,6 @@ uint8_t* CSoftAEStream::GetFrame()
   }
 
   --m_framesBuffered;
-
-  /* if we are draining */
-  if (m_draining)
-  {
-    /* if we have drained trigger the callback function */
-    if (m_framesBuffered == 0 && m_frameBufferSize == 0 && m_cbDrainFunc && !m_disableCallbacks)
-    {
-      m_inDrainFunc = true;
-      lock.Leave();
-      m_cbDrainFunc(this, m_cbDrainArg, 0);
-      m_cbDrainFunc = NULL;
-      lock.Enter();
-      m_inDrainFunc = false;
-    }
-  }
 
   /* we have a frame, if we have a viz we need to hand the data to it */
   if (m_audioCallback && vizData)
@@ -654,9 +593,4 @@ void CSoftAEStream::FadeVolume(float from, float target, unsigned int time)
 bool CSoftAEStream::IsFading()
 {
   return m_fadeRunning;
-}
-
-bool CSoftAEStream::IsBusy()
-{
-  return m_inDrainFunc;
 }

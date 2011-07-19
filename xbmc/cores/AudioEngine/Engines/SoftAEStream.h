@@ -42,9 +42,6 @@ public:
   void Initialize();
   void InitializeRemap();
   virtual void Destroy();
-  virtual void DisableCallbacks(bool free = true); /* disable all callbacks */
-  virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
-  virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg); /* called when the stream is deleted */
 
   virtual unsigned int GetFrameSize() {return m_format.m_frameSize;}
   virtual unsigned int GetSpace();
@@ -85,10 +82,7 @@ public:
 
   virtual void FadeVolume(float from, float to, unsigned int time);
   virtual bool IsFading();
-
-  /* returns true if the stream is in a callback function */
-  bool IsBusy();
-
+  
 private:
   void InternalFlush();
   void CheckResampleBuffers();
@@ -140,12 +134,6 @@ private:
   float             *m_vizPacketPos;
   bool               m_paused;
   bool               m_draining;
-
-  /* callback hook for more data */
-  bool          m_disableCallbacks;
-  AECBFunc     *m_cbDrainFunc, *m_cbFreeFunc;
-  void         *m_cbDrainArg , *m_cbFreeArg;
-  bool          m_inDrainFunc,  m_inFreeFunc;
 
   /* vizualization internals */
   CAERemap           m_vizRemap;

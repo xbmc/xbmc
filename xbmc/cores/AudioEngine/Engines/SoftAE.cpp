@@ -120,7 +120,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   list<CSoftAEStream*>::iterator itt;
   for(itt = m_streams.begin(); itt != m_streams.end();)
   {
-    if ((*itt)->IsDestroyed() && !(*itt)->IsBusy())
+    if ((*itt)->IsDestroyed())
     {
       CSoftAEStream *stream = *itt;
       itt = m_streams.erase(itt);
@@ -1015,14 +1015,8 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
     /* skip streams that are flagged for deletion */
     if (stream->IsDestroyed())
     {
-      if (!stream->IsBusy())
-      {
-        itt = m_streams.erase(itt);
-        delete stream;
-      }
-      else
-        ++itt;
-
+      itt = m_streams.erase(itt);
+      delete stream;
       continue;
     }
 
