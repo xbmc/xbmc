@@ -100,7 +100,7 @@ private:
   typedef std::list<StreamInfo*> StreamList;
 
   CCriticalSection       m_threadLock;
-  bool                   m_isPlaying;
+  bool                   m_isPlaying, m_isPaused;
   unsigned int           m_crossFadeTime;   /* how long the crossfade is */
   CEvent                 m_startEvent;      /* event for playback start */
   StreamInfo*            m_currentStream;   /* the current playing stream */
@@ -108,6 +108,8 @@ private:
   StreamList             m_streams;         /* playing streams */
 
   bool QueueNextFileEx(const CFileItem &file, bool fadeIn = true);
+  void SoftStart(bool wait = false);
+  void SoftStop(bool wait = false, bool close = true);
   void CloseAllStreams(bool fade = true);
   void ProcessStreams();
   bool PrepareStream(StreamInfo *si);

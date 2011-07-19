@@ -42,11 +42,10 @@
 // Supporting all open  audio codec standards.
 // First one being nullsoft's nsv audio decoder format
 
-#define P printf("%s\n", __FUNCTION__);
-
 PAPlayer::PAPlayer(IPlayerCallback& callback) :
   IPlayer::IPlayer(callback),
   m_isPlaying     (false),
+  m_isPaused      (false),
   m_currentStream (NULL)
 {
   m_startEvent.Reset();
@@ -54,10 +53,13 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
 
 PAPlayer::~PAPlayer()
 {
-  CloseAllStreams(false);
-  m_isPlaying = false;
+  if (m_isPaused)
+    CloseAllStreams(false);
+  else
+    SoftStop(true, true);
   
   /* wait for the thread to terminate */
+  m_isPlaying = false;
   CSingleLock lock(m_threadLock);
 }
 
@@ -73,12 +75,105 @@ bool PAPlayer::HandlesType(const CStdString &type)
   return false;
 }
 
-void PAPlayer::CloseAllStreams(bool fade/* = true */)
+void PAPlayer::SoftStart(bool wait/* = false */)
 {
-  CExclusiveLock lock(m_streamsLock);
-   
+  CSharedLock lock(m_streamsLock);
+  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+  {
+    StreamInfo* si = *itt;
+    if (si->m_fadeOutTriggered)
+      continue;
+    
+    si->m_stream->FadeVolume(0.0f, 1.0f, FAST_XFADE_TIME);
+    si->m_stream->Resume();
+  }
+  
+  if (wait)
+  {
+    /* wait for them to fade in */
+    lock.Leave();
+    Sleep(FAST_XFADE_TIME);
+    lock.Enter();
+
+    /* be sure they have faded in */
+    while(wait)
+    {
+      wait = false;
+      for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+      {
+        StreamInfo* si = *itt;
+        if (si->m_stream->IsFading())
+        {
+	  lock.Leave();	  
+          wait = true;
+          Sleep(1);
+	  lock.Enter();
+          break;
+        }
+      }
+    }   
+  }
+}
+
+void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
+{
+  /* fade all the streams out fast for a nice soft stop */
+  CSharedLock lock(m_streamsLock);
+  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+  {
+    StreamInfo* si = *itt;
+    si->m_stream->FadeVolume(1.0f, 0.0f, FAST_XFADE_TIME);
+    if (close)
+    {
+      si->m_prepareTriggered  = true;
+      si->m_playNextTriggered = true;
+      si->m_fadeOutTriggered  = true;
+    }
+  }
+  
+  /* if we are going to wait for them to finish fading */
+  if(wait)
+  {
+    /* wait for them to fade out */
+    lock.Leave();
+    Sleep(FAST_XFADE_TIME);
+    lock.Enter();
+    
+    /* be sure they have faded out */
+    while(wait)
+    {
+      wait = false;
+      for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+      {
+        StreamInfo* si = *itt;
+        if (si->m_stream->IsFading())
+        {
+	  lock.Leave();	  
+          wait = true;
+          Sleep(1);
+	  lock.Enter();
+          break;
+        }
+      }
+    }
+    
+    /* if we are not closing the streams, pause them */
+    if (!close)
+    {
+      for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+      {
+        StreamInfo* si = *itt;
+        si->m_stream->Pause();
+      }
+    }
+  }
+}
+
+void PAPlayer::CloseAllStreams(bool fade/* = true */)
+{   
   if (!fade) 
   {
+    CExclusiveLock lock(m_streamsLock);    
     while(!m_streams.empty())
     {
       StreamInfo* si = m_streams.front();
@@ -93,21 +188,14 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       si->m_decoder.Destroy();
       delete si;
     }
+    m_currentStream = NULL;
   }
   else
   {
-    /* fade all the streams out fast for a nice soft stop */
-    for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
-    {
-      StreamInfo* si = *itt;
-      si->m_stream->FadeVolume(1.0f, 0.0f, FAST_XFADE_TIME);
-      si->m_prepareTriggered  = true;
-      si->m_playNextTriggered = true;
-      si->m_fadeOutTriggered  = true;
-    }
-  }
-   
-   m_currentStream = NULL;
+    SoftStop(false, true);
+    CExclusiveLock lock(m_streamsLock);
+    m_currentStream = NULL;
+  }  
 }
 
 bool PAPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
@@ -201,7 +289,6 @@ bool PAPlayer::PrepareStream(StreamInfo *si)
 
 bool PAPlayer::CloseFile()
 {
-  CloseAllStreams(false);
   m_callback.OnPlayBackStopped();
   return true;
 }
@@ -221,7 +308,7 @@ void PAPlayer::Process()
   {
     if (IsPaused())
     {
-      Sleep(100);
+      Sleep(10);
       continue;
     }
 
@@ -324,22 +411,22 @@ bool PAPlayer::ProcessStream(StreamInfo *si)
 
 void PAPlayer::OnExit()
 {
-  P
+
 }
 
 void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 {
-  P
+
 }
 
 void PAPlayer::UnRegisterAudioCallback()
 {
-  P
+
 }
 
 void PAPlayer::OnNothingToQueueNotify()
 {
-  P
+
 }
 
 bool PAPlayer::IsPlaying() const
@@ -349,27 +436,36 @@ bool PAPlayer::IsPlaying() const
 
 bool PAPlayer::IsPaused() const
 {
-  return false;
+  return m_isPaused;
 }
 
 void PAPlayer::Pause()
 {
-  P
+  if (m_isPaused)
+  {
+    m_isPaused = false;
+    SoftStart();
+  }
+  else
+  {
+    SoftStop(true, false);
+    m_isPaused = true;
+  }
 }
 
 void PAPlayer::SetVolume(float volume)
 {
-  P
+
 }
 
 void PAPlayer::SetDynamicRangeCompression(long drc)
 {
-  P
+
 }
 
 void PAPlayer::ToFFRW(int iSpeed)
 {
-  P
+
 }
 
 __int64 PAPlayer::GetTime()
@@ -455,23 +551,22 @@ int PAPlayer::GetAudioBitrate()
 
 bool PAPlayer::CanSeek()
 {
-  P
   return false;
 }
 
 void PAPlayer::Seek(bool bPlus, bool bLargeStep)
 {
-  P
+
 }
 
 void PAPlayer::SeekTime(__int64 iTime /*=0*/)
 {
-  P
+
 }
 
 void PAPlayer::SeekPercentage(float fPercent /*=0*/)
 {
-  P
+
 }
 
 float PAPlayer::GetPercentage()
@@ -481,6 +576,5 @@ float PAPlayer::GetPercentage()
 
 bool PAPlayer::SkipNext()
 {
-  P
   return false;
 }
