@@ -1572,9 +1572,6 @@
     <ClInclude Include="..\..\xbmc\threads\CriticalSection.h" />
     <ClInclude Include="..\..\xbmc\threads\Event.h" />
     <ClInclude Include="..\..\xbmc\threads\LockFree.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\boost\Condition.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\boost\CriticalSection.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\boost\ThreadLocal.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\Condition.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h" />
