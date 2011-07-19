@@ -43,12 +43,9 @@ public:
   void Initialize(AEAudioFormat &outputFormat);
   void InitializeRemap();
   virtual void Destroy();
-  virtual void DisableCallbacks(bool free = true); /* disable all callbacks */
-  virtual void SetDataCallback (AECBFunc *cbFunc, void *arg); /* called when the buffer < 50% full */
-  virtual void SetDrainCallback(AECBFunc *cbFunc, void *arg); /* called when the buffer has been drained */
-  virtual void SetFreeCallback (AECBFunc *cbFunc, void *arg); /* called when the stream is deleted */
 
   virtual unsigned int GetFrameSize();
+  virtual unsigned int GetSpace();
   virtual unsigned int AddData(void *data, unsigned int size);
   unsigned int GetFrames(uint8_t *buffer, unsigned int size);
   virtual float GetDelay();
@@ -57,7 +54,7 @@ public:
 
   bool IsPaused();
   virtual bool IsDraining();
-  bool IsFreeOnDrain();
+  virtual bool IsDrained();
   bool IsDestroyed();
   bool IsValid();
 
@@ -83,11 +80,9 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
 
-  void SetFreeOnDrain();
-
-  /* returns true if the stream is in a callback function */
-  bool IsBusy();
-
+  virtual void FadeVolume(float from, float to, unsigned int time);
+  virtual bool IsFading();
+  
 private:
   void InternalFlush();
 
@@ -106,7 +101,6 @@ private:
   CAERemap                m_remap;         /* the remapper */
   float                   m_volume;        /* the volume level */
   float                   m_rgain;         /* replay gain level */
-  bool                    m_freeOnDrain;   /* true to free the stream when it has drained */
 
   CAEConvert::AEConvertToFn m_convertFn;
 
@@ -126,15 +120,16 @@ private:
   bool                    m_draining;
   unsigned int            m_AvgBytesPerSec;
 
-  /* callback hook for more data */
-  bool                    m_disableCallbacks;
-  AECBFunc               *m_cbDataFunc, *m_cbDrainFunc, *m_cbFreeFunc;
-  void                   *m_cbDataArg , *m_cbDrainArg , *m_cbFreeArg;
-  bool                    m_inDataFunc,  m_inDrainFunc,  m_inFreeFunc;
-
   /* vizualization internals */
   CAERemap                m_vizRemap;
   IAudioCallback         *m_audioCallback;
+
+  /* fade values */
+  bool               m_fadeRunning;
+  bool               m_fadeDirUp;
+  float              m_fadeStep;
+  float              m_fadeTarget;
+  unsigned int       m_fadeTime;
 };
 
 #endif

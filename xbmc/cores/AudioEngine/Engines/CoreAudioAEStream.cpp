@@ -24,6 +24,7 @@
 #include "utils/log.h"
 #include "DllAvCore.h"
 
+#include "AE.h"
 #include "AEFactory.h"
 #include "AEUtil.h"
 
@@ -49,17 +50,10 @@ CCoreAudioAEStream::CCoreAudioAEStream(enum AEDataFormat dataFormat, unsigned in
   m_convertFn       (NULL ),
   m_ssrc            (NULL ),
   m_draining        (false),
-  m_disableCallbacks(false),
-  m_cbDataFunc      (NULL ),
-  m_cbDrainFunc     (NULL ),
-  m_cbDataArg       (NULL ),
-  m_cbDrainArg      (NULL ),
-  m_inDataFunc      (false),
-  m_inDrainFunc     (false),
   m_audioCallback   (NULL ),
-  m_cbFreeFunc      (NULL ),
   m_AvgBytesPerSec  (0    ),
-  m_Buffer          (NULL)
+  m_Buffer          (NULL ),
+  m_fadeRunning     (false)
 {
   m_ssrcData.data_out             = NULL;
 
@@ -70,7 +64,6 @@ CCoreAudioAEStream::CCoreAudioAEStream(enum AEDataFormat dataFormat, unsigned in
   
   m_OutputFormat                  = m_StreamFormat;
     
-  m_freeOnDrain                   = (options & AESTREAM_FREE_ON_DRAIN) != 0;
   m_forceResample                 = (options & AESTREAM_FORCE_RESAMPLE) != 0;
   m_paused                        = (options & AESTREAM_PAUSED) != 0;
 
@@ -83,6 +76,7 @@ CCoreAudioAEStream::CCoreAudioAEStream(enum AEDataFormat dataFormat, unsigned in
 
 CCoreAudioAEStream::~CCoreAudioAEStream()
 {
+  ((CCoreAudioAE*)&AE)->RemoveStream(this);
   CSingleLock StreamLock(m_MutexStream);
 
   InternalFlush();
@@ -91,9 +85,6 @@ CCoreAudioAEStream::~CCoreAudioAEStream()
   _aligned_free(m_resampleBuffer);
   _aligned_free(m_remapBuffer);
   _aligned_free(m_vizRemapBuffer);
-  
-  if (m_cbFreeFunc)
-    m_cbFreeFunc(this, m_cbFreeArg, 0);
   
   if(m_Buffer)
     delete m_Buffer;
@@ -226,6 +217,9 @@ void CCoreAudioAEStream::Initialize(AEAudioFormat &outputFormat)
   CLog::Log(LOGDEBUG, "====================\n");
 
   StreamLock.Leave();
+  
+  m_fadeRunning = false;
+  
   m_valid = true;
 }
 
@@ -240,52 +234,6 @@ void CCoreAudioAEStream::Destroy()
   StreamLock.Leave();
 }
 
-void CCoreAudioAEStream::DisableCallbacks(bool free /* = true */)
-{
-  m_disableCallbacks = true;
-  while(IsBusy())
-    Sleep(100);
-
-  CSingleLock StreamLock(m_MutexStream);
-
-  m_cbDataFunc  = NULL;
-  m_cbDrainFunc = NULL;
-  if (free)
-    m_cbFreeFunc = NULL;
-  
-  StreamLock.Leave();
-}
-
-void CCoreAudioAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
-{
-  CSingleLock StreamLock(m_MutexStream);
-
-  m_cbDataFunc = cbFunc;
-  m_cbDataArg  = arg;
-  
-  StreamLock.Leave();
-}
-
-void CCoreAudioAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
-{
-  CSingleLock StreamLock(m_MutexStream);
-
-  m_cbDrainFunc = cbFunc;
-  m_cbDrainArg  = arg;
-
-  StreamLock.Leave();
-}
-
-void CCoreAudioAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
-{
-  CSingleLock StreamLock(m_MutexStream);
-
-  m_cbFreeFunc = cbFunc;
-  m_cbFreeArg  = arg;
-  
-  StreamLock.Leave();
-}
-
 unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 {
   unsigned int frames   = size / m_StreamFormat.m_frameSize;
@@ -293,12 +241,12 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   uint8_t     *adddata  = (uint8_t *)data;
   unsigned int addsize  = size;
 
-  if (!m_valid || size == 0 || data == NULL || m_draining || m_delete || !m_Buffer)
+  if (!m_valid || size == 0 || data == NULL || m_draining || !m_Buffer)
   {
     return 0; 
   }
 
-  //CSingleLock StreamLock(m_MutexStream);
+  CSingleLock StreamLock(m_MutexStream);
   unsigned int room = m_Buffer->GetWriteSize();
      
   /* convert the data if we need to */
@@ -317,7 +265,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
 
   if (samples == 0)
   {
-    //StreamLock.Leave();
+    StreamLock.Leave();
     return 0;
   }
   
@@ -373,7 +321,7 @@ unsigned int CCoreAudioAEStream::AddData(void *data, unsigned int size)
   {
     m_Buffer->Write(adddata, addsize);
   }
-  //StreamLock.Leave();
+  StreamLock.Leave();
 
   return size;    
 }
@@ -387,54 +335,21 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
   }
     
   /* we are draining */
+  /*
   if (m_draining)
   {
-    /* if we are draining trigger the callback function */
-    if (m_cbDrainFunc && !m_disableCallbacks)
-    {
-      m_inDrainFunc = true;
-      m_cbDrainFunc(this, m_cbDrainArg, 0);
-      m_cbDrainFunc = NULL;
-      m_inDrainFunc = false;
-    }
     return 0;
   }
+  */
+
+  CSingleLock StreamLock(m_MutexStream);
   
-  unsigned int readsize = m_Buffer->GetReadSize();
-  if(readsize < size)
-  {
-    /* otherwise ask for more data */
-    if (m_cbDataFunc && !m_disableCallbacks)
-    {
-      m_inDataFunc = true;
-      unsigned int samples = m_Buffer->GetWriteSize() / m_StreamBytesPerSample / 2;
-      m_cbDataFunc(this, m_cbDataArg, samples);
-      m_inDataFunc = false;
-    }
-  }
-  
-  readsize = std::min(m_Buffer->GetReadSize(), size);  
-  
+  unsigned int readsize = std::min(m_Buffer->GetReadSize(), size);
   m_Buffer->Read(buffer, readsize);
- 
-#if 0
-  if(!m_draining && (readsize < size))
-  {
-    /* otherwise ask for more data */
-    if (m_cbDataFunc && !m_disableCallbacks)
-    {
-      m_inDataFunc = true;
-      unsigned int samples = m_Buffer->GetWriteSize() / m_StreamBytesPerSample / 2;
-      m_cbDataFunc(this, m_cbDataArg, samples);
-      m_inDataFunc = false;
-    }
-  }
-#endif
 
   /* we have a frame, if we have a viz we need to hand the data to it.
      On iOS we do not have vizualisation. Keep in mind that our buffer
      is already in output format. So we remap output format to viz format !!!*/
-#ifndef __arm__
   if(!COREAUDIO_IS_RAW(m_StreamFormat.m_dataFormat) && (m_OutputFormat.m_dataFormat == AE_FMT_FLOAT))
   {
     // TODO : Why the hell is vizdata limited ?
@@ -454,7 +369,27 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
       }
     }
   }
-#endif
+
+  /* if we are fading */
+  if (m_fadeRunning)
+  {
+    m_volume += m_fadeStep;
+    m_volume = std::min(1.0f, std::max(0.0f, m_volume));
+    if (m_fadeDirUp)
+    {
+      if (m_volume >= m_fadeTarget)
+        m_fadeRunning = false;
+    }
+    else
+    {
+      if (m_volume <= m_fadeTarget)
+        m_fadeRunning = false;
+    }
+  }
+
+  m_fadeRunning = false;
+  
+  StreamLock.Leave();
   
   return readsize;  
 }
@@ -462,6 +397,13 @@ unsigned int CCoreAudioAEStream::GetFrames(uint8_t *buffer, unsigned int size)
 unsigned int CCoreAudioAEStream::GetFrameSize()
 {
   return m_OutputFormat.m_frameSize;
+}
+
+unsigned int CCoreAudioAEStream::GetSpace()
+{
+  if (!m_valid || m_draining) return 0;
+
+  return m_Buffer->GetWriteSize() / m_StreamFormat.m_frameSize;
 }
 
 float CCoreAudioAEStream::GetDelay()
@@ -497,11 +439,6 @@ bool CCoreAudioAEStream::IsDraining ()
   return m_draining;
 }
 
-bool CCoreAudioAEStream::IsFreeOnDrain()
-{ 
-  return m_freeOnDrain;
-}
-
 bool CCoreAudioAEStream::IsDestroyed()
 { 
   return m_delete;
@@ -525,6 +462,15 @@ void CCoreAudioAEStream::Resume()
 void CCoreAudioAEStream::Drain()
 {
   m_draining = true;
+}
+
+
+bool CCoreAudioAEStream::IsDrained()
+{
+  if(m_Buffer->GetReadSize() > 0)
+    return false;
+  else
+    return true;
 }
 
 void CCoreAudioAEStream::Flush()
@@ -618,12 +564,16 @@ void CCoreAudioAEStream::UnRegisterAudioCallback()
   StreamLock.Leave();
 }
 
-void CCoreAudioAEStream::SetFreeOnDrain()
+void CCoreAudioAEStream::FadeVolume(float from, float target, unsigned int time)
 {
-  m_freeOnDrain = true;
+  float delta   = target - from;
+  m_fadeDirUp   = target > from;
+  m_fadeTarget  = target;
+  m_fadeStep    = delta / (((float)m_OutputFormat.m_sampleRate / 1000.0f) * (float)time);
+  m_fadeRunning = true;
 }
 
-bool CCoreAudioAEStream::IsBusy()
+bool CCoreAudioAEStream::IsFading()
 {
-  return (m_inDataFunc || m_inDrainFunc);
+  return m_fadeRunning;
 }
