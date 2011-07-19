@@ -3331,9 +3331,7 @@ void CApplication::Stop(int exitCode)
     g_Windowing.DestroyWindowSystem();
 
     // shutdown the AudioEngine
-#ifndef  __APPLE__
-    CAEFactory::LoadEngine(AE_ENGINE_NULL);
-#endif
+    CAEFactory::AE->Shutdown();
 
     CLog::Log(LOGNOTICE, "stopped");
   }

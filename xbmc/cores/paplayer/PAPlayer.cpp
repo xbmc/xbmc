@@ -337,14 +337,14 @@ inline void PAPlayer::ProcessStreams(float &delay)
     StreamInfo* si = *itt;
     if (si->m_stream->IsDrained())
     {
-      si->m_stream->Destroy();
-      delete si;
       itt = m_finishing.erase(itt);
+      si->m_stream->Destroy();
+      delete si;      
     }
     else
       ++itt;
   }
-
+  
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;

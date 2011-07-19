@@ -376,6 +376,11 @@ bool CSoftAE::SetupEncoder(AEAudioFormat &format)
   return false;
 }
 
+void CSoftAE::Shutdown()
+{
+  Deinitialize();
+}
+
 bool CSoftAE::Initialize()
 {
   /* get the current volume level */
@@ -1017,6 +1022,8 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
     {
       itt = m_streams.erase(itt);
       delete stream;
+      if (m_streams.empty())
+	restart = true;
       continue;
     }
 

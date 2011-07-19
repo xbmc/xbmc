@@ -55,7 +55,11 @@ protected:
    */
   virtual bool Initialize() = 0;
 public:
-
+  /**
+   * Called when the application needs to terminate the engine
+   */
+  virtual void Shutdown() { }
+  
   /**
    * Callback to alert the AudioEngine of setting changes
    * @param setting The name of the setting that was changed
