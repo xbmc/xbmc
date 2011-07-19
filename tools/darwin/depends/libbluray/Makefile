@@ -1,4 +1,5 @@
 include ../Makefile.include
+include ../config.site.mk
 
 # lib name, version
 LIBNAME=libblueray
