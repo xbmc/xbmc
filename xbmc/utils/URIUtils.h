@@ -43,6 +43,7 @@ public:
                                      const CStdString& strNewExtension);
   static void Split(const CStdString& strFileNameAndPath, 
                     CStdString& strPath, CStdString& strFileName);
+  static CStdStringArray SplitPath(const CStdString& strPath);
 
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static CStdString GetParentPath(const CStdString& strPath);

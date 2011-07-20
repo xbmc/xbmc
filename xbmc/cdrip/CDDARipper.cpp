@@ -375,7 +375,7 @@ bool CCDDARipper::CreateAlbumDir(const MUSIC_INFO::CMusicInfoTag& infoTag, CStdS
     URIUtils::AddSlashAtEnd(strDirectory);
   }
 
-  CUtil::MakeLegalPath(strDirectory, legalType);
+  strDirectory = CUtil::MakeLegalPath(strDirectory, legalType);
 
   // Create directory if it doesn't exist
   if (!CUtil::CreateDirectoryEx(strDirectory))
