@@ -456,8 +456,9 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay)
     m_callback.OnPlayBackStarted();
   }
 
-  /* if we have not started yet */
-  if (!si->m_started)
+  /* if we have not started yet and the stream has been primed */
+  unsigned int space = si->m_stream->GetSpace();
+  if (!si->m_started && !space)
     return true;
 
   int status = si->m_decoder.GetStatus();
@@ -469,13 +470,15 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay)
     return false;
   }
 
-  /* update the delay time */
-  delay = std::min(delay, si->m_stream->GetCacheTime());  
-
   /* calculate the data size */
-  unsigned int size = std::min(si->m_decoder.GetDataSize(), si->m_stream->GetSpace() / si->m_bytesPerSample);
+  unsigned int size = std::min(si->m_decoder.GetDataSize(), space / si->m_bytesPerSample);
   if (!size)
+  {
+    /* update the delay time if we are running */
+    if (si->m_started)
+      delay = std::min(delay, si->m_stream->GetCacheTime());  
     return true;
+  }
   
   void* data = si->m_decoder.GetData(size);
   if (!data)
@@ -486,6 +489,10 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay)
   
   unsigned int added = si->m_stream->AddData(data, size * si->m_bytesPerSample);
   si->m_samplesSent += added / si->m_bytesPerSample;
+
+  /* update the delay time if we are running */
+  if (si->m_started)  
+    delay = std::min(delay, si->m_stream->GetCacheTime());  
   
   return true;
 }
