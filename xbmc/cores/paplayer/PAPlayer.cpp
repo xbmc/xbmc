@@ -34,6 +34,7 @@
 
 #include "threads/SingleLock.h"
 #include "cores/AudioEngine/Utils/AEUtil.h"
+#include <visualizations/Goom/goom2k4-0/src/goom_hash.h>
 
 #define TIME_TO_CACHE_NEXT_FILE 5000 /* 5 seconds before end of song, start caching the next song */
 #define FAST_XFADE_TIME           80 /* 80 milliseconds */
@@ -149,7 +150,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
       for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       {
         StreamInfo* si = *itt;
-        if (si->m_stream->IsFading())
+        if (si->m_stream && si->m_stream->IsFading())
         {
           lock.Leave();	  
           wait = true;
@@ -339,9 +340,11 @@ void PAPlayer::Process()
 inline void PAPlayer::ProcessStreams(float &delay)
 {
   CSharedLock sharedLock(m_streamsLock);
-  if (m_isFinished && m_streams.empty())
+  if (m_isFinished && m_streams.empty() && m_finishing.empty())
   {
+    m_callback.OnPlayBackStopped();    
     m_isPlaying = false;
+    delay       = 0;
     return;
   }
 
@@ -350,15 +353,15 @@ inline void PAPlayer::ProcessStreams(float &delay)
   {
     StreamInfo* si = *itt;
     if (si->m_stream->IsDrained())
-    {
+    {      
       itt = m_finishing.erase(itt);
       si->m_stream->Destroy();
-      delete si;      
+      delete si;
     }
     else
-      ++itt;
+      ++itt;    
   }
-  
+    
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
   {
     StreamInfo* si = *itt;
@@ -387,7 +390,7 @@ inline void PAPlayer::ProcessStreams(float &delay)
           {
             m_callback.OnQueueNextItem();
             si->m_prepareTriggered = true;
-          }          
+          }
           m_currentStream = NULL;
         }
         else
@@ -395,10 +398,10 @@ inline void PAPlayer::ProcessStreams(float &delay)
           m_currentStream = *itt;
         }
       }
-        
-      m_finishing.push_back(si);
+      
       si->m_decoder.Destroy();      
       si->m_stream->Drain();
+      m_finishing.push_back(si);
       return;
     }
     
