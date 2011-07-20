@@ -33,6 +33,7 @@ CGUILabel::CGUILabel(float posX, float posY, float width, float height, const CL
   m_scrolling = (overflow == OVER_FLOW_SCROLL);
   m_label = labelInfo;
   m_invalid = true;
+  m_color = COLOR_DISABLED;
 }
 
 CGUILabel::~CGUILabel(void)
