@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "UdpClient.h"
 #ifdef _LINUX
 #include <sys/ioctl.h>
@@ -192,7 +193,7 @@ void CUdpClient::Process()
         CStdString message = messageBuffer;
 
         CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT RX: %u\t\t<- '%s'",
-                  CTimeUtils::GetTimeMS(), message.c_str() );
+                  XbmcThreads::SystemClockMillis(), message.c_str() );
 
         // NOTE: You should consider locking access to the screen device
         // or at least wait until after vertical refresh before firing off events
@@ -242,7 +243,7 @@ bool CUdpClient::DispatchNextCommand()
     // only perform the following if logging level at debug
     CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %u\t\t-> "
                                      "<binary payload %u bytes>",
-              CTimeUtils::GetTimeMS(), command.binarySize );
+              XbmcThreads::SystemClockMillis(), command.binarySize );
 
     do
     {
@@ -256,7 +257,7 @@ bool CUdpClient::DispatchNextCommand()
   {
     // only perform the following if logging level at debug
     CLog::Log(UDPCLIENT_DEBUG_LEVEL, "UDPCLIENT TX: %u\t\t-> '%s'",
-              CTimeUtils::GetTimeMS(), command.message.c_str() );
+              XbmcThreads::SystemClockMillis(), command.message.c_str() );
 
     do
     {

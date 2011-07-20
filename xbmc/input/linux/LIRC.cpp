@@ -19,6 +19,7 @@
 *
 */
 
+#include "threads/SystemClock.h"
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -124,7 +125,7 @@ void CRemoteControl::setDeviceName(const CStdString& value)
 void CRemoteControl::Initialize()
 {
   struct sockaddr_un addr;
-  int now = CTimeUtils::GetTimeMS();
+  int now = XbmcThreads::SystemClockMillis();
 
   if (!m_used || now < m_lastInitAttempt + m_initRetryPeriod)
     return;
@@ -241,7 +242,7 @@ void CRemoteControl::Update()
   if (!CheckDevice())
     return;
 
-  uint32_t now = CTimeUtils::GetTimeMS();
+  uint32_t now = XbmcThreads::SystemClockMillis();
 
   // Read a line from the socket
   while (fgets(m_buf, sizeof(m_buf), m_file) != NULL)

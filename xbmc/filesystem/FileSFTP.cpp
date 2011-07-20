@@ -20,6 +20,7 @@
  */
 
 
+#include "threads/SystemClock.h"
 #include "FileSFTP.h"
 #ifdef HAS_FILESYSTEM_SFTP
 #include "threads/SingleLock.h"
@@ -56,7 +57,7 @@ CSFTPSession::CSFTPSession(const CStdString &host, unsigned int port, const CStd
   if (!Connect(host, port, username, password))
     Disconnect();
 
-  m_LastActive = CTimeUtils::GetTimeMS();
+  m_LastActive = XbmcThreads::SystemClockMillis();
 }
 
 CSFTPSession::~CSFTPSession()
@@ -70,7 +71,7 @@ sftp_file CSFTPSession::CreateFileHande(const CStdString &file)
   if (m_connected)
   {
     CSingleLock lock(m_critSect);
-    m_LastActive = CTimeUtils::GetTimeMS();
+    m_LastActive = XbmcThreads::SystemClockMillis();
     sftp_file handle = sftp_open(m_sftp_session, CorrectPath(file).c_str(), O_RDONLY, 0);
     if (handle)
     {
@@ -100,7 +101,7 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
 
     {
       CSingleLock lock(m_critSect);
-      m_LastActive = CTimeUtils::GetTimeMS();
+      m_LastActive = XbmcThreads::SystemClockMillis();
       dir = sftp_opendir(m_sftp_session, CorrectPath(folder).c_str());
     }
 
@@ -206,7 +207,7 @@ int CSFTPSession::Stat(const char *path, struct __stat64* buffer)
   CSingleLock lock(m_critSect);
   if(m_connected)
   {
-    m_LastActive = CTimeUtils::GetTimeMS();
+    m_LastActive = XbmcThreads::SystemClockMillis();
     sftp_attributes attributes = sftp_stat(m_sftp_session, CorrectPath(path).c_str());
 
     if (attributes)
@@ -235,27 +236,27 @@ int CSFTPSession::Stat(const char *path, struct __stat64* buffer)
 int CSFTPSession::Seek(sftp_file handle, uint64_t position)
 {
   CSingleLock lock(m_critSect);
-  m_LastActive = CTimeUtils::GetTimeMS();
+  m_LastActive = XbmcThreads::SystemClockMillis();
   return sftp_seek64(handle, position);
 }
 
 int CSFTPSession::Read(sftp_file handle, void *buffer, size_t length)
 {
   CSingleLock lock(m_critSect);
-  m_LastActive = CTimeUtils::GetTimeMS();
+  m_LastActive = XbmcThreads::SystemClockMillis();
   return sftp_read(handle, buffer, length);
 }
 
 int64_t CSFTPSession::GetPosition(sftp_file handle)
 {
   CSingleLock lock(m_critSect);
-  m_LastActive = CTimeUtils::GetTimeMS();
+  m_LastActive = XbmcThreads::SystemClockMillis();
   return sftp_tell64(handle);
 }
 
 bool CSFTPSession::IsIdle()
 {
-  return (CTimeUtils::GetTimeMS() - m_LastActive) > 90000;
+  return (XbmcThreads::SystemClockMillis() - m_LastActive) > 90000;
 }
 
 bool CSFTPSession::VerifyKnownHost(ssh_session session)

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "DVDFileInfo.h"
 #include "FileItem.h"
 #include "settings/AdvancedSettings.h"
@@ -73,7 +74,7 @@ bool CDVDFileInfo::GetFileDuration(const CStdString &path, int& duration)
 
 bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &strTarget, CStreamDetails *pStreamDetails)
 {
-  int nTime = CTimeUtils::GetTimeMS();
+  int nTime = XbmcThreads::SystemClockMillis();
   CDVDInputStream *pInputStream = CDVDFactoryInputStream::CreateInputStream(NULL, strPath, "");
   if (!pInputStream)
   {
@@ -249,7 +250,7 @@ bool CDVDFileInfo::ExtractThumb(const CStdString &strPath, const CStdString &str
       file.Close();
   }
 
-  int nTotalTime = CTimeUtils::GetTimeMS() - nTime;
+  int nTotalTime = XbmcThreads::SystemClockMillis() - nTime;
   CLog::Log(LOGDEBUG,"%s - measured %d ms to extract thumb from file <%s> ", __FUNCTION__, nTotalTime, strPath.c_str());
   return bOk;
 }

@@ -20,6 +20,7 @@
  */
 
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "PluginDirectory.h"
 #include "utils/URIUtils.h"
@@ -446,7 +447,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   const unsigned int timeBeforeProgressBar = 1500;
   const unsigned int timeToKillScript = 1000;
 
-  unsigned int startTime = CTimeUtils::GetTimeMS();
+  unsigned int startTime = XbmcThreads::SystemClockMillis();
   CGUIDialogProgress *progressBar = NULL;
 
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
@@ -475,14 +476,14 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     }
 
     // check whether we should pop up the progress dialog
-    if (!progressBar && CTimeUtils::GetTimeMS() - startTime > timeBeforeProgressBar)
+    if (!progressBar && XbmcThreads::SystemClockMillis() - startTime > timeBeforeProgressBar)
     { // loading takes more then 1.5 secs, show a progress dialog
       progressBar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // if script has shown progressbar don't override it
       if (progressBar && progressBar->IsActive())
       {
-        startTime = CTimeUtils::GetTimeMS();
+        startTime = XbmcThreads::SystemClockMillis();
         progressBar = NULL;
       }
 
@@ -518,9 +519,9 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
         if (!m_cancelled)
         {
           m_cancelled = true;
-          startTime = CTimeUtils::GetTimeMS();
+          startTime = XbmcThreads::SystemClockMillis();
         }
-        if (m_cancelled && CTimeUtils::GetTimeMS() - startTime > timeToKillScript)
+        if (m_cancelled && XbmcThreads::SystemClockMillis() - startTime > timeToKillScript)
         { // cancel our script
 #ifdef HAS_PYTHON
           int id = g_pythonParser.getScriptId(scriptPath.c_str());

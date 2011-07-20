@@ -19,6 +19,7 @@
  *
  */
  
+#include "threads/SystemClock.h"
 #include "GUIDialogCache.h"
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
@@ -43,7 +44,7 @@ CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const CStdString& strHeader, con
   if(dwDelay == 0)
     OpenDialog();    
   else
-    m_dwTimeStamp = CTimeUtils::GetTimeMS() + dwDelay;
+    m_dwTimeStamp = XbmcThreads::SystemClockMillis() + dwDelay;
 
   Create(true);
 }
@@ -132,7 +133,7 @@ void CGUIDialogCache::Process()
         {
           bSentCancel = true;
         }
-        else if( !m_pDlg->IsDialogRunning() && CTimeUtils::GetTimeMS() > m_dwTimeStamp 
+        else if( !m_pDlg->IsDialogRunning() && XbmcThreads::SystemClockMillis() > m_dwTimeStamp 
               && !g_windowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )
           OpenDialog();
       }

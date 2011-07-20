@@ -34,7 +34,6 @@ class CTimeUtils
 public:
   static void UpdateFrameTime();      ///< update the frame time.  Not threadsafe
   static unsigned int GetFrameTime(); ///< returns the frame time in MS.  Not threadsafe
-  static unsigned int GetTimeMS();
   static CDateTime GetLocalTime(time_t time);
 
 private:

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #ifndef __STDC_CONSTANT_MACROS
 #define __STDC_CONSTANT_MACROS
@@ -223,7 +224,7 @@ bool CDVDDemuxFFmpeg::Aborted()
   if(!m_timeout)
     return false;
 
-  if(CTimeUtils::GetTimeMS() > m_timeout)
+  if(XbmcThreads::SystemClockMillis() > m_timeout)
     return true;
 
   return false;
@@ -271,7 +272,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
 
   // try to abort after 30 seconds
-  m_timeout = CTimeUtils::GetTimeMS() + 30000;
+  m_timeout = XbmcThreads::SystemClockMillis() + 30000;
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
@@ -648,7 +649,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     pkt.stream_index = MAX_STREAMS;
 
     // timeout reads after 100ms
-    m_timeout = CTimeUtils::GetTimeMS() + 20000;
+    m_timeout = XbmcThreads::SystemClockMillis() + 20000;
     int result = 0;
     try
     {

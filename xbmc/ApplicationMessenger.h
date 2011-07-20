@@ -26,6 +26,7 @@
 #include "guilib/Key.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"
+#include <boost/shared_ptr.hpp>
 
 #include <queue>
 

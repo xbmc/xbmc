@@ -18,6 +18,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "threads/SystemClock.h"
 #include "system.h" // WIN32INCLUDES needed for the directsound stuff below
 #include "Win32DirectSound.h"
 #include "guilib/AudioContext.h"
@@ -212,7 +213,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_bIsAllocated = true;
   m_BufferOffset = 0;
   m_CacheLen = 0;
-  m_LastCacheCheck = CTimeUtils::GetTimeMS();
+  m_LastCacheCheck = XbmcThreads::SystemClockMillis();
 
   return m_bIsAllocated;
 }
@@ -379,7 +380,7 @@ void CWin32DirectSound::UpdateCacheStatus()
 {
   CSingleLock lock (m_critSection);
   // TODO: Check to see if we may have cycled around since last time
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   if (time == m_LastCacheCheck)
     return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
@@ -521,7 +522,7 @@ void CWin32DirectSound::WaitCompletion()
 
   // The drain should complete in the time occupied by the cache
   timeout  = (DWORD)(1000 * GetDelay());
-  timeout += CTimeUtils::GetTimeMS();
+  timeout += XbmcThreads::SystemClockMillis();
   silence  = (unsigned char*)calloc(1,m_dwChunkSize); // Initialize 'silence' to zero...
 
   while(AddPackets(silence, m_dwChunkSize) == 0)
@@ -529,7 +530,7 @@ void CWin32DirectSound::WaitCompletion()
     if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
       break;
 
-    if(timeout < CTimeUtils::GetTimeMS())
+    if(timeout < XbmcThreads::SystemClockMillis())
     {
       CLog::Log(LOGWARNING, __FUNCTION__ ": timeout adding silence to buffer");
       break;
@@ -542,7 +543,7 @@ void CWin32DirectSound::WaitCompletion()
     if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
       break;
 
-    if(timeout < CTimeUtils::GetTimeMS())
+    if(timeout < XbmcThreads::SystemClockMillis())
     {
       CLog::Log(LOGDEBUG, "CWin32DirectSound::WaitCompletion - timeout waiting for silence");
       break;

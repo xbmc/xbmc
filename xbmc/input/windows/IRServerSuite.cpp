@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "IRServerSuite.h"
 #include "IrssMessage.h"
 #include "input/ButtonTranslator.h"
@@ -84,14 +85,14 @@ void CRemoteControl::Initialize()
 void CRemoteControl::Process()
 {
   DWORD iMsRetryDelay = 5000;
-  DWORD time = CTimeUtils::GetTimeMS() - iMsRetryDelay;
+  DWORD time = XbmcThreads::SystemClockMillis() - iMsRetryDelay;
   // try to connect 60 times @ a 5 second interval (5 minutes)
   // multiple tries because irss service might be up and running a little later then xbmc on boot.
   while (!m_bStop && m_iAttempt <= 60)
   {
-    if (CTimeUtils::GetTimeMS() - time >= iMsRetryDelay)
+    if (XbmcThreads::SystemClockMillis() - time >= iMsRetryDelay)
     {
-      time = CTimeUtils::GetTimeMS();
+      time = XbmcThreads::SystemClockMillis();
       if (Connect())
         break;
 
