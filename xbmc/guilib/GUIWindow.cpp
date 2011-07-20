@@ -444,7 +444,6 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
         // TODO This shouldn't be handled like this
         // The processing should be done from WindowManager and deinit
         // should probably be called from there.
-        g_windowManager.Process(CTimeUtils::GetFrameTime());
         g_windowManager.ProcessRenderLoop(true);
       }
     }
