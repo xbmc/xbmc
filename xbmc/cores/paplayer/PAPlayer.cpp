@@ -104,10 +104,10 @@ void PAPlayer::SoftStart(bool wait/* = false */)
         StreamInfo* si = *itt;
         if (si->m_stream->IsFading())
         {
-	  lock.Leave();	  
+         lock.Leave();	  
           wait = true;
           Sleep(1);
-	  lock.Enter();
+          lock.Enter();
           break;
         }
       }
@@ -150,10 +150,10 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
         StreamInfo* si = *itt;
         if (si->m_stream->IsFading())
         {
-	  lock.Leave();	  
+          lock.Leave();	  
           wait = true;
           Sleep(1);
-	  lock.Enter();
+          lock.Enter();
           break;
         }
       }
@@ -184,7 +184,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       if (si->m_stream)
       {
         si->m_stream->Destroy();
-	si->m_stream = NULL;
+        si->m_stream = NULL;
       }
       
       si->m_decoder.Destroy();
@@ -199,7 +199,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       if (si->m_stream)
       {
         si->m_stream->Destroy();
-	si->m_stream = NULL;
+        si->m_stream = NULL;
       }
       
       si->m_decoder.Destroy();
