@@ -250,14 +250,32 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   if (!si->m_decoder.Create(file, (file.m_lStartOffset * 1000) / 75))
   {
     CLog::Log(LOGWARNING, "PAPlayer::QueueNextFileEx - Failed to create the decoder");
+    
     delete si;
     m_callback.OnQueueNextItem();
     return false;
   }
+
+  /* decode until there is data-available */
+  si->m_decoder.Start();
+  while(si->m_decoder.GetDataSize() == 0)
+  {
+    int status = si->m_decoder.GetStatus();
+    if (status == STATUS_ENDED   ||
+        status == STATUS_NO_FILE ||
+        si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+    {
+      CLog::Log(LOGINFO, "PAPlayer::QueueNextFileEx - Error reading samples");
+      
+      si->m_decoder.Destroy();
+      delete si;
+      m_callback.OnQueueNextItem();
+      return false;
+    }
+  }
   
   /* init the streaminfo struct */
   si->m_decoder.GetDataFormat(&si->m_channels, &si->m_sampleRate, &si->m_dataFormat);
-  
   si->m_bytesPerSample     = CAEUtil::DataFormatToBits(si->m_dataFormat) >> 3;
   si->m_started            = false;
   si->m_finishing          = false;
@@ -300,7 +318,6 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   
   si->m_stream->SetVolume    (si->m_volume);
   si->m_stream->SetReplayGain(si->m_decoder.GetReplayGain());
-  si->m_decoder.Start();
   
   CLog::Log(LOGINFO, "PAPlayer::PrepareStream - Ready");
   return true;
@@ -439,23 +456,18 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay)
     m_callback.OnPlayBackStarted();
   }
 
-  /* even if the stream is not started yet we still decode until we have data */
-  while(si->m_decoder.GetDataSize() == 0)
-  {
-    /* read until the decoder is finished, or we cant read more samples */
-    int status = si->m_decoder.GetStatus();
-    if (status == STATUS_ENDED   ||
-        status == STATUS_NO_FILE ||
-        si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
-    {
-      CLog::Log(LOGINFO, "PAPlayer::ProcessStream - Stream Finished");
-      return false;
-    }
-  }
-
   /* if we have not started yet */
   if (!si->m_started)
     return true;
+
+  int status = si->m_decoder.GetStatus();
+  if (status == STATUS_ENDED   ||
+      status == STATUS_NO_FILE ||
+      si->m_decoder.ReadSamples(PACKET_SIZE) == RET_ERROR)
+  {
+    CLog::Log(LOGINFO, "PAPlayer::ProcessStream - Stream Finished");
+    return false;
+  }
 
   /* update the delay time */
   delay = std::min(delay, si->m_stream->GetCacheTime());  
