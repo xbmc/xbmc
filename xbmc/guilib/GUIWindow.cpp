@@ -852,11 +852,13 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 
 void CGUIWindow::SetProperty(const CStdString &key, const CStdString &value)
 {
+  CSingleLock l(*this);
   m_mapProperties[key] = value;
 }
 
 void CGUIWindow::SetProperty(const CStdString &key, const char *value)
 {
+  CSingleLock l(*this);
   m_mapProperties[key] = value;
 }
 
@@ -881,6 +883,7 @@ void CGUIWindow::SetProperty(const CStdString &key, double value)
 
 CStdString CGUIWindow::GetProperty(const CStdString &key) const
 {
+  CSingleLock l(*this);
   std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(key);
   if (iter == m_mapProperties.end())
     return "";
@@ -905,6 +908,7 @@ double CGUIWindow::GetPropertyDouble(const CStdString &key) const
 
 void CGUIWindow::ClearProperties()
 {
+  CSingleLock l(*this);
   m_mapProperties.clear();
 }
 
