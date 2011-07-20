@@ -176,7 +176,7 @@ double CWinSystemIOS::GetDisplayLinkFPS(void)
   return fps;
 }
 
-bool CWinSystemIOS::PresentRenderImpl()
+bool CWinSystemIOS::PresentRenderImpl(const CDirtyRegionList &dirty)
 {
   //glFlush;
   [g_xbmcController presentFramebuffer];

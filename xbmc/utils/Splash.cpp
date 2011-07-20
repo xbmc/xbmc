@@ -67,7 +67,8 @@ void CSplash::Show()
 
   //show it on screen
   g_Windowing.EndRender();
-  g_graphicsContext.Flip();
+  CDirtyRegionList dirty;
+  g_graphicsContext.Flip(dirty);
   g_graphicsContext.Unlock();
 }
 

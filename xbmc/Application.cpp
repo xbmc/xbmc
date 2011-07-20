@@ -2020,7 +2020,7 @@ void CApplication::Render()
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
 
   if (flip)
-    g_graphicsContext.Flip();
+    g_graphicsContext.Flip(g_windowManager.GetDirty());
 
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
