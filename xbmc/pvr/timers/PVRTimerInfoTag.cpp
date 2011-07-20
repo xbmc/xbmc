@@ -516,30 +516,34 @@ const CDateTime &CPVRTimerInfoTag::FirstDayAsLocalTime(void) const
   return tmp;
 }
 
+void CPVRTimerInfoTag::GetNotificationText(CStdString &strText) const
+{
+  switch (m_state)
+  {
+  case PVR_TIMER_STATE_ABORTED:
+  case PVR_TIMER_STATE_CANCELLED:
+    strText.Format("%s: '%s'", g_localizeStrings.Get(19224), m_strTitle.c_str());
+    break;
+  case PVR_TIMER_STATE_SCHEDULED:
+    strText.Format("%s: '%s'", g_localizeStrings.Get(19225), m_strTitle.c_str());
+    break;
+  case PVR_TIMER_STATE_RECORDING:
+    strText.Format("%s: '%s'", g_localizeStrings.Get(19226), m_strTitle.c_str());
+    break;
+  case PVR_TIMER_STATE_COMPLETED:
+    strText.Format("%s: '%s'", g_localizeStrings.Get(19227), m_strTitle.c_str());
+    break;
+  default:
+    break;
+  }
+}
+
 void CPVRTimerInfoTag::QueueNotification(void) const
 {
   if (g_guiSettings.GetBool("pvrrecord.timernotifications"))
   {
     CStdString strMessage;
-
-    switch (m_state)
-    {
-    case PVR_TIMER_STATE_ABORTED:
-    case PVR_TIMER_STATE_CANCELLED:
-      strMessage.Format("%s: '%s'", g_localizeStrings.Get(19224), m_strTitle.c_str());
-      break;
-    case PVR_TIMER_STATE_SCHEDULED:
-      strMessage.Format("%s: '%s'", g_localizeStrings.Get(19225), m_strTitle.c_str());
-      break;
-    case PVR_TIMER_STATE_RECORDING:
-      strMessage.Format("%s: '%s'", g_localizeStrings.Get(19226), m_strTitle.c_str());
-      break;
-    case PVR_TIMER_STATE_COMPLETED:
-      strMessage.Format("%s: '%s'", g_localizeStrings.Get(19227), m_strTitle.c_str());
-      break;
-    default:
-      break;
-    }
+    GetNotificationText(strMessage);
 
     if (!strMessage.IsEmpty())
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
