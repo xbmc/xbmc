@@ -150,7 +150,12 @@ void *CAudioDecoder::GetData(unsigned int samples)
   }
 
   if (m_pcmBuffer.ReadData((char *)m_outputBuffer, size))
+  {
+    if (m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() == 0)
+      m_status = STATUS_ENDED;
+    
     return m_outputBuffer;
+  }
   
   CLog::Log(LOGERROR, "CAudioDecoder::GetData() ReadBinary failed with %i samples", samples);
   return NULL;
