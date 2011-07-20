@@ -141,7 +141,7 @@ unsigned int CAudioDecoder::GetDataSize()
 }
 
 void *CAudioDecoder::GetData(unsigned int samples)
-{  
+{
   unsigned int size  = samples * (m_codec->m_BitsPerSample >> 3);
   if (size > sizeof(m_outputBuffer))
   {
