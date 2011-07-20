@@ -18,6 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "threads/SystemClock.h"
 #include "system.h"
 #ifdef __APPLE__
 #include <sys/param.h>
@@ -2205,7 +2206,7 @@ CStdString CUtil::GetFrameworksPath(bool forPython)
 
 void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles )
 {
-  unsigned int startTimer = CTimeUtils::GetTimeMS();
+  unsigned int startTimer = XbmcThreads::SystemClockMillis();
   
   // new array for commons sub dirs
   const char * common_sub_dirs[] = {"subs",
@@ -2389,7 +2390,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
       delete pStream;
     }
   }
-  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - startTimer));
+  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));
 }
 
 int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStdString& strMovieFileNameNoExt, std::vector<CStdString>& vecSubtitles )

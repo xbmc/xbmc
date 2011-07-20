@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "DVDMessageTracker.h"
 #include "DVDMessage.h"
 #include "threads/SingleLock.h"
@@ -98,7 +99,7 @@ void CDVDMessageTracker::Process()
     while (!m_bStop && iter != m_messageList.end())
     {
       CDVDMessageTrackerItem* pItem = *iter;
-      if ((CTimeUtils::GetTimeMS() - pItem->m_time_created) > 60000)
+      if ((XbmcThreads::SystemClockMillis() - pItem->m_time_created) > 60000)
       {
         if (!pItem->m_debug_logged)
         {

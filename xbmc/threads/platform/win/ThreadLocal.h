@@ -19,9 +19,43 @@
 *
 */
 
-#include "threads/ThreadLocal.h"
+#pragma once
+
+#include <windows.h>
+#include <assert.h>
 
 namespace XbmcThreads
 {
-  void ThreadLocalNoCleanup(void*) {}
+  /**
+   * A thin wrapper around pthreads thread specific storage
+   * functionality.
+   */
+  template <typename T> class ThreadLocal
+  {
+    DWORD key;
+  public:
+    inline ThreadLocal()
+    { 
+      key = TlsAlloc();
+      assert(key != TLS_OUT_OF_INDEXES);
+    }
+
+    inline ~ThreadLocal()
+    {
+      BOOL tls_free_result = TlsFree(key);
+      assert(tls_free_result);
+    }
+
+    inline void set(T* val) 
+    { 
+      BOOL tls_set_value_result = TlsSetValue(key,(LPVOID)val);
+      assert(tls_set_value_result);
+    }
+
+    inline T* get() 
+    {
+      return (T*)TlsGetValue(key);
+    }
+  };
 }
+

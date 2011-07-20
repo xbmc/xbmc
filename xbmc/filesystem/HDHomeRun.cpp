@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "URL.h"
 #include "FileItem.h"
@@ -244,7 +245,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
   // neither of the players can be forced to
   // continue even if read return 0 as can happen
   // on live streams.
-  unsigned int timestamp = CTimeUtils::GetTimeMS() + 5000;
+  unsigned int timestamp = XbmcThreads::SystemClockMillis() + 5000;
   while(1)
   {
     datasize = (size_t) uiBufSize;
@@ -255,7 +256,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
       return (unsigned int)datasize;
     }
 
-    if(CTimeUtils::GetTimeMS() > timestamp)
+    if(XbmcThreads::SystemClockMillis() > timestamp)
       return 0;
 
     Sleep(64);

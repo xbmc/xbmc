@@ -146,7 +146,7 @@ namespace XbmcThreads
     return ret;
   }
 
-  CEventGroup::CEventGroup(int num, CEvent* v1, ...) : signaled(NULL), condVar(signaled), numWaits(0)
+  CEventGroup::CEventGroup(int num, CEvent* v1, ...) : signaled(NULL), condVar(actualCv,signaled), numWaits(0)
   {
     va_list ap;
 
@@ -164,7 +164,7 @@ namespace XbmcThreads
       (*iter)->addGroup(this);
   }
 
-  CEventGroup::CEventGroup(CEvent* v1, ...) : signaled(NULL), condVar(signaled), numWaits(0)
+  CEventGroup::CEventGroup(CEvent* v1, ...) : signaled(NULL), condVar(actualCv,signaled), numWaits(0)
   {
     va_list ap;
 

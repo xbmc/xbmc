@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "HTSPDirectory.h"
 #include "URL.h"
 #include "FileItem.h"
@@ -58,7 +59,7 @@ struct STimedOut
 {
   STimedOut(DWORD idle) : m_idle(idle)
   {
-    m_time = CTimeUtils::GetTimeMS();
+    m_time = XbmcThreads::SystemClockMillis();
   }
   bool operator()(SSession& data)
   {
@@ -131,7 +132,7 @@ void CHTSPDirectorySession::Release(CHTSPDirectorySession* &session)
     if(it->session == session)
     {
       it->refs--;
-      it->last = CTimeUtils::GetTimeMS();
+      it->last = XbmcThreads::SystemClockMillis();
       return;
     }
   }
