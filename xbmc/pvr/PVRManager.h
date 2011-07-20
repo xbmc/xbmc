@@ -27,7 +27,7 @@
 #include "windows/GUIWindowPVRCommon.h"
 #include "addons/include/xbmc_pvr_types.h"
 
-class CGUIDialogBusy;
+class CGUIDialogExtendedProgressBar;
 
 namespace PVR
 {
@@ -500,10 +500,16 @@ namespace PVR
     bool ContinueLastChannel(void);
 
     /*!
-     * @brief Show or hide the busy dialog.
-     * @param bShow True to show the dialog, false to hide it.
+     * @brief Show or update the progress dialog.
+     * @param strText The current status.
+     * @param iProgress The current progress in %.
      */
-    void ShowBusyDialog(bool bShow);
+    void ShowProgressDialog(const CStdString &strText, int iProgress);
+
+    /*!
+     * @brief Hide the progress dialog if it's visible.
+     */
+    void HideProgressDialog(void);
 
     void ExecutePendingJobs(void);
 
@@ -528,7 +534,7 @@ namespace PVR
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
     bool                            m_bLoaded;                     /*!< true if the pvrmanager has been loaded and can be used */
-    CGUIDialogBusy *                m_loadingBusyDialog;           /*!< busy dialog that is displayed while the pvrmanager is loading */
+    CGUIDialogExtendedProgressBar * m_loadingProgressDialog;       /*!< progress dialog that is displayed while the pvrmanager is loading */
     CPVRChannelGroup *              m_currentRadioGroup;           /*!< the currently selected radio channel group list */
     CPVRChannelGroup *              m_currentTVGroup;              /*!< the currently selected TV channel group list */
 

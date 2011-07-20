@@ -27,7 +27,7 @@
 
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
-#include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogExtendedProgressBar.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
@@ -63,7 +63,7 @@ CPVRManager::CPVRManager(void) :
     m_database(NULL),
     m_bFirstStart(true),
     m_bLoaded(false),
-    m_loadingBusyDialog(NULL),
+    m_loadingProgressDialog(NULL),
     m_currentRadioGroup(NULL),
     m_currentTVGroup(NULL)
 {
@@ -178,41 +178,54 @@ bool CPVRManager::Load(void)
   if (m_addons->HasActiveClients() && !m_bLoaded && !m_bStop)
   {
     CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
-//    TODO ShowBusyDialog(true);
 
     /* load all channels and groups */
     if (!m_bStop)
+    {
+      ShowProgressDialog(g_localizeStrings.Get(19236), 0);
       m_channelGroups->Load();
+    }
 
     /* get timers from the backends */
     if (!m_bStop)
+    {
+      ShowProgressDialog(g_localizeStrings.Get(19237), 50);
       m_timers->Load();
+    }
 
     /* get recordings from the backend */
     if (!m_bStop)
+    {
+      ShowProgressDialog(g_localizeStrings.Get(19238), 75);
       m_recordings->Load();
+    }
 
-//    TODO ShowBusyDialog(false);
     m_bLoaded = true;
   }
 
   return m_bLoaded;
 }
 
-void CPVRManager::ShowBusyDialog(bool bShow)
+void CPVRManager::ShowProgressDialog(const CStdString &strText, int iProgress)
 {
-  if (bShow)
+  if (!m_loadingProgressDialog)
   {
-    /* show the dialog */
-    if (!m_loadingBusyDialog)
-      m_loadingBusyDialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-    m_loadingBusyDialog->Show();
+    m_loadingProgressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
+    m_loadingProgressDialog->Show();
+    m_loadingProgressDialog->SetHeader(g_localizeStrings.Get(19235));
   }
-  else if (m_loadingBusyDialog && m_loadingBusyDialog->IsActive())
+
+  m_loadingProgressDialog->SetProgress(iProgress, 100);
+  m_loadingProgressDialog->SetTitle(strText);
+  m_loadingProgressDialog->UpdateState();
+}
+
+void CPVRManager::HideProgressDialog(void)
+{
+  if (m_loadingProgressDialog)
   {
-    /* hide the dialog */
-    m_loadingBusyDialog->Close();
-    m_loadingBusyDialog = NULL;
+    m_loadingProgressDialog->Close();
+    m_loadingProgressDialog = NULL;
   }
 }
 
@@ -221,6 +234,7 @@ void CPVRManager::Process(void)
   /* load the pvr data from the db and clients if it's not already loaded */
   if (!Load())
   {
+    HideProgressDialog();
     CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data", __FUNCTION__);
     return;
   }
@@ -231,17 +245,18 @@ void CPVRManager::Process(void)
     pWindow->Reset();
 
   /* start the other pvr related update threads */
+  ShowProgressDialog(g_localizeStrings.Get(19239), 85);
   m_addons->Start();
   m_guiInfo->Start();
   m_epg->RegisterObserver(this);
   m_epg->Start();
 
+  /* close the progess dialog */
+  HideProgressDialog();
+
   /* continue last watched channel after first startup */
   if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
-
-  /* close the busy dialog */
-//  TODO ShowBusyDialog(false);
 
   /* signal to window that clients are loaded */
   if (pWindow)
