@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include <limits>
+
 namespace XbmcThreads
 {
   /**
@@ -32,4 +34,32 @@ namespace XbmcThreads
    * Of course, on windows it just calls timeGetTime, so you're on your own.
    */
   unsigned int SystemClockMillis();
+
+  /**
+   * DO NOT compare the results from SystemClockMillis() to an expected end time
+   *  that was calculated by adding a number of milliseconds to some start time.
+   *  The reason is becuse the SystemClockMillis could wrap. Instead use this
+   *  class which uses differences (which are safe accross a wrap).
+   */
+  class EndTime
+  {
+    unsigned int startTime;
+    unsigned int totalWaitTime;
+  public:
+    inline EndTime() : startTime(0), totalWaitTime(0) {}
+    inline EndTime(unsigned int millisecondsIntoTheFuture) : startTime(SystemClockMillis()), totalWaitTime(millisecondsIntoTheFuture) {}
+
+    inline void set(unsigned int millisecondsIntoTheFuture) { startTime = SystemClockMillis(); totalWaitTime = millisecondsIntoTheFuture; }
+
+    inline bool isTimePast() { return totalWaitTime == 0 ? true : (SystemClockMillis() - startTime) >= totalWaitTime; }
+
+    inline unsigned int millisLeft()
+    {
+      unsigned int timeWaitedAlready = (SystemClockMillis() - startTime);
+      return (timeWaitedAlready >= totalWaitTime) ? 0 : (totalWaitTime - timeWaitedAlready);
+    }
+
+    inline void setExpired() { totalWaitTime = 0; }
+    inline void setInfinite() { totalWaitTime = std::numeric_limits<unsigned int>::max(); }
+  };
 }

@@ -44,12 +44,6 @@ namespace XbmcThreads
     ConditionVariable& cond;
     P predicate;
 
-    inline static unsigned long timeLeft(unsigned int endtime)
-    {
-      unsigned int cur = SystemClockMillis();
-      return endtime <= cur ? 0 : (endtime - cur);
-    }
-
   public:
     inline TightConditionVariable(ConditionVariable& cv, P predicate_) : cond(cv), predicate(predicate_) {}
 
@@ -59,12 +53,17 @@ namespace XbmcThreads
       bool ret = true;
       if (!predicate)
       {
-        unsigned int endtime = SystemClockMillis() + milliseconds;
-        bool notdone = true;
-        while (notdone && ret == true)
+        if (!milliseconds)
         {
-          cond.wait(lock,milliseconds);
-          ret = (notdone = (!predicate)) ? ((milliseconds = timeLeft(endtime)) != 0) : true;
+          cond.wait(lock,milliseconds /* zero */);
+          return !(!predicate); // eh? I only require the ! operation on P
+        }
+        else
+        {
+          EndTime endTime((unsigned int)milliseconds);
+          for (bool notdone = true; notdone && ret == true;
+               ret = (notdone = (!predicate)) ? ((milliseconds = endTime.millisLeft()) != 0) : true)
+            cond.wait(lock,milliseconds);
         }
       }
       return ret;
