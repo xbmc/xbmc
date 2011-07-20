@@ -173,7 +173,7 @@ void PAPlayer::SoftStop(bool wait/* = false */, bool close/* = true */)
 }
 
 void PAPlayer::CloseAllStreams(bool fade/* = true */)
-{   
+{
   if (!fade) 
   {
     CExclusiveLock lock(m_streamsLock);    
@@ -415,8 +415,8 @@ inline void PAPlayer::ProcessStreams(float &delay)
       if (!m_isFinished)
       {
         if (m_crossFadeTime)
-	  si->m_stream->FadeVolume(1.0f, 0.0f, m_crossFadeTime);
-	m_currentStream = NULL;
+          si->m_stream->FadeVolume(1.0f, 0.0f, m_crossFadeTime);
+        m_currentStream = NULL;
       }
       
       si->m_playNextTriggered = true;      
