@@ -72,7 +72,7 @@ public:
   unsigned int GetChannels() { if (m_codec) return m_codec->m_Channels; else return 0; };
   // Data management
   unsigned int GetDataSize();
-  void *GetData(unsigned int size);
+  void *GetData(unsigned int samples);
   void PrefixData(void *data, unsigned int size);
   ICodec *GetCodec() const { return m_codec; }
   float GetReplayGain();
