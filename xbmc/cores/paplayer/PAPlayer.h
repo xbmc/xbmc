@@ -80,23 +80,23 @@ protected:
 
 private:
   typedef struct {
-    CAudioDecoder     m_decoder;            /* the stream decoder */
-    unsigned int      m_channels;           /* number of channels in the stream */
-    unsigned int      m_sampleRate;         /* sample rate of the stream */
-    enum AEDataFormat m_dataFormat;         /* data format of the samples */
-    unsigned int      m_bytesPerSample;     /* number of bytes per audio sample */
+    CAudioDecoder     m_decoder;             /* the stream decoder */
+    unsigned int      m_channels;            /* number of channels in the stream */
+    unsigned int      m_sampleRate;          /* sample rate of the stream */
+    enum AEDataFormat m_dataFormat;          /* data format of the samples */
+    unsigned int      m_bytesPerSample;      /* number of bytes per audio sample */
     
-    bool              m_started;            /* if playback of this stream has been started */
-    bool              m_finishing;          /* if this stream is finishing */
-    unsigned int      m_framesSent;         /* number of frames sent to the stream */
-    unsigned int      m_prepareNextAtFrame; /* when to prepare the next stream */
-    bool              m_prepareTriggered;   /* if the next stream has been prepared */
-    unsigned int      m_playNextAtFrame;    /* when to start playing the next stream */
-    bool              m_playNextTriggered;  /* if this stream has started the next one */
-    bool              m_fadeOutTriggered;   /* if the stream has been told to fade out */
+    bool              m_started;             /* if playback of this stream has been started */
+    bool              m_finishing;           /* if this stream is finishing */
+    unsigned int      m_samplesSent;         /* number of frames sent to the stream */
+    unsigned int      m_prepareNextAtSample; /* when to prepare the next stream */
+    bool              m_prepareTriggered;    /* if the next stream has been prepared */
+    unsigned int      m_playNextAtSample;    /* when to start playing the next stream */
+    bool              m_playNextTriggered;   /* if this stream has started the next one */
+    bool              m_fadeOutTriggered;    /* if the stream has been told to fade out */
     
-    IAEStream*        m_stream;             /* the playback stream */
-    float             m_volume;             /* the initial volume level to set the stream to on creation */
+    IAEStream*        m_stream;              /* the playback stream */
+    float             m_volume;              /* the initial volume level to set the stream to on creation */
   } StreamInfo;
 
   typedef std::list<StreamInfo*> StreamList;
@@ -104,14 +104,14 @@ private:
   CCriticalSection       m_threadLock;
   bool                   m_isPlaying;
   bool                   m_isPaused;
-  bool                   m_isFinished;      /* if there are no more songs in the queue */
-  unsigned int           m_crossFadeTime;   /* how long the crossfade is */
-  CEvent                 m_startEvent;      /* event for playback start */
-  StreamInfo*            m_currentStream;   /* the current playing stream */
+  bool                   m_isFinished;       /* if there are no more songs in the queue */
+  unsigned int           m_crossFadeTime;    /* how long the crossfade is */
+  CEvent                 m_startEvent;       /* event for playback start */
+  StreamInfo*            m_currentStream;    /* the current playing stream */
   
-  CSharedSection         m_streamsLock;     /* lock for the stream list */
-  StreamList             m_streams;         /* playing streams */  
-  StreamList             m_finishing;       /* finishing streams */
+  CSharedSection         m_streamsLock;      /* lock for the stream list */
+  StreamList             m_streams;          /* playing streams */  
+  StreamList             m_finishing;        /* finishing streams */
 
   bool QueueNextFileEx(const CFileItem &file, bool fadeIn = true);
   void SoftStart(bool wait = false);
