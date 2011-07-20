@@ -86,7 +86,7 @@ public:
   CApplication(void);
   virtual ~CApplication(void);
   virtual bool Initialize();
-  virtual void FrameMove();
+  virtual void FrameMove(bool processEvents);
   virtual void Render();
   virtual bool RenderNoPresent();
   virtual void Preflight();

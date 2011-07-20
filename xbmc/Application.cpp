@@ -2574,44 +2574,45 @@ void CApplication::UpdateLCD()
 #endif
 }
 
-void CApplication::FrameMove()
+void CApplication::FrameMove(bool processEvents)
 {
   MEASURE_FUNCTION;
 
-  // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
-  float frameTime = m_frameTime.GetElapsedSeconds();
-  m_frameTime.StartZero();
-  // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
-  if( frameTime > 0.5 ) frameTime = 0.5;
-
-  g_graphicsContext.Lock();
-  // check if there are notifications to display
-  CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-  if (toast && toast->DoWork())
+  if (processEvents)
   {
-    if (!toast->IsDialogRunning())
-    {
-      toast->Show();
-    }
-  }
-  g_graphicsContext.Unlock();
+    // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
+    float frameTime = m_frameTime.GetElapsedSeconds();
+    m_frameTime.StartZero();
+    // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
+    if( frameTime > 0.5 ) frameTime = 0.5;
 
-  UpdateLCD();
+    g_graphicsContext.Lock();
+    // check if there are notifications to display
+    CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+    if (toast && toast->DoWork())
+    {
+      if (!toast->IsDialogRunning())
+      {
+        toast->Show();
+      }
+    }
+    g_graphicsContext.Unlock();
+
+    UpdateLCD();
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  // Read the input from a remote
-  g_RemoteControl.Update();
+    // Read the input from a remote
+    g_RemoteControl.Update();
 #endif
 
-  // process input actions
-  CWinEvents::MessagePump();
-  ProcessHTTPApiButtons();
-  ProcessRemote(frameTime);
-  ProcessGamepad(frameTime);
-  ProcessEventServer(frameTime);
-  m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
-
-  // Process events and animate controls
+    // process input actions
+    CWinEvents::MessagePump();
+    ProcessHTTPApiButtons();
+    ProcessRemote(frameTime);
+    ProcessGamepad(frameTime);
+    ProcessEventServer(frameTime);
+    m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
+  }
   if (!m_bStop)
     g_windowManager.Process(CTimeUtils::GetFrameTime());
   g_windowManager.FrameMove();
