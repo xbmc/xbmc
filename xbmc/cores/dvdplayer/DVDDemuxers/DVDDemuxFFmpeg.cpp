@@ -221,10 +221,7 @@ CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
 
 bool CDVDDemuxFFmpeg::Aborted()
 {
-  if(!m_timeout)
-    return false;
-
-  if(XbmcThreads::SystemClockMillis() > m_timeout)
+  if(m_timeout.isTimePast())
     return true;
 
   return false;
@@ -272,7 +269,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
 
   // try to abort after 30 seconds
-  m_timeout = XbmcThreads::SystemClockMillis() + 30000;
+  m_timeout.set(30000);
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
@@ -461,7 +458,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info finished", __FUNCTION__);
   }
   // reset any timeout
-  m_timeout = 0;
+  m_timeout.setInfinite();
 
   // if format can be nonblocking, let's use that
   m_pFormatContext->flags |= AVFMT_FLAG_NONBLOCK;
@@ -562,7 +559,7 @@ void CDVDDemuxFFmpeg::Flush()
 
 void CDVDDemuxFFmpeg::Abort()
 {
-  m_timeout = 1;
+  m_timeout.setExpired();
 }
 
 void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
@@ -649,7 +646,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     pkt.stream_index = MAX_STREAMS;
 
     // timeout reads after 100ms
-    m_timeout = XbmcThreads::SystemClockMillis() + 20000;
+    m_timeout.set(20000);
     int result = 0;
     try
     {
@@ -660,7 +657,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       e.writelog(__FUNCTION__);
       result = AVERROR(EFAULT);
     }
-    m_timeout = 0;
+    m_timeout.setInfinite();
 
     if (result == AVERROR(EINTR) || result == AVERROR(EAGAIN))
     {

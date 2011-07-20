@@ -178,8 +178,8 @@ int64_t CCacheCircular::WaitForData(unsigned int minumum, unsigned int millis)
   if(minumum > m_size - m_size_back)
     minumum = m_size - m_size_back;
 
-  unsigned int time = XbmcThreads::SystemClockMillis() + millis;
-  while (!IsEndOfInput() && avail < minumum && XbmcThreads::SystemClockMillis() < time )
+  XbmcThreads::EndTime endTime(millis);
+  while (!IsEndOfInput() && avail < minumum && !endTime.isTimePast() )
   {
     lock.Leave();
     m_written.WaitMSec(50); // may miss the deadline. shouldn't be a problem.

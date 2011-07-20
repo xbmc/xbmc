@@ -47,12 +47,12 @@ void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, DWORD source)
 
   AtomicIncrement(&m_objects);
 
-  DWORD timeout = XbmcThreads::SystemClockMillis() + m_timeout;
+  XbmcThreads::EndTime timeout(m_timeout);
 
   if (abort)
-    while( m_objects < GetNrOfReferences() && timeout > XbmcThreads::SystemClockMillis() && !(*abort)) Sleep(1);
+    while( m_objects < GetNrOfReferences() && !timeout.isTimePast() && !(*abort)) Sleep(1);
   else
-    while( m_objects < GetNrOfReferences() && timeout > XbmcThreads::SystemClockMillis() ) Sleep(1);
+    while( m_objects < GetNrOfReferences() && !timeout.isTimePast() ) Sleep(1);
 }
 
 /**

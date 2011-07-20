@@ -810,10 +810,10 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
 
 bool CRenderSystemDX::TestRender()
 {
-  static DWORD lastTime = 0;
+  static unsigned int lastTime = 0;
   static float delta = 0;
 
-  DWORD thisTime = XbmcThreads::SystemClockMillis();
+  unsigned int thisTime = XbmcThreads::SystemClockMillis();
 
   if(thisTime - lastTime > 10)
   {

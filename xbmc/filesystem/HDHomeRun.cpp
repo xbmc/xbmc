@@ -245,7 +245,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
   // neither of the players can be forced to
   // continue even if read return 0 as can happen
   // on live streams.
-  unsigned int timestamp = XbmcThreads::SystemClockMillis() + 5000;
+  XbmcThreads::EndTime timestamp(5000);
   while(1)
   {
     datasize = (size_t) uiBufSize;
@@ -256,7 +256,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
       return (unsigned int)datasize;
     }
 
-    if(XbmcThreads::SystemClockMillis() > timestamp)
+    if(timestamp.isTimePast())
       return 0;
 
     Sleep(64);

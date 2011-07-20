@@ -547,7 +547,7 @@ bool CMythFile::UpdateItem(CFileItem& item)
 
 int CMythFile::GetTotalTime()
 {
-  if(m_recorder && m_timestamp + 5000 < XbmcThreads::SystemClockMillis())
+  if(m_recorder && (XbmcThreads::SystemClockMillis() - m_timestamp) > 5000 )
   {
     m_timestamp = XbmcThreads::SystemClockMillis();
     if(m_program)

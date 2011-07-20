@@ -2063,7 +2063,7 @@ CStdString CXbmcHttp::GetCloseTag()
 CKey CXbmcHttp::GetKey()
 {
   if (repeatKeyRate!=0)
-    if (XbmcThreads::SystemClockMillis() >= MarkTime + repeatKeyRate)
+    if ((XbmcThreads::SystemClockMillis() - MarkTime) >=  repeatKeyRate)
     {
       MarkTime=XbmcThreads::SystemClockMillis();
       key=lastKey;

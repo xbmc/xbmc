@@ -117,7 +117,6 @@ protected:
   {
     std::string  origin;
     int          msgid;
-    unsigned int timeout;
     std::string  payload_origin;
     std::string  payload_type;
     std::string  payload;

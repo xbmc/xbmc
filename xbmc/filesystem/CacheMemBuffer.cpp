@@ -137,8 +137,8 @@ int64_t CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int millis)
   if (millis == 0 || IsEndOfInput())
     return m_buffer.getMaxReadSize();
 
-  unsigned int time = XbmcThreads::SystemClockMillis() + millis;
-  while (!IsEndOfInput() && (unsigned int) m_buffer.getMaxReadSize() < iMinAvail && XbmcThreads::SystemClockMillis() < time )
+  XbmcThreads::EndTime endTime(millis);
+  while (!IsEndOfInput() && (unsigned int) m_buffer.getMaxReadSize() < iMinAvail && !endTime.isTimePast() )
     m_written.WaitMSec(50); // may miss the deadline. shouldn't be a problem.
 
   return m_buffer.getMaxReadSize();
