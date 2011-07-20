@@ -1968,7 +1968,6 @@ void CApplication::Render()
   }
 
   CSingleLock lock(g_graphicsContext);
-  CTimeUtils::UpdateFrameTime();
   g_infoManager.UpdateFPS();
 
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
@@ -2021,6 +2020,7 @@ void CApplication::Render()
 
   if (flip)
     g_graphicsContext.Flip();
+  CTimeUtils::UpdateFrameTime(flip);
 
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();

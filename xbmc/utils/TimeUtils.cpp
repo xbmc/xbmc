@@ -62,7 +62,7 @@ int64_t CurrentHostFrequency(void)
 
 unsigned int CTimeUtils::frameTime = 0;
 
-void CTimeUtils::UpdateFrameTime()
+void CTimeUtils::UpdateFrameTime(bool flip)
 {
   frameTime = XbmcThreads::SystemClockMillis();
 }
