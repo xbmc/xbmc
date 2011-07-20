@@ -184,8 +184,8 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
-	/* we call this on all streams just in case */
-	si->m_stream->UnRegisterAudioCallback();
+        /* we call this on all streams just in case */
+        si->m_stream->UnRegisterAudioCallback();
         si->m_stream->Destroy();
         si->m_stream = NULL;
       }
@@ -201,8 +201,8 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
-	/* we call this on all streams just in case */
-	si->m_stream->UnRegisterAudioCallback();
+        /* we call this on all streams just in case */
+        si->m_stream->UnRegisterAudioCallback();
         si->m_stream->Destroy();
         si->m_stream = NULL;
       }
