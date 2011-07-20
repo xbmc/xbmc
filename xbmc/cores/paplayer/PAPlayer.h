@@ -108,6 +108,7 @@ private:
   unsigned int           m_crossFadeTime;    /* how long the crossfade is */
   CEvent                 m_startEvent;       /* event for playback start */
   StreamInfo*            m_currentStream;    /* the current playing stream */
+  IAudioCallback*        m_audioCallback;    /* the viz audio callback */
   
   CSharedSection         m_streamsLock;      /* lock for the stream list */
   StreamList             m_streams;          /* playing streams */  

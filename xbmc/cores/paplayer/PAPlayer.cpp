@@ -47,7 +47,8 @@ PAPlayer::PAPlayer(IPlayerCallback& callback) :
   m_isPlaying     (false),
   m_isPaused      (false),
   m_isFinished    (false),
-  m_currentStream (NULL)
+  m_currentStream (NULL ),
+  m_audioCallback (NULL )
 {
   m_startEvent.Reset();
 }
@@ -183,6 +184,8 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
+	/* we call this on all streams just in case */
+	si->m_stream->UnRegisterAudioCallback();
         si->m_stream->Destroy();
         si->m_stream = NULL;
       }
@@ -198,6 +201,8 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
+	/* we call this on all streams just in case */
+	si->m_stream->UnRegisterAudioCallback();
         si->m_stream->Destroy();
         si->m_stream = NULL;
       }
@@ -367,9 +372,13 @@ inline void PAPlayer::ProcessStreams(float &delay)
       CExclusiveLock lock(m_streamsLock);
 
       /* remove the stream */
-      itt = m_streams.erase(itt);	
+      itt = m_streams.erase(itt);
+      /* if its the current stream */
       if (si == m_currentStream)
       {
+	/* unregister the audio callback */
+        si->m_stream ->UnRegisterAudioCallback();
+
         /* if it was the last stream */
         if (itt == m_streams.end())
         {
@@ -378,8 +387,7 @@ inline void PAPlayer::ProcessStreams(float &delay)
           {
             m_callback.OnQueueNextItem();
             si->m_prepareTriggered = true;
-          }
-    
+          }          
           m_currentStream = NULL;
         }
         else
@@ -422,6 +430,7 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay)
   if (si == m_currentStream && !si->m_started)
   {
     si->m_started = true;
+    si->m_stream->RegisterAudioCallback(m_audioCallback);
     si->m_stream->Resume();
     si->m_stream->FadeVolume(0.0f, 1.0f, m_crossFadeTime);
     m_callback.OnPlayBackStarted();
@@ -473,12 +482,18 @@ void PAPlayer::OnExit()
 
 void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 {
-
+  CSharedLock lock(m_streamsLock);
+  m_audioCallback = pCallback;
+  if (m_currentStream && m_currentStream->m_stream)
+    m_currentStream->m_stream->RegisterAudioCallback(pCallback);
 }
 
 void PAPlayer::UnRegisterAudioCallback()
 {
-
+  CSharedLock lock(m_streamsLock);
+  if (m_currentStream && m_currentStream->m_stream)
+    m_currentStream->m_stream->UnRegisterAudioCallback();
+  m_audioCallback = NULL;
 }
 
 void PAPlayer::OnNothingToQueueNotify()
