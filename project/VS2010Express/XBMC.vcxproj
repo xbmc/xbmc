@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug (DirectX)|Win32">
@@ -1574,6 +1574,7 @@
     <ClInclude Include="..\..\xbmc\threads\LockFree.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\Condition.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\platform.select.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\Condition.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h" />
@@ -2014,12 +2015,6 @@
     <ClInclude Include="..\..\xbmc\windows\GUIWindowSystemInfo.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowWeather.h" />
     <ClInclude Include="..\..\xbmc\XBApplicationEx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\xbmc\threads\platform\platform.select">
-      <FileType>Document</FileType>
-    </ClInclude>
-    <None Include="..\..\xbmc\win32\XBMC.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc" />

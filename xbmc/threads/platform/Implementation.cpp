@@ -19,7 +19,7 @@
  *
  */
 
-#include "threads/platform/platform.select"
+#include "threads/platform/platform.select.h"
 
 #if (defined USE_PTHREADS_THREADING)
 #include "threads/platform/pthreads/Implementation.cpp"

@@ -30,7 +30,7 @@
 		DF0DF17F13A3AF9F008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17B13A3AF9F008ED511 /* FileNFS.cpp */; };
 		DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */; };
 		DF27E23613C23CAC002514FE /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF27E23413C23CAC002514FE /* InertialScrollingHandler.cpp */; };
-		DFD4D1E113D725ED00A47C47 /* platform.select in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D1D413D725ED00A47C47 /* platform.select */; };
+		DFD4D1E113D725ED00A47C47 /* platform.select.h in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D1D413D725ED00A47C47 /* platform.select.h */; };
 		DFD4D1E213D725ED00A47C47 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1D813D725ED00A47C47 /* Implementation.cpp */; };
 		DFD4D1E713D7263000A47C47 /* README.platform in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D1E613D7263000A47C47 /* README.platform */; };
 		DFD4D1FE13D7283500A47C47 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */; };
@@ -973,7 +973,7 @@
 		DF27E23513C23CAC002514FE /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
 		DFD4D1D113D725ED00A47C47 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		DFD4D1D213D725ED00A47C47 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
-		DFD4D1D413D725ED00A47C47 /* platform.select */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform.select; sourceTree = "<group>"; };
+		DFD4D1D413D725ED00A47C47 /* platform.select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform.select.h; sourceTree = "<group>"; };
 		DFD4D1D613D725ED00A47C47 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		DFD4D1D713D725ED00A47C47 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
 		DFD4D1D813D725ED00A47C47 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
@@ -2952,7 +2952,7 @@
 				DFD4D1E613D7263000A47C47 /* README.platform */,
 				DFD4D1D113D725ED00A47C47 /* Condition.h */,
 				DFD4D1D213D725ED00A47C47 /* CriticalSection.h */,
-				DFD4D1D413D725ED00A47C47 /* platform.select */,
+				DFD4D1D413D725ED00A47C47 /* platform.select.h */,
 				DFD4D1D513D725ED00A47C47 /* pthreads */,
 				DFD4D1DB13D725ED00A47C47 /* ThreadLocal.h */,
 			);
@@ -5824,7 +5824,7 @@
 			files = (
 				F56C8BA8131F4466000AD0F6 /* XBMC.png in Resources */,
 				F56C8BB9131F44AA000AD0F6 /* InfoPlist.strings in Resources */,
-				DFD4D1E113D725ED00A47C47 /* platform.select in Resources */,
+				DFD4D1E113D725ED00A47C47 /* platform.select.h in Resources */,
 				DFD4D1E713D7263000A47C47 /* README.platform in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
