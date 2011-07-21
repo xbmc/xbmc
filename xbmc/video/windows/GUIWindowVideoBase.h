@@ -34,6 +34,8 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
 
+  static bool OnRateAction(const CFileItemPtr &item, int action);
+
   void PlayMovie(const CFileItem *item);
   static int GetResumeItemOffset(const CFileItem *item);
 

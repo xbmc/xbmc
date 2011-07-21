@@ -296,6 +296,18 @@
 
 #define ACTION_PLAYER_PLAYPAUSE       229 // Play/pause. If playing it pauses, if paused it plays.
 
+#define ACTION_SET_RATING_0           230
+#define ACTION_SET_RATING_1           231
+#define ACTION_SET_RATING_2           232
+#define ACTION_SET_RATING_3           233
+#define ACTION_SET_RATING_4           234
+#define ACTION_SET_RATING_5           235
+#define ACTION_SET_RATING_6           236
+#define ACTION_SET_RATING_7           237
+#define ACTION_SET_RATING_8           238
+#define ACTION_SET_RATING_9           239
+#define ACTION_SET_RATING_10          240
+
 // The NOOP action can be specified to disable an input event. This is
 // useful in user keyboard.xml etc to disable actions specified in the
 // system mappings.

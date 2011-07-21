@@ -207,6 +207,22 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogVideoInfo::OnAction(const CAction &action)
+{
+  if (action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING ||
+      ( action.GetID() >= ACTION_SET_RATING_0 && action.GetID() <= ACTION_SET_RATING_10) )
+  {
+    if (CGUIWindowVideoBase::OnRateAction(m_movieItem, action.GetID()))
+    {
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_movieItem);
+      g_windowManager.SendMessage(msg);
+      return true;
+    }
+  }
+
+  return CGUIDialog::OnAction(action);
+}
+
 void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 {
   *m_movieItem = *item;

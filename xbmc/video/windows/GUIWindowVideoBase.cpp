@@ -98,7 +98,18 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SCAN_ITEM)
     return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
-
+  if (action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING ||
+      ( action.GetID() >= ACTION_SET_RATING_0 && action.GetID() <= ACTION_SET_RATING_10) )
+  {
+    if ( m_viewControl.GetSelectedItem() >= 0 &&
+         m_viewControl.GetSelectedItem() < m_vecItems->Size() &&
+         OnRateAction(m_vecItems->Get(m_viewControl.GetSelectedItem()), action.GetID()) )
+    {
+      CUtil::DeleteVideoDatabaseDirectoryCache();
+      Update(m_vecItems->m_strPath);
+    }
+    return true;
+  }
   return CGUIMediaWindow::OnAction(action);
 }
 
@@ -930,6 +941,26 @@ bool CGUIWindowVideoBase::OnFileAction(int iItem, int action)
     break;
   }
   return OnClick(iItem);
+}
+
+bool CGUIWindowVideoBase::OnRateAction(const CFileItemPtr &item, int action)
+{
+  bool bRatingChanged(false);
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    if (action == ACTION_DECREASE_RATING)
+      bRatingChanged = db.DecreaseRating(*item);
+    else if (action == ACTION_INCREASE_RATING)
+      bRatingChanged = db.IncreaseRating(*item);
+    else if (action >= ACTION_SET_RATING_0 && action <= ACTION_SET_RATING_10)
+    {
+      db.SetRating(*item, action - ACTION_SET_RATING_0);
+      bRatingChanged = true;
+    }
+    db.Close();
+  }
+  return bRatingChanged;
 }
 
 bool CGUIWindowVideoBase::OnInfo(int iItem) 
