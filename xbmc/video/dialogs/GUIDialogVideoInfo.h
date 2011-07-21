@@ -40,6 +40,8 @@ public:
   bool RefreshAll() const;
   bool HasUpdatedThumb() const { return m_hasUpdatedThumb; };
 
+  virtual bool OnAction(const CAction &action);
+
   const CStdString &GetThumbnail() const;
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return m_movieItem; }
   const CFileItemList& CurrentDirectory() const { return *m_castList; };
