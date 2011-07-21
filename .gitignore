@@ -322,20 +322,12 @@ lib/cmyth/Makefile
 /project/obj
 /project/output
 
-# /project/Win32BuildSetup/dependencies
-/project/Win32BuildSetup/dependencies/SDL.dll
-/project/Win32BuildSetup/dependencies/glew32.dll
-/project/Win32BuildSetup/dependencies/pcre.dll
-/project/Win32BuildSetup/dependencies/pcrecpp.dll
-/project/Win32BuildSetup/dependencies/python26.dll
-/project/Win32BuildSetup/dependencies/libcdio-12.dll
-/project/Win32BuildSetup/dependencies/vcredist
-
 # /project/Win32BuildSetup/
 /project/Win32BuildSetup/BuildLog.htm
 /project/Win32BuildSetup/XBMCSetup*.exe
 /project/Win32BuildSetup/languages.nsi
 /project/Win32BuildSetup/BUILD_WIN32/
+/project/Win32BuildSetup/dependencies
 
 # /project/BuildDependencies
 /project/BuildDependencies/downloads

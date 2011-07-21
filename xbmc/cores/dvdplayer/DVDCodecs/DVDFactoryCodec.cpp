@@ -44,7 +44,9 @@
 #include "Audio/DVDAudioCodecPassthroughFFmpeg.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecText.h"
+#include "Overlay/DVDOverlayCodecTX3G.h"
 #include "Overlay/DVDOverlayCodecFFmpeg.h"
+
 
 #include "DVDStreamInfo.h"
 #include "settings/GUISettings.h"
@@ -331,6 +333,10 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
       if( pCodec ) return pCodec;
 
       pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
+      if( pCodec ) return pCodec;
+
+    case CODEC_ID_MOV_TEXT:
+      pCodec = OpenCodec(new CDVDOverlayCodecTX3G(), hint, options);
       if( pCodec ) return pCodec;
 
     default:

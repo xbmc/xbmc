@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "Application.h"
 #include "interfaces/Builtins.h"
@@ -758,7 +759,7 @@ bool CApplication::Create()
 
   g_mediaManager.Initialize();
 
-  m_lastFrameTime = CTimeUtils::GetTimeMS();
+  m_lastFrameTime = XbmcThreads::SystemClockMillis();
   m_lastRenderTime = m_lastFrameTime;
 
   return Initialize();
@@ -803,7 +804,7 @@ bool CApplication::InitDirectoriesLinux()
 
   if (xbmcPath.IsEmpty())
   {
-    xbmcPath = INSTALL_PATH;
+    xbmcPath = xbmcBinPath;
     /* Check if xbmc binaries and arch independent data files are being kept in
      * separate locations. */
     if (!CFile::Exists(URIUtils::AddFileToFolder(xbmcPath, "language")))
@@ -1925,32 +1926,10 @@ bool CApplication::WaitFrame(unsigned int timeout)
   // Wait for all other frames to be presented
   CSingleLock lock(m_frameMutex);
   //wait until event is set, but modify remaining time
-  DWORD dwStartTime = CTimeUtils::GetTimeMS();
-  DWORD dwRemainingTime = timeout;
-  while(m_frameCount > 0)
-  {
-    ConditionVariable::TimedWaitResponse result = m_frameCond.wait(lock, dwRemainingTime);
-    if (result == ConditionVariable::TW_OK)
-    {
-      //fix time to wait because of spurious wakeups
-      DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
-      if(dwElapsed < dwRemainingTime)
-      {
-        dwRemainingTime -= dwElapsed;
-        continue;
-      }
-      else
-      {
-        //ran out of time
-        result = ConditionVariable::TW_TIMEDOUT;
-      }
-    }
 
-    if(result == ConditionVariable::TW_TIMEDOUT)
-      break;
-    if(result < 0)
-      CLog::Log(LOGWARNING, "CApplication::WaitFrame - error from conditional wait");
-  }
+  NotFrameCount nfc(this);
+  TightConditionVariable<NotFrameCount&> cv(m_frameCond, nfc);
+  cv.wait(lock,timeout);
   done = m_frameCount == 0;
 
   return done;
@@ -2000,34 +1979,8 @@ void CApplication::Render()
     {
       CSingleLock lock(m_frameMutex);
 
-      //wait until event is set, but modify remaining time
-      DWORD dwStartTime = CTimeUtils::GetTimeMS();
-      DWORD dwRemainingTime = 100;
-      // If we have frames or if we get notified of one, consume it.
-      while(m_frameCount == 0)
-      {
-        ConditionVariable::TimedWaitResponse result = m_frameCond.wait(lock, dwRemainingTime);
-        if (result == ConditionVariable::TW_OK)
-        {
-          //fix time to wait because of spurious wakeups
-          DWORD dwElapsed = CTimeUtils::GetTimeMS() - dwStartTime;
-          if(dwElapsed < dwRemainingTime)
-          {
-            dwRemainingTime -= dwElapsed;
-            continue;
-          }
-          else
-          {
-            //ran out of time
-            result = ConditionVariable::TW_TIMEDOUT;
-          }
-        }
-
-        if(result == ConditionVariable::TW_TIMEDOUT)
-          break;
-        if(result < 0)
-          CLog::Log(LOGWARNING, "CApplication::Render - error from conditional wait");
-      }
+      TightConditionVariable<int&> cv(m_frameCond,m_frameCount);
+      cv.wait(lock,100);
 
       m_bPresentFrame = m_frameCount > 0;
       decrement = m_bPresentFrame;
@@ -2087,7 +2040,7 @@ void CApplication::Render()
 
   lock.Leave();
 
-  unsigned int now = CTimeUtils::GetTimeMS();
+  unsigned int now = XbmcThreads::SystemClockMillis();
   if (hasRendered)
     m_lastRenderTime = now;
 
@@ -2109,7 +2062,7 @@ void CApplication::Render()
     if (frameTime < singleFrameTime)
       Sleep(singleFrameTime - frameTime);
   }
-  m_lastFrameTime = CTimeUtils::GetTimeMS();
+  m_lastFrameTime = XbmcThreads::SystemClockMillis();
 
   if (flip)
     g_graphicsContext.Flip();
@@ -2648,7 +2601,7 @@ void CApplication::UpdateLCD()
   long lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
     lTimeOut = 0;
-  if ( ((long)CTimeUtils::GetTimeMS() - lTickCount) >= lTimeOut)
+  if ( ((long)XbmcThreads::SystemClockMillis() - lTickCount) >= lTimeOut)
   {
     if (g_application.NavigationIdleTime() < 5)
       g_lcd->Render(ILCD::LCD_MODE_NAVIGATION);
@@ -2662,7 +2615,7 @@ void CApplication::UpdateLCD()
       g_lcd->Render(ILCD::LCD_MODE_GENERAL);
 
     // reset tick count
-    lTickCount = CTimeUtils::GetTimeMS();
+    lTickCount = XbmcThreads::SystemClockMillis();
   }
 #endif
 }

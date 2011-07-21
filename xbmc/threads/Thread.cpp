@@ -18,6 +18,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "threads/SystemClock.h"
 #include "Thread.h"
 #ifndef _LINUX
 #include <process.h>
@@ -232,7 +233,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   {
     throw 1; //ERROR should not b possible!!!
   }
-  m_iLastTime = CTimeUtils::GetTimeMS() * 10000;
+  m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
   m_bAutoDelete = bAutoDelete;
@@ -476,7 +477,7 @@ void CThread::Process()
 
 float CThread::GetRelativeUsage()
 {
-  unsigned __int64 iTime = CTimeUtils::GetTimeMS();
+  unsigned __int64 iTime = XbmcThreads::SystemClockMillis();
   iTime *= 10000; // convert into 100ns tics
 
   // only update every 1 second

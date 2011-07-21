@@ -4,6 +4,7 @@ SRCS=	DVDOverlayCodecCC.cpp \
 	DVDOverlayCodecFFmpeg.cpp \
 	DVDOverlayCodecSSA.cpp \
 	DVDOverlayCodecText.cpp \
+	DVDOverlayCodecTX3G.cpp \
 	libspucc/cc_decoder.c \
 
 LIB=	Overlay.a

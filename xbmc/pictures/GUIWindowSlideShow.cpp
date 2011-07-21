@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "GUIWindowSlideShow.h"
 #include "Application.h"
@@ -95,12 +96,12 @@ void CBackgroundPicLoader::Process()
     {
       if (m_pCallback)
       {
-        unsigned int start = CTimeUtils::GetTimeMS();
+        unsigned int start = XbmcThreads::SystemClockMillis();
         CBaseTexture* texture = new CTexture();
         unsigned int originalWidth = 0;
         unsigned int originalHeight = 0;
         texture->LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("pictures.useexifrotation"), &originalWidth, &originalHeight);
-        totalTime += CTimeUtils::GetTimeMS() - start;
+        totalTime += XbmcThreads::SystemClockMillis() - start;
         count++;
         // tell our parent
         bool bFullSize = ((int)texture->GetWidth() < m_maxWidth) && ((int)texture->GetHeight() < m_maxHeight);

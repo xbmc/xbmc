@@ -21,6 +21,7 @@
  */
 
 #if !defined(__arm__)
+#include "threads/SystemClock.h"
 #include <CoreServices/CoreServices.h>
 
 #include "CoreAudioRenderer.h"
@@ -284,7 +285,7 @@ void CCoreAudioPerformance::ReportData(UInt32 bytesIn, UInt32 bytesOut)
     return;
   
   // Perform watchdog funtions
-  UInt32 time = CTimeUtils::GetTimeMS();
+  UInt32 time = XbmcThreads::SystemClockMillis();
   if (!m_LastWatchdogCheck)
     m_LastWatchdogCheck = time;
   UInt32 deltaTime = time - m_LastWatchdogCheck;

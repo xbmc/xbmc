@@ -784,7 +784,7 @@ EPISODELIST CScraper::GetEpisodeList(XFILE::CFileCurl &fcurl, const CScraperUrl 
         {
           tm tm;
           if (strptime(sDate, "%Y-%m-%d", &tm))
-            ep.cDate.SetDate(tm.tm_year, tm.tm_mon + 1, tm.tm_mday);
+            ep.cDate.SetDate(1900+tm.tm_year, tm.tm_mon + 1, tm.tm_mday);
         }
         vcep.push_back(ep);
       }

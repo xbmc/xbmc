@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "SystemInfo.h"
 #ifndef _LINUX
@@ -144,12 +145,12 @@ CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   if(bTotalUptime)
   {
     //Total Uptime
-    iInputMinutes = g_settings.m_iSystemTimeTotalUp + ((int)(CTimeUtils::GetTimeMS() / 60000));
+    iInputMinutes = g_settings.m_iSystemTimeTotalUp + ((int)(XbmcThreads::SystemClockMillis() / 60000));
   }
   else
   {
     //Current UpTime
-    iInputMinutes = (int)(CTimeUtils::GetTimeMS() / 60000);
+    iInputMinutes = (int)(XbmcThreads::SystemClockMillis() / 60000);
   }
 
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);

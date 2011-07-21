@@ -42,7 +42,7 @@ public:
   bool Compress(bool bForce=true);
   void Interupt();
 
-  bool Open(DatabaseSettings &db);
+  bool Open(const DatabaseSettings &db);
 
   void BeginTransaction();
   virtual bool CommitTransaction();
@@ -126,7 +126,7 @@ protected:
   std::auto_ptr<dbiplus::Dataset> m_pDS2;
 
 private:
-  bool Connect(DatabaseSettings &db, bool create);
+  bool Connect(const DatabaseSettings &db, bool create);
   bool UpdateVersionNumber();
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */

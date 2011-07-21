@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "PlayListPlayer.h"
 #include "playlists/PlayListFactory.h"
 #include "Application.h"
@@ -249,7 +250,7 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
 
   m_bPlaybackStarted = false;
 
-  unsigned int playAttempt = CTimeUtils::GetTimeMS();
+  unsigned int playAttempt = XbmcThreads::SystemClockMillis();
   if (!g_application.PlayFile(*item, bAutoPlay))
   {
     CLog::Log(LOGERROR,"Playlist Player: skipping unplayable item: %i, path [%s]", m_iCurrentSong, item->m_strPath.c_str());
@@ -260,7 +261,7 @@ bool CPlayListPlayer::Play(int iSong, bool bAutoPlay /* = false */, bool bPlayPr
       m_failedSongsStart = playAttempt;
     m_iFailedSongs++;
     if ((m_iFailedSongs >= g_advancedSettings.m_playlistRetries && g_advancedSettings.m_playlistRetries >= 0)
-        || ((CTimeUtils::GetTimeMS() - m_failedSongsStart  >= (unsigned int)g_advancedSettings.m_playlistTimeout * 1000) && g_advancedSettings.m_playlistTimeout))
+        || ((XbmcThreads::SystemClockMillis() - m_failedSongsStart  >= (unsigned int)g_advancedSettings.m_playlistTimeout * 1000) && g_advancedSettings.m_playlistTimeout))
     {
       CLog::Log(LOGDEBUG,"Playlist Player: one or more items failed to play... aborting playback");
 

@@ -22,6 +22,7 @@
 #include <Python.h>
 
 
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "pyutil.h"
 #include "pythreadstate.h"
@@ -182,12 +183,74 @@ extern "C" {
 
       return Py_BuildValue((char*)"b", bResult);
     }      
+
+    PyDoc_STRVAR(mkdir__doc__,
+      "mkdir(path) -- Create a folder.\n"
+      "\n"
+      "path        : folder\n"
+      "\n"
+      "example:\n"
+      " - success = xbmcvfs.mkdir(path)\n");
+    // make a directory
+    PyObject* vfs_mkdir(File *self, PyObject *args, PyObject *kwds)
+    {
+      PyObject *f_line;
+      if (!PyArg_ParseTuple(
+        args,
+        (char*)"O",
+        &f_line))
+      {
+        return NULL;
+      }
+      CStdString strSource;
+      if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
+     
+      bool bResult;
+     
+      CPyThreadState pyState;
+      bResult = CDirectory::Create(strSource);
+      pyState.Restore();
+
+      return Py_BuildValue((char*)"b", bResult);
+    }      
+
+    PyDoc_STRVAR(rmdir__doc__,
+      "rmdir(path) -- Remove a folder.\n"
+      "\n"
+      "path        : folder\n"
+      "\n"
+      "example:\n"
+      " - success = xbmcvfs.rmdir(path)\n");
+    // remove a directory
+    PyObject* vfs_rmdir(File *self, PyObject *args, PyObject *kwds)
+    {
+      PyObject *f_line;
+      if (!PyArg_ParseTuple(
+        args,
+        (char*)"O",
+        &f_line))
+      {
+        return NULL;
+      }
+      CStdString strSource;
+      if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
+     
+      bool bResult;
+     
+      CPyThreadState pyState;
+      bResult = CDirectory::Remove(strSource);
+      pyState.Restore();
+
+      return Py_BuildValue((char*)"b", bResult);
+    }      
     
     // define c functions to be used in python here
     PyMethodDef xbmcvfsMethods[] = {
       {(char*)"copy", (PyCFunction)vfs_copy, METH_VARARGS, copy__doc__},
       {(char*)"delete", (PyCFunction)vfs_delete, METH_VARARGS, delete__doc__},
       {(char*)"rename", (PyCFunction)vfs_rename, METH_VARARGS, rename__doc__},
+      {(char*)"mkdir", (PyCFunction)vfs_mkdir, METH_VARARGS, mkdir__doc__},
+      {(char*)"rmdir", (PyCFunction)vfs_rmdir, METH_VARARGS, rmdir__doc__},
       {(char*)"exists", (PyCFunction)vfs_exists, METH_VARARGS, exists__doc__},
       {NULL, NULL, 0, NULL}
     };

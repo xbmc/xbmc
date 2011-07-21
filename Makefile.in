@@ -122,7 +122,7 @@ PAPCODECS_DIRS= \
 	lib/vgmstream \
 
 ifeq (@USE_ASAP_CODEC@,1)
-PAPCODEC_DIRS+= \
+PAPCODECS_DIRS+= \
 	lib/asap
 endif
 

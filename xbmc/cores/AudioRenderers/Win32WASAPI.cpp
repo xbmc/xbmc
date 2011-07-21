@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h" // WIN32INCLUDES needed for the WASAPI stuff below
 
 #include <mmdeviceapi.h>
@@ -276,7 +277,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   m_bIsAllocated = true;
   m_CacheLen = 0;
-  m_LastCacheCheck = CTimeUtils::GetTimeMS();
+  m_LastCacheCheck = XbmcThreads::SystemClockMillis();
   
   return m_bIsAllocated;
 
@@ -464,7 +465,7 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
 
 void CWin32WASAPI::UpdateCacheStatus()
 {
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   if (time == m_LastCacheCheck)
     return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
