@@ -72,6 +72,7 @@ struct SSortFileItem
   static void ByMPAARating(CFileItemPtr &item);
   static void ByStudio(CFileItemPtr &item);
   static void ByStudioNoThe(CFileItemPtr &item);
+  static void ByVideoUserRating(CFileItemPtr &item);
 
   static void ByEpisodeNum(CFileItemPtr &item);
   static void ByProductionCode(CFileItemPtr &item);
@@ -121,6 +122,7 @@ typedef enum {
   SORT_METHOD_LISTENERS,
   SORT_METHOD_UNSORTED,
   SORT_METHOD_BITRATE,
+  SORT_METHOD_VIDEO_USER_RATING,
   SORT_METHOD_MAX
 } SORT_METHOD;
 
