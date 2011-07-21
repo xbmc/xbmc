@@ -211,6 +211,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
           AddSortMethod(SORT_METHOD_EPISODE,20359,LABEL_MASKS("%E. %T","%R"));
           AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%E. %T", "%R"));  // Filename, Duration | Foldername, empty
           AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%E. %T", "%O"));
+          AddSortMethod(SORT_METHOD_VIDEO_USER_RATING, 577, LABEL_MASKS("%E. %T", "%R"));  // Filename, Duration | Foldername, empty
           AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%E. %T","%P", "%E. %T","%P"));
           AddSortMethod(SORT_METHOD_DATE,552,LABEL_MASKS("%E. %T","%J","%E. %T","%J"));
 
@@ -222,6 +223,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
           AddSortMethod(SORT_METHOD_EPISODE,20359,LABEL_MASKS("%H. %T","%R"));
           AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%H. %T", "%R"));  // Filename, Duration | Foldername, empty
           AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%H. %T", "%O"));
+          AddSortMethod(SORT_METHOD_VIDEO_USER_RATING, 577, LABEL_MASKS("%H. %T", "%R"));  // Filename, Duration | Foldername, empty
           AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%H. %T","%P", "%H. %T","%P"));
           AddSortMethod(SORT_METHOD_DATE,552,LABEL_MASKS("%H. %T","%J","%H. %T","%J"));
 
@@ -270,6 +272,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
 
           AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
           AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%T", "%O"));
+          AddSortMethod(SORT_METHOD_VIDEO_USER_RATING, 577, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
           AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
         }
         AddSortMethod(SORT_METHOD_VIDEO_RUNTIME,2050, LABEL_MASKS("%T", "%D"));
@@ -292,6 +295,7 @@ CGUIViewStateWindowVideoNav::CGUIViewStateWindowVideoNav(const CFileItemList& it
         else
           AddSortMethod(SORT_METHOD_LABEL, 551, LABEL_MASKS("%T", "%Y"));  // Filename, Duration | Foldername, empty
         AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%T", "%O"));
+        AddSortMethod(SORT_METHOD_VIDEO_USER_RATING, 577, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
         AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
         if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
         {
@@ -508,6 +512,7 @@ CGUIViewStateVideoMovies::CGUIViewStateVideoMovies(const CFileItemList& items) :
     AddSortMethod(SORT_METHOD_VIDEO_SORT_TITLE, 551, LABEL_MASKS("%T", "%R"));
   AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
   AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%T", "%O"));
+  AddSortMethod(SORT_METHOD_VIDEO_USER_RATING, 577, LABEL_MASKS("%T", "%R"));  // Filename, Duration | Foldername, empty
   AddSortMethod(SORT_METHOD_YEAR,562, LABEL_MASKS("%T", "%Y"));
 
   if (items.IsSmartPlayList())
@@ -595,6 +600,7 @@ CGUIViewStateVideoEpisodes::CGUIViewStateVideoEpisodes(const CFileItemList& item
   {
     AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%E. %T", "%R"));  // Filename, Duration | Foldername, empty
     AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%E. %T", "%O"));
+    AddSortMethod(SORT_METHOD_VIDEO_USER_RATING, 577, LABEL_MASKS("%E. %T", "%R"));  // Filename, Duration | Foldername, empty
     AddSortMethod(SORT_METHOD_EPISODE,20359,LABEL_MASKS("%E. %T","%R"));
     AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%E. %T","%P", "%E. %T","%P"));
     AddSortMethod(SORT_METHOD_DATE,552,LABEL_MASKS("%E. %T","%J","E. %T","%J"));
@@ -603,6 +609,7 @@ CGUIViewStateVideoEpisodes::CGUIViewStateVideoEpisodes(const CFileItemList& item
   { // format here is tvshowtitle - season/episode number. episode title
     AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%Z - %H. %T", "%R"));
     AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%Z - %H. %T", "%O"));
+    AddSortMethod(SORT_METHOD_VIDEO_USER_RATING, 577, LABEL_MASKS("%Z - %H. %T", "%R"));  // Filename, Duration | Foldername, empty
     AddSortMethod(SORT_METHOD_EPISODE,20359,LABEL_MASKS("%Z - %H. %T","%R"));
     AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%Z - %H. %T","%P"));
     AddSortMethod(SORT_METHOD_DATE,552,LABEL_MASKS("%Z - %H. %T","%J"));
