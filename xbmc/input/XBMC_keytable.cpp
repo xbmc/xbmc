@@ -21,206 +21,206 @@
 
 #include "system.h"
 #include "utils/StdString.h"
+#include "input/XBMC_keysym.h"
 #include "input/XBMC_vkeys.h"
 #include "input/XBMC_keytable.h"
 
 // The array of XBMCKEYTABLEs used in XBMC.
-// The entries are in ascending order of sym; just for convenience.
 // scancode, sym, unicode, ascii, vkey, keyname
 static const XBMCKEYTABLE XBMCKeyTable[] =
-{ { 0x0008,      0,    0, XBMCVK_BACK,   "backspace" }
-, { 0x0009,      0,    0, XBMCVK_TAB,    "tab" }
-, { 0x000d,      0,    0, XBMCVK_RETURN, "return" }
-, { 0x001b,      0,    0, XBMCVK_ESCAPE, "escape" }
-, {      0,      0,    0, XBMCVK_ESCAPE, "esc" } // Allowed abbreviation for "escape"
+{ { XBMCK_BACKSPACE, 0,    0, XBMCVK_BACK,   "backspace" }
+, { XBMCK_TAB,       0,    0, XBMCVK_TAB,    "tab" }
+, { XBMCK_RETURN,    0,    0, XBMCVK_RETURN, "return" }
+, { XBMCK_ESCAPE,    0,    0, XBMCVK_ESCAPE, "escape" }
+, { 0,               0,    0, XBMCVK_ESCAPE, "esc" } // Allowed abbreviation for "escape"
 
 // Number keys on the main keyboard
-, { 0x0030,    '0',  '0', XBMCVK_0, "zero" }
-, { 0x0031,    '1',  '1', XBMCVK_1, "one" }
-, { 0x0032,    '2',  '2', XBMCVK_2, "two" }
-, { 0x0033,    '3',  '3', XBMCVK_3, "three" }
-, { 0x0034,    '4',  '4', XBMCVK_4, "four" }
-, { 0x0035,    '5',  '5', XBMCVK_5, "five" }
-, { 0x0036,    '6',  '6', XBMCVK_6, "six" }
-, { 0x0037,    '7',  '7', XBMCVK_7, "seven" }
-, { 0x0038,    '8',  '8', XBMCVK_8, "eight" }
-, { 0x0039,    '9',  '9', XBMCVK_9, "nine" }
+, { XBMCK_0,    '0',  '0', XBMCVK_0, "zero" }
+, { XBMCK_1,    '1',  '1', XBMCVK_1, "one" }
+, { XBMCK_2,    '2',  '2', XBMCVK_2, "two" }
+, { XBMCK_3,    '3',  '3', XBMCVK_3, "three" }
+, { XBMCK_4,    '4',  '4', XBMCVK_4, "four" }
+, { XBMCK_5,    '5',  '5', XBMCVK_5, "five" }
+, { XBMCK_6,    '6',  '6', XBMCVK_6, "six" }
+, { XBMCK_7,    '7',  '7', XBMCVK_7, "seven" }
+, { XBMCK_8,    '8',  '8', XBMCVK_8, "eight" }
+, { XBMCK_9,    '9',  '9', XBMCVK_9, "nine" }
 
 // A to Z - note that upper case A-Z don't have a matching name or
 // vkey. Only the lower case a-z are used in key mappings.
-, { 0x0061,    'A',  'A', XBMCVK_A, NULL }
-, { 0x0062,    'B',  'B', XBMCVK_B, NULL }
-, { 0x0063,    'C',  'C', XBMCVK_C, NULL }
-, { 0x0064,    'D',  'D', XBMCVK_D, NULL }
-, { 0x0065,    'E',  'E', XBMCVK_E, NULL }
-, { 0x0066,    'F',  'F', XBMCVK_F, NULL }
-, { 0x0067,    'G',  'G', XBMCVK_G, NULL }
-, { 0x0068,    'H',  'H', XBMCVK_H, NULL }
-, { 0x0069,    'I',  'I', XBMCVK_I, NULL }
-, { 0x006A,    'J',  'J', XBMCVK_J, NULL }
-, { 0x006B,    'K',  'K', XBMCVK_K, NULL }
-, { 0x006C,    'L',  'L', XBMCVK_L, NULL }
-, { 0x006D,    'M',  'M', XBMCVK_M, NULL }
-, { 0x006E,    'N',  'N', XBMCVK_N, NULL }
-, { 0x006F,    'O',  'O', XBMCVK_O, NULL }
-, { 0x0070,    'P',  'P', XBMCVK_P, NULL }
-, { 0x0071,    'Q',  'Q', XBMCVK_Q, NULL }
-, { 0x0072,    'R',  'R', XBMCVK_R, NULL }
-, { 0x0073,    'S',  'S', XBMCVK_S, NULL }
-, { 0x0074,    'T',  'T', XBMCVK_T, NULL }
-, { 0x0075,    'U',  'U', XBMCVK_U, NULL }
-, { 0x0076,    'V',  'V', XBMCVK_V, NULL }
-, { 0x0077,    'W',  'W', XBMCVK_W, NULL }
-, { 0x0078,    'X',  'X', XBMCVK_X, NULL }
-, { 0x0079,    'Y',  'Y', XBMCVK_Y, NULL }
-, { 0x007A,    'Z',  'Z', XBMCVK_Z, NULL }
+, { XBMCK_a,    'A',  'A', XBMCVK_A, NULL }
+, { XBMCK_b,    'B',  'B', XBMCVK_B, NULL }
+, { XBMCK_c,    'C',  'C', XBMCVK_C, NULL }
+, { XBMCK_d,    'D',  'D', XBMCVK_D, NULL }
+, { XBMCK_e,    'E',  'E', XBMCVK_E, NULL }
+, { XBMCK_f,    'F',  'F', XBMCVK_F, NULL }
+, { XBMCK_g,    'G',  'G', XBMCVK_G, NULL }
+, { XBMCK_h,    'H',  'H', XBMCVK_H, NULL }
+, { XBMCK_i,    'I',  'I', XBMCVK_I, NULL }
+, { XBMCK_j,    'J',  'J', XBMCVK_J, NULL }
+, { XBMCK_k,    'K',  'K', XBMCVK_K, NULL }
+, { XBMCK_l,    'L',  'L', XBMCVK_L, NULL }
+, { XBMCK_m,    'M',  'M', XBMCVK_M, NULL }
+, { XBMCK_n,    'N',  'N', XBMCVK_N, NULL }
+, { XBMCK_o,    'O',  'O', XBMCVK_O, NULL }
+, { XBMCK_p,    'P',  'P', XBMCVK_P, NULL }
+, { XBMCK_q,    'Q',  'Q', XBMCVK_Q, NULL }
+, { XBMCK_r,    'R',  'R', XBMCVK_R, NULL }
+, { XBMCK_s,    'S',  'S', XBMCVK_S, NULL }
+, { XBMCK_t,    'T',  'T', XBMCVK_T, NULL }
+, { XBMCK_u,    'U',  'U', XBMCVK_U, NULL }
+, { XBMCK_v,    'V',  'V', XBMCVK_V, NULL }
+, { XBMCK_w,    'W',  'W', XBMCVK_W, NULL }
+, { XBMCK_x,    'X',  'X', XBMCVK_X, NULL }
+, { XBMCK_y,    'Y',  'Y', XBMCVK_Y, NULL }
+, { XBMCK_z,    'Z',  'Z', XBMCVK_Z, NULL }
 
-, { 0x0061,    'a',  'a', XBMCVK_A, "a" }
-, { 0x0062,    'b',  'b', XBMCVK_B, "b" }
-, { 0x0063,    'c',  'c', XBMCVK_C, "c" }
-, { 0x0064,    'd',  'd', XBMCVK_D, "d" }
-, { 0x0065,    'e',  'e', XBMCVK_E, "e" }
-, { 0x0066,    'f',  'f', XBMCVK_F, "f" }
-, { 0x0067,    'g',  'g', XBMCVK_G, "g" }
-, { 0x0068,    'h',  'h', XBMCVK_H, "h" }
-, { 0x0069,    'i',  'i', XBMCVK_I, "i" }
-, { 0x006a,    'j',  'j', XBMCVK_J, "j" }
-, { 0x006b,    'k',  'k', XBMCVK_K, "k" }
-, { 0x006c,    'l',  'l', XBMCVK_L, "l" }
-, { 0x006d,    'm',  'm', XBMCVK_M, "m" }
-, { 0x006e,    'n',  'n', XBMCVK_N, "n" }
-, { 0x006f,    'o',  'o', XBMCVK_O, "o" }
-, { 0x0070,    'p',  'p', XBMCVK_P, "p" }
-, { 0x0071,    'q',  'q', XBMCVK_Q, "q" }
-, { 0x0072,    'r',  'r', XBMCVK_R, "r" }
-, { 0x0073,    's',  's', XBMCVK_S, "s" }
-, { 0x0074,    't',  't', XBMCVK_T, "t" }
-, { 0x0075,    'u',  'u', XBMCVK_U, "u" }
-, { 0x0076,    'v',  'v', XBMCVK_V, "v" }
-, { 0x0077,    'w',  'w', XBMCVK_W, "w" }
-, { 0x0078,    'x',  'x', XBMCVK_X, "x" }
-, { 0x0079,    'y',  'y', XBMCVK_Y, "y" }
-, { 0x007a,    'z',  'z', XBMCVK_Z, "z" }
+, { XBMCK_a,    'a',  'a', XBMCVK_A, "a" }
+, { XBMCK_b,    'b',  'b', XBMCVK_B, "b" }
+, { XBMCK_c,    'c',  'c', XBMCVK_C, "c" }
+, { XBMCK_d,    'd',  'd', XBMCVK_D, "d" }
+, { XBMCK_e,    'e',  'e', XBMCVK_E, "e" }
+, { XBMCK_f,    'f',  'f', XBMCVK_F, "f" }
+, { XBMCK_g,    'g',  'g', XBMCVK_G, "g" }
+, { XBMCK_h,    'h',  'h', XBMCVK_H, "h" }
+, { XBMCK_i,    'i',  'i', XBMCVK_I, "i" }
+, { XBMCK_j,    'j',  'j', XBMCVK_J, "j" }
+, { XBMCK_k,    'k',  'k', XBMCVK_K, "k" }
+, { XBMCK_l,    'l',  'l', XBMCVK_L, "l" }
+, { XBMCK_m,    'm',  'm', XBMCVK_M, "m" }
+, { XBMCK_n,    'n',  'n', XBMCVK_N, "n" }
+, { XBMCK_o,    'o',  'o', XBMCVK_O, "o" }
+, { XBMCK_p,    'p',  'p', XBMCVK_P, "p" }
+, { XBMCK_q,    'q',  'q', XBMCVK_Q, "q" }
+, { XBMCK_r,    'r',  'r', XBMCVK_R, "r" }
+, { XBMCK_s,    's',  's', XBMCVK_S, "s" }
+, { XBMCK_t,    't',  't', XBMCVK_T, "t" }
+, { XBMCK_u,    'u',  'u', XBMCVK_U, "u" }
+, { XBMCK_v,    'v',  'v', XBMCVK_V, "v" }
+, { XBMCK_w,    'w',  'w', XBMCVK_W, "w" }
+, { XBMCK_x,    'x',  'x', XBMCVK_X, "x" }
+, { XBMCK_y,    'y',  'y', XBMCVK_Y, "y" }
+, { XBMCK_z,    'z',  'z', XBMCVK_Z, "z" }
 
 // Misc printing characters
-, { 0x0020, 0x0020, 0x20, XBMCVK_SPACE,         "space" }
-, { 0x0027,    '!',  '!', XBMCVK_EXCLAIM,       "exclaim" }
-, { 0x0027,    '"',  '"', XBMCVK_QUOTEDBL,      "doublequote" }
-, { 0x0027,    '#',  '#', XBMCVK_HASH,          "hash" }
-, { 0x0027,    '$',  '$', XBMCVK_DOLLAR,        "dollar" }
-, { 0x0027,    '%',  '%', XBMCVK_PERCENT,       "percent" }
-, { 0x0027,    '&',  '&', XBMCVK_AMPERSAND,     "ampersand" }
-, { 0x0027,   '\'', '\'', XBMCVK_QUOTE,         "quote" }
-, { 0x0027,    '(',  '(', XBMCVK_LEFTPAREN,     "leftbracket" }
-, { 0x0027,    ')',  ')', XBMCVK_RIGHTPAREN,    "rightbracket" }
-, { 0x0027,    '*',  '*', XBMCVK_ASTERISK,      "asterisk" }
-, { 0x003d,    '+',  '+', XBMCVK_PLUS,          "plus" }
-, { 0x002c,    ',',  ',', XBMCVK_COMMA,         "comma" }
-, { 0x002d,    '-',  '-', XBMCVK_MINUS,         "minus" }
-, { 0x002e,    '.',  '.', XBMCVK_PERIOD,        "period" }
-, { 0x002f,    '/',  '/', XBMCVK_SLASH,         "forwardslash" }
+, { XBMCK_SPACE,                ' ',  ' ', XBMCVK_SPACE,         "space" }
+, { XBMCK_EXCLAIM,              '!',  '!', XBMCVK_EXCLAIM,       "exclaim" }
+, { XBMCK_QUOTEDBL,             '"',  '"', XBMCVK_QUOTEDBL,      "doublequote" }
+, { XBMCK_HASH,                 '#',  '#', XBMCVK_HASH,          "hash" }
+, { XBMCK_DOLLAR,               '$',  '$', XBMCVK_DOLLAR,        "dollar" }
+, { 0,                          '%',  '%', XBMCVK_PERCENT,       "percent" }
+, { XBMCK_AMPERSAND,            '&',  '&', XBMCVK_AMPERSAND,     "ampersand" }
+, { XBMCK_QUOTE,                '\'', '\'', XBMCVK_QUOTE,         "quote" }
+, { XBMCK_LEFTPAREN,            '(',  '(', XBMCVK_LEFTPAREN,     "leftbracket" }
+, { XBMCK_RIGHTPAREN,           ')',  ')', XBMCVK_RIGHTPAREN,    "rightbracket" }
+, { XBMCK_ASTERISK,             '*',  '*', XBMCVK_ASTERISK,      "asterisk" }
+, { XBMCK_PLUS,                 '+',  '+', XBMCVK_PLUS,          "plus" }
+, { XBMCK_COMMA,                ',',  ',', XBMCVK_COMMA,         "comma" }
+, { XBMCK_MINUS,                '-',  '-', XBMCVK_MINUS,         "minus" }
+, { XBMCK_PERIOD,               '.',  '.', XBMCVK_PERIOD,        "period" }
+, { XBMCK_SLASH,                '/',  '/', XBMCVK_SLASH,         "forwardslash" }
 
-, { 0x003b,    ':',  ':', XBMCVK_COLON,         "colon" }
-, { 0x003b,    ';',  ';', XBMCVK_SEMICOLON,     "semicolon" }
-, { 0x002c,    '<',  '<', XBMCVK_LESS,          "lessthan" }
-, { 0x003d,    '=',  '=', XBMCVK_EQUALS,        "equals" }
-, { 0x002e,    '>',  '>', XBMCVK_GREATER,       "greaterthan" }
-, { 0x002f,    '?',  '?', XBMCVK_QUESTION,      "questionmark" }
-, { 0x002f,    '@',  '@', XBMCVK_AT,            "at" }
+, { XBMCK_COLON,                ':',  ':', XBMCVK_COLON,         "colon" }
+, { XBMCK_SEMICOLON,            ';',  ';', XBMCVK_SEMICOLON,     "semicolon" }
+, { XBMCK_LESS,                 '<',  '<', XBMCVK_LESS,          "lessthan" }
+, { XBMCK_EQUALS,               '=',  '=', XBMCVK_EQUALS,        "equals" }
+, { XBMCK_GREATER,              '>',  '>', XBMCVK_GREATER,       "greaterthan" }
+, { XBMCK_QUESTION,             '?',  '?', XBMCVK_QUESTION,      "questionmark" }
+, { XBMCK_AT,                   '@',  '@', XBMCVK_AT,            "at" }
 
-, { 0x005b,    '[',  '[', XBMCVK_LEFTBRACKET,   "opensquarebracket" }
-, { 0x005c,   '\\', '\\', XBMCVK_BACKSLASH,     "backslash" }
-, { 0x005d,    ']',  ']', XBMCVK_RIGHTBRACKET,  "closesquarebracket" }
-, {      0,    '^',  '^', XBMCVK_CARET,         "caret" }
-, { 0x002d,    '_',  '_', XBMCVK_UNDERSCORE,    "underline" }
-, {      0,    '`',  '`', XBMCVK_BACKQUOTE,     "leftquote" }
+, { XBMCK_LEFTBRACKET,          '[',  '[', XBMCVK_LEFTBRACKET,   "opensquarebracket" }
+, { XBMCK_BACKSLASH,            '\\', '\\', XBMCVK_BACKSLASH,     "backslash" }
+, { XBMCK_RIGHTBRACKET,         ']',  ']', XBMCVK_RIGHTBRACKET,  "closesquarebracket" }
+, { XBMCK_CARET,                '^',  '^', XBMCVK_CARET,         "caret" }
+, { XBMCK_UNDERSCORE,           '_',  '_', XBMCVK_UNDERSCORE,    "underline" }
+, { XBMCK_BACKQUOTE,            '`',  '`', XBMCVK_BACKQUOTE,     "leftquote" }
 
-, { 0x005b,    '{',  '{', XBMCVK_LEFTBRACE,     "openbrace" }
-, { 0x005c,    '|',  '|', XBMCVK_PIPE,          "pipe" }
-, { 0x005d,    '}',  '}', XBMCVK_RIGHTBRACE,    "closebrace" }
-, { 0x0060,    '~',  '~', XBMCVK_TILDE,         "tilde" }
+, { 0,                          '{',  '{', XBMCVK_LEFTBRACE,     "openbrace" }
+, { 0,                          '|',  '|', XBMCVK_PIPE,          "pipe" }
+, { 0,                          '}',  '}', XBMCVK_RIGHTBRACE,    "closebrace" }
+, { 0,                          '~',  '~', XBMCVK_TILDE,         "tilde" }
 
 // Numeric keypad
-, { 0x0100,    '0',  '0', XBMCVK_NUMPAD0,       "numpadzero"}
-, { 0x0101,    '1',  '1', XBMCVK_NUMPAD1,       "numpadone"}
-, { 0x0102,    '2',  '2', XBMCVK_NUMPAD2,       "numpadtwo"}
-, { 0x0103,    '3',  '3', XBMCVK_NUMPAD3,       "numpadthree"}
-, { 0x0104,    '4',  '4', XBMCVK_NUMPAD4,       "numpadfour"}
-, { 0x0105,    '5',  '5', XBMCVK_NUMPAD5,       "numpadfive"}
-, { 0x0106,    '6',  '6', XBMCVK_NUMPAD6,       "numpadsix"}
-, { 0x0107,    '7',  '7', XBMCVK_NUMPAD7,       "numpadseven"}
-, { 0x0108,    '8',  '8', XBMCVK_NUMPAD8,       "numpadeight"}
-, { 0x0109,    '9',  '9', XBMCVK_NUMPAD9,       "numpadnine"}
+, { XBMCK_KP0,                  '0',  '0', XBMCVK_NUMPAD0,       "numpadzero"}
+, { XBMCK_KP1,                  '1',  '1', XBMCVK_NUMPAD1,       "numpadone"}
+, { XBMCK_KP2,                  '2',  '2', XBMCVK_NUMPAD2,       "numpadtwo"}
+, { XBMCK_KP3,                  '3',  '3', XBMCVK_NUMPAD3,       "numpadthree"}
+, { XBMCK_KP4,                  '4',  '4', XBMCVK_NUMPAD4,       "numpadfour"}
+, { XBMCK_KP5,                  '5',  '5', XBMCVK_NUMPAD5,       "numpadfive"}
+, { XBMCK_KP6,                  '6',  '6', XBMCVK_NUMPAD6,       "numpadsix"}
+, { XBMCK_KP7,                  '7',  '7', XBMCVK_NUMPAD7,       "numpadseven"}
+, { XBMCK_KP8,                  '8',  '8', XBMCVK_NUMPAD8,       "numpadeight"}
+, { XBMCK_KP9,                  '9',  '9', XBMCVK_NUMPAD9,       "numpadnine"}
 
-, { 0x010b,    '/',  '/', XBMCVK_NUMPADDIVIDE,  "numpaddivide"}
-, { 0x010c,    '*',  '*', XBMCVK_NUMPADTIMES,   "numpadtimes"}
-, { 0x010d,    '-',  '-', XBMCVK_NUMPADMINUS,   "numpadminus"}
-, { 0x010e,    '+',  '+', XBMCVK_NUMPADPLUS,    "numpadplus"}
-, { 0x010f,      0,    0, XBMCVK_NUMPADENTER,   "enter"}
-, { 0x010a,    '.',  '.', XBMCVK_NUMPADPERIOD,  "numpadperiod"}
+, { XBMCK_KP_DIVIDE,            '/',  '/', XBMCVK_NUMPADDIVIDE,  "numpaddivide"}
+, { XBMCK_KP_MULTIPLY,          '*',  '*', XBMCVK_NUMPADTIMES,   "numpadtimes"}
+, { XBMCK_KP_MINUS,             '-',  '-', XBMCVK_NUMPADMINUS,   "numpadminus"}
+, { XBMCK_KP_PLUS,              '+',  '+', XBMCVK_NUMPADPLUS,    "numpadplus"}
+, { XBMCK_KP_ENTER,               0,    0, XBMCVK_NUMPADENTER,   "enter"}
+, { XBMCK_KP_PERIOD,            '.',  '.', XBMCVK_NUMPADPERIOD,  "numpadperiod"}
 
 // Multimedia keys
-, { 0x00A6,      0,    0, XBMCVK_BROWSER_BACK,        "browser_back" }
-, { 0x00A7,      0,    0, XBMCVK_BROWSER_FORWARD,     "browser_forward" }
-, { 0x00A8,      0,    0, XBMCVK_BROWSER_REFRESH,     "browser_refresh" }
-, { 0x00A9,      0,    0, XBMCVK_BROWSER_STOP,        "browser_stop" }
-, { 0x00AA,      0,    0, XBMCVK_BROWSER_SEARCH,      "browser_search" }
-, { 0x00AB,      0,    0, XBMCVK_BROWSER_FAVORITES,   "browser_favorites" }
-, { 0x00AC,      0,    0, XBMCVK_BROWSER_HOME,        "browser_home" }
-, { 0x00AD,      0,    0, XBMCVK_VOLUME_MUTE,         "volume_mute" }
-, { 0x00AE,      0,    0, XBMCVK_VOLUME_DOWN,         "volume_down" }
-, { 0x00AF,      0,    0, XBMCVK_VOLUME_UP,           "volume_up" }
-, { 0x00B0,      0,    0, XBMCVK_MEDIA_NEXT_TRACK,    "next_track" }
-, { 0x00B1,      0,    0, XBMCVK_MEDIA_PREV_TRACK,    "prev_track" }
-, { 0x00B2,      0,    0, XBMCVK_MEDIA_STOP,          "stop" }
-, { 0x00B3,      0,    0, XBMCVK_MEDIA_PLAY_PAUSE,    "play_pause" }
-, { 0x00B4,      0,    0, XBMCVK_LAUNCH_MAIL,         "launch_mail" }
-, { 0x00B5,      0,    0, XBMCVK_LAUNCH_MEDIA_SELECT, "launch_media_select" }
-, { 0x00B6,      0,    0, XBMCVK_LAUNCH_APP1,         "launch_app1_pc_icon" }
-, { 0x00B7,      0,    0, XBMCVK_LAUNCH_APP2,         "launch_app2_pc_icon" }
-, { 0x00B8,      0,    0, XBMCVK_LAUNCH_FILE_BROWSER, "launch_file_browser" }
-, { 0x00B9,      0,    0, XBMCVK_LAUNCH_MEDIA_CENTER, "launch_media_center" }
+, { XBMCK_BROWSER_BACK,           0,    0, XBMCVK_BROWSER_BACK,        "browser_back" }
+, { XBMCK_BROWSER_FORWARD,        0,    0, XBMCVK_BROWSER_FORWARD,     "browser_forward" }
+, { XBMCK_BROWSER_REFRESH,        0,    0, XBMCVK_BROWSER_REFRESH,     "browser_refresh" }
+, { XBMCK_BROWSER_STOP,           0,    0, XBMCVK_BROWSER_STOP,        "browser_stop" }
+, { XBMCK_BROWSER_SEARCH,         0,    0, XBMCVK_BROWSER_SEARCH,      "browser_search" }
+, { XBMCK_BROWSER_FAVORITES,      0,    0, XBMCVK_BROWSER_FAVORITES,   "browser_favorites" }
+, { XBMCK_BROWSER_HOME,           0,    0, XBMCVK_BROWSER_HOME,        "browser_home" }
+, { XBMCK_VOLUME_MUTE,            0,    0, XBMCVK_VOLUME_MUTE,         "volume_mute" }
+, { XBMCK_VOLUME_DOWN,            0,    0, XBMCVK_VOLUME_DOWN,         "volume_down" }
+, { XBMCK_VOLUME_UP,              0,    0, XBMCVK_VOLUME_UP,           "volume_up" }
+, { XBMCK_MEDIA_NEXT_TRACK,       0,    0, XBMCVK_MEDIA_NEXT_TRACK,    "next_track" }
+, { XBMCK_MEDIA_PREV_TRACK,       0,    0, XBMCVK_MEDIA_PREV_TRACK,    "prev_track" }
+, { XBMCK_MEDIA_STOP,             0,    0, XBMCVK_MEDIA_STOP,          "stop" }
+, { XBMCK_MEDIA_PLAY_PAUSE,       0,    0, XBMCVK_MEDIA_PLAY_PAUSE,    "play_pause" }
+, { XBMCK_LAUNCH_MAIL,            0,    0, XBMCVK_LAUNCH_MAIL,         "launch_mail" }
+, { XBMCK_LAUNCH_MEDIA_SELECT,    0,    0, XBMCVK_LAUNCH_MEDIA_SELECT, "launch_media_select" }
+, { XBMCK_LAUNCH_APP1,            0,    0, XBMCVK_LAUNCH_APP1,         "launch_app1_pc_icon" }
+, { XBMCK_LAUNCH_APP2,            0,    0, XBMCVK_LAUNCH_APP2,         "launch_app2_pc_icon" }
+, { XBMCK_LAUNCH_FILE_BROWSER,    0,    0, XBMCVK_LAUNCH_FILE_BROWSER, "launch_file_browser" }
+, { XBMCK_LAUNCH_MEDIA_CENTER,    0,    0, XBMCVK_LAUNCH_MEDIA_CENTER, "launch_media_center" }
 
 // Function keys
-, { 0x011a,      0,    0, XBMCVK_F1,            "f1"}
-, { 0x011b,      0,    0, XBMCVK_F2,            "f2"}
-, { 0x011c,      0,    0, XBMCVK_F3,            "f3"}
-, { 0x011d,      0,    0, XBMCVK_F4,            "f4"}
-, { 0x011e,      0,    0, XBMCVK_F5,            "f5"}
-, { 0x011f,      0,    0, XBMCVK_F6,            "f6"}
-, { 0x0120,      0,    0, XBMCVK_F7,            "f7"}
-, { 0x0121,      0,    0, XBMCVK_F8,            "f8"}
-, { 0x0122,      0,    0, XBMCVK_F9,            "f9"}
-, { 0x0123,      0,    0, XBMCVK_F10,           "f10"}
-, { 0x0124,      0,    0, XBMCVK_F11,           "f11"}
-, { 0x0125,      0,    0, XBMCVK_F12,           "f12"}
-, { 0x0126,      0,    0, XBMCVK_F13,           "f13"}
-, { 0x0127,      0,    0, XBMCVK_F14,           "f14"}
-, { 0x0128,      0,    0, XBMCVK_F15,           "f15"}
+, { XBMCK_F1,                     0,    0, XBMCVK_F1,            "f1"}
+, { XBMCK_F2,                     0,    0, XBMCVK_F2,            "f2"}
+, { XBMCK_F3,                     0,    0, XBMCVK_F3,            "f3"}
+, { XBMCK_F4,                     0,    0, XBMCVK_F4,            "f4"}
+, { XBMCK_F5,                     0,    0, XBMCVK_F5,            "f5"}
+, { XBMCK_F6,                     0,    0, XBMCVK_F6,            "f6"}
+, { XBMCK_F7,                     0,    0, XBMCVK_F7,            "f7"}
+, { XBMCK_F8,                     0,    0, XBMCVK_F8,            "f8"}
+, { XBMCK_F9,                     0,    0, XBMCVK_F9,            "f9"}
+, { XBMCK_F10,                    0,    0, XBMCVK_F10,           "f10"}
+, { XBMCK_F11,                    0,    0, XBMCVK_F11,           "f11"}
+, { XBMCK_F12,                    0,    0, XBMCVK_F12,           "f12"}
+, { XBMCK_F13,                    0,    0, XBMCVK_F13,           "f13"}
+, { XBMCK_F14,                    0,    0, XBMCVK_F14,           "f14"}
+, { XBMCK_F15,                    0,    0, XBMCVK_F15,           "f15"}
 
 // Misc non-printing keys
-, { 0x0111,      0,    0, XBMCVK_UP,            "up" }
-, { 0x0112,      0,    0, XBMCVK_DOWN,          "down" }
-, { 0x0113,      0,    0, XBMCVK_RIGHT,         "right" }
-, { 0x0114,      0,    0, XBMCVK_LEFT,          "left" }
-, { 0x0115,      0,    0, XBMCVK_INSERT,        "insert" }
-, { 0x007f,      0,    0, XBMCVK_DELETE,        "delete" }
-, { 0x0116,      0,    0, XBMCVK_HOME,          "home" }
-, { 0x0117,      0,    0, XBMCVK_END,           "end" }
-, { 0x0118,      0,    0, XBMCVK_PAGEUP,        "pageup" }
-, { 0x0119,      0,    0, XBMCVK_PAGEDOWN,      "pagedown" }
-, { 0x012c,      0,    0, XBMCVK_NUMLOCK,       "numlock" }
-, { 0x012d,      0,    0, XBMCVK_CAPSLOCK,      "capslock" }
-, { 0x012e,      0,    0, XBMCVK_SCROLLLOCK,    "scrolllock" }
-, { 0x012f,      0,    0, XBMCVK_RSHIFT,        "rightshift" }
-, { 0x0130,      0,    0, XBMCVK_LSHIFT,        "leftshift" }
-, { 0x0131,      0,    0, XBMCVK_RCONTROL,      "rightctrl" }
-, { 0x0132,      0,    0, XBMCVK_LCONTROL,      "leftctrl" }
-, { 0x0134,      0,    0, XBMCVK_LMENU,         "leftalt" }
-, { 0x0137,      0,    0, XBMCVK_LWIN,          "leftwindows" }
-, { 0x0138,      0,    0, XBMCVK_RWIN,          "rightwindows" }
-, { 0x013c,      0,    0, XBMCVK_PRINTSCREEN,   "printscreen" }
-, { 0x013f,      0,    0, XBMCVK_APP,           "menu" }
+, { XBMCK_UP,                     0,    0, XBMCVK_UP,            "up" }
+, { XBMCK_DOWN,                   0,    0, XBMCVK_DOWN,          "down" }
+, { XBMCK_RIGHT,                  0,    0, XBMCVK_RIGHT,         "right" }
+, { XBMCK_LEFT,                   0,    0, XBMCVK_LEFT,          "left" }
+, { XBMCK_INSERT,                 0,    0, XBMCVK_INSERT,        "insert" }
+, { 0,                            0,    0, XBMCVK_DELETE,        "delete" }
+, { XBMCK_HOME,                   0,    0, XBMCVK_HOME,          "home" }
+, { XBMCK_END,                    0,    0, XBMCVK_END,           "end" }
+, { XBMCK_PAGEUP,                 0,    0, XBMCVK_PAGEUP,        "pageup" }
+, { XBMCK_PAGEDOWN,               0,    0, XBMCVK_PAGEDOWN,      "pagedown" }
+, { XBMCK_NUMLOCK,                0,    0, XBMCVK_NUMLOCK,       "numlock" }
+, { XBMCK_CAPSLOCK,               0,    0, XBMCVK_CAPSLOCK,      "capslock" }
+, { XBMCK_SCROLLOCK,              0,    0, XBMCVK_SCROLLLOCK,    "scrolllock" }
+, { XBMCK_RSHIFT,                 0,    0, XBMCVK_RSHIFT,        "rightshift" }
+, { XBMCK_LSHIFT,                 0,    0, XBMCVK_LSHIFT,        "leftshift" }
+, { XBMCK_RCTRL,                  0,    0, XBMCVK_RCONTROL,      "rightctrl" }
+, { XBMCK_LCTRL,                  0,    0, XBMCVK_LCONTROL,      "leftctrl" }
+, { XBMCK_LALT,                   0,    0, XBMCVK_LMENU,         "leftalt" }
+, { XBMCK_LSUPER,                 0,    0, XBMCVK_LWIN,          "leftwindows" }
+, { XBMCK_RSUPER,                 0,    0, XBMCVK_RWIN,          "rightwindows" }
+, { 0,                            0,    0, XBMCVK_PRINTSCREEN,   "printscreen" }
+, { 0,                            0,    0, XBMCVK_APP,           "menu" }
 };
 
 static int XBMCKeyTableSize = sizeof(XBMCKeyTable)/sizeof(XBMCKEYTABLE);
