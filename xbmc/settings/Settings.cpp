@@ -137,6 +137,7 @@ void CSettings::Initialize()
   m_usingLoginScreen = false;
   m_lastUsedProfile = 0;
   m_currentProfile = 0;
+  m_nextIdProfile = 0;
 
   m_activeKeyboardMapping = "default";
 }
@@ -1023,6 +1024,7 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
       {
         XMLUtils::GetUInt(rootElement, "lastloaded", m_lastUsedProfile);
         XMLUtils::GetBoolean(rootElement, "useloginscreen", m_usingLoginScreen);
+        XMLUtils::GetInt(rootElement, "nextIdProfile", m_nextIdProfile);
 
         TiXmlElement* pProfile = rootElement->FirstChildElement("profile");
         
@@ -1032,7 +1034,11 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
         while (pProfile)
         {
           CProfile profile(defaultDir);
-          profile.Load(pProfile);
+          profile.Load(pProfile,GetNextProfileId());
+
+          //data integrity check - covers off migration from old profiles.xml and bad data coming in
+          m_nextIdProfile = max(m_nextIdProfile, profile.getId() + 1); 
+
           m_vecProfiles.push_back(profile);
           pProfile = pProfile->NextSiblingElement("profile");
         }
@@ -1046,7 +1052,8 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
 
   if (m_vecProfiles.empty())
   { // add the master user
-    CProfile profile("special://masterprofile/", "Master user");
+    CProfile profile("special://masterprofile/", "Master user",0);
+    m_nextIdProfile++;
     m_vecProfiles.push_back(profile);
   }
 
@@ -1070,6 +1077,7 @@ bool CSettings::SaveProfiles(const CStdString& profilesFile) const
   if (!pRoot) return false;
   XMLUtils::SetInt(pRoot,"lastloaded", m_currentProfile);
   XMLUtils::SetBoolean(pRoot,"useloginscreen",m_usingLoginScreen);
+  XMLUtils::SetInt(pRoot,"nextIdProfile",m_nextIdProfile);      
   for (unsigned int i = 0; i < m_vecProfiles.size(); ++i)
     m_vecProfiles[i].Save(pRoot);
 
@@ -1857,6 +1865,11 @@ const CProfile &CSettings::GetCurrentProfile() const
   return emptyProfile;
 }
 
+ int CSettings::GetCurrentProfileId() const
+ {
+   return GetCurrentProfile().getId();
+ }
+
 void CSettings::UpdateCurrentProfileDate()
 {
   if (m_currentProfile < m_vecProfiles.size())
@@ -1892,6 +1905,7 @@ int CSettings::GetProfileIndex(const CStdString &name) const
 
 void CSettings::AddProfile(const CProfile &profile)
 {
+  m_nextIdProfile++;
   m_vecProfiles.push_back(profile);
 }
 
