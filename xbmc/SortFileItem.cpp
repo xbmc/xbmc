@@ -420,6 +420,14 @@ void SSortFileItem::ByMovieRating(CFileItemPtr &item)
   item->SetSortLabel(label);
 }
 
+void SSortFileItem::ByVideoUserRating(CFileItemPtr &item)
+{
+  if (!item) return;
+  CStdString label;
+  label.Format("%02d %s", item->GetVideoInfoTag()->m_iUserRating, item->GetLabel().c_str());
+  item->SetSortLabel(label);
+}
+
 void SSortFileItem::ByMovieRuntime(CFileItemPtr &item)
 {
   if (!item) return;
