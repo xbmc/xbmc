@@ -25,7 +25,7 @@
 #include <stdint.h>
 
 /**
- * Bit options to pass to IAE::GetStream and IAE::AlterStream
+ * Bit options to pass to IAE::GetStream
  */
 enum AEStreamOptions {
   AESTREAM_FORCE_RESAMPLE = 0x01, /* force resample even if rates match */

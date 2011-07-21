@@ -172,12 +172,6 @@ IAEStream *CPulseAE::GetStream(enum AEDataFormat dataFormat, unsigned int sample
   return st;
 }
 
-IAEStream *CPulseAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
-{
-  stream->Destroy();
-  return GetStream(dataFormat, sampleRate, channelCount, channelLayout, options);
-}
-
 void CPulseAE::RemoveStream(IAEStream *stream)
 {
   std::list<CPulseAEStream*>::iterator itt;

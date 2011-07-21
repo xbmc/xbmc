@@ -90,19 +90,6 @@ public:
   virtual IAEStream *GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0) = 0;
 
   /**
-   * This method will re-configure the specified stream to accept data in the specified format.
-   * If the AudioEngine does not support stream reconfiguration, it will drain and destroy the old stream and return a new stream in the requested format.
-   * @param stream The stream to be altered
-   * @param dataFormat The data format the incoming audio will be in (eg, AE_FMT_S16LE)
-   * @param sampleRate The sample rate of the audio data (eg, 48000)
-   * @param channelCount The number of channels in the audio data
-   * @param channelLayout The order of the channels in the audio data
-   * @param options A bit field of stream options (see: enum AEStreamOptions)
-   * @return the stream supplied, or a new IAEStream that will accept data in the requested format if the AudioEngine does not support stream reconfiguration.
-   */
-  virtual IAEStream *AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0) = 0;
-
-  /**
    * This method will remove the specifyed stream from the engine.
    * For OSX/IOS this is essential to reconfigure the audio output.
    * @param stream The stream to be altered
