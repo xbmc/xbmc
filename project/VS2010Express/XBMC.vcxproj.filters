@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="win32">
@@ -2475,6 +2475,9 @@
     <ClCompile Include="..\..\xbmc\InertialScrollingHandler.cpp" />
     <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp">
       <Filter>threads\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
+      <Filter>threads</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4984,11 +4987,9 @@
     <ClInclude Include="..\..\xbmc\threads\platform\platform.select.h">
       <Filter>threads\platform</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\xbmc\win32\XBMC.ico">
-      <Filter>win32</Filter>
-    </None>
+    <ClInclude Include="..\..\xbmc\threads\SystemClock.h">
+      <Filter>threads</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
