@@ -64,7 +64,7 @@ inline unsigned int CAESinkALSA::GetChannelCount(AEAudioFormat format)
   {
     unsigned int out = 0;
     for(unsigned int c = 0; c < 8; ++c)
-      for(unsigned int i = 0; i < format.m_channelLayout; ++i)
+      for(unsigned int i = 0; i < format.m_channelLayout.Count(); ++i)
         if (format.m_channelLayout[i] == ALSAChannelMap[c])
         {
           out = c + 1;

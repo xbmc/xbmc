@@ -49,6 +49,6 @@ private:
   int            m_inChannels;
   int            m_outChannels;
 
-  void ResolveMix(const AEChannel from, const AEChLayout to);
+  void ResolveMix(const AEChannel from, CAEChannelInfo to);
 };
 

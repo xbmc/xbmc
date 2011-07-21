@@ -38,7 +38,7 @@ CAERemap::~CAERemap()
 
 bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool finalStage, bool forceNormalize/* = false */)
 {
-  if (!input || !output)
+  if (!input.Count() || !output.Count())
     return false;
 
   /* build the downmix matrix */
@@ -46,20 +46,20 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
   m_output = output;
 
   /* figure which channels we have */
-  for(unsigned int o = 0; o < (unsigned int)output; ++o) {
+  for(unsigned int o = 0; o < output.Count(); ++o) {
     m_mixInfo[output[o]].in_dst = true;
     m_outChannels = o;
   }
   ++m_outChannels;
 
   /* lookup the channels that exist in the output */
-  for(unsigned int i = 0; i < (unsigned int)input; ++i) {
+  for(unsigned int i = 0; i < input.Count(); ++i) {
     AEMixInfo  *info = &m_mixInfo[input[i]];
     AEMixLevel *lvl  = &info->srcIndex[info->srcCount++];
     info->in_src = true;
     lvl->index   = i;
     lvl->level   = 1.0f;
-    for(unsigned int o = 0; o < (unsigned int)output; ++o)
+    for(unsigned int o = 0; o < output.Count(); ++o)
       if (input[i] == output[o])
       {
         info->outIndex = o;
@@ -77,7 +77,7 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
   /* downmix from the specified channel to the specified list of channels */
   #define RM(from, ...) \
     static AEChannel downmix_##from[] = {__VA_ARGS__, AE_CH_NULL}; \
-    ResolveMix(from, downmix_##from);
+    ResolveMix(from, CAEChannelInfo(downmix_##from));
 
   /*
     the order of this is important as we can not mix channels
@@ -185,7 +185,7 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
   if (!dontnormalize)
   {
     float max = 0;
-    for(unsigned int o = 0; o < (unsigned int)output; ++o)
+    for(unsigned int o = 0; o < output.Count(); ++o)
     {
       AEMixInfo *info = &m_mixInfo[output[o]];
       float sum = 0;
@@ -197,7 +197,7 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
     }
 
     float scale = 1.0f / max;
-    for(unsigned int o = 0; o < (unsigned int)output; ++o)
+    for(unsigned int o = 0; o < output.Count(); ++o)
     {
       AEMixInfo *info = &m_mixInfo[output[o]];
       for(int i = 0; i < info->srcCount; ++i)
@@ -207,7 +207,7 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
 
   /* dump the matrix */
   CLog::Log(LOGINFO, "==[Downmix Matrix]==");
-  for(unsigned int o = 0; o < (unsigned int)output; ++o)
+  for(unsigned int o = 0; o < output.Count(); ++o)
   {
     AEMixInfo *info = &m_mixInfo[output[o]];
     if (info->srcCount == 0) continue;
@@ -227,13 +227,12 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
   return true;
 }
 
-void CAERemap::ResolveMix(const AEChannel from, const AEChLayout to)
+void CAERemap::ResolveMix(const AEChannel from, CAEChannelInfo to)
 {
   AEMixInfo *fromInfo = &m_mixInfo[from];
   if (fromInfo->in_dst || !fromInfo->in_src) return;
 
-  unsigned int toCh = CAEChannelInfo(to);
-  for(unsigned int i = 0; i < (unsigned int)to; ++i)
+  for(unsigned int i = 0; i < to.Count(); ++i)
   {
     AEMixInfo *toInfo = &m_mixInfo[to[i]];
     toInfo->in_src = true;
@@ -247,7 +246,7 @@ void CAERemap::ResolveMix(const AEChannel from, const AEChLayout to)
          if (toInfo->srcIndex[l].index == fromLvl->index)
          {
            toLvl = &toInfo->srcIndex[l];
-           toLvl->level = (fromLvl->level + toLvl->level) / sqrt((float)toCh + 1.0f);
+           toLvl->level = (fromLvl->level + toLvl->level) / sqrt((float)to.Count() + 1.0f);
            break;
          }
 
@@ -256,7 +255,7 @@ void CAERemap::ResolveMix(const AEChannel from, const AEChLayout to)
 
       toLvl = &toInfo->srcIndex[toInfo->srcCount++];
       toLvl->index = fromLvl->index;
-      toLvl->level = fromLvl->level / sqrt((float)toCh);
+      toLvl->level = fromLvl->level / sqrt((float)to.Count());
     }
   }
 
@@ -268,7 +267,7 @@ void CAERemap::Remap(float *in, float *out, unsigned int frames)
 {
   for(unsigned int f = 0; f < frames; ++f)
   {
-    for(unsigned int o = 0; o < (unsigned int)m_output; ++o)
+    for(unsigned int o = 0; o < m_output.Count(); ++o)
     {
       AEMixInfo *info = &m_mixInfo[m_output[o]];
 

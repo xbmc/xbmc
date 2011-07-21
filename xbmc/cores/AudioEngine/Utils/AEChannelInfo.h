@@ -75,11 +75,12 @@ public:
   CAEChannelInfo& operator=(const enum AEChannel* rhs);
   CAEChannelInfo& operator=(const enum AEStdChLayout rhs);
   bool operator==(const CAEChannelInfo& rhs);
+  bool operator!=(const CAEChannelInfo& rhs);
   const enum AEChannel operator[](unsigned int i);
   operator CStdString();
-  operator unsigned int();
 
   void Reset();
+  unsigned int Count();
   static const char* GetChName(const enum AEChannel ch);
 private:
   unsigned int   m_channelCount;

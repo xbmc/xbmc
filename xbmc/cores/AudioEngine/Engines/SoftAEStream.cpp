@@ -118,10 +118,10 @@ void CSoftAEStream::Initialize()
   else
   {
     /* no channel layout provided, so guess */
-    if (!m_initChannelLayout)
+    if (!m_initChannelLayout.Count())
     {
       m_initChannelLayout = CAEUtil::GuessChLayout(m_initChannelCount);
-      if (!m_initChannelLayout)
+      if (!m_initChannelLayout.Count())
       {
         m_valid = false;
         return;

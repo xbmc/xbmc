@@ -115,6 +115,11 @@ bool CAEChannelInfo::operator==(const CAEChannelInfo& rhs)
   return true;
 }
 
+bool CAEChannelInfo::operator!=(const CAEChannelInfo& rhs)
+{
+  return !(*this == rhs);
+}
+
 const enum AEChannel CAEChannelInfo::operator[](unsigned int i)
 {
   ASSERT(i < m_channelCount);
@@ -137,7 +142,7 @@ CAEChannelInfo::operator CStdString()
   return s;
 }
 
-CAEChannelInfo::operator unsigned int()
+unsigned int CAEChannelInfo::Count()
 {
   return m_channelCount;
 }

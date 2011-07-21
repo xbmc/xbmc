@@ -104,7 +104,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
   struct pa_channel_map map;
   map.channels = m_channelCount;
-  if (!m_channelLayout)
+  if (!m_channelLayout.Count())
     m_channelLayout = CAEUtil::GuessChLayout(m_channelCount);
 
   for(unsigned int ch = 0; ch < m_channelCount; ++ch)

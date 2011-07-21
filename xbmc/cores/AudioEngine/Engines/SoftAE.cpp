@@ -175,7 +175,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   /* setup the desired format */
   AEAudioFormat newFormat;
   newFormat.m_channelLayout = m_stdChLayout;
-  newFormat.m_channelCount  = m_rawPassthrough ? channels : (unsigned int)newFormat.m_channelLayout;
+  newFormat.m_channelCount  = m_rawPassthrough ? channels : newFormat.m_channelLayout.Count();
   newFormat.m_sampleRate    = sampleRate;
   newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? rawFormat : AE_FMT_FLOAT;
 
@@ -208,7 +208,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
       if (m_rawPassthrough || m_transcode)
         newFormat.m_channelCount = (rawFormat == AE_FMT_AC3) ? 2 : 8;
       else
-        newFormat.m_channelCount = newFormat.m_channelLayout;
+        newFormat.m_channelCount = newFormat.m_channelLayout.Count();
       newFormat.m_sampleRate    = sampleRate;
       newFormat.m_frames        = (unsigned int)(((float)sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
       newFormat.m_frameSamples  = newFormat.m_frames * newFormat.m_channelCount;
@@ -252,7 +252,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   {
     /* setup the standard output layout & format */
     m_chLayout     = m_stdChLayout;
-    m_channelCount = m_chLayout;
+    m_channelCount = m_chLayout.Count();
 
     //The sink should have the final say in the channel count.
     if(m_channelCount != m_sinkFormat.m_channelCount)
@@ -544,9 +544,6 @@ IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleR
     channelCount,
     ((CStdString)channelInfo).c_str()
   );
-
-  if ((unsigned int)channelInfo == 0)
-    channelInfo = CAEUtil::GuessChLayout(channelCount);
 
   CSingleLock streamLock(m_streamLock);
   bool wasEmpty = m_streams.empty();

@@ -260,14 +260,13 @@ bool CAEWAVLoader::Remap(CAEChannelInfo to) {
   if (!remap.Initialize(layouts[m_channelCount - 1], to, false))
     return false;
 
-  unsigned int newChannels = CAEChannelInfo(to);
-  float *remapped = (float*)_aligned_malloc(sizeof(float) * m_frameCount * newChannels, 16);
+  float *remapped = (float*)_aligned_malloc(sizeof(float) * m_frameCount * to.Count(), 16);
   remap.Remap(m_samples, remapped, m_frameCount);
 
   _aligned_free(m_samples);
   m_samples      = remapped;
-  m_sampleCount  = m_frameCount * newChannels;
-  m_channelCount = newChannels;
+  m_sampleCount  = m_frameCount * to.Count();
+  m_channelCount = to.Count();
 
   return true;
 }
