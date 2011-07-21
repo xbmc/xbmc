@@ -185,8 +185,6 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
-        /* we call this on all streams just in case */
-        si->m_stream->UnRegisterAudioCallback();
         si->m_stream->Destroy();
         si->m_stream = NULL;
       }
@@ -202,8 +200,6 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
-        /* we call this on all streams just in case */
-        si->m_stream->UnRegisterAudioCallback();
         si->m_stream->Destroy();
         si->m_stream = NULL;
       }
@@ -396,9 +392,6 @@ inline void PAPlayer::ProcessStreams(float &delay)
       /* if its the current stream */
       if (si == m_currentStream)
       {
-	/* unregister the audio callback */
-        si->m_stream ->UnRegisterAudioCallback();
-
         /* if it was the last stream */
         if (itt == m_streams.end())
         {
@@ -415,7 +408,9 @@ inline void PAPlayer::ProcessStreams(float &delay)
           m_currentStream = *itt;
         }
       }
-      
+
+      /* unregister the audio callback */
+      si->m_stream->UnRegisterAudioCallback();
       si->m_decoder.Destroy();      
       si->m_stream->Drain();
       m_finishing.push_back(si);
@@ -437,8 +432,11 @@ inline void PAPlayer::ProcessStreams(float &delay)
         if (m_crossFadeTime)
           si->m_stream->FadeVolume(1.0f, 0.0f, m_crossFadeTime);
         m_currentStream = NULL;
+
+        /* unregister the audio callback */
+        si->m_stream->UnRegisterAudioCallback();
       }
-      
+
       si->m_playNextTriggered = true;      
     }
   }
@@ -513,8 +511,10 @@ void PAPlayer::RegisterAudioCallback(IAudioCallback* pCallback)
 void PAPlayer::UnRegisterAudioCallback()
 {
   CSharedLock lock(m_streamsLock);
-  if (m_currentStream && m_currentStream->m_stream)
-    m_currentStream->m_stream->UnRegisterAudioCallback();
+  /* only one stream should have the callback, but we do it to all just incase */
+  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    if ((*itt)->m_stream)
+      (*itt)->m_stream->UnRegisterAudioCallback();
   m_audioCallback = NULL;
 }
 
