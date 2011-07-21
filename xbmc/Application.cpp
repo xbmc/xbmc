@@ -2346,6 +2346,35 @@ bool CApplication::OnAction(const CAction &action)
     return true;
   }
 
+  if (IsPlayingVideo() && m_itemCurrentFile && (
+       action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING ||
+       (action.GetID() >= ACTION_SET_RATING_0 && action.GetID() <= ACTION_SET_RATING_10) ))
+  {
+    CVideoDatabase db;
+    if (db.Open())
+    {
+      bool bRatingChanged(false);
+      if (action.GetID() == ACTION_DECREASE_RATING)
+        bRatingChanged = db.DecreaseRating(*m_itemCurrentFile);
+      else if (action.GetID() == ACTION_INCREASE_RATING)
+        bRatingChanged = db.IncreaseRating(*m_itemCurrentFile);
+      else if (action.GetID() >= ACTION_SET_RATING_0 && action.GetID() <= ACTION_SET_RATING_10)
+      {
+        db.SetRating(*m_itemCurrentFile, action.GetID() - ACTION_SET_RATING_0);
+        bRatingChanged = true;
+      }
+      db.Close();
+
+      if (bRatingChanged)
+      {
+        // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
+        CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_itemCurrentFile);
+        g_windowManager.SendMessage(msg);
+      }
+    }
+    return true;
+  }
+
   // stop : stops playing current audio song
   if (action.GetID() == ACTION_STOP)
   {
