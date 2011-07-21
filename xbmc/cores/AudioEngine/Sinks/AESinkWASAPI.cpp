@@ -97,7 +97,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, CStdString &device)
   IMMDeviceCollection* pEnumDevices = NULL;
 
   HRESULT hr = CoCreateInstance(CLSID_MMDeviceEnumerator, NULL, CLSCTX_ALL, IID_IMMDeviceEnumerator, (void**)&pEnumerator);
-  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %li", hr)
+  EXIT_ON_FAILURE(hr, __FUNCTION__": Could not allocate WASAPI device enumerator. CoCreateInstance error code: %s", hr)
 
   //Get our device.
   //First try to find the named device.
@@ -145,9 +145,26 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, CStdString &device)
 
   if(!m_pDevice)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": Could not locate the device named \"%s\" in the list of WASAPI endpoint devices.  Trying the default device...", device.c_str());
+    CLog::Log(LOGINFO, __FUNCTION__": Could not locate the device named \"%s\" in the list of WASAPI endpoint devices.  Trying the default device...", device.c_str());
     hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &m_pDevice);
     EXIT_ON_FAILURE(hr, __FUNCTION__": Could not retrieve the default WASAPI audio endpoint.")
+
+    IPropertyStore *pProperty = NULL;
+    PROPVARIANT varName;
+
+    hr = m_pDevice->OpenPropertyStore(STGM_READ, &pProperty);
+    EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of WASAPI endpoint properties failed.")
+
+    hr = pProperty->GetValue(PKEY_Device_FriendlyName, &varName);
+
+    CStdStringW strRawDevName(varName.pwszVal);
+    CStdString strDevName;
+    g_charsetConverter.ucs2CharsetToStringCharset(strRawDevName, strDevName);
+
+    CLog::Log(LOGINFO, __FUNCTION__": Found default sound device \"%s\"", strDevName.c_str());
+
+    PropVariantClear(&varName);
+    SAFE_RELEASE(pProperty);
   }
 
   //We are done with the enumerator.
@@ -606,7 +623,9 @@ initialize:
 
   if(wfxex.Format.wBitsPerSample == 32)
   {
-    if(wfxex.Samples.wValidBitsPerSample == 32)
+    if(wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
+      format.m_dataFormat = AE_FMT_FLOAT;
+    else if(wfxex.Samples.wValidBitsPerSample == 32)
       format.m_dataFormat = AE_FMT_S32NE;
     else // wfxex->Samples.wValidBitsPerSample == 24
       format.m_dataFormat = AE_FMT_S24NE4;
@@ -629,6 +648,12 @@ initialize:
   if(hnsPeriodicity < 80000) hnsPeriodicity = 80000;
 
   hnsRequestedDuration = hnsPeriodicity * 8;
+
+  CLog::Log(LOGINFO, __FUNCTION__": Initializing WASAPI exclusive mode with the following parameters:");
+  CLog::Log(LOGINFO, "  Sample Rate   : %d", format.m_sampleRate);
+  CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
+  CLog::Log(LOGINFO, "  Channel Count : %d", format.m_channelCount);
+  CLog::Log(LOGINFO, "  Channel Layout: %s", CAEUtil::GetChLayoutStr(format.m_channelLayout).c_str());
 
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, 0, hnsRequestedDuration, hnsPeriodicity, &wfxex.Format, NULL);
 
