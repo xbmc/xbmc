@@ -174,8 +174,10 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
   m_initFormat = format;
 
   /* set the channelLayout and the output device */
-  memcpy(format.m_channelLayout, ALSAChannelMap, format.m_channelCount * sizeof(enum AEChannel));
-  format.m_channelLayout[format.m_channelCount] = AE_CH_NULL;
+  memcpy(m_channelLayout, ALSAChannelMap, format.m_channelCount * sizeof(enum AEChannel));
+  m_channelLayout[format.m_channelCount] = AE_CH_NULL;
+
+  format.m_channelLayout = m_channelLayout;
   m_device = device = GetDeviceUse(format, device, m_passthrough);
   CLog::Log(LOGINFO, "CAESinkALSA::Initialize - Attempting to open device %s", device.c_str());
 
