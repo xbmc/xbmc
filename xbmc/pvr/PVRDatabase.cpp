@@ -482,6 +482,58 @@ bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup &group)
   return DeleteValues("map_channelgroups_channels", strWhereClause);
 }
 
+bool CPVRDatabase::GetCurrentGroupMembers(const CPVRChannelGroup &group, vector<int> &members)
+{
+  bool bReturn(false);
+
+  CStdString strCurrentMembersQuery = FormatSQL("SELECT idChannel FROM map_channelgroups_channels WHERE idGroup = %u", group.GroupID());
+  if (ResultQuery(strCurrentMembersQuery))
+  {
+    try
+    {
+      while (!m_pDS->eof())
+      {
+        members.push_back(m_pDS->fv("idChannel").get_asInt());
+        m_pDS->next();
+      }
+      m_pDS->close();
+      bReturn = true;
+    }
+    catch (...)
+    {
+      CLog::Log(LOGERROR, "PVRDB - %s - couldn't load channels from the database", __FUNCTION__);
+    }
+  }
+
+  return bReturn;
+}
+
+bool CPVRDatabase::DeleteChannelsFromGroup(const CPVRChannelGroup &group, const vector<int> &channelsToDelete)
+{
+  bool bDelete(true);
+  unsigned int iChannelPtr(0);
+
+  while (iChannelPtr < channelsToDelete.size())
+  {
+    CStdString strChannelsToDelete;
+    CStdString strWhereClause;
+
+    for (unsigned int iInnerPtr = 0; iInnerPtr + iChannelPtr < channelsToDelete.size() && iInnerPtr < 50; iInnerPtr++)
+      strChannelsToDelete.AppendFormat(", %d", channelsToDelete.at(iChannelPtr + iInnerPtr));
+
+    if (!strChannelsToDelete.IsEmpty())
+    {
+      strChannelsToDelete = strChannelsToDelete.Right(strChannelsToDelete.length() - 2);
+      strWhereClause = FormatSQL("idGroup = %u AND iChannelNumber IN (%s)", group.GroupID(), strChannelsToDelete.c_str());
+      bDelete = DeleteValues("map_channelgroups_channels", strWhereClause) && bDelete;
+    }
+
+    iChannelPtr += 50;
+  }
+
+  return bDelete;
+}
+
 bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
 {
   bool bDelete(true);
@@ -495,17 +547,26 @@ bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
 
   if (group.size() > 0)
   {
-    CStdString strTmpChannels;
-    for (unsigned int iChannelPtr = 0; iChannelPtr < group.size(); iChannelPtr++)
-      strTmpChannels.AppendFormat(", %d", group.at(iChannelPtr).iChannelNumber);
-    strTmpChannels = strTmpChannels.Right(strTmpChannels.length() - 2);
+    vector<int> currentMembers;
+    if (GetCurrentGroupMembers(group, currentMembers))
+    {
+      vector<int> channelsToDelete;
+      for (unsigned int iChannelPtr = 0; iChannelPtr < currentMembers.size(); iChannelPtr++)
+      {
+        if (!group.IsGroupMember(currentMembers.at(iChannelPtr)))
+          channelsToDelete.push_back(currentMembers.at(iChannelPtr));
+      }
 
-    strWhereClause = FormatSQL("idGroup = %u AND iChannelNumber NOT IN (%s)", group.GroupID(), strTmpChannels.c_str());
+      bDelete = DeleteChannelsFromGroup(group, channelsToDelete) && bDelete;
+    }
   }
   else
-    strWhereClause = FormatSQL("idGroup = %u", group.GroupID());
+  {
+    CStdString strWhereClause = FormatSQL("idGroup = %u", group.GroupID());
+    bDelete = DeleteValues("map_channelgroups_channels", strWhereClause) && bDelete;
+  }
 
-  return bDelete && DeleteValues("map_channelgroups_channels", strWhereClause);
+  return bDelete;
 }
 
 bool CPVRDatabase::DeleteChannelGroups(void)

@@ -221,6 +221,13 @@ namespace PVR
     virtual bool IsGroupMember(const CPVRChannel *channel) const;
 
     /*!
+     * @brief Check whether a channel is in this container.
+     * @param iChannelUid The unique id of the channel to find.
+     * @return True if the channel was found, false otherwise.
+     */
+    virtual bool IsGroupMember(int iChannelUid) const;
+
+    /*!
      * @brief Check if this group is the internal group containing all channels.
      * @return True if it's the internal group, false otherwise.
      */
