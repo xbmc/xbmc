@@ -43,8 +43,14 @@ extern "C" {
 #if (defined USE_EXTERNAL_FFMPEG)
   #if (defined HAVE_LIBAVFILTER_AVFILTER_H)
     #include <libavfilter/avfiltergraph.h>
+    #if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+      #include <libavfilter/vsink_buffer.h>
+    #endif
   #elif (defined HAVE_FFMPEG_AVFILTER_H)
     #include <ffmpeg/avfiltergraph.h>
+    #if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+      #include <ffmpeg/vsink_buffer.h>
+    #endif
   #endif
   /* for av_vsrc_buffer_add_frame */
   #if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,8,0)
@@ -59,8 +65,16 @@ extern "C" {
     int av_vsrc_buffer_add_frame(AVFilterContext *buffer_filter,
           AVFrame *frame, int64_t pts, AVRational pixel_aspect);
   #endif
+  /* for av_vsink_buffer_get_video_buffer_ref */
+  #if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+    int av_vsink_buffer_get_video_buffer_ref(AVFilterContext *buffer_sink,
+      AVFilterBufferRef **picref, int flags);
+  #endif
 #else
   #include "libavfilter/avfiltergraph.h"
+  #if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+    #include "libavfilter/vsink_buffer.h"
+  #endif
 #endif
 }
 
@@ -94,6 +108,9 @@ public:
   virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h)=0;
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref)=0;
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad)=0;
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+  virtual int av_vsink_buffer_get_video_buffer_ref(AVFilterContext *buffer_sink, AVFilterBufferRef **picref, int flags)=0;
+#endif
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -183,6 +200,9 @@ public:
   virtual AVFilterBufferRef *avfilter_get_video_buffer(AVFilterLink *link, int perms, int w, int h) { return ::avfilter_get_video_buffer(link, perms, w, h); }
   virtual void avfilter_unref_buffer(AVFilterBufferRef *ref) { ::avfilter_unref_buffer(ref); }
   virtual int avfilter_link(AVFilterContext *src, unsigned srcpad, AVFilterContext *dst, unsigned dstpad) { return ::avfilter_link(src, srcpad, dst, dstpad); }
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+  virtual int av_vsink_buffer_get_video_buffer_ref(AVFilterContext *buffer_sink, AVFilterBufferRef **picref, int flags) { return ::av_vsink_buffer_get_video_buffer_ref(buffer_sink, picref, flags); }
+#endif
   // DLL faking.
   virtual bool ResolveExports() { return true; }
   virtual bool Load() {
@@ -239,6 +259,13 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
   DEFINE_METHOD4(AVFilterBufferRef*, avfilter_get_video_buffer, (AVFilterLink *p1, int p2, int p3, int p4))
   DEFINE_METHOD1(void, avfilter_unref_buffer, (AVFilterBufferRef *p1))
   DEFINE_METHOD4(int, avfilter_link, (AVFilterContext *p1, unsigned p2, AVFilterContext *p3, unsigned p4))
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+  #ifdef _LINUX
+    DEFINE_METHOD3(int, av_vsink_buffer_get_video_buffer_ref, (AVFilterContext *p1, AVFilterBufferRef **p2, int p3))
+  #else
+    DEFINE_FUNC_ALIGNED3(int, __cdecl, av_vsink_buffer_get_video_buffer_ref, AVFilterContext*, AVFilterBufferRef**, int)
+  #endif
+#endif
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(avfilter_open, avfilter_open_dont_call)
@@ -260,6 +287,9 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
     RESOLVE_METHOD(avfilter_get_video_buffer)
     RESOLVE_METHOD(avfilter_unref_buffer)
     RESOLVE_METHOD(avfilter_link)
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,21,0)
+    RESOLVE_METHOD(av_vsink_buffer_get_video_buffer_ref)
+#endif
   END_METHOD_RESOLVE()
 
   /* dependencies of libavfilter */
