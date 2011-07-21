@@ -22,40 +22,24 @@
 #pragma once
 
 #include <windows.h>
-#include <assert.h>
 
 namespace XbmcThreads
 {
   /**
-   * A thin wrapper around pthreads thread specific storage
+   * A thin wrapper around windows thread specific storage
    * functionality.
    */
   template <typename T> class ThreadLocal
   {
     DWORD key;
   public:
-    inline ThreadLocal()
-    { 
-      key = TlsAlloc();
-      assert(key != TLS_OUT_OF_INDEXES);
-    }
+    inline ThreadLocal() {  XBMC_ASSERT_NOTEQUALS(TLS_OUT_OF_INDEXES,TlsAlloc()); }
 
-    inline ~ThreadLocal()
-    {
-      BOOL tls_free_result = TlsFree(key);
-      assert(tls_free_result);
-    }
+    inline ~ThreadLocal() { XBMC_ASSERT_TRUE(TlsFree(key));  }
 
-    inline void set(T* val) 
-    { 
-      BOOL tls_set_value_result = TlsSetValue(key,(LPVOID)val);
-      assert(tls_set_value_result);
-    }
+    inline void set(T* val) {  XBMC_ASSERT_TRUE(TlsSetValue(key,(LPVOID)val));  }
 
-    inline T* get() 
-    {
-      return (T*)TlsGetValue(key);
-    }
+    inline T* get() { return (T*)TlsGetValue(key); }
   };
 }
 

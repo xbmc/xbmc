@@ -44,20 +44,17 @@ namespace XbmcThreads
   public:
     inline ConditionVariable() 
     { 
-      int pthread_cond_init_result = pthread_cond_init(&cond,NULL); 
-      assert(pthread_cond_init_result == 0); 
+      XBMC_ASSERT_ZERO(pthread_cond_init(&cond,NULL)); 
     }
 
     inline ~ConditionVariable() 
     { 
-      int pthread_cond_destroy_result = pthread_cond_destroy(&cond); 
-      assert(pthread_cond_destroy_result == 0); 
+      XBMC_ASSERT_ZERO(pthread_cond_destroy(&cond)); 
     }
 
     inline void wait(CCriticalSection& lock) 
     { 
-      int pthread_cond_wait_result = pthread_cond_wait(&cond,&lock.get_underlying().mutex);
-      assert(pthread_cond_wait_result == 0);
+      XBMC_ASSERT_ZERO(pthread_cond_wait(&cond,&lock.get_underlying().mutex));
     }
 
     inline bool wait(CCriticalSection& lock, unsigned long milliseconds) 
@@ -65,8 +62,7 @@ namespace XbmcThreads
       struct timeval tv;
       struct timespec ts;
 
-      int result = gettimeofday(&tv,NULL);
-      assert(result == 0);
+      XBMC_ASSERT_ZERO(gettimeofday(&tv,NULL));
 
       milliseconds += tv.tv_usec / 1000; // move the usecs onto milliseconds
       ts.tv_sec = tv.tv_sec + (time_t)(milliseconds/1000);
@@ -81,14 +77,12 @@ namespace XbmcThreads
 
     inline void notifyAll() 
     { 
-      int pthread_cond_broadcast_result = pthread_cond_broadcast(&cond); 
-      assert(pthread_cond_broadcast_result == 0); 
+      XBMC_ASSERT_ZERO(pthread_cond_broadcast(&cond));
     }
 
     inline void notify() 
     { 
-      int pthread_cond_signal_result = pthread_cond_signal(&cond);
-      assert(pthread_cond_signal_result == 0); 
+      XBMC_ASSERT_ZERO(pthread_cond_signal(&cond)); 
     }
   };
 

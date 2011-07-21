@@ -22,7 +22,8 @@
 #pragma once
 
 #include <pthread.h>
-#include <assert.h>
+
+#include "threads/Helpers.h"
 
 namespace XbmcThreads
 {
@@ -36,20 +37,17 @@ namespace XbmcThreads
   public:
     inline ThreadLocal()
     { 
-      int pthread_key_create_result = pthread_key_create(&key,NULL);
-      assert(pthread_key_create_result == 0);
+      XBMC_ASSERT_ZERO(pthread_key_create(&key,NULL));
     }
 
     inline ~ThreadLocal()
     {
-      int pthread_key_delete_result = pthread_key_delete(key);
-      assert(pthread_key_delete_result == 0);
+      XBMC_ASSERT_ZERO(pthread_key_delete(key));
     }
 
     inline void set(T* val) 
     { 
-      int pthread_setspecific_result = pthread_setspecific(key,(void*)val);
-      assert(pthread_setspecific_result == 0);
+      XBMC_ASSERT_ZERO(pthread_setspecific(key,(void*)val));
     }
 
     inline T* get() 

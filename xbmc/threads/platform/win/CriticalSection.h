@@ -24,7 +24,6 @@
 #include "threads/Lockables.h"
 
 #include <windows.h>
-#include <assert.h>
 
 namespace XbmcThreads
 {

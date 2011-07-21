@@ -21,11 +21,11 @@
 
 #pragma once
 
-#include "threads/Lockables.h"
-
 #include <pthread.h>
-#include <assert.h>
 #include <errno.h>
+
+#include "threads/Lockables.h"
+#include "threads/Helpers.h"
 
 namespace XbmcThreads
 {
@@ -45,26 +45,22 @@ namespace XbmcThreads
     public:
       inline RecursiveMutex()
       {
-        int pthread_mutex_init_result = pthread_mutex_init(&mutex,getRecusiveAttr());
-        assert(pthread_mutex_init_result == 0);
+        XBMC_ASSERT_ZERO(pthread_mutex_init(&mutex,getRecusiveAttr()));
       }
       
       inline ~RecursiveMutex()
       {
-        int pthread_mutex_destroy_result = pthread_mutex_destroy(&mutex);
-        assert(pthread_mutex_destroy_result == 0);
+        XBMC_ASSERT_ZERO(pthread_mutex_destroy(&mutex));
       }
 
       inline void lock()
       {
-        int pthread_mutex_lock_result = pthread_mutex_lock(&mutex);
-        assert(pthread_mutex_lock_result == 0);
+        XBMC_ASSERT_ZERO(pthread_mutex_lock(&mutex));
       }
 
       inline void unlock()
       {
-        int pthread_mutex_unlock_result = pthread_mutex_unlock(&mutex);
-        assert(pthread_mutex_unlock_result == 0);
+        XBMC_ASSERT_ZERO(pthread_mutex_unlock(&mutex));
       }
         
       inline bool try_lock()

@@ -21,8 +21,8 @@
 
 #include "threads/Lockables.h"
 #include "threads/platform/pthreads/CriticalSection.h"
+#include "threads/Helpers.h"
 
-#include <assert.h>
 #include <pthread.h>
 
 namespace XbmcThreads
@@ -37,10 +37,8 @@ namespace XbmcThreads
       static bool alreadyCalled = false; // initialized to 0 in the data segment prior to startup init code running
       if (!alreadyCalled)
       {
-        int pthread_mutexattr_result = pthread_mutexattr_init(&recursiveAttr);
-        assert(pthread_mutexattr_result == 0);
-        pthread_mutexattr_result = pthread_mutexattr_settype(&recursiveAttr,PTHREAD_MUTEX_RECURSIVE);
-        assert(pthread_mutexattr_result == 0);
+        XBMC_ASSERT_ZERO(pthread_mutexattr_init(&recursiveAttr));
+        XBMC_ASSERT_ZERO(pthread_mutexattr_settype(&recursiveAttr,PTHREAD_MUTEX_RECURSIVE));
         alreadyCalled = true;
       }
       return true; // note, we never call destroy.
