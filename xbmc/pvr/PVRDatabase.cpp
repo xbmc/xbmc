@@ -484,10 +484,14 @@ bool CPVRDatabase::RemoveChannelsFromGroup(const CPVRChannelGroup &group)
 
 bool CPVRDatabase::RemoveStaleChannelsFromGroup(const CPVRChannelGroup &group)
 {
-  bool bDelete = false;
-  /* First remove channels that don't exist in the main channels table */
-  CStdString strWhereClause = FormatSQL("idChannel IN (SELECT map_channelgroups_channels.idChannel FROM map_channelgroups_channels LEFT JOIN channels on map_channelgroups_channels.idChannel = channels.idChannel WHERE channels.idChannel IS NULL)");
-  bDelete = DeleteValues("map_channelgroups_channels", strWhereClause);
+  bool bDelete(true);
+
+  if (!group.IsInternalGroup())
+  {
+    /* First remove channels that don't exist in the main channels table */
+    CStdString strWhereClause = FormatSQL("idChannel IN (SELECT map_channelgroups_channels.idChannel FROM map_channelgroups_channels LEFT JOIN channels on map_channelgroups_channels.idChannel = channels.idChannel WHERE channels.idChannel IS NULL)");
+    bDelete = DeleteValues("map_channelgroups_channels", strWhereClause);
+  }
 
   if (group.size() > 0)
   {
