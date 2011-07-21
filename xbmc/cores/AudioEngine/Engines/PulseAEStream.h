@@ -95,9 +95,9 @@ private:
   IAudioCallback* m_AudioCallback;
 
   enum AEDataFormat m_format;
-  unsigned int m_sampleRate;
-  unsigned int m_channelCount;
-  AEChLayout m_channelLayout;
+  unsigned int      m_sampleRate;
+  unsigned int      m_channelCount;
+  CAEChannelInfo    m_channelLayout;
   unsigned int m_options;
   unsigned int m_frameSize;
   unsigned int m_frameSamples;

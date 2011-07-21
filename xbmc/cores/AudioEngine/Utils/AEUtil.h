@@ -31,15 +31,10 @@
 class CAEUtil
 {
 public:
-  static unsigned int            GetChLayoutCount  (const AEChLayout src);
-  static const char*             GetChName         (const AEChannel  ch );
-  static CStdString              GetChLayoutStr    (const AEChLayout src);
-  static const AEChLayout        GuessChLayout     (const unsigned int channels);
-  static const AEChLayout        GetStdChLayout    (const enum AEStdChLayout layout);
+  static CAEChannelInfo          GuessChLayout     (const unsigned int channels);
   static const char*             GetStdChLayoutName(const enum AEStdChLayout layout);
   static const unsigned int      DataFormatToBits  (const enum AEDataFormat dataFormat);
   static const char*             DataFormatToStr   (const enum AEDataFormat dataFormat);
-  static bool                    CompareLayouts    (const AEChLayout c1, const AEChLayout c2);
 
   static inline float SoftClamp(float x)
   {

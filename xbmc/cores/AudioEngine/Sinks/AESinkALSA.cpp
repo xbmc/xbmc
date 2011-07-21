@@ -51,7 +51,7 @@ CAESinkALSA::~CAESinkALSA()
   Deinitialize();
 }
 
-inline unsigned int CAESinkALSA::GetChannelCount(const AEAudioFormat format)
+inline unsigned int CAESinkALSA::GetChannelCount(AEAudioFormat format)
 {
        if (format.m_dataFormat == AE_FMT_AC3 ||
            format.m_dataFormat == AE_FMT_DTS || 
@@ -64,7 +64,7 @@ inline unsigned int CAESinkALSA::GetChannelCount(const AEAudioFormat format)
   {
     unsigned int out = 0;
     for(unsigned int c = 0; c < 8; ++c)
-      for(unsigned int i = 0; format.m_channelLayout[i] != AE_CH_NULL; ++i)
+      for(unsigned int i = 0; i < format.m_channelLayout; ++i)
         if (format.m_channelLayout[i] == ALSAChannelMap[c])
         {
           out = c + 1;

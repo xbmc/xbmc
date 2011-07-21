@@ -25,86 +25,27 @@
 
 using namespace std;
 
-unsigned int CAEUtil::GetChLayoutCount(const AEChLayout src)
-{
-  unsigned int i = 0;
-  for(i = 0; i < AE_CH_MAX && src[i] != AE_CH_NULL;) ++i;
-  return i;
-}
-
-const char* CAEUtil::GetChName(const AEChannel ch)
-{
-  if (ch < 0 || ch >= AE_CH_MAX)
-    return "UNKNOWN";
-
-  static const char* channels[AE_CH_MAX] =
-  {
-    "RAW" ,
-    "FL"  , "FR" , "FC" , "LFE", "BL" , "BR" , "FLOC",
-    "FROC", "BC" , "SL" , "SR" , "TFL", "TFR", "TFC" ,
-    "TC"  , "TBL", "TBR", "TBC"
-  };
-
-  return channels[ch];
-}
-
-CStdString CAEUtil::GetChLayoutStr(const AEChLayout src)
-{
-  if (src == NULL) return "NULL";
-  unsigned int i = 0;
-  CStdString s;
-  for(i = 0; i < AE_CH_MAX && src[i] != AE_CH_NULL; ++i)
-  {
-    s.append(GetChName(src[i]));
-    if (i + 1 < AE_CH_MAX && src[i+1] != AE_CH_NULL)
-      s.append(",");
-  }
-
-  return s;
-}
-
-const AEChLayout CAEUtil::GuessChLayout(const unsigned int channels)
+CAEChannelInfo CAEUtil::GuessChLayout(const unsigned int channels)
 {
   CLog::Log(LOGWARNING, "CAEUtil::GuessChLayout - This method should really never be used, please fix the code that called this");
-  if (channels < 1 || channels > 8)
-    return NULL;
 
-  AEStdChLayout layout = AE_CH_LAYOUT_INVALID;
+  CAEChannelInfo result;
+  if (channels < 1 || channels > 8)
+    return result;
+
   switch(channels)
   {
-    case 1: layout = AE_CH_LAYOUT_1_0; break;
-    case 2: layout = AE_CH_LAYOUT_2_0; break;
-    case 3: layout = AE_CH_LAYOUT_3_0; break;
-    case 4: layout = AE_CH_LAYOUT_4_0; break;
-    case 5: layout = AE_CH_LAYOUT_5_0; break;
-    case 6: layout = AE_CH_LAYOUT_5_1; break;
-    case 7: layout = AE_CH_LAYOUT_7_0; break;
-    case 8: layout = AE_CH_LAYOUT_7_1; break;
+    case 1: result = AE_CH_LAYOUT_1_0; break;
+    case 2: result = AE_CH_LAYOUT_2_0; break;
+    case 3: result = AE_CH_LAYOUT_3_0; break;
+    case 4: result = AE_CH_LAYOUT_4_0; break;
+    case 5: result = AE_CH_LAYOUT_5_0; break;
+    case 6: result = AE_CH_LAYOUT_5_1; break;
+    case 7: result = AE_CH_LAYOUT_7_0; break;
+    case 8: result = AE_CH_LAYOUT_7_1; break;
   }
 
-  return GetStdChLayout(layout);
-}
-
-const AEChLayout CAEUtil::GetStdChLayout(const enum AEStdChLayout layout)
-{
-  if (layout < 0 || layout >= AE_CH_LAYOUT_MAX)
-    return NULL;
-
-  static enum AEChannel layouts[AE_CH_LAYOUT_MAX][9] = {
-    {AE_CH_FC, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_LFE, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC , AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC , AE_CH_LFE, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_BL , AE_CH_BR , AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_LFE, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_SL , AE_CH_SR, AE_CH_NULL},
-    {AE_CH_FL, AE_CH_FR, AE_CH_FC , AE_CH_BL , AE_CH_BR , AE_CH_SL , AE_CH_SR, AE_CH_LFE, AE_CH_NULL}
-  };
-
-  return layouts[layout];
+  return result;
 }
 
 const char* CAEUtil::GetStdChLayoutName(const enum AEStdChLayout layout)
@@ -199,19 +140,6 @@ const char* CAEUtil::DataFormatToStr(const enum AEDataFormat dataFormat)
   };
 
   return formats[dataFormat];
-}
-
-bool CAEUtil::CompareLayouts(const AEChLayout c1, const AEChLayout c2)
-{
-  for(int i = 0; i < AE_CH_MAX && c1[i] != AE_CH_NULL; ++i)
-    if (c1[i] != c2[i])
-      return false;
-
-  for(int i = 0; i < AE_CH_MAX && c2[i] != AE_CH_NULL; ++i)
-    if (c2[i] != c1[i])
-      return false;
-
-  return true;
 }
 
 #ifdef __SSE__

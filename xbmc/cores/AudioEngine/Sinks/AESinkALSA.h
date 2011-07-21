@@ -49,7 +49,7 @@ public:
   virtual void         Drain           ();
   static void          EnumerateDevices(AEDeviceList &devices, bool passthrough);
 private:
-  unsigned int GetChannelCount(const AEAudioFormat format);
+  unsigned int GetChannelCount(AEAudioFormat format);
   CStdString   GetDeviceUse   (const AEAudioFormat format, CStdString device, bool passthrough);
 
   AEAudioFormat     m_initFormat;

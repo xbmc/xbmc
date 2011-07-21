@@ -35,7 +35,7 @@ public:
   CAEEncoderFFmpeg();
   virtual ~CAEEncoderFFmpeg();
 
-  virtual bool IsCompatible(const AEAudioFormat format);
+  virtual bool IsCompatible(AEAudioFormat format);
   virtual bool Initialize(AEAudioFormat &format);
   virtual void Reset();
 

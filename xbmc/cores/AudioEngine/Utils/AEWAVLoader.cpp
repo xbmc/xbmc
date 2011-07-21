@@ -246,7 +246,7 @@ void CAEWAVLoader::DeInitialize()
   m_channelCount = 0;
 }
 
-bool CAEWAVLoader::Remap(AEChLayout to) {
+bool CAEWAVLoader::Remap(CAEChannelInfo to) {
   /* FIXME: add support for multichannel files */
   if (m_channelCount > 2)
     return false;
@@ -260,7 +260,7 @@ bool CAEWAVLoader::Remap(AEChLayout to) {
   if (!remap.Initialize(layouts[m_channelCount - 1], to, false))
     return false;
 
-  unsigned int newChannels = CAEUtil::GetChLayoutCount(to);
+  unsigned int newChannels = CAEChannelInfo(to);
   float *remapped = (float*)_aligned_malloc(sizeof(float) * m_frameCount * newChannels, 16);
   remap.Remap(m_samples, remapped, m_frameCount);
 

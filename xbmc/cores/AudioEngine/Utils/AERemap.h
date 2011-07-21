@@ -27,7 +27,7 @@ public:
   CAERemap();
   ~CAERemap();
 
-  bool Initialize(const AEChLayout input, const AEChLayout output, bool finalStage, bool forceNormalize = false);
+  bool Initialize(CAEChannelInfo input, CAEChannelInfo output, bool finalStage, bool forceNormalize = false);
   void Remap(float *in, float *out, unsigned int frames);
 
 private:
@@ -44,10 +44,10 @@ private:
     AEMixLevel        srcIndex[AE_CH_MAX];
   } AEMixInfo;
 
-  AEMixInfo  m_mixInfo[AE_CH_MAX+1];
-  AEChLayout m_output;
-  int        m_inChannels;
-  int        m_outChannels;
+  AEMixInfo      m_mixInfo[AE_CH_MAX+1];
+  CAEChannelInfo m_output;
+  int            m_inChannels;
+  int            m_outChannels;
 
   void ResolveMix(const AEChannel from, const AEChLayout to);
 };

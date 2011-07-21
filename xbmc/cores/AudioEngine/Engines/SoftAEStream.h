@@ -91,7 +91,7 @@ private:
   enum AEDataFormat m_initDataFormat;
   unsigned int      m_initSampleRate;
   unsigned int      m_initChannelCount;
-  AEChLayout        m_initChannelLayout;
+  CAEChannelInfo    m_initChannelLayout;
   
   typedef struct
   {
@@ -120,7 +120,7 @@ private:
   unsigned int       m_frameBufferSize;
   unsigned int       m_bytesPerSample;
   unsigned int       m_bytesPerFrame;
-  enum AEChannel    *m_aeChannelLayout;
+  CAEChannelInfo     m_aeChannelLayout;
   unsigned int       m_aeChannelCount;
   unsigned int       m_aePacketSamples;
   SRC_STATE         *m_ssrc;

@@ -72,13 +72,13 @@ void CSoftAEStream::InitializeRemap()
   if (!AE_IS_RAW(m_initDataFormat))
   {
     /* re-init the remappers */
-    m_remap   .Initialize(m_initChannelLayout, AE.GetChannelLayout(), false);
-    m_vizRemap.Initialize(m_initChannelLayout, CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true);
+    m_remap   .Initialize(m_initChannelLayout, AE.GetChannelLayout()           , false);
+    m_vizRemap.Initialize(m_initChannelLayout, CAEChannelInfo(AE_CH_LAYOUT_2_0), false, true);
 
     /*
     if the layout has changed we need to drop data that was already remapped
     */
-    if (!CAEUtil::CompareLayouts(AE.GetChannelLayout(), m_aeChannelLayout))
+    if (AE.GetChannelLayout() != m_aeChannelLayout)
     {
       InternalFlush();
       m_aeChannelLayout = AE.GetChannelLayout();
@@ -148,8 +148,8 @@ void CSoftAEStream::Initialize()
   if (!AE_IS_RAW(m_initDataFormat))
   {
     if (
-      !m_remap   .Initialize(m_initChannelLayout, m_aeChannelLayout, false) ||
-      !m_vizRemap.Initialize(m_initChannelLayout, CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true))
+      !m_remap   .Initialize(m_initChannelLayout, m_aeChannelLayout               , false) ||
+      !m_vizRemap.Initialize(m_initChannelLayout, CAEChannelInfo(AE_CH_LAYOUT_2_0), false, true))
     {
       m_valid = false;
       return;

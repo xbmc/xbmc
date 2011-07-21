@@ -40,7 +40,7 @@ CAEEncoderFFmpeg::~CAEEncoderFFmpeg()
   m_dllAvUtil.av_freep(&m_CodecCtx);
 }
 
-bool CAEEncoderFFmpeg::IsCompatible(const AEAudioFormat format)
+bool CAEEncoderFFmpeg::IsCompatible(AEAudioFormat format)
 {
   if (!m_CodecCtx)
     return false;

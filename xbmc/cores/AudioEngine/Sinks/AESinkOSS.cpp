@@ -343,7 +343,7 @@ void CAESinkOSS::Deinitialize()
   delete[] m_channelLayout;
 }
 
-bool CAESinkOSS::IsCompatible(const AEAudioFormat format, const CStdString device)
+bool CAESinkOSS::IsCompatible(AEAudioFormat format, const CStdString device)
 {
   bool match = (
     format.m_sampleRate   == m_initFormat.m_sampleRate    &&
@@ -352,15 +352,10 @@ bool CAESinkOSS::IsCompatible(const AEAudioFormat format, const CStdString devic
     GetDeviceUse(format, device) == m_device
   );
 
-  if (match)
-    for(unsigned int i = 0; format.m_channelLayout[i] != AE_CH_NULL; ++i)
-      if (format.m_channelLayout[i] != m_initFormat.m_channelLayout[i])
-      {
-        match = false;
-        break;
-      }
+  if (!match)
+    return false;
 
-  return match;
+  return format.m_channelLayout == m_initFormat.m_channelLayout;
 }
 
 void CAESinkOSS::Stop()

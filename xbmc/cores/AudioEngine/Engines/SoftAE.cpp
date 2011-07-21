@@ -174,8 +174,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
 
   /* setup the desired format */
   AEAudioFormat newFormat;
-  newFormat.m_channelLayout = CAEUtil::GetStdChLayout  (m_stdChLayout);
-  newFormat.m_channelCount  = m_rawPassthrough ? channels : CAEUtil::GetChLayoutCount(newFormat.m_channelLayout);
+  newFormat.m_channelLayout = m_stdChLayout;
+  newFormat.m_channelCount  = m_rawPassthrough ? channels : (unsigned int)newFormat.m_channelLayout;
   newFormat.m_sampleRate    = sampleRate;
   newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? rawFormat : AE_FMT_FLOAT;
 
@@ -204,11 +204,11 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
     {
       /* we failed, set the data format to defaults so the thread does not block */
       newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_S16NE : AE_FMT_FLOAT;
-      newFormat.m_channelLayout = CAEUtil::GetStdChLayout(m_stdChLayout);
+      newFormat.m_channelLayout = m_stdChLayout;
       if (m_rawPassthrough || m_transcode)
         newFormat.m_channelCount = (rawFormat == AE_FMT_AC3) ? 2 : 8;
       else
-        newFormat.m_channelCount = CAEUtil::GetChLayoutCount(newFormat.m_channelLayout);
+        newFormat.m_channelCount = newFormat.m_channelLayout;
       newFormat.m_sampleRate    = sampleRate;
       newFormat.m_frames        = (unsigned int)(((float)sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
       newFormat.m_frameSamples  = newFormat.m_frames * newFormat.m_channelCount;
@@ -220,7 +220,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
     CLog::Log(LOGINFO, "  Sample Rate   : %d", newFormat.m_sampleRate);
     CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(newFormat.m_dataFormat));
     CLog::Log(LOGINFO, "  Channel Count : %d", newFormat.m_channelCount);
-    CLog::Log(LOGINFO, "  Channel Layout: %s", CAEUtil::GetChLayoutStr(newFormat.m_channelLayout).c_str());
+    CLog::Log(LOGINFO, "  Channel Layout: %s", ((CStdString)newFormat.m_channelLayout).c_str());
     CLog::Log(LOGINFO, "  Frames        : %d", newFormat.m_frames);
     CLog::Log(LOGINFO, "  Frame Samples : %d", newFormat.m_frameSamples);
     CLog::Log(LOGINFO, "  Frame Size    : %d", newFormat.m_frameSize);
@@ -251,8 +251,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   else
   {
     /* setup the standard output layout & format */
-    m_chLayout     = CAEUtil::GetStdChLayout  (m_stdChLayout);
-    m_channelCount = CAEUtil::GetChLayoutCount(m_chLayout   );
+    m_chLayout     = m_stdChLayout;
+    m_channelCount = m_chLayout;
 
     //The sink should have the final say in the channel count.
     if(m_channelCount != m_sinkFormat.m_channelCount)
@@ -291,7 +291,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
       m_convertFn      = CAEConvert::FrFloat(m_encoderFormat.m_dataFormat);
       neededBufferSize = m_encoderFormat.m_frames * sizeof(float) * m_channelCount;
       
-      CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Encoding using layout: %s", CAEUtil::GetChLayoutStr(m_chLayout).c_str());
+      CLog::Log(LOGDEBUG, "CSoftAE::Initialize - Encoding using layout: %s", ((CStdString)m_chLayout).c_str());
     }
     else
     {
@@ -537,12 +537,16 @@ void CSoftAE::Stop()
 
 IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options/* = 0 */)
 {
+  CAEChannelInfo channelInfo(channelLayout);
   CLog::Log(LOGINFO, "CSoftAE::GetStream - %s, %u, %u, %s",
     CAEUtil::DataFormatToStr(dataFormat),
     sampleRate,
     channelCount,
-    CAEUtil::GetChLayoutStr(channelLayout).c_str()
+    ((CStdString)channelInfo).c_str()
   );
+
+  if ((unsigned int)channelInfo == 0)
+    channelInfo = CAEUtil::GuessChLayout(channelCount);
 
   CSingleLock streamLock(m_streamLock);
   bool wasEmpty = m_streams.empty();

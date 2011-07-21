@@ -35,7 +35,7 @@ public:
 
   virtual bool Initialize  (AEAudioFormat &format, CStdString &device);
   virtual void Deinitialize();
-  virtual bool IsCompatible(const AEAudioFormat format, const CStdString device);
+  virtual bool IsCompatible(AEAudioFormat format, const CStdString device);
 
   virtual void         Stop            ();
   virtual float        GetDelay        ();

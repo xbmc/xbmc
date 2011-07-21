@@ -33,7 +33,7 @@ public:
   void DeInitialize();
 
   bool IsValid() { return m_valid; }
-  bool Remap(AEChLayout to);
+  bool Remap(CAEChannelInfo to);
   unsigned int GetChannelCount();
   unsigned int GetSampleRate();
   unsigned int GetSampleCount();
