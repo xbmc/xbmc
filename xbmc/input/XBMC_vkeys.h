@@ -108,12 +108,12 @@ typedef enum {
 
 // Lowercase letters 0x61 - 0x7a have the same vkey as uppercase, so
 // use this block for the numpad keys
-  XBMCVK_NUMPADSLASH    = 0x61,
+  XBMCVK_NUMPADDIVIDE   = 0x61,
   XBMCVK_NUMPADTIMES    = 0x62,
   XBMCVK_NUMPADMINUS    = 0x63,
   XBMCVK_NUMPADPLUS     = 0x64,
   XBMCVK_NUMPADENTER    = 0x65,
-  XBMCVK_NUMPADDELETE   = 0x66,
+  XBMCVK_NUMPADPERIOD   = 0x66,
   XBMCVK_NUMPAD0        = 0x70,
   XBMCVK_NUMPAD1        = 0x71,
   XBMCVK_NUMPAD2        = 0x72,
@@ -186,6 +186,8 @@ typedef enum {
   XBMCVK_LAUNCH_MEDIA_SELECT = 0xBF,
   XBMCVK_LAUNCH_APP1         = 0xC0,
   XBMCVK_LAUNCH_APP2         = 0xC1,
+  XBMCVK_LAUNCH_FILE_BROWSER = 0xC2,
+  XBMCVK_LAUNCH_MEDIA_CENTER = 0xC3,
 
   XBMCVK_LCONTROL       = 0xD0,
   XBMCVK_RCONTROL       = 0xD1,
