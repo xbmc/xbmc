@@ -269,6 +269,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       iformat = m_dllAvFormat.av_find_input_format("mpeg");
     else if( content.compare("video/x-mpegts") == 0 )
       iformat = m_dllAvFormat.av_find_input_format("mpegts");
+    else if( content.compare("multipart/x-mixed-replace") == 0 )
+      iformat = m_dllAvFormat.av_find_input_format("mjpeg");
   }
 
   // try to abort after 30 seconds
@@ -431,6 +433,10 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       return false;
     }
   }
+
+  // analyse very short to speed up mjpeg playback start
+  if ((strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->is_streamed)
+    m_pFormatContext->max_analyze_duration = 500000;
 
   // we need to know if this is matroska or avi later
   m_bMatroska = strncmp(m_pFormatContext->iformat->name, "matroska", 8) == 0;	// for "matroska.webm"
