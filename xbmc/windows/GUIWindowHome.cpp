@@ -94,8 +94,11 @@ void CGUIWindowHome::Announce(EAnnouncementFlag flag, const char *sender, const 
 
 void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
 {
-  if (flag != 0)
-    CJobManager::GetInstance().AddJob(new CRecentlyAddedJob(flag), NULL);
+  for (int i = 0; i < 10; i++)
+  {
+    if (flag != 0)
+      CJobManager::GetInstance().AddJob(new CRecentlyAddedJob(flag), NULL);
+  }
   m_updateRA = 0;
 }
 

@@ -89,8 +89,6 @@ namespace XbmcThreads
         lock();
     }
 
-    inline unsigned int getCount() { return count; }
-
     /**
      * Some implementations (see pthreads) require access to the underlying 
      *  CCriticalSection, which is also implementation specific. This 
