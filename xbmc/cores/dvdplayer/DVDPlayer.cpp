@@ -1005,7 +1005,7 @@ void CDVDPlayer::Process()
       && !g_PVRManager.IsPlayingRecording())
   {
     SetCaching(CACHESTATE_PVR);
-    m_scanStart = CTimeUtils::GetTimeMS();
+    m_scanStart = XbmcThreads::SystemClockMillis();
   }
   else
     SetCaching(CACHESTATE_FLUSH);
@@ -1059,7 +1059,7 @@ void CDVDPlayer::Process()
 
     if (m_ChannelEntryTimeOut > 0 && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
     {
-      if ((int) CTimeUtils::GetTimeMS() - m_ChannelEntryTimeOut > g_guiSettings.GetInt("pvrplayback.channelentrytimeout"))
+      if ((int) XbmcThreads::SystemClockMillis() - m_ChannelEntryTimeOut > g_guiSettings.GetInt("pvrplayback.channelentrytimeout"))
       {
         m_ChannelEntryTimeOut = 0;
         CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
@@ -1156,7 +1156,7 @@ void CDVDPlayer::Process()
       {
         CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         unsigned int iTimeout = (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime");
-        if (m_scanStart && CTimeUtils::GetTimeMS() - m_scanStart >= iTimeout*1000)
+        if (m_scanStart && XbmcThreads::SystemClockMillis() - m_scanStart >= iTimeout*1000)
         {
           CLog::Log(LOGERROR,"CDVDPlayer - %s - no video or audio data available after %i seconds, playback stopped",
               __FUNCTION__, iTimeout);
@@ -2257,7 +2257,7 @@ void CDVDPlayer::HandleMessages()
             if (bShowPreview)
             {
               UpdateApplication(0);
-              m_ChannelEntryTimeOut = CTimeUtils::GetTimeMS();
+              m_ChannelEntryTimeOut = XbmcThreads::SystemClockMillis();
             }
             else
             {
@@ -2322,7 +2322,7 @@ void CDVDPlayer::SetCaching(ECacheState state)
     m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
 
     if (state == CACHESTATE_PVR)
-      m_scanStart = CTimeUtils::GetTimeMS();
+      m_scanStart = XbmcThreads::SystemClockMillis();
   }
 
   if(state == CACHESTATE_PLAY

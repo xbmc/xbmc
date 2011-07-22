@@ -36,7 +36,6 @@
 #include "threads/SingleLock.h"
 #include "windows/GUIWindowPVR.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 
 #include "PVRManager.h"
 #include "PVRDatabase.h"
@@ -865,9 +864,9 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   if (tagPrev && tagPrev->ChannelNumber() != m_LastChannel)
   {
     m_LastChannel         = tagPrev->ChannelNumber();
-    m_LastChannelChanged  = CTimeUtils::GetTimeMS();
+    m_LastChannelChanged  = XbmcThreads::SystemClockMillis();
   }
-  if (CTimeUtils::GetTimeMS() - m_LastChannelChanged >= (unsigned int) g_guiSettings.GetInt("pvrplayback.channelentrytimeout") && m_LastChannel != m_PreviousChannel[m_PreviousChannelIndex])
+  if (XbmcThreads::SystemClockMillis() - m_LastChannelChanged >= (unsigned int) g_guiSettings.GetInt("pvrplayback.channelentrytimeout") && m_LastChannel != m_PreviousChannel[m_PreviousChannelIndex])
      m_PreviousChannel[m_PreviousChannelIndex ^= 1] = m_LastChannel;
 
   return false;

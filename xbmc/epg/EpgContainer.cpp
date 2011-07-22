@@ -27,7 +27,6 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 
 #include "EpgContainer.h"
 #include "Epg.h"
@@ -354,7 +353,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   lock.Leave();
 
   bool bInterrupted(false);
-  long iStartTime                         = CTimeUtils::GetTimeMS();
+  long iStartTime                         = XbmcThreads::SystemClockMillis();
   bool bUpdateSuccess                     = true;
 
   if (!m_bDatabaseLoaded)
@@ -444,7 +443,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 
   CloseUpdateDialog();
 
-  long lUpdateTime = CTimeUtils::GetTimeMS() - iStartTime;
+  long lUpdateTime = XbmcThreads::SystemClockMillis() - iStartTime;
   CLog::Log(LOGINFO, "EpgContainer - %s - finished %s %d EPG tables after %li.%li seconds",
       __FUNCTION__, m_bDatabaseLoaded ? "updating" : "loading", iEpgCount, lUpdateTime / 1000, lUpdateTime % 1000);
 

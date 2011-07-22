@@ -29,7 +29,6 @@
 #include "threads/SingleLock.h"
 #include "pvr/PVRManager.h"
 #include "pvr/PVRDatabase.h"
-#include "utils/TimeUtils.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
 #include "pvr/channels/PVRChannelGroups.h"
@@ -1042,7 +1041,7 @@ void CPVRClients::StartChannelScan(void)
   /* start the channel scan */
   CLog::Log(LOGNOTICE,"PVR - %s - starting to scan for channels on client %s",
       __FUNCTION__, m_clientMap[scanningClientID]->GetFriendlyName());
-  long perfCnt = CTimeUtils::GetTimeMS();
+  long perfCnt = XbmcThreads::SystemClockMillis();
 
   /* stop the supervisor thread */
   g_PVRManager.StopUpdateThreads();
@@ -1056,7 +1055,7 @@ void CPVRClients::StartChannelScan(void)
   g_PVRManager.StartUpdateThreads();
 
   CLog::Log(LOGNOTICE, "PVRManager - %s - channel scan finished after %li.%li seconds",
-      __FUNCTION__, (CTimeUtils::GetTimeMS()-perfCnt)/1000, (CTimeUtils::GetTimeMS()-perfCnt)%1000);
+      __FUNCTION__, (XbmcThreads::SystemClockMillis()-perfCnt)/1000, (XbmcThreads::SystemClockMillis()-perfCnt)%1000);
   m_bChannelScanRunning = false;
 }
 
