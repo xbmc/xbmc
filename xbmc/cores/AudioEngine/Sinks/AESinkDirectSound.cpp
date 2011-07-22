@@ -68,7 +68,7 @@ CAESinkDirectSound::CAESinkDirectSound() :
   m_dwChunkSize  (0    ),
   m_dwBufferLen  (0    )
 {
-  m_channelLayout[0] = AE_CH_NULL;
+  m_channelLayout.Reset();
 }
 
 CAESinkDirectSound::~CAESinkDirectSound()
@@ -118,7 +118,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, CStdString &device)
   //fill waveformatex
   ZeroMemory(&wfxex, sizeof(WAVEFORMATEXTENSIBLE));
   wfxex.Format.cbSize          = sizeof(WAVEFORMATEXTENSIBLE)-sizeof(WAVEFORMATEX);
-  wfxex.Format.nChannels       = format.m_channelCount;
+  wfxex.Format.nChannels       = format.m_channelLayout.Count();
   wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
   if (AE_IS_RAW(format.m_dataFormat))
   {
@@ -188,8 +188,8 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, CStdString &device)
   format.m_channelLayout = m_channelLayout;
   format.m_dataFormat = AE_FMT_FLOAT;
   format.m_frames = uiFrameCount;
-  format.m_frameSamples = format.m_frames * format.m_channelCount;
-  format.m_frameSize = sizeof(float) * format.m_channelCount;
+  format.m_frameSamples = format.m_frames * format.m_channelLayout.Count();
+  format.m_frameSize = sizeof(float) * format.m_channelLayout.Count();
 
   m_format = format;
   m_device = device;
@@ -235,9 +235,9 @@ bool CAESinkDirectSound::IsCompatible(const AEAudioFormat format, const CStdStri
   if(!m_initialized) return false;
 
   if(m_device == device &&
-     m_format.m_sampleRate   == format.m_sampleRate  &&
-     m_format.m_dataFormat   == format.m_dataFormat  &&
-     m_format.m_channelCount == format.m_channelCount)
+     m_format.m_sampleRate    == format.m_sampleRate  &&
+     m_format.m_dataFormat    == format.m_dataFormat  &&
+     m_format.m_channelLayout == format.m_channelLayout)
      return true;
 
   return false;
@@ -420,22 +420,23 @@ unsigned int CAESinkDirectSound::GetSpace()
 void CAESinkDirectSound::AEChannelsFromSpeakerMask(DWORD speakers)
 {
   int j = 0;
+
+  m_channelLayout.Reset();
+
   for(int i = 0; i < SPEAKER_COUNT; i++)
   {
     if(speakers & DSChannelOrder[i])
-      m_channelLayout[j++] = AEChannelNames[i];
+      m_channelLayout += AEChannelNames[i];
   }
-
-  m_channelLayout[j] = AE_CH_NULL;
 }
 
-DWORD CAESinkDirectSound::SpeakerMaskFromAEChannels(AEChLayout channels)
+DWORD CAESinkDirectSound::SpeakerMaskFromAEChannels(const CAEChannelInfo &channels)
 {
   DWORD mask = 0;
 
-  for(int i = 0; channels[i] != AE_CH_NULL; i++)
+  for(unsigned int i = 0; i < channels.Count(); i++)
   {
-    for(int j = 0; j < SPEAKER_COUNT; j++)
+    for(unsigned int j = 0; j < SPEAKER_COUNT; j++)
       if(channels[i] == AEChannelNames[j])
         mask |= DSChannelOrder[j];
   }
@@ -443,7 +444,7 @@ DWORD CAESinkDirectSound::SpeakerMaskFromAEChannels(AEChLayout channels)
   return mask;
 }
 
-char *CAESinkDirectSound::dserr2str(int err)
+const char *CAESinkDirectSound::dserr2str(int err)
 {
   switch (err)
   {

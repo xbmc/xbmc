@@ -72,13 +72,13 @@ public:
   bool operator==(const CAEChannelInfo& rhs);
   bool operator!=(const CAEChannelInfo& rhs);
   void operator+=(const enum AEChannel rhs);
-  const enum AEChannel operator[](unsigned int i);
+  const enum AEChannel operator[](unsigned int i) const;
   operator CStdString();
 
   /* remove any channels that dont exist in the provided info */
   void RemoveAbsent(const CAEChannelInfo& rhs);
   void Reset();
-  unsigned int Count();
+  unsigned int Count() const;
   static const char* GetChName(const enum AEChannel ch);
 private:
   unsigned int   m_channelCount;

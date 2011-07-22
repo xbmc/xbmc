@@ -186,7 +186,7 @@ void CAEChannelInfo::operator+=(const enum AEChannel rhs)
   m_channels[m_channelCount++] = rhs;
 }
 
-const enum AEChannel CAEChannelInfo::operator[](unsigned int i)
+const enum AEChannel CAEChannelInfo::operator[](unsigned int i) const
 {
   ASSERT(i < m_channelCount);
   return m_channels[i];
@@ -208,7 +208,7 @@ CAEChannelInfo::operator CStdString()
   return s;
 }
 
-unsigned int CAEChannelInfo::Count()
+unsigned int CAEChannelInfo::Count() const
 {
   return m_channelCount;
 }

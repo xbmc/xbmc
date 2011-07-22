@@ -310,6 +310,7 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\PostProc\AEPPAnimationFade.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkDirectSound.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Sinks\AESinkWASAPI.cpp" />
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEChannelInfo.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEConvert.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEPackIEC61937.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AERemap.cpp" />

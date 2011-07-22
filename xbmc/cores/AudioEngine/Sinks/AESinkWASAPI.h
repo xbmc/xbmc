@@ -47,9 +47,11 @@ private:
   bool         InitializeShared(AEAudioFormat &format);
   bool         InitializeExclusive(AEAudioFormat &format);
   void         AEChannelsFromSpeakerMask(DWORD speakers);
-  DWORD        SpeakerMaskFromAEChannels(AEChLayout channels);
+  DWORD        SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
   void         BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATEXTENSIBLE &wfxex);
   void         BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAVEFORMATEXTENSIBLE_IEC61937 &wfxex);
+
+  static const char  *WASAPIErrToStr(HRESULT err);
 
   IMMDevice          *m_pDevice;
   IAudioClient       *m_pAudioClient;
@@ -59,7 +61,7 @@ private:
   enum AEDataFormat   m_encodedFormat;
   unsigned int        m_encodedChannels;
   unsigned int        m_encodedSampleRate;
-  enum AEChannel      m_channelLayout[9];
+  CAEChannelInfo      m_channelLayout;
   CStdString          m_device;
 
   bool                m_running;

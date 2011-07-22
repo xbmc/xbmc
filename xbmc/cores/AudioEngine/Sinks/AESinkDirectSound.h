@@ -44,17 +44,17 @@ public:
   static  void         EnumerateDevices (AEDeviceList &devices, bool passthrough);
 private:
   void          AEChannelsFromSpeakerMask(DWORD speakers);
-  DWORD         SpeakerMaskFromAEChannels(AEChLayout channels);
+  DWORD         SpeakerMaskFromAEChannels(const CAEChannelInfo &channels);
   void          CheckPlayStatus();
   void          UpdateCacheStatus();
   unsigned int  GetSpace();
-  char         *dserr2str(int err);
+  const char    *dserr2str(int err);
 
   LPDIRECTSOUNDBUFFER m_pBuffer;
   LPDIRECTSOUND8      m_pDSound;
 
   AEAudioFormat       m_format;
-  enum AEChannel      m_channelLayout[9];
+  CAEChannelInfo      m_channelLayout;
   CStdString          m_device;
 
   unsigned int        m_AvgBytesPerSec;

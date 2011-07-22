@@ -2500,6 +2500,9 @@
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEWAVLoader.cpp">
       <Filter>cores\AudioEngine\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\AudioEngine\Utils\AEChannelInfo.cpp">
+      <Filter>cores\AudioEngine\Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
