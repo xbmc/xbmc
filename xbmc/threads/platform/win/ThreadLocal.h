@@ -33,11 +33,11 @@ namespace XbmcThreads
   {
     DWORD key;
   public:
-    inline ThreadLocal() {  XBMC_ASSERT_NOTEQUALS(TLS_OUT_OF_INDEXES,TlsAlloc()); }
+    inline ThreadLocal() { key = TlsAlloc(); }
 
-    inline ~ThreadLocal() { XBMC_ASSERT_TRUE(TlsFree(key));  }
+    inline ~ThreadLocal() { TlsFree(key);  }
 
-    inline void set(T* val) {  XBMC_ASSERT_TRUE(TlsSetValue(key,(LPVOID)val));  }
+    inline void set(T* val) {  TlsSetValue(key,(LPVOID)val);  }
 
     inline T* get() { return (T*)TlsGetValue(key); }
   };

@@ -23,8 +23,6 @@
 
 #include <pthread.h>
 
-#include "threads/Helpers.h"
-
 namespace XbmcThreads
 {
   /**
@@ -35,25 +33,13 @@ namespace XbmcThreads
   {
     pthread_key_t key;
   public:
-    inline ThreadLocal()
-    { 
-      XBMC_ASSERT_ZERO(pthread_key_create(&key,NULL));
-    }
+    inline ThreadLocal() { pthread_key_create(&key,NULL); }
 
-    inline ~ThreadLocal()
-    {
-      XBMC_ASSERT_ZERO(pthread_key_delete(key));
-    }
+    inline ~ThreadLocal() { pthread_key_delete(key); }
 
-    inline void set(T* val) 
-    { 
-      XBMC_ASSERT_ZERO(pthread_setspecific(key,(void*)val));
-    }
+    inline void set(T* val) { pthread_setspecific(key,(void*)val); }
 
-    inline T* get() 
-    {
-      return (T*)pthread_getspecific(key);
-    }
+    inline T* get() { return (T*)pthread_getspecific(key); }
   };
 }
 
