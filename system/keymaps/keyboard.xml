@@ -93,6 +93,12 @@
       <backslash>ToggleFullScreen</backslash>
       <home>FirstPage</home>
       <end>LastPage</end>
+      <!-- PVR windows -->
+      <e>XBMC.ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</e>
+      <h>XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</h>
+      <j>XBMC.ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</j>
+      <k>XBMC.ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</k>
+      <b>XBMC.ActivateWindowAndFocus(MyPVR, 35,0, 14,0)</b>
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
       <browser_forward/>
