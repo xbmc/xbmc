@@ -112,6 +112,7 @@ CVDPAU::CVDPAU()
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
+  tmpDeint       = 0;
   max_references = 0;
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
