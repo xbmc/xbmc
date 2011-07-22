@@ -303,7 +303,7 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
   }
   else
   {
-    CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed (%li)", WASAPIErrToStr(hr));
+    CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed (%s)", WASAPIErrToStr(hr));
   }
 
   if(!m_running)
