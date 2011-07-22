@@ -168,7 +168,7 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
 
 #ifndef OSS4
   int mask = 0;
-  for(unsigned int i = 0; format.m_channelLayout[i] != AE_CH_NULL; ++i)
+  for(unsigned int i = 0; format.m_channelLayout.Count(); ++i)
     switch(format.m_channelLayout[i])
     {
       case AE_CH_FL:
@@ -206,16 +206,25 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
 #endif
 
   /* fix the channel count */
-  format.m_channelCount =
-    (mask & DSP_BIND_FRONT      ? 2 : 0) +
-    (mask & DSP_BIND_SURR       ? 2 : 0) +
-    (mask & DSP_BIND_CENTER_LFE ? 2 : 0);
-
-  /* set the layout */
-  m_channelLayout = new enum AEChannel[format.m_channelCount + 1];
-  memcpy(m_channelLayout, OSSChannelMap, format.m_channelCount * sizeof(enum AEChannel));
-  m_channelLayout[format.m_channelCount] = AE_CH_NULL;
-
+  format.m_channelLayout.Reset();
+  if (mask & DSP_BIND_FRONT)
+  {
+    format.m_channelLayout += AE_CH_FL;
+    format.m_channelLayout += AE_CH_FR;
+  }
+  
+  if (mask & DSP_BIND_SURR)
+  {
+    format.m_channelLayout += AE_CH_BL;
+    format.m_channelLayout += AE_CH_BR;
+  }
+  
+  if (mask & DSP_BIND_CENTER_LFE)
+  {
+    format.m_channelLayout += AE_CH_FC;
+    format.m_channelLayout += AE_CH_LFE;
+  }
+  
 #else /* OSS4 */
   unsigned long long order = 0;
   for(unsigned int i = 0; format.m_channelLayout[i] != AE_CH_NULL; ++i)
@@ -280,24 +289,25 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
   /* find the number we need to open to access the channels we need */
   bool found = false;
   int oss_ch = 0;
-  for(int ch = format.m_channelCount; ch < 9; ++ch)
+  for(int ch = format.m_channelLayout.Count(); ch < 9; ++ch)
   {
     oss_ch = ch;
-    if (ioctl(m_fd, SNDCTL_DSP_CHANNELS, &oss_ch) != -1 && oss_ch >= (int)format.m_channelCount)
+    if (ioctl(m_fd, SNDCTL_DSP_CHANNELS, &oss_ch) != -1 && oss_ch >= (int)format.m_channelLayout.Count())
     {
       found = true;
       break;
     }
   }
 
-  m_channelLayout[oss_ch] = AE_CH_NULL;
-  format.m_channelCount = oss_ch;
+  m_channelLayout.Reset();
+  for(int i = 0; i < oss_ch; ++i)
+    m_channelLayout += OSSChannelMap[i];
 
   if (!found)
     CLog::Log(LOGWARNING, "CAESinkOSS::Initialize - Failed to access the number of channels required, falling back");
 
 
-  int tmp = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount * OSS_FRAMES;
+  int tmp = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelLayout.Count() * OSS_FRAMES;
   int pos = 0;
   while((tmp & 0x1) == 0x0)
   {
@@ -327,9 +337,9 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
   }
 
   format.m_sampleRate    = oss_sr;
-  format.m_frameSize     = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelCount;
+  format.m_frameSize     = (CAEUtil::DataFormatToBits(format.m_dataFormat) >> 3) * format.m_channelLayout.Count();
   format.m_frames        = bi.fragsize / format.m_frameSize;
-  format.m_frameSamples  = format.m_frames * format.m_channelCount;
+  format.m_frameSamples  = format.m_frames * format.m_channelLayout.Count();
   format.m_channelLayout = m_channelLayout;
 
   m_device = device;
@@ -340,22 +350,16 @@ bool CAESinkOSS::Initialize(AEAudioFormat &format, CStdString &device)
 void CAESinkOSS::Deinitialize()
 {
   close(m_fd);
-  delete[] m_channelLayout;
 }
 
 bool CAESinkOSS::IsCompatible(AEAudioFormat format, const CStdString device)
 {
-  bool match = (
-    format.m_sampleRate   == m_initFormat.m_sampleRate    &&
-    format.m_dataFormat   == m_initFormat.m_dataFormat    &&
-    format.m_channelCount == m_initFormat.m_channelCount  &&
+  return (
+    format.m_sampleRate    == m_initFormat.m_sampleRate    &&
+    format.m_dataFormat    == m_initFormat.m_dataFormat    &&
+    format.m_channelLayout == m_initFormat.m_channelLayout &&
     GetDeviceUse(format, device) == m_device
   );
-
-  if (!match)
-    return false;
-
-  return format.m_channelLayout == m_initFormat.m_channelLayout;
 }
 
 void CAESinkOSS::Stop()

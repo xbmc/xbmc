@@ -293,7 +293,7 @@ int CDVDAudioCodecPcm::GetChannels()
   return m_iOutputChannels;
 }
 
-AEChLayout CDVDAudioCodecPcm::GetChannelMap()
+CAEChannelInfo CDVDAudioCodecPcm::GetChannelMap()
 {
   assert(m_iOutputChannels > 0 && m_iOutputChannels <= 8);
   static enum AEChannel map[8][9] =

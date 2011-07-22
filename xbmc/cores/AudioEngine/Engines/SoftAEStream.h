@@ -35,7 +35,7 @@ class CSoftAEStream : public IAEStream
 {
 protected:
   friend class CSoftAE;
-  CSoftAEStream(enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options);
+  CSoftAEStream(enum AEDataFormat format, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options);
   virtual ~CSoftAEStream();
 
 public:
@@ -68,7 +68,7 @@ public:
   virtual void  SetReplayGain(float factor) { m_rgain  = std::max(-1.0f, std::max(1.0f, factor)); }
 
   unsigned int              GetFrameSamples() { return m_format.m_frameSamples;     }
-  virtual unsigned int      GetChannelCount() { return m_initChannelCount;          }
+  virtual unsigned int      GetChannelCount() { return m_initChannelLayout.Count(); }
   virtual unsigned int      GetSampleRate()   { return m_initSampleRate;            }
   virtual enum AEDataFormat GetDataFormat()   { return m_initDataFormat;            }
   virtual bool              IsRaw()           { return AE_IS_RAW(m_initDataFormat); }
@@ -90,7 +90,6 @@ private:
   CCriticalSection  m_critSection;
   enum AEDataFormat m_initDataFormat;
   unsigned int      m_initSampleRate;
-  unsigned int      m_initChannelCount;
   CAEChannelInfo    m_initChannelLayout;
   
   typedef struct

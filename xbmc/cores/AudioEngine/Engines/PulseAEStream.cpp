@@ -48,8 +48,9 @@ static const char *StreamStateToString(pa_stream_state s)
   }
 }
 
-CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
+CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options)
 {
+  ASSERT(channelLayout.Count());
   m_Destroyed = false;
   m_Initialized = false;
   m_Paused = false;
@@ -60,16 +61,15 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
   m_format = format;
   m_sampleRate = sampleRate;
-  m_channelCount = channelCount;
   m_channelLayout = channelLayout;
   m_options = options;
 
   m_draining = false;
 
-  printf("Started initializing %i %i\n", sampleRate, channelCount);
+  printf("Started initializing %i %i\n", sampleRate, channelLayout.Count());
   pa_threaded_mainloop_lock(m_MainLoop);
 
-  m_SampleSpec.channels = m_channelCount;
+  m_SampleSpec.channels = channelLayout.Count();
   m_SampleSpec.rate = m_sampleRate;
 
   switch (m_format)
@@ -103,11 +103,9 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   m_frameSize = pa_frame_size(&m_SampleSpec);
 
   struct pa_channel_map map;
-  map.channels = m_channelCount;
-  if (!m_channelLayout.Count())
-    m_channelLayout = CAEUtil::GuessChLayout(m_channelCount);
+  map.channels = m_channelLayout.Count();
 
-  for(unsigned int ch = 0; ch < m_channelCount; ++ch)
+  for(unsigned int ch = 0; ch < m_channelLayout.Count(); ++ch)
     switch(m_channelLayout[ch])
     {
       case AE_CH_NULL: break;
@@ -392,7 +390,7 @@ unsigned int CPulseAEStream::GetFrameSize()
 
 unsigned int CPulseAEStream::GetChannelCount()
 {
-  return m_channelCount;
+  return m_channelLayout.Count();
 }
 
 unsigned int CPulseAEStream::GetSampleRate()

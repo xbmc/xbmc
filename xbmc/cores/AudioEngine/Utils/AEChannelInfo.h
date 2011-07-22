@@ -60,15 +60,10 @@ enum AEStdChLayout
   AE_CH_LAYOUT_MAX
 };
 
-/**
- * A channel layout array that is terminated by AE_CH_NULL
- */
-typedef enum AEChannel* AEChLayout;
-
 class CAEChannelInfo {
 public:
   CAEChannelInfo();
-  CAEChannelInfo(const AEChLayout rhs);
+  CAEChannelInfo(const enum AEChannel* rhs);
   CAEChannelInfo(const enum AEStdChLayout rhs);
   ~CAEChannelInfo();
   CAEChannelInfo& operator=(const CAEChannelInfo& rhs);

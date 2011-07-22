@@ -80,11 +80,6 @@ typedef struct {
   unsigned int       m_sampleRate;
 
   /**
-   * The stream's channel count
-   */
-  unsigned int       m_channelCount;
-
-  /**
    * The stream's channel layout
    */
   CAEChannelInfo     m_channelLayout;

@@ -165,7 +165,7 @@ int CDVDAudioCodecPassthrough::GetEncodedChannels()
   //return m_channels;
 }
 
-AEChLayout CDVDAudioCodecPassthrough::GetChannelMap()
+CAEChannelInfo CDVDAudioCodecPassthrough::GetChannelMap()
 {
   static enum AEChannel map[2][9] = {
     {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL},

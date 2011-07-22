@@ -65,7 +65,7 @@ public:
   virtual void  SetVolume(float volume);
 
   /* returns a new stream for data in the specified format */
-  virtual IAEStream *GetStream (enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0);
+  virtual IAEStream *GetStream (enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options = 0);
   virtual IAEStream *FreeStream(IAEStream *stream);
 
   /* returns a new sound object */
@@ -79,7 +79,7 @@ public:
 
   /* these are for the streams so they can provide compatible data */
   unsigned int          GetSampleRate   ();
-  unsigned int          GetChannelCount () {return m_channelCount          ;}
+  unsigned int          GetChannelCount () {return m_chLayout.Count()      ;}
   CAEChannelInfo&       GetChannelLayout() {return m_chLayout              ;}
   unsigned int          GetFrames       () {return m_sinkFormat.m_frames   ;}
   unsigned int          GetFrameSize    () {return m_frameSize             ;}
@@ -88,7 +88,6 @@ public:
   const AEAudioFormat*  GetSinkAudioFormat() {return &m_sinkFormat               ;}
   enum AEDataFormat     GetSinkDataFormat () {return m_sinkFormat.m_dataFormat   ;}
   CAEChannelInfo&       GetSinkChLayout   () {return m_sinkFormat.m_channelLayout;}
-  unsigned int          GetSinkChCount    () {return m_sinkFormat.m_channelCount ;}
   unsigned int          GetSinkFrameSize  () {return m_sinkFormat.m_frameSize    ;}
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
@@ -131,7 +130,6 @@ private:
 
   /* the current configuration */
   float               m_volume;
-  unsigned int        m_channelCount;
   CAEChannelInfo      m_chLayout;
   unsigned int        m_frameSize;
 

@@ -27,7 +27,7 @@ CAEChannelInfo::CAEChannelInfo()
   Reset();
 }
 
-CAEChannelInfo::CAEChannelInfo(const AEChLayout rhs)
+CAEChannelInfo::CAEChannelInfo(const enum AEChannel* rhs)
 {
   *this = rhs;
 }
@@ -127,9 +127,11 @@ CAEChannelInfo& CAEChannelInfo::operator=(const enum AEChannel* rhs)
 
   /* count the channels */
   m_channelCount = 0;
-  while(rhs[m_channelCount] != AE_CH_NULL)
+  while(m_channelCount < AE_CH_MAX && rhs[m_channelCount] != AE_CH_NULL)
     ++m_channelCount;
 
+  ASSERT(m_channelCount < AE_CH_MAX);
+  
   /* copy the info */
   memcpy(m_channels, rhs, sizeof(enum AEChannel) * m_channelCount);
   m_channels[m_channelCount] = AE_CH_NULL;

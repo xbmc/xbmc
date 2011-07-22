@@ -63,7 +63,7 @@ typedef struct stDVDAudioFrame
 
   int               channel_count;
   int               encoded_channel_count;
-  AEChLayout        channel_layout;
+  CAEChannelInfo    channel_layout;
   enum AEDataFormat data_format;
   int               bits_per_sample;
   int               sample_rate;

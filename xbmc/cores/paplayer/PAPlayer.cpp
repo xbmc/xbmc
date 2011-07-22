@@ -301,8 +301,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
   si->m_stream = CAEFactory::AE->GetStream(
     si->m_dataFormat,
     si->m_sampleRate,
-    si->m_channels,
-    NULL, /* FIXME: channelLayout */
+    CAEUtil::GuessChLayout(si->m_channels), /* FIXME: channelLayout */
     AESTREAM_PAUSED
   );
 

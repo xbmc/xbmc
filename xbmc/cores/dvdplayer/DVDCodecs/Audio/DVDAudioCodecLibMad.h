@@ -37,7 +37,7 @@ public:
   virtual int Decode(BYTE* pData, int iSize);
   virtual int GetData(BYTE** dst);
   virtual void Reset();
-  virtual AEChLayout GetChannelMap();
+  virtual CAEChannelInfo GetChannelMap();
   virtual int GetChannels()                 { return m_iSourceChannels;   }
   virtual int GetSampleRate()               { return m_iSourceSampleRate; }
   virtual enum AEDataFormat GetDataFormat() { return AE_FMT_FLOAT;        }

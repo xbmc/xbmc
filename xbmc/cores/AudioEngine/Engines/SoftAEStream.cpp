@@ -38,7 +38,7 @@
 
 using namespace std;
 
-CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
+CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options) :
   m_convertBuffer   (NULL ),
   m_valid           (false),
   m_delete          (false),
@@ -60,14 +60,11 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
 
   m_initDataFormat    = dataFormat;
   m_initSampleRate    = sampleRate;
-  m_initChannelCount  = channelCount;
   m_initChannelLayout = channelLayout;
   m_forceResample     = (options & AESTREAM_FORCE_RESAMPLE) != 0;
   m_paused            = (options & AESTREAM_PAUSED) != 0;
-
-  /* no channel layout provided, so guess */
-  if (!m_initChannelLayout.Count())
-    m_initChannelLayout = CAEUtil::GuessChLayout(m_initChannelCount);
+  
+  ASSERT(m_initChannelLayout.Count());  
 }
 
 void CSoftAEStream::InitializeRemap()
@@ -117,7 +114,6 @@ void CSoftAEStream::Initialize()
     /* we are raw, which means we need to work in the output format */
     useDataFormat       = ((CSoftAE*)&AE)->GetSinkDataFormat();
     m_initChannelLayout = ((CSoftAE*)&AE)->GetSinkChLayout  ();
-    m_initChannelCount  = ((CSoftAE*)&AE)->GetSinkChCount   ();
   }
   else
   {
@@ -129,7 +125,7 @@ void CSoftAEStream::Initialize()
   }
 
   m_bytesPerSample  = (CAEUtil::DataFormatToBits(useDataFormat) >> 3);
-  m_bytesPerFrame   = m_bytesPerSample * m_initChannelCount;
+  m_bytesPerFrame   = m_bytesPerSample * m_initChannelLayout.Count();
 
   m_aeChannelLayout = AE.GetChannelLayout();
   m_aeChannelCount  = AE.GetChannelCount();
@@ -138,10 +134,9 @@ void CSoftAEStream::Initialize()
 
   m_format.m_dataFormat    = useDataFormat;
   m_format.m_sampleRate    = m_initSampleRate;
-  m_format.m_channelCount  = m_initChannelCount;
   m_format.m_channelLayout = m_initChannelLayout;
   m_format.m_frames        = SOFTAE_FRAMES;
-  m_format.m_frameSamples  = m_format.m_frames * m_initChannelCount;
+  m_format.m_frameSamples  = m_format.m_frames * m_initChannelLayout.Count();
   m_format.m_frameSize     = m_bytesPerFrame;
 
   if (!AE_IS_RAW(m_initDataFormat))
@@ -187,7 +182,7 @@ void CSoftAEStream::Initialize()
   if (m_resample)
   {
     int err;
-    m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, m_initChannelCount, &err);
+    m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, m_initChannelLayout.Count(), &err);
     m_ssrcData.data_in       = m_convertBuffer;
     m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)m_initSampleRate;
     m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * std::ceil(m_ssrcData.src_ratio) * sizeof(float), 16);
@@ -298,7 +293,7 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
   /* resample it if we need to */
   if (m_resample)
   {
-    m_ssrcData.input_frames = samples / m_format.m_channelCount;
+    m_ssrcData.input_frames = samples / m_format.m_channelLayout.Count();
     if (src_process(m_ssrc, &m_ssrcData) != 0) return 0;
     data     = (uint8_t*)m_ssrcData.data_out;
     frames   = m_ssrcData.output_frames_gen;
@@ -306,13 +301,13 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
     if (!frames)
       return consumed;
 
-    samples = frames * m_format.m_channelCount;
+    samples = frames * m_format.m_channelLayout.Count();
   }
   else
   {
     data     = (uint8_t*)m_convertBuffer;
-    frames   = samples / m_format.m_channelCount;
-    samples  = frames * m_format.m_channelCount;
+    frames   = samples / m_format.m_channelLayout.Count();
+    samples  = frames * m_format.m_channelLayout.Count();
     consumed = frames * m_bytesPerFrame;
   }
 

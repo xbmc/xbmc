@@ -45,7 +45,7 @@ private:
   int m_fd;
   CStdString      m_device;
   AEAudioFormat   m_initFormat;
-  enum AEChannel *m_channelLayout;
+  CAEChannelInfo  m_channelLayout;
   AEAudioFormat   m_format;
 
   CStdString GetDeviceUse(AEAudioFormat format, CStdString device);

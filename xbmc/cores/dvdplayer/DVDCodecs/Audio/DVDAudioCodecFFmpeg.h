@@ -38,7 +38,7 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual int GetChannels();
-  virtual AEChLayout GetChannelMap();
+  virtual CAEChannelInfo GetChannelMap();
   virtual int GetSampleRate();
   virtual enum AEDataFormat GetDataFormat();
   virtual const char* GetName() { return "FFmpeg"; }
@@ -46,7 +46,7 @@ public:
 
 protected:
   AVCodecContext*   m_pCodecContext;
-  AEChannel         m_channelLayout[AE_CH_MAX];
+  CAEChannelInfo    m_channelLayout;
   int               m_iMapChannels;
 
   BYTE *m_pBuffer1;

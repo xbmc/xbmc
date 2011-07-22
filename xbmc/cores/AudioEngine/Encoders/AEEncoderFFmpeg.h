@@ -58,7 +58,7 @@ private:
 
   AEAudioFormat     m_CurrentFormat;
   AVCodecContext   *m_CodecCtx;
-  enum AEChannel    m_Layout[AE_CH_MAX+1];
+  CAEChannelInfo    m_Layout;
   uint8_t           m_Buffer[FF_MIN_BUFFER_SIZE];
   int               m_BufferSize;
   int               m_OutputSize;
@@ -66,6 +66,6 @@ private:
 
   unsigned int      m_NeededFrames;
 
-  unsigned int BuildChannelLayout(const int64_t ffmap, AEChLayout layout);
+  unsigned int BuildChannelLayout(const int64_t ffmap, CAEChannelInfo& layout);
 };
 
