@@ -40,21 +40,20 @@ namespace XbmcThreads
   private:
     pthread_cond_t cond;
 
-
   public:
     inline ConditionVariable() 
     { 
-      XBMC_ASSERT_ZERO(pthread_cond_init(&cond,NULL)); 
+      pthread_cond_init(&cond,NULL); 
     }
 
     inline ~ConditionVariable() 
     { 
-      XBMC_ASSERT_ZERO(pthread_cond_destroy(&cond)); 
+      pthread_cond_destroy(&cond);
     }
 
     inline void wait(CCriticalSection& lock) 
     { 
-      XBMC_ASSERT_ZERO(pthread_cond_wait(&cond,&lock.get_underlying().mutex));
+      pthread_cond_wait(&cond,&lock.get_underlying().mutex);
     }
 
     inline bool wait(CCriticalSection& lock, unsigned long milliseconds) 
@@ -62,13 +61,12 @@ namespace XbmcThreads
       struct timeval tv;
       struct timespec ts;
 
-      XBMC_ASSERT_ZERO(gettimeofday(&tv,NULL));
+      gettimeofday(&tv,NULL);
 
       milliseconds += tv.tv_usec / 1000; // move the usecs onto milliseconds
       ts.tv_sec = tv.tv_sec + (time_t)(milliseconds/1000);
       ts.tv_nsec = (long)((milliseconds % (unsigned long)1000) * (unsigned long)1000000);
       int pthread_cond_timedwait_result = pthread_cond_timedwait(&cond,&lock.get_underlying().mutex,&ts);
-      assert (pthread_cond_timedwait_result == 0 || pthread_cond_timedwait_result == ETIMEDOUT);
       return !pthread_cond_timedwait_result;
     }
 
@@ -77,12 +75,12 @@ namespace XbmcThreads
 
     inline void notifyAll() 
     { 
-      XBMC_ASSERT_ZERO(pthread_cond_broadcast(&cond));
+      pthread_cond_broadcast(&cond);
     }
 
     inline void notify() 
     { 
-      XBMC_ASSERT_ZERO(pthread_cond_signal(&cond)); 
+      pthread_cond_signal(&cond);
     }
   };
 

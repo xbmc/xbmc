@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <assert.h>
-
 namespace XbmcThreads
 {
   /**
@@ -38,14 +36,3 @@ namespace XbmcThreads
 
 }
 
-/*#ifdef NDEBUG
-#define XBMC_ASSERT_TRUE(expression) assert( expression )
-#define XBMC_ASSERT_NOTEQUALS(compareTo,expression) assert( compareTo != expression )
-#define XBMC_ASSERT_EQUALS(compareTo,expression) assert( compareTo == expression )
-#define XBMC_ASSERT_ZERO(expression) assert( 0 == expression )
-#else*/
-#define XBMC_ASSERT_TRUE(expression) expression
-#define XBMC_ASSERT_NOTEQUALS(compareTo,expression) expression
-#define XBMC_ASSERT_EQUALS(compareTo,expression) expression
-#define XBMC_ASSERT_ZERO(expression) expression
-//#endif
