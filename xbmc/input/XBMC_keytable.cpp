@@ -108,7 +108,7 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_QUOTEDBL,             '"',  '"', XBMCVK_QUOTEDBL,      "doublequote" }
 , { XBMCK_HASH,                 '#',  '#', XBMCVK_HASH,          "hash" }
 , { XBMCK_DOLLAR,               '$',  '$', XBMCVK_DOLLAR,        "dollar" }
-, { 0,                          '%',  '%', XBMCVK_PERCENT,       "percent" }
+, { XBMCK_PERCENT,              '%',  '%', XBMCVK_PERCENT,       "percent" }
 , { XBMCK_AMPERSAND,            '&',  '&', XBMCVK_AMPERSAND,     "ampersand" }
 , { XBMCK_QUOTE,                '\'', '\'', XBMCVK_QUOTE,         "quote" }
 , { XBMCK_LEFTPAREN,            '(',  '(', XBMCVK_LEFTPAREN,     "leftbracket" }
@@ -135,10 +135,10 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_UNDERSCORE,           '_',  '_', XBMCVK_UNDERSCORE,    "underline" }
 , { XBMCK_BACKQUOTE,            '`',  '`', XBMCVK_BACKQUOTE,     "leftquote" }
 
-, { 0,                          '{',  '{', XBMCVK_LEFTBRACE,     "openbrace" }
-, { 0,                          '|',  '|', XBMCVK_PIPE,          "pipe" }
-, { 0,                          '}',  '}', XBMCVK_RIGHTBRACE,    "closebrace" }
-, { 0,                          '~',  '~', XBMCVK_TILDE,         "tilde" }
+, { XBMCK_LEFTBRACE,            '{',  '{', XBMCVK_LEFTBRACE,     "openbrace" }
+, { XBMCK_PIPE,                 '|',  '|', XBMCVK_PIPE,          "pipe" }
+, { XBMCK_RIGHTBRACE,           '}',  '}', XBMCVK_RIGHTBRACE,    "closebrace" }
+, { XBMCK_TILDE,                '~',  '~', XBMCVK_TILDE,         "tilde" }
 
 // Numeric keypad
 , { XBMCK_KP0,                  '0',  '0', XBMCVK_NUMPAD0,       "numpadzero"}
@@ -204,14 +204,13 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_RIGHT,                  0,    0, XBMCVK_RIGHT,         "right" }
 , { XBMCK_LEFT,                   0,    0, XBMCVK_LEFT,          "left" }
 , { XBMCK_INSERT,                 0,    0, XBMCVK_INSERT,        "insert" }
-, { 0,                            0,    0, XBMCVK_DELETE,        "delete" }
+, { XBMCK_DELETE,                 0,    0, XBMCVK_DELETE,        "delete" }
 , { XBMCK_HOME,                   0,    0, XBMCVK_HOME,          "home" }
 , { XBMCK_END,                    0,    0, XBMCVK_END,           "end" }
 , { XBMCK_PAGEUP,                 0,    0, XBMCVK_PAGEUP,        "pageup" }
 , { XBMCK_PAGEDOWN,               0,    0, XBMCVK_PAGEDOWN,      "pagedown" }
 , { XBMCK_NUMLOCK,                0,    0, XBMCVK_NUMLOCK,       "numlock" }
 , { XBMCK_CAPSLOCK,               0,    0, XBMCVK_CAPSLOCK,      "capslock" }
-, { XBMCK_SCROLLOCK,              0,    0, XBMCVK_SCROLLLOCK,    "scrolllock" }
 , { XBMCK_RSHIFT,                 0,    0, XBMCVK_RSHIFT,        "rightshift" }
 , { XBMCK_LSHIFT,                 0,    0, XBMCVK_LSHIFT,        "leftshift" }
 , { XBMCK_RCTRL,                  0,    0, XBMCVK_RCONTROL,      "rightctrl" }
@@ -219,8 +218,10 @@ static const XBMCKEYTABLE XBMCKeyTable[] =
 , { XBMCK_LALT,                   0,    0, XBMCVK_LMENU,         "leftalt" }
 , { XBMCK_LSUPER,                 0,    0, XBMCVK_LWIN,          "leftwindows" }
 , { XBMCK_RSUPER,                 0,    0, XBMCVK_RWIN,          "rightwindows" }
-, { 0,                            0,    0, XBMCVK_PRINTSCREEN,   "printscreen" }
-, { 0,                            0,    0, XBMCVK_APP,           "menu" }
+, { XBMCK_MENU,                   0,    0, XBMCVK_MENU,          "menu" }
+, { XBMCK_PAUSE,                  0,    0, XBMCVK_PAUSE,         "pause" }
+, { XBMCK_SCROLLOCK,              0,    0, XBMCVK_SCROLLLOCK,    "scrolllock" }
+, { XBMCK_PRINT,                  0,    0, XBMCVK_PRINTSCREEN,   "printscreen" }
 };
 
 static int XBMCKeyTableSize = sizeof(XBMCKeyTable)/sizeof(XBMCKEYTABLE);

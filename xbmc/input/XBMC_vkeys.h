@@ -197,7 +197,7 @@ typedef enum {
   XBMCVK_RMENU          = 0xD5,
   XBMCVK_LWIN           = 0xD6,
   XBMCVK_RWIN           = 0xD7,
-  XBMCVK_APP            = 0xD8,
+  XBMCVK_MENU           = 0xD8,
   XBMCVK_CAPSLOCK       = 0xD9,
   XBMCVK_NUMLOCK        = 0xDA,
 
