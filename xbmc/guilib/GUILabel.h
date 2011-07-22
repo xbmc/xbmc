@@ -84,8 +84,7 @@ public:
   enum COLOR { COLOR_TEXT = 0,
                COLOR_SELECTED,
                COLOR_FOCUSED,
-               COLOR_DISABLED, 
-               COLOR_UNKNOWN };
+               COLOR_DISABLED };
   
   /*! \brief allowed overflow handling techniques for labels, as defined by the skin
    */
