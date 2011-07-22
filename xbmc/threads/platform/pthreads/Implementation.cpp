@@ -37,8 +37,8 @@ namespace XbmcThreads
       static bool alreadyCalled = false; // initialized to 0 in the data segment prior to startup init code running
       if (!alreadyCalled)
       {
-        XBMC_ASSERT_ZERO(pthread_mutexattr_init(&recursiveAttr));
-        XBMC_ASSERT_ZERO(pthread_mutexattr_settype(&recursiveAttr,PTHREAD_MUTEX_RECURSIVE));
+        pthread_mutexattr_init(&recursiveAttr);
+        pthread_mutexattr_settype(&recursiveAttr,PTHREAD_MUTEX_RECURSIVE);
         alreadyCalled = true;
       }
       return true; // note, we never call destroy.
