@@ -41,6 +41,25 @@ CAEChannelInfo::~CAEChannelInfo()
 {
 }
 
+void CAEChannelInfo::RemoveAbsent(const CAEChannelInfo& rhs)
+{
+  CAEChannelInfo newInfo;
+  for(unsigned int i = 0; i < m_channelCount; ++i)
+  {
+    bool found = false;
+    for(unsigned int c = 0; c < rhs.m_channelCount; ++c)
+      if (m_channels[i] == rhs.m_channels[c])
+      {
+        found = true;
+        break;
+      }
+
+    if (found)
+      newInfo += m_channels[i];
+  }
+  *this = newInfo;
+}
+
 void CAEChannelInfo::Reset()
 {
   m_channelCount = 0;
@@ -118,6 +137,12 @@ bool CAEChannelInfo::operator==(const CAEChannelInfo& rhs)
 bool CAEChannelInfo::operator!=(const CAEChannelInfo& rhs)
 {
   return !(*this == rhs);
+}
+
+void CAEChannelInfo::operator+=(const enum AEChannel rhs)
+{
+  ASSERT(m_channelCount < AE_CH_MAX);
+  m_channels[m_channelCount++] = rhs;
 }
 
 const enum AEChannel CAEChannelInfo::operator[](unsigned int i)

@@ -135,9 +135,20 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   else
     m_rawPassthrough = !m_streams.empty() && m_streams.front()->IsRaw();
 
-  /* override the sample rate based on the oldest stream if there is one */
+  /* the desired format */
+  AEAudioFormat newFormat;
+
+  /* override the sample rate & channel layout based on the oldest stream if there is one */
   if (!m_streams.empty())
-    sampleRate = m_streams.front()->GetSampleRate();
+  {
+    CSoftAEStream *stream     = m_streams.front();
+    sampleRate                = stream->GetSampleRate();
+    newFormat.m_channelLayout = stream->m_initChannelLayout;
+    newFormat.m_channelLayout.RemoveAbsent(m_stdChLayout);
+    channels                  = newFormat.m_channelLayout.Count();
+  }
+  else
+    newFormat.m_channelLayout = m_stdChLayout;
 
   streamLock.Leave();
 
@@ -172,9 +183,6 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
     CLog::Log(LOGINFO, "CSoftAE::OpenSink - Forcing samplerate to %d", sampleRate);
   }
 
-  /* setup the desired format */
-  AEAudioFormat newFormat;
-  newFormat.m_channelLayout = m_stdChLayout;
   newFormat.m_channelCount  = m_rawPassthrough ? channels : newFormat.m_channelLayout.Count();
   newFormat.m_sampleRate    = sampleRate;
   newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? rawFormat : AE_FMT_FLOAT;

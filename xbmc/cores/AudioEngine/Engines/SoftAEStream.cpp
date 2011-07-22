@@ -64,6 +64,10 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_initChannelLayout = channelLayout;
   m_forceResample     = (options & AESTREAM_FORCE_RESAMPLE) != 0;
   m_paused            = (options & AESTREAM_PAUSED) != 0;
+
+  /* no channel layout provided, so guess */
+  if (!m_initChannelLayout.Count())
+    m_initChannelLayout = CAEUtil::GuessChLayout(m_initChannelCount);
 }
 
 void CSoftAEStream::InitializeRemap()
@@ -117,15 +121,10 @@ void CSoftAEStream::Initialize()
   }
   else
   {
-    /* no channel layout provided, so guess */
     if (!m_initChannelLayout.Count())
     {
-      m_initChannelLayout = CAEUtil::GuessChLayout(m_initChannelCount);
-      if (!m_initChannelLayout.Count())
-      {
-        m_valid = false;
-        return;
-      }
+      m_valid = false;
+      return;
     }
   }
 

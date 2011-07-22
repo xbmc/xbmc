@@ -76,9 +76,12 @@ public:
   CAEChannelInfo& operator=(const enum AEStdChLayout rhs);
   bool operator==(const CAEChannelInfo& rhs);
   bool operator!=(const CAEChannelInfo& rhs);
+  void operator+=(const enum AEChannel rhs);
   const enum AEChannel operator[](unsigned int i);
   operator CStdString();
 
+  /* remove any channels that dont exist in the provided info */
+  void RemoveAbsent(const CAEChannelInfo& rhs);
   void Reset();
   unsigned int Count();
   static const char* GetChName(const enum AEChannel ch);
