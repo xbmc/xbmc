@@ -2460,7 +2460,7 @@ bool CApplication::OnAction(const CAction &action)
       { // unpaused - set the playspeed back to normal
         SetPlaySpeed(1);
       }
-      g_audioManager.Enable(m_pPlayer->IsPaused());
+      g_audioManager.Enable(m_pPlayer->IsPaused() && !g_guiSettings.GetBool("audiooutput.guisoundwhileplayback"));
       return true;
     }
     if (!m_pPlayer->IsPaused())
@@ -2520,7 +2520,7 @@ bool CApplication::OnAction(const CAction &action)
       {
         // unpause, and set the playspeed back to normal
         m_pPlayer->Pause();
-        g_audioManager.Enable(m_pPlayer->IsPaused());
+        g_audioManager.Enable(m_pPlayer->IsPaused() && !g_guiSettings.GetBool("audiooutput.guisoundwhileplayback"));
 
         g_application.SetPlaySpeed(1);
         return true;
@@ -3757,7 +3757,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #endif
 
 #if !defined(__APPLE__)
-    g_audioManager.Enable(false);
+    g_audioManager.Enable(g_guiSettings.GetBool("audiooutput.guisoundwhileplayback"));
 #endif
   }
   m_bPlaybackStarting = false;
