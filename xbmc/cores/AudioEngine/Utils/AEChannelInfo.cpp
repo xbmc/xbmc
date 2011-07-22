@@ -43,9 +43,41 @@ CAEChannelInfo::~CAEChannelInfo()
 
 void CAEChannelInfo::RemoveAbsent(const CAEChannelInfo& rhs)
 {
+  bool srcHasSL = false;
+  bool srcHasSR = false;
+  bool srcHasRL = false;
+  bool srcHasRR = false;
+
+  bool dstHasSL = false;
+  bool dstHasSR = false;
+  bool dstHasRL = false;
+  bool dstHasRR = false;
+
+  for(unsigned int c = 0; c < rhs.m_channelCount; ++c)
+    switch(rhs.m_channels[c])
+    {
+      case AE_CH_SL: dstHasSL = true; break;
+      case AE_CH_SR: dstHasSR = true; break;
+      case AE_CH_BL: dstHasRL = true; break;
+      case AE_CH_BR: dstHasRR = true; break;
+      default:
+        break;
+    }
+
+
   CAEChannelInfo newInfo;
   for(unsigned int i = 0; i < m_channelCount; ++i)
   {
+    switch(m_channels[i])
+    {
+      case AE_CH_SL: srcHasSL = true; break;
+      case AE_CH_SR: srcHasSR = true; break;
+      case AE_CH_BL: srcHasRL = true; break;
+      case AE_CH_BR: srcHasRR = true; break;
+      default:
+        break;
+    }
+
     bool found = false;
     for(unsigned int c = 0; c < rhs.m_channelCount; ++c)
       if (m_channels[i] == rhs.m_channels[c])
@@ -57,6 +89,13 @@ void CAEChannelInfo::RemoveAbsent(const CAEChannelInfo& rhs)
     if (found)
       newInfo += m_channels[i];
   }
+
+  /* we need to ensure we end up with rear or side channels for downmix to work */
+  if (srcHasSL && !dstHasSL && dstHasRL) newInfo += AE_CH_BL;
+  if (srcHasSR && !dstHasSR && dstHasRR) newInfo += AE_CH_BR;
+  if (srcHasRL && !dstHasRL && dstHasSL) newInfo += AE_CH_SL;
+  if (srcHasRR && !dstHasRR && dstHasSR) newInfo += AE_CH_SR; 
+
   *this = newInfo;
 }
 
