@@ -292,7 +292,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
 
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
-      CThread(),
+      CThread("CDVDPlayer"),
       m_CurrentAudio(STREAM_AUDIO),
       m_CurrentVideo(STREAM_VIDEO),
       m_CurrentSubtitle(STREAM_SUBTITLE),
@@ -418,7 +418,6 @@ bool CDVDPlayer::IsPlaying() const
 
 void CDVDPlayer::OnStartup()
 {
-  CThread::SetName("CDVDPlayer");
   m_CurrentVideo.Clear();
   m_CurrentAudio.Clear();
   m_CurrentSubtitle.Clear();

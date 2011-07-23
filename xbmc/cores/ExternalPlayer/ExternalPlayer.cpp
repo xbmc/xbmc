@@ -62,7 +62,7 @@ extern HWND g_hWnd;
 
 CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
-      CThread()
+      CThread("CExternalPlayer")
 {
   m_bAbortRequest = false;
   m_bIsPlaying = false;
@@ -133,8 +133,6 @@ bool CExternalPlayer::IsPlaying() const
 
 void CExternalPlayer::Process()
 {
-  SetName("CExternalPlayer");
-
   CStdString mainFile = m_launchFilename;
   CStdString archiveContent = "";
 
