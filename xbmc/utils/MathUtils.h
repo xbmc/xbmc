@@ -36,16 +36,6 @@ namespace MathUtils
     const float round_to_nearest = 0.5f;
     int i;
     
-    //BIG FIXME here
-    //the asm codes below do the following - trunc(x+0.5)
-    //this isn't correct for negativ x - values - for example 
-    //-1 gets rounded to zero because trunc(-1+0.5) == 0
-    //this is a dirty hack until someone fixes this propably in asm
-    //i've created a trac ticket for this #11767
-    //this hacks decrements the x by 1 if it is negativ
-    // so for -1 it would be trunc(-2+0.5) - which would be correct -1 then ...
-    x = x < 0 ? x-1 : x;
-
 #ifndef _LINUX
     __asm
     {
@@ -59,6 +49,16 @@ namespace MathUtils
 #if defined(__powerpc__) || defined(__ppc__)
     i = floor(x + round_to_nearest);
 #elif defined(__arm__)
+    //BIG FIXME here (still has issues with rounding -0.5 to zero and not -1)
+    //the asm codes below do the following - trunc(x+0.5)
+    //this isn't correct for negativ x - values - for example 
+    //-1 gets rounded to zero because trunc(-1+0.5) == 0
+    //this is a dirty hack until someone fixes this propably in asm
+    //i've created a trac ticket for this #11767
+    //this hacks decrements the x by 1 if it is negativ
+    // so for -1 it would be trunc(-2+0.5) - which would be correct -1 then ...
+    x = x < 0 ? x-1 : x;
+
     __asm__ __volatile__ (
                           "vmov.F64 d1,%[rnd_val]             \n\t" // Copy round_to_nearest into a working register
                           "vadd.F64 %P[value],%P[value],d1    \n\t" // Add round_to_nearest to value
