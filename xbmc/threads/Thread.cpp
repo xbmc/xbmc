@@ -122,8 +122,9 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     return 1;
   }
 
-  if (pThread->m_ThreadName.IsEmpty())
-    pThread->SetName(pThread->GetTypeName().c_str());
+  if (pThread->m_ThreadName.empty())
+    pThread->m_ThreadName = pThread->GetTypeName();
+  pThread->SetDebugCallStackName(pThread->m_ThreadName.c_str());
 
   CLog::Log(LOGDEBUG,"Thread %s start, auto delete: %d", pThread->m_ThreadName.c_str(), pThread->IsAutoDelete());
 
@@ -376,10 +377,8 @@ int CThread::GetNormalPriority(void)
 }
 
 
-void CThread::SetName( LPCTSTR szThreadName )
+void CThread::SetDebugCallStackName( const char *name )
 {
-  m_ThreadName = szThreadName;
-
 #ifdef _WIN32
   const unsigned int MS_VC_EXCEPTION = 0x406d1388;
   struct THREADNAME_INFO
@@ -391,7 +390,7 @@ void CThread::SetName( LPCTSTR szThreadName )
   } info;
 
   info.dwType = 0x1000;
-  info.szName = szThreadName;
+  info.szName = name;
   info.dwThreadID = m_ThreadId;
   info.dwFlags = 0;
 
@@ -407,9 +406,9 @@ void CThread::SetName( LPCTSTR szThreadName )
 
 // Get the thread name using the implementation dependant typeid() class
 // and attempt to clean it.
-CStdString CThread::GetTypeName(void)
+std::string CThread::GetTypeName(void)
 {
-  CStdString name = typeid(*this).name();
+  std::string name = typeid(*this).name();
  
 #if defined(_MSC_VER)
   // Visual Studio 2010 returns the name as "class CThread" etc
