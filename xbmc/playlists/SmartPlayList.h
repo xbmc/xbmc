@@ -46,6 +46,7 @@ public:
                         FIELD_LASTPLAYED,
                         FIELD_INPROGRESS,
                         FIELD_RATING,
+                        FIELD_USERRATING,
                         FIELD_COMMENT,
                         FIELD_DATEADDED,
                         FIELD_TVSHOWTITLE,

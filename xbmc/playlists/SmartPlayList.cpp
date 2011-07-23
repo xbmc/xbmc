@@ -58,6 +58,7 @@ static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NON
                                          { "lastplayed", CSmartPlaylistRule::FIELD_LASTPLAYED, CSmartPlaylistRule::DATE_FIELD, 568 },
                                          { "inprogress", CSmartPlaylistRule::FIELD_INPROGRESS, CSmartPlaylistRule::BOOLEAN_FIELD, 575 },
                                          { "rating", CSmartPlaylistRule::FIELD_RATING, CSmartPlaylistRule::NUMERIC_FIELD, 563 },
+                                         { "userrating", CSmartPlaylistRule::FIELD_USERRATING, CSmartPlaylistRule::NUMERIC_FIELD, 577 },
                                          { "comment", CSmartPlaylistRule::FIELD_COMMENT, CSmartPlaylistRule::TEXT_FIELD, 569 },
                                          { "dateadded", CSmartPlaylistRule::FIELD_DATEADDED, CSmartPlaylistRule::DATE_FIELD, 570 },
                                          { "plot", CSmartPlaylistRule::FIELD_PLOT, CSmartPlaylistRule::TEXT_FIELD, 207 },
@@ -249,6 +250,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_PATH);
     fields.push_back(FIELD_STUDIO);
     fields.push_back(FIELD_MPAA);
+    fields.push_back(FIELD_USERRATING);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "episodes")
@@ -333,6 +335,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_AUDIOLANGUAGE);
     fields.push_back(FIELD_SUBTITLELANGUAGE);
     fields.push_back(FIELD_VIDEOASPECT);
+    fields.push_back(FIELD_USERRATING);
   }
   if (sortOrders)
     fields.push_back(FIELD_RANDOM);
@@ -670,6 +673,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_COUNTRY) result.Format("c%02d", VIDEODB_ID_COUNTRY);    // join required
     else if (field == FIELD_HASTRAILER) result.Format("c%02d", VIDEODB_ID_TRAILER);
     else if (field == FIELD_FILENAME) result = "strFilename";
+    else if (field == FIELD_USERRATING) result = "userRating";
     else if (field == FIELD_PATH) result = "strPath";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idShow";       // only used for order clauses
@@ -691,6 +695,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_DIRECTOR) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_DIRECTOR);   // join required
     else if (field == FIELD_STUDIO) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_STUDIOS);     // join required
     else if (field == FIELD_PLOT) result.Format("c%02d", VIDEODB_ID_MUSICVIDEO_PLOT);
+    else if (field == FIELD_USERRATING) result = "userRating";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idMVideo";        // only used for order clauses
     return result;
@@ -706,6 +711,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_YEAR) result.Format("c%02d", VIDEODB_ID_TV_PREMIERED);
     else if (field == FIELD_GENRE) result.Format("c%02d", VIDEODB_ID_TV_GENRE);
     else if (field == FIELD_MPAA) result.Format("c%02d", VIDEODB_ID_TV_MPAA);
+    else if (field == FIELD_USERRATING) result.Format("c%02d", VIDEODB_ID_TV_USERRATING);
     else if (field == FIELD_DIRECTOR) result = "cant_order_by_director"; // join required
     else if (field == FIELD_ACTOR) result = "cant_order_by_actor";    // join required
     else if (field == FIELD_NUMEPISODES) result = "totalcount";
@@ -738,6 +744,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_SEASON) result.Format("c%02d", VIDEODB_ID_EPISODE_SEASON);
     else if (field == FIELD_FILENAME) result = "strFilename";
     else if (field == FIELD_PATH) result = "strPath";
+    else if (field == FIELD_USERRATING) result = "userRating";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idShow";       // only used for order clauses
     return result;
