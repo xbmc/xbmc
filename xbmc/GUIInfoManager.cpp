@@ -958,6 +958,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("lastplayed")) return LISTITEM_LASTPLAYED;
   else if (info.Equals("playcount")) return LISTITEM_PLAYCOUNT;
   else if (info.Equals("discnumber")) return LISTITEM_DISC_NUMBER;
+  else if (info.Equals("userrating")) return LISTITEM_USER_RATING;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -982,6 +983,7 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   else if (info.Equals("codec")) return MUSICPLAYER_CODEC;
   else if (info.Equals("discnumber")) return MUSICPLAYER_DISC_NUMBER;
   else if (info.Equals("rating")) return MUSICPLAYER_RATING;
+  else if (info.Equals("userrating")) return MUSICPLAYER_USER_RATING;
   else if (info.Equals("comment")) return MUSICPLAYER_COMMENT;
   else if (info.Equals("lyrics")) return MUSICPLAYER_LYRICS;
   else if (info.Equals("playlistplaying")) return MUSICPLAYER_PLAYLISTPLAYING;
@@ -1138,6 +1140,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case MUSICPLAYER_CODEC:
   case MUSICPLAYER_DISC_NUMBER:
   case MUSICPLAYER_RATING:
+  case MUSICPLAYER_USER_RATING:
   case MUSICPLAYER_COMMENT:
   case MUSICPLAYER_LYRICS:
   case MUSICPLAYER_PLAYCOUNT:
@@ -3095,6 +3098,8 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     return GetItemLabel(item, LISTITEM_DISC_NUMBER);
   case MUSICPLAYER_RATING:
     return GetItemLabel(item, LISTITEM_RATING);
+  case MUSICPLAYER_USER_RATING:
+    return GetItemLabel(item, LISTITEM_USER_RATING);
   case MUSICPLAYER_COMMENT:
     return GetItemLabel(item, LISTITEM_COMMENT);
   case MUSICPLAYER_DURATION:
@@ -4099,7 +4104,21 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_streamDetails.GetSubtitleLanguage();
     break;
+  case LISTITEM_USER_RATING:
+    CStdString strResult;
+    int iRating=-1;
+    if (item->HasVideoInfoTag())
+      iRating = item->GetVideoInfoTag()->m_iUserRating;
+    else if (item->HasMusicInfoTag())
+      iRating = (item->GetMusicInfoTag()->GetRating() - '0') * 2;
+    if (iRating >= 0 && iRating <= 10)
+    {
+      strResult.Format("%i", item->GetVideoInfoTag()->m_iUserRating);
+      return strResult;
+    }
+    break;
   }
+
   return "";
 }
 
