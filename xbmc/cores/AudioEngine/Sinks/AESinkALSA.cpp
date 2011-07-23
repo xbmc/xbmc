@@ -158,15 +158,16 @@ bool CAESinkALSA::Initialize(AEAudioFormat &format, CStdString &device)
         break;
     }
     
+    m_channelLayout = GetChannelLayout(format);
     format.m_dataFormat   = AE_FMT_S16NE;
     m_passthrough         = true;
   }
   else
   {
+    m_channelLayout = GetChannelLayout(format);
     m_passthrough = false;
   }
   
-  m_channelLayout = GetChannelLayout(format);
   if (m_channelLayout.Count() == 0)
   {
     CLog::Log(LOGERROR, "CAESinkALSA::Initialize - Unable to open the requested channel layout");

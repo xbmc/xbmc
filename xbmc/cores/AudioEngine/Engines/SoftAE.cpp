@@ -144,7 +144,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
     CSoftAEStream *stream     = m_streams.front();
     sampleRate                = stream->GetSampleRate();
     newFormat.m_channelLayout = stream->m_initChannelLayout;
-    newFormat.m_channelLayout.RemoveAbsent(m_stdChLayout);
+    if (!m_transcode && !m_rawPassthrough)
+      newFormat.m_channelLayout.RemoveAbsent(m_stdChLayout);
     channels                  = newFormat.m_channelLayout.Count();
   }
   else
