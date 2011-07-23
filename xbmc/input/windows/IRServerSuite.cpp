@@ -32,7 +32,7 @@
 
 CRemoteControl g_RemoteControl;
 
-CRemoteControl::CRemoteControl()
+CRemoteControl::CRemoteControl() : CThread("CRemoteControl")
 {
   m_socket = INVALID_SOCKET;
   m_bInitialized = false;
@@ -79,7 +79,6 @@ void CRemoteControl::Initialize()
   if (m_isConnecting || m_bInitialized) return;
   //trying to connect when there is nothing to connect to is kinda slow so kick it off in a thread.
   Create();
-  SetName("CRemoteControl");
 }
 
 void CRemoteControl::Process()
