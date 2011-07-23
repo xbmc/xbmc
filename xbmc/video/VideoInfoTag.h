@@ -96,6 +96,7 @@ public:
   int m_iSpecialSortSeason;
   int m_iSpecialSortEpisode;
   int m_iTrack;
+  int m_iUserRating;
   float m_fRating;
   float m_fEpBookmark;
   int m_iBookmarkId;
