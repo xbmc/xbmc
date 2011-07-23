@@ -36,6 +36,7 @@
 #include "threads/CriticalSection.h"
 
 #include "threads/Thread.h"
+#include "utils/StdString.h"
 
 namespace MEDIA_DETECT
 {
