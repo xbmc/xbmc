@@ -435,7 +435,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
 
   // analyse very short to speed up mjpeg playback start
-  if ((strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->is_streamed)
+  if (iformat && (strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->is_streamed)
     m_pFormatContext->max_analyze_duration = 500000;
 
   // we need to know if this is matroska or avi later
