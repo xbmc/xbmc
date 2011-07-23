@@ -65,11 +65,12 @@ namespace VIDEO
 #define VIDEODB_DETAILS_PATH			VIDEODB_MAX_COLUMNS + 3
 #define VIDEODB_DETAILS_PLAYCOUNT		VIDEODB_MAX_COLUMNS + 4
 #define VIDEODB_DETAILS_LASTPLAYED		VIDEODB_MAX_COLUMNS + 5
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_NAME	VIDEODB_MAX_COLUMNS + 6
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO	VIDEODB_MAX_COLUMNS + 7
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_ID	VIDEODB_MAX_COLUMNS + 8
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED	VIDEODB_MAX_COLUMNS + 9
-#define VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA	VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_USERRATING 		VIDEODB_MAX_COLUMNS + 6
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_NAME	VIDEODB_MAX_COLUMNS + 7
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO	VIDEODB_MAX_COLUMNS + 8
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_ID	VIDEODB_MAX_COLUMNS + 9
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED	VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA	VIDEODB_MAX_COLUMNS + 11
 						
 #define VIDEODB_DETAILS_TVSHOW_PATH		VIDEODB_MAX_COLUMNS + 1
 #define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES	VIDEODB_MAX_COLUMNS + 2
@@ -151,7 +152,8 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_fanart.m_xml) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strCountry) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_basePath) },
-  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_parentPathID) }
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_parentPathID) },
+  { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iUserRating) }
 };
 
 typedef enum // this enum MUST match the offset struct further down!! and make sure to keep min and max at -1 and sizeof(offsets)
@@ -175,6 +177,7 @@ typedef enum // this enum MUST match the offset struct further down!! and make s
   VIDEODB_ID_TV_SORTTITLE = 15,
   VIDEODB_ID_TV_BASEPATH = 16,
   VIDEODB_ID_TV_PARENTPATHID = 17,
+  VIDEODB_ID_TV_USERRATING = 18,
   VIDEODB_ID_TV_MAX
 } VIDEODB_TV_IDS;
 
@@ -360,6 +363,32 @@ public:
    \sa GetPlayCount, SetPlayCount, IncrementPlayCount
    */
   bool GetPlayCounts(const CStdString &path, CFileItemList &items);
+
+  /*! \brief Set the user rating of an item
+   Sets the rating to a given value
+   \param item CFileItem to set the rating for
+   \param iRating The rating to set.
+   \sa GetRating, IncreaseRating, DecreaseRating
+   */
+  void SetRating(const CFileItem &item, int iRating);
+
+  /*! \brief Get the rating of an item
+   \param items CFileItemList to fetch the rating for
+   \sa SetRating, IncreaseRating, DecreaseRating
+   */
+  int GetRating(const CFileItem &item);
+
+  /*! \brief Increase the rating of an item
+   \param items CFileItemList to increase the rating for
+   \sa SetRating, GetRating, DecreaseRating
+   */
+  bool IncreaseRating(const CFileItem &item);
+
+  /*! \brief Decrease the rating of an item
+   \param items CFileItemList to decrease the rating for
+   \sa SetRating, GetRating, IncreaseRating
+   */
+  bool DecreaseRating(const CFileItem &item);
 
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
@@ -720,7 +749,7 @@ private:
    */
   bool LookupByFolders(const CStdString &path, bool shows = false);
 
-  virtual int GetMinVersion() const { return 54; };
+  virtual int GetMinVersion() const { return 55; };
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
 

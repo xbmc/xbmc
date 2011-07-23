@@ -321,6 +321,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "codec",            MUSICPLAYER_CODEC },
                                   { "discnumber",       MUSICPLAYER_DISC_NUMBER },
                                   { "rating",           MUSICPLAYER_RATING },
+                                  { "userrating",       MUSICPLAYER_USER_RATING },
                                   { "comment",          MUSICPLAYER_COMMENT },
                                   { "lyrics",           MUSICPLAYER_LYRICS },
                                   { "playlistplaying",  MUSICPLAYER_PLAYLISTPLAYING },
@@ -467,7 +468,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
                                   { "playcount",        LISTITEM_PLAYCOUNT },
-                                  { "discnumber",       LISTITEM_DISC_NUMBER }};
+                                  { "discnumber",       LISTITEM_DISC_NUMBER },
+                                  { "userrating",       LISTITEM_USER_RATING }};
 
 const infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
                                   { "preset",           VISUALISATION_PRESET },
@@ -1142,6 +1144,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case MUSICPLAYER_CODEC:
   case MUSICPLAYER_DISC_NUMBER:
   case MUSICPLAYER_RATING:
+  case MUSICPLAYER_USER_RATING:
   case MUSICPLAYER_COMMENT:
   case MUSICPLAYER_LYRICS:
   case MUSICPLAYER_PLAYCOUNT:
@@ -3087,6 +3090,8 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) co
     return GetItemLabel(item, LISTITEM_DISC_NUMBER);
   case MUSICPLAYER_RATING:
     return GetItemLabel(item, LISTITEM_RATING);
+  case MUSICPLAYER_USER_RATING:
+    return GetItemLabel(item, LISTITEM_USER_RATING);
   case MUSICPLAYER_COMMENT:
     return GetItemLabel(item, LISTITEM_COMMENT);
   case MUSICPLAYER_DURATION:
@@ -3959,7 +3964,21 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_streamDetails.GetSubtitleLanguage();
     break;
+  case LISTITEM_USER_RATING:
+    CStdString strResult;
+    int iRating=-1;
+    if (item->HasVideoInfoTag())
+      iRating = item->GetVideoInfoTag()->m_iUserRating;
+    else if (item->HasMusicInfoTag())
+      iRating = (item->GetMusicInfoTag()->GetRating() - '0') * 2;
+    if (iRating >= 0 && iRating <= 10)
+    {
+      strResult.Format("%i", item->GetVideoInfoTag()->m_iUserRating);
+      return strResult;
+    }
+    break;
   }
+
   return "";
 }
 

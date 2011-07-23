@@ -73,6 +73,7 @@ void CVideoInfoTag::Reset()
   m_iFileId = -1;
   m_iBookmarkId = -1;
   m_iTrack = -1;
+  m_iUserRating = 0;
   m_fanart.m_xml = "";
   m_strRuntime = "";
   m_lastPlayed = "";
@@ -177,6 +178,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetAdditiveString(movie, "studio",
                           g_advancedSettings.m_videoItemSeparator, m_strStudio);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
+  XMLUtils::SetInt(movie, "userrating", m_iUserRating);
 
   if (m_streamDetails.HasItems())
   {
@@ -311,6 +313,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_iSpecialSortEpisode;
     ar << m_iBookmarkId;
     ar << m_iTrack;
+    ar << m_iUserRating;
     ar << dynamic_cast<IArchivable&>(m_streamDetails);
     ar << m_strShowLink;
     ar << m_fEpBookmark;
@@ -380,6 +383,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_iSpecialSortEpisode;
     ar >> m_iBookmarkId;
     ar >> m_iTrack;
+    ar >> m_iUserRating;
     ar >> dynamic_cast<IArchivable&>(m_streamDetails);
     ar >> m_strShowLink;
     ar >> m_fEpBookmark;
@@ -441,6 +445,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["dbid"] = m_iDbId;
   value["fileid"] = m_iFileId;
   value["track"] = m_iTrack;
+  value["userrating"] = m_iUserRating;
   value["showlink"] = m_strShowLink;
   m_streamDetails.Serialize(value["streamDetails"]);
   CVariant resume = CVariant(CVariant::VariantTypeObject);
@@ -482,6 +487,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetInt(movie, "season", m_iSeason);
   XMLUtils::GetInt(movie, "episode", m_iEpisode);
   XMLUtils::GetInt(movie, "track", m_iTrack);
+  XMLUtils::GetInt(movie, "userrating", m_iUserRating);
   XMLUtils::GetInt(movie, "displayseason", m_iSpecialSortSeason);
   XMLUtils::GetInt(movie, "displayepisode", m_iSpecialSortEpisode);
   int after=0;
