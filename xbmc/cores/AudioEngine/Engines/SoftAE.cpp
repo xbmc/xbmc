@@ -107,9 +107,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
 
   /* lock the sounds before we take the sink lock */
   CSingleLock soundLock(m_soundLock);
-  list<CSoftAESound*>::iterator sitt;
-  for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
-    (*sitt)->Lock();
+  for(SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+    (*itt)->Lock();
 
   /* lock the sink so the thread gets held up */
   m_sinkLock.lock();
@@ -117,8 +116,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
 
   /* remove any deleted streams */
   CSingleLock streamLock(m_streamLock);
-  list<CSoftAEStream*>::iterator itt;
-  for(itt = m_streams.begin(); itt != m_streams.end();)
+  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end();)
   {
     if ((*itt)->IsDestroyed())
     {
@@ -313,24 +311,24 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   if (m_rawPassthrough)
   {
     /* unlock the sounds */
-    for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
-      (*sitt)->UnLock();
+    for(SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+      (*itt)->UnLock();
 
     m_sinkLock.unlock();
     return true;
   }
 
   /* re-init sounds and unlock */
-  for(sitt = m_sounds.begin(); sitt != m_sounds.end(); ++sitt)
+  for(SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
   {
-    (*sitt)->Initialize();
-    (*sitt)->UnLock();
+    (*itt)->Initialize();
+    (*itt)->UnLock();
   }
   soundLock.Leave();
 
   /* re-init streams */
   streamLock.Enter();
-  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
     (*itt)->Initialize();  
   streamLock.Leave();
 
@@ -396,8 +394,7 @@ void CSoftAE::OnSettingsChange(CStdString setting)
   {
     /* re-init streams reampper */
     CSingleLock streamLock(m_streamLock);
-    list<CSoftAEStream*>::iterator itt;
-    for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
       (*itt)->InitializeRemap();
   }
 
@@ -594,7 +591,7 @@ void CSoftAE::FreeSound(IAESound *sound)
 
   sound->Stop();
   CSingleLock soundLock(m_soundLock);
-  for(list<CSoftAESound*>::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+  for(SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
     if (*itt == sound)
     {
       m_sounds.erase(itt);
@@ -619,8 +616,7 @@ unsigned int CSoftAE::GetSampleRate()
 void CSoftAE::StopSound(IAESound *sound)
 {
   CSingleLock lock(m_soundSampleLock);
-  list<SoundState>::iterator itt;
-  for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
+  for(SoundStateList::iterator itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
   {
     if ((*itt).owner == sound)
     {
@@ -631,32 +627,20 @@ void CSoftAE::StopSound(IAESound *sound)
   }
 }
 
-void CSoftAE::RemoveStream(IAEStream *stream)
-{
-  list<CSoftAEStream*>::iterator itt;
-  CSingleLock lock(m_streamLock);
-
-  /* ensure the stream still exists */
-  for(itt = m_streams.begin(); itt != m_streams.end(); ++itt)
-    if (*itt == stream)
-    {
-      m_streams.erase(itt);
-      lock.Leave();
-      OpenSink();
-
-      return;
-    }
-}
-
 IAEStream *CSoftAE::FreeStream(IAEStream *stream)
 {
   CSingleLock lock(m_streamLock);
-
-  RemoveStream(stream);
-
-  CSoftAEStream *istream = (CSoftAEStream *)stream;
-	
-  delete istream;
+  
+  /* ensure the stream still exists */
+  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+    if (*itt == stream)
+    {
+      m_streams.erase(itt);
+      delete *itt;
+      lock.Leave();
+      OpenSink();
+      break;
+    }
   
   return NULL;
 }
@@ -778,7 +762,7 @@ void CSoftAE::Run()
 
 void CSoftAE::MixSounds(float *buffer, unsigned int samples)
 {
-  list<SoundState>::iterator itt;
+  SoundStateList::iterator itt;
 
   CSingleLock lock(m_soundSampleLock);
   for(itt = m_playing_sounds.begin(); itt != m_playing_sounds.end(); )
@@ -998,10 +982,9 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
 
   float *dst = (float*)out;
   unsigned int mixed = 0;
-  list<CSoftAEStream*>::iterator itt;
 
   /* mix in any running streams */
-  for(itt = m_streams.begin(); itt != m_streams.end();)
+  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end();)
   {
     CSoftAEStream *stream = *itt;
 

@@ -112,10 +112,6 @@ private:
   unsigned int m_delayFrames;
   void DelayFrames();
 
-  /* this is called by streams on dtor, you should never need to call this directly */
-  friend class CSoftAEStream;
-  void RemoveStream(IAEStream *stream);
-
   enum AEStdChLayout m_stdChLayout;
   CStdString m_device;
   CStdString m_passthroughDevice;
@@ -146,13 +142,17 @@ private:
     float        *samples;
     unsigned int  sampleCount;
   } SoundState;
-  std::list<SoundState> m_playing_sounds;
 
+  typedef std::list<CSoftAEStream*> StreamList;
+  typedef std::list<CSoftAESound* > SoundList;
+  typedef std::list<SoundState    > SoundStateList;
+    
   /* the streams, sounds, output buffer and output buffer fill size */
-  bool                                      m_transcode;
-  bool                                      m_rawPassthrough;
-  std::list<CSoftAEStream*>                 m_streams;
-  std::list<CSoftAESound*>                  m_sounds;
+  bool           m_transcode;
+  bool           m_rawPassthrough;
+  StreamList     m_streams;
+  SoundList      m_sounds;
+  SoundStateList m_playing_sounds;
 
   /* this will contain either float, or uint8_t depending on if we are in raw mode or not */
   unsigned int                              m_bufferSize;

@@ -202,7 +202,6 @@ void CSoftAEStream::Destroy()
 
 CSoftAEStream::~CSoftAEStream()
 {
-  ((CSoftAE*)&AE)->RemoveStream(this);
   CSingleLock lock(m_critSection);
 
   InternalFlush();
