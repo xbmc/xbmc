@@ -30,7 +30,7 @@
 #include "threads/SingleLock.h"
 using namespace XFILE;
 using namespace std;
-#include "nfsc/libnfs-raw-mount.h"
+#include <nfsc/libnfs-raw-mount.h>
 
 CNFSDirectory::CNFSDirectory(void)
 {

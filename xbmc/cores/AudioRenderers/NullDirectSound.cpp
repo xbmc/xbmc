@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "NullDirectSound.h"
 #include "guilib/AudioContext.h"
 #include "utils/log.h"
@@ -55,7 +56,7 @@ bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_timePerPacket = 1.0f / (float)(iChannels*(uiBitsPerSample/8) * uiSamplesPerSec);
   m_packetsSent = 0;
   m_paused = 0;
-  m_lastUpdate = CTimeUtils::GetTimeMS();
+  m_lastUpdate = XbmcThreads::SystemClockMillis();
   return true;
 }
 
@@ -75,7 +76,7 @@ bool CNullDirectSound::Deinitialize()
 
 void CNullDirectSound::Flush()
 {
-  m_lastUpdate = CTimeUtils::GetTimeMS();
+  m_lastUpdate = XbmcThreads::SystemClockMillis();
   m_packetsSent = 0;
   Pause();
 }
@@ -188,7 +189,7 @@ void CNullDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers
 
 void CNullDirectSound::Update()
 {
-  long currentTime = CTimeUtils::GetTimeMS();
+  long currentTime = XbmcThreads::SystemClockMillis();
   long deltaTime = (currentTime - m_lastUpdate);
 
   if (m_paused)

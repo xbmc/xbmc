@@ -23,7 +23,7 @@
 #include "guilib/GUIWindowManager.h"
 
 CGUIDialogBusy::CGUIDialogBusy(void)
-: CGUIDialog(WINDOW_DIALOG_BUSY, "DialogBusy.xml")
+  : CGUIDialog(WINDOW_DIALOG_BUSY, "DialogBusy.xml"), m_bLastVisible(false)
 {
   m_loadOnDemand = false;
   m_bModal = true;

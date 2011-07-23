@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 
 #ifdef HAS_EVENT_SERVER
@@ -805,7 +806,7 @@ bool CEventClient::GetMousePos(float& x, float& y)
 
 bool CEventClient::CheckButtonRepeat(unsigned int &next)
 {
-  unsigned int now = CTimeUtils::GetTimeMS();
+  unsigned int now = XbmcThreads::SystemClockMillis();
 
   if ( next == 0 )
   {

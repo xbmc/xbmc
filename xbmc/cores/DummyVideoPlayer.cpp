@@ -19,6 +19,7 @@
  *
  */
  
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "DummyVideoPlayer.h"
 #include "guilib/GUIFontManager.h"
@@ -75,14 +76,14 @@ bool CDummyVideoPlayer::IsPlaying() const
 void CDummyVideoPlayer::Process()
 {
   m_clock = 0;
-  m_lastTime = CTimeUtils::GetTimeMS();
+  m_lastTime = XbmcThreads::SystemClockMillis();
 
   m_callback.OnPlayBackStarted();
   while (!m_bStop)
   {
     if (!m_paused)
-      m_clock += (CTimeUtils::GetTimeMS() - m_lastTime)*m_speed;
-    m_lastTime = CTimeUtils::GetTimeMS();
+      m_clock += (XbmcThreads::SystemClockMillis() - m_lastTime)*m_speed;
+    m_lastTime = XbmcThreads::SystemClockMillis();
     Sleep(0);
     g_graphicsContext.Lock();
     if (g_graphicsContext.IsFullScreenVideo())

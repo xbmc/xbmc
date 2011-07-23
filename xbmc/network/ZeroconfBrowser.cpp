@@ -59,7 +59,10 @@ CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection),m_started
   AddServiceType("_htsp._tcp.");
   AddServiceType("_daap._tcp.");
   AddServiceType("_webdav._tcp.");
+#ifdef HAS_FILESYSTEM_NFS
   AddServiceType("_nfs._tcp.");  
+#endif// HAS_FILESYSTEM_NFS
+  AddServiceType("_sftp-ssh._tcp."); 
 }
 
 CZeroconfBrowser::~CZeroconfBrowser()

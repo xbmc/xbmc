@@ -380,7 +380,11 @@
 		18CCEAEF1112F5B800615FC6 /* PCMRemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */; };
 		18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
 		18ECC96313CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
+		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
+		3802709B13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
+		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
+		38F4E57213CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
 		431AE5D9109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		43248C4E0FBE224000B88866 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
@@ -1167,8 +1171,6 @@
 		F558F29713ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F29413ABD7DF00631E12 /* GUIWindowDebugInfo.cpp */; };
 		F558F3D013AE663300631E12 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15713A3ADA7008ED511 /* FileNFS.cpp */; };
 		F558F3D113AE663A00631E12 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */; };
-		F558F51E13AF03AD00631E12 /* ThreadLocal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F51C13AF03AD00631E12 /* ThreadLocal.cpp */; };
-		F558F51F13AF03AD00631E12 /* ThreadLocal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F51C13AF03AD00631E12 /* ThreadLocal.cpp */; };
 		F56579AF13060D1E0085ED7F /* RenderCapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56579AD13060D1E0085ED7F /* RenderCapture.cpp */; };
 		F56A084B0F4A18FB003F9F87 /* karaokewindowbackground.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56A084A0F4A18FB003F9F87 /* karaokewindowbackground.cpp */; };
 		F56C8CE2131F5DAF000AD0F6 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F56C8CE1131F5DAF000AD0F6 /* libc.dylib */; };
@@ -1759,8 +1761,6 @@
 		F5A1CBBB0F6B06CF00A96ABD /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88ECB6580DE013C4003396A7 /* DiskArbitration.framework */; };
 		F5A2BD0E0F7AD9140006ABA0 /* ZeroconfOSX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C2C0F77219700C25D29 /* ZeroconfOSX.cpp */; };
 		F5A2BD0F0F7AD92C0006ABA0 /* Zeroconf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E46F7C280F77217400C25D29 /* Zeroconf.cpp */; };
-		F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */; };
-		F5A7A6221127980A0059D6AA /* posix-realtime-stub.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */; };
 		F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
 		F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */; };
 		F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5A7A859112908F00059D6AA /* WebServer.cpp */; };
@@ -2248,9 +2248,22 @@
 		18CCEAED1112F5B800615FC6 /* PCMRemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMRemap.h; sourceTree = "<group>"; };
 		18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC96113CF178D00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
+		3802709713D5A62D009493DD /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		3802709813D5A653009493DD /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
+		3802709913D5A653009493DD /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
 		384718D61325BA04000486D6 /* XBDateTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBDateTime.cpp; sourceTree = "<group>"; };
 		384718D71325BA04000486D6 /* XBDateTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBDateTime.h; sourceTree = "<group>"; };
 		38B2BBD013131B4A00F83309 /* GlobalsHandling.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GlobalsHandling.h; sourceTree = "<group>"; };
+		38F4E55E13CCCB3B00664821 /* Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Helpers.h; sourceTree = "<group>"; };
+		38F4E55F13CCCB3B00664821 /* Lockables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lockables.h; sourceTree = "<group>"; };
+		38F4E56513CCCB3B00664821 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
+		38F4E56613CCCB3B00664821 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
+		38F4E56813CCCB3B00664821 /* platform.select.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = platform.select.h; sourceTree = "<group>"; };
+		38F4E56A13CCCB3B00664821 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
+		38F4E56B13CCCB3B00664821 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
+		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
+		38F4E56D13CCCB3B00664821 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
+		38F4E56E13CCCB3B00664821 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		430C881312D64A730098821A /* IPowerSyscall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IPowerSyscall.h; sourceTree = "<group>"; };
 		431376FF12D6455C00680C15 /* GUIDialogCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogCache.h; sourceTree = "<group>"; };
 		4313777F12D648E900680C15 /* DllLibid3tag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibid3tag.h; sourceTree = "<group>"; };
@@ -3668,7 +3681,6 @@
 		F558F27E13ABD57400631E12 /* DirtyRegionTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DirtyRegionTracker.h; sourceTree = "<group>"; };
 		F558F29413ABD7DF00631E12 /* GUIWindowDebugInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIWindowDebugInfo.cpp; sourceTree = "<group>"; };
 		F558F29513ABD7DF00631E12 /* GUIWindowDebugInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIWindowDebugInfo.h; sourceTree = "<group>"; };
-		F558F51C13AF03AD00631E12 /* ThreadLocal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadLocal.cpp; sourceTree = "<group>"; };
 		F558F51D13AF03AD00631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		F558F54D13AF091000631E12 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		F56579AD13060D1E0085ED7F /* RenderCapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = RenderCapture.cpp; sourceTree = "<group>"; };
@@ -3718,8 +3730,6 @@
 		F5A00B240EFDE44100CD59F3 /* NullDirectSound.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDirectSound.cpp; path = xbmc/cores/AudioRenderers/NullDirectSound.cpp; sourceTree = SOURCE_ROOT; };
 		F5A00B250EFDE44100CD59F3 /* NullDirectSound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NullDirectSound.h; path = xbmc/cores/AudioRenderers/NullDirectSound.h; sourceTree = SOURCE_ROOT; };
 		F5A1CBD20F6B06CF00A96ABD /* XBMC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = XBMC; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "posix-realtime-stub.c"; sourceTree = "<group>"; };
-		F5A7A6201127980A0059D6AA /* posix-realtime-stub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "posix-realtime-stub.h"; sourceTree = "<group>"; };
 		F5A7A700112893E50059D6AA /* AnnouncementManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AnnouncementManager.cpp; sourceTree = "<group>"; };
 		F5A7A701112893E50059D6AA /* AnnouncementManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnouncementManager.h; sourceTree = "<group>"; };
 		F5A7A859112908F00059D6AA /* WebServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = WebServer.cpp; sourceTree = "<group>"; };
@@ -4361,6 +4371,30 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		38F4E56013CCCB3B00664821 /* platform */ = {
+			isa = PBXGroup;
+			children = (
+				38F4E56513CCCB3B00664821 /* Condition.h */,
+				38F4E56613CCCB3B00664821 /* CriticalSection.h */,
+				38F4E56813CCCB3B00664821 /* platform.select.h */,
+				38F4E56913CCCB3B00664821 /* pthreads */,
+				38F4E56D13CCCB3B00664821 /* README.platform */,
+				38F4E56E13CCCB3B00664821 /* ThreadLocal.h */,
+			);
+			path = platform;
+			sourceTree = "<group>";
+		};
+		38F4E56913CCCB3B00664821 /* pthreads */ = {
+			isa = PBXGroup;
+			children = (
+				3802709713D5A62D009493DD /* ThreadLocal.h */,
+				38F4E56A13CCCB3B00664821 /* Condition.h */,
+				38F4E56B13CCCB3B00664821 /* CriticalSection.h */,
+				38F4E56C13CCCB3B00664821 /* Implementation.cpp */,
+			);
+			path = pthreads;
+			sourceTree = "<group>";
+		};
 		430C880812D649B10098821A /* powermanagement */ = {
 			isa = PBXGroup;
 			children = (
@@ -4704,6 +4738,11 @@
 		43D8300612D64DEF00B38489 /* threads */ = {
 			isa = PBXGroup;
 			children = (
+				3802709813D5A653009493DD /* SystemClock.cpp */,
+				3802709913D5A653009493DD /* SystemClock.h */,
+				38F4E55E13CCCB3B00664821 /* Helpers.h */,
+				38F4E55F13CCCB3B00664821 /* Lockables.h */,
+				38F4E56013CCCB3B00664821 /* platform */,
 				83E0B2480F7C95FF0091643F /* Atomics.cpp */,
 				83E0B2470F7C95FF0091643F /* Atomics.h */,
 				F558F54D13AF091000631E12 /* Condition.h */,
@@ -4716,7 +4755,6 @@
 				E38E1E7C0D25F9FD00618676 /* SingleLock.h */,
 				E38E1E850D25F9FD00618676 /* Thread.cpp */,
 				E38E1E860D25F9FD00618676 /* Thread.h */,
-				F558F51C13AF03AD00631E12 /* ThreadLocal.cpp */,
 				F558F51D13AF03AD00631E12 /* ThreadLocal.h */,
 			);
 			path = threads;
@@ -4913,8 +4951,6 @@
 				E306D12D0DDF7B590052C2AD /* XBMCHelper.h */,
 				F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */,
 				F51CEEF00F5C5D28004F4602 /* OSXGNUReplacements.h */,
-				F5A7A61F1127980A0059D6AA /* posix-realtime-stub.c */,
-				F5A7A6201127980A0059D6AA /* posix-realtime-stub.h */,
 				F5ACB5370FC3DF3D00AAA056 /* eprintf.cpp */,
 			);
 			path = osx;
@@ -7819,7 +7855,6 @@
 				F5F245EE1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 				18CCEAEE1112F5B800615FC6 /* PCMRemap.cpp in Sources */,
 				F5F24E8611232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */,
-				F5A7A6211127980A0059D6AA /* posix-realtime-stub.c in Sources */,
 				F5A7A702112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 				F5A7A85B112908F00059D6AA /* WebServer.cpp in Sources */,
 				7C7B2B301134F36400713D6D /* mysqldataset.cpp in Sources */,
@@ -8051,12 +8086,13 @@
 				F558F29613ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */,
 				DF0DF15B13A3ADA7008ED511 /* FileNFS.cpp in Sources */,
 				DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */,
-				F558F51E13AF03AD00631E12 /* ThreadLocal.cpp in Sources */,
 				7C89619213B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
 				1830212813B8E2DC00770920 /* controledit.cpp in Sources */,
 				DF27E26E13C23D12002514FE /* InertialScrollingHandler.cpp in Sources */,
 				18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */,
 				F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
+				38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */,
+				3802709A13D5A653009493DD /* SystemClock.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8713,7 +8749,6 @@
 				F5F245EF1112C9AB009126C6 /* FileUtils.cpp in Sources */,
 				18CCEAEF1112F5B800615FC6 /* PCMRemap.cpp in Sources */,
 				F5F24E8711232488009126C6 /* DVDAudioEncoderFFmpeg.cpp in Sources */,
-				F5A7A6221127980A0059D6AA /* posix-realtime-stub.c in Sources */,
 				F5A7A703112893E50059D6AA /* AnnouncementManager.cpp in Sources */,
 				F5A7A85C112908F00059D6AA /* WebServer.cpp in Sources */,
 				7C7B2B311134F36400713D6D /* mysqldataset.cpp in Sources */,
@@ -8945,12 +8980,13 @@
 				F558F29713ABD7DF00631E12 /* GUIWindowDebugInfo.cpp in Sources */,
 				F558F3D013AE663300631E12 /* FileNFS.cpp in Sources */,
 				F558F3D113AE663A00631E12 /* NFSDirectory.cpp in Sources */,
-				F558F51F13AF03AD00631E12 /* ThreadLocal.cpp in Sources */,
 				7C89619313B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
 				1830212913B8E2DC00770920 /* controledit.cpp in Sources */,
 				43B0A5D013C64DF900B2382A /* InertialScrollingHandler.cpp in Sources */,
 				18ECC96313CF178D00A9ED6C /* StreamUtils.cpp in Sources */,
 				F5CEE60A13D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
+				38F4E57213CCCB3B00664821 /* Implementation.cpp in Sources */,
+				3802709B13D5A653009493DD /* SystemClock.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9050,7 +9086,6 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
-					"-lboost_thread",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9146,7 +9181,6 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
-					"-lboost_thread",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9234,6 +9268,9 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					_DEBUG,
+					TARGET_POSIX,
+					TARGET_DARWIN,
+					TARGET_DARWIN_OSX,
 					_LINUX,
 					_REENTRANT,
 					_FILE_DEFINED,
@@ -9328,6 +9365,9 @@
 				GCC_MODEL_TUNING = "";
 				GCC_OPTIMIZATION_LEVEL = 2;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					TARGET_POSIX,
+					TARGET_DARWIN,
+					TARGET_DARWIN_OSX,
 					_LINUX,
 					_REENTRANT,
 					_FILE_DEFINED,
