@@ -235,7 +235,7 @@ bool CDirectory::Create(const CStdString& strPath)
     CStdString realPath = Translate(strPath);
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
     if (pDirectory.get())
-      if(pDirectory->Create(realPath.c_str()))
+      if(pDirectory->Exists(realPath.c_str()) || pDirectory->Create(realPath.c_str()))
         return true;
   }
 #ifndef _LINUX
