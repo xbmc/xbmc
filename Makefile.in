@@ -134,8 +134,10 @@ LIB_DIRS=\
 	lib/cpluff \
 	lib/xbmc-dll-symbols
 
-SS_DIRS=\
-	xbmc/screensavers/rsxs-0.9/xbmc
+SS_DIRS=
+ifeq (@USE_OPENGL@,1)
+SS_DIRS+= xbmc/screensavers/rsxs-0.9/xbmc
+endif
 
 VIS_DIRS=
 ifeq (@USE_OPENGL@,1)
@@ -364,12 +366,14 @@ lib/xbmc-dll-symbols/dll-symbols.a: force
 exports: xbmc/cores/DllLoader/exports/exports.a xbmc/cores/DllLoader/exports/util/exports_utils.a
 	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
 dllloader: exports xbmc/cores/DllLoader/dllloader.a
-visualizations: exports
-	for d in $(VIS_DIRS); do $(MAKE) -C $$d; done
-screensavers: exports
-ifeq (@USE_OPENGL@,1)
-	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
-endif
+
+$(VIS_DIRS) $(SS_DIRS): force exports
+	$(MAKE) -C $@
+
+visualizations: $(VIS_DIRS)
+
+screensavers: $(SS_DIRS)
+
 libpython: dllloader
 	$(MAKE) -C xbmc/interfaces/python
 	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
