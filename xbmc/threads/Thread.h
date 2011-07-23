@@ -30,12 +30,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include <string>
 #include "system.h" // for HANDLE
 #ifdef _LINUX
 #include "PlatformInclude.h"
 #endif
 #include "Event.h"
-#include "utils/StdString.h"
 
 class IRunnable
 {
@@ -65,7 +65,6 @@ public:
   int GetMinPriority(void);
   int GetMaxPriority(void);
   int GetNormalPriority(void);
-  void SetName( LPCTSTR szThreadName );
   HANDLE ThreadHandle();
   operator HANDLE();
   operator HANDLE() const;
@@ -109,7 +108,10 @@ protected:
   }
 
 private:
-  CStdString GetTypeName(void);
+  /*! \brief set the threadname for the debugger/callstack, implementation dependent.
+   */
+  void SetDebugCallStackName( const char *threadName );
+  std::string GetTypeName(void);
 
 private:
   ThreadIdentifier ThreadId() const;
@@ -123,7 +125,7 @@ private:
   unsigned __int64 m_iLastTime;
   float m_fLastUsage;
 
-  CStdString m_ThreadName;
+  std::string m_ThreadName;
 
 #ifdef _LINUX
   static void term_handler (int signum);
