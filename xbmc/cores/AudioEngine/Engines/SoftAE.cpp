@@ -793,15 +793,14 @@ void CSoftAE::MixSounds(float *buffer, unsigned int samples)
       continue;
     }
 
-    float volume = ss->owner->GetVolume();// * 0.5f; /* 0.5 to normalize */
+    float volume = ss->owner->GetVolume();
     unsigned int mixSamples = std::min(ss->sampleCount, samples);
 
     #ifdef __SSE__
       CAEUtil::SSEMulAddArray(buffer, ss->samples, volume, mixSamples);
-   //   CSoftAE::SSEMulArray   (buffer, 0.5f, mixSamples);
     #else
       for(unsigned int i = 0; i < mixSamples; ++i)
-        buffer[i] = (buffer[i] + (ss->samples[i] * volume)) * 0.5f;
+        buffer[i] = (buffer[i] + (ss->samples[i] * volume));
     #endif
 
     ss->sampleCount -= mixSamples;
