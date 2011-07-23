@@ -199,6 +199,8 @@ bool CAddonDll<TheDll, TheStruct, TheProps>::Create()
   try
   {
     ADDON_STATUS status = m_pDll->Create(m_pHelpers->GetCallbacks(), m_pInfo);
+    if (status == ADDON_STATUS_OK)
+      return true;
     if ((status == ADDON_STATUS_NEED_SETTINGS) || (status == ADDON_STATUS_NEED_SAVEDSETTINGS))
     {
       m_needsavedsettings = (status == ADDON_STATUS_NEED_SAVEDSETTINGS);
