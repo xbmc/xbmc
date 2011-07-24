@@ -980,6 +980,7 @@
   <string id="12392">小时</string>
   <string id="12393">天</string>
   <string id="12394">累计开机时间</string>
+  <string id="12395">电池电量</string>
 
   <string id="12600">天气</string>
 
@@ -1465,10 +1466,10 @@
   <string id="16017">输入查询字符串</string>
   <string id="16018">关闭</string>
   <string id="16019">自动选择</string>
-  <string id="16020">去交错</string>
+  <string id="16020">去隔行</string>
   <string id="16021">抖动</string>
   <string id="16022">抖动（倒转）</string>
-  <string id="16023">交错设置</string>
+  <string id="16023">隔行扫描处理</string>
   <string id="16024">取消中...</string>
   <string id="16025">输入艺人名字</string>
   <string id="16026">播放失败</string>
@@ -1481,6 +1482,7 @@
   <string id="16033">无法打开资料库！</string>
   <string id="16034">无法从资料库获取歌曲文件！</string>
   <string id="16035">舞会模式播放列表</string>
+  <string id="16036">去隔行（半速）</string>
  
   <string id="16100">所有视频文件</string>
   <string id="16101">未观看的</string>
@@ -1727,6 +1729,8 @@
   <string id="20256">HTS Tvheadend 客户端</string>
   <string id="20257">VDR Streamdev 客户端</string>
   <string id="20258">MythTV 客户端</string>
+  <string id="20259">网络文件系统（NFS）</string>
+  <string id="20260">安全壳（SSH/SFTP）</string>
 
   <string id="20300">WEB服务器目录（HTTP）</string>
   <string id="20301">WEB服务器目录（HTTPS）</string>
@@ -1877,6 +1881,7 @@
   <string id="20453">集</string>
   <string id="20454">收听者</string>
   <string id="20455">听众</string>
+  <string id="20456">设置影片集同人画</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2308,4 +2313,7 @@
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
+
+  <string id="34201">未找到下一播放项目</string>
+  <string id="34202">未找到上一播放项目</string>
 </strings>
