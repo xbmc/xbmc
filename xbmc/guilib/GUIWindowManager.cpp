@@ -348,7 +348,10 @@ void CGUIWindowManager::ActivateWindow(int iWindowID, const vector<CStdString>& 
     g_application.getApplicationMessenger().ActivateWindow(iWindowID, params, swappingWindows);
   }
   else
+  {
+    CSingleLock lock(g_graphicsContext);
     ActivateWindow_Internal(iWindowID, params, swappingWindows);
+  }
 }
 
 void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStdString>& params, bool swappingWindows)
