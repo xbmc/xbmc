@@ -43,7 +43,7 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_strTitle           = "";
   m_strDirectory       = "/";
   m_strSummary         = "";
-  m_iClientId          = g_PVRClients->GetFirstID();
+  m_iClientId          = g_PVRClients->GetFirstConnectedClientID();
   m_iClientIndex       = -1;
   m_iClientChannelUid  = -1;
   m_iPriority          = g_guiSettings.GetInt("pvrrecord.defaultpriority");

@@ -102,13 +102,7 @@ void CPVRClients::Unload(void)
 
   /* destroy all clients */
   for (CLIENTMAPITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
-  {
-    boost::shared_ptr<CPVRClient> client = m_clientMap[(*itr).first];
-    CLog::Log(LOGDEBUG, "PVR - %s - destroying addon '%s' (%s)",
-        __FUNCTION__, client->Name().c_str(), client->ID().c_str());
-
-    client->Destroy();
-  }
+    m_clientMap[(*itr).first]->Destroy();
 
   /* reset class properties */
   m_bChannelScanRunning  = false;
@@ -120,7 +114,7 @@ void CPVRClients::Unload(void)
   m_clientMap.clear();
 }
 
-int CPVRClients::GetFirstID(void)
+int CPVRClients::GetFirstConnectedClientID(void)
 {
   int iReturn(-1);
   CSingleLock lock(m_critSection);
@@ -168,9 +162,6 @@ bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
   {
     if (m_clientMap[(*itr).first]->ID() == client->ID())
     {
-      CLog::Log(LOGINFO, "PVRManager - %s - %s client '%s'",
-          __FUNCTION__, bRestart ? "restarting" : "removing", m_clientMap[(*itr).first]->Name().c_str());
-
       g_PVRManager.StopUpdateThreads();
       if (bRestart)
       {

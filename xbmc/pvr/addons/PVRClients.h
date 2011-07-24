@@ -89,7 +89,7 @@ namespace PVR
     /*!
      * @brief The ID of the first active client or -1 if no clients are active;
      */
-    int GetFirstID(void);
+    int GetFirstConnectedClientID(void);
 
     /*!
      * @return True when all clients are connected, false otherwise.
