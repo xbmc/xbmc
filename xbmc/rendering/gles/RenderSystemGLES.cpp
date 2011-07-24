@@ -239,7 +239,7 @@ static int64_t abs64(int64_t a)
   return a;
 }
 
-bool CRenderSystemGLES::PresentRender()
+bool CRenderSystemGLES::PresentRender(const CDirtyRegionList &dirty)
 {
   if (!m_bRenderCreated)
     return false;
@@ -266,7 +266,7 @@ bool CRenderSystemGLES::PresentRender()
       Sleep((DWORD)diff);
   }
   
-  bool result = PresentRenderImpl();
+  bool result = PresentRenderImpl(dirty);
   
   if (m_iVSyncMode && m_iSwapRate != 0)
   {

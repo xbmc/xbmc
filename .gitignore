@@ -474,6 +474,7 @@ lib/cmyth/Makefile
 /tools/EventClients/*.pyc
 /tools/EventClients/Clients/OSXRemote/Makefile
 /tools/EventClients/Clients/OSXRemote/build/
+/tools/EventClients/Clients/WiiRemote/WiiRemote
 
 # /tools/Linux/
 /tools/Linux/xbmc.sh
@@ -1024,6 +1025,7 @@ lib/cmyth/Makefile
 /lib/libapetag/m4/ltoptions.m4
 /lib/libapetag/m4/ltsugar.m4
 /lib/libapetag/m4/ltversion.m4
+/lib/libapetag/m4/lt~obsolete.m4
 /lib/libapetag/Makefile.in
 /lib/libapetag/missing
 

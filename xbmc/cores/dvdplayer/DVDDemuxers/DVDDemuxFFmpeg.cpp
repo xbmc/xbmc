@@ -222,10 +222,7 @@ CDVDDemuxFFmpeg::~CDVDDemuxFFmpeg()
 
 bool CDVDDemuxFFmpeg::Aborted()
 {
-  if(!m_timeout)
-    return false;
-
-  if(XbmcThreads::SystemClockMillis() > m_timeout)
+  if(m_timeout.IsTimePast())
     return true;
 
   return false;
@@ -275,7 +272,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
 
   // try to abort after 30 seconds
-  m_timeout = XbmcThreads::SystemClockMillis() + 30000;
+  m_timeout.Set(30000);
 
   if( m_pInput->IsStreamType(DVDSTREAM_TYPE_FFMPEG) )
   {
@@ -436,7 +433,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   }
 
   // analyse very short to speed up mjpeg playback start
-  if ((strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->is_streamed)
+  if (iformat && (strcmp(iformat->name, "mjpeg") == 0) && m_ioContext->is_streamed)
     m_pFormatContext->max_analyze_duration = 500000;
 
   // we need to know if this is matroska or avi later
@@ -468,7 +465,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
     CLog::Log(LOGDEBUG, "%s - av_find_stream_info finished", __FUNCTION__);
   }
   // reset any timeout
-  m_timeout = 0;
+  m_timeout.SetInfinite();
 
   // if format can be nonblocking, let's use that
   m_pFormatContext->flags |= AVFMT_FLAG_NONBLOCK;
@@ -569,7 +566,7 @@ void CDVDDemuxFFmpeg::Flush()
 
 void CDVDDemuxFFmpeg::Abort()
 {
-  m_timeout = 1;
+  m_timeout.SetExpired();
 }
 
 void CDVDDemuxFFmpeg::SetSpeed(int iSpeed)
@@ -656,7 +653,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
     pkt.stream_index = MAX_STREAMS;
 
     // timeout reads after 100ms
-    m_timeout = XbmcThreads::SystemClockMillis() + 20000;
+    m_timeout.Set(20000);
     int result = 0;
     try
     {
@@ -667,7 +664,7 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
       e.writelog(__FUNCTION__);
       result = AVERROR(EFAULT);
     }
-    m_timeout = 0;
+    m_timeout.SetInfinite();
 
     if (result == AVERROR(EINTR) || result == AVERROR(EAGAIN))
     {

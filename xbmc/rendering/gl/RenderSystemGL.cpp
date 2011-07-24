@@ -261,7 +261,7 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
   return m_RenderExtensions.find(name) != std::string::npos;;
 }
 
-bool CRenderSystemGL::PresentRender()
+bool CRenderSystemGL::PresentRender(const CDirtyRegionList& dirty)
 {
   if (!m_bRenderCreated)
     return false;
@@ -288,7 +288,7 @@ bool CRenderSystemGL::PresentRender()
       Sleep((DWORD)diff);
   }
 
-  bool result = PresentRenderImpl();
+  bool result = PresentRenderImpl(dirty);
 
   if (m_iVSyncMode && m_iSwapRate != 0)
   {

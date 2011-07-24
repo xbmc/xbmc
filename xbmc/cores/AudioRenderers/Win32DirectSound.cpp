@@ -511,7 +511,8 @@ void CWin32DirectSound::UnRegisterAudioCallback()
 void CWin32DirectSound::WaitCompletion()
 {
   CSingleLock lock (m_critSection);
-  DWORD status, timeout;
+  DWORD status;
+  unsigned int timeout;
   unsigned char* silence;
 
   if (!m_pBuffer)
@@ -521,8 +522,8 @@ void CWin32DirectSound::WaitCompletion()
     return; // We weren't playing anyway
 
   // The drain should complete in the time occupied by the cache
-  timeout  = (DWORD)(1000 * GetDelay());
-  timeout += XbmcThreads::SystemClockMillis();
+  timeout  = (unsigned int)(1000 * GetDelay());
+  unsigned int startTime = XbmcThreads::SystemClockMillis();
   silence  = (unsigned char*)calloc(1,m_dwChunkSize); // Initialize 'silence' to zero...
 
   while(AddPackets(silence, m_dwChunkSize) == 0)
@@ -530,7 +531,7 @@ void CWin32DirectSound::WaitCompletion()
     if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
       break;
 
-    if(timeout < XbmcThreads::SystemClockMillis())
+    if((XbmcThreads::SystemClockMillis() - startTime) > timeout)
     {
       CLog::Log(LOGWARNING, __FUNCTION__ ": timeout adding silence to buffer");
       break;
@@ -543,7 +544,7 @@ void CWin32DirectSound::WaitCompletion()
     if(FAILED(m_pBuffer->GetStatus(&status)) || (status & DSBSTATUS_PLAYING) == 0)
       break;
 
-    if(timeout < XbmcThreads::SystemClockMillis())
+    if((XbmcThreads::SystemClockMillis() - startTime) > timeout)
     {
       CLog::Log(LOGDEBUG, "CWin32DirectSound::WaitCompletion - timeout waiting for silence");
       break;

@@ -63,7 +63,7 @@ bool CAsyncFileCopy::Copy(const CStdString &from, const CStdString &to, const CS
     if (!m_running)
       break;
     // start the dialog up as needed
-    if (dlg && !dlg->IsDialogRunning() && XbmcThreads::SystemClockMillis() > time + 500) // wait 0.5 seconds before starting dialog
+    if (dlg && !dlg->IsDialogRunning() && (XbmcThreads::SystemClockMillis() - time) > 500) // wait 0.5 seconds before starting dialog
     {
       dlg->SetHeading(heading);
       dlg->SetLine(0, url1.GetWithoutUserDetails());

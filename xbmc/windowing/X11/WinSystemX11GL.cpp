@@ -41,7 +41,7 @@ CWinSystemX11GL::~CWinSystemX11GL()
 {
 }
 
-bool CWinSystemX11GL::PresentRenderImpl()
+bool CWinSystemX11GL::PresentRenderImpl(const CDirtyRegionList& dirty)
 {
   if(m_iVSyncMode == 3)
   {

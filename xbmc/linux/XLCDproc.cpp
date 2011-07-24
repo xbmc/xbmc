@@ -58,7 +58,7 @@ void XLCDproc::Initialize()
 
   // don't try to initialize too often
   int now = XbmcThreads::SystemClockMillis();
-  if (now < m_lastInitAttempt + m_initRetryInterval)
+  if ((now - m_lastInitAttempt) < m_initRetryInterval)
     return;
   m_lastInitAttempt = now;
 

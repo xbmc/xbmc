@@ -2048,7 +2048,7 @@ void CApplication::Render()
   //we don't call g_graphicsContext.Flip() anymore, this saves gpu and cpu usage
   bool flip;
   if (g_advancedSettings.m_guiDirtyRegionNoFlipTimeout >= 0)
-    flip = hasRendered || now - m_lastRenderTime < (unsigned int)g_advancedSettings.m_guiDirtyRegionNoFlipTimeout;
+    flip = hasRendered || (now - m_lastRenderTime) < (unsigned int)g_advancedSettings.m_guiDirtyRegionNoFlipTimeout;
   else
     flip = true;
 
@@ -2065,7 +2065,7 @@ void CApplication::Render()
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
 
   if (flip)
-    g_graphicsContext.Flip();
+    g_graphicsContext.Flip(g_windowManager.GetDirty());
 
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
@@ -2594,14 +2594,14 @@ bool CApplication::OnAction(const CAction &action)
 void CApplication::UpdateLCD()
 {
 #ifdef HAS_LCD
-  static long lTickCount = 0;
+  static unsigned int lTickCount = 0;
 
   if (!g_lcd || !g_guiSettings.GetBool("videoscreen.haslcd"))
     return ;
-  long lTimeOut = 1000;
+  unsigned int lTimeOut = 1000;
   if ( m_iPlaySpeed != 1)
     lTimeOut = 0;
-  if ( ((long)XbmcThreads::SystemClockMillis() - lTickCount) >= lTimeOut)
+  if ( (XbmcThreads::SystemClockMillis() - lTickCount) >= lTimeOut)
   {
     if (g_application.NavigationIdleTime() < 5)
       g_lcd->Render(ILCD::LCD_MODE_NAVIGATION);

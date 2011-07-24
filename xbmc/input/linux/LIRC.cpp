@@ -125,9 +125,9 @@ void CRemoteControl::setDeviceName(const CStdString& value)
 void CRemoteControl::Initialize()
 {
   struct sockaddr_un addr;
-  int now = XbmcThreads::SystemClockMillis();
+  unsigned int now = XbmcThreads::SystemClockMillis();
 
-  if (!m_used || now < m_lastInitAttempt + m_initRetryPeriod)
+  if (!m_used || (now - m_lastInitAttempt) < m_initRetryPeriod)
     return;
   
   m_lastInitAttempt = now;

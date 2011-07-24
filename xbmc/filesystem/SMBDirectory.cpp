@@ -348,6 +348,7 @@ int CSMBDirectory::OpenDir(const CURL& url, CStdString& strAuth)
 
 bool CSMBDirectory::Create(const char* strPath)
 {
+  bool success = true;
   CSingleLock lock(smb);
   smb.Init();
 
@@ -356,15 +357,15 @@ bool CSMBDirectory::Create(const char* strPath)
   CStdString strFileName = smb.URLEncode(url);
 
   int result = smbc_mkdir(strFileName.c_str(), 0);
-
-  if(result != 0)
+  success = (result == 0 || EEXIST == errno);
+  if(!success)
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
 #endif
 
-  return (result == 0 || EEXIST == result);
+  return success;
 }
 
 bool CSMBDirectory::Remove(const char* strPath)

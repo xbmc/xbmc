@@ -290,8 +290,10 @@ void CGUIWindow::CenterWindow()
 void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
-  g_graphicsContext.ResetWindowTransform();
+  unsigned int size = g_graphicsContext.AddGUITransform();
   CGUIControlGroup::DoProcess(currentTime, dirtyregions);
+  if (size != g_graphicsContext.RemoveTransform())
+    CLog::Log(LOGERROR, "Unbalanced UI transforms (was %d)", size);
 }
 
 void CGUIWindow::DoRender()
@@ -304,8 +306,10 @@ void CGUIWindow::DoRender()
 
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
-  g_graphicsContext.ResetWindowTransform();
+  unsigned int size = g_graphicsContext.AddGUITransform();
   CGUIControlGroup::DoRender();
+  if (size != g_graphicsContext.RemoveTransform())
+    CLog::Log(LOGERROR, "Unbalanced UI transforms (was %d)", size);
 
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }

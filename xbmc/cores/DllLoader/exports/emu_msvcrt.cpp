@@ -186,31 +186,24 @@ extern "C" void __stdcall update_emu_environ()
       g_guiSettings.GetString("network.httpproxyserver") &&
       g_guiSettings.GetString("network.httpproxyport"))
   {
-    const CStdString &strProxyServer = g_guiSettings.GetString("network.httpproxyserver");
-    const CStdString &strProxyPort = g_guiSettings.GetString("network.httpproxyport");
-    // Should we check for valid strings here? should HTTPS_PROXY use https://?
-#ifdef _WIN32
-    CStdString buf;
-    buf = "HTTP_PROXY=http://" + strProxyServer + ":" + strProxyPort;
-    pgwin32_putenv(buf.c_str());
-    buf = "HTTPS_PROXY=http://" + strProxyServer + ":" + strProxyPort;
-    dll_putenv(buf.c_str());
-#else
-    setenv( "HTTP_PROXY", "http://" + strProxyServer + ":" + strProxyPort, true );
-    setenv( "HTTPS_PROXY", "http://" + strProxyServer + ":" + strProxyPort, true );
-#endif
-    if (!g_guiSettings.GetString("network.httpproxyusername").IsEmpty())
+    CStdString strProxy;
+    if (g_guiSettings.GetString("network.httpproxyusername") &&
+        g_guiSettings.GetString("network.httpproxypassword"))
     {
-#ifdef _WIN32
-      buf = "PROXY_USER" + g_guiSettings.GetString("network.httpproxyusername");
-      pgwin32_putenv(buf.c_str());
-      buf = "PROXY_PASS=" + g_guiSettings.GetString("network.httpproxypassword");
-      dll_putenv(buf.c_str());
-#else
-      setenv("PROXY_USER", g_guiSettings.GetString("network.httpproxyusername"), true);
-      setenv("PROXY_PASS", g_guiSettings.GetString("network.httpproxypassword"), true);
-#endif
+      strProxy.Format("%s:%s@", g_guiSettings.GetString("network.httpproxyusername").c_str(),
+                                g_guiSettings.GetString("network.httpproxypassword").c_str());
     }
+
+    strProxy += g_guiSettings.GetString("network.httpproxyserver");
+    strProxy += ":" + g_guiSettings.GetString("network.httpproxyport");
+
+#ifdef _WIN32
+    pgwin32_putenv(("HTTP_PROXY=http://" +strProxy).c_str());
+    pgwin32_putenv(("HTTPS_PROXY=http://" +strProxy).c_str());
+#else
+    setenv( "HTTP_PROXY", "http://" + strProxy, true );
+    setenv( "HTTPS_PROXY", "http://" + strProxy, true );
+#endif
   }
   else
   {

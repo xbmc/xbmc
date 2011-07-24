@@ -43,32 +43,15 @@ namespace XbmcThreads
       // needs acces to 'mutex'
       friend class XbmcThreads::ConditionVariable;
     public:
-      inline RecursiveMutex()
-      {
-        XBMC_ASSERT_ZERO(pthread_mutex_init(&mutex,getRecusiveAttr()));
-      }
+      inline RecursiveMutex() { pthread_mutex_init(&mutex,getRecusiveAttr()); }
       
-      inline ~RecursiveMutex()
-      {
-        XBMC_ASSERT_ZERO(pthread_mutex_destroy(&mutex));
-      }
+      inline ~RecursiveMutex() { pthread_mutex_destroy(&mutex); }
 
-      inline void lock()
-      {
-        XBMC_ASSERT_ZERO(pthread_mutex_lock(&mutex));
-      }
+      inline void lock() { pthread_mutex_lock(&mutex); }
 
-      inline void unlock()
-      {
-        XBMC_ASSERT_ZERO(pthread_mutex_unlock(&mutex));
-      }
+      inline void unlock() { pthread_mutex_unlock(&mutex); }
         
-      inline bool try_lock()
-      {
-        int pthread_mutex_trylock_result = pthread_mutex_trylock(&mutex);
-        assert(pthread_mutex_trylock_result == 0 || pthread_mutex_trylock_result == EBUSY);
-        return !pthread_mutex_trylock_result;
-      }
+      inline bool try_lock() { return (pthread_mutex_trylock(&mutex) == 0); }
     };
   }
 }

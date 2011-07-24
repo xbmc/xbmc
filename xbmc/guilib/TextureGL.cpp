@@ -139,23 +139,30 @@ void CGLTexture::LoadToGPU()
   GLint internalformat;
   GLenum pixelformat;
 
-  if (g_Windowing.SupportsBGRA())
+  switch (m_format)
   {
-    internalformat = pixelformat = GL_BGRA_EXT;
+    case XB_FMT_RGBA8:
+      internalformat = pixelformat = GL_RGBA;
+      break;
+    case XB_FMT_A8R8G8B8:
+      if (g_Windowing.SupportsBGRA())
+      {
+        internalformat = pixelformat = GL_BGRA_EXT;
+      }
+      else if (g_Windowing.SupportsBGRAApple())
+      {
+        // Apple's implementation does not conform to spec. Instead, they require
+        // differing format/internalformat, more like GL.
+        internalformat = GL_RGBA;
+        pixelformat = GL_BGRA_EXT;
+      }
+      else
+      {
+        SwapBlueRed(m_pixels, m_textureHeight, GetPitch());
+        internalformat = pixelformat = GL_RGBA;
+      }
+      break;
   }
-  else if (g_Windowing.SupportsBGRAApple())
-  {
-    // Apple's implementation does not conform to spec. Instead, they require
-    // differing format/internalformat, more like GL.
-    internalformat = GL_RGBA;
-    pixelformat = GL_BGRA_EXT;
-  }
-  else
-  {
-    SwapBlueRed(m_pixels, m_textureHeight, GetPitch());
-    internalformat = pixelformat = GL_RGBA;
-  }
-
   glTexImage2D(GL_TEXTURE_2D, 0, internalformat, m_textureWidth, m_textureHeight, 0,
     pixelformat, GL_UNSIGNED_BYTE, m_pixels);
 

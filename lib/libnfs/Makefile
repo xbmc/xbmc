@@ -6,7 +6,7 @@
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=9f88cb0
+VERSION=48593f5
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
@@ -19,7 +19,7 @@ ARCHIVE_TOOL_FLAGS=xf
 
 # configuration settings
 #FIX THE PREFIX TO SOMETHING LOCAL IN XBMC - CONFIGURE HAS TO FIND IT!
-CONFIGURE=./configure --prefix=/usr
+CONFIGURE=./configure CFLAGS=-D_FILE_OFFSET_BITS=64 --prefix=/usr
 
 SO_NAME=$(SOURCE)/lib/libnfs.so
 

@@ -633,7 +633,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       return false;
 
     // took over a second, and not normally cached, so cache it
-    if (time + 1000 < XbmcThreads::SystemClockMillis() && items.CacheToDiscIfSlow())
+    if ((XbmcThreads::SystemClockMillis() - time) > 1000  && items.CacheToDiscIfSlow())
       items.Save(GetID());
 
     // if these items should replace the current listing, then pop it off the top

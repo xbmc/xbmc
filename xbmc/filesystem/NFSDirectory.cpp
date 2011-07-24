@@ -204,6 +204,7 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 bool CNFSDirectory::Create(const char* strPath)
 {
   int ret = 0;
+  bool success=true;
   
   CSingleLock lock(gNfsConnection);
   CStdString folderName(strPath);
@@ -216,9 +217,10 @@ bool CNFSDirectory::Create(const char* strPath)
   
   ret = gNfsConnection.GetImpl()->nfs_mkdir(gNfsConnection.GetNfsContext(), folderName.c_str());
 
-  if(ret != 0)
+  success = (ret == 0 || -EEXIST == ret);
+  if(!success)
     CLog::Log(LOGERROR, "NFS: Failed to create(%s) %s\n", folderName.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
-  return (ret == 0 || EEXIST == ret);
+  return success;
 }
 
 bool CNFSDirectory::Remove(const char* strPath)

@@ -34,8 +34,9 @@
 #define XB_FMT_DXT3        2
 #define XB_FMT_DXT5        4
 #define XB_FMT_DXT5_YCoCg  8
-#define XB_FMT_A8R8G8B8   16
+#define XB_FMT_A8R8G8B8   16 // texture.xbt byte order (matches BGRA8)
 #define XB_FMT_A8         32
+#define XB_FMT_RGBA8      64
 
 class CXBTFFrame
 {

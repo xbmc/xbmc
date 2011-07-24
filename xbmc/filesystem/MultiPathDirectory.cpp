@@ -56,14 +56,14 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   if (!GetPaths(strPath, vecPaths))
     return false;
 
-  unsigned int progressTime = XbmcThreads::SystemClockMillis() + 3000L;   // 3 seconds before showing progress bar
+  XbmcThreads::EndTime progressTime(3000); // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
 
   unsigned int iFailures = 0;
   for (unsigned int i = 0; i < vecPaths.size(); ++i)
   {
     // show the progress dialog if we have passed our time limit
-    if (XbmcThreads::SystemClockMillis() > progressTime && !dlgProgress)
+    if (progressTime.IsTimePast() && !dlgProgress)
     {
       dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)
