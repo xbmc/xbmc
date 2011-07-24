@@ -128,9 +128,10 @@ namespace PVR
     /*!
      * @brief Get the friendly name for the client with the given id.
      * @param iClientId The id of the client.
-     * @return The friendly name of the client or an empty string when it wasn't found.
+     * @param strName The friendly name of the client or an empty string when it wasn't found.
+     * @return True if the client was found, false otherwise.
      */
-    const CStdString GetClientName(int iClientId);
+    bool GetClientName(int iClientId, CStdString &strName);
 
     /*!
      * @bried Get all connected clients.

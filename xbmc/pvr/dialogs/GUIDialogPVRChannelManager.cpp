@@ -706,7 +706,7 @@ void CGUIDialogPVRChannelManager::Update()
     if (channel->ClientID() == XBMC_VIRTUAL_CLIENTID) /* XBMC internal */
       clientName = g_localizeStrings.Get(19209);
     else
-      clientName = g_PVRClients->GetClientName(channel->ClientID());
+      g_PVRClients->GetClientName(channel->ClientID(), clientName);
     channelFile->SetProperty("ClientName", clientName);
 
     m_channelItems->Add(channelFile);
