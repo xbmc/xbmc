@@ -25,10 +25,24 @@
 #include <climits>
 #include <cmath>
 
+/*! \brief Math utility class.
+ Note that the test() routine should return true for all implementations
+ */
 namespace MathUtils
 {
   // GCC does something stupid with optimization on release builds if we try
   // to assert in these functions
+
+  /*! \brief Round to nearest integer.
+   This routine does fast rounding to the nearest integer.
+   In the case (k + 0.5 for any integer k) we round up to k+1, and in all other
+   instances we should return the nearest integer.
+   Thus, { -1.5, -0.5, 0.5, 1.5 } is rounded to { -1, 0, 1, 2 }.
+   It preserves the property that round(k) - round(k-1) = 1 for all doubles k.
+
+   Make sure MathUtils::test() returns true for each implementation.
+   \sa truncate_int, test
+   */
   inline int round_int (double x)
   {
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
@@ -79,6 +93,13 @@ namespace MathUtils
     return (i);
   }
 
+  /*! \brief Truncate to nearest integer.
+   This routine does fast truncation to an integer.
+   It should simply drop the fractional portion of the floating point number.
+
+   Make sure MathUtils::test() returns true for each implementation.
+   \sa round_int, test
+   */
   inline int truncate_int(double x)
   {
     assert(x > static_cast<double>(INT_MIN / 2) - 1.0);
@@ -131,5 +152,23 @@ namespace MathUtils
     MathUtils::truncate_int(0.0);
     MathUtils::abs(0);
   }
+
+#if 0
+  /*! \brief test routine for round_int and truncate_int
+   Must return true on all platforms.
+   */
+  inline bool test()
+  {
+    for (int i = -8; i < 8; ++i)
+    {
+      double d = 0.25*i;
+      int r = (i < 0) ? (i - 1) / 4 : (i + 2) / 4;
+      int t = i / 4;
+      if (round_int(d) != r || truncate_int(d) != t)
+        return false;
+    }
+    return true;
+  }
+#endif
 } // namespace MathUtils
 
