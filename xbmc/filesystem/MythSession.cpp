@@ -60,7 +60,7 @@ void CMythSession::CheckIdle()
   for (it = m_sessions.begin(); it != m_sessions.end(); )
   {
     CMythSession* session = *it;
-    if (session->m_timestamp + (MYTH_IDLE_TIMEOUT * 1000) < XbmcThreads::SystemClockMillis())
+    if ((XbmcThreads::SystemClockMillis() - session->m_timestamp) > (MYTH_IDLE_TIMEOUT * 1000) )
     {
       CLog::Log(LOGINFO, "%s - closing idle connection to MythTV backend: %s", __FUNCTION__, session->m_hostname.c_str());
       delete session;

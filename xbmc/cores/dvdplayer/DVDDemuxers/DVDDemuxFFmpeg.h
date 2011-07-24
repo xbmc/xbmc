@@ -27,6 +27,7 @@
 #include "DllAvUtil.h"
 
 #include "threads/CriticalSection.h"
+#include "threads/SystemClock.h"
 
 class CDVDDemuxFFmpeg;
 
@@ -138,7 +139,7 @@ protected:
   bool     m_bAVI;
   int      m_speed;
   unsigned m_program;
-  DWORD    m_timeout;
+  XbmcThreads::EndTime  m_timeout;
 
   CDVDInputStream* m_pInput;
 };
