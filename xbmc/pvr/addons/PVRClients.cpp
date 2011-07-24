@@ -42,7 +42,7 @@ using namespace PVR;
 
 CPVRClients::CPVRClients(void) :
     m_bChannelScanRunning(false),
-    m_bAllClientsLoaded(false),
+    m_bAllClientsConnected(false),
     m_currentChannel(NULL),
     m_currentRecording(NULL),
     m_scanStart(0),
@@ -112,7 +112,7 @@ void CPVRClients::Unload(void)
 
   /* reset class properties */
   m_bChannelScanRunning  = false;
-  m_bAllClientsLoaded    = false;
+  m_bAllClientsConnected    = false;
   m_currentChannel       = NULL;
   m_currentRecording     = NULL;
   m_strPlayingClientName = "";
@@ -142,7 +142,7 @@ int CPVRClients::GetFirstID(void)
 bool CPVRClients::AllClientsConnected(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_bAllClientsLoaded;
+  return m_bAllClientsConnected;
 }
 
 int CPVRClients::EnabledClientAmount(void) const
@@ -1148,7 +1148,7 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
   }
 
   /* check whether all clients are (still) connected */
-  m_bAllClientsLoaded = ConnectedClientAmount() == EnabledClientAmount();
+  m_bAllClientsConnected = ConnectedClientAmount() == EnabledClientAmount();
 
   return bReturn;
 }
