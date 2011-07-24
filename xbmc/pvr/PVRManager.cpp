@@ -1064,7 +1064,7 @@ bool CPVRManager::IsRunningChannelScan(void) const
   return m_addons->IsRunningChannelScan();
 }
 
-PVR_ADDON_CAPABILITIES CPVRManager::GetCurrentClientProperties(void)
+PVR_ADDON_CAPABILITIES CPVRManager::GetCurrentAddonCapabilities(void)
 {
   PVR_ADDON_CAPABILITIES props;
   memset(&props, 0, sizeof(PVR_ADDON_CAPABILITIES));

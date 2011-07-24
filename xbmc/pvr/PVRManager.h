@@ -378,7 +378,7 @@ namespace PVR
      * @brief Get the capabilities of the current playing client.
      * @return The capabilities.
      */
-    PVR_ADDON_CAPABILITIES GetCurrentClientProperties(void);
+    PVR_ADDON_CAPABILITIES GetCurrentAddonCapabilities(void);
 
     /*!
      * @brief Open a selection dialog and start a channel scan on the selected client.
