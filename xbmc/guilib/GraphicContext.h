@@ -170,11 +170,12 @@ public:
   void ApplyHardwareTransform();
   void RestoreHardwareTransform();
   void ClipRect(CRect &vertex, CRect &texture, CRect *diffuse = NULL);
-  inline void ResetWindowTransform()
+  inline unsigned int AddGUITransform()
   {
-    while (m_groupTransform.size())
-      m_groupTransform.pop();
+    unsigned int size = m_groupTransform.size();
     m_groupTransform.push(m_guiTransform);
+    UpdateFinalTransform(m_groupTransform.top());
+    return size;
   }
   inline TransformMatrix AddTransform(const TransformMatrix &matrix)
   {
@@ -192,15 +193,16 @@ public:
     m_groupTransform.push(matrix);
     UpdateFinalTransform(m_groupTransform.top());
   }
-  inline void RemoveTransform()
+  inline unsigned int RemoveTransform()
   {
-    ASSERT(m_groupTransform.size() > 1);
+    ASSERT(m_groupTransform.size());
     if (m_groupTransform.size())
       m_groupTransform.pop();
     if (m_groupTransform.size())
       UpdateFinalTransform(m_groupTransform.top());
     else
       UpdateFinalTransform(TransformMatrix());
+    return m_groupTransform.size();
   }
 
   CRect generateAABB(const CRect &rect) const;
