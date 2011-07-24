@@ -74,12 +74,21 @@ void CPVRClients::Stop(void)
 
 bool CPVRClients::IsConnectedClient(int iClientId)
 {
+  boost::shared_ptr<CPVRClient> client;
+  return GetConnectedClient(iClientId, client);
+}
+
+bool CPVRClients::GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient> &addon)
+{
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
   CLIENTMAPITR itr = m_clientMap.find(iClientId);
   if (itr != m_clientMap.end() && itr->second->ReadyToUse())
+  {
+    addon = itr->second;
     bReturn = true;
+  }
 
   return bReturn;
 }
@@ -1015,21 +1024,6 @@ void CPVRClients::StartChannelScan(void)
   CLog::Log(LOGNOTICE, "PVRManager - %s - channel scan finished after %li.%li seconds",
       __FUNCTION__, (XbmcThreads::SystemClockMillis()-perfCnt)/1000, (XbmcThreads::SystemClockMillis()-perfCnt)%1000);
   m_bChannelScanRunning = false;
-}
-
-bool CPVRClients::GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient> &addon)
-{
-  bool bReturn(false);
-  CSingleLock lock(m_critSection);
-
-  CLIENTMAPITR itr = m_clientMap.find(iClientId);
-  if (itr != m_clientMap.end() && itr->second->ReadyToUse())
-  {
-    addon = itr->second;
-    bReturn = true;
-  }
-
-  return bReturn;
 }
 
 int CPVRClients::AddClientToDb(const AddonPtr client)
