@@ -622,7 +622,7 @@ case TMSG_POWERDOWN:
       {
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
         if (pDialog)
-          pDialog->DoModal_Internal((int)pMsg->dwParam1, pMsg->strParam);
+          pDialog->DoModal((int)pMsg->dwParam1, pMsg->strParam);
       }
       break;
 
@@ -630,7 +630,7 @@ case TMSG_POWERDOWN:
       {
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
         if (pDialog)
-          pDialog->Show_Internal();
+          pDialog->Show();
       }
       break;
 
@@ -638,7 +638,7 @@ case TMSG_POWERDOWN:
       {
         CGUIDialog *dialog = (CGUIDialog *)pMsg->lpVoid;
         if (dialog)
-          dialog->Close_Internal(pMsg->dwParam1 > 0);
+          dialog->Close(pMsg->dwParam1 > 0);
       }
       break;
 
