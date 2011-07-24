@@ -44,7 +44,7 @@ CGUIDialogCache::CGUIDialogCache(DWORD dwDelay, const CStdString& strHeader, con
   if(dwDelay == 0)
     OpenDialog();    
   else
-    endTime.set((unsigned int)dwDelay);
+    m_endtime.Set((unsigned int)dwDelay);
 
   Create(true);
 }
@@ -133,7 +133,7 @@ void CGUIDialogCache::Process()
         {
           bSentCancel = true;
         }
-        else if( !m_pDlg->IsDialogRunning() && endTime.isTimePast() 
+        else if( !m_pDlg->IsDialogRunning() && m_endtime.IsTimePast() 
               && !g_windowManager.IsWindowActive(WINDOW_DIALOG_YES_NO) )
           OpenDialog();
       }

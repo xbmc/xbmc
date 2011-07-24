@@ -50,9 +50,9 @@ void CDVDMsgGeneralSynchronize::Wait(volatile bool *abort, DWORD source)
   XbmcThreads::EndTime timeout(m_timeout);
 
   if (abort)
-    while( m_objects < GetNrOfReferences() && !timeout.isTimePast() && !(*abort)) Sleep(1);
+    while( m_objects < GetNrOfReferences() && !timeout.IsTimePast() && !(*abort)) Sleep(1);
   else
-    while( m_objects < GetNrOfReferences() && !timeout.isTimePast() ) Sleep(1);
+    while( m_objects < GetNrOfReferences() && !timeout.IsTimePast() ) Sleep(1);
 }
 
 /**

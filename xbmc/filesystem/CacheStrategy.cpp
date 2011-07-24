@@ -187,7 +187,7 @@ int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
 
   XbmcThreads::EndTime endTime(iMillis);
   unsigned int millisLeft;
-  while ( !IsEndOfInput() && (millisLeft = endTime.millisLeft()) > 0 )
+  while ( !IsEndOfInput() && (millisLeft = endTime.MillisLeft()) > 0 )
   {
     int64_t iAvail = GetAvailableRead();
     if (iAvail >= iMinAvail)

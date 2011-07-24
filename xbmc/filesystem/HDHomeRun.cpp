@@ -256,7 +256,7 @@ unsigned int CFileHomeRun::Read(void* lpBuf, int64_t uiBufSize)
       return (unsigned int)datasize;
     }
 
-    if(timestamp.isTimePast())
+    if(timestamp.IsTimePast())
       return 0;
 
     Sleep(64);

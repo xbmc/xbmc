@@ -63,7 +63,7 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   for (unsigned int i = 0; i < vecPaths.size(); ++i)
   {
     // show the progress dialog if we have passed our time limit
-    if (progressTime.isTimePast() && !dlgProgress)
+    if (progressTime.IsTimePast() && !dlgProgress)
     {
       dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)

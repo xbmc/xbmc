@@ -48,7 +48,7 @@ protected:
 
   void OpenDialog();
 
-  XbmcThreads::EndTime endTime;
+  XbmcThreads::EndTime m_endtime;
   CGUIDialogProgress* m_pDlg;
   CStdString m_strLinePrev;
   CStdString m_strLinePrev2;
