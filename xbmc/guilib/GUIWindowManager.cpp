@@ -400,7 +400,10 @@ void CGUIWindowManager::ActivateWindow_Internal(int iWindowID, const vector<CStd
   else if (pNewWindow->IsDialog())
   { // if we have a dialog, we do a DoModal() rather than activate the window
     if (!pNewWindow->IsDialogRunning())
+    {
+      CSingleExit exitit(g_graphicsContext);
       ((CGUIDialog *)pNewWindow)->DoModal(iWindowID, params.size() ? params[0] : "");
+    }
     return;
   }
 
