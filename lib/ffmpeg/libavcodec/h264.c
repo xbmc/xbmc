@@ -1479,6 +1479,7 @@ static void flush_dpb(AVCodecContext *avctx){
             h->delayed_pic[i]->reference= 0;
         h->delayed_pic[i]= NULL;
     }
+    h->dxva2_sync = 0;
     h->outputed_poc= INT_MIN;
     h->prev_interlaced_frame = 1;
     idr(h);
@@ -1848,6 +1849,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             return -1;
         s->first_field = 0;
         h->prev_interlaced_frame = 1;
+        h->dxva2_sync = 0;
 
         init_scan_tables(h);
         ff_h264_alloc_tables(h);
@@ -2820,10 +2822,6 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size){
 
         buf_index += consumed;
 
-        if(  (s->hurry_up == 1 && h->nal_ref_idc  == 0) //FIXME do not discard SEI id
-           ||(avctx->skip_frame >= AVDISCARD_NONREF && h->nal_ref_idc  == 0))
-            continue;
-
       again:
         err = 0;
         switch(hx->nal_unit_type){
@@ -2927,6 +2925,10 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size){
         default:
             av_log(avctx, AV_LOG_DEBUG, "Unknown NAL code: %d (%d bits)\n", hx->nal_unit_type, bit_length);
         }
+
+        if(  (s->hurry_up == 1 && h->nal_ref_idc  == 0) //FIXME do not discard SEI id
+           ||(avctx->skip_frame >= AVDISCARD_NONREF && h->nal_ref_idc  == 0))
+            continue;
 
         if(context_count == h->max_contexts) {
             execute_decode_slices(h, context_count);
