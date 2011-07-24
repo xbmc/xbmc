@@ -449,6 +449,7 @@ lib/cmyth/Makefile
 /tools/EventClients/*.pyc
 /tools/EventClients/Clients/OSXRemote/Makefile
 /tools/EventClients/Clients/OSXRemote/build/
+/tools/EventClients/Clients/WiiRemote/WiiRemote
 
 # /tools/Linux/
 /tools/Linux/xbmc.sh
