@@ -52,7 +52,7 @@ struct SSession
   std::string            password;
   CHTSPDirectorySession* session;
   int                    refs;
-  DWORD                  last;
+  unsigned int           last;
 };
 
 struct STimedOut
@@ -63,10 +63,10 @@ struct STimedOut
   }
   bool operator()(SSession& data)
   {
-    return data.refs == 0 && data.last + m_idle < m_time;
+    return data.refs == 0 && (m_time - data.last) > m_idle;
   }
-  DWORD m_idle;
-  DWORD m_time;
+  unsigned int m_idle;
+  unsigned int m_time;
 };
 
 typedef std::vector<SSession> SSessions;

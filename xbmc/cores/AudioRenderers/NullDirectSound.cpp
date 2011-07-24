@@ -189,8 +189,10 @@ void CNullDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers
 
 void CNullDirectSound::Update()
 {
-  long currentTime = XbmcThreads::SystemClockMillis();
-  long deltaTime = (currentTime - m_lastUpdate);
+  unsigned int currentTime = XbmcThreads::SystemClockMillis();
+  // because of the if clause below it's possible that m_lastUpdate is larger
+  //  than currentTime. We need to handle this.
+  long deltaTime = (currentTime - m_lastUpdate); // the diff shouldn't overflow
 
   if (m_paused)
   {

@@ -62,7 +62,7 @@ namespace XbmcThreads
         {
           EndTime endTime((unsigned int)milliseconds);
           for (bool notdone = true; notdone && ret == true;
-               ret = (notdone = (!predicate)) ? ((milliseconds = endTime.millisLeft()) != 0) : true)
+               ret = (notdone = (!predicate)) ? ((milliseconds = endTime.MillisLeft()) != 0) : true)
             cond.wait(lock,milliseconds);
         }
       }

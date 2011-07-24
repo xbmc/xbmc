@@ -490,7 +490,7 @@ void XBPython::Process()
       else ++it;
     }
 
-    if(m_iDllScriptCounter == 0 && m_endtime + 10000 < XbmcThreads::SystemClockMillis())
+    if(m_iDllScriptCounter == 0 && (XbmcThreads::SystemClockMillis() - m_endtime) > 10000 )
       Finalize();
   }
 }
