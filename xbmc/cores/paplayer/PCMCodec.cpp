@@ -22,6 +22,7 @@
 #include "pch.h"
 #include "PCMCodec.h"
 #include "utils/log.h"
+#include "EndianSwap.h"
 
 PCMCodec::PCMCodec()
 {
@@ -30,7 +31,7 @@ PCMCodec::PCMCodec()
 	m_SampleRate = 44100;
 	m_Channels = 2;
 	m_BitsPerSample = 16;
-	m_Bitrate = m_SampleRate*m_Channels*m_BitsPerSample;
+	m_Bitrate = m_SampleRate * m_Channels * m_BitsPerSample;
 }
 
 PCMCodec::~PCMCodec()
@@ -61,7 +62,7 @@ void PCMCodec::DeInit()
 
 __int64 PCMCodec::Seek(__int64 iSeekTime)
 {
-	m_file.Seek((iSeekTime/1000)*(m_Bitrate/8));
+	m_file.Seek((iSeekTime / 1000) * (m_Bitrate / 8));
 	return iSeekTime;
 }
 
@@ -72,12 +73,11 @@ int PCMCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 	int iAmountRead = m_file.Read(pBuffer, size);
 	if (iAmountRead > 0)
 	{
-		WORD *x, *first;
-		first = (WORD*)pBuffer;
+		uint16_t *buffer = (uint16_t*) pBuffer;
 
-		for (x = first; x < (first + (iAmountRead/2)); x++)
-			*x = ((*x << 8) | (*x >> 8));
-
+		for (int i = 0; i < (iAmountRead / 2); i++)
+		  buffer[i] = Endian_Swap16(buffer[i]);
+ 
 		*actualsize = iAmountRead;
 		return READ_SUCCESS;
 	}
@@ -97,5 +97,5 @@ void PCMCodec::SetMimeParams(const CStdString& strMimeParams)
 	if (strMimeParams.Find("channels=1") > 0)
 		m_Channels = 1;
 
-	m_Bitrate = m_SampleRate*m_Channels*m_BitsPerSample;
+	m_Bitrate = m_SampleRate * m_Channels * m_BitsPerSample;
 }
