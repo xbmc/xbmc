@@ -171,10 +171,10 @@ void CPVRManager::Cleanup(void)
 bool CPVRManager::Load(void)
 {
   /* load at least one client */
-  while (!m_addons->HasActiveClients() && !m_bStop)
+  while (!m_addons->HasConnectedClients() && !m_bStop)
     m_addons->TryLoadClients(1);
 
-  if (m_addons->HasActiveClients() && !m_bLoaded && !m_bStop)
+  if (m_addons->HasConnectedClients() && !m_bLoaded && !m_bStop)
   {
     CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
 
@@ -271,15 +271,15 @@ void CPVRManager::Process(void)
   while (!m_bStop)
   {
     /* keep trying to load remaining clients if they're not already loaded */
-    if (!m_addons->AllClientsLoaded())
+    if (!m_addons->AllClientsConnected())
       m_addons->TryLoadClients(1);
 
     /* execute the next pending jobs if there are any */
-    if (m_addons->HasActiveClients())
+    if (m_addons->HasConnectedClients())
       ExecutePendingJobs();
 
     /* check if the (still) are any enabled addons */
-    if (!m_addons->HasActiveClients())
+    if (!m_addons->HasConnectedClients())
     {
       CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
       Stop();

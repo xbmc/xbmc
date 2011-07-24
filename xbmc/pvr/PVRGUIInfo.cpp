@@ -548,7 +548,7 @@ void CPVRGUIInfo::UpdateBackendCache(void)
 
   CPVRClients *clients = g_PVRClients;
   CLIENTMAP activeClients;
-  m_iActiveClients = clients->GetActiveClients(&activeClients);
+  m_iActiveClients = clients->GetConnectedClients(&activeClients);
   if (m_iActiveClients > 0)
   {
     CLIENTMAPITR activeClient = activeClients.begin();

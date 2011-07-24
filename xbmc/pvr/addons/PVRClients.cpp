@@ -72,7 +72,7 @@ void CPVRClients::Stop(void)
   StopThread();
 }
 
-bool CPVRClients::IsValidClient(int iClientId)
+bool CPVRClients::IsConnectedClient(int iClientId)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -174,19 +174,19 @@ int CPVRClients::GetFirstID(void)
   return iReturn;
 }
 
-bool CPVRClients::AllClientsLoaded(void) const
+bool CPVRClients::AllClientsConnected(void) const
 {
   CSingleLock lock(m_critSection);
   return m_bAllClientsLoaded;
 }
 
-int CPVRClients::GetActiveClientsAmount(void) const
+int CPVRClients::EnabledClientAmount(void) const
 {
   CSingleLock lock(m_critSection);
   return m_clientMap.size();
 }
 
-bool CPVRClients::HasClients(void) const
+bool CPVRClients::HasEnabledClients(void) const
 {
   CSingleLock lock(m_critSection);
   return !m_clientMap.empty();
@@ -228,7 +228,7 @@ bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
   return bReturn;
 }
 
-int CPVRClients::ActiveClientAmount(void)
+int CPVRClients::ConnectedClientAmount(void)
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);
@@ -247,7 +247,7 @@ int CPVRClients::ActiveClientAmount(void)
   return iReturn;
 }
 
-bool CPVRClients::HasActiveClients(void)
+bool CPVRClients::HasConnectedClients(void)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -274,7 +274,7 @@ const CStdString CPVRClients::GetClientName(int iClientId)
   static CStdString strClientName;
   CSingleLock lock(m_critSection);
 
-  if (IsValidClient(iClientId))
+  if (IsConnectedClient(iClientId))
     strClientName = m_clientMap.find(iClientId)->second->GetFriendlyName();
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, iClientId);
@@ -282,7 +282,7 @@ const CStdString CPVRClients::GetClientName(int iClientId)
   return strClientName;
 }
 
-int CPVRClients::GetActiveClients(CLIENTMAP *clients)
+int CPVRClients::GetConnectedClients(CLIENTMAP *clients)
 {
   int iReturn(0);
   CSingleLock lock(m_critSection);
@@ -323,7 +323,7 @@ PVR_ADDON_CAPABILITIES *CPVRClients::GetAddonCapabilities(int iClientId)
   PVR_ADDON_CAPABILITIES *props = NULL;
   CSingleLock lock(m_critSection);
 
-  if (IsValidClient(iClientId))
+  if (IsConnectedClient(iClientId))
     props = &m_clientsProps[iClientId];
 
   return props;
@@ -525,7 +525,7 @@ const char *CPVRClients::GetStreamURL(const CPVRChannel &tag)
 {
   static CStdString strReturn("");
   boost::shared_ptr<CPVRClient> client;
-  if (GetValidClient(tag.ClientID(), client))
+  if (GetConnectedClient(tag.ClientID(), client))
     strReturn = client->GetLiveStreamURL(tag);
   else
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, tag.ClientID());
@@ -545,7 +545,7 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
   }
 
   boost::shared_ptr<CPVRClient> client;
-  if (GetValidClient(channel.ClientID(), client))
+  if (GetConnectedClient(channel.ClientID(), client))
   {
     if (client->SwitchChannel(channel))
     {
@@ -692,14 +692,14 @@ bool CPVRClients::HasTimerSupport(int iClientId)
 {
   CSingleLock lock(m_critSection);
 
-  return IsValidClient(iClientId) && m_clientsProps[iClientId].bSupportsTimers;
+  return IsConnectedClient(iClientId) && m_clientsProps[iClientId].bSupportsTimers;
 }
 
 int CPVRClients::GetTimers(CPVRTimers *timers)
 {
   int iCurSize = timers->size();
   CLIENTMAP clients;
-  GetActiveClients(&clients);
+  GetConnectedClients(&clients);
 
   /* get the timer list from each client */
   CLIENTMAPITR itrClients = clients.begin();
@@ -718,7 +718,7 @@ bool CPVRClients::AddTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
-  if (HasTimerSupport(timer.m_iClientId) && GetValidClient(timer.m_iClientId, client))
+  if (HasTimerSupport(timer.m_iClientId) && GetConnectedClient(timer.m_iClientId, client))
     *error = client->AddTimer(timer);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support timers",__FUNCTION__, timer.m_iClientId);
@@ -730,7 +730,7 @@ bool CPVRClients::UpdateTimer(const CPVRTimerInfoTag &timer, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
-  if (HasTimerSupport(timer.m_iClientId) && GetValidClient(timer.m_iClientId, client))
+  if (HasTimerSupport(timer.m_iClientId) && GetConnectedClient(timer.m_iClientId, client))
     *error = client->UpdateTimer(timer);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d doest not support timers",__FUNCTION__, timer.m_iClientId);
@@ -742,7 +742,7 @@ bool CPVRClients::DeleteTimer(const CPVRTimerInfoTag &timer, bool bForce, PVR_ER
 {
   *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
-  if (HasTimerSupport(timer.m_iClientId) && GetValidClient(timer.m_iClientId, client))
+  if (HasTimerSupport(timer.m_iClientId) && GetConnectedClient(timer.m_iClientId, client))
     *error = client->DeleteTimer(timer, bForce);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support timers",__FUNCTION__, timer.m_iClientId);
@@ -754,7 +754,7 @@ bool CPVRClients::RenameTimer(const CPVRTimerInfoTag &timer, const CStdString &s
 {
   *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
-  if (HasTimerSupport(timer.m_iClientId) && GetValidClient(timer.m_iClientId, client))
+  if (HasTimerSupport(timer.m_iClientId) && GetConnectedClient(timer.m_iClientId, client))
     *error = client->RenameTimer(timer, strNewName);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support timers",__FUNCTION__, timer.m_iClientId);
@@ -766,14 +766,14 @@ bool CPVRClients::HasRecordingsSupport(int iClientId)
 {
   CSingleLock lock(m_critSection);
 
-  return IsValidClient(iClientId) && m_clientsProps[iClientId].bSupportsRecordings;
+  return IsConnectedClient(iClientId) && m_clientsProps[iClientId].bSupportsRecordings;
 }
 
 int CPVRClients::GetRecordings(CPVRRecordings *recordings)
 {
   int iCurSize = recordings->size();
   CLIENTMAP clients;
-  GetActiveClients(&clients);
+  GetConnectedClients(&clients);
 
   CLIENTMAPITR itrClients = clients.begin();
   while (itrClients != clients.end())
@@ -791,7 +791,7 @@ bool CPVRClients::RenameRecording(const CPVRRecording &recording, PVR_ERROR *err
 {
   *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
-  if (HasRecordingsSupport(recording.m_iClientId) && GetValidClient(recording.m_iClientId, client))
+  if (HasRecordingsSupport(recording.m_iClientId) && GetConnectedClient(recording.m_iClientId, client))
     *error = client->RenameRecording(recording);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support recordings",__FUNCTION__, recording.m_iClientId);
@@ -803,7 +803,7 @@ bool CPVRClients::DeleteRecording(const CPVRRecording &recording, PVR_ERROR *err
 {
   *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
-  if (HasRecordingsSupport(recording.m_iClientId) && GetValidClient(recording.m_iClientId, client))
+  if (HasRecordingsSupport(recording.m_iClientId) && GetConnectedClient(recording.m_iClientId, client))
     *error = client->DeleteRecording(recording);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support recordings",__FUNCTION__, recording.m_iClientId);
@@ -825,14 +825,14 @@ bool CPVRClients::HasEPGSupport(int iClientId)
 {
   CSingleLock lock(m_critSection);
 
-  return IsValidClient(iClientId) && m_clientsProps[iClientId].bSupportsEPG;
+  return IsConnectedClient(iClientId) && m_clientsProps[iClientId].bSupportsEPG;
 }
 
 bool CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error)
 {
   *error = PVR_ERROR_UNKNOWN;
   boost::shared_ptr<CPVRClient> client;
-  if (HasEPGSupport(channel.ClientID()) && GetValidClient(channel.ClientID(), client))
+  if (HasEPGSupport(channel.ClientID()) && GetConnectedClient(channel.ClientID(), client))
     *error = client->GetEPGForChannel(channel, epg, start, end);
   else
     CLog::Log(LOGERROR, "PVR - %s - client %d does not support EPG",__FUNCTION__, channel.ClientID());
@@ -845,7 +845,7 @@ int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
   *error = PVR_ERROR_NO_ERROR;
   int iCurSize = group->GetNumChannels();
   CLIENTMAP clients;
-  GetActiveClients(&clients);
+  GetConnectedClients(&clients);
 
   /* get the channel list from each client */
   CLIENTMAPITR itrClients = clients.begin();
@@ -870,7 +870,7 @@ bool CPVRClients::HasChannelGroupSupport(int iClientId)
 {
   CSingleLock lock(m_critSection);
 
-  return IsValidClient(iClientId) && m_clientsProps[iClientId].bSupportsChannelGroups;
+  return IsConnectedClient(iClientId) && m_clientsProps[iClientId].bSupportsChannelGroups;
 }
 
 int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
@@ -878,7 +878,7 @@ int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
   *error = PVR_ERROR_UNKNOWN;
   int iCurSize = groups->size();
   CLIENTMAP clients;
-  GetActiveClients(&clients);
+  GetConnectedClients(&clients);
 
   /* get the channel groups list from each client */
   CLIENTMAPITR itrClients = clients.begin();
@@ -898,7 +898,7 @@ int CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *erro
   *error = PVR_ERROR_NO_ERROR;
   int iCurSize = group->GetNumChannels();
   CLIENTMAP clients;
-  GetActiveClients(&clients);
+  GetConnectedClients(&clients);
 
   /* get the member list from each client */
   CLIENTMAPITR itrClients = clients.begin();
@@ -927,7 +927,7 @@ bool CPVRClients::HasMenuHooks(int iClientID)
     iClientID = GetPlayingClientID();
 
   boost::shared_ptr<CPVRClient> client;
-  if (GetValidClient(iClientID, client))
+  if (GetConnectedClient(iClientID, client))
     bReturn = client->HaveMenuHooks();
 
   return bReturn;
@@ -941,7 +941,7 @@ bool CPVRClients::GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks)
     iClientID = GetPlayingClientID();
 
   boost::shared_ptr<CPVRClient> client;
-  if (GetValidClient(iClientID, client))
+  if (GetConnectedClient(iClientID, client))
   {
     if (client->HaveMenuHooks())
     {
@@ -963,7 +963,7 @@ void CPVRClients::ProcessMenuHooks(int iClientID)
   if (GetMenuHooks(iClientID, hooks))
   {
     boost::shared_ptr<CPVRClient> client;
-    if (!GetValidClient(iClientID, client))
+    if (!GetConnectedClient(iClientID, client))
       return;
     std::vector<int> hookIDs;
 
@@ -1059,7 +1059,7 @@ void CPVRClients::StartChannelScan(void)
   m_bChannelScanRunning = false;
 }
 
-bool CPVRClients::GetValidClient(int iClientId, boost::shared_ptr<CPVRClient> &addon)
+bool CPVRClients::GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient> &addon)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
@@ -1118,7 +1118,7 @@ bool CPVRClients::LoadClients(void)
       continue; // don't set "m_bAllClientsLoaded = false;" here because this will enter a neverending loop
 
     /* check if this client isn't active already */
-    if (IsValidClient(iClientId))
+    if (IsConnectedClient(iClientId))
       continue;
 
     /* load and initialise the client libraries */

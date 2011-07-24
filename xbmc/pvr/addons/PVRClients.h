@@ -61,11 +61,11 @@ namespace PVR
     //@{
 
     /*!
-     * @brief Check whether a client ID points to a valid add-on.
+     * @brief Check whether a client ID points to a valid and connected add-on.
      * @param iClientId The client ID.
-     * @return True when the client ID is valid, false otherwise.
+     * @return True when the client ID is valid and connected, false otherwise.
      */
-    bool IsValidClient(int iClientId);
+    bool IsConnectedClient(int iClientId);
 
     /*!
      * @brief Restart a single client add-on.
@@ -100,19 +100,19 @@ namespace PVR
     int GetFirstID(void);
 
     /*!
-     * @return True when all clients are loaded, false otherwise.
+     * @return True when all clients are connected, false otherwise.
      */
-    bool AllClientsLoaded(void) const;
+    bool AllClientsConnected(void) const;
 
     /*!
-     * @return True when at least one client is known, false otherwise.
+     * @return True when at least one client is known and enabled, false otherwise.
      */
-    bool HasClients(void) const;
+    bool HasEnabledClients(void) const;
 
     /*!
-     * @return The amount of active clients.
+     * @return The amount of enabled clients.
      */
-    int GetActiveClientsAmount(void) const;
+    int EnabledClientAmount(void) const;
 
     /*!
      * @brief Stop a client.
@@ -123,15 +123,15 @@ namespace PVR
     bool StopClient(ADDON::AddonPtr client, bool bRestart);
 
     /*!
-     * @return The amount of active clients.
+     * @return The amount of connected clients.
      */
-    int ActiveClientAmount(void);
+    int ConnectedClientAmount(void);
 
     /*!
-     * @brief Check whether there are any active clients.
-     * @return True if at least one client is active.
+     * @brief Check whether there are any connected clients.
+     * @return True if at least one client is connected.
      */
-    bool HasActiveClients(void);
+    bool HasConnectedClients(void);
 
     /*!
      * @brief Get the friendly name for the client with the given id.
@@ -141,11 +141,11 @@ namespace PVR
     const CStdString GetClientName(int iClientId);
 
     /*!
-     * @bried Get all active clients.
+     * @bried Get all connected clients.
      * @param clients Store the active clients in this map.
      * @return The amount of added clients.
      */
-    int GetActiveClients(CLIENTMAP *clients);
+    int GetConnectedClients(CLIENTMAP *clients);
 
     /*!
      * @return The client ID of the client that is currently playing a stream or -1 if no client is playing.
@@ -581,7 +581,7 @@ namespace PVR
      */
     void Process(void);
 
-    bool GetValidClient(int iClientId, boost::shared_ptr<CPVRClient> &addon);
+    bool GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient> &addon);
 
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
     bool                  m_bAllClientsLoaded;        /*!< true when all clients are loaded, false otherwise */

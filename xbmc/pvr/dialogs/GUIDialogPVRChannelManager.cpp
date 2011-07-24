@@ -456,7 +456,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
   clients.push_back(XBMC_VIRTUAL_CLIENTID);
 
   CLIENTMAP clientMap;
-  if (g_PVRClients->GetActiveClients(&clientMap) > 0)
+  if (g_PVRClients->GetConnectedClients(&clientMap) > 0)
   {
     CLIENTMAPITR itr;
     for (itr = clientMap.begin() ; itr != clientMap.end(); itr++)
