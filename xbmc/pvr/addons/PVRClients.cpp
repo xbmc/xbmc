@@ -41,6 +41,7 @@ using namespace ADDON;
 using namespace PVR;
 
 CPVRClients::CPVRClients(void) :
+    CThread("PVR add-on updater"),
     m_bChannelScanRunning(false),
     m_bAllClientsConnected(false),
     m_currentChannel(NULL),
@@ -63,7 +64,6 @@ void CPVRClients::Start(void)
   ResetQualityData();
 
   Create();
-  SetName("XBMC PVR backend info");
   SetPriority(-1);
 }
 

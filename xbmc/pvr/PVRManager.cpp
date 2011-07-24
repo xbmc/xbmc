@@ -51,6 +51,7 @@ using namespace MUSIC_INFO;
 using namespace PVR;
 
 CPVRManager::CPVRManager(void) :
+    CThread("PVR manager"),
     m_channelGroups(NULL),
     m_epg(NULL),
     m_recordings(NULL),
@@ -141,7 +142,6 @@ bool CPVRManager::StartUpdateThreads(void)
 
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
   Create();
-  SetName("XBMC PVRManager");
   SetPriority(-1);
 
   return true;

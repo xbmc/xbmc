@@ -35,7 +35,8 @@
 
 using namespace PVR;
 
-CPVRGUIInfo::CPVRGUIInfo(void)
+CPVRGUIInfo::CPVRGUIInfo(void) :
+    CThread("PVR GUI info updater")
 {
 }
 
@@ -82,7 +83,6 @@ void CPVRGUIInfo::Start(void)
 {
   ResetProperties();
   Create();
-  SetName("XBMC PVR GUI info");
   SetPriority(-1);
 }
 

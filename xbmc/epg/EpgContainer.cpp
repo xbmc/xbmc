@@ -36,7 +36,8 @@
 using namespace std;
 using namespace EPG;
 
-CEpgContainer::CEpgContainer(void)
+CEpgContainer::CEpgContainer(void) :
+    CThread("EPG updater")
 {
   m_progressDialog = NULL;
   m_bStop = true;
@@ -114,7 +115,6 @@ void CEpgContainer::Start(void)
   LoadSettings();
 
   Create();
-  SetName("XBMC EPG thread");
   SetPriority(-1);
   CLog::Log(LOGNOTICE, "%s - EPG thread started", __FUNCTION__);
 }
