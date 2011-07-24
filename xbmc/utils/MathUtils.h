@@ -27,6 +27,9 @@
 
 /*! \brief Math utility class.
  Note that the test() routine should return true for all implementations
+
+ See http://ldesoras.free.fr/doc/articles/rounding_en.pdf for an explanation
+ of the technique used on x86.
  */
 namespace MathUtils
 {
