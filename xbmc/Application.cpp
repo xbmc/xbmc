@@ -1888,8 +1888,7 @@ bool CApplication::WaitFrame(unsigned int timeout)
   CSingleLock lock(m_frameMutex);
   //wait until event is set, but modify remaining time
 
-  NotFrameCount nfc(this);
-  TightConditionVariable<NotFrameCount&> cv(m_frameCond, nfc);
+  TightConditionVariable<InversePredicate<int&> > cv(m_frameCond, InversePredicate<int&>(m_frameCount));
   cv.wait(lock,timeout);
   done = m_frameCount == 0;
 
