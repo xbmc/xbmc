@@ -95,10 +95,9 @@ namespace PVR
 
     /*!
      * @brief Query this add-on's capabilities.
-     * @param pCapabilities The add-on properties.
-     * @return PVR_ERROR_NO_ERROR if the properties were fetched successfully.
+     * @return pCapabilities The add-on's capabilities.
      */
-    PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities);
+    PVR_ADDON_CAPABILITIES GetAddonCapabilities(void);
 
     /*!
      * @brief Get the stream properties of the stream that's currently being read.

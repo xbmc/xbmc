@@ -117,7 +117,6 @@ void CPVRClients::Unload(void)
   m_currentRecording     = NULL;
   m_strPlayingClientName = "";
 
-  m_clientsProps.clear();
   m_clientMap.clear();
 }
 
@@ -284,26 +283,28 @@ int CPVRClients::GetPlayingClientID(void) const
   return iReturn;
 }
 
-PVR_ADDON_CAPABILITIES *CPVRClients::GetAddonCapabilities(int iClientId)
+PVR_ADDON_CAPABILITIES CPVRClients::GetAddonCapabilities(int iClientId)
 {
-  PVR_ADDON_CAPABILITIES *props = NULL;
+  PVR_ADDON_CAPABILITIES props;
+  memset(&props, 0, sizeof(PVR_ADDON_CAPABILITIES));
   CSingleLock lock(m_critSection);
 
   if (IsConnectedClient(iClientId))
-    props = &m_clientsProps[iClientId];
+    props = m_clientMap[iClientId]->GetAddonCapabilities();
 
   return props;
 }
 
-PVR_ADDON_CAPABILITIES *CPVRClients::GetCurrentAddonCapabilities(void)
+PVR_ADDON_CAPABILITIES CPVRClients::GetCurrentAddonCapabilities(void)
 {
-  PVR_ADDON_CAPABILITIES *props = NULL;
+  PVR_ADDON_CAPABILITIES props;
+  memset(&props, 0, sizeof(PVR_ADDON_CAPABILITIES));
   CSingleLock lock(m_critSection);
 
   if (m_currentChannel)
-    props = &m_clientsProps[m_currentChannel->ClientID()];
+    props = m_clientMap[m_currentChannel->ClientID()]->GetAddonCapabilities();
   else if (m_currentRecording)
-    props = &m_clientsProps[m_currentRecording->m_iClientId];
+    props = m_clientMap[m_currentRecording->m_iClientId]->GetAddonCapabilities();
 
   return props;
 }
@@ -449,7 +450,7 @@ bool CPVRClients::OpenLiveStream(const CPVRChannel &tag)
 
   /* try to open the stream on the client */
   if ((tag.StreamURL().IsEmpty() == false ||
-      m_clientsProps[tag.ClientID()].bHandlesInputStream) &&
+      m_clientMap[tag.ClientID()]->GetAddonCapabilities().bHandlesInputStream) &&
       m_clientMap[tag.ClientID()]->OpenLiveStream(tag))
   {
     m_currentChannel = &tag;
@@ -658,7 +659,7 @@ bool CPVRClients::HasTimerSupport(int iClientId)
 {
   CSingleLock lock(m_critSection);
 
-  return IsConnectedClient(iClientId) && m_clientsProps[iClientId].bSupportsTimers;
+  return IsConnectedClient(iClientId) && m_clientMap[iClientId]->GetAddonCapabilities().bSupportsTimers;
 }
 
 int CPVRClients::GetTimers(CPVRTimers *timers)
@@ -732,7 +733,7 @@ bool CPVRClients::HasRecordingsSupport(int iClientId)
 {
   CSingleLock lock(m_critSection);
 
-  return IsConnectedClient(iClientId) && m_clientsProps[iClientId].bSupportsRecordings;
+  return IsConnectedClient(iClientId) && m_clientMap[iClientId]->GetAddonCapabilities().bSupportsRecordings;
 }
 
 int CPVRClients::GetRecordings(CPVRRecordings *recordings)
@@ -791,7 +792,7 @@ bool CPVRClients::HasEPGSupport(int iClientId)
 {
   CSingleLock lock(m_critSection);
 
-  return IsConnectedClient(iClientId) && m_clientsProps[iClientId].bSupportsEPG;
+  return IsConnectedClient(iClientId) && m_clientMap[iClientId]->GetAddonCapabilities().bSupportsEPG;
 }
 
 bool CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error)
@@ -836,7 +837,7 @@ bool CPVRClients::HasChannelGroupSupport(int iClientId)
 {
   CSingleLock lock(m_critSection);
 
-  return IsConnectedClient(iClientId) && m_clientsProps[iClientId].bSupportsChannelGroups;
+  return IsConnectedClient(iClientId) && m_clientMap[iClientId]->GetAddonCapabilities().bSupportsChannelGroups;
 }
 
 int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
@@ -969,7 +970,7 @@ void CPVRClients::StartChannelScan(void)
   CLIENTMAPITR itr = m_clientMap.begin();
   while (itr != m_clientMap.end())
   {
-    if (m_clientMap[(*itr).first]->ReadyToUse() && m_clientsProps[m_clientMap[(*itr).first]->GetID()].bSupportsChannelScan)
+    if (m_clientMap[(*itr).first]->ReadyToUse() && m_clientMap[(*itr).first]->GetAddonCapabilities().bSupportsChannelScan)
       clients.push_back(m_clientMap[(*itr).first]->GetID());
 
     itr++;
@@ -1092,20 +1093,8 @@ bool CPVRClients::InitialiseClient(AddonPtr client)
   boost::shared_ptr<CPVRClient> addon = boost::dynamic_pointer_cast<CPVRClient>(client);
   if (addon && addon->Create(iClientId))
   {
-    /* get the client's capabilities */
-    PVR_ADDON_CAPABILITIES props;
-    if (addon->GetAddonCapabilities(&props) == PVR_ERROR_NO_ERROR)
-    {
-      m_clientMap.insert(std::make_pair(iClientId, addon));
-      m_clientsProps.insert(std::make_pair(iClientId, props));
-
-      bReturn = true;
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "PVR - %s - can't get client properties from add-on '%s'",
-          __FUNCTION__, client->Name().c_str());
-    }
+    m_clientMap.insert(std::make_pair(iClientId, addon));
+    bReturn = true;
   }
   else
   {

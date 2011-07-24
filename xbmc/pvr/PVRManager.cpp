@@ -1064,14 +1064,18 @@ bool CPVRManager::IsRunningChannelScan(void) const
   return m_addons->IsRunningChannelScan();
 }
 
-PVR_ADDON_CAPABILITIES *CPVRManager::GetCurrentClientProperties(void)
+PVR_ADDON_CAPABILITIES CPVRManager::GetCurrentClientProperties(void)
 {
+  PVR_ADDON_CAPABILITIES props;
+  memset(&props, 0, sizeof(PVR_ADDON_CAPABILITIES));
   CSingleLock lock(m_critSection);
   if (!m_bLoaded)
-    return NULL;
+    return props;
   lock.Leave();
 
-  return m_addons->GetCurrentAddonCapabilities();
+  props = m_addons->GetCurrentAddonCapabilities();
+
+  return props;
 }
 
 void CPVRManager::StartChannelScan(void)

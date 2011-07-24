@@ -375,10 +375,10 @@ namespace PVR
     bool IsRunningChannelScan(void) const;
 
     /*!
-     * @brief Get the properties of the current playing client.
-     * @return A pointer to the properties or NULL if no stream is playing.
+     * @brief Get the capabilities of the current playing client.
+     * @return The capabilities.
      */
-    PVR_ADDON_CAPABILITIES *GetCurrentClientProperties(void);
+    PVR_ADDON_CAPABILITIES GetCurrentClientProperties(void);
 
     /*!
      * @brief Open a selection dialog and start a channel scan on the selected client.

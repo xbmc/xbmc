@@ -80,7 +80,7 @@ bool PVR::CPVREpg::UpdateFromScraper(time_t start, time_t end)
 
   if (m_Channel && m_Channel->EPGEnabled() && ScraperName() == "client")
   {
-    if (g_PVRClients->GetAddonCapabilities(m_Channel->ClientID())->bSupportsEPG)
+    if (g_PVRClients->GetAddonCapabilities(m_Channel->ClientID()).bSupportsEPG)
     {
       CLog::Log(LOGINFO, "%s - updating EPG for channel '%s' from client '%i'",
           __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());

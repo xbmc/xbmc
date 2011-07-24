@@ -33,7 +33,6 @@ namespace PVR
 
   typedef std::map< int, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
   typedef std::map< int, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
-  typedef std::map< int, PVR_ADDON_CAPABILITIES >                  CLIENTPROPS;
   typedef std::map< int, PVR_STREAM_PROPERTIES >                   STREAMPROPS;
 
   #define XBMC_VIRTUAL_CLIENTID -1
@@ -146,17 +145,17 @@ namespace PVR
     int GetPlayingClientID(void) const;
 
     /*!
-     * @brief Get the properties for a specific client.
+     * @brief Get the capabilities for a specific client.
      * @param clientID The ID of the client.
-     * @return A pointer to the properties or NULL if the client wasn't found.
+     * @return The add-on's capabilities.
      */
-    PVR_ADDON_CAPABILITIES *GetAddonCapabilities(int iClientId);
+    PVR_ADDON_CAPABILITIES GetAddonCapabilities(int iClientId);
 
     /*!
-     * @brief Get the properties of the current playing client.
-     * @return A pointer to the properties or NULL if no stream is playing.
+     * @brief Get the capabilities of the current playing client.
+     * @return The add-on's capabilities.
      */
-    PVR_ADDON_CAPABILITIES *GetCurrentAddonCapabilities(void);
+    PVR_ADDON_CAPABILITIES GetCurrentAddonCapabilities(void);
 
     //@}
 
@@ -633,7 +632,6 @@ namespace PVR
     DWORD                 m_scanStart;                /*!< scan start time to check for non present streams */
     CStdString            m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
     CLIENTMAP             m_clientMap;                /*!< a map of all known clients */
-    CLIENTPROPS           m_clientsProps;             /*!< store the properties of each client locally */
     PVR_SIGNAL_STATUS     m_qualityInfo;              /*!< stream quality information */
     STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
     CCriticalSection      m_critSection;

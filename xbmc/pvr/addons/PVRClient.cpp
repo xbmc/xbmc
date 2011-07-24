@@ -220,11 +220,9 @@ inline void PVRWriteClientChannelInfo(const CPVRChannel &xbmcChannel, PVR_CHANNE
   addonChannel.strStreamURL      = xbmcChannel.StreamURL().c_str();
 }
 
-PVR_ERROR CPVRClient::GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities)
+PVR_ADDON_CAPABILITIES CPVRClient::GetAddonCapabilities(void)
 {
-  *pCapabilities = m_addonCapabilities;
-
-  return PVR_ERROR_NO_ERROR;
+  return m_addonCapabilities;
 }
 
 const char *CPVRClient::GetBackendName(void)
