@@ -247,17 +247,31 @@ void CGUIDialog::Close(bool forceClose /* = false */)
     g_application.getApplicationMessenger().Close(this, forceClose);
   }
   else
-    g_application.getApplicationMessenger().Close(this, forceClose);
+    Close_Internal(forceClose);
 }
 
 void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
 {
-  g_application.getApplicationMessenger().DoModal(this, iWindowID, param);
+  if (!g_application.IsCurrentThread())
+  {
+    // make sure graphics lock is not held
+    CSingleExit leaveIt(g_graphicsContext);
+    g_application.getApplicationMessenger().DoModal(this, iWindowID, param);
+  }
+  else
+    DoModal_Internal(iWindowID, param);
 }
 
 void CGUIDialog::Show()
 {
-  g_application.getApplicationMessenger().Show(this);
+  if (!g_application.IsCurrentThread())
+  {
+    // make sure graphics lock is not held
+    CSingleExit leaveIt(g_graphicsContext);
+    g_application.getApplicationMessenger().Show(this);
+  }
+  else
+    Show_Internal();
 }
 
 void CGUIDialog::FrameMove()
