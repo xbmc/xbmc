@@ -357,7 +357,7 @@ bool CSMBDirectory::Create(const char* strPath)
   CStdString strFileName = smb.URLEncode(url);
 
   int result = smbc_mkdir(strFileName.c_str(), 0);
-  success = (result == 0 || EEXIST == result);
+  success = (result == 0 || EEXIST == errno);
   if(!success)
 #ifndef _LINUX
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));

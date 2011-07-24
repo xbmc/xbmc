@@ -217,7 +217,7 @@ bool CNFSDirectory::Create(const char* strPath)
   
   ret = gNfsConnection.GetImpl()->nfs_mkdir(gNfsConnection.GetNfsContext(), folderName.c_str());
 
-  success = (ret == 0 || EEXIST == ret);
+  success = (ret == 0 || -EEXIST == ret);
   if(!success)
     CLog::Log(LOGERROR, "NFS: Failed to create(%s) %s\n", folderName.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
   return success;
