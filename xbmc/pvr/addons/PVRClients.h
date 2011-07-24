@@ -83,13 +83,6 @@ namespace PVR
     bool RequestRemoval(ADDON::AddonPtr addon);
 
     /*!
-     * @brief Try to load and initialise all clients.
-     * @param iMaxTime Maximum time to try to load clients in seconds. Use 0 to keep trying until m_bStop becomes true.
-     * @return True if all clients were loaded, false otherwise.
-     */
-    bool TryLoadClients(int iMaxTime = 0);
-
-    /*!
      * @brief Unload all loaded add-ons and reset all class properties.
      */
     void Unload(void);
@@ -558,18 +551,41 @@ namespace PVR
     //@}
 
   private:
-    int AddClientToDb(const CStdString &strClientId, const CStdString &strName);
-    int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
-    int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
-    bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
-
-    void UpdateCharInfoSignalStatus(void);
+    /*!
+     * @brief Register a client in the db if it's not been registered yet.
+     * @param client The client to register.
+     * @return The database id of the client or -1 if an error occured.
+     */
+    int AddClientToDb(const ADDON::AddonPtr client);
 
     /*!
-     * @brief Load and initialise all clients.
-     * @return True if any clients were loaded, false otherwise.
+     * @brief Read from a livetv stream.
+     * @param lpBuf The buffer to store the data in.
+     * @param uiBufSize The length to read.
+     * @return The number of bytes read.
      */
-    bool LoadClients(void);
+    int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
+
+    /*!
+     * @brief Read from a recorded tv stream.
+     * @param lpBuf The buffer to store the data in.
+     * @param uiBufSize The length to read.
+     * @return The number of bytes read.
+     */
+    int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
+
+    /*!
+     * @brief Get the menu hooks for a client.
+     * @param iClientID The client to get the hooks for.
+     * @param hooks The container to add the hooks to.
+     * @return True if the hooks were added successfully (if any), false otherwise.
+     */
+    bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
+
+    /*!
+     * @brief Update the signal status for the tv stream that's currently being read.
+     */
+    void UpdateCharInfoSignalStatus(void);
 
     /*!
      * @brief Reset the signal quality data to the initial values.
@@ -581,7 +597,34 @@ namespace PVR
      */
     void Process(void);
 
+    /*!
+     * @brief Get the instance of the client, if it's connected.
+     * @param iClientId The id of the client to get.
+     * @param addon The client.
+     * @return True if the client is connected, false otherwise.
+     */
     bool GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient> &addon);
+
+    /*!
+     * @brief Check whether a client is registered.
+     * @param client The client to check.
+     * @return True if this client is registered, false otherwise.
+     */
+    bool IsKnownClient(const ADDON::AddonPtr client);
+
+    /*!
+     * @brief Check whether there are any new pvr add-ons enabled or whether any of the known clients has been disabled.
+     * @param bInitialiseAllClients True to initialise all clients, false to only initialise new clients.
+     * @return True if all clients were updated successfully, false otherwise.
+     */
+    bool UpdateAndInitialiseClients(bool bInitialiseAllClients = false);
+
+    /*!
+     * @brief Initialise and connect a client.
+     * @param client The client to initialise.
+     * @return True if the client was initialised successfully, false otherwise.
+     */
+    bool InitialiseClient(ADDON::AddonPtr client);
 
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
     bool                  m_bAllClientsLoaded;        /*!< true when all clients are loaded, false otherwise */

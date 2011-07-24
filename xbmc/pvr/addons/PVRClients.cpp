@@ -94,41 +94,6 @@ bool CPVRClients::RequestRemoval(AddonPtr addon)
   return StopClient(addon, false);
 }
 
-bool CPVRClients::TryLoadClients(int iMaxTime /* = 0 */)
-{
-  CDateTime start = CDateTime::GetCurrentDateTime();
-  CSingleLock lock(m_critSection);
-
-  while (!m_bAllClientsLoaded)
-  {
-    /* try to load clients */
-    LoadClients();
-
-    /* always break if the pvrmanager's thread is stopped */
-    if (!g_PVRManager.IsRunning())
-      break;
-
-    /* check whether iMaxTime has passed */
-    if (!m_bAllClientsLoaded && iMaxTime > 0)
-    {
-      CDateTimeSpan elapsed = CDateTime::GetCurrentDateTime() - start;
-      if (elapsed.GetSeconds() >= iMaxTime)
-        break;
-    }
-    /* break if there are no activated clients */
-    else if (m_clientMap.empty())
-      break;
-
-    lock.Leave();
-    Sleep(250);
-    lock.Enter();
-  }
-
-  CLog::Log(LOG_DEBUG, "PVR - %s - %s",
-      __FUNCTION__, m_bAllClientsLoaded && !m_clientMap.empty() ? "all clients loaded" : "couldn't load all clients. will keep trying in a separate thread.");
-  return m_bAllClientsLoaded;
-}
-
 void CPVRClients::Unload(void)
 {
   Stop();
@@ -215,6 +180,7 @@ bool CPVRClients::StopClient(AddonPtr client, bool bRestart)
       else
       {
         m_clientMap[(*itr).first]->Destroy();
+        // TODO remove the client from the db
         m_clientMap.erase((*itr).first);
       }
       g_PVRManager.StartUpdateThreads();
@@ -1074,82 +1040,117 @@ bool CPVRClients::GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient
   return bReturn;
 }
 
-int CPVRClients::AddClientToDb(const CStdString &strClientId, const CStdString &strName)
+int CPVRClients::AddClientToDb(const AddonPtr client)
 {
+  CSingleLock lock(m_critSection);
+
   /* add this client to the database if it's not in there yet */
   CPVRDatabase *database = OpenPVRDatabase();
-  int iClientDbId = database ? database->AddClient(strName, strClientId) : -1;
+  int iClientDbId = database ? database->AddClient(client->Name(), client->ID()) : -1;
   if (iClientDbId == -1)
   {
     CLog::Log(LOGERROR, "PVR - %s - can't add client '%s' to the database",
-        __FUNCTION__, strName.c_str());
+        __FUNCTION__, client->Name().c_str());
   }
 
   return iClientDbId;
 }
 
-bool CPVRClients::LoadClients(void)
+bool CPVRClients::IsKnownClient(const AddonPtr client)
 {
+  bool bReturn(false);
   CSingleLock lock(m_critSection);
-  if (m_bAllClientsLoaded)
-    return !m_clientMap.empty();
 
-  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
-
-  /* get all PVR addons */
-  VECADDONS addons;
-  if (!CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
-    return false;
-
-  /* load and initialise the clients */
-  CPVRDatabase *database = OpenPVRDatabase();
-  if (!database)
-    return false;
-
-  m_bAllClientsLoaded = true;
-  for (unsigned iClientPtr = 0; iClientPtr < addons.size(); iClientPtr++)
+  for (CLIENTMAPITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
   {
-    const AddonPtr clientAddon = addons.at(iClientPtr);
-    if (!clientAddon->Enabled())
-      continue;
-
-    int iClientId = AddClientToDb(clientAddon->ID(), clientAddon->Name());
-    if (iClientId == -1)
-      continue; // don't set "m_bAllClientsLoaded = false;" here because this will enter a neverending loop
-
-    /* check if this client isn't active already */
-    if (IsConnectedClient(iClientId))
-      continue;
-
-    /* load and initialise the client libraries */
-    boost::shared_ptr<CPVRClient> addon = boost::dynamic_pointer_cast<CPVRClient>(clientAddon);
-    if (addon && addon->Create(iClientId))
+    if (m_clientMap[(*itr).first]->ID().Equals(client->ID()) &&
+        m_clientMap[(*itr).first]->Name().Equals(client->Name()))
     {
-      /* get the client's properties */
-      PVR_ADDON_CAPABILITIES props;
-      if (addon->GetAddonCapabilities(&props) == PVR_ERROR_NO_ERROR)
-      {
-        m_clientMap.insert(std::make_pair(iClientId, addon));
-        m_clientsProps.insert(std::make_pair(iClientId, props));
-      }
-      else
-      {
-        CLog::Log(LOGERROR, "PVR - %s - can't get client properties from addon '%s'",
-            __FUNCTION__, clientAddon->Name().c_str());
-        m_bAllClientsLoaded = false;
-      }
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "PVR - %s - can't initialise client '%s'",
-          __FUNCTION__, clientAddon->Name().c_str());
-      m_bAllClientsLoaded = false;
+      bReturn = true;
+      break;
     }
   }
 
-  database->Close();
+  return bReturn;
+}
 
-  return !m_clientMap.empty();
+bool CPVRClients::InitialiseClient(AddonPtr client)
+{
+  bool bReturn(false);
+  if (!client->Enabled())
+    return bReturn;
+
+  CSingleLock lock(m_critSection);
+  CLog::Log(LOGDEBUG, "%s - initialising add-on '%s'", __FUNCTION__, client->Name().c_str());
+
+  /* register this client in the db */
+  int iClientId = AddClientToDb(client);
+  if (iClientId == -1)
+    return bReturn;
+
+  /* load and initialise the client libraries */
+  boost::shared_ptr<CPVRClient> addon = boost::dynamic_pointer_cast<CPVRClient>(client);
+  if (addon && addon->Create(iClientId))
+  {
+    /* get the client's capabilities */
+    PVR_ADDON_CAPABILITIES props;
+    if (addon->GetAddonCapabilities(&props) == PVR_ERROR_NO_ERROR)
+    {
+      m_clientMap.insert(std::make_pair(iClientId, addon));
+      m_clientsProps.insert(std::make_pair(iClientId, props));
+
+      bReturn = true;
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "PVR - %s - can't get client properties from add-on '%s'",
+          __FUNCTION__, client->Name().c_str());
+    }
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "PVR - %s - can't initialise add-on '%s'",
+        __FUNCTION__, client->Name().c_str());
+  }
+
+  return bReturn;
+}
+
+bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = false */)
+{
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
+
+  /* make sure that the callback is registered */
+  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
+
+  /* get all PVR addons from the add-on manager */
+  VECADDONS addons;
+  if (CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
+  {
+    bReturn = true;
+
+    for (unsigned iClientPtr = 0; iClientPtr < addons.size(); iClientPtr++)
+    {
+      const AddonPtr clientAddon = addons.at(iClientPtr);
+
+      if (!clientAddon->Enabled() && IsKnownClient(clientAddon))
+      {
+        /* stop the client and remove it from the db */
+        bReturn = StopClient(clientAddon, false) && bReturn;
+      }
+      else if (clientAddon->Enabled() && (bInitialiseAllClients || !IsKnownClient(clientAddon)))
+      {
+        /* register the new client and initialise it */
+        bReturn = InitialiseClient(clientAddon) && bReturn;
+      }
+    }
+  }
+
+  /* check whether all clients are (still) connected */
+  m_bAllClientsLoaded = ConnectedClientAmount() == EnabledClientAmount();
+
+  return bReturn;
 }
 
 void CPVRClients::ResetQualityData(void)
@@ -1189,6 +1190,7 @@ void CPVRClients::Process(void)
 {
   while (!m_bStop)
   {
+    UpdateAndInitialiseClients();
     UpdateCharInfoSignalStatus();
     Sleep(1000);
   }

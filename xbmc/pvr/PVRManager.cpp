@@ -170,9 +170,12 @@ void CPVRManager::Cleanup(void)
 
 bool CPVRManager::Load(void)
 {
+  /* start the add-on update thread */
+  m_addons->Start();
+
   /* load at least one client */
   while (!m_addons->HasConnectedClients() && !m_bStop)
-    m_addons->TryLoadClients(1);
+    Sleep(50);
 
   if (m_addons->HasConnectedClients() && !m_bLoaded && !m_bStop)
   {
@@ -245,7 +248,6 @@ void CPVRManager::Process(void)
 
   /* start the other pvr related update threads */
   ShowProgressDialog(g_localizeStrings.Get(19239), 85);
-  m_addons->Start();
   m_guiInfo->Start();
   m_epg->RegisterObserver(this);
   m_epg->Start();
@@ -270,10 +272,6 @@ void CPVRManager::Process(void)
   /* main loop */
   while (!m_bStop)
   {
-    /* keep trying to load remaining clients if they're not already loaded */
-    if (!m_addons->AllClientsConnected())
-      m_addons->TryLoadClients(1);
-
     /* execute the next pending jobs if there are any */
     if (m_addons->HasConnectedClients())
       ExecutePendingJobs();
