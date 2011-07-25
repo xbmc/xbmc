@@ -344,7 +344,9 @@ static const ActionMapping appcommands[] =
   { "play",                APPCOMMAND_MEDIA_PLAY },
   { "pause",               APPCOMMAND_MEDIA_PAUSE },
   { "fastforward",         APPCOMMAND_MEDIA_FAST_FORWARD },
-  { "rewind",              APPCOMMAND_MEDIA_REWIND }
+  { "rewind",              APPCOMMAND_MEDIA_REWIND },
+  { "channelup",           APPCOMMAND_MEDIA_CHANNEL_UP },
+  { "channeldown",         APPCOMMAND_MEDIA_CHANNEL_DOWN }
 };
 #endif
 
