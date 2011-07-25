@@ -48,9 +48,7 @@ typedef struct
 CSoftAESound::CSoftAESound(const CStdString &filename) :
   IAESound         (filename),
   m_volume         (1.0f    ),
-  m_inUse          (0       ),
-  m_freeCallback   (NULL    ),
-  m_freeCallbackArg(NULL    )
+  m_inUse          (0       )
 {
   m_filename = filename;
 }
@@ -111,12 +109,6 @@ bool CSoftAESound::IsPlaying()
   m_sampleLock.unlock_shared();
 
   return playing;
-}
-
-void CSoftAESound::SetFreeCallback(AECBFunc *callback, void *arg)
-{
-  m_freeCallback    = callback;
-  m_freeCallbackArg = arg;
 }
 
 void CSoftAESound::Play()
