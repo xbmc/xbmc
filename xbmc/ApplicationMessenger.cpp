@@ -634,11 +634,11 @@ case TMSG_POWERDOWN:
       }
       break;
 
-    case TMSG_GUI_DIALOG_CLOSE:
+    case TMSG_GUI_WINDOW_CLOSE:
       {
-        CGUIDialog *dialog = (CGUIDialog *)pMsg->lpVoid;
-        if (dialog)
-          dialog->Close(pMsg->dwParam1 > 0);
+        CGUIWindow *window = (CGUIWindow *)pMsg->lpVoid;
+        if (window)
+          window->Close(pMsg->dwParam1 > 0);
       }
       break;
 
@@ -1091,11 +1091,11 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::Close(CGUIDialog *dialog, bool forceClose,
+void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose,
                                   bool waitResult)
 {
-  ThreadMessage tMsg = {TMSG_GUI_DIALOG_CLOSE, forceClose ? 1 : 0};
-  tMsg.lpVoid = dialog;
+  ThreadMessage tMsg = {TMSG_GUI_WINDOW_CLOSE, forceClose ? 1 : 0};
+  tMsg.lpVoid = window;
   SendMessage(tMsg, waitResult);
 }
 

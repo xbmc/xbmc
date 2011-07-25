@@ -105,7 +105,7 @@ public:
   virtual void FrameMove() {};
 
   // Close should never be called on this base class (only on derivatives) - its here so that window-manager can use a general close
-  virtual void Close(bool forceClose = false);
+  void Close(bool forceClose = false);
 
   // OnAction() is called by our window manager.  We should process any messages
   // that should be handled at the window level in the derived classes, and any
@@ -224,6 +224,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
+  virtual void Close_Internal(bool forceClose = false);
   EVENT_RESULT OnMouseAction(const CAction &action);
   virtual bool Animate(unsigned int currentTime);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);

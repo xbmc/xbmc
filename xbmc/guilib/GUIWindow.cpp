@@ -39,6 +39,7 @@
 #include "utils/TimeUtils.h"
 #include "input/ButtonTranslator.h"
 #include "utils/XMLUtils.h"
+#include "Application.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -314,9 +315,21 @@ void CGUIWindow::DoRender()
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }
 
-void CGUIWindow::Close(bool forceClose)
+void CGUIWindow::Close_Internal(bool forceClose)
 {
   CLog::Log(LOGERROR,"%s - should never be called on the base class!", __FUNCTION__);
+}
+
+void CGUIWindow::Close(bool forceClose /* = false */)
+{
+  if (!g_application.IsCurrentThread())
+  {
+    // make sure graphics lock is not held
+    CSingleExit leaveIt(g_graphicsContext);
+    g_application.getApplicationMessenger().Close(this, forceClose);
+  }
+  else
+    Close_Internal(forceClose);
 }
 
 bool CGUIWindow::OnAction(const CAction &action)

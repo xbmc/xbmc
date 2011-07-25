@@ -238,18 +238,6 @@ void CGUIDialog::Show_Internal()
 //  m_bRunning = true;
 }
 
-void CGUIDialog::Close(bool forceClose /* = false */)
-{
-  if (!g_application.IsCurrentThread())
-  {
-    // make sure graphics lock is not held
-    CSingleExit leaveIt(g_graphicsContext);
-    g_application.getApplicationMessenger().Close(this, forceClose);
-  }
-  else
-    Close_Internal(forceClose);
-}
-
 void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
 {
   if (!g_application.IsCurrentThread())
