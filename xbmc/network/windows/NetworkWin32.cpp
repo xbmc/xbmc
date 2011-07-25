@@ -115,7 +115,7 @@ CStdString CNetworkInterfaceWin32::GetCurrentWirelessEssId(void)
       PWLAN_INTERFACE_INFO_LIST ppInterfaceList;
       if(WlanEnumInterfaces(hClientHdl,NULL, &ppInterfaceList ) == ERROR_SUCCESS)
       {
-        for(int i=0; i<ppInterfaceList->dwNumberOfItems;i++)
+        for(unsigned int i=0; i<ppInterfaceList->dwNumberOfItems;i++)
         {
           GUID guid = ppInterfaceList->InterfaceInfo[i].InterfaceGuid;
           WCHAR wcguid[64];
@@ -388,7 +388,7 @@ void CNetworkInterfaceWin32::GetSettings(NetworkAssignment& assignment, CStdStri
       PWLAN_INTERFACE_INFO_LIST ppInterfaceList;
       if(WlanEnumInterfaces(hClientHdl,NULL, &ppInterfaceList ) == ERROR_SUCCESS)
       {
-        for(int i=0; i<ppInterfaceList->dwNumberOfItems;i++)
+        for(unsigned int i=0; i<ppInterfaceList->dwNumberOfItems;i++)
         {
           GUID guid = ppInterfaceList->InterfaceInfo[i].InterfaceGuid;
           WCHAR wcguid[64];
