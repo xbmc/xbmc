@@ -66,7 +66,6 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
   m_draining = false;
 
-  printf("Started initializing %i %i\n", sampleRate, channelLayout.Count());
   pa_threaded_mainloop_lock(m_MainLoop);
 
   m_SampleSpec.channels = channelLayout.Count();
@@ -187,12 +186,23 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   a.tlength   = m_frameSamples * m_frameSize;
   WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &a, NULL, NULL), m_MainLoop, "SetBuffer");
 
+  m_cacheSize = pa_stream_writable_size(m_Stream);
+
   pa_threaded_mainloop_unlock(m_MainLoop);
 
   m_Initialized = true;
-  printf("Initialized\n");
+
+  CLog::Log(LOGINFO, "PulseAEStream::Initialized");
+  CLog::Log(LOGINFO, "  Sample Rate   : %d", m_sampleRate);
+  CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(m_format));
+  CLog::Log(LOGINFO, "  Channel Count : %d", m_channelLayout.Count());
+  CLog::Log(LOGINFO, "  Channel Layout: %s", ((CStdString)m_channelLayout).c_str());
+  CLog::Log(LOGINFO, "  Frame Samples : %d", m_frameSamples);
+  CLog::Log(LOGINFO, "  Frame Size    : %d", m_frameSize);
+  CLog::Log(LOGINFO, "  Cache Size    : %d", m_cacheSize);
 
   Resume();
+
   return /*true*/;
 }
 
@@ -201,18 +211,15 @@ CPulseAEStream::~CPulseAEStream()
   if (!m_Initialized)
     return;
 
-  printf("delete 1\n");
   pa_threaded_mainloop_lock(m_MainLoop);
 
   if (m_Stream)
   {
-    printf("delete 2\n");
     pa_stream_disconnect(m_Stream);
     pa_stream_unref(m_Stream);
     m_Stream = NULL;
   }
 
-  printf("delete 3\n");
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
@@ -282,6 +289,22 @@ float CPulseAEStream::GetDelay()
   return (float)((float)latency / 1000000.0f);
 }
 
+float CPulseAEStream::GetCacheTime()
+{
+  if (!m_Initialized)
+    return 0.0f;
+
+  return (float)(m_cacheSize - GetSpace()) / (float)m_sampleRate;
+}
+
+float CPulseAEStream::GetCacheTotal()
+{
+  if (!m_Initialized)
+    return 0.0f;
+
+  return (float)m_cacheSize / (float)m_sampleRate;
+}
+
 bool CPulseAEStream::IsPaused()
 {
   return m_Paused;
@@ -314,14 +337,11 @@ void CPulseAEStream::Drain()
   if (!m_Initialized || m_draining)
     return;
 
-  printf("drain1\n");
   m_draining = true;
   pa_threaded_mainloop_lock(m_MainLoop);
 
-  printf("drain2\n");
   pa_operation_unref(pa_stream_drain(m_Stream, CPulseAEStream::StreamDrainComplete, this));
   pa_threaded_mainloop_unlock(m_MainLoop);
-  printf("drain3\n");
 }
 
 void CPulseAEStream::Flush()
@@ -348,8 +368,6 @@ void CPulseAEStream::SetVolume(float volume)
 {
   if (!m_Initialized)
     return;
-
-  printf("Stream SetVolume %f\n", volume);
 
   if (!pa_threaded_mainloop_in_thread(m_MainLoop))
     pa_threaded_mainloop_lock(m_MainLoop);

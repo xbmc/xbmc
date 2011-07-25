@@ -1155,11 +1155,8 @@ bool CApplication::Initialize()
   /* window id's 3000 - 3100 are reserved for python */
 
   /* start the audio engine */
-#ifdef __APPLE__
-  CAEFactory::LoadEngine(AE_ENGINE_COREAUDIO);
-#else
-  CAEFactory::LoadEngine(AE_ENGINE_SOFT);
-#endif
+  CAEFactory::LoadEngine();
+
   SetHardwareVolume(CAEFactory::AE->GetVolume());
 
   // Make sure we have at least the default skin

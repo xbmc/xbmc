@@ -32,6 +32,26 @@
 
 IAE* CAEFactory::AE = NULL;
 
+bool CAEFactory::LoadEngine()
+{
+  bool loaded = false;
+
+#ifdef HAS_PULSEAUDIO
+  if (!loaded)
+    loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
+#endif
+
+#ifdef __APPLE__
+  if (!loaded)
+    loaded = CAEFactory::LoadEngine(AE_ENGINE_COREAUDIO);
+#endif
+
+  if (!loaded)
+    loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
+
+  return loaded;
+}
+
 bool CAEFactory::LoadEngine(enum AEEngine engine)
 {
   /* can only load the engine once, XBMC restart is required to change it */
