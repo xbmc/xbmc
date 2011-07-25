@@ -46,14 +46,28 @@ CStdString CInfoLoader::GetInfo(int info)
   // Refresh if need be
   if (m_refreshTime < CTimeUtils::GetFrameTime() && !m_busy)
   { // queue up the job
-    m_busy = true;
-    CJobManager::GetInstance().AddJob(GetJob(), this);
+    CJob *job = GetJob();
+    if (job)
+    {
+      m_busy = true;
+      CJobManager::GetInstance().AddJob(job, this);
+    }
+    else
+    {
+      // Job is waiting on a prerequisite
+      return BusyInfo(info);
+    }
   }
   if (m_busy)
   {
     return BusyInfo(info);
   }
   return TranslateInfo(info);
+}
+
+bool CInfoLoader::IsBusy() const
+{
+  return m_busy;
 }
 
 CStdString CInfoLoader::BusyInfo(int info) const

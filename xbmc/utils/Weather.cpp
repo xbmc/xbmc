@@ -43,6 +43,7 @@
 #include "XBDateTime.h"
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
+#include "Location.h"
 #include "filesystem/Directory.h"
 #include "utils/TimeUtils.h"
 #include "StringUtils.h"
@@ -162,18 +163,18 @@ const CWeatherInfo &CWeatherJob::GetInfo() const
   return m_info;
 }
 
-void CWeatherJob::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue)
+/*!
+ \brief Wrapper for XMLUtils::GetString(). Instead of returning a missing xml tag,
+        weather.com will return the tag containing only a single dash. This
+        function treats the dash as a missing tag.
+ \param pRootElement The root XML node
+ \param strTagName   The tag name to search for
+ \param value (out)  The value, or "" if the tag is missing or only contains a dash
+ */
+void CWeatherJob::GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value)
 {
-  value = "";
-  const TiXmlNode *pChild = pRootElement->FirstChild(strTagName.c_str());
-  if (pChild && pChild->FirstChild())
-  {
-    value = pChild->FirstChild()->Value();
-    if (value == "-")
-      value = "";
-  }
-  if (value.IsEmpty())
-    value = strDefaultValue;
+  if (!XMLUtils::GetString(pRootElement, strTagName.c_str(), value) || value.Equals("-"))
+    value = "";
 }
 
 void CWeatherJob::GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue)
@@ -315,8 +316,8 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
   if (strcmp(pRootElement->Value(), "error") == 0)
   {
     CStdString error;
-    GetString(pRootElement, "err", error, "Unknown Error"); //grab the error string
-    CLog::Log(LOGERROR, "WEATHER: Unable to get data: %s", error.c_str());
+    GetString(pRootElement, "err", error); //grab the error string
+    CLog::Log(LOGERROR, "WEATHER: Unable to get data: %s", error.IsEmpty() ? "Unknown error" : error.c_str());
     return false;
   }
 
@@ -324,7 +325,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
   TiXmlElement *pElement = pRootElement->FirstChildElement("loc");
   if (pElement)
   {
-    GetString(pElement, "dnam", m_info.location, "");
+    GetString(pElement, "dnam", m_info.location);
   }
 
   //current weather
@@ -336,15 +337,15 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
     m_info.lastUpdateTime = time.GetAsLocalizedDateTime(false, false);
 
     // ...and not the date/time from weather.com
-    //GetString(pElement, "lsup", m_szLastUpdateTime, "");
+    //GetString(pElement, "lsup", m_szLastUpdateTime);
 
-    GetString(pElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
+    GetString(pElement, "icon", iTmpStr); //string cause i've seen it return N/A
     if (iTmpStr == "N/A")
       m_info.currentIcon.Format("%s128x128/na.png", WEATHER_BASE_PATH);
     else
       m_info.currentIcon.Format("%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr.c_str());
 
-    GetString(pElement, "t", m_info.currentConditions, "");   //current condition
+    GetString(pElement, "t", m_info.currentConditions);   //current condition
     LocalizeOverview(m_info.currentConditions);
 
     int iTmpInt;
@@ -358,7 +359,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
     {
       GetInteger(pNestElement, "s", iTmpInt);   //current wind strength
       iTmpInt = ConvertSpeed(iTmpInt);    //convert speed if needed
-      GetString(pNestElement, "t", iTmpStr, "N");  //current wind direction
+      GetString(pNestElement, "t", iTmpStr);  //current wind direction, default to "N"
 
       CStdString szCalm = g_localizeStrings.Get(1410);
       if (iTmpStr ==  "CALM") {
@@ -366,7 +367,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
       } else {
         LocalizeOverviewToken(iTmpStr);
         m_info.currentWind.Format(g_localizeStrings.Get(434).c_str(),
-            iTmpStr, iTmpInt, g_langInfo.GetSpeedUnitString().c_str());
+            iTmpStr.IsEmpty() ? "N" : iTmpStr.c_str(), iTmpInt, g_langInfo.GetSpeedUnitString().c_str());
       }
     }
 
@@ -377,7 +378,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
     if (pNestElement)
     {
       GetInteger(pNestElement, "i", iTmpInt);
-      GetString(pNestElement, "t", iTmpStr, "");
+      GetString(pNestElement, "t", iTmpStr);
       LocalizeOverviewToken(iTmpStr);
       m_info.currentUVIndex.Format("%i %s", iTmpInt, iTmpStr);
     }
@@ -401,13 +402,13 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
           LocalizeOverviewToken(m_info.forecast[i].m_day);
         }
 
-        GetString(pOneDayElement, "hi", iTmpStr, ""); //string cause i've seen it return N/A
+        GetString(pOneDayElement, "hi", iTmpStr); //string cause i've seen it return N/A
         if (iTmpStr == "N/A")
           m_info.forecast[i].m_high = "";
         else
           FormatTemperature(m_info.forecast[i].m_high, atoi(iTmpStr));
 
-        GetString(pOneDayElement, "low", iTmpStr, "");
+        GetString(pOneDayElement, "low", iTmpStr);
         if (iTmpStr == "N/A")
           m_info.forecast[i].m_low = "";
         else
@@ -419,13 +420,13 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
           if (i == 0 && (time.wHour < 7 || time.wHour >= 19)) //weather.com works on a 7am to 7pm basis so grab night if its late in the day
             pDayTimeElement = pDayTimeElement->NextSiblingElement("part");
 
-          GetString(pDayTimeElement, "icon", iTmpStr, ""); //string cause i've seen it return N/A
+          GetString(pDayTimeElement, "icon", iTmpStr); //string cause i've seen it return N/A
           if (iTmpStr == "N/A")
             m_info.forecast[i].m_icon.Format("%s128x128/na.png", WEATHER_BASE_PATH);
           else
             m_info.forecast[i].m_icon.Format("%s128x128/%s.png", WEATHER_BASE_PATH, iTmpStr);
 
-          GetString(pDayTimeElement, "t", m_info.forecast[i].m_overview, "");
+          GetString(pDayTimeElement, "t", m_info.forecast[i].m_overview);
           LocalizeOverview(m_info.forecast[i].m_overview);
         }
 
@@ -639,7 +640,13 @@ CStdString CWeather::TranslateInfo(int info) const
   return "";
 }
 
-CStdString CWeather::GetAreaCity(const CStdString &codeAndCity)
+/*!
+ \brief  Extracts the city from a weather area code string
+ \param  codeAndCity a weather area code string, e.g. "USNY0996 - New York, NY"
+ \return The city part, e.g. "New York, NY" in the above example, or the original
+         string if it doesn't contain a dash
+ */
+CStdString CWeather::GetAreaCityPart(const CStdString &codeAndCity)
 {
   CStdString areaCode(codeAndCity);
   int pos = areaCode.Find(" - ");
@@ -648,7 +655,13 @@ CStdString CWeather::GetAreaCity(const CStdString &codeAndCity)
   return areaCode;
 }
 
-CStdString CWeather::GetAreaCode(const CStdString &codeAndCity)
+/*!
+ \brief  Extracts the weather code from a weather area code string
+ \param  codeAndCity a weather area code string, e.g. "USNY0996 - New York, NY"
+ \return The weather code, e.g. "USNY0996" in the above example, or the original
+         string if no dash is found
+ */
+CStdString CWeather::GetAreaCodePart(const CStdString &codeAndCity)
 {
   CStdString areaCode(codeAndCity);
   int pos = areaCode.Find(" - ");
@@ -658,19 +671,53 @@ CStdString CWeather::GetAreaCode(const CStdString &codeAndCity)
 }
 
 /*!
- \brief Retrieve the city name for the specified location from the settings
- \param iLocation the location index (can be in the range [1..MAXLOCATION])
- \return the city name (without the accompanying region area code)
+ \brief  Gets the weather code of the specified location
+ \param  iLocation integer between 0 and MAX_LOCATION (0 for current zip code)
+ \return The weather code (can be a zip code or a weather station ID)
  */
-CStdString CWeather::GetLocation(int iLocation)
+CStdString CWeather::GetAreaCode(int iLocation)
 {
-  if (m_location[iLocation - 1].IsEmpty())
+  // Sanity check
+  if (iLocation < 0 || iLocation > MAX_LOCATION)
+    return "";
+
+  // For auto-location, get the current zip code from g_locationManager
+  if (iLocation == 0)
+    return g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE);
+
+  // Cache location strings. To empty the cache, call Reset()
+  if (m_location[iLocation].IsEmpty())
   {
     CStdString setting;
     setting.Format("weather.areacode%i", iLocation);
-    m_location[iLocation - 1] = GetAreaCity(g_guiSettings.GetString(setting));
+    m_location[iLocation] = g_guiSettings.GetString(setting);
   }
-  return m_location[iLocation - 1];
+  return GetAreaCodePart(m_location[iLocation]);
+}
+
+/*!
+ \brief  Retrieves the city name for the specified location
+ \param  iLocation integer between 0 and MAXLOCATION (0 for current city)
+ \return the city name (without the accompanying weather area code)
+ */
+CStdString CWeather::GetLocation(int iLocation)
+{
+  // Sanity check
+  if (iLocation < 0 || iLocation > MAX_LOCATION)
+    return "";
+
+  // For auto-location, get the current cite name from g_locationManager
+  if (iLocation == 0)
+    return g_locationManager.GetInfo(LOCATION_CITY);
+
+  // Cache location strings. To empty the cache, call Reset()
+  if (m_location[iLocation].IsEmpty())
+  {
+    CStdString setting;
+    setting.Format("weather.areacode%i", iLocation);
+    m_location[iLocation] = g_guiSettings.GetString(setting);
+  }
+  return GetAreaCityPart(m_location[iLocation]);
 }
 
 void CWeather::Reset()
@@ -695,7 +742,7 @@ const day_forecast &CWeather::GetForecast(int day) const
 /*!
  \brief Saves the specified location index to the settings. Call Refresh()
         afterwards to update weather info for the new location.
- \param iLocation the new location index (can be in the range [1..MAXLOCATION])
+ \param iLocation the new location index (can be in the range 0 to MAXLOCATION)
  */
 void CWeather::SetArea(int iLocation)
 {
@@ -705,22 +752,39 @@ void CWeather::SetArea(int iLocation)
 
 /*!
  \brief Retrieves the current location index from the settings
- \return the active location index (will be in the range [1..MAXLOCATION])
+ \return the active location index (will be in the range 0 to MAXLOCATION)
  */
 int CWeather::GetArea() const
 {
   return g_guiSettings.GetInt("weather.currentlocation");
 }
 
+/*!
+ \brief  Creates a new weather job
+ \return The new weather job, or NULL if g_locationManager is busy/failed
+ */
 CJob *CWeather::GetJob() const
 {
+  if (GetArea() == 0)
+  {
+    CWeatherJob* job = NULL;
+    // Prefer zip code (generally more accurate than weather station ID)
+    if (g_locationManager.IsFetched() && !g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE).IsEmpty())
+      job = new CWeatherJob(g_locationManager.GetInfo(LOCATION_ZIP_POSTAL_CODE));
+    else if (g_locationManager.IsFetched() && !g_locationManager.GetInfo(LOCATION_WEATHER_ID).IsEmpty())
+      job = new CWeatherJob(g_locationManager.GetInfo(LOCATION_WEATHER_ID));
+    // Else, if g_locationManager is busy or failed, return NULL
+    return job;
+  }
   CStdString strSetting;
   strSetting.Format("weather.areacode%i", GetArea());
-  return new CWeatherJob(GetAreaCode(g_guiSettings.GetString(strSetting)));
+  return new CWeatherJob(GetAreaCodePart(g_guiSettings.GetString(strSetting)));
 }
 
 void CWeather::OnJobComplete(unsigned int jobID, bool success, CJob *job)
 {
-  m_info = ((CWeatherJob *)job)->GetInfo();
+  // if success is false then job->m_info is empty, so no need to store it
+  if (success)
+    m_info = ((CWeatherJob *)job)->GetInfo();
   CInfoLoader::OnJobComplete(jobID, success, job);
 }

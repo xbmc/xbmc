@@ -35,6 +35,7 @@ public:
 protected:
   virtual void OnInitWindow();
 
+  void PromptLocationFailed();
   void UpdateButtons();
   void UpdateLocations();
   void SetProperties();
