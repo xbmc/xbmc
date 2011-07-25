@@ -205,19 +205,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
 CPulseAEStream::~CPulseAEStream()
 {
-  if (!m_Initialized)
-    return;
-
-  pa_threaded_mainloop_lock(m_MainLoop);
-
-  if (m_Stream)
-  {
-    pa_stream_disconnect(m_Stream);
-    pa_stream_unref(m_Stream);
-    m_Stream = NULL;
-  }
-
-  pa_threaded_mainloop_unlock(m_MainLoop);
+  Destroy();
 }
 
 /*
@@ -226,8 +214,13 @@ CPulseAEStream::~CPulseAEStream()
 */
 void CPulseAEStream::Destroy()
 {
+  if (!m_Initialized)
+    return;
+
   if (m_Destroyed)
     return;
+
+  pa_threaded_mainloop_lock(m_MainLoop);
 
   if (m_DrainOperation)
   {
@@ -235,8 +228,18 @@ void CPulseAEStream::Destroy()
     pa_operation_unref(m_DrainOperation);
     m_DrainOperation = NULL;
   }
+
+  if (m_Stream)
+  {
+    pa_stream_disconnect(m_Stream);
+    pa_stream_unref(m_Stream);
+    m_Stream = NULL;
+  }
+
   /* signal CPulseAE to free us */
   m_Destroyed = true;
+
+  pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
 unsigned int CPulseAEStream::GetSpace()
