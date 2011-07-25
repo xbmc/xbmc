@@ -175,15 +175,6 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
     return /*false*/;
   }
 
-  pa_buffer_attr a;
-  m_frameSamples = m_sampleRate / 1000;
-  a.fragsize  = (uint32_t)-1;
-  a.maxlength = (uint32_t)-1;
-  a.prebuf    = 0;
-  a.minreq    = m_frameSamples * m_frameSize;
-  a.tlength   = m_frameSamples * m_frameSize;
-  WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &a, NULL, NULL), m_MainLoop, "SetBuffer");
-
   m_cacheSize = pa_stream_writable_size(m_Stream);
 
   pa_threaded_mainloop_unlock(m_MainLoop);
@@ -195,7 +186,6 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(m_format));
   CLog::Log(LOGINFO, "  Channel Count : %d", m_channelLayout.Count());
   CLog::Log(LOGINFO, "  Channel Layout: %s", ((CStdString)m_channelLayout).c_str());
-  CLog::Log(LOGINFO, "  Frame Samples : %d", m_frameSamples);
   CLog::Log(LOGINFO, "  Frame Size    : %d", m_frameSize);
   CLog::Log(LOGINFO, "  Cache Size    : %d", m_cacheSize);
 

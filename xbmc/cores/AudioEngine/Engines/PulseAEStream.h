@@ -100,7 +100,6 @@ private:
   CAEChannelInfo    m_channelLayout;
   unsigned int m_options;
   unsigned int m_frameSize;
-  unsigned int m_frameSamples;
   unsigned int m_cacheSize;
 
   pa_operation *m_DrainOperation;
