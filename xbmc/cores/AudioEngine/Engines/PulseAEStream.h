@@ -102,7 +102,7 @@ private:
   unsigned int m_frameSamples;
   unsigned int m_cacheSize;
 
-  bool m_draining;
+  pa_operation *m_DrainOperation;
 };
 
 #endif

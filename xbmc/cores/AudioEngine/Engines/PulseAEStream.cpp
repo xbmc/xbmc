@@ -64,7 +64,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   m_channelLayout = channelLayout;
   m_options = options;
 
-  m_draining = false;
+  m_DrainOperation = NULL;
 
   pa_threaded_mainloop_lock(m_MainLoop);
 
@@ -229,6 +229,12 @@ void CPulseAEStream::Destroy()
   if (m_Destroyed)
     return;
 
+  if (m_DrainOperation)
+  {
+    pa_operation_cancel(m_DrainOperation);
+    pa_operation_unref(m_DrainOperation);
+    m_DrainOperation = NULL;
+  }
   /* signal CPulseAE to free us */
   m_Destroyed = true;
 }
@@ -309,7 +315,16 @@ bool CPulseAEStream::IsPaused()
 
 bool CPulseAEStream::IsDraining()
 {
-  return m_draining;
+  if (m_DrainOperation)
+  {
+    if (pa_operation_get_state(m_DrainOperation) == PA_OPERATION_RUNNING)
+      return true;
+
+    pa_operation_unref(m_DrainOperation);
+    m_DrainOperation = NULL;
+  }
+
+  return false;
 }
 
 bool CPulseAEStream::IsDestroyed()
@@ -331,13 +346,14 @@ void CPulseAEStream::Resume()
 
 void CPulseAEStream::Drain()
 {
-  if (!m_Initialized || m_draining)
+  if (!m_Initialized)
     return;
 
-  m_draining = true;
-  pa_threaded_mainloop_lock(m_MainLoop);
+  if (m_DrainOperation)
+    return;
 
-  pa_operation_unref(pa_stream_drain(m_Stream, CPulseAEStream::StreamDrainComplete, this));
+  pa_threaded_mainloop_lock(m_MainLoop);
+  m_DrainOperation = pa_stream_drain(m_Stream, CPulseAEStream::StreamDrainComplete, this);
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
