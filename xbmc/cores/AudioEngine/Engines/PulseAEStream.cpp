@@ -145,6 +145,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   pa_stream_set_state_callback(m_Stream, CPulseAEStream::StreamStateCallback, this);
   pa_stream_set_write_callback(m_Stream, CPulseAEStream::StreamRequestCallback, this);
   pa_stream_set_latency_update_callback(m_Stream, CPulseAEStream::StreamLatencyUpdateCallback, this);
+  pa_stream_set_underflow_callback(m_Stream, CPulseAEStream::StreamUnderflowCallback, this);
 
   int flags = PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE;
   if (options && AESTREAM_FORCE_RESAMPLE)
@@ -482,6 +483,13 @@ void CPulseAEStream::StreamStateCallback(pa_stream *s, void *userdata)
       pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
       break;
   }
+}
+
+void CPulseAEStream::StreamUnderflowCallback(pa_stream *s, void *userdata)
+{
+  CPulseAEStream *stream = (CPulseAEStream *)userdata;
+  CLog::Log(LOGWARNING, "PulseAudio: Stream underflow");
+  pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
 }
 
 void CPulseAEStream::StreamDrainComplete(pa_stream *s, int success, void *userdata)

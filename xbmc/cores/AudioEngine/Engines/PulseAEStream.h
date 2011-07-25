@@ -73,6 +73,7 @@ private:
   static void StreamRequestCallback(pa_stream *s, size_t length, void *userdata);
   static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata);
   static void StreamStateCallback(pa_stream *s, void *userdata);
+  static void StreamUnderflowCallback(pa_stream *s, void *userdata);
   static void StreamDrainComplete(pa_stream *s, int success, void *userdata);
 
   static inline bool WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry);
