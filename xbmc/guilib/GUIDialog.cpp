@@ -34,7 +34,6 @@ CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
   m_bModal = true;
   m_bRunning = false;
   m_wasRunning = false;
-  m_dialogClosing = false;
   m_renderOrder = 1;
   m_autoClosing = false;
   m_enableSound = true;
@@ -98,7 +97,7 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
       {
         g_windowManager.RemoveDialog(GetID());
         m_bRunning = false;
-        m_dialogClosing = false;
+        m_closing = false;
         m_autoClosing = false;
       }
       return true;
@@ -148,16 +147,16 @@ void CGUIDialog::Close_Internal(bool forceClose /*= false*/)
   if (!m_bRunning) return;
 
   //  Play the window specific deinit sound
-  if(!m_dialogClosing && m_enableSound)
+  if(!m_closing && m_enableSound)
     g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
 
   // don't close if we should be animating
   if (!forceClose && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
   {
-    if (!m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    if (!m_closing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
     {
       QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
-      m_dialogClosing = true;
+      m_closing = true;
     }
     return;
   }
@@ -175,7 +174,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
   if (!g_windowManager.Initialized())
     return; // don't do anything
 
-  m_dialogClosing = false;
+  m_closing = false;
   m_bModal = true;
   // set running before it's added to the window manager, else the auto-show code
   // could show it as well if we are in a different thread from
@@ -212,7 +211,7 @@ void CGUIDialog::Show_Internal()
   //maybe we should have a critical section per window instead??
   CSingleLock lock(g_graphicsContext);
 
-  if (m_bRunning && !m_dialogClosing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
+  if (m_bRunning && !m_closing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
 
   if (!g_windowManager.Initialized())
     return; // don't do anything
@@ -224,7 +223,7 @@ void CGUIDialog::Show_Internal()
   // the main rendering thread (this should really be handled via
   // a thread message though IMO)
   m_bRunning = true;
-  m_dialogClosing = false;
+  m_closing = false;
   g_windowManager.AddModeless(this);
 
   //  Play the window specific init sound
@@ -264,7 +263,7 @@ void CGUIDialog::Show()
 
 void CGUIDialog::FrameMove()
 {
-  if (m_autoClosing && m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_dialogClosing)
+  if (m_autoClosing && m_showStartTime + m_showDuration < CTimeUtils::GetFrameTime() && !m_closing)
     Close();
   CGUIWindow::FrameMove();
 }
@@ -275,21 +274,6 @@ void CGUIDialog::Render()
     return;
 
   CGUIWindow::Render();
-  // Check to see if we should close at this point
-  // We check after the controls have finished rendering, as we may have to close due to
-  // the controls rendering after the window has finished it's animation
-  // we call the base class instead of this class so that we can find the change
-  if (m_dialogClosing && !CGUIWindow::IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-  {
-    Close(true);
-  }
-}
-
-bool CGUIDialog::IsAnimating(ANIMATION_TYPE animType)
-{
-  if (animType == ANIM_TYPE_WINDOW_CLOSE)
-    return m_dialogClosing;
-  return CGUIWindow::IsAnimating(animType);
 }
 
 void CGUIDialog::SetDefaults()
