@@ -377,13 +377,11 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
     case XBMC_KEYUP:
       g_Keyboard.ProcessKeyUp();
       break;
+    case XBMC_MOUSEBUTTONDOWN:
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
       g_Mouse.HandleEvent(newEvent);
       g_application.ProcessMouse();
-      break;
-    case XBMC_MOUSEBUTTONDOWN:
-      g_Mouse.HandleEvent(newEvent);    
       break;
     case XBMC_VIDEORESIZE:
       if (!g_application.m_bInitializing &&
