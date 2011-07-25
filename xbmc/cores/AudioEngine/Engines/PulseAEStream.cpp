@@ -186,6 +186,8 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   a.tlength   = m_frameSamples * m_frameSize;
   WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &a, NULL, NULL), m_MainLoop, "SetBuffer");
 
+  m_cacheSize = pa_stream_writable_size(m_Stream);
+
   pa_threaded_mainloop_unlock(m_MainLoop);
 
   m_Initialized = true;
@@ -197,8 +199,10 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   CLog::Log(LOGINFO, "  Channel Layout: %s", ((CStdString)m_channelLayout).c_str());
   CLog::Log(LOGINFO, "  Frame Samples : %d", m_frameSamples);
   CLog::Log(LOGINFO, "  Frame Size    : %d", m_frameSize);
+  CLog::Log(LOGINFO, "  Cache Size    : %d", m_cacheSize);
 
   Resume();
+
   return /*true*/;
 }
 
@@ -283,6 +287,22 @@ float CPulseAEStream::GetDelay()
 
   pa_threaded_mainloop_unlock(m_MainLoop);
   return (float)((float)latency / 1000000.0f);
+}
+
+float CPulseAEStream::GetCacheTime()
+{
+  if (!m_Initialized)
+    return 0.0f;
+
+  return (float)(m_cacheSize - GetSpace()) / (float)m_sampleRate;
+}
+
+float CPulseAEStream::GetCacheTotal()
+{
+  if (!m_Initialized)
+    return 0.0f;
+
+  return (float)m_cacheSize / (float)m_sampleRate;
 }
 
 bool CPulseAEStream::IsPaused()

@@ -37,8 +37,8 @@ public:
   virtual unsigned int GetSpace();
   virtual unsigned int AddData(void *data, unsigned int size);
   virtual float GetDelay();
-  virtual float GetCacheTime () {return 0.0f;} /* FIXME */
-  virtual float GetCacheTotal() {return 0.0f;} /* FIXME */
+  virtual float GetCacheTime ();
+  virtual float GetCacheTotal();
 
   virtual bool IsPaused     ();
   virtual bool IsDraining   ();
@@ -100,6 +100,7 @@ private:
   unsigned int m_options;
   unsigned int m_frameSize;
   unsigned int m_frameSamples;
+  unsigned int m_cacheSize;
 
   bool m_draining;
 };
