@@ -26,13 +26,13 @@
 #include "FileItem.h"
 #include "Application.h"
 #include "utils/log.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #endif
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
 #endif
-#ifndef _WIN32
+#ifndef TARGET_WINDOWS
 #include "linux/XTimeUtils.h"
 #endif
 
