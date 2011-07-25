@@ -19,16 +19,18 @@
  *
  */
 
-//#include <sys/types.h>
-//#include <sys/stat.h>
+#ifdef _WIN32
+#include <sys/types.h>
+#include <sys/stat.h>
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+#endif
 //#include <string>
 #include <cerrno>
 //#include <cstring>
-//#include <inttypes.h>
 #include <dirent.h>
 #include <map>
 
-//#define __STDC_FORMAT_MACROS
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #undef main
