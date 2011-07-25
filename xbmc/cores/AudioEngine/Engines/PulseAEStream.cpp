@@ -132,10 +132,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
   m_MaxVolume     = CAEFactory::AE->GetVolume();
   m_Volume        = 1.0f;
-  float useVolume = m_Volume * m_MaxVolume;
-
-  pa_volume_t paVolume = MathUtils::round_int(useVolume * PA_VOLUME_NORM);
-
+  pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
   pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
   if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
   {
@@ -373,8 +370,7 @@ void CPulseAEStream::SetVolume(float volume)
     pa_threaded_mainloop_lock(m_MainLoop);
 
   m_Volume = volume;
-  float useVolume = volume * m_MaxVolume;
-  pa_volume_t paVolume = MathUtils::round_int(useVolume * PA_VOLUME_NORM);
+  pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
 
   pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
   pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_ChVolume, NULL, NULL);
