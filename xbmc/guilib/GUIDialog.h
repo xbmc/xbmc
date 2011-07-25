@@ -49,7 +49,6 @@ public:
   void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   void Show(); // modeless
 
-  virtual void Close(bool forceClose = false);
   virtual bool IsDialogRunning() const { return m_bRunning; };
   virtual bool IsDialog() const { return true;};
   virtual bool IsModalDialog() const { return m_bModal; };
@@ -66,7 +65,7 @@ protected:
 
   virtual void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   virtual void Show_Internal(); // modeless
-  void Close_Internal(bool forceClose = false);
+  virtual void Close_Internal(bool forceClose = false);
 
   bool m_bRunning;
   bool m_wasRunning; ///< \brief true if we were running during the last DoProcess()
