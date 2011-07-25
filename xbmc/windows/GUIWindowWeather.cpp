@@ -169,7 +169,7 @@ void CGUIWindowWeather::UpdateLocations()
   g_windowManager.SendMessage(msg);
   CGUIMessage msg2(GUI_MSG_LABEL_ADD,GetID(),CONTROL_SELECTLOCATION);
 
-  int iCurWeather = g_weatherManager.GetArea();
+  unsigned int iCurWeather = g_weatherManager.GetArea();
 
   for (unsigned int i = 1; i <= MAX_LOCATION; i++)
   {
