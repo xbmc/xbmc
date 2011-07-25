@@ -19,7 +19,6 @@
  *
  */
 
-#include "pch.h"
 #include "PCMCodec.h"
 #include "utils/log.h"
 #include "EndianSwap.h"
