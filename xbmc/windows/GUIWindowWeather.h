@@ -41,8 +41,5 @@ protected:
   void CallScript();
   void SetLocation(int loc);
 
-  void Refresh();
-
-  unsigned int m_iCurWeather;
   CStopWatch m_scriptTimer;
 };
