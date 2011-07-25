@@ -91,7 +91,7 @@ void CAppParamParser::DisplayHelp()
 {
   printf("Usage: xbmc [OPTION]... [FILE]...\n\n");
   printf("Arguments:\n");
-  printf("  -d <n>\t\t\tdelay <n> seconds before starting\n");
+  printf("  -d <n>\t\tdelay <n> seconds before starting\n");
   printf("  -fs\t\t\tRuns XBMC in full screen\n");
   printf("  --standalone\t\tXBMC runs in a stand alone environment without a window \n");
   printf("\t\t\tmanager and supporting applications. For example, that\n");
