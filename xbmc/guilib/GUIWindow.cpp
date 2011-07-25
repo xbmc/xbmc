@@ -58,6 +58,7 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_needsScaling = true;
   m_windowLoaded = false;
   m_loadOnDemand = true;
+  m_closing = false;
   m_renderOrder = 0;
   m_dynamicResourceAlloc = true;
   m_previousWindow = WINDOW_INVALID;
@@ -315,6 +316,17 @@ void CGUIWindow::DoRender()
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }
 
+void CGUIWindow::Render()
+{
+  CGUIControlGroup::Render();
+  // Check to see if we should close at this point
+  // We check after the controls have finished rendering, as we may have to close due to
+  // the controls rendering after the window has finished it's animation
+  // we call the base class instead of this class so that we can find the change
+  if (m_closing && !CGUIControlGroup::IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    Close(true);
+}
+
 void CGUIWindow::Close_Internal(bool forceClose)
 {
   CLog::Log(LOGERROR,"%s - should never be called on the base class!", __FUNCTION__);
@@ -418,6 +430,7 @@ void CGUIWindow::OnInitWindow()
 {
   // set our rendered state
   m_hasRendered = false;
+  m_closing = false;
   ResetAnimations();  // we need to reset our animations as those windows that don't dynamically allocate
                       // need their anims reset. An alternative solution is turning off all non-dynamic
                       // allocation (which in some respects may be nicer, but it kills hdd spindown and the like)
@@ -691,6 +704,8 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 {
   if (!m_animationsEnabled)
     return false;
+  if (animType == ANIM_TYPE_WINDOW_CLOSE)
+    return m_closing;
   return CGUIControlGroup::IsAnimating(animType);
 }
 

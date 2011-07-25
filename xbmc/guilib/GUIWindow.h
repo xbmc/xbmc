@@ -97,6 +97,7 @@ public:
    \sa FrameMove
    */
   virtual void DoRender();
+  virtual void Render();
   
   /*! \brief Main update function, called every frame prior to rendering
    Any window that requires updating on a frame by frame basis (such as to maintain
@@ -263,6 +264,7 @@ protected:
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
   bool m_isDialog;      // true if we have a dialog, false otherwise.
   bool m_dynamicResourceAlloc;
+  bool m_closing;
   CGUIInfoColor m_clearBackground; // colour to clear the window
 
   int m_renderOrder;      // for render order of dialogs
