@@ -118,8 +118,8 @@ private:
   void SoftStart(bool wait = false);
   void SoftStop(bool wait = false, bool close = true);
   void CloseAllStreams(bool fade = true);
-  void ProcessStreams(float &delay);
+  void ProcessStreams(float &delay, float &buffer);
   bool PrepareStream(StreamInfo *si);
-  bool ProcessStream(StreamInfo *si, float &delay);  
+  bool ProcessStream(StreamInfo *si, float &delay, float &buffer);  
 };
 
