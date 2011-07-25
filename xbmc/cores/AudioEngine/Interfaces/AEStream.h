@@ -89,7 +89,7 @@ public:
   /**
    * Resumes the stream after pausing
    */
-  virtual void Resume  () = 0;
+  virtual void Resume() = 0;
 
   /**
    * Start draining the stream
@@ -134,7 +134,7 @@ public:
    * Sets the stream's replay gain factor, this is used by formats such as MP3 that have attenuation information in their streams
    * @param factor The replay gain factor
    */
-  virtual void  SetReplayGain(float factor) = 0;
+  virtual void SetReplayGain(float factor) = 0;
 
   /**
    * Returns the size of one audio frame in bytes (channelCount * resolution)
@@ -172,7 +172,7 @@ public:
    * @note This function will silently fail if the stream is not resampling, if you wish to use this be sure to set the AESTREAM_FORCE_RESAMPLE option
    * @param ratio the new sample rate ratio, calculated by ((double)desiredRate / (double)GetSampleRate())
    */
-  virtual void   SetResampleRatio(double ratio) = 0;
+  virtual void SetResampleRatio(double ratio) = 0;
 
   /**
    * Registers the audio callback to call with each block of data, this is used by Audio Visualizations
