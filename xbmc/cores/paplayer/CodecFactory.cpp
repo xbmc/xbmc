@@ -26,6 +26,7 @@
 #include "OGGcodec.h"
 #include "FLACcodec.h"
 #include "WAVcodec.h"
+#include "PCMCodec.h"
 #include "ModplugCodec.h"
 #include "NSFCodec.h"
 #ifdef HAS_SPC_CODEC
@@ -41,7 +42,6 @@
 #endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
-#include "PCMCodec.h"
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
