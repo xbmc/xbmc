@@ -36,7 +36,7 @@ CGUIDialogBusy::~CGUIDialogBusy(void)
 void CGUIDialogBusy::Show_Internal()
 {
   m_bCanceled = false;
-  m_bRunning = true;
+  m_active = true;
   m_bModal = true;
   m_bLastVisible = true;
   m_closing = false;

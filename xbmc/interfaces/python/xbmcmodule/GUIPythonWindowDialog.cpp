@@ -27,7 +27,6 @@
 CGUIPythonWindowDialog::CGUIPythonWindowDialog(int id)
 :CGUIPythonWindow(id)
 {
-  m_bRunning = false;
   m_loadOnDemand = false;
 }
 
@@ -66,14 +65,15 @@ void CGUIPythonWindowDialog::Show_Internal(bool show /* = true */)
     // active this dialog...
     CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
     OnMessage(msg);
-    m_bRunning = true;
+    m_active = true;
   }
   else // hide
-  {
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
-    OnMessage(msg);
+    Close();
+}
 
-    g_windowManager.RemoveDialog(GetID());
-    m_bRunning = false;
-  }
+void CGUIPythonWindowDialog::OnDeinitWindow(int nextWindowID)
+{
+  g_windowManager.RemoveDialog(GetID());
+  CGUIWindow::OnDeinitWindow(nextWindowID);
+  g_windowManager.Delete(GetID());
 }
