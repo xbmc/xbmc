@@ -450,6 +450,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("library.hascontent(tvshows)")) ret = LIBRARY_HAS_TVSHOWS;
     else if (strTest.Equals("library.hascontent(musicvideos)")) ret = LIBRARY_HAS_MUSICVIDEOS;
     else if (strTest.Equals("library.isscanning")) ret = LIBRARY_IS_SCANNING;
+    else if (strTest.Equals("library.isscanningvideo")) ret = LIBRARY_IS_SCANNING_VIDEO;
+    else if (strTest.Equals("library.isscanningmusic")) ret = LIBRARY_IS_SCANNING_MUSIC;
   }
   else if (strTest.Left(8).Equals("isempty("))
   {
@@ -1761,6 +1763,16 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = true;
     else
       bReturn = false;
+  }
+  else if (condition == LIBRARY_IS_SCANNING_VIDEO)
+  {
+    CGUIDialogVideoScan *videoScanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    bReturn = (videoScanner && videoScanner->IsScanning());
+  }
+  else if (condition == LIBRARY_IS_SCANNING_MUSIC)
+  {
+    CGUIDialogMusicScan *musicScanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    bReturn = (musicScanner && musicScanner->IsScanning());
   }
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #if defined(_LINUX) && !defined(__APPLE__)
