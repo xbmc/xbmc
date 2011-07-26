@@ -446,6 +446,10 @@ EVENT_RESULT CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
 /// calling the base method.
 void CGUIWindow::OnInitWindow()
 {
+  //  Play the window specific init sound
+  if (IsSoundEnabled())
+    g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
+
   // set our rendered state
   m_hasRendered = false;
   m_closing = false;

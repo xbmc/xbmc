@@ -157,10 +157,6 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
   m_active = true;
   g_windowManager.RouteToWindow(this);
 
-  //  Play the window specific init sound
-  if (m_enableSound)
-    g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
-
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, iWindowID);
   msg.SetStringParam(param);
@@ -197,10 +193,6 @@ void CGUIDialog::Show_Internal()
   m_active = true;
   m_closing = false;
   g_windowManager.AddModeless(this);
-
-  //  Play the window specific init sound
-  if (m_enableSound)
-    g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
 
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
