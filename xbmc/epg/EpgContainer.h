@@ -59,6 +59,7 @@ namespace EPG
     time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
     time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
     time_t       m_iLastEpgActiveTagCheck; /*!< the time the EPG checked for active tag updates */
+    unsigned int m_iNextEpgId;         /*!< the next epg ID that will be given to a new table when the db isn't being used */
     std::map<int, CEpg*> m_epgs;       /*!< the EPGs in this container */
     //@}
 
@@ -229,6 +230,12 @@ namespace EPG
      * @param epg The EPG to insert.
      */
     virtual void InsertEpg(CEpg *epg);
+
+    /*!
+     * @brief The next EPG ID to be given to a table when the db isn't being used.
+     * @return The next ID.
+     */
+    unsigned int NextEpgId(void);
 
     /*!
      * @brief Close the progress bar if it's visible.

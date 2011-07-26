@@ -44,6 +44,7 @@ CEpgContainer::CEpgContainer(void) :
   m_progressDialog = NULL;
   m_bStop = true;
   m_bIsUpdating = false;
+  m_iNextEpgId = 0;
   Clear(false);
 }
 
@@ -62,6 +63,12 @@ void CEpgContainer::Unload(void)
 {
   Stop();
   Clear(false);
+}
+
+unsigned int CEpgContainer::NextEpgId(void)
+{
+  CSingleLock lock(m_critSection);
+  return ++m_iNextEpgId;
 }
 
 void CEpgContainer::Clear(bool bClearDb /* = false */)
