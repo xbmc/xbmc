@@ -239,6 +239,7 @@ void CPulseAEStream::Destroy()
 
   /* signal CPulseAE to free us */
   m_Destroyed = true;
+  m_Initialized = false;
 
   pa_threaded_mainloop_unlock(m_MainLoop);
 }
