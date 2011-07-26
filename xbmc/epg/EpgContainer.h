@@ -56,6 +56,7 @@ namespace EPG
     /** @name Class state properties */
     //@{
     bool         m_bDatabaseLoaded;    /*!< true if we already loaded the EPG from the database */
+    bool         m_bIsUpdating;        /*!< true while an update is running */
     time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
     time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
     time_t       m_iLastEpgActiveTagCheck; /*!< the time the EPG checked for active tag updates */
@@ -87,15 +88,6 @@ namespace EPG
      * @return True if a running update should be interrupted, false otherwise.
      */
     virtual bool InterruptUpdate(void) const;
-
-    /*!
-     * @brief Load or update a single table.
-     * @param epg The table to update.
-     * @param start The start time to use.
-     * @param end The end time to use.
-     * @return True if the load or update was successful, false otherwise.
-     */
-    virtual bool UpdateSingleTable(CEpg *epg, const time_t start, const time_t end);
 
     /*!
      * @brief A hook that will be called on every update thread iteration.
@@ -227,13 +219,6 @@ namespace EPG
     virtual CEpg *GetById(int iEpgId) const;
 
     /*!
-     * @brief Get an EPG table given it's index in this container.
-     * @param iIndex The index.
-     * @return The table or NULL if it wasn't found.
-     */
-    virtual CEpg *GetByIndex(unsigned int iIndex) const;
-
-    /*!
      * @brief Notify EPG table observers when the currently active tag changed.
      * @return True if the check was done, false if it was not the right time to check
      */
@@ -242,6 +227,19 @@ namespace EPG
     /*!
      * @brief Close the progress bar if it's visible.
      */
-    virtual void CloseUpdateDialog(void);
+    virtual void CloseProgressDialog(void);
+
+    /*!
+     * @brief Show the progress bar
+     */
+    virtual void ShowProgressDialog(void);
+
+    /*!
+     * @brief Update the progress bar.
+     * @param iCurrent The current position.
+     * @param iMax The maximum position.
+     * @param strText The text to display.
+     */
+    virtual void UpdateProgressDialog(int iCurrent, int iMax, const CStdString &strText);
   };
 }

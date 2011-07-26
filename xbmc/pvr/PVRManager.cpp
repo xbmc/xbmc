@@ -381,7 +381,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the PVR database", __FUNCTION__);
 
   /* close the epg progress dialog, or we'll get a deadlock */
-  g_PVREpg->CloseUpdateDialog();
+  g_PVREpg->CloseProgressDialog();
 
   CGUIDialogProgress* pDlgProgress = NULL;
   if (bShowProgress)

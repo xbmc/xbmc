@@ -39,6 +39,7 @@ namespace EPG
   protected:
     bool                       m_bChanged;        /*!< true if anything changed that needs to be persisted, false otherwise */
     bool                       m_bInhibitSorting; /*!< don't sort the table if this is true */
+    bool                       m_bLoaded;         /*!< true when the initial entries have been loaded */
     int                        m_iEpgID;          /*!< the database ID of this table */
     CStdString                 m_strName;         /*!< the name of this table */
     CStdString                 m_strScraperName;  /*!< the name of the scraper to use */
@@ -282,9 +283,10 @@ namespace EPG
      * @param start The start time.
      * @param end The end time.
      * @param iUpdateTime Update the table after the given amount of time has passed.
+     * @param bLoadFromDb Try to load this table from the db if it's not been loaded yet.
      * @return True if the update was successful, false otherwise.
      */
-    virtual bool Update(const time_t start, const time_t end, int iUpdateTime);
+    virtual bool Update(const time_t start, const time_t end, int iUpdateTime, bool bLoadFromDb);
 
     /*!
      * @brief Get all EPG entries.

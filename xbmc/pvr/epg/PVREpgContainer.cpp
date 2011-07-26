@@ -185,6 +185,7 @@ int PVR::CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
 
 bool PVR::CPVREpgContainer::InterruptUpdate(void) const
 {
+  CSingleLock lock(m_critSection);
   return (CEpgContainer::InterruptUpdate() ||
       (g_guiSettings.GetBool("epg.preventupdateswhileplayingtv") &&
        g_PVRManager.IsStarted() &&
