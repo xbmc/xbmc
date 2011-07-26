@@ -31,6 +31,9 @@
 #include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "URL.h"
+#include "utils/RegExp.h"
+#include "utils/HTMLUtil.h"
+#include "utils/CharsetConverter.h"
 #include "utils/TimeUtils.h"
 #include "GUIInfoManager.h"
 #include "utils/log.h"
@@ -121,9 +124,19 @@ void CFileShoutcast::Close()
 
 void CFileShoutcast::ExtractTagInfo(const char* buf)
 {
-  char temp[1024];
-  if (sscanf(buf,"StreamTitle='%[^']",temp) > 0)
-    m_tag.SetTitle(temp);
+  CStdString strBuffer = buf;
+  g_charsetConverter.unknownToUTF8(strBuffer);
+
+  CStdStringW wBuffer, wConverted;
+  g_charsetConverter.utf8ToW(strBuffer, wBuffer, false);
+  HTML::CHTMLUtil::ConvertHTMLToW(wBuffer, wConverted);
+  g_charsetConverter.wToUTF8(wConverted, strBuffer);
+
+  CRegExp reTitle(true);
+  reTitle.RegComp("StreamTitle=\'(.*?)\';");
+
+  if (reTitle.RegFind(strBuffer.c_str()) != -1)
+    m_tag.SetTitle(reTitle.GetReplaceString("\\1"));
 }
 
 void CFileShoutcast::ReadTruncated(char* buf2, int size)
