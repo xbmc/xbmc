@@ -254,6 +254,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   {
     if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
     else if (strTest.Equals("pvr.hastimer")) ret = PVR_HAS_TIMER;
+    else if (strTest.Equals("pvr.hasnonrecordingtimer")) ret = PVR_HAS_NONRECORDING_TIMER;
     else if (strTest.Equals("pvr.nowrecordingtitle")) ret = PVR_NOW_RECORDING_TITLE;
     else if (strTest.Equals("pvr.nowrecordingdatetime")) ret = PVR_NOW_RECORDING_DATETIME;
     else if (strTest.Equals("pvr.nowrecordingchannel")) ret = PVR_NOW_RECORDING_CHANNEL;

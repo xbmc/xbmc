@@ -268,6 +268,8 @@ bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
     bReturn = g_PVRManager.IsStarted() && IsRecording();
   else if (dwInfo == PVR_HAS_TIMER)
     bReturn = g_PVRManager.IsStarted() && HasTimers();
+  else if (dwInfo == PVR_HAS_NONRECORDING_TIMER)
+    bReturn = g_PVRManager.IsStarted() && HasNonRecordingTimers();
   else if (dwInfo == PVR_IS_PLAYING_TV)
     bReturn = g_PVRManager.IsStarted() && g_PVRClients->IsPlayingTV();
   else if (dwInfo == PVR_IS_PLAYING_RADIO)
@@ -719,3 +721,11 @@ bool CPVRGUIInfo::HasTimers(void) const
 
   return m_iTimerAmount > 0;
 }
+
+bool CPVRGUIInfo::HasNonRecordingTimers(void) const
+{
+  CSingleLock lock(m_critSection);
+
+  return m_iTimerAmount - m_iRecordingTimerAmount > 0;
+}
+
