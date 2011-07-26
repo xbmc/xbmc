@@ -2764,20 +2764,24 @@ bool CApplication::ProcessMouse()
     return false;
   }
 
-  // Process the appcommand
-  CAction newmouseaction = CAction(mouseaction.GetID(), 
-                                  g_Mouse.GetHold(MOUSE_LEFT_BUTTON), 
-                                  (float)g_Mouse.GetX(), 
-                                  (float)g_Mouse.GetY(), 
-                                  (float)g_Mouse.GetDX(), 
-                                  (float)g_Mouse.GetDY(),
-                                  mouseaction.GetName());
-
   // Log mouse actions except for move and noop
-  if (newmouseaction.GetID() != ACTION_MOUSE_MOVE && newmouseaction.GetID() != ACTION_NOOP)
-    CLog::Log(LOGDEBUG, "%s: trying mouse action %s", __FUNCTION__, newmouseaction.GetName().c_str());
+  if (mouseaction.GetID() != ACTION_MOUSE_MOVE && mouseaction.GetID() != ACTION_NOOP)
+    CLog::Log(LOGDEBUG, "%s: trying mouse action %s", __FUNCTION__, mouseaction.GetName().c_str());
 
-  return OnAction(newmouseaction);
+  // The action might not be a mouse action. For example wheel moves might
+  // be mapped to volume up/down in mouse.xml. In this case we do not want
+  // the mouse position saved in the action.
+  if (!mouseaction.IsMouse())
+    return OnAction(CAction(mouseaction.GetID()));
+
+  // This is a mouse action so we need to record the mouse position
+  return OnAction(CAction(mouseaction.GetID(), 
+                          g_Mouse.GetHold(MOUSE_LEFT_BUTTON), 
+                          (float)g_Mouse.GetX(), 
+                          (float)g_Mouse.GetY(), 
+                          (float)g_Mouse.GetDX(), 
+                          (float)g_Mouse.GetDY(),
+                          mouseaction.GetName()));
 }
 
 void  CApplication::CheckForTitleChange()
