@@ -23,6 +23,7 @@
 #ifdef HAS_PULSEAUDIO
 
 #include "Interfaces/AEStream.h"
+#include "threads/Thread.h"
 #include <pulse/pulseaudio.h>
 
 class CPulseAEStream : public IAEStream
@@ -67,6 +68,9 @@ public:
   virtual void RegisterAudioCallback(IAudioCallback* pCallback);
   virtual void UnRegisterAudioCallback();
 
+  virtual void FadeVolume(float from, float target, unsigned int time);
+  virtual bool IsFading();
+
   /* trigger the stream to update its volume relative to AE */
   void UpdateVolume(float max);
 private:
@@ -103,6 +107,22 @@ private:
   unsigned int m_cacheSize;
 
   pa_operation *m_DrainOperation;
+
+  class CLinearFader : public CThread
+  {
+  public:
+    CLinearFader(IAEStream *stream);
+    void SetupFader(float from, float target, unsigned int time);
+    bool IsRunning();
+  protected:
+    virtual void Process();
+  private:
+    IAEStream *m_stream;
+    float m_from;
+    float m_target;
+    unsigned int m_time;
+    volatile bool m_isRunning;
+  } m_fader;
 };
 
 #endif

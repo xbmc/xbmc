@@ -48,7 +48,7 @@ static const char *StreamStateToString(pa_stream_state s)
   }
 }
 
-CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options)
+CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options) : m_fader(this)
 {
   ASSERT(channelLayout.Count());
   m_Destroyed = false;
@@ -210,6 +210,8 @@ void CPulseAEStream::Destroy()
 
   if (m_Destroyed)
     return;
+
+  m_fader.StopThread(true);
 
   pa_threaded_mainloop_lock(m_MainLoop);
 
@@ -447,6 +449,19 @@ void CPulseAEStream::UnRegisterAudioCallback()
   m_AudioCallback = NULL;
 }
 
+void CPulseAEStream::FadeVolume(float from, float target, unsigned int time)
+{
+  if (!m_Initialized)
+    return;
+
+  m_fader.SetupFader(from, target, time);
+}
+
+bool CPulseAEStream::IsFading()
+{
+  return m_fader.IsRunning();
+}
+
 void CPulseAEStream::StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 {
   CPulseAEStream *stream = (CPulseAEStream *)userdata;
@@ -522,4 +537,57 @@ bool CPulseAEStream::Cork(bool cork)
   return cork;
 }
 
+CPulseAEStream::CLinearFader::CLinearFader(IAEStream *stream) : m_stream(stream)
+{
+  m_from = 0;
+  m_target = 0;
+  m_time = 0;
+  m_isRunning = false;
+}
+
+void CPulseAEStream::CLinearFader::SetupFader(float from, float target, unsigned int time)
+{
+  StopThread(true);
+
+  m_from = from;
+  m_target = target;
+  m_time = time;
+
+  if (m_time > 0)
+    Create();
+  else
+    m_stream->SetVolume(m_target);
+}
+
+void CPulseAEStream::CLinearFader::Process()
+{
+  if (m_stream == NULL)
+    return;
+
+  m_isRunning = true;
+  m_stream->SetVolume(m_from);
+  float k = m_target - m_from;
+
+  unsigned int begin = XbmcThreads::SystemClockMillis();
+  unsigned int end = begin + m_time;
+  unsigned int current = begin;
+  unsigned int step = std::max(1u, m_time / 100);
+
+  do
+  {
+    float x = ((float)current - (float)begin) / (float)m_time;
+
+    m_stream->SetVolume(m_from + k * x);
+    usleep(step * 1000);
+    current = XbmcThreads::SystemClockMillis();
+  } while (current <= end && !m_bStop);
+
+  m_stream->SetVolume(m_target);
+  m_isRunning = false;
+}
+
+bool CPulseAEStream::CLinearFader::IsRunning()
+{
+  return !m_isRunning;
+}
 #endif
