@@ -911,6 +911,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("director")) return LISTITEM_DIRECTOR;
   else if (info.Equals("filename")) return LISTITEM_FILENAME;
   else if (info.Equals("filenameandpath")) return LISTITEM_FILENAME_AND_PATH;
+  else if (info.Equals("fileextension")) return LISTITEM_FILE_EXTENSION;
   else if (info.Equals("date")) return LISTITEM_DATE;
   else if (info.Equals("size")) return LISTITEM_SIZE;
   else if (info.Equals("rating")) return LISTITEM_RATING;
@@ -3818,11 +3819,24 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return item->GetMusicInfoTag()->GetGenre();
     break;
   case LISTITEM_FILENAME:
-    if (item->IsMusicDb() && item->HasMusicInfoTag())
-      return URIUtils::GetFileName(item->GetMusicInfoTag()->GetURL());
-    if (item->IsVideoDb() && item->HasVideoInfoTag())
-      return URIUtils::GetFileName(item->GetVideoInfoTag()->m_strFileNameAndPath);
-    return URIUtils::GetFileName(item->m_strPath);
+  case LISTITEM_FILE_EXTENSION:
+    {
+      CStdString strFile;
+      if (item->IsMusicDb() && item->HasMusicInfoTag())
+        strFile = URIUtils::GetFileName(item->GetMusicInfoTag()->GetURL());
+      else if (item->IsVideoDb() && item->HasVideoInfoTag())
+        strFile = URIUtils::GetFileName(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      else
+        strFile = URIUtils::GetFileName(item->m_strPath);
+
+      if (info==LISTITEM_FILE_EXTENSION)
+      {
+        CStdString strExtension = URIUtils::GetExtension(strFile);
+        return strExtension.TrimLeft(".");
+      }
+      return strFile;
+    }
+    break;
   case LISTITEM_DATE:
     if (item->m_dateTime.IsValid())
       return item->m_dateTime.GetAsLocalizedDate();
