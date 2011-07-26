@@ -19,16 +19,18 @@
  *
  */
 
-//#include <sys/types.h>
-//#include <sys/stat.h>
+#ifdef _WIN32
+#include <sys/types.h>
+#include <sys/stat.h>
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+#endif
 //#include <string>
 #include <cerrno>
 //#include <cstring>
-//#include <inttypes.h>
 #include <dirent.h>
 #include <map>
 
-//#define __STDC_FORMAT_MACROS
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #undef main
@@ -184,7 +186,7 @@ void CreateSkeletonHeader(CXBTF& xbtf, std::string fullPath)
   CreateSkeletonHeaderImpl(xbtf, fullPath, temp);
 }
 
-CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, unsigned int flags)
+CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned char *data, unsigned int size, unsigned int format, bool hasAlpha, unsigned int flags)
 {
   CXBTFFrame frame;
 #ifdef USE_LZO_PACKING
@@ -224,7 +226,7 @@ CXBTFFrame appendContent(CXBTFWriter &writer, int width, int height, unsigned ch
   frame.SetUnpackedSize(size);
   frame.SetWidth(width);
   frame.SetHeight(height);
-  frame.SetFormat(format);
+  frame.SetFormat(hasAlpha ? format : format | XB_FMT_OPAQUE);
   frame.SetDuration(0);
   return frame;
 }
@@ -233,6 +235,17 @@ void CompressImage(const squish::u8 *brga, int width, int height, squish::u8 *co
 {
   squish::CompressImage(brga, width, height, compressed, flags | squish::kSourceBGRA);
   squish::ComputeMSE(brga, width, height, compressed, flags | squish::kSourceBGRA, colorMSE, alphaMSE);
+}
+
+bool HasAlpha(unsigned char *argb, unsigned int width, unsigned int height)
+{
+  unsigned char *p = argb + 3; // offset of alpha
+  for (unsigned int i = 0; i < 4*width*height; i += 4)
+  {
+    if (p[i] != 0xff)
+      return true;
+  }
+  return false;
 }
 
 CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMSE, unsigned int flags)
@@ -273,6 +286,7 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
   
   width  = image->w;
   height = image->h;
+  bool hasAlpha = HasAlpha(argb, width, height);
   
   if (flags & FLAGS_USE_DXT)
   {
@@ -325,7 +339,7 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
   CXBTFFrame frame; 
   if (format)
   {
-    frame = appendContent(writer, width, height, compressed, compressedSize, format, flags);
+    frame = appendContent(writer, width, height, compressed, compressedSize, format, hasAlpha, flags);
     if (compressedSize)
       delete[] compressed;
   }
@@ -333,7 +347,7 @@ CXBTFFrame createXBTFFrame(SDL_Surface* image, CXBTFWriter& writer, double maxMS
   {
     // none of the compressed stuff works for us, so we use 32bit texture
     format = XB_FMT_A8R8G8B8;
-    frame = appendContent(writer, width, height, argb, (width * height * 4), format, flags);
+    frame = appendContent(writer, width, height, argb, (width * height * 4), format, hasAlpha, flags);
   }
 
   SDL_FreeSurface(argbImage);
@@ -441,7 +455,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
       {
         CXBTFFrame frame = createXBTFFrame(image, writer, maxMSE, flags);
 
-        printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()),
+        printf("%s%c (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
           frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
 
         file.SetLoop(0);
@@ -481,7 +495,7 @@ int createBundle(const std::string& InputDir, const std::string& OutputFile, dou
           CXBTFFrame frame = createXBTFFrame(gpAG[j].surface, writer, maxMSE, flags);
           frame.SetDuration(gpAG[j].delay);
           file.GetFrames().push_back(frame);
-          printf("%s (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()),
+          printf("%s%c (%d,%d @ %"PRIu64" bytes)\n", GetFormatString(frame.GetFormat()), frame.HasAlpha() ? ' ' : '*',
             frame.GetWidth(), frame.GetHeight(), frame.GetUnpackedSize());
         }
       }
