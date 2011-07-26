@@ -28,6 +28,11 @@
 #include "utils/log.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
+#if (PA_PROTOCOL_VERSION >= 21)
+#define PA_SUPPORTS_PASSTHROUGH 1
+#else
+#define PA_SUPPORTS_PASSTHROUGH 0
+#endif
 
 static const char *ContextStateToString(pa_context_state s)
 {
@@ -166,11 +171,18 @@ CPulseAudioDirectSound::CPulseAudioDirectSound()
 
 bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
 {
+  if ( bPassthrough )
+  {
+    return InitializePassthrough(pCallback, device, iChannels
+            , channelMap, uiSamplesPerSec, uiBitsPerSample
+			, bResample, bIsMusic);
+  }
+
   m_remap.Reset();
   m_uiDataChannels = iChannels;
   enum PCMChannels* outLayout = NULL;
 
-  if (!bPassthrough && channelMap)
+  if (channelMap)
   {
     /* set the input format, and get the channel layout so we know what we need to open */
     outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
@@ -206,13 +218,6 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
 
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
   m_dwNumPackets = 16;
-
-  /* Open the device */
-  if (m_bPassthrough)
-  {
-    CLog::Log(LOGWARNING, "PulseAudio: Does not support passthrough");
-    return false;
-  }
 
   std::vector<CStdString> hostdevice;
   CUtil::Tokenize(device, hostdevice, "@");
@@ -271,7 +276,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     }
   }
   else
-    pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA); 
+    pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA);
 
   pa_cvolume_reset(&m_Volume, m_SampleSpec.channels);
 
@@ -296,21 +301,8 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     return false;
   }
 
-  /* Wait until the stream is ready */
-  do
-  {
-    pa_threaded_mainloop_wait(m_MainLoop);
-    CLog::Log(LOGDEBUG, "PulseAudio: Stream %s", StreamStateToString(pa_stream_get_state(m_Stream)));
-  }
-  while (pa_stream_get_state(m_Stream) != PA_STREAM_READY && pa_stream_get_state(m_Stream) != PA_STREAM_FAILED);
-
-  if (pa_stream_get_state(m_Stream) == PA_STREAM_FAILED)
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Waited for the stream but it failed");
-    pa_threaded_mainloop_unlock(m_MainLoop);
-    Deinitialize();
+  if ( ! WaitForStreamReady() )
     return false;
-  }
 
   const pa_buffer_attr *a;
 
@@ -320,12 +312,15 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   {
     m_dwPacketSize = a->minreq;
     CLog::Log(LOGDEBUG, "PulseAudio: Default buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
+
+    m_dwPacketSize = a->minreq;
+    m_uiBufferSize = a->maxlength;
     pa_buffer_attr b;
-    b.prebuf = (uint32_t)-1;
-    b.minreq = a->minreq;
-    b.tlength = m_uiBufferSize = a->tlength;
-    b.maxlength = a->maxlength;
-    b.fragsize = a->fragsize;
+    b.minreq = (uint32_t)-1; // use default
+    b.prebuf = (uint32_t)-1; // use default
+    b.tlength = (uint32_t)-1; // use default
+    b.maxlength = (uint32_t)-1; // use default
+    b.fragsize = (uint32_t)-1; // use default
 
     WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &b, NULL, NULL), m_MainLoop, "SetBuffer");
 
@@ -334,7 +329,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     else
     {
       m_dwPacketSize = a->minreq;
-      m_uiBufferSize = a->tlength;
+      m_uiBufferSize = a->maxlength;
       CLog::Log(LOGDEBUG, "PulseAudio: Choosen buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
     }
   }
@@ -347,6 +342,195 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   Resume();
   return true;
 }
+
+bool CPulseAudioDirectSound::InitializePassthrough(IAudioCallback* pCallback
+  , const CStdString &device
+  , int iChannels
+  , enum PCMChannels* channelMap
+  , unsigned int uiSamplesPerSec
+  , unsigned int uiBitsPerSample
+  , bool bResample
+  , bool bIsMusic)
+{
+#if ! PA_SUPPORTS_PASSTHROUGH
+  return false;
+#else // ! PA_SUPPORTS_PASSTHROUGH
+  m_remap.Reset(); // no remapping used in passthrough
+  m_uiDataChannels = iChannels;
+
+  bool bAudioOnAllSpeakers(false);
+  g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
+  g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
+
+  m_Context = 0;
+  m_Stream = 0;
+  m_MainLoop = 0;
+  m_bPause = false;
+  m_bRecentlyFlushed = true;
+  m_bAutoResume = false;
+  m_bIsAllocated = false;
+  m_bPassthrough = true;
+  m_uiChannels = iChannels;
+  const int passThroughChannels(6); // assume 5.1 for passthrough, used for calculating bytes/sec
+  m_uiSamplesPerSec = uiSamplesPerSec;
+  m_uiBufferSize = 0;
+  m_uiBitsPerSample = uiBitsPerSample;
+  m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * passThroughChannels; // calcs to 576k
+                                                                                      // should be close enough
+
+  m_nCurrentVolume = g_settings.m_nVolumeLevel;
+  m_dwPacketSize = 4096; // 4096 max packet size for passthrough
+  m_dwNumPackets = 16;
+
+  CLog::Log(LOGDEBUG,
+    "CPulseAudioDirectSound::InitializePassthrough - packet size:%u, packet count:%u"
+    , m_dwPacketSize, m_dwNumPackets);
+
+  std::vector<CStdString> hostdevice;
+  CUtil::Tokenize(device, hostdevice, "@");
+
+  const char *host = ( hostdevice.size() < 2 || hostdevice[1].Equals("default" )
+                        ? 0 : hostdevice[1].c_str());
+
+  if ( ! SetupContext(host, &m_Context, &m_MainLoop) )
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
+    Deinitialize();
+    return false;
+  }
+
+  pa_threaded_mainloop_lock(m_MainLoop);
+
+  struct pa_channel_map map;
+
+  m_SampleSpec.channels = iChannels;
+  m_SampleSpec.rate = uiSamplesPerSec;
+  m_SampleSpec.format = PA_SAMPLE_S16NE;
+
+  if ( ! pa_sample_spec_valid(&m_SampleSpec) )
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
+    Deinitialize();
+    return false;
+  }
+
+  map.channels = iChannels;
+  pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA);
+
+  if ( ! (m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) )
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Could not create a stream");
+    pa_threaded_mainloop_unlock(m_MainLoop);
+    Deinitialize();
+    return false;
+  }
+
+  pa_stream_set_state_callback(m_Stream, StreamStateCallback, m_MainLoop);
+  pa_stream_set_write_callback(m_Stream, StreamRequestCallback, m_MainLoop);
+  pa_stream_set_latency_update_callback(m_Stream, StreamLatencyUpdateCallback, m_MainLoop);
+
+  const char *sink = ( hostdevice.size() < 1 || hostdevice[0].Equals("default") )
+                        ? 0 : hostdevice[0].c_str();
+
+  pa_stream_flags paFlags =
+    (pa_stream_flags)(PA_STREAM_PASSTHROUGH | PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE);
+
+  if ( pa_stream_connect_playback(m_Stream, sink, 0, paFlags, 0, 0) < 0 )
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to connect stream to output");
+    pa_threaded_mainloop_unlock(m_MainLoop);
+    Deinitialize();
+    return false;
+  }
+
+  if ( ! WaitForStreamReady() )
+    return false;
+
+  const pa_buffer_attr *a;
+
+  if ( ! (a = pa_stream_get_buffer_attr(m_Stream)) )
+      CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
+  else
+  {
+    CLog::Log(LOGDEBUG
+          , "PulseAudio: Default buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u"
+          , a->maxlength
+          , a->tlength
+          , a->prebuf
+          , a->minreq);
+
+    char cmt[PA_CHANNEL_MAP_SNPRINT_MAX];
+    char sst[PA_SAMPLE_SPEC_SNPRINT_MAX];
+
+    CLog::Log(LOGDEBUG, "Using sample spec '%s', channel map '%s'."
+      , pa_sample_spec_snprint(sst, sizeof(sst), pa_stream_get_sample_spec(m_Stream))
+      , pa_channel_map_snprint(cmt, sizeof(cmt), pa_stream_get_channel_map(m_Stream)));
+
+    CLog::Log(LOGDEBUG, "Connected to device %s (%u, %ssuspended)."
+      , pa_stream_get_device_name(m_Stream)
+      , pa_stream_get_device_index(m_Stream)
+      , pa_stream_is_suspended(m_Stream) ? "" : "not ");
+
+    m_dwPacketSize = a->minreq;
+    m_uiBufferSize = a->maxlength;
+    pa_buffer_attr b;
+    b.minreq = (uint32_t)-1; // use default
+    b.prebuf = (uint32_t)-1; // use default
+    b.tlength = (uint32_t)-1; // use default
+    b.maxlength = (uint32_t)-1; // use default
+    b.fragsize = (uint32_t)-1; // use default
+
+    WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &b, 0, 0), m_MainLoop, "SetBuffer");
+
+    if ( ! (a = pa_stream_get_buffer_attr(m_Stream)) )
+        CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
+    else
+    {
+      m_dwPacketSize = a->minreq;
+      m_uiBufferSize = a->maxlength;
+      CLog::Log(LOGDEBUG
+          , "PulseAudio: Chosen buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u"
+          , a->maxlength
+          , a->tlength
+          , a->prebuf
+          , a->minreq);
+    }
+  }
+
+  pa_threaded_mainloop_unlock(m_MainLoop);
+
+  m_bIsAllocated = true;
+
+  Resume();
+  return true;
+#endif // ! PA_SUPPORTS_PASSTHROUGH
+}
+
+bool CPulseAudioDirectSound::WaitForStreamReady()
+{
+  for ( ; ; ) // Wait until the stream is ready
+  {
+    pa_threaded_mainloop_wait(m_MainLoop);
+    pa_stream_state_t state = pa_stream_get_state(m_Stream);
+
+    CLog::Log(LOGDEBUG, "PulseAudio: Stream %s", StreamStateToString(state));
+
+	if ( state == PA_STREAM_READY )
+    {
+      break;
+    }
+	else if ( state == PA_STREAM_FAILED )
+    {
+      CLog::Log(LOGERROR, "PulseAudio: Waited for the stream but it failed");
+      pa_threaded_mainloop_unlock(m_MainLoop);
+      Deinitialize();
+      return false;
+    }
+  }
+
+  return true;
+}
+
 
 CPulseAudioDirectSound::~CPulseAudioDirectSound()
 {
@@ -631,6 +815,10 @@ void CPulseAudioDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSp
 
 void CPulseAudioDirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough)
 {
+#if ! PA_SUPPORTS_PASSTHROUGH
+  if ( passthrough )
+    return;
+#endif // ! PA_SUPPORTS_PASSTHROUGH
   pa_context *context;
   pa_threaded_mainloop *mainloop;
 
@@ -640,18 +828,15 @@ void CPulseAudioDirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, boo
     return;
   }
 
-  if (!passthrough)
-  {
-    pa_threaded_mainloop_lock(mainloop);
+  pa_threaded_mainloop_lock(mainloop);
 
-    SinkInfoStruct sinkStruct;
-    sinkStruct.mainloop = mainloop;
-    sinkStruct.list = &vAudioSinks;
-    vAudioSinks.push_back(AudioSink(g_localizeStrings.Get(409) + " (PulseAudio)", "pulse:default@default"));
-    WaitForOperation(pa_context_get_sink_info_list(context,	SinkInfo, &sinkStruct), mainloop, "EnumerateAudioSinks");
+  SinkInfoStruct sinkStruct;
+  sinkStruct.mainloop = mainloop;
+  sinkStruct.list = &vAudioSinks;
+  vAudioSinks.push_back(AudioSink(g_localizeStrings.Get(409) + " (PulseAudio)", "pulse:default@default"));
+  WaitForOperation(pa_context_get_sink_info_list(context,	SinkInfo, &sinkStruct), mainloop, "EnumerateAudioSinks");
 
-    pa_threaded_mainloop_unlock(mainloop);
-  }
+  pa_threaded_mainloop_unlock(mainloop);
 
   if (mainloop)
     pa_threaded_mainloop_stop(mainloop);
@@ -718,5 +903,5 @@ bool CPulseAudioDirectSound::SetupContext(const char *host, pa_context **context
   pa_threaded_mainloop_unlock(*mainloop);
   return true;
 }
-#endif
+#endif // HAS_PULSEAUDIO
 
