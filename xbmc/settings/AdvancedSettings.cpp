@@ -47,6 +47,7 @@ void CAdvancedSettings::Initialize()
 {
   m_audioHeadRoom = 0;
   m_ac3Gain = 12.0f;
+  m_audioErrorCorrectionSpeed = 10;
   m_audioApplyDrc = true;
   m_dvdplayerIgnoreDTSinWAV = false;
 
@@ -333,6 +334,8 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
   {
     XMLUtils::GetFloat(pElement, "ac3downmixgain", m_ac3Gain, -96.0f, 96.0f);
     XMLUtils::GetInt(pElement, "headroom", m_audioHeadRoom, 0, 12);
+    // 0 is used for old behavior
+    XMLUtils::GetFloat(pElement, "errorcorrectionspeed", m_audioErrorCorrectionSpeed, 0.0f, 30.0f);
     XMLUtils::GetString(pElement, "defaultplayer", m_audioDefaultPlayer);
     // 101 on purpose - can be used to never automark as watched
     XMLUtils::GetFloat(pElement, "playcountminimumpercent", m_audioPlayCountMinimumPercent, 0.0f, 101.0f);

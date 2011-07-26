@@ -26,6 +26,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDCodecs/DVDFactoryCodec.h"
 #include "DVDPerformanceCounter.h"
+#include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
 #include "video/VideoReferenceClock.h"
 #include "utils/log.h"
@@ -154,6 +155,8 @@ CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
   m_pClock = pClock;
   m_pAudioCodec = NULL;
   m_audioClock = 0;
+  m_audioError = 0;
+  m_audioErrorSpeed = g_advancedSettings.m_audioErrorCorrectionSpeed < 0.1f ? 0 : g_advancedSettings.m_audioErrorCorrectionSpeed;
   m_droptime = 0;
   m_speed = DVD_PLAYSPEED_NORMAL;
   m_stalled = true;
@@ -299,8 +302,14 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
       /* the packet dts refers to the first audioframe that starts in the packet */
       double dts = m_ptsInput.Get(m_decode.size + m_pAudioCodec->GetBufferSize(), true);
-      if (dts != DVD_NOPTS_VALUE)
+      if (dts != DVD_NOPTS_VALUE && m_audioErrorSpeed == 0.0f)
         m_audioClock = dts;
+      else if (dts != DVD_NOPTS_VALUE)
+      {
+        /* slowly apply dts changes over defined time period */
+        m_audioError  = dts - m_audioClock;
+        m_audioClock += m_duration / DVD_TIME_BASE * m_audioError / m_audioErrorSpeed;
+      }
 
       int len = m_pAudioCodec->Decode(m_decode.data, m_decode.size);
       m_audioStats.AddSampleBytes(m_decode.size);
@@ -898,6 +907,7 @@ string CDVDPlayerAudio::GetPlayerInfo()
   std::ostringstream s;
   s << "aq:"     << setw(2) << min(99,m_messageQueue.GetLevel() + MathUtils::round_int(100.0/8.0*m_dvdAudio.GetCacheTime())) << "%";
   s << ", kB/s:" << fixed << setprecision(2) << (double)GetAudioBitrate() / 1024.0;
+  s << ", ae:"   << fixed << setprecision(0) << m_audioError * 0.001;
 
   //print the inverse of the resample ratio, since that makes more sense
   //if the resample ratio is 0.5, then we're playing twice as fast
