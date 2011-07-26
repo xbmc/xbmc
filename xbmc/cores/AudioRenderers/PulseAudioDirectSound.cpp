@@ -306,6 +306,16 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
 
   const pa_buffer_attr *a;
 
+  /*
+   * BufferSizeFactor is a magic number
+   * that is necessary to work around
+   * a problem in xbmc master. (doesn't affect Dharma)
+   * There is a buffer underrun seemingly caused
+   * by the program sleeping too long.
+   * It causes music to drop-out.
+   */
+  const uint32_t BufferSizeFactor(4);
+
   if (!(a = pa_stream_get_buffer_attr(m_Stream)))
       CLog::Log(LOGERROR, "PulseAudio: %s", pa_strerror(pa_context_errno(m_Context)));
   else
@@ -314,7 +324,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     CLog::Log(LOGDEBUG, "PulseAudio: Default buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
 
     m_dwPacketSize = a->minreq;
-    m_uiBufferSize = a->maxlength;
+    m_uiBufferSize = a->maxlength / BufferSizeFactor;
     pa_buffer_attr b;
     b.minreq = (uint32_t)-1; // use default
     b.prebuf = (uint32_t)-1; // use default
@@ -329,7 +339,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     else
     {
       m_dwPacketSize = a->minreq;
-      m_uiBufferSize = a->maxlength;
+      m_uiBufferSize = a->maxlength / BufferSizeFactor;
       CLog::Log(LOGDEBUG, "PulseAudio: Choosen buffer attributes, maxlength=%u, tlength=%u, prebuf=%u, minreq=%u", a->maxlength, a->tlength, a->prebuf, a->minreq);
     }
   }
