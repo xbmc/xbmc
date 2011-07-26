@@ -27,6 +27,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
+#include <AudioFilter/Parsers.h>
 
 using namespace std;
 
@@ -75,14 +76,24 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 {
   CLog::Log(LOGNOTICE, "Creating audio device with codec id: %i, channels: %i, sample rate: %i, %s", codec, audioframe.channels, audioframe.sample_rate, audioframe.passthrough ? "pass-through" : "no pass-through");
 
-  // if passthrough isset do something else
+  int sample_rate(audioframe.sample_rate);
+  AudioFilter::HeaderInfo hi;
+  AudioFilter::DtsHeaderParser hp;
+
+  if ( hp.parseHeader(audioframe.data, &hi) && hi.isHd() )
+    sample_rate *= 4;
+
+  // if passthrough is set do something else
   CSingleLock lock (m_critSection);
-  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels, audioframe.channel_map, audioframe.sample_rate, audioframe.bits_per_sample, false, false, audioframe.passthrough);
+  m_pAudioDecoder = CAudioRendererFactory::Create(m_pCallback, audioframe.channels
+                               , audioframe.channel_map, sample_rate
+                               , audioframe.bits_per_sample, false, false
+                               , audioframe.passthrough);
 
   if (!m_pAudioDecoder) return false;
 
   m_iChannels = audioframe.channels;
-  m_iBitrate = audioframe.sample_rate;
+  m_iBitrate = sample_rate;
   m_iBitsPerSample = audioframe.bits_per_sample;
   m_bPassthrough = audioframe.passthrough;
   if(m_iChannels && m_iBitrate && m_iBitsPerSample)

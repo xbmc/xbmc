@@ -533,6 +533,9 @@ DYNOBJSXBMC= \
 
 LIBS += @PYTHON_LDFLAGS@
 
+# Link with AudioFilter
+LIBS += -lAudioFilter
+
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
 	$(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
