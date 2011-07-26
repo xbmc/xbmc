@@ -123,12 +123,11 @@ const CPVRChannel *CPVRChannelGroupsContainer::GetChannelById(int iChannelId) co
 
 const CPVRChannel *CPVRChannelGroupsContainer::GetChannelByEpgId(int iEpgId) const
 {
-	const CPVRChannel *channel = m_groupsTV->GetGroupAll()->GetByChannelEpgID(iEpgId);
+  const CPVRChannel *channel = m_groupsTV->GetGroupAll()->GetByChannelEpgID(iEpgId);
+  if (!channel)
+    channel = m_groupsRadio->GetGroupAll()->GetByChannelEpgID(iEpgId);
 
-	if (!channel)
-		channel = m_groupsRadio->GetGroupAll()->GetByChannelEpgID(iEpgId);
-
-	return channel;
+  return channel;
 }
 
 bool CPVRChannelGroupsContainer::GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio)
