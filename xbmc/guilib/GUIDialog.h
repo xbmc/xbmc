@@ -64,7 +64,6 @@ protected:
 
   virtual void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   virtual void Show_Internal(); // modeless
-  virtual void Close_Internal(bool forceClose = false);
 
   bool m_bRunning;
   bool m_wasRunning; ///< \brief true if we were running during the last DoProcess()
