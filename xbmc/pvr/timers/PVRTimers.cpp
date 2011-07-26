@@ -147,7 +147,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
           timerNotifications.push_back(strMessage);
         }
 
-        CLog::Log(LOGINFO,"PVRTimers - %s - updated timer %d on client %d",
+        CLog::Log(LOGDEBUG,"PVRTimers - %s - updated timer %d on client %d",
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
       }
     }
@@ -167,7 +167,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
         timerNotifications.push_back(strMessage);
       }
 
-      CLog::Log(LOGINFO,"PVRTimers - %s - added timer %d on client %d",
+      CLog::Log(LOGDEBUG,"PVRTimers - %s - added timer %d on client %d",
           __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
     }
   }
@@ -182,7 +182,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
     if (timers->GetByClient(timer->m_iClientId, timer->m_iClientIndex) == NULL)
     {
       /* timer was not found */
-      CLog::Log(LOGINFO,"PVRTimers - %s - deleted timer %d on client %d",
+      CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d",
           __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
 
       if (g_PVRManager.IsStarted())
