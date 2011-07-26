@@ -36,10 +36,9 @@ namespace EPG
 {
   #define g_EpgContainer CEpgContainer::Get()
 
-  class CEpgContainer : public std::vector<CEpg *>,
-                   public Observer,
-                   public Observable,
-                   private CThread
+  class CEpgContainer : public Observer,
+    public Observable,
+    private CThread
   {
     friend class CEpgDatabase;
 
@@ -60,6 +59,7 @@ namespace EPG
     time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
     time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
     time_t       m_iLastEpgActiveTagCheck; /*!< the time the EPG checked for active tag updates */
+    std::map<int, CEpg*> m_epgs;       /*!< the EPGs in this container */
     //@}
 
     CGUIDialogExtendedProgressBar *m_progressDialog; /*!< the progress dialog that is visible when updating the first time */
@@ -203,26 +203,32 @@ namespace EPG
      * @brief Get the start time of the first entry.
      * @return The start time.
      */
-    virtual const CDateTime GetFirstEPGDate(void) const;
+    virtual const CDateTime GetFirstEPGDate(void);
 
     /*!
       * @brief Get the end time of the last entry.
       * @return The end time.
       */
-    virtual const CDateTime GetLastEPGDate(void) const;
+    virtual const CDateTime GetLastEPGDate(void);
 
     /*!
      * @brief Get an EPG table given it's ID.
      * @param iEpgId The database ID of the table.
      * @return The table or NULL if it wasn't found.
      */
-    virtual CEpg *GetById(int iEpgId) const;
+    virtual CEpg *GetById(int iEpgId);
 
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
      * @return True if the check was done, false if it was not the right time to check
      */
     virtual bool CheckPlayingEvents(void);
+
+    /*!
+     * @brief Insert an epg into the table. If the table already contains an entry with the same id, then that entry will be replaced.
+     * @param epg The EPG to insert.
+     */
+    virtual void InsertEpg(CEpg *epg);
 
     /*!
      * @brief Close the progress bar if it's visible.

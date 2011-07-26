@@ -110,8 +110,8 @@ int PVR::CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSear
 {
   /* get filtered results from all tables */
   CSingleLock lock(m_critSection);
-  for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
-    ((CPVREpg *)at(iEpgPtr))->Get(results, filter);
+  for (std::map<int, CEpg*>::iterator itr = m_epgs.begin(); itr != m_epgs.end(); itr++)
+    ((CPVREpg *)m_epgs[(*itr).first])->Get(results, filter);
   lock.Leave();
 
   /* remove duplicate entries */

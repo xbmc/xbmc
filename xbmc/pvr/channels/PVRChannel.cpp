@@ -717,7 +717,7 @@ CPVREpg *CPVRChannel::GetEPG(void)
       m_EPG = new CPVREpg(this, false);
       if (!g_guiSettings.GetBool("epg.ignoredbforclient"))
         m_EPG->Persist();
-      g_PVREpg->push_back(m_EPG);
+      g_PVREpg->InsertEpg(m_EPG);
     }
 
     if (m_EPG && m_iEpgId != m_EPG->EpgID())
