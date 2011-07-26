@@ -334,22 +334,24 @@ void PAPlayer::Process()
   }
 
   CLog::Log(LOGDEBUG, "PAPlayer::Process - Playback started");  
-
   while(m_isPlaying)
   {
     float delay = 1.0f;
-    ProcessStreams(delay);
-
-    /* try to keep the buffer 75% full */
-    const float mul = 13.333333333f;
-    delay = delay * mul;    
-    Sleep(MathUtils::round_int(delay));
+    float buffer = 1.0f;
+    ProcessStreams(delay, buffer);
+    if (buffer > 0.2)
+    {
+      /* try to keep the buffer 75% full */
+      const float mul = 13.333333333f;
+      delay = delay * mul;
+      Sleep(MathUtils::round_int(delay));
+    }
   }
   
   m_callback.OnPlayBackEnded();
 }
 
-inline void PAPlayer::ProcessStreams(float &delay)
+inline void PAPlayer::ProcessStreams(float &delay, float &buffer)
 {
   CSharedLock sharedLock(m_streamsLock);
   if (m_isFinished && m_streams.empty() && m_finishing.empty())
@@ -380,7 +382,7 @@ inline void PAPlayer::ProcessStreams(float &delay)
     if (!m_currentStream && !si->m_started)
       m_currentStream = si;
         
-    if ((si->m_fadeOutTriggered && si->m_stream && !si->m_stream->IsFading()) || !PrepareStream(si) || !ProcessStream(si, delay))
+    if ((si->m_fadeOutTriggered && si->m_stream && !si->m_stream->IsFading()) || !PrepareStream(si) || !ProcessStream(si, delay, buffer))
     {
       /* if the stream is finshed */
       sharedLock.Leave();
@@ -441,7 +443,7 @@ inline void PAPlayer::ProcessStreams(float &delay)
   }
 }
 
-inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay)
+inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay, float &buffer)
 {
   /* if playback needs to start on this stream, do it */
   if (si == m_currentStream && !si->m_started)
@@ -471,9 +473,15 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay)
   unsigned int size = std::min(si->m_decoder.GetDataSize(), space / si->m_bytesPerSample);
   if (!size)
   {
+    float cacheTime = si->m_stream->GetCacheTime();
+    float cacheTotalTime = si->m_stream->GetCacheTotal();
+
     /* update the delay time if we are running */
     if (si->m_started)
-      delay = std::min(delay, si->m_stream->GetCacheTime());  
+    {
+      delay = std::min(delay, cacheTime);
+      buffer = std::min(buffer, cacheTime / cacheTotalTime);
+    }
     return true;
   }
   
@@ -487,9 +495,15 @@ inline bool PAPlayer::ProcessStream(StreamInfo *si, float &delay)
   unsigned int added = si->m_stream->AddData(data, size * si->m_bytesPerSample);
   si->m_samplesSent += added / si->m_bytesPerSample;
 
+  float cacheTime = si->m_stream->GetCacheTime();
+  float cacheTotalTime = si->m_stream->GetCacheTotal();
+
   /* update the delay time if we are running */
-  if (si->m_started)  
-    delay = std::min(delay, si->m_stream->GetCacheTime());  
+  if (si->m_started)
+  {
+    delay = std::min(delay, cacheTime);
+    buffer = std::min(buffer, cacheTime / cacheTotalTime);
+  }
   
   return true;
 }
