@@ -2204,6 +2204,8 @@
   <string id="24043">Verfügbare Updates</string>
   <string id="24044">Abhängigkeiten nicht erfüllt</string>
   <string id="24045">Add-on verfügt nicht über die richtige Struktur</string>
+  <string id="24046">%s wird von den folgenden Add-ons verwendet</string>
+  <string id="24047">Das Add-on kann nicht deinstalliert werden</string>
 
   <string id="24050">Verfügbare Add-ons</string>
   <string id="24051">Version:</string>

@@ -21,6 +21,7 @@
 
 #include "GUIDialogAddonInfo.h"
 #include "dialogs/GUIDialogYesNo.h"
+#include "dialogs/GUIDialogOK.h"
 #include "addons/AddonManager.h"
 #include "AddonDatabase.h"
 #include "FileItem.h"
@@ -31,6 +32,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "utils/JobManager.h"
 #include "utils/FileOperationJob.h"
+#include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "addons/AddonInstaller.h"
 
@@ -158,6 +160,26 @@ void CGUIDialogAddonInfo::OnUninstall()
 {
   if (!m_localAddon.get())
     return;
+
+  // ensure the addon is not a dependency of other installed addons
+  VECADDONS addons;
+  CStdStringArray deps;
+  CAddonMgr::Get().GetAllAddons(addons);
+  for (VECADDONS::iterator it  = addons.begin();
+                           it != addons.end();++it)
+  {
+    if ((*it)->GetDeps().find(m_localAddon->ID()) != (*it)->GetDeps().end())
+      deps.push_back((*it)->Name());
+  }
+
+  if (deps.size())
+  {
+    CStdString strLine0, strLine1;
+    StringUtils::JoinString(deps, ", ", strLine1);
+    strLine0.Format(g_localizeStrings.Get(24046), m_localAddon->Name().c_str());
+    CGUIDialogOK::ShowAndGetInput(24037, strLine0, strLine1, 24047);
+    return;
+  }
 
   // ensure the addon isn't disabled in our database
   CAddonDatabase database;
