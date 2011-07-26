@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "signal.h"
 #include "limits.h"
@@ -285,14 +286,14 @@ void CExternalPlayer::Process()
   LockSetForegroundWindow(LSFW_UNLOCK);
 #endif
 
-  m_playbackStartTime = CTimeUtils::GetTimeMS();
+  m_playbackStartTime = XbmcThreads::SystemClockMillis();
   BOOL ret = TRUE;
 #if defined(_WIN32)
   ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
 #elif defined(_LINUX)
   ret = ExecuteAppLinux(strFArgs.c_str());
 #endif
-  int64_t elapsedMillis = CTimeUtils::GetTimeMS() - m_playbackStartTime;
+  int64_t elapsedMillis = XbmcThreads::SystemClockMillis() - m_playbackStartTime;
 
   if (ret && (m_islauncher || elapsedMillis < LAUNCHER_PROCESS_TIME))
   {
@@ -538,7 +539,7 @@ void CExternalPlayer::SeekTime(__int64 iTime)
 
 __int64 CExternalPlayer::GetTime() // in millis
 {
-  if ((CTimeUtils::GetTimeMS() - m_playbackStartTime) / 1000 > m_playCountMinTime)
+  if ((XbmcThreads::SystemClockMillis() - m_playbackStartTime) / 1000 > m_playCountMinTime)
   {
     m_time = m_totalTime * 1000;
   }

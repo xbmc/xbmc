@@ -23,10 +23,12 @@
 
 #include "guilib/GUIWindow.h"
 #include "interfaces/IAnnouncer.h"
+#include "utils/Job.h"
 
 class CGUIWindowHome :
       public CGUIWindow,
-      public ANNOUNCEMENT::IAnnouncer
+      public ANNOUNCEMENT::IAnnouncer,
+      public IJobCallback
 {
 public:
   CGUIWindowHome(void);
@@ -36,7 +38,11 @@ public:
 
   virtual bool OnMessage(CGUIMessage& message);
 
+  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 private:
   int m_updateRA; // flag for which recently added items needs to be queried
   void AddRecentlyAddedJobs(int flag);
+
+  bool m_recentlyAddedRunning;
+  int m_cumulativeUpdateFlag;
 };

@@ -102,6 +102,9 @@ void CGUIFontTTFDX::End()
   if (--m_nestedBeginCount > 0)
     return;
 
+  if (m_vertex_count == 0)
+    return;
+
   unsigned index_size = m_vertex_size * 6 / 4;
   if(m_index_size < index_size)
   {

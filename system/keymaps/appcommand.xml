@@ -23,6 +23,8 @@
       <pause>Pause</pause>
       <fastforward>FastForward</fastforward>
       <rewind>Rewind</rewind>
+      <channelup>PageUp</channelup>
+      <channeldown>PageDown</channeldown>
     </appcommand>
   </global>
 </keymap>

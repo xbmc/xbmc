@@ -27,6 +27,8 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "threads/Condition.h"
 
+#include <map>
+
 class CFileItem;
 class CFileItemList;
 namespace ADDON
@@ -385,6 +387,16 @@ protected:
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
+
+  class NotFrameCount
+  {
+    CApplication* ths;
+  public:
+    inline NotFrameCount(CApplication* o) : ths(o) {}
+    inline bool operator!() { return !(ths->m_frameCount); }
+  };
+
+  friend class NotFrameCount;
 };
 
 extern CApplication g_application;

@@ -26,9 +26,9 @@
 
 #include "guilib/Geometry.h"
 #include "guilib/TransformMatrix.h"
+#include "guilib/DirtyRegion.h"
 #include "utils/StdString.h"
 #include <stdint.h>
-
 
 typedef enum _RenderingSystemType
 {
@@ -69,7 +69,7 @@ public:
 
   virtual bool BeginRender() = 0;
   virtual bool EndRender() = 0;
-  virtual bool PresentRender() = 0;
+  virtual bool PresentRender(const CDirtyRegionList& dirty) = 0;
   virtual bool ClearBuffers(color_t color) = 0;
   virtual bool IsExtSupported(const char* extension) = 0;
 

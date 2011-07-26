@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "DVDPlayer.h"
 
@@ -1087,7 +1088,7 @@ void CDVDPlayer::Process()
         {
           if (m_dvd.iDVDStillTime > 0)
           {
-            if (CTimeUtils::GetTimeMS() >= (m_dvd.iDVDStillStartTime + m_dvd.iDVDStillTime))
+            if ((XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime) >= m_dvd.iDVDStillTime)
             {
               m_dvd.iDVDStillTime = 0;
               m_dvd.iDVDStillStartTime = 0;
@@ -3069,7 +3070,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           else
             m_dvd.iDVDStillTime = 0;
 
-          m_dvd.iDVDStillStartTime = CTimeUtils::GetTimeMS();
+          m_dvd.iDVDStillStartTime = XbmcThreads::SystemClockMillis();
 
           /* adjust for the output delay in the video queue */
           DWORD time = 0;
@@ -3659,7 +3660,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     {
       if(m_dvd.state == DVDSTATE_STILL)
       {
-        m_State.time       = CTimeUtils::GetTimeMS() - m_dvd.iDVDStillStartTime;
+        m_State.time       = XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime;
         m_State.time_total = m_dvd.iDVDStillTime;
       }
 

@@ -24,6 +24,7 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "Application.h"
 #include "FileShoutcast.h"
@@ -39,7 +40,7 @@ using namespace MUSIC_INFO;
 
 CFileShoutcast::CFileShoutcast()
 {
-  m_lastTime = CTimeUtils::GetTimeMS();
+  m_lastTime = XbmcThreads::SystemClockMillis();
   m_discarded = 0;
   m_currint = 0;
   m_buffer = NULL;
@@ -95,9 +96,9 @@ unsigned int CFileShoutcast::Read(void* lpBuf, int64_t uiBufSize)
     m_discarded += header*16+1;
     m_currint = 0;
   }
-  if (CTimeUtils::GetTimeMS() - m_lastTime > 500)
+  if (XbmcThreads::SystemClockMillis() - m_lastTime > 500)
   {
-    m_lastTime = CTimeUtils::GetTimeMS();
+    m_lastTime = XbmcThreads::SystemClockMillis();
     g_infoManager.SetCurrentSongTag(m_tag);
   }
 

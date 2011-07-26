@@ -72,7 +72,7 @@ protected:
 
   bool         m_bWasFullScreenBeforeMinimize;
 
-  virtual bool PresentRenderImpl();
+  virtual bool PresentRenderImpl(const CDirtyRegionList &dirty);
   virtual void SetVSyncImpl(bool enable);
   
   CStdString m_eglext;

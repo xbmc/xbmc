@@ -223,6 +223,12 @@
     <Filter Include="libs\SlingboxLib">
       <UniqueIdentifier>{dfa70c36-927b-4540-b505-35919e64eb3d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="threads\platform">
+      <UniqueIdentifier>{2165ba63-177d-4746-b1c6-e5e425c9f0a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="threads\platform\win">
+      <UniqueIdentifier>{1f49caed-1c84-46a1-83fc-b1fa6cfd749e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="cores\AudioEngine">
       <UniqueIdentifier>{9d39835a-d694-4772-ad83-0434b1a972f8}</UniqueIdentifier>
     </Filter>
@@ -2448,10 +2454,13 @@
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp">
+    <ClCompile Include="..\..\xbmc\InertialScrollingHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp">
+      <Filter>threads\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
       <Filter>threads</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\InertialScrollingHandler.cpp" />
     <ClCompile Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAE.cpp">
       <Filter>cores\AudioEngine\Engines</Filter>
     </ClCompile>
@@ -4957,6 +4966,30 @@
       <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\InertialScrollingHandler.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\Condition.h">
+      <Filter>threads\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h">
+      <Filter>threads\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h">
+      <Filter>threads\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\win\Condition.h">
+      <Filter>threads\platform\win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h">
+      <Filter>threads\platform\win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h">
+      <Filter>threads\platform\win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\platform.select.h">
+      <Filter>threads\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\SystemClock.h">
+      <Filter>threads</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\AudioEngine\Engines\SoftAEStream.h">
       <Filter>cores\AudioEngine\Engines</Filter>
     </ClInclude>

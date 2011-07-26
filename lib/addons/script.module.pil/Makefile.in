@@ -17,12 +17,15 @@ else
 PYTHON=@PYTHON@
 endif
 
+NO_SYSTEM_PIL=$(shell $(PYTHON) -m Image >/dev/null 2>&1 || echo "1")
+
 DESTDIR=@abs_top_srcdir@/addons/script.module.pil/lib/PIL
 
 CLEAN_FILES=$(ARCHIVE) $(SOURCE) $(DESTDIR)
 
 all: $(DESTDIR)
 
+ifeq (1,$(NO_SYSTEM_PIL))
 $(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
 
@@ -33,6 +36,10 @@ $(SOURCE): $(ARCHIVE)
 $(DESTDIR): $(SOURCE)
 	-rm -rf $(DESTDIR)
 	pushd $(SOURCE) && $(PYTHON) setup.py build --build-lib $(DESTDIR); popd
+else
+$(DESTDIR):
+	@true
+endif
 
 include ../../../Makefile.include
 

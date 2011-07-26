@@ -41,48 +41,42 @@ protected:
 public:
   void Initialize();
   void InitializeRemap();
-  virtual void Destroy();
-
-  virtual unsigned int GetFrameSize() {return m_format.m_frameSize;}
-  virtual unsigned int GetSpace();
-  virtual unsigned int AddData(void *data, unsigned int size);
   uint8_t* GetFrame();
-  virtual float GetDelay();
-  virtual float GetCacheTime();
-  virtual float GetCacheTotal();
 
-  bool IsPaused     () { return m_paused;      }
-  virtual bool IsDraining   () { return m_draining;    }
-  virtual bool IsDrained    ();
-  bool IsDestroyed  () { return m_delete;      }
-  bool IsValid() { return m_valid; }
+  bool IsPaused   () { return m_paused; }
+  bool IsDestroyed() { return m_delete; }
+  bool IsValid    () { return m_valid;  }
+  bool IsRaw      () const { return AE_IS_RAW(m_initDataFormat); }  
 
-  virtual void Pause   () {m_paused = true; }
-  virtual void Resume  () {m_paused = false;}
-  virtual void Drain   ();
-  virtual void Flush   ();
+  virtual void              Destroy         ();
+  virtual unsigned int      GetSpace        ();
+  virtual unsigned int      AddData         (void *data, unsigned int size);
+  virtual float             GetDelay        ();
+  virtual float             GetCacheTime    ();
+  virtual float             GetCacheTotal   ();
 
-  virtual float GetVolume    ()             { return m_volume;   }
-  virtual float GetReplayGain()             { return m_rgain ;   }
-  virtual void  SetVolume    (float volume) { m_volume = std::max( 0.0f, std::min(1.0f, volume)); }
-  virtual void  SetReplayGain(float factor) { m_rgain  = std::max(-1.0f, std::max(1.0f, factor)); }
+  virtual void              Pause           () { m_paused = true;  }
+  virtual void              Resume          () { m_paused = false; }
+  virtual void              Drain           ();
+  virtual bool              IsDraining      () { return m_draining;    }
+  virtual bool              IsDrained       ();
+  virtual void              Flush           ();
 
-  unsigned int              GetFrameSamples() { return m_format.m_frameSamples;     }
-  virtual unsigned int      GetChannelCount() { return m_initChannelLayout.Count(); }
-  virtual unsigned int      GetSampleRate()   { return m_initSampleRate;            }
-  virtual enum AEDataFormat GetDataFormat()   { return m_initDataFormat;            }
-  virtual bool              IsRaw()           { return AE_IS_RAW(m_initDataFormat); }
-
-  /* for dynamic sample rate changes (smoothvideo) */
-  virtual double GetResampleRatio();
-  virtual void   SetResampleRatio(double ratio);
-
-  virtual void RegisterAudioCallback(IAudioCallback* pCallback);
-  virtual void UnRegisterAudioCallback();
-
-  virtual void FadeVolume(float from, float to, unsigned int time);
-  virtual bool IsFading();
+  virtual float             GetVolume       ()             { return m_volume; }
+  virtual float             GetReplayGain   ()             { return m_rgain ; }
+  virtual void              SetVolume       (float volume) { m_volume = std::max( 0.0f, std::min(1.0f, volume)); }
+  virtual void              SetReplayGain   (float factor) { m_rgain  = std::max(-1.0f, std::max(1.0f, factor)); }
+  virtual unsigned int      GetFrameSize    () const       { return m_format.m_frameSize; }
+  virtual unsigned int      GetChannelCount () const       { return m_initChannelLayout.Count(); }
+  virtual unsigned int      GetSampleRate   () const       { return m_initSampleRate; }
+  virtual enum AEDataFormat GetDataFormat   () const       { return m_initDataFormat; }
   
+  virtual double            GetResampleRatio();
+  virtual void              SetResampleRatio(double ratio);
+  virtual void              RegisterAudioCallback(IAudioCallback* pCallback);
+  virtual void              UnRegisterAudioCallback();
+  virtual void              FadeVolume(float from, float to, unsigned int time);
+  virtual bool              IsFading();
 private:
   void InternalFlush();
   void CheckResampleBuffers();

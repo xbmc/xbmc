@@ -265,14 +265,16 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     CLog::Log(LOGDEBUG, "Texture manager texture clamp:new texture size: %i x %i", width, height);
   }
 
-  Allocate(width, height, XB_FMT_A8R8G8B8);
+  // use RGBA to skip swizzling
+  Allocate(width, height, XB_FMT_RGBA8);
   m_orientation = rotate;
     
   CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
 
+  // hw convert jmpeg to RGBA
   CGContextRef context = CGBitmapContextCreate(m_pixels,
     width, height, 8, GetPitch(), colorSpace,
-    kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host);
+    kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
 
   CGColorSpaceRelease(colorSpace);
 
@@ -368,11 +370,12 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   return true;
 }
 
-bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, unsigned char* pixels)
+bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels)
 {
   m_imageWidth = width;
   m_imageHeight = height;
   m_format = format;
+  m_hasAlpha = hasAlpha;
   Update(width, height, pitch, format, pixels, false);
   return true;
 }
@@ -437,6 +440,7 @@ unsigned int CBaseTexture::GetPitch(unsigned int width) const
     return ((width + 3) / 4) * 16;
   case XB_FMT_A8:
     return width;
+  case XB_FMT_RGBA8:
   case XB_FMT_A8R8G8B8:
   default:
     return width*4;

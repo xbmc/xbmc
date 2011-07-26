@@ -9,6 +9,7 @@
 
 /********************************* Includes ***********************************/
 
+#include "threads/SystemClock.h"
 #include "Application.h"
 #include "XBMCConfiguration.h"
 #include "XBMChttp.h"
@@ -2062,9 +2063,9 @@ CStdString CXbmcHttp::GetCloseTag()
 CKey CXbmcHttp::GetKey()
 {
   if (repeatKeyRate!=0)
-    if (CTimeUtils::GetTimeMS() >= MarkTime + repeatKeyRate)
+    if ((XbmcThreads::SystemClockMillis() - MarkTime) >=  repeatKeyRate)
     {
-      MarkTime=CTimeUtils::GetTimeMS();
+      MarkTime=XbmcThreads::SystemClockMillis();
       key=lastKey;
     }
   return key;

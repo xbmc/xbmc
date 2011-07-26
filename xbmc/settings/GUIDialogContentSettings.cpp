@@ -41,7 +41,7 @@ using namespace std;
 using namespace ADDON;
 
 CGUIDialogContentSettings::CGUIDialogContentSettings(void)
-    : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml")
+  : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml"), m_origContent(CONTENT_NONE)
 {
   m_bNeedSave = false;
   m_content = CONTENT_NONE;

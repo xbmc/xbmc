@@ -33,6 +33,7 @@
 #include "utils/log.h"
 #include <map>
 #include <queue>
+#include "math.h"
 
 using namespace DBUSSERVER;
 using namespace std;

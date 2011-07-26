@@ -18,6 +18,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "threads/SystemClock.h"
 #include "Thread.h"
 #ifndef _LINUX
 #include <process.h>
@@ -233,7 +234,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   {
     throw 1; //ERROR should not b possible!!!
   }
-  m_iLastTime = CTimeUtils::GetTimeMS() * 10000;
+  m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
   m_bAutoDelete = bAutoDelete;
@@ -413,7 +414,7 @@ std::string CThread::GetTypeName(void)
 #if defined(_MSC_VER)
   // Visual Studio 2010 returns the name as "class CThread" etc
   if (name.substr(0, 6) == "class ")
-    name = name.Right(name.length() - 6);
+    name = name.substr(6, name.length() - 6);
 #elif defined(__GNUC__) && !defined(__clang__)
   // gcc provides __cxa_demangle to demangle the name
   char* demangled = NULL;
@@ -475,7 +476,7 @@ void CThread::Process()
 
 float CThread::GetRelativeUsage()
 {
-  unsigned __int64 iTime = CTimeUtils::GetTimeMS();
+  unsigned __int64 iTime = XbmcThreads::SystemClockMillis();
   iTime *= 10000; // convert into 100ns tics
 
   // only update every 1 second

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "GUIWindowSlideShow.h"
 #include "Application.h"
@@ -42,10 +43,8 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "playlists/PlayList.h"
 
 using namespace XFILE;
-using namespace PLAYLIST;
 
 #define MAX_ZOOM_FACTOR                     10
 #define MAX_PICTURE_SIZE             2048*2048
@@ -95,12 +94,12 @@ void CBackgroundPicLoader::Process()
     {
       if (m_pCallback)
       {
-        unsigned int start = CTimeUtils::GetTimeMS();
+        unsigned int start = XbmcThreads::SystemClockMillis();
         CBaseTexture* texture = new CTexture();
         unsigned int originalWidth = 0;
         unsigned int originalHeight = 0;
         texture->LoadFromFile(m_strFileName, m_maxWidth, m_maxHeight, g_guiSettings.GetBool("pictures.useexifrotation"), &originalWidth, &originalHeight);
-        totalTime += CTimeUtils::GetTimeMS() - start;
+        totalTime += XbmcThreads::SystemClockMillis() - start;
         count++;
         // tell our parent
         bool bFullSize = ((int)texture->GetWidth() < m_maxWidth) && ((int)texture->GetHeight() < m_maxHeight);
@@ -421,13 +420,7 @@ void CGUIWindowSlideShow::Process(unsigned int currentTime, CDirtyRegionList &re
   { 
     CLog::Log(LOGDEBUG, "Playing slide %s as video", m_slides->Get(m_iCurrentSlide)->m_strPath.c_str());
     m_bPlayingVideo = true;
-    g_playlistPlayer.Reset();
-    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
-    CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_VIDEO);
-    playlist.Clear();
-    playlist.Add(m_slides->Get(m_iCurrentSlide));
-    // play movie...
-    g_playlistPlayer.Play(0);
+    g_application.getApplicationMessenger().PlayFile(*m_slides->Get(m_iCurrentSlide));
     m_iCurrentSlide = m_iNextSlide;
     m_iNextSlide    = GetNextSlide();
   } 

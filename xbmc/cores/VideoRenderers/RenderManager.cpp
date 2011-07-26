@@ -668,7 +668,7 @@ void CXBMCRenderManager::PresentWeave()
 
 void CXBMCRenderManager::Recover()
 {
-#ifdef HAS_GL
+#if defined(HAS_GL) && !defined(TARGET_DARWIN)
   glFlush(); // attempt to have gpu done with pixmap and vdpau
 #endif
 }

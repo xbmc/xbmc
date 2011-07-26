@@ -101,6 +101,15 @@ DVDPCODECS_DIRS= \
 	lib \
 	lib/libdvd \
 
+DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
+                   xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a \
+                   xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a \
+                   xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a \
+                   xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a \
+                   xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
+                   xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
+                   xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a \
+
 PAPCODECS_DIRS= \
 	lib/xbadpcm \
 	lib/nosefart \
@@ -125,8 +134,10 @@ LIB_DIRS=\
 	lib/cpluff \
 	lib/xbmc-dll-symbols
 
-SS_DIRS=\
-	xbmc/screensavers/rsxs-0.9/xbmc
+SS_DIRS=
+ifeq (@USE_OPENGL@,1)
+SS_DIRS+= xbmc/screensavers/rsxs-0.9/xbmc
+endif
 
 VIS_DIRS=
 ifeq (@USE_OPENGL@,1)
@@ -211,22 +222,8 @@ xbmc/cores/DllLoader/exports/exports.a: force
 	$(MAKE) -C xbmc/cores/DllLoader/exports
 xbmc/cores/DllLoader/exports/util/exports_utils.a: force
 	$(MAKE) -C xbmc/cores/DllLoader/exports/util
-xbmc/cores/dvdplayer/DVDPlayer.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer
-xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs
-xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Audio
-xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Overlay
-xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDCodecs/Video
-xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDDemuxers
-xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDInputStreams
-xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a: force
-	$(MAKE) -C xbmc/cores/dvdplayer/DVDSubtitles
+$(DVDPLAYER_ARCHIVES): force dvdpcodecs
+	$(MAKE) -C $(@D)
 xbmc/cores/paplayer/paplayer.a: force papcodecs
 	$(MAKE) -C xbmc/cores/paplayer
 xbmc/cores/AudioEngine/audioengine.a: force
@@ -366,18 +363,17 @@ endif
 lib/xbmc-dll-symbols/dll-symbols.a: force
 	$(MAKE) -C lib/xbmc-dll-symbols
 
-exports:
-	$(MAKE) xbmc/cores/DllLoader/exports/exports.a
-	$(MAKE) xbmc/cores/DllLoader/exports/util/exports_utils.a
+exports: xbmc/cores/DllLoader/exports/exports.a xbmc/cores/DllLoader/exports/util/exports_utils.a
 	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
-dllloader: exports
-	$(MAKE) xbmc/cores/DllLoader/dllloader.a
-visualizations: exports
-	for d in $(VIS_DIRS); do $(MAKE) -C $$d; done
-screensavers: exports
-ifeq (@USE_OPENGL@,1)
-	$(MAKE) -C xbmc/screensavers/rsxs-0.9/xbmc
-endif
+dllloader: exports xbmc/cores/DllLoader/dllloader.a
+
+$(VIS_DIRS) $(SS_DIRS): force exports
+	$(MAKE) -C $@
+
+visualizations: $(VIS_DIRS)
+
+screensavers: $(SS_DIRS)
+
 libpython: dllloader
 	$(MAKE) -C xbmc/interfaces/python
 	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
@@ -438,7 +434,6 @@ OBJSXBMC=	\
 	xbmc/xbmc.a \
 	xbmc/addons/addons.a \
 	xbmc/cores/playercorefactory/playercorefactory.a \
-	xbmc/cores/dvdplayer/DVDPlayer.a \
 	xbmc/cores/paplayer/paplayer.a \
 	xbmc/cores/VideoRenderers/VideoRenderer.a \
 	xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a \
@@ -446,13 +441,7 @@ OBJSXBMC=	\
 	xbmc/cores/cores.a \
 	xbmc/interfaces/python/python.a \
 	xbmc/cores/DllLoader/dllloader.a \
-	xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a \
-	xbmc/cores/dvdplayer/DVDCodecs/Audio/Audio.a \
-	xbmc/cores/dvdplayer/DVDCodecs/Overlay/Overlay.a \
-	xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a \
-	xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
-	xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
-	xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a \
+	$(DVDPLAYER_ARCHIVES) \
 	xbmc/cores/AudioEngine/audioengine.a \
 	xbmc/cores/ExternalPlayer/ExternalPlayer.a \
 	xbmc/filesystem/filesystem.a \

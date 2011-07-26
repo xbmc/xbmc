@@ -250,15 +250,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_dllAvUtil.av_set_string3(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0, NULL);
   }
 
-#if defined(__APPLE__) && defined(__arm__)
-  m_dllAvCodec.avcodec_thread_init(m_pCodecContext, 1);
-#elif defined(_LINUX) || defined(_WIN32)
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
   if( num_threads > 1 && !hints.software && m_pHardware == NULL // thumbnail extraction fails when run threaded
   && ( pCodec->id == CODEC_ID_H264
     || pCodec->id == CODEC_ID_MPEG4 ))
     m_dllAvCodec.avcodec_thread_init(m_pCodecContext, num_threads);
-#endif
 
   if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
   {
@@ -718,8 +714,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
 
   if (!filters.empty())
   {
-    AVFilterInOut* outputs = (AVFilterInOut*)m_dllAvUtil.av_mallocz(sizeof(AVFilterInOut));
-    AVFilterInOut* inputs  = (AVFilterInOut*)m_dllAvUtil.av_mallocz(sizeof(AVFilterInOut));
+    AVFilterInOut* outputs = m_dllAvFilter.avfilter_inout_alloc();
+    AVFilterInOut* inputs  = m_dllAvFilter.avfilter_inout_alloc();
 
     outputs->name    = m_dllAvUtil.av_strdup("in");
     outputs->filter_ctx = m_pFilterIn;
@@ -731,11 +727,14 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
     inputs->pad_idx = 0;
     inputs->next    = NULL;
 
-    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), inputs, outputs, NULL)) < 0)
+    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), &inputs, &outputs, NULL)) < 0)
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_parse");
       return result;
     }
+
+    m_dllAvFilter.avfilter_inout_free(&outputs);
+    m_dllAvFilter.avfilter_inout_free(&inputs);
   }
   else
   {

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 
 #ifdef HAS_CDDA_RIPPER
@@ -316,7 +317,7 @@ bool CCDDARipper::RipCD()
     // construct filename
     CStdString strFile = URIUtils::AddFileToFolder(strDirectory, CUtil::MakeLegalFileName(GetTrackName(item.get()), legalType));
 
-    unsigned int tick = CTimeUtils::GetTimeMS();
+    unsigned int tick = XbmcThreads::SystemClockMillis();
 
     // don't rip non cdda items
     if (item->m_strPath.Find(".cdda") < 0)
@@ -326,7 +327,7 @@ bool CCDDARipper::RipCD()
     if (!Rip(item->m_strPath, strFile.c_str(), *item->GetMusicInfoTag()))
       return false;
 
-    tick = CTimeUtils::GetTimeMS() - tick;
+    tick = XbmcThreads::SystemClockMillis() - tick;
     CLog::Log(LOGINFO, "Ripping Track %d took %s", i, StringUtils::SecondsToTimeString(tick / 1000).c_str());
   }
 

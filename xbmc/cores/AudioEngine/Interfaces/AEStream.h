@@ -58,7 +58,7 @@ public:
   /**
    * Add interleaved PCM data to the stream
    * @param data The interleaved PCM data
-   * @param size The size in bytes of data
+   * @param size The size in bytes of data, if this is > GetSpace() only up to GetSpace() bytes will be consumed
    * @return The number of bytes consumed
    */
   virtual unsigned int AddData(void *data, unsigned int size) = 0;
@@ -140,25 +140,25 @@ public:
    * Returns the size of one audio frame in bytes (channelCount * resolution)
    * @return The size in bytes of one frame
   */
-  virtual unsigned int GetFrameSize() = 0;
+  virtual unsigned int GetFrameSize() const = 0;
 
   /**
    * Returns the number of channels the stream is configured to accept
    * @return The channel count
    */
-  virtual unsigned int GetChannelCount() = 0;
+  virtual unsigned int GetChannelCount() const = 0;
 
   /**
    * Returns the stream's sample rate, if the stream is using a dynamic sample rate, this value will NOT reflect any changes made by calls to SetResampleRatio()
    * @return The stream's sample rate (eg, 48000)
    */
-  virtual unsigned int GetSampleRate() = 0;
+  virtual unsigned int GetSampleRate() const = 0;
 
   /**
    * Return the data format the stream has been configured with
    * @return The stream's data format (eg, AE_FMT_S16LE)
    */
-  virtual enum AEDataFormat GetDataFormat() = 0;
+  virtual enum AEDataFormat GetDataFormat() const = 0;
 
   /**
    * Return the resample ratio

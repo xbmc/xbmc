@@ -50,7 +50,7 @@ public:
 
   virtual bool BeginRender();
   virtual bool EndRender();
-  virtual bool PresentRender();
+  virtual bool PresentRender(const CDirtyRegionList &dirty);
   virtual bool ClearBuffers(color_t color);
   virtual bool IsExtSupported(const char* extension);
   virtual bool IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage);
@@ -109,7 +109,7 @@ protected:
   void DeleteDevice();
   void OnDeviceLost();
   void OnDeviceReset();
-  bool PresentRenderImpl();
+  bool PresentRenderImpl(const CDirtyRegionList &dirty);
 
   void SetFocusWnd(HWND wnd) { m_hFocusWnd = wnd; }
   void SetDeviceWnd(HWND wnd) { m_hDeviceWnd = wnd; }

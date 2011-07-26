@@ -54,10 +54,10 @@ public:
   virtual void  SetVolume    (float volume);
   virtual void  SetReplayGain(float factor);
 
-  virtual unsigned int      GetFrameSize   ();
-  virtual unsigned int      GetChannelCount();
-  virtual unsigned int      GetSampleRate  ();
-  virtual enum AEDataFormat GetDataFormat  ();
+  virtual unsigned int      GetFrameSize   () const;
+  virtual unsigned int      GetChannelCount() const;
+  virtual unsigned int      GetSampleRate  () const;
+  virtual enum AEDataFormat GetDataFormat  () const;
 
   /* for dynamic sample rate changes (smoothvideo) */
   virtual double GetResampleRatio();

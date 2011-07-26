@@ -46,8 +46,11 @@
 		DF0DF17F13A3AF9F008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17B13A3AF9F008ED511 /* FileNFS.cpp */; };
 		DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */; };
 		DF27E23613C23CAC002514FE /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF27E23413C23CAC002514FE /* InertialScrollingHandler.cpp */; };
+		DFD4D1E113D725ED00A47C47 /* platform.select.h in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D1D413D725ED00A47C47 /* platform.select.h */; };
+		DFD4D1E213D725ED00A47C47 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1D813D725ED00A47C47 /* Implementation.cpp */; };
+		DFD4D1E713D7263000A47C47 /* README.platform in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D1E613D7263000A47C47 /* README.platform */; };
+		DFD4D1FE13D7283500A47C47 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */; };
 		F54D9E8112B713F8006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8012B713F8006870F9 /* libc.dylib */; };
-		F558F61113AFDC3000631E12 /* ThreadLocal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F558F60F13AFDC3000631E12 /* ThreadLocal.cpp */; };
 		F56B143412CAF279009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B143312CAF279009B4C96 /* CoreVideo.framework */; };
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
 		F56B15D512CD67A9009B4C96 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B15D412CD67A9009B4C96 /* CoreGraphics.framework */; };
@@ -718,7 +721,6 @@
 		F56C8ABA131F42ED000AD0F6 /* cddb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8656131F42EB000AD0F6 /* cddb.cpp */; };
 		F56C8ABB131F42ED000AD0F6 /* AutoPool.mm in Sources */ = {isa = PBXBuildFile; fileRef = F56C865A131F42EB000AD0F6 /* AutoPool.mm */; };
 		F56C8AC3131F42ED000AD0F6 /* OSXGNUReplacements.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C866B131F42EB000AD0F6 /* OSXGNUReplacements.c */; };
-		F56C8AC4131F42ED000AD0F6 /* posix-realtime-stub.c in Sources */ = {isa = PBXBuildFile; fileRef = F56C866D131F42EB000AD0F6 /* posix-realtime-stub.c */; };
 		F56C8AC5131F42ED000AD0F6 /* eprintf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C866F131F42EB000AD0F6 /* eprintf.cpp */; };
 		F56C8AC6131F42ED000AD0F6 /* GUIDialogPictureInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8673131F42EB000AD0F6 /* GUIDialogPictureInfo.cpp */; };
 		F56C8AC7131F42ED000AD0F6 /* GUIViewStatePictures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C8675131F42EB000AD0F6 /* GUIViewStatePictures.cpp */; };
@@ -1018,9 +1020,19 @@
 		DF0DF17E13A3AF9F008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
 		DF27E23413C23CAC002514FE /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
 		DF27E23513C23CAC002514FE /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
+		DFD4D1D113D725ED00A47C47 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
+		DFD4D1D213D725ED00A47C47 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
+		DFD4D1D413D725ED00A47C47 /* platform.select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = platform.select.h; sourceTree = "<group>"; };
+		DFD4D1D613D725ED00A47C47 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
+		DFD4D1D713D725ED00A47C47 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
+		DFD4D1D813D725ED00A47C47 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
+		DFD4D1D913D725ED00A47C47 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		DFD4D1DB13D725ED00A47C47 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
+		DFD4D1E613D7263000A47C47 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
+		DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
+		DFD4D1FD13D7283500A47C47 /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
 		F54D9E8012B713F8006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F558F60613AFDC1700631E12 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
-		F558F60F13AFDC3000631E12 /* ThreadLocal.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ThreadLocal.cpp; sourceTree = "<group>"; };
 		F558F61013AFDC3000631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		F56B143312CAF279009B4C96 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		F56B14A412CAF523009B4C96 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -2476,8 +2488,6 @@
 		F56C865A131F42EB000AD0F6 /* AutoPool.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoPool.mm; sourceTree = "<group>"; };
 		F56C866B131F42EB000AD0F6 /* OSXGNUReplacements.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = OSXGNUReplacements.c; sourceTree = "<group>"; };
 		F56C866C131F42EB000AD0F6 /* OSXGNUReplacements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OSXGNUReplacements.h; sourceTree = "<group>"; };
-		F56C866D131F42EB000AD0F6 /* posix-realtime-stub.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "posix-realtime-stub.c"; sourceTree = "<group>"; };
-		F56C866E131F42EB000AD0F6 /* posix-realtime-stub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "posix-realtime-stub.h"; sourceTree = "<group>"; };
 		F56C866F131F42EB000AD0F6 /* eprintf.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = eprintf.cpp; sourceTree = "<group>"; };
 		F56C8671131F42EB000AD0F6 /* DllImageLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllImageLib.h; sourceTree = "<group>"; };
 		F56C8672131F42EB000AD0F6 /* DllLibExif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DllLibExif.h; sourceTree = "<group>"; };
@@ -3049,6 +3059,30 @@
 				83D619BB13C0D25300418A0F /* README.ios */,
 			);
 			name = Documentation;
+			sourceTree = "<group>";
+		};
+		DFD4D1D013D725ED00A47C47 /* platform */ = {
+			isa = PBXGroup;
+			children = (
+				DFD4D1E613D7263000A47C47 /* README.platform */,
+				DFD4D1D113D725ED00A47C47 /* Condition.h */,
+				DFD4D1D213D725ED00A47C47 /* CriticalSection.h */,
+				DFD4D1D413D725ED00A47C47 /* platform.select.h */,
+				DFD4D1D513D725ED00A47C47 /* pthreads */,
+				DFD4D1DB13D725ED00A47C47 /* ThreadLocal.h */,
+			);
+			path = platform;
+			sourceTree = "<group>";
+		};
+		DFD4D1D513D725ED00A47C47 /* pthreads */ = {
+			isa = PBXGroup;
+			children = (
+				DFD4D1D613D725ED00A47C47 /* Condition.h */,
+				DFD4D1D713D725ED00A47C47 /* CriticalSection.h */,
+				DFD4D1D813D725ED00A47C47 /* Implementation.cpp */,
+				DFD4D1D913D725ED00A47C47 /* ThreadLocal.h */,
+			);
+			path = pthreads;
 			sourceTree = "<group>";
 		};
 		F56C8034131F42E5000AD0F6 /* Source */ = {
@@ -5255,8 +5289,6 @@
 				F56C8B9B131F4466000AD0F6 /* ios */,
 				F56C866B131F42EB000AD0F6 /* OSXGNUReplacements.c */,
 				F56C866C131F42EB000AD0F6 /* OSXGNUReplacements.h */,
-				F56C866D131F42EB000AD0F6 /* posix-realtime-stub.c */,
-				F56C866E131F42EB000AD0F6 /* posix-realtime-stub.h */,
 				F56C866F131F42EB000AD0F6 /* eprintf.cpp */,
 			);
 			path = osx;
@@ -5447,6 +5479,9 @@
 		F56C86DF131F42EB000AD0F6 /* threads */ = {
 			isa = PBXGroup;
 			children = (
+				DFD4D1D013D725ED00A47C47 /* platform */,
+				DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */,
+				DFD4D1FD13D7283500A47C47 /* SystemClock.h */,
 				F56C86E3131F42EB000AD0F6 /* Atomics.cpp */,
 				F56C86E4131F42EB000AD0F6 /* Atomics.h */,
 				F558F60613AFDC1700631E12 /* Condition.h */,
@@ -5459,7 +5494,6 @@
 				F56C86F3131F42EB000AD0F6 /* SingleLock.h */,
 				F56C86F4131F42EB000AD0F6 /* Thread.cpp */,
 				F56C86F5131F42EB000AD0F6 /* Thread.h */,
-				F558F60F13AFDC3000631E12 /* ThreadLocal.cpp */,
 				F558F61013AFDC3000631E12 /* ThreadLocal.h */,
 			);
 			path = threads;
@@ -5871,6 +5905,8 @@
 			files = (
 				F56C8BA8131F4466000AD0F6 /* XBMC.png in Resources */,
 				F56C8BB9131F44AA000AD0F6 /* InfoPlist.strings in Resources */,
+				DFD4D1E113D725ED00A47C47 /* platform.select.h in Resources */,
+				DFD4D1E713D7263000A47C47 /* README.platform in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6593,7 +6629,6 @@
 				F56C8ABA131F42ED000AD0F6 /* cddb.cpp in Sources */,
 				F56C8ABB131F42ED000AD0F6 /* AutoPool.mm in Sources */,
 				F56C8AC3131F42ED000AD0F6 /* OSXGNUReplacements.c in Sources */,
-				F56C8AC4131F42ED000AD0F6 /* posix-realtime-stub.c in Sources */,
 				F56C8AC5131F42ED000AD0F6 /* eprintf.cpp in Sources */,
 				F56C8AC6131F42ED000AD0F6 /* GUIDialogPictureInfo.cpp in Sources */,
 				F56C8AC7131F42ED000AD0F6 /* GUIViewStatePictures.cpp in Sources */,
@@ -6799,12 +6834,13 @@
 				7C0A7FB313A9E72E00AFC2BD /* DirtyRegionTracker.cpp in Sources */,
 				DF0DF17F13A3AF9F008ED511 /* FileNFS.cpp in Sources */,
 				DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */,
-				F558F61113AFDC3000631E12 /* ThreadLocal.cpp in Sources */,
 				7C89628013B7031E003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
 				1830219E13B8E37300770920 /* controledit.cpp in Sources */,
 				DF27E23613C23CAC002514FE /* InertialScrollingHandler.cpp in Sources */,
 				18ECC99D13CF17D200A9ED6C /* StreamUtils.cpp in Sources */,
 				F5CEE73013D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
+				DFD4D1E213D725ED00A47C47 /* Implementation.cpp in Sources */,
+				DFD4D1FE13D7283500A47C47 /* SystemClock.cpp in Sources */,
 				322D7C6813D611FA00F59B62 /* AEFactory.cpp in Sources */,
 				322D7C6913D611FA00F59B62 /* AESinkFactory.cpp in Sources */,
 				322D7C6A13D611FA00F59B62 /* AEEncoderFFmpeg.cpp in Sources */,
@@ -6916,7 +6952,6 @@
 					"-lmicrohttpd",
 					"-lsmbclient",
 					"-lpython2.6",
-					"-lboost_thread",
 					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
@@ -7010,7 +7045,6 @@
 					"-lmicrohttpd",
 					"-lsmbclient",
 					"-lpython2.6",
-					"-lboost_thread",
 					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
@@ -7034,7 +7068,7 @@
 				DEAD_CODE_STRIPPING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_MODEL_TUNING = "";
-				GCC_OPTIMIZATION_LEVEL = s;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_THUMB_SUPPORT = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;

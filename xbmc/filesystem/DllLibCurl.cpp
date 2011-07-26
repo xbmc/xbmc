@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "DllLibCurl.h"
 #include "threads/SingleLock.h"
@@ -76,7 +77,7 @@ void DllLibCurlGlobal::Unload()
 
   /* CheckIdle will clear this one up */
   if(g_curlReferences == 1)
-    g_curlTimeout = CTimeUtils::GetTimeMS();
+    g_curlTimeout = XbmcThreads::SystemClockMillis();
 }
 
 void DllLibCurlGlobal::CheckIdle()
@@ -92,7 +93,7 @@ void DllLibCurlGlobal::CheckIdle()
   VEC_CURLSESSIONS::iterator it = m_sessions.begin();
   while(it != m_sessions.end())
   {
-    if( !it->m_busy && it->m_idletimestamp + idletime < CTimeUtils::GetTimeMS())
+    if( !it->m_busy && (XbmcThreads::SystemClockMillis() - it->m_idletimestamp) > idletime )
     {
       CLog::Log(LOGINFO, "%s - Closing session to %s://%s (easy=%p, multi=%p)\n", __FUNCTION__, it->m_protocol.c_str(), it->m_hostname.c_str(), (void*)it->m_easy, (void*)it->m_multi);
 
@@ -112,7 +113,7 @@ void DllLibCurlGlobal::CheckIdle()
   }
 
   /* check if we should unload the dll */
-  if(g_curlReferences == 1 && CTimeUtils::GetTimeMS() > g_curlTimeout + idletime)
+  if(g_curlReferences == 1 && XbmcThreads::SystemClockMillis() - g_curlTimeout > idletime)
     Unload();
 }
 
@@ -210,7 +211,7 @@ void DllLibCurlGlobal::easy_release(CURL_HANDLE** easy_handle, CURLM** multi_han
       /* will reset verbose too so it won't print that it closed connections on cleanup*/
       easy_reset(easy);
       it->m_busy = false;
-      it->m_idletimestamp = CTimeUtils::GetTimeMS();
+      it->m_idletimestamp = XbmcThreads::SystemClockMillis();
       return;
     }
   }

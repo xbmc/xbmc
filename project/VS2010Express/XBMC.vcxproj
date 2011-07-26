@@ -746,8 +746,9 @@
     <ClCompile Include="..\..\xbmc\threads\Atomics.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\ThreadLocal.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp" />
     <ClCompile Include="..\..\xbmc\URL.cpp" />
@@ -1601,8 +1602,16 @@
     <ClInclude Include="..\..\xbmc\threads\CriticalSection.h" />
     <ClInclude Include="..\..\xbmc\threads\Event.h" />
     <ClInclude Include="..\..\xbmc\threads\LockFree.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\Condition.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\platform.select.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\Condition.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h" />
+    <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h" />
     <ClInclude Include="..\..\xbmc\threads\SharedSection.h" />
     <ClInclude Include="..\..\xbmc\threads\SingleLock.h" />
+    <ClInclude Include="..\..\xbmc\threads\SystemClock.h" />
     <ClInclude Include="..\..\xbmc\threads\Thread.h" />
     <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h" />
     <ClInclude Include="..\..\xbmc\ThumbLoader.h" />
@@ -2028,9 +2037,6 @@
     <ClInclude Include="..\..\xbmc\windows\GUIWindowSystemInfo.h" />
     <ClInclude Include="..\..\xbmc\windows\GUIWindowWeather.h" />
     <ClInclude Include="..\..\xbmc\XBApplicationEx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\xbmc\win32\XBMC.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc" />

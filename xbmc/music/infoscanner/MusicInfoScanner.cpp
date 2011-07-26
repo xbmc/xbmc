@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "MusicInfoScanner.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "MusicAlbumInfo.h"
@@ -73,7 +74,7 @@ void CMusicInfoScanner::Process()
 {
   try
   {
-    unsigned int tick = CTimeUtils::GetTimeMS();
+    unsigned int tick = XbmcThreads::SystemClockMillis();
 
     m_musicDatabase.Open();
 
@@ -152,7 +153,7 @@ void CMusicInfoScanner::Process()
       m_musicDatabase.Close();
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
-      tick = CTimeUtils::GetTimeMS() - tick;
+      tick = XbmcThreads::SystemClockMillis() - tick;
       CLog::Log(LOGNOTICE, "My Music: Scanning for music info using worker thread, operation took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
     }
     bool bCanceled;

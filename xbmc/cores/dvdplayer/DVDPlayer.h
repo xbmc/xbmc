@@ -354,8 +354,8 @@ protected:
     }
 
     int state;                // current dvdstate
-    DWORD iDVDStillTime;      // total time in ticks we should display the still before continuing
-    DWORD iDVDStillStartTime; // time in ticks when we started the still
+    unsigned int iDVDStillTime;      // total time in ticks we should display the still before continuing
+    unsigned int iDVDStillStartTime; // time in ticks when we started the still
     int iSelectedSPUStream;   // mpeg stream id, or -1 if disabled
     int iSelectedAudioStream; // mpeg stream id, or -1 if disabled
   } m_dvd;

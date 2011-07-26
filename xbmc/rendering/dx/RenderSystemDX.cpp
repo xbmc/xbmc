@@ -22,6 +22,7 @@
 
 #ifdef HAS_DX
 
+#include "threads/SystemClock.h"
 #include "settings/Settings.h"
 #include "RenderSystemDX.h"
 #include "utils/log.h"
@@ -540,7 +541,7 @@ bool CRenderSystemDX::CreateDevice()
   return true;
 }
 
-bool CRenderSystemDX::PresentRenderImpl()
+bool CRenderSystemDX::PresentRenderImpl(const CDirtyRegionList &dirty)
 {
   HRESULT hr;
 
@@ -732,12 +733,12 @@ bool CRenderSystemDX::IsExtSupported(const char* extension)
   return false;
 }
 
-bool CRenderSystemDX::PresentRender()
+bool CRenderSystemDX::PresentRender(const CDirtyRegionList &dirty)
 {
   if (!m_bRenderCreated)
     return false;
 
-  bool result = PresentRenderImpl();
+  bool result = PresentRenderImpl(dirty);
 
   return result;
 }
@@ -809,10 +810,10 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
 
 bool CRenderSystemDX::TestRender()
 {
-  static DWORD lastTime = 0;
+  static unsigned int lastTime = 0;
   static float delta = 0;
 
-  DWORD thisTime = CTimeUtils::GetTimeMS();
+  unsigned int thisTime = XbmcThreads::SystemClockMillis();
 
   if(thisTime - lastTime > 10)
   {
