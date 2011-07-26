@@ -47,14 +47,6 @@ bool CGUIPythonWindowXMLDialog::OnMessage(CGUIMessage &message)
   return CGUIPythonWindowXML::OnMessage(message);
 }
 
-void CGUIPythonWindowXMLDialog::Show(bool show /* = true */)
-{
-  CSingleExit leaveIt(g_graphicsContext);
-  ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 1, show ? 1 : 0};
-  tMsg.lpVoid = this;
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
-}
-
 void CGUIPythonWindowXMLDialog::Show_Internal(bool show /* = true */)
 {
   if (show)
