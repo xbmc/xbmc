@@ -32,7 +32,6 @@ CGUIDialog::CGUIDialog(int id, const CStdString &xmlFile)
     : CGUIWindow(id, xmlFile)
 {
   m_bModal = true;
-  m_bRunning = false;
   m_wasRunning = false;
   m_renderOrder = 1;
   m_autoClosing = false;
@@ -92,14 +91,6 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
         g_windowManager.ShowOverlay(pWindow->GetOverlayState());
 
       CGUIWindow::OnMessage(message);
-      // if we were running, make sure we remove ourselves from the window manager
-      if (m_bRunning)
-      {
-        g_windowManager.RemoveDialog(GetID());
-        m_bRunning = false;
-        m_closing = false;
-        m_autoClosing = false;
-      }
       return true;
     }
   case GUI_MSG_WINDOW_INIT:
@@ -113,18 +104,28 @@ bool CGUIDialog::OnMessage(CGUIMessage& message)
   return CGUIWindow::OnMessage(message);
 }
 
+void CGUIDialog::OnDeinitWindow(int nextWindowID)
+{
+  if (m_active)
+  {
+    g_windowManager.RemoveDialog(GetID());
+    m_autoClosing = false;
+  }
+  CGUIWindow::OnDeinitWindow(nextWindowID);
+}
+
 void CGUIDialog::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   UpdateVisibility();
 
   // if we were running but now we're not, mark us dirty
-  if (!m_bRunning && m_wasRunning)
+  if (!m_active && m_wasRunning)
     dirtyregions.push_back(m_renderRegion);
 
-  if (m_bRunning)
+  if (m_active)
     CGUIWindow::DoProcess(currentTime, dirtyregions);
 
-  m_wasRunning = m_bRunning;
+  m_wasRunning = m_active;
 }
 
 void CGUIDialog::UpdateVisibility()
@@ -153,7 +154,7 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
   // could show it as well if we are in a different thread from
   // the main rendering thread (this should really be handled via
   // a thread message though IMO)
-  m_bRunning = true;
+  m_active = true;
   g_windowManager.RouteToWindow(this);
 
   //  Play the window specific init sound
@@ -165,14 +166,12 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
   msg.SetStringParam(param);
   OnMessage(msg);
 
-//  m_bRunning = true;
-
   if (!m_windowLoaded)
     Close(true);
 
   lock.Leave();
 
-  while (m_bRunning && !g_application.m_bStop)
+  while (m_active && !g_application.m_bStop)
   {
     g_windowManager.ProcessRenderLoop();
   }
@@ -184,7 +183,7 @@ void CGUIDialog::Show_Internal()
   //maybe we should have a critical section per window instead??
   CSingleLock lock(g_graphicsContext);
 
-  if (m_bRunning && !m_closing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
+  if (m_active && !m_closing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE)) return;
 
   if (!g_windowManager.Initialized())
     return; // don't do anything
@@ -195,7 +194,7 @@ void CGUIDialog::Show_Internal()
   // could show it as well if we are in a different thread from
   // the main rendering thread (this should really be handled via
   // a thread message though IMO)
-  m_bRunning = true;
+  m_active = true;
   m_closing = false;
   g_windowManager.AddModeless(this);
 
@@ -206,8 +205,6 @@ void CGUIDialog::Show_Internal()
   // active this window...
   CGUIMessage msg(GUI_MSG_WINDOW_INIT, 0, 0);
   OnMessage(msg);
-
-//  m_bRunning = true;
 }
 
 void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
@@ -243,7 +240,7 @@ void CGUIDialog::FrameMove()
 
 void CGUIDialog::Render()
 {
-  if (!m_bRunning)
+  if (!m_active)
     return;
 
   CGUIWindow::Render();
@@ -259,7 +256,7 @@ void CGUIDialog::SetAutoClose(unsigned int timeoutMs)
 {
    m_autoClosing = true;
    m_showDuration = timeoutMs;
-   if (m_bRunning)
+   if (m_active)
      m_showStartTime = CTimeUtils::GetFrameTime();
 }
 
