@@ -55,6 +55,7 @@ public:
 
   void SetAutoClose(unsigned int timeoutMs);
   void SetSound(bool OnOff) { m_enableSound = OnOff; };
+  virtual bool IsSoundEnabled() const { return m_enableSound; };
 
 protected:
   virtual void SetDefaults();
