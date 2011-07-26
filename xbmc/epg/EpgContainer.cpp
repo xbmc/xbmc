@@ -491,12 +491,12 @@ bool CEpgContainer::CheckPlayingEvents(void)
   CDateTime::GetCurrentDateTime().GetAsTime(iNow);
   if (iNow >= m_iLastEpgActiveTagCheck + g_advancedSettings.m_iEpgActiveTagCheckInterval)
   {
-  	bool bFoundChanges(false);
-  	CSingleLock lock(m_critSection);
+    bool bFoundChanges(false);
+    CSingleLock lock(m_critSection);
 
     for (unsigned int iEpgPtr = 0; iEpgPtr < size(); iEpgPtr++)
-      if (at(iEpgPtr)->CheckPlayingEvent())
-        bFoundChanges = true;
+    if (at(iEpgPtr)->CheckPlayingEvent())
+      bFoundChanges = true;
     CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgActiveTagCheck);
 
     if (bFoundChanges)
