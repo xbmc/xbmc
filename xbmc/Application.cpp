@@ -2508,9 +2508,9 @@ bool CApplication::OnAction(const CAction &action)
         speed /= 50; //50 fps
 
       if (action.GetID() == ACTION_VOLUME_UP)
-        volume += (int)((float)fabs(action.GetAmount()) * action.GetAmount() * speed);
+        volume += (int) speed;
       else
-        volume -= (int)((float)fabs(action.GetAmount()) * action.GetAmount() * speed);
+        volume -= (int) speed;
 
       SetVolume(volume, false);
     }
