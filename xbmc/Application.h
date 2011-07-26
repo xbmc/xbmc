@@ -362,7 +362,6 @@ protected:
   bool ProcessHTTPApiButtons();
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
 
-  float NavigationIdleTime();
   static bool AlwaysProcess(const CAction& action);
 
   void SaveCurrentFileSettings();

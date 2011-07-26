@@ -22,9 +22,16 @@
 #include "LCD.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
+#include "settings/GUISettings.h"
 #include "CharsetConverter.h"
 #include "log.h"
 #include "XMLUtils.h"
+#include "Application.h"
+#include "guilib/GUIWindowManager.h"
+#include "GUIInfoManager.h"
+#include "storage/MediaManager.h"
+#include "cores/playercorefactory/PlayerCoreFactory.h"
+#include "utils/StreamDetails.h"
 
 using namespace std;
 
@@ -32,11 +39,11 @@ void ILCD::StringToLCDCharSet(CStdString& strText)
 {
 
   //0 = HD44780, 1=KS0073
-  unsigned int iLCDContr = 0;
+  unsigned int iLCDContr = 2;
   //the timeline is using blocks
   //a block is used at address 0xA0, smallBlocks at address 0xAC-0xAF
 
-  unsigned char LCD[2][256] = {
+  unsigned char LCD[3][256] = {
                                 { //HD44780 charset ROM code A00
                                   0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
                                   0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
@@ -73,7 +80,26 @@ void ILCD::StringToLCDCharSet(CStdString& strText)
                                   0x44, 0x5d, 0x4f, 0xe0, 0xec, 0x4f, 0x5c, 0x78, 0xab, 0xee, 0xe5, 0xee, 0x5e, 0xe6, 0x20, 0xbe,
                                   0x7f, 0xe7, 0xaf, 0xaf, 0x7b, 0xaf, 0xbd, 0xc8, 0xa4, 0xa5, 0xc7, 0x65, 0xa7, 0xe8, 0x69, 0x69,
                                   0x6f, 0x7d, 0xa8, 0xe9, 0xed, 0x6f, 0x7c, 0x25, 0xac, 0xa6, 0xea, 0xef, 0x7e, 0xeb, 0x70, 0x79
-                                }
+                                },
+
+                                { //Soundgraph iMon-LCD / Targa MDM166A VFD (play-icons are mapped, others not yet)
+								  0x00, 0x01, 0x12, 0x16, 0x15, 0x10, 0x11, 0x12, 0x14, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f,
+								  0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
+								  0x20, 0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f,
+								  0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, 0x3e, 0x3f,
+								  0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, 0x4e, 0x4f,
+								  0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f,
+								  0x60, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e, 0x6f,
+								  0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78, 0x79, 0x7a, 0x7b, 0x7c, 0x7d, 0x7e, 0x7f,
+								  0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8e, 0x8f,
+								  0x90, 0x91, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9a, 0x9b, 0x9c, 0x9d, 0x9e, 0x9f,
+								  0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 0x8c, 0x8a, 0x89, 0x88, 0x87, // Custom characters??? Should be here?
+								  0xb0, 0xb1, 0xb2, 0xb3, 0xb4, 0xb5, 0xb6, 0xb7, 0xb8, 0xb9, 0xba, 0xbb, 0xbc, 0xbd, 0xbe, 0xbf,
+								  0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xcb, 0xcc, 0xcd, 0xce, 0xcf,
+								  0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda, 0xdb, 0xdc, 0xdd, 0xde, 0xdf,
+								  0xe0, 0xe1, 0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea, 0xeb, 0xec, 0xed, 0xee, 0xef,
+								  0xf0, 0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8, 0xf9, 0xfa, 0xfb, 0xfc, 0xfd, 0xfe, 0xff
+								}
                               };
 
   unsigned char cLCD;
@@ -343,7 +369,7 @@ CStdString ILCD::GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nM
     for ( UINT nX = 0; nX < arrSizes[ _nCharset ][0]; nX++ )
     {
       // Add a space if we have more than one digit, and the given
-      // digit is smaller than the current value (base numer) we are dealing with
+      // digit is smaller than the current value (base number) we are dealing with
       if ( _bSpacePadding && ((nCurrentValue / 10) > (UINT)_nDigit ) && ( nCurrentSize > 1 ) )
       {
         strCurrentDigit += " ";
@@ -385,6 +411,7 @@ CStdString ILCD::GetBigDigit( UINT _nCharset, int _nDigit, UINT _nLine, UINT _nM
 void ILCD::Initialize()
 {
   CStdString lcdPath;
+  m_disableOnPlay = DISABLE_ON_PLAY_NONE;
   lcdPath = g_settings.GetUserDataItem("LCD.xml");
   LoadSkin(lcdPath);
   m_eCurrentCharset = CUSTOM_CHARSET_DEFAULT;
@@ -482,8 +509,31 @@ void ILCD::Reset()
 
 void ILCD::Render(LCD_MODE mode)
 {
+  CStdString currentVis = g_guiSettings.GetString("musicplayer.visualisation");
   unsigned int outLine = 0;
   unsigned int inLine = 0;
+
+  if (g_advancedSettings.m_lcdSpectrumAnalyzer)
+  {
+    if ((currentVis.Equals("None") || mode != LCD_MODE_MUSIC) && GetIsSpectrumAnalyzerWorking())
+    {
+      SetIsSpectrumAnalyzerWorking(false);
+      RemoveSpectrumAnalyzer();
+    }
+    else if (!currentVis.Equals("None") && g_application.IsPlayingAudio() && g_application.m_pPlayer && mode == LCD_MODE_MUSIC)
+    {
+      if (!GetIsSpectrumAnalyzerWorking())
+      {
+        InitializeSpectrumAnalyzer();
+        SetIsSpectrumAnalyzerWorking(true);
+      }
+      else
+      {
+        SetSpectrumAnalyzerData();
+      }
+    }
+  }
+
   while (outLine < 4 && inLine < m_lcdMode[mode].size())
   {
     CStdString line = m_lcdMode[mode][inLine++].GetLabel(0);
@@ -497,6 +547,8 @@ void ILCD::Render(LCD_MODE mode)
   // fill remainder with empty space
   while (outLine < 4)
     SetLine(outLine++, "");
+
+  RenderIcons();
 }
 
 void ILCD::DisableOnPlayback(bool playingVideo, bool playingAudio)
@@ -504,4 +556,274 @@ void ILCD::DisableOnPlayback(bool playingVideo, bool playingAudio)
   if ((playingVideo && (m_disableOnPlay & DISABLE_ON_PLAY_VIDEO)) ||
       (playingAudio && (m_disableOnPlay & DISABLE_ON_PLAY_MUSIC)))
     SetBackLight(0);
+}
+
+void ILCD::RenderIcons() {
+
+//  ResetModeIcons();
+  SetIconMovie(false);
+  SetIconMusic(false);
+  SetIconTV(false);
+  SetIconPhoto(false);
+
+  SetIconDiscIn(false);
+  SetIconSource(false);
+  SetIconFit(false);
+
+  if (g_application.IsPlayingVideo() && g_application.m_pPlayer) {
+#ifdef USE_PVR
+    if (g_PVRManager.TranslateBoolInfo(PVR_IS_PLAYING_TV)) {
+      SetIconTV(true);
+    }
+    else
+#endif
+    { // playing e.g. a video
+
+      SetIconPlaying(true);
+      SetIconMovie(true);
+    }
+
+    if (g_application.m_pPlayer->GetPictureWidth() <= 720)
+      SetIconResolution(LCD_RESOLUTION_SD);
+    else
+      SetIconResolution(LCD_RESOLUTION_HD);
+
+    int iResolution = g_graphicsContext.GetVideoResolution();
+
+    // tolerate 10% difference from current resolution to state that it is "in original resolution"
+    if ((g_application.m_pPlayer->GetPictureWidth() <= g_settings.m_ResInfo[iResolution].iWidth + ((g_settings.m_ResInfo[iResolution].iWidth)*0.1))
+          && (g_application.m_pPlayer->GetPictureWidth() >= g_settings.m_ResInfo[iResolution].iWidth - ((g_settings.m_ResInfo[iResolution].iWidth)*0.1)) ) {
+      SetIconSource(true);
+    }
+    else {
+      SetIconFit(true);
+    }
+
+  } else if (g_application.IsPlayingAudio() && g_application.m_pPlayer) {
+    SetIconPlaying(true);
+    SetIconMusic(true);
+    if (GetIsSpectrumAnalyzerWorking())
+      SetSpectrumAnalyzerData();
+  } else {
+    SetIconResolution(LCD_RESOLUTION_NONE);
+    SetIconPlaying(false);
+
+    if (GetIsSpectrumAnalyzerWorking() == true) {
+      RemoveSpectrumAnalyzer();
+      SetIsSpectrumAnalyzerWorking(false);
+    }
+  }
+
+  SetCodecInformationIcons();
+
+  SetProgressBar1(g_application.GetPercentage());
+  SetProgressBar2(g_application.GetVolume());
+
+  if (g_application.GetVolume() == 0) {
+    SetIconMute(true);
+  }
+  else {
+    SetIconMute(false);
+  }
+
+  if (g_application.IsPaused()) {
+    SetIconPause(true);
+  }
+  else {
+    SetIconPause(false);
+  }
+
+  if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER)
+  {
+    SetIconWeather(true);
+  }
+#ifdef USE_PVR
+  else if (g_windowManager.GetActiveWindow() == WINDOW_TV)
+  {
+    SetIconTV(true);
+  }
+#endif
+  else if (g_windowManager.GetActiveWindow() == WINDOW_VIDEOS /*|| g_PVRManager.TranslateBoolInfo(PVR_IS_PLAYING_RECORDING)*/)
+  {
+    SetIconMovie(true);
+  }
+  else if (g_windowManager.GetActiveWindow() == WINDOW_MUSIC
+#ifdef USE_PVR
+		  || g_PVRManager.TranslateBoolInfo(PVR_IS_PLAYING_RADIO)
+#endif
+		  )
+  {
+    SetIconMusic(true);
+  }
+  else if (g_windowManager.GetActiveWindow() == WINDOW_PICTURES)
+  {
+    SetIconPhoto(true);
+  }
+
+  // Set the volume icon accordingly
+  if (g_windowManager.IsWindowActive(WINDOW_DIALOG_VOLUME_BAR)) {
+    SetIconVolume(true);
+  }
+  else {
+    SetIconVolume(false);
+  }
+
+  // Set the alarm icon accordingly - if a pop-up is displayed
+  if (g_windowManager.IsWindowActive(WINDOW_DIALOG_KAI_TOAST)) {
+    SetIconAlarm(true);
+  }
+  else {
+    SetIconAlarm(false);
+  }
+#ifdef USE_PVR
+  // Set the record icon accordingly
+  if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->IsRecording() || g_PVRManager.TranslateBoolInfo(PVR_IS_RECORDING)) {
+    SetIconRecord(true);
+  }
+  else {
+    SetIconRecord(false);
+  }
+#endif
+  // Set the repeat icon accordingly
+  if ((g_playlistPlayer.GetRepeat(g_playlistPlayer.GetCurrentPlaylist()) == PLAYLIST::REPEAT_ALL)
+      || (g_playlistPlayer.GetRepeat(g_playlistPlayer.GetCurrentPlaylist()) == PLAYLIST::REPEAT_ONE)) {
+    SetIconRepeat(true);
+  }
+  else {
+    SetIconRepeat(false);
+  }
+
+  // Set the shuffle icon accordingly
+  if (g_playlistPlayer.IsShuffled(g_playlistPlayer.GetCurrentPlaylist())) {
+    SetIconShuffle(true);
+  }
+  else {
+    SetIconShuffle(false);
+  }
+
+  // Set the time icon accordingly
+  if ((!g_application.IsPlaying() && g_application.NavigationIdleTime() >= 5) && g_application.IsInScreenSaver()) {
+    SetIconTime(true);
+  }
+  else {
+    SetIconTime(false);
+  }
+
+  if (g_mediaManager.IsDiscInDrive()) {
+    SetIconDiscIn(true);
+  }
+
+  // Set the SCR1/2 icons accordingly
+  SetIconSCR1(false);
+  SetIconSCR2(false);
+
+  SendIconStatesToDisplay();
+}
+
+void ILCD::SetCodecInformationIcons() {
+  if (g_application.IsPlaying() && g_application.m_pPlayer) {
+
+    if (g_application.m_pPlayer->IsPassthrough()) {
+      SetIconSPDIF(true);
+    }
+    else {
+      SetIconSPDIF(false);
+    }
+
+    if (g_application.IsPlayingVideo()) {
+      CStdString videoCodec = g_application.m_pPlayer->GetVideoCodecName();
+//      CLog::Log(LOGDEBUG, "XLCDproc::%s - Videocodec = '%s'", __FUNCTION__, videoCodec.c_str());
+      if ((videoCodec.CompareNoCase("mpg") == 0)
+          || (videoCodec.CompareNoCase("mpeg") == 0)
+          || (videoCodec.CompareNoCase("mpeg2video") == 0)
+          || (videoCodec.CompareNoCase("h264") == 0)
+          || (videoCodec.CompareNoCase("x264") == 0)
+          || (videoCodec.CompareNoCase("mpeg4") == 0)
+#ifdef USE_PVR
+          || (g_PVRManager.TranslateBoolInfo(PVR_IS_PLAYING_TV))
+#endif
+          ) { // g_application.m_pPlayer->GetVideoCodecName() returns "" in TV-mode, so we have to cheat a bit
+        SetIconMPEG(true);
+      } else if ((videoCodec.CompareNoCase("divx") == 0)
+          || (videoCodec.CompareNoCase("dx50") == 0)
+          || (videoCodec.CompareNoCase("div3") == 0)) {
+        SetIconDIVX(true);
+      } else if (videoCodec.CompareNoCase("xvid") == 0) {
+        SetIconXVID(true);
+      } else if ((videoCodec.CompareNoCase("wmv") == 0)
+    		  || (videoCodec.CompareNoCase("wmv2") == 0)) {
+        SetIconWMV(true);
+      }
+    }
+
+    CStdString audioCodec = g_application.m_pPlayer->GetAudioCodecName();
+//    CLog::Log(LOGDEBUG, "XLCDproc::%s - Audiocodec = '%s'", __FUNCTION__, audioCodec.c_str());
+    if ((audioCodec.CompareNoCase("mpga") == 0)
+        || (audioCodec.CompareNoCase("mp2") == 0)) {
+      SetIconMPGA(true);
+    } else if (audioCodec.CompareNoCase("ac3") == 0) {
+      SetIconAC3(true);
+    } else if ((audioCodec.CompareNoCase("dts") == 0)
+    		|| (audioCodec.CompareNoCase("dca") == 0)) {
+      SetIconDTS(true);
+    } else if ((audioCodec.CompareNoCase("mp3") == 0)) {
+      SetIconMP3(true);
+    } else if ((audioCodec.CompareNoCase("ogg") == 0)
+        || (audioCodec.CompareNoCase("vorbis") == 0)) {
+      SetIconOGG(true);
+    } else if ((audioCodec.CompareNoCase("wma") == 0)
+    		|| (audioCodec.CompareNoCase("wmav2") == 0)) {
+      if (g_application.IsPlayingVideo()) {
+        SetIconVWMA(true);
+      }
+      else if (g_application.IsPlayingAudio()) {
+        SetIconAWMA(true);
+      }
+    } else if ((audioCodec.CompareNoCase("wav") == 0)
+    		|| audioCodec.Find("pcm") >= 0) {
+      SetIconWAV(true);
+    }
+
+    CStreamDetails streamDetails;
+
+    if (g_application.m_pPlayer->GetStreamDetails(streamDetails)) {
+      SetIconAudioChannels(streamDetails.GetAudioChannels());
+    }
+    else if (!audioCodec.IsEmpty()) {
+      SetIconAudioChannels(2); // Let's assume stereo if there is audio being played but no stream details are available (e.g. while playing music)
+    }
+  }
+  else {
+    ResetCodecIcons();
+  }
+}
+
+void ILCD::ResetCodecIcons()
+{
+  SetIconSPDIF(false);
+
+  SetIconMPEG(false);
+  SetIconDIVX(false);
+  SetIconXVID(false);
+  SetIconWMV(false);
+
+  SetIconMPGA(false);
+  SetIconAC3(false);
+  SetIconDTS(false);
+  SetIconMP3(false);
+
+  SetIconOGG(false);
+  SetIconVWMA(false);
+  SetIconAWMA(false);
+  SetIconWAV(false);
+}
+
+bool ILCD::GetIsSpectrumAnalyzerWorking()
+{
+  return m_bIsSpectrumAnalyzerWorking;
+}
+
+void ILCD::SetIsSpectrumAnalyzerWorking(bool working)
+{
+  m_bIsSpectrumAnalyzerWorking = working;
 }
