@@ -141,6 +141,26 @@ static void SinkInfo(pa_context *c, const pa_sink_info *i, int eol, void *userda
 /* PulseAudio class memberfunctions*/
 
 CPulseAudioDirectSound::CPulseAudioDirectSound()
+  : m_pCallback(0)
+  , m_nCurrentVolume(0)
+  , m_dwPacketSize(0)
+  , m_dwNumPackets(0)
+  , m_bIsAllocated(0)
+  , m_uiBytesPerSecond(0)
+  , m_uiBufferSize(0)
+  , m_uiSamplesPerSec(0)
+  , m_uiBitsPerSample(0)
+  , m_uiDataChannels(0)
+  , m_uiChannels(0)
+  , m_bPause(false)
+  , m_bRecentlyFlushed(false)
+  , m_bAutoResume(false)
+  , m_bPassthrough(false)
+  , m_Stream(0)
+  , m_SampleSpec()
+  , m_Volume()
+  , m_Context(0)
+  , m_MainLoop(0)
 {
 }
 
