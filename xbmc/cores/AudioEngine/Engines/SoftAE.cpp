@@ -527,10 +527,10 @@ void CSoftAE::Stop()
   CSingleLock lock(m_runningLock);
 }
 
-IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options/* = 0 */)
+IAEStream *CSoftAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options/* = 0 */)
 {
   CAEChannelInfo channelInfo(channelLayout);
-  CLog::Log(LOGINFO, "CSoftAE::GetStream - %s, %u, %s",
+  CLog::Log(LOGINFO, "CSoftAE::MakeStream - %s, %u, %s",
     CAEUtil::DataFormatToStr(dataFormat),
     sampleRate,
     ((CStdString)channelInfo).c_str()
@@ -554,7 +554,7 @@ IAEStream *CSoftAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleR
   return stream;
 }
 
-IAESound *CSoftAE::GetSound(CStdString file)
+IAESound *CSoftAE::MakeSound(CStdString file)
 {
   CSingleLock soundLock(m_soundLock);
 

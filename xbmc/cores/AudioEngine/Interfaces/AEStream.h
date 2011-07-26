@@ -44,12 +44,6 @@ protected:
 
 public:
   /**
-   * Call this to destroy the stream
-   * @note Do not use delete
-   */
-  virtual void Destroy() = 0;
-
-  /**
    * Returns the amount of space available in the stream
    * @return The number of bytes AddData will consume
    */

@@ -163,7 +163,7 @@ void CPulseAE::SetVolume(float volume)
     (*itt)->UpdateVolume(volume);
 }
 
-IAEStream *CPulseAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options)
+IAEStream *CPulseAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options)
 {
   CPulseAEStream *st = new CPulseAEStream(m_Context, m_MainLoop, dataFormat, sampleRate, channelLayout, options);
 
@@ -199,7 +199,7 @@ IAEStream *CPulseAE::FreeStream(IAEStream *stream)
   return NULL;
 }
 
-IAESound *CPulseAE::GetSound(CStdString file)
+IAESound *CPulseAE::MakeSound(CStdString file)
 {
   CSingleLock lock(m_lock);
 

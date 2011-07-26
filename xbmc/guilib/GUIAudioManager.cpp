@@ -302,7 +302,7 @@ IAESound* CGUIAudioManager::LoadSound(const CStdString &filename)
     return it->second.sound;
   }
 
-  IAESound *sound = CAEFactory::AE->GetSound(filename);
+  IAESound *sound = CAEFactory::AE->MakeSound(filename);
   if (!sound)
     return NULL;
 

@@ -41,6 +41,7 @@ protected:
 public:
   void Initialize();
   void InitializeRemap();
+  void Destroy();
   uint8_t* GetFrame();
 
   bool IsPaused   () { return m_paused; }
@@ -48,7 +49,6 @@ public:
   bool IsValid    () { return m_valid;  }
   bool IsRaw      () const { return AE_IS_RAW(m_initDataFormat); }  
 
-  virtual void              Destroy         ();
   virtual unsigned int      GetSpace        ();
   virtual unsigned int      AddData         (void *data, unsigned int size);
   virtual float             GetDelay        ();

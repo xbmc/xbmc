@@ -185,7 +185,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
-        si->m_stream->Destroy();
+        CAEFactory::AE->FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
       
@@ -200,7 +200,7 @@ void PAPlayer::CloseAllStreams(bool fade/* = true */)
       
       if (si->m_stream)
       {
-        si->m_stream->Destroy();
+        CAEFactory::AE->FreeStream(si->m_stream);
         si->m_stream = NULL;
       }
       
@@ -298,7 +298,7 @@ inline bool PAPlayer::PrepareStream(StreamInfo *si)
     return true;
   
   /* get a paused stream */
-  si->m_stream = CAEFactory::AE->GetStream(
+  si->m_stream = CAEFactory::AE->MakeStream(
     si->m_dataFormat,
     si->m_sampleRate,
     CAEUtil::GuessChLayout(si->m_channels), /* FIXME: channelLayout */
@@ -369,7 +369,7 @@ inline void PAPlayer::ProcessStreams(float &delay, float &buffer)
     if (si->m_stream->IsDrained())
     {      
       itt = m_finishing.erase(itt);
-      si->m_stream->Destroy();
+      CAEFactory::AE->FreeStream(si->m_stream);
       delete si;
     }
     else

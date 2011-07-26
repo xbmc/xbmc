@@ -86,7 +86,7 @@ public:
    * @param options A bit field of stream options (see: enum AEStreamOptions)
    * @return a new IAEStream that will accept data in the requested format
    */
-  virtual IAEStream *GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options = 0) = 0;
+  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options = 0) = 0;
 
   /**
    * This method will remove the specifyed stream from the engine.
@@ -101,7 +101,7 @@ public:
    * @param file The WAV file to load, this supports XBMC's VFS
    * @return A new IAESound if the file could be loaded, otherwise NULL
    */
-  virtual IAESound *GetSound(CStdString file) = 0;
+  virtual IAESound *MakeSound(CStdString file) = 0;
 
   /**
    * Free the supplied IAESound object

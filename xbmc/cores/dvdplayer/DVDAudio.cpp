@@ -67,7 +67,7 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec, bool need
 
   // if passthrough isset do something else
   CSingleLock lock(m_critSection);
-  m_pAudioStream = CAEFactory::AE->GetStream(
+  m_pAudioStream = CAEFactory::AE->MakeStream(
     audioframe.data_format,
     audioframe.passthrough ? audioframe.encoded_sample_rate : audioframe.sample_rate,
     audioframe.channel_layout,

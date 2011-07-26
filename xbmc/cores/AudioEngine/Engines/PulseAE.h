@@ -49,13 +49,13 @@ public:
   virtual void  SetVolume(float volume);
 
   /* returns a new stream for data in the specified format */
-  virtual IAEStream *GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options = 0);
-  virtual void RemoveStream(IAEStream *stream);
+  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options = 0);
   virtual IAEStream *FreeStream(IAEStream *stream);
+  void RemoveStream(IAEStream *stream);
 
   /* returns a new sound object */
-  virtual IAESound *GetSound(CStdString file);
-  virtual void FreeSound(IAESound *sound);
+  virtual IAESound *MakeSound(CStdString file);
+  virtual void      FreeSound(IAESound *sound);
 
   /* free's sounds that have expired */
   virtual void GarbageCollect();
