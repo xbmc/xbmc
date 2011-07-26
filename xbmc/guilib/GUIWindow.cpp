@@ -60,6 +60,7 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_windowLoaded = false;
   m_loadOnDemand = true;
   m_closing = false;
+  m_active = false;
   m_renderOrder = 0;
   m_dynamicResourceAlloc = true;
   m_previousWindow = WINDOW_INVALID;
@@ -333,7 +334,6 @@ void CGUIWindow::Render()
 void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
 {
   CSingleLock lock(g_graphicsContext);
-  if (!g_windowManager.IsWindowActive(GetID(), false)) return;
   forceClose |= (nextWindowID == WINDOW_FULLSCREEN_VIDEO);
   if (forceClose)
   {
@@ -341,7 +341,7 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
     OnMessage(msg);
     m_closing = false;
   }
-  else if (!m_closing)
+  else if (m_active && !m_closing)
   {
     if (enableSound && IsSoundEnabled())
       g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
@@ -451,6 +451,7 @@ void CGUIWindow::OnInitWindow()
   // set our rendered state
   m_hasRendered = false;
   m_closing = false;
+  m_active = true;
   ResetAnimations();  // we need to reset our animations as those windows that don't dynamically allocate
                       // need their anims reset. An alternative solution is turning off all non-dynamic
                       // allocation (which in some respects may be nicer, but it kills hdd spindown and the like)
@@ -483,6 +484,7 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
   }
 
   SaveControlStates();
+  m_active = false;
 }
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)

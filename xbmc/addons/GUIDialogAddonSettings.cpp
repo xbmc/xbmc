@@ -1036,7 +1036,7 @@ void CGUIDialogAddonSettings::DoProcess(unsigned int currentTime, CDirtyRegionLi
     }
   }
   CGUIDialogBoxBase::DoProcess(currentTime, dirtyregions);
-  if (alphaFaded && m_bRunning) // dialog may close
+  if (alphaFaded && m_active) // dialog may close
   {
     control->SetFocus(false);
     if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)
