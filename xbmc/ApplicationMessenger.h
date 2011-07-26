@@ -186,7 +186,7 @@ public:
 
   void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "");
   void Show(CGUIDialog *pDialog);
-  void Close(CGUIWindow *window, bool forceClose, bool waitResult=true);
+  void Close(CGUIWindow *window, bool forceClose, bool waitResult = true, int nextWindowID = 0, bool enableSound = true);
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
   void SendAction(const CAction &action, int windowID = WINDOW_INVALID, bool waitResult=true);
   std::vector<CStdString> GetInfoLabels(const std::vector<CStdString> &properties);

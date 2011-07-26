@@ -138,33 +138,6 @@ void CGUIDialog::UpdateVisibility()
   }
 }
 
-void CGUIDialog::Close_Internal(bool forceClose /*= false*/)
-{
-  //Lock graphic context here as it is sometimes called from non rendering threads
-  //maybe we should have a critical section per window instead??
-  CSingleLock lock(g_graphicsContext);
-
-  if (!m_bRunning) return;
-
-  //  Play the window specific deinit sound
-  if(!m_closing && m_enableSound)
-    g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
-
-  // don't close if we should be animating
-  if (!forceClose && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
-  {
-    if (!m_closing && !IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-    {
-      QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
-      m_closing = true;
-    }
-    return;
-  }
-
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-  OnMessage(msg);
-}
-
 void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param /* = "" */)
 {
   //Lock graphic context here as it is sometimes called from non rendering threads
