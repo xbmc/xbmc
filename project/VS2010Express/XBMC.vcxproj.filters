@@ -2479,6 +2479,9 @@
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
       <Filter>threads</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\Location.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4989,6 +4992,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\SystemClock.h">
       <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\Location.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

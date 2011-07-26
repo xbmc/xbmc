@@ -38,7 +38,7 @@ class TiXmlElement;
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
 
-#define MAX_LOCATION 3
+#define MAX_LOCATION 4 // location zero is current location
 
 struct day_forecast
 {
@@ -102,7 +102,7 @@ public:
   const CWeatherInfo &GetInfo() const;
 private:
   bool LoadWeather(const CStdString& strWeatherFile); //parse strWeatherFile
-  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue);
+  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value);
   void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
   void LocalizeOverview(CStdString &str);
   void LocalizeOverviewToken(CStdString &str);
@@ -132,6 +132,7 @@ public:
   static bool GetSearchResults(const CStdString &strSearch, CStdString &strResult);
 
   CStdString GetLocation(int iLocation);
+  CStdString GetAreaCode(int iLocation);
   const CStdString &GetLastUpdateTime() const { return m_info.lastUpdateTime; };
   const day_forecast &GetForecast(int day) const;
   bool IsFetched();
@@ -140,8 +141,8 @@ public:
   void SetArea(int iLocation);
   int GetArea() const;
 
-  static CStdString GetAreaCode(const CStdString &codeAndCity);
-  static CStdString GetAreaCity(const CStdString &codeAndCity);
+  static CStdString GetAreaCodePart(const CStdString &codeAndCity);
+  static CStdString GetAreaCityPart(const CStdString &codeAndCity);
 
 protected:
   virtual CJob *GetJob() const;
