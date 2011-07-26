@@ -5461,7 +5461,6 @@
 				E38E16140D25F9FA00618676 /* MP3codec.h */,
 				E38E161B0D25F9FA00618676 /* NSFCodec.cpp */,
 				E38E161C0D25F9FA00618676 /* NSFCodec.h */,
-				E38E161D0D25F9FA00618676 /* ogg */,
 				F5E560BB10770F9F006E788A /* OggCallback.cpp */,
 				F5E560BA10770F9F006E788A /* OggCallback.h */,
 				E38E16230D25F9FA00618676 /* OGGcodec.cpp */,
@@ -5470,10 +5469,8 @@
 				F5987FD90FBE2DFD008EF4FB /* PAPlayer.h */,
 				E38E162A0D25F9FA00618676 /* ReplayGain.cpp */,
 				E38E162B0D25F9FA00618676 /* ReplayGain.h */,
-				E38E162C0D25F9FA00618676 /* shn */,
 				E38E16310D25F9FA00618676 /* SIDCodec.cpp */,
 				E38E16320D25F9FA00618676 /* SIDCodec.h */,
-				E38E16330D25F9FA00618676 /* spc */,
 				E38E16350D25F9FA00618676 /* SPCCodec.cpp */,
 				E38E16360D25F9FA00618676 /* SPCCodec.h */,
 				E38E16370D25F9FA00618676 /* TimidityCodec.cpp */,
@@ -5484,27 +5481,6 @@
 				E38E16420D25F9FA00618676 /* YMCodec.h */,
 			);
 			path = paplayer;
-			sourceTree = "<group>";
-		};
-		E38E161D0D25F9FA00618676 /* ogg */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ogg;
-			sourceTree = "<group>";
-		};
-		E38E162C0D25F9FA00618676 /* shn */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = shn;
-			sourceTree = "<group>";
-		};
-		E38E16330D25F9FA00618676 /* spc */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = spc;
 			sourceTree = "<group>";
 		};
 		E38E16580D25F9FA00618676 /* VideoRenderers */ = {
