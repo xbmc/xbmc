@@ -91,7 +91,7 @@ bool CPVRClients::GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient
   }
   else
   {
-    CLog::Log(LOGDEBUG, "%s - cannot find client %d", __FUNCTION__, iClientId);
+    CLog::Log(LOGDEBUG, "%s - client %d is not connected", __FUNCTION__, iClientId);
   }
 
   return bReturn;
@@ -119,7 +119,7 @@ void CPVRClients::Unload(void)
 
   /* reset class properties */
   m_bChannelScanRunning  = false;
-  m_bAllClientsConnected    = false;
+  m_bAllClientsConnected = false;
   m_currentChannel       = NULL;
   m_currentRecording     = NULL;
   m_strPlayingClientName = "";
