@@ -76,7 +76,7 @@ public:
   operator CStdString();
 
   /* remove any channels that dont exist in the provided info */
-  void RemoveAbsent(const CAEChannelInfo& rhs);
+  void ResolveChannels(const CAEChannelInfo& rhs);
   void Reset();
   unsigned int Count() const;
   static const char* GetChName(const enum AEChannel ch);

@@ -41,8 +41,17 @@ CAEChannelInfo::~CAEChannelInfo()
 {
 }
 
-void CAEChannelInfo::RemoveAbsent(const CAEChannelInfo& rhs)
-{
+void CAEChannelInfo::ResolveChannels(const CAEChannelInfo& rhs)
+{  
+  /* mono gets upmixed to dual mono */
+  if (m_channelCount == 1 && m_channels[0] == AE_CH_FC)
+  {
+    Reset();
+    *this += AE_CH_FL;
+    *this += AE_CH_FR;
+    return;
+  }
+  
   bool srcHasSL = false;
   bool srcHasSR = false;
   bool srcHasRL = false;
@@ -63,7 +72,6 @@ void CAEChannelInfo::RemoveAbsent(const CAEChannelInfo& rhs)
       default:
         break;
     }
-
 
   CAEChannelInfo newInfo;
   for(unsigned int i = 0; i < m_channelCount; ++i)
@@ -114,7 +122,6 @@ CAEChannelInfo& CAEChannelInfo::operator=(const CAEChannelInfo& rhs)
   /* clone the information */
   m_channelCount = rhs.m_channelCount;
   memcpy(m_channels, rhs.m_channels, sizeof(enum AEChannel) * rhs.m_channelCount);
-  m_channels[m_channelCount] = AE_CH_NULL;
 
   return *this;
 }
@@ -128,13 +135,12 @@ CAEChannelInfo& CAEChannelInfo::operator=(const enum AEChannel* rhs)
   /* count the channels */
   m_channelCount = 0;
   while(m_channelCount < AE_CH_MAX && rhs[m_channelCount] != AE_CH_NULL)
+  {
+    m_channels[m_channelCount] = rhs[m_channelCount];
     ++m_channelCount;
+  }
 
   ASSERT(m_channelCount < AE_CH_MAX);
-  
-  /* copy the info */
-  memcpy(m_channels, rhs, sizeof(enum AEChannel) * m_channelCount);
-  m_channels[m_channelCount] = AE_CH_NULL;
 
   return *this;
 }
