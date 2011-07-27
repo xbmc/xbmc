@@ -116,6 +116,7 @@ private:
   enum AEStdChLayout m_stdChLayout;
   CStdString m_device;
   CStdString m_passthroughDevice;
+  bool m_preferSeemless;
 
   /* internal vars */
   bool             m_running, m_reOpened;

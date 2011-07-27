@@ -49,6 +49,7 @@ using namespace std;
 
 CSoftAE::CSoftAE():
   m_thread             (NULL ),
+  m_preferSeemless     (true ),
   m_running            (false),
   m_reOpened           (false),
   m_sink               (NULL ),
@@ -135,7 +136,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   /* override the sample rate & channel layout based on the oldest stream if there is one */
   if (!m_streams.empty())
   {
-    CSoftAEStream *stream     = m_streams.front();
+    CSoftAEStream *stream     = m_preferSeemless ? m_streams.front() : m_streams.back();
     sampleRate                = stream->GetSampleRate();
     newFormat.m_channelLayout = stream->m_initChannelLayout;
     if (!m_transcode && !m_rawPassthrough)
@@ -535,7 +536,7 @@ IAEStream *CSoftAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sample
 
   if (AE_IS_RAW(dataFormat))
     OpenSink(sampleRate, channelLayout.Count(), true, dataFormat);
-  else if (wasEmpty)
+  else if (wasEmpty || !m_preferSeemless)
     OpenSink(sampleRate);
 
   /* if the stream was not initialized, do it now */
