@@ -199,7 +199,7 @@ bool CGUIWindowVideoPlaylist::OnAction(const CAction &action)
     // Playlist has no parent dirs
     return true;
   }
-  if (action.GetID() == ACTION_SHOW_PLAYLIST)
+  if (action.GetID() == ACTION_SHOW_PLAYLIST || action.GetID() == ACTION_NAV_BACK)
   {
     g_windowManager.PreviousWindow();
     return true;

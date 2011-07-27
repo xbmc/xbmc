@@ -33,6 +33,7 @@
 #include "utils/log.h"
 #include <map>
 #include <queue>
+#include "math.h"
 
 using namespace DBUSSERVER;
 using namespace std;
@@ -269,9 +270,8 @@ void CDbusServer::StartServer(CApplication *parent)
   }
 
   m_bStop = false;
-  m_pThread = new CThread(this);
+  m_pThread = new CThread(this, "DbusServer");
   m_pThread->Create();
-  m_pThread->SetName("DbusServer");
 }
 
 void CDbusServer::StopServer(bool bWait)

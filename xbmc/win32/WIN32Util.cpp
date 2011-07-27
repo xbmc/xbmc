@@ -279,6 +279,16 @@ bool CWIN32Util::PowerManagement(PowerState State)
 #endif
 }
 
+int CWIN32Util::BatteryLevel()
+{
+  SYSTEM_POWER_STATUS SystemPowerStatus;
+
+  if (GetSystemPowerStatus(&SystemPowerStatus) && SystemPowerStatus.BatteryLifePercent != 255)
+      return SystemPowerStatus.BatteryLifePercent;
+
+  return 0;
+}
+
 bool CWIN32Util::XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit)
 {
   CStdString strCommand = strPath;
@@ -1349,6 +1359,65 @@ bool CWIN32Util::GetCrystalHDLibraryPath(CStdString &strPath)
     return true;
   else
     return false;
+}
+
+// Retrieve the filename of the process that currently has the focus.
+// Typically this will be some process using the system tray grabbing
+// the focus and causing XBMC to minimise. Logging the offending
+// process name can help the user fix the problem.
+bool CWIN32Util::GetFocussedProcess(CStdString &strProcessFile)
+{
+  strProcessFile = "";
+
+  // Get the window that has the focus
+  HWND hfocus = GetForegroundWindow();
+  if (!hfocus)
+    return false;
+
+  // Get the process ID from the window handle
+  DWORD pid = 0;
+  GetWindowThreadProcessId(hfocus, &pid);
+
+  // Use OpenProcess to get the process handle from the process ID
+  HANDLE hproc = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, 0, pid);
+  if (!hproc)
+    return false;
+
+  // Load QueryFullProcessImageName dynamically because it isn't available
+  // in all versions of Windows.
+  char procfile[MAX_PATH+1];
+  DWORD procfilelen = MAX_PATH;
+
+  HINSTANCE hkernel32 = LoadLibrary("kernel32.dll");
+  if (hkernel32)
+  {
+    DWORD (WINAPI *pQueryFullProcessImageNameA)(HANDLE,DWORD,LPTSTR,PDWORD);
+    pQueryFullProcessImageNameA = (DWORD (WINAPI *)(HANDLE,DWORD,LPTSTR,PDWORD)) GetProcAddress(hkernel32, "QueryFullProcessImageNameA");
+    if (pQueryFullProcessImageNameA)
+      if (pQueryFullProcessImageNameA(hproc, 0, procfile, &procfilelen))
+        strProcessFile = procfile;
+    FreeLibrary(hkernel32);
+  }
+
+  // If QueryFullProcessImageName failed fall back to GetModuleFileNameEx.
+  // Note this does not work across x86-x64 boundaries.
+  if (strProcessFile == "")
+  {
+    HINSTANCE hpsapi = LoadLibrary("psapi.dll");
+    if (hpsapi)
+    {
+      DWORD (WINAPI *pGetModuleFileNameExA)(HANDLE,HMODULE,LPTSTR,DWORD); 
+      pGetModuleFileNameExA = (DWORD (WINAPI*)(HANDLE,HMODULE,LPTSTR,DWORD)) GetProcAddress(hpsapi, "GetModuleFileNameExA");
+      if (pGetModuleFileNameExA)
+        if (pGetModuleFileNameExA(hproc, NULL, procfile, MAX_PATH))
+          strProcessFile = procfile;
+      FreeLibrary(hpsapi);
+    }
+  }
+
+  CloseHandle(hproc);
+
+  return true;
 }
 
 void CWinIdleTimer::StartZero()

@@ -42,6 +42,7 @@ namespace ADDON
 CCriticalSection CAddonStatusHandler::m_critSection;
 
 CAddonStatusHandler::CAddonStatusHandler(const CStdString &addonID, ADDON_STATUS status, CStdString message, bool sameThread)
+  : CThread("CAddonStatusHandler:" + addonID)
 {
   if (!CAddonMgr::Get().GetAddon(addonID, m_addon))
     return;
@@ -57,11 +58,7 @@ CAddonStatusHandler::CAddonStatusHandler(const CStdString &addonID, ADDON_STATUS
   }
   else
   {
-    CStdString ThreadName;
-    ThreadName.Format("Addon Status: %s", m_addon->Name().c_str());
-
     Create(true, THREAD_MINSTACKSIZE);
-    SetName(ThreadName.c_str());
     SetPriority(-15);
   }
 }

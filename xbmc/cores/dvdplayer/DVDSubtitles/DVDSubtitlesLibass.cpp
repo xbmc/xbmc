@@ -148,27 +148,6 @@ bool CDVDSubtitlesLibass::CreateTrack(char* buf)
   return true;
 }
 
-
-long CDVDSubtitlesLibass::Acquire()
-{
-  long count = AtomicIncrement(&m_references);
-  return count;
-}
-
-long CDVDSubtitlesLibass::Release()
-{
-  long count = AtomicDecrement(&m_references);
-  if (count == 0)
-    delete this;
-
-  return count;
-}
-
-long CDVDSubtitlesLibass::GetNrOfReferences()
-{
-  return m_references;
-}
-
 ASS_Image* CDVDSubtitlesLibass::RenderImage(int imageWidth, int imageHeight, double pts)
 {
   CSingleLock lock(m_section);

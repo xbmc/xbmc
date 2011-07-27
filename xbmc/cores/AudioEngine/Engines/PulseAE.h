@@ -23,7 +23,7 @@
 #include "system.h"
 #ifdef HAS_PULSEAUDIO
 
-#include "AE.h"
+#include "Interfaces/AE.h"
 #include "PulseAEStream.h"
 #include "PulseAESound.h"
 #include "threads/CriticalSection.h"
@@ -49,16 +49,13 @@ public:
   virtual void  SetVolume(float volume);
 
   /* returns a new stream for data in the specified format */
-  virtual IAEStream *GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0);
-  virtual IAEStream *AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0);
-  virtual void RemoveStream(IAEStream *stream);
+  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options = 0);
   virtual IAEStream *FreeStream(IAEStream *stream);
+  void RemoveStream(IAEStream *stream);
 
   /* returns a new sound object */
-  virtual IAESound *GetSound(CStdString file);
-  virtual void FreeSound(IAESound *sound);
-  virtual void PlaySound(IAESound *sound);
-  virtual void StopSound(IAESound *sound);
+  virtual IAESound *MakeSound(CStdString file);
+  virtual void      FreeSound(IAESound *sound);
 
   /* free's sounds that have expired */
   virtual void GarbageCollect();

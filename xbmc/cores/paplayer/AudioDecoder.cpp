@@ -28,8 +28,6 @@
 #include "utils/log.h"
 #include <math.h>
 
-#define INTERNAL_BUFFER_LENGTH  sizeof(float)*2*44100       // float samples, 2 channels, 44100 samples per sec = 1 second
-
 CAudioDecoder::CAudioDecoder()
 {
   m_codec = NULL;
@@ -139,28 +137,33 @@ unsigned int CAudioDecoder::GetDataSize()
   // check for end of file and end of buffer
   if (m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() < PACKET_SIZE)
     m_status = STATUS_ENDED;
-  return m_pcmBuffer.getMaxReadSize() / (m_codec->m_BitsPerSample >> 3);
+  return std::min(m_pcmBuffer.getMaxReadSize() / (m_codec->m_BitsPerSample >> 3), (unsigned int)OUTPUT_SAMPLES);
 }
 
-void *CAudioDecoder::GetData(unsigned int size)
+void *CAudioDecoder::GetData(unsigned int samples)
 {
-  if (size > OUTPUT_SAMPLES)
+  unsigned int size  = samples * (m_codec->m_BitsPerSample >> 3);
+  if (size > sizeof(m_outputBuffer))
   {
-    CLog::Log(LOGWARNING, "CAudioDecoder::GetData() more bytes/samples (%i) requested than we have to give (%i)!", size, OUTPUT_SAMPLES);
-    size = OUTPUT_SAMPLES;
+    CLog::Log(LOGERROR, "CAudioDecoder::GetData - More data was requested then we have space to buffer!");
+    return NULL;
+  }
+  
+  if (size > m_pcmBuffer.getMaxReadSize())
+  {
+    CLog::Log(LOGWARNING, "CAudioDecoder::GetData() more bytes/samples (%i) requested than we have to give (%i)!", size, m_pcmBuffer.getMaxReadSize());
+    size = m_pcmBuffer.getMaxReadSize();
   }
 
-  if (m_pcmBuffer.ReadData( (char *)(m_outputBuffer), size * (m_codec->m_BitsPerSample >> 3)))
+  if (m_pcmBuffer.ReadData((char *)m_outputBuffer, size))
   {
-    // check for end of file + end of buffer
-    if (m_status == STATUS_ENDING && (int)m_pcmBuffer.getMaxReadSize() < (OUTPUT_SAMPLES * (m_codec->m_BitsPerSample >> 3)))
-    {
-      CLog::Log(LOGINFO, "CAudioDecoder::GetData() ending track - only have %lu samples left", (unsigned long)(m_pcmBuffer.getMaxReadSize() / (m_codec->m_BitsPerSample >> 3)));
+    if (m_status == STATUS_ENDING && m_pcmBuffer.getMaxReadSize() == 0)
       m_status = STATUS_ENDED;
-    }
+    
     return m_outputBuffer;
   }
-  CLog::Log(LOGERROR, "CAudioDecoder::GetData() ReadBinary failed with %i samples", size);
+  
+  CLog::Log(LOGERROR, "CAudioDecoder::GetData() ReadBinary failed with %i samples", samples);
   return NULL;
 }
 
@@ -182,13 +185,13 @@ int CAudioDecoder::ReadSamples(int numsamples)
   numsamples -= (numsamples % m_codec->m_Channels);  // make sure it's divisible by our number of channels
   if ( numsamples )
   {
-    int samples = 0;
-    int result = m_codec->ReadPCM(m_pcmInputBuffer, numsamples * (m_codec->m_BitsPerSample >> 3), &samples);
+    int readSize = 0;
+    int result = m_codec->ReadPCM(m_pcmInputBuffer, numsamples * (m_codec->m_BitsPerSample >> 3), &readSize);
 
-    if ( result != READ_ERROR && samples)
+    if (result != READ_ERROR && readSize)
     {
       // move it into our buffer
-      m_pcmBuffer.WriteData((char *)m_pcmInputBuffer, samples);
+      m_pcmBuffer.WriteData((char *)m_pcmInputBuffer, readSize);
 
       // update status
       if (m_status == STATUS_QUEUING && m_pcmBuffer.getMaxReadSize() > m_pcmBuffer.getSize() * 0.9)

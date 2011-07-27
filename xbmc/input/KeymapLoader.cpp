@@ -28,26 +28,23 @@
 using namespace std;
 using namespace XFILE;
 
-CKeymapLoader::CKeymapLoader()
-{
-  if (!parsedMappings)
-  {
-    ParseDeviceMappings();
-  }
-}
+static std::map<CStdString, CStdString> deviceMappings;
+bool CKeymapLoader::parsedMappings = false;
 
-void CKeymapLoader::DeviceAdded(CStdString deviceId)
+void CKeymapLoader::DeviceAdded(const CStdString& deviceId)
 {
+  ParseDeviceMappings();
   CStdString keymapName;
-  if (FindMappedDevice(deviceId, keymapName))
+  if (CKeymapLoader::FindMappedDevice(deviceId, keymapName))
   {
     CLog::Log(LOGDEBUG, "Switching Active Keymapping to: %s", keymapName.c_str());
     g_settings.m_activeKeyboardMapping = keymapName;
   }
 }
 
-void CKeymapLoader::DeviceRemoved(CStdString deviceId)
+void CKeymapLoader::DeviceRemoved(const CStdString& deviceId)
 {
+  ParseDeviceMappings();
   CStdString keymapName;
   if (FindMappedDevice(deviceId, keymapName))
   {
@@ -58,33 +55,42 @@ void CKeymapLoader::DeviceRemoved(CStdString deviceId)
 
 void CKeymapLoader::ParseDeviceMappings()
 {
-  parsedMappings = true;
-  CStdString file("special://xbmc/system/deviceidmappings.xml");
-  TiXmlDocument deviceXML;
-  if (!CFile::Exists(file) || !deviceXML.LoadFile(file))
-    return;
-
-  TiXmlElement *pRootElement = deviceXML.RootElement();
-  if (!pRootElement || strcmpi(pRootElement->Value(), "devicemappings") != 0)
-    return;
-  
-  TiXmlElement *pDevice = pRootElement->FirstChildElement("device");
-  while (pDevice)
+  if (!parsedMappings)
   {
-    CStdString deviceId(pDevice->Attribute("id"));
-    CStdString keymap(pDevice->Attribute("keymap"));
-    if (!deviceId.empty() && !keymap.empty())
-      deviceMappings.insert(pair<CStdString, CStdString>(deviceId.ToUpper(), keymap));
-    pDevice = pDevice->NextSiblingElement("device");
+    parsedMappings = true;
+    CStdString file("special://xbmc/system/deviceidmappings.xml");
+    TiXmlDocument deviceXML;
+    if (!CFile::Exists(file) || !deviceXML.LoadFile(file))
+      return;
+
+    TiXmlElement *pRootElement = deviceXML.RootElement();
+    if (!pRootElement || strcmpi(pRootElement->Value(), "devicemappings") != 0)
+      return;
+  
+    TiXmlElement *pDevice = pRootElement->FirstChildElement("device");
+    while (pDevice)
+    {
+      CStdString deviceId(pDevice->Attribute("id"));
+      CStdString keymap(pDevice->Attribute("keymap"));
+      if (!deviceId.empty() && !keymap.empty())
+        deviceMappings.insert(pair<CStdString, CStdString>(deviceId.ToUpper(), keymap));
+      pDevice = pDevice->NextSiblingElement("device");
+    }
   }
 }
 
-bool CKeymapLoader::FindMappedDevice(CStdString deviceId, CStdString& keymapName)
+bool CKeymapLoader::FindMappedDevice(const CStdString& deviceId, CStdString& keymapName)
 {
-  std::map<CStdString, CStdString>::iterator deviceIdIt = deviceMappings.find(deviceId.ToUpper());
+  CStdString deviceIdTemp = deviceId;
+  std::map<CStdString, CStdString>::iterator deviceIdIt = deviceMappings.find(deviceIdTemp.ToUpper());
   if (deviceIdIt == deviceMappings.end())
     return false;
 
   keymapName = deviceIdIt->second;
   return true;
+}
+
+CStdString CKeymapLoader::ParseWin32HIDName(const CStdString& deviceLongName)
+{
+  return deviceLongName.Mid(deviceLongName.find_last_of('\\')+1, deviceLongName.find_last_of('#') - deviceLongName.find_last_of('\\'));
 }

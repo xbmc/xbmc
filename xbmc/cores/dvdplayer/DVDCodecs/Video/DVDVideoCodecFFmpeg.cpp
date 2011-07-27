@@ -118,21 +118,6 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
   return ctx->m_dllAvCodec.avcodec_default_get_format(avctx, fmt);
 }
 
-
-CDVDVideoCodecFFmpeg::IHardwareDecoder*  CDVDVideoCodecFFmpeg::IHardwareDecoder::Acquire()
-{
-  AtomicIncrement(&m_references);
-  return this;
-}
-
-long CDVDVideoCodecFFmpeg::IHardwareDecoder::Release()
-{
-  long count = AtomicDecrement(&m_references);
-  ASSERT(count >= 0);
-  if (count == 0) delete this;
-  return count;
-}
-
 CDVDVideoCodecFFmpeg::CDVDVideoCodecFFmpeg() : CDVDVideoCodec()
 {
   m_pCodecContext = NULL;
@@ -265,15 +250,11 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     m_dllAvUtil.av_set_string3(m_pCodecContext, it->m_name.c_str(), it->m_value.c_str(), 0, NULL);
   }
 
-#if defined(__APPLE__) && defined(__arm__)
-  m_dllAvCodec.avcodec_thread_init(m_pCodecContext, 1);
-#elif defined(_LINUX) || defined(_WIN32)
   int num_threads = std::min(8 /*MAX_THREADS*/, g_cpuInfo.getCPUCount());
   if( num_threads > 1 && !hints.software && m_pHardware == NULL // thumbnail extraction fails when run threaded
   && ( pCodec->id == CODEC_ID_H264
     || pCodec->id == CODEC_ID_MPEG4 ))
     m_dllAvCodec.avcodec_thread_init(m_pCodecContext, num_threads);
-#endif
 
   if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
   {
@@ -584,9 +565,11 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
 
   /* use variable in the frame */
   AVRational pixel_aspect = m_pCodecContext->sample_aspect_ratio;
-#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(1,75,0)
   if (m_pFilterLink)
+#ifdef HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO
     pixel_aspect = m_pFilterLink->cur_buf->video->sample_aspect_ratio;
+#else
+    pixel_aspect = m_pFilterLink->cur_buf->video->pixel_aspect;
 #endif
 
   if (pixel_aspect.num == 0)
@@ -731,8 +714,8 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
 
   if (!filters.empty())
   {
-    AVFilterInOut* outputs = (AVFilterInOut*)m_dllAvUtil.av_mallocz(sizeof(AVFilterInOut));
-    AVFilterInOut* inputs  = (AVFilterInOut*)m_dllAvUtil.av_mallocz(sizeof(AVFilterInOut));
+    AVFilterInOut* outputs = m_dllAvFilter.avfilter_inout_alloc();
+    AVFilterInOut* inputs  = m_dllAvFilter.avfilter_inout_alloc();
 
     outputs->name    = m_dllAvUtil.av_strdup("in");
     outputs->filter_ctx = m_pFilterIn;
@@ -744,11 +727,14 @@ int CDVDVideoCodecFFmpeg::FilterOpen(const CStdString& filters)
     inputs->pad_idx = 0;
     inputs->next    = NULL;
 
-    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), inputs, outputs, NULL)) < 0)
+    if ((result = m_dllAvFilter.avfilter_graph_parse(m_pFilterGraph, (const char*)m_filters.c_str(), &inputs, &outputs, NULL)) < 0)
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterOpen - avfilter_graph_parse");
       return result;
     }
+
+    m_dllAvFilter.avfilter_inout_free(&outputs);
+    m_dllAvFilter.avfilter_inout_free(&inputs);
   }
   else
   {
@@ -789,7 +775,9 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if (frame)
   {
-#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,7,0)
+#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,13,0)
+    result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, 0);
+#elif LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,7,0)
     result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame);
 #elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53,3,0)
     result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, frame->pts);

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "MythFile.h"
 #include "XBDateTime.h"
 #include "FileItem.h"
@@ -255,7 +256,7 @@ bool CMythFile::SetupLiveTV(const CURL& url)
   }
 
   m_program = m_dll->recorder_get_cur_proginfo(m_recorder);
-  m_timestamp = CTimeUtils::GetTimeMS();
+  m_timestamp = XbmcThreads::SystemClockMillis();
   if(m_program)
     m_starttime = m_dll->proginfo_rec_start(m_program);
 
@@ -546,9 +547,9 @@ bool CMythFile::UpdateItem(CFileItem& item)
 
 int CMythFile::GetTotalTime()
 {
-  if(m_recorder && m_timestamp + 5000 < CTimeUtils::GetTimeMS())
+  if(m_recorder && (XbmcThreads::SystemClockMillis() - m_timestamp) > 5000 )
   {
-    m_timestamp = CTimeUtils::GetTimeMS();
+    m_timestamp = XbmcThreads::SystemClockMillis();
     if(m_program)
       m_dll->ref_release(m_program);
     m_program = m_dll->recorder_get_cur_proginfo(m_recorder);

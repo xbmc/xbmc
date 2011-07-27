@@ -20,6 +20,7 @@
  */
 
 #ifdef _LINUX
+#include "threads/SystemClock.h"
 #include "linux/PlatformDefs.h"
 #endif
 #include "settings/AdvancedSettings.h"
@@ -136,8 +137,8 @@ int64_t CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int millis)
   if (millis == 0 || IsEndOfInput())
     return m_buffer.getMaxReadSize();
 
-  unsigned int time = CTimeUtils::GetTimeMS() + millis;
-  while (!IsEndOfInput() && (unsigned int) m_buffer.getMaxReadSize() < iMinAvail && CTimeUtils::GetTimeMS() < time )
+  XbmcThreads::EndTime endTime(millis);
+  while (!IsEndOfInput() && (unsigned int) m_buffer.getMaxReadSize() < iMinAvail && !endTime.IsTimePast() )
     m_written.WaitMSec(50); // may miss the deadline. shouldn't be a problem.
 
   return m_buffer.getMaxReadSize();
@@ -161,7 +162,7 @@ int64_t CacheMemBuffer::Seek(int64_t iFilePosition)
   // check if seek is inside the current buffer
   if (iFilePosition >= m_nStartPosition && iFilePosition < m_nStartPosition + m_buffer.getMaxReadSize())
   {
-    unsigned int nOffset = (iFilePosition - m_nStartPosition);
+    unsigned int nOffset = (unsigned int)(iFilePosition - m_nStartPosition);
     // copy to history so we can seek back
     if (m_HistoryBuffer.getMaxWriteSize() < nOffset)
       m_HistoryBuffer.SkipBytes(nOffset);

@@ -23,7 +23,7 @@
 #include "system.h"
 #ifdef HAS_ALSA
 
-#include "AESink.h"
+#include "Interfaces/AESink.h"
 #include <stdint.h>
 
 #define ALSA_PCM_NEW_HW_PARAMS_API
@@ -49,13 +49,13 @@ public:
   virtual void         Drain           ();
   static void          EnumerateDevices(AEDeviceList &devices, bool passthrough);
 private:
-  unsigned int GetChannelCount(const AEAudioFormat format);
-  CStdString   GetDeviceUse   (const AEAudioFormat format, CStdString device, bool passthrough);
+  CAEChannelInfo GetChannelLayout(AEAudioFormat format);
+  CStdString     GetDeviceUse    (const AEAudioFormat format, CStdString device, bool passthrough);
 
   AEAudioFormat     m_initFormat;
   AEAudioFormat     m_format;
   bool              m_passthrough;
-  enum AEChannel    m_channelLayout[AE_CH_MAX+1];
+  CAEChannelInfo    m_channelLayout;
   CStdString        m_device;
   snd_pcm_t        *m_pcm;
   int               m_timeout;

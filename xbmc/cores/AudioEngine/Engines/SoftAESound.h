@@ -23,8 +23,8 @@
 #include "utils/StdString.h"
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
-#include "AESound.h"
-#include "AEWAVLoader.h"
+#include "Interfaces/AESound.h"
+#include "Utils/AEWAVLoader.h"
 
 class CWAVLoader;
 class CSoftAESound : public IAESound
@@ -42,25 +42,17 @@ public:
 
   virtual void   SetVolume(float volume) { m_volume = std::max(0.0f, std::min(1.0f, volume)); }
   virtual float  GetVolume()             { return m_volume      ; }
-  virtual void   SetFreeCallback(AECBFunc *func, void *arg);
 
   unsigned int GetSampleCount();
-
-  /* must be called before initialize to be sure we have exclusive access to our samples */
-  void Lock()   { m_sampleLock.lock  (); }
-  void UnLock() { m_sampleLock.unlock(); }
 
   /* ReleaseSamples must be called for each time GetSamples has been called */
   virtual float* GetSamples    ();
   void           ReleaseSamples();
 private:
-  CSharedSection   m_sampleLock;
   CCriticalSection m_critSection;
   CStdString       m_filename;
   CAEWAVLoader     m_wavLoader;
   float            m_volume;
   int              m_inUse;
-  AECBFunc        *m_freeCallback;
-  void            *m_freeCallbackArg;
 };
 

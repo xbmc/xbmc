@@ -49,7 +49,7 @@ CDVDAudioCodecPassthrough::~CDVDAudioCodecPassthrough(void)
 bool CDVDAudioCodecPassthrough::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
 {
   /* dont open if AE doesnt support RAW */
-  if (!AE.SupportsRaw())
+  if (!CAEFactory::AE->SupportsRaw())
     return false;
 
   bool bSupportsAC3Out    = false;
@@ -165,7 +165,7 @@ int CDVDAudioCodecPassthrough::GetEncodedChannels()
   //return m_channels;
 }
 
-AEChLayout CDVDAudioCodecPassthrough::GetChannelMap()
+CAEChannelInfo CDVDAudioCodecPassthrough::GetChannelMap()
 {
   static enum AEChannel map[2][9] = {
     {AE_CH_RAW, AE_CH_RAW, AE_CH_NULL},

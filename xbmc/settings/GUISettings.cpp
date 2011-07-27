@@ -258,6 +258,7 @@ void CGUISettings::Initialize()
   // My Weather settings
   AddGroup(2, 8);
   CSettingsCategory* wea = AddCategory(2, "weather", 16000);
+  AddInt(NULL, "weather.currentlocation", 0, 1, 1, 1, 3, SPIN_CONTROL_INT_PLUS);
   AddString(wea, "weather.areacode1", 14019, "USNY0996 - New York, NY", BUTTON_CONTROL_STANDARD);
   AddString(wea, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(wea, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
@@ -331,7 +332,7 @@ void CGUISettings::Initialize()
   encoders.insert(make_pair(34001,CDDARIP_ENCODER_VORBIS));
   encoders.insert(make_pair(34002,CDDARIP_ENCODER_WAV));
   encoders.insert(make_pair(34005,CDDARIP_ENCODER_FLAC));
-  AddInt(acd, "audiocds.encoder", 621, CDDARIP_ENCODER_LAME, encoders, SPIN_CONTROL_TEXT);
+  AddInt(acd, "audiocds.encoder", 621, CDDARIP_ENCODER_FLAC, encoders, SPIN_CONTROL_TEXT);
 
   map<int,int> qualities;
   qualities.insert(make_pair(604,CDDARIP_QUALITY_CBR));

@@ -39,6 +39,7 @@
 #include "utils/TimeUtils.h"
 #include "Util.h"
 
+#include "threads/SystemClock.h"
 #include "addons/Addon.h"
 
 extern "C" HMODULE __stdcall dllLoadLibraryA(LPCSTR file);
@@ -236,11 +237,11 @@ void XBPython::UnloadExtensionLibs()
         "\tdef __init__(self, loglevel=xbmc.LOGNOTICE):\n" \
         "\t\tself.ll=loglevel\n" \
         "\tdef write(self, data):\n" \
-        "\t\txbmc.output(data,self.ll)\n" \
+        "\t\txbmc.log(data,self.ll)\n" \
         "\tdef close(self):\n" \
-        "\t\txbmc.output('.')\n" \
+        "\t\txbmc.log('.')\n" \
         "\tdef flush(self):\n" \
-        "\t\txbmc.output('.')\n" \
+        "\t\txbmc.log('.')\n" \
         "import sys\n" \
         "sys.stdout = xbmcout()\n" \
         "sys.stderr = xbmcout(xbmc.LOGERROR)\n"
@@ -405,7 +406,7 @@ void XBPython::FinalizeScript()
     m_iDllScriptCounter--;
   else
     CLog::Log(LOGERROR, "Python script counter attempted to become negative");
-  m_endtime = CTimeUtils::GetTimeMS();
+  m_endtime = XbmcThreads::SystemClockMillis();
 }
 void XBPython::Finalize()
 {
@@ -489,7 +490,7 @@ void XBPython::Process()
       else ++it;
     }
 
-    if(m_iDllScriptCounter == 0 && m_endtime + 10000 < CTimeUtils::GetTimeMS())
+    if(m_iDllScriptCounter == 0 && (XbmcThreads::SystemClockMillis() - m_endtime) > 10000 )
       Finalize();
   }
 }

@@ -1,0 +1,52 @@
+
+In order to port xbmc to an unsupported platform, the threading model
+needs to replace the following classes:
+
+-------------------------------------------------------------------------
+CCriticalSection
+-------------------------------------------------------------------------
+
+CCriticalSection - must implement the "CountingLockable" concept:
+   void lock();
+   bool try_lock();
+   void unlock();
+   unsigned int exit();
+   void restore(unsigned int);
+
+The "CountingLockable" concept implies a RECURSIVE Lockable.
+
+There is a "CountingLockable" template which can be used to facilitate this
+implementation from something that implements the "Lockable" concept:
+   void lock();
+   bool try_lock();
+   void unlock();
+
+using:
+   class CCriticalSection : public CountingLockable<PlatformSpecificLocakable> {};
+
+
+-------------------------------------------------------------------------
+ThreadLocal
+-------------------------------------------------------------------------
+
+ThreadLocal - must be a template<class T> that implements the "ThreadLocal" concept:
+   void set(T* val);
+   T* get();
+
+currently there is no need for a facility to define a cleanup function and if
+destructors are automatically called by the underlying implementation this
+behavior must be blocked (such is the case with boost).
+
+-------------------------------------------------------------------------
+ConditionVariable
+-------------------------------------------------------------------------
+
+ConditionVariable - must be implemented to handle a ConditionVariable concept:
+
+   tempalte <class L> WaitResponse wait(L& lock);
+   tempalte <class L> WaitResponse wait(L& lock, int milliseconds);
+   void notifyAll();
+   void notify();
+
+where L is a typename template variable that must satisfy Lockable concept 
+defined above.

@@ -100,6 +100,7 @@ void CalculateYUVMatrix(TransformMatrix &matrix
   for(int row = 0; row < 3; row++)
     for(int col = 0; col < 4; col++)
       coef.m[row][col] = conv[col][row];
+  coef.identity = false;
 
   matrix *= coef;
   matrix *= TransformMatrix::CreateTranslation(0.0, -0.5, -0.5);

@@ -49,6 +49,7 @@ public:
   static char FirstDriveFromMask (ULONG unitmask);
   static int GetDriveStatus(const CStdString &strPath);
   static bool PowerManagement(PowerState State);
+  static int BatteryLevel();
   static bool XBMCShellExecute(const CStdString &strPath, bool bWaitForScriptExit=false);
   static std::vector<CStdString> GetDiskUsage();
   static CStdString GetResInfoString();
@@ -78,6 +79,8 @@ public:
 
   static bool GetCrystalHDLibraryPath(CStdString &strPath);
   
+  static bool GetFocussedProcess(CStdString &strProcessFile);
+
 private:
 #if _MSC_VER > 1400
   static DEVINST GetDrivesDevInstByDiskNumber(long DiskNumber);

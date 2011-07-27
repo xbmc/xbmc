@@ -60,10 +60,10 @@ static void LoadTexture(GLenum target
   int width2  = NP2(width);
   int height2 = NP2(height);
   char *pixelVector = NULL;
+  const GLvoid *pixelData = pixels;
 
 #ifdef HAS_GLES
   /** OpenGL ES does not support strided texture input. Make a copy without stride **/
-  const GLvoid *pixelData = pixels;
   if (stride != width)
   {
     int bytesPerPixel;
@@ -81,8 +81,8 @@ static void LoadTexture(GLenum target
 
     int bytesPerLine = bytesPerPixel * width;
 
-    pixelVector = (char *)malloc(width * height * bytesPerLine);
-    
+    pixelVector = (char *)malloc(bytesPerLine * height);
+
     const char *src = (const char*)pixels;
     char *dst = pixelVector;
     for (int y = 0;y < height;++y)
@@ -96,18 +96,22 @@ static void LoadTexture(GLenum target
     stride = width;
   }
 #else
-  glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-  if(externalFormat == GL_RGBA
-  || externalFormat == GL_BGRA)
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
-  else if(externalFormat == GL_RGB
-       || externalFormat == GL_BGR)
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
-  else
-    glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
-
-  const GLvoid *pixelData = pixels;
+  switch(externalFormat)
+  {
+    case GL_RGBA:
+    case GL_BGRA:
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 4);
+      break;
+    case GL_RGB:
+    case GL_BGR:
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, stride / 3);
+      break;
+    default:
+      glPixelStorei(GL_UNPACK_ROW_LENGTH, stride);
+  }
 #endif
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
   glTexImage2D   (target, 0, internalFormat
                 , width2, height2, 0
@@ -414,7 +418,7 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glMatrixMode(GL_MODELVIEW);
   glPushMatrix();
-  glTranslatef(state.x    , state.y     , 0.0);
+  glTranslatef(state.x    , state.y     , 0.0f);
   glScalef    (state.width, state.height, 1.0f);
 
   VerifyGLState();
@@ -432,21 +436,21 @@ void COverlayGlyphGL::Render(SRenderState& state)
 
   glPopMatrix();
 #else
-  g_Windowing.EnableGUIShader(SM_FONTS);
-
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PushMatrix();
-  g_matrices.Translatef(state.x, state.y, 0.0);
+  g_matrices.Translatef(state.x, state.y, 0.0f);
   g_matrices.Scalef(state.width, state.height, 1.0f);
-
   VerifyGLState();
+
+  g_Windowing.EnableGUIShader(SM_FONTS);
+
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
-  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         0, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, x));
-  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, 0, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, r));
-  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         0, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, u));
+  glVertexAttribPointer(posLoc,  3, GL_FLOAT,         GL_FALSE, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, x));
+  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE,  sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, r));
+  glVertexAttribPointer(tex0Loc, 2, GL_FLOAT,         GL_FALSE, sizeof(VERTEX), (char*)m_vertex + offsetof(VERTEX, u));
 
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);

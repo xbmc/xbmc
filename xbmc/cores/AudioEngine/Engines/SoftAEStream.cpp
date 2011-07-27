@@ -26,19 +26,19 @@
 #include "DllAvCore.h"
 
 #include "AEFactory.h"
-#include "AEUtil.h"
+#include "Utils/AEUtil.h"
 
 #include "SoftAE.h"
 #include "SoftAEStream.h"
 
-#define SOFTAE_FRAMES 256
+#define SOFTAE_FRAMES 1024
 
 /* typecast AE to CSoftAE */
-#define AE (*(CSoftAE*)AE.GetEngine())
+#define AE (*((CSoftAE*)CAEFactory::AE))
 
 using namespace std;
 
-CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
+CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options) :
   m_convertBuffer   (NULL ),
   m_valid           (false),
   m_delete          (false),
@@ -52,26 +52,19 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_framesBuffered  (0    ),
   m_vizPacketPos    (NULL ),
   m_draining        (false),
-  m_disableCallbacks(false),
-  m_cbDataFunc      (NULL ),
-  m_cbDrainFunc     (NULL ),
-  m_cbDataArg       (NULL ),
-  m_cbDrainArg      (NULL ),
-  m_inDataFunc      (false),
-  m_inDrainFunc     (false),
   m_vizBufferSamples(0    ),
-  m_audioCallback   (NULL )
+  m_audioCallback   (NULL ),
+  m_fadeRunning     (false)
 {
   m_ssrcData.data_out = NULL;
 
   m_initDataFormat    = dataFormat;
   m_initSampleRate    = sampleRate;
-  m_initChannelCount  = channelCount;
   m_initChannelLayout = channelLayout;
-  m_freeOnDrain       = (options & AESTREAM_FREE_ON_DRAIN) != 0;
-  m_ownsPostProc      = (options & AESTREAM_OWNS_POST_PROC) != 0;
   m_forceResample     = (options & AESTREAM_FORCE_RESAMPLE) != 0;
   m_paused            = (options & AESTREAM_PAUSED) != 0;
+  
+  ASSERT(m_initChannelLayout.Count());  
 }
 
 void CSoftAEStream::InitializeRemap()
@@ -80,13 +73,13 @@ void CSoftAEStream::InitializeRemap()
   if (!AE_IS_RAW(m_initDataFormat))
   {
     /* re-init the remappers */
-    m_remap   .Initialize(m_initChannelLayout, AE.GetChannelLayout(), false);
-    m_vizRemap.Initialize(m_initChannelLayout, CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true);
+    m_remap   .Initialize(m_initChannelLayout, AE.GetChannelLayout()           , false);
+    m_vizRemap.Initialize(m_initChannelLayout, CAEChannelInfo(AE_CH_LAYOUT_2_0), false, true);
 
     /*
     if the layout has changed we need to drop data that was already remapped
     */
-    if (!CAEUtil::CompareLayouts(AE.GetChannelLayout(), m_aeChannelLayout))
+    if (AE.GetChannelLayout() != m_aeChannelLayout)
     {
       InternalFlush();
       m_aeChannelLayout = AE.GetChannelLayout();
@@ -121,24 +114,18 @@ void CSoftAEStream::Initialize()
     /* we are raw, which means we need to work in the output format */
     useDataFormat       = ((CSoftAE*)&AE)->GetSinkDataFormat();
     m_initChannelLayout = ((CSoftAE*)&AE)->GetSinkChLayout  ();
-    m_initChannelCount  = ((CSoftAE*)&AE)->GetSinkChCount   ();
   }
   else
   {
-    /* no channel layout provided, so guess */
-    if (!m_initChannelLayout)
+    if (!m_initChannelLayout.Count())
     {
-      m_initChannelLayout = CAEUtil::GuessChLayout(m_initChannelCount);
-      if (!m_initChannelLayout)
-      {
-        m_valid = false;
-        return;
-      }
+      m_valid = false;
+      return;
     }
   }
 
   m_bytesPerSample  = (CAEUtil::DataFormatToBits(useDataFormat) >> 3);
-  m_bytesPerFrame   = m_bytesPerSample * m_initChannelCount;
+  m_bytesPerFrame   = m_bytesPerSample * m_initChannelLayout.Count();
 
   m_aeChannelLayout = AE.GetChannelLayout();
   m_aeChannelCount  = AE.GetChannelCount();
@@ -147,17 +134,16 @@ void CSoftAEStream::Initialize()
 
   m_format.m_dataFormat    = useDataFormat;
   m_format.m_sampleRate    = m_initSampleRate;
-  m_format.m_channelCount  = m_initChannelCount;
   m_format.m_channelLayout = m_initChannelLayout;
   m_format.m_frames        = SOFTAE_FRAMES;
-  m_format.m_frameSamples  = m_format.m_frames * m_initChannelCount;
+  m_format.m_frameSamples  = m_format.m_frames * m_initChannelLayout.Count();
   m_format.m_frameSize     = m_bytesPerFrame;
 
   if (!AE_IS_RAW(m_initDataFormat))
   {
     if (
-      !m_remap   .Initialize(m_initChannelLayout, m_aeChannelLayout, false) ||
-      !m_vizRemap.Initialize(m_initChannelLayout, CAEUtil::GetStdChLayout(AE_CH_LAYOUT_2_0), false, true))
+      !m_remap   .Initialize(m_initChannelLayout, m_aeChannelLayout               , false) ||
+      !m_vizRemap.Initialize(m_initChannelLayout, CAEChannelInfo(AE_CH_LAYOUT_2_0), false, true))
     {
       m_valid = false;
       return;
@@ -196,30 +182,12 @@ void CSoftAEStream::Initialize()
   if (m_resample)
   {
     int err;
-    m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, m_initChannelCount, &err);
+    m_ssrc                   = src_new(SRC_SINC_MEDIUM_QUALITY, m_initChannelLayout.Count(), &err);
     m_ssrcData.data_in       = m_convertBuffer;
     m_ssrcData.src_ratio     = (double)AE.GetSampleRate() / (double)m_initSampleRate;
-    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * MathUtils::ceil_int(m_ssrcData.src_ratio) * sizeof(float), 16);
-    m_ssrcData.output_frames = m_format.m_frames * MathUtils::ceil_int(m_ssrcData.src_ratio);
+    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * std::ceil(m_ssrcData.src_ratio) * sizeof(float), 16);
+    m_ssrcData.output_frames = m_format.m_frames * std::ceil(m_ssrcData.src_ratio);
     m_ssrcData.end_of_input  = 0;
-  }
-
-  /* re-initialize post-proc objects */
-  if (!AE_IS_RAW(m_initDataFormat))
-  {
-    list<IAEPostProc*>::iterator pitt;
-    for(pitt = m_postProc.begin(); pitt != m_postProc.end();)
-    {
-      IAEPostProc *pp = *pitt;
-      if (!pp->Initialize(this))
-      {
-        CLog::Log(LOGERROR, "CSoftAEStream::CSoftAEStream - Failed to re-initialize post-proc filter: %s", pp->GetName());
-        pitt = m_postProc.erase(pitt);
-        continue;
-      }
-
-      ++pitt;
-    }
   }
 
   m_valid = true;
@@ -234,17 +202,7 @@ void CSoftAEStream::Destroy()
 
 CSoftAEStream::~CSoftAEStream()
 {
-  ((CSoftAE*)&AE)->RemoveStream(this);
   CSingleLock lock(m_critSection);
-
-  /* de-init/free post-proc objects */
-  while(!m_postProc.empty())
-  {
-    IAEPostProc *pp = m_postProc.front();
-    m_postProc.pop_front();
-    pp->DeInitialize();
-    if (m_ownsPostProc) delete pp;
-  }
 
   InternalFlush();
   _aligned_free(m_frameBuffer);
@@ -260,44 +218,18 @@ CSoftAEStream::~CSoftAEStream()
 
   _aligned_free(m_newPacket.data);
 
-  if (m_cbFreeFunc)
-    m_cbFreeFunc(this, m_cbFreeArg, 0);
-
   CLog::Log(LOGDEBUG, "CSoftAEStream::~CSoftAEStream - Destructed");
 }
 
-void CSoftAEStream::DisableCallbacks(bool free /* = true */)
-{
-  m_disableCallbacks = true;
-  while(IsBusy())
-    Sleep(100);
-
-  CSingleLock lock(m_critSection);
-  m_cbDataFunc  = NULL;
-  m_cbDrainFunc = NULL;
-  if (free)
-    m_cbFreeFunc = NULL;
-}
-
-void CSoftAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
+unsigned int CSoftAEStream::GetSpace()
 {
   CSingleLock lock(m_critSection);
-  m_cbDataFunc = cbFunc;
-  m_cbDataArg  = arg;
-}
+  if (!m_valid || m_draining) return 0;  
 
-void CSoftAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
-{
-  CSingleLock lock(m_critSection);
-  m_cbDrainFunc = cbFunc;
-  m_cbDrainArg  = arg;
-}
+  if (m_framesBuffered >= m_waterLevel)
+    return 0;
 
-void CSoftAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
-{
-  CSingleLock lock(m_critSection);
-  m_cbFreeFunc = cbFunc;
-  m_cbFreeArg  = arg;
+  return (m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize;
 }
 
 unsigned int CSoftAEStream::AddData(void *data, unsigned int size)
@@ -357,18 +289,10 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
   if (samples == 0)
     return 0;
 
-  /* post-process the data */
-  if (!AE_IS_RAW(m_initDataFormat))
-  {
-    list<IAEPostProc*>::iterator pitt;
-    for(pitt = m_postProc.begin(); pitt != m_postProc.end(); ++pitt)
-      (*pitt)->Process((float*)data, samples / m_format.m_channelCount);
-  }
-
   /* resample it if we need to */
   if (m_resample)
   {
-    m_ssrcData.input_frames = samples / m_format.m_channelCount;
+    m_ssrcData.input_frames = samples / m_format.m_channelLayout.Count();
     if (src_process(m_ssrc, &m_ssrcData) != 0) return 0;
     data     = (uint8_t*)m_ssrcData.data_out;
     frames   = m_ssrcData.output_frames_gen;
@@ -376,13 +300,13 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
     if (!frames)
       return consumed;
 
-    samples = frames * m_format.m_channelCount;
+    samples = frames * m_format.m_channelLayout.Count();
   }
   else
   {
     data     = (uint8_t*)m_convertBuffer;
-    frames   = samples / m_format.m_channelCount;
-    samples  = frames * m_format.m_channelCount;
+    frames   = samples / m_format.m_channelLayout.Count();
+    samples  = frames * m_format.m_channelLayout.Count();
     consumed = frames * m_bytesPerFrame;
   }
 
@@ -467,39 +391,12 @@ uint8_t* CSoftAEStream::GetFrame()
     if (m_outBuffer.empty())
     {
       if (m_draining)
-      {
-        /* if we are draining trigger the callback function */
-        if (m_cbDrainFunc && !m_disableCallbacks)
-        {
-          m_inDrainFunc = true;
-          lock.Leave();
-          m_cbDrainFunc(this, m_cbDrainArg, 0);
-          m_cbDrainFunc = NULL;
-          lock.Enter();
-          m_inDrainFunc = false;
-        }
         return NULL;
-      }
       else
       {
-        /* otherwise ask for more data */
-        if (m_cbDataFunc && !m_disableCallbacks)
-        {
-          m_inDataFunc = true;
-          unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
-          lock.Leave();
-          m_cbDataFunc(this, m_cbDataArg, space);
-          lock.Enter();
-          m_inDataFunc = false;
-          if (m_outBuffer.empty())
-            return NULL;
-        }
-        else
-        {
-          /* underrun, we need to refill our buffers */
-          m_refillBuffer = m_waterLevel;
-          return NULL;
-        }
+        /* underrun, we need to refill our buffers */
+        m_refillBuffer = m_waterLevel;
+        return NULL;
       }
     }
 
@@ -523,37 +420,26 @@ uint8_t* CSoftAEStream::GetFrame()
     m_packetPos += m_aeChannelCount * sizeof(float);
     if(vizData)
       m_vizPacketPos += 2;
+
+    /* if we are fading */
+    if (m_fadeRunning)
+    {
+      m_volume += m_fadeStep;
+      m_volume = std::min(1.0f, std::max(0.0f, m_volume));
+      if (m_fadeDirUp)
+      {
+        if (m_volume >= m_fadeTarget)
+          m_fadeRunning = false;
+      }
+      else
+      {
+        if (m_volume <= m_fadeTarget)
+          m_fadeRunning = false;
+      }
+    }
   }
 
   --m_framesBuffered;
-
-  /* if we are draining */
-  if (m_draining)
-  {
-    /* if we have drained trigger the callback function */
-    if (m_framesBuffered == 0 && m_frameBufferSize == 0 && m_cbDrainFunc && !m_disableCallbacks)
-    {
-      m_inDrainFunc = true;
-      lock.Leave();
-      m_cbDrainFunc(this, m_cbDrainArg, 0);
-      m_cbDrainFunc = NULL;
-      lock.Enter();
-      m_inDrainFunc = false;
-    }
-  }
-  else
-  {
-    /* if the buffer is low, fill up again */ 
-    if (m_cbDataFunc && !m_disableCallbacks && !m_delete && !m_draining && m_framesBuffered < m_waterLevel)
-    {
-      m_inDataFunc = true;
-      unsigned int space = ((m_format.m_frames * m_bytesPerFrame) - m_frameBufferSize) / m_bytesPerFrame;
-      lock.Leave();
-      m_cbDataFunc(this, m_cbDataArg, space);
-      lock.Enter();
-      m_inDataFunc = false;
-    }
-  }
 
   /* we have a frame, if we have a viz we need to hand the data to it */
   if (m_audioCallback && vizData)
@@ -595,6 +481,12 @@ void CSoftAEStream::Drain()
   m_draining = true;
 }
 
+bool CSoftAEStream::IsDrained()
+{
+  CSingleLock lock(m_critSection);  
+  return (!m_packet.samples && m_outBuffer.empty());
+}
+
 void CSoftAEStream::Flush()
 {
   CSingleLock lock(m_critSection);
@@ -631,42 +523,9 @@ void CSoftAEStream::InternalFlush()
     p.data    = NULL;
     p.vizData = NULL;
   };
-
-  /* flush any post-proc objects */
-  list<IAEPostProc*>::iterator ppi;
-  for(ppi = m_postProc.begin(); ppi != m_postProc.end(); ++ppi)
-    (*ppi)->Flush();
-  
+ 
   /* reset our counts */
   m_framesBuffered = 0;
-}
-
-void CSoftAEStream::AppendPostProc(IAEPostProc *pp)
-{
-  if (pp->Initialize(this))
-  {
-    CSingleLock lock(m_critSection);
-    m_postProc.push_back(pp);
-  }
-  else
-    CLog::Log(LOGERROR, "Failed to initialize post-proc filter: %s", pp->GetName());
-}
-
-void CSoftAEStream::PrependPostProc(IAEPostProc *pp)
-{
-  if (pp->Initialize(this))
-  {
-    CSingleLock lock(m_critSection);
-    m_postProc.push_front(pp);
-  }
-  else
-    CLog::Log(LOGERROR, "Failed to initialize post-proc filter: %s", pp->GetName());
-}
-
-void CSoftAEStream::RemovePostProc(IAEPostProc *pp)
-{
-  CSingleLock lock(m_critSection);
-  m_postProc.remove(pp);
 }
 
 double CSoftAEStream::GetResampleRatio()
@@ -685,17 +544,17 @@ void CSoftAEStream::SetResampleRatio(double ratio)
 
   CSingleLock lock(m_critSection);
 
-  int oldRatioInt = MathUtils::ceil_int(m_ssrcData.src_ratio);
+  int oldRatioInt = std::ceil(m_ssrcData.src_ratio);
 
   src_set_ratio(m_ssrc, ratio);
   m_ssrcData.src_ratio = ratio;
 
   //Check the resample buffer size and resize if necessary.
-  if(oldRatioInt < MathUtils::ceil_int(m_ssrcData.src_ratio))
+  if(oldRatioInt < std::ceil(m_ssrcData.src_ratio))
   {
     _aligned_free(m_ssrcData.data_out);
-    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * MathUtils::ceil_int(m_ssrcData.src_ratio) * sizeof(float), 16);
-    m_ssrcData.output_frames = m_format.m_frames * MathUtils::ceil_int(m_ssrcData.src_ratio);
+    m_ssrcData.data_out      = (float*)_aligned_malloc(m_format.m_frameSamples * std::ceil(m_ssrcData.src_ratio) * sizeof(float), 16);
+    m_ssrcData.output_frames = m_format.m_frames * std::ceil(m_ssrcData.src_ratio);
   }
 }
 
@@ -715,7 +574,16 @@ void CSoftAEStream::UnRegisterAudioCallback()
   m_vizBufferSamples = 0;
 }
 
-bool CSoftAEStream::IsBusy()
+void CSoftAEStream::FadeVolume(float from, float target, unsigned int time)
 {
-  return (m_inDataFunc || m_inDrainFunc);
+  float delta   = target - from;
+  m_fadeDirUp   = target > from;
+  m_fadeTarget  = target;
+  m_fadeStep    = delta / (((float)AE.GetSampleRate() / 1000.0f) * (float)time);
+  m_fadeRunning = true;
+}
+
+bool CSoftAEStream::IsFading()
+{
+  return m_fadeRunning;
 }

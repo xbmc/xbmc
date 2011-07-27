@@ -38,7 +38,7 @@ CWinSystemOSXGL::~CWinSystemOSXGL()
 {
 }
 
-bool CWinSystemOSXGL::PresentRenderImpl()
+bool CWinSystemOSXGL::PresentRenderImpl(const CDirtyRegionList &dirty)
 {
   return FlushBuffer();
 }

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "GUIUserMessages.h"
 #include "GUIWindowMusicBase.h"
@@ -60,6 +61,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "ThumbnailCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -87,7 +89,8 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 /// \param action Action that can be reacted on.
 bool CGUIWindowMusicBase::OnAction(const CAction& action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
+  if (action.GetID() == ACTION_PREVIOUS_MENU ||
+      action.GetID() == ACTION_NAV_BACK)
   {
     CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
     if (musicScan && !musicScan->IsDialogRunning())
@@ -603,12 +606,12 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 /// \brief Retrieve tag information for \e m_vecItems
 void CGUIWindowMusicBase::RetrieveMusicInfo()
 {
-  unsigned int startTick = CTimeUtils::GetTimeMS();
+  unsigned int startTick = XbmcThreads::SystemClockMillis();
 
   OnRetrieveMusicInfo(*m_vecItems);
 
   CLog::Log(LOGDEBUG, "RetrieveMusicInfo() took %u msec",
-            CTimeUtils::GetTimeMS() - startTick);
+            XbmcThreads::SystemClockMillis() - startTick);
 }
 
 /// \brief Add selected list/thumb control item to playlist and start playing
@@ -1201,7 +1204,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     saveDirThumb = false;
   }
 
-  CStdString albumThumb(CUtil::GetCachedAlbumThumb(album.strAlbum, album.strArtist));
+  CStdString albumThumb(CThumbnailCache::GetAlbumThumb(album));
 
   // Update the thumb in the music database (songs + albums)
   CStdString albumPath(path);
@@ -1249,7 +1252,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
     CStdString album, artist;
     if (CMusicInfoScanner::HasSingleAlbum(songs, album, artist))
     { // can cache as the folder thumb
-      CStdString folderThumb(CUtil::GetCachedMusicThumb(albumPath));
+      CStdString folderThumb(CThumbnailCache::GetMusicThumb(albumPath));
       CFile::Cache(albumThumb, folderThumb);
     }
   }
@@ -1280,13 +1283,13 @@ void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
   bool bShowProgress=!g_windowManager.HasModalDialog();
   bool bProgressVisible=false;
 
-  unsigned int tick=CTimeUtils::GetTimeMS();
+  unsigned int tick=XbmcThreads::SystemClockMillis();
 
   while (m_musicInfoLoader.IsLoading())
   {
     if (bShowProgress)
     { // Do we have to init a progress dialog?
-      unsigned int elapsed=CTimeUtils::GetTimeMS()-tick;
+      unsigned int elapsed=XbmcThreads::SystemClockMillis()-tick;
 
       if (!bProgressVisible && elapsed>1500 && m_dlgProgress)
       { // tag loading takes more then 1.5 secs, show a progress dialog

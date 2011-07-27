@@ -290,11 +290,13 @@ void CGUIWindow::CenterWindow()
 void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
-  g_graphicsContext.ResetWindowTransform();
+  unsigned int size = g_graphicsContext.AddGUITransform();
   CGUIControlGroup::DoProcess(currentTime, dirtyregions);
+  if (size != g_graphicsContext.RemoveTransform())
+    CLog::Log(LOGERROR, "Unbalanced UI transforms (was %d)", size);
 }
 
-void CGUIWindow::Render()
+void CGUIWindow::DoRender()
 {
   // If we're rendering from a different thread, then we should wait for the main
   // app thread to finish AllocResources(), as dynamic resources (images in particular)
@@ -304,8 +306,10 @@ void CGUIWindow::Render()
 
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
-  g_graphicsContext.ResetWindowTransform();
-  CGUIControlGroup::Render();
+  unsigned int size = g_graphicsContext.AddGUITransform();
+  CGUIControlGroup::DoRender();
+  if (size != g_graphicsContext.RemoveTransform())
+    CLog::Log(LOGERROR, "Unbalanced UI transforms (was %d)", size);
 
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }
@@ -322,12 +326,24 @@ bool CGUIWindow::OnAction(const CAction &action)
 
   CGUIControl *focusedControl = GetFocusedControl();
   if (focusedControl)
-    return focusedControl->OnAction(action);
+  {
+    if (focusedControl->OnAction(action))
+      return true;
+  }
+  else
+  {
+    // no control has focus?
+    // set focus to the default control then
+    CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_defaultControl);
+    OnMessage(msg);
+  }
 
-  // no control has focus?
-  // set focus to the default control then
-  CGUIMessage msg(GUI_MSG_SETFOCUS, GetID(), m_defaultControl);
-  OnMessage(msg);
+  // default implementations
+  if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
+  {
+    g_windowManager.PreviousWindow();
+    return true;
+  }
   return false;
 }
 
@@ -840,11 +856,13 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 
 void CGUIWindow::SetProperty(const CStdString &key, const CStdString &value)
 {
+  CSingleLock lock(*this);
   m_mapProperties[key] = value;
 }
 
 void CGUIWindow::SetProperty(const CStdString &key, const char *value)
 {
+  CSingleLock lock(*this);
   m_mapProperties[key] = value;
 }
 
@@ -869,6 +887,7 @@ void CGUIWindow::SetProperty(const CStdString &key, double value)
 
 CStdString CGUIWindow::GetProperty(const CStdString &key) const
 {
+  CSingleLock lock(*this);
   std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(key);
   if (iter == m_mapProperties.end())
     return "";
@@ -893,6 +912,7 @@ double CGUIWindow::GetPropertyDouble(const CStdString &key) const
 
 void CGUIWindow::ClearProperties()
 {
+  CSingleLock lock(*this);
   m_mapProperties.clear();
 }
 

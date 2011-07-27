@@ -54,6 +54,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "addons/Visualisation.h"
 #include "addons/AddonManager.h"
 #include "storage/MediaManager.h"
@@ -149,7 +150,7 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
 
 bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
   {
     g_settings.Save();
     if (m_iWindowBeforeJump!=WINDOW_INVALID)
@@ -158,8 +159,6 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
       return true;
     }
     m_lastControlID = 0; // don't save the control as we go to a different window each time
-    g_windowManager.PreviousWindow();
-    return true;
   }
   return CGUIWindow::OnAction(action);
 }
@@ -688,7 +687,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       {
         g_guiSettings.SetBool("services.esenabled", true);
         if (!g_application.StartEventServer())
-          g_application.m_guiDialogKaiToast.QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
+          CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
       }
 
       // if XBMC helper is running, prompt user before effecting change
@@ -1906,13 +1905,13 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
 		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 		g_guiSettings.SetString("audiooutput.audiodevice",pControl->GetCurrentLabel());
-    AE.OnSettingsChange(strSetting);
+    CAEFactory::AE->OnSettingsChange(strSetting);
 	}
 	else if (strSetting.Equals("audiooutput.passthroughdevice"))
 	{
 		CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 		g_guiSettings.SetString("audiooutput.passthroughdevice",pControl->GetCurrentLabel());
-    AE.OnSettingsChange(strSetting);
+    CAEFactory::AE->OnSettingsChange(strSetting);
 	}
   */
   else if (strSetting.find_first_of("audiooutput.") == 0)
@@ -1936,7 +1935,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #endif
     }
     
-    AE.OnSettingsChange(strSetting);
+    CAEFactory::AE->OnSettingsChange(strSetting);
   }
 
   UpdateSettings();
@@ -2896,7 +2895,7 @@ void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Pas
 
   int selectedValue = -1;
   AEDeviceList sinkList;
-  AE.EnumerateOutputDevices(sinkList, Passthrough);
+  CAEFactory::AE->EnumerateOutputDevices(sinkList, Passthrough);
 #if !defined(__APPLE__)
   if (sinkList.size()==0)
   {

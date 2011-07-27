@@ -18,6 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "threads/SystemClock.h"
 #include "system.h"
 #ifdef __APPLE__
 #include <sys/param.h>
@@ -1892,28 +1893,6 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
   return false;
 }
 
-CStdString CUtil::GetCachedAlbumThumb(const CStdString& album, const CStdString& artist)
-{
-  if (album.IsEmpty())
-    return GetCachedMusicThumb("unknown"+artist);
-  if (artist.IsEmpty())
-    return GetCachedMusicThumb(album+"unknown");
-  return GetCachedMusicThumb(album+artist);
-}
-
-CStdString CUtil::GetCachedMusicThumb(const CStdString& path)
-{
-  Crc32 crc;
-  CStdString noSlashPath(path);
-  URIUtils::RemoveSlashAtEnd(noSlashPath);
-  crc.ComputeFromLowerCase(noSlashPath);
-  CStdString hex;
-  hex.Format("%08x", (unsigned __int32) crc);
-  CStdString thumb;
-  thumb.Format("%c/%s.tbn", hex[0], hex.c_str());
-  return URIUtils::AddFileToFolder(g_settings.GetMusicThumbFolder(), thumb);
-}
-
 CStdString CUtil::GetDefaultFolderThumb(const CStdString &folderThumb)
 {
   if (g_TextureManager.HasTexture(folderThumb))
@@ -2227,7 +2206,7 @@ CStdString CUtil::GetFrameworksPath(bool forPython)
 
 void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles )
 {
-  unsigned int startTimer = CTimeUtils::GetTimeMS();
+  unsigned int startTimer = XbmcThreads::SystemClockMillis();
   
   // new array for commons sub dirs
   const char * common_sub_dirs[] = {"subs",
@@ -2411,7 +2390,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
       delete pStream;
     }
   }
-  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - startTimer));
+  CLog::Log(LOGDEBUG,"%s: END (total time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - startTimer));
 }
 
 int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStdString& strMovieFileNameNoExt, std::vector<CStdString>& vecSubtitles )

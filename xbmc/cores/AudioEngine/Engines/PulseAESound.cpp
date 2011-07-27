@@ -36,18 +36,13 @@ CPulseAESound::CPulseAESound(const CStdString &filename, pa_context *context, pa
   m_context        (context ),
   m_mainLoop       (mainLoop),
   m_stream         (NULL    ),
-  m_op             (NULL    ),
-  m_freeCallback   (NULL    ),
-  m_freeCallbackArg(NULL    )
+  m_op             (NULL    )
 {
   m_pulseName = StringUtils::CreateUUID();
 }
 
 CPulseAESound::~CPulseAESound()
 {
-  if (m_freeCallback)
-    m_freeCallback(this, m_freeCallbackArg);
-
   DeInitialize();
 }
 
@@ -84,11 +79,9 @@ bool CPulseAESound::Initialize()
       return false;
   }
 
-  m_maxVolume     = AE.GetVolume();
+  m_maxVolume     = CAEFactory::AE->GetVolume();
   m_volume        = 1.0f;
-  float useVolume = m_volume * m_maxVolume;
-
-  pa_volume_t paVolume = MathUtils::round_int(useVolume * PA_VOLUME_NORM);
+  pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_volume * m_maxVolume));
   pa_cvolume_set(&m_chVolume, m_sampleSpec.channels, paVolume);
 
   pa_threaded_mainloop_lock(m_mainLoop);
@@ -176,12 +169,6 @@ void CPulseAESound::SetVolume(float volume)
 float CPulseAESound::GetVolume()
 {
   return 1.0f;
-}
-
-void CPulseAESound::SetFreeCallback(AECBFunc *callback, void *arg)
-{
-  m_freeCallback    = callback;
-  m_freeCallbackArg = arg;
 }
 
 void CPulseAESound::StreamStateCallback(pa_stream *s, void *userdata)

@@ -3,9 +3,9 @@ include ../config.site.mk
 
 # lib name, version
 LIBNAME=rtmpdump
-VERSION=2.3
+VERSION=2.4
 SOURCE=$(LIBNAME)-$(VERSION)
-ARCHIVE=$(SOURCE).tgz
+ARCHIVE=$(SOURCE).tar.gz
 
 # configuration settings
 
@@ -20,7 +20,12 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
-	cd $(SOURCE); patch -p1 < ../01-make_shared_lib_for_darwin-tag2.3.patch
+	sed -i -e 's|CC=|#CC=|' $(SOURCE)/Makefile
+	sed -i -e 's|LD=|#LD=|' $(SOURCE)/Makefile
+	sed -i -e 's|CC=|#CC=|' $(SOURCE)/librtmp/Makefile
+	sed -i -e 's|LD=|#LD=|' $(SOURCE)/librtmp/Makefile
+	sed -i -e 's|AR=|#AR=|' $(SOURCE)/librtmp/Makefile
+	sed -i -e 's|headerpad_max_install_names|headerpad_max_install_names -install_name \$$(libdir)/\$$@|' $(SOURCE)/librtmp/Makefile
 
 $(LIBDYLIB): $(SOURCE)
 	make SYS=darwin prefix=$(PREFIX) XCFLAGS="$(CFLAGS)" XLDFLAGS="$(LDFLAGS)" -j $(MAKE_JOBS) -C $(SOURCE)/librtmp

@@ -46,6 +46,9 @@ public:
   virtual bool CanSuspend()   = 0;
   virtual bool CanHibernate() = 0;
   virtual bool CanReboot()    = 0;
+  
+// Battery related functions
+  virtual int  BatteryLevel() = 0;
 
   /*!
    \brief Pump power related events back to xbmc.

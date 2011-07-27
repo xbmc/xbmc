@@ -22,6 +22,7 @@
 #include "XHandle.h"
 #include "XThreadUtils.h"
 #include "utils/log.h"
+#include "threads/SingleLock.h"
 
 int CXHandle::m_objectTracker[10] = {0};
 

@@ -20,7 +20,7 @@
  *
  */
 
-#include "AESink.h"
+#include "Interfaces/AESink.h"
 #include <stdint.h>
 
 #include "threads/CriticalSection.h"
@@ -35,7 +35,7 @@ public:
 
   virtual bool Initialize  (AEAudioFormat &format, CStdString &device);
   virtual void Deinitialize();
-  virtual bool IsCompatible(const AEAudioFormat format, const CStdString device);
+  virtual bool IsCompatible(AEAudioFormat format, const CStdString device);
 
   virtual void         Stop            ();
   virtual float        GetDelay        ();
@@ -45,7 +45,7 @@ private:
   int m_fd;
   CStdString      m_device;
   AEAudioFormat   m_initFormat;
-  enum AEChannel *m_channelLayout;
+  CAEChannelInfo  m_channelLayout;
   AEAudioFormat   m_format;
 
   CStdString GetDeviceUse(AEAudioFormat format, CStdString device);

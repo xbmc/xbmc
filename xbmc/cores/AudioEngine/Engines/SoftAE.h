@@ -28,12 +28,12 @@
 #include "threads/CriticalSection.h"
 #include "threads/SharedSection.h"
 
-#include "ThreadedAE.h"
-#include "AEConvert.h"
-#include "AERemap.h"
-#include "AESink.h"
+#include "Interfaces/ThreadedAE.h"
+#include "Interfaces/AESink.h"
+#include "Interfaces/AEEncoder.h"
+#include "Utils/AEConvert.h"
+#include "Utils/AERemap.h"
 #include "AEAudioFormat.h"
-#include "AEEncoder.h"
 
 #include "SoftAEStream.h"
 #include "SoftAESound.h"
@@ -53,6 +53,7 @@ public:
   CSoftAE();
   virtual ~CSoftAE();
 
+  virtual void  Shutdown();
   virtual bool  Initialize      ();
   virtual void  OnSettingsChange(CStdString setting);
 
@@ -64,32 +65,30 @@ public:
   virtual void  SetVolume(float volume);
 
   /* returns a new stream for data in the specified format */
-  virtual IAEStream *GetStream  (enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0);
-  virtual IAEStream *AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options = 0);
+  virtual IAEStream *MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options = 0);
   virtual IAEStream *FreeStream(IAEStream *stream);
 
   /* returns a new sound object */
-  virtual IAESound *GetSound(CStdString file);
-  virtual void FreeSound(IAESound *sound);
-  virtual void PlaySound(IAESound *sound);
-  virtual void StopSound(IAESound *sound);
+  virtual IAESound *MakeSound(CStdString file);
+  virtual void      FreeSound(IAESound *sound);
+  void PlaySound(IAESound *sound);
+  void StopSound(IAESound *sound);
 
   /* free's sounds that have expired */
   virtual void GarbageCollect();
 
   /* these are for the streams so they can provide compatible data */
-  virtual unsigned int   GetSampleRate   ();
-  virtual unsigned int   GetChannelCount () {return m_channelCount          ;}
-  virtual AEChLayout     GetChannelLayout() {return m_chLayout              ;}
-  virtual unsigned int   GetFrames       () {return m_sinkFormat.m_frames   ;}
-  virtual unsigned int   GetFrameSize    () {return m_frameSize             ;}
+  unsigned int          GetSampleRate   ();
+  unsigned int          GetChannelCount () {return m_chLayout.Count()      ;}
+  CAEChannelInfo&       GetChannelLayout() {return m_chLayout              ;}
+  unsigned int          GetFrames       () {return m_sinkFormat.m_frames   ;}
+  unsigned int          GetFrameSize    () {return m_frameSize             ;}
 
   /* these are for streams that are in RAW mode */
-  const AEAudioFormat* GetSinkAudioFormat() {return &m_sinkFormat               ;}
-  enum AEDataFormat    GetSinkDataFormat () {return m_sinkFormat.m_dataFormat   ;}
-  AEChLayout           GetSinkChLayout   () {return m_sinkFormat.m_channelLayout;}
-  unsigned int         GetSinkChCount    () {return m_sinkFormat.m_channelCount ;}
-  unsigned int         GetSinkFrameSize  () {return m_sinkFormat.m_frameSize    ;}
+  const AEAudioFormat*  GetSinkAudioFormat() {return &m_sinkFormat               ;}
+  enum AEDataFormat     GetSinkDataFormat () {return m_sinkFormat.m_dataFormat   ;}
+  CAEChannelInfo&       GetSinkChLayout   () {return m_sinkFormat.m_channelLayout;}
+  unsigned int          GetSinkFrameSize  () {return m_sinkFormat.m_frameSize    ;}
 
   virtual void EnumerateOutputDevices(AEDeviceList &devices, bool passthrough);
   virtual bool SupportsRaw();
@@ -103,26 +102,24 @@ private:
   CThread *m_thread;
 
   void LoadSettings();
-  bool OpenSink(unsigned int sampleRate = 44100, unsigned int channels = 2, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);
+  bool OpenSink(unsigned int sampleRate = 48000, unsigned int channels = 2, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);
   void ResetEncoder();
   bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();
 
   IAESink *GetSink(AEAudioFormat &desiredFormat, bool passthrough, CStdString &device);
+  void StopAllSounds();
 
   unsigned int m_delayFrames;
   void DelayFrames();
 
-  /* this is called by streams on dtor, you should never need to call this directly */
-  friend class CSoftAEStream;
-  void RemoveStream(IAEStream *stream);
-
   enum AEStdChLayout m_stdChLayout;
-  CStdString m_device, m_driver;
-  CStdString m_passthroughDevice, m_passthroughDriver;
+  CStdString m_device;
+  CStdString m_passthroughDevice;
+  bool m_preferSeemless;
 
   /* internal vars */
-  bool m_running, m_reOpened;
+  bool             m_running, m_reOpened;
   CCriticalSection m_runningLock;     /* released when the thread exits */
   CSharedSection   m_sinkLock;        /* sink & configuration lock */
   CCriticalSection m_streamLock;      /* m_streams lock */
@@ -131,8 +128,7 @@ private:
 
   /* the current configuration */
   float               m_volume;
-  unsigned int        m_channelCount;
-  AEChLayout          m_chLayout;
+  CAEChannelInfo      m_chLayout;
   unsigned int        m_frameSize;
 
   /* the sink, its format information, and conversion function */
@@ -148,13 +144,17 @@ private:
     float        *samples;
     unsigned int  sampleCount;
   } SoundState;
-  std::list<SoundState> m_playing_sounds;
 
+  typedef std::list<CSoftAEStream*> StreamList;
+  typedef std::list<CSoftAESound* > SoundList;
+  typedef std::list<SoundState    > SoundStateList;
+    
   /* the streams, sounds, output buffer and output buffer fill size */
-  bool                                      m_transcode;
-  bool                                      m_rawPassthrough;
-  std::list<CSoftAEStream*>                 m_streams;
-  std::list<CSoftAESound*>                  m_sounds;
+  bool           m_transcode;
+  bool           m_rawPassthrough;
+  StreamList     m_streams;
+  SoundList      m_sounds;
+  SoundStateList m_playing_sounds;
 
   /* this will contain either float, or uint8_t depending on if we are in raw mode or not */
   unsigned int                              m_bufferSize;

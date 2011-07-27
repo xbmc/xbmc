@@ -163,22 +163,13 @@ void CPulseAE::SetVolume(float volume)
     (*itt)->UpdateVolume(volume);
 }
 
-IAEStream *CPulseAE::GetStream(enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
+IAEStream *CPulseAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options)
 {
-  CPulseAEStream *st = new CPulseAEStream(m_Context, m_MainLoop, dataFormat, sampleRate, channelCount, channelLayout, options);
+  CPulseAEStream *st = new CPulseAEStream(m_Context, m_MainLoop, dataFormat, sampleRate, channelLayout, options);
 
   CSingleLock lock(m_lock);
   m_streams.push_back(st);
   return st;
-}
-
-IAEStream *CPulseAE::AlterStream(IAEStream *stream, enum AEDataFormat dataFormat, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options)
-{
-  /* FIXME: Pulse can alter a stream I think */
-  ((CPulseAEStream*)stream)->SetFreeOnDrain();
-  stream->Drain();
-
-  return GetStream(dataFormat, sampleRate, channelCount, channelLayout, options);
 }
 
 void CPulseAE::RemoveStream(IAEStream *stream)
@@ -208,7 +199,7 @@ IAEStream *CPulseAE::FreeStream(IAEStream *stream)
   return NULL;
 }
 
-IAESound *CPulseAE::GetSound(CStdString file)
+IAESound *CPulseAE::MakeSound(CStdString file)
 {
   CSingleLock lock(m_lock);
 
@@ -237,20 +228,6 @@ void CPulseAE::FreeSound(IAESound *sound)
     }
 
   delete (CPulseAESound*)sound;
-}
-
-void CPulseAE::PlaySound(IAESound *sound)
-{
-  CSingleLock lock(m_lock);
-  if(sound)
-    sound->Play();
-}
-
-void CPulseAE::StopSound(IAESound *sound)
-{
-  CSingleLock lock(m_lock);
-  if(sound)
-    sound->Stop();
 }
 
 void CPulseAE::GarbageCollect()

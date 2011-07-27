@@ -26,6 +26,38 @@
 #ifdef HAS_DBUS
 #include "Application.h"
 
+CUPowerSource::CUPowerSource(const char *powerSource)
+{
+  if(powerSource == NULL)
+    m_powerSource = "";
+  else
+    m_powerSource = powerSource;
+
+  CVariant properties = CDBusUtil::GetAll("org.freedesktop.UPower", m_powerSource.c_str(), "org.freedesktop.UPower.Device");
+  m_isRechargeable = properties["IsRechargeable"].asBoolean();
+  Update();
+}
+
+CUPowerSource::~CUPowerSource() 
+{ 
+}
+
+void CUPowerSource::Update()
+{
+  CVariant properties = CDBusUtil::GetAll("org.freedesktop.UPower", m_powerSource.c_str(), "org.freedesktop.UPower.Device");
+  m_batteryLevel = properties["Percentage"].asDouble();
+}
+
+bool CUPowerSource::IsRechargeable()
+{
+  return m_isRechargeable;
+}
+
+double CUPowerSource::BatteryLevel()
+{
+  return m_batteryLevel;
+}
+
 CConsoleUPowerSyscall::CConsoleUPowerSyscall()
 {
   CLog::Log(LOGINFO, "Selected UPower and ConsoleKit as PowerSyscall");
@@ -57,6 +89,8 @@ CConsoleUPowerSyscall::CConsoleUPowerSyscall()
   m_CanReboot    = ConsoleKitMethodCall("CanRestart");
 
   UpdateUPower();
+
+  EnumeratePowerSources();
 }
 
 CConsoleUPowerSyscall::~CConsoleUPowerSyscall()
@@ -118,6 +152,50 @@ bool CConsoleUPowerSyscall::CanHibernate()
 bool CConsoleUPowerSyscall::CanReboot()
 {
   return m_CanReboot;
+}
+
+int CConsoleUPowerSyscall::BatteryLevel()
+{
+  unsigned int nBatteryCount  = 0;
+  double       subCapacity    = 0;
+  double       batteryLevel   = 0;
+
+  std::list<CUPowerSource>::iterator itr;
+  for (itr = m_powerSources.begin(); itr != m_powerSources.end(); ++itr)
+  {
+    itr->Update();
+    if(itr->IsRechargeable())
+    {
+      nBatteryCount++;
+      subCapacity += itr->BatteryLevel();
+    }
+  }
+
+  if(nBatteryCount)
+    batteryLevel = subCapacity / (double)nBatteryCount;
+
+  return (int) batteryLevel;
+}
+
+void CConsoleUPowerSyscall::EnumeratePowerSources()
+{
+  CDBusMessage message("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "EnumerateDevices");
+  DBusMessage *reply = message.SendSystem();
+  if (reply)
+  {
+    char** source  = NULL;
+    int    length = 0;
+
+    if (dbus_message_get_args (reply, NULL, DBUS_TYPE_ARRAY, DBUS_TYPE_OBJECT_PATH, &source, &length, DBUS_TYPE_INVALID))
+    {
+      for (int i = 0; i < length; i++)
+      {
+        m_powerSources.push_back(CUPowerSource(source[i]));
+      }
+
+      dbus_free_string_array(source);
+    }
+  }
 }
 
 bool CConsoleUPowerSyscall::HasDeviceConsoleKit()

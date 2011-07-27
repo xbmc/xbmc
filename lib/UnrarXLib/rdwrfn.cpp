@@ -211,12 +211,12 @@ void ComprDataIO::UnpWrite(byte *Addr,uint Count)
     while(UnpackToMemorySize < (int)Count)
     {
       hBufferEmpty->Set();
-      while( hBufferFilled->WaitMSec(1)) 
+      while(! hBufferFilled->WaitMSec(1)) 
         if (hQuit->WaitMSec(1))
           return;
     }
     
-    if (hSeek->WaitMSec(1)) // we are seeking
+    if (! hSeek->WaitMSec(1)) // we are seeking
     {
       memcpy(UnpackToMemoryAddr,Addr,Count);
       UnpackToMemoryAddr+=Count;

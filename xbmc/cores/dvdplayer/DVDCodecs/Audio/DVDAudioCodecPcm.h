@@ -34,7 +34,7 @@ public:
   virtual int GetData(BYTE** dst);
   virtual void Reset();
   virtual int GetChannels();
-  virtual AEChLayout GetChannelMap();
+  virtual CAEChannelInfo GetChannelMap();
   virtual int GetSampleRate();
   virtual enum AEDataFormat GetDataFormat();
   virtual const char* GetName()  { return "pcm"; }

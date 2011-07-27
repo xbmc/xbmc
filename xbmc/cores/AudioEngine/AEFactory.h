@@ -20,7 +20,7 @@
  *
  */
 
-#include "AEWrapper.h"
+#include "Interfaces/AE.h"
 #include "threads/Thread.h"
 
 enum AEEngine
@@ -36,11 +36,13 @@ enum AEEngine
 #endif
 };
 
-class CAEWrapper;
+class IAE;
 class CAEFactory
 {
 public:
-  static bool LoadEngine(enum AEEngine engine);
+  static IAE *AE;
+  static bool LoadEngine();
 private:
+  static bool LoadEngine(enum AEEngine engine);
 };
 

@@ -30,6 +30,7 @@
 #include "AE.h"
 #include "CoreAudioAEStream.h"
 #include "CoreAudioAESound.h"
+#include "CoreAudioAEEventThread.h"
 #include "threads/CriticalSection.h"
 
 #ifdef __arm__
@@ -42,6 +43,7 @@
 
 class CCoreAudioAEStream;
 class CCoreAudioAESound;
+class CCoreAudioAEEventThread;
 
 class CCoreAudioAE : public IAE
 {
@@ -54,8 +56,8 @@ protected:
   friend class CCoreAudioAEHALOSX;
   CCoreAudioAEHALOSX  *HAL;
 #endif
-  bool m_Use16BitAudio;
   
+  CCoreAudioAEEventThread *m_reinitTrigger;
 public:
   /* this should NEVER be called directly, use CAEFactory */
   CCoreAudioAE();
@@ -93,7 +95,8 @@ public:
   virtual void RemoveStream(IAEStream *stream);
   
   virtual IAEStream *FreeStream(IAEStream *stream);
-  
+  void Reinit();
+    
   /* returns a new sound object */
   virtual IAESound *GetSound(CStdString file);
   virtual void RemovePlayingSound(IAESound *sound);
@@ -119,6 +122,7 @@ public:
 private:
   CCriticalSection  m_Mutex;
   CCriticalSection  m_MutexLockEngine;
+  CCriticalSection  m_streamLock;
   bool              m_EngineLock;
   
   std::list<CCoreAudioAEStream*> m_streams;
@@ -141,12 +145,13 @@ private:
   uint8_t          *m_StreamBuffer;
   int               m_StreamBufferSize;
   bool              m_guiSoundWhilePlayback;
+  bool              m_needReinit;
   
   CAEConvert::AEConvertFrFn m_convertFn;
 
   enum AEChannel    *m_RemapChannelLayout;
   
-  bool OpenCoreAudio(unsigned int sampleRate = 44100, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);
+  bool OpenCoreAudio(unsigned int sampleRate = 48000, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);
   
   void Deinitialize();
   void Start();

@@ -258,7 +258,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   {
     HandleException(e, "m_pDll->Unload");
   }
-  delete m_pStruct;
+  free(m_pStruct);
   m_pStruct = NULL;
   delete m_pDll;
   m_pDll = NULL;

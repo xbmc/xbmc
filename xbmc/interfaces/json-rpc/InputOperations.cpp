@@ -31,9 +31,11 @@ bool CInputOperations::handleScreenSaver()
 {
   bool screenSaverBroken = false; //true if screensaver was active and we did reset him
 
+  g_application.ResetScreenSaver();
+  
   if(g_application.IsInScreenSaver())
   {
-    g_application.ResetScreenSaver();
+    g_application.WakeUpScreenSaverAndDPMS();
     screenSaverBroken = true;
   }
   return screenSaverBroken;
@@ -84,7 +86,7 @@ JSON_STATUS CInputOperations::Select(const CStdString &method, ITransportLayer *
 
 JSON_STATUS CInputOperations::Back(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  return sendAction(ACTION_PARENT_DIR);  
+  return sendAction(ACTION_NAV_BACK);  
 }
 
 JSON_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)

@@ -24,6 +24,7 @@
 #include "XEventUtils.h"
 #include "XHandle.h"
 #include "utils/log.h"
+#include "threads/SingleLock.h"
 
 using namespace std;
 

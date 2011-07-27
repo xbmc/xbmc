@@ -19,7 +19,7 @@
  *
  */
 
-#include "AESound.h"
+#include "Interfaces/AESound.h"
 
 #include <samplerate.h>
 #include "threads/SingleLock.h"
@@ -28,16 +28,16 @@
 
 #include "AEFactory.h"
 #include "AEAudioFormat.h"
-#include "AEConvert.h"
-#include "AERemap.h"
-#include "AEUtil.h"
+#include "Utils/AEConvert.h"
+#include "Utils/AERemap.h"
+#include "Utils/AEUtil.h"
 #include "DllAvCore.h"
 
 #include "SoftAE.h"
 #include "SoftAESound.h"
 
 /* typecast AE to CSoftAE */
-#define AE (*(CSoftAE*)AE.GetEngine())
+#define AE (*((CSoftAE*)CAEFactory::AE))
 
 typedef struct
 {
@@ -47,12 +47,10 @@ typedef struct
 
 CSoftAESound::CSoftAESound(const CStdString &filename) :
   IAESound         (filename),
+  m_filename       (filename),
   m_volume         (1.0f    ),
-  m_inUse          (0       ),
-  m_freeCallback   (NULL    ),
-  m_freeCallbackArg(NULL    )
+  m_inUse          (0       )
 {
-  m_filename = filename;
 }
 
 CSoftAESound::~CSoftAESound()
@@ -77,22 +75,17 @@ bool CSoftAESound::Initialize()
 
 unsigned int CSoftAESound::GetSampleCount()
 {
-  m_sampleLock.lock_shared();
-  int sampleCount = 0;
+  CSingleLock cs(m_critSection);
   if (m_wavLoader.IsValid())
-    sampleCount = m_wavLoader.GetSampleCount();
-  m_sampleLock.unlock_shared();
-  return sampleCount;
+    return m_wavLoader.GetSampleCount();
+  return 0;
 }
 
 float* CSoftAESound::GetSamples()
 {
-  m_sampleLock.lock_shared();
+  CSingleLock cs(m_critSection);
   if (!m_wavLoader.IsValid())
-  {
-    m_sampleLock.unlock_shared();
     return NULL;
-  }
 
   ++m_inUse;
   return m_wavLoader.GetSamples();
@@ -100,23 +93,15 @@ float* CSoftAESound::GetSamples()
 
 void CSoftAESound::ReleaseSamples()
 {
+  CSingleLock cs(m_critSection);
+  ASSERT(m_inUse > 0);
   --m_inUse;
-  m_sampleLock.unlock_shared();
 }
 
 bool CSoftAESound::IsPlaying()
 {
-  m_sampleLock.lock_shared();
-  bool playing = m_inUse > 0;
-  m_sampleLock.unlock_shared();
-
-  return playing;
-}
-
-void CSoftAESound::SetFreeCallback(AECBFunc *callback, void *arg)
-{
-  m_freeCallback    = callback;
-  m_freeCallbackArg = arg;
+  CSingleLock cs(m_critSection);
+  return (m_inUse > 0);
 }
 
 void CSoftAESound::Play()

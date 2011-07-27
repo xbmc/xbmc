@@ -262,7 +262,7 @@ namespace PYXBMC
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
-    return Py_BuildValue((char*)"l", listPos);
+    return Py_BuildValue((char*)"i", listPos);
   }
 
   // getListItem() method

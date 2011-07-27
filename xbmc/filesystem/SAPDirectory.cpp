@@ -17,6 +17,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "threads/SystemClock.h"
 #include "system.h" // WIN32INCLUDES - not sure why this is needed
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
@@ -340,7 +341,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
       }
 
       // should be improved in the case of sdp
-      it->timeout = CTimeUtils::GetTimeMS() + 60*60*1000;
+      it->timeout = XbmcThreads::SystemClockMillis() + 60*60*1000;
       return true;
     }
   }
@@ -367,7 +368,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   session.payload_type   = header.payload_type;
   session.payload_origin = desc.origin;
   session.payload.assign(data, len);
-  session.timeout = CTimeUtils::GetTimeMS() + 60*60*1000;
+  session.timeout = XbmcThreads::SystemClockMillis() + 60*60*1000;
   m_sessions.push_back(session);
 
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);

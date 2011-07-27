@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "MusicInfoScanner.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
 #include "MusicAlbumInfo.h"
@@ -47,6 +48,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "ThumbnailCache.h"
 
 #include <algorithm>
 
@@ -72,7 +74,7 @@ void CMusicInfoScanner::Process()
 {
   try
   {
-    unsigned int tick = CTimeUtils::GetTimeMS();
+    unsigned int tick = XbmcThreads::SystemClockMillis();
 
     m_musicDatabase.Open();
 
@@ -151,7 +153,7 @@ void CMusicInfoScanner::Process()
       m_musicDatabase.Close();
       CLog::Log(LOGDEBUG, "%s - Finished scan", __FUNCTION__);
 
-      tick = CTimeUtils::GetTimeMS() - tick;
+      tick = XbmcThreads::SystemClockMillis() - tick;
       CLog::Log(LOGNOTICE, "My Music: Scanning for music info using worker thread, operation took %s", StringUtils::SecondsToTimeString(tick / 1000).c_str());
     }
     bool bCanceled;
@@ -712,13 +714,13 @@ void CMusicInfoScanner::UpdateFolderThumb(const VECSONGS &songs, const CStdStrin
   CStdString album, artist;
   if (!HasSingleAlbum(songs, album, artist)) return;
   // Was the album art of this album read during scan?
-  CStdString albumCoverArt(CUtil::GetCachedAlbumThumb(album, artist));
+  CStdString albumCoverArt(CThumbnailCache::GetAlbumThumb(album, artist));
   if (CUtil::ThumbExists(albumCoverArt))
   {
     CStdString folderPath1(folderPath);
     // Folder art is cached without the slash at end
     URIUtils::RemoveSlashAtEnd(folderPath1);
-    CStdString folderCoverArt(CUtil::GetCachedMusicThumb(folderPath1));
+    CStdString folderCoverArt(CThumbnailCache::GetMusicThumb(folderPath1));
     // copy as directory thumb as well
     if (CFile::Cache(albumCoverArt, folderCoverArt))
       CUtil::ThumbCacheAdd(folderCoverArt, true);
@@ -1018,7 +1020,7 @@ void CMusicInfoScanner::GetAlbumArtwork(long id, const CAlbum &album)
     CStdString thumb;
     if (!m_musicDatabase.GetAlbumThumb(id, thumb) || thumb.IsEmpty() || !XFILE::CFile::Exists(thumb))
     {
-      thumb = CUtil::GetCachedAlbumThumb(album.strAlbum,album.strArtist);
+      thumb = CThumbnailCache::GetAlbumThumb(album);
       CScraperUrl::DownloadThumbnail(thumb,album.thumbURL.m_url[0]);
       m_musicDatabase.SaveAlbumThumb(id, thumb);
     }

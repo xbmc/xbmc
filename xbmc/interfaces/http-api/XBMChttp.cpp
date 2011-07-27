@@ -9,6 +9,7 @@
 
 /********************************* Includes ***********************************/
 
+#include "threads/SystemClock.h"
 #include "Application.h"
 #include "XBMCConfiguration.h"
 #include "XBMChttp.h"
@@ -51,6 +52,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "TextureCache.h"
+#include "ThumbnailCache.h"
 
 #ifdef _WIN32
 extern "C" FILE *fopen_utf8(const char *_Filename, const char *_Mode);
@@ -1585,7 +1587,7 @@ int CXbmcHttp::xbmcSeekPercentage(int numParas, CStdString paras[], bool relativ
 
 int CXbmcHttp::xbmcMute()
 {
-  g_application.Mute();
+  g_application.ToggleMute();
   return SetResponse(openTag+"OK");
 }
 
@@ -1815,7 +1817,7 @@ int CXbmcHttp::xbmcGetThumbFilename(int numParas, CStdString paras[])
 
   if (numParas>1)
   {
-    thumbFilename = CUtil::GetCachedAlbumThumb(paras[0], paras[1]);
+    thumbFilename = CThumbnailCache::GetAlbumThumb(paras[0], paras[1]);
     return SetResponse(openTag+thumbFilename ) ;
   }
   else
@@ -2061,9 +2063,9 @@ CStdString CXbmcHttp::GetCloseTag()
 CKey CXbmcHttp::GetKey()
 {
   if (repeatKeyRate!=0)
-    if (CTimeUtils::GetTimeMS() >= MarkTime + repeatKeyRate)
+    if ((XbmcThreads::SystemClockMillis() - MarkTime) >=  repeatKeyRate)
     {
-      MarkTime=CTimeUtils::GetTimeMS();
+      MarkTime=XbmcThreads::SystemClockMillis();
       key=lastKey;
     }
   return key;

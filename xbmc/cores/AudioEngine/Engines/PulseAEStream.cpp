@@ -24,7 +24,7 @@
 
 #include "PulseAEStream.h"
 #include "AEFactory.h"
-#include "AEUtil.h"
+#include "Utils/AEUtil.h"
 #include "utils/log.h"
 #include "utils/MathUtils.h"
 #include "threads/SingleLock.h"
@@ -48,11 +48,9 @@ static const char *StreamStateToString(pa_stream_state s)
   }
 }
 
-CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, unsigned int channelCount, AEChLayout channelLayout, unsigned int options) :
-  m_AudioDataThread (NULL),
-  m_AudioDrainThread(NULL),
-  m_AudioFreeThread(NULL)
+CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLoop, enum AEDataFormat format, unsigned int sampleRate, CAEChannelInfo channelLayout, unsigned int options) : m_fader(this)
 {
+  ASSERT(channelLayout.Count());
   m_Destroyed = false;
   m_Initialized = false;
   m_Paused = false;
@@ -63,16 +61,14 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
 
   m_format = format;
   m_sampleRate = sampleRate;
-  m_channelCount = channelCount;
   m_channelLayout = channelLayout;
   m_options = options;
 
-  m_draining = false;
+  m_DrainOperation = NULL;
 
-  printf("Started initializing %i %i\n", sampleRate, channelCount);
   pa_threaded_mainloop_lock(m_MainLoop);
 
-  m_SampleSpec.channels = m_channelCount;
+  m_SampleSpec.channels = channelLayout.Count();
   m_SampleSpec.rate = m_sampleRate;
 
   switch (m_format)
@@ -106,11 +102,9 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   m_frameSize = pa_frame_size(&m_SampleSpec);
 
   struct pa_channel_map map;
-  map.channels = m_channelCount;
-  if (!m_channelLayout)
-    m_channelLayout = CAEUtil::GuessChLayout(m_channelCount);
+  map.channels = m_channelLayout.Count();
 
-  for(unsigned int ch = 0; ch < m_channelCount; ++ch)
+  for(unsigned int ch = 0; ch < m_channelLayout.Count(); ++ch)
     switch(m_channelLayout[ch])
     {
       case AE_CH_NULL: break;
@@ -136,12 +130,9 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
       case AE_CH_TBC : map.map[ch] = PA_CHANNEL_POSITION_TOP_REAR_CENTER      ; break;
     }
 
-  m_MaxVolume     = AE.GetVolume();
+  m_MaxVolume     = CAEFactory::AE->GetVolume();
   m_Volume        = 1.0f;
-  float useVolume = m_Volume * m_MaxVolume;
-
-  pa_volume_t paVolume = MathUtils::round_int(useVolume * PA_VOLUME_NORM);
-
+  pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
   pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
   if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
   {
@@ -154,6 +145,7 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
   pa_stream_set_state_callback(m_Stream, CPulseAEStream::StreamStateCallback, this);
   pa_stream_set_write_callback(m_Stream, CPulseAEStream::StreamRequestCallback, this);
   pa_stream_set_latency_update_callback(m_Stream, CPulseAEStream::StreamLatencyUpdateCallback, this);
+  pa_stream_set_underflow_callback(m_Stream, CPulseAEStream::StreamUnderflowCallback, this);
 
   int flags = PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE;
   if (options && AESTREAM_FORCE_RESAMPLE)
@@ -183,54 +175,28 @@ CPulseAEStream::CPulseAEStream(pa_context *context, pa_threaded_mainloop *mainLo
     return /*false*/;
   }
 
-  pa_buffer_attr a;
-  m_frameSamples = m_sampleRate / 1000;
-  a.fragsize  = (uint32_t)-1;
-  a.maxlength = (uint32_t)-1;
-  a.prebuf    = 0;
-  a.minreq    = m_frameSamples * m_frameSize;
-  a.tlength   = m_frameSamples * m_frameSize;
-  WaitForOperation(pa_stream_set_buffer_attr(m_Stream, &a, NULL, NULL), m_MainLoop, "SetBuffer");
+  m_cacheSize = pa_stream_writable_size(m_Stream);
 
   pa_threaded_mainloop_unlock(m_MainLoop);
 
   m_Initialized = true;
-  printf("Initialized\n");
+
+  CLog::Log(LOGINFO, "PulseAEStream::Initialized");
+  CLog::Log(LOGINFO, "  Sample Rate   : %d", m_sampleRate);
+  CLog::Log(LOGINFO, "  Sample Format : %s", CAEUtil::DataFormatToStr(m_format));
+  CLog::Log(LOGINFO, "  Channel Count : %d", m_channelLayout.Count());
+  CLog::Log(LOGINFO, "  Channel Layout: %s", ((CStdString)m_channelLayout).c_str());
+  CLog::Log(LOGINFO, "  Frame Size    : %d", m_frameSize);
+  CLog::Log(LOGINFO, "  Cache Size    : %d", m_cacheSize);
 
   Resume();
+
   return /*true*/;
 }
 
 CPulseAEStream::~CPulseAEStream()
 {
-  delete m_AudioDataThread;
-  delete m_AudioDrainThread;
-  m_AudioDataThread  = NULL;
-  m_AudioDrainThread = NULL;
-
-  if (!m_Initialized)
-    return;
-
-  printf("delete 1\n");
-  pa_threaded_mainloop_lock(m_MainLoop);
-
-  if (m_Stream)
-  {
-    printf("delete 2\n");
-    pa_stream_disconnect(m_Stream);
-    pa_stream_unref(m_Stream);
-    m_Stream = NULL;
-  }
-
-  printf("delete 3\n");
-  pa_threaded_mainloop_unlock(m_MainLoop);
-
-  if (m_AudioFreeThread)
-  {
-    m_AudioFreeThread->Trigger();
-    delete m_AudioFreeThread;
-    m_AudioFreeThread = NULL;
-  }
+  Destroy();
 }
 
 /*
@@ -239,35 +205,47 @@ CPulseAEStream::~CPulseAEStream()
 */
 void CPulseAEStream::Destroy()
 {
+  if (!m_Initialized)
+    return;
+
   if (m_Destroyed)
     return;
 
-  if (m_AudioDataThread ) m_AudioDataThread ->SetCallback(NULL, NULL);
-  if (m_AudioDrainThread) m_AudioDrainThread->SetCallback(NULL, NULL);
+  m_fader.StopThread(true);
+
+  pa_threaded_mainloop_lock(m_MainLoop);
+
+  if (m_DrainOperation)
+  {
+    pa_operation_cancel(m_DrainOperation);
+    pa_operation_unref(m_DrainOperation);
+    m_DrainOperation = NULL;
+  }
+
+  if (m_Stream)
+  {
+    pa_stream_disconnect(m_Stream);
+    pa_stream_unref(m_Stream);
+    m_Stream = NULL;
+  }
 
   /* signal CPulseAE to free us */
   m_Destroyed = true;
+  m_Initialized = false;
+
+  pa_threaded_mainloop_unlock(m_MainLoop);
 }
 
-void CPulseAEStream::SetDataCallback(AECBFunc *cbFunc, void *arg)
+unsigned int CPulseAEStream::GetSpace()
 {
-  if (!m_AudioDataThread)
-    m_AudioDataThread = new CPulseAEEventThread(this);
-  m_AudioDataThread->SetCallback(cbFunc, arg);
-}
+  if (!m_Initialized)
+    return 0;
 
-void CPulseAEStream::SetDrainCallback(AECBFunc *cbFunc, void *arg)
-{
-  if (!m_AudioDrainThread)
-    m_AudioDrainThread = new CPulseAEEventThread(this);
-  m_AudioDrainThread->SetCallback(cbFunc, arg);
-}
+  pa_threaded_mainloop_lock(m_MainLoop);
+  unsigned int size = pa_stream_writable_size(m_Stream);
+  pa_threaded_mainloop_unlock(m_MainLoop);
 
-void CPulseAEStream::SetFreeCallback(AECBFunc *cbFunc, void *arg)
-{
-  if (!m_AudioFreeThread)
-    m_AudioFreeThread = new CPulseAEEventThread(this);
-  m_AudioFreeThread->SetCallback(cbFunc, arg);
+  return size;
 }
 
 unsigned int CPulseAEStream::AddData(void *data, unsigned int size)
@@ -311,16 +289,20 @@ float CPulseAEStream::GetDelay()
   return (float)((float)latency / 1000000.0f);
 }
 
-int CPulseAEStream::GetSpace()
+float CPulseAEStream::GetCacheTime()
 {
   if (!m_Initialized)
-    return 0;
+    return 0.0f;
 
-  pa_threaded_mainloop_lock(m_MainLoop);
-  int space = pa_stream_writable_size(m_Stream);
-  pa_threaded_mainloop_unlock(m_MainLoop);
+  return (float)(m_cacheSize - GetSpace()) / (float)m_sampleRate;
+}
 
-  return space / m_frameSize;
+float CPulseAEStream::GetCacheTotal()
+{
+  if (!m_Initialized)
+    return 0.0f;
+
+  return (float)m_cacheSize / (float)m_sampleRate;
 }
 
 bool CPulseAEStream::IsPaused()
@@ -330,12 +312,16 @@ bool CPulseAEStream::IsPaused()
 
 bool CPulseAEStream::IsDraining()
 {
-  return m_draining;
-}
+  if (m_DrainOperation)
+  {
+    if (pa_operation_get_state(m_DrainOperation) == PA_OPERATION_RUNNING)
+      return true;
 
-bool CPulseAEStream::IsFreeOnDrain()
-{
-  return m_options & AESTREAM_FREE_ON_DRAIN;
+    pa_operation_unref(m_DrainOperation);
+    m_DrainOperation = NULL;
+  }
+
+  return false;
 }
 
 bool CPulseAEStream::IsDestroyed()
@@ -357,17 +343,15 @@ void CPulseAEStream::Resume()
 
 void CPulseAEStream::Drain()
 {
-  if (!m_Initialized || m_draining)
+  if (!m_Initialized)
     return;
 
-  printf("drain1\n");
-  m_draining = true;
-  pa_threaded_mainloop_lock(m_MainLoop);
+  if (m_DrainOperation)
+    return;
 
-  printf("drain2\n");
-  pa_operation_unref(pa_stream_drain(m_Stream, CPulseAEStream::StreamDrainComplete, this));
+  pa_threaded_mainloop_lock(m_MainLoop);
+  m_DrainOperation = pa_stream_drain(m_Stream, CPulseAEStream::StreamDrainComplete, this);
   pa_threaded_mainloop_unlock(m_MainLoop);
-  printf("drain3\n");
 }
 
 void CPulseAEStream::Flush()
@@ -395,14 +379,11 @@ void CPulseAEStream::SetVolume(float volume)
   if (!m_Initialized)
     return;
 
-  printf("Stream SetVolume %f\n", volume);
-
   if (!pa_threaded_mainloop_in_thread(m_MainLoop))
     pa_threaded_mainloop_lock(m_MainLoop);
 
   m_Volume = volume;
-  float useVolume = volume * m_MaxVolume;
-  pa_volume_t paVolume = MathUtils::round_int(useVolume * PA_VOLUME_NORM);
+  pa_volume_t paVolume = pa_sw_volume_from_linear((double)(m_Volume * m_MaxVolume));
 
   pa_cvolume_set(&m_ChVolume, m_SampleSpec.channels, paVolume);
   pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_ChVolume, NULL, NULL);
@@ -429,34 +410,22 @@ void CPulseAEStream::SetReplayGain(float factor)
 {
 }
 
-void CPulseAEStream::AppendPostProc(IAEPostProc *pp)
-{
-}
-
-void CPulseAEStream::PrependPostProc(IAEPostProc *pp)
-{
-}
-
-void CPulseAEStream::RemovePostProc(IAEPostProc *pp)
-{
-}
-
-unsigned int CPulseAEStream::GetFrameSize()
+const unsigned int CPulseAEStream::GetFrameSize() const
 {
   return m_frameSize;
 }
 
-unsigned int CPulseAEStream::GetChannelCount()
+const unsigned int CPulseAEStream::GetChannelCount() const
 {
-  return m_channelCount;
+  return m_channelLayout.Count();
 }
 
-unsigned int CPulseAEStream::GetSampleRate()
+const unsigned int CPulseAEStream::GetSampleRate() const
 {
   return m_sampleRate;
 }
 
-enum AEDataFormat CPulseAEStream::GetDataFormat()
+const enum AEDataFormat CPulseAEStream::GetDataFormat() const
 {
   return m_format;
 }
@@ -480,13 +449,23 @@ void CPulseAEStream::UnRegisterAudioCallback()
   m_AudioCallback = NULL;
 }
 
+void CPulseAEStream::FadeVolume(float from, float target, unsigned int time)
+{
+  if (!m_Initialized)
+    return;
+
+  m_fader.SetupFader(from, target, time);
+}
+
+bool CPulseAEStream::IsFading()
+{
+  return m_fader.IsRunning();
+}
+
 void CPulseAEStream::StreamRequestCallback(pa_stream *s, size_t length, void *userdata)
 {
   CPulseAEStream *stream = (CPulseAEStream *)userdata;
-
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
-  if (stream->m_AudioDataThread)
-    stream->m_AudioDataThread->Trigger();
 }
 
 void CPulseAEStream::StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
@@ -512,15 +491,17 @@ void CPulseAEStream::StreamStateCallback(pa_stream *s, void *userdata)
   }
 }
 
+void CPulseAEStream::StreamUnderflowCallback(pa_stream *s, void *userdata)
+{
+  CPulseAEStream *stream = (CPulseAEStream *)userdata;
+  CLog::Log(LOGWARNING, "PulseAudio: Stream underflow");
+  pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
+}
+
 void CPulseAEStream::StreamDrainComplete(pa_stream *s, int success, void *userdata)
 {
   CPulseAEStream *stream = (CPulseAEStream *)userdata;
   pa_threaded_mainloop_signal(stream->m_MainLoop, 0);
-  if (stream->m_AudioDrainThread)
-    stream->m_AudioDrainThread->Trigger();
-
-  if (stream->IsFreeOnDrain())
-    stream->Destroy();
 }
 
 inline bool CPulseAEStream::WaitForOperation(pa_operation *op, pa_threaded_mainloop *mainloop, const char *LogEntry = "")
@@ -556,4 +537,57 @@ bool CPulseAEStream::Cork(bool cork)
   return cork;
 }
 
+CPulseAEStream::CLinearFader::CLinearFader(IAEStream *stream) : m_stream(stream)
+{
+  m_from = 0;
+  m_target = 0;
+  m_time = 0;
+  m_isRunning = false;
+}
+
+void CPulseAEStream::CLinearFader::SetupFader(float from, float target, unsigned int time)
+{
+  StopThread(true);
+
+  m_from = from;
+  m_target = target;
+  m_time = time;
+
+  if (m_time > 0)
+    Create();
+  else
+    m_stream->SetVolume(m_target);
+}
+
+void CPulseAEStream::CLinearFader::Process()
+{
+  if (m_stream == NULL)
+    return;
+
+  m_isRunning = true;
+  m_stream->SetVolume(m_from);
+  float k = m_target - m_from;
+
+  unsigned int begin = XbmcThreads::SystemClockMillis();
+  unsigned int end = begin + m_time;
+  unsigned int current = begin;
+  unsigned int step = std::max(1u, m_time / 100);
+
+  do
+  {
+    float x = ((float)current - (float)begin) / (float)m_time;
+
+    m_stream->SetVolume(m_from + k * x);
+    usleep(step * 1000);
+    current = XbmcThreads::SystemClockMillis();
+  } while (current <= end && !m_bStop);
+
+  m_stream->SetVolume(m_target);
+  m_isRunning = false;
+}
+
+bool CPulseAEStream::CLinearFader::IsRunning()
+{
+  return !m_isRunning;
+}
 #endif

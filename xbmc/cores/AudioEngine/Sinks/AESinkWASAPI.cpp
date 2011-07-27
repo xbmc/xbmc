@@ -28,7 +28,7 @@
 #include <Mmreg.h>
 #include <stdint.h>
 
-#include "AEUtil.h"
+#include "../Utils/AEUtil.h"
 #include "settings/GUISettings.h"
 #include "StdString.h"
 #include "utils/log.h"
@@ -64,6 +64,8 @@ static const sampleFormat testFormats[] = { {KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, 32
 
 #define EXIT_ON_FAILURE(hr, reason, ...) if(FAILED(hr)) {CLog::Log(LOGERROR, reason, __VA_ARGS__); goto failed;}
 
+#define ERRTOSTR(err) case err: return #err
+
 
 CAESinkWASAPI::CAESinkWASAPI() :
   m_pAudioClient(NULL),
@@ -77,7 +79,7 @@ CAESinkWASAPI::CAESinkWASAPI() :
   m_encodedSampleRate(0),
   m_uiBufferLen(0)
 {
-  m_channelLayout[0] = AE_CH_NULL;
+  m_channelLayout.Reset();
 }
 
 CAESinkWASAPI::~CAESinkWASAPI()
@@ -145,9 +147,26 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, CStdString &device)
 
   if(!m_pDevice)
   {
-    CLog::Log(LOGDEBUG, __FUNCTION__": Could not locate the device named \"%s\" in the list of WASAPI endpoint devices.  Trying the default device...", device.c_str());
+    CLog::Log(LOGINFO, __FUNCTION__": Could not locate the device named \"%s\" in the list of WASAPI endpoint devices.  Trying the default device...", device.c_str());
     hr = pEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &m_pDevice);
     EXIT_ON_FAILURE(hr, __FUNCTION__": Could not retrieve the default WASAPI audio endpoint.")
+
+    IPropertyStore *pProperty = NULL;
+    PROPVARIANT varName;
+
+    hr = m_pDevice->OpenPropertyStore(STGM_READ, &pProperty);
+    EXIT_ON_FAILURE(hr, __FUNCTION__": Retrieval of WASAPI endpoint properties failed.")
+
+    hr = pProperty->GetValue(PKEY_Device_FriendlyName, &varName);
+
+    CStdStringW strRawDevName(varName.pwszVal);
+    CStdString strDevName;
+    g_charsetConverter.ucs2CharsetToStringCharset(strRawDevName, strDevName);
+
+    CLog::Log(LOGINFO, __FUNCTION__": Found default sound device \"%s\"", strDevName.c_str());
+
+    PropVariantClear(&varName);
+    SAFE_RELEASE(pProperty);
   }
 
   //We are done with the enumerator.
@@ -173,7 +192,7 @@ bool CAESinkWASAPI::Initialize(AEAudioFormat &format, CStdString &device)
 
   hr = m_pAudioClient->GetBufferSize(&m_uiBufferLen);
   format.m_frames = m_uiBufferLen/8;
-  format.m_frameSamples = format.m_frames * format.m_channelCount;
+  format.m_frameSamples = format.m_frames * format.m_channelLayout.Count();
   m_format = format;
 
   hr = m_pAudioClient->GetService(IID_IAudioRenderClient, (void**)&m_pRenderClient);
@@ -224,15 +243,14 @@ bool CAESinkWASAPI::IsCompatible(const AEAudioFormat format, const CStdString de
 
      //If the current and target formats are raw and match...
      ((AE_IS_RAW(format.m_dataFormat) && AE_IS_RAW(m_encodedFormat) && 
-     format.m_dataFormat   == m_encodedFormat     &&
-     format.m_sampleRate   == m_encodedSampleRate &&
-     format.m_channelCount == m_encodedChannels)  ||
+     format.m_dataFormat            == m_encodedFormat     &&
+     format.m_sampleRate            == m_encodedSampleRate &&
+     format.m_channelLayout.Count() == m_encodedChannels)  ||
      
      //Or the current and target formats are both PCM and match...
      (!AE_IS_RAW(format.m_dataFormat) && !AE_IS_RAW(m_format.m_dataFormat) &&
      m_format.m_sampleRate    == format.m_sampleRate   && 
-     m_format.m_channelCount  == format.m_channelCount &&
-     CAEUtil::CompareLayouts(m_format.m_channelLayout, format.m_channelLayout))))
+     m_format.m_channelLayout == format.m_channelLayout)))
      return true; //We can reuse the existing sink.
 
   return false;
@@ -281,11 +299,11 @@ unsigned int CAESinkWASAPI::AddPackets(uint8_t *data, unsigned int frames)
   {
     memcpy(buf, data, frames*m_format.m_frameSize);
     if (FAILED(hr = m_pRenderClient->ReleaseBuffer(frames, 0)))
-      CLog::Log(LOGERROR, __FUNCTION__": ReleaseBuffer failed (%li)", hr);
+      CLog::Log(LOGERROR, __FUNCTION__": ReleaseBuffer failed (%s)", WASAPIErrToStr(hr));
   }
   else
   {
-    CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed (%li)", hr);
+    CLog::Log(LOGERROR, __FUNCTION__": GetBuffer failed (%s)", WASAPIErrToStr(hr));
   }
 
   if(!m_running)
@@ -398,7 +416,7 @@ void CAESinkWASAPI::EnumerateDevices(AEDeviceList &devices, bool passthrough)
 failed:
 
   if(FAILED(hr))
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to enumerate WASAPI endpoint devices (%li).", hr);
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to enumerate WASAPI endpoint devices (%s).", WASAPIErrToStr(hr));
 
   SAFE_RELEASE(pEnumDevices);
   SAFE_RELEASE(pEnumerator);
@@ -417,7 +435,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
     wfxex.dwChannelMask          = SpeakerMaskFromAEChannels(format.m_channelLayout);
     
     wfxex.SubFormat              = KSDATAFORMAT_SUBTYPE_IEEE_FLOAT;
-    wfxex.Format.nChannels       = format.m_channelCount;
+    wfxex.Format.nChannels       = format.m_channelLayout.Count();
     wfxex.Format.nSamplesPerSec  = format.m_sampleRate;
     wfxex.Format.wBitsPerSample  = 32;
   }
@@ -461,7 +479,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensible(AEAudioFormat &format, WAVEFORMATE
         break;
       }
 
-      if(format.m_channelCount == 8)
+      if(format.m_channelLayout.Count() == 8)
         wfxex.dwChannelMask         = KSAUDIO_SPEAKER_7POINT1;
       else
         wfxex.dwChannelMask         = KSAUDIO_SPEAKER_5POINT1;
@@ -479,7 +497,7 @@ void CAESinkWASAPI::BuildWaveFormatExtensibleIEC61397(AEAudioFormat &format, WAV
   BuildWaveFormatExtensible(format, wfxex.FormatExt);
 
   wfxex.FormatExt.Format.cbSize = sizeof(WAVEFORMATEXTENSIBLE_IEC61937)-sizeof(WAVEFORMATEX);
-  wfxex.dwEncodedChannelCount   = format.m_channelCount;
+  wfxex.dwEncodedChannelCount   = format.m_channelLayout.Count();
   wfxex.dwEncodedSamplesPerSec  = format.m_sampleRate;
   wfxex.dwAverageBytesPerSec    = 0; //Ignored
 }
@@ -492,7 +510,7 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
   HRESULT hr = m_pAudioClient->GetMixFormat((WAVEFORMATEX **)&wfxex);
   if(FAILED(hr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": GetMixFormat failed (%li)", hr);
+    CLog::Log(LOGERROR, __FUNCTION__": GetMixFormat failed (%s)", WASAPIErrToStr(hr));
     return false;
   }
 
@@ -506,10 +524,9 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
 
   AEChannelsFromSpeakerMask(wfxex->dwChannelMask);
 
-  format.m_channelCount  = wfxex->Format.nChannels;
   format.m_channelLayout = m_channelLayout;
   format.m_dataFormat    = AE_FMT_FLOAT;
-  format.m_frameSize     = sizeof(float) * format.m_channelCount;
+  format.m_frameSize     = sizeof(float) * format.m_channelLayout.Count();
   format.m_sampleRate    = wfxex->Format.nSamplesPerSec;
 
   REFERENCE_TIME hnsRequestedDuration, hnsPeriodicity;
@@ -523,7 +540,7 @@ bool CAESinkWASAPI::InitializeShared(AEAudioFormat &format)
 
   if (FAILED(hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED, 0, hnsRequestedDuration, 0, &wfxex->Format, NULL)))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Initialize failed (%li)", hr);
+    CLog::Log(LOGERROR, __FUNCTION__": Initialize failed (%s)", WASAPIErrToStr(hr));
     CoTaskMemFree(wfxex);
     return false;
   }
@@ -546,6 +563,11 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
 
   if(SUCCEEDED(hr))
     goto initialize;
+  else if(hr != AUDCLNT_E_UNSUPPORTED_FORMAT) //It failed for a reason unrelated to an unsupported format.
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
+    return false;
+  }
   else if(AE_IS_RAW(format.m_dataFormat)) //No sense in trying other formats for passthrough.
     return false;
 
@@ -578,6 +600,8 @@ bool CAESinkWASAPI::InitializeExclusive(AEAudioFormat &format)
         else if(closestMatch < 0 || abs((int)WASAPISampleRates[i] - (int)format.m_sampleRate) < abs((int)WASAPISampleRates[closestMatch] - (int)format.m_sampleRate))
           closestMatch = i;
       }
+      else if(hr != AUDCLNT_E_UNSUPPORTED_FORMAT)
+        CLog::Log(LOGERROR, __FUNCTION__": IsFormatSupported failed (%s)", WASAPIErrToStr(hr));
     }
 
     if(closestMatch >= 0)
@@ -601,12 +625,14 @@ initialize:
   //When the stream is raw, the values in the format structure are set to the link
   //parameters, so store the encoded stream values here for the IsCompatible function.
   m_encodedFormat     = format.m_dataFormat;
-  m_encodedChannels   = format.m_channelCount;
+  m_encodedChannels   = format.m_channelLayout.Count();
   m_encodedSampleRate = format.m_sampleRate;
 
   if(wfxex.Format.wBitsPerSample == 32)
   {
-    if(wfxex.Samples.wValidBitsPerSample == 32)
+    if(wfxex.SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT)
+      format.m_dataFormat = AE_FMT_FLOAT;
+    else if(wfxex.Samples.wValidBitsPerSample == 32)
       format.m_dataFormat = AE_FMT_S32NE;
     else // wfxex->Samples.wValidBitsPerSample == 24
       format.m_dataFormat = AE_FMT_S24NE4;
@@ -616,8 +642,7 @@ initialize:
     format.m_dataFormat = AE_FMT_S16NE;
   }
 
-  format.m_channelCount  = wfxex.Format.nChannels;      //PCM: Number of channels.  RAW: Number of data lines * 2
-  format.m_sampleRate    = wfxex.Format.nSamplesPerSec; //PCM: Sample rate.         RAW: Link speed
+  format.m_sampleRate    = wfxex.Format.nSamplesPerSec; //PCM: Sample rate.  RAW: Link speed
   format.m_channelLayout = m_channelLayout;
   format.m_frameSize     = (wfxex.Format.wBitsPerSample >> 3) * wfxex.Format.nChannels;
 
@@ -630,11 +655,17 @@ initialize:
 
   hnsRequestedDuration = hnsPeriodicity * 8;
 
+  CLog::Log(LOGDEBUG, __FUNCTION__": Initializing WASAPI exclusive mode with the following parameters:");
+  CLog::Log(LOGDEBUG, "  Sample Rate   : %d", format.m_sampleRate);
+  CLog::Log(LOGDEBUG, "  Sample Format : %s", CAEUtil::DataFormatToStr(format.m_dataFormat));
+  CLog::Log(LOGDEBUG, "  Channel Count : %d", format.m_channelLayout.Count());
+  CLog::Log(LOGDEBUG, "  Channel Layout: %s", ((CStdString)format.m_channelLayout).c_str());
+
   hr = m_pAudioClient->Initialize(AUDCLNT_SHAREMODE_EXCLUSIVE, 0, hnsRequestedDuration, hnsPeriodicity, &wfxex.Format, NULL);
 
   if(FAILED(hr))
   {
-    CLog::Log(LOGERROR, __FUNCTION__": Unable to initialize WASAPI in exclusive mode (%li).", hr);
+    CLog::Log(LOGERROR, __FUNCTION__": Unable to initialize WASAPI in exclusive mode (%s).", WASAPIErrToStr(hr));
     return false;
   }
 
@@ -644,25 +675,66 @@ initialize:
 void CAESinkWASAPI::AEChannelsFromSpeakerMask(DWORD speakers)
 {
   int j = 0;
+
+  m_channelLayout.Reset();
+
   for(int i = 0; i < SPEAKER_COUNT; i++)
   {
     if(speakers & WASAPIChannelOrder[i])
-      m_channelLayout[j++] = AEChannelNames[i];
+      m_channelLayout += AEChannelNames[i];
   }
-
-  m_channelLayout[j] = AE_CH_NULL;
 }
 
-DWORD CAESinkWASAPI::SpeakerMaskFromAEChannels(AEChLayout channels)
+DWORD CAESinkWASAPI::SpeakerMaskFromAEChannels(const CAEChannelInfo &channels)
 {
   DWORD mask = 0;
 
-  for(int i = 0; channels[i] != AE_CH_NULL; i++)
+  for(unsigned int i = 0; i < channels.Count(); i++)
   {
-    for(int j = 0; j < SPEAKER_COUNT; j++)
+    for(unsigned int j = 0; j < SPEAKER_COUNT; j++)
       if(channels[i] == AEChannelNames[j])
         mask |= WASAPIChannelOrder[j];
   }
 
   return mask;
+}
+
+const char *CAESinkWASAPI::WASAPIErrToStr(HRESULT err)
+{
+  switch(err)
+  {
+
+  ERRTOSTR(AUDCLNT_E_NOT_INITIALIZED);
+  ERRTOSTR(AUDCLNT_E_ALREADY_INITIALIZED);
+  ERRTOSTR(AUDCLNT_E_WRONG_ENDPOINT_TYPE);
+  ERRTOSTR(AUDCLNT_E_DEVICE_INVALIDATED);
+  ERRTOSTR(AUDCLNT_E_NOT_STOPPED);
+  ERRTOSTR(AUDCLNT_E_BUFFER_TOO_LARGE);
+  ERRTOSTR(AUDCLNT_E_OUT_OF_ORDER);
+  ERRTOSTR(AUDCLNT_E_UNSUPPORTED_FORMAT);
+  ERRTOSTR(AUDCLNT_E_INVALID_SIZE);
+  ERRTOSTR(AUDCLNT_E_DEVICE_IN_USE);
+  ERRTOSTR(AUDCLNT_E_BUFFER_OPERATION_PENDING);
+  ERRTOSTR(AUDCLNT_E_THREAD_NOT_REGISTERED);
+  ERRTOSTR(AUDCLNT_E_EXCLUSIVE_MODE_NOT_ALLOWED);
+  ERRTOSTR(AUDCLNT_E_ENDPOINT_CREATE_FAILED);
+  ERRTOSTR(AUDCLNT_E_SERVICE_NOT_RUNNING);
+  ERRTOSTR(AUDCLNT_E_EVENTHANDLE_NOT_EXPECTED);
+  ERRTOSTR(AUDCLNT_E_EXCLUSIVE_MODE_ONLY);
+  ERRTOSTR(AUDCLNT_E_BUFDURATION_PERIOD_NOT_EQUAL);
+  ERRTOSTR(AUDCLNT_E_EVENTHANDLE_NOT_SET);
+  ERRTOSTR(AUDCLNT_E_INCORRECT_BUFFER_SIZE);
+  ERRTOSTR(AUDCLNT_E_BUFFER_SIZE_ERROR);
+  ERRTOSTR(AUDCLNT_E_CPUUSAGE_EXCEEDED);
+  ERRTOSTR(AUDCLNT_E_BUFFER_ERROR);
+  ERRTOSTR(AUDCLNT_E_BUFFER_SIZE_NOT_ALIGNED);
+  ERRTOSTR(AUDCLNT_E_INVALID_DEVICE_PERIOD); 
+  ERRTOSTR(E_POINTER);
+  ERRTOSTR(E_INVALIDARG);
+  ERRTOSTR(E_OUTOFMEMORY);
+
+  default: break;
+  }
+
+  return NULL;
 }

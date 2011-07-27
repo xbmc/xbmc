@@ -20,9 +20,9 @@
  *
  */
 
-#include "AEEncoder.h"
-#include "AERemap.h"
-#include "AEPackIEC61937.h"
+#include "Interfaces/AEEncoder.h"
+#include "Utils/AERemap.h"
+#include "Utils/AEPackIEC61937.h"
 
 /* ffmpeg re-defines this, so undef it to squash the warning */
 #undef restrict
@@ -35,7 +35,7 @@ public:
   CAEEncoderFFmpeg();
   virtual ~CAEEncoderFFmpeg();
 
-  virtual bool IsCompatible(const AEAudioFormat format);
+  virtual bool IsCompatible(AEAudioFormat format);
   virtual bool Initialize(AEAudioFormat &format);
   virtual void Reset();
 
@@ -58,7 +58,7 @@ private:
 
   AEAudioFormat     m_CurrentFormat;
   AVCodecContext   *m_CodecCtx;
-  enum AEChannel    m_Layout[AE_CH_MAX+1];
+  CAEChannelInfo    m_Layout;
   uint8_t           m_Buffer[FF_MIN_BUFFER_SIZE];
   int               m_BufferSize;
   int               m_OutputSize;
@@ -66,6 +66,6 @@ private:
 
   unsigned int      m_NeededFrames;
 
-  unsigned int BuildChannelLayout(const int64_t ffmap, AEChLayout layout);
+  unsigned int BuildChannelLayout(const int64_t ffmap, CAEChannelInfo& layout);
 };
 

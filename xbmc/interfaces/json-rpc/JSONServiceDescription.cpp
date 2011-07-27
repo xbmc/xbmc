@@ -147,6 +147,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "PicturePlayer.Rotate",                         CPicturePlayerOperations::Rotate },
 
 // Video Playlist
+  { "VideoPlaylist.State",                          CAVPlaylistOperations::State },
   { "VideoPlaylist.Play",                           CAVPlaylistOperations::Play },
   { "VideoPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious },
   { "VideoPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext },
@@ -156,9 +157,12 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoPlaylist.Clear",                          CAVPlaylistOperations::Clear },
   { "VideoPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle },
   { "VideoPlaylist.UnShuffle",                      CAVPlaylistOperations::UnShuffle },
+  { "VideoPlaylist.Repeat",                         CAVPlaylistOperations::Repeat },
   { "VideoPlaylist.Remove",                         CAVPlaylistOperations::Remove },
+  { "VideoPlaylist.Swap",                           CAVPlaylistOperations::Swap },
 
 // AudioPlaylist
+  { "AudioPlaylist.State",                          CAVPlaylistOperations::State },
   { "AudioPlaylist.Play",                           CAVPlaylistOperations::Play },
   { "AudioPlaylist.SkipPrevious",                   CAVPlaylistOperations::SkipPrevious },
   { "AudioPlaylist.SkipNext",                       CAVPlaylistOperations::SkipNext },
@@ -168,7 +172,9 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "AudioPlaylist.Clear",                          CAVPlaylistOperations::Clear },
   { "AudioPlaylist.Shuffle",                        CAVPlaylistOperations::Shuffle },
   { "AudioPlaylist.UnShuffle",                      CAVPlaylistOperations::UnShuffle },
+  { "AudioPlaylist.Repeat",                         CAVPlaylistOperations::Repeat },
   { "AudioPlaylist.Remove",                         CAVPlaylistOperations::Remove },
+  { "AudioPlaylist.Swap",                           CAVPlaylistOperations::Swap },
 
 // Playlist
   { "Playlist.Create",                              CPlaylistOperations::Create },

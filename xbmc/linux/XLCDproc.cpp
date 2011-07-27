@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "PlatformInclude.h"
 #include "XLCDproc.h"
 #include "../utils/log.h"
@@ -56,8 +57,8 @@ void XLCDproc::Initialize()
     return ;//nothing to do
 
   // don't try to initialize too often
-  int now = CTimeUtils::GetTimeMS();
-  if (now < m_lastInitAttempt + m_initRetryInterval)
+  int now = XbmcThreads::SystemClockMillis();
+  if ((now - m_lastInitAttempt) < m_initRetryInterval)
     return;
   m_lastInitAttempt = now;
 

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "GUIMediaWindow.h"
 #include "GUIUserMessages.h"
 #include "Util.h"
@@ -152,18 +153,10 @@ CFileItemPtr CGUIMediaWindow::GetCurrentListItem(int offset)
 
 bool CGUIMediaWindow::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR ||
+     (action.GetID() == ACTION_NAV_BACK && !(m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->m_strPath == m_startDirectory)))
   {
-    if ((m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->m_strPath == m_startDirectory) && g_advancedSettings.m_bUseEvilB)
-      g_windowManager.PreviousWindow();
-    else
-      GoParentFolder();
-    return true;
-  }
-
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
+    GoParentFolder();
     return true;
   }
 
@@ -631,7 +624,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   }
   else
   {
-    unsigned int time = CTimeUtils::GetTimeMS();
+    unsigned int time = XbmcThreads::SystemClockMillis();
 
     if (strDirectory.IsEmpty())
       SetupShares();
@@ -640,7 +633,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       return false;
 
     // took over a second, and not normally cached, so cache it
-    if (time + 1000 < CTimeUtils::GetTimeMS() && items.CacheToDiscIfSlow())
+    if ((XbmcThreads::SystemClockMillis() - time) > 1000  && items.CacheToDiscIfSlow())
       items.Save(GetID());
 
     // if these items should replace the current listing, then pop it off the top

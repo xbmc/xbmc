@@ -9,7 +9,6 @@ SLIBS=CxImage/cximage.a raw/raw.a jbig/jbig.a
 
 ifeq ($(findstring osx,$(ARCH)), osx)
 	export ARCH
-	export SYSROOT
 	DIRS+=jasper
 	SLIBS+=jasper/jasper.a
 endif

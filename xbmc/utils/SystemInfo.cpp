@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "SystemInfo.h"
 #ifndef _LINUX
@@ -43,6 +44,7 @@
 #include "osx/DarwinUtils.h"
 #include "osx/CocoaInterface.h"
 #endif
+#include "powermanagement/PowerManager.h"
 
 CSysInfo g_sysinfo;
 
@@ -59,6 +61,7 @@ bool CSysInfoJob::DoWork()
   m_info.cpuFrequency      = GetCPUFreqInfo();
   m_info.kernelVersion     = CSysInfo::GetKernelVersion();
   m_info.macAddress        = GetMACAddress();
+  m_info.batteryLevel      = GetBatteryLevel();
   return true;
 }
 
@@ -101,6 +104,13 @@ CStdString CSysInfoJob::GetVideoEncoder()
   return "GPU: " + g_Windowing.GetRenderRenderer();
 }
 
+CStdString CSysInfoJob::GetBatteryLevel()
+{
+  CStdString strVal;
+  strVal.Format("%d%%", g_powerManager.BatteryLevel());
+  return strVal;
+}
+
 double CSysInfoJob::GetCPUFrequency()
 {
 #if defined (_LINUX) || defined(_WIN32)
@@ -135,12 +145,12 @@ CStdString CSysInfoJob::GetSystemUpTime(bool bTotalUptime)
   if(bTotalUptime)
   {
     //Total Uptime
-    iInputMinutes = g_settings.m_iSystemTimeTotalUp + ((int)(CTimeUtils::GetTimeMS() / 60000));
+    iInputMinutes = g_settings.m_iSystemTimeTotalUp + ((int)(XbmcThreads::SystemClockMillis() / 60000));
   }
   else
   {
     //Current UpTime
-    iInputMinutes = (int)(CTimeUtils::GetTimeMS() / 60000);
+    iInputMinutes = (int)(XbmcThreads::SystemClockMillis() / 60000);
   }
 
   SystemUpTime(iInputMinutes,iMinutes, iHours, iDays);
@@ -188,6 +198,8 @@ CStdString CSysInfo::TranslateInfo(int info) const
       return g_localizeStrings.Get(13274);
     else
       return g_localizeStrings.Get(13297);
+  case SYSTEM_BATTERY_LEVEL:
+    return m_info.batteryLevel;
   default:
     return "";
   }
@@ -711,19 +723,11 @@ bool CSysInfo::IsAppleTV()
 
 bool CSysInfo::IsAppleTV2()
 {
-  bool        result = false;
-#if defined(__APPLE__) && defined(__arm__)
-  char        buffer[512];
-  size_t      len = 512;
-  std::string hw_machine = "unknown";
-
-  if (sysctlbyname("hw.machine", &buffer, &len, NULL, 0) == 0)
-    hw_machine = buffer;
-
-  if (hw_machine.find("AppleTV2,1") != std::string::npos)
-    result = true;
+#if defined(__APPLE__)
+  return DarwinIsAppleTV2();
+#else
+  return false;
 #endif
-  return result;
 }
 
 bool CSysInfo::HasVideoToolBoxDecoder()

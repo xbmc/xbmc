@@ -65,10 +65,7 @@ CWIN32USBScan::CWIN32USBScan()
 
     detailResult = SetupDiGetDeviceInterfaceDetail(hDevHandle, &deviceInterfaceData, devicedetailData, nBufferSize , &required, NULL);
 
-    CStdString dbcc_name(devicedetailData->DevicePath);
-    dbcc_name = dbcc_name.Mid(dbcc_name.find_last_of('\\')+1, dbcc_name.find_last_of('#') - dbcc_name.find_last_of('\\'));
-
-    CKeymapLoader().DeviceAdded(dbcc_name);
+    CKeymapLoader::DeviceAdded(CKeymapLoader::ParseWin32HIDName(devicedetailData->DevicePath));
 
     if(!detailResult)
         continue;

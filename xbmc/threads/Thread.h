@@ -30,12 +30,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include <string>
 #include "system.h" // for HANDLE
 #ifdef _LINUX
 #include "PlatformInclude.h"
 #endif
 #include "Event.h"
-#include "utils/StdString.h"
 
 class IRunnable
 {
@@ -65,7 +65,6 @@ public:
   int GetMinPriority(void);
   int GetMaxPriority(void);
   int GetNormalPriority(void);
-  void SetName( LPCTSTR szThreadName );
   HANDLE ThreadHandle();
   operator HANDLE();
   operator HANDLE() const;
@@ -85,10 +84,34 @@ protected:
   volatile bool m_bStop;
   HANDLE m_ThreadHandle;
 
-  inline CEvent* getStopEvent() { return &m_StopEvent; }
+  enum WaitResponse { WAIT_INTERRUPTED = -1, WAIT_SIGNALED = 0, WAIT_TIMEDOUT = 1 };
+
+  /**
+   * This call will wait on a CEvent in an interruptible way such that if
+   *  stop is called on the thread the wait will return with a respone
+   *  indicating what happened.
+   */
+  inline WaitResponse AbortableWait(CEvent& event, int timeoutMillis)
+  {
+    XbmcThreads::CEventGroup group(&event, &m_StopEvent, NULL);
+    CEvent* result = group.wait(timeoutMillis);
+    return  result == &event ? WAIT_SIGNALED : 
+      (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
+  }
+
+  inline WaitResponse AbortableWait(CEvent& event)
+  {
+    XbmcThreads::CEventGroup group(&event, &m_StopEvent, NULL);
+    CEvent* result = group.wait();
+    return  result == &event ? WAIT_SIGNALED : 
+      (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
+  }
 
 private:
-  CStdString GetTypeName(void);
+  /*! \brief set the threadname for the debugger/callstack, implementation dependent.
+   */
+  void SetDebugCallStackName( const char *threadName );
+  std::string GetTypeName(void);
 
 private:
   ThreadIdentifier ThreadId() const;
@@ -102,7 +125,7 @@ private:
   unsigned __int64 m_iLastTime;
   float m_fLastUsage;
 
-  CStdString m_ThreadName;
+  std::string m_ThreadName;
 
 #ifdef _LINUX
   static void term_handler (int signum);

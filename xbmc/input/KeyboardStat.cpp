@@ -127,7 +127,7 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   }
 
   // At this point update the key hold time
-  if (memcmp(&keysym, &m_lastKeysym, sizeof(XBMC_keysym)) == 0)
+  if (keysym.mod == m_lastKeysym.mod && keysym.scancode == m_lastKeysym.scancode && keysym.sym == m_lastKeysym.sym && keysym.unicode == m_lastKeysym.unicode)
   {
     held = CTimeUtils::GetFrameTime() - m_lastKeyTime;
   }
@@ -137,6 +137,12 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
     m_lastKeyTime = CTimeUtils::GetFrameTime();
     held = 0;
   }
+
+  // If the shift modifier is used alone, it is ignored unless it is
+  // combined with a - z
+  if (modifiers == CKey::MODIFIER_SHIFT)
+    if ((unicode < 'A' || unicode > 'Z') && (unicode < 'a' || unicode > 'z'))
+      modifiers = 0;
 
   // Create and return a CKey
 

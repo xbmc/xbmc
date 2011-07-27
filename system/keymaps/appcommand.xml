@@ -1,7 +1,7 @@
 <keymap>
   <global>
     <appcommand>
-      <browser_back>ParentDir</browser_back>
+      <browser_back>Back</browser_back>
       <browser_forward/>
       <browser_refresh/>
       <browser_stop>Stop</browser_stop>
@@ -23,6 +23,8 @@
       <pause>Pause</pause>
       <fastforward>FastForward</fastforward>
       <rewind>Rewind</rewind>
+      <channelup>PageUp</channelup>
+      <channeldown>PageDown</channeldown>
     </appcommand>
   </global>
 </keymap>

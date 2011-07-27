@@ -28,7 +28,7 @@
 #include <locale.h>
 #include "guilib/MatrixGLES.h"
 #include "LinuxRendererGLES.h"
-#include "Application.h"
+#include "utils/fastmemcpy.h"
 #include "utils/MathUtils.h"
 #include "utils/GLUtils.h"
 #include "settings/Settings.h"
@@ -38,6 +38,7 @@
 #include "VideoShaders/YUV2RGBShader.h"
 #include "VideoShaders/VideoFilterShader.h"
 #include "windowing/WindowingFactory.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/Texture.h"
 #include "lib/DllSwScale.h"
 #include "../dvdplayer/DVDCodecs/Video/OpenMaxVideo.h"
@@ -333,7 +334,7 @@ void CLinuxRendererGLES::LoadPlane( YUVPLANE& plane, int type, unsigned flipinde
     char *dst = pixelVector;
     for (int y = 0;y < height;++y)
     {
-      memcpy(dst, src, width);
+      fast_memcpy(dst, src, width);
       src += stride;
       dst += width;
     }
@@ -470,62 +471,6 @@ void CLinuxRendererGLES::FlipPage(int source)
   return;
 }
 
-
-unsigned int CLinuxRendererGLES::DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y)
-{
-  BYTE *s;
-  BYTE *d;
-  int i, p;
-
-  int index = NextYV12Texture();
-  if( index < 0 )
-    return -1;
-
-  YV12Image &im = m_buffers[index].image;
-  // copy Y
-  p = 0;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
-  }
-
-  w >>= im.cshift_x; h >>= im.cshift_y;
-  x >>= im.cshift_x; y >>= im.cshift_y;
-
-  // copy U
-  p = 1;
-  d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-  s = src[p];
-  for (i = 0;i < h;i++)
-  {
-    memcpy(d, s, w);
-    s += stride[p];
-    d += im.stride[p];
-  }
-
-  // copy V
-  p = 2;
-  // check for valid yv12, nv12 does not use the third plane.
-  if(im.plane[p] && src[p])
-  {
-    d = (BYTE*)im.plane[p] + im.stride[p] * y + x;
-    s = src[p];
-    for (i = 0;i < h;i++)
-    {
-      memcpy(d, s, w);
-      s += stride[p];
-      d += im.stride[p];
-    }
-  }
-
-  m_eventTexturesDone[index]->Set();
-  return 0;
-}
-
 unsigned int CLinuxRendererGLES::PreInit()
 {
   CSingleLock lock(g_graphicsContext);
@@ -596,7 +541,7 @@ void CLinuxRendererGLES::UpdateVideoFilter()
     break;
   }
 
-  g_application.m_guiDialogKaiToast.QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
+  CGUIDialogKaiToast::QueueNotification("Video Renderering", "Failed to init video filters/scalers, falling back to bilinear scaling");
   CLog::Log(LOGERROR, "GL: Falling back to bilinear due to failure to init scaler");
   if (m_pVideoFilterShader)
   {
@@ -1297,10 +1242,11 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   // clear framebuffer and invert Y axis to get non-inverted image
   glDisable(GL_BLEND);
+
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PushMatrix();
-  g_matrices.Translatef(0, capture->GetHeight(), 0);
-  g_matrices.Scalef(1.0, -1.0f, 1.0f);
+  g_matrices.Translatef(0.0f, capture->GetHeight(), 0.0f);
+  g_matrices.Scalef(1.0f, -1.0f, 1.0f);
 
   capture->BeginRender();
 
@@ -1308,6 +1254,19 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   // read pixels
   glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
+
+  // OpenGLES returns in RGBA order but CRenderCapture needs BGRA order
+  // XOR Swap RGBA -> BGRA
+  unsigned char* pixels = (unsigned char*)capture->GetRenderBuffer();
+  for (int i = 0; i < capture->GetWidth() * capture->GetHeight(); i++, pixels+=4)
+  {
+    if (pixels[0] != pixels[2])
+    {
+      pixels[0] ^= pixels[2];
+      pixels[2] ^= pixels[0];
+      pixels[0] ^= pixels[2];
+    }
+  }
 
   capture->EndRender();
 

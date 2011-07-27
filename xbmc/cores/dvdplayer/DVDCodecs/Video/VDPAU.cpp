@@ -112,6 +112,7 @@ CVDPAU::CVDPAU()
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
+  tmpDeint       = 0;
   max_references = 0;
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
@@ -607,7 +608,7 @@ void CVDPAU::SetDeinterlacing()
 
   if (method == VS_INTERLACEMETHOD_AUTO)
   {
-    VdpBool enabled[]={1,1,1};
+    VdpBool enabled[]={1,0,0}; // Same features as VS_INTERLACEMETHOD_VDPAU_TEMPORAL
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
   else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL

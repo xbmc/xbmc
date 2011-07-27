@@ -27,6 +27,8 @@
 #include "utils/log.h"
 #include "utils/Variant.h"
 #include "utils/CharsetConverter.h"
+#include "ThumbnailCache.h"
+#include "filesystem/File.h"
 
 #include <sstream>
 
@@ -80,6 +82,8 @@ void CVideoInfoTag::Reset()
   m_fEpBookmark = 0;
   m_basePath = "";
   m_parentPathID = -1;
+  m_resumePoint.Reset();
+  m_resumePoint.type = CBookmark::RESUME;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -230,6 +234,11 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
                          g_advancedSettings.m_videoItemSeparator, m_strArtist);
   XMLUtils::SetAdditiveString(movie, "showlink",
                          g_advancedSettings.m_videoItemSeparator, m_strShowLink);
+ 
+  TiXmlElement resume("resume");
+  XMLUtils::SetFloat(&resume, "position", (float)m_resumePoint.timeInSeconds);
+  XMLUtils::SetFloat(&resume, "total", (float)m_resumePoint.totalTimeInSeconds);
+  movie->InsertEndChild(resume);
 
   return true;
 }
@@ -307,6 +316,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_fEpBookmark;
     ar << m_basePath;
     ar << m_parentPathID;
+    ar << m_resumePoint.timeInSeconds;
+    ar << m_resumePoint.totalTimeInSeconds;
   }
   else
   {
@@ -374,6 +385,8 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_fEpBookmark;
     ar >> m_basePath;
     ar >> m_parentPathID;
+    ar >> m_resumePoint.timeInSeconds;
+    ar >> m_resumePoint.totalTimeInSeconds;
   }
 }
 
@@ -396,6 +409,9 @@ void CVideoInfoTag::Serialize(CVariant& value)
     CVariant actor;
     actor["name"] = m_cast[i].strName;
     actor["role"] = m_cast[i].strRole;
+    CStdString thumb = CThumbnailCache::GetActorThumb(m_cast[i].strName);
+    if (XFILE::CFile::Exists(thumb))
+      actor["thumbnail"] = thumb;
     value["cast"].push_back(actor);
   }
   value["set"] = m_strSet;
@@ -427,6 +443,10 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["track"] = m_iTrack;
   value["showlink"] = m_strShowLink;
   m_streamDetails.Serialize(value["streamDetails"]);
+  CVariant resume = CVariant(CVariant::VariantTypeObject);
+  resume["position"] = (float)m_resumePoint.timeInSeconds;
+  resume["total"] = (float)m_resumePoint.totalTimeInSeconds;
+  value["resume"] = resume;
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
@@ -615,6 +635,14 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   {
     m_fanart.m_xml << *fanart;
     m_fanart.Unpack();
+  }
+
+  // resumePoint
+  const TiXmlNode *resume = movie->FirstChild("resume");
+  if (resume)
+  {
+    XMLUtils::GetDouble(resume, "position", m_resumePoint.timeInSeconds);
+    XMLUtils::GetDouble(resume, "total", m_resumePoint.totalTimeInSeconds);
   }
 }
 

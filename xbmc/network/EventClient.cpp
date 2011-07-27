@@ -19,13 +19,13 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 
 #ifdef HAS_EVENT_SERVER
 
 #include "EventClient.h"
 #include "EventPacket.h"
-#include "Application.h"
 #include "threads/SingleLock.h"
 #include "input/ButtonTranslator.h"
 #include <map>
@@ -33,6 +33,8 @@
 #include "filesystem/File.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "dialogs/GUIDialogKaiToast.h"
+#include "guilib/GraphicContext.h"
 
 using namespace EVENTCLIENT;
 using namespace EVENTPACKET;
@@ -333,14 +335,14 @@ bool CEventClient::OnPacketHELO(CEventPacket *packet)
   m_bGreeted = true;
   if (m_eLogoType == LT_NONE)
   {
-    g_application.m_guiDialogKaiToast.QueueNotification("Detected New Connection",
-                                                        m_deviceName.c_str());
+    CGUIDialogKaiToast::QueueNotification("Detected New Connection",
+                                          m_deviceName.c_str());
   }
   else
   {
-    g_application.m_guiDialogKaiToast.QueueNotification(iconfile.c_str(),
-                                                        "Detected New Connection",
-                                                        m_deviceName.c_str());
+    CGUIDialogKaiToast::QueueNotification(iconfile.c_str(),
+                                          "Detected New Connection",
+                                          m_deviceName.c_str());
   }
   return true;
 }
@@ -604,14 +606,14 @@ bool CEventClient::OnPacketNOTIFICATION(CEventPacket *packet)
 
   if (m_eLogoType == LT_NONE)
   {
-    g_application.m_guiDialogKaiToast.QueueNotification(title.c_str(),
-                                                        message.c_str());
+    CGUIDialogKaiToast::QueueNotification(title.c_str(),
+                                          message.c_str());
   }
   else
   {
-    g_application.m_guiDialogKaiToast.QueueNotification(iconfile.c_str(),
-                                                        title.c_str(),
-                                                        message.c_str());
+    CGUIDialogKaiToast::QueueNotification(iconfile.c_str(),
+                                          title.c_str(),
+                                          message.c_str());
   }
   return true;
 }
@@ -804,7 +806,7 @@ bool CEventClient::GetMousePos(float& x, float& y)
 
 bool CEventClient::CheckButtonRepeat(unsigned int &next)
 {
-  unsigned int now = CTimeUtils::GetTimeMS();
+  unsigned int now = XbmcThreads::SystemClockMillis();
 
   if ( next == 0 )
   {

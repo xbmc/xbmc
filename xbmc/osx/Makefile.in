@@ -15,7 +15,6 @@ SRCS = \
 	CocoaInterface.mm \
 	CoreAudio.cpp \
 	OSXGNUReplacements.c \
-	posix-realtime-stub.c
 	
 LIB=osx.a
 

@@ -30,7 +30,9 @@
 
 using namespace ANNOUNCEMENT;
 
-CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml")
+CGUIWindowHome::CGUIWindowHome(void) : CGUIWindow(WINDOW_HOME, "Home.xml"), 
+                                       m_recentlyAddedRunning(false),
+                                       m_cumulativeUpdateFlag(0)
 {
   m_updateRA = (Audio | Video | Totals);
   
@@ -94,10 +96,53 @@ void CGUIWindowHome::Announce(EAnnouncementFlag flag, const char *sender, const 
 
 void CGUIWindowHome::AddRecentlyAddedJobs(int flag)
 {
-  if (flag != 0)
-    CJobManager::GetInstance().AddJob(new CRecentlyAddedJob(flag), NULL);
+  bool getAJob = false;
+
+  // this block checks to see if another one is running
+  // and keeps track of the flag
+  {
+    CSingleLock lockMe(*this);
+    if (!m_recentlyAddedRunning)
+    {
+      getAJob = true;
+
+      flag |= m_cumulativeUpdateFlag; // add the flags from previous calls to AddRecentlyAddedJobs
+
+      m_cumulativeUpdateFlag = 0; // now taken care of in flag.
+                                  // reset this since we're going to execute a job
+
+      // we're about to add one so set the indicator
+      if (flag)
+        m_recentlyAddedRunning = true; // this will happen in the if clause below
+    }
+    else
+      // since we're going to skip a job, mark that one came in and ...
+      m_cumulativeUpdateFlag |= flag; // this will be used later
+  }
+
+  if (flag && getAJob)
+    CJobManager::GetInstance().AddJob(new CRecentlyAddedJob(flag), this);
+
   m_updateRA = 0;
 }
+
+void CGUIWindowHome::OnJobComplete(unsigned int jobID, bool success, CJob *job)
+{
+  int flag = 0;
+
+  {
+    CSingleLock lockMe(*this);
+
+    // the job is finished.
+    // did one come in in the meantime?
+    flag = m_cumulativeUpdateFlag;
+    m_recentlyAddedRunning = false; /// we're done.
+  }
+
+  if (flag)
+    AddRecentlyAddedJobs(0 /* the flag will be set inside AddRecentlyAddedJobs via m_cumulativeUpdateFlag */ );
+}
+
 
 bool CGUIWindowHome::OnMessage(CGUIMessage& message)
 {

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "GUILargeTextureManager.h"
 #include "pictures/Picture.h"
 #include "settings/GUISettings.h"
@@ -58,14 +59,14 @@ bool CImageLoader::DoWork()
       return false;
 
     m_texture = new CTexture();
-    DWORD start = CTimeUtils::GetTimeMS();
+    unsigned int start = XbmcThreads::SystemClockMillis();
     if (!m_texture->LoadFromFile(loadPath, min(g_graphicsContext.GetWidth(), 2048), min(g_graphicsContext.GetHeight(), 1080), g_guiSettings.GetBool("pictures.useexifrotation")))
     {
       delete m_texture;
       m_texture = NULL;
     }
-    else if (CTimeUtils::GetTimeMS() - start > 100)
-      CLog::Log(LOGDEBUG, "%s - took %d ms to load %s", __FUNCTION__, CTimeUtils::GetTimeMS() - start, loadPath.c_str());
+    else if (XbmcThreads::SystemClockMillis() - start > 100)
+      CLog::Log(LOGDEBUG, "%s - took %u ms to load %s", __FUNCTION__, XbmcThreads::SystemClockMillis() - start, loadPath.c_str());
   }
 
   return true;

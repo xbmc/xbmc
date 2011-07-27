@@ -30,21 +30,57 @@
 # include "Engines/PulseAE.h"
 #endif
 
+IAE* CAEFactory::AE = NULL;
+
+bool CAEFactory::LoadEngine()
+{
+  bool loaded = false;
+
+#ifdef HAS_PULSEAUDIO
+  if (!loaded)
+    loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
+#endif
+
+#ifdef __APPLE__
+  if (!loaded)
+    loaded = CAEFactory::LoadEngine(AE_ENGINE_COREAUDIO);
+#endif
+
+  if (!loaded)
+    loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
+
+  return loaded;
+}
+
 bool CAEFactory::LoadEngine(enum AEEngine engine)
 {
+  /* can only load the engine once, XBMC restart is required to change it */
+  if (AE)
+    return false;
+
   switch(engine)
   {
+#ifndef __APPLE__
+    case AE_ENGINE_NULL     :
+#endif
 #ifdef __APPLE__
-    case AE_ENGINE_COREAUDIO: return AE.SetEngine(new CCoreAudioAE());
+    case AE_ENGINE_COREAUDIO: AE = new CCoreAudioAE(); break;
 #else
-    case AE_ENGINE_NULL     : return AE.SetEngine(NULL);
-    case AE_ENGINE_SOFT     : return AE.SetEngine(new CSoftAE());
+    case AE_ENGINE_SOFT     : AE = new CSoftAE(); break;
 #endif
 #ifdef HAS_PULSEAUDIO
-    case AE_ENGINE_PULSE    : return AE.SetEngine(new CPulseAE());
+    case AE_ENGINE_PULSE    : AE = new CPulseAE(); break;
 #endif
   }
 
+  if (!AE)
+    return false;
+
+  if (AE->Initialize())
+    return true;
+
+  delete AE;
+  AE = NULL;
   return false;
 }
 

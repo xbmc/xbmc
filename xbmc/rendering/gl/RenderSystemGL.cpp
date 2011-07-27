@@ -54,7 +54,7 @@ void CRenderSystemGL::CheckOpenGLQuirks()
     // Nvidia 9400M is slow as a dog
     if (m_renderCaps & RENDER_CAPS_DXT_NPOT)
     {
-      char *arr[3]= { "7300","7600","9400M" };
+      const char *arr[3]= { "7300","7600","9400M" };
       for(int j = 0; j < 3; j++)
       {
         if((int(m_RenderRenderer.find(arr[j])) > -1))
@@ -261,7 +261,7 @@ bool CRenderSystemGL::IsExtSupported(const char* extension)
   return m_RenderExtensions.find(name) != std::string::npos;;
 }
 
-bool CRenderSystemGL::PresentRender()
+bool CRenderSystemGL::PresentRender(const CDirtyRegionList& dirty)
 {
   if (!m_bRenderCreated)
     return false;
@@ -288,7 +288,7 @@ bool CRenderSystemGL::PresentRender()
       Sleep((DWORD)diff);
   }
 
-  bool result = PresentRenderImpl();
+  bool result = PresentRenderImpl(dirty);
 
   if (m_iVSyncMode && m_iSwapRate != 0)
   {

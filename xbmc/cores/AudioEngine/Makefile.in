@@ -11,26 +11,25 @@ endif
 
 SRCS = \
 	AEFactory.cpp \
-  AESinkFactory.cpp \
+	AESinkFactory.cpp \
 	Sinks/AESinkALSA.cpp \
 	Sinks/AESinkOSS.cpp \
-	AEConvert.cpp \
-	AERemap.cpp \
-	AEUtil.cpp \
-	AEStreamInfo.cpp \
-	AEPackIEC61937.cpp \
-	AEWAVLoader.cpp \
+	\
+	Utils/AEChannelInfo.cpp \
+	Utils/AEConvert.cpp \
+	Utils/AERemap.cpp \
+	Utils/AEUtil.cpp \
+	Utils/AEStreamInfo.cpp \
+	Utils/AEPackIEC61937.cpp \
+	Utils/AEWAVLoader.cpp \
+	\
 	PostProc/AEPPAnimationFade.cpp \
 	\
-	AEWrapper.cpp \
-	AEStreamWrapper.cpp \
-	AESoundWrapper.cpp \
 	Engines/SoftAE.cpp \
 	Engines/SoftAEStream.cpp \
 	Engines/SoftAESound.cpp \
 	Engines/PulseAE.cpp \
 	Engines/PulseAEStream.cpp \
-	Engines/PulseAEEventThread.cpp \
 	Engines/PulseAESound.cpp \
 	\
 	Encoders/AEEncoderFFmpeg.cpp

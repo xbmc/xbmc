@@ -88,7 +88,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
     return;
 
   if (it->second)
-    it->second->Play();
+    it->second->Play();;
 }
 
 // \brief Play a sound associated with a window and its event
@@ -137,7 +137,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   if (itsb != m_pythonSounds.end())
   {
     IAESound* sound = itsb->second;
-    sound->Play();
+    sound->Play();;
     return;
   }
 
@@ -302,7 +302,7 @@ IAESound* CGUIAudioManager::LoadSound(const CStdString &filename)
     return it->second.sound;
   }
 
-  IAESound *sound = AE.GetSound(filename);
+  IAESound *sound = CAEFactory::AE->MakeSound(filename);
   if (!sound)
     return NULL;
 
@@ -320,7 +320,7 @@ void CGUIAudioManager::FreeSound(IAESound *sound)
   for(soundCache::iterator it = m_soundCache.begin(); it != m_soundCache.end(); ++it) {
     if (it->second.sound == sound) {
       if (--it->second.usage == 0) {     
-        AE.FreeSound(sound);
+        CAEFactory::AE->FreeSound(sound);
         m_soundCache.erase(it);
       }
       return;

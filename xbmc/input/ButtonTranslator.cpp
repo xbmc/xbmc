@@ -54,7 +54,9 @@ static const ActionMapping actions[] =
         {"pagedown"          , ACTION_PAGE_DOWN},
         {"select"            , ACTION_SELECT_ITEM},
         {"highlight"         , ACTION_HIGHLIGHT_ITEM},
-        {"parentdir"         , ACTION_PARENT_DIR},
+        {"parentdir"         , ACTION_NAV_BACK},       // backward compatibility
+        {"parentfolder"      , ACTION_PARENT_DIR},
+        {"back"              , ACTION_NAV_BACK},
         {"previousmenu"      , ACTION_PREVIOUS_MENU},
         {"info"              , ACTION_SHOW_INFO},
         {"pause"             , ACTION_PAUSE},
@@ -91,7 +93,7 @@ static const ActionMapping actions[] =
         {"resetcalibration"  , ACTION_CALIBRATE_RESET},
         {"analogmove"        , ACTION_ANALOG_MOVE},
         {"rotate"            , ACTION_ROTATE_PICTURE},
-        {"close"             , ACTION_CLOSE_DIALOG},
+        {"close"             , ACTION_NAV_BACK}, // backwards compatibility
         {"subtitledelayminus", ACTION_SUBTITLE_DELAY_MIN},
         {"subtitledelay"     , ACTION_SUBTITLE_DELAY},
         {"subtitledelayplus" , ACTION_SUBTITLE_DELAY_PLUS},
@@ -342,7 +344,9 @@ static const ActionMapping appcommands[] =
   { "play",                APPCOMMAND_MEDIA_PLAY },
   { "pause",               APPCOMMAND_MEDIA_PAUSE },
   { "fastforward",         APPCOMMAND_MEDIA_FAST_FORWARD },
-  { "rewind",              APPCOMMAND_MEDIA_REWIND }
+  { "rewind",              APPCOMMAND_MEDIA_REWIND },
+  { "channelup",           APPCOMMAND_MEDIA_CHANNEL_UP },
+  { "channeldown",         APPCOMMAND_MEDIA_CHANNEL_DOWN }
 };
 #endif
 
@@ -865,9 +869,8 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     {
       pDevice = pWindow->FirstChild(type);
       TiXmlElement *pDeviceElement = pDevice->ToElement();
-      CStdString deviceName;
       //check if exists, if not use "default"
-      deviceName = pDeviceElement->Attribute("name");
+      CStdString deviceName = pDeviceElement->Attribute("name");
       if (deviceName.empty())
         deviceName = "default";
 

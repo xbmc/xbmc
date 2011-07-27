@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "VideoDatabase.h"
 #include "video/windows/GUIWindowVideoBase.h"
 #include "utils/RegExp.h"
@@ -49,6 +50,7 @@
 #include "addons/AddonInstaller.h"
 #include "interfaces/AnnouncementManager.h"
 #include "dbwrappers/dataset.h"
+#include "ThumbnailCache.h"
 
 using namespace std;
 using namespace dbiplus;
@@ -91,7 +93,7 @@ bool CVideoDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create bookmark table");
     m_pDS->exec("CREATE TABLE bookmark ( idBookmark integer primary key, idFile integer, timeInSeconds double, totalTimeInSeconds double, thumbNailImage text, player text, playerState text, type integer)\n");
-    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile)");
+    m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
 
     CLog::Log(LOGINFO, "create settings table");
     m_pDS->exec("CREATE TABLE settings ( idFile integer, Deinterlace bool,"
@@ -491,7 +493,7 @@ bool CVideoDatabase::GetPathsForTvShow(int idShow, vector<int>& paths)
 
 int CVideoDatabase::RunQuery(const CStdString &sql)
 {
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   int rows = -1;
   if (m_pDS->query(sql.c_str()))
   {
@@ -499,7 +501,7 @@ int CVideoDatabase::RunQuery(const CStdString &sql)
     if (rows == 0)
       m_pDS->close();
   }
-  CLog::Log(LOGDEBUG, "%s took %d ms for %d items query: %s", __FUNCTION__, CTimeUtils::GetTimeMS() - time, rows, sql.c_str());
+  CLog::Log(LOGDEBUG, "%s took %d ms for %d items query: %s", __FUNCTION__, XbmcThreads::SystemClockMillis() - time, rows, sql.c_str());
   return rows;
 }
 
@@ -2804,25 +2806,53 @@ bool CVideoDatabase::GetStreamDetails(CVideoInfoTag& tag) const
 
   return retVal;
 }
+ 
+bool CVideoDatabase::GetResumePoint(CVideoInfoTag& tag) const
+{
+  bool match = false;
+
+  try
+  {
+    CStdString strSQL=PrepareSQL("select timeInSeconds, totalTimeInSeconds from bookmark where idFile=%i and type=%i order by timeInSeconds", tag.m_iFileId, CBookmark::RESUME);
+    m_pDS2->query( strSQL.c_str() );
+    if (!m_pDS2->eof())
+    {
+      tag.m_resumePoint.timeInSeconds = m_pDS2->fv(0).get_asDouble();
+      tag.m_resumePoint.totalTimeInSeconds = m_pDS2->fv(1).get_asDouble();
+      tag.m_resumePoint.type = CBookmark::RESUME;
+
+      match = true;
+    }
+    m_pDS2->close();
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, tag.m_strFileNameAndPath.c_str());
+  }
+
+  return match;
+}
 
 CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool needsCast /* = false */)
 {
   CVideoInfoTag details;
   details.Reset();
 
-  DWORD time = CTimeUtils::GetTimeMS();
+  DWORD time = XbmcThreads::SystemClockMillis();
   int idMovie = pDS->fv(0).get_asInt();
 
   GetDetailsFromDB(pDS, VIDEODB_ID_MIN, VIDEODB_ID_MAX, DbMovieOffsets, details);
 
   details.m_iDbId = idMovie;
   GetCommonDetails(pDS, details);
-  movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
+  movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   GetStreamDetails(details);
 
   if (needsCast)
   {
+    GetResumePoint(details);
+
     // create cast string
     CStdString strSQL = PrepareSQL("SELECT actors.strActor,actorlinkmovie.strRole,actors.strThumb FROM actorlinkmovie,actors WHERE actorlinkmovie.idMovie=%i AND actorlinkmovie.idActor=actors.idActor ORDER BY actorlinkmovie.iOrder",idMovie);
     m_pDS2->query(strSQL.c_str());
@@ -2835,7 +2865,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
       details.m_cast.push_back(info);
       m_pDS2->next();
     }
-    castTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
+    castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
 
     // create sets string
@@ -2875,7 +2905,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
   CVideoInfoTag details;
   details.Reset();
 
-  DWORD time = CTimeUtils::GetTimeMS();
+  DWORD time = XbmcThreads::SystemClockMillis();
   int idTvShow = pDS->fv(0).get_asInt();
 
   GetDetailsFromDB(pDS, VIDEODB_ID_TV_MIN, VIDEODB_ID_TV_MAX, DbTvShowOffsets, details, 1);
@@ -2885,7 +2915,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
   details.m_playCount = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInt();
   details.m_strShowTitle = details.m_strTitle;
 
-  movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
+  movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   if (needsCast)
   {
@@ -2901,7 +2931,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
       details.m_cast.push_back(info);
       m_pDS2->next();
     }
-    castTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
+    castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
   }
   return details;
@@ -2912,13 +2942,13 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   CVideoInfoTag details;
   details.Reset();
 
-  DWORD time = CTimeUtils::GetTimeMS();
+  DWORD time = XbmcThreads::SystemClockMillis();
   int idEpisode = pDS->fv(0).get_asInt();
 
   GetDetailsFromDB(pDS, VIDEODB_ID_EPISODE_MIN, VIDEODB_ID_EPISODE_MAX, DbEpisodeOffsets, details);
   details.m_iDbId = idEpisode;
   GetCommonDetails(pDS, details);
-  movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
+  movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   details.m_strMPAARating = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA).get_asString();
   details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
@@ -2929,6 +2959,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
 
   if (needsCast)
   {
+    GetResumePoint(details);
+
     set<int> actors;
     set<int>::iterator it;
 
@@ -2965,7 +2997,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
         }
       }
     }
-    castTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
+    castTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
     details.m_strPictureURL.Parse();
     strSQL=PrepareSQL("select * from bookmark join episode on episode.c%02d=bookmark.idBookmark where episode.idEpisode=%i and bookmark.type=%i", VIDEODB_ID_EPISODE_BOOKMARK,details.m_iDbId,CBookmark::EPISODE);
     m_pDS2->query(strSQL.c_str());
@@ -2981,15 +3013,16 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMusicVideo(auto_ptr<Dataset> &pDS)
   CVideoInfoTag details;
   details.Reset();
 
-  DWORD time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   int idMovie = pDS->fv(0).get_asInt();
 
   GetDetailsFromDB(pDS, VIDEODB_ID_MUSICVIDEO_MIN, VIDEODB_ID_MUSICVIDEO_MAX, DbMusicVideoOffsets, details);
   details.m_iDbId = idMovie;
   GetCommonDetails(pDS, details);
-  movieTime += CTimeUtils::GetTimeMS() - time; time = CTimeUtils::GetTimeMS();
+  movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();
 
   GetStreamDetails(details);
+  GetResumePoint(details);
 
   details.m_strPictureURL.Parse();
   return details;
@@ -3489,6 +3522,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
     if ( iVersion < 53 )
     {
       CreateViews();
+    }
+    if (iVersion < 54)
+    { // Change INDEX for bookmark table
+      m_pDS->dropIndex("bookmark", "ix_bookmark");
+      m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
     }
   }
   catch (...)
@@ -4031,7 +4069,7 @@ bool CVideoDatabase::GetSetsNav(const CStdString& strBaseDir, CFileItemList& ite
       m_pDS->close();
     }
 
-//    CLog::Log(LOGDEBUG, "%s Time: %d ms", CTimeUtils::GetTimeMS() - time);
+//    CLog::Log(LOGDEBUG, "%s Time: %d ms", XbmcThreads::SystemClockMillis() - time);
     return true;
   }
   catch (...)
@@ -4099,7 +4137,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           if (!items.Contains(pItem->m_strPath))
           {
             pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
-            CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),pItem->GetVideoInfoTag()->m_strArtist);
+            CStdString strThumb = CThumbnailCache::GetAlbumThumb(*pItem);
             if (CFile::Exists(strThumb))
               pItem->SetThumbnailImage(strThumb);
             items.Add(pItem);
@@ -4122,7 +4160,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
           if (!items.Contains(pItem->m_strPath))
           {
             pItem->GetVideoInfoTag()->m_strArtist = m_pDS->fv(2).get_asString();
-            CStdString strThumb = CUtil::GetCachedAlbumThumb(pItem->GetLabel(),m_pDS->fv(2).get_asString());
+            CStdString strThumb = CThumbnailCache::GetAlbumThumb(pItem->GetLabel(), m_pDS->fv(2).get_asString());
             if (CFile::Exists(strThumb))
               pItem->SetThumbnailImage(strThumb);
             items.Add(pItem);
@@ -4133,7 +4171,7 @@ bool CVideoDatabase::GetMusicVideoAlbumsNav(const CStdString& strBaseDir, CFileI
       m_pDS->close();
     }
 
-//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", CTimeUtils::GetTimeMS() - time);
+//    CLog::Log(LOGDEBUG, __FUNCTION__" Time: %d ms", XbmcThreads::SystemClockMillis() - time);
     return true;
   }
   catch (...)
@@ -4226,10 +4264,10 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
     }
 
     // run query
-    unsigned int time = CTimeUtils::GetTimeMS();
+    unsigned int time = XbmcThreads::SystemClockMillis();
     if (!m_pDS->query(strSQL.c_str())) return false;
     CLog::Log(LOGDEBUG, "%s -  query took %i ms",
-              __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+              __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
     {
@@ -4307,7 +4345,7 @@ bool CVideoDatabase::GetPeopleNav(const CStdString& strBaseDir, CFileItemList& i
       m_pDS->close();
     }
     CLog::Log(LOGDEBUG, "%s item retrieval took %i ms",
-              __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+              __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
 
     return true;
   }
@@ -4591,6 +4629,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetProperty("numepisodes", it->second.numEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", it->second.numWatched);
         pItem->SetProperty("unwatchedepisodes", it->second.numEpisodes - it->second.numWatched);
+        if (iSeason == 0) pItem->SetProperty("isspecial", "true");
         pItem->GetVideoInfoTag()->m_playCount = (it->second.numEpisodes == it->second.numWatched) ? 1 : 0;
         pItem->SetCachedSeasonThumb();
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
@@ -4627,6 +4666,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->SetProperty("numepisodes", totalEpisodes); // will be changed later to reflect watchmode setting
         pItem->SetProperty("watchedepisodes", watchedEpisodes);
         pItem->SetProperty("unwatchedepisodes", totalEpisodes - watchedEpisodes);
+        if (iSeason == 0) pItem->SetProperty("isspecial", "true");
         pItem->GetVideoInfoTag()->m_playCount = (totalEpisodes == watchedEpisodes) ? 1 : 0;
         pItem->SetCachedSeasonThumb();
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, (pItem->GetVideoInfoTag()->m_playCount > 0) && (pItem->GetVideoInfoTag()->m_iEpisode > 0));
@@ -5049,7 +5089,6 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
         pItem->m_strPath.Format("%s%ld/%ld/%ld",strBaseDir.c_str(), idShow, movie.m_iSeason,idEpisode);
       else
         pItem->m_strPath.Format("%s%ld",strBaseDir.c_str(), idEpisode);
-
       pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
       pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
       pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
@@ -5817,7 +5856,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
 {
   try
   {
-    DWORD time = CTimeUtils::GetTimeMS();
+    unsigned int time = XbmcThreads::SystemClockMillis();
     movieTime = 0;
     castTime = 0;
 
@@ -5831,7 +5870,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
     // run query
     if (!m_pDS->query(strSQL.c_str()))
       return false;
-    CLog::Log(LOGDEBUG, "%s time for actual SQL query = %d", __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+    CLog::Log(LOGDEBUG, "%s time for actual SQL query = %d", __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
 
     int iRowsFound = m_pDS->num_rows();
     if (iRowsFound == 0)
@@ -5858,7 +5897,7 @@ bool CVideoDatabase::GetMusicVideosByWhere(const CStdString &baseDir, const CStd
       m_pDS->next();
     }
 
-    CLog::Log(LOGDEBUG, "%s time to retrieve from dataset = %d", __FUNCTION__, CTimeUtils::GetTimeMS() - time); time = CTimeUtils::GetTimeMS();
+    CLog::Log(LOGDEBUG, "%s time to retrieve from dataset = %d", __FUNCTION__, XbmcThreads::SystemClockMillis() - time); time = XbmcThreads::SystemClockMillis();
 
     // cleanup
     m_pDS->close();
@@ -6378,7 +6417,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
     if (NULL == m_pDB.get()) return;
     if (NULL == m_pDS.get()) return;
 
-    unsigned int time = CTimeUtils::GetTimeMS();
+    unsigned int time = XbmcThreads::SystemClockMillis();
     CLog::Log(LOGNOTICE, "%s: Starting videodatabase cleanup ..", __FUNCTION__);
 
     BeginTransaction();
@@ -6490,7 +6529,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
 
     // Add any files that don't have a valid idPath entry to the filesToDelete list.
     sql = "select files.idFile from files where idPath not in (select idPath from path)";
-    m_pDS->exec(sql.c_str());
+    m_pDS->query(sql.c_str());
     while (!m_pDS->eof())
     {
       filesToDelete += m_pDS->fv("files.idFile").get_asString() + ",";
@@ -6754,7 +6793,7 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
 
     CUtil::DeleteVideoDatabaseDirectoryCache();
 
-    time = CTimeUtils::GetTimeMS() - time;
+    time = XbmcThreads::SystemClockMillis() - time;
     CLog::Log(LOGNOTICE, "%s: Cleaning videodatabase done. Operation took %s", __FUNCTION__, StringUtils::SecondsToTimeString(time / 1000).c_str());
 
     for (unsigned int i = 0; i < movieIDs.size(); i++)

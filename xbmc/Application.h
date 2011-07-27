@@ -27,6 +27,8 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "threads/Condition.h"
 
+#include <map>
+
 class CFileItem;
 class CFileItemList;
 namespace ADDON
@@ -35,11 +37,6 @@ namespace ADDON
   class IAddon;
   typedef boost::shared_ptr<IAddon> AddonPtr;
 }
-
-#include "dialogs/GUIDialogSeekBar.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogVolumeBar.h"
-#include "dialogs/GUIDialogMuteBug.h"
 
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -67,6 +64,7 @@ namespace ADDON
 #endif
 
 class CKaraokeLyricsManager;
+class CInertialScrollingHandler;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
@@ -165,8 +163,8 @@ public:
   void ProcessSlow();
   void ResetScreenSaver();
   int GetVolume() const;
-  void SetVolume(int iPercent);
-  void Mute(void);
+  void SetVolume(long iValue);
+  void ToggleMute(void);
   void ShowVolumeBar(const CAction *action = NULL);
   int GetPlaySpeed() const;
   int GetSubtitleDelay() const;
@@ -200,7 +198,6 @@ public:
 
   static bool OnEvent(XBMC_Event& newEvent);
 
-
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux& getNetwork();
@@ -212,11 +209,6 @@ public:
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
 #endif
-
-  CGUIDialogVolumeBar m_guiDialogVolumeBar;
-  CGUIDialogSeekBar m_guiDialogSeekBar;
-  CGUIDialogKaiToast m_guiDialogKaiToast;
-  CGUIDialogMuteBug m_guiDialogMuteBug;
 
 #ifdef HAS_DVD_DRIVE
   MEDIA_DETECT::CAutorun m_Autorun;
@@ -288,8 +280,9 @@ public:
 
   void Minimize();
   bool ToggleDPMS(bool manual);
+
+  float GetDimScreenSaverLevel() const;
 protected:
-  void RenderScreenSaver();
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
@@ -348,11 +341,12 @@ protected:
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
   
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   int        m_frameCount;
   CCriticalSection m_frameMutex;
   XbmcThreads::ConditionVariable  m_frameCond;
-#endif
+
+  void Mute();
+  void UnMute();
 
   void SetHardwareVolume(float hardwareVolume);
   void UpdateLCD();
@@ -377,6 +371,7 @@ protected:
   bool InitDirectoriesWin32();
   void CreateUserDirs();
 
+  CInertialScrollingHandler *m_pInertialScrollingHandler;
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux m_network;
@@ -392,6 +387,16 @@ protected:
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
+
+  class NotFrameCount
+  {
+    CApplication* ths;
+  public:
+    inline NotFrameCount(CApplication* o) : ths(o) {}
+    inline bool operator!() { return !(ths->m_frameCount); }
+  };
+
+  friend class NotFrameCount;
 };
 
 extern CApplication g_application;

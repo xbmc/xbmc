@@ -200,15 +200,15 @@ void CDVDAudioCodecLibMad::Reset()
   }
 }
 
-AEChLayout CDVDAudioCodecLibMad::GetChannelMap()
+CAEChannelInfo CDVDAudioCodecLibMad::GetChannelMap()
 {
-  if (m_iSourceChannels == 0 || m_iSourceChannels > 2) return NULL;
+  ASSERT(m_iSourceChannels > 0 || m_iSourceChannels < 3);
 
   static enum AEChannel map[2][3] = {
     {AE_CH_FC, AE_CH_NULL},
     {AE_CH_FL, AE_CH_FR, AE_CH_NULL}
   };
 
-  return map[m_iSourceChannels - 1];
+  return CAEChannelInfo(map[m_iSourceChannels -1]);
 }
 

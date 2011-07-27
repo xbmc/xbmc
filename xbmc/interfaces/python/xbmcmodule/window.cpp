@@ -29,6 +29,7 @@
 #include "guilib/GUIButtonControl.h"
 #include "guilib/GUICheckMarkControl.h"
 #include "guilib/GUIRadioButtonControl.h"
+#include "guilib/GUIEditControl.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/Settings.h"
 #include "Application.h"
@@ -263,6 +264,21 @@ namespace PYXBMC
       if (li.font) ((ControlRadioButton*)pControl)->strFont = li.font->GetFontName();
       ((ControlRadioButton*)pControl)->align = li.align;
       break;
+    case CGUIControl::GUICONTROL_EDIT:
+      pControl = (Control*)ControlEdit_Type.tp_alloc(&ControlEdit_Type, 0);
+      new(&((ControlEdit*)pControl)->strFont) string();
+      new(&((ControlEdit*)pControl)->strText) string();
+      new(&((ControlEdit*)pControl)->strTextureFocus) string();
+      new(&((ControlEdit*)pControl)->strTextureNoFocus) string();
+
+      li = ((CGUIEditControl *)pGUIControl)->GetLabelInfo();
+
+      // note: conversion from infocolors -> plain colors here
+      ((ControlEdit*)pControl)->disabledColor = li.disabledColor;
+      ((ControlEdit*)pControl)->textColor  = li.textColor;
+      if (li.font) ((ControlEdit*)pControl)->strFont = li.font->GetFontName();
+      ((ControlButton*)pControl)->align = li.align;
+      break;
     default:
       break;
     }
@@ -456,16 +472,16 @@ namespace PYXBMC
     "\n"
     "This method will recieve all actions that the main program will send\n"
     "to this window.\n"
-    "By default, only the PREVIOUS_MENU action is handled.\n"
+    "By default, only the PREVIOUS_MENU and NAV_BACK actions are handled.\n"
     "Overwrite this method to let your script handle all actions.\n"
-    "Don't forget to capture ACTION_PREVIOUS_MENU, else the user can't close this window.");
+    "Don't forget to capture ACTION_PREVIOUS_MENU or ACTION_NAV_BACK, else the user can't close this window.");
 
   PyObject* Window_OnAction(Window *self, PyObject *args)
   {
     Action* action;
     if (!PyArg_ParseTuple(args, (char*)"O", &action)) return NULL;
 
-    if(action->id == ACTION_PREVIOUS_MENU)
+    if(action->id == ACTION_PREVIOUS_MENU || action->id == ACTION_NAV_BACK)
     {
       Window_Close(self, args);
     }
@@ -613,6 +629,8 @@ namespace PYXBMC
     else if (ControlRadioButton_Check(pControl))
       ControlRadioButton_Create((ControlRadioButton*)pControl);
 
+    else if (ControlEdit_Check(pControl))
+      ControlEdit_Create((ControlEdit*)pControl);
     //unknown control type to add, should not happen
     else
     {

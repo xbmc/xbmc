@@ -83,7 +83,7 @@ public:
   /*
    * returns the channel mapping
    */
-  virtual AEChLayout GetChannelMap() = 0;
+  virtual CAEChannelInfo GetChannelMap() = 0;
 
   /*
    * returns the samplerate for the decoded audio stream

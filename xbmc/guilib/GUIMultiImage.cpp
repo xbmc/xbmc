@@ -146,12 +146,7 @@ void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
 void CGUIMultiImage::Render()
 {
   if (!m_files.empty())
-  {
-    // Set a viewport so that we don't render outside the defined area
-    g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
     m_image.Render();
-    g_graphicsContext.RestoreClipRegion();
-  }
 
   CGUIControl::Render();
 }
