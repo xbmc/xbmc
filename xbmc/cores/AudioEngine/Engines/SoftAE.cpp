@@ -104,14 +104,10 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   /* save off our raw/passthrough mode for checking */
   bool wasTranscode      = m_transcode;
   bool wasRawPassthrough = m_rawPassthrough;
-
-  /* lock the sounds before we take the sink lock */
-  CSingleLock soundLock(m_soundLock);
-  for(SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
-    (*itt)->Lock();
+  bool reInit            = false;
 
   /* lock the sink so the thread gets held up */
-  m_sinkLock.lock();
+  CExclusiveLock sinkLock(m_sinkLock);
   LoadSettings();
 
   /* remove any deleted streams */
@@ -190,7 +186,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   {
     /* let the thread know we have re-opened the sink */
     m_reOpened = true;
-
+    reInit = true;
+    
     /* we are going to open, so close the old sink if it was open */
     if (m_sink)
     {
@@ -245,7 +242,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
       /* invalidate the buffer */
       m_bufferSamples = 0;
     }
-
+    
+    reInit = (reInit || m_chLayout != m_sinkFormat.m_channelLayout);
     m_chLayout       = m_sinkFormat.m_channelLayout;
     m_convertFn      = NULL;
     m_bytesPerSample = CAEUtil::DataFormatToBits(m_sinkFormat.m_dataFormat) >> 3;  
@@ -254,6 +252,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   }
   else
   {
+    reInit = (reInit || m_chLayout != m_sinkFormat.m_channelLayout);
     m_chLayout = m_sinkFormat.m_channelLayout;
 
     /* if we are transcoding */
@@ -280,7 +279,8 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
       }
       
       /* remap directly to the format we need for encode */
-      m_chLayout       = m_encoderFormat.m_channelLayout;      
+      reInit = (reInit || m_chLayout != m_encoderFormat.m_channelLayout);
+      m_chLayout       = m_encoderFormat.m_channelLayout;
       m_convertFn      = CAEConvert::FrFloat(m_encoderFormat.m_dataFormat);
       neededBufferSize = m_encoderFormat.m_frames * sizeof(float) * m_chLayout.Count();
       
@@ -309,33 +309,24 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   
   /* if we in raw passthrough, we are finished */
   if (m_rawPassthrough)
-  {
-    /* unlock the sounds */
-    for(SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
-      (*itt)->UnLock();
-
-    m_sinkLock.unlock();
     return true;
-  }
 
-  /* re-init sounds and unlock */
-  for(SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+  if (reInit)
   {
-    (*itt)->Initialize();
-    (*itt)->UnLock();
+    /* re-init sounds, it is safe to do this here as the sinkLock prevents the thread from accessing the running sounds list */
+    CSingleLock soundLock(m_soundLock);
+    StopAllSounds();
+    for(SoundList::iterator itt = m_sounds.begin(); itt != m_sounds.end(); ++itt)
+      (*itt)->Initialize();
+
+    /* re-init streams */
+    streamLock.Enter();
+    for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
+      (*itt)->Initialize();  
+    streamLock.Leave();
   }
-  soundLock.Leave();
-
-  /* re-init streams */
-  streamLock.Enter();
-  for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
-    (*itt)->Initialize();  
-  streamLock.Leave();
-
-  bool valid = m_sink != NULL;
-  m_sinkLock.unlock();
-
-  return valid;
+  
+  return (m_sink != NULL);
 }
 
 void CSoftAE::ResetEncoder()
@@ -637,8 +628,14 @@ IAEStream *CSoftAE::FreeStream(IAEStream *stream)
     {
       m_streams.erase(itt);
       delete *itt;
-      lock.Leave();
-      OpenSink();
+
+      /* if it was the last stream and we have a mono output, then reopen */
+      if (m_streams.empty() && m_chLayout.Count() <= 1)
+      {
+         lock.Leave();
+         OpenSink();
+      }
+
       break;
     }
   
@@ -678,6 +675,17 @@ void CSoftAE::SetVolume(float volume)
   m_volume = volume;
 }
 
+void CSoftAE::StopAllSounds()
+{
+  CSingleLock lock(m_soundSampleLock);
+  while(!m_playing_sounds.empty())
+  {
+    SoundState *ss = &(*m_playing_sounds.begin());
+    m_playing_sounds.pop_front();
+    ss->owner->ReleaseSamples();
+  }
+}
+
 void CSoftAE::Run()
 {
   /* we release this when we exit the thread unblocking anyone waiting on "Stop" */
@@ -694,7 +702,7 @@ void CSoftAE::Run()
 
   m_sinkLock.lock_shared();
   while(m_running)
-  {
+  {    
     m_reOpened = false;
 
     /* output the buffer to the sink */
@@ -723,17 +731,6 @@ void CSoftAE::Run()
     /* if we are told to restart */
     if (restart)
     {
-      /* stop all playing sounds so that we can re-open */
-      CSingleLock lock(m_soundSampleLock);
-      while(!m_playing_sounds.empty())
-      {
-        SoundState *ss = &(*m_playing_sounds.begin());
-        m_playing_sounds.pop_front();
-        ss->owner->ReleaseSamples();
-      }
-      lock.Leave();
-
-      /* re-open the sink, and drop the frame */
       OpenSink();
     }
     else
@@ -993,8 +990,6 @@ unsigned int CSoftAE::RunStreamStage(unsigned int channelCount, void *out, bool 
     {
       itt = m_streams.erase(itt);
       delete stream;
-      if (m_streams.empty())
-	restart = true;
       continue;
     }
 

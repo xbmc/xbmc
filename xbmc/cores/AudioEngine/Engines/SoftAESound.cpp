@@ -47,10 +47,10 @@ typedef struct
 
 CSoftAESound::CSoftAESound(const CStdString &filename) :
   IAESound         (filename),
+  m_filename       (filename),
   m_volume         (1.0f    ),
   m_inUse          (0       )
 {
-  m_filename = filename;
 }
 
 CSoftAESound::~CSoftAESound()
@@ -75,22 +75,18 @@ bool CSoftAESound::Initialize()
 
 unsigned int CSoftAESound::GetSampleCount()
 {
-  m_sampleLock.lock_shared();
+  CSingleLock cs(m_critSection);
   int sampleCount = 0;
   if (m_wavLoader.IsValid())
     sampleCount = m_wavLoader.GetSampleCount();
-  m_sampleLock.unlock_shared();
   return sampleCount;
 }
 
 float* CSoftAESound::GetSamples()
 {
-  m_sampleLock.lock_shared();
+  CSingleLock cs(m_critSection);
   if (!m_wavLoader.IsValid())
-  {
-    m_sampleLock.unlock_shared();
     return NULL;
-  }
 
   ++m_inUse;
   return m_wavLoader.GetSamples();
@@ -98,17 +94,15 @@ float* CSoftAESound::GetSamples()
 
 void CSoftAESound::ReleaseSamples()
 {
+  CSingleLock cs(m_critSection);
+  ASSERT(m_inUse > 0);
   --m_inUse;
-  m_sampleLock.unlock_shared();
 }
 
 bool CSoftAESound::IsPlaying()
 {
-  m_sampleLock.lock_shared();
-  bool playing = m_inUse > 0;
-  m_sampleLock.unlock_shared();
-
-  return playing;
+  CSingleLock cs(m_critSection);
+  return (m_inUse > 0);
 }
 
 void CSoftAESound::Play()

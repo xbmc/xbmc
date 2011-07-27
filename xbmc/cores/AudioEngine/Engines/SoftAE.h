@@ -108,6 +108,7 @@ private:
   void Deinitialize();
 
   IAESink *GetSink(AEAudioFormat &desiredFormat, bool passthrough, CStdString &device);
+  void StopAllSounds();
 
   unsigned int m_delayFrames;
   void DelayFrames();
@@ -117,7 +118,7 @@ private:
   CStdString m_passthroughDevice;
 
   /* internal vars */
-  bool m_running, m_reOpened;
+  bool             m_running, m_reOpened;
   CCriticalSection m_runningLock;     /* released when the thread exits */
   CSharedSection   m_sinkLock;        /* sink & configuration lock */
   CCriticalSection m_streamLock;      /* m_streams lock */
