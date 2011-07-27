@@ -143,7 +143,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
     channels                  = newFormat.m_channelLayout.Count();
   }
   else
-    newFormat.m_channelLayout = m_stdChLayout;
+    newFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
 
   streamLock.Leave();
 
