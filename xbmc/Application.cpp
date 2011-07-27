@@ -378,6 +378,12 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_Keyboard.ProcessKeyUp();
       break;
     case XBMC_MOUSEBUTTONDOWN:
+      g_Mouse.HandleEvent(newEvent);
+      // Only mousewheel actions should be processed at this point. Other
+      // mouse button actions are processed when the button is released.
+      if (g_Mouse.GetAction() == ACTION_MOUSE_WHEEL_UP || g_Mouse.GetAction() == ACTION_MOUSE_WHEEL_DOWN)
+        g_application.ProcessMouse();          
+      break;
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
       g_Mouse.HandleEvent(newEvent);
