@@ -2772,7 +2772,7 @@ bool CApplication::ProcessMouse()
   // be mapped to volume up/down in mouse.xml. In this case we do not want
   // the mouse position saved in the action.
   if (!mouseaction.IsMouse())
-    return OnAction(CAction(mouseaction.GetID()));
+    return OnAction(mouseaction);
 
   // This is a mouse action so we need to record the mouse position
   return OnAction(CAction(mouseaction.GetID(), 
