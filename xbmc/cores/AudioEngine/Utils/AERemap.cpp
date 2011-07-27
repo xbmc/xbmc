@@ -205,6 +205,7 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
     }
   }
 
+#if 0
   /* dump the matrix */
   CLog::Log(LOGINFO, "==[Downmix Matrix]==");
   for(unsigned int o = 0; o < output.Count(); ++o)
@@ -223,6 +224,7 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
     CLog::Log(LOGINFO, "%s", s.c_str());
   }
   CLog::Log(LOGINFO, "====================\n");
+#endif
 
   return true;
 }
