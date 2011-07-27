@@ -47,7 +47,7 @@ public:
   bool IsPaused   () { return m_paused; }
   bool IsDestroyed() { return m_delete; }
   bool IsValid    () { return m_valid;  }
-  bool IsRaw      () const { return AE_IS_RAW(m_initDataFormat); }  
+  const bool IsRaw() const { return AE_IS_RAW(m_initDataFormat); }  
 
   virtual unsigned int      GetSpace        ();
   virtual unsigned int      AddData         (void *data, unsigned int size);
@@ -66,10 +66,11 @@ public:
   virtual float             GetReplayGain   ()             { return m_rgain ; }
   virtual void              SetVolume       (float volume) { m_volume = std::max( 0.0f, std::min(1.0f, volume)); }
   virtual void              SetReplayGain   (float factor) { m_rgain  = std::max(-1.0f, std::max(1.0f, factor)); }
-  virtual unsigned int      GetFrameSize    () const       { return m_format.m_frameSize; }
-  virtual unsigned int      GetChannelCount () const       { return m_initChannelLayout.Count(); }
-  virtual unsigned int      GetSampleRate   () const       { return m_initSampleRate; }
-  virtual enum AEDataFormat GetDataFormat   () const       { return m_initDataFormat; }
+
+  virtual const unsigned int      GetFrameSize   () const  { return m_format.m_frameSize; }
+  virtual const unsigned int      GetChannelCount() const  { return m_initChannelLayout.Count(); }
+  virtual const unsigned int      GetSampleRate  () const  { return m_initSampleRate; }
+  virtual const enum AEDataFormat GetDataFormat  () const  { return m_initDataFormat; }
   
   virtual double            GetResampleRatio();
   virtual void              SetResampleRatio(double ratio);

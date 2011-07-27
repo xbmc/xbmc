@@ -410,22 +410,22 @@ void CPulseAEStream::SetReplayGain(float factor)
 {
 }
 
-unsigned int CPulseAEStream::GetFrameSize() const
+const unsigned int CPulseAEStream::GetFrameSize() const
 {
   return m_frameSize;
 }
 
-unsigned int CPulseAEStream::GetChannelCount() const
+const unsigned int CPulseAEStream::GetChannelCount() const
 {
   return m_channelLayout.Count();
 }
 
-unsigned int CPulseAEStream::GetSampleRate() const
+const unsigned int CPulseAEStream::GetSampleRate() const
 {
   return m_sampleRate;
 }
 
-enum AEDataFormat CPulseAEStream::GetDataFormat() const
+const enum AEDataFormat CPulseAEStream::GetDataFormat() const
 {
   return m_format;
 }
