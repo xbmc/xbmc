@@ -26,11 +26,6 @@
 #include "../../guilib/Geometry.h"
 #include "../WinRenderer.h"
 
-/*
-class CBaseVideoFilter
-{
-};
-*/
 
 class CYUV2RGBMatrix
 {
