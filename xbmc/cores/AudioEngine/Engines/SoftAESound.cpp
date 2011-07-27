@@ -76,10 +76,9 @@ bool CSoftAESound::Initialize()
 unsigned int CSoftAESound::GetSampleCount()
 {
   CSingleLock cs(m_critSection);
-  int sampleCount = 0;
   if (m_wavLoader.IsValid())
-    sampleCount = m_wavLoader.GetSampleCount();
-  return sampleCount;
+    return m_wavLoader.GetSampleCount();
+  return 0;
 }
 
 float* CSoftAESound::GetSamples()
