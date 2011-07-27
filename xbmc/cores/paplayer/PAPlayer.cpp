@@ -279,10 +279,15 @@ bool PAPlayer::QueueNextFileEx(const CFileItem &file, bool fadeIn/* = true */)
   si->m_stream             = NULL;
   si->m_volume             = (fadeIn && m_crossFadeTime) ? 0.0f : 1.0f;
   
-  si->m_prepareNextAtSample = (si->m_decoder.TotalTime() - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * (si->m_sampleRate * si->m_channels) / 1000.0f;
-  si->m_prepareTriggered    = false;
-  si->m_playNextAtSample    = (si->m_decoder.TotalTime() - m_crossFadeTime) * (si->m_sampleRate * si->m_channels) / 1000.0f;
-  si->m_playNextTriggered   = false;
+  if (si->m_decoder.TotalTime() < TIME_TO_CACHE_NEXT_FILE + m_crossFadeTime)
+       si->m_prepareNextAtSample = 0;
+  else si->m_prepareNextAtSample = (si->m_decoder.TotalTime() - TIME_TO_CACHE_NEXT_FILE - m_crossFadeTime) * (si->m_sampleRate * si->m_channels) / 1000.0f;
+  si->m_prepareTriggered = false;
+  
+  if (si->m_decoder.TotalTime() < m_crossFadeTime)
+       si->m_playNextAtSample = (si->m_decoder.TotalTime() / 2) * (si->m_sampleRate * si->m_channels) / 1000.0f;
+  else si->m_playNextAtSample = (si->m_decoder.TotalTime() - m_crossFadeTime) * (si->m_sampleRate * si->m_channels) / 1000.0f;
+  si->m_playNextTriggered = false;
    
   /* add the stream to the list */
   CExclusiveLock lock(m_streamsLock);
@@ -384,6 +389,12 @@ inline void PAPlayer::ProcessStreams(float &delay, float &buffer)
         
     if ((si->m_fadeOutTriggered && si->m_stream && !si->m_stream->IsFading()) || !PrepareStream(si) || !ProcessStream(si, delay, buffer))
     {
+      if (!si->m_prepareTriggered)
+      {
+        si->m_prepareTriggered = true;
+        m_callback.OnQueueNextItem();
+      }
+
       /* if the stream is finshed */
       sharedLock.Leave();
       CExclusiveLock lock(m_streamsLock);
@@ -418,6 +429,9 @@ inline void PAPlayer::ProcessStreams(float &delay, float &buffer)
       return;
     }
     
+    if (!si->m_started)
+      continue;
+    
     /* is it time to prepare the next stream? */
     if (!si->m_prepareTriggered && si->m_samplesSent >= si->m_prepareNextAtSample)
     {
@@ -428,6 +442,12 @@ inline void PAPlayer::ProcessStreams(float &delay, float &buffer)
     /* it is time to start playing the next stream? */
     if (!si->m_playNextTriggered && si->m_samplesSent >= si->m_playNextAtSample)
     {
+      if (!si->m_prepareTriggered)
+      {
+        si->m_prepareTriggered = true;
+        m_callback.OnQueueNextItem();
+      }
+      
       if (!m_isFinished)
       {
         if (m_crossFadeTime)
