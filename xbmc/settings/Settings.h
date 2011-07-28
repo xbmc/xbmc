@@ -319,6 +319,13 @@ public:
    */
   unsigned int GetCurrentProfileIndex() const { return m_currentProfile; };
 
+  /*! \brief Retrieve the next id to use for a new profile
+   \return the unique <id> to be used when creating a new profile
+   */
+  int GetNextProfileId() const { return m_nextIdProfile; }; // used to get the value of m_nextIdProfile for use in new profile creation
+
+  int GetCurrentProfileId() const;
+
   std::vector<RESOLUTION_INFO> m_ResInfo;
 
   // utility functions for user data folders
@@ -399,6 +406,7 @@ private:
   bool m_usingLoginScreen;
   unsigned int m_lastUsedProfile;
   unsigned int m_currentProfile;
+  int m_nextIdProfile; // for tracking the next available id to give to a new profile to ensure id's are not re-used
 };
 
 extern class CSettings g_settings;
