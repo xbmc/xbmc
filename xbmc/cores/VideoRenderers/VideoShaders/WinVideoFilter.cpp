@@ -194,8 +194,6 @@ bool CWinShader::Execute()
 
 bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, BufferFormat fmt)
 {
-  ReleaseInternal();
-
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
 
   m_sourceWidth = sourceWidth;
@@ -395,8 +393,6 @@ bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
 
 bool CConvolutionShader::Create(ESCALINGMETHOD method)
 {
-  ReleaseInternal();
-
   CStdString effectString;
   switch(method)
   {
