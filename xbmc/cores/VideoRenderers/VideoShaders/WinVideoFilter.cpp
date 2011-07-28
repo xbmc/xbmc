@@ -94,11 +94,6 @@ CWinShader::~CWinShader()
     m_vb.Release();
 }
 
-void CWinShader::Release()
-{
-  delete this;
-}
-
 bool CWinShader::CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount)
 {
   if (!m_vb.Create(vertCount * vertSize, D3DUSAGE_WRITEONLY, FVF, g_Windowing.DefaultD3DPool()))

@@ -47,11 +47,6 @@ class CWinShader
 protected:
   CWinShader() {}
   virtual ~CWinShader();
-
-public:
-  void Release(); // for user code only, like the SAFE_RELEASE() construct
-
-protected:
   virtual bool CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount);
   virtual bool LockVertexBuffer(void **data);
   virtual bool UnlockVertexBuffer();

@@ -144,18 +144,16 @@ void CWinRenderer::SelectRenderMethod()
         // Try the pixel shaders support
         if (m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0))
         {
-          CTestShader* shader = new CTestShader;
-          if (shader->Create())
+          CTestShader shader;
+          if (shader.Create())
           {
             m_renderMethod = RENDER_PS;
-            shader->Release();
             break;
           }
           else
           {
             CLog::Log(LOGNOTICE, "D3D: unable to load test shader - D3D installation is most likely incomplete");
             CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
-            shader->Release();
           }
         }
         else
@@ -357,8 +355,8 @@ void CWinRenderer::UnInit()
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  SAFE_RELEASE(m_colorShader);
-  SAFE_RELEASE(m_scalerShader);
+  SAFE_DELETE(m_colorShader);
+  SAFE_DELETE(m_scalerShader);
   
   m_bConfigured = false;
   m_bFilterInitialized = false;
@@ -471,14 +469,14 @@ void CWinRenderer::SelectPSVideoFilter()
 
 void CWinRenderer::UpdatePSVideoFilter()
 {
-  SAFE_RELEASE(m_scalerShader);
+  SAFE_DELETE(m_scalerShader);
 
   if (m_bUseHQScaler)
   {
     m_scalerShader = new CConvolutionShader();
     if (!m_scalerShader->Create(m_scalingMethod))
     {
-      SAFE_RELEASE(m_scalerShader);
+      SAFE_DELETE(m_scalerShader);
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
       m_bUseHQScaler = false;
     }
@@ -489,11 +487,11 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
   {
-    SAFE_RELEASE(m_scalerShader);
+    SAFE_DELETE(m_scalerShader);
     m_bUseHQScaler = false;
   }
 
-  SAFE_RELEASE(m_colorShader);
+  SAFE_DELETE(m_colorShader);
 
   BufferFormat format = BufferFormatFromFlags(m_flags);
 
@@ -504,8 +502,8 @@ void CWinRenderer::UpdatePSVideoFilter()
     {
       // Try again after disabling the HQ scaler and freeing its resources
       m_IntermediateTarget.Release();
-      SAFE_RELEASE(m_scalerShader);
-      SAFE_RELEASE(m_colorShader);
+      SAFE_DELETE(m_scalerShader);
+      SAFE_DELETE(m_colorShader);
       m_bUseHQScaler = false;
     }
   }
@@ -514,7 +512,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   {
     m_colorShader = new CYUV2RGBShader();
     if (!m_colorShader->Create(m_sourceWidth, m_sourceHeight, format))
-      SAFE_RELEASE(m_colorShader);
+      SAFE_DELETE(m_colorShader);
     // we're in big trouble - should fallback on D3D accelerated or sw method
   }
 }
