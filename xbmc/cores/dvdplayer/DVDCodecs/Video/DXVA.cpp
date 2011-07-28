@@ -641,10 +641,7 @@ bool CDecoder::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture
   CSingleLock lock(m_section);
   picture->format = DVDVideoPicture::FMT_DXVA;
   picture->proc   = m_processor;
-  if(picture->iFlags & DVP_FLAG_DROPPED)
-    picture->proc_id = 0;
-  else
-    picture->proc_id = m_processor->Add((IDirect3DSurface9*)frame->data[3]);
+  picture->data[3]= frame->data[3];
   return true;
 }
 
@@ -884,6 +881,9 @@ CProcessor::CProcessor()
   m_process = NULL;
   m_time    = 0;
   g_Windowing.Register(this);
+
+  m_surfaces = NULL;
+  m_index = 0;
 }
 
 CProcessor::~CProcessor()
@@ -902,10 +902,122 @@ void CProcessor::Close()
   m_sample.clear();
   for (vector<IDirect3DSurface9*>::iterator it = m_heldsurfaces.begin(); it != m_heldsurfaces.end(); it++)
     SAFE_RELEASE(*it);
+
+  if (m_surfaces)
+  {
+    for (unsigned i = 0; i < m_surfaces_count; i++) SAFE_RELEASE(m_surfaces[i]);
+    free(m_surfaces);
+    m_surfaces = NULL;
+  }
+}
+
+bool CProcessor::Open(UINT width, UINT height, unsigned int flags)
+{
+  // Only NV12 software colorspace conversion is implemented for now
+  if (Open(width, height, flags, (D3DFORMAT)MAKEFOURCC('N','V','1','2')))
+    return true;
+
+  // Future...
+  //if (Open(width, height, flags, (D3DFORMAT)MAKEFOURCC('Y','U','Y','2')))
+  //  return true;
+
+  //if (Open(width, height, flags, (D3DFORMAT)MAKEFOURCC('U','Y','V','Y')))
+  //  return true;
+
+  return false;
+}
+
+bool CProcessor::Open(UINT width, UINT height, unsigned int flags, D3DFORMAT format)
+{
+  DXVA2_VideoDesc dsc;
+  memset(&dsc, 0, sizeof(DXVA2_VideoDesc));
+
+  dsc.Format = format;
+  dsc.SampleWidth = width;
+  dsc.SampleHeight = height;
+  dsc.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+  dsc.SampleFormat.VideoLighting = DXVA2_VideoLighting_dim;
+
+  switch (CONF_FLAGS_CHROMA_MASK(flags))
+  {
+    case CONF_FLAGS_CHROMA_LEFT:
+      dsc.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Horizontally_Cosited
+                                              | DXVA2_VideoChromaSubsampling_Vertically_AlignedChromaPlanes;
+      break;
+    case CONF_FLAGS_CHROMA_CENTER:
+      dsc.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Vertically_AlignedChromaPlanes;
+      break;
+    case CONF_FLAGS_CHROMA_TOPLEFT:
+      dsc.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Horizontally_Cosited
+                                              | DXVA2_VideoChromaSubsampling_Vertically_Cosited;
+      break;
+    default:
+      dsc.SampleFormat.VideoChromaSubsampling = DXVA2_VideoChromaSubsampling_Unknown;
+  }
+
+  if (flags & CONF_FLAGS_YUV_FULLRANGE)
+    dsc.SampleFormat.NominalRange = DXVA2_NominalRange_0_255;
+  else
+    dsc.SampleFormat.NominalRange = DXVA2_NominalRange_16_235;
+
+  switch (CONF_FLAGS_YUVCOEF_MASK(flags))
+  {
+    case CONF_FLAGS_YUVCOEF_240M:
+      dsc.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_SMPTE240M;
+      break;
+    case CONF_FLAGS_YUVCOEF_BT601:
+      dsc.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_BT601;
+      break;
+    case CONF_FLAGS_YUVCOEF_BT709:
+      dsc.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_BT709;
+      break;
+    default:
+      dsc.SampleFormat.VideoTransferMatrix = DXVA2_VideoTransferMatrix_Unknown;
+  }
+
+  switch (CONF_FLAGS_COLPRI_MASK(flags))
+  {
+    case CONF_FLAGS_COLPRI_BT709:
+      dsc.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT709;
+      break;
+    case CONF_FLAGS_COLPRI_BT470M:
+      dsc.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT470_2_SysM;
+      break;
+    case CONF_FLAGS_COLPRI_BT470BG:
+      dsc.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_BT470_2_SysBG;
+      break;
+    case CONF_FLAGS_COLPRI_170M:
+      dsc.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_SMPTE170M;
+      break;
+    case CONF_FLAGS_COLPRI_240M:
+      dsc.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_SMPTE240M;
+      break;
+    default:
+      dsc.SampleFormat.VideoPrimaries = DXVA2_VideoPrimaries_Unknown;
+  }
+
+  switch (CONF_FLAGS_TRC_MASK(flags))
+  {
+    case CONF_FLAGS_TRC_BT709:
+      dsc.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_709;
+      break;
+    case CONF_FLAGS_TRC_GAMMA22:
+      dsc.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_22;
+      break;
+    case CONF_FLAGS_TRC_GAMMA28:
+      dsc.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_28;
+      break;
+    default:
+      dsc.SampleFormat.VideoTransferFunction = DXVA2_VideoTransFunc_Unknown;
+  }
+
+  return Open(dsc);
 }
 
 bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
 {
+  Close();
+
   if(!LoadDXVA())
     return false;
 
@@ -972,6 +1084,25 @@ void CProcessor::HoldSurface(IDirect3DSurface9* surface)
   m_heldsurfaces.push_back(surface);
 }
 
+bool CProcessor::CreateSurfaces()
+{
+  CSingleLock lock(m_section);
+
+  m_surfaces_count = m_size;
+  m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_surfaces_count, sizeof(LPDIRECT3DSURFACE9));
+  CHECK(m_service->CreateSurface((m_desc.SampleWidth + 15) & ~15,
+                                 (m_desc.SampleHeight + 15) & ~15,
+                                  m_surfaces_count - 1,
+                                  m_desc.Format,
+                                  D3DPOOL_DEFAULT,
+                                  0,
+                                  DXVA2_VideoSoftwareRenderTarget,
+                                  m_surfaces,
+                                  NULL));
+
+  return true;
+}
+
 REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source)
 {
   CSingleLock lock(m_section);
@@ -1002,6 +1133,81 @@ REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source)
   }
 
   return m_time;
+}
+
+bool CProcessor::ProcessPicture(DVDVideoPicture* picture)
+{
+  CSingleLock lock(m_section);
+
+  IDirect3DSurface9* surface = NULL;
+
+  switch (picture->format)
+  {
+    case DVDVideoPicture::FMT_DXVA:
+    {
+      surface = (IDirect3DSurface9*)picture->data[3];
+      break;
+    }
+
+    case DVDVideoPicture::FMT_YUV420P:
+    {
+      surface = m_surfaces[m_index];
+      m_index = (m_index + 1) % m_size;
+  
+      D3DLOCKED_RECT rectangle;
+      CHECK(surface->LockRect(&rectangle, NULL, 0));
+
+      // Convert to NV12 - Luma
+      // TODO: Optimize this later using shaders/swscale/etc.
+      uint8_t *s = picture->data[0];
+      uint8_t* bits = (uint8_t*)(rectangle.pBits);
+      for (unsigned y = 0; y < picture->iHeight; y++)
+      {
+        memcpy(bits, s, picture->iWidth);
+        s += picture->iLineSize[0];
+        bits += rectangle.Pitch;
+      }
+
+      D3DSURFACE_DESC desc;
+      CHECK(surface->GetDesc(&desc));
+
+      // Convert to NV12 - Chroma
+      uint8_t *s_u, *s_v, *d_uv;
+      for (unsigned y = 0; y < picture->iHeight/2; y++)
+      {
+        s_u = picture->data[1] + (y * picture->iLineSize[1]);
+        s_v = picture->data[2] + (y * picture->iLineSize[2]);
+        d_uv = ((uint8_t*)(rectangle.pBits)) + (desc.Height + y) * rectangle.Pitch;
+        for (unsigned x = 0; x < picture->iWidth/2; x++)
+        {
+          *d_uv++ = *s_u++;
+          *d_uv++ = *s_v++;
+        }
+      }
+  
+      CHECK(surface->UnlockRect());
+
+      picture->proc = this;
+      picture->format = DVDVideoPicture::FMT_DXVA;
+      break;
+    }
+    
+    default:
+    {
+      CLog::Log(LOGWARNING, "DXVA - colorspace not supported by processor, skipping frame");
+      return false;
+    }
+  }
+
+  if (!surface)
+    return false;
+
+  if (picture->iFlags & DVP_FLAG_DROPPED)
+    picture->proc_id = 0;
+  else
+    picture->proc_id = Add(surface);
+
+  return true;
 }
 
 static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int min, int max, int def)

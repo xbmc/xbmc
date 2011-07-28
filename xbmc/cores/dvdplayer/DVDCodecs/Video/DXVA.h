@@ -106,10 +106,13 @@ public:
   CProcessor();
  ~CProcessor();
 
+  bool           Open(UINT width, UINT height, unsigned int flags);
   bool           Open(const DXVA2_VideoDesc& dsc);
+  bool           CreateSurfaces();
   void           Close();
   void           HoldSurface(IDirect3DSurface9* surface);
   REFERENCE_TIME Add(IDirect3DSurface9* source);
+  bool           ProcessPicture(DVDVideoPicture* picture);
   bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
   int            Size() { return m_size; }
 
@@ -117,6 +120,9 @@ public:
   virtual void OnDestroyDevice() { CSingleLock lock(m_section); Close(); }
   virtual void OnLostDevice()    { CSingleLock lock(m_section); Close(); }
   virtual void OnResetDevice()   { CSingleLock lock(m_section); Close(); }
+
+protected:
+  bool           Open(UINT width, UINT height, unsigned int flags, D3DFORMAT format);
 
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
@@ -132,13 +138,15 @@ public:
   REFERENCE_TIME   m_time;
   unsigned         m_size;
 
+  unsigned         m_index;
   typedef std::deque<DXVA2_VideoSample> SSamples;
   SSamples          m_sample;
 
   CCriticalSection  m_section;
 
-protected:
   std::vector<IDirect3DSurface9*> m_heldsurfaces;
+  LPDIRECT3DSURFACE9* m_surfaces;
+  unsigned            m_surfaces_count;
 };
 
 };

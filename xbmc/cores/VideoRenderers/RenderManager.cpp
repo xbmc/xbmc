@@ -694,6 +694,10 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   if (!m_pRenderer)
     return -1;
 
+#ifdef HAS_DX
+  m_pRenderer->AddProcessor(&pic);
+#endif
+
   YV12Image image;
   int index = m_pRenderer->GetImage(&image);
 
@@ -713,10 +717,6 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   {
     CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
   }
-#ifdef HAS_DX
-  else if(pic.format == DVDVideoPicture::FMT_DXVA)
-    m_pRenderer->AddProcessor(pic.proc, pic.proc_id);
-#endif
 #ifdef HAVE_LIBVDPAU
   else if(pic.format == DVDVideoPicture::FMT_VDPAU)
     m_pRenderer->AddProcessor(pic.vdpau);

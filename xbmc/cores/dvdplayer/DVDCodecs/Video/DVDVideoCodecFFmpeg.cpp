@@ -602,6 +602,10 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   if(m_pCodecContext->pix_fmt == PIX_FMT_YUVJ420P)
     pDvdVideoPicture->color_range = 1;
 
+  pDvdVideoPicture->chroma_position = m_pCodecContext->chroma_sample_location;
+  pDvdVideoPicture->color_primaries = m_pCodecContext->color_primaries;
+  pDvdVideoPicture->color_transfer = m_pCodecContext->color_trc;
+
   pDvdVideoPicture->qscale_table = m_pFrame->qscale_table;
   pDvdVideoPicture->qscale_stride = m_pFrame->qstride;
 
