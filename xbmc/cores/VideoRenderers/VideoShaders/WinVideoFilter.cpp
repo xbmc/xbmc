@@ -85,9 +85,17 @@ D3DXMATRIX* CYUV2RGBMatrix::Matrix()
 
 //===================================================================
 
+CWinShader::~CWinShader()
+{
+  if (m_effect.Get())
+    m_effect.Release();
+
+  if (m_vb.Get())
+    m_vb.Release();
+}
+
 void CWinShader::Release()
 {
-  ReleaseInternal(); // virtual, so calls the child function, which is supposed to call down the hierarchy
   delete this;
 }
 
@@ -120,17 +128,6 @@ bool CWinShader::UnlockVertexBuffer()
     return false;
   }
   return true;
-}
-
-void CWinShader::ReleaseInternal()
-{
-  if (m_effect.Get())
-    m_effect.Release();
-  
-  if (m_vb.Get())
-    m_vb.Release();
-
-  //derived classes: always call Base::ReleaseInternal() at the end
 }
 
 bool CWinShader::LoadEffect(CStdString filename, DefinesMap* defines)
@@ -280,6 +277,15 @@ void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
   Execute();
 }
 
+CYUV2RGBShader::~CYUV2RGBShader()
+{
+  for(unsigned i = 0; i < MAX_PLANES; i++)
+  {
+    if (m_YUVPlanes[i].Get())
+      m_YUVPlanes[i].Release();
+  }
+}
+
 void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
                                        CRect destRect,
                                        float contrast,
@@ -352,15 +358,6 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
   if (YUVbuf->GetActivePlanes() > 2)
     m_effect.SetTexture("g_VTexture", m_YUVPlanes[2]);
   m_effect.SetFloatArray("g_StepXY", m_texSteps, sizeof(m_texSteps)/sizeof(m_texSteps[0]));
-}
-
-void CYUV2RGBShader::ReleaseInternal()
-{
-  for(unsigned i = 0; i < MAX_PLANES; i++)
-  {
-    if (m_YUVPlanes[i].Get())
-      m_YUVPlanes[i].Release();
-  }
 }
 
 bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
@@ -444,6 +441,12 @@ void CConvolutionShader::Render(CD3DTexture &sourceTexture,
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
   Execute();
+}
+
+CConvolutionShader::~CConvolutionShader()
+{
+  if(m_HQKernelTexture.Get())
+    m_HQKernelTexture.Release();
 }
 
 bool CConvolutionShader::KernelTexFormat()
@@ -569,13 +572,6 @@ void CConvolutionShader::SetShaderParameters(CD3DTexture &sourceTexture, float* 
   m_effect.SetTexture( "g_Texture",  sourceTexture ) ;
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
   m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
-}
-
-void CConvolutionShader::ReleaseInternal()
-{
-  if(m_HQKernelTexture.Get())
-    m_HQKernelTexture.Release();
-  CWinShader::ReleaseInternal();
 }
 
 //==========================================================
