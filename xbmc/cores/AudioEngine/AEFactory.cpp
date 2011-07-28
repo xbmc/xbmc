@@ -36,6 +36,17 @@ bool CAEFactory::LoadEngine()
 {
   bool loaded = false;
 
+  CStdString engine;
+
+#if defined(__LINUX__) || defined(__APPLE__)
+  if (getenv("AE_ENGINE"))
+  {
+    engine = ((CStdString)getenv("AE_ENGINE")).ToUpper();
+         if (engine == "PULSE") loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
+    else if (engine == "SOFT" ) loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
+  }
+#endif
+
 #ifdef HAS_PULSEAUDIO
   if (!loaded)
     loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
