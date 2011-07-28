@@ -80,6 +80,7 @@ CWinRenderer::CWinRenderer()
 
   m_sw_scale_ctx = NULL;
   m_dllSwScale = NULL;
+  m_processor = NULL;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -139,6 +140,25 @@ void CWinRenderer::SelectRenderMethod()
 
     switch(requestedMethod)
     {
+      case RENDER_METHOD_DXVA:
+        if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)
+        {
+          if (m_processor == NULL)
+            m_processor = new DXVA::CProcessor();
+
+          if (m_processor->Open(m_sourceWidth, m_sourceHeight, m_flags)
+           && m_processor->CreateSurfaces())
+          {
+            m_renderMethod = RENDER_DXVA;
+            break;
+          }
+          else
+          {
+            m_processor->Close();
+            SAFE_RELEASE(m_processor);
+          }
+        }
+      // Drop through to pixel shader
       case RENDER_METHOD_AUTO:
       case RENDER_METHOD_D3D_PS:
         // Try the pixel shaders support
@@ -235,15 +255,25 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
-void CWinRenderer::AddProcessor(DXVA::CProcessor* processor, int64_t id)
+void CWinRenderer::AddProcessor(DVDVideoPicture* picture)
 {
-  int source = NextYV12Texture();
-  if(source < 0)
-    return;
-  DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
-  SAFE_RELEASE(buf->proc);
-  buf->proc = processor->Acquire();
-  buf->id   = id;
+  if (m_renderMethod == RENDER_DXVA)
+  {
+    int source = NextYV12Texture();
+    if(source < 0)
+      return;
+
+    DXVA::CProcessor* processor = m_processor;
+    if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+      processor = picture->proc;
+
+    processor->ProcessPicture(picture);
+
+    DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
+    SAFE_RELEASE(buf->proc);
+    buf->proc = processor->Acquire();
+    buf->id   = picture->proc_id;
+  }
 }
 
 int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
@@ -350,6 +380,12 @@ unsigned int CWinRenderer::PreInit()
 void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
+
+  if (m_processor)
+  {
+    m_processor->Close();
+    SAFE_RELEASE(m_processor);
+  }
 
   if (m_SWTarget.Get())
     m_SWTarget.Release();
@@ -589,7 +625,7 @@ void CWinRenderer::CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc)
 
 void CWinRenderer::Render(DWORD flags)
 {
-  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  if (m_renderMethod == RENDER_DXVA)
   {
     CWinRenderer::RenderProcessor(flags);
     return;
