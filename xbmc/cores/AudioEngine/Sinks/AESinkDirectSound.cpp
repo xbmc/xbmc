@@ -196,7 +196,7 @@ bool CAESinkDirectSound::Initialize(AEAudioFormat &format, CStdString &device)
 
   m_BufferOffset = 0;
   m_CacheLen = 0;
-  m_LastCacheCheck = CTimeUtils::GetTimeMS();
+  m_LastCacheCheck = XbmcThreads::SystemClockMillis();
   m_initialized = true;
 
   return true;
@@ -354,7 +354,7 @@ void CAESinkDirectSound::UpdateCacheStatus()
 {
   CSingleLock lock (m_runLock);
   // TODO: Check to see if we may have cycled around since last time
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   if (time == m_LastCacheCheck)
     return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
