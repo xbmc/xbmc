@@ -1035,11 +1035,7 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
         {
           CProfile profile(defaultDir);
           profile.Load(pProfile,GetNextProfileId());
-
-          //data integrity check - covers off migration from old profiles.xml and bad data coming in
-          m_nextIdProfile = max(m_nextIdProfile, profile.getId() + 1); 
-
-          m_vecProfiles.push_back(profile);
+          AddProfile(profile);
           pProfile = pProfile->NextSiblingElement("profile");
         }
       }
@@ -1053,8 +1049,7 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
   if (m_vecProfiles.empty())
   { // add the master user
     CProfile profile("special://masterprofile/", "Master user",0);
-    m_nextIdProfile++;
-    m_vecProfiles.push_back(profile);
+    AddProfile(profile);
   }
 
   // check the validity of the previous profile index
@@ -1905,7 +1900,9 @@ int CSettings::GetProfileIndex(const CStdString &name) const
 
 void CSettings::AddProfile(const CProfile &profile)
 {
-  m_nextIdProfile++;
+  //data integrity check - covers off migration from old profiles.xml, incrementing of the m_nextIdProfile,and bad data coming in
+  m_nextIdProfile = max(m_nextIdProfile, profile.getId() + 1); 
+
   m_vecProfiles.push_back(profile);
 }
 
