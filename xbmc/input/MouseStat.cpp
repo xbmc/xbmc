@@ -22,7 +22,6 @@
 #include "MouseStat.h"
 #include "guilib/Key.h"
 #include "windowing/WindowingFactory.h"
-#include "utils/log.h"
 #include "utils/TimeUtils.h"
 
 CMouseStat::CButtonState::CButtonState()
@@ -93,7 +92,7 @@ CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigne
       m_state = STATE_RELEASED;
       return Update(time, x, y, down);
     }
-    if (!down)
+    if (down)
     {
       m_state = STATE_IN_DOUBLE_IGNORE;
       return MB_DOUBLE_CLICK;
@@ -115,6 +114,7 @@ CMouseStat::CMouseStat()
   m_speedX = m_speedY = 0;
   m_maxX = m_maxY = 0;
   memset(&m_mouseState, 0, sizeof(m_mouseState));
+  m_LastMessage = 0;
 }
 
 CMouseStat::~CMouseStat()
@@ -130,6 +130,8 @@ void CMouseStat::Initialize()
 
 void CMouseStat::HandleEvent(XBMC_Event& newEvent)
 {
+  m_LastMessage = newEvent.type;
+
   int dx = newEvent.motion.x - m_mouseState.x;
   int dy = newEvent.motion.y - m_mouseState.y;
   
@@ -256,8 +258,9 @@ bool CMouseStat::MovedPastThreshold() const
 
 uint32_t CMouseStat::GetAction() const
 {
-  int actionID = ACTION_MOUSE_MOVE;
+  int actionID;
 
+  // Check the button state array
   if (bClick[MOUSE_LEFT_BUTTON])
     actionID = ACTION_MOUSE_LEFT_CLICK;
   else if (bClick[MOUSE_RIGHT_BUTTON])
@@ -268,10 +271,23 @@ uint32_t CMouseStat::GetAction() const
     actionID = ACTION_MOUSE_DOUBLE_CLICK;
   else if (bHold[MOUSE_LEFT_BUTTON])
     actionID = ACTION_MOUSE_DRAG;
+
+  // If nothing is set in the button state array check if it's a wheel action
   else if (m_mouseState.dz > 0)
     actionID = ACTION_MOUSE_WHEEL_UP;
   else if (m_mouseState.dz < 0)
     actionID = ACTION_MOUSE_WHEEL_DOWN;
+
+  // If it's not a button or wheel, check if the last mouse message was a move
+  else if (m_LastMessage == XBMC_MOUSEMOTION)
+    actionID = ACTION_MOUSE_MOVE;
+
+  // Not a button, wheel or move.
+  // Note that button down actions end up here because clicks are actioned
+  // the button up not the button down.
+  else
+    actionID = ACTION_NOOP;
+
 
   return actionID;
 }

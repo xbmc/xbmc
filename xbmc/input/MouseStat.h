@@ -158,6 +158,7 @@ private:
   bool m_mouseEnabled;
   CButtonState m_buttonState[5];
 
+  unsigned char m_LastMessage;
   int m_maxX;
   int m_maxY;
   float m_speedX;
