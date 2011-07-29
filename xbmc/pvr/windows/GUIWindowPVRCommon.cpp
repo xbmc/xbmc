@@ -447,7 +447,7 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
 
   /* check if the recording tag is valid */
   CPVRRecording *recTag = (CPVRRecording *) item->GetPVRRecordingInfoTag();
-  if (!recTag || recTag->m_iClientIndex < 0)
+  if (!recTag || recTag->m_strRecordingId.IsEmpty())
     return bReturn;
 
   /* show a confirmation dialog */

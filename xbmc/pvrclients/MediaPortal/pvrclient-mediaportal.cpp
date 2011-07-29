@@ -760,10 +760,13 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
     //if (m_bCharsetConv)
     //  XBMC_unknown_to_utf8(str_result);
 
+    CStdString strRecordingId;
     cRecording recording;
     if (recording.ParseLine(data))
     {
-      tag.iClientIndex   = recording.Index();
+      strRecordingId.Format("%i", recording.Index());
+
+      tag.strRecordingId = strRecordingId.c_str();
       tag.strTitle       = recording.Title();
       tag.strDirectory   = ""; //used in XBMC as directory structure below "Server X - hostname"
       tag.strPlotOutline = recording.Description();
@@ -808,7 +811,7 @@ PVR_ERROR cPVRClientMediaPortal::DeleteRecording(const PVR_RECORDING &recording)
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
 
-  snprintf(command, 256, "DeleteRecordedTV:%i\n", recording.iClientIndex);
+  snprintf(command, 256, "DeleteRecordedTV:%s\n", recording.strRecordingId);
 
   result = SendCommand(command);
 
@@ -832,18 +835,18 @@ PVR_ERROR cPVRClientMediaPortal::RenameRecording(const PVR_RECORDING &recording)
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
 
-  snprintf(command, 512, "UpdateRecording:%i|%s\n",
-    recording.iClientIndex,
+  snprintf(command, 512, "UpdateRecording:%s|%s\n",
+    recording.strRecordingId,
     uri::encode(uri::PATH_TRAITS, recording.strTitle).c_str());
 
   result = SendCommand(command);
 
   if(result.find("True") == string::npos)
   {
-    XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [failed]", recording.iClientIndex, recording.strTitle);
+    XBMC->Log(LOG_DEBUG, "RenameRecording(%s) to %s [failed]", recording.strRecordingId, recording.strTitle);
     return PVR_ERROR_NOT_DELETED;
   }
-  XBMC->Log(LOG_DEBUG, "RenameRecording(%i) to %s [done]", recording.iClientIndex, recording.strTitle);
+  XBMC->Log(LOG_DEBUG, "RenameRecording(%s) to %s [done]", recording.strRecordingId, recording.strTitle);
 
   // Although XBMC initiates the rename of this recording, we still have to trigger XBMC to update its
   // recordings list to see the renamed recording at the XBMC side
@@ -1102,7 +1105,7 @@ PVR_ERROR cPVRClientMediaPortal::SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 // These URLs are stored in the field PVR_RECORDINGINFO_OLD.stream_url
 bool cPVRClientMediaPortal::OpenRecordedStream(const PVR_RECORDING &recording)
 {
-  XBMC->Log(LOG_DEBUG, "->OpenRecordedStream(index=%i)", recording.iClientIndex);
+  XBMC->Log(LOG_DEBUG, "->OpenRecordedStream(index=%s)", recording.strRecordingId);
   if (!IsUp())
      return false;
 

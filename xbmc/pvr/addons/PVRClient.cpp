@@ -169,8 +169,8 @@ inline void PVRWriteClientRecordingInfo(const CPVRRecording &xbmcRecording, PVR_
   time_t recTime;
   xbmcRecording.RecordingTimeAsUTC().GetAsTime(recTime);
 
-  addonRecording.recordingTime = recTime - g_advancedSettings.m_iPVRTimeCorrection;
-  addonRecording.iClientIndex   = xbmcRecording.m_iClientIndex;
+  addonRecording.recordingTime  = recTime - g_advancedSettings.m_iPVRTimeCorrection;
+  addonRecording.strRecordingId = xbmcRecording.m_strRecordingId.c_str();
   addonRecording.strTitle       = xbmcRecording.m_strTitle.c_str();
   addonRecording.strPlotOutline = xbmcRecording.m_strPlotOutline.c_str();
   addonRecording.strPlot        = xbmcRecording.m_strPlot.c_str();

@@ -293,6 +293,7 @@ PVR_ERROR CHTSPData::GetRecordings(PVR_HANDLE handle)
     SRecording recording = it->second;
 
     CStdString strStreamURL = "http://";
+    CStdString strRecordingId;
     std::string strChannelName = "";
 
     /* lock */
@@ -315,10 +316,12 @@ PVR_ERROR CHTSPData::GetRecordings(PVR_HANDLE handle)
       strStreamURL.Format("%s%s:%i/dvrfile/%i", strStreamURL.c_str(), g_strHostname.c_str(), g_iPortHTTP, recording.id);
     }
 
+    strRecordingId.Format("%i", recording.id);
+
     PVR_RECORDING tag;
     memset(&tag, 0, sizeof(PVR_RECORDING));
 
-    tag.iClientIndex   = recording.id;
+    tag.strRecordingId = strRecordingId.c_str();
     tag.strTitle       = recording.title.c_str();
     tag.strStreamURL   = strStreamURL.c_str();
     tag.strDirectory   = "/";
@@ -344,7 +347,7 @@ PVR_ERROR CHTSPData::DeleteRecording(const PVR_RECORDING &recording)
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "deleteDvrEntry");
-  htsmsg_add_u32(msg, "id", recording.iClientIndex);
+  htsmsg_add_u32(msg, "id", atoi(recording.strRecordingId));
   if ((msg = ReadResult(msg)) == NULL)
   {
     XBMC->Log(LOG_DEBUG, "%s - Failed to get deleteDvrEntry", __FUNCTION__);
@@ -560,11 +563,11 @@ PVR_ERROR CHTSPData::UpdateTimer(const PVR_TIMER &timer)
 
 PVR_ERROR CHTSPData::RenameRecording(const PVR_RECORDING &recording, const char *strNewName)
 {
-  XBMC->Log(LOG_DEBUG, "%s - id=%d", __FUNCTION__, recording.iClientIndex);
+  XBMC->Log(LOG_DEBUG, "%s - id=%s", __FUNCTION__, recording.strRecordingId);
 
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method", "updateDvrEntry");
-  htsmsg_add_u32(msg, "id",     recording.iClientIndex);
+  htsmsg_add_u32(msg, "id",     atoi(recording.strRecordingId));
   htsmsg_add_str(msg, "title",  recording.strTitle);
   
   if ((msg = ReadResult(msg)) == NULL)
