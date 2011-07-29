@@ -42,8 +42,10 @@ bool CAEFactory::LoadEngine()
   if (getenv("AE_ENGINE"))
   {
     engine = ((CStdString)getenv("AE_ENGINE")).ToUpper();
-         if (engine == "PULSE") loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
-    else if (engine == "SOFT" ) loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
+    #ifdef HAS_PULSEAUDIO
+    if (!loaded && engine == "PULSE") loaded = CAEFactory::LoadEngine(AE_ENGINE_PULSE);
+    #endif
+    if (!loaded && engine == "SOFT" ) loaded = CAEFactory::LoadEngine(AE_ENGINE_SOFT);
   }
 #endif
 
