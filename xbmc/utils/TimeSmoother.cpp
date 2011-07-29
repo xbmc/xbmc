@@ -138,27 +138,36 @@ void CTimeSmoother::BinData(const boost::circular_buffer<double> &data, vector<d
 
 void CTimeSmoother::GetConvergent(double value, unsigned int &num, unsigned int &denom, const unsigned int maxnumden)
 {
-  assert(value > 0);
+  assert(value >= 1);
 
   unsigned int old_n = 1, old_d = 0;
   num = 0; denom = 1;
 
-  // this while loop is guaranteed to terminate as new_n, new_d are increasing non-negative integers
-  // as long as f >= 0.  This in turn is guaranteed as if f == 0, then value < 1 so that 1/(value - f) > 1,
-  // and hence the next loop f >= 1.
-  while (true)
+  // this while loop would typically be guaranteed to terminate as new_n, new_d are increasing non-negative
+  // integers as long as f >= 1.  This in turn is guaranteed as f may never be zero as long as value > 1 and
+  // value - f < 1.  Given that f = floor(value) this *should* always be true.
+  // However, as f is unsigned int and thus range restricted, we can not guarantee this, and hence
+  // break if value - f >= 1.
+  
+  // In addition, just to be on the safe side we don't allow the loop to run forever ;)
+  unsigned int maxLoops = 3 * maxnumden;
+  while (maxLoops--)
   {
     unsigned int f = (unsigned int)floor(value);
+    if (value - f >= 1)
+      break; // value out of range of unsigned int
     unsigned int new_n = f * num   + old_n;
     unsigned int new_d = f * denom + old_d;
     if (min(new_n, new_d) > maxnumden)
-      return;
+      break;
     old_n = num; old_d = denom;
     num = new_n; denom = new_d;
     if ((double)f == value)
-      return;
+      break;
     value = 1/(value - f);
   }
+  // ensure num, denom are positive
+  assert(num > 0 && denom > 0);
 }
 
 void CTimeSmoother::GetGCDMultipliers(const vector<double> &data, vector<unsigned int> &multipliers, const unsigned int maxminmult)

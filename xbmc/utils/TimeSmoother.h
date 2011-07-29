@@ -129,7 +129,7 @@ protected:
   /*! \brief Given a real value, find a rational convergent
    Uses a continued fraction expansion of value to determine the numerator and denominator of a rational convergent
    where min(num, denom) does not exceed maxnumdem
-   \param value real data vlaue
+   \param value real data value. Must be no less than 1.
    \param num [out] the numerator
    \param denom [out] the denominator
    \param maxnumden the maximal value of min(num, denom)
