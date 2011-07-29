@@ -458,7 +458,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
         if (CFile::Exists(match->GetCachedFanart()))
           pItem->SetProperty("fanart_image", match->GetCachedFanart());
         pItem->SetLabel (label);
-        pItem->SetLabel2(label);
+        pItem->SetLabel2(label2);
       }
     }
     else
