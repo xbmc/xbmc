@@ -477,3 +477,21 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */, bool bLastUpdate /* =
 
   return bReturn;
 }
+
+float CEpgInfoTag::ProgressPercentage(void) const
+{
+  int fReturn(0);
+  int iDuration;
+  time_t currentTime, startTime, endTime;
+  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
+  m_startTime.GetAsTime(startTime);
+  m_endTime.GetAsTime(endTime);
+  iDuration = endTime - startTime > 0 ? endTime - startTime : 3600;
+
+  if (currentTime >= startTime && currentTime <= endTime)
+    fReturn = ((float) currentTime - startTime) / iDuration * 100;
+  else if (currentTime > endTime)
+    fReturn = 100;
+
+  return fReturn;
+}
