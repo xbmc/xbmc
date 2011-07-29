@@ -21,27 +21,21 @@
 
 #pragma once
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#else
-  #ifdef WIN32
-    #define USE_WIN_THREADING 1
-  #endif
-#endif
-
-#ifdef USE_PTHREADS_THREADING
+#ifdef TARGET_POSIX
   #define XBMC_THREADING_IMPL_SET 1
+  #define USE_PTHREADS_THREADING
 #endif
 
-#ifdef USE_WIN_THREADING
+#ifdef TARGET_WINDOWS
   #ifdef XBMC_THREADING_IMPL_SET
-    #error "Cannot define both USE_WIN_THREADING and another USE_*_THREADING"
+    #error "Cannot define both TARGET_WINDOWS and TARGET_POSIX"
   #endif
   #define XBMC_THREADING_IMPL_SET 1
+  #define USE_WIN_THREADING
 #endif
 
 #ifndef XBMC_THREADING_IMPL_SET
-  #error "No threading implementation selected."
+  #error "No threading implementation selected. You should be compiling with either TARGET_POSIX or TARGET_WINDOWS (or you will need to add another implementation to the threading model)."
 #endif
 
 #undef XBMC_THREADING_IMPL_SET

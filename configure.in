@@ -600,7 +600,6 @@ AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
 AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
 AC_LANG_PUSH([C++])
-AC_DEFINE([USE_PTHREADS_THREADING], [1], [Whether to use pthreads as the threading implementation.])
 AC_LANG_POP([C++])
 
 PKG_CHECK_MODULES([FONTCONFIG], [fontconfig],
