@@ -441,7 +441,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       CStdString label2(pItem->GetLabel2());
       pItem->UpdateInfo(*match);
 
-      if(g_settings.m_videoStacking && m_stackingAvailable)
+      if (clean)
       {
         if (match->m_bIsFolder)
           pItem->m_strPath = match->GetVideoInfoTag()->m_strPath;
