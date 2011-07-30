@@ -55,6 +55,8 @@ CHelper_libXBMC_pvr   *PVR            = NULL;
 
 extern "C" {
 
+void ADDON_ReadSettings(void);
+
 /***********************************************************
  * Standard AddOn related public library functions
  ***********************************************************/
@@ -92,13 +94,85 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 #endif
 
   m_CurStatus    = ADDON_STATUS_UNKNOWN;
-  g_client       = new cPVRClientMediaPortal();
   g_iClientID    = pvrprops->iClientId;
   g_szUserPath   = pvrprops->strUserPath;
   g_szClientPath = pvrprops->strClientPath;
 
+  ADDON_ReadSettings();
+
+  /* Create connection to MediaPortal XBMC TV client */
+  g_client       = new cPVRClientMediaPortal();
+  if (!g_client->Connect())
+  {
+    SAFE_DELETE(g_client);
+    SAFE_DELETE(PVR);
+    SAFE_DELETE(XBMC);
+    m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
+  }
+  else
+  {
+    m_CurStatus = ADDON_STATUS_OK;
+  }
+
+  g_bCreated = true;
+
+  return m_CurStatus;
+}
+
+//-- Destroy ------------------------------------------------------------------
+// Used during destruction of the client, all steps to do clean and safe Create
+// again must be done.
+//-----------------------------------------------------------------------------
+void ADDON_Destroy()
+{
+  if ((g_bCreated) && (g_client))
+  {
+    g_client->Disconnect();
+    SAFE_DELETE(g_client);
+
+    g_bCreated = false;
+  }
+
+  if (PVR)
+  {
+    SAFE_DELETE(PVR);
+  }
+  if (XBMC)
+  {
+    SAFE_DELETE(XBMC);
+  }
+
+  m_CurStatus = ADDON_STATUS_UNKNOWN;
+}
+
+//-- GetStatus ----------------------------------------------------------------
+// Report the current Add-On Status to XBMC
+//-----------------------------------------------------------------------------
+ADDON_STATUS ADDON_GetStatus()
+{
+  return m_CurStatus;
+}
+
+//-- HasSettings --------------------------------------------------------------
+// Report "true", yes this AddOn have settings
+//-----------------------------------------------------------------------------
+bool ADDON_HasSettings()
+{
+  return true;
+}
+
+unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
+{
+  return 0;
+}
+
+void ADDON_ReadSettings(void)
+{
   /* Read setting "host" from settings.xml */
   char buffer[1024];
+
+  if (!XBMC)
+    return;
 
   if (XBMC->GetSetting("host", &buffer))
   {
@@ -212,69 +286,6 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 #else
   g_bDirectTSFileRead = false;
 #endif
-  /* Create connection to MediaPortal XBMC TV client */
-  if (!g_client->Connect())
-  {
-    SAFE_DELETE(g_client);
-    SAFE_DELETE(PVR);
-    SAFE_DELETE(XBMC);
-    m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
-  }
-  else
-  {
-    m_CurStatus = ADDON_STATUS_OK;
-  }
-
-  g_bCreated = true;
-
-  return m_CurStatus;
-}
-
-//-- Destroy ------------------------------------------------------------------
-// Used during destruction of the client, all steps to do clean and safe Create
-// again must be done.
-//-----------------------------------------------------------------------------
-void ADDON_Destroy()
-{
-  if ((g_bCreated) && (g_client))
-  {
-    g_client->Disconnect();
-    SAFE_DELETE(g_client);
-
-    g_bCreated = false;
-  }
-
-  if (PVR)
-  {
-    SAFE_DELETE(PVR);
-  }
-  if (XBMC)
-  {
-    SAFE_DELETE(XBMC);
-  }
-
-  m_CurStatus = ADDON_STATUS_UNKNOWN;
-}
-
-//-- GetStatus ----------------------------------------------------------------
-// Report the current Add-On Status to XBMC
-//-----------------------------------------------------------------------------
-ADDON_STATUS ADDON_GetStatus()
-{
-  return m_CurStatus;
-}
-
-//-- HasSettings --------------------------------------------------------------
-// Report "true", yes this AddOn have settings
-//-----------------------------------------------------------------------------
-bool ADDON_HasSettings()
-{
-  return true;
-}
-
-unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
-{
-  return 0;
 }
 
 //-- SetSetting ---------------------------------------------------------------
