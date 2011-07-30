@@ -81,7 +81,7 @@ namespace EPG
     /*!
      * @brief Load and update the EPG data.
      * @param bShowProgress Show a progress bar if true.
-     * @return True if the update was successful, false otherwise.
+     * @return True if the update has not been interrupted, false otherwise.
      */
     virtual bool UpdateEPG(bool bShowProgress = false);
 
