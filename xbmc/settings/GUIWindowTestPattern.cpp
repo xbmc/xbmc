@@ -42,16 +42,15 @@ bool CGUIWindowTestPattern::OnAction(const CAction &action)
   {
   case ACTION_MOVE_UP:
   case ACTION_MOVE_LEFT:
-     m_pattern = m_pattern > 0 ? m_pattern - 1 : TEST_PATTERNS_COUNT - 1;
+    m_pattern = m_pattern > 0 ? m_pattern - 1 : TEST_PATTERNS_COUNT - 1;
     SetInvalid();
-     break;
+    break;
 
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_RIGHT:
-     m_pattern = (m_pattern + 1) % TEST_PATTERNS_COUNT;
+    m_pattern = (m_pattern + 1) % TEST_PATTERNS_COUNT;
     SetInvalid();
-     break;
-
+    break;
   }
   return CGUIWindow::OnAction(action); // base class to handle basic movement etc.
 }
