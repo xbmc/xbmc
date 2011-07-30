@@ -450,14 +450,6 @@ public:
    */
   CStdString GetContentForPath(const CStdString& strPath);
 
-  /*! \brief Get a video of the given content type from the given path, if it exists
-   \param content the content type to fetch.
-   \param path the path to fetch a video from.
-   \param item the returned item.
-   \return true if an item is found, false otherwise.
-   */
-  bool GetItemForPath(const CStdString &content, const CStdString &path, CFileItem &item);
-
   /*! \brief Get videos of the given content type from the given path
    \param content the content type to fetch.
    \param path the path to fetch videos from.
