@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "HTSPDirectory.h"
 #include "URL.h"
 #include "FileItem.h"
@@ -51,21 +52,21 @@ struct SSession
   std::string            password;
   CHTSPDirectorySession* session;
   int                    refs;
-  DWORD                  last;
+  unsigned int           last;
 };
 
 struct STimedOut
 {
   STimedOut(DWORD idle) : m_idle(idle)
   {
-    m_time = CTimeUtils::GetTimeMS();
+    m_time = XbmcThreads::SystemClockMillis();
   }
   bool operator()(SSession& data)
   {
-    return data.refs == 0 && data.last + m_idle < m_time;
+    return data.refs == 0 && (m_time - data.last) > m_idle;
   }
-  DWORD m_idle;
-  DWORD m_time;
+  unsigned int m_idle;
+  unsigned int m_time;
 };
 
 typedef std::vector<SSession> SSessions;
@@ -131,7 +132,7 @@ void CHTSPDirectorySession::Release(CHTSPDirectorySession* &session)
     if(it->session == session)
     {
       it->refs--;
-      it->last = CTimeUtils::GetTimeMS();
+      it->last = XbmcThreads::SystemClockMillis();
       return;
     }
   }

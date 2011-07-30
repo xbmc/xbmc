@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "MultiPathDirectory.h"
 #include "Directory.h"
 #include "Util.h"
@@ -55,14 +56,14 @@ bool CMultiPathDirectory::GetDirectory(const CStdString& strPath, CFileItemList 
   if (!GetPaths(strPath, vecPaths))
     return false;
 
-  unsigned int progressTime = CTimeUtils::GetTimeMS() + 3000L;   // 3 seconds before showing progress bar
+  XbmcThreads::EndTime progressTime(3000); // 3 seconds before showing progress bar
   CGUIDialogProgress* dlgProgress = NULL;
 
   unsigned int iFailures = 0;
   for (unsigned int i = 0; i < vecPaths.size(); ++i)
   {
     // show the progress dialog if we have passed our time limit
-    if (CTimeUtils::GetTimeMS() > progressTime && !dlgProgress)
+    if (progressTime.IsTimePast() && !dlgProgress)
     {
       dlgProgress = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
       if (dlgProgress)
@@ -246,7 +247,7 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const vector<CStdString> &vec
 void CMultiPathDirectory::MergeItems(CFileItemList &items)
 {
   CLog::Log(LOGDEBUG, "CMultiPathDirectory::MergeItems, items = %i", (int)items.Size());
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   if (items.Size() == 0)
     return;
   // sort items by label
@@ -303,7 +304,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 
   CLog::Log(LOGDEBUG,
             "CMultiPathDirectory::MergeItems, items = %i,  took %d ms",
-            items.Size(), CTimeUtils::GetTimeMS() - time);
+            items.Size(), XbmcThreads::SystemClockMillis() - time);
 }
 
 bool CMultiPathDirectory::SupportsFileOperations(const CStdString &strPath)

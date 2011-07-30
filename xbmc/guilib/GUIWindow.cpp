@@ -290,8 +290,10 @@ void CGUIWindow::CenterWindow()
 void CGUIWindow::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
-  g_graphicsContext.ResetWindowTransform();
+  unsigned int size = g_graphicsContext.AddGUITransform();
   CGUIControlGroup::DoProcess(currentTime, dirtyregions);
+  if (size != g_graphicsContext.RemoveTransform())
+    CLog::Log(LOGERROR, "Unbalanced UI transforms (was %d)", size);
 }
 
 void CGUIWindow::DoRender()
@@ -304,8 +306,10 @@ void CGUIWindow::DoRender()
 
   g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
 
-  g_graphicsContext.ResetWindowTransform();
+  unsigned int size = g_graphicsContext.AddGUITransform();
   CGUIControlGroup::DoRender();
+  if (size != g_graphicsContext.RemoveTransform())
+    CLog::Log(LOGERROR, "Unbalanced UI transforms (was %d)", size);
 
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }
@@ -852,11 +856,13 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 
 void CGUIWindow::SetProperty(const CStdString &key, const CStdString &value)
 {
+  CSingleLock lock(*this);
   m_mapProperties[key] = value;
 }
 
 void CGUIWindow::SetProperty(const CStdString &key, const char *value)
 {
+  CSingleLock lock(*this);
   m_mapProperties[key] = value;
 }
 
@@ -881,6 +887,7 @@ void CGUIWindow::SetProperty(const CStdString &key, double value)
 
 CStdString CGUIWindow::GetProperty(const CStdString &key) const
 {
+  CSingleLock lock(*this);
   std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(key);
   if (iter == m_mapProperties.end())
     return "";
@@ -905,6 +912,7 @@ double CGUIWindow::GetPropertyDouble(const CStdString &key) const
 
 void CGUIWindow::ClearProperties()
 {
+  CSingleLock lock(*this);
   m_mapProperties.clear();
 }
 

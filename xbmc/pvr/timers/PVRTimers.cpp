@@ -121,6 +121,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
 {
   bool bChanged(false);
   bool bAddedOrDeleted(false);
+  vector<CStdString> timerNotifications;
 
   CSingleLock lock(m_critSection);
 
@@ -140,9 +141,13 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
         bChanged = true;
 
         if (bStateChanged && g_PVRManager.IsStarted())
-          existingTimer->QueueNotification();
+        {
+          CStdString strMessage;
+          existingTimer->GetNotificationText(strMessage);
+          timerNotifications.push_back(strMessage);
+        }
 
-        CLog::Log(LOGINFO,"PVRTimers - %s - updated timer %d on client %d",
+        CLog::Log(LOGDEBUG,"PVRTimers - %s - updated timer %d on client %d",
             __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
       }
     }
@@ -156,9 +161,13 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
       bAddedOrDeleted = true;
 
       if (g_PVRManager.IsStarted())
-        newTimer->QueueNotification();
+      {
+        CStdString strMessage;
+        newTimer->GetNotificationText(strMessage);
+        timerNotifications.push_back(strMessage);
+      }
 
-      CLog::Log(LOGINFO,"PVRTimers - %s - added timer %d on client %d",
+      CLog::Log(LOGDEBUG,"PVRTimers - %s - added timer %d on client %d",
           __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
     }
   }
@@ -173,14 +182,14 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
     if (timers->GetByClient(timer->m_iClientId, timer->m_iClientIndex) == NULL)
     {
       /* timer was not found */
-      CLog::Log(LOGINFO,"PVRTimers - %s - deleted timer %d on client %d",
+      CLog::Log(LOGDEBUG,"PVRTimers - %s - deleted timer %d on client %d",
           __FUNCTION__, timer->m_iClientIndex, timer->m_iClientId);
 
-      if (g_PVRManager.IsStarted() && g_guiSettings.GetBool("pvrrecord.timernotifications"))
+      if (g_PVRManager.IsStarted())
       {
         CStdString strMessage;
         strMessage.Format("%s: '%s'", g_localizeStrings.Get(19228), timer->m_strTitle.c_str());
-        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
+        timerNotifications.push_back(strMessage);
       }
 
       CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) at(iTimerPtr)->m_epgInfo;
@@ -204,6 +213,17 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
     lock.Leave();
 
     NotifyObservers(bAddedOrDeleted ? "timers-reset" : "timers", false);
+
+    if (g_guiSettings.GetBool("pvrrecord.timernotifications"))
+    {
+      /* queue notifications */
+      for (unsigned int iNotificationPtr = 0; iNotificationPtr < timerNotifications.size(); iNotificationPtr++)
+      {
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+            g_localizeStrings.Get(19166),
+            timerNotifications.at(iNotificationPtr));
+      }
+    }
   }
 
   return bChanged;
@@ -465,7 +485,7 @@ bool CPVRTimers::AddTimer(const CFileItem &item)
 
 bool CPVRTimers::AddTimer(CPVRTimerInfoTag &item)
 {
-  if (!g_PVRClients->GetAddonCapabilities(item.m_iClientId)->bSupportsTimers)
+  if (!g_PVRClients->GetAddonCapabilities(item.m_iClientId).bSupportsTimers)
   {
     CGUIDialogOK::ShowAndGetInput(19033,0,19215,0);
     return false;

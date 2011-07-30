@@ -115,13 +115,13 @@
 		<control type="group">
 			<posx>490r</posx>
 			<posy>40</posy>
-			<visible>Container(9000).HasFocus(12) + [PVR.IsRecording | PVR.HasTimer]</visible>
+			<visible>Container(9000).HasFocus(12) + [PVR.IsRecording | PVR.HasNonRecordingTimer]</visible>
 			<include>VisibleFadeEffect</include>
 			<include>Window_OpenClose_Animation</include>
 			<animation effect="fade" start="100" end="0" time="200" condition="Window.IsActive(Favourites)">conditional</animation>
 			<control type="group">
 				<animation effect="slide" start="0,0" end="0,100" time="0" condition="PVR.IsRecording">conditional</animation>
-				<visible>PVR.HasTimer</visible>
+				<visible>PVR.HasNonRecordingTimer</visible>
 				<control type="image">
 					<posx>0</posx>
 					<posy>-5</posy>

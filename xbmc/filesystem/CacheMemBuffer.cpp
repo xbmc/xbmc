@@ -20,6 +20,7 @@
  */
 
 #ifdef _LINUX
+#include "threads/SystemClock.h"
 #include "linux/PlatformDefs.h"
 #endif
 #include "settings/AdvancedSettings.h"
@@ -136,8 +137,8 @@ int64_t CacheMemBuffer::WaitForData(unsigned int iMinAvail, unsigned int millis)
   if (millis == 0 || IsEndOfInput())
     return m_buffer.getMaxReadSize();
 
-  unsigned int time = CTimeUtils::GetTimeMS() + millis;
-  while (!IsEndOfInput() && (unsigned int) m_buffer.getMaxReadSize() < iMinAvail && CTimeUtils::GetTimeMS() < time )
+  XbmcThreads::EndTime endTime(millis);
+  while (!IsEndOfInput() && (unsigned int) m_buffer.getMaxReadSize() < iMinAvail && !endTime.IsTimePast() )
     m_written.WaitMSec(50); // may miss the deadline. shouldn't be a problem.
 
   return m_buffer.getMaxReadSize();

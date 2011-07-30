@@ -49,6 +49,7 @@ namespace PVR
 
     bool IsRecording(void) const;
     bool HasTimers(void) const;
+    bool HasNonRecordingTimers(void) const;
 
     /*!
      * @brief Get the total duration of the currently playing LiveTV item.

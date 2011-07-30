@@ -36,10 +36,9 @@ namespace EPG
 {
   #define g_EpgContainer CEpgContainer::Get()
 
-  class CEpgContainer : public std::vector<CEpg *>,
-                   public Observer,
-                   public Observable,
-                   private CThread
+  class CEpgContainer : public Observer,
+    public Observable,
+    private CThread
   {
     friend class CEpgDatabase;
 
@@ -56,9 +55,12 @@ namespace EPG
     /** @name Class state properties */
     //@{
     bool         m_bDatabaseLoaded;    /*!< true if we already loaded the EPG from the database */
+    bool         m_bIsUpdating;        /*!< true while an update is running */
     time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
     time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
     time_t       m_iLastEpgActiveTagCheck; /*!< the time the EPG checked for active tag updates */
+    unsigned int m_iNextEpgId;         /*!< the next epg ID that will be given to a new table when the db isn't being used */
+    std::map<int, CEpg*> m_epgs;       /*!< the EPGs in this container */
     //@}
 
     CGUIDialogExtendedProgressBar *m_progressDialog; /*!< the progress dialog that is visible when updating the first time */
@@ -87,15 +89,6 @@ namespace EPG
      * @return True if a running update should be interrupted, false otherwise.
      */
     virtual bool InterruptUpdate(void) const;
-
-    /*!
-     * @brief Load or update a single table.
-     * @param epg The table to update.
-     * @param start The start time to use.
-     * @param end The end time to use.
-     * @return True if the load or update was successful, false otherwise.
-     */
-    virtual bool UpdateSingleTable(CEpg *epg, const time_t start, const time_t end);
 
     /*!
      * @brief A hook that will be called on every update thread iteration.
@@ -211,27 +204,20 @@ namespace EPG
      * @brief Get the start time of the first entry.
      * @return The start time.
      */
-    virtual const CDateTime GetFirstEPGDate(void) const;
+    virtual const CDateTime GetFirstEPGDate(void);
 
     /*!
       * @brief Get the end time of the last entry.
       * @return The end time.
       */
-    virtual const CDateTime GetLastEPGDate(void) const;
+    virtual const CDateTime GetLastEPGDate(void);
 
     /*!
      * @brief Get an EPG table given it's ID.
      * @param iEpgId The database ID of the table.
      * @return The table or NULL if it wasn't found.
      */
-    virtual CEpg *GetById(int iEpgId) const;
-
-    /*!
-     * @brief Get an EPG table given it's index in this container.
-     * @param iIndex The index.
-     * @return The table or NULL if it wasn't found.
-     */
-    virtual CEpg *GetByIndex(unsigned int iIndex) const;
+    virtual CEpg *GetById(int iEpgId);
 
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
@@ -240,8 +226,33 @@ namespace EPG
     virtual bool CheckPlayingEvents(void);
 
     /*!
+     * @brief Insert an epg into the table. If the table already contains an entry with the same id, then that entry will be replaced.
+     * @param epg The EPG to insert.
+     */
+    virtual void InsertEpg(CEpg *epg);
+
+    /*!
+     * @brief The next EPG ID to be given to a table when the db isn't being used.
+     * @return The next ID.
+     */
+    unsigned int NextEpgId(void);
+
+    /*!
      * @brief Close the progress bar if it's visible.
      */
-    virtual void CloseUpdateDialog(void);
+    virtual void CloseProgressDialog(void);
+
+    /*!
+     * @brief Show the progress bar
+     */
+    virtual void ShowProgressDialog(void);
+
+    /*!
+     * @brief Update the progress bar.
+     * @param iCurrent The current position.
+     * @param iMax The maximum position.
+     * @param strText The text to display.
+     */
+    virtual void UpdateProgressDialog(int iCurrent, int iMax, const CStdString &strText);
   };
 }

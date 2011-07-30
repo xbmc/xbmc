@@ -33,7 +33,6 @@ namespace PVR
 
   typedef std::map< int, boost::shared_ptr<CPVRClient> >           CLIENTMAP;
   typedef std::map< int, boost::shared_ptr<CPVRClient> >::iterator CLIENTMAPITR;
-  typedef std::map< int, PVR_ADDON_CAPABILITIES >                  CLIENTPROPS;
   typedef std::map< int, PVR_STREAM_PROPERTIES >                   STREAMPROPS;
 
   #define XBMC_VIRTUAL_CLIENTID -1
@@ -61,11 +60,11 @@ namespace PVR
     //@{
 
     /*!
-     * @brief Check whether a client ID points to a valid add-on.
+     * @brief Check whether a client ID points to a valid and connected add-on.
      * @param iClientId The client ID.
-     * @return True when the client ID is valid, false otherwise.
+     * @return True when the client ID is valid and connected, false otherwise.
      */
-    bool IsValidClient(int iClientId);
+    bool IsConnectedClient(int iClientId);
 
     /*!
      * @brief Restart a single client add-on.
@@ -83,13 +82,6 @@ namespace PVR
     bool RequestRemoval(ADDON::AddonPtr addon);
 
     /*!
-     * @brief Try to load and initialise all clients.
-     * @param iMaxTime Maximum time to try to load clients in seconds. Use 0 to keep trying until m_bStop becomes true.
-     * @return True if all clients were loaded, false otherwise.
-     */
-    bool TryLoadClients(int iMaxTime = 0);
-
-    /*!
      * @brief Unload all loaded add-ons and reset all class properties.
      */
     void Unload(void);
@@ -97,22 +89,22 @@ namespace PVR
     /*!
      * @brief The ID of the first active client or -1 if no clients are active;
      */
-    int GetFirstID(void);
+    int GetFirstConnectedClientID(void);
 
     /*!
-     * @return True when all clients are loaded, false otherwise.
+     * @return True when all clients are connected, false otherwise.
      */
-    bool AllClientsLoaded(void) const;
+    bool AllClientsConnected(void) const;
 
     /*!
-     * @return True when at least one client is known, false otherwise.
+     * @return True when at least one client is known and enabled, false otherwise.
      */
-    bool HasClients(void) const;
+    bool HasEnabledClients(void) const;
 
     /*!
-     * @return The amount of active clients.
+     * @return The amount of enabled clients.
      */
-    int GetActiveClientsAmount(void) const;
+    int EnabledClientAmount(void) const;
 
     /*!
      * @brief Stop a client.
@@ -123,29 +115,30 @@ namespace PVR
     bool StopClient(ADDON::AddonPtr client, bool bRestart);
 
     /*!
-     * @return The amount of active clients.
+     * @return The amount of connected clients.
      */
-    int ActiveClientAmount(void);
+    int ConnectedClientAmount(void);
 
     /*!
-     * @brief Check whether there are any active clients.
-     * @return True if at least one client is active.
+     * @brief Check whether there are any connected clients.
+     * @return True if at least one client is connected.
      */
-    bool HasActiveClients(void);
+    bool HasConnectedClients(void);
 
     /*!
      * @brief Get the friendly name for the client with the given id.
      * @param iClientId The id of the client.
-     * @return The friendly name of the client or an empty string when it wasn't found.
+     * @param strName The friendly name of the client or an empty string when it wasn't found.
+     * @return True if the client was found, false otherwise.
      */
-    const CStdString GetClientName(int iClientId);
+    bool GetClientName(int iClientId, CStdString &strName);
 
     /*!
-     * @bried Get all active clients.
+     * @bried Get all connected clients.
      * @param clients Store the active clients in this map.
      * @return The amount of added clients.
      */
-    int GetActiveClients(CLIENTMAP *clients);
+    int GetConnectedClients(CLIENTMAP *clients);
 
     /*!
      * @return The client ID of the client that is currently playing a stream or -1 if no client is playing.
@@ -153,17 +146,17 @@ namespace PVR
     int GetPlayingClientID(void) const;
 
     /*!
-     * @brief Get the properties for a specific client.
+     * @brief Get the capabilities for a specific client.
      * @param clientID The ID of the client.
-     * @return A pointer to the properties or NULL if the client wasn't found.
+     * @return The add-on's capabilities.
      */
-    PVR_ADDON_CAPABILITIES *GetAddonCapabilities(int iClientId);
+    PVR_ADDON_CAPABILITIES GetAddonCapabilities(int iClientId);
 
     /*!
-     * @brief Get the properties of the current playing client.
-     * @return A pointer to the properties or NULL if no stream is playing.
+     * @brief Get the capabilities of the current playing client.
+     * @return The add-on's capabilities.
      */
-    PVR_ADDON_CAPABILITIES *GetCurrentAddonCapabilities(void);
+    PVR_ADDON_CAPABILITIES GetCurrentAddonCapabilities(void);
 
     //@}
 
@@ -558,18 +551,41 @@ namespace PVR
     //@}
 
   private:
-    int AddClientToDb(const CStdString &strClientId, const CStdString &strName);
-    int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
-    int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
-    bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
-
-    void UpdateCharInfoSignalStatus(void);
+    /*!
+     * @brief Register a client in the db if it's not been registered yet.
+     * @param client The client to register.
+     * @return The database id of the client or -1 if an error occured.
+     */
+    int AddClientToDb(const ADDON::AddonPtr client);
 
     /*!
-     * @brief Load and initialise all clients.
-     * @return True if any clients were loaded, false otherwise.
+     * @brief Read from a livetv stream.
+     * @param lpBuf The buffer to store the data in.
+     * @param uiBufSize The length to read.
+     * @return The number of bytes read.
      */
-    bool LoadClients(void);
+    int ReadLiveStream(void* lpBuf, int64_t uiBufSize);
+
+    /*!
+     * @brief Read from a recorded tv stream.
+     * @param lpBuf The buffer to store the data in.
+     * @param uiBufSize The length to read.
+     * @return The number of bytes read.
+     */
+    int ReadRecordedStream(void* lpBuf, int64_t uiBufSize);
+
+    /*!
+     * @brief Get the menu hooks for a client.
+     * @param iClientID The client to get the hooks for.
+     * @param hooks The container to add the hooks to.
+     * @return True if the hooks were added successfully (if any), false otherwise.
+     */
+    bool GetMenuHooks(int iClientID, PVR_MENUHOOKS *hooks);
+
+    /*!
+     * @brief Update the signal status for the tv stream that's currently being read.
+     */
+    void UpdateCharInfoSignalStatus(void);
 
     /*!
      * @brief Reset the signal quality data to the initial values.
@@ -581,16 +597,42 @@ namespace PVR
      */
     void Process(void);
 
-    bool GetValidClient(int iClientId, boost::shared_ptr<CPVRClient> &addon);
+    /*!
+     * @brief Get the instance of the client, if it's connected.
+     * @param iClientId The id of the client to get.
+     * @param addon The client.
+     * @return True if the client is connected, false otherwise.
+     */
+    bool GetConnectedClient(int iClientId, boost::shared_ptr<CPVRClient> &addon);
+
+    /*!
+     * @brief Check whether a client is registered.
+     * @param client The client to check.
+     * @return True if this client is registered, false otherwise.
+     */
+    bool IsKnownClient(const ADDON::AddonPtr client);
+
+    /*!
+     * @brief Check whether there are any new pvr add-ons enabled or whether any of the known clients has been disabled.
+     * @param bInitialiseAllClients True to initialise all clients, false to only initialise new clients.
+     * @return True if all clients were updated successfully, false otherwise.
+     */
+    bool UpdateAndInitialiseClients(bool bInitialiseAllClients = false);
+
+    /*!
+     * @brief Initialise and connect a client.
+     * @param client The client to initialise.
+     * @return True if the client was initialised successfully, false otherwise.
+     */
+    bool InitialiseClient(ADDON::AddonPtr client);
 
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
-    bool                  m_bAllClientsLoaded;        /*!< true when all clients are loaded, false otherwise */
+    bool                  m_bAllClientsConnected;        /*!< true when all clients are loaded, false otherwise */
     const CPVRChannel *   m_currentChannel;           /*!< the channel that is currently playing or NULL if nothing is playing */
     const CPVRRecording * m_currentRecording;         /*!< the recording that is currently playing or NULL if nothing is playing */
     DWORD                 m_scanStart;                /*!< scan start time to check for non present streams */
     CStdString            m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
     CLIENTMAP             m_clientMap;                /*!< a map of all known clients */
-    CLIENTPROPS           m_clientsProps;             /*!< store the properties of each client locally */
     PVR_SIGNAL_STATUS     m_qualityInfo;              /*!< stream quality information */
     STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
     CCriticalSection      m_critSection;

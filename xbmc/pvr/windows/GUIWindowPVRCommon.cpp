@@ -180,7 +180,7 @@ bool CGUIWindowPVRCommon::OnAction(const CAction &action)
 {
   bool bReturn = false;
 
-  if (action.GetID() == ACTION_PREVIOUS_MENU ||
+  if (action.GetID() == ACTION_NAV_BACK ||
       action.GetID() == ACTION_PARENT_DIR)
   {
     g_windowManager.PreviousWindow();
@@ -447,7 +447,7 @@ bool CGUIWindowPVRCommon::ActionDeleteRecording(CFileItem *item)
 
   /* check if the recording tag is valid */
   CPVRRecording *recTag = (CPVRRecording *) item->GetPVRRecordingInfoTag();
-  if (!recTag || recTag->m_iClientIndex < 0)
+  if (!recTag || recTag->m_strRecordingId.IsEmpty())
     return bReturn;
 
   /* show a confirmation dialog */

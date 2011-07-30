@@ -30,12 +30,17 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "network/DNSNameCache.h"
+
+#include <nfsc/libnfs-raw-mount.h>
 
 using namespace XFILE;
 
 CNfsConnection::CNfsConnection()
 : m_pNfsContext(NULL)
-, m_shareName("")
+, m_exportPath("")
+, m_hostName("")
+, m_resolvedHostName("")
 , m_readChunkSize(0)
 , m_writeChunkSize(0)
 , m_OpenConnections(0)
@@ -46,79 +51,174 @@ CNfsConnection::CNfsConnection()
 
 CNfsConnection::~CNfsConnection()
 {
+  Deinit();
   delete m_pLibNfs;
 }
 
-void CNfsConnection::resetContext()
+void CNfsConnection::resolveHost(const CURL &url)
+{ 
+  //resolve if hostname has changed
+  if( !url.GetHostName().Equals(m_hostName) )
+  {
+    CDNSNameCache::Lookup(url.GetHostName(), m_resolvedHostName);
+  }
+}
+
+std::list<CStdString> CNfsConnection::GetExportList(const CURL &url)
 {
+    std::list<CStdString> retList;
+
+    if(HandleDyLoad())
+    {
+      struct exportnode *exportlist, *tmp;
+      exportlist = m_pLibNfs->mount_getexports(m_resolvedHostName);
+      tmp = exportlist;
+
+      for(tmp = exportlist; tmp!=NULL; tmp=tmp->ex_next)
+      {
+        retList.push_back(CStdString(tmp->ex_dir));
+      }      
+
+      gNfsConnection.GetImpl()->mount_free_export_list(exportlist);
+    }
+    
+    return retList;
+}
+
+bool CNfsConnection::HandleDyLoad()
+{
+  bool ret = true;
   
   if(!m_pLibNfs->IsLoaded())
   {
     if(!m_pLibNfs->Load())
     {
       CLog::Log(LOGERROR,"NFS: Error loading libnfs (%s).",__FUNCTION__);    
-      return;//FATAL!
+      ret = false; //fatal
     }    
   }
-  
-  if(m_pNfsContext)
-  {
-    m_pLibNfs->nfs_destroy_context(m_pNfsContext);
-  }
-  
-  m_pNfsContext = m_pLibNfs->nfs_init_context();
-  
-  if (!m_pNfsContext) 
-  {
-		CLog::Log(LOGERROR,"NFS: Error initcontext in resetContext.");
-  }
-  m_writeChunkSize = 0;
-  m_readChunkSize = 0;
-  m_shareName.clear();
-  m_hostName.clear();
+  return ret;
 }
 
-bool CNfsConnection::Connect(const CURL& url)
+void CNfsConnection::clearMembers()
+{
+    m_exportPath.clear();
+    m_hostName.clear();
+    m_exportList.clear();
+    m_writeChunkSize = 0;
+    m_readChunkSize = 0;  
+    m_pNfsContext = NULL;
+}
+
+bool CNfsConnection::resetContext()
+{
+  bool ret = HandleDyLoad(); 
+    
+  if(ret)
+  {
+    if(m_pNfsContext)
+    {
+      m_pLibNfs->nfs_destroy_context(m_pNfsContext);
+    }
+
+    clearMembers();  
+    m_pNfsContext = m_pLibNfs->nfs_init_context();
+    
+    if (!m_pNfsContext) 
+    {
+      CLog::Log(LOGERROR,"NFS: Error initcontext in resetContext.");
+      ret = false;
+    }
+  }
+  return ret;
+}
+
+bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &exportPath, CStdString &relativePath)
+{
+    bool ret = false;
+    
+    if(m_exportList.empty())
+    {
+      m_exportList = GetExportList(url);
+    }
+
+    if(!m_exportList.empty())
+    {
+      relativePath = "";
+      exportPath = "";
+      
+      CStdString path = url.GetFileName();
+      
+      //GetFileName returns path without leading "/"
+      //but we need it because the export paths start with "/"
+      //and path.Find(*it) wouldn't work else
+      if(path[0] != '/')
+      {
+        path = "/" + path;
+      }
+      
+      std::list<CStdString>::iterator it;
+      
+      for(it=m_exportList.begin();it!=m_exportList.end();it++)
+      {
+        //if path starts with the current export path
+        if( path.Find(*it) ==  0 )
+        {
+          exportPath = *it;
+          relativePath = "//" + path.Right((path.length()-1) - exportPath.length());
+          ret = true;
+          break;          
+        }
+      }
+    }
+    return ret;
+}
+
+bool CNfsConnection::Connect(const CURL& url, CStdString &relativePath)
 {
   CSingleLock lock(*this);
-  int ret = 0;
-  CStdString share; 
-  URIUtils::GetDirectory(url.GetFileName(),share);
-  share = "/" + share;
+  bool ret = false;
+  int nfsRet = 0;
+  CStdString exportPath = "";
 
-  if(!share.Equals(m_shareName,true) || !url.GetHostName().Equals(m_hostName,false) )
+  resolveHost(url);
+  ret = splitUrlIntoExportAndPath(url, exportPath, relativePath);
+  
+  if(ret && (!exportPath.Equals(m_exportPath,true) || !url.GetHostName().Equals(m_hostName,false)) )
   {
-    resetContext();//we need a new context because sharename or hostname has changed - old context will be freed
+    if(!resetContext())//we need a new context because sharename or hostname has changed - old context will be freed
+    {
+      return false;
+    }
     
     //we connect to the directory of the path. This will be the "root" path of this connection then.
     //So all fileoperations are relative to this mountpoint...
-    ret = m_pLibNfs->nfs_mount_sync(m_pNfsContext, url.GetHostName().c_str(), share.c_str());
+    nfsRet = m_pLibNfs->nfs_mount(m_pNfsContext, m_resolvedHostName.c_str(), exportPath.c_str());
 
-    if  (ret != 0) 
+    if  (nfsRet != 0) 
     {
-      CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s\n", m_pLibNfs->nfs_get_error(m_pNfsContext));
+      CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)\n", exportPath.c_str(), m_pLibNfs->nfs_get_error(m_pNfsContext));
       return false;
     }
-    m_shareName = share;
+    m_exportPath = exportPath;
     m_hostName = url.GetHostName();
+    //read chunksize only works after mount
     m_readChunkSize = m_pLibNfs->nfs_get_readmax(m_pNfsContext);
     m_writeChunkSize = m_pLibNfs->nfs_get_writemax(m_pNfsContext);   
-    CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s (chunks: r/w %i/%i)\n", url.GetHostName().c_str(), url.GetShareName().c_str(),(int)m_readChunkSize,(int)m_writeChunkSize);
+    
+    CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s (chunks: r/w %i/%i)\n", url.GetHostName().c_str(), exportPath.c_str(),(int)m_readChunkSize,(int)m_writeChunkSize);
   }
-
-  return true; 
+  return ret; 
 }
 
 void CNfsConnection::Deinit()
 {
-  if(m_pNfsContext)
+  if(m_pNfsContext && m_pLibNfs->IsLoaded())
   {
     m_pLibNfs->nfs_destroy_context(m_pNfsContext);
+    m_pLibNfs->Unload();    
   }        
-  m_pNfsContext = NULL;
-  m_shareName.clear();
-  m_hostName.clear();
-  m_pLibNfs->Unload();
+  clearMembers();
 }
 
 /* This is called from CApplication::ProcessSlow() and is used to tell if nfs have been idle for too long */
@@ -193,7 +293,7 @@ int64_t CFileNFS::GetPosition()
   
   if (gNfsConnection.GetNfsContext() == NULL || m_pFileHandle == NULL) return 0;
   
-  ret = (int)gNfsConnection.GetImpl()->nfs_lseek_sync(gNfsConnection.GetNfsContext(), m_pFileHandle, 0, SEEK_CUR, &offset);
+  ret = (int)gNfsConnection.GetImpl()->nfs_lseek(gNfsConnection.GetNfsContext(), m_pFileHandle, 0, SEEK_CUR, &offset);
   
   if (ret < 0) 
   {
@@ -220,14 +320,14 @@ bool CFileNFS::Open(const CURL& url)
     return false;
   }
   
-  CStdString filename = "//" + URIUtils::GetFileName(url.GetFileName());
+  CStdString filename = "";
    
   CSingleLock lock(gNfsConnection);
   
-  if(!gNfsConnection.Connect(url))
+  if(!gNfsConnection.Connect(url, filename))
     return false;
   
-  ret = gNfsConnection.GetImpl()->nfs_open_sync(gNfsConnection.GetNfsContext(), filename.c_str(), O_RDONLY, &m_pFileHandle);
+  ret = gNfsConnection.GetImpl()->nfs_open(gNfsConnection.GetNfsContext(), filename.c_str(), O_RDONLY, &m_pFileHandle);
   
   if (ret != 0) 
   {
@@ -271,15 +371,15 @@ int CFileNFS::Stat(const CURL& url, struct __stat64* buffer)
 {
   int ret = 0;
   CSingleLock lock(gNfsConnection);
+  CStdString filename = "";
   
-  if(!gNfsConnection.Connect(url))
+  if(!gNfsConnection.Connect(url,filename))
     return -1;
    
-  CStdString filename = "//" + URIUtils::GetFileName(url.GetFileName());
 
   struct stat tmpBuffer = {0};
 
-  ret = gNfsConnection.GetImpl()->nfs_stat_sync(gNfsConnection.GetNfsContext(), filename.c_str(), &tmpBuffer);
+  ret = gNfsConnection.GetImpl()->nfs_stat(gNfsConnection.GetNfsContext(), filename.c_str(), &tmpBuffer);
   
   //if buffer == NULL we where called from Exists - in that case don't spam the log with errors
   if (ret != 0 && buffer != NULL) 
@@ -311,38 +411,16 @@ int CFileNFS::Stat(const CURL& url, struct __stat64* buffer)
 unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
 {
   int numberOfBytesRead = 0;
-  int bytesLeft = uiBufSize;
-  int bytesRead = 0;
-  int chunkSize = gNfsConnection.GetMaxReadChunkSize();
   CSingleLock lock(gNfsConnection);
   
   if (m_pFileHandle == NULL || gNfsConnection.GetNfsContext()==NULL ) return 0;
 
-  //read chunked since nfs will only give server specific packet sizes at once
-  while(bytesLeft)
+  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(gNfsConnection.GetNfsContext(), m_pFileHandle, uiBufSize, (char *)lpBuf);
+  //something went wrong ...
+  if (numberOfBytesRead < 0) 
   {
-    //last chunk could be smaller then chunk size
-    if(bytesLeft < chunkSize)
-    {
-      chunkSize = bytesLeft; 
-    }
-    
-    bytesRead = gNfsConnection.GetImpl()->nfs_read_sync(gNfsConnection.GetNfsContext(), m_pFileHandle, chunkSize, (char *)lpBuf+numberOfBytesRead);
-    bytesLeft -= bytesRead;
-    numberOfBytesRead += bytesRead;
-    
-    if(bytesRead == 0)
-    {
-      break; //EOF
-    }
-    
-    //something went wrong ...
-    if (bytesRead < 0) 
-    {
-      CLog::Log(LOGERROR, "%s - Error( %d, %s )", __FUNCTION__, bytesRead, gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
-      return 0;
-    }
-    
+    CLog::Log(LOGERROR, "%s - Error( %d, %s )", __FUNCTION__, numberOfBytesRead, gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+    return 0;
   }
   return (unsigned int)numberOfBytesRead;
 }
@@ -356,7 +434,7 @@ int64_t CFileNFS::Seek(int64_t iFilePosition, int iWhence)
   if (m_pFileHandle == NULL || gNfsConnection.GetNfsContext()==NULL) return -1;
   
  
-  ret = (int)gNfsConnection.GetImpl()->nfs_lseek_sync(gNfsConnection.GetNfsContext(), m_pFileHandle, iFilePosition, iWhence, &offset);
+  ret = (int)gNfsConnection.GetImpl()->nfs_lseek(gNfsConnection.GetNfsContext(), m_pFileHandle, iFilePosition, iWhence, &offset);
   
   if (ret < 0) 
   {
@@ -374,7 +452,7 @@ void CFileNFS::Close()
   {
     int ret = 0;
     CLog::Log(LOGDEBUG,"CFileNFS::Close closing file %s", m_url.GetFileName().c_str());
-    ret = gNfsConnection.GetImpl()->nfs_close_sync(gNfsConnection.GetNfsContext(), m_pFileHandle);
+    ret = gNfsConnection.GetImpl()->nfs_close(gNfsConnection.GetNfsContext(), m_pFileHandle);
     
 	  if (ret < 0) 
     {
@@ -408,7 +486,7 @@ int CFileNFS::Write(const void* lpBuf, int64_t uiBufSize)
       chunkSize = leftBytes;//write last chunk with correct size
     }
     //write chunk
-    writtenBytes = gNfsConnection.GetImpl()->nfs_write_sync(gNfsConnection.GetNfsContext(), 
+    writtenBytes = gNfsConnection.GetImpl()->nfs_write(gNfsConnection.GetNfsContext(), 
                                   m_pFileHandle, 
                                   (size_t)chunkSize, 
                                   (char *)lpBuf + numberOfBytesWritten);
@@ -432,13 +510,13 @@ bool CFileNFS::Delete(const CURL& url)
 {
   int ret = 0;
   CSingleLock lock(gNfsConnection);
+  CStdString filename = "";
   
-  if(!gNfsConnection.Connect(url))
+  if(!gNfsConnection.Connect(url, filename))
     return false;
   
-  CStdString filename = "//" + URIUtils::GetFileName(url.GetFileName());
   
-  ret = gNfsConnection.GetImpl()->nfs_unlink_sync(gNfsConnection.GetNfsContext(), filename.c_str());
+  ret = gNfsConnection.GetImpl()->nfs_unlink(gNfsConnection.GetNfsContext(), filename.c_str());
   
   if(ret != 0)
   {
@@ -451,14 +529,16 @@ bool CFileNFS::Rename(const CURL& url, const CURL& urlnew)
 {
   int ret = 0;
   CSingleLock lock(gNfsConnection);
+  CStdString strFile = "";
   
-  if(!gNfsConnection.Connect(url))
+  if(!gNfsConnection.Connect(url,strFile))
     return false;
   
-  CStdString strFile = "//" + URIUtils::GetFileName(url.GetFileName());
-  CStdString strFileNew = "//" + URIUtils::GetFileName(urlnew.GetFileName());
+  CStdString strFileNew;
+  CStdString strDummy;
+  gNfsConnection.splitUrlIntoExportAndPath(urlnew, strDummy, strFileNew);
   
-  ret = gNfsConnection.GetImpl()->nfs_rename_sync(gNfsConnection.GetNfsContext() , strFile.c_str(), strFileNew.c_str());
+  ret = gNfsConnection.GetImpl()->nfs_rename(gNfsConnection.GetNfsContext() , strFile.c_str(), strFileNew.c_str());
   
   if(ret != 0)
   {
@@ -470,32 +550,30 @@ bool CFileNFS::Rename(const CURL& url, const CURL& urlnew)
 bool CFileNFS::OpenForWrite(const CURL& url, bool bOverWrite)
 { 
   int ret = 0;
-  
-  Close();
-  CSingleLock lock(gNfsConnection);
-  
-  if(!gNfsConnection.Connect(url))
-    return false;
-  
   // we can't open files like nfs://file.f or nfs://server/file.f
   // if a file matches the if below return false, it can't exist on a nfs share.
   if (!IsValidFile(url.GetFileName())) return false;
   
-  CStdString filename = "//" + URIUtils::GetFileName(url.GetFileName());
+  Close();
+  CSingleLock lock(gNfsConnection);
+  CStdString filename = "";
+  
+  if(!gNfsConnection.Connect(url,filename))
+    return false;
   
   if (bOverWrite)
   {
     CLog::Log(LOGWARNING, "FileNFS::OpenForWrite() called with overwriting enabled! - %s", filename.c_str());
     //create file with proper permissions
-    ret = gNfsConnection.GetImpl()->nfs_creat_sync(gNfsConnection.GetNfsContext(), filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);    
+    ret = gNfsConnection.GetImpl()->nfs_creat(gNfsConnection.GetNfsContext(), filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);    
     //if file was created the file handle isn't valid ... so close it and open later
     if(ret == 0)
     {
-      gNfsConnection.GetImpl()->nfs_close_sync(gNfsConnection.GetNfsContext(),m_pFileHandle);
+      gNfsConnection.GetImpl()->nfs_close(gNfsConnection.GetNfsContext(),m_pFileHandle);
     }
   }
 
-  ret = gNfsConnection.GetImpl()->nfs_open_sync(gNfsConnection.GetNfsContext(), filename.c_str(), O_RDWR, &m_pFileHandle);
+  ret = gNfsConnection.GetImpl()->nfs_open(gNfsConnection.GetNfsContext(), filename.c_str(), O_RDWR, &m_pFileHandle);
   
   if (ret || m_pFileHandle == NULL)
   {

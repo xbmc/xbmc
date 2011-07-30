@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "DllLibCMyth.h"
 #include "MythSession.h"
 #include "video/VideoInfoTag.h"
@@ -59,7 +60,7 @@ void CMythSession::CheckIdle()
   for (it = m_sessions.begin(); it != m_sessions.end(); )
   {
     CMythSession* session = *it;
-    if (session->m_timestamp + (MYTH_IDLE_TIMEOUT * 1000) < CTimeUtils::GetTimeMS())
+    if ((XbmcThreads::SystemClockMillis() - session->m_timestamp) > (MYTH_IDLE_TIMEOUT * 1000) )
     {
       CLog::Log(LOGINFO, "%s - closing idle connection to MythTV backend: %s", __FUNCTION__, session->m_hostname.c_str());
       delete session;
@@ -97,7 +98,7 @@ void CMythSession::ReleaseSession(CMythSession* session)
 {
   CLog::Log(LOGDEBUG, "%s - Releasing MythTV session: %p", __FUNCTION__, session);
   session->SetListener(NULL);
-  session->m_timestamp = CTimeUtils::GetTimeMS();
+  session->m_timestamp = XbmcThreads::SystemClockMillis();
   CSingleLock lock(m_section_session);
   m_sessions.push_back(session);
 }
@@ -367,7 +368,7 @@ CMythSession::CMythSession(const CURL& url)
   m_username  = url.GetUserName() == "" ? MYTH_DEFAULT_USERNAME : url.GetUserName();
   m_password  = url.GetPassWord() == "" ? MYTH_DEFAULT_PASSWORD : url.GetPassWord();
   m_port      = url.HasPort() ? url.GetPort() : MYTH_DEFAULT_PORT;
-  m_timestamp = CTimeUtils::GetTimeMS();
+  m_timestamp = XbmcThreads::SystemClockMillis();
   m_dll = new DllLibCMyth;
   m_dll->Load();
   if (m_dll->IsLoaded())

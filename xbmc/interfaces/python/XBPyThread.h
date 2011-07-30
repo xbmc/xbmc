@@ -54,7 +54,6 @@ protected:
 
   void setSource(const CStdString &src);
 
-  virtual void OnStartup();
   virtual void Process();
   virtual void OnExit();
   virtual void OnException();

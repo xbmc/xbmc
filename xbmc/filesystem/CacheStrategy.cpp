@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "CacheStrategy.h"
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -184,16 +185,16 @@ int64_t CSimpleFileCache::WaitForData(unsigned int iMinAvail, unsigned int iMill
   if( iMillis == 0 || IsEndOfInput() )
     return GetAvailableRead();
 
-  unsigned int timeout = CTimeUtils::GetTimeMS() + iMillis;
-  unsigned int time;
-  while ( !IsEndOfInput() && (time = CTimeUtils::GetTimeMS()) < timeout )
+  XbmcThreads::EndTime endTime(iMillis);
+  unsigned int millisLeft;
+  while ( !IsEndOfInput() && (millisLeft = endTime.MillisLeft()) > 0 )
   {
     int64_t iAvail = GetAvailableRead();
     if (iAvail >= iMinAvail)
       return iAvail;
 
     // busy look (sleep max 1 sec each round)
-    if (!m_hDataAvailEvent->WaitMSec((timeout - time)>1000?(timeout - time):1000 ))
+    if (!m_hDataAvailEvent->WaitMSec(millisLeft>1000?millisLeft:1000 ))
       return CACHE_RC_ERROR;
   }
 

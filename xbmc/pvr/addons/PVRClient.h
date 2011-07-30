@@ -95,10 +95,9 @@ namespace PVR
 
     /*!
      * @brief Query this add-on's capabilities.
-     * @param pCapabilities The add-on properties.
-     * @return PVR_ERROR_NO_ERROR if the properties were fetched successfully.
+     * @return pCapabilities The add-on's capabilities.
      */
-    PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities);
+    PVR_ADDON_CAPABILITIES GetAddonCapabilities(void);
 
     /*!
      * @brief Get the stream properties of the stream that's currently being read.
@@ -439,21 +438,21 @@ namespace PVR
     //@}
 
   protected:
-    bool                  m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
-    CStdString            m_strHostName;          /*!< the host name */
-    PVR_MENUHOOKS         m_menuhooks;            /*!< the menu hooks for this add-on */
+    bool                   m_bReadyToUse;          /*!< true if this add-on is connected to the backend, false otherwise */
+    CStdString             m_strHostName;          /*!< the host name */
+    PVR_MENUHOOKS          m_menuhooks;            /*!< the menu hooks for this add-on */
 
     /* cached data */
-    CStdString            m_strBackendName;       /*!< the cached backend version */
-    bool                  m_bGotBackendName;      /*!< true if the backend name has already been fetched */
-    CStdString            m_strBackendVersion;    /*!< the cached backend version */
-    bool                  m_bGotBackendVersion;   /*!< true if the backend version has already been fetched */
-    CStdString            m_strConnectionString;  /*!< the cached connection string */
-    bool                  m_bGotConnectionString; /*!< true if the connection string has already been fetched */
-    CStdString            m_strFriendlyName;      /*!< the cached friendly name */
-    bool                  m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
+    CStdString             m_strBackendName;       /*!< the cached backend version */
+    bool                   m_bGotBackendName;      /*!< true if the backend name has already been fetched */
+    CStdString             m_strBackendVersion;    /*!< the cached backend version */
+    bool                   m_bGotBackendVersion;   /*!< true if the backend version has already been fetched */
+    CStdString             m_strConnectionString;  /*!< the cached connection string */
+    bool                   m_bGotConnectionString; /*!< true if the connection string has already been fetched */
+    CStdString             m_strFriendlyName;      /*!< the cached friendly name */
+    bool                   m_bGotFriendlyName;     /*!< true if the friendly name has already been fetched */
     PVR_ADDON_CAPABILITIES m_addonCapabilities;     /*!< the cached add-on capabilities */
-    bool                  m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
+    bool                   m_bGotAddonCapabilities; /*!< true if the add-on capabilities have already been fetched */
 
   private:
     /*!
@@ -480,5 +479,15 @@ namespace PVR
      * @brief Get the backend properties from the server and store it locally.
      */
     PVR_ERROR SetAddonCapabilities(void);
+
+    /*!
+     * @brief Resets all class members to their defaults. Called by the constructors.
+     */
+    void ResetProperties(void);
+
+    /*!
+     * @brief Reset all add-on capabilities to false.
+     */
+    void ResetAddonCapabilities(void);
   };
 }

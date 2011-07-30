@@ -6,7 +6,7 @@
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=0977fbb
+VERSION=48593f5
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
@@ -16,10 +16,10 @@ RETRIEVE_TOOL=/usr/bin/curl
 RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
 ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
-prefix=/usr
 
 # configuration settings
-CONFIGURE=./configure --prefix=$(prefix) --without-examples --without-ldconfig
+#FIX THE PREFIX TO SOMETHING LOCAL IN XBMC - CONFIGURE HAS TO FIND IT!
+CONFIGURE=./configure CFLAGS=-D_FILE_OFFSET_BITS=64 --prefix=/usr
 
 SO_NAME=$(SOURCE)/lib/libnfs.so
 
@@ -34,25 +34,19 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
-	cd $(SOURCE);autoreconf -vif;$(CONFIGURE)
-	cd $(SOURCE); patch -p0 < ../printf.patch
+	cd $(SOURCE);./bootstrap;$(CONFIGURE)
 
 $(SO_NAME): $(SOURCE)
 	make -C $(SOURCE)
 
 install:
 	make -C $(SOURCE) install
-	rm -f $(prefix)/lib/libnfs.so
-	rm -f $(prefix)/lib/libnfs.so.1
-	ln -s $(prefix)/lib/libnfs.so.1.0.0 $(prefix)/lib/libnfs.so
-	ln -s $(prefix)/lib/libnfs.so.1.0.0 $(prefix)/lib/libnfs.so.1
 clean:
 	make -C $(SOURCE) clean
 	rm  -f .installed
 	rm -f -r include
 	rm -f -r lib
 	rm -f *.tar.gz
-	rm -r -f Memphiz-libnfs*
 	rm -r -f nfsc
 
 distclean::

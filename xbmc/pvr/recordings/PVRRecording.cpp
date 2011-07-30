@@ -39,7 +39,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
 {
   Reset();
 
-  m_iClientIndex   = recording.iClientIndex;
+  m_strRecordingId = recording.strRecordingId;
   m_strTitle       = recording.strTitle;
   m_iClientId      = iClientId;
   m_recordingTime  = recording.recordingTime + g_advancedSettings.m_iPVRTimeCorrection;
@@ -57,7 +57,7 @@ CPVRRecording::CPVRRecording(const PVR_RECORDING &recording, unsigned int iClien
 bool CPVRRecording::operator ==(const CPVRRecording& right) const
 {
   return (this == &right) ||
-      (m_iClientIndex       == right.m_iClientIndex &&
+      (m_strRecordingId     == right.m_strRecordingId &&
        m_iClientId          == right.m_iClientId &&
        m_strChannelName     == right.m_strChannelName &&
        m_recordingTime      == right.m_recordingTime &&
@@ -79,8 +79,8 @@ bool CPVRRecording::operator !=(const CPVRRecording& right) const
 
 void CPVRRecording::Reset(void)
 {
-  m_iClientIndex       = -1;
-  m_iClientId          = g_PVRClients->GetFirstID(); // Temporary until we support multiple backends
+  m_strRecordingId     = "";
+  m_iClientId          = g_PVRClients->GetFirstConnectedClientID(); // Temporary until we support multiple backends
   m_strChannelName     = "";
   m_strDirectory       = "";
   m_strStreamURL       = "";
@@ -141,7 +141,7 @@ void CPVRRecording::DisplayError(PVR_ERROR err) const
 
 void CPVRRecording::Update(const CPVRRecording &tag)
 {
-  m_iClientIndex   = tag.m_iClientIndex;
+  m_strRecordingId = tag.m_strRecordingId;
   m_iClientId      = tag.m_iClientId;
   m_strTitle       = tag.m_strTitle;
   m_recordingTime  = tag.m_recordingTime;

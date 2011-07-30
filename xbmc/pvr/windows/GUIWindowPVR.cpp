@@ -112,7 +112,7 @@ bool CGUIWindowPVR::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
 void CGUIWindowPVR::OnInitWindow(void)
 {
-  if (!g_PVRManager.IsStarted() || !g_PVRClients->HasActiveClients())
+  if (!g_PVRManager.IsStarted() || !g_PVRClients->HasConnectedClients())
   {
     m_bDialogOKActive = true;
     g_windowManager.PreviousWindow();

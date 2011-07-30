@@ -21,6 +21,7 @@
 
 // C++ Implementation: karaokelyricsmanager
 
+#include "threads/SystemClock.h"
 #include "Application.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/GUISettings.h"
@@ -139,7 +140,7 @@ void CKaraokeLyricsManager::ProcessSlow()
   if ( g_application.IsPlaying() )
   {
     if ( m_karaokeSongPlaying )
-      m_lastPlayedTime = CTimeUtils::GetTimeMS();
+      m_lastPlayedTime = XbmcThreads::SystemClockMillis();
 
     return;
   }
@@ -148,7 +149,7 @@ void CKaraokeLyricsManager::ProcessSlow()
     return;
 
   // If less than 750ms passed return; we're still processing STOP events
-  if ( !m_lastPlayedTime || CTimeUtils::GetTimeMS() - m_lastPlayedTime < 750 )
+  if ( !m_lastPlayedTime || XbmcThreads::SystemClockMillis() - m_lastPlayedTime < 750 )
     return;
 
   m_karaokeSongPlayed = false; // so it won't popup again

@@ -21,35 +21,23 @@
  *
  */
 
-#include "threads/CriticalSection.h"
 #include "threads/Condition.h"
-#include <boost/thread/shared_mutex.hpp>
+#include "threads/SingleLock.h"
 
 /**
- * A CSharedSection is a mutex that satisfies the "shared lockable" concept
- * Something that implements the "Shared Lockable" concept has all of the methods
- * required by the Lockable concept and also:
- *
- * void lock_shared();
- * bool try_lock_shared();
- * void unlock_shared();
- *
- * In a nutshell a "shared lockable" satisfies the read/write lock semantics
- * where many readers can own the lock at the same time, but a writer must
- * have exclusive access. A reader would obtain "shared access" using a 
- * CSharedLock while a writer would obtain "exclusive access." using a 
- * CExclusiveLock.
+ * A CSharedSection is a mutex that satisfies the Shared Lockable concept (see Lockables.h).
  */
 class CSharedSection
 {
   CCriticalSection sec;
+  XbmcThreads::ConditionVariable actualCv;
   XbmcThreads::TightConditionVariable<bool&> cond;
 
   unsigned int sharedCount;
   bool noShared;
 
 public:
-  inline CSharedSection() : cond(noShared), sharedCount(0), noShared(true) {}
+  inline CSharedSection() : cond(actualCv,noShared), sharedCount(0), noShared(true) {}
 
   inline void lock() { CSingleLock l(sec); if (sharedCount) cond.wait(l); sec.lock(); }
   inline bool try_lock() { return (sec.try_lock() ? ((sharedCount == 0) ? true : (sec.unlock(), false)) : false); }
@@ -60,22 +48,22 @@ public:
   inline void unlock_shared() { CSingleLock l(sec); sharedCount--; if (!sharedCount) { noShared = true; cond.notifyAll(); } }
 };
 
-class CSharedLock : public boost::shared_lock<CSharedSection>
+class CSharedLock : public XbmcThreads::SharedLock<CSharedSection>
 {
 public:
-  inline CSharedLock(CSharedSection& cs) : boost::shared_lock<CSharedSection>(cs) {}
-  inline CSharedLock(const CSharedSection& cs) : boost::shared_lock<CSharedSection>((CSharedSection&)cs) {}
+  inline CSharedLock(CSharedSection& cs) : XbmcThreads::SharedLock<CSharedSection>(cs) {}
+  inline CSharedLock(const CSharedSection& cs) : XbmcThreads::SharedLock<CSharedSection>((CSharedSection&)cs) {}
 
   inline bool IsOwner() const { return owns_lock(); }
   inline void Enter() { lock(); }
   inline void Leave() { unlock(); }
 };
 
-class CExclusiveLock : public boost::unique_lock<CSharedSection>
+class CExclusiveLock : public XbmcThreads::UniqueLock<CSharedSection>
 {
 public:
-  inline CExclusiveLock(CSharedSection& cs) : boost::unique_lock<CSharedSection>(cs) {}
-  inline CExclusiveLock(const CSharedSection& cs) : boost::unique_lock<CSharedSection> ((CSharedSection&)cs) {}
+  inline CExclusiveLock(CSharedSection& cs) : XbmcThreads::UniqueLock<CSharedSection>(cs) {}
+  inline CExclusiveLock(const CSharedSection& cs) : XbmcThreads::UniqueLock<CSharedSection> ((CSharedSection&)cs) {}
 
   inline bool IsOwner() const { return owns_lock(); }
   inline void Leave() { unlock(); }

@@ -160,6 +160,14 @@ CFileItem::CFileItem(const CPVREpgInfoTag& tag)
     *GetPVRTimerInfoTag() = *tag.Timer();
   SetLabel(tag.Title());
   m_strLabel2 = tag.Plot();
+  m_dateTime = tag.StartAsLocalTime();
+
+  const CEpgInfoTag *nextTag = tag.GetNextEvent();
+  SetProperty("epg.progress", tag.ProgressPercentage());
+  SetProperty("epg.endtime", tag.EndAsLocalTime().GetAsLocalizedTime("", false));
+  SetProperty("epg.starttime", tag.StartAsLocalTime().GetAsLocalizedTime("", false));
+  SetProperty("epg.duration", tag.GetDuration());
+  SetProperty("epg.next", nextTag ? nextTag->Title() : "");
 
   if (!tag.Icon().IsEmpty())
   {
@@ -187,6 +195,13 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
   m_strLabel2 = tag.Plot();
   m_dateTime = tag.StartAsLocalTime();
 
+  const CEpgInfoTag *nextTag = tag.GetNextEvent();
+  SetProperty("epg.progress", tag.ProgressPercentage());
+  SetProperty("epg.endtime", tag.EndAsLocalTime().GetAsLocalizedTime("", false));
+  SetProperty("epg.starttime", tag.StartAsLocalTime().GetAsLocalizedTime("", false));
+  SetProperty("epg.duration", tag.GetDuration());
+  SetProperty("epg.next", nextTag ? nextTag->Title() : "");
+
   if (!tag.Icon().IsEmpty())
   {
     SetThumbnailImage(tag.Icon());
@@ -212,6 +227,13 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
   m_strLabel2 = epgNow ? epgNow->Title() : g_localizeStrings.Get(19055);
+
+  const CEpgInfoTag *nextTag = epgNow ? epgNow->GetNextEvent() : NULL;
+  SetProperty("epg.progress", epgNow ? epgNow->ProgressPercentage() : 0);
+  SetProperty("epg.endtime", epgNow ? epgNow->EndAsLocalTime().GetAsLocalizedTime("", false) : "");
+  SetProperty("epg.starttime", epgNow ? epgNow->StartAsLocalTime().GetAsLocalizedTime("", false) : "");
+  SetProperty("epg.duration", epgNow ? epgNow->GetDuration() : 0);
+  SetProperty("epg.next", nextTag ? nextTag->Title() : "");
 
   if (channel.IsRadio() && epgNow)
   {

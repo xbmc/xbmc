@@ -22,7 +22,6 @@
 #include "PVRGUIInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
-#include "utils/TimeUtils.h"
 #include "GUIInfoManager.h"
 #include "Util.h"
 #include "threads/SingleLock.h"
@@ -36,7 +35,8 @@
 
 using namespace PVR;
 
-CPVRGUIInfo::CPVRGUIInfo(void)
+CPVRGUIInfo::CPVRGUIInfo(void) :
+    CThread("PVR GUI info updater")
 {
 }
 
@@ -83,7 +83,6 @@ void CPVRGUIInfo::Start(void)
 {
   ResetProperties();
   Create();
-  SetName("XBMC PVR GUI info");
   SetPriority(-1);
 }
 
@@ -104,7 +103,7 @@ void CPVRGUIInfo::ShowPlayerInfo(int iTimeout)
   CSingleLock lock(m_critSection);
 
   if (iTimeout > 0)
-    m_iToggleShowInfo = (int) CTimeUtils::GetTimeMS() + iTimeout * 1000;
+    m_iToggleShowInfo = (int) XbmcThreads::SystemClockMillis() + iTimeout * 1000;
 
   g_infoManager.SetShowInfo(true);
 }
@@ -113,7 +112,7 @@ void CPVRGUIInfo::ToggleShowInfo(void)
 {
   CSingleLock lock(m_critSection);
 
-  if (m_iToggleShowInfo > 0 && m_iToggleShowInfo < (unsigned int) CTimeUtils::GetTimeMS())
+  if (m_iToggleShowInfo > 0 && m_iToggleShowInfo < (unsigned int) XbmcThreads::SystemClockMillis())
   {
     m_iToggleShowInfo = 0;
     g_infoManager.SetShowInfo(false);
@@ -124,12 +123,12 @@ bool CPVRGUIInfo::AddonInfoToggle(void)
 {
   if (m_iAddonInfoToggleStart == 0)
   {
-    m_iAddonInfoToggleStart = CTimeUtils::GetTimeMS();
+    m_iAddonInfoToggleStart = XbmcThreads::SystemClockMillis();
     m_iAddonInfoToggleCurrent = 0;
     return true;
   }
 
-  if ((int) (CTimeUtils::GetTimeMS() - m_iAddonInfoToggleStart) > g_advancedSettings.m_iPVRInfoToggleInterval)
+  if ((int) (XbmcThreads::SystemClockMillis() - m_iAddonInfoToggleStart) > g_advancedSettings.m_iPVRInfoToggleInterval)
   {
     unsigned int iPrevious = m_iAddonInfoToggleCurrent;
     if (((int) ++m_iAddonInfoToggleCurrent) > m_iActiveClients - 1)
@@ -145,12 +144,12 @@ bool CPVRGUIInfo::TimerInfoToggle(void)
 {
   if (m_iTimerInfoToggleStart == 0)
   {
-    m_iTimerInfoToggleStart = CTimeUtils::GetTimeMS();
+    m_iTimerInfoToggleStart = XbmcThreads::SystemClockMillis();
     m_iTimerInfoToggleCurrent = 0;
     return true;
   }
 
-  if ((int) (CTimeUtils::GetTimeMS() - m_iTimerInfoToggleStart) > g_advancedSettings.m_iPVRInfoToggleInterval)
+  if ((int) (XbmcThreads::SystemClockMillis() - m_iTimerInfoToggleStart) > g_advancedSettings.m_iPVRInfoToggleInterval)
   {
     unsigned int iPrevious = m_iTimerInfoToggleCurrent;
     unsigned int iBoundary = m_iRecordingTimerAmount > 0 ? m_iRecordingTimerAmount : m_iTimerAmount;
@@ -269,6 +268,8 @@ bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
     bReturn = g_PVRManager.IsStarted() && IsRecording();
   else if (dwInfo == PVR_HAS_TIMER)
     bReturn = g_PVRManager.IsStarted() && HasTimers();
+  else if (dwInfo == PVR_HAS_NONRECORDING_TIMER)
+    bReturn = g_PVRManager.IsStarted() && HasNonRecordingTimers();
   else if (dwInfo == PVR_IS_PLAYING_TV)
     bReturn = g_PVRManager.IsStarted() && g_PVRClients->IsPlayingTV();
   else if (dwInfo == PVR_IS_PLAYING_RADIO)
@@ -549,7 +550,7 @@ void CPVRGUIInfo::UpdateBackendCache(void)
 
   CPVRClients *clients = g_PVRClients;
   CLIENTMAP activeClients;
-  m_iActiveClients = clients->GetActiveClients(&activeClients);
+  m_iActiveClients = clients->GetConnectedClients(&activeClients);
   if (m_iActiveClients > 0)
   {
     CLIENTMAPITR activeClient = activeClients.begin();
@@ -720,3 +721,11 @@ bool CPVRGUIInfo::HasTimers(void) const
 
   return m_iTimerAmount > 0;
 }
+
+bool CPVRGUIInfo::HasNonRecordingTimers(void) const
+{
+  CSingleLock lock(m_critSection);
+
+  return m_iTimerAmount - m_iRecordingTimerAmount > 0;
+}
+

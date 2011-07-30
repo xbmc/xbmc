@@ -984,6 +984,7 @@
   <string id="12392">Hores</string>
   <string id="12393">Dies</string>
   <string id="12394">Temps total d'activitat</string>
+  <string id="12395">Nivell de la bateria</string>
 
   <string id="12600">El temps</string>
 
@@ -1018,6 +1019,7 @@
 
   <string id="13100">Filtre de parpelleig</string>
   <string id="13101">Permet triar al dispositiu (requereix reiniciar)</string>
+  
   <string id="13105">Vertical blank sync</string>
   <string id="13106">Desactivat</string>
   <string id="13107">Activat durant la reproducció de vídeo</string>
@@ -1065,9 +1067,11 @@
 
   <string id="13200">Perfils</string>
   <string id="13201">Voleu suprimir el perfil '%s'?</string>
+  
   <string id="13204">Últim perfil carregat:</string>
   <string id="13205">Desconegut</string>
   <string id="13206">Sobreescriure</string>
+  
   <string id="13208">Alarma de rellotge</string>
   <string id="13209">Interval de l'alarma de rellotge (en minuts)</string>
   <string id="13210">Iniciada, alarma en %im</string>
@@ -1168,6 +1172,7 @@
   <string id="13359">Estableix la miniatura de l'artista</string>
   <string id="13360">Genera les miniatures automàticament</string>
   <string id="13361">Activa la veu</string>
+  
   <string id="13375">Activa el dispositiu</string>
   <string id="13376">Volum</string>
   <string id="13377">Mode de visualització per defecte</string>
@@ -1485,6 +1490,7 @@
   <string id="16033">No s'ha pogut obrir la base de dades.</string>
   <string id="16034">No s'han pogut obtenir les cançons de la base de dades.</string>
   <string id="16035">Lllista de reproducció del mode festa</string>
+  <string id="16036">Desentrellaçat (Half)</string>
 
   <string id="16100">Tots els vídeos</string>
   <string id="16101">No visualitzats</string>
@@ -1731,6 +1737,8 @@
   <string id="20256">HTS Tvheadend client</string>
   <string id="20257">VDR Streamdev client</string>
   <string id="20258">Client de MythTV</string>
+  <string id="20259">Network Filesystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
 
   <string id="20300">Directori del servidor web (HTTP)</string>
   <string id="20301">Directori dels servidor web (HTTPS)</string>
@@ -1833,17 +1841,17 @@
   <string id="20405">Remove episode bookmark</string>
   <string id="20406">Set episode bookmark</string>
   <string id="20407">Scraper settings</string>
-  <string id="20408">Downloading music video information S'està baixant</string>
-  <string id="20409">Downloading TV show information S'està baixant</string>
+  <string id="20408">S'està baixant la informació del videoclip</string>
+  <string id="20409">S'està baixant la informació del programa de televisió</string>
   <string id="20410">Trailer</string>
   <string id="20411">Flatten</string>
   <string id="20412">Flatten TV shows</string>
   <string id="20413">Get Fanart</string>
   <string id="20414">Show Fanart in video and music libraries</string>
   <string id="20415">S'està cercant nou contingut</string>
-  <string id="20416">First aired</string>
-  <string id="20417">Writer</string>
-  <string id="20418">Clean file and folder names</string>
+  <string id="20416">Emés per primera vegada</string>
+  <string id="20417">Escriptor</string>
+  <string id="20418">Neteja el nom dels fitxers i les carpetes</string>
 
   <string id="20420">Mai</string>
   <string id="20421">Si només hi ha una temporada</string>
@@ -1871,9 +1879,9 @@
   <string id="20443">Do you want to refresh info for all</string>
   <string id="20444">items within this path?</string>
   <string id="20445">Fanart</string>
-  <string id="20446">Locally stored information found.</string>
+  <string id="20446">S'ha trobat la informació emmagatzemada localment.</string>
   <string id="20447">Ignore and refresh from internet?</string>
-  <string id="20448">Could not download information</string>
+  <string id="20448">No s'ha pogut baixar la informació</string>
   <string id="20449">No es pot connectar al servidor remot</string>
   <string id="20450">Would you like to continue scanning?</string>
   <string id="20451">Països</string>
@@ -1881,9 +1889,10 @@
   <string id="20453">episodis</string>
   <string id="20454">Oient</string>
   <string id="20455">Oients</string>
+  <string id="20456">Set movieset fanart</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
-  <string id="21330">Show hidden files and directories</string>
+  <string id="21330">Mostra els fitxers i directoris ocults</string>
 
   <string id="21331">Client de TuxBox</string>
   <string id="21332">WARNING: Target TuxBox device is in recording-mode!</string>
@@ -1894,18 +1903,18 @@
   <string id="21337">Unitat de TuxBox</string>
   <!-- up to 21355 is reserved for the TuxBox Client!! !-->
 
-  <string id="21359">Add media share...</string>
-  <string id="21360">Share video and music libraries through UPnP</string>
+  <string id="21359">Afegeix recurs compartit...</string>
+  <string id="21360">Comparteix les biblioteques de vídeo i música a través de UPnP</string>
 
-  <string id="21364">Edit media share</string>
-  <string id="21365">Remove media share</string>
+  <string id="21364">Edita recurs compartit</string>
+  <string id="21365">Elimina recurs compartit</string>
   <string id="21366">Carpeta del subtítol</string>
   <string id="21367">Movie &amp; alternate subtitle directory</string>
 
   <string id="21369">Activa el ratolí</string>
-  <string id="21370">Play navigation sounds during media playback</string>
+  <string id="21370">Reprodueix els sons de navegació durant la reproducció</string>
   <string id="21371">Miniatura</string>
-  <string id="21372">Forced DVD player region</string>
+  <string id="21372">Força la regió del reproductor DVD</string>
   <string id="21373">Sortida de vídeo</string>
   <string id="21374">Aspecte del vídeo</string>
   <string id="21375">Normal</string>
@@ -1915,8 +1924,8 @@
   <string id="21379">Activa 720p</string>
   <string id="21380">Activa 1080i</string>
   <string id="21381">Introduïu el nom de la nova llista de reproducció</string>
-  <string id="21382">Show "Add source" buttons in file lists</string>
-  <string id="21383">Enable scrollbars</string>
+  <string id="21382">Mostra els botons "Afegeix font" en les llistes de fitxers</string>
+  <string id="21383">Activa les barres de desplaçament</string>
   <string id="21384">Make watched filtering a toggle in video library</string>
   <string id="21385">Obre</string>
   <string id="21386">Acoustic management level</string>
@@ -1992,7 +2001,7 @@
   <string id="21801">Cami del fitxer</string>
   <string id="21802">Mida del fitxer</string>
   <string id="21803">Data/Hora fitxer</string>
-  <string id="21804">Slide index</string>
+  <string id="21804">Índex de diapositives</string>
   <string id="21805">Resolució</string>
   <string id="21806">Comentari</string>
   <string id="21807">Color - B/N</string>
@@ -2120,7 +2129,7 @@
   <string id="23050">Activa el teletext</string>
   <string id="23051">Part %i</string>
   <string id="23052">S'està emplenant la memòria intermèdia amb %i bytes</string>
-  <string id="23053">S'està parant</string>
+  <string id="23053">S'està aturant</string>
   <string id="23054">S'està executant</string>
 
   <!-- strings 23100 thru 23150 reserved for external player -->
@@ -2156,7 +2165,7 @@
   <string id="24027">El temps</string>
   <string id="24028">Weather.com (estàndard)</string>
   <string id="24030">Aquest complement no es pot configurar</string>
-  <string id="24031">Hi ha un error carregant la configuració</string>
+  <string id="24031">S'ha produït un error en carregar la configuració</string>
   <string id="24032">Tots els complements</string>
   <string id="24033">Aconsegueix complements</string>
   <string id="24034">Comprova si hi ha actualitzacions</string>
@@ -2166,18 +2175,18 @@
   <string id="24038">Instal·la</string>
   <string id="24039">Complements desactivats</string>
   <string id="24040">(Esborra la configuració actual)</string>
-  <string id="24041">Instal·lar desde fitxer zip</string>
+  <string id="24041">Instal·la des d'un fitxer zip</string>
   <string id="24042">S'està baixant %i%%</string>
   <string id="24043">Actualitzacions disponibles</string>
-  <string id="24044">Dependencies not met</string>
-  <string id="24045">Add-on does not have the correct structure</string>
+  <string id="24044">Les dependències no es compleixen</string>
+  <string id="24045">El complement no té l'estructura correcta</string>
 
   <string id="24050">Complements disponibles</string>
   <string id="24051">Versió:</string>
   <string id="24052">Aclaració</string>
   <string id="24053">Llicència:</string>
   <string id="24054">Registre de canvis</string>
-  <string id="24059">Voleu activar aquest complement??</string>
+  <string id="24059">Voleu activar aquest complement?</string>
   <string id="24060">Voleu desactivar aquest complement?</string>
   <string id="24061">Hi ha una actualització per el complement disponible</string>
   <string id="24062">Complements activats</string>
@@ -2195,7 +2204,7 @@
   <string id="24073">No s'ha pogut connectar</string>
   <string id="24074">És necessari reiniciar</string>
   <string id="24075">Desactiva</string>
-  <string id="24080">Try to reconnect?</string>
+  <string id="24080">Voleu tornar a provar de connectar?</string>
   <string id="24089">Reinicia el complement</string>
   <string id="24090">Bloqueja el gestor de complements</string>
 
@@ -2284,11 +2293,11 @@
   <string id="33079">M'agrada</string>
   <string id="33080">No m'agrada</string>
   <string id="33081">Aquest fitxer està agrupat, seleccioneu la part que desitgeu reproduir.</string>
-  <string id="33082">Camí al script</string>
+  <string id="33082">Camí a l'script</string>
   <string id="33083">Activa el botó d'scripts personalitzats</string>
 
   <string id="33100">No s'ha pogut iniciar</string>
-  <string id="33101">Webserver</string>
+  <string id="33101">Servidor web</string>
   <string id="33102">Servidor d'esdeveniments</string>
   <string id="33103">Servidor remot de comunicació</string>
 
@@ -2300,7 +2309,7 @@
   <string id="34004">VAAPI</string>
   <string id="34005">Flac</string>
 
-  <string id="34100">Speaker Configuration</string>
+  <string id="34100">Configuració dels altaveus</string>
   <string id="34101">2.0</string>
   <string id="34102">2.1</string>
   <string id="34103">3.0</string>
@@ -2311,4 +2320,8 @@
   <string id="34108">5.1</string>
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
+  <!-- 34112-34200 reserved for future use -->
+  
+  <string id="34201">Can't find a next item to play</string>
+  <string id="34202">Can't find a previous item to play</string>
 </strings>

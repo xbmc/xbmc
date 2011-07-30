@@ -27,7 +27,7 @@
 #include "guilib/DirtyRegion.h"
 #include "lib/tinyXML/tinyxml.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
+#include "threads/SystemClock.h"
 #include "GUIInfoManager.h"
 
 #include "pvr/epg/PVREpgInfoTag.h"
@@ -782,7 +782,7 @@ void CGUIEPGGridContainer::UpdateItems()
 
   blockDuration.SetDateTimeSpan(0, 0, MINSPERBLOCK, 0);
 
-  long tick(CTimeUtils::GetTimeMS());
+  long tick(XbmcThreads::SystemClockMillis());
 
   for (unsigned int row = 0; row < m_channelItems.size(); ++row)
   {
@@ -872,7 +872,7 @@ void CGUIEPGGridContainer::UpdateItems()
 
   /******************************************* END ******************************************/
 
-  CLog::Log(LOGDEBUG, "%s completed successfully in %u ms", __FUNCTION__, (unsigned int)(CTimeUtils::GetTimeMS()-tick));
+  CLog::Log(LOGDEBUG, "%s completed successfully in %u ms", __FUNCTION__, (unsigned int)(XbmcThreads::SystemClockMillis()-tick));
 
   m_channels = (int)m_epgItemsPtr.size();
   m_item = GetItem(m_channelCursor);

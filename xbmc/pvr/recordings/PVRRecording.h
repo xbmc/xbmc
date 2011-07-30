@@ -46,7 +46,7 @@ namespace PVR
   {
   public:
     int           m_iClientId;      /*!< ID of the backend */
-    int           m_iClientIndex;   /*!< index number of the recording on the client, -1 for unknown */
+    CStdString    m_strRecordingId; /*!< unique id of the recording on the client */
     CStdString    m_strChannelName; /*!< name of the channel this was recorded from */
     CDateTimeSpan m_duration;       /*!< duration of this recording */
     int           m_iPriority;      /*!< priority of this recording */

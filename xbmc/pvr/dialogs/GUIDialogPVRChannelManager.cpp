@@ -456,7 +456,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
   clients.push_back(XBMC_VIRTUAL_CLIENTID);
 
   CLIENTMAP clientMap;
-  if (g_PVRClients->GetActiveClients(&clientMap) > 0)
+  if (g_PVRClients->GetConnectedClients(&clientMap) > 0)
   {
     CLIENTMAPITR itr;
     for (itr = clientMap.begin() ; itr != clientMap.end(); itr++)
@@ -706,7 +706,7 @@ void CGUIDialogPVRChannelManager::Update()
     if (channel->ClientID() == XBMC_VIRTUAL_CLIENTID) /* XBMC internal */
       clientName = g_localizeStrings.Get(19209);
     else
-      clientName = g_PVRClients->GetClientName(channel->ClientID());
+      g_PVRClients->GetClientName(channel->ClientID(), clientName);
     channelFile->SetProperty("ClientName", clientName);
 
     m_channelItems->Add(channelFile);

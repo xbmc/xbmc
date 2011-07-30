@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "LastFmManager.h"
 #include "Album.h"
 #include "Artist.h"
@@ -206,7 +207,7 @@ void CLastFmManager::CloseProgressDialog()
 
 bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 {
-  unsigned int start = CTimeUtils::GetTimeMS();
+  unsigned int start = XbmcThreads::SystemClockMillis();
 
   InitProgressDialog(stationUrl.Get());
 
@@ -258,7 +259,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
     g_application.m_strPlayListFile = stationUrl.Get(); //needed to highlight the playing item
     g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
     g_playlistPlayer.Play(0);
-    CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
+    CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - start));
     CloseProgressDialog();
     return true;
   }
@@ -268,7 +269,7 @@ bool CLastFmManager::ChangeStation(const CURL& stationUrl)
 
 bool CLastFmManager::RequestRadioTracks()
 {
-  unsigned int start = CTimeUtils::GetTimeMS();
+  unsigned int start = XbmcThreads::SystemClockMillis();
   CStdString url;
   CStdString html;
   url.Format("http://" + m_RadioBaseUrl + m_RadioBasePath + "/xspf.php?sk=%s&discovery=0&desktop=", m_RadioSession);
@@ -408,13 +409,13 @@ bool CLastFmManager::RequestRadioTracks()
   //end parse
   CSingleLock lock(m_lockCache);
   int iNrCachedTracks = m_RadioTrackQueue->size();
-  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
+  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - start));
   return iNrCachedTracks > 0;
 }
 
 void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
 {
-  unsigned int start = CTimeUtils::GetTimeMS();
+  unsigned int start = XbmcThreads::SystemClockMillis();
   CSingleLock lock(m_lockCache);
   int iNrCachedTracks = m_RadioTrackQueue->size();
   CFileCurl http;
@@ -459,7 +460,7 @@ void CLastFmManager::CacheTrackThumb(const int nrInitialTracksToAdd)
       item->GetMusicInfoTag()->SetLoaded();
     }
   }
-  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
+  CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - start));
 }
 
 void CLastFmManager::AddToPlaylist(const int nrTracks)
@@ -500,13 +501,13 @@ void CLastFmManager::OnSongChange(CFileItem& newSong)
     }
     else
     {
-      unsigned int start = CTimeUtils::GetTimeMS();
+      unsigned int start = XbmcThreads::SystemClockMillis();
       ReapSongs();
       MovePlaying();
       Update();
       SendUpdateMessage();
 
-      CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(CTimeUtils::GetTimeMS() - start));
+      CLog::Log(LOGDEBUG, "%s: Done (time: %i ms)", __FUNCTION__, (int)(XbmcThreads::SystemClockMillis() - start));
     }
   }
   m_CurrentSong.IsLoved = false;

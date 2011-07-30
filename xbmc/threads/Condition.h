@@ -21,44 +21,13 @@
 
 #pragma once
 
-#include <boost/thread/condition_variable.hpp>
+#include "threads/platform/Condition.h"
 
-#include "threads/SingleLock.h"
+#include "threads/SystemClock.h"
+#include <stdio.h>
 
 namespace XbmcThreads
 {
-  /**
-   * This is a thin wrapper around boost::condition_variable. It is subject
-   *  to "spurious returns" as it is built on boost which is built on posix
-   *  on many of our platforms.
-   */
-  class ConditionVariable
-  {
-  private:
-    boost::condition_variable_any impl;
-
-    // explicitly deny copying
-    inline ConditionVariable(const ConditionVariable& other) {}
-    inline ConditionVariable& operator=(ConditionVariable& other) { return *this; }
-  public:
-    inline ConditionVariable() {}
-
-    enum TimedWaitResponse { TW_OK = 0, TW_TIMEDOUT = 1, TW_INTERRUPTED=-1, TW_ERROR=-2 };
-
-    template<typename L> inline void wait(L& lock) { impl.wait(lock); }
-
-    template<typename L> inline TimedWaitResponse wait(L& lock, int milliseconds)
-    {
-      ConditionVariable::TimedWaitResponse ret = TW_OK;
-      try { ret = (impl.timed_wait(lock, boost::posix_time::milliseconds(milliseconds))) ? TW_OK : TW_TIMEDOUT; }
-      catch (boost::thread_interrupted ) { ret = TW_INTERRUPTED; }
-      catch (...) { ret = TW_ERROR; }
-      return ret;
-    }
-
-    inline void notifyAll() { impl.notify_all(); }
-    inline void notify() { impl.notify_one(); }
-  };
 
   /**
    * This is a condition variable along with its predicate. This allows the use of a 
@@ -72,26 +41,30 @@ namespace XbmcThreads
    */
   template <typename P> class TightConditionVariable
   {
-    ConditionVariable cond;
+    ConditionVariable& cond;
     P predicate;
-  public:
-    inline TightConditionVariable(P predicate_) : predicate(predicate_) {}
-    template <typename L> inline void wait(L& lock) { while(!predicate) cond.wait(lock); }
 
-    template <typename L> inline ConditionVariable::TimedWaitResponse wait(L& lock, int milliseconds)
+  public:
+    inline TightConditionVariable(ConditionVariable& cv, P predicate_) : cond(cv), predicate(predicate_) {}
+
+    template <typename L> inline void wait(L& lock) { while(!predicate) cond.wait(lock); }
+    template <typename L> inline bool wait(L& lock, unsigned long milliseconds)
     {
-      ConditionVariable::TimedWaitResponse ret = ConditionVariable::TW_OK;
-      boost::system_time const timeout=boost::get_system_time() + boost::posix_time::milliseconds(milliseconds);
-      while ((!predicate) && ret != ConditionVariable::TW_TIMEDOUT)
+      bool ret = true;
+      if (!predicate)
       {
-        cond.wait(lock,milliseconds);
-        if (milliseconds)
+        if (!milliseconds)
         {
-          if ((!predicate) && boost::get_system_time() > timeout)
-            ret = ConditionVariable::TW_TIMEDOUT;
+          cond.wait(lock,milliseconds /* zero */);
+          return !(!predicate); // eh? I only require the ! operation on P
         }
         else
-          ret = (!predicate) ? ConditionVariable::TW_TIMEDOUT : ConditionVariable::TW_OK;
+        {
+          EndTime endTime((unsigned int)milliseconds);
+          for (bool notdone = true; notdone && ret == true;
+               ret = (notdone = (!predicate)) ? ((milliseconds = endTime.MillisLeft()) != 0) : true)
+            cond.wait(lock,milliseconds);
+        }
       }
       return ret;
     }

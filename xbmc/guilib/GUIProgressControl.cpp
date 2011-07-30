@@ -21,6 +21,9 @@
 
 #include "GUIProgressControl.h"
 #include "GUIInfoManager.h"
+#include "GUIListItem.h"
+#include "GUIWindowManager.h"
+#include "FileItem.h"
 
 CGUIProgressControl::CGUIProgressControl(int parentID, int controlID,
                                          float posX, float posY, float width,
@@ -38,6 +41,7 @@ CGUIProgressControl::CGUIProgressControl(int parentID, int controlID,
     , m_guiOverlay(posX, posY, width, height, overlayTexture)
 {
   m_fPercent = 0;
+  m_fUpdatedInfo = -1;
   m_iInfoCode = 0;
   ControlType = GUICONTROL_PROGRESS;
   m_bReveal = reveal;
@@ -61,7 +65,9 @@ void CGUIProgressControl::Process(unsigned int currentTime, CDirtyRegionList &di
   if (!IsDisabled())
   {
     float percent = m_fPercent;
-    if (m_iInfoCode)
+    if (!m_strProperty.IsEmpty() && m_fUpdatedInfo >= 0)
+      m_fPercent = m_fUpdatedInfo;
+    else if (m_iInfoCode)
       m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode);
     if (m_fPercent < 0.0f) m_fPercent = 0.0f;
     if (m_fPercent > 100.0f) m_fPercent = 100.0f;
@@ -300,4 +306,31 @@ CStdString CGUIProgressControl::GetDescription() const
   CStdString percent;
   percent.Format("%2.f", m_fPercent);
   return percent;
+}
+
+void CGUIProgressControl::SetProperty(const CStdString &strProperty)
+{
+  m_strProperty = strProperty;
+}
+
+void CGUIProgressControl::UpdateInfo(const CGUIListItem *item)
+{
+  if (!m_strProperty.IsEmpty())
+  {
+    if (item && item->HasProperty(m_strProperty))
+    {
+      m_fUpdatedInfo = item->GetPropertyDouble(m_strProperty);
+    }
+    else if (!item)
+    {
+      CGUIWindow *window = g_windowManager.GetWindow(m_parentID);
+      if (window && window->HasListItems())
+      {
+         CFileItemPtr listItem = window->GetCurrentListItem();
+         m_fUpdatedInfo = listItem->GetPropertyDouble(m_strProperty);
+      }
+    }
+  }
+
+  CGUIControl::UpdateInfo(item);
 }

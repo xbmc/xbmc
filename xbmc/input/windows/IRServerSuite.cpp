@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "IRServerSuite.h"
 #include "IrssMessage.h"
 #include "input/ButtonTranslator.h"
@@ -31,7 +32,7 @@
 
 CRemoteControl g_RemoteControl;
 
-CRemoteControl::CRemoteControl()
+CRemoteControl::CRemoteControl() : CThread("CRemoteControl")
 {
   m_socket = INVALID_SOCKET;
   m_bInitialized = false;
@@ -78,20 +79,19 @@ void CRemoteControl::Initialize()
   if (m_isConnecting || m_bInitialized) return;
   //trying to connect when there is nothing to connect to is kinda slow so kick it off in a thread.
   Create();
-  SetName("CRemoteControl");
 }
 
 void CRemoteControl::Process()
 {
-  DWORD iMsRetryDelay = 5000;
-  DWORD time = CTimeUtils::GetTimeMS() - iMsRetryDelay;
+  unsigned int iMsRetryDelay = 5000;
+  unsigned int time = XbmcThreads::SystemClockMillis() - iMsRetryDelay;
   // try to connect 60 times @ a 5 second interval (5 minutes)
   // multiple tries because irss service might be up and running a little later then xbmc on boot.
   while (!m_bStop && m_iAttempt <= 60)
   {
-    if (CTimeUtils::GetTimeMS() - time >= iMsRetryDelay)
+    if (XbmcThreads::SystemClockMillis() - time >= iMsRetryDelay)
     {
-      time = CTimeUtils::GetTimeMS();
+      time = XbmcThreads::SystemClockMillis();
       if (Connect())
         break;
 

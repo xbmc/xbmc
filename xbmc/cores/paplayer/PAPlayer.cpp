@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "PAPlayer.h"
 #include "CodecFactory.h"
 #include "GUIInfoManager.h"
@@ -494,13 +495,13 @@ void PAPlayer::ToFFRW(int iSpeed)
 void PAPlayer::UpdateCacheLevel()
 {
   //check cachelevel every .5 seconds
-  if (m_LastCacheLevelCheck + 500 < CTimeUtils::GetTimeMS())
+  if ((XbmcThreads::SystemClockMillis() - m_LastCacheLevelCheck) > 500)
   {
     ICodec* codec = m_decoder[m_currentDecoder].GetCodec();
     if (codec)
     {
       m_CacheLevel = codec->GetCacheLevel();
-      m_LastCacheLevelCheck = CTimeUtils::GetTimeMS();
+      m_LastCacheLevelCheck = XbmcThreads::SystemClockMillis();
       //CLog::Log(LOGDEBUG,"Cachelevel: %i%%", m_CacheLevel);
     }
   }
@@ -887,9 +888,9 @@ void PAPlayer::HandleSeeking()
 {
   if (m_SeekTime != -1)
   {
-    DWORD time = CTimeUtils::GetTimeMS();
+    unsigned int time = XbmcThreads::SystemClockMillis();
     m_timeOffset = m_decoder[m_currentDecoder].Seek(m_SeekTime);
-    CLog::Log(LOGDEBUG, "Seek to time %f took %i ms", 0.001f * m_SeekTime, CTimeUtils::GetTimeMS() - time);
+    CLog::Log(LOGDEBUG, "Seek to time %f took %i ms", 0.001f * m_SeekTime, (int)(XbmcThreads::SystemClockMillis() - time));
     FlushStreams();
     m_SeekTime = -1;
   }

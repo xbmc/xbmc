@@ -365,7 +365,7 @@ const CPVRChannel *CPVRChannelGroup::GetLastPlayedChannel(void) const
     PVRChannelGroupMember groupMember = at(iChannelPtr);
 
     /* check whether the client is loaded */
-    if (!g_PVRClients->IsValidClient(groupMember.channel->ClientID()))
+    if (!g_PVRClients->IsConnectedClient(groupMember.channel->ClientID()))
       continue;
 
     /* always get the first channel */
@@ -757,6 +757,23 @@ bool CPVRChannelGroup::IsGroupMember(const CPVRChannel *channel) const
   return bReturn;
 }
 
+bool CPVRChannelGroup::IsGroupMember(int iChannelUid) const
+{
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    if (iChannelUid == at(iChannelPtr).channel->UniqueID())
+    {
+      bReturn = true;
+      break;
+    }
+  }
+
+  return bReturn;
+}
+
 const CPVRChannel *CPVRChannelGroup::GetFirstChannel(void) const
 {
   CPVRChannel *channel = NULL;
@@ -820,7 +837,7 @@ bool CPVRChannelGroup::Renumber(void)
 {
   bool bReturn(false);
   unsigned int iChannelNumber(0);
-  bool bUseBackendChannelNumbers(g_guiSettings.GetBool("pvrmanager.usebackendchannelnumbers") && g_PVRClients->GetActiveClientsAmount() == 1);
+  bool bUseBackendChannelNumbers(g_guiSettings.GetBool("pvrmanager.usebackendchannelnumbers") && g_PVRClients->EnabledClientAmount() == 1);
   CSingleLock lock(m_critSection);
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size();  iChannelPtr++)

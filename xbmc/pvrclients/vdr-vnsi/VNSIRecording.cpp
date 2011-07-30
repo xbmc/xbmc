@@ -48,7 +48,7 @@ bool cVNSIRecording::OpenRecording(const PVR_RECORDING& recinfo)
 
   cRequestPacket vrp;
   if (!vrp.init(VNSI_RECSTREAM_OPEN) ||
-      !vrp.add_U32(recinfo.iClientIndex))
+      !vrp.add_U32(atoi(recinfo.strRecordingId)))
   {
     return false;
   }

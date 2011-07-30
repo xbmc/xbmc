@@ -233,9 +233,14 @@ void CEpgInfoTag::SetPlotOutline(const CStdString &strPlotOutline)
 
 void CEpgInfoTag::SetPlot(const CStdString &strPlot)
 {
-  if (m_strPlot != strPlot)
+
+  CStdString strPlotClean = (m_strPlotOutline.length() > 0 && strPlot.Left(m_strPlotOutline.length()).Equals(m_strPlotOutline)) ?
+    strPlot.Right(strPlot.length() - m_strPlotOutline.length()) :
+    strPlot;
+
+  if (m_strPlot != strPlotClean)
   {
-    m_strPlot = strPlot;
+    m_strPlot = strPlotClean;
     m_bChanged = true;
     UpdatePath();
   }
@@ -471,4 +476,22 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */, bool bLastUpdate /* =
   database->Close();
 
   return bReturn;
+}
+
+float CEpgInfoTag::ProgressPercentage(void) const
+{
+  int fReturn(0);
+  int iDuration;
+  time_t currentTime, startTime, endTime;
+  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
+  m_startTime.GetAsTime(startTime);
+  m_endTime.GetAsTime(endTime);
+  iDuration = endTime - startTime > 0 ? endTime - startTime : 3600;
+
+  if (currentTime >= startTime && currentTime <= endTime)
+    fReturn = ((float) currentTime - startTime) / iDuration * 100;
+  else if (currentTime > endTime)
+    fReturn = 100;
+
+  return fReturn;
 }

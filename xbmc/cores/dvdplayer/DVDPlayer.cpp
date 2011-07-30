@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "DVDPlayer.h"
 
@@ -299,7 +300,7 @@ void CSelectionStreams::Update(CDVDInputStream* input, CDVDDemux* demuxer)
 
 CDVDPlayer::CDVDPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
-      CThread(),
+      CThread("CDVDPlayer"),
       m_CurrentAudio(STREAM_AUDIO),
       m_CurrentVideo(STREAM_VIDEO),
       m_CurrentSubtitle(STREAM_SUBTITLE),
@@ -426,7 +427,6 @@ bool CDVDPlayer::IsPlaying() const
 
 void CDVDPlayer::OnStartup()
 {
-  CThread::SetName("CDVDPlayer");
   m_CurrentVideo.Clear();
   m_CurrentAudio.Clear();
   m_CurrentSubtitle.Clear();
@@ -1001,10 +1001,11 @@ void CDVDPlayer::Process()
 
   // make sure all selected stream have data on startup
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
-      && !g_PVRManager.IsPlayingRecording())
+      && !g_PVRManager.IsPlayingRecording() &&
+      g_advancedSettings.m_bPVRCacheInDvdPlayer)
   {
     SetCaching(CACHESTATE_PVR);
-    m_scanStart = CTimeUtils::GetTimeMS();
+    m_scanStart = XbmcThreads::SystemClockMillis();
   }
   else
     SetCaching(CACHESTATE_FLUSH);
@@ -1058,7 +1059,7 @@ void CDVDPlayer::Process()
 
     if (m_ChannelEntryTimeOut > 0 && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
     {
-      if ((int) CTimeUtils::GetTimeMS() - m_ChannelEntryTimeOut > g_guiSettings.GetInt("pvrplayback.channelentrytimeout"))
+      if ((int) XbmcThreads::SystemClockMillis() - m_ChannelEntryTimeOut > g_guiSettings.GetInt("pvrplayback.channelentrytimeout"))
       {
         m_ChannelEntryTimeOut = 0;
         CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
@@ -1131,7 +1132,7 @@ void CDVDPlayer::Process()
         {
           if (m_dvd.iDVDStillTime > 0)
           {
-            if (CTimeUtils::GetTimeMS() >= (m_dvd.iDVDStillStartTime + m_dvd.iDVDStillTime))
+            if ((XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime) >= m_dvd.iDVDStillTime)
             {
               m_dvd.iDVDStillTime = 0;
               m_dvd.iDVDStillStartTime = 0;
@@ -1155,7 +1156,7 @@ void CDVDPlayer::Process()
       {
         CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
         unsigned int iTimeout = (unsigned int) g_guiSettings.GetInt("pvrplayback.scantime");
-        if (m_scanStart && CTimeUtils::GetTimeMS() - m_scanStart >= iTimeout*1000)
+        if (m_scanStart && XbmcThreads::SystemClockMillis() - m_scanStart >= iTimeout*1000)
         {
           CLog::Log(LOGERROR,"CDVDPlayer - %s - no video or audio data available after %i seconds, playback stopped",
               __FUNCTION__, iTimeout);
@@ -2256,7 +2257,7 @@ void CDVDPlayer::HandleMessages()
             if (bShowPreview)
             {
               UpdateApplication(0);
-              m_ChannelEntryTimeOut = CTimeUtils::GetTimeMS();
+              m_ChannelEntryTimeOut = XbmcThreads::SystemClockMillis();
             }
             else
             {
@@ -2265,6 +2266,11 @@ void CDVDPlayer::HandleMessages()
               SAFE_DELETE(m_pDemuxer);
               SetCaching(CACHESTATE_PVR);
             }
+          }
+          else
+          {
+            CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
+            CloseFile();
           }
         }
       }
@@ -2316,7 +2322,7 @@ void CDVDPlayer::SetCaching(ECacheState state)
     m_dvdPlayerVideo.SendMessage(new CDVDMsg(CDVDMsg::PLAYER_STARTED), 1);
 
     if (state == CACHESTATE_PVR)
-      m_scanStart = CTimeUtils::GetTimeMS();
+      m_scanStart = XbmcThreads::SystemClockMillis();
   }
 
   if(state == CACHESTATE_PLAY
@@ -3192,7 +3198,7 @@ int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
           else
             m_dvd.iDVDStillTime = 0;
 
-          m_dvd.iDVDStillStartTime = CTimeUtils::GetTimeMS();
+          m_dvd.iDVDStillStartTime = XbmcThreads::SystemClockMillis();
 
           /* adjust for the output delay in the video queue */
           DWORD time = 0;
@@ -3802,7 +3808,7 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     {
       if(m_dvd.state == DVDSTATE_STILL)
       {
-        m_State.time       = CTimeUtils::GetTimeMS() - m_dvd.iDVDStillStartTime;
+        m_State.time       = XbmcThreads::SystemClockMillis() - m_dvd.iDVDStillStartTime;
         m_State.time_total = m_dvd.iDVDStillTime;
       }
 

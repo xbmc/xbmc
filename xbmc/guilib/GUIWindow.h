@@ -31,6 +31,7 @@
 
 #include "GUIControlGroup.h"
 #include "boost/shared_ptr.hpp"
+#include "threads/CriticalSection.h"
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
@@ -73,9 +74,10 @@ public:
  \ingroup winmsg
  \brief
  */
-class CGUIWindow : public CGUIControlGroup
+class CGUIWindow : public CGUIControlGroup, protected CCriticalSection
 {
 public:
+
   enum WINDOW_TYPE { WINDOW = 0, MODAL_DIALOG, MODELESS_DIALOG, BUTTON_MENU, SUB_MENU };
 
   CGUIWindow(int id, const CStdString &xmlFile);
@@ -143,6 +145,9 @@ public:
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };
   virtual void SetInitialVisibility();
+  virtual bool IsVisible() const { return true; }; // windows are always considered visible as they implement their own
+                                                   // versions of UpdateVisibility, and are deemed visible if they're in
+                                                   // the window manager's active list.
 
   enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
 
@@ -283,14 +288,16 @@ protected:
     }
   };
 
-  std::map<CStdString, CStdString, icompare> m_mapProperties;
-
   std::vector<CGUIActionDescriptor> m_loadActions;
   std::vector<CGUIActionDescriptor> m_unloadActions;
 
   bool m_manualRunActions;
 
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
+
+private:
+  std::map<CStdString, CStdString, icompare> m_mapProperties;
+
 };
 
 #endif

@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "threads/Condition.h"
+#include "threads/SingleLock.h"
 
 // forward declare the CEventGroup
 namespace XbmcThreads
@@ -41,7 +42,7 @@ namespace XbmcThreads
  *
  * This class manages 'spurious returns' from the condition variable.
  */
-class CEvent
+class CEvent : public XbmcThreads::NonCopyable
 {
   bool manualReset;
   volatile bool signaled;
@@ -55,6 +56,7 @@ class CEvent
    *  predicate being monitored to include both the signaled and interrupted
    *  states.
    */
+  XbmcThreads::ConditionVariable actualCv;
   XbmcThreads::TightConditionVariable<volatile bool&> condVar;
   CCriticalSection mutex;
 
@@ -66,13 +68,9 @@ class CEvent
   // helper for the two wait methods
   inline bool prepReturn() { bool ret = signaled; if (!manualReset && numWaits == 0) signaled = false; return ret; }
 
-  // block the ability to copy
-  inline CEvent& operator=(const CEvent& src) { return *this; }
-  inline CEvent(const CEvent& other): condVar(signaled) {}
-
 public:
   inline CEvent(bool manual = false, bool signaled_ = false) : 
-    manualReset(manual), signaled(signaled_), numWaits(0), groups(NULL), condVar(signaled) {}
+    manualReset(manual), signaled(signaled_), numWaits(0), groups(NULL), condVar(actualCv,signaled) {}
 
   inline void Reset() { CSingleLock lock(mutex); signaled = false; }
   void Set();
@@ -93,6 +91,12 @@ public:
   inline bool Wait()
   { CSingleLock lock(mutex); numWaits++; condVar.wait(mutex); numWaits--; return prepReturn(); }
 
+  /**
+   * This is mostly for testing. It allows a thread to make sure there are 
+   *  the right amount of other threads waiting.
+   */
+  inline int getNumWaits() { CSingleLock lock(mutex); return numWaits; }
+
 };
 
 namespace XbmcThreads
@@ -102,10 +106,11 @@ namespace XbmcThreads
    * It is equivalent to WaitOnMultipleObject that returns when "any" Event
    * in the group signaled.
    */
-  class CEventGroup
+  class CEventGroup : public NonCopyable
   {
     std::vector<CEvent*> events;
     CEvent* signaled;
+    XbmcThreads::ConditionVariable actualCv;
     XbmcThreads::TightConditionVariable<CEvent*&> condVar;
     CCriticalSection mutex;
 
@@ -149,5 +154,12 @@ namespace XbmcThreads
      * NULL.
      */
     CEvent* wait(unsigned int milliseconds);
+
+    /**
+     * This is mostly for testing. It allows a thread to make sure there are 
+     *  the right amount of other threads waiting.
+     */
+    inline int getNumWaits() { CSingleLock lock(mutex); return numWaits; }
+
   };
 }

@@ -296,7 +296,7 @@ extern "C" {
    * @brief Representation of a recording.
    */
   typedef struct PVR_RECORDING {
-    int           iClientIndex;         /*!< @brief (required) index number of the recording on the client */
+    const char *  strRecordingId;       /*!< @brief (required) unique id of the recording on the client. */
     const char *  strTitle;             /*!< @brief (required) the title of this recording */
     const char *  strStreamURL;         /*!< @brief (required) stream URL to access this recording */
     const char *  strDirectory;         /*!< @brief (optional) directory of this recording on the client */

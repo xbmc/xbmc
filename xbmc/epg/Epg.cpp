@@ -433,9 +433,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
 
 bool CEpg::Load(void)
 {
-  bool bReturn = false;
-  CSingleLock lock(m_critSection);
-
+  bool bReturn(false);
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
   if (!database || !database->Open())
@@ -444,6 +442,7 @@ bool CEpg::Load(void)
     return bReturn;
   }
 
+  CSingleLock lock(m_critSection);
   int iEntriesLoaded = database->Get(*this);
   if (iEntriesLoaded <= 0)
   {
@@ -459,6 +458,7 @@ bool CEpg::Load(void)
     bReturn = true;
   }
 
+  m_bLoaded = true;
   database->Close();
 
   return bReturn;
@@ -575,12 +575,18 @@ const CDateTime &CEpg::GetLastScanTime(void)
   return m_lastScanTime;
 }
 
-bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
+bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bLoadFromDb)
 {
-  bool bGrabSuccess = true;
-  bool bUpdate = false;
+  bool bGrabSuccess(true);
+  bool bUpdate(false);
 
-  CSingleLock lock(m_critSection);
+  /* load the entries from the db first */
+  if (!m_bLoaded && bLoadFromDb)
+    Load();
+
+  /* clean up if needed */
+  if (m_bLoaded)
+    Cleanup();
 
   /* get the last update time from the database */
   CDateTime lastScanTime = GetLastScanTime();
@@ -592,10 +598,13 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
   lastScanTime.GetAsTime(iLastUpdate);
   bUpdate = (iNow > iLastUpdate + iUpdateTime);
 
-  lock.Leave();
-
   if (bUpdate)
     bGrabSuccess = LoadFromClients(start, end);
+
+  if (bGrabSuccess)
+    m_bLoaded = true;
+  else
+    CLog::Log(LOGERROR, "EPG - %s - failed to update table '%s'", __FUNCTION__, Name().c_str());
 
   return bGrabSuccess;
 }
@@ -702,6 +711,8 @@ bool CEpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
 
   if (bUpdateDb)
     bReturn = Persist(false);
+  else if (m_iEpgID <= 0)
+    m_iEpgID = g_EpgContainer.NextEpgId();
 
   return bReturn;
 }

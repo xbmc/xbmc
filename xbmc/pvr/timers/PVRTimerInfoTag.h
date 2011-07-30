@@ -140,6 +140,12 @@ namespace PVR
      */
     void QueueNotification(void) const;
 
+    /*!
+     * @brief Get the text for the notification.
+     * @param strText The notification.
+     */
+    void GetNotificationText(CStdString &strText) const;
+
     /* Client control functions */
     bool AddToClient();
     bool DeleteFromClient(bool bForce = false);

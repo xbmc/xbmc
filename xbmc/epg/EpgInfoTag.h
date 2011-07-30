@@ -385,5 +385,10 @@ namespace EPG
      * @return True if the tag was persisted correctly, false otherwise.
      */
     bool Persist(bool bSingleUpdate = true, bool bLastUpdate = false);
+
+    /*!
+     * @return The current progress of this tag.
+     */
+    float ProgressPercentage(void) const;
   };
 }

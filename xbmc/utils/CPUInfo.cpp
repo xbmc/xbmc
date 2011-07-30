@@ -151,7 +151,10 @@ CCPUInfo::CCPUInfo(void)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/THR0/temperature", "r");
   if (m_fProcTemperature == NULL)
     m_fProcTemperature = fopen("/proc/acpi/thermal_zone/TZ0/temperature", "r");
-
+  // read from the new location of the temperature data on new kernels, 2.6.39, 3.0 etc
+  if (m_fProcTemperature == NULL)   
+    m_fProcTemperature = fopen("/sys/class/hwmon/hwmon0/temp1_input", "r");
+  
   m_fCPUInfo = fopen("/proc/cpuinfo", "r");
   m_cpuCount = 0;
   if (m_fCPUInfo)
@@ -369,9 +372,19 @@ CTemperature CCPUInfo::getTemperature()
     // procfs is deprecated in the linux kernel, we should move away from
     // using it for temperature data.  It doesn't seem that sysfs has a
     // general enough interface to bother implementing ATM.
+    
     rewind(m_fProcTemperature);
     fflush(m_fProcTemperature);
     ret = fscanf(m_fProcTemperature, "temperature: %d %c", &value, &scale);
+    
+    // read from the temperature file of the new kernels
+    if (!ret)
+    {
+      ret = fscanf(m_fProcTemperature, "%d", &value);
+      value = value / 1000;
+      scale = 'c';
+      ret++;
+    }
   }
 
   if (ret != 2)
