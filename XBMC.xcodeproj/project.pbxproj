@@ -382,6 +382,10 @@
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
+		4308680413E3F64100698436 /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
+		4308680913E3F64C00698436 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
+		4308680D13E3F65700698436 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
+		4308681213E3F66600698436 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE60713D3C89700225F72 /* DVDOverlayCodecTX3G.cpp */; };
 		431AE5D9109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		431AE5DA109C1A63007428C3 /* OverlayRendererUtil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 431AE5D7109C1A63007428C3 /* OverlayRendererUtil.cpp */; };
 		43248C4E0FBE224000B88866 /* LockFree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 83A72B950FBC8E3B00171871 /* LockFree.cpp */; };
@@ -8963,6 +8967,10 @@
 				1830212913B8E2DC00770920 /* controledit.cpp in Sources */,
 				43B0A5D013C64DF900B2382A /* InertialScrollingHandler.cpp in Sources */,
 				7CEE2E5C13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */,
+				4308680413E3F64100698436 /* StreamUtils.cpp in Sources */,
+				4308680913E3F64C00698436 /* SystemClock.cpp in Sources */,
+				4308680D13E3F65700698436 /* Implementation.cpp in Sources */,
+				4308681213E3F66600698436 /* DVDOverlayCodecTX3G.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
