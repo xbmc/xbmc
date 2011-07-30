@@ -533,11 +533,15 @@ PVR_ERROR cPVRClientForTheRecord::GetRecordings(PVR_HANDLE handle)
           for (int recordingindex = 0; recordingindex < nrOfRecordings; recordingindex++)
           {
             cRecording recording;
+            CStdString strRecordingId;
+
             if (FetchRecordingDetails(recordingsbytitleresponse[recordingindex], recording))
             {
               PVR_RECORDING tag;
               memset(&tag, 0 , sizeof(tag));
-              tag.iClientIndex   = iNumRecordings;
+
+              strRecordingId.Format("%i", iNumRecordings);
+              tag.strRecordingId = strRecordingId.c_str(); //TODO: check if we can use recording.RecordingId() directly. XBMC uses the id internally as path name
               tag.strChannelName = recording.ChannelDisplayName();
               tag.iLifetime      = MAXLIFETIME; //TODO: recording.Lifetime();
               tag.iPriority      = 0; //TODO? recording.Priority();
@@ -1007,7 +1011,7 @@ PVR_ERROR cPVRClientForTheRecord::SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 /** Record stream handling */
 bool cPVRClientForTheRecord::OpenRecordedStream(const PVR_RECORDING &recinfo)
 {
-  XBMC->Log(LOG_DEBUG, "->OpenRecordedStream(index=%i)", recinfo.iClientIndex);
+  XBMC->Log(LOG_DEBUG, "->OpenRecordedStream(index=%s)", recinfo.strRecordingId);
 
   return false;
 }
