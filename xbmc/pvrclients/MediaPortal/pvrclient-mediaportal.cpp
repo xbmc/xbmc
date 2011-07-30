@@ -1374,7 +1374,7 @@ bool cPVRClientMediaPortal::OpenRecordedStream(const PVR_RECORDING &recording)
       cRecording myrecording;
       if (myrecording.ParseLine(data))
       {
-        if( myrecording.Index() == recording.iClientIndex)
+        if( myrecording.Index() == atoi(recording.strRecordingId))
         {
           XBMC->Log(LOG_DEBUG, "RECORDING: %s", data.c_str() );
 
@@ -1407,9 +1407,9 @@ bool cPVRClientMediaPortal::OpenRecordedStream(const PVR_RECORDING &recording)
     char           command[256];
 
     if(g_bUseRecordingsDir)
-      snprintf(command, 256, "GetRecordingInfo:%i|False\n", recording.iClientIndex);
+      snprintf(command, 256, "GetRecordingInfo:%s|False\n", recording.strRecordingId);
     else
-      snprintf(command, 256, "GetRecordingInfo:%i|True\n", recording.iClientIndex);
+      snprintf(command, 256, "GetRecordingInfo:%s|True\n", recording.strRecordingId);
     result = SendCommand(command);
 
     if(result.length() > 0)
