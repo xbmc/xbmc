@@ -30,6 +30,9 @@ MERCHANTABILITY ARE HEREBY DISCLAIMED.
 // Thomas Becker Dec 2000: Created
 // Thomas Becker Oct 2006: More error checking in Wait() and EndSynchronized()
 //
+// Jim Carroll Jul 2011: Use include <windows>
+// Jim Carroll Jul 2011: The "Wait" call never cleaned up correctly if it timed
+//  out.
 
 #include<Windows.h>
 #include"assert.h"
@@ -153,11 +156,11 @@ DWORD FairMonitor::Wait(
   std::deque<HANDLE>::const_iterator it_end = m_deqWaitSet.end();
   for ( std::deque<HANDLE>::const_iterator it = m_deqWaitSet.begin(); it < it_end; it++ )
   {
-	  if ((*it) == hWaitEvent)
-	  {
-		  m_deqWaitSet.erase(it);
-		  break;
-	  }
+     if ((*it) == hWaitEvent)
+     {
+        m_deqWaitSet.erase(it);
+        break;
+     }
   }
   ::LeaveCriticalSection(&m_critsecWaitSetProtection);
 

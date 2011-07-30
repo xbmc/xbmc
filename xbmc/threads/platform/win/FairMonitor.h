@@ -31,6 +31,7 @@ MERCHANTABILITY ARE HEREBY DISCLAIMED.
 // Thomas Becker Dec 2000: Created
 // Thomas Becker Oct 2006: More error checking in Wait() and EndSynchronized()
 //
+// Jim Carroll Jul 2011: Use include <windows>
 
 // Multiple inclusion protection
 //
