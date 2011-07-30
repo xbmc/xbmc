@@ -68,7 +68,11 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
+  {
+    delete XBMC;
+    XBMC = NULL;
     return ADDON_STATUS_UNKNOWN;
+  }
 
   GUI = new CHelper_libXBMC_gui;
   if (!GUI->RegisterMe(hdl))
@@ -76,7 +80,13 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
+  {
+    delete PVR;
+    delete XBMC;
+    PVR = NULL;
+    XBMC = NULL;
     return ADDON_STATUS_UNKNOWN;
+  }
 
   XBMC->Log(LOG_DEBUG, "Creating VDR VNSI PVR-Client");
 
@@ -147,6 +157,12 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   VNSIData = new cVNSIData;
   if (!VNSIData->Open(g_szHostname, g_iPort))
   {
+    delete VNSIData;
+    delete PVR;
+    delete XBMC;
+    VNSIData = NULL;
+    PVR = NULL;
+    XBMC = NULL;
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
   }
@@ -180,6 +196,19 @@ void ADDON_Destroy()
     delete VNSIData;
     VNSIData = NULL;
   }
+
+  if (PVR)
+  {
+    delete PVR;
+    PVR = NULL;
+  }
+
+  if (XBMC)
+  {
+    delete XBMC;
+    XBMC = NULL;
+  }
+
   m_CurStatus = ADDON_STATUS_UNKNOWN;
 }
 
