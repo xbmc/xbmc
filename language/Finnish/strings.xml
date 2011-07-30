@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Anssi Hannula-->
 <!--Email: anssi@xbmc.org-->
-<!--Based on English strings from git-83f79982b7ffd82afbdb8430cc99521408b5f053-->
+<!--Based on English strings from git-77215a4-->
 <!--$Revision$-->
 <strings>
   <string id="0">Ohjelmat</string>
@@ -983,6 +983,7 @@
   <string id="12392">tuntia</string>
   <string id="12393">päivää</string>
   <string id="12394">Kokonaiskäyntiaika</string>
+  <string id="12395">Akun taso</string>
 
   <string id="12600">Säätila</string>
 
@@ -1017,6 +1018,7 @@
 
   <string id="13100">Näytön välkynnän poisto</string>
   <string id="13101">Ajuri valitsee (vaatii uudelleenkäynnistyksen)</string>
+
   <string id="13105">Pystytahdistus</string>
   <string id="13106">Ei käytössä</string>
   <string id="13107">Käytössä videoita toistettaessa</string>
@@ -1064,9 +1066,11 @@
 
   <string id="13200">Käyttäjäprofiilit</string>
   <string id="13201">Poistetaanko profiili '%s'?</string>
+
   <string id="13204">Viimeksi ladattu profiili:</string>
   <string id="13205">Tuntematon</string>
   <string id="13206">Korvaa</string>
+
   <string id="13208">Herätyskello</string>
   <string id="13209">Hälytysväli (minuuttia)</string>
   <string id="13210">Käynnistetty, hälytys %i minuutin kuluttua</string>
@@ -1167,6 +1171,7 @@
   <string id="13359">Aseta esittäjän pienoiskuva</string>
   <string id="13360">Luo pienoiskuvat automaattisesti</string>
   <string id="13361">Puhe käytössä</string>
+
   <string id="13375">Laite käytössä</string>
   <string id="13376">Äänenvoimakkuus</string>
   <string id="13377">Oletus näyttötapa</string>
@@ -1484,6 +1489,7 @@
   <string id="16033">Tietokantaa ei voida avata.</string>
   <string id="16034">Tietokannasta ei voitu hakea kappaleita.</string>
   <string id="16035">Jukeboksi toistolista</string>
+  <string id="16036">Lomituksenpoisto (Half)</string>
 
   <string id="16100">Kaikki videot</string>
   <string id="16101">katsomatonta</string>
@@ -2160,10 +2166,12 @@
   <string id="20256">HTS Tvheadend-asiakas</string>
   <string id="20257">VDR Streamdev-asiakas</string>
   <string id="20258">MythTV-asiakas</string>
+  <string id="20259">Verkkotiedostojärjestelmä (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
 
   <string id="20300">Web-palvelimen hakemisto (HTTP)</string>
   <string id="20301">Web-palvelimen hakemisto (HTTPS)</string>
-  <string id="20302">Kansioon kirjoitus epäonnistui:</string>
+  <string id="20302">Kansioon ei voi kirjoittaa:</string>
   <string id="20303">Ohitetaanko ja jatketaanko suoritusta?</string>
   <string id="20304">RSS-syöte</string>
 
@@ -2310,6 +2318,7 @@
   <string id="20453">jaksoa</string>
   <string id="20454">Kuuntelija</string>
   <string id="20455">Kuuntelijat</string>
+  <string id="20456">Aseta elokuvasetin fanitaide</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -2601,6 +2610,8 @@
   <string id="24043">Päivitykset</string>
   <string id="24044">Riippuvuudet ei täyty</string>
   <string id="24045">Lisäosan rakenne on väärä</string>
+  <string id="24046">Seuraavat asennetut lisäosat tarvitsevat lisäosaa %s</string>
+  <string id="24047">Tätä lisäosaa ei voi poistaa</string>
 
   <string id="24050">Saatavilla olevat lisäosat</string>
   <string id="24051">Versio:</string>
@@ -2670,10 +2681,10 @@
   <string id="33024">Tuntuu kuin</string>
   <string id="33025">Tarkkailtu</string>
   <string id="33026">Poikkeama normaalista</string>
-  <string id="33027">Aurinko nousee</string>
-  <string id="33028">Aurinko laskee</string>
+  <string id="33027">Aurinko nous.</string>
+  <string id="33028">Aurinko lask.</string>
   <string id="33029">Yksityiskohdat</string>
-  <string id="33030">Ulkoasu</string>
+  <string id="33030">Odotettavissa</string>
   <string id="33031">Kuorivirta</string>
   <string id="33032">Käännä teksti</string>
   <string id="33033">Karttaluettelon %s-kategoria</string>
@@ -2743,4 +2754,6 @@
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
 
+  <string id="34201">Seuraavaa kohdetta ei löydy</string>
+  <string id="34202">Edellistä kohdetta ei löydy</string>
 </strings>
