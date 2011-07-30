@@ -109,6 +109,16 @@ public:
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
                                CRect destRect) = 0;
+  virtual ~CConvolutionShader();
+
+protected:
+  virtual bool ChooseKernelD3DFormat();
+  virtual bool CreateHQKernel(ESCALINGMETHOD method);
+
+  CD3DTexture   m_HQKernelTexture;
+  D3DFORMAT     m_KernelFormat;
+  bool          m_floattex;
+  bool          m_rgba;
 
   struct CUSTOMVERTEX {
       FLOAT x, y, z;
@@ -126,11 +136,8 @@ public:
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
                                CRect destRect);
-  virtual ~CConvolutionShader1Pass();
 
 protected:
-  virtual bool KernelTexFormat();
-  virtual bool CreateHQKernel(ESCALINGMETHOD method);
   virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                CRect sourceRect,
                                CRect destRect);
@@ -138,10 +145,6 @@ protected:
 
 
 private:
-  CD3DTexture   m_HQKernelTexture;
-  D3DFORMAT     m_format;
-  bool          m_floattex;
-  bool          m_rgba;
   unsigned int  m_sourceWidth, m_sourceHeight;
   CRect         m_sourceRect, m_destRect;
 };
@@ -161,8 +164,6 @@ public:
 protected:
   virtual bool ChooseIntermediateD3DFormat();
   virtual bool CreateIntermediateRenderTarget(unsigned int width, unsigned int height);
-  virtual bool ChooseKernelD3DFormat();
-  virtual bool CreateHQKernel(ESCALINGMETHOD method);
   virtual void PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
                                unsigned int destWidth, unsigned int destHeight,
                                CRect sourceRect,
@@ -172,10 +173,6 @@ protected:
 private:
   CD3DTexture   m_IntermediateTarget;
   D3DFORMAT     m_IntermediateFormat;
-  CD3DTexture   m_HQKernelTexture;
-  D3DFORMAT     m_KernelFormat;
-  bool          m_floattex;
-  bool          m_rgba;
   unsigned int  m_sourceWidth, m_sourceHeight;
   unsigned int  m_destWidth, m_destHeight;
   CRect         m_sourceRect, m_destRect;
