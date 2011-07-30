@@ -82,7 +82,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   m_CurStatus    = ADDON_STATUS_UNKNOWN;
   g_client       = new cPVRClientMediaPortal();
-  g_iClientID    = pvrprops->iClienId;
+  g_iClientID    = pvrprops->iClientId;
   g_szUserPath   = pvrprops->strUserPath;
   g_szClientPath = pvrprops->strClientPath;
 

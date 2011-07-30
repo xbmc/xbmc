@@ -94,7 +94,7 @@ bool CPVRClient::Create(int iClientId)
   /* initialise members */
   if (!m_pInfo)
     m_pInfo              = new PVR_PROPERTIES;
-  m_pInfo->iClienId      = iClientId;
+  m_pInfo->iClientId     = iClientId;
   CStdString userpath    = _P(Profile());
   m_pInfo->strUserPath   = userpath.c_str();
   CStdString clientpath  = _P(Path());
@@ -133,7 +133,7 @@ void CPVRClient::Destroy(void)
 
 bool CPVRClient::ReCreate(void)
 {
-  int clientID = m_pInfo->iClienId;
+  int clientID = m_pInfo->iClientId;
   Destroy();
   return Create(clientID);
 }
@@ -145,7 +145,7 @@ bool CPVRClient::ReadyToUse(void) const
 
 int CPVRClient::GetID(void) const
 {
-  return m_pInfo->iClienId;
+  return m_pInfo->iClientId;
 }
 
 /*!
@@ -1028,7 +1028,7 @@ ADDON_STATUS CPVRClient::SetSetting(const char *settingName, const void *setting
 
 int CPVRClient::GetClientID(void) const
 {
-  return m_pInfo->iClienId;
+  return m_pInfo->iClientId;
 }
 
 bool CPVRClient::HaveMenuHooks(void) const

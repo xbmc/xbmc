@@ -77,7 +77,7 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   XBMC->Log(LOG_DEBUG, "Creating MythTV PVR-Client");
 
   m_CurStatus    = ADDON_STATUS_UNKNOWN;
-  g_iClientID    = pvrprops->iClienId;
+  g_iClientID    = pvrprops->iClientId;
   g_szUserPath   = pvrprops->strUserPath;
   g_szClientPath = pvrprops->strClientPath;
 
