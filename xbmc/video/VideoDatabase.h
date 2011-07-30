@@ -355,10 +355,11 @@ public:
   void UpdateLastPlayed(const CFileItem &item);
 
   /*! \brief Get the playcount of a list of items
+   \param path the path to fetch videos from
    \param items CFileItemList to fetch the playcounts for
    \sa GetPlayCount, SetPlayCount, IncrementPlayCount
    */
-  bool GetPlayCounts(CFileItemList &items);
+  bool GetPlayCounts(const CStdString &path, CFileItemList &items);
 
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 

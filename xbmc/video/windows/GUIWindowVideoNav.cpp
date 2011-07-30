@@ -472,7 +472,7 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
                This code can be removed once the content tables are always filled */
       if (!pItem->m_bIsFolder && !fetchedPlayCounts)
       {
-        m_database.GetPlayCounts(items);
+        m_database.GetPlayCounts(items.m_strPath, items);
         fetchedPlayCounts = true;
       }
       if (pItem->HasVideoInfoTag())
