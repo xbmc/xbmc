@@ -327,7 +327,8 @@ void CGUIProgressControl::UpdateInfo(const CGUIListItem *item)
       if (window && window->HasListItems())
       {
          CFileItemPtr listItem = window->GetCurrentListItem();
-         m_fUpdatedInfo = listItem->GetPropertyDouble(m_strProperty);
+         if (listItem)
+           m_fUpdatedInfo = listItem->GetPropertyDouble(m_strProperty);
       }
     }
   }
