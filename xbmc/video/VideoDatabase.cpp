@@ -7868,7 +7868,15 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
   CStdString path(strPath);
   
   if(URIUtils::IsMultiPath(path))
-    path = CMultiPathDirectory::GetFirstPath(path);
+  {
+    vector<CStdString> paths;
+    CMultiPathDirectory::GetPaths(path, paths);
+
+    for(unsigned i=0;i<paths.size();i++)
+      GetItemsForPath(content, paths[i], items);
+
+    return items.Size() > 0;
+  }
   
   int pathID = GetPathId(path);
   if (pathID < 0)
