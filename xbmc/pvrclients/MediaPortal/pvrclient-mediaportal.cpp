@@ -1200,7 +1200,6 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
       { // Continue with the existing TsReader.
         XBMC->Log(LOG_INFO, "Re-using existing TsReader...");
         m_tsreader->OnZap();
-        usleep(100000);
         return true;
       }
       else
@@ -1462,6 +1461,7 @@ void cPVRClientMediaPortal::CloseRecordedStream(void)
   {
     XBMC->Log(LOG_DEBUG, "CloseRecordedStream: Stop TSReader...");
     m_tsreader->Close();
+    SAFE_DELETE(m_tsreader);
   }
   else
   {

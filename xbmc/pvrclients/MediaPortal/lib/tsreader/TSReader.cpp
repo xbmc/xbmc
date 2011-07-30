@@ -229,7 +229,11 @@ void CTsReader::Close()
 
 void CTsReader::OnZap(void)
 {
-  m_fileReader->SetFilePointer(0LL, FILE_END);
+  if (m_fileReader)
+  {
+    m_fileReader->SetFilePointer(0LL, FILE_END);
+    usleep(100000);
+  }
 }
 
 #endif //TSREADER
