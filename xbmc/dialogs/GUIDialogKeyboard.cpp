@@ -138,27 +138,27 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     uint8_t b = action.GetID() & 0xFF;
-    if (b == 0x24) // home
+    if (b == 0x88) // home
     {
       MoveCursor(-GetCursorPos());
     }
-    else if (b == 0x23) // end
+    else if (b == 0x89) // end
     {
       MoveCursor(m_strEdit.GetLength() - GetCursorPos());
     }
-    else if (b == 0x25) // left
+    else if (b == 0x82) // left
     {
       MoveCursor( -1);
     }
-    else if (b == 0x27) // right
+    else if (b == 0x83) // right
     {
       MoveCursor(1);
     }
-    else if (b == 0x0D) // enter
+    else if (b == 0x0D || b == 0x65) // enter
     {
       OnOK();
     }
-    else if (b == 0x2E) // delete
+    else if (b == 0x87) // delete
     {
       if (GetCursorPos() < m_strEdit.GetLength())
       {
