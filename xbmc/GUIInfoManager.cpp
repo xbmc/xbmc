@@ -590,6 +590,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.hasteletext")) return VIDEOPLAYER_HASTELETEXT;
     else if (strTest.Equals("videoplayer.lastplayed")) return VIDEOPLAYER_LASTPLAYED;
     else if (strTest.Equals("videoplayer.playcount")) return VIDEOPLAYER_PLAYCOUNT;
+    else if (strTest.Equals("videoplayer.hassubtitles")) return VIDEOPLAYER_HASSUBTITLES;
+    else if (strTest.Equals("videoplayer.subtitlesenabled")) return VIDEOPLAYER_SUBTITLESENABLED;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -2056,6 +2058,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VIDEOPLAYER_HASTELETEXT:
       if (g_application.m_pPlayer->GetTeletextCache())
         bReturn = true;
+      break;
+    case VIDEOPLAYER_HASSUBTITLES:
+      bReturn = g_application.m_pPlayer->GetSubtitleCount() > 0;
+      break;
+    case VIDEOPLAYER_SUBTITLESENABLED:
+      bReturn = g_application.m_pPlayer->GetSubtitleVisible();
       break;
     case VISUALISATION_LOCKED:
       {
