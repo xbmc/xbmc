@@ -53,6 +53,8 @@ CPVRClient::CPVRClient(const cp_extension_t *ext) :
 
 CPVRClient::~CPVRClient(void)
 {
+  if (m_pInfo)
+    SAFE_DELETE(m_pInfo);
 }
 
 void CPVRClient::ResetProperties(void)
@@ -123,6 +125,7 @@ void CPVRClient::Destroy(void)
     /* Tell the client to destroy */
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>::Destroy();
     m_menuhooks.clear();
+    SAFE_DELETE(m_pInfo);
   }
   catch (exception &e)
   {
