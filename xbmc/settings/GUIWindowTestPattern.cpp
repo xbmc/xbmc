@@ -29,6 +29,7 @@
 CGUIWindowTestPattern::CGUIWindowTestPattern(void)
     : CGUIWindow(WINDOW_TEST_PATTERN, "")
 {
+  m_needsScaling = false;
 }
 
 CGUIWindowTestPattern::~CGUIWindowTestPattern(void)
@@ -42,11 +43,13 @@ bool CGUIWindowTestPattern::OnAction(const CAction &action)
   case ACTION_MOVE_UP:
   case ACTION_MOVE_LEFT:
      m_pattern = m_pattern > 0 ? m_pattern - 1 : TEST_PATTERNS_COUNT - 1;
+    SetInvalid();
      break;
 
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_RIGHT:
      m_pattern = (m_pattern + 1) % TEST_PATTERNS_COUNT;
+    SetInvalid();
      break;
 
   }
@@ -68,6 +71,14 @@ bool CGUIWindowTestPattern::OnMessage(CGUIMessage& message)
 
   }
   return CGUIWindow::OnMessage(message);
+}
+
+void CGUIWindowTestPattern::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (m_pattern == 0 || m_pattern == 4)
+    MarkDirtyRegion();
+  CGUIWindow::Process(currentTime, dirtyregions);
+  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 }
 
 void CGUIWindowTestPattern::Render()
