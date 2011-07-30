@@ -450,8 +450,10 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
         // if we switch from a file to a folder item it means we really shouldn't be sorting files and
         // folders separately
         if (pItem->m_bIsFolder != match->m_bIsFolder)
+        {
           items.SetSortIgnoreFolders(true);
-        pItem->m_bIsFolder = match->m_bIsFolder;
+          pItem->m_bIsFolder = match->m_bIsFolder;
+        }
       }
       else
       {
