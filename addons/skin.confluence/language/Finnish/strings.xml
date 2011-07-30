@@ -179,4 +179,17 @@
   <string id="31509">Kanavaryhmä</string>
   <string id="31510">Ajastus asetettu</string>
   <string id="31511">Kanavan valinnat</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">Sääkartat</string>
+  <string id="31901">36 tunnin ennuste</string>
+  <string id="31902">Tunneittainen ennuste</string>
+  <string id="31903">Viikonlopun ennuste</string>
+  <string id="31904">10 paivän ennuste</string>
+  <string id="31905">Ennuste</string>
+  <string id="31906">Kartat &amp; Video</string>
+  <string id="31907">Videoennuste [COLOR=grey2](Kokoruututila)[/COLOR]</string>
+  <string id="31908">Sateen mahdollisuus</string>
+  <string id="31909">Noudetaan ennusteen tietoja...</string>
+
 </strings>
