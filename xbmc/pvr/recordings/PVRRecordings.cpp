@@ -102,7 +102,7 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     CFileItemPtr pFileItem(new CFileItem(*current));
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
-    pFileItem->m_strPath.Format("pvr://recordings/%05i-%05i.pvr", current->m_iClientId, atoi(current->m_strRecordingId));
+    pFileItem->m_strPath.Format("pvr://recordings/%05i-%s.pvr", current->m_iClientId, current->m_strRecordingId);
     results->Add(pFileItem);
   }
 }
@@ -260,12 +260,17 @@ CPVRRecording *CPVRRecordings::GetByPath(CStdString &path)
 
   if (fileName.Left(11) == "recordings/")
   {
+    // remove "recordings/" from filename
     fileName.erase(0,11);
     int iClientID = atoi(fileName.c_str());
+    // remove client id from filename
     fileName.erase(0,6);
 
     if (fileName.IsEmpty())
       return tag;
+
+    // remove ".pvr" from filename
+    fileName.erase(fileName.end() - 4, fileName.end());
 
     for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
     {
