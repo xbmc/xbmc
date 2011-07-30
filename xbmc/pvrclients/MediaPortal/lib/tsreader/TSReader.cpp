@@ -223,7 +223,7 @@ void CTsReader::Close()
     } else {
       m_fileReader->CloseFile();
     }
-    delete_null(m_fileReader);
+    SAFE_DELETE(m_fileReader);
   }
 }
 

@@ -23,7 +23,9 @@
 
 using namespace std;
 
-#define delete_null(ptr) (delete (ptr), ptr = NULL)
+/** Delete macros that make the pointer NULL again */
+#define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)
+#define SAFE_DELETE_ARRAY(p) do { delete[] (p);   (p)=NULL; } while (0)
 
 /**
  * String tokenize

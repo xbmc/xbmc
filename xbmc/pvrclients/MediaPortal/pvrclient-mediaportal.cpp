@@ -72,7 +72,7 @@ cPVRClientMediaPortal::~cPVRClientMediaPortal()
   XBMC->Log(LOG_DEBUG, "->~cPVRClientMediaPortal()");
   if (m_bConnected)
     Disconnect();
-  delete_null(m_tcpclient);
+  SAFE_DELETE(m_tcpclient);
 }
 
 string cPVRClientMediaPortal::SendCommand(string command)
@@ -251,7 +251,7 @@ void cPVRClientMediaPortal::Disconnect()
       if (m_tsreader)
       {
         m_tsreader->Close();
-        delete_null(m_tsreader);
+        SAFE_DELETE(m_tsreader);
       }
 #endif
       result = SendCommand("StopTimeshift:\n");
@@ -1289,7 +1289,7 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
     if (m_tsreader)
     {
       m_tsreader->Close();
-      delete_null(m_tsreader);
+      SAFE_DELETE(m_tsreader);
     }
 #endif
     result = SendCommand("StopTimeshift:\n");
@@ -1315,7 +1315,7 @@ bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channel)
     {
       //Only remove the TSReader for TVServerXBMC older than v1.1.0.90
       m_tsreader->Close();
-      delete_null(m_tsreader);
+      SAFE_DELETE(m_tsreader);
     }
   }
 #endif
