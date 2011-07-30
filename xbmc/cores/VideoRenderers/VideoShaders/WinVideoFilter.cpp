@@ -398,85 +398,29 @@ bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
 
 //==================================================================================
 
-bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
-{
-  CStdString effectString;
-  switch(method)
-  {
-    case VS_SCALINGMETHOD_CUBIC:
-    case VS_SCALINGMETHOD_LANCZOS2:
-    case VS_SCALINGMETHOD_LANCZOS3_FAST:
-      effectString = "special://xbmc/system/shaders/convolution-4x4_d3d.fx";
-      break;
-    case VS_SCALINGMETHOD_LANCZOS3:
-      effectString = "special://xbmc/system/shaders/convolution-6x6_d3d.fx";
-      break;
-    default:
-      CLog::Log(LOGERROR, __FUNCTION__": scaling method %d not supported.", method);
-      return false;
-  }
-
-  if (!KernelTexFormat())
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": failed to find a compatible texture format for the kernel.");
-    return false;
-  }
-
-  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
-
-  DefinesMap defines;
-  if (m_floattex)
-    defines["HAS_FLOAT_TEXTURE"] = "";
-  if (m_rgba)
-    defines["HAS_RGBA"] = "";
-
-  if(!LoadEffect(effectString, &defines))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
-    return false;
-  }
-
-  if (!CreateHQKernel(method))
-    return false;
-
-  return true;
-}
-
-void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
-                                unsigned int sourceWidth, unsigned int sourceHeight,
-                                unsigned int destWidth, unsigned int destHeight,
-                                CRect sourceRect,
-                                CRect destRect)
-{
-  PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
-  float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
-  SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
-  Execute(NULL, 4);
-}
-
-CConvolutionShader1Pass::~CConvolutionShader1Pass()
+CConvolutionShader::~CConvolutionShader()
 {
   if(m_HQKernelTexture.Get())
     m_HQKernelTexture.Release();
 }
 
-bool CConvolutionShader1Pass::KernelTexFormat()
+bool CConvolutionShader::ChooseKernelD3DFormat()
 {
   if (g_Windowing.IsTextureFormatOk(D3DFMT_A16B16G16R16F, 0))
   {
-    m_format = D3DFMT_A16B16G16R16F;
+    m_KernelFormat = D3DFMT_A16B16G16R16F;
     m_floattex = true;
     m_rgba = true;
   }
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, 0))
   {
-    m_format = D3DFMT_A8B8G8R8;
+    m_KernelFormat = D3DFMT_A8B8G8R8;
     m_floattex = false;
     m_rgba = true;
   }
   else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, 0))
   {
-    m_format = D3DFMT_A8R8G8B8;
+    m_KernelFormat = D3DFMT_A8R8G8B8;
     m_floattex = false;
     m_rgba = false;
   }
@@ -486,11 +430,11 @@ bool CConvolutionShader1Pass::KernelTexFormat()
   return true;
 }
 
-bool CConvolutionShader1Pass::CreateHQKernel(ESCALINGMETHOD method)
+bool CConvolutionShader::CreateHQKernel(ESCALINGMETHOD method)
 {
   CConvolutionKernel kern(method, 256);
 
-  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, g_Windowing.DefaultD3DUsage(), m_format, g_Windowing.DefaultD3DPool()))
+  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, g_Windowing.DefaultD3DUsage(), m_KernelFormat, g_Windowing.DefaultD3DPool()))
   {
     CLog::Log(LOGERROR, __FUNCTION__": Failed to create kernel texture.");
     return false;
@@ -526,6 +470,62 @@ bool CConvolutionShader1Pass::CreateHQKernel(ESCALINGMETHOD method)
     delete[] kernelVals;
 
   return true;
+}
+//==================================================================================
+bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
+{
+  CStdString effectString;
+  switch(method)
+  {
+    case VS_SCALINGMETHOD_CUBIC:
+    case VS_SCALINGMETHOD_LANCZOS2:
+    case VS_SCALINGMETHOD_LANCZOS3_FAST:
+      effectString = "special://xbmc/system/shaders/convolution-4x4_d3d.fx";
+      break;
+    case VS_SCALINGMETHOD_LANCZOS3:
+      effectString = "special://xbmc/system/shaders/convolution-6x6_d3d.fx";
+      break;
+    default:
+      CLog::Log(LOGERROR, __FUNCTION__": scaling method %d not supported.", method);
+      return false;
+  }
+
+  if (!ChooseKernelD3DFormat())
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": failed to find a compatible texture format for the kernel.");
+    return false;
+  }
+
+  CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX1, 4, sizeof(CUSTOMVERTEX), 2);
+
+  DefinesMap defines;
+  if (m_floattex)
+    defines["HAS_FLOAT_TEXTURE"] = "";
+  if (m_rgba)
+    defines["HAS_RGBA"] = "";
+
+  if(!LoadEffect(effectString, &defines))
+  {
+    CLog::Log(LOGERROR, __FUNCTION__": Failed to load shader %s.", effectString.c_str());
+    return false;
+  }
+
+  if (!CreateHQKernel(method))
+    return false;
+
+  return true;
+}
+
+void CConvolutionShader1Pass::Render(CD3DTexture &sourceTexture,
+                                unsigned int sourceWidth, unsigned int sourceHeight,
+                                unsigned int destWidth, unsigned int destHeight,
+                                CRect sourceRect,
+                                CRect destRect)
+{
+  PrepareParameters(sourceWidth, sourceHeight, sourceRect, destRect);
+  float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
+  SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
+  Execute(NULL,4);
 }
 
 void CConvolutionShader1Pass::PrepareParameters(unsigned int sourceWidth, unsigned int sourceHeight,
@@ -675,9 +675,6 @@ void CConvolutionShaderSeparable::Render(CD3DTexture &sourceTexture,
 
 CConvolutionShaderSeparable::~CConvolutionShaderSeparable()
 {
-  if(m_HQKernelTexture.Get())
-    m_HQKernelTexture.Release();
-
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 }
@@ -711,74 +708,6 @@ bool CConvolutionShaderSeparable::CreateIntermediateRenderTarget(unsigned int wi
     CLog::Log(LOGERROR, __FUNCTION__": render target creation failed.");
     return false;
   }
-  return true;
-}
-
-bool CConvolutionShaderSeparable::ChooseKernelD3DFormat()
-{
-  if (g_Windowing.IsTextureFormatOk(D3DFMT_A16B16G16R16F, 0))
-  {
-    m_KernelFormat = D3DFMT_A16B16G16R16F;
-    m_floattex = true;
-    m_rgba = true;
-  }
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, 0))
-  {
-    m_KernelFormat = D3DFMT_A8B8G8R8;
-    m_floattex = false;
-    m_rgba = true;
-  }
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, 0))
-  {
-    m_KernelFormat = D3DFMT_A8R8G8B8;
-    m_floattex = false;
-    m_rgba = false;
-  }
-  else
-    return false;
-
-  return true;
-}
-
-bool CConvolutionShaderSeparable::CreateHQKernel(ESCALINGMETHOD method)
-{
-  CConvolutionKernel kern(method, 256);
-
-  if (!m_HQKernelTexture.Create(kern.GetSize(), 1, 1, g_Windowing.DefaultD3DUsage(), m_KernelFormat, g_Windowing.DefaultD3DPool()))
-  {
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to create kernel texture.");
-    return false;
-  }
-
-  void *kernelVals;
-  int kernelValsSize;
-
-  if (m_floattex)
-  {
-    float *rawVals = kern.GetFloatPixels();
-    D3DXFLOAT16* float16Vals = new D3DXFLOAT16[kern.GetSize()*4];
-
-    for(int i = 0; i < kern.GetSize()*4; i++)
-      float16Vals[i] = rawVals[i];
-    kernelVals = float16Vals;
-    kernelValsSize = sizeof(D3DXFLOAT16)*kern.GetSize()*4;
-  }
-  else
-  {
-    kernelVals = kern.GetUint8Pixels();
-    kernelValsSize = sizeof(uint8_t)*kern.GetSize()*4;
-  }
-
-  D3DLOCKED_RECT lr;
-  if (!m_HQKernelTexture.LockRect(0, &lr, NULL, D3DLOCK_DISCARD))
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to lock kernel texture.");
-  memcpy(lr.pBits, kernelVals, kernelValsSize);
-  if (!m_HQKernelTexture.UnlockRect(0))
-    CLog::Log(LOGERROR, __FUNCTION__": Failed to unlock kernel texture.");
-
-  if (m_floattex)
-    delete[] kernelVals;
-
   return true;
 }
 
