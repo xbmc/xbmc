@@ -307,6 +307,10 @@ infomap audioscrobbler[] = {{ "enabled",           AUDIOSCROBBLER_ENABLED },
                             { "filescached",       AUDIOSCROBBLER_FILES_CACHED },
                             { "submitstate",       AUDIOSCROBBLER_SUBMIT_STATE }};
 
+infomap lastfm[] =         {{ "radioplaying",      LASTFM_RADIOPLAYING },
+                            { "canlove",           LASTFM_CANLOVE},
+                            { "canban",            LASTFM_CANBAN}};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -456,6 +460,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       {
         if (property == audioscrobbler[i].str)
           return audioscrobbler[i].val;
+      }
+    }
+    else if (category == "lastfm")
+    {
+      for (size_t i = 0; i < sizeof(lastfm) / sizeof(infomap); i++)
+      {
+        if (property == lastfm[i].str)
+          return lastfm[i].val;
       }
     }
     else if (category == "system")
@@ -659,12 +671,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("playlist.israndom")) ret = PLAYLIST_ISRANDOM;
     else if (strTest.Equals("playlist.isrepeat")) ret = PLAYLIST_ISREPEAT;
     else if (strTest.Equals("playlist.isrepeatone")) ret = PLAYLIST_ISREPEATONE;
-  }
-  else if (strCategory.Equals("lastfm"))
-  {
-    if (strTest.Equals("lastfm.radioplaying")) ret = LASTFM_RADIOPLAYING;
-    else if (strTest.Equals("lastfm.canlove")) ret = LASTFM_CANLOVE;
-    else if (strTest.Equals("lastfm.canban")) ret = LASTFM_CANBAN;
   }
   else if (strCategory.Equals("slideshow"))
     ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
