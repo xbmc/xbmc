@@ -186,17 +186,59 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   CStdString strTest = strCondition;
   strTest.TrimLeft(" \t\r\n");
   strTest.TrimRight(" \t\r\n");
-  if (strTest.IsEmpty()) return 0;
 
-  int ret = 0;
-  assert(strTest[0] != '!'); // should not occur anymore
+  vector< pair<CStdString, CStdString> > info;
+  SplitInfoString(strTest, info);
 
+  if (info.empty())
+    return 0;
+
+  CStdString category = info[0].first;
+  if (info.size() == 1)
+  { // single category
+    if (category == "false" || category == "no" || category == "off")
+      return SYSTEM_ALWAYS_FALSE;
+    else if (category == "true" || category == "yes" || category == "on")
+      return SYSTEM_ALWAYS_TRUE;
+    else if (!info[0].second.IsEmpty())
+    {
+      vector<CStdString> params;
+      CUtil::SplitParams(info[0].second, params);
+      if (category == "isempty" && params.size() == 1)
+        return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(params[0])));
+      else if (category == "stringcompare" && params.size() == 2)
+      {
+        int info = TranslateString(params[0]);
+        int info2 = TranslateString(params[1]);
+        if (info2 > 0)
+          return AddMultiInfo(GUIInfo(STRING_COMPARE, info, -info2));
+        // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
+        CStdString label = CGUIInfoLabel::GetLabel(params[1]).ToLower();
+        int compareString = ConditionalStringParameter(label);
+        return AddMultiInfo(GUIInfo(STRING_COMPARE, info, compareString));
+      }
+      else if (category == "integergreaterthan" && params.size() == 2)
+      {
+        int info = TranslateString(params[0]);
+        int compareInt = atoi(params[1].c_str());
+        return AddMultiInfo(GUIInfo(INTEGER_GREATER_THAN, info, compareInt));
+      }
+      else if (category == "substring" && params.size() > 1)
+      {
+        int info = TranslateString(params[0]);
+        CStdString label = CGUIInfoLabel::GetLabel(params[1]).ToLower();
+        int compareString = ConditionalStringParameter(label);
+        return AddMultiInfo(GUIInfo(STRING_STR, info, compareString));
+      }
+    }
+  }
 
   CStdString original(strTest);
   strTest.ToLower();
 
   CStdString strCategory = strTest.Left(strTest.Find("."));
 
+  int ret = 0;
   // translate conditions...
   if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off")) ret = SYSTEM_ALWAYS_FALSE;
   else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on")) ret = SYSTEM_ALWAYS_TRUE;
@@ -414,39 +456,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("library.isscanning")) ret = LIBRARY_IS_SCANNING;
     else if (strTest.Equals("library.isscanningvideo")) ret = LIBRARY_IS_SCANNING_VIDEO;
     else if (strTest.Equals("library.isscanningmusic")) ret = LIBRARY_IS_SCANNING_MUSIC;
-  }
-  else if (strTest.Left(8).Equals("isempty("))
-  {
-    CStdString str = strTest.Mid(8, strTest.GetLength() - 9);
-    return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(str)));
-  }
-  else if (strTest.Left(14).Equals("stringcompare("))
-  {
-    int pos = strTest.Find(",");
-    int info = TranslateString(strTest.Mid(14, pos-14));
-    int info2 = TranslateString(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
-    if (info2 > 0)
-      return AddMultiInfo(GUIInfo(STRING_COMPARE, info, -info2));
-    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
-    CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
-    int compareString = ConditionalStringParameter(label);
-    return AddMultiInfo(GUIInfo(STRING_COMPARE, info, compareString));
-  }
-  else if (strTest.Left(19).Equals("integergreaterthan("))
-  {
-    int pos = strTest.Find(",");
-    int info = TranslateString(strTest.Mid(19, pos-19));
-    int compareInt = atoi(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)).c_str());
-    return AddMultiInfo(GUIInfo(INTEGER_GREATER_THAN, info, compareInt));
-  }
-  else if (strTest.Left(10).Equals("substring("))
-  {
-    int pos = strTest.Find(",");
-    int info = TranslateString(strTest.Mid(10, pos-10));
-    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
-    CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
-    int compareString = ConditionalStringParameter(label);
-    return AddMultiInfo(GUIInfo(STRING_STR, info, compareString));
   }
   else if (strCategory.Equals("lcd"))
   {
