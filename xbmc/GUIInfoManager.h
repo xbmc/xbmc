@@ -672,6 +672,18 @@ protected:
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   bool GetItemBool(const CGUIListItem *item, int condition) const;
 
+  /*! \brief Split an info string into it's constituent parts and parameters
+   Format is:
+     
+     info1(params1).info2(params2).info3(params3) ...
+   
+   where the parameters are an optional comma separated parameter list.
+   
+   \param infoString the original string
+   \param info the resulting pairs of info and parameters.
+   */
+  void SplitInfoString(const CStdString &infoString, std::vector< std::pair<CStdString, CStdString> > &info);
+
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
   int ConditionalStringParameter(const CStdString &strParameter);

@@ -137,6 +137,47 @@ int CGUIInfoManager::TranslateString(const CStdString &condition)
   return TranslateSingleString(strCondition);
 }
 
+void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
+{
+  // our string is of the form:
+  // category[(params)][.info(params).info2(params)] ...
+  // so we need to split on . while taking into account of () pairs
+  unsigned int parentheses = 0;
+  CStdString property;
+  CStdString param;
+  for (size_t i = 0; i < infoString.size(); ++i)
+  {
+    if (infoString[i] == '(')
+    {
+      if (!parentheses++)
+        continue;
+    }
+    else if (infoString[i] == ')')
+    {
+      if (!parentheses)
+        CLog::Log(LOGERROR, "unmatched parentheses in %s", infoString.c_str());
+      else if (!--parentheses)
+        continue;
+    }
+    else if (infoString[i] == '.' && !parentheses)
+    {
+      if (!property.IsEmpty()) // add our property and parameters
+        info.push_back(make_pair(property.ToLower(), param));
+      property.clear();
+      param.clear();
+      continue;
+    }
+    if (parentheses)
+      param += infoString[i];
+    else
+      property += infoString[i];
+  }
+  if (parentheses)
+    CLog::Log(LOGERROR, "unmatched parentheses in %s", infoString.c_str());
+  if (!property.IsEmpty())
+    info.push_back(make_pair(property.ToLower(), param));
+}
+
 /// \brief Translates a string as given by the skin into an int that we use for more
 /// efficient retrieval of data.
 int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
