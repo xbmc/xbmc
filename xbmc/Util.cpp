@@ -1379,7 +1379,7 @@ void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &
       { // start of function
         inFunction++;
       }
-      if (!inFunction && !URIUtils::IsStack(paramString) && ch == ',')
+      if (!inFunction && ch == ',')
       { // not in a function, so a comma signfies the end of this parameter
         if (whiteSpacePos)
           parameter = parameter.Left(whiteSpacePos);
