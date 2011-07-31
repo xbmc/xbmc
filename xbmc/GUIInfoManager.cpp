@@ -209,6 +209,64 @@ infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
                             { "fanartcode",       WEATHER_FANART_CODE },
                             { "plugin",           WEATHER_PLUGIN }};
 
+infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACTIVE },
+                            { "hasmediadvd",      SYSTEM_MEDIA_DVD },
+                            { "dvdready",         SYSTEM_DVDREADY },
+                            { "trayopen",         SYSTEM_TRAYOPEN },
+                            { "haslocks",         SYSTEM_HASLOCKS },
+                            { "hasloginscreen",   SYSTEM_HAS_LOGINSCREEN },
+                            { "ismaster",         SYSTEM_ISMASTER },
+                            { "loggedon",         SYSTEM_LOGGEDON },
+                            { "showexitbutton",   SYSTEM_SHOW_EXIT_BUTTON },
+                            { "hasdrivef",        SYSTEM_HAS_DRIVE_F },
+                            { "hasdriveg",        SYSTEM_HAS_DRIVE_G },
+                            { "canpowerdown",     SYSTEM_CAN_POWERDOWN },
+                            { "cansuspend",       SYSTEM_CAN_SUSPEND },
+                            { "canhibernate",     SYSTEM_CAN_HIBERNATE },
+                            { "canreboot",        SYSTEM_CAN_REBOOT },
+                            { "cputemperature",   SYSTEM_CPU_TEMPERATURE },     // labels from here
+                            { "cpuusage",         SYSTEM_CPU_USAGE },
+                            { "gputemperature",   SYSTEM_GPU_TEMPERATURE },
+                            { "fanspeed",         SYSTEM_FAN_SPEED },
+                            { "freespace",        SYSTEM_FREE_SPACE },
+                            { "usedspace",        SYSTEM_USED_SPACE },
+                            { "totalspace",       SYSTEM_TOTAL_SPACE },
+                            { "usedspacepercent", SYSTEM_USED_SPACE_PERCENT },
+                            { "freespacepercent", SYSTEM_FREE_SPACE_PERCENT },
+                            { "buildversion",     SYSTEM_BUILD_VERSION },
+                            { "builddate",        SYSTEM_BUILD_DATE },
+                            { "fps",              SYSTEM_FPS },
+                            { "dvdtraystate",     SYSTEM_DVD_TRAY_STATE },
+                            { "freememory",       SYSTEM_FREE_MEMORY },
+                            { "language",         SYSTEM_LANGUAGE },
+                            { "temperatureunits", SYSTEM_TEMPERATURE_UNITS },
+                            { "screenmode",       SYSTEM_SCREEN_MODE },
+                            { "screenwidth",      SYSTEM_SCREEN_WIDTH },
+                            { "screenheight",     SYSTEM_SCREEN_HEIGHT },
+                            { "currentwindow",    SYSTEM_CURRENT_WINDOW },
+                            { "currentcontrol",   SYSTEM_CURRENT_CONTROL },
+                            { "dvdlabel",         SYSTEM_DVD_LABEL },
+                            { "internetstate",    SYSTEM_INTERNET_STATE },
+                            { "kernelversion",    SYSTEM_KERNEL_VERSION },
+                            { "uptime",           SYSTEM_UPTIME },
+                            { "totaluptime",      SYSTEM_TOTALUPTIME },
+                            { "cpufrequency",     SYSTEM_CPUFREQUENCY },
+                            { "screenresolution", SYSTEM_SCREEN_RESOLUTION },
+                            { "videoencoderinfo", SYSTEM_VIDEO_ENCODER_INFO },
+                            { "profilename",      SYSTEM_PROFILENAME },
+                            { "profilethumb",     SYSTEM_PROFILETHUMB },
+                            { "profilecount",     SYSTEM_PROFILECOUNT },
+                            { "progressbar",      SYSTEM_PROGRESS_BAR },
+                            { "batterylevel",     SYSTEM_BATTERY_LEVEL },
+                            { "alarmpos",         SYSTEM_ALARM_POS }};
+
+infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
+                            { "getbool",          SYSTEM_GET_BOOL },
+                            { "hascoreid",        SYSTEM_HAS_CORE_ID },
+                            { "setting",          SYSTEM_SETTING },
+                            { "hasaddon",         SYSTEM_HAS_ADDON },
+                            { "coreusage",        SYSTEM_GET_CORE_USAGE }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -328,6 +386,95 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           return weather[i].val;
       }
     }
+    else if (category == "system")
+    {
+      for (size_t i = 0; i < sizeof(system_labels) / sizeof(infomap); i++)
+      {
+        if (property == system_labels[i].str)
+          return system_labels[i].val;
+      }
+      for (size_t i = 0; i < sizeof(system_param) / sizeof(infomap); i++)
+      {
+        if (property == system_param[i].str)
+          return AddMultiInfo(GUIInfo(system_param[i].val, ConditionalStringParameter(info[1].second)));
+      }
+      if (property == "memory")
+      {
+        const CStdString &param = info[1].second;
+        if (param == "free") return SYSTEM_FREE_MEMORY;
+        else if (param == "free.percent") return SYSTEM_FREE_MEMORY_PERCENT;
+        else if (param == "used") return SYSTEM_USED_MEMORY;
+        else if (param == "used.percent") return SYSTEM_USED_MEMORY_PERCENT;
+        else if (param == "total") return SYSTEM_TOTAL_MEMORY;
+      }
+      else if (property == "addontitle")
+      {
+        int infoLabel = TranslateString(info[1].second);
+        if (infoLabel > 0)
+          return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, infoLabel, 0));
+        CStdString label = CGUIInfoLabel::GetLabel(info[1].second).ToLower();
+        return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, ConditionalStringParameter(label), 1));
+      }
+      else if (property == "addonicon")
+      {
+        int infoLabel = TranslateString(info[1].second);
+        if (infoLabel > 0)
+          return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, infoLabel, 0));
+        CStdString label = CGUIInfoLabel::GetLabel(info[1].second).ToLower();
+        return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, ConditionalStringParameter(label), 1));
+      }
+      else if (property == "idletime")
+      { // TODO: switch to GUIInfo
+        int time = atoi(info[1].second.c_str());
+        if (time > SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START)
+          time = SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START;
+        if (time > 0)
+          return SYSTEM_IDLE_TIME_START + time;
+      }
+      else if (property == "alarmlessorequal")
+      {
+        vector<CStdString> params;
+        CUtil::SplitParams(info[1].second, params);
+        if (params.size() == 2)
+          return AddMultiInfo(GUIInfo(SYSTEM_ALARM_LESS_OR_EQUAL, ConditionalStringParameter(params[0]), ConditionalStringParameter(params[1])));
+      }
+      else if (property == "date")
+      {
+        vector<CStdString> params;
+        CUtil::SplitParams(info[1].second, params);
+        if (params.size() == 2)
+          return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(params[0]) % 10000, StringUtils::DateStringToYYYYMMDD(params[1]) % 10000));
+        else if (params.size() == 1)
+          return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(params[0]) % 10000));
+        return SYSTEM_DATE;
+      }
+      else if (property == "time")
+      {
+        vector<CStdString> params;
+        CUtil::SplitParams(info[1].second, params);
+        if (params.size() == 0)
+          return AddMultiInfo(GUIInfo(SYSTEM_TIME, TIME_FORMAT_GUESS));
+        if (params.size() == 1)
+        {
+          TIME_FORMAT timeFormat = TranslateTimeFormat(params[0]);
+          if (timeFormat == TIME_FORMAT_GUESS)
+            return AddMultiInfo(GUIInfo(SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0])));
+          return AddMultiInfo(GUIInfo(SYSTEM_TIME, timeFormat));
+        }
+        else
+          return AddMultiInfo(GUIInfo(SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0]), StringUtils::TimeStringToSeconds(params[1])));
+      }
+    }
+  }
+  else if (info.size() == 3)
+  {
+    if (info[0].first == "system" && info[1].second == "platform")
+    { // TODO: replace with a single system.platform
+      CStdString platform = info[2].first;
+      if (platform == "linux") return SYSTEM_PLATFORM_LINUX;
+      else if (platform == "windows") return SYSTEM_PLATFORM_WINDOWS;
+      else if (platform == "osx") return SYSTEM_PLATFORM_OSX;
+    }
   }
 
   CStdString original(strTest);
@@ -383,150 +530,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.actstreamisencrypted")) ret = PVR_ACTUAL_STREAM_ENCRYPTED;
     else if (strTest.Equals("pvr.actstreamencryptionname")) ret = PVR_ACTUAL_STREAM_CRYPTION;
   }
-  else if (strCategory.Equals("system"))
-  {
-    if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
-    else if (strTest.Left(12).Equals("system.date("))
-    {
-      // the skin must submit the date in the format MM-DD
-      // This InfoBool is designed for generic range checking, so year is NOT used.  Only Month-Day.
-      CStdString param = strTest.Mid(12, strTest.length() - 13);
-      CStdStringArray params;
-      StringUtils::SplitString(param, ",", params);
-      if (params.size() == 2)
-        return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(params[0]) % 10000, StringUtils::DateStringToYYYYMMDD(params[1]) % 10000));
-      else if (params.size() == 1)
-        return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(params[0]) % 10000));
-    }
-    else if (strTest.Left(11).Equals("system.time"))
-    {
-      // determine if this is a System.Time(TIME_FORMAT) infolabel or a System.Time(13:00,14:00) boolean based on the contents of the param
-      // essentially if it isn't a valid TIME_FORMAT then its considered to be the latter.
-      CStdString param = strTest.Mid(11);
-      TIME_FORMAT timeFormat = TranslateTimeFormat(param);
-      if ((timeFormat == TIME_FORMAT_GUESS) && (!param.IsEmpty()))
-      {
-        param = strTest.Mid(12, strTest.length() - 13);
-        CStdStringArray params;
-        StringUtils::SplitString(param, ",", params);
-        if (params.size() == 2)
-          return AddMultiInfo(GUIInfo(SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0]), StringUtils::TimeStringToSeconds(params[1])));
-        else if (params.size() == 1)
-          return AddMultiInfo(GUIInfo(SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0])));
-      }
-      else
-        return AddMultiInfo(GUIInfo(SYSTEM_TIME, timeFormat));
-    }
-    else if (strTest.Equals("system.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
-    else if (strTest.Equals("system.cpuusage")) ret = SYSTEM_CPU_USAGE;
-    else if (strTest.Equals("system.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
-    else if (strTest.Equals("system.fanspeed")) ret = SYSTEM_FAN_SPEED;
-    else if (strTest.Equals("system.freespace")) ret = SYSTEM_FREE_SPACE;
-    else if (strTest.Equals("system.usedspace")) ret = SYSTEM_USED_SPACE;
-    else if (strTest.Equals("system.totalspace")) ret = SYSTEM_TOTAL_SPACE;
-    else if (strTest.Equals("system.usedspacepercent")) ret = SYSTEM_USED_SPACE_PERCENT;
-    else if (strTest.Equals("system.freespacepercent")) ret = SYSTEM_FREE_SPACE_PERCENT;
-    else if (strTest.Equals("system.buildversion")) ret = SYSTEM_BUILD_VERSION;
-    else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
-    else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
-    else if (strTest.Equals("system.fps")) ret = SYSTEM_FPS;
-    else if (strTest.Equals("system.hasmediadvd")) ret = SYSTEM_MEDIA_DVD;
-    else if (strTest.Equals("system.dvdready")) ret = SYSTEM_DVDREADY;
-    else if (strTest.Equals("system.trayopen")) ret = SYSTEM_TRAYOPEN;
-    else if (strTest.Equals("system.dvdtraystate")) ret = SYSTEM_DVD_TRAY_STATE;
-
-    else if (strTest.Equals("system.memory(free)") || strTest.Equals("system.freememory")) ret = SYSTEM_FREE_MEMORY;
-    else if (strTest.Equals("system.memory(free.percent)")) ret = SYSTEM_FREE_MEMORY_PERCENT;
-    else if (strTest.Equals("system.memory(used)")) ret = SYSTEM_USED_MEMORY;
-    else if (strTest.Equals("system.memory(used.percent)")) ret = SYSTEM_USED_MEMORY_PERCENT;
-    else if (strTest.Equals("system.memory(total)")) ret = SYSTEM_TOTAL_MEMORY;
-
-    else if (strTest.Equals("system.language")) ret = SYSTEM_LANGUAGE;
-    else if (strTest.Equals("system.temperatureunits")) ret = SYSTEM_TEMPERATURE_UNITS;
-    else if (strTest.Equals("system.screenmode")) ret = SYSTEM_SCREEN_MODE;
-    else if (strTest.Equals("system.screenwidth")) ret = SYSTEM_SCREEN_WIDTH;
-    else if (strTest.Equals("system.screenheight")) ret = SYSTEM_SCREEN_HEIGHT;
-    else if (strTest.Equals("system.currentwindow")) ret = SYSTEM_CURRENT_WINDOW;
-    else if (strTest.Equals("system.currentcontrol")) ret = SYSTEM_CURRENT_CONTROL;
-    else if (strTest.Equals("system.dvdlabel")) ret = SYSTEM_DVD_LABEL;
-    else if (strTest.Equals("system.haslocks")) ret = SYSTEM_HASLOCKS;
-    else if (strTest.Equals("system.hasloginscreen")) ret = SYSTEM_HAS_LOGINSCREEN;
-    else if (strTest.Equals("system.ismaster")) ret = SYSTEM_ISMASTER;
-    else if (strTest.Equals("system.internetstate")) ret = SYSTEM_INTERNET_STATE;
-    else if (strTest.Equals("system.loggedon")) ret = SYSTEM_LOGGEDON;
-    else if (strTest.Equals("system.showexitbutton")) ret = SYSTEM_SHOW_EXIT_BUTTON;
-    else if (strTest.Equals("system.hasdrivef")) ret = SYSTEM_HAS_DRIVE_F;
-    else if (strTest.Equals("system.hasdriveg")) ret = SYSTEM_HAS_DRIVE_G;
-    else if (strTest.Equals("system.kernelversion")) ret = SYSTEM_KERNEL_VERSION;
-    else if (strTest.Equals("system.uptime")) ret = SYSTEM_UPTIME;
-    else if (strTest.Equals("system.totaluptime")) ret = SYSTEM_TOTALUPTIME;
-    else if (strTest.Equals("system.cpufrequency")) ret = SYSTEM_CPUFREQUENCY;
-    else if (strTest.Equals("system.screenresolution")) ret = SYSTEM_SCREEN_RESOLUTION;
-    else if (strTest.Equals("system.videoencoderinfo")) ret = SYSTEM_VIDEO_ENCODER_INFO;
-    else if (strTest.Left(16).Equals("system.idletime("))
-    {
-      int time = atoi((strTest.Mid(16, strTest.GetLength() - 17).c_str()));
-      if (time > SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START)
-        time = SYSTEM_IDLE_TIME_FINISH - SYSTEM_IDLE_TIME_START;
-      if (time > 0)
-        ret = SYSTEM_IDLE_TIME_START + time;
-    }
-    else if (strTest.Left(16).Equals("system.hasalarm("))
-      return AddMultiInfo(GUIInfo(SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
-    else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
-    else if (strTest.Left(24).Equals("system.alarmlessorequal("))
-    {
-      int pos = strTest.Find(",");
-      int skinOffset = ConditionalStringParameter(strTest.Mid(24, pos-24));
-      int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
-      return AddMultiInfo(GUIInfo(SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
-    }
-    else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
-    else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
-    else if (strTest.Equals("system.profilecount")) ret = SYSTEM_PROFILECOUNT;
-    else if (strTest.Equals("system.progressbar")) ret = SYSTEM_PROGRESS_BAR;
-    else if (strTest.Equals("system.platform.linux")) ret = SYSTEM_PLATFORM_LINUX;
-    else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
-    else if (strTest.Equals("system.platform.osx")) ret = SYSTEM_PLATFORM_OSX;
-    else if (strTest.Left(15).Equals("system.getbool("))
-      return AddMultiInfo(GUIInfo(SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
-    else if (strTest.Left(17).Equals("system.coreusage("))
-      return AddMultiInfo(GUIInfo(SYSTEM_GET_CORE_USAGE, atoi(strTest.Mid(17,strTest.size()-18)), 0));
-    else if (strTest.Left(17).Equals("system.hascoreid("))
-      return AddMultiInfo(GUIInfo(SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
-    else if (strTest.Left(15).Equals("system.setting("))
-      return AddMultiInfo(GUIInfo(SYSTEM_SETTING, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
-    else if (strTest.Equals("system.canpowerdown")) ret = SYSTEM_CAN_POWERDOWN;
-    else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
-    else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
-    else if (strTest.Equals("system.canreboot"))    ret = SYSTEM_CAN_REBOOT;
-    else if (strTest.Left(16).Equals("system.hasaddon("))
-      return AddMultiInfo(GUIInfo(SYSTEM_HAS_ADDON, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
-    else if (strTest.Left(18).Equals("system.addontitle("))
-    {
-      CStdString param = strTest.Mid(18,strTest.size()-19);
-      int info = TranslateString(param);
-      if (info > 0)
-        return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, info, 0));
-    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
-      CStdString label = CGUIInfoLabel::GetLabel(param).ToLower();
-      int compareString = ConditionalStringParameter(label);
-      return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, compareString, 1));
-    }
-    else if (strTest.Left(17).Equals("system.addonicon("))
-    {
-      CStdString param = strTest.Mid(17,strTest.size()-18);
-      int info = TranslateString(param);
-      if (info > 0)
-        return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, info, 0));
-    // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
-      CStdString label = CGUIInfoLabel::GetLabel(param).ToLower();
-      int compareString = ConditionalStringParameter(label);
-      return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, compareString, 1));
-    }
-    else if (strTest.Equals("system.batterylevel")) ret = SYSTEM_BATTERY_LEVEL;
-  }
-  // library test conditions
   else if (strTest.Left(7).Equals("library"))
   {
     if (strTest.Equals("library.hascontent(music)")) ret = LIBRARY_HAS_MUSIC;
@@ -2722,7 +2725,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   else if (info.m_info == SYSTEM_GET_CORE_USAGE)
   {
     CStdString strCpu;
-    strCpu.Format("%4.2f", g_cpuInfo.GetCoreInfo(info.GetData1()).m_fPct);
+    strCpu.Format("%4.2f", g_cpuInfo.GetCoreInfo(atoi(m_stringParameters[info.GetData1()].c_str())).m_fPct);
     return strCpu;
   }
   else if (info.m_info >= MUSICPLAYER_TITLE && info.m_info <= MUSICPLAYER_ALBUM_ARTIST)
