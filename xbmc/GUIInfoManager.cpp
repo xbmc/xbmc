@@ -311,6 +311,37 @@ infomap lastfm[] =         {{ "radioplaying",      LASTFM_RADIOPLAYING },
                             { "canlove",           LASTFM_CANLOVE},
                             { "canban",            LASTFM_CANBAN}};
 
+infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
+                            { "album",            MUSICPLAYER_ALBUM },
+                            { "artist",           MUSICPLAYER_ARTIST },
+                            { "albumartist",      MUSICPLAYER_ALBUM_ARTIST },
+                            { "year",             MUSICPLAYER_YEAR },
+                            { "genre",            MUSICPLAYER_GENRE },
+                            { "duration",         MUSICPLAYER_DURATION },
+                            { "tracknumber",      MUSICPLAYER_TRACK_NUMBER },
+                            { "cover",            MUSICPLAYER_COVER },
+                            { "bitrate",          MUSICPLAYER_BITRATE },
+                            { "playlistlength",   MUSICPLAYER_PLAYLISTLEN },
+                            { "playlistposition", MUSICPLAYER_PLAYLISTPOS },
+                            { "channels",         MUSICPLAYER_CHANNELS },
+                            { "bitspersample",    MUSICPLAYER_BITSPERSAMPLE },
+                            { "samplerate",       MUSICPLAYER_SAMPLERATE },
+                            { "codec",            MUSICPLAYER_CODEC },
+                            { "discnumber",       MUSICPLAYER_DISC_NUMBER },
+                            { "rating",           MUSICPLAYER_RATING },
+                            { "comment",          MUSICPLAYER_COMMENT },
+                            { "lyrics",           MUSICPLAYER_LYRICS },
+                            { "playlistplaying",  MUSICPLAYER_PLAYLISTPLAYING },
+                            { "exists",           MUSICPLAYER_EXISTS },
+                            { "hasprevious",      MUSICPLAYER_HASPREVIOUS },
+                            { "hasnext",          MUSICPLAYER_HASNEXT },
+                            { "playcount",        MUSICPLAYER_PLAYCOUNT },
+                            { "lastplayed",       MUSICPLAYER_LASTPLAYED },
+                            { "channelname",      MUSICPLAYER_CHANNEL_NAME },
+                            { "channelnumber",    MUSICPLAYER_CHANNEL_NUMBER },
+                            { "channelgroup",     MUSICPLAYER_CHANNEL_GROUP }
+};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -558,6 +589,17 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         else if (cat == "musicvideos") return LIBRARY_HAS_MUSICVIDEOS;
       }
     }
+    else if (category == "musicplayer")
+    {
+      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++) // TODO: remove these, they're repeats
+      {
+        if (property == player_times[i].str)
+          return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(info[1].second)));
+      }
+      if (property == "property")
+        return AddListItemProp(info[1].second, MUSICPLAYER_PROPERTY_OFFSET);
+      return TranslateMusicPlayerString(property);
+    }
   }
   else if (info.size() == 3)
   {
@@ -568,6 +610,21 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       else if (platform == "windows") return SYSTEM_PLATFORM_WINDOWS;
       else if (platform == "osx") return SYSTEM_PLATFORM_OSX;
     }
+    if (info[0].first == "musicplayer")
+    { // TODO: these two don't allow duration(foo) and also don't allow more than this number of levels...
+      if (info[1].first == "position")
+      {
+        int position = atoi(info[1].second);
+        int value = TranslateMusicPlayerString(info[2].first); // musicplayer.position(foo).bar
+        return AddMultiInfo(GUIInfo(value, 0, position));
+      }
+      else if (info[1].first == "offset")
+      {
+        int position = atoi(info[1].second);
+        int value = TranslateMusicPlayerString(info[2].first); // musicplayer.offset(foo).bar
+        return AddMultiInfo(GUIInfo(value, 1, position));
+      }
+    }
   }
 
   CStdString original(strTest);
@@ -576,31 +633,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
   int ret = 0;
   // translate conditions...
-  if (strCategory.Equals("musicplayer"))
-  {
-    CStdString info = strTest.Mid(strCategory.GetLength() + 1);
-    if (info.Left(9).Equals("position("))
-    {
-      int position = atoi(info.Mid(9));
-      int value = TranslateMusicPlayerString(info.Mid(info.Find(".")+1));
-      ret = AddMultiInfo(GUIInfo(value, 0, position));
-    }
-    else if (info.Left(7).Equals("offset("))
-    {
-      int position = atoi(info.Mid(7));
-      int value = TranslateMusicPlayerString(info.Mid(info.Find(".")+1));
-      ret = AddMultiInfo(GUIInfo(value, 1, position));
-    }
-    else if (info.Left(13).Equals("timeremaining")) return AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(info.Mid(13))));
-    else if (info.Left(9).Equals("timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(info.Mid(9))));
-    else if (info.Left(4).Equals("time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(info.Mid(4))));
-    else if (info.Left(8).Equals("duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(info.Mid(8))));
-    else if (info.Left(9).Equals("property("))
-      return AddListItemProp(info.Mid(9, info.GetLength() - 10), MUSICPLAYER_PROPERTY_OFFSET);
-    else
-      ret = TranslateMusicPlayerString(strTest.Mid(12));
-  }
-  else if (strCategory.Equals("videoplayer"))
+  if (strCategory.Equals("videoplayer"))
   {
     if (strTest.Equals("videoplayer.title")) ret = VIDEOPLAYER_TITLE;
     else if (strTest.Equals("videoplayer.genre")) ret = VIDEOPLAYER_GENRE;
@@ -1072,35 +1105,11 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
 
 int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
 {
-  if (info.Equals("title")) return MUSICPLAYER_TITLE;
-  else if (info.Equals("album")) return MUSICPLAYER_ALBUM;
-  else if (info.Equals("artist")) return MUSICPLAYER_ARTIST;
-  else if (info.Equals("albumartist")) return MUSICPLAYER_ALBUM_ARTIST;
-  else if (info.Equals("year")) return MUSICPLAYER_YEAR;
-  else if (info.Equals("genre")) return MUSICPLAYER_GENRE;
-  else if (info.Equals("duration")) return MUSICPLAYER_DURATION;
-  else if (info.Equals("tracknumber")) return MUSICPLAYER_TRACK_NUMBER;
-  else if (info.Equals("cover")) return MUSICPLAYER_COVER;
-  else if (info.Equals("bitrate")) return MUSICPLAYER_BITRATE;
-  else if (info.Equals("playlistlength")) return MUSICPLAYER_PLAYLISTLEN;
-  else if (info.Equals("playlistposition")) return MUSICPLAYER_PLAYLISTPOS;
-  else if (info.Equals("channels")) return MUSICPLAYER_CHANNELS;
-  else if (info.Equals("bitspersample")) return MUSICPLAYER_BITSPERSAMPLE;
-  else if (info.Equals("samplerate")) return MUSICPLAYER_SAMPLERATE;
-  else if (info.Equals("codec")) return MUSICPLAYER_CODEC;
-  else if (info.Equals("discnumber")) return MUSICPLAYER_DISC_NUMBER;
-  else if (info.Equals("rating")) return MUSICPLAYER_RATING;
-  else if (info.Equals("comment")) return MUSICPLAYER_COMMENT;
-  else if (info.Equals("lyrics")) return MUSICPLAYER_LYRICS;
-  else if (info.Equals("playlistplaying")) return MUSICPLAYER_PLAYLISTPLAYING;
-  else if (info.Equals("exists")) return MUSICPLAYER_EXISTS;
-  else if (info.Equals("hasprevious")) return MUSICPLAYER_HASPREVIOUS;
-  else if (info.Equals("hasnext")) return MUSICPLAYER_HASNEXT;
-  else if (info.Equals("channelname")) return MUSICPLAYER_CHANNEL_NAME;
-  else if (info.Equals("channelnumber")) return MUSICPLAYER_CHANNEL_NUMBER;
-  else if (info.Equals("channelgroup")) return MUSICPLAYER_CHANNEL_GROUP;
-  else if (info.Equals("playcount")) return MUSICPLAYER_PLAYCOUNT;
-  else if (info.Equals("lastplayed")) return MUSICPLAYER_LASTPLAYED;
+  for (size_t i = 0; i < sizeof(musicplayer) / sizeof(infomap); i++)
+  {
+    if (info == musicplayer[i].str)
+      return musicplayer[i].val;
+  }
   return 0;
 }
 
