@@ -416,33 +416,29 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
   CStdString content = m_database.GetContentForPath(items.m_strPath);
   items.SetContent(content.IsEmpty() ? "files" : content);
 
-  bool clean = (g_guiSettings.GetBool("myvideos.cleanstrings") &&
-                !items.IsVirtualDirectoryRoot() &&
-                m_stackingAvailable);
+  bool fileMetaData = (g_guiSettings.GetBool("myvideos.filemetadata") &&
+                      !items.IsVirtualDirectoryRoot() &&
+                       m_stackingAvailable && !content.IsEmpty());
 
   CFileItemList dbItems;
   /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
            we won't need the fetchedPlayCounts code, and can "simply" do this directly on absense of content. */
-  bool fetchedPlayCounts = false;
-  if (!content.IsEmpty())
+  if (fileMetaData)
   {
     m_database.GetItemsForPath(content, items.m_strPath, dbItems);
     dbItems.SetFastLookup(true);
   }
+
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
-    CFileItemPtr match;
-    if (!content.IsEmpty())
-      match = dbItems.Get(pItem->m_strPath);
-    if (match)
+    if (fileMetaData)
     {
-      CStdString label (pItem->GetLabel ());
-      CStdString label2(pItem->GetLabel2());
-      pItem->UpdateInfo(*match);
-
-      if (clean)
+      CFileItemPtr match = dbItems.Get(pItem->m_strPath);
+      if (match)
       {
+        pItem->UpdateInfo(*match);
+
         if (match->m_bIsFolder)
           pItem->m_strPath = match->GetVideoInfoTag()->m_strPath;
         else
@@ -454,32 +450,25 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
           items.SetSortIgnoreFolders(true);
           pItem->m_bIsFolder = match->m_bIsFolder;
         }
+        // We're done with this one
+        continue;
       }
       else
       {
-        if (CFile::Exists(match->GetCachedFanart()))
-          pItem->SetProperty("fanart_image", match->GetCachedFanart());
-        pItem->SetLabel (label);
-        pItem->SetLabel2(label2);
-      }
-    }
-    else
-    { // set the watched overlay
-      // and clean the label
-
-      /* NOTE: Currently we GetPlayCounts on our items regardless of whether content is set
-               as if content is set, GetItemsForPaths doesn't return anything not in the content tables.
-               This code can be removed once the content tables are always filled */
-      if (!pItem->m_bIsFolder && !fetchedPlayCounts)
-      {
-        m_database.GetPlayCounts(items.m_strPath, items);
-        fetchedPlayCounts = true;
-      }
-      if (pItem->HasVideoInfoTag())
-        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
-      if (clean)
+        // Since the item is not in our db, as an alternative clean its name
         pItem->CleanString();
+      }
     }
+
+    /* NOTE: Currently we GetPlayCounts on our items regardless of whether content is set
+              as if content is set, GetItemsForPaths doesn't return anything not in the content tables.
+              This code can be removed once the content tables are always filled */
+    if (!pItem->m_bIsFolder)
+       m_database.GetPlayCounts(items.m_strPath, items);
+    
+    // set the watched overlay
+    if (pItem->HasVideoInfoTag())
+      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
   }
 }
 
