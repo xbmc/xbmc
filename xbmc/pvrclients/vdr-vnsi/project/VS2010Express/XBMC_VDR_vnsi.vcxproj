@@ -28,11 +28,11 @@
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\responsepacket.h" />
     <ClInclude Include="..\..\VNSIChannelScan.h" />
+    <ClInclude Include="..\..\vnsicommand.h" />
     <ClInclude Include="..\..\VNSIData.h" />
     <ClInclude Include="..\..\VNSIDemux.h" />
     <ClInclude Include="..\..\VNSIRecording.h" />
     <ClInclude Include="..\..\VNSISession.h" />
-    <ClInclude Include="..\..\vdrcommand.h" />
     <ClInclude Include="..\..\thread.h" />
     <ClInclude Include="..\..\tools.h" />
   </ItemGroup>
@@ -92,7 +92,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;_WIN32;__WINDOWS__;USE_DEMUX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\..\addons\include;.;..\..\win32;..\..\windows;..\..\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\addons\include;.;..\..\win32;..\..\windows;..\..\;..\..\..\..</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -108,7 +108,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\..\..\..\addons\include;.;..\..\win32;..\..\windows;..\..\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\addons\include;.;..\..\win32;..\..\windows;..\..\;..\..\..\..</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;_USE_32BIT_TIME_T;_WINSOCKAPI_;_WIN32;__WINDOWS__;USE_DEMUX;__STDC_CONSTANT_MACROS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>

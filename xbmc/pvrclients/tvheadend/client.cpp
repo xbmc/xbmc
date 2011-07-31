@@ -106,16 +106,26 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
+  {
+    delete XBMC;
+    XBMC = NULL;
     return ADDON_STATUS_UNKNOWN;
+  }
 
   PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
+  {
+    delete PVR;
+    delete XBMC;
+    PVR = NULL;
+    XBMC = NULL;
     return ADDON_STATUS_UNKNOWN;
+  }
 
   XBMC->Log(LOG_DEBUG, "%s - Creating Tvheadend PVR-Client", __FUNCTION__);
 
   m_CurStatus     = ADDON_STATUS_UNKNOWN;
-  g_iClientId     = pvrprops->iClienId;
+  g_iClientId     = pvrprops->iClientId;
   g_strUserPath   = pvrprops->strUserPath;
   g_strClientPath = pvrprops->strClientPath;
 
@@ -124,6 +134,12 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   HTSPData = new CHTSPData;
   if (!HTSPData->Open())
   {
+    delete HTSPData;
+    delete PVR;
+    delete XBMC;
+    HTSPData = NULL;
+    PVR = NULL;
+    XBMC = NULL;
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
   }
@@ -151,7 +167,21 @@ void ADDON_Destroy()
       delete HTSPData;
       HTSPData = NULL;
     }
+    m_bCreated = false;
   }
+
+  if (PVR)
+  {
+    delete PVR;
+    PVR = NULL;
+  }
+
+  if (XBMC)
+  {
+    delete XBMC;
+    XBMC = NULL;
+  }
+
   m_CurStatus = ADDON_STATUS_UNKNOWN;
 }
 

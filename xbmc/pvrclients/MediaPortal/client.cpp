@@ -72,17 +72,24 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
 
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
+  {
+    delete_null(XBMC);
     return ADDON_STATUS_UNKNOWN;
+  }
 
   PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
+  {
+    delete_null(PVR);
+    delete_null(XBMC);
     return ADDON_STATUS_UNKNOWN;
+  }
 
   XBMC->Log(LOG_DEBUG, "Creating MediaPortal PVR-Client (ffmpeg rtsp version)");
 
   m_CurStatus    = ADDON_STATUS_UNKNOWN;
   g_client       = new cPVRClientMediaPortal();
-  g_iClientID    = pvrprops->iClienId;
+  g_iClientID    = pvrprops->iClientId;
   g_szUserPath   = pvrprops->strUserPath;
   g_szClientPath = pvrprops->strClientPath;
 
@@ -192,6 +199,9 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   /* Create connection to MediaPortal XBMC TV client */
   if (!g_client->Connect())
   {
+    delete_null(g_client);
+    delete_null(PVR);
+    delete_null(XBMC);
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
   }
   else
@@ -390,7 +400,10 @@ const char * GetBackendName(void)
 //-----------------------------------------------------------------------------
 const char * GetBackendVersion(void)
 {
-  return g_client->GetBackendVersion();
+  if (g_client)
+    return g_client->GetBackendVersion();
+  else
+    return "";
 }
 
 //-- GetConnectionString ------------------------------------------------------
@@ -398,7 +411,10 @@ const char * GetBackendVersion(void)
 //-----------------------------------------------------------------------------
 const char * GetConnectionString(void)
 {
-  return g_client->GetConnectionString();
+  if (g_client)
+    return g_client->GetConnectionString();
+  else
+    return "addon error!";
 }
 
 //-- GetDriveSpace ------------------------------------------------------------
@@ -406,12 +422,18 @@ const char * GetConnectionString(void)
 //-----------------------------------------------------------------------------
 PVR_ERROR GetDriveSpace(long long *iTotal, long long *iUsed)
 {
-  return g_client->GetDriveSpace(iTotal, iUsed);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->GetDriveSpace(iTotal, iUsed);
 }
 
 PVR_ERROR GetBackendTime(time_t *localTime, int *gmtOffset)
 {
-  return g_client->GetMPTVTime(localTime, gmtOffset);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->GetMPTVTime(localTime, gmtOffset);
 }
 
 PVR_ERROR DialogChannelScan()
@@ -430,7 +452,10 @@ PVR_ERROR CallMenuHook(const PVR_MENUHOOK &menuhook)
 
 PVR_ERROR GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t iStart, time_t iEnd)
 {
-  return g_client->GetEpg(handle, channel, iStart, iEnd);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->GetEpg(handle, channel, iStart, iEnd);
 }
 
 
@@ -439,12 +464,18 @@ PVR_ERROR GetEPGForChannel(PVR_HANDLE handle, const PVR_CHANNEL &channel, time_t
 
 int GetChannelsAmount()
 {
-  return g_client->GetNumChannels();
+  if (!g_client)
+    return 0;
+  else
+    return g_client->GetNumChannels();
 }
 
 PVR_ERROR GetChannels(PVR_HANDLE handle, bool bRadio)
 {
-  return g_client->GetChannels(handle, bRadio);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->GetChannels(handle, bRadio);
 }
 
 PVR_ERROR DeleteChannel(const PVR_CHANNEL &channel)
@@ -473,17 +504,26 @@ PVR_ERROR DialogAddChannel(const PVR_CHANNEL &channelinfo)
 
 int GetChannelGroupsAmount(void)
 {
-  return g_client->GetChannelGroupsAmount();
+  if (!g_client)
+    return 0;
+  else
+    return g_client->GetChannelGroupsAmount();
 }
 
 PVR_ERROR GetChannelGroups(PVR_HANDLE handle, bool bRadio)
 {
-  return g_client->GetChannelGroups(handle, bRadio);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->GetChannelGroups(handle, bRadio);
 }
 
 PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &group)
 {
-  return g_client->GetChannelGroupMembers(handle, group);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->GetChannelGroupMembers(handle, group);
 }
 
 
@@ -492,22 +532,34 @@ PVR_ERROR GetChannelGroupMembers(PVR_HANDLE handle, const PVR_CHANNEL_GROUP &gro
 
 int GetRecordingsAmount(void)
 {
-  return g_client->GetNumRecordings();
+  if (!g_client)
+    return 0;
+  else
+    return g_client->GetNumRecordings();
 }
 
 PVR_ERROR GetRecordings(PVR_HANDLE handle)
 {
-  return g_client->GetRecordings(handle);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->GetRecordings(handle);
 }
 
 PVR_ERROR DeleteRecording(const PVR_RECORDING &recording)
 {
-  return g_client->DeleteRecording(recording);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->DeleteRecording(recording);
 }
 
 PVR_ERROR RenameRecording(const PVR_RECORDING &recording)
 {
-  return g_client->RenameRecording(recording);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->RenameRecording(recording);
 }
 
 
@@ -516,27 +568,42 @@ PVR_ERROR RenameRecording(const PVR_RECORDING &recording)
 
 int GetTimersAmount(void)
 {
-  return g_client->GetNumTimers();
+  if (!g_client)
+    return 0;
+  else
+    return g_client->GetNumTimers();
 }
 
 PVR_ERROR GetTimers(PVR_HANDLE handle)
 {
-  return g_client->GetTimers(handle);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->GetTimers(handle);
 }
 
 PVR_ERROR AddTimer(const PVR_TIMER &timer)
 {
-  return g_client->AddTimer(timer);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->AddTimer(timer);
 }
 
 PVR_ERROR DeleteTimer(const PVR_TIMER &timer, bool bForceDelete)
 {
-  return g_client->DeleteTimer(timer, bForceDelete);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->DeleteTimer(timer, bForceDelete);
 }
 
 PVR_ERROR UpdateTimer(const PVR_TIMER &timer)
 {
-  return g_client->UpdateTimer(timer);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->UpdateTimer(timer);
 }
 
 
@@ -545,32 +612,48 @@ PVR_ERROR UpdateTimer(const PVR_TIMER &timer)
 
 bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
-  return g_client->OpenLiveStream(channelinfo);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->OpenLiveStream(channelinfo);
 }
 
 void CloseLiveStream()
 {
-  return g_client->CloseLiveStream();
+  if (g_client)
+    CloseLiveStream();
 }
 
 int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
-  return g_client->ReadLiveStream(pBuffer, iBufferSize);
+  if (!g_client)
+    return 0;
+  else
+    return g_client->ReadLiveStream(pBuffer, iBufferSize);
 }
 
 int GetCurrentClientChannel()
 {
-  return g_client->GetCurrentClientChannel();
+  if (!g_client)
+    return 0;
+  else
+    return g_client->GetCurrentClientChannel();
 }
 
 bool SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
-  return g_client->SwitchChannel(channelinfo);
+  if (!g_client)
+    return false;
+  else
+    return g_client->SwitchChannel(channelinfo);
 }
 
 PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 {
-  return g_client->SignalStatus(signalStatus);
+  if (!g_client)
+    return PVR_ERROR_SERVER_ERROR;
+  else
+    return g_client->SignalStatus(signalStatus);
 }
 
 /*******************************************/
@@ -578,22 +661,32 @@ PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 
 bool OpenRecordedStream(const PVR_RECORDING &recording)
 {
-  return g_client->OpenRecordedStream(recording);
+  if (!g_client)
+    return false;
+  else
+    return g_client->OpenRecordedStream(recording);
 }
 
 void CloseRecordedStream(void)
 {
-  return g_client->CloseRecordedStream();
+  if (g_client)
+    g_client->CloseRecordedStream();
 }
 
 int ReadRecordedStream(unsigned char *pBuffer, unsigned int iBufferSize)
 {
-  return g_client->ReadRecordedStream(pBuffer, iBufferSize);
+  if (!g_client)
+    return 0;
+  else
+    return g_client->ReadRecordedStream(pBuffer, iBufferSize);
 }
 
 const char * GetLiveStreamURL(const PVR_CHANNEL &channel)
 {
-  return g_client->GetLiveStreamURL(channel);
+  if (!g_client)
+    return "";
+  else
+    return g_client->GetLiveStreamURL(channel);
 }
 
 /** UNUSED API FUNCTIONS */
