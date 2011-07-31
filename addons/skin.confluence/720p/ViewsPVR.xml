@@ -15,7 +15,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12</font>
-					<label>$INFO[Container(11).ListItem.Property(epg.starttime)]</label>
+					<label>$INFO[Container(11).ListItem.StartTime]</label>
 				</control>
 				<control type="progress">
 					<description>Progressbar</description>
@@ -33,7 +33,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12</font>
-					<label>$INFO[Container(11).ListItem.Property(epg.endtime)]</label>
+					<label>$INFO[Container(11).ListItem.EndTime]</label>
 				</control>
 				<control type="label">
 					<posx>0</posx>
@@ -70,7 +70,7 @@
 					<font>font12</font>
 					<textcolor>grey</textcolor>
 					<scroll>false</scroll>
-					<label>$LOCALIZE[19031]: $INFO[Container(11).ListItem.Property(epg.next)]</label>
+					<label>$LOCALIZE[19031]: $INFO[Container(11).ListItem.NextTitle]</label>
 				</control>
 			</control>
 			<control type="list" id="11">
@@ -310,7 +310,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12</font>
-					<label>$INFO[Container(12).ListItem.Property(epg.starttime)]</label>
+					<label>$INFO[Container(12).ListItem.StartTime]</label>
 				</control>
 				<control type="progress">
 					<description>Progressbar</description>
@@ -328,7 +328,7 @@
 					<align>center</align>
 					<aligny>center</aligny>
 					<font>font12</font>
-					<label>$INFO[Container(12).ListItem.Property(epg.endtime)]</label>
+					<label>$INFO[Container(12).ListItem.EndTime]</label>
 				</control>
 				<control type="label">
 					<posx>0</posx>
@@ -365,7 +365,7 @@
 					<font>font12</font>
 					<textcolor>grey</textcolor>
 					<scroll>false</scroll>
-					<label>$LOCALIZE[19031]: $INFO[Container(12).ListItem.Property(epg.next)]</label>
+					<label>$LOCALIZE[19031]: $INFO[Container(12).ListItem.NextTitle]</label>
 				</control>
 			</control>
 			<control type="list" id="12">

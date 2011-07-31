@@ -4478,6 +4478,10 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasPVRChannelInfoTag())
       return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->Genre() : "";
     break;
+  case LISTITEM_NEXT_TITLE:
+    if (item->HasPVRChannelInfoTag())
+      return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->Title() : "";
+    break;
   case LISTITEM_PARENTALRATING:
     {
       CStdString rating;
