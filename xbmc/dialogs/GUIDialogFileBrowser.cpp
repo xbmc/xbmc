@@ -598,7 +598,7 @@ void CGUIDialogFileBrowser::OnWindowUnload()
 
 bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VECSOURCES &shares, const CStdString &heading, CStdString &result, bool* flip, int label)
 {
-  CStdString mask = ".png|.jpg|.bmp|.gif";
+  CStdString mask = ".png|.jpg|.bmp|.gif|.dds";
   CGUIDialogFileBrowser *browser = new CGUIDialogFileBrowser();
   if (!browser)
     return false;
@@ -641,12 +641,12 @@ bool CGUIDialogFileBrowser::ShowAndGetImage(const CFileItemList &items, const VE
 
 bool CGUIDialogFileBrowser::ShowAndGetImage(const VECSOURCES &shares, const CStdString &heading, CStdString &path)
 {
-  return ShowAndGetFile(shares, ".png|.jpg|.bmp|.gif|.tbn", heading, path, true); // true for use thumbs
+  return ShowAndGetFile(shares, ".png|.jpg|.bmp|.gif|.tbn|.dds", heading, path, true); // true for use thumbs
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetImageList(const VECSOURCES &shares, const CStdString &heading, CStdStringArray &path)
 {
-  return ShowAndGetFileList(shares, ".png|.jpg|.bmp|.gif|.tbn", heading, path, true); // true for use thumbs
+  return ShowAndGetFileList(shares, ".png|.jpg|.bmp|.gif|.tbn|.dds", heading, path, true); // true for use thumbs
 }
 
 bool CGUIDialogFileBrowser::ShowAndGetDirectory(const VECSOURCES &shares, const CStdString &heading, CStdString &path, bool bWriteOnly)
