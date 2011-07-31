@@ -164,11 +164,6 @@ class CDateTime;
 #define LCD_HDD_TEMPERATURE         164
 #define LCD_FAN_SPEED               165
 #define LCD_DATE                    166
-#define LCD_FREE_SPACE_C            167
-// #define LCD_FREE_SPACE_D            168 // 168 is reserved for space on D
-#define LCD_FREE_SPACE_E            169
-#define LCD_FREE_SPACE_F            170
-#define LCD_FREE_SPACE_G            171
 #define LCD_TIME_21                 172 // Small bigfont
 #define LCD_TIME_22                 173
 #define LCD_TIME_W21                174 // Medum bigfont
@@ -352,37 +347,12 @@ class CDateTime;
 #define SYSTEM_SCREEN_RESOLUTION    659
 #define SYSTEM_VIDEO_ENCODER_INFO   660
 #define SYSTEM_KERNEL_VERSION       667
-#define SYSTEM_USED_SPACE_X         673
-#define SYSTEM_FREE_SPACE_X         674
-#define SYSTEM_USED_SPACE_Y         675
-#define SYSTEM_FREE_SPACE_Y         676
-#define SYSTEM_USED_SPACE_Z         677
-#define SYSTEM_FREE_SPACE_Z         678
 #define SYSTEM_FREE_SPACE           679
 #define SYSTEM_USED_SPACE           680
 #define SYSTEM_TOTAL_SPACE          681
 #define SYSTEM_USED_SPACE_PERCENT   682
 #define SYSTEM_FREE_SPACE_PERCENT   683
-#define SYSTEM_USED_SPACE_C         684
-#define SYSTEM_TOTAL_SPACE_C        685
-#define SYSTEM_USED_SPACE_PERCENT_C 686
-#define SYSTEM_FREE_SPACE_PERCENT_C 687
-#define SYSTEM_USED_SPACE_E         688
-#define SYSTEM_TOTAL_SPACE_E        689
-#define SYSTEM_USED_SPACE_PERCENT_E 690
-#define SYSTEM_FREE_SPACE_PERCENT_E 691
-#define SYSTEM_USED_SPACE_F         692
-#define SYSTEM_TOTAL_SPACE_F        693
-#define SYSTEM_USED_SPACE_PERCENT_F 694
-#define SYSTEM_FREE_SPACE_PERCENT_F 695
-#define SYSTEM_USED_SPACE_G         696
-#define SYSTEM_TOTAL_SPACE_G        697
-#define SYSTEM_USED_SPACE_PERCENT_G 698
-#define SYSTEM_FREE_SPACE_PERCENT_G 699
 #define SYSTEM_DVD_TRAY_STATE       700
-#define SYSTEM_TOTAL_SPACE_X        701
-#define SYSTEM_TOTAL_SPACE_Y        702
-#define SYSTEM_TOTAL_SPACE_Z        703
 #define SYSTEM_GET_BOOL             704
 #define SYSTEM_GET_CORE_USAGE       705
 #define SYSTEM_HAS_CORE_ID          706

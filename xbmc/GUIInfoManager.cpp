@@ -253,20 +253,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("bar.fanspeed")) ret = SYSTEM_FAN_SPEED;
     else if (strTest.Equals("bar.usedspace")) ret = SYSTEM_USED_SPACE;
     else if (strTest.Equals("bar.freespace")) ret = SYSTEM_FREE_SPACE;
-    else if (strTest.Equals("bar.usedspace(c)")) ret = SYSTEM_USED_SPACE_C;
-    else if (strTest.Equals("bar.freespace(c)")) ret = SYSTEM_FREE_SPACE_C;
-    else if (strTest.Equals("bar.usedspace(e)")) ret = SYSTEM_USED_SPACE_E;
-    else if (strTest.Equals("bar.freespace(e)")) ret = SYSTEM_FREE_SPACE_E;
-    else if (strTest.Equals("bar.usedspace(f)")) ret = SYSTEM_USED_SPACE_F;
-    else if (strTest.Equals("bar.freespace(f)")) ret = SYSTEM_FREE_SPACE_F;
-    else if (strTest.Equals("bar.usedspace(g)")) ret = SYSTEM_USED_SPACE_G;
-    else if (strTest.Equals("bar.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
-    else if (strTest.Equals("bar.usedspace(x)")) ret = SYSTEM_USED_SPACE_X;
-    else if (strTest.Equals("bar.freespace(x)")) ret = SYSTEM_FREE_SPACE_X;
-    else if (strTest.Equals("bar.usedspace(y)")) ret = SYSTEM_USED_SPACE_Y;
-    else if (strTest.Equals("bar.freespace(y)")) ret = SYSTEM_FREE_SPACE_Y;
-    else if (strTest.Equals("bar.usedspace(z)")) ret = SYSTEM_USED_SPACE_Z;
-    else if (strTest.Equals("bar.freespace(z)")) ret = SYSTEM_FREE_SPACE_Z;
     else if (strTest.Equals("bar.hddtemperature")) ret = SYSTEM_HDD_TEMPERATURE;
   }
   else if (strCategory.Equals("system"))
@@ -312,35 +298,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.totalspace")) ret = SYSTEM_TOTAL_SPACE;
     else if (strTest.Equals("system.usedspacepercent")) ret = SYSTEM_USED_SPACE_PERCENT;
     else if (strTest.Equals("system.freespacepercent")) ret = SYSTEM_FREE_SPACE_PERCENT;
-    else if (strTest.Equals("system.freespace(c)")) ret = SYSTEM_FREE_SPACE_C;
-    else if (strTest.Equals("system.usedspace(c)")) ret = SYSTEM_USED_SPACE_C;
-    else if (strTest.Equals("system.totalspace(c)")) ret = SYSTEM_TOTAL_SPACE_C;
-    else if (strTest.Equals("system.usedspacepercent(c)")) ret = SYSTEM_USED_SPACE_PERCENT_C;
-    else if (strTest.Equals("system.freespacepercent(c)")) ret = SYSTEM_FREE_SPACE_PERCENT_C;
-    else if (strTest.Equals("system.freespace(e)")) ret = SYSTEM_FREE_SPACE_E;
-    else if (strTest.Equals("system.usedspace(e)")) ret = SYSTEM_USED_SPACE_E;
-    else if (strTest.Equals("system.totalspace(e)")) ret = SYSTEM_TOTAL_SPACE_E;
-    else if (strTest.Equals("system.usedspacepercent(e)")) ret = SYSTEM_USED_SPACE_PERCENT_E;
-    else if (strTest.Equals("system.freespacepercent(e)")) ret = SYSTEM_FREE_SPACE_PERCENT_E;
-    else if (strTest.Equals("system.freespace(f)")) ret = SYSTEM_FREE_SPACE_F;
-    else if (strTest.Equals("system.usedspace(f)")) ret = SYSTEM_USED_SPACE_F;
-    else if (strTest.Equals("system.totalspace(f)")) ret = SYSTEM_TOTAL_SPACE_F;
-    else if (strTest.Equals("system.usedspacepercent(f)")) ret = SYSTEM_USED_SPACE_PERCENT_F;
-    else if (strTest.Equals("system.freespacepercent(f)")) ret = SYSTEM_FREE_SPACE_PERCENT_F;
-    else if (strTest.Equals("system.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
-    else if (strTest.Equals("system.usedspace(g)")) ret = SYSTEM_USED_SPACE_G;
-    else if (strTest.Equals("system.totalspace(g)")) ret = SYSTEM_TOTAL_SPACE_G;
-    else if (strTest.Equals("system.usedspacepercent(g)")) ret = SYSTEM_USED_SPACE_PERCENT_G;
-    else if (strTest.Equals("system.freespacepercent(g)")) ret = SYSTEM_FREE_SPACE_PERCENT_G;
-    else if (strTest.Equals("system.usedspace(x)")) ret = SYSTEM_USED_SPACE_X;
-    else if (strTest.Equals("system.freespace(x)")) ret = SYSTEM_FREE_SPACE_X;
-    else if (strTest.Equals("system.totalspace(x)")) ret = SYSTEM_TOTAL_SPACE_X;
-    else if (strTest.Equals("system.usedspace(y)")) ret = SYSTEM_USED_SPACE_Y;
-    else if (strTest.Equals("system.freespace(y)")) ret = SYSTEM_FREE_SPACE_Y;
-    else if (strTest.Equals("system.totalspace(y)")) ret = SYSTEM_TOTAL_SPACE_Y;
-    else if (strTest.Equals("system.usedspace(z)")) ret = SYSTEM_USED_SPACE_Z;
-    else if (strTest.Equals("system.freespace(z)")) ret = SYSTEM_FREE_SPACE_Z;
-    else if (strTest.Equals("system.totalspace(z)")) ret = SYSTEM_TOTAL_SPACE_Z;
     else if (strTest.Equals("system.buildversion")) ret = SYSTEM_BUILD_VERSION;
     else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
@@ -495,10 +452,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("lcd.hddtemperature")) ret = LCD_HDD_TEMPERATURE;
     else if (strTest.Equals("lcd.fanspeed")) ret = LCD_FAN_SPEED;
     else if (strTest.Equals("lcd.date")) ret = LCD_DATE;
-    else if (strTest.Equals("lcd.freespace(c)")) ret = LCD_FREE_SPACE_C;
-    else if (strTest.Equals("lcd.freespace(e)")) ret = LCD_FREE_SPACE_E;
-    else if (strTest.Equals("lcd.freespace(f)")) ret = LCD_FREE_SPACE_F;
-    else if (strTest.Equals("lcd.freespace(g)")) ret = LCD_FREE_SPACE_G;
     else if (strTest.Equals("lcd.Time21")) ret = LCD_TIME_21; // Small LCD numbers
     else if (strTest.Equals("lcd.Time22")) ret = LCD_TIME_22;
     else if (strTest.Equals("lcd.TimeWide21")) ret = LCD_TIME_W21; // Medium LCD numbers
@@ -1216,48 +1169,12 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   break;
 
   case SYSTEM_FREE_SPACE:
-  case SYSTEM_FREE_SPACE_C:
-  case SYSTEM_FREE_SPACE_E:
-  case SYSTEM_FREE_SPACE_F:
-  case SYSTEM_FREE_SPACE_G:
   case SYSTEM_USED_SPACE:
-  case SYSTEM_USED_SPACE_C:
-  case SYSTEM_USED_SPACE_E:
-  case SYSTEM_USED_SPACE_F:
-  case SYSTEM_USED_SPACE_G:
   case SYSTEM_TOTAL_SPACE:
-  case SYSTEM_TOTAL_SPACE_C:
-  case SYSTEM_TOTAL_SPACE_E:
-  case SYSTEM_TOTAL_SPACE_F:
-  case SYSTEM_TOTAL_SPACE_G:
   case SYSTEM_FREE_SPACE_PERCENT:
-  case SYSTEM_FREE_SPACE_PERCENT_C:
-  case SYSTEM_FREE_SPACE_PERCENT_E:
-  case SYSTEM_FREE_SPACE_PERCENT_F:
-  case SYSTEM_FREE_SPACE_PERCENT_G:
   case SYSTEM_USED_SPACE_PERCENT:
-  case SYSTEM_USED_SPACE_PERCENT_C:
-  case SYSTEM_USED_SPACE_PERCENT_E:
-  case SYSTEM_USED_SPACE_PERCENT_F:
-  case SYSTEM_USED_SPACE_PERCENT_G:
-  case SYSTEM_USED_SPACE_X:
-  case SYSTEM_FREE_SPACE_X:
-  case SYSTEM_TOTAL_SPACE_X:
-  case SYSTEM_USED_SPACE_Y:
-  case SYSTEM_FREE_SPACE_Y:
-  case SYSTEM_TOTAL_SPACE_Y:
-  case SYSTEM_USED_SPACE_Z:
-  case SYSTEM_FREE_SPACE_Z:
-  case SYSTEM_TOTAL_SPACE_Z:
     return g_sysinfo.GetHddSpaceInfo(info);
   break;
-
-  case LCD_FREE_SPACE_C:
-  case LCD_FREE_SPACE_E:
-  case LCD_FREE_SPACE_F:
-  case LCD_FREE_SPACE_G:
-    return g_sysinfo.GetHddSpaceInfo(info, true);
-    break;
 
   case SYSTEM_CPU_TEMPERATURE:
   case SYSTEM_GPU_TEMPERATURE:
@@ -1691,21 +1608,7 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
           return bar->GetPercentage();
       }
     case SYSTEM_FREE_SPACE:
-    case SYSTEM_FREE_SPACE_C:
-    case SYSTEM_FREE_SPACE_E:
-    case SYSTEM_FREE_SPACE_F:
-    case SYSTEM_FREE_SPACE_G:
     case SYSTEM_USED_SPACE:
-    case SYSTEM_USED_SPACE_C:
-    case SYSTEM_USED_SPACE_E:
-    case SYSTEM_USED_SPACE_F:
-    case SYSTEM_USED_SPACE_G:
-    case SYSTEM_FREE_SPACE_X:
-    case SYSTEM_USED_SPACE_X:
-    case SYSTEM_FREE_SPACE_Y:
-    case SYSTEM_USED_SPACE_Y:
-    case SYSTEM_FREE_SPACE_Z:
-    case SYSTEM_USED_SPACE_Z:
       {
         int ret = 0;
         g_sysinfo.GetHddSpaceInfo(ret, info, true);
