@@ -243,18 +243,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("weather.fanartcode")) ret = WEATHER_FANART_CODE;
     else if (strTest.Equals("weather.plugin")) ret = WEATHER_PLUGIN;
   }
-  else if (strCategory.Equals("bar"))
-  {
-    if (strTest.Equals("bar.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
-    else if (strTest.Equals("bar.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
-    else if (strTest.Equals("bar.cpuusage")) ret = SYSTEM_CPU_USAGE;
-    else if (strTest.Equals("bar.freememory")) ret = SYSTEM_FREE_MEMORY;
-    else if (strTest.Equals("bar.usedmemory")) ret = SYSTEM_USED_MEMORY;
-    else if (strTest.Equals("bar.fanspeed")) ret = SYSTEM_FAN_SPEED;
-    else if (strTest.Equals("bar.usedspace")) ret = SYSTEM_USED_SPACE;
-    else if (strTest.Equals("bar.freespace")) ret = SYSTEM_FREE_SPACE;
-    else if (strTest.Equals("bar.hddtemperature")) ret = SYSTEM_HDD_TEMPERATURE;
-  }
   else if (strCategory.Equals("system"))
   {
     if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
