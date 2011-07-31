@@ -285,6 +285,14 @@ infomap network_labels[] = {{ "isdhcp",            NETWORK_IS_DHCP },
                             { "dns2address",       NETWORK_DNS2_ADDRESS },
                             { "dhcpaddress",       NETWORK_DHCP_ADDRESS }};
 
+infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
+                            { "songsplayed",       MUSICPM_SONGSPLAYED },
+                            { "matchingsongs",     MUSICPM_MATCHINGSONGS },
+                            { "matchingsongspicked", MUSICPM_MATCHINGSONGSPICKED },
+                            { "matchingsongsleft", MUSICPM_MATCHINGSONGSLEFT },
+                            { "relaxedsongspicked",MUSICPM_RELAXEDSONGSPICKED },
+                            { "randomsongspicked", MUSICPM_RANDOMSONGSPICKED }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -418,6 +426,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       {
         if (property == network_labels[i].str)
           return network_labels[i].val;
+      }
+    }
+    else if (category == "musicpartymode")
+    {
+      for (size_t i = 0; i < sizeof(musicpartymode) / sizeof(infomap); i++)
+      {
+        if (property == musicpartymode[i].str)
+          return musicpartymode[i].val;
       }
     }
     else if (category == "system")
@@ -608,16 +624,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("playlist.israndom")) ret = PLAYLIST_ISRANDOM;
     else if (strTest.Equals("playlist.isrepeat")) ret = PLAYLIST_ISREPEAT;
     else if (strTest.Equals("playlist.isrepeatone")) ret = PLAYLIST_ISREPEATONE;
-  }
-  else if (strCategory.Equals("musicpartymode"))
-  {
-    if (strTest.Equals("musicpartymode.enabled")) ret = MUSICPM_ENABLED;
-    else if (strTest.Equals("musicpartymode.songsplayed")) ret = MUSICPM_SONGSPLAYED;
-    else if (strTest.Equals("musicpartymode.matchingsongs")) ret = MUSICPM_MATCHINGSONGS;
-    else if (strTest.Equals("musicpartymode.matchingsongspicked")) ret = MUSICPM_MATCHINGSONGSPICKED;
-    else if (strTest.Equals("musicpartymode.matchingsongsleft")) ret = MUSICPM_MATCHINGSONGSLEFT;
-    else if (strTest.Equals("musicpartymode.relaxedsongspicked")) ret = MUSICPM_RELAXEDSONGSPICKED;
-    else if (strTest.Equals("musicpartymode.randomsongspicked")) ret = MUSICPM_RANDOMSONGSPICKED;
   }
   else if (strCategory.Equals("audioscrobbler"))
   {
