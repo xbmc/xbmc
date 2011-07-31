@@ -283,6 +283,16 @@ infomap lcd_labels[] =     {{ "playicon",         LCD_PLAY_ICON },
                             { "time43",           LCD_TIME_43 },
                             { "time44",           LCD_TIME_44 }};
 
+infomap network_labels[] = {{ "isdhcp",            NETWORK_IS_DHCP },
+                            { "ipaddress",         NETWORK_IP_ADDRESS }, //labels from here
+                            { "linkstate",         NETWORK_LINK_STATE },
+                            { "macaddress",        NETWORK_MAC_ADDRESS },
+                            { "subnetaddress",     NETWORK_SUBNET_ADDRESS },
+                            { "gatewayaddress",    NETWORK_GATEWAY_ADDRESS },
+                            { "dns1address",       NETWORK_DNS1_ADDRESS },
+                            { "dns2address",       NETWORK_DNS2_ADDRESS },
+                            { "dhcpaddress",       NETWORK_DHCP_ADDRESS }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -410,6 +420,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           return lcd_labels[i].val;
       }
     }
+    else if (category == "network")
+    {
+      for (size_t i = 0; i < sizeof(network_labels) / sizeof(infomap); i++)
+      {
+        if (property == network_labels[i].str)
+          return network_labels[i].val;
+      }
+    }
     else if (category == "system")
     {
       for (size_t i = 0; i < sizeof(system_labels) / sizeof(infomap); i++)
@@ -516,19 +534,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
   int ret = 0;
   // translate conditions...
-  if (strCategory.Equals("network"))
-  {
-    if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
-    if (strTest.Equals("network.isdhcp")) ret = NETWORK_IS_DHCP;
-    if (strTest.Equals("network.linkstate")) ret = NETWORK_LINK_STATE;
-    if (strTest.Equals("network.macaddress")) ret = NETWORK_MAC_ADDRESS;
-    if (strTest.Equals("network.subnetaddress")) ret = NETWORK_SUBNET_ADDRESS;
-    if (strTest.Equals("network.gatewayaddress")) ret = NETWORK_GATEWAY_ADDRESS;
-    if (strTest.Equals("network.dns1address")) ret = NETWORK_DNS1_ADDRESS;
-    if (strTest.Equals("network.dns2address")) ret = NETWORK_DNS2_ADDRESS;
-    if (strTest.Equals("network.dhcpaddress")) ret = NETWORK_DHCP_ADDRESS;
-  }
-  else if (strCategory.Equals("musicplayer"))
+  if (strCategory.Equals("musicplayer"))
   {
     CStdString info = strTest.Mid(strCategory.GetLength() + 1);
     if (info.Left(9).Equals("position("))
