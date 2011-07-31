@@ -259,6 +259,22 @@ infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                             { "hasaddon",         SYSTEM_HAS_ADDON },
                             { "coreusage",        SYSTEM_GET_CORE_USAGE }};
 
+infomap lcd_labels[] =     {{ "playicon",         LCD_PLAY_ICON },
+                            { "progressbar",      LCD_PROGRESS_BAR },
+                            { "cputemperature",   LCD_CPU_TEMPERATURE },
+                            { "gputemperature",   LCD_GPU_TEMPERATURE },
+                            { "hddtemperature",   LCD_HDD_TEMPERATURE },
+                            { "fanspeed",         LCD_FAN_SPEED },
+                            { "date",             LCD_DATE },
+                            { "time21",           LCD_TIME_21 },
+                            { "time22",           LCD_TIME_22 },
+                            { "timewide21",       LCD_TIME_W21 },
+                            { "timewide22",       LCD_TIME_W22 },
+                            { "time41",           LCD_TIME_41 },
+                            { "time42",           LCD_TIME_42 },
+                            { "time43",           LCD_TIME_43 },
+                            { "time44",           LCD_TIME_44 }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -378,6 +394,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           return weather[i].val;
       }
     }
+    else if (category == "lcd")
+    {
+      for (size_t i = 0; i < sizeof(lcd_labels) / sizeof(infomap); i++)
+      {
+        if (property == lcd_labels[i].str)
+          return lcd_labels[i].val;
+      }
+    }
     else if (category == "system")
     {
       for (size_t i = 0; i < sizeof(system_labels) / sizeof(infomap); i++)
@@ -484,25 +508,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
   int ret = 0;
   // translate conditions...
-  if (strCategory.Equals("lcd"))
-  {
-    if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
-    else if (strTest.Equals("lcd.progressbar")) ret = LCD_PROGRESS_BAR;
-    else if (strTest.Equals("lcd.cputemperature")) ret = LCD_CPU_TEMPERATURE;
-    else if (strTest.Equals("lcd.gputemperature")) ret = LCD_GPU_TEMPERATURE;
-    else if (strTest.Equals("lcd.hddtemperature")) ret = LCD_HDD_TEMPERATURE;
-    else if (strTest.Equals("lcd.fanspeed")) ret = LCD_FAN_SPEED;
-    else if (strTest.Equals("lcd.date")) ret = LCD_DATE;
-    else if (strTest.Equals("lcd.Time21")) ret = LCD_TIME_21; // Small LCD numbers
-    else if (strTest.Equals("lcd.Time22")) ret = LCD_TIME_22;
-    else if (strTest.Equals("lcd.TimeWide21")) ret = LCD_TIME_W21; // Medium LCD numbers
-    else if (strTest.Equals("lcd.TimeWide22")) ret = LCD_TIME_W22;
-    else if (strTest.Equals("lcd.Time41")) ret = LCD_TIME_41; // Big LCD numbers
-    else if (strTest.Equals("lcd.Time42")) ret = LCD_TIME_42;
-    else if (strTest.Equals("lcd.Time43")) ret = LCD_TIME_43;
-    else if (strTest.Equals("lcd.Time44")) ret = LCD_TIME_44;
-  }
-  else if (strCategory.Equals("network"))
+  if (strCategory.Equals("network"))
   {
     if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
     if (strTest.Equals("network.isdhcp")) ret = NETWORK_IS_DHCP;
