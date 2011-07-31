@@ -162,8 +162,6 @@ CFileItem::CFileItem(const CPVREpgInfoTag& tag)
   m_strLabel2 = tag.Plot();
   m_dateTime = tag.StartAsLocalTime();
 
-  SetProperty("epg.progress", tag.ProgressPercentage());
-
   if (!tag.Icon().IsEmpty())
   {
     SetThumbnailImage(tag.Icon());
@@ -190,8 +188,6 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
   m_strLabel2 = tag.Plot();
   m_dateTime = tag.StartAsLocalTime();
 
-  SetProperty("epg.progress", tag.ProgressPercentage());
-
   if (!tag.Icon().IsEmpty())
   {
     SetThumbnailImage(tag.Icon());
@@ -217,8 +213,6 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   *GetPVRChannelInfoTag() = channel;
   SetLabel(channel.ChannelName());
   m_strLabel2 = epgNow ? epgNow->Title() : g_localizeStrings.Get(19055);
-
-  SetProperty("epg.progress", epgNow ? epgNow->ProgressPercentage() : 0);
 
   if (channel.IsRadio() && epgNow)
   {
