@@ -370,11 +370,12 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   return true;
 }
 
-bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, unsigned char* pixels)
+bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels)
 {
   m_imageWidth = width;
   m_imageHeight = height;
   m_format = format;
+  m_hasAlpha = hasAlpha;
   Update(width, height, pitch, format, pixels, false);
   return true;
 }

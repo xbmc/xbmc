@@ -80,6 +80,7 @@ class DllAvCodec;
 class DllSwScale;
 
 namespace DXVA { class CProcessor; }
+struct DVDVideoPicture;
 
 struct DRAWRECT
 {
@@ -196,7 +197,7 @@ public:
   virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual void         AddProcessor(DXVA::CProcessor* processor, int64_t id);
+  virtual void         AddProcessor(DVDVideoPicture* picture);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
@@ -241,6 +242,7 @@ protected:
   bool                 m_bConfigured;
   SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
   RenderMethod         m_renderMethod;
+  DXVA::CProcessor*    m_processor;
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   DllAvUtil           *m_dllAvUtil;

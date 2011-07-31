@@ -783,6 +783,7 @@
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
     <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp" />
+    <ClCompile Include="..\..\xbmc\threads\platform\win\FairMonitor.cpp" />
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
@@ -842,6 +843,7 @@
     <ClCompile Include="..\..\xbmc\utils\StringUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp" />
     <ClCompile Include="..\..\xbmc\utils\TextSearch.cpp" />
+    <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp" />
     <ClCompile Include="..\..\xbmc\utils\TimeUtils.cpp" />
     <ClCompile Include="..\..\xbmc\utils\TuxBoxUtil.cpp" />
     <ClCompile Include="..\..\xbmc\utils\URIUtils.cpp" />
@@ -1748,6 +1750,7 @@
     <ClInclude Include="..\..\xbmc\utils\StringUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\SystemInfo.h" />
     <ClInclude Include="..\..\xbmc\utils\TextSearch.h" />
+    <ClInclude Include="..\..\xbmc\utils\TimeSmoother.h" />
     <ClInclude Include="..\..\xbmc\utils\TimeUtils.h" />
     <ClInclude Include="..\..\xbmc\utils\TuxBoxUtil.h" />
     <ClInclude Include="..\..\xbmc\utils\URIUtils.h" />

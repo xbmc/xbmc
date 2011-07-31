@@ -604,7 +604,7 @@ CGUIViewStateVideoEpisodes::CGUIViewStateVideoEpisodes(const CFileItemList& item
   else
   { // format here is tvshowtitle - season/episode number. episode title
     AddSortMethod(SORT_METHOD_VIDEO_RATING, 563, LABEL_MASKS("%Z - %H. %T", "%R"));
-    AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%Z -%H. %T", "%O"));
+    AddSortMethod(SORT_METHOD_MPAA_RATING, 20074, LABEL_MASKS("%Z - %H. %T", "%O"));
     AddSortMethod(SORT_METHOD_EPISODE,20359,LABEL_MASKS("%Z - %H. %T","%R"));
     AddSortMethod(SORT_METHOD_PRODUCTIONCODE,20368,LABEL_MASKS("%Z - %H. %T","%P"));
     AddSortMethod(SORT_METHOD_DATE,552,LABEL_MASKS("%Z - %H. %T","%J"));

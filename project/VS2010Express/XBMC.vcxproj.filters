@@ -1997,6 +1997,9 @@
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TimeUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -2667,6 +2670,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
       <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\platform\win\FairMonitor.cpp">
+      <Filter>threads\platform\win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4671,6 +4677,9 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\SystemInfo.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\TimeSmoother.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\TimeUtils.h">

@@ -26,11 +26,14 @@
 #include "FileItem.h"
 #include "Application.h"
 #include "utils/log.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #endif
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
+#endif
+#ifndef TARGET_WINDOWS
+#include "linux/XTimeUtils.h"
 #endif
 
 CAppParamParser::CAppParamParser()
@@ -62,6 +65,16 @@ void CAppParamParser::Parse(const char* argv[], int nArgs)
       else if (strnicmp(argv[i], "-n", 2) == 0 || strnicmp(argv[i], "--nolirc", 8) == 0)
          g_RemoteControl.setUsed(false);
 #endif
+      if (stricmp(argv[i], "-d") == 0)
+      {
+        if (i + 1 < nArgs)
+        {
+          int sleeptime = atoi(argv[i + 1]);
+          if (sleeptime > 0 && sleeptime < 360)
+            Sleep(sleeptime*1000);
+        }
+        i++;
+      }
     }
   }
   PlayPlaylist();
@@ -78,6 +91,7 @@ void CAppParamParser::DisplayHelp()
 {
   printf("Usage: xbmc [OPTION]... [FILE]...\n\n");
   printf("Arguments:\n");
+  printf("  -d <n>\t\tdelay <n> seconds before starting\n");
   printf("  -fs\t\t\tRuns XBMC in full screen\n");
   printf("  --standalone\t\tXBMC runs in a stand alone environment without a window \n");
   printf("\t\t\tmanager and supporting applications. For example, that\n");

@@ -80,6 +80,7 @@ CWinRenderer::CWinRenderer()
 
   m_sw_scale_ctx = NULL;
   m_dllSwScale = NULL;
+  m_processor = NULL;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -139,23 +140,40 @@ void CWinRenderer::SelectRenderMethod()
 
     switch(requestedMethod)
     {
+      case RENDER_METHOD_DXVA:
+        if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)
+        {
+          if (m_processor == NULL)
+            m_processor = new DXVA::CProcessor();
+
+          if (m_processor->Open(m_sourceWidth, m_sourceHeight, m_flags)
+           && m_processor->CreateSurfaces())
+          {
+            m_renderMethod = RENDER_DXVA;
+            break;
+          }
+          else
+          {
+            m_processor->Close();
+            SAFE_RELEASE(m_processor);
+          }
+        }
+      // Drop through to pixel shader
       case RENDER_METHOD_AUTO:
       case RENDER_METHOD_D3D_PS:
         // Try the pixel shaders support
         if (m_deviceCaps.PixelShaderVersion >= D3DPS_VERSION(2, 0))
         {
-          CTestShader* shader = new CTestShader;
-          if (shader->Create())
+          CTestShader shader;
+          if (shader.Create())
           {
             m_renderMethod = RENDER_PS;
-            shader->Release();
             break;
           }
           else
           {
             CLog::Log(LOGNOTICE, "D3D: unable to load test shader - D3D installation is most likely incomplete");
             CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, "DirectX", g_localizeStrings.Get(2101));
-            shader->Release();
           }
         }
         else
@@ -235,15 +253,25 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
-void CWinRenderer::AddProcessor(DXVA::CProcessor* processor, int64_t id)
+void CWinRenderer::AddProcessor(DVDVideoPicture* picture)
 {
-  int source = NextYV12Texture();
-  if(source < 0)
-    return;
-  DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
-  SAFE_RELEASE(buf->proc);
-  buf->proc = processor->Acquire();
-  buf->id   = id;
+  if (m_renderMethod == RENDER_DXVA)
+  {
+    int source = NextYV12Texture();
+    if(source < 0)
+      return;
+
+    DXVA::CProcessor* processor = m_processor;
+    if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+      processor = picture->proc;
+
+    processor->ProcessPicture(picture);
+
+    DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
+    SAFE_RELEASE(buf->proc);
+    buf->proc = processor->Acquire();
+    buf->id   = picture->proc_id;
+  }
 }
 
 int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
@@ -351,14 +379,20 @@ void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
 
+  if (m_processor)
+  {
+    m_processor->Close();
+    SAFE_RELEASE(m_processor);
+  }
+
   if (m_SWTarget.Get())
     m_SWTarget.Release();
 
   if (m_IntermediateTarget.Get())
     m_IntermediateTarget.Release();
 
-  SAFE_RELEASE(m_colorShader);
-  SAFE_RELEASE(m_scalerShader);
+  SAFE_DELETE(m_colorShader);
+  SAFE_DELETE(m_scalerShader);
   
   m_bConfigured = false;
   m_bFilterInitialized = false;
@@ -471,14 +505,14 @@ void CWinRenderer::SelectPSVideoFilter()
 
 void CWinRenderer::UpdatePSVideoFilter()
 {
-  SAFE_RELEASE(m_scalerShader);
+  SAFE_DELETE(m_scalerShader);
 
   if (m_bUseHQScaler)
   {
     m_scalerShader = new CConvolutionShader();
     if (!m_scalerShader->Create(m_scalingMethod))
     {
-      SAFE_RELEASE(m_scalerShader);
+      SAFE_DELETE(m_scalerShader);
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
       m_bUseHQScaler = false;
     }
@@ -489,11 +523,11 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if (m_bUseHQScaler && !CreateIntermediateRenderTarget())
   {
-    SAFE_RELEASE(m_scalerShader);
+    SAFE_DELETE(m_scalerShader);
     m_bUseHQScaler = false;
   }
 
-  SAFE_RELEASE(m_colorShader);
+  SAFE_DELETE(m_colorShader);
 
   BufferFormat format = BufferFormatFromFlags(m_flags);
 
@@ -504,8 +538,8 @@ void CWinRenderer::UpdatePSVideoFilter()
     {
       // Try again after disabling the HQ scaler and freeing its resources
       m_IntermediateTarget.Release();
-      SAFE_RELEASE(m_scalerShader);
-      SAFE_RELEASE(m_colorShader);
+      SAFE_DELETE(m_scalerShader);
+      SAFE_DELETE(m_colorShader);
       m_bUseHQScaler = false;
     }
   }
@@ -514,7 +548,7 @@ void CWinRenderer::UpdatePSVideoFilter()
   {
     m_colorShader = new CYUV2RGBShader();
     if (!m_colorShader->Create(m_sourceWidth, m_sourceHeight, format))
-      SAFE_RELEASE(m_colorShader);
+      SAFE_DELETE(m_colorShader);
     // we're in big trouble - should fallback on D3D accelerated or sw method
   }
 }
@@ -589,7 +623,7 @@ void CWinRenderer::CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc)
 
 void CWinRenderer::Render(DWORD flags)
 {
-  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  if (m_renderMethod == RENDER_DXVA)
   {
     CWinRenderer::RenderProcessor(flags);
     return;

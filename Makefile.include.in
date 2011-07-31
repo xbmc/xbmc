@@ -83,22 +83,22 @@ GEN_DEPS=\
 
 %.o: %.cpp
 	@rm -f $@
-	$(SILENT_CPP) $(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
 	&& $(GEN_DEPS)
 
 %.o: %.cc
 	@rm -f $@
-	$(SILENT_CC) $(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
 	&& $(GEN_DEPS)
 
 %.o: %.c
 	@rm -f $@
-	$(SILENT_CC) $(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_CC) $(CC) -MF $*.d -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
 	&& $(GEN_DEPS)
 
 %.o: %.C
 	@rm -f $@
-	$(SILENT_CC) $(CC) -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_CPP) $(CXX) -MF $*.d -MD -c $(CFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
 	&& $(GEN_DEPS)
 
 %.o: %.S
@@ -111,12 +111,12 @@ GEN_DEPS=\
 
 %.o: %.m
 	@rm -f $@
-	$(SILENT_MM) $(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_MM) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
 	&& $(GEN_DEPS)
 
 %.o: %.mm
 	@rm -f $@
-	$(SILENT_MM) $(CXX) -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
+	$(SILENT_MM) $(CXX) -MF $*.d -MD -c $(CXXFLAGS) $(DEFINES) $(INCLUDES) $< -o $@ \
 	&& $(GEN_DEPS)
 
 

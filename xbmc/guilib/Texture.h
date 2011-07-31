@@ -58,7 +58,7 @@ public:
 
   bool LoadFromFile(const CStdString& texturePath, unsigned int maxHeight = 0, unsigned int maxWidth = 0,
                     bool autoRotate = false, unsigned int *originalWidth = NULL, unsigned int *originalHeight = NULL);
-  bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, unsigned char* pixels);
+  bool LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels);
   bool LoadPaletted(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, const unsigned char *pixels, const COLOR *palette);
 
   bool HasAlpha() const;

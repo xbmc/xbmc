@@ -58,45 +58,50 @@ CGUISliderControl::~CGUISliderControl(void)
 
 void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  // TODO Proper processing which marks when its actually changed. Just mark always for now.
-  MarkDirtyRegion();
-  m_guiBackground.Process(currentTime);
-  m_guiMidFocus.Process(currentTime);
-  m_guiMid.Process(currentTime);
-  CGUIControl::Process(currentTime, dirtyregions);
-}
+  bool dirty = false;
 
-void CGUISliderControl::Render()
-{
-  m_guiBackground.SetPosition( m_posX, m_posY );
+  dirty |= m_guiBackground.SetPosition( m_posX, m_posY );
   int infoCode = m_iInfoCode;
   if (m_action && (!m_dragging || m_action->fireOnDrag))
     infoCode = m_action->infoCode;
   if (infoCode)
     SetIntValue(g_infoManager.GetInt(infoCode));
 
-  float fScaleX = m_width == 0 ? 1.0f : m_width / m_guiBackground.GetTextureWidth();
   float fScaleY = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
 
-  m_guiBackground.SetHeight(m_height);
-  m_guiBackground.SetWidth(m_width);
-  m_guiBackground.Render();
+  dirty |= m_guiBackground.SetHeight(m_height);
+  dirty |= m_guiBackground.SetWidth(m_width);
+  dirty |= m_guiBackground.Process(currentTime);
 
   // we render the nib centered at the appropriate percentage, except where the nib
   // would overflow the background image
   CGUITexture &nib = (m_bHasFocus && !IsDisabled()) ? m_guiMidFocus : m_guiMid;
 
-  float offset = GetProportion() * m_guiBackground.GetTextureWidth() - nib.GetTextureWidth()/2;
-  if (offset > m_guiBackground.GetTextureWidth() - nib.GetTextureWidth())
-    offset = m_guiBackground.GetTextureWidth() - nib.GetTextureWidth();
+  dirty |= nib.SetHeight(nib.GetTextureHeight() * fScaleY);
+  dirty |= nib.SetWidth(nib.GetHeight() * 2);
+  CAspectRatio ratio(CAspectRatio::AR_KEEP); ratio.align = ASPECT_ALIGN_LEFT | ASPECT_ALIGNY_CENTER;
+  dirty |= nib.SetAspectRatio(ratio);
+  CRect rect = nib.GetRenderRect();
+
+  float offset = GetProportion() * m_width - rect.Width() / 2;
+  if (offset > m_width - rect.Width())
+    offset = m_width - rect.Width();
   if (offset < 0)
     offset = 0;
+  dirty |= nib.SetPosition(m_guiBackground.GetXPosition() + offset, m_guiBackground.GetYPosition() );
+  dirty |= nib.Process(currentTime);
 
-  nib.SetPosition(m_guiBackground.GetXPosition() + offset * fScaleX, m_guiBackground.GetYPosition() );
-  nib.SetWidth(nib.GetTextureWidth() * fScaleX);
-  nib.SetHeight(nib.GetTextureHeight() * fScaleY);
+  if (dirty)
+    MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
+void CGUISliderControl::Render()
+{
+  m_guiBackground.Render();
+  CGUITexture &nib = (m_bHasFocus && !IsDisabled()) ? m_guiMidFocus : m_guiMid;
   nib.Render();
-
   CGUIControl::Render();
 }
 

@@ -93,7 +93,7 @@ CMouseStat::CButtonState::BUTTON_ACTION CMouseStat::CButtonState::Update(unsigne
       m_state = STATE_RELEASED;
       return Update(time, x, y, down);
     }
-    if (down)
+    if (!down)
     {
       m_state = STATE_IN_DOUBLE_IGNORE;
       return MB_DOUBLE_CLICK;

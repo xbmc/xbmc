@@ -138,31 +138,31 @@ bool CGUIEditControl::OnAction(const CAction &action)
   {
     // input from the keyboard (vkey, not ascii)
     BYTE b = action.GetID() & 0xFF;
-    if (b == 0x24) // home
+    if (b == 0x88) // home
     {
       m_cursorPos = 0;
       UpdateText(false);
       return true;
     }
-    else if (b == 0x23) // end
+    else if (b == 0x89) // end
     {
       m_cursorPos = m_text2.length();
       UpdateText(false);
       return true;
     }
-    if (b == 0x25 && m_cursorPos > 0)
+    if (b == 0x82 && m_cursorPos > 0)
     { // left
       m_cursorPos--;
       UpdateText(false);
       return true;
     }
-    if (b == 0x27 && m_cursorPos < m_text2.length())
+    if (b == 0x83 && m_cursorPos < m_text2.length())
     { // right
       m_cursorPos++;
       UpdateText(false);
       return true;
     }
-    if (b == 0x2e)
+    if (b == 0x87)
     {
       if (m_cursorPos < m_text2.length())
       { // delete

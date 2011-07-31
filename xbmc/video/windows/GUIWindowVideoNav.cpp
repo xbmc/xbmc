@@ -416,19 +416,19 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
   CStdString content = m_database.GetContentForPath(items.m_strPath);
   items.SetContent(content.IsEmpty() ? "files" : content);
 
-  bool clean = (g_guiSettings.GetBool("myvideos.cleanstrings") &&
-                !items.IsVirtualDirectoryRoot() &&
-                m_stackingAvailable);
+  bool fileMetaData = (g_guiSettings.GetBool("myvideos.filemetadata") &&
+                      !items.IsVirtualDirectoryRoot() &&
+                       m_stackingAvailable);
 
   CFileItemList dbItems;
   /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
            we won't need the fetchedPlayCounts code, and can "simply" do this directly on absense of content. */
-  bool fetchedPlayCounts = false;
   if (!content.IsEmpty())
   {
     m_database.GetItemsForPath(content, items.m_strPath, dbItems);
     dbItems.SetFastLookup(true);
   }
+
   for (int i = 0; i < items.Size(); i++)
   {
     CFileItemPtr pItem = items[i];
@@ -440,9 +440,11 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       CStdString label (pItem->GetLabel ());
       CStdString label2(pItem->GetLabel2());
       pItem->UpdateInfo(*match);
-
-      if(g_settings.m_videoStacking && m_stackingAvailable)
+      
+      if (fileMetaData)
       {
+        pItem->UpdateInfo(*match);
+
         if (match->m_bIsFolder)
           pItem->m_strPath = match->GetVideoInfoTag()->m_strPath;
         else
@@ -450,32 +452,34 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
         // if we switch from a file to a folder item it means we really shouldn't be sorting files and
         // folders separately
         if (pItem->m_bIsFolder != match->m_bIsFolder)
+        {
           items.SetSortIgnoreFolders(true);
-        pItem->m_bIsFolder = match->m_bIsFolder;
+          pItem->m_bIsFolder = match->m_bIsFolder;
+        }
       }
       else
       {
         if (CFile::Exists(match->GetCachedFanart()))
           pItem->SetProperty("fanart_image", match->GetCachedFanart());
+
         pItem->SetLabel (label);
-        pItem->SetLabel2(label);
+        pItem->SetLabel2(label2);
       }
     }
     else
-    { // set the watched overlay
-      // and clean the label
-
+    {
       /* NOTE: Currently we GetPlayCounts on our items regardless of whether content is set
-               as if content is set, GetItemsForPaths doesn't return anything not in the content tables.
-               This code can be removed once the content tables are always filled */
-      if (!pItem->m_bIsFolder && !fetchedPlayCounts)
-      {
-        m_database.GetPlayCounts(items);
-        fetchedPlayCounts = true;
-      }
+                as if content is set, GetItemsForPaths doesn't return anything not in the content tables.
+                This code can be removed once the content tables are always filled */
+      if (!pItem->m_bIsFolder)
+        m_database.GetPlayCounts(items.m_strPath, items);
+      
+      // set the watched overlay
       if (pItem->HasVideoInfoTag())
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED, pItem->GetVideoInfoTag()->m_playCount > 0);
-      if (clean)
+
+      // Since the item is not in our db, as an alternative clean its name
+      if (fileMetaData)
         pItem->CleanString();
     }
   }
@@ -911,16 +915,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   }
   else
   {
-    ADDON::ScraperPtr info;
-    VIDEO::SScanSettings settings;
-    GetScraperForItem(item.get(), info, settings);
-
-    if (info && info->Content() == CONTENT_TVSHOWS)
-      buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
-    else if (info && info->Content() == CONTENT_MUSICVIDEOS)
-      buttons.Add(CONTEXT_BUTTON_INFO,20393);
-    else if (!item->m_bIsFolder && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
-      buttons.Add(CONTEXT_BUTTON_INFO, 13346);
 
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strArtist.IsEmpty())
     {
@@ -951,6 +945,17 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     if (!item->IsParentFolder())
     {
+      ADDON::ScraperPtr info;
+      VIDEO::SScanSettings settings;
+      GetScraperForItem(item.get(), info, settings);
+
+      if (info && info->Content() == CONTENT_TVSHOWS)
+        buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
+      else if (info && info->Content() == CONTENT_MUSICVIDEOS)
+        buttons.Add(CONTEXT_BUTTON_INFO,20393);
+      else if (info && info->Content() == CONTENT_MOVIES)
+        buttons.Add(CONTEXT_BUTTON_INFO, 13346);
+
       // can we update the database?
       if (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {

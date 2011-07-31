@@ -159,6 +159,13 @@ bool CTextureCache::IsCachedImage(const CStdString &url) const
 
 CStdString CTextureCache::GetCachedImage(const CStdString &url)
 {
+  if (0 == strncmp(url.c_str(), "thumb://", 8))
+  {
+    CStdString image = CURL(url).GetHostName();
+    CURL::Decode(image);
+    if (IsCachedImage(image))
+      return image; // no point generating thumbs of already cached images
+  }
   if (IsCachedImage(url))
     return url;
 

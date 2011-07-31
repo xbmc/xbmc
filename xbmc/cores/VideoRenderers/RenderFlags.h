@@ -45,6 +45,26 @@
 #define CONF_FLAGS_YUV_FULLRANGE 0x08
 #define CONF_FLAGS_FULLSCREEN    0x10
 
+/* defines color primaries */
+#define CONF_FLAGS_COLPRI_MASK(a) ((a) & 0xe0)
+#define CONF_FLAGS_COLPRI_BT709   0x20
+#define CONF_FLAGS_COLPRI_BT470M  0x40
+#define CONF_FLAGS_COLPRI_BT470BG 0x60
+#define CONF_FLAGS_COLPRI_170M    0x80
+#define CONF_FLAGS_COLPRI_240M    0xa0
+
+/* defines chroma subsampling sample location */
+#define CONF_FLAGS_CHROMA_MASK(a) ((a) & 0x0300)
+#define CONF_FLAGS_CHROMA_LEFT    0x0100
+#define CONF_FLAGS_CHROMA_CENTER  0x0200
+#define CONF_FLAGS_CHROMA_TOPLEFT 0x0300
+
+/* defines color transfer function */
+#define CONF_FLAGS_TRC_MASK(a) ((a) & 0x0c00)
+#define CONF_FLAGS_TRC_BT709      0x0400
+#define CONF_FLAGS_TRC_GAMMA22    0x0800
+#define CONF_FLAGS_TRC_GAMMA28    0x0c00
+
 #define CONF_FLAGS_FORMAT_MASK(a) ((a) & 0xff000)
 #define CONF_FLAGS_FORMAT_YV12   0x01000
 #define CONF_FLAGS_FORMAT_NV12   0x02000

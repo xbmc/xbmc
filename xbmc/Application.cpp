@@ -395,6 +395,12 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_Keyboard.ProcessKeyUp();
       break;
     case XBMC_MOUSEBUTTONDOWN:
+      g_Mouse.HandleEvent(newEvent);
+      // Only mousewheel actions should be processed at this point. Other
+      // mouse button actions are processed when the button is released.
+      if (g_Mouse.GetAction() == ACTION_MOUSE_WHEEL_UP || g_Mouse.GetAction() == ACTION_MOUSE_WHEEL_DOWN)
+        g_application.ProcessMouse();          
+      break;
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
       g_Mouse.HandleEvent(newEvent);
@@ -1927,8 +1933,7 @@ bool CApplication::WaitFrame(unsigned int timeout)
   CSingleLock lock(m_frameMutex);
   //wait until event is set, but modify remaining time
 
-  NotFrameCount nfc(this);
-  TightConditionVariable<NotFrameCount&> cv(m_frameCond, nfc);
+  TightConditionVariable<InversePredicate<int&> > cv(m_frameCond, InversePredicate<int&>(m_frameCount));
   cv.wait(lock,timeout);
   done = m_frameCount == 0;
 
@@ -2013,7 +2018,6 @@ void CApplication::Render()
   }
 
   CSingleLock lock(g_graphicsContext);
-  CTimeUtils::UpdateFrameTime();
   g_infoManager.UpdateFPS();
 
   if (g_graphicsContext.IsFullScreenVideo() && IsPlaying() && vsync_mode == VSYNC_VIDEO)
@@ -2066,6 +2070,7 @@ void CApplication::Render()
 
   if (flip)
     g_graphicsContext.Flip(g_windowManager.GetDirty());
+  CTimeUtils::UpdateFrameTime(flip);
 
   g_renderManager.UpdateResolution();
   g_renderManager.ManageCaptures();
@@ -2620,44 +2625,45 @@ void CApplication::UpdateLCD()
 #endif
 }
 
-void CApplication::FrameMove()
+void CApplication::FrameMove(bool processEvents)
 {
   MEASURE_FUNCTION;
 
-  // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
-  float frameTime = m_frameTime.GetElapsedSeconds();
-  m_frameTime.StartZero();
-  // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
-  if( frameTime > 0.5 ) frameTime = 0.5;
-
-  g_graphicsContext.Lock();
-  // check if there are notifications to display
-  CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
-  if (toast && toast->DoWork())
+  if (processEvents)
   {
-    if (!toast->IsDialogRunning())
-    {
-      toast->Show();
-    }
-  }
-  g_graphicsContext.Unlock();
+    // currently we calculate the repeat time (ie time from last similar keypress) just global as fps
+    float frameTime = m_frameTime.GetElapsedSeconds();
+    m_frameTime.StartZero();
+    // never set a frametime less than 2 fps to avoid problems when debuggin and on breaks
+    if( frameTime > 0.5 ) frameTime = 0.5;
 
-  UpdateLCD();
+    g_graphicsContext.Lock();
+    // check if there are notifications to display
+    CGUIDialogKaiToast *toast = (CGUIDialogKaiToast *)g_windowManager.GetWindow(WINDOW_DIALOG_KAI_TOAST);
+    if (toast && toast->DoWork())
+    {
+      if (!toast->IsDialogRunning())
+      {
+        toast->Show();
+      }
+    }
+    g_graphicsContext.Unlock();
+
+    UpdateLCD();
 
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  // Read the input from a remote
-  g_RemoteControl.Update();
+    // Read the input from a remote
+    g_RemoteControl.Update();
 #endif
 
-  // process input actions
-  CWinEvents::MessagePump();
-  ProcessHTTPApiButtons();
-  ProcessRemote(frameTime);
-  ProcessGamepad(frameTime);
-  ProcessEventServer(frameTime);
-  m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
-
-  // Process events and animate controls
+    // process input actions
+    CWinEvents::MessagePump();
+    ProcessHTTPApiButtons();
+    ProcessRemote(frameTime);
+    ProcessGamepad(frameTime);
+    ProcessEventServer(frameTime);
+    m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
+  }
   if (!m_bStop)
     g_windowManager.Process(CTimeUtils::GetFrameTime());
   g_windowManager.FrameMove();
@@ -2810,20 +2816,24 @@ bool CApplication::ProcessMouse()
     return false;
   }
 
-  // Process the appcommand
-  CAction newmouseaction = CAction(mouseaction.GetID(), 
-                                  g_Mouse.GetHold(MOUSE_LEFT_BUTTON), 
-                                  (float)g_Mouse.GetX(), 
-                                  (float)g_Mouse.GetY(), 
-                                  (float)g_Mouse.GetDX(), 
-                                  (float)g_Mouse.GetDY(),
-                                  mouseaction.GetName());
-
   // Log mouse actions except for move and noop
-  if (newmouseaction.GetID() != ACTION_MOUSE_MOVE && newmouseaction.GetID() != ACTION_NOOP)
-    CLog::Log(LOGDEBUG, "%s: trying mouse action %s", __FUNCTION__, newmouseaction.GetName().c_str());
+  if (mouseaction.GetID() != ACTION_MOUSE_MOVE && mouseaction.GetID() != ACTION_NOOP)
+    CLog::Log(LOGDEBUG, "%s: trying mouse action %s", __FUNCTION__, mouseaction.GetName().c_str());
 
-  return OnAction(newmouseaction);
+  // The action might not be a mouse action. For example wheel moves might
+  // be mapped to volume up/down in mouse.xml. In this case we do not want
+  // the mouse position saved in the action.
+  if (!mouseaction.IsMouse())
+    return OnAction(mouseaction);
+
+  // This is a mouse action so we need to record the mouse position
+  return OnAction(CAction(mouseaction.GetID(), 
+                          g_Mouse.GetHold(MOUSE_LEFT_BUTTON), 
+                          (float)g_Mouse.GetX(), 
+                          (float)g_Mouse.GetY(), 
+                          (float)g_Mouse.GetDX(), 
+                          (float)g_Mouse.GetDY(),
+                          mouseaction.GetName()));
 }
 
 void  CApplication::CheckForTitleChange()

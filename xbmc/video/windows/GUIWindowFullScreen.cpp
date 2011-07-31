@@ -281,6 +281,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_SUBTITLES:
     {
+      if (g_application.m_pPlayer->GetSubtitleCount() == 0)
+        return true;
+
       g_settings.m_currentVideoSettings.m_SubtitleOn = !g_settings.m_currentVideoSettings.m_SubtitleOn;
       g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
       CStdString sub, lang;
