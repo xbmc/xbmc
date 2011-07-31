@@ -913,16 +913,6 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   }
   else
   {
-    ADDON::ScraperPtr info;
-    VIDEO::SScanSettings settings;
-    GetScraperForItem(item.get(), info, settings);
-
-    if (info && info->Content() == CONTENT_TVSHOWS)
-      buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
-    else if (info && info->Content() == CONTENT_MUSICVIDEOS)
-      buttons.Add(CONTEXT_BUTTON_INFO,20393);
-    else if (!item->m_bIsFolder && !item->m_strPath.Left(19).Equals("newsmartplaylist://"))
-      buttons.Add(CONTEXT_BUTTON_INFO, 13346);
 
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strArtist.IsEmpty())
     {
@@ -953,6 +943,17 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
     }
     if (!item->IsParentFolder())
     {
+      ADDON::ScraperPtr info;
+      VIDEO::SScanSettings settings;
+      GetScraperForItem(item.get(), info, settings);
+
+      if (info && info->Content() == CONTENT_TVSHOWS)
+        buttons.Add(CONTEXT_BUTTON_INFO, item->m_bIsFolder ? 20351 : 20352);
+      else if (info && info->Content() == CONTENT_MUSICVIDEOS)
+        buttons.Add(CONTEXT_BUTTON_INFO,20393);
+      else if (info && info->Content() == CONTENT_MOVIES)
+        buttons.Add(CONTEXT_BUTTON_INFO, 13346);
+
       // can we update the database?
       if (g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser)
       {
