@@ -622,7 +622,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CStdString strTmp;
   int singleInfo = 0;
   CStdString strLabel;
-  CStdString strProgressProperty;
   int iUrlSet=0;
   int iToggleSelect;
 
@@ -970,8 +969,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   XMLUtils::GetBoolean(pControlNode, "password", bPassword);
 
-  GetString(pControlNode, "progress", strProgressProperty);
-
   // view type
   VIEW_TYPE viewType = VIEW_TYPE_NONE;
   CStdString viewLabel;
@@ -1236,8 +1233,13 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       parentID, id, posX, posY, width, height,
       textureBackground, textureLeft, textureMid, textureRight,
       textureOverlay, bReveal);
-    ((CGUIProgressControl *)control)->SetInfo(singleInfo);
-    ((CGUIProgressControl *)control)->SetProperty(strProgressProperty);
+
+    CGUIInfoLabel progress;
+    GetInfoLabel(pControlNode, "progress", progress);
+    if (!progress.IsEmpty())
+      ((CGUIProgressControl *)control)->SetListInfo(progress);
+    else
+      ((CGUIProgressControl *)control)->SetInfo(singleInfo);
   }
   else if (type == CGUIControl::GUICONTROL_IMAGE)
   {
