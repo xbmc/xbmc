@@ -147,11 +147,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   strTest.TrimRight(" \t\r\n");
   if (strTest.IsEmpty()) return 0;
 
-  bool bNegate = strTest[0] == '!';
   int ret = 0;
+  assert(strTest[0] != '!'); // should not occur anymore
 
-  if(bNegate)
-    strTest.Delete(0, 1);
+
   CStdString original(strTest);
   strTest.ToLower();
 
@@ -231,9 +230,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdStringArray params;
       StringUtils::SplitString(param, ",", params);
       if (params.size() == 2)
-        return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_DATE : SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(params[0]) % 10000, StringUtils::DateStringToYYYYMMDD(params[1]) % 10000));
+        return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(params[0]) % 10000, StringUtils::DateStringToYYYYMMDD(params[1]) % 10000));
       else if (params.size() == 1)
-        return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_DATE : SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(params[0]) % 10000));
+        return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(params[0]) % 10000));
     }
     else if (strTest.Left(11).Equals("system.time"))
     {
@@ -247,9 +246,9 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         CStdStringArray params;
         StringUtils::SplitString(param, ",", params);
         if (params.size() == 2)
-          return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_TIME : SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0]), StringUtils::TimeStringToSeconds(params[1])));
+          return AddMultiInfo(GUIInfo(SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0]), StringUtils::TimeStringToSeconds(params[1])));
         else if (params.size() == 1)
-          return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_TIME : SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0])));
+          return AddMultiInfo(GUIInfo(SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0])));
       }
       else
         return AddMultiInfo(GUIInfo(SYSTEM_TIME, timeFormat));
@@ -309,14 +308,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         ret = SYSTEM_IDLE_TIME_START + time;
     }
     else if (strTest.Left(16).Equals("system.hasalarm("))
-      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ALARM : SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
+      return AddMultiInfo(GUIInfo(SYSTEM_HAS_ALARM, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
     else if (strTest.Equals("system.alarmpos")) ret = SYSTEM_ALARM_POS;
     else if (strTest.Left(24).Equals("system.alarmlessorequal("))
     {
       int pos = strTest.Find(",");
       int skinOffset = ConditionalStringParameter(strTest.Mid(24, pos-24));
       int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
-      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ALARM_LESS_OR_EQUAL: SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
+      return AddMultiInfo(GUIInfo(SYSTEM_ALARM_LESS_OR_EQUAL, skinOffset, compareString));
     }
     else if (strTest.Equals("system.profilename")) ret = SYSTEM_PROFILENAME;
     else if (strTest.Equals("system.profilethumb")) ret = SYSTEM_PROFILETHUMB;
@@ -326,40 +325,40 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.platform.windows")) ret = SYSTEM_PLATFORM_WINDOWS;
     else if (strTest.Equals("system.platform.osx")) ret = SYSTEM_PLATFORM_OSX;
     else if (strTest.Left(15).Equals("system.getbool("))
-      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_GET_BOOL : SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
+      return AddMultiInfo(GUIInfo(SYSTEM_GET_BOOL, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
     else if (strTest.Left(17).Equals("system.coreusage("))
       return AddMultiInfo(GUIInfo(SYSTEM_GET_CORE_USAGE, atoi(strTest.Mid(17,strTest.size()-18)), 0));
     else if (strTest.Left(17).Equals("system.hascoreid("))
-      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_CORE_ID : SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
+      return AddMultiInfo(GUIInfo(SYSTEM_HAS_CORE_ID, ConditionalStringParameter(strTest.Mid(17,strTest.size()-18)), 0));
     else if (strTest.Left(15).Equals("system.setting("))
-      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_SETTING : SYSTEM_SETTING, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
+      return AddMultiInfo(GUIInfo(SYSTEM_SETTING, ConditionalStringParameter(strTest.Mid(15,strTest.size()-16)), 0));
     else if (strTest.Equals("system.canpowerdown")) ret = SYSTEM_CAN_POWERDOWN;
     else if (strTest.Equals("system.cansuspend"))   ret = SYSTEM_CAN_SUSPEND;
     else if (strTest.Equals("system.canhibernate")) ret = SYSTEM_CAN_HIBERNATE;
     else if (strTest.Equals("system.canreboot"))    ret = SYSTEM_CAN_REBOOT;
     else if (strTest.Left(16).Equals("system.hasaddon("))
-      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_HAS_ADDON: SYSTEM_HAS_ADDON, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
+      return AddMultiInfo(GUIInfo(SYSTEM_HAS_ADDON, ConditionalStringParameter(strTest.Mid(16,strTest.size()-17)), 0));
     else if (strTest.Left(18).Equals("system.addontitle("))
     {
       CStdString param = strTest.Mid(18,strTest.size()-19);
       int info = TranslateString(param);
       if (info > 0)
-        return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_TITLE: SYSTEM_ADDON_TITLE, info, 0));
+        return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, info, 0));
     // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
       CStdString label = CGUIInfoLabel::GetLabel(param).ToLower();
       int compareString = ConditionalStringParameter(label);
-      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_TITLE: SYSTEM_ADDON_TITLE, compareString, 1));
+      return AddMultiInfo(GUIInfo(SYSTEM_ADDON_TITLE, compareString, 1));
     }
     else if (strTest.Left(17).Equals("system.addonicon("))
     {
       CStdString param = strTest.Mid(17,strTest.size()-18);
       int info = TranslateString(param);
       if (info > 0)
-        return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_ICON: SYSTEM_ADDON_ICON, info, 0));
+        return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, info, 0));
     // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
       CStdString label = CGUIInfoLabel::GetLabel(param).ToLower();
       int compareString = ConditionalStringParameter(label);
-      return AddMultiInfo(GUIInfo(bNegate ? -SYSTEM_ADDON_ICON : SYSTEM_ADDON_ICON, compareString, 1));
+      return AddMultiInfo(GUIInfo(SYSTEM_ADDON_ICON, compareString, 1));
     }
     else if (strTest.Equals("system.batterylevel")) ret = SYSTEM_BATTERY_LEVEL;
   }
@@ -378,7 +377,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   else if (strTest.Left(8).Equals("isempty("))
   {
     CStdString str = strTest.Mid(8, strTest.GetLength() - 9);
-    return AddMultiInfo(GUIInfo(bNegate ? -STRING_IS_EMPTY : STRING_IS_EMPTY, TranslateSingleString(str)));
+    return AddMultiInfo(GUIInfo(STRING_IS_EMPTY, TranslateSingleString(str)));
   }
   else if (strTest.Left(14).Equals("stringcompare("))
   {
@@ -386,18 +385,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     int info = TranslateString(strTest.Mid(14, pos-14));
     int info2 = TranslateString(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
     if (info2 > 0)
-      return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, -info2));
+      return AddMultiInfo(GUIInfo(STRING_COMPARE, info, -info2));
     // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
     CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
     int compareString = ConditionalStringParameter(label);
-    return AddMultiInfo(GUIInfo(bNegate ? -STRING_COMPARE: STRING_COMPARE, info, compareString));
+    return AddMultiInfo(GUIInfo(STRING_COMPARE, info, compareString));
   }
   else if (strTest.Left(19).Equals("integergreaterthan("))
   {
     int pos = strTest.Find(",");
     int info = TranslateString(strTest.Mid(19, pos-19));
     int compareInt = atoi(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)).c_str());
-    return AddMultiInfo(GUIInfo(bNegate ? -INTEGER_GREATER_THAN: INTEGER_GREATER_THAN, info, compareInt));
+    return AddMultiInfo(GUIInfo(INTEGER_GREATER_THAN, info, compareInt));
   }
   else if (strTest.Left(10).Equals("substring("))
   {
@@ -406,7 +405,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     // pipe our original string through the localize parsing then make it lowercase (picks up $LBRACKET etc.)
     CStdString label = CGUIInfoLabel::GetLabel(original.Mid(pos + 1, original.GetLength() - (pos + 2))).ToLower();
     int compareString = ConditionalStringParameter(label);
-    return AddMultiInfo(GUIInfo(bNegate ? -STRING_STR: STRING_STR, info, compareString));
+    return AddMultiInfo(GUIInfo(STRING_STR, info, compareString));
   }
   else if (strCategory.Equals("lcd"))
   {
@@ -488,7 +487,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.ratingandvotes")) ret = VIDEOPLAYER_RATING_AND_VOTES;
     else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
     else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
-    else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(bNegate ? -VIDEOPLAYER_CONTENT : VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
+    else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
     else if (strTest.Equals("videoplayer.studio")) ret = VIDEOPLAYER_STUDIO;
     else if (strTest.Equals("videoplayer.mpaa")) return VIDEOPLAYER_MPAA;
     else if (strTest.Equals("videoplayer.top250")) return VIDEOPLAYER_TOP250;
@@ -556,21 +555,21 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int offset = atoi(info.Mid(15, info.GetLength() - 16));
       ret = TranslateListItem(info.Mid(info.Find(".")+1));
       if (offset || id)
-        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset));
+        return AddMultiInfo(GUIInfo(ret, id, offset));
     }
     else if (info.Left(16).Equals("listitemposition"))
     {
       int offset = atoi(info.Mid(17, info.GetLength() - 18));
       ret = TranslateListItem(info.Mid(info.Find(".")+1));
       if (offset || id)
-        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset, INFOFLAG_LISTITEM_POSITION));
+        return AddMultiInfo(GUIInfo(ret, id, offset, INFOFLAG_LISTITEM_POSITION));
     }
     else if (info.Left(8).Equals("listitem"))
     {
       int offset = atoi(info.Mid(9, info.GetLength() - 10));
       ret = TranslateListItem(info.Mid(info.Find(".")+1));
       if (offset || id)
-        return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id, offset, INFOFLAG_LISTITEM_WRAP));
+        return AddMultiInfo(GUIInfo(ret, id, offset, INFOFLAG_LISTITEM_WRAP));
     }
     else if (info.Equals("hasfiles")) ret = CONTAINER_HASFILES;
     else if (info.Equals("hasfolders")) ret = CONTAINER_HASFOLDERS;
@@ -588,21 +587,21 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("onscrollprevious")) ret = CONTAINER_SCROLL_PREVIOUS;
     else if (info.Equals("totaltime")) ret = CONTAINER_TOTALTIME;
     else if (info.Equals("scrolling"))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SCROLLING : CONTAINER_SCROLLING, id, 0));
+      return AddMultiInfo(GUIInfo(CONTAINER_SCROLLING, id, 0));
     else if (info.Equals("hasnext"))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_NEXT : CONTAINER_HAS_NEXT, id, 0));
+      return AddMultiInfo(GUIInfo(CONTAINER_HAS_NEXT, id, 0));
     else if (info.Equals("hasprevious"))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_PREVIOUS : CONTAINER_HAS_PREVIOUS, id, 0));
+      return AddMultiInfo(GUIInfo(CONTAINER_HAS_PREVIOUS, id, 0));
     else if (info.Left(8).Equals("content("))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_CONTENT : CONTAINER_CONTENT, ConditionalStringParameter(info.Mid(8,info.GetLength()-9)), 0));
+      return AddMultiInfo(GUIInfo(CONTAINER_CONTENT, ConditionalStringParameter(info.Mid(8,info.GetLength()-9)), 0));
     else if (info.Left(4).Equals("row("))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_ROW : CONTAINER_ROW, id, atoi(info.Mid(4, info.GetLength() - 5))));
+      return AddMultiInfo(GUIInfo(CONTAINER_ROW, id, atoi(info.Mid(4, info.GetLength() - 5))));
     else if (info.Left(7).Equals("column("))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_COLUMN : CONTAINER_COLUMN, id, atoi(info.Mid(7, info.GetLength() - 8))));
+      return AddMultiInfo(GUIInfo(CONTAINER_COLUMN, id, atoi(info.Mid(7, info.GetLength() - 8))));
     else if (info.Left(8).Equals("position"))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_POSITION : CONTAINER_POSITION, id, atoi(info.Mid(9, info.GetLength() - 10))));
+      return AddMultiInfo(GUIInfo(CONTAINER_POSITION, id, atoi(info.Mid(9, info.GetLength() - 10))));
     else if (info.Left(8).Equals("subitem("))
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SUBITEM : CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
+      return AddMultiInfo(GUIInfo(CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
     else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
     else if (info.Equals("numpages")) ret = CONTAINER_NUM_PAGES;
     else if (info.Equals("numitems")) ret = CONTAINER_NUM_ITEMS;
@@ -616,7 +615,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         order = SORT_ORDER_ASC;
       else if (direction == "descending")
         order = SORT_ORDER_DESC;
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_DIRECTION : CONTAINER_SORT_DIRECTION, order));
+      return AddMultiInfo(GUIInfo(CONTAINER_SORT_DIRECTION, order));
     }
     else if (info.Left(5).Equals("sort("))
     {
@@ -624,12 +623,12 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString method(info.Mid(5, info.GetLength() - 6));
       if (method.Equals("songrating")) sort = SORT_METHOD_SONG_RATING;
       if (sort != SORT_METHOD_NONE)
-        return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_SORT_METHOD : CONTAINER_SORT_METHOD, sort));
+        return AddMultiInfo(GUIInfo(CONTAINER_SORT_METHOD, sort));
     }
     else if (id && info.Left(9).Equals("hasfocus("))
     {
       int itemID = atoi(info.Mid(9, info.GetLength() - 10));
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTAINER_HAS_FOCUS : CONTAINER_HAS_FOCUS, id, itemID));
+      return AddMultiInfo(GUIInfo(CONTAINER_HAS_FOCUS, id, itemID));
     }
     else if (info.Left(9).Equals("property("))
     {
@@ -639,28 +638,28 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
     if (id && ((ret >= CONTAINER_SCROLL_PREVIOUS && ret <= CONTAINER_SCROLL_NEXT) || ret == CONTAINER_NUM_PAGES ||
                ret == CONTAINER_NUM_ITEMS || ret == CONTAINER_CURRENT_PAGE))
-      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, id));
+      return AddMultiInfo(GUIInfo(ret, id));
   }
   else if (strCategory.Left(8).Equals("listitem"))
   {
     int offset = atoi(strCategory.Mid(9, strCategory.GetLength() - 10));
     ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
     if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
-      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
+      return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
   }
   else if (strCategory.Left(16).Equals("listitemposition"))
   {
     int offset = atoi(strCategory.Mid(17, strCategory.GetLength() - 18));
     ret = TranslateListItem(strCategory.Mid(strCategory.GetLength()+1));
     if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
-      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
+      return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
   }
   else if (strCategory.Left(14).Equals("listitemnowrap"))
   {
     int offset = atoi(strCategory.Mid(15, strCategory.GetLength() - 16));
     ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
     if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
-      return AddMultiInfo(GUIInfo(bNegate ? -ret : ret, 0, offset));
+      return AddMultiInfo(GUIInfo(ret, 0, offset));
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -689,15 +688,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       {
         int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, pos - 12));
         int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
-        return AddMultiInfo(GUIInfo(bNegate ? -SKIN_STRING : SKIN_STRING, skinOffset, compareString));
+        return AddMultiInfo(GUIInfo(SKIN_STRING, skinOffset, compareString));
       }
       int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, strTest.GetLength() - 13));
-      return AddMultiInfo(GUIInfo(bNegate ? -SKIN_STRING : SKIN_STRING, skinOffset));
+      return AddMultiInfo(GUIInfo(SKIN_STRING, skinOffset));
     }
     else if (strTest.Left(16).Equals("skin.hassetting("))
     {
       int skinOffset = g_settings.TranslateSkinBool(strTest.Mid(16, strTest.GetLength() - 17));
-      return AddMultiInfo(GUIInfo(bNegate ? -SKIN_BOOL : SKIN_BOOL, skinOffset));
+      return AddMultiInfo(GUIInfo(SKIN_BOOL, skinOffset));
     }
     else if (strTest.Left(14).Equals("skin.hastheme("))
       ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
@@ -726,72 +725,72 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
       if (window.Find("xml") >= 0)
-        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
+        return AddMultiInfo(GUIInfo(WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
       int winID = CButtonTranslator::TranslateWindow(window);
       if (winID != WINDOW_INVALID)
-        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_ACTIVE : WINDOW_IS_ACTIVE, winID, 0));
+        return AddMultiInfo(GUIInfo(WINDOW_IS_ACTIVE, winID, 0));
     }
     else if (info.Left(7).Equals("ismedia")) return WINDOW_IS_MEDIA;
     else if (info.Left(10).Equals("istopmost("))
     {
       CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
       if (window.Find("xml") >= 0)
-        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
+        return AddMultiInfo(GUIInfo(WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
       int winID = CButtonTranslator::TranslateWindow(window);
       if (winID != WINDOW_INVALID)
-        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_TOPMOST : WINDOW_IS_TOPMOST, winID, 0));
+        return AddMultiInfo(GUIInfo(WINDOW_IS_TOPMOST, winID, 0));
     }
     else if (info.Left(10).Equals("isvisible("))
     {
       CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
       if (window.Find("xml") >= 0)
-        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
+        return AddMultiInfo(GUIInfo(WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
       int winID = CButtonTranslator::TranslateWindow(window);
       if (winID != WINDOW_INVALID)
-        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_IS_VISIBLE : WINDOW_IS_VISIBLE, winID, 0));
+        return AddMultiInfo(GUIInfo(WINDOW_IS_VISIBLE, winID, 0));
     }
     else if (info.Left(9).Equals("previous("))
     {
       CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
       if (window.Find("xml") >= 0)
-        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
+        return AddMultiInfo(GUIInfo(WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
       int winID = CButtonTranslator::TranslateWindow(window);
       if (winID != WINDOW_INVALID)
-        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_PREVIOUS : WINDOW_PREVIOUS, winID, 0));
+        return AddMultiInfo(GUIInfo(WINDOW_PREVIOUS, winID, 0));
     }
     else if (info.Left(5).Equals("next("))
     {
       CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
       if (window.Find("xml") >= 0)
-        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, 0, ConditionalStringParameter(window)));
+        return AddMultiInfo(GUIInfo(WINDOW_NEXT, 0, ConditionalStringParameter(window)));
       int winID = CButtonTranslator::TranslateWindow(window);
       if (winID != WINDOW_INVALID)
-        return AddMultiInfo(GUIInfo(bNegate ? -WINDOW_NEXT : WINDOW_NEXT, winID, 0));
+        return AddMultiInfo(GUIInfo(WINDOW_NEXT, winID, 0));
     }
   }
   else if (strTest.Left(17).Equals("control.hasfocus("))
   {
     int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
     if (controlID)
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_HAS_FOCUS : CONTROL_HAS_FOCUS, controlID, 0));
+      return AddMultiInfo(GUIInfo(CONTROL_HAS_FOCUS, controlID, 0));
   }
   else if (strTest.Left(18).Equals("control.isvisible("))
   {
     int controlID = atoi(strTest.Mid(18, strTest.GetLength() - 19).c_str());
     if (controlID)
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_IS_VISIBLE : CONTROL_IS_VISIBLE, controlID, 0));
+      return AddMultiInfo(GUIInfo(CONTROL_IS_VISIBLE, controlID, 0));
   }
   else if (strTest.Left(18).Equals("control.isenabled("))
   {
     int controlID = atoi(strTest.Mid(18, strTest.GetLength() - 19).c_str());
     if (controlID)
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_IS_ENABLED : CONTROL_IS_ENABLED, controlID, 0));
+      return AddMultiInfo(GUIInfo(CONTROL_IS_ENABLED, controlID, 0));
   }
   else if (strTest.Left(17).Equals("control.getlabel("))
   {
     int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
     if (controlID)
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GET_LABEL : CONTROL_GET_LABEL, controlID, 0));
+      return AddMultiInfo(GUIInfo(CONTROL_GET_LABEL, controlID, 0));
   }
   else if (strTest.Left(13).Equals("controlgroup("))
   {
@@ -802,11 +801,11 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       controlID = atoi(strTest.Mid(controlPos + 10).c_str());
     if (groupID)
     {
-      return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GROUP_HAS_FOCUS : CONTROL_GROUP_HAS_FOCUS, groupID, controlID));
+      return AddMultiInfo(GUIInfo(CONTROL_GROUP_HAS_FOCUS, groupID, controlID));
     }
   }
 
-  return bNegate ? -ret : ret;
+  return ret;
 }
 
 int CGUIInfoManager::TranslateListItem(const CStdString &info)
