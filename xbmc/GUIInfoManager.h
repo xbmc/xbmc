@@ -365,6 +365,7 @@ namespace INFO
 #define SYSTEM_ADDON_TITLE          712
 #define SYSTEM_ADDON_ICON           713
 #define SYSTEM_BATTERY_LEVEL        714
+#define SYSTEM_IDLE_TIME            715
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
@@ -403,9 +404,6 @@ namespace INFO
 #define WINDOW_PREVIOUS             9997
 #define WINDOW_IS_MEDIA             9998
 #define WINDOW_IS_ACTIVE            9999
-
-#define SYSTEM_IDLE_TIME_START      20000
-#define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
 
 #define CONTROL_GET_LABEL           29996
 #define CONTROL_IS_ENABLED          29997
