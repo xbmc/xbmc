@@ -267,6 +267,22 @@ infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                             { "hasaddon",         SYSTEM_HAS_ADDON },
                             { "coreusage",        SYSTEM_GET_CORE_USAGE }};
 
+infomap lcd_labels[] =     {{ "playicon",         LCD_PLAY_ICON },
+                            { "progressbar",      LCD_PROGRESS_BAR },
+                            { "cputemperature",   LCD_CPU_TEMPERATURE },
+                            { "gputemperature",   LCD_GPU_TEMPERATURE },
+                            { "hddtemperature",   LCD_HDD_TEMPERATURE },
+                            { "fanspeed",         LCD_FAN_SPEED },
+                            { "date",             LCD_DATE },
+                            { "time21",           LCD_TIME_21 },
+                            { "time22",           LCD_TIME_22 },
+                            { "timewide21",       LCD_TIME_W21 },
+                            { "timewide22",       LCD_TIME_W22 },
+                            { "time41",           LCD_TIME_41 },
+                            { "time42",           LCD_TIME_42 },
+                            { "time43",           LCD_TIME_43 },
+                            { "time44",           LCD_TIME_44 }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -386,6 +402,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           return weather[i].val;
       }
     }
+    else if (category == "lcd")
+    {
+      for (size_t i = 0; i < sizeof(lcd_labels) / sizeof(infomap); i++)
+      {
+        if (property == lcd_labels[i].str)
+          return lcd_labels[i].val;
+      }
+    }
     else if (category == "system")
     {
       for (size_t i = 0; i < sizeof(system_labels) / sizeof(infomap); i++)
@@ -492,72 +516,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
   int ret = 0;
   // translate conditions...
-  if (strCategory.Equals("pvr"))
-  {
-    if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
-    else if (strTest.Equals("pvr.hastimer")) ret = PVR_HAS_TIMER;
-    else if (strTest.Equals("pvr.hasnonrecordingtimer")) ret = PVR_HAS_NONRECORDING_TIMER;
-    else if (strTest.Equals("pvr.nowrecordingtitle")) ret = PVR_NOW_RECORDING_TITLE;
-    else if (strTest.Equals("pvr.nowrecordingdatetime")) ret = PVR_NOW_RECORDING_DATETIME;
-    else if (strTest.Equals("pvr.nowrecordingchannel")) ret = PVR_NOW_RECORDING_CHANNEL;
-    else if (strTest.Equals("pvr.nowrecordingchannelicon")) ret = PVR_NOW_RECORDING_CHAN_ICO;
-    else if (strTest.Equals("pvr.nextrecordingtitle")) ret = PVR_NEXT_RECORDING_TITLE;
-    else if (strTest.Equals("pvr.nextrecordingdatetime")) ret = PVR_NEXT_RECORDING_DATETIME;
-    else if (strTest.Equals("pvr.nextrecordingchannel")) ret = PVR_NEXT_RECORDING_CHANNEL;
-    else if (strTest.Equals("pvr.nextrecordingchannelicon")) ret = PVR_NEXT_RECORDING_CHAN_ICO;
-    else if (strTest.Equals("pvr.backendname")) ret = PVR_BACKEND_NAME;
-    else if (strTest.Equals("pvr.backendversion")) ret = PVR_BACKEND_VERSION;
-    else if (strTest.Equals("pvr.backendhost")) ret = PVR_BACKEND_HOST;
-    else if (strTest.Equals("pvr.backenddiskspace")) ret = PVR_BACKEND_DISKSPACE;
-    else if (strTest.Equals("pvr.backendchannels")) ret = PVR_BACKEND_CHANNELS;
-    else if (strTest.Equals("pvr.backendtimers")) ret = PVR_BACKEND_TIMERS;
-    else if (strTest.Equals("pvr.backendrecordings")) ret = PVR_BACKEND_RECORDINGS;
-    else if (strTest.Equals("pvr.backendnumber")) ret = PVR_BACKEND_NUMBER;
-    else if (strTest.Equals("pvr.hasepg")) ret = PVR_HAS_EPG;
-    else if (strTest.Equals("pvr.hastxt")) ret = PVR_HAS_TXT;
-    else if (strTest.Equals("pvr.hasdirector")) ret = PVR_HAS_DIRECTOR;
-    else if (strTest.Equals("pvr.totaldiscspace")) ret = PVR_TOTAL_DISKSPACE;
-    else if (strTest.Equals("pvr.nexttimer")) ret = PVR_NEXT_TIMER;
-    else if (strTest.Equals("pvr.isplayingtv")) ret = PVR_IS_PLAYING_TV;
-    else if (strTest.Equals("pvr.isplayingradio")) ret = PVR_IS_PLAYING_RADIO;
-    else if (strTest.Equals("pvr.isplayingrecording")) ret = PVR_IS_PLAYING_RECORDING;
-    else if (strTest.Equals("pvr.duration")) ret = PVR_PLAYING_DURATION;
-    else if (strTest.Equals("pvr.time")) ret = PVR_PLAYING_TIME;
-    else if (strTest.Equals("pvr.progress")) ret = PVR_PLAYING_PROGRESS;
-    else if (strTest.Equals("pvr.actstreamclient")) ret = PVR_ACTUAL_STREAM_CLIENT;
-    else if (strTest.Equals("pvr.actstreamdevice")) ret = PVR_ACTUAL_STREAM_DEVICE;
-    else if (strTest.Equals("pvr.actstreamstatus")) ret = PVR_ACTUAL_STREAM_STATUS;
-    else if (strTest.Equals("pvr.actstreamsignal")) ret = PVR_ACTUAL_STREAM_SIG;
-    else if (strTest.Equals("pvr.actstreamsnr")) ret = PVR_ACTUAL_STREAM_SNR;
-    else if (strTest.Equals("pvr.actstreamber")) ret = PVR_ACTUAL_STREAM_BER;
-    else if (strTest.Equals("pvr.actstreamunc")) ret = PVR_ACTUAL_STREAM_UNC;
-    else if (strTest.Equals("pvr.actstreamvideobitrate")) ret = PVR_ACTUAL_STREAM_VIDEO_BR;
-    else if (strTest.Equals("pvr.actstreamaudiobitrate")) ret = PVR_ACTUAL_STREAM_AUDIO_BR;
-    else if (strTest.Equals("pvr.actstreamdolbybitrate")) ret = PVR_ACTUAL_STREAM_DOLBY_BR;
-    else if (strTest.Equals("pvr.actstreamprogrsignal")) ret = PVR_ACTUAL_STREAM_SIG_PROGR;
-    else if (strTest.Equals("pvr.actstreamprogrsnr")) ret = PVR_ACTUAL_STREAM_SNR_PROGR;
-    else if (strTest.Equals("pvr.actstreamisencrypted")) ret = PVR_ACTUAL_STREAM_ENCRYPTED;
-    else if (strTest.Equals("pvr.actstreamencryptionname")) ret = PVR_ACTUAL_STREAM_CRYPTION;
-  }
-  else if (strCategory.Equals("lcd"))
-  {
-    if (strTest.Equals("lcd.playicon")) ret = LCD_PLAY_ICON;
-    else if (strTest.Equals("lcd.progressbar")) ret = LCD_PROGRESS_BAR;
-    else if (strTest.Equals("lcd.cputemperature")) ret = LCD_CPU_TEMPERATURE;
-    else if (strTest.Equals("lcd.gputemperature")) ret = LCD_GPU_TEMPERATURE;
-    else if (strTest.Equals("lcd.hddtemperature")) ret = LCD_HDD_TEMPERATURE;
-    else if (strTest.Equals("lcd.fanspeed")) ret = LCD_FAN_SPEED;
-    else if (strTest.Equals("lcd.date")) ret = LCD_DATE;
-    else if (strTest.Equals("lcd.Time21")) ret = LCD_TIME_21; // Small LCD numbers
-    else if (strTest.Equals("lcd.Time22")) ret = LCD_TIME_22;
-    else if (strTest.Equals("lcd.TimeWide21")) ret = LCD_TIME_W21; // Medium LCD numbers
-    else if (strTest.Equals("lcd.TimeWide22")) ret = LCD_TIME_W22;
-    else if (strTest.Equals("lcd.Time41")) ret = LCD_TIME_41; // Big LCD numbers
-    else if (strTest.Equals("lcd.Time42")) ret = LCD_TIME_42;
-    else if (strTest.Equals("lcd.Time43")) ret = LCD_TIME_43;
-    else if (strTest.Equals("lcd.Time44")) ret = LCD_TIME_44;
-  }
-  else if (strCategory.Equals("network"))
+  if (strCategory.Equals("network"))
   {
     if (strTest.Equals("network.ipaddress")) ret = NETWORK_IP_ADDRESS;
     if (strTest.Equals("network.isdhcp")) ret = NETWORK_IS_DHCP;
@@ -691,6 +650,53 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   }
   else if (strCategory.Equals("slideshow"))
     ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
+  else if (strCategory.Equals("pvr"))
+  {
+    if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
+    else if (strTest.Equals("pvr.hastimer")) ret = PVR_HAS_TIMER;
+    else if (strTest.Equals("pvr.hasnonrecordingtimer")) ret = PVR_HAS_NONRECORDING_TIMER;
+    else if (strTest.Equals("pvr.nowrecordingtitle")) ret = PVR_NOW_RECORDING_TITLE;
+    else if (strTest.Equals("pvr.nowrecordingdatetime")) ret = PVR_NOW_RECORDING_DATETIME;
+    else if (strTest.Equals("pvr.nowrecordingchannel")) ret = PVR_NOW_RECORDING_CHANNEL;
+    else if (strTest.Equals("pvr.nowrecordingchannelicon")) ret = PVR_NOW_RECORDING_CHAN_ICO;
+    else if (strTest.Equals("pvr.nextrecordingtitle")) ret = PVR_NEXT_RECORDING_TITLE;
+    else if (strTest.Equals("pvr.nextrecordingdatetime")) ret = PVR_NEXT_RECORDING_DATETIME;
+    else if (strTest.Equals("pvr.nextrecordingchannel")) ret = PVR_NEXT_RECORDING_CHANNEL;
+    else if (strTest.Equals("pvr.nextrecordingchannelicon")) ret = PVR_NEXT_RECORDING_CHAN_ICO;
+    else if (strTest.Equals("pvr.backendname")) ret = PVR_BACKEND_NAME;
+    else if (strTest.Equals("pvr.backendversion")) ret = PVR_BACKEND_VERSION;
+    else if (strTest.Equals("pvr.backendhost")) ret = PVR_BACKEND_HOST;
+    else if (strTest.Equals("pvr.backenddiskspace")) ret = PVR_BACKEND_DISKSPACE;
+    else if (strTest.Equals("pvr.backendchannels")) ret = PVR_BACKEND_CHANNELS;
+    else if (strTest.Equals("pvr.backendtimers")) ret = PVR_BACKEND_TIMERS;
+    else if (strTest.Equals("pvr.backendrecordings")) ret = PVR_BACKEND_RECORDINGS;
+    else if (strTest.Equals("pvr.backendnumber")) ret = PVR_BACKEND_NUMBER;
+    else if (strTest.Equals("pvr.hasepg")) ret = PVR_HAS_EPG;
+    else if (strTest.Equals("pvr.hastxt")) ret = PVR_HAS_TXT;
+    else if (strTest.Equals("pvr.hasdirector")) ret = PVR_HAS_DIRECTOR;
+    else if (strTest.Equals("pvr.totaldiscspace")) ret = PVR_TOTAL_DISKSPACE;
+    else if (strTest.Equals("pvr.nexttimer")) ret = PVR_NEXT_TIMER;
+    else if (strTest.Equals("pvr.isplayingtv")) ret = PVR_IS_PLAYING_TV;
+    else if (strTest.Equals("pvr.isplayingradio")) ret = PVR_IS_PLAYING_RADIO;
+    else if (strTest.Equals("pvr.isplayingrecording")) ret = PVR_IS_PLAYING_RECORDING;
+    else if (strTest.Equals("pvr.duration")) ret = PVR_PLAYING_DURATION;
+    else if (strTest.Equals("pvr.time")) ret = PVR_PLAYING_TIME;
+    else if (strTest.Equals("pvr.progress")) ret = PVR_PLAYING_PROGRESS;
+    else if (strTest.Equals("pvr.actstreamclient")) ret = PVR_ACTUAL_STREAM_CLIENT;
+    else if (strTest.Equals("pvr.actstreamdevice")) ret = PVR_ACTUAL_STREAM_DEVICE;
+    else if (strTest.Equals("pvr.actstreamstatus")) ret = PVR_ACTUAL_STREAM_STATUS;
+    else if (strTest.Equals("pvr.actstreamsignal")) ret = PVR_ACTUAL_STREAM_SIG;
+    else if (strTest.Equals("pvr.actstreamsnr")) ret = PVR_ACTUAL_STREAM_SNR;
+    else if (strTest.Equals("pvr.actstreamber")) ret = PVR_ACTUAL_STREAM_BER;
+    else if (strTest.Equals("pvr.actstreamunc")) ret = PVR_ACTUAL_STREAM_UNC;
+    else if (strTest.Equals("pvr.actstreamvideobitrate")) ret = PVR_ACTUAL_STREAM_VIDEO_BR;
+    else if (strTest.Equals("pvr.actstreamaudiobitrate")) ret = PVR_ACTUAL_STREAM_AUDIO_BR;
+    else if (strTest.Equals("pvr.actstreamdolbybitrate")) ret = PVR_ACTUAL_STREAM_DOLBY_BR;
+    else if (strTest.Equals("pvr.actstreamprogrsignal")) ret = PVR_ACTUAL_STREAM_SIG_PROGR;
+    else if (strTest.Equals("pvr.actstreamprogrsnr")) ret = PVR_ACTUAL_STREAM_SNR_PROGR;
+    else if (strTest.Equals("pvr.actstreamisencrypted")) ret = PVR_ACTUAL_STREAM_ENCRYPTED;
+    else if (strTest.Equals("pvr.actstreamencryptionname")) ret = PVR_ACTUAL_STREAM_CRYPTION;
+  }
   else if (strCategory.Left(9).Equals("container"))
   {
     int id = atoi(strCategory.Mid(10, strCategory.GetLength() - 11));
