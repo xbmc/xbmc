@@ -145,6 +145,70 @@ int CGUIInfoManager::TranslateString(const CStdString &condition)
   return TranslateSingleString(strCondition);
 }
 
+typedef struct
+{
+  char str[20];
+  int  val;
+} infomap;
+
+infomap player_labels[] =  {{ "hasmedia",         PLAYER_HAS_MEDIA },           // bools from here
+                            { "hasaudio",         PLAYER_HAS_AUDIO },
+                            { "hasvideo",         PLAYER_HAS_VIDEO },
+                            { "playing",          PLAYER_PLAYING },
+                            { "paused",           PLAYER_PAUSED },
+                            { "rewinding",        PLAYER_REWINDING },
+                            { "forwarding",       PLAYER_FORWARDING },
+                            { "rewinding2x",      PLAYER_REWINDING_2x },
+                            { "rewinding4x",      PLAYER_REWINDING_4x },
+                            { "rewinding8x",      PLAYER_REWINDING_8x },
+                            { "rewinding16x",     PLAYER_REWINDING_16x },
+                            { "rewinding32x",     PLAYER_REWINDING_32x },
+                            { "forwarding2x",     PLAYER_FORWARDING_2x },
+                            { "forwarding4x",     PLAYER_FORWARDING_4x },
+                            { "forwarding8x",     PLAYER_FORWARDING_8x },
+                            { "forwarding16x",    PLAYER_FORWARDING_16x },
+                            { "forwarding32x",    PLAYER_FORWARDING_32x },
+                            { "canrecord",        PLAYER_CAN_RECORD },
+                            { "recording",        PLAYER_RECORDING },
+                            { "displayafterseek", PLAYER_DISPLAY_AFTER_SEEK },
+                            { "caching",          PLAYER_CACHING },
+                            { "seekbar",          PLAYER_SEEKBAR },
+                            { "seeking",          PLAYER_SEEKING },
+                            { "showtime",         PLAYER_SHOWTIME },
+                            { "showcodec",        PLAYER_SHOWCODEC },
+                            { "showinfo",         PLAYER_SHOWINFO },
+                            { "muted",            PLAYER_MUTED },
+                            { "hasduration",      PLAYER_HASDURATION },
+                            { "passthrough",      PLAYER_PASSTHROUGH },
+                            { "cachelevel",       PLAYER_CACHELEVEL },          // labels from here
+                            { "seekbar",          PLAYER_SEEKBAR },
+                            { "progress",         PLAYER_PROGRESS },
+                            { "progresscache",    PLAYER_PROGRESS_CACHE },
+                            { "volume",           PLAYER_VOLUME },
+                            { "subtitledelay",    PLAYER_SUBTITLE_DELAY },
+                            { "audiodelay",       PLAYER_AUDIO_DELAY },
+                            { "chapter",          PLAYER_CHAPTER },
+                            { "chaptercount",     PLAYER_CHAPTERCOUNT },
+                            { "chaptername",      PLAYER_CHAPTERNAME },
+                            { "starrating",       PLAYER_STAR_RATING },
+                            { "folderpath",       PLAYER_PATH },
+                            { "filenameandpath",  PLAYER_FILEPATH }};
+
+infomap player_times[] =   {{ "seektime",         PLAYER_SEEKTIME },
+                            { "seekoffset",       PLAYER_SEEKOFFSET },
+                            { "timeremaining",    PLAYER_TIME_REMAINING },
+                            { "timespeed",        PLAYER_TIME_SPEED },
+                            { "time",             PLAYER_TIME },
+                            { "duration",         PLAYER_DURATION },
+                            { "finishtime",       PLAYER_FINISH_TIME }};
+
+infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
+                            { "conditions",       WEATHER_CONDITIONS },         // labels from here
+                            { "temperature",      WEATHER_TEMPERATURE },
+                            { "location",         WEATHER_LOCATION },
+                            { "fanartcode",       WEATHER_FANART_CODE },
+                            { "plugin",           WEATHER_PLUGIN }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -240,77 +304,39 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       }
     }
   }
+  else if (info.size() == 2)
+  {
+    CStdString property = info[1].first;
+    if (category == "player")
+    {
+      for (size_t i = 0; i < sizeof(player_labels) / sizeof(infomap); i++)
+      {
+        if (property == player_labels[i].str)
+          return player_labels[i].val;
+      }
+      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++)
+      {
+        if (property == player_times[i].str)
+          return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(info[1].second)));
+      }
+    }
+    else if (category == "weather")
+    {
+      for (size_t i = 0; i < sizeof(weather) / sizeof(infomap); i++)
+      {
+        if (property == weather[i].str)
+          return weather[i].val;
+      }
+    }
+  }
 
   CStdString original(strTest);
   strTest.ToLower();
-
   CStdString strCategory = strTest.Left(strTest.Find("."));
 
   int ret = 0;
   // translate conditions...
-  if (strTest.Equals("false") || strTest.Equals("no") || strTest.Equals("off")) ret = SYSTEM_ALWAYS_FALSE;
-  else if (strTest.Equals("true") || strTest.Equals("yes") || strTest.Equals("on")) ret = SYSTEM_ALWAYS_TRUE;
-  if (strCategory.Equals("player"))
-  {
-    if (strTest.Equals("player.hasmedia")) ret = PLAYER_HAS_MEDIA;
-    else if (strTest.Equals("player.hasaudio")) ret = PLAYER_HAS_AUDIO;
-    else if (strTest.Equals("player.hasvideo")) ret = PLAYER_HAS_VIDEO;
-    else if (strTest.Equals("player.playing")) ret = PLAYER_PLAYING;
-    else if (strTest.Equals("player.paused")) ret = PLAYER_PAUSED;
-    else if (strTest.Equals("player.rewinding")) ret = PLAYER_REWINDING;
-    else if (strTest.Equals("player.forwarding")) ret = PLAYER_FORWARDING;
-    else if (strTest.Equals("player.rewinding2x")) ret = PLAYER_REWINDING_2x;
-    else if (strTest.Equals("player.rewinding4x")) ret = PLAYER_REWINDING_4x;
-    else if (strTest.Equals("player.rewinding8x")) ret = PLAYER_REWINDING_8x;
-    else if (strTest.Equals("player.rewinding16x")) ret = PLAYER_REWINDING_16x;
-    else if (strTest.Equals("player.rewinding32x")) ret = PLAYER_REWINDING_32x;
-    else if (strTest.Equals("player.forwarding2x")) ret = PLAYER_FORWARDING_2x;
-    else if (strTest.Equals("player.forwarding4x")) ret = PLAYER_FORWARDING_4x;
-    else if (strTest.Equals("player.forwarding8x")) ret = PLAYER_FORWARDING_8x;
-    else if (strTest.Equals("player.forwarding16x")) ret = PLAYER_FORWARDING_16x;
-    else if (strTest.Equals("player.forwarding32x")) ret = PLAYER_FORWARDING_32x;
-    else if (strTest.Equals("player.canrecord")) ret = PLAYER_CAN_RECORD;
-    else if (strTest.Equals("player.recording")) ret = PLAYER_RECORDING;
-    else if (strTest.Equals("player.displayafterseek")) ret = PLAYER_DISPLAY_AFTER_SEEK;
-    else if (strTest.Equals("player.caching")) ret = PLAYER_CACHING;
-    else if (strTest.Equals("player.cachelevel")) ret = PLAYER_CACHELEVEL;
-    else if (strTest.Equals("player.seekbar")) ret = PLAYER_SEEKBAR;
-    else if (strTest.Equals("player.progress")) ret = PLAYER_PROGRESS;
-    else if (strTest.Equals("player.progresscache")) ret = PLAYER_PROGRESS_CACHE;
-    else if (strTest.Equals("player.seeking")) ret = PLAYER_SEEKING;
-    else if (strTest.Equals("player.showtime")) ret = PLAYER_SHOWTIME;
-    else if (strTest.Equals("player.showcodec")) ret = PLAYER_SHOWCODEC;
-    else if (strTest.Equals("player.showinfo")) ret = PLAYER_SHOWINFO;
-    else if (strTest.Left(15).Equals("player.seektime")) return AddMultiInfo(GUIInfo(PLAYER_SEEKTIME, TranslateTimeFormat(strTest.Mid(15))));
-    else if (strTest.Left(17).Equals("player.seekoffset")) return AddMultiInfo(GUIInfo(PLAYER_SEEKOFFSET, TranslateTimeFormat(strTest.Mid(17))));
-    else if (strTest.Left(20).Equals("player.timeremaining")) return AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(20))));
-    else if (strTest.Left(16).Equals("player.timespeed")) return AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(16))));
-    else if (strTest.Left(11).Equals("player.time")) return AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(11))));
-    else if (strTest.Left(15).Equals("player.duration")) return AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(15))));
-    else if (strTest.Left(17).Equals("player.finishtime")) return AddMultiInfo(GUIInfo(PLAYER_FINISH_TIME, TranslateTimeFormat(strTest.Mid(17))));
-    else if (strTest.Equals("player.volume")) ret = PLAYER_VOLUME;
-    else if (strTest.Equals("player.subtitledelay")) ret = PLAYER_SUBTITLE_DELAY;
-    else if (strTest.Equals("player.audiodelay")) ret = PLAYER_AUDIO_DELAY;
-    else if (strTest.Equals("player.muted")) ret = PLAYER_MUTED;
-    else if (strTest.Equals("player.hasduration")) ret = PLAYER_HASDURATION;
-    else if (strTest.Equals("player.chapter")) ret = PLAYER_CHAPTER;
-    else if (strTest.Equals("player.chaptercount")) ret = PLAYER_CHAPTERCOUNT;
-    else if (strTest.Equals("player.chaptername")) ret = PLAYER_CHAPTERNAME;
-    else if (strTest.Equals("player.starrating")) ret = PLAYER_STAR_RATING;
-    else if (strTest.Equals("player.passthrough")) ret = PLAYER_PASSTHROUGH;
-    else if (strTest.Equals("player.folderpath")) ret = PLAYER_PATH;
-    else if (strTest.Equals("player.filenameandpath")) ret = PLAYER_FILEPATH;
-  }
-  else if (strCategory.Equals("weather"))
-  {
-    if (strTest.Equals("weather.conditions")) ret = WEATHER_CONDITIONS;
-    else if (strTest.Equals("weather.temperature")) ret = WEATHER_TEMPERATURE;
-    else if (strTest.Equals("weather.location")) ret = WEATHER_LOCATION;
-    else if (strTest.Equals("weather.isfetched")) ret = WEATHER_IS_FETCHED;
-    else if (strTest.Equals("weather.fanartcode")) ret = WEATHER_FANART_CODE;
-    else if (strTest.Equals("weather.plugin")) ret = WEATHER_PLUGIN;
-  }
-  else if (strCategory.Equals("pvr"))
+  if (strCategory.Equals("pvr"))
   {
     if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
     else if (strTest.Equals("pvr.hastimer")) ret = PVR_HAS_TIMER;
