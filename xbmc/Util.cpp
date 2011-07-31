@@ -1342,7 +1342,11 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
   if( function.Left(5).Equals("xbmc.", false) )
     function.Delete(0, 5);
 
-  // now split up our parameters - we may have quotes to deal with as well as brackets and whitespace
+  SplitParams(paramString, parameters);
+}
+
+void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &parameters)
+{
   bool inQuotes = false;
   bool lastEscaped = false; // only every second character can be escaped
   int inFunction = 0;
@@ -1406,7 +1410,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
     parameter += ch;
   }
   if (inFunction || inQuotes)
-    CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, execString.c_str());
+    CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, paramString.c_str());
   if (whiteSpacePos)
     parameter = parameter.Left(whiteSpacePos);
   // trim off start and end quotes
