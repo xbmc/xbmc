@@ -2482,6 +2482,9 @@
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
       <Filter>threads</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\platform\win\FairMonitor.cpp">
+      <Filter>threads\platform\win</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
