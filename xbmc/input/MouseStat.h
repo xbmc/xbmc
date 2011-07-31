@@ -150,15 +150,12 @@ private:
    */
   bool MovedPastThreshold() const;
 
-  void UpdateInternal();
- 
   // state of the mouse
   MOUSE_STATE m_pointerState;
   MouseState m_mouseState;
   bool m_mouseEnabled;
   CButtonState m_buttonState[5];
 
-  unsigned char m_LastMessage;
   int m_maxX;
   int m_maxY;
   float m_speedX;
@@ -170,6 +167,8 @@ private:
   bool bClick[5];
   bool bDoubleClick[5];
   int  bHold[5];
+
+  uint32_t m_Action;
 };
 
 extern CMouseStat g_Mouse;
