@@ -293,6 +293,12 @@ infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
                             { "relaxedsongspicked",MUSICPM_RELAXEDSONGSPICKED },
                             { "randomsongspicked", MUSICPM_RANDOMSONGSPICKED }};
 
+infomap audioscrobbler[] = {{ "enabled",           AUDIOSCROBBLER_ENABLED },
+                            { "connectstate",      AUDIOSCROBBLER_CONN_STATE }, //labels from here
+                            { "submitinterval",    AUDIOSCROBBLER_SUBMIT_INT },
+                            { "filescached",       AUDIOSCROBBLER_FILES_CACHED },
+                            { "submitstate",       AUDIOSCROBBLER_SUBMIT_STATE }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -434,6 +440,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       {
         if (property == musicpartymode[i].str)
           return musicpartymode[i].val;
+      }
+    }
+    else if (category == "audioscrobbler")
+    {
+      for (size_t i = 0; i < sizeof(audioscrobbler) / sizeof(infomap); i++)
+      {
+        if (property == audioscrobbler[i].str)
+          return audioscrobbler[i].val;
       }
     }
     else if (category == "system")
@@ -624,14 +638,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("playlist.israndom")) ret = PLAYLIST_ISRANDOM;
     else if (strTest.Equals("playlist.isrepeat")) ret = PLAYLIST_ISREPEAT;
     else if (strTest.Equals("playlist.isrepeatone")) ret = PLAYLIST_ISREPEATONE;
-  }
-  else if (strCategory.Equals("audioscrobbler"))
-  {
-    if (strTest.Equals("audioscrobbler.enabled")) ret = AUDIOSCROBBLER_ENABLED;
-    else if (strTest.Equals("audioscrobbler.connectstate")) ret = AUDIOSCROBBLER_CONN_STATE;
-    else if (strTest.Equals("audioscrobbler.submitinterval")) ret = AUDIOSCROBBLER_SUBMIT_INT;
-    else if (strTest.Equals("audioscrobbler.filescached")) ret = AUDIOSCROBBLER_FILES_CACHED;
-    else if (strTest.Equals("audioscrobbler.submitstate")) ret = AUDIOSCROBBLER_SUBMIT_STATE;
   }
   else if (strCategory.Equals("lastfm"))
   {
