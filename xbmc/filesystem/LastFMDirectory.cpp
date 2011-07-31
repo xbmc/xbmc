@@ -69,7 +69,7 @@ bool CLastFMDirectory::RetrieveList(CStdString url)
     m_dlgProgress->Progress();
   }
 
-  CThread thread(this);
+  CThread thread(this, "CLastFMDirectory");
   m_strSource = url;
   m_strDestination = "special://temp/lastfm.xml";
   thread.Create();

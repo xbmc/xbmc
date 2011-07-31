@@ -189,7 +189,7 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
     return false;
   }
 
-  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && g_VideoReferenceClock.ThreadHandle() == NULL)
+  if(g_guiSettings.GetBool("videoplayer.usedisplayasclock") && !g_VideoReferenceClock.IsRunning())
   {
     g_VideoReferenceClock.Create();
     //we have to wait for the clock to start otherwise alsa can cause trouble
@@ -291,7 +291,7 @@ void CDVDPlayerVideo::OnStartup()
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_FlipTimeStamp = m_pClock->GetAbsoluteClock();
 
-  g_dvdPerformanceCounter.EnableVideoDecodePerformance(ThreadHandle());
+  g_dvdPerformanceCounter.EnableVideoDecodePerformance(this);
 }
 
 void CDVDPlayerVideo::Process()

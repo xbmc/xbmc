@@ -671,7 +671,7 @@ bool CPeripheralCecAdapter::GetNextKey(void)
     return bHasButton;
 
   CLog::Log(LOGDEBUG, "%s - received key %2x", __FUNCTION__, key.keycode);
-  WORD iButton = 0;
+  int iButton = 0;
   bHasButton = true;
 
   switch (key.keycode)
@@ -860,7 +860,7 @@ bool CPeripheralCecAdapter::GetNextKey(void)
   return m_bHasButton;
 }
 
-WORD CPeripheralCecAdapter::GetButton(void)
+int CPeripheralCecAdapter::GetButton(void)
 {
   CSingleLock lock(m_critSection);
   if (!m_bHasButton)

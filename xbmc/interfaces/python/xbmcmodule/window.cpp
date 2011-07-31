@@ -540,11 +540,11 @@ namespace PYXBMC
 
         CPyThreadState pyState;
         if (WindowXML_Check(self))
-          ((CGUIPythonWindowXML*)self->pWindow)->WaitForActionEvent(INFINITE);
+          ((CGUIPythonWindowXML*)self->pWindow)->WaitForActionEvent();
         else if (WindowXMLDialog_Check(self))
-          ((CGUIPythonWindowXMLDialog*)self->pWindow)->WaitForActionEvent(INFINITE);
+          ((CGUIPythonWindowXMLDialog*)self->pWindow)->WaitForActionEvent();
         else
-          ((CGUIPythonWindow*)self->pWindow)->WaitForActionEvent(INFINITE);
+          ((CGUIPythonWindow*)self->pWindow)->WaitForActionEvent();
       }
     }
     Py_INCREF(Py_None);

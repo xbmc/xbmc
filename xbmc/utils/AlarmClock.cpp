@@ -28,7 +28,7 @@
 
 using namespace std;
 
-CAlarmClock::CAlarmClock() : m_bIsRunning(false)
+CAlarmClock::CAlarmClock() : CThread("CAlarmClock"), m_bIsRunning(false)
 {
 }
 

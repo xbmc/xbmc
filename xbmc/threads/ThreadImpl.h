@@ -1,8 +1,5 @@
-#ifndef __PLATFORM_INCLUDE__H__
-#define __PLATFORM_INCLUDE__H__
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -22,12 +19,7 @@
  *
  */
 
-#include "PlatformDefs.h"
-#include "XHandlePublic.h"
-#include "XFileUtils.h"
-#include "XTimeUtils.h"
-#include "XMemUtils.h"
-#include "ConvUtils.h"
+#pragma once
 
-#endif
+#include "threads/platform/ThreadImpl.h"
 
