@@ -29,6 +29,7 @@ class XMLUtils
 {
 public:
   static bool HasUTF8Declaration(const CStdString &strXML);
+  static bool HasChild(const TiXmlNode* pRootNode, const char* strTag);
 
   static bool GetHex(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwHexValue);
   static bool GetUInt(const TiXmlNode* pRootNode, const char* strTag, uint32_t& dwUIntValue);
