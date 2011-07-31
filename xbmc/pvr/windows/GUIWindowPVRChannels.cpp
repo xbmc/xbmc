@@ -135,7 +135,7 @@ void CGUIWindowPVRChannels::SetSelectedGroup(CPVRChannelGroup *group)
 
 void CGUIWindowPVRChannels::Notify(const Observable &obs, const CStdString& msg)
 {
-  if (msg.Equals("channelgroup") || msg.Equals("timers-reset") || msg.Equals("timers") || msg.Equals("epg-now"))
+  if (msg.Equals("channelgroup") || msg.Equals("timers-reset") || msg.Equals("timers") || msg.Equals("epg-current-event"))
   {
     if (IsVisible())
       SetInvalid();

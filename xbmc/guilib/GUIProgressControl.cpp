@@ -65,10 +65,10 @@ void CGUIProgressControl::Process(unsigned int currentTime, CDirtyRegionList &di
   if (!IsDisabled())
   {
     float percent = m_fPercent;
-    if (!m_strProperty.IsEmpty() && m_fUpdatedInfo >= 0)
-      m_fPercent = m_fUpdatedInfo;
-    else if (m_iInfoCode)
+    if (m_iInfoCode)
       m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode);
+    else if (m_fUpdatedInfo >= 0)
+      m_fPercent = m_fUpdatedInfo;
     if (m_fPercent < 0.0f) m_fPercent = 0.0f;
     if (m_fPercent > 100.0f) m_fPercent = 100.0f;
     changed |= (percent != m_fPercent);
@@ -308,30 +308,22 @@ CStdString CGUIProgressControl::GetDescription() const
   return percent;
 }
 
-void CGUIProgressControl::SetProperty(const CStdString &strProperty)
+void CGUIProgressControl::SetListInfo(const CGUIInfoLabel &info)
 {
-  m_strProperty = strProperty;
+  m_listInfo = info;
 }
 
 void CGUIProgressControl::UpdateInfo(const CGUIListItem *item)
 {
-  if (!m_strProperty.IsEmpty())
+  if (m_listInfo.IsEmpty())
   {
-    if (item && item->HasProperty(m_strProperty))
-    {
-      m_fUpdatedInfo = item->GetPropertyDouble(m_strProperty);
-    }
-    else if (!item)
-    {
-      CGUIWindow *window = g_windowManager.GetWindow(m_parentID);
-      if (window && window->HasListItems())
-      {
-         CFileItemPtr listItem = window->GetCurrentListItem();
-         if (listItem)
-           m_fUpdatedInfo = listItem->GetPropertyDouble(m_strProperty);
-      }
-    }
+    CGUIControl::UpdateInfo(item);
+    return;
   }
-
-  CGUIControl::UpdateInfo(item);
+  else if (m_listInfo.IsConstant() && !m_bInvalidated)
+    return;
+  else if (item)
+    m_fUpdatedInfo = atof(m_listInfo.GetItemLabel(item, false));
+  else if (m_parentID)
+    m_fUpdatedInfo = atof(m_listInfo.GetLabel(m_parentID, false));
 }

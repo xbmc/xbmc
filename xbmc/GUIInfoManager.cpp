@@ -1036,6 +1036,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("hastimer")) return LISTITEM_HASTIMER;
   else if (info.Equals("isrecording")) return LISTITEM_ISRECORDING;
   else if (info.Equals("isencrypted")) return LISTITEM_ISENCRYPTED;
+  else if (info.Equals("progress")) return LISTITEM_PROGRESS;
   else if (info.Equals("parentalrating")) return LISTITEM_PARENTALRATING;
   else if (info.Equals("originaltitle")) return LISTITEM_ORIGINALTITLE;
   else if (info.Equals("lastplayed")) return LISTITEM_LASTPLAYED;
@@ -4478,12 +4479,34 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasPVRChannelInfoTag())
       return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->Genre() : "";
     break;
+  case LISTITEM_NEXT_TITLE:
+    if (item->HasPVRChannelInfoTag())
+      return item->GetPVRChannelInfoTag()->GetEPGNext() ? item->GetPVRChannelInfoTag()->GetEPGNext()->Title() : "";
+    break;
   case LISTITEM_PARENTALRATING:
     {
       CStdString rating;
       if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->ParentalRating() > 0)
         rating.Format("%i", item->GetEPGInfoTag()->ParentalRating());
       return rating;
+    }
+    break;
+  case LISTITEM_PROGRESS:
+    {
+      CStdString strProgress;
+      if (item->HasPVRChannelInfoTag())
+      {
+        CPVREpgInfoTag *epgNow = item->GetPVRChannelInfoTag()->GetEPGNow();
+        if (epgNow)
+          strProgress.Format("%2.2f", epgNow->ProgressPercentage());
+        else
+          strProgress = "0";
+      }
+      else if (item->HasEPGInfoTag())
+      {
+        strProgress.Format("%2.2f", item->GetEPGInfoTag()->ProgressPercentage());
+      }
+      return strProgress;
     }
     break;
   }

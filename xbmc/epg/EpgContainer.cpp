@@ -157,9 +157,15 @@ void CEpgContainer::Process(void)
     CDateTime::GetCurrentDateTime().GetAsTime(iNow);
 
     /* load or update the EPG */
-    if (!m_bStop && (iNow > m_iLastEpgUpdate + g_advancedSettings.m_iEpgUpdateCheckInterval || !m_bDatabaseLoaded))
+    if (!m_bStop && !InterruptUpdate() &&
+        (iNow > m_iLastEpgUpdate + g_advancedSettings.m_iEpgUpdateCheckInterval || !m_bDatabaseLoaded))
     {
-      UpdateEPG(!m_bDatabaseLoaded);
+      if (!UpdateEPG(!m_bDatabaseLoaded))
+      {
+        /* the update has been interrupted. try again later */
+        CDateTime::GetCurrentDateTime().GetAsTime(iNow);
+        m_iLastEpgUpdate = iNow - g_advancedSettings.m_iEpgUpdateCheckInterval - g_advancedSettings.m_iEpgRetryInterruptedUpdateInterval;
+      }
     }
 
     /* clean up old entries */
@@ -339,7 +345,6 @@ bool CEpgContainer::InterruptUpdate(void) const
 bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
 {
   long iStartTime(XbmcThreads::SystemClockMillis());
-  bool bUpdateSuccess(true);
   bool bInterrupted(false);
   unsigned int iUpdatedTables(0);
 
@@ -368,7 +373,6 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   }
 
   /* load or update all EPG tables */
-  bool bCurrent;
   CEpg *epg;
   int iEpgPtr(0);
   for (EPGITR itr = m_epgs.begin(); itr != m_epgs.end(); itr++)
@@ -384,15 +388,11 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     if (!epg)
       continue;
 
-    if (!(bCurrent = epg->Update(start, end, m_iUpdateTime, !m_bDatabaseLoaded && !m_bIgnoreDbForClient)))
-      bUpdateSuccess = false;
-    else
+    if (epg->Update(start, end, m_iUpdateTime, !m_bDatabaseLoaded && !m_bIgnoreDbForClient))
       ++iUpdatedTables;
 
     if (bShowProgress)
       UpdateProgressDialog(iEpgPtr, iEpgCount, epg->Name());
-
-    CheckPlayingEvents();
   }
 
   if (!bInterrupted)
@@ -404,7 +404,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
     lock.Leave();
 
     /* update the last scan time if we did a full update */
-    if (bUpdateSuccess && m_bDatabaseLoaded && !m_bIgnoreDbForClient)
+    if (m_bDatabaseLoaded && !m_bIgnoreDbForClient)
       m_database.PersistLastEpgScanTime(0);
   }
 
@@ -423,11 +423,12 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   /* notify observers */
   if (iUpdatedTables > 0)
   {
+    CheckPlayingEvents();
     SetChanged();
     NotifyObservers("epg", true);
   }
 
-  return bUpdateSuccess;
+  return !bInterrupted;
 }
 
 int CEpgContainer::GetEPGAll(CFileItemList* results)

@@ -2270,7 +2270,7 @@ void CDVDPlayer::HandleMessages()
           else
           {
             CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
-            CloseFile();
+            g_application.getApplicationMessenger().MediaStop();
           }
         }
       }
