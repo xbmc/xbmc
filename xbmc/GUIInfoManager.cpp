@@ -2079,36 +2079,36 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
         break;
       case STRING_STR:
+        {
+          CStdString compare = m_stringParameters[info.GetData2()];
+          // our compare string is already in lowercase, so lower case our label as well
+          // as CStdString::Find() is case sensitive
+          CStdString label;
+          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+            label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
+          else
+            label = GetImage(info.GetData1(), contextWindow).ToLower();
+          if (compare.Right(5).Equals(",left"))
+            bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
+          else if (compare.Right(6).Equals(",right"))
           {
-            CStdString compare = m_stringParameters[info.GetData2()];
-            // our compare string is already in lowercase, so lower case our label as well
-            // as CStdString::Find() is case sensitive
-            CStdString label;
-            if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-              label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
-            else
-              label = GetImage(info.GetData1(), contextWindow).ToLower();
-            if (compare.Right(5).Equals(",left"))
-              bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
-            else if (compare.Right(6).Equals(",right"))
-            {
-              compare = compare.Mid(0,compare.size()-6);
-              bReturn = label.Find(compare) == (int)(label.size()-compare.size());
-            }
-            else
-              bReturn = label.Find(compare) > -1;
+            compare = compare.Mid(0,compare.size()-6);
+            bReturn = label.Find(compare) == (int)(label.size()-compare.size());
           }
+          else
+            bReturn = label.Find(compare) > -1;
+        }
         break;
-    case SYSTEM_ALARM_LESS_OR_EQUAL:
-    {
-      int time = lrint(g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]));
-      int timeCompare = atoi(m_stringParameters[info.GetData2()]);
-      if (time > 0)
-        bReturn = timeCompare >= time;
-      else
-        bReturn = false;
-    }
-    break;
+      case SYSTEM_ALARM_LESS_OR_EQUAL:
+        {
+          int time = lrint(g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]));
+          int timeCompare = atoi(m_stringParameters[info.GetData2()]);
+          if (time > 0)
+            bReturn = timeCompare >= time;
+          else
+            bReturn = false;
+        }
+        break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
           CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
