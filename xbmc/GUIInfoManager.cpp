@@ -459,6 +459,21 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           return AddMultiInfo(GUIInfo(SYSTEM_TIME, StringUtils::TimeStringToSeconds(params[0]), StringUtils::TimeStringToSeconds(params[1])));
       }
     }
+    else if (category == "library")
+    {
+      if (property == "isscanning") return LIBRARY_IS_SCANNING;
+      else if (property == "isscanningvideo") return LIBRARY_IS_SCANNING_VIDEO; // TODO: change to IsScanning(Video)
+      else if (property == "isscanningmusic") return LIBRARY_IS_SCANNING_MUSIC;
+      else if (property == "hascontent")
+      {
+        const CStdString &cat = info[1].second.ToLower();
+        if (cat == "music") return LIBRARY_HAS_MUSIC;
+        else if (cat == "video") return LIBRARY_HAS_VIDEO;
+        else if (cat == "movies") return LIBRARY_HAS_MOVIES;
+        else if (cat == "tvshows") return LIBRARY_HAS_TVSHOWS;
+        else if (cat == "musicvideos") return LIBRARY_HAS_MUSICVIDEOS;
+      }
+    }
   }
   else if (info.size() == 3)
   {
@@ -523,17 +538,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.actstreamprogrsnr")) ret = PVR_ACTUAL_STREAM_SNR_PROGR;
     else if (strTest.Equals("pvr.actstreamisencrypted")) ret = PVR_ACTUAL_STREAM_ENCRYPTED;
     else if (strTest.Equals("pvr.actstreamencryptionname")) ret = PVR_ACTUAL_STREAM_CRYPTION;
-  }
-  else if (strTest.Left(7).Equals("library"))
-  {
-    if (strTest.Equals("library.hascontent(music)")) ret = LIBRARY_HAS_MUSIC;
-    else if (strTest.Equals("library.hascontent(video)")) ret = LIBRARY_HAS_VIDEO;
-    else if (strTest.Equals("library.hascontent(movies)")) ret = LIBRARY_HAS_MOVIES;
-    else if (strTest.Equals("library.hascontent(tvshows)")) ret = LIBRARY_HAS_TVSHOWS;
-    else if (strTest.Equals("library.hascontent(musicvideos)")) ret = LIBRARY_HAS_MUSICVIDEOS;
-    else if (strTest.Equals("library.isscanning")) ret = LIBRARY_IS_SCANNING;
-    else if (strTest.Equals("library.isscanningvideo")) ret = LIBRARY_IS_SCANNING_VIDEO;
-    else if (strTest.Equals("library.isscanningmusic")) ret = LIBRARY_IS_SCANNING_MUSIC;
   }
   else if (strCategory.Equals("lcd"))
   {
