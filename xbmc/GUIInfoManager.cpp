@@ -330,6 +330,48 @@ infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                             { "playcount",        MUSICPLAYER_PLAYCOUNT },
                             { "lastplayed",       MUSICPLAYER_LASTPLAYED }};
 
+infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
+                            { "genre",            VIDEOPLAYER_GENRE },
+                            { "country",          VIDEOPLAYER_COUNTRY },
+                            { "originaltitle",    VIDEOPLAYER_ORIGINALTITLE },
+                            { "director",         VIDEOPLAYER_DIRECTOR },
+                            { "year",             VIDEOPLAYER_YEAR },
+                            { "cover",            VIDEOPLAYER_COVER },
+                            { "usingoverlays",    VIDEOPLAYER_USING_OVERLAYS },
+                            { "isfullscreen",     VIDEOPLAYER_ISFULLSCREEN },
+                            { "hasmenu",          VIDEOPLAYER_HASMENU },
+                            { "playlistlength",   VIDEOPLAYER_PLAYLISTLEN },
+                            { "playlistposition", VIDEOPLAYER_PLAYLISTPOS },
+                            { "plot",             VIDEOPLAYER_PLOT },
+                            { "plotoutline",      VIDEOPLAYER_PLOT_OUTLINE },
+                            { "episode",          VIDEOPLAYER_EPISODE },
+                            { "season",           VIDEOPLAYER_SEASON },
+                            { "rating",           VIDEOPLAYER_RATING },
+                            { "ratingandvotes",   VIDEOPLAYER_RATING_AND_VOTES },
+                            { "tvshowtitle",      VIDEOPLAYER_TVSHOW },
+                            { "premiered",        VIDEOPLAYER_PREMIERED },
+                            { "studio",           VIDEOPLAYER_STUDIO },
+                            { "mpaa",             VIDEOPLAYER_MPAA },
+                            { "top250",           VIDEOPLAYER_TOP250 },
+                            { "cast",             VIDEOPLAYER_CAST },
+                            { "castandrole",      VIDEOPLAYER_CAST_AND_ROLE },
+                            { "artist",           VIDEOPLAYER_ARTIST },
+                            { "album",            VIDEOPLAYER_ALBUM },
+                            { "writer",           VIDEOPLAYER_WRITER },
+                            { "tagline",          VIDEOPLAYER_TAGLINE },
+                            { "hasinfo",          VIDEOPLAYER_HAS_INFO },
+                            { "trailer",          VIDEOPLAYER_TRAILER },
+                            { "videocodec",       VIDEOPLAYER_VIDEO_CODEC },
+                            { "videoresolution",  VIDEOPLAYER_VIDEO_RESOLUTION },
+                            { "videoaspect",      VIDEOPLAYER_VIDEO_ASPECT },
+                            { "audiocodec",       VIDEOPLAYER_AUDIO_CODEC },
+                            { "audiochannels",    VIDEOPLAYER_AUDIO_CHANNELS },
+                            { "hasteletext",      VIDEOPLAYER_HASTELETEXT },
+                            { "lastplayed",       VIDEOPLAYER_LASTPLAYED },
+                            { "playcount",        VIDEOPLAYER_PLAYCOUNT },
+                            { "hassubtitles",     VIDEOPLAYER_HASSUBTITLES },
+                            { "subtitlesenabled", VIDEOPLAYER_SUBTITLESENABLED }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -588,6 +630,21 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         return AddListItemProp(info[1].second, MUSICPLAYER_PROPERTY_OFFSET);
       return TranslateMusicPlayerString(property);
     }
+    else if (category == "videoplayer")
+    {
+      for (size_t i = 0; i < sizeof(player_times) / sizeof(infomap); i++) // TODO: remove these, they're repeats
+      {
+        if (property == player_times[i].str)
+          return AddMultiInfo(GUIInfo(player_times[i].val, TranslateTimeFormat(info[1].second)));
+      }
+      if (property == "content")
+        return AddMultiInfo(GUIInfo(VIDEOPLAYER_CONTENT, ConditionalStringParameter(info[1].second.ToLower()), 0));
+      for (size_t i = 0; i < sizeof(videoplayer) / sizeof(infomap); i++)
+      {
+        if (property == videoplayer[i].str)
+          return videoplayer[i].val;
+      }
+    }
   }
   else if (info.size() == 3)
   {
@@ -621,56 +678,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
 
   int ret = 0;
   // translate conditions...
-  if (strCategory.Equals("videoplayer"))
-  {
-    if (strTest.Equals("videoplayer.title")) ret = VIDEOPLAYER_TITLE;
-    else if (strTest.Equals("videoplayer.genre")) ret = VIDEOPLAYER_GENRE;
-    else if (strTest.Equals("videoplayer.country")) ret = VIDEOPLAYER_COUNTRY;
-    else if (strTest.Equals("videoplayer.originaltitle")) ret = VIDEOPLAYER_ORIGINALTITLE;
-    else if (strTest.Equals("videoplayer.director")) ret = VIDEOPLAYER_DIRECTOR;
-    else if (strTest.Equals("videoplayer.year")) ret = VIDEOPLAYER_YEAR;
-    else if (strTest.Left(25).Equals("videoplayer.timeremaining")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_REMAINING, TranslateTimeFormat(strTest.Mid(25))));
-    else if (strTest.Left(21).Equals("videoplayer.timespeed")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME_SPEED, TranslateTimeFormat(strTest.Mid(21))));
-    else if (strTest.Left(16).Equals("videoplayer.time")) ret = AddMultiInfo(GUIInfo(PLAYER_TIME, TranslateTimeFormat(strTest.Mid(16))));
-    else if (strTest.Left(20).Equals("videoplayer.duration")) ret = AddMultiInfo(GUIInfo(PLAYER_DURATION, TranslateTimeFormat(strTest.Mid(20))));
-    else if (strTest.Equals("videoplayer.cover")) ret = VIDEOPLAYER_COVER;
-    else if (strTest.Equals("videoplayer.usingoverlays")) ret = VIDEOPLAYER_USING_OVERLAYS;
-    else if (strTest.Equals("videoplayer.isfullscreen")) ret = VIDEOPLAYER_ISFULLSCREEN;
-    else if (strTest.Equals("videoplayer.hasmenu")) ret = VIDEOPLAYER_HASMENU;
-    else if (strTest.Equals("videoplayer.playlistlength")) ret = VIDEOPLAYER_PLAYLISTLEN;
-    else if (strTest.Equals("videoplayer.playlistposition")) ret = VIDEOPLAYER_PLAYLISTPOS;
-    else if (strTest.Equals("videoplayer.plot")) ret = VIDEOPLAYER_PLOT;
-    else if (strTest.Equals("videoplayer.plotoutline")) ret = VIDEOPLAYER_PLOT_OUTLINE;
-    else if (strTest.Equals("videoplayer.episode")) ret = VIDEOPLAYER_EPISODE;
-    else if (strTest.Equals("videoplayer.season")) ret = VIDEOPLAYER_SEASON;
-    else if (strTest.Equals("videoplayer.rating")) ret = VIDEOPLAYER_RATING;
-    else if (strTest.Equals("videoplayer.ratingandvotes")) ret = VIDEOPLAYER_RATING_AND_VOTES;
-    else if (strTest.Equals("videoplayer.tvshowtitle")) ret = VIDEOPLAYER_TVSHOW;
-    else if (strTest.Equals("videoplayer.premiered")) ret = VIDEOPLAYER_PREMIERED;
-    else if (strTest.Left(19).Equals("videoplayer.content")) return AddMultiInfo(GUIInfo(VIDEOPLAYER_CONTENT, ConditionalStringParameter(strTest.Mid(20,strTest.size()-21)), 0));
-    else if (strTest.Equals("videoplayer.studio")) ret = VIDEOPLAYER_STUDIO;
-    else if (strTest.Equals("videoplayer.mpaa")) return VIDEOPLAYER_MPAA;
-    else if (strTest.Equals("videoplayer.top250")) return VIDEOPLAYER_TOP250;
-    else if (strTest.Equals("videoplayer.cast")) return VIDEOPLAYER_CAST;
-    else if (strTest.Equals("videoplayer.castandrole")) return VIDEOPLAYER_CAST_AND_ROLE;
-    else if (strTest.Equals("videoplayer.artist")) return VIDEOPLAYER_ARTIST;
-    else if (strTest.Equals("videoplayer.album")) return VIDEOPLAYER_ALBUM;
-    else if (strTest.Equals("videoplayer.writer")) return VIDEOPLAYER_WRITER;
-    else if (strTest.Equals("videoplayer.tagline")) return VIDEOPLAYER_TAGLINE;
-    else if (strTest.Equals("videoplayer.hasinfo")) return VIDEOPLAYER_HAS_INFO;
-    else if (strTest.Equals("videoplayer.trailer")) return VIDEOPLAYER_TRAILER;
-    else if (strTest.Equals("videoplayer.videocodec")) return VIDEOPLAYER_VIDEO_CODEC;
-    else if (strTest.Equals("videoplayer.videoresolution")) return VIDEOPLAYER_VIDEO_RESOLUTION;
-    else if (strTest.Equals("videoplayer.videoaspect")) return VIDEOPLAYER_VIDEO_ASPECT;
-    else if (strTest.Equals("videoplayer.audiocodec")) return VIDEOPLAYER_AUDIO_CODEC;
-    else if (strTest.Equals("videoplayer.audiochannels")) return VIDEOPLAYER_AUDIO_CHANNELS;
-    else if (strTest.Equals("videoplayer.hasteletext")) return VIDEOPLAYER_HASTELETEXT;
-    else if (strTest.Equals("videoplayer.lastplayed")) return VIDEOPLAYER_LASTPLAYED;
-    else if (strTest.Equals("videoplayer.playcount")) return VIDEOPLAYER_PLAYCOUNT;
-    else if (strTest.Equals("videoplayer.hassubtitles")) return VIDEOPLAYER_HASSUBTITLES;
-    else if (strTest.Equals("videoplayer.subtitlesenabled")) return VIDEOPLAYER_SUBTITLESENABLED;
-  }
-  else if (strCategory.Equals("playlist"))
+  if (strCategory.Equals("playlist"))
   {
     if (strTest.Equals("playlist.length")) ret = PLAYLIST_LENGTH;
     else if (strTest.Equals("playlist.position")) ret = PLAYLIST_POSITION;
