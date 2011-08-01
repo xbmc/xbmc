@@ -579,6 +579,11 @@ CAnimation CAnimation::CreateFader(float start, float end, unsigned int delay, u
   return anim;
 }
 
+bool CAnimation::CheckCondition()
+{
+  return !m_condition || g_infoManager.GetBoolValue(m_condition);
+}
+
 void CAnimation::UpdateCondition(const CGUIListItem *item)
 {
   bool condition = g_infoManager.GetBoolValue(m_condition, item);

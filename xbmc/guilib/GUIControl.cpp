@@ -785,7 +785,7 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
     CAnimation &anim = m_animations[i];
     if (anim.GetType() == type)
     {
-      if (!checkConditions || !anim.GetCondition() || g_infoManager.GetBoolValue(anim.GetCondition()))
+      if (!checkConditions || anim.CheckCondition())
         return &anim;
     }
   }

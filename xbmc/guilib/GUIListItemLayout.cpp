@@ -123,6 +123,11 @@ bool CGUIListItemLayout::MoveRight()
   return m_group.MoveRight();
 }
 
+bool CGUIListItemLayout::CheckCondition()
+{
+  return !m_condition || g_infoManager.GetBoolValue(m_condition);
+}
+
 void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group)
 {
   if (!group) return;
