@@ -306,6 +306,7 @@ protected:
   bool ReadPacket(DemuxPacket*& packet, CDemuxStream*& stream);
   bool IsValidStream(CCurrentStream& stream);
   bool IsBetterStream(CCurrentStream& current, CDemuxStream* stream);
+  bool CheckDelayedChannelEntry(void);
 
   bool OpenInputStream();
   bool OpenDemuxStream();
