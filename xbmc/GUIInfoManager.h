@@ -749,9 +749,24 @@ protected:
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
   CGUIWindow *GetWindowWithCondition(int contextWindow, int condition) const;
 
+  /*! \brief class for holding information on properties
+   */
+  class Property
+  {
+  public:
+    Property(const CStdString &property, const CStdString &parameters);
+
+    const CStdString &param(unsigned int n = 0) const;
+    unsigned int num_params() const;
+
+    CStdString name;
+  private:
+    std::vector<CStdString> params;
+  };
+
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
-  int TranslateListItem(const CStdString &info, const CStdString &param);
+  int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   bool GetItemBool(const CGUIListItem *item, int condition) const;
@@ -766,7 +781,7 @@ protected:
    \param infoString the original string
    \param info the resulting pairs of info and parameters.
    */
-  void SplitInfoString(const CStdString &infoString, std::vector< std::pair<CStdString, CStdString> > &info);
+  void SplitInfoString(const CStdString &infoString, std::vector<Property> &info);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
