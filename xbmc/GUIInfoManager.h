@@ -328,15 +328,13 @@ namespace INFO
 #define STRING_STR                  412
 #define INTEGER_GREATER_THAN        413
 
-#define SKIN_HAS_THEME_START        500
-#define SKIN_HAS_THEME_END          599 // allow for max 100 themes
-
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
 #define SKIN_HAS_MUSIC_OVERLAY      602
 #define SKIN_HAS_VIDEO_OVERLAY      603
 #define SKIN_THEME                  604
 #define SKIN_COLOUR_THEME           605
+#define SKIN_HAS_THEME              606
 
 #define SYSTEM_TOTAL_MEMORY         644
 #define SYSTEM_CPU_USAGE            645

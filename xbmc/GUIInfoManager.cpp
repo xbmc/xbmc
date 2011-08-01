@@ -856,7 +856,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (property == "hassetting")
         return AddMultiInfo(GUIInfo(SKIN_BOOL, g_settings.TranslateSkinBool(info[1].second)));
       else if (property == "hastheme")
-        return SKIN_HAS_THEME_START + ConditionalStringParameter(info[1].second);
+        return AddMultiInfo(GUIInfo(SKIN_HAS_THEME, ConditionalStringParameter(info[1].second)));
     }
   }
   else if (info.size() == 3)
@@ -1863,15 +1863,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = m_playerShowInfo;
   else if (condition == PLAYER_SHOWCODEC)
     bReturn = m_playerShowCodec;
-  else if (condition >= SKIN_HAS_THEME_START && condition <= SKIN_HAS_THEME_END)
-  { // Note that the code used here could probably be extended to general
-    // settings conditions (parameter would need to store both the setting name an
-    // the and the comparison string)
-    CStdString theme = g_guiSettings.GetString("lookandfeel.skintheme");
-    theme.ToLower();
-    URIUtils::RemoveExtension(theme);
-    bReturn = theme.Equals(m_stringParameters[condition - SKIN_HAS_THEME_START]);
-  }
   else if (condition >= MULTI_INFO_START && condition <= MULTI_INFO_END)
   {
     return GetMultiInfoBool(m_multiInfo[condition - MULTI_INFO_START], contextWindow, item);
@@ -2176,6 +2167,14 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = g_settings.GetSkinString(info.GetData1()).Equals(m_stringParameters[info.GetData2()]);
           else
             bReturn = !g_settings.GetSkinString(info.GetData1()).IsEmpty();
+        }
+        break;
+      case SKIN_HAS_THEME:
+        {
+          CStdString theme = g_guiSettings.GetString("lookandfeel.skintheme");
+          theme.ToLower();
+          URIUtils::RemoveExtension(theme);
+          bReturn = theme.Equals(m_stringParameters[info.GetData1()]);
         }
         break;
       case STRING_IS_EMPTY:
