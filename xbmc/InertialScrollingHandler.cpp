@@ -35,7 +35,7 @@
 //the factor for decreasing the deacceleration
 #define DEACELLERATION_DECREASE_FACTOR 0.9f
 //minimum speed for doing inertial scroll is 50 pixels / s
-#define MINIMUM_SPEED_FOR_INERTIA 50
+#define MINIMUM_SPEED_FOR_INERTIA 100
 
 CInertialScrollingHandler::CInertialScrollingHandler()
 : m_bScrolling(false)
@@ -77,8 +77,8 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
   {
     if (action->GetID() == ACTION_GESTURE_END && ( fabs(action->GetAmount(0)) > MINIMUM_SPEED_FOR_INERTIA || fabs(action->GetAmount(1)) > MINIMUM_SPEED_FOR_INERTIA ) )
     {
-      m_iFlickVelocity.x = action->GetAmount(0);//in pixels per sec
-      m_iFlickVelocity.y = action->GetAmount(1);//in pixels per sec     
+      m_iFlickVelocity.x = action->GetAmount(0)/2;//in pixels per sec
+      m_iFlickVelocity.y = action->GetAmount(1)/2;//in pixels per sec     
       m_iLastGesturePoint.x = action->GetAmount(2);//last gesture point x
       m_iLastGesturePoint.y = action->GetAmount(3);//last gesture point y
       
@@ -89,7 +89,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
       m_inertialDeacceleration.y = -1*m_iFlickVelocity.y/TIME_TO_ZERO_SPEED;
       
       //CLog::Log(LOGDEBUG, "initial vel: %f dec: %f", m_iFlickVelocity.y, m_inertialDeacceleration.y);
-      m_inertialStartTime = CTimeUtils::GetFrameTime();//start time of inertial scrolling
+      m_inertialStartTime = XbmcThreads::SystemClockMillis();//start time of inertial scrolling
       ret = true;
       m_bScrolling = true;//activate the inertial scrolling animation
     }
