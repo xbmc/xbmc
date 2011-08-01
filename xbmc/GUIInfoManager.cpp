@@ -428,7 +428,8 @@ infomap container_ints[] = {{ "row",              CONTAINER_ROW },
                             { "subitem",          CONTAINER_SUBITEM },
                             { "hasfocus",         CONTAINER_HAS_FOCUS }};
 
-infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY }};
+infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
+                            { "content",          CONTAINER_CONTENT }};
 
 infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                             { "icon",             LISTITEM_ICON },
@@ -809,9 +810,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         if (property == container_str[i].str)
           return AddMultiInfo(GUIInfo(container_str[i].val, id, ConditionalStringParameter(info[1].second)));
       }
-      if (property == "content")
-        return AddMultiInfo(GUIInfo(CONTAINER_CONTENT, ConditionalStringParameter(info[1].second), 0));
-      else if (property == "sortdirection")
+      if (property == "sortdirection")
       {
         SORT_ORDER order = SORT_ORDER_NONE;
         if (info[1].second.Equals("ascending"))
@@ -2531,7 +2530,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             if (window)
               content = ((CGUIMediaWindow *)window)->CurrentDirectory().GetContent();
           }
-          bReturn = m_stringParameters[info.GetData1()].Equals(content);
+          bReturn = m_stringParameters[info.GetData2()].Equals(content);
         }
         break;
       case CONTAINER_ROW:
