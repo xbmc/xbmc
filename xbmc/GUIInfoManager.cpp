@@ -40,7 +40,6 @@
 #include "GUIPassword.h"
 #include "LangInfo.h"
 #include "utils/SystemInfo.h"
-#include "guilib/GUIButtonScroller.h"
 #include "guilib/GUITextBox.h"
 #include "GUIInfoManager.h"
 #include "pictures/GUIWindowSlideShow.h"
@@ -895,12 +894,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     {
       return AddMultiInfo(GUIInfo(bNegate ? -CONTROL_GROUP_HAS_FOCUS : CONTROL_GROUP_HAS_FOCUS, groupID, controlID));
     }
-  }
-  else if (strTest.Left(24).Equals("buttonscroller.hasfocus("))
-  {
-    int controlID = atoi(strTest.Mid(24, strTest.GetLength() - 24).c_str());
-    if (controlID)
-      return AddMultiInfo(GUIInfo(bNegate ? -BUTTON_SCROLLER_HAS_ICON : BUTTON_SCROLLER_HAS_ICON, controlID, 0));
   }
 
   return bNegate ? -ret : ret;
@@ -2296,17 +2289,6 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
           CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
           if (window)
             bReturn = (window->GetFocusedControlID() == (int)info.GetData1());
-        }
-        break;
-      case BUTTON_SCROLLER_HAS_ICON:
-        {
-          CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
-          if (window)
-          {
-            CGUIControl *pControl = window->GetFocusedControl();
-            if (pControl && pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
-              bReturn = ((CGUIButtonScroller *)pControl)->GetActiveButtonID() == (int)info.GetData1();
-          }
         }
         break;
       case WINDOW_NEXT:

@@ -35,7 +35,6 @@
 #include "pictures/GUIWindowSlideShow.h"
 #include "windows/GUIMediaWindow.h"
 #include "windows/GUIWindowFileManager.h"
-#include "guilib/GUIButtonScroller.h"
 #include "filesystem/Directory.h"
 #include "filesystem/VirtualDirectory.h"
 #include "filesystem/Directory.h"
@@ -1750,13 +1749,6 @@ int CXbmcHttp::xbmcGetGUIStatus()
         vector<CGUIActionDescriptor> actions = ((CGUIButtonControl *)pControl)->GetClickActions();
         if (actions.size())
           output += closeTag+openTag+"Execution:" + actions[0].m_action;
-      }
-      else if (pControl->GetControlType() == CGUIControl::GUICONTROL_BUTTONBAR)
-      {
-        output += closeTag+openTag+"Type:ButtonBar"+closeTag+openTag+"Description:" + strTmp;
-        CStdString button;
-        button.Format("%d",((CGUIButtonScroller *)pControl)->GetActiveButton());
-        output += closeTag+openTag+"ActiveButton:" + button;
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_SPIN)
       {

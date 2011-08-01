@@ -39,7 +39,6 @@
 #include "GUISelectButtonControl.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
-#include "GUIButtonScroller.h"
 #include "GUISpinControlEx.h"
 #include "GUIVisualisationControl.h"
 #include "GUISettingsSliderControl.h"
@@ -97,7 +96,6 @@ static const ControlMapping controls[] =
     {"videowindow",       CGUIControl::GUICONTROL_VIDEO},
     {"mover",             CGUIControl::GUICONTROL_MOVER},
     {"resize",            CGUIControl::GUICONTROL_RESIZE},
-    {"buttonscroller",    CGUIControl::GUICONTROL_BUTTONBAR},
     {"edit",              CGUIControl::GUICONTROL_EDIT},
     {"visualisation",     CGUIControl::GUICONTROL_VISUALISATION},
     {"karvisualisation",  CGUIControl::GUICONTROL_VISUALISATION},
@@ -666,14 +664,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CStdString strTitle = "";
   CStdString strRSSTags = "";
 
-  int iNumSlots = 7;
   float buttonGap = 5;
-  int iDefaultSlot = 2;
   int iMovementRange = 0;
-  bool bHorizontal = false;
-  int iAlpha = 0;
-  bool bWrapAround = true;
-  bool bSmoothScrolling = true;
   CAspectRatio aspect;
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
   if (insideContainer)  // default for inside containers is keep
@@ -918,23 +910,13 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
   XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
 
-  // stuff for button scroller
   if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
   {
     if (strTmp.ToLower() == "horizontal")
-    {
-      bHorizontal = true;
       orientation = HORIZONTAL;
-    }
   }
-  XMLUtils::GetFloat(pControlNode, "buttongap", buttonGap);
   XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
-  XMLUtils::GetInt(pControlNode, "numbuttons", iNumSlots);
   XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
-  XMLUtils::GetInt(pControlNode, "defaultbutton", iDefaultSlot);
-  XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
-  XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
-  XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
   GetAspectRatio(pControlNode, "aspectratio", aspect);
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
@@ -1344,14 +1326,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIResizeControl(
       parentID, id, posX, posY, width, height,
       textureFocus, textureNoFocus);
-  }
-  else if (type == CGUIControl::GUICONTROL_BUTTONBAR)
-  {
-    control = new CGUIButtonScroller(
-      parentID, id, posX, posY, width, height, buttonGap, iNumSlots, iDefaultSlot,
-      iMovementRange, bHorizontal, iAlpha, bWrapAround, bSmoothScrolling,
-      textureFocus, textureNoFocus, labelInfo);
-    ((CGUIButtonScroller *)control)->LoadButtons(pControlNode);
   }
   else if (type == CGUIControl::GUICONTROL_SPINEX)
   {

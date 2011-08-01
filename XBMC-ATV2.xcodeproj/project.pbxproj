@@ -407,7 +407,6 @@
 		F56C79F8131EC154000AD0F6 /* GUIBaseContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7506131EC152000AD0F6 /* GUIBaseContainer.cpp */; };
 		F56C79F9131EC154000AD0F6 /* GUIBorderedImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7507131EC152000AD0F6 /* GUIBorderedImage.cpp */; };
 		F56C79FA131EC154000AD0F6 /* GUIButtonControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7508131EC152000AD0F6 /* GUIButtonControl.cpp */; };
-		F56C79FB131EC154000AD0F6 /* GUIButtonScroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C7509131EC152000AD0F6 /* GUIButtonScroller.cpp */; };
 		F56C79FC131EC154000AD0F6 /* GUICheckMarkControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C750A131EC152000AD0F6 /* GUICheckMarkControl.cpp */; };
 		F56C79FD131EC154000AD0F6 /* GUIColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C750B131EC152000AD0F6 /* GUIColorManager.cpp */; };
 		F56C79FE131EC154000AD0F6 /* GUIControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C750C131EC152000AD0F6 /* GUIControl.cpp */; };
@@ -1819,7 +1818,6 @@
 		F56C74AB131EC152000AD0F6 /* GUIBaseContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIBaseContainer.h; sourceTree = "<group>"; };
 		F56C74AC131EC152000AD0F6 /* GUIBorderedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIBorderedImage.h; sourceTree = "<group>"; };
 		F56C74AD131EC152000AD0F6 /* GUIButtonControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIButtonControl.h; sourceTree = "<group>"; };
-		F56C74AE131EC152000AD0F6 /* GUIButtonScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIButtonScroller.h; sourceTree = "<group>"; };
 		F56C74AF131EC152000AD0F6 /* GUICallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUICallback.h; sourceTree = "<group>"; };
 		F56C74B0131EC152000AD0F6 /* GUICheckMarkControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUICheckMarkControl.h; sourceTree = "<group>"; };
 		F56C74B1131EC152000AD0F6 /* GUIColorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIColorManager.h; sourceTree = "<group>"; };
@@ -1910,7 +1908,6 @@
 		F56C7506131EC152000AD0F6 /* GUIBaseContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIBaseContainer.cpp; sourceTree = "<group>"; };
 		F56C7507131EC152000AD0F6 /* GUIBorderedImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIBorderedImage.cpp; sourceTree = "<group>"; };
 		F56C7508131EC152000AD0F6 /* GUIButtonControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIButtonControl.cpp; sourceTree = "<group>"; };
-		F56C7509131EC152000AD0F6 /* GUIButtonScroller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIButtonScroller.cpp; sourceTree = "<group>"; };
 		F56C750A131EC152000AD0F6 /* GUICheckMarkControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUICheckMarkControl.cpp; sourceTree = "<group>"; };
 		F56C750B131EC152000AD0F6 /* GUIColorManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIColorManager.cpp; sourceTree = "<group>"; };
 		F56C750C131EC152000AD0F6 /* GUIControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControl.cpp; sourceTree = "<group>"; };
@@ -4275,7 +4272,6 @@
 				F56C74AB131EC152000AD0F6 /* GUIBaseContainer.h */,
 				F56C74AC131EC152000AD0F6 /* GUIBorderedImage.h */,
 				F56C74AD131EC152000AD0F6 /* GUIButtonControl.h */,
-				F56C74AE131EC152000AD0F6 /* GUIButtonScroller.h */,
 				F56C74AF131EC152000AD0F6 /* GUICallback.h */,
 				F56C74B0131EC152000AD0F6 /* GUICheckMarkControl.h */,
 				F56C74B1131EC152000AD0F6 /* GUIColorManager.h */,
@@ -4366,7 +4362,6 @@
 				F56C7506131EC152000AD0F6 /* GUIBaseContainer.cpp */,
 				F56C7507131EC152000AD0F6 /* GUIBorderedImage.cpp */,
 				F56C7508131EC152000AD0F6 /* GUIButtonControl.cpp */,
-				F56C7509131EC152000AD0F6 /* GUIButtonScroller.cpp */,
 				F56C750A131EC152000AD0F6 /* GUICheckMarkControl.cpp */,
 				F56C750B131EC152000AD0F6 /* GUIColorManager.cpp */,
 				F56C750C131EC152000AD0F6 /* GUIControl.cpp */,
@@ -6238,7 +6233,6 @@
 				F56C79F8131EC154000AD0F6 /* GUIBaseContainer.cpp in Sources */,
 				F56C79F9131EC154000AD0F6 /* GUIBorderedImage.cpp in Sources */,
 				F56C79FA131EC154000AD0F6 /* GUIButtonControl.cpp in Sources */,
-				F56C79FB131EC154000AD0F6 /* GUIButtonScroller.cpp in Sources */,
 				F56C79FC131EC154000AD0F6 /* GUICheckMarkControl.cpp in Sources */,
 				F56C79FD131EC154000AD0F6 /* GUIColorManager.cpp in Sources */,
 				F56C79FE131EC154000AD0F6 /* GUIControl.cpp in Sources */,
