@@ -989,6 +989,10 @@ void CDVDPlayer::Process()
     }
   }
 
+  // make sure all selected stream have data on startup
+  if (CachePVRStream())
+    SetCaching(CACHESTATE_PVR);
+
   // make sure application know our info
   UpdateApplication(0);
   UpdatePlayState(0);
@@ -999,12 +1003,7 @@ void CDVDPlayer::Process()
   // we are done initializing now, set the readyevent
   m_ready.Set();
 
-  // make sure all selected stream have data on startup
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
-      !g_PVRManager.IsPlayingRecording() &&
-      g_advancedSettings.m_bPVRCacheInDvdPlayer)
-    SetCaching(CACHESTATE_PVR);
-  else
+  if (!CachePVRStream())
     SetCaching(CACHESTATE_FLUSH);
 
   while (!m_bAbortRequest)
@@ -1572,8 +1571,7 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   if((current.type == STREAM_AUDIO && m_dvdPlayerAudio.IsStalled())
   || (current.type == STREAM_VIDEO && m_dvdPlayerVideo.IsStalled()))
   {
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
-        && !g_PVRManager.IsPlayingRecording())
+    if (CachePVRStream())
     {
       SetCaching(CACHESTATE_PVR);
       return true;
@@ -2221,7 +2219,7 @@ void CDVDPlayer::HandleMessages()
         if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
-          SetCaching(CACHESTATE_PVR);
+          SetCaching(CachePVRStream() ? CACHESTATE_PVR : CACHESTATE_FLUSH);
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
@@ -2235,7 +2233,7 @@ void CDVDPlayer::HandleMessages()
         if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
-          SetCaching(CACHESTATE_PVR);
+          SetCaching(CachePVRStream() ? CACHESTATE_PVR : CACHESTATE_FLUSH);
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
@@ -2272,7 +2270,7 @@ void CDVDPlayer::HandleMessages()
             {
               m_iChannelEntryTimeOut = 0;
               SAFE_DELETE(m_pDemuxer);
-              SetCaching(CACHESTATE_PVR);
+              SetCaching(CachePVRStream() ? CACHESTATE_PVR : CACHESTATE_FLUSH);
 
               g_infoManager.SetDisplayAfterSeek();
             }
@@ -4024,4 +4022,11 @@ bool CDVDPlayer::SwitchChannel(const CPVRChannel &channel)
   m_messenger.Put(new CDVDMsgType<CPVRChannel>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
 
   return true;
+}
+
+bool CDVDPlayer::CachePVRStream(void) const
+{
+  return m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
+      !g_PVRManager.IsPlayingRecording() &&
+      g_advancedSettings.m_bPVRCacheInDvdPlayer;
 }

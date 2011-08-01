@@ -229,6 +229,7 @@ public:
   virtual CStdString GetPlayingTitle();
 
   virtual bool SwitchChannel(const PVR::CPVRChannel &channel);
+  virtual bool CachePVRStream(void) const;
 
   enum ECacheState
   { CACHESTATE_DONE = 0
