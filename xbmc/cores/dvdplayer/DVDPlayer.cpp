@@ -1000,8 +1000,8 @@ void CDVDPlayer::Process()
   m_ready.Set();
 
   // make sure all selected stream have data on startup
-  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
-      && !g_PVRManager.IsPlayingRecording() &&
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) &&
+      !g_PVRManager.IsPlayingRecording() &&
       g_advancedSettings.m_bPVRCacheInDvdPlayer)
     SetCaching(CACHESTATE_PVR);
   else
