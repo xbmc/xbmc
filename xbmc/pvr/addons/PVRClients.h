@@ -56,6 +56,16 @@ namespace PVR
      */
     void Stop(void);
 
+    /*!
+     * @brief Load the settings for the current channel from the database.
+     */
+    void LoadCurrentChannelSettings(void);
+
+    /*!
+     * @brief Persist the current channel settings in the database.
+     */
+    void SaveCurrentChannelSettings(void);
+
     /*! @name Backend methods */
     //@{
 
