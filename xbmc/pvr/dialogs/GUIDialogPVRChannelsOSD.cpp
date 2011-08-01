@@ -157,12 +157,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     return;
   }
 
-  if (!g_application.PlayFile(*pItem))
-  {
-    CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
-    return;
-  }
-
+  g_application.getApplicationMessenger().PlayFile(*pItem);
   CloseOrSelect();
 }
 
