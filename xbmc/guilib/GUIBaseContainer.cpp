@@ -815,8 +815,8 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     return; // no need to update the content if we're not visible
 
   // check whether we need to update our layouts
-  if ((m_layout && m_layout->GetCondition() && !g_infoManager.GetBoolValue(m_layout->GetCondition())) ||
-      (m_focusedLayout && m_focusedLayout->GetCondition() && !g_infoManager.GetBoolValue(m_focusedLayout->GetCondition())))
+  if ((m_layout && !m_layout->CheckCondition()) ||
+      (m_focusedLayout && !m_focusedLayout->CheckCondition()))
   {
     // and do it
     int item = GetSelectedItem();
@@ -1095,8 +1095,7 @@ void CGUIBaseContainer::GetCurrentLayouts()
   m_layout = NULL;
   for (unsigned int i = 0; i < m_layouts.size(); i++)
   {
-    unsigned int condition = m_layouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBoolValue(condition))
+    if (m_layouts[i].CheckCondition())
     {
       m_layout = &m_layouts[i];
       break;
@@ -1108,8 +1107,7 @@ void CGUIBaseContainer::GetCurrentLayouts()
   m_focusedLayout = NULL;
   for (unsigned int i = 0; i < m_focusedLayouts.size(); i++)
   {
-    unsigned int condition = m_focusedLayouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBoolValue(condition))
+    if (m_focusedLayouts[i].CheckCondition())
     {
       m_focusedLayout = &m_focusedLayouts[i];
       break;
