@@ -417,12 +417,12 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
   items.SetContent(content.IsEmpty() ? "files" : content);
 
   bool fileMetaData = (g_guiSettings.GetBool("myvideos.filemetadata") &&
-                      !items.IsVirtualDirectoryRoot() &&
-                       m_stackingAvailable);
+                      !content.IsEmpty() );
 
   CFileItemList dbItems;
   /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
            we won't need the fetchedPlayCounts code, and can "simply" do this directly on absense of content. */
+  bool fetchedPlayCounts = false;
   if (!content.IsEmpty())
   {
     m_database.GetItemsForPath(content, items.m_strPath, dbItems);
@@ -471,8 +471,11 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       /* NOTE: Currently we GetPlayCounts on our items regardless of whether content is set
                 as if content is set, GetItemsForPaths doesn't return anything not in the content tables.
                 This code can be removed once the content tables are always filled */
-      if (!pItem->m_bIsFolder)
+      if (!pItem->m_bIsFolder && !fetchedPlayCounts)
+      {
         m_database.GetPlayCounts(items.m_strPath, items);
+        fetchedPlayCounts = true;
+      }
       
       // set the watched overlay
       if (pItem->HasVideoInfoTag())
