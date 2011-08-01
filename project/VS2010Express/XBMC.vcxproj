@@ -379,7 +379,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIBaseContainer.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIBorderedImage.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIButtonControl.cpp" />
-    <ClCompile Include="..\..\xbmc\guilib\GUIButtonScroller.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUICheckMarkControl.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIColorManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIControl.cpp" />
@@ -1342,7 +1341,6 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIBaseContainer.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIBorderedImage.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIButtonControl.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUIButtonScroller.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUICallback.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUICheckMarkControl.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIColorManager.h" />
