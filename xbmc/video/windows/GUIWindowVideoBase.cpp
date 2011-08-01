@@ -1227,14 +1227,9 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     return true;
 
   case CONTEXT_BUTTON_INFO:
-    {
-      ADDON::ScraperPtr info;
-      VIDEO::SScanSettings settings;
-      GetScraperForItem(item.get(), info, settings);
+    OnInfo(itemNumber);
+    return true;
 
-      OnInfo(item.get(),info);
-      return true;
-    }
   case CONTEXT_BUTTON_STOP_SCANNING:
     {
       CGUIDialogVideoScan *pScanDlg = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);

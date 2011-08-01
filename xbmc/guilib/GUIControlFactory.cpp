@@ -1234,10 +1234,12 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       textureBackground, textureLeft, textureMid, textureRight,
       textureOverlay, bReveal);
 
-    CGUIInfoLabel progress;
-    GetInfoLabel(pControlNode, "progress", progress);
-    if (!progress.IsEmpty())
+    if (XMLUtils::HasChild(pControlNode, "progress"))
+    {
+      CGUIInfoLabel progress;
+      GetInfoLabel(pControlNode, "progress", progress);
       ((CGUIProgressControl *)control)->SetListInfo(progress);
+    }
     else
       ((CGUIProgressControl *)control)->SetInfo(singleInfo);
   }

@@ -71,8 +71,8 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     BYTE b = action.GetID() & 0xFF;
-    if (b == 0x25) OnPrevious();     // left
-    else if (b == 0x27) OnNext();  // right
+    if (b == 0x82) OnPrevious();     // left
+    else if (b == 0x83) OnNext();  // right
     else if (b == 0x0D) OnOK();         // enter
     else if (b == 0x08) OnBackSpace();    // backspace
     else if (b == 0x1B) OnCancel();        // escape

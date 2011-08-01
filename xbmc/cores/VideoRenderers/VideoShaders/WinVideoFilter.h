@@ -26,11 +26,6 @@
 #include "../../guilib/Geometry.h"
 #include "../WinRenderer.h"
 
-/*
-class CBaseVideoFilter
-{
-};
-*/
 
 class CYUV2RGBMatrix
 {
@@ -51,15 +46,10 @@ class CWinShader
 {
 protected:
   CWinShader() {}
-
-public:
-  void Release(); // for user code only, like the SAFE_RELEASE() construct
-
-protected:
+  virtual ~CWinShader();
   virtual bool CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount);
   virtual bool LockVertexBuffer(void **data);
   virtual bool UnlockVertexBuffer();
-  virtual void ReleaseInternal();
   virtual bool LoadEffect(CStdString filename, DefinesMap* defines);
   virtual bool Execute();
 
@@ -83,6 +73,7 @@ public:
                       float brightness,
                       unsigned int flags,
                       YUVBuffer* YUVbuf);
+  virtual ~CYUV2RGBShader();
 
 protected:
   virtual void PrepareParameters(CRect sourceRect,
@@ -91,7 +82,6 @@ protected:
                                  float brightness,
                                  unsigned int flags);
   virtual void SetShaderParameters(YUVBuffer* YUVbuf);
-  virtual void ReleaseInternal();
   virtual bool UploadToGPU(YUVBuffer* YUVbuf);
 
 private:
@@ -118,6 +108,7 @@ public:
                                unsigned int sourceWidth, unsigned int sourceHeight,
                                CRect sourceRect,
                                CRect destRect);
+  virtual ~CConvolutionShader();
 
 protected:
   virtual bool KernelTexFormat();
@@ -126,7 +117,6 @@ protected:
                                CRect sourceRect,
                                CRect destRect);
   virtual void SetShaderParameters(CD3DTexture &sourceTexture, float* texSteps, int texStepsCount);
-  virtual void ReleaseInternal();
 
 private:
   CD3DTexture   m_HQKernelTexture;

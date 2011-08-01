@@ -29,6 +29,7 @@
 #include "network/DNSNameCache.h"
 #include "settings/Settings.h"
 #include "URL.h"
+#include "StringUtils.h"
 
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -184,6 +185,30 @@ void URIUtils::Split(const CStdString& strFileNameAndPath,
 
   strPath = strFileNameAndPath.Left(i + 1);
   strFileName = strFileNameAndPath.Right(strFileNameAndPath.size() - i - 1);
+}
+
+CStdStringArray URIUtils::SplitPath(const CStdString& strPath)
+{
+  CURL url(strPath);
+
+  // silly CStdString can't take a char in the constructor
+  CStdString sep(1, url.GetDirectorySeparator());
+
+  // split the filename portion of the URL up into separate dirs
+  CStdStringArray dirs;
+  StringUtils::SplitString(url.GetFileName(), sep, dirs);
+  
+  // we start with the root path
+  CStdString dir = url.GetWithoutFilename();
+  
+  if (!dir.IsEmpty())
+    dirs.insert(dirs.begin(), dir);
+
+  // we don't need empty token on the end
+  if (dirs.size() > 1 && dirs.back().IsEmpty())
+    dirs.erase(dirs.end() - 1);
+
+  return dirs;
 }
 
 void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)

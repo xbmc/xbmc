@@ -384,7 +384,7 @@ void CGUIViewState::AddLiveTVSources()
       source.strName = (*it).strName;
       source.vecPaths = (*it).vecPaths;
       source.m_strThumbnailImage = "";
-      source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+      source.FromNameAndPaths("video", source.strName, source.vecPaths);
       m_sources.push_back(source);
     }
   }

@@ -52,6 +52,7 @@
                      "special://xbmc/system/players/paplayer/;" \
                      "special://xbmc/system/cdrip/;" \
                      "special://xbmc/system/python/;" \
+                     "special://xbmc/system/webserver/;" \
                      "special://xbmc/"
 
 extern HWND g_hWnd;

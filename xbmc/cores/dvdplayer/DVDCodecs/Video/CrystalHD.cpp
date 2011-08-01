@@ -771,7 +771,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           if (!pBuffer)
           {
             // No free pre-allocated buffers so make one
-#ifdef _WIN32
+#if 0
             // force Windows to use YV12 until DX renderer gets NV12 or YUY2 capability.
             pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
 #else

@@ -132,6 +132,14 @@ bool XMLUtils::GetString(const TiXmlNode* pRootNode, const char* strTag, CStdStr
   return false;
 }
 
+bool XMLUtils::HasChild(const TiXmlNode* pRootNode, const char* strTag)
+{
+  const TiXmlElement* pElement = pRootNode->FirstChildElement(strTag);
+  if (!pElement) return false;
+  const TiXmlNode* pNode = pElement->FirstChild();
+  return (pNode != NULL);
+}
+
 bool XMLUtils::GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag,
                                  const CStdString& strSeparator, CStdString& strStringValue)
 {

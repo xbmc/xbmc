@@ -297,32 +297,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.actstreamisencrypted")) ret = PVR_ACTUAL_STREAM_ENCRYPTED;
     else if (strTest.Equals("pvr.actstreamencryptionname")) ret = PVR_ACTUAL_STREAM_CRYPTION;
   }
-  else if (strCategory.Equals("bar"))
-  {
-    if (strTest.Equals("bar.gputemperature")) ret = SYSTEM_GPU_TEMPERATURE;
-    else if (strTest.Equals("bar.cputemperature")) ret = SYSTEM_CPU_TEMPERATURE;
-    else if (strTest.Equals("bar.cpuusage")) ret = SYSTEM_CPU_USAGE;
-    else if (strTest.Equals("bar.freememory")) ret = SYSTEM_FREE_MEMORY;
-    else if (strTest.Equals("bar.usedmemory")) ret = SYSTEM_USED_MEMORY;
-    else if (strTest.Equals("bar.fanspeed")) ret = SYSTEM_FAN_SPEED;
-    else if (strTest.Equals("bar.usedspace")) ret = SYSTEM_USED_SPACE;
-    else if (strTest.Equals("bar.freespace")) ret = SYSTEM_FREE_SPACE;
-    else if (strTest.Equals("bar.usedspace(c)")) ret = SYSTEM_USED_SPACE_C;
-    else if (strTest.Equals("bar.freespace(c)")) ret = SYSTEM_FREE_SPACE_C;
-    else if (strTest.Equals("bar.usedspace(e)")) ret = SYSTEM_USED_SPACE_E;
-    else if (strTest.Equals("bar.freespace(e)")) ret = SYSTEM_FREE_SPACE_E;
-    else if (strTest.Equals("bar.usedspace(f)")) ret = SYSTEM_USED_SPACE_F;
-    else if (strTest.Equals("bar.freespace(f)")) ret = SYSTEM_FREE_SPACE_F;
-    else if (strTest.Equals("bar.usedspace(g)")) ret = SYSTEM_USED_SPACE_G;
-    else if (strTest.Equals("bar.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
-    else if (strTest.Equals("bar.usedspace(x)")) ret = SYSTEM_USED_SPACE_X;
-    else if (strTest.Equals("bar.freespace(x)")) ret = SYSTEM_FREE_SPACE_X;
-    else if (strTest.Equals("bar.usedspace(y)")) ret = SYSTEM_USED_SPACE_Y;
-    else if (strTest.Equals("bar.freespace(y)")) ret = SYSTEM_FREE_SPACE_Y;
-    else if (strTest.Equals("bar.usedspace(z)")) ret = SYSTEM_USED_SPACE_Z;
-    else if (strTest.Equals("bar.freespace(z)")) ret = SYSTEM_FREE_SPACE_Z;
-    else if (strTest.Equals("bar.hddtemperature")) ret = SYSTEM_HDD_TEMPERATURE;
-  }
   else if (strCategory.Equals("system"))
   {
     if (strTest.Equals("system.date")) ret = SYSTEM_DATE;
@@ -366,35 +340,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("system.totalspace")) ret = SYSTEM_TOTAL_SPACE;
     else if (strTest.Equals("system.usedspacepercent")) ret = SYSTEM_USED_SPACE_PERCENT;
     else if (strTest.Equals("system.freespacepercent")) ret = SYSTEM_FREE_SPACE_PERCENT;
-    else if (strTest.Equals("system.freespace(c)")) ret = SYSTEM_FREE_SPACE_C;
-    else if (strTest.Equals("system.usedspace(c)")) ret = SYSTEM_USED_SPACE_C;
-    else if (strTest.Equals("system.totalspace(c)")) ret = SYSTEM_TOTAL_SPACE_C;
-    else if (strTest.Equals("system.usedspacepercent(c)")) ret = SYSTEM_USED_SPACE_PERCENT_C;
-    else if (strTest.Equals("system.freespacepercent(c)")) ret = SYSTEM_FREE_SPACE_PERCENT_C;
-    else if (strTest.Equals("system.freespace(e)")) ret = SYSTEM_FREE_SPACE_E;
-    else if (strTest.Equals("system.usedspace(e)")) ret = SYSTEM_USED_SPACE_E;
-    else if (strTest.Equals("system.totalspace(e)")) ret = SYSTEM_TOTAL_SPACE_E;
-    else if (strTest.Equals("system.usedspacepercent(e)")) ret = SYSTEM_USED_SPACE_PERCENT_E;
-    else if (strTest.Equals("system.freespacepercent(e)")) ret = SYSTEM_FREE_SPACE_PERCENT_E;
-    else if (strTest.Equals("system.freespace(f)")) ret = SYSTEM_FREE_SPACE_F;
-    else if (strTest.Equals("system.usedspace(f)")) ret = SYSTEM_USED_SPACE_F;
-    else if (strTest.Equals("system.totalspace(f)")) ret = SYSTEM_TOTAL_SPACE_F;
-    else if (strTest.Equals("system.usedspacepercent(f)")) ret = SYSTEM_USED_SPACE_PERCENT_F;
-    else if (strTest.Equals("system.freespacepercent(f)")) ret = SYSTEM_FREE_SPACE_PERCENT_F;
-    else if (strTest.Equals("system.freespace(g)")) ret = SYSTEM_FREE_SPACE_G;
-    else if (strTest.Equals("system.usedspace(g)")) ret = SYSTEM_USED_SPACE_G;
-    else if (strTest.Equals("system.totalspace(g)")) ret = SYSTEM_TOTAL_SPACE_G;
-    else if (strTest.Equals("system.usedspacepercent(g)")) ret = SYSTEM_USED_SPACE_PERCENT_G;
-    else if (strTest.Equals("system.freespacepercent(g)")) ret = SYSTEM_FREE_SPACE_PERCENT_G;
-    else if (strTest.Equals("system.usedspace(x)")) ret = SYSTEM_USED_SPACE_X;
-    else if (strTest.Equals("system.freespace(x)")) ret = SYSTEM_FREE_SPACE_X;
-    else if (strTest.Equals("system.totalspace(x)")) ret = SYSTEM_TOTAL_SPACE_X;
-    else if (strTest.Equals("system.usedspace(y)")) ret = SYSTEM_USED_SPACE_Y;
-    else if (strTest.Equals("system.freespace(y)")) ret = SYSTEM_FREE_SPACE_Y;
-    else if (strTest.Equals("system.totalspace(y)")) ret = SYSTEM_TOTAL_SPACE_Y;
-    else if (strTest.Equals("system.usedspace(z)")) ret = SYSTEM_USED_SPACE_Z;
-    else if (strTest.Equals("system.freespace(z)")) ret = SYSTEM_FREE_SPACE_Z;
-    else if (strTest.Equals("system.totalspace(z)")) ret = SYSTEM_TOTAL_SPACE_Z;
     else if (strTest.Equals("system.buildversion")) ret = SYSTEM_BUILD_VERSION;
     else if (strTest.Equals("system.builddate")) ret = SYSTEM_BUILD_DATE;
     else if (strTest.Equals("system.hasnetwork")) ret = SYSTEM_ETHERNET_LINK_ACTIVE;
@@ -504,6 +449,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("library.hascontent(tvshows)")) ret = LIBRARY_HAS_TVSHOWS;
     else if (strTest.Equals("library.hascontent(musicvideos)")) ret = LIBRARY_HAS_MUSICVIDEOS;
     else if (strTest.Equals("library.isscanning")) ret = LIBRARY_IS_SCANNING;
+    else if (strTest.Equals("library.isscanningvideo")) ret = LIBRARY_IS_SCANNING_VIDEO;
+    else if (strTest.Equals("library.isscanningmusic")) ret = LIBRARY_IS_SCANNING_MUSIC;
   }
   else if (strTest.Left(8).Equals("isempty("))
   {
@@ -547,10 +494,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("lcd.hddtemperature")) ret = LCD_HDD_TEMPERATURE;
     else if (strTest.Equals("lcd.fanspeed")) ret = LCD_FAN_SPEED;
     else if (strTest.Equals("lcd.date")) ret = LCD_DATE;
-    else if (strTest.Equals("lcd.freespace(c)")) ret = LCD_FREE_SPACE_C;
-    else if (strTest.Equals("lcd.freespace(e)")) ret = LCD_FREE_SPACE_E;
-    else if (strTest.Equals("lcd.freespace(f)")) ret = LCD_FREE_SPACE_F;
-    else if (strTest.Equals("lcd.freespace(g)")) ret = LCD_FREE_SPACE_G;
     else if (strTest.Equals("lcd.Time21")) ret = LCD_TIME_21; // Small LCD numbers
     else if (strTest.Equals("lcd.Time22")) ret = LCD_TIME_22;
     else if (strTest.Equals("lcd.TimeWide21")) ret = LCD_TIME_W21; // Medium LCD numbers
@@ -655,6 +598,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("videoplayer.parentalrating")) return VIDEOPLAYER_PARENTAL_RATING;
     else if (strTest.Equals("videoplayer.lastplayed")) return VIDEOPLAYER_LASTPLAYED;
     else if (strTest.Equals("videoplayer.playcount")) return VIDEOPLAYER_PLAYCOUNT;
+    else if (strTest.Equals("videoplayer.hassubtitles")) return VIDEOPLAYER_HASSUBTITLES;
+    else if (strTest.Equals("videoplayer.subtitlesenabled")) return VIDEOPLAYER_SUBTITLESENABLED;
   }
   else if (strCategory.Equals("playlist"))
   {
@@ -978,6 +923,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("director")) return LISTITEM_DIRECTOR;
   else if (info.Equals("filename")) return LISTITEM_FILENAME;
   else if (info.Equals("filenameandpath")) return LISTITEM_FILENAME_AND_PATH;
+  else if (info.Equals("fileextension")) return LISTITEM_FILE_EXTENSION;
   else if (info.Equals("date")) return LISTITEM_DATE;
   else if (info.Equals("size")) return LISTITEM_SIZE;
   else if (info.Equals("rating")) return LISTITEM_RATING;
@@ -1353,48 +1299,12 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   break;
 
   case SYSTEM_FREE_SPACE:
-  case SYSTEM_FREE_SPACE_C:
-  case SYSTEM_FREE_SPACE_E:
-  case SYSTEM_FREE_SPACE_F:
-  case SYSTEM_FREE_SPACE_G:
   case SYSTEM_USED_SPACE:
-  case SYSTEM_USED_SPACE_C:
-  case SYSTEM_USED_SPACE_E:
-  case SYSTEM_USED_SPACE_F:
-  case SYSTEM_USED_SPACE_G:
   case SYSTEM_TOTAL_SPACE:
-  case SYSTEM_TOTAL_SPACE_C:
-  case SYSTEM_TOTAL_SPACE_E:
-  case SYSTEM_TOTAL_SPACE_F:
-  case SYSTEM_TOTAL_SPACE_G:
   case SYSTEM_FREE_SPACE_PERCENT:
-  case SYSTEM_FREE_SPACE_PERCENT_C:
-  case SYSTEM_FREE_SPACE_PERCENT_E:
-  case SYSTEM_FREE_SPACE_PERCENT_F:
-  case SYSTEM_FREE_SPACE_PERCENT_G:
   case SYSTEM_USED_SPACE_PERCENT:
-  case SYSTEM_USED_SPACE_PERCENT_C:
-  case SYSTEM_USED_SPACE_PERCENT_E:
-  case SYSTEM_USED_SPACE_PERCENT_F:
-  case SYSTEM_USED_SPACE_PERCENT_G:
-  case SYSTEM_USED_SPACE_X:
-  case SYSTEM_FREE_SPACE_X:
-  case SYSTEM_TOTAL_SPACE_X:
-  case SYSTEM_USED_SPACE_Y:
-  case SYSTEM_FREE_SPACE_Y:
-  case SYSTEM_TOTAL_SPACE_Y:
-  case SYSTEM_USED_SPACE_Z:
-  case SYSTEM_FREE_SPACE_Z:
-  case SYSTEM_TOTAL_SPACE_Z:
     return g_sysinfo.GetHddSpaceInfo(info);
   break;
-
-  case LCD_FREE_SPACE_C:
-  case LCD_FREE_SPACE_E:
-  case LCD_FREE_SPACE_F:
-  case LCD_FREE_SPACE_G:
-    return g_sysinfo.GetHddSpaceInfo(info, true);
-    break;
 
   case SYSTEM_CPU_TEMPERATURE:
   case SYSTEM_GPU_TEMPERATURE:
@@ -1828,21 +1738,7 @@ int CGUIInfoManager::GetInt(int info, int contextWindow) const
           return bar->GetPercentage();
       }
     case SYSTEM_FREE_SPACE:
-    case SYSTEM_FREE_SPACE_C:
-    case SYSTEM_FREE_SPACE_E:
-    case SYSTEM_FREE_SPACE_F:
-    case SYSTEM_FREE_SPACE_G:
     case SYSTEM_USED_SPACE:
-    case SYSTEM_USED_SPACE_C:
-    case SYSTEM_USED_SPACE_E:
-    case SYSTEM_USED_SPACE_F:
-    case SYSTEM_USED_SPACE_G:
-    case SYSTEM_FREE_SPACE_X:
-    case SYSTEM_USED_SPACE_X:
-    case SYSTEM_FREE_SPACE_Y:
-    case SYSTEM_USED_SPACE_Y:
-    case SYSTEM_FREE_SPACE_Z:
-    case SYSTEM_USED_SPACE_Z:
       {
         int ret = 0;
         g_sysinfo.GetHddSpaceInfo(ret, info, true);
@@ -1906,6 +1802,16 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = true;
     else
       bReturn = false;
+  }
+  else if (condition == LIBRARY_IS_SCANNING_VIDEO)
+  {
+    CGUIDialogVideoScan *videoScanner = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
+    bReturn = (videoScanner && videoScanner->IsScanning());
+  }
+  else if (condition == LIBRARY_IS_SCANNING_MUSIC)
+  {
+    CGUIDialogMusicScan *musicScanner = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+    bReturn = (musicScanner && musicScanner->IsScanning());
   }
   else if (condition == SYSTEM_PLATFORM_LINUX)
 #if defined(_LINUX) && !defined(__APPLE__)
@@ -2194,6 +2100,12 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       if (g_application.m_pPlayer->GetTeletextCache())
         bReturn = true;
       break;
+    case VIDEOPLAYER_HASSUBTITLES:
+      bReturn = g_application.m_pPlayer->GetSubtitleCount() > 0;
+      break;
+    case VIDEOPLAYER_SUBTITLESENABLED:
+      bReturn = g_application.m_pPlayer->GetSubtitleVisible();
+      break;
     case VISUALISATION_LOCKED:
       {
         CGUIMessage msg(GUI_MSG_GET_VISUALISATION, 0, 0);
@@ -2317,36 +2229,36 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
         break;
       case STRING_STR:
+        {
+          CStdString compare = m_stringParameters[info.GetData2()];
+          // our compare string is already in lowercase, so lower case our label as well
+          // as CStdString::Find() is case sensitive
+          CStdString label;
+          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+            label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
+          else
+            label = GetImage(info.GetData1(), contextWindow).ToLower();
+          if (compare.Right(5).Equals(",left"))
+            bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
+          else if (compare.Right(6).Equals(",right"))
           {
-            CStdString compare = m_stringParameters[info.GetData2()];
-            // our compare string is already in lowercase, so lower case our label as well
-            // as CStdString::Find() is case sensitive
-            CStdString label;
-            if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-              label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
-            else
-              label = GetImage(info.GetData1(), contextWindow).ToLower();
-            if (compare.Right(5).Equals(",left"))
-              bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
-            else if (compare.Right(6).Equals(",right"))
-            {
-              compare = compare.Mid(0,compare.size()-6);
-              bReturn = label.Find(compare) == (int)(label.size()-compare.size());
-            }
-            else
-              bReturn = label.Find(compare) > -1;
+            compare = compare.Mid(0,compare.size()-6);
+            bReturn = label.Find(compare) == (int)(label.size()-compare.size());
           }
+          else
+            bReturn = label.Find(compare) > -1;
+        }
         break;
-    case SYSTEM_ALARM_LESS_OR_EQUAL:
-    {
-      int time = lrint(g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]));
-      int timeCompare = atoi(m_stringParameters[info.GetData2()]);
-      if (time > 0)
-        bReturn = timeCompare >= time;
-      else
-        bReturn = false;
-    }
-    break;
+      case SYSTEM_ALARM_LESS_OR_EQUAL:
+        {
+          int time = lrint(g_alarmClock.GetRemaining(m_stringParameters[info.GetData1()]));
+          int timeCompare = atoi(m_stringParameters[info.GetData2()]);
+          if (time > 0)
+            bReturn = timeCompare >= time;
+          else
+            bReturn = false;
+        }
+        break;
       case CONTROL_GROUP_HAS_FOCUS:
         {
           CGUIWindow *window = GetWindowWithCondition(contextWindow, 0);
@@ -4085,11 +3997,24 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return item->GetEPGInfoTag()->Genre();
     break;
   case LISTITEM_FILENAME:
-    if (item->IsMusicDb() && item->HasMusicInfoTag())
-      return URIUtils::GetFileName(item->GetMusicInfoTag()->GetURL());
-    if (item->IsVideoDb() && item->HasVideoInfoTag())
-      return URIUtils::GetFileName(item->GetVideoInfoTag()->m_strFileNameAndPath);
-    return URIUtils::GetFileName(item->m_strPath);
+  case LISTITEM_FILE_EXTENSION:
+    {
+      CStdString strFile;
+      if (item->IsMusicDb() && item->HasMusicInfoTag())
+        strFile = URIUtils::GetFileName(item->GetMusicInfoTag()->GetURL());
+      else if (item->IsVideoDb() && item->HasVideoInfoTag())
+        strFile = URIUtils::GetFileName(item->GetVideoInfoTag()->m_strFileNameAndPath);
+      else
+        strFile = URIUtils::GetFileName(item->m_strPath);
+
+      if (info==LISTITEM_FILE_EXTENSION)
+      {
+        CStdString strExtension = URIUtils::GetExtension(strFile);
+        return strExtension.TrimLeft(".");
+      }
+      return strFile;
+    }
+    break;
   case LISTITEM_DATE:
     if (item->HasEPGInfoTag())
       return item->GetEPGInfoTag()->StartAsLocalTime().GetAsLocalizedDateTime(false, false);

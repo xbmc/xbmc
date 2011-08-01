@@ -78,8 +78,6 @@ protected:
   void AddSetting(CSetting *pSetting, float width, int &iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
-  void JumpToSection(int windowID, const CStdString &section);
-  void JumpToPreviousSection();
   void ValidatePortNumber(CBaseSettingControl* pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening=true);
 
   std::vector<CBaseSettingControl *> m_vecSettings;
@@ -107,13 +105,6 @@ protected:
   std::map<CStdString, CStdString> m_AnalogAudioSinkMap;
   std::map<CStdString, CStdString> m_DigitalAudioSinkMap;
   std::map<CStdString, CStdString> m_SkinFontSetIDs;
-
-  // state of the window saved in JumpToSection()
-  // to get to the previous settings screen when
-  // using JumpToPreviousSection()
-  int m_iSectionBeforeJump;
-  int m_iControlBeforeJump;
-  int m_iWindowBeforeJump;
 
   bool m_returningFromSkinLoad; // true if we are returning from loading the skin
 

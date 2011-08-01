@@ -638,7 +638,12 @@ CStdString CURL::GetWithoutFilename() const
 
 bool CURL::IsLocal() const
 {
-  return m_strProtocol.IsEmpty();
+  return (IsLocalHost() || m_strProtocol.IsEmpty());
+}
+
+bool CURL::IsLocalHost() const
+{
+  return (m_strHostName.Equals("localhost") || m_strHostName.Equals("127.0.0.1"));
 }
 
 bool CURL::IsFileOnly(const CStdString &url)

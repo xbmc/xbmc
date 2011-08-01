@@ -148,9 +148,6 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_strErrorMessage = "";
   m_strOldTrackFormat = "";
   m_strOldTrackFormatRight = "";
-  m_iSectionBeforeJump=-1;
-  m_iControlBeforeJump=-1;
-  m_iWindowBeforeJump=WINDOW_INVALID;
   m_returningFromSkinLoad = false;
   m_delayedSetting = NULL;
 }
@@ -166,11 +163,6 @@ bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
   if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
   {
     g_settings.Save();
-    if (m_iWindowBeforeJump!=WINDOW_INVALID)
-    {
-      JumpToPreviousSection();
-      return true;
-    }
     m_lastControlID = 0; // don't save the control as we go to a different window each time
   }
   return CGUIWindow::OnAction(action);
@@ -2628,49 +2620,6 @@ CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &st
       return m_vecSettings[i];
   }
   return NULL;
-}
-
-void CGUIWindowSettingsCategory::JumpToSection(int windowId, const CStdString &section)
-{
-  // grab our section
-  CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(windowId - WINDOW_SETTINGS_MYPICTURES);
-  if (!pSettingsGroup) return;
-  // get the categories we need
-  vecSettingsCategory categories;
-  pSettingsGroup->GetCategories(categories);
-  // iterate through them and check for the required section
-  int iSection = -1;
-  for (unsigned int i = 0; i < categories.size(); i++)
-    if (categories[i]->m_strCategory.Equals(section))
-      iSection = i;
-  if (iSection == -1) return;
-
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
-  OnMessage(msg);
-  m_iSectionBeforeJump=m_iSection;
-  m_iControlBeforeJump=m_lastControlID;
-  m_iWindowBeforeJump=GetID();
-
-  m_iSection=iSection;
-  m_lastControlID=CONTROL_START_CONTROL;
-  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, windowId);
-  OnMessage(msg1);
-  for (unsigned int i=0; i<m_vecSections.size(); ++i)
-    CONTROL_DISABLE(CONTROL_START_BUTTONS+i);
-}
-
-void CGUIWindowSettingsCategory::JumpToPreviousSection()
-{
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
-  OnMessage(msg);
-  m_iSection=m_iSectionBeforeJump;
-  m_lastControlID=m_iControlBeforeJump;
-  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, m_iWindowBeforeJump);
-  OnMessage(msg1);
-
-  m_iSectionBeforeJump=-1;
-  m_iControlBeforeJump=-1;
-  m_iWindowBeforeJump=WINDOW_INVALID;
 }
 
 void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)

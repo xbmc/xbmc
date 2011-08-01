@@ -258,6 +258,7 @@ void CGUISettings::Initialize()
   // My Weather settings
   AddGroup(2, 8);
   CSettingsCategory* wea = AddCategory(2, "weather", 16000);
+  AddInt(NULL, "weather.currentlocation", 0, 1, 1, 1, 3, SPIN_CONTROL_INT_PLUS);
   AddString(wea, "weather.areacode1", 14019, "USNY0996 - New York, NY", BUTTON_CONTROL_STANDARD);
   AddString(wea, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(wea, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
@@ -572,6 +573,8 @@ void CGUISettings::Initialize()
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
 
 #ifdef HAS_DX
+  if (g_sysinfo.IsVistaOrHigher())
+    renderers.insert(make_pair(16319, RENDER_METHOD_DXVA));
   renderers.insert(make_pair(13431, RENDER_METHOD_D3D_PS));
   renderers.insert(make_pair(13419, RENDER_METHOD_SOFTWARE));
 #endif
@@ -654,7 +657,7 @@ void CGUISettings::Initialize()
   AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, SELECT_ACTION_CHOOSE, 1, SELECT_ACTION_INFO, SPIN_CONTROL_TEXT);
   AddBool(NULL, "myvideos.treatstackasfile", 20051, true);
   AddBool(vid, "myvideos.extractflags",20433, true);
-  AddBool(vid, "myvideos.cleanstrings", 20418, false);
+  AddBool(vid, "myvideos.filemetadata", 20419, true);
   AddBool(NULL, "myvideos.extractthumb",20433, true);
 
   CSettingsCategory* sub = AddCategory(5, "subtitles", 287);

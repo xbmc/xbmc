@@ -38,6 +38,8 @@ class TiXmlElement;
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
 
+#define MAX_LOCATION 3
+
 struct day_forecast
 {
   CStdString m_icon;
@@ -135,8 +137,8 @@ public:
   bool IsFetched();
   void Reset();
 
-  void SetArea(int iArea) { m_iCurWeather = iArea; };
-  int GetArea() const { return m_iCurWeather; };
+  void SetArea(int iLocation);
+  int GetArea() const;
 
   static CStdString GetAreaCode(const CStdString &codeAndCity);
   static CStdString GetAreaCity(const CStdString &codeAndCity);
@@ -149,8 +151,7 @@ protected:
 
 private:
 
-  CStdString m_location[3];
-  unsigned int m_iCurWeather;
+  CStdString m_location[MAX_LOCATION];
 
   CWeatherInfo m_info;
 };

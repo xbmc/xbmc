@@ -21,7 +21,6 @@
 
 #include "VideoInfoDownloader.h"
 #include "Util.h"
-#include "utils/HTMLUtil.h"
 #include "utils/XMLUtils.h"
 #include "utils/RegExp.h"
 #include "utils/ScraperParser.h"
@@ -35,7 +34,6 @@
 #include "utils/URIUtils.h"
 
 using namespace std;
-using namespace HTML;
 
 #ifndef __GNUC__
 #pragma warning (disable:4018)

@@ -730,7 +730,7 @@ void CDVDPlayer::OpenDefaultStreams()
   if(!valid)
     CloseSubtitleStream(false);
 
-  if((g_settings.m_currentVideoSettings.m_SubtitleOn || force) && !m_PlayerOptions.video_only)
+  if(valid && (g_settings.m_currentVideoSettings.m_SubtitleOn || force) && !m_PlayerOptions.video_only)
     m_dvdPlayerVideo.EnableSubtitle(true);
   else
     m_dvdPlayerVideo.EnableSubtitle(false);
@@ -1003,10 +1003,7 @@ void CDVDPlayer::Process()
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
       && !g_PVRManager.IsPlayingRecording() &&
       g_advancedSettings.m_bPVRCacheInDvdPlayer)
-  {
     SetCaching(CACHESTATE_PVR);
-    m_scanStart = XbmcThreads::SystemClockMillis();
-  }
   else
     SetCaching(CACHESTATE_FLUSH);
 

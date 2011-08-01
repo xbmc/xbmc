@@ -1525,7 +1525,7 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("weather.locationset"))
   {
     int loc = atoi(params[0]);
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, 0, 0, loc - 1);
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, 0, 0, loc);
     g_windowManager.SendMessage(msg, WINDOW_WEATHER);
   }
   else if (execute.Equals("weather.locationnext"))

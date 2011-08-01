@@ -119,6 +119,23 @@ public:
   static CStdString ValidatePath(const CStdString &path, bool bFixDoubleSlashes = false); ///< return a validated path, with correct directory separators.
   
   static bool IsUsingTTFSubtitles();
+
+  /*! \brief Split a comma separated parameter list into separate parameters.
+   Takes care of the case where we may have a quoted string containing commas, or we may
+   have a function (i.e. parentheses) with multiple parameters as a single parameter.
+
+   eg:
+
+    foo, bar(param1, param2), foo
+
+   will return:
+
+    "foo", "bar(param1, param2)", and "foo".
+
+   \param paramString the string to break up
+   \param parameters the returned parameters
+   */
+  static void SplitParams(const CStdString &paramString, std::vector<CStdString> &parameters);
   static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<CStdString> &parameters);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
@@ -144,6 +161,7 @@ public:
 #ifdef UNIT_TESTING
   static bool TestSplitExec();
   static bool TestGetQualifiedFilename();
+  static bool TestMakeLegalPath();
 #endif
 
   static void InitRandomSeed();
