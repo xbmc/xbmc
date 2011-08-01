@@ -482,6 +482,18 @@ infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
 infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
                             { "currentcolourtheme",SKIN_COLOUR_THEME }};
 
+infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
+                            { "isactive",         WINDOW_IS_ACTIVE },
+                            { "istopmost",        WINDOW_IS_TOPMOST },
+                            { "isvisible",        WINDOW_IS_VISIBLE },
+                            { "previous",         WINDOW_PREVIOUS },
+                            { "next",             WINDOW_NEXT }};
+
+infomap control_labels[] = {{ "hasfocus",         CONTROL_HAS_FOCUS },
+                            { "isvisible",        CONTROL_IS_VISIBLE },
+                            { "isenabled",        CONTROL_IS_ENABLED },
+                            { "getlabel",         CONTROL_GET_LABEL }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -858,6 +870,48 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       else if (property == "hastheme")
         return AddMultiInfo(GUIInfo(SKIN_HAS_THEME, ConditionalStringParameter(info[1].second)));
     }
+    else if (category == "window")
+    {
+      if (property == "property")
+      { // TODO: this doesn't support foo.xml
+        int winID = 0;
+        if (!info[0].second.IsEmpty())
+          winID = CButtonTranslator::TranslateWindow(info[0].second);
+        if (winID != WINDOW_INVALID)
+          return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, ConditionalStringParameter(info[1].second)));
+      }
+      for (size_t i = 0; i < sizeof(window_bools) / sizeof(infomap); i++)
+      {
+        if (property == window_bools[i].str)
+        { // TODO: The parameter for these should really be on the first not the second property
+          if (info[1].second.Find("xml") >= 0)
+            return AddMultiInfo(GUIInfo(window_bools[i].val, 0, ConditionalStringParameter(info[1].second)));
+          int winID = CButtonTranslator::TranslateWindow(info[1].second);
+          if (winID != WINDOW_INVALID)
+            return AddMultiInfo(GUIInfo(window_bools[i].val, winID, 0));
+          return 0;
+        }
+      }
+    }
+    else if (category == "control")
+    {
+      for (size_t i = 0; i < sizeof(control_labels) / sizeof(infomap); i++)
+      {
+        if (property == control_labels[i].str)
+        { // TODO: The parameter for these should really be on the first not the second property
+          int controlID = atoi(info[1].second.c_str());
+          if (controlID)
+            return AddMultiInfo(GUIInfo(control_labels[i].val, controlID, 0));
+          return 0;
+        }
+      }
+    }
+    else if (category == "controlgroup" && property == "hasfocus")
+    {
+      int groupID = atoi(info[0].second.c_str());
+      if (groupID)
+        return AddMultiInfo(GUIInfo(CONTROL_GROUP_HAS_FOCUS, groupID, atoi(info[1].second.c_str())));
+    }
   }
   else if (info.size() == 3)
   {
@@ -910,109 +964,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("playlist.israndom")) ret = PLAYLIST_ISRANDOM;
     else if (strTest.Equals("playlist.isrepeat")) ret = PLAYLIST_ISREPEAT;
     else if (strTest.Equals("playlist.isrepeatone")) ret = PLAYLIST_ISREPEATONE;
-  }
-  else if (strCategory.Left(6).Equals("window"))
-  {
-    CStdString info = strTest.Mid(strCategory.GetLength() + 1);
-    // special case for window.xml parameter, fails above
-    if (info.Left(5).Equals("xml)."))
-      info = info.Mid(5, info.GetLength() + 1);
-    if (info.Left(9).Equals("property("))
-    {
-      int winID = 0;
-      if (strTest.Left(7).Equals("window("))
-      {
-        CStdString window(strTest.Mid(7, strTest.Find(")", 7) - 7).ToLower());
-        winID = CButtonTranslator::TranslateWindow(window);
-      }
-      if (winID != WINDOW_INVALID)
-      {
-        int compareString = ConditionalStringParameter(info.Mid(9, info.GetLength() - 10));
-        return AddMultiInfo(GUIInfo(WINDOW_PROPERTY, winID, compareString));
-      }
-    }
-    else if (info.Left(9).Equals("isactive("))
-    {
-      CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
-      if (window.Find("xml") >= 0)
-        return AddMultiInfo(GUIInfo(WINDOW_IS_ACTIVE, 0, ConditionalStringParameter(window)));
-      int winID = CButtonTranslator::TranslateWindow(window);
-      if (winID != WINDOW_INVALID)
-        return AddMultiInfo(GUIInfo(WINDOW_IS_ACTIVE, winID, 0));
-    }
-    else if (info.Left(7).Equals("ismedia")) return WINDOW_IS_MEDIA;
-    else if (info.Left(10).Equals("istopmost("))
-    {
-      CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
-      if (window.Find("xml") >= 0)
-        return AddMultiInfo(GUIInfo(WINDOW_IS_TOPMOST, 0, ConditionalStringParameter(window)));
-      int winID = CButtonTranslator::TranslateWindow(window);
-      if (winID != WINDOW_INVALID)
-        return AddMultiInfo(GUIInfo(WINDOW_IS_TOPMOST, winID, 0));
-    }
-    else if (info.Left(10).Equals("isvisible("))
-    {
-      CStdString window(strTest.Mid(17, strTest.GetLength() - 18).ToLower());
-      if (window.Find("xml") >= 0)
-        return AddMultiInfo(GUIInfo(WINDOW_IS_VISIBLE, 0, ConditionalStringParameter(window)));
-      int winID = CButtonTranslator::TranslateWindow(window);
-      if (winID != WINDOW_INVALID)
-        return AddMultiInfo(GUIInfo(WINDOW_IS_VISIBLE, winID, 0));
-    }
-    else if (info.Left(9).Equals("previous("))
-    {
-      CStdString window(strTest.Mid(16, strTest.GetLength() - 17).ToLower());
-      if (window.Find("xml") >= 0)
-        return AddMultiInfo(GUIInfo(WINDOW_PREVIOUS, 0, ConditionalStringParameter(window)));
-      int winID = CButtonTranslator::TranslateWindow(window);
-      if (winID != WINDOW_INVALID)
-        return AddMultiInfo(GUIInfo(WINDOW_PREVIOUS, winID, 0));
-    }
-    else if (info.Left(5).Equals("next("))
-    {
-      CStdString window(strTest.Mid(12, strTest.GetLength() - 13).ToLower());
-      if (window.Find("xml") >= 0)
-        return AddMultiInfo(GUIInfo(WINDOW_NEXT, 0, ConditionalStringParameter(window)));
-      int winID = CButtonTranslator::TranslateWindow(window);
-      if (winID != WINDOW_INVALID)
-        return AddMultiInfo(GUIInfo(WINDOW_NEXT, winID, 0));
-    }
-  }
-  else if (strTest.Left(17).Equals("control.hasfocus("))
-  {
-    int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
-    if (controlID)
-      return AddMultiInfo(GUIInfo(CONTROL_HAS_FOCUS, controlID, 0));
-  }
-  else if (strTest.Left(18).Equals("control.isvisible("))
-  {
-    int controlID = atoi(strTest.Mid(18, strTest.GetLength() - 19).c_str());
-    if (controlID)
-      return AddMultiInfo(GUIInfo(CONTROL_IS_VISIBLE, controlID, 0));
-  }
-  else if (strTest.Left(18).Equals("control.isenabled("))
-  {
-    int controlID = atoi(strTest.Mid(18, strTest.GetLength() - 19).c_str());
-    if (controlID)
-      return AddMultiInfo(GUIInfo(CONTROL_IS_ENABLED, controlID, 0));
-  }
-  else if (strTest.Left(17).Equals("control.getlabel("))
-  {
-    int controlID = atoi(strTest.Mid(17, strTest.GetLength() - 18).c_str());
-    if (controlID)
-      return AddMultiInfo(GUIInfo(CONTROL_GET_LABEL, controlID, 0));
-  }
-  else if (strTest.Left(13).Equals("controlgroup("))
-  {
-    int groupID = atoi(strTest.Mid(13).c_str());
-    int controlID = 0;
-    int controlPos = strTest.Find(".hasfocus(");
-    if (controlPos > 0)
-      controlID = atoi(strTest.Mid(controlPos + 10).c_str());
-    if (groupID)
-    {
-      return AddMultiInfo(GUIInfo(CONTROL_GROUP_HAS_FOCUS, groupID, controlID));
-    }
   }
 
   return ret;
