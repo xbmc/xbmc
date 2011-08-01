@@ -10,7 +10,6 @@ SRCS=AnimatedGif.cpp \
      GUIBaseContainer.cpp \
      GUIBorderedImage.cpp \
      GUIButtonControl.cpp \
-     GUIButtonScroller.cpp \
      GUICheckMarkControl.cpp \
      GUIColorManager.cpp \
      GUIControl.cpp \

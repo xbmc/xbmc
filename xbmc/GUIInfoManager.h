@@ -411,7 +411,6 @@ class CDateTime;
 #define CONTROL_IS_VISIBLE          29998
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS           30000
-#define BUTTON_SCROLLER_HAS_ICON    30001
 
 // Version string MUST NOT contain spaces.  It is used
 // in the HTTP request user agent.

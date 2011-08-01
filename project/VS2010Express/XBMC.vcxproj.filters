@@ -1256,9 +1256,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIButtonControl.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIButtonScroller.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUICheckMarkControl.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -3639,9 +3636,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIButtonControl.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIButtonScroller.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUICallback.h">
