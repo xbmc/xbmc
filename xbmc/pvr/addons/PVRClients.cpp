@@ -31,10 +31,15 @@
 #include "pvr/PVRDatabase.h"
 #include "guilib/GUIWindowManager.h"
 #include "settings/AdvancedSettings.h"
+#include "settings/Settings.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
+
+#ifdef HAS_VIDEO_PLAYBACK
+#include "cores/VideoRenderers/RenderManager.h"
+#endif
 
 using namespace std;
 using namespace ADDON;
@@ -1191,5 +1196,103 @@ void CPVRClients::UpdateCharInfoSignalStatus(void)
   else
   {
     ResetQualityData();
+  }
+}
+
+void CPVRClients::SaveCurrentChannelSettings(void)
+{
+  CSingleLock lock(m_critSection);
+  if (!m_currentChannel)
+    return;
+
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
+    return;
+
+  if (g_settings.m_currentVideoSettings != g_settings.m_defaultVideoSettings)
+  {
+    CLog::Log(LOGDEBUG, "PVR - %s - persisting custom channel settings for channel '%s'",
+        __FUNCTION__, m_currentChannel->ChannelName().c_str());
+    database->PersistChannelSettings(*m_currentChannel, g_settings.m_currentVideoSettings);
+  }
+  else
+  {
+    CLog::Log(LOGDEBUG, "PVR - %s - no custom channel settings for channel '%s'",
+        __FUNCTION__, m_currentChannel->ChannelName().c_str());
+    database->DeleteChannelSettings(*m_currentChannel);
+  }
+
+  database->Close();
+}
+
+void CPVRClients::LoadCurrentChannelSettings(void)
+{
+  CSingleLock lock(m_critSection);
+  if (!m_currentChannel)
+    return;
+
+  CPVRDatabase *database = OpenPVRDatabase();
+  if (!database)
+    return;
+
+  if (g_application.m_pPlayer)
+  {
+    /* set the default settings first */
+    CVideoSettings loadedChannelSettings = g_settings.m_defaultVideoSettings;
+
+    /* try to load the settings from the database */
+    database->GetChannelSettings(*m_currentChannel, loadedChannelSettings);
+    database->Close();
+
+    g_settings.m_currentVideoSettings = g_settings.m_defaultVideoSettings;
+    g_settings.m_currentVideoSettings.m_Brightness          = loadedChannelSettings.m_Brightness;
+    g_settings.m_currentVideoSettings.m_Contrast            = loadedChannelSettings.m_Contrast;
+    g_settings.m_currentVideoSettings.m_Gamma               = loadedChannelSettings.m_Gamma;
+    g_settings.m_currentVideoSettings.m_Crop                = loadedChannelSettings.m_Crop;
+    g_settings.m_currentVideoSettings.m_CropLeft            = loadedChannelSettings.m_CropLeft;
+    g_settings.m_currentVideoSettings.m_CropRight           = loadedChannelSettings.m_CropRight;
+    g_settings.m_currentVideoSettings.m_CropTop             = loadedChannelSettings.m_CropTop;
+    g_settings.m_currentVideoSettings.m_CropBottom          = loadedChannelSettings.m_CropBottom;
+    g_settings.m_currentVideoSettings.m_CustomPixelRatio    = loadedChannelSettings.m_CustomPixelRatio;
+    g_settings.m_currentVideoSettings.m_CustomZoomAmount    = loadedChannelSettings.m_CustomZoomAmount;
+    g_settings.m_currentVideoSettings.m_CustomVerticalShift = loadedChannelSettings.m_CustomVerticalShift;
+    g_settings.m_currentVideoSettings.m_NoiseReduction      = loadedChannelSettings.m_NoiseReduction;
+    g_settings.m_currentVideoSettings.m_Sharpness           = loadedChannelSettings.m_Sharpness;
+    g_settings.m_currentVideoSettings.m_InterlaceMethod     = loadedChannelSettings.m_InterlaceMethod;
+    g_settings.m_currentVideoSettings.m_OutputToAllSpeakers = loadedChannelSettings.m_OutputToAllSpeakers;
+    g_settings.m_currentVideoSettings.m_AudioDelay          = loadedChannelSettings.m_AudioDelay;
+    g_settings.m_currentVideoSettings.m_AudioStream         = loadedChannelSettings.m_AudioStream;
+    g_settings.m_currentVideoSettings.m_SubtitleOn          = loadedChannelSettings.m_SubtitleOn;
+    g_settings.m_currentVideoSettings.m_SubtitleDelay       = loadedChannelSettings.m_SubtitleDelay;
+    g_settings.m_currentVideoSettings.m_CustomNonLinStretch = loadedChannelSettings.m_CustomNonLinStretch;
+    g_settings.m_currentVideoSettings.m_ScalingMethod       = loadedChannelSettings.m_ScalingMethod;
+    g_settings.m_currentVideoSettings.m_PostProcess         = loadedChannelSettings.m_PostProcess;
+
+    /* only change the view mode if it's different */
+    if (g_settings.m_currentVideoSettings.m_ViewMode != loadedChannelSettings.m_ViewMode)
+    {
+      g_settings.m_currentVideoSettings.m_ViewMode = loadedChannelSettings.m_ViewMode;
+
+      g_renderManager.SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
+      g_settings.m_currentVideoSettings.m_CustomZoomAmount = g_settings.m_fZoomAmount;
+      g_settings.m_currentVideoSettings.m_CustomPixelRatio = g_settings.m_fPixelRatio;
+    }
+
+    /* only change the subtitle stream, if it's different */
+    if (g_settings.m_currentVideoSettings.m_SubtitleStream != loadedChannelSettings.m_SubtitleStream)
+    {
+      g_settings.m_currentVideoSettings.m_SubtitleStream = loadedChannelSettings.m_SubtitleStream;
+
+      g_application.m_pPlayer->SetSubtitle(g_settings.m_currentVideoSettings.m_SubtitleStream);
+    }
+
+    /* only change the audio stream if it's different */
+    if (g_application.m_pPlayer->GetAudioStream() != g_settings.m_currentVideoSettings.m_AudioStream)
+      g_application.m_pPlayer->SetAudioStream(g_settings.m_currentVideoSettings.m_AudioStream);
+
+    g_application.m_pPlayer->SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
+    g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
+    g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
+    g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
   }
 }
