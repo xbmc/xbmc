@@ -2364,7 +2364,7 @@ void CDVDPlayer::Pause()
 
 bool CDVDPlayer::IsPaused() const
 {
-  return (m_playSpeed == DVD_PLAYSPEED_PAUSE) || m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR;
+  return m_playSpeed == DVD_PLAYSPEED_PAUSE || m_caching == CACHESTATE_FULL || m_caching == CACHESTATE_PVR;
 }
 
 bool CDVDPlayer::HasVideo() const
@@ -3788,12 +3788,6 @@ void CDVDPlayer::UpdatePlayState(double timeout)
   {
     // override from input stream if needed
 
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
-    {
-      m_State.canrecord = static_cast<CDVDInputStreamTV*>(m_pInputStream)->CanRecord();
-      m_State.recording = static_cast<CDVDInputStreamTV*>(m_pInputStream)->IsRecording();
-    }
-
     CDVDInputStream::IDisplayTime* pDisplayTime = dynamic_cast<CDVDInputStream::IDisplayTime*>(m_pInputStream);
     if (pDisplayTime)
     {
@@ -4003,13 +3997,18 @@ CStdString CDVDPlayer::GetPlayingTitle()
 
 bool CDVDPlayer::SwitchChannel(const CPVRChannel &channel)
 {
+  /* set GUI info */
   g_PVRManager.PerformChannelSwitch(channel, true);
   UpdateApplication(0);
   UpdatePlayState(0);
+
+  /* make sure the pvr window is updated */
   CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
   if (pWindow)
     pWindow->SetInvalid();
 
+  /* select the new channel */
   m_messenger.Put(new CDVDMsgType<CPVRChannel>(CDVDMsg::PLAYER_CHANNEL_SELECT, channel));
+
   return true;
 }
