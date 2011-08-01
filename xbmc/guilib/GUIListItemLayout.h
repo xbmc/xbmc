@@ -55,10 +55,10 @@ public:
   bool MoveLeft();
   bool MoveRight();
 
-  unsigned int GetCondition() const { return m_condition; };
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
+  bool CheckCondition();
 protected:
   void LoadControl(TiXmlElement *child, CGUIControlGroup *group);
   void Update(CFileItem *item);
