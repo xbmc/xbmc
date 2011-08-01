@@ -494,6 +494,14 @@ infomap control_labels[] = {{ "hasfocus",         CONTROL_HAS_FOCUS },
                             { "isenabled",        CONTROL_IS_ENABLED },
                             { "getlabel",         CONTROL_GET_LABEL }};
 
+infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
+                            { "position",         PLAYLIST_POSITION },
+                            { "random",           PLAYLIST_RANDOM },
+                            { "repeat",           PLAYLIST_REPEAT },
+                            { "israndom",         PLAYLIST_ISRANDOM },
+                            { "isrepeat",         PLAYLIST_ISREPEAT },
+                            { "isrepeatone",      PLAYLIST_ISREPEATONE }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -912,6 +920,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       if (groupID)
         return AddMultiInfo(GUIInfo(CONTROL_GROUP_HAS_FOCUS, groupID, atoi(info[1].second.c_str())));
     }
+    else if (category == "playlist")
+    {
+      for (size_t i = 0; i < sizeof(playlist) / sizeof(infomap); i++)
+      {
+        if (property == playlist[i].str)
+          return playlist[i].val;
+      }
+    }
   }
   else if (info.size() == 3)
   {
@@ -949,24 +965,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
   }
 
-  CStdString original(strTest);
-  strTest.ToLower();
-  CStdString strCategory = strTest.Left(strTest.Find("."));
-
-  int ret = 0;
-  // translate conditions...
-  if (strCategory.Equals("playlist"))
-  {
-    if (strTest.Equals("playlist.length")) ret = PLAYLIST_LENGTH;
-    else if (strTest.Equals("playlist.position")) ret = PLAYLIST_POSITION;
-    else if (strTest.Equals("playlist.random")) ret = PLAYLIST_RANDOM;
-    else if (strTest.Equals("playlist.repeat")) ret = PLAYLIST_REPEAT;
-    else if (strTest.Equals("playlist.israndom")) ret = PLAYLIST_ISRANDOM;
-    else if (strTest.Equals("playlist.isrepeat")) ret = PLAYLIST_ISREPEAT;
-    else if (strTest.Equals("playlist.isrepeatone")) ret = PLAYLIST_ISREPEATONE;
-  }
-
-  return ret;
+  return 0;
 }
 
 int CGUIInfoManager::TranslateListItem(const CStdString &info, const CStdString &param)
