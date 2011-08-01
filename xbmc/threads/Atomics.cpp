@@ -47,24 +47,24 @@ long cas(volatile long *pAddr, long expectedVal, long swapVal)
 }
 
 #elif defined(__arm__)
-
 long cas(volatile long* pAddr, long expectedVal, long swapVal)
 {
-  register long prev;
-  asm volatile (
-                "1:                      \n"
-                "ldrex    %0, [%1]       \n" /* Load the current value of *pAddr(%1) into prev (%0) and lock pAddr,  */
-                "cmp      %0,  %2        \n" /* Verify that the current value (%0) == old value (%2) */
-                "bne      2f             \n" /* Bail if the two values are not equal [not as expected] */
-                "strex    r1,  %3, [%1]  \n"
-                "cmp      r1,  #0        \n"                
-                "bne      1b             \n"
-                "2:                        "
-                : "=&r" (prev)
-                : "r"(pAddr), "r"(expectedVal),"r"(swapVal)
-                : "r1"
-                );
-  return prev;
+  return(__sync_val_compare_and_swap(pAddr, expectedVal, swapVal));
+//  register long prev;
+//  asm volatile (
+//                "1:                      \n"
+//                "ldrex    %0, [%1]       \n" /* Load the current value of *pAddr(%1) into prev (%0) and lock pAddr,  */
+//                "cmp      %0,  %2        \n" /* Verify that the current value (%0) == old value (%2) */
+//                "bne      2f             \n" /* Bail if the two values are not equal [not as expected] */
+//                "strex    r1,  %3, [%1]  \n"
+//                "cmp      r1,  #0        \n"                
+//                "bne      1b             \n"
+//                "2:                        "
+//                : "=&r" (prev)
+//                : "r"(pAddr), "r"(expectedVal),"r"(swapVal)
+//                : "r1"
+//                );
+//  return prev;
 }
 
 #elif defined(__mips__)
