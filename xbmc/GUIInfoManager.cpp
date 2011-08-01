@@ -669,6 +669,8 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           return videoplayer[i].val;
       }
     }
+    else if (category == "slideshow")
+      return CPictureInfoTag::TranslateString(property);
   }
   else if (info.size() == 3)
   {
@@ -712,8 +714,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("playlist.isrepeat")) ret = PLAYLIST_ISREPEAT;
     else if (strTest.Equals("playlist.isrepeatone")) ret = PLAYLIST_ISREPEATONE;
   }
-  else if (strCategory.Equals("slideshow"))
-    ret = CPictureInfoTag::TranslateString(strTest.Mid(strCategory.GetLength() + 1));
   else if (strCategory.Equals("pvr"))
   {
     if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
