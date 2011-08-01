@@ -1003,10 +1003,7 @@ void CDVDPlayer::Process()
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER)
       && !g_PVRManager.IsPlayingRecording() &&
       g_advancedSettings.m_bPVRCacheInDvdPlayer)
-  {
     SetCaching(CACHESTATE_PVR);
-    m_scanStart = XbmcThreads::SystemClockMillis();
-  }
   else
     SetCaching(CACHESTATE_FLUSH);
 
