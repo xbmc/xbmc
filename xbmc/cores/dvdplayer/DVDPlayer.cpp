@@ -2251,7 +2251,10 @@ void CDVDPlayer::HandleMessages()
           bool bShowPreview(g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0);
 
           if (!bShowPreview)
+          {
+            g_infoManager.SetDisplayAfterSeek(100000);
             FlushBuffers(false);
+          }
 
           if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
             bSwitchSuccessful = input->NextChannel(bShowPreview);
@@ -2270,6 +2273,8 @@ void CDVDPlayer::HandleMessages()
               m_iChannelEntryTimeOut = 0;
               SAFE_DELETE(m_pDemuxer);
               SetCaching(CACHESTATE_PVR);
+
+              g_infoManager.SetDisplayAfterSeek();
             }
           }
           else
