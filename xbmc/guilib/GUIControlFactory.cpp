@@ -1043,8 +1043,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTROL_GROUPLIST)
   {
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller);
+
     control = new CGUIControlGroupList(
-      parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align, scrollTime);
+      parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align, scroller);
     ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
   }
   else if (type == CGUIControl::GUICONTROL_LABEL)
