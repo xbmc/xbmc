@@ -1123,14 +1123,14 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
 TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
 {
   if (format.IsEmpty()) return TIME_FORMAT_GUESS;
-  else if (format.Equals("(hh)")) return TIME_FORMAT_HH;
-  else if (format.Equals("(mm)")) return TIME_FORMAT_MM;
-  else if (format.Equals("(ss)")) return TIME_FORMAT_SS;
-  else if (format.Equals("(hh:mm)")) return TIME_FORMAT_HH_MM;
-  else if (format.Equals("(mm:ss)")) return TIME_FORMAT_MM_SS;
-  else if (format.Equals("(hh:mm:ss)")) return TIME_FORMAT_HH_MM_SS;
-  else if (format.Equals("(h)")) return TIME_FORMAT_H;
-  else if (format.Equals("(h:mm:ss)")) return TIME_FORMAT_H_MM_SS;
+  else if (format.Equals("hh")) return TIME_FORMAT_HH;
+  else if (format.Equals("mm")) return TIME_FORMAT_MM;
+  else if (format.Equals("ss")) return TIME_FORMAT_SS;
+  else if (format.Equals("hh:mm")) return TIME_FORMAT_HH_MM;
+  else if (format.Equals("mm:ss")) return TIME_FORMAT_MM_SS;
+  else if (format.Equals("hh:mm:ss")) return TIME_FORMAT_HH_MM_SS;
+  else if (format.Equals("h")) return TIME_FORMAT_H;
+  else if (format.Equals("h:mm:ss")) return TIME_FORMAT_H_MM_SS;
   return TIME_FORMAT_GUESS;
 }
 
