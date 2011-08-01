@@ -26,8 +26,8 @@
 
 using namespace std;
 
-CGUIPanelContainer::CGUIPanelContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
-    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scrollTime, preloadItems)
+CGUIPanelContainer::CGUIPanelContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
+    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
 {
   ControlType = GUICONTAINER_PANEL;
   m_type = VIEW_TYPE_ICON;
@@ -49,7 +49,7 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
 
   UpdateScrollOffset(currentTime);
 
-  int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
+  int offset = (int)(m_scroller.GetValue() / m_layout->Size(m_orientation));
 
   int cacheBefore, cacheAfter;
   GetCacheOffsets(cacheBefore, cacheAfter);
@@ -60,7 +60,7 @@ void CGUIPanelContainer::Process(unsigned int currentTime, CDirtyRegionList &dir
   CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
   float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
   float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
-  pos += (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scrollOffset;
+  pos += (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scroller.GetValue();
   end += cacheAfter * m_layout->Size(m_orientation);
 
   int current = (offset - cacheBefore) * m_itemsPerRow;
@@ -100,7 +100,7 @@ void CGUIPanelContainer::Render()
 {
   if (!m_layout || !m_focusedLayout) return;
 
-  int offset = (int)(m_scrollOffset / m_layout->Size(m_orientation));
+  int offset = (int)(m_scroller.GetValue() / m_layout->Size(m_orientation));
 
   int cacheBefore, cacheAfter;
   GetCacheOffsets(cacheBefore, cacheAfter);
@@ -112,7 +112,7 @@ void CGUIPanelContainer::Render()
   CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
   float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
   float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
-  pos += (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scrollOffset;
+  pos += (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scroller.GetValue();
   end += cacheAfter * m_layout->Size(m_orientation);
 
   float focusedPos = 0;
@@ -386,15 +386,15 @@ void CGUIPanelContainer::Scroll(int amount)
 void CGUIPanelContainer::ValidateOffset()
 { // first thing is we check the range of our offset
   if (!m_layout) return;
-  if (GetOffset() > (int)GetRows() - m_itemsPerPage || m_scrollOffset > ((int)GetRows() - m_itemsPerPage) * m_layout->Size(m_orientation))
+  if (GetOffset() > (int)GetRows() - m_itemsPerPage || m_scroller.GetValue() > ((int)GetRows() - m_itemsPerPage) * m_layout->Size(m_orientation))
   {
     SetOffset(std::max(0, (int)GetRows() - m_itemsPerPage));
-    m_scrollOffset = GetOffset() * m_layout->Size(m_orientation);
+    m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
   }
-  if (GetOffset() < 0 || m_scrollOffset < 0)
+  if (GetOffset() < 0 || m_scroller.GetValue() < 0)
   {
     SetOffset(0);
-    m_scrollOffset = 0;
+    m_scroller.SetValue(0);
   }
 }
 
@@ -428,7 +428,7 @@ void CGUIPanelContainer::CalculateLayout()
   if (m_itemsPerPage < 1) m_itemsPerPage = 1;
 
   // ensure that the scroll offset is a multiple of our size
-  m_scrollOffset = GetOffset() * m_layout->Size(m_orientation);
+  m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
 }
 
 unsigned int CGUIPanelContainer::GetRows() const

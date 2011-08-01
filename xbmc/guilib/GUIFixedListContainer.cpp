@@ -23,8 +23,8 @@
 #include "GUIListItem.h"
 #include "Key.h"
 
-CGUIFixedListContainer::CGUIFixedListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition, int cursorRange)
-    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scrollTime, preloadItems)
+CGUIFixedListContainer::CGUIFixedListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition, int cursorRange)
+    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
 {
   ControlType = GUICONTAINER_FIXEDLIST;
   m_type = VIEW_TYPE_LIST;
@@ -148,15 +148,15 @@ void CGUIFixedListContainer::ValidateOffset()
   SetCursor(std::max(GetCursor(), minCursor));
   SetCursor(std::min(GetCursor(), maxCursor));
   // and finally ensure our offset is valid
-  if (GetOffset() + maxCursor >= (int)m_items.size() || m_scrollOffset > ((int)m_items.size() - maxCursor - 1) * m_layout->Size(m_orientation))
+  if (GetOffset() + maxCursor >= (int)m_items.size() || m_scroller.GetValue() > ((int)m_items.size() - maxCursor - 1) * m_layout->Size(m_orientation))
   {
     SetOffset(std::max(-minCursor, (int)m_items.size() - maxCursor - 1));
-    m_scrollOffset = GetOffset() * m_layout->Size(m_orientation);
+    m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
   }
-  if (GetOffset() < -minCursor || m_scrollOffset < -minCursor * m_layout->Size(m_orientation))
+  if (GetOffset() < -minCursor || m_scroller.GetValue() < -minCursor * m_layout->Size(m_orientation))
   {
     SetOffset(-minCursor);
-    m_scrollOffset = GetOffset() * m_layout->Size(m_orientation);
+    m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
   }
 }
 

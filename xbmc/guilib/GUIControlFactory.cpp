@@ -1254,7 +1254,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTAINER_LIST)
   {
-    control = new CGUIListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller);
+
+    control = new CGUIListContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems);
     ((CGUIListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIListContainer *)control)->LoadContent(pControlNode);
     ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
@@ -1263,7 +1266,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTAINER_WRAPLIST)
   {
-    control = new CGUIWrappingListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller);
+
+    control = new CGUIWrappingListContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems, focusPosition);
     ((CGUIWrappingListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
@@ -1272,7 +1278,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTAINER_FIXEDLIST)
   {
-    control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition, iMovementRange);
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller);
+
+    control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems, focusPosition, iMovementRange);
     ((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
@@ -1281,7 +1290,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTAINER_PANEL)
   {
-    control = new CGUIPanelContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller); 
+
+    control = new CGUIPanelContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems);
     ((CGUIPanelContainer *)control)->LoadLayout(pControlNode);
     ((CGUIPanelContainer *)control)->LoadContent(pControlNode);
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);

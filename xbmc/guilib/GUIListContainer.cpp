@@ -24,8 +24,8 @@
 #include "GUIInfoManager.h"
 #include "Key.h"
 
-CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
-    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scrollTime, preloadItems)
+CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
+    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
 {
   ControlType = GUICONTAINER_LIST;
   m_type = VIEW_TYPE_LIST;
@@ -196,15 +196,15 @@ void CGUIListContainer::Scroll(int amount)
 void CGUIListContainer::ValidateOffset()
 { // first thing is we check the range of our offset
   if (!m_layout) return;
-  if (GetOffset() > (int)m_items.size() - m_itemsPerPage || m_scrollOffset > ((int)m_items.size() - m_itemsPerPage) * m_layout->Size(m_orientation))
+  if (GetOffset() > (int)m_items.size() - m_itemsPerPage || m_scroller.GetValue() > ((int)m_items.size() - m_itemsPerPage) * m_layout->Size(m_orientation))
   {
     SetOffset(std::max(0, (int)m_items.size() - m_itemsPerPage));
-    m_scrollOffset = GetOffset() * m_layout->Size(m_orientation);
+    m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
   }
-  if (GetOffset() < 0 || m_scrollOffset < 0)
+  if (GetOffset() < 0 || m_scroller.GetValue() < 0)
   {
     SetOffset(0);
-    m_scrollOffset = 0;
+    m_scroller.SetValue(0);
   }
 }
 
