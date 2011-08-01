@@ -639,18 +639,15 @@ bool CPVRChannelSettingsSaveJob::DoWork(void)
 
 bool CPVRManager::OpenLiveStream(const CPVRChannel &tag)
 {
-  bool bReturn = false;
-  CSingleLock lock(m_critSection);
-
+  bool bReturn(false);
   CLog::Log(LOGDEBUG,"PVRManager - %s - opening live stream on channel '%s'",
       __FUNCTION__, tag.ChannelName().c_str());
 
   if ((bReturn = m_addons->OpenLiveStream(tag)) != false)
   {
+    CSingleLock lock(m_critSection);
     if(m_currentFile)
-    {
       delete m_currentFile;
-    }
     m_currentFile = new CFileItem(tag);
 
     LoadCurrentChannelSettings();
