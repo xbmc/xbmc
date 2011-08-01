@@ -443,8 +443,6 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
       
       if (fileMetaData)
       {
-        pItem->UpdateInfo(*match);
-
         if (match->m_bIsFolder)
           pItem->m_strPath = match->GetVideoInfoTag()->m_strPath;
         else
