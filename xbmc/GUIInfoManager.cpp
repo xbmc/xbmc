@@ -396,6 +396,121 @@ infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                             { "channelgroup",     VIDEOPLAYER_CHANNEL_GROUP },
                             { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING }};
 
+infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
+                            { "hasfolders",       CONTAINER_HASFOLDERS },
+                            { "isstacked",        CONTAINER_STACKED },
+                            { "folderthumb",      CONTAINER_FOLDERTHUMB },
+                            { "tvshowthumb",      CONTAINER_TVSHOWTHUMB },
+                            { "seasonthumb",      CONTAINER_SEASONTHUMB },
+                            { "folderpath",       CONTAINER_FOLDERPATH },
+                            { "foldername",       CONTAINER_FOLDERNAME },
+                            { "pluginname",       CONTAINER_PLUGINNAME },
+                            { "viewmode",         CONTAINER_VIEWMODE },
+                            { "totaltime",        CONTAINER_TOTALTIME },
+                            { "hasthumb",         CONTAINER_HAS_THUMB },
+                            { "sortmethod",       CONTAINER_SORT_METHOD },
+                            { "showplot",         CONTAINER_SHOWPLOT }};
+
+infomap container_bools[] ={{ "onnext",           CONTAINER_MOVE_NEXT },
+                            { "onprevious",       CONTAINER_MOVE_PREVIOUS },
+                            { "onscrollnext",     CONTAINER_SCROLL_NEXT },
+                            { "onscrollprevious", CONTAINER_SCROLL_PREVIOUS },
+                            { "numpages",         CONTAINER_NUM_PAGES },
+                            { "numitems",         CONTAINER_NUM_ITEMS },
+                            { "currentpage",      CONTAINER_CURRENT_PAGE },
+                            { "scrolling",        CONTAINER_SCROLLING },
+                            { "hasnext",          CONTAINER_HAS_NEXT },
+                            { "hasprevious",      CONTAINER_HAS_PREVIOUS }};
+
+infomap container_ints[] = {{ "row",              CONTAINER_ROW },
+                            { "column",           CONTAINER_COLUMN },
+                            { "position",         CONTAINER_POSITION },
+                            { "subitem",          CONTAINER_SUBITEM },
+                            { "hasfocus",         CONTAINER_HAS_FOCUS }};
+
+infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY }};
+
+infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
+                            { "icon",             LISTITEM_ICON },
+                            { "actualicon",       LISTITEM_ACTUAL_ICON },
+                            { "overlay",          LISTITEM_OVERLAY },
+                            { "label",            LISTITEM_LABEL },
+                            { "label2",           LISTITEM_LABEL2 },
+                            { "title",            LISTITEM_TITLE },
+                            { "tracknumber",      LISTITEM_TRACKNUMBER },
+                            { "artist",           LISTITEM_ARTIST },
+                            { "album",            LISTITEM_ALBUM },
+                            { "albumartist",      LISTITEM_ALBUM_ARTIST },
+                            { "year",             LISTITEM_YEAR },
+                            { "genre",            LISTITEM_GENRE },
+                            { "director",         LISTITEM_DIRECTOR },
+                            { "filename",         LISTITEM_FILENAME },
+                            { "filenameandpath",  LISTITEM_FILENAME_AND_PATH },
+                            { "fileextension",    LISTITEM_FILE_EXTENSION },
+                            { "date",             LISTITEM_DATE },
+                            { "size",             LISTITEM_SIZE },
+                            { "rating",           LISTITEM_RATING },
+                            { "ratingandvotes",   LISTITEM_RATING_AND_VOTES },
+                            { "programcount",     LISTITEM_PROGRAM_COUNT },
+                            { "duration",         LISTITEM_DURATION },
+                            { "isselected",       LISTITEM_ISSELECTED },
+                            { "isplaying",        LISTITEM_ISPLAYING },
+                            { "plot",             LISTITEM_PLOT },
+                            { "plotoutline",      LISTITEM_PLOT_OUTLINE },
+                            { "episode",          LISTITEM_EPISODE },
+                            { "season",           LISTITEM_SEASON },
+                            { "tvshowtitle",      LISTITEM_TVSHOW },
+                            { "premiered",        LISTITEM_PREMIERED },
+                            { "comment",          LISTITEM_COMMENT },
+                            { "path",             LISTITEM_PATH },
+                            { "foldername",       LISTITEM_FOLDERNAME },
+                            { "folderpath",       LISTITEM_FOLDERPATH },
+                            { "picturepath",      LISTITEM_PICTURE_PATH },
+                            { "pictureresolution",LISTITEM_PICTURE_RESOLUTION },
+                            { "picturedatetime",  LISTITEM_PICTURE_DATETIME },
+                            { "studio",           LISTITEM_STUDIO },
+                            { "country",          LISTITEM_COUNTRY },
+                            { "mpaa",             LISTITEM_MPAA },
+                            { "cast",             LISTITEM_CAST },
+                            { "castandrole",      LISTITEM_CAST_AND_ROLE },
+                            { "writer",           LISTITEM_WRITER },
+                            { "tagline",          LISTITEM_TAGLINE },
+                            { "top250",           LISTITEM_TOP250 },
+                            { "trailer",          LISTITEM_TRAILER },
+                            { "starrating",       LISTITEM_STAR_RATING },
+                            { "sortletter",       LISTITEM_SORT_LETTER },
+                            { "videocodec",       LISTITEM_VIDEO_CODEC },
+                            { "videoresolution",  LISTITEM_VIDEO_RESOLUTION },
+                            { "videoaspect",      LISTITEM_VIDEO_ASPECT },
+                            { "audiocodec",       LISTITEM_AUDIO_CODEC },
+                            { "audiochannels",    LISTITEM_AUDIO_CHANNELS },
+                            { "audiolanguage",    LISTITEM_AUDIO_LANGUAGE },
+                            { "subtitlelanguage", LISTITEM_SUBTITLE_LANGUAGE },
+                            { "isfolder",         LISTITEM_IS_FOLDER },
+                            { "originaltitle",    LISTITEM_ORIGINALTITLE },
+                            { "lastplayed",       LISTITEM_LASTPLAYED },
+                            { "playcount",        LISTITEM_PLAYCOUNT },
+                            { "discnumber",       LISTITEM_DISC_NUMBER },
+                            { "starttime",        LISTITEM_STARTTIME },
+                            { "endtime",          LISTITEM_ENDTIME },
+                            { "startdate",        LISTITEM_STARTDATE },
+                            { "enddate",          LISTITEM_ENDDATE },
+                            { "nexttitle",        LISTITEM_NEXT_TITLE },
+                            { "nextgenre",        LISTITEM_NEXT_GENRE },
+                            { "nextplot",         LISTITEM_NEXT_PLOT },
+                            { "nextplotoutline",  LISTITEM_NEXT_PLOT_OUTLINE },
+                            { "nextstarttime",    LISTITEM_NEXT_STARTTIME },
+                            { "nextendtime",      LISTITEM_NEXT_ENDTIME },
+                            { "nextstartdate",    LISTITEM_NEXT_STARTDATE },
+                            { "nextenddate",      LISTITEM_NEXT_ENDDATE },
+                            { "channelname",      LISTITEM_CHANNEL_NAME },
+                            { "channelnumber",    LISTITEM_CHANNEL_NUMBER },
+                            { "channelgroup",     LISTITEM_CHANNEL_GROUP },
+                            { "hastimer",         LISTITEM_HASTIMER },
+                            { "isrecording",      LISTITEM_ISRECORDING },
+                            { "isencrypted",      LISTITEM_ISENCRYPTED },
+                            { "progress",         LISTITEM_PROGRESS }};
+
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
   // our string is of the form:
@@ -671,6 +786,72 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
     else if (category == "slideshow")
       return CPictureInfoTag::TranslateString(property);
+    else if (category == "container")
+    {
+      for (size_t i = 0; i < sizeof(mediacontainer) / sizeof(infomap); i++) // these ones don't have or need an id
+      {
+        if (property == mediacontainer[i].str)
+          return mediacontainer[i].val;
+      }
+      int id = atoi(info[0].second);
+      for (size_t i = 0; i < sizeof(container_bools) / sizeof(infomap); i++) // these ones can have an id (but don't need to?)
+      {
+        if (property == container_bools[i].str)
+          return id ? AddMultiInfo(GUIInfo(container_bools[i].val, id)) : container_bools[i].val;
+      }
+      for (size_t i = 0; i < sizeof(container_ints) / sizeof(infomap); i++) // these ones can have an int param on the property
+      {
+        if (property == container_ints[i].str)
+          return AddMultiInfo(GUIInfo(container_ints[i].val, id, atoi(info[1].second)));
+      }
+      for (size_t i = 0; i < sizeof(container_str) / sizeof(infomap); i++) // these ones have a string param on the property
+      {
+        if (property == container_str[i].str)
+          return AddMultiInfo(GUIInfo(container_str[i].val, id, ConditionalStringParameter(info[1].second)));
+      }
+      if (property == "content")
+        return AddMultiInfo(GUIInfo(CONTAINER_CONTENT, ConditionalStringParameter(info[1].second), 0));
+      else if (property == "sortdirection")
+      {
+        SORT_ORDER order = SORT_ORDER_NONE;
+        if (info[1].second.Equals("ascending"))
+          order = SORT_ORDER_ASC;
+        else if (info[1].second.Equals("descending"))
+          order = SORT_ORDER_DESC;
+        return AddMultiInfo(GUIInfo(CONTAINER_SORT_DIRECTION, order));
+      }
+      else if (property == "sort")
+      {
+        SORT_METHOD sort = SORT_METHOD_NONE;
+        if (info[1].second.Equals("songrating")) sort = SORT_METHOD_SONG_RATING;
+        if (sort != SORT_METHOD_NONE)
+          return AddMultiInfo(GUIInfo(CONTAINER_SORT_METHOD, sort));
+      }
+    }
+    else if (category == "listitem")
+    {
+      int offset = atoi(info[0].second);
+      int ret = TranslateListItem(info[1].first, info[1].second);
+      if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
+        return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
+      return ret;
+    }
+    else if (category == "listitemposition")
+    {
+      int offset = atoi(info[0].second);
+      int ret = TranslateListItem(info[1].first, info[1].second);
+      if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
+        return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
+      return ret;
+    }
+    else if (category == "listitemnowrap")
+    {
+      int offset = atoi(info[0].second);
+      int ret = TranslateListItem(info[1].first, info[1].second);
+      if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
+        return AddMultiInfo(GUIInfo(ret, 0, offset));
+      return ret;
+    }
   }
   else if (info.size() == 3)
   {
@@ -695,6 +876,16 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         int value = TranslateMusicPlayerString(info[2].first); // musicplayer.offset(foo).bar
         return AddMultiInfo(GUIInfo(value, 1, position));
       }
+    }
+    else if (info[0].first == "container")
+    {
+      int id = atoi(info[0].second);
+      if (info[1].first == "listitemnowrap")
+        return AddMultiInfo(GUIInfo(TranslateListItem(info[2].first, info[2].second), id, atoi(info[1].second)));
+      else if (info[1].first == "listitemposition")
+        return AddMultiInfo(GUIInfo(TranslateListItem(info[2].first, info[2].second), id, atoi(info[1].second), INFOFLAG_LISTITEM_POSITION));
+      else if (info[1].first == "listitem")
+        return AddMultiInfo(GUIInfo(TranslateListItem(info[2].first, info[2].second), id, atoi(info[1].second), INFOFLAG_LISTITEM_WRAP));
     }
   }
 
@@ -760,121 +951,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("pvr.actstreamprogrsnr")) ret = PVR_ACTUAL_STREAM_SNR_PROGR;
     else if (strTest.Equals("pvr.actstreamisencrypted")) ret = PVR_ACTUAL_STREAM_ENCRYPTED;
     else if (strTest.Equals("pvr.actstreamencryptionname")) ret = PVR_ACTUAL_STREAM_CRYPTION;
-  }
-  else if (strCategory.Left(9).Equals("container"))
-  {
-    int id = atoi(strCategory.Mid(10, strCategory.GetLength() - 11));
-    CStdString info = strTest.Mid(strCategory.GetLength() + 1);
-    if (info.Left(14).Equals("listitemnowrap"))
-    {
-      int offset = atoi(info.Mid(15, info.GetLength() - 16));
-      ret = TranslateListItem(info.Mid(info.Find(".")+1));
-      if (offset || id)
-        return AddMultiInfo(GUIInfo(ret, id, offset));
-    }
-    else if (info.Left(16).Equals("listitemposition"))
-    {
-      int offset = atoi(info.Mid(17, info.GetLength() - 18));
-      ret = TranslateListItem(info.Mid(info.Find(".")+1));
-      if (offset || id)
-        return AddMultiInfo(GUIInfo(ret, id, offset, INFOFLAG_LISTITEM_POSITION));
-    }
-    else if (info.Left(8).Equals("listitem"))
-    {
-      int offset = atoi(info.Mid(9, info.GetLength() - 10));
-      ret = TranslateListItem(info.Mid(info.Find(".")+1));
-      if (offset || id)
-        return AddMultiInfo(GUIInfo(ret, id, offset, INFOFLAG_LISTITEM_WRAP));
-    }
-    else if (info.Equals("hasfiles")) ret = CONTAINER_HASFILES;
-    else if (info.Equals("hasfolders")) ret = CONTAINER_HASFOLDERS;
-    else if (info.Equals("isstacked")) ret = CONTAINER_STACKED;
-    else if (info.Equals("folderthumb")) ret = CONTAINER_FOLDERTHUMB;
-    else if (info.Equals("tvshowthumb")) ret = CONTAINER_TVSHOWTHUMB;
-    else if (info.Equals("seasonthumb")) ret = CONTAINER_SEASONTHUMB;
-    else if (info.Equals("folderpath")) ret = CONTAINER_FOLDERPATH;
-    else if (info.Equals("foldername")) ret = CONTAINER_FOLDERNAME;
-    else if (info.Equals("pluginname")) ret = CONTAINER_PLUGINNAME;
-    else if (info.Equals("viewmode")) ret = CONTAINER_VIEWMODE;
-    else if (info.Equals("onnext")) ret = CONTAINER_MOVE_NEXT;
-    else if (info.Equals("onprevious")) ret = CONTAINER_MOVE_PREVIOUS;
-    else if (info.Equals("onscrollnext")) ret = CONTAINER_SCROLL_NEXT;
-    else if (info.Equals("onscrollprevious")) ret = CONTAINER_SCROLL_PREVIOUS;
-    else if (info.Equals("totaltime")) ret = CONTAINER_TOTALTIME;
-    else if (info.Equals("scrolling"))
-      return AddMultiInfo(GUIInfo(CONTAINER_SCROLLING, id, 0));
-    else if (info.Equals("hasnext"))
-      return AddMultiInfo(GUIInfo(CONTAINER_HAS_NEXT, id, 0));
-    else if (info.Equals("hasprevious"))
-      return AddMultiInfo(GUIInfo(CONTAINER_HAS_PREVIOUS, id, 0));
-    else if (info.Left(8).Equals("content("))
-      return AddMultiInfo(GUIInfo(CONTAINER_CONTENT, ConditionalStringParameter(info.Mid(8,info.GetLength()-9)), 0));
-    else if (info.Left(4).Equals("row("))
-      return AddMultiInfo(GUIInfo(CONTAINER_ROW, id, atoi(info.Mid(4, info.GetLength() - 5))));
-    else if (info.Left(7).Equals("column("))
-      return AddMultiInfo(GUIInfo(CONTAINER_COLUMN, id, atoi(info.Mid(7, info.GetLength() - 8))));
-    else if (info.Left(8).Equals("position"))
-      return AddMultiInfo(GUIInfo(CONTAINER_POSITION, id, atoi(info.Mid(9, info.GetLength() - 10))));
-    else if (info.Left(8).Equals("subitem("))
-      return AddMultiInfo(GUIInfo(CONTAINER_SUBITEM, id, atoi(info.Mid(8, info.GetLength() - 9))));
-    else if (info.Equals("hasthumb")) ret = CONTAINER_HAS_THUMB;
-    else if (info.Equals("numpages")) ret = CONTAINER_NUM_PAGES;
-    else if (info.Equals("numitems")) ret = CONTAINER_NUM_ITEMS;
-    else if (info.Equals("currentpage")) ret = CONTAINER_CURRENT_PAGE;
-    else if (info.Equals("sortmethod")) ret = CONTAINER_SORT_METHOD;
-    else if (info.Left(13).Equals("sortdirection"))
-    {
-      CStdString direction = info.Mid(14, info.GetLength() - 15);
-      SORT_ORDER order = SORT_ORDER_NONE;
-      if (direction == "ascending")
-        order = SORT_ORDER_ASC;
-      else if (direction == "descending")
-        order = SORT_ORDER_DESC;
-      return AddMultiInfo(GUIInfo(CONTAINER_SORT_DIRECTION, order));
-    }
-    else if (info.Left(5).Equals("sort("))
-    {
-      SORT_METHOD sort = SORT_METHOD_NONE;
-      CStdString method(info.Mid(5, info.GetLength() - 6));
-      if (method.Equals("songrating")) sort = SORT_METHOD_SONG_RATING;
-      if (sort != SORT_METHOD_NONE)
-        return AddMultiInfo(GUIInfo(CONTAINER_SORT_METHOD, sort));
-    }
-    else if (id && info.Left(9).Equals("hasfocus("))
-    {
-      int itemID = atoi(info.Mid(9, info.GetLength() - 10));
-      return AddMultiInfo(GUIInfo(CONTAINER_HAS_FOCUS, id, itemID));
-    }
-    else if (info.Left(9).Equals("property("))
-    {
-      int compareString = ConditionalStringParameter(info.Mid(9, info.GetLength() - 10));
-      return AddMultiInfo(GUIInfo(CONTAINER_PROPERTY, id, compareString));
-    }
-    else if (info.Equals("showplot")) ret = CONTAINER_SHOWPLOT;
-    if (id && ((ret >= CONTAINER_SCROLL_PREVIOUS && ret <= CONTAINER_SCROLL_NEXT) || ret == CONTAINER_NUM_PAGES ||
-               ret == CONTAINER_NUM_ITEMS || ret == CONTAINER_CURRENT_PAGE))
-      return AddMultiInfo(GUIInfo(ret, id));
-  }
-  else if (strCategory.Left(8).Equals("listitem"))
-  {
-    int offset = atoi(strCategory.Mid(9, strCategory.GetLength() - 10));
-    ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
-    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
-      return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_WRAP));
-  }
-  else if (strCategory.Left(16).Equals("listitemposition"))
-  {
-    int offset = atoi(strCategory.Mid(17, strCategory.GetLength() - 18));
-    ret = TranslateListItem(strCategory.Mid(strCategory.GetLength()+1));
-    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
-      return AddMultiInfo(GUIInfo(ret, 0, offset, INFOFLAG_LISTITEM_POSITION));
-  }
-  else if (strCategory.Left(14).Equals("listitemnowrap"))
-  {
-    int offset = atoi(strCategory.Mid(15, strCategory.GetLength() - 16));
-    ret = TranslateListItem(strTest.Mid(strCategory.GetLength() + 1));
-    if (offset || ret == LISTITEM_ISSELECTED || ret == LISTITEM_ISPLAYING || ret == LISTITEM_IS_FOLDER)
-      return AddMultiInfo(GUIInfo(ret, 0, offset));
   }
   else if (strCategory.Equals("visualisation"))
   {
@@ -1023,90 +1099,15 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
   return ret;
 }
 
-int CGUIInfoManager::TranslateListItem(const CStdString &info)
+int CGUIInfoManager::TranslateListItem(const CStdString &info, const CStdString &param)
 {
-  if (info.Equals("thumb")) return LISTITEM_THUMB;
-  else if (info.Equals("icon")) return LISTITEM_ICON;
-  else if (info.Equals("actualicon")) return LISTITEM_ACTUAL_ICON;
-  else if (info.Equals("overlay")) return LISTITEM_OVERLAY;
-  else if (info.Equals("label")) return LISTITEM_LABEL;
-  else if (info.Equals("label2")) return LISTITEM_LABEL2;
-  else if (info.Equals("title")) return LISTITEM_TITLE;
-  else if (info.Equals("tracknumber")) return LISTITEM_TRACKNUMBER;
-  else if (info.Equals("artist")) return LISTITEM_ARTIST;
-  else if (info.Equals("album")) return LISTITEM_ALBUM;
-  else if (info.Equals("albumartist")) return LISTITEM_ALBUM_ARTIST;
-  else if (info.Equals("year")) return LISTITEM_YEAR;
-  else if (info.Equals("genre")) return LISTITEM_GENRE;
-  else if (info.Equals("director")) return LISTITEM_DIRECTOR;
-  else if (info.Equals("filename")) return LISTITEM_FILENAME;
-  else if (info.Equals("filenameandpath")) return LISTITEM_FILENAME_AND_PATH;
-  else if (info.Equals("fileextension")) return LISTITEM_FILE_EXTENSION;
-  else if (info.Equals("date")) return LISTITEM_DATE;
-  else if (info.Equals("size")) return LISTITEM_SIZE;
-  else if (info.Equals("rating")) return LISTITEM_RATING;
-  else if (info.Equals("ratingandvotes")) return LISTITEM_RATING_AND_VOTES;
-  else if (info.Equals("programcount")) return LISTITEM_PROGRAM_COUNT;
-  else if (info.Equals("duration")) return LISTITEM_DURATION;
-  else if (info.Equals("isselected")) return LISTITEM_ISSELECTED;
-  else if (info.Equals("isplaying")) return LISTITEM_ISPLAYING;
-  else if (info.Equals("plot")) return LISTITEM_PLOT;
-  else if (info.Equals("plotoutline")) return LISTITEM_PLOT_OUTLINE;
-  else if (info.Equals("episode")) return LISTITEM_EPISODE;
-  else if (info.Equals("season")) return LISTITEM_SEASON;
-  else if (info.Equals("tvshowtitle")) return LISTITEM_TVSHOW;
-  else if (info.Equals("premiered")) return LISTITEM_PREMIERED;
-  else if (info.Equals("comment")) return LISTITEM_COMMENT;
-  else if (info.Equals("path")) return LISTITEM_PATH;
-  else if (info.Equals("foldername")) return LISTITEM_FOLDERNAME;
-  else if (info.Equals("folderpath")) return LISTITEM_FOLDERPATH;
-  else if (info.Equals("picturepath")) return LISTITEM_PICTURE_PATH;
-  else if (info.Equals("pictureresolution")) return LISTITEM_PICTURE_RESOLUTION;
-  else if (info.Equals("picturedatetime")) return LISTITEM_PICTURE_DATETIME;
-  else if (info.Equals("studio")) return LISTITEM_STUDIO;
-  else if (info.Equals("country")) return LISTITEM_COUNTRY;
-  else if (info.Equals("mpaa")) return LISTITEM_MPAA;
-  else if (info.Equals("cast")) return LISTITEM_CAST;
-  else if (info.Equals("castandrole")) return LISTITEM_CAST_AND_ROLE;
-  else if (info.Equals("writer")) return LISTITEM_WRITER;
-  else if (info.Equals("tagline")) return LISTITEM_TAGLINE;
-  else if (info.Equals("top250")) return LISTITEM_TOP250;
-  else if (info.Equals("trailer")) return LISTITEM_TRAILER;
-  else if (info.Equals("starrating")) return LISTITEM_STAR_RATING;
-  else if (info.Equals("sortletter")) return LISTITEM_SORT_LETTER;
-  else if (info.Equals("videocodec")) return LISTITEM_VIDEO_CODEC;
-  else if (info.Equals("videoresolution")) return LISTITEM_VIDEO_RESOLUTION;
-  else if (info.Equals("videoaspect")) return LISTITEM_VIDEO_ASPECT;
-  else if (info.Equals("audiocodec")) return LISTITEM_AUDIO_CODEC;
-  else if (info.Equals("audiochannels")) return LISTITEM_AUDIO_CHANNELS;
-  else if (info.Equals("audiolanguage")) return LISTITEM_AUDIO_LANGUAGE;
-  else if (info.Equals("subtitlelanguage")) return LISTITEM_SUBTITLE_LANGUAGE;
-  else if (info.Equals("isfolder")) return LISTITEM_IS_FOLDER;
-  else if (info.Equals("starttime")) return LISTITEM_STARTTIME;
-  else if (info.Equals("endtime")) return LISTITEM_ENDTIME;
-  else if (info.Equals("startdate")) return LISTITEM_STARTDATE;
-  else if (info.Equals("enddate")) return LISTITEM_ENDDATE;
-  else if (info.Equals("nexttitle")) return LISTITEM_NEXT_TITLE;
-  else if (info.Equals("nextgenre")) return LISTITEM_NEXT_GENRE;
-  else if (info.Equals("nextplot")) return LISTITEM_NEXT_PLOT;
-  else if (info.Equals("nextplotoutline")) return LISTITEM_NEXT_PLOT_OUTLINE;
-  else if (info.Equals("nextstarttime")) return LISTITEM_NEXT_STARTTIME;
-  else if (info.Equals("nextendtime")) return LISTITEM_NEXT_ENDTIME;
-  else if (info.Equals("nextstartdate")) return LISTITEM_NEXT_STARTDATE;
-  else if (info.Equals("nextenddate")) return LISTITEM_NEXT_ENDDATE;
-  else if (info.Equals("channelname")) return LISTITEM_CHANNEL_NAME;
-  else if (info.Equals("channelnumber")) return LISTITEM_CHANNEL_NUMBER;
-  else if (info.Equals("channelgroup")) return LISTITEM_CHANNEL_GROUP;
-  else if (info.Equals("hastimer")) return LISTITEM_HASTIMER;
-  else if (info.Equals("isrecording")) return LISTITEM_ISRECORDING;
-  else if (info.Equals("isencrypted")) return LISTITEM_ISENCRYPTED;
-  else if (info.Equals("progress")) return LISTITEM_PROGRESS;
-  else if (info.Equals("parentalrating")) return LISTITEM_PARENTALRATING;
-  else if (info.Equals("originaltitle")) return LISTITEM_ORIGINALTITLE;
-  else if (info.Equals("lastplayed")) return LISTITEM_LASTPLAYED;
-  else if (info.Equals("playcount")) return LISTITEM_PLAYCOUNT;
-  else if (info.Equals("discnumber")) return LISTITEM_DISC_NUMBER;
-  else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
+  for (size_t i = 0; i < sizeof(listitem_labels) / sizeof(infomap); i++) // these ones don't have or need an id
+  {
+    if (info == listitem_labels[i].str)
+      return listitem_labels[i].val;
+  }
+  if (info == "property")
+    return AddListItemProp(param);
   return 0;
 }
 
