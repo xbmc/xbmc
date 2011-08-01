@@ -207,6 +207,64 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogVideoInfo::OnAction(const CAction &action)
+{
+  if (m_movieItem && action.GetID() == ACTION_INCREASE_RATING)
+    IncreaseRating();
+  if (m_movieItem && action.GetID() == ACTION_DECREASE_RATING)
+    DecreaseRating();
+  else if (m_movieItem && action.GetID() >= ACTION_SET_RATING_0 && action.GetID() <= ACTION_SET_RATING_10)
+    SetRating(action.GetID() - ACTION_SET_RATING_0);
+
+  return CGUIDialog::OnAction(action);
+}
+
+void CGUIDialogVideoInfo::SetRating(int iRating)
+{
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    db.SetRating(*m_movieItem, iRating);
+    db.Close();
+
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_movieItem);
+    g_windowManager.SendMessage(msg);
+  }
+}
+
+void CGUIDialogVideoInfo::IncreaseRating()
+{
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    bool bRatingChanged = db.IncreaseRating(*m_movieItem);
+    db.Close();
+
+    if (bRatingChanged)
+    {
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_movieItem);
+      g_windowManager.SendMessage(msg);
+    }
+  }
+}
+
+
+void CGUIDialogVideoInfo::DecreaseRating()
+{
+  CVideoDatabase db;
+  if (db.Open())
+  {
+    bool bRatingChanged = db.DecreaseRating(*m_movieItem);
+    db.Close();
+
+    if (bRatingChanged)
+    {
+      CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, m_movieItem);
+      g_windowManager.SendMessage(msg);
+    }
+  }
+}
+
 void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
 {
   *m_movieItem = *item;

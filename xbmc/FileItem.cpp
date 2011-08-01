@@ -1566,6 +1566,9 @@ void CFileItemList::Sort(SORT_METHOD sortMethod, SORT_ORDER sortOrder)
   case SORT_METHOD_VIDEO_RATING:
     FillSortFields(SSortFileItem::ByMovieRating);
     break;
+  case SORT_METHOD_VIDEO_USER_RATING:
+    FillSortFields(SSortFileItem::ByVideoUserRating);
+    break;
   case SORT_METHOD_VIDEO_TITLE:
     FillSortFields(SSortFileItem::ByMovieTitle);
     break;

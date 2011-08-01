@@ -159,7 +159,7 @@ bool CVideoDatabase::CreateTables()
     m_pDS->exec("CREATE UNIQUE INDEX ix_path ON path ( strPath(255) )");
 
     CLog::Log(LOGINFO, "create files table");
-    m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, playCount integer, lastPlayed text)");
+    m_pDS->exec("CREATE TABLE files ( idFile integer primary key, idPath integer, strFilename text, playCount integer, lastPlayed text, userRating integer)");
     m_pDS->exec("CREATE UNIQUE INDEX ix_files ON files ( idPath, strFilename(255) )");
 
     CLog::Log(LOGINFO, "create tvshow table");
@@ -325,7 +325,7 @@ void CVideoDatabase::CreateViews()
   CLog::Log(LOGINFO, "create episodeview");
   m_pDS->exec("DROP VIEW IF EXISTS episodeview");
   CStdString episodeview = PrepareSQL("create view episodeview as select episode.*,files.strFileName as strFileName,"
-                                      "path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,tvshow.c%02d as strTitle,tvshow.c%02d as strStudio,tvshow.idShow as idShow,"
+                                      "path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,files.userRating as userRating,tvshow.c%02d as strTitle,tvshow.c%02d as strStudio,tvshow.idShow as idShow,"
                                       "tvshow.c%02d as premiered, tvshow.c%02d as mpaa from episode "
                                       "join files on files.idFile=episode.idFile "
                                       "join tvshowlinkepisode on episode.idEpisode=tvshowlinkepisode.idEpisode "
@@ -357,12 +357,12 @@ void CVideoDatabase::CreateViews()
 
   CLog::Log(LOGINFO, "create musicvideoview");
   m_pDS->exec("DROP VIEW IF EXISTS musicvideoview");
-  m_pDS->exec("create view musicvideoview as select musicvideo.*,files.strFileName as strFileName,path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed "
+  m_pDS->exec("create view musicvideoview as select musicvideo.*,files.strFileName as strFileName,path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed, files.userRating as userRating "
               "from musicvideo join files on files.idFile=musicvideo.idFile join path on path.idPath=files.idPath");
 
   CLog::Log(LOGINFO, "create movieview");
   m_pDS->exec("DROP VIEW IF EXISTS movieview");
-  m_pDS->exec("create view movieview as select movie.*,files.strFileName as strFileName,path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed "
+  m_pDS->exec("create view movieview as select movie.*,files.strFileName as strFileName,path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed, files.userRating as userRating "
               "from movie join files on files.idFile=movie.idFile join path on path.idPath=files.idPath");
 }
 
@@ -3036,6 +3036,7 @@ void CVideoDatabase::GetCommonDetails(auto_ptr<Dataset> &pDS, CVideoInfoTag &det
   ConstructPath(details.m_strFileNameAndPath,details.m_strPath,strFileName);
   details.m_playCount = pDS->fv(VIDEODB_DETAILS_PLAYCOUNT).get_asInt();
   details.m_lastPlayed = pDS->fv(VIDEODB_DETAILS_LASTPLAYED).get_asString();
+  details.m_iUserRating = pDS->fv(VIDEODB_DETAILS_USERRATING).get_asInt();
 }
 
 /// \brief GetVideoSettings() obtains any saved video settings for the current file.
@@ -3528,6 +3529,11 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->dropIndex("bookmark", "ix_bookmark");
       m_pDS->exec("CREATE INDEX ix_bookmark ON bookmark (idFile, type)");
     }
+    if (iVersion < 55)
+    {
+      m_pDS->exec("ALTER TABLE files ADD userRating integer");
+      CreateViews();
+    }
   }
   catch (...)
   {
@@ -3765,6 +3771,116 @@ void CVideoDatabase::IncrementPlayCount(const CFileItem &item)
 void CVideoDatabase::UpdateLastPlayed(const CFileItem &item)
 {
   SetPlayCount(item, GetPlayCount(item), CDateTime::GetCurrentDateTime().GetAsDBDateTime());
+}
+
+void CVideoDatabase::SetRating(const CFileItem &item, int iRating)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return ;
+    if (NULL == m_pDS.get()) return ;
+    if (!item.HasVideoInfoTag())
+      return;
+
+    if (iRating < 0)
+      iRating = 0;
+    else if (iRating > 10)
+      iRating = 10;
+
+    CStdString strSQL;
+
+    if (item.HasVideoInfoTag() && (!item.GetVideoInfoTag()->m_strShowTitle.IsEmpty() ||
+        item.GetVideoInfoTag()->m_iEpisode > 0))
+    {
+      int iDbId = item.GetVideoInfoTag()->m_iDbId;
+      CLog::Log(LOGINFO, "Changing TvShow:id:%i New Rating:%i", iDbId, iRating);
+      strSQL = PrepareSQL("UPDATE tvshow SET c%02d='%i' WHERE idShow=%i", VIDEODB_ID_TV_USERRATING, iRating, iDbId );
+      m_pDS->exec(strSQL.c_str());
+      AnnounceUpdate("tvshow", iDbId);
+    }
+    else
+    {
+      int iDbId = AddFile(item);
+      strSQL = PrepareSQL("update files set userRating=%i where idFile=%i", iRating, iDbId);
+      m_pDS->exec(strSQL.c_str());
+      CVariant data;
+      data["userrating"] = iRating;
+      ANNOUNCEMENT::CAnnouncementManager::Announce(ANNOUNCEMENT::VideoLibrary, "xbmc", "OnUpdate", CFileItemPtr(new CFileItem(item)), data);
+    }
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+}
+
+int CVideoDatabase::GetRating(const CFileItem &item)
+{
+  if (!item.HasVideoInfoTag())
+    return 0;
+
+  try
+  {
+    if (NULL == m_pDB.get()) return -1;
+    if (NULL == m_pDS.get()) return -1;
+
+    CStdString strRet;
+
+    // If this is a TV Show, read the rating from the tvshow table
+    if (!item.GetVideoInfoTag()->m_strShowTitle.IsEmpty() || item.GetVideoInfoTag()->m_iEpisode > 0)
+    {
+      int iDbId = item.GetVideoInfoTag()->m_iDbId;
+      if (iDbId <= 0)
+        return 0;
+      CStdString strCol;
+      strCol.Format("c%02d", VIDEODB_ID_TV_USERRATING);
+      strRet = GetSingleValue("tvshow", strCol.c_str(), PrepareSQL("idShow=%i", iDbId));
+    }
+
+    // all other video ratings are stored in the files table
+    else
+    {
+      int iDbId = GetFileId(item);
+      if (iDbId <= 0)
+        return 0;
+      strRet = GetSingleValue("files", "userRating", PrepareSQL("idFile=%i", iDbId));
+    }
+
+    return atoi(strRet.c_str());
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return 0;
+}
+
+bool CVideoDatabase::IncreaseRating(const CFileItem &item)
+{
+  int iRating = GetRating(item);
+  if (iRating < 10)
+  {
+    /* To simplify setting ratings using increase/decrease buttons,
+       the first "increase" action will jump the rating to 5
+       subsequent ratings will change the rating by 1 */
+    if (iRating == 0)
+      SetRating(item, 5);
+    else
+      SetRating(item, iRating+1);
+    return true;
+  }
+  return false;
+}
+
+bool CVideoDatabase::DecreaseRating(const CFileItem &item)
+{
+  int iRating = GetRating(item);
+  if (iRating > 0)
+  {
+    SetRating(item, iRating-1);
+    return true;
+  }
+  return false;
 }
 
 void CVideoDatabase::UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType)
@@ -7544,6 +7660,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         CFileItem item(info);
         bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.m_strPath) : false;
         scanner.AddVideo(&item, CONTENT_MOVIES, useFolders);
+        SetRating(item, info.m_iUserRating);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
         CStdString strFileName(info.m_strTitle);
         if (GetExportVersion() >= 1 && info.m_iYear > 0)
@@ -7561,6 +7678,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
         CFileItem item(info);
         bool useFolders = info.m_basePath.IsEmpty() ? LookupByFolders(item.m_strPath) : false;
         scanner.AddVideo(&item, CONTENT_MUSICVIDEOS, useFolders);
+        SetRating(item, info.m_iUserRating);
         SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
         CStdString strFileName(info.m_strArtist + "." + info.m_strTitle);
         if (GetExportVersion() >= 1 && info.m_iYear > 0)

@@ -894,6 +894,7 @@ int CGUIInfoManager::TranslateListItem(const CStdString &info)
   else if (info.Equals("lastplayed")) return LISTITEM_LASTPLAYED;
   else if (info.Equals("playcount")) return LISTITEM_PLAYCOUNT;
   else if (info.Equals("discnumber")) return LISTITEM_DISC_NUMBER;
+  else if (info.Equals("userrating")) return LISTITEM_USER_RATING;
   else if (info.Left(9).Equals("property(")) return AddListItemProp(info.Mid(9, info.GetLength() - 10));
   return 0;
 }
@@ -918,6 +919,7 @@ int CGUIInfoManager::TranslateMusicPlayerString(const CStdString &info) const
   else if (info.Equals("codec")) return MUSICPLAYER_CODEC;
   else if (info.Equals("discnumber")) return MUSICPLAYER_DISC_NUMBER;
   else if (info.Equals("rating")) return MUSICPLAYER_RATING;
+  else if (info.Equals("userrating")) return MUSICPLAYER_RATING;
   else if (info.Equals("comment")) return MUSICPLAYER_COMMENT;
   else if (info.Equals("lyrics")) return MUSICPLAYER_LYRICS;
   else if (info.Equals("playlistplaying")) return MUSICPLAYER_PLAYLISTPLAYING;
@@ -3980,7 +3982,16 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_streamDetails.GetSubtitleLanguage();
     break;
+  case LISTITEM_USER_RATING:
+    if (item->HasVideoInfoTag())
+    {
+      CStdString strResult;
+      strResult.Format("%i", item->GetVideoInfoTag()->m_iUserRating);
+      return strResult;
+    }
+    break;
   }
+
   return "";
 }
 
@@ -4000,16 +4011,25 @@ CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
     break;
   case LISTITEM_STAR_RATING:
     {
-      CStdString rating;
-      if (item->HasVideoInfoTag())
-      { // rating for videos is assumed 0..10, so convert to 0..5
-        rating.Format("rating%d.png", (long)((item->GetVideoInfoTag()->m_fRating * 0.5f) + 0.5f));
+      CStdString strType = "rating";
+      CStdString strStarRating;
+      int iRating = 0;
+      if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iUserRating)
+      {
+        strType = "userrating";
+        iRating = item->GetVideoInfoTag()->m_iUserRating;
       }
+      else if (item->HasVideoInfoTag())
+        iRating = (int) (item->GetVideoInfoTag()->m_fRating + .5);
       else if (item->HasMusicInfoTag())
-      { // song rating.
-        rating.Format("rating%c.png", item->GetMusicInfoTag()->GetRating());
-      }
-      return rating;
+        iRating = item->GetMusicInfoTag()->GetRating();
+
+      if (iRating % 2)
+        strStarRating.Format("%s%.1f.png", strType.c_str(), iRating *.5);
+      else
+        strStarRating.Format("%s%i.png", strType.c_str(), iRating/2);
+
+      return strStarRating;
     }
     break;
   }  /* switch (info) */

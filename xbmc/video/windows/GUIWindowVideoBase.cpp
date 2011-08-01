@@ -98,7 +98,39 @@ bool CGUIWindowVideoBase::OnAction(const CAction &action)
 {
   if (action.GetID() == ACTION_SCAN_ITEM)
     return OnContextButton(m_viewControl.GetSelectedItem(),CONTEXT_BUTTON_SCAN);
+  if (action.GetID() == ACTION_INCREASE_RATING || action.GetID() == ACTION_DECREASE_RATING ||
+      ( action.GetID() >= ACTION_SET_RATING_0 && action.GetID() <= ACTION_SET_RATING_10) )
+  {
+    int iItemNumber = m_viewControl.GetSelectedItem();
+    CFileItemPtr pItem;
+    if (iItemNumber >= 0 && iItemNumber < m_vecItems->Size())
+      pItem = m_vecItems->Get(iItemNumber);
+    else
+      return true;
 
+    CVideoDatabase db;
+    if (db.Open())
+    {
+      bool bRatingChanged(false);
+      if (action.GetID() == ACTION_DECREASE_RATING)
+        bRatingChanged = db.DecreaseRating(*pItem);
+      else if (action.GetID() == ACTION_INCREASE_RATING)
+        bRatingChanged = db.IncreaseRating(*pItem);
+      else if (action.GetID() >= ACTION_SET_RATING_0 && action.GetID() <= ACTION_SET_RATING_10)
+      {
+        db.SetRating(*pItem, action.GetID() - ACTION_SET_RATING_0);
+        bRatingChanged = true;
+      }
+      db.Close();
+
+      if (bRatingChanged)
+      {
+        CUtil::DeleteVideoDatabaseDirectoryCache();
+        Update(m_vecItems->m_strPath);
+      }
+    }
+    return true;
+  }
   return CGUIMediaWindow::OnAction(action);
 }
 
