@@ -139,7 +139,7 @@ int CGUIInfoManager::TranslateString(const CStdString &condition)
 
 typedef struct
 {
-  char str[20];
+  char str[21];
   int  val;
 } infomap;
 
@@ -468,6 +468,19 @@ infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                             { "lastplayed",       LISTITEM_LASTPLAYED },
                             { "playcount",        LISTITEM_PLAYCOUNT },
                             { "discnumber",       LISTITEM_DISC_NUMBER }};
+
+infomap visualisation[] =  {{ "locked",           VISUALISATION_LOCKED },
+                            { "preset",           VISUALISATION_PRESET },
+                            { "name",             VISUALISATION_NAME },
+                            { "enabled",          VISUALISATION_ENABLED }};
+
+infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
+                            { "color2",           FANART_COLOR2 },
+                            { "color3",           FANART_COLOR3 },
+                            { "image",            FANART_IMAGE }};
+
+infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
+                            { "currentcolourtheme",SKIN_COLOUR_THEME }};
 
 void CGUIInfoManager::SplitInfoString(const CStdString &infoString, vector< pair<CStdString, CStdString> > &info)
 {
@@ -808,6 +821,43 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         return AddMultiInfo(GUIInfo(ret, 0, offset));
       return ret;
     }
+    else if (category == "visualisation")
+    {
+      for (size_t i = 0; i < sizeof(visualisation) / sizeof(infomap); i++)
+      {
+        if (property == visualisation[i].str)
+          return visualisation[i].val;
+      }
+    }
+    else if (category == "fanart")
+    {
+      for (size_t i = 0; i < sizeof(fanart_labels) / sizeof(infomap); i++)
+      {
+        if (property == fanart_labels[i].str)
+          return fanart_labels[i].val;
+      }
+    }
+    else if (category == "skin")
+    {
+      for (size_t i = 0; i < sizeof(skin_labels) / sizeof(infomap); i++)
+      {
+        if (property == skin_labels[i].str)
+          return skin_labels[i].val;
+      }
+      if (property == "string")
+      {
+        vector<CStdString> params;
+        CUtil::SplitParams(info[1].second, params);
+        if (params.size() == 2)
+          return AddMultiInfo(GUIInfo(SKIN_STRING, g_settings.TranslateSkinString(params[0]), ConditionalStringParameter(params[1])));
+        else
+          return AddMultiInfo(GUIInfo(SKIN_STRING, g_settings.TranslateSkinString(params[0])));
+      }
+      if (property == "hassetting")
+        return AddMultiInfo(GUIInfo(SKIN_BOOL, g_settings.TranslateSkinBool(info[1].second)));
+      else if (property == "hastheme")
+        return SKIN_HAS_THEME_START + ConditionalStringParameter(info[1].second);
+    }
   }
   else if (info.size() == 3)
   {
@@ -860,46 +910,6 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     else if (strTest.Equals("playlist.israndom")) ret = PLAYLIST_ISRANDOM;
     else if (strTest.Equals("playlist.isrepeat")) ret = PLAYLIST_ISREPEAT;
     else if (strTest.Equals("playlist.isrepeatone")) ret = PLAYLIST_ISREPEATONE;
-  }
-  else if (strCategory.Equals("visualisation"))
-  {
-    if (strTest.Equals("visualisation.locked")) ret = VISUALISATION_LOCKED;
-    else if (strTest.Equals("visualisation.preset")) ret = VISUALISATION_PRESET;
-    else if (strTest.Equals("visualisation.name")) ret = VISUALISATION_NAME;
-    else if (strTest.Equals("visualisation.enabled")) ret = VISUALISATION_ENABLED;
-  }
-  else if (strCategory.Equals("fanart"))
-  {
-    if (strTest.Equals("fanart.color1")) ret = FANART_COLOR1;
-    else if (strTest.Equals("fanart.color2")) ret = FANART_COLOR2;
-    else if (strTest.Equals("fanart.color3")) ret = FANART_COLOR3;
-    else if (strTest.Equals("fanart.image")) ret = FANART_IMAGE;
-  }
-  else if (strCategory.Equals("skin"))
-  {
-    if (strTest.Equals("skin.currenttheme"))
-      ret = SKIN_THEME;
-    else if (strTest.Equals("skin.currentcolourtheme"))
-      ret = SKIN_COLOUR_THEME;
-    else if (strTest.Left(12).Equals("skin.string("))
-    {
-      int pos = strTest.Find(",");
-      if (pos >= 0)
-      {
-        int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, pos - 12));
-        int compareString = ConditionalStringParameter(strTest.Mid(pos + 1, strTest.GetLength() - (pos + 2)));
-        return AddMultiInfo(GUIInfo(SKIN_STRING, skinOffset, compareString));
-      }
-      int skinOffset = g_settings.TranslateSkinString(strTest.Mid(12, strTest.GetLength() - 13));
-      return AddMultiInfo(GUIInfo(SKIN_STRING, skinOffset));
-    }
-    else if (strTest.Left(16).Equals("skin.hassetting("))
-    {
-      int skinOffset = g_settings.TranslateSkinBool(strTest.Mid(16, strTest.GetLength() - 17));
-      return AddMultiInfo(GUIInfo(SKIN_BOOL, skinOffset));
-    }
-    else if (strTest.Left(14).Equals("skin.hastheme("))
-      ret = SKIN_HAS_THEME_START + ConditionalStringParameter(strTest.Mid(14, strTest.GetLength() -  15));
   }
   else if (strCategory.Left(6).Equals("window"))
   {
