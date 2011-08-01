@@ -55,6 +55,25 @@ extern "C" {
 #endif
 }
 
+#include "utils/CPUInfo.h"
+
+inline int PPCPUFlags()
+{
+  unsigned int cpuFeatures = g_cpuInfo.GetCPUFeatures();
+  int flags = 0;
+
+  if (cpuFeatures & CPU_FEATURE_MMX)
+    flags |= PP_CPU_CAPS_MMX;
+  if (cpuFeatures & CPU_FEATURE_MMX2)
+    flags |= PP_CPU_CAPS_MMX2;
+  if (cpuFeatures & CPU_FEATURE_3DNOW)
+    flags |= PP_CPU_CAPS_3DNOW;
+  if (cpuFeatures & CPU_FEATURE_ALTIVEC)
+    flags |= PP_CPU_CAPS_ALTIVEC;
+
+  return flags;
+}
+
 class DllPostProcInterface
 {
 public:
