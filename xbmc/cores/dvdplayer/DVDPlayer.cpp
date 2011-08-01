@@ -522,7 +522,7 @@ retry:
   m_clock.Reset();
   m_dvd.Clear();
   m_errorCount = 0;
-  m_ChannelEntryTimeOut = 0;
+  m_iChannelEntryTimeOut = 0;
 
   return true;
 }
@@ -1210,15 +1210,14 @@ bool CDVDPlayer::CheckDelayedChannelEntry(void)
 {
   bool bReturn(false);
 
-  if (m_ChannelEntryTimeOut > 0 &&
-      (int) XbmcThreads::SystemClockMillis() - m_ChannelEntryTimeOut > g_guiSettings.GetInt("pvrplayback.channelentrytimeout"))
+  if (m_iChannelEntryTimeOut > 0 && XbmcThreads::SystemClockMillis() >= m_iChannelEntryTimeOut)
   {
     CFileItem currentFile(g_application.CurrentFileItem());
     CPVRChannel *currentChannel = currentFile.GetPVRChannelInfoTag();
     SwitchChannel(*currentChannel);
 
     bReturn = true;
-    m_ChannelEntryTimeOut = 0;
+    m_iChannelEntryTimeOut = 0;
   }
 
   return bReturn;
@@ -2217,22 +2216,30 @@ void CDVDPlayer::HandleMessages()
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT_NUMBER) == 0)
       {
+        FlushBuffers(false);
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
-          FlushBuffers(false);
           SAFE_DELETE(m_pDemuxer);
           SetCaching(CACHESTATE_PVR);
+        }else
+        {
+          CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
+          g_application.getApplicationMessenger().MediaStop();
         }
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
       {
+        FlushBuffers(false);
         CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
         if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
         {
-          FlushBuffers(false);
           SAFE_DELETE(m_pDemuxer);
           SetCaching(CACHESTATE_PVR);
+        }else
+        {
+          CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
+          g_application.getApplicationMessenger().MediaStop();
         }
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
@@ -2242,6 +2249,9 @@ void CDVDPlayer::HandleMessages()
         {
           bool bSwitchSuccessful(false);
           bool bShowPreview(g_guiSettings.GetInt("pvrplayback.channelentrytimeout") > 0);
+
+          if (!bShowPreview)
+            FlushBuffers(false);
 
           if(pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT))
             bSwitchSuccessful = input->NextChannel(bShowPreview);
@@ -2253,12 +2263,11 @@ void CDVDPlayer::HandleMessages()
             if (bShowPreview)
             {
               UpdateApplication(0);
-              m_ChannelEntryTimeOut = XbmcThreads::SystemClockMillis();
+              m_iChannelEntryTimeOut = XbmcThreads::SystemClockMillis() + g_guiSettings.GetInt("pvrplayback.channelentrytimeout");
             }
             else
             {
-              m_ChannelEntryTimeOut = 0;
-              FlushBuffers(false);
+              m_iChannelEntryTimeOut = 0;
               SAFE_DELETE(m_pDemuxer);
               SetCaching(CACHESTATE_PVR);
             }
