@@ -323,7 +323,7 @@ protected:
   ECacheState  m_caching;
   CFileItem    m_item;
   unsigned int m_scanStart;
-  long         m_ChannelEntryTimeOut;
+  unsigned int m_iChannelEntryTimeOut;
 
 
   CCurrentStream m_CurrentAudio;
