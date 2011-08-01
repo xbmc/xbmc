@@ -1054,27 +1054,8 @@ void CDVDPlayer::Process()
     // update application with our state
     UpdateApplication(1000);
 
-    if (m_ChannelEntryTimeOut > 0 && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
-    {
-      if ((int) XbmcThreads::SystemClockMillis() - m_ChannelEntryTimeOut > g_guiSettings.GetInt("pvrplayback.channelentrytimeout"))
-      {
-        m_ChannelEntryTimeOut = 0;
-        CDVDInputStreamPVRManager* pStream = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream);
-        CFileItem currentFile(g_application.CurrentFileItem());
-        CPVRChannel *currentChannel = currentFile.GetPVRChannelInfoTag();
-        if(currentChannel && pStream->SelectChannel(*currentChannel))
-        {
-          FlushBuffers(false);
-          SAFE_DELETE(m_pDemuxer);
-          SetCaching(CACHESTATE_PVR);
-          continue;
-        }
-        else
-        {
-          break;
-        }
-      }
-    }
+    if (CheckDelayedChannelEntry())
+      continue;
 
     // if the queues are full, no need to read more
     if ((!m_dvdPlayerAudio.AcceptsData() && m_CurrentAudio.id >= 0) ||
@@ -1223,6 +1204,24 @@ void CDVDPlayer::Process()
     // check if in a cut or commercial break that should be automatically skipped
     CheckAutoSceneSkip();
   }
+}
+
+bool CDVDPlayer::CheckDelayedChannelEntry(void)
+{
+  bool bReturn(false);
+
+  if (m_ChannelEntryTimeOut > 0 &&
+      (int) XbmcThreads::SystemClockMillis() - m_ChannelEntryTimeOut > g_guiSettings.GetInt("pvrplayback.channelentrytimeout"))
+  {
+    CFileItem currentFile(g_application.CurrentFileItem());
+    CPVRChannel *currentChannel = currentFile.GetPVRChannelInfoTag();
+    SwitchChannel(*currentChannel);
+
+    bReturn = true;
+    m_ChannelEntryTimeOut = 0;
+  }
+
+  return bReturn;
 }
 
 void CDVDPlayer::ProcessPacket(CDemuxStream* pStream, DemuxPacket* pPacket)
