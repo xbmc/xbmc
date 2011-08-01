@@ -125,9 +125,9 @@ void CGUIFixedListContainer::Scroll(int amount)
     offset = -minCursor;
     SetCursor(minCursor);
   }
-  if (offset > (int)m_items.size() - maxCursor)
+  if (offset > (int)m_items.size() - 1 - maxCursor)
   {
-    offset = m_items.size() - maxCursor;
+    offset = m_items.size() - 1 - maxCursor;
     SetCursor(maxCursor);
   }
   ScrollToOffset(offset);
