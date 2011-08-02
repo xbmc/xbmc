@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <strings>
-  <string id="0">Programmas</string>
-  <string id="1">Afbeeldingen</string>
+  <string id="0">Programma's</string>
+  <string id="1">Foto's</string>
   <string id="2">Muziek</string>
   <string id="3">Video's</string>
   <string id="4">TV-gids</string>
@@ -157,7 +157,7 @@
   <string id="182">Nummer</string>
   <string id="183">Beschrijving</string>
   <string id="184">Vernieuwen</string>
-  <string id="185">Albuminformatie ophalen</string>
+  <string id="185">Album info ophalen</string>
   <string id="186">OK</string>
   <string id="187">Geen albums gevonden!</string>
   <string id="188">Alles selecteren</string>
@@ -379,11 +379,11 @@
   <string id="418">Min</string>
   <string id="419">Max</string>
   <string id="420">HDMI</string>
-  <string id="422">Albuminformatie wissen</string>
+  <string id="422">Album info wissen</string>
   
   <string id="423">CDDB-informatie wissen</string>
   <string id="424">Selecteer</string>
-  <string id="425">Geen albuminformatie gevonden.</string>
+  <string id="425">Geen album info gevonden.</string>
   <string id="426">Geen CDDB-informatie gevonden.</string>
   <string id="427">Schijf:</string>
   <string id="428">Voer de juiste CD/DVD in</string>
@@ -452,12 +452,12 @@
   <string id="497">Extensies mediabestanden tonen</string>
   <string id="498">Sorteer: Type</string>
   <string id="499">Kan geen verbinding maken met allmusic.com</string>
-  <string id="500">Albuminfo downloaden mislukt</string>
+  <string id="500">Album info downloaden mislukt</string>
   <string id="501">Zoeken naar albumnamen...</string>
   <string id="502">Open</string>
   <string id="503">Bezig</string>
   <string id="504">Leeg</string>
-  <string id="505">Media-info van bestanden inlezen...</string>
+  <string id="505">Media info van bestanden inlezen...</string>
   <string id="507">Sorteer: Gebruik</string>
   <string id="510">Visualisaties weergeven</string>
   <string id="511">Videoweergave automatisch aanpassen aan regiocode</string>
@@ -471,7 +471,7 @@
   <string id="519">Starten in..</string>
   
   <string id="521">Compilaties</string>
-  <string id="522">Snelkoppeling verwijderen</string>
+  <string id="522">Lokatie verwijderen</string>
   <string id="523">Media veranderen</string>
   <string id="524">Afspeellijst kiezen</string>
   <string id="525">Nieuwe afspeellijst</string>
@@ -493,7 +493,7 @@
   <string id="541">Covers</string>
   <string id="542">DVD-iconen</string>
   <string id="543">DVD</string>
-  <string id="544">Media-info</string>
+  <string id="544">Media info</string>
   <string id="545">Apparaat voor geluidsuitvoer</string>
   <string id="546">Doorgifte Geluidsuitvoerapparaat</string>
   <string id="547">Geen biografie beschikbaar voor artiest</string>
@@ -902,7 +902,7 @@
   <string id="10517">Muziek - Afspeellijst</string>
 
   <string id="10522">Video's - Afspeellijst</string>
-  <string id="10523">Albuminformatie</string>
+  <string id="10523">Album info</string>
   <string id="10524">Filminformatie</string>
 
   <string id="12000">Selecteren</string>
@@ -1156,7 +1156,7 @@
   <string id="13348">IMDb doorzoeken...</string>
   <string id="13349">Naar nieuwe inhoud scannen</string>
   <string id="13350">Afspeellijst weergeven</string>
-  <string id="13351">Albuminformatie</string>
+  <string id="13351">Album info</string>
   <string id="13352">Aan bibliotheek toevoegen</string>
   <string id="13353">Scan annuleren</string>
   <string id="13354">Rendermethode</string>
@@ -1581,7 +1581,7 @@
   <string id="20057">Miniatuur verwijderen</string>
   <string id="20058">Profiel toevoegen...</string>
   <string id="20059">Info opvragen voor alle albums</string>
-  <string id="20060">Media-info</string>
+  <string id="20060">Media info</string>
   <string id="20061">Afzonderlijk</string>
   <string id="20062">Gebruik standaard</string>
   <string id="20063">Gebruik standaard (alleen-lezen)</string>
@@ -1618,7 +1618,7 @@
   <string id="20094">Mediabronnen</string>
   <string id="20095">Geef profielvergrendelcode</string>
   <string id="20096">Inlogscherm</string>
-  <string id="20097">Albuminfo ophalen</string>
+  <string id="20097">Album info ophalen</string>
   <string id="20098">Info over album ophalen</string>
   <string id="20099">CD-rippen is tijdens het afspelen niet mogelijk</string>
   <string id="20100">Vergrendelingsinstellingen</string>
@@ -1711,8 +1711,8 @@
   <string id="20189">Plot en bespreking automatisch scrollen</string>
   <string id="20190">Handmatig</string>
   <string id="20191">Foutregistratie inschakelen</string>
-  <string id="20192">Extra albuminformatie downloaden tijdens het scannen</string>
-  <string id="20193">Standaardscraper voor albuminformatie</string>
+  <string id="20192">Extra album info downloaden tijdens het scannen</string>
+  <string id="20193">Standaardscraper voor album info</string>
   <string id="20194">Standaardscraper voor artiestinformatie</string>
   <string id="20195">Scraper wijzigen</string>
   <string id="20196">Muziekbibliotheek exporteren...</string>
@@ -1847,8 +1847,10 @@
   <string id="20417">Schrijver</string>
   <string id="20418">Bestands- en mapnamen opschonen</string>
   
+<string id="20419">Laat metadata zien in bestandslayout</string>
+  
   <string id="20420">Nooit</string>
-  <string id="20421">Alleen indien &#xe9;&#xe9;n seizoen</string>
+  <string id="20421">Indien &#xe9;&#xe9;n seizoen</string>
   <string id="20422">Altijd</string>
   <string id="20423">Trailer</string>
   <string id="20424">Onwaar</string>
@@ -2051,7 +2053,7 @@
   <string id="21882">Direct naar het DVD-menu proberen te gaan</string>
   <string id="21883">Geripte muziekalbums</string>
   <string id="21884">Info over alle artiesten zoeken</string>
-  <string id="21885">Albuminformatie downloaden</string>
+  <string id="21885">Album info downloaden</string>
   <string id="21886">Artiestinformatie downloaden</string>
   <string id="21887">Biografie</string>
   <string id="21888">Discografie</string>
@@ -2147,7 +2149,7 @@
   <string id="24013">Songtekstscraper</string>
   <string id="24014">TV-informatie</string>
   <string id="24015">Muziekvideoinformatie</string>
-  <string id="24016">Albuminformatie</string>
+  <string id="24016">Album info</string>
   <string id="24017">Artiestinformatie</string>
   <string id="24018">Processen</string>
   
@@ -2174,7 +2176,7 @@
   <string id="24044">Niet voldaan aan afhankelijkheden</string>
   <string id="24045">Add-on heeft niet de juiste structuur</string>
   
-<string id="24046">%s word gebruikt door deze geinstallerde add-on(s)</string> 
+  <string id="24046">%s wordt gebruikt door deze geinstallerde add-on(s)</string> 
   <string id="24047">Deze add-on kan niet worden verwijderd</string> 
   
   <string id="24050">Beschikbare add-ons</string>
