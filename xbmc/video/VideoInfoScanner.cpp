@@ -350,9 +350,6 @@ namespace VIDEO
     }
 
     m_database.Open();
-    // needed to ensure the movie count etc is cached
-    for (int i=LIBRARY_HAS_VIDEO;i<LIBRARY_HAS_MUSICVIDEOS+1;++i)
-      g_infoManager.GetBool(i);
 
     bool FoundSomeInfo = false;
     vector<int> seenPaths;
