@@ -591,7 +591,7 @@ public:
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
   void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
   void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
-  void ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; };
+  bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
   bool m_performingSeek;
 
   std::string GetSystemHeatInfo(int info);

@@ -58,8 +58,7 @@ bool CGUIWindowVisualisation::OnAction(const CAction &action)
   case ACTION_SHOW_INFO:
     {
       m_initTimer.Stop();
-      g_infoManager.ToggleShowInfo();
-      g_settings.m_bMyMusicSongThumbInVis = g_infoManager.GetBool(PLAYER_SHOWINFO);
+      g_settings.m_bMyMusicSongThumbInVis = g_infoManager.ToggleShowInfo();
       return true;
     }
     break;
