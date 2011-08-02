@@ -46,6 +46,7 @@ protected:
   bool SendSubscribe  (int subscription, int channel);
   bool SendUnsubscribe(int subscription);
   DemuxPacket *ParseMuxPacket(htsmsg_t *m);
+  bool WaitForFirstPacket(void);
 
 private:
   CHTSPConnection      *m_session;
