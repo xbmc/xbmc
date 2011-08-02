@@ -35,6 +35,7 @@ CHTSPDemux::CHTSPDemux() :
     m_bGotFirstIframe(false),
     m_bIsRadio(false),
     m_bAbort(false),
+    m_bWaiting(false),
     m_subs(0),
     m_channel(0),
     m_tag(0),
@@ -109,6 +110,8 @@ DemuxPacket* CHTSPDemux::Read()
     method = htsmsg_get_str(msg, "method");
     if(method == NULL)
       break;
+
+    SendPendingNotification();
 
     uint32_t subs;
     if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
@@ -206,16 +209,30 @@ DemuxPacket *CHTSPDemux::ParseMuxPacket(htsmsg_t *msg)
 bool CHTSPDemux::WaitForFirstPacket(void)
 {
   m_bAbort      = false;
+  m_bWaiting    = true;
   m_StatusCount = 0;
   while (m_Streams.iStreamCount == 0 && m_StatusCount == 0 && !m_bAbort)
   {
     DemuxPacket* pkg = Read();
     if (!pkg)
+    {
+      m_bWaiting = false;
       return false;
+    }
     PVR->FreeDemuxPacket(pkg);
   }
 
+  m_bWaiting = false;
   return true;
+}
+
+void CHTSPDemux::SendPendingNotification(void)
+{
+  if (!m_bWaiting && !m_Status.empty())
+  {
+    XBMC->QueueNotification(QUEUE_INFO, m_Status.c_str());
+    m_Status = "";
+  }
 }
 
 bool CHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
@@ -456,7 +473,8 @@ void CHTSPDemux::SubscriptionStatus(htsmsg_t *m)
     m_StatusCount++;
     m_Status = status;
     XBMC->Log(LOG_DEBUG, "%s - %s", __FUNCTION__, status);
-    XBMC->QueueNotification(QUEUE_INFO, status);
+    if (!m_bWaiting)
+      XBMC->QueueNotification(QUEUE_INFO, status);
   }
 }
 
