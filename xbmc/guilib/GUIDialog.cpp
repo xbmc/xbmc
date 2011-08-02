@@ -200,6 +200,9 @@ void CGUIDialog::DoModal_Internal(int iWindowID /*= WINDOW_INVALID */, const CSt
 
   lock.Leave();
 
+  // make sure we hold no lock to graphics context
+  CSingleExit exit(g_graphicsContext);
+
   while (m_bRunning && !g_application.m_bStop)
   {
     g_windowManager.ProcessRenderLoop();
