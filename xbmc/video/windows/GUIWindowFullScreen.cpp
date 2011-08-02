@@ -563,6 +563,7 @@ void CGUIWindowFullScreen::OnWindowLoaded()
     pLabel->SetVisible(true);
     pLabel->SetLabel("$INFO(VIDEOPLAYER.TIME) / $INFO(VIDEOPLAYER.DURATION)");
   }
+  m_showCodec.Parse("player.showcodec", GetID());
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -703,7 +704,8 @@ void CGUIWindowFullScreen::FrameMove()
   }
 
   //------------------------
-  if (g_infoManager.GetBool(PLAYER_SHOWCODEC))
+  m_showCodec.Update();
+  if (m_showCodec)
   {
     // show audio codec info
     CStdString strAudio, strVideo, strGeneral;
@@ -834,7 +836,7 @@ void CGUIWindowFullScreen::FrameMove()
     OnMessage(msg);
   }
 
-  if (g_infoManager.GetBool(PLAYER_SHOWCODEC) || m_bShowViewModeInfo)
+  if (m_showCodec || m_bShowViewModeInfo)
   {
     SET_CONTROL_VISIBLE(LABEL_ROW1);
     SET_CONTROL_VISIBLE(LABEL_ROW2);

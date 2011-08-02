@@ -79,6 +79,7 @@ private:
 
   bool m_bShowViewModeInfo;
   unsigned int m_dwShowViewModeTimeout;
+  CGUIInfoBool m_showCodec;
 
   bool m_bShowCurrentTime;
 
