@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Language file translated with Team XBMC Translator-->
 <strings>
-  <string id="0">Programma's</string>
+  <string id="0">Programmas</string>
   <string id="1">Afbeeldingen</string>
   <string id="2">Muziek</string>
   <string id="3">Video's</string>
@@ -108,7 +108,7 @@
   <string id="131">Beeldscherm</string>
   <string id="132">Albums</string>
   <string id="133">Artiesten</string>
-  <string id="134">Alle nummers</string>
+  <string id="134">Nummers</string>
   <string id="135">Genres</string>
   <string id="136">Afspeellijsten</string>
   <string id="137">Zoeken</string>
@@ -2174,6 +2174,9 @@
   <string id="24043">Beschikbare updates</string>
   <string id="24044">Niet voldaan aan afhankelijkheden</string>
   <string id="24045">Add-on heeft niet de juiste structuur</string>
+  
+<string id="24046">%s word gebruikt door deze geinstallerde add-on(s)</string> 
+  <string id="24047">Deze add-on kan niet worden verwijderd</string> 
   
   <string id="24050">Beschikbare add-ons</string>
   <string id="24051">Versie:</string>
