@@ -47,12 +47,14 @@ protected:
   bool SendUnsubscribe(int subscription);
   DemuxPacket *ParseMuxPacket(htsmsg_t *m);
   bool WaitForFirstPacket(void);
+  void SendPendingNotification(void);
 
 private:
   CHTSPConnection      *m_session;
   bool                  m_bGotFirstIframe;
   bool                  m_bIsRadio;
   bool                  m_bAbort;
+  bool                  m_bWaiting;
   unsigned              m_subs;
   int                   m_channel;
   int                   m_tag;
