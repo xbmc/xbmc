@@ -1493,7 +1493,7 @@ void CDVDPlayer::HandlePlaySpeed()
     if (/* if all streams got at least g_advancedSettings.m_iPVRMinCacheLevel in their buffers, we're done */
         ((bGotVideo || bGotAudio) && (!bGotAudio || bAudioLevelOk) && (!bGotVideo || bVideoLevelOk)) ||
         /* or if one of the buffers is full but the stream hasn't been started */
-        m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0 && (bAudioFullNotStarted || bVideoFullNotStarted))
+        (m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0 && (bAudioFullNotStarted || bVideoFullNotStarted)))
     {
       CLog::Log(LOGDEBUG, "set caching from pvr to done. audio (%d) = %d. video (%d) = %d",
           bGotAudio, m_dvdPlayerAudio.m_messageQueue.GetLevel(),
