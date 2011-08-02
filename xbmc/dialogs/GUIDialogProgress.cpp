@@ -63,16 +63,16 @@ void CGUIDialogProgress::StartModal()
 {
   CSingleLock lock(g_graphicsContext);
 
-  CLog::Log(LOGDEBUG, "DialogProgress::StartModal called %s", m_bRunning ? "(already running)!" : "");
+  CLog::Log(LOGDEBUG, "DialogProgress::StartModal called %s", m_active ? "(already running)!" : "");
   m_bCanceled = false;
 
   // set running before it's routed, else the auto-show code
   // could show it as well if we are in a different thread from
   // the main rendering thread (this should really be handled via
   // a thread message though IMO)
-  m_bRunning = true;
+  m_active = true;
   m_bModal = true;
-  m_dialogClosing = false;
+  m_closing = false;
   g_windowManager.RouteToWindow(this);
 
   // active this window...
@@ -82,7 +82,7 @@ void CGUIDialogProgress::StartModal()
 
   lock.Leave();
 
-  while (m_bRunning && IsAnimating(ANIM_TYPE_WINDOW_OPEN))
+  while (m_active && IsAnimating(ANIM_TYPE_WINDOW_OPEN))
   {
     Progress();
     // we should have rendered at least once by now - if we haven't, then
@@ -96,7 +96,7 @@ void CGUIDialogProgress::StartModal()
 
 void CGUIDialogProgress::Progress()
 {
-  if (m_bRunning)
+  if (m_active)
   {
     g_windowManager.ProcessRenderLoop();
   }
@@ -104,7 +104,7 @@ void CGUIDialogProgress::Progress()
 
 void CGUIDialogProgress::ProgressKeys()
 {
-  if (m_bRunning)
+  if (m_active)
   {
     g_application.FrameMove(true);
   }
@@ -191,7 +191,7 @@ void CGUIDialogProgress::SetProgressAdvance(int nSteps/*=1*/)
 
 bool CGUIDialogProgress::Abort()
 {
-  return m_bRunning ? m_bCanceled : false;
+  return m_active ? m_bCanceled : false;
 }
 
 void CGUIDialogProgress::ShowProgressBar(bool bOnOff)
