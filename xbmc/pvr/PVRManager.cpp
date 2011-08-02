@@ -366,6 +366,7 @@ void CPVRManager::ResetProperties(void)
   m_PreviousChannel[1]    = -1;
   m_PreviousChannelIndex  = 0;
   m_LastChannel           = 0;
+  m_bIsSwitchingChannels  = false;
 
   for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
     delete m_pendingUpdates.at(iJobPtr);
@@ -791,7 +792,16 @@ bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = f
 
 bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview)
 {
+  bool bSwitched(false);
+
   CSingleLock lock(m_critSection);
+  if (m_bIsSwitchingChannels)
+  {
+    CLog::Log(LOGDEBUG, "PVRManager - %s - can't switch to channel '%s'. waiting for the previous switch to complete",
+        __FUNCTION__, channel.ChannelName().c_str());
+    return bSwitched;
+  }
+  m_bIsSwitchingChannels = true;
 
   CLog::Log(LOGDEBUG, "PVRManager - %s - switching to channel '%s'",
       __FUNCTION__, channel.ChannelName().c_str());
@@ -806,25 +816,37 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     m_currentFile = NULL;
   }
 
+  lock.Leave();
+
   if (!bPreview && (channel.ClientID() < 0 || !m_addons->SwitchChannel(channel)))
   {
+    lock.Enter();
+    m_bIsSwitchingChannels = false;
+    lock.Leave();
+
     CLog::Log(LOGERROR, "PVRManager - %s - failed to switch to channel '%s'",
         __FUNCTION__, channel.ChannelName().c_str());
     CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
-    return false;
   }
-
-  m_currentFile = new CFileItem(channel);
-
-  if (!bPreview)
+  else
   {
-    LoadCurrentChannelSettings();
+    bSwitched = true;
 
-    CLog::Log(LOGNOTICE, "PVRManager - %s - switched to channel '%s'",
-        __FUNCTION__, channel.ChannelName().c_str());
+    lock.Enter();
+    m_currentFile = new CFileItem(channel);
+
+    if (!bPreview)
+    {
+      LoadCurrentChannelSettings();
+
+      CLog::Log(LOGNOTICE, "PVRManager - %s - switched to channel '%s'",
+          __FUNCTION__, channel.ChannelName().c_str());
+    }
+
+    m_bIsSwitchingChannels = false;
   }
 
-  return true;
+  return bSwitched;
 }
 
 int CPVRManager::GetTotalTime(void) const
