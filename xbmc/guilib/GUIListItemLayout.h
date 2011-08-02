@@ -23,6 +23,7 @@
 
 #include "GUIListGroup.h"
 #include "GUITexture.h"
+#include "GUIInfoTypes.h"
 
 class CGUIListItem;
 class CFileItem;
@@ -71,6 +72,6 @@ protected:
   bool m_invalidated;
 
   unsigned int m_condition;
-  bool m_isPlaying;
+  CGUIInfoBool m_isPlaying;
 };
 
