@@ -252,6 +252,8 @@ void CGUIDialog::Close(bool forceClose /* = false */)
 
 void CGUIDialog::DoModal(int iWindowID /*= WINDOW_INVALID */, const CStdString &param)
 {
+  // make sure we hold no lock to graphics context
+  CSingleExit exit(g_graphicsContext);
   g_application.getApplicationMessenger().DoModal(this, iWindowID, param);
 }
 
