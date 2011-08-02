@@ -826,7 +826,6 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
 
     CLog::Log(LOGERROR, "PVRManager - %s - failed to switch to channel '%s'",
         __FUNCTION__, channel.ChannelName().c_str());
-    CGUIDialogOK::ShowAndGetInput(19033,0,19136,0);
   }
   else
   {
