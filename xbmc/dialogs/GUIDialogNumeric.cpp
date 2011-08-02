@@ -24,6 +24,7 @@
 #include "utils/md5.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "input/XBMC_vkeys.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 
@@ -71,11 +72,11 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     BYTE b = action.GetID() & 0xFF;
-    if (b == 0x82) OnPrevious();     // left
-    else if (b == 0x83) OnNext();  // right
-    else if (b == 0x0D) OnOK();         // enter
-    else if (b == 0x08) OnBackSpace();    // backspace
-    else if (b == 0x1B) OnCancel();        // escape
+    if (b == XBMCVK_LEFT) OnPrevious();     // left
+    else if (b == XBMCVK_RIGHT) OnNext();  // right
+    else if (b == XBMCVK_RETURN) OnOK();         // enter
+    else if (b == XBMCVK_BACK) OnBackSpace();    // backspace
+    else if (b == XBMCVK_ESCAPE) OnCancel();        // escape
   }
   else if (action.GetID() >= KEY_ASCII) // FIXME make it KEY_UNICODE
   { // input from the keyboard
