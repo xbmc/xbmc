@@ -33,7 +33,7 @@
 
 using namespace std;
 
-CWinSystemX11::CWinSystemX11() : CWinSystemBase(), m_screensaverReset(true)
+CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_X11;
   m_glContext = NULL;
