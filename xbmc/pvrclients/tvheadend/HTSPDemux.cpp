@@ -223,7 +223,7 @@ bool CHTSPDemux::WaitForFirstPacket(void)
   }
 
   m_bWaiting = false;
-  return true;
+  return m_Streams.iStreamCount > 0;
 }
 
 void CHTSPDemux::SendPendingNotification(void)
