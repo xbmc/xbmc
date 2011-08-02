@@ -383,7 +383,7 @@ namespace PYXBMC
       ++it;
     }
 
-    if (self->bIsPythonWindow)
+    if (self->bIsPythonWindow && !self->pWindow->IsDialog())
       g_windowManager.Delete(self->pWindow->GetID());
 
     lock.Leave();
