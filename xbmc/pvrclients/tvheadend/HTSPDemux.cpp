@@ -35,7 +35,6 @@ CHTSPDemux::CHTSPDemux() :
     m_bGotFirstIframe(false),
     m_bIsRadio(false),
     m_bAbort(false),
-    m_bWaiting(false),
     m_subs(0),
     m_channel(0),
     m_tag(0),
@@ -65,7 +64,9 @@ bool CHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
   if(!SendSubscribe(m_subs, m_channel))
     return false;
 
-  return WaitForFirstPacket();
+  m_Streams.iStreamCount  = 0;
+  m_StatusCount = 0;
+  return true;
 }
 
 void CHTSPDemux::Close()
@@ -110,8 +111,6 @@ DemuxPacket* CHTSPDemux::Read()
     method = htsmsg_get_str(msg, "method");
     if(method == NULL)
       break;
-
-    SendPendingNotification();
 
     uint32_t subs;
     if(htsmsg_get_u32(msg, "subscriptionId", &subs) || subs != m_subs)
@@ -206,35 +205,6 @@ DemuxPacket *CHTSPDemux::ParseMuxPacket(htsmsg_t *msg)
   return pkt;
 }
 
-bool CHTSPDemux::WaitForFirstPacket(void)
-{
-  m_bAbort      = false;
-  m_bWaiting    = true;
-  m_StatusCount = 0;
-  while (m_Streams.iStreamCount == 0 && m_StatusCount == 0 && !m_bAbort)
-  {
-    DemuxPacket* pkg = Read();
-    if (!pkg)
-    {
-      m_bWaiting = false;
-      return false;
-    }
-    PVR->FreeDemuxPacket(pkg);
-  }
-
-  m_bWaiting = false;
-  return m_Streams.iStreamCount > 0;
-}
-
-void CHTSPDemux::SendPendingNotification(void)
-{
-  if (!m_bWaiting && !m_Status.empty())
-  {
-    XBMC->QueueNotification(QUEUE_INFO, m_Status.c_str());
-    m_Status = "";
-  }
-}
-
 bool CHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
   XBMC->Log(LOG_DEBUG, "%s - changing to channel '%s'", __FUNCTION__, channelinfo.strChannelName);
@@ -248,9 +218,10 @@ bool CHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
   {
     m_channel           = channelinfo.iChannelNumber;
     m_subs              = m_subs+1;
-    m_Streams.iStreamCount  = 0;
+    m_Streams.iStreamCount = 0;
+    m_StatusCount = 0;
 
-    return WaitForFirstPacket();
+    return true;
   }
   return false;
 }
@@ -473,8 +444,7 @@ void CHTSPDemux::SubscriptionStatus(htsmsg_t *m)
     m_StatusCount++;
     m_Status = status;
     XBMC->Log(LOG_DEBUG, "%s - %s", __FUNCTION__, status);
-    if (!m_bWaiting)
-      XBMC->QueueNotification(QUEUE_INFO, status);
+    XBMC->QueueNotification(QUEUE_INFO, status);
   }
 }
 
