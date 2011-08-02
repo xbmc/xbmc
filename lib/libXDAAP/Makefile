@@ -1,7 +1,0 @@
-CFLAGS+=-DHAVE___ALIGNOF__
-SRCS= daap.c debug.c dmap_generics.c global.c httpClient.c ioloop.c libXDAAP.c threadpool.c Authentication/hasher.c Authentication/md5.c
-
-LIB=libxdaap.a
-
-include ../../Makefile.include
-
