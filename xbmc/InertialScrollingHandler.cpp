@@ -89,7 +89,7 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
       m_inertialDeacceleration.y = -1*m_iFlickVelocity.y/TIME_TO_ZERO_SPEED;
       
       //CLog::Log(LOGDEBUG, "initial vel: %f dec: %f", m_iFlickVelocity.y, m_inertialDeacceleration.y);
-      m_inertialStartTime = XbmcThreads::SystemClockMillis();//start time of inertial scrolling
+      m_inertialStartTime = CTimeUtils::GetFrameTime();//start time of inertial scrolling
       ret = true;
       m_bScrolling = true;//activate the inertial scrolling animation
     }
@@ -107,7 +107,7 @@ bool CInertialScrollingHandler::ProcessInertialScroll(float frameTime)
     
     //decrease based on negativ acceleration
     //calc the overall inertial scrolling time in secs
-    float absolutInertialTime = (XbmcThreads::SystemClockMillis() - m_inertialStartTime)/(float)1000;
+    float absolutInertialTime = (CTimeUtils::GetFrameTime() - m_inertialStartTime)/(float)1000;
     
     //as long as we aren't over the overall inertial scroll time - do the deacceleration
     if ( absolutInertialTime < TIME_TO_ZERO_SPEED + TIME_FOR_DEACELLERATION_DECREASE )
