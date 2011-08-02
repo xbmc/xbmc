@@ -48,6 +48,7 @@ class CDateTime;
 namespace INFO
 {
   class InfoBool;
+  class InfoSingle;
 }
 
 // conditions for window retrieval
@@ -662,7 +663,6 @@ public:
   bool EvaluateBool(const CStdString &expression, int context = 0);
 
   int TranslateString(const CStdString &strCondition);
-  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
   int GetInt(int info, int contextWindow = 0) const;
   CStdString GetLabel(int info, int contextWindow = 0);
 
@@ -751,6 +751,9 @@ public:
   int TranslateSingleString(const CStdString &strCondition);
 
 protected:
+  friend class INFO::InfoSingle;
+  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
+
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
   CGUIWindow *GetWindowWithCondition(int contextWindow, int condition) const;
