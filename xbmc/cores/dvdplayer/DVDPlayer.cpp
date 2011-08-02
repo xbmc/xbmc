@@ -1039,6 +1039,9 @@ void CDVDPlayer::Process()
         break;
       }
 
+      if (CachePVRStream())
+        SetCaching(CACHESTATE_PVR);
+
       OpenDefaultStreams();
       UpdateApplication(0);
       UpdatePlayState(0);
@@ -2213,7 +2216,6 @@ void CDVDPlayer::HandleMessages()
         if(input && input->SelectChannelByNumber(static_cast<CDVDMsgInt*>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
-          SetCaching(CachePVRStream() ? CACHESTATE_PVR : CACHESTATE_FLUSH);
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
@@ -2227,7 +2229,6 @@ void CDVDPlayer::HandleMessages()
         if(input && input->SelectChannel(static_cast<CDVDMsgType <CPVRChannel> *>(pMsg)->m_value))
         {
           SAFE_DELETE(m_pDemuxer);
-          SetCaching(CachePVRStream() ? CACHESTATE_PVR : CACHESTATE_FLUSH);
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
@@ -2264,7 +2265,6 @@ void CDVDPlayer::HandleMessages()
             {
               m_iChannelEntryTimeOut = 0;
               SAFE_DELETE(m_pDemuxer);
-              SetCaching(CachePVRStream() ? CACHESTATE_PVR : CACHESTATE_FLUSH);
 
               g_infoManager.SetDisplayAfterSeek();
             }
