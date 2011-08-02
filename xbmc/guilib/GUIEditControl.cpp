@@ -24,6 +24,7 @@
 #include "utils/CharsetConverter.h"
 #include "dialogs/GUIDialogKeyboard.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "input/XBMC_vkeys.h"
 #include "LocalizeStrings.h"
 #include "XBDateTime.h"
 #include "utils/md5.h"
@@ -138,31 +139,31 @@ bool CGUIEditControl::OnAction(const CAction &action)
   {
     // input from the keyboard (vkey, not ascii)
     BYTE b = action.GetID() & 0xFF;
-    if (b == 0x88) // home
+    if (b == XBMCVK_HOME) // home
     {
       m_cursorPos = 0;
       UpdateText(false);
       return true;
     }
-    else if (b == 0x89) // end
+    else if (b == XBMCVK_END) // end
     {
       m_cursorPos = m_text2.length();
       UpdateText(false);
       return true;
     }
-    if (b == 0x82 && m_cursorPos > 0)
+    if (b == XBMCVK_LEFT && m_cursorPos > 0)
     { // left
       m_cursorPos--;
       UpdateText(false);
       return true;
     }
-    if (b == 0x83 && m_cursorPos < m_text2.length())
+    if (b == XBMCVK_RIGHT && m_cursorPos < m_text2.length())
     { // right
       m_cursorPos++;
       UpdateText(false);
       return true;
     }
-    if (b == 0x87)
+    if (b == XBMCVK_DELETE)
     {
       if (m_cursorPos < m_text2.length())
       { // delete
@@ -172,7 +173,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
         return true;
       }
     }
-    if (b == 0x8)
+    if (b == XBMCVK_BACK)
     {
       if (m_cursorPos > 0)
       { // backspace
