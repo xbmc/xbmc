@@ -49,6 +49,7 @@ CPVRClients::CPVRClients(void) :
     CThread("PVR add-on updater"),
     m_bChannelScanRunning(false),
     m_bAllClientsConnected(false),
+    m_bIsSwitchingChannels(false),
     m_currentChannel(NULL),
     m_currentRecording(NULL),
     m_scanStart(0),
@@ -518,6 +519,13 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
+  if (m_bIsSwitchingChannels)
+  {
+    CLog::Log(LOGDEBUG, "PVRClients - %s - can't switch to channel '%s'. waiting for the previous switch to complete",
+        __FUNCTION__, channel.ChannelName().c_str());
+    return bReturn;
+  }
+
   if (m_currentChannel && m_currentChannel->ClientID() != channel.ClientID())
   {
     lock.Leave();
@@ -525,13 +533,18 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
     return OpenLiveStream(channel);
   }
 
+  m_bIsSwitchingChannels = true;
+  lock.Leave();
+
   boost::shared_ptr<CPVRClient> client;
   if (GetConnectedClient(channel.ClientID(), client))
   {
     if (client->SwitchChannel(channel))
     {
+      lock.Enter();
       m_currentChannel = &channel;
       ResetQualityData();
+      lock.Leave();
 
       bReturn = true;
     }
@@ -544,6 +557,9 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
   {
     CLog::Log(LOGERROR, "PVR - %s - cannot find client %d",__FUNCTION__, channel.ClientID());
   }
+
+  lock.Enter();
+  m_bIsSwitchingChannels = false;
 
   return bReturn;
 }

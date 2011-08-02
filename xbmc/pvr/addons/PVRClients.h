@@ -638,6 +638,7 @@ namespace PVR
 
     bool                  m_bChannelScanRunning;      /*!< true when a channel scan is currently running, false otherwise */
     bool                  m_bAllClientsConnected;        /*!< true when all clients are loaded, false otherwise */
+    bool                  m_bIsSwitchingChannels;        /*!< true while switching channels */
     const CPVRChannel *   m_currentChannel;           /*!< the channel that is currently playing or NULL if nothing is playing */
     const CPVRRecording * m_currentRecording;         /*!< the recording that is currently playing or NULL if nothing is playing */
     DWORD                 m_scanStart;                /*!< scan start time to check for non present streams */
