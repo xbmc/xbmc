@@ -37,19 +37,17 @@ CGUIListItemLayout::CGUIListItemLayout()
   m_condition = 0;
   m_focused = false;
   m_invalidated = true;
-  m_isPlaying = false;
   m_group.SetPushUpdates(true);
 }
 
 CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
-: m_group(from.m_group)
+: m_group(from.m_group), m_isPlaying(from.m_isPlaying)
 {
   m_width = from.m_width;
   m_height = from.m_height;
   m_focused = from.m_focused;
   m_condition = from.m_condition;
   m_invalidated = true;
-  m_isPlaying = false;
 }
 
 CGUIListItemLayout::~CGUIListItemLayout()
@@ -78,7 +76,7 @@ void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int 
     // could use a dynamic cast here if RTTI was enabled.  As it's not,
     // let's use a static cast with a virtual base function
     CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : new CFileItem(*item);
-    m_isPlaying = g_infoManager.GetBool(LISTITEM_ISPLAYING, parentID, item);
+    m_isPlaying.Update(item);
     m_group.SetInvalid();
     m_group.UpdateInfo(fileItem);
     m_invalidated = false;
@@ -174,6 +172,7 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focu
   const char *condition = layout->Attribute("condition");
   if (condition)
     m_condition = g_infoManager.Register(condition, context);
+  m_isPlaying.Parse("listitem.isplaying", context);
   TiXmlElement *child = layout->FirstChildElement("control");
   m_group.SetWidth(m_width);
   m_group.SetHeight(m_height);
@@ -193,6 +192,7 @@ void CGUIListItemLayout::CreateListControlLayouts(float width, float height, boo
   m_width = width;
   m_height = height;
   m_focused = focused;
+  m_isPlaying.Parse("listitem.isplaying", 0);
   CGUIImage *tex = new CGUIImage(0, 0, 0, 0, width, texHeight, texture);
   tex->SetVisibleCondition(nofocusCondition);
   m_group.AddControl(tex);
