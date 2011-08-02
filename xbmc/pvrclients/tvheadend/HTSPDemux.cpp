@@ -64,21 +64,7 @@ bool CHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
   if(!SendSubscribe(m_subs, m_channel))
     return false;
 
-  m_StatusCount = 0;
-  m_bAbort = false;
-
-  while(m_Streams.iStreamCount == 0 && m_StatusCount == 0 && !m_bAbort)
-  {
-    DemuxPacket* pkg = Read();
-    if(!pkg)
-    {
-      Close();
-      return false;
-    }
-    PVR->FreeDemuxPacket(pkg);
-  }
-
-  return !m_bAbort;
+  return WaitForFirstPacket();
 }
 
 void CHTSPDemux::Close()
@@ -217,6 +203,21 @@ DemuxPacket *CHTSPDemux::ParseMuxPacket(htsmsg_t *msg)
   return pkt;
 }
 
+bool CHTSPDemux::WaitForFirstPacket(void)
+{
+  m_bAbort      = false;
+  m_StatusCount = 0;
+  while (m_Streams.iStreamCount == 0 && m_StatusCount == 0 && !m_bAbort)
+  {
+    DemuxPacket* pkg = Read();
+    if (!pkg)
+      return false;
+    PVR->FreeDemuxPacket(pkg);
+  }
+
+  return true;
+}
+
 bool CHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
   XBMC->Log(LOG_DEBUG, "%s - changing to channel '%s'", __FUNCTION__, channelinfo.strChannelName);
@@ -231,18 +232,8 @@ bool CHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
     m_channel           = channelinfo.iChannelNumber;
     m_subs              = m_subs+1;
     m_Streams.iStreamCount  = 0;
-    m_StatusCount       = 0;
-    m_bAbort            = false;
-    while (m_Streams.iStreamCount == 0 && m_StatusCount == 0 && !m_bAbort)
-    {
-      DemuxPacket* pkg = Read();
-      if (!pkg)
-      {
-        return false;
-      }
-      PVR->FreeDemuxPacket(pkg);
-    }
-    return true;
+
+    return WaitForFirstPacket();
   }
   return false;
 }
