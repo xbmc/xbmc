@@ -186,7 +186,7 @@ namespace PYXBMC
 
     PyXBMCGUILock();
     if (self->pGUIControl)
-      self->pGUIControl->SetVisibleCondition(cVisible, bHidden ? "true" : "");
+      self->pGUIControl->SetVisibleCondition(cVisible, bHidden ? "true" : "false");
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
