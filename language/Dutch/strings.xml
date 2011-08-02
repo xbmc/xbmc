@@ -1848,8 +1848,7 @@
   <string id="20418">Bestands- en mapnamen opschonen</string>
   
 <string id="20419">Laat metadata zien in bestandslayout</string>
-  
-<string id="20420">Nooit</string>
+  <string id="20420">Nooit</string>
   <string id="20421">Indien &#xe9;&#xe9;n seizoen</string>
   <string id="20422">Altijd</string>
   <string id="20423">Trailer</string>
@@ -1890,7 +1889,7 @@
 
   <string id="21330">Verborgen bestanden en mappen weergeven</string>
   
-  <string id="21331">TuxBox-client</string>
+<string id="21331">TuxBox-client</string>
   <string id="21332">WAARSCHUWING: TuxBox is aan het opnemen.</string>
   <string id="21333">De stream wordt gestopt!</string>
   <string id="21334">Zappen naar kanaal %s mislukt!</string>
