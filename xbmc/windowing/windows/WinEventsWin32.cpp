@@ -52,7 +52,6 @@
 
 static XBMCKey VK_keymap[XBMCK_LAST];
 static HKL hLayoutUS = NULL;
-static XBMCKey Arrows_keymap[4];
 
 static GUID USB_HID_GUID = { 0x4D1E55B2, 0xF16F, 0x11CF, { 0x88, 0xCB, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30 } };
 
@@ -228,11 +227,6 @@ void DIB_InitOSKeymap()
     VK_keymap[VK_LAUNCH_APP1]         = XBMCK_LAUNCH_APP1;
     VK_keymap[VK_LAUNCH_APP2]         = XBMCK_LAUNCH_APP2;
   }
-
-  Arrows_keymap[3] = (XBMCKey)0x25;
-  Arrows_keymap[2] = (XBMCKey)0x26;
-  Arrows_keymap[1] = (XBMCKey)0x27;
-  Arrows_keymap[0] = (XBMCKey)0x28;
 }
 
 static int XBMC_MapVirtualKey(int scancode, int vkey)
