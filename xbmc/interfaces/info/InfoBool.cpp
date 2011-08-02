@@ -49,6 +49,8 @@ void InfoExpression::Update(const CGUIListItem *item)
   Evaluate(item, m_value);
 }
 
+#define OPERATOR_LB   5
+#define OPERATOR_RB   4
 #define OPERATOR_NOT  3
 #define OPERATOR_AND  2
 #define OPERATOR_OR   1
@@ -56,9 +58,9 @@ void InfoExpression::Update(const CGUIListItem *item)
 short InfoExpression::GetOperator(const char ch) const
 {
   if (ch == '[')
-    return 5;
+    return OPERATOR_LB;
   else if (ch == ']')
-    return 4;
+    return OPERATOR_RB;
   else if (ch == '!')
     return OPERATOR_NOT;
   else if (ch == '+')
