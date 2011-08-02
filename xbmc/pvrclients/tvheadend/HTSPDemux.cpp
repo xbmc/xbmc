@@ -34,6 +34,7 @@ extern "C" {
 CHTSPDemux::CHTSPDemux() :
     m_bGotFirstIframe(false),
     m_bIsRadio(false),
+    m_bAbort(false),
     m_subs(0),
     m_channel(0),
     m_tag(0),
@@ -64,8 +65,9 @@ bool CHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
     return false;
 
   m_StatusCount = 0;
+  m_bAbort = false;
 
-  while(m_Streams.iStreamCount == 0 && m_StatusCount == 0 )
+  while(m_Streams.iStreamCount == 0 && m_StatusCount == 0 && !m_bAbort)
   {
     DemuxPacket* pkg = Read();
     if(!pkg)
@@ -76,11 +78,12 @@ bool CHTSPDemux::Open(const PVR_CHANNEL &channelinfo)
     PVR->FreeDemuxPacket(pkg);
   }
 
-  return true;
+  return !m_bAbort;
 }
 
 void CHTSPDemux::Close()
 {
+  m_bAbort = true;
   m_session->Close();
 }
 
@@ -107,6 +110,7 @@ bool CHTSPDemux::GetStreamProperties(PVR_STREAM_PROPERTIES* props)
 void CHTSPDemux::Abort()
 {
   m_Streams.iStreamCount = 0;
+  m_bAbort = true;
   m_session->Abort();
 }
 
@@ -114,7 +118,7 @@ DemuxPacket* CHTSPDemux::Read()
 {
   htsmsg_t *  msg;
   const char* method;
-  while((msg = m_session->ReadMessage(1000)))
+  while((msg = m_session->ReadMessage(1000)) && !m_bAbort)
   {
     method = htsmsg_get_str(msg, "method");
     if(method == NULL)
@@ -228,7 +232,8 @@ bool CHTSPDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
     m_subs              = m_subs+1;
     m_Streams.iStreamCount  = 0;
     m_StatusCount       = 0;
-    while (m_Streams.iStreamCount == 0 && m_StatusCount == 0)
+    m_bAbort            = false;
+    while (m_Streams.iStreamCount == 0 && m_StatusCount == 0 && !m_bAbort)
     {
       DemuxPacket* pkg = Read();
       if (!pkg)

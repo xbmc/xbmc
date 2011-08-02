@@ -51,6 +51,7 @@ private:
   CHTSPConnection      *m_session;
   bool                  m_bGotFirstIframe;
   bool                  m_bIsRadio;
+  bool                  m_bAbort;
   unsigned              m_subs;
   int                   m_channel;
   int                   m_tag;
