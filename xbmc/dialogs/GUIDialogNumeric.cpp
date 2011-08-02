@@ -72,11 +72,11 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     BYTE b = action.GetID() & 0xFF;
-    if (b == XBMCVK_LEFT) OnPrevious();     // left
-    else if (b == XBMCVK_RIGHT) OnNext();  // right
-    else if (b == XBMCVK_RETURN) OnOK();         // enter
-    else if (b == XBMCVK_BACK) OnBackSpace();    // backspace
-    else if (b == XBMCVK_ESCAPE) OnCancel();        // escape
+    if (b == XBMCVK_LEFT) OnPrevious();
+    else if (b == XBMCVK_RIGHT) OnNext();
+    else if (b == XBMCVK_RETURN || b == XBMCVK_NUMPADENTER) OnOK();
+    else if (b == XBMCVK_BACK) OnBackSpace();
+    else if (b == XBMCVK_ESCAPE) OnCancel();
   }
   else if (action.GetID() >= KEY_ASCII) // FIXME make it KEY_UNICODE
   { // input from the keyboard

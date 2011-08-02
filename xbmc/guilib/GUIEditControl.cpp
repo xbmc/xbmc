@@ -139,26 +139,26 @@ bool CGUIEditControl::OnAction(const CAction &action)
   {
     // input from the keyboard (vkey, not ascii)
     BYTE b = action.GetID() & 0xFF;
-    if (b == XBMCVK_HOME) // home
+    if (b == XBMCVK_HOME)
     {
       m_cursorPos = 0;
       UpdateText(false);
       return true;
     }
-    else if (b == XBMCVK_END) // end
+    else if (b == XBMCVK_END)
     {
       m_cursorPos = m_text2.length();
       UpdateText(false);
       return true;
     }
     if (b == XBMCVK_LEFT && m_cursorPos > 0)
-    { // left
+    {
       m_cursorPos--;
       UpdateText(false);
       return true;
     }
     if (b == XBMCVK_RIGHT && m_cursorPos < m_text2.length())
-    { // right
+    {
       m_cursorPos++;
       UpdateText(false);
       return true;
@@ -166,7 +166,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     if (b == XBMCVK_DELETE)
     {
       if (m_cursorPos < m_text2.length())
-      { // delete
+      {
         if (!ClearMD5())
           m_text2.erase(m_cursorPos, 1);
         UpdateText();
@@ -176,7 +176,7 @@ bool CGUIEditControl::OnAction(const CAction &action)
     if (b == XBMCVK_BACK)
     {
       if (m_cursorPos > 0)
-      { // backspace
+      {
         if (!ClearMD5())
           m_text2.erase(--m_cursorPos, 1);
         UpdateText();

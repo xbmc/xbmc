@@ -139,27 +139,27 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     uint8_t b = action.GetID() & 0xFF;
-    if (b == XBMCVK_HOME) // home
+    if (b == XBMCVK_HOME)
     {
       MoveCursor(-GetCursorPos());
     }
-    else if (b == XBMCVK_END) // end
+    else if (b == XBMCVK_END)
     {
       MoveCursor(m_strEdit.GetLength() - GetCursorPos());
     }
-    else if (b == XBMCVK_LEFT) // left
+    else if (b == XBMCVK_LEFT)
     {
       MoveCursor( -1);
     }
-    else if (b == XBMCVK_RIGHT) // right
+    else if (b == XBMCVK_RIGHT)
     {
       MoveCursor(1);
     }
-    else if (b == XBMCVK_RETURN || b == XBMCVK_NUMPADENTER) // enter
+    else if (b == XBMCVK_RETURN || b == XBMCVK_NUMPADENTER)
     {
       OnOK();
     }
-    else if (b == XBMCVK_DELETE) // delete
+    else if (b == XBMCVK_DELETE)
     {
       if (GetCursorPos() < m_strEdit.GetLength())
       {
@@ -167,8 +167,8 @@ bool CGUIDialogKeyboard::OnAction(const CAction &action)
         Backspace();
       }
     }
-    else if (b == XBMCVK_BACK) Backspace();    // backspace
-    else if (b == XBMCVK_ESCAPE) Close();        // escape
+    else if (b == XBMCVK_BACK) Backspace();
+    else if (b == XBMCVK_ESCAPE) Close();
   }
   else if (action.GetID() >= KEY_ASCII)
   { // input from the keyboard
