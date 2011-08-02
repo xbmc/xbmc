@@ -151,7 +151,11 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
     return;
   }
 
-  g_application.getApplicationMessenger().PlayFile(*pItem);
+  if (g_PVRManager.IsPlaying() && pItem->HasPVRChannelInfoTag() && g_application.m_pPlayer)
+    g_application.m_pPlayer->SwitchChannel(*pItem->GetPVRChannelInfoTag());
+  else
+    g_application.getApplicationMessenger().PlayFile(*pItem);
+
   CloseOrSelect(item);
 }
 
