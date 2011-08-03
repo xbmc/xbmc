@@ -625,11 +625,7 @@ bool CGUIWindowPVRCommon::PlayRecording(CFileItem *item, bool bPlayMinimized /* 
     return false;
   }
 
-  if (!g_application.PlayFile(*item, false))
-  {
-    CGUIDialogOK::ShowAndGetInput(19033,0,19036,0);
-    return false;
-  }
+  g_application.getApplicationMessenger().PlayFile(*item, false);
 
   return true;
 }
@@ -663,7 +659,10 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
       bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(*item->GetPVRChannelInfoTag());
 
     if (!bSwitchSuccessful)
-      bSwitchSuccessful = g_application.PlayFile(*item, false);
+    {
+      g_application.getApplicationMessenger().PlayFile(*item, false);
+      return true;
+    }
 
     if (!bSwitchSuccessful)
     {
