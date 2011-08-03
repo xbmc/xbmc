@@ -26,6 +26,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
+#include "GUIInfoManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGroupManager.h"
@@ -56,6 +57,7 @@ CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
 {
   g_PVREpg->UnregisterObserver(this);
   g_PVRTimers->UnregisterObserver(this);
+  g_infoManager.UnregisterObserver(this);
 }
 
 void CGUIWindowPVRChannels::ResetObservers(void)
@@ -63,6 +65,7 @@ void CGUIWindowPVRChannels::ResetObservers(void)
   CSingleLock lock(m_critSection);
   g_PVREpg->RegisterObserver(this);
   g_PVRTimers->RegisterObserver(this);
+  g_infoManager.RegisterObserver(this);
 }
 
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -135,7 +138,7 @@ void CGUIWindowPVRChannels::SetSelectedGroup(CPVRChannelGroup *group)
 
 void CGUIWindowPVRChannels::Notify(const Observable &obs, const CStdString& msg)
 {
-  if (msg.Equals("channelgroup") || msg.Equals("timers-reset") || msg.Equals("timers") || msg.Equals("epg-current-event"))
+  if (msg.Equals("channelgroup") || msg.Equals("timers-reset") || msg.Equals("timers") || msg.Equals("epg-current-event") || msg.Equals("current-item"))
   {
     if (IsVisible())
       SetInvalid();

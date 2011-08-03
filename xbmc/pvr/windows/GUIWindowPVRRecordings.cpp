@@ -25,6 +25,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "GUIInfoManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "pvr/timers/PVRTimers.h"
@@ -44,6 +45,7 @@ CGUIWindowPVRRecordings::~CGUIWindowPVRRecordings(void)
 {
   g_PVRRecordings->UnregisterObserver(this);
   g_PVRTimers->UnregisterObserver(this);
+  g_infoManager.UnregisterObserver(this);
 }
 
 void CGUIWindowPVRRecordings::ResetObservers(void)
@@ -51,6 +53,7 @@ void CGUIWindowPVRRecordings::ResetObservers(void)
   CSingleLock lock(m_critSection);
   g_PVRRecordings->RegisterObserver(this);
   g_PVRTimers->RegisterObserver(this);
+  g_infoManager.RegisterObserver(this);
 }
 
 void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -147,7 +150,7 @@ void CGUIWindowPVRRecordings::UpdateData(void)
 
 void CGUIWindowPVRRecordings::Notify(const Observable &obs, const CStdString& msg)
 {
-  if (msg.Equals("recordings") || msg.Equals("timers"))
+  if (msg.Equals("recordings") || msg.Equals("timers") || msg.Equals("current-item"))
   {
     if (IsVisible())
       SetInvalid();
