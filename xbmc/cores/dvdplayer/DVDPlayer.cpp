@@ -1502,6 +1502,14 @@ void CDVDPlayer::HandlePlaySpeed()
       SAFE_RELEASE(m_CurrentAudio.startsync);
       SAFE_RELEASE(m_CurrentVideo.startsync);
     }
+    else
+    {
+      /* ensure that automatically started players are stopped while caching */
+      if (m_CurrentAudio.started)
+        m_dvdPlayerAudio.SetSpeed(DVD_PLAYSPEED_PAUSE);
+      if (m_CurrentVideo.started)
+        m_dvdPlayerVideo.SetSpeed(DVD_PLAYSPEED_PAUSE);
+    }
   }
 
   if(caching == CACHESTATE_PLAY)
