@@ -334,6 +334,10 @@ void CGUIWindow::Render()
 void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
 {
   CSingleLock lock(g_graphicsContext);
+
+  if (!m_active)
+    return;
+
   forceClose |= (nextWindowID == WINDOW_FULLSCREEN_VIDEO);
   if (forceClose)
   {
