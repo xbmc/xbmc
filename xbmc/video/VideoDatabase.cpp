@@ -4820,7 +4820,10 @@ bool CVideoDatabase::GetTvShowsByWhere(const CStdString& strBaseDir, const CStdS
       int numSeasons = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_SEASONS).get_asInt();
 
       CVideoInfoTag movie = GetDetailsForTvShow(m_pDS, false);
-      if (!g_advancedSettings.m_bVideoLibraryHideEmptySeries || movie.m_iEpisode > 0)
+      if ((g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+           g_passwordManager.bMasterUser                                     ||
+           g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, g_settings.m_videoSources)) &&
+          (!g_advancedSettings.m_bVideoLibraryHideEmptySeries || movie.m_iEpisode > 0))
       {
         CFileItemPtr pItem(new CFileItem(movie));
         pItem->m_strPath.Format("%s%ld/", strBaseDir.c_str(), idShow);
@@ -5096,16 +5099,20 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
       int idShow = m_pDS->fv("idShow").get_asInt();
 
       CVideoInfoTag movie = GetDetailsForEpisode(m_pDS);
-      CFileItemPtr pItem(new CFileItem(movie));
-      if (appendFullShowPath)
-        pItem->m_strPath.Format("%s%ld/%ld/%ld",strBaseDir.c_str(), idShow, movie.m_iSeason,idEpisode);
-      else
-        pItem->m_strPath.Format("%s%ld",strBaseDir.c_str(), idEpisode);
-      pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
-      pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
-      pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
-      items.Add(pItem);
-
+      if (g_settings.GetMasterProfile().getLockMode() == LOCK_MODE_EVERYONE ||
+          g_passwordManager.bMasterUser                                     ||
+          g_passwordManager.IsDatabasePathUnlocked(movie.m_strPath, g_settings.m_videoSources))
+      {
+        CFileItemPtr pItem(new CFileItem(movie));
+        if (appendFullShowPath)
+          pItem->m_strPath.Format("%s%ld/%ld/%ld",strBaseDir.c_str(), idShow, movie.m_iSeason,idEpisode);
+        else
+          pItem->m_strPath.Format("%s%ld",strBaseDir.c_str(), idEpisode);
+        pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
+        pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
+        pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
+        items.Add(pItem);
+      }
       m_pDS->next();
     }
 
