@@ -1030,6 +1030,13 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);
         }
+
+        if (!item->IsLiveTV()) 
+        { 
+          if (!m_database.HasMovieInfo(item->GetPath()) &&  !m_database.HasEpisodeInfo(item->GetPath())) 
+             buttons.Add(CONTEXT_BUTTON_ADD_TO_LIBRARY, 527); // Add to Database 
+        } 
+
         // add "Set/Change content" to folders
         if (item->m_bIsFolder && !item->IsPlayList() && !item->IsSmartPlayList() && !item->IsLiveTV() && !item->IsPlugin() && !item->IsAddonsPath())
         {
@@ -1328,6 +1335,12 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CUtil::DeleteVideoDatabaseDirectoryCache();
       Update(m_vecItems->GetPath());
       return true;
+    }
+
+  case CONTEXT_BUTTON_ADD_TO_LIBRARY: 
+    {
+      AddToDatabase(itemNumber); 
+      return true; 
     }
 
   default:
