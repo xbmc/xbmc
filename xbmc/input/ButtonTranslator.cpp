@@ -209,6 +209,18 @@ static const ActionMapping actions[] =
         {"mousedrag"         , ACTION_MOUSE_DRAG},
         {"mousemove"         , ACTION_MOUSE_MOVE},
 
+        {"setrating(0)"      , ACTION_SET_RATING_0},
+        {"setrating(1)"      , ACTION_SET_RATING_1},
+        {"setrating(2)"      , ACTION_SET_RATING_2},
+        {"setrating(3)"      , ACTION_SET_RATING_3},
+        {"setrating(4)"      , ACTION_SET_RATING_4},
+        {"setrating(5)"      , ACTION_SET_RATING_5},
+        {"setrating(6)"      , ACTION_SET_RATING_6},
+        {"setrating(7)"      , ACTION_SET_RATING_7},
+        {"setrating(8)"      , ACTION_SET_RATING_8},
+        {"setrating(9)"      , ACTION_SET_RATING_9},
+        {"setrating(10)"     , ACTION_SET_RATING_10},
+
         // Do nothing action
         { "noop"             , ACTION_NOOP}
 };
