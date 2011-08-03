@@ -7719,6 +7719,7 @@ void CVideoDatabase::ImportFromXML(const CStdString &path)
           info.Load(episode);
           CFileItem item(info);
           scanner.AddVideo(&item,CONTENT_TVSHOWS,false,showID);
+          SetRating(item, info.m_iUserRating);
           SetPlayCount(item, info.m_playCount, info.m_lastPlayed);
           CStdString file;
           file.Format("s%02ie%02i.tbn", info.m_iSeason, info.m_iEpisode);
