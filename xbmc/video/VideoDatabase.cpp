@@ -3789,8 +3789,7 @@ void CVideoDatabase::SetRating(const CFileItem &item, int iRating)
 
     CStdString strSQL;
 
-    if (item.HasVideoInfoTag() && (!item.GetVideoInfoTag()->m_strShowTitle.IsEmpty() ||
-        item.GetVideoInfoTag()->m_iEpisode > 0))
+    if (item.GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS)
     {
       int iDbId = item.GetVideoInfoTag()->m_iDbId;
       CLog::Log(LOGINFO, "Changing TvShow:id:%i New Rating:%i", iDbId, iRating);
@@ -3827,7 +3826,7 @@ int CVideoDatabase::GetRating(const CFileItem &item)
     CStdString strRet;
 
     // If this is a TV Show, read the rating from the tvshow table
-    if (!item.GetVideoInfoTag()->m_strShowTitle.IsEmpty() || item.GetVideoInfoTag()->m_iEpisode > 0)
+    if (item.GetVideoContentType() == VIDEODB_CONTENT_TVSHOWS)
     {
       int iDbId = item.GetVideoInfoTag()->m_iDbId;
       if (iDbId <= 0)
