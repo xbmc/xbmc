@@ -770,8 +770,9 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
   }
   if (event.m_id != ACTION_MOUSE_MOVE || event.m_offsetX || event.m_offsetY)
   { // some other mouse action has occurred - bring up the OSD
+    // if it is not already running
     CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-    if (pOSD)
+    if (pOSD && !pOSD->IsDialogRunning())
     {
       pOSD->SetAutoClose(3000);
       pOSD->DoModal();
