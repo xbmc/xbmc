@@ -152,7 +152,7 @@ SORT_ORDER CGUIViewState::GetDisplaySortOrder() const
   // default sort order for date, size, program count + rating is reversed
   SORT_METHOD sortMethod = GetSortMethod();
   if (sortMethod == SORT_METHOD_DATE || sortMethod == SORT_METHOD_SIZE || sortMethod == SORT_METHOD_PLAYCOUNT ||
-      sortMethod == SORT_METHOD_VIDEO_RATING || sortMethod == SORT_METHOD_PROGRAM_COUNT ||
+      sortMethod == SORT_METHOD_VIDEO_RATING || sortMethod == SORT_METHOD_VIDEO_USER_RATING || sortMethod == SORT_METHOD_PROGRAM_COUNT ||
       sortMethod == SORT_METHOD_SONG_RATING || sortMethod == SORT_METHOD_BITRATE || sortMethod == SORT_METHOD_LISTENERS)
   {
     if (m_sortOrder == SORT_ORDER_ASC) return SORT_ORDER_DESC;
