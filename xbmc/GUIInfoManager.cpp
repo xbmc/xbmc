@@ -99,7 +99,8 @@ CGUIInfoManager::CCombinedValue& CGUIInfoManager::CCombinedValue::operator =(con
   return *this;
 }
 
-CGUIInfoManager::CGUIInfoManager(void)
+CGUIInfoManager::CGUIInfoManager(void) :
+    Observable()
 {
   m_lastSysHeatInfoTime = -SYSHEATUPDATEINTERVAL;  // make sure we grab CPU temp on the first pass
   m_lastMusicBitrateTime = 0;
@@ -3457,6 +3458,9 @@ void CGUIInfoManager::SetCurrentItem(CFileItem &item)
     SetCurrentSong(item);
   else
     SetCurrentMovie(item);
+
+  SetChanged();
+  NotifyObservers("current-item", true);
 }
 
 void CGUIInfoManager::SetCurrentAlbumThumb(const CStdString thumbFileName)
