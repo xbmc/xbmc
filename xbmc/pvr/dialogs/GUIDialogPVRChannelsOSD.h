@@ -22,12 +22,13 @@
 
 #include "guilib/GUIDialog.h"
 #include "GUIViewControl.h"
+#include "utils/Observer.h"
 
 class CFileItemList;
 
 namespace PVR
 {
-  class CGUIDialogPVRChannelsOSD : public CGUIDialog
+  class CGUIDialogPVRChannelsOSD : public CGUIDialog, public Observer
   {
   public:
     CGUIDialogPVRChannelsOSD(void);
@@ -35,6 +36,7 @@ namespace PVR
     virtual bool OnMessage(CGUIMessage& message);
     virtual void OnWindowLoaded();
     virtual void OnWindowUnload();
+    virtual void Notify(const Observable &obs, const CStdString& msg);
 
   protected:
     void CloseOrSelect(unsigned int iItem);
