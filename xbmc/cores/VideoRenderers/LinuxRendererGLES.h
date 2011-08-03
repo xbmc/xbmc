@@ -86,11 +86,12 @@ struct YUVCOEF
 
 enum RenderMethod
 {
-  RENDER_GLSL=0x01,
-  RENDER_SW=0x04,
-  RENDER_POT=0x10,
-  RENDER_OMXEGL=0x40,
-  RENDER_CVREF=0x80
+  RENDER_GLSL   = 0x001,
+  RENDER_SW     = 0x004,
+  RENDER_POT    = 0x010,
+  RENDER_OMXEGL = 0x040,
+  RENDER_CVREF  = 0x080,
+  RENDER_BYPASS = 0x100
 };
 
 enum RenderQuality
@@ -178,6 +179,10 @@ protected:
   void UploadCVRefTexture(int index);
   void DeleteCVRefTexture(int index);
   bool CreateCVRefTexture(int index);
+
+  void UploadBYPASSTexture(int index);
+  void DeleteBYPASSTexture(int index);
+  bool CreateBYPASSTexture(int index);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 
