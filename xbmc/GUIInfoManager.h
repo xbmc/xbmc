@@ -32,6 +32,7 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "inttypes.h"
 #include "XBDateTime.h"
+#include "utils/Observer.h"
 
 #include <list>
 #include <map>
@@ -620,7 +621,7 @@ private:
  \ingroup strings
  \brief
  */
-class CGUIInfoManager : public IMsgTargetCallback
+class CGUIInfoManager : public IMsgTargetCallback, public Observable
 {
 public:
   CGUIInfoManager(void);
