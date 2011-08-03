@@ -922,6 +922,7 @@
 		F5AE453B134D2E720004BD79 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4539134D2E720004BD79 /* JSONServiceDescription.cpp */; };
 		F5B13E0113344F310045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13E0013344F310045076D /* DarwinUtils.mm */; };
 		F5CEE72C13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE72B13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp */; };
+		F5E6209F13E9081400D5F2CD /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E6209D13E9081400D5F2CD /* InfoBool.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2881,6 +2882,8 @@
 		F5B13E0013344F310045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 		F5CEE72B13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
 		F5CEE72D13D3F9B300225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
+		F5E6209D13E9081400D5F2CD /* InfoBool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = InfoBool.cpp; path = info/InfoBool.cpp; sourceTree = "<group>"; };
+		F5E6209E13E9081400D5F2CD /* InfoBool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = InfoBool.h; path = info/InfoBool.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4469,6 +4472,9 @@
 		F56C7563131EC152000AD0F6 /* interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				F5E6209C13E9081400D5F2CD /* info */,
+				F5E6209D13E9081400D5F2CD /* InfoBool.cpp */,
+				F5E6209E13E9081400D5F2CD /* InfoBool.h */,
 				F56C7564131EC152000AD0F6 /* python */,
 				F56C75A3131EC152000AD0F6 /* AnnouncementManager.cpp */,
 				F56C75A4131EC152000AD0F6 /* AnnouncementManager.h */,
@@ -5769,6 +5775,13 @@
 			path = "json-rpc";
 			sourceTree = "<group>";
 		};
+		F5E6209C13E9081400D5F2CD /* info */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = info;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -6754,6 +6767,7 @@
 				DFD4D22013D7286E00A47C47 /* Implementation.cpp in Sources */,
 				DFD4D22213D7286E00A47C47 /* SystemClock.cpp in Sources */,
 				7CEE2E6D13D6B7A8000ABF2A /* TimeSmoother.cpp in Sources */,
+				F5E6209F13E9081400D5F2CD /* InfoBool.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
