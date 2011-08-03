@@ -27,6 +27,7 @@
 #include "GUIDialogPVRGuideInfo.h"
 #include "ViewState.h"
 #include "settings/GUISettings.h"
+#include "GUIInfoManager.h"
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
@@ -38,8 +39,9 @@ using namespace PVR;
 
 #define CONTROL_LIST                  11
 
-CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD()
-    : CGUIDialog(WINDOW_DIALOG_PVR_OSD_CHANNELS, "DialogPVRChannelsOSD.xml")
+CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD() :
+    CGUIDialog(WINDOW_DIALOG_PVR_OSD_CHANNELS, "DialogPVRChannelsOSD.xml"),
+    Observer()
 {
   m_vecItems = new CFileItemList;
 }
@@ -47,6 +49,9 @@ CGUIDialogPVRChannelsOSD::CGUIDialogPVRChannelsOSD()
 CGUIDialogPVRChannelsOSD::~CGUIDialogPVRChannelsOSD()
 {
   delete m_vecItems;
+
+  if (IsObserving(g_infoManager))
+    g_infoManager.UnregisterObserver(this);
 }
 
 bool CGUIDialogPVRChannelsOSD::OnMessage(CGUIMessage& message)
@@ -106,6 +111,10 @@ void CGUIDialogPVRChannelsOSD::Update()
 {
   // lock our display, as this window is rendered from the player thread
   g_graphicsContext.Lock();
+
+  if (!IsObserving(g_infoManager))
+    g_infoManager.RegisterObserver(this);
+
   m_viewControl.SetCurrentView(DEFAULT_VIEW_LIST);
 
   // empty the list ready for population
@@ -213,4 +222,10 @@ CGUIControl *CGUIDialogPVRChannelsOSD::GetFirstFocusableControl(int id)
     id = m_viewControl.GetCurrentControl();
 
   return CGUIWindow::GetFirstFocusableControl(id);
+}
+
+void CGUIDialogPVRChannelsOSD::Notify(const Observable &obs, const CStdString& msg)
+{
+  if (msg.Equals("current-item"))
+    Update();
 }
