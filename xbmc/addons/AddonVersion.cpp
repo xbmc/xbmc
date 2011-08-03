@@ -128,4 +128,17 @@ namespace ADDON
     out.Format("%s %s", g_localizeStrings.Get(24051), m_originalVersion); // "Version <str>"
     return CStdString(out);
   }
+
+  bool AddonVersion::SplitFileName(CStdString& ID, CStdString& version,
+                                   const CStdString& filename)
+  {
+    int dpos = filename.rfind("-");
+    if (dpos < 0)
+      return false;
+    ID = filename.Mid(0,dpos);
+    version = filename.Mid(dpos+1);
+    version = version.Mid(0,version.size()-4);
+
+    return true;
+  }
 }
