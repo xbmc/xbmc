@@ -43,8 +43,9 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     CGUIControlFactory::GetInfoLabel(item, "thumb", thumb);
     CGUIControlFactory::GetInfoLabel(item, "icon", icon);
     const char *id = item->Attribute("id");
-    int visibleCondition = 0;
-    CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
+    CStdString condition;
+    CGUIControlFactory::GetConditionalVisibility(item, condition);
+    m_visCondition = g_infoManager.Register(condition, parentID);
     // multiple action strings are concat'd together, separated with " , "
     vector<CGUIActionDescriptor> actions;
     CGUIControlFactory::GetMultipleString(item, "onclick", actions);
@@ -66,7 +67,6 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     if (!thumb.IsConstant())  m_info.push_back(make_pair(thumb, "thumb"));
     if (!icon.IsConstant())   m_info.push_back(make_pair(icon, "icon"));
     m_iprogramCount = id ? atoi(id) : 0;
-    m_visCondition = visibleCondition;
     // add any properties
     const TiXmlElement *property = item->FirstChildElement("property");
     while (property)
@@ -124,7 +124,7 @@ bool CGUIStaticItem::UpdateVisibility(int contextWindow)
 {
   if (!m_visCondition)
     return false;
-  bool state = g_infoManager.GetBool(m_visCondition, contextWindow);
+  bool state = g_infoManager.GetBoolValue(m_visCondition);
   if (state != m_visState)
   {
     m_visState = state;

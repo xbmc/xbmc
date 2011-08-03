@@ -151,7 +151,7 @@ public:
 
   static CAnimation CreateFader(float start, float end, unsigned int delay, unsigned int length, ANIMATION_TYPE type = ANIM_TYPE_NONE);
 
-  void Create(const TiXmlElement *node, const CRect &rect);
+  void Create(const TiXmlElement *node, const CRect &rect, int context);
 
   void Animate(unsigned int time, bool startAnim);
   void ResetAnimation();
@@ -164,14 +164,14 @@ public:
   void QueueAnimation(ANIMATION_PROCESS process);
 
   inline bool IsReversible() const { return m_reversible; };
-  inline int  GetCondition() const { return m_condition; };
   inline ANIMATION_TYPE GetType() const { return m_type; };
   inline ANIMATION_STATE GetState() const { return m_currentState; };
   inline ANIMATION_PROCESS GetProcess() const { return m_currentProcess; };
   inline ANIMATION_PROCESS GetQueuedProcess() const { return m_queuedProcess; };
 
-  void UpdateCondition(int contextWindow, const CGUIListItem *item = NULL);
-  void SetInitialCondition(int contextWindow);
+  bool CheckCondition();
+  void UpdateCondition(const CGUIListItem *item = NULL);
+  void SetInitialCondition();
 
 private:
   void Calculate(const CPoint &point);
@@ -183,7 +183,7 @@ private:
   // type of animation
   ANIMATION_TYPE m_type;
   bool m_reversible;
-  int m_condition;
+  unsigned int m_condition;
 
   // conditional anims can repeat
   ANIM_REPEAT m_repeatAnim;

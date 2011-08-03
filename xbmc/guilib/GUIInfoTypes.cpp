@@ -38,27 +38,27 @@ CGUIInfoBool::CGUIInfoBool(bool value)
   m_value = value;
 }
 
-void CGUIInfoBool::Parse(const CStdString &info)
+CGUIInfoBool::~CGUIInfoBool()
 {
-  m_info = g_infoManager.TranslateString(info);
-  if (m_info == SYSTEM_ALWAYS_TRUE)
-  {
-    m_value = true;
-    m_info = 0;
-  }
-  else if (m_info == SYSTEM_ALWAYS_FALSE)
-  {
-    m_value = false;
-    m_info = 0;
-  }
-  else
-    m_info = g_infoManager.GetBool(m_info);
 }
 
-void CGUIInfoBool::Update(int parentID, const CGUIListItem *item)
+void CGUIInfoBool::Parse(const CStdString &expression, int context)
+{
+  if (expression == "true")
+    m_value = true;
+  else if (expression == "false")
+    m_value = false;
+  else
+  {
+    m_info = g_infoManager.Register(expression, context);
+    Update();
+  }
+}
+
+void CGUIInfoBool::Update(const CGUIListItem *item)
 {
   if (m_info)
-    m_value = g_infoManager.GetBool(m_info, parentID, item);
+    m_value = g_infoManager.GetBoolValue(m_info, item);
 }
 
 

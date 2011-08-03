@@ -58,7 +58,7 @@ void CGUIRadioButtonControl::Process(unsigned int currentTime, CDirtyRegionList 
   if (m_toggleSelect)
   {
     // ask our infoManager whether we are selected or not...
-    bool selected = g_infoManager.GetBool(m_toggleSelect, m_parentID);
+    bool selected = g_infoManager.GetBoolValue(m_toggleSelect);
 
     if (selected != m_bSelected)
     {
@@ -175,3 +175,7 @@ bool CGUIRadioButtonControl::UpdateColors()
   return changed;
 }
 
+void CGUIRadioButtonControl::SetToggleSelect(const CStdString &toggleSelect)
+{
+  m_toggleSelect = g_infoManager.Register(toggleSelect, GetParentID());
+}
