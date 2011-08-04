@@ -1741,7 +1741,7 @@ bool CApplication::LoadUserWindows()
         CStdString skinFile = URIUtils::GetFileName(items[i]->m_strPath);
         if (skinFile.Left(6).CompareNoCase("custom") == 0)
         {
-          CXBMCTinyXML xmlDoc;
+          TiXmlDocument xmlDoc;
           if (!xmlDoc.LoadFile(items[i]->m_strPath))
           {
             CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->m_strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());

@@ -20,7 +20,7 @@
  */
 
 #include "GUIControlProfiler.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "utils/TimeUtils.h"
 
 bool CGUIControlProfiler::m_bIsRunning = false;
@@ -340,7 +340,7 @@ bool CGUIControlProfiler::SaveResults(void)
   if (m_strOutputFile.IsEmpty())
     return false;
 
-  CXBMCTinyXML doc;
+  TiXmlDocument doc;
   TiXmlDeclaration decl("1.0", "", "yes");
   doc.InsertEndChild(decl);
 

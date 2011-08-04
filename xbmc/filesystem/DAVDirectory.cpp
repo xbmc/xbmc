@@ -196,7 +196,7 @@ bool CDAVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CStdString strResponse;
   dav.ReadData(strResponse);
 
-  CXBMCTinyXML davResponse;
+  TiXmlDocument davResponse;
   davResponse.Parse(strResponse.c_str());
 
   if (!davResponse.Parse(strResponse))

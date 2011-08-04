@@ -84,7 +84,7 @@ static inline CStdString GetString( const TiXmlElement* pRootElement, const char
 
 bool CPlayListXML::Load( const CStdString& strFileName )
 {
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
 
   m_strPlayListName = URIUtils::GetFileName(strFileName);
   URIUtils::GetParentPath(strFileName, m_strBasePath);

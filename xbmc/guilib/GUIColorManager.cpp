@@ -24,7 +24,7 @@
 #include "addons/Skin.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 
 CGUIColorManager g_colorManager;
 
@@ -48,7 +48,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
   Clear();
 
   // load the global color map if it exists
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
   if (xmlDoc.LoadFile(PTH_IC("special://xbmc/system/colors.xml")))
     LoadXML(xmlDoc);
 
@@ -71,7 +71,7 @@ void CGUIColorManager::Load(const CStdString &colorFile)
     LoadXML(xmlDoc);
 }
 
-bool CGUIColorManager::LoadXML(CXBMCTinyXML &xmlDoc)
+bool CGUIColorManager::LoadXML(TiXmlDocument &xmlDoc)
 {
   TiXmlElement* pRootElement = xmlDoc.RootElement();
 

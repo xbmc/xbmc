@@ -124,7 +124,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "runtime", m_strRuntime);
   if (!m_strPictureURL.m_xml.empty())
   {
-    CXBMCTinyXML doc;
+    TiXmlDocument doc;
     doc.Parse(m_strPictureURL.m_xml);
     const TiXmlNode* thumb = doc.FirstChild("thumb");
     while (thumb)
@@ -135,7 +135,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   }
   if (m_fanart.m_xml.size())
   {
-    CXBMCTinyXML doc;
+    TiXmlDocument doc;
     doc.Parse(m_fanart.m_xml);
     movie->InsertEndChild(*doc.RootElement());
   }
@@ -151,7 +151,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   }
   if (!m_strEpisodeGuide.IsEmpty())
   {
-    CXBMCTinyXML doc;
+    TiXmlDocument doc;
     doc.Parse(m_strEpisodeGuide);
     if (doc.RootElement())
       movie->InsertEndChild(*doc.RootElement());

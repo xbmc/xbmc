@@ -21,7 +21,7 @@
  */
 
 #include "IDirectory.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "FileItem.h"
 
 namespace XFILE

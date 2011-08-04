@@ -34,7 +34,7 @@ namespace ADDON
 }
 
 class TiXmlElement;
-class CXBMCTinyXML;
+class TiXmlDocument;
 
 class CScraperSettings;
 
@@ -54,7 +54,7 @@ public:
   const CStdString Parse(const CStdString& strTag,
                          ADDON::CScraper* scraper);
 
-  void AddDocument(const CXBMCTinyXML* doc);
+  void AddDocument(const TiXmlDocument* doc);
 
   CStdString m_param[MAX_SCRAPER_BUFFERS];
 
@@ -72,7 +72,7 @@ private:
   void GetBufferParams(bool* result, const char* attribute, bool defvalue);
   void InsertToken(CStdString& strOutput, int buf, const char* token);
 
-  CXBMCTinyXML* m_document;
+  TiXmlDocument* m_document;
   TiXmlElement* m_pRootElement;
 
   const char* m_SearchStringEncoding;

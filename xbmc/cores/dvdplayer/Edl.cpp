@@ -26,7 +26,7 @@
 #include "filesystem/MythFile.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "PlatformDefs.h"
 
 extern "C"
@@ -504,7 +504,7 @@ bool CEdl::ReadBeyondTV(const CStdString& strMovie)
   if (!CFile::Exists(beyondTVFilename))
     return false;
 
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
   if (!xmlDoc.LoadFile(beyondTVFilename))
   {
     CLog::Log(LOGERROR, "%s - Could not load Beyond TV file: %s. %s", __FUNCTION__, beyondTVFilename.c_str(),
