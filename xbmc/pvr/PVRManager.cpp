@@ -59,6 +59,7 @@ CPVRManager::CPVRManager(void) :
     m_database(NULL),
     m_bFirstStart(true),
     m_bLoaded(false),
+    m_bIsStopping(false),
     m_loadingProgressDialog(NULL),
     m_currentRadioGroup(NULL),
     m_currentTVGroup(NULL)
@@ -104,6 +105,10 @@ void CPVRManager::Stop(void)
 {
   /* check whether the pvrmanager is loaded */
   CSingleLock lock(m_critSection);
+  if (m_bIsStopping)
+    return;
+  m_bIsStopping = true;
+
   if (!m_bLoaded)
     return;
   m_bLoaded = false;
@@ -115,10 +120,14 @@ void CPVRManager::Stop(void)
   if (IsPlaying())
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
-    g_application.StopPlaying();
+    g_application.getApplicationMessenger().MediaStop();
+
+    while (IsPlaying())
+      Sleep(100);
   }
 
   /* stop all update threads */
+  lock.Enter();
   StopUpdateThreads();
 
   /* unload all data */
@@ -129,6 +138,7 @@ void CPVRManager::Stop(void)
   m_epg->Unload();
   m_channelGroups->Unload();
   m_addons->Unload();
+  m_bIsStopping = false;
 }
 
 bool CPVRManager::StartUpdateThreads(void)

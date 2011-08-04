@@ -534,6 +534,7 @@ namespace PVR
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
     bool                            m_bLoaded;                     /*!< true if the pvrmanager has been loaded and can be used */
+    bool                            m_bIsStopping;                 /*!< true while the pvrmanager is being unloaded */
     bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */
     CGUIDialogExtendedProgressBar * m_loadingProgressDialog;       /*!< progress dialog that is displayed while the pvrmanager is loading */
     CPVRChannelGroup *              m_currentRadioGroup;           /*!< the currently selected radio channel group list */
