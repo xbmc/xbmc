@@ -78,7 +78,7 @@
 		<control type="group">
 			<posx>20</posx>
 			<posy>80</posy>
-			<control type="label" id="2">
+			<control type="fadelabel" id="2">
 				<description>coordinates label</description>
 				<posx>0</posx>
 				<posy>10</posy>
@@ -87,7 +87,7 @@
 				<align>center</align>
 				<font>font13caps</font>
 			</control>
-			<control type="label" id="3">
+			<control type="fadelabel" id="3">
 				<description>help information</description>
 				<posx>0</posx>
 				<posy>40</posy>
