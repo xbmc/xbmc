@@ -40,11 +40,10 @@
 
 using namespace PVR;
 
-CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder) :
+CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName) :
     m_bRadio(bRadio),
     m_iGroupId(iGroupId),
     m_strGroupName(strGroupName),
-    m_iSortOrder(iSortOrder),
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false)
@@ -55,7 +54,6 @@ CPVRChannelGroup::CPVRChannelGroup(bool bRadio) :
     m_bRadio(bRadio),
     m_iGroupId(-1),
     m_strGroupName(""),
-    m_iSortOrder(-1),
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false)
@@ -66,7 +64,6 @@ CPVRChannelGroup::CPVRChannelGroup(const PVR_CHANNEL_GROUP &group) :
     m_bRadio(group.bIsRadio),
     m_iGroupId(-1),
     m_strGroupName(group.strGroupName),
-    m_iSortOrder(-1),
     m_bLoaded(false),
     m_bChanged(false),
     m_bUsingBackendChannelOrder(false)
@@ -124,7 +121,7 @@ void CPVRChannelGroup::Unload(void)
 
 bool CPVRChannelGroup::Update(void)
 {
-  CPVRChannelGroup PVRChannels_tmp(m_bRadio, m_iGroupId, m_strGroupName, m_iSortOrder);
+  CPVRChannelGroup PVRChannels_tmp(m_bRadio, m_iGroupId, m_strGroupName);
   PVRChannels_tmp.LoadFromClients();
 
   return UpdateGroupEntries(PVRChannels_tmp);
