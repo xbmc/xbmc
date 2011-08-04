@@ -40,7 +40,7 @@
 #include "Autorun.h"
 #include "GUIUserMessages.h"
 #include "settings/Settings.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -97,7 +97,7 @@ bool CMediaManager::LoadSources()
   m_locations.clear();
 
   // load xml file...
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
   if ( !xmlDoc.LoadFile( MEDIA_SOURCES_XML ) )
     return false;
 
@@ -130,7 +130,7 @@ bool CMediaManager::LoadSources()
 
 bool CMediaManager::SaveSources()
 {
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
   TiXmlElement xmlRootElement("mediasources");
   TiXmlNode *pRoot = xmlDoc.InsertEndChild(xmlRootElement);
   if (!pRoot) return false;

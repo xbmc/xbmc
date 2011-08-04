@@ -26,7 +26,7 @@
 #include "settings/GUISettings.h"
 #include "utils/log.h"
 #include "utils/RegExp.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 
 CPlayerSelectionRule::CPlayerSelectionRule(TiXmlElement* pRule)
 {

@@ -29,7 +29,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "addons/Scraper.h"
 #include "utils/CharsetConverter.h"
 
@@ -53,7 +53,7 @@ public:
   template<class T>
     bool GetDetails(T& details,const char* document=NULL)
   {
-    CXBMCTinyXML doc;
+    TiXmlDocument doc;
     CStdString strDoc;
     if (document)
       strDoc = document;

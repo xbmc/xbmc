@@ -20,7 +20,7 @@
  */
 
 #include "Repository.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "filesystem/File.h"
 #include "AddonDatabase.h"
 #include "settings/Settings.h"
@@ -130,7 +130,7 @@ VECADDONS CRepository::Parse()
   CSingleLock lock(m_critSection);
 
   VECADDONS result;
-  CXBMCTinyXML doc;
+  TiXmlDocument doc;
 
   CStdString file = m_info;
   if (m_compressed)

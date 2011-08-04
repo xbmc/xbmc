@@ -21,7 +21,7 @@
 
 #include "PlayListB4S.h"
 #include "Util.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "settings/AdvancedSettings.h"
 #include "music/tags/MusicInfoTag.h"
 #include "filesystem/File.h"
@@ -57,7 +57,7 @@ CPlayListB4S::~CPlayListB4S(void)
 
 bool CPlayListB4S::LoadData(istream& stream)
 {
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
 
   stream >> xmlDoc;
 

@@ -37,7 +37,7 @@
 #include <vector>
 #include <list>
 
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 
 #define RSS_COLOR_BODY  0
 #define RSS_COLOR_HEADLINE 1
@@ -83,7 +83,7 @@ private:
   std::vector<SYSTEMTIME *> m_vecTimeStamps;
   std::vector<int> m_vecUpdateTimes;
   int m_spacesBetweenFeeds;
-  CXBMCTinyXML m_xml;
+  TiXmlDocument m_xml;
   std::list<CStdString> m_tagSet;
   std::vector<std::string> m_vecUrls;
   std::vector<int> m_vecQueue;

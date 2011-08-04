@@ -20,7 +20,8 @@
  */
 
 #include "DllDvdNav.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
+
 #include "DVDStateSerializer.h"
 #include <sstream>
 
@@ -42,7 +43,7 @@ bool CDVDStateSerializer::test( const dvd_state_t *state  )
 bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_t *state )
 {
   char buffer[256];
-  CXBMCTinyXML xmlDoc("navstate");
+  TiXmlDocument xmlDoc("navstate");
 
   TiXmlElement eRoot("navstate");
   eRoot.SetAttribute("version", 1);
@@ -204,7 +205,7 @@ bool CDVDStateSerializer::DVDToXMLState( std::string &xmlstate, const dvd_state_
 
 bool CDVDStateSerializer::XMLToDVDState( dvd_state_t *state, const std::string &xmlstate )
 {
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
 
   xmlDoc.Parse(xmlstate.c_str());
 
