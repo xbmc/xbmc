@@ -33,7 +33,7 @@
 #include "settings/GUISettings.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 
 using namespace std;
 
@@ -330,7 +330,7 @@ bool CGUIPythonWindowXML::LoadXML(const CStdString &strPath, const CStdString &s
   }
   delete[] buffer;
 
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   xmlDoc.Parse(xml.c_str());
 
   if (xmlDoc.Error())

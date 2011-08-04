@@ -25,7 +25,7 @@
 #include "guilib/Key.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "settings/AdvancedSettings.h"
@@ -52,7 +52,7 @@ bool CFavourites::Load(CFileItemList &items)
 
 bool CFavourites::LoadFavourites(CStdString& strPath, CFileItemList& items)
 {
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   if (!doc.LoadFile(strPath))
   {
     CLog::Log(LOGERROR, "Unable to load %s (row %i column %i)", strPath.c_str(), doc.Row(), doc.Column());
@@ -92,7 +92,7 @@ bool CFavourites::LoadFavourites(CStdString& strPath, CFileItemList& items)
 bool CFavourites::Save(const CFileItemList &items)
 {
   CStdString favourites;
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   TiXmlElement xmlRootElement("favourites");
   TiXmlNode *rootNode = doc.InsertEndChild(xmlRootElement);
   if (!rootNode) return false;
