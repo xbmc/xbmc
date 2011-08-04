@@ -164,6 +164,7 @@ bool CXBMCTinyXML::LoadFile(const char *_filename, TiXmlEncoding encoding)
     CStdString temp;
     g_charsetConverter.unknownToUTF8(data, temp);
     data = temp;
+    encoding = TIXML_ENCODING_UTF8;
   }
 
   Parse( data.c_str(), 0, encoding );
