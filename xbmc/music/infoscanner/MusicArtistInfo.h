@@ -26,7 +26,7 @@
 #include "addons/Scraper.h"
 #include "utils/ScraperParser.h"
 
-class CXBMCTinyXML;
+class TiXmlDocument;
 class CScraperUrl;
 
 namespace MUSIC_GRABBER

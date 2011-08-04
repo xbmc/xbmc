@@ -26,7 +26,7 @@
 #include "utils/HttpHeader.h"
 #include "utils/TuxBoxUtil.h"
 #include "URL.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "utils/log.h"
@@ -131,7 +131,7 @@ bool CDirectoryTuxBox::GetDirectory(const CStdString& strPath, CFileItemList &it
       http.Close();
 
       // parse returned xml
-      CXBMCTinyXML doc;
+      TiXmlDocument doc;
       data.Replace("></",">-</"); //FILL EMPTY ELEMENTS WITH "-"!
       doc.Parse(data.c_str());
       TiXmlElement *root = doc.RootElement();

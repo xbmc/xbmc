@@ -25,7 +25,7 @@
 #include "GUIInfoManager.h"
 #include "GUIListLabel.h"
 #include "GUIImage.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 
 using namespace std;
 

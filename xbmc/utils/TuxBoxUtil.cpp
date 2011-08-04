@@ -39,7 +39,7 @@
 #include "FileItem.h"
 #include "guilib/LocalizeStrings.h"
 #include "StringUtils.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "log.h"
 
 using namespace XFILE;
@@ -745,7 +745,7 @@ bool CTuxBoxUtil::GetHttpXML(CURL url,CStdString strRequestType)
       }
 
       // parse returned xml
-      CXBMCTinyXML doc;
+      TiXmlDocument doc;
       TiXmlElement *XMLRoot=NULL;
       strTmp.Replace("></",">-</"); //FILL EMPTY ELEMENTS WITH "-"!
       doc.Parse(strTmp.c_str());
@@ -1482,7 +1482,7 @@ CStdString CTuxBoxUtil::GetPicon(CStdString strServiceName)
     piconPath = "special://xbmc/userdata/PictureIcon/Picon/";
     defaultPng = piconPath+"tuxbox.png";
     piconXML = "special://xbmc/userdata/PictureIcon/picon.xml";
-    CXBMCTinyXML piconDoc;
+    TiXmlDocument piconDoc;
 
     if (!CFile::Exists(piconXML))
       return defaultPng;

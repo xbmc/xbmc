@@ -3,7 +3,7 @@
 #undef min
 #undef max
 #include <algorithm>
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 
 typedef char char_t;
 typedef struct websRec *webs_t;
@@ -26,7 +26,7 @@ private:
 	int		Load();
 	bool	IsValidOption(char* option);
 
-	CXBMCTinyXML	xbmcCfg;
+	TiXmlDocument	xbmcCfg;
 	bool	xbmcCfgLoaded;
 };
 

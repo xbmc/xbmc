@@ -690,18 +690,6 @@ else
   PKG_CHECK_MODULES([SDL],   [sdl],
     [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
     AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([TINYXML],   [tinyxml],
-    [INCLUDES="$INCLUDES $TINYXML_CFLAGS"; LIBS="$LIBS $TINYXML_LIBS"],
-    AC_MSG_ERROR($missing_library))
-
-  # Also need to determine element names in TiXmlNode
-  AC_LANG_PUSH([C++])
-  AC_COMPILE_IFELSE(
-    [#include <tinyxml.h>
-     int foo(){return TiXmlNode::TINYXML_ELEMENT;}],
-    [AC_DEFINE([USE_RENAMED_TIXMLNODE_ELEMENTS], [1],
-    [Whether TiXmlNode element names are prepended with TINYXML_.])],)
-  AC_LANG_POP([C++])
 fi
 
 XB_FIND_SONAME([MAD],         [mad])

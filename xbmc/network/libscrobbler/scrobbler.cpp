@@ -283,7 +283,7 @@ bool CScrobbler::LoadJournal()
 {
   int                     journalVersion  = 0;
   SubmissionJournalEntry  entry;
-  CXBMCTinyXML            xmlDoc;
+  TiXmlDocument           xmlDoc;
   CStdString              JournalFileName = GetJournalFileName();
   CSingleLock             lock(m_queueLock);
 
@@ -361,7 +361,7 @@ bool CScrobbler::SaveJournal()
     return true;
   }
   CStdString        strJournalVersion;
-  CXBMCTinyXML      xmlDoc;
+  TiXmlDocument     xmlDoc;
   TiXmlDeclaration  decl("1.0", "utf-8", "yes");
   TiXmlElement      xmlRootElement("asjournal");
   xmlDoc.InsertEndChild(decl);

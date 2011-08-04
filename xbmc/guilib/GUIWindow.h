@@ -55,7 +55,7 @@ class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 // forward
 class TiXmlNode;
 class TiXmlElement;
-class CXBMCTinyXML;
+class TiXmlDocument;
 
 class COrigin
 {
@@ -217,7 +217,7 @@ public:
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual bool LoadXML(const CStdString& strPath, const CStdString &strLowerPath);  ///< Loads from the given file
-  bool Load(CXBMCTinyXML &xmlDoc);                 ///< Loads from the given XML document
+  bool Load(TiXmlDocument &xmlDoc);                 ///< Loads from the given XML document
   virtual void LoadAdditionalTags(TiXmlElement *root) {}; ///< Load additional information from the XML document
 
   virtual void SetDefaults();

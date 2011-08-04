@@ -21,7 +21,7 @@
 
 #include "PlayListWPL.h"
 #include "Util.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "settings/AdvancedSettings.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
@@ -59,7 +59,7 @@ CPlayListWPL::~CPlayListWPL(void)
 
 bool CPlayListWPL::LoadData(istream& stream)
 {
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
 
   stream >> xmlDoc;
   if (xmlDoc.Error())

@@ -22,7 +22,7 @@
 
 #include "IDirectory.h"
 #include "FileCurl.h"
-#include "utils/XBMCTinyXML.h"
+#include "tinyXML/tinyxml.h"
 #include "threads/Thread.h"
 
 class CGUIDialogProgress;
@@ -60,7 +60,7 @@ protected:
 
   bool m_Error;
   bool m_Downloaded;
-  CXBMCTinyXML m_xmlDoc;
+  TiXmlDocument m_xmlDoc;
 
   XFILE::CFileCurl m_http;
 

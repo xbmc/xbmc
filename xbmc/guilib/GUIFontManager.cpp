@@ -328,7 +328,7 @@ void GUIFontManager::Clear()
 
 void GUIFontManager::LoadFonts(const CStdString& strFontSet)
 {
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
   if (!OpenFontFile(xmlDoc))
     return;
 
@@ -443,7 +443,7 @@ void GUIFontManager::LoadFonts(const TiXmlNode* fontNode)
   }
 }
 
-bool GUIFontManager::OpenFontFile(CXBMCTinyXML& xmlDoc)
+bool GUIFontManager::OpenFontFile(TiXmlDocument& xmlDoc)
 {
   // Get the file to load fonts from:
   CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml", &m_skinResolution);
@@ -472,7 +472,7 @@ bool GUIFontManager::GetFirstFontSetUnicode(CStdString& strFontSet)
   strFontSet.Empty();
 
   // Load our font file
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
   if (!OpenFontFile(xmlDoc))
     return false;
 
@@ -518,7 +518,7 @@ bool GUIFontManager::GetFirstFontSetUnicode(CStdString& strFontSet)
 
 bool GUIFontManager::IsFontSetUnicode(const CStdString& strFontSet)
 {
-  CXBMCTinyXML xmlDoc;
+  TiXmlDocument xmlDoc;
   if (!OpenFontFile(xmlDoc))
     return false;
 
