@@ -652,7 +652,10 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
 
 bool CEpg::Persist(bool bPersistTags /* = false */, bool bQueueWrite /* = false */)
 {
-  bool bReturn = false;
+  if (g_guiSettings.GetBool("epg.ignoredbforclient"))
+    return true;
+
+  bool bReturn(false);
   CEpgDatabase *database = g_EpgContainer.GetDatabase();
 
   if (!database || !database->Open())
@@ -725,7 +728,7 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
   bool bReturn = false;
   CEpgDatabase *database = NULL;
 
-  if (bStore)
+  if (bStore && !g_guiSettings.GetBool("epg.ignoredbforclient"))
   {
     database = g_EpgContainer.GetDatabase();
 

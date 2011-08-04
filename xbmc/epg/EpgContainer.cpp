@@ -90,7 +90,7 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   m_epgs.clear();
 
   /* clear the database entries */
-  if (bClearDb)
+  if (bClearDb && !m_bIgnoreDbForClient)
   {
     if (m_database.Open())
     {
