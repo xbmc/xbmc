@@ -65,7 +65,7 @@
 					<alttexturenofocus>-</alttexturenofocus>
 					<label>31051</label>
 					<altlabel>31050</altlabel>
-					<usealtlabel>Container.SortDirection(Ascending)</usealtlabel>
+					<usealttexture>Container.SortDirection(Ascending)</usealttexture>
 				</control>
 				<control type="edit" id="19">
 					<description>Filter</description>
