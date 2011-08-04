@@ -22,7 +22,7 @@
  */
 
 #include "threads/Thread.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "guilib/GUILabelControl.h"  // for CInfoPortion
 
 class TiXmlNode;

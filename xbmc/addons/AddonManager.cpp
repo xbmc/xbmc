@@ -30,9 +30,7 @@
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
-#include "tinyXML/tinyxml.h"
-
-
+#include "utils/XBMCTinyXML.h"
 #ifdef HAS_VISUALISATION
 #include "Visualisation.h"
 #endif

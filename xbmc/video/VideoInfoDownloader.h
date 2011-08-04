@@ -29,7 +29,7 @@
 #include "filesystem/FileCurl.h"
 
 // forward declarations
-class TiXmlDocument;
+class CXBMCTinyXML;
 class CGUIDialogProgress;
 
 namespace ADDON
