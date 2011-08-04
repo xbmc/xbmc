@@ -50,4 +50,8 @@ public:
   {
     return SaveFile(filename.c_str());
   }
+  void setConvertToUtf8(bool value);
+  bool getConvertToUtf8();
+private:
+  bool convertToUtf8;
 };

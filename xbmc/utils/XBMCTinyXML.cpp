@@ -20,8 +20,12 @@
 #include "XBMCTinyXML.h"
 #include "filesystem/SpecialProtocol.h"
 #include "filesystem/File.h"
+#include "utils/CharsetConverter.h"
 
-CXBMCTinyXML::CXBMCTinyXML(){}
+CXBMCTinyXML::CXBMCTinyXML()
+{
+  convertToUtf8 = false;
+}
 
 CXBMCTinyXML::CXBMCTinyXML(const char *documentName)
 {
@@ -155,6 +159,13 @@ bool CXBMCTinyXML::LoadFile(const char *_filename, TiXmlEncoding encoding)
   free(buf);
   buf = 0;
 
+  if (convertToUtf8)
+  {
+    CStdString temp;
+    g_charsetConverter.unknownToUTF8(data, temp);
+    data = temp;
+  }
+
   Parse( data.c_str(), 0, encoding );
 
   if (  Error() )
@@ -174,4 +185,14 @@ bool CXBMCTinyXML::SaveFile(const char *filename) const
     return true;
   }
   return false;
+}
+
+void CXBMCTinyXML::setConvertToUtf8(bool value)
+{
+  convertToUtf8 = value;
+}
+
+bool CXBMCTinyXML::getConvertToUtf8()
+{
+  return convertToUtf8;
 }
