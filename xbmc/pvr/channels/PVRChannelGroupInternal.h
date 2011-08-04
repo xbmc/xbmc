@@ -35,71 +35,6 @@ namespace PVR
     friend class CPVRChannelGroups;
     friend class CPVRDatabase;
 
-  private:
-    int  m_iHiddenChannels; /*!< the amount of hidden channels in this container */
-
-    /*!
-     * @brief Load all channels from the database.
-     * @param bCompress Compress the database after changing anything.
-     * @return The amount of channels that were loaded.
-     */
-    int LoadFromDb(bool bCompress = false);
-
-    /*!
-     * @brief Load all channels from the clients.
-     * @return The amount of channels that were loaded.
-     */
-    int LoadFromClients(void);
-
-    /*!
-     * @brief Check if this group is the internal group containing all channels.
-     * @return True if it's the internal group, false otherwise.
-     */
-    bool IsInternalGroup(void) const { return true; }
-
-    /*!
-     * @brief Update the current channel list with the given list.
-     *
-     * Update the current channel list with the given list.
-     * Only the new channels will be present in the passed list after this call.
-     *
-     * @param channels The channels to use to update this list.
-     * @return True if everything went well, false otherwise.
-     */
-    bool UpdateGroupEntries(const CPVRChannelGroup &channels);
-
-    bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers);
-
-    /*!
-     * @brief Refresh the channel list from the clients.
-     */
-    bool Update(void);
-
-    /*!
-     * @brief Remove invalid channels and updates the channel numbers.
-     */
-    void Renumber(void);
-
-    /*!
-     * @brief Load the channels from the database.
-     *
-     * Load the channels from the database.
-     * If no channels are stored in the database, then the channels will be loaded from the clients.
-     *
-     * @return The amount of channels that were added.
-     */
-    int Load(void);
-
-    /*!
-     * @brief Update the vfs paths of all channels.
-     */
-    void UpdateChannelPaths(void);
-
-    /*!
-     * @brief Clear this channel list and destroy all channel instances in it.
-     */
-    void Unload();
-
   public:
     /*!
      * @brief Create a new internal channel group.
@@ -111,80 +46,145 @@ namespace PVR
      * @brief The amount of channels in this container.
      * @return The amount of channels in this container.
      */
-    int GetNumHiddenChannels() const { return m_iHiddenChannels; }
+    virtual int GetNumHiddenChannels() const { return m_iHiddenChannels; }
 
     /*!
      * @brief Update all channel numbers on timers.
      * @return True if the channel number were updated, false otherwise.
      */
-    bool UpdateTimers(void);
+    virtual bool UpdateTimers(void);
 
     /*!
      * @brief Persist changed or new data.
      * @return True if the channel was persisted, false otherwise.
      */
-    bool Persist(void);
+    virtual bool Persist(void);
 
     /*!
      * @brief Add or update a channel in this table.
      * @param channel The channel to update.
      * @return True if the channel was updated and persisted.
      */
-    bool UpdateChannel(const CPVRChannel &channel);
+    virtual bool UpdateChannel(const CPVRChannel &channel);
 
     /*!
      * @brief Add a channel to this internal group.
      * @param iChannelNumber The channel number to use for this channel or 0 to add it to the back.
      * @param bSortAndRenumber Set to false to not to sort the group after adding a channel
      */
-    bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
+    virtual bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
 
     /*!
      * @brief Callback for add-ons to update a channel.
      * @param channel The updated channel.
      * @return True if the channel has been updated succesfully, false otherwise.
      */
-    bool UpdateFromClient(const CPVRChannel &channel);
+    virtual bool UpdateFromClient(const CPVRChannel &channel);
 
     /*!
      * @see CPVRChannelGroup::IsGroupMember
      */
-    bool IsGroupMember(const CPVRChannel &channel) const;
+    virtual bool IsGroupMember(const CPVRChannel &channel) const;
 
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
+    virtual bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
 
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup
      */
-    bool RemoveFromGroup(CPVRChannel *channel);
+    virtual bool RemoveFromGroup(CPVRChannel *channel);
 
     /*!
      * @see CPVRChannelGroup::MoveChannel
      */
-    bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb = true);
+    virtual bool MoveChannel(unsigned int iOldChannelNumber, unsigned int iNewChannelNumber, bool bSaveInDb = true);
 
     /*!
      * @see CPVRChannelGroup::GetMembers
      */
-    int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
+    virtual int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
 
     /*!
      * @brief Check whether the group name is still correct after the language setting changed.
      */
-    void CheckGroupName(void);
+    virtual void CheckGroupName(void);
 
     /*!
      * @brief Create an EPG table for each channel.
      * @return True if all tables were created successfully, false otherwise.
      */
-    bool CreateChannelEpgs(void);
+    virtual bool CreateChannelEpgs(void);
 
     /*!
      * @return Cache all channel icons in this group.
      */
-    void CacheIcons(void);
+    virtual void CacheIcons(void);
+
+  protected:
+    /*!
+     * @brief Load all channels from the database.
+     * @param bCompress Compress the database after changing anything.
+     * @return The amount of channels that were loaded.
+     */
+    virtual int LoadFromDb(bool bCompress = false);
+
+    /*!
+     * @brief Load all channels from the clients.
+     * @return The amount of channels that were loaded.
+     */
+    virtual int LoadFromClients(void);
+
+    /*!
+     * @brief Check if this group is the internal group containing all channels.
+     * @return True if it's the internal group, false otherwise.
+     */
+    virtual bool IsInternalGroup(void) const { return true; }
+
+    /*!
+     * @brief Update the current channel list with the given list.
+     *
+     * Update the current channel list with the given list.
+     * Only the new channels will be present in the passed list after this call.
+     *
+     * @param channels The channels to use to update this list.
+     * @return True if everything went well, false otherwise.
+     */
+    virtual bool UpdateGroupEntries(const CPVRChannelGroup &channels);
+
+    virtual bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers);
+
+    /*!
+     * @brief Refresh the channel list from the clients.
+     */
+    virtual bool Update(void);
+
+    /*!
+     * @brief Remove invalid channels and updates the channel numbers.
+     */
+    virtual bool Renumber(void);
+
+    /*!
+     * @brief Load the channels from the database.
+     *
+     * Load the channels from the database.
+     * If no channels are stored in the database, then the channels will be loaded from the clients.
+     *
+     * @return The amount of channels that were added.
+     */
+    virtual int Load(void);
+
+    /*!
+     * @brief Update the vfs paths of all channels.
+     */
+    virtual void UpdateChannelPaths(void);
+
+    /*!
+     * @brief Clear this channel list and destroy all channel instances in it.
+     */
+    virtual void Unload(void);
+
+    int m_iHiddenChannels; /*!< the amount of hidden channels in this container */
   };
 }

@@ -37,21 +37,6 @@ namespace PVR
     friend class CPVRChannelsUpdateJob;
     friend class CPVRChannelGroupsUpdateJob;
 
-  private:
-    CPVRChannelGroups *m_groupsRadio; /*!< all radio channel groups */
-    CPVRChannelGroups *m_groupsTV;    /*!< all TV channel groups */
-    CCriticalSection   m_critSection;
-    bool               m_bUpdateChannelsOnly;
-    bool               m_bIsUpdating;
-
-  protected:
-    /*!
-     * @brief Update the contents of all the groups in this container.
-     * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool Update(bool bChannelsOnly = false);
-
   public:
     /*!
      * @brief Create a new container for all channel groups
@@ -67,50 +52,50 @@ namespace PVR
      * @brief Load all channel groups and all channels in those channel groups.
      * @return True if all groups were loaded, false otherwise.
      */
-    bool Load(void);
+    virtual bool Load(void);
 
     /*!
      * @brief Unload and destruct all channel groups and all channels in them.
      */
-    void Unload(void);
+    virtual void Unload(void);
 
     /*!
      * @brief Get the TV channel groups.
      * @return The TV channel groups.
      */
-    CPVRChannelGroups *GetTV(void) const { return Get(false); }
+    virtual CPVRChannelGroups *GetTV(void) const { return Get(false); }
 
     /*!
      * @brief Get the radio channel groups.
      * @return The radio channel groups.
      */
-    CPVRChannelGroups *GetRadio(void) const { return Get(true); }
+    virtual CPVRChannelGroups *GetRadio(void) const { return Get(true); }
 
     /*!
      * @brief Get the radio or TV channel groups.
      * @param bRadio If true, get the radio channel groups. Get the TV channel groups otherwise.
      * @return The requested groups.
      */
-    CPVRChannelGroups *Get(bool bRadio) const;
+    virtual CPVRChannelGroups *Get(bool bRadio) const;
 
     /*!
      * @brief Get the group containing all TV channels.
      * @return The group containing all TV channels.
      */
-    CPVRChannelGroupInternal *GetGroupAllTV(void)  const{ return GetGroupAll(false); }
+    virtual CPVRChannelGroupInternal *GetGroupAllTV(void)  const{ return GetGroupAll(false); }
 
     /*!
      * @brief Get the group containing all radio channels.
      * @return The group containing all radio channels.
      */
-    CPVRChannelGroupInternal *GetGroupAllRadio(void)  const{ return GetGroupAll(true); }
+    virtual CPVRChannelGroupInternal *GetGroupAllRadio(void)  const{ return GetGroupAll(true); }
 
     /*!
      * @brief Get the group containing all TV or radio channels.
      * @param bRadio If true, get the group containing all radio channels. Get the group containing all TV channels otherwise.
      * @return The requested group.
      */
-    CPVRChannelGroupInternal *GetGroupAll(bool bRadio) const;
+    virtual CPVRChannelGroupInternal *GetGroupAll(bool bRadio) const;
 
     /*!
      * @brief Get a group given it's ID.
@@ -118,28 +103,28 @@ namespace PVR
      * @param iGroupId The ID of the group.
      * @return The requested group or NULL if it wasn't found.
      */
-    const CPVRChannelGroup *GetById(bool bRadio, int iGroupId) const;
+    virtual const CPVRChannelGroup *GetById(bool bRadio, int iGroupId) const;
 
     /*!
      * @brief Get a group given it's ID.
      * @param iGroupId The ID of the group.
      * @return The requested group or NULL if it wasn't found.
      */
-    const CPVRChannelGroup *GetByIdFromAll(int iGroupId) const;
+    virtual const CPVRChannelGroup *GetByIdFromAll(int iGroupId) const;
 
     /*!
      * @brief Get a channel given it's database ID.
      * @param iChannelId The ID of the channel.
      * @return The channel or NULL if it wasn't found.
      */
-    const CPVRChannel *GetChannelById(int iChannelId) const;
+    virtual const CPVRChannel *GetChannelById(int iChannelId) const;
 
     /*!
      * @brief Get a channel given it's EPG ID.
      * @param iEpgId The EPG ID of the channel.
      * @return The channel or NULL if it wasn't found.
      */
-    const CPVRChannel *GetChannelByEpgId(int iEpgId) const;
+    virtual const CPVRChannel *GetChannelByEpgId(int iEpgId) const;
 
     /*!
      * @brief Get the groups list for a directory.
@@ -148,14 +133,14 @@ namespace PVR
      * @param bRadio Get radio channels or tv channels.
      * @return True if the list was filled succesfully.
      */
-    bool GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio);
+    virtual bool GetGroupsDirectory(const CStdString &strBase, CFileItemList *results, bool bRadio);
 
     /*!
      * @brief Get a channel given it's path.
      * @param strPath The path.
      * @return The channel or NULL if it wasn't found.
      */
-    const CPVRChannel *GetByPath(const CStdString &strPath);
+    virtual const CPVRChannel *GetByPath(const CStdString &strPath);
 
     /*!
      * @brief Get the directory for a path.
@@ -163,13 +148,13 @@ namespace PVR
      * @param results The file list to store the results in.
      * @return True if the directory was found, false if not.
      */
-    bool GetDirectory(const CStdString& strPath, CFileItemList &results);
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &results);
 
     /*!
      * @brief The total amount of unique channels in all containers.
      * @return The total amount of unique channels in all containers.
      */
-    int GetNumChannelsFromAll();
+    virtual int GetNumChannelsFromAll(void);
 
     /*!
      * @brief Get a channel given it's channel ID from all containers.
@@ -177,33 +162,47 @@ namespace PVR
      * @param iClientID The ID of the client.
      * @return The channel or NULL if it wasn't found.
      */
-    const CPVRChannel *GetByUniqueID(int iClientChannelNumber, int iClientID);
+    virtual const CPVRChannel *GetByUniqueID(int iClientChannelNumber, int iClientID);
 
     /*!
      * @brief Get a channel given it's channel ID from all containers.
      * @param iChannelID The channel ID.
      * @return The channel or NULL if it wasn't found.
      */
-    const CPVRChannel *GetByChannelIDFromAll(int iChannelID);
+    virtual const CPVRChannel *GetByChannelIDFromAll(int iChannelID);
 
-    const CPVRChannel *GetByClientFromAll(unsigned int iClientId, unsigned int iChannelUid);
+    virtual const CPVRChannel *GetByClientFromAll(unsigned int iClientId, unsigned int iChannelUid);
 
     /*!
      * @brief Get a channel given it's unique ID.
      * @param iUniqueID The unique ID of the channel.
      * @return The channel or NULL if it wasn't found.
      */
-    const CPVRChannel *GetByUniqueIDFromAll(int iUniqueID);
+    virtual const CPVRChannel *GetByUniqueIDFromAll(int iUniqueID);
 
     /*!
      * @brief Try to find missing channel icons automatically
      */
-    void SearchMissingChannelIcons(void);
+    virtual void SearchMissingChannelIcons(void);
 
     /*!
      * @brief The channel that was played last that has a valid client or NULL if there was none.
      * @return The requested channel.
      */
     virtual const CPVRChannel *GetLastPlayedChannel(void) const;
+
+  protected:
+    /*!
+     * @brief Update the contents of all the groups in this container.
+     * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
+     * @return True if the update was successful, false otherwise.
+     */
+    virtual bool Update(bool bChannelsOnly = false);
+
+    CPVRChannelGroups *m_groupsRadio; /*!< all radio channel groups */
+    CPVRChannelGroups *m_groupsTV;    /*!< all TV channel groups */
+    CCriticalSection   m_critSection;
+    bool               m_bUpdateChannelsOnly;
+    bool               m_bIsUpdating;
   };
 }

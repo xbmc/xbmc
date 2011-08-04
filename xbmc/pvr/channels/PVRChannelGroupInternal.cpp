@@ -263,9 +263,9 @@ int CPVRChannelGroupInternal::LoadFromClients(void)
   return size() - iCurSize;
 }
 
-void CPVRChannelGroupInternal::Renumber(void)
+bool CPVRChannelGroupInternal::Renumber(void)
 {
-  CPVRChannelGroup::Renumber();
+  bool bReturn(CPVRChannelGroup::Renumber());
 
   m_iHiddenChannels = 0;
   for (unsigned int iChannelPtr = 0; iChannelPtr < size();  iChannelPtr++)
@@ -275,6 +275,8 @@ void CPVRChannelGroupInternal::Renumber(void)
     else
       at(iChannelPtr).channel->UpdatePath(iChannelPtr);
   }
+
+  return bReturn;
 }
 
 bool CPVRChannelGroupInternal::IsGroupMember(const CPVRChannel &channel) const
