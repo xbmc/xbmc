@@ -856,7 +856,12 @@ int CBuiltins::Execute(const CStdString& execString)
     float seconds = 0;
     bool silent = false;
     if (params.size() > 2)
-      seconds = static_cast<float>(atoi(params[2].c_str())*60);
+    {
+      if (params[2].Find(':') == -1)
+        seconds = static_cast<float>(atoi(params[2].c_str())*60);
+      else
+        seconds = (float)StringUtils::TimeStringToSeconds(params[2]);
+    }
     else
     { // check if shutdown is specified in particular, and get the time for it
       CStdString strHeading;

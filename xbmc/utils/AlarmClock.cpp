@@ -67,7 +67,7 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
 
   CStdString strMessage;
 
-  strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60);
+  strMessage.Format(strStarted.c_str(),static_cast<int>(event.m_fSecs)/60,static_cast<int>(event.m_fSecs)%60);
 
   if(!bSilent)
      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, strAlarmClock, strMessage);
