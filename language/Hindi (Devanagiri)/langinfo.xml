@@ -50,7 +50,7 @@
 <!-- 57002 x-iscii-de ISCII Devanagari                  -->
 
 
-<language>
+<language locale="hi">
   <charsets>
     <gui unicodefont="true">CP65001</gui>                
     <subtitle>CP65001</subtitle>
@@ -63,7 +63,7 @@
   </dvd>
 
   <regions>
-    <region name="USA">
+    <region name="USA" locale="US">
       <dateshort>MM/DD/YYYY</dateshort>
       <datelong>DDDD, MMMM D, YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
@@ -71,7 +71,7 @@
       <speedunit>mph</speedunit>
     </region>
 
-    <region name="India (12h)">
+    <region name="India (12h)" locale="IN">
       <dateshort>DD/MM/YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="AM" symbolPM="PM">h:mm:ss xx</time>
