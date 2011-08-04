@@ -85,7 +85,8 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
 
 bool CGUIWindowPVRRecordings::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PARENT_DIR)
+  if (action.GetID() == ACTION_PARENT_DIR ||
+      action.GetID() == ACTION_NAV_BACK)
   {
     if (m_parent->m_vecItems->m_strPath != "pvr://recordings/")
       m_parent->GoParentFolder();
