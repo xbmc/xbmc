@@ -1112,6 +1112,8 @@ uint32_t CButtonTranslator::TranslateRemoteString(const char *szButton)
   else if (strButton.Equals("recordedtv")) buttonCode = XINPUT_IR_REMOTE_RECORDED_TV;
   else if (strButton.Equals("guide")) buttonCode = XINPUT_IR_REMOTE_GUIDE;
   else if (strButton.Equals("livetv")) buttonCode = XINPUT_IR_REMOTE_LIVE_TV;
+  else if (strButton.Equals("liveradio")) buttonCode = XINPUT_IR_REMOTE_LIVE_RADIO;
+  else if (strButton.Equals("epgsearch")) buttonCode = XINPUT_IR_REMOTE_EPG_SEARCH;
   else if (strButton.Equals("star")) buttonCode = XINPUT_IR_REMOTE_STAR;
   else if (strButton.Equals("hash")) buttonCode = XINPUT_IR_REMOTE_HASH;
   else if (strButton.Equals("clear")) buttonCode = XINPUT_IR_REMOTE_CLEAR;

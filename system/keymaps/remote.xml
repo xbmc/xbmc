@@ -66,8 +66,13 @@
       <myvideo>XBMC.ActivateWindow(MyVideos)</myvideo>
       <mymusic>XBMC.ActivateWindow(MyMusic)</mymusic>
       <mypictures>XBMC.ActivateWindow(MyPictures)</mypictures>
-      <mytv>XBMC.ActivateWindow(MyTV)</mytv>
-      <red>XBMC.ActivateWindow(MyTV)</red>
+      <mytv>XBMC.ActivateWindow(MyPVR)</mytv>
+      <guide>XBMC.ActivateWindowAndFocus(MyPVR, 31,0, 10,0)</guide>
+      <livetv>XBMC.ActivateWindowAndFocus(MyPVR, 32,0, 11,0)</livetv>
+      <liveradio>XBMC.ActivateWindowAndFocus(MyPVR, 33,0, 12,0)</liveradio>
+      <recordedtv>XBMC.ActivateWindowAndFocus(MyPVR, 34,0, 13,0)</recordedtv>
+      <epgsearch>XBMC.ActivateWindowAndFocus(MyPVR, 35,0, 14,0)</epgsearch>
+      <red>XBMC.ActivateWindow(MyPVR)</red>
       <green>XBMC.ActivateWindow(MyVideos)</green>
       <yellow>XBMC.ActivateWindow(MyMusic)</yellow>
       <blue>XBMC.ActivateWindow(MyPictures)</blue>

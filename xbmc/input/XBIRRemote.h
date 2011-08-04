@@ -91,6 +91,9 @@
 #define XINPUT_IR_REMOTE_PLAYLIST       255
 #define XINPUT_IR_REMOTE_GUIDE          256
 
+#define XINPUT_IR_REMOTE_LIVE_RADIO     248
+#define XINPUT_IR_REMOTE_EPG_SEARCH     247
+
 typedef struct _XINPUT_IR_REMOTE
 {
   BYTE wButtons;
