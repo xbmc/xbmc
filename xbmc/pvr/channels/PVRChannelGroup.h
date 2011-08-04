@@ -56,9 +56,8 @@ namespace PVR
      * @param bRadio True if this group holds radio channels.
      * @param iGroupId The database ID of this group.
      * @param strGroupName The name of this group.
-     * @param iSortOrder The sort order to use.
      */
-    CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName, int iSortOrder);
+    CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName);
 
     /*!
      * @brief Create a new channel group.
@@ -188,18 +187,6 @@ namespace PVR
      * @return The name of this group.
      */
     virtual const CStdString &GroupName(void) const { return m_strGroupName; }
-
-    /*!
-     * @brief The sort order of this group.
-     * @return The sort order of this group.
-     */
-    virtual int SortOrder(void) const { return m_iSortOrder; }
-
-    /*!
-     * @brief Change the sort order of this group.
-     * @param iSortOrder The new sort order of this group.
-     */
-    virtual void SetSortOrder(int iSortOrder) { m_iSortOrder = iSortOrder; }
 
     /*! @name Sort methods
      */
@@ -394,7 +381,6 @@ namespace PVR
     bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
     int              m_iGroupId;                    /*!< The ID of this group in the database */
     CStdString       m_strGroupName;                /*!< The name of this group */
-    int              m_iSortOrder;                  /*!< The sort order to use */
     bool             m_bLoaded;                     /*!< True if this container is loaded, false otherwise */
     bool             m_bChanged;                    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
     bool             m_bUsingBackendChannelOrder;   /*!< true to use the channel order from backends, false otherwise */

@@ -40,7 +40,6 @@ CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   m_iHiddenChannels = 0;
   m_iGroupId        = bRadio ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV;
   m_strGroupName    = g_localizeStrings.Get(bRadio ? 19216 : 19217);
-  m_iSortOrder      = 0;
 }
 
 int CPVRChannelGroupInternal::Load(void)

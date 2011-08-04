@@ -66,7 +66,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
 
 bool CPVRChannelGroups::UpdateFromClient(const CPVRChannelGroup &group)
 {
-  CPVRChannelGroup *newGroup = new CPVRChannelGroup(group.IsRadio(), -1, group.GroupName(), group.SortOrder());
+  CPVRChannelGroup *newGroup = new CPVRChannelGroup(group.IsRadio(), -1, group.GroupName());
   push_back(newGroup);
 
   return true;
@@ -86,7 +86,7 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
 
   if (iIndex < 0)
   {
-    CPVRChannelGroup *newGroup = new CPVRChannelGroup(m_bRadio, group.GroupID(), group.GroupName(), group.SortOrder());
+    CPVRChannelGroup *newGroup = new CPVRChannelGroup(m_bRadio, group.GroupID(), group.GroupName());
     if (bSaveInDb)
       newGroup->Persist();
 
@@ -96,7 +96,6 @@ bool CPVRChannelGroups::Update(const CPVRChannelGroup &group, bool bSaveInDb)
   {
     at(iIndex)->SetGroupID(group.GroupID());
     at(iIndex)->SetGroupName(group.GroupName());
-    at(iIndex)->SetSortOrder(group.SortOrder());
 
     if (bSaveInDb)
       at(iIndex)->Persist();
@@ -215,7 +214,6 @@ bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
     {
       CPVRChannelGroup *newGroup = new CPVRChannelGroup(m_bRadio);
       newGroup->SetGroupName(group->GroupName());
-      newGroup->SetSortOrder(group->SortOrder());
       push_back(newGroup);
     }
   }
