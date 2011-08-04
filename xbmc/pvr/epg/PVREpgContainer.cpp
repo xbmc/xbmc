@@ -62,7 +62,7 @@ int PVR::CPVREpgContainer::GetEPGAll(CFileItemList* results, bool bRadio /* = fa
     return -1;
 
   CSingleLock lock(m_critSection);
-  for (int iChannelPtr = 0; iChannelPtr < group->GetNumChannels(); iChannelPtr++)
+  for (int iChannelPtr = 0; iChannelPtr < group->Size(); iChannelPtr++)
   {
     CPVRChannel *channel = (CPVRChannel *) group->GetByIndex(iChannelPtr);
     if (!channel || channel->IsHidden())
@@ -135,7 +135,7 @@ int PVR::CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
   CSingleLock lock(m_critSection);
   int iInitialSize           = results->Size();
 
-  for (int iChannelPtr = 0; iChannelPtr < channels->GetNumChannels(); iChannelPtr++)
+  for (int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
   {
     CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
     CPVREpg *epg = channel->GetEPG();
@@ -162,7 +162,7 @@ int PVR::CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
   CSingleLock lock(m_critSection);
   int iInitialSize           = results->Size();
 
-  for (int iChannelPtr = 0; iChannelPtr < channels->GetNumChannels(); iChannelPtr++)
+  for (int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
   {
     CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
     CPVREpg *epg = channel->GetEPG();

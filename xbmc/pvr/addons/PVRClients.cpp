@@ -846,7 +846,7 @@ bool CPVRClients::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, tim
 int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
 {
   *error = PVR_ERROR_NO_ERROR;
-  int iCurSize = group->GetNumChannels();
+  int iCurSize = group->Size();
   CLIENTMAP clients;
   GetConnectedClients(&clients);
 
@@ -868,7 +868,7 @@ int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
     itrClients++;
   }
 
-  return group->GetNumChannels() - iCurSize;
+  return group->Size() - iCurSize;
 }
 
 bool CPVRClients::HasChannelGroupSupport(int iClientId)
@@ -903,7 +903,7 @@ int CPVRClients::GetChannelGroups(CPVRChannelGroups *groups, PVR_ERROR *error)
 int CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *error)
 {
   *error = PVR_ERROR_NO_ERROR;
-  int iCurSize = group->GetNumChannels();
+  int iCurSize = group->Size();
   CLIENTMAP clients;
   GetConnectedClients(&clients);
 
@@ -923,7 +923,7 @@ int CPVRClients::GetChannelGroupMembers(CPVRChannelGroup *group, PVR_ERROR *erro
     itrClients++;
   }
 
-  return group->GetNumChannels() - iCurSize;
+  return group->Size() - iCurSize;
 }
 
 bool CPVRClients::HasMenuHooks(int iClientID)
