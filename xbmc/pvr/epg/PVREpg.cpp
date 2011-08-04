@@ -42,6 +42,12 @@ PVR::CPVREpg::CPVREpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
   SetChannel(channel);
 }
 
+PVR::CPVREpg::~CPVREpg(void)
+{
+  if (m_Channel)
+    m_Channel->m_EPG = NULL;
+}
+
 bool PVR::CPVREpg::HasValidEntries(void) const
 {
   CSingleLock lock(m_critSection);

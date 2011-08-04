@@ -70,6 +70,8 @@ namespace PVR
      */
     CPVREpg(CPVRChannel *channel, bool bLoadedFromDb = false);
 
+    virtual ~CPVREpg(void);
+
     /*!
      * @brief Check whether this EPG contains valid entries.
      * @return True if it has valid entries, false if not.
