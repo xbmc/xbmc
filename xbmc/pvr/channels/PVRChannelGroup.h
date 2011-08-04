@@ -33,13 +33,13 @@ namespace PVR
   class CPVRChannelGroups;
   class CPVRChannelGroupInternal;
 
-  typedef struct {
+  typedef struct
+  {
     CPVRChannel *channel;
     unsigned int iChannelNumber;
   } PVRChannelGroupMember;
 
   /** A group of channels */
-
   class CPVRChannelGroup : private std::vector<PVRChannelGroupMember>,
                            private Observer,
                            public Observable,
@@ -49,73 +49,6 @@ namespace PVR
     friend class CPVRChannelGroups;
     friend class CPVRChannelGroupInternal;
     friend class CPVRDatabase;
-
-  private:
-    bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
-    int              m_iGroupId;                    /*!< The ID of this group in the database */
-    CStdString       m_strGroupName;                /*!< The name of this group */
-    int              m_iSortOrder;                  /*!< The sort order to use */
-    bool             m_bLoaded;                     /*!< True if this container is loaded, false otherwise */
-    bool             m_bChanged;                    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
-    bool             m_bUsingBackendChannelOrder;   /*!< true to use the channel order from backends, false otherwise */
-    bool             m_bUsingBackendChannelNumbers; /*!< true to use the channel numbers from 1 backend, false otherwise */
-    CCriticalSection m_critSection;
-
-    /*!
-     * @brief Load the channels stored in the database.
-     * @param bCompress If true, compress the database after storing the channels.
-     * @return The amount of channels that were added.
-     */
-    virtual int LoadFromDb(bool bCompress = false);
-
-    /*!
-     * @brief Update the current channel list with the given list.
-     *
-     * Update the current channel list with the given list.
-     * Only the new channels will be present in the passed list after this call.
-     *
-     * @param channels The channels to use to update this list.
-     * @return True if everything went well, false otherwise.
-     */
-    virtual bool UpdateGroupEntries(const CPVRChannelGroup &channels);
-
-    virtual bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers);
-    virtual bool RemoveDeletedChannels(const CPVRChannelGroup &channels);
-
-    /*!
-     * @brief Remove invalid channels from this container.
-     */
-    virtual void RemoveInvalidChannels(void);
-
-    /*!
-     * @brief Load the channels from the database.
-     * @return The amount of channels that were added or -1 if an error occured.
-     */
-    virtual int Load(void);
-
-    /*!
-     * @brief Clear this channel list.
-     */
-    virtual void Unload(void);
-
-    /*!
-     * @brief Remove a channel.
-     * @param iUniqueID The ID of the channel to delete.
-     * @return True if the channel was found and removed, false otherwise.
-     */
-    bool RemoveByUniqueID(int iUniqueID);
-
-    /*!
-     * @brief Load the channels from the clients.
-     * @return The amount of channels that were added.
-     */
-    virtual int LoadFromClients(void);
-
-    /*!
-     * @brief Remove invalid channels and updates the channel numbers.
-     * @return True if something changed, false otherwise.
-     */
-    bool Renumber(void);
 
   public:
     /*!
@@ -147,7 +80,7 @@ namespace PVR
     virtual bool operator ==(const CPVRChannelGroup &right) const;
     virtual bool operator !=(const CPVRChannelGroup &right) const;
 
-    int Size(void) const { return size(); }
+    virtual int Size(void) const { return size(); }
 
     /*!
      * @brief Refresh the channel list from the clients.
@@ -411,9 +344,76 @@ namespace PVR
     /*!
      * @brief Reset the channel number cache if this is the selected group in the UI.
      */
-    void ResetChannelNumberCache(void);
+    virtual void ResetChannelNumberCache(void);
 
-    void OnJobComplete(unsigned int jobID, bool success, CJob* job) {}
+    virtual void OnJobComplete(unsigned int jobID, bool success, CJob* job) {}
+
+  protected:
+    /*!
+     * @brief Load the channels stored in the database.
+     * @param bCompress If true, compress the database after storing the channels.
+     * @return The amount of channels that were added.
+     */
+    virtual int LoadFromDb(bool bCompress = false);
+
+    /*!
+     * @brief Update the current channel list with the given list.
+     *
+     * Update the current channel list with the given list.
+     * Only the new channels will be present in the passed list after this call.
+     *
+     * @param channels The channels to use to update this list.
+     * @return True if everything went well, false otherwise.
+     */
+    virtual bool UpdateGroupEntries(const CPVRChannelGroup &channels);
+
+    virtual bool AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers);
+    virtual bool RemoveDeletedChannels(const CPVRChannelGroup &channels);
+
+    /*!
+     * @brief Remove invalid channels from this container.
+     */
+    virtual void RemoveInvalidChannels(void);
+
+    /*!
+     * @brief Load the channels from the database.
+     * @return The amount of channels that were added or -1 if an error occured.
+     */
+    virtual int Load(void);
+
+    /*!
+     * @brief Clear this channel list.
+     */
+    virtual void Unload(void);
+
+    /*!
+     * @brief Remove a channel.
+     * @param iUniqueID The ID of the channel to delete.
+     * @return True if the channel was found and removed, false otherwise.
+     */
+    virtual bool RemoveByUniqueID(int iUniqueID);
+
+    /*!
+     * @brief Load the channels from the clients.
+     * @return The amount of channels that were added.
+     */
+    virtual int LoadFromClients(void);
+
+    /*!
+     * @brief Remove invalid channels and updates the channel numbers.
+     * @return True if something changed, false otherwise.
+     */
+    virtual bool Renumber(void);
+
+    bool             m_bRadio;                      /*!< true if this container holds radio channels, false if it holds TV channels */
+    int              m_iGroupId;                    /*!< The ID of this group in the database */
+    CStdString       m_strGroupName;                /*!< The name of this group */
+    int              m_iSortOrder;                  /*!< The sort order to use */
+    bool             m_bLoaded;                     /*!< True if this container is loaded, false otherwise */
+    bool             m_bChanged;                    /*!< true if anything changed in this group that hasn't been persisted, false otherwise */
+    bool             m_bUsingBackendChannelOrder;   /*!< true to use the channel order from backends, false otherwise */
+    bool             m_bUsingBackendChannelNumbers; /*!< true to use the channel numbers from 1 backend, false otherwise */
+    CCriticalSection m_critSection;
   };
 
   class CPVRPersistGroupJob : public CJob
