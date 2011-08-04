@@ -172,14 +172,6 @@ bool cVNSIDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
   m_channelinfo = channelinfo;
   m_Streams.iStreamCount  = 0;
 
-  while (m_Streams.iStreamCount == 0 && !ConnectionLost())
-  {
-    DemuxPacket* pkg = Read();
-    if(!pkg)
-      return false;
-    PVR->FreeDemuxPacket(pkg);
-  }
-
   return !ConnectionLost();
 }
 
