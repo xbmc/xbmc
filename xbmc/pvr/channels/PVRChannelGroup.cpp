@@ -130,19 +130,6 @@ bool CPVRChannelGroup::Update(void)
   return UpdateGroupEntries(PVRChannels_tmp);
 }
 
-bool CPVRChannelGroup::Update(const CPVRChannelGroup &group)
-{
-  CSingleLock lock(m_critSection);
-  if (!m_strGroupName.Equals(group.GroupName()) || m_iSortOrder != group.SortOrder())
-  {
-    m_bChanged = true;
-    m_strGroupName = group.GroupName();
-    m_iSortOrder   = group.SortOrder();
-  }
-
-  return true;
-}
-
 bool CPVRChannelGroup::SetChannelNumber(CPVRChannel *channel, unsigned int iChannelNumber)
 {
   bool bReturn(false);
@@ -515,21 +502,6 @@ int CPVRChannelGroup::LoadFromClients(void)
     CLog::Log(LOGWARNING, "PVRChannelGroup - %s - got bad error (%d) on call to GetChannelGroupMembers", __FUNCTION__, error);
 
   return size() - iCurSize;
-}
-
-bool CPVRChannelGroup::RemoveByUniqueID(int iUniqueID)
-{
-  for (unsigned int ptr = 0; ptr < size(); ptr++)
-  {
-    if (at(ptr).channel->UniqueID() == iUniqueID)
-    {
-      erase(begin() + ptr);
-      m_bChanged = true;
-      return true;
-    }
-  }
-
-  return false;
 }
 
 bool CPVRChannelGroup::AddAndUpdateChannels(const CPVRChannelGroup &channels, bool bUseBackendChannelNumbers)
