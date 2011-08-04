@@ -1479,7 +1479,7 @@ static void flush_dpb(AVCodecContext *avctx){
             h->delayed_pic[i]->reference= 0;
         h->delayed_pic[i]= NULL;
     }
-    h->hwaccel_internal = 0;
+    h->s.decoder_sync = 0;
     h->outputed_poc= INT_MIN;
     h->prev_interlaced_frame = 1;
     idr(h);
@@ -1849,7 +1849,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             return -1;
         s->first_field = 0;
         h->prev_interlaced_frame = 1;
-        h->hwaccel_internal = 0;
+        s->decoder_sync = 0;
 
         init_scan_tables(h);
         ff_h264_alloc_tables(h);

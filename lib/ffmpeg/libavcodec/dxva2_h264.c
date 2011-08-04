@@ -432,10 +432,10 @@ static int end_frame(AVCodecContext *avctx)
         return -1;
 
     // Wait for an I-frame before start decoding. Workaround for buggy video drivers
-    if (!h->hwaccel_internal) {
+    if (!s->decoder_sync) {
         if (!(ctx_pic->pp.wBitFields & (1 << 15)))
             return -1;
-        h->hwaccel_internal = 1;
+        s->decoder_sync = 1;
     }
 
     return ff_dxva2_common_end_frame(avctx, s,

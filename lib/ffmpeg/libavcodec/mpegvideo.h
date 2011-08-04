@@ -492,6 +492,8 @@ typedef struct MpegEncContext {
     int next_p_frame_damaged;        ///< set if the next p frame is damaged, to avoid showing trashed b frames
     int error_recognition;
 
+    int decoder_sync;                ///< used to workaround decoding in some buggy video drivers
+
     ParseContext parse_context;
 
     /* H.263 specific */
