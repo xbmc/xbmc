@@ -144,7 +144,7 @@ void CEpgContainer::Process(void)
   m_iLastEpgActiveTagCheck = 0;
   CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
 
-  if (m_database.Open())
+  if (!m_bIgnoreDbForClient && m_database.Open())
   {
     m_database.DeleteOldEpgEntries();
     m_database.Get(*this);
