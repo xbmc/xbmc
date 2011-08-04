@@ -109,7 +109,7 @@ void CPasswordManager::Load()
   CStdString passwordsFile = g_settings.GetUserDataItem("passwords.xml");
   if (XFILE::CFile::Exists(passwordsFile))
   {
-    TiXmlDocument doc;
+    CXBMCTinyXML doc;
     if (!doc.LoadFile(passwordsFile))
     {
       CLog::Log(LOGERROR, "%s - Unable to load: %s, Line %d\n%s", 
@@ -141,7 +141,7 @@ void CPasswordManager::Save() const
   if (!m_permanentCache.size())
     return;
 
-  TiXmlDocument doc;
+  CXBMCTinyXML doc;
   TiXmlElement rootElement("passwords");
   TiXmlNode *root = doc.InsertEndChild(rootElement);
   if (!root)

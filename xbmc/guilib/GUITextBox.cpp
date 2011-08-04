@@ -22,7 +22,7 @@
 #include "GUITextBox.h"
 #include "utils/CharsetConverter.h"
 #include "GUIInfoManager.h"
-#include "tinyXML/tinyxml.h"
+#include "utils/XBMCTinyXML.h"
 #include "utils/MathUtils.h"
 
 using namespace std;
