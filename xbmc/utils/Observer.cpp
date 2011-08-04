@@ -19,6 +19,7 @@
  *
  */
 
+#include "Application.h"
 #include "Observer.h"
 #include "threads/SingleLock.h"
 #include "utils/JobManager.h"
@@ -164,7 +165,7 @@ void Observable::UnregisterObserver(Observer *obs)
 void Observable::NotifyObservers(const CStdString& strMessage /* = "" */, bool bAsync /* = false */)
 {
   CSingleLock lock(m_obsCritSection);
-  if (m_bObservableChanged)
+  if (m_bObservableChanged && !g_application.m_bStop)
   {
     if (bAsync && m_bAsyncAllowed)
       CJobManager::GetInstance().AddJob(new ObservableMessageJob(*this, strMessage), NULL);

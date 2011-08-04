@@ -19,6 +19,7 @@
  *
  */
 
+#include "Application.h"
 #include "PVRGUIInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/StringUtils.h"
@@ -170,7 +171,7 @@ void CPVRGUIInfo::Process(void)
   g_PVRTimers->RegisterObserver(this);
   UpdateTimersCache();
 
-  while (!m_bStop)
+  while (!g_application.m_bStop && !m_bStop)
   {
     ToggleShowInfo();
     Sleep(0);

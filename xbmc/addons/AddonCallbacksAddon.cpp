@@ -211,7 +211,7 @@ char* CAddonCallbacksAddon::UnknownToUTF8(const char *strSource)
 const char* CAddonCallbacksAddon::GetLocalizedString(const void* addonData, long dwCode)
 {
   CAddonCallbacks* helper = (CAddonCallbacks*) addonData;
-  if (!helper)
+  if (!helper || g_application.m_bStop)
     return NULL;
 
   CAddonCallbacksAddon* addonHelper = helper->GetHelperAddon();

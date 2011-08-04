@@ -19,6 +19,7 @@
  *
  */
 
+#include "Application.h"
 #include "threads/SingleLock.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
@@ -50,7 +51,7 @@ CEpgContainer::CEpgContainer(void) :
 
 CEpgContainer::~CEpgContainer(void)
 {
-  Clear();
+  Unload();
 }
 
 CEpgContainer &CEpgContainer::Get(void)
@@ -339,7 +340,7 @@ void CEpgContainer::UpdateProgressDialog(int iCurrent, int iMax, const CStdStrin
 bool CEpgContainer::InterruptUpdate(void) const
 {
   CSingleLock lock(m_critSection);
-  return m_bStop;
+  return g_application.m_bStop || m_bStop;
 }
 
 bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
