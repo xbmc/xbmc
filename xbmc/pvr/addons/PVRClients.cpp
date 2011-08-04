@@ -1190,7 +1190,7 @@ int CPVRClients::ReadRecordedStream(void* lpBuf, int64_t uiBufSize)
 
 void CPVRClients::Process(void)
 {
-  while (!m_bStop)
+  while (!g_application.m_bStop && !m_bStop)
   {
     UpdateAndInitialiseClients();
     UpdateCharInfoSignalStatus();

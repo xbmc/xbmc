@@ -276,7 +276,7 @@ void CPVRManager::Process(void)
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
 
   /* main loop */
-  while (!m_bStop)
+  while (!g_application.m_bStop && !m_bStop)
   {
     /* execute the next pending jobs if there are any */
     if (m_addons->HasConnectedClients())
