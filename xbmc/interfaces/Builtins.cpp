@@ -854,7 +854,6 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     // format is alarmclock(name,command[,seconds,true]);
     float seconds = 0;
-    bool silent = false;
     if (params.size() > 2)
     {
       if (params[2].Find(':') == -1)
@@ -878,13 +877,21 @@ int CBuiltins::Execute(const CStdString& execString)
       else
         return false;
     }
-    if (params.size() > 3 && params[3].CompareNoCase("true") == 0)
-      silent = true;
+    bool silent = false;
+    bool loop = false;
+    for (unsigned int i = 3; i < params.size() ; i++)
+    {
+      // check "true" for backward comp
+      if (params[i].CompareNoCase("true") == 0 || params[i].CompareNoCase("silent") == 0)
+        silent = true;
+      else if (params[i].CompareNoCase("loop") == 0)
+        loop = true;
+    }
 
     if( g_alarmClock.IsRunning() )
       g_alarmClock.Stop(params[0],silent);
 
-    g_alarmClock.Start(params[0], seconds, params[1], silent);
+    g_alarmClock.Start(params[0], seconds, params[1], silent, loop);
   }
   else if (execute.Equals("notification"))
   {
