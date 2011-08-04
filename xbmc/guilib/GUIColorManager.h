@@ -38,7 +38,7 @@
 
 #include <map>
 
-class TiXmlDocument;
+class CXBMCTinyXML;
 
 typedef uint32_t color_t;
 
@@ -55,7 +55,7 @@ public:
   void Clear();
 
 protected:
-  bool LoadXML(TiXmlDocument &xmlDoc);
+  bool LoadXML(CXBMCTinyXML &xmlDoc);
 
   std::map<CStdString, color_t> m_colors;
   typedef std::map<CStdString, color_t>::iterator iColor;

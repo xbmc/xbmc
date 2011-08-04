@@ -59,7 +59,7 @@ void CKeymapLoader::ParseDeviceMappings()
   {
     parsedMappings = true;
     CStdString file("special://xbmc/system/deviceidmappings.xml");
-    TiXmlDocument deviceXML;
+    CXBMCTinyXML deviceXML;
     if (!CFile::Exists(file) || !deviceXML.LoadFile(file))
       return;
 
