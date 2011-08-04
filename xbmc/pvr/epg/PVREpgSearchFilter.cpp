@@ -67,7 +67,7 @@ bool PVR::PVREpgSearchFilter::MatchChannelGroup(const CPVREpgInfoTag &tag) const
   if (m_iChannelGroup != EPG_SEARCH_UNSET)
   {
     const CPVRChannelGroup *group = g_PVRChannelGroups->GetByIdFromAll(m_iChannelGroup);
-    bReturn = (group && group->IsGroupMember(tag.ChannelTag()));
+    bReturn = (group && group->IsGroupMember(*tag.ChannelTag()));
   }
 
   return bReturn;

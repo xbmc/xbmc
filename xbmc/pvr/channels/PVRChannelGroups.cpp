@@ -177,7 +177,7 @@ void CPVRChannelGroups::RemoveFromAllGroups(CPVRChannel *channel)
   for (unsigned int iGroupPtr = 2; iGroupPtr < size(); iGroupPtr++)
   {
     CPVRChannelGroup *group = (CPVRChannelGroup *) at(iGroupPtr);
-    group->RemoveFromGroup(channel);
+    group->RemoveFromGroup(*channel);
   }
 }
 
@@ -449,7 +449,7 @@ bool CPVRChannelGroups::AddChannelToGroup(CPVRChannel *channel, int iGroupId)
   CPVRChannelGroup *group = (CPVRChannelGroup *) GetById(iGroupId);
   if (group)
   {
-    bReturn = group->AddToGroup(channel);
+    bReturn = group->AddToGroup(*channel);
   }
 
   return bReturn;

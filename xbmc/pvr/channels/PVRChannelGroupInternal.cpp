@@ -91,10 +91,10 @@ bool CPVRChannelGroupInternal::UpdateFromClient(const CPVRChannel &channel)
   else
     realChannel = new CPVRChannel(channel);
 
-  return CPVRChannelGroup::AddToGroup(realChannel, 0, false);
+  return CPVRChannelGroup::AddToGroup(*realChannel, 0, false);
 }
 
-bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
+bool CPVRChannelGroupInternal::InsertInGroup(CPVRChannel &channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
 {
   CSingleLock lock(m_critSection);
   return CPVRChannelGroup::AddToGroup(channel, iChannelNumber, bSortAndRenumber);
@@ -125,16 +125,14 @@ bool CPVRChannelGroupInternal::UpdateTimers(void)
   return true;
 }
 
-bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel *channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
+bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel &channel, int iChannelNumber /* = 0 */, bool bSortAndRenumber /* = true */)
 {
   CSingleLock lock(m_critSection);
 
   bool bReturn(false);
-  if (!channel)
-    return bReturn;
 
   /* get the actual channel since this is called from a fileitemlist copy */
-  CPVRChannel *realChannel = (CPVRChannel *) GetByChannelID(channel->ChannelID());
+  CPVRChannel *realChannel = (CPVRChannel *) GetByChannelID(channel.ChannelID());
   if (!realChannel)
     return bReturn;
 
@@ -156,23 +154,20 @@ bool CPVRChannelGroupInternal::AddToGroup(CPVRChannel *channel, int iChannelNumb
   return bReturn;
 }
 
-bool CPVRChannelGroupInternal::RemoveFromGroup(CPVRChannel *channel)
+bool CPVRChannelGroupInternal::RemoveFromGroup(const CPVRChannel &channel)
 {
-  if (!channel)
-    return false;
-
   CSingleLock lock(m_critSection);
 
   /* check if this channel is currently playing if we are hiding it */
   CPVRChannel currentChannel;
-  if (g_PVRManager.GetCurrentChannel(&currentChannel) && currentChannel == *channel)
+  if (g_PVRManager.GetCurrentChannel(&currentChannel) && currentChannel == channel)
   {
     CGUIDialogOK::ShowAndGetInput(19098,19101,0,19102);
     return false;
   }
 
   /* get the actual channel since this is called from a fileitemlist copy */
-  CPVRChannel *realChannel = (CPVRChannel *) GetByChannelID(channel->ChannelID());
+  CPVRChannel *realChannel = (CPVRChannel *) GetByChannelID(channel.ChannelID());
   if (!realChannel)
     return false;
 
@@ -202,9 +197,9 @@ bool CPVRChannelGroupInternal::MoveChannel(unsigned int iOldChannelNumber, unsig
   return CPVRChannelGroup::MoveChannel(iOldChannelNumber, iNewChannelNumber, bSaveInDb);
 }
 
-int CPVRChannelGroupInternal::GetMembers(CFileItemList *results, bool bGroupMembers /* = true */) const
+int CPVRChannelGroupInternal::GetMembers(CFileItemList &results, bool bGroupMembers /* = true */) const
 {
-  int iOrigSize = results->Size();
+  int iOrigSize = results.Size();
   CSingleLock lock(m_critSection);
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
@@ -216,11 +211,11 @@ int CPVRChannelGroupInternal::GetMembers(CFileItemList *results, bool bGroupMemb
     if (bGroupMembers != channel->IsHidden())
     {
       CFileItemPtr pFileItem(new CFileItem(*channel));
-      results->Add(pFileItem);
+      results.Add(pFileItem);
     }
   }
 
-  return results->Size() - iOrigSize;
+  return results.Size() - iOrigSize;
 }
 
 int CPVRChannelGroupInternal::LoadFromDb(bool bCompress /* = false */)
@@ -333,7 +328,7 @@ bool CPVRChannelGroupInternal::AddAndUpdateChannels(const CPVRChannelGroup &chan
 
       /* insert the new channel in this group */
       int iChannelNumber = bUseBackendChannelNumbers ? member.channel->ClientChannelNumber() : 0;
-      InsertInGroup(newChannel, iChannelNumber, false);
+      InsertInGroup(*newChannel, iChannelNumber, false);
 
       bReturn = true;
       CLog::Log(LOGINFO,"PVRChannelGroupInternal - %s - added %s channel '%s' at position %d",

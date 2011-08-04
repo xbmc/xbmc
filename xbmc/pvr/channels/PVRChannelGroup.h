@@ -91,7 +91,7 @@ namespace PVR
      * @param channel The channel to change the channel number for.
      * @param iChannelNumber The new channel number.
      */
-    virtual bool SetChannelNumber(CPVRChannel *channel, unsigned int iChannelNumber);
+    virtual bool SetChannelNumber(const CPVRChannel &channel, unsigned int iChannelNumber);
 
     /*!
      * @brief Move a channel from position iOldIndex to iNewIndex.
@@ -113,7 +113,7 @@ namespace PVR
      * @param channel The channel to remove.
      * @return True if the channel was found and removed, false otherwise.
      */
-    virtual bool RemoveFromGroup(CPVRChannel *channel);
+    virtual bool RemoveFromGroup(const CPVRChannel &channel);
 
     /*!
      * @brief Add a channel to this container.
@@ -122,7 +122,7 @@ namespace PVR
      * @param bSortAndRenumber Set to false to keep the channel list unsorted after adding a new channel.
      * @return True if the channel was added, false otherwise.
      */
-    virtual bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
+    virtual bool AddToGroup(CPVRChannel &channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
 
     /*!
      * @brief Change the name of this group.
@@ -143,7 +143,7 @@ namespace PVR
      * @param channel The channel to find.
      * @return True if the channel was found, false otherwise.
      */
-    virtual bool IsGroupMember(const CPVRChannel *channel) const;
+    virtual bool IsGroupMember(const CPVRChannel &channel) const;
 
     /*!
      * @brief Check whether a channel is in this container.
@@ -296,7 +296,7 @@ namespace PVR
      * @param bGroupMembers If true, get the channels that are in this group. Get the channels that are not in this group otherwise.
      * @return The amount of channels that were added to the list.
      */
-    virtual int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
+    virtual int GetMembers(CFileItemList &results, bool bGroupMembers = true) const;
 
     /*!
      * @brief The amount of hidden channels in this container.

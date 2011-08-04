@@ -53,7 +53,7 @@ CGUIDialogPVRTimerSettings::CGUIDialogPVRTimerSettings(void)
 
 void CGUIDialogPVRTimerSettings::AddChannelNames(CFileItemList &channelsList, SETTINGSTRINGS &channelNames, bool bRadio)
 {
-  g_PVRChannelGroups->GetGroupAll(bRadio)->GetMembers(&channelsList);
+  g_PVRChannelGroups->GetGroupAll(bRadio)->GetMembers(channelsList);
 
   channelNames.push_back("0 dummy");
   for (int i = 0; i < channelsList.Size(); i++)

@@ -484,7 +484,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonNewChannel(CGUIMessage &message)
           newchannel->SetVirtual(true);
           newchannel->SetStreamURL(strURL);
           newchannel->SetClientID(XBMC_VIRTUAL_CLIENTID);
-          g_PVRChannelGroups->GetGroupAll(m_bIsRadio)->AddToGroup(newchannel);
+          g_PVRChannelGroups->GetGroupAll(m_bIsRadio)->AddToGroup(*newchannel);
           newchannel->Persist();
 
           CFileItemPtr channel(new CFileItem(newchannel));
@@ -766,10 +766,10 @@ bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannel
   if (bHidden)
   {
     group->SortByChannelNumber(); // or previous changes will be overwritten
-    group->RemoveFromGroup(channel);
+    group->RemoveFromGroup(*channel);
   }
   else
-    group->SetChannelNumber(channel, ++(*iChannelNumber));
+    group->SetChannelNumber(*channel, ++(*iChannelNumber));
 
   return true;
 }
