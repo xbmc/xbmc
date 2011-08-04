@@ -88,13 +88,6 @@ namespace PVR
     virtual bool Update(void);
 
     /*!
-     * @brief Update the information in this group with the passed group's info.
-     * @param group The new info.
-     * @return True if this group was updated, false otherwise.
-     */
-    virtual bool Update(const CPVRChannelGroup &group);
-
-    /*!
      * @brief Change the channelnumber of a group. Used by CGUIDialogPVRChannelManager. Call SortByChannelNumber() and Renumber() after all changes are done.
      * @param channel The channel to change the channel number for.
      * @param iChannelNumber The new channel number.
@@ -385,13 +378,6 @@ namespace PVR
      * @brief Clear this channel list.
      */
     virtual void Unload(void);
-
-    /*!
-     * @brief Remove a channel.
-     * @param iUniqueID The ID of the channel to delete.
-     * @return True if the channel was found and removed, false otherwise.
-     */
-    virtual bool RemoveByUniqueID(int iUniqueID);
 
     /*!
      * @brief Load the channels from the clients.
