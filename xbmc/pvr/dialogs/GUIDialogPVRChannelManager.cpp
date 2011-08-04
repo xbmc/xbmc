@@ -684,7 +684,7 @@ void CGUIDialogPVRChannelManager::Update()
   if( !channels )
     return;
 
-  for (int iChannelPtr = 0; iChannelPtr < channels->GetNumChannels(); iChannelPtr++)
+  for (int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
   {
     const CPVRChannel *channel = channels->GetByIndex(iChannelPtr);
     CFileItemPtr channelFile(new CFileItem(*channel));

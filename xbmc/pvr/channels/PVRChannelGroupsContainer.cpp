@@ -244,7 +244,7 @@ bool CPVRChannelGroupsContainer::GetDirectory(const CStdString& strPath, CFileIt
 
 int CPVRChannelGroupsContainer::GetNumChannelsFromAll()
 {
-  return GetGroupAllTV()->GetNumChannels() + GetGroupAllRadio()->GetNumChannels();
+  return GetGroupAllTV()->Size() + GetGroupAllRadio()->Size();
 }
 
 const CPVRChannel *CPVRChannelGroupsContainer::GetByUniqueID(int iClientChannelNumber, int iClientID)

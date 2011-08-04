@@ -386,12 +386,6 @@ namespace PVR
     virtual int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
 
     /*!
-     * @brief The amount of channels in this container.
-     * @return The amount of channels in this container.
-     */
-    virtual int GetNumChannels(void) const { return size(); }
-
-    /*!
      * @brief The amount of hidden channels in this container.
      * @return The amount of hidden channels in this container.
      */
