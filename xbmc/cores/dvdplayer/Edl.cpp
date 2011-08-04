@@ -113,7 +113,8 @@ bool CEdl::ReadEditDecisionLists(const CStdString& strMovie, const float fFrameR
    * network share.
    */
   if ((URIUtils::IsHD(strMovie) ||  URIUtils::IsSmb(strMovie)) &&
-      !URIUtils::IsPVRRecording(strMovie))
+      !URIUtils::IsPVRRecording(strMovie) &&
+      !URIUtils::IsInternetStream(strMovie))
   {
     CLog::Log(LOGDEBUG, "%s - Checking for edit decision lists (EDL) on local drive or remote share for: %s",
               __FUNCTION__, strMovie.c_str());
