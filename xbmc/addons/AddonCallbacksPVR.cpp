@@ -104,7 +104,7 @@ void CAddonCallbacksPVR::PVRTransferChannelGroupMember(void *addonData, const PV
   if (group != NULL && channel != NULL && group->IsRadio() == channel->IsRadio())
   {
     /* transfer this entry to the group */
-    group->AddToGroup(channel, member->iChannelNumber, false);
+    group->AddToGroup(*channel, member->iChannelNumber, false);
   }
   else
   {

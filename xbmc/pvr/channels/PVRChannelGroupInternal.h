@@ -72,7 +72,7 @@ namespace PVR
      * @param iChannelNumber The channel number to use for this channel or 0 to add it to the back.
      * @param bSortAndRenumber Set to false to not to sort the group after adding a channel
      */
-    virtual bool InsertInGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
+    virtual bool InsertInGroup(CPVRChannel &channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
 
     /*!
      * @brief Callback for add-ons to update a channel.
@@ -89,12 +89,12 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::AddToGroup
      */
-    virtual bool AddToGroup(CPVRChannel *channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
+    virtual bool AddToGroup(CPVRChannel &channel, int iChannelNumber = 0, bool bSortAndRenumber = true);
 
     /*!
      * @see CPVRChannelGroup::RemoveFromGroup
      */
-    virtual bool RemoveFromGroup(CPVRChannel *channel);
+    virtual bool RemoveFromGroup(const CPVRChannel &channel);
 
     /*!
      * @see CPVRChannelGroup::MoveChannel
@@ -104,7 +104,7 @@ namespace PVR
     /*!
      * @see CPVRChannelGroup::GetMembers
      */
-    virtual int GetMembers(CFileItemList *results, bool bGroupMembers = true) const;
+    virtual int GetMembers(CFileItemList &results, bool bGroupMembers = true) const;
 
     /*!
      * @brief Check whether the group name is still correct after the language setting changed.

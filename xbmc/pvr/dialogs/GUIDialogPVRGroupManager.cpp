@@ -192,7 +192,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonUngroupedChannels(CGUIMessage &messa
       else if (m_ungroupedChannels->GetFileCount() > 0)
       {
         CFileItemPtr pItemChannel = m_ungroupedChannels->Get(m_iSelectedUngroupedChannel);
-        if (m_selectedGroup->AddToGroup(pItemChannel->GetPVRChannelInfoTag()))
+        if (m_selectedGroup->AddToGroup(*pItemChannel->GetPVRChannelInfoTag()))
           Update();
       }
     }
@@ -217,7 +217,7 @@ bool CGUIDialogPVRGroupManager::ActionButtonGroupMembers(CGUIMessage &message)
       if (m_selectedGroup && m_groupMembers->GetFileCount() > 0)
       {
         CFileItemPtr pItemChannel = m_groupMembers->Get(m_iSelectedGroupMember);
-        m_selectedGroup->RemoveFromGroup(pItemChannel->GetPVRChannelInfoTag());
+        m_selectedGroup->RemoveFromGroup(*pItemChannel->GetPVRChannelInfoTag());
         Update();
       }
     }
@@ -362,12 +362,12 @@ void CGUIDialogPVRGroupManager::Update()
     }
 
     /* get all channels that are not in this group for the center part */
-    m_selectedGroup->GetMembers(m_ungroupedChannels, false);
+    m_selectedGroup->GetMembers(*m_ungroupedChannels, false);
     m_viewUngroupedChannels.SetItems(*m_ungroupedChannels);
     m_viewUngroupedChannels.SetSelectedItem(m_iSelectedUngroupedChannel);
 
     /* get all channels in this group for the right side part */
-    m_selectedGroup->GetMembers(m_groupMembers, true);
+    m_selectedGroup->GetMembers(*m_groupMembers, true);
     m_viewGroupMembers.SetItems(*m_groupMembers);
     m_viewGroupMembers.SetSelectedItem(m_iSelectedGroupMember);
   }

@@ -126,7 +126,7 @@ void CGUIDialogPVRChannelsOSD::Update()
 
   if (group)
   {
-    group->GetMembers(m_vecItems);
+    group->GetMembers(*m_vecItems);
     m_viewControl.SetItems(*m_vecItems);
     m_viewControl.SetSelectedItem(group->GetIndex(channel));
   }
