@@ -22,8 +22,7 @@
  */
 
 #include "utils/StdString.h"
-#include "tinyXML/tinyxml.h" // no use forwarding these, as this class is the main workhorse anyway,
-                             // thus it simplifies the include patterns
+#include "utils/XBMCTinyXML.h"
 
 class XMLUtils
 {
@@ -40,7 +39,7 @@ public:
   static bool GetBoolean(const TiXmlNode* pRootNode, const char* strTag, bool& bBoolValue);
   static bool GetString(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   static bool GetAdditiveString(const TiXmlNode* pRootNode, const char* strTag, const CStdString& strSeparator, CStdString& strStringValue);
-  static bool GetEncoding(const TiXmlDocument* pDoc, CStdString& strEncoding);
+  static bool GetEncoding(const CXBMCTinyXML* pDoc, CStdString& strEncoding);
   static bool GetPath(const TiXmlNode* pRootNode, const char* strTag, CStdString& strStringValue);
   static bool GetFloat(const TiXmlNode* pRootNode, const char* strTag, float& value, const float min, const float max);
   static bool GetInt(const TiXmlNode* pRootNode, const char* strTag, int& iIntValue, const int min, const int max);

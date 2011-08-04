@@ -2237,7 +2237,7 @@ void CGUIWindowSettingsCategory::FillInSkinFonts(CSetting *pSetting)
 
   CStdString strPath = g_SkinInfo->GetSkinPath("Font.xml");
 
-  TiXmlDocument xmlDoc;
+  CXBMCTinyXML xmlDoc;
   if (!xmlDoc.LoadFile(strPath))
   {
     CLog::Log(LOGERROR, "Couldn't load %s", strPath.c_str());
