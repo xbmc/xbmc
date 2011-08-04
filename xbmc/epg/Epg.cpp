@@ -711,8 +711,6 @@ bool CEpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
 
   if (bUpdateDb)
     bReturn = Persist(false);
-  else if (m_iEpgID <= 0)
-    m_iEpgID = g_EpgContainer.NextEpgId();
 
   return bReturn;
 }
