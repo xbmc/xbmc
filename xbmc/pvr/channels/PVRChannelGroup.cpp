@@ -724,14 +724,14 @@ bool CPVRChannelGroup::IsGroupMember(const CPVRChannel &channel) const
   return bReturn;
 }
 
-bool CPVRChannelGroup::IsGroupMember(int iChannelUid) const
+bool CPVRChannelGroup::IsGroupMember(int iChannelId) const
 {
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
-    if (iChannelUid == at(iChannelPtr).channel->UniqueID())
+    if (iChannelId == at(iChannelPtr).channel->ChannelID())
     {
       bReturn = true;
       break;
