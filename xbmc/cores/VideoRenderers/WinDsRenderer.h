@@ -29,7 +29,7 @@
 
 #include "WinBaseRenderer.h"
 #include "../DSPlayer/DSUtil/SmartPtr.h"
-#include "CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 class CBaseTexture;
 class IPaintCallback;

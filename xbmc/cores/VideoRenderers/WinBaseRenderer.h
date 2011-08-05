@@ -28,10 +28,10 @@
 #if !defined(_LINUX) && !defined(HAS_GL) && defined(HAS_DS_PLAYER)
 
 
-#include "GraphicContext.h"
+#include "guilib/GraphicContext.h"
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
-#include "D3DResource.h"
+#include "guilib/D3DResource.h"
 #include "settings/VideoSettings.h"
 
 
