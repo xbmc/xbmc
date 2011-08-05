@@ -299,6 +299,22 @@ CStdString CStreamDetails::GetVideoCodec(int idx) const
     return "";
 }
 
+#ifdef HAS_DS_PLAYER
+CStdString CStreamDetails::GetVideoFourcc(int idx) const
+{
+  CStreamDetailVideo *item = (CStreamDetailVideo *)GetNthStream(CStreamDetail::VIDEO, idx);
+  if (item)
+  {
+    CStdString fourcc = "";
+    int iFourcc = item->m_iFourcc;
+    fourcc.Format("%c%c%c%c", iFourcc >> 24 & 0xff, iFourcc >> 16 & 0xff, iFourcc >> 8 & 0xff, iFourcc & 0xff);
+    return fourcc;
+  }
+  else
+    return "";
+}
+#endif
+
 float CStreamDetails::GetVideoAspect(int idx) const
 {
   CStreamDetailVideo *item = (CStreamDetailVideo *)GetNthStream(CStreamDetail::VIDEO, idx);

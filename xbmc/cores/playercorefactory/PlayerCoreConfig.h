@@ -26,6 +26,9 @@
 #include "cores/dvdplayer/DVDPlayer.h"
 #include "cores/paplayer/PAPlayer.h"
 #include "cores/ExternalPlayer/ExternalPlayer.h"
+#ifdef HAS_DS_PLAYER
+#include "DSPlayer.h"
+#endif
 #include "utils/log.h"
 
 class CPlayerCoreConfig
@@ -74,6 +77,9 @@ public:
       case EPC_DVDPLAYER: pPlayer = new CDVDPlayer(callback); break;
       case EPC_PAPLAYER: pPlayer = new PAPlayer(callback); break;
       case EPC_EXTPLAYER: pPlayer = new CExternalPlayer(callback); break;
+#ifdef HAS_DS_PLAYER
+      case EPC_DSPLAYER: pPlayer = new CDSPlayer(callback); break;
+#endif
       default: return NULL;
     }
 

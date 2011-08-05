@@ -662,7 +662,16 @@ void CGUISettings::Initialize()
   AddInt(sub, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
   AddInt(sub, "subtitles.style", 736, FONT_STYLE_BOLD, FONT_STYLE_NORMAL, 1, FONT_STYLE_BOLD_ITALICS, SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
+#ifdef HAS_DS_PLAYER
+  AddInt(sub, "subtitles.border", 35050, SUBTITLE_BORDER_OUTLINE, SUBTITLE_BORDER_OUTLINE, 1, SUBTITLE_BORDER_OPAQUE, SPIN_CONTROL_TEXT);
+  AddInt(sub, "subtitles.outline.width", 35053, 2, 0, 1, 100, SPIN_CONTROL_INT);
+  AddInt(sub, "subtitles.shadow.depth", 35054, 3, 0, 1, 100, SPIN_CONTROL_INT);
+  AddInt(sub, "subtitles.alpha", 35055, 0, 0, 5, 255, SPIN_CONTROL_INT);
+#endif
   AddString(sub, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
+#ifdef HAS_DS_PLAYER
+  AddString(sub, "subtitles.ds.font", 35056, "Arial", BUTTON_CONTROL_STANDARD);
+#endif
   AddSeparator(sub, "subtitles.sep1");
   AddPath(sub, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 
@@ -675,7 +684,15 @@ void CGUISettings::Initialize()
   AddDefaultAddon(NULL, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
   AddDefaultAddon(NULL, "scrapers.musicvideosdefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
   AddBool(NULL, "scrapers.langfallback", 21416, false);
-
+#ifdef HAS_DS_PLAYER
+  //Dsplayer
+  CSettingsCategory* dsp = AddCategory(5, "dsplayer", 35000);
+  //If vista or higher non default is vmr9
+  AddBool(dsp, "dsplayer.forcenondefaultrenderer", g_sysinfo.IsVistaOrHigher() ? 35001 : 35002 , false);
+  AddSeparator(dsp, "dsplayer.sep1");
+  AddString(dsp, "dsplayer.audiorenderer", 35003, "Default", SPIN_CONTROL_TEXT);
+  AddBool(dsp, "dsplayer.useinternalfilters", 35020, false);
+#endif
   // network settings
   AddGroup(6, 705);
 

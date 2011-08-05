@@ -157,6 +157,9 @@ public:
     iProfile = 0;
     bPTSInvalid = false;
     type = STREAM_VIDEO;
+#ifdef HAS_DS_PLAYER
+    iCodecTag = 0;
+#endif
   }
 
   virtual ~CDemuxStreamVideo() {}
@@ -169,6 +172,9 @@ public:
   int iLevel; // encoder level of the stream reported by the decoder. used to qualify hw decoders.
   int iProfile; // encoder profile of the stream reported by the decoder. used to qualify hw decoders.
   bool bPTSInvalid; // pts cannot be trusted (avi's).
+#ifdef HAS_DS_PLAYER
+  int iCodecTag;
+#endif
   
 };
 

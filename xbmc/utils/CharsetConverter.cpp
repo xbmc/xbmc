@@ -46,6 +46,29 @@
   #define UTF8_SOURCE "UTF-8"
 #endif
 
+#ifdef _WIN32
+#define ANSI_CHARSET            0
+#define DEFAULT_CHARSET         1
+#define SYMBOL_CHARSET          2
+#define SHIFTJIS_CHARSET        128
+#define HANGEUL_CHARSET         129
+#define HANGUL_CHARSET          129
+#define GB2312_CHARSET          134
+#define CHINESEBIG5_CHARSET     136
+#define OEM_CHARSET             255
+#if(WINVER >= 0x0400)
+#define JOHAB_CHARSET           130
+#define HEBREW_CHARSET          177
+#define ARABIC_CHARSET          178
+#define GREEK_CHARSET           161
+#define TURKISH_CHARSET         162
+#define VIETNAMESE_CHARSET      163
+#define THAI_CHARSET            222
+#define EASTEUROPE_CHARSET      238
+#define RUSSIAN_CHARSET         204
+#endif
+#endif
+
 
 static iconv_t m_iconvStringCharsetToFontCharset = (iconv_t)-1;
 static iconv_t m_iconvSubtitleCharsetToW         = (iconv_t)-1;
@@ -82,32 +105,33 @@ static struct SCharsetMapping
 {
   const char* charset;
   const char* caption;
+  int         win_id;
 } g_charsets[] = {
-   { "ISO-8859-1", "Western Europe (ISO)" }
- , { "ISO-8859-2", "Central Europe (ISO)" }
- , { "ISO-8859-3", "South Europe (ISO)"   }
- , { "ISO-8859-4", "Baltic (ISO)"         }
- , { "ISO-8859-5", "Cyrillic (ISO)"       }
- , { "ISO-8859-6", "Arabic (ISO)"         }
- , { "ISO-8859-7", "Greek (ISO)"          }
- , { "ISO-8859-8", "Hebrew (ISO)"         }
- , { "ISO-8859-9", "Turkish (ISO)"        }
- , { "CP1250"    , "Central Europe (Windows)" }
- , { "CP1251"    , "Cyrillic (Windows)"       }
- , { "CP1252"    , "Western Europe (Windows)" }
- , { "CP1253"    , "Greek (Windows)"          }
- , { "CP1254"    , "Turkish (Windows)"        }
- , { "CP1255"    , "Hebrew (Windows)"         }
- , { "CP1256"    , "Arabic (Windows)"         }
- , { "CP1257"    , "Baltic (Windows)"         }
- , { "CP1258"    , "Vietnamesse (Windows)"    }
- , { "CP874"     , "Thai (Windows)"           }
- , { "BIG5"      , "Chinese Traditional (Big5)" }
- , { "GBK"       , "Chinese Simplified (GBK)" }
- , { "SHIFT_JIS" , "Japanese (Shift-JIS)"     }
- , { "CP949"     , "Korean"                   }
- , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)"   }
- , { NULL        , NULL                       }
+   { "ISO-8859-1", "Western Europe (ISO)", DEFAULT_CHARSET }
+ , { "ISO-8859-2", "Central Europe (ISO)", DEFAULT_CHARSET }
+ , { "ISO-8859-3", "South Europe (ISO)"  , DEFAULT_CHARSET }
+ , { "ISO-8859-4", "Baltic (ISO)"        , DEFAULT_CHARSET }
+ , { "ISO-8859-5", "Cyrillic (ISO)"      , DEFAULT_CHARSET }
+ , { "ISO-8859-6", "Arabic (ISO)"        , DEFAULT_CHARSET }
+ , { "ISO-8859-7", "Greek (ISO)"         , DEFAULT_CHARSET }
+ , { "ISO-8859-8", "Hebrew (ISO)"        , DEFAULT_CHARSET }
+ , { "ISO-8859-9", "Turkish (ISO)"       , DEFAULT_CHARSET }
+ , { "CP1250"    , "Central Europe (Windows)", EASTEUROPE_CHARSET }
+ , { "CP1251"    , "Cyrillic (Windows)"      , RUSSIAN_CHARSET    }
+ , { "CP1252"    , "Western Europe (Windows)", ANSI_CHARSET       }
+ , { "CP1253"    , "Greek (Windows)"         , GREEK_CHARSET      }
+ , { "CP1254"    , "Turkish (Windows)"       , TURKISH_CHARSET    }
+ , { "CP1255"    , "Hebrew (Windows)"        , HEBREW_CHARSET     }
+ , { "CP1256"    , "Arabic (Windows)"        , ARABIC_CHARSET     }
+ , { "CP1257"    , "Baltic (Windows)"        , BALTIC_CHARSET     }
+ , { "CP1258"    , "Vietnamesse (Windows)"   , VIETNAMESE_CHARSET }
+ , { "CP874"     , "Thai (Windows)"          , THAI_CHARSET       }
+ , { "BIG5"      , "Chinese Traditional (Big5)", CHINESEBIG5_CHARSET }
+ , { "GBK"       , "Chinese Simplified (GBK)", GB2312_CHARSET     }
+ , { "SHIFT_JIS" , "Japanese (Shift-JIS)"    , SHIFTJIS_CHARSET   }
+ , { "CP949"     , "Korean"                  , HANGEUL_CHARSET    }
+ , { "BIG5-HKSCS", "Hong Kong (Big5-HKSCS)"  , DEFAULT_CHARSET    }
+ , { NULL        , NULL                      , 0                  }
 };
 
 
@@ -348,6 +372,17 @@ CStdString CCharsetConverter::getCharsetNameByLabel(const CStdString& charsetLab
   }
 
   return "";
+}
+
+int CCharsetConverter::getCharsetIdByName(const CStdString& charsetName)
+{
+  for(SCharsetMapping *c = g_charsets; c->charset; c++)
+  {
+    if (charsetName.Equals(c->charset))
+      return c->win_id;
+  }
+
+  return 1;
 }
 
 bool CCharsetConverter::isBidiCharset(const CStdString& charset)

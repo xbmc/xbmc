@@ -28,6 +28,10 @@
 #include "rendering/RenderSystem.h"
 #include "threads/CriticalSection.h"
 
+#ifdef HAS_DS_PLAYER
+#include "guilib/D3DResource.h"
+#endif
+
 enum PCI_Vendors
 {
   PCIV_ATI    = 0x1002,
@@ -74,8 +78,14 @@ public:
 
   virtual bool TestRender();
 
+  HRESULT           GetDeviceStatus() { return m_nDeviceStatus; }
   LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
+  LPDIRECT3D9       Get3DObject() { return m_pD3D; }
+  UINT              GetCurrentAdapter() { return m_adapter; }
   int GetBackbufferCount() const { return m_D3DPP.BackBufferCount; }
+#ifdef HAS_DS_PLAYER
+  void              GetBackbufferSize(uint32_t& width, uint32_t& height) { width = m_nBackBufferWidth; height = m_nBackBufferHeight; }
+#endif
 
   bool    UseD3D9Ex()       { return m_useD3D9Ex; }
   DWORD   DefaultD3DUsage() { return m_defaultD3DUsage; }

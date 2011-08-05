@@ -2323,4 +2323,37 @@
 
   <string id="34201">Can't find a next item to play</string>
   <string id="34202">Can't find a previous item to play</string>
+  
+    <!-- 35000-35100 reserved for DSPlayer-->
+  <string id="35000">DSPlayer</string>
+  <string id="35001">Use VMR9 instead of EVR Renderer</string>
+  <string id="35002">Use EVR instead of VMR9 Renderer</string>
+  <string id="35003">Audio Renderer</string>
+  <string id="35004">Set all stable formats to libavcodec (ffdshow)</string>
+  <string id="35005">Nearest neighbor</string>
+  <string id="35006">Bilinear</string>
+  <string id="35007">Bilinear (PS 2.0)</string>
+  <string id="35008">Bicubic A=-0.60 (PS 2.0)</string>
+  <string id="35009">Bicubic A=-0.75 (PS 2.0)</string>
+  <string id="35010">Bicubic A=-1.00 (PS 2.0)</string>
+  <string id="35011">Stats hidden</string>
+  <string id="35012">Stats minimal</string>
+  <string id="35013">Stats medium</string>
+  <string id="35014">Stats large</string>
+  <string id="35015">Renderer stats</string>
+  <string id="35016">Shaders</string>
+  <string id="32017">Shaders list</string>
+  <string id="32018">There is no shader loaded</string>
+  <string id="35020">Force internal filters</string>
+
+  <!--  35050-35100 Directshow Subtitles -->
+  <string id="35050">- Border line</string>
+  <string id="35051">Outline</string>
+  <string id="35052">Opaque</string>
+  <string id="35053">- Outline width</string>
+  <string id="35054">- Shadow depth</string>
+  <string id="35055">- Alpha</string>
+  <string id="35056">Font to use for text subtitles (dsplayer only) : %s</string>
+  <string id="35057">Choose a font</string>
+  
 </strings>

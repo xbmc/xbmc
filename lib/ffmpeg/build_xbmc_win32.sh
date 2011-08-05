@@ -39,6 +39,7 @@ OPTIONS="
 --disable-ffmpeg \
 --disable-ffprobe \
 --disable-devices \
+--disable-decoder=h264_dshow \
 --enable-muxer=spdif \
 --enable-muxer=adts \
 --enable-encoder=ac3 \

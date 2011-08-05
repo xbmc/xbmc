@@ -24,6 +24,7 @@
 #include "DllLoader.h"
 #include "threads/SingleLock.h"
 #include "utils/log.h"
+#include "utils/CharsetConverter.h"
 
 #ifdef _LINUX
 #define dll_open open
@@ -113,6 +114,16 @@ extern "C"
 
     tracker_file_free(loc, fd, FILE_XBMC_OPEN);
     return dll_close(fd);
+  }
+
+  FILE* track_wfopen(const wchar_t* swFileName, const wchar_t* wmode)
+  {
+    CStdStringA filename;
+    CStdStringA mode;
+
+    g_charsetConverter.wToUTF8(swFileName, filename);
+    g_charsetConverter.wToUTF8(wmode, mode);
+    return track_fopen(filename, mode);
   }
 
   FILE* track_fopen(const char* sFileName, const char* mode)

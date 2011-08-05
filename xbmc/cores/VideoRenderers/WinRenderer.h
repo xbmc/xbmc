@@ -26,9 +26,15 @@
 #include "guilib/GraphicContext.h"
 #include "RenderFlags.h"
 #include "BaseRenderer.h"
+#include "settings/VideoSettings.h"
+#ifdef HAS_DS_PLAYER
+#include "WinBaseRenderer.h"
+#include "RenderCapture.h"
+#else
 #include "guilib/D3DResource.h"
 #include "RenderCapture.h"
 #include "settings/VideoSettings.h"
+#endif
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING
@@ -182,7 +188,11 @@ struct DXVABuffer : SVideoBuffer
   int64_t           id;
 };
 
+#ifdef HAS_DS_PLAYER
+class CWinRenderer : public CWinBaseRenderer
+#else
 class CWinRenderer : public CBaseRenderer
+#endif
 {
 public:
   CWinRenderer();

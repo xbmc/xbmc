@@ -28,6 +28,8 @@
 #include "settings/GUISettings.h"
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"
+#include "windowing/WindowingFactory.h"
+#include "Application.h"
 #endif
 #include "video/VideoDatabase.h"
 #include "dialogs/GUIDialogYesNo.h"
@@ -36,9 +38,18 @@
 
 using namespace std;
 
+#ifdef HAS_DS_PLAYER
+#include "cores/DSPlayer/DSConfig.h"
+#include "cores/DSPlayer/Filters/RendererSettings.h"
+#include "DSUtil/DSUtil.h"
+#include "utils/CharsetConverter.h"
+#include "guilib/LocalizeStrings.h"
+#endif
+
 CGUIDialogVideoSettings::CGUIDialogVideoSettings(void)
     : CGUIDialogSettings(WINDOW_DIALOG_VIDEO_OSD_SETTINGS, "VideoOSDSettings.xml")
 {
+  m_scalingMethod = 0;
 }
 
 CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
@@ -66,6 +77,11 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTINGS_NONLIN_STRETCH     21
 #define VIDEO_SETTINGS_POSTPROCESS        22
 #define VIDEO_SETTINGS_VERTICAL_SHIFT     23
+
+#ifdef HAS_DS_PLAYER
+#define VIDEO_SETTINGS_DS_STATS           24
+#define VIDEO_SETTINGS_DS_FILTERS         0x20
+#endif
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -103,6 +119,9 @@ void CGUIDialogVideoSettings::CreateSettings()
 
     AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
   }
+#ifdef HAS_DS_PLAYER
+  if ( g_application.GetCurrentPlayer() == PCID_DVDPLAYER )
+#endif
   {
     vector<pair<int, int> > entries;
     entries.push_back(make_pair(VS_SCALINGMETHOD_NEAREST          , 16301));
@@ -129,8 +148,31 @@ void CGUIDialogVideoSettings::CreateSettings()
         it = entries.erase(it);
     }
 
+    m_scalingMethod = g_settings.m_currentVideoSettings.GetDVDPlayerScalingMethod();
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, (int*)&g_settings.m_currentVideoSettings.m_ScalingMethod, entries);
   }
+#ifdef HAS_DS_PLAYER
+  else if ( g_application.GetCurrentPlayer() == PCID_DSPLAYER )
+  {
+    vector<pair<int, int> > entries;
+    entries.push_back(make_pair(DS_SCALINGMETHOD_NEAREST_NEIGHBOR  , 35005));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR          , 35006));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2        , 35007));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_60     , 35008));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_75     , 35009));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_100    , 35010));
+    
+    m_scalingMethod = g_settings.m_currentVideoSettings.GetDSPlayerScalingMethod();
+    AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, &m_scalingMethod, entries);
+
+    entries.clear();
+    entries.push_back(make_pair(DS_STATS_NONE, 35011));
+    entries.push_back(make_pair(DS_STATS_1, 35012));
+    entries.push_back(make_pair(DS_STATS_2, 35013));
+    entries.push_back(make_pair(DS_STATS_3, 35014));
+    AddSpin(VIDEO_SETTINGS_DS_STATS, 35015, (int *) &g_dsSettings.pRendererSettings->displayStats, entries);
+  }
+#endif
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);
   {
     const int entries[] = {630, 631, 632, 633, 634, 635, 636 };
@@ -148,6 +190,22 @@ void CGUIDialogVideoSettings::CreateSettings()
     AddSlider(VIDEO_SETTINGS_CONTRAST, 465, &g_settings.m_currentVideoSettings.m_Contrast, 0, 1, 100, FormatInteger);
   if (g_renderManager.Supports(RENDERFEATURE_GAMMA))
     AddSlider(VIDEO_SETTINGS_GAMMA, 466, &g_settings.m_currentVideoSettings.m_Gamma, 0, 1, 100, FormatInteger);
+#ifdef HAS_DS_PLAYER
+  if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+  {
+
+    int size = g_dsconfig.GetFiltersWithPropertyPages().size();
+
+    if (size != 0)
+      AddSeparator(8);
+
+    uint32_t offset = g_localizeStrings.LoadBlock("6000", "special://temp//dslang.xml", "");
+
+    for (int i = 0; i < size; i++)
+      AddButton(VIDEO_SETTINGS_DS_FILTERS + i, offset + i);
+
+  }
+#endif
   if (g_renderManager.Supports(RENDERFEATURE_NOISE))
     AddSlider(VIDEO_SETTING_VDPAU_NOISE, 16312, &g_settings.m_currentVideoSettings.m_NoiseReduction, 0.0f, 0.01f, 1.0f, FormatFloat);
   if (g_renderManager.Supports(RENDERFEATURE_SHARPNESS))
@@ -184,6 +242,17 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
     g_renderManager.SetViewMode(VIEW_MODE_CUSTOM);
     UpdateSetting(VIDEO_SETTINGS_VIEW_MODE);
   }
+  else if (setting.id == VIDEO_SETTINGS_SCALINGMETHOD)
+  {
+#ifdef HAS_DS_PLAYER
+    if ( g_application.GetCurrentPlayer() == PCID_DVDPLAYER )
+#endif
+      g_settings.m_currentVideoSettings.SetDVDPlayerScalingMethod((ESCALINGMETHOD) m_scalingMethod);
+#ifdef HAS_DS_PLAYER
+    else if (g_application.GetCurrentPlayer() == PCID_DSPLAYER)
+      g_settings.m_currentVideoSettings.SetDSPlayerScalingMethod((EDSSCALINGMETHOD) m_scalingMethod);
+#endif
+  }
   else
 #endif
   if (setting.id == VIDEO_SETTINGS_CALIBRATION)
@@ -213,6 +282,17 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
       g_settings.Save();
     }
   }
+#ifdef HAS_DS_PLAYER
+  else if ( (setting.id & VIDEO_SETTINGS_DS_FILTERS) == VIDEO_SETTINGS_DS_FILTERS)
+  {
+    int filterId = setting.id - VIDEO_SETTINGS_DS_FILTERS;
+
+    IBaseFilter *pBF = g_dsconfig.GetFiltersWithPropertyPages()[filterId];
+    HRESULT hr = S_OK;
+    //Showing the property page for this filter
+    g_dsconfig.ShowPropertyPage(pBF);    
+  }
+#endif
 }
 
 CStdString CGUIDialogVideoSettings::FormatInteger(float value, float minimum)
