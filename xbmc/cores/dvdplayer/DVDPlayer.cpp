@@ -1498,6 +1498,11 @@ void CDVDPlayer::HandlePlaySpeed()
       CLog::Log(LOGDEBUG, "set caching from pvr to done. audio (%d) = %d. video (%d) = %d",
           bGotAudio, m_dvdPlayerAudio.m_messageQueue.GetLevel(),
           bGotVideo, m_dvdPlayerVideo.m_messageQueue.GetLevel());
+
+      CFileItem currentItem(g_application.CurrentFileItem());
+      if (currentItem.HasPVRChannelInfoTag())
+        g_PVRManager.LoadCurrentChannelSettings();
+
       caching = CACHESTATE_DONE;
       SAFE_RELEASE(m_CurrentAudio.startsync);
       SAFE_RELEASE(m_CurrentVideo.startsync);
