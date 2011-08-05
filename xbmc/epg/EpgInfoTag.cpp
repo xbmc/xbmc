@@ -82,7 +82,29 @@ CEpgInfoTag::CEpgInfoTag(void) :
 {
 }
 
-CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data)
+CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
+    m_bNotify(false),
+    m_bChanged(false),
+    m_iBroadcastId(-1),
+    m_iGenreType(0),
+    m_iGenreSubType(0),
+    m_iParentalRating(0),
+    m_iStarRating(0),
+    m_iSeriesNumber(0),
+    m_iEpisodeNumber(0),
+    m_iEpisodePart(0),
+    m_iUniqueBroadcastID(-1),
+    m_strTitle(""),
+    m_strPlotOutline(""),
+    m_strPlot(""),
+    m_strGenre(""),
+    m_strEpisodeName(""),
+    m_strIconPath(""),
+    m_strFileNameAndPath(""),
+    m_nextEvent(NULL),
+    m_previousEvent(NULL),
+    m_Timer(NULL),
+    m_Epg(NULL)
 {
   Update(data);
 }
