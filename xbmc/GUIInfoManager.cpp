@@ -545,6 +545,51 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
                                   { "isrepeat",         PLAYLIST_ISREPEAT },
                                   { "isrepeatone",      PLAYLIST_ISREPEATONE }};
 
+const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING },
+                                  { "hastimer",                 PVR_HAS_TIMER },
+                                  { "hasnonrecordingtimer",     PVR_HAS_NONRECORDING_TIMER },
+                                  { "nowrecordingtitle",        PVR_NOW_RECORDING_TITLE },
+                                  { "nowrecordingdatetime",     PVR_NOW_RECORDING_DATETIME },
+                                  { "nowrecordingchannel",      PVR_NOW_RECORDING_CHANNEL },
+                                  { "nowrecordingchannelicon",  PVR_NOW_RECORDING_CHAN_ICO },
+                                  { "nextrecordingtitle",       PVR_NEXT_RECORDING_TITLE },
+                                  { "nextrecordingdatetime",    PVR_NEXT_RECORDING_DATETIME },
+                                  { "nextrecordingchannel",     PVR_NEXT_RECORDING_CHANNEL },
+                                  { "nextrecordingchannelicon", PVR_NEXT_RECORDING_CHAN_ICO },
+                                  { "backendname",              PVR_BACKEND_NAME },
+                                  { "backendversion",           PVR_BACKEND_VERSION },
+                                  { "backendhost",              PVR_BACKEND_HOST },
+                                  { "backenddiskspace",         PVR_BACKEND_DISKSPACE },
+                                  { "backendchannels",          PVR_BACKEND_CHANNELS },
+                                  { "backendtimers",            PVR_BACKEND_TIMERS },
+                                  { "backendrecordings",        PVR_BACKEND_RECORDINGS },
+                                  { "backendnumber",            PVR_BACKEND_NUMBER },
+                                  { "hasepg",                   PVR_HAS_EPG },
+                                  { "hastxt",                   PVR_HAS_TXT },
+                                  { "hasdirector",              PVR_HAS_DIRECTOR },
+                                  { "totaldiscspace",           PVR_TOTAL_DISKSPACE },
+                                  { "nexttimer",                PVR_NEXT_TIMER },
+                                  { "isplayingtv",              PVR_IS_PLAYING_TV },
+                                  { "isplayingradio",           PVR_IS_PLAYING_RADIO },
+                                  { "isplayingrecording",       PVR_IS_PLAYING_RECORDING },
+                                  { "duration",                 PVR_PLAYING_DURATION },
+                                  { "time",                     PVR_PLAYING_TIME },
+                                  { "progress",                 PVR_PLAYING_PROGRESS },
+                                  { "actstreamclient",          PVR_ACTUAL_STREAM_CLIENT },
+                                  { "actstreamdevice",          PVR_ACTUAL_STREAM_DEVICE },
+                                  { "actstreamstatus",          PVR_ACTUAL_STREAM_STATUS },
+                                  { "actstreamsignal",          PVR_ACTUAL_STREAM_SIG },
+                                  { "actstreamsnr",             PVR_ACTUAL_STREAM_SNR },
+                                  { "actstreamber",             PVR_ACTUAL_STREAM_BER },
+                                  { "actstreamunc",             PVR_ACTUAL_STREAM_UNC },
+                                  { "actstreamvideobitrate",    PVR_ACTUAL_STREAM_VIDEO_BR },
+                                  { "actstreamaudiobitrate",    PVR_ACTUAL_STREAM_AUDIO_BR },
+                                  { "actstreamdolbybitrate",    PVR_ACTUAL_STREAM_DOLBY_BR },
+                                  { "actstreamprogrsignal",     PVR_ACTUAL_STREAM_SIG_PROGR },
+                                  { "actstreamprogrsnr",        PVR_ACTUAL_STREAM_SNR_PROGR },
+                                  { "actstreamisencrypted",     PVR_ACTUAL_STREAM_ENCRYPTED },
+                                  { "actstreamencryptionname",  PVR_ACTUAL_STREAM_CRYPTION }};
+
 CGUIInfoManager::Property::Property(const CStdString &property, const CStdString &parameters)
 : name(property)
 {
@@ -977,6 +1022,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
           return playlist[i].val;
       }
     }
+    else if (cat.name == "pvr")
+    {
+      for (size_t i = 0; i < sizeof(pvr) / sizeof(infomap); i++)
+      {
+        if (prop.name == pvr[i].str)
+          return pvr[i].val;
+      }
+    }
   }
   else if (info.size() == 3)
   {
@@ -1015,62 +1068,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
     }
   }
 
-  /* XXX */
-  CStdString original(strTest);
-  strTest.ToLower();
-  CStdString strCategory = strTest.Left(strTest.Find("."));
-
-  int ret = 0;
-  if (strCategory.Equals("pvr"))
-  {
-    if (strTest.Equals("pvr.isrecording")) ret = PVR_IS_RECORDING;
-    else if (strTest.Equals("pvr.hastimer")) ret = PVR_HAS_TIMER;
-    else if (strTest.Equals("pvr.hasnonrecordingtimer")) ret = PVR_HAS_NONRECORDING_TIMER;
-    else if (strTest.Equals("pvr.nowrecordingtitle")) ret = PVR_NOW_RECORDING_TITLE;
-    else if (strTest.Equals("pvr.nowrecordingdatetime")) ret = PVR_NOW_RECORDING_DATETIME;
-    else if (strTest.Equals("pvr.nowrecordingchannel")) ret = PVR_NOW_RECORDING_CHANNEL;
-    else if (strTest.Equals("pvr.nowrecordingchannelicon")) ret = PVR_NOW_RECORDING_CHAN_ICO;
-    else if (strTest.Equals("pvr.nextrecordingtitle")) ret = PVR_NEXT_RECORDING_TITLE;
-    else if (strTest.Equals("pvr.nextrecordingdatetime")) ret = PVR_NEXT_RECORDING_DATETIME;
-    else if (strTest.Equals("pvr.nextrecordingchannel")) ret = PVR_NEXT_RECORDING_CHANNEL;
-    else if (strTest.Equals("pvr.nextrecordingchannelicon")) ret = PVR_NEXT_RECORDING_CHAN_ICO;
-    else if (strTest.Equals("pvr.backendname")) ret = PVR_BACKEND_NAME;
-    else if (strTest.Equals("pvr.backendversion")) ret = PVR_BACKEND_VERSION;
-    else if (strTest.Equals("pvr.backendhost")) ret = PVR_BACKEND_HOST;
-    else if (strTest.Equals("pvr.backenddiskspace")) ret = PVR_BACKEND_DISKSPACE;
-    else if (strTest.Equals("pvr.backendchannels")) ret = PVR_BACKEND_CHANNELS;
-    else if (strTest.Equals("pvr.backendtimers")) ret = PVR_BACKEND_TIMERS;
-    else if (strTest.Equals("pvr.backendrecordings")) ret = PVR_BACKEND_RECORDINGS;
-    else if (strTest.Equals("pvr.backendnumber")) ret = PVR_BACKEND_NUMBER;
-    else if (strTest.Equals("pvr.hasepg")) ret = PVR_HAS_EPG;
-    else if (strTest.Equals("pvr.hastxt")) ret = PVR_HAS_TXT;
-    else if (strTest.Equals("pvr.hasdirector")) ret = PVR_HAS_DIRECTOR;
-    else if (strTest.Equals("pvr.totaldiscspace")) ret = PVR_TOTAL_DISKSPACE;
-    else if (strTest.Equals("pvr.nexttimer")) ret = PVR_NEXT_TIMER;
-    else if (strTest.Equals("pvr.isplayingtv")) ret = PVR_IS_PLAYING_TV;
-    else if (strTest.Equals("pvr.isplayingradio")) ret = PVR_IS_PLAYING_RADIO;
-    else if (strTest.Equals("pvr.isplayingrecording")) ret = PVR_IS_PLAYING_RECORDING;
-    else if (strTest.Equals("pvr.duration")) ret = PVR_PLAYING_DURATION;
-    else if (strTest.Equals("pvr.time")) ret = PVR_PLAYING_TIME;
-    else if (strTest.Equals("pvr.progress")) ret = PVR_PLAYING_PROGRESS;
-    else if (strTest.Equals("pvr.actstreamclient")) ret = PVR_ACTUAL_STREAM_CLIENT;
-    else if (strTest.Equals("pvr.actstreamdevice")) ret = PVR_ACTUAL_STREAM_DEVICE;
-    else if (strTest.Equals("pvr.actstreamstatus")) ret = PVR_ACTUAL_STREAM_STATUS;
-    else if (strTest.Equals("pvr.actstreamsignal")) ret = PVR_ACTUAL_STREAM_SIG;
-    else if (strTest.Equals("pvr.actstreamsnr")) ret = PVR_ACTUAL_STREAM_SNR;
-    else if (strTest.Equals("pvr.actstreamber")) ret = PVR_ACTUAL_STREAM_BER;
-    else if (strTest.Equals("pvr.actstreamunc")) ret = PVR_ACTUAL_STREAM_UNC;
-    else if (strTest.Equals("pvr.actstreamvideobitrate")) ret = PVR_ACTUAL_STREAM_VIDEO_BR;
-    else if (strTest.Equals("pvr.actstreamaudiobitrate")) ret = PVR_ACTUAL_STREAM_AUDIO_BR;
-    else if (strTest.Equals("pvr.actstreamdolbybitrate")) ret = PVR_ACTUAL_STREAM_DOLBY_BR;
-    else if (strTest.Equals("pvr.actstreamprogrsignal")) ret = PVR_ACTUAL_STREAM_SIG_PROGR;
-    else if (strTest.Equals("pvr.actstreamprogrsnr")) ret = PVR_ACTUAL_STREAM_SNR_PROGR;
-    else if (strTest.Equals("pvr.actstreamisencrypted")) ret = PVR_ACTUAL_STREAM_ENCRYPTED;
-    else if (strTest.Equals("pvr.actstreamencryptionname")) ret = PVR_ACTUAL_STREAM_CRYPTION;
-  }
-
-  return ret;
-  /* XXX return 0; */
+  return 0;
 }
 
 int CGUIInfoManager::TranslateListItem(const Property &info)
