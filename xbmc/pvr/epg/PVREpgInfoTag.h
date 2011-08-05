@@ -38,7 +38,6 @@ namespace PVR
 
   private:
     const CPVRTimerInfoTag * m_Timer;       /*!< a pointer to a timer for this event or NULL if there is none */
-    bool                     m_isRecording; // XXX
 
   public:
     /*!
