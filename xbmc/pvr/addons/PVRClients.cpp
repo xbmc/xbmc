@@ -1190,12 +1190,31 @@ int CPVRClients::ReadRecordedStream(void* lpBuf, int64_t uiBufSize)
 
 void CPVRClients::Process(void)
 {
+  bool bCheckedEnabledClientsOnStartup(false);
+
   while (!g_application.m_bStop && !m_bStop)
   {
     UpdateAndInitialiseClients();
+
+    if (!bCheckedEnabledClientsOnStartup)
+    {
+      bCheckedEnabledClientsOnStartup = true;
+      if (!HasEnabledClients())
+        ShowDialogNoClientsEnabled();
+    }
     UpdateCharInfoSignalStatus();
     Sleep(1000);
   }
+}
+
+void CPVRClients::ShowDialogNoClientsEnabled(void)
+{
+  CGUIDialogOK::ShowAndGetInput(19240, 19241, 19242, 19243);
+
+  vector<CStdString> params;
+  params.push_back("addons://enabled/xbmc.pvrclient");
+  params.push_back("return");
+  g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
 }
 
 void CPVRClients::UpdateCharInfoSignalStatus(void)

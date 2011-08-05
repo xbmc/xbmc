@@ -1772,6 +1772,10 @@
   <string id="19237">importing timers</string>
   <string id="19238">importing recordings</string>
   <string id="19239">starting background threads</string>
+  <string id="19240">No PVR add-on enabled</string>
+  <string id="19241">The PVR manager has been enabled without any</string>
+  <string id="19242">enabled PVR add-on. Enable at least one add-on</string>
+  <string id="19243">in order to use the PVR functionality.</string>
 
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>
