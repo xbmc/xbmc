@@ -29,7 +29,6 @@
 		DF0DF16C13A3AF82008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF16813A3AF82008ED511 /* FileNFS.cpp */; };
 		DF0DF16D13A3AF82008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */; };
 		DF27E25C13C23CCA002514FE /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF27E25A13C23CCA002514FE /* InertialScrollingHandler.cpp */; };
-		DF88787A13E8912900B4ECE2 /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88787913E8912900B4ECE2 /* TimeSmoother.cpp */; };
 		DFD4D22013D7286E00A47C47 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D21413D7286E00A47C47 /* Implementation.cpp */; };
 		DFD4D22113D7286E00A47C47 /* README.platform in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D21613D7286E00A47C47 /* README.platform */; };
 		DFD4D22213D7286E00A47C47 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D21C13D7286E00A47C47 /* SystemClock.cpp */; };
@@ -6764,7 +6763,6 @@
 				F5CEE72C13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				DFD4D22013D7286E00A47C47 /* Implementation.cpp in Sources */,
 				DFD4D22213D7286E00A47C47 /* SystemClock.cpp in Sources */,
-				7CEE2E6D13D6B7A8000ABF2A /* TimeSmoother.cpp in Sources */,
 				F5E6209F13E9081400D5F2CD /* InfoBool.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
