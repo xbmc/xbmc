@@ -57,7 +57,7 @@ bool CGUIDialogExtendedProgressBar::OnMessage(CGUIMessage& message)
 
 void CGUIDialogExtendedProgressBar::Render()
 {
-  if (m_bRunning)
+  if (m_active)
     UpdateState();
 
   CGUIDialog::Render();
