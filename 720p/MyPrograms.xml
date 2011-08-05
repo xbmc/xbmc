@@ -7,34 +7,78 @@
 		<include>List</include>
 		<include>InfoList</include>
 		<include>PanelStream</include>
-		<include>Coverflow</include>
-		<include>WallStream</include>
 		<include>PluginStream</include>
 		<control type="group">
+			<posy>9</posy>
 			<include>TopOverlayTitlePos</include>
 			<control type="group">
 				<visible>!IsEmpty(Container.SecondTitle)</visible>
-				<include>TopOverlaySecondTitleSlide</include>
-				<include>TopOverlaySecondTitleAreaBG</include>
-				<control type="label">
-					<description>Second title</description>
-					<label>$INFO[Container.SecondTitle]</label>
-					<include>TopOverlaySecondTitleAreaText</include>
+				<include>TopOverlayFirstTitleSlide</include>
+				<control type="grouplist">
+					<orientation>horizontal</orientation>
+					<itemgap>7</itemgap>
+					<control type="label">
+						<height>32</height>
+						<font>LargeTitleFont</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+						<width>10</width>
+					</control>
+					<control type="label">
+						<description>First title</description>
+						<include>TopOverlayFirstTitleAreaText</include>
+						<label>$INFO[Container.FirstTitle]</label>
+					</control>
+					<control type="label">
+						<description>Second title</description>
+						<label>: $INFO[Container.SecondTitle]</label>
+						<include>TopOverlaySecondTitleAreaText</include>
+					</control>
 				</control>
 			</control>
-			<include>TopOverlayFirstTitleAreaBG</include>
-			<control type="label">
-				<description>Programs label</description>
-				<visible>IsEmpty(Container.FirstTitle)</visible>
-				<include>TopOverlayFirstTitleAreaText</include>
-				<label>$LOCALIZE[0]</label>
+			<control type="group">
+				<visible>IsEmpty(Container.SecondTitle) + !IsEmpty(Container.FirstTitle)</visible>
+				<include>TopOverlayFirstTitleSlide</include>
+				<control type="grouplist">
+					<orientation>horizontal</orientation>
+					<itemgap>7</itemgap>
+					<control type="label">
+						<height>32</height>
+						<font>LargeTitleFont</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+						<width>10</width>
+					</control>
+					<control type="label">
+						<description>First title</description>
+						<include>TopOverlayFirstTitleAreaText</include>
+						<label>$INFO[Container.FirstTitle]</label>
+					</control>
+				</control>
 			</control>
-			<control type="label">
-				<description>First title for programs</description>
-				<visible>!IsEmpty(Container.FirstTitle)</visible>
-				<include>TopOverlayFirstTitleAreaText</include>
-				<label>$INFO[Container.FirstTitle]</label>
-			</control>
+			<control type="group">
+				<visible>IsEmpty(Container.FirstTitle) + IsEmpty(Container.SecondTitle)</visible>
+				<include>TopOverlayFirstTitleSlide</include>
+				<control type="grouplist">
+					<orientation>horizontal</orientation>
+					<itemgap>7</itemgap>
+					<control type="label">
+						<height>32</height>
+						<font>LargeTitleFont</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+						<width>10</width>
+					</control>
+					<control type="label">
+						<description>Programs label</description>
+						<include>TopOverlayFirstTitleAreaText</include>
+						<label>$LOCALIZE[0]</label>
+					</control>
+				</control>
+			</control>	
 		</control>
 		<include>Clock</include>
 		<include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>

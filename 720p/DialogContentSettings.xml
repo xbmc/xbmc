@@ -1,202 +1,182 @@
+<?xml version="1.0"?>
 <window id="132">
-  <defaultcontrol>3</defaultcontrol>
-  <coordinates>
-    <system>1</system>
-    <posx>0</posx>
-    <posy>0</posy>
-  </coordinates>
-
-  <include>DialogFade</include>
-
-  <controls>
-    <include>DialogFadeBG</include>
-
-    <control type="group">
-      <include>InfoDialogPos</include>
-
-      <include>InfoDialogBG</include>
-
-      <control type="group">
-        <posx>InfoDialogLargeThumbPosX</posx>
-        <posy>228</posy>
-        <visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
-
-        <control type="image">
-          <description>Poster</description>
-          <visible>Control.HasFocus(4)</visible>
-          <texture fallback="amt-blank-poster.png">$INFO[Container(4).ListItem.Label,Scraper_,_thumb.png]</texture>
-          <include>SetContentDialogThumb</include>
-          <visible>!Skin.HasTheme(lite)</visible>
-        </control>
-        <control type="image">
-          <description>Poster</description>
-          <visible>!Control.HasFocus(4)</visible>
-          <texture fallback="amt-blank-poster.png">$INFO[ListItem.Label,Scraper_,_thumb.png]</texture>
-          <include>SetContentDialogThumb</include>
-          <visible>!Skin.HasTheme(lite)</visible>
-        </control>
-        <control type="label">
-          <posy>60</posy>
-          <width>InfoDialogLargeThumbWidth</width>
-          <font>TitleCapsFont</font>
-          <include>NoThumbLabel</include>
-        </control>
-        <control type="image">
-          <description>Poster reflection</description>
-          <visible>Control.HasFocus(4)</visible>
-          <texture fallback="amt-blank-poster.png" flipy="true" diffuse="DiffuseMirror3.png">$INFO[Container(4).ListItem.Label,Scraper_,_thumb.png]</texture>
-          <include>SetContentDialogThumbRflctn</include>
-          <visible>!Skin.HasTheme(lite)</visible>
-        </control>
-        <control type="image">
-          <description>Poster reflection</description>
-          <visible>!Control.HasFocus(4)</visible>
-          <texture fallback="amt-blank-poster.png" flipy="true" diffuse="DiffuseMirror3.png">$INFO[ListItem.Label,Scraper_,_thumb.png]</texture>
-          <include>SetContentDialogThumbRflctn</include>
-          <visible>!Skin.HasTheme(lite)</visible>
-        </control>
-      </control>
-
-      <control type="group">
-        <posx>InfoDialogTitleXOffset</posx>
-
-        <control type="label" id="1000">
-          <description>Heading</description>
-          <label>$LOCALIZE[20333]</label>
-          <include>InfoDialogTitle</include>
-        </control>
-
-        <control type="spincontrolex" id="3">
-          <description>Directory Content</description>
-          <onup>5</onup>
-          <ondown>9001</ondown>
-          <onleft>3</onleft>
-          <onright>3</onright>
-          <include>SetContentDirectoryContentDims</include>
-          <reverse>yes</reverse>
-          <align>center</align>
-          <pulseonselect>no</pulseonselect>
-          <texturefocus>-</texturefocus>
-          <textureup>ArrowUpNF.png</textureup>
-          <textureupfocus>ArrowUpFO.png</textureupfocus>
-          <texturedown>ArrowDownNF.png</texturedown>
-          <texturedownfocus>ArrowDownFO.png</texturedownfocus>
-          <include>DialogTopButton</include>
-        </control>
-
-        <control type="group" id="9001">
-          <control type="panel" id="4">
-            <description>Directory List</description>
-            <include>SetContentDirectoryListDims</include>
-            <onup>3</onup>
-            <ondown>5</ondown>
-            <onleft>3</onleft>
-            <onright>5</onright>
-            <scrolltime>200</scrolltime>
-            <pagecontrol>60</pagecontrol>
-            <visible allowhiddenfocus="false">true</visible>
-
-            <itemlayout width="132" height="136">
-              <control type="image">
-                <include>SetContentDialogIcon</include>
-                <colordiffuse>cc999999</colordiffuse>
-              </control>
-              <control type="label">
-                <include>SetContentDialogIconLabel</include>
-              </control>
-            </itemlayout>
-  
-            <focusedlayout width="132" height="136">
-              <control type="image">
-                <include>SetContentDialogIcon</include>
-              </control>
-              <control type="label">
-                <visible>!Control.HasFocus(4)</visible>
-                <include>SetContentDialogIconLabel</include>
-              </control>
-              <control type="label">
-                <visible>Control.HasFocus(4)</visible>
-                <textcolor>Focused</textcolor>
-                <scroll>true</scroll>
-                <include>SetContentDialogIconLabel</include>
-              </control>
-            </focusedlayout>
-          </control>
-  
-          <control type="grouplist" id="5">
-            <description>Set Content Options</description>
-            <posx>0</posx>
-            <posy>386</posy>
-            <itemgap>0</itemgap>
-            <orientation>vertical</orientation>
-            <width>SetContentGroupListWidth</width>
-            <onup>4</onup>
-            <ondown>28</ondown>
-            <onleft>28</onleft>
-            <onright>28</onright>
-      
-            <control type="button" id="7">
-              <description>Default Button</description>
-              <posx>0</posx>
-              <posy>0</posy>
-              <height>30</height>
-              <width>SetContentGroupButtonWidth</width>
-              <label>-</label>
-              <font>MediumSmallDefaultCapsFont</font>
-              <include>DialogTextColors</include>
-              <align>left</align>
-              <texturefocus>-</texturefocus>
-              <texturenofocus>-</texturenofocus>
-            </control>
-          </control>
-  
-          <control type="radiobutton" id="8">
-            <description>Radiobutton</description>
-            <posx>0</posx>
-            <posy>0</posy>
-            <height>30</height>
-            <align>left</align>
-            <aligny>center</aligny>
-            <font>MediumSmallDefaultCapsFont</font>
-            <textoffsetx>30</textoffsetx>
-            <include>DialogTextControl</include>
-          </control>
-
-          <control type="grouplist" id="9002">
-            <onup>5</onup>
-            <ondown>3</ondown>
-            <include>SetContentButtonsGroupDims</include>
-            <orientation>horizontal</orientation>
-
-            <control type="button" id="28">
-              <description>Select</description>
-              <onleft>29</onleft>
-              <onright>6</onright>
-              <label>$LOCALIZE[424]</label>
-              <include>SetContentDialogButton</include>
-            </control>
-  
-            <control type="button" id="6">
-              <description>Settings button</description>
-              <onleft>28</onleft>
-              <onright>29</onright>
-              <label>$LOCALIZE[5]</label>
-              <width>170</width>
-              <include>SetContentDialogButton</include>
-            </control>
-  
-            <control type="button" id="29">
-              <description>Cancel</description>
-              <onleft>6</onleft>
-              <onright>28</onright>
-              <label>$LOCALIZE[222]</label>
-              <include>SetContentDialogButton</include>
-            </control>
-  
-          </control>
-        </control>
-      </control>
-    </control>
-
-  </controls>
+	<defaultcontrol>3</defaultcontrol>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<include>DialogFade</include>
+	<controls>
+		<include>DialogFadeBG</include>
+		<control type="group">
+			<include>InfoDialogPos</include>
+			<include>InfoDialogBG</include>
+			<control type="group">
+				<posx>InfoDialogLargeThumbPosX</posx>
+				<posy>228</posy>
+				<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
+				<control type="image">
+					<description>Poster</description>
+					<visible>Control.HasFocus(4)</visible>
+					<texture fallback="amt-blank-poster.png">$INFO[Container(4).ListItem.Label,Scraper_,_thumb.png]</texture>
+					<include>SetContentDialogThumb</include>
+					<visible>!Skin.HasTheme(lite)</visible>
+				</control>
+				<control type="image">
+					<description>Poster</description>
+					<visible>!Control.HasFocus(4)</visible>
+					<texture fallback="amt-blank-poster.png">$INFO[ListItem.Label,Scraper_,_thumb.png]</texture>
+					<include>SetContentDialogThumb</include>
+					<visible>!Skin.HasTheme(lite)</visible>
+				</control>
+				<control type="label">
+					<posy>60</posy>
+					<width>InfoDialogLargeThumbWidth</width>
+					<font>TitleCapsFont</font>
+					<include>NoThumbLabel</include>
+				</control>
+				<control type="image">
+					<description>Poster reflection</description>
+					<visible>Control.HasFocus(4)</visible>
+					<texture fallback="amt-blank-poster.png" flipy="true" diffuse="DiffuseMirror3.png">$INFO[Container(4).ListItem.Label,Scraper_,_thumb.png]</texture>
+					<include>SetContentDialogThumbRflctn</include>
+					<visible>!Skin.HasTheme(lite)</visible>
+				</control>
+				<control type="image">
+					<description>Poster reflection</description>
+					<visible>!Control.HasFocus(4)</visible>
+					<texture fallback="amt-blank-poster.png" flipy="true" diffuse="DiffuseMirror3.png">$INFO[ListItem.Label,Scraper_,_thumb.png]</texture>
+					<include>SetContentDialogThumbRflctn</include>
+					<visible>!Skin.HasTheme(lite)</visible>
+				</control>
+			</control>
+			<control type="group">
+				<posx>InfoDialogTitleXOffset</posx>
+				<control type="label" id="1000">
+					<description>Heading</description>
+					<label>$LOCALIZE[20333]</label>
+					<include>InfoDialogTitle</include>
+				</control>
+				<control type="spincontrolex" id="3">
+					<description>Directory Content</description>
+					<onup>5</onup>
+					<ondown>9001</ondown>
+					<onleft>3</onleft>
+					<onright>3</onright>
+					<include>SetContentDirectoryContentDims</include>
+					<reverse>yes</reverse>
+					<align>center</align>
+					<pulseonselect>no</pulseonselect>
+					<texturefocus>-</texturefocus>
+					<textureup>ArrowUpNF.png</textureup>
+					<textureupfocus>ArrowUpFO.png</textureupfocus>
+					<texturedown>ArrowDownNF.png</texturedown>
+					<texturedownfocus>ArrowDownFO.png</texturedownfocus>
+					<include>DialogTopButton</include>
+				</control>
+				<control type="group" id="9001">
+					<control type="panel" id="4">
+						<description>Directory List</description>
+						<include>SetContentDirectoryListDims</include>
+						<onup>3</onup>
+						<ondown>5</ondown>
+						<onleft>3</onleft>
+						<onright>5</onright>
+						<scrolltime>200</scrolltime>
+						<pagecontrol>60</pagecontrol>
+						<visible allowhiddenfocus="false">true</visible>
+						<itemlayout width="132" height="136">
+							<control type="image">
+								<include>SetContentDialogIcon</include>
+								<colordiffuse>cc999999</colordiffuse>
+							</control>
+							<control type="label">
+								<include>SetContentDialogIconLabel</include>
+							</control>
+						</itemlayout>
+						<focusedlayout width="132" height="136">
+							<control type="image">
+								<include>SetContentDialogIcon</include>
+							</control>
+							<control type="label">
+								<visible>!Control.HasFocus(4)</visible>
+								<include>SetContentDialogIconLabel</include>
+							</control>
+							<control type="label">
+								<visible>Control.HasFocus(4)</visible>
+								<textcolor>Focused</textcolor>
+								<scroll>true</scroll>
+								<include>SetContentDialogIconLabel</include>
+							</control>
+						</focusedlayout>
+					</control>
+					<control type="grouplist" id="5">
+						<description>Set Content Options</description>
+						<posx>0</posx>
+						<posy>386</posy>
+						<itemgap>0</itemgap>
+						<orientation>vertical</orientation>
+						<width>SetContentGroupListWidth</width>
+						<onup>4</onup>
+						<ondown>28</ondown>
+						<onleft>28</onleft>
+						<onright>28</onright>
+						<control type="button" id="7">
+							<description>Default Button</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<height>30</height>
+							<width>SetContentGroupButtonWidth</width>
+							<label>-</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<include>DialogTextColors</include>
+							<align>left</align>
+							<texturefocus>-</texturefocus>
+							<texturenofocus>-</texturenofocus>
+						</control>
+					</control>
+					<control type="radiobutton" id="8">
+						<description>Radiobutton</description>
+						<posx>0</posx>
+						<posy>0</posy>
+						<height>30</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<font>MediumSmallDefaultCapsFont</font>
+						<textoffsetx>30</textoffsetx>
+						<include>DialogTextControl</include>
+					</control>
+					<control type="grouplist" id="9002">
+						<onup>5</onup>
+						<ondown>3</ondown>
+						<include>SetContentButtonsGroupDims</include>
+						<orientation>horizontal</orientation>
+						<control type="button" id="28">
+							<description>Select</description>
+							<onleft>29</onleft>
+							<onright>6</onright>
+							<label>$LOCALIZE[424]</label>
+							<include>SetContentDialogButton</include>
+						</control>
+						<control type="button" id="6">
+							<description>Settings button</description>
+							<onleft>28</onleft>
+							<onright>29</onright>
+							<label>$LOCALIZE[5]</label>
+							<width>170</width>
+							<include>SetContentDialogButton</include>
+						</control>
+						<control type="button" id="29">
+							<description>Cancel</description>
+							<onleft>6</onleft>
+							<onright>28</onright>
+							<label>$LOCALIZE[222]</label>
+							<include>SetContentDialogButton</include>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
 </window>

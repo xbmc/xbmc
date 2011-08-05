@@ -148,7 +148,7 @@
 		<control type="image">
 			<description>Background image</description>
 			<include>ProgressDialogBGDims</include>
-			<texture>DialogProgressBG.png</texture>
+			<include>DialogBGTexture</include>
 			<visible>!Skin.HasTheme(lite)</visible>
 		</control>
 	</include>
@@ -1385,25 +1385,33 @@
 			<posy>9</posy>
 			<visible>!Window.IsVisible(2003) + !Skin.HasSetting(Clock)</visible>
 			<control type="group" id="1">
-				<visible>!Skin.HasSetting(LargeClock)</visible>
+				<!--<visible>!Skin.HasSetting(LargeClock)</visible>-->
 				<control type="grouplist">
 					<orientation>horizontal</orientation>
-					<itemgap>20</itemgap>
+					<itemgap>7</itemgap>
+					<control type="label">
+						<height>32</height>
+						<font>LargeTitleFont</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+						<width>10</width>
+					</control>
 					<control type="label">
 						<height>32</height>
 						<font>MediumAltDefaultFont</font>
-						<align>right</align>
+						<align>left</align>
 						<aligny>center</aligny>
-						<info>System.Time(short_no_meridian)</info>
-						<width min="1" max="90">auto</width>
+						<label>$INFO[System.Time(short_no_meridian)]</label>
+						<width min="1" max="100">auto</width>
 					</control>
-					<control type="image">
+					<!--<control type="image">
 						<texture>ClockBackground2.png</texture>						
 						<align>right</align>
-					</control>
+					</control>-->
 				</control>								
 			</control>
-			<control type="group" id="1">
+			<!--<control type="group" id="1">
 				<visible>Skin.HasSetting(LargeClock)</visible>
 				<control type="image" id="1">
 					<include>LargeClockBGDims</include>
@@ -1421,24 +1429,23 @@
 						<include>ClockFGText</include>
 					</control>
 				</control>
-			</control>
+			</control>-->
 		</control>
 	</include>
 	<include name="MediaCountLabel">
 		<posx>12</posx>
 		<posy>3</posy>
+		<height>32</height>
 		<width min="1" max="200">auto</width>
 		<font>MediumAltDefaultFont</font>
-		<!--<textcolor>Unfocused</textcolor>-->
+		<aligny>center</aligny>
 	</include>
 	<include name="MediaCountNumLabel">
-		<!--<posy>-1</posy>-->
-		<height>28</height>
 		<font>MediumAltDefaultFont</font>
 		<textcolor>FFFF9900</textcolor>
 		<width min="1" max="200">auto</width>
-		<!--<align>right</align>
-		<aligny>center</aligny>-->
+		<aligny>center</aligny>
+		<height>32</height>
 	</include>
 	<include name="MediaCount">
 		<control type="group">
@@ -1446,14 +1453,18 @@
 			<visible>!Window.IsVisible(2003) + !ControlGroup(9009).HasFocus()</visible>
 			<animation effect="fade" time="600" delay="600" start="0" end="100">Visible</animation>
 			<animation effect="fade" time="200" start="100" end="0">Hidden</animation>
-			<control type="image">
-				<include>MediaCountBGDims</include>
-				<texture border="12,0,26,0">MediaCountBackground.png</texture>
-			</control>
 			<!-- horiz auto width list -->
 			<control type="grouplist">
 				<orientation>horizontal</orientation>
-				<itemgap>10</itemgap>
+				<itemgap>7</itemgap>
+				<control type="label">
+					<font>LargeTitleFont</font>
+					<align>right</align>
+					<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+					<width>10</width>
+					<height>32</height>
+					<aligny>center</aligny>
+				</control>
 			<control type="label">
 				<description>Objects</description>
 				<include>MediaCountLabel</include>
@@ -1702,9 +1713,6 @@
 	</include>
 	<include name="ListViewFocusedLayoutWide">
 		<control type="image">
-			<include>MediaItemBG</include>
-		</control>
-		<control type="image">
 			<include>MediaItemFocusBGWide</include>
 		</control>
 		<control type="image">
@@ -1825,7 +1833,7 @@
 	</include>
 	<include name="PanelStreamEpisodeImage">
 		<include>PanelStreamEpisodeImageDims</include>
-		<texture>bookmark-resume.png</texture>
+		<!--<texture>bookmark-resume.png</texture>-->
 		<include>PanelStreamImage</include>
 	</include>
 	<include name="PanelStreamEpisodeImageFocus">
@@ -1839,7 +1847,6 @@
 	</include>
 	<include name="PanelStreamAlbumImage">
 		<include>PanelStreamAlbumImageDims</include>
-		<texture>DefaultAlbumCover.png</texture>
 		<include>PanelStreamImage</include>
 	</include>
 	<include name="PanelStreamAlbumNoThumb">
@@ -1848,7 +1855,26 @@
 	</include>
 	<!-- PanelStream -->
 	<include name="PanelStreamLayout">
-		<itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="154" height="241">
+		<itemlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles) | Container.content(plugincontent) | Container.content(plugins) | Container.content(clip)]" width="154" height="241">
+			<control type="image">
+				<description>Overlay</description>
+				<posx>20</posx>
+				<posy>173</posy>
+				<include>WtchUnwtchOverlayDims</include>
+				<info>ListItem.Overlay</info>
+				<colordiffuse>FF999999</colordiffuse>
+				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
+			</control>
+			<!--<control type="image">
+				<posx>60</posx>
+				<posy>190</posy>
+				<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>
+				<height>30</height>
+				<width min="1" max="95">auto</width>
+				<info>Listitem.Property(mediaTag::contentRating)</info>
+				<aspectratio>keep</aspectratio>
+				<align>left</align>
+			</control>-->
 			<!-- drop shadow -->
 			<control type="image">
 				<posx>9</posx>
@@ -1888,16 +1914,17 @@
 				<textcolor>FFffffff</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 			</control>-->
+			
+		</itemlayout>
+		<focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles) | Container.content(plugincontent) | Container.content(plugins) | Container.content(clip)]" width="158" height="241">
 			<control type="image">
 				<description>Overlay</description>
-				<posx>121</posx>
-				<posy>169</posy>
+				<posx>20</posx>
+				<posy>175</posy>
 				<include>WtchUnwtchOverlayDims</include>
 				<info>ListItem.Overlay</info>
 				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
 			</control>
-		</itemlayout>
-		<focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="158" height="241">
 			<!-- drop shadow -->
 			<control type="image">
 				<posx>9</posx>
@@ -1938,18 +1965,117 @@
 				<wrapmultiline>false</wrapmultiline>
 				<scrollspeed>30</scrollspeed>
 			</control>-->
-			<control type="image">
-				<description>Overlay</description>
-				<posx>121</posx>
-				<posy>169</posy>
-				<include>WtchUnwtchOverlayDims</include>
-				<info>ListItem.Overlay</info>
-				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
-			</control>
 		</focusedlayout>
 		<!-- Plugins -->
+		<itemlayout condition="Container.content(plugincontent)" width="154" height="160">
+			<!-- drop shadow -->
+			<control type="image">
+				<posx>9</posx>
+				<posy>-7</posy>
+				<width>140</width>
+				<height>140</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>18</posx>
+				<posy>3</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+			<control type="image">
+				<posx>18</posx>
+				<posy>130</posy>
+				<width>122</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>80</posx>
+				<posy>141</posy>
+				<width>110</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Label]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>FFdddddd</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Container.content(plugincontent)" width="154" height="160">
+			<!-- drop shadow -->
+			<control type="image">
+				<posx>9</posx>
+				<posy>-7</posy>
+				<width>140</width>
+				<height>140</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>15</posx>
+				<posy>0</posy>
+				<width>128</width>
+				<height>128</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<bordertexture border="10">frameOrange.png</bordertexture>
+				<bordersize>3</bordersize>
+			</control>
+			<control type="image">
+				<posx>18</posx>
+				<posy>130</posy>
+				<width>122</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>80</posx>
+				<posy>141</posy>
+				<width>110</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Label]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>orange</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+		</focusedlayout>
+		<!-- Plugins main pages -->
+		<itemlayout condition="Container.content(plugins)" width="154" height="160">
+			<control type="image">
+				<description>Poster image</description>
+				<posx>18</posx>
+				<posy>3</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Icon]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="center">keep</aspectratio>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Container.content(plugins)" width="158" height="160">
+			<control type="image">
+				<description>Poster image</description>
+				<posx>18</posx>
+				<posy>3</posy>
+				<width>142</width>
+				<height>142</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Icon]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
+			</control>
+		</focusedlayout>
 		<!-- Albums -->
-		<itemlayout condition="Container.content(plugins)" width="180" height="180">
+		<itemlayout condition="Container.content(albums)" width="180" height="180">
 			<control type="image">
 				<description>Album cover</description>
 				<include>PanelStreamAlbumImage</include>
@@ -1960,7 +2086,7 @@
 				<include>PanelStreamAlbumNoThumb</include>
 			</control>
 		</itemlayout>
-		<focusedlayout condition="Container.content(plugins)" width="180" height="180">
+		<focusedlayout condition="Container.content(albums)" width="180" height="180">
 			<control type="image">
 				<description>Album cover</description>
 				<include>PanelStreamAlbumImageFocusAnim</include>
@@ -1971,61 +2097,212 @@
 				<include>PanelStreamAlbumNoThumb</include>
 			</control>
 		</focusedlayout>
-		<!-- Episodes -->
-		<itemlayout condition="Container.content(episodes)" width="262" height="185">
-			<control type="image">
-				<description>Episode thumb</description>
-				<include>PanelStreamEpisodeImage</include>
-			</control>
+		<!-- Episodes & Clips -->
+		<itemlayout condition="Container.content(episodes) | Container.content(clip)" width="252" height="160">
 			<control type="image">
 				<description>Overlay</description>
-				<posx>245</posx>
-				<posy>123</posy>
-				<include>WtchUnwtchOverlayDims</include>
+				<posx>20</posx>
+				<posy>100</posy>
 				<info>ListItem.Overlay</info>
+				<colordiffuse>FF999999</colordiffuse>
 				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
 			</control>
-			<control type="label">
-				<posx>148</posx>
-				<posy>152</posy>
+			<control type="image">
+				<posx>10</posx>
+				<posy>0</posy>
 				<width>250</width>
+				<height>122</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+			</control>
+			<control type="image">
+				<description>Episode thumb</description>
+				<posx>18</posx>
+				<posy>3</posy>
+				<width>234</width>
+				<height>110</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+			<control type="image">
+				<posx>60</posx>
+				<posy>120</posy>
+				<width>190</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>155</posx>
+				<posy>124</posy>
+				<width>175</width>
+				<visible>true</visible>
+				<align>center</align>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.title]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>ffffffff</textcolor>
+				<scrollsuffix>...</scrollsuffix>
+				<visible>IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+			<control type="label">
+				<posx>155</posx>
+				<posy>124</posy>
+				<width>175</width>
 				<visible>true</visible>
 				<align>center</align>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.title]</label>
-				<font>EpisodeTitles</font>
+				<font>SearchResultSmaller</font>
+				<textcolor>ffffffff</textcolor>
+				<scrollsuffix>...</scrollsuffix>
+				<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Container.content(episodes) | Container.content(clip)" width="252" height="160">
+			<control type="image">
+				<description>Overlay</description>
+				<posx>20</posx>
+				<posy>103</posy>
+				<info>ListItem.Overlay</info>
+				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
+			</control>
+			<control type="image">
+				<posx>7</posx>
+				<posy>0</posy>
+				<width>256</width>
+				<height>125</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+			</control>
+			<control type="image">
+				<description>Episode thumb</description>
+				<posx>15</posx>
+				<posy>0</posy>
+				<width>240</width>
+				<height>116</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<bordertexture border="10">frameOrange.png</bordertexture>
+				<bordersize>3</bordersize>
+			</control>
+			<control type="image">
+				<posx>60</posx>
+				<posy>120</posy>
+				<width>190</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>155</posx>
+				<posy>124</posy>
+				<width>175</width>
+				<align>center</align>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.title]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>ffffffff</textcolor>
+				<scrollsuffix>...</scrollsuffix>
+				<visible>IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+			<control type="label">
+				<posx>155</posx>
+				<posy>124</posy>
+				<width>175</width>
+				<align>center</align>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.title]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>ffffffff</textcolor>
+				<scrollsuffix>...</scrollsuffix>
+				<visible>!IsEmpty(Container.Property(mixedParents))</visible>
+			</control>
+		</focusedlayout>
+		<!-- Artists -->
+		<itemlayout condition="Container.content(artists)" width="252" height="160">
+			<control type="image">
+				<posx>10</posx>
+				<posy>0</posy>
+				<width>250</width>
+				<height>122</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+			</control>
+			<control type="image">
+				<posx>18</posx>
+				<posy>3</posy>
+				<width>234</width>
+				<height>110</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+			<control type="image">
+				<posx>20</posx>
+				<posy>120</posy>
+				<width>230</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>135</posx>
+				<posy>124</posy>
+				<width>215</width>
+				<visible>true</visible>
+				<align>center</align>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.title]</label>
+				<font>SearchResultSmaller</font>
 				<textcolor>ffffffff</textcolor>
 				<scrollsuffix>...</scrollsuffix>
 			</control>
 		</itemlayout>
-		<focusedlayout condition="Container.content(episodes)" width="262" height="185">
+		<focusedlayout condition="Container.content(artists)" width="252" height="160">
 			<control type="image">
-				<description>Episode thumb</description>
-				<include>PanelStreamEpisodeImageFocus</include>
+				<posx>7</posx>
+				<posy>0</posy>
+				<width>256</width>
+				<height>125</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 			</control>
 			<control type="image">
-				<description>Overlay</description>
-				<posx>245</posx>
-				<posy>123</posy>
-				<include>WtchUnwtchOverlayDims</include>
-				<info>ListItem.Overlay</info>
-				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
+				<posx>15</posx>
+				<posy>0</posy>
+				<width>240</width>
+				<height>116</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<bordertexture border="10">frameOrange.png</bordertexture>
+				<bordersize>3</bordersize>
+			</control>
+			<control type="image">
+				<posx>20</posx>
+				<posy>120</posy>
+				<width>230</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
 			</control>
 			<control type="label">
-				<posx>148</posx>
-				<posy>152</posy>
-				<width>250</width>
-				<visible>true</visible>
+				<posx>135</posx>
+				<posy>124</posy>
+				<width>215</width>
 				<align>center</align>
 				<scroll>false</scroll>
-				<label>$INFO[ListItem.TVShowTitle]: $INFO[ListItem.title]</label>
-				<font>EpisodeTitles</font>
+				<label>$INFO[ListItem.title]</label>
+				<font>SearchResultSmaller</font>
 				<textcolor>ffffffff</textcolor>
 				<scrollsuffix>...</scrollsuffix>
 			</control>
 		</focusedlayout>
 		<!-- Albums -->
-		<itemlayout condition="Container.content(albums) | Window.IsVisible(MyMusicFiles)" width="180" height="180">
+		<itemlayout condition="!Container.content(artists) + [Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="180">
 			<control type="image">
 				<description>Album cover</description>
 				<include>PanelStreamAlbumImage</include>
@@ -2036,7 +2313,7 @@
 				<include>PanelStreamAlbumNoThumb</include>
 			</control>
 		</itemlayout>
-		<focusedlayout condition="Container.content(albums) | Window.IsVisible(MyMusicFiles)" width="180" height="180">
+		<focusedlayout condition="!Container.content(artists) + [Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="180">
 			<control type="image">
 				<description>Album cover</description>
 				<include>PanelStreamAlbumImageFocusAnim</include>
@@ -2616,14 +2893,14 @@
 	</include>
 	<!-- Video Views -->
 	<include name="TopOverlayFirstTitleSlide">
-		<animation effect="slide" time="700" tween="circle" easing="out" start="-700,0" end="0,0">Visible</animation>
-		<animation effect="slide" time="700" tween="circle" easing="out" start="-700,0" end="0,0">WindowOpen</animation>
+		<animation effect="slide" time="700" tween="circle" easing="out" start="-700,0" end="130,0">Visible</animation>
+		<animation effect="slide" time="700" tween="circle" easing="out" start="-700,0" end="130,0">WindowOpen</animation>
 		<animation effect="slide" time="700" tween="circle" easing="out" start="0,0" end="-700,0">Hidden</animation>
 		<animation effect="slide" time="700" tween="circle" easing="out" start="0,0" end="-700,0">WindowClose</animation>
 	</include>
 	<include name="TopOverlaySecondTitleSlide">
-		<animation effect="slide" time="700" tween="circle" easing="out" start="-280,0" end="0,0">Visible</animation>
-		<animation effect="slide" time="700" tween="circle" easing="out" start="-280,0" end="0,0">WindowOpen</animation>
+		<animation effect="slide" time="700" tween="circle" easing="out" start="-280,0" end="200,0">Visible</animation>
+		<animation effect="slide" time="700" tween="circle" easing="out" start="-280,0" end="200,0">WindowOpen</animation>
 		<animation effect="slide" time="700" tween="circle" easing="out" start="0,0" end="-280,0">Hidden</animation>
 		<animation effect="slide" time="700" tween="circle" easing="out" start="0,0" end="-280,0">WindowClose</animation>
 	</include>
@@ -2661,19 +2938,18 @@
 	<include name="TopOverlayTitleAreaText">
 		<include>TopOverlayTitleAreaTextDims</include>
 		<scroll>true</scroll>
-		<align>right</align>
+		<align>left</align>
 		<aligny>center</aligny>
+		<height>32</height>
 		<font>MediumDefaultCapsFont</font>
 	</include>
 	<include name="TopOverlayFirstTitleAreaText">
 		<include>TopOverlayFirstTitleAreaTextDims</include>
 		<include>TopOverlayTitleAreaText</include>
-		<include>TopOverlayFirstTitleSlide</include>
 	</include>
 	<include name="TopOverlaySecondTitleAreaText">
 		<include>TopOverlaySecondTitleAreaTextDims</include>
 		<include>TopOverlayTitleAreaText</include>
-		<include>TopOverlaySecondTitleSlide</include>
 	</include>
 	<include name="FanartOnTVProjectorScreen">
 		<control type="group">
@@ -2794,15 +3070,15 @@
 		<visible>Control.IsVisible(54)</visible>
 	</include>
 	<include name="WatchedUnwatchedOverlay">
-		<control type="image">
+		<!--<control type="image">
 			<description>Background</description>
 			<include>WtchUnwtchOverlayBGDims</include>
 			<texture>OverlayWUBG.png</texture>
 			<visible>!IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideWatchedIcons)</visible>
-		</control>
+		</control>-->
 		<control type="image">
 			<description>Overlay</description>
-			<include>WtchUnwtchOverlayDims</include>
+			<include>WatchUnwtchOverlayDims</include>
 			<info>ListItem.Overlay</info>
 			<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
 		</control>
@@ -2862,8 +3138,8 @@
 	</include>
 	<!-- Little baby thumbs at the bottom -->
 	<include name="MediaPreviewThumbDetails">
-		<texture>amt-blank-poster.png</texture>
-		<info>ListItem.Icon</info>
+		<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+		<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 		<visible>!IsEmpty(ListItem.Thumb) | !Skin.HasSetting(HideNoThumbIcon)</visible>
 	</include>
 	<include name="MediaPreviewThumb">
@@ -2883,26 +3159,11 @@
 			<posx>88</posx>
 			<posy>158</posy>
 			<control type="image">
-				<description>Background</description>
-				<include>WtchUnwtchOverlayBGDims</include>
-				<texture flipy="true">OverlayWUBG.png</texture>
-				<animation effect="rotate" center="0,0" start="-90" end="-90" time="0" condition="true">Conditional</animation>
-				<!--
-				<animation effect="slide" tween="quadratic" end="12,0" time="300" delay="100">Focus</animation>
-				<animation effect="slide" tween="quadratic" end="0,0" time="200">Unfocus</animation>
-				-->
-				<visible>!IsEmpty(ListItem.Overlay) + !Skin.HasSetting(HideWatchedIcons)</visible>
-			</control>
-			<control type="image">
 				<description>Overlay</description>
 				<posx>-42</posx>
 				<posy>0</posy>
 				<include>WtchUnwtchOverlayDims</include>
 				<info>ListItem.Overlay</info>
-				<!--
-				<animation effect="slide" tween="quadratic" end="0,12" time="300" delay="100">Focus</animation>
-				<animation effect="slide" tween="quadratic" end="0,0" time="200">Unfocus</animation>
-				-->
 				<visible>!Skin.HasSetting(HideWatchedIcons)</visible>
 			</control>
 		</control>
@@ -4606,9 +4867,9 @@
 	</include>
 	<include name="ImageStreamLargeImage">
 		<posx>0</posx>
-		<posy>-120</posy>
+		<posy>50</posy>
 		<width>1280</width>
-		<height>960</height>
+		<height>455</height>
 		<aspectratio>keep</aspectratio>
 	</include>
 	<include name="ImageStreamThumbBG">
@@ -4635,7 +4896,7 @@
 		<width>140</width>
 		<height>140</height>
 		<info>ListItem.Icon</info>
-		<aspectratio>keep</aspectratio>
+		<aspectratio>scale</aspectratio>
 	</include>
 	<!-- Search -->	
 	<include name="Search_Header_background">

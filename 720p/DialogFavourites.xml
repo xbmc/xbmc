@@ -1,113 +1,103 @@
+<?xml version="1.0"?>
 <window type="dialog" id="134">
-  <defaultcontrol always="true">450</defaultcontrol>
-
-  <controls>
-
-    <control type="group">
-      <include>FavouritesDialogPos</include>
-      <include>VideoOSDSlideLeft</include>
-
-      <control type="image">
-        <description>Background Image</description>
-        <include>FavouritesBGDims</include>
-        <texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
-      </control>
-
-      <control type="group">
-        <posx>-10</posx>
-        <posy>20</posy>
-
-        <control type="label">
-          <description>Choose Your label</description>
-          <width>FavouriteTextWidth</width>
-          <label>$LOCALIZE[31038]</label>
-          <font>MediumDefaultCapsFont</font>
-        </control>
-        <control type="label">
-          <description>Favourite label</description>
-          <posy>18</posy>
-          <width>FavouriteTextWidth</width>
-          <label>$LOCALIZE[31039]</label>
-          <font>LargeTitleCapsFont</font>
-        </control>
-
-        <control type="group">
-          <posy>-344</posy>
-
-          <control type="list" id="450">
-            <posx>-12</posx>
-            <posy>420</posy>
-            <width>FavouriteTextWidth</width>
-            <height>336</height>
-            <onleft>-</onleft>
-            <onright>-</onright>
-            <onup>450</onup>
-            <ondown>450</ondown>
-
-            <itemlayout width="320" height="42">
-              <control type="image">
-                <posx>-66</posx>
-                <posy>-6</posy>
-                <width>679</width>
-                <height>54</height>
-                <texture>MediaItemBG.png</texture>
-              </control>
-              <control type="label">
-                <posx>12</posx>
-                <posy>10</posy>
-                <width>FavouriteTextWidth</width>
-                <height>30</height>
-                <align>left</align>
-                <label>$INFO[ListItem.Label]</label>
-                <font>MediumSmallDefaultCapsFont</font>
-                <textcolor>Unfocused</textcolor>
-              </control>
-            </itemlayout>
-  
-            <focusedlayout width="320" height="42">
-              <control type="image">
-                <posx>-66</posx>
-                <posy>-6</posy>
-                <width>679</width>
-                <height>54</height>
-                <texture>MediaItemBG.png</texture>
-              </control>
-              <control type="label">
-                <posx>12</posx>
-                <posy>10</posy>
-                <width>FavouriteTextWidth</width>
-                <height>30</height>
-                <align>left</align>
-                <label>$INFO[ListItem.Label]</label>
-                <font>MediumSmallDefaultCapsFont</font>
-                <textcolor>Unfocused</textcolor>
-              </control>
-              <control type="image">
-                <posx>-44</posx>
-                <posy>0</posy>
-                <width>595</width>
-                <height>42</height>
-                <texture aspectratio="stretch">MenuItemFO.png</texture>
-                <animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container(450).OnNext">focus</animation>
-                <animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false"  tween="quadratic" easing="out" condition="Container(450).OnPrevious">focus</animation>
-              </control>
-              <control type="label">
-                <posx>12</posx>
-                <posy>10</posy>
-                <width>FavouriteTextWidth</width>
-                <height>30</height>
-                <align>left</align>
-                <label>$INFO[ListItem.Label]</label>
-                <font>MediumSmallDefaultCapsFont</font>
-                <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container(450).OnNext">Focus</animation>
-                <animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container(450).OnPrevious">Focus</animation>
-              </control>
-            </focusedlayout>
-          </control>
-        </control>
-      </control>
-    </control>
-
-  </controls>
-  
+	<defaultcontrol always="true">450</defaultcontrol>
+	<controls>
+		<control type="group">
+			<include>FavouritesDialogPos</include>
+			<include>VideoOSDSlideLeft</include>
+			<control type="image">
+				<description>Background Image</description>
+				<include>FavouritesBGDims</include>
+				<texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
+			</control>
+			<control type="group">
+				<posx>-10</posx>
+				<posy>20</posy>
+				<control type="label">
+					<description>Choose Your label</description>
+					<width>FavouriteTextWidth</width>
+					<label>$LOCALIZE[31038]</label>
+					<font>MediumDefaultCapsFont</font>
+				</control>
+				<control type="label">
+					<description>Favourite label</description>
+					<posy>18</posy>
+					<width>FavouriteTextWidth</width>
+					<label>$LOCALIZE[31039]</label>
+					<font>LargeTitleCapsFont</font>
+				</control>
+				<control type="group">
+					<posy>-344</posy>
+					<control type="list" id="450">
+						<posx>-13</posx>
+						<posy>420</posy>
+						<width>260</width>
+						<height>336</height>
+						<onleft>-</onleft>
+						<onright>-</onright>
+						<onup>450</onup>
+						<ondown>450</ondown>
+						<itemlayout width="320" height="45">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>679</width>
+								<height>45</height>
+								<texture>MediaItemBG.png</texture>
+							</control>
+							<control type="label">
+								<posx>12</posx>
+								<posy>10</posy>
+								<width>250</width>
+								<height>30</height>
+								<align>left</align>
+								<label>$INFO[ListItem.Label]</label>
+								<font>MediumSmallDefaultCapsFont</font>
+								<textcolor>Unfocused</textcolor>
+							</control>
+						</itemlayout>
+						<focusedlayout width="320" height="45">
+							<control type="image">
+								<posx>0</posx>
+								<posy>0</posy>
+								<width>679</width>
+								<height>45</height>
+								<texture>MediaItemBG.png</texture>
+							</control>
+							<control type="label">
+								<posx>12</posx>
+								<posy>10</posy>
+								<width>245</width>
+								<height>30</height>
+								<align>left</align>
+								<label>$INFO[ListItem.Label]</label>
+								<font>MediumSmallDefaultCapsFont</font>
+								<textcolor>Unfocused</textcolor>
+							</control>
+							<control type="image">
+								<posx>-44</posx>
+								<posy>0</posy>
+								<width>595</width>
+								<height>42</height>
+								<texture aspectratio="stretch">MenuItemFO.png</texture>
+								<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container(450).OnNext">focus</animation>
+								<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container(450).OnPrevious">focus</animation>
+							</control>
+							<control type="label">
+								<posx>12</posx>
+								<posy>10</posy>
+								<width>245</width>
+								<height>30</height>
+								<align>left</align>
+								<label>$INFO[ListItem.Label]</label>
+								<font>MediumSmallDefaultCapsFont</font>
+								<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container(450).OnNext">Focus</animation>
+								<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container(450).OnPrevious">Focus</animation>
+							</control>
+						</focusedlayout>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
 </window>

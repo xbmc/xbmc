@@ -1,166 +1,146 @@
+<?xml version="1.0"?>
 <window id="503">
-  <defaultcontrol always="true">50</defaultcontrol>
-  <allowoverlay>no</allowoverlay>
-
-  <controls>
-    <include>Background</include>
-
-    <control type="group">
-      <include>BackgroundOverlayFade</include>
-      <include>MediaViewBGOverlay</include>
-    </control>
-
-    <control type="group">
-      <posy>230</posy>
-
-      <control type="group">
-        <posx>30</posx>
-
-        <control type="label">
-          <description>Music label</description>
-          <label>1211</label>
-          <include>MPESectionTitle</include>
-        </control>
-
-        <control type="list" id="50">
-          <onright>100</onright>
-          <onup>50</onup>
-          <ondown>50</ondown>
-          <include>MusicPlaylistEditorList</include>
-
-          <itemlayout width="640" height="42">
-            <control type="image">
-              <include>MediaItemBG</include>
-            </control>
-            <control type="label">
-              <include>MediaItemMainInfoNF</include>
-            </control>
-            <control type="label">
-              <include>MediaItemDetailInfoNF</include>
-            </control>
-          </itemlayout>
-
-          <focusedlayout width="640" height="42">
-            <control type="image">
-              <include>MediaItemBG</include>
-            </control>
-            <control type="image">
-              <visible>Control.HasFocus(50)</visible>
-              <include>MediaItemFocusBG</include>
-            </control>
-            <control type="image">
-              <visible>!IsEmpty(ListItem.Label2)</visible>
-              <include>MediaItemDetailBG</include>
-            </control>
-            <control type="label">
-              <include>MediaItemMainInfoNF</include>
-              <include>MediaListItemFadeOut</include>
-            </control>
-            <control type="label">
-              <include>MediaItemDetailInfoNF</include>
-              <include>MediaListItemFadeOut</include>
-            </control>
-            <control type="label">
-              <include>MediaItemMainInfoFO</include>
-              <include>MediaListItemFade</include>
-            </control>
-            <control type="label">
-              <include>MediaItemDetailInfoFO</include>
-              <include>MediaListItemFade</include>
-            </control>
-          </focusedlayout>
-        </control>
-
-        <control type="label" id="12">
-          <description>Music Files Count</description>
-          <posy>440</posy>
-          <label>-</label>
-          <font>SmallTitleCapsFont</font>
-        </control>
-      </control>
-
-      <control type="group">
-        <posx>680</posx>
-
-        <control type="label">
-          <description>Playlist directory text label right</description>
-          <label>559</label>
-          <include>MPESectionTitle</include>
-        </control>
-
-        <control type="list" id="100">
-          <onleft>50</onleft>
-          <onup>100</onup>
-          <ondown>100</ondown>
-          <include>MusicPlaylistEditorList</include>
-
-          <itemlayout width="640" height="42">
-            <control type="image">
-              <include>MediaItemBG</include>
-            </control>
-            <control type="label">
-              <include>MediaItemMainInfoNF</include>
-            </control>
-            <control type="label">
-              <include>MediaItemDetailInfoNF</include>
-            </control>
-          </itemlayout>
-  
-          <focusedlayout width="640" height="42">
-            <control type="image">
-              <include>MediaItemBG</include>
-            </control>
-            <control type="image">
-              <visible>Control.HasFocus(100)</visible>
-              <include>MediaItemFocusBG</include>
-            </control>
-            <control type="image">
-              <visible>!IsEmpty(ListItem.Label2)</visible>
-              <include>MediaItemDetailBG</include>
-            </control>
-            <control type="label">
-              <include>MediaItemMainInfoNF</include>
-              <include>MediaListItemFadeOut</include>
-            </control>
-            <control type="label">
-              <include>MediaItemDetailInfoNF</include>
-              <include>MediaListItemFadeOut</include>
-            </control>
-            <control type="label">
-              <include>MediaItemMainInfoFO</include>
-              <include>MediaListItemFade</include>
-            </control>
-            <control type="label">
-              <include>MediaItemDetailInfoFO</include>
-              <include>MediaListItemFade</include>
-            </control>
-          </focusedlayout>
-        </control>
-  
-        <control type="label" id="101">
-          <description>Playlist Files Count</description>
-          <posy>440</posy>
-          <label>-</label>
-          <font>SmallTitleCapsFont</font>
-        </control>
-      </control>
-
-    </control>
-
-    <control type="group">
-      <include>TopOverlayTitlePos</include>
-
-      <include>TopOverlayFirstTitleAreaBG</include>
-
-      <control type="label">
-        <description>Music Playlist Editor label</description>
-        <include>TopOverlayFirstTitleAreaText</include>
-        <label>$LOCALIZE[249] $LOCALIZE[559] $LOCALIZE[31041]</label>
-      </control>
-    </control>
-
-    <include>Clock</include>
-    <include>MusicNowPlayingIndicators</include>
-
-  </controls>
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>Background</include>
+		<control type="group">
+			<include>BackgroundOverlayFade</include>
+			<include>MediaViewBGOverlay</include>
+		</control>
+		<control type="group">
+			<posy>230</posy>
+			<control type="group">
+				<posx>30</posx>
+				<control type="label">
+					<description>Music label</description>
+					<label>1211</label>
+					<include>MPESectionTitle</include>
+				</control>
+				<control type="list" id="50">
+					<onright>100</onright>
+					<onup>50</onup>
+					<ondown>50</ondown>
+					<include>MusicPlaylistEditorList</include>
+					<itemlayout width="640" height="42">
+						<control type="image">
+							<include>MediaItemBG</include>
+						</control>
+						<control type="label">
+							<include>MediaItemMainInfoNF</include>
+						</control>
+						<control type="label">
+							<include>MediaItemDetailInfoNF</include>
+						</control>
+					</itemlayout>
+					<focusedlayout width="640" height="42">
+						<control type="image">
+							<include>MediaItemBG</include>
+						</control>
+						<control type="image">
+							<visible>Control.HasFocus(50)</visible>
+							<include>MediaItemFocusBG</include>
+						</control>
+						<control type="image">
+							<visible>!IsEmpty(ListItem.Label2)</visible>
+							<include>MediaItemDetailBG</include>
+						</control>
+						<control type="label">
+							<include>MediaItemMainInfoNF</include>
+							<include>MediaListItemFadeOut</include>
+						</control>
+						<control type="label">
+							<include>MediaItemDetailInfoNF</include>
+							<include>MediaListItemFadeOut</include>
+						</control>
+						<control type="label">
+							<include>MediaItemMainInfoFO</include>
+							<include>MediaListItemFade</include>
+						</control>
+						<control type="label">
+							<include>MediaItemDetailInfoFO</include>
+							<include>MediaListItemFade</include>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="label" id="12">
+					<description>Music Files Count</description>
+					<posy>440</posy>
+					<label>-</label>
+					<font>SmallTitleCapsFont</font>
+				</control>
+			</control>
+			<control type="group">
+				<posx>680</posx>
+				<control type="label">
+					<description>Playlist directory text label right</description>
+					<label>559</label>
+					<include>MPESectionTitle</include>
+				</control>
+				<control type="list" id="100">
+					<onleft>50</onleft>
+					<onup>100</onup>
+					<ondown>100</ondown>
+					<include>MusicPlaylistEditorList</include>
+					<itemlayout width="640" height="42">
+						<control type="image">
+							<include>MediaItemBG</include>
+						</control>
+						<control type="label">
+							<include>MediaItemMainInfoNF</include>
+						</control>
+						<control type="label">
+							<include>MediaItemDetailInfoNF</include>
+						</control>
+					</itemlayout>
+					<focusedlayout width="640" height="42">
+						<control type="image">
+							<include>MediaItemBG</include>
+						</control>
+						<control type="image">
+							<visible>Control.HasFocus(100)</visible>
+							<include>MediaItemFocusBG</include>
+						</control>
+						<control type="image">
+							<visible>!IsEmpty(ListItem.Label2)</visible>
+							<include>MediaItemDetailBG</include>
+						</control>
+						<control type="label">
+							<include>MediaItemMainInfoNF</include>
+							<include>MediaListItemFadeOut</include>
+						</control>
+						<control type="label">
+							<include>MediaItemDetailInfoNF</include>
+							<include>MediaListItemFadeOut</include>
+						</control>
+						<control type="label">
+							<include>MediaItemMainInfoFO</include>
+							<include>MediaListItemFade</include>
+						</control>
+						<control type="label">
+							<include>MediaItemDetailInfoFO</include>
+							<include>MediaListItemFade</include>
+						</control>
+					</focusedlayout>
+				</control>
+				<control type="label" id="101">
+					<description>Playlist Files Count</description>
+					<posy>440</posy>
+					<label>-</label>
+					<font>SmallTitleCapsFont</font>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>TopOverlayTitlePos</include>
+			<include>TopOverlayFirstTitleAreaBG</include>
+			<control type="label">
+				<description>Music Playlist Editor label</description>
+				<include>TopOverlayFirstTitleAreaText</include>
+				<label>$LOCALIZE[249] $LOCALIZE[559] $LOCALIZE[31041]</label>
+			</control>
+		</control>
+		<include>Clock</include>
+		<include>MusicNowPlayingIndicators</include>
+	</controls>
 </window>

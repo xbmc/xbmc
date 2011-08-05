@@ -12,14 +12,14 @@
 	</include>
 	<include name="MediaCountPos">
 		<posx>1050</posx>
-		<posy>11</posy>
+		<posy>9</posy>
 		<align>right</align>
 	</include>
 	<include name="MediaCountBGDims">
 		<posx>-15</posx>
-		<posy>-1</posy>
+		<posy>-11</posy>
 		<width>160</width>
-		<height>32</height>
+		<height>47</height>
 	</include>
 	<include name="MediaCountNumberPos">
 		<posx>134</posx>
@@ -40,7 +40,7 @@
 		<posy>0</posy>
 		<width>1280</width>
 		<height>720</height>
-		<aspectratio>stretch</aspectratio>
+		<aspectratio>scale</aspectratio>
 	</include>
 	<include name="FullScreenOverlayDims">
 		<include>FullScreenBGImageDims</include>
@@ -1194,7 +1194,7 @@
 	<!-- Video Views -->
 	<!-- =========== -->
 	<include name="TopOverlayTitleAreaTextDims">
-		<posy>3</posy>
+		<posy>9</posy>
 		<height>32</height>
 	</include>
 	<include name="TopOverlayFirstTitleAreaBGDims">
@@ -1203,7 +1203,7 @@
 	</include>
 	<include name="TopOverlayFirstTitleAreaTextDims">
 		<posx>380</posx>
-		<width>352</width>
+		<width min="1" max="352">auto</width>
 	</include>
 	<include name="TopOverlaySecondTitleAreaBGDims">
 		<posx>360</posx>
@@ -1211,7 +1211,7 @@
 	</include>
 	<include name="TopOverlaySecondTitleAreaTextDims">
 		<posx>650</posx>
-		<width>250</width>
+		<width>350</width>
 	</include>
 	<include name="MediaInfoCaptionDims">
 		<posx>0</posx>
@@ -1290,8 +1290,8 @@
 		<posy>134</posy>
 	</include>
 	<include name="TVSeasonsSeasonThumbDims">
-		<width>272</width>
-		<height>462</height>
+		<width>262</width>
+		<height>472</height>
 	</include>
 	<include name="TVSeasonsSeasonThumbRflctnDims">
 		<posx>6</posx>
@@ -1428,10 +1428,10 @@
 	</include>
 	<include name="MediaPreviewEpThumbDims">
 		<posx>18</posx>
-		<posy>34</posy>
+		<posy>54</posy>
 		<width>226</width>
-		<height>156</height>
-		<aspectratio aligny="bottom">keep</aspectratio>
+		<height>136</height>
+		<aspectratio aligny="bottom">scale</aspectratio>
 	</include>
 	<include name="MediaPreviewThumbAnim">
 		<animation type="focus">

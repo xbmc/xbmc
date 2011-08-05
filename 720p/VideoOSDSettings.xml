@@ -1,83 +1,72 @@
+<?xml version="1.0"?>
 <window id="123">
-  <defaultcontrol>2</defaultcontrol>
-  <zorder>1</zorder>
-
-  <controls>
-    <control type="group">
-      <include>VideoOSDSettingsPos</include>
-
-      <include>VideoOSDSlideLeft</include>
-
-      <control type="image">
-        <description>OSD Background Image</description>
-        <include>VideoOSDSettingsBGDims</include>
-        <texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
-      </control>
-
-      <control type="group">
-        <posx>10</posx>
-
-        <control type="label" id="2">
-          <description>settings</description>
-          <posy>10</posy>
-          <width>VideoOSDSettingsTextWidth</width>
-          <font>MediumTitleCapsFont</font>
-        </control>
-
-        <control type="label" id="3">
-          <description>no settings label</description>
-          <posx>170</posx>
-          <posy>170</posy>
-          <label>13390</label>
-          <font>MediumDefaultFont</font>
-        </control>
-
-        <control type="grouplist" id="5">
-          <description>control area</description>
-          <posx>-8</posx>
-          <posy>40</posy>
-          <width>VideoOSDSettingsTextWidth</width>
-          <height>480</height>
-          <itemgap>0</itemgap>
-          <onleft>28</onleft>
-          <onright>60</onright>
-          <onup>5</onup>
-          <ondown>5</ondown>
-        </control>
-      </control>
-
-      <control type="button" id="7">
-        <description>default button</description>
-        <textoffsety>4</textoffsety>
-        <font>SmallTitleCapsFont</font>
-        <include>DialogTextControl</include>
-      </control>
-
-      <control type="radiobutton" id="8">
-        <description>default radiobutton</description>
-        <width>360</width>
-        <textoffsetx>10</textoffsetx>
-        <textoffsety>2</textoffsety>
-        <include>DialogTextControl</include>
-      </control>
-
-      <control type="spincontrolex" id="9">
-        <description>default spincontrolex</description>
-        <font>LanguageString</font>
-    		<posx>0</posx>
-    		<posy>150</posy>
-    		<width>300</width>
-    		<textoffsetx>7</textoffsetx>
-    		<textoffsety>0</textoffsety>
-        <include>DialogTextControl</include>
-      </control>
-
-      <control type="sliderex" id="10">
-        <description>default slider</description>
-        <textoffsety>-6</textoffsety>
-        <include>DialogTextControl</include>
-      </control>
-    </control>
-
-  </controls>
+	<defaultcontrol>2</defaultcontrol>
+	<zorder>1</zorder>
+	<controls>
+		<control type="group">
+			<include>VideoOSDSettingsPos</include>
+			<include>VideoOSDSlideLeft</include>
+			<control type="image">
+				<description>OSD Background Image</description>
+				<include>VideoOSDSettingsBGDims</include>
+				<texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
+			</control>
+			<control type="group">
+				<posx>10</posx>
+				<control type="label" id="2">
+					<description>settings</description>
+					<posy>10</posy>
+					<width>VideoOSDSettingsTextWidth</width>
+					<font>MediumTitleCapsFont</font>
+				</control>
+				<control type="label" id="3">
+					<description>no settings label</description>
+					<posx>170</posx>
+					<posy>170</posy>
+					<label>13390</label>
+					<font>MediumDefaultFont</font>
+				</control>
+				<control type="grouplist" id="5">
+					<description>control area</description>
+					<posx>-8</posx>
+					<posy>40</posy>
+					<width>VideoOSDSettingsTextWidth</width>
+					<height>480</height>
+					<itemgap>0</itemgap>
+					<onleft>28</onleft>
+					<onright>60</onright>
+					<onup>5</onup>
+					<ondown>5</ondown>
+				</control>
+			</control>
+			<control type="button" id="7">
+				<description>default button</description>
+				<textoffsety>4</textoffsety>
+				<font>SmallTitleCapsFont</font>
+				<include>DialogTextControl</include>
+			</control>
+			<control type="radiobutton" id="8">
+				<description>default radiobutton</description>
+				<width>360</width>
+				<textoffsetx>10</textoffsetx>
+				<textoffsety>2</textoffsety>
+				<include>DialogTextControl</include>
+			</control>
+			<control type="spincontrolex" id="9">
+				<description>default spincontrolex</description>
+				<font>LanguageString</font>
+				<posx>0</posx>
+				<posy>150</posy>
+				<width>300</width>
+				<textoffsetx>7</textoffsetx>
+				<textoffsety>0</textoffsety>
+				<include>DialogTextControl</include>
+			</control>
+			<control type="sliderex" id="10">
+				<description>default slider</description>
+				<textoffsety>-6</textoffsety>
+				<include>DialogTextControl</include>
+			</control>
+		</control>
+	</controls>
 </window>

@@ -1,38 +1,33 @@
+<?xml version="1.0"?>
 <window id="136">
-  <coordinates>
-  	<system>1</system>
-  	<posx>0</posx>
-  	<posy>0</posy>
-  </coordinates>
-  	
-  <controls>
-
-    <control type="image">
-      <description>Background Overlay</description>
-      <include>FullScreenOverlayDims</include>
-      <aspectratio>stretch</aspectratio>
-      <texture>BlackTransparent.png</texture>
-      <colordiffuse>99cccccc</colordiffuse>
-      <include>DialogFade</include>
-    </control>
-
-    <control type="group">
-      <include>BusyDialogPos</include>
-      <include>DialogSlideUp</include>
-
-      <control type="image">
-        <description>Panel background</description>
-        <include>BusyDialogBGDims</include>
-        <include>InfoMessagePanelBG</include>
-      </control>
-
-      <control type="label">
-        <description>Please Wait label</description>
-        <include>BusyDialogLabelDims</include>
-        <align>center</align>
-        <label>$LOCALIZE[20186]</label>
-      </control>
-    </control>
-
-  </controls>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="image">
+			<description>Background Overlay</description>
+			<include>FullScreenOverlayDims</include>
+			<aspectratio>stretch</aspectratio>
+			<texture>BlackTransparent.png</texture>
+			<colordiffuse>99cccccc</colordiffuse>
+			<include>DialogFade</include>
+		</control>
+		<control type="group">
+			<include>BusyDialogPos</include>
+			<include>DialogSlideUp</include>
+			<control type="image">
+				<description>Panel background</description>
+				<include>BusyDialogBGDims</include>
+				<include>InfoMessagePanelBG</include>
+			</control>
+			<control type="label">
+				<description>Please Wait label</description>
+				<include>BusyDialogLabelDims</include>
+				<align>center</align>
+				<label>$LOCALIZE[20186]</label>
+			</control>
+		</control>
+	</controls>
 </window>

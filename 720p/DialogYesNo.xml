@@ -1,44 +1,35 @@
-﻿<window id="100">
-  <defaultcontrol always="true">10</defaultcontrol>
-
-  <include>DialogFade</include>
-
-  <controls>
-    <include>DialogDarkFadeBG</include>
-
-    <control type="group">
-      <include>ProgressDialogCenterPos</include>
-      <include>ProgressDialogBG</include>
-
-      <control type="group">
-        <include>ProgressDialogHeadingPos</include>
-
-        <include>ConfirmDialogControls</include>
-
-        <control type="group">
-          <include>DialogYesNoButtonPos</include>
-
-          <control type="button" id="10">
-            <description>No Button</description>
-            <width>DialogYesNoButtonWidth</width>
-    			  <label>$LOCALIZE[106]</label>
-      			<onleft>11</onleft>
-      			<onright>11</onright>
-      			<include>DialogButton</include>
-          </control>
-
-          <control type="button" id="11">
-            <description>Yes Button</description>
-            <include>DialogYesNoYesBtnDims</include>
-    			  <label>$LOCALIZE[107]</label>
-      			<onleft>10</onleft>
-      			<onright>10</onright>
-      			<include>DialogButton</include>
-          </control>
-        </control>
-      </control>
-    </control>
-
-  </controls>
-
+﻿<?xml version="1.0"?>
+<window id="100">
+	<defaultcontrol always="true">10</defaultcontrol>
+	<include>DialogFade</include>
+	<controls>
+		<include>DialogDarkFadeBG</include>
+		<control type="group">
+			<include>ProgressDialogCenterPos</include>
+			<include>ProgressDialogBG</include>
+			<control type="group">
+				<include>ProgressDialogHeadingPos</include>
+				<include>ConfirmDialogControls</include>
+				<control type="group">
+					<include>DialogYesNoButtonPos</include>
+					<control type="button" id="10">
+						<description>No Button</description>
+						<width>DialogYesNoButtonWidth</width>
+						<label>$LOCALIZE[106]</label>
+						<onleft>11</onleft>
+						<onright>11</onright>
+						<include>DialogButton</include>
+					</control>
+					<control type="button" id="11">
+						<description>Yes Button</description>
+						<include>DialogYesNoYesBtnDims</include>
+						<label>$LOCALIZE[107]</label>
+						<onleft>10</onleft>
+						<onright>10</onright>
+						<include>DialogButton</include>
+					</control>
+				</control>
+			</control>
+		</control>
+	</controls>
 </window>

@@ -1,56 +1,118 @@
+<?xml version="1.0"?>
 <window id="2">
-  <defaultcontrol>50</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
-
-  <controls>
-
-    <include>Background</include>
-
-    <!-- -->
-    <include>List</include>
-    <include>Pictures</include>
+	<defaultcontrol>56</defaultcontrol>
+	<allowoverlay>yes</allowoverlay>
+	<controls>
+		<include>Background</include>
+		<!-- -->
+		<include>List</include>
+		<include>Pictures</include>
 		<include>InfoList</include>
-    <include>ImageStream</include>
-    <include>WallStream</include>
-    <include>Coverflow</include>
-		<include>PluginStream</include>
-    <!-- -->
-
-    <control type="group">
-      <include>TopOverlayTitlePos</include>
-
+		<include>ImageStream</include>
+		<!--<include>PluginStream</include>-->
+		<!-- -->
+		<control type="group">
+			<posy>9</posy>
+			<include>TopOverlayTitlePos</include>
+			<visible>!Control.IsVisible(53) | !Container(53).Row(0)</visible>
 			<control type="group">
 				<visible>!IsEmpty(Container.SecondTitle)</visible>
-	      <include>TopOverlaySecondTitleSlide</include>
-	      <include>TopOverlaySecondTitleAreaBG</include>
-
-	      <control type="label">
-	        <description>Second title</description>
-	        <label>$INFO[Container.SecondTitle]</label>
-	        <include>TopOverlaySecondTitleAreaText</include>
-	      </control>
-	    </control>
-
-      <include>TopOverlayFirstTitleAreaBG</include>
-
-      <control type="label">
-        <description>Pictures label</description>
-				<visible>IsEmpty(Container.FirstTitle)</visible>
-        <include>TopOverlayFirstTitleAreaText</include>
-        <label>$LOCALIZE[31973]</label>
-      </control>
+				<include>TopOverlayFirstTitleSlide</include>
+				<control type="grouplist">
+					<orientation>horizontal</orientation>
+					<itemgap>7</itemgap>
+					<control type="label">
+						<height>32</height>
+						<font>LargeTitleFont</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+						<width>10</width>
+					</control>
+					<control type="label">
+						<description>First title</description>
+						<include>TopOverlayFirstTitleAreaText</include>
+						<label>$INFO[Container.FirstTitle]</label>
+					</control>
+					<control type="label">
+						<description>Second title</description>
+						<label>: $INFO[Container.SecondTitle]</label>
+						<include>TopOverlaySecondTitleAreaText</include>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<visible>IsEmpty(Container.SecondTitle) + !IsEmpty(Container.FirstTitle)</visible>
+				<include>TopOverlayFirstTitleSlide</include>
+				<control type="grouplist">
+					<orientation>horizontal</orientation>
+					<itemgap>7</itemgap>
+					<control type="label">
+						<height>32</height>
+						<font>LargeTitleFont</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+						<width>10</width>
+					</control>
+					<control type="label">
+						<description>First title</description>
+						<include>TopOverlayFirstTitleAreaText</include>
+						<label>$INFO[Container.FirstTitle]</label>
+					</control>
+				</control>
+			</control>
+			<control type="group">
+				<visible>IsEmpty(Container.FirstTitle) + IsEmpty(Container.SecondTitle)</visible>
+				<include>TopOverlayFirstTitleSlide</include>
+				<control type="grouplist">
+					<orientation>horizontal</orientation>
+					<itemgap>7</itemgap>
+					<control type="label">
+						<height>32</height>
+						<font>LargeTitleFont</font>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>[COLOR=orange][B]&#xB7;[/B][/COLOR]</label>
+						<width>10</width>
+					</control>
+					<control type="label">
+						<description>Music label</description>
+						<include>TopOverlayFirstTitleAreaText</include>
+						<label>$LOCALIZE[31973]</label>
+					</control>
+				</control>
+			</control>
+		</control>
+		<!--<control type="group">
+			<include>TopOverlayTitlePos</include>
+			<control type="group">
+				<visible>!IsEmpty(Container.SecondTitle)</visible>
+				<include>TopOverlaySecondTitleSlide</include>
+				<include>TopOverlaySecondTitleAreaBG</include>
+				<control type="label">
+					<description>Second title</description>
+					<label>$INFO[Container.SecondTitle]</label>
+					<include>TopOverlaySecondTitleAreaText</include>
+				</control>
+			</control>
+			<include>TopOverlayFirstTitleAreaBG</include>
 			<control type="label">
-        <description>First title</description>
+				<description>Pictures label</description>
+				<visible>IsEmpty(Container.FirstTitle)</visible>
+				<include>TopOverlayFirstTitleAreaText</include>
+				<label>$LOCALIZE[31973]</label>
+			</control>
+			<control type="label">
+				<description>First title</description>
 				<visible>!IsEmpty(Container.FirstTitle)</visible>
-        <include>TopOverlayFirstTitleAreaText</include>
-        <label>$INFO[Container.FirstTitle]</label>
-      </control>
-    </control>
-
-    <include>Clock</include>
-    <include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>
-    <include>MediaCount</include>
-    <include>MusicNowPlayingIndicators</include>
-
-  </controls>
+				<include>TopOverlayFirstTitleAreaText</include>
+				<label>$INFO[Container.FirstTitle]</label>
+			</control>
+		</control>-->
+		<include>Clock</include>
+		<include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>
+		<include>MediaCount</include>
+		<include>MusicNowPlayingIndicators</include>
+	</controls>
 </window>
