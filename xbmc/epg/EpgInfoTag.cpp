@@ -50,6 +50,7 @@ CEpgInfoTag::CEpgInfoTag(int iUniqueBroadcastId) :
     m_strFileNameAndPath(""),
     m_nextEvent(NULL),
     m_previousEvent(NULL),
+    m_Timer(NULL),
     m_Epg(NULL)
 {
 }
@@ -75,6 +76,7 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_strFileNameAndPath(""),
     m_nextEvent(NULL),
     m_previousEvent(NULL),
+    m_Timer(NULL),
     m_Epg(NULL)
 {
 }
