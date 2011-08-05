@@ -2084,30 +2084,29 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
 
   if (condition >= LISTITEM_START && condition <= LISTITEM_END)
   {
-    // TODO: We currently don't use the item that is passed in to here, as these
-    //       conditions only come from Container(id).ListItem(offset).* at this point.
-    CGUIListItemPtr item;
-    CGUIWindow *window = NULL;
-    int data1 = info.GetData1();
-    if (!data1) // No container specified, so we lookup the current view container
+    if (!item)
     {
-      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
-      if (window && window->IsMediaWindow())
-        data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
+      CGUIWindow *window = NULL;
+      int data1 = info.GetData1();
+      if (!data1) // No container specified, so we lookup the current view container
+      {
+        window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+        if (window && window->IsMediaWindow())
+          data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
+      }
+
+      if (!window) // If we don't have a window already (from lookup above), get one
+        window = GetWindowWithCondition(contextWindow, 0);
+
+      if (window)
+      {
+        const CGUIControl *control = window->GetControl(data1);
+        if (control && control->IsContainer())
+          item = ((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag()).get();
+      }
     }
-
-    if (!window) // If we don't have a window already (from lookup above), get one
-      window = GetWindowWithCondition(contextWindow, 0);
-
-    if (window)
-    {
-      const CGUIControl *control = window->GetControl(data1);
-      if (control && control->IsContainer())
-        item = ((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag());
-    }
-
     if (item) // If we got a valid item, do the lookup
-      bReturn = GetItemBool(item.get(), condition); // Image prioritizes images over labels (in the case of music item ratings for instance)
+      bReturn = GetItemBool(item, condition); // Image prioritizes images over labels (in the case of music item ratings for instance)
   }
   else
   {
