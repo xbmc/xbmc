@@ -76,7 +76,7 @@ bool PVR::CPVREpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = fa
   if (!data)
     return false;
 
-  CPVREpgInfoTag tag(*data);
+  CEpgInfoTag tag(*data);
   return CEpg::UpdateEntry(tag, bUpdateDatabase);
 }
 

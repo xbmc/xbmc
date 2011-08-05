@@ -21,6 +21,7 @@
  *
  */
 
+#include "addons/include/xbmc_pvr_types.h"
 #include "XBDateTime.h"
 #include "Epg.h"
 
@@ -72,19 +73,19 @@ namespace EPG
     /*!
      * @brief Hook that is called when the start date changed.
      */
-    virtual void UpdatePath() {}
+    virtual void UpdatePath();
 
     /*!
      * @brief Change the pointer to the next event.
      * @param event The next event.
      */
-    void SetNextEvent(const CEpgInfoTag *event) { m_nextEvent = event; }
+    virtual void SetNextEvent(const CEpgInfoTag *event) { m_nextEvent = event; }
 
     /*!
      * @brief Change the pointer to the previous event.
      * @param event The previous event.
      */
-    void SetPreviousEvent(const CEpgInfoTag *event) { m_previousEvent = event; }
+    virtual void SetPreviousEvent(const CEpgInfoTag *event) { m_previousEvent = event; }
 
   public:
     /*!
@@ -99,6 +100,12 @@ namespace EPG
     CEpgInfoTag();
 
     /*!
+     * @brief Create a new EPG infotag with 'data' as content.
+     * @param data The tag's content.
+     */
+    CEpgInfoTag(const EPG_TAG &data);
+
+    /*!
      * @brief Destroy this instance.
      */
     virtual ~CEpgInfoTag();
@@ -110,7 +117,7 @@ namespace EPG
      * @brief Check whether this tag has changed and unsaved values.
      * @return True if it has unsaved values, false otherwise.
      */
-    bool Changed(void) const { return m_bChanged; }
+    virtual bool Changed(void) const { return m_bChanged; }
 
     /*!
      * @brief The table this event belongs to
@@ -122,101 +129,101 @@ namespace EPG
      * @brief Change the unique broadcast ID of this event.
      * @param iUniqueBroadcastId The new unique broadcast ID.
      */
-    void SetUniqueBroadcastID(int iUniqueBroadcastID);
+    virtual void SetUniqueBroadcastID(int iUniqueBroadcastID);
 
     /*!
      * @brief Get the unique broadcast ID.
      * @return The unique broadcast ID.
      */
-    int UniqueBroadcastID(void) const { return m_iUniqueBroadcastID; }
+    virtual int UniqueBroadcastID(void) const { return m_iUniqueBroadcastID; }
 
     /*!
      * @brief Get the event's database ID.
      * @return The database ID.
      */
-    int BroadcastId(void) const { return m_iBroadcastId; }
+    virtual int BroadcastId(void) const { return m_iBroadcastId; }
 
     /*!
      * @brief Change the event's database ID.
      * @param iId The new database ID.
      */
-    void SetBroadcastId(int iId);
+    virtual void SetBroadcastId(int iId);
 
     /*!
      * @brief Get the event's start time.
      * @return The new start time.
      */
-    const CDateTime &StartAsUTC(void) const { return m_startTime; }
-    const CDateTime &StartAsLocalTime(void) const;
+    virtual const CDateTime &StartAsUTC(void) const { return m_startTime; }
+    virtual const CDateTime &StartAsLocalTime(void) const;
 
     /*!
      * @brief Change the event's start time.
      * @param start The new start time.
      */
-    void SetStartFromUTC(const CDateTime &start);
+    virtual void SetStartFromUTC(const CDateTime &start);
     void SetStartFromLocalTime(const CDateTime &start);
 
     /*!
      * @brief Get the event's end time.
      * @return The new start time.
      */
-    const CDateTime &EndAsUTC(void) const { return m_endTime; }
-    const CDateTime &EndAsLocalTime(void) const;
+    virtual const CDateTime &EndAsUTC(void) const { return m_endTime; }
+    virtual const CDateTime &EndAsLocalTime(void) const;
 
     /*!
      * @brief Change the event's end time.
      * @param end The new end time.
      */
-    void SetEndFromUTC(const CDateTime &end);
-    void SetEndFromLocalTime(const CDateTime &end);
+    virtual void SetEndFromUTC(const CDateTime &end);
+    virtual void SetEndFromLocalTime(const CDateTime &end);
 
     /*!
      * @brief Get the duration of this event in seconds.
      * @return The duration in seconds.
      */
-    int GetDuration() const;
+    virtual int GetDuration() const;
 
     /*!
      * @brief Get the title of this event.
      * @return The title.
      */
-    const CStdString &Title(void) const;
+    virtual const CStdString &Title(void) const;
 
     /*!
      * @brief Change the title of this event.
      * @param strTitle The new title.
      */
-    void SetTitle(const CStdString &strTitle);
+    virtual void SetTitle(const CStdString &strTitle);
 
     /*!
      * @brief Get the plot outline of this event.
      * @return The plot outline.
      */
-    const CStdString &PlotOutline(void) const { return m_strPlotOutline; }
+    virtual const CStdString &PlotOutline(void) const { return m_strPlotOutline; }
 
     /*!
      * @brief Change the plot outline of this event.
      * @param strPlotOutline The new plot outline.
      */
-    void SetPlotOutline(const CStdString &strPlotOutline);
+    virtual void SetPlotOutline(const CStdString &strPlotOutline);
 
     /*!
      * @brief Get the plot of this event.
      * @return The plot.
      */
-    const CStdString &Plot(void) const { return m_strPlot; }
+    virtual const CStdString &Plot(void) const { return m_strPlot; }
 
     /*!
      * @brief Change the plot of this event.
      * @param strPlot The new plot.
      */
-    void SetPlot(const CStdString &strPlot);
+    virtual void SetPlot(const CStdString &strPlot);
 
     /*!
      * @brief Get the genre type ID of this event.
      * @return The genre type ID.
      */
-    int GenreType(void) const { return m_iGenreType; }
+    virtual int GenreType(void) const { return m_iGenreType; }
 
     /*!
      * @brief Get the genre subtype ID of this event.
@@ -228,112 +235,112 @@ namespace EPG
      * @brief Get the genre as human readable string.
      * @return The genre.
      */
-    const CStdString &Genre(void) const { return m_strGenre; }
+    virtual const CStdString &Genre(void) const { return m_strGenre; }
 
     /*!
      * @brief Change the genre of this event.
      * @param iID The genre type ID.
      * @param iSubID The genre subtype ID.
      */
-    void SetGenre(int iID, int iSubID, const char* strGenre);
+    virtual void SetGenre(int iID, int iSubID, const char* strGenre);
 
     /*!
      * @brief Get the first air date of this event.
      * @return The first air date.
      */
-    const CDateTime &FirstAiredAsUTC(void) const { return m_firstAired; }
-    const CDateTime &FirstAiredAsLocalTime(void) const;
+    virtual const CDateTime &FirstAiredAsUTC(void) const { return m_firstAired; }
+    virtual const CDateTime &FirstAiredAsLocalTime(void) const;
 
     /*!
      * @brief Change the first air date of this event.
      * @param firstAired The new first air date.
      */
-    void SetFirstAiredFromUTC(const CDateTime &firstAired);
-    void SetFirstAiredFromLocalTime(const CDateTime &firstAired);
+    virtual void SetFirstAiredFromUTC(const CDateTime &firstAired);
+    virtual void SetFirstAiredFromLocalTime(const CDateTime &firstAired);
 
     /*!
      * @brief Get the parental rating of this event.
      * @return The parental rating.
      */
-    int ParentalRating(void) const { return m_iParentalRating; }
+    virtual int ParentalRating(void) const { return m_iParentalRating; }
 
     /*!
      * @brief Change the parental rating of this event.
      * @param iParentalRating The new parental rating.
      */
-    void SetParentalRating(int iParentalRating);
+    virtual void SetParentalRating(int iParentalRating);
 
     /*!
      * @brief Get the star rating of this event.
      * @return The star rating.
      */
-    int StarRating(void) const { return m_iStarRating; }
+    virtual int StarRating(void) const { return m_iStarRating; }
 
     /*!
      * @brief Change the star rating of this event.
      * @param iStarRating The new star rating.
      */
-    void SetStarRating(int iStarRating);
+    virtual void SetStarRating(int iStarRating);
 
     /*!
      * @brief Notify on start if true.
      * @return Notify on start.
      */
-    bool Notify(void) const { return m_bNotify; }
+    virtual bool Notify(void) const { return m_bNotify; }
 
     /*!
      * @brief Change the value of notify on start.
      * @param bNotify The new value.
      */
-    void SetNotify(bool bNotify);
+    virtual void SetNotify(bool bNotify);
 
     /*!
      * @brief The series number of this event.
      * @return The series number.
      */
-    int SeriesNum(void) const { return m_iSeriesNumber; }
+    virtual int SeriesNum(void) const { return m_iSeriesNumber; }
 
     /*!
      * @brief Change the series number of this event.
      * @param strSeriesNum The new series number.
      */
-    void SetSeriesNum(int iSeriesNum);
+    virtual void SetSeriesNum(int iSeriesNum);
 
     /*!
      * @brief The episode number of this event.
      * @return The episode number.
      */
-    int EpisodeNum(void) const { return m_iEpisodeNumber; }
+    virtual int EpisodeNum(void) const { return m_iEpisodeNumber; }
 
     /*!
      * @brief Change the episode number of this event.
      * @param strEpisodeNum The new episode number.
      */
-    void SetEpisodeNum(int iEpisodeNum);
+    virtual void SetEpisodeNum(int iEpisodeNum);
 
     /*!
      * @brief The episode part number of this event.
      * @return The episode part number.
      */
-    int EpisodePart(void) const { return m_iEpisodePart; }
+    virtual int EpisodePart(void) const { return m_iEpisodePart; }
 
     /*!
      * @brief Change the episode part number of this event.
      * @param strEpisodePart The new episode part number.
      */
-    void SetEpisodePart(int iEpisodePart);
+    virtual void SetEpisodePart(int iEpisodePart);
 
     /*!
      * @brief The episode name of this event.
      * @return The episode name.
      */
-    const CStdString &EpisodeName(void) const { return m_strEpisodeName; }
+    virtual const CStdString &EpisodeName(void) const { return m_strEpisodeName; }
 
     /*!
      * @brief Change the episode name of this event.
      * @param strEpisodeName The new episode name.
      */
-    void SetEpisodeName(const CStdString &strEpisodeName);
+    virtual void SetEpisodeName(const CStdString &strEpisodeName);
 
     /*!
      * @brief Get the path to the icon for this event.
@@ -345,31 +352,31 @@ namespace EPG
      * @brief Change the path to the icon for this event.
      * @param strIconPath The new path.
      */
-    void SetIcon(const CStdString &strIconPath);
+    virtual void SetIcon(const CStdString &strIconPath);
 
     /*!
      * @brief The path to this event.
      * @return The path.
      */
-    const CStdString &Path(void) const { return m_strFileNameAndPath; }
+    virtual const CStdString &Path(void) const { return m_strFileNameAndPath; }
 
     /*!
      * @brief Change the path to this event.
      * @param strFileNameAndPath The new path.
      */
-    void SetPath(const CStdString &strFileNameAndPath);
+    virtual void SetPath(const CStdString &strFileNameAndPath);
 
     /*!
      * @brief Get a pointer to the next event. Set by CEpg in a call to Sort()
      * @return A pointer to the next event or NULL if it's not set.
      */
-    const CEpgInfoTag *GetNextEvent() const;
+    virtual const CEpgInfoTag *GetNextEvent() const;
 
     /*!
      * @brief Get a pointer to the previous event. Set by CEpg in a call to Sort()
      * @return A pointer to the previous event or NULL if it's not set.
      */
-    const CEpgInfoTag *GetPreviousEvent() const;
+    virtual const CEpgInfoTag *GetPreviousEvent() const;
 
     /*!
      * @brief Update the information in this tag with the info in the given tag.
@@ -382,7 +389,7 @@ namespace EPG
      * @brief Check if this event is currently active.
      * @return True if it's active, false otherwise.
      */
-    bool IsActive(void) const;
+    virtual bool IsActive(void) const;
 
     /*!
      * @brief Persist this tag in the database.
@@ -390,29 +397,41 @@ namespace EPG
      * @param bLastUpdate True to commit a batch of changes, false otherwise.
      * @return True if the tag was persisted correctly, false otherwise.
      */
-    bool Persist(bool bSingleUpdate = true, bool bLastUpdate = false);
+    virtual bool Persist(bool bSingleUpdate = true, bool bLastUpdate = false);
 
     /*!
      * @return The current progress of this tag.
      */
-    float ProgressPercentage(void) const;
+    virtual float ProgressPercentage(void) const;
 
     /*!
      * @brief Check whether this event has an active timer tag.
      * @return True if it has an active timer tag, false if not.
      */
-    bool HasTimer() const { return !(m_Timer == NULL); }
+    virtual bool HasTimer() const { return !(m_Timer == NULL); }
 
     /*!
      * @brief Set a timer for this event or NULL to clear it.
      * @param newTimer The new timer value.
      */
-    void SetTimer(const PVR::CPVRTimerInfoTag *newTimer) { m_Timer = newTimer; }
+    virtual void SetTimer(const PVR::CPVRTimerInfoTag *newTimer) { m_Timer = newTimer; }
 
     /*!
      * @brief Get a pointer to the timer for event or NULL if there is none.
      * @return A pointer to the timer for event or NULL if there is none.
      */
-    const PVR::CPVRTimerInfoTag *Timer(void) const { return m_Timer; }
+    virtual const PVR::CPVRTimerInfoTag *Timer(void) const { return m_Timer; }
+
+    /*!
+     * @brief Update the information in this tag with the info in the given tag.
+     * @param tag The new info.
+     */
+    virtual void Update(const EPG_TAG &tag);
+
+    /*!
+     * @brief Get the channel that plays this event.
+     * @return a pointer to the channel.
+     */
+    virtual const PVR::CPVRChannel *ChannelTag(void) const;
   };
 }
