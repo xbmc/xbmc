@@ -402,6 +402,11 @@ namespace PVR
      */
     void SaveCurrentChannelSettings(void);
 
+    /*!
+     * @brief Load the settings for the current channel from the database.
+     */
+    void LoadCurrentChannelSettings(void);
+
   protected:
     /*!
      * @brief PVR update and control thread.
@@ -487,11 +492,6 @@ namespace PVR
      * @brief Restart the EPG and PVR threads after they've been stopped by StopUpdateThreads()
      */
     bool StartUpdateThreads(void);
-
-    /*!
-     * @brief Load the settings for the current channel from the database.
-     */
-    void LoadCurrentChannelSettings(void);
 
     /*!
      * @brief Continue playback on the last channel if it was stored in the database.
