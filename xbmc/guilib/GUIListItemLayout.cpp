@@ -37,19 +37,17 @@ CGUIListItemLayout::CGUIListItemLayout()
   m_condition = 0;
   m_focused = false;
   m_invalidated = true;
-  m_isPlaying = false;
   m_group.SetPushUpdates(true);
 }
 
 CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
-: m_group(from.m_group)
+: m_group(from.m_group), m_isPlaying(from.m_isPlaying)
 {
   m_width = from.m_width;
   m_height = from.m_height;
   m_focused = from.m_focused;
   m_condition = from.m_condition;
   m_invalidated = true;
-  m_isPlaying = false;
 }
 
 CGUIListItemLayout::~CGUIListItemLayout()
@@ -78,7 +76,7 @@ void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int 
     // could use a dynamic cast here if RTTI was enabled.  As it's not,
     // let's use a static cast with a virtual base function
     CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : new CFileItem(*item);
-    m_isPlaying = g_infoManager.GetBool(LISTITEM_ISPLAYING, parentID, item);
+    m_isPlaying.Update(item);
     m_group.SetInvalid();
     m_group.UpdateInfo(fileItem);
     m_invalidated = false;
@@ -137,6 +135,11 @@ bool CGUIListItemLayout::MoveRight()
   return m_group.MoveRight();
 }
 
+bool CGUIListItemLayout::CheckCondition()
+{
+  return !m_condition || g_infoManager.GetBoolValue(m_condition);
+}
+
 void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *group)
 {
   if (!group) return;
@@ -161,14 +164,15 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
   }
 }
 
-void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
+void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focused)
 {
   m_focused = focused;
   layout->QueryFloatAttribute("width", &m_width);
   layout->QueryFloatAttribute("height", &m_height);
   const char *condition = layout->Attribute("condition");
   if (condition)
-    m_condition = g_infoManager.TranslateString(condition);
+    m_condition = g_infoManager.Register(condition, context);
+  m_isPlaying.Parse("listitem.isplaying", context);
   TiXmlElement *child = layout->FirstChildElement("control");
   m_group.SetWidth(m_width);
   m_group.SetHeight(m_height);
@@ -183,18 +187,19 @@ void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, bool focused)
 }
 
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
-void CGUIListItemLayout::CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, int nofocusCondition, int focusCondition)
+void CGUIListItemLayout::CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, const CStdString &nofocusCondition, const CStdString &focusCondition)
 {
   m_width = width;
   m_height = height;
   m_focused = focused;
+  m_isPlaying.Parse("listitem.isplaying", 0);
   CGUIImage *tex = new CGUIImage(0, 0, 0, 0, width, texHeight, texture);
-  tex->SetVisibleCondition(nofocusCondition, false);
+  tex->SetVisibleCondition(nofocusCondition);
   m_group.AddControl(tex);
   if (focused)
   {
     CGUIImage *tex = new CGUIImage(0, 0, 0, 0, width, texHeight, textureFocus);
-    tex->SetVisibleCondition(focusCondition, false);
+    tex->SetVisibleCondition(focusCondition);
     m_group.AddControl(tex);
   }
   CGUIImage *image = new CGUIImage(0, 0, 8, 0, iconWidth, texHeight, CTextureInfo(""));

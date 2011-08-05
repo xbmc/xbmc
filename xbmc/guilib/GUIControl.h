@@ -198,9 +198,9 @@ public:
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
   virtual void SetVisible(bool bVisible, bool setVisState = false);
-  void SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus);
-  int GetVisibleCondition() const { return m_visibleCondition; };
-  void SetEnableCondition(int condition);
+  void SetVisibleCondition(const CStdString &expression, const CStdString &allowHiddenFocus = "");
+  unsigned int GetVisibleCondition() const { return m_visibleCondition; };
+  void SetEnableCondition(const CStdString &expression);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void SetInitialVisibility();
   virtual void SetEnabled(bool bEnable);
@@ -253,7 +253,6 @@ public:
     GUICONTROL_VIDEO,
     GUICONTROL_MOVER,
     GUICONTROL_RESIZE,
-    GUICONTROL_BUTTONBAR,
     GUICONTROL_EDIT,
     GUICONTROL_VISUALISATION,
     GUICONTROL_RENDERADDON,
@@ -335,14 +334,14 @@ protected:
   CGUIControl *m_parentControl;   // our parent control if we're part of a group
 
   // visibility condition/state
-  int m_visibleCondition;
+  unsigned int m_visibleCondition;
   GUIVISIBLE m_visible;
   bool m_visibleFromSkinCondition;
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   CGUIInfoBool m_allowHiddenFocus;
   bool m_hasRendered;
   // enable/disable state
-  int m_enableCondition;
+  unsigned int m_enableCondition;
   bool m_enabled;
 
   bool m_pushedUpdates;

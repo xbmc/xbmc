@@ -63,7 +63,7 @@
 					<alttexturenofocus>-</alttexturenofocus>
 					<label>31051</label>
 					<altlabel>31050</altlabel>
-					<usealtlabel>Container.SortDirection(Ascending)</usealtlabel>
+					<usealttexture>Container.SortDirection(Ascending)</usealttexture>
 				</control>
 				<control type="radiobutton" id="99">
 					<description>Library button</description>

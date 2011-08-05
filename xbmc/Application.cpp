@@ -395,12 +395,6 @@ bool CApplication::OnEvent(XBMC_Event& newEvent)
       g_Keyboard.ProcessKeyUp();
       break;
     case XBMC_MOUSEBUTTONDOWN:
-      g_Mouse.HandleEvent(newEvent);
-      // Only mousewheel actions should be processed at this point. Other
-      // mouse button actions are processed when the button is released.
-      if (g_Mouse.GetAction() == ACTION_MOUSE_WHEEL_UP || g_Mouse.GetAction() == ACTION_MOUSE_WHEEL_DOWN)
-        g_application.ProcessMouse();          
-      break;
     case XBMC_MOUSEBUTTONUP:
     case XBMC_MOUSEMOTION:
       g_Mouse.HandleEvent(newEvent);
@@ -1827,7 +1821,7 @@ bool CApplication::LoadUserWindows()
             if (pType && pType->FirstChild())
               id = atol(pType->FirstChild()->Value());
           }
-          int visibleCondition = 0;
+          CStdString visibleCondition;
           CGUIControlFactory::GetConditionalVisibility(pRootElement, visibleCondition);
 
           if (strType.Equals("dialog"))
@@ -1850,7 +1844,7 @@ bool CApplication::LoadUserWindows()
             delete pWindow;
             continue;
           }
-          pWindow->SetVisibleCondition(visibleCondition, false);
+          pWindow->SetVisibleCondition(visibleCondition);
           g_windowManager.AddCustomWindow(pWindow);
         }
       }
@@ -2790,14 +2784,16 @@ bool CApplication::ProcessMouse()
   if (!g_Mouse.IsActive() || !m_AppFocused)
     return false;
 
+  // Get the mouse command ID
+  uint32_t mousecommand = g_Mouse.GetAction();
+  if (mousecommand == ACTION_NOOP)
+    return true;
+
   // Reset the screensaver and idle timers
   m_idleTimer.StartZero();
   ResetScreenSaver();
   if (WakeUpScreenSaverAndDPMS())
     return true;
-
-  // Get the mouse command ID
-  uint32_t mousecommand = g_Mouse.GetAction();
 
   // Retrieve the corresponding action
   int iWin;

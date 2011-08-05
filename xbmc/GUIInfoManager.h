@@ -45,14 +45,15 @@ class CVideoInfoTag;
 class CFileItem;
 class CGUIListItem;
 class CDateTime;
+namespace INFO
+{
+  class InfoBool;
+  class InfoSingle;
+}
 
 // conditions for window retrieval
 #define WINDOW_CONDITION_HAS_LIST_ITEMS  1
 #define WINDOW_CONDITION_IS_MEDIA_WINDOW 2
-
-#define OPERATOR_NOT  3
-#define OPERATOR_AND  2
-#define OPERATOR_OR   1
 
 #define PLAYER_HAS_MEDIA              1
 #define PLAYER_HAS_AUDIO              2
@@ -345,13 +346,13 @@ class CDateTime;
 #define STRING_STR                  412
 #define INTEGER_GREATER_THAN        413
 
-#define SKIN_HAS_THEME_START        500
-#define SKIN_HAS_THEME_END          599 // allow for max 100 themes
-
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
 #define SKIN_HAS_MUSIC_OVERLAY      602
 #define SKIN_HAS_VIDEO_OVERLAY      603
+#define SKIN_THEME                  604
+#define SKIN_COLOUR_THEME           605
+#define SKIN_HAS_THEME              606
 
 #define SYSTEM_TOTAL_MEMORY         644
 #define SYSTEM_CPU_USAGE            645
@@ -382,6 +383,7 @@ class CDateTime;
 #define SYSTEM_ADDON_TITLE          712
 #define SYSTEM_ADDON_ICON           713
 #define SYSTEM_BATTERY_LEVEL        714
+#define SYSTEM_IDLE_TIME            715
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
@@ -401,9 +403,6 @@ class CDateTime;
 #define SYSTEM_CAN_SUSPEND          751
 #define SYSTEM_CAN_HIBERNATE        752
 #define SYSTEM_CAN_REBOOT           753
-
-#define SKIN_THEME                  800
-#define SKIN_COLOUR_THEME           801
 
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
@@ -471,15 +470,11 @@ class CDateTime;
 #define WINDOW_IS_MEDIA             9998
 #define WINDOW_IS_ACTIVE            9999
 
-#define SYSTEM_IDLE_TIME_START      20000
-#define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
-
 #define CONTROL_GET_LABEL           29996
 #define CONTROL_IS_ENABLED          29997
 #define CONTROL_IS_VISIBLE          29998
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS           30000
-#define BUTTON_SCROLLER_HAS_ICON    30001
 
 // Version string MUST NOT contain spaces.  It is used
 // in the HTTP request user agent.
@@ -630,8 +625,35 @@ public:
   void Clear();
   virtual bool OnMessage(CGUIMessage &message);
 
+  /*! \brief Register a boolean condition/expression
+   This routine allows controls or other clients of the info manager to register
+   to receive updates of particular expressions, in a particular context (currently windows).
+
+   In the future, it will allow clients to receive pushed callbacks when the expression changes.
+
+   \param expression the boolean condition or expression
+   \param context the context window
+   \return an identifier used to reference this expression
+
+   \sa GetBoolValue
+   */
+  unsigned int Register(const CStdString &expression, int context = 0);
+
+  /*! \brief Get a previously registered boolean expression's value
+   Checks the cache and evaluates the boolean expression if required.
+   \sa Register
+   */
+  bool GetBoolValue(unsigned int expression, const CGUIListItem *item = NULL);
+
+  /*! \brief Evaluate a boolean expression
+   \param expression the expression to evaluate
+   \param context the context in which to evaluate the expression (currently windows)
+   \return the value of the evaluated expression.
+   \sa Register, GetBoolValue
+   */
+  bool EvaluateBool(const CStdString &expression, int context = 0);
+
   int TranslateString(const CStdString &strCondition);
-  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
   int GetInt(int info, int contextWindow = 0) const;
   CStdString GetLabel(int info, int contextWindow = 0);
 
@@ -681,7 +703,7 @@ public:
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
   void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
   void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
-  void ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; };
+  bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
   bool m_performingSeek;
 
   std::string GetSystemHeatInfo(int info);
@@ -694,7 +716,6 @@ public:
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
   void ResetCache();
-  void ResetPersistentCache();
 
   CStdString GetItemLabel(const CFileItem *item, int info) const;
   CStdString GetItemImage(const CFileItem *item, int info) const;
@@ -718,18 +739,49 @@ public:
   void ResetLibraryBools();
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
 
+  int TranslateSingleString(const CStdString &strCondition);
+
 protected:
+  friend class INFO::InfoSingle;
+  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
+
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
   CGUIWindow *GetWindowWithCondition(int contextWindow, int condition) const;
 
+  /*! \brief class for holding information on properties
+   */
+  class Property
+  {
+  public:
+    Property(const CStdString &property, const CStdString &parameters);
+
+    const CStdString &param(unsigned int n = 0) const;
+    unsigned int num_params() const;
+
+    CStdString name;
+  private:
+    std::vector<CStdString> params;
+  };
+
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
-  int TranslateSingleString(const CStdString &strCondition);
-  int TranslateListItem(const CStdString &info);
+  int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   bool GetItemBool(const CGUIListItem *item, int condition) const;
+
+  /*! \brief Split an info string into it's constituent parts and parameters
+   Format is:
+     
+     info1(params1).info2(params2).info3(params3) ...
+   
+   where the parameters are an optional comma separated parameter list.
+   
+   \param infoString the original string
+   \param info the resulting pairs of info and parameters.
+   */
+  void SplitInfoString(const CStdString &infoString, std::vector<Property> &info);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
@@ -778,28 +830,9 @@ protected:
   int m_nextWindowID;
   int m_prevWindowID;
 
-  class CCombinedValue
-  {
-  public:
-    CStdString m_info;    // the text expression
-    int m_id;             // the id used to identify this expression
-    std::list<int> m_postfix;  // the postfix binary expression
-    CCombinedValue& operator=(const CCombinedValue& mSrc);
-  };
+  std::vector<INFO::InfoBool*> m_bools;
+  unsigned int m_updateTime;
 
-  int GetOperator(const char ch);
-  int TranslateBooleanExpression(const CStdString &expression);
-  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, int contextWindow, const CGUIListItem *item=NULL);
-
-  std::vector<CCombinedValue> m_CombinedValues;
-
-  // routines for caching the bool results
-  bool IsCached(int condition, int contextWindow, bool &result) const;
-  void CacheBool(int condition, int contextWindow, bool result, bool persistent=false);
-  std::map<int, bool> m_boolCache;
-
-  // persistent cache
-  std::map<int, bool> m_persistentBoolCache;
   int m_libraryHasMusic;
   int m_libraryHasMovies;
   int m_libraryHasTVShows;

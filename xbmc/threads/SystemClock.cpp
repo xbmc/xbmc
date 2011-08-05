@@ -51,6 +51,6 @@ namespace XbmcThreads
       start_time = now_time;
       start_time_set = true;
     }
-    return (now_time - start_time);
+    return (unsigned int)(now_time - start_time);
   }
 }

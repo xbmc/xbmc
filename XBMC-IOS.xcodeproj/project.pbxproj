@@ -554,7 +554,6 @@
 		F56C89E2131F42ED000AD0F6 /* GUIBaseContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C84E9131F42E9000AD0F6 /* GUIBaseContainer.cpp */; };
 		F56C89E3131F42ED000AD0F6 /* GUIBorderedImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C84EA131F42E9000AD0F6 /* GUIBorderedImage.cpp */; };
 		F56C89E4131F42ED000AD0F6 /* GUIButtonControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C84EB131F42E9000AD0F6 /* GUIButtonControl.cpp */; };
-		F56C89E5131F42ED000AD0F6 /* GUIButtonScroller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C84EC131F42E9000AD0F6 /* GUIButtonScroller.cpp */; };
 		F56C89E6131F42ED000AD0F6 /* GUICheckMarkControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C84ED131F42E9000AD0F6 /* GUICheckMarkControl.cpp */; };
 		F56C89E7131F42ED000AD0F6 /* GUIColorManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C84EE131F42E9000AD0F6 /* GUIColorManager.cpp */; };
 		F56C89E8131F42ED000AD0F6 /* GUIControl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F56C84EF131F42E9000AD0F6 /* GUIControl.cpp */; };
@@ -976,6 +975,8 @@
 		F5AE4166134175520004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4159134175520004BD79 /* XBMCOperations.cpp */; };
 		F5AE4530134D2E3E0004BD79 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE452E134D2E3E0004BD79 /* JSONServiceDescription.cpp */; };
 		F5B13DCF1334490D0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13DCE1334490D0045076D /* DarwinUtils.mm */; };
+		F5CEE73013D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE72F13D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp */; };
+		F5E6209613E907E200D5F2CD /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E6209413E907E200D5F2CD /* InfoBool.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2179,7 +2180,6 @@
 		F56C848E131F42E9000AD0F6 /* GUIBaseContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIBaseContainer.h; sourceTree = "<group>"; };
 		F56C848F131F42E9000AD0F6 /* GUIBorderedImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIBorderedImage.h; sourceTree = "<group>"; };
 		F56C8490131F42E9000AD0F6 /* GUIButtonControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIButtonControl.h; sourceTree = "<group>"; };
-		F56C8491131F42E9000AD0F6 /* GUIButtonScroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIButtonScroller.h; sourceTree = "<group>"; };
 		F56C8492131F42E9000AD0F6 /* GUICallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUICallback.h; sourceTree = "<group>"; };
 		F56C8493131F42E9000AD0F6 /* GUICheckMarkControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUICheckMarkControl.h; sourceTree = "<group>"; };
 		F56C8494131F42E9000AD0F6 /* GUIColorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIColorManager.h; sourceTree = "<group>"; };
@@ -2270,7 +2270,6 @@
 		F56C84E9131F42E9000AD0F6 /* GUIBaseContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIBaseContainer.cpp; sourceTree = "<group>"; };
 		F56C84EA131F42E9000AD0F6 /* GUIBorderedImage.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIBorderedImage.cpp; sourceTree = "<group>"; };
 		F56C84EB131F42E9000AD0F6 /* GUIButtonControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIButtonControl.cpp; sourceTree = "<group>"; };
-		F56C84EC131F42E9000AD0F6 /* GUIButtonScroller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIButtonScroller.cpp; sourceTree = "<group>"; };
 		F56C84ED131F42E9000AD0F6 /* GUICheckMarkControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUICheckMarkControl.cpp; sourceTree = "<group>"; };
 		F56C84EE131F42E9000AD0F6 /* GUIColorManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIColorManager.cpp; sourceTree = "<group>"; };
 		F56C84EF131F42E9000AD0F6 /* GUIControl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIControl.cpp; sourceTree = "<group>"; };
@@ -3042,6 +3041,10 @@
 		F5AE539813673FC70004BD79 /* IOSAudioRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRingBuffer.h; path = AudioRenderers/IOSAudioRingBuffer.h; sourceTree = "<group>"; };
 		F5B13DCD1334490D0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13DCE1334490D0045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
+		F5CEE72F13D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
+		F5CEE73113D3F9D800225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
+		F5E6209413E907E200D5F2CD /* InfoBool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoBool.cpp; sourceTree = "<group>"; };
+		F5E6209513E907E200D5F2CD /* InfoBool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoBool.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4947,7 +4950,6 @@
 				F56C848E131F42E9000AD0F6 /* GUIBaseContainer.h */,
 				F56C848F131F42E9000AD0F6 /* GUIBorderedImage.h */,
 				F56C8490131F42E9000AD0F6 /* GUIButtonControl.h */,
-				F56C8491131F42E9000AD0F6 /* GUIButtonScroller.h */,
 				F56C8492131F42E9000AD0F6 /* GUICallback.h */,
 				F56C8493131F42E9000AD0F6 /* GUICheckMarkControl.h */,
 				F56C8494131F42E9000AD0F6 /* GUIColorManager.h */,
@@ -5038,7 +5040,6 @@
 				F56C84E9131F42E9000AD0F6 /* GUIBaseContainer.cpp */,
 				F56C84EA131F42E9000AD0F6 /* GUIBorderedImage.cpp */,
 				F56C84EB131F42E9000AD0F6 /* GUIButtonControl.cpp */,
-				F56C84EC131F42E9000AD0F6 /* GUIButtonScroller.cpp */,
 				F56C84ED131F42E9000AD0F6 /* GUICheckMarkControl.cpp */,
 				F56C84EE131F42E9000AD0F6 /* GUIColorManager.cpp */,
 				F56C84EF131F42E9000AD0F6 /* GUIControl.cpp */,
@@ -5145,6 +5146,7 @@
 		F56C8546131F42E9000AD0F6 /* interfaces */ = {
 			isa = PBXGroup;
 			children = (
+				F5E6209313E907E200D5F2CD /* info */,
 				F56C8547131F42E9000AD0F6 /* python */,
 				F56C8586131F42EA000AD0F6 /* AnnouncementManager.cpp */,
 				F56C8587131F42EA000AD0F6 /* AnnouncementManager.h */,
@@ -6095,6 +6097,15 @@
 			path = "json-rpc";
 			sourceTree = "<group>";
 		};
+		F5E6209313E907E200D5F2CD /* info */ = {
+			isa = PBXGroup;
+			children = (
+				F5E6209413E907E200D5F2CD /* InfoBool.cpp */,
+				F5E6209513E907E200D5F2CD /* InfoBool.h */,
+			);
+			path = info;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -6666,7 +6677,6 @@
 				F56C89E2131F42ED000AD0F6 /* GUIBaseContainer.cpp in Sources */,
 				F56C89E3131F42ED000AD0F6 /* GUIBorderedImage.cpp in Sources */,
 				F56C89E4131F42ED000AD0F6 /* GUIButtonControl.cpp in Sources */,
-				F56C89E5131F42ED000AD0F6 /* GUIButtonScroller.cpp in Sources */,
 				F56C89E6131F42ED000AD0F6 /* GUICheckMarkControl.cpp in Sources */,
 				F56C89E7131F42ED000AD0F6 /* GUIColorManager.cpp in Sources */,
 				F56C89E8131F42ED000AD0F6 /* GUIControl.cpp in Sources */,
@@ -7144,10 +7154,11 @@
 				DF79146B13D4A0A20018E92E /* GUIEPGGridContainer.cpp in Sources */,
 				DF79147113D4A0E20018E92E /* Observer.cpp in Sources */,
 				DF79147413D4A0F60018E92E /* TextSearch.cpp in Sources */,
-				DF88796413E8997000B4ECE2 /* Implementation.cpp in Sources */,
-				DF88796813E8997E00B4ECE2 /* TimeSmoother.cpp in Sources */,
-				DF8879A013E89AA600B4ECE2 /* SystemClock.cpp in Sources */,
-				DF8879A513E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp in Sources */,
+				F5CEE73013D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
+				DFD4D1E213D725ED00A47C47 /* Implementation.cpp in Sources */,
+				DFD4D1FE13D7283500A47C47 /* SystemClock.cpp in Sources */,
+				7CEE2E7F13D6B7D4000ABF2A /* TimeSmoother.cpp in Sources */,
+				F5E6209613E907E200D5F2CD /* InfoBool.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7272,8 +7283,10 @@
 					"$(inherited)",
 					"\"$(SDKROOT)$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
 				);
+				GCC_AUTO_VECTORIZATION = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					NDEBUG,
 					TARGET_POSIX,

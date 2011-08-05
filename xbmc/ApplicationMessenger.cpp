@@ -624,7 +624,7 @@ case TMSG_POWERDOWN:
       {
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
         if (pDialog)
-          pDialog->DoModal_Internal((int)pMsg->dwParam1, pMsg->strParam);
+          pDialog->DoModal((int)pMsg->dwParam1, pMsg->strParam);
       }
       break;
 
@@ -632,15 +632,15 @@ case TMSG_POWERDOWN:
       {
         CGUIDialog *pDialog = (CGUIDialog *)pMsg->lpVoid;
         if (pDialog)
-          pDialog->Show_Internal();
+          pDialog->Show();
       }
       break;
 
-    case TMSG_GUI_DIALOG_CLOSE:
+    case TMSG_GUI_WINDOW_CLOSE:
       {
-        CGUIDialog *dialog = (CGUIDialog *)pMsg->lpVoid;
-        if (dialog)
-          dialog->Close_Internal(pMsg->dwParam1 > 0);
+        CGUIWindow *window = (CGUIWindow *)pMsg->lpVoid;
+        if (window)
+          window->Close(pMsg->dwParam2 & 0x1 ? true : false, pMsg->dwParam1, pMsg->dwParam2 & 0x2 ? true : false);
       }
       break;
 
@@ -707,7 +707,7 @@ case TMSG_POWERDOWN:
         {
           vector<bool> *infoLabels = (vector<bool> *)pMsg->lpVoid;
           for (unsigned int i = 0; i < pMsg->params.size(); i++)
-            infoLabels->push_back(g_infoManager.GetBool(g_infoManager.TranslateString(pMsg->params[i])));
+            infoLabels->push_back(g_infoManager.EvaluateBool(pMsg->params[i]));
         }
       }
       break;
@@ -1102,11 +1102,11 @@ void CApplicationMessenger::Show(CGUIDialog *pDialog)
   SendMessage(tMsg, true);
 }
 
-void CApplicationMessenger::Close(CGUIDialog *dialog, bool forceClose,
-                                  bool waitResult)
+void CApplicationMessenger::Close(CGUIWindow *window, bool forceClose, bool waitResult /*= true*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
 {
-  ThreadMessage tMsg = {TMSG_GUI_DIALOG_CLOSE, forceClose ? 1 : 0};
-  tMsg.lpVoid = dialog;
+  ThreadMessage tMsg = {TMSG_GUI_WINDOW_CLOSE, nextWindowID};
+  tMsg.dwParam2 = (DWORD)(forceClose ? 0x01 : 0 | enableSound ? 0x02 : 0);
+  tMsg.lpVoid = window;
   SendMessage(tMsg, waitResult);
 }
 

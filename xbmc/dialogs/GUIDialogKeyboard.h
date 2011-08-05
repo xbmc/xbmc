@@ -48,13 +48,11 @@ public:
   static bool ShowAndVerifyNewPassword(CStdString& newPassword, const CVariant &heading, bool allowEmpty);
   static int ShowAndVerifyPassword(CStdString& strPassword, const CStdString& strHeading, int iRetries);
   static bool ShowAndGetFilter(CStdString& aTextString, bool searching);
-
-  virtual void Close(bool forceClose = false);
-
 protected:
   virtual void OnInitWindow();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual void OnDeinitWindow(int nextWindowID);
   void SetControlLabel(int id, const CStdString &label);
   void OnShift();
   void MoveCursor(int iAmount);

@@ -389,7 +389,7 @@ const CAnimation &CAnimation::operator =(const CAnimation &src)
   if (this == &src) return *this; // same
   m_type = src.m_type;
   m_reversible = src.m_reversible;
-  m_condition = src.m_condition;
+  m_condition = src.m_condition; // TODO: register/unregister
   m_repeatAnim = src.m_repeatAnim;
   m_lastCondition = src.m_lastCondition;
   m_queuedProcess = src.m_queuedProcess;
@@ -579,9 +579,14 @@ CAnimation CAnimation::CreateFader(float start, float end, unsigned int delay, u
   return anim;
 }
 
-void CAnimation::UpdateCondition(int contextWindow, const CGUIListItem *item)
+bool CAnimation::CheckCondition()
 {
-  bool condition = g_infoManager.GetBool(m_condition, contextWindow, item);
+  return !m_condition || g_infoManager.GetBoolValue(m_condition);
+}
+
+void CAnimation::UpdateCondition(const CGUIListItem *item)
+{
+  bool condition = g_infoManager.GetBoolValue(m_condition, item);
   if (condition && !m_lastCondition)
     QueueAnimation(ANIM_PROCESS_NORMAL);
   else if (!condition && m_lastCondition)
@@ -594,16 +599,16 @@ void CAnimation::UpdateCondition(int contextWindow, const CGUIListItem *item)
   m_lastCondition = condition;
 }
 
-void CAnimation::SetInitialCondition(int contextWindow)
+void CAnimation::SetInitialCondition()
 {
-  m_lastCondition = g_infoManager.GetBool(m_condition, contextWindow);
+  m_lastCondition = g_infoManager.GetBoolValue(m_condition);
   if (m_lastCondition)
     ApplyAnimation();
   else
     ResetAnimation();
 }
 
-void CAnimation::Create(const TiXmlElement *node, const CRect &rect)
+void CAnimation::Create(const TiXmlElement *node, const CRect &rect, int context)
 {
   if (!node || !node->FirstChild())
     return;
@@ -611,7 +616,7 @@ void CAnimation::Create(const TiXmlElement *node, const CRect &rect)
   // conditions and reversibility
   const char *condition = node->Attribute("condition");
   if (condition)
-    m_condition = g_infoManager.TranslateString(condition);
+    m_condition = g_infoManager.Register(condition, context);
   const char *reverse = node->Attribute("reversible");
   if (reverse && strcmpi(reverse, "false") == 0)
     m_reversible = false;

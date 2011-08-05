@@ -23,6 +23,7 @@
 
 #include "GUIListGroup.h"
 #include "GUITexture.h"
+#include "GUIInfoTypes.h"
 
 class CGUIListItem;
 class CFileItem;
@@ -34,7 +35,7 @@ public:
   CGUIListItemLayout();
   CGUIListItemLayout(const CGUIListItemLayout &from);
   virtual ~CGUIListItemLayout();
-  void LoadLayout(TiXmlElement *layout, bool focused);
+  void LoadLayout(TiXmlElement *layout, int context, bool focused);
   void Process(CGUIListItem *item, int parentID, unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render(CGUIListItem *item, int parentID);
   float Size(ORIENTATION orientation) const;
@@ -46,7 +47,7 @@ public:
   void FreeResources(bool immediately = false);
 
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
-  void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, int nofocusCondition, int focusCondition);
+  void CreateListControlLayouts(float width, float height, bool focused, const CLabelInfo &labelInfo, const CLabelInfo &labelInfo2, const CTextureInfo &texture, const CTextureInfo &textureFocus, float texHeight, float iconWidth, float iconHeight, const CStdString &nofocusCondition, const CStdString &focusCondition);
 //#endif
 
   void SetWidth(float width);
@@ -55,10 +56,10 @@ public:
   bool MoveLeft();
   bool MoveRight();
 
-  int GetCondition() const { return m_condition; };
 #ifdef _DEBUG
   virtual void DumpTextureUse();
 #endif
+  bool CheckCondition();
 protected:
   void LoadControl(TiXmlElement *child, CGUIControlGroup *group);
   void Update(CFileItem *item);
@@ -70,7 +71,7 @@ protected:
   bool m_focused;
   bool m_invalidated;
 
-  int m_condition;
-  bool m_isPlaying;
+  unsigned int m_condition;
+  CGUIInfoBool m_isPlaying;
 };
 

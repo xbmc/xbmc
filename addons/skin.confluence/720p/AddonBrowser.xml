@@ -57,7 +57,7 @@
 					<alttexturenofocus>-</alttexturenofocus>
 					<label>31051</label>
 					<altlabel>31050</altlabel>
-					<usealtlabel>Container.SortDirection(Ascending)</usealtlabel>
+					<usealttexture>Container.SortDirection(Ascending)</usealttexture>
 				</control>
 				<control type="label" id="201">
 					<width>250</width>

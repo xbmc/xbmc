@@ -80,7 +80,7 @@ public:
 private:
   typedef std::vector< std::pair<CGUIInfoLabel, CStdString> > InfoVector;
   InfoVector m_info;
-  int  m_visCondition;
+  unsigned int m_visCondition;
   bool m_visState;
 };
 

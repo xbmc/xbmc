@@ -1457,7 +1457,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false);
     m_channelLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("channellayout");
   }
@@ -1465,7 +1465,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, true);
+    itemLayout.LoadLayout(itemElement, GetParentID(), true);
     m_focusedChannelLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("focusedchannellayout");
   }
@@ -1475,7 +1475,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, true);
+    itemLayout.LoadLayout(itemElement, GetParentID(), true);
     m_focusedProgrammeLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
@@ -1483,7 +1483,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false);
     m_programmeLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("itemlayout");
   }
@@ -1493,7 +1493,7 @@ void CGUIEPGGridContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   {
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false);
     m_rulerLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("rulerlayout");
   }
@@ -1651,8 +1651,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   m_channelLayout = NULL;
   for (unsigned int i = 0; i < m_channelLayouts.size(); i++)
   {
-    int condition = m_channelLayouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    if (m_channelLayouts[i].CheckCondition())
     {
       m_channelLayout = &m_channelLayouts[i];
       break;
@@ -1664,8 +1663,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   m_focusedChannelLayout = NULL;
   for (unsigned int i = 0; i < m_focusedChannelLayouts.size(); i++)
   {
-    int condition = m_focusedChannelLayouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    if (m_focusedChannelLayouts[i].CheckCondition())
     {
       m_focusedChannelLayout = &m_focusedChannelLayouts[i];
       break;
@@ -1677,8 +1675,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   m_programmeLayout = NULL;
   for (unsigned int i = 0; i < m_programmeLayouts.size(); i++)
   {
-    int condition = m_programmeLayouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    if (m_programmeLayouts[i].CheckCondition())
     {
       m_programmeLayout = &m_programmeLayouts[i];
       break;
@@ -1690,8 +1687,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   m_focusedProgrammeLayout = NULL;
   for (unsigned int i = 0; i < m_focusedProgrammeLayouts.size(); i++)
   {
-    int condition = m_focusedProgrammeLayouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    if (m_focusedProgrammeLayouts[i].CheckCondition())
     {
       m_focusedProgrammeLayout = &m_focusedProgrammeLayouts[i];
       break;
@@ -1703,8 +1699,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   m_rulerLayout = NULL;
   for (unsigned int i = 0; i < m_rulerLayouts.size(); i++)
   {
-    int condition = m_rulerLayouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    if (m_rulerLayouts[i].CheckCondition())
     {
       m_rulerLayout = &m_rulerLayouts[i];
       break;

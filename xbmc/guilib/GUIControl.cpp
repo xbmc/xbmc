@@ -154,7 +154,7 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   changed |=  m_controlIsDirty;
 
-  if (changed)
+  if (changed || dirtyRegion != m_renderRegion)
   {
     dirtyRegion.Union(m_renderRegion);
     dirtyregions.push_back(dirtyRegion);
@@ -446,9 +446,14 @@ void CGUIControl::SetEnabled(bool bEnable)
   }
 }
 
-void CGUIControl::SetEnableCondition(int condition)
+void CGUIControl::SetEnableCondition(const CStdString &expression)
 {
-  m_enableCondition = condition;
+  if (expression == "true")
+    m_enabled = true;
+  else if (expression == "false")
+    m_enabled = false;
+  else
+    m_enableCondition = g_infoManager.Register(expression, GetParentID());
 }
 
 void CGUIControl::SetPosition(float posX, float posY)
@@ -557,7 +562,7 @@ void CGUIControl::SetVisible(bool bVisible, bool setVisState)
      //       otherwise we just set m_forceHidden
     GUIVISIBLE visible = m_visible;
     if (m_visibleCondition)
-      visible = g_infoManager.GetBool(m_visibleCondition, m_parentID) ? VISIBLE : HIDDEN;
+      visible = g_infoManager.GetBoolValue(m_visibleCondition) ? VISIBLE : HIDDEN;
     else
       visible = VISIBLE;
     if (visible != m_visible)
@@ -617,7 +622,7 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   if (m_visibleCondition)
   {
     bool bWasVisible = m_visibleFromSkinCondition;
-    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_parentID, item);
+    m_visibleFromSkinCondition = g_infoManager.GetBoolValue(m_visibleCondition, item);
     if (!bWasVisible && m_visibleFromSkinCondition)
     { // automatic change of visibility - queue the in effect
   //    CLog::Log(LOGDEBUG, "Visibility changed to visible for control id %i", m_controlID);
@@ -634,18 +639,18 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   {
     CAnimation &anim = m_animations[i];
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
-      anim.UpdateCondition(GetParentID(), item);
+      anim.UpdateCondition(item);
   }
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
   bool enabled = m_enabled;
   if (m_enableCondition)
-    m_enabled = g_infoManager.GetBool(m_enableCondition, m_parentID, item);
+    m_enabled = g_infoManager.GetBoolValue(m_enableCondition, item);
 
   if (m_enabled != enabled)
     MarkDirtyRegion();
 
-  m_allowHiddenFocus.Update(m_parentID, item);
+  m_allowHiddenFocus.Update(item);
   if (UpdateColors())
     MarkDirtyRegion();
   // and finally, update our control information (if not pushed)
@@ -662,34 +667,36 @@ void CGUIControl::SetInitialVisibility()
 {
   if (m_visibleCondition)
   {
-    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_parentID);
+    m_visibleFromSkinCondition = g_infoManager.GetBoolValue(m_visibleCondition);
     m_visible = m_visibleFromSkinCondition ? VISIBLE : HIDDEN;
   //  CLog::Log(LOGDEBUG, "Set initial visibility for control %i: %s", m_controlID, m_visible == VISIBLE ? "visible" : "hidden");
-    // no need to enquire every frame if we are always visible or always hidden
-    if (m_visibleCondition == SYSTEM_ALWAYS_TRUE || m_visibleCondition == SYSTEM_ALWAYS_FALSE)
-      m_visibleCondition = 0;
   }
   // and handle animation conditions as well
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
-      anim.SetInitialCondition(GetParentID());
+      anim.SetInitialCondition();
   }
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
   if (m_enableCondition)
-    m_enabled = g_infoManager.GetBool(m_enableCondition, m_parentID);
-  m_allowHiddenFocus.Update(m_parentID);
+    m_enabled = g_infoManager.GetBoolValue(m_enableCondition);
+  m_allowHiddenFocus.Update();
   UpdateColors();
 
   MarkDirtyRegion();
 }
 
-void CGUIControl::SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus)
+void CGUIControl::SetVisibleCondition(const CStdString &expression, const CStdString &allowHiddenFocus)
 {
-  m_visibleCondition = visible;
-  m_allowHiddenFocus = allowHiddenFocus;
+  if (expression == "true")
+    m_visible = VISIBLE;
+  else if (expression == "false")
+    m_visible = HIDDEN;
+  else  // register with the infomanager for updates
+    m_visibleCondition = g_infoManager.Register(expression, GetParentID());
+  m_allowHiddenFocus.Parse(allowHiddenFocus, GetParentID());
 }
 
 void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
@@ -778,7 +785,7 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
     CAnimation &anim = m_animations[i];
     if (anim.GetType() == type)
     {
-      if (!checkConditions || !anim.GetCondition() || g_infoManager.GetBool(anim.GetCondition()))
+      if (!checkConditions || anim.CheckCondition())
         return &anim;
     }
   }
