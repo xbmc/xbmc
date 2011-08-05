@@ -30,38 +30,8 @@ namespace PVR
   struct PVREpgSearchFilter;
   class CPVREpgContainer;
 
-  /** PVR EPG class */
-
   class CPVREpg : public EPG::CEpg
   {
-  private:
-    /*!
-     * @brief Update the EPG from a scraper set in the channel tag.
-     * @param start Get entries with a start date after this time.
-     * @param end Get entries with an end date before this time.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool UpdateFromScraper(time_t start, time_t end);
-
-    /*!
-     * @brief Create a new tag.
-     * @return The new tag.
-     */
-    EPG::CEpgInfoTag *CreateTag(void);
-
-    bool LoadFromClients(time_t start, time_t end);
-
-  protected:
-    /*!
-     * @brief Update this table's info with the given info. Doesn't change the EpgID.
-     * @param epg The new info.
-     * @param bUpdateDb If true, persist the changes.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool Update(const CEpg &epg, bool bUpdateDb = false);
-
-    bool IsRemovableTag(const EPG::CEpgInfoTag *tag) const;
-
   public:
     /*!
      * @brief Create a new EPG instance for a channel.
@@ -73,28 +43,24 @@ namespace PVR
     virtual ~CPVREpg(void);
 
     /*!
-     * @brief Check whether this EPG contains valid entries.
-     * @return True if it has valid entries, false if not.
+     * @see EPG::CEpg::Update()
+     */
+    bool Update(const CEpg &epg, bool bUpdateDb = false);
+
+    /*!
+     * @see EPG::CEpg::HasValidEntries()
      */
     bool HasValidEntries(void) const;
 
     /*!
-     * @brief Remove all entries from this EPG.
+     * @see EPG::CEpg::Clear()
      */
     void Clear(void);
 
-    /*!
-     * @brief Update an entry in this EPG.
-     * @param data The tag to update.
-     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
-     * @return True if it was updated successfully, false otherwise.
-     */
-    bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
     bool UpdateFromClient(const EPG_TAG *data, bool bUpdateDatabase = false) { return UpdateEntry(data, bUpdateDatabase); };
 
     /*!
-     * @brief True if this is a table for a radio channel, false if it's for TV.
-     * @return True if this is a table for a radio channel, false if it's for TV.
+     * @see EPG::CEpg::IsRadio()
      */
     bool IsRadio(void) const;
 
@@ -107,5 +73,26 @@ namespace PVR
     int Get(CFileItemList *results, const PVREpgSearchFilter &filter) const;
 
     int Get(CFileItemList *results) const { return CEpg::Get(results); };
+
+  protected:
+    /*!
+     * @see EPG::CEpg::UpdateFromScraper()
+     */
+    bool UpdateFromScraper(time_t start, time_t end);
+
+    /*!
+     * @see EPG::CEpg::CreateTag()
+     */
+    EPG::CEpgInfoTag *CreateTag(void);
+
+    /*!
+     * @see EPG::CEpg::LoadFromClients()
+     */
+    bool LoadFromClients(time_t start, time_t end);
+
+    /*!
+     * @see EPG::CEpg::IsRemovableTag()
+     */
+    bool IsRemovableTag(const EPG::CEpgInfoTag *tag) const;
   };
 }
