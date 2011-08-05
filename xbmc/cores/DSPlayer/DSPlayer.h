@@ -26,18 +26,18 @@
 #endif
 
 #include "cores/IPlayer.h"
-#include "utils/Thread.h"
-#include "SingleLock.h"
-#include "StdString.h"
+#include "threads/Thread.h"
+#include "threads/SingleLock.h"
+#include "utils/StdString.h"
 #include "DSGraph.h"
 #include "DVDClock.h"
 
 #include "StreamsManager.h"
 #include "ChaptersManager.h"
 
-#include "TimeUtils.h"
+#include "utils/TimeUtils.h"
 #include "Event.h"
-#include "GUIDialogBoxBase.h"
+#include "dialogs/GUIDialogBoxBase.h"
 
 #ifdef HAS_VIDEO_PLAYBACK
 #include "cores/VideoRenderers/RenderManager.h"

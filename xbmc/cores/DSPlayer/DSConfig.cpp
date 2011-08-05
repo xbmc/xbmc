@@ -23,8 +23,8 @@
 
 #include "dsconfig.h"
 #include "DSUtil/DSUtil.h"
-#include "CharsetConverter.h"
-#include "XMLUtils.h"
+#include "utils/CharsetConverter.h"
+#include "utils/XMLUtils.h"
 
 #include "DSUtil/SmartPtr.h"
 

@@ -25,16 +25,16 @@
 #include "DSPlayer.h"
 #include "Filters/RendererSettings.h"
 #include "PixelShaderList.h"
-#include "winsystemwin32.h" //Important needed to get the right hwnd
-#include "WindowingFactory.h" //important needed to get d3d object and device
+#include "windowing/windows/winsystemwin32.h" //Important needed to get the right hwnd
+#include "windowing/WindowingFactory.h" //important needed to get d3d object and device
 #include "Util.h"
 #include "Application.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include <iomanip>
-#include "Log.h"
+#include "utils/Log.h"
 #include "URL.h"
-#include "AdvancedSettings.h"
+#include "settings/AdvancedSettings.h"
 #include "StreamsManager.h"
 #include "GUIInfoManager.h"
 #include <streams.h>
@@ -44,10 +44,10 @@
 #include "qnetwork.h"
 #include "DSUtil/SmartPtr.h"
 #include "DVDSubtitles/DVDFactorySubtitle.h"
-#include "GUIWindowManager.h"
+#include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "DSUtil/MediaTypeEx.h"
-#include "timeutils.h"
+#include "utils/timeutils.h"
 
 enum 
 {
@@ -55,7 +55,7 @@ enum
 };
 
 
-#include "win32exception.h"
+#include "utils/win32exception.h"
 #include "Filters/EVRAllocatorPresenter.h"
 #include "DSConfig.h"
 

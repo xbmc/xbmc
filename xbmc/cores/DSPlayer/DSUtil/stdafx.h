@@ -43,7 +43,7 @@
 #include <Shlwapi.h>
 
 #include <streams.h>
-#include "StdString.h"
+#include "utils/StdString.h"
 #include <dvdmedia.h>
 
 #include "smartptr.h"

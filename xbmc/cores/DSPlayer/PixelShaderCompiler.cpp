@@ -26,8 +26,8 @@
 
 #include "Filters\RendererSettings.h"
 #include "PixelShaderCompiler.h"
-#include "WindowingFactory.h"
-#include "Log.h"
+#include "windowing/WindowingFactory.h"
+#include "utils/Log.h"
 #include "DSUtil/SmartPtr.h"
 
 CPixelShaderCompiler::CPixelShaderCompiler(bool fStaySilent)

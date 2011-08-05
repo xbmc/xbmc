@@ -22,12 +22,12 @@
 #ifdef HAS_DS_PLAYER
 
 #include "RendererSettings.h"
-#include "file.h"
-#include "log.h"
+#include "filesystem/file.h"
+#include "utils/log.h"
 #include "util.h"
-#include "Settings.h"
-#include "GuiSettings.h"
-#include "XMLUtils.h"
+#include "settings/Settings.h"
+#include "settings/GuiSettings.h"
+#include "utils/XMLUtils.h"
 #include "utils/SystemInfo.h"
 #include "PixelShaderList.h"
 

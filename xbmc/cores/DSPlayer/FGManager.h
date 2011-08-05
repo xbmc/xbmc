@@ -33,7 +33,7 @@
 #include "FGFilter.h"
 #include "DSConfig.h"
 #include "Filters/IffdshowDecVideo.h"
-#include "File.h"
+#include "filesystem/File.h"
 #include "FileItem.h"
 #include "FGLoader.h"
 

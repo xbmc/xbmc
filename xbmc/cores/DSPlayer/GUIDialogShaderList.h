@@ -25,7 +25,7 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "GUIDialog.h"
+#include "guilib/GUIDialog.h"
 
 class CGUIListGroup;
 

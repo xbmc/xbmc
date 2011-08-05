@@ -60,7 +60,7 @@
 // TODO: reference additional headers your program requires here
 
 #include <streams.h>
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "..\..\dsutil\DSUtil.h"
 #include "..\..\dsutil\vd.h"
 #include "..\..\DSUtil\Geometry.h"

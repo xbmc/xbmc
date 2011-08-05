@@ -24,7 +24,7 @@
 #include <Qnetwork.h>
 
 #include "BaseDemuxer.h"
-#include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
+#include "DVDDemuxers/DVDDemuxFFmpeg.h"
 #include "Filters/BaseFilters/IKeyFrameInfo.h"
 
 #define FFMPEG_FILE_BUFFER_SIZE   32768 // default reading size for ffmpeg

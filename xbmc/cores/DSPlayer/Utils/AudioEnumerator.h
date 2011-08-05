@@ -21,8 +21,8 @@
  *
  */
 
-#include "utils/CriticalSection.h"
-#include "StdString.h"
+#include "threads/CriticalSection.h"
+#include "utils/StdString.h"
 
 struct DSFilterInfo
 {

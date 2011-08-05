@@ -23,10 +23,10 @@
  
 #include "ExternalPixelShader.h"
 #include "PixelShaderCompiler.h"
-#include "StdString.h"
+#include "utils/StdString.h"
 #include "FileSystem\File.h"
-#include "XMLUtils.h"
-#include "Settings.h"
+#include "utils/XMLUtils.h"
+#include "settings/Settings.h"
 
 HRESULT CExternalPixelShader::Compile(CPixelShaderCompiler *pCompiler)
 {

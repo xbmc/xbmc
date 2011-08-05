@@ -30,12 +30,12 @@
 
 #include "Filters/VMR9AllocatorPresenter.h"
 #include "Filters/EVRAllocatorPresenter.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #include "utils/log.h"
-#include "charsetconverter.h"
-#include "XMLUtils.h"
-#include "File.h"
-#include "SpecialProtocol.h"
+#include "utils/charsetconverter.h"
+#include "utils/XMLUtils.h"
+#include "filesystem/File.h"
+#include "filesystem/SpecialProtocol.h"
 
 #include "Dmodshow.h"
 #include "Dmoreg.h"

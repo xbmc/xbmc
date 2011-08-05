@@ -21,7 +21,7 @@
 
 #pragma once
 #include "DSUtil/DSUtil.h"
-#include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
+#include "DVDDemuxers/DVDDemuxFFmpeg.h"
 
 const char *get_stream_language(AVStream *pStream);
 HRESULT lavf_describe_stream(AVStream *pStream, WCHAR **ppszName);

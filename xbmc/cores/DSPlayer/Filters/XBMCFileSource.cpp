@@ -25,7 +25,7 @@
 
 #include "XBMCFileSource.h"
 #include "utils/log.h"
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 
 CXBMCAsyncStream::CXBMCAsyncStream()
   : m_llLength(0)
@@ -86,11 +86,11 @@ DWORD CXBMCAsyncStream::Alignment()
 }
 void CXBMCAsyncStream::Lock()
 {
-  m_csLock.getCriticalSection().Enter();
+  m_csLock.lock();
 }
 void CXBMCAsyncStream::Unlock()
 {
-  m_csLock.getCriticalSection().Leave();
+  m_csLock.unlock();
 }
 
 STDMETHODIMP CXBMCASyncReader::Register()

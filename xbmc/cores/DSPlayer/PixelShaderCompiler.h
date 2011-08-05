@@ -31,8 +31,8 @@
 #include <d3dx9shader.h>
 #include "DSUtil/DSUtil.h"
 #include "DSUtil/SmartPtr.h"
-#include "CriticalSection.h"
-#include "SingleLock.h"
+#include "threads/CriticalSection.h"
+#include "threads/SingleLock.h"
 
 class CPixelShaderCompiler
 {

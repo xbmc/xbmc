@@ -1373,7 +1373,7 @@ HRESULT CXBMCVideoDecFilter::FindDXVA1DecoderConfiguration(IAMVideoAccelerator* 
         if (pPixelFormats[iFormat].dwFourCC == MAKEFOURCC ('N', 'V', '1', '2'))
         {
           memcpy (pPixelFormat, &pPixelFormats[iFormat], sizeof(DDPIXELFORMAT));
-          SAFE_DELETE_ARRAY(pPixelFormats)
+          SAFE_DELETE_ARRAY(pPixelFormats);
           return S_OK;
         }
       }

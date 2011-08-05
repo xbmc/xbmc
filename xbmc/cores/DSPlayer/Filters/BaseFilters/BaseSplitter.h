@@ -37,7 +37,7 @@
 #include "Filters/XBMCFileReader.h"
 
 
-#include "singlelock.h"
+#include "threads/singlelock.h"
 using namespace std;
 using namespace boost;
 #define INVALID_TIME (_I64_MIN)

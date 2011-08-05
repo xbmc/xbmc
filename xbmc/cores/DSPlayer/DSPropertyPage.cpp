@@ -30,12 +30,12 @@
 #include "DSPropertyPage.h"
 #include "Utils/log.h"
 #include "DSUtil/DSUtil.h"
-#include "WindowingFactory.h"
-#include "CharsetConverter.h"
-#include "GraphicContext.h"
-#include "GUISettings.h"
+#include "windowing/WindowingFactory.h"
+#include "utils/CharsetConverter.h"
+#include "guilib/GraphicContext.h"
+#include "settings/GUISettings.h"
 #include "Application.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 
 LONG GdiGetCharDimensions(HDC hdc, LPTEXTMETRICW lptm, LONG *height)
 {

@@ -28,14 +28,14 @@
 
 #include <mpconfig.h> //IMixerConfig
 
-#include "WinSystemWin32.h" //g_hwnd
-#include "WindowingFactory.h"
-#include "CharsetConverter.h"
+#include "windowing/windows/WinSystemWin32.h" //g_hwnd
+#include "windowing/WindowingFactory.h"
+#include "utils/CharsetConverter.h"
 #include "DSUtil/DSUtil.h"
 #include "DSUtil/DShowCommon.h"
 #include "DSUtil/SmartPtr.h"
-#include "SystemInfo.h" //g_sysinfo
-#include "GUISettings.h"//g_guiSettings
+#include "utils/SystemInfo.h" //g_sysinfo
+#include "settings/GUISettings.h"//g_guiSettings
 
 
 #include "filters/VMR9AllocatorPresenter.h"
@@ -46,15 +46,15 @@
 #include <dmodshow.h>
 #include <D3d9.h>
 #include <Vmr9.h>
-#include "Log.h"
+#include "utils/Log.h"
 #include "FileSystem/SpecialProtocol.h"
 
 //XML CONFIG HEADERS
 #include "tinyXML/tinyxml.h"
-#include "XMLUtils.h"
-#include "GUIDialogOK.h"
-#include "GUIWindowManager.h"
-#include "GUIDialogYesNo.h"
+#include "utils/XMLUtils.h"
+#include "dialogs/GUIDialogOK.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogYesNo.h"
 //END XML CONFIG HEADERS
 
 #include "DSPlayer.h"

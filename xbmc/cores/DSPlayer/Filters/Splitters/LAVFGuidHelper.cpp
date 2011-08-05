@@ -24,7 +24,7 @@
 #include "BaseDemuxer.h"
 
 #include "ExtradataParser.h"
-#include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
+#include "DVDDemuxers/DVDDemuxFFmpeg.h"
 CLAVFGuidHelper g_GuidHelper;
 
 CMediaType CLAVFGuidHelper::initAudioType(CodecID codecId, unsigned int codecTag)

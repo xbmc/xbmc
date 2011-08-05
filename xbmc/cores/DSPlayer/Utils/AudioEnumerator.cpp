@@ -23,9 +23,9 @@
 
 #include "system.h"
 #include "AudioEnumerator.h"
-#include "SingleLock.h"
-#include "log.h"
-#include "CharsetConverter.h"
+#include "threads/SingleLock.h"
+#include "utils/log.h"
+#include "utils/CharsetConverter.h"
 #include "streams.h"
 
 #include "DSUtil/DSUtil.h"

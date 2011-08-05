@@ -21,9 +21,9 @@
 
 #ifdef HAS_DS_PLAYER
 
-#include "log.h"
+#include "utils/log.h"
 #include "ILogImpl.h"
-#include "StdString.h"
+#include "utils/StdString.h"
 
 void ILogImpl::Log(int loglevel, const char *format, ...)
 {

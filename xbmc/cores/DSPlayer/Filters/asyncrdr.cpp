@@ -36,7 +36,7 @@
 #include "asyncrdr.h"
 
 #include <initguid.h>
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 
 DEFINE_GUID(CLSID_AsyncSample,
 0xc553f2c0, 0x1529, 0x11d0, 0xb4, 0xd1, 0x00, 0x80, 0x5f, 0x6c, 0xbb, 0xea);

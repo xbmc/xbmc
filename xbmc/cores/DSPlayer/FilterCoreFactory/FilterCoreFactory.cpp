@@ -28,7 +28,8 @@
 #include "filters/Splitters/LAVFSplitter.h"
 //#include "filters/Splitters/MpegSplitter.h"
 #include "filters/XBMCFileSource.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
+#include "utils/URIUtils.h"
 
 
 InternalFilters internalFilters[] =
@@ -106,7 +107,7 @@ HRESULT CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdStr
 
   /* Special case for internet stream, and rar archive */
   // TODO: handle DVD
-  if (CUtil::IsInArchive(pFileItem.m_strPath))
+  if (URIUtils::IsInArchive(pFileItem.m_strPath))
   {
     filter = "internal_archivesource";
     return S_OK;

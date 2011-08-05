@@ -26,11 +26,11 @@
 #endif
 
 #include "tinyXML\tinyxml.h"
-#include "log.h"
+#include "utils/log.h"
 #include "FilterSelectionRule.h"
 #include "ShadersSelectionRule.h"
-#include "DllLibCurl.h"
-#include "RegExp.h"
+#include "filesystem/DllLibCurl.h"
+#include "utils/RegExp.h"
 
 class CGlobalFilterSelectionRule
 {

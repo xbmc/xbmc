@@ -22,13 +22,14 @@
 #ifdef HAS_DS_PLAYER
 
 #include "PixelShaderList.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "FileSystem\File.h"
 #include "FileSystem\Directory.h"
-#include "XMLUtils.h"
-#include "SingleLock.h"
+#include "utils/XMLUtils.h"
+#include "threads/SingleLock.h"
 #include "Util.h"
 #include "utils\log.h"
+#include "utils\URIUtils.h"
 
 CPixelShaderList::~CPixelShaderList()
 {
@@ -46,7 +47,7 @@ CPixelShaderList::~CPixelShaderList()
 
 void CPixelShaderList::SaveXML()
 {
-  CStdString userDataDSPlayer = CUtil::AddFileToFolder(g_settings.GetUserDataFolder(), "dsplayer");
+  CStdString userDataDSPlayer = URIUtils::AddFileToFolder(g_settings.GetUserDataFolder(), "dsplayer");
   if (! XFILE::CDirectory::Exists(userDataDSPlayer))
   {
     if (! XFILE::CDirectory::Create(userDataDSPlayer))
@@ -56,7 +57,7 @@ void CPixelShaderList::SaveXML()
     }
   }
 
-  CStdString xmlFile = CUtil::AddFileToFolder(userDataDSPlayer, "shaders.xml");
+  CStdString xmlFile = URIUtils::AddFileToFolder(userDataDSPlayer, "shaders.xml");
   if (XFILE::CFile::Exists(xmlFile))
     XFILE::CFile::Delete(xmlFile);
 

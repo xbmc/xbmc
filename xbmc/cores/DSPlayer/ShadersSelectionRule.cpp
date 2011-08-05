@@ -23,11 +23,11 @@
 
 #include "URL.h"
 #include "ShadersSelectionRule.h"
-#include "VideoInfoTag.h"
-#include "StreamDetails.h"
-#include "GUISettings.h"
+#include "video/VideoInfoTag.h"
+#include "utils/StreamDetails.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
-#include "XMLUtils.h"
+#include "utils/XMLUtils.h"
 
 CShadersSelectionRule::CShadersSelectionRule(TiXmlElement* pRule)
   : m_shaderId(-1)

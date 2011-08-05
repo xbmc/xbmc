@@ -27,8 +27,8 @@
 
 #include "BaseSplitter.h"
 
-#include "VideoInfoTag.h"
-#include "StreamDetails.h"
+#include "video/VideoInfoTag.h"
+#include "utils/StreamDetails.h"
 #include "FileItem.h"
 
 #pragma warning(disable: 4355)

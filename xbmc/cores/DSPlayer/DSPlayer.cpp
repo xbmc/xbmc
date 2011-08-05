@@ -26,20 +26,20 @@
 #include "DSUtil/SmartPtr.h"
 #include "Filters/RendererSettings.h"
 
-#include "winsystemwin32.h" //Important needed to get the right hwnd
-#include "utils/GUIInfoManager.h"
+#include "windowing/windows/winsystemwin32.h" //Important needed to get the right hwnd
+#include "xbmc/GUIInfoManager.h"
 #include "utils/SystemInfo.h"
-#include "MouseStat.h"
-#include "GUISettings.h"
-#include "Settings.h"
+#include "input/MouseStat.h"
+#include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "FileItem.h"
 #include "utils/log.h"
 #include "URL.h"
 
-#include "GUIWindowManager.h"
-#include "GUIDialogBusy.h"
-#include "WindowingFactory.h"
-#include "GUIDialogOK.h"
+#include "guilib/GUIWindowManager.h"
+#include "dialogs/GUIDialogBusy.h"
+#include "windowing/WindowingFactory.h"
+#include "dialogs/GUIDialogOK.h"
 #include "PixelShaderList.h"
 
 using namespace std;
@@ -194,7 +194,7 @@ void CDSPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 void CDSPlayer::OnStartup()
 {
   CoInitializeEx(NULL, COINIT_MULTITHREADED);
-  CThread::SetName("CDSPlayer graph thread messages");
+  //CThread::SetName("CDSPlayer graph thread messages");
 
   START_PERFORMANCE_COUNTER
   if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
@@ -415,7 +415,7 @@ CGraphManagementThread::CGraphManagementThread(CDSPlayer * pPlayer)
 
 void CGraphManagementThread::OnStartup()
 {
-  CThread::SetName("DSPlayer graph management thread");
+  //CThread::SetName("DSPlayer graph management thread");
 }
 
 void CGraphManagementThread::Process()

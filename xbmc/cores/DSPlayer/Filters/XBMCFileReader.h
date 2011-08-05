@@ -26,8 +26,8 @@
 #define __XBMCFILESOURCE_H__
 #include "filters/asyncio.h"
 #include "filters/asyncrdr.h"
-#include "CriticalSection.h"
-#include "File.h"
+#include "threads/CriticalSection.h"
+#include "filesystem/File.h"
 using namespace XFILE;
 
 [uuid("6DDB4EE7-45A0-4459-A508-BD77B32C91B2")]

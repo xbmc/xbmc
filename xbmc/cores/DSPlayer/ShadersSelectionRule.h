@@ -24,8 +24,8 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "XMLUtils.h"
-#include "RegExp.h"
+#include "utils/XMLUtils.h"
+#include "utils/RegExp.h"
 #include "FileItem.h"
 #include "StreamsManager.h"
 

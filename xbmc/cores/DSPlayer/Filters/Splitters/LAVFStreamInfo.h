@@ -24,7 +24,7 @@
 #include <string>
 #include "StreamInfo.h"
 
-#include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
+#include "DVDDemuxers/DVDDemuxFFmpeg.h"
 
 class CLAVFStreamInfo : public CStreamInfo
 {

@@ -31,8 +31,8 @@
 #include "FilterSelectionRule.h"
 #include "tinyXML\tinyxml.h"
 #include "globalfilterselectionrule.h"
-#include "GUIDialogOK.h"
-#include "GUIWindowManager.h"
+#include "dialogs/GUIDialogOK.h"
+#include "guilib/GUIWindowManager.h"
 
 
 typedef CFGFilter* (*InternalFilterConstructorPtr) ( CStdStringW name );

@@ -26,7 +26,7 @@
 #endif
 
 #include "streams.h"
-#include "utils/Thread.h"
+#include "threads/Thread.h"
 #include "DSUtil/SmartPtr.h"
 
 class CDSPlayerPropertyPageSite: public IPropertyPageSite, public CUnknown

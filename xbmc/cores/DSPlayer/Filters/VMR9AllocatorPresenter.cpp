@@ -29,9 +29,9 @@
 #include "Utils/IPinHook.h"
 #include "Utils/MacrovisionKicker.h"
 #include "DSUtil/DSUtil.h"
-#include "SystemInfo.h"
+#include "utils/SystemInfo.h"
 #include "MpConfig.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #include "Application.h"
 #include <algorithm>
 

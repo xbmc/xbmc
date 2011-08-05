@@ -25,7 +25,7 @@
 
 #include "XBMCVideoDecFilter.h"
 #include "DIRECTSHOW.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #define MAX_RETRY_ON_PENDING 50
 #define DO_DXVA_PENDING_LOOP(x)		nTry = 0; \
 									while (FAILED(hr = x) && nTry<MAX_RETRY_ON_PENDING) \

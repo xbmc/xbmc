@@ -25,8 +25,8 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "StdString.h"
-#include "StringUtils.h"
+#include "utils/StdString.h"
+#include "utils/StringUtils.h"
 
 #include <dshow.h> //needed for CLSID_VideoRenderer
 #include <initguid.h>
@@ -37,9 +37,9 @@
 #include "fgmanager.h"
 #include "DSUtil/DSUtil.h"
 #include "DSUtil/SmartPtr.h"
-#include "winsystemwin32.h"
+#include "windowing/windows/winsystemwin32.h"
 #include "cores/IPlayer.h"
-#include "File.h"
+#include "filesystem/File.h"
 
 #include "DSMessage.h"
 

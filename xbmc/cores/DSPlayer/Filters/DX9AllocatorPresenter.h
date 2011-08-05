@@ -31,10 +31,10 @@
 #include "AllocatorCommon.h"
 #include "RendererSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
-#include "D3DResource.h"
+#include "guilib/D3DResource.h"
 #include "IPaintCallback.h"
 #include "Utils/smartlist.h"
-#include "utils/Event.h"
+#include "threads/Event.h"
 #include "DSGraph.h"
 #include "..\ExternalPixelShader.h"
 // Support ffdshow queueing.

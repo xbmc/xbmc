@@ -35,7 +35,7 @@
 #error DSPlayer's header file included without HAS_DS_PLAYER defined
 #endif
 
-#include "CriticalSection.h"
+#include "threads/CriticalSection.h"
 #include "Streams.h"
 //
 // definition of CAsyncFile object that performs file access. It provides

@@ -33,7 +33,7 @@
 #include "DSUtil/SmartPtr.h"
 #include "Utils/TimeUtils.h"
 #include "Application.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 
 #if (0)    // Set to 1 to activate EVR traces
   #define TRACE_EVR    CLog::DebugLog

@@ -31,12 +31,12 @@
 #include "DSUtil/DSUtil.h"
 #include "StreamsManager.h"
 #include "Utils/TimeUtils.h"
-#include "Log.h"
-#include "WindowingFactory.h"
+#include "utils/Log.h"
+#include "windowing/WindowingFactory.h"
 #include "application.h"
 #include "FileSystem/File.h"
 #include "PixelShaderList.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "DSPlayer.h"
 
 #ifndef TRACE

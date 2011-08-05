@@ -29,7 +29,7 @@
 namespace Com
 {
 
-#include "CriticalSection.h"
+#include "threads/CriticalSection.h"
 template <class T>
 struct NoOp
 {

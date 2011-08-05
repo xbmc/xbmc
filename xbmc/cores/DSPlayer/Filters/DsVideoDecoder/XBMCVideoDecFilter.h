@@ -37,9 +37,9 @@
 #include "DIRECTSHOW.h"
 #include "../splitters/DSStreamInfo.h"
 #include "../splitters/LAVFGuidHelper.h"
-#include "Codecs/DllAvCodec.h"
-#include "Codecs/DllAvFormat.h"
-#include "Codecs/DllSwScale.h"
+#include "DllAvCodec.h"
+#include "DllAvFormat.h"
+#include "DllSwScale.h"
 
 struct AVCodec;
 struct AVCodecContext;

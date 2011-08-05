@@ -31,8 +31,8 @@
 #include <qnetwork.h>
 
 #include "DSGraph.h"
-#include "log.h"
-#include "CharsetConverter.h"
+#include "utils/log.h"
+#include "utils/CharsetConverter.h"
 
 /// \brief Contains informations about a chapter
 struct SChapterInfos

@@ -29,13 +29,13 @@
 #include "DSUtil/DSUtil.h"
 #include "DSUtil/SmartPtr.h"
 
-#include "charsetconverter.h"
-#include "Log.h"
-#include "GUIDialogOK.h"
-#include "GUIWindowManager.h"
+#include "utils/charsetconverter.h"
+#include "utils/Log.h"
+#include "dialogs/GUIDialogOK.h"
+#include "guilib/GUIWindowManager.h"
 #include "filtercorefactory/filtercorefactory.h"
-#include "Settings.h"
-#include "GUISettings.h"
+#include "settings/Settings.h"
+#include "settings/GUISettings.h"
 #include "utils/SystemInfo.h"
 
 #include "filters/XBMCFileSource.h"
@@ -46,7 +46,8 @@
 
 #include "Utils/AudioEnumerator.h"
 #include "DVDFileInfo.h"
-#include "VideoInfoTag.h"
+#include "video/VideoInfoTag.h"
+#include "utils/URIUtils.h"
 
 using namespace std;
 
@@ -106,7 +107,7 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
     CGraphFilters::Get()->SetIsDVD(true);
     CStdString dirA;
     CStdStringW dirW;
-    CUtil::GetDirectory(pFileItem.m_strPath, dirA);
+    URIUtils::GetDirectory(pFileItem.m_strPath, dirA);
     g_charsetConverter.utf8ToW(dirA, dirW);
 
     hr = CGraphFilters::Get()->DVD.dvdControl->SetDVDDirectory(dirW.c_str());

@@ -31,7 +31,7 @@
 
 #include <streams.h>
 #include "asyncio.h"
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 
 // --- CAsyncRequest ---
 

@@ -26,8 +26,8 @@
 
 #include "filters/asyncio.h"
 #include "filters/asyncrdr.h"
-#include "CriticalSection.h"
-#include "File.h"
+#include "threads/CriticalSection.h"
+#include "filesystem/File.h"
 using namespace XFILE;
 class CXBMCASyncReader;
 

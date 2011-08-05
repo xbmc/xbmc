@@ -27,10 +27,10 @@
 #include "dxva2_wrapper.h"
 
 #include <videoacc.h>
-#include "DVDPlayer/DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
+#include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 
 //#include "Event.h"
-#include "utils/CriticalSection.h"
+#include "threads/CriticalSection.h"
 
 
 enum DxvaDecoderType {

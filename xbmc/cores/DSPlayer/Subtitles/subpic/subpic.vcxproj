@@ -81,7 +81,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release Unicode|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>..\..\..\..\;..\..\..\..\..\guilib;..\..\..\..\win32;..\..\include;..\..\baseclasses;..\..\..\..\lib\boost;..\..\DshowUtil/;..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\;..\..\..\..\..\guilib;..\..\..\..\win32;..\..\include;..\..\baseclasses;..\..\DshowUtil/;..\..\;..\..\..\..\..\project\BuildDependencies\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BufferSecurityCheck>true</BufferSecurityCheck>

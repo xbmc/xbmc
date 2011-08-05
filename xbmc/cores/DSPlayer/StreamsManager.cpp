@@ -22,18 +22,19 @@
 #ifdef HAS_DS_PLAYER
 
 #include "StreamsManager.h"
-#include "StreamDetails.h"
-#include "SpecialProtocol.h"
+#include "utils/StreamDetails.h"
+#include "filesystem/SpecialProtocol.h"
 #include "DVDSubtitles\DVDFactorySubtitle.h"
-#include "Settings.h"
+#include "settings/Settings.h"
 #include "filtercorefactory\filtercorefactory.h"
 #include "DSPlayer.h"
 #include "FGFilter.h"
 #include "DSUtil/SmartPtr.h"
-#include "WindowingFactory.h"
+#include "windowing/WindowingFactory.h"
 #include "LangInfo.h"
-#include "GUISettings.h"
+#include "settings/GUISettings.h"
 #include "Filters\RendererSettings.h"
+#include "Utils/URIUtils.h"
 
 CDSStreamDetail::CDSStreamDetail()
   : IAMStreamSelect_Index(0), flags(0), pObj(NULL), pUnk(NULL), lcid(0),
@@ -1205,7 +1206,7 @@ int CSubtitleManager::AddSubtitle(const CStdString& subFilePath)
   } 
 
   if (s->displayname.empty())
-    s->displayname = CUtil::GetFileName(s->path);
+    s->displayname = URIUtils::GetFileName(s->path);
   else
     s->displayname += " [External]";
 

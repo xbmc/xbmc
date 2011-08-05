@@ -21,9 +21,9 @@
 
 #include "DSStreamInfo.h"
 #include "application.h"
-#include "DVDPlayer/DVDCodecs/DVDCodecs.h"
-#include "DVDPlayer/DVDDemuxers/DVDDemux.h"
-#include "DVDPlayer/DVDDemuxers/DVDDemuxFFmpeg.h"
+#include "DVDCodecs/DVDCodecs.h"
+#include "DVDDemuxers/DVDDemux.h"
+#include "DVDDemuxers/DVDDemuxFFmpeg.h"
 #include "LAVFGuidHelper.h"
 #include "MMReg.h"
 #include "moreuuids.h"

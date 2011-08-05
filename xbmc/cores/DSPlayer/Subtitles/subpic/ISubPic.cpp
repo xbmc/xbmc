@@ -22,7 +22,7 @@
 #include "stdafx.h"
 #include "ISubPic.h"
 #include "..\DSUtil\DSUtil.h"
-#include "StdString.h"
+#include "utils/StdString.h"
 
 //
 // ISubPicImpl

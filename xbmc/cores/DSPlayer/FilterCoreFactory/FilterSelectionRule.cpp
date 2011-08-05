@@ -23,9 +23,9 @@
 
 #include "URL.h"
 #include "FilterSelectionRule.h"
-#include "VideoInfoTag.h"
-#include "StreamDetails.h"
-#include "GUISettings.h"
+#include "video/VideoInfoTag.h"
+#include "utils/StreamDetails.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
 
 CFilterSelectionRule::CFilterSelectionRule(TiXmlElement* pRule, const CStdString &nodeName)

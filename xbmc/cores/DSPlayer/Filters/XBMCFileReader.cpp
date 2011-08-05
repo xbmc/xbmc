@@ -25,7 +25,7 @@
 
 #include "XBMCFileReader.h"
 #include "utils/log.h"
-#include "SingleLock.h"
+#include "threads/SingleLock.h"
 #include "DSUtil/DSUtil.h"
 
 

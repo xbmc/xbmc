@@ -19,8 +19,8 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "../../../dvdplayer/Codecs/DllAvCodec.h"
-#include "../../../dvdplayer/Codecs/DllAvFormat.h"
+#include "DllAvCodec.h"
+#include "DllAvFormat.h"
 #include "streams.h"
 #include "dvdmedia.h"
 enum StreamType;

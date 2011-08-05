@@ -22,10 +22,10 @@
 #ifdef HAS_DS_PLAYER
 
 #include "GUIDialogShaderList.h"
-#include "GUIListGroup.h"
-#include "GUILabelControl.h"
-#include "GUIButtonControl.h"
-#include "GUIRadioButtonControl.h"
+#include "guilib/GUIListGroup.h"
+#include "guilib/GUILabelControl.h"
+#include "guilib/GUIButtonControl.h"
+#include "guilib/GUIRadioButtonControl.h"
 #include "PixelShaderList.h"
 #include "Filters\RendererSettings.h"
 

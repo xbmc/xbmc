@@ -35,14 +35,14 @@
 
 #include "Filters/ffdshow_constants.h"
 #include "DSGraph.h"
-#include "log.h"
-#include "CharsetConverter.h"
-#include "RegExp.h"
+#include "utils/log.h"
+#include "utils/CharsetConverter.h"
+#include "utils/RegExp.h"
 #include "Subtitles/subpic/ISubPic.h"
 #include "Subtitles/DllLibSubs.h"
 #include "Subtitles/ILogImpl.h"
 
-#include "StreamDetails.h"
+#include "utils/StreamDetails.h"
 
 class CDSStreamDetail
 {
