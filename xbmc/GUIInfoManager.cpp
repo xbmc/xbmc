@@ -101,7 +101,7 @@ CGUIInfoManager::CGUIInfoManager(void)
   m_currentSlide = new CFileItem;
   m_frameCounter = 0;
   m_lastFPSTime = 0;
-  m_updateTime = 0;
+  m_updateTime = 1;
   ResetLibraryBools();
 }
 
