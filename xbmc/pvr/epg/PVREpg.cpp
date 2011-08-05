@@ -71,15 +71,6 @@ void PVR::CPVREpg::Clear(void)
   CEpg::Clear();
 }
 
-bool PVR::CPVREpg::UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase /* = false */)
-{
-  if (!data)
-    return false;
-
-  CEpgInfoTag tag(*data);
-  return CEpg::UpdateEntry(tag, bUpdateDatabase);
-}
-
 bool PVR::CPVREpg::UpdateFromScraper(time_t start, time_t end)
 {
   bool bGrabSuccess = false;

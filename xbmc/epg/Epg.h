@@ -55,7 +55,7 @@ namespace EPG
 
     /*!
      * @brief Update the EPG from a scraper set in the channel tag.
-     * TODO: not implemented yet
+     * TODO: not implemented yet for non-pvr EPGs
      * @param start Get entries with a start date after this time.
      * @param end Get entries with an end date before this time.
      * @return True if the update was successful, false otherwise.
@@ -142,7 +142,7 @@ namespace EPG
      * @brief Load all entries for this table from the database.
      * @return True if any entries were loaded, false otherwise.
      */
-    bool Load(void);
+    virtual bool Load(void);
 
     /*!
      * @brief Create a new EPG instance.
@@ -162,7 +162,7 @@ namespace EPG
      * @brief The channel this EPG belongs to.
      * @return The channel this EPG belongs to
      */
-    const PVR::CPVRChannel *Channel(void) const { return m_Channel; }
+    virtual const PVR::CPVRChannel *Channel(void) const { return m_Channel; }
 
     /*!
      * @brief Channel the channel tag linked to this EPG table.
@@ -174,25 +174,25 @@ namespace EPG
      * @brief Get the name of the scraper to use for this table.
      * @return The name of the scraper to use for this table.
      */
-    const CStdString &ScraperName(void) const { return m_strScraperName; }
+    virtual const CStdString &ScraperName(void) const { return m_strScraperName; }
 
     /*!
      * @brief Change the name of the scraper to use.
      * @param strScraperName The new scraper.
      */
-    void SetScraperName(const CStdString &strScraperName);
+    virtual void SetScraperName(const CStdString &strScraperName);
 
     /*!
      * @brief Get the name of this table.
      * @return The name of this table.
      */
-    const CStdString &Name(void) const { return m_strName; }
+    virtual const CStdString &Name(void) const { return m_strName; }
 
     /*!
      * @brief Changed the name of this table.
      * @param strName The new name.
      */
-    void SetName(const CStdString &strName);
+    virtual void SetName(const CStdString &strName);
 
     /*!
      * @brief Get the database ID of this table.
@@ -340,5 +340,13 @@ namespace EPG
      * @return A human readable name.
      */
     static const CStdString &ConvertGenreIdToString(int iID, int iSubID);
+
+    /*!
+     * @brief Update an entry in this EPG.
+     * @param data The tag to update.
+     * @param bUpdateDatabase If set to true, this event will be persisted in the database.
+     * @return True if it was updated successfully, false otherwise.
+     */
+    virtual bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
   };
 }
