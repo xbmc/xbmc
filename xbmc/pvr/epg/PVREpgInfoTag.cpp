@@ -34,15 +34,13 @@ using namespace EPG;
 
 PVR::CPVREpgInfoTag::CPVREpgInfoTag(void) :
     CEpgInfoTag(),
-    m_Timer(NULL),
-    m_isRecording(false)
+    m_Timer(NULL)
 {
 }
 
 PVR::CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data) :
     CEpgInfoTag(),
-    m_Timer(NULL),
-    m_isRecording(false)
+    m_Timer(NULL)
 {
   Update(data);
 }
