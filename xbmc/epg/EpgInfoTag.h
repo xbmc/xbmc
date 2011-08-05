@@ -40,53 +40,6 @@ namespace EPG
     friend class CEpg;
     friend class CEpgDatabase;
 
-  protected:
-    bool                         m_bNotify;            /*!< notify on start */
-    bool                         m_bChanged;           /*!< keep track of changes to this entry */
-
-    int                          m_iBroadcastId;       /*!< database ID */
-    int                          m_iGenreType;         /*!< genre type */
-    int                          m_iGenreSubType;      /*!< genre subtype */
-    int                          m_iParentalRating;    /*!< parental rating */
-    int                          m_iStarRating;        /*!< star rating */
-    int                          m_iSeriesNumber;      /*!< series number */
-    int                          m_iEpisodeNumber;     /*!< episode number */
-    int                          m_iEpisodePart;       /*!< episode part number */
-    int                          m_iUniqueBroadcastID; /*!< unique broadcast ID */
-    CStdString                   m_strTitle;           /*!< title */
-    CStdString                   m_strPlotOutline;     /*!< plot outline */
-    CStdString                   m_strPlot;            /*!< plot */
-    CStdString                   m_strGenre;           /*!< genre */
-    CStdString                   m_strEpisodeName;     /*!< episode name */
-    CStdString                   m_strIconPath;        /*!< the path to the icon */
-    CStdString                   m_strFileNameAndPath; /*!< the filename and path */
-    CDateTime                    m_startTime;          /*!< event start time */
-    CDateTime                    m_endTime;            /*!< event end time */
-    CDateTime                    m_firstAired;         /*!< first airdate */
-
-    mutable const CEpgInfoTag *  m_nextEvent;          /*!< the event that will occur after this one */
-    mutable const CEpgInfoTag *  m_previousEvent;      /*!< the event that occurred before this one */
-
-    const PVR::CPVRTimerInfoTag *m_Timer;              /*!< a pointer to a timer for this event or NULL if there is none */
-    const CEpg *                 m_Epg;                /*!< the schedule this event belongs to */
-
-    /*!
-     * @brief Hook that is called when the start date changed.
-     */
-    virtual void UpdatePath();
-
-    /*!
-     * @brief Change the pointer to the next event.
-     * @param event The next event.
-     */
-    virtual void SetNextEvent(const CEpgInfoTag *event) { m_nextEvent = event; }
-
-    /*!
-     * @brief Change the pointer to the previous event.
-     * @param event The previous event.
-     */
-    virtual void SetPreviousEvent(const CEpgInfoTag *event) { m_previousEvent = event; }
-
   public:
     /*!
      * @brief Create a new EPG event.
@@ -433,5 +386,52 @@ namespace EPG
      * @return a pointer to the channel.
      */
     virtual const PVR::CPVRChannel *ChannelTag(void) const;
+
+  protected:
+    /*!
+     * @brief Hook that is called when the start date changed.
+     */
+    virtual void UpdatePath();
+
+    /*!
+     * @brief Change the pointer to the next event.
+     * @param event The next event.
+     */
+    virtual void SetNextEvent(const CEpgInfoTag *event) { m_nextEvent = event; }
+
+    /*!
+     * @brief Change the pointer to the previous event.
+     * @param event The previous event.
+     */
+    virtual void SetPreviousEvent(const CEpgInfoTag *event) { m_previousEvent = event; }
+
+    bool                         m_bNotify;            /*!< notify on start */
+    bool                         m_bChanged;           /*!< keep track of changes to this entry */
+
+    int                          m_iBroadcastId;       /*!< database ID */
+    int                          m_iGenreType;         /*!< genre type */
+    int                          m_iGenreSubType;      /*!< genre subtype */
+    int                          m_iParentalRating;    /*!< parental rating */
+    int                          m_iStarRating;        /*!< star rating */
+    int                          m_iSeriesNumber;      /*!< series number */
+    int                          m_iEpisodeNumber;     /*!< episode number */
+    int                          m_iEpisodePart;       /*!< episode part number */
+    int                          m_iUniqueBroadcastID; /*!< unique broadcast ID */
+    CStdString                   m_strTitle;           /*!< title */
+    CStdString                   m_strPlotOutline;     /*!< plot outline */
+    CStdString                   m_strPlot;            /*!< plot */
+    CStdString                   m_strGenre;           /*!< genre */
+    CStdString                   m_strEpisodeName;     /*!< episode name */
+    CStdString                   m_strIconPath;        /*!< the path to the icon */
+    CStdString                   m_strFileNameAndPath; /*!< the filename and path */
+    CDateTime                    m_startTime;          /*!< event start time */
+    CDateTime                    m_endTime;            /*!< event end time */
+    CDateTime                    m_firstAired;         /*!< first airdate */
+
+    mutable const CEpgInfoTag *  m_nextEvent;          /*!< the event that will occur after this one */
+    mutable const CEpgInfoTag *  m_previousEvent;      /*!< the event that occurred before this one */
+
+    const PVR::CPVRTimerInfoTag *m_Timer;              /*!< a pointer to a timer for this event or NULL if there is none */
+    const CEpg *                 m_Epg;                /*!< the schedule this event belongs to */
   };
 }
