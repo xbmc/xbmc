@@ -85,10 +85,10 @@
 		DF79147113D4A0E20018E92E /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79146F13D4A0E20018E92E /* Observer.cpp */; };
 		DF79147413D4A0F60018E92E /* TextSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79147213D4A0F60018E92E /* TextSearch.cpp */; };
 		DF79147C13D4A30A0018E92E /* libTcpSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF79147B13D4A30A0018E92E /* libTcpSocket.a */; };
-		DF88796413E8997000B4ECE2 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88795E13E8997000B4ECE2 /* Implementation.cpp */; };
-		DF88796813E8997E00B4ECE2 /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88796713E8997E00B4ECE2 /* TimeSmoother.cpp */; };
-		DF8879A013E89AA600B4ECE2 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88799F13E89AA600B4ECE2 /* SystemClock.cpp */; };
-		DF8879A513E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8879A413E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp */; };
+		DFAC338A13EC693E0020DDC0 /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88796713E8997E00B4ECE2 /* TimeSmoother.cpp */; };
+		DFAC338B13EC69690020DDC0 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8879A413E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp */; };
+		DFAC338E13EC698D0020DDC0 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88795E13E8997000B4ECE2 /* Implementation.cpp */; };
+		DFAC339113EC69A30020DDC0 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88799F13E89AA600B4ECE2 /* SystemClock.cpp */; };
 		F54D9E8112B713F8006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8012B713F8006870F9 /* libc.dylib */; };
 		F56B143412CAF279009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B143312CAF279009B4C96 /* CoreVideo.framework */; };
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
@@ -975,7 +975,6 @@
 		F5AE4166134175520004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4159134175520004BD79 /* XBMCOperations.cpp */; };
 		F5AE4530134D2E3E0004BD79 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE452E134D2E3E0004BD79 /* JSONServiceDescription.cpp */; };
 		F5B13DCF1334490D0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13DCE1334490D0045076D /* DarwinUtils.mm */; };
-		F5CEE73013D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE72F13D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp */; };
 		F5E6209613E907E200D5F2CD /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E6209413E907E200D5F2CD /* InfoBool.cpp */; };
 /* End PBXBuildFile section */
 
@@ -1144,8 +1143,8 @@
 		DF88796713E8997E00B4ECE2 /* TimeSmoother.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeSmoother.cpp; sourceTree = "<group>"; };
 		DF88799E13E89AA600B4ECE2 /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
 		DF88799F13E89AA600B4ECE2 /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
-		DF8879A313E89AE000B4ECE2 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DVDOverlayCodecTX3G.h; path = xbmc/cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayCodecTX3G.h; sourceTree = SOURCE_ROOT; };
-		DF8879A413E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DVDOverlayCodecTX3G.cpp; path = xbmc/cores/dvdplayer/DVDCodecs/Overlay/DVDOverlayCodecTX3G.cpp; sourceTree = SOURCE_ROOT; };
+		DF8879A313E89AE000B4ECE2 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
+		DF8879A413E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
 		F54D9E8012B713F8006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F558F60613AFDC1700631E12 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		F558F61013AFDC3000631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
@@ -3041,8 +3040,6 @@
 		F5AE539813673FC70004BD79 /* IOSAudioRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRingBuffer.h; path = AudioRenderers/IOSAudioRingBuffer.h; sourceTree = "<group>"; };
 		F5B13DCD1334490D0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13DCE1334490D0045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
-		F5CEE72F13D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
-		F5CEE73113D3F9D800225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
 		F5E6209413E907E200D5F2CD /* InfoBool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoBool.cpp; sourceTree = "<group>"; };
 		F5E6209513E907E200D5F2CD /* InfoBool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoBool.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4291,6 +4288,8 @@
 				F56C825A131F42E6000AD0F6 /* DVDOverlayCodecFFmpeg.h */,
 				F56C825B131F42E6000AD0F6 /* DVDOverlayCodecText.cpp */,
 				F56C825C131F42E6000AD0F6 /* DVDOverlayCodecText.h */,
+				DF8879A313E89AE000B4ECE2 /* DVDOverlayCodecTX3G.h */,
+				DF8879A413E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp */,
 				F56C825D131F42E6000AD0F6 /* DVDOverlayImage.h */,
 				F56C825E131F42E7000AD0F6 /* DVDOverlaySpu.h */,
 				F56C825F131F42E7000AD0F6 /* DVDOverlayText.h */,
@@ -4311,8 +4310,6 @@
 		F56C8263131F42E7000AD0F6 /* Video */ = {
 			isa = PBXGroup;
 			children = (
-				DF8879A313E89AE000B4ECE2 /* DVDOverlayCodecTX3G.h */,
-				DF8879A413E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp */,
 				F56C8264131F42E7000AD0F6 /* DllLibMpeg2.h */,
 				F56C8265131F42E7000AD0F6 /* DVDVideoCodec.h */,
 				F56C8266131F42E7000AD0F6 /* CrystalHD.cpp */,
@@ -7154,11 +7151,11 @@
 				DF79146B13D4A0A20018E92E /* GUIEPGGridContainer.cpp in Sources */,
 				DF79147113D4A0E20018E92E /* Observer.cpp in Sources */,
 				DF79147413D4A0F60018E92E /* TextSearch.cpp in Sources */,
-				F5CEE73013D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
-				DFD4D1E213D725ED00A47C47 /* Implementation.cpp in Sources */,
-				DFD4D1FE13D7283500A47C47 /* SystemClock.cpp in Sources */,
-				7CEE2E7F13D6B7D4000ABF2A /* TimeSmoother.cpp in Sources */,
 				F5E6209613E907E200D5F2CD /* InfoBool.cpp in Sources */,
+				DFAC338A13EC693E0020DDC0 /* TimeSmoother.cpp in Sources */,
+				DFAC338B13EC69690020DDC0 /* DVDOverlayCodecTX3G.cpp in Sources */,
+				DFAC338E13EC698D0020DDC0 /* Implementation.cpp in Sources */,
+				DFAC339113EC69A30020DDC0 /* SystemClock.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
