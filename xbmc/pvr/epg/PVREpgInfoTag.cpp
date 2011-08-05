@@ -33,14 +33,12 @@ using namespace PVR;
 using namespace EPG;
 
 PVR::CPVREpgInfoTag::CPVREpgInfoTag(void) :
-    CEpgInfoTag(),
-    m_Timer(NULL)
+    CEpgInfoTag()
 {
 }
 
 PVR::CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data) :
-    CEpgInfoTag(),
-    m_Timer(NULL)
+    CEpgInfoTag()
 {
   Update(data);
 }
@@ -49,14 +47,6 @@ const CPVRChannel *PVR::CPVREpgInfoTag::ChannelTag(void) const
 {
   const CPVREpg *table = (const CPVREpg *) GetTable();
   return table ? table->Channel() : NULL;
-}
-
-void PVR::CPVREpgInfoTag::SetTimer(const CPVRTimerInfoTag *newTimer)
-{
-  if (!newTimer)
-    m_Timer = NULL;
-
-  m_Timer = newTimer;
 }
 
 void PVR::CPVREpgInfoTag::UpdatePath(void)

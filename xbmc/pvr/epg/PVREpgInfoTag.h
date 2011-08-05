@@ -36,9 +36,6 @@ namespace PVR
   {
     friend class CPVREpg;
 
-  private:
-    const CPVRTimerInfoTag * m_Timer;       /*!< a pointer to a timer for this event or NULL if there is none */
-
   public:
     /*!
      * @brief Create a new empty EPG infotag.
@@ -56,24 +53,6 @@ namespace PVR
      * @return a pointer to the channel.
      */
     const CPVRChannel *ChannelTag(void) const;
-
-    /*!
-     * @brief Check whether this event has an active timer tag.
-     * @return True if it has an active timer tag, false if not.
-     */
-    bool HasTimer() const { return !(m_Timer == NULL); }
-
-    /*!
-     * @brief Set a timer for this event or NULL to clear it.
-     * @param newTimer The new timer value.
-     */
-    void SetTimer(const CPVRTimerInfoTag *newTimer);
-
-    /*!
-     * @brief Get a pointer to the timer for event or NULL if there is none.
-     * @return A pointer to the timer for event or NULL if there is none.
-     */
-    const CPVRTimerInfoTag *Timer(void) const { return m_Timer; }
 
     /*!
      * @brief Update the value of m_strFileNameAndPath after a value changed.
