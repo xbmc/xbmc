@@ -608,6 +608,11 @@ namespace PVR
     void Process(void);
 
     /*!
+     * @brief Show a dialog to guide new users who have no clients enabled.
+     */
+    void ShowDialogNoClientsEnabled(void);
+
+    /*!
      * @brief Get the instance of the client, if it's connected.
      * @param iClientId The id of the client to get.
      * @param addon The client.
