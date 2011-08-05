@@ -180,10 +180,10 @@ bool CPVRManager::Load(void)
   m_addons->Start();
 
   /* load at least one client */
-  while (!m_addons->HasConnectedClients() && !m_bStop)
+  while (!g_application.m_bStop && !m_bStop && m_addons && !m_addons->HasConnectedClients())
     Sleep(50);
 
-  if (m_addons->HasConnectedClients() && !m_bLoaded && !m_bStop)
+  if (!g_application.m_bStop && !m_bStop && !m_bLoaded && m_addons->HasConnectedClients())
   {
     CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
 
