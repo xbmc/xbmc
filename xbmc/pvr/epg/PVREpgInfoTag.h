@@ -1,7 +1,7 @@
 #pragma once
 
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,50 +21,14 @@
  *
  */
 
-#include "XBDateTime.h"
 #include "epg/EpgInfoTag.h"
-#include "addons/include/xbmc_pvr_types.h"
 
 namespace PVR
 {
-  class CPVREpg;
-  class CPVRTimerInfoTag;
-
-  /** an EPG info tag */
-
   class CPVREpgInfoTag : public EPG::CEpgInfoTag
   {
-    friend class CPVREpg;
-
   public:
-    /*!
-     * @brief Create a new empty EPG infotag.
-     */
-    CPVREpgInfoTag(void);
-
-    /*!
-     * @brief Create a new EPG infotag with 'data' as content.
-     * @param data The tag's content.
-     */
-    CPVREpgInfoTag(const EPG_TAG &data);
-
-    /*!
-     * @brief Get the channel that plays this event.
-     * @return a pointer to the channel.
-     */
-    const CPVRChannel *ChannelTag(void) const;
-
-    /*!
-     * @brief Update the value of m_strFileNameAndPath after a value changed.
-     */
     void UpdatePath(void);
-
-    /*!
-     * @brief Update the information in this tag with the info in the given tag.
-     * @param tag The new info.
-     */
-    void Update(const EPG_TAG &tag);
-
     const CStdString &Icon(void) const;
   };
 }

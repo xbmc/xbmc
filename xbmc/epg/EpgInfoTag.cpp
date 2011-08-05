@@ -23,6 +23,7 @@
 #include "EpgInfoTag.h"
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "addons/include/xbmc_pvr_types.h"
 
@@ -79,6 +80,11 @@ CEpgInfoTag::CEpgInfoTag(void) :
     m_Timer(NULL),
     m_Epg(NULL)
 {
+}
+
+CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data)
+{
+  Update(data);
 }
 
 CEpgInfoTag::~CEpgInfoTag()
@@ -496,4 +502,38 @@ float CEpgInfoTag::ProgressPercentage(void) const
     fReturn = 100;
 
   return fReturn;
+}
+
+void CEpgInfoTag::Update(const EPG_TAG &tag)
+{
+  SetStartFromUTC(tag.startTime + g_advancedSettings.m_iPVRTimeCorrection);
+  SetEndFromUTC(tag.endTime + g_advancedSettings.m_iPVRTimeCorrection);
+  SetTitle(tag.strTitle);
+  SetPlotOutline(tag.strPlotOutline);
+  SetPlot(tag.strPlot);
+  SetGenre(tag.iGenreType, tag.iGenreSubType, tag.strGenreDescription);
+  SetParentalRating(tag.iParentalRating);
+  SetUniqueBroadcastID(tag.iUniqueBroadcastId);
+  SetNotify(tag.bNotify);
+  SetFirstAiredFromUTC(tag.firstAired + g_advancedSettings.m_iPVRTimeCorrection);
+  SetEpisodeNum(tag.iEpisodeNumber);
+  SetEpisodePart(tag.iEpisodePartNumber);
+  SetEpisodeName(tag.strEpisodeName);
+  SetStarRating(tag.iStarRating);
+  SetIcon(tag.strIconPath);
+}
+
+const PVR::CPVRChannel *CEpgInfoTag::ChannelTag(void) const
+{
+  return m_Epg ? m_Epg->Channel() : NULL;
+}
+
+void CEpgInfoTag::UpdatePath(void)
+{
+  if (!m_Epg)
+    return;
+
+  CStdString path;
+  path.Format("pvr://guide/%04i/%s.epg", m_Epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
+  SetPath(path);
 }

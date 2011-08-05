@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,34 +20,11 @@
  */
 
 #include "guilib/LocalizeStrings.h"
-
-#include "PVREpg.h"
+#include "pvr/channels/PVRChannel.h"
 #include "PVREpgInfoTag.h"
-#include "pvr/PVRManager.h"
-#include "pvr/timers/PVRTimers.h"
-#include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "settings/AdvancedSettings.h"
 
-using namespace std;
 using namespace PVR;
 using namespace EPG;
-
-PVR::CPVREpgInfoTag::CPVREpgInfoTag(void) :
-    CEpgInfoTag()
-{
-}
-
-PVR::CPVREpgInfoTag::CPVREpgInfoTag(const EPG_TAG &data) :
-    CEpgInfoTag()
-{
-  Update(data);
-}
-
-const CPVRChannel *PVR::CPVREpgInfoTag::ChannelTag(void) const
-{
-  const CPVREpg *table = (const CPVREpg *) GetTable();
-  return table ? table->Channel() : NULL;
-}
 
 void PVR::CPVREpgInfoTag::UpdatePath(void)
 {
@@ -55,36 +32,16 @@ void PVR::CPVREpgInfoTag::UpdatePath(void)
     return;
 
   CStdString path;
-  path.Format("pvr://guide/channel-%04i/%s.epg", m_Epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
+  path.Format("pvr://guide/%04i/%s.epg", m_Epg->Channel() ? m_Epg->Channel()->ChannelID() : m_Epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
   SetPath(path);
-}
-
-void PVR::CPVREpgInfoTag::Update(const EPG_TAG &tag)
-{
-  SetStartFromUTC(tag.startTime + g_advancedSettings.m_iPVRTimeCorrection);
-  SetEndFromUTC(tag.endTime + g_advancedSettings.m_iPVRTimeCorrection);
-  SetTitle(tag.strTitle);
-  SetPlotOutline(tag.strPlotOutline);
-  SetPlot(tag.strPlot);
-  SetGenre(tag.iGenreType, tag.iGenreSubType, tag.strGenreDescription);
-  SetParentalRating(tag.iParentalRating);
-  SetUniqueBroadcastID(tag.iUniqueBroadcastId);
-  SetNotify(tag.bNotify);
-  SetFirstAiredFromUTC(tag.firstAired + g_advancedSettings.m_iPVRTimeCorrection);
-  SetEpisodeNum(tag.iEpisodeNumber);
-  SetEpisodePart(tag.iEpisodePartNumber);
-  SetEpisodeName(tag.strEpisodeName);
-  SetStarRating(tag.iStarRating);
-  SetIcon(tag.strIconPath);
 }
 
 const CStdString &PVR::CPVREpgInfoTag::Icon(void) const
 {
   if (m_strIconPath.IsEmpty() && m_Epg)
   {
-    CPVREpg *pvrEpg = (CPVREpg *) m_Epg;
-    if (pvrEpg->Channel())
-      return pvrEpg->Channel()->IconPath();
+    if (m_Epg->Channel())
+      return m_Epg->Channel()->IconPath();
   }
 
   return m_strIconPath;
