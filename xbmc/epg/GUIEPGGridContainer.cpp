@@ -1663,7 +1663,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   m_focusedChannelLayout = NULL;
   for (unsigned int i = 0; i < m_focusedChannelLayouts.size(); i++)
   {
-    if (m_focusedChannelLayout[i].CheckCondition())
+    if (m_focusedChannelLayouts[i].CheckCondition())
     {
       m_focusedChannelLayout = &m_focusedChannelLayouts[i];
       break;
@@ -1675,7 +1675,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   m_programmeLayout = NULL;
   for (unsigned int i = 0; i < m_programmeLayouts.size(); i++)
   {
-    if (m_programmeLayout[i].CheckCondition())
+    if (m_programmeLayouts[i].CheckCondition())
     {
       m_programmeLayout = &m_programmeLayouts[i];
       break;
@@ -1687,7 +1687,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   m_focusedProgrammeLayout = NULL;
   for (unsigned int i = 0; i < m_focusedProgrammeLayouts.size(); i++)
   {
-    if (m_focusedProgrammeLayout[i].CheckCondition())
+    if (m_focusedProgrammeLayouts[i].CheckCondition())
     {
       m_focusedProgrammeLayout = &m_focusedProgrammeLayouts[i];
       break;
@@ -1699,7 +1699,7 @@ void CGUIEPGGridContainer::GetCurrentLayouts()
   m_rulerLayout = NULL;
   for (unsigned int i = 0; i < m_rulerLayouts.size(); i++)
   {
-    if (m_rulerLayout[i].CheckCondition())
+    if (m_rulerLayouts[i].CheckCondition())
     {
       m_rulerLayout = &m_rulerLayouts[i];
       break;
