@@ -121,9 +121,6 @@ void CPVRManager::Stop(void)
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - stopping PVR playback", __FUNCTION__);
     g_application.getApplicationMessenger().MediaStop();
-
-    while (IsPlaying())
-      Sleep(100);
   }
 
   /* stop all update threads */
@@ -404,7 +401,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   if (m_addons->IsPlaying())
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - stopping playback", __FUNCTION__);
-    g_application.StopPlaying();
+    g_application.getApplicationMessenger().MediaStop();
   }
 
   if (bShowProgress)
@@ -780,22 +777,11 @@ bool CPVRManager::UpdateItem(CFileItem& item)
 
 bool CPVRManager::StartPlayback(const CPVRChannel *channel, bool bPreview /* = false */)
 {
-  bool bReturn = false;
   g_settings.m_bStartVideoWindowed = bPreview;
-
-  if (g_application.PlayFile(CFileItem(*channel)))
-  {
-    CLog::Log(LOGNOTICE, "PVRManager - %s - started playback on channel '%s'",
-        __FUNCTION__, channel->ChannelName().c_str());
-    bReturn = true;
-  }
-  else
-  {
-    CLog::Log(LOGERROR, "PVRManager - %s - failed to start playback on channel '%s'",
-        __FUNCTION__, channel ? channel->ChannelName().c_str() : "NULL");
-  }
-
-  return bReturn;
+  g_application.getApplicationMessenger().MediaPlay(CFileItem(*channel));
+  CLog::Log(LOGNOTICE, "PVRManager - %s - started playback on channel '%s'",
+      __FUNCTION__, channel->ChannelName().c_str());
+  return true;
 }
 
 bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview)
