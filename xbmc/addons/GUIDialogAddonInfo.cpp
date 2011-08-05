@@ -128,11 +128,12 @@ void CGUIDialogAddonInfo::UpdateControls()
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").Equals("true");
   bool isUpdatable = isInstalled && m_item->GetProperty("Addon.UpdateAvail").Equals("true");
   // TODO: System addons should be able to be disabled
-  bool canDisable = isInstalled && (!isSystem || m_localAddon->Type() == ADDON_PVRDLL) && !m_localAddon->IsInUse();
+  bool isPVR = m_localAddon->Type() == ADDON_PVRDLL;
+  bool canDisable = isInstalled && (!isSystem || isPVR) && !m_localAddon->IsInUse();
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").IsEmpty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, (canDisable || canInstall) && !isPVR);
   SET_CONTROL_LABEL(CONTROL_BTN_INSTALL, isInstalled ? 24037 : 24038);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_ENABLE, canDisable);
