@@ -415,6 +415,7 @@ bool CPVRChannelGroupInternal::Persist(void)
 
 bool CPVRChannelGroupInternal::CreateChannelEpgs(void)
 {
+  CSingleLock lock(m_critSection);
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
     CPVRChannel *channel = at(iChannelPtr).channel;
@@ -425,6 +426,7 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(void)
     if (epg)
       epg->SetChannel(channel);
   }
+  lock.Leave();
 
   if (HasChangedChannels())
     return Persist();
