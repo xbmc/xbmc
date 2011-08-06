@@ -162,13 +162,13 @@ void CPVRManager::StopUpdateThreads(void)
 
 void CPVRManager::Cleanup(void)
 {
-  delete m_guiInfo;            m_guiInfo = NULL;
-  delete m_timers;             m_timers = NULL;
-  delete m_epg;                m_epg = NULL;
-  delete m_recordings;         m_recordings = NULL;
-  delete m_channelGroups;      m_channelGroups = NULL;
-  delete m_addons;             m_addons = NULL;
-  delete m_database;           m_database = NULL;
+  CSingleLock lock(m_critSection);
+  if (m_addons)        delete m_addons;        m_addons = NULL;
+  if (m_guiInfo)       delete m_guiInfo;       m_guiInfo = NULL;
+  if (m_timers)        delete m_timers;        m_timers = NULL;
+  if (m_recordings)    delete m_recordings;    m_recordings = NULL;
+  if (m_channelGroups) delete m_channelGroups; m_channelGroups = NULL;
+  if (m_database)      delete m_database;      m_database = NULL;
   m_triggerEvent.Set();
 }
 
@@ -359,13 +359,16 @@ bool CPVRManager::ContinueLastChannel(void)
 
 void CPVRManager::ResetProperties(void)
 {
-  if (!m_database)      m_database      = new CPVRDatabase;
-  if (!m_addons)        m_addons        = new CPVRClients;
-  if (!m_channelGroups) m_channelGroups = new CPVRChannelGroupsContainer;
-  if (!m_epg)           m_epg           = &g_EpgContainer;
-  if (!m_recordings)    m_recordings    = new CPVRRecordings;
-  if (!m_timers)        m_timers        = new CPVRTimers;
-  if (!m_guiInfo)       m_guiInfo       = new CPVRGUIInfo;
+  if (!g_application.m_bStop)
+  {
+    if (!m_database)      m_database      = new CPVRDatabase;
+    if (!m_addons)        m_addons        = new CPVRClients;
+    if (!m_channelGroups) m_channelGroups = new CPVRChannelGroupsContainer;
+    if (!m_epg)           m_epg           = &g_EpgContainer;
+    if (!m_recordings)    m_recordings    = new CPVRRecordings;
+    if (!m_timers)        m_timers        = new CPVRTimers;
+    if (!m_guiInfo)       m_guiInfo       = new CPVRGUIInfo;
+  }
 
   m_currentFile           = NULL;
   m_currentRadioGroup     = NULL;
