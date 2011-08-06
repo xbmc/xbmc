@@ -975,7 +975,7 @@ void cPVRClientForTheRecord::CloseLiveStream()
     {
       XBMC->Log(LOG_DEBUG, "Close TsReader");
       m_tsreader->Close();
-      delete_null(m_tsreader);
+      SAFE_DELETE(m_tsreader);
     }
 #endif
     ForTheRecord::StopLiveStream();

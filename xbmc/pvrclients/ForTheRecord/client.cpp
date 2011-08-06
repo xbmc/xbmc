@@ -66,15 +66,15 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
   {
-    delete_null(XBMC);
+    SAFE_DELETE(XBMC);
     return ADDON_STATUS_UNKNOWN;
   }
 
   PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
   {
-    delete_null(PVR);
-    delete_null(XBMC);
+    SAFE_DELETE(PVR);
+    SAFE_DELETE(XBMC);
     return ADDON_STATUS_UNKNOWN;
   }
 
@@ -132,9 +132,9 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   /* Connect to ForTheRecord */
   if (!g_client->Connect())
   {
-    delete_null(g_client);
-    delete_null(PVR);
-    delete_null(XBMC);
+    SAFE_DELETE(g_client);
+    SAFE_DELETE(PVR);
+    SAFE_DELETE(XBMC);
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
   }
   else
@@ -156,18 +156,18 @@ void ADDON_Destroy()
   if ((g_bCreated) && (g_client))
   {
     g_client->Disconnect();
-    delete_null(g_client);
+    SAFE_DELETE(g_client);
 
     g_bCreated = false;
   }
 
   if (PVR)
   {
-    delete_null(PVR);
+    SAFE_DELETE(PVR);
   }
   if (XBMC)
   {
-    delete_null(XBMC);
+    SAFE_DELETE(XBMC);
   }
 
   m_CurStatus = ADDON_STATUS_UNKNOWN;
