@@ -419,9 +419,9 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelUp(const CPVRChannel &channel) 
 const CPVRChannel *CPVRChannelGroup::GetByChannelDown(const CPVRChannel &channel) const
 {
   CSingleLock lock(m_critSection);
-  unsigned int iChannelIndex = GetIndex(channel) - 1;
+  int iChannelIndex = GetIndex(channel) - 1;
   if (iChannelIndex < 0)
-    iChannelIndex = size();
+    iChannelIndex = size() - 1;
 
   return GetByIndex(iChannelIndex);
 }
