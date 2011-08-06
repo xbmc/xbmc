@@ -31,7 +31,7 @@
 #include "pvr/addons/PVRClients.h"
 #include "epg/EpgContainer.h"
 #include "epg/EpgDatabase.h"
-#include "PVREpgSearchFilter.h"
+#include "epg/EpgSearchFilter.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -146,7 +146,7 @@ bool PVR::CPVREpg::LoadFromClients(time_t start, time_t end)
   return bReturn;
 }
 
-int PVR::CPVREpg::Get(CFileItemList *results, const PVREpgSearchFilter &filter) const
+int PVR::CPVREpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
 {
   int iInitialSize = results->Size();
 

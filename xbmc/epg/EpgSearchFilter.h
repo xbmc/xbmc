@@ -35,6 +35,9 @@ namespace EPG
 
   struct EpgSearchFilter
   {
+    static int FilterRecordings(CFileItemList *results);
+    static int FilterTimers(CFileItemList *results);
+
     /*!
      * @brief Clear this filter.
      */
@@ -46,11 +49,14 @@ namespace EPG
      * @return True if this tag matches the filter, false if not.
      */
     virtual bool FilterEntry(const CEpgInfoTag &tag) const;
+    virtual bool FilterEntry(const PVR::CPVREpgInfoTag &tag) const;
 
-    bool MatchGenre(const CEpgInfoTag &tag) const;
-    bool MatchDuration(const CEpgInfoTag &tag) const;
-    bool MatchStartAndEndTimes(const CEpgInfoTag &tag) const;
-    bool MatchSearchTerm(const CEpgInfoTag &tag) const;
+    virtual bool MatchGenre(const CEpgInfoTag &tag) const;
+    virtual bool MatchDuration(const CEpgInfoTag &tag) const;
+    virtual bool MatchStartAndEndTimes(const CEpgInfoTag &tag) const;
+    virtual bool MatchSearchTerm(const CEpgInfoTag &tag) const;
+    virtual bool MatchChannelNumber(const PVR::CPVREpgInfoTag &tag) const;
+    virtual bool MatchChannelGroup(const PVR::CPVREpgInfoTag &tag) const;
 
     static int RemoveDuplicates(CFileItemList *results);
 
@@ -64,8 +70,13 @@ namespace EPG
     CDateTime     m_startDateTime;            /*!< The minimum start time for an entry */
     CDateTime     m_endDateTime;              /*!< The maximum end time for an entry */
     bool          m_bIncludeUnknownGenres;    /*!< Include unknown genres or not */
+    bool          m_bPreventRepeats;          /*!< True to remove repeating events, false if not */
+
+    /* PVR specific filters */
+    int           m_iChannelNumber;           /*!< The channel number in the selected channel group */
+    bool          m_bFTAOnly;                 /*!< Free to air only or not */
+    int           m_iChannelGroup;            /*!< The group this channel belongs to */
     bool          m_bIgnorePresentTimers;     /*!< True to ignore currently present timers (future recordings), false if not */
     bool          m_bIgnorePresentRecordings; /*!< True to ignore currently active recordings, false if not */
-    bool          m_bPreventRepeats;          /*!< True to remove repeating events, false if not */
   };
 }

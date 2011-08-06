@@ -106,7 +106,7 @@ const CDateTime PVR::CPVREpgContainer::GetLastEPGDate(bool bRadio /* = false */)
   return CEpgContainer::GetLastEPGDate();
 }
 
-int PVR::CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter)
+int PVR::CPVREpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)
 {
   /* get filtered results from all tables */
   CSingleLock lock(m_critSection);
@@ -120,11 +120,11 @@ int PVR::CPVREpgContainer::GetEPGSearch(CFileItemList* results, const PVREpgSear
 
   /* filter recordings */
   if (filter.m_bIgnorePresentRecordings)
-    PVREpgSearchFilter::FilterRecordings(results);
+    EpgSearchFilter::FilterRecordings(results);
 
   /* filter timers */
   if (filter.m_bIgnorePresentTimers)
-    PVREpgSearchFilter::FilterRecordings(results);
+    EpgSearchFilter::FilterTimers(results);
 
   return results->Size();
 }
