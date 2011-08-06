@@ -804,6 +804,15 @@ bool CSmartPlaylist::Load(const CStdString &path)
   // encoding:
   CStdString encoding;
   XMLUtils::GetEncoding(&m_xmlDoc, encoding);
+  
+  // from here we decode from XML
+  return LoadFromXML(root, encoding);
+}
+
+bool CSmartPlaylist::LoadFromXML(TiXmlElement *root, const CStdString &encoding)
+{
+  if (!root)
+    return false;
 
   TiXmlHandle match = ((TiXmlHandle)root->FirstChild("match")).FirstChild();
   if (match.Node())

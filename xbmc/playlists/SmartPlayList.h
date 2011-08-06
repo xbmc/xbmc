@@ -149,6 +149,7 @@ public:
   bool Save(const CStdString &path);
 
   TiXmlElement *OpenAndReadName(const CStdString &path);
+  bool LoadFromXML(TiXmlElement *root, const CStdString &encoding = "UTF-8");
 
   void SetName(const CStdString &name);
   void SetType(const CStdString &type); // music, video, mixed

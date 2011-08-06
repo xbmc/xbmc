@@ -45,6 +45,11 @@ namespace XFILE
     CSmartPlaylist playlist;
     if (!playlist.Load(strPath))
       return false;
+    return GetDirectory(playlist, items);
+  }
+  
+  bool CSmartPlaylistDirectory::GetDirectory(const CSmartPlaylist &playlist, CFileItemList& items)
+  {
     bool success = false, success2 = false;
     std::set<CStdString> playlists;
     if (playlist.GetType().Equals("tvshows"))
