@@ -1,2 +1,2 @@
 ; filename                        		      source of the file
-dsplayer_standalone_filters-1.4.2833_x86_msvc2008.7z  http://xbmcwindeps.googlecode.com/files
+standalone_filters-1.5.3.3585_x86.7z  http://xbmcdspdeps.googlecode.com/files
