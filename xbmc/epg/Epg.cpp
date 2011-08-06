@@ -477,6 +477,7 @@ bool CEpg::Load(void)
         __FUNCTION__, (int) size(), m_strName.c_str());
     Sort();
     UpdateFirstAndLastDates();
+    InfoTagNow();
     bReturn = true;
   }
 
@@ -614,7 +615,10 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bL
     bGrabSuccess = LoadFromClients(start, end);
 
   if (bGrabSuccess)
+  {
+    InfoTagNow();
     m_bLoaded = true;
+  }
   else
     CLog::Log(LOGERROR, "EPG - %s - failed to update table '%s'", __FUNCTION__, Name().c_str());
 
