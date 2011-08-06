@@ -84,7 +84,7 @@ CEpg* PVR::CPVREpgContainer::CreateEpg(int iEpgId)
   CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
   if (channel)
   {
-    return new CEpg(channel, false);
+    return new CEpg(channel, true);
   }
   else
   {

@@ -28,6 +28,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
 
 #include "EpgContainer.h"
 #include "Epg.h"
@@ -36,6 +38,7 @@
 
 using namespace std;
 using namespace EPG;
+using namespace PVR;
 
 typedef std::map<int, CEpg*>::iterator EPGITR;
 
@@ -212,7 +215,14 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
     unsigned int iEpgId = entry.EpgID() > 0 ? entry.EpgID() : NextEpgId();
     epg = CreateEpg(iEpgId);
     if (epg)
+    {
       m_epgs.insert(std::make_pair(iEpgId, epg));
+      if (epg->HasPVRChannel())
+      {
+        CPVRChannel *channel = (CPVRChannel *)epg->Channel();
+        channel->Persist();
+      }
+    }
   }
 
   bReturn = epg ? epg->Update(entry, bUpdateDatabase) : false;

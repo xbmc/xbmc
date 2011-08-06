@@ -74,6 +74,9 @@ CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
   m_lastScanTime.SetValid(false);
   m_firstDate.SetValid(false);
   m_lastDate.SetValid(false);
+
+  if (m_Channel)
+    m_Channel->m_EPG = this;
 }
 
 CEpg::~CEpg(void)
@@ -682,6 +685,13 @@ bool CEpg::Persist(bool bPersistTags /* = false */, bool bQueueWrite /* = false 
       m_iEpgID = iId;
       m_bChanged = false;
     }
+  }
+
+  if (HasPVRChannel() && m_Channel->m_iEpgId != m_iEpgID)
+  {
+    m_Channel->m_iEpgId = m_iEpgID;
+    m_Channel->m_bChanged = true;
+    m_Channel->Persist();
   }
 
   if (bPersistTags)
