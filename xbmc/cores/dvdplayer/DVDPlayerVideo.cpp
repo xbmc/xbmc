@@ -501,7 +501,7 @@ void CDVDPlayerVideo::Process()
         mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
       else if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
         mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
-      else if(mInt == VS_INTERLACEMETHOD_AUTO)
+      else if((mInt == VS_INTERLACEMETHOD_AUTO) && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_BOB))
         mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
 
       mFilters = m_pVideoCodec->SetFilters(mFilters);
@@ -601,7 +601,8 @@ void CDVDPlayerVideo::Process()
             {
               if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
               || (mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)
-                                                  && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)))
+                                                  && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)
+                                                  && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_BOB)))
               {
                 if (!sPostProcessType.empty())
                   sPostProcessType += ",";

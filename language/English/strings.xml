@@ -1525,6 +1525,9 @@
   <string id="16319">DXVA</string>
   <string id="16320">Auto - ION Optimized</string>
 
+  <string id="16350">Best available</string>
+  <string id="16351">Best available (inverted)</string>
+
   <string id="16400">Post-processing</string>
 
   <string id="17500">Display sleep timeout</string>

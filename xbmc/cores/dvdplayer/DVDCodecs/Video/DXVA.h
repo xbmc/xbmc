@@ -20,14 +20,13 @@
  */
 #pragma once
 
+#include "settings/VideoSettings.h"
 #include "DllAvCodec.h"
 #include "DVDCodecs/Video/DVDVideoCodecFFmpeg.h"
 #include "guilib/D3DResource.h"
 #include "threads/Event.h"
 #include "DVDResource.h"
 #include <dxva2api.h>
-#include <deque>
-#include <vector>
 
 namespace DXVA {
 
@@ -39,7 +38,7 @@ class CDecoder
 {
 public:
   CDecoder();
- ~CDecoder();
+  ~CDecoder();
   virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
@@ -53,8 +52,7 @@ public:
   int   GetBuffer(AVCodecContext *avctx, AVFrame *pic);
   void  RelBuffer(AVCodecContext *avctx, AVFrame *pic);
 
-  static bool      Supports(enum PixelFormat fmt);
-
+  static bool Supports(enum PixelFormat fmt);
 
 protected:
   enum EDeviceState
@@ -68,27 +66,18 @@ protected:
   virtual void OnLostDevice()    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
   virtual void OnResetDevice()   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
 
-  struct SVideoBuffer
-  {
-    SVideoBuffer();
-   ~SVideoBuffer();
-    void Clear();
-
-    IDirect3DSurface9* surface;
-    bool               used;
-    int                age;
-  };
-
   IDirectXVideoDecoderService* m_service;
-  IDirectXVideoDecoder*        m_decoder;
-  HANDLE                       m_device;
   GUID                         m_input;
   DXVA2_VideoDesc              m_format;
-  static const unsigned        m_buffer_max = 32;
-  SVideoBuffer                 m_buffer[m_buffer_max];
-  unsigned                     m_buffer_count;
-  unsigned                     m_buffer_age;
-  int                          m_refs;
+  
+  LPDIRECT3DSURFACE9*          m_surfaces;
+
+  unsigned                     m_read;
+  unsigned                     m_write;
+
+  unsigned                     m_level;
+
+  unsigned                     m_refs;
 
   struct dxva_context*         m_context;
 
@@ -104,16 +93,19 @@ class CProcessor
 {
 public:
   CProcessor();
- ~CProcessor();
+  ~CProcessor();
 
   bool           Open(UINT width, UINT height, unsigned int flags);
   bool           Open(const DXVA2_VideoDesc& dsc);
   bool           CreateSurfaces();
   void           Close();
-  void           HoldSurface(IDirect3DSurface9* surface);
+  bool           LockSurfaces(LPDIRECT3DSURFACE9* surfaces, unsigned count);
   REFERENCE_TIME Add(IDirect3DSurface9* source);
+
+  void           SetStreamSampleFormat(unsigned sformat) { m_StreamSampleFormat = sformat; };
+
   bool           ProcessPicture(DVDVideoPicture* picture);
-  bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
+  bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time, int fieldflag);
   int            Size() { return m_size; }
 
   virtual void OnCreateDevice()  {}
@@ -123,10 +115,22 @@ public:
 
 protected:
   bool           Open(UINT width, UINT height, unsigned int flags, D3DFORMAT format);
+  bool           SelectProcessor();
+
+  GUID                           m_progdevice;
+  GUID                           m_bobdevice;
+  GUID                           m_hqdevice;
+
+  GUID                           m_device;
+
+  GUID                           m_default;
 
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
-  GUID                           m_device;
+
+  EINTERLACEMETHOD             m_CurrInterlaceMethod;
+  unsigned                     m_StreamSampleFormat;
+  int                          m_BFF;
 
   DXVA2_VideoProcessorCaps m_caps;
   DXVA2_VideoDesc  m_desc;
@@ -135,18 +139,22 @@ protected:
   DXVA2_ValueRange m_contrast;
   DXVA2_ValueRange m_hue;
   DXVA2_ValueRange m_saturation;
-  REFERENCE_TIME   m_time;
-  unsigned         m_size;
-
-  unsigned         m_index;
-  typedef std::deque<DXVA2_VideoSample> SSamples;
-  SSamples          m_sample;
 
   CCriticalSection  m_section;
 
-  std::vector<IDirect3DSurface9*> m_heldsurfaces;
   LPDIRECT3DSURFACE9* m_surfaces;
   unsigned            m_surfaces_count;
+
+  struct VideoSample {
+	  REFERENCE_TIME Time;
+	  IDirect3DSurface9* SrcSurface;
+  };
+
+  VideoSample* m_samples;
+  unsigned m_index;
+  unsigned m_size;
+
+  REFERENCE_TIME m_time;
 };
 
 };
