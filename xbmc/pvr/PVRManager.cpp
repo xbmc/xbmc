@@ -326,7 +326,7 @@ bool CPVRManager::ChannelUpDown(unsigned int *iNewChannelNumber, bool bPreview, 
     if (group)
     {
       const CPVRChannel *newChannel = bUp ? group->GetByChannelUp(*currentChannel) : group->GetByChannelDown(*currentChannel);
-      if (PerformChannelSwitch(*newChannel, bPreview))
+      if (newChannel && PerformChannelSwitch(*newChannel, bPreview))
       {
         *iNewChannelNumber = newChannel->ChannelNumber();
         bReturn = true;
