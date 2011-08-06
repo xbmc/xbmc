@@ -52,6 +52,7 @@ CGUIControl::CGUIControl()
   m_controlRight = 0;
   m_controlUp = 0;
   m_controlDown = 0;
+  m_controlBack = 0;
   m_controlNext = 0;
   m_controlPrev = 0;
   ControlType = GUICONTROL_UNKNOWN;
@@ -85,6 +86,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_controlRight = 0;
   m_controlUp = 0;
   m_controlDown = 0;
+  m_controlBack = 0;
   m_controlNext = 0;
   m_controlPrev = 0;
   ControlType = GUICONTROL_UNKNOWN;
@@ -222,6 +224,9 @@ bool CGUIControl::OnAction(const CAction &action)
       OnRight();
       return true;
 
+    case ACTION_NAV_BACK:
+      return OnBack();
+
     case ACTION_NEXT_CONTROL:
       OnNextControl();
       return true;
@@ -293,6 +298,22 @@ void CGUIControl::OnRight()
       SendWindowMessage(msg);
     }
   }
+}
+
+bool CGUIControl::OnBack()
+{
+  if (m_backActions.size())
+  {
+    ExecuteActions(m_backActions);
+    return true;
+  }
+  else if (m_controlBack && m_controlID != m_controlBack)
+  {
+    // Send a message to the window with the sender set as the window
+    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_NAV_BACK);
+    return SendWindowMessage(msg);
+  }
+  return false;
 }
 
 void CGUIControl::OnNextControl()
@@ -501,12 +522,13 @@ CRect CGUIControl::CalcRenderRegion() const
   return CRect(tl.x, tl.y, br.x, br.y);
 }
 
-void CGUIControl::SetNavigation(int up, int down, int left, int right)
+void CGUIControl::SetNavigation(int up, int down, int left, int right, int back)
 {
   m_controlUp = up;
   m_controlDown = down;
   m_controlLeft = left;
   m_controlRight = right;
+  m_controlBack = back;
 }
 
 void CGUIControl::SetTabNavigation(int next, int prev)
@@ -516,12 +538,14 @@ void CGUIControl::SetTabNavigation(int next, int prev)
 }
 
 void CGUIControl::SetNavigationActions(const vector<CGUIActionDescriptor> &up, const vector<CGUIActionDescriptor> &down,
-                                       const vector<CGUIActionDescriptor> &left, const vector<CGUIActionDescriptor> &right, bool replace)
+                                       const vector<CGUIActionDescriptor> &left, const vector<CGUIActionDescriptor> &right,
+                                       const vector<CGUIActionDescriptor> &back, bool replace)
 {
   if (m_leftActions.empty()  || replace) m_leftActions  = left;
   if (m_rightActions.empty() || replace) m_rightActions = right;
   if (m_upActions.empty()    || replace) m_upActions    = up;
   if (m_downActions.empty()  || replace) m_downActions  = down;
+  if (m_backActions.empty()  || replace) m_backActions  = back;
 }
 
 void CGUIControl::SetWidth(float width)
@@ -921,6 +945,8 @@ int CGUIControl::GetNextControl(int direction) const
     return m_controlLeft;
   case ACTION_MOVE_RIGHT:
     return m_controlRight;
+  case ACTION_NAV_BACK:
+    return m_controlBack;
   default:
     return -1;
   }
