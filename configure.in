@@ -92,6 +92,7 @@ librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
+alsa_not_found="== Could not find ALSA. ALSA support disabled. =="
 
 
 # External library message strings
@@ -667,8 +668,8 @@ else
   AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
 
   PKG_CHECK_MODULES([ALSA],  [alsa],
-    [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"],
-    AC_MSG_ERROR($missing_library))
+    [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"; use_alsa=yes],
+    AC_MSG_NOTICE($alsa_not_found); use_alsa=no)
   PKG_CHECK_MODULES([ENCA],  [enca],
     [INCLUDES="$INCLUDES $ENCA_CFLAGS"; LIBS="$LIBS $ENCA_LIBS"],
     AC_MSG_ERROR($missing_library))
@@ -1198,6 +1199,15 @@ else
   fi
 fi
 
+if test "$use_alsa" = "yes"; then
+  USE_ALSA=1
+  AC_DEFINE([USE_ALSA],[1],["Define to 1 if alsa is installed"])
+  final_message="$final_message\n  ALSA:\t\tYes"
+else
+  USE_ALSA=0
+  final_message="$final_message\n  ALSA:\t\tNo"
+fi
+
 if test "x$use_vdpau" != "xno"; then
   final_message="$final_message\n  VDPAU:\tYes"
 else
@@ -1509,6 +1519,7 @@ AC_SUBST(USE_VDA)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
 AC_SUBST(USE_XRANDR)
+AC_SUBST(USE_ALSA)
 AC_SUBST(USE_TEXTUREPACKER)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE_ROOT)
