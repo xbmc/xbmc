@@ -54,7 +54,6 @@ int CGUIViewStateWindowVideo::GetPlaylist()
 VECSOURCES& CGUIViewStateWindowVideo::GetSources()
 {
   AddLiveTVSources();
-  AddAddonsSource("video", g_localizeStrings.Get(1037), "DefaultAddonVideo.png");
   return CGUIViewState::GetSources();
 }
 
@@ -404,9 +403,8 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
 {
   //  Setup shares we want to have
   m_sources.clear();
-  //  Musicdb shares
   CFileItemList items;
-  CDirectory::GetDirectory("videodb://", items, "", true, false, DIR_CACHE_ONCE, true, false);
+  CDirectory::GetDirectory("library://video/", items, "", true, false, DIR_CACHE_ONCE, true, false);
   for (int i=0; i<items.Size(); ++i)
   {
     CFileItemPtr item=items[i];
@@ -416,35 +414,6 @@ VECSOURCES& CGUIViewStateWindowVideoNav::GetSources()
     share.m_strThumbnailImage= item->GetIconImage();
     share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
     m_sources.push_back(share);
-  }
-
-  if (g_settings.GetSourcesFromType("video")->empty())
-  { // no sources - add the "Add Source" item
-    CMediaSource share;
-    share.strName=g_localizeStrings.Get(999); // "Add Videos"
-    share.strPath = "sources://add/";
-    share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultAddSource.png");
-    share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-    m_sources.push_back(share);
-  }
-  else
-  {
-    { // Files share
-      CMediaSource share;
-      share.strName=g_localizeStrings.Get(744); // Files
-      share.strPath = "sources://video/";
-      share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultFolder.png");
-      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-      m_sources.push_back(share);
-    }
-    { // Playlists share
-      CMediaSource share;
-      share.strName=g_localizeStrings.Get(136); // Playlists
-      share.strPath = "special://videoplaylists/";
-      share.m_strThumbnailImage = CUtil::GetDefaultFolderThumb("DefaultVideoPlaylists.png");
-      share.m_iDriveType = CMediaSource::SOURCE_TYPE_LOCAL;
-      m_sources.push_back(share);
-    }
   }
   return CGUIViewStateWindowVideo::GetSources();
 }
