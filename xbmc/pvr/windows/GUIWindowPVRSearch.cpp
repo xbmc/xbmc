@@ -27,7 +27,7 @@
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/dialogs/GUIDialogPVRGuideSearch.h"
-#include "pvr/epg/PVREpgContainer.h"
+#include "epg/EpgContainer.h"
 #include "pvr/recordings/PVRRecordings.h"
 #include "GUIWindowPVR.h"
 #include "utils/log.h"

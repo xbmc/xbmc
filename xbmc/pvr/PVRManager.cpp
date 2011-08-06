@@ -38,7 +38,7 @@
 #include "PVRGUIInfo.h"
 #include "addons/PVRClients.h"
 #include "channels/PVRChannelGroupsContainer.h"
-#include "epg/PVREpgContainer.h"
+#include "epg/EpgContainer.h"
 #include "recordings/PVRRecordings.h"
 #include "timers/PVRTimers.h"
 
@@ -362,7 +362,7 @@ void CPVRManager::ResetProperties(void)
   if (!m_database)      m_database      = new CPVRDatabase;
   if (!m_addons)        m_addons        = new CPVRClients;
   if (!m_channelGroups) m_channelGroups = new CPVRChannelGroupsContainer;
-  if (!m_epg)           m_epg           = new CPVREpgContainer;
+  if (!m_epg)           m_epg           = &g_EpgContainer;
   if (!m_recordings)    m_recordings    = new CPVRRecordings;
   if (!m_timers)        m_timers        = new CPVRTimers;
   if (!m_guiInfo)       m_guiInfo       = new CPVRGUIInfo;

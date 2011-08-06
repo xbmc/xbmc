@@ -28,7 +28,6 @@
 #include "EpgSearchFilter.h"
 #include "EpgContainer.h"
 
-#include "pvr/epg/PVREpgContainer.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/recordings/PVRRecordings.h"

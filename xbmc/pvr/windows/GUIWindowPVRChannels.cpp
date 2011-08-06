@@ -33,7 +33,7 @@
 #include "pvr/windows/GUIWindowPVR.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/timers/PVRTimers.h"
-#include "pvr/epg/PVREpgContainer.h"
+#include "epg/EpgContainer.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "storage/MediaManager.h"

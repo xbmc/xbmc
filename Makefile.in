@@ -72,7 +72,6 @@ BIN_DIRS=	\
 	xbmc/pvr/addons \
 	xbmc/pvr/channels \
 	xbmc/pvr/dialogs \
-	xbmc/pvr/epg \
 	xbmc/pvr/recordings \
 	xbmc/pvr/timers \
 	xbmc/pvr/windows \
@@ -381,8 +380,6 @@ xbmc/pvr/channels/pvrchannels.a: force
 	$(MAKE) -C xbmc/pvr/channels
 xbmc/pvr/dialogs/pvrdialogs.a: force
 	$(MAKE) -C xbmc/pvr/dialogs
-xbmc/pvr/epg/pvrepg.a: force
-	$(MAKE) -C xbmc/pvr/epg
 xbmc/pvr/recordings/pvrrecordings.a: force
 	$(MAKE) -C xbmc/pvr/recordings
 xbmc/pvr/timers/pvrtimers.a: force
@@ -515,7 +512,6 @@ OBJSXBMC=	\
 	xbmc/pvr/pvr.a \
 	xbmc/pvr/channels/pvrchannels.a \
 	xbmc/pvr/dialogs/pvrdialogs.a \
-	xbmc/pvr/epg/pvrepg.a \
 	xbmc/pvr/recordings/pvrrecordings.a \
 	xbmc/pvr/timers/pvrtimers.a \
 	xbmc/video/dialogs/videodialogs.a \

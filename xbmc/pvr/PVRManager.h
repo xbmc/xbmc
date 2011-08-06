@@ -29,6 +29,11 @@
 
 class CGUIDialogExtendedProgressBar;
 
+namespace EPG
+{
+  class CEpgContainer;
+}
+
 namespace PVR
 {
   class CPVRClients;
@@ -36,7 +41,6 @@ namespace PVR
   class CPVRChannelGroup;
   class CPVRRecordings;
   class CPVRTimers;
-  class CPVREpgContainer;
   class CPVRGUIInfo;
   class CPVRDatabase;
 
@@ -86,7 +90,7 @@ namespace PVR
      * @brief Get the EPG container.
      * @return The EPG container.
      */
-    CPVREpgContainer *EPG(void) const { return m_epg; }
+    EPG::CEpgContainer *EPG(void) const { return m_epg; }
 
     /*!
      * @brief Get the recordings container.
@@ -518,7 +522,7 @@ namespace PVR
     /** @name containers */
     //@{
     CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */
-    CPVREpgContainer *              m_epg;                         /*!< pointer to the EPG container */
+    EPG::CEpgContainer *            m_epg;                         /*!< pointer to the EPG container */
     CPVRRecordings *                m_recordings;                  /*!< pointer to the recordings container */
     CPVRTimers *                    m_timers;                      /*!< pointer to the timers container */
     CPVRClients *                   m_addons;                      /*!< pointer to the pvr addon container */
