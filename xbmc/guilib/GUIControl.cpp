@@ -202,43 +202,34 @@ void CGUIControl::Render()
 
 bool CGUIControl::OnAction(const CAction &action)
 {
-  switch (action.GetID())
+  if (HasFocus())
   {
-  case ACTION_MOVE_DOWN:
-    if (!HasFocus()) return false;
-    OnDown();
-    return true;
-    break;
+    switch (action.GetID())
+    {
+    case ACTION_MOVE_DOWN:
+      OnDown();
+      return true;
 
-  case ACTION_MOVE_UP:
-    if (!HasFocus()) return false;
-    OnUp();
-    return true;
-    break;
+    case ACTION_MOVE_UP:
+      OnUp();
+      return true;
 
-  case ACTION_MOVE_LEFT:
-    if (!HasFocus()) return false;
-    OnLeft();
-    return true;
-    break;
+    case ACTION_MOVE_LEFT:
+      OnLeft();
+      return true;
 
-  case ACTION_MOVE_RIGHT:
-    if (!HasFocus()) return false;
-    OnRight();
-    return true;
-    break;
+    case ACTION_MOVE_RIGHT:
+      OnRight();
+      return true;
 
-  case ACTION_NEXT_CONTROL:
-      if (!HasFocus()) return false;
+    case ACTION_NEXT_CONTROL:
       OnNextControl();
       return true;
-      break;
 
-  case ACTION_PREV_CONTROL:
-      if (!HasFocus()) return false;
+    case ACTION_PREV_CONTROL:
       OnPrevControl();
       return true;
-      break;
+    }
   }
   return false;
 }
