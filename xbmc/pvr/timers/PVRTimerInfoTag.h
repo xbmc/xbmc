@@ -89,6 +89,7 @@ namespace PVR
 
     CPVRTimerInfoTag(void);
     CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel, unsigned int iClientId);
+    virtual ~CPVRTimerInfoTag(void);
 
     void Reset();
 

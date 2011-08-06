@@ -130,6 +130,12 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           bChannelsMatch);
 }
 
+CPVRTimerInfoTag::~CPVRTimerInfoTag(void)
+{
+  if (m_epgInfo)
+    m_epgInfo->SetTimer(NULL);
+}
+
 /**
  * Compare not equal for two CPVRTimerInfoTag
  */
