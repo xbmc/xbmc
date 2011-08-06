@@ -29,7 +29,7 @@
 
 #include "addons/include/xbmc_pvr_types.h"
 #include "pvr/PVRManager.h"
-#include "pvr/epg/PVREpgSearchFilter.h"
+#include "epg/EpgSearchFilter.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 
 using namespace std;

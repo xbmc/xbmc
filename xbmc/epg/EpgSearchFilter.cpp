@@ -28,8 +28,15 @@
 #include "EpgSearchFilter.h"
 #include "EpgContainer.h"
 
+#include "pvr/epg/PVREpgContainer.h"
+#include "pvr/PVRManager.h"
+#include "pvr/channels/PVRChannelGroupsContainer.h"
+#include "pvr/recordings/PVRRecordings.h"
+#include "pvr/timers/PVRTimers.h"
+
 using namespace std;
 using namespace EPG;
+using namespace PVR;
 
 void EpgSearchFilter::Reset()
 {
@@ -40,12 +47,19 @@ void EpgSearchFilter::Reset()
   m_iGenreSubType            = EPG_SEARCH_UNSET;
   m_iMinimumDuration         = EPG_SEARCH_UNSET;
   m_iMaximumDuration         = EPG_SEARCH_UNSET;
-  m_startDateTime            = g_EpgContainer.GetFirstEPGDate();
-  m_endDateTime              = g_EpgContainer.GetLastEPGDate();
+  m_startDateTime            = CPVRManager::Get().IsStarted() ? CPVRManager::Get().EPG()->GetFirstEPGDate() : g_EpgContainer.GetFirstEPGDate();
+  m_endDateTime              = CPVRManager::Get().IsStarted() ? CPVRManager::Get().EPG()->GetLastEPGDate() : g_EpgContainer.GetLastEPGDate();
   m_bIncludeUnknownGenres    = false;
   m_bIgnorePresentTimers     = false;
   m_bIgnorePresentRecordings = false;
   m_bPreventRepeats          = false;
+
+  /* pvr specific filters */
+  m_iChannelNumber           = EPG_SEARCH_UNSET;
+  m_bFTAOnly                 = false;
+  m_iChannelGroup            = EPG_SEARCH_UNSET;
+  m_bIgnorePresentTimers     = true;
+  m_bIgnorePresentRecordings = true;
 }
 
 bool EpgSearchFilter::MatchGenre(const CEpgInfoTag &tag) const
@@ -128,4 +142,103 @@ int EpgSearchFilter::RemoveDuplicates(CFileItemList *results)
   }
 
   return iSize;
+}
+
+
+bool EpgSearchFilter::MatchChannelNumber(const CPVREpgInfoTag &tag) const
+{
+  bool bReturn(true);
+
+  if (m_iChannelNumber != EPG_SEARCH_UNSET)
+  {
+    const CPVRChannelGroup *group = (m_iChannelGroup != EPG_SEARCH_UNSET) ? CPVRManager::Get().ChannelGroups()->GetByIdFromAll(m_iChannelGroup) : g_PVRChannelGroups->GetGroupAllTV();
+    if (!group)
+      group = CPVRManager::Get().ChannelGroups()->GetGroupAllTV();
+
+    bReturn = (m_iChannelNumber == (int) group->GetChannelNumber(*tag.ChannelTag()));
+  }
+
+  return bReturn;
+}
+
+bool EpgSearchFilter::MatchChannelGroup(const CPVREpgInfoTag &tag) const
+{
+  bool bReturn(true);
+
+  if (m_iChannelGroup != EPG_SEARCH_UNSET)
+  {
+    const CPVRChannelGroup *group = CPVRManager::Get().ChannelGroups()->GetByIdFromAll(m_iChannelGroup);
+    bReturn = (group && group->IsGroupMember(*tag.ChannelTag()));
+  }
+
+  return bReturn;
+}
+
+bool EpgSearchFilter::FilterEntry(const CPVREpgInfoTag &tag) const
+{
+  return FilterEntry(tag) &&
+      MatchChannelNumber(tag) &&
+      MatchChannelGroup(tag) &&
+      (!m_bFTAOnly || !tag.ChannelTag()->IsEncrypted());
+}
+
+int EpgSearchFilter::FilterRecordings(CFileItemList *results)
+{
+  int iRemoved(0);
+  CPVRRecordings *recordings = CPVRManager::Get().Recordings();
+
+  // TODO not thread safe and inefficient!
+  for (unsigned int iRecordingPtr = 0; iRecordingPtr < recordings->size(); iRecordingPtr++)
+  {
+    CPVRRecording *recording = recordings->at(iRecordingPtr);
+    if (!recording)
+      continue;
+
+    for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
+    {
+      const CPVREpgInfoTag *epgentry  = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
+
+      /* no match */
+      if (!epgentry ||
+          epgentry->Title()       != recording->m_strTitle ||
+          epgentry->Plot()        != recording->m_strPlot)
+        continue;
+
+      results->Remove(iResultPtr);
+      iResultPtr--;
+      ++iRemoved;
+    }
+  }
+
+  return iRemoved;
+}
+
+int EpgSearchFilter::FilterTimers(CFileItemList *results)
+{
+  int iRemoved(0);
+  CPVRTimers *timers = CPVRManager::Get().Timers();
+
+  // TODO not thread safe and inefficient!
+  for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
+  {
+    CPVRTimerInfoTag *timer = timers->at(iTimerPtr);
+    if (!timer)
+      continue;
+
+    for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
+    {
+      const CPVREpgInfoTag *epgentry = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
+      if (!epgentry ||
+          *epgentry->ChannelTag() != *timer->m_channel ||
+          epgentry->StartAsUTC()   <  timer->StartAsUTC() ||
+          epgentry->EndAsUTC()     >  timer->EndAsUTC())
+        continue;
+
+      results->Remove(iResultPtr);
+      iResultPtr--;
+      ++iRemoved;
+    }
+  }
+
+  return iRemoved;
 }

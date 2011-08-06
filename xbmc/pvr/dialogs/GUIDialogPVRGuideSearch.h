@@ -23,10 +23,13 @@
 #include "guilib/GUIDialog.h"
 #include "XBDateTime.h"
 
+namespace EPG
+{
+  struct EpgSearchFilter;
+}
+
 namespace PVR
 {
-  struct PVREpgSearchFilter;
-
   class CGUIDialogPVRGuideSearch : public CGUIDialog
   {
   public:
@@ -35,7 +38,7 @@ namespace PVR
     virtual bool OnMessage(CGUIMessage& message);
     virtual void OnWindowLoaded();
 
-    void SetFilterData(PVREpgSearchFilter *searchFilter) { m_searchFilter = searchFilter; }
+    void SetFilterData(EPG::EpgSearchFilter *searchFilter) { m_searchFilter = searchFilter; }
     bool IsConfirmed() const { return m_bConfirmed; }
     bool IsCanceled() const { return m_bCanceled; }
     void OnSearch();
@@ -50,6 +53,6 @@ namespace PVR
 
     bool m_bConfirmed;
     bool m_bCanceled;
-    PVREpgSearchFilter *m_searchFilter;
+    EPG::EpgSearchFilter *m_searchFilter;
   };
 }

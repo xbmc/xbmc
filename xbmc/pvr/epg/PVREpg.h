@@ -25,9 +25,13 @@
 #include "PVREpgInfoTag.h"
 #include "addons/include/xbmc_pvr_types.h"
 
+namespace EPG
+{
+  struct EpgSearchFilter;
+}
+
 namespace PVR
 {
-  struct PVREpgSearchFilter;
   class CPVREpgContainer;
 
   class CPVREpg : public EPG::CEpg
@@ -70,7 +74,7 @@ namespace PVR
      * @param filter The filter to apply.
      * @return The amount of entries that were added.
      */
-    int Get(CFileItemList *results, const PVREpgSearchFilter &filter) const;
+    int Get(CFileItemList *results, const EPG::EpgSearchFilter &filter) const;
 
     int Get(CFileItemList *results) const { return CEpg::Get(results); };
 

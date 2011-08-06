@@ -22,8 +22,8 @@
  */
 
 #include "epg/EpgContainer.h"
+#include "epg/EpgSearchFilter.h"
 #include "PVREpg.h"
-#include "PVREpgSearchFilter.h"
 
 namespace PVR
 {
@@ -70,7 +70,7 @@ namespace PVR
      * @param filter The filter to apply.
      * @return The amount of entries that were added.
      */
-    int GetEPGSearch(CFileItemList* results, const PVREpgSearchFilter &filter);
+    int GetEPGSearch(CFileItemList* results, const EPG::EpgSearchFilter &filter);
 
     /*!
      * @brief Get all EPG tables.

@@ -22,7 +22,7 @@
  */
 
 #include "GUIWindowPVRCommon.h"
-#include "pvr/epg/PVREpgSearchFilter.h"
+#include "epg/EpgSearchFilter.h"
 
 namespace PVR
 {
@@ -56,6 +56,6 @@ namespace PVR
 
     bool               m_bSearchStarted;
     bool               m_bSearchConfirmed;
-    PVREpgSearchFilter m_searchfilter;
+    EPG::EpgSearchFilter m_searchfilter;
   };
 }
