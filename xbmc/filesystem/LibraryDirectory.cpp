@@ -20,6 +20,8 @@
  */
 
 #include "LibraryDirectory.h"
+#include "playlists/SmartPlayList.h"
+#include "SmartPlaylistDirectory.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
@@ -52,6 +54,24 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   CStdString label;
   if (XMLUtils::GetString(node, "label", label))
     label = CGUIControlFactory::FilterLabel(label);
+
+  // check if our node is a filter node
+  CStdString type = node->Attribute("type");
+  if (type == "filter")
+  {
+    CSmartPlaylist playlist;
+    CStdString type;
+    XMLUtils::GetString(node, "content", type);
+    playlist.SetType(type);
+    playlist.SetName(label);
+    if (playlist.LoadFromXML(node) &&
+        CSmartPlaylistDirectory::GetDirectory(playlist, items))
+    {
+      items.SetProperty("library.filter", "true");
+      return true;
+    }
+    return false;
+  }
 
   // now that we have our node, return all subnodes of this one, and set the label and thumb etc.
   TiXmlElement *child = node->FirstChildElement("node");
