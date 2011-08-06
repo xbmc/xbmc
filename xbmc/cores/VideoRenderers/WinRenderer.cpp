@@ -515,22 +515,26 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if (m_bUseHQScaler)
   {
-    switch(m_scalingMethod)
-    {
-    case VS_SCALINGMETHOD_CUBIC:
-    case VS_SCALINGMETHOD_LANCZOS2:
-      m_scalerShader = new CConvolutionShader1Pass();
-      break;
-    default:
-      m_scalerShader = new CConvolutionShaderSeparable();
-      break;
-    }
+    // First try the more efficient two pass convolution scaler
+    m_scalerShader = new CConvolutionShaderSeparable();
 
     if (!m_scalerShader->Create(m_scalingMethod))
     {
       SAFE_DELETE(m_scalerShader);
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
-      m_bUseHQScaler = false;
+      CLog::Log(LOGNOTICE, __FUNCTION__": two pass convolution shader init problem, falling back to one pass.");
+    }
+
+    // Fallback on the one pass version
+    if (m_scalerShader == NULL)
+    {
+      m_scalerShader = new CConvolutionShader1Pass();
+
+      if (!m_scalerShader->Create(m_scalingMethod))
+      {
+        SAFE_DELETE(m_scalerShader);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
+        m_bUseHQScaler = false;
+      }
     }
   }
 

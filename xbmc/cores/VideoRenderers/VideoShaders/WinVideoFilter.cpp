@@ -683,15 +683,14 @@ bool CConvolutionShaderSeparable::ChooseIntermediateD3DFormat()
 {
   DWORD usage = D3DUSAGE_RENDERTARGET;
 
-  // Try for higher precision than the output of the scaler to preserve quality
-  if      (g_Windowing.IsTextureFormatOk(D3DFMT_A2R10G10B10, usage)) m_IntermediateFormat = D3DFMT_A2R10G10B10;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A2B10G10R10, usage)) m_IntermediateFormat = D3DFMT_A2B10G10R10;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8R8G8B8, usage))    m_IntermediateFormat = D3DFMT_A8R8G8B8;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A8B8G8R8, usage))    m_IntermediateFormat = D3DFMT_A8B8G8R8;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8R8G8B8, usage))    m_IntermediateFormat = D3DFMT_X8R8G8B8;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_X8B8G8R8, usage))    m_IntermediateFormat = D3DFMT_X8B8G8R8;
-  else if (g_Windowing.IsTextureFormatOk(D3DFMT_R8G8B8, usage))      m_IntermediateFormat = D3DFMT_R8G8B8;
-  else return false;
+  // Need a float texture, as the output of the first pass can contain negative values.
+  if      (g_Windowing.IsTextureFormatOk(D3DFMT_A16B16G16R16F, usage)) m_IntermediateFormat = D3DFMT_A16B16G16R16F;
+  else if (g_Windowing.IsTextureFormatOk(D3DFMT_A32B32G32R32F, usage)) m_IntermediateFormat = D3DFMT_A32B32G32R32F;
+  else
+  {
+    CLog::Log(LOGNOTICE, __FUNCTION__": no float format available for the intermediate render target");
+    return false;
+  }
 
   CLog::Log(LOGDEBUG, __FUNCTION__": format %i", m_IntermediateFormat);
 
