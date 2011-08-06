@@ -37,13 +37,13 @@ namespace XbmcThreads
   {
     class RecursiveMutex
     {
-      pthread_mutexattr_t* getRecusiveAttr();
+      pthread_mutexattr_t* getRecursiveAttr();
       pthread_mutex_t mutex;
 
       // needs acces to 'mutex'
       friend class XbmcThreads::ConditionVariable;
     public:
-      inline RecursiveMutex() { pthread_mutex_init(&mutex,getRecusiveAttr()); }
+      inline RecursiveMutex() { pthread_mutex_init(&mutex,getRecursiveAttr()); }
       
       inline ~RecursiveMutex() { pthread_mutex_destroy(&mutex); }
 
