@@ -41,6 +41,7 @@
 #include "threads/SingleLock.h"
 
 using namespace PVR;
+using namespace EPG;
 
 CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio) :
   CGUIWindowPVRCommon(parent,
@@ -55,7 +56,7 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio)
 
 CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
 {
-  g_PVREpg->UnregisterObserver(this);
+  g_EpgContainer.UnregisterObserver(this);
   g_PVRTimers->UnregisterObserver(this);
   g_infoManager.UnregisterObserver(this);
 }
@@ -63,7 +64,7 @@ CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
 void CGUIWindowPVRChannels::ResetObservers(void)
 {
   CSingleLock lock(m_critSection);
-  g_PVREpg->RegisterObserver(this);
+  g_EpgContainer.RegisterObserver(this);
   g_PVRTimers->RegisterObserver(this);
   g_infoManager.RegisterObserver(this);
 }
@@ -178,7 +179,7 @@ void CGUIWindowPVRChannels::UpdateData(void)
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
 
-  g_PVREpg->RegisterObserver(this);
+  g_EpgContainer.RegisterObserver(this);
   g_PVRTimers->RegisterObserver(this);
 
   /* lock the graphics context while updating */

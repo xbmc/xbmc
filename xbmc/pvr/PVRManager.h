@@ -46,7 +46,6 @@ namespace PVR
 
   #define g_PVRManager       CPVRManager::Get()
   #define g_PVRChannelGroups g_PVRManager.ChannelGroups()
-  #define g_PVREpg           g_PVRManager.EPG()
   #define g_PVRTimers        g_PVRManager.Timers()
   #define g_PVRRecordings    g_PVRManager.Recordings()
   #define g_PVRClients       g_PVRManager.Clients()
@@ -85,12 +84,6 @@ namespace PVR
      * @return The groups container.
      */
     CPVRChannelGroupsContainer *ChannelGroups(void) const { return m_channelGroups; }
-
-    /*!
-     * @brief Get the EPG container.
-     * @return The EPG container.
-     */
-    EPG::CEpgContainer *EPG(void) const { return m_epg; }
 
     /*!
      * @brief Get the recordings container.
@@ -522,7 +515,6 @@ namespace PVR
     /** @name containers */
     //@{
     CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */
-    EPG::CEpgContainer *            m_epg;                         /*!< pointer to the EPG container */
     CPVRRecordings *                m_recordings;                  /*!< pointer to the recordings container */
     CPVRTimers *                    m_timers;                      /*!< pointer to the timers container */
     CPVRClients *                   m_addons;                      /*!< pointer to the pvr addon container */

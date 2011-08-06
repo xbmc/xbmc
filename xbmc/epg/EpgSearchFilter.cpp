@@ -46,8 +46,8 @@ void EpgSearchFilter::Reset()
   m_iGenreSubType            = EPG_SEARCH_UNSET;
   m_iMinimumDuration         = EPG_SEARCH_UNSET;
   m_iMaximumDuration         = EPG_SEARCH_UNSET;
-  m_startDateTime            = CPVRManager::Get().IsStarted() ? CPVRManager::Get().EPG()->GetFirstEPGDate() : g_EpgContainer.GetFirstEPGDate();
-  m_endDateTime              = CPVRManager::Get().IsStarted() ? CPVRManager::Get().EPG()->GetLastEPGDate() : g_EpgContainer.GetLastEPGDate();
+  m_startDateTime            = g_EpgContainer.GetFirstEPGDate();
+  m_endDateTime              = g_EpgContainer.GetLastEPGDate();
   m_bIncludeUnknownGenres    = false;
   m_bIgnorePresentTimers     = false;
   m_bIgnorePresentRecordings = false;

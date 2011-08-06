@@ -50,14 +50,14 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
 {
-  g_PVREpg->UnregisterObserver(this);
+  g_EpgContainer.UnregisterObserver(this);
   delete m_localItems;
 }
 
 void CGUIWindowPVRGuide::ResetObservers(void)
 {
   CSingleLock lock(m_critSection);
-  g_PVREpg->RegisterObserver(this);
+  g_EpgContainer.RegisterObserver(this);
 }
 
 void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
@@ -203,12 +203,11 @@ void CGUIWindowPVRGuide::UpdateViewNext(void)
 void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 {
   CPVRChannel CurrentChannel;
-  CEpgContainer *epg = g_PVREpg;
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(&CurrentChannel);
   bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
   CDateTime gridStart = CDateTime::GetCurrentDateTime();
-  CDateTime firstDate = epg->GetFirstEPGDate();
-  CDateTime lastDate = epg->GetLastEPGDate();
+  CDateTime firstDate = g_EpgContainer.GetFirstEPGDate();
+  CDateTime lastDate = g_EpgContainer.GetLastEPGDate();
   m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
   if (!m_parent->m_guideGrid)
     return;
@@ -246,7 +245,7 @@ void CGUIWindowPVRGuide::UpdateData(void)
     return;
   CLog::Log(LOGDEBUG, "CGUIWindowPVRGuide - %s - update window '%s'. set view to %d", __FUNCTION__, GetName(), m_iControlList);
 
-  g_PVREpg->RegisterObserver(this);
+  g_EpgContainer.RegisterObserver(this);
   m_bIsFocusing = true;
   m_bUpdateRequired = false;
 
