@@ -3616,58 +3616,6 @@
 				<info>Weather.Conditions</info>
 			</control>
 		</control>
-		<control type="group">
-			<description>RSS</description>
-			<posx>0</posx>
-			<posy>670</posy>
-			<visible>System.GetBool(RSS.EnableRSSFeeds) + System.HasNetwork</visible>
-			<!--<visible>False</visible>-->
-			<animation type="WindowOpen">
-				<effect type="slide" start="0,50" time="700" delay="100"/>
-				<effect type="fade" time="700" delay="500"/>
-			</animation>
-			<animation type="WindowClose">
-				<effect type="slide" end="0,50" time="300"/>
-				<effect type="fade" time="100" delay="100"/>
-			</animation>
-			<control type="image">
-				<description>RSS Background</description>
-				<width>1280</width>
-				<height>50</height>
-				<texture>HomeRSS.png</texture>
-			</control>
-			<control type="rss">
-				<description>Rss Feed</description>
-				<posx>0</posx>
-				<posy>18</posy>
-				<width>1280</width>
-				<font>RssFeedFont</font>
-				<urlset>1</urlset>
-				<textcolor>FFFF9900</textcolor>
-				<headlinecolor>Focused</headlinecolor>
-				<titlecolor>FFFF9900</titlecolor>
-				<animation effect="fade" time="700" delay="300">WindowOpen</animation>
-				<animation effect="fade" time="100">WindowClose</animation>
-			</control>
-			<control type="group">
-				<description>Fades for RSS text</description>
-				<posy>4</posy>
-				<!--<control type="image">
-					<description>Left hand fade for RSS</description>
-					<posx>29</posx>
-					<width>40</width>
-					<height>40</height>
-					<texture>BlackGradient.png</texture>
-				</control>
-				<control type="image">
-					<description>Right hand fade for RSS</description>
-					<posx>1168</posx>
-					<width>40</width>
-					<height>40</height>
-					<texture flipx="true">BlackGradient.png</texture>
-				</control>-->
-			</control>
-		</control>
 		<!-- Music Now Playing -->
 		<include>MusicNowPlayingIndicators</include>
 		<control type="group">
