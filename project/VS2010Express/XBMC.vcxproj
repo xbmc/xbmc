@@ -1028,6 +1028,7 @@
     <ClCompile Include="..\..\xbmc\FileSystem\IDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\IFile.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\LastFMDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\FileSystem\LibraryDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\MultiPathDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\MultiPathFile.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\MusicDatabaseDirectory.cpp" />
@@ -1901,6 +1902,7 @@
     <ClInclude Include="..\..\xbmc\FileSystem\HTSPSession.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\HTTPDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\LastFMDirectory.h" />
+    <ClInclude Include="..\..\xbmc\FileSystem\LibraryDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\MultiPathDirectory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\MultiPathFile.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\MusicDatabaseDirectory.h" />

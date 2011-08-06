@@ -1,0 +1,173 @@
+<library>
+  <!-- default path to go to when first entering the library.  This is the path of a node -->
+  <default>movies</default>
+
+  <!-- nodes.  Each node must have a unique id (if non-unique we'll just take the first) -->
+
+  <node id="movies" visible="Library.HasContent(Movies)">
+    <!-- a virtual folder -->
+    <label>342</label>
+    <icon>DefaultMovies.png</icon>
+
+    <node id="genres" type="folder">
+      <label>135</label>
+      <path>videodb://1/1</path>
+      <icon>DefaultGenre.png</icon>
+    </node>
+    <node id="titles" type="folder">
+      <label>369</label>
+      <path>videodb://1/2</path>
+      <icon>DefaultMovieTitle.png</icon>
+    </node>
+    <node id="years" type="folder">
+      <label>562</label>
+      <path>videodb://1/3</path>
+      <icon>DefaultYear.png</icon>
+    </node>
+    <node id="actors" type="folder">
+      <label>344</label>
+      <path>videodb://1/4</path>
+      <icon>DefaultActor.png</icon>
+    </node>
+    <node id="directors" type="folder">
+      <label>20348</label>
+      <path>videodb://1/5</path>
+      <icon>DefaultDirector.png</icon>
+    </node>
+    <node id="studios" type="folder">
+      <label>20388</label>
+      <path>videodb://1/6</path>
+      <icon>DefaultStudios.png</icon>
+    </node>
+    <node id="sets" type="folder">
+      <label>20434</label>
+      <path>videodb://1/7</path>
+      <icon>DefaultSets.png</icon>
+    </node>
+    <node id="country" type="folder">
+      <label>20451</label>
+      <path>videodb://1/8</path>
+      <icon>DefaultCountry.png</icon>
+    </node>
+  </node>
+
+  <node id="tvshows" visible="Library.HasContent(TVShows)">
+    <!-- a virtual folder -->
+    <label>20343</label>
+    <icon>DefaultTVShows.png</icon>
+
+    <node id="genres" type="folder">
+      <label>135</label>
+      <path>videodb://2/1</path>
+      <icon>DefaultGenre.png</icon>
+    </node>
+    <node id="titles" type="folder">
+      <label>369</label>
+      <path>videodb://2/2</path>
+      <icon>DefaultTVShowTitle.png</icon>
+    </node>
+    <node id="years" type="folder">
+      <label>562</label>
+      <path>videodb://2/3</path>
+      <icon>DefaultYear.png</icon>
+    </node>
+    <node id="actors" type="folder">
+      <label>344</label>
+      <path>videodb://2/4</path>
+      <icon>DefaultActor.png</icon>
+    </node>
+    <node id="studios" type="folder">
+      <label>20388</label>
+      <path>videodb://2/5</path>
+      <icon>DefaultStudios.png</icon>
+    </node>
+  </node>
+
+  <node id="musicvideos" visible="Library.HasContent(MusicVideos)">
+    <!-- a virtual folder -->
+    <label>20389</label>
+    <icon>DefaultMusicVideos.png</icon>
+
+    <node id="genres" type="folder">
+      <label>135</label>
+      <path>videodb://3/1</path>
+      <icon>DefaultGenre.png</icon>
+    </node>
+    <node id="titles" type="folder">
+      <label>369</label>
+      <path>videodb://3/2</path>
+      <icon>DefaultMusicVideoTitle.png</icon>
+    </node>
+    <node id="years" type="folder">
+      <label>562</label>
+      <path>videodb://3/3</path>
+      <icon>DefaultYear.png</icon>
+    </node>
+    <node id="actors" type="folder">
+      <label>133</label>
+      <path>videodb://3/4</path>
+      <icon>DefaultArtist.png</icon>
+    </node>
+    <node id="albums" type="folder">
+      <label>132</label>
+      <path>videodb://3/5</path>
+      <icon>DefaultAlbum.png</icon>
+    </node>
+    <node id="directors" type="folder">
+      <label>20348</label>
+      <path>videodb://3/6</path>
+      <icon>DefaultDirector.png</icon>
+    </node>
+    <node id="studios" type="folder">
+      <label>20388</label>
+      <path>videodb://3/7</path>
+      <icon>DefaultStudios.png</icon>
+    </node>
+  </node>
+
+  <node type="filter" id="recentlyaddedmovies" visible="Library.HasContent(Movies)">
+    <label>20386</label>
+    <icon>DefaultRecentlyAddedMovies.png</icon>
+    <content>movies</content>
+      <match>all</match>
+      <limit>25</limit>
+      <order direction="descending">dateadded</order>
+  </node>
+
+  <node type="filter" id="recentlyaddedepisodes" visible="Library.HasContent(TVShows)">
+    <label>20387</label>
+    <icon>DefaultRecentlyAddedEpisodes.png</icon>
+    <content>episodes</content>
+      <match>all</match>
+      <limit>25</limit>
+      <order direction="descending">dateadded</order>
+  </node>
+
+  <node type="filter" id="recentlyaddedmusicvideos" visible="Library.HasContent(MusicVideos)">
+    <label>20390</label>
+    <icon>DefaultRecentlyAddedMusicVideos.png</icon>
+    <content>musicvideos</content>
+      <match>all</match>
+      <limit>25</limit>
+      <order direction="descending">dateadded</order>
+  </node>
+
+  <node type="folder">
+    <label>744</label>
+    <icon>DefaultFolder.png</icon>
+    <path>sources://video</path>
+  </node>
+
+  <node type="folder">
+    <label>136</label>
+    <icon>DefaultVideoPlaylists.png</icon>
+    <path>special://videoplaylists/</path>
+  </node>
+
+  <node type="folder">
+    <label>1037</label>
+    <icon>DefaultAddonVideo.png</icon>
+    <path>addons://sources/video/</path>
+  </node>
+
+</library>
