@@ -5445,9 +5445,6 @@
     <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h">
       <Filter>threads\platform\win</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\platform\platform.select.h">
-      <Filter>threads\platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\SystemClock.h">
       <Filter>threads</Filter>
     </ClInclude>
