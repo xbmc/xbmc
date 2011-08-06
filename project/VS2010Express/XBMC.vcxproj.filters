@@ -244,9 +244,6 @@
     <Filter Include="pvr\recordings">
       <UniqueIdentifier>{eab084ef-b5b5-4a61-b2a5-eac88bbcc73a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="pvr\epg">
-      <UniqueIdentifier>{42772157-07b9-49a8-b108-1b5fd27fc9c4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="pvr\channels">
       <UniqueIdentifier>{7be58f63-0e53-4a26-9894-e52c2bd78709}</UniqueIdentifier>
     </Filter>
@@ -2494,18 +2491,6 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\recordings\PVRRecordings.cpp">
       <Filter>pvr\recordings</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpg.cpp">
-      <Filter>pvr\epg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgContainer.cpp">
-      <Filter>pvr\epg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgInfoTag.cpp">
-      <Filter>pvr\epg</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgSearchFilter.cpp">
-      <Filter>pvr\epg</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRChannelManager.cpp">
       <Filter>pvr\dialogs</Filter>
@@ -5147,18 +5132,6 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\recordings\PVRRecording.h">
       <Filter>pvr\recordings</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgSearchFilter.h">
-      <Filter>pvr\epg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpg.h">
-      <Filter>pvr\epg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgContainer.h">
-      <Filter>pvr\epg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgInfoTag.h">
-      <Filter>pvr\epg</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.h">
       <Filter>pvr\dialogs</Filter>

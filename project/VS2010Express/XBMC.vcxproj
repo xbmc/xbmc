@@ -728,10 +728,6 @@
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideSearch.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.cpp" />
-    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpg.cpp" />
-    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgContainer.cpp" />
-    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgInfoTag.cpp" />
-    <ClCompile Include="..\..\xbmc\pvr\epg\PVREpgSearchFilter.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRDatabase.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRGUIInfo.cpp" />
     <ClCompile Include="..\..\xbmc\pvr\PVRManager.cpp" />
@@ -1623,10 +1619,6 @@
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRGuideSearch.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRRecordingInfo.h" />
     <ClInclude Include="..\..\xbmc\pvr\dialogs\GUIDialogPVRTimerSettings.h" />
-    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpg.h" />
-    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgContainer.h" />
-    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgInfoTag.h" />
-    <ClInclude Include="..\..\xbmc\pvr\epg\PVREpgSearchFilter.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRDatabase.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRGUIInfo.h" />
     <ClInclude Include="..\..\xbmc\pvr\PVRManager.h" />
