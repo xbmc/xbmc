@@ -21,6 +21,8 @@
 
 #include "LibraryDirectory.h"
 #include "Directory.h"
+#include "playlists/SmartPlayList.h"
+#include "SmartPlaylistDirectory.h"
 #include "utils/URIUtils.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
@@ -49,6 +51,32 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   CStdString libNode = GetNode(strPath);
   if (libNode.IsEmpty())
     return false;
+
+  if (URIUtils::GetExtension(libNode).Equals(".xml"))
+  { // a filter node
+    TiXmlElement *node = LoadXML(libNode);
+    if (node)
+    {
+      CStdString type = node->Attribute("type");
+      if (type == "filter")
+      {
+        CSmartPlaylist playlist;
+        CStdString type, label;
+        XMLUtils::GetString(node, "content", type);
+        if (XMLUtils::GetString(node, "label", label))
+          label = CGUIControlFactory::FilterLabel(label);
+        playlist.SetType(type);
+        playlist.SetName(label);
+        if (playlist.LoadFromXML(node) &&
+            CSmartPlaylistDirectory::GetDirectory(playlist, items))
+        {
+          items.SetProperty("library.filter", "true");
+          return true;
+        }
+      }
+    }
+    return false;
+  }
 
   // just a plain node - read the folder for XML nodes and other folders
   CFileItemList nodes;
@@ -91,7 +119,7 @@ bool CLibraryDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
         item.reset(new CFileItem(path, true));
       }
       else
-      { // virtual folder
+      { // virtual folder or filter
         URIUtils::RemoveSlashAtEnd(xml);
         CStdString folder = URIUtils::GetFileName(xml);
         item.reset(new CFileItem(URIUtils::AddFileToFolder(strPath, folder), true));
