@@ -50,7 +50,6 @@ using namespace EPG;
 CPVRManager::CPVRManager(void) :
     CThread("PVR manager"),
     m_channelGroups(NULL),
-    m_epg(NULL),
     m_recordings(NULL),
     m_timers(NULL),
     m_addons(NULL),
@@ -129,11 +128,11 @@ void CPVRManager::Stop(void)
   StopUpdateThreads();
 
   /* unload all data */
-  m_epg->UnregisterObserver(this);
+  g_EpgContainer.UnregisterObserver(this);
 
   m_recordings->Unload();
   m_timers->Unload();
-  m_epg->Unload();
+  g_EpgContainer.Unload();
   m_channelGroups->Unload();
   m_addons->Unload();
   m_bIsStopping = false;
@@ -154,8 +153,8 @@ bool CPVRManager::StartUpdateThreads(void)
 void CPVRManager::StopUpdateThreads(void)
 {
   StopThread();
-  m_epg->UnregisterObserver(this);
-  m_epg->Stop();
+  g_EpgContainer.UnregisterObserver(this);
+  g_EpgContainer.Stop();
   m_guiInfo->Stop();
   m_addons->Stop();
 }
@@ -253,8 +252,8 @@ void CPVRManager::Process(void)
   /* start the other pvr related update threads */
   ShowProgressDialog(g_localizeStrings.Get(19239), 85);
   m_guiInfo->Start();
-  m_epg->RegisterObserver(this);
-  m_epg->Start();
+  g_EpgContainer.RegisterObserver(this);
+  g_EpgContainer.Start();
 
   /* close the progess dialog */
   HideProgressDialog();
@@ -364,7 +363,6 @@ void CPVRManager::ResetProperties(void)
     if (!m_database)      m_database      = new CPVRDatabase;
     if (!m_addons)        m_addons        = new CPVRClients;
     if (!m_channelGroups) m_channelGroups = new CPVRChannelGroupsContainer;
-    if (!m_epg)           m_epg           = &g_EpgContainer;
     if (!m_recordings)    m_recordings    = new CPVRRecordings;
     if (!m_timers)        m_timers        = new CPVRTimers;
     if (!m_guiInfo)       m_guiInfo       = new CPVRGUIInfo;
@@ -389,7 +387,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the PVR database", __FUNCTION__);
 
   /* close the epg progress dialog, or we'll get a deadlock */
-  g_PVREpg->CloseProgressDialog();
+  g_EpgContainer.CloseProgressDialog();
 
   CGUIDialogProgress* pDlgProgress = NULL;
   if (bShowProgress)
@@ -427,7 +425,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   if (m_database->Open())
   {
     /* clean the EPG database */
-    m_epg->Clear(true);
+    g_EpgContainer.Clear(true);
     if (bShowProgress)
     {
       pDlgProgress->SetPercentage(30);
@@ -489,7 +487,7 @@ void CPVRManager::ResetEPG(void)
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the EPG database", __FUNCTION__);
 
   StopUpdateThreads();
-  m_epg->Reset();
+  g_EpgContainer.Reset();
 
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
     StartUpdateThreads();

@@ -215,7 +215,7 @@ bool CPVRChannel::Delete(void)
   /* delete the EPG table */
   if (m_EPG)
   {
-    g_PVREpg->DeleteEpg(*m_EPG, true);
+    g_EpgContainer.DeleteEpg(*m_EPG, true);
     m_EPG = NULL;
   }
 
@@ -710,17 +710,17 @@ CEpg *CPVRChannel::GetEPG(void)
   if (m_EPG == NULL)
   {
     if (m_iEpgId > 0)
-      m_EPG = g_PVREpg->GetById(m_iEpgId);
+      m_EPG = g_EpgContainer.GetById(m_iEpgId);
 
     if (m_iEpgId <= 0)
-      m_iEpgId = g_PVREpg->NextEpgId();
+      m_iEpgId = g_EpgContainer.NextEpgId();
 
     if (m_EPG == NULL)
     {
       /* will be cleaned up by CPVREpgContainer on exit */
       m_EPG = new CEpg(this, false);
       m_EPG->Persist();
-      g_PVREpg->InsertEpg(m_EPG);
+      g_EpgContainer.InsertEpg(m_EPG);
     }
 
     if (m_EPG && m_iEpgId != m_EPG->EpgID())

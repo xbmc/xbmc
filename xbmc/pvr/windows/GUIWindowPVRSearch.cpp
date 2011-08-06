@@ -34,6 +34,7 @@
 #include "pvr/addons/PVRClients.h"
 
 using namespace PVR;
+using namespace EPG;
 
 CGUIWindowPVRSearch::CGUIWindowPVRSearch(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_SEARCH, CONTROL_BTNSEARCH, CONTROL_LIST_SEARCH),
@@ -122,7 +123,7 @@ void CGUIWindowPVRSearch::UpdateData(void)
       dlgProgress->Progress();
     }
 
-    g_PVREpg->GetEPGSearch(m_parent->m_vecItems, m_searchfilter);
+    g_EpgContainer.GetEPGSearch(m_parent->m_vecItems, m_searchfilter);
     if (dlgProgress)
       dlgProgress->Close();
 

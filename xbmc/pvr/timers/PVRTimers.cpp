@@ -51,7 +51,7 @@ CPVRTimers::~CPVRTimers(void)
 int CPVRTimers::Load()
 {
   Unload();
-  g_PVREpg->RegisterObserver(this);
+  g_EpgContainer.RegisterObserver(this);
   Update();
 
   return size();
@@ -60,7 +60,7 @@ int CPVRTimers::Load()
 void CPVRTimers::Unload()
 {
   CSingleLock lock(m_critSection);
-  g_PVREpg->UnregisterObserver(this);
+  g_EpgContainer.UnregisterObserver(this);
 
   for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
     delete at(iTimerPtr);
