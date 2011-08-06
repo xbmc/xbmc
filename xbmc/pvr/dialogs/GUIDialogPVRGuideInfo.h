@@ -22,9 +22,13 @@
 
 #include "guilib/GUIDialog.h"
 
+namespace EPG
+{
+  class CEpgInfoTag;
+}
+
 namespace PVR
 {
-  class CPVREpgInfoTag;
   class CPVRTimerInfoTag;
 
   class CGUIDialogPVRGuideInfo : public CGUIDialog
@@ -40,7 +44,7 @@ namespace PVR
 
   protected:
     void Update();
-    bool ActionStartTimer(const CPVREpgInfoTag *tag);
+    bool ActionStartTimer(const EPG::CEpgInfoTag *tag);
     bool ActionCancelTimer(const CPVRTimerInfoTag *tag);
 
     bool OnClickButtonOK(CGUIMessage &message);

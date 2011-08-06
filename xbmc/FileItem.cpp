@@ -40,8 +40,7 @@
 #include "music/MusicDatabase.h"
 #include "SortFileItem.h"
 #include "utils/TuxBoxUtil.h"
-#include "pvr/epg/PVREpg.h"
-#include "pvr/epg/PVREpgInfoTag.h"
+#include "epg/Epg.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/recordings/PVRRecording.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -140,35 +139,6 @@ CFileItem::CFileItem(const CVideoInfoTag& movie)
   SetCachedVideoThumb();
 }
 
-CFileItem::CFileItem(const CPVREpgInfoTag& tag)
-{
-  m_musicInfoTag = NULL;
-  m_videoInfoTag = NULL;
-  m_epgInfoTag = NULL;
-  m_pvrChannelInfoTag = NULL;
-  m_pvrRecordingInfoTag = NULL;
-  m_pvrTimerInfoTag = NULL;
-  m_pictureInfoTag = NULL;
-
-  Reset();
-
-  m_strPath = tag.Path();
-  m_bIsFolder = false;
-  *GetEPGInfoTag() = tag;
-  *GetPVRChannelInfoTag() = *tag.ChannelTag();
-  if (tag.Timer())
-    *GetPVRTimerInfoTag() = *tag.Timer();
-  SetLabel(tag.Title());
-  m_strLabel2 = tag.Plot();
-  m_dateTime = tag.StartAsLocalTime();
-
-  if (!tag.Icon().IsEmpty())
-  {
-    SetThumbnailImage(tag.Icon());
-    SetIconImage(tag.Icon());
-  }
-}
-
 CFileItem::CFileItem(const CEpgInfoTag& tag)
 {
   m_musicInfoTag = NULL;
@@ -180,6 +150,11 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
   m_pictureInfoTag = NULL;
 
   Reset();
+
+  if (tag.HasPVRChannel())
+    *GetPVRChannelInfoTag() = *tag.ChannelTag();
+  if (tag.HasTimer())
+    *GetPVRTimerInfoTag() = *tag.Timer();
 
   m_strPath = tag.Path();
   m_bIsFolder = false;
@@ -206,7 +181,7 @@ CFileItem::CFileItem(const CPVRChannel& channel)
   m_pictureInfoTag = NULL;
 
   Reset();
-  CPVREpgInfoTag *epgNow = channel.GetEPGNow();
+  const CEpgInfoTag *epgNow = channel.GetEPGNow();
 
   m_strPath = channel.Path();
   m_bIsFolder = false;
@@ -3269,7 +3244,7 @@ CVideoInfoTag* CFileItem::GetVideoInfoTag()
 CEpgInfoTag* CFileItem::GetEPGInfoTag()
 {
   if (!m_epgInfoTag)
-    m_epgInfoTag = new CPVREpgInfoTag;
+    m_epgInfoTag = new CEpgInfoTag;
 
   return m_epgInfoTag;
 }

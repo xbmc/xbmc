@@ -1,6 +1,4 @@
-SRCS=PVREpg.cpp \
-     PVREpgInfoTag.cpp \
-     PVREpgContainer.cpp
+SRCS=PVREpgContainer.cpp
 
 LIB=pvrepg.a
 

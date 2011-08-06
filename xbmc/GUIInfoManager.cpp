@@ -76,7 +76,7 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/epg/PVREpgInfoTag.h"
+#include "epg/EpgInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/recordings/PVRRecording.h"
 
@@ -91,6 +91,7 @@ using namespace MUSIC_INFO;
 using namespace ADDON;
 using namespace PVR;
 using namespace INFO;
+using namespace EPG;
 
 CGUIInfoManager::CGUIInfoManager(void) :
     Observable()
@@ -3290,7 +3291,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
   {
     if (m_currentFile->HasPVRChannelInfoTag())
     {
-      const CPVREpgInfoTag *tag = m_currentFile->GetPVRChannelInfoTag()->GetEPGNow();
+      const CEpgInfoTag *tag = m_currentFile->GetPVRChannelInfoTag()->GetEPGNow();
       return tag ? tag->Title() : g_localizeStrings.Get(19055);
     }
     if (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->m_strTitle.IsEmpty())
@@ -4316,8 +4317,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString number;
       if (item->HasPVRChannelInfoTag())
         number.Format("%i", item->GetPVRChannelInfoTag()->ChannelNumber());
-      if (item->HasEPGInfoTag())
-        number.Format("%i", ((CPVREpgInfoTag *) item->GetEPGInfoTag())->ChannelTag()->ChannelNumber());
+      if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
+        number.Format("%i", item->GetEPGInfoTag()->ChannelTag()->ChannelNumber());
       if (item->HasPVRTimerInfoTag())
         number.Format("%i", item->GetPVRTimerInfoTag()->ChannelNumber());
 
@@ -4327,8 +4328,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_CHANNEL_NAME:
     if (item->HasPVRChannelInfoTag())
       return item->GetPVRChannelInfoTag()->ChannelName();
-    if (item->HasEPGInfoTag())
-      return ((CPVREpgInfoTag *)item->GetEPGInfoTag())->ChannelTag()->ChannelName();
+    if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->HasPVRChannel())
+      return item->GetEPGInfoTag()->ChannelTag()->ChannelName();
     if (item->HasPVRRecordingInfoTag())
       return item->GetPVRRecordingInfoTag()->m_strChannelName;
     if (item->HasPVRTimerInfoTag())
@@ -4390,7 +4391,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString strProgress;
       if (item->HasPVRChannelInfoTag())
       {
-        CPVREpgInfoTag *epgNow = item->GetPVRChannelInfoTag()->GetEPGNow();
+        const CEpgInfoTag *epgNow = item->GetPVRChannelInfoTag()->GetEPGNow();
         if (epgNow)
           strProgress.Format("%2.2f", epgNow->ProgressPercentage());
         else
@@ -4503,9 +4504,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
       {
         return pItem->GetPVRChannelInfoTag()->IsEncrypted();
       }
-      else if (pItem->HasEPGInfoTag())
+      else if (pItem->HasEPGInfoTag() && pItem->GetEPGInfoTag()->HasPVRChannel())
       {
-        return ((CPVREpgInfoTag *) pItem->GetEPGInfoTag())->ChannelTag()->IsEncrypted();
+        return pItem->GetEPGInfoTag()->ChannelTag()->IsEncrypted();
       }
     }
   }

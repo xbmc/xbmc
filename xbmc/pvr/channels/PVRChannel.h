@@ -28,12 +28,16 @@
 #include "utils/Observer.h"
 #include "threads/CriticalSection.h"
 
+namespace EPG
+{
+  class CEpg;
+}
+
 namespace PVR
 {
   class CPVRChannelGroup;
   class CPVRChannelGroupInternal;
   class CPVRDatabase;
-  class CPVREpg;
   class CPVREpgContainer;
   class CPVRChannelIconCacheJob;
 
@@ -45,7 +49,7 @@ namespace PVR
     friend class CPVRChannelGroupInternal;
     friend class CPVRDatabase;
     friend class CPVREpgContainer;
-    friend class CPVREpg;
+    friend class EPG::CEpg;
     friend class CPVRChannelIconCacheJob;
 
   private:
@@ -67,7 +71,7 @@ namespace PVR
      */
     //@{
     int              m_iEpgId;                  /*!< the id of the EPG for this channel */
-    CPVREpg *        m_EPG;                     /*!< the EPG table for this channel */
+    EPG::CEpg *      m_EPG;                     /*!< the EPG table for this channel */
     bool             m_bEPGEnabled;             /*!< don't use an EPG for this channel if set to false */
     CStdString       m_strEPGScraper;           /*!< the name of the scraper to be used for this channel */
     //@}
@@ -429,7 +433,7 @@ namespace PVR
      *
      * @return The EPG for this channel.
      */
-    CPVREpg *GetEPG();
+    EPG::CEpg *GetEPG();
 
     /*!
      * @brief Get the EPG table for this channel.
@@ -456,7 +460,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel now.
      */
-    CPVREpgInfoTag* GetEPGNow() const;
+    const EPG::CEpgInfoTag* GetEPGNow() const;
 
     /*!
      * @brief Get the EPG tag that is active on this channel next.
@@ -466,7 +470,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel next.
      */
-    CPVREpgInfoTag* GetEPGNext() const;
+    const EPG::CEpgInfoTag* GetEPGNext() const;
 
     /*!
      * @brief Don't use an EPG for this channel if set to false.

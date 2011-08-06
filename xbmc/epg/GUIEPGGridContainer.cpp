@@ -30,7 +30,7 @@
 #include "threads/SystemClock.h"
 #include "GUIInfoManager.h"
 
-#include "pvr/epg/PVREpgInfoTag.h"
+#include "epg/EpgInfoTag.h"
 #include "pvr/channels/PVRChannel.h"
 
 #include "GUIEPGGridContainer.h"
@@ -466,7 +466,7 @@ void CGUIEPGGridContainer::RenderProgrammeItem(float posX, float posY, float wid
       CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : NULL;
       if (fileItem)
       {
-        const CPVREpgInfoTag* tag = (CPVREpgInfoTag *) fileItem->GetEPGInfoTag();
+        const CEpgInfoTag* tag = fileItem->GetEPGInfoTag();
         if (m_orientation == VERTICAL)
           layout->SetWidth(width);
         else
@@ -506,7 +506,7 @@ void CGUIEPGGridContainer::RenderProgrammeItem(float posX, float posY, float wid
       CFileItem *fileItem = item->IsFileItem() ? (CFileItem *)item : NULL;
       if (fileItem)
       {
-        const CPVREpgInfoTag* tag = (CPVREpgInfoTag *) fileItem->GetEPGInfoTag();
+        const CEpgInfoTag* tag = fileItem->GetEPGInfoTag();
         if (m_orientation == VERTICAL)
           layout->SetWidth(width);
         else
@@ -677,7 +677,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       itemsPointer.start = 0;
       for (int i = 0; i < items->Size(); ++i)
       {
-        const CPVREpgInfoTag* tag = (CPVREpgInfoTag *) items->Get(i)->GetEPGInfoTag();
+        const CEpgInfoTag* tag = items->Get(i)->GetEPGInfoTag();
         if (!tag)
           continue;
 
@@ -789,7 +789,7 @@ void CGUIEPGGridContainer::UpdateItems()
     CDateTime gridCursor  = m_gridStart; //reset cursor for new channel
     unsigned long progIdx = m_epgItemsPtr[row].start;
     unsigned long lastIdx = m_epgItemsPtr[row].stop;
-    int channelnum        = ((CPVREpgInfoTag *)((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag())->ChannelTag()->ChannelNumber();
+    int channelnum        = ((CFileItem *)m_programmeItems[progIdx].get())->GetEPGInfoTag()->ChannelTag()->ChannelNumber();
 
     /** FOR EACH BLOCK **********************************************************************/
 
@@ -798,10 +798,10 @@ void CGUIEPGGridContainer::UpdateItems()
       while (progIdx <= lastIdx)
       {
         CGUIListItemPtr item = m_programmeItems[progIdx];
-        if (((CPVREpgInfoTag *)((CFileItem *)item.get())->GetEPGInfoTag())->ChannelTag()->ChannelNumber() != channelnum)
+        if (((CFileItem *)item.get())->GetEPGInfoTag()->ChannelTag()->ChannelNumber() != channelnum)
           break;
 
-        const CPVREpgInfoTag* tag = (CPVREpgInfoTag *) ((CFileItem *)item.get())->GetEPGInfoTag();
+        const CEpgInfoTag* tag = ((CFileItem *)item.get())->GetEPGInfoTag();
         if (tag == NULL)
           progIdx++;
 
@@ -837,7 +837,7 @@ void CGUIEPGGridContainer::UpdateItems()
       {
         if (!m_gridIndex[row][block].item)
         {
-          CPVREpgInfoTag broadcast;
+          CEpgInfoTag broadcast;
           CFileItemPtr unknown(new CFileItem(broadcast));
           for (int i = block ; i > block - itemSize; i--)
           {

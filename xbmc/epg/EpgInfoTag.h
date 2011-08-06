@@ -299,7 +299,7 @@ namespace EPG
      * @brief Get the path to the icon for this event.
      * @return The path to the icon
      */
-    virtual const CStdString &Icon(void) const { return m_strIconPath; }
+    virtual const CStdString &Icon(void) const;
 
     /*!
      * @brief Change the path to the icon for this event.
@@ -362,6 +362,8 @@ namespace EPG
      * @return True if it has an active timer tag, false if not.
      */
     virtual bool HasTimer() const { return !(m_Timer == NULL); }
+
+    virtual bool HasPVRChannel(void) const;
 
     /*!
      * @brief Set a timer for this event or NULL to clear it.

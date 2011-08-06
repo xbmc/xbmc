@@ -28,11 +28,12 @@
 #include "PVRChannelGroupsContainer.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
-#include "pvr/epg/PVREpg.h"
+#include "epg/Epg.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/addons/PVRClients.h"
 
 using namespace PVR;
+using namespace EPG;
 
 CPVRChannelGroupInternal::CPVRChannelGroupInternal(bool bRadio) :
   CPVRChannelGroup(bRadio)
@@ -422,7 +423,7 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(void)
     if (!channel)
       continue;
 
-    CPVREpg *epg = channel->GetEPG();
+    CEpg *epg = channel->GetEPG();
     if (epg)
       epg->SetChannel(channel);
   }

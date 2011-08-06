@@ -39,6 +39,7 @@
 #include "pvr/epg/PVREpgContainer.h"
 
 using namespace PVR;
+using namespace EPG;
 
 CPVRChannelGroup::CPVRChannelGroup(bool bRadio, unsigned int iGroupId, const CStdString &strGroupName) :
     m_bRadio(bRadio),
@@ -465,7 +466,7 @@ int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* =
     if (bGroupMembers || !IsGroupMember(*channel))
     {
       /* ensure that the epg pointer is set for this channel */
-      CPVREpg *epg = channel->GetEPG(); epg = NULL;
+      CEpg *epg = channel->GetEPG(); epg = NULL;
 
       CFileItemPtr pFileItem(new CFileItem(*channel));
       results.Add(pFileItem);

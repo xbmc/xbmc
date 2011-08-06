@@ -27,6 +27,11 @@
 #include <vector>
 #include <deque>
 
+namespace EPG
+{
+  class CEpg;
+}
+
 namespace PVR
 {
   class CPVRGUIInfo;
@@ -487,7 +492,7 @@ namespace PVR
      * @param error An error if it occured.
      * @return True if the EPG was transfered successfully, false otherwise.
      */
-    bool GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start, time_t end, PVR_ERROR *error);
+    bool GetEPGForChannel(const CPVRChannel &channel, EPG::CEpg *epg, time_t start, time_t end, PVR_ERROR *error);
 
     //@}
 

@@ -39,6 +39,7 @@
 using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace PVR;
+using namespace EPG;
 
 bool CPVRChannel::operator==(const CPVRChannel &right) const
 {
@@ -703,13 +704,13 @@ void CPVRChannel::UpdateEncryptionName(void)
 
 /********** EPG methods **********/
 
-CPVREpg *CPVRChannel::GetEPG(void)
+CEpg *CPVRChannel::GetEPG(void)
 {
   CSingleLock lock(m_critSection);
   if (m_EPG == NULL)
   {
     if (m_iEpgId > 0)
-      m_EPG = (CPVREpg *) g_PVREpg->GetById(m_iEpgId);
+      m_EPG = g_PVREpg->GetById(m_iEpgId);
 
     if (m_iEpgId <= 0)
       m_iEpgId = g_PVREpg->NextEpgId();
@@ -717,7 +718,7 @@ CPVREpg *CPVRChannel::GetEPG(void)
     if (m_EPG == NULL)
     {
       /* will be cleaned up by CPVREpgContainer on exit */
-      m_EPG = new CPVREpg(this, false);
+      m_EPG = new CEpg(this, false);
       m_EPG->Persist();
       g_PVREpg->InsertEpg(m_EPG);
     }
@@ -734,7 +735,7 @@ CPVREpg *CPVRChannel::GetEPG(void)
 
 int CPVRChannel::GetEPG(CFileItemList *results)
 {
-  CPVREpg *epg = GetEPG();
+  CEpg *epg = GetEPG();
   if (!epg)
   {
     CLog::Log(LOGDEBUG, "PVR - %s - cannot get EPG for channel '%s'",
@@ -754,26 +755,18 @@ bool CPVRChannel::ClearEPG()
   return true;
 }
 
-CPVREpgInfoTag* CPVRChannel::GetEPGNow(void) const
+const CEpgInfoTag* CPVRChannel::GetEPGNow(void) const
 {
-  CPVREpgInfoTag *tag(NULL);
   CSingleLock lock(m_critSection);
-
-  if (!m_bIsHidden && m_bEPGEnabled && m_EPG)
-    tag = (CPVREpgInfoTag *) m_EPG->InfoTagNow();
-
-  return tag;
+  return (!m_bIsHidden && m_bEPGEnabled && m_EPG) ?
+      m_EPG->InfoTagNow() : NULL;
 }
 
-CPVREpgInfoTag* CPVRChannel::GetEPGNext(void) const
+const CEpgInfoTag* CPVRChannel::GetEPGNext(void) const
 {
-  CPVREpgInfoTag *tag(NULL);
   CSingleLock lock(m_critSection);
-
-  if (!m_bIsHidden && m_bEPGEnabled && m_EPG)
-    tag = (CPVREpgInfoTag *) m_EPG->InfoTagNext();
-
-  return tag;
+  return (!m_bIsHidden && m_bEPGEnabled && m_EPG) ?
+      m_EPG->InfoTagNext() : NULL;
 }
 
 bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled /* = true */, bool bSaveInDb /* = false */)

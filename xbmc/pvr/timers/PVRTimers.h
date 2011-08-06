@@ -34,7 +34,6 @@ namespace EPG
 
 namespace PVR
 {
-  class CPVREpgInfoTag;
   class CGUIDialogPVRTimerSettings;
 
   class CPVRTimers : public std::vector<CPVRTimerInfoTag *>,

@@ -84,7 +84,7 @@ CEpg* PVR::CPVREpgContainer::CreateEpg(int iEpgId)
   CPVRChannel *channel = (CPVRChannel *) g_PVRChannelGroups->GetChannelByEpgId(iEpgId);
   if (channel)
   {
-    return new CPVREpg(channel, false);
+    return new CEpg(channel, false);
   }
   else
   {
@@ -111,7 +111,7 @@ int PVR::CPVREpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchF
   /* get filtered results from all tables */
   CSingleLock lock(m_critSection);
   for (std::map<int, CEpg*>::iterator itr = m_epgs.begin(); itr != m_epgs.end(); itr++)
-    ((CPVREpg *)m_epgs[(*itr).first])->Get(results, filter);
+    m_epgs[(*itr).first]->Get(results, filter);
   lock.Leave();
 
   /* remove duplicate entries */
@@ -138,11 +138,11 @@ int PVR::CPVREpgContainer::GetEPGNow(CFileItemList* results, bool bRadio)
   for (int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
   {
     CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
-    CPVREpg *epg = channel->GetEPG();
+    CEpg *epg = channel->GetEPG();
     if (!epg->HasValidEntries())
       continue;
 
-    const CPVREpgInfoTag *epgNow = (CPVREpgInfoTag *) epg->InfoTagNow();
+    const CEpgInfoTag *epgNow = epg->InfoTagNow();
     if (!epgNow)
       continue;
 
@@ -165,11 +165,11 @@ int PVR::CPVREpgContainer::GetEPGNext(CFileItemList* results, bool bRadio)
   for (int iChannelPtr = 0; iChannelPtr < channels->Size(); iChannelPtr++)
   {
     CPVRChannel *channel = (CPVRChannel *) channels->GetByIndex(iChannelPtr);
-    CPVREpg *epg = channel->GetEPG();
+    CEpg *epg = channel->GetEPG();
     if (!epg->HasValidEntries())
       continue;
 
-    const CPVREpgInfoTag *epgNext = (CPVREpgInfoTag *) epg->InfoTagNext();
+    const CEpgInfoTag *epgNext = epg->InfoTagNext();
     if (!epgNext)
       continue;
 

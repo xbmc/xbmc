@@ -26,7 +26,7 @@
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
 #include "pvr/PVRManager.h"
-#include "pvr/epg/PVREpg.h"
+#include "epg/Epg.h"
 #include "pvr/channels/PVRChannelGroups.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
@@ -38,6 +38,7 @@
 using namespace std;
 using namespace ADDON;
 using namespace PVR;
+using namespace EPG;
 
 CPVRClient::CPVRClient(const AddonProps& props) :
     CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>(props)
@@ -352,7 +353,7 @@ void CPVRClient::CallMenuHook(const PVR_MENUHOOK &hook)
   }
 }
 
-PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg, time_t start /* = 0 */, time_t end /* = 0 */, bool bSaveInDb /* = false*/)
+PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CEpg *epg, time_t start /* = 0 */, time_t end /* = 0 */, bool bSaveInDb /* = false*/)
 {
   PVR_ERROR retVal = PVR_ERROR_UNKNOWN;
   if (!m_bReadyToUse)
@@ -368,7 +369,7 @@ PVR_ERROR CPVRClient::GetEPGForChannel(const CPVRChannel &channel, CPVREpg *epg,
 
     PVR_HANDLE_STRUCT handle;
     handle.callerAddress = this;
-    handle.dataAddress = (CPVREpg*) epg;
+    handle.dataAddress = (CEpg*) epg;
     handle.dataIdentifier = bSaveInDb ? 1 : 0; // used by the callback method CAddonCallbacksPVR::PVRTransferEpgEntry()
     retVal = m_pStruct->GetEpg(&handle,
         addonChannel,

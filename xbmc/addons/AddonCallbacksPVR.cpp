@@ -25,7 +25,7 @@
 #include "utils/log.h"
 #include "dialogs/GUIDialogKaiToast.h"
 
-#include "pvr/epg/PVREpg.h"
+#include "epg/Epg.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
 #include "pvr/channels/PVRChannelGroupInternal.h"
@@ -35,6 +35,7 @@
 #include "pvr/timers/PVRTimerInfoTag.h"
 
 using namespace PVR;
+using namespace EPG;
 
 namespace ADDON
 {
@@ -122,13 +123,13 @@ void CAddonCallbacksPVR::PVRTransferEpgEntry(void *addonData, const PVR_HANDLE h
     return;
   }
 
-  CPVREpg *xbmcEpg   = (CPVREpg*) handle->dataAddress;
+  CEpg *xbmcEpg   = (CEpg*) handle->dataAddress;
 
   EPG_TAG *epgentry2 = (EPG_TAG*) epgentry;
   bool bUpdateDatabase = handle->dataIdentifier == 1;
 
   /* transfer this entry to the epg */
-  xbmcEpg->UpdateFromClient(epgentry2, bUpdateDatabase);
+  xbmcEpg->UpdateEntry(epgentry2, bUpdateDatabase);
 }
 
 void CAddonCallbacksPVR::PVRTransferChannelEntry(void *addonData, const PVR_HANDLE handle, const PVR_CHANNEL *channel)

@@ -192,7 +192,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
         timerNotifications.push_back(strMessage);
       }
 
-      CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) at(iTimerPtr)->m_epgInfo;
+      CEpgInfoTag *epgTag = at(iTimerPtr)->m_epgInfo;
       if (epgTag)
         epgTag->SetTimer(NULL);
 
@@ -420,7 +420,7 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
   if (!channel)
     return NULL;
 
-  const CPVREpgInfoTag *epgTag = channel->GetEPGNow();
+  const CEpgInfoTag *epgTag = channel->GetEPGNow();
 
   CPVRTimerInfoTag *newTimer = epgTag ? CPVRTimerInfoTag::CreateFromEpg(*epgTag) : NULL;
   if (!newTimer)

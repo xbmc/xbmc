@@ -29,6 +29,11 @@
 #include "EpgSearchFilter.h"
 #include "utils/Observer.h"
 
+namespace PVR
+{
+  class CPVRChannel;
+}
+
 /** EPG container for CEpgInfoTag instances */
 namespace EPG
 {
@@ -37,6 +42,27 @@ namespace EPG
     friend class CEpgDatabase;
 
   public:
+    /*!
+     * @brief Create a new EPG instance.
+     * @param iEpgID The ID of this table or <= 0 to create a new ID.
+     * @param strName The name of this table.
+     * @param strScraperName The name of the scraper to use.
+     * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
+     */
+    CEpg(int iEpgID, const CStdString &strName = "", const CStdString &strScraperName = "", bool bLoadedFromDb = false);
+
+    /*!
+     * @brief Create a new EPG instance for a channel.
+     * @param channel The channel to create the EPG for.
+     * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
+     */
+    CEpg(PVR::CPVRChannel *channel, bool bLoadedFromDb = false);
+
+    /*!
+     * @brief Destroy this EPG instance.
+     */
+    virtual ~CEpg(void);
+
     /*!
      * @brief Update this table's info with the given info. Doesn't change the EpgID.
      * @param epg The new info.
@@ -50,20 +76,6 @@ namespace EPG
      * @return True if any entries were loaded, false otherwise.
      */
     virtual bool Load(void);
-
-    /*!
-     * @brief Create a new EPG instance.
-     * @param iEpgID The ID of this table or <= 0 to create a new ID.
-     * @param strName The name of this table.
-     * @param strScraperName The name of the scraper to use.
-     * @param bLoadedFromDb True if this table was loaded from the database, false otherwise.
-     */
-    CEpg(int iEpgID, const CStdString &strName = "", const CStdString &strScraperName = "", bool bLoadedFromDb = false);
-
-    /*!
-     * @brief Destroy this EPG instance.
-     */
-    virtual ~CEpg(void);
 
     /*!
      * @brief The channel this EPG belongs to.
@@ -112,6 +124,11 @@ namespace EPG
      * @return True if it has valid entries, false if not.
      */
     virtual bool HasValidEntries(void) const;
+
+    /*!
+     * @return True if this EPG has a PVR channel set, false otherwise.
+     */
+    virtual bool HasPVRChannel(void) const { return !(m_Channel == NULL); }
 
     /*!
      * @brief Delete an infotag from this EPG.
@@ -256,6 +273,11 @@ namespace EPG
      */
     virtual bool UpdateEntry(const EPG_TAG *data, bool bUpdateDatabase = false);
 
+    /*!
+     * @return True if this is an EPG table for a radio channel, false otherwise.
+     */
+    virtual bool IsRadio(void) const;
+
   protected:
     /*!
      * @brief Update the EPG from a scraper set in the channel tag.
@@ -331,7 +353,7 @@ namespace EPG
      */
     virtual void UpdateFirstAndLastDates(void);
 
-    virtual bool IsRemovableTag(const EPG::CEpgInfoTag *tag) const { return true; }
+    virtual bool IsRemovableTag(const EPG::CEpgInfoTag *tag) const;
 
     bool                       m_bChanged;        /*!< true if anything changed that needs to be persisted, false otherwise */
     bool                       m_bInhibitSorting; /*!< don't sort the table if this is true */

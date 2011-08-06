@@ -32,7 +32,7 @@
 #include "pvr/dialogs/GUIDialogPVRGuideInfo.h"
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
-#include "pvr/epg/PVREpgInfoTag.h"
+#include "epg/EpgInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/addons/PVRClients.h"
 #include "pvr/windows/GUIWindowPVR.h"
@@ -45,6 +45,7 @@
 
 using namespace std;
 using namespace PVR;
+using namespace EPG;
 
 CGUIWindowPVRCommon::CGUIWindowPVRCommon(CGUIWindowPVR *parent, PVRWindow window,
     unsigned int iControlButton, unsigned int iControlList)
@@ -318,8 +319,8 @@ bool CGUIWindowPVRCommon::OnContextButtonMenuHooks(CFileItem *item, CONTEXT_BUTT
   {
     bReturn = true;
 
-    if (item->IsEPG())
-      g_PVRClients->ProcessMenuHooks(((CPVREpgInfoTag *) item->GetEPGInfoTag())->ChannelTag()->ClientID());
+    if (item->IsEPG() && item->GetEPGInfoTag()->HasPVRChannel())
+      g_PVRClients->ProcessMenuHooks(item->GetEPGInfoTag()->ChannelTag()->ClientID());
     else if (item->IsPVRChannel())
       g_PVRClients->ProcessMenuHooks(item->GetPVRChannelInfoTag()->ClientID());
     else if (item->IsPVRRecording())
@@ -401,7 +402,7 @@ bool CGUIWindowPVRCommon::ActionRecord(CFileItem *item)
 {
   bool bReturn = false;
 
-  CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) item->GetEPGInfoTag();
+  CEpgInfoTag *epgTag = item->GetEPGInfoTag();
   if (!epgTag)
     return bReturn;
 
@@ -497,7 +498,7 @@ bool CGUIWindowPVRCommon::ActionPlayEpg(CFileItem *item)
 {
   bool bReturn = false;
 
-  CPVREpgInfoTag *epgTag = (CPVREpgInfoTag *) item->GetEPGInfoTag();
+  CEpgInfoTag *epgTag = item->GetEPGInfoTag();
   if (!epgTag)
     return bReturn;
 
@@ -679,7 +680,7 @@ bool CGUIWindowPVRCommon::StartRecordFile(CFileItem *item)
   if (!item->HasEPGInfoTag())
     return false;
 
-  CPVREpgInfoTag *tag = (CPVREpgInfoTag *) item->GetEPGInfoTag();
+  CEpgInfoTag *tag = item->GetEPGInfoTag();
   if (!tag || !tag->ChannelTag() || tag->ChannelTag()->ChannelNumber() <= 0)
     return false;
 
@@ -713,7 +714,7 @@ bool CGUIWindowPVRCommon::StopRecordFile(CFileItem *item)
   if (!item->HasEPGInfoTag())
     return false;
 
-  CPVREpgInfoTag *tag = (CPVREpgInfoTag *) item->GetEPGInfoTag();
+  CEpgInfoTag *tag = item->GetEPGInfoTag();
   if (!tag || !tag->ChannelTag() || tag->ChannelTag()->ChannelNumber() <= 0)
     return false;
 
@@ -733,7 +734,7 @@ void CGUIWindowPVRCommon::ShowEPGInfo(CFileItem *item)
   }
   else if (item->IsPVRChannel())
   {
-    const CPVREpgInfoTag *epgnow = item->GetPVRChannelInfoTag()->GetEPGNow();
+    const CEpgInfoTag *epgnow = item->GetPVRChannelInfoTag()->GetEPGNow();
     if (!epgnow)
     {
       CGUIDialogOK::ShowAndGetInput(19033,0,19055,0);
