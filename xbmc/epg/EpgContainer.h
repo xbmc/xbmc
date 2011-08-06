@@ -213,7 +213,7 @@ namespace EPG
      * @brief A hook that is called after the tables have been loaded from the database.
      * @return True if the hook was executed successfully, false otherwise.
      */
-    virtual bool AutoCreateTablesHook(void) { return true; }
+    virtual bool AutoCreateTablesHook(void);
 
     /*!
      * @brief Create a new EPG table.

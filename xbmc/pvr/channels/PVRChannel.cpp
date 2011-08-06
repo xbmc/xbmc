@@ -31,7 +31,7 @@
 #include "threads/SingleLock.h"
 
 #include "PVRChannelGroupsContainer.h"
-#include "pvr/epg/PVREpgContainer.h"
+#include "epg/EpgContainer.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"

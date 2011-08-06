@@ -26,7 +26,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/epg/PVREpgContainer.h"
+#include "epg/EpgContainer.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/GUISettings.h"
@@ -166,7 +166,7 @@ void CGUIWindowPVRGuide::UpdateViewNow(void)
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19030));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
 
-  if (g_PVREpg->GetEPGNow(m_parent->m_vecItems, bRadio) == 0)
+  if (g_PVRChannelGroups->GetGroupAll(bRadio)->GetEPGNow(m_parent->m_vecItems) == 0)
   {
     CFileItemPtr item;
     item.reset(new CFileItem("pvr://guide/now/empty.epg", false));
@@ -189,7 +189,7 @@ void CGUIWindowPVRGuide::UpdateViewNext(void)
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19031));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
 
-  if (g_PVREpg->GetEPGNext(m_parent->m_vecItems, bRadio) == 0)
+  if (g_PVRChannelGroups->GetGroupAll(bRadio)->GetEPGNext(m_parent->m_vecItems) == 0)
   {
     CFileItemPtr item;
     item.reset(new CFileItem("pvr://guide/next/empty.epg", false));
@@ -203,12 +203,12 @@ void CGUIWindowPVRGuide::UpdateViewNext(void)
 void CGUIWindowPVRGuide::UpdateViewTimeline(void)
 {
   CPVRChannel CurrentChannel;
-  CPVREpgContainer *epg = g_PVREpg;
+  CEpgContainer *epg = g_PVREpg;
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(&CurrentChannel);
   bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
   CDateTime gridStart = CDateTime::GetCurrentDateTime();
-  CDateTime firstDate = epg->GetFirstEPGDate(bRadio);
-  CDateTime lastDate = epg->GetLastEPGDate(bRadio);
+  CDateTime firstDate = epg->GetFirstEPGDate();
+  CDateTime lastDate = epg->GetLastEPGDate();
   m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
   if (!m_parent->m_guideGrid)
     return;
@@ -219,7 +219,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   if (m_bEpgCacheUpdateRequired)
   {
     m_localItems->ClearItems();
-    g_PVREpg->GetEPGAll(m_localItems, bRadio);
+    g_PVRChannelGroups->GetGroupAll(bRadio)->GetEPGAll(m_localItems);
     m_bEpgCacheUpdateRequired = false;
   }
   m_parent->m_vecItems->ClearItems();

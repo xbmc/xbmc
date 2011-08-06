@@ -25,6 +25,11 @@
 #include "PVRChannel.h"
 #include "utils/JobManager.h"
 
+namespace EPG
+{
+  struct EpgSearchFilter;
+}
+
 namespace PVR
 {
 #define XBMC_INTERNAL_GROUP_RADIO 1
@@ -327,6 +332,47 @@ namespace PVR
     virtual void ResetChannelNumberCache(void);
 
     virtual void OnJobComplete(unsigned int jobID, bool success, CJob* job) {}
+
+    /*!
+     * @brief Get all EPG tables and apply a filter.
+     * @param results The fileitem list to store the results in.
+     * @param filter The filter to apply.
+     * @return The amount of entries that were added.
+     */
+    virtual int GetEPGSearch(CFileItemList* results, const EPG::EpgSearchFilter &filter);
+
+    /*!
+     * @brief Get all EPG tables.
+     * @param results The fileitem list to store the results in.
+     * @return The amount of entries that were added.
+     */
+    virtual int GetEPGAll(CFileItemList* results);
+
+    /*!
+     * @brief Get all entries that are active now.
+     * @param results The fileitem list to store the results in.
+     * @return The amount of entries that were added.
+     */
+    virtual int GetEPGNow(CFileItemList* results);
+
+    /*!
+     * @brief Get all entries that will be active next.
+     * @param results The fileitem list to store the results in.
+     * @return The amount of entries that were added.
+     */
+    virtual int GetEPGNext(CFileItemList* results);
+
+    /*!
+     * @brief Get the start time of the first entry.
+     * @return The start time.
+     */
+    virtual const CDateTime GetFirstEPGDate(void);
+
+    /*!
+      * @brief Get the end time of the last entry.
+      * @return The end time.
+      */
+    virtual const CDateTime GetLastEPGDate(void);
 
   protected:
     /*!

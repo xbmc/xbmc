@@ -36,7 +36,7 @@
 #include "pvr/PVRDatabase.h"
 #include "pvr/PVRManager.h"
 #include "pvr/addons/PVRClients.h"
-#include "pvr/epg/PVREpgContainer.h"
+#include "epg/EpgContainer.h"
 
 using namespace PVR;
 using namespace EPG;
@@ -928,4 +928,104 @@ void CPVRChannelGroup::Notify(const Observable &obs, const CStdString& msg)
 bool CPVRPersistGroupJob::DoWork(void)
 {
   return m_group->Persist();
+}
+
+const CDateTime CPVRChannelGroup::GetFirstEPGDate(void)
+{
+  // TODO should use two separate containers, one for radio, one for tv
+  return g_EpgContainer.GetFirstEPGDate();
+}
+
+const CDateTime CPVRChannelGroup::GetLastEPGDate(void)
+{
+  // TODO should use two separate containers, one for radio, one for tv
+  return g_EpgContainer.GetLastEPGDate();
+}
+
+int CPVRChannelGroup::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)
+{
+  /* get filtered results from all tables */
+  g_EpgContainer.GetEPGSearch(results, filter);
+
+  /* remove duplicate entries */
+  if (filter.m_bPreventRepeats)
+    EpgSearchFilter::RemoveDuplicates(results);
+
+  /* filter recordings */
+  if (filter.m_bIgnorePresentRecordings)
+    EpgSearchFilter::FilterRecordings(results);
+
+  /* filter timers */
+  if (filter.m_bIgnorePresentTimers)
+    EpgSearchFilter::FilterTimers(results);
+
+  return results->Size();
+}
+
+int CPVRChannelGroup::GetEPGNow(CFileItemList* results)
+{
+  CSingleLock lock(m_critSection);
+  int iInitialSize = results->Size();
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    CPVRChannel *channel = at(iChannelPtr).channel;
+    CEpg *epg = channel->GetEPG();
+    if (!epg->HasValidEntries())
+      continue;
+
+    const CEpgInfoTag *epgNow = epg->InfoTagNow();
+    if (!epgNow)
+      continue;
+
+    CFileItemPtr entry(new CFileItem(*epgNow));
+    entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
+    entry->m_strPath = channel->ChannelName();
+    entry->SetThumbnailImage(channel->IconPath());
+    results->Add(entry);
+  }
+
+  return results->Size() - iInitialSize;
+}
+
+int CPVRChannelGroup::GetEPGNext(CFileItemList* results)
+{
+  CSingleLock lock(m_critSection);
+  int iInitialSize = results->Size();
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    CPVRChannel *channel = at(iChannelPtr).channel;
+    CEpg *epg = channel->GetEPG();
+    if (!epg->HasValidEntries())
+      continue;
+
+    const CEpgInfoTag *epgNow = epg->InfoTagNext();
+    if (!epgNow)
+      continue;
+
+    CFileItemPtr entry(new CFileItem(*epgNow));
+    entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
+    entry->m_strPath = channel->ChannelName();
+    entry->SetThumbnailImage(channel->IconPath());
+    results->Add(entry);
+  }
+
+  return results->Size() - iInitialSize;
+}
+
+int CPVRChannelGroup::GetEPGAll(CFileItemList* results)
+{
+  int iInitialSize = results->Size();
+  CSingleLock lock(m_critSection);
+
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+  {
+    if (!at(iChannelPtr).channel || at(iChannelPtr).channel->IsHidden())
+      continue;
+
+    at(iChannelPtr).channel->GetEPG(results);
+  }
+
+  return results->Size() - iInitialSize;
 }
