@@ -92,7 +92,7 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
     // XXX stop the timers from being updated while clearing tags
     /* remove all pointers to epg tables on timers */
     CPVRTimers *timers = g_PVRTimers;
-    for (unsigned int iTimerPtr = 0; iTimerPtr < timers->size(); iTimerPtr++)
+    for (unsigned int iTimerPtr = 0; timers != NULL && iTimerPtr < timers->size(); iTimerPtr++)
       timers->at(iTimerPtr)->SetEpgInfoTag(NULL);
   }
 
@@ -137,8 +137,6 @@ bool CEpgContainer::Stop(void)
 {
   StopThread();
 
-  g_guiSettings.UnregisterObserver(this);
-
   return true;
 }
 
@@ -176,7 +174,7 @@ void CEpgContainer::Process(void)
 
   AutoCreateTablesHook();
 
-  while (!m_bStop)
+  while (!m_bStop && !g_application.m_bStop)
   {
     CDateTime::GetCurrentDateTime().GetAsTime(iNow);
 
@@ -205,6 +203,8 @@ void CEpgContainer::Process(void)
 
     Sleep(1000);
   }
+
+  g_guiSettings.UnregisterObserver(this);
 }
 
 CEpg *CEpgContainer::GetById(int iEpgId)
