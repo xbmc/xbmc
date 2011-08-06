@@ -23,14 +23,12 @@
 
 #include "epg/EpgContainer.h"
 #include "epg/EpgSearchFilter.h"
-#include "PVREpg.h"
+#include "epg/Epg.h"
 
 namespace PVR
 {
   class CPVREpgContainer : public EPG::CEpgContainer
   {
-    friend class CPVREpg;
-
   protected:
     /*!
      * @brief Create an EPG table for each channel.

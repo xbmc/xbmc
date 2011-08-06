@@ -30,10 +30,6 @@
 #include "utils/log.h"
 #include "Application.h"
 
-#include "pvr/epg/PVREpg.h"
-#include "pvr/epg/PVREpgInfoTag.h"
-
-using namespace std;
 using namespace PVR;
 
 CGUIDialogPVRDirectorOSD::CGUIDialogPVRDirectorOSD()

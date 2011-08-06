@@ -20,15 +20,18 @@
  */
 
 #include "guilib/LocalizeStrings.h"
+#include "Epg.h"
 #include "EpgInfoTag.h"
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
+#include "pvr/channels/PVRChannel.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "addons/include/xbmc_pvr_types.h"
 
 using namespace std;
 using namespace EPG;
+using namespace PVR;
 
 CEpgInfoTag::CEpgInfoTag(int iUniqueBroadcastId) :
     m_bNotify(false),
@@ -556,6 +559,22 @@ void CEpgInfoTag::UpdatePath(void)
     return;
 
   CStdString path;
-  path.Format("pvr://guide/%04i/%s.epg", m_Epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
+  if (m_Epg->HasPVRChannel())
+    path.Format("pvr://guide/%04i/%s.epg", m_Epg->Channel() ? m_Epg->Channel()->ChannelID() : m_Epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
+  else
+    path.Format("pvr://guide/%04i/%s.epg", m_Epg->EpgID(), m_startTime.GetAsDBDateTime().c_str());
   SetPath(path);
+}
+
+const CStdString &CEpgInfoTag::Icon(void) const
+{
+  if (m_strIconPath.IsEmpty() && m_Epg && m_Epg->HasPVRChannel())
+    return m_Epg->Channel()->IconPath();
+
+  return m_strIconPath;
+}
+
+bool CEpgInfoTag::HasPVRChannel(void) const
+{
+  return m_Epg && m_Epg->HasPVRChannel();
 }

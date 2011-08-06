@@ -113,7 +113,11 @@ bool EpgSearchFilter::FilterEntry(const CEpgInfoTag &tag) const
   return (MatchGenre(tag) &&
       MatchDuration(tag) &&
       MatchStartAndEndTimes(tag) &&
-      MatchSearchTerm(tag));
+      MatchSearchTerm(tag)) &&
+      (!tag.HasPVRChannel() ||
+      (MatchChannelNumber(tag) &&
+       MatchChannelGroup(tag) &&
+       (!m_bFTAOnly || !tag.ChannelTag()->IsEncrypted())));
 }
 
 int EpgSearchFilter::RemoveDuplicates(CFileItemList *results)
@@ -145,7 +149,7 @@ int EpgSearchFilter::RemoveDuplicates(CFileItemList *results)
 }
 
 
-bool EpgSearchFilter::MatchChannelNumber(const CPVREpgInfoTag &tag) const
+bool EpgSearchFilter::MatchChannelNumber(const CEpgInfoTag &tag) const
 {
   bool bReturn(true);
 
@@ -161,7 +165,7 @@ bool EpgSearchFilter::MatchChannelNumber(const CPVREpgInfoTag &tag) const
   return bReturn;
 }
 
-bool EpgSearchFilter::MatchChannelGroup(const CPVREpgInfoTag &tag) const
+bool EpgSearchFilter::MatchChannelGroup(const CEpgInfoTag &tag) const
 {
   bool bReturn(true);
 
@@ -172,14 +176,6 @@ bool EpgSearchFilter::MatchChannelGroup(const CPVREpgInfoTag &tag) const
   }
 
   return bReturn;
-}
-
-bool EpgSearchFilter::FilterEntry(const CPVREpgInfoTag &tag) const
-{
-  return FilterEntry(tag) &&
-      MatchChannelNumber(tag) &&
-      MatchChannelGroup(tag) &&
-      (!m_bFTAOnly || !tag.ChannelTag()->IsEncrypted());
 }
 
 int EpgSearchFilter::FilterRecordings(CFileItemList *results)
@@ -196,7 +192,7 @@ int EpgSearchFilter::FilterRecordings(CFileItemList *results)
 
     for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
     {
-      const CPVREpgInfoTag *epgentry  = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
+      const CEpgInfoTag *epgentry  = results->Get(iResultPtr)->GetEPGInfoTag();
 
       /* no match */
       if (!epgentry ||
@@ -227,7 +223,7 @@ int EpgSearchFilter::FilterTimers(CFileItemList *results)
 
     for (int iResultPtr = 0; iResultPtr < results->Size(); iResultPtr++)
     {
-      const CPVREpgInfoTag *epgentry = (CPVREpgInfoTag *) results->Get(iResultPtr)->GetEPGInfoTag();
+      const CEpgInfoTag *epgentry = results->Get(iResultPtr)->GetEPGInfoTag();
       if (!epgentry ||
           *epgentry->ChannelTag() != *timer->m_channel ||
           epgentry->StartAsUTC()   <  timer->StartAsUTC() ||

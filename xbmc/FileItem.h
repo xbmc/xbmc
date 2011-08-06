@@ -48,7 +48,6 @@ namespace EPG
 }
 namespace PVR
 {
-  class CPVREpgInfoTag;
   class CPVRChannel;
   class CPVRRecording;
   class CPVRTimerInfoTag;
@@ -85,7 +84,6 @@ public:
   CFileItem(const CArtist& artist);
   CFileItem(const CGenre& genre);
   CFileItem(const CVideoInfoTag& movie);
-  CFileItem(const PVR::CPVREpgInfoTag& tag);
   CFileItem(const EPG::CEpgInfoTag& tag);
   CFileItem(const PVR::CPVRChannel& channel);
   CFileItem(const PVR::CPVRRecording& record);

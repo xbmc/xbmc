@@ -54,9 +54,13 @@
 
 class CFileItem;
 
+namespace EPG
+{
+  class CEpgInfoTag;
+}
+
 namespace PVR
 {
-  class CPVREpgInfoTag;
   class CGUIDialogPVRTimerSettings;
   class CPVRChannel;
 
@@ -77,7 +81,7 @@ namespace PVR
     CStdString            m_strFileNameAndPath; /*!< @brief filename is only for reference */
     int                   m_iChannelNumber;     /*!< @brief integer value of the channel number */
     bool                  m_bIsRadio;           /*!< @brief is radio channel if set */
-    CPVREpgInfoTag *      m_epgInfo;
+    EPG::CEpgInfoTag *    m_epgInfo;
     const CPVRChannel *   m_channel;
     unsigned int          m_iMarginStart;       /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
     unsigned int          m_iMarginEnd;         /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
@@ -100,8 +104,8 @@ namespace PVR
 
     bool SetDuration(int iDuration);
 
-    static CPVRTimerInfoTag *CreateFromEpg(const CPVREpgInfoTag &tag);
-    void SetEpgInfoTag(CPVREpgInfoTag *tag);
+    static CPVRTimerInfoTag *CreateFromEpg(const EPG::CEpgInfoTag &tag);
+    void SetEpgInfoTag(EPG::CEpgInfoTag *tag);
 
     int ChannelNumber(void) const;
     CStdString ChannelName(void) const;

@@ -45,6 +45,7 @@
 using namespace std;
 using namespace MUSIC_INFO;
 using namespace PVR;
+using namespace EPG;
 
 CPVRManager::CPVRManager(void) :
     CThread("PVR manager"),
@@ -730,7 +731,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   g_infoManager.SetCurrentItem(*m_currentFile);
 
   CPVRChannel* channelTag = item.GetPVRChannelInfoTag();
-  const CPVREpgInfoTag* epgTagNow = channelTag->GetEPGNow();
+  const CEpgInfoTag* epgTagNow = channelTag->GetEPGNow();
 
   if (channelTag->IsRadio())
   {

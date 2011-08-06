@@ -49,14 +49,13 @@ namespace EPG
      * @return True if this tag matches the filter, false if not.
      */
     virtual bool FilterEntry(const CEpgInfoTag &tag) const;
-    virtual bool FilterEntry(const PVR::CPVREpgInfoTag &tag) const;
 
     virtual bool MatchGenre(const CEpgInfoTag &tag) const;
     virtual bool MatchDuration(const CEpgInfoTag &tag) const;
     virtual bool MatchStartAndEndTimes(const CEpgInfoTag &tag) const;
     virtual bool MatchSearchTerm(const CEpgInfoTag &tag) const;
-    virtual bool MatchChannelNumber(const PVR::CPVREpgInfoTag &tag) const;
-    virtual bool MatchChannelGroup(const PVR::CPVREpgInfoTag &tag) const;
+    virtual bool MatchChannelNumber(const CEpgInfoTag &tag) const;
+    virtual bool MatchChannelGroup(const CEpgInfoTag &tag) const;
 
     static int RemoveDuplicates(CFileItemList *results);
 

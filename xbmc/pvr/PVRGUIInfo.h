@@ -25,9 +25,13 @@
 #include "threads/Thread.h"
 #include "addons/include/xbmc_pvr_types.h"
 
+namespace EPG
+{
+  class CEpgInfoTag;
+}
+
 namespace PVR
 {
-  class CPVREpgInfoTag;
   class CPVRTimerInfoTag;
   class CPVRRecording;
 
@@ -151,7 +155,7 @@ namespace PVR
     unsigned int                    m_iTimerInfoToggleStart;
     unsigned int                    m_iTimerInfoToggleCurrent;
     unsigned int                    m_iToggleShowInfo;
-    mutable const CPVREpgInfoTag *  m_playingEpgTag;
+    mutable const EPG::CEpgInfoTag *m_playingEpgTag;
 
     CCriticalSection                m_critSection;
   };

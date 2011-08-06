@@ -27,7 +27,7 @@
 
 #include "pvr/PVRManager.h"
 #include "pvr/channels/PVRChannelGroupsContainer.h"
-#include "pvr/epg/PVREpgInfoTag.h"
+#include "epg/EpgInfoTag.h"
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
 
@@ -49,7 +49,7 @@ CGUIDialogPVRGuideInfo::~CGUIDialogPVRGuideInfo(void)
 {
 }
 
-bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CPVREpgInfoTag *tag)
+bool CGUIDialogPVRGuideInfo::ActionStartTimer(const CEpgInfoTag *tag)
 {
   bool bReturn = false;
 
@@ -122,7 +122,7 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonRecord(CGUIMessage &message)
   {
     bReturn = true;
 
-    const CPVREpgInfoTag *tag = (const CPVREpgInfoTag *) m_progItem->GetEPGInfoTag();
+    const CEpgInfoTag *tag = m_progItem->GetEPGInfoTag();
     if (!tag || !tag->ChannelTag() || tag->ChannelTag()->UniqueID() <= 0)
     {
       /* invalid channel */
@@ -151,7 +151,8 @@ bool CGUIDialogPVRGuideInfo::OnClickButtonSwitch(CGUIMessage &message)
   {
     Close();
 
-    if (!g_application.PlayFile(CFileItem(*((CPVREpgInfoTag *)m_progItem->GetEPGInfoTag())->ChannelTag())))
+    if (!m_progItem->GetEPGInfoTag()->HasPVRChannel() ||
+        !g_application.PlayFile(CFileItem(*m_progItem->GetEPGInfoTag()->ChannelTag())))
       CGUIDialogOK::ShowAndGetInput(19033,0,19035,0);
     else
       bReturn = true;
