@@ -313,6 +313,7 @@ unsigned int CIOSAudioRenderer::AddPackets(const void* data, DWORD len)
     status = m_Buffer->Write((unsigned char *)data, len);
   }
 
+  Resume();
   //only return the length if buffer accepted the data
   return status == 0 ? len : 0;
 }

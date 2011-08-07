@@ -1113,10 +1113,6 @@ REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source)
   vs.Start          = m_time;
   vs.End            = 0; 
   vs.SampleFormat   = m_desc.SampleFormat;
-  vs.SrcRect.left   = 0;
-  vs.SrcRect.right  = m_desc.SampleWidth;
-  vs.SrcRect.top    = 0;
-  vs.SrcRect.bottom = m_desc.SampleHeight;
   vs.PlanarAlpha    = DXVA2_Fixed32OpaqueAlpha();
   vs.SampleData     = 0;
   vs.SrcSurface     = source;
@@ -1224,7 +1220,7 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
     return range.DefaultValue;
 }
 
-bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TIME time)
+bool CProcessor::Render(const RECT &src, const RECT &dst, IDirect3DSurface9* target, REFERENCE_TIME time)
 {
   CSingleLock lock(m_section);
 
@@ -1265,6 +1261,7 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   {
     DXVA2_VideoSample& vs = samp[valid];
     vs = *it;
+    vs.SrcRect = src;
     vs.DstRect = dst;
     if(vs.End == 0)
       vs.End = vs.Start + 2;
