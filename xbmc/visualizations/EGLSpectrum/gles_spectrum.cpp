@@ -462,7 +462,7 @@ extern "C" void Render()
       break;
   }
 }
-extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
+extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   int i,c;
   int y=0;
@@ -478,10 +478,8 @@ extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *
     {
       for (int i=0; i < iAudioDataLength; i+=2)
       {
-        g_fWaveform[0][ipos] = (int)(pAudioData[i  ] * (INT16_MAX+.5f)); // left channel
-        g_fWaveform[1][ipos] = (int)(pAudioData[i+1] * (INT16_MAX+.5f)); // right channel
-        //g_fWaveform[0][ipos] = pAudioData[i  ]; // left channel
-        //g_fWaveform[1][ipos] = pAudioData[i+1]; // right channel
+        g_fWaveform[0][ipos] = pAudioData[i  ]; // left channel
+        g_fWaveform[1][ipos] = pAudioData[i+1]; // right channel
         ipos++;
         if (ipos >= 512) break;
       }
@@ -503,8 +501,7 @@ extern "C" void AudioData(const float* pAudioData, int iAudioDataLength, float *
         if (c<iAudioDataLength)
         {
           if(pAudioData[c] > y)
-            y = (int)(pAudioData[c] * (INT16_MAX+.5f));
-            //y = (int)(pAudioData[c];
+            y = (int)(pAudioData[c]);
         }
         else
           continue;
