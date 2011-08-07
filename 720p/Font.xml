@@ -55,7 +55,7 @@
 		<name>MediaPreviewYear</name>
 		<filename>HelveticaNeue</filename>
 		<variant>Regular</variant>
-		<size>22</size>
+		<size>18</size>
 	</font>
 	
 	<font>
@@ -69,7 +69,7 @@
 		<name>MediaPreviewDetailsHeader</name>
 		<filename>HelveticaNeue</filename>
 		<variant>Condensed Bold</variant>
-		<size>20</size>
+		<size>18</size>
 	</font>
 	
 	<font>
@@ -137,21 +137,21 @@
       <name>MediumDefaultFont</name>
       <filename>HelveticaNeue</filename>
 	  <variant>Regular</variant>
-      <size>20</size>
+      <size>18</size>
     </font>
 
     <font>
       <name>MediumAltDefaultFont</name>
       <filename>HelveticaNeue</filename>
 			<variant>Regular</variant>
-      <size>20</size>
+      <size>18</size>
     </font>
 
     <font>
       <name>MediumDefaultCapsFont</name>
-      <filename>HelveticaNeue</filename>
-			<variant>Regular</variant>
-      <size>20</size>
+      	<filename>HelveticaNeue</filename>
+		<variant>Regular</variant>
+		<size>18</size>
     </font>
 
     <font>
@@ -172,7 +172,7 @@
       <name>MediumSmallDefaultCapsFont</name>
       <filename>HelveticaNeue</filename>
 			<variant>Regular</variant>
-      <size>20</size>
+      <size>18</size>
     </font>
 
     <font>
@@ -280,7 +280,7 @@
       <name>HomeScreenUnselectedItems</name>
       <filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-      <size>25</size>
+      <size>22</size>
     </font>
     
 		<!-- InfoList titles -->
@@ -334,7 +334,18 @@
 			<variant>Condensed Bold</variant>
       <size>18</size>
     </font>
-
+	<font>
+      <name>MediumSmallTitleFont2</name>
+      <filename>HelveticaNeue</filename>
+			<variant>Condensed Bold</variant>
+      <size>16</size>
+    </font>
+	<font>
+      <name>MediumSmallTitleFont3</name>
+      <filename>HelveticaNeue</filename>
+			<variant>Condensed Bold</variant>
+      <size>14</size>
+    </font>
     <font>
       <name>MediumSmallTitleCapsFont</name>
       <filename>HelveticaNeue</filename>
@@ -389,14 +400,14 @@
       <name>HomeMenuFocusFont</name>
       <filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-      <size>46</size>
+      <size>42</size>
     </font>
 
     <font>
       <name>HomeMenuInfoFont</name>
       <filename>HelveticaNeue</filename>
 			<variant>Regular</variant>
-      <size>18</size>
+      <size>16</size>
     </font>
 
 		<!-- Home screen panel font -->

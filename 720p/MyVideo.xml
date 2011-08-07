@@ -6,7 +6,7 @@
 		<include>Background</include>
 		<!-- -->
 		<include>InfoList</include>
-		<include>List</include>
+		<!--<include>List</include>-->
 		<include>TV</include>
 		<!-- <include>TVEpisodes</include> -->
 		<!-- <include>Showcase</include> -->

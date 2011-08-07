@@ -26,7 +26,7 @@
 				<posy>6</posy>
 			</control>
 		</control>
-		<!-- Keyboard & text field -->
+		<!-- Keyboard & text field & results -->
 		<control type="group">
 			<animation effect="fade" start="0" end="100" time="30">WindowOpen</animation>
 			<posx>0</posx>
@@ -598,7 +598,7 @@
 			<!-- results -->
 			<control type="group" id="5000">
 				<visible>true</visible>
-				<posx>372</posx>
+				<posx>369</posx>
 				<posy>-1</posy>
 				<width>910</width>
 				<height>720</height>
@@ -655,7 +655,7 @@
 						<control type="grouplist">
 							<posx>38</posx>
 							<posy>10</posy>
-							<height>20</height>
+							<height>23</height>
 							<orientation>horizontal</orientation>
 							<itemgap>0</itemgap>
 							<visible>Control.HasFocus(9001)</visible>
@@ -789,7 +789,7 @@
 						<control type="grouplist">
 							<posx>38</posx>
 							<posy>10</posy>
-							<height>20</height>
+							<height>23</height>
 							<orientation>horizontal</orientation>
 							<itemgap>0</itemgap>
 							<visible>Control.HasFocus(9002)</visible>
@@ -924,7 +924,7 @@
 						<control type="grouplist">
 							<posx>38</posx>
 							<posy>10</posy>
-							<height>20</height>
+							<height>23</height>
 							<orientation>horizontal</orientation>
 							<itemgap>0</itemgap>
 							<visible>Control.HasFocus(9004)</visible>
@@ -1033,7 +1033,7 @@
 								</control>
 								<control type="label">
 									<posx>95</posx>
-									<posy>281</posy>
+									<posy>275</posy>
 									<width>100</width>
 									<align>center</align>
 									<height>30</height>
@@ -1043,7 +1043,22 @@
 									<label>$INFO[ListItem.Title]</label>
 									<font>SearchResultSmaller</font>
 									<textcolor>FFdddddd</textcolor>
-									<wrapmultiline>true</wrapmultiline>
+									<wrapmultiline>false</wrapmultiline>
+									<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>300</posy>
+									<width>100</width>
+									<align>center</align>
+									<height>30</height>
+									<align>left</align>
+									<aligny>top</aligny>
+									<scroll>false</scroll>
+									<label>Season $INFO[ListItem.Season] - Ep $INFO[ListItem.Episode]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFdddddd</textcolor>
+									<wrapmultiline>false</wrapmultiline>
 									<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 								</control>
 								</control>
@@ -1110,7 +1125,7 @@
 							</control>
 							<control type="label">
 								<posx>95</posx>
-								<posy>281</posy>
+								<posy>275</posy>
 								<width>100</width>
 								<align>center</align>
 								<height>30</height>
@@ -1122,6 +1137,21 @@
 								<textcolor>orange</textcolor>
 								<wrapmultiline>true</wrapmultiline>
 								<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
+							</control>
+							<control type="label">
+								<posx>95</posx>
+								<posy>300</posy>
+								<width>100</width>
+								<align>center</align>
+								<height>30</height>
+								<align>left</align>
+								<aligny>top</aligny>
+								<scroll>false</scroll>
+								<label>Season $INFO[ListItem.Season] - Ep $INFO[ListItem.Episode]</label>
+								<font>SearchResultSmaller</font>
+								<textcolor>FF3d3d3d</textcolor>
+								<wrapmultiline>false</wrapmultiline>
+								<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 							</control>
 								</control>
 							</focusedlayout>
@@ -1167,7 +1197,7 @@
 						<control type="grouplist">
 							<posx>38</posx>
 							<posy>10</posy>
-							<height>20</height>
+							<height>23</height>
 							<orientation>horizontal</orientation>
 							<itemgap>0</itemgap>
 							<visible>Control.HasFocus(9008)</visible>
@@ -1326,7 +1356,7 @@
 						<control type="grouplist">
 							<posx>38</posx>
 							<posy>10</posy>
-							<height>20</height>
+							<height>23</height>
 							<orientation>horizontal</orientation>
 							<itemgap>0</itemgap>
 							<visible>Control.HasFocus(9009)</visible>
@@ -1548,7 +1578,7 @@
 						<control type="grouplist">
 							<posx>38</posx>
 							<posy>10</posy>
-							<height>20</height>
+							<height>23</height>
 							<orientation>horizontal</orientation>
 							<itemgap>0</itemgap>
 							<visible>Control.HasFocus(9010)</visible>
@@ -1769,7 +1799,7 @@
 						<control type="grouplist">
 							<posx>38</posx>
 							<posy>10</posy>
-							<height>20</height>
+							<height>23</height>
 							<orientation>horizontal</orientation>
 							<itemgap>0</itemgap>
 							<visible>Control.HasFocus(9013)</visible>
@@ -1910,7 +1940,7 @@
 						<control type="grouplist">
 							<posx>38</posx>
 							<posy>10</posy>
-							<height>20</height>
+							<height>23</height>
 							<orientation>horizontal</orientation>
 							<itemgap>0</itemgap>
 							<visible>Control.HasFocus(9012)</visible>

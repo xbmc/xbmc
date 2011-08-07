@@ -46,6 +46,7 @@
 				</control>
 			</control>
 		</control>
+		<!-- Wide -->
 		<control type="group">
 			<include>MediaViewFade</include>
 			<visible>Control.IsVisible(57)</visible>
@@ -141,7 +142,7 @@
 					</control>
 					<control type="label">
 						<posx>542</posx>
-						<posy>13</posy>
+						<posy>8</posy>
 						<width>40</width>
 						<align>center</align>
 						<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
@@ -196,7 +197,7 @@
 					</control>
 					<control type="label">
 						<posx>542</posx>
-						<posy>12</posy>
+						<posy>8</posy>
 						<width>40</width>
 						<align>center</align>
 						<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
@@ -369,8 +370,8 @@
 							<visible>!IsEmpty(ListItem.StarRating)</visible>
 						</control>
 						<control type="grouplist">
-							<posy>94</posy>
-							<height>20</height>
+							<posy>90</posy>
+							<height>30</height>
 							<orientation>horizontal</orientation>
 							<itemgap>10</itemgap>
 							<control type="label">
@@ -396,7 +397,7 @@
 						<control type="textbox">
 							<description>Plot</description>
 							<width>650</width>
-							<height>191</height>
+							<height>196</height>
 							<info>ListItem.Plot</info>
 							<visible>Container.Content(TVShows)</visible>
 						</control>
@@ -556,7 +557,7 @@
 						<posy>156</posy>
 						<posx>380</posx>
 						<width>870</width>
-						<height>130</height>
+						<height>135</height>
 						<info>ListItem.Plot</info>
 						<font>MediaPreviewSummary</font>
 					</control>
@@ -625,7 +626,7 @@
 						</control>
 					</control>
 					<control type="group">
-						<posx>365</posx>
+						<posx>265</posx>
 						<posy>443</posy>
 						<include>MediaPreviewFlags</include>
 					</control>
@@ -676,7 +677,7 @@
 						<posy>156</posy>
 						<posx>380</posx>
 						<width>870</width>
-						<height>130</height>
+						<height>133</height>
 						<info>ListItem.Plot</info>
 						<font>MediaPreviewSummary</font>
 					</control>
@@ -822,7 +823,7 @@
 						<posx>95</posx>
 						<control type="label">
 							<description>Title</description>
-							<width>660</width>
+							<width>750</width>
 							<label>$INFO[ListItem.Label]</label>
 							<font>LargeTitleFont</font>
 							<scroll>true</scroll>
@@ -847,8 +848,8 @@
 						</control>
 					</control>
 					<control type="grouplist">
-						<posy>275</posy>
-						<posx>-340</posx>
+						<posy>250</posy>
+						<posx>100</posx>
 						<itemgap>0</itemgap>
 						<orientation>vertical</orientation>
 						<control type="grouplist">
@@ -975,16 +976,16 @@
 					</control>
 					<control type="image">
 						<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
-						<posx>700</posx>
-						<posy>180</posy>
-						<height>180</height>
-						<width>180</width>
+						<posx>660</posx>
+						<posy>285</posy>
+						<height>80</height>
+						<width>130</width>
 						<info>Listitem.Property(mediaTag::studio)</info>
 						<aspectratio>keep</aspectratio>
 					</control>
 					<control type="group">
-						<posx>100</posx>
-						<posy>373</posy>
+						<posx>-470</posx>
+						<posy>362</posy>
 						<include>MediaPreviewFlags</include>
 						<visible>!Container.Content(clip)</visible>
 					</control>

@@ -6,7 +6,7 @@
 	</include>
 	<include name="OptionsMenu">
 		<control type="group">
-			<visible>!Control.IsVisible(9009)</visible>
+			<visible>!Control.IsVisible(9009) + !Container.Content(secondary)</visible>
 			<include>OptionsMenuFade</include>
 			<control type="image" id="9007">
 				<description>Options menu (Press Up)</description>
@@ -35,11 +35,13 @@
 		<visible allowhiddenfocus="true">ControlGroup(9009).HasFocus()</visible>
 	</include>
 	<include name="OMTitleItem">
+		<align>center</align>
 		<width>OMTextWidth</width>
 		<height>24</height>
 		<font>MediumTitleCapsFont</font>
 	</include>
 	<include name="OMViewThumb">
+		<posx>10</posx>
 		<include>OMViewThumbDims</include>
 		<aspectratio>keep</aspectratio>
 		<bordertexture>Grey.png</bordertexture>
@@ -50,18 +52,18 @@
 		<animation effect="slide" time="0" start="0,0" end="0,-130" condition="Skin.HasSetting(HideOptionMenuThumbs)">Conditional</animation>
 	</include>
 	<include name="OMViewLabelItem">
-		<posy>132</posy>
+		<posy>125</posy>
 		<width>OMTextWidth</width>
 		<height>30</height>
-		<font>DefaultCapsFont</font>
+		<font>MediumSmallTitleFont2</font>
 		<align>center</align>
 		<textcolor>Selected</textcolor>
 	</include>
 	<include name="OMButtonItem">
 		<width>OMTextWidth</width>
-		<font>DefaultCapsFont</font>
+		<font>MediumSmallTitleFont2</font>
 		<textoffsetx>10</textoffsetx>
-		<textoffsety>2</textoffsety>
+		<textoffsety>1</textoffsety>
 		<include>DialogTextControl</include>
 	</include>
 	<include name="OMViewLargeThumb">
@@ -74,7 +76,9 @@
 		<control type="group">
 			<include>OptionsMenuUIDims</include>
 			<visible>!Skin.HasSetting(HideOptionMenuThumbs) + ControlGroup(9009).HasFocus() + [Control.HasFocus(911) | Control.HasFocus(912) | Control.HasFocus(915) | Control.HasFocus(916) | Control.HasFocus(925) | Control.HasFocus(926) | Control.HasFocus(927) | Control.HasFocus(951) | Control.HasFocus(952)| Control.HasFocus(953)| Control.HasFocus(955) | Control.HasFocus(956) | Control.HasFocus(957) | Control.HasFocus(958) | Control.HasFocus(959) | Control.HasFocus(960)]</visible>
+			<!-- deactivated the silly left-side thumbs -->
 			<control type="group">
+				<visible>false</visible>
 				<posy>12</posy>
 				<posx>16</posx>
 				<control type="image">
@@ -174,24 +178,24 @@
 			<include>OptionsMenuPos</include>
 			<include>OptionsMenuVisible</include>
 			<include>VideoOSDSlideLeft</include>
-			<control type="image">
+			<!--<control type="image">
 				<description>Background Image</description>
 				<posx>-24</posx>
 				<posy>0</posy>
 				<include>OptionsMenuBGDims</include>
 				<texture>Black.png</texture>
 				<colordiffuse>99666666</colordiffuse>
-			</control>
+			</control>-->
 			<control type="image">
 				<description>Background Image</description>
 				<posx>-38</posx>
 				<posy>0</posy>
 				<include>OptionsMenuBGDims</include>
-				<texture flipx="true" border="22,0,0,0">VisOsdPanel.png</texture>
+				<texture>OptionsPanel.png</texture>
 			</control>
 			<control type="label" id="900">
 				<description>View Options</description>
-				<posy>10</posy>
+				<posy>5</posy>
 				<label>$LOCALIZE[14018]</label>
 				<include>OMTitleItem</include>
 			</control>
@@ -203,7 +207,7 @@
 				<control type="image" id="9100">
 					<description>List Thumb</description>
 					<texture>ViewThumbList.png</texture>
-					<visible>Control.IsVisible(50)</visible>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(911)</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9100">
@@ -215,7 +219,7 @@
 				<control type="image" id="9101">
 					<description>Media Preview Thumb</description>
 					<texture>ViewThumbMediaPreview.png</texture>
-					<visible>Control.IsVisible(51) + Window.IsActive(24)</visible>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(915)</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9101">
@@ -299,7 +303,7 @@
 				<control type="image" id="9109">
 					<description>Info List Thumb</description>
 					<texture>ViewThumbInfoList.png</texture>
-					<visible>Control.IsVisible(56) + !Container.Content(episodes)</visible>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(912)</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9109">
@@ -323,7 +327,7 @@
 				<control type="image" id="9112">
 					<description>Panel Stream Thumb</description>
 					<texture>ViewThumbPanelStream.png</texture>
-					<visible>Control.IsVisible(52)</visible>
+					<visible>ControlGroup(9009).HasFocus() + [Control.HasFocus(957) | Control.HasFocus(958) | Control.HasFocus(960)]</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9112">
@@ -381,12 +385,12 @@
 				<height>522</height>
 				<orientation>vertical</orientation>
 				<itemgap>2</itemgap>
-				<onleft>50</onleft>
+				<onleft>56</onleft>
 				<include>OMNoViewThumbSlide</include>
 				<!-- Possible View Options -->
 				<control type="button" id="911">
 					<description>List view button</description>
-					<visible>!Control.IsVisible(50) + !Container.Content(Episodes) + !Container.Content(TVShows) + !Container.Content(Movies) + !Container.Content(Artists) + !Container.Content(Albums) + !Container.Content(Songs)  + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
+					<visible>![Control.IsVisible(50) | Container.Content(Episodes) | Container.Content(TVShows) | Container.Content(Movies) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs) | Window.IsVisible(MyPictures) | Container.Content(Secondary) | Container.Content(clip) | Container.Content(plugincontent)]</visible>
 					<label>$LOCALIZE[535]</label>
 					<onclick>Container.SetViewMode(50)</onclick>
 					<onclick>SetFocus(50)</onclick>
@@ -397,15 +401,15 @@
 					<visible>[!Control.IsVisible(56) + !Container.Content(Plugins)] | [Control.IsVisible(56) + Container.Content(Secondary)]</visible>
 					<label>$LOCALIZE[31711]</label>
 					<onclick>Container.SetViewMode(56)</onclick>
-					<onclick>SetFocus(50)</onclick>
+					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
 				</control>
 				<control type="button" id="915">
 					<description>Media Preview button</description>
-					<visible>!Control.IsVisible(51) + !Container.Content(Seasons) + !Container.Content(Albums)  + !Container.Content(Artists) + !Container.Content(Songs) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Container.Content(Plugins)</visible>
+					<visible>!Control.IsVisible(51) + ![Container.Content(Seasons)  | Container.Content(Albums) | Container.Content(Artists) | Container.Content(Songs)  | Window.IsVisible(MyPictures) | Container.Content(Secondary)  | Container.Content(Plugins) | Container.Content(plugincontent)]</visible>
 					<label>$LOCALIZE[31707]</label>
 					<onclick>Container.SetViewMode(51)</onclick>
-					<onclick>SetFocus(50)</onclick>
+					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
 				</control>
 				<control type="button" id="925">
@@ -413,7 +417,7 @@
 					<visible>!Control.IsVisible(57) + [Container.Content(tvshows) + !Container.Content(Plugins)]</visible>
 					<label>$LOCALIZE[539]</label>
 					<onclick>Container.SetViewMode(57)</onclick>
-					<onclick>SetFocus(50)</onclick>
+					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
 				</control>
 				<control type="button" id="926">
@@ -421,7 +425,7 @@
 					<visible>!Control.IsVisible(57) + [Container.Content(seasons) + !Container.Content(Plugins)]</visible>
 					<label>$LOCALIZE[31703]</label>
 					<onclick>Container.SetViewMode(57)</onclick>
-					<onclick>SetFocus(50)</onclick>
+					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
 				</control>
 				<!--<control type="button" id="927">
@@ -437,7 +441,7 @@
 					<visible>!Control.IsVisible(51) + Control.IsVisible(9814)</visible>
 					<label>$LOCALIZE[31704]</label>
 					<onclick>Container.SetViewMode(51)</onclick>
-					<onclick>SetFocus(50)</onclick>
+					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
 				</control>
 				<control type="button" id="955">
@@ -445,7 +449,7 @@
 					<visible>!Control.IsVisible(51) + [Window.IsVisible(MyPictures)] + !Container.Content(Secondary)</visible>
 					<label>$LOCALIZE[1]</label>
 					<onclick>Container.SetViewMode(51)</onclick>
-					<onclick>SetFocus(50)</onclick>
+					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
 				</control>
 				<control type="button" id="956">
@@ -453,7 +457,7 @@
 					<visible>!Control.IsVisible(57) + [Window.IsVisible(MyPictures)] + !Container.Content(Secondary)</visible>
 					<label>$LOCALIZE[31712]</label>
 					<onclick>Container.SetViewMode(57)</onclick>
-					<onclick>SetFocus(50)</onclick>
+					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
 				</control>
 				<control type="button" id="957">
@@ -461,7 +465,7 @@
 					<visible>!Control.IsVisible(52) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
 					<label>$LOCALIZE[31715]</label>
 					<onclick>Container.SetViewMode(52)</onclick>
-					<onclick>SetFocus(50)</onclick>
+					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
 				</control>
 				<!--<control type="button" id="958">
@@ -510,7 +514,7 @@
 				</control>
 				<control type="button" id="22">
 					<description>Clear button</description>
-					<visible>Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist) | Window.IsVisible(MyScripts)</visible>
+					<visible>[Window.IsVisible(MyVideoPlaylist) | Window.IsVisible(MyMusicPlaylist)]</visible>
 					<label>192</label>
 					<include>OMButtonItem</include>
 				</control>
@@ -558,5 +562,6 @@
 				</control>
 			</control>
 		</control>
+		
 	</include>
 </includes>

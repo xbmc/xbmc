@@ -16,7 +16,7 @@
 		</control>
 		<!-- Right hand backgrounds -->
 		<!-- Backgrounds -->
-		<control type="group" id="200">
+		<!--<control type="group" id="200">
 			<visible>!Player.HasVideo</visible>
 			<control type="group" id="216">
 				<description>Power Background Image</description>
@@ -281,7 +281,7 @@
 				</control>
 			</control>
 			<include>HomeRightOverlay</include>
-		</control>
+		</control>-->
 		<!-- Behind Menu Backgrounds (on the left hand side)-->
 		<control type="group" id="201">
 			<visible>!Player.HasVideo</visible>
@@ -1060,7 +1060,7 @@
 				<itemlayout width="600" height="50">
 					<control type="label">
 						<posx>802</posx>
-						<posy>14</posy>
+						<posy>20</posy>
 						<width>600</width>
 						<height>0</height>
 						<info>ListItem.Label</info>
@@ -1072,9 +1072,8 @@
 						<shadowcolor>HomeShadow</shadowcolor>
 					</control>
 				</itemlayout>
-				<focusedlayout width="600" height="100">
+				<focusedlayout width="600" height="90">
 					<control type="label">
-						<!--<include>HomeMainMenuFOLabel2</include>-->
 						<posx>806</posx>
 						<posy>37</posy>
 						<width>600</width>
@@ -1083,22 +1082,20 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<font>HomeMenuFocusFont</font>
-						<!--<textcolor>HomeMain</textcolor>-->
 						<textcolor>orange</textcolor>
 						<shadowcolor>HomeShadow</shadowcolor>
 					</control>
 					<control type="label">
-						<!--<include>HomeMainMenuFOCaption2</include>-->
-						<posx>797</posx>
-						<posy>74</posy>
+						<posx>806</posx>
+						<posy>60</posy>
 						<width>250</width>
 						<height>20</height>
-						<info>ListItem.Label2</info>
+						<label>$INFO[ListItem.Label2] &#xB7;</label>
 						<align>right</align>
 						<aligny>center</aligny>
 						<font>HomeMenuInfoFont</font>
-						<!--<textcolor>HomeMain</textcolor>-->
 						<textcolor>orange</textcolor>
+						<visible>!IsEmpty(ListItem.Label2)</visible>
 					</control>
 				</focusedlayout>
 				<content>
@@ -1107,7 +1104,7 @@
 						<label> $LOCALIZE[31955] </label>
 						<onclick>SetFocus(506)</onclick>
 					</item>
-					<item id="6">
+					<item id="7">
 						<description>Search Menu</description>
 						<label> Search </label>
 						<onclick>Plex.ActivateWindow(10051)</onclick>
@@ -1136,12 +1133,12 @@
 						<visible>!Skin.HasSetting(HideHelp)</visible>
 						<onclick>Plex.ActivateWindow(1,plex://localhost/system/help,return)</onclick>
 					</item>
-					<item id="11">
+					<!--<item id="11">
 						<description>Favorites Menu</description>
 						<label> $LOCALIZE[31063] </label>
 						<onclick>Plex.ActivateWindow(Favourites)</onclick>
 						<visible>!Skin.HasSetting(HideFavourites)</visible>
-					</item>
+					</item>-->
 					<item id="12">
 						<description>Plex Online Menu</description>
 						<label> $LOCALIZE[31952] </label>
@@ -1154,12 +1151,12 @@
 						<onclick>SetFocus(507)</onclick>
 						<visible>Skin.HasSetting(CollapsePluginMenuItems) + ![[Skin.HasSetting(HideVideos) + Skin.HasSetting(HideMusic)] | [Skin.HasSetting(HideVideos) + Skin.HasSetting(HidePictures)] | [Skin.HasSetting(HidePictures) + Skin.HasSetting(HideMusic)]]</visible>
 					</item>
-					<item id="1">
+					<!--<item id="1">
 						<description>My Videos Button</description>
 						<label> $LOCALIZE[31971] </label>
 						<visible>[!Skin.HasSetting(HideVideos)] + [[Skin.HasSetting(HideMusic) + Skin.HasSetting(HidePictures)] | !Skin.HasSetting(CollapsePluginMenuItems)]</visible>
 						<onclick>XBMC.ActivateWindow(24)</onclick>
-					</item>
+					</item>-->
 					<item id="2">
 						<description>My Music Button</description>
 						<label> $LOCALIZE[31972] </label>
@@ -1250,16 +1247,6 @@
 					<textcolor>orange</textcolor>
 				</control>
 			</control>
-			<!--<control type="group">
-				<include>HomeSlideLeft</include>
-				<control type="image">
-					<posx>582</posx>
-					<posy>0</posy>
-					<width>246</width>
-					<height>720</height>
-					<texture diffuse="HomeMenuDiffuse.png">HomeBladeLeftMenuOverlay.png</texture>
-				</control>
-			</control>-->
 			<control type="group">
 				<include>HomeSlideLeft</include>
 				<control type="image">
@@ -1330,7 +1317,7 @@
 					<control type="label" id="8002">
 						<visible>Control.IsVisible(11001)</visible>
 						<posx>870</posx>
-						<font>MediaPreviewDetailsHeader</font>
+						<font>MediumSmallTitleFont2</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
 						<width>350</width>
@@ -1504,7 +1491,7 @@
 								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="150" height="250">
+						<focusedlayout width="160" height="250">
 							<!-- album -->
 							<control type="image">
 								<posx>15</posx>
@@ -1624,8 +1611,8 @@
 					<!-- title bar Labels -->
 					<control type="grouplist">
 						<posx>26</posx>
-						<posy>136</posy>
-						<height>20</height>
+						<posy>132</posy>
+						<height>25</height>
 						<orientation>horizontal</orientation>
 						<visible>Control.IsVisible(11001)</visible>
 						<itemgap>0</itemgap>
@@ -1720,7 +1707,7 @@
 					<!-- list title when both lists are visible -->
 					<control type="label" id="8001">
 						<posx>870</posx>
-						<font>MediaPreviewDetailsHeader</font>
+						<font>MediumSmallTitleFont2</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
 						<width>350</width>
@@ -1734,7 +1721,7 @@
 					<!-- list title when only this list is visible -->
 					<control type="label" id="8001">
 						<posx>870</posx>
-						<font>MediaPreviewDetailsHeader</font>
+						<font>MediumSmallTitleFont2</font>
 						<textcolor>orange</textcolor>
 						<shadowcolor>FF222222</shadowcolor>
 						<width>350</width>
@@ -1770,7 +1757,7 @@
 						<onright>-</onright>
 						<onleft>300</onleft>
 						<posx>-14</posx>
-						<posy>8</posy>
+						<posy>0</posy>
 						<width>880</width>
 						<height>400</height>
 						<itemlayout width="140" height="230">
@@ -1845,10 +1832,11 @@
 							</control>
 							<!-- photos -->
 							<control type="group">
+								<posy>5</posy>
 								<!-- drop shadow -->
 								<control type="image">
 									<posx>28</posx>
-									<posy>43</posy>
+									<posy>48</posy>
 									<width>134</width>
 									<height>134</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
@@ -1857,7 +1845,7 @@
 								</control>
 								<control type="image">
 									<posx>37</posx>
-									<posy>53</posy>
+									<posy>58</posy>
 									<width>116</width>
 									<height>116</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
@@ -1866,7 +1854,7 @@
 								</control>
 								<control type="image">
 									<posx>35</posx>
-									<posy>181</posy>
+									<posy>186</posy>
 									<width>120</width>
 									<height>30</height>
 									<texture border="10">whitewiderounded.png</texture>
@@ -1876,7 +1864,7 @@
 								</control>
 								<control type="label">
 									<posx>95</posx>
-									<posy>194</posy>
+									<posy>199</posy>
 									<width>100</width>
 									<align>center</align>
 									<aligny>center</aligny>
@@ -2138,7 +2126,7 @@
 								</control>
 							</control>
 						</itemlayout>
-						<focusedlayout width="150" height="250">
+						<focusedlayout width="160" height="250">
 							<!-- album -->
 							<control type="group">
 								<!-- drop shadow -->
@@ -2213,9 +2201,10 @@
 							</control>
 							<!-- photos -->
 							<control type="group">
+								<posy>5</posy>
 								<control type="image">
 									<posx>34</posx>
-									<posy>50</posy>
+									<posy>55</posy>
 									<width>122</width>
 									<height>122</height>
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
@@ -2408,8 +2397,8 @@
 					<!-- title bar Labels when both lists are visible -->
 					<control type="grouplist">
 						<posx>26</posx>
-						<posy>351</posy>
-						<height>20</height>
+						<posy>347</posy>
+						<height>25</height>
 						<orientation>horizontal</orientation>
 						<visible>Control.HasFocus(11000) + Control.IsVisible(11001)</visible>
 						<itemgap>0</itemgap>
@@ -2500,8 +2489,8 @@
 					<!-- title bar Labels when only this list is visible -->
 					<control type="grouplist">
 						<posx>26</posx>
-						<posy>252</posy>
-						<height>20</height>
+						<posy>248</posy>
+						<height>25</height>
 						<orientation>horizontal</orientation>
 						<visible>Control.HasFocus(11000) + !Control.IsVisible(11001)</visible>
 						<itemgap>0</itemgap>
@@ -2651,7 +2640,7 @@
 						<control type="label" id="8001">
 							<visible>Control.IsVisible(11003)</visible>
 							<posx>870</posx>
-							<font>MediaPreviewDetailsHeader</font>
+							<font>MediumSmallTitleFont2</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<width>350</width>
@@ -2916,8 +2905,8 @@
 					<!-- title bar Labels -->
 					<control type="grouplist">
 						<posx>26</posx>
-						<posy>485</posy>
-						<height>20</height>
+						<posy>483</posy>
+						<height>25</height>
 						<orientation>horizontal</orientation>
 						<visible>Control.IsVisible(11003)</visible>
 						<itemgap>0</itemgap>
@@ -3008,17 +2997,17 @@
 						<control type="label">
 							<align>left</align>
 							<label>$INFO[Container(11003).ListItem(0).Title]</label>
-							<font>SearchResult</font>
+							<font>MediumSmallTitleFont2</font>
 							<scroll>false</scroll>
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
-							<width min="1" max="400">auto</width>
+							<width min="1" max="500">auto</width>
 							<visible>ControlGroup(7003).HasFocus + Container(11003).ListItem(0).Type(clip)</visible>
 						</control>
 						<control type="label">
 							<align>left</align>
 							<label> &#xB7; $INFO[Container(11003).ListItem(0).Year]</label>
-							<font>SearchResult</font>
+							<font>MediumSmallTitleFont2</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -3028,7 +3017,7 @@
 						<control type="label">
 							<align>left</align>
 							<label> &#xB7; $INFO[Container(11003).ListItem(0).Property(sourceTitle)]</label>
-							<font>SearchResult</font>
+							<font>MediumSmallTitleFont2</font>
 							<scroll>false</scroll>
 							<textcolor>orange</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -3039,7 +3028,7 @@
 						<control type="label">
 							<align>left</align>
 							<label> &#xB7; $INFO[Container(11003).ListItem(0).Duration]</label>
-							<font>SearchResult</font>
+							<font>MediumSmallTitleFont2</font>
 							<scroll>false</scroll>
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
@@ -3078,7 +3067,7 @@
 						<control type="label" id="8001">
 							<visible>Control.IsVisible(11002)</visible>
 							<posx>870</posx>
-							<font>MediaPreviewDetailsHeader</font>
+							<font>MediumSmallTitleFont2</font>
 							<textcolor>orange</textcolor>
 							<shadowcolor>FF222222</shadowcolor>
 							<width>350</width>
@@ -3111,7 +3100,7 @@
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 									<visible>ListItem.Type(channel)</visible>
-								</control>
+								</control>								
 								<control type="image">
 									<posx>37</posx>
 									<posy>47</posy>
@@ -3120,7 +3109,7 @@
 									<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 									<texture diffuse="posterMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
 									<visible>ListItem.Type(channel)</visible>
-								</control>
+								</control>								
 								<control type="image">
 									<posx>35</posx>
 									<posy>175</posy>
@@ -3130,7 +3119,7 @@
 									<colordiffuse>FF000000</colordiffuse>
 									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
 									<visible>ListItem.Type(channel)</visible>
-								</control>
+								</control>							
 								<control type="label">
 									<posx>95</posx>
 									<posy>188</posy>
@@ -3614,58 +3603,6 @@
 				<aspectratio>keep</aspectratio>
 				<colordiffuse>ccbbbbbb</colordiffuse>
 				<info>Weather.Conditions</info>
-			</control>
-		</control>
-		<control type="group">
-			<description>RSS</description>
-			<posx>0</posx>
-			<posy>670</posy>
-			<visible>System.GetBool(RSS.EnableRSSFeeds) + System.HasNetwork</visible>
-			<!--<visible>False</visible>-->
-			<animation type="WindowOpen">
-				<effect type="slide" start="0,50" time="700" delay="100"/>
-				<effect type="fade" time="700" delay="500"/>
-			</animation>
-			<animation type="WindowClose">
-				<effect type="slide" end="0,50" time="300"/>
-				<effect type="fade" time="100" delay="100"/>
-			</animation>
-			<control type="image">
-				<description>RSS Background</description>
-				<width>1280</width>
-				<height>50</height>
-				<texture>HomeRSS.png</texture>
-			</control>
-			<control type="rss">
-				<description>Rss Feed</description>
-				<posx>0</posx>
-				<posy>18</posy>
-				<width>1280</width>
-				<font>RssFeedFont</font>
-				<urlset>1</urlset>
-				<textcolor>FFFF9900</textcolor>
-				<headlinecolor>Focused</headlinecolor>
-				<titlecolor>FFFF9900</titlecolor>
-				<animation effect="fade" time="700" delay="300">WindowOpen</animation>
-				<animation effect="fade" time="100">WindowClose</animation>
-			</control>
-			<control type="group">
-				<description>Fades for RSS text</description>
-				<posy>4</posy>
-				<!--<control type="image">
-					<description>Left hand fade for RSS</description>
-					<posx>29</posx>
-					<width>40</width>
-					<height>40</height>
-					<texture>BlackGradient.png</texture>
-				</control>
-				<control type="image">
-					<description>Right hand fade for RSS</description>
-					<posx>1168</posx>
-					<width>40</width>
-					<height>40</height>
-					<texture flipx="true">BlackGradient.png</texture>
-				</control>-->
 			</control>
 		</control>
 		<!-- Music Now Playing -->

@@ -40,7 +40,7 @@
 		<posy>0</posy>
 		<width>1280</width>
 		<height>720</height>
-		<aspectratio>scale</aspectratio>
+		<aspectratio>stretch</aspectratio>
 	</include>
 	<include name="FullScreenOverlayDims">
 		<include>FullScreenBGImageDims</include>
@@ -410,7 +410,7 @@
 	<!-- Settings Screen -->
 	<!-- =============== -->
 	<include name="SettingsSubBladeDims">
-		<posx>754</posx>
+		<posx>764</posx>
 		<posy>351</posy>
 	</include>
 	<include name="SettingsCentreBladeBGDims">
@@ -470,9 +470,9 @@
 	<constant name="SettingsCatTextWidth">600</constant>
 	<include name="SettingsCatBtnDims">
 		<posx>0</posx>
-		<posy>-10</posy>
+		<posy>0</posy>
 		<width>SettingsCatTextWidth</width>
-		<height>43</height>
+		<height>42</height>
 		<textoffsetx>45</textoffsetx>
 	</include>
 	<include name="SettingsCatRadioBtnDims">
@@ -532,9 +532,9 @@
 		<height>400</height>
 	</include>
 	<include name="HomeSubMenuBackgroundSettingsDims">
-		<posx>44</posx>
+		<posx>33</posx>
 		<posy>-331</posy>
-		<width>221</width>
+		<width>232</width>
 	</include>
 	<!-- Options Menu -->
 	<!-- ============ -->
@@ -1194,8 +1194,8 @@
 	<!-- Video Views -->
 	<!-- =========== -->
 	<include name="TopOverlayTitleAreaTextDims">
-		<posy>9</posy>
-		<height>32</height>
+		<posy>19</posy>
+		<height>35</height>
 	</include>
 	<include name="TopOverlayFirstTitleAreaBGDims">
 		<posx>20</posx>

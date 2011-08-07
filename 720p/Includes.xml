@@ -109,14 +109,14 @@
 			<include>SelectionDialogBGDims</include>
 			<include>DialogBGTexture</include>
 		</control>
-		<control type="image">
+		<!--<control type="image">
 			<description>Title Background</description>
 			<posx>20</posx>
 			<posy>12</posy>
 			<width>SelectionDialogTextWidth</width>
 			<height>50</height>
 			<texture>GlassTitleBar.png</texture>
-		</control>
+		</control>-->
 	</include>
 	<include name="SelectionDialogTitle">
 		<posx>20</posx>
@@ -922,7 +922,7 @@
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
 					<info>FanArt.Image</info>
-					<visible>!IsEmpty(FanArt.Image)</visible>
+					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
 					<include>BackgroundFade</include>
 				</control>
 				<control type="multiimage">
@@ -1398,12 +1398,13 @@
 						<width>10</width>
 					</control>
 					<control type="label">
-						<height>32</height>
-						<font>MediumAltDefaultFont</font>
+						<height>35</height>
+						<font>MediumDefaultCapsFont</font>
 						<align>left</align>
 						<aligny>center</aligny>
 						<label>$INFO[System.Time(short_no_meridian)]</label>
 						<width min="1" max="100">auto</width>
+						<textcolor>FF999999</textcolor>
 					</control>
 					<!--<control type="image">
 						<texture>ClockBackground2.png</texture>						
@@ -1435,7 +1436,7 @@
 	<include name="MediaCountLabel">
 		<posx>12</posx>
 		<posy>3</posy>
-		<height>32</height>
+		<height>35</height>
 		<width min="1" max="200">auto</width>
 		<font>MediumAltDefaultFont</font>
 		<aligny>center</aligny>
@@ -1445,7 +1446,7 @@
 		<textcolor>FFFF9900</textcolor>
 		<width min="1" max="200">auto</width>
 		<aligny>center</aligny>
-		<height>32</height>
+		<height>35</height>
 	</include>
 	<include name="MediaCount">
 		<control type="group">
@@ -1793,7 +1794,7 @@
 	<include name="PanelStreamVisible">
 		<visible>Control.IsVisible(52)</visible>
 	</include>
-	<constant name="PanelStreamDetailTextWidth">430</constant>
+	<constant name="PanelStreamDetailTextWidth">400</constant>
 	<constant name="PanelStreamEpisodeDetailTextWidth">480</constant>
 	<include name="PanelStreamImage">
 		<posx>18</posx>
@@ -1986,10 +1987,22 @@
 				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
-			<control type="image">
+			<!-- iTunes hack -->
+			<!--<control type="image">
+				<description>Poster image</description>
 				<posx>18</posx>
-				<posy>130</posy>
+				<posy>3</posy>
 				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="bigPosterMask.png">DefaultAlbumCover.png</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<visible>Container.Content(SecondTitle)</visible>
+			</control>-->
+			<!-- end iTunes hack -->
+			<control type="image">
+				<posx>14</posx>
+				<posy>130</posy>
+				<width>130</width>
 				<height>25</height>
 				<texture border="10">whitewiderounded.png</texture>
 				<colordiffuse>FF000000</colordiffuse>
@@ -2030,9 +2043,9 @@
 				<bordersize>3</bordersize>
 			</control>
 			<control type="image">
-				<posx>18</posx>
+				<posx>14</posx>
 				<posy>130</posy>
-				<width>122</width>
+				<width>130</width>
 				<height>25</height>
 				<texture border="10">whitewiderounded.png</texture>
 				<colordiffuse>FF000000</colordiffuse>
@@ -2074,7 +2087,107 @@
 				<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
 			</control>
 		</focusedlayout>
-		<!-- Albums -->
+		<!-- Albums & Songs -->
+		<itemlayout condition="[Container.content(albums) | Container.content(songs)]" width="154" height="158">
+			<!-- drop shadow -->
+			<control type="image">
+				<posx>9</posx>
+				<posy>-7</posy>
+				<width>140</width>
+				<height>140</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>18</posx>
+				<posy>3</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+			<control type="image">
+				<posx>14</posx>
+				<posy>130</posy>
+				<width>130</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>81</posx>
+				<posy>130</posy>
+				<width>122</width>
+				<align>center</align>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.title]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>ffffffff</textcolor>
+				<scrollsuffix>...</scrollsuffix>
+			</control>
+			<control type="label">
+				<description>No Thumb label</description>
+				<include>PanelStreamNoThumb</include>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="[Container.content(albums) | Container.content(songs)]" width="154" height="158">
+			<!-- drop shadow -->
+			<control type="image">
+				<posx>9</posx>
+				<posy>-7</posy>
+				<width>140</width>
+				<height>140</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
+			</control>
+			<!-- new bg border -->
+			<control type="image">
+				<posx>15</posx>
+				<posy>0</posy>
+				<width>128</width>
+				<height>128</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true">posterMaskSmall.png</texture>
+				<!--<visible>ListItem.Type(movie)</visible>-->
+				<colordiffuse>FFd1801c</colordiffuse>
+			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>18</posx>
+				<posy>3</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+			<control type="image">
+				<posx>14</posx>
+				<posy>130</posy>
+				<width>130</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>81</posx>
+				<posy>130</posy>
+				<width>122</width>
+				<align>center</align>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.title]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>ffffffff</textcolor>
+				<scrollsuffix>...</scrollsuffix>
+			</control>
+			<control type="label">
+				<include>PanelStreamNoThumb</include>
+			</control>
+		</focusedlayout>
+		
+		<!--
 		<itemlayout condition="Container.content(albums)" width="180" height="180">
 			<control type="image">
 				<description>Album cover</description>
@@ -2097,6 +2210,7 @@
 				<include>PanelStreamAlbumNoThumb</include>
 			</control>
 		</focusedlayout>
+	-->
 		<!-- Episodes & Clips -->
 		<itemlayout condition="Container.content(episodes) | Container.content(clip)" width="252" height="160">
 			<control type="image">
@@ -2134,11 +2248,11 @@
 				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
 			</control>
 			<control type="label">
-				<posx>155</posx>
-				<posy>124</posy>
+				<posx>70</posx>
+				<posy>121</posy>
 				<width>175</width>
 				<visible>true</visible>
-				<align>center</align>
+				<align>left</align>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.title]</label>
 				<font>SearchResultSmaller</font>
@@ -2148,7 +2262,7 @@
 			</control>
 			<control type="label">
 				<posx>155</posx>
-				<posy>124</posy>
+				<posy>120</posy>
 				<width>175</width>
 				<visible>true</visible>
 				<align>center</align>
@@ -2197,10 +2311,10 @@
 				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
 			</control>
 			<control type="label">
-				<posx>155</posx>
-				<posy>124</posy>
+				<posx>70</posx>
+				<posy>121</posy>
 				<width>175</width>
-				<align>center</align>
+				<align>left</align>
 				<scroll>false</scroll>
 				<label>$INFO[ListItem.title]</label>
 				<font>SearchResultSmaller</font>
@@ -2210,7 +2324,7 @@
 			</control>
 			<control type="label">
 				<posx>155</posx>
-				<posy>124</posy>
+				<posy>120</posy>
 				<width>175</width>
 				<align>center</align>
 				<scroll>false</scroll>
@@ -2240,9 +2354,9 @@
 				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 			</control>
 			<control type="image">
-				<posx>20</posx>
-				<posy>120</posy>
-				<width>230</width>
+				<posx>15</posx>
+				<posy>123</posy>
+				<width>240</width>
 				<height>25</height>
 				<texture border="10">whitewiderounded.png</texture>
 				<colordiffuse>FF000000</colordiffuse>
@@ -2250,7 +2364,7 @@
 			</control>
 			<control type="label">
 				<posx>135</posx>
-				<posy>124</posy>
+				<posy>123</posy>
 				<width>215</width>
 				<visible>true</visible>
 				<align>center</align>
@@ -2281,9 +2395,9 @@
 				<bordersize>3</bordersize>
 			</control>
 			<control type="image">
-				<posx>20</posx>
-				<posy>120</posy>
-				<width>230</width>
+				<posx>15</posx>
+				<posy>123</posy>
+				<width>240</width>
 				<height>25</height>
 				<texture border="10">whitewiderounded.png</texture>
 				<colordiffuse>FF000000</colordiffuse>
@@ -2291,7 +2405,7 @@
 			</control>
 			<control type="label">
 				<posx>135</posx>
-				<posy>124</posy>
+				<posy>123</posy>
 				<width>215</width>
 				<align>center</align>
 				<scroll>false</scroll>
@@ -2301,7 +2415,8 @@
 				<scrollsuffix>...</scrollsuffix>
 			</control>
 		</focusedlayout>
-		<!-- Albums -->
+		<!-- songs -->
+		<!--
 		<itemlayout condition="!Container.content(artists) + [Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="180">
 			<control type="image">
 				<description>Album cover</description>
@@ -2324,6 +2439,7 @@
 				<include>PanelStreamAlbumNoThumb</include>
 			</control>
 		</focusedlayout>
+	-->
 	</include>
 	<include name="PanelStreamContent">
 		<posx>6</posx>
@@ -2940,7 +3056,6 @@
 		<scroll>true</scroll>
 		<align>left</align>
 		<aligny>center</aligny>
-		<height>32</height>
 		<font>MediumDefaultCapsFont</font>
 	</include>
 	<include name="TopOverlayFirstTitleAreaText">
@@ -4379,7 +4494,7 @@
 			<posy>-20</posy>
 			<include>HomeSubMenuBackgroundSettings</include>
 			<animation effect="fade" start="0" end="95" time="0" condition="true">Conditional</animation>
-			<posx>35</posx>
+			<posx>36</posx>
 		</control>
 	</include>
 	<include name="SettingsSideMenu">
@@ -4473,7 +4588,7 @@
 		<include>SettingsUpperTitleDims</include>
 		<scroll>true</scroll>
 		<align>right</align>
-		<font>XLargeDefaultCapsFont</font>
+		<font>MediumSearchFont</font>
 	</include>
 	<include name="SettingsLowerTitle">
 		<include>SettingsLowerTitleDims</include>
@@ -4493,7 +4608,7 @@
 		<texture border="128,4,155,4">MenuItemNF.png</texture>
 	</include>
 	<include name="MenuItemNFTextureNF">
-		<texturenofocus aspectratio="stretch" border="128,4,155,4">MenuItemNF.png</texturenofocus>
+		<texturenofocus aspectratio="stretch">MenuItemNF.png</texturenofocus>
 	</include>
 	<include name="MenuItemNFTextureFO">
 		<texturefocus aspectratio="stretch" border="128,4,155,4">MenuItemNF.png</texturefocus>
@@ -4574,7 +4689,8 @@
         </itemlayout>
 				<focusedlayout width="SettingsCategoryTextWidth" height="140">
 					<control type="label">
-						<posy>20</posy>
+						<posy>30</posy>
+						<posx>8</posx>
 						<width>SettingsCategoryTextWidth</width>
 						<height>0</height>
 						<info>ListItem.Label</info>
@@ -4908,7 +5024,7 @@
 		<posy>7</posy>
 		<posx>880</posx>
 		<align>right</align>
-		<font>MediaPreviewDetailsHeader</font>
+		<font>MediumSmallTitleFont2</font>
 		<textcolor>orange</textcolor>
 		<width>278</width>
 		<height>30</height>
@@ -4917,7 +5033,7 @@
 		<posy>7</posy>
 		<posx>880</posx>
 		<align>right</align>
-		<font>MediaPreviewDetailsHeader</font>
+		<font>MediumSmallTitleFont2</font>
 		<textcolor>Unfocused</textcolor>
 		<width>278</width>
 		<height>30</height>
@@ -5031,8 +5147,8 @@
 		<focusedcolor>Focused</focusedcolor>
 		<align>center</align>
 		<aligny>center</aligny>
-		<texturefocus border="10">plex-search-button.png</texturefocus>
-		<textureclick border="10">-</textureclick>
+		<texturefocus border="20">plex-search-button.png</texturefocus>
+		<textureclick border="20">-</textureclick>
 		<colordiffuse>orange</colordiffuse>
 	</include>
 	<include name="Search_Keyboard_ToggleButton">
