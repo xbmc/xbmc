@@ -39,7 +39,7 @@
       <path>videodb://1/6</path>
       <icon>DefaultStudios.png</icon>
     </node>
-    <node id="sets" type="folder">
+    <node id="sets" type="folder" visible="Library.HasContent(MovieSets)">
       <label>20434</label>
       <path>videodb://1/7</path>
       <icon>DefaultSets.png</icon>
