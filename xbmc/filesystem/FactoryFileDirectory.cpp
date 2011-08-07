@@ -128,7 +128,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     }
     else
     { // compressed or more than one file -> create a zip dir
-      pItem->m_strPath = strUrl;
+      pItem->SetPath(strUrl);
       return new CZipDirectory;
     }
     return NULL;
@@ -179,7 +179,7 @@ IFileDirectory* CFactoryFileDirectory::Create(const CStdString& strPath, CFileIt
     {
 #ifdef HAS_FILESYSTEM_RAR
       // compressed or more than one file -> create a rar dir
-      pItem->m_strPath = strUrl;
+      pItem->SetPath(strUrl);
       return new CRarDirectory;
 #else
       return NULL;

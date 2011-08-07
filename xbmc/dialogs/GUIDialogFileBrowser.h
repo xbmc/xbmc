@@ -66,7 +66,7 @@ protected:
   void OnSort();
   void ClearFileItems();
   void Update(const CStdString &strDirectory);
-  bool HaveDiscOrConnection( CStdString& strPath, int iDriveType );
+  bool HaveDiscOrConnection( int iDriveType );
   bool OnPopupMenu(int iItem);
   void OnAddNetworkLocation();
   void OnAddMediaSource();

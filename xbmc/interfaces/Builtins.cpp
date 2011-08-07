@@ -437,8 +437,8 @@ int CBuiltins::Execute(const CStdString& execString)
       CFileItem item(params[0]);
       if (!item.m_bIsFolder)
       {
-        item.m_strPath = params[0];
-        CPluginDirectory::RunScriptWithParams(item.m_strPath);
+        item.SetPath(params[0]);
+        CPluginDirectory::RunScriptWithParams(item.GetPath());
       }
     }
     else
@@ -530,7 +530,7 @@ int CBuiltins::Execute(const CStdString& execString)
     if (item.m_bIsFolder)
     {
       CFileItemList items;
-      CDirectory::GetDirectory(item.m_strPath,items,g_settings.m_videoExtensions);
+      CDirectory::GetDirectory(item.GetPath(),items,g_settings.m_videoExtensions);
       g_playlistPlayer.Add(PLAYLIST_VIDEO,items);
       g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
       g_playlistPlayer.Play();

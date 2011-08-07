@@ -366,7 +366,7 @@ NPT_String
 CUPnPServer::GetMimeType(const CFileItem& item,
                             const PLT_HttpRequestContext* context /* = NULL */)
 {
-    CStdString path = item.m_strPath;
+    CStdString path = item.GetPath();
     if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) {
         path = item.GetVideoInfoTag()->m_strFileNameAndPath;
     } else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().IsEmpty()) {
@@ -574,7 +574,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
 
-    CLog::Log(LOGDEBUG, "Building didl for object '%s'", (const char*)item.m_strPath);
+    CLog::Log(LOGDEBUG, "Building didl for object '%s'", (const char*)item.GetPath());
 
     EClientQuirks quirks = GetClientQuirks(context);
 
@@ -591,7 +591,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
 
     if (!item.m_bIsFolder) {
         object = new PLT_MediaItem();
-        object->m_ObjectID = item.m_strPath;
+        object->m_ObjectID = item.GetPath();
 
         /* Setup object type */
         if (item.IsMusicDb() || item.IsAudio()) {
@@ -662,7 +662,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         object = container;
 
         /* Assign a title and id for this container */
-        container->m_ObjectID = item.m_strPath;
+        container->m_ObjectID = item.GetPath();
         container->m_ObjectClass.type = "object.container";
         container->m_ChildrenCount = -1;
 
@@ -670,7 +670,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
 
         /* this might be overkill, but hey */
         if (item.IsMusicDb()) {
-            MUSICDATABASEDIRECTORY::NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryType(item.m_strPath);
+            MUSICDATABASEDIRECTORY::NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryType(item.GetPath());
             switch(node) {
                 case MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST: {
                       container->m_ObjectClass.type += ".person.musicArtist";
@@ -714,7 +714,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   break;
             }
         } else if (item.IsVideoDb()) {
-            VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(item.m_strPath);
+            VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(item.GetPath());
             CVideoInfoTag &tag = *(CVideoInfoTag*)item.GetVideoInfoTag();
             switch(node) {
                 case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
@@ -785,7 +785,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             object->m_Title = title;
         } else {
             CStdString title, volumeNumber;
-            CUtil::GetVolumeFromFileName(item.m_strPath, title, volumeNumber);
+            CUtil::GetVolumeFromFileName(item.GetPath(), title, volumeNumber);
             if (!item.m_bIsFolder) URIUtils::RemoveExtension(title);
             object->m_Title = title;
         }
@@ -828,7 +828,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                    const char*                   parent_id /* = NULL */)
 {
     PLT_MediaObject* object = NULL;
-    NPT_String       path = item->m_strPath.c_str();
+    NPT_String       path = item->GetPath().c_str();
 
     //HACK: temporary disabling count as it thrashes HDD
     with_count = false;
@@ -857,7 +857,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
     } else {
         // db path handling
         NPT_String file_path, share_name;
-        file_path = item->m_strPath;
+        file_path = item->GetPath();
         share_name = "";
 
         if (path.StartsWith("musicdb://")) {
@@ -1066,7 +1066,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
 
     CLog::Log(LOGINFO, "Received UPnP Browse DirectChildren request for object '%s'", (const char*)object_id);
 
-    items.m_strPath = parent_id;
+    items.SetPath(CStdString(parent_id));
     if (!items.Load()) {
         // cache anything that takes more than a second to retrieve
       unsigned int time = XbmcThreads::SystemClockMillis();
@@ -1921,7 +1921,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
         for(NPT_Cardinal i = 0; i < object->m_Resources.GetItemCount(); i++) {
             if(object->m_Resources[i].m_ProtocolInfo.ToString().StartsWith("xbmc-get:")) {
                 res = &object->m_Resources[i];
-                item.m_strPath = res->m_Uri;
+                item.SetPath(CStdString(res->m_Uri));
                 break;
             }
         }
@@ -1944,7 +1944,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
         } else if (object->m_ObjectClass.type.StartsWith("object.item.imageItem")) {
             bImageFile = true;
         }
-        bImageFile?g_application.getApplicationMessenger().PictureShow(item.m_strPath)
+        bImageFile?g_application.getApplicationMessenger().PictureShow(item.GetPath())
                   :g_application.getApplicationMessenger().MediaPlay(item);
     } else {
         bImageFile = NPT_String(PLT_MediaObject::GetUPnPClass(uri)).StartsWith("object.item.imageItem", true);

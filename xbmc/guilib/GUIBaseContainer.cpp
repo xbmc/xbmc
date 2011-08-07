@@ -700,7 +700,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
         int controlID = GetID(); // save as these could go away as we send messages
         int parentID = GetParentID();
         vector<CStdString> actions;
-        StringUtils::SplitString(item->m_strPath, " , ", actions);
+        StringUtils::SplitString(item->GetPath(), " , ", actions);
         for (unsigned int i = 0; i < actions.size(); i++)
         {
           CStdString action = actions[i];

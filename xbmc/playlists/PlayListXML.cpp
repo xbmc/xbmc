@@ -132,7 +132,7 @@ bool CPlayListXML::Load( const CStdString& strFileName )
 
        CStdString info = name;
        CFileItemPtr newItem( new CFileItem(info) );
-       newItem->m_strPath = url;
+       newItem->SetPath(url);
 
        // Set language as metadata
        if ( !lang.IsEmpty() )
@@ -185,7 +185,7 @@ void CPlayListXML::Save(const CStdString& strFileName) const
   {
     CFileItemPtr item = m_vecItems[i];
     write.AppendFormat("  <stream>\n" );
-    write.AppendFormat("    <url>%s</url>", item->m_strPath.c_str() );
+    write.AppendFormat("    <url>%s</url>", item->GetPath().c_str() );
     write.AppendFormat("    <name>%s</name>", item->GetLabel().c_str() );
 
     if ( !item->GetProperty("language").IsEmpty() )

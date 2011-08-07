@@ -82,8 +82,8 @@ bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_WINDOW_INIT:
     {
-      if (m_vecItems->m_strPath == "?")
-        m_vecItems->m_strPath.Empty();
+      if (m_vecItems->GetPath() == "?")
+        m_vecItems->SetPath("");
       CGUIWindowMusicBase::OnMessage(message);
 
       if (message.GetNumStringParams())
@@ -153,7 +153,7 @@ bool CGUIWindowMusicPlaylistEditor::GetDirectory(const CStdString &strDirectory,
     db->SetLabel(g_localizeStrings.Get(14022));
     db->SetLabelPreformated(true);
     db->m_bIsShareOrDrive = true;
-    items.m_strPath = "";
+    items.SetPath("");
     items.Add(db);
     return true;
   }

@@ -88,7 +88,7 @@ protected:
   void GetFilteredItems(const CStdString &filter, CFileItemList &items);
 
   // check for a disc or connection
-  virtual bool HaveDiscOrConnection(CStdString& strPath, int iDriveType);
+  virtual bool HaveDiscOrConnection(int iDriveType);
   void ShowShareErrorMessage(CFileItem* pItem);
 
   void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);

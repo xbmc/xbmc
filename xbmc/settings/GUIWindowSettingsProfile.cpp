@@ -183,7 +183,6 @@ void CGUIWindowSettingsProfile::LoadList()
   {
     const CProfile *profile = g_settings.GetProfile(i);
     CFileItemPtr item(new CFileItem(profile->getName()));
-    item->m_strPath.Empty();
     item->SetLabel2(profile->getDate());
     item->SetThumbnailImage(profile->getThumb());
     item->SetOverlayImage(profile->getLockMode() == LOCK_MODE_EVERYONE ? CGUIListItem::ICON_OVERLAY_NONE : CGUIListItem::ICON_OVERLAY_LOCKED);
@@ -191,7 +190,6 @@ void CGUIWindowSettingsProfile::LoadList()
   }
   {
     CFileItemPtr item(new CFileItem(g_localizeStrings.Get(20058)));
-    item->m_strPath.Empty();
     m_listItems->Add(item);
   }
   CGUIMessage msg(GUI_MSG_LABEL_BIND, GetID(), CONTROL_PROFILES, 0, 0, m_listItems);

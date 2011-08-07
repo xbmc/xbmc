@@ -256,13 +256,13 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory)
 
   for (int i=0;i<items.Size();++i)
   {
-    if (CMusicDatabaseDirectory::IsAllItem(items[i]->m_strPath) || items[i]->IsParentFolder())
+    if (CMusicDatabaseDirectory::IsAllItem(items[i]->GetPath()) || items[i]->IsParentFolder())
       continue;
 
     CAlbum album;
     album.strAlbum = items[i]->GetMusicInfoTag()->GetAlbum();
     album.strArtist = items[i]->GetMusicInfoTag()->GetArtist();
-    album.strGenre = items[i]->m_strPath; // a bit hacky use of field
+    album.strGenre = items[i]->GetPath(); // a bit hacky use of field
     m_albumsToScan.insert(album);
   }
 
@@ -297,12 +297,12 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory)
 
   for (int i=0;i<items.Size();++i)
   {
-    if (CMusicDatabaseDirectory::IsAllItem(items[i]->m_strPath) || items[i]->IsParentFolder())
+    if (CMusicDatabaseDirectory::IsAllItem(items[i]->GetPath()) || items[i]->IsParentFolder())
       continue;
 
     CArtist artist;
     artist.strArtist = items[i]->GetMusicInfoTag()->GetArtist();
-    artist.strGenre = items[i]->m_strPath; // a bit hacky use of field
+    artist.strGenre = items[i]->GetPath(); // a bit hacky use of field
     m_artistsToScan.insert(artist);
   }
 
@@ -412,7 +412,7 @@ bool CMusicInfoScanner::DoScan(const CStdString& strDirectory)
     // if we have a directory item (non-playlist) we then recurse into that folder
     if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList())
     {
-      CStdString strPath=pItem->m_strPath;
+      CStdString strPath=pItem->GetPath();
       if (!DoScan(strPath))
       {
         m_bStop = true;
@@ -440,30 +440,30 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
   {
     CFileItemPtr pItem = items[i];
     CStdString strExtension;
-    URIUtils::GetExtension(pItem->m_strPath, strExtension);
+    URIUtils::GetExtension(pItem->GetPath(), strExtension);
 
     if (m_bStop)
       return 0;
 
     // Discard all excluded files defined by m_musicExcludeRegExps
-    if (CUtil::ExcludeFileOrFolder(pItem->m_strPath, regexps))
+    if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps))
       continue;
 
     // dont try reading id3tags for folders, playlists or shoutcast streams
     if (!pItem->m_bIsFolder && !pItem->IsPlayList() && !pItem->IsPicture() && !pItem->IsLyrics() )
     {
       m_currentItem++;
-//      CLog::Log(LOGDEBUG, "%s - Reading tag for: %s", __FUNCTION__, pItem->m_strPath.c_str());
+//      CLog::Log(LOGDEBUG, "%s - Reading tag for: %s", __FUNCTION__, pItem->GetPath().c_str());
 
       // grab info from the song
-      CSong *dbSong = songsMap.Find(pItem->m_strPath);
+      CSong *dbSong = songsMap.Find(pItem->GetPath());
 
       CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
       if (!tag.Loaded() )
       { // read the tag from a file
-        auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->m_strPath));
+        auto_ptr<IMusicInfoTagLoader> pLoader (CMusicInfoTagLoaderFactory::CreateLoader(pItem->GetPath()));
         if (NULL != pLoader.get())
-          pLoader->Load(pItem->m_strPath, tag);
+          pLoader->Load(pItem->GetPath(), tag);
       }
 
       // if we have the itemcount, notify our
@@ -479,7 +479,7 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         if (song.strFileName.IsEmpty())
         {
           // copy filename from path in case UPnP or other tag loaders didn't specify one (FIXME?)
-          song.strFileName = pItem->m_strPath;
+          song.strFileName = pItem->GetPath();
 
           // if we still don't have a valid filename, skip the song
           if (song.strFileName.IsEmpty())
@@ -503,16 +503,16 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
         pItem->SetMusicThumb();
         song.strThumb = pItem->GetThumbnailImage();
         songsToAdd.push_back(song);
-//        CLog::Log(LOGDEBUG, "%s - Tag loaded for: %s", __FUNCTION__, pItem->m_strPath.c_str());
+//        CLog::Log(LOGDEBUG, "%s - Tag loaded for: %s", __FUNCTION__, pItem->GetPath().c_str());
       }
       else
-        CLog::Log(LOGDEBUG, "%s - No tag found for: %s", __FUNCTION__, pItem->m_strPath.c_str());
+        CLog::Log(LOGDEBUG, "%s - No tag found for: %s", __FUNCTION__, pItem->GetPath().c_str());
     }
   }
 
   CheckForVariousArtists(songsToAdd);
   if (!items.HasThumbnail())
-    UpdateFolderThumb(songsToAdd, items.m_strPath);
+    UpdateFolderThumb(songsToAdd, items.GetPath());
 
   // finally, add these to the database
   set<CStdString> artistsToScan;
@@ -767,7 +767,7 @@ int CMusicInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
     const CFileItemPtr pItem=items[i];
 
     if (recursive && pItem->m_bIsFolder)
-      count+=CountFilesRecursively(pItem->m_strPath);
+      count+=CountFilesRecursively(pItem->GetPath());
     else if (pItem->IsAudio() && !pItem->IsPlayList() && !pItem->IsNFO())
       count++;
   }
@@ -783,7 +783,7 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, CStdString &hash)
   for (int i = 0; i < items.Size(); ++i)
   {
     const CFileItemPtr pItem = items[i];
-    md5state.append(pItem->m_strPath);
+    md5state.append(pItem->GetPath());
     md5state.append((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
     FILETIME time = pItem->m_dateTime;
     md5state.append((unsigned char *)&time, sizeof(FILETIME));
@@ -1210,7 +1210,7 @@ void CMusicInfoScanner::GetArtistArtwork(long id, const CStdString &artistName, 
   CStdString cachedImage = item2.GetCachedFanart();
   if (!CFile::Exists(cachedImage))
   { // check for local fanart
-    CLog::Log(LOGDEBUG, "%s looking for fanart for artist %s in folder %s", __FUNCTION__, artistName.c_str(), item2.m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "%s looking for fanart for artist %s in folder %s", __FUNCTION__, artistName.c_str(), item2.GetPath().c_str());
     if (!item2.CacheLocalFanart())
     {
       CLog::Log(LOGDEBUG, "%s no local fanart found for artist %s", __FUNCTION__, artistName.c_str());

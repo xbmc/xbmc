@@ -91,7 +91,7 @@ void CBackgroundInfoLoader::Run()
         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "%s::LoadItem - Unhandled exception for item %s", __FUNCTION__, pItem->m_strPath.c_str());
+          CLog::Log(LOGERROR, "%s::LoadItem - Unhandled exception for item %s", __FUNCTION__, pItem->GetPath().c_str());
         }
       }
     }

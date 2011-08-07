@@ -51,7 +51,8 @@ bool CVTPDirectory::GetChannels(const CStdString& base, CFileItemList &items)
     CStdString buffer;
     CFileItemPtr item(new CFileItem("", false));
 
-    item->m_strPath.Format("%s/%d.ts", base.c_str(), it->index);
+    buffer.Format("%s/%d.ts", base.c_str(), it->index);
+    item->SetPath(buffer);
     item->m_strTitle = it->name;
     buffer.Format("%d - %s", it->index, it->name);
     item->SetLabel(buffer);

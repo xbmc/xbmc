@@ -364,7 +364,7 @@ case TMSG_POWERDOWN:
             {
               pSlideShow->Add(items[i].get());
             }
-            pSlideShow->Select(items[0]->m_strPath);
+            pSlideShow->Select(items[0]->GetPath());
           }
         }
         else
@@ -798,9 +798,7 @@ void CApplicationMessenger::ExecBuiltIn(const CStdString &command, bool wait)
 
 void CApplicationMessenger::MediaPlay(string filename)
 {
-  CFileItem item;
-  item.m_strPath = filename;
-  item.m_bIsFolder = false;
+  CFileItem item(filename, false);
   if (item.IsAudio())
     item.SetMusicThumb();
   else

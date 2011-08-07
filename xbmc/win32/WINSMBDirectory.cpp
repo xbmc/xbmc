@@ -141,11 +141,10 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
           if (strLabel != "." && strLabel != "..")
           {
             CFileItemPtr pItem(new CFileItem(strLabel));
-            pItem->m_strPath = strPath;
-            URIUtils::AddSlashAtEnd(pItem->m_strPath);
-            pItem->m_strPath += strLabel;
+            CStdString path = URIUtils::AddFileToFolder(strPath, strLabel);
+            URIUtils::AddSlashAtEnd(path);
+            pItem->SetPath(path);
             pItem->m_bIsFolder = true;
-            URIUtils::AddSlashAtEnd(pItem->m_strPath);
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             pItem->m_dateTime=localTime;
 
@@ -158,9 +157,7 @@ bool CWINSMBDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &i
         else
         {
           CFileItemPtr pItem(new CFileItem(strLabel));
-          pItem->m_strPath = strPath;
-          URIUtils::AddSlashAtEnd(pItem->m_strPath);
-          pItem->m_strPath += strLabel;
+          pItem->SetPath(URIUtils::AddFileToFolder(strPath, strLabel));
           pItem->m_bIsFolder = false;
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
@@ -302,10 +299,10 @@ bool CWINSMBDirectory::EnumerateFunc(LPNETRESOURCEW lpnr, CFileItemList &items)
             strName = rooturl.GetHostName();
 
           strName.Replace("\\","");
-          
+
+          URIUtils::AddSlashAtEnd(strurl);
           CFileItemPtr pItem(new CFileItem(strName));
-          pItem->m_strPath = strurl;
-          URIUtils::AddSlashAtEnd(pItem->m_strPath);
+          pItem->SetPath(strurl);
           pItem->m_bIsFolder = true;
           items.Add(pItem);
         }

@@ -527,7 +527,7 @@ bool CApplication::Create()
       CFileItemList items;
       CUtil::GetRecursiveListing("special://xbmc/userdata",items,"");
       for (int i=0;i<items.Size();++i)
-          CFile::Cache(items[i]->m_strPath,"special://masterprofile/"+URIUtils::GetFileName(items[i]->m_strPath));
+          CFile::Cache(items[i]->GetPath(),"special://masterprofile/"+URIUtils::GetFileName(items[i]->GetPath()));
     }
     g_settings.m_logFolder = "special://masterprofile/";
   }
@@ -1738,13 +1738,13 @@ bool CApplication::LoadUserWindows()
       {
         if (items[i]->m_bIsFolder)
           continue;
-        CStdString skinFile = URIUtils::GetFileName(items[i]->m_strPath);
+        CStdString skinFile = URIUtils::GetFileName(items[i]->GetPath());
         if (skinFile.Left(6).CompareNoCase("custom") == 0)
         {
           TiXmlDocument xmlDoc;
-          if (!xmlDoc.LoadFile(items[i]->m_strPath))
+          if (!xmlDoc.LoadFile(items[i]->GetPath()))
           {
-            CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->m_strPath.c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
+            CLog::Log(LOGERROR, "unable to load:%s, Line %d\n%s", items[i]->GetPath().c_str(), xmlDoc.ErrorRow(), xmlDoc.ErrorDesc());
             continue;
           }
 
@@ -2334,7 +2334,7 @@ bool CApplication::OnAction(const CAction &action)
         CMusicDatabase db;
         if (db.Open())      // OpenForWrite() ?
         {
-          db.SetSongRating(m_itemCurrentFile->m_strPath, m_itemCurrentFile->GetMusicInfoTag()->GetRating());
+          db.SetSongRating(m_itemCurrentFile->GetPath(), m_itemCurrentFile->GetMusicInfoTag()->GetRating());
           db.Close();
         }
         // send a message to all windows to tell them to update the fileitem (eg playlistplayer, media windows)
@@ -3303,11 +3303,11 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
   {
     CDirectory dir;
     CFileItemList items;
-    if (dir.GetDirectory(item.m_strPath, items) && items.Size())
+    if (dir.GetDirectory(item.GetPath(), items) && items.Size())
     {
       CSmartPlaylist smartpl;
       //get name and type of smartplaylist, this will always succeed as GetDirectory also did this.
-      smartpl.OpenAndReadName(item.m_strPath);
+      smartpl.OpenAndReadName(item.GetPath());
       CPlayList playlist;
       playlist.Add(items);
       return ProcessAndStartPlaylist(smartpl.GetName(), playlist, (smartpl.GetType() == "songs" || smartpl.GetType() == "albums") ? PLAYLIST_MUSIC:PLAYLIST_VIDEO);
@@ -3319,7 +3319,7 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 
     //is or could be a playlist
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(item));
-    bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.m_strPath));
+    bool gotPlayList = (pPlayList.get() && pPlayList->Load(item.GetPath()));
 
     if (dlgCache)
     {
@@ -3332,10 +3332,10 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
     {
 
       if (iPlaylist != PLAYLIST_NONE)
-        return ProcessAndStartPlaylist(item.m_strPath, *pPlayList, iPlaylist);
+        return ProcessAndStartPlaylist(item.GetPath(), *pPlayList, iPlaylist);
       else
       {
-        CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.m_strPath.c_str());
+        CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.GetPath().c_str());
         if(pPlayList->size())
           return PlayFile(*(*pPlayList)[0], false);
       }
@@ -3368,15 +3368,15 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
   CVideoDatabase dbs;
   if (dbs.Open())
   {
-    dbs.GetVideoSettings(item.m_strPath, g_settings.m_currentVideoSettings);
-    haveTimes = dbs.GetStackTimes(item.m_strPath, times);
+    dbs.GetVideoSettings(item.GetPath(), g_settings.m_currentVideoSettings);
+    haveTimes = dbs.GetStackTimes(item.GetPath(), times);
     dbs.Close();
   }
 
 
   // calculate the total time of the stack
   CStackDirectory dir;
-  dir.GetDirectory(item.m_strPath, *m_currentStack);
+  dir.GetDirectory(item.GetPath(), *m_currentStack);
   long totalTime = 0;
   for (int i = 0; i < m_currentStack->Size(); i++)
   {
@@ -3385,7 +3385,7 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     else
     {
       int duration;
-      if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->m_strPath, duration))
+      if (!CDVDFileInfo::GetFileDuration((*m_currentStack)[i]->GetPath(), duration))
       {
         m_currentStack->Clear();
         return false;
@@ -3403,13 +3403,13 @@ bool CApplication::PlayStack(const CFileItem& item, bool bRestart)
     if (dbs.Open())
     {
       if( !haveTimes )
-        dbs.SetStackTimes(item.m_strPath, times);
+        dbs.SetStackTimes(item.GetPath(), times);
 
       if( item.m_lStartOffset == STARTOFFSET_RESUME )
       {
         // can only resume seek here, not dvdstate
         CBookmark bookmark;
-        if( dbs.GetResumeBookMark(item.m_strPath, bookmark) )
+        if( dbs.GetResumeBookMark(item.GetPath(), bookmark) )
           seconds = bookmark.timeInSeconds;
         else
           seconds = 0.0f;
@@ -3478,15 +3478,15 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   if (item.IsPlugin())
   { // we modify the item so that it becomes a real URL
     CFileItem item_new(item);
-    if (XFILE::CPluginDirectory::GetPluginResult(item.m_strPath, item_new))
+    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
       return PlayFile(item_new, false);
     return false;
   }
 
-  if (URIUtils::IsUPnP(item.m_strPath))
+  if (URIUtils::IsUPnP(item.GetPath()))
   {
     CFileItem item_new(item);
-    if (XFILE::CUPnPDirectory::GetResource(item.m_strPath, item_new))
+    if (XFILE::CUPnPDirectory::GetResource(item.GetPath(), item_new))
       return PlayFile(item_new, false);
     return false;
   }
@@ -3500,7 +3500,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   //Is TuxBox, this should probably be moved to CFileTuxBox
   if(item.IsTuxBox())
   {
-    CLog::Log(LOGDEBUG, "%s - TuxBox URL Detected %s",__FUNCTION__, item.m_strPath.c_str());
+    CLog::Log(LOGDEBUG, "%s - TuxBox URL Detected %s",__FUNCTION__, item.GetPath().c_str());
 
     if(g_tuxboxService.IsRunning())
       g_tuxboxService.Stop();
@@ -3550,13 +3550,13 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
       // open the d/b and retrieve the bookmarks for the current movie
       CVideoDatabase dbs;
       dbs.Open();
-      dbs.GetVideoSettings(item.m_strPath, g_settings.m_currentVideoSettings);
+      dbs.GetVideoSettings(item.GetPath(), g_settings.m_currentVideoSettings);
 
       if( item.m_lStartOffset == STARTOFFSET_RESUME )
       {
         options.starttime = 0.0f;
         CBookmark bookmark;
-        CStdString path = item.m_strPath;
+        CStdString path = item.GetPath();
         if (item.IsDVD()) 
           path = item.GetVideoInfoTag()->m_strFileNameAndPath;
         if(dbs.GetResumeBookMark(path, bookmark))
@@ -3656,7 +3656,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
   else
   {
-    CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.m_strPath.c_str());
+    CLog::Log(LOGERROR, "Error creating player for item %s (File doesn't exist?)", item.GetPath().c_str());
     bResult = false;
   }
 
@@ -3986,7 +3986,7 @@ void CApplication::SaveFileState()
 void CApplication::UpdateFileState()
 {
   // Did the file change?
-  if (m_progressTrackingItem->m_strPath != "" && m_progressTrackingItem->m_strPath != CurrentFile())
+  if (m_progressTrackingItem->GetPath() != "" && m_progressTrackingItem->GetPath() != CurrentFile())
   {
     SaveFileState();
 
@@ -3997,7 +3997,7 @@ void CApplication::UpdateFileState()
   {
     if (IsPlayingVideo() || IsPlayingAudio())
     {
-      if (m_progressTrackingItem->m_strPath == "")
+      if (m_progressTrackingItem->GetPath() == "")
       {
         // Init some stuff
         *m_progressTrackingItem = CurrentFileItem();
@@ -4389,14 +4389,14 @@ bool CApplication::OnMessage(CGUIMessage& message)
           {
             if (!m_itemCurrentFile->HasMusicInfoTag() || !m_itemCurrentFile->GetMusicInfoTag()->Loaded())
             {
-              IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(m_itemCurrentFile->m_strPath);
-              tagloader->Load(m_itemCurrentFile->m_strPath,*m_itemCurrentFile->GetMusicInfoTag());
+              IMusicInfoTagLoader* tagloader = CMusicInfoTagLoaderFactory::CreateLoader(m_itemCurrentFile->GetPath());
+              tagloader->Load(m_itemCurrentFile->GetPath(),*m_itemCurrentFile->GetMusicInfoTag());
               delete tagloader;
             }
             m_pKaraokeMgr->Start(m_itemCurrentFile->GetMusicInfoTag()->GetURL());
           }
           else
-            m_pKaraokeMgr->Start(m_itemCurrentFile->m_strPath);
+            m_pKaraokeMgr->Start(m_itemCurrentFile->GetPath());
         }
 #endif
         // Let scrobbler know about the track
@@ -4563,7 +4563,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
 #ifdef HAS_PYTHON
         if (item.IsPythonScript())
         { // a python script
-          g_pythonParser.evalFile(item.m_strPath.c_str(),ADDON::AddonPtr());
+          g_pythonParser.evalFile(item.GetPath().c_str(),ADDON::AddonPtr());
         }
         else
 #endif
@@ -4836,7 +4836,7 @@ void CApplication::Restart(bool bSamePosition)
 
 const CStdString& CApplication::CurrentFile()
 {
-  return m_itemCurrentFile->m_strPath;
+  return m_itemCurrentFile->GetPath();
 }
 
 CFileItem& CApplication::CurrentFileItem()
@@ -5259,7 +5259,7 @@ void CApplication::SaveCurrentFileSettings()
     {
       CVideoDatabase dbs;
       dbs.Open();
-      dbs.SetVideoSettings(m_itemCurrentFile->m_strPath, g_settings.m_currentVideoSettings);
+      dbs.SetVideoSettings(m_itemCurrentFile->GetPath(), g_settings.m_currentVideoSettings);
       dbs.Close();
     }
   }
