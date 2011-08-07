@@ -132,7 +132,6 @@ void CPVRManager::Stop(void)
 
   m_recordings->Unload();
   m_timers->Unload();
-  g_EpgContainer.Unload();
   m_channelGroups->Unload();
   m_addons->Unload();
   m_bIsStopping = false;
@@ -154,7 +153,6 @@ void CPVRManager::StopUpdateThreads(void)
 {
   StopThread();
   g_EpgContainer.UnregisterObserver(this);
-  g_EpgContainer.Stop();
   m_guiInfo->Stop();
   m_addons->Stop();
 }
@@ -253,7 +251,6 @@ void CPVRManager::Process(void)
   ShowProgressDialog(g_localizeStrings.Get(19239), 85);
   m_guiInfo->Start();
   g_EpgContainer.RegisterObserver(this);
-  g_EpgContainer.Start();
 
   /* close the progess dialog */
   HideProgressDialog();
@@ -386,8 +383,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
 {
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the PVR database", __FUNCTION__);
 
-  /* close the epg progress dialog, or we'll get a deadlock */
-  g_EpgContainer.CloseProgressDialog();
+  g_EpgContainer.Stop();
 
   CGUIDialogProgress* pDlgProgress = NULL;
   if (bShowProgress)
@@ -467,6 +463,8 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
   }
 
   CLog::Log(LOGNOTICE,"PVRManager - %s - PVR database cleared", __FUNCTION__);
+
+  g_EpgContainer.Start();
 
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
@@ -934,6 +932,12 @@ bool CPVRManager::IsRunning(void) const
 {
   CSingleLock lock(m_critSection);
   return !m_bStop;
+}
+
+bool CPVRManager::IsInitialising(void) const
+{
+  CSingleLock lock(m_critSection);
+  return g_guiSettings.GetBool("pvrmanager.enabled") && !m_bLoaded;
 }
 
 bool CPVRManager::IsPlayingTV(void) const

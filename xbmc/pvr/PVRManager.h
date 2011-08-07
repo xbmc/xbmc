@@ -177,6 +177,11 @@ namespace PVR
     bool IsRunning(void) const;
 
     /*!
+     * @return True while the PVRManager is initialising.
+     */
+    bool IsInitialising(void) const;
+
+    /*!
      * @brief Return the channel that is currently playing.
      * @param channel The channel or NULL if none is playing.
      * @return True if a channel is playing, false otherwise.

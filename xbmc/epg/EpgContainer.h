@@ -105,7 +105,7 @@ namespace EPG
      * @brief Update an entry in this container.
      * @param tag The table to update.
      * @param bUpdateDatabase If set to true, this table will be persisted in the database.
-     * @return True if it was updated successfully, false otherwise.
+     * @return The updated epg table or NULL if it couldn't be found.
      */
     virtual bool UpdateEntry(const CEpg &entry, bool bUpdateDatabase = false);
 
@@ -141,19 +141,20 @@ namespace EPG
      * @param iEpgId The database ID of the table.
      * @return The table or NULL if it wasn't found.
      */
-    virtual CEpg *GetById(int iEpgId);
+    virtual CEpg *GetById(int iEpgId) const;
+
+    /*!
+     * @brief Get an EPG table given a PVR channel.
+     * @param channel The channel to get the EPG table for.
+     * @return The table or NULL if it wasn't found.
+     */
+    virtual CEpg *GetByChannel(const PVR::CPVRChannel &channel) const;
 
     /*!
      * @brief Notify EPG table observers when the currently active tag changed.
      * @return True if the check was done, false if it was not the right time to check
      */
     virtual bool CheckPlayingEvents(void);
-
-    /*!
-     * @brief Insert an epg into the table. If the table already contains an entry with the same id, then that entry will be replaced.
-     * @param epg The EPG to insert.
-     */
-    virtual void InsertEpg(CEpg *epg);
 
     /*!
      * @brief The next EPG ID to be given to a table when the db isn't being used.
@@ -179,7 +180,30 @@ namespace EPG
      */
     virtual void UpdateProgressDialog(int iCurrent, int iMax, const CStdString &strText);
 
+    /*!
+     * @return True to not to store EPG entries in the database.
+     */
+    virtual bool IgnoreDB(void) const { return m_bIgnoreDbForClient; }
+
+    /*!
+     * @brief Wait for an EPG update to finish.
+     * @param bInterrupt True to interrupt a running update.
+     */
+    void WaitForUpdateFinish(bool bInterrupt = true);
+
+    /*!
+     * @brief Set to true to prevent updates.
+     * @param bSetTo The new value.
+     */
+    void PreventUpdates(bool bSetTo = true) { m_bPreventUpdates = bSetTo;  }
+
   protected:
+    /*!
+     * @brief Insert an epg into the table. If the table already contains an entry with the same id, then that entry will be replaced.
+     * @param epg The EPG to insert.
+     */
+    virtual void InsertEpg(CEpg *epg);
+
     /*!
      * @brief Load the EPG settings.
      * @return True if the settings were loaded successfully, false otherwise.
@@ -205,17 +229,6 @@ namespace EPG
     virtual bool InterruptUpdate(void) const;
 
     /*!
-     * @brief A hook that will be called on every update thread iteration.
-     */
-    virtual void ProcessHook(const CDateTime &time) {};
-
-    /*!
-     * @brief A hook that is called after the tables have been loaded from the database.
-     * @return True if the hook was executed successfully, false otherwise.
-     */
-    virtual bool AutoCreateTablesHook(void);
-
-    /*!
      * @brief Create a new EPG table.
      * @param iEpgId The table ID or -1 to create a new one.
      * @return The new table.
@@ -232,6 +245,11 @@ namespace EPG
      */
     CEpgContainer(void);
 
+    /*!
+     * @brief Load all tables from the database
+     */
+    void LoadFromDB(void);
+
     CEpgDatabase m_database;           /*!< the EPG database */
 
     /** @name Configuration */
@@ -243,16 +261,17 @@ namespace EPG
 
     /** @name Class state properties */
     //@{
-    bool         m_bDatabaseLoaded;    /*!< true if we already loaded the EPG from the database */
     bool         m_bIsUpdating;        /*!< true while an update is running */
+    bool         m_bPreventUpdates;    /*!< true to prevent EPG updates */
     time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
-    time_t       m_iLastEpgUpdate;     /*!< the time the EPG was updated */
-    time_t       m_iLastEpgActiveTagCheck; /*!< the time the EPG checked for active tag updates */
+    time_t       m_iNextEpgUpdate;     /*!< the time the EPG will be updated */
+    time_t       m_iNextEpgActiveTagCheck; /*!< the time the EPG will be checked for active tag updates */
     unsigned int m_iNextEpgId;         /*!< the next epg ID that will be given to a new table when the db isn't being used */
-    std::map<int, CEpg*> m_epgs;       /*!< the EPGs in this container */
+    std::vector<CEpg*> m_epgs;         /*!< the EPGs in this container */
     //@}
 
     CGUIDialogExtendedProgressBar *m_progressDialog; /*!< the progress dialog that is visible when updating the first time */
     CCriticalSection               m_critSection;    /*!< a critical section for changes to this container */
+    CEvent                         m_updateEvent;    /*!< trigger when an update finishes */
   };
 }

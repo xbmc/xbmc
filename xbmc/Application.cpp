@@ -241,6 +241,8 @@
 #include "pvr/dialogs/GUIDialogPVRRecordingInfo.h"
 #include "pvr/dialogs/GUIDialogPVRTimerSettings.h"
 
+#include "epg/EpgContainer.h"
+
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "video/dialogs/GUIDialogTeletext.h"
 #include "dialogs/GUIDialogSlider.h"
@@ -318,6 +320,7 @@ using namespace JSONRPC;
 #endif
 using namespace ANNOUNCEMENT;
 using namespace PVR;
+using namespace EPG;
 
 using namespace XbmcThreads;
 
@@ -1177,6 +1180,7 @@ bool CApplication::Initialize()
       FatalErrorHandler(true, true, true);
   }
 
+  StartEPGManager();
   StartPVRManager();
 
   if (g_advancedSettings.m_splashImage)
@@ -1516,11 +1520,21 @@ void CApplication::StartPVRManager()
     g_PVRManager.Start();
 }
 
+void CApplication::StartEPGManager(void)
+{
+  g_EpgContainer.Start();
+}
+
 void CApplication::StopPVRManager()
 {
   CLog::Log(LOGINFO, "stopping PVRManager");
   StopPlaying();
   g_PVRManager.Stop();
+}
+
+void CApplication::StopEPGManager(void)
+{
+  g_EpgContainer.Stop();
 }
 
 void CApplication::DimLCDOnPlayback(bool dim)
@@ -3263,6 +3277,7 @@ void CApplication::Stop(int exitCode)
     m_applicationMessenger.Cleanup();
 
     StopPVRManager();
+    StopEPGManager();
     StopServices();
     //Sleep(5000);
 

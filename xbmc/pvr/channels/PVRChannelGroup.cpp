@@ -465,9 +465,6 @@ int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* =
 
     if (bGroupMembers || !IsGroupMember(*channel))
     {
-      /* ensure that the epg pointer is set for this channel */
-      CEpg *epg = channel->GetEPG(); epg = NULL;
-
       CFileItemPtr pFileItem(new CFileItem(*channel));
       results.Add(pFileItem);
     }
@@ -971,7 +968,7 @@ int CPVRChannelGroup::GetEPGNow(CFileItemList* results)
   {
     CPVRChannel *channel = at(iChannelPtr).channel;
     CEpg *epg = channel->GetEPG();
-    if (!epg->HasValidEntries())
+    if (!epg || !epg->HasValidEntries())
       continue;
 
     const CEpgInfoTag *epgNow = epg->InfoTagNow();
@@ -997,7 +994,7 @@ int CPVRChannelGroup::GetEPGNext(CFileItemList* results)
   {
     CPVRChannel *channel = at(iChannelPtr).channel;
     CEpg *epg = channel->GetEPG();
-    if (!epg->HasValidEntries())
+    if (!epg || !epg->HasValidEntries())
       continue;
 
     const CEpgInfoTag *epgNow = epg->InfoTagNext();

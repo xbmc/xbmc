@@ -74,9 +74,6 @@ CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
   m_lastScanTime.SetValid(false);
   m_firstDate.SetValid(false);
   m_lastDate.SetValid(false);
-
-  if (m_Channel)
-    m_Channel->m_EPG = this;
 }
 
 CEpg::~CEpg(void)
@@ -193,9 +190,6 @@ void CEpg::Clear(void)
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
     delete at(iTagPtr);
   erase(begin(), end());
-
-  if (m_Channel)
-    m_Channel->m_EPG = NULL;
 }
 
 void CEpg::Cleanup(void)
@@ -588,13 +582,13 @@ const CDateTime &CEpg::GetLastScanTime(void)
   return m_lastScanTime;
 }
 
-bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime, bool bLoadFromDb)
+bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
 {
   bool bGrabSuccess(true);
   bool bUpdate(false);
 
   /* load the entries from the db first */
-  if (!m_bLoaded && bLoadFromDb)
+  if (!m_bLoaded && !g_EpgContainer.IgnoreDB())
     Load();
 
   /* clean up if needed */
@@ -691,13 +685,6 @@ bool CEpg::Persist(bool bPersistTags /* = false */, bool bQueueWrite /* = false 
     }
   }
 
-  if (HasPVRChannel() && m_Channel->m_iEpgId != m_iEpgID)
-  {
-    m_Channel->m_iEpgId = m_iEpgID;
-    m_Channel->m_bChanged = true;
-    m_Channel->Persist();
-  }
-
   if (bPersistTags)
     bReturn = PersistTags(bQueueWrite);
   else
@@ -734,6 +721,8 @@ bool CEpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
 
   m_strName = epg.m_strName;
   m_strScraperName = epg.m_strScraperName;
+  if (epg.HasPVRChannel())
+    m_Channel = epg.m_Channel;
 
   if (bUpdateDb)
     bReturn = Persist(false);

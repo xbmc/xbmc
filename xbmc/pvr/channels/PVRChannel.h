@@ -71,7 +71,7 @@ namespace PVR
      */
     //@{
     int              m_iEpgId;                  /*!< the id of the EPG for this channel */
-    EPG::CEpg *      m_EPG;                     /*!< the EPG table for this channel */
+    bool             m_bEPGCreated;             /*!< true if an EPG has been created for this channel */
     bool             m_bEPGEnabled;             /*!< don't use an EPG for this channel if set to false */
     CStdString       m_strEPGScraper;           /*!< the name of the scraper to be used for this channel */
     //@}
@@ -427,30 +427,28 @@ namespace PVR
 
     /*!
      * @brief Get the EPG table for this channel.
-     *
-     * Get the EPG table for this channel.
-     * Will be created if it doesn't exist.
-     *
      * @return The EPG for this channel.
      */
-    EPG::CEpg *GetEPG();
+    EPG::CEpg *GetEPG() const;
+
+    /*!
+     * @brief Create the EPG table for this channel.
+     * @return True if the table was created successfully, false otherwise.
+     */
+    bool CreateEPG(void);
 
     /*!
      * @brief Get the EPG table for this channel.
-     *
-     * Get the EPG table for this channel.
-     * Will be created if it doesn't exist.
-     *
      * @param results The file list to store the results in.
      * @return The number of tables that were added.
      */
-    int GetEPG(CFileItemList *results);
+    int GetEPG(CFileItemList *results) const;
 
     /*!
      * @brief Clear the EPG for this channel.
      * @return True if it was cleared, false if not.
      */
-    bool ClearEPG();
+    bool ClearEPG() const;
 
     /*!
      * @brief Get the EPG tag that is active on this channel now.
