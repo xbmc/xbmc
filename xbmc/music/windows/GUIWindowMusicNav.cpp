@@ -439,7 +439,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     else if (!inPlaylists && (dir.HasAlbumInfo(item->m_strPath)||
                               dir.IsArtistDir(item->m_strPath)   )      &&
              !dir.IsAllItem(item->m_strPath) && !item->IsParentFolder() &&
-             !item->IsLastFM()                                          &&
+             !item->IsLastFM() && !item->IsPlugin() && !item->IsScript() &&
              !item->m_strPath.Left(14).Equals("musicsearch://"))
     {
       if (dir.IsArtistDir(item->m_strPath))
