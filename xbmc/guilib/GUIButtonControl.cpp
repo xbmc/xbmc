@@ -159,11 +159,15 @@ bool CGUIButtonControl::OnMessage(CGUIMessage& message)
     }
     if (message.GetMessage() == GUI_MSG_SELECTED)
     {
+      if (!m_bSelected)
+        SetInvalid();
       m_bSelected = true;
       return true;
     }
     if (message.GetMessage() == GUI_MSG_DESELECTED)
     {
+      if (m_bSelected)
+        SetInvalid();
       m_bSelected = false;
       return true;
     }

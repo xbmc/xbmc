@@ -74,6 +74,7 @@ public:
   static bool IsOnLAN(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile);
   static bool IsPVRRecording(const CStdString& strFile);
+  static bool IsScript(const CStdString& strFile);
   static bool IsRAR(const CStdString& strFile);
   static bool IsRemote(const CStdString& strFile);
   static bool IsSmb(const CStdString& strFile);

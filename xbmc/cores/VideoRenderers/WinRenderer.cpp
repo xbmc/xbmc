@@ -901,12 +901,17 @@ void CWinRenderer::Stage2()
 void CWinRenderer::RenderProcessor(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
-  RECT rect;
   HRESULT hr;
-  rect.top    = m_destRect.y1;
-  rect.bottom = m_destRect.y2;
-  rect.left   = m_destRect.x1;
-  rect.right  = m_destRect.x2;
+  RECT sourceRect;
+  sourceRect.top    = m_sourceRect.y1;
+  sourceRect.bottom = m_sourceRect.y2;
+  sourceRect.left   = m_sourceRect.x1;
+  sourceRect.right  = m_sourceRect.x2;
+  RECT destRect;
+  destRect.top    = m_destRect.y1;
+  destRect.bottom = m_destRect.y2;
+  destRect.left   = m_destRect.x1;
+  destRect.right  = m_destRect.x2;
 
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
   if(image->proc == NULL)
@@ -919,7 +924,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  image->proc->Render(rect, target, image->id);
+  image->proc->Render(sourceRect, destRect, target, image->id);
 
   target->Release();
 }

@@ -1,4 +1,3 @@
-#ifndef __APPLE__
 /*
 * XBMC Media Center
 * Copyright (c) 2002 d7o3g4q and RUNTiME
@@ -718,4 +717,3 @@ void CALSADirectSound::GenSoundLabel(AudioSinkList& vAudioSinks, CStdString sink
     vAudioSinks.push_back(AudioSink(label, finalSink));
   }
 }
-#endif

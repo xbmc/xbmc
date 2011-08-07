@@ -439,7 +439,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
     else if (!inPlaylists && (dir.HasAlbumInfo(item->m_strPath)||
                               dir.IsArtistDir(item->m_strPath)   )      &&
              !dir.IsAllItem(item->m_strPath) && !item->IsParentFolder() &&
-             !item->IsLastFM()                                          &&
+             !item->IsLastFM() && !item->IsPlugin() && !item->IsScript() &&
              !item->m_strPath.Left(14).Equals("musicsearch://"))
     {
       if (dir.IsArtistDir(item->m_strPath))
@@ -526,7 +526,7 @@ void CGUIWindowMusicNav::GetContextButtons(int itemNumber, CContextButtons &butt
                     && (item->IsPlayList() || item->IsSmartPlayList()))
       buttons.Add(CONTEXT_BUTTON_DELETE, 117);
 
-    if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+    if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
       buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
   }
   // noncontextual buttons
