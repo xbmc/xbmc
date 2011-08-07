@@ -39,7 +39,7 @@
 #else
   #include "CoreAudioRenderer.h"
 #endif
-#elif defined(_LINUX)
+#elif defined(USE_ALSA)
 #include "ALSADirectSound.h"
 #endif
 
@@ -151,7 +151,7 @@ IAudioRenderer* CAudioRendererFactory::Create(IAudioCallback* pCallback, int iCh
   #else
     CreateAndReturnOnValidInitialize(CCoreAudioRenderer);
   #endif
-#elif defined(_LINUX)
+#elif defined(USE_ALSA)
   CreateAndReturnOnValidInitialize(CALSADirectSound);
 #endif
 
@@ -176,7 +176,7 @@ void CAudioRendererFactory::EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool
   #if !defined(__arm__)
     CCoreAudioRenderer::EnumerateAudioSinks(vAudioSinks, passthrough);
   #endif
-#elif defined(_LINUX)
+#elif defined(USE_ALSA)
   CALSADirectSound::EnumerateAudioSinks(vAudioSinks, passthrough);
 #endif
 }
@@ -203,7 +203,7 @@ IAudioRenderer *CAudioRendererFactory::CreateFromUri(const CStdString &soundsyst
     if (soundsystem.Equals("coreaudio"))
       ReturnNewRenderer(CCoreAudioRenderer);
   #endif
-#elif defined(_LINUX)
+#elif defined(USE_ALSA)
   if (soundsystem.Equals("alsa"))
     ReturnNewRenderer(CALSADirectSound);
 #endif

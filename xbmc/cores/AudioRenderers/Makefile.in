@@ -10,8 +10,11 @@ else
 SRCS = \
 	NullDirectSound.cpp \
 	AudioRendererFactory.cpp \
-	ALSADirectSound.cpp \
 
+endif
+
+ifeq (@USE_ALSA@,1)
+SRCS+=	ALSADirectSound.cpp
 endif
 
 ifeq (@USE_PULSE@,1)
