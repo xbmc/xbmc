@@ -37,6 +37,7 @@ public:
   virtual ~CGUIMediaWindow(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   virtual void OnInitWindow();

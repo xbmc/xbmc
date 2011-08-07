@@ -48,6 +48,8 @@ public:
 
   void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   void Show(); // modeless
+  
+  virtual bool OnBack(int actionID);
 
   virtual bool IsDialogRunning() const { return m_active; };
   virtual bool IsDialog() const { return true;};

@@ -78,12 +78,10 @@ CGUIDialogSmartPlaylistEditor::~CGUIDialogSmartPlaylistEditor()
   delete m_ruleLabels;
 }
 
-bool CGUIDialogSmartPlaylistEditor::OnAction(const CAction &action)
+bool CGUIDialogSmartPlaylistEditor::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU ||
-      action.GetID() == ACTION_NAV_BACK)
-    m_cancelled = true;
-  return CGUIDialog::OnAction(action);
+  m_cancelled = true;
+  return CGUIDialog::OnBack(actionID);
 }
 
 bool CGUIDialogSmartPlaylistEditor::OnMessage(CGUIMessage& message)

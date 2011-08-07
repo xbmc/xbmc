@@ -85,22 +85,15 @@ CGUIWindowMusicBase::~CGUIWindowMusicBase ()
 {
 }
 
-/// \brief Handle actions on window.
-/// \param action Action that can be reacted on.
-bool CGUIWindowMusicBase::OnAction(const CAction& action)
+bool CGUIWindowMusicBase::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU ||
-      action.GetID() == ACTION_NAV_BACK)
+  CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
+  if (musicScan && !musicScan->IsDialogRunning())
   {
-    CGUIDialogMusicScan *musicScan = (CGUIDialogMusicScan *)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_SCAN);
-    if (musicScan && !musicScan->IsDialogRunning())
-    {
-      CUtil::ThumbCacheClear();
-      CUtil::RemoveTempFiles();
-    }
+    CUtil::ThumbCacheClear();
+    CUtil::RemoveTempFiles();
   }
-
-  return CGUIMediaWindow::OnAction(action);
+  return CGUIMediaWindow::OnBack(actionID);
 }
 
 /*!
