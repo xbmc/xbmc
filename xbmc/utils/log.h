@@ -24,8 +24,9 @@
 #include <stdio.h>
 #include <string>
 
-#include "threads/CriticalSection.h"
+//#include "threads/CriticalSection.h"
 #include "utils/GlobalsHandling.h"
+#include "threads/platform/win/CriticalSection.h"
 
 #define LOG_LEVEL_NONE         -1 // nothing at all is logged
 #define LOG_LEVEL_NORMAL        0 // shows notice, error, severe and fatal
