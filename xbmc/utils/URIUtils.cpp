@@ -576,6 +576,12 @@ bool URIUtils::IsPlugin(const CStdString& strFile)
   return url.GetProtocol().Equals("plugin");
 }
 
+bool URIUtils::IsScript(const CStdString& strFile)
+{
+  CURL url(strFile);
+  return url.GetProtocol().Equals("script");
+}
+
 bool URIUtils::IsAddonsPath(const CStdString& strFile)
 {
   CURL url(strFile);

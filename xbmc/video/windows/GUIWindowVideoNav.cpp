@@ -1063,7 +1063,7 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           }
         }
       }
-      if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
     }
   }
