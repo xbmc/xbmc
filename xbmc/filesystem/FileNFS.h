@@ -73,6 +73,7 @@ private:
   tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
   DllLibNfs *m_pLibNfs;//the lib
   std::list<CStdString> m_exportList;//list of exported pathes of current connected servers
+  CCriticalSection keepAliveLock;
  
   void clearMembers();
   bool resetContext();//clear old nfs context and init new context

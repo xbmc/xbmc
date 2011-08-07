@@ -252,10 +252,10 @@ void CNfsConnection::CheckIfIdle()
   
   if( m_pNfsContext != NULL )
   {
-    CSingleLock lock(*this);
     //handle keep alive on opened files
     for( tFileKeepAliveMap::iterator it = m_KeepAliveTimeouts.begin();it!=m_KeepAliveTimeouts.end();it++)
     {
+      CSingleLock lock(keepAliveLock);
       if(it->second > 0)
       {
         it->second--;
@@ -266,6 +266,7 @@ void CNfsConnection::CheckIfIdle()
         //reset timeout
         it->second = KEEP_ALIVE_TIMEOUT;
       }
+      lock.Leave();      
     }
   }
 }
@@ -273,14 +274,14 @@ void CNfsConnection::CheckIfIdle()
 //remove file handle from keep alive list on file close
 void CNfsConnection::removeFromKeepAliveList(struct nfsfh  *_pFileHandle)
 {
-  CSingleLock lock(*this);
+  CSingleLock lock(keepAliveLock);
   m_KeepAliveTimeouts.erase(_pFileHandle);
 }
 
 //reset timeouts on read
 void CNfsConnection::resetKeepAlive(struct nfsfh  *_pFileHandle)
 {
-  CSingleLock lock(*this);
+  CSingleLock lock(keepAliveLock);
   //adds new keys - refreshs existing ones  
   m_KeepAliveTimeouts[_pFileHandle] = KEEP_ALIVE_TIMEOUT;
 }
