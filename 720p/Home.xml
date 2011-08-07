@@ -633,7 +633,7 @@
 			<height>720</height>
 			<aspectratio>scale</aspectratio>
 			<aligny>top</aligny>
-			<imagepath background="true">http://localhost:32400/library/arts</imagepath>
+			<imagepath background="true">http://127.0.0.1:32400/library/arts</imagepath>
 			<timeperimage>8000</timeperimage>
 			<fadetime>1700</fadetime>
 			<randomize>true</randomize>
@@ -1131,7 +1131,7 @@
 						<description>Help Menu</description>
 						<label> $LOCALIZE[31954] </label>
 						<visible>!Skin.HasSetting(HideHelp)</visible>
-						<onclick>Plex.ActivateWindow(1,plex://localhost/system/help,return)</onclick>
+						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/help,return)</onclick>
 					</item>
 					<!--<item id="11">
 						<description>Favorites Menu</description>
@@ -1142,7 +1142,7 @@
 					<item id="12">
 						<description>Plex Online Menu</description>
 						<label> $LOCALIZE[31952] </label>
-						<onclick>Plex.ActivateWindow(1,plex://localhost/system/plexonline,return)</onclick>
+						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/plexonline,return)</onclick>
 						<visible>!Skin.HasSetting(HideAppStore)</visible>
 					</item>
 					<item id="1">
