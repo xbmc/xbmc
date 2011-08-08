@@ -425,6 +425,9 @@ void CSoftAE::LoadSettings()
     case 10: m_stdChLayout = AE_CH_LAYOUT_7_1; break;
   }
 
+#if defined(_WIN32)
+  m_passthroughDevice = g_guiSettings.GetString("audiooutput.audiodevice");
+#else
   m_passthroughDevice = g_guiSettings.GetString("audiooutput.passthroughdevice");
   if (m_passthroughDevice == "custom")
     m_passthroughDevice = g_guiSettings.GetString("audiooutput.custompassthrough");
@@ -434,6 +437,7 @@ void CSoftAE::LoadSettings()
 
   if (m_passthroughDevice.IsEmpty())
     m_passthroughDevice = "default";
+#endif
 
   m_device = g_guiSettings.GetString("audiooutput.audiodevice");
   if (m_device == "custom")
