@@ -631,8 +631,8 @@ IAEStream *CSoftAE::FreeStream(IAEStream *stream)
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end(); ++itt)
     if (*itt == stream)
     {
-      m_streams.erase(itt);
-      delete *itt;
+      itt = m_streams.erase(itt);
+      delete (CSoftAEStream*)stream;
 
       /* if it was the last stream and we have a mono output, then reopen */
       if (m_streams.empty() && m_chLayout.Count() <= 1)
