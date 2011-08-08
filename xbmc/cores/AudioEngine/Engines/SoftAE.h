@@ -102,7 +102,7 @@ private:
   CThread *m_thread;
 
   void LoadSettings();
-  bool OpenSink(unsigned int sampleRate = 48000, unsigned int channels = 2, bool forceRaw = false, enum AEDataFormat rawFormat = AE_FMT_AC3);
+  bool OpenSink();
   void ResetEncoder();
   bool SetupEncoder(AEAudioFormat &format);
   void Deinitialize();

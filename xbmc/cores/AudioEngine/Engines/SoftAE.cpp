@@ -100,51 +100,62 @@ IAESink *CSoftAE::GetSink(AEAudioFormat &newFormat, bool passthrough, CStdString
   return sink;
 }
 
-bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channels/* = 2*/, bool forceRaw/* = false */, enum AEDataFormat rawFormat/* = AE_FMT_RAW */)
+bool CSoftAE::OpenSink()
 {
   /* save off our raw/passthrough mode for checking */
-  bool wasTranscode      = m_transcode;
-  bool wasRawPassthrough = m_rawPassthrough;
-  bool reInit            = false;
+  bool wasTranscode           = m_transcode;
+  bool wasRawPassthrough      = m_rawPassthrough;
+  bool reInit                 = false;
+  CSoftAEStream *masterStream = NULL;
+  m_rawPassthrough            = false;
 
   /* lock the sink so the thread gets held up */
   CExclusiveLock sinkLock(m_sinkLock);
   LoadSettings();
-
+ 
   /* remove any deleted streams */
   CSingleLock streamLock(m_streamLock);
   for(StreamList::iterator itt = m_streams.begin(); itt != m_streams.end();)
   {
-    if ((*itt)->IsDestroyed())
+    CSoftAEStream *stream = *itt;
+    if (stream->IsDestroyed())
     {
-      CSoftAEStream *stream = *itt;
       itt = m_streams.erase(itt);
       delete stream;
       continue;
     }
+
+    /* prefer the first found raw stream over any others as the master */
+    if (stream->IsRaw() &! masterStream)
+    {
+      masterStream      = stream;
+      m_rawPassthrough  = true;
+    }
+
     ++itt;
   }
 
-  if (forceRaw)
-    m_rawPassthrough = true;
-  else
-    m_rawPassthrough = !m_streams.empty() && m_streams.front()->IsRaw();
+  /* if we dont have a master stream, choose one based on the seemless setting */
+  if (!masterStream && !m_streams.empty())
+    masterStream = m_preferSeemless ? m_streams.front() : m_streams.back();
 
   /* the desired format */
   AEAudioFormat newFormat;
 
-  /* override the sample rate & channel layout based on the oldest stream if there is one */
-  if (!m_streams.empty())
+  /* override the sample rate & channel layout based on the master stream if there is one */
+  if (masterStream)
   {
-    CSoftAEStream *stream     = m_preferSeemless ? m_streams.front() : m_streams.back();
-    sampleRate                = stream->GetSampleRate();
-    newFormat.m_channelLayout = stream->m_initChannelLayout;
+    newFormat.m_sampleRate    = masterStream->GetSampleRate();
+    newFormat.m_channelLayout = masterStream->m_initChannelLayout;    
+    /* dont resolve the channels if we are transoding or in raw mode */
     if (!m_transcode && !m_rawPassthrough)
       newFormat.m_channelLayout.ResolveChannels(m_stdChLayout);
-    channels                  = newFormat.m_channelLayout.Count();
   }
   else
+  {
+    newFormat.m_sampleRate    = 44100;
     newFormat.m_channelLayout = AE_CH_LAYOUT_2_0;
+  }
 
   streamLock.Leave();
 
@@ -167,7 +178,7 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
     some receivers & crappy integrated sound drivers.
   */
   if (m_transcode && !m_rawPassthrough)
-    sampleRate = 48000;
+    newFormat.m_sampleRate = 48000;
 
   /*
     if there is an audio resample rate set, use it, this MAY NOT be honoured as
@@ -175,12 +186,11 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
   */
   if (g_advancedSettings.m_audioResample)
   {
-    sampleRate = g_advancedSettings.m_audioResample;
-    CLog::Log(LOGINFO, "CSoftAE::OpenSink - Forcing samplerate to %d", sampleRate);
+    newFormat.m_sampleRate = g_advancedSettings.m_audioResample;
+    CLog::Log(LOGINFO, "CSoftAE::OpenSink - Forcing samplerate to %d", newFormat.m_sampleRate);
   }
 
-  newFormat.m_sampleRate = sampleRate;
-  newFormat.m_dataFormat = (m_rawPassthrough || m_transcode) ? rawFormat : AE_FMT_FLOAT;
+  newFormat.m_dataFormat = (m_rawPassthrough || m_transcode) ? masterStream->GetDataFormat() : AE_FMT_FLOAT;
 
   /* only re-open the sink if its not compatible with what we need */
   if (!m_sink || ((CStdString)m_sink->GetName()).ToUpper() != driver || !m_sink->IsCompatible(newFormat, device))
@@ -207,14 +217,12 @@ bool CSoftAE::OpenSink(unsigned int sampleRate/* = 48000*/, unsigned int channel
     if (!m_sink)
     {
       /* we failed, set the data format to defaults so the thread does not block */
-      newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_S16NE : AE_FMT_FLOAT;
-      newFormat.m_channelLayout = m_stdChLayout;
       if (m_rawPassthrough || m_transcode)
-        newFormat.m_channelLayout = (rawFormat == AE_FMT_AC3) ? AE_CH_LAYOUT_2_0 : AE_CH_LAYOUT_7_1;
+        newFormat.m_channelLayout = (newFormat.m_dataFormat == AE_FMT_AC3) ? AE_CH_LAYOUT_2_0 : AE_CH_LAYOUT_7_1;
       else
-        newFormat.m_channelLayout = newFormat.m_channelLayout;
-      newFormat.m_sampleRate    = sampleRate;
-      newFormat.m_frames        = (unsigned int)(((float)sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
+        newFormat.m_channelLayout = m_stdChLayout;
+      newFormat.m_dataFormat    = (m_rawPassthrough || m_transcode) ? AE_FMT_S16NE : AE_FMT_FLOAT;
+      newFormat.m_frames        = (unsigned int)(((float)newFormat.m_sampleRate / 1000.0f) * (float)DELAY_FRAME_TIME);
       newFormat.m_frameSamples  = newFormat.m_frames * newFormat.m_channelLayout.Count();
       newFormat.m_frameSize     = (CAEUtil::DataFormatToBits(newFormat.m_dataFormat) >> 3) * newFormat.m_channelLayout.Count();
     }
@@ -539,9 +547,9 @@ IAEStream *CSoftAE::MakeStream(enum AEDataFormat dataFormat, unsigned int sample
   streamLock.Leave();
 
   if (AE_IS_RAW(dataFormat))
-    OpenSink(sampleRate, channelLayout.Count(), true, dataFormat);
+    OpenSink();
   else if (wasEmpty || !m_preferSeemless)
-    OpenSink(sampleRate);
+    OpenSink();
 
   /* if the stream was not initialized, do it now */
   if (!stream->IsValid())
