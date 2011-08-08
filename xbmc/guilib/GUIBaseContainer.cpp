@@ -1032,12 +1032,12 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
   { // remove before keepStart and after keepEnd
     for (int i = 0; i < keepStart && i < (int)m_items.size(); ++i)
       m_items[i]->FreeMemory();
-    for (int i = keepEnd + 1; i < (int)m_items.size(); ++i)
+    for (int i = std::max(keepEnd + 1, 0); i < (int)m_items.size(); ++i)
       m_items[i]->FreeMemory();
   }
   else
   { // wrapping
-    for (int i = keepEnd + 1; i < keepStart && i < (int)m_items.size(); ++i)
+    for (int i = std::max(keepEnd + 1, 0); i < keepStart && i < (int)m_items.size(); ++i)
       m_items[i]->FreeMemory();
   }
 }
