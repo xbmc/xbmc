@@ -348,7 +348,7 @@ void CEpgContainer::CloseProgressDialog(void)
   CSingleLock lock(m_critSection);
   if (m_progressDialog)
   {
-    m_progressDialog->Close(true);
+    m_progressDialog->Close(true, 0, true, false);
     m_progressDialog = NULL;
   }
  }

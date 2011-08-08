@@ -228,7 +228,7 @@ void CPVRManager::HideProgressDialog(void)
 {
   if (m_loadingProgressDialog)
   {
-    m_loadingProgressDialog->Close();
+    m_loadingProgressDialog->Close(true, 0, true, false);
     m_loadingProgressDialog = NULL;
   }
 }
