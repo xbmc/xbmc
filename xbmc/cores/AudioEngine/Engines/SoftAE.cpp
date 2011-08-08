@@ -107,10 +107,10 @@ bool CSoftAE::OpenSink()
   bool wasRawPassthrough      = m_rawPassthrough;
   bool reInit                 = false;
   CSoftAEStream *masterStream = NULL;
-  m_rawPassthrough            = false;
 
   /* lock the sink so the thread gets held up */
   CExclusiveLock sinkLock(m_sinkLock);
+  m_rawPassthrough = false;
   LoadSettings();
  
   /* remove any deleted streams */
@@ -190,7 +190,10 @@ bool CSoftAE::OpenSink()
     CLog::Log(LOGINFO, "CSoftAE::OpenSink - Forcing samplerate to %d", newFormat.m_sampleRate);
   }
 
-  newFormat.m_dataFormat = (m_rawPassthrough || m_transcode) ? masterStream->GetDataFormat() : AE_FMT_FLOAT;
+  if (m_rawPassthrough || m_transcode)
+    newFormat.m_dataFormat = masterStream ? masterStream->GetDataFormat() : AE_FMT_AC3;
+  else
+    newFormat.m_dataFormat = AE_FMT_FLOAT;
 
   /* only re-open the sink if its not compatible with what we need */
   if (!m_sink || ((CStdString)m_sink->GetName()).ToUpper() != driver || !m_sink->IsCompatible(newFormat, device))
@@ -641,17 +644,16 @@ IAEStream *CSoftAE::FreeStream(IAEStream *stream)
     {
       itt = m_streams.erase(itt);
       delete (CSoftAEStream*)stream;
-
-      /* if it was the last stream and we have a mono output, then reopen */
-      if (m_streams.empty() && m_chLayout.Count() <= 1)
-      {
-         lock.Leave();
-         OpenSink();
-      }
-
       break;
     }
-  
+
+  /* if it was the last stream and we have a mono output, or we are raw, then reopen */
+  if (m_streams.empty() && (m_chLayout.Count() <= 1 || (m_rawPassthrough && !m_transcode)))
+  {
+     lock.Leave();
+     OpenSink();
+  }
+
   return NULL;
 }
 
@@ -713,9 +715,9 @@ void CSoftAE::Run()
   unsigned int channelCount = m_chLayout.Count();
   size_t size               = m_frameSize;
 
-  m_sinkLock.lock_shared();
+  CSharedLock sinkLock(m_sinkLock);
   while(m_running)
-  {    
+  {
     m_reOpened = false;
 
     /* output the buffer to the sink */
@@ -725,7 +727,7 @@ void CSoftAE::Run()
       RunOutputStage();
 
     /* unlock the sink, we don't need it anymore */
-    m_sinkLock.unlock_shared();
+    sinkLock.Leave();
 
     /* make sure we have enough room to fetch a frame */
     if(size > outSize)
@@ -754,7 +756,7 @@ void CSoftAE::Run()
     }
 
     /* re-lock the sink for the next loop */
-    m_sinkLock.lock_shared();
+    sinkLock.Enter();
 
     /* update the save values */
     channelCount = m_chLayout.Count();
