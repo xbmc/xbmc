@@ -193,7 +193,7 @@ namespace PVR
      * @param channel The EPG or NULL if no channel is playing.
      * @return The amount of results that was added or -1 if none.
      */
-    int GetCurrentEpg(CFileItemList *results) const;
+    int GetCurrentEpg(CFileItemList &results) const;
 
     /*!
      * @brief Check whether the PVRManager has fully started.

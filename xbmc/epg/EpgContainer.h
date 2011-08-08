@@ -115,14 +115,14 @@ namespace EPG
      * @param filter The filter to apply.
      * @return The amount of entries that were added.
      */
-    virtual int GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter);
+    virtual int GetEPGSearch(CFileItemList &results, const EpgSearchFilter &filter);
 
     /*!
      * @brief Get all EPG tables.
      * @param results The fileitem list to store the results in.
      * @return The amount of entries that were added.
      */
-    virtual int GetEPGAll(CFileItemList* results);
+    virtual int GetEPGAll(CFileItemList &results);
 
     /*!
      * @brief Get the start time of the first entry.

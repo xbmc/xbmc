@@ -939,8 +939,10 @@ const CDateTime CPVRChannelGroup::GetLastEPGDate(void)
   return g_EpgContainer.GetLastEPGDate();
 }
 
-int CPVRChannelGroup::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)
+int CPVRChannelGroup::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &filter)
 {
+  int iInitialSize = results.Size();
+
   /* get filtered results from all tables */
   g_EpgContainer.GetEPGSearch(results, filter);
 
@@ -956,13 +958,13 @@ int CPVRChannelGroup::GetEPGSearch(CFileItemList* results, const EpgSearchFilter
   if (filter.m_bIgnorePresentTimers)
     EpgSearchFilter::FilterTimers(results);
 
-  return results->Size();
+  return results.Size() - iInitialSize;
 }
 
-int CPVRChannelGroup::GetEPGNow(CFileItemList* results)
+int CPVRChannelGroup::GetEPGNow(CFileItemList &results)
 {
+  int iInitialSize = results.Size();
   CSingleLock lock(m_critSection);
-  int iInitialSize = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
@@ -979,16 +981,16 @@ int CPVRChannelGroup::GetEPGNow(CFileItemList* results)
     entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->m_strPath = channel->ChannelName();
     entry->SetThumbnailImage(channel->IconPath());
-    results->Add(entry);
+    results.Add(entry);
   }
 
-  return results->Size() - iInitialSize;
+  return results.Size() - iInitialSize;
 }
 
-int CPVRChannelGroup::GetEPGNext(CFileItemList* results)
+int CPVRChannelGroup::GetEPGNext(CFileItemList &results)
 {
+  int iInitialSize = results.Size();
   CSingleLock lock(m_critSection);
-  int iInitialSize = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
@@ -1005,15 +1007,15 @@ int CPVRChannelGroup::GetEPGNext(CFileItemList* results)
     entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->m_strPath = channel->ChannelName();
     entry->SetThumbnailImage(channel->IconPath());
-    results->Add(entry);
+    results.Add(entry);
   }
 
-  return results->Size() - iInitialSize;
+  return results.Size() - iInitialSize;
 }
 
-int CPVRChannelGroup::GetEPGAll(CFileItemList* results)
+int CPVRChannelGroup::GetEPGAll(CFileItemList &results)
 {
-  int iInitialSize = results->Size();
+  int iInitialSize = results.Size();
   CSingleLock lock(m_critSection);
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
@@ -1024,5 +1026,5 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList* results)
     at(iChannelPtr).channel->GetEPG(results);
   }
 
-  return results->Size() - iInitialSize;
+  return results.Size() - iInitialSize;
 }

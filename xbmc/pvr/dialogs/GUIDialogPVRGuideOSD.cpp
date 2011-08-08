@@ -100,7 +100,7 @@ void CGUIDialogPVRGuideOSD::Update()
   // empty the list ready for population
   Clear();
 
-  g_PVRManager.GetCurrentEpg(m_vecItems);
+  g_PVRManager.GetCurrentEpg(*m_vecItems);
   m_viewControl.SetItems(*m_vecItems);
 
   /* select the active entry */

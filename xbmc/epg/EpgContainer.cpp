@@ -491,15 +491,15 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   return !bInterrupted;
 }
 
-int CEpgContainer::GetEPGAll(CFileItemList* results)
+int CEpgContainer::GetEPGAll(CFileItemList &results)
 {
-  int iInitialSize = results->Size();
+  int iInitialSize = results.Size();
 
   CSingleLock lock(m_critSection);
   for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
     m_epgs[iEpgPtr]->Get(results);
 
-  return results->Size() - iInitialSize;
+  return results.Size() - iInitialSize;
 }
 
 const CDateTime CEpgContainer::GetFirstEPGDate(void)
@@ -532,8 +532,10 @@ const CDateTime CEpgContainer::GetLastEPGDate(void)
   return returnValue;
 }
 
-int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)
+int CEpgContainer::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &filter)
 {
+  int iInitialSize = results.Size();
+
   /* get filtered results from all tables */
   CSingleLock lock(m_critSection);
   for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
@@ -544,7 +546,7 @@ int CEpgContainer::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &f
   if (filter.m_bPreventRepeats)
     EpgSearchFilter::RemoveDuplicates(results);
 
-  return results->Size();
+  return results.Size() - iInitialSize;
 }
 
 bool CEpgContainer::CheckPlayingEvents(void)

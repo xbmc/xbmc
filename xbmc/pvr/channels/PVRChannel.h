@@ -442,7 +442,7 @@ namespace PVR
      * @param results The file list to store the results in.
      * @return The number of tables that were added.
      */
-    int GetEPG(CFileItemList *results) const;
+    int GetEPG(CFileItemList &results) const;
 
     /*!
      * @brief Clear the EPG for this channel.

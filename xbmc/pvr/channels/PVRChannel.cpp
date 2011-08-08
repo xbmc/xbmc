@@ -724,7 +724,7 @@ bool CPVRChannel::CreateEPG(void)
   return m_bEPGCreated;
 }
 
-int CPVRChannel::GetEPG(CFileItemList *results) const
+int CPVRChannel::GetEPG(CFileItemList &results) const
 {
   CEpg *epg = g_EpgContainer.GetByChannel(*this);
   if (!epg)

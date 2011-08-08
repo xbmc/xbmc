@@ -619,9 +619,9 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
   return bGrabSuccess;
 }
 
-int CEpg::Get(CFileItemList *results) const
+int CEpg::Get(CFileItemList &results) const
 {
-  int iInitialSize = results->Size();
+  int iInitialSize = results.Size();
 
   CSingleLock lock(m_critSection);
 
@@ -632,15 +632,15 @@ int CEpg::Get(CFileItemList *results) const
 
     CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
     entry->SetLabel2(at(iTagPtr)->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
-    results->Add(entry);
+    results.Add(entry);
   }
 
-  return size() - iInitialSize;
+  return results.Size() - iInitialSize;
 }
 
-int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
+int CEpg::Get(CFileItemList &results, const EpgSearchFilter &filter) const
 {
-  int iInitialSize = results->Size();
+  int iInitialSize = results.Size();
 
   if (!HasValidEntries())
     return -1;
@@ -653,11 +653,11 @@ int CEpg::Get(CFileItemList *results, const EpgSearchFilter &filter) const
     {
       CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
       entry->SetLabel2(at(iTagPtr)->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
-      results->Add(entry);
+      results.Add(entry);
     }
   }
 
-  return size() - iInitialSize;
+  return results.Size() - iInitialSize;
 }
 
 bool CEpg::Persist(bool bPersistTags /* = false */, bool bQueueWrite /* = false */)

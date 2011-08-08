@@ -123,7 +123,8 @@ void CGUIWindowPVRSearch::UpdateData(void)
       dlgProgress->Progress();
     }
 
-    g_EpgContainer.GetEPGSearch(m_parent->m_vecItems, m_searchfilter);
+    // TODO get this from the selected channel group
+    g_EpgContainer.GetEPGSearch(*m_parent->m_vecItems, m_searchfilter);
     if (dlgProgress)
       dlgProgress->Close();
 

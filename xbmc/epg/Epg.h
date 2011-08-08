@@ -216,7 +216,7 @@ namespace EPG
      * @param results The file list to store the results in.
      * @return The amount of entries that were added.
      */
-    virtual int Get(CFileItemList *results) const;
+    virtual int Get(CFileItemList &results) const;
 
     /*!
      * @brief Get all EPG entries that and apply a filter.
@@ -224,7 +224,7 @@ namespace EPG
      * @param filter The filter to apply.
      * @return The amount of entries that were added.
      */
-    virtual int Get(CFileItemList *results, const EpgSearchFilter &filter) const;
+    virtual int Get(CFileItemList &results, const EpgSearchFilter &filter) const;
 
     /*!
      * @brief Persist this table in the database.
