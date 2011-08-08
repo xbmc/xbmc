@@ -290,6 +290,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_MOVE_RIGHT:
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_UP:
+  case ACTION_NAV_BACK:
     {
       if (!HasFocus()) return false;
       if (action.GetHoldTime() > HOLD_TIME_START &&

@@ -33,7 +33,7 @@ public:
   CGUIWindowSettingsCategory(void);
   virtual ~CGUIWindowSettingsCategory(void);
   virtual bool OnMessage(CGUIMessage &message);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual void FrameMove();
   virtual void Render();
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);

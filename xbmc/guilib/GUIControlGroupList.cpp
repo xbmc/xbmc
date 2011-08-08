@@ -282,29 +282,29 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
       if (m_orientation == VERTICAL)
       {
         if (before) // update the DOWN action to point to us
-          before->SetNavigation(before->GetControlIdUp(), control->GetID(), GetControlIdLeft(), GetControlIdRight());
+          before->SetNavigation(before->GetControlIdUp(), control->GetID(), GetControlIdLeft(), GetControlIdRight(), GetControlIdBack());
         if (after) // update the UP action to point to us
-          after->SetNavigation(control->GetID(), after->GetControlIdDown(), GetControlIdLeft(), GetControlIdRight());
+          after->SetNavigation(control->GetID(), after->GetControlIdDown(), GetControlIdLeft(), GetControlIdRight(), GetControlIdBack());
       }
       else
       {
         if (before) // update the RIGHT action to point to us
-          before->SetNavigation(GetControlIdUp(), GetControlIdDown(), before->GetControlIdLeft(), control->GetID());
+          before->SetNavigation(GetControlIdUp(), GetControlIdDown(), before->GetControlIdLeft(), control->GetID(), GetControlIdBack());
         if (after) // update the LEFT action to point to us
-          after->SetNavigation(GetControlIdUp(), GetControlIdDown(), control->GetID(), after->GetControlIdRight());
+          after->SetNavigation(GetControlIdUp(), GetControlIdDown(), control->GetID(), after->GetControlIdRight(), GetControlIdBack());
       }
     }
     // now the control's nav
     std::vector<CGUIActionDescriptor> empty;
     if (m_orientation == VERTICAL)
     {
-      control->SetNavigation(beforeID, afterID, GetControlIdLeft(), GetControlIdRight());
-      control->SetNavigationActions(empty, empty, m_leftActions, m_rightActions, false);
+      control->SetNavigation(beforeID, afterID, GetControlIdLeft(), GetControlIdRight(), GetControlIdBack());
+      control->SetNavigationActions(empty, empty, m_leftActions, m_rightActions, empty, false);
     }
     else
     {
-      control->SetNavigation(GetControlIdUp(), GetControlIdDown(), beforeID, afterID);
-      control->SetNavigationActions(m_upActions, m_downActions, empty, empty, false);
+      control->SetNavigation(GetControlIdUp(), GetControlIdDown(), beforeID, afterID, GetControlIdBack());
+      control->SetNavigationActions(m_upActions, m_downActions, empty, empty, empty, false);
     }
 
     if (!m_useControlPositions)

@@ -61,18 +61,11 @@ bool CGUIDialogYesNo::OnMessage(CGUIMessage& message)
   return CGUIDialogBoxBase::OnMessage(message);
 }
 
-bool CGUIDialogYesNo::OnAction(const CAction& action)
+bool CGUIDialogYesNo::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU ||
-      action.GetID() == ACTION_NAV_BACK)
-  {
-    m_bCanceled = true;
-    m_bConfirmed = false;
-    Close();
-    return true;
-  }
-
-  return CGUIDialogBoxBase::OnAction(action);
+  m_bCanceled = true;
+  m_bConfirmed = false;
+  return CGUIDialogBoxBase::OnBack(actionID);
 }
 
 // \brief Show CGUIDialogYesNo dialog, then wait for user to dismiss it.

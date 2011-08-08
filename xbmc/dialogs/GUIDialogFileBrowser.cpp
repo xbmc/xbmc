@@ -81,8 +81,7 @@ CGUIDialogFileBrowser::~CGUIDialogFileBrowser()
 
 bool CGUIDialogFileBrowser::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PARENT_DIR ||
-     (action.GetID() == ACTION_NAV_BACK && !m_vecItems->IsVirtualDirectoryRoot()))
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     GoParentFolder();
     return true;
@@ -110,6 +109,16 @@ bool CGUIDialogFileBrowser::OnAction(const CAction &action)
   }
 
   return CGUIDialog::OnAction(action);
+}
+
+bool CGUIDialogFileBrowser::OnBack(int actionID)
+{
+  if (actionID == ACTION_NAV_BACK && !m_vecItems->IsVirtualDirectoryRoot())
+  {
+    GoParentFolder();
+    return true;
+  }
+  return CGUIDialog::OnBack(actionID);
 }
 
 bool CGUIDialogFileBrowser::OnMessage(CGUIMessage& message)
