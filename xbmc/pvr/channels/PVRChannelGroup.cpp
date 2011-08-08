@@ -108,6 +108,9 @@ int CPVRChannelGroup::Load(void)
         __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
   }
 
+  SortByChannelNumber();
+  Renumber();
+
   g_guiSettings.RegisterObserver(this);
   m_bLoaded = true;
 
