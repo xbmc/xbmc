@@ -243,6 +243,7 @@ protected:
   SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
   RenderMethod         m_renderMethod;
   DXVA::CProcessor*    m_processor;
+  unsigned             m_processorCaps;
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   DllAvUtil           *m_dllAvUtil;
