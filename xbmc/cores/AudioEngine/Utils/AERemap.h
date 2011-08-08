@@ -28,7 +28,7 @@ public:
   ~CAERemap();
 
   bool Initialize(CAEChannelInfo input, CAEChannelInfo output, bool finalStage, bool forceNormalize = false);
-  void Remap(float *in, float *out, const unsigned int frames) const;
+  void Remap(float * const in, float * const out, const unsigned int frames) const;
 
 private:
   typedef struct {

@@ -264,7 +264,7 @@ void CAERemap::ResolveMix(const AEChannel from, CAEChannelInfo to)
   fromInfo->in_src   = false;
 }
 
-void CAERemap::Remap(float *in, float *out, const unsigned int frames) const
+void CAERemap::Remap(float * const in, float * const out, const unsigned int frames) const
 {
   const unsigned int frameBlocks = frames & ~0x3;
 
