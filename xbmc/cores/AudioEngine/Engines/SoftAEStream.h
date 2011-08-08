@@ -86,6 +86,7 @@ private:
   enum AEDataFormat m_initDataFormat;
   unsigned int      m_initSampleRate;
   CAEChannelInfo    m_initChannelLayout;
+  unsigned int      m_chLayoutCount;
   
   typedef struct
   {

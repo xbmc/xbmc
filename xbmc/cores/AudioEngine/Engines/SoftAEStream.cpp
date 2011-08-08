@@ -61,6 +61,7 @@ CSoftAEStream::CSoftAEStream(enum AEDataFormat dataFormat, unsigned int sampleRa
   m_initDataFormat    = dataFormat;
   m_initSampleRate    = sampleRate;
   m_initChannelLayout = channelLayout;
+  m_chLayoutCount     = channelLayout.Count();
   m_forceResample     = (options & AESTREAM_FORCE_RESAMPLE) != 0;
   m_paused            = (options & AESTREAM_PAUSED) != 0;
   
@@ -190,6 +191,7 @@ void CSoftAEStream::Initialize()
     m_ssrcData.end_of_input  = 0;
   }
 
+  m_chLayoutCount = m_format.m_channelLayout.Count();  
   m_valid = true;
 }
 
@@ -292,7 +294,7 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
   /* resample it if we need to */
   if (m_resample)
   {
-    m_ssrcData.input_frames = samples / m_format.m_channelLayout.Count();
+    m_ssrcData.input_frames = samples / m_chLayoutCount;
     if (src_process(m_ssrc, &m_ssrcData) != 0) return 0;
     data     = (uint8_t*)m_ssrcData.data_out;
     frames   = m_ssrcData.output_frames_gen;
@@ -300,13 +302,13 @@ unsigned int CSoftAEStream::ProcessFrameBuffer()
     if (!frames)
       return consumed;
 
-    samples = frames * m_format.m_channelLayout.Count();
+    samples = frames * m_chLayoutCount;
   }
   else
   {
     data     = (uint8_t*)m_convertBuffer;
-    frames   = samples / m_format.m_channelLayout.Count();
-    samples  = frames * m_format.m_channelLayout.Count();
+    frames   = samples / m_chLayoutCount;
+    samples  = frames * m_chLayoutCount;
     consumed = frames * m_bytesPerFrame;
   }
 

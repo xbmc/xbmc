@@ -52,7 +52,9 @@ CSoftAE::CSoftAE():
   m_preferSeemless     (true ),
   m_running            (false),
   m_reOpened           (false),
+  m_chLayoutCount      (0    ),
   m_sink               (NULL ),
+  m_sinkChLayoutCount  (0    ),
   m_transcode          (false),
   m_rawPassthrough     (false),
   m_bufferSize         (0    ),
@@ -240,7 +242,8 @@ bool CSoftAE::OpenSink()
     CLog::Log(LOGINFO, "  Frame Samples : %d", newFormat.m_frameSamples);
     CLog::Log(LOGINFO, "  Frame Size    : %d", newFormat.m_frameSize);
 
-    m_sinkFormat = newFormat;
+    m_sinkFormat        = newFormat;
+    m_sinkChLayoutCount = newFormat.m_channelLayout.Count();
 
     /* invalidate the buffer */
     m_bufferSamples = 0;
@@ -317,6 +320,7 @@ bool CSoftAE::OpenSink()
     m_bufferSize = neededBufferSize;
   }
 
+  m_chLayoutCount = m_chLayout.Count();
   m_remap.Initialize(m_chLayout, m_sinkFormat.m_channelLayout, true);
   
   /* if we in raw passthrough, we are finished */
@@ -671,7 +675,7 @@ float CSoftAE::GetDelay()
   if (m_transcode && m_encoder && !m_rawPassthrough)
     delay += m_encoder->GetDelay(m_encodedBufferFrames - m_encodedBufferPos);
 
-  unsigned int buffered = m_bufferSamples / m_chLayout.Count();
+  unsigned int buffered = m_bufferSamples / m_chLayoutCount;
   delay += (float)buffered / (float)m_sinkFormat.m_sampleRate;
 
   m_sinkLock.unlock_shared();
@@ -759,7 +763,7 @@ void CSoftAE::Run()
     sinkLock.Enter();
 
     /* update the save values */
-    channelCount = m_chLayout.Count();
+    channelCount = m_chLayoutCount;
     size         = m_frameSize;
 
     /* buffer the samples into the output buffer */
@@ -822,8 +826,8 @@ void CSoftAE::FinalizeSamples(float *buffer, unsigned int samples)
 
 inline void CSoftAE::RunOutputStage()
 {
-  unsigned int rSamples = m_sinkFormat.m_frames * m_sinkFormat.m_channelLayout.Count();
-  unsigned int samples  = m_rawPassthrough ? rSamples : m_sinkFormat.m_frames * m_chLayout.Count();
+  const unsigned int rSamples = m_sinkFormat.m_frames * m_sinkChLayoutCount;
+  const unsigned int samples  = m_rawPassthrough ? rSamples : m_sinkFormat.m_frames * m_chLayoutCount;
 
   /* this normally only loops once */
   while(m_bufferSamples >= samples)
@@ -872,7 +876,7 @@ inline void CSoftAE::RunOutputStage()
         }
       }
 
-      int wroteSamples = wroteFrames * m_chLayout.Count();
+      int wroteSamples = wroteFrames * m_chLayoutCount;
       int bytesLeft    = (m_bufferSamples - wroteSamples) * m_bytesPerSample;
       memmove((float*)m_buffer, (float*)m_buffer + wroteSamples, bytesLeft);
       m_bufferSamples -= wroteSamples;
@@ -887,7 +891,7 @@ inline void CSoftAE::RunOutputStage()
       else
         wroteFrames = m_sinkFormat.m_frames;
 
-      int wroteSamples = wroteFrames * m_chLayout.Count();
+      int wroteSamples = wroteFrames * m_chLayoutCount;
       int bytesLeft    = (m_bufferSamples - wroteSamples) * m_bytesPerSample;
       memmove(rawBuffer, rawBuffer + (wroteSamples * m_bytesPerSample), bytesLeft);
       m_bufferSamples -= wroteSamples;
@@ -1070,6 +1074,6 @@ inline void CSoftAE::RunBufferStage(void *out)
     float *floatBuffer = (float*)m_buffer;
     memcpy(floatBuffer + m_bufferSamples, out, m_frameSize);
   }
-  m_bufferSamples += m_chLayout.Count();
+  m_bufferSamples += m_chLayoutCount;
 }
 
