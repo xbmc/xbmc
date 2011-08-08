@@ -435,6 +435,9 @@ cmyth_file_seek(cmyth_file_t file, long long offset, int whence)
 	if ((offset == 0) && (whence == SEEK_CUR))
 		return file->file_pos;
 
+	if ((offset == file->file_pos) && (whence == SEEK_SET))
+		return file->file_pos;
+
 	while(file->file_pos < file->file_req) {
 		c = file->file_req - file->file_pos;
 		if(c > sizeof(msg))
