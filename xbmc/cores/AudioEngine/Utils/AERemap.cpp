@@ -46,11 +46,10 @@ bool CAERemap::Initialize(CAEChannelInfo input, CAEChannelInfo output, bool fina
   m_output = output;
 
   /* figure which channels we have */
-  for(unsigned int o = 0; o < output.Count(); ++o) {
+  for(unsigned int o = 0; o < output.Count(); ++o)
     m_mixInfo[output[o]].in_dst = true;
-    m_outChannels = o;
-  }
-  ++m_outChannels;
+  
+  m_outChannels = output.Count();
 
   /* lookup the channels that exist in the output */
   for(unsigned int i = 0; i < input.Count(); ++i) {
@@ -265,27 +264,52 @@ void CAERemap::ResolveMix(const AEChannel from, CAEChannelInfo to)
   fromInfo->in_src   = false;
 }
 
-void CAERemap::Remap(float *in, float *out, unsigned int frames)
+void CAERemap::Remap(float *in, float *out, const unsigned int frames) const
 {
-  for(unsigned int f = 0; f < frames; ++f)
-  {
-    for(unsigned int o = 0; o < m_output.Count(); ++o)
-    {
-      AEMixInfo *info = &m_mixInfo[m_output[o]];
+  const unsigned int frameBlocks = frames & ~0x3;
 
-      /* if there is only 1 source, just copy it so we dont break DPL */
-      if (info->srcCount == 1)
-        *out = in[info->srcIndex[0].index];
-      else
+  for(int o = 0; o < m_outChannels; ++o)
+  {
+    const AEMixInfo *info = &m_mixInfo[m_output[o]];
+    /* if there is only 1 source, just copy it so we dont break DPL */
+    if (info->srcCount == 1)
+    {
+      unsigned int f = 0;
+      /* the compiler has a better chance of optimizing this if it is done in parallel */
+      for(; f < frameBlocks; f += 4)
       {
-        *out = 0;
-        for(int i = 0; i < info->srcCount; ++i)
-          *out += in[info->srcIndex[i].index] * info->srcIndex[i].level;
+        out[((f + 0) * m_outChannels) + o] = in[((f + 0) * m_inChannels) + info->srcIndex[0].index];
+        out[((f + 1) * m_outChannels) + o] = in[((f + 1) * m_inChannels) + info->srcIndex[0].index];
+        out[((f + 2) * m_outChannels) + o] = in[((f + 2) * m_inChannels) + info->srcIndex[0].index];
+        out[((f + 3) * m_outChannels) + o] = in[((f + 3) * m_inChannels) + info->srcIndex[0].index];
       }
 
-      ++out;
+      for(; f < frames; ++f)
+        out[(f * m_outChannels) + o] = in[(f * m_inChannels) + info->srcIndex[0].index];
     }
-    in += m_inChannels;
+    else
+    {
+      for(unsigned int f = 0; f < frames; ++f)
+      {
+        float *outOffset = out + (f * m_outChannels) + o;
+        float *inOffset  = in  + (f * m_inChannels);
+        *outOffset = 0.0f;
+
+        int i = 0;
+        /* the compiler has a better chance of optimizing this if it is done in parallel */
+        int blocks = info->srcCount & 0x3;
+        for(; i < blocks; i += 4)
+        {
+          *outOffset += inOffset[info->srcIndex[i + 0].index] * info->srcIndex[i + 0].level;
+          *outOffset += inOffset[info->srcIndex[i + 1].index] * info->srcIndex[i + 1].level;
+          *outOffset += inOffset[info->srcIndex[i + 2].index] * info->srcIndex[i + 2].level;
+          *outOffset += inOffset[info->srcIndex[i + 3].index] * info->srcIndex[i + 3].level;
+        }
+
+        for(; i < info->srcCount; ++i)
+          *outOffset += inOffset[info->srcIndex[i].index] * info->srcIndex[i].level;
+      }
+    }
   }
 }
 
