@@ -55,7 +55,7 @@ bool CMusicDatabaseDirectory::GetDirectory(const CStdString& strPath, CFileItemL
     CFileItemPtr item = items[i];
     if (item->m_bIsFolder && !item->HasIcon() && !item->HasThumbnail())
     {
-      CStdString strImage = GetIcon(item->m_strPath);
+      CStdString strImage = GetIcon(item->GetPath());
       if (!strImage.IsEmpty() && g_TextureManager.HasTexture(strImage))
         item->SetIconImage(strImage);
     }
@@ -115,11 +115,11 @@ bool CMusicDatabaseDirectory::HasAlbumInfo(const CStdString& strDirectory)
 
 void CMusicDatabaseDirectory::ClearDirectoryCache(const CStdString& strDirectory)
 {
-  CFileItem directory(strDirectory, true);
-  URIUtils::RemoveSlashAtEnd(directory.m_strPath);
+  CStdString path(strDirectory);
+  URIUtils::RemoveSlashAtEnd(path);
 
   Crc32 crc;
-  crc.ComputeFromLowerCase(directory.m_strPath);
+  crc.ComputeFromLowerCase(path);
 
   CStdString strFileName;
   strFileName.Format("special://temp/%08x.fi", (unsigned __int32) crc);

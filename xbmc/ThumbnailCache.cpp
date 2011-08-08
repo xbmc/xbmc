@@ -195,7 +195,7 @@ CStdString CThumbnailCache::GetEpisodeThumb(const CVideoInfoTag* videoInfo)
 CStdString CThumbnailCache::GetVideoThumb(const CFileItem &item)
 {
   if (item.IsStack())
-    return GetThumb(CStackDirectory::GetFirstStackedFile(item.m_strPath), g_settings.GetVideoThumbFolder(), true);
+    return GetThumb(CStackDirectory::GetFirstStackedFile(item.GetPath()), g_settings.GetVideoThumbFolder(), true);
   else if (item.IsVideoDb() && item.HasVideoInfoTag())
   {
     if (item.m_bIsFolder && !item.GetVideoInfoTag()->m_strPath.IsEmpty())
@@ -203,7 +203,7 @@ CStdString CThumbnailCache::GetVideoThumb(const CFileItem &item)
     else if (!item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
       return GetThumb(item.GetVideoInfoTag()->m_strFileNameAndPath, g_settings.GetVideoThumbFolder(), true);
   }
-  return GetThumb(item.m_strPath, g_settings.GetVideoThumbFolder(), true);
+  return GetThumb(item.GetPath(), g_settings.GetVideoThumbFolder(), true);
 }
 
 CStdString CThumbnailCache::GetFanart(const CFileItem &item)
@@ -229,7 +229,7 @@ CStdString CThumbnailCache::GetFanart(const CFileItem &item)
   if (item.HasMusicInfoTag())
     return GetThumb(item.GetMusicInfoTag()->GetArtist(),g_settings.GetMusicFanartFolder());
 
-  return GetThumb(item.m_strPath,g_settings.GetVideoFanartFolder());
+  return GetThumb(item.GetPath(),g_settings.GetVideoFanartFolder());
 }
 
 CStdString CThumbnailCache::GetThumb(const CStdString &path, const CStdString &path2, bool split /* = false */)

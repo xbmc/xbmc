@@ -67,7 +67,7 @@ private:
   public:
     virtual bool DoWork()
     {
-      m_result->m_list.m_strPath = m_result->m_dir;
+      m_result->m_list.SetPath(m_result->m_dir);
       m_result->m_result         = m_imp->GetDirectory(m_result->m_dir, m_result->m_list);
       m_result->m_event.Set();
       return m_result->m_result;
@@ -130,7 +130,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 
     // check our cache for this path
     if (g_directoryCache.GetDirectory(strPath, items, cacheDirectory == DIR_CACHE_ALWAYS))
-      items.m_strPath = strPath;
+      items.SetPath(strPath);
     else
     {
       // need to clear the cache (in case the directory fetch fails)
@@ -174,7 +174,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
         }
         else
         {
-          items.m_strPath = strPath;
+          items.SetPath(strPath);
           result = pDirectory->GetDirectory(realPath, items);
         }
 
@@ -199,7 +199,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       CFileItemPtr item = items[i];
       // TODO: we shouldn't be checking the gui setting here;
       // callers should use getHidden instead
-      if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->m_strPath)) ||
+      if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath())) ||
           (item->GetPropertyBOOL("file:hidden") && !getHidden && !g_guiSettings.GetBool("filelists.showhidden")))
       {
         items.Remove(i);
@@ -306,7 +306,7 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &m
     CFileItemPtr pItem=items[i];
     if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
     {
-      auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem.get(),mask));
+      auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->GetPath(),pItem.get(),mask));
       if (pDirectory.get())
         pItem->m_bIsFolder = true;
       else

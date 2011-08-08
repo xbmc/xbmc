@@ -250,20 +250,20 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
     CStackDirectory dir;
     CFileItemList items;
     dir.GetDirectory(strPath,items);
-    GetDirectory(items[0]->m_strPath,items[0]->m_strDVDLabel);
+    GetDirectory(items[0]->GetPath(),items[0]->m_strDVDLabel);
     if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
       GetParentPath(items[0]->m_strDVDLabel, strParent);
     else
       strParent = items[0]->m_strDVDLabel;
     for( int i=1;i<items.Size();++i)
     {
-      GetDirectory(items[i]->m_strPath,items[i]->m_strDVDLabel);
+      GetDirectory(items[i]->GetPath(),items[i]->m_strDVDLabel);
       if (items[0]->m_strDVDLabel.Mid(0,6).Equals("rar://") || items[0]->m_strDVDLabel.Mid(0,6).Equals("zip://"))
-        GetParentPath(items[i]->m_strDVDLabel, items[i]->m_strPath);
+        items[i]->SetPath(GetParentPath(items[i]->m_strDVDLabel));
       else
-        items[i]->m_strPath = items[i]->m_strDVDLabel;
+        items[i]->SetPath(items[i]->m_strDVDLabel);
 
-      GetCommonPath(strParent,items[i]->m_strPath);
+      GetCommonPath(strParent,items[i]->GetPath());
     }
     return true;
   }

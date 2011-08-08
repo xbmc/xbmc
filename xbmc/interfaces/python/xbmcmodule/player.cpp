@@ -147,7 +147,7 @@ namespace PYXBMC
       pListItem = (ListItem*)pObjectListItem;
 
       // set m_strPath to the passed url
-      pListItem->item->m_strPath = PyString_AsString(pObject);
+      pListItem->item->SetPath(PyString_AsString(pObject));
 
       CPyThreadState pyState;
       g_application.getApplicationMessenger().PlayFile((const CFileItem)*pListItem->item, false);
@@ -157,7 +157,7 @@ namespace PYXBMC
       CFileItem item(PyString_AsString(pObject), false);
       
       CPyThreadState pyState;
-      g_application.getApplicationMessenger().MediaPlay(item.m_strPath);
+      g_application.getApplicationMessenger().MediaPlay(item.GetPath());
     }
     else if (PlayList_Check(pObject))
     {

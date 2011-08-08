@@ -96,7 +96,7 @@ void CGUIDialogFavourites::OnClick(int item)
 
   // grab our message, close the dialog, and send
   CFileItemPtr pItem = (*m_favourites)[item];
-  CStdString execute(pItem->m_strPath);
+  CStdString execute(pItem->GetPath());
 
   Close();
 

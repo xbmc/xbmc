@@ -172,10 +172,10 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       CFileItemPtr pItem = vecItems[i];
 
       // is the current item a (non system) folder?
-      if (pItem->m_bIsFolder && pItem->m_strPath != "." && pItem->m_strPath != "..")
+      if (pItem->m_bIsFolder && pItem->GetPath() != "." && pItem->GetPath() != "..")
       {
         // Check if the current foldername indicates a DVD structure (name is "VIDEO_TS")
-        if (pItem->m_strPath.Find( "VIDEO_TS" ) != -1 && bAllowVideo
+        if (pItem->GetPath().Find( "VIDEO_TS" ) != -1 && bAllowVideo
         && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
           CUtil::PlayDVD("dvd", restart);
@@ -186,7 +186,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         // Check if the current foldername indicates a Blu-Ray structure (default is "BDMV").
         // A BR should also include an "AACS" folder for encryption, Sony-BRs can also include update folders for PS3 (PS3_UPDATE / PS3_VPRM).
         // ToDo: for the time beeing, the DVD autorun settings are used to determine if the BR should be started automatically.
-        if (pItem->m_strPath.Find( "BDMV" ) != -1 && bAllowVideo
+        if (pItem->GetPath().Find( "BDMV" ) != -1 && bAllowVideo
         && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
           CUtil::PlayDVD("bd", restart);
@@ -196,9 +196,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 
         // Video CDs can have multiple file formats. First we need to determine which one is used on the CD
         CStdString strExt;
-        if (pItem->m_strPath.Find("MPEGAV") != -1)
+        if (pItem->GetPath().Find("MPEGAV") != -1)
           strExt = ".dat";
-        if (pItem->m_strPath.Find("MPEG2") != -1)
+        if (pItem->GetPath().Find("MPEG2") != -1)
           strExt = ".mpg";
 
         // If a file format was extracted we are sure this is a VCD. Autoplay if settings indicate we should.
@@ -206,7 +206,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
              && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
           CFileItemList items;
-          CDirectory::GetDirectory(pItem->m_strPath, items, strExt);
+          CDirectory::GetDirectory(pItem->GetPath(), items, strExt);
           if (items.Size())
           {
             items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
@@ -219,12 +219,12 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           }
         }
         /* Probably want this if/when we add some automedia action dialog...
-        else if (pItem->m_strPath.Find("PICTURES") != -1 && bAllowPictures
+        else if (pItem->GetPath().Find("PICTURES") != -1 && bAllowPictures
               && (bypassSettings))
         {
           bPlaying = true;
           CStdString strExec;
-          strExec.Format("XBMC.RecursiveSlideShow(%s)", pItem->m_strPath.c_str());
+          strExec.Format("XBMC.RecursiveSlideShow(%s)", pItem->GetPath().c_str());
           CBuiltins::Execute(strExec);
           return true;
         }
@@ -254,7 +254,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
           // TODO: remove this once the app/player is capable of handling stacks immediately
           CStackDirectory dir;
           CFileItemList items;
-          dir.GetDirectory(pItem->m_strPath, items);
+          dir.GetDirectory(pItem->GetPath(), items);
           itemlist.Append(items);
         }
         else
@@ -318,9 +318,9 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       CFileItemPtr  pItem = vecItems[i];
       if (pItem->m_bIsFolder)
       {
-        if (pItem->m_strPath != "." && pItem->m_strPath != ".." )
+        if (pItem->GetPath() != "." && pItem->GetPath() != ".." )
         {
-          if (RunDisc(pDir, pItem->m_strPath, nAddedToPlaylist, false, bypassSettings, restart))
+          if (RunDisc(pDir, pItem->GetPath(), nAddedToPlaylist, false, bypassSettings, restart))
           {
             bPlaying = true;
             break;

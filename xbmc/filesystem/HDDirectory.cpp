@@ -115,10 +115,10 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
           if (strLabel != "." && strLabel != "..")
           {
             CFileItemPtr pItem(new CFileItem(strLabel));
-            pItem->m_strPath = strRoot;
-            pItem->m_strPath += strLabel;
+            CStdString itemPath = strRoot + strLabel;
+            URIUtils::AddSlashAtEnd(itemPath);
+            pItem->SetPath(itemPath);
             pItem->m_bIsFolder = true;
-            URIUtils::AddSlashAtEnd(pItem->m_strPath);
             FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);
             pItem->m_dateTime=localTime;
 
@@ -130,8 +130,7 @@ bool CHDDirectory::GetDirectory(const CStdString& strPath1, CFileItemList &items
         else
         {
           CFileItemPtr pItem(new CFileItem(strLabel));
-          pItem->m_strPath = strRoot;
-          pItem->m_strPath += strLabel;
+          pItem->SetPath(strRoot + strLabel);
           pItem->m_bIsFolder = false;
           pItem->m_dwSize = CUtil::ToInt64(wfd.nFileSizeHigh, wfd.nFileSizeLow);
           FileTimeToLocalFileTime(&wfd.ftLastWriteTime, &localTime);

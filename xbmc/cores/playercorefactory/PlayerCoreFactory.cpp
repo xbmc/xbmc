@@ -135,9 +135,9 @@ void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores, const bool audio,
 
 void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecCores)
 {
-  CURL url(item.m_strPath);
+  CURL url(item.GetPath());
 
-  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", item.m_strPath.c_str());
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", item.GetPath().c_str());
 
   // Process rules
   for(unsigned int i = 0; i < s_vecCoreSelectionRules.size(); i++)
@@ -157,7 +157,7 @@ void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecC
     {
 //      bAdd = true;
 //      DVDPlayerCodec codec;
-//      if (!codec.Init(item.m_strPath,2048))
+//      if (!codec.Init(item.GetPath(),2048))
 //        bAdd = false;
 //      codec.DeInit();
     }
