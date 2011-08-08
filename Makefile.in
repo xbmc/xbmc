@@ -149,11 +149,19 @@ VIS_DIRS+=\
 
 endif
 ifeq (($(findstring osx,@ARCH@), osx),(@USE_OPENGL@,1)) 
-VIS_DIRS+=xbmc/visualizations/iTunes
+VIS_DIRS+=xbmc/visualizations/iTunes \
+
 endif
 ifneq (@DISABLE_GOOM@,1)
 VIS_DIRS+=xbmc/visualizations/Goom \
 
+endif
+ifeq (@USE_OPENGLES@,1)
+  ifeq ($(findstring osx,@ARCH@), osx)
+    ifeq (@ARCH@, arm-osx)
+      VIS_DIRS+=xbmc/visualizations/EGLSpectrum \
+    endif
+  endif
 endif
 
 CONFLUENCE_MEDIA=addons/skin.confluence/media
