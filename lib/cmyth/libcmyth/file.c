@@ -618,7 +618,7 @@ int cmyth_file_read(cmyth_file_t file, char *buf, unsigned long len)
 			}
 			if (len64 >= 0x100000000LL || len64 < 0) {
 				/* -1 seems to be a common result, but isn't valid so use 0 instead. */
-				cmyth_dbg (CMYTH_DBG_DEBUG,
+				cmyth_dbg (CMYTH_DBG_WARN,
 				           "%s: cmyth_rcv_int64() returned out of bound value (%d). Using 0\n",
 				           __FUNCTION__, (long)len64);
 				len64 = 0;
