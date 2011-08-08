@@ -24,6 +24,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
@@ -833,6 +834,13 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
           __FUNCTION__, channel.ChannelName().c_str());
 
     m_bIsSwitchingChannels = false;
+  }
+
+  if (!bSwitched)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+        g_localizeStrings.Get(19166),
+        g_localizeStrings.Get(19035));
   }
 
   return bSwitched;
