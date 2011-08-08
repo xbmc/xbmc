@@ -415,7 +415,7 @@ bool CPVRChannelGroupInternal::Persist(void)
   return bReturn;
 }
 
-bool CPVRChannelGroupInternal::CreateChannelEpgs(void)
+bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
 {
   CSingleLock lock(m_critSection);
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
@@ -424,7 +424,7 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(void)
     if (!channel)
       continue;
 
-    channel->CreateEPG();
+    channel->CreateEPG(bForce);
   }
   lock.Leave();
 

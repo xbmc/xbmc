@@ -433,9 +433,10 @@ namespace PVR
 
     /*!
      * @brief Create the EPG table for this channel.
+     * @brief bForce Create a table, even if it already has been created before.
      * @return True if the table was created successfully, false otherwise.
      */
-    bool CreateEPG(void);
+    bool CreateEPG(bool bForce = false);
 
     /*!
      * @brief Get the EPG table for this channel.

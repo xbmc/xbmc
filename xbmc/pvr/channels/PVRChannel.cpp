@@ -704,10 +704,10 @@ void CPVRChannel::UpdateEncryptionName(void)
 
 /********** EPG methods **********/
 
-bool CPVRChannel::CreateEPG(void)
+bool CPVRChannel::CreateEPG(bool bForce /* = false */)
 {
   CSingleLock lock(m_critSection);
-  if (!m_bEPGCreated)
+  if (!m_bEPGCreated || bForce)
   {
     CEpg epgTmp(this, false);
     if (g_EpgContainer.UpdateEntry(epgTmp, m_iEpgId <= 0))

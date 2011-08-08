@@ -486,10 +486,16 @@ void CPVRManager::ResetEPG(void)
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the EPG database", __FUNCTION__);
 
   StopUpdateThreads();
+  g_EpgContainer.Stop();
   g_EpgContainer.Reset();
 
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  {
+    m_channelGroups->GetGroupAllTV()->CreateChannelEpgs(true);
+    m_channelGroups->GetGroupAllRadio()->CreateChannelEpgs(true);
+    g_EpgContainer.Start();
     StartUpdateThreads();
+  }
 }
 
 bool CPVRManager::IsPlaying(void) const
