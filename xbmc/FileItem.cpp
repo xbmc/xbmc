@@ -151,11 +151,6 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
 
   Reset();
 
-  if (tag.HasPVRChannel())
-    *GetPVRChannelInfoTag() = *tag.ChannelTag();
-  if (tag.HasTimer())
-    *GetPVRTimerInfoTag() = *tag.Timer();
-
   m_strPath = tag.Path();
   m_bIsFolder = false;
   *GetEPGInfoTag() = tag;
