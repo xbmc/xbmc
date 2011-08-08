@@ -333,7 +333,7 @@ bool CEpg::CheckPlayingEvent(void)
   return bChanged;
 }
 
-const CEpgInfoTag *CEpg::GetTag(int uniqueID, const CDateTime &StartTime) const
+CEpgInfoTag *CEpg::GetTag(int uniqueID, const CDateTime &StartTime) const
 {
   CEpgInfoTag *returnTag = NULL;
   CSingleLock lock(m_critSection);
@@ -424,7 +424,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
-  CEpgInfoTag *infoTag = (CEpgInfoTag *) GetTag(tag.UniqueBroadcastID(), tag.StartAsUTC());
+  CEpgInfoTag *infoTag = GetTag(tag.UniqueBroadcastID(), tag.StartAsUTC());
 
   /* create a new tag if no tag with this ID exists */
   if (!infoTag)

@@ -192,7 +192,7 @@ namespace EPG
      * @param beginTime The start time of the event to find if it wasn't found by it's unique ID.
      * @return The found tag or NULL if it wasn't found.
      */
-    virtual const CEpgInfoTag *GetTag(int uniqueID, const CDateTime &beginTime) const;
+    virtual CEpgInfoTag *GetTag(int uniqueID, const CDateTime &beginTime) const;
 
     /*!
      * @brief Update an entry in this EPG.
