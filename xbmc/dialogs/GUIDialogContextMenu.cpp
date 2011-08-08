@@ -22,6 +22,7 @@
 #include "system.h"
 #include "GUIDialogContextMenu.h"
 #include "guilib/GUIButtonControl.h"
+#include "guilib/GUIControlGroupList.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
@@ -54,6 +55,7 @@ using namespace std;
 #define BACKGROUND_IMAGE       999
 #define BACKGROUND_BOTTOM      998
 #define BACKGROUND_TOP         997
+#define GROUP_LIST             996
 #define BUTTON_TEMPLATE       1000
 #define BUTTON_START          1001
 #define BUTTON_END            (BUTTON_START + (int)m_buttons.size() - 1)
@@ -110,6 +112,13 @@ void CGUIDialogContextMenu::SetupButtons()
     return;
   pButtonTemplate->SetVisible(false);
 
+  CGUIControlGroupList* pGroupList = NULL;
+  {
+    const CGUIControl* pControl = GetControl(GROUP_LIST);
+    if (pControl && pControl->GetControlType() == GUICONTROL_GROUPLIST)
+      pGroupList = (CGUIControlGroupList*)pControl;
+  }
+
   // add our buttons
   for (unsigned int i = 0; i < m_buttons.size(); i++)
   {
@@ -118,30 +127,77 @@ void CGUIDialogContextMenu::SetupButtons()
     { // set the button's ID and position
       int id = BUTTON_START + i;
       pButton->SetID(id);
-      pButton->SetPosition(pButtonTemplate->GetXPosition(), i*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
       pButton->SetVisible(true);
-      pButton->SetNavigation(id - 1, id + 1, id, id);
       pButton->SetLabel(m_buttons[i].second);
-      AddControl(pButton);
+      if (pGroupList)
+      {
+        pButton->SetPosition(pButtonTemplate->GetXPosition(), pButtonTemplate->GetYPosition());
+        pGroupList->AddControl(pButton);
+      }
+      else
+      {
+        pButton->SetPosition(pButtonTemplate->GetXPosition(), i*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
+        pButton->SetNavigation(id - 1, id + 1, id, id);
+        AddControl(pButton);
+      }
     }
   }
 
-  // update the navigation of the first and last buttons
-  CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_START);
+  CGUIControl *pControl = NULL;
+  if (!pGroupList)
+  {
+  // if we don't have grouplist update the navigation of the first and last buttons
+  pControl = (CGUIControl *)GetControl(BUTTON_START);
   if (pControl)
     pControl->SetNavigation(BUTTON_END, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   pControl = (CGUIControl *)GetControl(BUTTON_END);
   if (pControl)
     pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  }
 
-  // fix up the height of the background image
+  // fix up background images placement and size
   pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
   if (pControl)
   {
-    pControl->SetHeight(m_buttons.size() * (pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
-    CGUIControl *pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
-    if (pControl2)
-      pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
+    // first set size of background image
+    if (pGroupList)
+    {
+      if (pGroupList->GetOrientation() == VERTICAL)
+      {
+        // keep gap between bottom edges of grouplist and background image
+        float diff = pControl->GetHeight() - pGroupList->GetHeight();
+        pGroupList->SetHeight(pGroupList->GetTotalSize());
+        pControl->SetHeight(diff + pGroupList->GetHeight());
+      }
+      else
+      {
+        // keep gap between right edges of grouplist and background image
+        float diff = pControl->GetWidth() - pGroupList->GetWidth();
+        pGroupList->SetWidth(pGroupList->GetTotalSize());
+        pControl->SetWidth(diff + pGroupList->GetWidth());
+      }
+    }
+    else
+      pControl->SetHeight(m_buttons.size() * (pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
+
+    if (pGroupList && pGroupList->GetOrientation() == HORIZONTAL)
+    {
+      // if there is grouplist control with horizontal orientation - adjust width of top and bottom background
+      CGUIControl* pControl2 = (CGUIControl *)GetControl(BACKGROUND_TOP);
+      if (pControl2)
+        pControl2->SetWidth(pControl->GetWidth());
+
+      pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+      if (pControl2)
+        pControl2->SetWidth(pControl->GetWidth());
+    }
+    else
+    {
+      // adjust position of bottom background
+      CGUIControl* pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+      if (pControl2)
+        pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
+    }
   }
 
   // update our default control
