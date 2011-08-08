@@ -929,19 +929,19 @@
 					<content>
 						<item id="8">
 							<description>Video Plug-ins Button</description>
-							<label> $LOCALIZE[31001] </label>
+							<label>$LOCALIZE[31001]</label>
 							<onclick>Plex.ActivateWindow(24)</onclick>
 							<visible>!Skin.HasSetting(HideVideos)</visible>
 						</item>
 						<item id="7">
 							<description>Music Plug-ins Button</description>
-							<label> $LOCALIZE[31002] </label>
+							<label>$LOCALIZE[31002]</label>
 							<onclick>Plex.ActivateWindow(5)</onclick>
 							<visible>!Skin.HasSetting(HideMusic)</visible>
 						</item>
 						<item id="1">
 							<description>Picture Plug-ins Button</description>
-							<label> $LOCALIZE[31003] </label>
+							<label>$LOCALIZE[31003]</label>
 							<onclick>Plex.ActivateWindow(2)</onclick>
 							<visible>!Skin.HasSetting(HidePictures)</visible>
 						</item>
@@ -1151,12 +1151,12 @@
 						<onclick>SetFocus(507)</onclick>
 						<visible>Skin.HasSetting(CollapsePluginMenuItems) + ![[Skin.HasSetting(HideVideos) + Skin.HasSetting(HideMusic)] | [Skin.HasSetting(HideVideos) + Skin.HasSetting(HidePictures)] | [Skin.HasSetting(HidePictures) + Skin.HasSetting(HideMusic)]]</visible>
 					</item>
-					<!--<item id="1">
+					<item id="1">
 						<description>My Videos Button</description>
 						<label> $LOCALIZE[31971] </label>
 						<visible>[!Skin.HasSetting(HideVideos)] + [[Skin.HasSetting(HideMusic) + Skin.HasSetting(HidePictures)] | !Skin.HasSetting(CollapsePluginMenuItems)]</visible>
 						<onclick>XBMC.ActivateWindow(24)</onclick>
-					</item>-->
+					</item>
 					<item id="2">
 						<description>My Music Button</description>
 						<label> $LOCALIZE[31972] </label>
