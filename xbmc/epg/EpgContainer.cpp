@@ -240,7 +240,7 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
   if (!epg)
   {
     /* table does not exist yet, create a new one */
-    unsigned int iEpgId = entry.EpgID() > 0 ? entry.EpgID() : NextEpgId();
+    unsigned int iEpgId = !m_bIgnoreDbForClient ? entry.EpgID() : NextEpgId();
     epg = CreateEpg(iEpgId);
     if (epg)
       InsertEpg(epg);
