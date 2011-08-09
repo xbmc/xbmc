@@ -380,9 +380,12 @@ void CEpgContainer::UpdateProgressDialog(int iCurrent, int iMax, const CStdStrin
 
 bool CEpgContainer::InterruptUpdate(void) const
 {
+  bool bReturn(false);
   CSingleLock lock(m_critSection);
-  return g_application.m_bStop || m_bStop || m_bPreventUpdates ||
-    g_PVRManager.IsInitialising() ||
+  bReturn = g_application.m_bStop || m_bStop || m_bPreventUpdates;
+  lock.Leave();
+
+  return bReturn || g_PVRManager.IsInitialising() ||
     (g_guiSettings.GetBool("epg.preventupdateswhileplayingtv") &&
      g_PVRManager.IsStarted() &&
      g_PVRManager.IsPlaying());
