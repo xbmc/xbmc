@@ -853,6 +853,14 @@ void URIUtils::GetDirectory(const CStdString& strFilePath,
   if (iPos1 > 0)
   {
     strDirectoryPath = strFilePath.Left(iPos1 + 1); // include the slash
+
+    // Keep possible |option=foo options for certain paths
+    iPos2 = strFilePath.ReverseFind('|');
+    if (iPos2 > 0)
+    {
+      strDirectoryPath += strFilePath.Mid(iPos2);
+    }
+
   }
 }
 
