@@ -112,6 +112,9 @@ namespace VIDEO
      */
     bool RetrieveVideoInfo(CFileItemList& items, bool bDirNames, CONTENT_TYPE content, bool useLocal = true, CScraperUrl *pURL = NULL, bool fetchEpisodes = true, CGUIDialogProgress* pDlgProgress = NULL);
 
+    INFO_RET AddVideoByFilename(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder = false, int idShow = -1);
+    INFO_RET AddEpisodeByFilename(CFileItem *pItem, int idShow, int iSeason, int iEpisode, CStdString strAirDate);
+
     static void ApplyThumbToFolder(const CStdString &folder, const CStdString &imdbThumb);
     static bool DownloadFailed(CGUIDialogProgress* pDlgProgress);
     CNfoFile::NFOResult CheckForNFOFile(CFileItem* pItem, bool bGrabAny, ADDON::ScraperPtr& scraper, CScraperUrl& scrUrl);

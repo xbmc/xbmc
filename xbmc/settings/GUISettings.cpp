@@ -552,6 +552,7 @@ void CGUISettings::Initialize()
   AddGroup(5, 3);
   CSettingsCategory* vdl = AddCategory(5, "videolibrary", 14022);
   AddBool(NULL, "videolibrary.enabled", 418, true);
+  AddBool(vdl, "videolibrary.addunknown", 22025, true);
   AddBool(vdl, "videolibrary.showunwatchedplots", 20369, true);
   AddBool(NULL, "videolibrary.seasonthumbs", 20382, true);
   AddBool(vdl, "videolibrary.actorthumbs", 20402, true);

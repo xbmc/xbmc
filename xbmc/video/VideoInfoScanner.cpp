@@ -491,18 +491,36 @@ namespace VIDEO
     int retVal = 0;
     if (pURL)
       url = *pURL;
-    else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
-      return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
+    else
+      retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress);
 
-    if (m_pObserver && !url.strTitle.IsEmpty())
-      m_pObserver->OnSetTitle(url.strTitle);
-
-    long lResult=-1;
-    if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
+    long lResult = -1;
+    if (retVal < 0)
+      return INFO_CANCELLED;
+    else if (retVal == 0)
     {
-      if ((lResult = AddVideo(pItem.get(), info2->Content(), bDirNames)) < 0)
-        return INFO_ERROR;
-      GetArtwork(pItem.get(), info2->Content(), false, useLocal);
+      if (g_guiSettings.GetBool("videolibrary.addunknown"))
+      {
+        CVideoInfoTag* pVideoInfoTag = pItem->GetVideoInfoTag();
+        pVideoInfoTag->m_strTitle = pItem->GetMovieName(bDirNames);
+        if (AddVideo(pItem.get(), CONTENT_TVSHOWS, bDirNames) < 0)
+          return INFO_ERROR;
+        GetArtwork(pItem.get(), CONTENT_TVSHOWS);
+      }
+      else
+        return INFO_NOT_FOUND;
+    }
+    else
+    {
+      if (m_pObserver && !url.strTitle.IsEmpty())
+        m_pObserver->OnSetTitle(url.strTitle);
+
+      if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
+      {
+        if ((lResult = AddVideo(pItem.get(), info2->Content(), bDirNames)) < 0)
+          return INFO_ERROR;
+        GetArtwork(pItem.get(), info2->Content(), false, useLocal);
+      }
     }
     if (fetchEpisodes)
     {
@@ -552,7 +570,7 @@ namespace VIDEO
     if (pURL)
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
-      return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
+      return retVal < 0 ? INFO_CANCELLED : AddVideoByFilename(pItem.get(), CONTENT_MOVIES, bDirNames);
 
     if (m_pObserver && !url.strTitle.IsEmpty())
       m_pObserver->OnSetTitle(url.strTitle);
@@ -604,7 +622,7 @@ namespace VIDEO
     if (pURL)
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
-      return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
+      return retVal < 0 ? INFO_CANCELLED : AddVideoByFilename(pItem.get(), CONTENT_MUSICVIDEOS, bDirNames);
 
     if (m_pObserver && !url.strTitle.IsEmpty())
       m_pObserver->OnSetTitle(url.strTitle);
@@ -1126,6 +1144,47 @@ namespace VIDEO
     return lResult;
   }
 
+  INFO_RET CVideoInfoScanner::AddVideoByFilename(CFileItem *pItem, const CONTENT_TYPE &content, bool videoFolder, int idShow)
+  {
+    if (g_guiSettings.GetBool("videolibrary.addunknown"))
+    {
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding unknown item to %s:%s", TranslateContent(content).c_str(), pItem->m_strPath.c_str());
+      CVideoInfoTag* pVideoInfoTag = pItem->GetVideoInfoTag();
+      pVideoInfoTag->m_strTitle = pItem->GetMovieName(videoFolder);
+
+      if (AddVideo(pItem, content, videoFolder, idShow) < 0)
+        return INFO_ERROR;
+      else
+      {
+        GetArtwork(pItem, content);
+        return INFO_ADDED;
+      }
+    }
+    return INFO_NOT_FOUND;
+  }
+
+  INFO_RET CVideoInfoScanner::AddEpisodeByFilename(CFileItem *pItem, int idShow, int iSeason, int iEpisode, CStdString strAirDate)
+  {
+    if (g_guiSettings.GetBool("videolibrary.addunknown"))
+    {
+      CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding unknown episode: season %i ep %i : %s", iSeason, iEpisode, pItem->m_strPath.c_str());
+      CVideoInfoTag* pVideoInfoTag = pItem->GetVideoInfoTag();
+      pVideoInfoTag->m_strTitle = pItem->GetMovieName(false);
+      pVideoInfoTag->m_iSeason = iSeason;
+      pVideoInfoTag->m_iEpisode = iEpisode;
+      pVideoInfoTag->m_strFirstAired = strAirDate;
+
+      if (AddVideo(pItem, CONTENT_TVSHOWS, false, idShow) < 0)
+        return INFO_ERROR;
+      else
+      {
+        GetArtwork(pItem, CONTENT_TVSHOWS);
+        return INFO_ADDED;
+      }
+    }
+    return INFO_NOT_FOUND;
+  }
+
   void CVideoInfoScanner::GetArtwork(CFileItem *pItem, const CONTENT_TYPE &content, bool bApplyToDir, bool useLocal, CGUIDialogProgress* pDialog /* == NULL */)
   {
     CVideoInfoTag &movieDetails = *pItem->GetVideoInfoTag();
@@ -1271,9 +1330,10 @@ namespace VIDEO
 
       if (episodes.empty())
       {
-        CLog::Log(LOGERROR, "VideoInfoScanner: Asked to lookup episode %s"
-                            " online, but we have no episode guide. Check your tvshow.nfo and make"
-                            " sure the <episodeguide> tag is in place.", file->strPath.c_str());
+        if (AddEpisodeByFilename(&item, idShow, file->iSeason, file->iEpisode, file->cDate.GetAsLocalizedDate().c_str()) < 0 )
+          CLog::Log(LOGERROR, "VideoInfoScanner: Asked to lookup episode %s"
+                              " online, but we have no episode guide. Check your tvshow.nfo and make"
+                              " sure the <episodeguide> tag is in place.", file->strPath.c_str());
         continue;
       }
 
@@ -1351,9 +1411,15 @@ namespace VIDEO
         CFileItem item;
         item.SetPath(file->strPath);
         if (!imdb.GetEpisodeDetails(guide->cScraperUrl, *item.GetVideoInfoTag(), pDlgProgress))
-          return INFO_NOT_FOUND; // TODO: should we just skip to the next episode?
-        item.GetVideoInfoTag()->m_iSeason = guide->key.first;
-        item.GetVideoInfoTag()->m_iEpisode = guide->key.second;
+        {
+          AddEpisodeByFilename(&item, idShow, guide->key.first, guide->key.second, file->cDate.GetAsLocalizedDate().c_str());
+          continue;
+        }
+        else
+        {
+          item.GetVideoInfoTag()->m_iSeason = guide->key.first;
+          item.GetVideoInfoTag()->m_iEpisode = guide->key.second;
+        }
         if (m_pObserver)
         {
           CStdString strTitle;
@@ -1366,9 +1432,10 @@ namespace VIDEO
       }
       else
       {
-        CLog::Log(LOGDEBUG,"%s - no match for show: '%s', season: %d, episode: %d, airdate: '%s', title: '%s'",
-                  __FUNCTION__, strShowTitle.c_str(), file->iSeason, file->iEpisode,
-                  file->cDate.GetAsLocalizedDate().c_str(), file->strTitle.c_str());
+        if ( AddEpisodeByFilename(&item, idShow, file->iSeason, file->iEpisode, file->cDate.GetAsLocalizedDate().c_str()) < 0 )
+          CLog::Log(LOGDEBUG,"%s - no match for show: '%s', season: %d, episode: %d, airdate: '%s', title: '%s'",
+                    __FUNCTION__, strShowTitle.c_str(), file->iSeason, file->iEpisode,
+                    file->cDate.GetAsLocalizedDate().c_str(), file->strTitle.c_str());
       }
     }
     if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))
