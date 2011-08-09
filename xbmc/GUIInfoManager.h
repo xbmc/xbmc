@@ -175,6 +175,8 @@ namespace INFO
 #define LCD_TIME_44                 179
 #define SYSTEM_ALARM_LESS_OR_EQUAL  180
 #define SYSTEM_PROFILECOUNT         181
+#define SYSTEM_ISFULLSCREEN         182
+#define SYSTEM_ISSTANDALONE         183
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191

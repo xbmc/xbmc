@@ -208,6 +208,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "haslocks",         SYSTEM_HASLOCKS },
                                   { "hasloginscreen",   SYSTEM_HAS_LOGINSCREEN },
                                   { "ismaster",         SYSTEM_ISMASTER },
+                                  { "isfullscreen",     SYSTEM_ISFULLSCREEN },
+                                  { "isstandalone",     SYSTEM_ISSTANDALONE },
                                   { "loggedon",         SYSTEM_LOGGEDON },
                                   { "showexitbutton",   SYSTEM_SHOW_EXIT_BUTTON },
                                   { "hasdrivef",        SYSTEM_HAS_DRIVE_F },
@@ -1828,6 +1830,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_ISMASTER)
     bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+  else if (condition == SYSTEM_ISFULLSCREEN)
+    bReturn = g_Windowing.IsFullScreen();
+  else if (condition == SYSTEM_ISSTANDALONE)
+    bReturn = g_application.IsStandAlone();
   else if (condition == SYSTEM_LOGGEDON)
     bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
   else if (condition == SYSTEM_SHOW_EXIT_BUTTON)
