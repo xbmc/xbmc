@@ -146,13 +146,13 @@ void CGUIDialogContextMenu::SetupButtons()
   CGUIControl *pControl = NULL;
   if (!pGroupList)
   {
-  // if we don't have grouplist update the navigation of the first and last buttons
-  pControl = (CGUIControl *)GetControl(BUTTON_START);
-  if (pControl)
-    pControl->SetNavigation(BUTTON_END, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  pControl = (CGUIControl *)GetControl(BUTTON_END);
-  if (pControl)
-    pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+    // if we don't have grouplist update the navigation of the first and last buttons
+    pControl = (CGUIControl *)GetControl(BUTTON_START);
+    if (pControl)
+      pControl->SetNavigation(BUTTON_END, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+    pControl = (CGUIControl *)GetControl(BUTTON_END);
+    if (pControl)
+      pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
   }
 
   // fix up background images placement and size
