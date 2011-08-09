@@ -9,6 +9,12 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Source Files\tinyXML">
+      <UniqueIdentifier>{a365b5cd-6962-4e53-9c35-55934619a180}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\tinyXML">
+      <UniqueIdentifier>{4a9cd83d-78e2-4957-864f-e37d61e2975e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\channels.cpp">
@@ -43,6 +49,18 @@
     </ClCompile>
     <ClCompile Include="..\..\Cards.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tinyxml\tinystr.cpp">
+      <Filter>Source Files\tinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tinyxml\tinyxml.cpp">
+      <Filter>Source Files\tinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tinyxml\tinyxmlerror.cpp">
+      <Filter>Source Files\tinyXML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp">
+      <Filter>Source Files\tinyXML</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +99,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Cards.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tinyxml\tinystr.h">
+      <Filter>Header Files\tinyXML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\tinyxml\tinyxml.h">
+      <Filter>Header Files\tinyXML</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

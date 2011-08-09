@@ -17,6 +17,7 @@
  *
  */
 
+#include <algorithm>
 #include <vector>
 #include <stdio.h>
 
@@ -101,6 +102,7 @@ using namespace std;
 
 cEpg::cEpg()
 {
+  m_genremap        = NULL;
   Reset();
 }
 
@@ -211,6 +213,11 @@ bool cEpg::ParseLine(string& data)
   return false;
 }
 
+void cEpg::SetGenreMap(GenreMap* genremap)
+{
+  m_genremap = genremap;
+}
+
 void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
 {
   //TODO: The xmltv plugin from the MediaPortal TV Server can return genre
@@ -221,53 +228,64 @@ void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
   m_genre = Genre;
   m_genre_subtype = 0;
 
-  if(g_bReadGenre && m_genre.length() > 0)
+  if(g_bReadGenre && m_genremap && m_genre.length() > 0)
   {
-    if(m_genre.compare("news/current affairs (general)") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS;
-    } else if (m_genre.compare("magazines/reports/documentary") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS;
-      m_genre_subtype = MAGAZINES_REPORTS_DOCUMENTARY;
-    } else if (m_genre.compare("sports (general)") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_SPORTS;
-    } else if (m_genre.compare("arts/culture (without music, general)") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_ARTSCULTURE;
-    } else if (m_genre.compare("childrens's/youth program (general)") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_CHILDRENYOUTH;
-    } else if (m_genre.compare("show/game show (general)") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_SHOW;
-    } else if (m_genre.compare("detective/thriller") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-      m_genre_subtype = DETECTIVE_THRILLER;
-    } else if (m_genre.compare("religion") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_ARTSCULTURE;
-      m_genre_subtype = RELIGION;
-    } else if (m_genre.compare("documentary") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS;
-      m_genre_subtype = DOCUMENTARY;
-    } else if (m_genre.compare("education/science/factual topics (general)") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE;
-    } else if (m_genre.compare("comedy") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-      m_genre_subtype = COMEDY;
-    } else if (m_genre.compare("soap/melodram/folkloric") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-      m_genre_subtype = SOAP_MELODRAMA_FOLKLORIC;
-    } else if (m_genre.compare("cartoon/puppets") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_CHILDRENYOUTH;
-      m_genre_subtype = CARTOONS_PUPPETS;
-    } else if (m_genre.compare("movie/drama (general)") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-    } else if (m_genre.compare("nature/animals/environment") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE;
-      m_genre_subtype = NATURE_ANIMALS_ENVIRONMENT;
-    } else if (m_genre.compare("adult movie/drama") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-      m_genre_subtype = ADULTMOVIE_DRAMA;
-    } else if (m_genre.compare("music/ballet/dance (general)") == 0) {
-      m_genre_type = EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE;
-    } else {
-      //XBMC->Log(LOG_DEBUG, "epg::setgenre: TODO mapping of MPTV's '%s' genre.", Genre.c_str());
+    std::map<std::string, genre_t>::iterator it;
+
+    std::transform(m_genre.begin(), m_genre.end(), m_genre.begin(), ::tolower);
+
+    it = m_genremap->find(m_genre);
+    if (it != m_genremap->end())
+    {
+      m_genre_type = it->second.type;
+      m_genre_subtype = it->second.subtype;
+    }
+    //if(m_genre.compare("news/current affairs (general)") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS;
+    //} else if (m_genre.compare("magazines/reports/documentary") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS;
+    //  m_genre_subtype = MAGAZINES_REPORTS_DOCUMENTARY;
+    //} else if (m_genre.compare("sports (general)") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_SPORTS;
+    //} else if (m_genre.compare("arts/culture (without music, general)") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_ARTSCULTURE;
+    //} else if (m_genre.compare("childrens's/youth program (general)") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_CHILDRENYOUTH;
+    //} else if (m_genre.compare("show/game show (general)") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_SHOW;
+    //} else if (m_genre.compare("detective/thriller") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
+    //  m_genre_subtype = DETECTIVE_THRILLER;
+    //} else if (m_genre.compare("religion") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_ARTSCULTURE;
+    //  m_genre_subtype = RELIGION;
+    //} else if (m_genre.compare("documentary") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS;
+    //  m_genre_subtype = DOCUMENTARY;
+    //} else if (m_genre.compare("education/science/factual topics (general)") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE;
+    //} else if (m_genre.compare("comedy") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
+    //  m_genre_subtype = COMEDY;
+    //} else if (m_genre.compare("soap/melodram/folkloric") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
+    //  m_genre_subtype = SOAP_MELODRAMA_FOLKLORIC;
+    //} else if (m_genre.compare("cartoon/puppets") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_CHILDRENYOUTH;
+    //  m_genre_subtype = CARTOONS_PUPPETS;
+    //} else if (m_genre.compare("movie/drama (general)") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
+    //} else if (m_genre.compare("nature/animals/environment") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE;
+    //  m_genre_subtype = NATURE_ANIMALS_ENVIRONMENT;
+    //} else if (m_genre.compare("adult movie/drama") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
+    //  m_genre_subtype = ADULTMOVIE_DRAMA;
+    //} else if (m_genre.compare("music/ballet/dance (general)") == 0) {
+    //  m_genre_type = EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE;
+    else
+    {
+      XBMC->Log(LOG_DEBUG, "No mapping of '%s' to type/subtype found.", Genre.c_str());
       m_genre_type     = EPG_GENRE_USE_STRING;
       m_genre_subtype  = 0;
     }

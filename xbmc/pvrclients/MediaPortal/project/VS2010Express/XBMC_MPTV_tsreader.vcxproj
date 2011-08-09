@@ -122,6 +122,10 @@
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
     <ClCompile Include="..\..\epg.cpp" />
+    <ClCompile Include="..\..\lib\tinyxml\tinystr.cpp" />
+    <ClCompile Include="..\..\lib\tinyxml\tinyxml.cpp" />
+    <ClCompile Include="..\..\lib\tinyxml\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\lib\tsreader\AutoLock.cpp" />
     <ClCompile Include="..\..\lib\tsreader\CritSec.cpp" />
     <ClCompile Include="..\..\lib\tsreader\FileReader.cpp" />
@@ -145,6 +149,8 @@
     <ClInclude Include="..\..\channels.h" />
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\epg.h" />
+    <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
+    <ClInclude Include="..\..\lib\tinyxml\tinyxml.h" />
     <ClInclude Include="..\..\lib\tsreader\AutoLock.h" />
     <ClInclude Include="..\..\lib\tsreader\CritSec.h" />
     <ClInclude Include="..\..\lib\tsreader\FileReader.h" />

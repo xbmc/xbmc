@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "libPlatform/os-dependent.h"
+#include "os-dependent.h"
 
 #include "client.h"
 #include "timers.h"
@@ -30,6 +30,8 @@
 #include "epg.h"
 #include "utils.h"
 #include "pvrclient-mediaportal.h"
+//#include <ctime>
+#include "lib/tinyxml/tinyxml.h"
 
 #ifdef TSREADER
 #include "lib/tsreader/TSReader.h"
@@ -232,6 +234,15 @@ bool cPVRClientMediaPortal::Connect()
   }
 
   m_bConnected = true;
+
+  // Read the genre string to type/subtype translation file:
+  if(g_bReadGenre)
+  {
+    string sGenreFile = g_szClientPath + PATH_SEPARATOR_CHAR + "resources" + PATH_SEPARATOR_CHAR + "genre_translation.xml";
+
+    LoadGenreXML(sGenreFile);
+  }
+
   return true;
 }
 
@@ -469,6 +480,7 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
     if( result.length() != 0)
     {
       memset(&broadcast, NULL, sizeof(EPG_TAG));
+      epg.SetGenreMap(&m_genremap);
 
       Tokenize(result, lines, ",");
 
@@ -1596,4 +1608,87 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
     }
     return m_PlaybackURL.c_str();
   }
+}
+
+bool cPVRClientMediaPortal::LoadGenreXML(const std::string &filename)
+{
+  TiXmlDocument xmlDoc;
+  if (!xmlDoc.LoadFile(filename))
+  {
+    XBMC->Log(LOG_DEBUG, "unable to load %s: %s at line %d", filename.c_str(), xmlDoc.ErrorDesc(), xmlDoc.ErrorRow());
+    return false;
+  }
+
+  XBMC->Log(LOG_DEBUG, "Opened %s to read genre string to type/subtype translation table", filename.c_str());
+
+  TiXmlHandle hDoc(&xmlDoc);
+	TiXmlElement* pElem;
+	TiXmlHandle hRoot(0);
+  string sGenre;
+  const char* sGenreType = NULL;
+  const char* sGenreSubType = NULL;
+  genre_t genre;
+
+	// block: genrestrings
+	pElem = hDoc.FirstChildElement("genrestrings").Element();
+	// should always have a valid root but handle gracefully if it does
+	if (!pElem)
+  {
+    XBMC->Log(LOG_DEBUG, "Could not find <genrestrings> element");    
+    return false;
+  }
+		
+  //This should hold: pElem->Value() == "genrestrings"
+
+	// save this for later
+	hRoot=TiXmlHandle(pElem);
+
+  // iterate through all genre elements
+  TiXmlElement* pGenreNode = hRoot.FirstChildElement("genre").Element();
+  //This should hold: pGenreNode->Value() == "genre"
+
+  if (!pElem)
+  {
+    XBMC->Log(LOG_DEBUG, "Could not find <genre> element");    
+    return false;
+  }
+
+  for (pGenreNode; pGenreNode; pGenreNode = pGenreNode->NextSiblingElement("genre"))
+  {
+    const char* sGenreString = pGenreNode->GetText();
+
+    if (sGenreString)
+    {
+      sGenreType = pGenreNode->Attribute("type");
+		  sGenreSubType = pGenreNode->Attribute("subtype");
+
+      if ((sGenreType) && (strlen(sGenreType) > 2))
+      {
+        if(sscanf(sGenreType + 2, "%x", &genre.type) != 1)
+          genre.type = 0;
+      }
+      else
+      {
+        genre.type = 0;
+      }
+
+      if ((sGenreSubType) && (strlen(sGenreSubType) > 2 ))
+      {
+        if(sscanf(sGenreSubType + 2, "%x", &genre.subtype) != 1)
+          genre.subtype = 0;
+      }
+      else
+      {
+        genre.subtype = 0;
+      }
+
+      if (genre.type > 0)
+      {
+        XBMC->Log(LOG_DEBUG, "Genre '%s' => 0x%x, 0x%x", sGenreString, genre.type, genre.subtype);
+        m_genremap.insert(std::pair<std::string, genre_t>(sGenreString, genre));
+      }
+    }
+	}
+
+  return true;
 }
