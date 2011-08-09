@@ -106,7 +106,9 @@ public:
   void StartUPnPServer();
   void StopUPnPServer();
   void StartPVRManager();
+  void StartEPGManager(void);
   void StopPVRManager();
+  void StopEPGManager(void);
   bool StartEventServer();
   bool StopEventServer(bool bWait, bool promptuser);
   void RefreshEventServer();

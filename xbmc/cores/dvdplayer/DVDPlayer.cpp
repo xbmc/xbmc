@@ -2236,7 +2236,7 @@ void CDVDPlayer::HandleMessages()
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
-          g_application.getApplicationMessenger().MediaStop();
+          g_application.getApplicationMessenger().MediaStop(false);
         }
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_SELECT) && m_messenger.GetPacketCount(CDVDMsg::PLAYER_CHANNEL_SELECT) == 0)
@@ -2249,7 +2249,7 @@ void CDVDPlayer::HandleMessages()
         }else
         {
           CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
-          g_application.getApplicationMessenger().MediaStop();
+          g_application.getApplicationMessenger().MediaStop(false);
         }
       }
       else if (pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_NEXT) || pMsg->IsType(CDVDMsg::PLAYER_CHANNEL_PREV))
@@ -2289,7 +2289,7 @@ void CDVDPlayer::HandleMessages()
           else
           {
             CLog::Log(LOGWARNING, "%s - failed to switch channel. playback stopped", __FUNCTION__);
-            g_application.getApplicationMessenger().MediaStop();
+            g_application.getApplicationMessenger().MediaStop(false);
           }
         }
       }

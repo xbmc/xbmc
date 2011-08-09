@@ -24,6 +24,7 @@
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogExtendedProgressBar.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "music/tags/MusicInfoTag.h"
@@ -132,7 +133,6 @@ void CPVRManager::Stop(void)
 
   m_recordings->Unload();
   m_timers->Unload();
-  g_EpgContainer.Unload();
   m_channelGroups->Unload();
   m_addons->Unload();
   m_bIsStopping = false;
@@ -154,7 +154,6 @@ void CPVRManager::StopUpdateThreads(void)
 {
   StopThread();
   g_EpgContainer.UnregisterObserver(this);
-  g_EpgContainer.Stop();
   m_guiInfo->Stop();
   m_addons->Stop();
 }
@@ -229,7 +228,7 @@ void CPVRManager::HideProgressDialog(void)
 {
   if (m_loadingProgressDialog)
   {
-    m_loadingProgressDialog->Close();
+    m_loadingProgressDialog->Close(true, 0, true, false);
     m_loadingProgressDialog = NULL;
   }
 }
@@ -253,7 +252,6 @@ void CPVRManager::Process(void)
   ShowProgressDialog(g_localizeStrings.Get(19239), 85);
   m_guiInfo->Start();
   g_EpgContainer.RegisterObserver(this);
-  g_EpgContainer.Start();
 
   /* close the progess dialog */
   HideProgressDialog();
@@ -386,8 +384,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
 {
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the PVR database", __FUNCTION__);
 
-  /* close the epg progress dialog, or we'll get a deadlock */
-  g_EpgContainer.CloseProgressDialog();
+  g_EpgContainer.Stop();
 
   CGUIDialogProgress* pDlgProgress = NULL;
   if (bShowProgress)
@@ -468,6 +465,8 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
 
   CLog::Log(LOGNOTICE,"PVRManager - %s - PVR database cleared", __FUNCTION__);
 
+  g_EpgContainer.Start();
+
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - restarting the PVRManager", __FUNCTION__);
@@ -487,10 +486,16 @@ void CPVRManager::ResetEPG(void)
   CLog::Log(LOGNOTICE,"PVRManager - %s - clearing the EPG database", __FUNCTION__);
 
   StopUpdateThreads();
+  g_EpgContainer.Stop();
   g_EpgContainer.Reset();
 
   if (g_guiSettings.GetBool("pvrmanager.enabled"))
+  {
+    m_channelGroups->GetGroupAllTV()->CreateChannelEpgs(true);
+    m_channelGroups->GetGroupAllRadio()->CreateChannelEpgs(true);
+    g_EpgContainer.Start();
     StartUpdateThreads();
+  }
 }
 
 bool CPVRManager::IsPlaying(void) const
@@ -503,7 +508,7 @@ bool CPVRManager::GetCurrentChannel(CPVRChannel *channel) const
   return m_addons->GetPlayingChannel(channel);
 }
 
-int CPVRManager::GetCurrentEpg(CFileItemList *results) const
+int CPVRManager::GetCurrentEpg(CFileItemList &results) const
 {
   int iReturn = -1;
 
@@ -837,6 +842,13 @@ bool CPVRManager::PerformChannelSwitch(const CPVRChannel &channel, bool bPreview
     m_bIsSwitchingChannels = false;
   }
 
+  if (!bSwitched)
+  {
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error,
+        g_localizeStrings.Get(19166),
+        g_localizeStrings.Get(19035));
+  }
+
   return bSwitched;
 }
 
@@ -934,6 +946,12 @@ bool CPVRManager::IsRunning(void) const
 {
   CSingleLock lock(m_critSection);
   return !m_bStop;
+}
+
+bool CPVRManager::IsInitialising(void) const
+{
+  CSingleLock lock(m_critSection);
+  return g_guiSettings.GetBool("pvrmanager.enabled") && !m_bLoaded;
 }
 
 bool CPVRManager::IsPlayingTV(void) const

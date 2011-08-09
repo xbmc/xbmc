@@ -2368,7 +2368,6 @@
 		38F4E55F13CCCB3B00664821 /* Lockables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Lockables.h; sourceTree = "<group>"; };
 		38F4E56513CCCB3B00664821 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		38F4E56613CCCB3B00664821 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
-		38F4E56813CCCB3B00664821 /* platform.select.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 4; path = platform.select.h; sourceTree = "<group>"; };
 		38F4E56A13CCCB3B00664821 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		38F4E56B13CCCB3B00664821 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
 		38F4E56C13CCCB3B00664821 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
@@ -4607,7 +4606,6 @@
 			children = (
 				38F4E56513CCCB3B00664821 /* Condition.h */,
 				38F4E56613CCCB3B00664821 /* CriticalSection.h */,
-				38F4E56813CCCB3B00664821 /* platform.select.h */,
 				38F4E56913CCCB3B00664821 /* pthreads */,
 				38F4E56D13CCCB3B00664821 /* README.platform */,
 				38F4E56E13CCCB3B00664821 /* ThreadLocal.h */,

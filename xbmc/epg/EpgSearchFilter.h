@@ -35,8 +35,8 @@ namespace EPG
 
   struct EpgSearchFilter
   {
-    static int FilterRecordings(CFileItemList *results);
-    static int FilterTimers(CFileItemList *results);
+    static int FilterRecordings(CFileItemList &results);
+    static int FilterTimers(CFileItemList &results);
 
     /*!
      * @brief Clear this filter.
@@ -57,7 +57,7 @@ namespace EPG
     virtual bool MatchChannelNumber(const CEpgInfoTag &tag) const;
     virtual bool MatchChannelGroup(const CEpgInfoTag &tag) const;
 
-    static int RemoveDuplicates(CFileItemList *results);
+    static int RemoveDuplicates(CFileItemList &results);
 
     CStdString    m_strSearchTerm;            /*!< The term to search for */
     bool          m_bIsCaseSensitive;         /*!< Do a case sensitive search */

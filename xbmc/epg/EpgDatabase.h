@@ -22,6 +22,7 @@
 
 #include "dbwrappers/Database.h"
 #include "XBDateTime.h"
+#include "threads/CriticalSection.h"
 
 namespace EPG
 {
@@ -155,5 +156,7 @@ namespace EPG
      * @return True if it was updated successfully, false otherwise.
      */
     virtual bool UpdateOldVersion(int version);
+
+    CCriticalSection m_critSection;
   };
 }

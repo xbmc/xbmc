@@ -108,6 +108,9 @@ int CPVRChannelGroup::Load(void)
         __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
   }
 
+  SortByChannelNumber();
+  Renumber();
+
   g_guiSettings.RegisterObserver(this);
   m_bLoaded = true;
 
@@ -465,9 +468,6 @@ int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* =
 
     if (bGroupMembers || !IsGroupMember(*channel))
     {
-      /* ensure that the epg pointer is set for this channel */
-      CEpg *epg = channel->GetEPG(); epg = NULL;
-
       CFileItemPtr pFileItem(new CFileItem(*channel));
       results.Add(pFileItem);
     }
@@ -586,7 +586,7 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
   CSingleLock lock(m_critSection);
   /* sort by client channel number if this is the first time or if pvrmanager.backendchannelorder is true */
-  bool bUseBackendChannelNumbers(m_bUsingBackendChannelOrder);
+  bool bUseBackendChannelNumbers(size() == 0 || m_bUsingBackendChannelOrder);
 
   CPVRDatabase *database = OpenPVRDatabase();
   if (!database)
@@ -942,8 +942,10 @@ const CDateTime CPVRChannelGroup::GetLastEPGDate(void)
   return g_EpgContainer.GetLastEPGDate();
 }
 
-int CPVRChannelGroup::GetEPGSearch(CFileItemList* results, const EpgSearchFilter &filter)
+int CPVRChannelGroup::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &filter)
 {
+  int iInitialSize = results.Size();
+
   /* get filtered results from all tables */
   g_EpgContainer.GetEPGSearch(results, filter);
 
@@ -959,19 +961,19 @@ int CPVRChannelGroup::GetEPGSearch(CFileItemList* results, const EpgSearchFilter
   if (filter.m_bIgnorePresentTimers)
     EpgSearchFilter::FilterTimers(results);
 
-  return results->Size();
+  return results.Size() - iInitialSize;
 }
 
-int CPVRChannelGroup::GetEPGNow(CFileItemList* results)
+int CPVRChannelGroup::GetEPGNow(CFileItemList &results)
 {
+  int iInitialSize = results.Size();
   CSingleLock lock(m_critSection);
-  int iInitialSize = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
     CPVRChannel *channel = at(iChannelPtr).channel;
     CEpg *epg = channel->GetEPG();
-    if (!epg->HasValidEntries())
+    if (!epg || !epg->HasValidEntries())
       continue;
 
     const CEpgInfoTag *epgNow = epg->InfoTagNow();
@@ -982,22 +984,22 @@ int CPVRChannelGroup::GetEPGNow(CFileItemList* results)
     entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->m_strPath = channel->ChannelName();
     entry->SetThumbnailImage(channel->IconPath());
-    results->Add(entry);
+    results.Add(entry);
   }
 
-  return results->Size() - iInitialSize;
+  return results.Size() - iInitialSize;
 }
 
-int CPVRChannelGroup::GetEPGNext(CFileItemList* results)
+int CPVRChannelGroup::GetEPGNext(CFileItemList &results)
 {
+  int iInitialSize = results.Size();
   CSingleLock lock(m_critSection);
-  int iInitialSize = results->Size();
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
   {
     CPVRChannel *channel = at(iChannelPtr).channel;
     CEpg *epg = channel->GetEPG();
-    if (!epg->HasValidEntries())
+    if (!epg || !epg->HasValidEntries())
       continue;
 
     const CEpgInfoTag *epgNow = epg->InfoTagNext();
@@ -1008,15 +1010,15 @@ int CPVRChannelGroup::GetEPGNext(CFileItemList* results)
     entry->SetLabel2(epgNow->StartAsLocalTime().GetAsLocalizedTime("", false));
     entry->m_strPath = channel->ChannelName();
     entry->SetThumbnailImage(channel->IconPath());
-    results->Add(entry);
+    results.Add(entry);
   }
 
-  return results->Size() - iInitialSize;
+  return results.Size() - iInitialSize;
 }
 
-int CPVRChannelGroup::GetEPGAll(CFileItemList* results)
+int CPVRChannelGroup::GetEPGAll(CFileItemList &results)
 {
-  int iInitialSize = results->Size();
+  int iInitialSize = results.Size();
   CSingleLock lock(m_critSection);
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
@@ -1027,5 +1029,5 @@ int CPVRChannelGroup::GetEPGAll(CFileItemList* results)
     at(iChannelPtr).channel->GetEPG(results);
   }
 
-  return results->Size() - iInitialSize;
+  return results.Size() - iInitialSize;
 }

@@ -805,7 +805,7 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         else if (prop.name == "idletime")
           return AddMultiInfo(GUIInfo(SYSTEM_IDLE_TIME, atoi(param.c_str())));
       }
-      else if (prop.name == "alarmlessorequal" && prop.num_params() == 2)
+      if (prop.name == "alarmlessorequal" && prop.num_params() == 2)
         return AddMultiInfo(GUIInfo(SYSTEM_ALARM_LESS_OR_EQUAL, ConditionalStringParameter(prop.param(0)), ConditionalStringParameter(prop.param(1))));
       else if (prop.name == "date")
       {

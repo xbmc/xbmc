@@ -850,10 +850,10 @@ void CApplicationMessenger::PlayFile(const CFileItem &item, bool bRestart /*= fa
   SendMessage(tMsg, false);
 }
 
-void CApplicationMessenger::MediaStop()
+void CApplicationMessenger::MediaStop(bool bWait /* = true */)
 {
   ThreadMessage tMsg = {TMSG_MEDIA_STOP};
-  SendMessage(tMsg, true);
+  SendMessage(tMsg, bWait);
 }
 
 void CApplicationMessenger::MediaPause()

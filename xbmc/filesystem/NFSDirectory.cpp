@@ -195,6 +195,12 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
       }
+
+      if (strName[0] == '.')
+      {
+        pItem->SetProperty("file:hidden", true);
+      }
+      
       items.Add(pItem);
     }
   }

@@ -192,7 +192,7 @@ namespace EPG
      * @param beginTime The start time of the event to find if it wasn't found by it's unique ID.
      * @return The found tag or NULL if it wasn't found.
      */
-    virtual const CEpgInfoTag *GetTag(int uniqueID, const CDateTime &beginTime) const;
+    virtual CEpgInfoTag *GetTag(int uniqueID, const CDateTime &beginTime) const;
 
     /*!
      * @brief Update an entry in this EPG.
@@ -207,17 +207,16 @@ namespace EPG
      * @param start The start time.
      * @param end The end time.
      * @param iUpdateTime Update the table after the given amount of time has passed.
-     * @param bLoadFromDb Try to load this table from the db if it's not been loaded yet.
      * @return True if the update was successful, false otherwise.
      */
-    virtual bool Update(const time_t start, const time_t end, int iUpdateTime, bool bLoadFromDb);
+    virtual bool Update(const time_t start, const time_t end, int iUpdateTime);
 
     /*!
      * @brief Get all EPG entries.
      * @param results The file list to store the results in.
      * @return The amount of entries that were added.
      */
-    virtual int Get(CFileItemList *results) const;
+    virtual int Get(CFileItemList &results) const;
 
     /*!
      * @brief Get all EPG entries that and apply a filter.
@@ -225,7 +224,7 @@ namespace EPG
      * @param filter The filter to apply.
      * @return The amount of entries that were added.
      */
-    virtual int Get(CFileItemList *results, const EpgSearchFilter &filter) const;
+    virtual int Get(CFileItemList &results, const EpgSearchFilter &filter) const;
 
     /*!
      * @brief Persist this table in the database.

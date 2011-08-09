@@ -527,7 +527,11 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
     return bReturn;
   }
 
-  if (m_currentChannel && m_currentChannel->ClientID() != channel.ClientID())
+  if (m_currentChannel && (
+      /* different client add-on */
+      m_currentChannel->ClientID() != channel.ClientID() ||
+      /* switch from radio -> tv or tv -> radio */
+      m_currentChannel->IsRadio() != channel.IsRadio()))
   {
     lock.Leave();
     CloseStream();

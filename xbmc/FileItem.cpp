@@ -151,11 +151,6 @@ CFileItem::CFileItem(const CEpgInfoTag& tag)
 
   Reset();
 
-  if (tag.HasPVRChannel())
-    *GetPVRChannelInfoTag() = *tag.ChannelTag();
-  if (tag.HasTimer())
-    *GetPVRTimerInfoTag() = *tag.Timer();
-
   m_strPath = tag.Path();
   m_bIsFolder = false;
   *GetEPGInfoTag() = tag;
@@ -1000,6 +995,11 @@ bool CFileItem::IsStack() const
 bool CFileItem::IsPlugin() const
 {
   return URIUtils::IsPlugin(m_strPath);
+}
+
+bool CFileItem::IsScript() const
+{
+  return URIUtils::IsScript(m_strPath);
 }
 
 bool CFileItem::IsAddonsPath() const

@@ -1674,7 +1674,6 @@
     <ClInclude Include="..\..\xbmc\threads\LockFree.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\Condition.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\platform.select.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\Condition.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h" />
