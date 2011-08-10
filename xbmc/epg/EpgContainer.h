@@ -197,6 +197,11 @@ namespace EPG
      */
     void PreventUpdates(bool bSetTo = true) { m_bPreventUpdates = bSetTo;  }
 
+    /*!
+     * @return True while being initialised.
+     */
+    bool IsInitialising(void) const;
+
   protected:
     /*!
      * @brief Insert an epg into the table. If the table already contains an entry with the same id, then that entry will be replaced.
@@ -262,6 +267,7 @@ namespace EPG
     /** @name Class state properties */
     //@{
     bool         m_bIsUpdating;        /*!< true while an update is running */
+    bool         m_bIsInitialising;    /*!< true while the epg manager hasn't loaded all tables */
     bool         m_bPreventUpdates;    /*!< true to prevent EPG updates */
     time_t       m_iLastEpgCleanup;    /*!< the time the EPG was cleaned up */
     time_t       m_iNextEpgUpdate;     /*!< the time the EPG will be updated */

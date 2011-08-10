@@ -49,6 +49,7 @@ CEpgContainer::CEpgContainer(void) :
   m_progressDialog = NULL;
   m_bStop = true;
   m_bIsUpdating = false;
+  m_bIsInitialising = true;
   m_iNextEpgId = 0;
   m_bPreventUpdates = false;
   m_updateEvent.Reset();
@@ -114,6 +115,7 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
   }
 
   m_iNextEpgUpdate  = 0;
+  m_bIsInitialising = true;
 
   lock.Leave();
 
@@ -168,7 +170,6 @@ void CEpgContainer::Process(void)
   lock.Leave();
 
   bool bUpdateEpg(true);
-  bool bShowProgress(true);
   while (!m_bStop && !g_application.m_bStop)
   {
     CDateTime::GetCurrentDateTime().GetAsTime(iNow);
@@ -177,8 +178,8 @@ void CEpgContainer::Process(void)
     lock.Leave();
 
     /* load or update the EPG */
-    if (!InterruptUpdate() && bUpdateEpg)
-      bShowProgress = !UpdateEPG(bShowProgress);
+    if (!InterruptUpdate() && bUpdateEpg && UpdateEPG(m_bIsInitialising))
+      m_bIsInitialising = false;
 
     /* clean up old entries */
     if (!m_bStop && iNow >= m_iLastEpgCleanup)
@@ -583,4 +584,10 @@ bool CEpgContainer::CheckPlayingEvents(void)
   }
 
   return bReturn;
+}
+
+bool CEpgContainer::IsInitialising(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_bIsInitialising;
 }
