@@ -329,6 +329,8 @@ namespace INFO
 #define STRING_COMPARE              411
 #define STRING_STR                  412
 #define INTEGER_GREATER_THAN        413
+#define STRING_STR_LEFT             414
+#define STRING_STR_RIGHT            415
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
