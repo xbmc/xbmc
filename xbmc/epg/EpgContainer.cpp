@@ -357,7 +357,7 @@ void CEpgContainer::CloseProgressDialog(void)
 void CEpgContainer::ShowProgressDialog(void)
 {
   CSingleLock lock(m_critSection);
-  if (!m_progressDialog)
+  if (!m_progressDialog && !g_PVRManager.IsInitialising())
   {
     m_progressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
     m_progressDialog->Show();
@@ -386,7 +386,7 @@ bool CEpgContainer::InterruptUpdate(void) const
   bReturn = g_application.m_bStop || m_bStop || m_bPreventUpdates;
   lock.Leave();
 
-  return bReturn || g_PVRManager.IsInitialising() ||
+  return bReturn ||
     (g_guiSettings.GetBool("epg.preventupdateswhileplayingtv") &&
      g_PVRManager.IsStarted() &&
      g_PVRManager.IsPlaying());
