@@ -22,6 +22,7 @@
 #include "GUIDialogVideoOverlay.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
+#include "Application.h"
 
 #define CONTROL_PLAYTIME     2
 #define CONTROL_PLAY_LOGO    3
@@ -36,7 +37,6 @@ CGUIDialogVideoOverlay::CGUIDialogVideoOverlay()
     : CGUIDialog(WINDOW_DIALOG_VIDEO_OVERLAY, "VideoOverlay.xml")
 {
   m_renderOrder = 0;
-  m_visibleCondition = SKIN_HAS_VIDEO_OVERLAY;
 }
 
 CGUIDialogVideoOverlay::~CGUIDialogVideoOverlay()
@@ -61,6 +61,13 @@ void CGUIDialogVideoOverlay::SetDefaults()
 {
   CGUIDialog::SetDefaults();
   m_renderOrder = 0;
-  m_visibleCondition = SKIN_HAS_VIDEO_OVERLAY;
+}
+
+void CGUIDialogVideoOverlay::UpdateVisibility()
+{
+  if (g_windowManager.IsOverlayAllowed() && g_application.IsPlayingVideo())
+    Show();
+  else 
+    Close();
 }
 

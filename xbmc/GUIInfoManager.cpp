@@ -1854,14 +1854,6 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     g_sysinfo.GetInfo(condition);
     bReturn = g_sysinfo.HasInternet();
   }
-  else if (condition == SKIN_HAS_VIDEO_OVERLAY)
-  {
-    bReturn = g_windowManager.IsOverlayAllowed() && g_application.IsPlayingVideo();
-  }
-  else if (condition == SKIN_HAS_MUSIC_OVERLAY)
-  {
-    bReturn = g_windowManager.IsOverlayAllowed() && g_application.IsPlayingAudio();
-  }
   else if (condition == CONTAINER_HASFILES || condition == CONTAINER_HASFOLDERS)
   {
     CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
