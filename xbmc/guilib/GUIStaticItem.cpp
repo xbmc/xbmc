@@ -53,7 +53,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     for (vector<CGUIActionDescriptor>::iterator it = actions.begin(); it != actions.end(); ++it)
     {
       (*it).m_action.Replace(",", ",,");
-      if (path.IsEmpty())
+      if (!path.IsEmpty())
       {
         path += " , ";
       }
