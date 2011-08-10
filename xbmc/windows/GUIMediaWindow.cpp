@@ -153,8 +153,7 @@ CFileItemPtr CGUIMediaWindow::GetCurrentListItem(int offset)
 
 bool CGUIMediaWindow::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_PARENT_DIR ||
-     (action.GetID() == ACTION_NAV_BACK && !(m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == m_startDirectory)))
+  if (action.GetID() == ACTION_PARENT_DIR)
   {
     GoParentFolder();
     return true;
@@ -197,6 +196,16 @@ bool CGUIMediaWindow::OnAction(const CAction &action)
   }
 
   return false;
+}
+
+bool CGUIMediaWindow::OnBack(int actionID)
+{
+  if (actionID == ACTION_NAV_BACK && !(m_vecItems->IsVirtualDirectoryRoot() || m_vecItems->GetPath() == m_startDirectory))
+  {
+    GoParentFolder();
+    return true;
+  }
+  return CGUIWindow::OnBack(actionID);
 }
 
 bool CGUIMediaWindow::OnMessage(CGUIMessage& message)

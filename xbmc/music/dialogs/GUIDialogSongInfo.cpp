@@ -144,10 +144,13 @@ bool CGUIDialogSongInfo::OnAction(const CAction &action)
       SetRating(rating - 1);
     return true;
   }
-  else if (action.GetID() == ACTION_PREVIOUS_MENU ||
-           action.GetID() == ACTION_NAV_BACK)
-    m_cancelled = true;
   return CGUIDialog::OnAction(action);
+}
+
+bool CGUIDialogSongInfo::OnBack(int actionID)
+{
+  m_cancelled = true;
+  return CGUIDialog::OnBack(actionID);
 }
 
 void CGUIDialogSongInfo::OnInitWindow()

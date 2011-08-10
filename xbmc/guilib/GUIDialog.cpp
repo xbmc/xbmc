@@ -72,12 +72,13 @@ bool CGUIDialog::OnAction(const CAction &action)
   if (!action.IsMouse() && m_autoClosing)
     SetAutoClose(m_showDuration);
 
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
-  {
-    Close();
-    return true;
-  }
   return CGUIWindow::OnAction(action);
+}
+
+bool CGUIDialog::OnBack(int actionID)
+{
+  Close();
+  return true;
 }
 
 bool CGUIDialog::OnMessage(CGUIMessage& message)

@@ -58,14 +58,10 @@ CGUIDialogMediaSource::~CGUIDialogMediaSource()
   delete m_paths;
 }
 
-bool CGUIDialogMediaSource::OnAction(const CAction &action)
+bool CGUIDialogMediaSource::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU ||
-      action.GetID() == ACTION_NAV_BACK)
-  {
-    m_confirmed = false;
-  }
-  return CGUIDialog::OnAction(action);
+  m_confirmed = false;
+  return CGUIDialog::OnBack(actionID);
 }
 
 bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)

@@ -164,8 +164,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.GetID() == ACTION_PARENT_DIR ||
-       (action.GetID() == ACTION_NAV_BACK && !m_vecItems[list]->IsVirtualDirectoryRoot()))
+    if (action.GetID() == ACTION_PARENT_DIR)
     {
       GoParentFolder(list);
       return true;
@@ -179,6 +178,17 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
     }
   }
   return CGUIWindow::OnAction(action);
+}
+
+bool CGUIWindowFileManager::OnBack(int actionID)
+{
+  int list = GetFocusedList();
+  if (list >= 0 && list <= 1 && actionID == ACTION_NAV_BACK && !m_vecItems[list]->IsVirtualDirectoryRoot())
+  {
+    GoParentFolder(list);
+    return true;
+  }
+  return CGUIWindow::OnBack(actionID);
 }
 
 bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)

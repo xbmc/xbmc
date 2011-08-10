@@ -59,13 +59,11 @@ CGUIWindowMusicPlaylistEditor::~CGUIWindowMusicPlaylistEditor(void)
   delete m_playlist;
 }
 
-bool CGUIWindowMusicPlaylistEditor::OnAction(const CAction &action)
+bool CGUIWindowMusicPlaylistEditor::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_NAV_BACK && !m_viewControl.HasControl(GetFocusedControlID()))
-  { // base class would normally go up a folder here, but we don't do this
-    return CGUIWindow::OnAction(action);
-  }
-  return CGUIWindowMusicBase::OnAction(action);
+  if (actionID == ACTION_NAV_BACK && !m_viewControl.HasControl(GetFocusedControlID()))
+    return CGUIWindow::OnBack(actionID); // base class goes up a folder, but none to go up
+  return CGUIWindowMusicBase::OnBack(actionID);
 }
 
 bool CGUIWindowMusicPlaylistEditor::OnMessage(CGUIMessage& message)

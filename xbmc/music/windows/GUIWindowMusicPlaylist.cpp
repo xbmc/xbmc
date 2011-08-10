@@ -218,7 +218,7 @@ bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
     // Playlist has no parent dirs
     return true;
   }
-  if (action.GetID() == ACTION_SHOW_PLAYLIST || action.GetID() == ACTION_NAV_BACK)
+  if (action.GetID() == ACTION_SHOW_PLAYLIST)
   {
     g_windowManager.PreviousWindow();
     return true;
@@ -233,6 +233,13 @@ bool CGUIWindowMusicPlayList::OnAction(const CAction &action)
     return true;
   }
   return CGUIWindowMusicBase::OnAction(action);
+}
+
+bool CGUIWindowMusicPlayList::OnBack(int actionID)
+{
+  if (actionID == ACTION_NAV_BACK)
+    return CGUIWindow::OnBack(actionID); // base class goes up a folder, but none to go up
+  return CGUIWindowMusicBase::OnBack(actionID);
 }
 
 bool CGUIWindowMusicPlayList::MoveCurrentPlayListItem(int iItem, int iAction, bool bUpdate /* = true */)
