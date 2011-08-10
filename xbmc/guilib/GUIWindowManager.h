@@ -108,7 +108,7 @@ public:
   void RouteToWindow(CGUIWindow* dialog);
   void AddModeless(CGUIWindow* dialog);
   void RemoveDialog(int id);
-  int GetTopMostModalDialogID() const;
+  int GetTopMostModalDialogID(bool ignoreClosing = false) const;
 
   void SendThreadMessage(CGUIMessage& message);
   void SendThreadMessage(CGUIMessage& message, int window);
