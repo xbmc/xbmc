@@ -1426,7 +1426,13 @@ CFileItemPtr CFileItemList::Get(const CStdString& strPath)
 {
   CSingleLock lock(m_lock);
 
-  CStdString pathToCheck(strPath); pathToCheck.ToLower();
+  CStdString pathToCheck(strPath);
+  
+  if (URIUtils::IsStack(strPath))
+    pathToCheck = CStackDirectory::GetStackedTitlePath(strPath);
+
+  pathToCheck.ToLower();
+
   if (m_fastLookup)
   {
     IMAPFILEITEMS it=m_map.find(pathToCheck);
@@ -1449,8 +1455,14 @@ CFileItemPtr CFileItemList::Get(const CStdString& strPath)
 const CFileItemPtr CFileItemList::Get(const CStdString& strPath) const
 {
   CSingleLock lock(m_lock);
+  
+  CStdString pathToCheck(strPath);
+  
+  if (URIUtils::IsStack(strPath))
+    pathToCheck = CStackDirectory::GetStackedTitlePath(strPath);
 
-  CStdString pathToCheck(strPath); pathToCheck.ToLower();
+  pathToCheck.ToLower();
+   
   if (m_fastLookup)
   {
     map<CStdString, CFileItemPtr>::const_iterator it=m_map.find(pathToCheck);
