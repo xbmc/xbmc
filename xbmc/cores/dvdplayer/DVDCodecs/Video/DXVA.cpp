@@ -1495,6 +1495,13 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   if (!SelectProcessor())
     return false;
 
+  /* add a delay given number of forward references */
+  REFERENCE_TIME requested_time = time;
+  if (time > m_caps.NumForwardRefSamples * 2)
+    time -= m_caps.NumForwardRefSamples * 2;
+  else
+    time = 0;
+
   if(m_sample.empty())
     return false;
 
@@ -1506,25 +1513,11 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
       break;
   }
 
-  /* find oldest needed frame for all processors */
-  SSamples::iterator it3 = m_sample.begin();
-  for(; it3 != m_sample.end(); it3++)
-  {
-    if(it3->Start + (m_maxbackrefs + m_maxfwdrefs) * 2 >= time)
-      break;
-  }
-
   if(it == m_sample.end())
   {
     CLog::Log(LOGERROR, "DXVA - failed to find image, all images newer or no images");
     return false;
   }
-
-  /* erase anything older than this */
-  for(SSamples::iterator it2 = m_sample.begin(); it2 != it3; it2++)
-    SAFE_RELEASE(it2->SrcSurface);
-  it3 = m_sample.erase(m_sample.begin(), it3);
-
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
@@ -1542,12 +1535,6 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
       vs.End = vs.Start + 2;
     CWinRenderer::CropSource(vs.SrcRect, vs.DstRect, desc);
   }
-
-  /* add a delay given number of forward references */
-  if (time > m_caps.NumForwardRefSamples * 2)
-    time -= m_caps.NumForwardRefSamples * 2;
-  else
-    time = 0;
 
   if(time >= samp[valid-1].End)
   {
@@ -1596,6 +1583,29 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 1, verts, 3*sizeof(float));
 
   CHECK(m_process->VideoProcessBlt(target, &blt, samp.get(), valid, NULL));
+
+  /* add a delay given number of maximum forward references */
+  if (requested_time > m_maxfwdrefs * 2)
+    requested_time -= m_maxfwdrefs * 2;
+  else
+    requested_time = 0;
+
+  /* find oldest needed frame for all processors */
+  it = m_sample.begin();
+  for(; it != m_sample.end(); it++)
+  {
+    if(it->Start + m_maxbackrefs * 2 >= requested_time)
+      break;
+  }
+
+  /* erase anything older than this */
+  if(it != m_sample.end())
+  {
+    for(SSamples::iterator it2 = m_sample.begin(); it2 != it; it2++)
+      SAFE_RELEASE(it2->SrcSurface);
+    m_sample.erase(m_sample.begin(), it);
+  }
+
   return true;
 }
 
