@@ -279,7 +279,7 @@ void CPVRManager::Process(void)
       ExecutePendingJobs();
 
     /* check if the (still) are any enabled addons */
-    if (!m_addons->HasConnectedClients())
+    if (!m_bStop && !m_addons->HasConnectedClients())
     {
       CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
       Stop();
@@ -287,7 +287,8 @@ void CPVRManager::Process(void)
       return;
     }
 
-    m_triggerEvent.WaitMSec(1000);
+    if (!m_bStop)
+      m_triggerEvent.WaitMSec(1000);
   }
 
 }
