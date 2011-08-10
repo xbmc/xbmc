@@ -14,6 +14,13 @@
 			<visible>Player.HasVideo</visible>
 			<include>FullScreenBGImage</include>
 		</control>
+		<control type="image">
+			<visible>true</visible>
+			<width>1280</width>
+			<height>720</height>
+			<aspectratio>scale</aspectratio>
+			<texture>grainy_black_bg.png</texture>
+		</control>
 		<!-- Right hand backgrounds -->
 		<!-- Backgrounds -->
 		<!--<control type="group" id="200">
@@ -283,7 +290,7 @@
 			<include>HomeRightOverlay</include>
 		</control>-->
 		<!-- Behind Menu Backgrounds (on the left hand side)-->
-		<control type="group" id="201">
+		<!--><control type="group" id="201">
 			<visible>!Player.HasVideo</visible>
 			<control type="group" id="236">
 				<description>Power Background Image</description>
@@ -585,7 +592,7 @@
 					</control>
 				</control>
 			</control>
-		</control>
+		</control>-->
 		<!-- THE FANART BACKGROUND -->
 		<control type="group">
 			<visible>!Player.HasVideo + !ControlGroup(7001).IsVisible + !ControlGroup(7002).IsVisible</visible>
@@ -601,7 +608,7 @@
 				<visible>true</visible>
 			</control>
 		</control>
-		<control type="image">
+		<!--><control type="image">
 			<visible>Skin.String(Developer_Background) + Skin.HasSetting(Developer) + Skin.HasSetting(Developer_Background_Visible)</visible>
 			<width>1280</width>
 			<height>720</height>
@@ -625,31 +632,14 @@
 			<include condition="Skin.HasSetting(Background_80)">opacity_80</include>
 			<include condition="Skin.HasSetting(Background_90)">opacity_90</include>
 			<include condition="Skin.HasSetting(Background_100)">opacity_100</include>
-		</control>
-		<control type="multiimage">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>1280</width>
-			<height>720</height>
-			<aspectratio>scale</aspectratio>
-			<aligny>top</aligny>
-			<imagepath background="true">http://127.0.0.1:32400/library/arts</imagepath>
-			<timeperimage>8000</timeperimage>
-			<fadetime>1700</fadetime>
-			<randomize>true</randomize>
-			<loop>yes</loop>
-			<visible>!ControlGroup(7001).HasFocus + !ControlGroup(7002).HasFocus</visible>
-			<animation type="WindowOpen" condition="true">
-				<effect type="fade" start="0" end="100" time="300" delay="0"/>
-			</animation>
-		</control>
+		</control>-->
 		<!-- Fanart slideshow -->
 		<control type="multiimage" id="10101">
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<aspectratio>scale</aspectratio>
+			<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
 			<aligny>top</aligny>
 			<timeperimage>8000</timeperimage>
 			<fadetime>1000</fadetime>
@@ -678,7 +668,7 @@
 			<animation effect="fade" end="100" time="300" delay="0">Visible</animation>
 			<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
 			<info background="true">Container(11001).ListItem.Property(fanart_image)</info>
-			<aspectratio>scale</aspectratio>
+			<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>1280</width>
@@ -1127,6 +1117,12 @@
 						<onclick>Plex.ShutDownSystem</onclick>
 						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + Skin.HasSetting(ShowShutDown)</visible>
 					</item>
+					<item id="2">
+						<description>My Music Button</description>
+						<label> $LOCALIZE[31972] </label>
+						<visible>[!Skin.HasSetting(HideMusic)] + [[Skin.HasSetting(HideVideos) + Skin.HasSetting(HidePictures)] | !Skin.HasSetting(CollapsePluginMenuItems)]</visible>
+						<onclick>XBMC.ActivateWindow(5)</onclick>
+					</item>
 					<item id="13">
 						<description>Help Menu</description>
 						<label> $LOCALIZE[31954] </label>
@@ -1151,18 +1147,13 @@
 						<onclick>SetFocus(507)</onclick>
 						<visible>Skin.HasSetting(CollapsePluginMenuItems) + ![[Skin.HasSetting(HideVideos) + Skin.HasSetting(HideMusic)] | [Skin.HasSetting(HideVideos) + Skin.HasSetting(HidePictures)] | [Skin.HasSetting(HidePictures) + Skin.HasSetting(HideMusic)]]</visible>
 					</item>
-					<!--<item id="1">
+					<item id="1">
 						<description>My Videos Button</description>
 						<label> $LOCALIZE[31971] </label>
 						<visible>[!Skin.HasSetting(HideVideos)] + [[Skin.HasSetting(HideMusic) + Skin.HasSetting(HidePictures)] | !Skin.HasSetting(CollapsePluginMenuItems)]</visible>
 						<onclick>XBMC.ActivateWindow(24)</onclick>
-					</item>-->
-					<item id="2">
-						<description>My Music Button</description>
-						<label> $LOCALIZE[31972] </label>
-						<visible>[!Skin.HasSetting(HideMusic)] + [[Skin.HasSetting(HideVideos) + Skin.HasSetting(HidePictures)] | !Skin.HasSetting(CollapsePluginMenuItems)]</visible>
-						<onclick>XBMC.ActivateWindow(5)</onclick>
 					</item>
+					
 					<item id="3">
 						<description>My Pics Button</description>
 						<label> $LOCALIZE[31973] </label>
