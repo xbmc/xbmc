@@ -454,9 +454,6 @@ bool cVNSIDemux::StreamContentInfo(cResponsePacket *resp)
         m_Streams.stream[i].iHeight           = resp->extract_U32();
         m_Streams.stream[i].iWidth            = resp->extract_U32();
         m_Streams.stream[i].fAspect           = resp->extract_Double();
-
-        // ignore fAspect, this is wrong
-        m_Streams.stream[i].fAspect = 0.0;
       }
       else if (m_Streams.stream[i].iCodecType == AVMEDIA_TYPE_SUBTITLE)
       {
