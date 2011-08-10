@@ -44,7 +44,7 @@ public:
 
 protected:
   virtual void SetVSyncImpl(bool enable);
-  virtual bool PresentRenderImpl();
+  virtual bool PresentRenderImpl(const CDirtyRegionList& dirty);
   HGLRC m_hglrc;
   BOOL (APIENTRY *m_wglSwapIntervalEXT)( int );
 };
