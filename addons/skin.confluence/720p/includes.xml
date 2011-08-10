@@ -531,6 +531,7 @@
 				<onright>606</onright>
 				<onup>610</onup>
 				<ondown>611</ondown>
+				<onback>50</onback>
 				<onclick>XBMC.PlayerControl(Previous)</onclick>
 			</control>
 			<control type="button" id="606">
@@ -545,6 +546,7 @@
 				<onright>603</onright>
 				<onup>610</onup>
 				<ondown>611</ondown>
+				<onback>50</onback>
 				<onclick>XBMC.PlayerControl(Rewind)</onclick>
 				<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
 			</control>
@@ -565,6 +567,7 @@
 					<onright>601</onright>
 					<onup>610</onup>
 					<ondown>611</ondown>
+					<onback>50</onback>
 					<onclick>XBMC.PlayerControl(Play)</onclick>
 				</control>
 				<control type="button" id="601">
@@ -579,6 +582,7 @@
 					<onright>607</onright>
 					<onup>610</onup>
 					<ondown>611</ondown>
+					<onback>50</onback>
 					<onclick>down</onclick>
 					<onclick>XBMC.PlayerControl(Stop)</onclick>
 				</control>
@@ -594,6 +598,7 @@
 					<onright>602</onright>
 					<onup>610</onup>
 					<ondown>611</ondown>
+					<onback>50</onback>
 					<onclick>XBMC.PlayerControl(Forward)</onclick>
 					<visible>Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo</visible>
 				</control>
@@ -609,6 +614,7 @@
 					<onright>604</onright>
 					<onup>610</onup>
 					<ondown>611</ondown>
+					<onback>50</onback>
 					<onclick>XBMC.PlayerControl(Next)</onclick>
 					<animation effect="slide" start="0,0" end="40,0" time="0" condition="Window.IsVisible(MusicPlaylist) | Window.IsVisible(VideoPlaylist) | Player.HasVideo">Conditional</animation>
 				</control>
@@ -628,6 +634,7 @@
 					<onright>605</onright>
 					<onup>610</onup>
 					<ondown>611</ondown>
+					<onback>50</onback>
 				</control>
 				<control type="image">
 					<posx>165</posx>
@@ -699,6 +706,7 @@
 					<onright>50</onright>
 					<onup>610</onup>
 					<ondown>611</ondown>
+					<onback>50</onback>
 				</control>
 			</control>
 		</control>
