@@ -108,10 +108,11 @@ void CPVRManager::Stop(void)
   CSingleLock lock(m_critSection);
   if (m_bIsStopping)
     return;
-  m_bIsStopping = true;
 
   if (!m_bLoaded)
     return;
+
+  m_bIsStopping = true;
   m_bLoaded = false;
   lock.Leave();
 
