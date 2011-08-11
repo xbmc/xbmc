@@ -598,8 +598,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float width = 0, height = 0;
   float minWidth = 0;
 
-  int left = 0, right = 0, up = 0, down = 0, next = 0, prev = 0;
-  vector<CGUIActionDescriptor> leftActions, rightActions, upActions, downActions, nextActions, prevActions;
+  int left = 0, right = 0, up = 0, down = 0, back = 0, next = 0, prev = 0;
+  vector<CGUIActionDescriptor> leftActions, rightActions, upActions, downActions, backActions, nextActions, prevActions;
 
   int pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
@@ -750,6 +750,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   if (!GetNavigation(pControlNode, "ondown", down, downActions)) down = id;
   if (!GetNavigation(pControlNode, "onleft", left, leftActions)) left = id;
   if (!GetNavigation(pControlNode, "onright", right, rightActions)) right = id;
+  if (!GetNavigation(pControlNode, "onback", back, backActions)) back = 0;
   if (!GetNavigation(pControlNode, "onnext", next, nextActions)) next = id;
   if (!GetNavigation(pControlNode, "onprev", prev, prevActions)) prev = id;
 
@@ -1338,9 +1339,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control->SetEnableCondition(enableCondition);
     control->SetAnimations(animations);
     control->SetColorDiffuse(colorDiffuse);
-    control->SetNavigation(up, down, left, right);
+    control->SetNavigation(up, down, left, right, back);
     control->SetTabNavigation(next,prev);
-    control->SetNavigationActions(upActions, downActions, leftActions, rightActions);
+    control->SetNavigationActions(upActions, downActions, leftActions, rightActions, backActions);
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)
       control->SetCamera(camera);

@@ -147,7 +147,7 @@ namespace XFILE
         CFileItemPtr item = list[i];
         if (item->GetLabel().CompareNoCase(name) == 0)
         { // found :)
-          return item->m_strPath;
+          return item->GetPath();
         }
       }
     }

@@ -46,7 +46,7 @@ BIN_DIRS=	\
 	xbmc/network/osx \
 	xbmc/playlists \
 	xbmc/powermanagement \
-        xbmc/powermanagement/linux \
+	xbmc/powermanagement/linux \
 	xbmc/rendering \
 	xbmc/storage \
 	xbmc/storage/linux \
@@ -83,7 +83,7 @@ BIN_DIRS=	\
 	xbmc/input/linux \
 	xbmc/osx \
 	xbmc/threads \
-	xbmc/windowing \
+	xbmc/windowing
 
 ifeq (@USE_OPENGL@,1)
 BIN_DIRS += xbmc/rendering/gl
@@ -110,7 +110,7 @@ XBMCTEX_DIRS= \
 
 DVDPCODECS_DIRS= \
 	lib \
-	lib/libdvd \
+	lib/libdvd
 
 DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
                    xbmc/cores/dvdplayer/DVDCodecs/DVDCodecs.a \
@@ -119,7 +119,7 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
                    xbmc/cores/dvdplayer/DVDCodecs/Video/Video.a \
                    xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
                    xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
-                   xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a \
+                   xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a
 
 PAPCODECS_DIRS= \
 	lib/xbadpcm \
@@ -128,7 +128,7 @@ PAPCODECS_DIRS= \
 	lib/libsidplay2 \
 	lib/stsound/StSoundLibrary \
 	lib/snesapu/SNES/SNESAPU \
-	lib/vgmstream \
+	lib/vgmstream
 
 ifeq (@USE_ASAP_CODEC@,1)
 PAPCODECS_DIRS+= \
@@ -147,7 +147,7 @@ LIB_DIRS=\
 
 SS_DIRS=
 ifeq (@USE_OPENGL@,1)
-SS_DIRS+= xbmc/screensavers/rsxs-0.9/xbmc
+  SS_DIRS+= xbmc/screensavers/rsxs-0.9/xbmc
 endif
 
 VIS_DIRS=
@@ -155,15 +155,23 @@ ifeq (@USE_OPENGL@,1)
 VIS_DIRS+=\
 	xbmc/visualizations/OpenGLSpectrum \
 	xbmc/visualizations/WaveForm \
-	xbmc/visualizations/XBMCProjectM \
+	xbmc/visualizations/XBMCProjectM
+endif
 
+ifeq (($(findstring osx,@ARCH@), osx),(@USE_OPENGL@,1))
+  VIS_DIRS+=xbmc/visualizations/iTunes
 endif
-ifeq (($(findstring osx,@ARCH@), osx),(@USE_OPENGL@,1)) 
-VIS_DIRS+=xbmc/visualizations/iTunes
-endif
+
 ifneq (@DISABLE_GOOM@,1)
-VIS_DIRS+=xbmc/visualizations/Goom \
+  VIS_DIRS+=xbmc/visualizations/Goom
+endif
 
+ifeq (@USE_OPENGLES@,1)
+  ifeq ($(findstring osx,@ARCH@), osx)
+    ifeq (@ARCH@, arm-osx)
+      VIS_DIRS+=xbmc/visualizations/EGLSpectrum
+    endif
+  endif
 endif
 
 PVR_DIRS=\
@@ -537,8 +545,8 @@ OBJSXBMC=	\
 	lib/SlingboxLib/SlingboxLib.a \
 	lib/libapetag/.libs/libapetag.a \
 	lib/xbmc-dll-symbols/dll-symbols.a \
-        xbmc/rendering/rendering.a \
-        xbmc/windowing/windowing.a \
+	xbmc/rendering/rendering.a \
+	xbmc/windowing/windowing.a
 
 ifeq (@USE_OPENGL@,1)
 OBJSXBMC+= \
@@ -567,8 +575,7 @@ OBJSXBMC += \
 	xbmc/powermanagement/osx/powermanagement.a \
 	xbmc/network/osx/network.a \
 	xbmc/storage/osx/storage.a \
-	xbmc/network/linux/network_linux.a \
-
+	xbmc/network/linux/network_linux.a
 else
 OBJSXBMC += \
 	xbmc/input/linux/input_linux.a \
@@ -608,7 +615,7 @@ ifneq (1,@USE_XRANDR@)
 	# xbmc-xrandr.c gets picked up by the default make rules
 	@echo "excluding xbmc-xrandr"
 else
-	$(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11 
+	$(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11
 endif
 
 tools/XBMCTex/XBMCTex:
@@ -683,7 +690,7 @@ ifeq ($(findstring bsd,@ARCH@), bsd)
 		-exec printf " -- %-75.75s\r" "{}" \;
 else
 	@find addons language media sounds userdata system -regextype posix-extended -type f -not -iregex ".*@ARCH@.*|.*\.pvr|.*\.vis|.*\.xbs|.*svn.*|.*\.so|.*\.dll" -exec install -D -m 0644 "{}" $(DESTDIR)$(datarootdir)/xbmc/"{}" \; -printf " -- %-75.75f\r"
-endif	
+endif
 	@# Icons and links
 	@install -d $(DESTDIR)$(datarootdir)/applications
 	@install tools/Linux/xbmc.desktop $(DESTDIR)$(datarootdir)/applications/xbmc.desktop
@@ -727,7 +734,7 @@ reallyclean:
 		echo " The following files may need reverted (svn revert <file>)"; \
 		svn st | sed -e "s/^M */  /p" -e d; \
 	 else \
-	 	echo; \
+		echo; \
 	 fi
 
 clean-xbmc.bin:

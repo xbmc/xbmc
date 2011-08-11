@@ -127,7 +127,7 @@ void SSortFileItem::ByFile(CFileItemPtr &item)
 {
   if (!item) return;
 
-  CURL url(item->m_strPath);
+  CURL url(item->GetPath());
   CStdString label;
   label.Format("%s %d", url.GetFileNameWithoutPath().c_str(), item->m_lStartOffset);
   item->SetSortLabel(label);
@@ -138,7 +138,7 @@ void SSortFileItem::ByFullPath(CFileItemPtr &item)
   if (!item) return;
 
   CStdString label;
-  label.Format("%s %d", item->m_strPath, item->m_lStartOffset);
+  label.Format("%s %d", item->GetPath(), item->m_lStartOffset);
   item->SetSortLabel(label);
 }
 

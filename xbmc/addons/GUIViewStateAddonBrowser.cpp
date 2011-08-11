@@ -40,12 +40,12 @@ CGUIViewStateAddonBrowser::CGUIViewStateAddonBrowser(const CFileItemList& items)
   SetViewAsControl(DEFAULT_VIEW_AUTO);
 
   SetSortOrder(SORT_ORDER_ASC);
-  LoadViewState(items.m_strPath, WINDOW_ADDON_BROWSER);
+  LoadViewState(items.GetPath(), WINDOW_ADDON_BROWSER);
 }
 
 void CGUIViewStateAddonBrowser::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_ADDON_BROWSER);
+  SaveViewToDb(m_items.GetPath(), WINDOW_ADDON_BROWSER);
 }
 
 CStdString CGUIViewStateAddonBrowser::GetExtensions()

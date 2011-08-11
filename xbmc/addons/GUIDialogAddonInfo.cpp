@@ -318,7 +318,7 @@ void CGUIDialogAddonInfo::OnJobComplete(unsigned int jobID, bool success,
   {
     CFile file;
     if (file.Open("special://temp/"+
-      URIUtils::GetFileName(((CFileOperationJob*)job)->GetItems()[0]->m_strPath)))
+      URIUtils::GetFileName(((CFileOperationJob*)job)->GetItems()[0]->GetPath())))
     {
       char* temp = new char[(size_t)file.GetLength()+1];
       file.Read(temp,file.GetLength());

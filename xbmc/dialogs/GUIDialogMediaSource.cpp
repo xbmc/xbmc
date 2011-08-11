@@ -60,14 +60,10 @@ CGUIDialogMediaSource::~CGUIDialogMediaSource()
   delete m_paths;
 }
 
-bool CGUIDialogMediaSource::OnAction(const CAction &action)
+bool CGUIDialogMediaSource::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU ||
-      action.GetID() == ACTION_NAV_BACK)
-  {
-    m_confirmed = false;
-  }
-  return CGUIDialog::OnAction(action);
+  m_confirmed = false;
+  return CGUIDialog::OnBack(actionID);
 }
 
 bool CGUIDialogMediaSource::OnMessage(CGUIMessage& message)
@@ -232,7 +228,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   bool allowNetworkShares(m_type != "programs");
   VECSOURCES extraShares;
 
-  if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->m_strPath))
+  if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->GetPath()))
     m_bNameChanged=true;
 
   if (m_type == "music")
@@ -361,7 +357,7 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
   if (CGUIDialogFileBrowser::ShowAndGetSource(path, allowNetworkShares, extraShares.size()==0?NULL:&extraShares))
   {
     if (item < m_paths->Size()) // if the skin does funky things, m_paths may have been cleared
-      m_paths->Get(item)->m_strPath = path;
+      m_paths->Get(item)->SetPath(path);
     if (!m_bNameChanged || m_name.IsEmpty())
     {
       CURL url(path);
@@ -377,15 +373,17 @@ void CGUIDialogMediaSource::OnPath(int item)
 {
   if (item < 0 || item > m_paths->Size()) return;
 
-  if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->m_strPath))
+  if (m_name != CUtil::GetTitleFromPath(m_paths->Get(item)->GetPath()))
     m_bNameChanged=true;
 
-  CGUIDialogKeyboard::ShowAndGetInput(m_paths->Get(item)->m_strPath, g_localizeStrings.Get(1021), false);
-  URIUtils::AddSlashAtEnd(m_paths->Get(item)->m_strPath);
+  CStdString path(m_paths->Get(item)->GetPath());
+  CGUIDialogKeyboard::ShowAndGetInput(path, g_localizeStrings.Get(1021), false);
+  URIUtils::AddSlashAtEnd(path);
+  m_paths->Get(item)->SetPath(path);
 
   if (!m_bNameChanged || m_name.IsEmpty())
   {
-    CURL url(m_paths->Get(item)->m_strPath);
+    CURL url(m_paths->Get(item)->GetPath());
     m_name = url.GetWithoutUserDetails();
     URIUtils::RemoveSlashAtEnd(m_name);
     m_name = CUtil::GetTitleFromPath(m_name);
@@ -431,7 +429,7 @@ void CGUIDialogMediaSource::UpdateButtons()
   if (!m_paths->Size()) // sanity
     return;
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, !m_paths->Get(0)->m_strPath.IsEmpty() && !m_name.IsEmpty());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, !m_paths->Get(0)->GetPath().IsEmpty() && !m_name.IsEmpty());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_REMOVE, m_paths->Size() > 1);
   // name
   SET_CONTROL_LABEL2(CONTROL_NAME, m_name);
@@ -443,7 +441,7 @@ void CGUIDialogMediaSource::UpdateButtons()
   {
     CFileItemPtr item = m_paths->Get(i);
     CStdString path;
-    CURL url(item->m_strPath);
+    CURL url(item->GetPath());
     path = url.GetWithoutUserDetails();
     if (path.IsEmpty()) path = "<"+g_localizeStrings.Get(231)+">"; // <None>
     item->SetLabel(path);
@@ -543,7 +541,7 @@ vector<CStdString> CGUIDialogMediaSource::GetPaths()
 {
   vector<CStdString> paths;
   for (int i = 0; i < m_paths->Size(); i++)
-    if (!m_paths->Get(i)->m_strPath.IsEmpty())
-      paths.push_back(m_paths->Get(i)->m_strPath);
+    if (!m_paths->Get(i)->GetPath().IsEmpty())
+      paths.push_back(m_paths->Get(i)->GetPath());
   return paths;
 }

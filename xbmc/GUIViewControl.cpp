@@ -199,7 +199,7 @@ void CGUIViewControl::SetSelectedItem(const CStdString &itemPath)
   int item = -1;
   for (int i = 0; i < m_fileItems->Size(); ++i)
   {
-    CStdString strPath =(*m_fileItems)[i]->m_strPath;
+    CStdString strPath =(*m_fileItems)[i]->GetPath();
     URIUtils::RemoveSlashAtEnd(strPath);
     if (strPath.CompareNoCase(comparePath) == 0)
     {

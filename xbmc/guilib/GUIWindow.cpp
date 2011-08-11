@@ -389,10 +389,8 @@ bool CGUIWindow::OnAction(const CAction &action)
 
   // default implementations
   if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
+    return OnBack(action.GetID());
+
   return false;
 }
 
@@ -789,6 +787,12 @@ void CGUIWindow::ResetControlStates()
   m_lastControlID = 0;
   m_focusedControl = 0;
   m_controlStates.clear();
+}
+
+bool CGUIWindow::OnBack(int actionID)
+{
+  g_windowManager.PreviousWindow();
+  return true;
 }
 
 bool CGUIWindow::OnMove(int fromControl, int moveAction)

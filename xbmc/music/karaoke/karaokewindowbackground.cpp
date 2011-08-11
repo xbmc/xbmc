@@ -238,11 +238,11 @@ void CKaraokeWindowBackground::StartVideo( const CStdString& path, __int64 offse
 
   if ( !m_videoPlayer->OpenFile( item, options ) )
   {
-    CLog::Log(LOGERROR, "KaraokeVideoBackground: error opening video file %s", item.m_strPath.c_str());
+    CLog::Log(LOGERROR, "KaraokeVideoBackground: error opening video file %s", item.GetPath().c_str());
     return;
   }
 
-  CLog::Log(LOGDEBUG, "KaraokeVideoBackground: video file %s opened successfully", item.m_strPath.c_str());
+  CLog::Log(LOGDEBUG, "KaraokeVideoBackground: video file %s opened successfully", item.GetPath().c_str());
 
   m_ImgControl->SetVisible( false );
   m_VisControl->SetVisible( false );

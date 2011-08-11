@@ -80,14 +80,14 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         URIUtils::RemoveSlashAtEnd(strName);
 
         CFileItemPtr pItem(new CFileItem(strName));
-        pItem->m_strPath = strBasePath + strLink;
+        pItem->SetPath(strBasePath + strLink);
         pItem->SetProperty("IsHTTPDirectory", true);
 
-        if(URIUtils::HasSlashAtEnd(pItem->m_strPath))
+        if(URIUtils::HasSlashAtEnd(pItem->GetPath()))
           pItem->m_bIsFolder = true;
 
-        url.SetFileName(pItem->m_strPath);
-        pItem->m_strPath = url.Get();
+        url.SetFileName(pItem->GetPath());
+        pItem->SetPath(url.Get());
 
         if (!pItem->m_bIsFolder && g_advancedSettings.m_bHTTPDirectoryStatFilesize)
         {

@@ -560,8 +560,10 @@ bool CAddonMgr::PlatformSupportsAddon(const cp_plugin_info_t *plugin) const
       if (platforms[i] == "wingl")
 #elif defined(_WIN32) && defined(HAS_DX)
       if (platforms[i] == "windx")
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN_OSX)
       if (platforms[i] == "osx")
+#elif defined(TARGET_DARWIN_IOS)
+      if (platforms[i] == "ios")
 #endif
         return true;
     }

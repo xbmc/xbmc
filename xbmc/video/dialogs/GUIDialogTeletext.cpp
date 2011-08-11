@@ -46,16 +46,16 @@ CGUIDialogTeletext::~CGUIDialogTeletext()
 
 bool CGUIDialogTeletext::OnAction(const CAction& action)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
-  {
-    m_bClose = true;
-    return true;
-  }
-
   if (m_TextDecoder.HandleAction(action))
     return true;
 
   return CGUIDialog::OnAction(action);
+}
+
+bool CGUIDialogTeletext::OnBack(int actionID)
+{
+  m_bClose = true;
+  return true;
 }
 
 bool CGUIDialogTeletext::OnMessage(CGUIMessage& message)

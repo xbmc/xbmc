@@ -57,9 +57,7 @@ CGUIDialogNumeric::~CGUIDialogNumeric(void)
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
-    OnCancel();
-  else if (action.GetID() == ACTION_NEXT_ITEM)
+  if (action.GetID() == ACTION_NEXT_ITEM)
     OnNext();
   else if (action.GetID() == ACTION_PREV_ITEM)
     OnPrevious();
@@ -88,6 +86,12 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   }
   else
     return CGUIDialog::OnAction(action);
+  return true;
+}
+
+bool CGUIDialogNumeric::OnBack(int actionID)
+{
+  OnCancel();
   return true;
 }
 

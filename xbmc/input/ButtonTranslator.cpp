@@ -408,7 +408,7 @@ bool CButtonTranslator::Load()
       //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
       files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
       for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-        success |= LoadKeymap(files[fileIndex]->m_strPath);
+        success |= LoadKeymap(files[fileIndex]->GetPath());
     }
   }
 

@@ -73,7 +73,7 @@ public:
 protected:
   virtual void OnOkay() {};
   virtual void OnCancel() {};
-  virtual bool OnAction(const CAction& action);
+  virtual bool OnBack(int actionID);
   virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings() {};

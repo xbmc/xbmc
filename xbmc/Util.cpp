@@ -752,7 +752,7 @@ void CUtil::RemoveTempFiles()
   {
     if (items[i]->m_bIsFolder)
       continue;
-    XFILE::CFile::Delete(items[i]->m_strPath);
+    XFILE::CFile::Delete(items[i]->GetPath());
   }
 }
 
@@ -765,10 +765,10 @@ void CUtil::ClearSubtitles()
   {
     if (!items[i]->m_bIsFolder)
     {
-      if ( items[i]->m_strPath.Find("subtitle") >= 0 || items[i]->m_strPath.Find("vobsub_queue") >= 0 )
+      if ( items[i]->GetPath().Find("subtitle") >= 0 || items[i]->GetPath().Find("vobsub_queue") >= 0 )
       {
-        CLog::Log(LOGDEBUG, "%s - Deleting temporary subtitle %s", __FUNCTION__, items[i]->m_strPath.c_str());
-        CFile::Delete(items[i]->m_strPath);
+        CLog::Log(LOGDEBUG, "%s - Deleting temporary subtitle %s", __FUNCTION__, items[i]->GetPath().c_str());
+        CFile::Delete(items[i]->GetPath());
       }
     }
   }
@@ -1679,9 +1679,9 @@ void CUtil::DeleteDirectoryCache(const CStdString &prefix)
   {
     if (items[i]->m_bIsFolder)
       continue;
-    CStdString fileName = URIUtils::GetFileName(items[i]->m_strPath);
+    CStdString fileName = URIUtils::GetFileName(items[i]->GetPath());
     if (fileName.Left(prefix.GetLength()) == prefix)
-      XFILE::CFile::Delete(items[i]->m_strPath);
+      XFILE::CFile::Delete(items[i]->GetPath());
   }
 }
 
@@ -1801,7 +1801,7 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
   for (int i=0;i<myItems.Size();++i)
   {
     if (myItems[i]->m_bIsFolder)
-      CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask,bUseFileDirectories);
+      CUtil::GetRecursiveListing(myItems[i]->GetPath(),items,strMask,bUseFileDirectories);
     else
       items.Add(myItems[i]);
   }
@@ -1813,10 +1813,10 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
   CDirectory::GetDirectory(strPath,myItems,"",false);
   for (int i=0;i<myItems.Size();++i)
   {
-    if (myItems[i]->m_bIsFolder && !myItems[i]->m_strPath.Equals(".."))
+    if (myItems[i]->m_bIsFolder && !myItems[i]->GetPath().Equals(".."))
     {
       item.Add(myItems[i]);
-      CUtil::GetRecursiveDirsListing(myItems[i]->m_strPath,item);
+      CUtil::GetRecursiveDirsListing(myItems[i]->GetPath(),item);
     }
   }
 }
@@ -1969,7 +1969,7 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;
-      URIUtils::GetExtension(pItem->m_strPath, strExtension);
+      URIUtils::GetExtension(pItem->GetPath(), strExtension);
       if ((strExtension == ".xpr" && pItem->GetLabel().CompareNoCase("Textures.xpr")) ||
           (strExtension == ".xbt" && pItem->GetLabel().CompareNoCase("Textures.xbt")))
       {
@@ -2395,12 +2395,12 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
       
       for (int j = 0; j < items.Size(); j++)
       {
-        URIUtils::Split(items[j]->m_strPath, strPath, strItem);
+        URIUtils::Split(items[j]->GetPath(), strPath, strItem);
         
         // is this a rar or zip-file
         if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
         {
-          ScanArchiveForSubtitles( items[j]->m_strPath, strMovieFileNameNoExt, vecSubtitles );
+          ScanArchiveForSubtitles( items[j]->GetPath(), strMovieFileNameNoExt, vecSubtitles );
         }
         else    // not a rar/zip file
         {
@@ -2409,8 +2409,8 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
             //Cache subtitle with same name as movie
             if (URIUtils::GetExtension(strItem).Equals(sub_exts[i]) && strItem.Left(fnl).Equals(strMovieFileNameNoExt))
             {
-              vecSubtitles.push_back( items[j]->m_strPath ); 
-              CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->m_strPath.c_str() );
+              vecSubtitles.push_back( items[j]->GetPath() ); 
+              CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
             }
           }
         }
@@ -2475,7 +2475,7 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   }
   for (int it= 0 ; it <ItemList.Size();++it)
   {
-   CStdString strPathInRar = ItemList[it]->m_strPath;
+   CStdString strPathInRar = ItemList[it]->GetPath();
    CStdString strExt = URIUtils::GetExtension(strPathInRar);
    
    CLog::Log(LOGDEBUG, "ScanArchiveForSubtitles:: Found file %s", strPathInRar.c_str());

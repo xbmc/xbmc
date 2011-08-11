@@ -231,16 +231,10 @@ void CGUIDialogSettings::UpdateSetting(unsigned int id)
   }
 }
 
-bool CGUIDialogSettings::OnAction(const CAction& action)
+bool CGUIDialogSettings::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU ||
-      action.GetID() == ACTION_NAV_BACK)
-  {
-    OnCancel();
-    Close();
-    return true;
-  }
-  return CGUIDialog::OnAction(action);
+  OnCancel();
+  return CGUIDialog::OnBack(actionID);
 }
 
 void CGUIDialogSettings::OnClick(int iID)

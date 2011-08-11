@@ -290,6 +290,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_MOVE_RIGHT:
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_UP:
+  case ACTION_NAV_BACK:
     {
       if (!HasFocus()) return false;
       if (action.GetHoldTime() > HOLD_TIME_START &&
@@ -700,7 +701,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
         int controlID = GetID(); // save as these could go away as we send messages
         int parentID = GetParentID();
         vector<CStdString> actions;
-        StringUtils::SplitString(item->m_strPath, " , ", actions);
+        StringUtils::SplitString(item->GetPath(), " , ", actions);
         for (unsigned int i = 0; i < actions.size(); i++)
         {
           CStdString action = actions[i];

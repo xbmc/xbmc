@@ -31,6 +31,7 @@
 				<onright>50</onright>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
+				<onback>50</onback>
 				<itemgap>0</itemgap>
 				<control type="label" id="200">
 					<width>250</width>

@@ -92,6 +92,9 @@ public:
   virtual ~CFileItem(void);
   virtual CGUIListItem *Clone() const { return new CFileItem(*this); };
 
+  const CStdString &GetPath() const { return m_strPath; };
+  void SetPath(const CStdString &path) { m_strPath = path; };
+
   void Reset();
   const CFileItem& operator=(const CFileItem& item);
   virtual void Archive(CArchive& ar);
@@ -349,7 +352,6 @@ private:
   CStdString GetPreviouslyCachedMusicThumb() const;
 
 public:
-  CStdString m_strPath;            ///< complete path to item
   bool m_bIsShareOrDrive;    ///< is this a root share/drive
   int m_iDriveType;     ///< If \e m_bIsShareOrDrive is \e true, use to get the share type. Types see: CMediaSource::m_iDriveType
   CDateTime m_dateTime;             ///< file creation date & time
@@ -364,7 +366,9 @@ public:
   CStdString m_strLockCode;
   int m_iHasLock; // 0 - no lock 1 - lock, but unlocked 2 - locked
   int m_iBadPwdCount;
+
 private:
+  CStdString m_strPath;            ///< complete path to item
 
   SPECIAL_SORT m_specialSort;
   bool m_bIsParentFolder;
