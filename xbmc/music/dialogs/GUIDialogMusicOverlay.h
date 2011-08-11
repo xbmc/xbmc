@@ -29,7 +29,6 @@ public:
   CGUIDialogMusicOverlay(void);
   virtual ~CGUIDialogMusicOverlay(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual void UpdateVisibility();
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void SetDefaults();

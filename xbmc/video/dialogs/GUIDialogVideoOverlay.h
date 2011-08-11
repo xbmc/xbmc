@@ -29,7 +29,6 @@ public:
   CGUIDialogVideoOverlay(void);
   virtual ~CGUIDialogVideoOverlay(void);
   virtual void FrameMove();
-  virtual void UpdateVisibility();
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void SetDefaults();
