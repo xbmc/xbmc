@@ -1354,10 +1354,10 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
     item.SetProperty("original_listitem_url", pItem->GetPath());
   }
 
-  if (item.m_strPath.Left(17) == "pvr://recordings/")
+  if (item.GetPath().Left(17) == "pvr://recordings/")
   {
     /* For recordings we check here for a available stream URL */
-    CPVRRecording *tag = g_PVRRecordings->GetByPath(item.m_strPath);
+    CPVRRecording *tag = g_PVRRecordings->GetByPath(item.GetPath());
     if (tag && !tag->m_strStreamURL.IsEmpty())
     {
       CStdString stream = tag->m_strStreamURL;
@@ -1383,7 +1383,7 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
           vector<int> stack;
           for (int i = 0; i < items.Size(); ++i)
           {
-            if (URIUtils::GetExtension(items[i]->m_strPath) == ext)
+            if (URIUtils::GetExtension(items[i]->GetPath()) == ext)
               stack.push_back(i);
           }
 
@@ -1392,13 +1392,13 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
             /* If we have a stack change the path of the item to it */
             CStackDirectory dir;
             CStdString stackPath = dir.ConstructStackPath(items, stack);
-            item.m_strPath = stackPath;
+            item.SetPath(stackPath);
           }
         }
         else
         {
           /* If no asterix is present play only the given stream URL */
-          item.m_strPath = stream;
+          item.SetPath(stream);
         }
       }
       else

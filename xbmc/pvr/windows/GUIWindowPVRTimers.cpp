@@ -57,7 +57,7 @@ void CGUIWindowPVRTimers::GetContextButtons(int itemNumber, CContextButtons &but
 
   /* Check for a empty file item list, means only a
      file item with the name "Add timer..." is present */
-  if (pItem->m_strPath == "pvr://timers/add.timer")
+  if (pItem->GetPath() == "pvr://timers/add.timer")
   {
     buttons.Add(CONTEXT_BUTTON_ADD, 19056);             /* new timer */
     if (m_parent->m_vecItems->Size() > 1)
@@ -113,8 +113,8 @@ void CGUIWindowPVRTimers::UpdateData(void)
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
-  m_parent->m_vecItems->m_strPath = "pvr://timers/";
-  m_parent->Update(m_parent->m_vecItems->m_strPath);
+  m_parent->m_vecItems->SetPath("pvr://timers/");
+  m_parent->Update(m_parent->m_vecItems->GetPath());
   m_parent->m_vecItems->Sort(m_iSortMethod, m_iSortOrder);
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
   m_parent->m_viewControl.SetSelectedItem(m_iSelected);

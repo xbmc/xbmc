@@ -88,7 +88,7 @@ bool CGUIWindowPVRRecordings::OnAction(const CAction &action)
   if (action.GetID() == ACTION_PARENT_DIR ||
       action.GetID() == ACTION_NAV_BACK)
   {
-    if (m_parent->m_vecItems->m_strPath != "pvr://recordings/")
+    if (m_parent->m_vecItems->GetPath() != "pvr://recordings/")
       m_parent->GoParentFolder();
     else
       g_windowManager.PreviousWindow();
@@ -114,7 +114,7 @@ bool CGUIWindowPVRRecordings::OnContextButton(int itemNumber, CONTEXT_BUTTON but
 
 void CGUIWindowPVRRecordings::OnWindowUnload(void)
 {
-  m_strSelectedPath = m_parent->m_vecItems->m_strPath;
+  m_strSelectedPath = m_parent->m_vecItems->GetPath();
   CGUIWindowPVRCommon::OnWindowUnload();
 }
 
@@ -138,7 +138,7 @@ void CGUIWindowPVRRecordings::UpdateData(void)
   m_parent->m_viewControl.Clear();
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
-  m_parent->m_vecItems->m_strPath = "pvr://recordings/";
+  m_parent->m_vecItems->SetPath("pvr://recordings/");
   m_parent->Update(m_strSelectedPath);
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
   if (!SelectPlayingFile())

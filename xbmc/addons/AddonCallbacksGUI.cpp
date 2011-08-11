@@ -1113,7 +1113,7 @@ GUIHANDLE CAddonCallbacksGUI::ListItem_Create(void *addonData, const char *label
   if (thumbnailImage)
     pItem->SetThumbnailImage(thumbnailImage);
   if (path)
-    pItem->m_strPath = path;
+    pItem->SetPath(path);
 
   return pItem;
 }
@@ -1214,7 +1214,7 @@ void CAddonCallbacksGUI::ListItem_SetPath(void *addonData, GUIHANDLE handle, con
   if (!helper || !handle)
     return;
 
-  ((CFileItem*)handle)->m_strPath = path;
+  ((CFileItem*)handle)->SetPath(path);
 }
 
 

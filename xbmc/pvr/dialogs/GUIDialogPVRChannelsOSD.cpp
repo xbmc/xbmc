@@ -155,7 +155,7 @@ void CGUIDialogPVRChannelsOSD::GotoChannel(int item)
   if (item < 0 || item >= (int)m_vecItems->Size()) return;
   CFileItemPtr pItem = m_vecItems->Get(item);
 
-  if (pItem->m_strPath == g_application.CurrentFile())
+  if (pItem->GetPath() == g_application.CurrentFile())
   {
     CloseOrSelect(item);
     return;

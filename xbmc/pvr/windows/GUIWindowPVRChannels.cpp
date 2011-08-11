@@ -75,7 +75,7 @@ void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &b
     return;
   CFileItemPtr pItem = m_parent->m_vecItems->Get(itemNumber);
 
-  if (pItem->m_strPath == "pvr://channels/.add.channel")
+  if (pItem->GetPath() == "pvr://channels/.add.channel")
   {
     /* If yes show only "New Channel" on context menu */
     buttons.Add(CONTEXT_BUTTON_ADD, 19046);                                           /* add new channel */
@@ -194,11 +194,13 @@ void CGUIWindowPVRChannels::UpdateData(void)
   if (!currentGroup)
     return;
 
-  m_parent->m_vecItems->m_strPath.Format("pvr://channels/%s/%s/",
+  CStdString strPath;
+  strPath.Format("pvr://channels/%s/%s/",
       m_bRadio ? "radio" : "tv",
       m_bShowHiddenChannels ? ".hidden" : currentGroup->GroupName());
 
-  m_parent->Update(m_parent->m_vecItems->m_strPath);
+  m_parent->m_vecItems->SetPath(strPath);
+  m_parent->Update(m_parent->m_vecItems->GetPath());
 
   /* empty list */
   if (m_parent->m_vecItems->Size() == 0)

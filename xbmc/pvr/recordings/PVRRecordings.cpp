@@ -93,6 +93,7 @@ bool CPVRRecordings::IsDirectoryMember(const CStdString &strDirectory, const CSt
 
 void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *results) const
 {
+  CStdString strPath;
   for (unsigned int iRecordingPtr = 0; iRecordingPtr < size(); iRecordingPtr++)
   {
     CPVRRecording *current = at(iRecordingPtr);
@@ -102,7 +103,8 @@ void CPVRRecordings::GetContents(const CStdString &strDirectory, CFileItemList *
     CFileItemPtr pFileItem(new CFileItem(*current));
     pFileItem->SetLabel2(current->RecordingTimeAsLocalTime().GetAsLocalizedDateTime(true, false));
     pFileItem->m_dateTime = current->RecordingTimeAsLocalTime();
-    pFileItem->m_strPath.Format("pvr://recordings/%05i-%s.pvr", current->m_iClientId, current->m_strRecordingId);
+    strPath.Format("pvr://recordings/%05i-%s.pvr", current->m_iClientId, current->m_strRecordingId);
+    pFileItem->SetPath(strPath);
     results->Add(pFileItem);
   }
 }
@@ -125,7 +127,7 @@ void CPVRRecordings::GetSubDirectories(const CStdString &strBase, CFileItemList 
     {
       CFileItemPtr pFileItem;
       pFileItem.reset(new CFileItem(strCurrent, true));
-      pFileItem->m_strPath = strFilePath;
+      pFileItem->SetPath(strFilePath);
       pFileItem->SetLabel(strCurrent);
       pFileItem->SetLabelPreformated(true);
       results->Add(pFileItem);
@@ -249,7 +251,7 @@ bool CPVRRecordings::GetDirectory(const CStdString& strPath, CFileItemList &item
   return false;
 }
 
-CPVRRecording *CPVRRecordings::GetByPath(CStdString &path)
+CPVRRecording *CPVRRecordings::GetByPath(const CStdString &path)
 {
   CPVRRecording *tag = NULL;
   CSingleLock lock(m_critSection);
