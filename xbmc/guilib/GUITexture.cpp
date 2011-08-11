@@ -397,8 +397,8 @@ bool CGUITextureBase::CalculateSize()
     }
     if (m_aspect.ratio == CAspectRatio::AR_CENTER)
     { // keep original size + center
-      newWidth = m_frameWidth;
-      newHeight = m_frameHeight;
+      newWidth = m_frameWidth / sqrt(pixelRatio);
+      newHeight = m_frameHeight * sqrt(pixelRatio);
     }
 
     if (m_aspect.align & ASPECT_ALIGN_LEFT)
