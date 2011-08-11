@@ -30,7 +30,6 @@ CGUIDialogMusicOverlay::CGUIDialogMusicOverlay()
     : CGUIDialog(WINDOW_DIALOG_MUSIC_OVERLAY, "MusicOverlay.xml")
 {
   m_renderOrder = 0;
-  m_visibleCondition = SKIN_HAS_MUSIC_OVERLAY;
 }
 
 CGUIDialogMusicOverlay::~CGUIDialogMusicOverlay()
@@ -81,6 +80,6 @@ void CGUIDialogMusicOverlay::SetDefaults()
 {
   CGUIDialog::SetDefaults();
   m_renderOrder = 0;
-  m_visibleCondition = SKIN_HAS_MUSIC_OVERLAY;
+  SetVisibleCondition("skin.hasmusicoverlay");
 }
 

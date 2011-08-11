@@ -482,7 +482,9 @@ const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
                                   { "image",            FANART_IMAGE }};
 
 const infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
-                                  { "currentcolourtheme",SKIN_COLOUR_THEME }};
+                                  { "currentcolourtheme",SKIN_COLOUR_THEME },
+                                  {"hasvideooverlay",   SKIN_HAS_VIDEO_OVERLAY},
+                                  {"hasmusicoverlay",   SKIN_HAS_MUSIC_OVERLAY}};
 
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
                                   { "isactive",         WINDOW_IS_ACTIVE },
