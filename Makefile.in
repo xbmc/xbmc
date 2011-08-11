@@ -136,7 +136,7 @@ LIB_DIRS=\
 	lib/xbmc-dll-symbols
 
 SS_DIRS=
-ifeq (@USE_OPENGL@,1)
+ifneq (@DISABLE_RSXS@,1)
   SS_DIRS+= xbmc/screensavers/rsxs-0.9/xbmc
 endif
 
