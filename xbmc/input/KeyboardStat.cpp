@@ -33,11 +33,6 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/PeripheralHID.h"
 
-#if defined(_LINUX) && !defined(__APPLE__)
-#include <X11/Xlib.h>
-#include <X11/XKBlib.h>
-#endif
-
 using namespace std;
 using namespace PERIPHERALS;
 
