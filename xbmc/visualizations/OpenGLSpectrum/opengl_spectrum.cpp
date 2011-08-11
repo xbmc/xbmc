@@ -144,6 +144,8 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   if (!props)
     return ADDON_STATUS_UNKNOWN;
 
+  scale = 1.0 / log(256.0);
+
   return ADDON_STATUS_NEED_SETTINGS;
 }
 
@@ -195,8 +197,6 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
       cHeights[y][x] = 0.0;
     }
   }
-
-  scale = 1.0 / log(256.0);
 
   x_speed = 0.0;
   y_speed = 0.5;
@@ -379,25 +379,25 @@ extern "C" ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* val
   {
     switch (*(int*) value)
     {
-    case 1:
+    case 1://standard
+      scale = 1.f / log(256.f);
+      break;
+
+    case 2://big
       scale = 2.f / log(256.f);
       break;
 
-    case 2:
+    case 3://real big
       scale = 3.f / log(256.f);
       break;
 
-    case 3:
-      scale = 0.5f / log(256.f);
-      break;
-
-    case 4:
+    case 4://unused
       scale = 0.33f / log(256.f);
       break;
 
-    case 0:
+    case 0://small
     default:
-      scale = 1.f / log(256.f);
+      scale = 0.5f / log(256.f);
       break;
     }
     return ADDON_STATUS_OK;

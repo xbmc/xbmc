@@ -482,7 +482,9 @@ const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
                                   { "image",            FANART_IMAGE }};
 
 const infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
-                                  { "currentcolourtheme",SKIN_COLOUR_THEME }};
+                                  { "currentcolourtheme",SKIN_COLOUR_THEME },
+                                  {"hasvideooverlay",   SKIN_HAS_VIDEO_OVERLAY},
+                                  {"hasmusicoverlay",   SKIN_HAS_MUSIC_OVERLAY}};
 
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
                                   { "isactive",         WINDOW_IS_ACTIVE },
@@ -604,11 +606,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int compareInt = atoi(cat.param(1).c_str());
       return AddMultiInfo(GUIInfo(INTEGER_GREATER_THAN, info, compareInt));
     }
-    else if (cat.name == "substring" && cat.num_params() == 2)
+    else if (cat.name == "substring" && cat.num_params() >= 2)
     {
       int info = TranslateSingleString(cat.param(0));
       CStdString label = CGUIInfoLabel::GetLabel(cat.param(1)).ToLower();
       int compareString = ConditionalStringParameter(label);
+      if (cat.num_params() > 2)
+      {
+        if (cat.param(2).CompareNoCase("left") == 0)
+          return AddMultiInfo(GUIInfo(STRING_STR_LEFT, info, compareString));
+        else if (cat.param(2).CompareNoCase("right") == 0)
+          return AddMultiInfo(GUIInfo(STRING_STR_RIGHT, info, compareString));
+      }
       return AddMultiInfo(GUIInfo(STRING_STR, info, compareString));
     }
   }
@@ -2185,6 +2194,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
         break;
       case STRING_STR:
+      case STRING_STR_LEFT:
+      case STRING_STR_RIGHT:
         {
           CStdString compare = m_stringParameters[info.GetData2()];
           // our compare string is already in lowercase, so lower case our label as well
@@ -2194,13 +2205,10 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
           else
             label = GetImage(info.GetData1(), contextWindow).ToLower();
-          if (compare.Right(5).Equals(",left"))
-            bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
-          else if (compare.Right(6).Equals(",right"))
-          {
-            compare = compare.Mid(0,compare.size()-6);
+          if (condition == STRING_STR_LEFT)
+            bReturn = label.Find(compare) == 0;
+          else if (condition == STRING_STR_RIGHT)
             bReturn = label.Find(compare) == (int)(label.size()-compare.size());
-          }
           else
             bReturn = label.Find(compare) > -1;
         }
