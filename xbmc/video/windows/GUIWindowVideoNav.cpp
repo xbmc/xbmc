@@ -417,7 +417,8 @@ void CGUIWindowVideoNav::LoadVideoInfo(CFileItemList &items)
   items.SetContent(content.IsEmpty() ? "files" : content);
 
   bool fileMetaData = (g_guiSettings.GetBool("myvideos.filemetadata") &&
-                      !content.IsEmpty() );
+                      !content.IsEmpty() &&
+                       m_stackingAvailable);
 
   CFileItemList dbItems;
   /* NOTE: In the future when GetItemsForPath returns all items regardless of whether they're "in the library"
