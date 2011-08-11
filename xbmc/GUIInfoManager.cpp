@@ -1898,6 +1898,16 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     if (pWindow)
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
   }
+  else if (condition == CONTAINER_HAS_NEXT || condition == CONTAINER_HAS_PREVIOUS || condition == CONTAINER_SCROLLING)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+    {
+      const CGUIControl* control = window->GetControl(window->GetViewContainerID());
+      if (control)
+        bReturn = control->GetCondition(condition, 0);
+    }
+  }
   else if (condition == VIDEOPLAYER_HAS_INFO)
     bReturn = (m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty());
   else if (condition >= CONTAINER_SCROLL_PREVIOUS && condition <= CONTAINER_SCROLL_NEXT)
