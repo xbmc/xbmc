@@ -35,7 +35,7 @@
 class CGUIControlGroupList : public CGUIControlGroup
 {
 public:
-  CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, unsigned int scrollTime);
+  CGUIControlGroupList(int parentID, int controlID, float posX, float posY, float width, float height, float itemGap, int pageControl, ORIENTATION orientation, bool useControlPositions, uint32_t alignment, const CScroller& scroller);
   virtual ~CGUIControlGroupList(void);
   virtual CGUIControlGroupList *Clone() const { return new CGUIControlGroupList(*this); };
 
@@ -63,13 +63,9 @@ protected:
   float m_itemGap;
   int m_pageControl;
 
-  float m_offset; // measurement in pixels of our origin
   float m_totalSize;
 
-  float m_scrollSpeed;
-  float m_scrollOffset;
-  unsigned int m_scrollLastTime;
-  unsigned int m_scrollTime;
+  CScroller m_scroller;
 
   bool m_useControlPositions;
   ORIENTATION m_orientation;
