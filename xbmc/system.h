@@ -136,7 +136,9 @@
 #define HAS_DBUS
 #define HAS_DBUS_SERVER
 #define HAS_GL
+#ifdef HAVE_X11
 #define HAS_GLX
+#endif
 #define HAS_LINUX_NETWORK
 #define HAS_SDL_AUDIO
 #define HAS_LIRC
