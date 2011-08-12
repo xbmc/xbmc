@@ -7,18 +7,26 @@
 		<posy>0</posy>
 	</coordinates>
 	<controls>
-		<control type="image" id="997">
-			<description>background top image</description>
+		<control type="image" id="999">
+			<description>background image</description>
 			<posx>0</posx>
-			<posy>-30</posy>
+			<posy>0</posy>
 			<width>340</width>
-			<height>30</height>
-			<texture border="20,19,20,0">DialogContextTop.png</texture>
+			<height>200</height>
+			<texture border="20,19,20,19">DialogBack.png</texture>
+		</control>
+		<control type="grouplist" id="996">
+			<description>grouplist for context buttons</description>
+			<posx>20</posx>
+			<posy>30</posy>
+			<width>300</width>
+			<height>145</height>
+			<itemgap>2</itemgap>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
 			<posx>260</posx>
-			<posy>-25</posy>
+			<posy>5</posy>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -32,23 +40,9 @@
 			<ondown>2</ondown>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
-		<control type="image" id="999">
-			<description>background image</description>
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>340</width>
-			<texture border="20,0,20,0">DialogContextMiddle.png</texture>
-		</control>
-		<control type="image" id="998">
-			<description>background bottom image</description>
-			<posx>0</posx>
-			<width>340</width>
-			<height>25</height>
-			<texture border="20,0,19,20">DialogContextBottom.png</texture>
-		</control>
 		<control type="button" id="1000">
 			<description>button template</description>
-			<posx>20</posx>
+			<posx>-</posx>
 			<posy>-</posy>
 			<width>300</width>
 			<height>38</height>
