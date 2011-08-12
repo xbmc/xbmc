@@ -45,7 +45,10 @@ bool CSourcesDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   CURL url(strPath);
   CStdString type(url.GetHostName());
 
-  VECSOURCES sources = *g_settings.GetSourcesFromType(url.GetHostName());
+  VECSOURCES sources;
+  VECSOURCES *sourcesFromType = g_settings.GetSourcesFromType(url.GetHostName());
+  if (sourcesFromType)
+    sources = *sourcesFromType;
   g_mediaManager.GetRemovableDrives(sources);
 
   if (sources.empty())
