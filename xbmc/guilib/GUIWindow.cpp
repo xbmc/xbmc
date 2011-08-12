@@ -339,13 +339,7 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
     return;
 
   forceClose |= (nextWindowID == WINDOW_FULLSCREEN_VIDEO);
-  if (forceClose)
-  {
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-    OnMessage(msg);
-    m_closing = false;
-  }
-  else if (m_active && !m_closing)
+  if (!forceClose && m_active && !m_closing && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
   {
     if (enableSound && IsSoundEnabled())
       g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
@@ -353,6 +347,12 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
     // Perform the window out effect
     QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
     m_closing = true;
+  }
+  else
+  {
+    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+    OnMessage(msg);
+    m_closing = false;
   }
 }
 
