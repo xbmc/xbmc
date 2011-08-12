@@ -316,7 +316,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
   switch (button)
   {
   case CONTEXT_BUTTON_EJECT_DRIVE:
-    return g_mediaManager.Eject(item->m_strPath);
+    return g_mediaManager.Eject(item->GetPath());
 
 #ifdef HAS_DVD_DRIVE
   case CONTEXT_BUTTON_PLAY_DISC:
@@ -327,7 +327,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
   case CONTEXT_BUTTON_EJECT_DISC:
 #ifdef _WIN32
-    CWIN32Util::ToggleTray(g_mediaManager.TranslateDevicePath(item->m_strPath)[0]);
+    CWIN32Util::ToggleTray(g_mediaManager.TranslateDevicePath(item->GetPath())[0]);
 #else
     CIoSupport::ToggleTray();
 #endif
@@ -464,7 +464,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
         CStdString cachedThumb;
         if (type == "music")
         {
-          cachedThumb = item->m_strPath;
+          cachedThumb = item->GetPath();
           URIUtils::RemoveSlashAtEnd(cachedThumb);
           cachedThumb = CThumbnailCache::GetMusicThumb(cachedThumb);
         }
@@ -475,8 +475,8 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
           CTextureDatabase db;
           if (db.Open())
           {
-            cachedThumb = CTextureCache::GetUniqueImage(item->m_strPath, URIUtils::GetExtension(strThumb));
-            db.SetTextureForPath(item->m_strPath, cachedThumb);
+            cachedThumb = CTextureCache::GetUniqueImage(item->GetPath(), URIUtils::GetExtension(strThumb));
+            db.SetTextureForPath(item->GetPath(), cachedThumb);
           }
         }
         XFILE::CFile::Cache(strThumb, cachedThumb);
@@ -590,7 +590,7 @@ CMediaSource *CGUIDialogContextMenu::GetShare(const CStdString &type, const CFil
     }
     else
     {
-      if (!testShare.strPath.Equals(item->m_strPath))
+      if (!testShare.strPath.Equals(item->GetPath()))
         continue;
     }
     // paths match, what about share name - only match the leftmost

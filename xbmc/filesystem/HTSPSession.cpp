@@ -621,7 +621,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
 
   CStdString temp;
 
-  CURL url(item.m_strPath);
+  CURL url(item.GetPath());
   temp.Format("tags/%d/%d.ts", tagid, channel.id);
   url.SetFileName(temp);
 
@@ -638,7 +638,7 @@ bool CHTSPSession::ParseItem(const SChannel& channel, int tagid, const SEvent& e
   if(tag->m_strShowTitle.length() > 0)
     tag->m_strTitle += " : " + tag->m_strShowTitle;
 
-  item.m_strPath  = url.Get();
+  item.SetPath(url.Get());
   item.m_strTitle = tag->m_strTitle;
   item.SetThumbnailImage(channel.icon);
   item.SetMimeType("video/X-htsp");

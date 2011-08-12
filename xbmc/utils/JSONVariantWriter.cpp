@@ -39,11 +39,12 @@ string CJSONVariantWriter::Write(const CVariant &value, bool compact)
   if (InternalWrite(g, value))
   {
     const unsigned char * buffer;
-    unsigned int length;
 
 #if YAJL_MAJOR == 2
-    yajl_gen_get_buf(g, &buffer, (size_t*)&length);
+    size_t length;
+    yajl_gen_get_buf(g, &buffer, &length);
 #else
+    unsigned int length;
     yajl_gen_get_buf(g, &buffer, &length);
 #endif
     output = string((const char *)buffer, length);

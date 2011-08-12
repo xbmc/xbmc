@@ -329,78 +329,63 @@
 					</control>
 				</control>
 			</control>
-			<control type="group" id="9000">
+			<control type="grouplist" id="9000">
 				<posx>30</posx>
 				<posy>310</posy>
-				<control type="button" id ="6">
-					<description>Enable Addon button</description>
-					<posx>0</posx>
-					<posy>0</posy>
-					<width>220</width>
-					<height>45</height>
-					<label>24022</label>
-					<align>center</align>
-					<font>font12_title</font>
-					<onleft>60</onleft>
-					<onright>60</onright>
-					<onup>10</onup>
-					<ondown>7</ondown>
-				</control>
-				<control type="button" id="7">
-					<description>Disable Addon button</description>
-					<posx>0</posx>
-					<posy>50</posy>
-					<width>220</width>
-					<height>45</height>
-					<label>24021</label>
-					<align>center</align>
-					<font>font12_title</font>
-					<onleft>60</onleft>
-					<onright>60</onright>
-					<onup>6</onup>
-					<ondown>9</ondown>
-				</control>
+				<width>220</width>
+				<height>270</height>
+				<onleft>60</onleft>
+				<onright>60</onright>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<itemgap>2</itemgap>
 				<control type="button" id="9">
-					<description>Addon Settings</description>
-					<posx>0</posx>
-					<posy>100</posy>
+					<description>Configure Addon</description>
 					<width>220</width>
-					<height>45</height>
+					<height>43</height>
 					<label>24020</label>
 					<align>center</align>
 					<font>font12_title</font>
-					<onleft>60</onleft>
-					<onright>60</onright>
-					<onup>7</onup>
-					<ondown>8</ondown>
 				</control>
 				<control type="button" id="8">
 					<description>Update Addon button</description>
-					<posx>0</posx>
-					<posy>150</posy>
 					<width>220</width>
-					<height>45</height>
+					<height>43</height>
 					<label>24069</label>
 					<align>center</align>
 					<font>font12_title</font>
-					<onleft>60</onleft>
-					<onright>60</onright>
-					<onup>9</onup>
-					<ondown>10</ondown>
+				</control>
+				<control type="button" id ="6">
+					<description>Install/UnInstall Addon button</description>
+					<width>220</width>
+					<height>43</height>
+					<label>24022</label>
+					<align>center</align>
+					<font>font12_title</font>
+				</control>
+				<control type="button" id="7">
+					<description>Enable/Disable Addon button</description>
+					<width>220</width>
+					<height>43</height>
+					<label>24021</label>
+					<align>center</align>
+					<font>font12_title</font>
+				</control>
+				<control type="button" id="11">
+					<description>Rollback button</description>
+					<width>220</width>
+					<height>43</height>
+					<label>24048</label>
+					<align>center</align>
+					<font>font12_title</font>
 				</control>
 				<control type="button" id="10">
 					<description>Changelog button</description>
-					<posx>0</posx>
-					<posy>200</posy>
 					<width>220</width>
-					<height>45</height>
+					<height>43</height>
 					<label>24036</label>
 					<align>center</align>
 					<font>font12_title</font>
-					<onleft>60</onleft>
-					<onright>60</onright>
-					<onup>8</onup>
-					<ondown>6</ondown>
 				</control>
 			</control>
 			<control type="group">

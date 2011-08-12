@@ -995,7 +995,7 @@ bool CSettings::DeleteProfile(unsigned int index)
       }
 
       CFileItemPtr item = CFileItemPtr(new CFileItem(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory)));
-      item->m_strPath = URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory + "\\");
+      item->SetPath(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory + "/"));
       item->m_bIsFolder = true;
       item->Select(true);
       CFileUtils::DeleteItem(item);

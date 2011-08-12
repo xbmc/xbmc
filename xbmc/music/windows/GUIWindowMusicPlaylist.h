@@ -32,6 +32,7 @@ public:
 
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
 
   void RemovePlayListItem(int iItem);
   void MoveItem(int iStart, int iDest);

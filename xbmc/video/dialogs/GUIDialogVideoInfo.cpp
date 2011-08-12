@@ -193,7 +193,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       if (IsActive() && message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
       {
         CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
-        if (item && m_movieItem->m_strPath.Equals(item->m_strPath))
+        if (item && m_movieItem->GetPath().Equals(item->GetPath()))
         { // Just copy over the stream details and the thumb if we don't already have one
           if (!m_movieItem->HasThumbnail())
             m_movieItem->SetThumbnailImage(item->GetThumbnailImage());
@@ -556,13 +556,13 @@ void CGUIDialogVideoInfo::OnSearchItemFound(const CFileItem* pItem)
 
   CVideoInfoTag movieDetails;
   if (type == VIDEODB_CONTENT_MOVIES)
-    db.GetMovieInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    db.GetMovieInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (type == VIDEODB_CONTENT_EPISODES)
-    db.GetEpisodeInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    db.GetEpisodeInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (type == VIDEODB_CONTENT_TVSHOWS)
-    db.GetTvShowInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    db.GetTvShowInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   if (type == VIDEODB_CONTENT_MUSICVIDEOS)
-    db.GetMusicVideoInfo(pItem->m_strPath, movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
+    db.GetMusicVideoInfo(pItem->GetPath(), movieDetails, pItem->GetVideoInfoTag()->m_iDbId);
   db.Close();
 
   CFileItem item(*pItem);
@@ -593,7 +593,7 @@ void CGUIDialogVideoInfo::Play(bool resume)
 
   CFileItem movie(*m_movieItem->GetVideoInfoTag());
   if (m_movieItem->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-    movie.m_strPath = m_movieItem->m_strPath;
+    movie.SetPath(m_movieItem->GetPath());
   CGUIWindowVideoNav* pWindow = (CGUIWindowVideoNav*)g_windowManager.GetWindow(WINDOW_VIDEO_NAV);
   if (pWindow)
   {
@@ -829,7 +829,7 @@ void CGUIDialogVideoInfo::OnGetFanart()
 void CGUIDialogVideoInfo::PlayTrailer()
 {
   CFileItem item;
-  item.m_strPath = m_movieItem->GetVideoInfoTag()->m_strTrailer;
+  item.SetPath(m_movieItem->GetVideoInfoTag()->m_strTrailer);
   *item.GetVideoInfoTag() = *m_movieItem->GetVideoInfoTag();
   item.GetVideoInfoTag()->m_streamDetails.Reset();
   item.GetVideoInfoTag()->m_strTitle.Format("%s (%s)",m_movieItem->GetVideoInfoTag()->m_strTitle.c_str(),g_localizeStrings.Get(20410));

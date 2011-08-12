@@ -41,7 +41,7 @@ typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 class CGUIBaseContainer : public CGUIControl
 {
 public:
-  CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems);
+  CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems);
   virtual ~CGUIBaseContainer(void);
 
   virtual bool OnAction(const CAction &action);
@@ -151,9 +151,7 @@ protected:
   void SetContainerMoving(int direction);
   void UpdateScrollOffset(unsigned int currentTime);
 
-  unsigned int m_scrollLastTime;
-  int          m_scrollTime;
-  float        m_scrollOffset;
+  CScroller m_scroller;
 
   VIEW_TYPE m_type;
   CStdString m_label;
@@ -168,8 +166,8 @@ protected:
 
   void UpdateScrollByLetter();
   void GetCacheOffsets(int &cacheBefore, int &cacheAfter);
-  bool ScrollingDown() const { return m_scrollSpeed > 0; };
-  bool ScrollingUp() const { return m_scrollSpeed < 0; };
+  bool ScrollingDown() const { return m_scroller.IsScrollingDown(); };
+  bool ScrollingUp() const { return m_scroller.IsScrollingUp(); };
   void OnNextLetter();
   void OnPrevLetter();
   void OnJumpLetter(char letter);
@@ -194,7 +192,6 @@ private:
   int m_cursor;
   int m_offset;
   int m_cacheItems;
-  float m_scrollSpeed;
   CStopWatch m_scrollTimer;
   CStopWatch m_pageChangeTimer;
 

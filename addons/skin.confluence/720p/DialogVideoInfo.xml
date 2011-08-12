@@ -1128,6 +1128,13 @@
 						<onclick>PlayMedia($INFO[ListItem.Trailer],1)</onclick>
 						<visible>!IsEmpty(ListItem.Trailer) + Skin.HasSetting(WindowedTrailer)</visible>
 					</control>
+					<control type="button" id="100">
+						<description>Fetch TvTunes stuff</description>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>31127</label>
+						<onclick>XBMC.RunScript(script.tvtunes,mode=solo&amp;tvpath=$INFO[ListItem.FilenameAndPath]&amp;tvname=$INFO[ListItem.TVShowTitle])</onclick>
+						<visible>Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes) + Container.Content(TVShows)</visible>
+					</control>
 				</control>
 			</control>
 		</control>

@@ -113,6 +113,8 @@ public:
   // on to the currently focused control.  Returns true if the action has been handled
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
+  
+  virtual bool OnBack(int actionID);
 
   /*! \brief Clear the background (if necessary) prior to rendering the window
    */

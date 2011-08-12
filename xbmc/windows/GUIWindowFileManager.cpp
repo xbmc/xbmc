@@ -96,8 +96,8 @@ CGUIWindowFileManager::CGUIWindowFileManager(void)
   m_Directory[1] = new CFileItem;
   m_vecItems[0] = new CFileItemList;
   m_vecItems[1] = new CFileItemList;
-  m_Directory[0]->m_strPath = "?";
-  m_Directory[1]->m_strPath = "?";
+  m_Directory[0]->SetPath("?");
+  m_Directory[1]->SetPath("?");
   m_Directory[0]->m_bIsFolder = true;
   m_Directory[1]->m_bIsFolder = true;
   bCheckShareConnectivity = true;
@@ -164,8 +164,7 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
       }
       return true;
     }
-    if (action.GetID() == ACTION_PARENT_DIR ||
-       (action.GetID() == ACTION_NAV_BACK && !m_vecItems[list]->IsVirtualDirectoryRoot()))
+    if (action.GetID() == ACTION_PARENT_DIR)
     {
       GoParentFolder(list);
       return true;
@@ -181,6 +180,17 @@ bool CGUIWindowFileManager::OnAction(const CAction &action)
   return CGUIWindow::OnAction(action);
 }
 
+bool CGUIWindowFileManager::OnBack(int actionID)
+{
+  int list = GetFocusedList();
+  if (list >= 0 && list <= 1 && actionID == ACTION_NAV_BACK && !m_vecItems[list]->IsVirtualDirectoryRoot())
+  {
+    GoParentFolder(list);
+    return true;
+  }
+  return CGUIWindow::OnBack(actionID);
+}
+
 bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
 {
   switch ( message.GetMessage() )
@@ -189,8 +199,8 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
     { // Message is received even if window is inactive
       if (message.GetParam1() == GUI_MSG_WINDOW_RESET)
       {
-        m_Directory[0]->m_strPath = "?";
-        m_Directory[1]->m_strPath = "?";
+        m_Directory[0]->SetPath("?");
+        m_Directory[1]->SetPath("?");
         m_Directory[0]->m_bIsFolder = true;
         m_Directory[1]->m_bIsFolder = true;
         return true;
@@ -204,15 +214,15 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           if (m_Directory[i]->IsVirtualDirectoryRoot() && IsActive())
           {
             int iItem = GetSelectedItem(i);
-            Update(i, m_Directory[i]->m_strPath);
+            Update(i, m_Directory[i]->GetPath());
             CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem);
           }
-          else if (m_Directory[i]->IsRemovable() && !m_rootDir.IsInSource(m_Directory[i]->m_strPath))
+          else if (m_Directory[i]->IsRemovable() && !m_rootDir.IsInSource(m_Directory[i]->GetPath()))
           { //
             if (IsActive())
               Update(i, "");
             else
-              m_Directory[i]->m_strPath="";
+              m_Directory[i]->SetPath("");
           }
         }
         return true;
@@ -224,7 +234,7 @@ bool CGUIWindowFileManager::OnMessage(CGUIMessage& message)
           if (m_Directory[i]->IsVirtualDirectoryRoot() && IsActive())
           {
             int iItem = GetSelectedItem(i);
-            Update(i, m_Directory[i]->m_strPath);
+            Update(i, m_Directory[i]->GetPath());
             CONTROL_SELECT_ITEM(CONTROL_LEFT_LIST + i, iItem);
           }
         }
@@ -304,7 +314,7 @@ void CGUIWindowFileManager::OnSort(int iList)
   for (int i = 0; i < m_vecItems[iList]->Size(); i++)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
-    if (pItem->m_bIsFolder && (!pItem->m_dwSize || pItem->m_strPath.Equals("add")))
+    if (pItem->m_bIsFolder && (!pItem->m_dwSize || pItem->GetPath().Equals("add")))
       pItem->SetLabel2("");
     else
       pItem->SetFileSizeLabel();
@@ -315,7 +325,7 @@ void CGUIWindowFileManager::OnSort(int iList)
       if (pItem->IsHD())
       {
         ULARGE_INTEGER ulBytesFree;
-        if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), &ulBytesFree, NULL, NULL))
+        if (GetDiskFreeSpaceEx(pItem->GetPath().c_str(), &ulBytesFree, NULL, NULL))
         {
           pItem->m_dwSize = ulBytesFree.QuadPart;
           pItem->SetFileSizeLabel();
@@ -324,7 +334,7 @@ void CGUIWindowFileManager::OnSort(int iList)
       else if (pItem->IsDVD() && g_mediaManager.IsDiscInDrive())
       {
         ULARGE_INTEGER ulBytesTotal;
-        if (GetDiskFreeSpaceEx(pItem->m_strPath.c_str(), NULL, &ulBytesTotal, NULL))
+        if (GetDiskFreeSpaceEx(pItem->GetPath().c_str(), NULL, &ulBytesTotal, NULL))
         {
           pItem->m_dwSize = ulBytesTotal.QuadPart;
           pItem->SetFileSizeLabel();
@@ -379,7 +389,7 @@ void CGUIWindowFileManager::UpdateButtons()
 
   */
   // update our current directory labels
-  CStdString strDir = CURL(m_Directory[0]->m_strPath).GetWithoutUserDetails();
+  CStdString strDir = CURL(m_Directory[0]->GetPath()).GetWithoutUserDetails();
   if (strDir.IsEmpty())
   {
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT,g_localizeStrings.Get(20108));
@@ -388,7 +398,7 @@ void CGUIWindowFileManager::UpdateButtons()
   {
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_LEFT, strDir);
   }
-  strDir = CURL(m_Directory[1]->m_strPath).GetWithoutUserDetails();
+  strDir = CURL(m_Directory[1]->GetPath()).GetWithoutUserDetails();
   if (strDir.IsEmpty())
   {
     SET_CONTROL_LABEL(CONTROL_CURRENTDIRLABEL_RIGHT,g_localizeStrings.Get(20108));
@@ -443,17 +453,17 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
     if (!pItem->IsParentFolder())
     {
       GetDirectoryHistoryString(pItem.get(), strSelectedItem);
-      m_history[iList].SetSelectedItem(strSelectedItem, m_Directory[iList]->m_strPath);
+      m_history[iList].SetSelectedItem(strSelectedItem, m_Directory[iList]->GetPath());
     }
   }
 
-  CStdString strOldDirectory=m_Directory[iList]->m_strPath;
-  m_Directory[iList]->m_strPath = strDirectory;
+  CStdString strOldDirectory=m_Directory[iList]->GetPath();
+  m_Directory[iList]->SetPath(strDirectory);
 
   CFileItemList items;
-  if (!GetDirectory(iList, m_Directory[iList]->m_strPath, items))
+  if (!GetDirectory(iList, m_Directory[iList]->GetPath(), items))
   {
-    m_Directory[iList]->m_strPath = strOldDirectory;
+    m_Directory[iList]->SetPath(strOldDirectory);
     return false;
   }
 
@@ -462,7 +472,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   ClearFileItems(iList);
 
   m_vecItems[iList]->Append(items);
-  m_vecItems[iList]->m_strPath = items.m_strPath;
+  m_vecItems[iList]->SetPath(items.GetPath());
 
   CStdString strParentPath;
   URIUtils::GetParentPath(strDirectory, strParentPath);
@@ -470,7 +480,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   { // add 'add source button'
     CStdString strLabel = g_localizeStrings.Get(1026);
     CFileItemPtr pItem(new CFileItem(strLabel));
-    pItem->m_strPath = "add";
+    pItem->SetPath("add");
     pItem->SetIconImage("DefaultAddSource.png");
     pItem->SetLabel(strLabel);
     pItem->SetLabelPreformated(true);
@@ -481,7 +491,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   else if (items.IsEmpty() || g_guiSettings.GetBool("filelists.showparentdiritems"))
   {
     CFileItemPtr pItem(new CFileItem(".."));
-    pItem->m_strPath = (m_rootDir.IsSource(strDirectory) ? "" : strParentPath);
+    pItem->SetPath(m_rootDir.IsSource(strDirectory) ? "" : strParentPath);
     pItem->m_bIsFolder = true;
     pItem->m_bIsShareOrDrive = false;
     m_vecItems[iList]->AddFront(pItem, 0);
@@ -503,10 +513,10 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
     CStdString strExtension;
-    URIUtils::GetExtension(pItem->m_strPath, strExtension);
+    URIUtils::GetExtension(pItem->GetPath(), strExtension);
     if (pItem->IsHD() && strExtension == ".tbn")
     {
-      pItem->SetThumbnailImage(pItem->m_strPath);
+      pItem->SetThumbnailImage(pItem->GetPath());
     }
   }
   m_vecItems[iList]->FillInDefaultIcons();
@@ -515,7 +525,7 @@ bool CGUIWindowFileManager::Update(int iList, const CStdString &strDirectory)
   UpdateButtons();
 
   int item = 0;
-  strSelectedItem = m_history[iList].GetSelectedItem(m_Directory[iList]->m_strPath);
+  strSelectedItem = m_history[iList].GetSelectedItem(m_Directory[iList]->GetPath());
   for (int i = 0; i < m_vecItems[iList]->Size(); ++i)
   {
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
@@ -538,13 +548,13 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   if ( iItem < 0 || iItem >= m_vecItems[iList]->Size() ) return ;
 
   CFileItemPtr pItem = m_vecItems[iList]->Get(iItem);
-  if (pItem->m_strPath == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
+  if (pItem->GetPath() == "add" && pItem->GetLabel() == g_localizeStrings.Get(1026)) // 'add source button' in empty root
   {
     if (CGUIDialogMediaSource::ShowAndAddMediaSource("files"))
     {
       m_rootDir.SetSources(g_settings.m_fileSources);
-      Update(0,m_Directory[0]->m_strPath);
-      Update(1,m_Directory[1]->m_strPath);
+      Update(0,m_Directory[0]->GetPath());
+      Update(1,m_Directory[1]->GetPath());
     }
     return;
   }
@@ -552,7 +562,7 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   if (pItem->m_bIsFolder)
   {
     // save path + drive type because of the possible refresh
-    CStdString strPath = pItem->m_strPath;
+    CStdString strPath = pItem->GetPath();
     int iDriveType = pItem->m_iDriveType;
     if ( pItem->m_bIsShareOrDrive )
     {
@@ -571,13 +581,13 @@ void CGUIWindowFileManager::OnClick(int iList, int iItem)
   else if (pItem->IsZIP() || pItem->IsCBZ()) // mount zip archive
   {
     CStdString strArcivedPath;
-    URIUtils::CreateArchivePath(strArcivedPath, "zip", pItem->m_strPath, "");
+    URIUtils::CreateArchivePath(strArcivedPath, "zip", pItem->GetPath(), "");
     Update(iList, strArcivedPath);
   }
   else if (pItem->IsRAR() || pItem->IsCBR())
   {
     CStdString strArcivedPath;
-    URIUtils::CreateArchivePath(strArcivedPath, "rar", pItem->m_strPath, "");
+    URIUtils::CreateArchivePath(strArcivedPath, "rar", pItem->GetPath(), "");
     Update(iList, strArcivedPath);
   }
   else
@@ -595,7 +605,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
   // start playlists from file manager
   if (pItem->IsPlayList())
   {
-    CStdString strPlayList = pItem->m_strPath;
+    CStdString strPlayList = pItem->GetPath();
     auto_ptr<CPlayList> pPlayList (CPlayListFactory::Create(strPlayList));
     if (NULL != pPlayList.get())
     {
@@ -616,12 +626,12 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
 #ifdef HAS_PYTHON
   if (pItem->IsPythonScript())
   {
-    g_pythonParser.evalFile(pItem->m_strPath.c_str(),ADDON::AddonPtr());
+    g_pythonParser.evalFile(pItem->GetPath().c_str(),ADDON::AddonPtr());
     return ;
   }
 #endif
   if (pItem->IsShortCut())
-    CUtil::RunShortcut(pItem->m_strPath);
+    CUtil::RunShortcut(pItem->GetPath());
   if (pItem->IsPicture())
   {
     CGUIWindowSlideShow *pSlideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
@@ -632,7 +642,7 @@ void CGUIWindowFileManager::OnStart(CFileItem *pItem)
 
     pSlideShow->Reset();
     pSlideShow->Add(pItem);
-    pSlideShow->Select(pItem->m_strPath);
+    pSlideShow->Select(pItem->GetPath());
 
     g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
   }
@@ -699,7 +709,7 @@ void CGUIWindowFileManager::OnCopy(int iList)
   m_errorHeading = 16201;
   m_errorLine    = 16202;
 
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionCopy, *m_vecItems[iList], m_Directory[1 - iList]->m_strPath), this);
+  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionCopy, *m_vecItems[iList], m_Directory[1 - iList]->GetPath()), this);
 }
 
 void CGUIWindowFileManager::OnMove(int iList)
@@ -712,7 +722,7 @@ void CGUIWindowFileManager::OnMove(int iList)
   m_errorHeading = 16203;
   m_errorLine    = 16204;
 
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionMove, *m_vecItems[iList], m_Directory[1 - iList]->m_strPath), this);
+  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionMove, *m_vecItems[iList], m_Directory[1 - iList]->GetPath()), this);
 }
 
 void CGUIWindowFileManager::OnDelete(int iList)
@@ -725,7 +735,7 @@ void CGUIWindowFileManager::OnDelete(int iList)
   m_errorHeading = 16205;
   m_errorLine    = 16206;
 
-  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, *m_vecItems[iList], m_Directory[iList]->m_strPath), this);
+  CJobManager::GetInstance().AddJob(new CFileOperationJob(CFileOperationJob::ActionDelete, *m_vecItems[iList], m_Directory[iList]->GetPath()), this);
 }
 
 void CGUIWindowFileManager::OnRename(int iList)
@@ -736,7 +746,7 @@ void CGUIWindowFileManager::OnRename(int iList)
     CFileItemPtr pItem = m_vecItems[iList]->Get(i);
     if (pItem->IsSelected())
     {
-      strFile = pItem->m_strPath;
+      strFile = pItem->GetPath();
       break;
     }
   }
@@ -763,7 +773,7 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
   CStdString strNewFolder = "";
   if (CGUIDialogKeyboard::ShowAndGetInput(strNewFolder, g_localizeStrings.Get(16014), false))
   {
-    CStdString strNewPath = m_Directory[iList]->m_strPath;
+    CStdString strNewPath = m_Directory[iList]->GetPath();
     URIUtils::AddSlashAtEnd(strNewPath);
     strNewPath += strNewFolder;
     CDirectory::Create(strNewPath);
@@ -773,7 +783,7 @@ void CGUIWindowFileManager::OnNewFolder(int iList)
     for (int i=0; i<m_vecItems[iList]->Size(); ++i)
     {
       CFileItemPtr pItem=m_vecItems[iList]->Get(i);
-      CStdString strPath=pItem->m_strPath;
+      CStdString strPath=pItem->GetPath();
       URIUtils::RemoveSlashAtEnd(strPath);
       if (strPath==strNewPath)
       {
@@ -788,7 +798,7 @@ void CGUIWindowFileManager::Refresh(int iList)
 {
   int nSel = GetSelectedItem(iList);
   // update the list views
-  Update(iList, m_Directory[iList]->m_strPath);
+  Update(iList, m_Directory[iList]->GetPath());
 
   while (nSel > m_vecItems[iList]->Size())
     nSel--;
@@ -802,8 +812,8 @@ void CGUIWindowFileManager::Refresh()
   int iList = GetFocusedList();
   int nSel = GetSelectedItem(iList);
   // update the list views
-  Update(0, m_Directory[0]->m_strPath);
-  Update(1, m_Directory[1]->m_strPath);
+  Update(0, m_Directory[0]->GetPath());
+  Update(1, m_Directory[1]->GetPath());
 
   while (nSel > (int)m_vecItems[iList]->Size())
     nSel--;
@@ -821,16 +831,16 @@ int CGUIWindowFileManager::GetSelectedItem(int iControl)
 
 void CGUIWindowFileManager::GoParentFolder(int iList)
 {
-  CURL url(m_Directory[iList]->m_strPath);
+  CURL url(m_Directory[iList]->GetPath());
   if ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip"))
   {
     // check for step-below, if, unmount rar
     if (url.GetFileName().IsEmpty())
       if (url.GetProtocol() == "zip")
-        g_ZipManager.release(m_Directory[iList]->m_strPath); // release resources
+        g_ZipManager.release(m_Directory[iList]->GetPath()); // release resources
   }
 
-  CStdString strPath(m_strParentPath[iList]), strOldPath(m_Directory[iList]->m_strPath);
+  CStdString strPath(m_strParentPath[iList]), strOldPath(m_Directory[iList]->GetPath());
   Update(iList, strPath);
 }
 
@@ -878,14 +888,14 @@ void CGUIWindowFileManager::GetDirectoryHistoryString(const CFileItem* pItem, CS
     else
     {
       // Other items in virtual directory
-      strHistoryString = pItem->GetLabel() + pItem->m_strPath;
+      strHistoryString = pItem->GetLabel() + pItem->GetPath();
       URIUtils::RemoveSlashAtEnd(strHistoryString);
     }
   }
   else
   {
     // Normal directory items
-    strHistoryString = pItem->m_strPath;
+    strHistoryString = pItem->GetPath();
     URIUtils::RemoveSlashAtEnd(strHistoryString);
   }
 }
@@ -1075,7 +1085,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
       CFileItemPtr pItem2=m_vecItems[list]->Get(i);
       if (pItem2->m_bIsFolder && pItem2->IsSelected())
       {
-        int64_t folderSize = CalculateFolderSize(pItem2->m_strPath, progress);
+        int64_t folderSize = CalculateFolderSize(pItem2->GetPath(), progress);
         if (folderSize >= 0)
         {
           pItem2->m_dwSize = folderSize;
@@ -1101,7 +1111,7 @@ void CGUIWindowFileManager::OnPopupMenu(int list, int item, bool bContextDriven 
   }
   if (btnid == 12)
   {
-    CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list]->m_strPath);
+    CGUIDialogContextMenu::SwitchMedia("files", m_vecItems[list]->GetPath());
     return;
   }
 
@@ -1147,7 +1157,7 @@ int64_t CGUIWindowFileManager::CalculateFolderSize(const CStdString &strDirector
   {
     if (items[i]->m_bIsFolder && !items[i]->IsParentFolder()) // folder
     {
-      int64_t folderSize = CalculateFolderSize(items[i]->m_strPath, pProgress);
+      int64_t folderSize = CalculateFolderSize(items[i]->GetPath(), pProgress);
       if (folderSize < 0) return -1;
       totalSize += folderSize;
     }
@@ -1199,7 +1209,7 @@ void CGUIWindowFileManager::ShowShareErrorMessage(CFileItem* pItem)
   if (pItem->m_bIsShareOrDrive)
   {
     int idMessageText=0;
-    CURL url(pItem->m_strPath);
+    CURL url(pItem->GetPath());
     const CStdString& strHostName=url.GetHostName();
 
     if (pItem->m_iDriveType!=CMediaSource::SOURCE_TYPE_REMOTE) //  Local shares incl. dvd drive
@@ -1220,15 +1230,14 @@ void CGUIWindowFileManager::OnInitWindow()
 
   for (int i = 0; i < 2; i++)
   {
-    Update(i, m_Directory[i]->m_strPath);
+    Update(i, m_Directory[i]->GetPath());
   }
   CGUIWindow::OnInitWindow();
 
   if (!bCheckShareConnectivity)
   {
     bCheckShareConnectivity = true; //reset
-    CFileItem pItem;
-    pItem.m_strPath=strCheckSharePath;
+    CFileItem pItem(strCheckSharePath, true);
     pItem.m_bIsShareOrDrive = true;
     if (URIUtils::IsHD(strCheckSharePath))
       pItem.m_iDriveType=CMediaSource::SOURCE_TYPE_LOCAL;
@@ -1249,9 +1258,9 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
     CLog::Log(LOGINFO, "Attempting to quickpath to: %s", strDestination.c_str());
   }
   // otherwise, is this the first time accessing this window?
-  else if (m_Directory[0]->m_strPath == "?")
+  else if (m_Directory[0]->GetPath() == "?")
   {
-    m_Directory[0]->m_strPath = strDestination = g_settings.m_defaultFileSource;
+    m_Directory[0]->SetPath(strDestination = g_settings.m_defaultFileSource);
     CLog::Log(LOGINFO, "Attempting to default to: %s", strDestination.c_str());
   }
   // try to open the destination path
@@ -1260,13 +1269,13 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
     // open root
     if (strDestination.Equals("$ROOT"))
     {
-      m_Directory[0]->m_strPath = "";
+      m_Directory[0]->SetPath("");
       CLog::Log(LOGINFO, "  Success! Opening root listing.");
     }
     else
     {
       // default parameters if the jump fails
-      m_Directory[0]->m_strPath = "";
+      m_Directory[0]->SetPath("");
 
       bool bIsSourceName = false;
       VECSOURCES shares;
@@ -1275,17 +1284,19 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
       if (iIndex > -1)
       {
         // set current directory to matching share
+        CStdString path;
         if (bIsSourceName && iIndex < (int)shares.size())
-          m_Directory[0]->m_strPath = shares[iIndex].strPath;
+          path = shares[iIndex].strPath;
         else
-          m_Directory[0]->m_strPath = strDestination;
-        URIUtils::RemoveSlashAtEnd(m_Directory[0]->m_strPath);
+          path = strDestination;
+        URIUtils::RemoveSlashAtEnd(path);
+        m_Directory[0]->SetPath(path);
         CLog::Log(LOGINFO, "  Success! Opened destination path: %s", strDestination.c_str());
 
         // outside call: check the share for connectivity
-        bCheckShareConnectivity = Update(0, m_Directory[0]->m_strPath);
+        bCheckShareConnectivity = Update(0, m_Directory[0]->GetPath());
         if(!bCheckShareConnectivity)
-          strCheckSharePath = m_Directory[0]->m_strPath;
+          strCheckSharePath = m_Directory[0]->GetPath();
       }
       else
       {
@@ -1294,7 +1305,7 @@ void CGUIWindowFileManager::SetInitialPath(const CStdString &path)
     }
   }
 
-  if (m_Directory[1]->m_strPath == "?") m_Directory[1]->m_strPath = "";
+  if (m_Directory[1]->GetPath() == "?") m_Directory[1]->SetPath("");
 }
 
 void CGUIWindowFileManager::ResetProgressBar(bool showProgress /*= true */)

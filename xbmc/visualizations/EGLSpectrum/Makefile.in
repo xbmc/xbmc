@@ -1,0 +1,16 @@
+ARCH=@ARCH@
+DEFINES+=-DHAS_SDL_OPENGL -DHAS_SDL
+CXXFLAGS=-fPIC
+OBJS=Shader.o GUIShader.o MatrixGLES.o gles_spectrum.o
+
+SLIB=@abs_top_srcdir@/addons/visualization.glesspectrum/gles_spectrum.vis
+
+$(SLIB): $(OBJS)
+ifeq ($(findstring osx,$(ARCH)), osx)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -bundle -undefined dynamic_lookup -read_only_relocs suppress -o $@ $(OBJS) -framework OpenGLES
+else
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g -o $(SLIB) $(OBJS)
+endif
+
+include @abs_top_srcdir@/Makefile.include
+
