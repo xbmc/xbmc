@@ -137,7 +137,7 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
       item.GetVideoInfoTag()->m_streamDetails.GetVideoAspect()), regExp)) return;
   }
 
-  CURL url(item.m_strPath);
+  CURL url(item.GetPath());
 
   //if (CompileRegExp(m_fileTypes, regExp) && !MatchesRegExp(url.GetFileType(), regExp)) return;
   
@@ -145,7 +145,7 @@ void CFilterSelectionRule::GetFilters(const CFileItem& item, std::vector<CStdStr
   
   if (CompileRegExp(m_mimeTypes, regExp) && !MatchesRegExp(item.GetMimeType(), regExp)) return;
 
-  if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(item.m_strPath, regExp)) return;
+  if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(item.GetPath(), regExp)) return;
 
   //CLog::Log(LOGDEBUG, "CFilterSelectionRule::GetFilters: matches rule: %s", m_name.c_str());
 

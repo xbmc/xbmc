@@ -107,7 +107,7 @@ HRESULT CFilterCoreFactory::GetSourceFilter( const CFileItem& pFileItem, CStdStr
 
   /* Special case for internet stream, and rar archive */
   // TODO: handle DVD
-  if (URIUtils::IsInArchive(pFileItem.m_strPath))
+  if (URIUtils::IsInArchive(pFileItem.GetPath()))
   {
     filter = "internal_archivesource";
     return S_OK;

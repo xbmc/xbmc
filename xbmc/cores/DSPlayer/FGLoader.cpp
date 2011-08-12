@@ -72,10 +72,10 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
   HRESULT hr = E_FAIL;
   
   /* XBMC SOURCE FILTER  */
-  /*if (CUtil::IsInArchive(pFileItem.m_strPath))
+  /*if (CUtil::IsInArchive(pFileItem.GetPath()))
   {
-    CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.m_strPath.c_str());
-    CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.m_strPath, &CGraphFilters::Get()->Source.pBF, &hr);
+    CLog::Log(LOGNOTICE,"%s File \"%s\" need a custom source filter", __FUNCTION__, pFileItem.GetPath().c_str());
+    CXBMCAsyncStream* pXBMCStream = new CXBMCAsyncStream(pFileItem.GetPath(), &CGraphFilters::Get()->Source.pBF, &hr);
     if (SUCCEEDED(hr))
     {
       hr = g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->Source.pBF, L"XBMC Source Filter");
@@ -107,7 +107,7 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
     CGraphFilters::Get()->SetIsDVD(true);
     CStdString dirA;
     CStdStringW dirW;
-    URIUtils::GetDirectory(pFileItem.m_strPath, dirA);
+    URIUtils::GetDirectory(pFileItem.GetPath(), dirA);
     g_charsetConverter.utf8ToW(dirA, dirW);
 
     hr = CGraphFilters::Get()->DVD.dvdControl->SetDVDDirectory(dirW.c_str());
@@ -133,7 +133,7 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
     {
       hr = g_dsGraph->pFilterGraph->AddFilter(CGraphFilters::Get()->Source.pBF, L"URLReader");
       CGraphFilters::Get()->Source.osdname = "URLReader";
-      CStdStringW strUrlW; g_charsetConverter.utf8ToW(pFileItem.m_strPath, strUrlW);
+      CStdStringW strUrlW; g_charsetConverter.utf8ToW(pFileItem.GetPath(), strUrlW);
 
       if (pSourceUrl = pUnk)
         hr = pSourceUrl->Load(strUrlW.c_str(), NULL);
@@ -162,7 +162,7 @@ HRESULT CFGLoader::InsertSourceFilter(CFileItem& pFileItem, const CStdString& fi
   // If the source filter has more than one ouput pin, it's a splitter too.
   // Only problem, the file must be loaded in the source filter to see the
   // number of output pin
-  CURL url(pFileItem.m_strPath);
+  CURL url(pFileItem.GetPath());
   
   CStdString pWinFilePath = url.Get();
   if ( (pWinFilePath.Left(6)).Equals("smb://", false) )
@@ -247,7 +247,7 @@ void CFGLoader::ParseStreamingType(CFileItem& pFileItem, IBaseFilter* pBF)
   EndEnumPins;
 
   if (guid == MEDIASUBTYPE_MOV)
-    pFileItem.m_strPath = "http://dummysite.com/dummyfile.mov";
+    pFileItem.SetPath("http://dummysite.com/dummyfile.mov");
 }
 
 HRESULT CFGLoader::InsertSplitter(const CFileItem& pFileItem, const CStdString& filterName)
@@ -393,13 +393,13 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
   {
 
     CLog::Log(LOGERROR, "%s Extension \"%s\" not found. Please check mediasconfig.xml",
-      __FUNCTION__, CURL(pFileItem.m_strPath).GetFileType().c_str());
+      __FUNCTION__, CURL(pFileItem.GetPath()).GetFileType().c_str());
     CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
     if (dialog)
     {
       dialog->SetHeading("Extension not found");
       dialog->SetLine(0, "Impossible to play the media file : the media");
-      dialog->SetLine(1, "extension \"" + CURL(pFileItem.m_strPath).GetFileType() + "\" isn't declared in mediasconfig.xml.");
+      dialog->SetLine(1, "extension \"" + CURL(pFileItem.GetPath()).GetFileType() + "\" isn't declared in mediasconfig.xml.");
       dialog->SetLine(2, "");
       CDSPlayer::errorWindow = dialog;
     }
@@ -423,7 +423,7 @@ HRESULT CFGLoader::LoadFilterRules(const CFileItem& _pFileItem)
   if (g_guiSettings.GetBool("myvideos.extractflags") &&
     pFileItem.HasVideoInfoTag() && !pFileItem.GetVideoInfoTag()->HasStreamDetails())
   {
-    CLog::Log(LOGDEBUG,"%s - trying to extract filestream details from video file %s", __FUNCTION__, pFileItem.m_strPath.c_str());
+    CLog::Log(LOGDEBUG,"%s - trying to extract filestream details from video file %s", __FUNCTION__, pFileItem.GetPath().c_str());
     hasStreamDetails = CDVDFileInfo::GetFileStreamDetails(&pFileItem);
   } else
     hasStreamDetails = pFileItem.HasVideoInfoTag() && pFileItem.GetVideoInfoTag()->HasStreamDetails();

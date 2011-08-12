@@ -500,7 +500,7 @@ void CStreamsManager::LoadStreams()
      We load external subtitle file */
 
   std::vector<CStdString> subtitles;
-  CUtil::ScanForExternalSubtitles( CDSPlayer::currentFileItem.m_strPath, subtitles );
+  CUtil::ScanForExternalSubtitles( CDSPlayer::currentFileItem.GetPath(), subtitles );
 
   for (std::vector<CStdString>::const_iterator it = subtitles.begin(); it != subtitles.end(); ++it)
   {

@@ -56,7 +56,7 @@ public:
 
   bool Match(const CFileItem& pFileItem, bool checkUrl = false)
   {
-    CURL url(pFileItem.m_strPath);
+    CURL url(pFileItem.GetPath());
     CRegExp regExp;
 
     if (m_fileTypes.empty() && m_fileName.empty())
@@ -65,7 +65,7 @@ public:
     if (!checkUrl && m_url > 0) return false;
     if (checkUrl && pFileItem.IsInternetStream() && m_url < 1) return false;
     if (CompileRegExp(m_fileTypes, regExp) && !MatchesRegExp(url.GetFileType(), regExp)) return false;
-    if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(pFileItem.m_strPath, regExp)) return false;
+    if (CompileRegExp(m_fileName, regExp) && !MatchesRegExp(pFileItem.GetPath(), regExp)) return false;
 
     return true;
   }
