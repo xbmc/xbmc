@@ -465,6 +465,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "audiochannels",    LISTITEM_AUDIO_CHANNELS },
                                   { "audiolanguage",    LISTITEM_AUDIO_LANGUAGE },
                                   { "subtitlelanguage", LISTITEM_SUBTITLE_LANGUAGE },
+                                  { "isresumable",      LISTITEM_IS_RESUMABLE},
                                   { "isfolder",         LISTITEM_IS_FOLDER },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
@@ -4102,6 +4103,8 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
+  else if (condition == LISTITEM_IS_RESUMABLE)
+    return (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0);
   return false;
 }
 
