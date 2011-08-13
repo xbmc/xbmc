@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "GUIWindowFullScreen.h"
 #include "Application.h"
@@ -37,6 +38,7 @@
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "video/dialogs/GUIDialogAudioSubtitleSettings.h"
 #include "dialogs/GUIDialogNumeric.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/GUISliderControl.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
@@ -48,11 +50,13 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "input/ButtonTranslator.h"
 
 #include <stdio.h>
-
+#ifdef __APPLE__
+#include "linux/LinuxResourceCounter.h"
+#endif
 
 #define BLUE_BAR                          0
 #define LABEL_ROW1                       10
@@ -253,15 +257,23 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 
   case ACTION_SHOW_SUBTITLES:
     {
+      if (g_application.m_pPlayer->GetSubtitleCount() == 0)
+        return true;
+
       g_settings.m_currentVideoSettings.m_SubtitleOn = !g_settings.m_currentVideoSettings.m_SubtitleOn;
       g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
-      CStdString sub;
+      CStdString sub, lang;
       if (g_settings.m_currentVideoSettings.m_SubtitleOn)
+      {
         g_application.m_pPlayer->GetSubtitleName(g_application.m_pPlayer->GetSubtitle(),sub);
+        g_application.m_pPlayer->GetSubtitleLanguage(g_application.m_pPlayer->GetSubtitle(),lang);
+        if (sub != lang)
+          sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+      }
       else
         sub = g_localizeStrings.Get(1223);
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info,
-                                                          g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info,
+                                            g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
     }
     return true;
     break;
@@ -302,12 +314,17 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
         g_application.m_pPlayer->SetSubtitleVisible(true);
       }
 
-      CStdString sub;
+      CStdString sub, lang;
       if (g_settings.m_currentVideoSettings.m_SubtitleOn)
+      {
         g_application.m_pPlayer->GetSubtitleName(g_settings.m_currentVideoSettings.m_SubtitleStream,sub);
+        g_application.m_pPlayer->GetSubtitleLanguage(g_settings.m_currentVideoSettings.m_SubtitleStream,lang);
+        if (sub != lang)
+          sub.Format("%s [%s]", sub.c_str(), lang.c_str());
+      }
       else
         sub = g_localizeStrings.Get(1223);
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(287), sub, DisplTime, false, MsgTime);
     }
     return true;
     break;
@@ -383,7 +400,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       g_application.m_pPlayer->SetAudioStream(g_settings.m_currentVideoSettings.m_AudioStream);    // Set the audio stream to the one selected
       CStdString aud;
       g_application.m_pPlayer->GetAudioStreamName(g_settings.m_currentVideoSettings.m_AudioStream,aud);
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(460), aud, DisplTime, false, MsgTime);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(460), aud, DisplTime, false, MsgTime);
       return true;
     }
     break;
@@ -427,7 +444,7 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
 #endif
       }
       m_bShowViewModeInfo = true;
-      m_dwShowViewModeTimeout = CTimeUtils::GetTimeMS();
+      m_dwShowViewModeTimeout = XbmcThreads::SystemClockMillis();
     }
     return true;
     break;
@@ -527,7 +544,7 @@ void CGUIWindowFullScreen::OnWindowLoaded()
     if( pProgress->GetInfo() == 0 || pProgress->GetVisibleCondition() == 0)
     {
       pProgress->SetInfo(PLAYER_PROGRESS);
-      pProgress->SetVisibleCondition(PLAYER_DISPLAY_AFTER_SEEK, false);
+      pProgress->SetVisibleCondition("player.displayafterseek");
       pProgress->SetVisible(true);
     }
   }
@@ -535,17 +552,18 @@ void CGUIWindowFullScreen::OnWindowLoaded()
   CGUILabelControl* pLabel = (CGUILabelControl*)GetControl(LABEL_BUFFERING);
   if(pLabel && pLabel->GetVisibleCondition() == 0)
   {
-    pLabel->SetVisibleCondition(PLAYER_CACHING, false);
+    pLabel->SetVisibleCondition("player.caching");
     pLabel->SetVisible(true);
   }
 
   pLabel = (CGUILabelControl*)GetControl(LABEL_CURRENT_TIME);
   if(pLabel && pLabel->GetVisibleCondition() == 0)
   {
-    pLabel->SetVisibleCondition(PLAYER_DISPLAY_AFTER_SEEK, false);
+    pLabel->SetVisibleCondition("player.displayafterseek");
     pLabel->SetVisible(true);
     pLabel->SetLabel("$INFO(VIDEOPLAYER.TIME) / $INFO(VIDEOPLAYER.DURATION)");
   }
+  m_showCodec.Parse("player.showcodec", GetID());
 }
 
 bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
@@ -586,8 +604,9 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         fontPath += g_guiSettings.GetString("subtitles.font");
 
         // We scale based on PAL4x3 - this at least ensures all sizing is constant across resolutions.
-        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), false, 1.0f, 1.0f, RES_PAL_4x3, true);
-        CGUIFont *borderFont = g_fontManager.LoadTTF("__subtitleborder__", fontPath, 0xFF000000, 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), true, 1.0f, 1.0f, RES_PAL_4x3, true);
+        RESOLUTION_INFO pal(720, 576, 0);
+        CGUIFont *subFont = g_fontManager.LoadTTF("__subtitle__", fontPath, color[g_guiSettings.GetInt("subtitles.color")], 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), false, 1.0f, 1.0f, &pal, true);
+        CGUIFont *borderFont = g_fontManager.LoadTTF("__subtitleborder__", fontPath, 0xFF000000, 0, g_guiSettings.GetInt("subtitles.height"), g_guiSettings.GetInt("subtitles.style"), true, 1.0f, 1.0f, &pal, true);
         if (!subFont || !borderFont)
           CLog::Log(LOGERROR, "CGUIWindowFullScreen::OnMessage(WINDOW_INIT) - Unable to load subtitle font");
         else
@@ -659,8 +678,9 @@ EVENT_RESULT CGUIWindowFullScreen::OnMouseEvent(const CPoint &point, const CMous
   }
   if (event.m_id != ACTION_MOUSE_MOVE || event.m_offsetX || event.m_offsetY)
   { // some other mouse action has occurred - bring up the OSD
+    // if it is not already running
     CGUIDialogVideoOSD *pOSD = (CGUIDialogVideoOSD *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_OSD);
-    if (pOSD)
+    if (pOSD && !pOSD->IsDialogRunning())
     {
       pOSD->SetAutoClose(3000);
       pOSD->DoModal();
@@ -685,7 +705,8 @@ void CGUIWindowFullScreen::FrameMove()
   }
 
   //------------------------
-  if (g_infoManager.GetBool(PLAYER_SHOWCODEC))
+  m_showCodec.Update();
+  if (m_showCodec)
   {
     // show audio codec info
     CStdString strAudio, strVideo, strGeneral;
@@ -739,7 +760,7 @@ void CGUIWindowFullScreen::FrameMove()
   //----------------------
   // ViewMode Information
   //----------------------
-  if (m_bShowViewModeInfo && CTimeUtils::GetTimeMS() - m_dwShowViewModeTimeout > 2500)
+  if (m_bShowViewModeInfo && XbmcThreads::SystemClockMillis() - m_dwShowViewModeTimeout > 2500)
   {
     m_bShowViewModeInfo = false;
   }
@@ -793,7 +814,7 @@ void CGUIWindowFullScreen::FrameMove()
 
   if (m_timeCodeShow && m_timeCodePosition != 0)
   {
-    if ( (CTimeUtils::GetTimeMS() - m_timeCodeTimeout) >= 2500)
+    if ( (XbmcThreads::SystemClockMillis() - m_timeCodeTimeout) >= 2500)
     {
       m_timeCodeShow = false;
       m_timeCodePosition = 0;
@@ -816,7 +837,7 @@ void CGUIWindowFullScreen::FrameMove()
     OnMessage(msg);
   }
 
-  if (g_infoManager.GetBool(PLAYER_SHOWCODEC) || m_bShowViewModeInfo)
+  if (m_showCodec || m_bShowViewModeInfo)
   {
     SET_CONTROL_VISIBLE(LABEL_ROW1);
     SET_CONTROL_VISIBLE(LABEL_ROW2);
@@ -837,6 +858,15 @@ void CGUIWindowFullScreen::FrameMove()
     SET_CONTROL_HIDDEN(LABEL_ROW3);
     SET_CONTROL_HIDDEN(BLUE_BAR);
   }
+}
+
+void CGUIWindowFullScreen::Process(unsigned int currentTime, CDirtyRegionList &dirtyregion)
+{
+  // TODO: This isn't quite optimal - ideally we'd only be dirtying up the actual video render rect
+  //       which is probably the job of the renderer as it can more easily track resizing etc.
+  MarkDirtyRegion();
+  CGUIWindow::Process(currentTime, dirtyregion);
+  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 }
 
 void CGUIWindowFullScreen::Render()
@@ -880,7 +910,7 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       subtitleText.Replace("</u", "");
 
       RESOLUTION res = g_graphicsContext.GetVideoResolution();
-      g_graphicsContext.SetRenderingResolution(res, false);
+      g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
 
       float maxWidth = (float) g_settings.m_ResInfo[res].Overscan.right - g_settings.m_ResInfo[res].Overscan.left;
       m_subsLayout->Update(subtitleText, maxWidth * 0.9f, false, true); // true to force LTR reading order (most Hebrew subs are this format)
@@ -891,6 +921,9 @@ void CGUIWindowFullScreen::RenderTTFSubtitles()
       float y = g_settings.m_ResInfo[res].iSubtitles - textHeight;
 
       m_subsLayout->RenderOutline(x, y, 0, 0xFF000000, XBFONT_CENTER_X, maxWidth);
+
+      // reset rendering resolution
+      g_graphicsContext.SetRenderingResolution(m_coordsRes, m_needsScaling);
     }
   }
 }
@@ -900,7 +933,7 @@ void CGUIWindowFullScreen::ChangetheTimeCode(int remote)
   if (remote >= REMOTE_0 && remote <= REMOTE_9)
   {
     m_timeCodeShow = true;
-    m_timeCodeTimeout = CTimeUtils::GetTimeMS();
+    m_timeCodeTimeout = XbmcThreads::SystemClockMillis();
 
     if (m_timeCodePosition < 6)
       m_timeCodeStamp[m_timeCodePosition++] = remote - REMOTE_0;

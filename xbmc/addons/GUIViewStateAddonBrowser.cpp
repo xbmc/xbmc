@@ -37,15 +37,15 @@ CGUIViewStateAddonBrowser::CGUIViewStateAddonBrowser(const CFileItemList& items)
   AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // Filename, Date | Foldername, Date
   SetSortMethod(SORT_METHOD_LABEL_IGNORE_FOLDERS);
 
-  SetViewAsControl(DEFAULT_VIEW_LIST);
+  SetViewAsControl(DEFAULT_VIEW_AUTO);
 
   SetSortOrder(SORT_ORDER_ASC);
-  LoadViewState(items.m_strPath, WINDOW_ADDON_BROWSER);
+  LoadViewState(items.GetPath(), WINDOW_ADDON_BROWSER);
 }
 
 void CGUIViewStateAddonBrowser::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, WINDOW_ADDON_BROWSER);
+  SaveViewToDb(m_items.GetPath(), WINDOW_ADDON_BROWSER);
 }
 
 CStdString CGUIViewStateAddonBrowser::GetExtensions()

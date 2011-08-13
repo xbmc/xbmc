@@ -29,12 +29,6 @@
 
 using namespace std;
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -190,11 +184,9 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, (char*)"s|b", &cVisible, &bHidden)) return NULL;
 
-    int ret = g_infoManager.TranslateString(cVisible);
-
     PyXBMCGUILock();
     if (self->pGUIControl)
-      self->pGUIControl->SetVisibleCondition(ret, 0 != bHidden);
+      self->pGUIControl->SetVisibleCondition(cVisible, bHidden ? "true" : "false");
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -219,11 +211,9 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, (char*)"s", &cEnable)) return NULL;
 
-    int ret = g_infoManager.TranslateString(cEnable);
-
     PyXBMCGUILock();
     if (self->pGUIControl)
-      self->pGUIControl->SetEnableCondition(ret);
+      self->pGUIControl->SetEnableCondition(cEnable);
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -302,7 +292,7 @@ namespace PYXBMC
     PyXBMCGUILock();
     if (self->pGUIControl)
     {
-      CGUIControlFactory::GetAnimations(pRoot, animRect, animations);
+      CGUIControlFactory::GetAnimations(pRoot, animRect, self->iParentId, animations);
       self->pGUIControl->SetAnimations(animations);
     }
     PyXBMCGUIUnlock();
@@ -621,12 +611,6 @@ namespace PYXBMC
     "Base class for all controls.");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
   PyTypeObject Control_Type;
 

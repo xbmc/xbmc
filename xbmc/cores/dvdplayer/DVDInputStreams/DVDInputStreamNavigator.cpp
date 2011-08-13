@@ -84,7 +84,7 @@ bool CDVDInputStreamNavigator::Open(const char* strFile, const std::string& cont
   {
     strDVDFile[strlen(strDVDFile) - 13] = '\0';
   }
-#if defined(__APPLE__)
+#if defined(__APPLE__) && !defined(__arm__)
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // strDVDFile will get realloc'ed and replaced IF this is a physical DVD.
   Cocoa_MountPoint2DeviceName(strDVDFile);
@@ -267,28 +267,14 @@ int CDVDInputStreamNavigator::ProcessBlock(BYTE* dest_buffer, int* read)
   if(m_holdmode == HOLDMODE_HELD)
     return NAVRESULT_HOLD;
 
-  try
-  {
-    // the main reading function
-    if(m_holdmode == HOLDMODE_SKIP)
-    { /* we where holding data, return the data held */
-      m_holdmode = HOLDMODE_DATA;
-      result = DVDNAV_STATUS_OK;
-    }
-    else
-      result = m_dll.dvdnav_get_next_cache_block(m_dvdnav, &buf, &m_lastevent, &len);
-
+  // the main reading function
+  if(m_holdmode == HOLDMODE_SKIP)
+  { /* we where holding data, return the data held */
+    m_holdmode = HOLDMODE_DATA;
+    result = DVDNAV_STATUS_OK;
   }
-  catch (...)
-  {
-    CLog::Log(LOGERROR, "CDVDInputStreamNavigator::ProcessBlock - exception thrown in dvdnav_get_next_cache_block.");
-
-    // okey, we are probably holding a vm_lock here so leave it.. this could potentialy cause problems if we aren't holding it
-    // but it's more likely that we do
-    LeaveCriticalSection((LPCRITICAL_SECTION)&(m_dvdnav->vm_lock));
-    m_bEOF = true;
-    return NAVRESULT_ERROR;
-  }
+  else
+    result = m_dll.dvdnav_get_next_cache_block(m_dvdnav, &buf, &m_lastevent, &len);
 
   if (result == DVDNAV_STATUS_ERR)
   {
@@ -1061,7 +1047,7 @@ bool CDVDInputStreamNavigator::SeekChapter(int iChapter)
   // therefore we just skip the request in case there are buttons and return false
   if (IsInMenu() && GetTotalButtons() > 0)
   {
-    CLog::Log(LOGDEBUG, "%s - Seeking chapter is not allowed in menu set with buttons");
+    CLog::Log(LOGDEBUG, "%s - Seeking chapter is not allowed in menu set with buttons", __FUNCTION__);
     return false;
   }
 

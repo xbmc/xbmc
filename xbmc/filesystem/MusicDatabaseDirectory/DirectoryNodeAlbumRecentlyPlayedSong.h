@@ -31,7 +31,7 @@ namespace XFILE
     public:
       CDirectoryNodeAlbumRecentlyPlayedSong(const CStdString& strName, CDirectoryNode* pParent);
     protected:
-      virtual bool GetContent(CFileItemList& items);
+      virtual bool GetContent(CFileItemList& items) const;
     };
   }
 }

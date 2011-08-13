@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 29/11/2010-->
-<!--Turkish strings based on English strings revision 35510-->
+<!--Date of translation: 20/04/2011-->
+<!--Turkish strings based on English strings commit 51ed57d4fede2c21c1ca-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Değiştir</string>
@@ -11,8 +11,9 @@
   <string id="31003">Güç Seçenekleri</string>
   <string id="31004">Çalışıyor...</string>
   <string id="31005">Bilgiyi Gizle</string>
-
+  <string id="31006">Görünüm Seçenekleri</string>
   <string id="31007">Eklentiler</string>
+  <string id="31008">Tam ekran</string>
 
   <string id="31020">Son Eklenenler</string>
   <string id="31021">Video - Dosyalar</string>
@@ -42,6 +43,8 @@
   <string id="31047">Geçerli Önayar</string>
   <string id="31048">Görsel Öğe Önayarları</string>
   <string id="31049">Bitiş Zamanı</string>
+  <string id="31050">Sırala: Artan</string>
+  <string id="31051">Sırala: Azalan</string>
 
 
   <!-- Playlist Editor labels -->
@@ -137,6 +140,7 @@
   <string id="31328">Son Eklenenler</string>
   <string id="31329">[B]Zamanlayıcı ayarlandı![/B] [COLOR=grey2] - Sistem'in otomatik kapanma süresi[/COLOR]</string>
   <string id="31330">Oynatmak için düğmeye basın[CR][CR]Film fragmanı</string>
+  <string id="31331">Albüm Ayrıntıları</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Duraklat</string>

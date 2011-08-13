@@ -40,6 +40,13 @@ CGUIWindowScreensaver::~CGUIWindowScreensaver(void)
 {
 }
 
+void CGUIWindowScreensaver::Process(unsigned int currentTime, CDirtyRegionList &regions)
+{
+  MarkDirtyRegion();
+  CGUIWindow::Process(currentTime, regions);
+  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
+}
+
 void CGUIWindowScreensaver::Render()
 {
   CSingleLock lock (m_critSection);

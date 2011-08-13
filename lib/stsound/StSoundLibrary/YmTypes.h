@@ -39,12 +39,12 @@
 // Platform specific stuff
 //-----------------------------------------------------------
 
-#if defined(_WIN32) || defined(__linux__)
+#if defined(_WIN32) || defined(__linux__) || defined(__FreeBSD__)
 
 // These settings are ok for Windows 32bits platform.
 
 #ifdef YM_INTEGER_ONLY
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD__)
 #include <inttypes.h>
 typedef 	int64_t				yms64;
 #else

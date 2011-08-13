@@ -112,6 +112,7 @@ CVDPAU::CVDPAU()
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
+  tmpDeint       = 0;
   max_references = 0;
 
   for (int i = 0; i < NUM_OUTPUT_SURFACES; i++)
@@ -607,7 +608,7 @@ void CVDPAU::SetDeinterlacing()
 
   if (method == VS_INTERLACEMETHOD_AUTO)
   {
-    VdpBool enabled[]={1,1,1};
+    VdpBool enabled[]={1,0,0}; // Same features as VS_INTERLACEMETHOD_VDPAU_TEMPORAL
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
   else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
@@ -639,6 +640,7 @@ void CVDPAU::InitVDPAUProcs()
 {
   char* error;
 
+  (void)dlerror();
   dl_vdp_device_create_x11 = (VdpStatus (*)(Display*, int, VdpDevice*, VdpStatus (**)(VdpDevice, VdpFuncId, void**)))dlsym(dl_handle, (const char*)"vdp_device_create_x11");
   error = dlerror();
   if (error)
@@ -1174,7 +1176,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     {
       if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
       || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
-      || avctx->hurry_up)
+      || avctx->skip_frame == AVDISCARD_NONREF)
         m_mixerstep = 0;
       else
         m_mixerstep = 1;
@@ -1194,7 +1196,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   else if(m_mixerstep == 1)
   { // no new frame given, output second field of old frame
 
-    if(avctx->hurry_up)
+    if(avctx->skip_frame == AVDISCARD_NONREF)
     {
       ClearUsedForRender(&past[1]);
       m_DVDVideoPics.pop();

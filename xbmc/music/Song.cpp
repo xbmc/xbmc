@@ -115,6 +115,16 @@ CSongMap::CSongMap()
 {
 }
 
+std::map<CStdString, CSong>::const_iterator CSongMap::Begin()
+{
+  return m_map.begin();
+}
+
+std::map<CStdString, CSong>::const_iterator CSongMap::End()
+{
+  return m_map.end();
+}
+
 void CSongMap::Add(const CStdString &file, const CSong &song)
 {
   CStdString lower = file;

@@ -2,6 +2,7 @@
 #include "UnrarX.hpp"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "filesystem/File.h"
 
 #include "smallfn.cpp"
 
@@ -12,44 +13,7 @@ extern "C" char **__crt0_glob_function (char *arg) { return 0; }
 extern "C" void   __crt0_load_environment_file (char *progname) { }
 #endif
 
-#if defined(_XBOX) && defined(__XBOX__TEST__)
-void main(int argc, char *argv[])
-{
-  ArchiveList_struct *list, *p;
-  urarlib_list(argv[1], &list, NULL);
-
-  printf("                   Name     Size  Packed   OS  FileTime    ");
-  printf("CRC-32 Attr Ver Meth\n");
-  printf("     ------------------------------------------------------");
-  printf("--------------------\n");
-
-  p = list;
-  while (list)
-  {
-    if (list->item.NameSize < 23)
-      printf("%23s", list->item.Name);
-    else
-      printf("%23s", list->item.Name + (list->item.NameSize - 23));
-
-    printf("%9ld",  list->item.UnpSize);
-    printf("%8ld",  list->item.PackSize);
-    printf("%5d",  list->item.HostOS);
-    printf("%10lx", list->item.FileTime);
-    printf("%10lx", list->item.FileCRC);
-    printf("%5ld",  list->item.FileAttr);
-    printf("%4d",  list->item.UnpVer);
-    printf("%5d",  list->item.Method);
-    printf("\n");
-
-    list = list->next;
-  }
-  urarlib_freelist(p);
-
-  int res = urarlib_get(argv[1], argv[2], argv[3], NULL);
-}
-#else
-
-#if !defined(GUI) && !defined(RARDLL) && !defined(_XBOX) && !defined(_LINUX) && !defined(_XBMC)
+#if !defined(GUI) && !defined(RARDLL) && !defined(_LINUX) && !defined(_XBMC)
 int main(int argc, char *argv[])
 {
 #ifdef _UNIX
@@ -164,9 +128,8 @@ int main(int argc, char *argv[])
 }
 #endif
 
-#endif /* __XBOX__TEST__ */
 
-#if defined(_XBOX) || defined(_LINUX) || defined(_XBMC)
+#if defined(_LINUX) || defined(_XBMC)
 /*-------------------------------------------------------------------------*\
                                XBOX interface
 \*-------------------------------------------------------------------------*/
@@ -471,4 +434,4 @@ void urarlib_freelist(ArchiveList_struct *list)
 }
 
 
-#endif /* _XBOX */
+#endif

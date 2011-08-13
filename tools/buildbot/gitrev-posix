@@ -1,0 +1,14 @@
+#!/bin/bash
+#Print the git revision in the form yyyymmdd-abc1234
+#Note: yyyymmdd is the date that abc1234 was committed and not today's date.
+
+which git &>/dev/null
+if [ "$?" != "0" ]; then
+  echo "Unknown"
+  exit 1
+fi
+git --no-pager log --abbrev=7 -n 1 --pretty=format:"%h %ci" HEAD | awk '{gsub("-", "");print $2"-"$1}' 2>/dev/null
+if [ "$?" != "0" ]; then
+  echo "Unknown"
+  exit 1
+fi

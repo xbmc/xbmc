@@ -37,14 +37,12 @@ public:
 private:
   DllFlacEnc m_dll;
   FLAC__StreamEncoder *m_encoder;
-  FLAC__StreamMetadata *m_metadata[1];
+  FLAC__StreamMetadata *m_metadata[2];
 
   static const int SAMPLES_BUF_SIZE = 1024 * 2;
   FLAC__int32 *m_samplesBuf;
 
   static FLAC__StreamEncoderWriteStatus write_callback(const FLAC__StreamEncoder *encoder, const FLAC__byte buffer[], size_t bytes, unsigned samples, unsigned current_frame, void *client_data);
-  static FLAC__StreamEncoderSeekStatus seek_callback(const FLAC__StreamEncoder *encoder, FLAC__uint64 absolute_byte_offset, void *client_data);
-  static FLAC__StreamEncoderTellStatus tell_callback(const FLAC__StreamEncoder *encoder, FLAC__uint64 *absolute_byte_offset, void *client_data);
 };
 
 #endif // _ENCODERFLAC_H

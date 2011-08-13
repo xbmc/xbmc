@@ -1,7 +1,0 @@
-- git clone git://git.videolan.org/libbluray.git (currently using Commit:0e5902ff9a6f1e122a81cad2ee8707d00a39b58b
-- sh bootstrap
-- ./configure
-- make
-- look in src/.libs for a dll
-- if there isn't any (as with my setup), run 
-  gcc -shared -std=c99 -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112L -D_REENTRANT -Wall -Wdisabled-optimization -Wpointer -arith -Wredundant-decls -Wcast-qual -Wwrite-strings -Wundef -Wextra -Winline -O3 -fomit-frame-pointer -o libbluray.dll *.o

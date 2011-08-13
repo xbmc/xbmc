@@ -1,15 +1,14 @@
 ARCH=@ARCH@
-INCLUDES=-I. -I../../addons/include -I/opt/local/include
+INCLUDES=-I. -I@abs_top_srcdir@/addons/include
 OBJS=Main.o itunes_vis.o qview.o common_osx.o
 CXXFLAGS=-Wall -g -fPIC
 SLIB=../../../addons/visualization.itunes/iTunes.mvis
 
 $(SLIB): $(OBJS)
 ifeq ($(findstring osx,$(ARCH)), osx)
-	@export MACOSX_DEPLOYMENT_TARGET=10.4
-	$(CXX) $(CXXFLAGS) -framework Carbon -bundle -shared -flat_namespace \
-		-undefined suppress -o $@ $(OBJS) 
-	../../../tools/Mach5/wrapper.rb $@;mv output.so $@
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -Wl,-alias_list,@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper_mach_alias \
+		-framework Carbon -bundle -undefined dynamic_lookup -read_only_relocs suppress -o $@ \
+		@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS) 
 endif
 
 include ../../../Makefile.include

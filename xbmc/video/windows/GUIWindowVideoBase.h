@@ -35,7 +35,7 @@ public:
   virtual bool OnAction(const CAction &action);
 
   void PlayMovie(const CFileItem *item);
-  int  GetResumeItemOffset(const CFileItem *item);
+  static int GetResumeItemOffset(const CFileItem *item);
 
   void AddToDatabase(int iItem);
   virtual void OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scraper);
@@ -59,6 +59,14 @@ public:
    \sa DoSearch
    */
   static void AppendAndClearSearchItems(CFileItemList &searchItems, const CStdString &prependLabel, CFileItemList &results);
+
+  static void OnAssignContent(const CStdString &path, int iFound, ADDON::ScraperPtr& scraper, VIDEO::SScanSettings& settings);
+
+  /*! \brief checks the database for a resume position and puts together a string
+   \param item selected item
+   \return string containing the resume position or an empty string if there is no resume position
+   */
+  static CStdString GetResumeString(CFileItem item);
 
 protected:
   void OnScan(const CStdString& strPath, bool scanAll = false);
@@ -90,11 +98,7 @@ protected:
    \return true if the action is performed, false otherwise
    */
   bool OnFileAction(int item, int action);
-  /*! \brief checks the database for a resume position and puts together a string
-   \param item selected item
-   \return string containing the resume position or an empty string if there is no resume position
-   */
-  static CStdString GetResumeString(CFileItem item);
+
   void OnRestartItem(int iItem);
   bool OnResumeItem(int iItem);
   void PlayItem(int iItem);
@@ -105,14 +109,17 @@ protected:
   bool ShowIMDB(CFileItem *item, const ADDON::ScraperPtr& content);
 
   void AddItemToPlayList(const CFileItemPtr &pItem, CFileItemList &queuedItems);
-  void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
+  static void GetStackedFiles(const CStdString &strFileName, std::vector<CStdString> &movies);
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
   int GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &info, VIDEO::SScanSettings& settings);
 
+  static bool OnUnAssignContent(const CStdString &path, int label1, int label2, int label3);
+
   CGUIDialogProgress* m_dlgProgress;
   CVideoDatabase m_database;
 
   CVideoThumbLoader m_thumbLoader;
+  bool m_stackingAvailable;
 };

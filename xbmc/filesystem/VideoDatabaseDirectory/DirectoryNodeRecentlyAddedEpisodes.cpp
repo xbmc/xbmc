@@ -31,12 +31,12 @@ CDirectoryNodeRecentlyAddedEpisodes::CDirectoryNodeRecentlyAddedEpisodes(const C
 
 }
 
-NODE_TYPE CDirectoryNodeRecentlyAddedEpisodes::GetChildType()
+NODE_TYPE CDirectoryNodeRecentlyAddedEpisodes::GetChildType() const
 {
   return NODE_TYPE_EPISODES;
 }
 
-bool CDirectoryNodeRecentlyAddedEpisodes::GetContent(CFileItemList& items)
+bool CDirectoryNodeRecentlyAddedEpisodes::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

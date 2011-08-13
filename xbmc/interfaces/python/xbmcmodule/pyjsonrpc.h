@@ -27,7 +27,7 @@
 class CPythonTransport : public JSONRPC::ITransportLayer
 {
 public:
-  virtual bool Download(const char *path, Json::Value *result) { return false; }
+  virtual bool Download(const char *path, CVariant &result) { return false; }
   virtual int GetCapabilities() { return JSONRPC::Response; }
 
   class CPythonClient : public JSONRPC::IClient

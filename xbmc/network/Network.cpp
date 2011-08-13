@@ -26,6 +26,11 @@
 #include "libscrobbler/librefmscrobbler.h"
 #include "utils/RssReader.h"
 #include "utils/log.h"
+#include "guilib/LocalizeStrings.h"
+#include "dialogs/GUIDialogKaiToast.h"
+
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 using namespace std;
 
@@ -269,19 +274,22 @@ void CNetwork::StartServices()
   g_application.StartTimeServer();
 #endif
 #ifdef HAS_WEB_SERVER
-  g_application.StartWebServer();
+  if (!g_application.StartWebServer())
+    CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33101), g_localizeStrings.Get(33100));
 #endif
 #ifdef HAS_UPNP
   g_application.StartUPnP();
 #endif
 #ifdef HAS_EVENT_SERVER
-  g_application.StartEventServer();
+  if (!g_application.StartEventServer())
+    CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
 #endif
 #ifdef HAS_DBUS_SERVER
   g_application.StartDbusServer();
 #endif
 #ifdef HAS_JSONRPC
-  g_application.StartJSONRPCServer();
+  if (!g_application.StartJSONRPCServer())
+    CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33103), g_localizeStrings.Get(33100));
 #endif
 #ifdef HAS_ZEROCONF
   g_application.StartZeroconf();

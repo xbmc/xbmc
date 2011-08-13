@@ -31,7 +31,7 @@
 #include "threads/CriticalSection.h"
 #include "guilib/IMsgTargetCallback.h"
 #include "inttypes.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 
 #include <list>
 #include <map>
@@ -44,14 +44,15 @@ class CVideoInfoTag;
 class CFileItem;
 class CGUIListItem;
 class CDateTime;
+namespace INFO
+{
+  class InfoBool;
+  class InfoSingle;
+}
 
 // conditions for window retrieval
 #define WINDOW_CONDITION_HAS_LIST_ITEMS  1
 #define WINDOW_CONDITION_IS_MEDIA_WINDOW 2
-
-#define OPERATOR_NOT  3
-#define OPERATOR_AND  2
-#define OPERATOR_OR   1
 
 #define PLAYER_HAS_MEDIA              1
 #define PLAYER_HAS_AUDIO              2
@@ -100,6 +101,7 @@ class CDateTime;
 #define PLAYER_PATH                  45
 #define PLAYER_FILEPATH              46
 #define PLAYER_SEEKOFFSET            47
+#define PLAYER_PROGRESS_CACHE        48
 
 #define WEATHER_CONDITIONS          100
 #define WEATHER_TEMPERATURE         101
@@ -140,6 +142,7 @@ class CDateTime;
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
 #define SYSTEM_TRAYOPEN             142
+#define SYSTEM_SHOW_EXIT_BUTTON		143
 #define SYSTEM_ALARM_POS            144
 #define SYSTEM_LOGGEDON             145
 #define SYSTEM_PROFILENAME          146
@@ -162,11 +165,6 @@ class CDateTime;
 #define LCD_HDD_TEMPERATURE         164
 #define LCD_FAN_SPEED               165
 #define LCD_DATE                    166
-#define LCD_FREE_SPACE_C            167
-// #define LCD_FREE_SPACE_D            168 // 168 is reserved for space on D
-#define LCD_FREE_SPACE_E            169
-#define LCD_FREE_SPACE_F            170
-#define LCD_FREE_SPACE_G            171
 #define LCD_TIME_21                 172 // Small bigfont
 #define LCD_TIME_22                 173
 #define LCD_TIME_W21                174 // Medum bigfont
@@ -177,6 +175,8 @@ class CDateTime;
 #define LCD_TIME_44                 179
 #define SYSTEM_ALARM_LESS_OR_EQUAL  180
 #define SYSTEM_PROFILECOUNT         181
+#define SYSTEM_ISFULLSCREEN         182
+#define SYSTEM_ISSTANDALONE         183
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191
@@ -219,6 +219,8 @@ class CDateTime;
 #define VIDEOPLAYER_GENRE             251
 #define VIDEOPLAYER_DIRECTOR          252
 #define VIDEOPLAYER_YEAR              253
+#define VIDEOPLAYER_HASSUBTITLES      254
+#define VIDEOPLAYER_SUBTITLESENABLED  255
 #define VIDEOPLAYER_COVER             258
 #define VIDEOPLAYER_USING_OVERLAYS    259
 #define VIDEOPLAYER_ISFULLSCREEN      260
@@ -327,14 +329,16 @@ class CDateTime;
 #define STRING_COMPARE              411
 #define STRING_STR                  412
 #define INTEGER_GREATER_THAN        413
-
-#define SKIN_HAS_THEME_START        500
-#define SKIN_HAS_THEME_END          599 // allow for max 100 themes
+#define STRING_STR_LEFT             414
+#define STRING_STR_RIGHT            415
 
 #define SKIN_BOOL                   600
 #define SKIN_STRING                 601
 #define SKIN_HAS_MUSIC_OVERLAY      602
 #define SKIN_HAS_VIDEO_OVERLAY      603
+#define SKIN_THEME                  604
+#define SKIN_COLOUR_THEME           605
+#define SKIN_HAS_THEME              606
 
 #define SYSTEM_TOTAL_MEMORY         644
 #define SYSTEM_CPU_USAGE            645
@@ -348,37 +352,12 @@ class CDateTime;
 #define SYSTEM_SCREEN_RESOLUTION    659
 #define SYSTEM_VIDEO_ENCODER_INFO   660
 #define SYSTEM_KERNEL_VERSION       667
-#define SYSTEM_USED_SPACE_X         673
-#define SYSTEM_FREE_SPACE_X         674
-#define SYSTEM_USED_SPACE_Y         675
-#define SYSTEM_FREE_SPACE_Y         676
-#define SYSTEM_USED_SPACE_Z         677
-#define SYSTEM_FREE_SPACE_Z         678
 #define SYSTEM_FREE_SPACE           679
 #define SYSTEM_USED_SPACE           680
 #define SYSTEM_TOTAL_SPACE          681
 #define SYSTEM_USED_SPACE_PERCENT   682
 #define SYSTEM_FREE_SPACE_PERCENT   683
-#define SYSTEM_USED_SPACE_C         684
-#define SYSTEM_TOTAL_SPACE_C        685
-#define SYSTEM_USED_SPACE_PERCENT_C 686
-#define SYSTEM_FREE_SPACE_PERCENT_C 687
-#define SYSTEM_USED_SPACE_E         688
-#define SYSTEM_TOTAL_SPACE_E        689
-#define SYSTEM_USED_SPACE_PERCENT_E 690
-#define SYSTEM_FREE_SPACE_PERCENT_E 691
-#define SYSTEM_USED_SPACE_F         692
-#define SYSTEM_TOTAL_SPACE_F        693
-#define SYSTEM_USED_SPACE_PERCENT_F 694
-#define SYSTEM_FREE_SPACE_PERCENT_F 695
-#define SYSTEM_USED_SPACE_G         696
-#define SYSTEM_TOTAL_SPACE_G        697
-#define SYSTEM_USED_SPACE_PERCENT_G 698
-#define SYSTEM_FREE_SPACE_PERCENT_G 699
 #define SYSTEM_DVD_TRAY_STATE       700
-#define SYSTEM_TOTAL_SPACE_X        701
-#define SYSTEM_TOTAL_SPACE_Y        702
-#define SYSTEM_TOTAL_SPACE_Z        703
 #define SYSTEM_GET_BOOL             704
 #define SYSTEM_GET_CORE_USAGE       705
 #define SYSTEM_HAS_CORE_ID          706
@@ -389,6 +368,8 @@ class CDateTime;
 #define SYSTEM_HAS_ADDON            711
 #define SYSTEM_ADDON_TITLE          712
 #define SYSTEM_ADDON_ICON           713
+#define SYSTEM_BATTERY_LEVEL        714
+#define SYSTEM_IDLE_TIME            715
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
@@ -396,6 +377,8 @@ class CDateTime;
 #define LIBRARY_HAS_TVSHOWS         723
 #define LIBRARY_HAS_MUSICVIDEOS     724
 #define LIBRARY_IS_SCANNING         725
+#define LIBRARY_IS_SCANNING_VIDEO   726
+#define LIBRARY_IS_SCANNING_MUSIC   727
 
 #define SYSTEM_PLATFORM_XBOX        740
 #define SYSTEM_PLATFORM_LINUX       741
@@ -406,9 +389,6 @@ class CDateTime;
 #define SYSTEM_CAN_SUSPEND          751
 #define SYSTEM_CAN_HIBERNATE        752
 #define SYSTEM_CAN_REBOOT           753
-
-#define SKIN_THEME                  800
-#define SKIN_COLOUR_THEME           801
 
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
@@ -426,15 +406,11 @@ class CDateTime;
 #define WINDOW_IS_MEDIA             9998
 #define WINDOW_IS_ACTIVE            9999
 
-#define SYSTEM_IDLE_TIME_START      20000
-#define SYSTEM_IDLE_TIME_FINISH     21000 // 1000 seconds
-
 #define CONTROL_GET_LABEL           29996
 #define CONTROL_IS_ENABLED          29997
 #define CONTROL_IS_VISIBLE          29998
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS           30000
-#define BUTTON_SCROLLER_HAS_ICON    30001
 
 // Version string MUST NOT contain spaces.  It is used
 // in the HTTP request user agent.
@@ -500,6 +476,8 @@ class CDateTime;
 #define LISTITEM_PLAYCOUNT          (LISTITEM_START + 56)
 #define LISTITEM_LASTPLAYED         (LISTITEM_START + 57)
 #define LISTITEM_FOLDERPATH         (LISTITEM_START + 58)
+#define LISTITEM_DISC_NUMBER        (LISTITEM_START + 59)
+#define LISTITEM_FILE_EXTENSION     (LISTITEM_START + 60)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -562,8 +540,35 @@ public:
   void Clear();
   virtual bool OnMessage(CGUIMessage &message);
 
+  /*! \brief Register a boolean condition/expression
+   This routine allows controls or other clients of the info manager to register
+   to receive updates of particular expressions, in a particular context (currently windows).
+
+   In the future, it will allow clients to receive pushed callbacks when the expression changes.
+
+   \param expression the boolean condition or expression
+   \param context the context window
+   \return an identifier used to reference this expression
+
+   \sa GetBoolValue
+   */
+  unsigned int Register(const CStdString &expression, int context = 0);
+
+  /*! \brief Get a previously registered boolean expression's value
+   Checks the cache and evaluates the boolean expression if required.
+   \sa Register
+   */
+  bool GetBoolValue(unsigned int expression, const CGUIListItem *item = NULL);
+
+  /*! \brief Evaluate a boolean expression
+   \param expression the expression to evaluate
+   \param context the context in which to evaluate the expression (currently windows)
+   \return the value of the evaluated expression.
+   \sa Register, GetBoolValue
+   */
+  bool EvaluateBool(const CStdString &expression, int context = 0);
+
   int TranslateString(const CStdString &strCondition);
-  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
   int GetInt(int info, int contextWindow = 0) const;
   CStdString GetLabel(int info, int contextWindow = 0);
 
@@ -613,7 +618,7 @@ public:
   void SetShowCodec(bool showcodec) { m_playerShowCodec = showcodec; };
   void SetShowInfo(bool showinfo) { m_playerShowInfo = showinfo; };
   void ToggleShowCodec() { m_playerShowCodec = !m_playerShowCodec; };
-  void ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; };
+  bool ToggleShowInfo() { m_playerShowInfo = !m_playerShowInfo; return m_playerShowInfo; };
   bool m_performingSeek;
 
   std::string GetSystemHeatInfo(int info);
@@ -626,7 +631,6 @@ public:
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
   void ResetCache();
-  void ResetPersistentCache();
 
   CStdString GetItemLabel(const CFileItem *item, int info) const;
   CStdString GetItemImage(const CFileItem *item, int info) const;
@@ -650,18 +654,49 @@ public:
   void ResetLibraryBools();
   CStdString LocalizeTime(const CDateTime &time, TIME_FORMAT format) const;
 
+  int TranslateSingleString(const CStdString &strCondition);
+
 protected:
+  friend class INFO::InfoSingle;
+  bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
+
   // routines for window retrieval
   bool CheckWindowCondition(CGUIWindow *window, int condition) const;
   CGUIWindow *GetWindowWithCondition(int contextWindow, int condition) const;
 
+  /*! \brief class for holding information on properties
+   */
+  class Property
+  {
+  public:
+    Property(const CStdString &property, const CStdString &parameters);
+
+    const CStdString &param(unsigned int n = 0) const;
+    unsigned int num_params() const;
+
+    CStdString name;
+  private:
+    std::vector<CStdString> params;
+  };
+
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
-  int TranslateSingleString(const CStdString &strCondition);
-  int TranslateListItem(const CStdString &info);
+  int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
   bool GetItemBool(const CGUIListItem *item, int condition) const;
+
+  /*! \brief Split an info string into it's constituent parts and parameters
+   Format is:
+     
+     info1(params1).info2(params2).info3(params3) ...
+   
+   where the parameters are an optional comma separated parameter list.
+   
+   \param infoString the original string
+   \param info the resulting pairs of info and parameters.
+   */
+  void SplitInfoString(const CStdString &infoString, std::vector<Property> &info);
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
@@ -710,28 +745,9 @@ protected:
   int m_nextWindowID;
   int m_prevWindowID;
 
-  class CCombinedValue
-  {
-  public:
-    CStdString m_info;    // the text expression
-    int m_id;             // the id used to identify this expression
-    std::list<int> m_postfix;  // the postfix binary expression
-    CCombinedValue& operator=(const CCombinedValue& mSrc);
-  };
+  std::vector<INFO::InfoBool*> m_bools;
+  unsigned int m_updateTime;
 
-  int GetOperator(const char ch);
-  int TranslateBooleanExpression(const CStdString &expression);
-  bool EvaluateBooleanExpression(const CCombinedValue &expression, bool &result, int contextWindow, const CGUIListItem *item=NULL);
-
-  std::vector<CCombinedValue> m_CombinedValues;
-
-  // routines for caching the bool results
-  bool IsCached(int condition, int contextWindow, bool &result) const;
-  void CacheBool(int condition, int contextWindow, bool result, bool persistent=false);
-  std::map<int, bool> m_boolCache;
-
-  // persistent cache
-  std::map<int, bool> m_persistentBoolCache;
   int m_libraryHasMusic;
   int m_libraryHasMovies;
   int m_libraryHasTVShows;

@@ -58,20 +58,18 @@ CGUIMultiSelectTextControl::~CGUIMultiSelectTextControl(void)
 {
 }
 
-void CGUIMultiSelectTextControl::DoRender(unsigned int currentTime)
+bool CGUIMultiSelectTextControl::UpdateColors()
+{
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_label.UpdateColors();
+
+  return changed;
+}
+
+void CGUIMultiSelectTextControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   m_renderTime = currentTime;
-  CGUIControl::DoRender(currentTime);
-}
 
-void CGUIMultiSelectTextControl::UpdateColors()
-{
-  m_label.UpdateColors();
-  CGUIControl::UpdateColors();
-}
-
-void CGUIMultiSelectTextControl::Render()
-{
   // check our selected item is in range
   unsigned int numSelectable = GetNumSelectable();
   if (!numSelectable)
@@ -94,6 +92,22 @@ void CGUIMultiSelectTextControl::Render()
   }
   m_scrollLastTime = m_renderTime;
 
+  g_graphicsContext.SetOrigin(-m_scrollOffset, 0);
+
+  // process the buttons
+  for (unsigned int i = 0; i < m_buttons.size(); i++)
+  {
+    m_buttons[i].SetFocus(HasFocus() && i == m_selectedItem);
+    m_buttons[i].DoProcess(currentTime, dirtyregions);
+  }
+
+  g_graphicsContext.RestoreOrigin();
+
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
+void CGUIMultiSelectTextControl::Render()
+{
   // clip and set our scrolling origin
   bool clip(m_width < m_totalWidth);
   if (clip)
@@ -105,10 +119,7 @@ void CGUIMultiSelectTextControl::Render()
 
   // render the buttons
   for (unsigned int i = 0; i < m_buttons.size(); i++)
-  {
-    m_buttons[i].SetFocus(HasFocus() && i == m_selectedItem);
-    m_buttons[i].DoRender(m_renderTime);
-  }
+    m_buttons[i].DoRender();
 
   // position the text - we center vertically if applicable, and use the offsets.
   // all x-alignment is ignored for now (see constructor)

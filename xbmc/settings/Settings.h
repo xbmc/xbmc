@@ -64,9 +64,6 @@
 #define VIEW_MODE_ORIGINAL      5
 #define VIEW_MODE_CUSTOM        6
 
-#define STACK_NONE          0
-#define STACK_SIMPLE        1
-
 #define VIDEO_SHOW_ALL 0
 #define VIDEO_SHOW_UNWATCHED 1
 #define VIDEO_SHOW_WATCHED 2
@@ -156,8 +153,11 @@ public:
   CStdString m_pictureExtensions;
   CStdString m_musicExtensions;
   CStdString m_videoExtensions;
+  CStdString m_discStubExtensions;
 
   CStdString m_logFolder;
+
+  CStdString m_activeKeyboardMapping;
 
   bool m_bMyMusicSongInfoInVis;
   bool m_bMyMusicSongThumbInVis;
@@ -204,7 +204,7 @@ public:
 
   int m_iVideoStartWindow;
 
-  int m_iMyVideoStack;
+  bool m_videoStacking;
 
   int iAdditionalSubtitleDirectoryChecked;
 
@@ -239,9 +239,7 @@ public:
   CStdString m_defaultMusicSource;
   CStdString m_defaultPictureSource;
   CStdString m_defaultFileSource;
-  CStdString m_defaultVideoSource;
   CStdString m_defaultMusicLibSource;
-  CStdString m_defaultVideoLibSource;
 
   CStdString m_UPnPUUIDServer;
   int        m_UPnPPortServer;
@@ -320,6 +318,13 @@ public:
    \return the index of the currently logged in profile.
    */
   unsigned int GetCurrentProfileIndex() const { return m_currentProfile; };
+
+  /*! \brief Retrieve the next id to use for a new profile
+   \return the unique <id> to be used when creating a new profile
+   */
+  int GetNextProfileId() const { return m_nextIdProfile; }; // used to get the value of m_nextIdProfile for use in new profile creation
+
+  int GetCurrentProfileId() const;
 
   std::vector<RESOLUTION_INFO> m_ResInfo;
 
@@ -401,6 +406,7 @@ private:
   bool m_usingLoginScreen;
   unsigned int m_lastUsedProfile;
   unsigned int m_currentProfile;
+  int m_nextIdProfile; // for tracking the next available id to give to a new profile to ensure id's are not re-used
 };
 
 extern class CSettings g_settings;

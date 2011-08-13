@@ -2,13 +2,14 @@ SRCS=AnimatedGif.cpp \
      AudioContext.cpp \
      DDSImage.cpp \
      DirectXGraphics.cpp \
+     DirtyRegionSolvers.cpp \
+     DirtyRegionTracker.cpp \
      FrameBufferObject.cpp \
      GraphicContext.cpp \
      GUIAudioManager.cpp \
      GUIBaseContainer.cpp \
      GUIBorderedImage.cpp \
      GUIButtonControl.cpp \
-     GUIButtonScroller.cpp \
      GUICheckMarkControl.cpp \
      GUIColorManager.cpp \
      GUIControl.cpp \

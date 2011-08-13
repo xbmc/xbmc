@@ -1033,7 +1033,7 @@ static int DVDReadBlocksPath( dvd_file_t *dvd_file, unsigned int offset,
 #ifdef WITH_CACHE
 
 /* returns true aslong as the sector isn't all zeros */
-inline int DVDCheckSector(unsigned char *data, int offset)
+int DVDCheckSector(unsigned char *data, int offset)
 {
   int i = 0;
   int32_t *p = (int32_t*)data + (DVD_VIDEO_LB_LEN>>2)*offset;

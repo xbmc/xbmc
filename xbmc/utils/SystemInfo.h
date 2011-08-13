@@ -53,6 +53,7 @@ public:
   CStdString cpuFrequency;
   CStdString kernelVersion;
   CStdString macAddress;
+  CStdString batteryLevel;
 };
 
 class CSysInfoJob : public CJob
@@ -71,6 +72,7 @@ private:
   CStdString GetCPUFreqInfo();
   CStdString GetMACAddress();
   CStdString GetVideoEncoder();
+  CStdString GetBatteryLevel();
 
   CSysData m_info;
 };
@@ -87,7 +89,7 @@ public:
   bool GetHDDInfo(CStdString& strHDDModel, CStdString& strHDDSerial,CStdString& strHDDFirmware,CStdString& strHDDpw,CStdString& strHDDLockState);
   bool GetRefurbInfo(CStdString& rfi_FirstBootTime, CStdString& rfi_PowerCycleCount);
 
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(_LINUX) && !defined(__APPLE__) && !defined(__FreeBSD__)
   CStdString GetLinuxDistro();
 #endif
 #ifdef _LINUX
@@ -96,7 +98,9 @@ public:
   CStdString GetUserAgent();
   bool HasInternet();
   bool IsAppleTV();
+  bool IsAppleTV2();
   bool HasVDADecoder();
+  bool HasVideoToolBoxDecoder();
   bool IsAeroDisabled();
   bool IsVistaOrHigher();
   static CStdString GetKernelVersion();

@@ -92,7 +92,7 @@ public:
    CNetworkInterface* GetInterfaceByName(CStdString& name);
 
    // Return the first interface which is active
-   CNetworkInterface* GetFirstConnectedInterface(void);
+   virtual CNetworkInterface* GetFirstConnectedInterface(void);
 
    // Return true if there is a interface for the same network as address
    bool HasInterfaceForIP(unsigned long address);

@@ -31,11 +31,7 @@
 
 #include <stdio.h>
 #include "dataset.h"
-#ifndef _LINUX
-#include "sqlite3.h"
-#else
 #include <sqlite3.h>
-#endif
 
 namespace dbiplus {
 /***************** Class SqliteDatabase definition ******************
@@ -67,7 +63,7 @@ public:
   virtual const char *getErrorMsg();
   
 /* func. connects to database-server */
-  virtual int connect();
+  virtual int connect(bool create);
 /* func. disconnects from database-server */
   virtual void disconnect();
 /* func. creates new database */
@@ -171,7 +167,7 @@ or insert() operations default = false) */
 /* Go to record No (starting with 0) */
   virtual bool seek(int pos=0);
 
-
+  virtual bool dropIndex(const char *table, const char *index);
 };
 } //namespace
 #endif

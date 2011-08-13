@@ -53,12 +53,16 @@ typedef std::vector<color_t> vecColors;
  \brief
  */
 
-typedef struct _SVertex
+struct SVertex
 {
-  float u, v;
-  unsigned char r, g, b, a;
   float x, y, z;
-} SVertex;
+#ifdef HAS_DX
+  unsigned char b, g, r, a;
+#else
+  unsigned char r, g, b, a;
+#endif
+  float u, v;
+};
 
 
 class CGUIFontTTFBase
@@ -111,7 +115,6 @@ protected:
   virtual CBaseTexture* ReallocTexture(unsigned int& newHeight) = 0;
   virtual bool CopyCharToTexture(FT_BitmapGlyph bitGlyph, Character *ch) = 0;
   virtual void DeleteHardwareTexture() = 0;
-  virtual void RenderInternal(SVertex* v) = 0;
 
   // modifying glyphs
   void EmboldenGlyph(FT_GlyphSlot slot);

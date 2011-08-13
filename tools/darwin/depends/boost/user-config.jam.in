@@ -1,0 +1,5 @@
+using darwin : @platform_gcc_version@ : g++-@platform_gcc_version@ :
+  <cflags>"-isysroot @boost_flags@ -fvisibility=default -fvisibility-inlines-hidden"
+  <cxxflags>"-isysroot @boost_flags@ -fvisibility=default -fvisibility-inlines-hidden"
+  <linkflags>"-Wl,-syslibroot,@boost_flags@"
+;

@@ -96,7 +96,7 @@ const CStdString& CGUIListItem::GetLabel2() const
 
 void CGUIListItem::SetSortLabel(const CStdString &label)
 {
-  g_charsetConverter.utf8ToW(label, m_sortLabel);
+  g_charsetConverter.utf8ToW(label, m_sortLabel, false);
   // no need to invalidate - this is never shown in the UI
 }
 
@@ -410,6 +410,6 @@ double CGUIListItem::GetPropertyDouble(const CStdString &strKey) const
 
 void CGUIListItem::AppendProperties(const CGUIListItem &item)
 {
-  for (PropertyMap::const_iterator i = m_mapProperties.begin(); i != m_mapProperties.end(); ++i)
+  for (PropertyMap::const_iterator i = item.m_mapProperties.begin(); i != item.m_mapProperties.end(); ++i)
     SetProperty(i->first, i->second);
 }

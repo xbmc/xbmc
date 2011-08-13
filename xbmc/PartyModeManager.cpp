@@ -19,10 +19,12 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
 #include "music/MusicDatabase.h"
 #include "music/windows/GUIWindowMusicPlaylist.h"
+#include "video/VideoDatabase.h"
 #include "playlists/SmartPlayList.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "GUIUserMessages.h"
@@ -102,7 +104,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
   pDialog->StartModal();
 
   ClearState();
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   vector< pair<int,int> > songIDs;
   if (m_type.Equals("songs") || m_type.Equals("mixed"))
   {
@@ -186,7 +188,7 @@ bool CPartyModeManager::Enable(PartyModeContext context /*= PARTYMODECONTEXT_MUS
     return false;
   }
   CLog::Log(LOGDEBUG, "%s time for song fetch: %u",
-            __FUNCTION__, CTimeUtils::GetTimeMS() - time);
+            __FUNCTION__, XbmcThreads::SystemClockMillis() - time);
 
   // start playing
   g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
@@ -431,7 +433,7 @@ void CPartyModeManager::Add(CFileItemPtr &pItem)
 
   CPlayList& playlist = g_playlistPlayer.GetPlaylist(iPlaylist);
   playlist.Add(pItem);
-  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding randomly selected song at %i:[%s]", playlist.size() - 1, pItem->m_strPath.c_str());
+  CLog::Log(LOGINFO,"PARTY MODE MANAGER: Adding randomly selected song at %i:[%s]", playlist.size() - 1, pItem->GetPath().c_str());
   m_iMatchingSongsPicked++;
 }
 
@@ -582,8 +584,8 @@ bool CPartyModeManager::AddInitialSongs(vector<pair<int,int> > &songIDs)
 
     vector<pair<int,int> > chosenSongIDs;
     GetRandomSelection(songIDs, iMissingSongs, chosenSongIDs);
-    CStdString sqlWhereMusic = "where songview.idsong in (";
-    CStdString sqlWhereVideo = "where idmvideo in (";
+    CStdString sqlWhereMusic = "where songview.idSong in (";
+    CStdString sqlWhereVideo = "where idMVideo in (";
 
     for (vector< pair<int,int> >::iterator it = chosenSongIDs.begin(); it != chosenSongIDs.end(); it++)
     {
@@ -632,13 +634,13 @@ pair<CStdString,CStdString> CPartyModeManager::GetWhereClauseWithHistory() const
   if (m_history.size())
   {
     if (m_strCurrentFilterMusic.IsEmpty())
-      historyWhereMusic = "where songview.idsong not in (";
+      historyWhereMusic = "where songview.idSong not in (";
     else
-      historyWhereMusic = m_strCurrentFilterMusic + " and songview.idsong not in (";
+      historyWhereMusic = m_strCurrentFilterMusic + " and songview.idSong not in (";
     if (m_strCurrentFilterVideo.IsEmpty())
-      historyWhereVideo = "where idmvideo not in (";
+      historyWhereVideo = "where idMVideo not in (";
     else
-      historyWhereVideo = m_strCurrentFilterVideo + " and idmvideo not in (";
+      historyWhereVideo = m_strCurrentFilterVideo + " and idMVideo not in (";
 
     for (unsigned int i = 0; i < m_history.size(); i++)
     {

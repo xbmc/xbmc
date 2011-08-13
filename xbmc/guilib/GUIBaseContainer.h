@@ -41,7 +41,7 @@ typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 class CGUIBaseContainer : public CGUIControl
 {
 public:
-  CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems);
+  CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems);
   virtual ~CGUIBaseContainer(void);
 
   virtual bool OnAction(const CAction &action);
@@ -50,6 +50,7 @@ public:
   virtual void OnLeft();
   virtual void OnRight();
   virtual bool OnMouseOver(const CPoint &point);
+  virtual bool CanFocus() const;
   virtual bool OnMessage(CGUIMessage& message);
   virtual void SetFocus(bool bOnOff);
   virtual void AllocResources();
@@ -67,7 +68,9 @@ public:
   virtual void SaveStates(std::vector<CControlState> &states);
   virtual int GetSelectedItem() const;
 
-  virtual void DoRender(unsigned int currentTime);
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
 
@@ -96,6 +99,9 @@ public:
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool OnClick(int actionID);
+
+  virtual void ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions);
+
   virtual void Render();
   virtual void RenderItem(float posX, float posY, CGUIListItem *item, bool focused);
   virtual void Scroll(int amount);
@@ -123,8 +129,6 @@ protected:
 
   CPoint m_renderOffset; ///< \brief render offset of the first item in the list \sa SetRenderOffset
     
-  int m_offset;
-  int m_cursor;
   float m_analogScrollCount;
   unsigned int m_lastHoldTime;
 
@@ -137,8 +141,6 @@ protected:
 
   int m_pageControl;
 
-  unsigned int m_renderTime;
-
   std::vector<CGUIListItemLayout> m_layouts;
   std::vector<CGUIListItemLayout> m_focusedLayouts;
 
@@ -147,11 +149,9 @@ protected:
 
   void ScrollToOffset(int offset);
   void SetContainerMoving(int direction);
-  void UpdateScrollOffset();
+  void UpdateScrollOffset(unsigned int currentTime);
 
-  unsigned int m_scrollLastTime;
-  int          m_scrollTime;
-  float        m_scrollOffset;
+  CScroller m_scroller;
 
   VIEW_TYPE m_type;
   CStdString m_label;
@@ -166,16 +166,32 @@ protected:
 
   void UpdateScrollByLetter();
   void GetCacheOffsets(int &cacheBefore, int &cacheAfter);
-  bool ScrollingDown() const { return m_scrollSpeed > 0; };
-  bool ScrollingUp() const { return m_scrollSpeed < 0; };
+  bool ScrollingDown() const { return m_scroller.IsScrollingDown(); };
+  bool ScrollingUp() const { return m_scroller.IsScrollingUp(); };
   void OnNextLetter();
   void OnPrevLetter();
   void OnJumpLetter(char letter);
   void OnJumpSMS(int letter);
   std::vector< std::pair<int, CStdString> > m_letterOffsets;
+
+  /*! \brief Set the cursor position
+   Should be used by all base classes rather than directly setting it, as
+   this also marks the control as dirty (if needed)
+   */
+  virtual void SetCursor(int cursor);
+  inline int GetCursor() const { return m_cursor; };
+
+  /*! \brief Set the container offset
+   Should be used by all base classes rather than directly setting it, as
+   this also marks the control as dirty (if needed)
+   */
+  void SetOffset(int offset);
+  inline int GetOffset() const { return m_offset; };
+
 private:
+  int m_cursor;
+  int m_offset;
   int m_cacheItems;
-  float m_scrollSpeed;
   CStopWatch m_scrollTimer;
   CStopWatch m_pageChangeTimer;
 

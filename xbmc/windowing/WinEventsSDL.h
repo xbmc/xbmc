@@ -18,13 +18,13 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
+#pragma once
 
 #ifndef WINDOW_EVENTS_SDL_H
 #define WINDOW_EVENTS_SDL_H
 
+#ifdef HAS_SDL
 #include <SDL/SDL_events.h>
-
-#pragma once
 
 #include "WinEvents.h"
 
@@ -41,4 +41,5 @@ protected:
 #endif
 };
 
+#endif
 #endif // WINDOW_EVENTS_SDL_H

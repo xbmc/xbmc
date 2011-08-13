@@ -43,34 +43,33 @@ public:
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
   virtual void FrameMove();
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
 
   void DoModal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
   void Show(); // modeless
+  
+  virtual bool OnBack(int actionID);
 
-  virtual void Close(bool forceClose = false);
-  virtual bool IsDialogRunning() const { return m_bRunning; };
+  virtual bool IsDialogRunning() const { return m_active; };
   virtual bool IsDialog() const { return true;};
   virtual bool IsModalDialog() const { return m_bModal; };
 
-  virtual bool IsAnimating(ANIMATION_TYPE animType);
-
   void SetAutoClose(unsigned int timeoutMs);
   void SetSound(bool OnOff) { m_enableSound = OnOff; };
+  virtual bool IsSoundEnabled() const { return m_enableSound; };
 
 protected:
-  virtual bool RenderAnimation(unsigned int time);
   virtual void SetDefaults();
   virtual void OnWindowLoaded();
+  virtual void UpdateVisibility();
 
-  friend class CApplicationMessenger;
-  void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
-  void Show_Internal(); // modeless
-  void Close_Internal(bool forceClose = false);
+  virtual void DoModal_Internal(int iWindowID = WINDOW_INVALID, const CStdString &param = ""); // modal
+  virtual void Show_Internal(); // modeless
+  virtual void OnDeinitWindow(int nextWindowID);
 
-  bool m_bRunning;
+  bool m_wasRunning; ///< \brief true if we were running during the last DoProcess()
   bool m_bModal;
-  bool m_dialogClosing;
   bool m_autoClosing;
   bool m_enableSound;
   unsigned int m_showStartTime;

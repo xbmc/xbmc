@@ -8,4 +8,4 @@ Usage:
 1) Run BuildSetup.bat in project\Win32BuildSetup
 2) Watch the screen, maybe you're asked for input
 3) Wait... Wait... Wait...
-You should now have XBMCSetup-Rev<svnrevisionnr>.exe file.
+You should now have XBMCSetup-<lastcommitdate-gitrev>.exe file.

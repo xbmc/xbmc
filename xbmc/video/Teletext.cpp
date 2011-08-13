@@ -26,11 +26,20 @@
  * Many thanks to the TuxBox Teletext Team for this great work.
  */
 
+#include "threads/SystemClock.h"
 #include "Teletext.h"
 #include "Application.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
 #include "filesystem/SpecialProtocol.h"
+#include "guilib/GraphicContext.h"
+
+#ifndef HAS_SDL
+#define SDL_memset4(dst, val, len) memset(dst, val, (len)*4)
+#define SDL_memcpy4(dst, src, len) memcpy(dst, src, (len)*4)
+#define SDL_memcpy4(dst, src, len) memcpy(dst, src, (len)*4)
+#define SDL_memset4(dst, val, len) memset(dst, val, (len)*4)
+#endif
 
 using namespace std;
 
@@ -1174,7 +1183,7 @@ void CTeletextDecoder::RenderPage()
         m_RenderInfo.SubtitleCache[j] = c;
       }
       c->Valid = true;
-      c->Timestamp = CTimeUtils::GetTimeMS()/1000;
+      c->Timestamp = XbmcThreads::SystemClockMillis()/1000;
 
       if (m_txtCache->SubPageTable[m_txtCache->Page] != 0xFF)
       {
@@ -1214,7 +1223,7 @@ void CTeletextDecoder::RenderPage()
   {
     if (m_RenderInfo.DelayStarted)
     {
-      long now = CTimeUtils::GetTimeMS()/1000;
+      long now = XbmcThreads::SystemClockMillis()/1000;
       for (int i = 0; i < SUBTITLE_CACHESIZE ; i++)
       {
         if (m_RenderInfo.SubtitleCache[i] && m_RenderInfo.SubtitleCache[i]->Valid && now - m_RenderInfo.SubtitleCache[i]->Timestamp >= (long)m_RenderInfo.SubtitleDelay)
@@ -1320,7 +1329,7 @@ void CTeletextDecoder::DoFlashing(int startrow)
   /* Flashing */
   TextPageAttr_t flashattr;
   char flashchar;
-  long flashphase = CTimeUtils::GetTimeMS() % 1000;
+  long flashphase = XbmcThreads::SystemClockMillis() % 1000;
 
   int srow = startrow;
   int erow = 24;

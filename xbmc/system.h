@@ -64,6 +64,11 @@
 #define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
 
+#ifdef HAVE_LIBNFS
+  #define HAS_FILESYSTEM_NFS
+#endif
+
+
 /**********************
  * Non-free Components
  **********************/
@@ -71,11 +76,9 @@
 #if defined(_LINUX) || defined(__APPLE__)
   #if defined(HAVE_XBMC_NONFREE)
     #define HAS_FILESYSTEM_RAR
-    #define HAS_FILESYSTEM_CCX
   #endif
 #else
   #define HAS_FILESYSTEM_RAR
-  #define HAS_FILESYSTEM_CCX
 #endif
 
 /*****************
@@ -94,6 +97,8 @@
 #define HAVE_LIBSSH
 #define HAS_LIBRTMP
 #define HAVE_LIBBLURAY
+#define HAS_ASAP_CODEC
+#define HAVE_YAJL_YAJL_VERSION_H
 #endif
 
 /*****************
@@ -101,12 +106,17 @@
  *****************/
 
 #ifdef __APPLE__
-#define HAS_ZEROCONF
-#define HAS_GL
-#define HAS_LINUX_NETWORK
-#define HAS_SDL_AUDIO
-#define HAS_SDL_OPENGL
-#define HAS_SDL_WIN_EVENTS
+  #if defined(__arm__)
+    #undef HAS_SDL
+    #define HAS_XBMC_MUTEX
+  #else
+    #define HAS_GL
+    #define HAS_SDL_AUDIO
+    #define HAS_SDL_OPENGL
+    #define HAS_SDL_WIN_EVENTS
+  #endif
+  #define HAS_ZEROCONF
+  #define HAS_LINUX_NETWORK
 #endif
 
 /*****************
@@ -159,9 +169,6 @@
  ****************************************/
 
 #ifdef _WIN32
-#if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
-#include <winsock2.h>
-#endif
 #include <windows.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "mmsystem.h"
@@ -179,13 +186,8 @@
 #endif
 
 #ifdef _LINUX
-#include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
 #include <sys/types.h>
 #include <errno.h>
 #include "PlatformInclude.h"
@@ -234,15 +236,13 @@
 #endif
 
 #if HAS_GLES == 2
-#ifdef _ARMEL	// PowerVR SGX Header
-// not sure about this one tg2 (arm) does not have gl2extimg.h
-//#include <GLES2/gl2extimg.h>
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#else
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#endif
+  #if defined(__APPLE__)
+    #include <OpenGLES/ES2/gl.h>
+    #include <OpenGLES/ES2/glext.h>
+  #else
+    #include <GLES2/gl2.h>
+    #include <GLES2/gl2ext.h>
+  #endif
 #endif
 
 #ifdef HAS_DVD_DRIVE

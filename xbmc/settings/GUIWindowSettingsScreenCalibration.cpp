@@ -59,13 +59,6 @@ bool CGUIWindowSettingsScreenCalibration::OnAction(const CAction &action)
 {
   switch (action.GetID())
   {
-  case ACTION_PREVIOUS_MENU:
-    {
-      g_windowManager.PreviousWindow();
-      return true;
-    }
-    break;
-
   case ACTION_CALIBRATE_SWAP_ARROWS:
     {
       NextControl();
@@ -164,27 +157,7 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
         m_iCurRes = (unsigned int)-1;
         g_graphicsContext.GetAllowedResolutions(m_Res);
         // find our starting resolution
-        RESOLUTION curRes = g_graphicsContext.GetVideoResolution();
-        for (UINT i = 0; i < m_Res.size(); i++)
-        {
-          // If it's a CUSTOM (monitor) resolution, then g_graphicsContext.GetAllowedResolutions()
-          // returns just one entry with CUSTOM in it. Update that entry to point to the current
-          // CUSTOM resolution.
-          if (curRes>=RES_CUSTOM)
-          {
-            if (m_Res[i]==RES_CUSTOM)
-            {
-              m_iCurRes = i;
-              m_Res[i] = curRes;
-              break;
-            }
-          }
-          else if (m_Res[i] == g_graphicsContext.GetVideoResolution())
-          {
-            m_iCurRes = i;
-            break;
-          }
-        }
+        m_iCurRes = FindCurrentResolution();
       }
       if (m_iCurRes==(unsigned int)-1)
       {
@@ -205,8 +178,38 @@ bool CGUIWindowSettingsScreenCalibration::OnMessage(CGUIMessage& message)
       NextControl();
     }
     break;
+  case GUI_MSG_NOTIFY_ALL:
+    {
+      if (message.GetParam1() == GUI_MSG_WINDOW_RESIZE)
+      {
+        m_iCurRes = FindCurrentResolution();
+      }
+    }
+    break;
   }
   return CGUIWindow::OnMessage(message);
+}
+
+unsigned int CGUIWindowSettingsScreenCalibration::FindCurrentResolution()
+{
+  RESOLUTION curRes = g_graphicsContext.GetVideoResolution();
+  for (unsigned int i = 0; i < m_Res.size(); i++)
+  {
+    // If it's a CUSTOM (monitor) resolution, then g_graphicsContext.GetAllowedResolutions()
+    // returns just one entry with CUSTOM in it. Update that entry to point to the current
+    // CUSTOM resolution.
+    if (curRes>=RES_CUSTOM)
+    {
+      if (m_Res[i]==RES_CUSTOM)
+      {
+        m_Res[i] = curRes;
+        return i;
+      }
+    }
+    else if (m_Res[i] == g_graphicsContext.GetVideoResolution())
+      return i;
+  }
+  return 0;
 }
 
 void CGUIWindowSettingsScreenCalibration::NextControl()
@@ -375,30 +378,35 @@ void CGUIWindowSettingsScreenCalibration::FrameMove()
   CGUIWindow::FrameMove();
 }
 
-void CGUIWindowSettingsScreenCalibration::Render()
+void CGUIWindowSettingsScreenCalibration::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  SET_CONTROL_HIDDEN(CONTROL_TOP_LEFT);
-  SET_CONTROL_HIDDEN(CONTROL_BOTTOM_RIGHT);
-  SET_CONTROL_HIDDEN(CONTROL_SUBTITLES);
-  SET_CONTROL_HIDDEN(CONTROL_PIXEL_RATIO);
+  MarkDirtyRegion();
 
-  // we set that we need scaling here to render so that anything else on screen scales correctly
+  for (int i = CONTROL_TOP_LEFT; i <= CONTROL_PIXEL_RATIO; i++)
+    SET_CONTROL_HIDDEN(i);
+
   m_needsScaling = true;
-  CGUIWindow::Render();
+  CGUIWindow::DoProcess(currentTime, dirtyregions);
   m_needsScaling = false;
-  g_graphicsContext.SetRenderingResolution(m_coordsRes, false);
 
-  SET_CONTROL_VISIBLE(CONTROL_TOP_LEFT);
-  SET_CONTROL_VISIBLE(CONTROL_BOTTOM_RIGHT);
-  SET_CONTROL_VISIBLE(CONTROL_SUBTITLES);
-  SET_CONTROL_VISIBLE(CONTROL_PIXEL_RATIO);
+  g_graphicsContext.SetRenderingResolution(m_Res[m_iCurRes], false);
+  g_graphicsContext.AddGUITransform();
 
-  // render the movers etc.
+  // process the movers etc.
   for (int i = CONTROL_TOP_LEFT; i <= CONTROL_PIXEL_RATIO; i++)
   {
+    SET_CONTROL_VISIBLE(i);
     CGUIControl *control = (CGUIControl *)GetControl(i);
     if (control)
-      control->Render();
+      control->DoProcess(currentTime, dirtyregions);
   }
+  g_graphicsContext.RemoveTransform();
+}
 
+void CGUIWindowSettingsScreenCalibration::DoRender()
+{
+  // we set that we need scaling here to render so that anything else on screen scales correctly
+  m_needsScaling = true;
+  CGUIWindow::DoRender();
+  m_needsScaling = false;
 }

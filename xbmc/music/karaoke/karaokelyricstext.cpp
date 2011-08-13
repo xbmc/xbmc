@@ -315,7 +315,7 @@ void CKaraokeLyricsText::Render()
 
   // Calculate drawing parameters
   RESOLUTION resolution = g_graphicsContext.GetVideoResolution();
-  g_graphicsContext.SetRenderingResolution(resolution, false);
+  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
   float maxWidth = (float) g_settings.m_ResInfo[resolution].Overscan.right - g_settings.m_ResInfo[resolution].Overscan.left;
 
   // We must only fall through for STATE_DRAW_SYLLABLE or STATE_PREAMBLE

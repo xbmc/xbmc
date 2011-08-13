@@ -36,6 +36,7 @@ public:
   virtual bool OnMessage(CGUIMessage& message);
 
 protected:
+  virtual bool GetDirectory(const CStdString &strDirectory, CFileItemList& items);
   virtual void OnInfo(int item);
   virtual bool OnClick(int iItem);
   virtual void UpdateButtons();

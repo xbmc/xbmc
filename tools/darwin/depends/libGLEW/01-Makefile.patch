@@ -1,0 +1,19 @@
+--- Makefile.orig	2010-11-04 07:55:35.000000000 +1100
++++ Makefile	2010-11-16 18:00:37.000000000 +1100
+@@ -89,7 +89,7 @@
+ 	mkdir bin
+ 
+ lib/$(LIB.STATIC): $(LIB.OBJS)
+-	$(AR) cr $@ $^
++	$(AR) crs $@ $^
+ 
+ lib/$(LIB.SHARED): $(LIB.SOBJS)
+ 	$(LD) $(LDFLAGS.SO) -o $@ $^ $(LIB.LDFLAGS) $(LIB.LIBS)
+@@ -146,7 +146,6 @@
+ ifeq ($(filter-out mingw% cygwin,$(SYSTEM)),)
+ 	$(INSTALL) -m 0644 lib/$(LIB.DEVLNK) $(LIBDIR)/
+ else
+-	$(STRIP) -x lib/$(LIB.STATIC)
+ 	$(INSTALL) -m 0644 lib/$(LIB.STATIC) $(LIBDIR)/
+ 	$(LN) $(LIB.SHARED) $(LIBDIR)/$(LIB.DEVLNK)
+ endif

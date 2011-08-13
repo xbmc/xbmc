@@ -25,6 +25,9 @@
 #include "XBApplicationEx.h"
 
 #include "guilib/IMsgTargetCallback.h"
+#include "threads/Condition.h"
+
+#include <map>
 
 class CFileItem;
 class CFileItemList;
@@ -34,12 +37,6 @@ namespace ADDON
   class IAddon;
   typedef boost::shared_ptr<IAddon> AddonPtr;
 }
-
-#include "dialogs/GUIDialogSeekBar.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogVolumeBar.h"
-#include "dialogs/GUIDialogMuteBug.h"
-#include "windows/GUIWindowPointer.h"   // Mouse pointer
 
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -59,9 +56,6 @@ namespace ADDON
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceStats.h"
 #endif
-#ifdef _LINUX
-#include "linux/LinuxResourceCounter.h"
-#endif
 #include "windowing/XBMC_events.h"
 #include "threads/Thread.h"
 
@@ -69,15 +63,11 @@ namespace ADDON
 #include "network/WebServer.h"
 #endif
 
-#ifdef HAS_SDL
-#include <SDL/SDL_mutex.h>
-#endif
-
 class CKaraokeLyricsManager;
+class CInertialScrollingHandler;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
-class CGUITextLayout;
 
 class CBackgroundPlayer : public CThread
 {
@@ -96,18 +86,18 @@ public:
   CApplication(void);
   virtual ~CApplication(void);
   virtual bool Initialize();
-  virtual void FrameMove();
+  virtual void FrameMove(bool processEvents);
   virtual void Render();
-  virtual void RenderNoPresent();
+  virtual bool RenderNoPresent();
   virtual void Preflight();
   virtual bool Create();
   virtual bool Cleanup();
 
   void StartServices();
   void StopServices();
-  void StartWebServer();
+  bool StartWebServer();
   void StopWebServer();
-  void StartJSONRPCServer();
+  bool StartJSONRPCServer();
   void StopJSONRPCServer(bool bWait);
   void StartUPnP();
   void StopUPnP(bool bWait);
@@ -115,7 +105,7 @@ public:
   void StopUPnPRenderer();
   void StartUPnPServer();
   void StopUPnPServer();
-  void StartEventServer();
+  bool StartEventServer();
   bool StopEventServer(bool bWait, bool promptuser);
   void RefreshEventServer();
   void StartDbusServer();
@@ -124,9 +114,9 @@ public:
   void StopZeroconf();
   void DimLCDOnPlayback(bool dim);
   bool IsCurrentThread() const;
-  void Stop();
+  void Stop(int exitCode);
   void RestartApp();
-  void UnloadSkin();
+  void UnloadSkin(bool forReload = false);
   bool LoadUserWindows();
   void ReloadSkin();
   const CStdString& CurrentFile();
@@ -161,7 +151,6 @@ public:
   bool OnKey(const CKey& key);
   bool OnAppCommand(const CAction &action);
   bool OnAction(const CAction &action);
-  void RenderMemoryStatus();
   void CheckShutdown();
   // Checks whether the screensaver and / or DPMS should become active.
   void CheckScreenSaverAndDPMS();
@@ -174,22 +163,27 @@ public:
   void ProcessSlow();
   void ResetScreenSaver();
   int GetVolume() const;
-  void SetVolume(int iPercent);
-  void Mute(void);
+  void SetVolume(long iValue, bool isPercentage = true);
+  void ToggleMute(void);
+  void ShowVolumeBar(const CAction *action = NULL);
   int GetPlaySpeed() const;
   int GetSubtitleDelay() const;
   int GetAudioDelay() const;
   void SetPlaySpeed(int iSpeed);
   void ResetScreenSaverTimer();
+  void StopScreenSaverTimer();
   // Wakes up from the screensaver and / or DPMS. Returns true if woken up.
   bool WakeUpScreenSaverAndDPMS();
   bool WakeUpScreenSaver();
   double GetTotalTime() const;
   double GetTime() const;
   float GetPercentage() const;
+
+  // Get the percentage of data currently cached/buffered (aq/vq + FileCache) from the input stream if applicable.
+  float GetCachePercentage() const;
+
   void SeekPercentage(float percent);
   void SeekTime( double dTime = 0.0 );
-  void ResetPlayTime();
 
   void StopShutdownTimer();
   void ResetShutdownTimers();
@@ -204,7 +198,6 @@ public:
 
   static bool OnEvent(XBMC_Event& newEvent);
 
-
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux& getNetwork();
@@ -216,12 +209,6 @@ public:
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
 #endif
-
-  CGUIDialogVolumeBar m_guiDialogVolumeBar;
-  CGUIDialogSeekBar m_guiDialogSeekBar;
-  CGUIDialogKaiToast m_guiDialogKaiToast;
-  CGUIDialogMuteBug m_guiDialogMuteBug;
-  CGUIWindowPointer m_guiPointer;
 
 #ifdef HAS_DVD_DRIVE
   MEDIA_DETECT::CAutorun m_Autorun;
@@ -293,12 +280,18 @@ public:
 
   void Minimize();
   bool ToggleDPMS(bool manual);
+
+  float GetDimScreenSaverLevel() const;
 protected:
-  void RenderScreenSaver();
   bool LoadSkin(const CStdString& skinID);
   void LoadSkin(const boost::shared_ptr<ADDON::CSkinInfo>& skin);
 
+  bool m_skinReloading; // if true we disallow LoadSkin until ReloadSkin is called
+
   friend class CApplicationMessenger;
+#if defined(__APPLE__) && defined(__arm__)
+  friend class CWinEventsIOS;
+#endif
   // screensaver
   bool m_bScreenSave;
   ADDON::AddonPtr m_screenSaver;
@@ -340,19 +333,20 @@ protected:
   int m_nextPlaylistItem;
 
   bool m_bPresentFrame;
+  unsigned int m_lastFrameTime;
+  unsigned int m_lastRenderTime;
 
   bool m_bStandalone;
   bool m_bEnableLegacyRes;
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
   
-  CGUITextLayout *m_debugLayout;
-
-#ifdef HAS_SDL
   int        m_frameCount;
-  SDL_mutex* m_frameMutex;
-  SDL_cond*  m_frameCond;
-#endif
+  CCriticalSection m_frameMutex;
+  XbmcThreads::ConditionVariable  m_frameCond;
+
+  void Mute();
+  void UnMute();
 
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
@@ -377,6 +371,7 @@ protected:
   bool InitDirectoriesWin32();
   void CreateUserDirs();
 
+  CInertialScrollingHandler *m_pInertialScrollingHandler;
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux m_network;
@@ -388,13 +383,11 @@ protected:
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats m_perfStats;
 #endif
-#ifdef _LINUX
-  CLinuxResourceCounter m_resourceCounter;
-#endif
 
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
+
 };
 
 extern CApplication g_application;

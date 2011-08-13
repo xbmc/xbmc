@@ -1,8 +1,0 @@
-// $Id: bad-cat1.toc,v 1.1 2004/05/08 20:36:02 rocky Exp $
-// test catalog number - no catalog after word CATALOG
-
-CATALOG
-
-TRACK AUDIO
-NO COPY
-FILE "cdda.bin" 1:0:0

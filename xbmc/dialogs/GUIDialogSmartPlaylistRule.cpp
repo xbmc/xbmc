@@ -51,11 +51,10 @@ CGUIDialogSmartPlaylistRule::~CGUIDialogSmartPlaylistRule()
 {
 }
 
-bool CGUIDialogSmartPlaylistRule::OnAction(const CAction &action)
+bool CGUIDialogSmartPlaylistRule::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU)
-    m_cancelled = true;
-  return CGUIDialog::OnAction(action);
+  m_cancelled = true;
+  return CGUIDialog::OnBack(actionID);
 }
 
 bool CGUIDialogSmartPlaylistRule::OnMessage(CGUIMessage& message)
@@ -330,6 +329,7 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   case CSmartPlaylistRule::BROWSEABLE_FIELD:
   case CSmartPlaylistRule::PLAYLIST_FIELD:
   case CSmartPlaylistRule::TEXTIN_FIELD:
+  case CSmartPlaylistRule::NUMERIC_FIELD:
     type = CGUIEditControl::INPUT_TYPE_TEXT;
     break;
   case CSmartPlaylistRule::DATE_FIELD:
@@ -342,7 +342,6 @@ void CGUIDialogSmartPlaylistRule::UpdateButtons()
   case CSmartPlaylistRule::SECONDS_FIELD:
     type = CGUIEditControl::INPUT_TYPE_SECONDS;
     break;
-  case CSmartPlaylistRule::NUMERIC_FIELD:
   case CSmartPlaylistRule::BOOLEAN_FIELD:
     type = CGUIEditControl::INPUT_TYPE_NUMBER;
     break;

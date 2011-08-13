@@ -290,7 +290,11 @@ CDVDInputStreamBluray::CDVDInputStreamBluray() :
   m_title = NULL;
   m_bd    = NULL;
   m_dll = new DllLibbluray;
-  m_dll->Load();
+  if (!m_dll->Load())
+  {
+    delete m_dll;
+    m_dll = NULL;
+  }
 }
 
 CDVDInputStreamBluray::~CDVDInputStreamBluray()
@@ -321,6 +325,9 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     URIUtils::GetDirectory(strPath,strPath);
     URIUtils::RemoveSlashAtEnd(strPath);
   }
+
+  if (!m_dll)
+    return false;
 
   m_dll->bd_register_dir(dir_open);
   m_dll->bd_register_file(file_open);
@@ -422,6 +429,8 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
 // close file and reset everyting
 void CDVDInputStreamBluray::Close()
 {
+  if (!m_dll)
+    return;
   if(m_bd)
     m_dll->bd_close(m_bd);
   m_bd = NULL;

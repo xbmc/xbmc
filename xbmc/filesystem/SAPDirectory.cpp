@@ -17,6 +17,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "threads/SystemClock.h"
 #include "system.h" // WIN32INCLUDES - not sure why this is needed
 #include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
@@ -26,15 +27,14 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "URL.h"
 #ifdef __APPLE__
 #include "OSXGNUReplacements.h" // strnlen
 #endif
-#ifdef _MSC_VER
-#include <Ws2tcpip.h>
-#else
+
 #include <sys/socket.h>
-#define SD_BOTH SHUT_RDWR
-#endif
+#include <netinet/in.h>
+#include <arpa/inet.h>
 #include <vector>
 
 //using namespace std; On VS2010, bind conflicts with std::bind
@@ -286,7 +286,7 @@ void CSAPSessions::StopThread(bool bWait /*= true*/)
 {
   if(m_socket != INVALID_SOCKET)
   {
-    if(shutdown(m_socket, SD_BOTH) == SOCKET_ERROR)
+    if(shutdown(m_socket, SHUT_RDWR) == SOCKET_ERROR)
       CLog::Log(LOGERROR, "s - failed to shutdown socket");
 #ifdef WINSOCK_VERSION
     closesocket(m_socket);
@@ -341,7 +341,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
       }
 
       // should be improved in the case of sdp
-      it->timeout = CTimeUtils::GetTimeMS() + 60*60*1000;
+      it->timeout = XbmcThreads::SystemClockMillis() + 60*60*1000;
       return true;
     }
   }
@@ -368,7 +368,7 @@ bool CSAPSessions::ParseAnnounce(char* data, int len)
   session.payload_type   = header.payload_type;
   session.payload_origin = desc.origin;
   session.payload.assign(data, len);
-  session.timeout = CTimeUtils::GetTimeMS() + 60*60*1000;
+  session.timeout = XbmcThreads::SystemClockMillis() + 60*60*1000;
   m_sessions.push_back(session);
 
   CGUIMessage message(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_PATH);
@@ -520,7 +520,7 @@ namespace XFILE
         item->SetLabel2(desc.info);
       item->SetLabelPreformated(true);
 
-      item->m_strPath = it->path;
+      item->SetPath(it->path);
       items.Add(item);
     }
 

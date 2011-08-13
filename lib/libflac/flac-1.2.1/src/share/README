@@ -1,5 +1,0 @@
-This directory contains several convenience libraries used by the rest of the
-tools and plugins.  Two of them (getopt and utf8) are shamelessly copied from
-vorbistools, one for manipulating UTF-8 strings (GPL) and one for implementing
-getopt (LGPL).  libFLAC does not link to either; the only FLAC tools that do
-are GPL'ed.

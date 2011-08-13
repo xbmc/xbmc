@@ -37,19 +37,15 @@ using namespace std;
 #define HOLD_TIME_START 100
 #define HOLD_TIME_END   3000
 
-CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
+CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
+    , m_scroller(scroller)
 {
   m_cursor = 0;
   m_offset = 0;
-  m_scrollOffset = 0;
-  m_scrollSpeed = 0;
-  m_scrollLastTime = 0;
-  m_scrollTime = scrollTime ? scrollTime : 1;
   m_lastHoldTime = 0;
   m_itemsPerPage = 10;
   m_pageControl = 0;
-  m_renderTime = 0;
   m_orientation = orientation;
   m_analogScrollCount = 0;
   m_lastItem = NULL;
@@ -65,7 +61,16 @@ CGUIBaseContainer::~CGUIBaseContainer(void)
 {
 }
 
-void CGUIBaseContainer::Render()
+void CGUIBaseContainer::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  CGUIControl::DoProcess(currentTime, dirtyregions);
+
+  if (m_pageChangeTimer.GetElapsedMilliseconds() > 200)
+    m_pageChangeTimer.Stop();
+  m_wasReset = false;
+}
+
+void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   ValidateOffset();
 
@@ -74,9 +79,9 @@ void CGUIBaseContainer::Render()
 
   if (!m_layout || !m_focusedLayout) return;
 
-  UpdateScrollOffset();
+  UpdateScrollOffset(currentTime);
 
-  int offset = (int)floorf(m_scrollOffset / m_layout->Size(m_orientation));
+  int offset = (int)floorf(m_scroller.GetValue() / m_layout->Size(m_orientation));
 
   int cacheBefore, cacheAfter;
   GetCacheOffsets(cacheBefore, cacheAfter);
@@ -84,6 +89,105 @@ void CGUIBaseContainer::Render()
   // Free memory not used on screen
   if ((int)m_items.size() > m_itemsPerPage + cacheBefore + cacheAfter)
     FreeMemory(CorrectOffset(offset - cacheBefore, 0), CorrectOffset(offset + m_itemsPerPage + 1 + cacheAfter, 0));
+
+  CPoint origin = CPoint(m_posX, m_posY) + m_renderOffset;
+  float pos = (m_orientation == VERTICAL) ? origin.y : origin.x;
+  float end = (m_orientation == VERTICAL) ? m_posY + m_height : m_posX + m_width;
+
+  // we offset our draw position to take into account scrolling and whether or not our focused
+  // item is offscreen "above" the list.
+  float drawOffset = (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scroller.GetValue();
+  if (GetOffset() + GetCursor() < offset)
+    drawOffset += m_focusedLayout->Size(m_orientation) - m_layout->Size(m_orientation);
+  pos += drawOffset;
+  end += cacheAfter * m_layout->Size(m_orientation);
+
+  int current = offset - cacheBefore;
+  while (pos < end && m_items.size())
+  {
+    int itemNo = CorrectOffset(current, 0);
+    if (itemNo >= (int)m_items.size())
+      break;
+    bool focused = (current == GetOffset() + GetCursor());
+    if (itemNo >= 0)
+    {
+      CGUIListItemPtr item = m_items[itemNo];
+      // render our item
+      if (m_orientation == VERTICAL)
+        ProcessItem(origin.x, pos, item.get(), focused, currentTime, dirtyregions);
+      else
+        ProcessItem(pos, origin.y, item.get(), focused, currentTime, dirtyregions);
+    }
+    // increment our position
+    pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
+    current++;
+  }
+
+  UpdatePageControl(offset);
+
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
+void CGUIBaseContainer::ProcessItem(float posX, float posY, CGUIListItem *item, bool focused, unsigned int currentTime, CDirtyRegionList &dirtyregions)
+{
+  if (!m_focusedLayout || !m_layout) return;
+
+  // set the origin
+  g_graphicsContext.SetOrigin(posX, posY);
+
+  if (m_bInvalidated)
+    item->SetInvalid();
+  if (focused)
+  {
+    if (!item->GetFocusedLayout())
+    {
+      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_focusedLayout);
+      item->SetFocusedLayout(layout);
+    }
+    if (item->GetFocusedLayout())
+    {
+      if (item != m_lastItem || !HasFocus())
+      {
+        item->GetFocusedLayout()->SetFocusedItem(0);
+      }
+      if (item != m_lastItem && HasFocus())
+      {
+        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
+        unsigned int subItem = 1;
+        if (m_lastItem && m_lastItem->GetFocusedLayout())
+          subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
+        item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
+      }
+      item->GetFocusedLayout()->Process(item, m_parentID, currentTime, dirtyregions);
+    }
+    m_lastItem = item;
+  }
+  else
+  {
+    if (item->GetFocusedLayout())
+      item->GetFocusedLayout()->SetFocusedItem(0);  // focus is not set
+    if (!item->GetLayout())
+    {
+      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
+      item->SetLayout(layout);
+    }
+    if (item->GetFocusedLayout())
+      item->GetFocusedLayout()->Process(item, m_parentID, currentTime, dirtyregions);
+    if (item->GetLayout())
+      item->GetLayout()->Process(item, m_parentID, currentTime, dirtyregions);
+  }
+
+  g_graphicsContext.RestoreOrigin();
+}
+
+void CGUIBaseContainer::Render()
+{
+  if (!m_layout || !m_focusedLayout) return;
+
+  int offset = (int)floorf(m_scroller.GetValue() / m_layout->Size(m_orientation));
+
+  int cacheBefore, cacheAfter;
+  GetCacheOffsets(cacheBefore, cacheAfter);
 
   if (g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
   {
@@ -93,8 +197,8 @@ void CGUIBaseContainer::Render()
 
     // we offset our draw position to take into account scrolling and whether or not our focused
     // item is offscreen "above" the list.
-    float drawOffset = (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scrollOffset;
-    if (m_offset + m_cursor < offset)
+    float drawOffset = (offset - cacheBefore) * m_layout->Size(m_orientation) - m_scroller.GetValue();
+    if (GetOffset() + GetCursor() < offset)
       drawOffset += m_focusedLayout->Size(m_orientation) - m_layout->Size(m_orientation);
     pos += drawOffset;
     end += cacheAfter * m_layout->Size(m_orientation);
@@ -107,7 +211,7 @@ void CGUIBaseContainer::Render()
       int itemNo = CorrectOffset(current, 0);
       if (itemNo >= (int)m_items.size())
         break;
-      bool focused = (current == m_offset + m_cursor);
+      bool focused = (current == GetOffset() + GetCursor());
       if (itemNo >= 0)
       {
         CGUIListItemPtr item = m_items[itemNo];
@@ -154,46 +258,17 @@ void CGUIBaseContainer::RenderItem(float posX, float posY, CGUIListItem *item, b
   // set the origin
   g_graphicsContext.SetOrigin(posX, posY);
 
-  if (m_bInvalidated)
-    item->SetInvalid();
   if (focused)
   {
-    if (!item->GetFocusedLayout())
-    {
-      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_focusedLayout);
-      item->SetFocusedLayout(layout);
-    }
     if (item->GetFocusedLayout())
-    {
-      if (item != m_lastItem || !HasFocus())
-      {
-        item->GetFocusedLayout()->SetFocusedItem(0);
-      }
-      if (item != m_lastItem && HasFocus())
-      {
-        item->GetFocusedLayout()->ResetAnimation(ANIM_TYPE_UNFOCUS);
-        unsigned int subItem = 1;
-        if (m_lastItem && m_lastItem->GetFocusedLayout())
-          subItem = m_lastItem->GetFocusedLayout()->GetFocusedItem();
-        item->GetFocusedLayout()->SetFocusedItem(subItem ? subItem : 1);
-      }
-      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
-    }
-    m_lastItem = item;
+      item->GetFocusedLayout()->Render(item, m_parentID);
   }
   else
   {
-    if (item->GetFocusedLayout())
-      item->GetFocusedLayout()->SetFocusedItem(0);  // focus is not set
-    if (!item->GetLayout())
-    {
-      CGUIListItemLayout *layout = new CGUIListItemLayout(*m_layout);
-      item->SetLayout(layout);
-    }
     if (item->GetFocusedLayout() && item->GetFocusedLayout()->IsAnimating(ANIM_TYPE_UNFOCUS))
-      item->GetFocusedLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetFocusedLayout()->Render(item, m_parentID);
     else if (item->GetLayout())
-      item->GetLayout()->Render(item, m_parentID, m_renderTime);
+      item->GetLayout()->Render(item, m_parentID);
   }
   g_graphicsContext.RestoreOrigin();
 }
@@ -212,6 +287,7 @@ bool CGUIBaseContainer::OnAction(const CAction &action)
   case ACTION_MOVE_RIGHT:
   case ACTION_MOVE_DOWN:
   case ACTION_MOVE_UP:
+  case ACTION_NAV_BACK:
     {
       if (!HasFocus()) return false;
       if (action.GetHoldTime() > HOLD_TIME_START &&
@@ -319,7 +395,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == m_pageControl && IsVisible())
       { // update our page if we're visible - not much point otherwise
-        if ((int)message.GetParam1() != m_offset)
+        if ((int)message.GetParam1() != GetOffset())
           m_pageChangeTimer.StartZero();
         ScrollToOffset(message.GetParam1());
         return true;
@@ -397,7 +473,7 @@ void CGUIBaseContainer::OnRight()
 
 void CGUIBaseContainer::OnNextLetter()
 {
-  int offset = CorrectOffset(m_offset, m_cursor);
+  int offset = CorrectOffset(GetOffset(), GetCursor());
   for (unsigned int i = 0; i < m_letterOffsets.size(); i++)
   {
     if (m_letterOffsets[i].first > offset)
@@ -410,7 +486,7 @@ void CGUIBaseContainer::OnNextLetter()
 
 void CGUIBaseContainer::OnPrevLetter()
 {
-  int offset = CorrectOffset(m_offset, m_cursor);
+  int offset = CorrectOffset(GetOffset(), GetCursor());
   if (!m_letterOffsets.size())
     return;
   for (int i = (int)m_letterOffsets.size() - 1; i >= 0; i--)
@@ -437,7 +513,7 @@ void CGUIBaseContainer::OnJumpLetter(char letter)
     return;
 
   // find the current letter we're focused on
-  unsigned int offset = CorrectOffset(m_offset, m_cursor);
+  unsigned int offset = CorrectOffset(GetOffset(), GetCursor());
   for (unsigned int i = (offset + 1) % m_items.size(); i != offset; i = (i+1) % m_items.size())
   {
     CGUIListItemPtr item = m_items[i];
@@ -465,7 +541,7 @@ void CGUIBaseContainer::OnJumpSMS(int letter)
 
   const CStdString letters = letterMap[letter - 2];
   // find where we currently are
-  int offset = CorrectOffset(m_offset, m_cursor);
+  int offset = CorrectOffset(GetOffset(), GetCursor());
   unsigned int currentLetter = 0;
   while (currentLetter + 1 < m_letterOffsets.size() && m_letterOffsets[currentLetter + 1].first <= offset)
     currentLetter++;
@@ -505,12 +581,12 @@ bool CGUIBaseContainer::MoveDown(bool wrapAround)
 // scrolls the said amount
 void CGUIBaseContainer::Scroll(int amount)
 {
-  ScrollToOffset(m_offset + amount);
+  ScrollToOffset(GetOffset() + amount);
 }
 
 int CGUIBaseContainer::GetSelectedItem() const
 {
-  return CorrectOffset(m_offset, m_cursor);
+  return CorrectOffset(GetOffset(), GetCursor());
 }
 
 CGUIListItemPtr CGUIBaseContainer::GetListItem(int offset, unsigned int flag) const
@@ -519,7 +595,7 @@ CGUIListItemPtr CGUIBaseContainer::GetListItem(int offset, unsigned int flag) co
     return CGUIListItemPtr();
   int item = GetSelectedItem() + offset;
   if (flag & INFOFLAG_LISTITEM_POSITION) // use offset from the first item displayed, taking into account scrolling
-    item = CorrectOffset((int)(m_scrollOffset / m_layout->Size(m_orientation)), offset);
+    item = CorrectOffset((int)(m_scroller.GetValue() / m_layout->Size(m_orientation)), offset);
 
   if (flag & INFOFLAG_LISTITEM_WRAP)
   {
@@ -581,10 +657,11 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
   }
   else if (event.m_id == ACTION_GESTURE_PAN)
   { // do the drag and validate our offset (corrects for end of scroll)
-    m_scrollOffset -= (m_orientation == HORIZONTAL) ? event.m_offsetX : event.m_offsetY;
+    m_scroller.SetValue(m_scroller.GetValue() - (m_orientation == HORIZONTAL) ? event.m_offsetX : event.m_offsetY);
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
-    int offset = (int)MathUtils::round_int(m_scrollOffset / size);
-    m_offset = offset;
+    int offset = (int)MathUtils::round_int(m_scroller.GetValue() / size);
+    m_scrollTimer.Start();
+    SetOffset(offset);
     ValidateOffset();
     return EVENT_RESULT_HANDLED;
   }
@@ -594,12 +671,12 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     SendWindowMessage(msg);
     // and compute the nearest offset from this and scroll there
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
-    float offset = m_scrollOffset / size;
+    float offset = m_scroller.GetValue() / size;
     int toOffset = (int)MathUtils::round_int(offset);
     if (toOffset < offset)
-      m_offset = toOffset+1;
+      SetOffset(toOffset+1);
     else
-      m_offset = toOffset-1;
+      SetOffset(toOffset-1);
     ScrollToOffset(toOffset);
     return EVENT_RESULT_HANDLED;
   }
@@ -621,7 +698,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
         int controlID = GetID(); // save as these could go away as we send messages
         int parentID = GetParentID();
         vector<CStdString> actions;
-        StringUtils::SplitString(item->m_strPath, " , ", actions);
+        StringUtils::SplitString(item->GetPath(), " , ", actions);
         for (unsigned int i = 0; i < actions.size(); i++)
         {
           CStdString action = actions[i];
@@ -682,15 +759,6 @@ void CGUIBaseContainer::ValidateOffset()
 {
 }
 
-void CGUIBaseContainer::DoRender(unsigned int currentTime)
-{
-  m_renderTime = currentTime;
-  CGUIControl::DoRender(currentTime);
-  if (m_pageChangeTimer.GetElapsedMilliseconds() > 200)
-    m_pageChangeTimer.Stop();
-  m_wasReset = false;
-}
-
 void CGUIBaseContainer::AllocResources()
 {
   CalculateLayout();
@@ -703,7 +771,7 @@ void CGUIBaseContainer::FreeResources(bool immediately)
   { // free any static content
     Reset();
   }
-  m_scrollSpeed = 0;
+  m_scroller.Stop();
 }
 
 void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
@@ -716,6 +784,7 @@ void CGUIBaseContainer::UpdateLayout(bool updateAllItems)
   // and recalculate the layout
   CalculateLayout();
   SetPageControlRange();
+  MarkDirtyRegion();
 }
 
 void CGUIBaseContainer::SetPageControlRange()
@@ -744,8 +813,8 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     return; // no need to update the content if we're not visible
 
   // check whether we need to update our layouts
-  if ((m_layout && m_layout->GetCondition() && !g_infoManager.GetBool(m_layout->GetCondition(), GetParentID())) ||
-      (m_focusedLayout && m_focusedLayout->GetCondition() && !g_infoManager.GetBool(m_focusedLayout->GetCondition(), GetParentID())))
+  if ((m_layout && !m_layout->CheckCondition()) ||
+      (m_focusedLayout && !m_focusedLayout->CheckCondition()))
   {
     // and do it
     int item = GetSelectedItem();
@@ -769,8 +838,9 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
     for (unsigned int i = 0; i < m_staticItems.size(); ++i)
     {
       CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_staticItems[i]);
-      // m_idepth is used to store the visibility condition
-      if (!item->m_idepth || g_infoManager.GetBool(item->m_idepth, GetParentID()))
+      if (item->UpdateVisibility(GetParentID()))
+        MarkDirtyRegion();
+      if (item->IsVisible())
       {
         m_items.push_back(item);
         if (item.get() == lastItem)
@@ -800,7 +870,7 @@ void CGUIBaseContainer::CalculateLayout()
   m_itemsPerPage = (int)((Size() - m_focusedLayout->Size(m_orientation)) / m_layout->Size(m_orientation)) + 1;
 
   // ensure that the scroll offset is a multiple of our size
-  m_scrollOffset = m_offset * m_layout->Size(m_orientation);
+  m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
 }
 
 void CGUIBaseContainer::UpdateScrollByLetter()
@@ -841,43 +911,38 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
   float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
   int range = m_itemsPerPage / 4;
   if (range <= 0) range = 1;
-  if (offset * size < m_scrollOffset &&  m_scrollOffset - offset * size > size * range)
+  if (offset * size < m_scroller.GetValue() &&  m_scroller.GetValue() - offset * size > size * range)
   { // scrolling up, and we're jumping more than 0.5 of a screen
-    m_scrollOffset = (offset + range) * size;
+    m_scroller.SetValue((offset + range) * size);
   }
-  if (offset * size > m_scrollOffset && offset * size - m_scrollOffset > size * range)
+  if (offset * size > m_scroller.GetValue() && offset * size - m_scroller.GetValue() > size * range)
   { // scrolling down, and we're jumping more than 0.5 of a screen
-    m_scrollOffset = (offset - range) * size;
+    m_scroller.SetValue((offset - range) * size);
   }
-  m_scrollSpeed = (offset * size - m_scrollOffset) / m_scrollTime;
+  m_scroller.ScrollTo(offset * size);
   if (!m_wasReset)
   {
-    SetContainerMoving(offset - m_offset);
-    if (m_scrollSpeed)
+    SetContainerMoving(offset - GetOffset());
+    if (m_scroller.IsScrolling())
       m_scrollTimer.Start();
     else
       m_scrollTimer.Stop();
   }
-  m_offset = offset;
+  SetOffset(offset);
 }
 
 void CGUIBaseContainer::SetContainerMoving(int direction)
 {
   if (direction)
-    g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scrollSpeed != 0);
+    g_infoManager.SetContainerMoving(GetID(), direction > 0, m_scroller.IsScrolling());
 }
 
-void CGUIBaseContainer::UpdateScrollOffset()
+void CGUIBaseContainer::UpdateScrollOffset(unsigned int currentTime)
 {
-  m_scrollOffset += m_scrollSpeed * (m_renderTime - m_scrollLastTime);
-  if ((m_scrollSpeed < 0 && m_scrollOffset < m_offset * m_layout->Size(m_orientation)) ||
-      (m_scrollSpeed > 0 && m_scrollOffset > m_offset * m_layout->Size(m_orientation)))
-  {
-    m_scrollOffset = m_offset * m_layout->Size(m_orientation);
-    m_scrollSpeed = 0;
+  if (m_scroller.Update(currentTime))
+    MarkDirtyRegion();
+  else
     m_scrollTimer.Stop();
-  }
-  m_scrollLastTime = m_renderTime;
 }
 
 int CGUIBaseContainer::CorrectOffset(int offset, int cursor) const
@@ -898,7 +963,7 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, false);
+    itemLayout.LoadLayout(itemElement, GetParentID(), false);
     m_layouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("itemlayout");
   }
@@ -906,7 +971,7 @@ void CGUIBaseContainer::LoadLayout(TiXmlElement *layout)
   while (itemElement)
   { // we have a new item layout
     CGUIListItemLayout itemLayout;
-    itemLayout.LoadLayout(itemElement, true);
+    itemLayout.LoadLayout(itemElement, GetParentID(), true);
     m_focusedLayouts.push_back(itemLayout);
     itemElement = itemElement->NextSiblingElement("focusedlayout");
   }
@@ -958,12 +1023,12 @@ void CGUIBaseContainer::FreeMemory(int keepStart, int keepEnd)
   { // remove before keepStart and after keepEnd
     for (int i = 0; i < keepStart && i < (int)m_items.size(); ++i)
       m_items[i]->FreeMemory();
-    for (int i = keepEnd + 1; i < (int)m_items.size(); ++i)
+    for (int i = std::max(keepEnd + 1, 0); i < (int)m_items.size(); ++i)
       m_items[i]->FreeMemory();
   }
   else
   { // wrapping
-    for (int i = keepEnd + 1; i < keepStart && i < (int)m_items.size(); ++i)
+    for (int i = std::max(keepEnd + 1, 0); i < keepStart && i < (int)m_items.size(); ++i)
       m_items[i]->FreeMemory();
   }
 }
@@ -995,11 +1060,11 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
   switch (condition)
   {
   case CONTAINER_ROW:
-    return (m_orientation == VERTICAL) ? (m_cursor == data) : true;
+    return (m_orientation == VERTICAL) ? (GetCursor() == data) : true;
   case CONTAINER_COLUMN:
-    return (m_orientation == HORIZONTAL) ? (m_cursor == data) : true;
+    return (m_orientation == HORIZONTAL) ? (GetCursor() == data) : true;
   case CONTAINER_POSITION:
-    return (m_cursor == data);
+    return (GetCursor() == data);
   case CONTAINER_HAS_NEXT:
     return (HasNextPage());
   case CONTAINER_HAS_PREVIOUS:
@@ -1010,7 +1075,7 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
       return layout ? (layout->GetFocusedItem() == (unsigned int)data) : false;
     }
   case CONTAINER_SCROLLING:
-    return (m_scrollTimer.GetElapsedMilliseconds() > m_scrollTime || m_pageChangeTimer.IsRunning());
+    return (m_scrollTimer.GetElapsedMilliseconds() > m_scroller.GetDuration() || m_pageChangeTimer.IsRunning());
   default:
     return false;
   }
@@ -1021,8 +1086,7 @@ void CGUIBaseContainer::GetCurrentLayouts()
   m_layout = NULL;
   for (unsigned int i = 0; i < m_layouts.size(); i++)
   {
-    int condition = m_layouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    if (m_layouts[i].CheckCondition())
     {
       m_layout = &m_layouts[i];
       break;
@@ -1034,8 +1098,7 @@ void CGUIBaseContainer::GetCurrentLayouts()
   m_focusedLayout = NULL;
   for (unsigned int i = 0; i < m_focusedLayouts.size(); i++)
   {
-    int condition = m_focusedLayouts[i].GetCondition();
-    if (!condition || g_infoManager.GetBool(condition, GetParentID()))
+    if (m_focusedLayouts[i].CheckCondition())
     {
       m_focusedLayout = &m_focusedLayouts[i];
       break;
@@ -1067,7 +1130,7 @@ CStdString CGUIBaseContainer::GetLabel(int info) const
     label.Format("%u", GetCurrentPage());
     break;
   case CONTAINER_POSITION:
-    label.Format("%i", m_cursor);
+    label.Format("%i", GetCursor());
     break;
   case CONTAINER_NUM_ITEMS:
     {
@@ -1086,19 +1149,19 @@ CStdString CGUIBaseContainer::GetLabel(int info) const
 
 int CGUIBaseContainer::GetCurrentPage() const
 {
-  if (m_offset + m_itemsPerPage >= (int)GetRows())  // last page
+  if (GetOffset() + m_itemsPerPage >= (int)GetRows())  // last page
     return (GetRows() + m_itemsPerPage - 1) / m_itemsPerPage;
-  return m_offset / m_itemsPerPage + 1;
+  return GetOffset() / m_itemsPerPage + 1;
 }
 
 void CGUIBaseContainer::GetCacheOffsets(int &cacheBefore, int &cacheAfter)
 {
-  if (m_scrollSpeed > 0)
+  if (m_scroller.IsScrollingDown())
   {
     cacheBefore = 0;
     cacheAfter = m_cacheItems;
   }
-  else if (m_scrollSpeed < 0)
+  else if (m_scroller.IsScrollingUp())
   {
     cacheBefore = m_cacheItems;
     cacheAfter = 0;
@@ -1108,4 +1171,21 @@ void CGUIBaseContainer::GetCacheOffsets(int &cacheBefore, int &cacheAfter)
     cacheBefore = m_cacheItems / 2;
     cacheAfter = m_cacheItems / 2;
   }
+}
+
+void CGUIBaseContainer::SetCursor(int cursor)
+{
+  m_cursor = cursor;
+}
+
+void CGUIBaseContainer::SetOffset(int offset)
+{
+  if (m_offset != offset)
+    MarkDirtyRegion();
+  m_offset = offset;
+}
+
+bool CGUIBaseContainer::CanFocus() const
+{
+  return (!m_items.empty() && CGUIControl::CanFocus());
 }

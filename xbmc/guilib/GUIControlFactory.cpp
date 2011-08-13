@@ -39,7 +39,6 @@
 #include "GUISelectButtonControl.h"
 #include "GUIMoverControl.h"
 #include "GUIResizeControl.h"
-#include "GUIButtonScroller.h"
 #include "GUISpinControlEx.h"
 #include "GUIVisualisationControl.h"
 #include "GUISettingsSliderControl.h"
@@ -95,7 +94,6 @@ static const ControlMapping controls[] =
     {"videowindow",       CGUIControl::GUICONTROL_VIDEO},
     {"mover",             CGUIControl::GUICONTROL_MOVER},
     {"resize",            CGUIControl::GUICONTROL_RESIZE},
-    {"buttonscroller",    CGUIControl::GUICONTROL_BUTTONBAR},
     {"edit",              CGUIControl::GUICONTROL_EDIT},
     {"visualisation",     CGUIControl::GUICONTROL_VISUALISATION},
     {"karvisualisation",  CGUIControl::GUICONTROL_VISUALISATION},
@@ -351,7 +349,7 @@ bool CGUIControlFactory::GetAlignmentY(const TiXmlNode* pRootNode, const char* s
   return true;
 }
 
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int &condition, CGUIInfoBool &allowHiddenFocus)
+bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, CStdString &condition, CStdString &allowHiddenFocus)
 {
   const TiXmlElement* node = control->FirstChildElement("visible");
   if (!node) return false;
@@ -360,7 +358,7 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int 
   {
     const char *hidden = node->Attribute("allowhiddenfocus");
     if (hidden)
-      allowHiddenFocus.Parse(hidden);
+      allowHiddenFocus = hidden;
     // add to our condition string
     if (!node->NoChildren())
       conditions.push_back(node->FirstChild()->Value());
@@ -369,36 +367,24 @@ bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode* control, int 
   if (!conditions.size())
     return false;
   if (conditions.size() == 1)
-    condition = g_infoManager.TranslateString(conditions[0]);
+    condition = conditions[0];
   else
   { // multiple conditions should be anded together
-    CStdString conditionString = "[";
+    condition = "[";
     for (unsigned int i = 0; i < conditions.size() - 1; i++)
-      conditionString += conditions[i] + "] + [";
-    conditionString += conditions[conditions.size() - 1] + "]";
-    condition = g_infoManager.TranslateString(conditionString);
+      condition += conditions[i] + "] + [";
+    condition += conditions[conditions.size() - 1] + "]";
   }
-  return (condition != 0);
+  return true;
 }
 
-bool CGUIControlFactory::GetCondition(const TiXmlNode *control, const char *tag, int &condition)
+bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, CStdString &condition)
 {
-  CStdString condString;
-  if (XMLUtils::GetString(control, tag, condString))
-  {
-    condition = g_infoManager.TranslateString(condString);
-    return true;
-  }
-  return false;
-}
-
-bool CGUIControlFactory::GetConditionalVisibility(const TiXmlNode *control, int &condition)
-{
-  CGUIInfoBool allowHiddenFocus;
+  CStdString allowHiddenFocus;
   return GetConditionalVisibility(control, condition, allowHiddenFocus);
 }
 
-bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, vector<CAnimation> &animations)
+bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, int context, vector<CAnimation> &animations)
 {
   TiXmlElement* node = control->FirstChildElement("animation");
   bool ret = false;
@@ -410,7 +396,7 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, ve
     if (node->FirstChild())
     {
       CAnimation anim;
-      anim.Create(node, rect);
+      anim.Create(node, rect, context);
       animations.push_back(anim);
       if (strcmpi(node->FirstChild()->Value(), "VisibleChange") == 0)
       { // add the hidden one as well
@@ -429,7 +415,7 @@ bool CGUIControlFactory::GetAnimations(TiXmlNode *control, const CRect &rect, ve
         else if (end)
           hidden.SetAttribute("start", end);
         CAnimation anim2;
-        anim2.Create(&hidden, rect);
+        anim2.Create(&hidden, rect, context);
         animations.push_back(anim2);
       }
     }
@@ -450,6 +436,21 @@ bool CGUIControlFactory::GetHitRect(const TiXmlNode *control, CRect &rect)
     if (node->Attribute("h"))
       rect.y2 = (float)atof(node->Attribute("h")) + rect.y1;
     return true;
+  }
+  return false;
+}
+
+bool CGUIControlFactory::GetScroller(const TiXmlNode *control, const CStdString &scrollerTag, CScroller& scroller)
+{
+  const TiXmlElement* node = control->FirstChildElement(scrollerTag);
+  if (node)
+  {
+    unsigned int scrollTime;
+    if (XMLUtils::GetUInt(control, scrollerTag, scrollTime))
+    {
+      scroller = CScroller(scrollTime, CAnimEffect::GetTweener(node));
+      return true;
+    }
   }
   return false;
 }
@@ -609,8 +610,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   float width = 0, height = 0;
   float minWidth = 0;
 
-  int left = 0, right = 0, up = 0, down = 0, next = 0, prev = 0;
-  vector<CGUIActionDescriptor> leftActions, rightActions, upActions, downActions, nextActions, prevActions;
+  int left = 0, right = 0, up = 0, down = 0, back = 0, next = 0, prev = 0;
+  vector<CGUIActionDescriptor> leftActions, rightActions, upActions, downActions, backActions, nextActions, prevActions;
 
   int pageControl = 0;
   CGUIInfoColor colorDiffuse(0xFFFFFFFF);
@@ -620,7 +621,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   int singleInfo = 0;
   CStdString strLabel;
   int iUrlSet=0;
-  int iToggleSelect;
+  CStdString toggleSelect;
 
   float spinWidth = 16;
   float spinHeight = 16;
@@ -663,23 +664,16 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CStdString strTitle = "";
   CStdString strRSSTags = "";
 
-  int iNumSlots = 7;
   float buttonGap = 5;
-  int iDefaultSlot = 2;
   int iMovementRange = 0;
-  bool bHorizontal = false;
-  int iAlpha = 0;
-  bool bWrapAround = true;
-  bool bSmoothScrolling = true;
   CAspectRatio aspect;
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
   if (insideContainer)  // default for inside containers is keep
     aspect.ratio = CAspectRatio::AR_KEEP;
 #endif
 
-  int iVisibleCondition = 0;
-  CGUIInfoBool allowHiddenFocus(false);
-  int enableCondition = 0;
+  CStdString allowHiddenFocus;
+  CStdString enableCondition;
 
   vector<CAnimation> animations;
 
@@ -721,6 +715,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   bool   hasCamera = false;
   bool resetOnLabelChange = true;
   bool bPassword = false;
+  CStdString visibleCondition;
 
   /////////////////////////////////////////////////////////////////////////////
   // Read control properties from XML
@@ -761,10 +756,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   hitRect.SetRect(posX, posY, posX + width, posY + height);
   GetHitRect(pControlNode, hitRect);
 
-  if (!GetNavigation(pControlNode, "onup", up, upActions)) up = id - 1;
-  if (!GetNavigation(pControlNode, "ondown", down, downActions)) down = id + 1;
+  if (!GetNavigation(pControlNode, "onup", up, upActions)) up = id;
+  if (!GetNavigation(pControlNode, "ondown", down, downActions)) down = id;
   if (!GetNavigation(pControlNode, "onleft", left, leftActions)) left = id;
   if (!GetNavigation(pControlNode, "onright", right, rightActions)) right = id;
+  if (!GetNavigation(pControlNode, "onback", back, backActions)) back = 0;
   if (!GetNavigation(pControlNode, "onnext", next, nextActions)) next = id;
   if (!GetNavigation(pControlNode, "onprev", prev, prevActions)) prev = id;
 
@@ -778,11 +774,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   GetInfoColor(pControlNode, "colordiffuse", colorDiffuse);
 
-  GetConditionalVisibility(pControlNode, iVisibleCondition, allowHiddenFocus);
-  GetCondition(pControlNode, "enable", enableCondition);
+  GetConditionalVisibility(pControlNode, visibleCondition, allowHiddenFocus);
+  XMLUtils::GetString(pControlNode, "enable", enableCondition);
 
   CRect animRect(posX, posY, posX + width, posY + height);
-  GetAnimations(pControlNode, animRect, animations);
+  GetAnimations(pControlNode, animRect, parentID, animations);
 
   GetInfoColor(pControlNode, "textcolor", labelInfo.textColor);
   GetInfoColor(pControlNode, "focusedcolor", labelInfo.focusedColor);
@@ -817,10 +813,9 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetTexture(pControlNode, "texturenofocus", textureNoFocus);
   GetTexture(pControlNode, "alttexturefocus", textureAltFocus);
   GetTexture(pControlNode, "alttexturenofocus", textureAltNoFocus);
-  CStdString strToggleSelect;
-  XMLUtils::GetString(pControlNode, "usealttexture", strToggleSelect);
-  XMLUtils::GetString(pControlNode, "selected", strToggleSelect);
-  iToggleSelect = g_infoManager.TranslateString(strToggleSelect);
+
+  XMLUtils::GetString(pControlNode, "usealttexture", toggleSelect);
+  XMLUtils::GetString(pControlNode, "selected", toggleSelect);
 
   XMLUtils::GetBoolean(pControlNode, "haspath", bHasPath);
 
@@ -913,23 +908,13 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetBoolean(pControlNode, "wrapmultiline", wrapMultiLine);
   XMLUtils::GetInt(pControlNode,"urlset",iUrlSet);
 
-  // stuff for button scroller
   if ( XMLUtils::GetString(pControlNode, "orientation", strTmp) )
   {
     if (strTmp.ToLower() == "horizontal")
-    {
-      bHorizontal = true;
       orientation = HORIZONTAL;
-    }
   }
-  XMLUtils::GetFloat(pControlNode, "buttongap", buttonGap);
   XMLUtils::GetFloat(pControlNode, "itemgap", buttonGap);
-  XMLUtils::GetInt(pControlNode, "numbuttons", iNumSlots);
   XMLUtils::GetInt(pControlNode, "movement", iMovementRange);
-  XMLUtils::GetInt(pControlNode, "defaultbutton", iDefaultSlot);
-  XMLUtils::GetInt(pControlNode, "alpha", iAlpha);
-  XMLUtils::GetBoolean(pControlNode, "wraparound", bWrapAround);
-  XMLUtils::GetBoolean(pControlNode, "smoothscrolling", bSmoothScrolling);
   GetAspectRatio(pControlNode, "aspectratio", aspect);
   XMLUtils::GetBoolean(pControlNode, "scroll", bScrollLabel);
   XMLUtils::GetBoolean(pControlNode,"pulseonselect", bPulse);
@@ -1000,6 +985,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       viewType = VIEW_TYPE_WRAP;
     else if (type == "bigwrap")
       viewType = VIEW_TYPE_BIG_WRAP;
+    else if (type == "info")
+      viewType = VIEW_TYPE_INFO;
+    else if (type == "biginfo")
+      viewType = VIEW_TYPE_BIG_INFO;
     const char *label = itemElement->Attribute("label");
     if (label)
       viewLabel = CGUIInfoLabel::GetLabel(FilterLabel(label));
@@ -1042,8 +1031,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTROL_GROUPLIST)
   {
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller);
+
     control = new CGUIControlGroupList(
-      parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align, scrollTime);
+      parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align, scroller);
     ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
   }
   else if (type == CGUIControl::GUICONTROL_LABEL)
@@ -1067,6 +1059,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIEditControl(
       parentID, id, posX, posY, width, height, textureFocus, textureNoFocus,
       labelInfo, strLabel);
+
+    CGUIInfoLabel hint_text;
+    GetInfoLabel(pControlNode, "hinttext", hint_text);
+    ((CGUIEditControl *) control)->SetHint(hint_text);
 
     if (bPassword)
       ((CGUIEditControl *) control)->SetInputType(CGUIEditControl::INPUT_TYPE_PASSWORD, 0);
@@ -1126,7 +1122,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     ((CGUIToggleButtonControl *)control)->SetAltClickActions(altclickActions);
     ((CGUIToggleButtonControl *)control)->SetFocusActions(focusActions);
     ((CGUIToggleButtonControl *)control)->SetUnFocusActions(unfocusActions);
-    ((CGUIToggleButtonControl *)control)->SetToggleSelect(iToggleSelect);
+    ((CGUIToggleButtonControl *)control)->SetToggleSelect(toggleSelect);
   }
   else if (type == CGUIControl::GUICONTROL_CHECKMARK)
   {
@@ -1147,7 +1143,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
     ((CGUIRadioButtonControl *)control)->SetLabel(strLabel);
     ((CGUIRadioButtonControl *)control)->SetRadioDimensions(radioPosX, radioPosY, radioWidth, radioHeight);
-    ((CGUIRadioButtonControl *)control)->SetToggleSelect(iToggleSelect);
+    ((CGUIRadioButtonControl *)control)->SetToggleSelect(toggleSelect);
     ((CGUIRadioButtonControl *)control)->SetClickActions(clickActions);
     ((CGUIRadioButtonControl *)control)->SetFocusActions(focusActions);
     ((CGUIRadioButtonControl *)control)->SetUnFocusActions(unfocusActions);
@@ -1249,7 +1245,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTAINER_LIST)
   {
-    control = new CGUIListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller);
+
+    control = new CGUIListContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems);
     ((CGUIListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIListContainer *)control)->LoadContent(pControlNode);
     ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
@@ -1258,7 +1257,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTAINER_WRAPLIST)
   {
-    control = new CGUIWrappingListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition);
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller);
+
+    control = new CGUIWrappingListContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems, focusPosition);
     ((CGUIWrappingListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
@@ -1267,7 +1269,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTAINER_FIXEDLIST)
   {
-    control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems, focusPosition, iMovementRange);
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller);
+
+    control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems, focusPosition, iMovementRange);
     ((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
@@ -1276,7 +1281,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   else if (type == CGUIControl::GUICONTAINER_PANEL)
   {
-    control = new CGUIPanelContainer(parentID, id, posX, posY, width, height, orientation, scrollTime, preloadItems);
+    CScroller scroller;
+    GetScroller(pControlNode, "scrolltime", scroller); 
+
+    control = new CGUIPanelContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems);
     ((CGUIPanelContainer *)control)->LoadLayout(pControlNode);
     ((CGUIPanelContainer *)control)->LoadContent(pControlNode);
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
@@ -1316,14 +1324,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       parentID, id, posX, posY, width, height,
       textureFocus, textureNoFocus);
   }
-  else if (type == CGUIControl::GUICONTROL_BUTTONBAR)
-  {
-    control = new CGUIButtonScroller(
-      parentID, id, posX, posY, width, height, buttonGap, iNumSlots, iDefaultSlot,
-      iMovementRange, bHorizontal, iAlpha, bWrapAround, bSmoothScrolling,
-      textureFocus, textureNoFocus, labelInfo);
-    ((CGUIButtonScroller *)control)->LoadButtons(pControlNode);
-  }
   else if (type == CGUIControl::GUICONTROL_SPINEX)
   {
     control = new CGUISpinControlEx(
@@ -1344,13 +1344,13 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   if (control)
   {
     control->SetHitRect(hitRect);
-    control->SetVisibleCondition(iVisibleCondition, allowHiddenFocus);
+    control->SetVisibleCondition(visibleCondition, allowHiddenFocus);
     control->SetEnableCondition(enableCondition);
     control->SetAnimations(animations);
     control->SetColorDiffuse(colorDiffuse);
-    control->SetNavigation(up, down, left, right);
+    control->SetNavigation(up, down, left, right, back);
     control->SetTabNavigation(next,prev);
-    control->SetNavigationActions(upActions, downActions, leftActions, rightActions);
+    control->SetNavigationActions(upActions, downActions, leftActions, rightActions, backActions);
     control->SetPulseOnSelect(bPulse);
     if (hasCamera)
       control->SetCamera(camera);

@@ -85,7 +85,6 @@ public:
   virtual int GetSampleRate();
   virtual CStdString GetAudioCodecName();
   virtual __int64 GetTime();
-  virtual void ResetTime();
   virtual void SeekTime(__int64 iTime = 0);
   // Skip to next track/item inside the current media (if supported).
   virtual bool SkipNext();

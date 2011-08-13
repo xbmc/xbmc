@@ -1,6 +1,5 @@
 SRCS=GUIWindowFullScreen.cpp \
      GUIWindowVideoBase.cpp \
-     GUIWindowVideoFiles.cpp \
      GUIWindowVideoNav.cpp \
      GUIWindowVideoPlaylist.cpp \
 

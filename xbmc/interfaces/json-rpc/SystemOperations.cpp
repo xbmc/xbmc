@@ -23,10 +23,9 @@
 #include "Application.h"
 #include "powermanagement/PowerManager.h"
 
-using namespace Json;
 using namespace JSONRPC;
 
-JSON_STATUS CSystemOperations::Shutdown(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CSystemOperations::Shutdown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_powerManager.CanPowerdown())
   {
@@ -37,7 +36,7 @@ JSON_STATUS CSystemOperations::Shutdown(const CStdString &method, ITransportLaye
     return FailedToExecute;
 }
 
-JSON_STATUS CSystemOperations::Suspend(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CSystemOperations::Suspend(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_powerManager.CanSuspend())
   {
@@ -48,7 +47,7 @@ JSON_STATUS CSystemOperations::Suspend(const CStdString &method, ITransportLayer
     return FailedToExecute;
 }
 
-JSON_STATUS CSystemOperations::Hibernate(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CSystemOperations::Hibernate(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_powerManager.CanHibernate())
   {
@@ -59,7 +58,7 @@ JSON_STATUS CSystemOperations::Hibernate(const CStdString &method, ITransportLay
     return FailedToExecute;
 }
 
-JSON_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_powerManager.CanReboot())
   {
@@ -70,22 +69,16 @@ JSON_STATUS CSystemOperations::Reboot(const CStdString &method, ITransportLayer 
     return FailedToExecute;
 }
 
-JSON_STATUS CSystemOperations::GetInfoLabels(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CSystemOperations::GetInfoLabels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if (!parameterObject.isArray())
-    return InvalidParams;
-
   std::vector<CStdString> info;
 
-  for (unsigned int i = 0; i < parameterObject.size(); i++)
+  for (unsigned int i = 0; i < parameterObject["labels"].size(); i++)
   {
-    if (!parameterObject[i].isString())
-      continue;
-
-    CStdString field = parameterObject[i].asString();
+   CStdString field = parameterObject["labels"][i].asString();
     field = field.ToLower();
 
-    info.push_back(parameterObject[i].asString());
+    info.push_back(parameterObject["labels"][i].asString());
   }
 
   if (info.size() > 0)
@@ -102,37 +95,31 @@ JSON_STATUS CSystemOperations::GetInfoLabels(const CStdString &method, ITranspor
   return OK;
 }
 
-JSON_STATUS CSystemOperations::GetInfoBooleans(const CStdString &method, ITransportLayer *transport, IClient *client, const Value &parameterObject, Value &result)
+JSON_STATUS CSystemOperations::GetInfoBooleans(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if (!parameterObject.isArray())
-    return InvalidParams;
-
   std::vector<CStdString> info;
 
   bool CanControlPower = (client->GetPermissionFlags() & ControlPower) > 0;
 
-  for (unsigned int i = 0; i < parameterObject.size(); i++)
+  for (unsigned int i = 0; i < parameterObject["booleans"].size(); i++)
   {
-    if (!parameterObject[i].isString())
-      continue;
-
-    CStdString field = parameterObject[i].asString();
+    CStdString field = parameterObject["booleans"][i].asString();
     field = field.ToLower();
 
     // Need to override power management of whats in infomanager since jsonrpc
     // have a security layer aswell.
     if (field.Equals("system.canshutdown"))
-      result[parameterObject[i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
+      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
     else if (field.Equals("system.canpowerdown"))
-      result[parameterObject[i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
+      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
     else if (field.Equals("system.cansuspend"))
-      result[parameterObject[i].asString()] = (g_powerManager.CanSuspend() && CanControlPower);
+      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanSuspend() && CanControlPower);
     else if (field.Equals("system.canhibernate"))
-      result[parameterObject[i].asString()] = (g_powerManager.CanHibernate() && CanControlPower);
+      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanHibernate() && CanControlPower);
     else if (field.Equals("system.canreboot"))
-      result[parameterObject[i].asString()] = (g_powerManager.CanReboot() && CanControlPower);
+      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanReboot() && CanControlPower);
     else
-      info.push_back(parameterObject[i].asString());
+      info.push_back(parameterObject["booleans"][i].asString());
   }
 
   if (info.size() > 0)
@@ -142,7 +129,7 @@ JSON_STATUS CSystemOperations::GetInfoBooleans(const CStdString &method, ITransp
     {
       if (i >= infoLabels.size())
         break;
-      result[info[i].c_str()] = Value(infoLabels[i]);
+      result[info[i].c_str()] = CVariant(infoLabels[i]);
     }
   }
 

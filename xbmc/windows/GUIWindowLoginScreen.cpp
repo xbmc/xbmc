@@ -34,6 +34,8 @@
 #include "network/Network.h"
 #include "addons/Skin.h"
 #include "settings/Profile.h"
+#include "guilib/GUIMessage.h"
+#include "GUIUserMessages.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
 #include "settings/Settings.h"
@@ -65,6 +67,7 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
   case GUI_MSG_WINDOW_DEINIT:
     {
       m_viewControl.Reset();
+      m_vecItems->Clear();
     }
     break;
 
@@ -89,8 +92,6 @@ bool CGUIWindowLoginScreen::OnMessage(CGUIMessage& message)
 
           return bResult;
         }
-        else if (iAction == ACTION_PREVIOUS_MENU) // oh no u don't
-          return false;
         else if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK)
         {
           int iItem = m_viewControl.GetSelectedItem();
@@ -137,6 +138,12 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
     return true;
   }
   return CGUIWindow::OnAction(action);
+}
+
+bool CGUIWindowLoginScreen::OnBack(int actionID)
+{
+  // no escape from the login window
+  return false;
 }
 
 void CGUIWindowLoginScreen::FrameMove()

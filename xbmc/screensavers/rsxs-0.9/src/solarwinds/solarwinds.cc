@@ -256,10 +256,10 @@ void Hack::pointerLeave() {}
 
 extern "C" {
 
-ADDON_STATUS Create(void* hdl, void* props)
+ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
   if (!props)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   SCR_PROPS* scrprops = (SCR_PROPS*)props;
 
@@ -268,7 +268,7 @@ ADDON_STATUS Create(void* hdl, void* props)
   Common::aspectRatio = float(Common::width) / float(Common::height);
   Common::resources = new ResourceManager;
 
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
 void Start()
@@ -281,37 +281,37 @@ void Render()
   Hack::tick();
 }
 
-void Stop()
+void ADDON_Stop()
 {
   Hack::stop();
 }
 
-void Destroy()
+void ADDON_Destroy()
 {
   delete Common::resources;
 }
 
-ADDON_STATUS GetStatus()
+ADDON_STATUS ADDON_GetStatus()
 {
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
-bool HasSettings()
+bool ADDON_HasSettings()
 {
   return false;
 }
 
-unsigned int GetSettings(StructSetting ***sSet)
+unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
 {
   return 0;
 }
 
-ADDON_STATUS SetSetting(const char *settingName, const void *settingValue)
+ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
 {
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
-void FreeSettings()
+void ADDON_FreeSettings()
 {
 }
 

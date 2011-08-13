@@ -25,6 +25,7 @@
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
 #include "utils/StreamDetails.h"
+#include "video/Bookmark.h"
 
 class CArchive;
 class TiXmlNode;
@@ -50,6 +51,8 @@ public:
   bool HasStreamDetails() const;
   bool IsEmpty() const;
 
+  CStdString m_basePath; // the base path of the video, for folder-based lookups
+  int m_parentPathID;      // the parent path id where the base path of the video lies
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
   CStdString m_strGenre;
@@ -98,6 +101,7 @@ public:
   int m_iBookmarkId;
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
+  CBookmark m_resumePoint;
 
 private:
   void ParseNative(const TiXmlElement* movie);

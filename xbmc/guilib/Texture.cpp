@@ -25,6 +25,12 @@
 #include "utils/URIUtils.h"
 #include "pictures/DllImageLib.h"
 #include "DDSImage.h"
+#include "filesystem/SpecialProtocol.h"
+#if defined(__APPLE__) && defined(__arm__)
+#include <ImageIO/ImageIO.h>
+#include "filesystem/File.h"
+#include "osx/DarwinUtils.h"
+#endif
 
 /************************************************************************/
 /*                                                                      */
@@ -33,7 +39,7 @@ CBaseTexture::CBaseTexture(unsigned int width, unsigned int height, unsigned int
  : m_hasAlpha( true )
 {
 #ifndef HAS_DX 
-  m_texture = NULL; 
+  m_texture = 0; 
 #endif
   m_pixels = NULL;
   m_loadedToGPU = false;
@@ -164,6 +170,135 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     return false;
   }
 
+#if defined(__APPLE__) && defined(__arm__)
+  XFILE::CFile file;
+  UInt8 *imageBuff      = NULL;
+  int64_t imageBuffSize = 0;
+
+  //open path and read data to buffer
+  //this handles advancedsettings.xml pathsubstitution
+  //and resulting networking
+  if (file.Open(texturePath, 0))
+  {
+    imageBuffSize =file.GetLength();
+    imageBuff = new UInt8[imageBuffSize];
+    imageBuffSize = file.Read(imageBuff, imageBuffSize);
+    file.Close();
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "Texture manager unable to open file %s", texturePath.c_str());
+    return false;
+  }
+
+  if (imageBuffSize <= 0)
+  {
+    CLog::Log(LOGERROR, "Texture manager read texture file failed.");
+    delete [] imageBuff;
+    return false;
+  }
+
+  // create the image from buffer;
+  CGImageSourceRef imageSource;
+  // create a CFDataRef using CFDataCreateWithBytesNoCopy and kCFAllocatorNull for deallocator.
+  // this allows us to do a nocopy reference and we handle the free of imageBuff
+  CFDataRef cfdata = CFDataCreateWithBytesNoCopy(NULL, imageBuff, imageBuffSize, kCFAllocatorNull);
+  imageSource = CGImageSourceCreateWithData(cfdata, NULL);   
+    
+  if (imageSource == nil)
+  {
+    CLog::Log(LOGERROR, "Texture manager unable to load file: %s", CSpecialProtocol::TranslatePath(texturePath).c_str());
+    CFRelease(cfdata);
+    delete [] imageBuff;
+    return false;
+  }
+
+  CGImageRef image = CGImageSourceCreateImageAtIndex(imageSource, 0, NULL);
+
+  int rotate = 0;
+  if (autoRotate)
+  { // get the orientation of the image for displaying it correctly
+    CFDictionaryRef imagePropertiesDictionary = CGImageSourceCopyPropertiesAtIndex(imageSource,0, NULL);
+    if (imagePropertiesDictionary != nil)
+    {
+      CFNumberRef orientation = (CFNumberRef)CFDictionaryGetValue(imagePropertiesDictionary, kCGImagePropertyOrientation);
+      if (orientation != nil)
+      {
+        int value = 0;
+        CFNumberGetValue(orientation, kCFNumberIntType, &value);
+        if (value)
+          rotate = value - 1;
+      }
+      CFRelease(imagePropertiesDictionary);
+    }
+  }
+
+  CFRelease(imageSource);
+
+  unsigned int width  = CGImageGetWidth(image);
+  unsigned int height = CGImageGetHeight(image);
+
+  m_hasAlpha = (CGImageGetAlphaInfo(image) != kCGImageAlphaNone);
+
+  if (originalWidth)
+    *originalWidth = width;
+  if (originalHeight)
+    *originalHeight = height;
+
+  // check texture size limits and limit to screen size - preserving aspectratio of image  
+  if ( width > g_Windowing.GetMaxTextureSize() || height > g_Windowing.GetMaxTextureSize() )
+  {
+    float aspect;
+
+    if ( width > height )
+    {
+      aspect = (float)width / (float)height;
+      width  = g_Windowing.GetWidth();
+      height = (float)width / (float)aspect;
+    }
+    else
+    {
+      aspect = (float)height / (float)width;
+      height = g_Windowing.GetHeight();
+      width  = (float)height / (float)aspect;
+    }
+    CLog::Log(LOGDEBUG, "Texture manager texture clamp:new texture size: %i x %i", width, height);
+  }
+
+  // use RGBA to skip swizzling
+  Allocate(width, height, XB_FMT_RGBA8);
+  m_orientation = rotate;
+    
+  CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+
+  // hw convert jmpeg to RGBA
+  CGContextRef context = CGBitmapContextCreate(m_pixels,
+    width, height, 8, GetPitch(), colorSpace,
+    kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
+
+  CGColorSpaceRelease(colorSpace);
+
+  // Flip so that it isn't upside-down
+  //CGContextTranslateCTM(context, 0, height);
+  //CGContextScaleCTM(context, 1.0f, -1.0f);
+  #if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
+    CGContextClearRect(context, CGRectMake(0, 0, width, height));
+  #else
+    #if MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+    // (just a way of checking whether we're running in 10.5 or later)
+    if (CGContextDrawLinearGradient == 0)
+      CGContextClearRect(context, CGRectMake(0, 0, width, height));
+    else
+    #endif
+      CGContextSetBlendMode(context, kCGBlendModeCopy);
+  #endif
+  //CGContextSetBlendMode(context, kCGBlendModeCopy);
+  CGContextDrawImage(context, CGRectMake(0, 0, width, height), image);
+  CGContextRelease(context);
+  CGImageRelease(image);
+  CFRelease(cfdata);
+  delete [] imageBuff;
+#else
   DllImageLib dll;
   if (!dll.Load())
     return false;
@@ -190,35 +325,57 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   if (originalHeight)
     *originalHeight = image.originalheight;
 
-  unsigned int destPitch = GetPitch();
+  unsigned int dstPitch = GetPitch();
   unsigned int srcPitch = ((image.width + 1)* 3 / 4) * 4; // bitmap row length is aligned to 4 bytes
+
+  unsigned char *dst = m_pixels;
+  unsigned char *src = image.texture + (m_imageHeight - 1) * srcPitch;
 
   for (unsigned int y = 0; y < m_imageHeight; y++)
   {
-    unsigned char *dst = m_pixels + y * destPitch;
-    unsigned char *src = image.texture + (m_imageHeight - 1 - y) * srcPitch;
-    unsigned char *alpha = image.alpha + (m_imageHeight - 1 - y) * m_imageWidth;
-    for (unsigned int x = 0; x < m_imageWidth; x++)
+    unsigned char *dst2 = dst;
+    unsigned char *src2 = src;
+    for (unsigned int x = 0; x < m_imageWidth; x++, dst2 += 4, src2 += 3)
     {
-      *dst++ = *src++;
-      *dst++ = *src++;
-      *dst++ = *src++;
-      *dst++ = (image.alpha) ? *alpha++ : 0xff;
+      dst2[0] = src2[0];
+      dst2[1] = src2[1];
+      dst2[2] = src2[2];
+      dst2[3] = 0xff;
     }
+    src -= srcPitch;
+    dst += dstPitch;
   }
 
+  if(image.alpha)
+  {
+    dst = m_pixels + 3;
+    src = image.alpha + (m_imageHeight - 1) * m_imageWidth;
+
+    for (unsigned int y = 0; y < m_imageHeight; y++)
+    {
+      unsigned char *dst2 = dst;
+      unsigned char *src2 = src;
+
+      for (unsigned int x = 0; x < m_imageWidth; x++,  dst2+=4, src2++)
+        *dst2 = *src2;
+      src -= m_imageWidth;
+      dst += dstPitch;
+    }
+  }
   dll.ReleaseImage(&image);
+#endif
 
   ClampToEdge();
 
   return true;
 }
 
-bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, unsigned char* pixels)
+bool CBaseTexture::LoadFromMemory(unsigned int width, unsigned int height, unsigned int pitch, unsigned int format, bool hasAlpha, unsigned char* pixels)
 {
   m_imageWidth = width;
   m_imageHeight = height;
   m_format = format;
+  m_hasAlpha = hasAlpha;
   Update(width, height, pitch, format, pixels, false);
   return true;
 }
@@ -258,6 +415,19 @@ unsigned int CBaseTexture::PadPow2(unsigned int x)
   return ++x;
 }
 
+bool CBaseTexture::SwapBlueRed(unsigned char *pixels, unsigned int height, unsigned int pitch, unsigned int elements, unsigned int offset)
+{
+  if (!pixels) return false;
+  unsigned char *dst = pixels;
+  for (unsigned int y = 0; y < height; y++)
+  {
+    dst = pixels + (y * pitch);
+    for (unsigned int x = 0; x < pitch; x+=elements)
+      std::swap(dst[x+offset], dst[x+2+offset]);
+  }
+  return true;
+}
+
 unsigned int CBaseTexture::GetPitch(unsigned int width) const
 {
   switch (m_format)
@@ -270,6 +440,7 @@ unsigned int CBaseTexture::GetPitch(unsigned int width) const
     return ((width + 3) / 4) * 16;
   case XB_FMT_A8:
     return width;
+  case XB_FMT_RGBA8:
   case XB_FMT_A8R8G8B8:
   default:
     return width*4;

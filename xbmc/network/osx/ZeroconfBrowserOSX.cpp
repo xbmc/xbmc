@@ -26,6 +26,9 @@
 #include <guilib/GUIMessage.h>
 #include <GUIUserMessages.h>
 
+#include <arpa/inet.h>
+#include <netinet/in.h>
+
 namespace
 {
   CStdString CFStringToCStdString(const CFStringRef cfstr)
@@ -50,6 +53,47 @@ namespace
     return myString;
   }
   
+  //helper for getting a the txt-records list
+  //returns true on success, false if nothing found or error
+  CZeroconfBrowser::ZeroconfService::tTxtRecordMap GetTxtRecords(CFNetServiceRef serviceRef)  
+  {
+    CFIndex idx = 0;
+    CZeroconfBrowser::ZeroconfService::tTxtRecordMap recordMap;
+    CFDataRef data = NULL;
+
+    data=CFNetServiceGetTXTData(serviceRef);
+    if( data != NULL )
+    {
+      CFDictionaryRef dict = NULL;
+      dict = CFNetServiceCreateDictionaryWithTXTData(kCFAllocatorDefault, data);
+
+      if( dict != NULL )
+      {
+        CFIndex numValues = 0;
+        numValues = CFDictionaryGetCount(dict);
+        if( numValues > 0)
+        {
+          CFStringRef keys[numValues];
+          CFDataRef values[numValues];
+
+          CFDictionaryGetKeysAndValues(dict, (const void **)&keys,  (const void **)&values);
+
+          for(idx = 0; idx < numValues; idx++)
+          {
+            recordMap.insert(
+              std::make_pair(
+                CFStringToCStdString(keys[idx]),
+                CStdString((const char *)CFDataGetBytePtr(values[idx]))
+              )
+            );
+          }
+        }
+        CFRelease(dict);
+      }
+    }
+    return recordMap;
+  }
+
   //helper to get (first) IP and port from a resolved service
   //returns true on success, false on if none was found
   bool CopyFirstIPv4Address(CFNetServiceRef serviceRef, CStdString& fr_address, int& fr_port)
@@ -96,8 +140,12 @@ namespace
 CZeroconfBrowserOSX::CZeroconfBrowserOSX():m_runloop(0)
 {
   //aquire the main threads event loop
+#if !defined(__arm__)
   EventLoopRef ref = GetMainEventLoop();
   m_runloop = (CFRunLoopRef)GetCFRunLoopFromEventLoop(ref);
+#else
+  m_runloop = CFRunLoopGetMain();
+#endif
 }
 
 CZeroconfBrowserOSX::~CZeroconfBrowserOSX()
@@ -146,7 +194,7 @@ void CZeroconfBrowserOSX::BrowserCallback(CFNetServiceBrowserRef browser, CFOpti
     }
   } else
   {
-    CLog::Log(LOGERROR, "CZeroconfBrowserOSX::BrowserCallback returned (domain = %d, error = %ld)\n", error->domain, error->error);
+    CLog::Log(LOGERROR, "CZeroconfBrowserOSX::BrowserCallback returned (domain = %d, error = %ld)\n", (int)error->domain, error->error);
   }
 }
 
@@ -226,7 +274,7 @@ bool CZeroconfBrowserOSX::doAddServiceType(const CStdString& fcr_service_type)
     CFNetServiceBrowserUnscheduleFromRunLoop(p_browser, m_runloop, kCFRunLoopCommonModes);         
     CFRelease(p_browser);
     p_browser = NULL;
-    CLog::Log(LOGERROR, "CFNetServiceBrowserSearchForServices returned (domain = %d, error = %ld)\n", error.domain, error.error);
+    CLog::Log(LOGERROR, "CFNetServiceBrowserSearchForServices returned (domain = %d, error = %ld)\n", (int)error.domain, error.error);
   } else
   {
     //store the browser
@@ -306,6 +354,8 @@ bool CZeroconfBrowserOSX::doResolveService(CZeroconfBrowser::ZeroconfService& fr
     ret = CopyFirstIPv4Address(service, ip, port);
     fr_service.SetIP(ip);
     fr_service.SetPort(port);
+    //get txt-record list
+    fr_service.SetTxtRecords(GetTxtRecords(service));
   }
   CFRelease(type);
   CFRelease(name);

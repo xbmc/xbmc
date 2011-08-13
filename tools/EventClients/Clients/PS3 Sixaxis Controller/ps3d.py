@@ -165,7 +165,10 @@ class PS3SixaxisThread ( StoppableThread ):
                 if not data:
                     continue
 
-                (bflags, psflags, pressure) = sixaxis.process_input(data, self.xbmc, toggle_mouse)
+                (bflags, psflags, pressure, analog) = sixaxis.process_input(data, self.xbmc, toggle_mouse)
+
+                if analog:
+                    self.reset_timeout()
 
                 if psflags:
                     self.reset_timeout()

@@ -96,7 +96,7 @@
 					<textcolor>blue</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[31331]</label>
+					<label>$LOCALIZE[31341]</label>
 				</control>
 				<control type="label">
 					<posx>0</posx>
@@ -118,7 +118,7 @@
 					<textcolor>blue</textcolor>
 					<align>center</align>
 					<aligny>center</aligny>
-					<label>$LOCALIZE[31332]</label>
+					<label>$LOCALIZE[31342]</label>
 				</control>
 				<control type="label">
 					<posx>0</posx>

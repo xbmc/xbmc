@@ -22,8 +22,11 @@
  */
 
 #include "utils/StdString.h"
-#include "mysqldataset.h"
-#include "sqlitedataset.h"
+
+namespace dbiplus {
+  class Database;
+  class Dataset;
+}
 
 #include <memory>
 
@@ -39,7 +42,7 @@ public:
   bool Compress(bool bForce=true);
   void Interupt();
 
-  bool Open(DatabaseSettings &db);
+  bool Open(const DatabaseSettings &db);
 
   void BeginTransaction();
   virtual bool CommitTransaction();
@@ -112,9 +115,10 @@ protected:
   virtual bool UpdateOldVersion(int version) { return true; };
 
   virtual int GetMinVersion() const=0;
-  virtual const char *GetDefaultDBName() const=0;
+  virtual const char *GetBaseDBName() const=0;
 
-  bool m_bOpen;
+  bool UpdateVersion(const CStdString &dbName);
+
   bool m_sqlite; ///< \brief whether we use sqlite (defaults to true)
 
   std::auto_ptr<dbiplus::Database> m_pDB;
@@ -122,8 +126,9 @@ protected:
   std::auto_ptr<dbiplus::Dataset> m_pDS2;
 
 private:
+  bool Connect(const DatabaseSettings &db, bool create);
   bool UpdateVersionNumber();
 
   bool m_bMultiWrite; /*!< True if there are any queries in the queue, false otherwise */
-  int m_iRefCount;
+  unsigned int m_openCount;
 };

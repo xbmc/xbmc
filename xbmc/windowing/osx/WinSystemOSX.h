@@ -19,12 +19,14 @@
  *
  */
 
+#if !defined(__arm__)
 #ifndef WINDOW_SYSTEM_OSX_H
 #define WINDOW_SYSTEM_OSX_H
 
 #include "windowing/WinSystem.h"
 #include <SDL/SDL_video.h>
 
+class CWinEventsOSX;
 class CWinSystemOSX : public CWinSystemBase
 {
 public:
@@ -64,7 +66,8 @@ protected:
   void* m_glContext;
   static void* m_lastOwnedContext;
   SDL_Surface* m_SDLSurface;
+  CWinEventsOSX *m_osx_events;
 };
 
 #endif // WINDOW_SYSTEM_H
-
+#endif

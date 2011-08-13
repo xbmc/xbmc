@@ -18,30 +18,30 @@
 				<texture border="40">DialogBack.png</texture>
 			</control>
 			<control type="image">
-				<posx>80</posx>
-				<posy>10</posy>
-				<width>640</width>
-				<height>90</height>
-				<aspectratio>stretch</aspectratio>
-				<texture>GlassTitleBar.png</texture>
+				<description>Dialog Header image</description>
+				<posx>40</posx>
+				<posy>16</posy>
+				<width>720</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
 			</control>
 			<control type="label" id="1">
 				<description>header label</description>
-				<posx>20</posx>
-				<posy>18</posy>
-				<width>760</width>
+				<posx>40</posx>
+				<posy>20</posy>
+				<width>720</width>
 				<height>30</height>
 				<font>font13_title</font>
 				<label>$LOCALIZE[20333]</label>
 				<align>center</align>
 				<aligny>center</aligny>
-				<textcolor>white</textcolor>
+				<textcolor>selected</textcolor>
 				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
 				<posx>710</posx>
-				<posy>9</posy>
+				<posy>15</posy>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -49,10 +49,10 @@
 				<onclick>PreviousMenu</onclick>
 				<texturefocus>DialogCloseButton-focus.png</texturefocus>
 				<texturenofocus>DialogCloseButton.png</texturenofocus>
-				<onleft>3</onleft>
-				<onright>3</onright>
-				<onup>3</onup>
-				<ondown>3</ondown>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<onup>10</onup>
+				<ondown>10</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
 			</control>
 			<control type="label">
@@ -61,7 +61,7 @@
 				<posy>60</posy>
 				<width>320</width>
 				<height>40</height>
-				<font>font12caps</font>
+				<font>font12</font>
 				<label>$LOCALIZE[20344]</label>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -75,7 +75,7 @@
 				<width>320</width>
 				<height>40</height>
 				<texturefocus border="5">button-focus.png</texturefocus>
-				<texturenofocus border="5">MenuItemNF.png</texturenofocus>
+				<texturenofocus border="5">button-nofocus.png</texturenofocus>
 				<font>-</font>
 				<label>-</label>
 				<reverse>yes</reverse>
@@ -103,7 +103,7 @@
 				<posy>150</posy>
 				<width>320</width>
 				<height>20</height>
-				<font>font12caps</font>
+				<font>font12</font>
 				<label>$LOCALIZE[31312]</label>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -144,9 +144,9 @@
 				<description>Scraper List Header</description>
 				<posx>400</posx>
 				<posy>60</posy>
-				<width>370</width>
+				<width>360</width>
 				<height>40</height>
-				<font>font12caps</font>
+				<font>font12</font>
 				<label>$LOCALIZE[31313]</label>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -156,7 +156,7 @@
 			<control type="list" id="4">
 				<posx>400</posx>
 				<posy>100</posy>
-				<width>340</width>
+				<width>360</width>
 				<height>241</height>
 				<onup>4</onup>
 				<onleft>3</onleft>
@@ -164,13 +164,13 @@
 				<ondown>4</ondown>
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
-				<itemlayout height="40">
+				<itemlayout height="45">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>340</width>
-						<height>41</height>
-						<texture>MenuItemNF.png</texture>
+						<width>360</width>
+						<height>40</height>
+						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="image">
 						<posx>5</posx>
@@ -192,22 +192,22 @@
 						<info>ListItem.Label</info>
 					</control>
 				</itemlayout>
-				<focusedlayout height="40">
+				<focusedlayout height="45">
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>340</width>
-						<height>41</height>
+						<width>360</width>
+						<height>40</height>
 						<visible>!Control.HasFocus(4)</visible>
-						<texture>MenuItemNF.png</texture>
+						<texture border="5">button-nofocus.png</texture>
 					</control>
 					<control type="image">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>340</width>
-						<height>41</height>
+						<width>360</width>
+						<height>40</height>
 						<visible>Control.HasFocus(4)</visible>
-						<texture>MenuItemFO.png</texture>
+						<texture border="5">button-focus2.png</texture>
 					</control>
 					<control type="image">
 						<posx>5</posx>
@@ -231,7 +231,7 @@
 				</focusedlayout>
 			</control>
 			<control type="scrollbar" id="60">
-				<posx>745</posx>
+				<posx>760</posx>
 				<posy>100</posy>
 				<width>25</width>
 				<height>240</height>
@@ -242,16 +242,16 @@
 				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
 				<onleft>4</onleft>
 				<onright>3</onright>
-				<showonepage>false</showonepage>
+				<showonepage>true</showonepage>
 				<orientation>vertical</orientation>
 			</control>
 			<control type="label">
 				<description>Scanning Options Header</description>
 				<posx>30</posx>
-				<posy>355</posy>
+				<posy>350</posy>
 				<width>740</width>
-				<height>30</height>
-				<font>font12caps</font>
+				<height>20</height>
+				<font>font12</font>
 				<label>$LOCALIZE[31314]</label>
 				<align>center</align>
 				<aligny>center</aligny>
@@ -261,10 +261,10 @@
 			<control type="grouplist" id="5">
 				<description>control area</description>
 				<posx>30</posx>
-				<posy>390</posy>
+				<posy>380</posy>
 				<width>740</width>
-				<height>200</height>
-				<itemgap>-1</itemgap>
+				<height>220</height>
+				<itemgap>4</itemgap>
 				<onup>3</onup>
 				<ondown>28</ondown>
 				<onleft>5</onleft>
@@ -276,8 +276,7 @@
 				<posy>0</posy>
 				<height>40</height>
 				<font>font13</font>
-				<texturefocus>MenuItemFO.png</texturefocus>
-				<texturenofocus>MenuItemNF.png</texturenofocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 			</control>
 			<control type="radiobutton" id="8">
 				<description>Default RadioButton</description>
@@ -285,8 +284,7 @@
 				<posy>0</posy>
 				<height>40</height>
 				<font>font13</font>
-				<texturefocus>MenuItemFO.png</texturefocus>
-				<texturenofocus>MenuItemNF.png</texturenofocus>
+				<texturefocus border="5">button-focus2.png</texturefocus>
 			</control>
 			<control type="group" id="9001">
 				<posy>615</posy>
@@ -298,8 +296,6 @@
 					<height>40</height>
 					<align>center</align>
 					<aligny>center</aligny>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<texturefocus border="5">button-focus.png</texturefocus>
 					<font>font12_title</font>
 					<label>186</label>
 					<onleft>6</onleft>
@@ -315,8 +311,6 @@
 					<height>40</height>
 					<align>center</align>
 					<aligny>center</aligny>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<texturefocus border="5">button-focus.png</texturefocus>
 					<font>font12_title</font>
 					<label>222</label>
 					<onleft>28</onleft>
@@ -332,8 +326,6 @@
 					<height>40</height>
 					<align>center</align>
 					<aligny>center</aligny>
-					<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-					<texturefocus border="5">button-focus.png</texturefocus>
 					<font>font12_title</font>
 					<label>5</label>
 					<onleft>29</onleft>

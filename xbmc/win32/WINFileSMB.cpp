@@ -24,8 +24,8 @@
 
 #include <sys/stat.h>
 #include <io.h>
-#include "log.h"
-#include "CharsetConverter.h"
+#include "utils/log.h"
+#include "utils/CharsetConverter.h"
 #include "utils/URIUtils.h"
 #include "WINSMBDirectory.h"
 
@@ -101,6 +101,7 @@ bool CWINFileSMB::Exists(const CURL& url)
   if(url.GetFileName() == url.GetShareName())
     return false;
   CStdString strFile = GetLocal(url);
+  URIUtils::RemoveSlashAtEnd(strFile);
   CStdStringW strWFile;
   g_charsetConverter.utf8ToW(strFile, strWFile, false);
   if(_wstat64(strWFile.c_str(), &buffer) == 0)
@@ -314,7 +315,7 @@ void CWINFileSMB::Flush()
   ::FlushFileBuffers(m_hFile);
 }
 
-int CWINFileSMB::IoControl(int request, void* param)
+int CWINFileSMB::IoControl(EIoControl request, void* param)
 { 
   return -1;
 }

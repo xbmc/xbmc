@@ -188,6 +188,12 @@ void CGUIDialogAudioSubtitleSettings::AddSubtitleStreams(unsigned int id)
     if (strName.length() == 0)
       strName = "Unnamed";
 
+    CStdString strLanguage;
+    g_application.m_pPlayer->GetSubtitleLanguage(i, strLanguage);
+
+    if (strName != strLanguage)
+      strName.Format("%s [%s]", strName.c_str(), strLanguage.c_str());
+
     strItem.Format("%s (%i/%i)", strName.c_str(), i + 1, (int)setting.max + 1);
 
     setting.entry.push_back(make_pair(setting.entry.size(), strItem));
@@ -278,13 +284,13 @@ void CGUIDialogAudioSubtitleSettings::OnSettingChanged(SettingInfo &setting)
   else if (setting.id == SUBTITLE_SETTINGS_BROWSER)
   {
     CStdString strPath;
-    if (URIUtils::IsInRAR(g_application.CurrentFileItem().m_strPath) || URIUtils::IsInZIP(g_application.CurrentFileItem().m_strPath))
+    if (URIUtils::IsInRAR(g_application.CurrentFileItem().GetPath()) || URIUtils::IsInZIP(g_application.CurrentFileItem().GetPath()))
     {
-      CURL url(g_application.CurrentFileItem().m_strPath);
+      CURL url(g_application.CurrentFileItem().GetPath());
       strPath = url.GetHostName();
     }
     else
-      strPath = g_application.CurrentFileItem().m_strPath;
+      strPath = g_application.CurrentFileItem().GetPath();
 
     CStdString strMask = ".utf|.utf8|.utf-8|.sub|.srt|.smi|.rt|.txt|.ssa|.aqt|.jss|.ass|.idx|.rar|.zip";
     if (g_application.GetCurrentPlayer() == EPC_DVDPLAYER)

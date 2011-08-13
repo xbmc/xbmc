@@ -31,12 +31,17 @@ CDirectoryNodeYear::CDirectoryNodeYear(const CStdString& strName, CDirectoryNode
 
 }
 
-NODE_TYPE CDirectoryNodeYear::GetChildType()
+NODE_TYPE CDirectoryNodeYear::GetChildType() const
 {
   return NODE_TYPE_YEAR_ALBUM;
 }
 
-bool CDirectoryNodeYear::GetContent(CFileItemList& items)
+CStdString CDirectoryNodeYear::GetLocalizedName() const
+{
+  return GetName();
+}
+
+bool CDirectoryNodeYear::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

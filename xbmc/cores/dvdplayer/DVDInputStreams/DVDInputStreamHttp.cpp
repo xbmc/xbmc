@@ -105,11 +105,15 @@ int CDVDInputStreamHttp::Read(BYTE* buf, int buf_size)
 
 __int64 CDVDInputStreamHttp::Seek(__int64 offset, int whence)
 {
-  __int64 ret = 0;
-  if (m_pFile) ret = m_pFile->Seek(offset, whence);
-  else return -1;
+  if(!m_pFile)
+    return -1;
 
-  m_eof = false;
+  if(whence == SEEK_POSSIBLE)
+    return m_pFile->IoControl(IOCTRL_SEEK_POSSIBLE, NULL);
+
+  __int64 ret = m_pFile->Seek(offset, whence);
+
+  if( ret >= 0 ) m_eof = false;
 
   return ret;
 }

@@ -139,12 +139,14 @@ void draw_bars(void)
 //-- Create -------------------------------------------------------------------
 // Called on load. Addon should fully initalize or return error status
 //-----------------------------------------------------------------------------
-ADDON_STATUS Create(void* hdl, void* props)
+ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
   if (!props)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
-  return STATUS_NEED_SETTINGS;
+  scale = 1.0 / log(256.0);
+
+  return ADDON_STATUS_NEED_SETTINGS;
 }
 
 //-- Render -------------------------------------------------------------------
@@ -195,8 +197,6 @@ extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, con
       cHeights[y][x] = 0.0;
     }
   }
-
-  scale = 1.0 / log(256.0);
 
   x_speed = 0.0;
   y_speed = 0.5;
@@ -299,7 +299,7 @@ extern "C" bool IsLocked()
 // This dll must cease all runtime activities
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Stop()
+extern "C" void ADDON_Stop()
 {
 }
 
@@ -307,7 +307,7 @@ extern "C" void Stop()
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Destroy()
+extern "C" void ADDON_Destroy()
 {
 }
 
@@ -315,7 +315,7 @@ extern "C" void Destroy()
 // Returns true if this add-on use settings
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" bool HasSettings()
+extern "C" bool ADDON_HasSettings()
 {
   return true;
 }
@@ -324,16 +324,16 @@ extern "C" bool HasSettings()
 // Returns the current Status of this visualisation
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS GetStatus()
+extern "C" ADDON_STATUS ADDON_GetStatus()
 {
-  return STATUS_OK;
+  return ADDON_STATUS_OK;
 }
 
 //-- GetSettings --------------------------------------------------------------
 // Return the settings for XBMC to display
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" unsigned int GetSettings(StructSetting ***sSet)
+extern "C" unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
 {
   return 0;
 }
@@ -343,7 +343,7 @@ extern "C" unsigned int GetSettings(StructSetting ***sSet)
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
 
-extern "C" void FreeSettings()
+extern "C" void ADDON_FreeSettings()
 {
 }
 
@@ -351,10 +351,10 @@ extern "C" void FreeSettings()
 // Set a specific Setting value (called from XBMC)
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
+extern "C" ADDON_STATUS ADDON_SetSetting(const char *strSetting, const void* value)
 {
   if (!strSetting || !value)
-    return STATUS_UNKNOWN;
+    return ADDON_STATUS_UNKNOWN;
 
   if (strcmp(strSetting, "mode")==0)
   {
@@ -373,34 +373,34 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
         g_mode = GL_FILL;
         break;
     }
-    return STATUS_OK;
+    return ADDON_STATUS_OK;
   }
   else if (strcmp(strSetting, "bar_height")==0)
   {
     switch (*(int*) value)
     {
-    case 1:
+    case 1://standard
+      scale = 1.f / log(256.f);
+      break;
+
+    case 2://big
       scale = 2.f / log(256.f);
       break;
 
-    case 2:
+    case 3://real big
       scale = 3.f / log(256.f);
       break;
 
-    case 3:
-      scale = 0.5f / log(256.f);
-      break;
-
-    case 4:
+    case 4://unused
       scale = 0.33f / log(256.f);
       break;
 
-    case 0:
+    case 0://small
     default:
-      scale = 1.f / log(256.f);
+      scale = 0.5f / log(256.f);
       break;
     }
-    return STATUS_OK;
+    return ADDON_STATUS_OK;
   }
   else if (strcmp(strSetting, "speed")==0)
   {
@@ -427,9 +427,9 @@ extern "C" ADDON_STATUS SetSetting(const char *strSetting, const void* value)
       hSpeed = 0.05f;
       break;
     }
-    return STATUS_OK;
+    return ADDON_STATUS_OK;
   }
 
-  return STATUS_UNKNOWN;
+  return ADDON_STATUS_UNKNOWN;
 }
 

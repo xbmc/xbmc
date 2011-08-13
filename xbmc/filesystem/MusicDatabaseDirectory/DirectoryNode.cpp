@@ -155,19 +155,29 @@ CDirectoryNode* CDirectoryNode::CreateNode(NODE_TYPE Type, const CStdString& str
 }
 
 //  Current node name
-const CStdString& CDirectoryNode::GetName()
+const CStdString& CDirectoryNode::GetName() const
 {
   return m_strName;
 }
 
+int CDirectoryNode::GetID() const
+{
+  return atoi(m_strName.c_str());
+}
+
+CStdString CDirectoryNode::GetLocalizedName() const
+{
+  return "";
+}
+
 //  Current node type
-NODE_TYPE CDirectoryNode::GetType()
+NODE_TYPE CDirectoryNode::GetType() const
 {
   return m_Type;
 }
 
 //  Return the parent directory node or NULL, if there is no
-CDirectoryNode* CDirectoryNode::GetParent()
+CDirectoryNode* CDirectoryNode::GetParent() const
 {
   return m_pParent;
 }
@@ -180,13 +190,13 @@ void CDirectoryNode::RemoveParent()
 //  should be overloaded by a derived class
 //  to get the content of a node. Will be called
 //  by GetChilds() of a parent node
-bool CDirectoryNode::GetContent(CFileItemList& items)
+bool CDirectoryNode::GetContent(CFileItemList& items) const
 {
   return false;
 }
 
 //  Creates a musicdb url
-CStdString CDirectoryNode::BuildPath()
+CStdString CDirectoryNode::BuildPath() const
 {
   CStdStringArray array;
 
@@ -213,7 +223,7 @@ CStdString CDirectoryNode::BuildPath()
 //  Collects Query params from this and all parent nodes. If a NODE_TYPE can
 //  be used as a database parameter, it will be added to the
 //  params object.
-void CDirectoryNode::CollectQueryParams(CQueryParams& params)
+void CDirectoryNode::CollectQueryParams(CQueryParams& params) const
 {
   params.SetQueryParam(m_Type, m_strName);
 
@@ -227,7 +237,7 @@ void CDirectoryNode::CollectQueryParams(CQueryParams& params)
 
 //  Should be overloaded by a derived class.
 //  Returns the NODE_TYPE of the child nodes.
-NODE_TYPE CDirectoryNode::GetChildType()
+NODE_TYPE CDirectoryNode::GetChildType() const
 {
   return NODE_TYPE_NONE;
 }
@@ -261,7 +271,7 @@ bool CDirectoryNode::GetChilds(CFileItemList& items)
 
 //  Add an "* All ..." folder to the CFileItemList
 //  depending on the child node
-void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
+void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
 {
   CFileItemPtr pItem;
 
@@ -284,14 +294,14 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   /* no need for all genres
   case NODE_TYPE_GENRE:
     pItem.reset(new CFileItem(g_localizeStrings.Get(15105)));  // "All Genres"
-    pItem->m_strPath = BuildPath() + "-1/";
+    pItem->GetPath() = BuildPath() + "-1/";
     break;
   */
 
   case NODE_TYPE_ARTIST:
     if (GetType() == NODE_TYPE_OVERVIEW) return;
     pItem.reset(new CFileItem(g_localizeStrings.Get(15103)));  // "All Artists"
-    pItem->m_strPath = BuildPath() + "-1/";
+    pItem->SetPath(BuildPath() + "-1/");
     break;
 
     //  All album related nodes
@@ -303,7 +313,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   case NODE_TYPE_ALBUM_TOP100:
   case NODE_TYPE_YEAR_ALBUM:
     pItem.reset(new CFileItem(g_localizeStrings.Get(15102)));  // "All Albums"
-    pItem->m_strPath = BuildPath() + "-1/";
+    pItem->SetPath(BuildPath() + "-1/");
     break;
 
     //  All song related nodes
@@ -314,7 +324,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   case NODE_TYPE_SONG_TOP100:
   case NODE_TYPE_SONG:
     pItem = new CFileItem(g_localizeStrings.Get(15104));  // "All Songs"
-    pItem->m_strPath = BuildPath() + "-1/";
+    pItem->GetPath() = BuildPath() + "-1/";
     break;*/
   default:
     break;
@@ -333,7 +343,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items)
   }
 }
 
-bool CDirectoryNode::CanCache()
+bool CDirectoryNode::CanCache() const
 {
   // JM: No need to cache these views, as caching is added in the mediawindow baseclass for anything that takes
   //     longer than a second

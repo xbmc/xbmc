@@ -3,7 +3,7 @@
 	<coordinates>
 		<system>1</system>
 		<posx>240</posx>
-		<posy>115</posy>
+		<posy>60</posy>
 	</coordinates>
 	<include>dialogeffect</include>
 	<controls>
@@ -14,22 +14,49 @@
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>800</width>
-				<height>490</height>
-				<colordiffuse>DDFFFFFF</colordiffuse>
-				<texture border="40">DialogBack.png</texture>
+				<height>600</height>
+				<texture border="40">DialogBack2.png</texture>
 			</control>
 			<control type="image">
-				<posx>80</posx>
-				<posy>10</posy>
-				<width>640</width>
-				<height>90</height>
-				<aspectratio>stretch</aspectratio>
-				<texture>GlassTitleBar.png</texture>
+				<description>Dialog Header image</description>
+				<posx>40</posx>
+				<posy>16</posy>
+				<width>720</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>20</posy>
+				<width>720</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[3] - $LOCALIZE[5]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Window.IsVisible(123)</visible>
+			</control>
+			<control type="label">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>20</posy>
+				<width>720</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<label>$LOCALIZE[292] - $LOCALIZE[5]</label>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<visible>Window.IsVisible(124)</visible>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
 				<posx>710</posx>
-				<posy>9</posy>
+				<posy>15</posy>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -42,34 +69,6 @@
 				<onup>2</onup>
 				<ondown>2</ondown>
 				<visible>system.getbool(input.enablemouse)</visible>
-			</control>
-			<control type="label">
-				<description>header label</description>
-				<posx>20</posx>
-				<posy>18</posy>
-				<width>760</width>
-				<height>30</height>
-				<font>font13_title</font>
-				<label>$LOCALIZE[3] - $LOCALIZE[5]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<visible>Window.IsVisible(123)</visible>
-			</control>
-			<control type="label">
-				<description>header label</description>
-				<posx>20</posx>
-				<posy>18</posy>
-				<width>760</width>
-				<height>30</height>
-				<font>font13_title</font>
-				<label>$LOCALIZE[292] - $LOCALIZE[5]</label>
-				<align>center</align>
-				<aligny>center</aligny>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<visible>Window.IsVisible(124)</visible>
 			</control>
 			<control type="label" id="3">
 				<description>No Settings Label</description>
@@ -85,8 +84,8 @@
 				<posx>40</posx>
 				<posy>65</posy>
 				<width>720</width>
-				<height>395</height>
-				<itemgap>-1</itemgap>
+				<height>490</height>
+				<itemgap>5</itemgap>
 				<pagecontrol>60</pagecontrol>
 				<onleft>60</onleft>
 				<onright>60</onright>
@@ -97,7 +96,7 @@
 				<posx>760</posx>
 				<posy>65</posy>
 				<width>25</width>
-				<height>390</height>
+				<height>490</height>
 				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -114,8 +113,8 @@
 		<control type="sliderex" id="10">
 			<description>Default Slider</description>
 			<height>40</height>
-			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
-			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
@@ -128,8 +127,7 @@
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
-			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
 		</control>
 		<control type="radiobutton" id="8">
 			<description>Default RadioButton</description>
@@ -139,8 +137,7 @@
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
-			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
 		</control>
 		<control type="spincontrolex" id="9">
 			<description>Default SpinControlex</description>
@@ -150,8 +147,8 @@
 			<font>font13</font>
 			<textcolor>grey2</textcolor>
 			<focusedcolor>white</focusedcolor>
-			<texturefocus border="0,2,0,2">MenuItemFO.png</texturefocus>
-			<texturenofocus border="0,2,0,2">MenuItemNF.png</texturenofocus>
+			<texturenofocus border="5">button-nofocus.png</texturenofocus>
+			<texturefocus border="5">button-focus2.png</texturefocus>
 			<aligny>center</aligny>
 			<reverse>yes</reverse>
 		</control>

@@ -30,6 +30,7 @@ typedef enum _WindowSystemType
 {
   WINDOW_SYSTEM_WIN32,
   WINDOW_SYSTEM_OSX,
+  WINDOW_SYSTEM_IOS,
   WINDOW_SYSTEM_X11,
   WINDOW_SYSTEM_SDL,
   WINDOW_SYSTEM_EGL
@@ -69,6 +70,7 @@ public:
   virtual void NotifyAppFocusChange(bool bGaining) {}
   virtual void NotifyAppActiveChange(bool bActivated) {}
   virtual void ShowOSMouse(bool show) {};
+  virtual bool HasCursor(){ return true; }
 
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }

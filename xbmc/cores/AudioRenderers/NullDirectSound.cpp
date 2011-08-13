@@ -19,11 +19,12 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "NullDirectSound.h"
 #include "guilib/AudioContext.h"
-#include "Application.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 #define BUFFER CHUNKLEN * 20
 #define CHUNKLEN 512
@@ -51,11 +52,11 @@ bool CNullDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   g_audioContext.SetupSpeakerConfig(iChannels, bAudioOnAllSpeakers, bIsMusic);
   g_audioContext.SetActiveDevice(CAudioContext::DIRECTSOUND_DEVICE);
 
-  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, "Failed to initialize audio device", "Check your audiosettings", TOAST_DISPLAY_TIME, false);
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Failed to initialize audio device", "Check your audiosettings", TOAST_DISPLAY_TIME, false);
   m_timePerPacket = 1.0f / (float)(iChannels*(uiBitsPerSample/8) * uiSamplesPerSec);
   m_packetsSent = 0;
   m_paused = 0;
-  m_lastUpdate = CTimeUtils::GetTimeMS();
+  m_lastUpdate = XbmcThreads::SystemClockMillis();
   return true;
 }
 
@@ -75,7 +76,7 @@ bool CNullDirectSound::Deinitialize()
 
 void CNullDirectSound::Flush()
 {
-  m_lastUpdate = CTimeUtils::GetTimeMS();
+  m_lastUpdate = XbmcThreads::SystemClockMillis();
   m_packetsSent = 0;
   Pause();
 }
@@ -188,8 +189,10 @@ void CNullDirectSound::SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers
 
 void CNullDirectSound::Update()
 {
-  long currentTime = CTimeUtils::GetTimeMS();
-  long deltaTime = (currentTime - m_lastUpdate);
+  unsigned int currentTime = XbmcThreads::SystemClockMillis();
+  // because of the if clause below it's possible that m_lastUpdate is larger
+  //  than currentTime. We need to handle this.
+  long deltaTime = (currentTime - m_lastUpdate); // the diff shouldn't overflow
 
   if (m_paused)
   {

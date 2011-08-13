@@ -27,6 +27,7 @@
 #include "DirectoryCache.h"
 #include "FileItem.h"
 #include "addons/Repository.h"
+#include "addons/AddonInstaller.h"
 #include "addons/PluginSource.h"
 #include "guilib/TextureManager.h"
 #include "File.h"
@@ -62,22 +63,26 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   {
     CAddonMgr::Get().GetAllAddons(addons, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24062));
+    items.SetLabel(g_localizeStrings.Get(24062));
   }
   else if (path.GetHostName().Equals("disabled"))
   { // grab all disabled addons, including disabled repositories
     reposAsFolders = false;
     CAddonMgr::Get().GetAllAddons(addons, false, true);
     items.SetProperty("reponame",g_localizeStrings.Get(24039));
+    items.SetLabel(g_localizeStrings.Get(24039));
   }
   else if (path.GetHostName().Equals("outdated"))
   {
     reposAsFolders = false;
     CAddonMgr::Get().GetAllOutdatedAddons(addons);
     items.SetProperty("reponame",g_localizeStrings.Get(24043));
+    items.SetLabel(g_localizeStrings.Get(24043));
   }
   else if (path.GetHostName().Equals("repos"))
   {
     CAddonMgr::Get().GetAddons(ADDON_REPOSITORY,addons,true);
+    items.SetLabel(g_localizeStrings.Get(24033)); // Get Add-ons
   }
   else if (path.GetHostName().Equals("sources"))
   {
@@ -89,21 +94,23 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     database.Open();
     database.GetAddons(addons);
     items.SetProperty("reponame",g_localizeStrings.Get(24032));
+    items.SetLabel(g_localizeStrings.Get(24032));
   }
   else
   {
+    reposAsFolders = false;
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(path.GetHostName(),addon);
     if (!addon)
       return false;
+
+    // ensure our repos are up to date
+    CAddonInstaller::Get().UpdateRepos(false, true);
     CAddonDatabase database;
     database.Open();
-    if (!database.GetRepository(addon->ID(),addons))
-    {
-      RepositoryPtr repo = boost::dynamic_pointer_cast<CRepository>(addon);
-      addons = CRepositoryUpdateJob::GrabAddons(repo,false);
-    }
+    database.GetRepository(addon->ID(),addons);
     items.SetProperty("reponame",addon->Name());
+    items.SetLabel(addon->Name());
   }
 
   if (path.GetFileName().IsEmpty())
@@ -117,7 +124,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
           if (addons[j]->IsType((TYPE)i))
           {
             CFileItemPtr item(new CFileItem(TranslateType((TYPE)i,true)));
-            item->m_strPath = URIUtils::AddFileToFolder(strPath,TranslateType((TYPE)i,false));
+            item->SetPath(URIUtils::AddFileToFolder(strPath,TranslateType((TYPE)i,false)));
             item->m_bIsFolder = true;
             CStdString thumb = GetIcon((TYPE)i);
             if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
@@ -127,7 +134,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
           }
         }
       }
-      items.m_strPath = strPath;
+      items.SetPath(strPath);
       return true;
     }
   }
@@ -135,7 +142,8 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   {
     TYPE type = TranslateType(path.GetFileName());
     items.SetProperty("addoncategory",TranslateType(type, true));
-    items.m_strPath = strPath;
+    items.SetLabel(TranslateType(type, true));
+    items.SetPath(strPath);
 
     // FIXME: Categorisation of addons needs adding here
     for (unsigned int j=0;j<addons.size();++j)
@@ -145,7 +153,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     }
   }
 
-  items.m_strPath = strPath;
+  items.SetPath(strPath);
   GenerateListing(path, addons, items, reposAsFolders);
   // check for available updates
   if (path.GetHostName().Equals("enabled"))
@@ -156,7 +164,8 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     {
       AddonPtr addon2;
       database.GetAddon(items[i]->GetProperty("Addon.ID"),addon2);
-      if (addon2 && addon2->Version() > AddonVersion(items[i]->GetProperty("Addon.Version")))
+      if (addon2 && addon2->Version() > AddonVersion(items[i]->GetProperty("Addon.Version"))
+                 && !database.IsAddonBlacklisted(addon2->ID(),addon2->Version().c_str()))
       {
         items[i]->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
         items[i]->SetProperty("Addon.UpdateAvail","true");
@@ -214,7 +223,7 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
   CFileItemPtr item(new CFileItem(path, folder));
   item->SetLabel(addon->Name());
   if (!(basePath.Equals("addons://") && addon->Type() == ADDON_REPOSITORY))
-    item->SetLabel2(addon->Version().str);
+    item->SetLabel2(addon->Version().c_str());
   item->SetThumbnailImage(addon->Icon());
   item->SetLabelPreformated(true);
   item->SetIconImage("DefaultAddon.png");
@@ -272,6 +281,7 @@ bool CAddonsDirectory::GetScriptsAndPlugins(const CStdString &content, CFileItem
   items.Add(GetMoreItem(content));
 
   items.SetContent("addons");
+  items.SetLabel(g_localizeStrings.Get(24001)); // Add-ons
 
   return items.Size() > 0;
 }

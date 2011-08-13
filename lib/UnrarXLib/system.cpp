@@ -19,32 +19,7 @@ void InitSystemOptions(int SleepTime)
 
 void SetPriority(int Priority)
 {
-#ifdef _XBOX
-  int PriorityLevel;
-  if (Priority<1 || Priority>15)
-    return;
-  if (Priority==1)
-  {
-    PriorityLevel=THREAD_PRIORITY_IDLE;
-  }
-  else
-    if (Priority<7)
-    {
-      PriorityLevel=Priority-4;
-    }
-    else
-      if (Priority<11)
-      {
-        PriorityLevel=Priority-9;
-      }
-      else
-      {
-        PriorityLevel=Priority-13;
-      }
-  SetThreadPriority(GetCurrentThread(),PriorityLevel);
-
-//#ifdef _WIN_32
-#elif defined(_WIN_32)
+#if defined(_WIN_32)
   uint PriorityClass;
   int PriorityLevel;
   if (Priority<1 || Priority>15)

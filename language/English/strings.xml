@@ -387,7 +387,7 @@
   <string id="426">No CD information found</string>
   <string id="427">Disc</string>
   <string id="428">Insert correct CD/DVD</string>
-  <string id="429">Please insert the following CD/DVD</string>
+  <string id="429">Please insert the following disc:</string>
   <string id="430">Sort by: DVD#</string>
   <string id="431">No cache</string>
   <string id="432">Remove movie from library</string>
@@ -706,6 +706,8 @@
   <string id="851">Valid port range is 1-65535</string>
   <string id="852">Valid port range is 1024-65535</string>
 
+  <string id="998">Add Music...</string>
+  <string id="999">Add Videos...</string>
   <string id="1000">- Preview</string>
   <string id="1001">Unable to connect</string>
   <string id="1002">XBMC was unable to connect to the network location.</string>
@@ -978,6 +980,7 @@
   <string id="12392">Hours</string>
   <string id="12393">Days</string>
   <string id="12394">Total uptime</string>
+  <string id="12395">Battery level</string>
 
   <string id="12600">Weather</string>
 
@@ -1012,6 +1015,7 @@
 
   <string id="13100">Flicker filter</string>
   <string id="13101">Let driver choose (requires restart)</string>
+  
   <string id="13105">Vertical blank sync</string>
   <string id="13106">Disabled</string>
   <string id="13107">Enabled during video playback</string>
@@ -1059,9 +1063,11 @@
 
   <string id="13200">Profiles</string>
   <string id="13201">Delete profile '%s'?</string>
+  
   <string id="13204">Last loaded profile:</string>
   <string id="13205">Unknown</string>
   <string id="13206">Overwrite</string>
+  
   <string id="13208">Alarm clock</string>
   <string id="13209">Alarm clock interval (in minutes)</string>
   <string id="13210">Started, alarm in %im</string>
@@ -1162,6 +1168,7 @@
   <string id="13359">Set artist thumb</string>
   <string id="13360">Automatically generate thumbnails</string>
   <string id="13361">Enable voice</string>
+  
   <string id="13375">Enable device</string>
   <string id="13376">Volume</string>
   <string id="13377">Default view mode</string>
@@ -1219,6 +1226,7 @@
   <string id="13429">Allow hardware acceleration (VDADecoder)</string>
   <string id="13430">Allow hardware acceleration (OpenMax)</string>
   <string id="13431">Pixel Shaders</string>
+  <string id="13432">Allow hardware acceleration (VideoToolbox)</string>
 
   <string id="13500">A/V sync method</string>
   <string id="13501">Audio clock</string>
@@ -1478,6 +1486,7 @@
   <string id="16033">Could not open database.</string>
   <string id="16034">Could not get songs from database.</string>
   <string id="16035">Party mode playlist</string>
+  <string id="16036">De-interlace (Half)</string>
 
   <string id="16100">All Videos</string>
   <string id="16101">Unwatched</string>
@@ -1735,6 +1744,8 @@
   <string id="20256">HTS Tvheadend client</string>
   <string id="20257">VDR Streamdev client</string>
   <string id="20258">MythTV client</string>
+  <string id="20259">Network Filesystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
@@ -1842,12 +1853,13 @@
   <string id="20410">Trailer</string>
   <string id="20411">Flatten</string>
   <string id="20412">Flatten TV shows</string>
-  <string id="20413">Get Fanart</string>
+  <string id="20413">Get fanart</string>
   <string id="20414">Show Fanart in video and music libraries</string>
   <string id="20415">Scanning for new content</string>
   <string id="20416">First aired</string>
   <string id="20417">Writer</string>
-  <string id="20418">Clean file and folder names</string>
+  <string id="20418"></string>
+  <string id="20419">Show metadata in files view</string>
 
   <string id="20420">Never</string>
   <string id="20421">If only one season</string>
@@ -1885,6 +1897,7 @@
   <string id="20453">episodes</string>
   <string id="20454">Listener</string>
   <string id="20455">Listeners</string>
+  <string id="20456">Set movieset fanart</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>
@@ -2173,6 +2186,11 @@
   <string id="24041">Install from zip file</string>
   <string id="24042">Downloading %i%%</string>
   <string id="24043">Available Updates</string>
+  <string id="24044">Dependencies not met</string>
+  <string id="24045">Add-on does not have the correct structure</string>
+  <string id="24046">%s is used by the following installed add-on(s)</string>
+  <string id="24047">This add-on cannot be uninstalled</string>
+  <string id="24048">Rollback</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
@@ -2201,6 +2219,8 @@
   <string id="24089">Add-on restarts</string>
   <string id="24090">Lock Add-on manager</string>
 
+  <string id="24094">(current)</string>
+  <string id="24095">(blacklisted)</string>
   <string id="24096">Add-on has been marked as broken in repository.</string>
   <string id="24097">Would you like to disable it on your system?</string>
   <string id="24098">Broken</string>
@@ -2289,6 +2309,11 @@
   <string id="33082">Path to script</string>
   <string id="33083">Enable custom script button</string>
 
+  <string id="33100">Failed to start</string>
+  <string id="33101">Webserver</string>
+  <string id="33102">Event Server</string>
+  <string id="33103">Remote communication server</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2310,4 +2335,6 @@
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
 
+  <string id="34201">Can't find a next item to play</string>
+  <string id="34202">Can't find a previous item to play</string>
 </strings>

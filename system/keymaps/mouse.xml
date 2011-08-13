@@ -1,0 +1,14 @@
+<keymap>
+  <global>
+    <mouse>
+      <leftclick>leftclick</leftclick>
+      <middleclick>middleclick</middleclick>
+      <rightclick>rightclick</rightclick>
+      <doubleclick>doubleclick</doubleclick>
+      <wheeldown>wheeldown</wheeldown>
+      <wheelup>wheelup</wheelup>
+      <mousedrag>mousedrag</mousedrag>
+      <mousemove>mousemove</mousemove>
+    </mouse>
+  </global>
+</keymap>

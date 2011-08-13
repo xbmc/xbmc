@@ -19,9 +19,7 @@
  *
  */
 #include "Variant.h"
-#include "PlatformDefs.h"
 #include <string.h>
-#include "jsoncpp/include/json/value.h"
 
 using namespace std;
 
@@ -31,14 +29,33 @@ CVariant::CVariant(VariantType type)
 {
   m_type = type;
 
-  if (isString())
-    m_data.string = NULL;
-  else if (isArray())
-    m_data.array = new VariantArray();
-  else if (isObject())
-    m_data.map = new VariantMap();
-  else
-    memset(&m_data, 0, sizeof(m_data));
+  switch (type)
+  {
+    case VariantTypeInteger:
+      m_data.integer = 0;
+      break;
+    case VariantTypeUnsignedInteger:
+      m_data.unsignedinteger = 0;
+      break;
+    case VariantTypeBoolean:
+      m_data.boolean = false;
+      break;
+    case VariantTypeString:
+      m_data.string = NULL;
+      break;
+    case VariantTypeDouble:
+      m_data.dvalue = 0.0;
+      break;
+    case VariantTypeArray:
+      m_data.array = new VariantArray();
+      break;
+    case VariantTypeObject:
+      m_data.map = new VariantMap();
+      break;
+    default:
+      memset(&m_data, 0, sizeof(m_data));
+      break;
+  }
 }
 
 CVariant::CVariant(int integer)
@@ -65,10 +82,16 @@ CVariant::CVariant(uint64_t unsignedinteger)
   m_data.unsignedinteger = unsignedinteger;
 }
 
-CVariant::CVariant(float fFloat)
+CVariant::CVariant(double value)
 {
-  m_type = VariantTypeFloat;
-  m_data.fFloat = fFloat;
+  m_type = VariantTypeDouble;
+  m_data.dvalue = value;
+}
+
+CVariant::CVariant(float value)
+{
+  m_type = VariantTypeDouble;
+  m_data.dvalue = (double)value;
 }
 
 CVariant::CVariant(bool boolean)
@@ -81,6 +104,12 @@ CVariant::CVariant(const char *str)
 {
   m_type = VariantTypeString;
   m_data.string = new string(str);
+}
+
+CVariant::CVariant(const char *str, unsigned int length)
+{
+  m_type = VariantTypeString;
+  m_data.string = new string(str, length);
 }
 
 CVariant::CVariant(const string &str)
@@ -97,17 +126,17 @@ CVariant::CVariant(const CVariant &variant)
 
 CVariant::~CVariant()
 {
-  if (isString() && m_data.string)
+  if (m_type == VariantTypeString && m_data.string)
   {
     delete m_data.string;
     m_data.string = NULL;
   }
-  else if (isArray() && m_data.array)
+  else if (m_type == VariantTypeArray && m_data.array)
   {
     delete m_data.array;
     m_data.array = NULL;
   }
-  else if (isObject() && m_data.map)
+  else if (m_type == VariantTypeObject && m_data.map)
   {
     delete m_data.map;
     m_data.map = NULL;
@@ -129,9 +158,9 @@ bool CVariant::isBoolean() const
   return m_type == VariantTypeBoolean;
 }
 
-bool CVariant::isFloat() const
+bool CVariant::isDouble() const
 {
-  return m_type == VariantTypeFloat;
+  return m_type == VariantTypeDouble;
 }
 
 bool CVariant::isString() const
@@ -154,9 +183,14 @@ bool CVariant::isNull() const
   return m_type == VariantTypeNull || m_type == VariantTypeConstNull;
 }
 
+CVariant::VariantType CVariant::type() const
+{
+  return m_type;
+}
+
 int64_t CVariant::asInteger(int64_t fallback) const
 {
-  if (isInteger())
+  if (m_type == VariantTypeInteger)
     return m_data.integer;
   else
     return fallback;
@@ -164,23 +198,31 @@ int64_t CVariant::asInteger(int64_t fallback) const
 
 uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
 {
-  if (isUnsignedInteger())
+  if (m_type == VariantTypeUnsignedInteger)
     return m_data.unsignedinteger;
+  else
+    return fallback;
+}
+
+double CVariant::asDouble(double fallback) const
+{
+  if (m_type == VariantTypeDouble)
+    return m_data.dvalue;
   else
     return fallback;
 }
 
 float CVariant::asFloat(float fallback) const
 {
-  if (isFloat())
-    return m_data.fFloat;
+  if (m_type == VariantTypeDouble)
+    return (float)m_data.dvalue;
   else
     return fallback;
 }
 
 bool CVariant::asBoolean(bool fallback) const
 {
-  if (isBoolean())
+  if (m_type == VariantTypeBoolean)
     return m_data.boolean;
   else
     return fallback;
@@ -188,50 +230,10 @@ bool CVariant::asBoolean(bool fallback) const
 
 const char *CVariant::asString(const char *fallback) const
 {
-  if (isString())
+  if (m_type == VariantTypeString)
     return m_data.string->c_str();
   else
     return fallback;
-}
-
-void CVariant::toJsonValue(Json::Value& value) const
-{
-  switch (m_type)
-  {
-  case VariantTypeInteger:
-    value = (int32_t) m_data.integer;
-    break;
-  case VariantTypeUnsignedInteger:
-    value = (uint32_t) m_data.unsignedinteger;
-    break;
-  case VariantTypeBoolean:
-    value = m_data.boolean;
-    break;
-  case VariantTypeFloat:
-    value = m_data.fFloat;
-    break;
-  case VariantTypeString:
-    value = (*m_data.string);
-    break;
-  case VariantTypeArray:
-    for (unsigned int i = 0; i < size(); i++)
-    {
-      Json::Value array;
-      (*m_data.array)[i].toJsonValue(array);
-      value.append(array);
-    }
-    break;
-  case VariantTypeObject:
-    for (VariantMap::iterator itr = m_data.map->begin(); itr != m_data.map->end(); itr++)
-    {
-      Json::Value object;
-      itr->second.toJsonValue(object);
-      value[itr->first] = object;
-    }
-    break;
-  default:
-    break;
-  }
 }
 
 CVariant &CVariant::operator[](string key)
@@ -242,7 +244,15 @@ CVariant &CVariant::operator[](string key)
     m_data.map = new VariantMap();
   }
 
-  if (isObject())
+  if (m_type == VariantTypeObject)
+    return (*m_data.map)[key];
+  else
+    return ConstNullVariant;
+}
+
+const CVariant &CVariant::operator[](std::string key) const
+{
+  if (m_type == VariantTypeObject)
     return (*m_data.map)[key];
   else
     return ConstNullVariant;
@@ -250,7 +260,15 @@ CVariant &CVariant::operator[](string key)
 
 CVariant &CVariant::operator[](unsigned int position)
 {
-  if (isArray() && size() > position)
+  if (m_type == VariantTypeArray && size() > position)
+    return (*m_data.array)[position];
+  else
+    return ConstNullVariant;
+}
+
+const CVariant &CVariant::operator[](unsigned int position) const
+{
+  if (m_type == VariantTypeArray && size() > position)
     return (*m_data.array)[position];
   else
     return ConstNullVariant;
@@ -274,8 +292,8 @@ CVariant &CVariant::operator=(const CVariant &rhs)
   case VariantTypeBoolean:
     m_data.boolean = rhs.m_data.boolean;
     break;
-  case VariantTypeFloat:
-    m_data.fFloat = rhs.m_data.fFloat;
+  case VariantTypeDouble:
+    m_data.dvalue = rhs.m_data.dvalue;
     break;
   case VariantTypeString:
     m_data.string = new string(rhs.m_data.string->c_str());
@@ -293,6 +311,41 @@ CVariant &CVariant::operator=(const CVariant &rhs)
   return *this;
 }
 
+bool CVariant::operator==(const CVariant &rhs) const
+{
+  if (m_type == rhs.m_type)
+  {
+    switch (m_type)
+    {
+    case VariantTypeInteger:
+      return m_data.integer == rhs.m_data.integer;
+      break;
+    case VariantTypeUnsignedInteger:
+      return m_data.unsignedinteger == rhs.m_data.unsignedinteger;
+      break;
+    case VariantTypeBoolean:
+      return m_data.boolean == rhs.m_data.boolean;
+      break;
+    case VariantTypeDouble:
+      return m_data.dvalue == rhs.m_data.dvalue;
+      break;
+    case VariantTypeString:
+      return (*m_data.string) == (*rhs.m_data.string);
+      break;
+    case VariantTypeArray:
+      return (*m_data.array) == (*rhs.m_data.array);
+      break;
+    case VariantTypeObject:
+      return (*m_data.map) == (*rhs.m_data.map);
+      break;
+    default:
+      break;
+    }
+  }
+
+  return false;
+}
+
 void CVariant::push_back(CVariant variant)
 {
   if (m_type == VariantTypeNull)
@@ -301,25 +354,116 @@ void CVariant::push_back(CVariant variant)
     m_data.array = new VariantArray();
   }
 
-  if (isArray())
+  if (m_type == VariantTypeArray)
     m_data.array->push_back(variant);
+}
+
+void CVariant::append(CVariant variant)
+{
+  push_back(variant);
+}
+
+const char *CVariant::c_str() const
+{
+  if (m_type == VariantTypeString)
+    return m_data.string->c_str();
+  else
+    return NULL;
+}
+
+void CVariant::swap(CVariant &rhs)
+{
+  VariantType  temp_type = m_type;
+  VariantUnion temp_data = m_data;
+
+  m_type = rhs.m_type;
+  m_data = rhs.m_data;
+
+  rhs.m_type = temp_type;
+  rhs.m_data = temp_data;
+}
+
+CVariant::iterator_array CVariant::begin_array()
+{
+  if (m_type == VariantTypeArray)
+    return m_data.array->begin();
+  else
+    return iterator_array();
+}
+
+CVariant::const_iterator_array CVariant::begin_array() const
+{
+  if (m_type == VariantTypeArray)
+    return m_data.array->begin();
+  else
+    return const_iterator_array();
+}
+
+CVariant::iterator_array CVariant::end_array()
+{
+  if (m_type == VariantTypeArray)
+    return m_data.array->end();
+  else
+    return iterator_array();
+}
+
+CVariant::const_iterator_array CVariant::end_array() const
+{
+  if (m_type == VariantTypeArray)
+    return m_data.array->end();
+  else
+    return const_iterator_array();
+}
+
+CVariant::iterator_map CVariant::begin_map()
+{
+  if (m_type == VariantTypeObject)
+    return m_data.map->begin();
+  else
+    return iterator_map();
+}
+
+CVariant::const_iterator_map CVariant::begin_map() const
+{
+  if (m_type == VariantTypeObject)
+    return m_data.map->begin();
+  else
+    return const_iterator_map();
+}
+
+CVariant::iterator_map CVariant::end_map()
+{
+  if (m_type == VariantTypeObject)
+    return m_data.map->end();
+  else
+    return iterator_map();
+}
+
+CVariant::const_iterator_map CVariant::end_map() const
+{
+  if (m_type == VariantTypeObject)
+    return m_data.map->end();
+  else
+    return const_iterator_map();
 }
 
 unsigned int CVariant::size() const
 {
-  if (isObject())
+  if (m_type == VariantTypeObject)
     return m_data.map->size();
-  else if (isArray())
+  else if (m_type == VariantTypeArray)
     return m_data.array->size();
+  else if (m_type == VariantTypeString)
+    return m_data.string->size();
   else
     return 0;
 }
 
 bool CVariant::empty() const
 {
-  if (isObject())
+  if (m_type == VariantTypeObject)
     return m_data.map->empty();
-  else if (isArray())
+  else if (m_type == VariantTypeArray)
     return m_data.array->empty();
   else
     return true;
@@ -327,9 +471,9 @@ bool CVariant::empty() const
 
 void CVariant::clear()
 {
-  if (isObject())
+  if (m_type == VariantTypeObject)
     m_data.map->clear();
-  else if (isArray())
+  else if (m_type == VariantTypeArray)
     m_data.array->clear();
 }
 
@@ -340,7 +484,7 @@ void CVariant::erase(std::string key)
     m_type = VariantTypeObject;
     m_data.map = new VariantMap();
   }
-  else if (isObject())
+  else if (m_type == VariantTypeObject)
     m_data.map->erase(key);
 }
 
@@ -352,58 +496,14 @@ void CVariant::erase(unsigned int position)
     m_data.array = new VariantArray();
   }
 
-  if (isArray() && position < size())
+  if (m_type == VariantTypeArray && position < size())
     m_data.array->erase(m_data.array->begin() + position);
 }
 
-#include <stdio.h>
-
-void CVariant::debug()
+bool CVariant::isMember(string key) const
 {
-  internaldebug();
-  printf("\n");
-}
+  if (m_type == VariantTypeObject)
+    return m_data.map->find(key) != m_data.map->end();
 
-void CVariant::internaldebug()
-{
-  switch (m_type)
-  {
-  case VariantTypeInteger:
-    printf("int: %"PRIu64"", m_data.integer);
-    break;
-  case VariantTypeUnsignedInteger:
-    printf("uint: %"PRIu64"", m_data.unsignedinteger);
-    break;
-  case VariantTypeFloat:
-    printf("float: %f", m_data.fFloat);
-    break;
-  case VariantTypeBoolean:
-    printf("bool: %s", m_data.boolean ? "true" : "false");
-    break;
-  case VariantTypeString:
-    printf("string: \"%s\"", m_data.string->c_str());
-    break;
-  case VariantTypeArray:
-    printf("array: [");
-    for (unsigned int i = 0; i < size(); i++)
-    {
-      (*m_data.array)[i].internaldebug();
-      if (i < size() - 1)
-        printf(", ");
-    }
-    printf("]");
-    break;
-  case VariantTypeObject:
-    printf("map: [");
-    for (VariantMap::iterator itr = m_data.map->begin(); itr != m_data.map->end(); itr++)
-    {
-      printf("key='%s' value='", itr->first.c_str());
-      itr->second.internaldebug();
-      printf("' ");
-    }
-    printf("]");
-    break;
-  default:
-    break;
-  }
+  return false;
 }

@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: airplanez-->
 <!--Email: airplanez@gmail.com-->
-<!--Date of translation: 12/20/2010-->
+<!--Date of translation: 01/20/2011-->
 <!--$Revision$-->
 <strings>
   <string id="0">프로그램</string>
@@ -1302,6 +1302,7 @@
   <string id="15275">%name% 주간 트랙 차트</string>
   <string id="15276">%name% 의 이웃 Last.fm 라디오 듣기</string>
   <string id="15277">%name% 의 개인 Last.fm 라디오 듣기</string>
+  <string id="15278">%name% 의 모든 Last.fm 라디오 듣기</string>
   <string id="15279">Last.fm 에서 목록을 검색중...</string>
   <string id="15280">Last.fm 에서 목록을 검색할수 없음...</string>
   <string id="15281">찾을 관련 아티스트 이름을 입력</string>

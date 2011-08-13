@@ -19,23 +19,8 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/Python.h"
-#endif
-#include "../XBPythonDll.h"
+#include <Python.h>
+
 #include "listitem.h"
 #include "pyutil.h"
 #include "video/VideoInfoTag.h"
@@ -45,12 +30,6 @@
 
 using namespace std;
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -119,7 +98,7 @@ namespace PYXBMC
     }
     if (path && PyXBMCGetUnicodeString(utf8String, path, 1))
     {
-      self->item->m_strPath = utf8String;
+      self->item->SetPath(utf8String);
     }
     return (PyObject*)self;
   }
@@ -432,12 +411,12 @@ namespace PYXBMC
     }
 
     PyObject *key, *value;
-    int pos = 0;
+    Py_ssize_t pos = 0;
 
     PyXBMCGUILock();
 
     CStdString tmp;
-    while (PyDict_Next(pInfoLabels, (Py_ssize_t*)&pos, &key, &value)) {
+    while (PyDict_Next(pInfoLabels, &pos, &key, &value)) {
       if (strcmpi(cType, "video") == 0)
       {
         if (strcmpi(PyString_AsString(key), "year") == 0)
@@ -607,7 +586,7 @@ namespace PYXBMC
           if (strcmpi(PyString_AsString(key), "title") == 0)
             self->item->m_strTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
-            self->item->m_strPath = tmp;
+            self->item->SetPath(tmp);
           else if (strcmpi(PyString_AsString(key), "date") == 0)
           {
             if (strlen(tmp) == 10)
@@ -858,7 +837,7 @@ namespace PYXBMC
       return NULL;
     // set path
     PyXBMCGUILock();
-    self->item->m_strPath = path;
+    self->item->SetPath(path);
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -900,12 +879,6 @@ namespace PYXBMC
     "  - listitem = xbmcgui.ListItem('Casino Royale', '[PG-13]', 'blank-poster.tbn', 'poster.tbn', path='f:\\\\movies\\\\casino_royale.mov')\n");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
   PyTypeObject ListItem_Type;
 

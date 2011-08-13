@@ -41,6 +41,9 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #include "utils/PCMRemap.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
+#if defined(__APPLE__)
+  #include "osx/DarwinUtils.h"
+#endif
 
 using namespace std;
 using namespace ADDON;
@@ -252,6 +255,7 @@ void CGUISettings::Initialize()
   // My Weather settings
   AddGroup(2, 8);
   CSettingsCategory* wea = AddCategory(2, "weather", 16000);
+  AddInt(NULL, "weather.currentlocation", 0, 1, 1, 1, 3, SPIN_CONTROL_INT_PLUS);
   AddString(wea, "weather.areacode1", 14019, "USNY0996 - New York, NY", BUTTON_CONTROL_STANDARD);
   AddString(wea, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
   AddString(wea, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
@@ -325,7 +329,7 @@ void CGUISettings::Initialize()
   encoders.insert(make_pair(34001,CDDARIP_ENCODER_VORBIS));
   encoders.insert(make_pair(34002,CDDARIP_ENCODER_WAV));
   encoders.insert(make_pair(34005,CDDARIP_ENCODER_FLAC));
-  AddInt(acd, "audiocds.encoder", 621, CDDARIP_ENCODER_LAME, encoders, SPIN_CONTROL_TEXT);
+  AddInt(acd, "audiocds.encoder", 621, CDDARIP_ENCODER_FLAC, encoders, SPIN_CONTROL_TEXT);
 
   map<int,int> qualities;
   qualities.insert(make_pair(604,CDDARIP_QUALITY_CBR));
@@ -357,6 +361,13 @@ void CGUISettings::Initialize()
   // System settings
   AddGroup(4, 13000);
   CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
+
+#if (defined(__APPLE__) && defined(__arm__))
+  // define but hide display, resolution and blankdisplays settings on atv2/ios, they are not user controlled
+  AddInt(NULL, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
+  AddInt(NULL, "videoscreen.resolution", 131, -1, 0, 1, INT_MAX, SPIN_CONTROL_TEXT);
+  AddBool(NULL, "videoscreen.blankdisplays", 13130, false);
+#else
   // this setting would ideally not be saved, as its value is systematically derived from videoscreen.screenmode.
   // contains a DISPLAYMODE
   AddInt(vs, "videoscreen.screen", 240, 0, -1, 1, g_Windowing.GetNumScreens(), SPIN_CONTROL_TEXT);
@@ -395,6 +406,7 @@ void CGUISettings::Initialize()
   AddBool(vs, "videoscreen.blankdisplays", 13130, false);
   AddSeparator(vs, "videoscreen.sep1");
 #endif
+#endif
 
   map<int,int> vsync;
 #if defined(_LINUX) && !defined(__APPLE__)
@@ -428,8 +440,21 @@ void CGUISettings::Initialize()
   AddInt(ao, "audiooutput.channellayout", 34100, PCM_LAYOUT_2_0, channelLayout, SPIN_CONTROL_TEXT);
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
 
+#if (defined(__APPLE__) && defined(__arm__))
+  if (g_sysinfo.IsAppleTV2())
+  {
+    AddBool(ao, "audiooutput.ac3passthrough", 364, false);
+    AddBool(ao, "audiooutput.dtspassthrough", 254, false);
+  }
+  else
+  {
+    AddBool(NULL, "audiooutput.ac3passthrough", 364, false);
+    AddBool(NULL, "audiooutput.dtspassthrough", 254, false);
+  }
+#else
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);
   AddBool(ao, "audiooutput.dtspassthrough", 254, true);
+#endif
   AddBool(NULL, "audiooutput.passthroughaac", 299, false);
   AddBool(NULL, "audiooutput.passthroughmp1", 300, false);
   AddBool(NULL, "audiooutput.passthroughmp2", 301, false);
@@ -450,19 +475,27 @@ void CGUISettings::Initialize()
 #endif
 
   CSettingsCategory* in = AddCategory(4, "input", 14094);
-#ifdef __APPLE__
+#if defined(__APPLE__)
   map<int,int> remotemode;
   remotemode.insert(make_pair(13610,APPLE_REMOTE_DISABLED));
   remotemode.insert(make_pair(13611,APPLE_REMOTE_STANDARD));
   remotemode.insert(make_pair(13612,APPLE_REMOTE_UNIVERSAL));
   remotemode.insert(make_pair(13613,APPLE_REMOTE_MULTIREMOTE));
   AddInt(in, "input.appleremotemode", 13600, APPLE_REMOTE_STANDARD, remotemode, SPIN_CONTROL_TEXT);
+#if !defined(__arm__)
   AddBool(in, "input.appleremotealwayson", 13602, false);
+#else
+  AddBool(NULL, "input.appleremotealwayson", 13602, false);
+#endif
   AddInt(NULL, "input.appleremotesequencetime", 13603, 500, 50, 50, 1000, SPIN_CONTROL_INT_PLUS, MASK_MS, TEXT_OFF);
   AddSeparator(in, "input.sep1");
 #endif
   AddBool(in, "input.remoteaskeyboard", 21449, false);
+#if (defined(__APPLE__) && defined(__arm_))
+  AddBool(NULL, "input.enablemouse", 21369, true);
+#else
   AddBool(in, "input.enablemouse", 21369, true);
+#endif
 
   CSettingsCategory* pwm = AddCategory(4, "powermanagement", 14095);
   // Note: Application.cpp might hide powersaving settings if not supported.
@@ -537,6 +570,8 @@ void CGUISettings::Initialize()
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
 
 #ifdef HAS_DX
+  if (g_sysinfo.IsVistaOrHigher())
+    renderers.insert(make_pair(16319, RENDER_METHOD_DXVA));
   renderers.insert(make_pair(13431, RENDER_METHOD_D3D_PS));
   renderers.insert(make_pair(13419, RENDER_METHOD_SOFTWARE));
 #endif
@@ -566,6 +601,9 @@ void CGUISettings::Initialize()
 #ifdef HAVE_LIBOPENMAX
   AddBool(vp, "videoplayer.useomx", 13430, true);
 #endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  AddBool(g_sysinfo.HasVideoToolBoxDecoder() ? vp: NULL, "videoplayer.usevideotoolbox", 13432, true);
+#endif
 
 #ifdef HAS_GL
   AddBool(NULL, "videoplayer.usepbo", 13424, true);
@@ -574,8 +612,13 @@ void CGUISettings::Initialize()
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   //AddInt(5, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)CUSTOM+MAX_RESOLUTIONS, SPIN_CONTROL_TEXT);
   AddInt(NULL, "videoplayer.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
+#if !(defined(__APPLE__) && defined(__arm__))
   AddBool(vp, "videoplayer.adjustrefreshrate", 170, false);
   AddInt(vp, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
+#else
+  AddBool(NULL, "videoplayer.adjustrefreshrate", 170, false);
+  AddInt(NULL, "videoplayer.pauseafterrefreshchange", 13550, 0, 0, 1, MAXREFRESHCHANGEDELAY, SPIN_CONTROL_TEXT);
+#endif
   //sync settings not available on windows gl build
 #if defined(_WIN32) && defined(HAS_GL)
   #define SYNCSETTINGS 0
@@ -611,7 +654,7 @@ void CGUISettings::Initialize()
   AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, SELECT_ACTION_CHOOSE, 1, SELECT_ACTION_INFO, SPIN_CONTROL_TEXT);
   AddBool(NULL, "myvideos.treatstackasfile", 20051, true);
   AddBool(vid, "myvideos.extractflags",20433, true);
-  AddBool(vid, "myvideos.cleanstrings", 20418, false);
+  AddBool(vid, "myvideos.filemetadata", 20419, true);
   AddBool(NULL, "myvideos.extractthumb",20433, true);
 
   CSettingsCategory* sub = AddCategory(5, "subtitles", 287);
@@ -717,10 +760,21 @@ void CGUISettings::Initialize()
   AddString(loc, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
-#if defined(_LINUX) && !defined(__APPLE__)
-  AddSeparator(loc, "locale.sep1");
-  AddString(loc, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
-  AddString(loc, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+  
+  bool use_timezone = false;
+  
+#if defined(_LINUX)
+#if defined(__APPLE__)
+  if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
+#endif
+    use_timezone = true;  
+  
+  if (use_timezone)
+  {  
+    AddSeparator(loc, "locale.sep1");
+    AddString(loc, "locale.timezonecountry", 14079, g_timezone.GetCountryByTimezone(g_timezone.GetOSConfiguredTimezone()), SPIN_CONTROL_TEXT);
+    AddString(loc, "locale.timezone", 14080, g_timezone.GetOSConfiguredTimezone(), SPIN_CONTROL_TEXT);
+  }	
 #endif
 #ifdef HAS_TIME_SERVER
   AddSeparator(loc, "locale.sep2");
@@ -930,6 +984,7 @@ void CGUISettings::AddHex(CSettingsCategory* cat, const char *strSetting, int iL
 int CGUISettings::GetInt(const char *strSetting) const
 {
   ASSERT(settingsMap.size());
+
   constMapIter it = settingsMap.find(CStdString(strSetting).ToLower());
   if (it != settingsMap.end())
   {
@@ -1109,15 +1164,25 @@ void CGUISettings::LoadXML(TiXmlElement *pRootElement, bool hideSettings /* = fa
   m_replayGain.iNoGainPreAmp = GetInt("musicplayer.replaygainnogainpreamp");
   m_replayGain.iType = GetInt("musicplayer.replaygaintype");
   m_replayGain.bAvoidClipping = GetBool("musicplayer.replaygainavoidclipping");
-
-#if defined(_LINUX) && !defined(__APPLE__)
-  CStdString timezone = GetString("locale.timezone");
-  if(timezone == "0" || timezone.IsEmpty())
-  {
-    timezone = g_timezone.GetOSConfiguredTimezone();
-    SetString("locale.timezone", timezone);
+  
+  bool use_timezone = false;
+  
+#if defined(_LINUX)
+#if defined(__APPLE__) 
+  if (g_sysinfo.IsAppleTV2() && GetIOSVersion() < 4.3)
+#endif
+    use_timezone = true;
+  
+  if (use_timezone)
+  {  
+    CStdString timezone = GetString("locale.timezone");
+    if(timezone == "0" || timezone.IsEmpty())
+    {
+      timezone = g_timezone.GetOSConfiguredTimezone();
+      SetString("locale.timezone", timezone);
+    }
+    g_timezone.SetTimezone(timezone);	
   }
-  g_timezone.SetTimezone(timezone);
 #endif
 }
 

@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"
@@ -40,7 +41,9 @@ CSectionLoader::CSectionLoader(void)
 {}
 
 CSectionLoader::~CSectionLoader(void)
-{}
+{
+  UnloadAll();
+}
 
 bool CSectionLoader::IsLoaded(const CStdString& strSection)
 {
@@ -109,7 +112,7 @@ void CSectionLoader::Unload(const CStdString& strSection)
       section.m_lReferenceCount--;
       if ( 0 == section.m_lReferenceCount)
       {
-        section.m_unloadDelayStartTick = CTimeUtils::GetTimeMS();
+        section.m_unloadDelayStartTick = XbmcThreads::SystemClockMillis();
         return ;
       }
     }
@@ -164,7 +167,7 @@ void CSectionLoader::UnloadDLL(const CStdString &dllname)
       if (0 == dll.m_lReferenceCount)
       {
         if (dll.m_bDelayUnload)
-          dll.m_unloadDelayStartTick = CTimeUtils::GetTimeMS();
+          dll.m_unloadDelayStartTick = XbmcThreads::SystemClockMillis();
         else
         {
           CLog::Log(LOGDEBUG,"SECTION:UnloadDll(%s)", dllname.c_str());
@@ -187,7 +190,7 @@ void CSectionLoader::UnloadDelayed()
   while( i != g_sectionLoader.m_vecLoadedSections.end() )
   {
     CSection& section = *i;
-    if( section.m_lReferenceCount == 0 && CTimeUtils::GetTimeMS() - section.m_unloadDelayStartTick > UNLOAD_DELAY)
+    if( section.m_lReferenceCount == 0 && XbmcThreads::SystemClockMillis() - section.m_unloadDelayStartTick > UNLOAD_DELAY)
     {
       CLog::Log(LOGDEBUG,"SECTION:UnloadDelayed(SECTION: %s)", section.m_strSectionName.c_str());
 #ifdef HAS_SECTIONS
@@ -203,7 +206,7 @@ void CSectionLoader::UnloadDelayed()
   for (int i = 0; i < (int)g_sectionLoader.m_vecLoadedDLLs.size(); ++i)
   {
     CDll& dll = g_sectionLoader.m_vecLoadedDLLs[i];
-    if (dll.m_lReferenceCount == 0 && CTimeUtils::GetTimeMS() - dll.m_unloadDelayStartTick > UNLOAD_DELAY)
+    if (dll.m_lReferenceCount == 0 && XbmcThreads::SystemClockMillis() - dll.m_unloadDelayStartTick > UNLOAD_DELAY)
     {
       CLog::Log(LOGDEBUG,"SECTION:UnloadDelayed(DLL: %s)", dll.m_strDllName.c_str());
 

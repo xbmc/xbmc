@@ -23,6 +23,7 @@
 #include "system.h"
 #include "PlatformInclude.h"
 #include "LinuxTimezone.h"
+#include "utils/SystemInfo.h"
 #ifdef __APPLE__
 #include "OSXGNUReplacements.h"
 #endif
@@ -144,12 +145,22 @@ CStdString CLinuxTimezone::GetCountryByTimezone(const CStdString timezone)
 
 void CLinuxTimezone::SetTimezone(CStdString timezoneName)
 {
-#ifndef __APPLE__
-   static char env_var[255];
-   sprintf(env_var, "TZ=:%s", timezoneName.c_str());
-   putenv(env_var);
-   tzset();
+  bool use_timezone = false;
+  
+#ifndef __APPLE__ 
+  use_timezone = true;
+#else
+  if (g_sysinfo.IsAppleTV2())
+    use_timezone = true;  
 #endif
+  
+  if (use_timezone)
+  {
+    static char env_var[255];
+    sprintf(env_var, "TZ=:%s", timezoneName.c_str());
+    putenv(env_var);
+    tzset();
+  }
 }
 
 CStdString CLinuxTimezone::GetOSConfiguredTimezone()

@@ -121,7 +121,7 @@ void CLastFMDirectory::AddEntry(int iString, CStdString strPath, CStdString strI
 
   CFileItemPtr pItem(new CFileItem);
   pItem->SetLabel(strLabel);
-  pItem->m_strPath = strPath;
+  pItem->SetPath(strPath);
   pItem->m_bIsFolder = bFolder;
   pItem->SetLabelPreformated(true);
   //the extra info is used in the mediawindows to determine which items are needed in the contextmenu
@@ -162,7 +162,7 @@ void CLastFMDirectory::AddListEntry(const char *name, const char *artist, const 
   }
 
   pItem->SetLabel(strName);
-  pItem->m_strPath = strPath;
+  pItem->SetPath(strPath);
   pItem->m_bIsFolder = true;
   pItem->SetLabelPreformated(true);
 

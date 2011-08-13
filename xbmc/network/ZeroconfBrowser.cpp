@@ -58,6 +58,11 @@ CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection),m_started
   AddServiceType("_ftp._tcp.");
   AddServiceType("_htsp._tcp.");
   AddServiceType("_daap._tcp.");
+  AddServiceType("_webdav._tcp.");
+#ifdef HAS_FILESYSTEM_NFS
+  AddServiceType("_nfs._tcp.");  
+#endif// HAS_FILESYSTEM_NFS
+  AddServiceType("_sftp-ssh._tcp."); 
 }
 
 CZeroconfBrowser::~CZeroconfBrowser()
@@ -203,6 +208,17 @@ void CZeroconfBrowser::ZeroconfService::SetIP(const CStdString& fcr_ip)
 void CZeroconfBrowser::ZeroconfService::SetPort(int f_port)
 {
   m_port = f_port;
+}
+
+void CZeroconfBrowser::ZeroconfService::SetTxtRecords(const tTxtRecordMap& txt_records)
+{
+  m_txtrecords_map = txt_records;
+  
+  CLog::Log(LOGDEBUG,"CZeroconfBrowser: dump txt-records");
+  for(tTxtRecordMap::const_iterator it = m_txtrecords_map.begin(); it != m_txtrecords_map.end(); ++it)
+  {
+    CLog::Log(LOGDEBUG,"CZeroconfBrowser:  key: %s value: %s",it->first.c_str(), it->second.c_str());
+  }
 }
 
 CStdString CZeroconfBrowser::ZeroconfService::toPath(const ZeroconfService& fcr_service)

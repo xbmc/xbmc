@@ -1,0 +1,45 @@
+--- a/Modules/_ctypes/_ctypes.c	(revision 74955)
++++ b/Modules/_ctypes/_ctypes.c	(working copy)
+@@ -5521,36 +5521,42 @@
+ 	Struct_Type.tp_base = &CData_Type;
+ 	if (PyType_Ready(&Struct_Type) < 0)
+ 		return;
++	Py_INCREF(&Struct_Type);
+ 	PyModule_AddObject(m, "Structure", (PyObject *)&Struct_Type);
+ 
+ 	Py_TYPE(&Union_Type) = &UnionType_Type;
+ 	Union_Type.tp_base = &CData_Type;
+ 	if (PyType_Ready(&Union_Type) < 0)
+ 		return;
++	Py_INCREF(&Union_Type);
+ 	PyModule_AddObject(m, "Union", (PyObject *)&Union_Type);
+ 
+ 	Py_TYPE(&Pointer_Type) = &PointerType_Type;
+ 	Pointer_Type.tp_base = &CData_Type;
+ 	if (PyType_Ready(&Pointer_Type) < 0)
+ 		return;
++	Py_INCREF(&Pointer_Type);
+ 	PyModule_AddObject(m, "_Pointer", (PyObject *)&Pointer_Type);
+ 
+ 	Py_TYPE(&Array_Type) = &ArrayType_Type;
+ 	Array_Type.tp_base = &CData_Type;
+ 	if (PyType_Ready(&Array_Type) < 0)
+ 		return;
++	Py_INCREF(&Array_Type);
+ 	PyModule_AddObject(m, "Array", (PyObject *)&Array_Type);
+ 
+ 	Py_TYPE(&Simple_Type) = &SimpleType_Type;
+ 	Simple_Type.tp_base = &CData_Type;
+ 	if (PyType_Ready(&Simple_Type) < 0)
+ 		return;
++	Py_INCREF(&Simple_Type);
+ 	PyModule_AddObject(m, "_SimpleCData", (PyObject *)&Simple_Type);
+ 
+ 	Py_TYPE(&CFuncPtr_Type) = &CFuncPtrType_Type;
+ 	CFuncPtr_Type.tp_base = &CData_Type;
+ 	if (PyType_Ready(&CFuncPtr_Type) < 0)
+ 		return;
++	Py_INCREF(&CFuncPtr_Type);
+ 	PyModule_AddObject(m, "CFuncPtr", (PyObject *)&CFuncPtr_Type);
+ 
+ 	/*************************************************

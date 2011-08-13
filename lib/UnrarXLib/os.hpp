@@ -22,11 +22,6 @@
 #define LITTLE_ENDIAN
 #define NM  1024
 
-#if defined(_XBOX)
-#ifndef _WIN_32
-#define _WIN_32
-#endif  //_WIN_32
-#endif //_XBOX
 #ifdef _WIN_32
 
 //#define STRICT
@@ -40,13 +35,11 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 
-#if !defined(_XBOX)
+
 #include "system.h"
 #include <prsht.h>
-#elif defined(_LINUX)
+#if defined(_LINUX)
 #include "PlatformDefs.h"
-#else
-#include <xtl.h>
 #endif
 
 #endif

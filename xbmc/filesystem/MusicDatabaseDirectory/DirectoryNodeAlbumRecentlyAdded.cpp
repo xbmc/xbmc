@@ -31,7 +31,7 @@ CDirectoryNodeAlbumRecentlyAdded::CDirectoryNodeAlbumRecentlyAdded(const CStdStr
 
 }
 
-NODE_TYPE CDirectoryNodeAlbumRecentlyAdded::GetChildType()
+NODE_TYPE CDirectoryNodeAlbumRecentlyAdded::GetChildType() const
 {
   if (GetName()=="-1")
     return NODE_TYPE_ALBUM_RECENTLY_ADDED_SONGS;
@@ -39,7 +39,17 @@ NODE_TYPE CDirectoryNodeAlbumRecentlyAdded::GetChildType()
   return NODE_TYPE_SONG;
 }
 
-bool CDirectoryNodeAlbumRecentlyAdded::GetContent(CFileItemList& items)
+CStdString CDirectoryNodeAlbumRecentlyAdded::GetLocalizedName() const
+{
+  if (GetID() == -1)
+    return g_localizeStrings.Get(15102); // All Albums
+  CMusicDatabase db;
+  if (db.Open())
+    return db.GetAlbumById(GetID());
+  return "";
+}
+
+bool CDirectoryNodeAlbumRecentlyAdded::GetContent(CFileItemList& items) const
 {
   CMusicDatabase musicdatabase;
   if (!musicdatabase.Open())

@@ -183,7 +183,7 @@ bool FindFile::FastFind(const char *FindMask,const wchar *FindMaskW,struct FindD
 #ifdef _WIN_32
 HANDLE FindFile::Win32Find(HANDLE hFind,const char *Mask,const wchar *MaskW,struct FindData *fd)
 {
-#if !defined(_XBOX) && !defined(_LINUX)
+#if !defined(_LINUX)
 #ifndef _WIN_CE
   if (WinNT())
 #endif
@@ -237,7 +237,7 @@ HANDLE FindFile::Win32Find(HANDLE hFind,const char *Mask,const wchar *MaskW,stru
   }
 #ifndef _WIN_CE
   else
-#endif //_XBOX
+#endif
   {
     char CharMask[NM];
     if (Mask!=NULL && *Mask!=0)

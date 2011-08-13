@@ -31,12 +31,20 @@ CDirectoryNodeMusicVideoAlbum::CDirectoryNodeMusicVideoAlbum(const CStdString& s
 
 }
 
-NODE_TYPE CDirectoryNodeMusicVideoAlbum::GetChildType()
+NODE_TYPE CDirectoryNodeMusicVideoAlbum::GetChildType() const
 {
   return NODE_TYPE_TITLE_MUSICVIDEOS;
 }
 
-bool CDirectoryNodeMusicVideoAlbum::GetContent(CFileItemList& items)
+CStdString CDirectoryNodeMusicVideoAlbum::GetLocalizedName() const
+{
+  CVideoDatabase db;
+  if (db.Open())
+    return db.GetMusicVideoAlbumById(GetID());
+  return "";
+}
+
+bool CDirectoryNodeMusicVideoAlbum::GetContent(CFileItemList& items) const
 {
   CVideoDatabase videodatabase;
   if (!videodatabase.Open())

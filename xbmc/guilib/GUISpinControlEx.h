@@ -43,6 +43,7 @@ public:
   virtual ~CGUISpinControlEx(void);
   virtual CGUISpinControlEx *Clone() const { return new CGUISpinControlEx(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual void SetPosition(float posX, float posY);
   virtual float GetWidth() const { return m_buttonControl.GetWidth();};
@@ -55,7 +56,6 @@ public:
   virtual void SetInvalid();
   const CStdString GetCurrentLabel() const;
   void SetText(const std::string & aLabel) {m_buttonControl.SetLabel(aLabel);};
-  virtual void SetVisible(bool bVisible);
   virtual void SetEnabled(bool bEnable);
   virtual float GetXPosition() const { return m_buttonControl.GetXPosition();};
   virtual float GetYPosition() const { return m_buttonControl.GetYPosition();};
@@ -66,7 +66,7 @@ public:
   void SetItemInvalid(bool invalid);
 protected:
   virtual void RenderText(float posX, float width);
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   CGUIButtonControl m_buttonControl;
   float m_spinPosX;
 };

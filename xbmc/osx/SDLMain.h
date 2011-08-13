@@ -9,7 +9,10 @@
   public domain.
 */
 
+#if !defined(__arm__)
+
 #import <Cocoa/Cocoa.h>
 
 @interface XBMCDelegate : NSObject
 @end
+#endif

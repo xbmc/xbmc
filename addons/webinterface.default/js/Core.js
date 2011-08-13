@@ -51,6 +51,36 @@ function durationToString(duration) {
 	return result;
 }
 
+function timeToString(duration, showMilliseconds) {
+	if (!duration) {
+		return '00:00';
+	}
+	milliseconds = duration.milliseconds
+	var result = '';
+	if (duration.hours) {
+		result += (duration.hours < 10 ? '0' + duration.hours : duration.hours) + ':';
+	}
+	result += (duration.minutes < 10 ? '0' + duration.minutes : duration.minutes) + ':' + (duration.seconds < 10 ? '0' + duration.seconds : duration.seconds);
+	if (showMilliseconds) {
+		result += '.';
+		if (duration.milliseconds < 1000) {
+			result += '.';
+			if (duration.milliseconds < 100) {
+				result += '0';
+				if (duration.milliseconds < 10) {
+					result += '0';
+				}
+			}
+		}
+		result += duration.milliseconds;
+	}
+	return result;
+}
+
+function timeToDuration(time) {
+	return time.hours * 3600 + time.minutes * 60 + time.seconds;
+}
+
 function applyDeviceFixes() {
 	document.addEventListener('touchmove', function(e){ e.preventDefault(); });
 }
@@ -59,11 +89,35 @@ var commsErrorTimeout;
 
 function displayCommunicationError(m) {
 	clearTimeout(commsErrorTimeout);
-	var message = m||'Connection to server lost';
+	var message = m || 'Connection to server lost';
 	$('#commsErrorPanel').html(message).show();
 	commsErrorTimeout = setTimeout('hideCommunicationError()', 5000);
 }
 
 function hideCommunicationError() {
 	$('#commsErrorPanel').hide();
+}
+function setCookie(name,value,days) {
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+}
+
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+function deleteCookie(name) {
+    setCookie(name,"",-1);
 }

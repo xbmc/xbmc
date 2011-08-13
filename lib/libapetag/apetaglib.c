@@ -714,26 +714,22 @@ apetag_read_fp(apetag *mem_cnt, ape_file * fp, char *filename, int flag)
     int apeTag2 = 0;
     unsigned char *buff;
     struct _apetag_footer ape_footer;
-    size_t savedFilePosition, buffLength;
+    size_t buffLength;
     
     unsigned char *end;
     unsigned long tagCount;
     unsigned char *p;
     
-    savedFilePosition = ape_ftell(fp);
-    
     id3v1 = is_id3v1(fp);
     
     if (mem_cnt == NULL) {
         PRINT_ERR( ">apetaglib>READ_FP>FATAL>apetag_init()\n");
-        ape_fseek(fp, savedFilePosition, SEEK_SET);
         return ATL_NOINIT;
     }
     
     ape_fseek(fp, id3v1 ? -128 - (ssize_t)sizeof (ape_footer) : -(ssize_t)sizeof (ape_footer), SEEK_END);
     if (sizeof (ape_footer) != ape_fread(&ape_footer, 1, sizeof (ape_footer), fp)){
         PRINT_ERR( "ERROR->libapetag->apetag_read_fp:fread1\n");
-        ape_fseek(fp, savedFilePosition, SEEK_SET);
         return ATL_FREAD;
     }
     
@@ -760,7 +756,6 @@ apetag_read_fp(apetag *mem_cnt, ape_file * fp, char *filename, int flag)
         memset(buff, 0, buffLength);
         if (ape2long(ape_footer.length) != ape_fread(buff, 1, ape2long(ape_footer.length), fp)) {
             PRINT_ERR( "ERROR->libapetag->apetag_read_fp:fread2\n");
-            ape_fseek(fp, savedFilePosition, SEEK_SET);
             free(buff);
             return ATL_FREAD;
         }
@@ -805,8 +800,6 @@ apetag_read_fp(apetag *mem_cnt, ape_file * fp, char *filename, int flag)
     if (!(flag & DONT_READ_TAG_ID3V1) && (id3v1)) {
         readtag_id3v1_fp(mem_cnt, fp);
     }
-    
-    ape_fseek(fp, savedFilePosition, SEEK_SET);
     return 0;
 }
 

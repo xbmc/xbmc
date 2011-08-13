@@ -29,8 +29,12 @@
 CZeroconfOSX::CZeroconfOSX():m_runloop(0)
 {
   //aquire the main threads event loop
+#if !defined(__arm__)
   EventLoopRef ref = GetMainEventLoop();
   m_runloop = (CFRunLoopRef)GetCFRunLoopFromEventLoop(ref);
+#else
+  m_runloop = CFRunLoopGetMain();
+#endif
 }
 
 CZeroconfOSX::~CZeroconfOSX()
@@ -75,7 +79,7 @@ bool CZeroconfOSX::doPublishService(const std::string& fcr_identifier,
     CFNetServiceSetClient(netService, NULL, NULL);
     CFRelease(netService);
     netService = NULL;
-    CLog::Log(LOGERROR, "CZeroconfOSX::doPublishService CFNetServiceRegister returned (domain = %d, error = %ld)\n", error.domain, error.error);
+    CLog::Log(LOGERROR, "CZeroconfOSX::doPublishService CFNetServiceRegister returned (domain = %d, error = %ld)\n", (int)error.domain, error.error);
   } else
   {
     CSingleLock lock(m_data_guard);
@@ -117,7 +121,7 @@ void CZeroconfOSX::registerCallback(CFNetServiceRef theService, CFStreamError* e
         CLog::Log(LOGERROR, "CZeroconfOSX::registerCallback name collision occured");
         break;
       default:
-        CLog::Log(LOGERROR, "CZeroconfOSX::registerCallback returned (domain = %d, error = %ld)\n", error->domain, error->error);
+        CLog::Log(LOGERROR, "CZeroconfOSX::registerCallback returned (domain = %d, error = %ld)\n", (int)error->domain, error->error);
         break;
     }
     p_this->cancelRegistration(theService);
@@ -160,4 +164,3 @@ std::string CZeroconfOSX::assemblePublishedName(const std::string& fcr_given_nam
   }
   return ss.str();
 }
-

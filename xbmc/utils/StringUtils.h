@@ -32,7 +32,7 @@
 #ifndef __STRINGUTILS_H_
 #define __STRINGUTILS_H_
 
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "utils/StdString.h"
 #include <vector>
 #include <stdint.h>

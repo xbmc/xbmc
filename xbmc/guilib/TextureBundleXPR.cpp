@@ -28,18 +28,16 @@
 #ifndef _LINUX
 #include <sys/stat.h>
 #include "utils/CharsetConverter.h"
-#include "lib/win32/liblzo/LZO1X.H"
-#else
-#include <lzo/lzo1x.h>
 #endif
+#include <lzo/lzo1x.h>
 #include "addons/Skin.h"
 #include "settings/GUISettings.h"
 #include "filesystem/SpecialProtocol.h"
 #include "utils/EndianSwap.h"
 #include "utils/URIUtils.h"
 
-#if !defined(__GNUC__)
-#pragma comment(lib,"../../lib/win32/liblzo/lzo.lib")
+#ifdef _WIN32
+#pragma comment(lib,"liblzo2.lib")
 #endif
 
 // alignment of file blocks - should be a multiple of the sector size of the disk and a power of 2
@@ -285,7 +283,7 @@ bool CTextureBundleXPR::LoadFile(const CStdString& Filename, CAutoTexBuffer& Unp
     GlobalMemoryStatus(&stat);
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %lu bytes, have %lu bytes)", name.c_str(),
               file->second.UnpackedSize + file->second.PackedSize, stat.dwAvailPhys);
-#elif defined(__APPLE__)
+#elif defined(__APPLE__) || defined(__FreeBSD__)
     CLog::Log(LOGERROR, "Out of memory loading texture: %s (need %d bytes)", name.c_str(),
               file->second.UnpackedSize + file->second.PackedSize);
 #else

@@ -20,6 +20,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "threads/SystemClock.h"
 #include "UPnP.h"
 #include "utils/URIUtils.h"
 #include "Application.h"
@@ -42,6 +43,8 @@
 #include "NptNetwork.h"
 #include "NptConsole.h"
 #include "music/tags/MusicInfoTag.h"
+#include "pictures/PictureInfoTag.h"
+#include "pictures/GUIWindowSlideShow.h"
 #include "filesystem/Directory.h"
 #include "URL.h"
 #include "settings/GUISettings.h"
@@ -53,6 +56,7 @@
 #include "GUIInfoManager.h"
 #include "utils/TimeUtils.h"
 #include "utils/md5.h"
+#include "guilib/Key.h"
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -272,6 +276,17 @@ public:
     NPT_String BuildSafeResourceUri(const char*        host,
                                     const char*        file_path);
 
+    void AddSafeResourceUri(PLT_MediaObject* object, NPT_List<NPT_IpAddress> ips, const char* file_path, const NPT_String& info)
+    {
+        PLT_MediaItemResource res;
+        for(NPT_List<NPT_IpAddress>::Iterator ip = ips.GetFirstItem(); ip; ++ip) {
+            res.m_ProtocolInfo = PLT_ProtocolInfo(info);
+            res.m_Uri          = BuildSafeResourceUri((*ip).ToString(), file_path);
+            object->m_Resources.Add(res);
+        }
+    }
+
+
     static const char* GetMimeTypeFromExtension(const char* extension, const PLT_HttpRequestContext* context = NULL);
     static NPT_String  GetMimeType(const CFileItem& item, const PLT_HttpRequestContext* context = NULL);
     static NPT_String  GetMimeType(const char* filename, const PLT_HttpRequestContext* context = NULL);
@@ -298,9 +313,9 @@ private:
 
         return file_path.Left(index);
     }
-    static NPT_String GetProtocolInfo(const CFileItem& item,
-                                      const char* protocol,
-                                      const PLT_HttpRequestContext* context = NULL);
+    static const NPT_String GetProtocolInfo(const CFileItem& item,
+                                            const char* protocol,
+                                            const PLT_HttpRequestContext* context = NULL);
 
     NPT_Mutex                       m_FileMutex;
     NPT_Map<NPT_String, NPT_String> m_FileMap;
@@ -351,7 +366,7 @@ NPT_String
 CUPnPServer::GetMimeType(const CFileItem& item,
                             const PLT_HttpRequestContext* context /* = NULL */)
 {
-    CStdString path = item.m_strPath;
+    CStdString path = item.GetPath();
     if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) {
         path = item.GetVideoInfoTag()->m_strFileNameAndPath;
     } else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().IsEmpty()) {
@@ -402,7 +417,7 @@ CUPnPServer::GetMimeType(const CFileItem& item,
 /*----------------------------------------------------------------------
 |   CUPnPServer::GetProtocolInfo
 +---------------------------------------------------------------------*/
-NPT_String
+const NPT_String
 CUPnPServer::GetProtocolInfo(const CFileItem&              item,
                              const char*                   protocol,
                              const PLT_HttpRequestContext* context /* = NULL */)
@@ -441,17 +456,10 @@ CUPnPServer::PopulateObjectFromTag(CMusicInfoTag&         tag,
                                    PLT_MediaItemResource* resource,  /* = NULL */
                                    EClientQuirks          quirks)
 {
-    // some usefull buffers
-    CStdStringArray strings;
-
     if (!tag.GetURL().IsEmpty() && file_path)
       *file_path = tag.GetURL();
 
-    StringUtils::SplitString(tag.GetGenre(), " / ", strings);
-    for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-        object.m_Affiliation.genre.Add((*it).c_str());
-    }
-
+    object.m_Affiliation.genre = NPT_String(tag.GetGenre().c_str()).Split(" / ");
     object.m_Title = tag.GetTitle();
     object.m_Affiliation.album = tag.GetAlbum();
     object.m_People.artists.Add(tag.GetArtist().c_str());
@@ -503,11 +511,13 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
           object.m_Recorded.series_title = tag.m_strShowTitle;
           object.m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
           object.m_Title = object.m_Recorded.series_title + " - " + object.m_Recorded.program_title;
+          object.m_Date = tag.m_strFirstAired;
           if(tag.m_iSeason != -1)
               object.m_ReferenceID = NPT_String::Format("videodb://2/0/%i", tag.m_iDbId);
         } else {
           object.m_ObjectClass.type = "object.item.videoItem.movie";
           object.m_Title = tag.m_strTitle;
+          object.m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
           object.m_ReferenceID = NPT_String::Format("videodb://1/2/%i", tag.m_iDbId);
         }
     }
@@ -518,10 +528,7 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
     if(object.m_ReferenceID == object.m_ObjectID)
         object.m_ReferenceID = "";
 
-    StringUtils::SplitString(tag.m_strGenre, " / ", strings);
-    for(CStdStringArray::iterator it = strings.begin(); it != strings.end(); it++) {
-        object.m_Affiliation.genre.Add((*it).c_str());
-    }
+    object.m_Affiliation.genre = NPT_String(tag.m_strGenre.c_str()).Split(" / ");
 
     for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
@@ -532,7 +539,8 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
 
     object.m_Description.description = tag.m_strTagLine;
     object.m_Description.long_description = tag.m_strPlot;
-    if (resource) resource->m_Duration = StringUtils::TimeStringToSeconds(tag.m_strRuntime.c_str());
+    if (resource) resource->m_Duration = tag.m_streamDetails.GetVideoDuration();
+    if (resource) resource->m_Resolution = NPT_String::FromInteger(tag.m_streamDetails.GetVideoWidth()) + "x" + NPT_String::FromInteger(tag.m_streamDetails.GetVideoHeight());
 
     return NPT_SUCCESS;
 }
@@ -566,7 +574,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
     PLT_MediaItemResource resource;
     PLT_MediaObject*      object = NULL;
 
-    CLog::Log(LOGDEBUG, "Building didl for object '%s'", (const char*)item.m_strPath);
+    CLog::Log(LOGDEBUG, "Building didl for object '%s'", (const char*)item.GetPath());
 
     EClientQuirks quirks = GetClientQuirks(context);
 
@@ -583,7 +591,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
 
     if (!item.m_bIsFolder) {
         object = new PLT_MediaItem();
-        object->m_ObjectID = item.m_strPath;
+        object->m_ObjectID = item.GetPath();
 
         /* Setup object type */
         if (item.IsMusicDb() || item.IsAudio()) {
@@ -623,26 +631,17 @@ CUPnPServer::BuildObject(const CFileItem&              item,
           resource.m_Size = (NPT_LargeSize)-1;
 
         // set date
-        if (item.m_dateTime.IsValid()) {
+        if (object->m_Date.IsEmpty() && item.m_dateTime.IsValid()) {
             object->m_Date = item.m_dateTime.GetAsLocalizedDate();
         }
 
         if (upnp_server) {
-            // iterate through ip addresses and build list of resources
-            // through http file server
-            NPT_List<NPT_IpAddress>::Iterator ip = ips.GetFirstItem();
-            while (ip) {
-                resource.m_ProtocolInfo = PLT_ProtocolInfo(GetProtocolInfo(item, "http", context));
-                resource.m_Uri = upnp_server->BuildSafeResourceUri((*ip).ToString(), file_path);
-                object->m_Resources.Add(resource);
-                ++ip;
-            }
+            upnp_server->AddSafeResourceUri(object, ips, file_path, GetProtocolInfo(item, "http", context));
         }
 
         // if the item is remote, add a direct link to the item
         if (URIUtils::IsRemote((const char*)file_path)) {
-            resource.m_ProtocolInfo = PLT_ProtocolInfo(
-                CUPnPServer::GetProtocolInfo(item, item.GetAsUrl().GetProtocol(), context));
+            resource.m_ProtocolInfo = PLT_ProtocolInfo(CUPnPServer::GetProtocolInfo(item, item.GetAsUrl().GetProtocol(), context));
             resource.m_Uri = file_path;
 
             // if the direct link can be served directly using http, then push it in front
@@ -663,13 +662,15 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         object = container;
 
         /* Assign a title and id for this container */
-        container->m_ObjectID = item.m_strPath;
+        container->m_ObjectID = item.GetPath();
         container->m_ObjectClass.type = "object.container";
         container->m_ChildrenCount = -1;
 
+        CStdStringArray strings;
+
         /* this might be overkill, but hey */
         if (item.IsMusicDb()) {
-            MUSICDATABASEDIRECTORY::NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryType(item.m_strPath);
+            MUSICDATABASEDIRECTORY::NODE_TYPE node = CMusicDatabaseDirectory::GetDirectoryType(item.GetPath());
             switch(node) {
                 case MUSICDATABASEDIRECTORY::NODE_TYPE_ARTIST: {
                       container->m_ObjectClass.type += ".person.musicArtist";
@@ -713,24 +714,54 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   break;
             }
         } else if (item.IsVideoDb()) {
-            VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(item.m_strPath);
-            if(quirks & ECLIENTQUIRKS_ONLYSTORAGEFOLDER) {
-                container->m_ObjectClass.type += ".storageFolder";
-            } else {
-                switch(node) {
-                    case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
-                      container->m_ObjectClass.type += ".genre.movieGenre";
-                      break;
-                    case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
-                      container->m_ObjectClass.type += ".person";
-                      break;
-                    default:
-                      container->m_ObjectClass.type += ".storageFolder";
-                      break;
-                }
+            VIDEODATABASEDIRECTORY::NODE_TYPE node = CVideoDatabaseDirectory::GetDirectoryType(item.GetPath());
+            CVideoInfoTag &tag = *(CVideoInfoTag*)item.GetVideoInfoTag();
+            switch(node) {
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_GENRE:
+                  container->m_ObjectClass.type += ".genre.movieGenre";
+                  break;
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_ACTOR:
+                  container->m_ObjectClass.type += ".person.videoArtist";
+                  container->m_Creator = tag.m_strArtist;
+                  container->m_Title   = tag.m_strTitle;
+                  break;
+                case VIDEODATABASEDIRECTORY::NODE_TYPE_TITLE_TVSHOWS:
+                  container->m_ObjectClass.type += ".album.videoAlbum";
+                  container->m_Recorded.program_title  = "S" + ("0" + NPT_String::FromInteger(tag.m_iSeason)).Right(2);
+                  container->m_Recorded.program_title += "E" + ("0" + NPT_String::FromInteger(tag.m_iEpisode)).Right(2);
+                  container->m_Recorded.program_title += " : " + tag.m_strTitle;
+                  container->m_Recorded.series_title = tag.m_strShowTitle;
+                  container->m_Recorded.episode_number = tag.m_iSeason * 100 + tag.m_iEpisode;
+                  container->m_Title = container->m_Recorded.series_title + " - " + container->m_Recorded.program_title;
+                  container->m_Title = tag.m_strTitle;
+                  if(tag.m_strFirstAired.IsEmpty() && tag.m_iYear)
+                    container->m_Date = NPT_String::FromInteger(tag.m_iYear) + "-01-01";
+                  else
+                    container->m_Date = tag.m_strFirstAired;
+
+                  container->m_Affiliation.genre = NPT_String(tag.m_strGenre.c_str()).Split(" / ");
+
+                  for(CVideoInfoTag::iCast it = tag.m_cast.begin();it != tag.m_cast.end();it++) {
+                      container->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
+                  }
+
+                  container->m_People.director = tag.m_strDirector;
+                  container->m_People.authors.Add(tag.m_strWritingCredits.c_str());
+
+                  container->m_Description.description = tag.m_strTagLine;
+                  container->m_Description.long_description = tag.m_strPlot;
+
+                  break;
+                default:
+                  container->m_ObjectClass.type += ".storageFolder";
+                  break;
             }
         } else if (item.IsPlayList()) {
             container->m_ObjectClass.type += ".playlistContainer";
+        }
+
+        if(quirks & ECLIENTQUIRKS_ONLYSTORAGEFOLDER) {
+          container->m_ObjectClass.type = "object.container.storageFolder";
         }
 
         /* Get the number of children for this container */
@@ -754,7 +785,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
             object->m_Title = title;
         } else {
             CStdString title, volumeNumber;
-            CUtil::GetVolumeFromFileName(item.m_strPath, title, volumeNumber);
+            CUtil::GetVolumeFromFileName(item.GetPath(), title, volumeNumber);
             if (!item.m_bIsFolder) URIUtils::RemoveExtension(title);
             object->m_Title = title;
         }
@@ -764,6 +795,20 @@ CUPnPServer::BuildObject(const CFileItem&              item,
         object->m_ExtraInfo.album_art_uri = upnp_server->BuildSafeResourceUri(
             (*ips.GetFirstItem()).ToString(),
             item.GetThumbnailImage());
+        // Set DLNA profileID by extension, defaulting to JPEG.
+        NPT_String ext = URIUtils::GetExtension(item.GetThumbnailImage()).c_str();
+        if (strcmp(ext, ".png") == 0) {
+            object->m_ExtraInfo.album_art_uri_dlna_profile = "PNG_TN";
+        } else {
+            object->m_ExtraInfo.album_art_uri_dlna_profile = "JPEG_TN";
+        }
+    }
+
+    if (upnp_server) {
+        CStdString fanart(item.GetCachedFanart());
+        if (CFile::Exists(fanart)) {
+            upnp_server->AddSafeResourceUri(object, ips, fanart, "xbmc.org:*:fanart:*");
+        }
     }
 
     return object;
@@ -783,7 +828,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
                    const char*                   parent_id /* = NULL */)
 {
     PLT_MediaObject* object = NULL;
-    NPT_String       path = item->m_strPath.c_str();
+    NPT_String       path = item->GetPath().c_str();
 
     //HACK: temporary disabling count as it thrashes HDD
     with_count = false;
@@ -812,7 +857,7 @@ CUPnPServer::Build(CFileItemPtr                  item,
     } else {
         // db path handling
         NPT_String file_path, share_name;
-        file_path = item->m_strPath;
+        file_path = item->GetPath();
         share_name = "";
 
         if (path.StartsWith("musicdb://")) {
@@ -1021,10 +1066,10 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
 
     CLog::Log(LOGINFO, "Received UPnP Browse DirectChildren request for object '%s'", (const char*)object_id);
 
-    items.m_strPath = parent_id;
+    items.SetPath(CStdString(parent_id));
     if (!items.Load()) {
         // cache anything that takes more than a second to retrieve
-        unsigned int time = CTimeUtils::GetTimeMS() + 1000;
+      unsigned int time = XbmcThreads::SystemClockMillis();
 
         if (parent_id.StartsWith("virtualpath://upnproot")) {
             CFileItemPtr item;
@@ -1045,7 +1090,7 @@ CUPnPServer::OnBrowseDirectChildren(PLT_ActionReference&          action,
             CDirectory::GetDirectory((const char*)parent_id, items);
         }
 
-        if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && time < CTimeUtils::GetTimeMS())) {
+        if (items.CacheToDiscAlways() || (items.CacheToDiscIfSlow() && (XbmcThreads::SystemClockMillis() - time) > 1000 )) {
             items.Save();
         }
     }
@@ -1419,6 +1464,7 @@ private:
     NPT_Result PlayMedia(const char* uri,
                          const char* metadata = NULL,
                          PLT_Action* action = NULL);
+    NPT_Mutex m_state;
 };
 
 /*----------------------------------------------------------------------
@@ -1453,6 +1499,7 @@ CUPnPRenderer::SetupServices(PLT_DeviceData& data)
         ",http-get:*:audio/mpeg:*"
         ",http-get:*:audio/mpeg3:*"
         ",http-get:*:audio/mp3:*"
+        ",http-get:*:audio/mp4:*"
         ",http-get:*:audio/basic:*"
         ",http-get:*:audio/midi:*"
         ",http-get:*:audio/ulaw:*"
@@ -1595,10 +1642,18 @@ CUPnPRenderer::ProcessHttpRequest(NPT_HttpRequest&              request,
 void
 CUPnPRenderer::UpdateState()
 {
+    NPT_AutoLock lock(m_state);
+
     PLT_Service *avt, *rct;
     if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", avt)))
         return;
     if (NPT_FAILED(FindServiceByType("urn:schemas-upnp-org:service:RenderingControl:1", rct)))
+        return;
+
+    /* don't update state while transitioning */
+    NPT_String state;
+    avt->GetStateVariableValue("TransportState", state);
+    if(state == "TRANSITIONING")
         return;
 
     CStdString buffer;
@@ -1631,7 +1686,6 @@ CUPnPRenderer::UpdateState()
 
         buffer = g_infoManager.GetCurrentPlayTime(TIME_FORMAT_HH_MM_SS);
         avt->SetStateVariable("RelativeTimePosition", buffer.c_str());
-        buffer = StringUtils::SecondsToTimeString((long)g_infoManager.GetTotalPlayTime(), TIME_FORMAT_HH_MM_SS);
         avt->SetStateVariable("AbsoluteTimePosition", buffer.c_str());
 
         buffer = g_infoManager.GetDuration(TIME_FORMAT_HH_MM_SS);
@@ -1654,6 +1708,27 @@ CUPnPRenderer::UpdateState()
         }
         avt->SetStateVariable("CurrentTrackMetadata", metadata);
         avt->SetStateVariable("AVTransportURIMetaData", metadata);
+    } else if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        avt->SetStateVariable("TransportState", "PLAYING");
+
+        avt->SetStateVariable("AVTransportURI" , g_infoManager.GetPictureLabel(SLIDE_FILE_PATH));
+        avt->SetStateVariable("CurrentTrackURI", g_infoManager.GetPictureLabel(SLIDE_FILE_PATH));
+        avt->SetStateVariable("TransportPlaySpeed", "1");
+
+        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        if (slideshow)
+        {
+          CStdString index;
+          index.Format("%d", slideshow->NumSlides());
+          avt->SetStateVariable("NumberOfTracks", index.c_str());
+          index.Format("%d", slideshow->CurrentSlide());
+          avt->SetStateVariable("CurrentTrack", index.c_str());
+
+        }
+
+        avt->SetStateVariable("CurrentTrackMetadata", "");
+        avt->SetStateVariable("AVTransportURIMetaData", "");
+
     } else {
         avt->SetStateVariable("TransportState", "STOPPED");
         avt->SetStateVariable("TransportPlaySpeed", "1");
@@ -1705,7 +1780,12 @@ CUPnPRenderer::GetMetadata(NPT_String& meta)
 NPT_Result
 CUPnPRenderer::OnNext(PLT_ActionReference& action)
 {
-    g_application.getApplicationMessenger().PlayListPlayerNext();
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        CAction action(ACTION_NEXT_PICTURE);
+        g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
+    } else {
+        g_application.getApplicationMessenger().PlayListPlayerNext();
+    }
     return NPT_SUCCESS;
 }
 
@@ -1715,7 +1795,10 @@ CUPnPRenderer::OnNext(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPause(PLT_ActionReference& action)
 {
-    if (!g_application.IsPaused())
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        CAction action(ACTION_PAUSE);
+        g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
+    } else if (!g_application.IsPaused())
       g_application.getApplicationMessenger().MediaPause();
     return NPT_SUCCESS;
 }
@@ -1726,7 +1809,9 @@ CUPnPRenderer::OnPause(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPlay(PLT_ActionReference& action)
 {
-    if (g_application.IsPaused()) {
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        return NPT_SUCCESS;
+    } else if (g_application.IsPaused()) {
       g_application.getApplicationMessenger().MediaPause();
     } else if (!g_application.IsPlaying()) {
         NPT_String uri, meta;
@@ -1748,7 +1833,12 @@ CUPnPRenderer::OnPlay(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnPrevious(PLT_ActionReference& action)
 {
-    g_application.getApplicationMessenger().PlayListPlayerPrevious();
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        CAction action(ACTION_PREV_PICTURE);
+        g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
+    } else {
+        g_application.getApplicationMessenger().PlayListPlayerPrevious();
+    }
     return NPT_SUCCESS;
 }
 
@@ -1758,7 +1848,12 @@ CUPnPRenderer::OnPrevious(PLT_ActionReference& action)
 NPT_Result
 CUPnPRenderer::OnStop(PLT_ActionReference& action)
 {
-    g_application.getApplicationMessenger().MediaStop();
+    if (g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        CAction action(ACTION_STOP);
+        g_application.getApplicationMessenger().SendAction(action, WINDOW_SLIDESHOW);
+    } else {
+        g_application.getApplicationMessenger().MediaStop();
+    }
     return NPT_SUCCESS;
 }
 
@@ -1777,7 +1872,7 @@ CUPnPRenderer::OnSetAVTransportURI(PLT_ActionReference& action)
 
     // if not playing already, just keep around uri & metadata
     // and wait for play command
-    if (!g_application.IsPlaying()) {
+    if (!g_application.IsPlaying() && g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW) {
         service->SetStateVariable("TransportState", "STOPPED");
         service->SetStateVariable("TransportStatus", "OK");
         service->SetStateVariable("TransportPlaySpeed", "1");
@@ -1801,9 +1896,10 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
     PLT_Service* service;
     NPT_CHECK_SEVERE(FindServiceByType("urn:schemas-upnp-org:service:AVTransport:1", service));
 
-    service->SetStateVariable("TransportState", "TRANSITIONING");
-    service->SetStateVariable("TransportStatus", "OK");
-    service->SetStateVariable("TransportPlaySpeed", "1");
+    { NPT_AutoLock lock(m_state);
+      service->SetStateVariable("TransportState", "TRANSITIONING");
+      service->SetStateVariable("TransportStatus", "OK");
+    }
 
     PLT_MediaObjectListReference list;
     PLT_MediaObject*             object = NULL;
@@ -1825,7 +1921,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
         for(NPT_Cardinal i = 0; i < object->m_Resources.GetItemCount(); i++) {
             if(object->m_Resources[i].m_ProtocolInfo.ToString().StartsWith("xbmc-get:")) {
                 res = &object->m_Resources[i];
-                item.m_strPath = res->m_Uri;
+                item.SetPath(CStdString(res->m_Uri));
                 break;
             }
         }
@@ -1848,7 +1944,7 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
         } else if (object->m_ObjectClass.type.StartsWith("object.item.imageItem")) {
             bImageFile = true;
         }
-        bImageFile?g_application.getApplicationMessenger().PictureShow(item.m_strPath)
+        bImageFile?g_application.getApplicationMessenger().PictureShow(item.GetPath())
                   :g_application.getApplicationMessenger().MediaPlay(item);
     } else {
         bImageFile = NPT_String(PLT_MediaObject::GetUPnPClass(uri)).StartsWith("object.item.imageItem", true);
@@ -1857,12 +1953,16 @@ CUPnPRenderer::PlayMedia(const char* uri, const char* meta, PLT_Action* action)
                   :g_application.getApplicationMessenger().MediaPlay((const char*)uri);
     }
 
-    if (!g_application.IsPlaying()) {
-        service->SetStateVariable("TransportState", "STOPPED");
-        service->SetStateVariable("TransportStatus", "ERROR_OCCURRED");
-    } else {
+    if (g_application.IsPlaying() || g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW) {
+        NPT_AutoLock lock(m_state);
+        service->SetStateVariable("TransportState", "PLAYING");
+        service->SetStateVariable("TransportStatus", "OK");
         service->SetStateVariable("AVTransportURI", uri);
         service->SetStateVariable("AVTransportURIMetaData", meta);
+    } else {
+        NPT_AutoLock lock(m_state);
+        service->SetStateVariable("TransportState", "STOPPED");
+        service->SetStateVariable("TransportStatus", "ERROR_OCCURRED");
     }
 
     if (action) {
@@ -1892,7 +1992,7 @@ CUPnPRenderer::OnSetMute(PLT_ActionReference& action)
     NPT_String mute;
     NPT_CHECK_SEVERE(action->GetArgumentValue("DesiredMute",mute));
     if((mute == "1") ^ g_settings.m_bMute)
-        g_application.Mute();
+        g_application.ToggleMute();
     return NPT_SUCCESS;
 }
 
@@ -2300,6 +2400,9 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
                                  PLT_MediaObject&       object,
                                  PLT_MediaItemResource* resource /* = NULL */)
 {
+    CDateTime date;
+    date.SetFromDateString((const char*)object.m_Date);
+
     if(!object.m_Recorded.program_title.IsEmpty())
     {
         int episode;
@@ -2314,9 +2417,14 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
             tag.m_iSeason  = object.m_Recorded.episode_number / 100;
             tag.m_iEpisode = object.m_Recorded.episode_number % 100;
         }
+        tag.m_strFirstAired = date.GetAsLocalizedDate();
     }
     else
-        tag.m_strTitle = object.m_Title;
+    {
+        tag.m_strTitle     = object.m_Title;
+        tag.m_strPremiered = date.GetAsLocalizedDate();
+    }
+    tag.m_iYear       = date.GetYear();
     tag.m_strGenre    = JoinString(object.m_Affiliation.genre, " / ");
     tag.m_strDirector = object.m_People.director;
     tag.m_strTagLine  = object.m_Description.description;

@@ -63,7 +63,7 @@ public:
 
 protected:
   void       ChooseBestResolution(float fps);
-  bool       FindResolutionFromOverride(float fps, float& weight);
+  bool       FindResolutionFromOverride(float fps, float& weight, bool fallback);
   void       FindResolutionFromFpsMatch(float fps, float& weight);
   RESOLUTION FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight);
   float      RefreshWeight(float refresh, float fps);

@@ -20,17 +20,9 @@
  *
  */
 
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
-
 #include <climits>
 #include <cmath>
 #include <vector>
-#include <limits>
 #include <string.h>
 #include <stdint.h>
 
@@ -98,7 +90,7 @@ public:
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
   static void ThumbCacheClear();
-  static void PlayDVD(const CStdString& strProtocol="dvd");
+  static void PlayDVD(const CStdString& strProtocol = "dvd", bool restart = false);
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static CStdString GetNextPathname(const CStdString &path_template, int max);
   static void TakeScreenshot();
@@ -123,6 +115,23 @@ public:
   static CStdString ValidatePath(const CStdString &path, bool bFixDoubleSlashes = false); ///< return a validated path, with correct directory separators.
   
   static bool IsUsingTTFSubtitles();
+
+  /*! \brief Split a comma separated parameter list into separate parameters.
+   Takes care of the case where we may have a quoted string containing commas, or we may
+   have a function (i.e. parentheses) with multiple parameters as a single parameter.
+
+   eg:
+
+    foo, bar(param1, param2), foo
+
+   will return:
+
+    "foo", "bar(param1, param2)", and "foo".
+
+   \param paramString the string to break up
+   \param parameters the returned parameters
+   */
+  static void SplitParams(const CStdString &paramString, std::vector<CStdString> &parameters);
   static void SplitExecFunction(const CStdString &execString, CStdString &function, std::vector<CStdString> &parameters);
   static int GetMatchingSource(const CStdString& strPath, VECSOURCES& VECSOURCES, bool& bIsSourceName);
   static CStdString TranslateSpecialSource(const CStdString &strSpecial);
@@ -143,13 +152,12 @@ public:
   static double AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& strAlbum1, const CStdString& strArtistTemp1, const CStdString& strArtist1);
   static bool MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength);
   static bool SupportsFileOperations(const CStdString& strPath);
-
-  static CStdString GetCachedMusicThumb(const CStdString &path);
-  static CStdString GetCachedAlbumThumb(const CStdString &album, const CStdString &artist);
   static CStdString GetDefaultFolderThumb(const CStdString &folderThumb);
 
 #ifdef UNIT_TESTING
   static bool TestSplitExec();
+  static bool TestGetQualifiedFilename();
+  static bool TestMakeLegalPath();
 #endif
 
   static void InitRandomSeed();
@@ -180,6 +188,7 @@ public:
   static bool RunCommandLine(const CStdString& cmdLine, bool waitExit = false);
 #endif
   static CStdString ResolveExecutablePath();
+  static CStdString GetFrameworksPath(bool forPython = false);
 };
 
 

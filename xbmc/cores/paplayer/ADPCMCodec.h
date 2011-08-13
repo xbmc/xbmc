@@ -37,7 +37,7 @@ public:
   virtual bool CanInit();
 
 private:
-  int m_adpcm;
+  void* m_adpcm;
   bool m_bIsPlaying;
 
   DllADPCM m_dll;

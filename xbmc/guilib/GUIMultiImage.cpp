@@ -106,7 +106,7 @@ void CGUIMultiImage::UpdateInfo(const CGUIListItem *item)
   }
 }
 
-void CGUIMultiImage::Render()
+void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // Set a viewport so that we don't render outside the defined area
   if (!m_files.empty() && g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height))
@@ -126,13 +126,28 @@ void CGUIMultiImage::Render()
         // grab a new image
         m_currentImage = nextImage;
         m_image.SetFileName(m_files[m_currentImage]);
+        MarkDirtyRegion();
+
         m_imageTimer.StartZero();
       }
     }
-    m_image.SetColorDiffuse(m_diffuseColor);
-    m_image.Render();
+
+    if (m_image.SetColorDiffuse(m_diffuseColor))
+      MarkDirtyRegion();
+
+    m_image.DoProcess(currentTime, dirtyregions);
+
     g_graphicsContext.RestoreClipRegion();
   }
+
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
+void CGUIMultiImage::Render()
+{
+  if (!m_files.empty())
+    m_image.Render();
+
   CGUIControl::Render();
 }
 
@@ -231,7 +246,7 @@ void CGUIMultiImage::LoadDirectory()
     {
       CFileItemPtr pItem = items[i];
       if (pItem->IsPicture())
-        m_files.push_back(pItem->m_strPath);
+        m_files.push_back(pItem->GetPath());
     }
   }
 

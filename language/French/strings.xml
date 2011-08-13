@@ -186,7 +186,7 @@
   <string id="214">Étalonnage de l'écran...</string>
   <string id="215">Adoucir</string>
   <string id="216">Niveau de Zoom</string>
-  <string id="217">Pixel ratio</string>
+  <string id="217">Rapport largeur/hauteur</string>
   <string id="218">Lecteur DVD</string>
   <string id="219">Veuillez insérer un disque</string>
   <string id="220">Partage distant</string>
@@ -194,7 +194,8 @@
   <string id="222">Annuler</string>
   <string id="224">Vitesse</string>
   
-  <string id="226">Tester Patterns...</string>
+  <string id="225">Hauteur de l'image</string>
+  <string id="226">Afficher la mire...</string>
   <string id="227">Rechercher le nom des pistes CD Audio sur freedb.org</string>
   <string id="228">Mélanger la playliste lors du chargement</string>
   <string id="229">Temps d'arrêt du DD</string>
@@ -1517,6 +1518,10 @@
   <string id="16400">Post-processing Vidéo</string>
   
   <string id="17500">Afficher temps avant la mise en veille</string>
+
+  <string id="17997">%i Mo</string>
+  <string id="17998">%i heures</string>
+  <string id="17999">%i jours</string>
   
   <string id="19000">Changer de canal</string>
   

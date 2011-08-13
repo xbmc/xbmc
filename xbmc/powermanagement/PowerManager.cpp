@@ -30,6 +30,8 @@
 #include "interfaces/Builtins.h"
 #include "interfaces/AnnouncementManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "guilib/GraphicContext.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -64,7 +66,7 @@ CPowerManager::~CPowerManager()
 
 void CPowerManager::Initialize()
 {
-#ifdef __APPLE__
+#if defined(__APPLE__)
   m_instance = new CCocoaPowerSyscall();
 #elif defined(_LINUX) && defined(HAS_DBUS)
   if (CConsoleUPowerSyscall::HasDeviceConsoleKit())
@@ -129,41 +131,24 @@ void CPowerManager::SetDefaults()
 
 bool CPowerManager::Powerdown()
 {
-
-  bool success = CanPowerdown() ? m_instance->Powerdown() : false;
-  if (success)
-    CAnnouncementManager::Announce(System, "xbmc", "Shutdown");
-
-  return success;
+  return CanPowerdown() ? m_instance->Powerdown() : false;
 }
+
 bool CPowerManager::Suspend()
 {
-  bool success = false;
-  if (CanSuspend())
-    success = m_instance->Suspend();
-  
-  if (success)
-    CAnnouncementManager::Announce(System, "xbmc", "Suspend");
-
-  return success;
+  return CanSuspend() ? m_instance->Suspend() : false;
 }
+
 bool CPowerManager::Hibernate()
 {
-  bool success = false;
-  if (CanHibernate())
-    success = m_instance->Hibernate();
-
-  if (success)
-    CAnnouncementManager::Announce(System, "xbmc", "Hibernate");
-
-  return success;
+  return CanHibernate() ? m_instance->Hibernate() : false;
 }
 bool CPowerManager::Reboot()
 {
   bool success = CanReboot() ? m_instance->Reboot() : false;
 
   if (success)
-    CAnnouncementManager::Announce(System, "xbmc", "Reboot");
+    CAnnouncementManager::Announce(System, "xbmc", "OnRestart");
 
   return success;
 }
@@ -184,7 +169,10 @@ bool CPowerManager::CanReboot()
 {
   return m_instance->CanReboot();
 }
-
+int CPowerManager::BatteryLevel()
+{
+  return m_instance->BatteryLevel();
+}
 void CPowerManager::ProcessEvents()
 {
   m_instance->PumpPowerEvents(this);
@@ -192,7 +180,7 @@ void CPowerManager::ProcessEvents()
 
 void CPowerManager::OnSleep()
 {
-  CAnnouncementManager::Announce(System, "xbmc", "Sleep");
+  CAnnouncementManager::Announce(System, "xbmc", "OnSleep");
   CLog::Log(LOGNOTICE, "%s: Running sleep jobs", __FUNCTION__);
 
 #ifdef HAS_LCD
@@ -207,6 +195,7 @@ void CPowerManager::OnSleep()
 
   g_application.StopPlaying();
   g_application.StopShutdownTimer();
+  g_application.StopScreenSaverTimer();
 }
 
 void CPowerManager::OnWake()
@@ -249,14 +238,14 @@ void CPowerManager::OnWake()
   g_application.UpdateLibraries();
   g_weatherManager.Refresh();
 
-  CAnnouncementManager::Announce(System, "xbmc", "Wake");
+  CAnnouncementManager::Announce(System, "xbmc", "OnWake");
 }
 
 void CPowerManager::OnLowBattery()
 {
   CLog::Log(LOGNOTICE, "%s: Running low battery jobs", __FUNCTION__);
 
-  g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(13050), "");
 
-  CAnnouncementManager::Announce(System, "xbmc", "LowBattery");
+  CAnnouncementManager::Announce(System, "xbmc", "OnLowBattery");
 }

@@ -49,6 +49,8 @@
 
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
+#include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "../dvdplayer/DVDCodecs/DVDCodecUtils.h"
 
 #define MAXPRESENTDELAY 0.500
 
@@ -64,18 +66,18 @@ public:
   CRetakeLock(CSharedSection &section, bool immidiate = true, CCriticalSection &owned = g_graphicsContext)
     : m_owned(owned)
   {
-    m_count = ExitCriticalSection(m_owned);
+    m_count = m_owned.exit();
     m_lock  = new T(section);
     if(immidiate)
     {
-      RestoreCriticalSection(m_owned, m_count);
+      m_owned.restore(m_count);
       m_count = 0;
     }
   }
   ~CRetakeLock()
   {
     delete m_lock;
-    RestoreCriticalSection(m_owned, m_count);
+    m_owned.restore(m_count);
   }
   void Leave() { m_lock->Leave(); }
   void Enter() { m_lock->Enter(); }
@@ -111,7 +113,7 @@ CXBMCRenderManager::~CXBMCRenderManager()
 /* These is based on CurrentHostCounter() */
 double CXBMCRenderManager::GetPresentTime()
 {
-  return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
+  return CDVDClock::GetAbsoluteClock(false) / DVD_TIME_BASE;
 }
 
 static double wrap(double x, double minimum, double maximum)
@@ -666,7 +668,7 @@ void CXBMCRenderManager::PresentWeave()
 
 void CXBMCRenderManager::Recover()
 {
-#ifdef HAS_GL
+#if defined(HAS_GL) && !defined(TARGET_DARWIN)
   glFlush(); // attempt to have gpu done with pixmap and vdpau
 #endif
 }
@@ -683,4 +685,55 @@ void CXBMCRenderManager::UpdateResolution()
     }
     m_bReconfigured = false;
   }
+}
+
+
+int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
+{
+  CSharedLock lock(m_sharedSection);
+  if (!m_pRenderer)
+    return -1;
+
+#ifdef HAS_DX
+  m_pRenderer->AddProcessor(&pic);
+#endif
+
+  YV12Image image;
+  int index = m_pRenderer->GetImage(&image);
+
+  if(index < 0)
+    return index;
+
+  if(pic.format == DVDVideoPicture::FMT_YUV420P)
+  {
+    CDVDCodecUtils::CopyPicture(&image, &pic);
+  }
+  else if(pic.format == DVDVideoPicture::FMT_NV12)
+  {
+    CDVDCodecUtils::CopyNV12Picture(&image, &pic);
+  }
+  else if(pic.format == DVDVideoPicture::FMT_YUY2
+       || pic.format == DVDVideoPicture::FMT_UYVY)
+  {
+    CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
+  }
+#ifdef HAVE_LIBVDPAU
+  else if(pic.format == DVDVideoPicture::FMT_VDPAU)
+    m_pRenderer->AddProcessor(pic.vdpau);
+#endif
+#ifdef HAVE_LIBOPENMAX
+  else if(pic.format == DVDVideoPicture::FMT_OMXEGL)
+    m_pRenderer->AddProcessor(pic.openMax, &pic);
+#endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  else if(pic.format == DVDVideoPicture::FMT_CVBREF)
+    m_pRenderer->AddProcessor(pic.vtb, &pic);
+#endif
+#ifdef HAVE_LIBVA
+  else if(pic.format == DVDVideoPicture::FMT_VAAPI)
+    m_pRenderer->AddProcessor(*pic.vaapi);
+#endif
+  m_pRenderer->ReleaseImage(index, false);
+
+  return index;
 }

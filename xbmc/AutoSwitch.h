@@ -37,7 +37,7 @@ public:
   static bool ByThumbPercent(bool bHideParentDirItems, int iPercent, const CFileItemList& vecItems);
   static bool ByFileCount(const CFileItemList& vecItems);
   static bool ByFolderThumbPercentage(bool hideParentDirItems, int percent, const CFileItemList &vecItems);
-
+  static float MetadataPercentage(const CFileItemList &vecItems);
 protected:
 
 };

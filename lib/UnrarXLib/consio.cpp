@@ -1,4 +1,4 @@
-#if !defined(_XBOX) && !defined(_LINUX) && !defined(_XBMC)
+#if !defined(_LINUX) && !defined(_XBMC)
 #include "rar.hpp"
 
 #ifndef GUI
@@ -291,10 +291,10 @@ void OutComment(char *Comment,int Size)
 #endif
 }
 
-#else // _XBOX
+#else
 
 void OutComment(char *Comment,int Size)
 {
 }
 
-#endif // !_XBOX
+#endif

@@ -50,7 +50,7 @@ public:
 
   virtual bool BeginRender();
   virtual bool EndRender();
-  virtual bool PresentRender();
+  virtual bool PresentRender(const CDirtyRegionList &dirty);
   virtual bool ClearBuffers(color_t color);
   virtual bool IsExtSupported(const char* extension);
   virtual bool IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage);
@@ -60,6 +60,9 @@ public:
 
   virtual void SetViewPort(CRect& viewPort);
   virtual void GetViewPort(CRect& viewPort);
+
+  virtual void SetScissors(const CRect &rect);
+  virtual void ResetScissors();
 
   virtual void CaptureStateBlock();
   virtual void ApplyStateBlock();
@@ -106,7 +109,7 @@ protected:
   void DeleteDevice();
   void OnDeviceLost();
   void OnDeviceReset();
-  bool PresentRenderImpl();
+  bool PresentRenderImpl(const CDirtyRegionList &dirty);
 
   void SetFocusWnd(HWND wnd) { m_hFocusWnd = wnd; }
   void SetDeviceWnd(HWND wnd) { m_hDeviceWnd = wnd; }

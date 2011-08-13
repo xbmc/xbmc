@@ -22,6 +22,8 @@
 #ifndef WINDOWING_FACTORY_H
 #define WINDOWING_FACTORY_H
 
+#include "system.h"
+
 #if defined(_WIN32) && defined(HAS_GL)
 #include "windows/WinSystemWin32GL.h"
 #endif
@@ -31,14 +33,18 @@
 #endif
 
 #if defined(__APPLE__)
+#if defined(__arm__)
+#include "osx/WinSystemIOS.h"
+#else
 #include "osx/WinSystemOSXGL.h"
+#endif
 #endif
 
 #if defined(HAS_GLX)
 #include "X11/WinSystemX11GL.h"
 #endif
 
-#if defined(HAS_EGL)
+#if defined(HAS_EGL) && !defined(__APPLE__)
 #include "egl/WinSystemEGL.h"
 #endif
 

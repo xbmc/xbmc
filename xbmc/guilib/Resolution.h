@@ -92,12 +92,20 @@ struct RESOLUTION_INFO
   CStdString strMode;
   CStdString strOutput;
   CStdString strId;
-  public:
-  RESOLUTION_INFO()
+public:
+  RESOLUTION_INFO(int width = 1280, int height = 720, float aspect = 0, const CStdString &mode = "")
   {
-    bFullScreen = false;
-    iScreen = iWidth = iHeight = iSubtitles = dwFlags = 0;
-    fPixelRatio = fRefreshRate = 0.f;
+    iWidth = width;
+    iHeight = height;
+    fPixelRatio = aspect ? ((float)width)/height / aspect : 1.0f;
+    strMode = mode;
+    bFullScreen = true;
+    fRefreshRate = 0;
+    dwFlags = iSubtitles = iScreen = 0;
+  }
+  float DisplayRatio() const
+  {
+    return iWidth * fPixelRatio / iHeight;
   }
   RESOLUTION_INFO(const RESOLUTION_INFO& res)
   {

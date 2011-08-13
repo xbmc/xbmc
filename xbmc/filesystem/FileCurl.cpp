@@ -338,7 +338,6 @@ void CFileCurl::SetBufferSize(unsigned int size)
 
 void CFileCurl::Close()
 {
-  CLog::Log(LOGDEBUG, "FileCurl::Close(%p) %s", (void*)this, m_url.c_str());
   m_state->Disconnect();
 
   m_url.Empty();
@@ -438,7 +437,7 @@ void CFileCurl::SetCommonOptions(CReadState* state)
     g_curlInterface.easy_setopt(h, CURLOPT_REFERER, m_referer.c_str());
   else
   {
-    g_curlInterface.easy_setopt(h, CURLOPT_REFERER, "");
+    g_curlInterface.easy_setopt(h, CURLOPT_REFERER, NULL);
     g_curlInterface.easy_setopt(h, CURLOPT_AUTOREFERER, TRUE);
   }
 
@@ -982,8 +981,6 @@ int64_t CFileCurl::Seek(int64_t iFilePosition, int iWhence)
       else
         return -1;
       break;
-    case SEEK_POSSIBLE:
-      return m_seekable ? 1 : 0;
     default:
       return -1;
   }
@@ -1293,16 +1290,6 @@ bool CFileCurl::CReadState::FillBuffer(unsigned int want)
     {
       case CURLM_OK:
       {
-        // hack for broken curl, that thinks there is data all the time
-        // happens especially on ftp during initial connection
-#ifndef _LINUX
-        SwitchToThread();
-#elif __APPLE__
-        sched_yield();
-#else
-        pthread_yield();
-#endif
-
         int maxfd = -1;
         FD_ZERO(&fdread);
         FD_ZERO(&fdwrite);
@@ -1398,4 +1385,12 @@ bool CFileCurl::GetMimeType(const CURL &url, CStdString &content, CStdString use
    CLog::Log(LOGDEBUG, "CFileCurl::GetMimeType - %s -> failed", url.Get().c_str());
    content = "";
    return false;
+}
+
+int CFileCurl::IoControl(EIoControl request, void* param)
+{
+  if(request == IOCTRL_SEEK_POSSIBLE)
+    return m_seekable ? 1 : 0;
+
+  return -1;
 }

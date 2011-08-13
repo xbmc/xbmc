@@ -33,11 +33,7 @@
 #endif
 
 // stuff for freetype
-#ifndef _LINUX
-#include "ft2build.h"
-#else
 #include <ft2build.h>
-#endif
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_OUTLINE_H

@@ -1,6 +1,0 @@
-// additional pre-gap for track 1
-
-TRACK AUDIO
-NO COPY       // so that all CTL flags are 0
-FILE "cdda.bin" 0:59:0  // Seconds are just under 60
-START 0:10:0  // 10 second pre-gap

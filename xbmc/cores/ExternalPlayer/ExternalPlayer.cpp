@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "signal.h"
 #include "limits.h"
@@ -63,7 +64,7 @@ extern HWND g_hWnd;
 
 CExternalPlayer::CExternalPlayer(IPlayerCallback& callback)
     : IPlayer(callback),
-      CThread()
+      CThread("CExternalPlayer")
 {
   m_bAbortRequest = false;
   m_bIsPlaying = false;
@@ -97,7 +98,7 @@ bool CExternalPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &opti
   try
   {
     m_bIsPlaying = true;
-    m_launchFilename = file.m_strPath;
+    m_launchFilename = file.GetPath();
     CLog::Log(LOGNOTICE, "%s: %s", __FUNCTION__, m_launchFilename.c_str());
     Create();
 
@@ -134,8 +135,6 @@ bool CExternalPlayer::IsPlaying() const
 
 void CExternalPlayer::Process()
 {
-  SetName("CExternalPlayer");
-
   CStdString mainFile = m_launchFilename;
   CStdString archiveContent = "";
 
@@ -295,14 +294,14 @@ void CExternalPlayer::Process()
   LockSetForegroundWindow(LSFW_UNLOCK);
 #endif
 
-  m_playbackStartTime = CTimeUtils::GetTimeMS();
+  m_playbackStartTime = XbmcThreads::SystemClockMillis();
   BOOL ret = TRUE;
 #if defined(_WIN32)
   ret = ExecuteAppW32(strFName.c_str(),strFArgs.c_str());
 #elif defined(_LINUX)
   ret = ExecuteAppLinux(strFArgs.c_str());
 #endif
-  int64_t elapsedMillis = CTimeUtils::GetTimeMS() - m_playbackStartTime;
+  int64_t elapsedMillis = XbmcThreads::SystemClockMillis() - m_playbackStartTime;
 
   if (ret && (m_islauncher || elapsedMillis < LAUNCHER_PROCESS_TIME))
   {
@@ -554,7 +553,7 @@ void CExternalPlayer::SeekTime(__int64 iTime)
 
 __int64 CExternalPlayer::GetTime() // in millis
 {
-  if ((CTimeUtils::GetTimeMS() - m_playbackStartTime) / 1000 > m_playCountMinTime)
+  if ((XbmcThreads::SystemClockMillis() - m_playbackStartTime) / 1000 > m_playCountMinTime)
   {
     m_time = m_totalTime * 1000;
   }

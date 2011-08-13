@@ -47,16 +47,16 @@ class CAutorun
 public:
   CAutorun();
   virtual ~CAutorun();
-  static bool PlayDisc();
+  static bool PlayDisc(bool restart = false);
   bool IsEnabled() const;
   void Enable();
   void Disable();
   void HandleAutorun();
-  static void ExecuteAutorun(bool bypassSettings = false, bool ignoreplaying=false);
+  static void ExecuteAutorun(bool bypassSettings = false, bool ignoreplaying = false, bool restart = false);
 protected:
   static void RunCdda();
-  static void RunMedia(bool bypassSettings = false);
-  static bool RunDisc(XFILE::IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings = false);
+  static void RunMedia(bool bypassSettings, bool restart);
+  static bool RunDisc(XFILE::IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings, bool restart);
   bool m_bEnable;
 };
 }

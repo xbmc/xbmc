@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
-<!--Date of translation: 02/14/2011-->
 <strings>
   <string id="0">程序</string>
   <string id="1">图片</string>
@@ -388,7 +387,7 @@
   <string id="426">找不到 CD 信息！</string>
   <string id="427">光盘</string>
   <string id="428">请放入正确的 CD/DVD</string>
-  <string id="429">请放入下一张 CD/DVD</string>
+  <string id="429">请放入下一张盘片：</string>
   <string id="430">排序：DVD#</string>
   <string id="431">无缓存</string>
   <string id="432">从资料库中移除影片</string>
@@ -707,6 +706,8 @@
   <string id="851">有效端口范围是 1-65535</string>
   <string id="852">有效端口范围是 1024-65535</string>
 
+  <string id="998">添加音乐...</string>
+  <string id="999">添加视频...</string>
   <string id="1000">- 预览</string>
   <string id="1001">无法连接</string>
   <string id="1002">XBMC 无法连接到该网上邻居！</string>
@@ -979,6 +980,7 @@
   <string id="12392">小时</string>
   <string id="12393">天</string>
   <string id="12394">累计开机时间</string>
+  <string id="12395">电池电量</string>
 
   <string id="12600">天气</string>
 
@@ -1039,8 +1041,8 @@
   <string id="13132">空白显示</string>
 
   <string id="13140">检测到活动连接！</string>
-  <string id="13141">如果你处理，你将不再能控制你的</string>
-  <string id="13142">XBMC，你是否确认要停止远程控制？</string>
+  <string id="13141">如果继续此操作，可能会无法控制你的</string>
+  <string id="13142">XBMC，你是否确认要停止事件服务器？</string>
 
   <string id="13144">改变 Apple 遥控器的模式？</string>
   <string id="13145">如果你现在正在使用 Apple 遥控器</string>
@@ -1220,6 +1222,7 @@
   <string id="13429">允许硬件加速（VDADecoder）</string>
   <string id="13430">允许硬件加速（OpenMax）</string>
   <string id="13431">像素着色器</string>
+  <string id="13432">允许硬件加速（VideoToolbox）</string>
 
   <string id="13500">影音同步方式</string>
   <string id="13501">音频时钟</string>
@@ -1463,10 +1466,10 @@
   <string id="16017">输入查询字符串</string>
   <string id="16018">关闭</string>
   <string id="16019">自动选择</string>
-  <string id="16020">去交错</string>
+  <string id="16020">去隔行</string>
   <string id="16021">抖动</string>
   <string id="16022">抖动（倒转）</string>
-  <string id="16023">交错设置</string>
+  <string id="16023">隔行扫描处理</string>
   <string id="16024">取消中...</string>
   <string id="16025">输入艺人名字</string>
   <string id="16026">播放失败</string>
@@ -1479,6 +1482,7 @@
   <string id="16033">无法打开资料库！</string>
   <string id="16034">无法从资料库获取歌曲文件！</string>
   <string id="16035">舞会模式播放列表</string>
+  <string id="16036">去隔行（半速）</string>
  
   <string id="16100">所有视频文件</string>
   <string id="16101">未观看的</string>
@@ -1725,6 +1729,8 @@
   <string id="20256">HTS Tvheadend 客户端</string>
   <string id="20257">VDR Streamdev 客户端</string>
   <string id="20258">MythTV 客户端</string>
+  <string id="20259">网络文件系统（NFS）</string>
+  <string id="20260">安全壳（SSH/SFTP）</string>
 
   <string id="20300">WEB服务器目录（HTTP）</string>
   <string id="20301">WEB服务器目录（HTTPS）</string>
@@ -1875,6 +1881,7 @@
   <string id="20453">集</string>
   <string id="20454">收听者</string>
   <string id="20455">听众</string>
+  <string id="20456">设置影片集同人画</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2163,6 +2170,8 @@
   <string id="24041">从zip文件安装</string>
   <string id="24042">正在下载 %i%%</string>
   <string id="24043">可更新项</string>
+  <string id="24044">依赖项目未找到</string>
+  <string id="24045">扩展功能程序结构不完整</string>
 
   <string id="24050">可用扩展功能</string>
   <string id="24051">版本：</string>
@@ -2191,9 +2200,9 @@
   <string id="24089">重新启动扩展功能</string>
   <string id="24090">锁定扩展功能管理器</string>
 
-  <string id="24096">库中的扩展功能被标记为已损坏。</string>
+  <string id="24096">库中的扩展功能被标记为已失效。</string>
   <string id="24097">要在系统中禁用它吗？</string>
-  <string id="24098">已损坏</string>
+  <string id="24098">已失效</string>
   <string id="24099">要切换到此皮肤吗？</string>
   <string id="25000">提示信息</string>
 
@@ -2279,6 +2288,11 @@
   <string id="33082">脚本目录</string>
   <string id="33083">启用自定义脚本按钮</string>
 
+  <string id="33100">启动失败</string>
+  <string id="33101">Web服务器</string>
+  <string id="33102">事件服务器</string>
+  <string id="33103">远程通信服务器</string>
+
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
@@ -2299,4 +2313,7 @@
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
+
+  <string id="34201">未找到下一播放项目</string>
+  <string id="34202">未找到上一播放项目</string>
 </strings>

@@ -78,7 +78,7 @@ private:
   CStdString m_strLastShare;
 #ifdef _LINUX
   int m_OpenConnections;
-  int m_LastActive;
+  unsigned int m_IdleTimeout;
 #endif
 };
 

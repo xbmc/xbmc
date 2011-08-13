@@ -18,6 +18,7 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#if !defined(__arm__)
 #import <unistd.h>
 #import <sys/mount.h>
 
@@ -30,6 +31,8 @@
 #import "CocoaInterface.h"
 #import "DllPaths_generated.h"
 
+#import "AutoPool.h"
+
 // hack for Cocoa_GL_ResizeWindow
 //extern "C" void SDL_SetWidthHeight(int w, int h);
 
@@ -40,31 +43,6 @@
 static CVDisplayLinkRef displayLink = NULL; 
 
 CGDirectDisplayID Cocoa_GetDisplayIDFromScreen(NSScreen *screen);
-
-CCocoaAutoPool::CCocoaAutoPool()
-{
-  m_opaque_pool = [[NSAutoreleasePool alloc] init];
-}
-CCocoaAutoPool::~CCocoaAutoPool()
-{
-  [(NSAutoreleasePool*)m_opaque_pool release];
-}
-
-
-void* Cocoa_Create_AutoReleasePool(void)
-{
-  // Original Author: Elan Feingold
-	// Create an autorelease pool (necessary to call Obj-C code from non-Obj-C code)
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  return pool;
-}
-
-void Cocoa_Destroy_AutoReleasePool(void* aPool)
-{
-  // Original Author: Elan Feingold
-  NSAutoreleasePool* pool = (NSAutoreleasePool* )aPool;
-  [pool release];
-}
 
 int Cocoa_GL_GetCurrentDisplayID(void)
 {
@@ -92,7 +70,6 @@ int Cocoa_GL_GetCurrentDisplayID(void)
   
   return((int)display_id);
 }
-
 
 /* 10.5 only
 void Cocoa_SetSystemSleep(bool enable)
@@ -125,7 +102,7 @@ void Cocoa_SetDisplaySleep(bool enable)
 void Cocoa_UpdateSystemActivity(void)
 {
   // Original Author: Elan Feingold
-  UpdateSystemActivity(UsrActivity);   
+  UpdateSystemActivity(UsrActivity);
 }
 
 bool Cocoa_CVDisplayLinkCreate(void *displayLinkcallback, void *displayLinkContext)
@@ -259,8 +236,8 @@ void Cocoa_DoAppleScriptFile(const char* filePath)
 
 const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconName)
 {
-  NSString* bundlePath = [NSString stringWithCString:_bundlePath];
-  NSString* iconName = [NSString stringWithCString:_iconName];
+  NSString* bundlePath = [NSString stringWithUTF8String:_bundlePath];
+  NSString* iconName = [NSString stringWithUTF8String:_iconName];
   NSBundle* bundle = [NSBundle bundleWithPath:bundlePath];
   NSString* iconPath = [bundle pathForResource:iconName ofType:@"icns"];
   NSString* bundleIdentifier = [bundle bundleIdentifier];
@@ -359,7 +336,7 @@ bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volum
   }
 
   NSString *volumename = [dd objectForKey:(NSString*)kDADiskDescriptionVolumeNameKey];
-  volumeName = [volumename cString];
+  volumeName = [volumename UTF8String];
 
   CFRelease(session);		        
   CFRelease(disk);		        
@@ -547,12 +524,12 @@ bool Cocoa_HasVDADecoder()
   if (result == -1)
   {
     if (Cocoa_GetOSVersion() >= 0x1063)
-      result = access(DLL_PATH_LIBVDADECODER, 0) == 0;
+      result = (access(DLL_PATH_LIBVDADECODER, 0) == 0) ? 1:0;
     else
-      result = false;
+      result = 0;
   }
 
-  return(result);
+  return (result == 1);
 }
 
 bool Cocoa_GPUForDisplayIsNvidiaPureVideo3()
@@ -682,3 +659,4 @@ OSStatus SendAppleEventToSystemProcess(AEEventID EventToSend)
 
   return(error); 
 }
+#endif

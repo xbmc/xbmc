@@ -30,6 +30,15 @@
 #include <semaphore.h>
 #include <OMX_Core.h>
 
+////////////////////////////////////////////////////////////////////////////////////////////
+// debug spew defines
+#if 0
+#define OMX_DEBUG_VERBOSE
+#define OMX_DEBUG_EVENTHANDLER
+#define OMX_DEBUG_FILLBUFFERDONE
+#define OMX_DEBUG_EMPTYBUFFERDONE
+#endif
+
 typedef struct omx_codec_capability {
     // level is OMX_VIDEO_AVCPROFILETYPE, OMX_VIDEO_H263PROFILETYPE, 
     // or OMX_VIDEO_MPEG4PROFILETYPE depending on context.

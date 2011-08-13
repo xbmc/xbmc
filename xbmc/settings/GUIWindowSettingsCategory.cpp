@@ -55,6 +55,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "addons/Visualisation.h"
 #include "addons/AddonManager.h"
 #include "storage/MediaManager.h"
@@ -66,16 +67,20 @@
 #include "LinuxTimezone.h"
 #include <dlfcn.h>
 #include "cores/AudioRenderers/AudioRendererFactory.h"
-#ifndef __APPLE__
+#if defined(USE_ALSA)
 #include "cores/AudioRenderers/ALSADirectSound.h"
 #endif
 #ifdef HAS_HAL
 #include "HALManager.h"
 #endif
 #endif
-#ifdef __APPLE__
+#if defined(__APPLE__) 
+#if defined(__arm__)
+#include "IOSCoreAudio.h"
+#else
 #include "CoreAudio.h"
 #include "XBMCHelper.h"
+#endif
 #endif
 #include "network/GUIDialogAccessPoints.h"
 #include "filesystem/Directory.h"
@@ -139,9 +144,6 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_strErrorMessage = "";
   m_strOldTrackFormat = "";
   m_strOldTrackFormatRight = "";
-  m_iSectionBeforeJump=-1;
-  m_iControlBeforeJump=-1;
-  m_iWindowBeforeJump=WINDOW_INVALID;
   m_returningFromSkinLoad = false;
   m_delayedSetting = NULL;
 }
@@ -152,21 +154,11 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
   delete m_pOriginalEdit;
 }
 
-bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
+bool CGUIWindowSettingsCategory::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_PARENT_DIR)
-  {
-    g_settings.Save();
-    if (m_iWindowBeforeJump!=WINDOW_INVALID)
-    {
-      JumpToPreviousSection();
-      return true;
-    }
-    m_lastControlID = 0; // don't save the control as we go to a different window each time
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-  return CGUIWindow::OnAction(action);
+  g_settings.Save();
+  m_lastControlID = 0; // don't save the control as we go to a different window each time
+  return CGUIWindow::OnBack(actionID);
 }
 
 bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
@@ -581,10 +573,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
       for (int i = 1; i <= MAXREFRESHCHANGEDELAY; i++)
       {
         CStdString delayText;
-        if (i < 4)
-          delayText.Format(g_localizeStrings.Get(13552).c_str(), (double)i / 2.0);
+        if (i < 20)
+          delayText.Format(g_localizeStrings.Get(13552).c_str(), (double)i / 10.0);
         else
-          delayText.Format(g_localizeStrings.Get(13553).c_str(), (double)i / 2.0);
+          delayText.Format(g_localizeStrings.Get(13553).c_str(), (double)i / 10.0);
 
         pControl->AddLabel(delayText, i);
       }
@@ -669,7 +661,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl)
         pControl->SetEnabled(g_guiSettings.GetInt("videoscreen.screen") != DM_WINDOWED);
     }
-#if defined(__APPLE__) || defined(_WIN32)
+#if (defined(__APPLE__) && !defined(__arm__)) || defined(_WIN32)
     else if (strSetting.Equals("videoscreen.blankdisplays"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
@@ -683,7 +675,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       }
     }
 #endif
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
     else if (strSetting.Equals("input.appleremotemode"))
     {
       int remoteMode = g_guiSettings.GetInt("input.appleremotemode");
@@ -692,7 +684,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if ( remoteMode != APPLE_REMOTE_DISABLED )
       {
         g_guiSettings.SetBool("services.esenabled", true);
-        g_application.StartEventServer();
+        if (!g_application.StartEventServer())
+          CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
       }
 
       // if XBMC helper is running, prompt user before effecting change
@@ -816,13 +809,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
                                          g_guiSettings.GetString("audiooutput.audiodevice").find("wasapi:") == CStdString::npos);
     }
 #ifdef HAS_WEB_SERVER
-    else if (strSetting.Equals("services.webserverusername"))
-    {
-      CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
-      if (pControl)
-        pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
-    }
-    else if (strSetting.Equals("services.webserverpassword"))
+    else if (strSetting.Equals("services.webserverusername") ||
+             strSetting.Equals("services.webserverpassword"))
     {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (pControl)
@@ -1058,6 +1046,9 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
       if (g_weatherManager.GetSearchResults(strSearch, strResult))
       {
         ((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
+        // Update the labels on the location spinner
+        g_weatherManager.Reset();
+        // Refresh the weather using the new location
         g_weatherManager.Refresh();
       }
     }
@@ -1304,7 +1295,7 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
 #if defined(_LINUX) && !defined(__APPLE__)
       g_guiSettings.SetString("audiooutput.passthroughdevice", m_DigitalAudioSinkMap[pControl->GetCurrentLabel()]);
-#else
+#elif !defined(__arm__)
       g_guiSettings.SetString("audiooutput.passthroughdevice", pControl->GetCurrentLabel());
 #endif
   }
@@ -1326,7 +1317,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       ValidatePortNumber(pSettingControl, "8080", "80");
     g_application.StopWebServer();
     if (g_guiSettings.GetBool("services.webserver"))
-      g_application.StartWebServer();
+      if (!g_application.StartWebServer())
+      {
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33101), "", g_localizeStrings.Get(33100), "");
+        g_guiSettings.SetBool("services.webserver", false);
+      }
   }
   else if (strSetting.Equals("services.webserverusername") || strSetting.Equals("services.webserverpassword"))
   {
@@ -1681,7 +1676,15 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
 #ifdef HAS_EVENT_SERVER
     if (g_guiSettings.GetBool("services.esenabled"))
-      g_application.StartEventServer();
+    {
+      if (!g_application.StartEventServer())
+      {
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33102), "", g_localizeStrings.Get(33100), "");
+        g_guiSettings.SetBool("services.esenabled", false);
+        CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+        if (pControl) pControl->SetEnabled(false);
+      }
+    }
     else
     {
       if (!g_application.StopEventServer(true, true))
@@ -1692,10 +1695,15 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
+#ifdef HAS_JSONRPC
     if (g_guiSettings.GetBool("services.esenabled"))
-      g_application.StartJSONRPCServer();
+    {
+      if (!g_application.StartJSONRPCServer())
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33103), "", g_localizeStrings.Get(33100), "");
+    }
     else
       g_application.StopJSONRPCServer(false);
+#endif
   }
   else if (strSetting.Equals("services.esport"))
   {
@@ -1703,8 +1711,11 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     ValidatePortNumber(pSettingControl, "9777", "9777");
     //restart eventserver without asking user
     if (g_application.StopEventServer(true, false))
-      g_application.StartEventServer();
-#ifdef __APPLE__
+    {
+      if (!g_application.StartEventServer())
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33102), "", g_localizeStrings.Get(33100), "");
+    }
+#if defined(__APPLE__) && !defined(__arm__)
     //reconfigure XBMCHelper for port changes
     XBMCHelper::GetInstance().Configure();
 #endif
@@ -1716,7 +1727,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if (g_guiSettings.GetBool("services.esenabled"))
     {
       if (g_application.StopEventServer(true, true))
-        g_application.StartEventServer();
+      {
+        if (!g_application.StartEventServer())
+          CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33102), "", g_localizeStrings.Get(33100), "");
+      }
       else
       {
         g_guiSettings.SetBool("services.esenabled", true);
@@ -1725,10 +1739,15 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       }
     }
 #endif
+#ifdef HAS_JSONRPC
     if (g_guiSettings.GetBool("services.esenabled"))
-      g_application.StartJSONRPCServer();
+    {
+      if (!g_application.StartJSONRPCServer())
+        CGUIDialogOK::ShowAndGetInput(g_localizeStrings.Get(33103), "", g_localizeStrings.Get(33100), "");
+    }
     else
       g_application.StopJSONRPCServer(false);
+#endif
   }
   else if (strSetting.Equals("services.esinitialdelay") ||
            strSetting.Equals("services.escontinuousdelay"))
@@ -1982,7 +2001,7 @@ void CGUIWindowSettingsCategory::FrameMove()
   CGUIWindow::FrameMove();
 }
 
-void CGUIWindowSettingsCategory::Render()
+void CGUIWindowSettingsCategory::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // update alpha status of current button
   bool bAlphaFaded = false;
@@ -2002,7 +2021,7 @@ void CGUIWindowSettingsCategory::Render()
       bAlphaFaded = true;
     }
   }
-  CGUIWindow::Render();
+  CGUIWindow::DoProcess(currentTime, dirtyregions);
   if (bAlphaFaded)
   {
     control->SetFocus(false);
@@ -2011,6 +2030,11 @@ void CGUIWindowSettingsCategory::Render()
     else
       ((CGUIButtonControl *)control)->SetSelected(false);
   }
+}
+
+void CGUIWindowSettingsCategory::Render()
+{
+  CGUIWindow::Render();
   // render the error message if necessary
   if (m_strErrorMessage.size())
   {
@@ -2291,7 +2315,8 @@ DisplayMode CGUIWindowSettingsCategory::FillInScreens(CStdString strSetting, RES
   pControl->Clear();
 
   CStdString strScreen;
-  pControl->AddLabel(g_localizeStrings.Get(242), -1);
+  if (g_advancedSettings.m_canWindowed)
+    pControl->AddLabel(g_localizeStrings.Get(242), -1);
 
   for (int idx = 0; idx < g_Windowing.GetNumScreens(); idx++)
   {
@@ -2522,49 +2547,6 @@ CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &st
   return NULL;
 }
 
-void CGUIWindowSettingsCategory::JumpToSection(int windowId, const CStdString &section)
-{
-  // grab our section
-  CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(windowId - WINDOW_SETTINGS_MYPICTURES);
-  if (!pSettingsGroup) return;
-  // get the categories we need
-  vecSettingsCategory categories;
-  pSettingsGroup->GetCategories(categories);
-  // iterate through them and check for the required section
-  int iSection = -1;
-  for (unsigned int i = 0; i < categories.size(); i++)
-    if (categories[i]->m_strCategory.Equals(section))
-      iSection = i;
-  if (iSection == -1) return;
-
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
-  OnMessage(msg);
-  m_iSectionBeforeJump=m_iSection;
-  m_iControlBeforeJump=m_lastControlID;
-  m_iWindowBeforeJump=GetID();
-
-  m_iSection=iSection;
-  m_lastControlID=CONTROL_START_CONTROL;
-  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, windowId);
-  OnMessage(msg1);
-  for (unsigned int i=0; i<m_vecSections.size(); ++i)
-    CONTROL_DISABLE(CONTROL_START_BUTTONS+i);
-}
-
-void CGUIWindowSettingsCategory::JumpToPreviousSection()
-{
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
-  OnMessage(msg);
-  m_iSection=m_iSectionBeforeJump;
-  m_lastControlID=m_iControlBeforeJump;
-  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, m_iWindowBeforeJump);
-  OnMessage(msg1);
-
-  m_iSectionBeforeJump=-1;
-  m_iControlBeforeJump=-1;
-  m_iWindowBeforeJump=WINDOW_INVALID;
-}
-
 void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
 {
   // There is a default theme (just Textures.xpr/xbt)
@@ -2793,31 +2775,61 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
 
 void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Passthrough)
 {
-#ifdef __APPLE__
-  if (Passthrough)
-    return;
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
-  pControl->Clear();
+#if defined(__APPLE__)
+  #if defined(__arm__)
+    if (Passthrough)
+      return;
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+    pControl->Clear();
 
-  CoreAudioDeviceList deviceList;
-  CCoreAudioHardware::GetOutputDevices(&deviceList);
+    IOSCoreAudioDeviceList deviceList;
+    CIOSCoreAudioHardware::GetOutputDevices(&deviceList);
 
-  if (CCoreAudioHardware::GetDefaultOutputDevice())
-    pControl->AddLabel("Default Output Device", 0); // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
-  int activeDevice = 0;
+    // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
+    if (CIOSCoreAudioHardware::GetDefaultOutputDevice())
+      pControl->AddLabel("Default Output Device", 0);
 
-  CStdString deviceName;
-  for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
-  {
-    CCoreAudioDevice device(deviceList.front());
-    pControl->AddLabel(device.GetName(deviceName), i);
+    int activeDevice = 0;
+    CStdString deviceName;
+    for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
+    {
+      CIOSCoreAudioDevice device(deviceList.front());
+      pControl->AddLabel(device.GetName(deviceName), i);
 
-    if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
-      activeDevice = i; // Tag this one
+      // Tag this one
+      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
+        activeDevice = i; 
 
-    deviceList.pop_front();
-  }
-  pControl->SetValue(activeDevice);
+      deviceList.pop_front();
+    }
+    pControl->SetValue(activeDevice);
+  #else
+    if (Passthrough)
+      return;
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+    pControl->Clear();
+
+    CoreAudioDeviceList deviceList;
+    CCoreAudioHardware::GetOutputDevices(&deviceList);
+
+    // This will cause FindAudioDevice to fall back to the system default as configured in 'System Preferences'
+    if (CCoreAudioHardware::GetDefaultOutputDevice())
+      pControl->AddLabel("Default Output Device", 0);
+
+    int activeDevice = 0;
+    CStdString deviceName;
+    for (int i = pControl->GetMaximum(); !deviceList.empty(); i++)
+    {
+      CCoreAudioDevice device(deviceList.front());
+      pControl->AddLabel(device.GetName(deviceName), i);
+
+      if (g_guiSettings.GetString("audiooutput.audiodevice").Equals(deviceName))
+        activeDevice = i; // Tag this one
+
+      deviceList.pop_front();
+    }
+    pControl->SetValue(activeDevice);
+  #endif
 #else
   CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->Clear();

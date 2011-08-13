@@ -26,7 +26,6 @@
 #include "OGGcodec.h"
 #include "FLACcodec.h"
 #include "WAVcodec.h"
-#include "WAVPackcodec.h"
 #include "ModplugCodec.h"
 #include "NSFCodec.h"
 #ifdef HAS_SPC_CODEC
@@ -35,7 +34,6 @@
 #include "SIDCodec.h"
 #include "VGMCodec.h"
 #include "YMCodec.h"
-#include "AIFFcodec.h"
 #include "ADPCMCodec.h"
 #include "TimidityCodec.h"
 #ifdef HAS_ASAP_CODEC
@@ -64,7 +62,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
            strFileType.Equals("m4a") || strFileType.Equals("aac"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("wv"))
-    return new WAVPackCodec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("669")  ||  strFileType.Equals("abc") ||
            strFileType.Equals("amf")  ||  strFileType.Equals("ams") ||
            strFileType.Equals("dbm")  ||  strFileType.Equals("dmf") ||
@@ -96,7 +94,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
   else if (strFileType.Equals("wma"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("aiff") || strFileType.Equals("aif"))
-    return new AIFFCodec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("xwav"))
     return new ADPCMCodec();
   else if (TimidityCodec::IsSupportedFormat(strFileType))

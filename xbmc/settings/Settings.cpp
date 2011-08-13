@@ -57,6 +57,7 @@
 #include "utils/URIUtils.h"
 #include "input/MouseStat.h"
 #include "filesystem/File.h"
+#include "addons/AddonManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -78,7 +79,7 @@ void CSettings::Initialize()
     g_graphicsContext.ResetOverscan((RESOLUTION)i, m_ResInfo[i].Overscan);
   }
 
-  m_iMyVideoStack = STACK_NONE;
+  m_videoStacking = false;
 
   m_bMyMusicSongInfoInVis = true;    // UNUSED - depreciated.
   m_bMyMusicSongThumbInVis = false;  // used for music info in vis screen
@@ -102,8 +103,9 @@ void CSettings::Initialize()
   m_bNonLinStretch = false;
 
   m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.m3u|.dng|.nef|.cr2|.crw|.orf|.arw|.erf|.3fr|.dcr|.x3f|.mef|.raf|.mrw|.pef|.sr2|.rss";
-  m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.cm3|.cms|.dlt|.brstm";
-  m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.tp|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml|.vc1|.h264|.rcv|.rss|.mpls|.webm|.bdmv";
+  m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.cm3|.cms|.dlt|.brstm|.wtv";
+  m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.tp|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml|.vc1|.h264|.rcv|.rss|.mpls|.webm|.bdmv|.wtv";
+  m_discStubExtensions = ".disc";
   // internal music extensions
   m_musicExtensions += "|.sidstream|.oggstream|.nsfstream|.asapstream|.cdda";
 
@@ -135,6 +137,9 @@ void CSettings::Initialize()
   m_usingLoginScreen = false;
   m_lastUsedProfile = 0;
   m_currentProfile = 0;
+  m_nextIdProfile = 0;
+
+  m_activeKeyboardMapping = "default";
 }
 
 CSettings::~CSettings(void)
@@ -209,8 +214,6 @@ CStdString CSettings::GetDefaultSourceFromType(const CStdString &type)
     defaultShare = m_defaultFileSource;
   else if (type == "music")
     defaultShare = m_defaultMusicSource;
-  else if (type == "video")
-    defaultShare = m_defaultVideoSource;
   else if (type == "pictures")
     defaultShare = m_defaultPictureSource;
   return defaultShare;
@@ -285,7 +288,7 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
       strPath = CSpecialProtocol::ReplaceOldPath(strPath, pathVersion);
       // make sure there are no virtualpaths or stack paths defined in xboxmediacenter.xml
       //CLog::Log(LOGDEBUG,"    Found path: %s", strPath.c_str());
-      if (!URIUtils::IsVirtualPath(strPath) && !URIUtils::IsStack(strPath))
+      if (!URIUtils::IsStack(strPath))
       {
         // translate special tags
         if (!strPath.IsEmpty() && strPath.at(0) == '$')
@@ -363,16 +366,6 @@ bool CSettings::GetSource(const CStdString &category, const TiXmlNode *source, C
 
     share.FromNameAndPaths(category, strName, verifiedPaths);
 
-/*    CLog::Log(LOGDEBUG,"      Adding source:");
-    CLog::Log(LOGDEBUG,"        Name: %s", share.strName.c_str());
-    if (URIUtils::IsVirtualPath(share.strPath) || URIUtils::IsMultiPath(share.strPath))
-    {
-      for (int i = 0; i < (int)share.vecPaths.size(); ++i)
-        CLog::Log(LOGDEBUG,"        Path (%02i): %s", i+1, share.vecPaths.at(i).c_str());
-    }
-    else
-      CLog::Log(LOGDEBUG,"        Path: %s", share.strPath.c_str());
-*/
     share.m_iBadPwdCount = 0;
     if (pLockMode)
     {
@@ -631,9 +624,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     GetInteger(pElement, "startwindow", m_iVideoStartWindow, WINDOW_VIDEO_FILES, WINDOW_VIDEO_FILES, WINDOW_VIDEO_NAV);
-    GetInteger(pElement, "stackvideomode", m_iMyVideoStack, STACK_NONE, STACK_NONE, STACK_SIMPLE);
-
-    GetPath(pElement, "defaultlibview", m_defaultVideoLibSource);
+    XMLUtils::GetBoolean(pElement, "stackvideos", m_videoStacking);
 
     // Read the watchmode settings for the various media views
     GetInteger(pElement, "watchmodemovies", m_watchMode["movies"], VIDEO_SHOW_ALL, VIDEO_SHOW_ALL, VIDEO_SHOW_WATCHED);
@@ -732,6 +723,10 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   // Advanced settings
   g_advancedSettings.Load();
 
+  // Add the list of disc stub extensions (if any) to the list of video extensions
+  if (!m_discStubExtensions.IsEmpty())
+ 	g_settings.m_videoExtensions += "|" + m_discStubExtensions;
+
   // Default players?
   CLog::Log(LOGNOTICE, "Default DVD Player: %s", g_advancedSettings.m_videoDefaultDVDPlayer.c_str());
   CLog::Log(LOGNOTICE, "Default Video Player: %s", g_advancedSettings.m_videoDefaultPlayer.c_str());
@@ -804,9 +799,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
 
   XMLUtils::SetInt(pNode, "startwindow", m_iVideoStartWindow);
 
-  XMLUtils::SetInt(pNode, "stackvideomode", m_iMyVideoStack);
-
-  XMLUtils::SetPath(pNode, "defaultlibview", m_defaultVideoLibSource);
+  XMLUtils::SetBoolean(pNode, "stackvideos", m_videoStacking);
 
   XMLUtils::SetInt(pNode, "watchmodemovies", m_watchMode.find("movies")->second);
   XMLUtils::SetInt(pNode, "watchmodetvshows", m_watchMode.find("tvshows")->second);
@@ -962,6 +955,8 @@ bool CSettings::LoadProfile(unsigned int index)
     CUtil::DeleteMusicDatabaseDirectoryCache();
     CUtil::DeleteVideoDatabaseDirectoryCache();
 
+    ADDON::CAddonMgr::Get().StartServices(false);
+
     return true;
   }
 
@@ -1000,7 +995,7 @@ bool CSettings::DeleteProfile(unsigned int index)
       }
 
       CFileItemPtr item = CFileItemPtr(new CFileItem(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory)));
-      item->m_strPath = URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory + "\\");
+      item->SetPath(URIUtils::AddFileToFolder(GetUserDataFolder(), strDirectory + "/"));
       item->m_bIsFolder = true;
       item->Select(true);
       CFileUtils::DeleteItem(item);
@@ -1029,6 +1024,7 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
       {
         XMLUtils::GetUInt(rootElement, "lastloaded", m_lastUsedProfile);
         XMLUtils::GetBoolean(rootElement, "useloginscreen", m_usingLoginScreen);
+        XMLUtils::GetInt(rootElement, "nextIdProfile", m_nextIdProfile);
 
         TiXmlElement* pProfile = rootElement->FirstChildElement("profile");
         
@@ -1038,8 +1034,8 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
         while (pProfile)
         {
           CProfile profile(defaultDir);
-          profile.Load(pProfile);
-          m_vecProfiles.push_back(profile);
+          profile.Load(pProfile,GetNextProfileId());
+          AddProfile(profile);
           pProfile = pProfile->NextSiblingElement("profile");
         }
       }
@@ -1052,8 +1048,8 @@ void CSettings::LoadProfiles(const CStdString& profilesFile)
 
   if (m_vecProfiles.empty())
   { // add the master user
-    CProfile profile("special://masterprofile/", "Master user");
-    m_vecProfiles.push_back(profile);
+    CProfile profile("special://masterprofile/", "Master user",0);
+    AddProfile(profile);
   }
 
   // check the validity of the previous profile index
@@ -1076,6 +1072,7 @@ bool CSettings::SaveProfiles(const CStdString& profilesFile) const
   if (!pRoot) return false;
   XMLUtils::SetInt(pRoot,"lastloaded", m_currentProfile);
   XMLUtils::SetBoolean(pRoot,"useloginscreen",m_usingLoginScreen);
+  XMLUtils::SetInt(pRoot,"nextIdProfile",m_nextIdProfile);      
   for (unsigned int i = 0; i < m_vecProfiles.size(); ++i)
     m_vecProfiles[i].Save(pRoot);
 
@@ -1170,10 +1167,6 @@ bool CSettings::UpdateSource(const CStdString &strType, const CStdString strOldN
   VECSOURCES *pShares = GetSourcesFromType(strType);
 
   if (!pShares) return false;
-
-  // disallow virtual paths
-  if (strUpdateElement.Equals("path") && URIUtils::IsVirtualPath(strUpdateText))
-    return false;
 
   for (IVECSOURCES it = pShares->begin(); it != pShares->end(); it++)
   {
@@ -1272,7 +1265,7 @@ bool CSettings::SaveSources()
 
   // ok, now run through and save each sources section
   SetSources(pRoot, "programs", m_programSources, m_defaultProgramSource);
-  SetSources(pRoot, "video", m_videoSources, m_defaultVideoSource);
+  SetSources(pRoot, "video", m_videoSources, "");
   SetSources(pRoot, "music", m_musicSources, m_defaultMusicSource);
   SetSources(pRoot, "pictures", m_pictureSources, m_defaultPictureSource);
   SetSources(pRoot, "files", m_fileSources, m_defaultFileSource);
@@ -1341,11 +1334,12 @@ void CSettings::LoadSources()
   // parse sources
   if (pRootElement)
   {
+    CStdString dummy;
     GetSources(pRootElement, "programs", m_programSources, m_defaultProgramSource);
     GetSources(pRootElement, "pictures", m_pictureSources, m_defaultPictureSource);
     GetSources(pRootElement, "files", m_fileSources, m_defaultFileSource);
     GetSources(pRootElement, "music", m_musicSources, m_defaultMusicSource);
-    GetSources(pRootElement, "video", m_videoSources, m_defaultVideoSource);
+    GetSources(pRootElement, "video", m_videoSources, dummy);
   }
 }
 
@@ -1866,6 +1860,11 @@ const CProfile &CSettings::GetCurrentProfile() const
   return emptyProfile;
 }
 
+ int CSettings::GetCurrentProfileId() const
+ {
+   return GetCurrentProfile().getId();
+ }
+
 void CSettings::UpdateCurrentProfileDate()
 {
   if (m_currentProfile < m_vecProfiles.size())
@@ -1901,6 +1900,9 @@ int CSettings::GetProfileIndex(const CStdString &name) const
 
 void CSettings::AddProfile(const CProfile &profile)
 {
+  //data integrity check - covers off migration from old profiles.xml, incrementing of the m_nextIdProfile,and bad data coming in
+  m_nextIdProfile = max(m_nextIdProfile, profile.getId() + 1); 
+
   m_vecProfiles.push_back(profile);
 }
 

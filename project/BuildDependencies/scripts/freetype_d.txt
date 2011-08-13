@@ -1,0 +1,2 @@
+; filename                   mirror of the file
+freetype-2.4.4-win32.zip       http://mirrors.xbmc.org/build-deps/win32/

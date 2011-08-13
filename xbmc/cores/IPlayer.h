@@ -88,6 +88,7 @@ public:
   virtual bool SeekScene(bool bPlus = true) {return false;}
   virtual void SeekPercentage(float fPercent = 0){}
   virtual float GetPercentage(){ return 0;}
+  virtual float GetCachePercentage(){ return 0;}
   virtual void SetVolume(long nVolume){}
   virtual void SetDynamicRangeCompression(long drc){}
   virtual void GetAudioInfo( CStdString& strAudioInfo) = 0;
@@ -108,6 +109,7 @@ public:
   virtual int  GetSubtitleCount()     { return 0; }
   virtual int  GetSubtitle()          { return -1; }
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName){};
+  virtual void GetSubtitleLanguage(int iStream, CStdString &strStreamLang){};
   virtual void SetSubtitle(int iStream){};
   virtual bool GetSubtitleVisible(){ return false;};
   virtual void SetSubtitleVisible(bool bVisible){};
@@ -132,7 +134,6 @@ public:
   virtual float GetActualFPS() { return 0.0f; };
   virtual void SeekTime(__int64 iTime = 0){};
   virtual __int64 GetTime(){ return 0;};
-  virtual void ResetTime() {};
   virtual int GetTotalTime(){ return 0;};
   virtual int GetAudioBitrate(){ return 0;}
   virtual int GetVideoBitrate(){ return 0;}

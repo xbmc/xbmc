@@ -8,6 +8,7 @@
   SDLMain.m and SDLMain.h carry neither a copyright or license. They are in the
   public domain.
 */
+#if !defined(__arm__)
 
 #import "SDL/SDL.h"
 #import "SDLMain.h"
@@ -457,11 +458,12 @@ int main(int argc, char *argv[])
   // call SDL_main which calls our real main in xbmc.cpp
   // we never return from here as quiting xbmc will call exit() directly.
   // see http://lists.libsdl.org/pipermail/sdl-libsdl.org/2008-September/066542.html
-  SDL_main(gArgc, gArgv);
+  int status;
+  status = SDL_main(gArgc, gArgv);
 
   [xbmc_delegate release];
-  [pool release];
+  [pool drain];
 
-  return 0;
+  return status;
 }
-
+#endif

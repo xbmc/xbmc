@@ -19,10 +19,11 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "IRServerSuite.h"
 #include "IrssMessage.h"
 #include "input/ButtonTranslator.h"
-#include "log.h"
+#include "utils/log.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/TimeUtils.h"
 #include <Ws2tcpip.h>
@@ -31,11 +32,12 @@
 
 CRemoteControl g_RemoteControl;
 
-CRemoteControl::CRemoteControl()
+CRemoteControl::CRemoteControl() : CThread("CRemoteControl")
 {
   m_socket = INVALID_SOCKET;
   m_bInitialized = false;
   m_isConnecting = false;
+  m_iAttempt     = 0;
   Reset();
 }
 
@@ -77,27 +79,30 @@ void CRemoteControl::Initialize()
   if (m_isConnecting || m_bInitialized) return;
   //trying to connect when there is nothing to connect to is kinda slow so kick it off in a thread.
   Create();
-  SetName("CRemoteControl");
 }
 
 void CRemoteControl::Process()
 {
-  int iTries = 1;
-  DWORD iMsRetryDelay = 5000;
-  DWORD time = CTimeUtils::GetTimeMS() - iMsRetryDelay;
+  unsigned int iMsRetryDelay = 5000;
+  unsigned int time = XbmcThreads::SystemClockMillis() - iMsRetryDelay;
   // try to connect 60 times @ a 5 second interval (5 minutes)
   // multiple tries because irss service might be up and running a little later then xbmc on boot.
-  while (!m_bStop && iTries <= 60)
+  while (!m_bStop && m_iAttempt <= 60)
   {
-    if (CTimeUtils::GetTimeMS() - time >= iMsRetryDelay)
+    if (XbmcThreads::SystemClockMillis() - time >= iMsRetryDelay)
     {
-      time = CTimeUtils::GetTimeMS();
+      time = XbmcThreads::SystemClockMillis();
       if (Connect())
         break;
-      iTries++;
+
+      if(m_iAttempt == 0)
+        CLog::Log(LOGINFO, "CRemoteControl::Process - failed to connect to irss, will keep retrying every %d seconds", iMsRetryDelay / 1000);
+
+      m_iAttempt++;
     }
     Sleep(1000);
   }
+  m_iAttempt     = 0;
 }
 
 bool CRemoteControl::Connect()
@@ -116,7 +121,8 @@ bool CRemoteControl::Connect()
   res = getaddrinfo("localhost", service, &hints, &result);
   if(res)
   {
-    CLog::Log(LOGERROR, "CRemoteControl::Connect - failed: %s", __FUNCTION__, gai_strerror(res));
+    if(m_iAttempt == 0)
+      CLog::Log(LOGERROR, "CRemoteControl::Connect - failed: %s", __FUNCTION__, gai_strerror(res));
     return false;
   }
 
@@ -126,8 +132,10 @@ bool CRemoteControl::Connect()
     {
       strcpy(namebuf, "[unknown]");
       strcpy(portbuf, "[unknown]");
-	}
-    CLog::Log(LOGDEBUG, "CRemoteControl::Connect - connecting to: %s:%s ...", namebuf, portbuf);
+    }
+
+    if(m_iAttempt == 0)
+      CLog::Log(LOGDEBUG, "CRemoteControl::Connect - connecting to: %s:%s ...", namebuf, portbuf);
 
     m_socket = socket(addr->ai_family, addr->ai_socktype, addr->ai_protocol);
     if(m_socket == INVALID_SOCKET)
@@ -143,7 +151,8 @@ bool CRemoteControl::Connect()
   freeaddrinfo(result);
   if(m_socket == INVALID_SOCKET)
   {
-    CLog::Log(LOGERROR, "CRemoteControl::Connect - failed to connect");
+    if(m_iAttempt == 0)
+      CLog::Log(LOGERROR, "CRemoteControl::Connect - failed to connect");
     Close();
     return false;
   }
@@ -151,7 +160,8 @@ bool CRemoteControl::Connect()
   u_long iMode = 1; //non-blocking
   if (ioctlsocket(m_socket, FIONBIO, &iMode) == SOCKET_ERROR)
   {
-    CLog::Log(LOGERROR, "IRServerSuite: failed to set socket to non-blocking.");
+    if(m_iAttempt == 0)
+      CLog::Log(LOGERROR, "IRServerSuite: failed to set socket to non-blocking.");
     Close();
     return false;
   }
@@ -160,7 +170,8 @@ bool CRemoteControl::Connect()
   CIrssMessage mess(IRSSMT_RegisterClient, IRSSMF_Request);
   if (!SendPacket(mess))
   {
-    CLog::Log(LOGERROR, "IRServerSuite: failed to send RegisterClient packet.");
+    if(m_iAttempt == 0)
+      CLog::Log(LOGERROR, "IRServerSuite: failed to send RegisterClient packet.");
     return false;
   }
   m_isConnecting = true;

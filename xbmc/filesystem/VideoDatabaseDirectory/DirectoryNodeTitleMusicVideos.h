@@ -31,7 +31,7 @@ namespace XFILE
     public:
       CDirectoryNodeTitleMusicVideos(const CStdString& strEntryName, CDirectoryNode* pParent);
     protected:
-      virtual bool GetContent(CFileItemList& items);
+      virtual bool GetContent(CFileItemList& item) const;
     };
   }
 }

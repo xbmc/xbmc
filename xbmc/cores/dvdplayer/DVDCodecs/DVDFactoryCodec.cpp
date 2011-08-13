@@ -28,6 +28,9 @@
 #include "Overlay/DVDOverlayCodec.h"
 
 #include "Video/DVDVideoCodecVDA.h"
+#if defined(HAVE_VIDEOTOOLBOXDECODER)
+#include "Video/DVDVideoCodecVideoToolBox.h"
+#endif
 #include "Video/DVDVideoCodecFFmpeg.h"
 #include "Video/DVDVideoCodecOpenMax.h"
 #include "Video/DVDVideoCodecLibMpeg2.h"
@@ -41,7 +44,9 @@
 #include "Audio/DVDAudioCodecPassthroughFFmpeg.h"
 #include "Overlay/DVDOverlayCodecSSA.h"
 #include "Overlay/DVDOverlayCodecText.h"
+#include "Overlay/DVDOverlayCodecTX3G.h"
 #include "Overlay/DVDOverlayCodecFFmpeg.h"
+
 
 #include "DVDStreamInfo.h"
 #include "settings/GUISettings.h"
@@ -127,6 +132,11 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
 #elif defined(__APPLE__)
   hwSupport += "VDADecoder:no ";
 #endif
+#if defined(HAVE_VIDEOTOOLBOXDECODER) && defined(__APPLE__)
+  hwSupport += "VideoToolBoxDecoder:yes ";
+#elif defined(__APPLE__)
+  hwSupport += "VideoToolBoxDecoder:no ";
+#endif
 #ifdef HAVE_LIBCRYSTALHD
   hwSupport += "CrystalHD:yes ";
 #else
@@ -167,6 +177,26 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec( CDVDStreamInfo &hint )
     {
       CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
       if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+    }
+  }
+#endif
+
+#if defined(HAVE_VIDEOTOOLBOXDECODER)
+  if (!hint.software && g_guiSettings.GetBool("videoplayer.usevideotoolbox"))
+  {
+    if (g_sysinfo.HasVideoToolBoxDecoder())
+    {
+      switch(hint.codec)
+      {
+        case CODEC_ID_H264:
+          if (hint.codec == CODEC_ID_H264 && hint.ptsinvalid)
+            break;
+          CLog::Log(LOGINFO, "Apple VideoToolBox Decoder...");
+          if ( (pCodec = OpenCodec(new CDVDVideoCodecVideoToolBox(), hint, options)) ) return pCodec;
+        break;
+        default:
+        break;
+      }
     }
   }
 #endif
@@ -303,6 +333,10 @@ CDVDOverlayCodec* CDVDFactoryCodec::CreateOverlayCodec( CDVDStreamInfo &hint )
       if( pCodec ) return pCodec;
 
       pCodec = OpenCodec(new CDVDOverlayCodecText(), hint, options);
+      if( pCodec ) return pCodec;
+
+    case CODEC_ID_MOV_TEXT:
+      pCodec = OpenCodec(new CDVDOverlayCodecTX3G(), hint, options);
       if( pCodec ) return pCodec;
 
     default:

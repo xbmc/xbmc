@@ -24,12 +24,16 @@
 //
 //////////////////////////////////////////////////////////////////////
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "Application.h"
 #include "FileShoutcast.h"
 #include "settings/GUISettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "URL.h"
+#include "utils/RegExp.h"
+#include "utils/HTMLUtil.h"
+#include "utils/CharsetConverter.h"
 #include "utils/TimeUtils.h"
 #include "GUIInfoManager.h"
 #include "utils/log.h"
@@ -39,7 +43,7 @@ using namespace MUSIC_INFO;
 
 CFileShoutcast::CFileShoutcast()
 {
-  m_lastTime = CTimeUtils::GetTimeMS();
+  m_lastTime = XbmcThreads::SystemClockMillis();
   m_discarded = 0;
   m_currint = 0;
   m_buffer = NULL;
@@ -95,9 +99,9 @@ unsigned int CFileShoutcast::Read(void* lpBuf, int64_t uiBufSize)
     m_discarded += header*16+1;
     m_currint = 0;
   }
-  if (CTimeUtils::GetTimeMS() - m_lastTime > 500)
+  if (XbmcThreads::SystemClockMillis() - m_lastTime > 500)
   {
-    m_lastTime = CTimeUtils::GetTimeMS();
+    m_lastTime = XbmcThreads::SystemClockMillis();
     g_infoManager.SetCurrentSongTag(m_tag);
   }
 
@@ -120,9 +124,19 @@ void CFileShoutcast::Close()
 
 void CFileShoutcast::ExtractTagInfo(const char* buf)
 {
-  char temp[1024];
-  if (sscanf(buf,"StreamTitle='%[^']",temp) > 0)
-    m_tag.SetTitle(temp);
+  CStdString strBuffer = buf;
+  g_charsetConverter.unknownToUTF8(strBuffer);
+
+  CStdStringW wBuffer, wConverted;
+  g_charsetConverter.utf8ToW(strBuffer, wBuffer, false);
+  HTML::CHTMLUtil::ConvertHTMLToW(wBuffer, wConverted);
+  g_charsetConverter.wToUTF8(wConverted, strBuffer);
+
+  CRegExp reTitle(true);
+  reTitle.RegComp("StreamTitle=\'(.*?)\';");
+
+  if (reTitle.RegFind(strBuffer.c_str()) != -1)
+    m_tag.SetTitle(reTitle.GetReplaceString("\\1"));
 }
 
 void CFileShoutcast::ReadTruncated(char* buf2, int size)

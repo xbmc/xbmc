@@ -129,11 +129,11 @@ def read_input(isock):
 
 def process_input(data, xbmc=None, mouse_enabled=0):
     if len(data) < 3:
-        return (0, 0, 0)
+        return (0, 0, 0, False)
 
     # make sure this is the correct report
     if struct.unpack("BBB", data[0:3]) != (0xa1, 0x01, 0x00):
-        return (0, 0, 0)
+        return (0, 0, 0, False)
 
     if len(data) >= 48:
         v1 = struct.unpack("h", data[42:44])
@@ -186,17 +186,20 @@ def process_input(data, xbmc=None, mouse_enabled=0):
         xval += sumx[i]
         yval += sumy[i]
 
+    analog = False
     axis = struct.unpack("BBBB", data[7:11])
     if xbmc:
       for i in range(4):
         config = axismap_sixaxis[i]
         axis_amount[i] = send_singleaxis(xbmc, axis[i], axis_amount[i], config[0], config[1], config[2])
+        if axis_amount[i] != 0:
+          analog = True
 
       # send the mouse position to xbmc
       if mouse_enabled == 1:
           xbmc.send_mouse_position(xval/num_samples, yval/num_samples)
 
-    return (bflags, psflags, pressure)
+    return (bflags, psflags, pressure, analog)
 
 def send_singleaxis(xbmc, axis, last_amount, mapname, action_min, action_pos):
     amount = normalize_axis(axis, 0.30)

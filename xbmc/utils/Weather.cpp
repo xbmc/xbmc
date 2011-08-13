@@ -35,11 +35,12 @@
 #include "Util.h"
 #include "Application.h"
 #include "settings/GUISettings.h"
+#include "settings/Settings.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "dialogs/GUIDialogProgress.h"
 #include "dialogs/GUIDialogSelect.h"
-#include "DateTime.h"
+#include "XBDateTime.h"
 #include "LangInfo.h"
 #include "guilib/LocalizeStrings.h"
 #include "filesystem/Directory.h"
@@ -81,7 +82,6 @@ using namespace XFILE;
 #define PARTNER_ID    "1004124588"   //weather.com partner id
 #define PARTNER_KEY    "079f24145f208494"  //weather.com partner key
 
-#define MAX_LOCATION   3
 #define LOCALIZED_TOKEN_FIRSTID    370
 #define LOCALIZED_TOKEN_LASTID     395
 #define LOCALIZED_TOKEN_FIRSTID2  1396
@@ -279,6 +279,12 @@ int CWeatherJob::ConvertSpeed(int curSpeed)
   return curSpeed;
 }
 
+void CWeatherJob::FormatTemperature(CStdString &text, int temp)
+{
+  CTemperature temperature = CTemperature::CreateFromCelsius(temp);
+  text.Format("%.0f", temperature.ToLocale());
+}
+
 bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
 {
   CStdString iTmpStr;
@@ -343,11 +349,9 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
 
     int iTmpInt;
     GetInteger(pElement, "tmp", iTmpInt);    //current temp
-    CTemperature temp=CTemperature::CreateFromCelsius(iTmpInt);
-    m_info.currentTemperature.Format("%2.0f", temp.ToLocale());
+    FormatTemperature(m_info.currentTemperature, iTmpInt);
     GetInteger(pElement, "flik", iTmpInt);    //current 'Feels Like'
-    CTemperature tempFlik=CTemperature::CreateFromCelsius(iTmpInt);
-    m_info.currentFeelsLike.Format("%2.0f", tempFlik.ToLocale());
+    FormatTemperature(m_info.currentFeelsLike, iTmpInt);
 
     TiXmlElement *pNestElement = pElement->FirstChildElement("wind"); //current wind
     if (pNestElement)
@@ -379,8 +383,7 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
     }
 
     GetInteger(pElement, "dewp", iTmpInt);    //current dew point
-    CTemperature dewPoint=CTemperature::CreateFromCelsius(iTmpInt);
-    m_info.currentDewPoint.Format("%2.0f", dewPoint.ToLocale());
+    FormatTemperature(m_info.currentDewPoint, iTmpInt);
   }
   //future forcast
   pElement = pRootElement->FirstChildElement("dayf");
@@ -402,19 +405,13 @@ bool CWeatherJob::LoadWeather(const CStdString &weatherXML)
         if (iTmpStr == "N/A")
           m_info.forecast[i].m_high = "";
         else
-        {
-          CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
-          m_info.forecast[i].m_high.Format("%2.0f", temp.ToLocale());
-        }
+          FormatTemperature(m_info.forecast[i].m_high, atoi(iTmpStr));
 
         GetString(pOneDayElement, "low", iTmpStr, "");
         if (iTmpStr == "N/A")
           m_info.forecast[i].m_low = "";
         else
-        {
-          CTemperature temp=CTemperature::CreateFromCelsius(atoi(iTmpStr));
-          m_info.forecast[i].m_low.Format("%2.0f", temp.ToLocale());
-        }
+          FormatTemperature(m_info.forecast[i].m_low, atoi(iTmpStr));
 
         TiXmlElement *pDayTimeElement = pOneDayElement->FirstChildElement("part"); //grab the first day/night part (should be day)
         if (pDayTimeElement)
@@ -660,15 +657,20 @@ CStdString CWeather::GetAreaCode(const CStdString &codeAndCity)
   return areaCode;
 }
 
+/*!
+ \brief Retrieve the city name for the specified location from the settings
+ \param iLocation the location index (can be in the range [1..MAXLOCATION])
+ \return the city name (without the accompanying region area code)
+ */
 CStdString CWeather::GetLocation(int iLocation)
 {
-  if (m_location[iLocation].IsEmpty())
+  if (m_location[iLocation - 1].IsEmpty())
   {
     CStdString setting;
-    setting.Format("weather.areacode%i", iLocation + 1);
-    m_location[iLocation] = GetAreaCity(g_guiSettings.GetString(setting));
+    setting.Format("weather.areacode%i", iLocation);
+    m_location[iLocation - 1] = GetAreaCity(g_guiSettings.GetString(setting));
   }
-  return m_location[iLocation];
+  return m_location[iLocation - 1];
 }
 
 void CWeather::Reset()
@@ -690,10 +692,30 @@ const day_forecast &CWeather::GetForecast(int day) const
   return m_info.forecast[day];
 }
 
+/*!
+ \brief Saves the specified location index to the settings. Call Refresh()
+        afterwards to update weather info for the new location.
+ \param iLocation the new location index (can be in the range [1..MAXLOCATION])
+ */
+void CWeather::SetArea(int iLocation)
+{
+  g_guiSettings.SetInt("weather.currentlocation", iLocation);
+  g_settings.Save();
+}
+
+/*!
+ \brief Retrieves the current location index from the settings
+ \return the active location index (will be in the range [1..MAXLOCATION])
+ */
+int CWeather::GetArea() const
+{
+  return g_guiSettings.GetInt("weather.currentlocation");
+}
+
 CJob *CWeather::GetJob() const
 {
   CStdString strSetting;
-  strSetting.Format("weather.areacode%i", m_iCurWeather + 1);
+  strSetting.Format("weather.areacode%i", GetArea());
   return new CWeatherJob(GetAreaCode(g_guiSettings.GetString(strSetting)));
 }
 

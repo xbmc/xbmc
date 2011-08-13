@@ -60,7 +60,7 @@ struct RefreshOverride
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
 
-class CAdvancedSettings : public virtual xbmcutil::Referenced
+class CAdvancedSettings
 {
   public:
     CAdvancedSettings();
@@ -68,7 +68,7 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
     static CAdvancedSettings* getInstance();
 
     void Initialize();
-
+    void AddSettingsFile(const CStdString &filename);
     bool Load();
     void Clear();
 
@@ -76,9 +76,6 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
     static void GetCustomRegexps(TiXmlElement *pRootElement, CStdStringArray& settings);
     static void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
     static void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
-
-    // multipath testing
-    bool m_useMultipaths;
 
     int m_audioHeadRoom;
     float m_ac3Gain;
@@ -168,9 +165,10 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
+    CStdStringArray m_folderStackRegExps;
     CStdStringArray m_trailerMatchRegExps;
-    SETTINGS_TVSHOWLIST m_tvshowStackRegExps;
-    CStdString m_tvshowMultiPartStackRegExp;
+    SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
+    CStdString m_tvshowMultiPartEnumRegExp;
     typedef std::vector< std::pair<CStdString, CStdString> > StringMapping;
     StringMapping m_pathSubstitutions;
     int m_remoteDelay; ///< \brief number of remote messages to ignore before repeating
@@ -217,7 +215,6 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
 
     bool m_bVideoScannerIgnoreErrors;
 
-    bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
     int m_iTuxBoxStreamtsPort;
@@ -251,6 +248,8 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
 
     bool m_fullScreen;
     bool m_startFullScreen;
+	bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
+    bool m_canWindowed;
     bool m_splashImage;
     bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;
@@ -286,10 +285,18 @@ class CAdvancedSettings : public virtual xbmcutil::Referenced
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
 
+    bool m_guiVisualizeDirtyRegions;
+    int  m_guiAlgorithmDirtyRegions;
+    int  m_guiDirtyRegionNoFlipTimeout;
+
     unsigned int m_cacheMemBufferSize;
 
     bool m_jsonOutputCompact;
     unsigned int m_jsonTcpPort;
+
+    bool m_enableMultimediaKeys;
+    std::vector<CStdString> m_settingsFiles;
+    void ParseSettingsFile(const CStdString &file);
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

@@ -1,0 +1,11 @@
+--- gettext-tools/Makefile.in.orig	2010-06-03 16:38:55.000000000 -0500
++++ gettext-tools/Makefile.in	2010-06-04 01:16:07.000000000 -0500
+@@ -724,7 +724,7 @@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = 1.5 gnu no-dependencies
+ ACLOCAL_AMFLAGS = -I m4 -I ../gettext-runtime/m4 -I ../autoconf-lib-link/m4 -I ../m4 -I gnulib-m4 -I libgettextpo/gnulib-m4
+-SUBDIRS = doc intl gnulib-lib libgrep src libgettextpo po projects styles misc man m4 tests gnulib-tests examples
++SUBDIRS = doc intl gnulib-lib libgrep src libgettextpo po projects styles misc man m4 tests gnulib-tests
+ 
+ # Allow users to use "gnulib-tool --update".
+ 

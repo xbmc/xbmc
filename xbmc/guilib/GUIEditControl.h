@@ -65,6 +65,7 @@ public:
 
   virtual void SetLabel(const std::string &text);
   virtual void SetLabel2(const std::string &text);
+  void SetHint(const CGUIInfoLabel& hint);
 
   virtual CStdString GetLabel2() const;
 
@@ -78,7 +79,7 @@ public:
   bool HasTextChangeActions() { return m_textChangeActions.size() > 0; };
 
 protected:
-  virtual void RenderText();
+  virtual void ProcessText(unsigned int currentTime);
   CStdStringW GetDisplayedText() const;
   void RecalcLabelPosition();
   void ValidateCursor();
@@ -94,6 +95,7 @@ protected:
   
   CStdStringW m_text2;
   CStdString  m_text;
+  CGUIInfoLabel m_hintInfo;
   float m_textOffset;
   float m_textWidth;
 

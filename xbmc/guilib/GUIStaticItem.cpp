@@ -22,11 +22,15 @@
 #include "GUIStaticItem.h"
 #include "utils/XMLUtils.h"
 #include "GUIControlFactory.h"
+#include "GUIInfoManager.h"
 
 using namespace std;
 
 CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileItem()
 {
+  m_visCondition = 0;
+  m_visState = false;
+
   assert(item);
 
   // check whether we're using the more verbose method...
@@ -39,20 +43,23 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     CGUIControlFactory::GetInfoLabel(item, "thumb", thumb);
     CGUIControlFactory::GetInfoLabel(item, "icon", icon);
     const char *id = item->Attribute("id");
-    int visibleCondition = 0;
-    CGUIControlFactory::GetConditionalVisibility(item, visibleCondition);
+    CStdString condition;
+    CGUIControlFactory::GetConditionalVisibility(item, condition);
+    m_visCondition = g_infoManager.Register(condition, parentID);
     // multiple action strings are concat'd together, separated with " , "
     vector<CGUIActionDescriptor> actions;
     CGUIControlFactory::GetMultipleString(item, "onclick", actions);
+    CStdString path;
     for (vector<CGUIActionDescriptor>::iterator it = actions.begin(); it != actions.end(); ++it)
     {
       (*it).m_action.Replace(",", ",,");
-      if (m_strPath.length() > 0)
+      if (!path.IsEmpty())
       {
-        m_strPath   += " , ";
+        path += " , ";
       }
-      m_strPath += (*it).m_action;
+      path += (*it).m_action;
     }
+    SetPath(path);
     SetLabel(label.GetLabel(parentID));
     SetLabel2(label2.GetLabel(parentID));
     SetThumbnailImage(thumb.GetLabel(parentID, true));
@@ -62,7 +69,6 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     if (!thumb.IsConstant())  m_info.push_back(make_pair(thumb, "thumb"));
     if (!icon.IsConstant())   m_info.push_back(make_pair(icon, "icon"));
     m_iprogramCount = id ? atoi(id) : 0;
-    m_idepth = visibleCondition;
     // add any properties
     const TiXmlElement *property = item->FirstChildElement("property");
     while (property)
@@ -87,12 +93,11 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     icon   = item->Attribute("icon");   icon   = CGUIControlFactory::FilterLabel(icon);
     const char *id = item->Attribute("id");
     SetLabel(CGUIInfoLabel::GetLabel(label, parentID));
-    m_strPath = item->FirstChild()->Value();
+    SetPath(item->FirstChild()->Value());
     SetLabel2(CGUIInfoLabel::GetLabel(label2, parentID));
     SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, parentID, true));
     SetIconImage(CGUIInfoLabel::GetLabel(icon, parentID, true));
     m_iprogramCount = id ? atoi(id) : 0;
-    m_idepth = 0;  // no visibility condition
   }
 }
     
@@ -115,4 +120,24 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
     else
       SetProperty(name, value);
   }
+}
+
+bool CGUIStaticItem::UpdateVisibility(int contextWindow)
+{
+  if (!m_visCondition)
+    return false;
+  bool state = g_infoManager.GetBoolValue(m_visCondition);
+  if (state != m_visState)
+  {
+    m_visState = state;
+    return true;
+  }
+  return false;
+}
+
+bool CGUIStaticItem::IsVisible() const
+{
+  if (m_visCondition)
+    return m_visState;
+  return true;
 }

@@ -1,3 +1,0 @@
-version=2
-
-http://downloads.xiph.org/releases/ogg/libogg-(.*)\.tar\.gz	debian uupdate

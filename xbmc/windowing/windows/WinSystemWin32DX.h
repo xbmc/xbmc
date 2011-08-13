@@ -33,7 +33,7 @@
 
 #ifdef HAS_DX
 
-class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemDX, public virtual xbmcutil::Referenced
+class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemDX
 {
 public:
   CWinSystemWin32DX();

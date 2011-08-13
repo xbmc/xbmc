@@ -42,7 +42,7 @@ CConvolutionKernel::CConvolutionKernel(ESCALINGMETHOD method, int size)
     Lanczos3Fast();
   else if (method == VS_SCALINGMETHOD_LANCZOS3)
     Lanczos3();
-  else if (method == VS_SCALINGMETHOD_CUBIC) 
+  else if (method == VS_SCALINGMETHOD_CUBIC)
     Bicubic(1.0 / 3.0, 1.0 / 3.0);
 
   ToIntFract();
@@ -182,8 +182,8 @@ double CConvolutionKernel::BicubicWeight(double x, double B, double C)
   }
   else if (ax<2.0)
   {
-    return ((-B - 6*C) * ax * ax * ax + 
-            (6*B + 30*C) * ax * ax + (-12*B - 48*C) * 
+    return ((-B - 6*C) * ax * ax * ax +
+            (6*B + 30*C) * ax * ax + (-12*B - 48*C) *
              ax + (8*B + 24*C)) / 6;
   }
   else
@@ -208,7 +208,7 @@ void CConvolutionKernel::ToIntFract()
       value = 0;
     else if (value > 65535)
       value = 65535;
-    
+
     int integer = value / 256;
     int fract   = value % 256;
 

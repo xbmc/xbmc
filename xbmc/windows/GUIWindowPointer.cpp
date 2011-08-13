@@ -21,15 +21,18 @@
 
 #include "GUIWindowPointer.h"
 #include "input/MouseStat.h"
-
+#include "windowing/WindowingFactory.h"
+#include <climits>
 #define ID_POINTER 10
 
 CGUIWindowPointer::CGUIWindowPointer(void)
-    : CGUIWindow(105, "Pointer.xml")
+    : CGUIDialog(WINDOW_DIALOG_POINTER, "Pointer.xml")
 {
   m_pointer = 0;
   m_loadOnDemand = false;
   m_needsScaling = false;
+  m_active = false;
+  m_renderOrder = INT_MAX - 1;
 }
 
 CGUIWindowPointer::~CGUIWindowPointer(void)
@@ -52,6 +55,17 @@ void CGUIWindowPointer::SetPointer(int pointer)
   }
 }
 
+void CGUIWindowPointer::UpdateVisibility()
+{
+  if(g_Windowing.HasCursor())
+  {
+    if (g_Mouse.IsActive())
+      Show();
+    else
+      Close();
+  }
+}
+
 void CGUIWindowPointer::OnWindowLoaded()
 { // set all our pointer images invisible
   for (iControls i = m_children.begin();i != m_children.end(); ++i)
@@ -62,11 +76,18 @@ void CGUIWindowPointer::OnWindowLoaded()
   CGUIWindow::OnWindowLoaded();
   DynamicResourceAlloc(false);
   m_pointer = 0;
+  m_renderOrder = INT_MAX - 1;
 }
 
-void CGUIWindowPointer::Render()
+void CGUIWindowPointer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  bool active = g_Mouse.IsActive();
+  if (active != m_active)
+  {
+    MarkDirtyRegion();
+    m_active = active;
+  }
+  SetPosition((float)g_Mouse.GetX(), (float)g_Mouse.GetY());
   SetPointer(g_Mouse.GetState());
-  CGUIWindow::Render();
+  return CGUIWindow::Process(currentTime, dirtyregions);
 }
-

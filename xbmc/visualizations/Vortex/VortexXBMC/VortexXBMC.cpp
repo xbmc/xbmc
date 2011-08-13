@@ -31,17 +31,17 @@ Vortex* g_Vortex = NULL;
 // settings vector
 StructSetting** g_structSettings;
 
-extern "C" ADDON_STATUS Create(void* hdl, void* props)
+extern "C" ADDON_STATUS ADDON_Create(void* hdl, void* props)
 {
 	if (!props)
-		return STATUS_UNKNOWN;
+		return ADDON_STATUS_UNKNOWN;
 
 	VIS_PROPS* visprops = (VIS_PROPS*)props;
 
 	g_Vortex = new Vortex;
 	g_Vortex->Init( ( LPDIRECT3DDEVICE9 )visprops->device, visprops->x, visprops->y, visprops->width, visprops->height, visprops->pixelRatio );
 
-	return STATUS_NEED_SETTINGS;
+	return ADDON_STATUS_NEED_SETTINGS;
 }
 
 extern "C" void Start( int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName )
@@ -49,7 +49,7 @@ extern "C" void Start( int iChannels, int iSamplesPerSec, int iBitsPerSample, co
 	g_Vortex->Start( iChannels, iSamplesPerSec, iBitsPerSample, szSongName );
 }
 
-extern "C" void Stop()
+extern "C" void ADDON_Stop()
 {
 	if ( g_Vortex )
 	{
@@ -149,7 +149,7 @@ extern "C" bool IsLocked()
 // Do everything before unload of this add-on
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" void Destroy()
+extern "C" void ADDON_Destroy()
 {
 	Stop();
 }
@@ -158,7 +158,7 @@ extern "C" void Destroy()
 // Returns true if this add-on use settings
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" bool HasSettings()
+extern "C" bool ADDON_HasSettings()
 {
 	return true;
 }
@@ -167,25 +167,25 @@ extern "C" bool HasSettings()
 // Returns the current Status of this visualisation
 // !!! Add-on master function !!!
 //-----------------------------------------------------------------------------
-extern "C" ADDON_STATUS GetStatus()
+extern "C" ADDON_STATUS ADDON_GetStatus()
 {
-	return STATUS_OK;
+	return ADDON_STATUS_OK;
 }
 
-extern "C" unsigned int GetSettings(StructSetting*** sSet)
+extern "C" unsigned int ADDON_GetSettings(ADDON_StructSetting*** sSet)
 {
 	return 0;
 }
 
-extern "C" void FreeSettings()
+extern "C" void ADDON_FreeSettings()
 {
 
 }
 
-extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
+extern "C" ADDON_STATUS ADDON_SetSetting(const char* id, const void* value)
 {
 	if ( !id || !value || g_Vortex == NULL )
-		return STATUS_UNKNOWN;
+		return ADDON_STATUS_UNKNOWN;
 
 	UserSettings& userSettings = g_Vortex->GetUserSettings();
 
@@ -226,9 +226,9 @@ extern "C" ADDON_STATUS SetSetting(const char* id, const void* value)
 		userSettings.ShowAudioAnalysis = *(bool*)value == 1;
 	}
  	else
- 		return STATUS_UNKNOWN;
+ 		return ADDON_STATUS_UNKNOWN;
 
-	return STATUS_OK;
+	return ADDON_STATUS_OK;
 }
 
 //-- GetSubModules ------------------------------------------------------------

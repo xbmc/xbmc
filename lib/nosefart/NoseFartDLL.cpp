@@ -19,7 +19,7 @@
  *
  */
 
-#ifdef __linux__
+#if defined(__linux__) || defined(__FreeBSD__)
 #define __declspec(x) 
 #endif
 extern "C" 

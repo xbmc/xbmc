@@ -106,15 +106,8 @@ int CTextureBundle::LoadAnim(const CStdString& Filename, CBaseTexture*** ppTextu
 
 void CTextureBundle::Cleanup()
 {
-  if (m_useXBT)
-  {
-    m_tbXBT.Cleanup();
-  }
-  else if (m_useXPR)
-  {
-    m_tbXPR.Cleanup();
-  }
-
+  m_tbXBT.Cleanup();
+  m_tbXPR.Cleanup();
   m_useXPR = m_useXBT = false;
 }
 

@@ -19,27 +19,12 @@
  *
  */
 
-#if (defined HAVE_CONFIG_H) && (!defined WIN32)
-  #include "config.h"
-#endif
 #include "dialog.h"
-#if (defined USE_EXTERNAL_PYTHON)
-  #if (defined HAVE_LIBPYTHON2_6)
-    #include <python2.6/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_5)
-    #include <python2.5/Python.h>
-  #elif (defined HAVE_LIBPYTHON2_4)
-    #include <python2.4/Python.h>
-  #else
-    #error "Could not determine version of Python to use."
-  #endif
-#else
-  #include "python/Include/Python.h"
-#endif
-#include "../XBPythonDll.h"
+
 #include "Application.h"
 #include "settings/Settings.h"
 #include "pyutil.h"
+#include "pythreadstate.h"
 #include "dialogs/GUIDialogFileBrowser.h"
 #include "dialogs/GUIDialogNumeric.h"
 #include "dialogs/GUIDialogGamepad.h"
@@ -53,12 +38,6 @@ using namespace std;
 
 #define ACTIVE_WINDOW  g_windowManager.GetActiveWindow()
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -203,7 +182,9 @@ namespace PYXBMC
       utf8Line[2] += "|.rar|.zip";
 
     value = cDefault;
-    Py_BEGIN_ALLOW_THREADS
+
+    CPyThreadState pyState;
+
     if (browsetype == 1)
     {
       if (enableMultiple)
@@ -220,7 +201,8 @@ namespace PYXBMC
     }
     else
       CGUIDialogFileBrowser::ShowAndGetDirectory(*shares, utf8Line[0], value, browsetype != 0);
-    Py_END_ALLOW_THREADS
+
+    pyState.Restore();
 
     if (enableMultiple && (browsetype == 1 || browsetype == 2))
     {
@@ -228,7 +210,7 @@ namespace PYXBMC
       if (!result)
         return NULL;
 
-      for (int i = 0; i < valuelist.size(); i++)
+      for (unsigned int i = 0; i < valuelist.size(); i++)
         PyTuple_SetItem(result, i, PyString_FromString(valuelist.at(i).c_str()));
 
       return result;
@@ -611,12 +593,6 @@ namespace PYXBMC
     "DialogProgress class.\n");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
   PyTypeObject WindowDialog_Type;
 

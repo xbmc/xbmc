@@ -19,7 +19,7 @@
  *
  */
 
-#ifdef __APPLE__
+#if defined(__APPLE__) && !defined(__arm__)
 
 //hack around problem with xbmc's typedef int BOOL
 // and obj-c's typedef unsigned char BOOL
@@ -38,7 +38,7 @@ CWinSystemOSXGL::~CWinSystemOSXGL()
 {
 }
 
-bool CWinSystemOSXGL::PresentRenderImpl()
+bool CWinSystemOSXGL::PresentRenderImpl(const CDirtyRegionList &dirty)
 {
   return FlushBuffer();
 }

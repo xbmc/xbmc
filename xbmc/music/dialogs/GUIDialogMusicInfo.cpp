@@ -41,6 +41,7 @@
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "TextureCache.h"
+#include "ThumbnailCache.h"
 
 using namespace std;
 using namespace XFILE;
@@ -165,6 +166,9 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
   artist.SetCachedArtistThumb();
   if (CFile::Exists(artist.GetThumbnailImage()))
     m_albumItem->SetProperty("artistthumb", artist.GetThumbnailImage());
+  CStdString strFanart = m_albumItem->GetCachedFanart();
+  if (CFile::Exists(strFanart))
+    m_albumItem->SetProperty("fanart_image",strFanart);
   m_hasUpdatedThumb = false;
   m_bArtistInfo = false;
   m_albumSongs->SetContent("albums");
@@ -230,50 +234,49 @@ void CGUIDialogMusicInfo::Update()
   if (m_bArtistInfo)
   {
     CONTROL_ENABLE(CONTROL_BTN_GET_FANART);
-    if (m_bViewReview)
+
+    SetLabel(CONTROL_TEXTAREA, m_artist.strBiography);
+    CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
+    OnMessage(message);
+
+    if (GetControl(CONTROL_BTN_TRACKS)) // if no CONTROL_BTN_TRACKS found - allow skinner full visibility control over CONTROL_TEXTAREA and CONTROL_LIST
     {
-      SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
-      SET_CONTROL_HIDDEN(CONTROL_LIST);
-      SetLabel(CONTROL_TEXTAREA, m_artist.strBiography);
-      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21888);
-    }
-    else
-    {
-      SET_CONTROL_VISIBLE(CONTROL_LIST);
-      if (GetControl(CONTROL_LIST))
+      if (m_bViewReview)
       {
-        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-        CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
-        OnMessage(message);
+        SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
+        SET_CONTROL_HIDDEN(CONTROL_LIST);
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21888);
       }
       else
-        CLog::Log(LOGERROR, "Out of date skin - needs list with id %i", CONTROL_LIST);
-      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21887);
+      {
+        SET_CONTROL_VISIBLE(CONTROL_LIST);
+        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 21887);
+      }
     }
   }
   else
   {
     CONTROL_DISABLE(CONTROL_BTN_GET_FANART);
 
-    if (m_bViewReview)
+    SetLabel(CONTROL_TEXTAREA, m_album.strReview);
+    CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
+    OnMessage(message);
+
+    if (GetControl(CONTROL_BTN_TRACKS)) // if no CONTROL_BTN_TRACKS found - allow skinner full visibility control over CONTROL_TEXTAREA and CONTROL_LIST
     {
-      SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
-      SET_CONTROL_HIDDEN(CONTROL_LIST);
-      SetLabel(CONTROL_TEXTAREA, m_album.strReview);
-      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 182);
-    }
-    else
-    {
-      SET_CONTROL_VISIBLE(CONTROL_LIST);
-      if (GetControl(CONTROL_LIST))
+      if (m_bViewReview)
       {
-        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
-        CGUIMessage message(GUI_MSG_LABEL_BIND, GetID(), CONTROL_LIST, 0, 0, m_albumSongs);
-        OnMessage(message);
+        SET_CONTROL_VISIBLE(CONTROL_TEXTAREA);
+        SET_CONTROL_HIDDEN(CONTROL_LIST);
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 182);
       }
       else
-        CLog::Log(LOGERROR, "Out of date skin - needs list with id %i", CONTROL_LIST);
-      SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 183);
+      {
+        SET_CONTROL_VISIBLE(CONTROL_LIST);
+        SET_CONTROL_HIDDEN(CONTROL_TEXTAREA);
+        SET_CONTROL_LABEL(CONTROL_BTN_TRACKS, 183);
+      }
     }
   }
   // update the thumbnail
@@ -319,7 +322,7 @@ void CGUIDialogMusicInfo::RefreshThumb()
     if (m_bArtistInfo)
       thumbImage = m_albumItem->GetCachedArtistThumb();
     else
-      thumbImage = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
+      thumbImage = CThumbnailCache::GetAlbumThumb(m_album);
 
     if (!CFile::Exists(thumbImage))
     {
@@ -328,7 +331,12 @@ void CGUIDialogMusicInfo::RefreshThumb()
     }
   }
   if (!CFile::Exists(thumbImage) )
-    thumbImage.Empty();
+  {
+    if (m_bArtistInfo)
+      thumbImage = "DefaultArtist.png";
+    else
+      thumbImage = "DefaultAlbumCover.png";
+  }
 
   m_albumItem->SetThumbnailImage(thumbImage);
 }
@@ -443,7 +451,7 @@ void CGUIDialogMusicInfo::OnGetThumb()
   if (m_bArtistInfo)
     cachedThumb = m_albumItem->GetCachedArtistThumb();
   else
-    cachedThumb = CUtil::GetCachedAlbumThumb(m_album.strAlbum, m_album.strArtist);
+    cachedThumb = CThumbnailCache::GetAlbumThumb(m_album);
 
   CTextureCache::Get().ClearCachedImage(cachedThumb, true);
   if (result.Left(14) == "thumb://Remote")
@@ -481,7 +489,7 @@ void CGUIDialogMusicInfo::OnGetFanart()
 {
   CFileItemList items;
 
-  CStdString cachedThumb(CFileItem::GetCachedThumb(m_artist.strArtist,g_settings.GetMusicFanartFolder()));
+  CStdString cachedThumb(CThumbnailCache::GetThumb(m_artist.strArtist,g_settings.GetMusicFanartFolder()));
   if (CFile::Exists(cachedThumb))
   {
     CFileItemPtr itemCurrent(new CFileItem("fanart://Current",false));

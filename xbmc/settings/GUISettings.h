@@ -35,6 +35,7 @@ class TiXmlElement;
 #define RENDER_METHOD_GLSL      2
 #define RENDER_METHOD_SOFTWARE  3
 #define RENDER_METHOD_D3D_PS    4
+#define RENDER_METHOD_DXVA      5
 #define RENDER_OVERLAYS         99   // to retain compatibility
 
 // Scaling options.
@@ -163,8 +164,8 @@ class TiXmlElement;
 #define RESAMPLE_HIGH 2
 #define RESAMPLE_REALLYHIGH 3
 
-//0.5 second increments
-#define MAXREFRESHCHANGEDELAY 20
+//0.1 second increments
+#define MAXREFRESHCHANGEDELAY 200
 
 enum PowerState
 {

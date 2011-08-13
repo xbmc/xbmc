@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Date of translation: 05/01/2011-->
-<!--Based on English a9839fa95cb9711efe46 (04.01.2011)-->
+<!--Based on English efd4751d0508977b36be (13.05.2011)-->
 <!--$Revision$-->
 <strings>
   <!-- Vegyes feliratok -->
@@ -11,9 +10,10 @@
   <string id="31002">Utálom</string>
   <string id="31003">Kikapcsolási lehetőségek</string>
   <string id="31004">Dolgozom...</string>
-  <string id="31005">Infó elrejtése</string>
-
+  <string id="31005">Információ elrejtése</string>
+  <string id="31006">Nézet lehetőségek</string>
   <string id="31007">Beépülők</string>
+  <string id="31008">Teljes képernyő</string>
 
   <string id="31020">Nemrég hozzáadott</string>
   <string id="31021">Videók - Fájlmód</string>
@@ -43,6 +43,8 @@
   <string id="31047">Jelenlegi beállítás</string>
   <string id="31048">Vizualizáció altípus</string>
   <string id="31049">Befejezés időpontja</string>
+  <string id="31050">Sorrend: Növekvő</string>
+  <string id="31051">Sorrend: Csökkenő</string>
 
 
   <!-- Lejátszáslista szerkesztő feliratai -->
@@ -74,7 +76,7 @@
   <string id="31116"></string>
   <string id="31117">Nemrég hozzáadott videók mutatása</string>
   <string id="31118">Sajátképernyő programok almenü</string>
-  <string id="31119"></string>
+  <string id="31119">Fanart-háttér elrejtése</string>
   <string id="31120">GOMBFELIRAT</string>
   <string id="31121"></string>
   <string id="31122">Időjárás oldal</string>
@@ -138,6 +140,7 @@
   <string id="31328">Nemrég hozzáadva</string>
   <string id="31329">[B]Időzítő beállítva![/B] [COLOR=grey2] - Automatikus leállítás ennyi idő múlva:[/COLOR]</string>
   <string id="31330">Nyomd a gombot a filmelőzetes[CR][CR]Lejátszásához</string>
+  <string id="31331">Album részletek</string>
 
   <!-- Videó és Zene OSD Feliratok  -->
   <string id="31351">Pillanatmegállítás</string>

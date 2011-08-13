@@ -15,7 +15,7 @@ using namespace std;
 
 bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
 {
-  if (!item)
+  if (!item || item->IsParentFolder())
     return false;
 
   CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -23,7 +23,7 @@ bool CFileUtils::DeleteItem(const CFileItemPtr &item, bool force)
   {
     pDialog->SetHeading(122);
     pDialog->SetLine(0, 125);
-    pDialog->SetLine(1, URIUtils::GetFileName(item->m_strPath));
+    pDialog->SetLine(1, URIUtils::GetFileName(item->GetPath()));
     pDialog->SetLine(2, "");
     pDialog->DoModal();
     if (!pDialog->IsConfirmed()) return false;
@@ -98,6 +98,6 @@ bool CFileUtils::SubtitleFileSizeAndHash(const CStdString &path, CStdString &str
   
   file.Close(); //close file
   strHash.Format("%"PRIx64"", hash); //format hash
-  strSize.Format("%d", fileSize);  // format size
+  strSize.Format("%"PRIu64"", fileSize);  // format size
   return true;
 }
