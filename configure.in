@@ -97,6 +97,7 @@ librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
 alsa_not_found="== Could not find ALSA. ALSA support disabled. =="
+dbus_not_found="== Could not find DBUS. DBUS support disabled. =="
 
 
 # External library message strings
@@ -687,9 +688,10 @@ else
   PKG_CHECK_MODULES([ALSA],  [alsa],
     [INCLUDES="$INCLUDES $ALSA_CFLAGS"; LIBS="$LIBS $ALSA_LIBS"; use_alsa=yes],
     AC_MSG_NOTICE($alsa_not_found); use_alsa=no)
-  PKG_CHECK_MODULES([DBUS],  [dbus-1],
-    [INCLUDES="$INCLUDES $DBUS_CFLAGS"; LIBS="$LIBS $DBUS_LIBS"],
-    AC_MSG_ERROR($missing_library))
+  PKG_CHECK_MODULES([DBUS],    [dbus-1],
+    [INCLUDES="$INCLUDES $DBUS_CFLAGS"; LIBS="$LIBS $DBUS_LIBS"; use_dbus=yes]; \
+    AC_DEFINE([HAVE_DBUS],[1],["Define to 1 if dbus is installed"]),
+    AC_MSG_NOTICE($missing_library); use_dbus=no)
   PKG_CHECK_MODULES([SDL],   [sdl],
     [INCLUDES="$INCLUDES $SDL_CFLAGS"; LIBS="$LIBS $SDL_LIBS"],
     AC_MSG_ERROR($missing_library))
@@ -1241,6 +1243,12 @@ if test "$use_alsa" = "yes"; then
 else
   USE_ALSA=0
   final_message="$final_message\n  ALSA:\t\tNo"
+fi
+
+if test "$use_dbus" = "yes"; then
+  final_message="$final_message\n  DBUS:\t\tYes"
+else
+  final_message="$final_message\n  DBUS:\t\tNo"
 fi
 
 if test "x$use_vdpau" != "xno"; then
