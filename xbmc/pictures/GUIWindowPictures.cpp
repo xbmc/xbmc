@@ -33,6 +33,7 @@
 #include "PictureInfoLoader.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogOK.h"
+#include "dialogs/GUIDialogYesNo.h"
 #include "playlists/PlayList.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
@@ -300,7 +301,7 @@ bool CGUIWindowPictures::ShowPicture(int iItem, bool startSlideShow)
 
 #ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
-    return MEDIA_DETECT::CAutorun::PlayDisc();
+    return MEDIA_DETECT::CAutorun::PlayDisc(!MEDIA_DETECT::CAutorun::CanResumePlayDVD() || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
 #endif
 
   if (pItem->m_bIsShareOrDrive)
