@@ -36,25 +36,15 @@
 	</include>
 	<include name="InfoListFlags">
 		<control type="grouplist">
+			<posx>125</posx>
 			<orientation>horizontal</orientation>
 			<itemgap>20</itemgap>
-			<control type="image">
-				<visible>!IsEmpty(ListItem.MPAA)</visible>
-				<!--<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>-->
-				<height>30</height>
-				<width min="1" max="95">auto</width>
-				<texture>$INFO[ListItem.MPAA]</texture>
-				<!--<info>Listitem.Property(mediaTag::contentRating)</info>-->
-				<aspectratio>keep</aspectratio>
-			</control>
-			<!--<control type="image">
-				<description>Star Rating</description>
-				<texture>$INFO[ListItem.StarRating]</texture>
-				<aspectratio>keep</aspectratio>
-				<width min="1" max="100">auto</width>
-				<height>20</height>
-				<visible>!IsEmpty(ListItem.StarRating) + ![Container.Content(Secondary) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)]</visible>
-			</control>-->
+			<control type="image">							<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>
+							<height>20</height>
+							<width min="1" max="95">auto</width>
+							<info>Listitem.Property(mediaTag::contentRating)</info>
+							<aspectratio>keep</aspectratio>
+						</control>
 			<control type="image">
 				<visible>!IsEmpty(Listitem.Property(mediaTag::videoResolution))</visible>
 				<height>17</height>
@@ -237,17 +227,9 @@
 			<visible>!IsEmpty(ListItem.StarRating) + Container.Content(tvshows)</visible>
 		</control>
 		<control type="grouplist">
+			<posx>110</posx>
 			<orientation>horizontal</orientation>
 			<itemgap>20</itemgap>
-			<control type="image">
-				<visible>!IsEmpty(ListItem.MPAA)</visible>
-				<!--<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>-->
-				<height>30</height>
-				<width min="1" max="95">auto</width>
-				<texture>$INFO[ListItem.MPAA]</texture>
-				<!--<info>Listitem.Property(mediaTag::contentRating)</info>-->
-				<aspectratio>keep</aspectratio>
-			</control>
 			<control type="image">
 				<description>Star Rating</description>
 				<texture>$INFO[ListItem.StarRating]</texture>
@@ -327,9 +309,9 @@
 		<control type="group">
 			<visible>Container.Content(movies)</visible>
 		<control type="image">
-			<posy>-310</posy>
+			<posy>-300</posy>
 			<posx>0</posx>
-			<height>37</height>
+			<height>25</height>
 			<width min="1" max="95">auto</width>
 			<info>Listitem.Property(mediaTag::contentRating)</info>
 			<align>right</align>

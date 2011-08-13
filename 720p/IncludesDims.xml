@@ -529,7 +529,7 @@
 		<posx>105</posx>
 		<posy>65</posy>
 		<width>584</width>
-		<height>400</height>
+		<height>390</height>
 	</include>
 	<include name="HomeSubMenuBackgroundSettingsDims">
 		<posx>33</posx>

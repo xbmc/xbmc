@@ -64,7 +64,7 @@
 				<include>DialogQuickFade</include>
 			</control>
 		</control>
-		<control type="group">
+		<!--<control type="group">
 			<description>Context menu for Favourites dialog</description>
 			<include>FavouritesDialogContextMenuPos</include>
 			<visible>Window.IsVisible(Favourites)</visible>
@@ -102,6 +102,6 @@
 				<include>DialogTextColors</include>
 				<include>DialogFade</include>
 			</control>
-		</control>
+		</control>-->
 	</controls>
 </window>

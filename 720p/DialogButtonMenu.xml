@@ -184,7 +184,7 @@
             <visible>!Control.HasFocus(3120)</visible>
 					</control>
 
-					<control type="image">
+					<!--<control type="image">
 						<description>Favourites Button Overlay</description>
 						<posx>706</posx>
 						<include>ButtonMenuOverlayDims</include>
@@ -207,8 +207,7 @@
 						<ondown>3110</ondown>
 						<font>-</font>
 						<label>1036</label>
-					</control>
-
+					</control>-->
 					<control type="image">
 						<description>Restart XBMC Button Overlay</description>
 						<posx>874</posx>

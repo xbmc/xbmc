@@ -8,7 +8,7 @@
 		<include>TVEpisodes</include>
 		<include>MediaPreview</include>
 		<include>Showcase</include>
-		<include>List</include>
+		<!--><include>List</include>-->
 		<include>InfoList</include>
 		<include>PanelStream</include>
 		<include>Coverflow</include>

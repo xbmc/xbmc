@@ -605,45 +605,6 @@
 		<include>FullScreenBGImage</include>
 		<include>HomeBackgroundFade</include>
 	</include>
-	<include name="HomeVideosBGVisible">
-		<visible>Container(300).HasFocus(1)</visible>
-	</include>
-	<include name="HomeMusicBGVisible">
-		<visible>Container(300).HasFocus(2)</visible>
-	</include>
-	<include name="HomePicturesBGVisible">
-		<visible>Container(300).HasFocus(3)</visible>
-	</include>
-	<include name="HomeProgramsBGVisible">
-		<visible>Container(300).HasFocus(4)</visible>
-	</include>
-	<include name="HomeWeatherBGVisible">
-		<visible>Container(300).HasFocus(5)</visible>
-	</include>
-	<include name="HomeSystemBGVisible">
-		<visible>Container(300).HasFocus(6)</visible>
-	</include>
-	<include name="HomePowerBGVisible">
-		<visible>Container(300).HasFocus(111)</visible>
-	</include>
-	<include name="HomeTVShowsBGVisible">
-		<visible>Container(300).HasFocus(8)</visible>
-	</include>
-	<include name="HomeMoviesBGVisible">
-		<visible>Container(300).HasFocus(9)</visible>
-	</include>
-	<include name="HomeDVDBGVisible">
-		<visible>Container(300).HasFocus(10)</visible>
-	</include>
-	<include name="HomeAppStoreBGVisible">
-		<visible>Container(300).HasFocus(12)</visible>
-	</include>
-	<include name="HomeFavouritesBGVisible">
-		<visible>Container(300).HasFocus(11)</visible>
-	</include>
-	<include name="HomeHelpBGVisible">
-		<visible>Container(300).HasFocus(13)</visible>
-	</include>
 	<include name="HomeRightOverlay">
 		<control type="image">
 			<description>Overlay for right of screen</description>

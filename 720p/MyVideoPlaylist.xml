@@ -1,5 +1,5 @@
 <window id="6">
-  <defaultcontrol>50</defaultcontrol>
+  <defaultcontrol>56</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
 
   <controls>
@@ -7,7 +7,7 @@
     <include>Background</include>
 
     <!-- -->
-    <include>List</include>
+    <!--><include>List</include>-->
     <include>InfoList</include>
     <include>PanelStream</include>
     <include>Coverflow</include>

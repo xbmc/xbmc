@@ -1,12 +1,12 @@
 <window id="500">
-  <defaultcontrol>50</defaultcontrol>
+  <defaultcontrol>56</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
 
   <controls>
     <include>Background</include>
 
     <!-- -->
-    <include>List</include>
+    <!--><include>List</include>-->
     <include>MusicAlbums</include>
     <include>MusicSongs</include>
     <include>InfoList</include>

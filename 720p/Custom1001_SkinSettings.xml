@@ -150,13 +150,13 @@
 					<onclick>Skin.ToggleSetting(HidePictures)</onclick>
 					<selected>!Skin.HasSetting(HidePictures)</selected>
 				</control>
-				<control type="radiobutton" id="242">
+				<!--<control type="radiobutton" id="242">
 					<description>Show separate items for plug-in sections</description>
 					<include>GeneralSkinOption</include>
 					<label>$LOCALIZE[31985]</label>
 					<onclick>Skin.ToggleSetting(CollapsePluginMenuItems)</onclick>
 					<selected>!Skin.HasSetting(CollapsePluginMenuItems)</selected>
-				</control>
+				</control>-->
 				<control type="radiobutton" id="245">
 					<description>Show Applications Menu</description>
 					<include>GeneralSkinOption</include>
@@ -185,13 +185,13 @@
 					<onclick>Skin.ToggleSetting(HideHelp)</onclick>
 					<selected>!Skin.HasSetting(HideHelp)</selected>
 				</control>
-				<control type="radiobutton" id="306">
+				<!--<control type="radiobutton" id="306">
 					<description>Show Favourites Menu</description>
 					<include>GeneralSkinOption</include>
 					<label>$LOCALIZE[31956] $LOCALIZE[31063]</label>
 					<onclick>Skin.ToggleSetting(HideFavourites)</onclick>
 					<selected>!Skin.HasSetting(HideFavourites)</selected>
-				</control>
+				</control>-->
 				<control type="radiobutton" id="307">
 					<description>Show App Store Menu</description>
 					<include>GeneralSkinOption</include>

@@ -923,6 +923,39 @@
 							<texture diffuse="bigPosterHorizMask.png" background="true">$INFO[ListItem.Thumb]</texture>
 						</control>
 					</control>
+					<!-- photos -->
+					<control type="group">
+						<posx>0</posx>
+						<posy>-3</posy>
+						<visible>ListItem.Type(photo)</visible>
+						<control type="group">
+						<control type="label">
+							<description>Title</description>
+							<width>InfoListTitleWidth</width>
+							<font>LargeTitleFont</font>
+							<label>$INFO[ListItem.Title]</label>
+						</control>
+						<!-- drop shadow -->
+						<control type="image">
+							<posx>-397</posx>
+							<posy>55</posy>
+							<width>406</width>
+							<height>227</height>
+							<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+							<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+						</control>
+						<control type="image">
+							<description>Thumb image</description>
+							<posx>-389</posx>
+							<posy>64</posy>
+							<width>390</width>
+							<height>210</height>
+							<aspectratio scalediffuse="false" align="top">scale</aspectratio>
+							<texture diffuse="bigPosterHorizMask.png" background="true">$INFO[ListItem.Thumb]</texture>
+						</control>
+						</control>
+					</control>
+					
 				</control>
 				<!-- Layout for any except Episodes -->
 				<control type="group">
