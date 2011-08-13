@@ -216,7 +216,7 @@ bool CGUIMultiSelectTextControl::MoveLeft()
 {
   if (m_selectedItem > 0)
     ScrollToItem(m_selectedItem - 1);
-  else if (GetNumSelectable() && m_controlLeft && m_controlLeft == m_controlID)
+  else if (GetNumSelectable() && m_actionLeft.GetNavigation() && m_actionLeft.GetNavigation() == m_controlID)
     ScrollToItem(GetNumSelectable() - 1);
   else
     return false;
@@ -227,7 +227,7 @@ bool CGUIMultiSelectTextControl::MoveRight()
 {
   if (GetNumSelectable() && m_selectedItem < GetNumSelectable() - 1)
     ScrollToItem(m_selectedItem + 1);
-  else if (m_controlRight && m_controlRight == m_controlID)
+  else if (m_actionRight.GetNavigation() && m_actionRight.GetNavigation() == m_controlID)
     ScrollToItem(0);
   else
     return false;

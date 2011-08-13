@@ -281,16 +281,16 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
       }
     }
     // now the control's nav
-    std::vector<CGUIActionDescriptor> empty;
+    CGUIAction empty;
     if (m_orientation == VERTICAL)
     {
       control->SetNavigation(beforeID, afterID, GetControlIdLeft(), GetControlIdRight(), GetControlIdBack());
-      control->SetNavigationActions(empty, empty, m_leftActions, m_rightActions, empty, false);
+      control->SetNavigationActions(empty, empty, m_actionLeft, m_actionRight, empty, false);
     }
     else
     {
       control->SetNavigation(GetControlIdUp(), GetControlIdDown(), beforeID, afterID, GetControlIdBack());
-      control->SetNavigationActions(m_upActions, m_downActions, empty, empty, empty, false);
+      control->SetNavigationActions(m_actionUp, m_actionDown, empty, empty, empty, false);
     }
 
     if (!m_useControlPositions)

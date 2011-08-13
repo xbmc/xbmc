@@ -194,7 +194,6 @@ public:
   void CheckMusicPlaylist();
 
   bool ExecuteXBMCAction(std::string action);
-  bool ExecuteAction(CGUIActionDescriptor action);
 
   static bool OnEvent(XBMC_Event& newEvent);
 
