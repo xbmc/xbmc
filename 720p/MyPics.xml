@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <window id="2">
-	<defaultcontrol always="true">56</defaultcontrol>
+	<defaultcontrol always="false">57</defaultcontrol>
+	<views>56,57,561</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<include>Background</include>
@@ -108,7 +109,7 @@
 			</control>
 		</control>-->
 		<include>Clock</include>
-		<include condition="!Container.Content(Secondary)">OptionsMenu</include>
+		<include>OptionsMenu</include>
 		<include>MediaCount</include>
 		<include>MusicNowPlayingIndicators</include>
 	</controls>

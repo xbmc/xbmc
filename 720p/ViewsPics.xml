@@ -34,14 +34,14 @@
 			<posx>20</posx>
 			<posy>240</posy>
 			<include>MediaViewFade</include>
-			<control type="panel" id="56">
+			<control type="panel" id="561">
 				<visible>!Container.Content(Secondary) + Control.IsVisible(589)</visible>
 				<viewtype label="Pictures">panel</viewtype>
 				<width>600</width>
 				<height>440</height>
 				<pagecontrol>61</pagecontrol>
-				<onup>56</onup>
-				<ondown>56</ondown>
+				<onup>561</onup>
+				<ondown>561</ondown>
 				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 				<onright>9009</onright>
 				<orientation>vertical</orientation>
@@ -101,7 +101,7 @@
 					<description>Large Picture Thumb</description>
 					<posy>-8</posy>
 					<control type="largeimage">
-						<visible>![Container(56).OnNext | Container(56).OnPrevious]</visible>
+						<visible>![Container(561).OnNext | Container(561).OnPrevious]</visible>
 						<animation effect="fade" start="0" end="100" time="1000" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
 						<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
 						
@@ -314,7 +314,7 @@
 	</include>
 	<include name="InfoListPics">
 		<control type="group">
-		<visible>Control.IsVisible(56) + Container.Content(Secondary)</visible>
+		<visible>Container.Content(Secondary)</visible>
 		<control type="group">			
 			<include>MediaViewBGOverlay</include>
 		</control>

@@ -292,10 +292,10 @@
 				<include>OMNoViewThumbSlide</include>				
 				<control type="button" id="912">
 					<description>Pictures view button</description>
-					<visible>!Container.Content(Secondary) + Control.IsVisible(57)</visible>
+					<visible>Control.IsVisible(57)</visible>
 					<label>$LOCALIZE[1]</label>
-					<onclick>Container.SetViewMode(56)</onclick>
-					<onclick>SetFocus(56)</onclick>
+					<onclick>Container.SetViewMode(561)</onclick>
+					<onclick>SetFocus(561)</onclick>
 					<include>OMButtonItem</include>
 				</control>
 				<control type="button" id="912">
@@ -305,7 +305,7 @@
 					<onclick>Container.SetViewMode(56)</onclick>
 					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
-				</control>				
+				</control>			
 				<control type="button" id="956">
 					<description>Image Stream view button</description>
 					<visible>!Control.IsVisible(57) + !Container.Content(Secondary)</visible>
