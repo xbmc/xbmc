@@ -1998,10 +1998,10 @@ void CFileItemList::Stack(bool stackFiles /* = true */)
   // items needs to be sorted for stuff below to work properly
   Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
 
+  StackFolders();
+
   if (stackFiles)
     StackFiles();
-
-  StackFolders();
 }
 
 void CFileItemList::StackFolders()
