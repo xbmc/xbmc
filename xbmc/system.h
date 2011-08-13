@@ -133,8 +133,10 @@
 #define HAS_AVAHI
 #endif
 #define HAS_LCD
+#ifdef HAVE_DBUS
 #define HAS_DBUS
 #define HAS_DBUS_SERVER
+#endif
 #define HAS_GL
 #ifdef HAVE_X11
 #define HAS_GLX
