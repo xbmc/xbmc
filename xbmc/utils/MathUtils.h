@@ -66,23 +66,43 @@ namespace MathUtils
 #if defined(__powerpc__) || defined(__ppc__)
     i = floor(x + round_to_nearest);
 #elif defined(__arm__)
-    //BIG FIXME here (still has issues with rounding -0.5 to zero and not -1)
-    //the asm codes below do the following - trunc(x+0.5)
-    //this isn't correct for negativ x - values - for example 
-    //-1 gets rounded to zero because trunc(-1+0.5) == 0
-    //this is a dirty hack until someone fixes this propably in asm
-    //i've created a trac ticket for this #11767
-    //this hacks decrements the x by 1 if it is negativ
-    // so for -1 it would be trunc(-2+0.5) - which would be correct -1 then ...
-    x = x < 0 ? x-1 : x;
+    // From 'ARM®v7-M Architecture Reference Manual' page A7-569:
+    //  "The floating-point to integer operation (vcvt) [normally] uses the Round towards Zero rounding mode"
+    // Because of this...we must use some less-than-straightforward logic to perform this operation without
+    //  changing the rounding mode flags
+
+    /* The assembly below implements the following logic:
+     if (x < 0)
+       inc = -0.5f
+     else
+       inc = 0.5f
+     int_val = trunc(x+inc);
+     err = x - int_val;
+     if (err == 0.5f)
+       int_val++;
+     return int_val;
+     */
 
     __asm__ __volatile__ (
-                          "vmov.F64 d1,%[rnd_val]             \n\t" // Copy round_to_nearest into a working register
-                          "vadd.F64 %P[value],%P[value],d1    \n\t" // Add round_to_nearest to value
-                          "vcvt.S32.F64 %[result],%P[value]   \n\t" // Truncate(round towards zero) and store the result
-                          : [result] "=w"(i), [value] "+w"(x)  // Outputs
-                          : [rnd_val] "Dv" (round_to_nearest)  // Inputs
-                          : "d1");                             // Clobbers
+                          "vmov.F64 d1,%[rnd_val]      \n\t" // Copy round_to_nearest into a working register (d1 = 0.5)
+                          "fcmpezd %P[value]           \n\t" // Check value against zero (value == 0?)
+                          "fmstat                      \n\t" // Copy the floating-point status flags into the general-purpose status flags
+                          "it mi                       \n\t"
+                          "vnegmi.F64 d1, d1           \n\t" // if N-flag is set, negate round_to_nearest (if (value < 0) d1 = -1 * d1)
+                          "vadd.F64 d1,%P[value],d1    \n\t" // Add round_to_nearest to value, store result in working register (d1 += value)
+                          "vcvt.S32.F64 s3,d1          \n\t" // Truncate(round towards zero) (s3 = (int)d1)
+                          "vmov %[result],s3           \n\t" // Store the integer result in a general-purpose register (result = s3)
+                          "vcvt.F64.S32 d1,s3          \n\t" // Convert back to floating-point (d1 = (double)s3)
+                          "vsub.F64 d1,%P[value],d1    \n\t" // Calculate the error (d1 = value - d1)
+                          "vmov.F64 d2,%[rnd_val]      \n\t" // d2 = 0.5;
+                          "fcmped d1, d2               \n\t" // (d1 == 0.5?)
+                          "fmstat                      \n\t" // Copy the floating-point status flags into the general-purpose status flags
+                          "it eq                       \n\t"
+                          "addeq %[result],#1          \n\t" // (if (d1 == d2) result++;)
+                          : [result] "=r"(i)                                  // Outputs
+                          : [rnd_val] "Dv" (round_to_nearest), [value] "w"(x) // Inputs
+                          : "d1", "d2", "s3"                                  // Clobbers
+                          );
 #else
     __asm__ __volatile__ (
                           "fadd %%st\n\t"
@@ -124,8 +144,15 @@ namespace MathUtils
       sar i, 1
     }
 #else
-#if defined(__powerpc__) || defined(__ppc__) || defined(__arm__)
+#if defined(__powerpc__) || defined(__ppc__)
     return (int)x;
+#elif defined(__arm__)
+    __asm__ __volatile__ (
+                          "vcvt.S32.F64 %[result],%P[value]   \n\t" // Truncate(round towards zero) and store the result
+                          : [result] "=w"(i)                        // Outputs
+                          : [value] "w"(x)                          // Inputs
+                          );
+    return i;
 #else
     __asm__ __volatile__ (
                           "fadd %%st\n\t"
