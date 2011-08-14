@@ -313,7 +313,7 @@ void CGUIProgressControl::UpdateInfo(const CGUIListItem *item)
   {
     float percent = m_fPercent;
     if (m_iInfoCode)
-      m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode, m_parentID, (const CFileItem *)item);
+      m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode, m_parentID, item);
 
     if (m_fPercent < 0.0f) m_fPercent = 0.0f;
     if (m_fPercent > 100.0f) m_fPercent = 100.0f;
