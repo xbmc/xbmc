@@ -52,7 +52,7 @@
 #include "network/libscrobbler/lastfmscrobbler.h"
 #include "network/libscrobbler/librefmscrobbler.h"
 #include "GUIPassword.h"
-#include "InertialScrollingHandler.h"
+#include "input/InertialScrollingHandler.h"
 #include "ApplicationMessenger.h"
 #include "SectionLoader.h"
 #include "cores/DllLoader/DllLoaderContainer.h"

@@ -406,7 +406,6 @@
 		43348AAE1077486D00F859CF /* PlayerCoreFactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AA81077486D00F859CF /* PlayerCoreFactory.cpp */; };
 		43348AAF1077486D00F859CF /* PlayerSelectionRule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43348AAA1077486D00F859CF /* PlayerSelectionRule.cpp */; };
 		43352CEE1071634600706B8A /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
-		43B0A5D013C64DF900B2382A /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF27E26C13C23D12002514FE /* InertialScrollingHandler.cpp */; };
 		43BF08EB1080C6BA00E25290 /* Neptune.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A41080C6B900E25290 /* Neptune.cpp */; };
 		43BF08EC1080C6BA00E25290 /* NptBase64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A71080C6B900E25290 /* NptBase64.cpp */; };
 		43BF08ED1080C6BA00E25290 /* NptBufferedStreams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43BF08A91080C6B900E25290 /* NptBufferedStreams.cpp */; };
@@ -618,7 +617,8 @@
 		C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		DF0DF15B13A3ADA7008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15713A3ADA7008ED511 /* FileNFS.cpp */; };
 		DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */; };
-		DF27E26E13C23D12002514FE /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF27E26C13C23D12002514FE /* InertialScrollingHandler.cpp */; };
+		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
+		DFAB049913F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
 		E33206380D5070AA00435CE3 /* DVDDemuxVobsub.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */; };
 		E33466A60D2E5103005A65EC /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E33466A50D2E5103005A65EC /* IOKit.framework */; };
@@ -2542,8 +2542,8 @@
 		DF0DF15813A3ADA7008ED511 /* FileNFS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileNFS.h; sourceTree = "<group>"; };
 		DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF15A13A3ADA7008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
-		DF27E26C13C23D12002514FE /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
-		DF27E26D13C23D12002514FE /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
+		DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
+		DFAB049713F8376700B70BFB /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
 		E306D12D0DDF7B590052C2AD /* XBMCHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMCHelper.h; sourceTree = "<group>"; };
 		E33206370D5070AA00435CE3 /* DVDDemuxVobsub.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDDemuxVobsub.cpp; sourceTree = "<group>"; };
@@ -4303,6 +4303,8 @@
 			children = (
 				18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */,
 				18B7C8CC12942546009E7A26 /* ButtonTranslator.h */,
+				DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */,
+				DFAB049713F8376700B70BFB /* InertialScrollingHandler.h */,
 				18B7C8CD12942546009E7A26 /* KeyboardLayoutConfiguration.cpp */,
 				18B7C8CE12942546009E7A26 /* KeyboardLayoutConfiguration.h */,
 				18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */,
@@ -5027,8 +5029,6 @@
 				E38E17F80D25F9FA00618676 /* GUIViewControl.h */,
 				E38E17F90D25F9FA00618676 /* GUIViewState.cpp */,
 				E38E17FA0D25F9FA00618676 /* GUIViewState.h */,
-				DF27E26C13C23D12002514FE /* InertialScrollingHandler.cpp */,
-				DF27E26D13C23D12002514FE /* InertialScrollingHandler.h */,
 				E38E184F0D25F9FA00618676 /* IProgressCallback.h */,
 				E38E18580D25F9FA00618676 /* LangInfo.cpp */,
 				E38E18590D25F9FA00618676 /* LangInfo.h */,
@@ -8075,13 +8075,13 @@
 				DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */,
 				7C89619213B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
 				1830212813B8E2DC00770920 /* controledit.cpp in Sources */,
-				DF27E26E13C23D12002514FE /* InertialScrollingHandler.cpp in Sources */,
 				18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */,
 				F5CEE60913D3C89700225F72 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */,
 				3802709A13D5A653009493DD /* SystemClock.cpp in Sources */,
 				7CEE2E5B13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */,
 				7C89674613C03B22003631FE /* InfoBool.cpp in Sources */,
+				DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8970,13 +8970,13 @@
 				F558F3D113AE663A00631E12 /* NFSDirectory.cpp in Sources */,
 				7C89619313B6A16F003631FE /* GUIWindowScreensaverDim.cpp in Sources */,
 				1830212913B8E2DC00770920 /* controledit.cpp in Sources */,
-				43B0A5D013C64DF900B2382A /* InertialScrollingHandler.cpp in Sources */,
 				7CEE2E5C13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */,
 				4308680413E3F64100698436 /* StreamUtils.cpp in Sources */,
 				4308680913E3F64C00698436 /* SystemClock.cpp in Sources */,
 				4308680D13E3F65700698436 /* Implementation.cpp in Sources */,
 				4308681213E3F66600698436 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				7C89674813C03B22003631FE /* InfoBool.cpp in Sources */,
+				DFAB049913F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
