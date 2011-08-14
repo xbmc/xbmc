@@ -63,6 +63,8 @@ public:
 
   float GetPercentage() const;
   CStdString GetDescription() const;
+  virtual void UpdateInfo(const CGUIListItem *item = NULL);
+  bool UpdateLayout(void);
 protected:
   virtual bool UpdateColors();
   CGUITexture m_guiBackground;
@@ -75,5 +77,6 @@ protected:
   int m_iInfoCode;
   float m_fPercent;
   bool m_bReveal;
+  bool m_bChanged;
 };
 #endif
