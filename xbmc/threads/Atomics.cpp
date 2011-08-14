@@ -194,12 +194,14 @@ long AtomicIncrement(volatile long* pAddr)
 {
   register long val;
   asm volatile (
+                "dmb      ish            \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
                 "1:                     \n" 
                 "ldrex   %0, [%1]       \n" // (val = *pAddr)
                 "add     %0,  #1        \n" // (val += 1)
                 "strex   r1,  %0, [%1]	\n"
                 "cmp     r1,   #0       \n"
                 "bne     1b             \n"
+                "dmb     ish            \n" // Memory barrier.
                 : "=&r" (val)
                 : "r"(pAddr)
                 : "r1"
@@ -271,12 +273,14 @@ long AtomicAdd(volatile long* pAddr, long amount)
 {
   register long val;
   asm volatile (
+                "dmb      ish            \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
                 "1:                     \n" 
                 "ldrex   %0, [%1]       \n" // (val = *pAddr)
                 "add     %0,  %2        \n" // (val += amount)
                 "strex   r1,  %0, [%1]	\n"
                 "cmp     r1,   #0       \n"
                 "bne     1b             \n"
+                "dmb     ish            \n" // Memory barrier.
                 : "=&r" (val)
                 : "r"(pAddr), "r"(amount)
                 : "r1"
@@ -347,12 +351,14 @@ long AtomicDecrement(volatile long* pAddr)
 {
   register long val;
   asm volatile (
+                "dmb      ish            \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
                 "1:                     \n" 
                 "ldrex   %0, [%1]       \n" // (val = *pAddr)
                 "sub     %0,  #1        \n" // (val -= 1)
                 "strex   r1,  %0, [%1]	\n"
                 "cmp     r1,   #0       \n"
                 "bne     1b             \n"
+                "dmb     ish            \n" // Memory barrier.
                 : "=&r" (val)
                 : "r"(pAddr)
                 : "r1"
@@ -425,12 +431,14 @@ long AtomicSubtract(volatile long* pAddr, long amount)
 {
   register long val;
   asm volatile (
+                "dmb     ish            \n" // Memory barrier. Make sure all memory accesses appearing before this complete before any that appear after
                 "1:                     \n" 
                 "ldrex   %0, [%1]       \n" // (val = *pAddr)
                 "sub     %0,  %2        \n" // (val -= amount)
                 "strex   r1,  %0, [%1]	\n"
                 "cmp     r1,   #0       \n"
                 "bne     1b             \n"
+                "dmb     ish            \n" // Memory barrier.
                 : "=&r" (val)
                 : "r"(pAddr), "r"(amount)
                 : "r1"
