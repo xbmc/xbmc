@@ -209,11 +209,6 @@ CStdString CGUIProgressControl::GetDescription() const
   return percent;
 }
 
-void CGUIProgressControl::SetListInfo(const CGUIInfoLabel &info)
-{
-  m_listInfo = info;
-}
-
 bool CGUIProgressControl::UpdateLayout(void)
 {
   bool bChanged(false);
@@ -318,14 +313,10 @@ void CGUIProgressControl::UpdateInfo(const CGUIListItem *item)
   {
     float percent = m_fPercent;
     if (m_iInfoCode)
-      m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode);
-    else if (item && !m_listInfo.IsEmpty() && (!m_listInfo.IsConstant() || m_bInvalidated))
-      m_fPercent = atof(m_listInfo.GetItemLabel(item, false));
-    else if (m_parentID && !m_listInfo.IsEmpty() && (!m_listInfo.IsConstant() || m_bInvalidated))
-      m_fPercent = atof(m_listInfo.GetLabel(m_parentID, false));
+      m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode, m_parentID, (const CFileItem *)item);
 
     if (m_fPercent < 0.0f) m_fPercent = 0.0f;
     if (m_fPercent > 100.0f) m_fPercent = 100.0f;
-    m_bChanged |= (percent != m_fPercent);
+    m_bChanged = (percent != m_fPercent);
   }
 }

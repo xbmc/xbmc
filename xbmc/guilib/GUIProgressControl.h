@@ -60,7 +60,6 @@ public:
   void SetPercentage(float fPercent);
   void SetInfo(int iInfo);
   int GetInfo() const {return m_iInfoCode;};
-  void SetListInfo(const CGUIInfoLabel &info);
 
   float GetPercentage() const;
   CStdString GetDescription() const;
@@ -76,7 +75,6 @@ protected:
   CRect m_guiMidClipRect;
 
   int m_iInfoCode;
-  CGUIInfoLabel m_listInfo;
   float m_fPercent;
   bool m_bReveal;
   bool m_bChanged;
