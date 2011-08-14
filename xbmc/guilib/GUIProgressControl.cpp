@@ -21,7 +21,6 @@
 
 #include "GUIProgressControl.h"
 #include "GUIInfoManager.h"
-#include "GUIListItem.h"
 
 CGUIProgressControl::CGUIProgressControl(int parentID, int controlID,
                                          float posX, float posY, float width,
@@ -42,7 +41,6 @@ CGUIProgressControl::CGUIProgressControl(int parentID, int controlID,
   m_iInfoCode = 0;
   ControlType = GUICONTROL_PROGRESS;
   m_bReveal = reveal;
-  m_bChanged = false;
 }
 
 CGUIProgressControl::~CGUIProgressControl(void)
@@ -58,9 +56,10 @@ void CGUIProgressControl::SetPosition(float posX, float posY)
 
 void CGUIProgressControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  bool changed = m_bChanged;
+  bool changed = false;
 
-  changed |= UpdateLayout();
+  if (!IsDisabled())
+    changed |= UpdateLayout();
   changed |= m_guiBackground.Process(currentTime);
   changed |= m_guiMid.Process(currentTime);
   changed |= m_guiLeft.Process(currentTime);
@@ -210,8 +209,6 @@ CStdString CGUIProgressControl::GetDescription() const
 bool CGUIProgressControl::UpdateLayout(void)
 {
   bool bChanged(false);
-  if (IsDisabled())
-    return bChanged;
 
   if (m_width == 0)
     m_width = m_guiBackground.GetTextureWidth();
@@ -306,7 +303,6 @@ bool CGUIProgressControl::UpdateLayout(void)
 
 void CGUIProgressControl::UpdateInfo(const CGUIListItem *item)
 {
-  m_bChanged = false;
   if (!IsDisabled())
   {
     float percent = m_fPercent;
@@ -315,6 +311,5 @@ void CGUIProgressControl::UpdateInfo(const CGUIListItem *item)
 
     if (m_fPercent < 0.0f) m_fPercent = 0.0f;
     if (m_fPercent > 100.0f) m_fPercent = 100.0f;
-    m_bChanged = (percent != m_fPercent);
   }
 }
