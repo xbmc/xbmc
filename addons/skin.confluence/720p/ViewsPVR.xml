@@ -23,7 +23,7 @@
 					<posy>5</posy>
 					<width>520</width>
 					<height>8</height>
-					<progress>$INFO[Container(11).ListItem.Progress]</progress>
+					<info>Container(11).ListItem.Progress</info>
 				</control>
 				<control type="label">
 					<posx>605</posx>
@@ -112,7 +112,7 @@
 						<posy>32</posy>
 						<width>40</width>
 						<height>8</height>
-						<progress>$INFO[ListItem.Progress]</progress>
+						<info>ListItem.Progress</info>
 					</control>
 					<control type="label">
 						<posx>50</posx>
@@ -205,7 +205,7 @@
 						<posy>32</posy>
 						<width>40</width>
 						<height>8</height>
-						<progress>$INFO[ListItem.Progress]</progress>
+						<info>ListItem.Progress</info>
 					</control>
 					<control type="label">
 						<posx>50</posx>
@@ -318,7 +318,7 @@
 					<posy>5</posy>
 					<width>520</width>
 					<height>8</height>
-					<progress>$INFO[Container(12).ListItem.Progress]</progress>
+					<info>Container(12).ListItem.Progress</info>
 				</control>
 				<control type="label">
 					<posx>605</posx>
@@ -407,7 +407,7 @@
 						<posy>32</posy>
 						<width>40</width>
 						<height>8</height>
-						<progress>$INFO[ListItem.Progress]</progress>
+						<info>ListItem.Progress</info>
 					</control>
 					<control type="label">
 						<posx>50</posx>
@@ -492,7 +492,7 @@
 						<posy>32</posy>
 						<width>40</width>
 						<height>8</height>
-						<progress>$INFO[ListItem.Progress]</progress>
+						<info>ListItem.Progress</info>
 					</control>
 					<control type="label">
 						<posx>50</posx>
