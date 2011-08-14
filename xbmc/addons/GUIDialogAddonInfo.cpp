@@ -128,7 +128,8 @@ void CGUIDialogAddonInfo::UpdateControls()
   bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").Equals("true");
   bool isUpdatable = isInstalled && m_item->GetProperty("Addon.UpdateAvail").Equals("true");
   // TODO: System addons should be able to be disabled
-  bool isPVR = m_localAddon->Type() == ADDON_PVRDLL;
+  // TODO: the following line will have to be changed later, when the PVR add-ons are no longer part of our source tree
+  bool isPVR = isInstalled && m_localAddon->Type() == ADDON_PVRDLL;
   bool canDisable = isInstalled && (!isSystem || isPVR) && !m_localAddon->IsInUse();
   bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").IsEmpty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
