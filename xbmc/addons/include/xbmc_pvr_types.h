@@ -274,7 +274,7 @@ extern "C" {
   typedef struct PVR_TIMER {
     unsigned int    iClientIndex;      /*!< @brief (required) the index of this timer given by the client */
     int             iClientChannelUid; /*!< @brief (required) unique identifier of the channel to record on */
-    time_t          startTime;         /*!< @brief (required) start time of the recording in UTC */
+    time_t          startTime;         /*!< @brief (required) start time of the recording in UTC. instant timers that are sent to the add-on by xbmc will have this value set to 0 */
     time_t          endTime;           /*!< @brief (required) end time of the recording in UTC */
     PVR_TIMER_STATE state;             /*!< @brief (required) the state of this timer */
     const char *    strTitle;          /*!< @brief (optional) title of this timer */

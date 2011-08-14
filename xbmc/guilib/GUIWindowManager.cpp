@@ -720,13 +720,13 @@ bool CGUIWindowManager::HasDialogOnScreen() const
 
 /// \brief Get the ID of the top most routed window
 /// \return id ID of the window or WINDOW_INVALID if no routed window available
-int CGUIWindowManager::GetTopMostModalDialogID() const
+int CGUIWindowManager::GetTopMostModalDialogID(bool ignoreClosing /*= false*/) const
 {
   CSingleLock lock(g_graphicsContext);
   for (crDialog it = m_activeDialogs.rbegin(); it != m_activeDialogs.rend(); ++it)
   {
     CGUIWindow *dialog = *it;
-    if (dialog->IsModalDialog())
+    if (dialog->IsModalDialog() && (!ignoreClosing || !dialog->IsAnimating(ANIM_TYPE_WINDOW_CLOSE)))
     { // have a modal window
       return dialog->GetID();
     }
@@ -789,7 +789,7 @@ int CGUIWindowManager::GetActiveWindow() const
 // same as GetActiveWindow() except it first grabs dialogs
 int CGUIWindowManager::GetFocusedWindow() const
 {
-  int dialog = GetTopMostModalDialogID();
+  int dialog = GetTopMostModalDialogID(true);
   if (dialog != WINDOW_INVALID)
     return dialog;
 

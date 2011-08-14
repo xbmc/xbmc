@@ -160,8 +160,7 @@ bool CSFTPSession::GetDirectory(const CStdString &base, const CStdString &folder
             pItem->m_dwSize = attributes->size;
           }
 
-          pItem->m_strPath = base;
-          pItem->m_strPath += localPath;
+          pItem->SetPath(base + localPath);
           items.Add(pItem);
 
           {

@@ -290,11 +290,13 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
 {
   int iReturn = 0;
 
+  CStdString strPath;
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
     CFileItemPtr group(new CFileItem(at(iGroupPtr)->GroupName()));
     group->m_strTitle = at(iGroupPtr)->GroupName();
-    group->m_strPath.Format("%i", at(iGroupPtr)->GroupID());
+    strPath.Format("%i", at(iGroupPtr)->GroupID());
+    group->SetPath(strPath);
     results->Add(group);
     ++iReturn;
   }

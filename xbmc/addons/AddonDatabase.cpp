@@ -88,6 +88,10 @@ bool CAddonDatabase::CreateTables()
     CLog::Log(LOGINFO, "create broken table");
     m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
+
+    CLog::Log(LOGINFO, "create blacklist table");
+    m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
   }
   catch (...)
   {
@@ -117,6 +121,11 @@ bool CAddonDatabase::UpdateOldVersion(int version)
     if (version < 15)
     {
       m_pDS->exec("ALTER TABLE addon add minversion text");
+    }
+    if (version < 15)
+    {
+      m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
+      m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
     }
   }
   catch (...)
@@ -728,6 +737,52 @@ bool CAddonDatabase::HasDisabledAddons()
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+bool CAddonDatabase::BlacklistAddon(const CStdString& addonID,
+                                    const CStdString& version)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString sql = PrepareSQL("insert into blacklist(id, addonID, version) values(NULL, '%s', '%s')", addonID.c_str(),version.c_str());
+    m_pDS->exec(sql);
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s' for version '%s'", __FUNCTION__, addonID.c_str(),version.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::IsAddonBlacklisted(const CStdString& addonID,
+                                        const CStdString& version)
+{
+  CStdString where = PrepareSQL("addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
+  return !GetSingleValue("blacklist","addonID",where).IsEmpty();
+}
+
+bool CAddonDatabase::RemoveAddonFromBlacklist(const CStdString& addonID,
+                                              const CStdString& version)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString sql = PrepareSQL("delete from blacklist where addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
+    m_pDS->exec(sql);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s' for version '%s'", __FUNCTION__, addonID.c_str(),version.c_str());
   }
   return false;
 }

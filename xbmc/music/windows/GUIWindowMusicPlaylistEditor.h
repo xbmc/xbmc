@@ -33,7 +33,7 @@ public:
   virtual ~CGUIWindowMusicPlaylistEditor(void);
 
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
 
 protected:
   virtual void OnItemLoaded(CFileItem* pItem) {};

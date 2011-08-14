@@ -49,15 +49,17 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     // multiple action strings are concat'd together, separated with " , "
     vector<CGUIActionDescriptor> actions;
     CGUIControlFactory::GetMultipleString(item, "onclick", actions);
+    CStdString path;
     for (vector<CGUIActionDescriptor>::iterator it = actions.begin(); it != actions.end(); ++it)
     {
       (*it).m_action.Replace(",", ",,");
-      if (m_strPath.length() > 0)
+      if (!path.IsEmpty())
       {
-        m_strPath   += " , ";
+        path += " , ";
       }
-      m_strPath += (*it).m_action;
+      path += (*it).m_action;
     }
+    SetPath(path);
     SetLabel(label.GetLabel(parentID));
     SetLabel2(label2.GetLabel(parentID));
     SetThumbnailImage(thumb.GetLabel(parentID, true));
@@ -91,7 +93,7 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     icon   = item->Attribute("icon");   icon   = CGUIControlFactory::FilterLabel(icon);
     const char *id = item->Attribute("id");
     SetLabel(CGUIInfoLabel::GetLabel(label, parentID));
-    m_strPath = item->FirstChild()->Value();
+    SetPath(item->FirstChild()->Value());
     SetLabel2(CGUIInfoLabel::GetLabel(label2, parentID));
     SetThumbnailImage(CGUIInfoLabel::GetLabel(thumb, parentID, true));
     SetIconImage(CGUIInfoLabel::GetLabel(icon, parentID, true));

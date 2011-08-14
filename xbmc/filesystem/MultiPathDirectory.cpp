@@ -215,7 +215,7 @@ CStdString CMultiPathDirectory::ConstructMultiPath(const CFileItemList& items, c
   CStdString newPath = "multipath://";
   //CLog::Log(LOGDEBUG, "-- adding path: %s", strPath.c_str());
   for (unsigned int i = 0; i < stack.size(); ++i)
-    AddToMultiPath(newPath, items[stack[i]]->m_strPath);
+    AddToMultiPath(newPath, items[stack[i]]->GetPath());
 
   //CLog::Log(LOGDEBUG, "Final path: %s", newPath.c_str());
   return newPath;
@@ -268,7 +268,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
 
     vector<int> stack;
     stack.push_back(i);
-    CLog::Log(LOGDEBUG,"Testing path: [%03i] %s", i, pItem1->m_strPath.c_str());
+    CLog::Log(LOGDEBUG,"Testing path: [%03i] %s", i, pItem1->GetPath().c_str());
 
     int j = i + 1;
     do
@@ -282,7 +282,7 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
       if (!pItem2->IsFileFolder())
       {
         stack.push_back(j);
-        CLog::Log(LOGDEBUG,"  Adding path: [%03i] %s", j, pItem2->m_strPath.c_str());
+        CLog::Log(LOGDEBUG,"  Adding path: [%03i] %s", j, pItem2->GetPath().c_str());
       }
       j++;
     }
@@ -295,8 +295,8 @@ void CMultiPathDirectory::MergeItems(CFileItemList &items)
       CStdString newPath = ConstructMultiPath(items, stack);
       for (unsigned int k = stack.size() - 1; k > 0; --k)
         items.Remove(stack[k]);
-      pItem1->m_strPath = newPath;
-      CLog::Log(LOGDEBUG,"  New path: %s", pItem1->m_strPath.c_str());
+      pItem1->SetPath(newPath);
+      CLog::Log(LOGDEBUG,"  New path: %s", pItem1->GetPath().c_str());
     }
 
     i++;

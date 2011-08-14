@@ -50,8 +50,8 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
     {
       if (items[i]->IsSmb())
       {
-        CURL url(items[i]->m_strPath);
-        items[i]->m_strPath = url.GetWithoutUserDetails();
+        CURL url(items[i]->GetPath());
+        items[i]->SetPath(url.GetWithoutUserDetails());
       }
     }
 
@@ -97,13 +97,13 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
     CFileItemList filteredDirectories, filteredFiles;
     for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
     {
-      if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
+      if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
         continue;
 
       if (items[i]->IsSmb())
       {
-        CURL url(items[i]->m_strPath);
-        items[i]->m_strPath = url.GetWithoutUserDetails();
+        CURL url(items[i]->GetPath());
+        items[i]->SetPath(url.GetWithoutUserDetails());
       }
 
       if (items[i]->m_bIsFolder)
@@ -114,7 +114,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
       else
       {
         CFileItem fileItem;
-        if (FillFileItem(items[i]->m_strPath, fileItem, media))
+        if (FillFileItem(items[i]->GetPath(), fileItem, media))
           filteredFiles.Add(CFileItemPtr(new CFileItem(fileItem)));
       }
     }
@@ -229,7 +229,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
         CFileItemList filteredDirectories;
         for (unsigned int i = 0; i < (unsigned int)items.Size(); i++)
         {
-          if (CUtil::ExcludeFileOrFolder(items[i]->m_strPath, regexps))
+          if (CUtil::ExcludeFileOrFolder(items[i]->GetPath(), regexps))
             continue;
 
           if (items[i]->m_bIsFolder)
@@ -240,7 +240,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
           else
           {
             CFileItem fileItem;
-            if (FillFileItem(items[i]->m_strPath, fileItem, media))
+            if (FillFileItem(items[i]->GetPath(), fileItem, media))
               list.Add(CFileItemPtr(new CFileItem(fileItem)));
           }
         }
@@ -250,7 +250,7 @@ bool CFileOperations::FillFileItemList(const CVariant &parameterObject, CFileIte
           for (int i = 0; i < filteredDirectories.Size(); i++)
           {
             CVariant val = parameterObject;
-            val["directory"] = filteredDirectories[i]->m_strPath;
+            val["directory"] = filteredDirectories[i]->GetPath();
             FillFileItemList(val, list);
           }
         }

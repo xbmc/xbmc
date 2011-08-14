@@ -34,7 +34,7 @@ public:
   CGUIDialogMediaSource(void);
   virtual ~CGUIDialogMediaSource(void);
   virtual bool OnMessage(CGUIMessage& message);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual void OnWindowLoaded();
   static bool ShowAndAddMediaSource(const CStdString &type);
   static bool ShowAndEditMediaSource(const CStdString &type, const CMediaSource &share);

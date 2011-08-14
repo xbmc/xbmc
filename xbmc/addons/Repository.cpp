@@ -200,7 +200,8 @@ bool CRepositoryUpdateJob::DoWork()
 
     AddonPtr addon;
     CAddonMgr::Get().GetAddon(addons[i]->ID(),addon);
-    if (addon && addons[i]->Version() > addon->Version())
+    if (addon && addons[i]->Version() > addon->Version() &&
+        !database.IsAddonBlacklisted(addons[i]->ID(),addons[i]->Version().c_str()))
     {
       if (g_settings.m_bAddonAutoUpdate || addon->Type() >= ADDON_VIZ_LIBRARY)
       {

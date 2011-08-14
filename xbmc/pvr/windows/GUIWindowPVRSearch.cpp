@@ -258,7 +258,7 @@ bool CGUIWindowPVRSearch::OnContextButtonStopRecord(CFileItem *item, CONTEXT_BUT
 
 bool CGUIWindowPVRSearch::ActionShowSearch(CFileItem *item)
 {
-  if (item->m_strPath == "pvr://guide/searchresults/empty.epg")
+  if (item->GetPath() == "pvr://guide/searchresults/empty.epg")
     ShowSearchResults();
   else
     ShowEPGInfo(item);

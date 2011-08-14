@@ -46,7 +46,7 @@ CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) :
     SetSortOrder(g_settings.m_viewStateVideoFiles.m_sortOrder);
   }
 
-  LoadViewState(items.m_strPath, WINDOW_PVR);
+  LoadViewState(items.GetPath(), WINDOW_PVR);
 }
 
 PVRWindow CGUIViewStatePVR::GetActiveView()

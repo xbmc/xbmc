@@ -127,7 +127,7 @@ bool CGUIInfoManager::OnMessage(CGUIMessage &message)
     if (message.GetParam1() == GUI_MSG_UPDATE_ITEM && message.GetItem())
     {
       CFileItemPtr item = boost::static_pointer_cast<CFileItem>(message.GetItem());
-      if (item && m_currentFile->m_strPath.Equals(item->m_strPath))
+      if (item && m_currentFile->GetPath().Equals(item->GetPath()))
         *m_currentFile = *item;
       return true;
     }
@@ -217,6 +217,8 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "haslocks",         SYSTEM_HASLOCKS },
                                   { "hasloginscreen",   SYSTEM_HAS_LOGINSCREEN },
                                   { "ismaster",         SYSTEM_ISMASTER },
+                                  { "isfullscreen",     SYSTEM_ISFULLSCREEN },
+                                  { "isstandalone",     SYSTEM_ISSTANDALONE },
                                   { "loggedon",         SYSTEM_LOGGEDON },
                                   { "showexitbutton",   SYSTEM_SHOW_EXIT_BUTTON },
                                   { "hasdrivef",        SYSTEM_HAS_DRIVE_F },
@@ -524,7 +526,9 @@ const infomap fanart_labels[] =  {{ "color1",           FANART_COLOR1 },
                                   { "image",            FANART_IMAGE }};
 
 const infomap skin_labels[] =    {{ "currenttheme",     SKIN_THEME },
-                                  { "currentcolourtheme",SKIN_COLOUR_THEME }};
+                                  { "currentcolourtheme",SKIN_COLOUR_THEME },
+                                  {"hasvideooverlay",   SKIN_HAS_VIDEO_OVERLAY},
+                                  {"hasmusicoverlay",   SKIN_HAS_MUSIC_OVERLAY}};
 
 const infomap window_bools[] =   {{ "ismedia",          WINDOW_IS_MEDIA },
                                   { "isactive",         WINDOW_IS_ACTIVE },
@@ -691,11 +695,18 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       int compareInt = atoi(cat.param(1).c_str());
       return AddMultiInfo(GUIInfo(INTEGER_GREATER_THAN, info, compareInt));
     }
-    else if (cat.name == "substring" && cat.num_params() == 2)
+    else if (cat.name == "substring" && cat.num_params() >= 2)
     {
       int info = TranslateSingleString(cat.param(0));
       CStdString label = CGUIInfoLabel::GetLabel(cat.param(1)).ToLower();
       int compareString = ConditionalStringParameter(label);
+      if (cat.num_params() > 2)
+      {
+        if (cat.param(2).CompareNoCase("left") == 0)
+          return AddMultiInfo(GUIInfo(STRING_STR_LEFT, info, compareString));
+        else if (cat.param(2).CompareNoCase("right") == 0)
+          return AddMultiInfo(GUIInfo(STRING_STR_RIGHT, info, compareString));
+      }
       return AddMultiInfo(GUIInfo(STRING_STR, info, compareString));
     }
   }
@@ -1248,7 +1259,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       else if (m_currentFile->HasVideoInfoTag())
         strLabel = m_currentFile->GetVideoInfoTag()->m_strFileNameAndPath;
       if (strLabel.IsEmpty())
-        strLabel = m_currentFile->m_strPath;
+        strLabel = m_currentFile->GetPath();
     }
     if (info == PLAYER_PATH)
     {
@@ -1419,7 +1430,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
         if (info==CONTAINER_FOLDERNAME)
           strLabel = ((CGUIMediaWindow*)window)->CurrentDirectory().GetLabel();
         else
-          strLabel = CURL(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath).GetWithoutUserDetails();
+          strLabel = CURL(((CGUIMediaWindow*)window)->CurrentDirectory().GetPath()).GetWithoutUserDetails();
       }
       break;
     }
@@ -1428,7 +1439,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
       {
-        CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().m_strPath);
+        CURL url(((CGUIMediaWindow*)window)->CurrentDirectory().GetPath());
         if (url.GetProtocol().Equals("plugin"))
         {
           strLabel = url.GetFileName();
@@ -1981,6 +1992,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE;
   else if (condition == SYSTEM_ISMASTER)
     bReturn = g_settings.GetMasterProfile().getLockMode() != LOCK_MODE_EVERYONE && g_passwordManager.bMasterUser;
+  else if (condition == SYSTEM_ISFULLSCREEN)
+    bReturn = g_Windowing.IsFullScreen();
+  else if (condition == SYSTEM_ISSTANDALONE)
+    bReturn = g_application.IsStandAlone();
   else if (condition == SYSTEM_LOGGEDON)
     bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
   else if (condition == SYSTEM_SHOW_EXIT_BUTTON)
@@ -2038,6 +2053,16 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     CGUIWindow *pWindow = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (pWindow)
       bReturn = ((CGUIMediaWindow*)pWindow)->CurrentDirectory().HasThumbnail();
+  }
+  else if (condition == CONTAINER_HAS_NEXT || condition == CONTAINER_HAS_PREVIOUS || condition == CONTAINER_SCROLLING)
+  {
+    CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
+    if (window)
+    {
+      const CGUIControl* control = window->GetControl(window->GetViewContainerID());
+      if (control)
+        bReturn = control->GetCondition(condition, 0);
+    }
   }
   else if (condition == VIDEOPLAYER_HAS_INFO)
     bReturn = ((m_currentFile->HasVideoInfoTag() && !m_currentFile->GetVideoInfoTag()->IsEmpty()) ||
@@ -2336,6 +2361,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         }
         break;
       case STRING_STR:
+      case STRING_STR_LEFT:
+      case STRING_STR_RIGHT:
         {
           CStdString compare = m_stringParameters[info.GetData2()];
           // our compare string is already in lowercase, so lower case our label as well
@@ -2345,13 +2372,10 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             label = GetItemImage((const CFileItem *)item, info.GetData1()).ToLower();
           else
             label = GetImage(info.GetData1(), contextWindow).ToLower();
-          if (compare.Right(5).Equals(",left"))
-            bReturn = label.Find(compare.Mid(0,compare.size()-5)) == 0;
-          else if (compare.Right(6).Equals(",right"))
-          {
-            compare = compare.Mid(0,compare.size()-6);
+          if (condition == STRING_STR_LEFT)
+            bReturn = label.Find(compare) == 0;
+          else if (condition == STRING_STR_RIGHT)
             bReturn = label.Find(compare) == (int)(label.size()-compare.size());
-          }
           else
             bReturn = label.Find(compare) > -1;
         }
@@ -3301,7 +3325,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return g_application.m_pPlayer->GetPlayingTitle();
     if (!m_currentFile->GetLabel().IsEmpty())
       return m_currentFile->GetLabel();
-    return CUtil::GetTitleFromPath(m_currentFile->m_strPath);
+    return CUtil::GetTitleFromPath(m_currentFile->GetPath());
   }
   else if (item == VIDEOPLAYER_PLAYLISTLEN)
   {
@@ -3574,14 +3598,14 @@ void CGUIInfoManager::SetCurrentAlbumThumb(const CStdString thumbFileName)
 
 void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 {
-  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.m_strPath.c_str());
+  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentSong(%s)",item.GetPath().c_str());
   *m_currentFile = item;
 
   m_currentFile->LoadMusicTag();
   if (m_currentFile->GetMusicInfoTag()->GetTitle().IsEmpty())
   {
     // No title in tag, show filename only
-    m_currentFile->GetMusicInfoTag()->SetTitle(CUtil::GetTitleFromPath(m_currentFile->m_strPath));
+    m_currentFile->GetMusicInfoTag()->SetTitle(CUtil::GetTitleFromPath(m_currentFile->GetPath()));
   }
   m_currentFile->GetMusicInfoTag()->SetLoaded(true);
 
@@ -3612,7 +3636,7 @@ void CGUIInfoManager::SetCurrentSong(CFileItem &item)
 
 void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
 {
-  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.m_strPath.c_str());
+  CLog::Log(LOGDEBUG,"CGUIInfoManager::SetCurrentMovie(%s)",item.GetPath().c_str());
   *m_currentFile = item;
 
   /* also call GetMovieInfo() when a VideoInfoTag is already present or additional info won't be present in the tag */
@@ -3621,7 +3645,7 @@ void CGUIInfoManager::SetCurrentMovie(CFileItem &item)
     CVideoDatabase dbs;
     if (dbs.Open())
     {
-      dbs.LoadVideoInfo(item.m_strPath, *m_currentFile->GetVideoInfoTag());
+      dbs.LoadVideoInfo(item.GetPath(), *m_currentFile->GetVideoInfoTag());
       dbs.Close();
     }
   }
@@ -3975,7 +3999,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
         strFile = URIUtils::GetFileName(item->GetVideoInfoTag()->m_strFileNameAndPath);
       else
-        strFile = URIUtils::GetFileName(item->m_strPath);
+        strFile = URIUtils::GetFileName(item->GetPath());
 
       if (info==LISTITEM_FILE_EXTENSION)
       {
@@ -4138,7 +4162,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   case LISTITEM_THUMB:
     return item->GetThumbnailImage();
   case LISTITEM_FOLDERPATH:
-    return CURL(item->m_strPath).GetWithoutUserDetails();
+    return CURL(item->GetPath()).GetWithoutUserDetails();
   case LISTITEM_FOLDERNAME:
   case LISTITEM_PATH:
     {
@@ -4153,7 +4177,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
           URIUtils::GetParentPath(item->GetVideoInfoTag()->m_strFileNameAndPath, path);
       }
       else
-        URIUtils::GetParentPath(item->m_strPath, path);
+        URIUtils::GetParentPath(item->GetPath(), path);
       path = CURL(path).GetWithoutUserDetails();
       if (info==LISTITEM_FOLDERNAME)
       {
@@ -4171,14 +4195,14 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       else if (item->IsVideoDb() && item->HasVideoInfoTag())
         path = item->GetVideoInfoTag()->m_strFileNameAndPath;
       else
-        path = item->m_strPath;
+        path = item->GetPath();
       path = CURL(path).GetWithoutUserDetails();
       CURL::Decode(path);
       return path;
     }
   case LISTITEM_PICTURE_PATH:
     if (item->IsPicture() && (!item->IsZIP() || item->IsRAR() || item->IsCBZ() || item->IsCBR()))
-      return item->m_strPath;
+      return item->GetPath();
     break;
   case LISTITEM_PICTURE_DATETIME:
     if (item->HasPictureInfoTag())
@@ -4452,12 +4476,12 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   }
   else if (condition == LISTITEM_ISPLAYING)
   {
-    if (item->IsFileItem() && !m_currentFile->m_strPath.IsEmpty())
+    if (item->IsFileItem() && !m_currentFile->GetPath().IsEmpty())
     {
       if (!g_application.m_strPlayListFile.IsEmpty())
       {
         //playlist file that is currently playing or the playlistitem that is currently playing.
-        return g_application.m_strPlayListFile.Equals(((const CFileItem *)item)->m_strPath) || m_currentFile->IsSamePath((const CFileItem *)item);
+        return g_application.m_strPlayListFile.Equals(((const CFileItem *)item)->GetPath()) || m_currentFile->IsSamePath((const CFileItem *)item);
       }
       return m_currentFile->IsSamePath((const CFileItem *)item);
     }
@@ -4572,7 +4596,7 @@ CStdString CGUIInfoManager::GetPictureLabel(int info) const
   else if (info == SLIDE_FILE_PATH)
   {
     CStdString path;
-    URIUtils::GetDirectory(m_currentSlide->m_strPath, path);
+    URIUtils::GetDirectory(m_currentSlide->GetPath(), path);
     return CURL(path).GetWithoutUserDetails();
   }
   else if (info == SLIDE_FILE_SIZE)
@@ -4596,10 +4620,10 @@ CStdString CGUIInfoManager::GetPictureLabel(int info) const
 
 void CGUIInfoManager::SetCurrentSlide(CFileItem &item)
 {
-  if (m_currentSlide->m_strPath != item.m_strPath)
+  if (m_currentSlide->GetPath() != item.GetPath())
   {
     if (!item.HasPictureInfoTag() && !item.GetPictureInfoTag()->Loaded())
-      item.GetPictureInfoTag()->Load(item.m_strPath);
+      item.GetPictureInfoTag()->Load(item.GetPath());
     *m_currentSlide = item;
   }
 }

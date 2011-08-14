@@ -62,6 +62,6 @@ namespace PVR
     bool RenameRecording(CFileItem &item, CStdString &strNewName);
 
     bool GetDirectory(const CStdString& strPath, CFileItemList &items);
-    CPVRRecording *GetByPath(CStdString &path);
+    CPVRRecording *GetByPath(const CStdString &path);
   };
 }

@@ -142,7 +142,7 @@ void CAppParamParser::ParseArg(const CStdString &arg)
     if (m_testmode)
       g_application.SetEnableTestMode(true);
     CFileItemPtr pItem(new CFileItem(arg));
-    pItem->m_strPath = arg;
+    pItem->SetPath(arg);
     m_playlist.Add(pItem);
   }
 }

@@ -100,6 +100,7 @@ public:
   static void GetRectFromString(const CStdString &string, CRect &rect);
   static bool GetAction(const TiXmlElement* pElement, CGUIActionDescriptor &action);
   static bool GetHitRect(const TiXmlNode* pRootNode, CRect &rect);
+  static bool GetScroller(const TiXmlNode *pControlNode, const CStdString &scrollerTag, CScroller& scroller);
 private:
   static CStdString GetType(const TiXmlElement *pControlNode);
   bool GetNavigation(const TiXmlElement *node, const char *tag, int &direction, std::vector<CGUIActionDescriptor> &actions);

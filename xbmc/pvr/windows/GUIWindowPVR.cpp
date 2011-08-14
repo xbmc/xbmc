@@ -288,4 +288,9 @@ void CGUIWindowPVR::Reset(void)
   m_windowGuide->ResetObservers();
   m_windowRecordings->ResetObservers();
   m_windowTimers->ResetObservers();
+
+  m_currentSubwindow = NULL;
+  m_savedSubwindow = NULL;
+  ClearFileItems();
+  FreeResources();
 }

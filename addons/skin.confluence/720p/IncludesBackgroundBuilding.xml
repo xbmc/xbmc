@@ -14,6 +14,7 @@
 			<width>1280</width>
 			<height>720</height>
 			<visible>Player.HasAudio + !Skin.HasSetting(ShowBackgroundVis)</visible>
+			<visible>!SubString(Window(videolibrary).Property(TvTunesIsAlive),True)</visible>
 		</control>
 		<control type="videowindow">
 			<posx>0</posx>

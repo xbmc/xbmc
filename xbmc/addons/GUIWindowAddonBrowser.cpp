@@ -81,8 +81,8 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
       m_rootDir.AllowNonLocalSources(false);
 
       // is this the first time the window is opened?
-      if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
-        m_vecItems->m_strPath = "";
+      if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
+        m_vecItems->SetPath("");
     }
     break;
   case GUI_MSG_CLICKED:
@@ -142,7 +142,7 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
                                                CContextButtons& buttons)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  if (pItem->m_strPath.Equals("addons://enabled/"))
+  if (pItem->GetPath().Equals("addons://enabled/"))
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
   
   AddonPtr addon;
@@ -165,7 +165,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
                                              CONTEXT_BUTTON button)
 {
   CFileItemPtr pItem = m_vecItems->Get(itemNumber);
-  if (pItem->m_strPath.Equals("addons://enabled/"))
+  if (pItem->GetPath().Equals("addons://enabled/"))
   {
     if (button == CONTEXT_BUTTON_SCAN)
     {
@@ -207,7 +207,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
 bool CGUIWindowAddonBrowser::OnClick(int iItem)
 {
   CFileItemPtr item = m_vecItems->Get(iItem);
-  if (item->m_strPath == "addons://install/")
+  if (item->GetPath() == "addons://install/")
   {
     // pop up filebrowser to grab an installed folder
     VECSOURCES shares = g_settings.m_fileSources;
@@ -227,7 +227,7 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
                                            g_localizeStrings.Get(24066),""))
       {
         if (CAddonInstaller::Get().Cancel(item->GetProperty("Addon.ID")))
-          Update(m_vecItems->m_strPath);
+          Update(m_vecItems->GetPath());
       }
       return true;
     }
@@ -259,12 +259,12 @@ bool CGUIWindowAddonBrowser::GetDirectory(const CStdString& strDirectory,
     CAddonsDirectory::GenerateListing(url,addons,items);
     result = true;
     items.SetProperty("reponame",g_localizeStrings.Get(24067));
-    items.m_strPath = strDirectory;
+    items.SetPath(strDirectory);
 
     if (m_guiState.get() && !m_guiState->HideParentDirItems())
     {
       CFileItemPtr pItem(new CFileItem(".."));
-      pItem->m_strPath = m_history.GetParentPath();
+      pItem->SetPath(m_history.GetParentPath());
       pItem->m_bIsFolder = true;
       pItem->m_bIsShareOrDrive = false;
       items.AddFront(pItem, 0);
@@ -377,7 +377,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
   }
   if (dialog->GetSelectedLabel() >= 0)
   {
-    addonID = dialog->GetSelectedItem().m_strPath;
+    addonID = dialog->GetSelectedItem().GetPath();
     return 1;
   }
   return 0;

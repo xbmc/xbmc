@@ -185,13 +185,13 @@ bool CUPnPDirectory::GetResource(const CURL& path, CFileItem &item)
     }
 
     // store original path so we remember it
-    item.SetProperty("original_listitem_url",  item.m_strPath);
+    item.SetProperty("original_listitem_url",  item.GetPath());
     item.SetProperty("original_listitem_mime", item.GetMimeType(false));
 
     // if it's an item, path is the first url to the item
     // we hope the server made the first one reachable for us
     // (it could be a format we dont know how to play however)
-    item.m_strPath = (const char*) resource.m_Uri;
+    item.SetPath((const char*) resource.m_Uri);
 
     // look for content type in protocol info
     if (resource.m_ProtocolInfo.IsValid()) {
@@ -260,7 +260,7 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
             NPT_String uuid = (*device)->GetUUID();
 
             CFileItemPtr pItem(new CFileItem((const char*)name));
-            pItem->m_strPath = (const char*) "upnp://" + uuid + "/";
+            pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/"));
             pItem->m_bIsFolder = true;
             pItem->SetThumbnailImage((const char*)(*device)->GetIconUrl("image/jpeg"));
 
@@ -383,13 +383,13 @@ CUPnPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 
             CStdString id = (char*) (*entry)->m_ObjectID;
             CURL::Encode(id);
-            pItem->m_strPath = (const char*) "upnp://" + uuid + "/" + id.c_str() + "/";
+            pItem->SetPath(CStdString((const char*) "upnp://" + uuid + "/" + id.c_str() + "/"));
 
             // if it's a container, format a string as upnp://uuid/object_id
             if (pItem->m_bIsFolder) {
                 CStdString id = (char*) (*entry)->m_ObjectID;
                 CURL::Encode(id);
-                pItem->m_strPath += "/";
+                pItem->SetPath(pItem->GetPath() + "/");
 
                 // look for metadata
                 if( ObjectClass.StartsWith("object.container.album.videoalbum") ) {

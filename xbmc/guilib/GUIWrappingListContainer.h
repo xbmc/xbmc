@@ -34,7 +34,7 @@
 class CGUIWrappingListContainer : public CGUIBaseContainer
 {
 public:
-  CGUIWrappingListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems, int fixedPosition);
+  CGUIWrappingListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems, int fixedPosition);
   virtual ~CGUIWrappingListContainer(void);
   virtual CGUIWrappingListContainer *Clone() const { return new CGUIWrappingListContainer(*this); };
 

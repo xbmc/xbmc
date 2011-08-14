@@ -43,6 +43,7 @@ public:
   virtual int GetBitsPerSample();
   virtual const char* GetName() { return "FFmpeg"; }
   virtual int GetBufferSize() { return m_iBuffered; }
+  virtual int GetBitRate();
 
 protected:
   AVCodecContext* m_pCodecContext;

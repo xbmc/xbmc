@@ -158,14 +158,11 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
   delete m_pOriginalEdit;
 }
 
-bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
+bool CGUIWindowSettingsCategory::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_NAV_BACK)
-  {
-    g_settings.Save();
-    m_lastControlID = 0; // don't save the control as we go to a different window each time
-  }
-  return CGUIWindow::OnAction(action);
+  g_settings.Save();
+  m_lastControlID = 0; // don't save the control as we go to a different window each time
+  return CGUIWindow::OnBack(actionID);
 }
 
 bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)

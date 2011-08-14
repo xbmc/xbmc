@@ -108,10 +108,11 @@ void CPVRManager::Stop(void)
   CSingleLock lock(m_critSection);
   if (m_bIsStopping)
     return;
-  m_bIsStopping = true;
 
   if (!m_bLoaded)
     return;
+
+  m_bIsStopping = true;
   m_bLoaded = false;
   lock.Leave();
 
@@ -179,6 +180,7 @@ bool CPVRManager::Load(void)
   while (!g_application.m_bStop && !m_bStop && m_addons && !m_addons->HasConnectedClients())
     Sleep(50);
 
+  bool bChannelsLoaded(false);
   if (!g_application.m_bStop && !m_bStop && !m_bLoaded && m_addons->HasConnectedClients())
   {
     CLog::Log(LOGDEBUG, "PVRManager - %s - active clients found. continue to start", __FUNCTION__);
@@ -187,25 +189,44 @@ bool CPVRManager::Load(void)
     if (!m_bStop)
     {
       ShowProgressDialog(g_localizeStrings.Get(19236), 0);
-      m_channelGroups->Load();
+      bChannelsLoaded = m_channelGroups->Load();
     }
 
     /* get timers from the backends */
-    if (!m_bStop)
+    if (!m_bStop && bChannelsLoaded)
     {
       ShowProgressDialog(g_localizeStrings.Get(19237), 50);
       m_timers->Load();
     }
 
     /* get recordings from the backend */
-    if (!m_bStop)
+    if (!m_bStop && bChannelsLoaded)
     {
       ShowProgressDialog(g_localizeStrings.Get(19238), 75);
       m_recordings->Load();
     }
 
-    m_bLoaded = true;
+    /* reset observers that are observing pvr related data in the pvr windows, or updates won't work after a reload */
+    if (!m_bStop && bChannelsLoaded)
+    {
+      CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
+      if (pWindow)
+        pWindow->Reset();
+    }
+
+    /* start the other pvr related update threads */
+    if (!m_bStop && bChannelsLoaded)
+    {
+      ShowProgressDialog(g_localizeStrings.Get(19239), 85);
+      m_guiInfo->Start();
+      g_EpgContainer.RegisterObserver(this);
+
+      m_bLoaded = true;
+    }
   }
+
+  /* close the progess dialog */
+  HideProgressDialog();
 
   return m_bLoaded;
 }
@@ -238,29 +259,16 @@ void CPVRManager::Process(void)
   /* load the pvr data from the db and clients if it's not already loaded */
   if (!Load())
   {
-    HideProgressDialog();
     CLog::Log(LOGERROR, "PVRManager - %s - failed to load PVR data", __FUNCTION__);
     return;
   }
-
-  /* reset observers that are observing pvr related data in the pvr windows, or updates won't work after a reload */
-  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
-  if (pWindow)
-    pWindow->Reset();
-
-  /* start the other pvr related update threads */
-  ShowProgressDialog(g_localizeStrings.Get(19239), 85);
-  m_guiInfo->Start();
-  g_EpgContainer.RegisterObserver(this);
-
-  /* close the progess dialog */
-  HideProgressDialog();
 
   /* continue last watched channel after first startup */
   if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
 
   /* signal to window that clients are loaded */
+  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
   if (pWindow)
     pWindow->UnlockWindow();
 
@@ -278,7 +286,7 @@ void CPVRManager::Process(void)
       ExecutePendingJobs();
 
     /* check if the (still) are any enabled addons */
-    if (!m_addons->HasConnectedClients())
+    if (!m_bStop && !m_addons->HasConnectedClients())
     {
       CLog::Log(LOGNOTICE, "PVRManager - %s - no add-ons enabled anymore. restarting the pvrmanager", __FUNCTION__);
       Stop();
@@ -286,7 +294,8 @@ void CPVRManager::Process(void)
       return;
     }
 
-    m_triggerEvent.WaitMSec(1000);
+    if (!m_bStop)
+      m_triggerEvent.WaitMSec(1000);
   }
 
 }

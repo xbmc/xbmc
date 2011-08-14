@@ -45,7 +45,10 @@ bool CSourcesDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   CURL url(strPath);
   CStdString type(url.GetHostName());
 
-  VECSOURCES sources = *g_settings.GetSourcesFromType(url.GetHostName());
+  VECSOURCES sources;
+  VECSOURCES *sourcesFromType = g_settings.GetSourcesFromType(url.GetHostName());
+  if (sourcesFromType)
+    sources = *sourcesFromType;
   g_mediaManager.GetRemovableDrives(sources);
 
   if (sources.empty())
@@ -60,30 +63,30 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
   {
     const CMediaSource& share = sources[i];
     CFileItemPtr pItem(new CFileItem(share));
-    if (pItem->IsLastFM() || (pItem->m_strPath.Left(14).Equals("musicsearch://")))
+    if (pItem->IsLastFM() || (pItem->GetPath().Left(14).Equals("musicsearch://")))
       pItem->SetCanQueue(false);
-    CStdString strPathUpper = pItem->m_strPath;
+    CStdString strPathUpper = pItem->GetPath();
     strPathUpper.ToUpper();
     
     CStdString strIcon;
     // We have the real DVD-ROM, set icon on disktype
     if (share.m_iDriveType == CMediaSource::SOURCE_TYPE_DVD && share.m_strThumbnailImage.IsEmpty())
     {
-      CUtil::GetDVDDriveIcon( pItem->m_strPath, strIcon );
+      CUtil::GetDVDDriveIcon( pItem->GetPath(), strIcon );
       // CDetectDVDMedia::SetNewDVDShareUrl() caches disc thumb as special://temp/dvdicon.tbn
       CStdString strThumb = "special://temp/dvdicon.tbn";
       if (XFILE::CFile::Exists(strThumb))
         pItem->SetThumbnailImage(strThumb);
     }
-    else if (pItem->m_strPath.Left(9) == "addons://")
+    else if (pItem->GetPath().Left(9) == "addons://")
       strIcon = "DefaultHardDisk.png";
     else if (pItem->IsLastFM()
              || pItem->IsVideoDb()
              || pItem->IsMusicDb()
              || pItem->IsPlugin()
-             || pItem->m_strPath == "special://musicplaylists/"
-             || pItem->m_strPath == "special://videoplaylists/"
-             || pItem->m_strPath == "musicsearch://")
+             || pItem->GetPath() == "special://musicplaylists/"
+             || pItem->GetPath() == "special://videoplaylists/"
+             || pItem->GetPath() == "musicsearch://")
       strIcon = "DefaultFolder.png";
     else if (pItem->IsRemote())
       strIcon = "DefaultNetwork.png";

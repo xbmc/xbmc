@@ -153,7 +153,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
           strValue = CUtil::SubstitutePath(strValue);
         CUtil::GetQualifiedFilename(m_strBasePath, strValue);
         g_charsetConverter.unknownToUTF8(strValue);
-        m_vecItems[idx - 1]->m_strPath = strValue;
+        m_vecItems[idx - 1]->SetPath(strValue);
       }
       else if (strLeft.Left(5) == "title")
       {
@@ -195,7 +195,7 @@ bool CPlayListPLS::Load(const CStdString &strFile)
   ivecItems p = m_vecItems.begin();
   while ( p != m_vecItems.end())
   {
-    if ((*p)->m_strPath.empty())
+    if ((*p)->GetPath().empty())
     {
       p = m_vecItems.erase(p);
     }
@@ -227,7 +227,7 @@ void CPlayListPLS::Save(const CStdString& strFileName) const
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
-    CStdString strFileName=item->m_strPath;
+    CStdString strFileName=item->GetPath();
     g_charsetConverter.utf8ToStringCharset(strFileName);
     CStdString strDescription=item->GetLabel();
     g_charsetConverter.utf8ToStringCharset(strDescription);
@@ -277,7 +277,7 @@ bool CPlayListASX::LoadAsxIniInfo(istream &stream)
 
     CLog::Log(LOGINFO, "Adding element %s=%s", name.c_str(), value.c_str());
     CFileItemPtr newItem(new CFileItem(value));
-    newItem->m_strPath = value;
+    newItem->SetPath(value);
     Add(newItem);
   }
 
@@ -371,7 +371,7 @@ bool CPlayListASX::LoadData(istream& stream)
 
             CLog::Log(LOGINFO, "Adding element %s, %s", title.c_str(), value.c_str());
             CFileItemPtr newItem(new CFileItem(title));
-            newItem->m_strPath = value;
+            newItem->SetPath(value);
             Add(newItem);
           }
           pRef = pRef->NextSiblingElement("ref");
@@ -406,7 +406,7 @@ bool CPlayListRAM::LoadData(istream& stream)
 
   CLog::Log(LOGINFO, "Adding element %s", strMMS.c_str());
   CFileItemPtr newItem(new CFileItem(strMMS));
-  newItem->m_strPath = strMMS;
+  newItem->SetPath(strMMS);
   Add(newItem);
   return true;
 }

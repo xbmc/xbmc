@@ -127,9 +127,8 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
       items.Sort(SORT_METHOD_SIZE, SORT_ORDER_DESC);
       while (items.Size() && CheckFreeSpace(strDir) < iSize)
       {
-        CStdString strPath = items[0]->m_strPath;
         if (!items[0]->m_bIsFolder)
-          if (!CFile::Delete(items[0]->m_strPath))
+          if (!CFile::Delete(items[0]->GetPath()))
             break;
 
         items.Remove(0);
@@ -303,8 +302,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
       {
         dirSet.insert(vec[iDepth]);
         pFileItem.reset(new CFileItem(vec[iDepth]));
-        pFileItem->m_strPath = vec[iDepth];
-        pFileItem->m_strPath += '/';
+        pFileItem->SetPath(vec[iDepth] + '/');
         pFileItem->m_bIsFolder = true;
         pFileItem->m_idepth = pIterator->item.Method;
         pFileItem->m_iDriveType = pIterator->item.HostOS;
@@ -319,7 +317,7 @@ bool CRarManager::GetFilesInRar(CFileItemList& vecpItems, const CStdString& strR
           pFileItem.reset(new CFileItem(strName));
         else
           pFileItem.reset(new CFileItem(vec[iDepth]));
-        pFileItem->m_strPath = strName.c_str()+strPathInRar.size();
+        pFileItem->SetPath(strName.c_str()+strPathInRar.size());
         pFileItem->m_dwSize = pIterator->item.UnpSize;
         pFileItem->m_idepth = pIterator->item.Method;
         pFileItem->m_iDriveType = pIterator->item.HostOS;
@@ -386,7 +384,7 @@ bool CRarManager::IsFileInRar(bool& bResult, const CStdString& strRarPath, const
   int it;
   for (it=0;it<ItemList.Size();++it)
   {
-    if (strPathInRar.compare(ItemList[it]->m_strPath) == 0)
+    if (strPathInRar.compare(ItemList[it]->GetPath()) == 0)
       break;
   }
   if (it != ItemList.Size())

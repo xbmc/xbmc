@@ -98,7 +98,7 @@ bool CPlayListWPL::LoadData(istream& stream)
       CUtil::GetQualifiedFilename(m_strBasePath, strFileName);
       CStdString strDescription = URIUtils::GetFileName(strFileName);
       CFileItemPtr newItem(new CFileItem(strDescription));
-      newItem->m_strPath = strFileName;
+      newItem->SetPath(strFileName);
       Add(newItem);
     }
     pMediaElement = pMediaElement->NextSiblingElement();
@@ -129,7 +129,7 @@ void CPlayListWPL::Save(const CStdString& strFileName) const
   for (int i = 0; i < (int)m_vecItems.size(); ++i)
   {
     CFileItemPtr item = m_vecItems[i];
-    write.AppendFormat("            <media src=%c%s%c/>", 34, item->m_strPath.c_str(), 34);
+    write.AppendFormat("            <media src=%c%s%c/>", 34, item->GetPath().c_str(), 34);
   }
   write.AppendFormat("        </seq>\n");
   write.AppendFormat("    </body>\n");

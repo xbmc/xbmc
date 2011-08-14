@@ -125,7 +125,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
           if (addons[j]->IsType((TYPE)i))
           {
             CFileItemPtr item(new CFileItem(TranslateType((TYPE)i,true)));
-            item->m_strPath = URIUtils::AddFileToFolder(strPath,TranslateType((TYPE)i,false));
+            item->SetPath(URIUtils::AddFileToFolder(strPath,TranslateType((TYPE)i,false)));
             item->m_bIsFolder = true;
             CStdString thumb = GetIcon((TYPE)i);
             if (!thumb.IsEmpty() && g_TextureManager.HasTexture(thumb))
@@ -135,7 +135,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
           }
         }
       }
-      items.m_strPath = strPath;
+      items.SetPath(strPath);
       return true;
     }
   }
@@ -144,7 +144,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     TYPE type = TranslateType(path.GetFileName());
     items.SetProperty("addoncategory",TranslateType(type, true));
     items.SetLabel(TranslateType(type, true));
-    items.m_strPath = strPath;
+    items.SetPath(strPath);
 
     // FIXME: Categorisation of addons needs adding here
     for (unsigned int j=0;j<addons.size();++j)
@@ -154,7 +154,7 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     }
   }
 
-  items.m_strPath = strPath;
+  items.SetPath(strPath);
   GenerateListing(path, addons, items, reposAsFolders);
   // check for available updates
   if (path.GetHostName().Equals("enabled"))
@@ -165,7 +165,8 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     {
       AddonPtr addon2;
       database.GetAddon(items[i]->GetProperty("Addon.ID"),addon2);
-      if (addon2 && addon2->Version() > AddonVersion(items[i]->GetProperty("Addon.Version")))
+      if (addon2 && addon2->Version() > AddonVersion(items[i]->GetProperty("Addon.Version"))
+                 && !database.IsAddonBlacklisted(addon2->ID(),addon2->Version().c_str()))
       {
         items[i]->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
         items[i]->SetProperty("Addon.UpdateAvail","true");

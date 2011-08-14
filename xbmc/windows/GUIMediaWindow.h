@@ -37,6 +37,7 @@ public:
   virtual ~CGUIMediaWindow(void);
   virtual bool OnMessage(CGUIMessage& message);
   virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();
   virtual void OnInitWindow();
@@ -88,7 +89,7 @@ protected:
   void GetFilteredItems(const CStdString &filter, CFileItemList &items);
 
   // check for a disc or connection
-  virtual bool HaveDiscOrConnection(CStdString& strPath, int iDriveType);
+  virtual bool HaveDiscOrConnection(int iDriveType);
   void ShowShareErrorMessage(CFileItem* pItem);
 
   void GetDirectoryHistoryString(const CFileItem* pItem, CStdString& strHistoryString);
