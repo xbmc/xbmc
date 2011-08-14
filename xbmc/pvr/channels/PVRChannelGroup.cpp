@@ -567,7 +567,7 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
         channel->Delete();
       }
       else
-        RemoveFromGroup(channel);
+        RemoveFromGroup(*channel);
 
       bReturn = true;
       iChannelPtr--;
