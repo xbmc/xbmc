@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -20,25 +20,25 @@
  *
  */
 
-
-#include "IFileDirectory.h"
-
-class CSmartPlaylist;
+#include "IDirectory.h"
+#include "lib/tinyXML/tinyxml.h"
 
 namespace XFILE
 {
-  class CSmartPlaylistDirectory : public IFileDirectory
+  class CLibraryDirectory : public IDirectory
   {
   public:
-    CSmartPlaylistDirectory();
-    ~CSmartPlaylistDirectory();
-    virtual bool GetDirectory(const CStdString& strPath, CFileItemList& items);
-    virtual bool IsAllowed(const CStdString &strFile) const { return true; };
-    virtual bool ContainsFiles(const CStdString& strPath);
-    virtual bool Remove(const char *strPath);
-
-    static bool GetDirectory(CSmartPlaylist &playlist, CFileItemList& items);
-
-    static CStdString GetPlaylistByName(const CStdString& name, const CStdString& playlistType);
+    CLibraryDirectory();
+    virtual ~CLibraryDirectory();
+    virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+    virtual bool Exists(const char* strPath);
+    virtual bool IsAllowed(const CStdString& strFile) const { return true; };
+  private:
+    /*! \brief parse the given path, load our xml file and return the node corresponding to this path
+     \param the library:// path to parse
+     \return a pointer to the corresponding <node> TiXmlElement, NULL if not found.
+     */
+    TiXmlElement *GetNode(const CStdString &path);
+    TiXmlDocument m_doc;
   };
 }

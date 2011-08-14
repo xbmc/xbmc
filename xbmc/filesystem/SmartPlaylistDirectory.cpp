@@ -44,6 +44,11 @@ namespace XFILE
     CSmartPlaylist playlist;
     if (!playlist.Load(strPath))
       return false;
+    return GetDirectory(playlist, items);
+  }
+  
+  bool CSmartPlaylistDirectory::GetDirectory(CSmartPlaylist &playlist, CFileItemList& items)
+  {
     bool success = false, success2 = false;
     if (playlist.GetType().Equals("tvshows"))
     {

@@ -48,6 +48,7 @@ SRCS=AddonsDirectory.cpp \
      iso9660.cpp \
      ISO9660Directory.cpp \
      LastFMDirectory.cpp \
+     LibraryDirectory.cpp \
      MultiPathDirectory.cpp \
      MultiPathFile.cpp \
      MusicDatabaseDirectory.cpp \
