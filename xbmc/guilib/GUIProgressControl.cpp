@@ -323,7 +323,7 @@ void CGUIProgressControl::UpdateInfo(const CGUIListItem *item)
   else if (m_listInfo.IsConstant() && !m_bInvalidated)
     return;
   else if (item)
-    m_fUpdatedInfo = atof(m_listInfo.GetItemLabel(item, false));
+    m_fUpdatedInfo = (float) atof(m_listInfo.GetItemLabel(item, false));
   else if (m_parentID)
-    m_fUpdatedInfo = atof(m_listInfo.GetLabel(m_parentID, false));
+    m_fUpdatedInfo = (float) atof(m_listInfo.GetLabel(m_parentID, false));
 }
