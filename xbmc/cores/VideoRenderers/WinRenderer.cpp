@@ -926,7 +926,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  image->proc->Render(sourcerect, destRect, target, image->id, flags == RENDER_FLAG_BOT ? 1 : 0);
+  image->proc->Render(sourceRect, destRect, target, image->id, flags == RENDER_FLAG_BOT ? 1 : 0);
 
   target->Release();
 }

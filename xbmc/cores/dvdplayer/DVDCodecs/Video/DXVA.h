@@ -105,7 +105,7 @@ public:
   void           SetStreamSampleFormat(unsigned sformat) { m_StreamSampleFormat = sformat; };
 
   bool           ProcessPicture(DVDVideoPicture* picture);
-  bool           Render(const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time, int fieldflag);
+  bool           Render(const RECT& src, const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time, int fieldflag);
   int            Size() { return m_size; }
 
   virtual void OnCreateDevice()  {}

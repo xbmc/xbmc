@@ -1417,7 +1417,7 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
   return range.DefaultValue;
 }
 
-bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TIME time, int fieldflag)
+bool CProcessor::Render(const RECT &src, const RECT &dst, IDirect3DSurface9* target, REFERENCE_TIME time, int fieldflag)
 {
   CSingleLock lock(m_section);
 
@@ -1455,9 +1455,10 @@ bool CProcessor::Render(const RECT &dst, IDirect3DSurface9* target, REFERENCE_TI
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
 
-  RECT dest = dst, src = { 0, 0, m_desc.SampleWidth, m_desc.SampleHeight };
+  RECT dest = dst;
+  RECT source = src;
 
-  CWinRenderer::CropSource(src, dest, desc);
+  CWinRenderer::CropSource(source, dest, desc);
 
   auto_aptr<DXVA2_VideoSample> samples(new DXVA2_VideoSample[count]);
   for (unsigned i = 0; i < count; i++) {
