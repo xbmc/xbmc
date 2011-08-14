@@ -2621,6 +2621,7 @@
   <string id="24045">Add-on does not have the correct structure</string>
   <string id="24046">%s is used by the following installed add-on(s)</string>
   <string id="24047">This add-on cannot be uninstalled</string>
+  <string id="24048">Rollback</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
@@ -2649,6 +2650,8 @@
   <string id="24089">Add-on restarts</string>
   <string id="24090">Lock Add-on manager</string>
 
+  <string id="24094">(current)</string>
+  <string id="24095">(blacklisted)</string>
   <string id="24096">Add-on has been marked as broken in repository.</string>
   <string id="24097">Would you like to disable it on your system?</string>
   <string id="24098">Broken</string>

@@ -231,8 +231,7 @@ namespace VIDEO
       if (!bSkip)
       { // need to fetch the folder
         CDirectory::GetDirectory(strDirectory, items, g_settings.m_videoExtensions);
-        if (content == CONTENT_MOVIES)
-          items.Stack();
+        items.Stack();
         // compute hash
         GetPathHash(items, hash);
         if (hash != dbHash && !hash.IsEmpty())

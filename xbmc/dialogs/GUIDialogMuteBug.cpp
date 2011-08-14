@@ -36,7 +36,7 @@ CGUIDialogMuteBug::~CGUIDialogMuteBug(void)
 
 void CGUIDialogMuteBug::UpdateVisibility()
 {
-  if (g_settings.m_bMute)
+  if (g_settings.m_bMute || g_settings.m_nVolumeLevel == VOLUME_MINIMUM)
     Show();
   else
     Close();

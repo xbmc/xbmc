@@ -140,6 +140,8 @@ void CAdvancedSettings::Initialize()
   m_moviesExcludeFromScanRegExps.push_back("[-._ \\\\/]sample[-._ \\\\/]");
   m_tvshowExcludeFromScanRegExps.push_back("[-._ \\\\/]sample[-._ \\\\/]");
 
+  m_folderStackRegExps.push_back("((cd|dvd|dis[ck])[0-9]+)$");
+
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[0-9]+)(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ _.-]*(?:cd|dvd|p(?:(?:ar)?t)|dis[ck]|d)[ _.-]*[a-d])(.*?)(\\.[^.]+)$");
   m_videoStackRegExps.push_back("(.*?)([ ._-]*[a-d])(.*?)(\\.[^.]+)$");
@@ -772,10 +774,15 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
                                         m_trailerMatchRegExps.begin(),
                                         m_trailerMatchRegExps.end());
 
-  // stacking regexps
+  // video stacking regexps
   TiXmlElement* pVideoStacking = pRootElement->FirstChildElement("moviestacking");
   if (pVideoStacking)
     GetCustomRegexps(pVideoStacking, m_videoStackRegExps);
+
+  // folder stacking regexps
+  TiXmlElement* pFolderStacking = pRootElement->FirstChildElement("folderstacking");
+  if (pFolderStacking)
+    GetCustomRegexps(pFolderStacking, m_folderStackRegExps);
 
   //tv stacking regexps
   TiXmlElement* pTVStacking = pRootElement->FirstChildElement("tvshowmatching");
@@ -968,6 +975,7 @@ void CAdvancedSettings::Clear()
   m_tvshowExcludeFromScanRegExps.clear();
   m_videoExcludeFromListingRegExps.clear();
   m_videoStackRegExps.clear();
+  m_folderStackRegExps.clear();
   m_audioExcludeFromScanRegExps.clear();
   m_audioExcludeFromListingRegExps.clear();
   m_pictureExcludeFromListingRegExps.clear();

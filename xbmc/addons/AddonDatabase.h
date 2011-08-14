@@ -110,6 +110,11 @@ public:
    \sa BreakAddon */
   CStdString IsAddonBroken(const CStdString &addonID);
 
+  bool BlacklistAddon(const CStdString& addonID, const CStdString& version);
+  bool IsAddonBlacklisted(const CStdString& addonID, const CStdString& version);
+  bool RemoveAddonFromBlacklist(const CStdString& addonID,
+                                const CStdString& version);
+
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);

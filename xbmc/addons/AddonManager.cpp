@@ -313,7 +313,9 @@ bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool enabled /*= true*/)
         if (!m_database.GetAddon(temp[j]->ID(), repoAddon))
           continue;
 
-        if (temp[j]->Version() < repoAddon->Version())
+        if (temp[j]->Version() < repoAddon->Version() &&
+            !m_database.IsAddonBlacklisted(temp[j]->ID(),
+                                           repoAddon->Version().c_str()))
           addons.push_back(repoAddon);
       }
     }
