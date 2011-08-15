@@ -348,7 +348,7 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
     QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
     m_closing = true;
   }
-  else
+  else if (forceClose)
   {
     CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
     OnMessage(msg);
