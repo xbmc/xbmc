@@ -80,12 +80,6 @@
     <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_writer.cpp">
       <Filter>Source Files\libjsoncpp</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\AutoLock.cpp">
-      <Filter>Source Files\tsreader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\CritSec.cpp">
-      <Filter>Source Files\tsreader</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\MediaPortal\lib\tsreader\FileReader.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
@@ -114,6 +108,12 @@
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
     <ClCompile Include="..\..\activerecording.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\AutoLock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\CriticalSection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -166,12 +166,6 @@
     <ClInclude Include="..\..\windows\os_windows.h">
       <Filter>Header Files\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\AutoLock.h">
-      <Filter>Header Files\tsreader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\CritSec.h">
-      <Filter>Header Files\tsreader</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\MediaPortal\lib\tsreader\FileReader.h">
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>
@@ -200,6 +194,12 @@
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>
     <ClInclude Include="..\..\activerecording.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\AutoLock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\CriticalSection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

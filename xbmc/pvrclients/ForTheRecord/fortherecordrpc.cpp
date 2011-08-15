@@ -30,6 +30,8 @@
 #include "pvrclient-fortherecord.h"
 #include "utils.h"
 #include "fortherecordrpc.h"
+#include "CriticalSection.h"
+#include "AutoLock.h"
 
 // Some version dependent API strings
 #define FTR_GETEPG_40 "ForTheRecord/Guide/Programs/%s/%i-%02i-%02iT%02i:%02i:%02i%/%i-%02i-%02iT%02i:%02i:%02i"
@@ -85,6 +87,8 @@ static int my_curl_debug_callback(CURL* curl, curl_infotype infotype, char* data
  */
 namespace ForTheRecord
 {
+  CCriticalSection communication_mutex;
+
   // The usable urls:
   //http://localhost:49943/ForTheRecord/Control/help
   //http://localhost:49943/ForTheRecord/Scheduler/help
@@ -98,6 +102,7 @@ namespace ForTheRecord
     CURL *curl;
     CURLcode res;
     std::string url = g_szBaseURL + command;
+    CAutoLock critsec(&communication_mutex);
 
     XBMC->Log(LOG_DEBUG, "URL: %s\n", url.c_str());
 
