@@ -608,7 +608,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   int id = 0;
   float posX = 0, posY = 0;
   float width = 0, height = 0;
-  float minWidth = 0;
+  float minHeight = 0, minWidth = 0;
 
   int left = 0, right = 0, up = 0, down = 0, back = 0, next = 0, prev = 0;
   vector<CGUIActionDescriptor> leftActions, rightActions, upActions, downActions, backActions, nextActions, prevActions;
@@ -738,7 +738,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     posY = rect.Height() - posY;
 
   GetDimension(pControlNode, "width", width, minWidth);
-  XMLUtils::GetFloat(pControlNode, "height", height);
+  GetDimension(pControlNode, "height", height, minHeight);
   XMLUtils::GetFloat(pControlNode, "offsetx", offset.x);
   XMLUtils::GetFloat(pControlNode, "offsety", offset.y);
 
@@ -1037,6 +1037,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIControlGroupList(
       parentID, id, posX, posY, width, height, buttonGap, pageControl, orientation, useControlCoords, labelInfo.align, scroller);
     ((CGUIControlGroup *)control)->SetRenderFocusedLast(renderFocusedLast);
+    ((CGUIControlGroupList *)control)->SetMinSize(minWidth, minHeight);
   }
   else if (type == CGUIControl::GUICONTROL_LABEL)
   {
