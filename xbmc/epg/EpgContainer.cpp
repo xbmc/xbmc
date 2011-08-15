@@ -346,17 +346,15 @@ bool CEpgContainer::DeleteEpg(const CEpg &epg, bool bDeleteFromDatabase /* = fal
 
 void CEpgContainer::CloseProgressDialog(void)
 {
-  CSingleLock lock(m_critSection);
   if (m_progressDialog)
   {
     m_progressDialog->Close(true, 0, true, false);
     m_progressDialog = NULL;
   }
- }
+}
 
 void CEpgContainer::ShowProgressDialog(void)
 {
-  CSingleLock lock(m_critSection);
   if (!m_progressDialog && !g_PVRManager.IsInitialising())
   {
     m_progressDialog = (CGUIDialogExtendedProgressBar *)g_windowManager.GetWindow(WINDOW_DIALOG_EXT_PROGRESS);
@@ -367,7 +365,6 @@ void CEpgContainer::ShowProgressDialog(void)
 
 void CEpgContainer::UpdateProgressDialog(int iCurrent, int iMax, const CStdString &strText)
 {
-  CSingleLock lock(m_critSection);
   if (!m_progressDialog)
     ShowProgressDialog();
 
