@@ -606,38 +606,11 @@ namespace VIDEO
 
   INFO_RET CVideoInfoScanner::RetrieveInfoForEpisodes(CFileItemPtr item, long showID, const ADDON::ScraperPtr &scraper, bool useLocal, CGUIDialogProgress *progress)
   {
-    EPISODELIST episodes;
-
     // enumerate episodes
     EPISODES files;
     EnumerateSeriesFolder(item.get(), files);
     if (files.size() == 0) // no update or no files
       return INFO_NOT_NEEDED;
-
-    // fetch episode guide
-    CVideoInfoTag details;
-    m_database.GetTvShowInfo(item->GetPath(), details, showID);
-    if (!details.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
-    {
-      CScraperUrl url;
-      url.ParseEpisodeGuide(details.m_strEpisodeGuide);
-
-      if (progress)
-      {
-        if (item->m_bIsFolder)
-          progress->SetHeading(20353);
-        else
-          progress->SetHeading(20361);
-        progress->SetLine(0, item->GetLabel());
-        progress->SetLine(1, details.m_strTitle);
-        progress->SetLine(2, 20354);
-        progress->Progress();
-      }
-
-      CVideoInfoDownloader imdb(scraper);
-      if (!imdb.GetEpisodeList(url, episodes))
-        return INFO_NOT_FOUND;
-    }
 
     if (m_bStop || (progress && progress->IsCanceled()))
       return INFO_CANCELLED;
@@ -645,7 +618,8 @@ namespace VIDEO
     if (m_pObserver)
       m_pObserver->OnDirectoryChanged(item->GetPath());
 
-    return OnProcessSeriesFolder(episodes, files, scraper, useLocal, showID, details.m_strTitle, progress);
+    CStdString showTitle = m_database.GetTvShowTitleById(showID);
+    return OnProcessSeriesFolder(files, scraper, useLocal, showID, showTitle, progress);
   }
 
   void CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList)
@@ -1203,15 +1177,19 @@ namespace VIDEO
     }
   }
 
-  INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
+  INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
   {
     if (pDlgProgress)
     {
+      pDlgProgress->SetLine(1, strShowTitle);
       pDlgProgress->SetLine(2, 20361);
       pDlgProgress->SetPercentage(0);
       pDlgProgress->ShowProgressBar(true);
       pDlgProgress->Progress();
     }
+
+    EPISODELIST episodes;
+    bool hasEpisodeGuide = false;
 
     int iMax = files.size();
     int iCurr = 1;
@@ -1257,6 +1235,30 @@ namespace VIDEO
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
         continue;
+      }
+
+      if (!hasEpisodeGuide)
+      {
+        // fetch episode guide
+        CVideoInfoTag details;
+        m_database.GetTvShowInfo(item.GetPath(), details, idShow);
+        if (!details.m_strEpisodeGuide.IsEmpty())
+        {
+          CScraperUrl url;
+          url.ParseEpisodeGuide(details.m_strEpisodeGuide);
+
+          if (pDlgProgress)
+          {
+            pDlgProgress->SetLine(2, 20354);
+            pDlgProgress->Progress();
+          }
+
+          CVideoInfoDownloader imdb(scraper);
+          if (!imdb.GetEpisodeList(url, episodes))
+            return INFO_NOT_FOUND;
+
+          hasEpisodeGuide = true;
+        }
       }
 
       if (episodes.empty())
