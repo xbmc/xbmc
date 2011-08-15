@@ -27,6 +27,7 @@
 #include "Socket.h"
 #include "Cards.h"
 #include "epg.h"
+#include "CriticalSection.h"
 
 /* Use a forward declaration here. Including RTSPClient.h via TSReader.h at this point gives compile errors */
 class CTsReader;
@@ -114,6 +115,7 @@ private:
   time_t                  m_BackendTime;
   CCards                  m_cCards;
   GenreMap                m_genremap;
+  CCriticalSection        m_mutex;
 #ifdef TSREADER
   CTsReader*              m_tsreader;
 

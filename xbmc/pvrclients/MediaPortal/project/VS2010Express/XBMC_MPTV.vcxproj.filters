@@ -65,6 +65,9 @@
     <ClCompile Include="..\..\CriticalSection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\AutoLock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\channels.h">
@@ -110,6 +113,9 @@
       <Filter>Header Files\tinyXML</Filter>
     </ClInclude>
     <ClInclude Include="..\..\CriticalSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\AutoLock.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
