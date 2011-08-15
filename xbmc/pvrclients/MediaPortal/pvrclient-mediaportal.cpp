@@ -160,6 +160,9 @@ bool cPVRClientMediaPortal::Connect()
 
   result = SendCommand("PVRclientXBMC:0-1\n");
 
+  if (result.length() == 0)
+    return false;
+
   if(result.find("Unexpected protocol") != std::string::npos)
   {
     XBMC->Log(LOG_ERROR, "TVServer does not accept protocol: PVRclientXBMC:0-1");
@@ -367,6 +370,9 @@ PVR_ERROR cPVRClientMediaPortal::GetMPTVTime(time_t *localTime, int *gmtOffset)
 
   result = SendCommand("GetTime:\n");
 
+  if (result.length() == 0)
+    return PVR_ERROR_SERVER_ERROR;
+
   Tokenize(result, fields, "|");
 
   if(fields.size() >= 3)
@@ -557,7 +563,9 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
     XBMC->Log(LOG_DEBUG, "RequestChannelList for TV group:%s", g_szTVGroup.c_str());
     command.Format("ListTVChannels:%s\n", uri::encode(uri::PATH_TRAITS, g_szTVGroup).c_str());
   }
-  SendCommand2(command.c_str(), code, lines);
+
+  if( !SendCommand2(command.c_str(), code, lines) )
+    return PVR_ERROR_SERVER_ERROR;
 
   memset(&tag, NULL, sizeof(PVR_CHANNEL));
 
@@ -641,12 +649,14 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio
   if(bRadio)
   {
     XBMC->Log(LOG_DEBUG, "GetChannelGroups for radio");
-    SendCommand2("ListRadioGroups\n", code, lines);
+    if (!SendCommand2("ListRadioGroups\n", code, lines))
+      return PVR_ERROR_SERVER_ERROR;
   }
   else
   {
     XBMC->Log(LOG_DEBUG, "RequestChannelList for TV group:%s", g_szTVGroup.c_str());
-    SendCommand2("ListRadioGroups\n", code, lines);
+    if (!SendCommand2("ListRadioGroups\n", code, lines))
+      PVR_ERROR_SERVER_ERROR;
   }
 
   memset(&tag, 0 , sizeof(PVR_CHANNEL_GROUP));
@@ -696,7 +706,9 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const
     XBMC->Log(LOG_DEBUG, "%s: for group '%s', radio=%i", __FUNCTION__, group.strGroupName, group.bIsRadio);
     command.Format("ListTVChannels:%s\n", uri::encode(uri::PATH_TRAITS, group.strGroupName).c_str());
   }
-  SendCommand2(command.c_str(), code, lines);
+
+  if (!SendCommand2(command.c_str(), code, lines))
+    return PVR_ERROR_SERVER_ERROR;
 
   memset(&tag,0 , sizeof(PVR_CHANNEL_GROUP_MEMBER));
 
@@ -765,13 +777,13 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
     result = SendCommand("ListRecordings\n");
   }
 
-  Tokenize(result, lines, ",");
-
   if( result.length() == 0 )
   {
     XBMC->Log(LOG_DEBUG, "Backend returned no recordings" );
     return PVR_ERROR_NO_ERROR;
   }
+
+  Tokenize(result, lines, ",");
 
   memset(&tag, NULL, sizeof(PVR_RECORDING));
 
@@ -908,7 +920,7 @@ PVR_ERROR cPVRClientMediaPortal::GetTimers(PVR_HANDLE handle)
 
   result = SendCommand("ListSchedules:\n");
 
-  if(result.length() > 0)
+  if (result.length() > 0)
   {
     Tokenize(result, lines, ",");
 
@@ -947,6 +959,9 @@ PVR_ERROR cPVRClientMediaPortal::GetTimerInfo(unsigned int timernumber, PVR_TIME
   snprintf(command, 256, "GetScheduleInfo:%i\n", timernumber);
 
   result = SendCommand(command);
+
+  if (result.length() == 0)
+    return PVR_ERROR_SERVER_ERROR;
 
   cTimer timer;
   if( timer.ParseLine(result.c_str()) == false )
