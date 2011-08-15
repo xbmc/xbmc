@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -17,13 +17,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "CritSec.h"
+#include "CriticalSection.h"
 
 class  CAutoLock  
 {
   public:
-    CAutoLock(CCritSec* pCritSec);
+    CAutoLock(CCriticalSection* pCritSec);
     ~CAutoLock();
   protected:
-    CCritSec* m_pAutoLock;
+    CCriticalSection* m_pAutoLock;
 };

@@ -20,7 +20,7 @@
 #if defined TSREADER
 
 #include "WaitEvent.h"
-#include "CritSec.h"
+#include "CriticalSection.h"
 #include <vector>
 
 using namespace std;
@@ -55,7 +55,7 @@ class CMemoryBuffer
 
   protected:
     vector<BUFFERITEM *> m_Array;
-    CCritSec m_BufferLock;
+    CCriticalSection m_BufferLock;
     unsigned long    m_BytesInBuffer;
     CWaitEvent m_event;
     IMemoryCallback* m_pcallback;

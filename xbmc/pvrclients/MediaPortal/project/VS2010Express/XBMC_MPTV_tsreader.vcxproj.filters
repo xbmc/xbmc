@@ -50,12 +50,6 @@
     <ClCompile Include="..\..\utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\tsreader\AutoLock.cpp">
-      <Filter>Source Files\tsreader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\tsreader\CritSec.cpp">
-      <Filter>Source Files\tsreader</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\lib\tsreader\FileReader.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
@@ -101,6 +95,12 @@
     <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp">
       <Filter>Source Files\tinyXML</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\CriticalSection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\AutoLock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\channels.h">
@@ -134,12 +134,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\tsreader\WaitEvent.h">
-      <Filter>Header Files\tsreader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\tsreader\AutoLock.h">
-      <Filter>Header Files\tsreader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\tsreader\CritSec.h">
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\tsreader\FileReader.h">
@@ -177,6 +171,12 @@
     </ClInclude>
     <ClInclude Include="..\..\lib\tinyxml\tinyxml.h">
       <Filter>Header Files\tinyXML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\CriticalSection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\AutoLock.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

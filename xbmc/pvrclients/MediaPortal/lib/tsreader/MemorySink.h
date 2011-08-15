@@ -45,7 +45,7 @@ class CMemorySink: public MediaSink
   private: // redefined virtual functions:
     virtual Boolean continuePlaying();
 
-    CCritSec m_BufferLock;
+    CCriticalSection m_BufferLock;
     unsigned char* m_pSubmitBuffer;
     int   m_iSubmitBufferPos;
     bool  m_bReEntrant;

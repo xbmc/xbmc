@@ -1,5 +1,5 @@
 /*
- *      Copyright (C) 2005-2010 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This program is free software: you can redistribute it and/or modify
@@ -16,49 +16,45 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifdef TSREADER
+#include "CriticalSection.h"
 
-#include "CritSec.h"
-
-CCritSec::CCritSec(void)
+CCriticalSection::CCriticalSection(void)
 {
 #ifdef _WIN32
-  InitializeCriticalSection(&m_CritSec);
+  InitializeCriticalSection(&m_CriticalSection);
 #else
   pthread_mutexattr_t attr;
   pthread_mutexattr_init(&attr);
   pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
   pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-  pthread_mutex_init(&m_CritSec, &attr);
+  pthread_mutex_init(&m_CriticalSection, &attr);
   pthread_mutexattr_destroy(&attr);
 #endif
 }
 
-CCritSec::~CCritSec(void)
+CCriticalSection::~CCriticalSection(void)
 {
 #ifdef _WIN32
-  DeleteCriticalSection(&m_CritSec);
+  DeleteCriticalSection(&m_CriticalSection);
 #else
-  pthread_mutex_destroy(&m_CritSec);
+  pthread_mutex_destroy(&m_CriticalSection);
 #endif
 }
 
-void CCritSec::Lock(void)
+void CCriticalSection::Lock(void)
 {
 #ifdef _WIN32
-  EnterCriticalSection(&m_CritSec);
+  EnterCriticalSection(&m_CriticalSection);
 #else
-  (void)pthread_mutex_lock(&m_CritSec);
+  (void)pthread_mutex_lock(&m_CriticalSection);
 #endif
 }
 
-void CCritSec::Unlock(void)
+void CCriticalSection::Unlock(void)
 {
 #ifdef _WIN32
-  LeaveCriticalSection(&m_CritSec);
+  LeaveCriticalSection(&m_CriticalSection);
 #else
-  pthread_mutex_unlock(&m_CritSec);
+  pthread_mutex_unlock(&m_CriticalSection);
 #endif
 }
-
-#endif //TSREADER
