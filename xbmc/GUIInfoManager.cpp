@@ -1760,8 +1760,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 }
 
 // tries to get a integer value for use in progressbars/sliders and such
-int CGUIInfoManager::GetInt(int info, int contextWindow) const
+int CGUIInfoManager::GetInt(int info, int contextWindow, const CGUIListItem *item /* = NULL */) const
 {
+  if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
+    return GetMultiInfoInt(m_multiInfo[info - MULTI_INFO_START], contextWindow);
+
+  if (info >= LISTITEM_START && info <= LISTITEM_END)
+    return GetItemInt(item, info);
+
   switch( info )
   {
     case PLAYER_VOLUME:
@@ -2650,6 +2656,38 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
     }
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
+}
+
+int CGUIInfoManager::GetMultiInfoInt(const GUIInfo &info, int contextWindow) const
+{
+  if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
+  {
+    CFileItemPtr item;
+    CGUIWindow *window = NULL;
+
+    int data1 = info.GetData1();
+    if (!data1) // No container specified, so we lookup the current view container
+    {
+      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+      if (window && window->IsMediaWindow())
+        data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
+    }
+
+    if (!window) // If we don't have a window already (from lookup above), get one
+      window = GetWindowWithCondition(contextWindow, 0);
+
+    if (window)
+    {
+      const CGUIControl *control = window->GetControl(data1);
+      if (control && control->IsContainer())
+        item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag()));
+    }
+
+    if (item) // If we got a valid item, do the lookup
+      return GetItemInt(item.get(), info.m_info);
+  }
+
+  return 0;
 }
 
 /// \brief Examines the multi information sent and returns the string as appropriate
@@ -3872,6 +3910,45 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
   return (int)m_stringParameters.size() - 1;
 }
 
+int CGUIInfoManager::GetItemInt(const CGUIListItem *item, int info) const
+{
+  if (!item) return 0;
+
+  if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
+  { // grab the property
+    CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
+    CStdString val = item->GetProperty(property);
+    return atoi(val);
+  }
+
+  switch (info)
+  {
+    case LISTITEM_PROGRESS:
+    {
+      int iProgress(0);
+      if (item->IsFileItem())
+      {
+        const CFileItem *pItem = (const CFileItem *)item;
+        if (pItem && pItem->HasPVRChannelInfoTag())
+        {
+          const CEpgInfoTag *epgNow = pItem->GetPVRChannelInfoTag()->GetEPGNow();
+          if (epgNow)
+            iProgress = (int) epgNow->ProgressPercentage();
+        }
+        else if (pItem && pItem->HasEPGInfoTag())
+        {
+          iProgress = (int) pItem->GetEPGInfoTag()->ProgressPercentage();
+        }
+      }
+
+      return iProgress;
+    }
+    break;
+  }
+
+  return 0;
+}
+
 CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
 {
   if (!item) return "";
@@ -4408,24 +4485,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       if (item->HasEPGInfoTag() && item->GetEPGInfoTag()->ParentalRating() > 0)
         rating.Format("%i", item->GetEPGInfoTag()->ParentalRating());
       return rating;
-    }
-    break;
-  case LISTITEM_PROGRESS:
-    {
-      CStdString strProgress;
-      if (item->HasPVRChannelInfoTag())
-      {
-        const CEpgInfoTag *epgNow = item->GetPVRChannelInfoTag()->GetEPGNow();
-        if (epgNow)
-          strProgress.Format("%2.2f", epgNow->ProgressPercentage());
-        else
-          strProgress = "0";
-      }
-      else if (item->HasEPGInfoTag())
-      {
-        strProgress.Format("%2.2f", item->GetEPGInfoTag()->ProgressPercentage());
-      }
-      return strProgress;
     }
     break;
   }

@@ -10,36 +10,8 @@
 				<control type="label">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>80</width>
-					<height>20</height>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<label>$INFO[Container(11).ListItem.StartTime]</label>
-				</control>
-				<control type="progress">
-					<description>Progressbar</description>
-					<posx>85</posx>
-					<posy>5</posy>
-					<width>520</width>
-					<height>8</height>
-					<progress>$INFO[Container(11).ListItem.Progress]</progress>
-				</control>
-				<control type="label">
-					<posx>605</posx>
-					<posy>0</posy>
-					<width>80</width>
-					<height>20</height>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<label>$INFO[Container(11).ListItem.EndTime]</label>
-				</control>
-				<control type="label">
-					<posx>0</posx>
-					<posy>20</posy>
 					<width>690</width>
-					<height>30</height>
+					<height>20</height>
 					<font>font13</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
@@ -48,10 +20,40 @@
 					<aligny>center</aligny>
 					<label>[B]$INFO[Container(11).ListItem.Title][/B]</label>
 				</control>
+				<control type="label">
+					<posx>80</posx>
+					<posy>22</posy>
+					<width>80</width>
+					<height>20</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font10_title</font>
+					<textcolor>blue</textcolor>
+					<label>$INFO[Container(11).ListItem.StartTime]</label>
+				</control>
+				<control type="progress">
+					<description>Progressbar</description>
+					<posx>85</posx>
+					<posy>30</posy>
+					<width>510</width>
+					<height>8</height>
+					<info>Container(11).ListItem.Progress</info>
+				</control>
+				<control type="label">
+					<posx>600</posx>
+					<posy>22</posy>
+					<width>80</width>
+					<height>20</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font10_title</font>
+					<textcolor>blue</textcolor>
+					<label>$INFO[Container(11).ListItem.EndTime]</label>
+				</control>
 				<control type="textbox">
 					<description>Plot Value for TVShow</description>
 					<posx>0</posx>
-					<posy>50</posy>
+					<posy>43</posy>
 					<width>690</width>
 					<height>80</height>
 					<font>font12</font>
@@ -63,12 +65,14 @@
 					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 				</control>
 				<control type="label">
-					<posx>400</posx>
-					<posy>130</posy>
-					<width>280</width>
-					<height>10</height>
+					<posx>690</posx>
+					<posy>140</posy>
+					<width>690</width>
+					<height>20</height>
 					<font>font12</font>
-					<textcolor>grey</textcolor>
+					<textcolor>grey2</textcolor>
+					<align>right</align>
+					<aligny>center</aligny>
 					<scroll>false</scroll>
 					<label>$LOCALIZE[19031]: $INFO[Container(11).ListItem.NextTitle]</label>
 				</control>
@@ -106,19 +110,11 @@
 						<selectedcolor>grey</selectedcolor>
 						<info>ListItem.ChannelNumber</info>
 					</control>
-					<control type="progress">
-						<description>Progressbar</description>
-						<posx>5</posx>
-						<posy>32</posy>
-						<width>40</width>
-						<height>8</height>
-						<progress>$INFO[ListItem.Progress]</progress>
-					</control>
 					<control type="label">
 						<posx>50</posx>
 						<posy>0</posy>
 						<width>270</width>
-						<height>30</height>
+						<height>25</height>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -128,9 +124,9 @@
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>330</width>
-						<height>30</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
@@ -141,9 +137,9 @@
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>280</width>
-						<height>30</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
@@ -151,6 +147,15 @@
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Title]</label>
 						<visible>!IsEmpty(Listitem.Icon)</visible>
+					</control>
+					<control type="progress">
+						<description>Progressbar</description>
+						<posx>50</posx>
+						<posy>48</posy>
+						<width>280</width>
+						<height>6</height>
+						<colordiffuse>88FFFFFF</colordiffuse>
+						<info>ListItem.Progress</info>
 					</control>
 					<control type="image">
 						<posx>340</posx>
@@ -199,19 +204,11 @@
 						<selectedcolor>grey</selectedcolor>
 						<info>ListItem.ChannelNumber</info>
 					</control>
-					<control type="progress">
-						<description>Progressbar</description>
-						<posx>5</posx>
-						<posy>32</posy>
-						<width>40</width>
-						<height>8</height>
-						<progress>$INFO[ListItem.Progress]</progress>
-					</control>
 					<control type="label">
 						<posx>50</posx>
 						<posy>0</posy>
 						<width>270</width>
-						<height>30</height>
+						<height>25</height>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -221,29 +218,38 @@
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>330</width>
-						<height>30</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
-						<visible>IsEmpty(Listitem.Icon)</visible>
 						<label>$INFO[ListItem.Title]</label>
+						<visible>IsEmpty(Listitem.Icon)</visible>
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>280</width>
-						<height>30</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
-						<visible>!IsEmpty(Listitem.Icon)</visible>
 						<label>$INFO[ListItem.Title]</label>
+						<visible>!IsEmpty(Listitem.Icon)</visible>
+					</control>
+					<control type="progress">
+						<description>Progressbar</description>
+						<posx>50</posx>
+						<posy>48</posy>
+						<width>280</width>
+						<height>6</height>
+						<colordiffuse>88FFFFFF</colordiffuse>
+						<info>ListItem.Progress</info>
 					</control>
 					<control type="image">
 						<posx>340</posx>
@@ -305,36 +311,8 @@
 				<control type="label">
 					<posx>0</posx>
 					<posy>0</posy>
-					<width>80</width>
-					<height>20</height>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<label>$INFO[Container(12).ListItem.StartTime]</label>
-				</control>
-				<control type="progress">
-					<description>Progressbar</description>
-					<posx>85</posx>
-					<posy>5</posy>
-					<width>520</width>
-					<height>8</height>
-					<progress>$INFO[Container(12).ListItem.Progress]</progress>
-				</control>
-				<control type="label">
-					<posx>605</posx>
-					<posy>0</posy>
-					<width>80</width>
-					<height>20</height>
-					<align>center</align>
-					<aligny>center</aligny>
-					<font>font12</font>
-					<label>$INFO[Container(12).ListItem.EndTime]</label>
-				</control>
-				<control type="label">
-					<posx>0</posx>
-					<posy>20</posy>
 					<width>690</width>
-					<height>30</height>
+					<height>20</height>
 					<font>font13</font>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
@@ -343,10 +321,40 @@
 					<aligny>center</aligny>
 					<label>[B]$INFO[Container(12).ListItem.Title][/B]</label>
 				</control>
+				<control type="label">
+					<posx>80</posx>
+					<posy>22</posy>
+					<width>80</width>
+					<height>20</height>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font10_title</font>
+					<textcolor>blue</textcolor>
+					<label>$INFO[Container(12).ListItem.StartTime]</label>
+				</control>
+				<control type="progress">
+					<description>Progressbar</description>
+					<posx>85</posx>
+					<posy>30</posy>
+					<width>510</width>
+					<height>8</height>
+					<info>Container(12).ListItem.Progress</info>
+				</control>
+				<control type="label">
+					<posx>600</posx>
+					<posy>22</posy>
+					<width>80</width>
+					<height>20</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font10_title</font>
+					<textcolor>blue</textcolor>
+					<label>$INFO[Container(12).ListItem.EndTime]</label>
+				</control>
 				<control type="textbox">
 					<description>Plot Value for TVShow</description>
 					<posx>0</posx>
-					<posy>50</posy>
+					<posy>43</posy>
 					<width>690</width>
 					<height>80</height>
 					<font>font12</font>
@@ -358,12 +366,14 @@
 					<autoscroll time="2000" delay="3000" repeat="5000">true</autoscroll>
 				</control>
 				<control type="label">
-					<posx>400</posx>
-					<posy>130</posy>
-					<width>280</width>
-					<height>10</height>
+					<posx>690</posx>
+					<posy>140</posy>
+					<width>690</width>
+					<height>20</height>
 					<font>font12</font>
-					<textcolor>grey</textcolor>
+					<textcolor>grey2</textcolor>
+					<align>right</align>
+					<aligny>center</aligny>
 					<scroll>false</scroll>
 					<label>$LOCALIZE[19031]: $INFO[Container(12).ListItem.NextTitle]</label>
 				</control>
@@ -401,19 +411,11 @@
 						<selectedcolor>grey</selectedcolor>
 						<info>ListItem.ChannelNumber</info>
 					</control>
-					<control type="progress">
-						<description>Progressbar</description>
-						<posx>5</posx>
-						<posy>32</posy>
-						<width>40</width>
-						<height>8</height>
-						<progress>$INFO[ListItem.Progress]</progress>
-					</control>
 					<control type="label">
 						<posx>50</posx>
 						<posy>0</posy>
 						<width>270</width>
-						<height>30</height>
+						<height>25</height>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -423,9 +425,9 @@
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>330</width>
-						<height>30</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
@@ -436,9 +438,9 @@
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>280</width>
-						<height>30</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
@@ -447,12 +449,29 @@
 						<label>$INFO[ListItem.Title]</label>
 						<visible>!IsEmpty(Listitem.Icon)</visible>
 					</control>
+					<control type="progress">
+						<description>Progressbar</description>
+						<posx>50</posx>
+						<posy>48</posy>
+						<width>280</width>
+						<height>6</height>
+						<colordiffuse>88FFFFFF</colordiffuse>
+						<info>ListItem.Progress</info>
+					</control>
 					<control type="image">
 						<posx>340</posx>
 						<posy>4</posy>
 						<width>50</width>
 						<height>50</height>
 						<texture>$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>37</posy>
+						<width>30</width>
+						<height>20</height>
+						<texture>PVR-IsRecording.png</texture>
+						<visible>ListItem.IsRecording</visible>
 					</control>
 				</itemlayout>
 				<focusedlayout height="60" width="390">
@@ -486,19 +505,11 @@
 						<selectedcolor>grey</selectedcolor>
 						<info>ListItem.ChannelNumber</info>
 					</control>
-					<control type="progress">
-						<description>Progressbar</description>
-						<posx>5</posx>
-						<posy>32</posy>
-						<width>40</width>
-						<height>8</height>
-						<progress>$INFO[ListItem.Progress]</progress>
-					</control>
 					<control type="label">
 						<posx>50</posx>
 						<posy>0</posy>
 						<width>270</width>
-						<height>30</height>
+						<height>25</height>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -508,29 +519,38 @@
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>330</width>
-						<height>30</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
-						<visible>IsEmpty(Listitem.Icon)</visible>
 						<label>$INFO[ListItem.Title]</label>
+						<visible>IsEmpty(Listitem.Icon)</visible>
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>280</width>
-						<height>30</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
 						<align>left</align>
 						<aligny>center</aligny>
-						<visible>!IsEmpty(Listitem.Icon)</visible>
 						<label>$INFO[ListItem.Title]</label>
+						<visible>!IsEmpty(Listitem.Icon)</visible>
+					</control>
+					<control type="progress">
+						<description>Progressbar</description>
+						<posx>50</posx>
+						<posy>48</posy>
+						<width>280</width>
+						<height>6</height>
+						<colordiffuse>88FFFFFF</colordiffuse>
+						<info>ListItem.Progress</info>
 					</control>
 					<control type="image">
 						<posx>340</posx>
@@ -538,6 +558,14 @@
 						<width>50</width>
 						<height>50</height>
 						<texture>$INFO[ListItem.Icon]</texture>
+					</control>
+					<control type="image">
+						<posx>5</posx>
+						<posy>37</posy>
+						<width>30</width>
+						<height>20</height>
+						<texture>PVR-IsRecording.png</texture>
+						<visible>ListItem.IsRecording</visible>
 					</control>
 				</focusedlayout>
 			</control>

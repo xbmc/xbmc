@@ -1222,14 +1222,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       textureBackground, textureLeft, textureMid, textureRight,
       textureOverlay, bReveal);
 
-    if (XMLUtils::HasChild(pControlNode, "progress"))
-    {
-      CGUIInfoLabel progress;
-      GetInfoLabel(pControlNode, "progress", progress);
-      ((CGUIProgressControl *)control)->SetListInfo(progress);
-    }
-    else
-      ((CGUIProgressControl *)control)->SetInfo(singleInfo);
+    ((CGUIProgressControl *)control)->SetInfo(singleInfo);
   }
   else if (type == CGUIControl::GUICONTROL_IMAGE)
   {

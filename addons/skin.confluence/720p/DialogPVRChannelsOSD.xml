@@ -114,7 +114,7 @@
 						<posx>50</posx>
 						<posy>0</posy>
 						<width>350</width>
-						<height>30</height>
+						<height>25</height>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -124,9 +124,9 @@
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>350</width>
-						<height>25</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
@@ -137,9 +137,9 @@
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>300</width>
-						<height>25</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
@@ -147,6 +147,15 @@
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Title]</label>
 						<visible>!IsEmpty(Listitem.Icon)</visible>
+					</control>
+					<control type="progress">
+						<description>Progressbar</description>
+						<posx>50</posx>
+						<posy>50</posy>
+						<width>300</width>
+						<height>6</height>
+						<colordiffuse>88FFFFFF</colordiffuse>
+						<info>ListItem.Progress</info>
 					</control>
 					<control type="image">
 						<posx>355</posx>
@@ -199,7 +208,7 @@
 						<posx>50</posx>
 						<posy>0</posy>
 						<width>350</width>
-						<height>30</height>
+						<height>25</height>
 						<font>font13</font>
 						<textcolor>white</textcolor>
 						<selectedcolor>selected</selectedcolor>
@@ -209,9 +218,9 @@
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>350</width>
-						<height>25</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
@@ -222,9 +231,9 @@
 					</control>
 					<control type="label">
 						<posx>50</posx>
-						<posy>30</posy>
+						<posy>25</posy>
 						<width>300</width>
-						<height>25</height>
+						<height>20</height>
 						<font>font12</font>
 						<textcolor>grey</textcolor>
 						<selectedcolor>grey</selectedcolor>
@@ -232,6 +241,15 @@
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Title]</label>
 						<visible>!IsEmpty(Listitem.Icon)</visible>
+					</control>
+					<control type="progress">
+						<description>Progressbar</description>
+						<posx>50</posx>
+						<posy>50</posy>
+						<width>300</width>
+						<height>6</height>
+						<colordiffuse>88FFFFFF</colordiffuse>
+						<info>ListItem.Progress</info>
 					</control>
 					<control type="image">
 						<posx>355</posx>
