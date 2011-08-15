@@ -80,8 +80,6 @@ unsigned int CEpgContainer::NextEpgId(void)
 
 void CEpgContainer::Clear(bool bClearDb /* = false */)
 {
-  CSingleLock lock(m_critSection);
-
   /* make sure the update thread is stopped */
   bool bThreadRunning = !m_bStop;
   if (bThreadRunning && !Stop())
@@ -99,10 +97,15 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
       timers->at(iTimerPtr)->SetEpgInfoTag(NULL);
   }
 
-  /* clear all epg tables and remove pointers to epg tables on channels */
-  for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
-    delete m_epgs[iEpgPtr];
-  m_epgs.clear();
+  {
+    CSingleLock lock(m_critSection);
+    /* clear all epg tables and remove pointers to epg tables on channels */
+    for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
+      delete m_epgs[iEpgPtr];
+    m_epgs.clear();
+    m_iNextEpgUpdate  = 0;
+    m_bIsInitialising = true;
+  }
 
   /* clear the database entries */
   if (bClearDb && !m_bIgnoreDbForClient)
@@ -113,11 +116,6 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
       m_database.Close();
     }
   }
-
-  m_iNextEpgUpdate  = 0;
-  m_bIsInitialising = true;
-
-  lock.Leave();
 
   if (bThreadRunning)
     Start();
