@@ -117,6 +117,9 @@ void CEpgContainer::Clear(bool bClearDb /* = false */)
     }
   }
 
+  SetChanged();
+  NotifyObservers("epg", true);
+
   if (bThreadRunning)
     Start();
 }
