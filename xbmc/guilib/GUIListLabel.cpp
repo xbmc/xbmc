@@ -50,7 +50,8 @@ void CGUIListLabel::SetScrolling(bool scrolling)
 
 void CGUIListLabel::SetSelected(bool selected)
 {
-  m_label.SetColor(selected ? CGUILabel::COLOR_SELECTED : CGUILabel::COLOR_TEXT);
+  if(m_label.SetColor(selected ? CGUILabel::COLOR_SELECTED : CGUILabel::COLOR_TEXT))
+    SetInvalid();
 }
 
 void CGUIListLabel::SetFocus(bool focus)
