@@ -465,8 +465,6 @@ namespace VIDEO
     {
       pItem->GetVideoInfoTag()->Reset();
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-      if (m_pObserver)
-        m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
       long lResult = AddVideo(pItem.get(), info2->Content(), bDirNames);
       if (lResult < 0)
@@ -492,9 +490,6 @@ namespace VIDEO
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
-
-    if (m_pObserver && !url.strTitle.IsEmpty())
-      m_pObserver->OnSetTitle(url.strTitle);
 
     long lResult=-1;
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
@@ -535,8 +530,6 @@ namespace VIDEO
     {
       pItem->GetVideoInfoTag()->Reset();
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-      if (m_pObserver)
-        m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
       if (AddVideo(pItem.get(), info2->Content(), bDirNames) < 0)
         return INFO_ERROR;
@@ -552,9 +545,6 @@ namespace VIDEO
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
-
-    if (m_pObserver && !url.strTitle.IsEmpty())
-      m_pObserver->OnSetTitle(url.strTitle);
 
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
     {
@@ -587,8 +577,6 @@ namespace VIDEO
     {
       pItem->GetVideoInfoTag()->Reset();
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-      if (m_pObserver)
-        m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
       if (AddVideo(pItem.get(), info2->Content(), bDirNames) < 0)
         return INFO_ERROR;
@@ -604,9 +592,6 @@ namespace VIDEO
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
-
-    if (m_pObserver && !url.strTitle.IsEmpty())
-      m_pObserver->OnSetTitle(url.strTitle);
 
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
     {
@@ -1053,6 +1038,18 @@ namespace VIDEO
     if (!m_database.Open())
       return -1;
 
+    CVideoInfoTag *tag = pItem->GetVideoInfoTag();
+    CStdString strTitle(tag->m_strTitle);
+
+    if (idShow > -1 && content == CONTENT_TVSHOWS)
+    {
+      CStdString strShowTitle = m_database.GetTvShowTitleById(idShow);
+      strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), tag->m_iSeason, tag->m_iEpisode, tag->m_strTitle.c_str());
+    }
+
+    if (m_pObserver)
+      m_pObserver->OnSetTitle(strTitle);
+
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to %s:%s", TranslateContent(content).c_str(), pItem->GetPath().c_str());
     long lResult = -1;
 
@@ -1256,12 +1253,6 @@ namespace VIDEO
       if (result == CNfoFile::FULL_NFO)
       {
         m_nfoReader.GetDetails(*item.GetVideoInfoTag());
-        if (m_pObserver)
-        {
-          CStdString strTitle;
-          strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_strTitle.c_str());
-          m_pObserver->OnSetTitle(strTitle);
-        }
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
@@ -1353,12 +1344,6 @@ namespace VIDEO
           return INFO_NOT_FOUND; // TODO: should we just skip to the next episode?
         item.GetVideoInfoTag()->m_iSeason = guide->key.first;
         item.GetVideoInfoTag()->m_iEpisode = guide->key.second;
-        if (m_pObserver)
-        {
-          CStdString strTitle;
-          strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_strTitle.c_str());
-          m_pObserver->OnSetTitle(strTitle);
-        }
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
