@@ -50,6 +50,11 @@ public:
   virtual void ClearAll();
 
   virtual bool GetCondition(int condition, int data) const;
+  /**
+   * Calculate total size of child controls area (including gaps between controls)
+   */
+  float GetTotalSize() const;
+  ORIENTATION GetOrientation() const { return m_orientation; }
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool IsFirstFocusableControl(const CGUIControl *control) const;
