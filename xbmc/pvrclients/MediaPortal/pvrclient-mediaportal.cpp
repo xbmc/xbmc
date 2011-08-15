@@ -1022,6 +1022,8 @@ PVR_ERROR cPVRClientMediaPortal::DeleteTimer(const PVR_TIMER &timer, bool bForce
   // Although XBMC deletes this timer, we still have to trigger XBMC to update its timer list to
   // remove the timer from the XBMC list
   PVR->TriggerTimerUpdate();
+  // When deleting a currently active (recording) timer, we need to refresh also the recording list
+  PVR->TriggerRecordingUpdate();
 
   return PVR_ERROR_NO_ERROR;
 }
@@ -1052,6 +1054,7 @@ PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMER &timerinfo)
   // Although XBMC changes this timer, we still have to trigger XBMC to update its timer list to
   // see the timer changes at the XBMC side
   PVR->TriggerTimerUpdate();
+  PVR->TriggerRecordingUpdate();
 
   return PVR_ERROR_NO_ERROR;
 }
