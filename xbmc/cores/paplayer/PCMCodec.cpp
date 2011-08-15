@@ -22,6 +22,7 @@
 #include "PCMCodec.h"
 #include "utils/log.h"
 #include "EndianSwap.h"
+#include "StringUtils.h"
 
 PCMCodec::PCMCodec()
 {
@@ -48,7 +49,10 @@ bool PCMCodec::Init(const CStdString &strFile, unsigned int filecache)
 	}
 
 	int64_t length = m_file.GetLength();
-	m_TotalTime = (int)(((float)length / (m_Bitrate / 8)) * 1000);
+
+	if (m_Bitrate)
+		m_TotalTime = 1000 * 8 * length / m_Bitrate;
+
 	m_file.Seek(0, SEEK_SET);
 
 	return true;
@@ -68,16 +72,19 @@ __int64 PCMCodec::Seek(__int64 iSeekTime)
 int PCMCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
 	*actualsize = 0;
-	
-	int iAmountRead = m_file.Read(pBuffer, size);
-	if (iAmountRead > 0)
+
+	int iAmountRead = m_file.Read(pBuffer, 2 * (size / 2));
+	if (iAmountRead)
 	{
 		uint16_t *buffer = (uint16_t*) pBuffer;
+
+		iAmountRead = 2 * (iAmountRead / 2);
 
 		for (int i = 0; i < (iAmountRead / 2); i++)
 		  buffer[i] = Endian_Swap16(buffer[i]);
  
 		*actualsize = iAmountRead;
+
 		return READ_SUCCESS;
 	}
 	return READ_ERROR;
@@ -90,11 +97,35 @@ bool PCMCodec::CanInit()
 
 void PCMCodec::SetMimeParams(const CStdString& strMimeParams)
 {
-	if (strMimeParams.Find("rate=48000") > 0)
-		m_SampleRate = 48000;
+	CStdStringArray mimeParams;
 
-	if (strMimeParams.Find("channels=1") > 0)
-		m_Channels = 1;
+	// if there are no parameters, the default is 2 channels, 44100 samples/sec
+	m_Channels = 2;
+	m_SampleRate = 44100;
+
+	int paramCount = StringUtils::SplitString(strMimeParams, ";", mimeParams);
+	if (paramCount)
+	{
+		for (int i = 0; i < paramCount; i++)
+		{
+			if (mimeParams[i].Find("rate=") >= 0)
+			{
+				CStdStringArray rate;
+
+				int strCount = StringUtils::SplitString(mimeParams[i], "=", rate, 2);
+				if (strCount > 1)
+					m_SampleRate = atoi(rate[1].Trim());
+			}
+			else if (mimeParams[i].Find("channels=") >= 0)
+			{
+				CStdStringArray channel;
+
+				int strCount = StringUtils::SplitString(mimeParams[i], "=", channel, 2);
+				if (strCount > 1)
+					m_Channels = atoi(channel[1].Trim());
+			}
+		}
+	}
 
 	m_Bitrate = m_SampleRate * m_Channels * m_BitsPerSample;
 }
