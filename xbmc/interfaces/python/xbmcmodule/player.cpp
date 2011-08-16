@@ -647,7 +647,10 @@ namespace PYXBMC
     {
       int streamCount = g_application.m_pPlayer->GetSubtitleCount();
       if(iStream < streamCount)
+      {
         g_application.m_pPlayer->SetSubtitle(iStream);
+        g_application.m_pPlayer->SetSubtitleVisible(true);
+      }
     }
 
     Py_INCREF(Py_None);
