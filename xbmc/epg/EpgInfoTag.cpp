@@ -513,7 +513,7 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */, bool bLastUpdate /* =
 
 float CEpgInfoTag::ProgressPercentage(void) const
 {
-  int fReturn(0);
+  float fReturn(0);
   int iDuration;
   time_t currentTime, startTime, endTime;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(currentTime);
