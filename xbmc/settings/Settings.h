@@ -21,6 +21,7 @@
  */
 
 #define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
+#define PRE_SKIN_VERSION_11_COMPATIBILITY 1
 
 #define DEFAULT_SKIN          "skin.confluence"
 #define DEFAULT_FANART_HEIGHT 0
