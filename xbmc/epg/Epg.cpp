@@ -51,6 +51,7 @@ struct sortEPGbyDate
 CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &strScraperName /* = "" */, bool bLoadedFromDb /* = false */) :
     m_bChanged(!bLoadedFromDb),
     m_bInhibitSorting(false),
+    m_bLoaded(false),
     m_iEpgID(iEpgID),
     m_strName(strName),
     m_strScraperName(strScraperName),
@@ -65,6 +66,7 @@ CEpg::CEpg(int iEpgID, const CStdString &strName /* = "" */, const CStdString &s
 CEpg::CEpg(CPVRChannel *channel, bool bLoadedFromDb /* = false */) :
     m_bChanged(!bLoadedFromDb),
     m_bInhibitSorting(false),
+    m_bLoaded(false),
     m_iEpgID(channel->EpgID()),
     m_strName(channel->ChannelName()),
     m_strScraperName(channel->EPGScraper()),
