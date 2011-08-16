@@ -183,14 +183,14 @@ int CGUIDialogSelect::GetSelectedLabel() const
   return m_iSelected;
 }
 
-const CFileItem& CGUIDialogSelect::GetSelectedItem()
+const CFileItemPtr CGUIDialogSelect::GetSelectedItem()
 {
-  return *m_selectedItems->Get(0);
+  return m_selectedItems->Size() > 0 ? m_selectedItems->Get(0) : CFileItemPtr(new CFileItem);
 }
 
 const CStdString& CGUIDialogSelect::GetSelectedLabelText()
 {
-  return GetSelectedItem().GetLabel();
+  return GetSelectedItem()->GetLabel();
 }
 
 const CFileItemList& CGUIDialogSelect::GetSelectedItems() const

@@ -44,7 +44,7 @@ public:
   void SetItems(CFileItemList* items);
   int GetSelectedLabel() const;
   const CStdString& GetSelectedLabelText();
-  const CFileItem& GetSelectedItem();
+  const CFileItemPtr GetSelectedItem();
   const CFileItemList& GetSelectedItems() const;
   void EnableButton(bool enable, int string);
   bool IsButtonPressed();
