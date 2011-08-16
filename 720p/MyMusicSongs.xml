@@ -1,15 +1,20 @@
 <?xml version="1.0"?>
 <window id="501">
 	<defaultcontrol>56</defaultcontrol>
+	<views>56</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
+		<control type="group">
 		<include>Background</include>
+		<animation effect="fade" end="40" time="300" delay="0" condition="true">Conditional</animation>
+		</control>
 		<!-- -->
 		<!--<include>List</include>
 		<include>MusicSongs</include>-->
 		<include>InfoList</include>
-		<include>PanelStream</include>
-		<include>PluginStream</include>
+		<!-- PanelStream deactivated for the moment -->
+		<!--<include>PanelStream</include>-->
+		<!--<include>PluginStream</include>-->
 		<!-- -->
 		<control type="group">
 			<posy>9</posy>

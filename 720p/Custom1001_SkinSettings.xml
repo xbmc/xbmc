@@ -171,13 +171,13 @@
 					<onclick>Skin.ToggleSetting(HideDVD)</onclick>
 					<selected>!Skin.HasSetting(HideDVD)</selected>
 				</control>
-				<control type="radiobutton" id="255">
+				<!--<control type="radiobutton" id="255">
 					<description>Show Weather Menu</description>
 					<include>GeneralSkinOption</include>
 					<label>$LOCALIZE[31956] $LOCALIZE[31005]</label>
 					<onclick>Skin.ToggleSetting(HideWeather)</onclick>
 					<selected>!Skin.HasSetting(HideWeather)</selected>
-				</control>
+				</control>-->
 				<control type="radiobutton" id="300">
 					<description>Show Help Menu</description>
 					<include>GeneralSkinOption</include>
@@ -337,7 +337,7 @@
 					<usealttexture>Skin.String(CustomDVDBGFolder)</usealttexture>
 					<include>GeneralSkinOption</include>
 				</control>
-				<control type="togglebutton" id="315">
+				<!--<control type="togglebutton" id="315">
 					<description>Custom Weather BG image</description>
 					<label>$LOCALIZE[20141] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31657]</label>
 					<altlabel>$LOCALIZE[31659] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31657]</altlabel>
@@ -345,8 +345,8 @@
 					<altclick>Skin.Reset(CustomWeatherBG)</altclick>
 					<usealttexture>Skin.String(CustomWeatherBG)</usealttexture>
 					<include>GeneralSkinOption</include>
-				</control>
-				<control type="togglebutton" id="316">
+				</control>-->
+				<!--<control type="togglebutton" id="316">
 					<description>Custom Weather BG Images Folder</description>
 					<onclick>Skin.SetPath(CustomWeatherBGFolder)</onclick>
 					<onclick>Skin.Reset(CustomWeatherBG)</onclick>
@@ -355,7 +355,7 @@
 					<altlabel>$LOCALIZE[192] $LOCALIZE[8] $LOCALIZE[31623] $LOCALIZE[31658]</altlabel>
 					<usealttexture>Skin.String(CustomWeatherBGFolder)</usealttexture>
 					<include>GeneralSkinOption</include>
-				</control>
+				</control>-->
 				<control type="togglebutton" id="317">
 					<description>Custom System BG image</description>
 					<label>$LOCALIZE[20141] $LOCALIZE[31955] $LOCALIZE[31623] $LOCALIZE[31657]</label>
@@ -460,7 +460,7 @@
 				<visible>Skin.String(CustomPicturesBGFolder) + ControlGroup(209).HasFocus(291)</visible>
 				<include>CustomBGSettingMultiThumb</include>
 			</control>
-			<control type="image">
+			<!--<control type="image">
 				<info>Skin.String(CustomWeatherBG)</info>
 				<visible>Skin.String(CustomWeatherBG) + ControlGroup(203).HasFocus(240)</visible>
 				<include>CustomBGSettingThumb</include>
@@ -469,7 +469,7 @@
 				<info>Skin.String(CustomWeatherBGFolder)</info>
 				<visible>Skin.String(CustomWeatherBGFolder) + ControlGroup(203).HasFocus(241)</visible>
 				<include>CustomBGSettingMultiThumb</include>
-			</control>
+			</control>-->
 			<control type="image">
 				<info>Skin.String(CustomProgramsBG)</info>
 				<visible>Skin.String(CustomProgramsBG) + ControlGroup(203).HasFocus(242)</visible>

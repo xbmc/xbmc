@@ -2,7 +2,7 @@
 <includes>
 	<include name="Pictures">
 	<control type="group">
-		<visible>!Container.Content(Secondary)</visible>
+		<visible>!Container.Content(Secondary) + !Container.Content(plugins)</visible>
 		<control type="group">
 			<control type="image" id="589">
 				<description>Background</description>
@@ -239,7 +239,7 @@
 		</control>
 		<control type="group">
 			<posy>500</posy>
-			<include>ImageStreamVisible_</include>
+			<include>ImageStreamVisible</include>
 			<include>MediaViewFade</include>
 			<!--<animation effect="slide" start="0,0" end="0,300" time="1000" delay="3000" reversible="false" tween="quadratic" condition="![Container.OnNext | Container.OnPrevious]">Conditional</animation>-->
 			<!--<control type="image">
@@ -314,7 +314,7 @@
 	</include>
 	<include name="InfoListPics">
 		<control type="group">
-		<visible>Container.Content(Secondary)</visible>
+		<visible>Container.Content(Secondary) | Container.Content(plugins)</visible>
 		<control type="group">			
 			<include>MediaViewBGOverlay</include>
 		</control>
@@ -330,14 +330,6 @@
 				<scrolltime>200</scrolltime>
 				<pagecontrol>61</pagecontrol>
 				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-					<!--<control type="group">
-					<visible>Container.Content(Secondary)</visible>
-						<onright>56</onright>
-					</control>
-					<control type="group">
-						<visible>!Container.Content(Secondary)</visible>
-							<onright>9009</onright>
-					</control>-->
 				<onright>9009</onright>
 				<onup>56</onup>
 				<ondown>56</ondown>

@@ -56,12 +56,12 @@
 	</include>
 	<include name="DialogButton">
 		<include>DialogButtonDims</include>
-		<height>34</height>
-		<include>DialogButtonFOTexture</include>
-		<include>DialogButtonNFTexture</include>
+		<height>28</height>
+		<!--<include>DialogButtonFOTexture</include>
+		<include>DialogButtonNFTexture</include>-->
 		<font>DefaultCapsFont</font>
 		<aligny>top</aligny>
-		<textoffsety>6</textoffsety>
+		<textoffsety>0</textoffsety>
 		<include>DialogTextColors</include>
 	</include>
 	<include name="DialogTextControl">
@@ -143,13 +143,6 @@
 			<description>Background image</description>
 			<include>ProgressDialogBGDims</include>
 			<include>DialogBGTexture</include>
-			<visible>Skin.HasTheme(lite)</visible>
-		</control>
-		<control type="image">
-			<description>Background image</description>
-			<include>ProgressDialogBGDims</include>
-			<include>DialogBGTexture</include>
-			<visible>!Skin.HasTheme(lite)</visible>
 		</control>
 	</include>
 	<include name="ProgressDialogHeading">
@@ -598,9 +591,9 @@
 		<animation effect="fade" end="100" time="600">Visible</animation>
 		<animation effect="fade" end="0" time="600" delay="600">Hidden</animation>
 	</include>
-	<include name="HomeWeatherBGFade">
+	<!--<include name="HomeWeatherBGFade">
 		<animation effect="fade" start="0" end="100" time="600" condition="!Window.Previous(MyWeather)">WindowOpen</animation>
-	</include>
+	</include>-->
 	<include name="HomeBackgroundImage">
 		<include>FullScreenBGImage</include>
 		<include>HomeBackgroundFade</include>
@@ -759,9 +752,9 @@
 	<include name="PicturesBGVisible">
 		<visible>![[Skin.String(CustomPicturesBG) | Skin.String(CustomPicturesBGFolder)] + !Skin.HasSetting(HideCustomBGForPictures)] | [Window.IsVisible(Home) + !Skin.HasSetting(EnableCustomBGHome)]</visible>
 	</include>
-	<include name="WeatherBGVisible">
+	<!--<include name="WeatherBGVisible">
 		<visible>![Skin.String(CustomWeatherBG) | Skin.String(CustomWeatherBGFolder)] | [Window.IsVisible(Home) + !Skin.HasSetting(EnableCustomBGHome)]</visible>
-	</include>
+	</include>-->
 	<include name="ProgramsBGVisible">
 		<visible>![Skin.String(CustomProgramsBG) | Skin.String(CustomProgramsBGFolder)] | [Window.IsVisible(Home) + !Skin.HasSetting(EnableCustomBGHome)]</visible>
 	</include>
@@ -852,7 +845,7 @@
 					<height>720</height>
 					<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
-					<fadetime>100</fadetime>					
+					<fadetime>100</fadetime>
 				</control>
 			</control>
 			<control type="group">
@@ -973,7 +966,7 @@
 					<include>BackgroundFade</include>
 				</control>
 			</control>
-			<control type="group">
+			<!--<control type="group">
 				<description>Weather Background Image</description>
 				<visible>Window.IsVisible(MyWeather)</visible>
 				<control type="group">
@@ -992,7 +985,7 @@
 					</control>
 				</control>
 				<include>CustomWeatherBackground</include>
-			</control>
+			</control>-->
 			<control type="group">
 				<description>Programs Background Image</description>
 				<visible>Window.IsVisible(MyPrograms)</visible>
@@ -1150,7 +1143,7 @@
 		<randomize>true</randomize>
 		<include>FullScreenBGImage</include>
 	</include>
-	<include name="CustomVideosBackground">
+	<!--<include name="CustomVideosBackground">
 		<control type="group">
 			<visible>Skin.String(CustomVideosBG) + [!Skin.HasSetting(HideCustomBGForVideos) | Window.IsVisible(Home)]</visible>
 			<control type="image">
@@ -1235,7 +1228,8 @@
 			</control>
 		</control>
 	</include>
-	<include name="CustomWeatherBackground">
+	-->
+	<!--<include name="CustomWeatherBackground">
 		<control type="group">
 			<visible>Skin.String(CustomWeatherBG)</visible>
 			<control type="image">
@@ -1251,7 +1245,7 @@
 				<include>HomeWeatherBGVisible</include>
 			</control>
 		</control>
-	</include>
+	</include>-->
 	<include name="CustomProgramsBackground">
 		<control type="group">
 			<visible>Skin.String(CustomProgramsBG)</visible>
@@ -1371,7 +1365,7 @@
 						<texture>ClockBackground2.png</texture>						
 						<align>right</align>
 					</control>-->
-				</control>								
+				</control>
 			</control>
 			<!--<control type="group" id="1">
 				<visible>Skin.HasSetting(LargeClock)</visible>
@@ -1427,84 +1421,84 @@
 					<height>32</height>
 					<aligny>center</aligny>
 				</control>
-			<control type="label">
-				<description>Objects</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[127]:</label>
-				<visible>![Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(files) | Container.Content(songs) | Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(items) | Container.Content(photos)]</visible>
-			</control>
-			<control type="label">
-				<description>TV Shows</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[20343]:</label>
-				<visible>Container.Content(tvshows)</visible>
-			</control>
-			<control type="label">
-				<description>Seasons</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[31021]:</label>
-				<visible>Container.Content(seasons)</visible>
-			</control>
-			<control type="label">
-				<description>Episodes</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[20360]:</label>
-				<visible>Container.Content(episodes)</visible>
-			</control>
-			<control type="label">
-				<description>Movies</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[342]:</label>
-				<visible>Container.Content(movies)</visible>
-			</control>
-			<control type="label">
-				<description>Files</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[744]:</label>
-				<visible>Container.Content(files)</visible>
-			</control>
-			<control type="label">
-				<description>Songs</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[134]:</label>
-				<visible>Container.Content(songs)</visible>
-			</control>
-			<control type="label">
-				<description>Artists</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[133]:</label>
-				<visible>Container.Content(artists)</visible>
-			</control>
-			<control type="label">
-				<description>Albums</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[132]:</label>
-				<visible>Container.Content(albums)</visible>
-			</control>
-			<control type="label">
-				<description>Music Videos</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[10006]:</label>
-				<visible>Container.Content(musicvideos)</visible>
-			</control>
-			<control type="label">
-				<description>Items</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[31050]:</label>
-				<visible>Container.Content(items)</visible>
-			</control>
-			<control type="label">
-				<description>Photos</description>
-				<include>MediaCountLabel</include>
-				<label>$LOCALIZE[31051]:</label>
-				<visible>Container.Content(photos)</visible>
-			</control>
-			<control type="label">
-				<description>Item count</description>
-				<include>MediaCountNumberPos</include>
-				<info>Container.NumItems</info>
-				<include>MediaCountNumLabel</include>
-			</control>
+				<control type="label">
+					<description>Objects</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[127]:</label>
+					<visible>![Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Container.Content(movies) | Container.Content(files) | Container.Content(songs) | Container.Content(artists) | Container.Content(albums) | Container.Content(musicvideos) | Container.Content(items) | Container.Content(photos)]</visible>
+				</control>
+				<control type="label">
+					<description>TV Shows</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[20343]:</label>
+					<visible>Container.Content(tvshows)</visible>
+				</control>
+				<control type="label">
+					<description>Seasons</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[31021]:</label>
+					<visible>Container.Content(seasons)</visible>
+				</control>
+				<control type="label">
+					<description>Episodes</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[20360]:</label>
+					<visible>Container.Content(episodes)</visible>
+				</control>
+				<control type="label">
+					<description>Movies</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[342]:</label>
+					<visible>Container.Content(movies)</visible>
+				</control>
+				<control type="label">
+					<description>Files</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[744]:</label>
+					<visible>Container.Content(files)</visible>
+				</control>
+				<control type="label">
+					<description>Songs</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[134]:</label>
+					<visible>Container.Content(songs)</visible>
+				</control>
+				<control type="label">
+					<description>Artists</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[133]:</label>
+					<visible>Container.Content(artists)</visible>
+				</control>
+				<control type="label">
+					<description>Albums</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[132]:</label>
+					<visible>Container.Content(albums)</visible>
+				</control>
+				<control type="label">
+					<description>Music Videos</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[10006]:</label>
+					<visible>Container.Content(musicvideos)</visible>
+				</control>
+				<control type="label">
+					<description>Items</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[31050]:</label>
+					<visible>Container.Content(items)</visible>
+				</control>
+				<control type="label">
+					<description>Photos</description>
+					<include>MediaCountLabel</include>
+					<label>$LOCALIZE[31051]:</label>
+					<visible>Container.Content(photos)</visible>
+				</control>
+				<control type="label">
+					<description>Item count</description>
+					<include>MediaCountNumberPos</include>
+					<info>Container.NumItems</info>
+					<include>MediaCountNumLabel</include>
+				</control>
 			</control>
 		</control>
 	</include>
@@ -1876,7 +1870,6 @@
 				<textcolor>FFffffff</textcolor>
 				<wrapmultiline>false</wrapmultiline>
 			</control>-->
-			
 		</itemlayout>
 		<focusedlayout condition="![Container.content(episodes) | Container.content(albums) | Window.IsVisible(MyMusicFiles) | Container.content(plugincontent) | Container.content(plugins) | Container.content(clip)]" width="158" height="241">
 			<control type="image">
@@ -2147,7 +2140,6 @@
 				<include>PanelStreamNoThumb</include>
 			</control>
 		</focusedlayout>
-		
 		<!--
 		<itemlayout condition="Container.content(albums)" width="180" height="180">
 			<control type="image">
@@ -2733,12 +2725,25 @@
 		</control>
 		<!-- new "transparency" overlay for fanart -->
 		<control type="largeimage">
+			<visible>!Window.IsVisible(2)</visible>
 			<posy>219</posy>
 			<posx>0</posx>
 			<width>1280</width>
 			<height>502</height>
 			<aspectratio aligny="bottom">scale</aspectratio>
 			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
+			<visible>true</visible>
+			<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
+		</control>
+		<!-- photos overlay -->
+		<control type="largeimage">
+			<visible>Window.IsVisible(2)</visible>
+			<posy>0</posy>
+			<posx>0</posx>
+			<width>1280</width>
+			<height>720</height>
+			<aspectratio aligny="top">scale</aspectratio>
+			<texture background="true">$INFO[ListItem.Thumb]</texture>
 			<visible>true</visible>
 			<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
 		</control>
@@ -4490,21 +4495,21 @@
 			<animation effect="slide" tween="cubic" start="0,0" end="620,0" time="300" delay="100" condition="Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
 			<animation effect="slide" tween="cubic" start="0,0" end="-670,0" time="700" delay="100" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + !Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
 			<animation effect="slide" tween="cubic" start="0,0" end="-230,0" time="800" delay="100" condition="!Window.Next(0) + !Window.Next(SettingsCategory.xml) + !Window.Next(1001) + Skin.HasSetting(HomeBladeCentre)">WindowClose</animation>
-		<control type="image">
-			<description>Background Image Left Blade</description>
-			<posx>-620</posx>
-			<posy>0</posy>
-			<width>846</width>
-			<height>720</height>
-			<texture border="0,0,500,0">HomeBladeLeft.png</texture>			
-		</control>
-		<control type="image">
-			<posx>-290</posx>
-			<posy>0</posy>
-			<width>500</width>
-			<height>720</height>
-			<texture diffuse="HomeMenuDiffuse.png">HomeBladeLeftMenuOverlay.png</texture>
-		</control>
+			<control type="image">
+				<description>Background Image Left Blade</description>
+				<posx>-620</posx>
+				<posy>0</posy>
+				<width>846</width>
+				<height>720</height>
+				<texture border="0,0,500,0">HomeBladeLeft.png</texture>
+			</control>
+			<control type="image">
+				<posx>-290</posx>
+				<posy>0</posy>
+				<width>500</width>
+				<height>720</height>
+				<texture diffuse="HomeMenuDiffuse.png">HomeBladeLeftMenuOverlay.png</texture>
+			</control>
 		</control>
 	</include>
 	<include name="SettingsCentreBladeBG">
@@ -4695,11 +4700,11 @@
 						<onclick>XBMC.ReplaceWindow(13)</onclick>
 					</item>
 					-->
-					<item id="5">
+					<!--><item id="5">
 						<description>Weather Settings Button</description>
 						<label> $LOCALIZE[31005] </label>
 						<onclick>XBMC.ReplaceWindow(14)</onclick>
-					</item>
+					</item>-->
 					<item id="8">
 						<description>System Settings Button</description>
 						<label> $LOCALIZE[31006] </label>
@@ -4736,7 +4741,7 @@
 		<include>SystemInfoLabels</include>
 	</include>
 	<!-- Weather -->
-	<include name="WeatherButton">
+	<!--<include name="WeatherButton">
 		<posy>24</posy>
 		<width>170</width>
 		<include>DialogButton</include>
@@ -4779,7 +4784,7 @@
 		<align>left</align>
 		<aligny>center</aligny>
 		<label>-</label>
-	</include>
+	</include>-->
 	<!-- File Manager -->
 	<constant name="FileMgrDirectoryWidth">492</constant>
 	<constant name="FileMgrTextIndent">32</constant>
@@ -4975,7 +4980,7 @@
 		<info>ListItem.Icon</info>
 		<aspectratio>scale</aspectratio>
 	</include>
-	<!-- Search -->	
+	<!-- Search -->
 	<include name="Search_Header_background">
 		<posx>1</posx>
 		<texture>plex-search-header.png</texture>

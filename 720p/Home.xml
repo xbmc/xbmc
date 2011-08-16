@@ -583,17 +583,17 @@
 						<visible>System.HasMediadvd + !Skin.HasSetting(HideDVD)</visible>
 						<onclick>XBMC.PlayDVD</onclick>
 					</item>
-					<item id="5">
+					<!--<item id="5">
 						<description>My Weather Button</description>
 						<label> $LOCALIZE[31005] </label>
 						<onclick>XBMC.ActivateWindow(2600)</onclick>
 						<visible>!Skin.HasSetting(HideWeather)</visible>
 						<visible>System.HasNetwork</visible>
-					</item>
-					<!--><item id="14">
-						<label>DIALOG TEST</label>
-						<onclick>ActivateWindow(2002)</onclick>
 					</item>-->
+					<item id="14">
+						<label>DIALOG TEST</label>
+						<onclick>ActivateWindow(103)</onclick>
+					</item>
 				</content>
 			</control>
 			<control type="group">
@@ -2065,58 +2065,68 @@
 						<height>230</height>
 						<itemlayout width="140" height="230">
 							<!-- album -->
-							<control type="image">
-								<posx>15</posx>
-								<posy>27</posy>
-								<width>140</width>
-								<height>140</height>
-								<info>ListItem.Thumb</info>
-								<aspectratio aligny="top">keep</aspectratio>
-								<texture diffuse="bigSquareMask.png"/>
-								<bordertexture>bigSquareMask.png</bordertexture>
-								<bordersize>2</bordersize>
-								<visible>ListItem.Type(album)</visible>
+							<!-- deactivated for the moment, not allowed yet -->
+							<control type="group">
+								<visible>false</visible>
+								<control type="image">
+									<posx>15</posx>
+									<posy>27</posy>
+									<width>140</width>
+									<height>140</height>
+									<info>ListItem.Thumb</info>
+									<aspectratio aligny="top">keep</aspectratio>
+									<texture diffuse="bigSquareMask.png"/>
+									<bordertexture>bigSquareMask.png</bordertexture>
+									<bordersize>2</bordersize>
+									<visible>ListItem.Type(album)</visible>
+								</control>
 							</control>
 							<!-- tv show episode -->
-							<control type="image">
-								<posx>15</posx>
-								<posy>27</posy>
-								<width>128</width>
-								<height>90</height>
-								<aspectratio scalediffuse="true" align="top">keep</aspectratio>
-								<bordertexture>episodeMaskSmall.png</bordertexture>
-								<bordersize>2</bordersize>
-								<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-								<visible>ListItem.Type(episode)</visible>
+							<!-- deactivated for the moment, not allowed yet -->
+							<control type="group">
+								<visible>false</visible>
+								<control type="image">
+									<posx>15</posx>
+									<posy>27</posy>
+									<width>128</width>
+									<height>90</height>
+									<aspectratio scalediffuse="true" align="top">keep</aspectratio>
+									<bordertexture>episodeMaskSmall.png</bordertexture>
+									<bordersize>2</bordersize>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<visible>ListItem.Type(episode)</visible>
+								</control>
+								<control type="label">
+									<posx>81</posx>
+									<posy>142</posy>
+									<width>122</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$INFO[ListItem.TVShowTitle]</label>
+									<font>SearchResult</font>
+									<textcolor>FFdddddd</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
+								</control>
+								<control type="label">
+									<posx>81</posx>
+									<posy>172</posy>
+									<width>122</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>S $INFO[ListItem.Season] &#xB7; Ep $INFO[ListItem.Episode]</label>
+									<font>SearchResult</font>
+									<textcolor>FFdddddd</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
+								</control>
 							</control>
-							<control type="label">
-								<posx>81</posx>
-								<posy>142</posy>
-								<width>122</width>
-								<align>center</align>
-								<aligny>center</aligny>
-								<scroll>false</scroll>
-								<label>$INFO[ListItem.TVShowTitle]</label>
-								<font>SearchResult</font>
-								<textcolor>FFdddddd</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
-							</control>
-							<control type="label">
-								<posx>81</posx>
-								<posy>172</posy>
-								<width>122</width>
-								<align>center</align>
-								<aligny>center</aligny>
-								<scroll>false</scroll>
-								<label>S $INFO[ListItem.Season] &#xB7; Ep $INFO[ListItem.Episode]</label>
-								<font>SearchResult</font>
-								<textcolor>FFdddddd</textcolor>
-								<wrapmultiline>false</wrapmultiline>
-								<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
-							</control>
+							<!-- web content -->
 							<!-- clip -->
 							<control type="group">
+								<visible>ListItem.Type(clip)</visible>
 								<posy>0</posy>
 								<!-- drop shadow -->
 								<control type="image">
@@ -2126,7 +2136,6 @@
 									<height>128</height>
 									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
-									<visible>ListItem.Type(clip)</visible>
 								</control>
 								<control type="image">
 									<posx>37</posx>
@@ -2135,7 +2144,6 @@
 									<height>110</height>
 									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
-									<visible>ListItem.Type(clip)</visible>
 								</control>
 								<control type="image">
 									<posx>35</posx>
@@ -2145,7 +2153,6 @@
 									<texture border="10">whitewiderounded.png</texture>
 									<colordiffuse>FF000000</colordiffuse>
 									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-									<visible>ListItem.Type(clip)</visible>
 								</control>
 								<control type="image">
 									<posx>35</posx>
@@ -2155,7 +2162,6 @@
 									<texture border="10">whitewiderounded.png</texture>
 									<colordiffuse>FF000000</colordiffuse>
 									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
-									<visible>ListItem.Type(clip)</visible>
 								</control>
 								<control type="label">
 									<posx>95</posx>
@@ -2168,7 +2174,6 @@
 									<font>SearchResultSmaller</font>
 									<textcolor>FFdddddd</textcolor>
 									<wrapmultiline>false</wrapmultiline>
-									<visible>ListItem.Type(clip)</visible>
 									<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
 								</control>
 								<control type="label">
@@ -2182,7 +2187,71 @@
 									<font>SearchResultSmaller</font>
 									<textcolor>FFdddddd</textcolor>
 									<wrapmultiline>false</wrapmultiline>
-									<visible>ListItem.Type(clip)</visible>
+								</control>
+							</control>
+							<!-- generic -->
+							<control type="group">
+								<visible>!ListItem.Type(clip)</visible>
+								<posy>0</posy>
+								<!-- drop shadow -->
+								<control type="image">
+									<posx>28</posx>
+									<posy>30</posy>
+									<width>134</width>
+									<height>128</height>
+									<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+									<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+								</control>
+								<control type="image">
+									<posx>37</posx>
+									<posy>39</posy>
+									<width>116</width>
+									<height>110</height>
+									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+								</control>
+								<control type="image">
+									<posx>35</posx>
+									<posy>157</posy>
+									<width>120</width>
+									<height>27</height>
+									<texture border="10">whitewiderounded.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="image">
+									<posx>35</posx>
+									<posy>189</posy>
+									<width>120</width>
+									<height>27</height>
+									<texture border="10">whitewiderounded.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>169</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$INFO[ListItem.Title]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFdddddd</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>200</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$INFO[ListItem.Property(sourceTitle)]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFdddddd</textcolor>
+									<wrapmultiline>false</wrapmultiline>
 								</control>
 							</control>
 						</itemlayout>
@@ -2969,7 +3038,7 @@
 		</control>
 		<!-- END OF THE NEW LISTS CONTENT -->
 		<!-- Home Widgets -->
-		<control type="group">
+		<!--<control type="group">
 			<description>Current Weather Summary</description>
 			<include>HomeWeatherSummaryPos</include>
 			<visible>Skin.HasSetting(ShowWeatherOnHome) + Weather.IsFetched</visible>
@@ -3006,7 +3075,7 @@
 				<colordiffuse>ccbbbbbb</colordiffuse>
 				<info>Weather.Conditions</info>
 			</control>
-		</control>
+		</control>-->
 		<!-- Music Now Playing -->
 		<include>MusicNowPlayingIndicators</include>
 		<control type="group">

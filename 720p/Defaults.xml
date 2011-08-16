@@ -17,13 +17,13 @@
 	<default type="button">
 		<description>Default Button</description>
 		<width>140</width>
-		<height>26</height>
+		<height>20</height>
 		<font>DefaultFont</font>
 		<textcolor>Focused</textcolor>
 		<align>center</align>
 		<aligny>top</aligny>
 		<textoffsety>1</textoffsety>
-		<texturefocus>ButtonOverlay.png</texturefocus>
+		<texturefocus border="5">plex-orange-button.png</texturefocus>
 		<texturenofocus>-</texturenofocus>
 	</default>
 	<default type="togglebutton">

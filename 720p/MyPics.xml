@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <window id="2">
-	<defaultcontrol always="false">57</defaultcontrol>
+	<defaultcontrol>561</defaultcontrol>
 	<views>56,57,561</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
@@ -82,32 +82,6 @@
 				</control>
 			</control>
 		</control>
-		<!--<control type="group">
-			<include>TopOverlayTitlePos</include>
-			<control type="group">
-				<visible>!IsEmpty(Container.SecondTitle)</visible>
-				<include>TopOverlaySecondTitleSlide</include>
-				<include>TopOverlaySecondTitleAreaBG</include>
-				<control type="label">
-					<description>Second title</description>
-					<label>$INFO[Container.SecondTitle]</label>
-					<include>TopOverlaySecondTitleAreaText</include>
-				</control>
-			</control>
-			<include>TopOverlayFirstTitleAreaBG</include>
-			<control type="label">
-				<description>Pictures label</description>
-				<visible>IsEmpty(Container.FirstTitle)</visible>
-				<include>TopOverlayFirstTitleAreaText</include>
-				<label>$LOCALIZE[31973]</label>
-			</control>
-			<control type="label">
-				<description>First title</description>
-				<visible>!IsEmpty(Container.FirstTitle)</visible>
-				<include>TopOverlayFirstTitleAreaText</include>
-				<label>$INFO[Container.FirstTitle]</label>
-			</control>
-		</control>-->
 		<include>Clock</include>
 		<include>OptionsMenu</include>
 		<include>MediaCount</include>

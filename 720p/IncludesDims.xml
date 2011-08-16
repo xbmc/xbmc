@@ -112,7 +112,7 @@
 		<posy>331</posy>
 		<animation effect="slide" tween="back" end="220,0" time="400" delay="300" condition="ControlGroup(302).HasFocus() | ControlGroup(303).HasFocus()">Conditional</animation>
 	</include>
-	<include name="HomeWeatherSummaryPos">
+	<!--<include name="HomeWeatherSummaryPos">
 		<posx>990</posx>
 		<posy>11</posy>
 	</include>
@@ -127,7 +127,7 @@
 		<posx>226</posx>
 		<width>50</width>
 		<height>50</height>
-	</include>
+	</include>-->
 	<!-- Dialogs -->
 	<!-- ======= -->
 	<include name="DialogButtonDims">

@@ -72,20 +72,11 @@
 		<bordertexture border="14">ThumbShadow2.png</bordertexture>
 		<bordersize>10</bordersize>
 	</include>
-	<include name="OptionsMenuUI">
-		
+	<include name="OptionsMenuUI">		
 		<control type="group" id="9009">
 			<include>OptionsMenuPos</include>
 			<include>OptionsMenuVisible</include>
 			<include>VideoOSDSlideLeft</include>
-			<!--<control type="image">
-				<description>Background Image</description>
-				<posx>-24</posx>
-				<posy>0</posy>
-				<include>OptionsMenuBGDims</include>
-				<texture>Black.png</texture>
-				<colordiffuse>99666666</colordiffuse>
-			</control>-->
 			<control type="image">
 				<description>Background Image</description>
 				<posx>-38</posx>
@@ -189,21 +180,21 @@
 					<include>OMViewLabelItem</include>
 				</control>
 				<control type="image" id="9108">
-					<description>Pictures Thumb</description>
+					<description>Image Stream Thumb</description>
 					<texture>ViewThumbImageStream.png</texture>
-					<visible>Control.IsVisible(56) + [Window.IsActive(2) + !Container.Content(Secondary)]</visible>
+					<visible>Control.IsVisible(561)</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9108">
 					<description>Pictures view button</description>
-					<visible>Control.IsVisible(56) + [Window.IsActive(2) + !Container.Content(Secondary)]</visible>
+					<visible>Control.IsVisible(561) + Window.IsActive(2)</visible>
 					<label>$LOCALIZE[1]</label>
 					<include>OMViewLabelItem</include>
 				</control>
 				<control type="image" id="9109">
 					<description>Info List Thumb</description>
 					<texture>ViewThumbInfoList.png</texture>
-					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(912)</visible>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(912) + !Control.IsVisible(561)</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9109">
@@ -213,14 +204,14 @@
 					<include>OMViewLabelItem</include>
 				</control>
 				<control type="image" id="9110">
-					<description>Image Stream Thumb</description>
+					<description>Pictures Thumb</description>
 					<texture>ViewThumbPictures.png</texture>
-					<visible>Control.IsVisible(57) + [Window.IsVisible(MyPictures)]</visible>
+					<visible>Control.IsVisible(57) + [Window.IsActive(2)]</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9110">
 					<description>Image Stream view button</description>
-					<visible>Control.IsVisible(57) + [Window.IsVisible(MyPictures)]</visible>
+					<visible>Control.IsVisible(57) + [Window.IsActive(2)]</visible>
 					<label>$LOCALIZE[31712]</label>
 					<include>OMViewLabelItem</include>
 				</control>
@@ -288,9 +279,17 @@
 				<height>522</height>
 				<orientation>vertical</orientation>
 				<itemgap>2</itemgap>
-				<onleft>57</onleft>
-				<include>OMNoViewThumbSlide</include>				
-				<control type="button" id="912">
+				<onleft>56</onleft>
+				<include>OMNoViewThumbSlide</include>
+				<control type="button" id="910">
+					<description>Image Stream view button</description>
+					<visible>Control.IsVisible(561)</visible>
+					<label>$LOCALIZE[31712]</label>
+					<onclick>Container.SetViewMode(57)</onclick>
+					<onclick>SetFocus(57)</onclick>
+					<include>OMButtonItem</include>
+				</control>				
+				<control type="button" id="911">
 					<description>Pictures view button</description>
 					<visible>Control.IsVisible(57)</visible>
 					<label>$LOCALIZE[1]</label>
@@ -306,14 +305,6 @@
 					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
 				</control>			
-				<control type="button" id="956">
-					<description>Image Stream view button</description>
-					<visible>!Control.IsVisible(57) + !Container.Content(Secondary)</visible>
-					<label>$LOCALIZE[31712]</label>
-					<onclick>Container.SetViewMode(57)</onclick>
-					<onclick>SetFocus(57)</onclick>
-					<include>OMButtonItem</include>
-				</control>
 			</control>
 			<!-- non-photos views -->
 			<control type="grouplist" id="9011">
@@ -323,7 +314,7 @@
 				<height>522</height>
 				<orientation>vertical</orientation>
 				<itemgap>2</itemgap>
-				<onleft>57</onleft>
+				<onleft>56</onleft>
 				<include>OMNoViewThumbSlide</include>				
 				<!--<control type="button" id="911">
 					<description>List view button</description>
@@ -385,7 +376,7 @@
 				
 				<control type="button" id="957">
 					<description>Panel Stream view button</description>
-					<visible>!Control.IsVisible(52) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary)</visible>
+					<visible>!Control.IsVisible(52) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Window.IsVisible(501)</visible>
 					<label>$LOCALIZE[31715]</label>
 					<onclick>Container.SetViewMode(52)</onclick>
 					<onclick>SetFocus(52)</onclick>

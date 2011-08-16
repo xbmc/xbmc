@@ -46,6 +46,6 @@
 			<include>MusicNowPlayingIndicators</include>
 		</control>
 		<include>MediaCount</include>
-		<include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>
+		<include>OptionsMenu</include>
 	</controls>
 </window>

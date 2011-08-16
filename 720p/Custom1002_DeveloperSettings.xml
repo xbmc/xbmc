@@ -308,7 +308,7 @@
 				<visible>Skin.String(CustomPicturesBGFolder) + ControlGroup(209).HasFocus(291)</visible>
 				<include>CustomBGSettingMultiThumb</include>
 			</control>
-			<control type="image">
+			<!--<control type="image">
 				<info>Skin.String(CustomWeatherBG)</info>
 				<visible>Skin.String(CustomWeatherBG) + ControlGroup(203).HasFocus(240)</visible>
 				<include>CustomBGSettingThumb</include>
@@ -317,7 +317,7 @@
 				<info>Skin.String(CustomWeatherBGFolder)</info>
 				<visible>Skin.String(CustomWeatherBGFolder) + ControlGroup(203).HasFocus(241)</visible>
 				<include>CustomBGSettingMultiThumb</include>
-			</control>
+			</control>-->
 			<control type="image">
 				<info>Skin.String(CustomProgramsBG)</info>
 				<visible>Skin.String(CustomProgramsBG) + ControlGroup(203).HasFocus(242)</visible>
