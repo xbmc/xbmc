@@ -377,7 +377,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
   }
   if (dialog->GetSelectedLabel() >= 0)
   {
-    addonID = dialog->GetSelectedItem().GetPath();
+    addonID = dialog->GetSelectedItem()->GetPath();
     return 1;
   }
   return 0;
