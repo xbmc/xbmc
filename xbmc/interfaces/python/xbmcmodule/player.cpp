@@ -618,9 +618,8 @@ namespace PYXBMC
         CStdString strName;
         CStdString FullLang;
         g_application.m_pPlayer->GetSubtitleName(iStream, strName);
-        g_LangCodeExpander.Lookup(FullLang, strName);
-        if (FullLang.IsEmpty())
-          g_application.m_pPlayer->GetSubtitleName(iStream, FullLang);
+        if (!g_LangCodeExpander.Lookup(FullLang, strName))
+          FullLang = strName;
         PyList_Append(list, Py_BuildValue((char*)"s", FullLang.c_str()));
       }
       return list;
