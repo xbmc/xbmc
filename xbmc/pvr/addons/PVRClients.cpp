@@ -857,8 +857,7 @@ int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
 
   /* get the channel list from each client */
   boost::shared_ptr<CPVRClient> client;
-  CLIENTMAPITR itrClients = clients.begin();
-  while (itrClients != clients.end())
+  for (CLIENTMAPITR itrClients = clients.begin(); itrClients != clients.end(); itrClients++)
   {
     PVR_ERROR currentError;
     client = (*itrClients).second;
@@ -869,8 +868,6 @@ int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
       continue;
     else if ((currentError = client->GetChannels(*group, group->IsRadio())) != PVR_ERROR_NO_ERROR)
       *error = currentError;
-
-    itrClients++;
   }
 
   return group->Size() - iCurSize;
