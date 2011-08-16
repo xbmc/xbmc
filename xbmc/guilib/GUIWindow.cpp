@@ -343,18 +343,19 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
   {
     if (!m_closing)
     {
-    if (enableSound && IsSoundEnabled())
-      g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
-    
-    // Perform the window out effect
-    QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
-    m_closing = true;
+      if (enableSound && IsSoundEnabled())
+        g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
+
+      // Perform the window out effect
+      QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
+      m_closing = true;
     }
     return;
   }
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-    OnMessage(msg);
-    m_closing = false;
+
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+  OnMessage(msg);
+  m_closing = false;
 }
 
 void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
