@@ -137,6 +137,9 @@ void CPVRManager::Stop(void)
   m_channelGroups->Unload();
   m_addons->Unload();
   m_bIsStopping = false;
+
+  if(g_application.m_bStop)
+    Cleanup();
 }
 
 bool CPVRManager::StartUpdateThreads(void)
@@ -162,12 +165,18 @@ void CPVRManager::StopUpdateThreads(void)
 void CPVRManager::Cleanup(void)
 {
   CSingleLock lock(m_critSection);
-  if (m_addons)        delete m_addons;        m_addons = NULL;
-  if (m_guiInfo)       delete m_guiInfo;       m_guiInfo = NULL;
-  if (m_timers)        delete m_timers;        m_timers = NULL;
-  if (m_recordings)    delete m_recordings;    m_recordings = NULL;
-  if (m_channelGroups) delete m_channelGroups; m_channelGroups = NULL;
-  if (m_database)      delete m_database;      m_database = NULL;
+  if (m_addons)
+    SAFE_DELETE(m_addons);
+  if (m_guiInfo)
+    SAFE_DELETE(m_guiInfo);
+  if (m_timers)
+    SAFE_DELETE(m_timers);
+  if (m_recordings)
+    SAFE_DELETE(m_recordings);
+  if (m_channelGroups)
+    SAFE_DELETE(m_channelGroups);
+  if (m_database)
+    SAFE_DELETE(m_database);
   m_triggerEvent.Set();
 }
 
