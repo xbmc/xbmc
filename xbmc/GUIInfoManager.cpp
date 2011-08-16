@@ -466,6 +466,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "audiolanguage",    LISTITEM_AUDIO_LANGUAGE },
                                   { "subtitlelanguage", LISTITEM_SUBTITLE_LANGUAGE },
                                   { "isresumable",      LISTITEM_IS_RESUMABLE},
+                                  { "percentplayed",    LISTITEM_PERCENT_PLAYED},
                                   { "isfolder",         LISTITEM_IS_FOLDER },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
@@ -3680,8 +3681,10 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
 
   switch (info)
   {
-    /* add integer LISTITEM_ here */
-    break;
+  case LISTITEM_PERCENT_PLAYED:
+    if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0)
+      value = (int)(100 * ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+    return true;
   }
 
   return false;
