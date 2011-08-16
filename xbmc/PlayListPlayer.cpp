@@ -164,6 +164,10 @@ bool CPlayListPlayer::PlayNext(int offset, bool bAutoPlay)
     if(!bAutoPlay)
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(34201));
 
+    CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
+    g_windowManager.SendThreadMessage(msg);
+    Reset();
+    m_iCurrentPlayList = PLAYLIST_NONE;
     return false;
   }
 

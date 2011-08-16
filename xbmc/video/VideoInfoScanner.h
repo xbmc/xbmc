@@ -219,7 +219,6 @@ namespace VIDEO
      TODO: Ideally we would return INFO_HAVE_ALREADY if we don't have to update any episodes
      and we should return INFO_NOT_FOUND only if no information is found for any of
      the episodes. INFO_ADDED then indicates we've added one or more episodes.
-     \param episodes the episode list for the show.
      \param files the episode files to process.
      \param scraper scraper to use for finding online info
      \param idShow the database id of the show.
@@ -228,7 +227,7 @@ namespace VIDEO
      \return INFO_ERROR on failure, INFO_CANCELLED on cancellation,
      INFO_NOT_FOUND if an episode isn't found, or INFO_ADDED if all episodes are added.
      */
-    INFO_RET OnProcessSeriesFolder(EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
+    INFO_RET OnProcessSeriesFolder(EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress = NULL);
 
     void EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList);
     bool EnumerateEpisodeItem(const CFileItemPtr item, EPISODES& episodeList);

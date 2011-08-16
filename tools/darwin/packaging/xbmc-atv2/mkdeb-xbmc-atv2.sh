@@ -20,7 +20,9 @@ if [ ! -d $XBMC ]; then
   echo "XBMC.frappliance not found! are you sure you built $1 target?"
   exit 1
 fi
-if [ -f "/usr/bin/sudo" ]; then
+if [ -f "/usr/libexec/fauxsu/libfauxsu.dylib" ]; then
+  export DYLD_INSERT_LIBRARIES=/usr/libexec/fauxsu/libfauxsu.dylib
+elif [ -f "/usr/bin/sudo" ]; then
   SUDO="/usr/bin/sudo"
 fi
 if [ -f "/Users/Shared/xbmc-depends/toolchain/bin/dpkg-deb" ]; then

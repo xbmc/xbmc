@@ -569,7 +569,7 @@ public:
   bool EvaluateBool(const CStdString &expression, int context = 0);
 
   int TranslateString(const CStdString &strCondition);
-  int GetInt(int info, int contextWindow = 0) const;
+  int GetInt(int info, int contextWindow = 0, const CGUIListItem *item = NULL) const;
   CStdString GetLabel(int info, int contextWindow = 0);
 
   CStdString GetImage(int info, int contextWindow);
@@ -632,6 +632,7 @@ public:
 
   void ResetCache();
 
+  int GetItemInt(const CGUIListItem *item, int info) const;
   CStdString GetItemLabel(const CFileItem *item, int info) const;
   CStdString GetItemImage(const CFileItem *item, int info) const;
 
@@ -680,6 +681,7 @@ protected:
   };
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
+  int GetMultiInfoInt(const GUIInfo &info, int contextWindow = 0) const;
   CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;

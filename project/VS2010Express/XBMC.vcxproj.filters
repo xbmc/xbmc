@@ -2691,7 +2691,9 @@
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\InertialScrollingHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\input\InertialScrollingHandler.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp">
       <Filter>threads\platform</Filter>
     </ClCompile>
@@ -5426,7 +5428,9 @@
     <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h">
       <Filter>threads</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\InertialScrollingHandler.h" />
+    <ClInclude Include="..\..\xbmc\input\InertialScrollingHandler.h" >
+          <Filter>input</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\platform\Condition.h">
       <Filter>threads\platform</Filter>
     </ClInclude>

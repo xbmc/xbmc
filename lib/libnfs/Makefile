@@ -6,7 +6,7 @@
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=48593f5
+VERSION=9115b88
 SOURCE=$(LIBNAME)-$(VERSION)
 # download location and format
 BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
