@@ -1426,12 +1426,7 @@ CFileItemPtr CFileItemList::Get(const CStdString& strPath)
 {
   CSingleLock lock(m_lock);
 
-  CStdString pathToCheck(strPath);
-  
-  if (URIUtils::IsStack(strPath))
-    pathToCheck = CStackDirectory::GetStackedTitlePath(strPath);
-
-  pathToCheck.ToLower();
+  CStdString pathToCheck(strPath); pathToCheck.ToLower();
 
   if (m_fastLookup)
   {
@@ -1456,12 +1451,7 @@ const CFileItemPtr CFileItemList::Get(const CStdString& strPath) const
 {
   CSingleLock lock(m_lock);
   
-  CStdString pathToCheck(strPath);
-  
-  if (URIUtils::IsStack(strPath))
-    pathToCheck = CStackDirectory::GetStackedTitlePath(strPath);
-
-  pathToCheck.ToLower();
+  CStdString pathToCheck(strPath); pathToCheck.ToLower();
    
   if (m_fastLookup)
   {
