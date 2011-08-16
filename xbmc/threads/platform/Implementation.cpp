@@ -19,10 +19,8 @@
  *
  */
 
-#include "threads/platform/platform.select.h"
-
-#if (defined USE_PTHREADS_THREADING)
+#if (defined TARGET_POSIX)
 #include "threads/platform/pthreads/Implementation.cpp"
-#elif (defined USE_WIN_THREADING)
+#elif (defined TARGET_WINDOWS)
 // win has no need of an Implementation.cpp
 #endif

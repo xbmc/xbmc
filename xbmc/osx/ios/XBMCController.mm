@@ -29,7 +29,6 @@
 #include "AdvancedSettings.h"
 #include "FileItem.h"
 #include "Application.h"
-#include "InertialScrollingHandler.h"
 #include "MouseStat.h"
 #include "WindowingFactory.h"
 #include "guilib/GUIWindowManager.h"

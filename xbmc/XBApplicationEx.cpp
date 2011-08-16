@@ -117,7 +117,7 @@ INT CXBApplicationEx::Run()
     try
     {
 #endif
-      if (!m_bStop) FrameMove();
+      if (!m_bStop) FrameMove(true);
       //reset exception count
       frameMoveExceptionCount = 0;
 

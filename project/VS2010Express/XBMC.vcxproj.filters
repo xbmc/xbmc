@@ -235,6 +235,9 @@
     <Filter Include="threads\platform\win">
       <UniqueIdentifier>{1f49caed-1c84-46a1-83fc-b1fa6cfd749e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="interfaces\info">
+      <UniqueIdentifier>{cea579fc-bdd7-499e-a6a6-07d681d1ab24}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -1256,9 +1259,6 @@
     <ClCompile Include="..\..\xbmc\guilib\GUIButtonControl.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\guilib\GUIButtonScroller.cpp">
-      <Filter>guilib</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\guilib\GUICheckMarkControl.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
@@ -1970,6 +1970,9 @@
     <ClCompile Include="..\..\xbmc\utils\SystemInfo.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\TimeSmoother.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\TimeUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -2472,12 +2475,20 @@
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp">
       <Filter>guilib</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\InertialScrollingHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\input\InertialScrollingHandler.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp">
       <Filter>threads\platform</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
       <Filter>threads</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\threads\platform\win\FairMonitor.cpp">
+      <Filter>threads\platform\win</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp">
+      <Filter>interfaces\info</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -3635,9 +3646,6 @@
     <ClInclude Include="..\..\xbmc\guilib\GUIButtonControl.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIButtonScroller.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUICallback.h">
       <Filter>guilib</Filter>
     </ClInclude>
@@ -4484,6 +4492,9 @@
     <ClInclude Include="..\..\xbmc\utils\SystemInfo.h">
       <Filter>utils</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\TimeSmoother.h">
+      <Filter>utils</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\TimeUtils.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -4965,7 +4976,9 @@
     <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h">
       <Filter>threads</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\InertialScrollingHandler.h" />
+    <ClInclude Include="..\..\xbmc\input\InertialScrollingHandler.h" >
+          <Filter>input</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\platform\Condition.h">
       <Filter>threads\platform</Filter>
     </ClInclude>
@@ -4984,11 +4997,11 @@
     <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h">
       <Filter>threads\platform\win</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\platform\platform.select.h">
-      <Filter>threads\platform</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\threads\SystemClock.h">
       <Filter>threads</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h">
+      <Filter>interfaces\info</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

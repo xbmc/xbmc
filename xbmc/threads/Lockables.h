@@ -73,7 +73,10 @@ namespace XbmcThreads
       {
         ret = count - 1;  // The -1 is because we don't want 
                           //  to count the try_lock increment.
-        while (count > 0) // This will also unlock the try_lock.
+        // We must NOT compare "count" in this loop since 
+        // as soon as the last unlock is called another thread
+        // can modify it.
+        for (unsigned int i = 0; i <= ret; i++) // This will also unlock the try_lock.
           unlock();
       }
 

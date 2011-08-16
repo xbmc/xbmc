@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="skin.confluence"
-  version="2.0.0"
+  version="2.1.0"
   name="Confluence"
   provider-name="Jezz_X, Team XBMC">
   <requires>
@@ -9,11 +9,11 @@
   </requires>
   <extension
     point="xbmc.gui.skin"
-    defaultresolution="720p"
-    defaultresolutionwide="720p"
     defaultthemename="textures.xbt"
-    effectslowdown="0.75"
-    debugging="false"/>
+    debugging="false"
+    effectslowdown="0.75">
+    <res width="1280" height="720" aspect="16:9" default="true" folder="720p" />
+  </extension>
   <extension point="xbmc.addon.metadata">
     <summary lang="ca">Aparença Confluence, per Jezz_X. (Aparença per defecte de l'XBMC)</summary>
     <summary lang="en">Confluence skin by Jezz_X. (XBMC's default skin)</summary>

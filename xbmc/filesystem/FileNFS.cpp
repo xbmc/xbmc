@@ -34,6 +34,12 @@
 
 #include <nfsc/libnfs-raw-mount.h>
 
+//KEEP_ALIVE_TIMEOUT is decremented every half a second
+//480 * 0.5s == 240s == 4mins
+//so when no read was done for 4mins and files are open
+//do the nfs keep alive for the open files
+#define KEEP_ALIVE_TIMEOUT 480
+
 using namespace XFILE;
 
 CNfsConnection::CNfsConnection()
@@ -108,6 +114,7 @@ void CNfsConnection::clearMembers()
     m_writeChunkSize = 0;
     m_readChunkSize = 0;  
     m_pNfsContext = NULL;
+    m_KeepAliveTimeouts.clear();    
 }
 
 bool CNfsConnection::resetContext()
@@ -242,15 +249,56 @@ void CNfsConnection::CheckIfIdle()
       }
     }
   }
+  
+  if( m_pNfsContext != NULL )
+  {
+    //handle keep alive on opened files
+    for( tFileKeepAliveMap::iterator it = m_KeepAliveTimeouts.begin();it!=m_KeepAliveTimeouts.end();it++)
+    {
+      CSingleLock lock(keepAliveLock);
+      if(it->second > 0)
+      {
+        it->second--;
+      }
+      else
+      {
+        keepAlive(it->first);
+        //reset timeout
+        it->second = KEEP_ALIVE_TIMEOUT;
+      }
+      lock.Leave();      
+    }
+  }
 }
 
-void CNfsConnection::SetActivityTime()
+//remove file handle from keep alive list on file close
+void CNfsConnection::removeFromKeepAliveList(struct nfsfh  *_pFileHandle)
 {
-  /* Since we get called every 500ms from ProcessSlow we limit the tick count to 180 */
-  /* That means we have 2 ticks per second which equals 180/2 == 90 seconds */
-  m_IdleTimeout = 180;
+  CSingleLock lock(keepAliveLock);
+  m_KeepAliveTimeouts.erase(_pFileHandle);
 }
 
+//reset timeouts on read
+void CNfsConnection::resetKeepAlive(struct nfsfh  *_pFileHandle)
+{
+  CSingleLock lock(keepAliveLock);
+  //adds new keys - refreshs existing ones  
+  m_KeepAliveTimeouts[_pFileHandle] = KEEP_ALIVE_TIMEOUT;
+}
+
+//keep alive the filehandles nfs connection
+//by blindly doing a read 32bytes - seek back to where
+//we were before
+void CNfsConnection::keepAlive(struct nfsfh  *_pFileHandle)
+{
+  off_t offset = 0;
+  char buffer[32];
+  CLog::Log(LOGNOTICE, "NFS: sending keep alive after %i s.",KEEP_ALIVE_TIMEOUT/2);
+  CSingleLock lock(*this);
+  m_pLibNfs->nfs_lseek(m_pNfsContext, _pFileHandle, 0, SEEK_CUR, &offset);
+  m_pLibNfs->nfs_read(m_pNfsContext, _pFileHandle, 32, buffer);
+  m_pLibNfs->nfs_lseek(m_pNfsContext, _pFileHandle, offset, SEEK_SET, &offset);
+}
 
 /* The following two function is used to keep track on how many Opened files/directories there are.
 needed for unloading the dylib*/
@@ -268,7 +316,6 @@ void CNfsConnection::AddIdleConnection()
    leaves the movie paused for a long while and then press stop */
   m_IdleTimeout = 180;
 }
-
 
 CNfsConnection gNfsConnection;
 
@@ -415,7 +462,8 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
   
   if (m_pFileHandle == NULL || gNfsConnection.GetNfsContext()==NULL ) return 0;
 
-  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(gNfsConnection.GetNfsContext(), m_pFileHandle, uiBufSize, (char *)lpBuf);
+  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(gNfsConnection.GetNfsContext(), m_pFileHandle, uiBufSize, (char *)lpBuf);  
+  gNfsConnection.resetKeepAlive(m_pFileHandle);//triggers keep alive timer reset for this filehandle
   //something went wrong ...
   if (numberOfBytesRead < 0) 
   {
@@ -435,7 +483,6 @@ int64_t CFileNFS::Seek(int64_t iFilePosition, int iWhence)
   
  
   ret = (int)gNfsConnection.GetImpl()->nfs_lseek(gNfsConnection.GetNfsContext(), m_pFileHandle, iFilePosition, iWhence, &offset);
-  
   if (ret < 0) 
   {
     CLog::Log(LOGERROR, "%s - Error( seekpos: %"PRId64", whence: %i, fsize: %"PRId64", %s)", __FUNCTION__, iFilePosition, iWhence, m_fileSize, gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
@@ -453,7 +500,8 @@ void CFileNFS::Close()
     int ret = 0;
     CLog::Log(LOGDEBUG,"CFileNFS::Close closing file %s", m_url.GetFileName().c_str());
     ret = gNfsConnection.GetImpl()->nfs_close(gNfsConnection.GetNfsContext(), m_pFileHandle);
-    
+    gNfsConnection.removeFromKeepAliveList(m_pFileHandle);
+        
 	  if (ret < 0) 
     {
       CLog::Log(LOGERROR, "Failed to close(%s) - %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));

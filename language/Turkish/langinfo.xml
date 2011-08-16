@@ -10,7 +10,7 @@
     <subtitle>tr</subtitle>
   </dvd>
   <regions>
-    <region name="Turkiye" locale="TR">
+    <region name="Türkiye" locale="TR">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>DDDD, D MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>

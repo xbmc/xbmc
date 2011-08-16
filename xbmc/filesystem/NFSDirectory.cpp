@@ -55,10 +55,11 @@ bool CNFSDirectory::GetDirectoryFromExportList(const CStdString& strPath, CFileI
       URIUtils::RemoveSlashAtEnd(nonConstStrPath);
            
       CFileItemPtr pItem(new CFileItem(currentExport));
-      pItem->m_strPath = nonConstStrPath + currentExport;
+      CStdString path(nonConstStrPath + currentExport);
+      URIUtils::AddSlashAtEnd(path);
+      pItem->SetPath(path);
       pItem->m_dateTime=0;
 
-      URIUtils::AddSlashAtEnd(pItem->m_strPath);
       pItem->m_bIsFolder = true;
       items.Add(pItem);
   }
@@ -84,10 +85,11 @@ bool CNFSDirectory::GetServerList(CFileItemList &items)
       CStdString currentExport(srv->addr);
 
       CFileItemPtr pItem(new CFileItem(currentExport));
-      pItem->m_strPath = "nfs://" + currentExport;
+      CStdString path("nfs://" + currentExport);
+      URIUtils::AddSlashAtEnd(path);
       pItem->m_dateTime=0;
 
-      URIUtils::AddSlashAtEnd(pItem->m_strPath);
+      pItem->SetPath(path);
       pItem->m_bIsFolder = true;
       items.Add(pItem);
       ret = true; //added at least one entry
@@ -182,12 +184,12 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       FileTimeToLocalFileTime(&fileTime, &localTime);
 
       CFileItemPtr pItem(new CFileItem(strName));
-      pItem->m_strPath = strPath + strName;
+      CStdString path(strPath + strName);
       pItem->m_dateTime=localTime;      
 
       if (bIsDir)
       {
-        URIUtils::AddSlashAtEnd(pItem->m_strPath);
+        URIUtils::AddSlashAtEnd(path);
         pItem->m_bIsFolder = true;
       }
       else
@@ -195,6 +197,12 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
       }
+
+      if (strName[0] == '.')
+      {
+        pItem->SetProperty("file:hidden", true);
+      }
+      pItem->SetPath(path);
       items.Add(pItem);
     }
   }

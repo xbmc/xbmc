@@ -109,18 +109,18 @@ bool CGUIDialogPlayEject::ShowAndGetInput(const CFileItem & item,
   }
   else
   {
-    strLine1 = URIUtils::GetFileName(item.m_strPath);
+    strLine1 = URIUtils::GetFileName(item.GetPath());
     URIUtils::RemoveExtension(strLine1);
   }
 
   // Figure out Line 2 of the dialog
   CStdString strLine2;
   TiXmlDocument discStubXML;
-  if (discStubXML.LoadFile(item.m_strPath))
+  if (discStubXML.LoadFile(item.GetPath()))
   {
     TiXmlElement * pRootElement = discStubXML.RootElement();
     if (!pRootElement || strcmpi(pRootElement->Value(), "discstub") != 0)
-      CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.m_strPath.c_str());
+      CLog::Log(LOGERROR, "Error loading %s, no <discstub> node", item.GetPath().c_str());
     else
       XMLUtils::GetString(pRootElement, "message", strLine2);
   }

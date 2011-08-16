@@ -27,7 +27,6 @@
 CGUIPythonWindowXMLDialog::CGUIPythonWindowXMLDialog(int id, CStdString strXML, CStdString strFallBackPath)
 : CGUIPythonWindowXML(id,strXML,strFallBackPath)
 {
-  m_bRunning = false;
   m_loadOnDemand = false;
 }
 
@@ -47,14 +46,6 @@ bool CGUIPythonWindowXMLDialog::OnMessage(CGUIMessage &message)
   return CGUIPythonWindowXML::OnMessage(message);
 }
 
-void CGUIPythonWindowXMLDialog::Show(bool show /* = true */)
-{
-  CSingleExit leaveIt(g_graphicsContext);
-  ThreadMessage tMsg = {TMSG_GUI_PYTHON_DIALOG, 1, show ? 1 : 0};
-  tMsg.lpVoid = this;
-  g_application.getApplicationMessenger().SendMessage(tMsg, true);
-}
-
 void CGUIPythonWindowXMLDialog::Show_Internal(bool show /* = true */)
 {
   if (show)
@@ -64,14 +55,15 @@ void CGUIPythonWindowXMLDialog::Show_Internal(bool show /* = true */)
     // active this dialog...
     CGUIMessage msg(GUI_MSG_WINDOW_INIT,0,0);
     OnMessage(msg);
-    m_bRunning = true;
+    m_active = true;
   }
   else // hide
-  {
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT,0,0);
-    OnMessage(msg);
+    Close();
+}
 
-    g_windowManager.RemoveDialog(GetID());
-    m_bRunning = false;
-  }
+void CGUIPythonWindowXMLDialog::OnDeinitWindow(int nextWindowID)
+{
+  g_windowManager.RemoveDialog(GetID());
+  CGUIWindow::OnDeinitWindow(nextWindowID);
+  g_windowManager.Delete(GetID());
 }

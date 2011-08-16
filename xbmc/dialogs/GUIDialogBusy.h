@@ -29,7 +29,7 @@ class CGUIDialogBusy: public CGUIDialog
 public:
   CGUIDialogBusy(void);
   virtual ~CGUIDialogBusy(void);
-  virtual bool OnAction(const CAction &action);
+  virtual bool OnBack(int actionID);
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
 

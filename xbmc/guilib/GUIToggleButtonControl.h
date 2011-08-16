@@ -55,13 +55,13 @@ public:
   void SetLabel(const std::string& strLabel);
   void SetAltLabel(const std::string& label);
   virtual CStdString GetDescription() const;
-  void SetToggleSelect(int toggleSelect) { m_toggleSelect = toggleSelect; };
+  void SetToggleSelect(const CStdString &toggleSelect);
   void SetAltClickActions(const std::vector<CGUIActionDescriptor> &clickActions);
 
 protected:
   virtual bool UpdateColors();
   virtual void OnClick();
   CGUIButtonControl m_selectButton;
-  int m_toggleSelect;
+  unsigned int m_toggleSelect;
 };
 #endif

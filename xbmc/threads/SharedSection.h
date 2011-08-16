@@ -23,6 +23,7 @@
 
 #include "threads/Condition.h"
 #include "threads/SingleLock.h"
+#include "threads/Helpers.h"
 
 /**
  * A CSharedSection is a mutex that satisfies the Shared Lockable concept (see Lockables.h).
@@ -31,21 +32,20 @@ class CSharedSection
 {
   CCriticalSection sec;
   XbmcThreads::ConditionVariable actualCv;
-  XbmcThreads::TightConditionVariable<bool&> cond;
+  XbmcThreads::TightConditionVariable<XbmcThreads::InversePredicate<unsigned int&> > cond;
 
   unsigned int sharedCount;
-  bool noShared;
 
 public:
-  inline CSharedSection() : cond(actualCv,noShared), sharedCount(0), noShared(true) {}
+  inline CSharedSection() : cond(actualCv,XbmcThreads::InversePredicate<unsigned int&>(sharedCount)), sharedCount(0)  {}
 
   inline void lock() { CSingleLock l(sec); if (sharedCount) cond.wait(l); sec.lock(); }
   inline bool try_lock() { return (sec.try_lock() ? ((sharedCount == 0) ? true : (sec.unlock(), false)) : false); }
   inline void unlock() { sec.unlock(); }
 
-  inline void lock_shared() { CSingleLock l(sec); sharedCount++; noShared = false; }
-  inline bool try_lock_shared() { return (sec.try_lock() ? sharedCount++, noShared = false, sec.unlock(), true : false); }
-  inline void unlock_shared() { CSingleLock l(sec); sharedCount--; if (!sharedCount) { noShared = true; cond.notifyAll(); } }
+  inline void lock_shared() { CSingleLock l(sec); sharedCount++; }
+  inline bool try_lock_shared() { return (sec.try_lock() ? sharedCount++, sec.unlock(), true : false); }
+  inline void unlock_shared() { CSingleLock l(sec); sharedCount--; if (!sharedCount) { cond.notifyAll(); } }
 };
 
 class CSharedLock : public XbmcThreads::SharedLock<CSharedSection>

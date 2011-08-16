@@ -88,7 +88,7 @@ bool CDirectoryNodeOverview::GetContent(CFileItemList& items) const
     CFileItemPtr pItem(new CFileItem(g_localizeStrings.Get(OverviewChildren[i].label)));
     CStdString strDir;
     strDir.Format("%ld/", OverviewChildren[i].id);
-    pItem->m_strPath = BuildPath() + strDir;
+    pItem->SetPath(BuildPath() + strDir);
     pItem->m_bIsFolder = true;
     pItem->SetCanQueue(false);
     items.Add(pItem);

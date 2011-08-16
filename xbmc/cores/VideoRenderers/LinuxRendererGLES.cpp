@@ -392,6 +392,29 @@ void CLinuxRendererGLES::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
   if (ValidateRenderTarget())
     return;
 
+  if (m_renderMethod & RENDER_BYPASS)
+  {
+    ManageDisplay();
+    ManageTextures();
+    g_graphicsContext.BeginPaint();
+
+    // RENDER_BYPASS means we are rendering video
+    // outside the control of gles and on a different
+    // graphics plane that is under the gles layer.
+    // Clear a hole where video would appear so we do not see
+    // background images that have already been rendered. 
+    g_graphicsContext.SetScissors(m_destRect);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    g_graphicsContext.EndPaint();
+    glFinish();
+    return;
+  }
+
   // this needs to be checked after texture validation
   if (!m_bImageReady) return;
 
@@ -577,6 +600,12 @@ void CLinuxRendererGLES::LoadShaders(int field)
         m_renderMethod = RENDER_OMXEGL;
         break;
       }
+      else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_BYPASS)
+      {
+        CLog::Log(LOGNOTICE, "GL: Using BYPASS render method");
+        m_renderMethod = RENDER_BYPASS;
+        break;
+      }
       else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_CVBREF)
       {
         CLog::Log(LOGNOTICE, "GL: Using CoreVideoRef RGBA render method");
@@ -639,6 +668,12 @@ void CLinuxRendererGLES::LoadShaders(int field)
     m_textureCreate = &CLinuxRendererGLES::CreateCVRefTexture;
     m_textureDelete = &CLinuxRendererGLES::DeleteCVRefTexture;
   }
+  else if (CONF_FLAGS_FORMAT_MASK(m_iFlags) == CONF_FLAGS_FORMAT_BYPASS)
+  {
+    m_textureUpload = &CLinuxRendererGLES::UploadBYPASSTexture;
+    m_textureCreate = &CLinuxRendererGLES::CreateBYPASSTexture;
+    m_textureDelete = &CLinuxRendererGLES::DeleteBYPASSTexture;
+  }
   else
   {
     // default to YV12 texture handlers
@@ -678,6 +713,10 @@ void CLinuxRendererGLES::UnInit()
 
 void CLinuxRendererGLES::Render(DWORD flags, int index)
 {
+  // If rendered directly by the hardware
+  if (m_renderMethod & RENDER_BYPASS)
+    return;
+
   // obtain current field, if interlaced
   if( flags & RENDER_FLAG_TOP)
     m_currentField = FIELD_TOP;
@@ -1698,6 +1737,22 @@ bool CLinuxRendererGLES::CreateCVRefTexture(int index)
 
   m_eventTexturesDone[index]->Set();
 #endif
+  return true;
+}
+
+//********************************************************************************************************
+// BYPASS creation, deletion, copying + clearing
+//********************************************************************************************************
+void CLinuxRendererGLES::UploadBYPASSTexture(int index)
+{
+  m_eventTexturesDone[index]->Set();
+}
+void CLinuxRendererGLES::DeleteBYPASSTexture(int index)
+{
+}
+bool CLinuxRendererGLES::CreateBYPASSTexture(int index)
+{
+  m_eventTexturesDone[index]->Set();
   return true;
 }
 

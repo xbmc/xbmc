@@ -45,6 +45,7 @@ void CVideoInfoTag::Reset()
   m_strPlot = "";
   m_strPictureURL.Clear();
   m_strTitle = "";
+  m_strShowTitle = "";
   m_strOriginalTitle = "";
   m_strSortTitle = "";
   m_strVotes = "";
@@ -99,6 +100,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "title", m_strTitle);
   if (!m_strOriginalTitle.IsEmpty())
     XMLUtils::SetString(movie, "originaltitle", m_strOriginalTitle);
+  if (!m_strShowTitle.IsEmpty())
+    XMLUtils::SetString(movie, "showtitle", m_strShowTitle);
   if (!m_strSortTitle.IsEmpty())
     XMLUtils::SetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::SetFloat(movie, "rating", m_fRating);
@@ -468,6 +471,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
 {
   XMLUtils::GetString(movie, "title", m_strTitle);
   XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
+  XMLUtils::GetString(movie, "showtitle", m_strShowTitle);
   XMLUtils::GetString(movie, "sorttitle", m_strSortTitle);
   XMLUtils::GetFloat(movie, "rating", m_fRating);
   XMLUtils::GetFloat(movie, "epbookmark", m_fEpBookmark);

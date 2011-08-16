@@ -125,7 +125,7 @@ void CGUITextBox::Process(unsigned int currentTime, CDirtyRegionList &dirtyregio
   // update our auto-scrolling as necessary
   if (m_autoScrollTime && m_lines.size() > m_itemsPerPage)
   {
-    if (!m_autoScrollCondition || g_infoManager.GetBool(m_autoScrollCondition, m_parentID))
+    if (!m_autoScrollCondition || g_infoManager.GetBoolValue(m_autoScrollCondition))
     {
       if (m_lastRenderTime)
         m_autoScrollDelayTime += currentTime - m_lastRenderTime;
@@ -324,7 +324,7 @@ void CGUITextBox::SetAutoScrolling(const TiXmlNode *node)
     scroll->Attribute("delay", &m_autoScrollDelay);
     scroll->Attribute("time", &m_autoScrollTime);
     if (scroll->FirstChild())
-      m_autoScrollCondition = g_infoManager.TranslateString(scroll->FirstChild()->ValueStr());
+      m_autoScrollCondition = g_infoManager.Register(scroll->FirstChild()->ValueStr(), GetParentID());
     int repeatTime;
     if (scroll->Attribute("repeat", &repeatTime))
       m_autoScrollRepeatAnim = new CAnimation(CAnimation::CreateFader(100, 0, repeatTime, 1000));

@@ -36,10 +36,10 @@ CGUIDialogBusy::~CGUIDialogBusy(void)
 void CGUIDialogBusy::Show_Internal()
 {
   m_bCanceled = false;
-  m_bRunning = true;
+  m_active = true;
   m_bModal = true;
   m_bLastVisible = true;
-  m_dialogClosing = false;
+  m_closing = false;
   g_windowManager.RouteToWindow(this);
 
   // active this window...
@@ -63,14 +63,8 @@ void CGUIDialogBusy::Render()
   CGUIDialog::Render();
 }
 
-bool CGUIDialogBusy::OnAction(const CAction &action)
+bool CGUIDialogBusy::OnBack(int actionID)
 {
-  if(action.GetID() == ACTION_NAV_BACK 
-  || action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    m_bCanceled = true;
-    return true;
-  }
-  else
-    return CGUIDialog::OnAction(action);
+  m_bCanceled = true;
+  return true;
 }

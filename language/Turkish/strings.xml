@@ -5,6 +5,9 @@
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
 <!--Date of translation: 22/04/2011-->
+<!--Translator: K. Deniz-->
+<!--Email: blackpilot24@hotmail.com-->
+<!--Date of translation: 08/08/2011-->
 <!--Based on English strings commit 282f5a5b809ab387129f-->
 <strings>
   <string id="0">Programlar</string>
@@ -16,7 +19,7 @@
   <string id="6">XBMC SVN</string>
   <string id="7">Dosya yöneticisi</string>
   <string id="8">Hava Durumu</string>
-  <string id="9">xbmc media center</string>
+  <string id="9">xbmc media merkezi</string>
 
   <string id="11">Pazartesi</string>
   <string id="12">Salı</string>
@@ -2145,7 +2148,7 @@
   <string id="24010">Görsel öğe</string>
   <string id="24011">Eklenti deposu</string>
   <string id="24012">Altyazılar</string>
-  <string id="24013">Lyrics</string>
+  <string id="24013">Şakı Sözleri</string>
   <string id="24014">TV bilgisi</string>
   <string id="24015">Müzik videosu bilgisi</string>
   <string id="24016">Albüm bilgisi</string>
@@ -2248,7 +2251,7 @@
   <string id="33029">Ayrıntılar</string>
   <string id="33030">Outlook</string>
   <string id="33031">Coverflow</string>
-  <string id="33032">Translate text</string>
+  <string id="33032">Metni Tercüme Et</string>
   <string id="33033">%s kategorisinin harita listesi</string>
   <string id="33034">36 Saatlik</string>
   <string id="33035">Haritalar</string>

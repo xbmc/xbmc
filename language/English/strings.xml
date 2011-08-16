@@ -1842,12 +1842,13 @@
   <string id="20410">Trailer</string>
   <string id="20411">Flatten</string>
   <string id="20412">Flatten TV shows</string>
-  <string id="20413">Get Fanart</string>
+  <string id="20413">Get fanart</string>
   <string id="20414">Show Fanart in video and music libraries</string>
   <string id="20415">Scanning for new content</string>
   <string id="20416">First aired</string>
   <string id="20417">Writer</string>
-  <string id="20418">Clean file and folder names</string>
+  <string id="20418"></string>
+  <string id="20419">Show metadata in files view</string>
 
   <string id="20420">Never</string>
   <string id="20421">If only one season</string>
@@ -2178,6 +2179,7 @@
   <string id="24045">Add-on does not have the correct structure</string>
   <string id="24046">%s is used by the following installed add-on(s)</string>
   <string id="24047">This add-on cannot be uninstalled</string>
+  <string id="24048">Rollback</string>
 
   <string id="24050">Available Add-ons</string>
   <string id="24051">Version:</string>
@@ -2206,6 +2208,8 @@
   <string id="24089">Add-on restarts</string>
   <string id="24090">Lock Add-on manager</string>
 
+  <string id="24094">(current)</string>
+  <string id="24095">(blacklisted)</string>
   <string id="24096">Add-on has been marked as broken in repository.</string>
   <string id="24097">Would you like to disable it on your system?</string>
   <string id="24098">Broken</string>

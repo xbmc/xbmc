@@ -108,7 +108,7 @@ public:
   void RouteToWindow(CGUIWindow* dialog);
   void AddModeless(CGUIWindow* dialog);
   void RemoveDialog(int id);
-  int GetTopMostModalDialogID() const;
+  int GetTopMostModalDialogID(bool ignoreClosing = false) const;
 
   void SendThreadMessage(CGUIMessage& message);
   void SendThreadMessage(CGUIMessage& message, int window);
@@ -138,6 +138,7 @@ private:
   void HideOverlay(CGUIWindow::OVERLAY_STATE state);
   void AddToWindowHistory(int newWindowID);
   void ClearWindowHistory();
+  void CloseWindowSync(CGUIWindow *window, int nextWindowID = 0);
   CGUIWindow *GetTopMostDialog() const;
 
   friend class CApplicationMessenger;

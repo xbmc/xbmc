@@ -21,10 +21,8 @@
 
 #pragma once
 
-#include "threads/platform/platform.select.h"
-
-#if (defined USE_PTHREADS_THREADING)
+#if (defined TARGET_POSIX)
 #include "threads/platform/pthreads/ThreadLocal.h"
-#elif (defined USE_WIN_THREADING)
+#elif (defined TARGET_WINDOWS)
 #include "threads/platform/win/ThreadLocal.h"
 #endif

@@ -455,6 +455,27 @@ bool CUtil::TestGetQualifiedFilename()
   if (file != "smb://foo/bar/") return false;
   return true;
 }
+
+bool CUtil::TestMakeLegalPath()
+{
+  CStdString path;
+#ifdef _WIN32
+  path = "C:\\foo\\bar"; path = MakeLegalPath(path);
+  if (path != "C:\\foo\\bar") return false;
+  path = "C:\\foo:\\bar\\"; path = MakeLegalPath(path);
+  if (path != "C:\\foo_\\bar\\") return false;
+#elif
+  path = "/foo/bar/"; path = MakeLegalPath(path);
+  if (path != "/foo/bar/") return false;
+  path = "/foo?/bar"; path = MakeLegalPath(path);
+  if (path != "/foo_/bar") return false;
+#endif
+  path = "smb://foo/bar"; path = MakeLegalPath(path);
+  if (path != "smb://foo/bar") return false;
+  path = "smb://foo/bar?/"; path = MakeLegalPath(path);
+  if (path != "smb://foo/bar_/") return false;
+  return true;
+}
 #endif
 
 void CUtil::RunShortcut(const char* szShortcutPath)
@@ -697,7 +718,7 @@ void CUtil::RemoveTempFiles()
   {
     if (items[i]->m_bIsFolder)
       continue;
-    XFILE::CFile::Delete(items[i]->m_strPath);
+    XFILE::CFile::Delete(items[i]->GetPath());
   }
 }
 
@@ -710,10 +731,10 @@ void CUtil::ClearSubtitles()
   {
     if (!items[i]->m_bIsFolder)
     {
-      if ( items[i]->m_strPath.Find("subtitle") >= 0 || items[i]->m_strPath.Find("vobsub_queue") >= 0 )
+      if ( items[i]->GetPath().Find("subtitle") >= 0 || items[i]->GetPath().Find("vobsub_queue") >= 0 )
       {
-        CLog::Log(LOGDEBUG, "%s - Deleting temporary subtitle %s", __FUNCTION__, items[i]->m_strPath.c_str());
-        CFile::Delete(items[i]->m_strPath);
+        CLog::Log(LOGDEBUG, "%s - Deleting temporary subtitle %s", __FUNCTION__, items[i]->GetPath().c_str());
+        CFile::Delete(items[i]->GetPath());
       }
     }
   }
@@ -1153,27 +1174,12 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
     return false;
   }
 
-  CURL url(strPath);
-  // silly CStdString can't take a char in the constructor
-  CStdString sep(1, url.GetDirectorySeparator());
-
-  // split the filename portion of the URL up into separate dirs
-  CStdStringArray dirs;
-  StringUtils::SplitString(url.GetFileName(), sep, dirs);
-
-  // we start with the root path
-  CStdString dir = url.GetWithoutFilename();
-  unsigned int i = 0;
-  if (dir.IsEmpty())
-  { // local directory - start with the first dirs member so that
-    // we ensure CUtil::AddFileToFolder() below has something to work with
-    dir = dirs[i++] + sep;
-  }
-  // and append the rest of the directories successively, creating each dir
-  // as we go
-  for (; i < dirs.size(); i++)
+  CStdStringArray dirs = URIUtils::SplitPath(strPath);
+  CStdString dir(dirs.front());
+  URIUtils::AddSlashAtEnd(dir);
+  for (CStdStringArray::iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
   {
-    dir = URIUtils::AddFileToFolder(dir, dirs[i]);
+    dir = URIUtils::AddFileToFolder(dir, *it);
     CDirectory::Create(dir);
   }
 
@@ -1206,14 +1212,27 @@ CStdString CUtil::MakeLegalFileName(const CStdString &strFile, int LegalType)
   return result;
 }
 
-// same as MakeLegalFileName, but we assume that we're passed a complete path,
-// and just legalize the filename
+// legalize entire path
 CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
 {
-  CStdString strPath;
-  URIUtils::GetDirectory(strPathAndFile,strPath);
-  CStdString strFileName = URIUtils::GetFileName(strPathAndFile);
-  return strPath + MakeLegalFileName(strFileName, LegalType);
+  if (URIUtils::IsStack(strPathAndFile))
+    return MakeLegalPath(CStackDirectory::GetFirstStackedFile(strPathAndFile));
+  if (URIUtils::IsMultiPath(strPathAndFile))
+    return MakeLegalPath(CMultiPathDirectory::GetFirstPath(strPathAndFile));
+  if (!URIUtils::IsHD(strPathAndFile) && !URIUtils::IsSmb(strPathAndFile) && !URIUtils::IsNfs(strPathAndFile))
+    return strPathAndFile; // we don't support writing anywhere except HD, SMB and NFS - no need to legalize path
+
+  bool trailingSlash = URIUtils::HasSlashAtEnd(strPathAndFile);
+  CStdStringArray dirs = URIUtils::SplitPath(strPathAndFile);
+  // we just add first token to path and don't legalize it - possible values: 
+  // "X:" (local win32), "" (local unix - empty string before '/') or
+  // "protocol://domain"
+  CStdString dir(dirs.front());
+  URIUtils::AddSlashAtEnd(dir);
+  for (CStdStringArray::iterator it = dirs.begin() + 1; it != dirs.end(); it ++)
+    dir = URIUtils::AddFileToFolder(dir, MakeLegalFileName(*it, LegalType));
+  if (trailingSlash) URIUtils::AddSlashAtEnd(dir);
+  return dir;
 }
 
 CStdString CUtil::ValidatePath(const CStdString &path, bool bFixDoubleSlashes /* = false */)
@@ -1323,7 +1342,11 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
   if( function.Left(5).Equals("xbmc.", false) )
     function.Delete(0, 5);
 
-  // now split up our parameters - we may have quotes to deal with as well as brackets and whitespace
+  SplitParams(paramString, parameters);
+}
+
+void CUtil::SplitParams(const CStdString &paramString, std::vector<CStdString> &parameters)
+{
   bool inQuotes = false;
   bool lastEscaped = false; // only every second character can be escaped
   int inFunction = 0;
@@ -1356,7 +1379,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
       { // start of function
         inFunction++;
       }
-      if (!inFunction && !URIUtils::IsStack(paramString) && ch == ',')
+      if (!inFunction && ch == ',')
       { // not in a function, so a comma signfies the end of this parameter
         if (whiteSpacePos)
           parameter = parameter.Left(whiteSpacePos);
@@ -1387,7 +1410,7 @@ void CUtil::SplitExecFunction(const CStdString &execString, CStdString &function
     parameter += ch;
   }
   if (inFunction || inQuotes)
-    CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, execString.c_str());
+    CLog::Log(LOGWARNING, "%s(%s) - end of string while searching for ) or \"", __FUNCTION__, paramString.c_str());
   if (whiteSpacePos)
     parameter = parameter.Left(whiteSpacePos);
   // trim off start and end quotes
@@ -1622,9 +1645,9 @@ void CUtil::DeleteDirectoryCache(const CStdString &prefix)
   {
     if (items[i]->m_bIsFolder)
       continue;
-    CStdString fileName = URIUtils::GetFileName(items[i]->m_strPath);
+    CStdString fileName = URIUtils::GetFileName(items[i]->GetPath());
     if (fileName.Left(prefix.GetLength()) == prefix)
-      XFILE::CFile::Delete(items[i]->m_strPath);
+      XFILE::CFile::Delete(items[i]->GetPath());
   }
 }
 
@@ -1744,7 +1767,7 @@ void CUtil::GetRecursiveListing(const CStdString& strPath, CFileItemList& items,
   for (int i=0;i<myItems.Size();++i)
   {
     if (myItems[i]->m_bIsFolder)
-      CUtil::GetRecursiveListing(myItems[i]->m_strPath,items,strMask,bUseFileDirectories);
+      CUtil::GetRecursiveListing(myItems[i]->GetPath(),items,strMask,bUseFileDirectories);
     else
       items.Add(myItems[i]);
   }
@@ -1756,10 +1779,10 @@ void CUtil::GetRecursiveDirsListing(const CStdString& strPath, CFileItemList& it
   CDirectory::GetDirectory(strPath,myItems,"",false);
   for (int i=0;i<myItems.Size();++i)
   {
-    if (myItems[i]->m_bIsFolder && !myItems[i]->m_strPath.Equals(".."))
+    if (myItems[i]->m_bIsFolder && !myItems[i]->GetPath().Equals(".."))
     {
       item.Add(myItems[i]);
-      CUtil::GetRecursiveDirsListing(myItems[i]->m_strPath,item);
+      CUtil::GetRecursiveDirsListing(myItems[i]->GetPath(),item);
     }
   }
 }
@@ -1883,10 +1906,7 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
     return CMythDirectory::SupportsFileOperations(strPath);
   }
   if (URIUtils::IsStack(strPath))
-  {
-    CStackDirectory dir;
-    return SupportsFileOperations(dir.GetFirstStackedFile(strPath));
-  }
+    return SupportsFileOperations(CStackDirectory::GetFirstStackedFile(strPath));
   if (URIUtils::IsMultiPath(strPath))
     return CMultiPathDirectory::SupportsFileOperations(strPath);
 
@@ -1913,7 +1933,7 @@ void CUtil::GetSkinThemes(vector<CStdString>& vecTheme)
     if (!pItem->m_bIsFolder)
     {
       CStdString strExtension;
-      URIUtils::GetExtension(pItem->m_strPath, strExtension);
+      URIUtils::GetExtension(pItem->GetPath(), strExtension);
       if ((strExtension == ".xpr" && pItem->GetLabel().CompareNoCase("Textures.xpr")) ||
           (strExtension == ".xbt" && pItem->GetLabel().CompareNoCase("Textures.xbt")))
       {
@@ -2339,12 +2359,12 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
       
       for (int j = 0; j < items.Size(); j++)
       {
-        URIUtils::Split(items[j]->m_strPath, strPath, strItem);
+        URIUtils::Split(items[j]->GetPath(), strPath, strItem);
         
         // is this a rar or zip-file
         if (URIUtils::IsRAR(strItem) || URIUtils::IsZIP(strItem))
         {
-          ScanArchiveForSubtitles( items[j]->m_strPath, strMovieFileNameNoExt, vecSubtitles );
+          ScanArchiveForSubtitles( items[j]->GetPath(), strMovieFileNameNoExt, vecSubtitles );
         }
         else    // not a rar/zip file
         {
@@ -2353,8 +2373,8 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
             //Cache subtitle with same name as movie
             if (URIUtils::GetExtension(strItem).Equals(sub_exts[i]) && strItem.Left(fnl).Equals(strMovieFileNameNoExt))
             {
-              vecSubtitles.push_back( items[j]->m_strPath ); 
-              CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->m_strPath.c_str() );
+              vecSubtitles.push_back( items[j]->GetPath() ); 
+              CLog::Log(LOGINFO, "%s: found subtitle file %s\n", __FUNCTION__, items[j]->GetPath().c_str() );
             }
           }
         }
@@ -2419,7 +2439,7 @@ int CUtil::ScanArchiveForSubtitles( const CStdString& strArchivePath, const CStd
   }
   for (int it= 0 ; it <ItemList.Size();++it)
   {
-   CStdString strPathInRar = ItemList[it]->m_strPath;
+   CStdString strPathInRar = ItemList[it]->GetPath();
    CStdString strExt = URIUtils::GetExtension(strPathInRar);
    
    CLog::Log(LOGDEBUG, "ScanArchiveForSubtitles:: Found file %s", strPathInRar.c_str());

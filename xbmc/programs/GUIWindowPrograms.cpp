@@ -78,7 +78,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // is this the first time accessing this window?
-      if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
+      if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
         message.SetStringParam(g_settings.m_defaultProgramSource);
 
       m_database.Open();
@@ -150,7 +150,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
 
       buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
@@ -179,7 +179,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CShortcut cut;
       if (item->IsShortCut())
       {
-        cut.Create(item->m_strPath);
+        cut.Create(item->GetPath());
         strDescription = cut.m_strLabel;
       }
       else
@@ -190,15 +190,15 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (item->IsShortCut())
         {
           cut.m_strLabel = strDescription;
-          cut.Save(item->m_strPath);
+          cut.Save(item->GetPath());
         }
         else
         {
           // SetXBEDescription will truncate to 40 characters.
-          //CUtil::SetXBEDescription(item->m_strPath,strDescription);
-          //m_database.SetDescription(item->m_strPath,strDescription);
+          //CUtil::SetXBEDescription(item->GetPath(),strDescription);
+          //m_database.SetDescription(item->GetPath(),strDescription);
         }
-        Update(m_vecItems->m_strPath);
+        Update(m_vecItems->GetPath());
       }
       return true;
     }

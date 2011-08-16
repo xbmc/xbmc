@@ -355,10 +355,11 @@ public:
   void UpdateLastPlayed(const CFileItem &item);
 
   /*! \brief Get the playcount of a list of items
+   \param path the path to fetch videos from
    \param items CFileItemList to fetch the playcounts for
    \sa GetPlayCount, SetPlayCount, IncrementPlayCount
    */
-  bool GetPlayCounts(CFileItemList &items);
+  bool GetPlayCounts(const CStdString &path, CFileItemList &items);
 
   void UpdateMovieTitle(int idMovie, const CStdString& strNewMovieTitle, VIDEODB_CONTENT_TYPE iType=VIDEODB_CONTENT_MOVIES);
 
@@ -449,14 +450,6 @@ public:
    \return A content type string for the current path.
    */
   CStdString GetContentForPath(const CStdString& strPath);
-
-  /*! \brief Get a video of the given content type from the given path, if it exists
-   \param content the content type to fetch.
-   \param path the path to fetch a video from.
-   \param item the returned item.
-   \return true if an item is found, false otherwise.
-   */
-  bool GetItemForPath(const CStdString &content, const CStdString &path, CFileItem &item);
 
   /*! \brief Get videos of the given content type from the given path
    \param content the content type to fetch.

@@ -39,6 +39,8 @@
 #include "utils/TimeUtils.h"
 #include "input/ButtonTranslator.h"
 #include "utils/XMLUtils.h"
+#include "GUIAudioManager.h"
+#include "Application.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -57,6 +59,8 @@ CGUIWindow::CGUIWindow(int id, const CStdString &xmlFile)
   m_needsScaling = true;
   m_windowLoaded = false;
   m_loadOnDemand = true;
+  m_closing = false;
+  m_active = false;
   m_renderOrder = 0;
   m_dynamicResourceAlloc = true;
   m_previousWindow = WINDOW_INVALID;
@@ -167,13 +171,15 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
     }
     else if (strValue == "visible" && pChild->FirstChild())
     {
-      CGUIControlFactory::GetConditionalVisibility(pRootElement, m_visibleCondition);
+      CStdString condition;
+      CGUIControlFactory::GetConditionalVisibility(pRootElement, condition);
+      m_visibleCondition = g_infoManager.Register(condition, GetID());
     }
     else if (strValue == "animation" && pChild->FirstChild())
     {
       CRect rect(0, 0, (float)m_coordsRes.iWidth, (float)m_coordsRes.iHeight);
       CAnimation anim;
-      anim.Create(pChild, rect);
+      anim.Create(pChild, rect, GetID());
       m_animations.push_back(anim);
     }
     else if (strValue == "zorder" && pChild->FirstChild())
@@ -192,7 +198,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
         originElement->QueryFloatAttribute("x", &origin.x);
         originElement->QueryFloatAttribute("y", &origin.y);
         if (originElement->FirstChild())
-          origin.condition = g_infoManager.TranslateString(originElement->FirstChild()->Value());
+          origin.condition = g_infoManager.Register(originElement->FirstChild()->Value(), GetID());
         m_origins.push_back(origin);
         originElement = originElement->NextSiblingElement("origin");
       }
@@ -314,9 +320,52 @@ void CGUIWindow::DoRender()
   if (CGUIControlProfiler::IsRunning()) CGUIControlProfiler::Instance().EndFrame();
 }
 
-void CGUIWindow::Close(bool forceClose)
+void CGUIWindow::Render()
 {
-  CLog::Log(LOGERROR,"%s - should never be called on the base class!", __FUNCTION__);
+  CGUIControlGroup::Render();
+  // Check to see if we should close at this point
+  // We check after the controls have finished rendering, as we may have to close due to
+  // the controls rendering after the window has finished it's animation
+  // we call the base class instead of this class so that we can find the change
+  if (m_closing && !CGUIControlGroup::IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
+    Close(true);
+}
+
+void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
+{
+  CSingleLock lock(g_graphicsContext);
+
+  if (!m_active)
+    return;
+
+  forceClose |= (nextWindowID == WINDOW_FULLSCREEN_VIDEO);
+  if (!forceClose && m_active && !m_closing && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
+  {
+    if (enableSound && IsSoundEnabled())
+      g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
+    
+    // Perform the window out effect
+    QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
+    m_closing = true;
+  }
+  else if (forceClose)
+  {
+    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+    OnMessage(msg);
+    m_closing = false;
+  }
+}
+
+void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
+{
+  if (!g_application.IsCurrentThread())
+  {
+    // make sure graphics lock is not held
+    CSingleExit leaveIt(g_graphicsContext);
+    g_application.getApplicationMessenger().Close(this, forceClose, true, nextWindowID, enableSound);
+  }
+  else
+    Close_Internal(forceClose, nextWindowID, enableSound);
 }
 
 bool CGUIWindow::OnAction(const CAction &action)
@@ -340,10 +389,8 @@ bool CGUIWindow::OnAction(const CAction &action)
 
   // default implementations
   if (action.GetID() == ACTION_NAV_BACK || action.GetID() == ACTION_PREVIOUS_MENU)
-  {
-    g_windowManager.PreviousWindow();
-    return true;
-  }
+    return OnBack(action.GetID());
+
   return false;
 }
 
@@ -352,7 +399,7 @@ CPoint CGUIWindow::GetPosition() const
   for (unsigned int i = 0; i < m_origins.size(); i++)
   {
     // no condition implies true
-    if (!m_origins[i].condition || g_infoManager.GetBool(m_origins[i].condition, GetID()))
+    if (!m_origins[i].condition || g_infoManager.GetBoolValue(m_origins[i].condition))
     { // found origin
       return CPoint(m_origins[i].x, m_origins[i].y);
     }
@@ -403,8 +450,14 @@ EVENT_RESULT CGUIWindow::OnMouseEvent(const CPoint &point, const CMouseEvent &ev
 /// calling the base method.
 void CGUIWindow::OnInitWindow()
 {
+  //  Play the window specific init sound
+  if (IsSoundEnabled())
+    g_audioManager.PlayWindowSound(GetID(), SOUND_INIT);
+
   // set our rendered state
   m_hasRendered = false;
+  m_closing = false;
+  m_active = true;
   ResetAnimations();  // we need to reset our animations as those windows that don't dynamically allocate
                       // need their anims reset. An alternative solution is turning off all non-dynamic
                       // allocation (which in some respects may be nicer, but it kills hdd spindown and the like)
@@ -436,24 +489,8 @@ void CGUIWindow::OnDeinitWindow(int nextWindowID)
     RunUnloadActions();
   }
 
-  if (nextWindowID != WINDOW_FULLSCREEN_VIDEO)
-  {
-    // Dialog animations are handled in Close() rather than here
-    if (HasAnimation(ANIM_TYPE_WINDOW_CLOSE) && !IsDialog() && IsActive())
-    {
-      // Perform the window out effect
-      QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
-      while (IsAnimating(ANIM_TYPE_WINDOW_CLOSE))
-      {
-        // TODO This shouldn't be handled like this
-        // The processing should be done from WindowManager and deinit
-        // should probably be called from there.
-        g_windowManager.Process(CTimeUtils::GetFrameTime());
-        g_windowManager.ProcessRenderLoop(true);
-      }
-    }
-  }
   SaveControlStates();
+  m_active = false;
 }
 
 bool CGUIWindow::OnMessage(CGUIMessage& message)
@@ -679,6 +716,8 @@ bool CGUIWindow::IsAnimating(ANIMATION_TYPE animType)
 {
   if (!m_animationsEnabled)
     return false;
+  if (animType == ANIM_TYPE_WINDOW_CLOSE)
+    return m_closing;
   return CGUIControlGroup::IsAnimating(animType);
 }
 
@@ -748,6 +787,12 @@ void CGUIWindow::ResetControlStates()
   m_lastControlID = 0;
   m_focusedControl = 0;
   m_controlStates.clear();
+}
+
+bool CGUIWindow::OnBack(int actionID)
+{
+  g_windowManager.PreviousWindow();
+  return true;
 }
 
 bool CGUIWindow::OnMove(int fromControl, int moveAction)

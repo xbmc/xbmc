@@ -97,6 +97,7 @@ public:
   virtual void OnDown();
   virtual void OnLeft();
   virtual void OnRight();
+  virtual bool OnBack();
   virtual void OnNextControl();
   virtual void OnPrevControl();
   virtual void OnFocus() {};
@@ -174,7 +175,7 @@ public:
    */
   virtual CRect CalcRenderRegion() const;
 
-  virtual void SetNavigation(int up, int down, int left, int right);
+  virtual void SetNavigation(int up, int down, int left, int right, int back = 0);
   virtual void SetTabNavigation(int next, int prev);
 
   /*! \brief Set actions to perform on navigation
@@ -183,24 +184,27 @@ public:
    \param down vector of CGUIActionDescriptors to execute on down
    \param left vector of CGUIActionDescriptors to execute on left
    \param right vector of CGUIActionDescriptors to execute on right
+   \param back vector of CGUIActionDescriptors to execute on back
    \param replace Actions are set only if replace is true or there is no previously set action.  Defaults to true
    \sa SetNavigation, ExecuteActions
    */
   virtual void SetNavigationActions(const std::vector<CGUIActionDescriptor> &up, const std::vector<CGUIActionDescriptor> &down,
-                                    const std::vector<CGUIActionDescriptor> &left, const std::vector<CGUIActionDescriptor> &right, bool replace = true);
+                                    const std::vector<CGUIActionDescriptor> &left, const std::vector<CGUIActionDescriptor> &right,
+                                    const std::vector<CGUIActionDescriptor> &back, bool replace = true);
   void ExecuteActions(const std::vector<CGUIActionDescriptor> &actions);
   int GetControlIdUp() const { return m_controlUp;};
   int GetControlIdDown() const { return m_controlDown;};
   int GetControlIdLeft() const { return m_controlLeft;};
   int GetControlIdRight() const { return m_controlRight;};
+  int GetControlIdBack() const { return m_controlBack; };
   virtual int GetNextControl(int direction) const;
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);
   virtual void SetVisible(bool bVisible, bool setVisState = false);
-  void SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus);
-  int GetVisibleCondition() const { return m_visibleCondition; };
-  void SetEnableCondition(int condition);
+  void SetVisibleCondition(const CStdString &expression, const CStdString &allowHiddenFocus = "");
+  unsigned int GetVisibleCondition() const { return m_visibleCondition; };
+  void SetEnableCondition(const CStdString &expression);
   virtual void UpdateVisibility(const CGUIListItem *item = NULL);
   virtual void SetInitialVisibility();
   virtual void SetEnabled(bool bEnable);
@@ -253,7 +257,6 @@ public:
     GUICONTROL_VIDEO,
     GUICONTROL_MOVER,
     GUICONTROL_RESIZE,
-    GUICONTROL_BUTTONBAR,
     GUICONTROL_EDIT,
     GUICONTROL_VISUALISATION,
     GUICONTROL_RENDERADDON,
@@ -307,6 +310,7 @@ protected:
   int m_controlRight;
   int m_controlUp;
   int m_controlDown;
+  int m_controlBack;
   int m_controlNext;
   int m_controlPrev;
 
@@ -314,6 +318,7 @@ protected:
   std::vector<CGUIActionDescriptor> m_rightActions;
   std::vector<CGUIActionDescriptor> m_upActions;
   std::vector<CGUIActionDescriptor> m_downActions;
+  std::vector<CGUIActionDescriptor> m_backActions;
   std::vector<CGUIActionDescriptor> m_nextActions;
   std::vector<CGUIActionDescriptor> m_prevActions;
 
@@ -334,14 +339,14 @@ protected:
   CGUIControl *m_parentControl;   // our parent control if we're part of a group
 
   // visibility condition/state
-  int m_visibleCondition;
+  unsigned int m_visibleCondition;
   GUIVISIBLE m_visible;
   bool m_visibleFromSkinCondition;
   bool m_forceHidden;       // set from the code when a hidden operation is given - overrides m_visible
   CGUIInfoBool m_allowHiddenFocus;
   bool m_hasRendered;
   // enable/disable state
-  int m_enableCondition;
+  unsigned int m_enableCondition;
   bool m_enabled;
 
   bool m_pushedUpdates;

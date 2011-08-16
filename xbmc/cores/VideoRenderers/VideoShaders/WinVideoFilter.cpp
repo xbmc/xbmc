@@ -85,10 +85,13 @@ D3DXMATRIX* CYUV2RGBMatrix::Matrix()
 
 //===================================================================
 
-void CWinShader::Release()
+CWinShader::~CWinShader()
 {
-  ReleaseInternal(); // virtual, so calls the child function, which is supposed to call down the hierarchy
-  delete this;
+  if (m_effect.Get())
+    m_effect.Release();
+
+  if (m_vb.Get())
+    m_vb.Release();
 }
 
 bool CWinShader::CreateVertexBuffer(DWORD FVF, unsigned int vertCount, unsigned int vertSize, unsigned int primitivesCount)
@@ -120,17 +123,6 @@ bool CWinShader::UnlockVertexBuffer()
     return false;
   }
   return true;
-}
-
-void CWinShader::ReleaseInternal()
-{
-  if (m_effect.Get())
-    m_effect.Release();
-  
-  if (m_vb.Get())
-    m_vb.Release();
-
-  //derived classes: always call Base::ReleaseInternal() at the end
 }
 
 bool CWinShader::LoadEffect(CStdString filename, DefinesMap* defines)
@@ -194,8 +186,6 @@ bool CWinShader::Execute()
 
 bool CYUV2RGBShader::Create(unsigned int sourceWidth, unsigned int sourceHeight, BufferFormat fmt)
 {
-  ReleaseInternal();
-
   CWinShader::CreateVertexBuffer(D3DFVF_XYZRHW | D3DFVF_TEX3, 4, sizeof(CUSTOMVERTEX), 2);
 
   m_sourceWidth = sourceWidth;
@@ -282,6 +272,15 @@ void CYUV2RGBShader::Render(CRect sourceRect, CRect destRect,
   Execute();
 }
 
+CYUV2RGBShader::~CYUV2RGBShader()
+{
+  for(unsigned i = 0; i < MAX_PLANES; i++)
+  {
+    if (m_YUVPlanes[i].Get())
+      m_YUVPlanes[i].Release();
+  }
+}
+
 void CYUV2RGBShader::PrepareParameters(CRect sourceRect,
                                        CRect destRect,
                                        float contrast,
@@ -356,15 +355,6 @@ void CYUV2RGBShader::SetShaderParameters(YUVBuffer* YUVbuf)
   m_effect.SetFloatArray("g_StepXY", m_texSteps, sizeof(m_texSteps)/sizeof(m_texSteps[0]));
 }
 
-void CYUV2RGBShader::ReleaseInternal()
-{
-  for(unsigned i = 0; i < MAX_PLANES; i++)
-  {
-    if (m_YUVPlanes[i].Get())
-      m_YUVPlanes[i].Release();
-  }
-}
-
 bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
 {
   const POINT point = { 0, 0 };
@@ -395,8 +385,6 @@ bool CYUV2RGBShader::UploadToGPU(YUVBuffer* YUVbuf)
 
 bool CConvolutionShader::Create(ESCALINGMETHOD method)
 {
-  ReleaseInternal();
-
   CStdString effectString;
   switch(method)
   {
@@ -448,6 +436,12 @@ void CConvolutionShader::Render(CD3DTexture &sourceTexture,
   float texSteps[] = { 1.0f/(float)sourceWidth, 1.0f/(float)sourceHeight};
   SetShaderParameters(sourceTexture, &texSteps[0], sizeof(texSteps)/sizeof(texSteps[0]));
   Execute();
+}
+
+CConvolutionShader::~CConvolutionShader()
+{
+  if(m_HQKernelTexture.Get())
+    m_HQKernelTexture.Release();
 }
 
 bool CConvolutionShader::KernelTexFormat()
@@ -573,13 +567,6 @@ void CConvolutionShader::SetShaderParameters(CD3DTexture &sourceTexture, float* 
   m_effect.SetTexture( "g_Texture",  sourceTexture ) ;
   m_effect.SetTexture( "g_KernelTexture", m_HQKernelTexture );
   m_effect.SetFloatArray("g_StepXY", texSteps, texStepsCount);
-}
-
-void CConvolutionShader::ReleaseInternal()
-{
-  if(m_HQKernelTexture.Get())
-    m_HQKernelTexture.Release();
-  CWinShader::ReleaseInternal();
 }
 
 //==========================================================

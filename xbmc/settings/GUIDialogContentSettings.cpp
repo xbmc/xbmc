@@ -85,8 +85,8 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       { // Get More... item.
         // This is tricky - ideally we want to completely save the state of this dialog,
         // close it while linking to the addon manager, then reopen it on return.
-        // For now, we just close the dialog + send the message to open the addons window
-        CStdString content = m_vecItems->Get(iSelected)->m_strPath.Mid(14);
+        // For now, we just close the dialog + send the GetPath() to open the addons window
+        CStdString content = m_vecItems->Get(iSelected)->GetPath().Mid(14);
         OnCancel();
         Close();
         CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.metadata.scraper." + content + ",return)");
@@ -325,7 +325,7 @@ void CGUIDialogContentSettings::FillListControl()
   for (IVECADDONS iter=m_scrapers.find(m_content)->second.begin();iter!=m_scrapers.find(m_content)->second.end();++iter)
   {
     CFileItemPtr item(new CFileItem((*iter)->Name()));
-    item->m_strPath = (*iter)->ID();
+    item->SetPath((*iter)->ID());
     item->SetThumbnailImage((*iter)->Icon());
     if (m_scraper && (*iter)->ID() == m_scraper->ID())
     {
