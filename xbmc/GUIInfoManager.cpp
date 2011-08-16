@@ -2399,6 +2399,11 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case INTEGER_GREATER_THAN:
         {
+          int integer;
+          if (GetInt(integer, info.GetData1(), contextWindow, item))
+            bReturn = integer > info.GetData2();
+          else
+          {
           CStdString value;
 
           if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
@@ -2412,6 +2417,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
             bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
           else
             bReturn = atoi( value.c_str() ) > info.GetData2();
+          }
         }
         break;
       case STRING_STR:
