@@ -64,16 +64,20 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
 {
   if (msg.Equals("epg"))
   {
+    m_bEpgCacheUpdateRequired = true;
+
     /* update the current window if the EPG timeline view is visible */
     if (IsVisible() && m_iGuideView == GUIDE_VIEW_TIMELINE)
-    {
-      m_bEpgCacheUpdateRequired = true;
       UpdateData();
-    }
+    else
+      m_bUpdateRequired = true;
   }
-  else if (msg.Equals("epg-now")) {
-      if (IsVisible() && m_iGuideView != GUIDE_VIEW_TIMELINE)
-        SetInvalid();
+  else if (msg.Equals("epg-now"))
+  {
+    if (IsVisible() && m_iGuideView != GUIDE_VIEW_TIMELINE)
+      SetInvalid();
+    else
+      m_bUpdateRequired = true;
   }
 }
 

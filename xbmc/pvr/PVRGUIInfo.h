@@ -78,6 +78,7 @@ namespace PVR
     void ResetProperties(void);
     void Process(void);
 
+    void ResetPlayingTag(void);
     void UpdatePlayingTag(void);
     void UpdateTimersCache(void);
     void UpdateBackendCache(void);
