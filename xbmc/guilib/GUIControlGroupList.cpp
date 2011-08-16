@@ -209,14 +209,7 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
 void CGUIControlGroupList::ValidateOffset()
 {
   // calculate how many items we have on this page
-  m_totalSize = 0;
-  for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-  {
-    CGUIControl *control = *it;
-    if (!control->IsVisible()) continue;
-    m_totalSize += Size(control) + m_itemGap;
-  }
-  if (m_totalSize > 0) m_totalSize -= m_itemGap;
+  m_totalSize = GetTotalSize();
   // check our m_offset range
   if (m_scroller.GetValue() > m_totalSize - Size())
     m_scroller.SetValue(m_totalSize - Size());
@@ -456,4 +449,17 @@ EVENT_RESULT CGUIControlGroupList::OnMouseEvent(const CPoint &point, const CMous
     }
   }
   return EVENT_RESULT_UNHANDLED;
+}
+
+float CGUIControlGroupList::GetTotalSize() const
+{
+  float totalSize = 0;
+  for (ciControls it = m_children.begin(); it != m_children.end(); ++it)
+  {
+    CGUIControl *control = *it;
+    if (!control->IsVisible()) continue;
+    totalSize += Size(control) + m_itemGap;
+  }
+  if (totalSize > 0) totalSize -= m_itemGap;
+  return totalSize;
 }

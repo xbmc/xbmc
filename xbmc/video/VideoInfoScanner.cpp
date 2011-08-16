@@ -465,8 +465,6 @@ namespace VIDEO
     {
       pItem->GetVideoInfoTag()->Reset();
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-      if (m_pObserver)
-        m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
       long lResult = AddVideo(pItem.get(), info2->Content(), bDirNames);
       if (lResult < 0)
@@ -492,9 +490,6 @@ namespace VIDEO
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
-
-    if (m_pObserver && !url.strTitle.IsEmpty())
-      m_pObserver->OnSetTitle(url.strTitle);
 
     long lResult=-1;
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
@@ -535,8 +530,6 @@ namespace VIDEO
     {
       pItem->GetVideoInfoTag()->Reset();
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-      if (m_pObserver)
-        m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
       if (AddVideo(pItem.get(), info2->Content(), bDirNames) < 0)
         return INFO_ERROR;
@@ -552,9 +545,6 @@ namespace VIDEO
       url = *pURL;
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
-
-    if (m_pObserver && !url.strTitle.IsEmpty())
-      m_pObserver->OnSetTitle(url.strTitle);
 
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
     {
@@ -587,8 +577,6 @@ namespace VIDEO
     {
       pItem->GetVideoInfoTag()->Reset();
       m_nfoReader.GetDetails(*pItem->GetVideoInfoTag());
-      if (m_pObserver)
-        m_pObserver->OnSetTitle(pItem->GetVideoInfoTag()->m_strTitle);
 
       if (AddVideo(pItem.get(), info2->Content(), bDirNames) < 0)
         return INFO_ERROR;
@@ -605,9 +593,6 @@ namespace VIDEO
     else if ((retVal = FindVideo(pItem->GetMovieName(bDirNames), info2, url, pDlgProgress)) <= 0)
       return retVal < 0 ? INFO_CANCELLED : INFO_NOT_FOUND;
 
-    if (m_pObserver && !url.strTitle.IsEmpty())
-      m_pObserver->OnSetTitle(url.strTitle);
-
     if (GetDetails(pItem.get(), url, info2, result == CNfoFile::COMBINED_NFO ? &m_nfoReader : NULL, pDlgProgress))
     {
       if (AddVideo(pItem.get(), info2->Content(), bDirNames) < 0)
@@ -621,38 +606,11 @@ namespace VIDEO
 
   INFO_RET CVideoInfoScanner::RetrieveInfoForEpisodes(CFileItemPtr item, long showID, const ADDON::ScraperPtr &scraper, bool useLocal, CGUIDialogProgress *progress)
   {
-    EPISODELIST episodes;
-
     // enumerate episodes
     EPISODES files;
     EnumerateSeriesFolder(item.get(), files);
     if (files.size() == 0) // no update or no files
       return INFO_NOT_NEEDED;
-
-    // fetch episode guide
-    CVideoInfoTag details;
-    m_database.GetTvShowInfo(item->GetPath(), details, showID);
-    if (!details.m_strEpisodeGuide.IsEmpty()) // assume local-only series if no episode guide url
-    {
-      CScraperUrl url;
-      url.ParseEpisodeGuide(details.m_strEpisodeGuide);
-
-      if (progress)
-      {
-        if (item->m_bIsFolder)
-          progress->SetHeading(20353);
-        else
-          progress->SetHeading(20361);
-        progress->SetLine(0, item->GetLabel());
-        progress->SetLine(1, details.m_strTitle);
-        progress->SetLine(2, 20354);
-        progress->Progress();
-      }
-
-      CVideoInfoDownloader imdb(scraper);
-      if (!imdb.GetEpisodeList(url, episodes))
-        return INFO_NOT_FOUND;
-    }
 
     if (m_bStop || (progress && progress->IsCanceled()))
       return INFO_CANCELLED;
@@ -660,7 +618,8 @@ namespace VIDEO
     if (m_pObserver)
       m_pObserver->OnDirectoryChanged(item->GetPath());
 
-    return OnProcessSeriesFolder(episodes, files, scraper, useLocal, showID, details.m_strTitle, progress);
+    CStdString showTitle = m_database.GetTvShowTitleById(showID);
+    return OnProcessSeriesFolder(files, scraper, useLocal, showID, showTitle, progress);
   }
 
   void CVideoInfoScanner::EnumerateSeriesFolder(CFileItem* item, EPISODES& episodeList)
@@ -1053,6 +1012,18 @@ namespace VIDEO
     if (!m_database.Open())
       return -1;
 
+    CVideoInfoTag *tag = pItem->GetVideoInfoTag();
+    CStdString strTitle(tag->m_strTitle);
+
+    if (idShow > -1 && content == CONTENT_TVSHOWS)
+    {
+      CStdString strShowTitle = m_database.GetTvShowTitleById(idShow);
+      strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), tag->m_iSeason, tag->m_iEpisode, tag->m_strTitle.c_str());
+    }
+
+    if (m_pObserver)
+      m_pObserver->OnSetTitle(strTitle);
+
     CLog::Log(LOGDEBUG, "VideoInfoScanner: Adding new item to %s:%s", TranslateContent(content).c_str(), pItem->GetPath().c_str());
     long lResult = -1;
 
@@ -1206,15 +1177,19 @@ namespace VIDEO
     }
   }
 
-  INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(EPISODELIST& episodes, EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
+  INFO_RET CVideoInfoScanner::OnProcessSeriesFolder(EPISODES& files, const ADDON::ScraperPtr &scraper, bool useLocal, int idShow, const CStdString& strShowTitle, CGUIDialogProgress* pDlgProgress /* = NULL */)
   {
     if (pDlgProgress)
     {
+      pDlgProgress->SetLine(1, strShowTitle);
       pDlgProgress->SetLine(2, 20361);
       pDlgProgress->SetPercentage(0);
       pDlgProgress->ShowProgressBar(true);
       pDlgProgress->Progress();
     }
+
+    EPISODELIST episodes;
+    bool hasEpisodeGuide = false;
 
     int iMax = files.size();
     int iCurr = 1;
@@ -1256,16 +1231,34 @@ namespace VIDEO
       if (result == CNfoFile::FULL_NFO)
       {
         m_nfoReader.GetDetails(*item.GetVideoInfoTag());
-        if (m_pObserver)
-        {
-          CStdString strTitle;
-          strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_strTitle.c_str());
-          m_pObserver->OnSetTitle(strTitle);
-        }
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);
         continue;
+      }
+
+      if (!hasEpisodeGuide)
+      {
+        // fetch episode guide
+        CVideoInfoTag details;
+        m_database.GetTvShowInfo(item.GetPath(), details, idShow);
+        if (!details.m_strEpisodeGuide.IsEmpty())
+        {
+          CScraperUrl url;
+          url.ParseEpisodeGuide(details.m_strEpisodeGuide);
+
+          if (pDlgProgress)
+          {
+            pDlgProgress->SetLine(2, 20354);
+            pDlgProgress->Progress();
+          }
+
+          CVideoInfoDownloader imdb(scraper);
+          if (!imdb.GetEpisodeList(url, episodes))
+            return INFO_NOT_FOUND;
+
+          hasEpisodeGuide = true;
+        }
       }
 
       if (episodes.empty())
@@ -1353,12 +1346,6 @@ namespace VIDEO
           return INFO_NOT_FOUND; // TODO: should we just skip to the next episode?
         item.GetVideoInfoTag()->m_iSeason = guide->key.first;
         item.GetVideoInfoTag()->m_iEpisode = guide->key.second;
-        if (m_pObserver)
-        {
-          CStdString strTitle;
-          strTitle.Format("%s - %ix%i - %s", strShowTitle.c_str(), item.GetVideoInfoTag()->m_iSeason, item.GetVideoInfoTag()->m_iEpisode, item.GetVideoInfoTag()->m_strTitle.c_str());
-          m_pObserver->OnSetTitle(strTitle);
-        }
         if (AddVideo(&item, CONTENT_TVSHOWS, file->isFolder, idShow) < 0)
           return INFO_ERROR;
         GetArtwork(&item, CONTENT_TVSHOWS);

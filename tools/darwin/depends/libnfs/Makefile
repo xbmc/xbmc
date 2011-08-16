@@ -3,7 +3,7 @@ include ../config.site.mk
 
 # lib name, version
 LIBNAME=libnfs
-VERSION=48593f5
+VERSION=9115b88
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 

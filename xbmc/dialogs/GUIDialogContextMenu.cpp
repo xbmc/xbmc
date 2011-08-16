@@ -22,6 +22,7 @@
 #include "system.h"
 #include "GUIDialogContextMenu.h"
 #include "guilib/GUIButtonControl.h"
+#include "guilib/GUIControlGroupList.h"
 #include "GUIDialogNumeric.h"
 #include "GUIDialogGamepad.h"
 #include "GUIDialogFileBrowser.h"
@@ -52,12 +53,15 @@
 using namespace std;
 
 #define BACKGROUND_IMAGE       999
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
 #define BACKGROUND_BOTTOM      998
 #define BACKGROUND_TOP         997
+#define SPACE_BETWEEN_BUTTONS    2
+#endif
+#define GROUP_LIST             996
 #define BUTTON_TEMPLATE       1000
 #define BUTTON_START          1001
 #define BUTTON_END            (BUTTON_START + (int)m_buttons.size() - 1)
-#define SPACE_BETWEEN_BUTTONS    2
 
 void CContextButtons::Add(unsigned int button, const CStdString &label)
 {
@@ -110,6 +114,13 @@ void CGUIDialogContextMenu::SetupButtons()
     return;
   pButtonTemplate->SetVisible(false);
 
+  CGUIControlGroupList* pGroupList = NULL;
+  {
+    const CGUIControl* pControl = GetControl(GROUP_LIST);
+    if (pControl && pControl->GetControlType() == GUICONTROL_GROUPLIST)
+      pGroupList = (CGUIControlGroupList*)pControl;
+  }
+
   // add our buttons
   for (unsigned int i = 0; i < m_buttons.size(); i++)
   {
@@ -118,30 +129,83 @@ void CGUIDialogContextMenu::SetupButtons()
     { // set the button's ID and position
       int id = BUTTON_START + i;
       pButton->SetID(id);
-      pButton->SetPosition(pButtonTemplate->GetXPosition(), i*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
       pButton->SetVisible(true);
-      pButton->SetNavigation(id - 1, id + 1, id, id);
       pButton->SetLabel(m_buttons[i].second);
-      AddControl(pButton);
+      if (pGroupList)
+      {
+        pButton->SetPosition(pButtonTemplate->GetXPosition(), pButtonTemplate->GetYPosition());
+        pGroupList->AddControl(pButton);
+      }
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
+      else
+      {
+        pButton->SetPosition(pButtonTemplate->GetXPosition(), i*(pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
+        pButton->SetNavigation(id - 1, id + 1, id, id);
+        AddControl(pButton);
+      }
+#endif
     }
   }
 
-  // update the navigation of the first and last buttons
-  CGUIControl *pControl = (CGUIControl *)GetControl(BUTTON_START);
-  if (pControl)
-    pControl->SetNavigation(BUTTON_END, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
-  pControl = (CGUIControl *)GetControl(BUTTON_END);
-  if (pControl)
-    pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  CGUIControl *pControl = NULL;
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
+  if (!pGroupList)
+  {
+    // if we don't have grouplist update the navigation of the first and last buttons
+    pControl = (CGUIControl *)GetControl(BUTTON_START);
+    if (pControl)
+      pControl->SetNavigation(BUTTON_END, pControl->GetControlIdDown(), pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+    pControl = (CGUIControl *)GetControl(BUTTON_END);
+    if (pControl)
+      pControl->SetNavigation(pControl->GetControlIdUp(), BUTTON_START, pControl->GetControlIdLeft(), pControl->GetControlIdRight());
+  }
+#endif
 
-  // fix up the height of the background image
+  // fix up background images placement and size
   pControl = (CGUIControl *)GetControl(BACKGROUND_IMAGE);
   if (pControl)
   {
-    pControl->SetHeight(m_buttons.size() * (pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
-    CGUIControl *pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
-    if (pControl2)
-      pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
+    // first set size of background image
+    if (pGroupList)
+    {
+      if (pGroupList->GetOrientation() == VERTICAL)
+      {
+        // keep gap between bottom edges of grouplist and background image
+        float diff = pControl->GetHeight() - pGroupList->GetHeight();
+        pGroupList->SetHeight(pGroupList->GetTotalSize());
+        pControl->SetHeight(diff + pGroupList->GetHeight());
+      }
+      else
+      {
+        // keep gap between right edges of grouplist and background image
+        float diff = pControl->GetWidth() - pGroupList->GetWidth();
+        pGroupList->SetWidth(pGroupList->GetTotalSize());
+        pControl->SetWidth(diff + pGroupList->GetWidth());
+      }
+    }
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
+    else
+      pControl->SetHeight(m_buttons.size() * (pButtonTemplate->GetHeight() + SPACE_BETWEEN_BUTTONS));
+
+    if (pGroupList && pGroupList->GetOrientation() == HORIZONTAL)
+    {
+      // if there is grouplist control with horizontal orientation - adjust width of top and bottom background
+      CGUIControl* pControl2 = (CGUIControl *)GetControl(BACKGROUND_TOP);
+      if (pControl2)
+        pControl2->SetWidth(pControl->GetWidth());
+
+      pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+      if (pControl2)
+        pControl2->SetWidth(pControl->GetWidth());
+    }
+    else
+    {
+      // adjust position of bottom background
+      CGUIControl* pControl2 = (CGUIControl *)GetControl(BACKGROUND_BOTTOM);
+      if (pControl2)
+        pControl2->SetPosition(pControl2->GetXPosition(), pControl->GetYPosition() + pControl->GetHeight());
+    }
+#endif
   }
 
   // update our default control
@@ -159,12 +223,14 @@ void CGUIDialogContextMenu::SetPosition(float posX, float posY)
   if (posX + GetWidth() > m_coordsRes.iWidth)
     posX = m_coordsRes.iWidth - GetWidth();
   if (posX < 0) posX = 0;
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
   // we currently hack the positioning of the buttons from y position 0, which
   // forces skinners to place the top image at a negative y value.  Thus, we offset
   // the y coordinate by the height of the top image.
   const CGUIControl *top = GetControl(BACKGROUND_TOP);
   if (top)
     posY += top->GetHeight();
+#endif
   CGUIDialog::SetPosition(posX, posY);
 }
 
@@ -172,6 +238,7 @@ float CGUIDialogContextMenu::GetHeight()
 {
   const CGUIControl *backMain = GetControl(BACKGROUND_IMAGE);
   if (backMain)
+#if PRE_SKIN_VERSION_11_COMPATIBILITY
   {
     float height = backMain->GetHeight();
     const CGUIControl *backBottom = GetControl(BACKGROUND_BOTTOM);
@@ -182,6 +249,9 @@ float CGUIDialogContextMenu::GetHeight()
       height += backTop->GetHeight();
     return height;
   }
+#else
+  return backMain->GetHeight();
+#endif
   else
     return CGUIDialog::GetHeight();
 }
