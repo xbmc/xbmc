@@ -279,6 +279,7 @@ public:
   bool IsPresentFrame();
 
   void Minimize();
+  float NavigationIdleTime();
   bool ToggleDPMS(bool manual);
 
   float GetDimScreenSaverLevel() const;
