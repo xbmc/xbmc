@@ -865,7 +865,7 @@ int CPVRClients::GetChannels(CPVRChannelGroupInternal *group, PVR_ERROR *error)
     if (group->IsRadio() && !client->GetAddonCapabilities().bSupportsRadio)
       continue;
     else if (!group->IsRadio() && !client->GetAddonCapabilities().bSupportsTV)
-      itrClients++;
+      continue;
     else if ((currentError = client->GetChannels(*group, group->IsRadio())) != PVR_ERROR_NO_ERROR)
       *error = currentError;
   }
