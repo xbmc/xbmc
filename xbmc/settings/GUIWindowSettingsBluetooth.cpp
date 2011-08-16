@@ -102,7 +102,7 @@ void CGUIWindowSettingsBluetooth::OnItemSelected(int iItem)
   switch (choice)
   {
   case 1:
-    g_bluetoothManager.CreateDevice(item->m_strPath);
+    g_bluetoothManager.CreateDevice(item->GetPath());
     break;
 
   case 2:

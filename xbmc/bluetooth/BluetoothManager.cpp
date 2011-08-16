@@ -100,8 +100,8 @@ void CBluetoothManager::ProcessEvents()
 
 void CBluetoothManager::OnDeviceConnected(IBluetoothDevice *device)
 {
-  if (device->IsPaired())
-    g_application.m_guiDialogKaiToast.QueueNotification("Bluetooth.png", device->GetName(), g_localizeStrings.Get(13296));
+//  if (device->IsPaired())
+//    g_application.m_guiDialogKaiToast.QueueNotification("Bluetooth.png", device->GetName(), g_localizeStrings.Get(13296));
   CGUIMessage msg(GUI_MSG_UPDATE_ITEM, WINDOW_SETTINGS_BLUETOOTH, 0);
   msg.SetPointer(device);
   g_windowManager.SendMessage(msg);
@@ -109,8 +109,8 @@ void CBluetoothManager::OnDeviceConnected(IBluetoothDevice *device)
 
 void CBluetoothManager::OnDeviceDisconnected(IBluetoothDevice *device)
 {
-  if (device->IsPaired())
-    g_application.m_guiDialogKaiToast.QueueNotification("Bluetooth.png", device->GetName(), g_localizeStrings.Get(16509));
+//  if (device->IsPaired())
+//    g_application.m_guiDialogKaiToast.QueueNotification("Bluetooth.png", device->GetName(), g_localizeStrings.Get(16509));
   CGUIMessage msg(GUI_MSG_UPDATE_ITEM, WINDOW_SETTINGS_BLUETOOTH, 0);
   msg.SetPointer(device);
   g_windowManager.SendMessage(msg);
