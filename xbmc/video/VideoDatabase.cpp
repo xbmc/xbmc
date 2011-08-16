@@ -7892,6 +7892,11 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
     GetMusicVideosByWhere("", where, items);
   }
   for (int i = 0; i < items.Size(); i++)
-    items[i]->SetPath(items[i]->GetVideoInfoTag()->m_strFileNameAndPath);
+  {
+    if (content == "movies")
+      items[i]->SetPath(items[i]->GetVideoInfoTag()->m_strFileNameAndPath);
+    else
+      items[i]->SetPath(items[i]->GetVideoInfoTag()->m_basePath);
+  }
   return items.Size() > 0;
 }
