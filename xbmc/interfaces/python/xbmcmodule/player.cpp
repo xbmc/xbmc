@@ -536,6 +536,23 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // Player_EnableSubtitles
+  PyDoc_STRVAR(EnableSubtitles__doc__,
+    "EnableSubtitles() -- enable subtitles\n");
+
+  PyObject* Player_EnableSubtitles(PyObject *self)
+  {
+    if (g_application.m_pPlayer)
+    {
+      g_settings.m_currentVideoSettings.m_SubtitleOn = true;
+      g_application.m_pPlayer->SetSubtitleVisible(true);
+
+      Py_INCREF(Py_None);
+      return Py_None;
+    }
+    return NULL;
+  }
+
   // Player_DisableSubtitles
   PyDoc_STRVAR(DisableSubtitles__doc__,
     "DisableSubtitles() -- disable subtitles\n");
@@ -680,6 +697,7 @@ namespace PYXBMC
     {(char*)"seekTime", (PyCFunction)Player_SeekTime, METH_VARARGS, seekTime__doc__},
     {(char*)"setSubtitles", (PyCFunction)Player_SetSubtitles, METH_VARARGS, setSubtitles__doc__},
     {(char*)"getSubtitles", (PyCFunction)Player_GetSubtitles, METH_NOARGS, getSubtitles__doc__},
+    {(char*)"enableSubtitles", (PyCFunction)Player_EnableSubtitles, METH_NOARGS, EnableSubtitles__doc__},
     {(char*)"disableSubtitles", (PyCFunction)Player_DisableSubtitles, METH_NOARGS, DisableSubtitles__doc__},
     {(char*)"getAvailableAudioStreams", (PyCFunction)Player_getAvailableAudioStreams, METH_NOARGS, getAvailableAudioStreams__doc__},
     {(char*)"setAudioStream", (PyCFunction)Player_setAudioStream, METH_VARARGS, setAudioStream__doc__},
