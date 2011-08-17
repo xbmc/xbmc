@@ -309,7 +309,6 @@ void CGUIProgressControl::UpdateInfo(const CGUIListItem *item)
 {
   if (!IsDisabled())
   {
-    float percent = m_fPercent;
     if (m_iInfoCode)
       m_fPercent = (float)g_infoManager.GetInt(m_iInfoCode, m_parentID, item);
 
