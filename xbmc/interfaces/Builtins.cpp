@@ -914,7 +914,10 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("playdvd"))
   {
 #ifdef HAS_DVD_DRIVE
-    CAutorun::PlayDisc();
+    bool restart = false;
+    if (params.size() > 0 && params[0].CompareNoCase("restart") == 0)
+      restart = true;
+    CAutorun::PlayDisc(restart);
 #endif
   }
   else if (execute.Equals("ripcd"))
