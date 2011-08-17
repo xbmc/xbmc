@@ -224,7 +224,12 @@ void CGUIDialogAddonInfo::OnSettings()
 void CGUIDialogAddonInfo::OnChangeLog()
 {
   CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
-  pDlgInfo->SetHeading(g_localizeStrings.Get(24054)+" - "+m_addon->Name());
+  CStdString name;
+  if (m_addon)
+    name = m_addon->Name();
+  else if (m_localAddon)
+    name = m_localAddon->Name();
+  pDlgInfo->SetHeading(g_localizeStrings.Get(24054)+" - "+name);
   if (m_item->GetProperty("Addon.Changelog").IsEmpty())
   {
     pDlgInfo->SetText(g_localizeStrings.Get(13413));
