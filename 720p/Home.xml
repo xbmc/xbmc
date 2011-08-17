@@ -2370,6 +2370,64 @@
 									<visible>ListItem.Type(clip)</visible>
 								</control>
 							</control>
+							<control type="group">
+							<visible>!ListItem.Type(clip)</visible>
+								<posy>0</posy>
+								<control type="image">
+									<posx>34</posx>
+									<posy>36</posy>
+									<width>122</width>
+									<height>116</height>
+									<aspectratio scalediffuse="false" align="top">scale</aspectratio>
+									<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
+									<bordertexture border="10">frameOrange.png</bordertexture>
+									<bordersize>3</bordersize>
+								</control>
+								<control type="image">
+									<posx>35</posx>
+									<posy>157</posy>
+									<width>120</width>
+									<height>27</height>
+									<texture border="10">whitewiderounded.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="image">
+									<posx>35</posx>
+									<posy>189</posy>
+									<width>120</width>
+									<height>27</height>
+									<texture border="10">whitewiderounded.png</texture>
+									<colordiffuse>FF000000</colordiffuse>
+									<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>169</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$INFO[ListItem.Title]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FF3d3d3d</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>200</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$INFO[ListItem.Property(sourceTitle)]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FF3d3d3d</textcolor>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+									<wrapmultiline>false</wrapmultiline>
+								</control>
+							</control>
 						</focusedlayout>
 						<height>200</height>
 					</control>
