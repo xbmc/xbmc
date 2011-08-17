@@ -325,7 +325,7 @@
 					<include>OMButtonItem</include>
 				</control>-->
 				<control type="button" id="912">
-					<visible>!Control.IsVisible(56) | [Control.IsVisible(56) + Container.Content(Secondary) + !Container.Content(Plugins)]</visible>
+					<visible>!Control.IsVisible(56) | [Control.IsVisible(56) + !Container.Content(Plugins)]</visible>
 					<description>Info List view button</description>
 					<label>$LOCALIZE[31711]</label>
 					<onclick>Container.SetViewMode(56)</onclick>

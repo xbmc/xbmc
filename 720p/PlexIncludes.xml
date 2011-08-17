@@ -4,14 +4,6 @@
 		<control type="group">
 			<description>Current cover</description>
 			<visible>Player.HasMusicPlaylist</visible>
-			<!--<control type="image">
-				<posy>332</posy>
-				<width>330</width>
-				<height>330</height>
-				<info>MusicPlayer.Cover</info>
-				<aspectratio>scale</aspectratio>
-				<texture flipy="true" diffuse="NowPlayingReflectionDiffuse.png"/>
-			</control>-->
 			<control type="image">
 				<posx>-9</posx>
 				<posy>-9</posy>
@@ -24,15 +16,9 @@
 				<width>330</width>
 				<height>330</height>
 				<info>MusicPlayer.Cover</info>
-				<aspectratio>scale</aspectratio>
+				<aspectratio scalediffuse="false">scale</aspectratio>
 				<texture diffuse="bigSquareMask.png"/>
 			</control>
-			<!--<control type="image">
-				<width>330</width>
-				<height>330</height>
-				<aspectratio>scale</aspectratio>
-				<texture>NowPlayingCoverOverlay.png</texture>
-			</control>-->
 		</control>
 	</include>
 	<include name="NowPlayingNextCover">
@@ -51,32 +37,9 @@
 				<width>264</width>
 				<height>264</height>
 				<info>MusicPlayer.NextNewCover</info>
-				<aspectratio>scale</aspectratio>
+				<aspectratio scalediffuse="false">scale</aspectratio>
 				<texture diffuse="bigSquareMask.png"/>
 			</control>
-			<!--<control type="image">
-				<posy>264</posy>
-				<width>264</width>
-				<height>264</height>
-				<info>MusicPlayer.NextNewCover</info>
-				<aspectratio>scale</aspectratio>
-				<texture flipy="true" diffuse="NowPlayingSmallReflectionDiffuse.png"/>
-			</control>-->
-			<!--<control type="image">
-				<posx>104</posx>
-				<width>176</width>
-				<height>264</height>
-				<aspectratio>scale</aspectratio>
-				<texture>NowPlayingCoverShadow.png</texture>
-				<visible>MusicPlayer.HasNext</visible>
-			</control>-->
-			<!--<control type="image">
-				<width>264</width>
-				<height>264</height>
-				<aspectratio>scale</aspectratio>
-				<visible>MusicPlayer.HasNext</visible>
-				<texture diffuse="NowPlayingSmallCoverDiffuse.png">NowPlayingCoverOverlay.png</texture>
-			</control>-->
 		</control>
 	</include>
 	<include name="NowPlayingCurrentInfo">
@@ -86,7 +49,7 @@
 				<posx>500</posx>
 				<width>500</width>
 				<font>NPArtistFont</font>
-				<textcolor>Dark</textcolor>
+				<textcolor>orange</textcolor>
 				<label>$INFO[MusicPlayer.Artist]</label>
 				<align>right</align>
 			</control>
@@ -94,18 +57,27 @@
 				<posx>500</posx>
 				<posy>50</posy>
 				<width>500</width>
-				<font>NPTitleFont</font>
-				<textcolor>Medium</textcolor>
+				<font>NPAlbumFont</font>
+				<textcolor>Light</textcolor>
 				<label>$INFO[MusicPlayer.Album]</label>
 				<align>right</align>
 			</control>
 			<control type="label">
 				<posx>500</posx>
 				<posy>88</posy>
-				<width>500</width>
-				<font>NPAlbumFont</font>
-				<textcolor>Light</textcolor>
+				<width min="100" max="500">auto</width>
+				<font>MediumSmallTitleFont2</font>
+				<textcolor>orange</textcolor>
 				<label>$INFO[MusicPlayer.Title]</label>
+				<align>right</align>
+			</control>
+			<control type="label">
+				<posy>140</posy>
+				<posx>500</posx>
+				<width>200</width>
+				<textcolor>Light</textcolor>
+				<font>MediumSmallTitleFont2</font>
+				<label>$INFO[MusicPlayer.Time] / $INFO[MusicPlayer.Duration]</label>
 				<align>right</align>
 			</control>
 		</control>
@@ -135,7 +107,7 @@
 				<posy>53</posy>
 				<width>500</width>
 				<font>NPNextFont</font>
-				<textcolor>Light</textcolor>
+				<textcolor>orange</textcolor>
 				<label>$INFO[MusicPlayer.Offset(1).Title]</label>
 				<align>right</align>
 			</control>
@@ -148,7 +120,7 @@
 				<posx>0</posx>
 				<width>500</width>
 				<font>NPArtistFont</font>
-				<textcolor>Dark</textcolor>
+				<textcolor>orange</textcolor>
 				<label>$INFO[MusicPlayer.Artist]</label>
 				<align>left</align>
 			</control>
@@ -156,18 +128,27 @@
 				<posx>0</posx>
 				<posy>50</posy>
 				<width>500</width>
-				<font>NPTitleFont</font>
-				<textcolor>Medium</textcolor>
+				<font>NPAlbumFont</font>
+				<textcolor>Light</textcolor>
 				<label>$INFO[MusicPlayer.Album]</label>
 				<align>left</align>
 			</control>
 			<control type="label">
 				<posx>0</posx>
 				<posy>88</posy>
-				<width>500</width>
-				<font>NPAlbumFont</font>
-				<textcolor>Light</textcolor>
+				<width min="100" max="500">auto</width>
+				<font>MediumSmallTitleFont2</font>
+				<textcolor>orange</textcolor>
 				<label>$INFO[MusicPlayer.Title]</label>
+				<align>left</align>
+			</control>
+			<control type="label">
+				<posy>140</posy>
+				<posx>0</posx>
+				<width>200</width>
+				<textcolor>Light</textcolor>
+				<font>MediumSmallTitleFont2</font>
+				<label>$INFO[MusicPlayer.Time] / $INFO[MusicPlayer.Duration]</label>
 				<align>left</align>
 			</control>
 		</control>
@@ -197,7 +178,7 @@
 				<posy>53</posy>
 				<width>500</width>
 				<font>NPNextFont</font>
-				<textcolor>Light</textcolor>
+				<textcolor>orange</textcolor>
 				<label>$INFO[MusicPlayer.Offset(1).Title]</label>
 				<align>left</align>
 			</control>

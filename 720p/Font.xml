@@ -82,53 +82,53 @@
 <!-- Default fonts -->
     <font>
       <name>NPArtistFont</name>
-      <filename>HelveticaNeue</filename>
+      <filename>Helvetica</filename>
 			<variant>Bold</variant>
-      <size>44</size>
+      <size>32</size>
     </font>
     <font>
       <name>NPTitleFont</name>
-      <filename>HelveticaNeue</filename>
+      <filename>Helvetica</filename>
 			<variant>Bold</variant>
-      <size>32</size>
+      <size>16</size>
     </font>
     <font>
       <name>NPAlbumFont</name>
-      <filename>HelveticaNeue</filename>
-			<variant>Regular</variant>
-      <size>32</size>
+      <filename>Helvetica</filename>
+			<variant>Bold</variant>
+      <size>20</size>
     </font>
     <font>
       <name>NPNextFont</name>
-      <filename>HelveticaNeue</filename>
+      <filename>Helvetica</filename>
 		<variant>Regular</variant>
       <size>20</size>
     </font>
 
     <font>
       <name>XLargeDefaultFont</name>
-      <filename>HelveticaNeue</filename>
+      <filename>Helvetica</filename>
 			<variant>Regular</variant>
       <size>32</size>
     </font>
 
     <font>
       <name>XLargeDefaultCapsFont</name>
-      <filename>HelveticaNeue</filename>
+      <filename>Helvetica</filename>
 	  <variant>Condensed Bold</variant>
       <size>32</size>
     </font>
 
     <font>
       <name>LargeDefaultFont</name>
-      <filename>HelveticaNeue</filename>
+      <filename>Helvetica</filename>
 			<variant>Regular</variant>
       <size>24</size>
     </font>
 
     <font>
       <name>LargeDefaultCapsFont</name>
-      <filename>HelveticaNeue</filename>
+      <filename>Helvetica</filename>
 			<variant>Regular</variant>
       <size>24</size>
     </font>

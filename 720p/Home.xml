@@ -541,24 +541,12 @@
 						<visible>!Skin.HasSetting(HideHelp)</visible>
 						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/help,return)</onclick>
 					</item>
-					<!--<item id="11">
-						<description>Favorites Menu</description>
-						<label> $LOCALIZE[31063] </label>
-						<onclick>Plex.ActivateWindow(Favourites)</onclick>
-						<visible>!Skin.HasSetting(HideFavourites)</visible>
-					</item>-->
 					<item id="12">
 						<description>Plex Online Menu</description>
 						<label> $LOCALIZE[31952] </label>
 						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/plexonline,return)</onclick>
 						<visible>!Skin.HasSetting(HideAppStore)</visible>
 					</item>
-					<!--<item id="1">
-						<description>Plug-ins Menu</description>
-						<label> $LOCALIZE[31970] </label>
-						<onclick>SetFocus(507)</onclick>
-						<visible>Skin.HasSetting(CollapsePluginMenuItems) + ![[Skin.HasSetting(HideVideos) + Skin.HasSetting(HideMusic)] | [Skin.HasSetting(HideVideos) + Skin.HasSetting(HidePictures)] | [Skin.HasSetting(HidePictures) + Skin.HasSetting(HideMusic)]]</visible>
-					</item>-->
 					<item id="1">
 						<description>My Videos Button</description>
 						<label> $LOCALIZE[31971] </label>
@@ -583,17 +571,10 @@
 						<visible>System.HasMediadvd + !Skin.HasSetting(HideDVD)</visible>
 						<onclick>XBMC.PlayDVD</onclick>
 					</item>
-					<!--<item id="5">
-						<description>My Weather Button</description>
-						<label> $LOCALIZE[31005] </label>
-						<onclick>XBMC.ActivateWindow(2600)</onclick>
-						<visible>!Skin.HasSetting(HideWeather)</visible>
-						<visible>System.HasNetwork</visible>
-					</item>-->
-					<item id="14">
+					<!--<item id="14">
 						<label>DIALOG TEST</label>
 						<onclick>ActivateWindow(103)</onclick>
-					</item>
+					</item>-->
 				</content>
 			</control>
 			<control type="group">
@@ -2370,6 +2351,7 @@
 									<visible>ListItem.Type(clip)</visible>
 								</control>
 							</control>
+							<!-- generic -->
 							<control type="group">
 							<visible>!ListItem.Type(clip)</visible>
 								<posy>0</posy>
@@ -3096,44 +3078,6 @@
 		</control>
 		<!-- END OF THE NEW LISTS CONTENT -->
 		<!-- Home Widgets -->
-		<!--<control type="group">
-			<description>Current Weather Summary</description>
-			<include>HomeWeatherSummaryPos</include>
-			<visible>Skin.HasSetting(ShowWeatherOnHome) + Weather.IsFetched</visible>
-			<include>HomeSlideRight</include>
-			<control type="image">
-				<description>Dialog Background</description>
-				<include>HomeWeatherSummaryBGDims</include>
-				<include>DialogBGTexture</include>
-				<colordiffuse>99eeeeee</colordiffuse>
-			</control>
-			<control type="group">
-				<posy>7</posy>
-				<control type="label">
-					<description>Weather Conditions</description>
-					<posx>HomeWeatherTextWidth</posx>
-					<width>HomeWeatherTextWidth</width>
-					<align>right</align>
-					<font>SmallTitleCapsFont</font>
-					<label>$INFO[Weather.Conditions]</label>
-				</control>
-				<control type="label">
-					<description>Weather Conditions</description>
-					<posx>HomeWeatherTextWidth</posx>
-					<posy>16</posy>
-					<width>HomeWeatherTextWidth</width>
-					<align>right</align>
-					<label>$INFO[Weather.Temperature]</label>
-				</control>
-			</control>
-			<control type="image">
-				<description>Weather image</description>
-				<include>HomeWeatherSummaryImgDims</include>
-				<aspectratio>keep</aspectratio>
-				<colordiffuse>ccbbbbbb</colordiffuse>
-				<info>Weather.Conditions</info>
-			</control>
-		</control>-->
 		<!-- Music Now Playing -->
 		<include>MusicNowPlayingIndicators</include>
 		<control type="group">
