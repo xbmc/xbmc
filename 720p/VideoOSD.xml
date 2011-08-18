@@ -9,11 +9,5 @@
       <include>VideoOSDSlide</include>
       <include>OSDGroup</include>
     </control>
-    <control type="group">
-      <visible>Player.IsWebkit</visible>
-      <include>VideoOSDWebKitDims</include>
-      <include>VideoOSDSlide</include>
-      <include>OSDWebKitGroup</include>
-    </control>
   </controls>
 </window>

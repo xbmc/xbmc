@@ -122,7 +122,7 @@
 				<control type="image" id="9103">
 					<description>TV Wide Thumb</description>
 					<texture>ViewThumbTVWide.png</texture>
-					<visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(tvshows)</visible>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(925) + Container.Content(tvshows)</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9103">

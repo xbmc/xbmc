@@ -237,7 +237,7 @@
 					</control>
 					<control type="label">
 						<posx>592</posx>
-						<posy>13</posy>
+						<posy>9</posy>
 						<width>40</width>
 						<align>center</align>
 						<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
@@ -281,7 +281,7 @@
 					</control>
 					<control type="label">
 						<posx>592</posx>
-						<posy>12</posy>
+						<posy>9</posy>
 						<width>40</width>
 						<align>center</align>
 						<label>$INFO[ListItem.Property(UnWatchedEpisodes)]</label>
@@ -1135,6 +1135,7 @@
 				<focusposition>4</focusposition>
 				<include>MediaViewFade</include>
 				<animation effect="slide" start="0,0" end="-512,-20" time="0" condition="!Skin.HasSetting(ShowAnimMediaPreview) + [Container.Content(episodes) | Container.Content(clip)]">Conditional</animation>
+				<!-- generic -->
 				<itemlayout condition="![Container.Content(episodes) | Container.Content(clip)]" width="142" height="220">
 					<control type="image">
 						<visible>!Container.Content(tvshows) + !Container.Content(seasons)</visible>

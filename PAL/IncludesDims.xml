@@ -706,8 +706,8 @@
   <constant name="VideOSDControlButtonWidth">65</constant>
 
   <include name="VideOSDControlButtonDims">
-    <width>VideOSDControlButtonWidth</width>
-    <height>49</height>
+    <width>48</width>
+    <height>48</height>
   </include>
 
   <constant name="VideoOSDPlayerControlsSeparatorWidth">88</constant>

@@ -370,8 +370,8 @@
 		<control type="group">
 			<visible>Container.Content(episodes)</visible>
 		<control type="image">
-			<posy>-310</posy>
-			<posx>0</posx>
+			<posy>-325</posy>
+			<posx>200</posx>
 			<height>37</height>
 			<width min="1" max="95">auto</width>
 			<info>Listitem.Property(mediaTag::contentRating)</info>

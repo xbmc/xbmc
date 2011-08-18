@@ -1943,7 +1943,7 @@
 					</control>
 					<control type="image">
 						<posx>300</posx>
-						<posy>40</posy>
+						<posy>62</posy>
 						<visible>!IsEmpty(Listitem.Property(mediaTag::studio))</visible>
 						<height>60</height>
 						<width>80</width>
