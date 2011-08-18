@@ -41,6 +41,7 @@ using namespace EPG;
 CPVRTimers::CPVRTimers(void)
 {
   m_bIsUpdating = false;
+  m_bIsLoaded = false;
 }
 
 CPVRTimers::~CPVRTimers(void)
@@ -53,12 +54,16 @@ int CPVRTimers::Load()
   Unload();
   g_EpgContainer.RegisterObserver(this);
   Update();
+  m_bIsLoaded = true;
 
   return size();
 }
 
 void CPVRTimers::Unload()
 {
+  if (!m_bIsLoaded)
+    return;
+
   CSingleLock lock(m_critSection);
   CEpgContainer *epg = &g_EpgContainer;
   if (epg)
@@ -67,6 +72,7 @@ void CPVRTimers::Unload()
   for (unsigned int iTimerPtr = 0; iTimerPtr < size(); iTimerPtr++)
     delete at(iTimerPtr);
   clear();
+  m_bIsLoaded = false;
 }
 
 int CPVRTimers::LoadFromClients(void)

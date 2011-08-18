@@ -43,6 +43,7 @@ namespace PVR
   private:
     CCriticalSection m_critSection;
     bool             m_bIsUpdating;
+    bool             m_bIsLoaded;
 
     /*!
      * @brief Add timers to this container.
