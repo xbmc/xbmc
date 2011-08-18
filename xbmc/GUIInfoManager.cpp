@@ -506,6 +506,9 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
                                   { "isrepeat",         PLAYLIST_ISREPEAT },
                                   { "isrepeatone",      PLAYLIST_ISREPEATONE }};
 
+const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
+                                  { "israndom",         SLIDESHOW_ISRANDOM }};
+
 CGUIInfoManager::Property::Property(const CStdString &property, const CStdString &parameters)
 : name(property)
 {
@@ -794,7 +797,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       }
     }
     else if (cat.name == "slideshow")
+    {
+      for (size_t i = 0; i < sizeof(slideshow) / sizeof(infomap); i++)
+      {
+        if (prop.name == slideshow[i].str)
+          return slideshow[i].val;
+      }
       return CPictureInfoTag::TranslateString(prop.name);
+    }
     else if (cat.name == "container")
     {
       for (size_t i = 0; i < sizeof(mediacontainer) / sizeof(infomap); i++) // these ones don't have or need an id
@@ -1932,6 +1942,16 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
       }
     }
+  }
+  else if (condition == SLIDESHOW_ISPAUSED)
+  {
+    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    bReturn = (slideShow && slideShow->IsPaused());
+  }
+  else if (condition == SLIDESHOW_ISRANDOM)
+  {
+    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    bReturn = (slideShow && slideShow->IsShuffled());
   }
   else if (g_application.IsPlaying())
   {

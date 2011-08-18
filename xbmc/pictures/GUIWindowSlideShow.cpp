@@ -159,6 +159,7 @@ void CGUIWindowSlideShow::Reset()
 {
   g_infoManager.SetShowCodec(false);
   m_bSlideShow = false;
+  m_bShuffled = false;
   m_bPause = false;
   m_bPlayingVideo = false;
   m_bErrorMessage = false;
@@ -829,6 +830,7 @@ void CGUIWindowSlideShow::Shuffle()
   m_slides->Randomize();
   m_iCurrentSlide = 0;
   m_iNextSlide = 1;
+  m_bShuffled = true;
 }
 
 int CGUIWindowSlideShow::NumSlides() const

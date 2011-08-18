@@ -90,6 +90,8 @@ public:
   int NumSlides() const;
   int CurrentSlide() const;
   void Shuffle();
+  bool IsPaused() const { return m_bPause; }
+  bool IsShuffled() const { return m_bShuffled; }
 private:
   typedef std::set<CStdString> path_set;  // set to track which paths we're adding
   void AddItems(const CStdString &strPath, path_set *recursivePaths,
@@ -109,6 +111,7 @@ private:
   int m_iRotate;
   int m_iZoomFactor;
 
+  bool m_bShuffled;
   bool m_bSlideShow;
   bool m_bScreensaver;
   bool m_bPause;
