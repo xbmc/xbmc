@@ -759,11 +759,6 @@ void URIUtils::AddSlashAtEnd(CStdString& strFolder)
       url.SetFileName(file);
       strFolder = url.Get();
     }
-    else if (file.IsEmpty())
-    {
-      url.SetHostName(url.GetHostName()+"/");
-      strFolder = url.Get();
-    }
     return;
   }
 
