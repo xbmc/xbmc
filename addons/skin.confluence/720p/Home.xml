@@ -600,18 +600,11 @@
 					</item>
 					<item id="2">
 						<label>3</label>
-						<onclick>ActivateWindow(Videos)</onclick>
+						<onclick condition="!Skin.HasSetting(HomeVideostoFiles)">ActivateWindow(Videos)</onclick>
+						<onclick condition="Skin.HasSetting(HomeVideostoFiles)">ActivateWindow(Videos,Files,Return)</onclick>
 						<icon>special://skin/backgrounds/videos.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
 						<visible>!Skin.HasSetting(HomeMenuNoVideosButton)</visible>
-						<visible>!Skin.HasSetting(HomeVideostoFiles)</visible>
-					</item>
-					<item id="2">
-						<label>3</label>
-						<onclick>ActivateWindow(Videos,Files,Return)</onclick>
-						<icon>special://skin/backgrounds/videos.jpg</icon>
-						<thumb>$INFO[Skin.String(Home_Custom_Back_Video_Folder)]</thumb>
-						<visible>Skin.HasSetting(HomeVideostoFiles)</visible>
 					</item>
 					<item id="10">
 						<label>20342</label>

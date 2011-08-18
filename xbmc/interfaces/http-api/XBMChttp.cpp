@@ -1746,9 +1746,8 @@ int CXbmcHttp::xbmcGetGUIStatus()
         output += closeTag+openTag+"Type:Button";
         if (strTmp!="")
           output += closeTag+openTag+"Description:" + strTmp;
-        vector<CGUIActionDescriptor> actions = ((CGUIButtonControl *)pControl)->GetClickActions();
-        if (actions.size())
-          output += closeTag+openTag+"Execution:" + actions[0].m_action;
+        if (((CGUIButtonControl *)pControl)->HasClickActions())
+          output += closeTag+openTag+"Execution:" + ((CGUIButtonControl *)pControl)->GetClickActions().GetFirstAction();
       }
       else if (pControl->GetControlType() == CGUIControl::GUICONTROL_SPIN)
       {

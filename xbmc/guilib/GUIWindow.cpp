@@ -143,8 +143,8 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
   SetDefaults();
 
   CGUIControlFactory::GetInfoColor(pRootElement, "backgroundcolor", m_clearBackground);
-  CGUIControlFactory::GetMultipleString(pRootElement, "onload", m_loadActions);
-  CGUIControlFactory::GetMultipleString(pRootElement, "onunload", m_unloadActions);
+  CGUIControlFactory::GetActions(pRootElement, "onload", m_loadActions);
+  CGUIControlFactory::GetActions(pRootElement, "onunload", m_unloadActions);
   CGUIControlFactory::GetHitRect(pRootElement, m_hitRect);
 
   TiXmlElement *pChild = pRootElement->FirstChildElement();
@@ -963,19 +963,6 @@ void CGUIWindow::ClearProperties()
   m_mapProperties.clear();
 }
 
-void CGUIWindow::RunActions(std::vector<CGUIActionDescriptor>& actions)
-{
-  vector<CGUIActionDescriptor> tempActions = actions;
-
-  // and execute our actions
-  for (unsigned int i = 0; i < tempActions.size(); i++)
-  {
-    CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
-    message.SetAction(tempActions[i]);
-    g_windowManager.SendMessage(message);
-  }
-}
-
 void CGUIWindow::SetRunActionsManually()
 {
   m_manualRunActions = true;
@@ -983,12 +970,12 @@ void CGUIWindow::SetRunActionsManually()
 
 void CGUIWindow::RunLoadActions()
 {
-  RunActions(m_loadActions);
+  m_loadActions.Execute(GetID(), GetParentID());
 }
 
 void CGUIWindow::RunUnloadActions()
 {
-  RunActions(m_unloadActions);
+  m_unloadActions.Execute(GetID(), GetParentID());
 }
 
 void CGUIWindow::ClearBackground()
