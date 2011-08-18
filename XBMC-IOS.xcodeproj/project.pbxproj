@@ -29,6 +29,7 @@
 		C8EC5D26136953E100CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D24136953E100CCC10D /* XBMC_keytable.cpp */; };
 		DF0DF17F13A3AF9F008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17B13A3AF9F008ED511 /* FileNFS.cpp */; };
 		DF0DF18013A3AF9F008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */; };
+		DF34881513FD721B0026A711 /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34881313FD721B0026A711 /* InertialScrollingHandler.cpp */; };
 		DF7913B613D49E2A0018E92E /* AddonCallbacks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7913B513D49E2A0018E92E /* AddonCallbacks.cpp */; };
 		DF7913BE13D49E490018E92E /* AddonCallbacksAddon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7913B813D49E490018E92E /* AddonCallbacksAddon.cpp */; };
 		DF7913BF13D49E490018E92E /* AddonCallbacksGUI.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7913BA13D49E490018E92E /* AddonCallbacksGUI.cpp */; };
@@ -56,10 +57,6 @@
 		DF79143A13D4A02A0018E92E /* GUIDialogPVRGuideSearch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7913F413D4A02A0018E92E /* GUIDialogPVRGuideSearch.cpp */; };
 		DF79143B13D4A02A0018E92E /* GUIDialogPVRRecordingInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7913F613D4A02A0018E92E /* GUIDialogPVRRecordingInfo.cpp */; };
 		DF79143C13D4A02A0018E92E /* GUIDialogPVRTimerSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7913F813D4A02A0018E92E /* GUIDialogPVRTimerSettings.cpp */; };
-		DF79143F13D4A02A0018E92E /* PVREpg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7913FD13D4A02A0018E92E /* PVREpg.cpp */; };
-		DF79144013D4A02A0018E92E /* PVREpgContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7913FF13D4A02A0018E92E /* PVREpgContainer.cpp */; };
-		DF79144113D4A02A0018E92E /* PVREpgInfoTag.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79140113D4A02A0018E92E /* PVREpgInfoTag.cpp */; };
-		DF79144213D4A02A0018E92E /* PVREpgSearchFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79140313D4A02A0018E92E /* PVREpgSearchFilter.cpp */; };
 		DF79144413D4A02A0018E92E /* PVRDatabase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79140613D4A02A0018E92E /* PVRDatabase.cpp */; };
 		DF79144513D4A02A0018E92E /* PVRGUIInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79140813D4A02A0018E92E /* PVRGUIInfo.cpp */; };
 		DF79144613D4A02A0018E92E /* PVRManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79140A13D4A02A0018E92E /* PVRManager.cpp */; };
@@ -88,10 +85,6 @@
 		DFAC338B13EC69690020DDC0 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF8879A413E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp */; };
 		DFAC338E13EC698D0020DDC0 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88795E13E8997000B4ECE2 /* Implementation.cpp */; };
 		DFAC339113EC69A30020DDC0 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88799F13E89AA600B4ECE2 /* SystemClock.cpp */; };
-		DFAB04B013F8383300B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */; };
-		DFD4D1E213D725ED00A47C47 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1D813D725ED00A47C47 /* Implementation.cpp */; };
-		DFD4D1E713D7263000A47C47 /* README.platform in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D1E613D7263000A47C47 /* README.platform */; };
-		DFD4D1FE13D7283500A47C47 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */; };
 		F54D9E8112B713F8006870F9 /* libc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F54D9E8012B713F8006870F9 /* libc.dylib */; };
 		F56B143412CAF279009B4C96 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B143312CAF279009B4C96 /* CoreVideo.framework */; };
 		F56B14A512CAF523009B4C96 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F56B14A412CAF523009B4C96 /* AudioToolbox.framework */; };
@@ -1026,6 +1019,8 @@
 		DF0DF17C13A3AF9F008ED511 /* FileNFS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileNFS.h; sourceTree = "<group>"; };
 		DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF17E13A3AF9F008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
+		DF34881313FD721B0026A711 /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
+		DF34881413FD721B0026A711 /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
 		DF7913B513D49E2A0018E92E /* AddonCallbacks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacks.cpp; sourceTree = "<group>"; };
 		DF7913B713D49E490018E92E /* AddonCallbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacks.h; sourceTree = "<group>"; };
 		DF7913B813D49E490018E92E /* AddonCallbacksAddon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacksAddon.cpp; sourceTree = "<group>"; };
@@ -1077,14 +1072,6 @@
 		DF7913F713D4A02A0018E92E /* GUIDialogPVRRecordingInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPVRRecordingInfo.h; sourceTree = "<group>"; };
 		DF7913F813D4A02A0018E92E /* GUIDialogPVRTimerSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPVRTimerSettings.cpp; sourceTree = "<group>"; };
 		DF7913F913D4A02A0018E92E /* GUIDialogPVRTimerSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPVRTimerSettings.h; sourceTree = "<group>"; };
-		DF7913FD13D4A02A0018E92E /* PVREpg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVREpg.cpp; sourceTree = "<group>"; };
-		DF7913FE13D4A02A0018E92E /* PVREpg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVREpg.h; sourceTree = "<group>"; };
-		DF7913FF13D4A02A0018E92E /* PVREpgContainer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVREpgContainer.cpp; sourceTree = "<group>"; };
-		DF79140013D4A02A0018E92E /* PVREpgContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVREpgContainer.h; sourceTree = "<group>"; };
-		DF79140113D4A02A0018E92E /* PVREpgInfoTag.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVREpgInfoTag.cpp; sourceTree = "<group>"; };
-		DF79140213D4A02A0018E92E /* PVREpgInfoTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVREpgInfoTag.h; sourceTree = "<group>"; };
-		DF79140313D4A02A0018E92E /* PVREpgSearchFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVREpgSearchFilter.cpp; sourceTree = "<group>"; };
-		DF79140413D4A02A0018E92E /* PVREpgSearchFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVREpgSearchFilter.h; sourceTree = "<group>"; };
 		DF79140613D4A02A0018E92E /* PVRDatabase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRDatabase.cpp; sourceTree = "<group>"; };
 		DF79140713D4A02A0018E92E /* PVRDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRDatabase.h; sourceTree = "<group>"; };
 		DF79140813D4A02A0018E92E /* PVRGUIInfo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PVRGUIInfo.cpp; sourceTree = "<group>"; };
@@ -1137,7 +1124,6 @@
 		DF88795D13E8997000B4ECE2 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
 		DF88795E13E8997000B4ECE2 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
 		DF88795F13E8997000B4ECE2 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
-		DF88796013E8997000B4ECE2 /* platform.select.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = platform.select.h; path = platform/platform.select.h; sourceTree = "<group>"; };
 		DF88796213E8997000B4ECE2 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CriticalSection.h; path = platform/CriticalSection.h; sourceTree = "<group>"; };
 		DF88796313E8997000B4ECE2 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Condition.h; path = platform/Condition.h; sourceTree = "<group>"; };
 		DF88796613E8997E00B4ECE2 /* TimeSmoother.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeSmoother.h; sourceTree = "<group>"; };
@@ -1146,18 +1132,6 @@
 		DF88799F13E89AA600B4ECE2 /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
 		DF8879A313E89AE000B4ECE2 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
 		DF8879A413E89AE000B4ECE2 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
-		DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
-		DFAB04AF13F8383300B70BFB /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
-		DFD4D1D113D725ED00A47C47 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
-		DFD4D1D213D725ED00A47C47 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
-		DFD4D1D613D725ED00A47C47 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
-		DFD4D1D713D725ED00A47C47 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
-		DFD4D1D813D725ED00A47C47 /* Implementation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Implementation.cpp; sourceTree = "<group>"; };
-		DFD4D1D913D725ED00A47C47 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
-		DFD4D1DB13D725ED00A47C47 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
-		DFD4D1E613D7263000A47C47 /* README.platform */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.platform; sourceTree = "<group>"; };
-		DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
-		DFD4D1FD13D7283500A47C47 /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
 		F54D9E8012B713F8006870F9 /* libc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libc.dylib; path = usr/lib/libc.dylib; sourceTree = SDKROOT; };
 		F558F60613AFDC1700631E12 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		F558F61013AFDC3000631E12 /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
@@ -3127,7 +3101,6 @@
 				DF7913D313D4A02A0018E92E /* addons */,
 				DF7913D913D4A02A0018E92E /* channels */,
 				DF7913E513D4A02A0018E92E /* dialogs */,
-				DF7913FB13D4A02A0018E92E /* epg */,
 				DF79140613D4A02A0018E92E /* PVRDatabase.cpp */,
 				DF79140713D4A02A0018E92E /* PVRDatabase.h */,
 				DF79140813D4A02A0018E92E /* PVRGUIInfo.cpp */,
@@ -3139,13 +3112,6 @@
 				DF79141813D4A02A0018E92E /* windows */,
 			);
 			path = pvr;
-				DFD4D1E613D7263000A47C47 /* README.platform */,
-				DFD4D1D113D725ED00A47C47 /* Condition.h */,
-				DFD4D1D213D725ED00A47C47 /* CriticalSection.h */,
-				DFD4D1D513D725ED00A47C47 /* pthreads */,
-				DFD4D1DB13D725ED00A47C47 /* ThreadLocal.h */,
-			);
-			path = platform;
 			sourceTree = "<group>";
 		};
 		DF7913D313D4A02A0018E92E /* addons */ = {
@@ -3201,21 +3167,6 @@
 				DF7913F913D4A02A0018E92E /* GUIDialogPVRTimerSettings.h */,
 			);
 			path = dialogs;
-			sourceTree = "<group>";
-		};
-		DF7913FB13D4A02A0018E92E /* epg */ = {
-			isa = PBXGroup;
-			children = (
-				DF7913FD13D4A02A0018E92E /* PVREpg.cpp */,
-				DF7913FE13D4A02A0018E92E /* PVREpg.h */,
-				DF7913FF13D4A02A0018E92E /* PVREpgContainer.cpp */,
-				DF79140013D4A02A0018E92E /* PVREpgContainer.h */,
-				DF79140113D4A02A0018E92E /* PVREpgInfoTag.cpp */,
-				DF79140213D4A02A0018E92E /* PVREpgInfoTag.h */,
-				DF79140313D4A02A0018E92E /* PVREpgSearchFilter.cpp */,
-				DF79140413D4A02A0018E92E /* PVREpgSearchFilter.h */,
-			);
-			path = epg;
 			sourceTree = "<group>";
 		};
 		DF79140C13D4A02A0018E92E /* recordings */ = {
@@ -5137,8 +5088,8 @@
 			children = (
 				F56C8537131F42E9000AD0F6 /* ButtonTranslator.cpp */,
 				F56C8538131F42E9000AD0F6 /* ButtonTranslator.h */,
-				DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */,
-				DFAB04AF13F8383300B70BFB /* InertialScrollingHandler.h */,
+				DF34881313FD721B0026A711 /* InertialScrollingHandler.cpp */,
+				DF34881413FD721B0026A711 /* InertialScrollingHandler.h */,
 				F56C8539131F42E9000AD0F6 /* KeyboardLayoutConfiguration.cpp */,
 				F56C853A131F42E9000AD0F6 /* KeyboardLayoutConfiguration.h */,
 				F56C853B131F42E9000AD0F6 /* KeyboardStat.cpp */,
@@ -5734,7 +5685,6 @@
 				DF88799F13E89AA600B4ECE2 /* SystemClock.cpp */,
 				DF88795A13E8997000B4ECE2 /* ThreadLocal.h */,
 				DF88795B13E8997000B4ECE2 /* pthreads */,
-				DF88796013E8997000B4ECE2 /* platform.select.h */,
 				DF88796213E8997000B4ECE2 /* CriticalSection.h */,
 				DF88796313E8997000B4ECE2 /* Condition.h */,
 				F56C86E3131F42EB000AD0F6 /* Atomics.cpp */,
@@ -6178,7 +6128,6 @@
 			files = (
 				F56C8BA8131F4466000AD0F6 /* XBMC.png in Resources */,
 				F56C8BB9131F44AA000AD0F6 /* InfoPlist.strings in Resources */,
-				DFD4D1E713D7263000A47C47 /* README.platform in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6211,7 +6160,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\nTARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -aq --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *x86-osx.so --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \n#SYNCSKIN=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\nSYNCSKIN=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence --exclude screensaver.rsxs* --exclude visualization.*\"\n\n# binary name is XBMC but we build XBMC.bin so to get a clean binary each time\nmv $TARGET_BUILD_DIR/$TARGET_NAME/XBMC.bin $TARGET_BUILD_DIR/$TARGET_NAME/XBMC\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/tools/osx\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/addons/visualization.glesspectrum\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\tmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Resources/XBMC/extras/user\"\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/extras/user\"\nfi\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\nTARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -aq --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *x86-osx.so --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \n#SYNCSKIN=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\nSYNCSKIN=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence --exclude screensaver.rsxs* --exclude visualization.*\"\n\n# binary name is XBMC but we build XBMC.bin so to get a clean binary each time\nmv $TARGET_BUILD_DIR/$TARGET_NAME/XBMC.bin $TARGET_BUILD_DIR/$TARGET_NAME/XBMC\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/tools/osx\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/addons/visualization.glesspectrum\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n\n# copy extra packages if applicable\nif [ -d \"$SRCROOT/extras/system\" ]; then\n\t${SYNC} \"$SRCROOT/extras/system/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nfi\n\n# copy extra user packages if applicable\nif [ -d \"$SRCROOT/extras/user\" ]; then\n\tmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/Resources/XBMC/extras/user\"\n\t${SYNC} \"$SRCROOT/extras/user/\" \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/extras/user\"\nfi\n\nfi";
 			showEnvVarsInLog = 0;
 		};
 		F589B48D128A697C00D8079E /* copy frameworks */ = {
@@ -7144,10 +7093,6 @@
 				DF79143A13D4A02A0018E92E /* GUIDialogPVRGuideSearch.cpp in Sources */,
 				DF79143B13D4A02A0018E92E /* GUIDialogPVRRecordingInfo.cpp in Sources */,
 				DF79143C13D4A02A0018E92E /* GUIDialogPVRTimerSettings.cpp in Sources */,
-				DF79143F13D4A02A0018E92E /* PVREpg.cpp in Sources */,
-				DF79144013D4A02A0018E92E /* PVREpgContainer.cpp in Sources */,
-				DF79144113D4A02A0018E92E /* PVREpgInfoTag.cpp in Sources */,
-				DF79144213D4A02A0018E92E /* PVREpgSearchFilter.cpp in Sources */,
 				DF79144413D4A02A0018E92E /* PVRDatabase.cpp in Sources */,
 				DF79144513D4A02A0018E92E /* PVRGUIInfo.cpp in Sources */,
 				DF79144613D4A02A0018E92E /* PVRManager.cpp in Sources */,
@@ -7176,7 +7121,7 @@
 				DFAC338B13EC69690020DDC0 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				DFAC338E13EC698D0020DDC0 /* Implementation.cpp in Sources */,
 				DFAC339113EC69A30020DDC0 /* SystemClock.cpp in Sources */,
-				DFAB04B013F8383300B70BFB /* InertialScrollingHandler.cpp in Sources */,
+				DF34881513FD721B0026A711 /* InertialScrollingHandler.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
