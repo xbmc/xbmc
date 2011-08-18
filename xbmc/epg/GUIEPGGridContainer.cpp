@@ -316,7 +316,7 @@ void CGUIEPGGridContainer::Render()
     float posA2 = posA;
 
     CGUIListItemPtr item = m_gridIndex[channel][block].item;
-    if (item == m_gridIndex[channel][blockOffset-1].item && blockOffset != 0)
+    if (blockOffset > 0 && item == m_gridIndex[channel][blockOffset-1].item)
     {
       /* first program starts before current view */
       int startBlock = blockOffset - 1;
