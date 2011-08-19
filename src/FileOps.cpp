@@ -19,6 +19,21 @@
 #include <libgen.h>
 #endif
 
+FileOps::IOException::IOException(const std::string& error)
+: m_errno(0)
+{
+	m_error = error;
+
+#ifdef PLATFORM_UNIX
+	m_errno = errno;
+
+	if (m_errno > 0)
+	{
+		m_error += " details: " + std::string(strerror(m_errno));
+	}
+#endif
+}
+
 FileOps::IOException::~IOException() throw ()
 {
 }
@@ -153,7 +168,10 @@ void FileOps::removeFile(const char* src) throw (IOException)
 #ifdef PLATFORM_UNIX
 	if (unlink(src) != 0)
 	{
-		throw IOException("Unable to remove file " + std::string(src));
+		if (errno != ENOENT)
+		{
+			throw IOException("Unable to remove file " + std::string(src));
+		}
 	}
 #else
 	throw IOException("not implemented");

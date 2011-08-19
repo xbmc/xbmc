@@ -3,16 +3,15 @@
 #include <exception>
 #include <string>
 
+#include "StringUtils.h"
+
 class FileOps
 {
 	public:
 		class IOException : public std::exception
 		{
 			public:
-				IOException(const std::string& error)
-				: m_error(error)
-				{
-				}
+				IOException(const std::string& error);
 
 				virtual ~IOException() throw ();
 
@@ -23,6 +22,7 @@ class FileOps
 
 			private:
 				std::string m_error;
+				int m_errno;
 		};
 
 		static bool fileExists(const char* path) throw (IOException);
