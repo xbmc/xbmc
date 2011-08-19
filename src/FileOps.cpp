@@ -3,6 +3,9 @@
 #include "Platform.h"
 #include "StringUtils.h"
 
+#include <malloc.h>
+#include <string.h>
+
 #ifdef PLATFORM_UNIX
 #include <unistd.h>
 #include <stdio.h>
@@ -10,6 +13,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <libgen.h>
 #endif
 
 FileOps::IOException::~IOException() throw ()
@@ -125,7 +129,10 @@ void FileOps::removeFile(const char* src) throw (IOException)
 std::string FileOps::dirname(const char* path)
 {
 #ifdef PLATFORM_UNIX
-	throw IOException("not implemented");
+	char* pathCopy = strdup(path);
+	std::string dirname = ::dirname(pathCopy);
+	free(pathCopy);
+	return dirname;
 #else
 	throw IOException("not implemented");
 #endif
