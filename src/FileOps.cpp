@@ -194,7 +194,12 @@ void FileOps::touch(const char* path) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	// see http://pubs.opengroup.org/onlinepubs/9699919799/utilities/touch.html
-	if (creat(path,S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH) != 0)
+	int fd = creat(path,S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+	if (fd != -1)
+	{
+		close(fd);
+	}
+	else
 	{
 		throw IOException("Unable to touch file " + std::string(path));
 	}
