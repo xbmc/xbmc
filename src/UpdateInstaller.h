@@ -1,8 +1,11 @@
 #pragma once
 
-#include <string>
+#include "UpdateScript.h"
 
-class UpdateScript;
+#include <string>
+#include <map>
+
+class UpdateObserver;
 
 class UpdateInstaller
 {
@@ -20,14 +23,30 @@ class UpdateInstaller
 		void setBackupDir(const std::string& path);
 		void setMode(Mode mode);
 		void setScript(UpdateScript* script);
+		void setWaitPid(long long pid);
 
-		void run();
+		void setObserver(UpdateObserver* observer);
+
+		void run() throw ();
 
 	private:
+		void cleanup();
+		void revert();
+		void removeBackups();
+		bool checkAccess();
+
+		void installFiles();
+		void uninstallFiles();
+		void installFile(const UpdateScriptFile& file);
+		void backupFile(const std::string& path);
+
 		Mode m_mode;
 		std::string m_installDir;
 		std::string m_packageDir;
 		std::string m_backupDir;
+		long long m_waitPid;
 		UpdateScript* m_script;
+		UpdateObserver* m_observer;
+		std::map<std::string,std::string> m_backups;
 };
 

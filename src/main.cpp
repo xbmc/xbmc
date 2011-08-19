@@ -42,6 +42,7 @@ int main(int argc, char** argv)
 	installer.setInstallDir(options.installDir);
 	installer.setPackageDir(options.packageDir);
 	installer.setScript(&script);
+	installer.setWaitPid(options.waitPid);
 	installer.run();
 
 	return 0;
