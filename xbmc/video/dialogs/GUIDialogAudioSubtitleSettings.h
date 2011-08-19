@@ -32,7 +32,7 @@ public:
   virtual void FrameMove();
 
   static CStdString FormatDelay(float value, float minimum);
-  static CStdString FormatDecibel(float value, float minimum);
+  static CStdString FormatVolume(float value, float minimum);
 
 protected:
   virtual void CreateSettings();
