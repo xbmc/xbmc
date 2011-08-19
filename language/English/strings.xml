@@ -1523,6 +1523,9 @@
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">Adaptive (low)</string>
+  <string id="16321">Adaptive (medium)</string>
+  <string id="16322">High quality</string>
 
   <string id="16400">Post-processing</string>
 

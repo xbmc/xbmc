@@ -25,9 +25,16 @@
 #include "guilib/D3DResource.h"
 #include "threads/Event.h"
 #include "DVDResource.h"
+#include "settings/VideoSettings.h"
 #include <dxva2api.h>
 #include <deque>
 #include <vector>
+
+#define DXVA_DEINTERLACE_MASK(a) ((a) & 0x0f)
+#define DXVA_DEINTERLACE_BOB             0x01
+#define DXVA_DEINTERLACE_ADAPTIVE_LOW    0x02
+#define DXVA_DEINTERLACE_ADAPTIVE_MEDIUM 0x04
+#define DXVA_DEINTERLACE_ADAPTIVE_HIGH   0x08
 
 namespace DXVA {
 
@@ -115,6 +122,7 @@ public:
   bool           ProcessPicture(DVDVideoPicture* picture);
   bool           Render(const RECT& src, const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
   int            Size() { return m_size; }
+  unsigned       GetCaps() { return m_processorcaps; };
 
   virtual void OnCreateDevice()  {}
   virtual void OnDestroyDevice() { CSingleLock lock(m_section); Close(); }
@@ -123,10 +131,30 @@ public:
 
 protected:
   bool           Open(UINT width, UINT height, unsigned int flags, D3DFORMAT format);
+  bool           SelectProcessor();
+  bool           SaveProcessor(EINTERLACEMETHOD method, GUID* guid, unsigned caps);
 
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
   GUID                           m_device;
+
+  typedef struct
+  {
+    EINTERLACEMETHOD method;
+    GUID             guid;
+    unsigned         caps;
+  } dxva2_processor_t;
+
+  std::vector<dxva2_processor_t> m_processors;
+  GUID                           m_defaultdevice;
+  EINTERLACEMETHOD               m_currinterlacemethod;
+  UINT                           m_streamsampleformat;
+  bool                           m_deinterlacing;
+  REFERENCE_TIME                 m_previoustime;
+  unsigned                       m_processorcaps;
+
+  unsigned         m_maxbackrefs;
+  unsigned         m_maxfwdrefs;
 
   DXVA2_VideoProcessorCaps m_caps;
   DXVA2_VideoDesc  m_desc;

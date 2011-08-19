@@ -81,6 +81,7 @@ CWinRenderer::CWinRenderer()
   m_sw_scale_ctx = NULL;
   m_dllSwScale = NULL;
   m_processor = NULL;
+  m_processorCaps = 0;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -266,6 +267,7 @@ void CWinRenderer::AddProcessor(DVDVideoPicture* picture)
       processor = picture->proc;
 
     processor->ProcessPicture(picture);
+    m_processorCaps = processor->GetCaps();
 
     DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
     SAFE_RELEASE(buf->proc);
@@ -1010,12 +1012,19 @@ bool CWinRenderer::CreateYV12Texture(int index)
 
 bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 {
-  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  if(m_renderMethod == RENDER_DXVA)
   {
-    if(method == VS_INTERLACEMETHOD_NONE)
+    if(method == VS_INTERLACEMETHOD_NONE
+    ||(method == VS_INTERLACEMETHOD_AUTO || method == VS_INTERLACEMETHOD_DXVA_ANY) && DXVA_DEINTERLACE_MASK(m_processorCaps)
+    || method == VS_INTERLACEMETHOD_DXVA_BOB && (m_processorCaps & DXVA_DEINTERLACE_BOB)
+    || method == VS_INTERLACEMETHOD_DXVA_ADAPTIVE_LOW && (m_processorCaps & DXVA_DEINTERLACE_ADAPTIVE_LOW)
+    || method == VS_INTERLACEMETHOD_DXVA_ADAPTIVE_MEDIUM && (m_processorCaps & DXVA_DEINTERLACE_ADAPTIVE_MEDIUM)
+    || method == VS_INTERLACEMETHOD_DXVA_ADAPTIVE_HIGH && (m_processorCaps & DXVA_DEINTERLACE_ADAPTIVE_HIGH))
       return true;
-    return false;
   }
+
+  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+    return false;
 
   if(method == VS_INTERLACEMETHOD_NONE
   || method == VS_INTERLACEMETHOD_AUTO
