@@ -29,6 +29,7 @@ CRenderSystemBase::CRenderSystemBase()
   m_RenderVersionMajor = 0;
   m_RenderVersionMinor = 0;
   m_renderCaps = 0;
+  m_renderQuirks = 0;
   m_minDXTPitch = 0;
 }
 
