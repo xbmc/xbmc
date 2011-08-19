@@ -31,7 +31,7 @@ class CGUIControl;
 class CGUIAction
 {
 public:
-  typedef enum { ACTION_NAV = 0, ACTION_XBMC = 1} ActionType;
+  typedef enum { ACTION_NAV = 0, ACTION_XBMC = 1, ACTION_PYTHON = 2} ActionType;
 
   CGUIAction();
 

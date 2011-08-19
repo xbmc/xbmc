@@ -24,6 +24,7 @@
 #include "GUIWindowManager.h"
 #include "GUIControl.h"
 #include "GUIInfoManager.h"
+#include "interfaces/python/XBPython.h"
 
 using namespace std;
 
@@ -55,7 +56,7 @@ bool CGUIAction::Execute(int controlID, int parentID, int direction /*= 0*/) con
         }
         retval |= g_windowManager.SendMessage(msg);
       }
-      else // if (it->type == ACTION_XBMC)
+      else if (it->type == ACTION_XBMC)
       {
         CGUIMessage msg(GUI_MSG_EXECUTE, controlID, parentID);
         msg.SetStringParam(it->action);
@@ -63,6 +64,12 @@ bool CGUIAction::Execute(int controlID, int parentID, int direction /*= 0*/) con
           g_windowManager.SendThreadMessage(msg);
         else
           g_windowManager.SendMessage(msg);
+        retval |= true;
+      }
+      else // if (it->type == ACTION_PYTHON)
+      {
+        vector<CStdString> argv;
+        g_pythonParser.evalString(it->action, argv);
         retval |= true;
       }
     }
