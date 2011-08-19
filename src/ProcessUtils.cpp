@@ -4,6 +4,8 @@
 #include "StringUtils.h"
 #include "Log.h"
 
+#include <string.h>
+
 #ifdef PLATFORM_WINDOWS
 #include <windows.h>
 #else
@@ -40,7 +42,7 @@ bool ProcessUtils::waitForProcess(long long pid)
 	pid_t result = ::waitpid(static_cast<pid_t>(pid), 0, 0);	
 	if (result < 0)
 	{
-		LOG(Error,"waitpid() failed with error" + intToStr(errno));
+		LOG(Error,"waitpid() failed with error: " + std::string(strerror(errno)));
 	}
 	return result > 0;
 #elif defined(PLATFORM_WINDOWS)
