@@ -148,6 +148,10 @@ public:
    */
   void CycleWatchMode(const CStdString& content);
 
+  /*! \brief Try to export skin settings from guisettings to addon settings.
+   */
+  void ExportSkinSettingsToAddonSetting();
+
   CStdString m_pictureExtensions;
   CStdString m_musicExtensions;
   CStdString m_videoExtensions;
@@ -392,7 +396,6 @@ protected:
 
   // skin activated settings
   void LoadSkinSettings(const TiXmlElement* pElement);
-  void SaveSkinSettings(TiXmlNode *pElement) const;
 
   void LoadUserFolderLayout();
 

@@ -58,6 +58,7 @@
 #include "input/MouseStat.h"
 #include "filesystem/File.h"
 #include "filesystem/DirectoryCache.h"
+#include "addons/AddonManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -913,8 +914,6 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   else // save the global settings
     g_guiSettings.SaveXML(pRoot);
 
-  SaveSkinSettings(pRoot);
-
   // For mastercode
   SaveProfiles( PROFILES_FILE );
 
@@ -1366,6 +1365,54 @@ void CSettings::LoadSources()
   }
 }
 
+void CSettings::ExportSkinSettingsToAddonSetting()
+{
+  // In v11.0 and earlier skin settings were stored in guisettings.
+  // This method tries to preserve skin settings when we are switching
+  // skin settings mechanism from guisettings to addon settings.
+
+  // check if we have any skin settings we need to export
+  if (m_skinBools.size() == 0 && m_skinStrings.size() == 0)
+    return;
+
+  ADDON::VECADDONS skinList;
+  ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_SKIN, skinList);
+
+  // iterate through every installed skin catching its settings
+  for (ADDON::VECADDONS::iterator skin_it = skinList.begin(); skin_it != skinList.end(); skin_it++)
+  {
+    CStdString skinID;
+    skinID.Format("%s.", (*skin_it)->ID().c_str());
+    int len = skinID.length();
+    bool changed = false;
+
+    { // handle skin strings
+      for (map<int, CSkinString>::iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); it++)
+      {
+        if (it->second.name.Left(len).Equals(skinID) && !it->second.value.IsEmpty())
+        {
+          (*skin_it)->UpdateSetting(it->second.name.Mid(len), it->second.value);
+          changed = true;
+        }
+      }
+    }
+
+    { // handle skin bools
+      for (map<int, CSkinBool>::iterator it = m_skinBools.begin(); it != m_skinBools.end() ; it++ )
+      {
+        if (it->second.name.Left(len).Equals(skinID))
+        {
+          (*skin_it)->UpdateSetting(it->second.name.Mid(len), it->second.value ? "true" : "false");
+          changed = true;
+        }
+      }
+    }
+
+    if (changed)
+      (*skin_it)->SaveSettings();
+  }
+}
+
 void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
 {
   int number = 0;
@@ -1394,34 +1441,6 @@ void CSettings::LoadSkinSettings(const TiXmlElement* pRootElement)
       }
       pChild = pChild->NextSiblingElement("setting");
     }
-  }
-}
-
-void CSettings::SaveSkinSettings(TiXmlNode *pRootElement) const
-{
-  // add the <skinsettings> tag
-  TiXmlElement xmlSettingsElement("skinsettings");
-  TiXmlNode *pSettingsNode = pRootElement->InsertEndChild(xmlSettingsElement);
-  if (!pSettingsNode) return;
-  for (map<int, CSkinBool>::const_iterator it = m_skinBools.begin(); it != m_skinBools.end(); ++it)
-  {
-    // Add a <setting type="bool" name="name">true/false</setting>
-    TiXmlElement xmlSetting("setting");
-    xmlSetting.SetAttribute("type", "bool");
-    xmlSetting.SetAttribute("name", (*it).second.name.c_str());
-    TiXmlText xmlBool((*it).second.value ? "true" : "false");
-    xmlSetting.InsertEndChild(xmlBool);
-    pSettingsNode->InsertEndChild(xmlSetting);
-  }
-  for (map<int, CSkinString>::const_iterator it = m_skinStrings.begin(); it != m_skinStrings.end(); ++it)
-  {
-    // Add a <setting type="string" name="name">string</setting>
-    TiXmlElement xmlSetting("setting");
-    xmlSetting.SetAttribute("type", "string");
-    xmlSetting.SetAttribute("name", (*it).second.name.c_str());
-    TiXmlText xmlLabel((*it).second.value);
-    xmlSetting.InsertEndChild(xmlLabel);
-    pSettingsNode->InsertEndChild(xmlSetting);
   }
 }
 
