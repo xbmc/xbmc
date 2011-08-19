@@ -146,7 +146,7 @@
 			<posy>50r</posy>
 			<animation effect="fade" time="200">VisibleChange</animation>
 			<visible>![Window.IsVisible(SliderDialog) | Window.IsVisible(OSDVideoSettings) | Window.IsVisible(OSDAudioSettings) | Window.IsVisible(VideoBookmarks)]</visible>
-			<control type="togglebutton" id="701">
+			<control type="button" id="701">
 				<posx>0</posx>
 				<posy>0</posy>
 				<width>45</width>
@@ -155,18 +155,13 @@
 				<font>-</font>
 				<texturefocus>OSDSubtitlesFO.png</texturefocus>
 				<texturenofocus>OSDSubtitlesNF.png</texturenofocus>
-				<alttexturefocus>OSDSubtitlesFO.png</alttexturefocus>
-				<alttexturenofocus>OSDSubtitlesNF.png</alttexturenofocus>
 				<onleft>605</onleft>
 				<onright>702</onright>
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>Close</onclick>
 				<onclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</onclick>
-				<altclick>Skin.SetAddon(SubtitleScript_Path,xbmc.python.subtitles)</altclick>
-				<altclick>Close</altclick>
-				<altclick>XBMC.RunScript($INFO[Skin.String(SubtitleScript_Path)])</altclick>
-				<usealttexture>IsEmpty(Skin.String(SubtitleScript_Path))</usealttexture>
+				<visible>!IsEmpty(Skin.String(SubtitleScript_Path))</visible>
 			</control>
 			<control type="button" id="702">
 				<posx>45</posx>

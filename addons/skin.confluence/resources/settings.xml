@@ -1,0 +1,3 @@
+<settings>
+  <setting id="SubtitleScript_Path" default="script.xbmc.subtitles" />
+</settings>
