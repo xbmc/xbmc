@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
+#include "Cards.h"
 
 using namespace std;
 
@@ -32,9 +33,10 @@ class cRecording
 private:
   int m_Index;
   string m_channelName;
-  string m_fileName;
-  string m_filePath;
-  string m_directory;
+  string m_filePath;          ///< The full recording path as returned by the backend
+  string m_basePath;          ///< The base path shared by all recordings (to be determined from the Card settings)
+  string m_directory;         ///< An optional subdirectory below the basePath
+  string m_fileName;          ///< The recording filename without path
   string m_stream;
   string m_originalurl;
   time_t m_StartTime;
@@ -47,7 +49,8 @@ private:
   string m_episodePart;
   int m_scheduleID;
   int m_keepUntil;
-  time_t m_keepUntilDate;     ///> MediaPortal keepUntilDate
+  time_t m_keepUntilDate;     ///< MediaPortal keepUntilDate
+  CCards* m_cardSettings;     ///< Pointer to the MediaPortal card settings. Will be used to determine the base path of the recordings
 
 public:
   //cRecording(const PVR_RECORDING *Recording);
@@ -101,4 +104,10 @@ public:
    * \return Stream URL
    */
   const char *OrignalURL(void) const { return m_originalurl.c_str(); }
+
+  /**
+   * \brief Pass a pointer to the MediaPortal card settings to this class
+   * \param the cardSettings
+   */
+  void SetCardSettings(CCards* cardSettings);
 };
