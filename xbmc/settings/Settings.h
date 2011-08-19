@@ -128,14 +128,6 @@ public:
   bool UpdateShare(const CStdString &type, const CStdString oldName, const CMediaSource &share);
   bool AddShare(const CStdString &type, const CMediaSource &share);
 
-  int TranslateSkinString(const CStdString &setting);
-  const CStdString &GetSkinString(int setting) const;
-  void SetSkinString(int setting, const CStdString &label);
-
-  int TranslateSkinBool(const CStdString &setting);
-  bool GetSkinBool(int setting) const;
-  void SetSkinBool(int setting, bool set);
-
   /*! \brief Retreive the watched mode for the given content type
    \param content Current content type
    \return the current watch mode for this content type, WATCH_MODE_ALL if the content type is unknown.
@@ -155,9 +147,6 @@ public:
    \sa GetWatchMode, SetWatchMode
    */
   void CycleWatchMode(const CStdString& content);
-
-  void ResetSkinSetting(const CStdString &setting);
-  void ResetSkinSettings();
 
   CStdString m_pictureExtensions;
   CStdString m_musicExtensions;

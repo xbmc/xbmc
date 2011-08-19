@@ -43,6 +43,7 @@
 #include "addons/AddonInstaller.h"
 #include "addons/AddonManager.h"
 #include "addons/PluginSource.h"
+#include "addons/Skin.h"
 #include "music/LastFmManager.h"
 #include "utils/LCD.h"
 #include "utils/log.h"
@@ -960,33 +961,40 @@ int CBuiltins::Execute(const CStdString& execString)
   }
   else if (execute.Equals("skin.togglesetting"))
   {
-    int setting = g_settings.TranslateSkinBool(parameter);
-    g_settings.SetSkinBool(setting, !g_settings.GetSkinBool(setting));
-    g_settings.Save();
+    if (g_SkinInfo)
+    {
+      g_SkinInfo->UpdateSetting(parameter, g_SkinInfo->GetSetting(parameter).Equals("true") ? "false" : "true");
+      g_SkinInfo->SaveSettings();
+    }
   }
   else if (execute.Equals("skin.setbool") && params.size())
   {
-    if (params.size() > 1)
+    if (g_SkinInfo)
     {
-      int string = g_settings.TranslateSkinBool(params[0]);
-      g_settings.SetSkinBool(string, params[1].CompareNoCase("true") == 0);
-      g_settings.Save();
+      CStdString value = "true"; // default is to set it to true
+      if (params.size() > 1 && params[1].CompareNoCase("true") != 0)
+        value = "false";
+
+      g_SkinInfo->UpdateSetting(params[0], value);
+      g_SkinInfo->SaveSettings();
       return 0;
     }
-    // default is to set it to true
-    int setting = g_settings.TranslateSkinBool(params[0]);
-    g_settings.SetSkinBool(setting, true);
-    g_settings.Save();
   }
   else if (execute.Equals("skin.reset"))
   {
-    g_settings.ResetSkinSetting(parameter);
-    g_settings.Save();
+    if (g_SkinInfo)
+    {
+      g_SkinInfo->ResetSetting(parameter);
+      g_SkinInfo->SaveSettings();
+    }
   }
   else if (execute.Equals("skin.resetsettings"))
   {
-    g_settings.ResetSkinSettings();
-    g_settings.Save();
+    if (g_SkinInfo)
+    {
+      g_SkinInfo->ResetSettings();
+      g_SkinInfo->SaveSettings();
+    }
   }
   else if (execute.Equals("skin.theme"))
   {
@@ -1033,44 +1041,43 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("skin.setstring") || execute.Equals("skin.setimage") || execute.Equals("skin.setfile") ||
            execute.Equals("skin.setpath") || execute.Equals("skin.setnumeric") || execute.Equals("skin.setlargeimage"))
   {
+    if (!g_SkinInfo)
+      return -1;
     // break the parameter up if necessary
     int string = 0;
     if (params.size() > 1)
     {
-      string = g_settings.TranslateSkinString(params[0]);
       if (execute.Equals("skin.setstring"))
       {
-        g_settings.SetSkinString(string, params[1]);
-        g_settings.Save();
+        g_SkinInfo->UpdateSetting(params[0], params[1]);
+        g_SkinInfo->SaveSettings();
         return 0;
       }
     }
-    else
-      string = g_settings.TranslateSkinString(params[0]);
-    CStdString value = g_settings.GetSkinString(string);
+    CStdString value = g_SkinInfo->GetSetting(params[0]);
     VECSOURCES localShares;
     g_mediaManager.GetLocalDrives(localShares);
     if (execute.Equals("skin.setstring"))
     {
       if (CGUIDialogKeyboard::ShowAndGetInput(value, g_localizeStrings.Get(1029), true))
-        g_settings.SetSkinString(string, value);
+        g_SkinInfo->UpdateSetting(params[0], value);
     }
     else if (execute.Equals("skin.setnumeric"))
     {
       if (CGUIDialogNumeric::ShowAndGetNumber(value, g_localizeStrings.Get(611)))
-        g_settings.SetSkinString(string, value);
+        g_SkinInfo->UpdateSetting(params[0], value);
     }
     else if (execute.Equals("skin.setimage"))
     {
       if (CGUIDialogFileBrowser::ShowAndGetImage(localShares, g_localizeStrings.Get(1030), value))
-        g_settings.SetSkinString(string, value);
+        g_SkinInfo->UpdateSetting(params[0], value);
     }
     else if (execute.Equals("skin.setlargeimage"))
     {
       VECSOURCES *shares = g_settings.GetSourcesFromType("pictures");
       if (!shares) shares = &localShares;
       if (CGUIDialogFileBrowser::ShowAndGetImage(*shares, g_localizeStrings.Get(1030), value))
-        g_settings.SetSkinString(string, value);
+        g_SkinInfo->UpdateSetting(params[0], value);
     }
     else if (execute.Equals("skin.setfile"))
     {
@@ -1097,9 +1104,9 @@ int CBuiltins::Execute(const CStdString& execString)
         if (CGUIDialogFileBrowser::ShowAndGetFile(url.Get(), strMask, TranslateType(type, true), replace, true, true, true))
         {
           if (replace.Mid(0,9).Equals("addons://"))
-            g_settings.SetSkinString(string, URIUtils::GetFileName(replace));
+            g_SkinInfo->UpdateSetting(params[0], URIUtils::GetFileName(replace));
           else
-            g_settings.SetSkinString(string, replace);
+            g_SkinInfo->UpdateSetting(params[0], replace);
         }
       }
       else 
@@ -1118,20 +1125,19 @@ int CBuiltins::Execute(const CStdString& execString)
           }
         }
         if (CGUIDialogFileBrowser::ShowAndGetFile(localShares, strMask, g_localizeStrings.Get(1033), value))
-          g_settings.SetSkinString(string, value);
+          g_SkinInfo->UpdateSetting(params[0], value);
       }
     }
     else // execute.Equals("skin.setpath"))
     {
       g_mediaManager.GetNetworkLocations(localShares);
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(1031), value))
-        g_settings.SetSkinString(string, value);
+        g_SkinInfo->UpdateSetting(params[0], value);
     }
-    g_settings.Save();
+    g_SkinInfo->SaveSettings();
   }
   else if (execute.Equals("skin.setaddon") && params.size() > 1)
   {
-    int string = g_settings.TranslateSkinString(params[0]);
     vector<ADDON::TYPE> types;
     for (unsigned int i = 1 ; i < params.size() ; i++)
     {
@@ -1142,8 +1148,8 @@ int CBuiltins::Execute(const CStdString& execString)
     CStdString result;
     if (types.size() > 0 && CGUIWindowAddonBrowser::SelectAddonID(types, result, true) == 1)
     {
-      g_settings.SetSkinString(string, result);
-      g_settings.Save();
+      g_SkinInfo->UpdateSetting(params[0], result);
+      g_SkinInfo->SaveSettings();
     }
   }
   else if (execute.Equals("dialog.close") && params.size())
