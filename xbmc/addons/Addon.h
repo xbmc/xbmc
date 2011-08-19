@@ -135,6 +135,19 @@ public:
    */
   virtual CStdString GetSetting(const CStdString& key);
 
+  /*! \brief Reset a particular settings value
+   Value of given settings will be set to default.
+   \param key the id of the setting to reset
+   \return true if setting has default value
+   */
+  bool ResetSetting(const CStdString& key);
+
+  /*! \brief Reset all settings values
+   Value of all settings will be set to defaults.
+   \return true if any setting has default value
+   */
+  bool ResetSettings();
+
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id);
 

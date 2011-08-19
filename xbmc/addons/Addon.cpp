@@ -397,6 +397,23 @@ bool CAddon::LoadSettings(bool bForce /* = false*/)
   return true;
 }
 
+bool CAddon::ResetSettings()
+{
+  // remove all settings
+  m_settings.clear();
+  // load default settings
+  return SettingsFromXML(m_addonXmlDoc, true);
+}
+
+bool CAddon::ResetSetting(const CStdString& key)
+{
+  // remove given settings
+  m_settings.erase(key);
+  // load default value for removed setting
+  // (we will not overwrite rest of the settings)
+  return SettingsFromXML(m_addonXmlDoc, true, false);
+}
+
 bool CAddon::HasUserSettings()
 {
   if (!LoadSettings())
