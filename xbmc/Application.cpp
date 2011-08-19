@@ -1226,16 +1226,17 @@ bool CApplication::StartWebServer()
     bool started = false;
     if (m_WebServer.Start(webPort, g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword")))
     {
+      std::map<std::string, std::string> txt; 
       started = true;
       // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
-      CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort, txt);
 #endif
 #ifdef HAS_HTTPAPI
-      CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort, txt);
 #endif
 #ifdef HAS_JSONRPC
-      CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", webPort, txt);
 #endif
     }
 #ifdef HAS_HTTPAPI
@@ -1278,7 +1279,8 @@ bool CApplication::StartJSONRPCServer()
 
     if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
     {
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.m_jsonTcpPort);
+      std::map<std::string, std::string> txt;  
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.m_jsonTcpPort, txt);
       return true;
     }
     else
