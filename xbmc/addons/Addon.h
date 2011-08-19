@@ -192,10 +192,11 @@ protected:
   /*! \brief Parse settings from an XML document
    \param doc XML document to parse for settings
    \param loadDefaults if true, the default attribute is used and settings are reset prior to parsing, else the value attribute is used.
+   \param overwrite if false, only settings that aren't loaded will be updated
    \return true if settings are loaded, false otherwise
    \sa SettingsToXML
    */
-  bool SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults = false);
+  bool SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults = false, bool overwrite = true);
 
   /*! \brief Parse settings into an XML document
    \param doc XML document to receive the settings

@@ -463,7 +463,7 @@ void CAddon::UpdateSetting(const CStdString& key, const CStdString& value)
   m_settings[key] = value;
 }
 
-bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=false */)
+bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=false */, bool overwrite /* = true */)
 {
   if (!doc.RootElement())
     return false;
@@ -482,6 +482,10 @@ bool CAddon::SettingsFromXML(const TiXmlDocument &doc, bool loadDefaults /*=fals
     while (setting)
     {
       const char *id = setting->Attribute("id");
+
+      if (!overwrite && m_settings.find(id) != m_settings.end())
+        continue; // don't overwrite existing setting
+
       const char *value = setting->Attribute(loadDefaults ? "default" : "value");
       if (id && value)
       {
