@@ -46,6 +46,7 @@ CBaseRenderer::~CBaseRenderer()
 
 void CBaseRenderer::ChooseBestResolution(float fps)
 {
+  if (fps == 0.0) return;
   m_resolution = g_guiSettings.m_LookAndFeelResolution;
   if ( m_resolution == RES_WINDOW )
     m_resolution = RES_DESKTOP;
