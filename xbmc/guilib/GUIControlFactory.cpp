@@ -397,6 +397,10 @@ bool CGUIControlFactory::GetActions(const TiXmlNode* pRootNode, const char* strT
       CGUIAction::cond_action_pair pair;
       pair.condition = pElement->Attribute("condition");
       pair.action = pElement->FirstChild()->Value();
+      if (StringUtils::IsInteger(pair.action))
+        pair.type = CGUIAction::ACTION_NAV;
+      else
+        pair.type = CGUIAction::ACTION_XBMC;
       action.m_actions.push_back(pair);
     }
     pElement = pElement->NextSiblingElement(strTag);

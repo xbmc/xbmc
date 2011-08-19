@@ -41,7 +41,7 @@ bool CGUIAction::Execute(int controlID, int parentID, int direction /*= 0*/) con
   {
     if (it->condition.IsEmpty() || g_infoManager.EvaluateBool(it->condition))
     {
-      if (StringUtils::IsInteger(it->action))
+      if (it->type == ACTION_NAV)
       {
         CGUIMessage msg(GUI_MSG_MOVE, parentID, controlID, direction);
         if (parentID)
@@ -55,7 +55,7 @@ bool CGUIAction::Execute(int controlID, int parentID, int direction /*= 0*/) con
         }
         retval |= g_windowManager.SendMessage(msg);
       }
-      else
+      else // if (it->type == ACTION_XBMC)
       {
         CGUIMessage msg(GUI_MSG_EXECUTE, controlID, parentID);
         msg.SetStringParam(it->action);
@@ -74,11 +74,8 @@ int CGUIAction::GetNavigation() const
 {
   for (ciActions it = m_actions.begin() ; it != m_actions.end() ; it++)
   {
-    if (StringUtils::IsInteger(it->action))
-    {
-      if (it->condition.IsEmpty() || g_infoManager.EvaluateBool(it->condition))
-        return atoi(it->action.c_str());
-    }
+    if (it->type == ACTION_NAV && (it->condition.IsEmpty() || g_infoManager.EvaluateBool(it->condition)))
+      return atoi(it->action.c_str());
   }
   return 0;
 }
@@ -90,7 +87,7 @@ void CGUIAction::SetNavigation(int id)
   strId.Format("%i", id);
   for (iActions it = m_actions.begin() ; it != m_actions.end() ; it++)
   {
-    if (StringUtils::IsInteger(it->action) && it->condition.IsEmpty())
+    if (it->type == ACTION_NAV && it->condition.IsEmpty())
     {
       it->action = strId;
       return;
@@ -98,6 +95,7 @@ void CGUIAction::SetNavigation(int id)
   }
   cond_action_pair pair;
   pair.action = strId;
+  pair.type = ACTION_NAV;
   m_actions.push_back(pair);
 }
 
