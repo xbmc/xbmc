@@ -116,7 +116,7 @@ protected:
   void AutoCrop(DVDVideoPicture *pPicture, RECT &crop);
   CRect m_crop;
 
-  int OutputPicture(DVDVideoPicture* pPicture, double pts);
+  int OutputPicture(const DVDVideoPicture* src, double pts);
 #ifdef HAS_VIDEO_PLAYBACK
   void ProcessOverlays(DVDVideoPicture* pSource, double pts);
 #endif

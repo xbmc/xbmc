@@ -901,8 +901,12 @@ void CDVDPlayerVideo::ProcessOverlays(DVDVideoPicture* pSource, double pts)
 }
 #endif
 
-int CDVDPlayerVideo::OutputPicture(DVDVideoPicture* pPicture, double pts)
+int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
 {
+  /* picture buffer is not allowed to be modified in this call */
+  DVDVideoPicture picture(*src);
+  DVDVideoPicture* pPicture = &picture;
+
 #ifdef HAS_VIDEO_PLAYBACK
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
   if (!g_renderManager.IsConfigured()
