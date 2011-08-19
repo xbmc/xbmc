@@ -1132,11 +1132,14 @@ REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source)
   return m_time;
 }
 
-bool CProcessor::ProcessPicture(DVDVideoPicture* picture)
+REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
 {
   CSingleLock lock(m_section);
 
   IDirect3DSurface9* surface = NULL;
+
+  if (picture->iFlags & DVP_FLAG_DROPPED)
+    return 0;
 
   switch (picture->format)
   {
@@ -1184,8 +1187,6 @@ bool CProcessor::ProcessPicture(DVDVideoPicture* picture)
   
       CHECK(surface->UnlockRect());
 
-      picture->proc = this;
-      picture->format = DVDVideoPicture::FMT_DXVA;
       break;
     }
     
@@ -1197,14 +1198,9 @@ bool CProcessor::ProcessPicture(DVDVideoPicture* picture)
   }
 
   if (!surface)
-    return false;
+    return 0;
 
-  if (picture->iFlags & DVP_FLAG_DROPPED)
-    picture->proc_id = 0;
-  else
-    picture->proc_id = Add(surface);
-
-  return true;
+  return Add(surface);
 }
 
 static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int min, int max, int def)
