@@ -1,0 +1,29 @@
+#pragma once
+
+#include <exception>
+#include <string>
+
+class FileOps
+{
+	public:
+		class IOException : public std::exception
+		{
+			public:
+				IOException(const std::string& error);
+				virtual ~IOException() throw ();
+
+				virtual const char* what();
+
+			private:
+				std::string m_error;
+		};
+
+		static bool fileExists(const char* path) throw (IOException);
+		static void setPermissions(const char* path, int permissions) throw (IOException);
+		static void moveFile(const char* src, const char* dest) throw (IOException);
+		static void extractFromZip(const char* zipFile, const char* src, const char* dest) throw (IOException);
+		static void mkdir(const char* dir) throw (IOException);
+		static void rmdir(const char* dir) throw (IOException);
+		static void createSymLink(const char* link, const char* target) throw (IOException);
+};
+

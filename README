@@ -1,0 +1,14 @@
+Once an update has been downloaded to a temporary directory,
+this tool is responsible for installing the updates to the application's
+directory and displaying a progress dialog whilst it does so.
+
+Features:
+
+ * Supports Windows, Mac, Linux
+
+ * Standalone.  The only external dependencies are the C++ runtime library (Linux, Mac),
+   pthreads (Linux, Mac) and the native UI library (Cocoa on Mac, Gtk on Linux)
+
+ * A simple updater UI implemented using the native
+   Win32, Cocoa and GTK libraries (depending on the platform).
+
