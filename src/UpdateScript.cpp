@@ -1,15 +1,9 @@
 #include "UpdateScript.h"
 
 #include "Log.h"
+#include "StringUtils.h"
 
 #include "tinyxml/tinyxml.h"
-
-std::string intToStr(int i)
-{
-	std::stringstream stream;
-	stream << i;
-	return stream.str();
-}
 
 UpdateScript::UpdateScript()
 {
