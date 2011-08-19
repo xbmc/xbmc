@@ -30,6 +30,7 @@ add_executable(updater
 target_link_libraries(updater
   anyoption
   tinyxml
+  minizip
   # TODO - Mac and Windows version
   /usr/lib/libboost_thread.a
 )

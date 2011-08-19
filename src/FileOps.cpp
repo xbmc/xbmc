@@ -5,6 +5,9 @@
 
 #include <malloc.h>
 #include <string.h>
+#include <fstream>
+
+#include "minizip/unzip.h"
 
 #ifdef PLATFORM_UNIX
 #include <unistd.h>
@@ -67,13 +70,44 @@ void FileOps::moveFile(const char* src, const char* dest) throw (IOException)
 #endif
 }
 
-void FileOps::extractFromZip(const char* zipFile, const char* src, const char* dest) throw (IOException)
+void FileOps::extractFromZip(const char* zipFilePath, const char* src, const char* dest) throw (IOException)
 {
-#ifdef PLATFORM_UNIX
-	throw IOException("not implemented");
-#else
-	throw IOException("not implemented");
-#endif
+	unzFile zipFile = unzOpen(zipFilePath);
+	int result = unzLocateFile(zipFile,src,0);
+	if (result == UNZ_OK)
+	{
+		// found a match which is now the current file
+		unzOpenCurrentFile(zipFile);
+		int chunkSize = 4096;
+		char buffer[chunkSize];
+
+		std::ofstream outputFile(dest,std::ofstream::binary);
+		if (!outputFile.good())
+		{
+			throw IOException("Unable to write to file " + std::string(src));
+		}
+		while (true)
+		{
+			int count = unzReadCurrentFile(zipFile,buffer,chunkSize);
+			if (count <= 0)
+			{
+				if (count < 0)
+				{
+					throw IOException("Error extracting file from archive " + std::string(src));
+				}
+				break;
+			}
+			outputFile.write(buffer,count);
+		}
+		outputFile.close();
+
+		unzCloseCurrentFile(zipFile);
+	}
+	else
+	{
+		throw IOException("Unable to find file " + std::string(src) + " in zip archive " + std::string(zipFilePath));
+	}
+	unzClose(zipFile);
 }
 
 void FileOps::mkdir(const char* dir) throw (IOException)
