@@ -37,13 +37,13 @@ void UpdateInstaller::run()
 {
 	LOG(Info,"Starting update installation");
 
-	if (mode == Setup)
+	if (m_mode == Setup)
 	{
 	}
-	else if (mode == Main)
+	else if (m_mode == Main)
 	{
 	}
-	else if (mode == Cleanup)
+	else if (m_mode == Cleanup)
 	{
 	}
 }
