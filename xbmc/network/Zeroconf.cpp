@@ -40,7 +40,7 @@
 //should be optimized away
 class CZeroconfDummy : public CZeroconf
 {
-  virtual bool doPublishService(const std::string&, const std::string&, const std::string&, unsigned int)
+  virtual bool doPublishService(const std::string&, const std::string&, const std::string&, unsigned int, std::map<std::string, std::string>)
   {
     return false;
   }
