@@ -24,7 +24,7 @@ CONFIGURE=./configure --prefix=$(PREFIX) \
   ac_cv_func_posix_getgrgid_r=yes \
   ac_cv_path_GLIB_GENMARSHAL=`pwd`/../glib-genmarshal
 
-LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
+LIBDYLIB=$(SOURCE)/glib/.libs/libglib-2.0.dylib
 
 all: $(LIBDYLIB) .installed
 
