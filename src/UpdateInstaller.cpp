@@ -45,32 +45,43 @@ void UpdateInstaller::setScript(UpdateScript* script)
 
 void UpdateInstaller::run() throw ()
 {
-	LOG(Info,"Starting update installation");
-
 	if (m_mode == Setup)
 	{
+		LOG(Info,"Preparing update installation");
+		LOG(Info,"Waiting for main app process to finish");
 		ProcessUtils::waitForProcess(m_waitPid);
 
 		std::string updaterPath;
 		std::list<std::string> args;
 		if (!checkAccess())
 		{
+			LOG(Info,"Insufficient rights to install app to " + m_installDir + " requesting elevation");
+
 			// start a copy of the updater with admin rights
 			ProcessUtils::runElevated(updaterPath,args);
 		}
 		else
 		{
+			LOG(Info,"Sufficient rights to install app - restarting with same permissions");
+
 			// TODO - Change this to run synchronously
 			ProcessUtils::runAsync(updaterPath,args);
 		}
 	}
 	else if (m_mode == Main)
 	{
+		LOG(Info,"Starting update installation");
+
 		std::string error;
 		try
 		{
+			LOG(Info,"Installing new and updated files");
 			installFiles();
+
+			LOG(Info,"Uninstalling removed files");
 			uninstallFiles();
+
+			LOG(Info,"Removing backups");
 			removeBackups();
 		}
 		catch (const FileOps::IOException& exception)
@@ -99,6 +110,8 @@ void UpdateInstaller::run() throw ()
 	}
 	else if (m_mode == Cleanup)
 	{
+		LOG(Info,"Cleaning up temporary updater files");
+
 		ProcessUtils::waitForProcess(m_waitPid);
 		cleanup();
 	}
@@ -224,6 +237,7 @@ bool UpdateInstaller::checkAccess()
 	}
 	catch (const FileOps::IOException& error)
 	{
+		LOG(Info,"checkAccess() failed " + std::string(error.what()));
 		return false;
 	}
 }
