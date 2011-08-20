@@ -1843,7 +1843,8 @@
   <string id="20415">扫描新内容</string>
   <string id="20416">最初发表</string>
   <string id="20417">编剧</string>
-  <string id="20418">自动显示整齐的文件和目录名</string>
+  <string id="20418"></string>
+  <string id="20419">文件视图显示媒体标识信息</string>
 
   <string id="20420">从不</string>
   <string id="20421">如果只有一季</string>
@@ -2172,6 +2173,9 @@
   <string id="24043">可更新项</string>
   <string id="24044">依赖项目未找到</string>
   <string id="24045">扩展功能程序结构不完整</string>
+  <string id="24046">下列已安装扩展功能依赖 %s</string>
+  <string id="24047">此扩展功能无法卸载</string>
+  <string id="24048">撤消</string>
 
   <string id="24050">可用扩展功能</string>
   <string id="24051">版本：</string>
@@ -2200,6 +2204,8 @@
   <string id="24089">重新启动扩展功能</string>
   <string id="24090">锁定扩展功能管理器</string>
 
+  <string id="24094">（当前使用）</string>
+  <string id="24095">（列入黑名单）</string>
   <string id="24096">库中的扩展功能被标记为已失效。</string>
   <string id="24097">要在系统中禁用它吗？</string>
   <string id="24098">已失效</string>
