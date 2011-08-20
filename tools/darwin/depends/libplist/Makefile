@@ -3,12 +3,12 @@ include ../config.site.mk
 
 # lib name, version
 LIBNAME=libplist
-VERSION=1.3
-SOURCE=JonathanBeck-libplist-02cf35b
+VERSION=1.6
+SOURCE=$(LIBNAME)-$(VERSION)
 FILENAME=v$(VERSION)
-ARCHIVE=$(FILENAME).tar.gz
+ARCHIVE=$(SOURCE).tar.gz
 
-BASE_URL=http://githubredir.debian.net/github/JonathanBeck/libplist/
+BASE_URL=http://cgit.sukimashita.com/libplist.git/snapshot
 
 LIBDYLIB=$(SOURCE)/build/src/$(LIBNAME).dylib
 
