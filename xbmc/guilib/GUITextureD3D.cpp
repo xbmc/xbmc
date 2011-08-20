@@ -201,6 +201,8 @@ void CGUITextureD3D::DrawQuad(const CRect &rect, color_t color, CBaseTexture *te
     p3DDevice->SetTextureStageState( 1, D3DTSS_COLOROP, D3DTOP_DISABLE);
     p3DDevice->SetTextureStageState( 1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
   }
+  else
+    p3DDevice->SetTexture( 0, NULL );
 
   p3DDevice->SetRenderState( D3DRS_ALPHATESTENABLE, TRUE );
   p3DDevice->SetRenderState( D3DRS_ALPHAREF, 0 );
@@ -226,7 +228,8 @@ void CGUITextureD3D::DrawQuad(const CRect &rect, color_t color, CBaseTexture *te
   };
   p3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, verts, sizeof(CUSTOMVERTEX));
 
-  p3DDevice->SetTexture( 0, NULL );
+  if (texture)
+    p3DDevice->SetTexture( 0, NULL );
 }
 
 #endif
