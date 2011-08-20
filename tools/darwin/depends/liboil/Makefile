@@ -11,7 +11,9 @@ BASE_URL=http://liboil.freedesktop.org/download
 
 # configuration settings
 export PKG_CONFIG=pkg-config --define-variable prefix=$(SDKSTAGE)
-CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST)
+CONFIGURE=./configure --prefix=$(PREFIX) --host=$(HOST) \
+  --disable-gtk-doc \
+  --disable-static
 
 LIBDYLIB=$(SOURCE)/.libs/liboil-0.3.dylib
 
@@ -25,6 +27,10 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); $(CONFIGURE)
+	# arm uses asm which needs leading underscores
+	if test "$(DARWIN)" = "ios"; then \
+		sed -i "" -e "s|vfp_ ##|_vfp_ ##|g" "$(SOURCE)/liboil/arm/math_vfp_asm.S"; \
+	fi
 
 $(LIBDYLIB): $(SOURCE)
 	make -j 1 -C $(SOURCE)
