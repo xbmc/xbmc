@@ -1,5 +1,6 @@
 #include "FileOps.h"
 
+#include "Dir.h"
 #include "Platform.h"
 #include "StringUtils.h"
 
@@ -206,5 +207,29 @@ void FileOps::touch(const char* path) throw (IOException)
 #else
 	throw IOException("not implemented");
 #endif
+}
+
+void FileOps::rmdirRecursive(const char* path) throw (IOException)
+{
+	// remove dir contents
+	Dir dir(path);
+	while (dir.next())
+	{
+		std::string name = dir.fileName();
+		if (name != "." && name != "..")
+		{
+			if (dir.isDir())
+			{
+				rmdir(dir.filePath().c_str());
+			}
+			else
+			{
+				removeFile(dir.filePath().c_str());
+			}
+		}
+	}
+
+	// remove the directory itself
+	rmdir(path);
 }
 

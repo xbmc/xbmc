@@ -119,7 +119,7 @@ void UpdateInstaller::run() throw ()
 
 void UpdateInstaller::cleanup()
 {
-	// TODO - Remove the temp dir which the installer was copied to
+	FileOps::rmdirRecursive(m_packageDir.c_str());
 }
 
 void UpdateInstaller::revert()

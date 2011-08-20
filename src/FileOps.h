@@ -35,5 +35,6 @@ class FileOps
 		static void createSymLink(const char* link, const char* target) throw (IOException);
 		static void touch(const char* path) throw (IOException);
 		static std::string dirname(const char* path);
+		static void rmdirRecursive(const char* dir) throw (IOException);
 };
 

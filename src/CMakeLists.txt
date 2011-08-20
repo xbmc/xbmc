@@ -4,6 +4,7 @@ find_package(Boost REQUIRED)
 add_definitions(-DTIXML_USE_STL)
 
 set (SOURCES
+  Dir.cpp
   FileOps.cpp
   Log.cpp
   ProcessUtils.cpp
@@ -14,6 +15,7 @@ set (SOURCES
 )
 
 set (HEADERS
+  Dir.h
   FileOps.h
   Log.h
   ProcessUtils.h
