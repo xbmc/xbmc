@@ -58,7 +58,7 @@
   <string id="31102">Ozadje</string>
   <string id="31103">Prikaži "Prekinjeno" v projekciji slik</string>
   <string id="31104">Predvajaj napovednike v oknu [COLOR=grey3](Samo okno z informacijami o videu)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">"Video" gumb je vedno v "Datoteke" za video</string>
   <string id="31106">Razne nastavitve</string>
   <string id="31107">Skrij oznake videa, prebrane iz datotek [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Skrij gumbe v glavnem menuju</string>
@@ -80,8 +80,8 @@
   <string id="31124">Prikaži "Trenutno predvajam" video v ozadju</string>
   <string id="31125">Prikaži "Trenutno predvajam" vizualizacijo v ozadju</string>
 
-  <string id="31126"></string>  <!-- blanked 2010-11-12 -->
-  <string id="31127"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31126">Predvajaj uvodne pesmi TV serij v knjižnici (dodatek TvTunes)</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">Besedilo pesmi</string>
   <string id="31129"></string>  <!-- blanked 2010-11-12 -->
   <string id="31130"></string>  <!-- blanked 2010-11-12 -->
