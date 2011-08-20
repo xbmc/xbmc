@@ -438,6 +438,10 @@ CScraperUrl CScraper::NfoUrl(const CStdString &sNfoContent)
       }
       if (pId && pId->FirstChild())
         scurlRet.strId = pId->FirstChild()->Value();
+
+      if (pxeUrl && pxeUrl->Attribute("function"))
+        continue;
+
       if (pxeUrl)
         scurlRet.ParseElement(pxeUrl);
       else if (!strcmp(doc.RootElement()->Value(), "url"))
