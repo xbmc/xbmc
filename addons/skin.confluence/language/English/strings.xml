@@ -138,6 +138,9 @@
   <string id="31330">Click button to play[CR][CR]Movie trailer</string>
   <string id="31331">Album Details</string>
 
+  <string id="31341">Selected Device</string>
+  <string id="31342">Hardware Address</string>
+
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Pause</string>
   <string id="31352">Stop</string>

@@ -61,6 +61,26 @@ bool CDBusMessage::AppendArgument(const char **arrayString, unsigned int length)
   return success;
 }
 
+bool CDBusMessage::AppendVariant(bool b)
+{
+  return AppendVariant(DBUS_TYPE_BOOLEAN, "b", &b);
+}
+
+bool CDBusMessage::AppendVariant(const char *string)
+{
+  return AppendVariant(DBUS_TYPE_STRING, "s", &string);
+}
+
+bool CDBusMessage::AppendVariant(int type, const char *signature, const void *value)
+{
+  PrepareArgument();
+  DBusMessageIter sub;
+  bool success = dbus_message_iter_open_container(&m_args, DBUS_TYPE_VARIANT, signature, &sub);
+  success &= dbus_message_iter_append_basic(&sub, type, value);
+  success &= dbus_message_iter_close_container(&m_args, &sub);
+  return success;
+}
+
 DBusMessage *CDBusMessage::SendSystem()
 {
   return Send(DBUS_BUS_SYSTEM);
@@ -98,21 +118,19 @@ DBusMessage *CDBusMessage::Send(DBusBusType type)
   return returnMessage;
 }
 
-bool CDBusMessage::SendAsync(DBusBusType type)
+DBusMessage *CDBusMessage::Send(DBusConnection *con)
 {
   DBusError error;
   dbus_error_init (&error);
-  DBusConnection *con = dbus_bus_get(type, &error);
 
-  bool result;
-  if (con && m_message)
-    result = dbus_connection_send(con, m_message, NULL);
-  else
-    result = false;
+  DBusMessage *returnMessage = Send(con, &error);
+
+  if (dbus_error_is_set(&error))
+    CLog::Log(LOGERROR, "DBus: Error %s - %s", error.name, error.message);
 
   dbus_error_free (&error);
-  dbus_connection_unref(con);
-  return result;
+
+  return returnMessage;
 }
 
 DBusMessage *CDBusMessage::Send(DBusConnection *con, DBusError *error)
@@ -126,6 +144,33 @@ DBusMessage *CDBusMessage::Send(DBusConnection *con, DBusError *error)
   }
 
   return m_reply;
+}
+
+bool CDBusMessage::SendAsync(DBusBusType type)
+{
+  DBusError error;
+  dbus_error_init (&error);
+  DBusConnection *con = dbus_bus_get(type, &error);
+
+  bool result = SendAsync(con);
+
+  if (dbus_error_is_set(&error))
+    CLog::Log(LOGERROR, "DBus: Error %s - %s", error.name, error.message);
+
+  dbus_error_free (&error);
+  dbus_connection_unref(con);
+  return result;
+}
+
+bool CDBusMessage::SendAsync(DBusConnection *con)
+{
+  bool result;
+  if (con && m_message)
+    result = dbus_connection_send(con, m_message, NULL);
+  else
+    result = false;
+
+  return result;
 }
 
 void CDBusMessage::Close()

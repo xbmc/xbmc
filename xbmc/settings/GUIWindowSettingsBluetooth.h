@@ -1,6 +1,7 @@
 #pragma once
+
 /*
- *      Copyright (C) 2005-2009 Team XBMC
+ *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -19,21 +20,30 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
-#include "system.h"
-#ifdef HAS_DBUS
-#include "DBusMessage.h"
-#include "utils/Variant.h"
 
-class CDBusUtil
+#include "guilib/GUIWindow.h"
+#include "bluetooth/IBluetoothSyscall.h"
+
+class CGUIWindowSettingsBluetooth :
+      public CGUIWindow
 {
 public:
-  static CVariant GetAll(const char *destination, const char *object, const char *arg);
-  static CVariant GetAll(const char *destination, const char *object, const char *interface, const char *method, const char *arg);
+  CGUIWindowSettingsBluetooth(void);
+  virtual ~CGUIWindowSettingsBluetooth(void);
+  virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction &action);
+  void UpdateDevice(IBluetoothDevice *device);
+  void RemoveDiscoveredDevice(const char *address);
+  void RemoveDevice(const char *path);
 
-  static CVariant GetVariant(const char *destination, const char *object, const char *interface, const char *property);
+protected:
+  virtual void OnInitWindow();
+  CFileItemList *m_listItems;
+  bool m_active;
 
-  static CVariant Parse(DBusMessageIter *itr);
-  static CVariant ParseDictionary(DBusMessageIter *itr);
-  static CVariant ParseType(DBusMessageIter *itr);
+  int GetSelectedItem();
+  void LoadList();
+  void ClearListItems();
+  void RefreshList();
+  void OnItemSelected(int iItem);
 };
-#endif

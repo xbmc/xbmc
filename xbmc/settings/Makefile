@@ -8,6 +8,7 @@ SRCS=AdvancedSettings.cpp \
      GUIWindowSettings.cpp \
      GUIWindowSettingsCategory.cpp \
      GUIWindowSettingsProfile.cpp \
+     GUIWindowSettingsBluetooth.cpp \
      GUIWindowSettingsScreenCalibration.cpp \
      GUIWindowTestPattern.cpp \
      Profile.cpp \
