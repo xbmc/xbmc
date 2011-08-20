@@ -12,6 +12,9 @@
 
 #include <iostream>
 
+#include <boost/bind.hpp>
+#include <boost/thread.hpp>
+
 void setupUi(UpdateInstaller* installer);
 
 int main(int argc, char** argv)
@@ -43,7 +46,10 @@ int main(int argc, char** argv)
 	installer.setPackageDir(options.packageDir);
 	installer.setScript(&script);
 	installer.setWaitPid(options.waitPid);
+
 	installer.run();
+	boost::thread updaterThread(boost::bind(&UpdateInstaller::run,&installer));
+	updaterThread.join();
 
 	return 0;
 }
