@@ -36,5 +36,6 @@ class FileOps
 		static void touch(const char* path) throw (IOException);
 		static std::string dirname(const char* path);
 		static void rmdirRecursive(const char* dir) throw (IOException);
+		static std::string canonicalPath(const char* path);
 };
 

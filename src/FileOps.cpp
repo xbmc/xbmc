@@ -233,3 +233,23 @@ void FileOps::rmdirRecursive(const char* path) throw (IOException)
 	rmdir(path);
 }
 
+std::string FileOps::canonicalPath(const char* path)
+{
+#ifdef PLATFORM_UNIX
+	// on Linux and Mac OS 10.6, realpath() can allocate the required
+	// amount of memory automatically, however Mac OS 10.5 does not support
+	// this, so we used a fixed-sized buffer on all platforms
+	char canonicalPathBuffer[PATH_MAX+1];
+	if (realpath(path,canonicalPathBuffer) != 0)
+	{
+		return std::string(canonicalPathBuffer);
+	}
+	else
+	{
+		throw IOException("Error reading canonical path for " + std::string(path));
+	}
+#else
+	throw IOException("Not implemented");
+#endif
+}
+
