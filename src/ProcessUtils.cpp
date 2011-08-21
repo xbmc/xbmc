@@ -1,10 +1,13 @@
 #include "ProcessUtils.h"
 
+#include "FileOps.h"
 #include "Platform.h"
 #include "StringUtils.h"
 #include "Log.h"
 
 #include <string.h>
+#include <vector>
+#include <iostream>
 
 #ifdef PLATFORM_WINDOWS
 #include <windows.h>
@@ -186,6 +189,25 @@ void ProcessUtils::runElevatedWindows(const std::string& executable,
 void ProcessUtils::runAsyncUnix(const std::string& executable,
 						const std::list<std::string>& args)
 {
+	if (fork() == 0)
+	{
+		// in child process
+		char** argBuffer = new char*[args.size() + 1];
+		argBuffer[0] = strdup(executable.c_str());
+		int i = 1;
+		for (std::list<std::string>::const_iterator iter = args.begin(); iter != args.end(); iter++)
+		{
+			argBuffer[i] = strdup(iter->c_str());
+			++i;
+		}
+		argBuffer[i] = 0;
+
+		if (execve(executable.c_str(),argBuffer,environ) == -1)
+		{
+			LOG(Error,"error starting child: " + std::string(strerror(errno)));
+			exit(1);
+		}
+	}
 }
 #endif
 
@@ -195,3 +217,13 @@ void ProcessUtils::runAsyncWindows(const std::string& executable,
 {
 }
 #endif
+		
+std::string ProcessUtils::currentProcessPath()
+{
+#ifdef PLATFORM_LINUX
+	std::string path = FileOps::canonicalPath("/proc/self/exe");
+	LOG(Info,"Current process path " + path);
+	return path;
+#endif
+}
+

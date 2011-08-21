@@ -51,8 +51,17 @@ void UpdateInstaller::run() throw ()
 		LOG(Info,"Waiting for main app process to finish");
 		ProcessUtils::waitForProcess(m_waitPid);
 
-		std::string updaterPath;
+		std::string updaterPath = ProcessUtils::currentProcessPath();
 		std::list<std::string> args;
+		args.push_back("--mode");
+		args.push_back("main");
+		args.push_back("--install-dir");
+		args.push_back(m_installDir);
+		args.push_back("--package-dir");
+		args.push_back(m_packageDir);
+		args.push_back("--script");
+		args.push_back(m_script->path());
+
 		if (!checkAccess())
 		{
 			LOG(Info,"Insufficient rights to install app to " + m_installDir + " requesting elevation");
@@ -140,7 +149,7 @@ void UpdateInstaller::revert()
 
 void UpdateInstaller::installFile(const UpdateScriptFile& file)
 {
-	std::string packageFile = m_installDir + '/' + file.package;
+	std::string packageFile = m_packageDir + '/' + file.package + ".zip";
 	std::string destPath = m_installDir + '/' + file.path;
 	std::string target = file.linkTarget;
 

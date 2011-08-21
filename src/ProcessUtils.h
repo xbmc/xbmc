@@ -6,6 +6,8 @@
 class ProcessUtils
 {
 	public:
+		static std::string currentProcessPath();
+
 		static void runAsync(const std::string& executable,
 		                     const std::list<std::string>& args);
 
