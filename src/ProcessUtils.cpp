@@ -189,7 +189,8 @@ void ProcessUtils::runElevatedWindows(const std::string& executable,
 void ProcessUtils::runAsyncUnix(const std::string& executable,
 						const std::list<std::string>& args)
 {
-	if (fork() == 0)
+	pid_t child = fork();
+	if (child == 0)
 	{
 		// in child process
 		char** argBuffer = new char*[args.size() + 1];
@@ -207,6 +208,10 @@ void ProcessUtils::runAsyncUnix(const std::string& executable,
 			LOG(Error,"error starting child: " + std::string(strerror(errno)));
 			exit(1);
 		}
+	}
+	else
+	{
+		LOG(Info,"Started child process " + intToStr(child));
 	}
 }
 #endif
