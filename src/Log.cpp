@@ -31,7 +31,23 @@ void Log::open(const std::string& path)
 
 void Log::write(Type type, const char* text)
 {
-	std::cerr << "log " << text << std::endl;
-	::write(m_fd,text,strlen(text));
+	switch (type)
+	{
+		case Info:
+			std::cerr << "INFO  ";
+			break;
+		case Warn:
+			std::cerr << "WARN  ";
+			break;
+		case Error:
+			std::cerr << "ERROR ";
+			break;
+	}
+	std::cerr << text << std::endl;
+
+	if (m_fd >= 0)
+	{
+		::write(m_fd,text,strlen(text));
+	}
 }
 
