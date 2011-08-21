@@ -172,14 +172,8 @@ void UpdateInstaller::revert()
 
 void UpdateInstaller::installFile(const UpdateScriptFile& file)
 {
-	std::string packageFile = m_packageDir + '/' + file.package + ".zip";
 	std::string destPath = m_installDir + '/' + file.path;
 	std::string target = file.linkTarget;
-
-	if (!FileOps::fileExists(packageFile.c_str()))
-	{
-		throw "Package file does not exist: " + packageFile;
-	}
 
 	// backup the existing file if any
 	backupFile(destPath);
@@ -193,6 +187,13 @@ void UpdateInstaller::installFile(const UpdateScriptFile& file)
 
 	if (target.empty())
 	{
+		// locate the package containing the file
+		std::string packageFile = m_packageDir + '/' + file.package + ".zip";
+		if (!FileOps::fileExists(packageFile.c_str()))
+		{
+			throw "Package file does not exist: " + packageFile;
+		}
+
 		// extract the file from the package and copy it to
 		// the destination
 		FileOps::extractFromZip(packageFile.c_str(),file.path.c_str(),destPath.c_str());

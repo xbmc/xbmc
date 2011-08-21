@@ -23,6 +23,11 @@
    <permissions>30549</permissions>
    <package>app-pkg</package>
   </file>
+  <!-- Test symlink !-->
+  <file>
+   <name>test-dir/app-symlink</name>
+   <target>../app</target>
+  </file>
  </install>
  <uninstall>
   <!-- TODO - List some files to uninstall here !-->
