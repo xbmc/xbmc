@@ -9,8 +9,11 @@ Updater Tasks:
  * Win32 UI for Windows
  * Cocoa UI for Mac
  * Gtk or Qt UI for Linux
+ * Retry/cancel support if updater cannot overwrite file (eg. due to
+   file being in use by Microsoft Word or another application)
  * Unit test working under Windows
  * Unit test working under Mac
+ * Start new application once installation is finished
 
 Mendeley Desktop <= 1.0 auto-update system compatibility:
 
