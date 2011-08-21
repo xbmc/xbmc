@@ -228,7 +228,15 @@ void UpdateInstaller::uninstallFiles()
 	std::vector<std::string>::const_iterator iter = m_script->filesToUninstall().begin();
 	for (;iter != m_script->filesToUninstall().end();iter++)
 	{
-		FileOps::removeFile(iter->c_str());
+		std::string path = m_installDir + '/' + iter->c_str();
+		if (FileOps::fileExists(path.c_str()))
+		{
+			FileOps::removeFile(path.c_str());
+		}
+		else
+		{
+			LOG(Warn,"Unable to uninstall file " + path + " because it does not exist.");
+		}
 	}
 }
 

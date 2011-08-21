@@ -14,6 +14,12 @@ FileUtils.rm_rf(PACKAGE_DIR)
 Dir.mkdir(INSTALL_DIR)
 FileUtils.cp("oldapp","#{INSTALL_DIR}/app")
 
+# Create a dummy file to uninstall
+uninstall_test_file = "#{INSTALL_DIR}/file-to-uninstall.txt"
+File.open(uninstall_test_file,"w") do |file|
+	file.puts "this file should be removed after the update"
+end
+
 # Create the update archive containing the new app
 Dir.mkdir(PACKAGE_DIR)
 FileUtils.cp("newapp","#{PACKAGE_DIR}/app")
@@ -33,11 +39,11 @@ sleep(1)
 
 # Check that the app was updated
 output = `#{INSTALL_DIR}/app`
-if (output.strip == "new app starting")
-	puts "Updated app produced expected output"
-	exit(0)
-else
-	puts "Updated app produced unexpected output: #{output}"
-	exit(1)
+if (output.strip != "new app starting")
+	throw "Updated app produced unexpected output: #{output}"
+end
+
+if (File.exist?(uninstall_test_file))
+	throw "File to uninstall was not removed"
 end
 
