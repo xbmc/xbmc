@@ -1,14 +1,33 @@
-Once an update has been downloaded to a temporary directory,
-this tool is responsible for installing the updates to the application's
-directory and displaying a progress dialog whilst it does so.
+This tool is a component of an auto-update system.  It is responsible for performing
+the installation of an update after the necessary files have been downloaded
+to a temporary directory.
 
-Features:
+This tool is responsible for:
 
- * Supports Windows, Mac, Linux
+ * Reading an XML file specifying the contents of an update.
+ 
+ * Extracting and installing updated files from one or more compressed packages.
+   
+ * Removing any files which are no longer needed in the new version of the application.
 
- * Standalone.  The only external dependencies are the C++ runtime library (Linux, Mac),
-   pthreads (Linux, Mac) and the native UI library (Cocoa on Mac, Gtk on Linux)
+ * Requesting elevated priviledges if required to install the update.
 
- * A simple updater UI implemented using the native
-   Win32, Cocoa and GTK libraries (depending on the platform).
+ * Displaying a simple updater UI and re-launching the main application
+   once the update is installed.
 
+The tool consists of a single small binary which only has a small number of external 
+dependencies that need to be present on the target system.
+
+The external dependencies of the updater binary are:
+
+ * The C++ runtime library (Linux, Mac),
+ * pthreads (Linux, Mac),
+ * zlib (Linux, Mac)
+ * native UI library (Win32 API on Windows, Cocoa on Mac).
+
+To perform an update, the application (or another separate tool) needs to download
+the updater binary, an XML file describing the update and one or more zip packages
+containing the files for the update to a temporary directory.  It then needs
+to invoke the updater, specifying the installation directory, temporary package
+directory and path to the update script file.  The updater then installs the
+update and restarts the application when done.
