@@ -467,7 +467,7 @@ CStdString CAddon::GetSetting(const CStdString& key)
   if (!LoadSettings())
     return ""; // no settings available
 
-  map<CStdString, CStdString>::const_iterator i = m_settings.find(key);
+  MAPSETTINGS::const_iterator i = m_settings.find(key);
   if (i != m_settings.end())
     return i->second;
   return "";
@@ -520,7 +520,7 @@ void CAddon::SettingsToXML(TiXmlDocument &doc) const
 {
   TiXmlElement node("settings");
   doc.InsertEndChild(node);
-  for (map<CStdString, CStdString>::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
+  for (MAPSETTINGS::const_iterator i = m_settings.begin(); i != m_settings.end(); ++i)
   {
     TiXmlElement nodeSetting("setting");
     nodeSetting.SetAttribute("id", i->first.c_str());

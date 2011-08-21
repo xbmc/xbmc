@@ -243,7 +243,9 @@ private:
   CStdString  m_profile;
   bool        m_enabled;
   CLocalizeStrings  m_strings;
-  std::map<CStdString, CStdString> m_settings;
+
+  typedef std::map<CStdString, CStdString, StdStringLessNoCase> MAPSETTINGS;
+  MAPSETTINGS m_settings;
 };
 
 class CAddonLibrary : public CAddon
