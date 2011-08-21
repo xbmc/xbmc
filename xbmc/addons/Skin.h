@@ -106,6 +106,9 @@ public:
 
   bool IsInUse() const;
 
+  virtual bool LoadSettings();
+  virtual bool HasSettings();
+
 //  static bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
   static double GetMinVersion();
   void LoadIncludes();
