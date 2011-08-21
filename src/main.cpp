@@ -49,7 +49,6 @@ int main(int argc, char** argv)
 	installer.setScript(&script);
 	installer.setWaitPid(options.waitPid);
 
-	installer.run();
 	boost::thread updaterThread(boost::bind(&UpdateInstaller::run,&installer));
 	updaterThread.join();
 
