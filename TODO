@@ -1,5 +1,7 @@
 Updater Tasks:
 
+ * Set file permissions for Unix
+ * Set file permissions for Windows
  * Basic functionality for Windows
  * Basic functionality for Mac
  * Elevation for Windows
