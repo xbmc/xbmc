@@ -1,0 +1,25 @@
+Updater Tasks:
+
+ * Basic functionality for Windows
+ * Basic functionality for Mac
+ * Elevation for Linux
+ * Elevation for Windows
+ * Elevation for Mac
+ * Win32 UI for Windows
+ * Cocoa UI for Mac
+ * Gtk or Qt UI for Linux
+ * Unit test working under Windows
+ * Unit test working under Mac
+
+Mendeley Desktop <= 1.0 auto-update system compatibility:
+
+ * Support for MD <= 1.0 updater command-line syntax
+ * Backwards compatible structure for XML file
+
+Auto-update preparation tools:
+
+ * Tool to create .zip packages for a release and
+   upload them to S3
+ * Tool to generate backwards-compatible structure for XML file
+ * Tool to generate new structure for XML file
+
