@@ -14,6 +14,8 @@ void UpdateScript::parse(const std::string& path)
 	TiXmlDocument document(path);
 	if (document.LoadFile())
 	{
+		m_path = path;
+
 		LOG(Info,"Loaded script from " + path);
 
 		const TiXmlElement* updateNode = document.RootElement();
@@ -118,4 +120,8 @@ const std::vector<std::string>& UpdateScript::filesToUninstall() const
 	return m_filesToUninstall;
 }
 
+const std::string UpdateScript::path() const
+{
+	return m_path;
+}
 
