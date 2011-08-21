@@ -1135,7 +1135,7 @@
 								<label>$INFO[ListItem.Title]</label>
 								<font>SearchResultSmaller</font>
 								<textcolor>orange</textcolor>
-								<wrapmultiline>true</wrapmultiline>
+								<wrapmultiline>false</wrapmultiline>
 								<animation effect="fade" start="0" end="40" time="400" condition="true">Conditional</animation>
 							</control>
 							<control type="label">

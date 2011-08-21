@@ -282,7 +282,7 @@
 				<width>VideoOSDPlayerControlsSeparatorWidth</width>
 				<label/>
 			</control>
-			<control type="button" id="211">
+			<!--><control type="button" id="211">
 				<description>BookMarks button</description>
 				<visible>![Player.Forwarding | Player.Rewinding]</visible>
 				<include>VideOSDControlButton</include>
@@ -291,7 +291,7 @@
 				<onclick>XBMC.ActivateWindow(125)</onclick>
 				<onleft>220</onleft>
 				<onright>212</onright>
-			</control>
+			</control>-->
 			<control type="button" id="212">
 				<description>Audio Settings button</description>
 				<visible>![Player.Forwarding | Player.Rewinding]</visible>

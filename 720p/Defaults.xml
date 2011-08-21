@@ -140,7 +140,7 @@
 		<width>300</width>
 		<texturenofocus>-</texturenofocus>
 		<sliderwidth>100</sliderwidth>
-		<sliderheight>24</sliderheight>
+		<sliderheight>22</sliderheight>
 		<texturesliderbar>SliderBackground.png</texturesliderbar>
 		<textureslidernib>SliderNibNF.png</textureslidernib>
 		<textureslidernibfocus>SliderNibFO.png</textureslidernibfocus>

@@ -129,7 +129,7 @@
 							<onleft>12</onleft>
 							<label>$LOCALIZE[208]</label>
 							<disabledcolor>-</disabledcolor>
-							<textoffsety>5</textoffsety>
+							<textoffsety>3</textoffsety>
 							<include>VideoInfoButton</include>
 							<visible>!Control.IsEnabled(9) + [Container.Content(movies) | Container.Content(episodes)]</visible>
 						</control>
@@ -140,7 +140,7 @@
 							<onleft>8</onleft>
 							<label>$LOCALIZE[13404]</label>
 							<disabledcolor>-</disabledcolor>
-							<textoffsety>5</textoffsety>
+							<textoffsety>3</textoffsety>
 							<include>VideoInfoButton</include>
 							<visible>[Container.Content(movies) | Container.Content(episodes)] + Control.IsEnabled(9)</visible>
 						</control>
@@ -150,7 +150,7 @@
 							<onright>10</onright>
 							<onleft>8</onleft>
 							<label>$LOCALIZE[206]</label>
-							<textoffsety>5</textoffsety>
+							<textoffsety>3</textoffsety>
 							<include>VideoInfoButton</include>
 						</control>
 						<control type="button" id="6">
@@ -159,7 +159,7 @@
 							<onright>10</onright>
 							<onleft>5</onleft>
 							<label>$LOCALIZE[184]</label>
-							<textoffsety>5</textoffsety>
+							<textoffsety>3</textoffsety>
 							<include>VideoInfoButton</include>
 						</control>
 						<control type="button" id="10">
@@ -168,7 +168,7 @@
 							<onright>12</onright>
 							<onleft>6</onleft>
 							<label>$LOCALIZE[31117]</label>
-							<textoffsety>5</textoffsety>
+							<textoffsety>3</textoffsety>
 							<include>VideoInfoButton</include>
 						</control>
 						<control type="button" id="12">
@@ -176,7 +176,7 @@
 							<width>95</width>
 							<onright>13</onright>
 							<onleft>10</onleft>
-							<textoffsety>5</textoffsety>
+							<textoffsety>3</textoffsety>
 							<include>VideoInfoFanart</include>
 							<visible>!Container.Content(episodes)</visible>
 						</control>
@@ -186,7 +186,7 @@
 							<onright>8</onright>
 							<onleft>12</onleft>
 							<label>$LOCALIZE[31128]</label>
-							<textoffsety>5</textoffsety>
+							<textoffsety>3</textoffsety>
 							<include>VideoInfoButton</include>
 							<visible>Container.Content(tvshows)</visible>
 						</control>

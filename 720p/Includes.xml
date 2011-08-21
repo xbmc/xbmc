@@ -63,7 +63,7 @@
 		<include>DialogTextColors</include>
 	</include>
 	<include name="DialogTextControl">
-		<height>28</height>
+		<height>30</height>
 		<align>left</align>
 		<texturefocus flipx="true">HomeBladeSubFO2.png</texturefocus>
 		<texturenofocus>-</texturenofocus>
@@ -775,6 +775,13 @@
 					<info>FanArt.Image</info>
 					<include>BackgroundFade</include>
 				</control>
+				<control type="largeimage">
+					<description>Clip background</description>
+					<include>FullScreenBGImage</include>
+					<info background="true">ListItem.Thumb</info>
+					<visible>Container.Content(clip)</visible>
+					<animation effect="fade" start="0" end="70" time="0" condition="true">Conditional</animation>
+				</control>
 			</control>
 			<control type="group">
 				<description>Movies Background Image</description>
@@ -1304,12 +1311,14 @@
 		<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 	</include>
 	<include name="PanelStreamImageFocus">
-		<posx>18</posx>
-		<posy>3</posy>
-		<width>122</width>
-		<height>186</height>
+		<posx>15</posx>
+		<posy>0</posy>
+		<width>128</width>
+		<height>192</height>
 		<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
 		<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+		<bordertexture border="10">frameOrange.png</bordertexture>
+		<bordersize>3</bordersize>
 	</include>
 	<include name="PicturesImageFocus">
 		<info>ListItem.Icon</info>
@@ -1396,17 +1405,6 @@
 				<height>205</height>
 				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 				<texture background="true" border="40">posterFrameSmallShadow3.png</texture>
-			</control>
-			<!-- new bg border -->
-			<control type="image">
-				<posx>15</posx>
-				<posy>0</posy>
-				<width>128</width>
-				<height>192</height>
-				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-				<texture background="true">posterMaskSmall.png</texture>
-				<!--<visible>ListItem.Type(movie)</visible>-->
-				<colordiffuse>FFd1801c</colordiffuse>
 			</control>
 			<control type="image">
 				<description>Poster image</description>
@@ -2963,7 +2961,7 @@
 	</include>
 	<!-- Music OSD -->
 	<include name="MusicNowPlayingIndicators">
-		<control type="group">
+		<!--<control type="group">
 			<visible>Player.HasAudio + ![Container.Content(movies) + [Control.IsVisible(51) | Control.IsVisible(58)]]</visible>
 			<include>OptionsMenuFade</include>
 			<control type="image">
@@ -2986,7 +2984,7 @@
 				<height>34</height>
 				<texture>NPIndicLeft.png</texture>
 			</control>
-		</control>
+		</control>-->
 	</include>
 	<include name="MusicNowPlayingSlideLeft">
 		<animation effect="slide" time="700" tween="circle" easing="out" start="-1400,0" end="0,0">Visible</animation>
@@ -2995,16 +2993,19 @@
 		<animation effect="slide" time="700" tween="circle" easing="out" start="0,0" end="-1400,0">WindowClose</animation>
 	</include>
 	<include name="MusicOSDControlButton">
-		<width>36</width>
-		<height>36</height>
+		<width>30</width>
+		<height>30</height>
 	</include>
-	<constant name="MusicOSDButtonAreaWidth">40</constant>
+	<constant name="MusicOSDButtonAreaWidth">34</constant>
 	<include name="MusicOSDPlayerControls">
+		<!-- generic -->
 		<control type="group">
+			<visible>!Window.IsActive(0)</visible>
+			<posy>10</posy>
 			<control type="button" id="215">
 				<description>Prev Track button</description>
 				<posx>0</posx>
-				<onleft>208</onleft>
+				<onleft>222</onleft>
 				<onright>216</onright>
 				<include>OSDPrevButton</include>
 				<include>MusicOSDControlButton</include>
@@ -3070,7 +3071,7 @@
 										<control type="button" id="222">
 											<description>Repeat button</description>
 											<onleft>221</onleft>
-											<onright>208</onright>
+											<onright>215</onright>
 											<texturefocus>-</texturefocus>
 											<texturenofocus>-</texturenofocus>
 											<onclick>XBMC.PlayerControl(Repeat)</onclick>
@@ -3112,7 +3113,7 @@
 											<visible>Control.HasFocus(222)</visible>
 											<include>MusicOSDControlButton</include>
 										</control>
-										<control type="group">
+										<!--<control type="group">
 											<posx>MusicOSDButtonAreaWidth</posx>
 											<control type="image">
 												<description>No Record button</description>
@@ -3140,6 +3141,130 @@
 												<include>MusicOSDControlButton</include>
 												<visible>Player.CanRecord</visible>
 											</control>
+										</control>-->
+									</control>
+								</control>
+							</control>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+		<!-- home -->
+		<control type="group">
+			<visible>Window.IsActive(0)</visible>
+			<posy>-30</posy>
+			<posx>480</posx>
+			<control type="button" id="215">
+				<description>Prev Track button</description>
+				<posx>0</posx>
+				<onleft>222</onleft>
+				<onright>216</onright>
+				<include>OSDPrevButton</include>
+				<include>MusicOSDControlButton</include>
+			</control>
+			<control type="group">
+				<posx>MusicOSDButtonAreaWidth</posx>
+				<control type="button" id="216">
+					<description>Rewind button</description>
+					<include>OSDRewindButton</include>
+					<include>MusicOSDControlButton</include>
+				</control>
+				<control type="group">
+					<posx>MusicOSDButtonAreaWidth</posx>
+					<control type="button" id="217">
+						<description>Stop button</description>
+						<include>OSDStopButton</include>
+						<include>MusicOSDControlButton</include>
+					</control>
+					<control type="group">
+						<posx>MusicOSDButtonAreaWidth</posx>
+						<control type="button" id="218">
+							<description>Play button</description>
+							<include>OSDPlayButton</include>
+							<include>MusicOSDControlButton</include>
+						</control>
+						<control type="button" id="218">
+							<description>Pause button</description>
+							<include>OSDPauseButton</include>
+							<include>MusicOSDControlButton</include>
+						</control>
+						<control type="group">
+							<posx>MusicOSDButtonAreaWidth</posx>
+							<control type="button" id="219">
+								<description>Fast Forward button</description>
+								<include>OSDForwardButton</include>
+								<include>MusicOSDControlButton</include>
+							</control>
+							<control type="group">
+								<posx>MusicOSDButtonAreaWidth</posx>
+								<control type="button" id="220">
+									<description>Next Track button</description>
+									<onleft>219</onleft>
+									<onright>221</onright>
+									<include>OSDNextButton</include>
+									<include>MusicOSDControlButton</include>
+								</control>
+								<control type="group">
+									<posx>MusicOSDButtonAreaWidth</posx>
+									<control type="togglebutton" id="221">
+										<description>Random button</description>
+										<onleft>220</onleft>
+										<onright>222</onright>
+										<texturefocus>OSDRandomOffFO.png</texturefocus>
+										<texturenofocus>OSDRandomOffNF.png</texturenofocus>
+										<usealttexture>Playlist.IsRandom</usealttexture>
+										<alttexturefocus>OSDRandomOnFO.png</alttexturefocus>
+										<alttexturenofocus>OSDRandomOnNF.png</alttexturenofocus>
+										<onclick>XBMC.PlayerControl(Random)</onclick>
+										<include>MusicOSDControlButton</include>
+									</control>
+									<control type="group">
+										<posx>MusicOSDButtonAreaWidth</posx>
+										<control type="button" id="222">
+											<description>Repeat button</description>
+											<onleft>221</onleft>
+											<onright>215</onright>
+											<texturefocus>-</texturefocus>
+											<texturenofocus>-</texturenofocus>
+											<onclick>XBMC.PlayerControl(Repeat)</onclick>
+											<include>MusicOSDControlButton</include>
+										</control>
+										<control type="image">
+											<texture>OSDRepeatNF.png</texture>
+											<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+											<visible>!Control.HasFocus(222)</visible>
+											<include>MusicOSDControlButton</include>
+										</control>
+										<control type="image">
+											<texture>OSDRepeatFO.png</texture>
+											<visible>!Playlist.IsRepeat + !Playlist.IsRepeatOne</visible>
+											<visible>Control.HasFocus(222)</visible>
+											<include>MusicOSDControlButton</include>
+										</control>
+										<control type="image">
+											<texture>OSDRepeatOneNF.png</texture>
+											<visible>Playlist.IsRepeatOne</visible>
+											<visible>!Control.HasFocus(222)</visible>
+											<include>MusicOSDControlButton</include>
+										</control>
+										<control type="image">
+											<texture>OSDRepeatOneFO.png</texture>
+											<visible>Playlist.IsRepeatOne</visible>
+											<visible>Control.HasFocus(222)</visible>
+											<include>MusicOSDControlButton</include>
+										</control>
+										<control type="image">
+											<texture>OSDRepeatAllNF.png</texture>
+											<visible>Playlist.IsRepeat</visible>
+											<visible>!Control.HasFocus(222)</visible>
+											<include>MusicOSDControlButton</include>
+										</control>
+										<control type="image">
+											<texture>OSDRepeatAllFO.png</texture>
+											<visible>Playlist.IsRepeat</visible>
+											<visible>Control.HasFocus(222)</visible>
+											<include>MusicOSDControlButton</include>
 										</control>
 									</control>
 								</control>
@@ -3172,34 +3297,49 @@
 		<include condition="[Window.IsActive(Home) + !Skin.HasSetting(HomeBladeCentre) + Skin.HasSetting(ShowHomeNPOnLeft)]">MusicNPHomeLeftText</include>
 	</include>
 	<include name="MusicNowPlayingDetails">
+		<!-- generic -->
 		<control type="group">
-			<control type="image">
-				<description>album cover</description>
-				<include>MusicNowPlayingCoverDims</include>
-				<info>MusicPlayer.Cover</info>
-				<aspectratio>stretch</aspectratio>
-				<bordertexture border="14">ThumbShadow2.png</bordertexture>
-				<bordersize>8</bordersize>
+			<visible>!Window.IsActive(0)</visible>			
+			<control type="group">
+				<description>Current cover</description>
+				<control type="image">
+					<posx>-9</posx>
+					<posy>-9</posy>
+					<width>135</width>
+					<height>135</height>
+					<aspectratio align="center" aligny="top">stretch</aspectratio>
+					<texture border="13">bigPosterFrameShadow.png</texture>
+				</control>
+				<control type="image">
+					<width>115</width>
+					<height>115</height>
+					<info>MusicPlayer.Cover</info>
+					<aspectratio scalediffuse="false">scale</aspectratio>
+					<texture diffuse="bigSquareMask.png"/>
+				</control>
 			</control>
 			<control type="label">
 				<description>artist</description>
-				<font>MediumSmallTitleCapsFont</font>
+				<posy>-5</posy>
+				<font>MediumSmallTitleFont2</font>
 				<label>$INFO[MusicPlayer.Artist]</label>
 				<include>MusicNowPlayingText</include>
+				<textcolor>orange</textcolor>
 			</control>
 			<control type="label">
 				<description>album</description>
-				<posy>22</posy>
-				<font>SmallTitleCapsFont</font>
+				<posy>15</posy>
+				<font>MediumSmallTitleFont2</font>
 				<label>$INFO[MusicPlayer.Album] $INFO[MusicPlayer.Year, (,)]</label>
 				<include>MusicNowPlayingText</include>
 			</control>
 			<control type="label">
 				<description>track title</description>
-				<posy>38</posy>
+				<posy>43</posy>
 				<aligny>bottom</aligny>
 				<label>$INFO[MusicPlayer.Title]</label>
-				<font>DefaultCapsFont</font>
+				<font>MediumSmallTitleFont2</font>
+				<textcolor>orange</textcolor>
 				<include>MusicNowPlayingText</include>
 			</control>
 			<control type="label">
@@ -3207,30 +3347,114 @@
 				<posy>62</posy>
 				<aligny>top</aligny>
 				<label>$INFO[MusicPlayer.Time]$INFO[MusicPlayer.Duration, / ]</label>
-				<font>AltDefaultFont</font>
+				<font>MediumSmallTitleFont2</font>
 				<include>MusicNowPlayingText</include>
 			</control>
 			<control type="group">
+				<posy>95</posy>
 				<include>MusicNextPrevTextDims</include>
 				<visible>!Skin.HasSetting(HideNowPlayingMusicInfo) + !Window.IsActive(PlayerControls)</visible>
 				<include>MusicNowPlayingSlideLeft</include>
 				<control type="label">
-					<label>$INFO[MusicPlayer.Offset(-1).Title,[COLOR=Highlighted]Prev[/COLOR]: ]$INFO[MusicPlayer.Offset(-1).Artist, by ]</label>
+					<label>$INFO[MusicPlayer.Offset(-1).Title,[COLOR=Highlighted]Prev : [/COLOR] ]$INFO[MusicPlayer.Offset(-1).Artist, by ]</label>
 					<visible>MusicPlayer.HasPrevious + !MusicPlayer.HasNext</visible>
 					<include>MusicNextPrevTrackInfo</include>
+					<font>MediumSmallTitleFont2</font>
 				</control>
 				<control type="fadelabel">
-					<label>$INFO[MusicPlayer.Offset(1).Title,[COLOR=Highlighted]Next[/COLOR]: ]$INFO[MusicPlayer.Offset(1).Artist, by ]</label>
-					<label>$INFO[MusicPlayer.Offset(-1).Title,[COLOR=Highlighted]Prev[/COLOR]: ]$INFO[MusicPlayer.Offset(-1).Artist, by ]</label>
+					<label>$INFO[MusicPlayer.Offset(1).Title,[COLOR=Highlighted]Next : [/COLOR] ]$INFO[MusicPlayer.Offset(1).Artist, by ]</label>
+					<label>$INFO[MusicPlayer.Offset(-1).Title,[COLOR=Highlighted]Prev : [/COLOR] ]$INFO[MusicPlayer.Offset(-1).Artist, by ]</label>
 					<visible>MusicPlayer.HasPrevious + MusicPlayer.HasNext</visible>
 					<include>MusicNextPrevTrackInfo</include>
+					<font>MediumSmallTitleFont2</font>
 				</control>
 				<control type="label">
-					<label>$INFO[MusicPlayer.Offset(1).Title,[COLOR=Highlighted]Next[/COLOR]: ]$INFO[MusicPlayer.Offset(1).Artist, by ]</label>
+					<label>$INFO[MusicPlayer.Offset(1).Title,[COLOR=Highlighted]Next : [/COLOR] ]$INFO[MusicPlayer.Offset(1).Artist, by ]</label>
 					<visible>!MusicPlayer.HasPrevious + MusicPlayer.HasNext</visible>
 					<include>MusicNextPrevTrackInfo</include>
+					<font>MediumSmallTitleFont2</font>
 				</control>
 			</control>
+		</control>
+		<!-- home -->
+		<control type="group">
+			<visible>Window.IsActive(0)</visible>			
+			<control type="group">
+				<description>Current cover</description>
+				<control type="image">
+					<posx>11</posx>
+					<posy>-9</posy>
+					<width>105</width>
+					<height>105</height>
+					<aspectratio align="center" aligny="top">stretch</aspectratio>
+					<texture border="13">bigPosterFrameShadow.png</texture>
+				</control>
+				<control type="image">
+					<posx>21</posx>
+					<width>85</width>
+					<height>85</height>
+					<info>MusicPlayer.Cover</info>
+					<aspectratio scalediffuse="false">scale</aspectratio>
+					<texture diffuse="bigSquareMask.png"/>
+				</control>
+			</control>
+			<control type="label">
+				<description>artist</description>
+				<posy>-5</posy>
+				<font>MediumSmallTitleFont2</font>
+				<label>$INFO[MusicPlayer.Artist]</label>
+				<include>MusicNowPlayingText</include>
+				<textcolor>orange</textcolor>
+			</control>
+			<control type="label">
+				<description>album</description>
+				<posy>15</posy>
+				<font>MediumSmallTitleFont2</font>
+				<label>$INFO[MusicPlayer.Album] $INFO[MusicPlayer.Year, (,)]</label>
+				<include>MusicNowPlayingText</include>
+			</control>
+			<control type="label">
+				<description>track title</description>
+				<posy>46</posy>
+				<aligny>bottom</aligny>
+				<label>$INFO[MusicPlayer.Title]</label>
+				<font>MediumSmallTitleFont2</font>
+				<textcolor>orange</textcolor>
+				<include>MusicNowPlayingText</include>
+			</control>
+			<control type="label">
+				<description>time</description>
+				<posy>65</posy>
+				<aligny>top</aligny>
+				<label>$INFO[MusicPlayer.Time]$INFO[MusicPlayer.Duration, / ]</label>
+				<font>MediumSmallTitleFont2</font>
+				<include>MusicNowPlayingText</include>
+			</control>
+			<!--<control type="group">
+				<posy>95</posy>
+				<include>MusicNextPrevTextDims</include>
+				<visible>!Skin.HasSetting(HideNowPlayingMusicInfo) + !Window.IsActive(PlayerControls)</visible>
+				<include>MusicNowPlayingSlideLeft</include>
+				<control type="label">
+					<label>$INFO[MusicPlayer.Offset(-1).Title,[COLOR=Highlighted]Prev : [/COLOR] ]$INFO[MusicPlayer.Offset(-1).Artist, by ]</label>
+					<visible>MusicPlayer.HasPrevious + !MusicPlayer.HasNext</visible>
+					<include>MusicNextPrevTrackInfo</include>
+					<font>MediumSmallTitleFont2</font>
+				</control>
+				<control type="fadelabel">
+					<label>$INFO[MusicPlayer.Offset(1).Title,[COLOR=Highlighted]Next : [/COLOR] ]$INFO[MusicPlayer.Offset(1).Artist, by ]</label>
+					<label>$INFO[MusicPlayer.Offset(-1).Title,[COLOR=Highlighted]Prev : [/COLOR] ]$INFO[MusicPlayer.Offset(-1).Artist, by ]</label>
+					<visible>MusicPlayer.HasPrevious + MusicPlayer.HasNext</visible>
+					<include>MusicNextPrevTrackInfo</include>
+					<font>MediumSmallTitleFont2</font>
+				</control>
+				<control type="label">
+					<label>$INFO[MusicPlayer.Offset(1).Title,[COLOR=Highlighted]Next : [/COLOR] ]$INFO[MusicPlayer.Offset(1).Artist, by ]</label>
+					<visible>!MusicPlayer.HasPrevious + MusicPlayer.HasNext</visible>
+					<include>MusicNextPrevTrackInfo</include>
+					<font>MediumSmallTitleFont2</font>
+				</control>
+			</control>-->
 		</control>
 	</include>
 	<include name="MusicOSDSeekImage">
@@ -3238,22 +3462,150 @@
 		<height>32</height>
 	</include>
 	<include name="MusicNowPlaying">
+		<!-- generic -->
 		<control type="group">
 			<posy>0</posy>
-			<visible>[!Skin.HasSetting(HideNowPlayingMusicInfo) | Window.IsActive(PlayerControls)] + !Window.IsActive(NowPlaying)</visible>
+			<visible>[!Skin.HasSetting(HideNowPlayingMusicInfo) | Window.IsActive(PlayerControls)] + ![Window.IsActive(NowPlaying) | Window.IsActive(0)]</visible>
 			<include>MusicNowPlayingSlideLeft</include>
 			<include>MusicNowPlayingHomeSlideAnim</include>
 			<control type="image">
-				<description>Background</description>
-				<include>MusicNowPlayingBGDims</include>
-				<include>DialogBGTexture</include>
-				<visible>Skin.HasTheme(lite)</visible>
+				<posx>5</posx>
+				<posy>-10</posy>
+				<width>650</width>
+				<height>143</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="30" time="400" condition="true">Conditional</animation>
 			</control>
+			<control type="group">
+				<posx>18</posx>
+				<posy>4</posy>
+				<include>MusicNowPlayingDetails</include>
+			</control>
+			<control type="group">
+				<description>Seek Indicators</description>
+				<posx>420</posx>
+				<posy>8</posy>
+				<control type="image">
+					<description>FF/REW container image</description>
+					<posx>7</posx>
+					<posy>50</posy>
+					<width>65</width>
+					<height>39</height>
+					<visible>Player.Forwarding | Player.Rewinding</visible>
+					<texture>OSDSeekFrame.png</texture>
+				</control>
+				<control type="group">
+					<posy>56</posy>
+					<control type="image">
+						<description>RW image</description>
+						<width>13</width>
+						<height>28</height>
+						<visible>Player.Rewinding</visible>
+						<texture>OSDSeekRewind.png</texture>
+					</control>
+					<control type="image">
+						<description>FF image</description>
+						<posx>65</posx>
+						<width>13</width>
+						<height>28</height>
+						<visible>Player.Forwarding</visible>
+						<texture>OSDSeekForward.png</texture>
+					</control>
+				</control>
+				<control type="group">
+					<posx>11</posx>
+					<posy>53</posy>
+					<control type="image">
+						<description>2x FF image</description>
+						<include>MusicOSDSeekImage</include>
+						<texture>OSD2x.png</texture>
+						<visible>Player.Forwarding2x</visible>
+					</control>
+					<control type="image">
+						<description>32x REW image</description>
+						<include>MusicOSDSeekImage</include>
+						<texture>OSD32x.png</texture>
+						<visible>Player.Rewinding32x</visible>
+					</control>
+					<control type="group">
+						<posx>6</posx>
+						<control type="image">
+							<description>4x FF image</description>
+							<include>MusicOSDSeekImage</include>
+							<texture>OSD4x.png</texture>
+							<visible>Player.Forwarding4x</visible>
+						</control>
+						<control type="image">
+							<description>16x REW image</description>
+							<include>MusicOSDSeekImage</include>
+							<texture>OSD16x.png</texture>
+							<visible>Player.Rewinding16x</visible>
+						</control>
+					</control>
+					<control type="group">
+						<posx>12</posx>
+						<control type="image">
+							<description>8x FF image</description>
+							<include>MusicOSDSeekImage</include>
+							<texture>OSD8x.png</texture>
+							<visible>Player.Forwarding8x</visible>
+						</control>
+						<control type="image">
+							<description>8x REW image</description>
+							<include>MusicOSDSeekImage</include>
+							<texture>OSD8x.png</texture>
+							<visible>Player.Rewinding8x</visible>
+						</control>
+					</control>
+					<control type="group">
+						<posx>18</posx>
+						<control type="image">
+							<description>16x FF image</description>
+							<include>MusicOSDSeekImage</include>
+							<texture>OSD16x.png</texture>
+							<visible>Player.Forwarding16x</visible>
+						</control>
+						<control type="image">
+							<description>4x REW image</description>
+							<include>MusicOSDSeekImage</include>
+							<texture>OSD4x.png</texture>
+							<visible>Player.Rewinding4x</visible>
+						</control>
+					</control>
+					<control type="group">
+						<posx>24</posx>
+						<control type="image">
+							<description>32x FF image</description>
+							<include>MusicOSDSeekImage</include>
+							<texture>OSD32x.png</texture>
+							<visible>Player.Forwarding32x</visible>
+						</control>
+						<control type="image">
+							<description>2x REW image</description>
+							<include>MusicOSDSeekImage</include>
+							<texture>OSD2x.png</texture>
+							<visible>Player.Rewinding2x</visible>
+						</control>
+					</control>
+				</control>
+			</control>
+		</control>
+		<!-- home -->
+		<control type="group">
+			<posy>0</posy>
+			<visible>Window.IsActive(0)</visible>
+			<include>MusicNowPlayingSlideLeft</include>
+			<include>MusicNowPlayingHomeSlideAnim</include>
 			<control type="image">
-				<description>Background</description>
-				<include>MusicNowPlayingBGDims</include>
-				<texture>DialogProgressBG.png</texture>
-				<visible>!Skin.HasTheme(lite)</visible>
+				<posx>5</posx>
+				<posy>-10</posy>
+				<width>650</width>
+				<height>143</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="30" time="400" condition="true">Conditional</animation>
+				<visible>!Window.IsActive(0)</visible>
 			</control>
 			<control type="group">
 				<posx>18</posx>

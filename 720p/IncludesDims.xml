@@ -47,7 +47,7 @@
 	</include>
 	<!-- Music Now Playing -->
 	<include name="MusicNowPlayingHomeSlideAnim">
-		<animation effect="slide" start="0,0" end="770,0" time="0" condition="Window.IsActive(Home) + !Skin.HasSetting(ShowHomeNPOnLeft)">Conditional</animation>
+		<animation effect="slide" start="0,82" end="365,82" time="0" condition="Window.IsActive(Home) + !Skin.HasSetting(ShowHomeNPOnLeft)">Conditional</animation>
 	</include>
 	<include name="MusicOverlayNowPlayingDims">
 		<posx>0</posx>
@@ -68,13 +68,13 @@
 	<include name="MusicNowPlayingTextDims">
 		<posx>124</posx>
 	</include>
-	<constant name="MusicNPTextWidth">352</constant>
+	<constant name="MusicNPTextWidth">500</constant>
 	<constant name="MusicNPHomeLeftTextWidth">250</constant>
 	<include name="MusicNextPrevTextDims">
 		<posx>124</posx>
 		<posy>86</posy>
 	</include>
-	<constant name="MusicNextPrevTextTextWidth">330</constant>
+	<constant name="MusicNextPrevTextTextWidth">500</constant>
 	<!-- Home screen -->
 	<!-- =========== -->
 	<include name="HomeSubMenuBladeDims">
@@ -261,6 +261,7 @@
 	</include>
 	<include name="VideoInfoButtonDims">
 		<width>100</width>
+		<height>26</height>
 	</include>
 	<constant name="MoviesInfoPlotCastBtnPosX">62</constant>
 	<constant name="MoviesInfoRefreshBtnPosX">128</constant>
@@ -590,9 +591,9 @@
 		<posy>10</posy>
 	</include>
 	<include name="VideoOSDSettingsBGDims">
-		<posx>-28</posx>
+		<posx>-5</posx>
 		<posy>-10</posy>
-		<width>440</width>
+		<!--><width>440</width>-->
 		<height>720</height>
 	</include>
 	<constant name="VideoOSDSettingsTextWidth">380</constant>
