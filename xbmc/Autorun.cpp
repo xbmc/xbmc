@@ -38,6 +38,7 @@
 #include "playlists/PlayList.h"
 #include "guilib/GUIWindowManager.h"
 #include "storage/MediaManager.h"
+#include "video/VideoDatabase.h"
 
 using namespace std;
 using namespace XFILE;
@@ -369,6 +370,18 @@ bool CAutorun::PlayDisc(bool restart)
 {
   ExecuteAutorun(true,true, restart);
   return true;
+}
+
+bool CAutorun::CanResumePlayDVD()
+{
+  CStdString strPath = "removable://"; // need to put volume label for resume point in videoInfoTag
+  strPath += g_mediaManager.GetDiskLabel();
+  CVideoDatabase dbs;
+  dbs.Open();
+  CBookmark bookmark;
+  if (dbs.GetResumeBookMark(strPath, bookmark))
+    return true;
+  return false;
 }
 
 #endif

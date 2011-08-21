@@ -11,6 +11,7 @@ SUBDIRS := \
 	libass libcdio libsamplerate librtmp libcrystalhd libnfs \
 	libGLEW libsdl libsdl_mixer libsdl_image \
 	libmicrohttpd libmodplug libbluray libyajl \
+	libplist \
 	samba python26 mysqlclient boost \
 
 ifeq ($(DARWIN), ios)

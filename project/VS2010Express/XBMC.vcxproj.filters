@@ -2708,6 +2708,9 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\addons\Skin.cpp" />
     <ClCompile Include="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\GUIAction.cpp">
+      <Filter>guilib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4039,9 +4042,6 @@
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\gui3d.h">
-      <Filter>guilib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\guilib\GUIActionDescriptor.h">
       <Filter>guilib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\guilib\GUIAudioManager.h">
@@ -5455,6 +5455,9 @@
     <ClInclude Include="..\..\xbmc\cores\DSPlayer\GUIDialogShaderList.h" />
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h">
       <Filter>interfaces\info</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\guilib\GUIAction.h">
+      <Filter>guilib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

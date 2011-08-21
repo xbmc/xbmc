@@ -256,8 +256,6 @@ protected:
   void ChangeButtonToEdit(int id, bool singleLabel = false);
 //#endif
 
-  void RunActions(std::vector<CGUIActionDescriptor>& actions);
-
   int m_idRange;
   OVERLAY_STATE m_overlayState;
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.
@@ -294,8 +292,8 @@ protected:
     }
   };
 
-  std::vector<CGUIActionDescriptor> m_loadActions;
-  std::vector<CGUIActionDescriptor> m_unloadActions;
+  CGUIAction m_loadActions;
+  CGUIAction m_unloadActions;
 
   bool m_manualRunActions;
 

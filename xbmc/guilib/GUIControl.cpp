@@ -48,13 +48,6 @@ CGUIControl::CGUIControl()
   m_posY = 0;
   m_width = 0;
   m_height = 0;
-  m_controlLeft = 0;
-  m_controlRight = 0;
-  m_controlUp = 0;
-  m_controlDown = 0;
-  m_controlBack = 0;
-  m_controlNext = 0;
-  m_controlPrev = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -82,13 +75,6 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_visibleCondition = 0;
   m_enableCondition = 0;
   m_enabled = true;
-  m_controlLeft = 0;
-  m_controlRight = 0;
-  m_controlUp = 0;
-  m_controlDown = 0;
-  m_controlBack = 0;
-  m_controlNext = 0;
-  m_controlPrev = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -243,97 +229,42 @@ bool CGUIControl::OnAction(const CAction &action)
 void CGUIControl::OnUp()
 {
   if (HasFocus())
-  {
-    if (m_upActions.size())
-      ExecuteActions(m_upActions);
-    else if (m_controlID != m_controlUp)
-    {
-      // Send a message to the window with the sender set as the window
-      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_UP);
-      SendWindowMessage(msg);
-    }
-  }
+    m_actionUp.Execute(GetID(), GetParentID(), ACTION_MOVE_UP);
 }
 
 void CGUIControl::OnDown()
 {
   if (HasFocus())
-  {
-    if (m_downActions.size())
-      ExecuteActions(m_downActions);
-    else if (m_controlID != m_controlDown)
-    {
-      // Send a message to the window with the sender set as the window
-      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_DOWN);
-      SendWindowMessage(msg);
-    }
-  }
+    m_actionDown.Execute(GetID(), GetParentID(), ACTION_MOVE_DOWN);
 }
 
 void CGUIControl::OnLeft()
 {
   if (HasFocus())
-  {
-    if (m_leftActions.size())
-      ExecuteActions(m_leftActions);
-    else if (m_controlID != m_controlLeft)
-    {
-      // Send a message to the window with the sender set as the window
-      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_LEFT);
-      SendWindowMessage(msg);
-    }
-  }
+    m_actionLeft.Execute(GetID(), GetParentID(), ACTION_MOVE_LEFT);
 }
 
 void CGUIControl::OnRight()
 {
   if (HasFocus())
-  {
-    if (m_rightActions.size())
-      ExecuteActions(m_rightActions);
-    else if (m_controlID != m_controlRight)
-    {
-      // Send a message to the window with the sender set as the window
-      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_RIGHT);
-      SendWindowMessage(msg);
-    }
-  }
+    m_actionRight.Execute(GetID(), GetParentID(), ACTION_MOVE_RIGHT);
 }
 
 bool CGUIControl::OnBack()
 {
-  if (m_backActions.size())
-  {
-    ExecuteActions(m_backActions);
-    return true;
-  }
-  else if (m_controlBack && m_controlID != m_controlBack)
-  {
-    // Send a message to the window with the sender set as the window
-    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_NAV_BACK);
-    return SendWindowMessage(msg);
-  }
-  return false;
+  return HasFocus() ? m_actionBack.Execute(GetID(), GetParentID(), ACTION_NAV_BACK) : false;
 }
 
 void CGUIControl::OnNextControl()
 {
-  if (m_controlID != m_controlNext)
-  {
-    // Send a message to the window with the sender set as the window
-    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_NEXT_CONTROL, m_controlNext);
-    SendWindowMessage(msg);
-  }
+  if (HasFocus())
+    m_actionNext.Execute(GetID(), GetParentID(), ACTION_NEXT_CONTROL);
 }
 
 void CGUIControl::OnPrevControl()
 {
-  if (m_controlID != m_controlPrev)
-  {
-    // Send a message to the window with the sender set as the window
-    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_PREV_CONTROL, m_controlPrev);
-    SendWindowMessage(msg);
-  }
+  if (HasFocus())
+    m_actionPrev.Execute(GetID(), GetParentID(), ACTION_PREV_CONTROL);
 }
 
 bool CGUIControl::SendWindowMessage(CGUIMessage &message)
@@ -524,28 +455,28 @@ CRect CGUIControl::CalcRenderRegion() const
 
 void CGUIControl::SetNavigation(int up, int down, int left, int right, int back)
 {
-  m_controlUp = up;
-  m_controlDown = down;
-  m_controlLeft = left;
-  m_controlRight = right;
-  m_controlBack = back;
+  m_actionUp.SetNavigation(up);
+  m_actionDown.SetNavigation(down);
+  m_actionLeft.SetNavigation(left);
+  m_actionRight.SetNavigation(right);
+  m_actionBack.SetNavigation(back);
 }
 
 void CGUIControl::SetTabNavigation(int next, int prev)
 {
-  m_controlNext = next;
-  m_controlPrev = prev;
+  m_actionNext.SetNavigation(next);
+  m_actionPrev.SetNavigation(prev);
 }
 
-void CGUIControl::SetNavigationActions(const vector<CGUIActionDescriptor> &up, const vector<CGUIActionDescriptor> &down,
-                                       const vector<CGUIActionDescriptor> &left, const vector<CGUIActionDescriptor> &right,
-                                       const vector<CGUIActionDescriptor> &back, bool replace)
+void CGUIControl::SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
+                                       const CGUIAction &left, const CGUIAction &right,
+                                       const CGUIAction &back, bool replace)
 {
-  if (m_leftActions.empty()  || replace) m_leftActions  = left;
-  if (m_rightActions.empty() || replace) m_rightActions = right;
-  if (m_upActions.empty()    || replace) m_upActions    = up;
-  if (m_downActions.empty()  || replace) m_downActions  = down;
-  if (m_backActions.empty()  || replace) m_backActions  = back;
+  if (!m_actionLeft.HasAnyActions()  || replace) m_actionLeft  = left;
+  if (!m_actionRight.HasAnyActions() || replace) m_actionRight = right;
+  if (!m_actionUp.HasAnyActions()    || replace) m_actionUp    = up;
+  if (!m_actionDown.HasAnyActions()  || replace) m_actionDown  = down;
+  if (!m_actionBack.HasAnyActions()  || replace) m_actionBack  = back;
 }
 
 void CGUIControl::SetWidth(float width)
@@ -938,15 +869,15 @@ int CGUIControl::GetNextControl(int direction) const
   switch (direction)
   {
   case ACTION_MOVE_UP:
-    return m_controlUp;
+    return m_actionUp.GetNavigation();
   case ACTION_MOVE_DOWN:
-    return m_controlDown;
+    return m_actionDown.GetNavigation();
   case ACTION_MOVE_LEFT:
-    return m_controlLeft;
+    return m_actionLeft.GetNavigation();
   case ACTION_MOVE_RIGHT:
-    return m_controlRight;
+    return m_actionRight.GetNavigation();
   case ACTION_NAV_BACK:
-    return m_controlBack;
+    return m_actionBack.GetNavigation();
   default:
     return -1;
   }
@@ -989,21 +920,6 @@ void CGUIControl::SetCamera(const CPoint &camera)
 {
   m_camera = camera;
   m_hasCamera = true;
-}
-
-void CGUIControl::ExecuteActions(const vector<CGUIActionDescriptor> &actions)
-{
-  // we should really save anything we need, as the action may cause the window to close
-  int savedID = GetID();
-  int savedParent = GetParentID();
-  vector<CGUIActionDescriptor> savedActions = actions;
-
-  for (unsigned int i = 0; i < savedActions.size(); i++)
-  {
-    CGUIMessage message(GUI_MSG_EXECUTE, savedID, savedParent);
-    message.SetAction(savedActions[i]);
-    g_windowManager.SendMessage(message);
-  }
 }
 
 CPoint CGUIControl::GetRenderPosition() const

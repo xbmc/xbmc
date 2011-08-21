@@ -68,7 +68,7 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"iOO|bl",
+      (char*)"iOO|bi",
       (char**)keywords,
       &handle,
       &pURL,
@@ -120,7 +120,7 @@ namespace PYXBMC
     if (!PyArg_ParseTupleAndKeywords(
       args,
       kwds,
-      (char*)"iO|l",
+      (char*)"iO|i",
       (char**)keywords,
       &handle,
       &pItems,

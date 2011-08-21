@@ -92,6 +92,12 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "MPEG2 MoComp", &DXVA2_ModeMPEG2_MoComp,  0 },
     { "MPEG2 IDCT",   &DXVA2_ModeMPEG2_IDCT,    0 },
 
+    // Intel drivers return standard modes in addition to the Intel specific ones. Try the Intel specific first, they work better for Sandy Bridges.
+    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, CODEC_ID_H264 },
+    { "Intel H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVADDI_Intel_ModeH264_C, 0 },
+    { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0 },
+    { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
+
     { "H.264 variable-length decoder (VLD), FGT",               &DXVA2_ModeH264_F, CODEC_ID_H264 },
     { "H.264 VLD, no FGT",                                      &DXVA2_ModeH264_E, CODEC_ID_H264 },
     { "H.264 IDCT, FGT",                                        &DXVA2_ModeH264_D, 0,            },
@@ -111,11 +117,6 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "VC-1 IDCT",            &DXVA2_ModeVC1_C, 0 },
     { "VC-1 MoComp",          &DXVA2_ModeVC1_B, 0 },
     { "VC-1 post processing", &DXVA2_ModeVC1_A, 0 },
-
-    { "Intel H.264 VLD, no FGT",                                      &DXVADDI_Intel_ModeH264_E, CODEC_ID_H264 },
-    { "Intel H.264 inverse discrete cosine transform (IDCT), no FGT", &DXVADDI_Intel_ModeH264_C, 0 },
-    { "Intel H.264 motion compensation (MoComp), no FGT",             &DXVADDI_Intel_ModeH264_A, 0 },
-    { "Intel VC-1 VLD",                                               &DXVADDI_Intel_ModeVC1_E,  0 },
 
     { NULL, NULL, 0 }
 };
@@ -1131,11 +1132,14 @@ REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source)
   return m_time;
 }
 
-bool CProcessor::ProcessPicture(DVDVideoPicture* picture)
+REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
 {
   CSingleLock lock(m_section);
 
   IDirect3DSurface9* surface = NULL;
+
+  if (picture->iFlags & DVP_FLAG_DROPPED)
+    return 0;
 
   switch (picture->format)
   {
@@ -1183,8 +1187,6 @@ bool CProcessor::ProcessPicture(DVDVideoPicture* picture)
   
       CHECK(surface->UnlockRect());
 
-      picture->proc = this;
-      picture->format = DVDVideoPicture::FMT_DXVA;
       break;
     }
     
@@ -1196,14 +1198,9 @@ bool CProcessor::ProcessPicture(DVDVideoPicture* picture)
   }
 
   if (!surface)
-    return false;
+    return 0;
 
-  if (picture->iFlags & DVP_FLAG_DROPPED)
-    picture->proc_id = 0;
-  else
-    picture->proc_id = Add(surface);
-
-  return true;
+  return Add(surface);
 }
 
 static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int min, int max, int def)

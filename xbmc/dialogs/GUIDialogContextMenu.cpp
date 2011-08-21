@@ -393,7 +393,7 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
     return MEDIA_DETECT::CAutorun::PlayDisc(true); // restart
 
   case CONTEXT_BUTTON_RESUME_DISC:
-    return MEDIA_DETECT::CAutorun::PlayDisc();
+    return MEDIA_DETECT::CAutorun::PlayDisc(false);// resume
 
   case CONTEXT_BUTTON_EJECT_DISC:
 #ifdef _WIN32
