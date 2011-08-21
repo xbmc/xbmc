@@ -1,5 +1,6 @@
 #include "UpdaterOptions.h"
 
+#include "Log.h"
 #include "AnyOption/anyoption.h"
 #include <cstdlib>
 
@@ -23,7 +24,10 @@ UpdateInstaller::Mode stringToMode(const std::string& modeStr)
 	}
 	else
 	{
-		std::cout << "unknown mode " << modeStr << std::endl;
+		if (!modeStr.empty())
+		{
+			LOG(Error,"Unknown mode " + modeStr);
+		}
 		return UpdateInstaller::Setup;
 	}
 }
