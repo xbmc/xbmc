@@ -43,24 +43,40 @@ void UpdateInstaller::setScript(UpdateScript* script)
 	m_script = script;
 }
 
+std::list<std::string> UpdateInstaller::updaterArgs() const
+{
+	std::list<std::string> args;
+	args.push_back("--install-dir");
+	args.push_back(m_installDir);
+	args.push_back("--package-dir");
+	args.push_back(m_packageDir);
+	args.push_back("--script");
+	args.push_back(m_script->path());
+	return args;
+}
+
 void UpdateInstaller::run() throw ()
 {
+	std::string updaterPath;
+	try
+	{
+		updaterPath = ProcessUtils::currentProcessPath();
+	}
+	catch (const FileOps::IOException& ex)
+	{
+		LOG(Error,"error reading process path with mode " + intToStr(m_mode));
+		return;
+	}
+
 	if (m_mode == Setup)
 	{
 		LOG(Info,"Preparing update installation");
 		LOG(Info,"Waiting for main app process to finish");
 		ProcessUtils::waitForProcess(m_waitPid);
 
-		std::string updaterPath = ProcessUtils::currentProcessPath();
-		std::list<std::string> args;
+		std::list<std::string> args = updaterArgs();
 		args.push_back("--mode");
 		args.push_back("main");
-		args.push_back("--install-dir");
-		args.push_back(m_installDir);
-		args.push_back("--package-dir");
-		args.push_back(m_packageDir);
-		args.push_back("--script");
-		args.push_back(m_script->path());
 
 		if (!checkAccess())
 		{
@@ -116,6 +132,11 @@ void UpdateInstaller::run() throw ()
 		{
 			m_observer->updateFinished();
 		}
+
+		std::list<std::string> args = updaterArgs();
+		args.push_back("--mode");
+		args.push_back("cleanup");
+		ProcessUtils::runAsync(updaterPath,args);
 	}
 	else if (m_mode == Cleanup)
 	{
@@ -123,6 +144,8 @@ void UpdateInstaller::run() throw ()
 
 		ProcessUtils::waitForProcess(m_waitPid);
 		cleanup();
+
+		LOG(Info,"Updater files removed");
 	}
 }
 

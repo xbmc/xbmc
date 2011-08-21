@@ -2,6 +2,7 @@
 
 #include "UpdateScript.h"
 
+#include <list>
 #include <string>
 #include <map>
 
@@ -39,6 +40,8 @@ class UpdateInstaller
 		void uninstallFiles();
 		void installFile(const UpdateScriptFile& file);
 		void backupFile(const std::string& path);
+
+		std::list<std::string> updaterArgs() const;
 
 		Mode m_mode;
 		std::string m_installDir;
