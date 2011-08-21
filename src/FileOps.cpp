@@ -179,6 +179,18 @@ void FileOps::removeFile(const char* src) throw (IOException)
 #endif
 }
 
+std::string FileOps::fileName(const char* path)
+{
+#ifdef PLATFORM_UNIX
+	char* pathCopy = strdup(path);
+	std::string basename = ::basename(pathCopy);
+	free(pathCopy);
+	return basename;
+#else
+	throw IOException("not implemented");
+#endif
+}
+
 std::string FileOps::dirname(const char* path)
 {
 #ifdef PLATFORM_UNIX

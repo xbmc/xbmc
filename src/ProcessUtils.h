@@ -8,6 +8,9 @@ class ProcessUtils
 	public:
 		static std::string currentProcessPath();
 
+		static int runSync(const std::string& executable,
+		                    const std::list<std::string>& args);
+
 		static void runAsync(const std::string& executable,
 		                     const std::list<std::string>& args);
 
@@ -24,9 +27,11 @@ class ProcessUtils
 		static void runElevatedWindows(const std::string& executable,
 		                               const std::list<std::string>& args);
 
-		static void runAsyncUnix(const std::string& executable,
+		static int runAsyncUnix(const std::string& executable,
 		                         const std::list<std::string>& args);
 		static void runAsyncWindows(const std::string& executable,
 		                            const std::list<std::string>& args);
+		static int runSyncUnix(const std::string& executable,
+		                        const std::list<std::string>& args);
 };
 

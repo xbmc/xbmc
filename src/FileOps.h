@@ -34,6 +34,7 @@ class FileOps
 		static void rmdir(const char* dir) throw (IOException);
 		static void createSymLink(const char* link, const char* target) throw (IOException);
 		static void touch(const char* path) throw (IOException);
+		static std::string fileName(const char* path);
 		static std::string dirname(const char* path);
 		static void rmdirRecursive(const char* dir) throw (IOException);
 		static std::string canonicalPath(const char* path);

@@ -17,6 +17,27 @@
 #include <errno.h>
 #endif
 
+int ProcessUtils::runSync(const std::string& executable,
+		                   const std::list<std::string>& args)
+{
+#ifdef PLATFORM_UNIX
+	return runSyncUnix(executable,args);
+#else
+	return runSyncWindows(executable,args);
+#endif
+}
+
+#ifdef PLATFORM_UNIX
+int ProcessUtils::runSyncUnix(const std::string& executable,
+		                        const std::list<std::string>& args)
+{
+	int pid = runAsyncUnix(executable,args);
+	int status = 0;
+	waitpid(pid,&status,0);
+	return status;
+}
+#endif
+
 void ProcessUtils::runAsync(const std::string& executable,
 		      const std::list<std::string>& args)
 {
@@ -73,6 +94,44 @@ bool ProcessUtils::waitForProcess(long long pid)
 void ProcessUtils::runElevatedLinux(const std::string& executable,
 							const std::list<std::string>& args)
 {
+	std::string sudoMessage = FileOps::fileName(executable.c_str()) + " needs administrative privileges.  Please enter your password.";
+
+	std::vector<std::string> sudos;
+	sudos.push_back("kdesudo");
+	sudos.push_back("gksudo");
+	sudos.push_back("gksu");
+
+	for (int i=0; i < sudos.size(); i++)
+	{
+		const std::string& sudoBinary = sudos.at(i);
+
+		std::list<std::string> sudoArgs;
+		sudoArgs.push_back("-u");
+		sudoArgs.push_back("root");
+
+		if (sudoBinary == "kdesudo")
+		{
+			sudoArgs.push_back("-d");
+			sudoArgs.push_back("--comment");
+			sudoArgs.push_back(sudoMessage);
+		}
+		else
+		{
+			sudoArgs.push_back(sudoMessage);
+		}
+
+		sudoArgs.push_back("--");
+		sudoArgs.push_back(executable);
+		std::copy(args.begin(),args.end(),std::back_inserter(sudoArgs));
+
+		// != 255: some sudo has been found and user failed to authenticate
+		// or user authenticated correctly
+		int result = ProcessUtils::runSync(sudoBinary,sudoArgs);
+		if (result != 255)
+		{
+			break;
+		}
+	}
 }
 #endif
 
@@ -186,7 +245,7 @@ void ProcessUtils::runElevatedWindows(const std::string& executable,
 #endif
 
 #ifdef PLATFORM_UNIX
-void ProcessUtils::runAsyncUnix(const std::string& executable,
+int ProcessUtils::runAsyncUnix(const std::string& executable,
 						const std::list<std::string>& args)
 {
 	pid_t child = fork();
@@ -203,7 +262,7 @@ void ProcessUtils::runAsyncUnix(const std::string& executable,
 		}
 		argBuffer[i] = 0;
 
-		if (execve(executable.c_str(),argBuffer,environ) == -1)
+		if (execvp(executable.c_str(),argBuffer) == -1)
 		{
 			LOG(Error,"error starting child: " + std::string(strerror(errno)));
 			exit(1);
