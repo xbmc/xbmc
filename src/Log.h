@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <fstream>
 
 class Log
 {
@@ -23,7 +24,9 @@ class Log
 		static Log* instance();
 	
 	private:
-		int m_fd;
+		static void writeToStream(std::ostream& stream, Type type, const char* text);
+
+		std::fstream m_output;
 };
 
 inline void Log::write(Type type, const std::string& text)

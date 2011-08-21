@@ -1,13 +1,30 @@
 #include "Log.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#include "Platform.h"
+#include "StringUtils.h"
 
 #include <string.h>
 #include <iostream>
 
+#ifdef PLATFORM_UNIX
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#endif
+
 Log m_globalLog;
+
+#ifdef PLATFORM_UNIX
+pid_t currentProcessId = 0;
+pid_t processId()
+{
+	if (currentProcessId == 0)
+	{
+		currentProcessId = getpid();
+	}
+	return currentProcessId;
+}
+#endif
 
 Log* Log::instance()
 {
@@ -15,39 +32,41 @@ Log* Log::instance()
 }
 
 Log::Log()
-: m_fd(-1)
 {
 }
 
 Log::~Log()
 {
-	close(m_fd);
 }
 
 void Log::open(const std::string& path)
 {
-	m_fd = ::open(path.c_str(),S_IRUSR);
+	m_output.open(path.c_str());
 }
 
-void Log::write(Type type, const char* text)
+void Log::writeToStream(std::ostream& stream, Type type, const char* text)
 {
 	switch (type)
 	{
 		case Info:
-			std::cerr << "INFO  ";
+			stream << "INFO  ";
 			break;
 		case Warn:
-			std::cerr << "WARN  ";
+			stream << "WARN  ";
 			break;
 		case Error:
-			std::cerr << "ERROR ";
+			stream << "ERROR ";
 			break;
 	}
-	std::cerr << text << std::endl;
+	stream << '(' << intToStr(processId()) << ") " << text << std::endl;
+}
 
-	if (m_fd >= 0)
+void Log::write(Type type, const char* text)
+{
+	writeToStream(std::cerr,type,text);
+	if (m_output.is_open())
 	{
-		::write(m_fd,text,strlen(text));
+		writeToStream(m_output,type,text);
 	}
 }
 
