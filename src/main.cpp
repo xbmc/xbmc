@@ -1,6 +1,8 @@
-#include "UpdaterOptions.h"
-#include "UpdateScript.h"
+#include "Log.h"
 #include "Platform.h"
+#include "StringUtils.h"
+#include "UpdateScript.h"
+#include "UpdaterOptions.h"
 
 #if defined(PLATFORM_WINDOWS)
   #include "UpdateDialogWin32.h"
@@ -35,11 +37,11 @@ int main(int argc, char** argv)
 		setupUi(&installer);
 	}
 
-	std::cout << "install dir " << options.installDir << std::endl;
-	std::cout << "package dir " << options.packageDir << std::endl;
-	std::cout << "wait pid " << options.waitPid << std::endl;
-	std::cout << "script " << options.script << std::endl;
-	std::cout << "mode " << options.mode << std::endl;
+	LOG(Info,"started updater. install-dir: " + options.installDir
+	         + ", package-dir: " + options.packageDir
+	         + ", wait-pid: " + intToStr(options.waitPid)
+	         + ", script-path: " + options.script
+	         + ", mode: " + intToStr(options.mode));
 
 	installer.setMode(options.mode);
 	installer.setInstallDir(options.installDir);
