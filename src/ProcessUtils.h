@@ -1,11 +1,15 @@
 #pragma once
 
+#include "Platform.h"
+
 #include <list>
 #include <string>
 
 class ProcessUtils
 {
 	public:
+		static PLATFORM_PID currentProcessId();
+
 		static std::string currentProcessPath();
 
 		static int runSync(const std::string& executable,
@@ -17,7 +21,7 @@ class ProcessUtils
 		static void runElevated(const std::string& executable,
 		                        const std::list<std::string>& args);
 
-		static bool waitForProcess(long long pid);
+		static bool waitForProcess(PLATFORM_PID pid);
 
 	private:
 		static void runElevatedLinux(const std::string& executable,

@@ -1,5 +1,6 @@
 #pragma once
 
+// basic platform defines
 #ifdef __linux__
  #define PLATFORM_LINUX
 #endif
@@ -17,3 +18,9 @@
  #define PLATFORM_UNIX
 #endif
 
+// platform-specific type aliases
+#if defined(PLATFORM_UNIX)
+ #define PLATFORM_PID pid_t
+#else
+ #define PLATFORM_PID DWORD
+#endif

@@ -22,6 +22,15 @@
 #include <mach-o/dyld.h>
 #endif
 
+PLATFORM_PID ProcessUtils::currentProcessId()
+{
+#ifdef PLATFORM_UNIX
+	return getpid();
+#else
+	return GetCurrentProcessId();
+#endif
+}
+
 int ProcessUtils::runSync(const std::string& executable,
 		                   const std::list<std::string>& args)
 {
@@ -74,10 +83,10 @@ void ProcessUtils::runElevated(const std::string& executable,
 #endif
 }
 
-bool ProcessUtils::waitForProcess(long long pid)
+bool ProcessUtils::waitForProcess(PLATFORM_PID pid)
 {
 #ifdef PLATFORM_UNIX
-	pid_t result = ::waitpid(static_cast<pid_t>(pid), 0, 0);	
+	pid_t result = ::waitpid(pid, 0, 0);	
 	if (result < 0)
 	{
 		LOG(Error,"waitpid() failed with error: " + std::string(strerror(errno)));
@@ -86,7 +95,7 @@ bool ProcessUtils::waitForProcess(long long pid)
 #elif defined(PLATFORM_WINDOWS)
 	HANDLE hProc;
 
-	if (!(hProc = OpenProcess(SYNCHRONIZE, FALSE, static_cast<DWORD>(pid))))
+	if (!(hProc = OpenProcess(SYNCHRONIZE, FALSE, pid)))
 	{
 		LOG(Error,"Unable to get process handle for pid " + intToStr(pid) + " last error " + intToStr(GetLastError()));
 		return false;

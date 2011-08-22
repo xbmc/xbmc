@@ -77,6 +77,8 @@ void UpdateInstaller::run() throw ()
 		std::list<std::string> args = updaterArgs();
 		args.push_back("--mode");
 		args.push_back("main");
+		args.push_back("--wait");
+		args.push_back(intToStr(ProcessUtils::currentProcessId()));
 
 		if (!checkAccess())
 		{
@@ -136,6 +138,8 @@ void UpdateInstaller::run() throw ()
 		std::list<std::string> args = updaterArgs();
 		args.push_back("--mode");
 		args.push_back("cleanup");
+		args.push_back("--wait");
+		args.push_back(intToStr(ProcessUtils::currentProcessId()));
 		ProcessUtils::runAsync(updaterPath,args);
 	}
 	else if (m_mode == Cleanup)
