@@ -2,18 +2,18 @@ Updater Tasks:
 
  * Elevation for Linux [done - needs testing]
  * Set file permissions for Unix [done]
+ * Elevation for Mac [done]
+ * Basic functionality for Mac [done]
+ * Unit test working under Mac [done]
  * Set file permissions for Windows
  * Basic functionality for Windows
- * Basic functionality for Mac
  * Elevation for Windows
- * Elevation for Mac
  * Win32 UI for Windows
  * Cocoa UI for Mac
  * Gtk or Qt UI for Linux
  * Retry/cancel support if updater cannot overwrite file (eg. due to
    file being in use by Microsoft Word or another application)
  * Unit test working under Windows
- * Unit test working under Mac
  * Start new application once installation is finished
 
 Mendeley Desktop <= 1.0 auto-update system compatibility:

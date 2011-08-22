@@ -144,6 +144,12 @@ void ProcessUtils::runElevatedLinux(const std::string& executable,
 void ProcessUtils::runElevatedMac(const std::string& executable,
 						const std::list<std::string>& args)
 {
+	// request elevation using the Security Service.
+	//
+	// This only works when the application is being run directly
+	// from the Mac.  Attempting to run the app via a remote SSH session
+	// (for example) will fail with an interaction-not-allowed error
+
 	OSStatus status;
 	AuthorizationRef authorizationRef;
 	
