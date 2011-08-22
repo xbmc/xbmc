@@ -26,6 +26,7 @@
 #include "system.h"
 #ifdef HAS_AIRPLAY
 
+#include <sys/socket.h>
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include "utils/HttpParser.h"

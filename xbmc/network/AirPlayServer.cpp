@@ -127,7 +127,7 @@ CAirPlayServer::CAirPlayServer(int port, bool nonlocal)
 {
   m_port = port;
   m_nonlocal = nonlocal;
-  m_ServerSocket = -1;
+  m_ServerSocket = INVALID_SOCKET;
 }
 
 void CAirPlayServer::Process()
@@ -187,7 +187,7 @@ void CAirPlayServer::Process()
         CTCPClient newconnection;
         newconnection.m_socket = accept(m_ServerSocket, &newconnection.m_cliaddr, &newconnection.m_addrlen);
 
-        if (newconnection.m_socket < 0)
+        if (newconnection.m_socket == INVALID_SOCKET)
           CLog::Log(LOGERROR, "AIRPLAY Server: Accept of new connection failed");
         else
         {
@@ -217,7 +217,7 @@ bool CAirPlayServer::Initialize()
 
   m_ServerSocket = socket(PF_INET, SOCK_STREAM, 0);
 
-  if (m_ServerSocket < 0)
+  if (m_ServerSocket == INVALID_SOCKET)
   {
 
     CLog::Log(LOGERROR, "AIRPLAY Server: Failed to create serversocket");
@@ -249,17 +249,17 @@ void CAirPlayServer::Deinitialize()
 
   m_connections.clear();
 
-  if (m_ServerSocket >= 0)
+  if (m_ServerSocket != INVALID_SOCKET)
   {
     shutdown(m_ServerSocket, SHUT_RDWR);
     close(m_ServerSocket);
-    m_ServerSocket = -1;
+    m_ServerSocket = INVALID_SOCKET;
   }
 }
 
 CAirPlayServer::CTCPClient::CTCPClient()
 {
-  m_socket = -1;
+  m_socket = INVALID_SOCKET;
   m_httpParser = new HttpParser();
 
   m_addrlen = sizeof(struct sockaddr);
@@ -342,12 +342,12 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
 
 void CAirPlayServer::CTCPClient::Disconnect()
 {
-  if (m_socket >= 0)
+  if (m_socket != INVALID_SOCKET)
   {
     CSingleLock lock (m_critSection);
     shutdown(m_socket, SHUT_RDWR);
     close(m_socket);
-    m_socket = -1;
+    m_socket = INVALID_SOCKET;
     delete m_httpParser;
   }
 }
