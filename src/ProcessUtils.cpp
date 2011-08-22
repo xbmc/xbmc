@@ -19,6 +19,7 @@
 
 #ifdef PLATFORM_MAC
 #include <Security/Security.h>
+#include <mach-o/dyld.h>
 #endif
 
 int ProcessUtils::runSync(const std::string& executable,
@@ -293,6 +294,13 @@ std::string ProcessUtils::currentProcessPath()
 	std::string path = FileOps::canonicalPath("/proc/self/exe");
 	LOG(Info,"Current process path " + path);
 	return path;
+#elif defined(PLATFORM_MAC)
+	uint32_t bufferSize = PATH_MAX;
+	char buffer[bufferSize];
+	_NSGetExecutablePath(buffer,&bufferSize);
+	return buffer;
+#else
+	return std::string();
 #endif
 }
 
