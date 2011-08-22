@@ -35,9 +35,11 @@ target_link_libraries(updatershared
   tinyxml
   minizip
   tinythread
-  # TODO - Mac and Windows version
-  pthread
 )
+
+if (UNIX)
+  target_link_libraries(updatershared pthread)
+endif()
 
 add_executable(updater
   main.cpp
