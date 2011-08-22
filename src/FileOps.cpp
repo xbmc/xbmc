@@ -4,7 +4,6 @@
 #include "Platform.h"
 #include "StringUtils.h"
 
-#include <malloc.h>
 #include <string.h>
 #include <fstream>
 
