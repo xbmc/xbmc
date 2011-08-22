@@ -16,6 +16,13 @@ set (HEADERS
  zip.h
 )
 
+if (APPLE)
+	# Mac OS X does not have fopen64()
+	# and several related functions as the standard fopen()
+	# calls are 64bit
+	add_definitions("-DUSE_FILE32API")
+endif()
+
 add_library(minizip
  ${SOURCES}
  ${HEADERS}
