@@ -272,6 +272,7 @@ void addFlag(InFlags inFlags, int testBit, OutFlags& outFlags, int setBit)
 	}
 }
 
+#ifdef PLATFORM_UNIX
 int FileOps::toUnixPermissions(int qtPermissions)
 {
 	mode_t result = 0;
@@ -286,4 +287,5 @@ int FileOps::toUnixPermissions(int qtPermissions)
 	addFlag(qtPermissions,ExecOther,result,S_IXOTH);
 	return result;
 }
+#endif
 
