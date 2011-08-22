@@ -1,8 +1,17 @@
 #include "Dir.h"
 
+#include "Log.h"
+#include "StringUtils.h"
+
 #ifdef PLATFORM_UNIX
  #include <dirent.h>
 #endif
+
+bool endsWith(const std::string& str, const char* text)
+{
+	int length = strlen(text);
+	return str.find(text,str.size() - length) != 0;
+}
 
 Dir::Dir(const char* path)
 {
@@ -11,7 +20,16 @@ Dir::Dir(const char* path)
 #ifdef PLATFORM_UNIX
 	m_dir = opendir(path);
 #else
-	m_findHandle = FindFirstFile(path,&m_findData);
+	// to list the contents of a directory, the first
+	// argument to FindFirstFile needs to be a wildcard
+	// of the form: C:\path\to\dir\*
+	std::string searchPath = m_path;
+	if (!endsWith(searchPath,"/"))
+	{
+		searchPath.append("/");
+	}
+	searchPath.append("*");
+	m_findHandle = FindFirstFile(searchPath.c_str(),&m_findData);
 	m_firstEntry = true;
 #endif
 }

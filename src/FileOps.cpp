@@ -1,6 +1,7 @@
 #include "FileOps.h"
 
 #include "Dir.h"
+#include "Log.h"
 #include "Platform.h"
 #include "StringUtils.h"
 
