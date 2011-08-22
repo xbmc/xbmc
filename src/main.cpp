@@ -20,8 +20,15 @@ void setupUi(UpdateInstaller* installer);
 
 void runUpdaterThread(void* arg)
 {
-	UpdateInstaller* installer = static_cast<UpdateInstaller*>(arg);
-	installer->run();
+	try
+	{
+		UpdateInstaller* installer = static_cast<UpdateInstaller*>(arg);
+		installer->run();
+	}
+	catch (const std::exception& ex)
+	{
+		LOG(Error,"Unexpected exception " + std::string(ex.what()));
+	}
 }
 
 int main(int argc, char** argv)
