@@ -2,7 +2,9 @@ project(minizip)
 
 cmake_minimum_required(VERSION 2.6)
 
-find_package(ZLIB REQUIRED)
+if (UNIX)
+	find_package(ZLIB REQUIRED)
+endif()
 
 set (SOURCES
  ioapi.c
@@ -28,5 +30,10 @@ add_library(minizip
  ${HEADERS}
 )
 
-target_link_libraries(minizip z)
+if (UNIX)
+	target_link_libraries(minizip z)
+else()
+	target_link_libraries(minizip "${CMAKE_CURRENT_SOURCE_DIR}/../zlib/zlib.lib")
+endif()
+
 
