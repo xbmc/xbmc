@@ -97,6 +97,8 @@ public:
   void StopServices();
   bool StartWebServer();
   void StopWebServer();
+  void StartAirplayServer();  
+  void StopAirplayServer(bool bWait);   
   bool StartJSONRPCServer();
   void StopJSONRPCServer(bool bWait);
   void StartUPnP();

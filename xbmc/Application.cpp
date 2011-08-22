@@ -138,6 +138,9 @@
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "network/TCPServer.h"
 #endif
+#ifdef HAS_AIRPLAY
+#include "network/AirPlayServer.h"
+#endif
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
@@ -1267,6 +1270,32 @@ void CApplication::StopWebServer()
     } else
       CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
   }
+#endif
+}
+
+void CApplication::StartAirplayServer()
+{
+#ifdef HAS_AIRPLAY
+  if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
+  {
+    if (CAirPlayServer::StartServer(9091, true))
+    {
+      std::map<std::string, std::string> txt;
+      txt["deviceid"] = m_network.GetFirstConnectedInterface()->GetMacAddress();
+      txt["features"] = "0x77";
+      txt["model"] = "AppleTV2,1";
+      txt["srcvers"] = "101.10";
+      CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", "XBMC", 9091, txt);
+    }
+  }
+#endif
+}
+
+void CApplication::StopAirplayServer(bool bWait)
+{
+#ifdef HAS_AIRPLAY
+  CAirPlayServer::StopServer(bWait);
+  CZeroconf::GetInstance()->RemoveService("servers.airplay");
 #endif
 }
 

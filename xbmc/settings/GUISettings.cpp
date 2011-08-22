@@ -710,6 +710,10 @@ void CGUISettings::Initialize()
   AddBool(srv, "services.zeroconf", 1260, true);
 #endif
 
+#ifdef HAS_AIRPLAY
+  AddBool(srv, "services.airplay", 1270, false);
+#endif
+
 #ifndef _WIN32
   CSettingsCategory* smb = AddCategory(6, "smb", 1200);
   AddString(smb, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
