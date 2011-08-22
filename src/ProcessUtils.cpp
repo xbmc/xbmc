@@ -252,7 +252,7 @@ int ProcessUtils::runAsyncUnix(const std::string& executable,
 	if (child == 0)
 	{
 		// in child process
-		char** argBuffer = new char*[args.size() + 1];
+		char** argBuffer = new char*[args.size() + 2];
 		argBuffer[0] = strdup(executable.c_str());
 		int i = 1;
 		for (std::list<std::string>::const_iterator iter = args.begin(); iter != args.end(); iter++)
