@@ -665,6 +665,7 @@ void CGUISettings::Initialize()
   AddString(sub, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(sub, "subtitles.sep1");
   AddPath(sub, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddInt(sub, "subtitles.align", 21460, SUBTITLE_ALIGN_MANUAL, SUBTITLE_ALIGN_MANUAL, 1, SUBTITLE_ALIGN_TOP_OUTSIDE, SPIN_CONTROL_TEXT);
 
   CSettingsCategory* dvd = AddCategory(5, "dvds", 14087);
   AddBool(dvd, "dvds.autorun", 14088, false);
