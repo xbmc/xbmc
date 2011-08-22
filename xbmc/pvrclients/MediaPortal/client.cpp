@@ -28,20 +28,21 @@ using namespace std;
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-std::string g_szHostname           = DEFAULT_HOST;         ///< The Host name or IP of the MediaPortal TV Server
-int         g_iPort                = DEFAULT_PORT;         ///< The TVServerXBMC listening port (default: 9596)
-int         g_iConnectTimeout      = DEFAULT_TIMEOUT;      ///< The Socket connection timeout
-int         g_iSleepOnRTSPurl      = DEFAULT_SLEEP_RTSP_URL; ///< An optional delay between tuning a channel and opening the corresponding RTSP stream in XBMC (default: 0)
-bool        g_bOnlyFTA             = DEFAULT_FTA_ONLY;     ///< Send only Free-To-Air Channels inside Channel list to XBMC
-bool        g_bRadioEnabled        = DEFAULT_RADIO;        ///< Send also Radio channels list to XBMC
-bool        g_bHandleMessages      = DEFAULT_HANDLE_MSG;   ///< Send VDR's OSD status messages to XBMC OSD
+std::string g_szHostname           = DEFAULT_HOST;                  ///< The Host name or IP of the MediaPortal TV Server
+int         g_iPort                = DEFAULT_PORT;                  ///< The TVServerXBMC listening port (default: 9596)
+int         g_iConnectTimeout      = DEFAULT_TIMEOUT;               ///< The Socket connection timeout
+int         g_iSleepOnRTSPurl      = DEFAULT_SLEEP_RTSP_URL;        ///< An optional delay between tuning a channel and opening the corresponding RTSP stream in XBMC (default: 0)
+bool        g_bOnlyFTA             = DEFAULT_FTA_ONLY;              ///< Send only Free-To-Air Channels inside Channel list to XBMC
+bool        g_bRadioEnabled        = DEFAULT_RADIO;                 ///< Send also Radio channels list to XBMC
+bool        g_bHandleMessages      = DEFAULT_HANDLE_MSG;            ///< Send VDR's OSD status messages to XBMC OSD
 bool        g_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME; ///< Resolve the server hostname in the rtsp URLs to an IP at the TV Server side (default: false)
-bool        g_bReadGenre           = DEFAULT_READ_GENRE;   ///< Read the genre strings from MediaPortal and translate them into XBMC DVB genre id's (only English)
-bool        g_bUseRecordingsDir    = DEFAULT_USE_REC_DIR;  ///< Use a normal directory if true for recordings
-std::string g_szRecordingsDir      = DEFAULT_REC_DIR;      ///< The path to the recordings directory
-std::string g_szTVGroup            = DEFAULT_TVGROUP;      ///< Import only TV channels from this TV Server TV group
-std::string g_szRadioGroup         = DEFAULT_RADIOGROUP;   ///< Import only radio channels from this TV Server radio group
-bool        g_bDirectTSFileRead    = DEFAULT_DIRECT_TS_FR; ///< Open the Live-TV timeshift buffer directly (skip RTSP streaming)
+bool        g_bReadGenre           = DEFAULT_READ_GENRE;            ///< Read the genre strings from MediaPortal and translate them into XBMC DVB genre id's (only English)
+bool        g_bUseRecordingsDir    = DEFAULT_USE_REC_DIR;           ///< Use a normal directory if true for recordings
+std::string g_szRecordingsDir      = DEFAULT_REC_DIR;               ///< The path to the recordings directory
+std::string g_szTimeshiftDir       = DEFAULT_TIMESHIFT_DIR;         ///< The path to the recordings directory
+std::string g_szTVGroup            = DEFAULT_TVGROUP;               ///< Import only TV channels from this TV Server TV group
+std::string g_szRadioGroup         = DEFAULT_RADIOGROUP;            ///< Import only radio channels from this TV Server radio group
+bool        g_bDirectTSFileRead    = DEFAULT_DIRECT_TS_FR;          ///< Open the Live-TV timeshift buffer directly (skip RTSP streaming)
 
 /* Client member variables */
 ADDON_STATUS           m_CurStatus    = ADDON_STATUS_UNKNOWN;
@@ -283,6 +284,14 @@ void ADDON_ReadSettings(void)
     XBMC->Log(LOG_ERROR, "Couldn't get 'directtsfileread' setting, falling back to 'false' as default");
     g_bDirectTSFileRead = DEFAULT_DIRECT_TS_FR;
   }
+
+  if (!XBMC->GetSetting("timeshiftdir", &buffer))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'timeshiftdir' setting, falling back to '%s' as default", DEFAULT_TIMESHIFT_DIR);
+  } else {
+   g_szTimeshiftDir = buffer;
+  }
 #else
   g_bDirectTSFileRead = false;
 #endif
@@ -377,6 +386,11 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
   {
     XBMC->Log(LOG_INFO, "Changed setting 'directtsfileread' from %u to %u", g_bDirectTSFileRead, *(bool*) settingValue);
     g_bDirectTSFileRead = *(bool*) settingValue;
+  }
+  else if (str == "timeshiftdir")
+  {
+    XBMC->Log(LOG_INFO, "Changed setting 'timeshiftdir' from %u to %u", g_szTimeshiftDir.c_str(), *(bool*) settingValue);
+    g_szTimeshiftDir = *(bool*) settingValue;
   }
 #endif
   return ADDON_STATUS_OK;

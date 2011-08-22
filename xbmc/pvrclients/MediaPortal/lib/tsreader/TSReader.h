@@ -23,6 +23,7 @@
 #include "FileReader.h"
 #include "MemoryBuffer.h"
 #include "utils/StdString.h"
+#include "Cards.h"
 
 class CTsReader
 {
@@ -34,7 +35,26 @@ public:
   void Close();
   void OnZap(void);
 
+  /**
+   * \brief Pass a pointer to the MediaPortal card settings to this class
+   * \param the cardSettings
+   */
+  void SetCardSettings(CCards* cardSettings);
+
+  /**
+   * \brief Override the search directory for timeshift buffer files
+   * \param the new search directory
+   */
+  void SetDirectory( string& directory );
+
 private:
+
+  /**
+   * \brief Translate the given path using the m_basePath setting
+   * \param The original (local) timeshift buffer file path on the TV server side
+   */
+  std::string TranslatePath(const char* pszFileName);
+
   bool            m_bTimeShifting;
   bool            m_bRecording;
   bool            m_bLiveTv;
@@ -46,5 +66,8 @@ private:
   CRTSPClient     m_rtspClient;
 #endif
   CMemoryBuffer   m_buffer;
+  CCards*         m_cardSettings;     ///< Pointer to the MediaPortal card settings. Will be used to determine the base path of the timeshift buffer
+  string          m_basePath;         ///< The base path shared by all timeshift buffers (to be determined from the Card settings)
+
 };
 #endif //TSREADER

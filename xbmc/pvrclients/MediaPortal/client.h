@@ -42,6 +42,7 @@
 #define DEFAULT_SLEEP_RTSP_URL        0
 #define DEFAULT_USE_REC_DIR           false
 #define DEFAULT_REC_DIR               ""
+#define DEFAULT_TIMESHIFT_DIR         ""
 #define DEFAULT_TVGROUP               ""
 #define DEFAULT_RADIOGROUP            ""
 #define DEFAULT_DIRECT_TS_FR          false
@@ -64,6 +65,7 @@ extern bool         g_bReadGenre;
 extern bool         g_bUseRecordingsDir;
 extern bool         g_bDirectTSFileRead;
 extern std::string  g_szRecordingsDir;
+extern std::string  g_szTimeshiftDir;
 extern std::string  g_szTVGroup;
 extern std::string  g_szRadioGroup;
 

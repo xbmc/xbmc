@@ -38,23 +38,52 @@
 
 CTsReader::CTsReader()
 {
-  m_fileReader=NULL;
-  m_fileDuration=NULL;
+  m_fileReader      = NULL;
+  m_fileDuration    = NULL;
+  m_bLiveTv         = false;
+  m_bTimeShifting   = false;
+  m_bIsRTSP         = false;
+  m_cardSettings    = NULL;
 
 #ifdef LIVE555
   m_rtspClient.Initialize(&m_buffer);
 #endif
+}
 
-  m_bLiveTv = false;
-  m_bTimeShifting = false;
-  m_bIsRTSP = false;
+std::string CTsReader::TranslatePath(const char*  pszFileName)
+{
+  if (m_basePath.length() == 0)
+    return pszFileName;
+
+  CStdString sTimeshiftFile = pszFileName;
+  size_t found = string::npos;
+
+  if ((m_cardSettings) && (m_cardSettings->size() > 0))
+  {
+    for (CCards::iterator it = m_cardSettings->begin(); it < m_cardSettings->end(); it++)
+    {
+      // Determine whether the first part of the timeshift file name is shared with this card
+      found = sTimeshiftFile.find(it->TimeshiftingFolder);
+      if (found != string::npos)
+      {
+        // Remove the original base path and replace it with the given path
+        sTimeshiftFile = m_basePath + sTimeshiftFile.substr(it->TimeshiftingFolder.length()+1);
+        break;
+      }
+    }
+    XBMC->Log(LOG_DEBUG, "CTsReader:TranslatePath %s -> %s", pszFileName, sTimeshiftFile.c_str());
+    return sTimeshiftFile;
+  }
+
+  return pszFileName;
 }
 
 long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
 {
   XBMC->Log(LOG_DEBUG, "CTsReader::Open(%s)", pszFileName);
 
-  m_fileName = pszFileName;
+  m_fileName = TranslatePath(pszFileName);
+
   char url[MAX_PATH];
   strncpy(url, m_fileName.c_str(), MAX_PATH);
   //check file type
@@ -234,6 +263,30 @@ void CTsReader::OnZap(void)
     m_fileReader->SetFilePointer(0LL, FILE_END);
     usleep(100000);
   }
+}
+
+void CTsReader::SetCardSettings(CCards* cardSettings)
+{
+  m_cardSettings = cardSettings;
+}
+
+void CTsReader::SetDirectory( string& directory )
+{
+  CStdString tmp = directory;
+  //m_basePath = directory;
+  //tmp = m_basePath + m_directory + m_fileName;
+
+#ifdef _WIN32
+  if( tmp.find("smb://") != string::npos )
+  {
+    // Convert XBMC smb share name back to a real windows network share...
+    tmp.Replace("smb://","\\\\");
+    tmp.Replace("/","\\");
+  }
+#else
+  //TODO: do something useful...
+#endif
+  m_basePath = tmp;
 }
 
 #endif //TSREADER

@@ -1283,6 +1283,11 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
     if(g_bDirectTSFileRead)
     { // Timeshift buffer
+      if (g_szTimeshiftDir.length() > 0)
+      {
+        m_tsreader->SetCardSettings(&m_cCards);
+        m_tsreader->SetDirectory(g_szTimeshiftDir);
+      }
       m_tsreader->Open(timeshiftfields[2].c_str());
     }
     else
