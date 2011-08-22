@@ -1,7 +1,6 @@
 
 add_subdirectory(tests)
 
-find_package(Boost REQUIRED)
 find_package(Threads REQUIRED)
 
 add_definitions(-DTIXML_USE_STL)
@@ -35,9 +34,9 @@ target_link_libraries(updatershared
   anyoption
   tinyxml
   minizip
+  tinythread
   # TODO - Mac and Windows version
   pthread
-  /usr/lib/libboost_thread.a
 )
 
 add_executable(updater

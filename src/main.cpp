@@ -4,6 +4,8 @@
 #include "UpdateScript.h"
 #include "UpdaterOptions.h"
 
+#include "tinythread.h"
+
 #if defined(PLATFORM_WINDOWS)
   #include "UpdateDialogWin32.h"
 #elif defined(PLATFORM_MAC)
@@ -14,10 +16,13 @@
 
 #include <iostream>
 
-#include <boost/bind.hpp>
-#include <boost/thread.hpp>
-
 void setupUi(UpdateInstaller* installer);
+
+void runUpdaterThread(void* arg)
+{
+	UpdateInstaller* installer = static_cast<UpdateInstaller*>(arg);
+	installer->run();
+}
 
 int main(int argc, char** argv)
 {
@@ -49,7 +54,7 @@ int main(int argc, char** argv)
 	installer.setScript(&script);
 	installer.setWaitPid(options.waitPid);
 
-	boost::thread updaterThread(boost::bind(&UpdateInstaller::run,&installer));
+	tthread::thread updaterThread(runUpdaterThread,&installer);
 	updaterThread.join();
 
 	return 0;

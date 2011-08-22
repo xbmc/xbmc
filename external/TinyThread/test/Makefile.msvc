@@ -1,0 +1,77 @@
+#-----------------------------------------------------------------------------------------
+# Makefile for Microsoft Visual Studio C++
+# Usage: nmake /f Makefile.msvc
+#-----------------------------------------------------------------------------------------
+# Copyright (c) 2010 Marcus Geelnard
+#
+# This software is provided 'as-is', without any express or implied
+# warranty. In no event will the authors be held liable for any damages
+# arising from the use of this software.
+#
+# Permission is granted to anyone to use this software for any purpose,
+# including commercial applications, and to alter it and redistribute it
+# freely, subject to the following restrictions:
+#
+#     1. The origin of this software must not be misrepresented; you must not
+#     claim that you wrote the original software. If you use this software
+#     in a product, an acknowledgment in the product documentation would be
+#     appreciated but is not required.
+#
+#     2. Altered source versions must be plainly marked as such, and must not be
+#     misrepresented as being the original software.
+#
+#     3. This notice may not be removed or altered from any source
+#     distribution.
+#-----------------------------------------------------------------------------------------
+
+# Compiler settings
+CPP = cl
+CPPFLAGS = /nologo /W2 /O2 /c /I../source /EHsc
+LFLAGS = /nologo /EHsc
+LIBS =
+
+# Misc. system commands
+RM = del /Q
+
+# File endings
+EXE = .exe
+
+# Object files for the hello program
+HELLO_OBJS = hello.obj
+
+# Object files for the test program
+TEST_OBJS = test.obj
+
+# Object files for the hello program
+FRACAL_OBJS = fractal.obj
+
+# TinyThread++ object files
+TINYTHREAD_OBJS = tinythread.obj
+
+all: hello$(EXE) test$(EXE) fractal$(EXE)
+
+clean:
+	$(RM) hello$(EXE) test$(EXE) fractal$(EXE) $(HELLO_OBJS) $(TEST_OBJS) $(FRACAL_OBJS) $(TINYTHREAD_OBJS)
+
+
+test$(EXE): $(TEST_OBJS) $(TINYTHREAD_OBJS)
+	$(CPP) $(LFLAGS) /Fe$@ $(TEST_OBJS) $(TINYTHREAD_OBJS) $(LIBS)
+
+hello$(EXE): $(HELLO_OBJS) $(TINYTHREAD_OBJS)
+	$(CPP) $(LFLAGS) /Fe$@ $(HELLO_OBJS) $(TINYTHREAD_OBJS) $(LIBS)
+
+fractal$(EXE): $(FRACAL_OBJS) $(TINYTHREAD_OBJS)
+	$(CPP) $(LFLAGS) /Fe$@ $(FRACAL_OBJS) $(TINYTHREAD_OBJS) $(LIBS)
+
+# Dependencies
+hello.obj: hello.cpp ../source/tinythread.h
+	$(CPP) $(CPPFLAGS) hello.cpp
+
+test.obj: test.cpp ../source/tinythread.h ../source/fast_mutex.h
+	$(CPP) $(CPPFLAGS) test.cpp
+
+fractal.obj: fractal.cpp ../source/tinythread.h
+	$(CPP) $(CPPFLAGS) fractal.cpp
+
+tinythread.obj: ../source/tinythread.cpp ../source/tinythread.h
+	$(CPP) $(CPPFLAGS) ../source/tinythread.cpp
