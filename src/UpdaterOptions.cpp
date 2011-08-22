@@ -32,6 +32,56 @@ UpdateInstaller::Mode stringToMode(const std::string& modeStr)
 	}
 }
 
+void UpdaterOptions::parseOldFormatArg(const std::string& arg, std::string* key, std::string* value)
+{
+	int pos = arg.find('=');
+	if (pos != std::string::npos)
+	{
+		*key = arg.substr(0,pos);
+		*value = arg.substr(pos+1);
+	}
+}
+
+void UpdaterOptions::parseOldFormatArgs(int argc, char** argv)
+{
+	for (int i=0; i < argc; i++)
+	{
+		std::string key;
+		std::string value;
+
+		parseOldFormatArg(argv[i],&key,&value);
+
+		if (key == "CurrentDir")
+		{
+			installDir = value;
+		}
+		else if (key == "TempDir")
+		{
+			packageDir = value;
+		}
+		else if (key == "UpdateScriptFileName")
+		{
+			script = value;
+		}
+		else if (key == "AppFileName")
+		{
+			// TODO - Store app file name
+		}
+		else if (key == "PID")
+		{
+			waitPid = atoll(value.c_str());
+		}
+		else if (key == "--main")
+		{
+			mode = UpdateInstaller::Main;
+		}
+		else if (key == "--clean")
+		{
+			mode = UpdateInstaller::Cleanup;
+		}
+	}
+}
+
 void UpdaterOptions::parse(int argc, char** argv)
 {
 	AnyOption parser;
@@ -62,6 +112,14 @@ void UpdaterOptions::parse(int argc, char** argv)
 	if (parser.getValue("wait"))
 	{
 		waitPid = atoll(parser.getValue("wait"));
+	}
+	
+	if (installDir.empty())
+	{
+		// if no --install-dir argument is present, try parsing
+		// the command-line arguments in the old format (which uses
+		// a list of 'Key=Value' args)
+		parseOldFormatArgs(argc,argv);
 	}
 }
 

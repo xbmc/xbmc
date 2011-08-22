@@ -45,6 +45,7 @@ class TestUtils
 		template <class T>
 		static int runTest(class TestList<T>& tests) throw ()
 		{
+			std::string errorText;
 			try
 			{
 				T testInstance;
@@ -52,12 +53,24 @@ class TestUtils
 				{
 					tests.runTest(&testInstance,i);
 				}
-				std::cout << "Test passed" << std::endl;
-				return 0;
+			}
+			catch (const std::string& error)
+			{
+				errorText = error;
 			}
 			catch (...)
 			{
-				std::cout << "Test failed" << std::endl;
+				errorText = "Unknown exception";
+			}
+
+			if (errorText.empty())
+			{
+				std::cout << "Test passed" << std::endl;
+				return 0;
+			}
+			else
+			{
+				std::cout << "Test failed: " << errorText << std::endl;
 				return 1;
 			}
 		}

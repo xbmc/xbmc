@@ -30,5 +30,10 @@ add_executable(TestUpdateScript
 target_link_libraries(TestUpdateScript
   updatershared
 )
-
+add_executable(TestUpdaterOptions
+  TestUpdaterOptions.cpp
+)
+target_link_libraries(TestUpdaterOptions
+  updatershared
+)
   

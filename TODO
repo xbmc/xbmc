@@ -1,6 +1,7 @@
 Updater Tasks:
 
- * Set file permissions for Unix
+ * Elevation for Linux [done - needs testing]
+ * Set file permissions for Unix [done]
  * Set file permissions for Windows
  * Basic functionality for Windows
  * Basic functionality for Mac
@@ -17,8 +18,8 @@ Updater Tasks:
 
 Mendeley Desktop <= 1.0 auto-update system compatibility:
 
- * Support for MD <= 1.0 updater command-line syntax
- * Backwards compatible structure for XML file
+ * Support for MD <= 1.0 updater command-line syntax [done]
+ * Backwards compatible structure for XML file [done]
 
 Auto-update preparation tools:
 

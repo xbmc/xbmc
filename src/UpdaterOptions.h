@@ -15,5 +15,9 @@ class UpdaterOptions
 		std::string script;
 		long long waitPid;
 		std::string logFile;
+
+	private:
+		void parseOldFormatArgs(int argc, char** argv);
+		static void parseOldFormatArg(const std::string& arg, std::string* key, std::string* value);
 };
 
