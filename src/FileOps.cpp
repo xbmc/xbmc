@@ -178,7 +178,7 @@ void FileOps::createSymLink(const char* link, const char* target) throw (IOExcep
 #else
 	// symlinks are not supported under Windows (at least, not universally.
 	// Windows Vista and later do actually support symlinks)
-	throw IOException("createSymLink() not implemented");
+	LOG(Warn,"Skipping symlink creation - not implemented in Windows");
 #endif
 }
 
