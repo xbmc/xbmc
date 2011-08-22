@@ -269,9 +269,45 @@ void ProcessUtils::runElevatedMac(const std::string& executable,
 
 #ifdef PLATFORM_WINDOWS
 void ProcessUtils::runElevatedWindows(const std::string& executable,
-							const std::list<std::string>& args)
+							const std::list<std::string>& arguments)
 {
+	std::string args;
 
+	// quote process arguments
+	for (std::list<std::string>::const_iterator iter = arguments.begin();
+	     iter != arguments.end();
+	     iter++)
+	{
+		std::string arg = *iter;
+
+		if (arg.at(0) != '"' && arg.at(arg.size()-1) != '"')
+        {
+			arg.insert(0,"\"");
+			arg.append("\"");
+        }
+
+		args += arg;
+		args += " ";
+    }
+
+	SHELLEXECUTEINFO executeInfo;
+	ZeroMemory(&executeInfo,sizeof(executeInfo));
+	executeInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+	executeInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+	// request UAC elevation
+	executeInfo.lpVerb = "runas";
+	executeInfo.lpFile = executable.c_str();
+	executeInfo.lpParameters = args.c_str();
+	executeInfo.nShow = SW_SHOWNORMAL;
+
+	LOG(Info,"Attempting to execute " + executable + " with administrator priviledges");
+	if (!ShellExecuteEx(&executeInfo))
+	{
+		LOG(Error,"Failed to start with admin priviledges using ShellExecuteEx()");
+		return;
+	}
+
+	WaitForSingleObject(executeInfo.hProcess, INFINITE);
 }
 #endif
 
