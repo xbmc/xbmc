@@ -66,6 +66,9 @@ void CRenderSystemGL::CheckOpenGLQuirks()
     }
   }
 #endif
+  if (m_RenderVendor.ToLower() == "nouveau")
+    m_renderQuirks |= RENDER_QUIRKS_YV12_PREFERED;
+
   if (m_RenderVendor.Equals("Tungsten Graphics, Inc.")
   ||  m_RenderVendor.Equals("Tungsten Graphics, Inc"))
   {

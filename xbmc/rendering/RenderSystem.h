@@ -57,6 +57,7 @@ enum
 enum
 {
   RENDER_QUIRKS_MAJORMEMLEAK_OVERLAYRENDERER = 1 << 0,
+  RENDER_QUIRKS_YV12_PREFERED                = 1 << 1,
 };
 
 class CRenderSystemBase
