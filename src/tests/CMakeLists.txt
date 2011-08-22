@@ -1,14 +1,18 @@
 
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
+
+# Create helper binaries for unit tests
 add_executable(oldapp
   old_app.cpp
 )
-
 add_executable(newapp
   new_app.cpp
 )
 
+# Install data files required by unit tests
 set(TEST_FILES
   file_list.xml
+  v2_file_list.xml
   test-update.rb
 )
 
@@ -19,3 +23,12 @@ foreach(TEST_FILE ${TEST_FILES})
   )
 endforeach()
 
+# Add unit test binaries
+add_executable(TestUpdateScript
+  TestUpdateScript.cpp
+)
+target_link_libraries(TestUpdateScript
+  updatershared
+)
+
+  

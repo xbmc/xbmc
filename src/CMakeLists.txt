@@ -14,7 +14,6 @@ set (SOURCES
   UpdateInstaller.cpp
   UpdateScript.cpp
   UpdaterOptions.cpp
-  main.cpp
 )
 
 set (HEADERS
@@ -27,18 +26,26 @@ set (HEADERS
   UpdaterOptions.h
 )
 
-add_executable(updater
+add_library(updatershared
   ${SOURCES}
   ${HEADERS}
 )
 
-target_link_libraries(updater
+target_link_libraries(updatershared
   anyoption
   tinyxml
   minizip
   # TODO - Mac and Windows version
   pthread
   /usr/lib/libboost_thread.a
+)
+
+add_executable(updater
+  main.cpp
+)
+
+target_link_libraries(updater
+  updatershared
 )
 
 install(TARGETS updater RUNTIME DESTINATION bin)

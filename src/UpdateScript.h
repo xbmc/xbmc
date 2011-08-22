@@ -16,6 +16,14 @@ class UpdateScriptPackage
 		std::string sha1;
 		std::string source;
 		int size;
+
+		bool operator==(const UpdateScriptPackage& other) const
+		{
+			return name == other.name &&
+			       sha1 == other.sha1 &&
+			       source == other.source &&
+			       size == other.size;
+		}
 };
 
 class UpdateScriptFile
@@ -29,6 +37,14 @@ class UpdateScriptFile
 		std::string package;
 		int permissions;
 		std::string linkTarget;
+
+		bool operator==(const UpdateScriptFile& other) const
+		{
+			return path == other.path &&
+			       package == other.package &&
+			       permissions == other.permissions &&
+			       linkTarget == other.linkTarget;
+		}
 };
 
 class UpdateScript
@@ -45,6 +61,7 @@ class UpdateScript
 		const std::vector<std::string>& filesToUninstall() const;
 
 	private:
+		void parseUpdate(const TiXmlElement* element);
 		UpdateScriptFile parseFile(const TiXmlElement* element);
 		UpdateScriptPackage parsePackage(const TiXmlElement* element);
 

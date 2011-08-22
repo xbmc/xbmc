@@ -19,55 +19,70 @@ void UpdateScript::parse(const std::string& path)
 		LOG(Info,"Loaded script from " + path);
 
 		const TiXmlElement* updateNode = document.RootElement();
-
-		const TiXmlElement* depsNode = updateNode->FirstChildElement("dependencies");
-		const TiXmlElement* depFileNode = depsNode->FirstChildElement("file");
-		while (depFileNode)
+		const TiXmlElement* v3UpdateNode = updateNode->FirstChildElement("update-v3");
+		if (v3UpdateNode)
 		{
-			m_dependencies.push_back(std::string(depFileNode->GetText()));
-			depFileNode = depFileNode->NextSiblingElement("file");
+			// this XML file is structured for backwards compatibility
+			// with Mendeley Desktop <= 1.0 clients.  The normal update XML contents
+			// are wrapped in an <update-v3> node.
+			parseUpdate(v3UpdateNode);
 		}
-		LOG(Info,"Dependency count " + intToStr(m_dependencies.size()));
-
-		const TiXmlElement* installNode = updateNode->FirstChildElement("install");
-		if (installNode)
+		else
 		{
-			const TiXmlElement* installFileNode = installNode->FirstChildElement("file");
-			while (installFileNode)
-			{
-				m_filesToInstall.push_back(parseFile(installFileNode));
-				installFileNode = installFileNode->NextSiblingElement("file");
-			}
-			LOG(Info,"Files to install count " + intToStr(m_filesToInstall.size()));
-		}
-
-		const TiXmlElement* uninstallNode = updateNode->FirstChildElement("uninstall");
-		if (uninstallNode)
-		{
-			const TiXmlElement* uninstallFileNode = uninstallNode->FirstChildElement("file");
-			while (uninstallFileNode)
-			{
-				m_filesToUninstall.push_back(uninstallFileNode->GetText());
-				uninstallFileNode = uninstallFileNode->NextSiblingElement("file");
-			}
-			LOG(Info,"Files to uninstall count " + intToStr(m_filesToUninstall.size()));
-		}
-
-		const TiXmlElement* packagesNode = updateNode->FirstChildElement("packages");
-		if (packagesNode)
-		{
-			const TiXmlElement* packageNode = packagesNode->FirstChildElement("package");
-			while (packageNode)
-			{
-				m_packages.push_back(parsePackage(packageNode));
-				packageNode = packageNode->NextSiblingElement("package");
-			}
-			LOG(Info,"Package count " + intToStr(m_packages.size()));
+			parseUpdate(updateNode);
 		}
 	}
 	else
 	{
 		LOG(Error,"Unable to load script " + path);
+	}
+}
+
+void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
+{
+	const TiXmlElement* depsNode = updateNode->FirstChildElement("dependencies");
+	const TiXmlElement* depFileNode = depsNode->FirstChildElement("file");
+	while (depFileNode)
+	{
+		m_dependencies.push_back(std::string(depFileNode->GetText()));
+		depFileNode = depFileNode->NextSiblingElement("file");
+	}
+	LOG(Info,"Dependency count " + intToStr(m_dependencies.size()));
+
+	const TiXmlElement* installNode = updateNode->FirstChildElement("install");
+	if (installNode)
+	{
+		const TiXmlElement* installFileNode = installNode->FirstChildElement("file");
+		while (installFileNode)
+		{
+			m_filesToInstall.push_back(parseFile(installFileNode));
+			installFileNode = installFileNode->NextSiblingElement("file");
+		}
+		LOG(Info,"Files to install count " + intToStr(m_filesToInstall.size()));
+	}
+
+	const TiXmlElement* uninstallNode = updateNode->FirstChildElement("uninstall");
+	if (uninstallNode)
+	{
+		const TiXmlElement* uninstallFileNode = uninstallNode->FirstChildElement("file");
+		while (uninstallFileNode)
+		{
+			m_filesToUninstall.push_back(uninstallFileNode->GetText());
+			uninstallFileNode = uninstallFileNode->NextSiblingElement("file");
+		}
+		LOG(Info,"Files to uninstall count " + intToStr(m_filesToUninstall.size()));
+	}
+
+	const TiXmlElement* packagesNode = updateNode->FirstChildElement("packages");
+	if (packagesNode)
+	{
+		const TiXmlElement* packageNode = packagesNode->FirstChildElement("package");
+		while (packageNode)
+		{
+			m_packages.push_back(parsePackage(packageNode));
+			packageNode = packageNode->NextSiblingElement("package");
+		}
+		LOG(Info,"Package count " + intToStr(m_packages.size()));
 	}
 }
 
