@@ -92,7 +92,7 @@ void FileOps::extractFromZip(const char* zipFilePath, const char* src, const cha
 	{
 		// found a match which is now the current file
 		unzOpenCurrentFile(zipFile);
-		int chunkSize = 4096;
+		const int chunkSize = 4096;
 		char buffer[chunkSize];
 
 		std::ofstream outputFile(dest,std::ofstream::binary);

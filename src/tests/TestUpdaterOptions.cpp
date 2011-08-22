@@ -5,7 +5,7 @@
 
 void TestUpdaterOptions::testOldFormatArgs()
 {
-	int argc = 6;
+	const int argc = 6;
 	char* argv[argc];
 	argv[0] = "updater";
 	argv[1] = "CurrentDir=/path/to/app";
