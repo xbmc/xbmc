@@ -12,6 +12,6 @@
     <setting id="readgenre" type="bool" label="30009" default="false" />
     <setting id="sleeponrtspurl" type="enum" label="30010" values="0|100|200|300|400|500|600|700|800|900|1000|1200|1500|2000|2500" default="0"/>
     <setting id="userecordingsdir" type="bool" label="30011" default="true" />
-    <setting id="recordingsdir" type="folder" label="30012" default="" />
+    <setting id="recordingsdir" type="folder" option="smb" label="30012" default="" />
     <setting id="directtsfileread" type="bool" label="30013" default="true" />
 </settings>
