@@ -2,9 +2,17 @@
 
 #include "Log.h"
 #include "AnyOption/anyoption.h"
-#include <cstdlib>
+#include "Platform.h"
 
+#include <cstdlib>
 #include <iostream>
+
+#ifdef PLATFORM_WINDOWS
+long long atoll(const char* string)
+{
+	return _atoi64(string);
+}
+#endif
 
 UpdaterOptions::UpdaterOptions()
 : mode(UpdateInstaller::Setup)

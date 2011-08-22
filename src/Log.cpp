@@ -24,6 +24,16 @@ pid_t processId()
 	}
 	return currentProcessId;
 }
+#else
+DWORD currentProcessId = 0;
+DWORD processId()
+{
+	if (currentProcessId == 0)
+	{
+		currentProcessId = GetCurrentProcessId();
+	}
+	return currentProcessId;
+}
 #endif
 
 Log* Log::instance()
