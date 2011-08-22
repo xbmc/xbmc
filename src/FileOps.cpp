@@ -112,7 +112,7 @@ void FileOps::extractFromZip(const char* zipFilePath, const char* src, const cha
 		std::ofstream outputFile(dest,std::ofstream::binary);
 		if (!outputFile.good())
 		{
-			throw IOException("Unable to write to file " + std::string(src));
+			throw IOException("Unable to write to file " + std::string(dest));
 		}
 		while (true)
 		{
