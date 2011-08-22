@@ -30,7 +30,8 @@ ARFLAGS = -nologo
 RCFLAGS = /dWIN32 /r
 
 OBJS = adler32.obj compress.obj crc32.obj deflate.obj gzclose.obj gzlib.obj gzread.obj \
-       gzwrite.obj infback.obj inflate.obj inftrees.obj trees.obj uncompr.obj zutil.obj
+       gzwrite.obj infback.obj inflate.obj inftrees.obj trees.obj uncompr.obj zutil.obj \
+       inffast.obj
 OBJA =
 
 
