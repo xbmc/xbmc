@@ -69,18 +69,17 @@ void CRenderSystemGL::CheckOpenGLQuirks()
   if (m_RenderVendor.Equals("Tungsten Graphics, Inc.")
   ||  m_RenderVendor.Equals("Tungsten Graphics, Inc"))
   {
-	unsigned major, minor, micro;
-	if(sscanf(m_RenderVersion.c_str(), "%*s Mesa %u.%u.%u", &major, &minor, &micro) == 3)
-	{
+    unsigned major, minor, micro;
+    if (sscanf(m_RenderVersion.c_str(), "%*s Mesa %u.%u.%u", &major, &minor, &micro) == 3)
+    {
 
-	  if((major  < 7)
-	  || (major == 7 && minor  < 7)
-	  || (major == 7 && minor == 7 && micro < 1))
-		m_renderQuirks |= RENDER_QUIRKS_MAJORMEMLEAK_OVERLAYRENDERER;
-
-	}
-	else
-	  CLog::Log(LOGNOTICE, "CRenderSystemGL::CheckOpenGLQuirks - unable to parse mesa version string");
+      if((major  < 7)
+      || (major == 7 && minor  < 7)
+      || (major == 7 && minor == 7 && micro < 1))
+        m_renderQuirks |= RENDER_QUIRKS_MAJORMEMLEAK_OVERLAYRENDERER;
+    }
+    else
+      CLog::Log(LOGNOTICE, "CRenderSystemGL::CheckOpenGLQuirks - unable to parse mesa version string");
 
     if(m_RenderRenderer.Find("Poulsbo") >= 0)
       m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
