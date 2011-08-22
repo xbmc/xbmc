@@ -310,7 +310,7 @@ int ProcessUtils::runAsyncUnix(const std::string& executable,
 void ProcessUtils::runAsyncWindows(const std::string& executable,
 						const std::list<std::string>& args)
 {
-	std::string commandLine;
+	std::string commandLine = executable;
 	for (std::list<std::string>::const_iterator iter = args.begin(); iter != args.end(); iter++)
 	{
 		if (!commandLine.empty())

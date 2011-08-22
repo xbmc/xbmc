@@ -3,6 +3,7 @@
 #include "Log.h"
 #include "AnyOption/anyoption.h"
 #include "Platform.h"
+#include "StringUtils.h"
 
 #include <cstdlib>
 #include <iostream>
