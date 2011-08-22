@@ -43,6 +43,15 @@ int ProcessUtils::runSyncUnix(const std::string& executable,
 }
 #endif
 
+#ifdef PLATFORM_WINDOWS
+int ProcessUtils::runSyncWindows(const std::string& executable,
+		                         const std::list<std::string>& args)
+{
+	// TODO - Implement me
+	return 0;
+}
+#endif
+
 void ProcessUtils::runAsync(const std::string& executable,
 		      const std::list<std::string>& args)
 {
@@ -79,7 +88,7 @@ bool ProcessUtils::waitForProcess(long long pid)
 
 	if (!(hProc = OpenProcess(SYNCHRONIZE, FALSE, static_cast<DWORD>(pid))))
 	{
-		LOG(Error,"Unable to get process handle for pid" + intToStr(pid) + "last error" + intToStr(GetLastError()));
+		LOG(Error,"Unable to get process handle for pid " + intToStr(pid) + " last error " + intToStr(GetLastError()));
 		return false;
 	}
 
@@ -88,7 +97,7 @@ bool ProcessUtils::waitForProcess(long long pid)
 
 	if (dwRet == WAIT_FAILED)
 	{
-		debug_logger(m_debugLog) << "WaitForSingleObject failed with error" << GetLastError();
+		LOG(Error,"WaitForSingleObject failed with error " + intToStr(GetLastError()));
 	}
 
 	return (dwRet == WAIT_OBJECT_0);

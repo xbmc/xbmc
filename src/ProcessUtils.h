@@ -33,5 +33,7 @@ class ProcessUtils
 		                            const std::list<std::string>& args);
 		static int runSyncUnix(const std::string& executable,
 		                        const std::list<std::string>& args);
+		static int runSyncWindows(const std::string& executable,
+		                        const std::list<std::string>& args);
 };
 

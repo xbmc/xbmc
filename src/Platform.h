@@ -6,6 +6,7 @@
 
 #ifdef WIN32
  #define PLATFORM_WINDOWS
+ #include <windows.h>
 #endif
 
 #ifdef __APPLE__
