@@ -1224,58 +1224,56 @@ bool CProcessor::Render(const RECT &src, const RECT &dst, IDirect3DSurface9* tar
   if(m_sample.empty())
     return false;
 
-  /* add a delay given number of forward references */
-  time -= m_caps.NumForwardRefSamples * 2;
+  // MinTime and MaxTime are the first and last samples to feed the processor.
+  // MinTime is also the first sample to keep.
+  REFERENCE_TIME MinTime = time - m_caps.NumBackwardRefSamples*2;
+  REFERENCE_TIME MaxTime = time + m_caps.NumForwardRefSamples*2;
 
-  /* find oldest needed frame */
   SSamples::iterator it = m_sample.begin();
-  for(; it != m_sample.end(); it++)
+  while (it != m_sample.end())
   {
-    if(it->Start >= time - m_caps.NumBackwardRefSamples * 2)
-      break;
+    if (it->Start < MinTime)
+    {
+      SAFE_RELEASE(it->SrcSurface);
+      it = m_sample.erase(it);
+    }
+    else
+      it++;
   }
-
-  if(it == m_sample.end())
-  {
-    CLog::Log(LOGERROR, "DXVA - failed to find image, all images newer or no images");
-    return false;
-  }
-
-  /* erase anything older than this */
-  for(SSamples::iterator it2 = m_sample.begin(); it2 != it; it2++)
-    SAFE_RELEASE(it2->SrcSurface);
-  it = m_sample.erase(m_sample.begin(), it);
-
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
 
+  // How to prepare the samples array for VideoProcessBlt
+  // - always provide current picture + the number of forward and backward references required by the current processor.
+  // - provide the surfaces in the array in increasing temporal order
+  // - at the start of playback, there may not be enough samples available. Use SampleFormat.SampleFormat = DXVA2_SampleUnknown for the missing samples.
+
   int count = 1 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
   int valid = 0;
-
   auto_aptr<DXVA2_VideoSample> samp(new DXVA2_VideoSample[count]);
-  for(; it != m_sample.end() && valid < count; it++, valid++)
+
+  for (int i = 0; i < count; i++)
+    samp[i].SampleFormat.SampleFormat = DXVA2_SampleUnknown;
+
+  for(it = m_sample.begin(); it != m_sample.end() && valid < count; it++)
   {
-    DXVA2_VideoSample& vs = samp[valid];
-    vs = *it;
-    vs.SrcRect = src;
-    vs.DstRect = dst;
-    if(vs.End == 0)
-      vs.End = vs.Start + 2;
-    CWinRenderer::CropSource(vs.SrcRect, vs.DstRect, desc);
+    if (it->Start <= MaxTime)
+    {
+      DXVA2_VideoSample& vs = samp[(it->Start - MinTime) / 2];
+      vs = *it;
+      vs.SrcRect = src;
+      vs.DstRect = dst;
+      if(vs.End == 0)
+        vs.End = vs.Start + 2;
+      CWinRenderer::CropSource(vs.SrcRect, vs.DstRect, desc);
+      valid++;
+    }
   }
 
-  if(time >= samp[valid-1].End)
-  {
-    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %l64d is after last sample %l64d", time, samp[valid-1].End);
-    time = samp[valid-1].Start;
-  }
-  
-  if(time < samp[0].Start)
-  {
-    CLog::Log(LOGWARNING, "CProcessor::Render - requested time %l64d is before first sample %l64d", time, samp[0].Start);
-    time = samp[0].Start;
-  }  
+  // The D3D debug runtime complains about DXVA2_SampleUnknown surfaces but this is recommended in the dxva processor documentation.
+  if(valid < count)
+    CLog::Log(LOGWARNING, __FUNCTION__" - did not find all required samples.");
 
   DXVA2_VideoProcessBltParams blt = {};
   blt.TargetFrame = time;
@@ -1306,7 +1304,7 @@ bool CProcessor::Render(const RECT &src, const RECT &dst, IDirect3DSurface9* tar
   float verts[2][3]= {};
   g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 1, verts, 3*sizeof(float));
 
-  CHECK(m_process->VideoProcessBlt(target, &blt, samp.get(), valid, NULL));
+  CHECK(m_process->VideoProcessBlt(target, &blt, samp.get(), count, NULL));
   return true;
 }
 
