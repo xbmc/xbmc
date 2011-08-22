@@ -86,5 +86,6 @@
 		<include>OptionsMenu</include>
 		<include>MediaCount</include>
 		<include>MusicNowPlayingIndicators</include>
+		<include>CommonSortLetters</include>
 	</controls>
 </window>

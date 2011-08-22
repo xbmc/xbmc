@@ -1066,8 +1066,8 @@
 			<posx>990</posx>
 			<posy>660</posy>
 			<visible>Container.Scrolling</visible>
-			<animation effect="slide" time="500" tween="circle" easing="out" start="0,100" end="0,0">Visible</animation>
-			<animation effect="slide" time="500" tween="circle" easing="in" start="0,0" end="0,100">Hidden</animation>
+			<animation effect="slide" time="300" tween="circle" easing="out" start="0,100" end="0,0">Visible</animation>
+			<animation effect="slide" time="300" tween="circle" easing="in" start="0,0" end="0,100">Hidden</animation>
 			<control type="image">
 				<description>Panel background</description>
 				<width>120</width>
@@ -3299,7 +3299,7 @@
 	<include name="MusicNowPlayingDetails">
 		<!-- generic -->
 		<control type="group">
-			<visible>!Window.IsActive(0)</visible>			
+			<visible>!Window.IsActive(0)</visible>
 			<control type="group">
 				<description>Current cover</description>
 				<control type="image">
@@ -3378,7 +3378,7 @@
 		</control>
 		<!-- home -->
 		<control type="group">
-			<visible>Window.IsActive(0)</visible>			
+			<visible>Window.IsActive(0)</visible>
 			<control type="group">
 				<description>Current cover</description>
 				<control type="image">

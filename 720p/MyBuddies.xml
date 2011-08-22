@@ -1,7 +1,7 @@
+<?xml version="1.0"?>
 <window id="2700">
 	<defaultcontrol>3012</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
-
 	<controls>
 		<control type="label" id="1">
 			<description>XBMC label</description>
@@ -10,7 +10,6 @@
 			<align>right</align>
 			<label>9</label>
 		</control>
-
 		<control type="label" id="1">
 			<description>description label</description>
 			<posx>207</posx>
@@ -18,11 +17,9 @@
 			<align>left</align>
 			<label>10509</label>
 		</control>
-
 		<control type="group">
 			<posx>278</posx>
 			<posy>98</posy>
-
 			<control type="button" id="3080">
 				<description>friends tab</description>
 				<posx>0</posx>
@@ -33,7 +30,6 @@
 				<align>center</align>
 				<aligny>center</aligny>
 			</control>
-
 			<control type="button" id="3081">
 				<description>games tab</description>
 				<posx>83</posx>
@@ -44,7 +40,6 @@
 				<align>center</align>
 				<aligny>center</aligny>
 			</control>
-
 			<control type="button" id="3082">
 				<description>arenas tab</description>
 				<posx>166</posx>
@@ -55,7 +50,6 @@
 				<align>center</align>
 				<aligny>center</aligny>
 			</control>
-
 			<control type="button" id="3083">
 				<description>chat tab</description>
 				<posx>249</posx>
@@ -67,11 +61,9 @@
 				<aligny>center</aligny>
 			</control>
 		</control>
-
 		<control type="group">
 			<posx>20</posx>
 			<posy>-20</posy>
-
 			<control type="button" id="3012">
 				<description>Mode Button</description>
 				<posx>0</posx>
@@ -81,7 +73,6 @@
 				<onup>3015</onup>
 				<ondown>3013</ondown>
 			</control>
-
 			<control type="button" id="3013">
 				<description>Join (Friends)</description>
 				<posx>0</posx>
@@ -91,7 +82,6 @@
 				<onup>3012</onup>
 				<ondown>3016</ondown>
 			</control>
-
 			<control type="button" id="3016">
 				<description>Speex (Friends)</description>
 				<posx>0</posx>
@@ -101,7 +91,6 @@
 				<onup>3013</onup>
 				<ondown>3014</ondown>
 			</control>
-
 			<control type="button" id="3014">
 				<description>Invite (Friends)</description>
 				<posx>0</posx>
@@ -111,7 +100,6 @@
 				<onup>3016</onup>
 				<ondown>3015</ondown>
 			</control>
-
 			<control type="button" id="3015">
 				<description>Remove (Friends)</description>
 				<posx>0</posx>
@@ -121,7 +109,6 @@
 				<onup>3014</onup>
 				<ondown>3012</ondown>
 			</control>
-
 			<control type="button" id="3033">
 				<description>Play (Arenas)</description>
 				<posx>0</posx>
@@ -131,7 +118,6 @@
 				<onup>3012</onup>
 				<ondown>3035</ondown>
 			</control>
-
 			<control type="button" id="3035">
 				<description>Host (Arenas)</description>
 				<posx>0</posx>
@@ -141,7 +127,6 @@
 				<onup>3033</onup>
 				<ondown>3034</ondown>
 			</control>
-
 			<control type="button" id="3034">
 				<description>Add (Arenas)</description>
 				<posx>0</posx>
@@ -151,7 +136,6 @@
 				<onup>3035</onup>
 				<ondown>3012</ondown>
 			</control>
-
 			<control type="button" id="3036">
 				<description>Keyboard (chat)</description>
 				<posx>0</posx>
@@ -162,7 +146,6 @@
 				<ondown>3012</ondown>
 			</control>
 		</control>
-
 		<control type="listcontrolex" id="3031">
 			<description>Arena List</description>
 			<posx>190</posx>
@@ -178,7 +161,6 @@
 			<animation effect="fade" time="200" delay="200">WindowOpen</animation>
 			<animation effect="fade" time="100">WindowClose</animation>
 		</control>
-
 		<control type="console" id="3074">
 			<description>Console control</description>
 			<posx>239</posx>
@@ -198,7 +180,6 @@
 			<onup>3074</onup>
 			<ondown>3074</ondown>
 		</control>
-
 		<control type="label" id="3052">
 			<description>Arena Name</description>
 			<posx>275</posx>
@@ -207,7 +188,6 @@
 			<label>-</label>
 			<align>center</align>
 		</control>
-
 		<control type="edit" id="3075">
 			<description>Edit control</description>
 			<posx>239</posx>
@@ -215,7 +195,6 @@
 			<width>390</width>
 			<label>-</label>
 		</control>
-
 		<control type="group">
 			<control type="image" id="3064">
 				<description>My avatar icon</description>
@@ -226,7 +205,6 @@
 				<colorkey>FFFF00FF</colorkey>
 				<colordiffuse>BBFFFFFF</colordiffuse>
 			</control>
-
 			<control type="button" id="3051">
 				<description>Username</description>
 				<posx>38</posx>
@@ -237,7 +215,6 @@
 				<texturefocus>-</texturefocus>
 				<texturenofocus>-</texturenofocus>
 			</control>
-
 			<control type="label" id="3073">
 				<description>Player Count</description>
 				<posx>38</posx>
@@ -247,7 +224,6 @@
 				<label>-</label>
 			</control>
 		</control>
-
 		<control type="image" id="3060">
 			<description>Buddy (offline) icon</description>
 			<posx>288</posx>
@@ -259,7 +235,6 @@
 			<animation effect="fade" time="200" delay="200">WindowOpen</animation>
 			<animation effect="fade" time="100">WindowClose</animation>
 		</control>
-
 		<control type="image" id="3061">
 			<description>Buddy (online) icon</description>
 			<posx>288</posx>
@@ -271,7 +246,6 @@
 			<animation effect="fade" time="200" delay="200">WindowOpen</animation>
 			<animation effect="fade" time="100">WindowClose</animation>
 		</control>
-
 		<control type="image" id="3062">
 			<description>Opponent icon</description>
 			<posx>288</posx>
@@ -283,7 +257,6 @@
 			<animation effect="fade" time="200" delay="200">WindowOpen</animation>
 			<animation effect="fade" time="100">WindowClose</animation>
 		</control>
-
 		<control type="image" id="3063">
 			<description>Arena icon</description>
 			<posx>288</posx>
@@ -295,7 +268,6 @@
 			<animation effect="fade" time="200" delay="200">WindowOpen</animation>
 			<animation effect="fade" time="100">WindowClose</animation>
 		</control>
-
 		<control type="fadelabel" id="3070">
 			<description>Buddy Name</description>
 			<posx>368</posx>
@@ -305,7 +277,6 @@
 			<animation effect="fade" time="200" delay="200">WindowOpen</animation>
 			<animation effect="fade" time="100">WindowClose</animation>
 		</control>
-
 		<control type="fadelabel" id="3071">
 			<description>Buddy Status</description>
 			<posx>368</posx>
@@ -315,7 +286,6 @@
 			<animation effect="fade" time="200" delay="200">WindowOpen</animation>
 			<animation effect="fade" time="100">WindowClose</animation>
 		</control>
-
 		<control type="label" id="3072">
 			<description>Buddy Invitation Status</description>
 			<posx>360</posx>
@@ -325,6 +295,5 @@
 			<animation effect="fade" time="200" delay="200">WindowOpen</animation>
 			<animation effect="fade" time="100">WindowClose</animation>
 		</control>
-
 	</controls>
 </window>

@@ -1,65 +1,60 @@
-﻿<window id="109">
-  <defaultcontrol always="true">15</defaultcontrol>
-  <allowoverlay>no</allowoverlay>
-  <zorder>1</zorder>
-    
-   <coordinates>
-    <system>1</system>
-    <posx>0</posx>
-    <posy>0</posy>
-  </coordinates>
-  
-  <include>DialogFade</include>
-    
-  <controls>
-    <include>DialogFadeBG</include>
-
-    <control type="group">
-      <posx>177</posx>
-      <posy>82</posy>
-      <control type="image">
-        <description>Background Image</description>
-        <posx>0</posx>
-        <posy>0</posy>
-        <width>926</width>
-        <height>556</height>
-        <texture>Keyboard.png</texture>
-      </control>
-      <control type="label" id="1">
-        <description>Heading Label</description>
-        <posx>0</posx>
-        <posy>30</posy>
-        <width>926</width>
-        <align>center</align>
-        <label>$LOCALIZE[12323]</label>
-        <font>TitleCapsFont</font>
-      </control>
-    </control>
-  
-    <control type="group">
-      <posx>0</posx>
-      <posy>0</posy>
-      <control type="label" id="4">
-        <description>Edit</description>
+﻿<?xml version="1.0"?>
+<window id="109">
+	<defaultcontrol always="true">15</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<zorder>1</zorder>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<include>DialogFade</include>
+	<controls>
+		<include>DialogFadeBG</include>
+		<control type="group">
+			<posx>177</posx>
+			<posy>82</posy>
+			<control type="image">
+				<description>Background Image</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>926</width>
+				<height>556</height>
+				<texture>Keyboard.png</texture>
+			</control>
+			<control type="label" id="1">
+				<description>Heading Label</description>
+				<posx>0</posx>
+				<posy>30</posy>
+				<width>926</width>
+				<align>center</align>
+				<label>$LOCALIZE[12323]</label>
+				<font>TitleCapsFont</font>
+			</control>
+		</control>
+		<control type="group">
+			<posx>0</posx>
+			<posy>0</posy>
+			<control type="label" id="4">
+				<description>Edit</description>
 				<posx>360</posx>
 				<posy>210</posy>
 				<width>570</width>
 				<height>30</height>
-        <label>$LOCALIZE[12323]</label>
-        <font>LargeDefaultFont</font>
+				<label>$LOCALIZE[12323]</label>
+				<font>LargeDefaultFont</font>
 				<textcolor>Focused</textcolor>
 				<disabledcolor>Unfocused</disabledcolor>
-        <align>center</align>
-        <aligny>center</aligny>
-      </control>
-
+				<align>center</align>
+				<aligny>center</aligny>
+			</control>
 			<control type="button" id="20">
 				<description>Previous button</description>
 				<posx>213</posx>
 				<posy>254</posy>
 				<width>165</width>
 				<height>134</height>
-				<hitrect x="259" y="293" w="71" h="46" />
+				<hitrect x="259" y="293" w="71" h="46"/>
 				<font>XLargeDefaultFont</font>
 				<focusedcolor>00FFFFFF</focusedcolor>
 				<label>&lt;</label>
@@ -79,7 +74,7 @@
 				<posy>249</posy>
 				<width>132</width>
 				<height>132</height>
-				<hitrect x="335" y="293" w="56" h="46" />
+				<hitrect x="335" y="293" w="56" h="46"/>
 				<onleft>20</onleft>
 				<onright>12</onright>
 				<onup>21</onup>
@@ -98,7 +93,7 @@
 				<posy>249</posy>
 				<width>132</width>
 				<height>132</height>
-				<hitrect x="397" y="293" w="56" h="46" />
+				<hitrect x="397" y="293" w="56" h="46"/>
 				<onleft>11</onleft>
 				<onright>13</onright>
 				<onup>21</onup>
@@ -117,7 +112,7 @@
 				<posy>249</posy>
 				<width>132</width>
 				<height>132</height>
-				<hitrect x="459" y="293" w="56" h="46" />
+				<hitrect x="459" y="293" w="56" h="46"/>
 				<onleft>12</onleft>
 				<onright>14</onright>
 				<onup>21</onup>
@@ -136,7 +131,7 @@
 				<posy>249</posy>
 				<width>132</width>
 				<height>132</height>
-				<hitrect x="520" y="293" w="56" h="46" />
+				<hitrect x="520" y="293" w="56" h="46"/>
 				<onleft>13</onleft>
 				<onright>15</onright>
 				<onup>21</onup>
@@ -155,7 +150,7 @@
 				<posy>249</posy>
 				<width>132</width>
 				<height>132</height>
-				<hitrect x="582" y="293" w="56" h="46" />
+				<hitrect x="582" y="293" w="56" h="46"/>
 				<onleft>14</onleft>
 				<onright>16</onright>
 				<onup>21</onup>
@@ -174,7 +169,7 @@
 				<posy>249</posy>
 				<width>132</width>
 				<height>132</height>
-				<hitrect x="644" y="293" w="56" h="46" />
+				<hitrect x="644" y="293" w="56" h="46"/>
 				<onleft>15</onleft>
 				<onright>17</onright>
 				<onup>21</onup>
@@ -193,7 +188,7 @@
 				<posy>249</posy>
 				<width>132</width>
 				<height>132</height>
-				<hitrect x="705" y="293" w="56" h="46" />
+				<hitrect x="705" y="293" w="56" h="46"/>
 				<onleft>16</onleft>
 				<onright>18</onright>
 				<onup>21</onup>
@@ -212,7 +207,7 @@
 				<posy>249</posy>
 				<width>132</width>
 				<height>132</height>
-				<hitrect x="767" y="293" w="56" h="46" />
+				<hitrect x="767" y="293" w="56" h="46"/>
 				<onleft>17</onleft>
 				<onright>19</onright>
 				<onup>21</onup>
@@ -231,7 +226,7 @@
 				<posy>249</posy>
 				<width>132</width>
 				<height>132</height>
-				<hitrect x="828" y="293" w="56" h="46" />
+				<hitrect x="828" y="293" w="56" h="46"/>
 				<onleft>18</onleft>
 				<onright>10</onright>
 				<onup>21</onup>
@@ -250,7 +245,7 @@
 				<posy>249</posy>
 				<width>132</width>
 				<height>132</height>
-				<hitrect x="890" y="293" w="56" h="46" />
+				<hitrect x="890" y="293" w="56" h="46"/>
 				<onleft>19</onleft>
 				<onright>22</onright>
 				<onup>21</onup>
@@ -269,7 +264,7 @@
 				<posy>254</posy>
 				<width>165</width>
 				<height>134</height>
-				<hitrect x="952" y="293" w="71" h="46" />
+				<hitrect x="952" y="293" w="71" h="46"/>
 				<label>&gt;</label>
 				<font>XLargeDefaultFont</font>
 				<focusedcolor>00FFFFFF</focusedcolor>
@@ -283,14 +278,13 @@
 				<aligny>top</aligny>
 				<textoffsety>40</textoffsety>
 			</control>
-			
 			<control type="button" id="23">
 				<description>BACKSPACE button</description>
 				<posx>694</posx>
 				<posy>460</posy>
 				<width>230</width>
 				<height>136</height>
-				<hitrect x="734" y="503" w="148" h="47" />
+				<hitrect x="734" y="503" w="148" h="47"/>
 				<font>LargeDefaultFont</font>
 				<focusedcolor>00FFFFFF</focusedcolor>
 				<label>$LOCALIZE[20181]</label>
@@ -309,7 +303,7 @@
 				<posy>460</posy>
 				<width>226</width>
 				<height>138</height>
-				<hitrect x="889" y="503" w="134" h="47" />
+				<hitrect x="889" y="503" w="134" h="47"/>
 				<font>LargeDefaultCapsFont</font>
 				<focusedcolor>00FFFFFF</focusedcolor>
 				<label>$LOCALIZE[20177]</label>
@@ -322,7 +316,6 @@
 				<align>center</align>
 				<aligny>center</aligny>
 			</control>
-
 			<!-- Disabled Buttons -->
 			<control type="group">
 				<animation effect="fade" end="30" time="0">WindowOpen</animation>
@@ -333,7 +326,7 @@
 					<posy>342</posy>
 					<width>27</width>
 					<height>27</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>73</onleft>
 					<onright>65</onright>
 					<onup>305</onup>
@@ -359,7 +352,7 @@
 					<posy>288</posy>
 					<width>161</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>303</onleft>
 					<onright>66</onright>
 					<onup>50</onup>
@@ -378,7 +371,7 @@
 					<posy>288</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>65</onleft>
 					<onright>67</onright>
 					<onup>51</onup>
@@ -397,7 +390,7 @@
 					<posy>288</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>66</onleft>
 					<onright>68</onright>
 					<onup>52</onup>
@@ -416,7 +409,7 @@
 					<posy>288</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>67</onleft>
 					<onright>69</onright>
 					<onup>53</onup>
@@ -435,7 +428,7 @@
 					<posy>288</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>68</onleft>
 					<onright>70</onright>
 					<onup>55</onup>
@@ -454,7 +447,7 @@
 					<posy>288</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>69</onleft>
 					<onright>71</onright>
 					<onup>56</onup>
@@ -473,7 +466,7 @@
 					<posy>288</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>70</onleft>
 					<onright>72</onright>
 					<onup>57</onup>
@@ -492,7 +485,7 @@
 					<posy>288</posy>
 					<width>163</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>71</onleft>
 					<onright>73</onright>
 					<onup>48</onup>
@@ -511,7 +504,7 @@
 					<posy>288</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>72</onleft>
 					<onright>303</onright>
 					<onup>306</onup>
@@ -524,7 +517,6 @@
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
-
 				<!-- Row 3 -->
 				<control type="togglebutton">
 					<description>SHIFT button</description>
@@ -532,7 +524,7 @@
 					<posy>395</posy>
 					<width>27</width>
 					<height>27</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>82</onleft>
 					<onright>74</onright>
 					<onup>303</onup>
@@ -557,7 +549,7 @@
 					<posy>341</posy>
 					<width>161</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>302</onleft>
 					<onright>75</onright>
 					<onup>65</onup>
@@ -576,7 +568,7 @@
 					<posy>341</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>74</onleft>
 					<onright>76</onright>
 					<onup>66</onup>
@@ -595,7 +587,7 @@
 					<posy>341</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>75</onleft>
 					<onright>77</onright>
 					<onup>67</onup>
@@ -614,7 +606,7 @@
 					<posy>341</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>76</onleft>
 					<onright>78</onright>
 					<onup>68</onup>
@@ -633,7 +625,7 @@
 					<posy>341</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>77</onleft>
 					<onright>79</onright>
 					<onup>69</onup>
@@ -652,7 +644,7 @@
 					<posy>341</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>78</onleft>
 					<onright>80</onright>
 					<onup>70</onup>
@@ -671,7 +663,7 @@
 					<posy>341</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>79</onleft>
 					<onright>81</onright>
 					<onup>71</onup>
@@ -690,7 +682,7 @@
 					<posy>341</posy>
 					<width>163</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>80</onleft>
 					<onright>82</onright>
 					<onup>72</onup>
@@ -709,7 +701,7 @@
 					<posy>341</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>81</onleft>
 					<onright>302</onright>
 					<onup>73</onup>
@@ -722,7 +714,6 @@
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
-
 				<!-- Row 4 -->
 				<control type="togglebutton">
 					<description>Symbols button</description>
@@ -730,7 +721,7 @@
 					<posy>447</posy>
 					<width>27</width>
 					<height>27</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>90</onleft>
 					<onright>83</onright>
 					<onup>302</onup>
@@ -755,7 +746,7 @@
 					<posy>393</posy>
 					<width>161</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>304</onleft>
 					<onright>84</onright>
 					<onup>74</onup>
@@ -774,7 +765,7 @@
 					<posy>393</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>83</onleft>
 					<onright>85</onright>
 					<onup>75</onup>
@@ -793,7 +784,7 @@
 					<posy>393</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>84</onleft>
 					<onright>86</onright>
 					<onup>76</onup>
@@ -812,7 +803,7 @@
 					<posy>393</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>85</onleft>
 					<onright>87</onright>
 					<onup>77</onup>
@@ -831,7 +822,7 @@
 					<posy>393</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>86</onleft>
 					<onright>88</onright>
 					<onup>78</onup>
@@ -850,7 +841,7 @@
 					<posy>393</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>87</onleft>
 					<onright>89</onright>
 					<onup>79</onup>
@@ -869,7 +860,7 @@
 					<posy>393</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>88</onleft>
 					<onright>90</onright>
 					<onup>80</onup>
@@ -888,7 +879,7 @@
 					<posy>393</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<onleft>89</onleft>
 					<onright>304</onright>
 					<onup>81</onup>
@@ -907,7 +898,7 @@
 					<posy>393</posy>
 					<width>162</width>
 					<height>156</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<label>-</label>
 					<font>LargeDefaultFont</font>
 					<textcolor>Unfocused</textcolor>
@@ -916,7 +907,6 @@
 					<align>center</align>
 					<aligny>center</aligny>
 				</control>
-
 				<!-- Row 5 -->
 				<control type="button">
 					<description>IP Input button</description>
@@ -924,7 +914,7 @@
 					<posy>462</posy>
 					<width>244</width>
 					<height>136</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<font>LargeDefaultFont</font>
 					<textcolor>Unfocused</textcolor>
 					<label>$LOCALIZE[1006]</label>
@@ -943,7 +933,7 @@
 					<posy>462</posy>
 					<width>394</width>
 					<height>136</height>
-					<hitrect x="399" y="398" w="10" h="10" />
+					<hitrect x="399" y="398" w="10" h="10"/>
 					<font>LargeDefaultCapsFont</font>
 					<textcolor>Unfocused</textcolor>
 					<label>$LOCALIZE[20182]</label>
@@ -957,7 +947,6 @@
 					<aligny>center</aligny>
 				</control>
 			</control>
-
 			<!-- Focused Items -->
 			<control type="label" id="20">
 				<description>Previous button</description>
@@ -1110,7 +1099,6 @@
 				<aligny>center</aligny>
 				<visible>Control.HasFocus(22)</visible>
 			</control>
-
 			<control type="label" id="23">
 				<description>BACKSPACE button</description>
 				<posx>694</posx>
@@ -1136,5 +1124,5 @@
 				<visible>Control.HasFocus(21)</visible>
 			</control>
 		</control>
-  </controls>
+	</controls>
 </window>

@@ -8,14 +8,7 @@
 		<include>Background</include>
 		<animation effect="fade" end="40" time="300" delay="0" condition="true">Conditional</animation>
 		</control>
-		<!-- -->
-		<!--<include>List</include>
-		<include>MusicSongs</include>-->
 		<include>InfoList</include>
-		<!-- PanelStream deactivated for the moment -->
-		<!--<include>PanelStream</include>-->
-		<!--<include>PluginStream</include>-->
-		<!-- -->
 		<control type="group">
 			<posy>9</posy>
 			<include>TopOverlayTitlePos</include>
@@ -89,34 +82,6 @@
 				</control>
 			</control>
 		</control>
-		<!--<control type="group">
-			<include>TopOverlayTitlePos</include>
-			<visible>!Control.IsVisible(53) | !Container(53).Row(0)</visible>
-			<control type="group">
-				<visible>!IsEmpty(Container.SecondTitle)</visible>
-				<include>TopOverlaySecondTitleSlide</include>
-				<include>TopOverlaySecondTitleAreaBG</include>
-				<control type="label">
-					<description>Second title</description>
-					<visible>!IsEmpty(Container.SecondTitle)</visible>
-					<label>$INFO[Container.SecondTitle]</label>
-					<include>TopOverlaySecondTitleAreaText</include>
-				</control>
-			</control>
-			<include>TopOverlayFirstTitleAreaBG</include>
-			<control type="label">
-				<description>Music label</description>
-				<visible>IsEmpty(Container.FirstTitle)</visible>
-				<include>TopOverlayFirstTitleAreaText</include>
-				<label>$LOCALIZE[31972]</label>
-			</control>
-			<control type="label">
-				<description>First title</description>
-				<visible>!IsEmpty(Container.FirstTitle)</visible>
-				<include>TopOverlayFirstTitleAreaText</include>
-				<label>$INFO[Container.FirstTitle]</label>
-			</control>
-		</control>-->
 		<control type="group">
 			<visible>!Control.IsVisible(53) | !Container(53).Row(0)</visible>
 			<include>Clock</include>
@@ -124,5 +89,6 @@
 		</control>
 		<include>MediaCount</include>
 		<include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>
+		<include>CommonSortLetters</include>
 	</controls>
 </window>

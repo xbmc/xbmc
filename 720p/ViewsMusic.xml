@@ -1,6 +1,6 @@
+<?xml version="1.0"?>
 <includes>
 	<!-- MusicAlbums -->
-	
 	<!-- MusicSongs -->
 	<include name="MusicSongs">
 		<control type="group">
@@ -23,12 +23,6 @@
 						<bordertexture border="14">ThumbShadow.png</bordertexture>
 						<bordersize>8</bordersize>
 					</control>
-					<!--
-          <control type="image">
-            <description>Glass overlay</description>
-            <include>MusicSongsCoverOverlayDims</include>
-            <include>GlassTextureOverlay</include>
-          </control>-->
 					<control type="image">
 						<include>MusicSongsCoverRflctnDims</include>
 						<info>ListItem.Icon</info>
@@ -163,7 +157,6 @@
 		</control>
 		<control type="group">
 			<include>MusicSongsVisible</include>
-			<include>CommonSortLetters</include>
 		</control>
 	</include>
 </includes>

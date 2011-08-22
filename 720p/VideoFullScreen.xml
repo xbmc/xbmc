@@ -169,28 +169,12 @@
 						<posx>406</posx>
 						<visible>![Window.IsActive(VideoOSD) | Player.Forwarding | Player.Rewinding]</visible>
 						<include>MediaFade</include>
-						<!--><control type="image" id="1">
-							<width>170</width>
-							<height>94</height>
-							<aspectratio align="right">keep</aspectratio>
-							<info>VideoPlayer.Cover</info>
-							<visible>!Skin.HasSetting(HidePlotInVideoOSD)</visible>
-						</control>-->
 						<control type="textbox" id="1">
 							<posx>-40</posx>
 							<width>800</width>
 							<height>92</height>
 							<label>$INFO[VideoPlayer.Plot]</label>
-							<!--><visible>!Skin.HasSetting(HidePlotInVideoOSD)</visible>-->
 						</control>
-						<!--><control type="image" id="1">
-							<posx>596</posx>
-							<width>170</width>
-							<height>94</height>
-							<aspectratio align="right">keep</aspectratio>
-							<info>VideoPlayer.Cover</info>
-							<visible>Skin.HasSetting(HidePlotInVideoOSD)</visible>
-						</control>-->
 					</control>
 				</control>
 			</control>

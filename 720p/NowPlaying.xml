@@ -52,30 +52,30 @@
 				</control>
 				<control type="group">
 					<description>Info</description>
+					<visible>Player.HasMusicPlaylist</visible>
 					<posx>60</posx>
 					<posy>220</posy>
 					<control type="group">
-						<visible>Player.HasMusicPlaylist</visible>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
 						<include>NowPlayingCurrentInfo</include>
 					</control>
 					<control type="progress" id="20">
 						<description>Progress control</description>
-						<posx>129</posx>
+						<posx>136</posx>
 						<posy>162</posy>
 						<aligny>center</aligny>
 						<width>372</width>
 						<info>Player.Progress</info>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
-						<visible>Player.HasMusicPlaylist</visible>
 					</control>
 					<control type="group">
 						<posy>219</posy>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
-						<visible>Player.HasMusicPlaylist + MusicPlayer.HasNext</visible>
+						<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
+						<visible>MusicPlayer.HasNext</visible>
 						<include>NowPlayingNextInfo</include>
 					</control>
 				</control>
@@ -104,14 +104,13 @@
 					</control>
 					<control type="progress" id="21">
 						<description>Progress control</description>
-						<posx>129</posx>
+						<posx>136</posx>
 						<posy>162</posy>
 						<aligny>center</aligny>
 						<width>372</width>
 						<info>Player.Progress</info>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
-						<visible>Player.HasMusicPlaylist</visible>
 					</control>
 					<control type="group">
 						<posy>219</posy>
@@ -169,20 +168,20 @@
 					</control>
 					<control type="progress" id="22">
 						<description>Progress control</description>
-						<posx>0</posx>
+						<posx>-10</posx>
 						<posy>162</posy>
 						<aligny>center</aligny>
 						<width>372</width>
 						<info>Player.Progress</info>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
-						<visible>Player.HasMusicPlaylist</visible>
 					</control>
 					<control type="group">
 						<posy>219</posy>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
-						<visible>Player.HasMusicPlaylist + MusicPlayer.HasNext</visible>
+						<animation effect="fade" start="0" end="60" time="400" condition="true">Conditional</animation>
+						<visible>MusicPlayer.HasNext</visible>
 						<include>NowPlayingNextInfoFlipped</include>
 					</control>
 				</control>
@@ -214,14 +213,13 @@
 					</control>
 					<control type="progress" id="23">
 						<description>Progress control</description>
-						<posx>0</posx>
+						<posx>-10</posx>
 						<posy>162</posy>
 						<aligny>center</aligny>
 						<width>372</width>
 						<info>Player.Progress</info>
 						<animation effect="fade" start="0" end="100" time="1000">Visible</animation>
 						<animation effect="fade" start="100" end="0" time="1000">Hidden</animation>
-						<visible>Player.HasMusicPlaylist</visible>
 					</control>
 					<control type="group">
 						<posy>219</posy>

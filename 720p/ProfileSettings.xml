@@ -1,14 +1,11 @@
+<?xml version="1.0"?>
 <window id="130">
 	<defaultcontrol always="true">5</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
-
 	<controls>
-
 		<include>Background</include>
 		<include>HomeRightOverlay</include>
-
 		<!-- Submenu blade -->
-
 		<control type="group">
 			<posx>754</posx>
 			<posy>351</posy>
@@ -18,7 +15,6 @@
 				<posy>-351</posy>
 				<include>HomeSubMenuBlade</include>
 			</control>
-
 			<control type="radiobutton" id="4">
 				<description>default_radio_button</description>
 				<posx>70</posx>
@@ -40,7 +36,6 @@
 				<onup>-</onup>
 				<ondown>2</ondown>
 			</control>
-			
 			<control type="image">
 				<posx>75</posx>
 				<posy>43</posy>
@@ -63,9 +58,7 @@
 				<scroll>true</scroll>
 			</control>
 		</control>
-
 		<!-- Main control area -->
-		
 		<control type="image">
 			<include>SettingsCentreBladeBG</include>
 		</control>
@@ -73,13 +66,11 @@
 			<description>Submenu Background Image</description>
 			<include>SettingsCentreBlade</include>
 		</control>
-
 		<control type="group">
 			<description>Control Area</description>
 			<posx>100</posx>
 			<posy>150</posy>
 			<width>750</width>
-
 			<control type="grouplist" id="5">
 				<description>control_area</description>
 				<posx>105</posx>
@@ -136,7 +127,6 @@
 				<aligny>center</aligny>
 				<align>left</align>
 			</control>
-
 			<control type="button" id="28">
 				<description>ok button</description>
 				<posx>105</posx>
@@ -180,7 +170,6 @@
 				<label>$LOCALIZE[222]</label>
 			</control>
 		</control>
-
 		<control type="image">
 			<posx>256</posx>
 			<posy>80</posy>
@@ -198,7 +187,6 @@
 			<colordiffuse>ffffffff</colordiffuse>
 			<aspectratio>keep</aspectratio>
 		</control>
-
 		<control type="label">
 			<description>Title label</description>
 			<posx>780</posx>
@@ -221,7 +209,6 @@
 			<font>XXXLargeTitleCapsFont</font>
 			<textcolor>Focused</textcolor>
 		</control>
-
 		<control type="label" id="1001">
 			<description>profile directory label</description>
 			<posx>255</posx>
@@ -232,11 +219,8 @@
 			<font>MediumDefaultCapsFont</font>
 			<textcolor>Focused</textcolor>
 		</control>
-
 		<!-- Blades -->
-
 		<control type="group" id="1000">
-
 			<control type="image">
 				<description>Background Image Left Blade</description>
 				<posx>-620</posx>
@@ -245,16 +229,12 @@
 				<height>720</height>
 				<texture border="0,0,500,0">HomeBladeLeft.png</texture>
 			</control>
-
 		</control>
-
 		<!-- Widgets -->
-
 		<control type="group">
 			<posx>0</posx>
 			<posy>0</posy>
 			<include>Clock</include>
 		</control>
-
-  </controls>
+	</controls>
 </window>

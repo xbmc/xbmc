@@ -12,14 +12,6 @@
 				<height>470</height>
 				<include>DialogBGTexture</include>
 			</control>
-			<!--<control type="image">
-				<description>Title Background</description>
-				<posx>20</posx>
-				<posy>12</posy>
-				<width>SmartPlaylistTextWidth</width>
-				<height>50</height>
-				<texture>GlassTitleBar.png</texture>
-			</control>-->
 			<control type="label" id="1000">
 				<description>Heading</description>
 				<posx>20</posx>

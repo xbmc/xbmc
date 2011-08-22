@@ -37,31 +37,6 @@
 					<aspectratio scalediffuse="false" align="center">scale</aspectratio>
 					<texture diffuse="bigPosterMask.png" background="true">$INFO[ListItem.Thumb]</texture>
 				</control>
-				
-				<!--<control type="image">
-					<width>InfoDialogLargeThumbWidth</width>
-					<height>300</height>
-					<texture>DefaultAlbumCover.png</texture>
-					<info>ListItem.Thumb</info>
-					<aspectratio aligny="bottom">keep</aspectratio>
-					<bordertexture border="14">ThumbShadow.png</bordertexture>
-					<bordersize>8</bordersize>
-				</control>-->
-				<!--<control type="label">
-					<posy>60</posy>
-					<width>InfoDialogLargeThumbWidth</width>
-					<font>TitleCapsFont</font>
-					<include>NoThumbLabel</include>
-				</control>
-				<control type="image">
-					<posx>8</posx>
-					<posy>358</posy>
-					<width>InfoDialogLargeThumbTextWidth</width>
-					<height>350</height>
-					<texture flipy="true" diffuse="DiffuseMirror3.png">DefaultAlbumCover.png</texture>
-					<info>ListItem.Thumb</info>
-					<aspectratio aligny="top">keep</aspectratio>
-				</control>-->
 			</control>
 			<control type="group">
 				<posx>InfoDialogTitleXOffset</posx>

@@ -237,15 +237,14 @@
 		</control>
 		<control type="group">
 			<include>ListViewVisible</include>
-			<include>CommonSortLetters</include>
 		</control>
 	</include>
 	<include name="InfoList">
 		<control type="group">
 			<include>InfoListVisible</include>
 			<!-- background -->
-			<control type="group">				
-				<include>MediaViewBGOverlay</include>				
+			<control type="group">
+				<include>MediaViewBGOverlay</include>
 			</control>
 			<control type="largeimage">
 				<description>Clip background</description>
@@ -271,7 +270,7 @@
 					<onup>56</onup>
 					<ondown>56</ondown>
 					<!-- generic -->
-					<itemlayout height="45" width="530" condition="!Container.Content(Secondary) + ![Container.Content(songs) | Container.Content(albums)])">
+					<itemlayout height="45" width="530" condition="!Container.Content(Secondary) + ![Container.Content(songs) | Container.Content(albums) | Container.Content(plugincontent)])">
 						<!-- horiz separator -->
 						<control type="image">
 							<posx>0</posx>
@@ -368,7 +367,7 @@
 							<textcolor>Unfocused</textcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout height="45" width="530" condition="!Container.Content(Secondary) + ![Container.Content(songs) | Container.Content(albums)]">
+					<focusedlayout height="45" width="530" condition="!Container.Content(Secondary) + ![Container.Content(songs) | Container.Content(albums) | Container.Content(plugincontent)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -592,7 +591,7 @@
 						</control>
 					</focusedlayout>
 					<!-- albums -->
-					<itemlayout height="45" width="830" condition="Container.Content(albums)">
+					<itemlayout height="45" width="830" condition="Container.Content(albums) | [Container.Content(plugincontent) + Container.Content(artists)]">
 						<!-- horiz separator -->
 						<control type="image">
 							<posx>0</posx>
@@ -612,7 +611,7 @@
 							<textcolor>Unfocused</textcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout height="45" width="830" condition="Container.Content(albums)">
+					<focusedlayout height="45" width="830" condition="Container.Content(albums) | [Container.Content(plugincontent) + Container.Content(artists)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -798,7 +797,7 @@
 					<onleft>50</onleft>
 					<onright>9009</onright>
 					<showonepage>true</showonepage>
-					<visible>!Container.Content(albums)</visible>
+					<visible>![Container.Content(albums) | [Container.Content(plugincontent) + Container.Content(artists)]]</visible>
 				</control>
 				<!-- albums -->
 				<control type="scrollbar" id="61">
@@ -810,7 +809,7 @@
 					<onleft>50</onleft>
 					<onright>9009</onright>
 					<showonepage>true</showonepage>
-					<visible>Container.Content(albums)</visible>
+					<visible>Container.Content(albums) | [Container.Content(plugincontent) + Container.Content(artists)]</visible>
 				</control>
 			</control>
 			<!-- poster & right side -->
@@ -954,35 +953,11 @@
 								</control>
 							</control>
 						</control>
-						<!-- itunes artists -->
-						<control type="group">
-							<posx>-280</posx>
-							<posy>50</posy>
-							<visible>Container.Content(artists) + Container.Content(plugincontent)</visible>
-							<control type="group">
-								<control type="image">
-									<posy>0</posy>
-									<posx>44</posx>
-									<width>354</width>
-									<height>354</height>
-									<aspectratio align="center" aligny="top">stretch</aspectratio>
-									<texture border="13">bigPosterFrameShadow.png</texture>
-								</control>
-								<control type="image">
-									<posy>9</posy>
-									<posx>53</posx>
-									<width>334</width>
-									<height>334</height>
-									<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
-									<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-								</control>
-							</control>
-						</control>
-						<!-- Albums -->
+						<!-- Albums & itunes artists -->
 						<control type="group">
 							<posx>-185</posx>
 							<posy>50</posy>
-							<visible>Container.Content(albums)</visible>
+							<visible>Container.Content(albums) | [Container.Content(plugincontent) + Container.Content(artists)]</visible>
 							<visible>!IsEmpty(ListItem.Thumb)</visible>
 							<control type="image">
 								<posy>0</posy>
@@ -1658,10 +1633,6 @@
 					</control>
 				</control>
 			</control>
-			<!-- quick-scroll letter panel -->
-			<control type="group">
-				<include>CommonSortLetters</include>
-			</control>
 		</control>
 	</include>
 	<include name="PanelStream">
@@ -2061,37 +2032,68 @@
 						<wrapmultiline>true</wrapmultiline>
 						<font>MediumTitleFont</font>
 					</control>
-					<control type="group">
+					<control type="grouplist">
 						<posx>0</posx>
-						<posy>-10</posy>
+						<posy>40</posy>
+						<height>25</height>
+						<orientation>horizontal</orientation>
+						<itemgap>10</itemgap>
 						<control type="image">
 							<description>Star Rating</description>
 							<align>left</align>
 							<info>ListItem.StarRating</info>
 							<aspectratio>keep</aspectratio>
 							<width>80</width>
-							<height>20</height>
-							<posy>70</posy>
-							<posx>0</posx>
+							<height>25</height>
 							<colordiffuse>orange</colordiffuse>
 						</control>
 						<control type="label">
+							<description>Duration Label</description>
+							<width min="5" max="10">auto</width>
+							<font>MediumSmallTitleFont2</font>
+							<label>&#xB7;</label>
+							<textcolor>orange</textcolor>
+							<visible>!IsEmpty(ListItem.Duration)</visible>
+						</control>
+						<control type="label">
+							<description>Duration Label</description>
+							<width min="20" max="80">auto</width>
+							<font>MediumSmallTitleFont2</font>
+							<label>$INFO[ListItem.Duration]</label>
+							<textcolor>orange</textcolor>
+							<visible>!IsEmpty(ListItem.Duration)</visible>
+						</control>
+						<control type="label">
 							<description>Year Label</description>
-							<posy>95</posy>
-							<posx>0</posx>
-							<width>80</width>
+							<width min="5" max="10">auto</width>
+							<font>MediumSmallTitleFont2</font>
+							<label>&#xB7;</label>
+							<textcolor>orange</textcolor>
+							<visible>!IsEmpty(ListItem.Year)</visible>
+						</control>
+						<control type="label">
+							<description>Year Label</description>
+							<width min="20" max="80">auto</width>
 							<font>MediumSmallTitleFont2</font>
 							<label>$INFO[ListItem.Year]</label>
 							<textcolor>orange</textcolor>
+							<visible>!IsEmpty(ListItem.Year)</visible>
 						</control>
 						<control type="label">
-							<description>Duration</description>
-							<posx>0</posx>
-							<posy>125</posy>
-							<width>180</width>
+							<description>Provider Label</description>
+							<width min="5" max="10">auto</width>
+							<font>MediumSmallTitleFont2</font>
+							<label>&#xB7;</label>
+							<textcolor>orange</textcolor>
+							<visible>!IsEmpty(ListItem.Property(sourceTitle))</visible>
+						</control>
+						<control type="label">
+							<description>Provider Label</description>
+							<width min="20" max="180">auto</width>
 							<label>$INFO[ListItem.Property(sourceTitle)]</label>
 							<textcolor>orange</textcolor>
 							<font>MediumSmallTitleFont2</font>
+							<visible>!IsEmpty(ListItem.Property(sourceTitle))</visible>
 						</control>
 					</control>
 					<control type="textbox">

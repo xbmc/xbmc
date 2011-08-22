@@ -1,6 +1,5 @@
 <window id="2901">
   <defaultcontrol>217</defaultcontrol>
-
   <controls>
     <!-- OSD Controls -->
     <control type="group">

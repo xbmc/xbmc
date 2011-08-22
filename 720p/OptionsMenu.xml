@@ -72,7 +72,7 @@
 		<bordertexture border="14">ThumbShadow2.png</bordertexture>
 		<bordersize>10</bordersize>
 	</include>
-	<include name="OptionsMenuUI">		
+	<include name="OptionsMenuUI">
 		<control type="group" id="9009">
 			<include>OptionsMenuPos</include>
 			<include>OptionsMenuVisible</include>
@@ -288,7 +288,7 @@
 					<onclick>Container.SetViewMode(57)</onclick>
 					<onclick>SetFocus(57)</onclick>
 					<include>OMButtonItem</include>
-				</control>				
+				</control>
 				<control type="button" id="911">
 					<description>Pictures view button</description>
 					<visible>Control.IsVisible(57)</visible>
@@ -304,7 +304,7 @@
 					<onclick>Container.SetViewMode(56)</onclick>
 					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
-				</control>			
+				</control>
 			</control>
 			<!-- non-photos views -->
 			<control type="grouplist" id="9011">
@@ -315,7 +315,7 @@
 				<orientation>vertical</orientation>
 				<itemgap>2</itemgap>
 				<onleft>56</onleft>
-				<include>OMNoViewThumbSlide</include>				
+				<include>OMNoViewThumbSlide</include>
 				<!--<control type="button" id="911">
 					<description>List view button</description>
 					<visible>![Control.IsVisible(50) | Container.Content(Episodes) | Container.Content(TVShows) | Container.Content(Movies) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs)| Container.Content(Secondary) | Container.Content(clip) | Container.Content(plugincontent)]</visible>
@@ -372,8 +372,6 @@
 					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
 				</control>-->
-				
-				
 				<control type="button" id="957">
 					<description>Panel Stream view button</description>
 					<visible>!Control.IsVisible(52) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Window.IsVisible(501)</visible>
@@ -382,7 +380,6 @@
 					<onclick>SetFocus(52)</onclick>
 					<include>OMButtonItem</include>
 				</control>
-				
 				<!--<control type="button" id="958">
 					<description>Panel Stream view button</description>
 					<visible>!Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists) | Container.Content(Plugins)]</visible>
@@ -477,7 +474,6 @@
 					<include>OMButtonItem</include>
 				</control>
 			</control>
-			</control>
-		
+		</control>
 	</include>
 </includes>

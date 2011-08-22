@@ -53,23 +53,6 @@
 						</control>
 					</focusedlayout>
 				</control>
-				<!--><control type="button" id="5">
-					<description>Manual Button</description>
-					<posx>488</posx>
-					<width>92</width>
-					<label>$LOCALIZE[368]</label>
-					<onleft>3</onleft>
-					<include>DialogButton</include>
-				</control>-->
-				<!--<control type="label" id="2">
-					<description>Number of Files</description>
-					<posx>574</posx>
-					<posy>236</posy>
-					<width>335</width>
-					<label>-</label>
-					<align>right</align>
-					<textcolor>Unfocused</textcolor>
-				</control>-->
 			</control>
 		</control>
 	</controls>

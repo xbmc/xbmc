@@ -1054,7 +1054,7 @@
 						<include>MediaPreviewFlags</include>
 						<visible>!Container.Content(clip)</visible>
 					</control>
-				</control>			
+				</control>
 			</control>
 		</control>
 		<!-- main list -->
@@ -1337,7 +1337,6 @@
 		</control>
 		<control type="group">
 			<include>MediaPreviewVisible</include>
-			<include>CommonSortLetters</include>
 		</control>
 	</include>
 </includes>
