@@ -143,8 +143,15 @@ void UpdateInstaller::run() throw ()
 		LOG(Info,"Cleaning up temporary updater files");
 
 		ProcessUtils::waitForProcess(m_waitPid);
-		cleanup();
 
+		try
+		{
+			cleanup();
+		}
+		catch (const FileOps::IOException& ex)
+		{
+			LOG(Error,"Error cleaning up updater " + std::string(ex.what()));
+		}
 		LOG(Info,"Updater files removed");
 	}
 }
