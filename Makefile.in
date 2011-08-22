@@ -498,7 +498,7 @@ OBJSXBMC += xbmc/rendering/gl/rendering_gl.a
 endif
 ifeq (@USE_OPENGLES@,1)
 OBJSXBMC += xbmc/rendering/gles/rendering_gles.a
-OBJSXBMC += xbmc/windowing/egl/windowing_egl.aÄ
+OBJSXBMC += xbmc/windowing/egl/windowing_egl.a
 endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
