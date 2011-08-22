@@ -268,7 +268,15 @@ void UpdateInstaller::removeBackups()
 bool UpdateInstaller::checkAccess()
 {
 	std::string testFile = m_installDir + "/update-installer-test-file";
-	FileOps::removeFile(testFile.c_str());
+
+	try
+	{
+		FileOps::removeFile(testFile.c_str());
+	}
+	catch (const FileOps::IOException& error)
+	{
+		LOG(Info,"Removing existing access check file failed " + std::string(error.what()));
+	}
 
 	try
 	{
