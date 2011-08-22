@@ -262,6 +262,7 @@ void ProcessUtils::runElevatedMac(const std::string& executable,
 void ProcessUtils::runElevatedWindows(const std::string& executable,
 							const std::list<std::string>& args)
 {
+
 }
 #endif
 
@@ -300,6 +301,40 @@ int ProcessUtils::runAsyncUnix(const std::string& executable,
 void ProcessUtils::runAsyncWindows(const std::string& executable,
 						const std::list<std::string>& args)
 {
+	std::string commandLine;
+	for (std::list<std::string>::const_iterator iter = args.begin(); iter != args.end(); iter++)
+	{
+		if (!commandLine.empty())
+		{
+			commandLine.append(" ");
+		}
+		commandLine.append(*iter);
+	}
+
+	STARTUPINFO startupInfo;
+	ZeroMemory(&startupInfo,sizeof(startupInfo));
+	startupInfo.cb = sizeof(startupInfo);
+
+	PROCESS_INFORMATION processInfo;
+	ZeroMemory(&processInfo,sizeof(processInfo));
+
+	char* commandLineStr = strdup(commandLine.c_str());
+	bool result = CreateProcess(
+	    executable.c_str(),
+		commandLineStr,
+		0 /* process attributes */,
+		0 /* thread attributes */,
+		false /* inherit handles */,
+		NORMAL_PRIORITY_CLASS /* creation flags */,
+		0 /* environment */,
+		0 /* current directory */,
+		&startupInfo /* startup info */,
+		&processInfo /* process information */
+	);
+	if (!result)
+	{
+		LOG(Error,"Failed to start child process. " + executable + " Last error: " + intToStr(GetLastError()));
+	}
 }
 #endif
 		
@@ -315,7 +350,9 @@ std::string ProcessUtils::currentProcessPath()
 	_NSGetExecutablePath(buffer,&bufferSize);
 	return buffer;
 #else
-	return std::string();
+	char fileName[MAX_PATH];
+	GetModuleFileName(0 /* get path of current process */,fileName,MAX_PATH);
+	return fileName;
 #endif
 }
 
