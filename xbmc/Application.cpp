@@ -3564,6 +3564,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   CPlayerOptions options;
+  
+  if( item.HasProperty("StartPercent") )
+  {
+    options.startpercent = item.GetPropertyDouble("StartPercent");                    
+  }
+  
   PLAYERCOREID eNewCore = EPC_NONE;
   if( bRestart )
   {
