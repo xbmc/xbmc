@@ -30,5 +30,11 @@ class Dir
 		DIR* m_dir;
 		dirent* m_entry;
 #endif
+
+#ifdef PLATFORM_WINDOWS
+		HANDLE m_findHandle;
+		WIN32_FIND_DATA m_findData;
+		bool m_firstEntry;
+#endif
 };
 
