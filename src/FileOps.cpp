@@ -55,7 +55,12 @@ bool FileOps::fileExists(const char* path) throw (IOException)
 	}
 	return true;
 #else
-	throw IOException("not implemented");
+	DWORD result = GetFileAttributes(path);
+	if (result == INVALID_FILE_ATTRIBUTES)
+	{
+		return false;
+	}
+	return true;
 #endif
 }
 
@@ -68,7 +73,8 @@ void FileOps::setQtPermissions(const char* path, int qtPermissions) throw (IOExc
 		throw IOException("Failed to set permissions on " + std::string(path) + " to " + intToStr(qtPermissions));
 	}
 #else
-	throw IOException("not implemented");
+	// TODO - Not implemented under Windows - all files
+	// get default permissions
 #endif
 }
 
@@ -80,7 +86,10 @@ void FileOps::moveFile(const char* src, const char* dest) throw (IOException)
 		throw IOException("Unable to rename " + std::string(src) + " to " + std::string(dest));
 	}
 #else
-	throw IOException("not implemented");
+	if (!MoveFile(src,dest))
+	{
+		throw IOException("Unable to rename " + std::string(src) + " to " + std::string(dest));
+	}
 #endif
 }
 
@@ -132,7 +141,10 @@ void FileOps::mkdir(const char* dir) throw (IOException)
 		throw IOException("Unable to create directory " + std::string(dir));
 	}
 #else
-	throw IOException("not implemented");
+	if (!CreateDirectory(dir,0 /* default security attributes */))
+	{
+		throw IOException("Unable to create directory " + std::string(dir));
+	}
 #endif
 }
 
@@ -144,7 +156,10 @@ void FileOps::rmdir(const char* dir) throw (IOException)
 		throw IOException("Unable to remove directory " + std::string(dir));
 	}
 #else
-	throw IOException("not implemented");
+	if (!RemoveDirectory(dir))
+	{
+		throw IOException("Unable to remove directory " + std::string(dir));
+	}
 #endif
 }
 
@@ -158,7 +173,7 @@ void FileOps::createSymLink(const char* link, const char* target) throw (IOExcep
 #else
 	// symlinks are not supported under Windows (at least, not universally.
 	// Windows Vista and later do actually support symlinks)
-	throw IOException("not implemented");
+	throw IOException("createSymLink() not implemented");
 #endif
 }
 
@@ -191,7 +206,10 @@ std::string FileOps::fileName(const char* path)
 	free(pathCopy);
 	return basename;
 #else
-	throw IOException("not implemented");
+	char baseName[MAX_PATH];
+	char extension[MAX_PATH];
+	_splitpath(path, 0 /* drive */, 0 /* dir */, baseName, extension);
+	return std::string(baseName) + std::string(extension);
 #endif
 }
 
@@ -203,7 +221,9 @@ std::string FileOps::dirname(const char* path)
 	free(pathCopy);
 	return dirname;
 #else
-	throw IOException("not implemented");
+	char dir[MAX_PATH];
+	_splitpath(path, 0 /* drive */, dir, 0 /* filename */, 0/* extension */); 
+	return std::string(dir);
 #endif
 }
 
@@ -278,7 +298,7 @@ std::string FileOps::canonicalPath(const char* path)
 		throw IOException("Error reading canonical path for " + std::string(path));
 	}
 #else
-	throw IOException("Not implemented");
+	throw IOException("canonicalPath() not implemented");
 #endif
 }
 
