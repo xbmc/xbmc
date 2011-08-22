@@ -11,6 +11,20 @@ APP_NAME = "app.exe"
 UPDATER_NAME = "updater.exe"
 ZIP_TOOL = "C:/Cygwin/bin/zip.exe"
 
+file_list_vars = {
+  "APP_FILENAME" => APP_NAME
+}
+
+def replace_vars(src_file,dest_file,vars)
+	content = File.read(src_file)
+	vars.each do |key,value|
+		content.gsub! "$#{key}",value
+	end
+	File.open(dest_file,'w') do |file|
+		file.print content
+	end
+end
+
 # Remove the install and package dirs if they
 # already exist
 FileUtils.rm_rf(INSTALL_DIR)
@@ -34,7 +48,7 @@ FileUtils.rm("#{PACKAGE_DIR}/#{APP_NAME}")
 
 # Copy the install script and updater to the target
 # directory
-FileUtils.cp("file_list.xml","#{PACKAGE_DIR}/file_list.xml")
+replace_vars("file_list.xml","#{PACKAGE_DIR}/file_list.xml",file_list_vars)
 FileUtils.cp("../#{UPDATER_NAME}","#{PACKAGE_DIR}/#{UPDATER_NAME}")
 
 # Run the updater using the new syntax

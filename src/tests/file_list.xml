@@ -17,7 +17,7 @@
  </packages>
  <install>
   <file>
-   <name>app</name>
+   <name>$APP_FILENAME</name>
    <hash>$UPDATED_APP_HASH</hash>
    <size>$UPDATED_APP_SIZE</size>
    <permissions>30549</permissions>
