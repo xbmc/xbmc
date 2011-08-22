@@ -43,6 +43,14 @@ add_executable(updater
   main.cpp
 )
 
+if(APPLE)
+	set_target_properties(
+		updater
+		PROPERTIES LINK_FLAGS "-framework Security"
+	)
+endif()
+
+
 target_link_libraries(updater
   updatershared
 )

@@ -17,6 +17,10 @@
 #include <errno.h>
 #endif
 
+#ifdef PLATFORM_MAC
+#include <Security/Security.h>
+#endif
+
 int ProcessUtils::runSync(const std::string& executable,
 		                   const std::list<std::string>& args)
 {
@@ -163,22 +167,23 @@ void ProcessUtils::runElevatedMac(const std::string& executable,
 
 		if (status == errAuthorizationSuccess)
 		{
-			char** args;
-			args = (char**) malloc(sizeof(char*) * arguments.count() + 1);
+			char** argv;
+			argv = (char**) malloc(sizeof(char*) * args.size() + 1);
 		
-			int i;
-			for (i = 0; i < arguments.size(); i++)
+			int i = 0;
+			for (std::list<std::string>::const_iterator iter = args.begin(); iter != args.end(); iter++)
 			{
-				args[i] = strdup(arguments[i].c_str());
+				argv[i] = strdup(iter->c_str());
+				++i;
 			}
-			args[i] = NULL;
+			argv[i] = NULL;
 
 			FILE* pipe = NULL;
 
 			char* tool = strdup(executable.c_str());
 			
 			status = AuthorizationExecuteWithPrivileges(authorizationRef, tool,
-					kAuthorizationFlagDefaults, args, &pipe);
+					kAuthorizationFlagDefaults, argv, &pipe);
 
 			if (status == errAuthorizationSuccess)
 			{
@@ -224,9 +229,9 @@ void ProcessUtils::runElevatedMac(const std::string& executable,
 			// If we want to know more information about what has happened:
 			// http://developer.apple.com/mac/library/documentation/Security/Reference/authorization_ref/Reference/reference.html#//apple_ref/doc/uid/TP30000826-CH4g-CJBEABHG
 			free(tool);
-			for (i = 0; i < arguments.count(); i++)
+			for (i = 0; i < args.size(); i++)
 			{
-				free(args[i]);
+				free(argv[i]);
 			}
 		}
 		else
