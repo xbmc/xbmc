@@ -33,6 +33,10 @@ FileOps::IOException::IOException(const std::string& error)
 		m_error += " details: " + std::string(strerror(m_errno));
 	}
 #endif
+
+#ifdef PLATFORM_WINDOWS
+	m_error += " GetLastError returned: " + intToStr(GetLastError());
+#endif
 }
 
 FileOps::IOException::~IOException() throw ()
