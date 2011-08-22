@@ -2510,10 +2510,13 @@ CStdString CFileItem::GetUserMusicThumb(bool alwaysCheckRemote /* = false */) co
   {
     CStdString strFolder, strFile;
     URIUtils::Split(m_strPath, strFolder, strFile);
-    CFileItem folderItem(strFolder, true);
-    folderItem.SetMusicThumb(alwaysCheckRemote);
-    if (folderItem.HasThumbnail())
-      return folderItem.GetThumbnailImage();
+    if (!m_strPath.Equals(strFolder)) // any more parents to inherit from?
+    {
+      CFileItem folderItem(strFolder, true);
+      folderItem.SetMusicThumb(alwaysCheckRemote);
+      if (folderItem.HasThumbnail())
+        return folderItem.GetThumbnailImage();
+    }
   }
   // No thumb found
   return "";
