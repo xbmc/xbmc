@@ -173,7 +173,13 @@ void FileOps::removeFile(const char* src) throw (IOException)
 		}
 	}
 #else
-	throw IOException("not implemented");
+	if (!DeleteFile(src))
+	{
+		if (GetLastError() != ERROR_FILE_NOT_FOUND)
+		{
+			throw IOException("Unable to remove file " + std::string(src));
+		}
+	}
 #endif
 }
 
@@ -215,7 +221,20 @@ void FileOps::touch(const char* path) throw (IOException)
 		throw IOException("Unable to touch file " + std::string(path));
 	}
 #else
-	throw IOException("not implemented");
+	HANDLE result = CreateFile(path,GENERIC_WRITE,
+	                           FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
+	                           0,
+							   CREATE_ALWAYS,
+                               FILE_ATTRIBUTE_NORMAL,
+                               0);
+	if (result == INVALID_HANDLE_VALUE)
+	{
+		throw IOException("Unable to touch file " + std::string(path));
+	}
+	else
+	{
+		CloseHandle(result);
+	}
 #endif
 }
 
