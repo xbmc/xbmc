@@ -9,6 +9,7 @@ OLDAPP_NAME = "oldapp.exe"
 NEWAPP_NAME = "newapp.exe"
 APP_NAME = "app.exe"
 UPDATER_NAME = "updater.exe"
+ZIP_TOOL = "C:/Cygwin/bin/zip.exe"
 
 # Remove the install and package dirs if they
 # already exist
@@ -28,7 +29,7 @@ end
 # Create the update archive containing the new app
 Dir.mkdir(PACKAGE_DIR)
 FileUtils.cp(NEWAPP_NAME,"#{PACKAGE_DIR}/#{APP_NAME}")
-system("zip #{PACKAGE_DIR}/app-pkg.zip -j #{PACKAGE_DIR}/#{APP_NAME}")
+system("#{ZIP_TOOL} #{PACKAGE_DIR}/app-pkg.zip -j #{PACKAGE_DIR}/#{APP_NAME}")
 FileUtils.rm("#{PACKAGE_DIR}/#{APP_NAME}")
 
 # Copy the install script and updater to the target
