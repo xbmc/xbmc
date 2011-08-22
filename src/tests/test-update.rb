@@ -38,9 +38,16 @@ system("#{PACKAGE_DIR}/updater --install-dir #{INSTALL_DIR} --package-dir #{PACK
 sleep(1)
 
 # Check that the app was updated
-output = `#{INSTALL_DIR}/app`
+app_path = "#{INSTALL_DIR}/app"
+output = `#{app_path}`
 if (output.strip != "new app starting")
 	throw "Updated app produced unexpected output: #{output}"
+end
+
+# Check that the permissions were correctly set on the installed app
+mode = File.stat(app_path).mode.to_s(8)
+if (mode != "100755")
+	throw "Updated app has incorrect permissions: #{mode}"
 end
 
 if (File.exist?(uninstall_test_file))

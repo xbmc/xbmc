@@ -199,7 +199,7 @@ void UpdateInstaller::installFile(const UpdateScriptFile& file)
 		FileOps::extractFromZip(packageFile.c_str(),file.path.c_str(),destPath.c_str());
 
 		// set the permissions on the newly extracted file
-		FileOps::setPermissions(destPath.c_str(),file.permissions);
+		FileOps::setQtPermissions(destPath.c_str(),file.permissions);
 	}
 	else
 	{

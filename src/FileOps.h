@@ -25,8 +25,24 @@ class FileOps
 				int m_errno;
 		};
 
+		enum QtFilePermission
+		{
+			ReadOwner  = 0x4000,
+			WriteOwner = 0x2000,
+			ExecOwner  = 0x1000,
+			ReadUser   = 0x0400,
+			WriteUser  = 0x0200,
+			ExecUser   = 0x0100,
+			ReadGroup  = 0x0040,
+			WriteGroup = 0x0020,
+			ExecGroup  = 0x0010,
+			ReadOther  = 0x0004,
+			WriteOther = 0x0002,
+			ExecOther  = 0x0001
+		};
+
+		static void setQtPermissions(const char* path, int permissions) throw (IOException);
 		static bool fileExists(const char* path) throw (IOException);
-		static void setPermissions(const char* path, int permissions) throw (IOException);
 		static void moveFile(const char* src, const char* dest) throw (IOException);
 		static void removeFile(const char* src) throw (IOException);
 		static void extractFromZip(const char* zipFile, const char* src, const char* dest) throw (IOException);
@@ -38,5 +54,8 @@ class FileOps
 		static std::string dirname(const char* path);
 		static void rmdirRecursive(const char* dir) throw (IOException);
 		static std::string canonicalPath(const char* path);
+
+	private:
+		static int toUnixPermissions(int qtPermissions);
 };
 

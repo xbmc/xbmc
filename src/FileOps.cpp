@@ -60,14 +60,13 @@ bool FileOps::fileExists(const char* path) throw (IOException)
 #endif
 }
 
-void FileOps::setPermissions(const char* path, int permissions) throw (IOException)
+void FileOps::setQtPermissions(const char* path, int qtPermissions) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
-	// TODO - Convert permissions correctly
-	int mode = permissions;
+	int mode = toUnixPermissions(qtPermissions);
 	if (chmod(path,mode) != 0)
 	{
-		throw IOException("Failed to set permissions on " + std::string(path) + " to " + intToStr(permissions));
+		throw IOException("Failed to set permissions on " + std::string(path) + " to " + intToStr(qtPermissions));
 	}
 #else
 	throw IOException("not implemented");
@@ -263,5 +262,29 @@ std::string FileOps::canonicalPath(const char* path)
 #else
 	throw IOException("Not implemented");
 #endif
+}
+
+template <class InFlags, class OutFlags>
+void addFlag(InFlags inFlags, int testBit, OutFlags& outFlags, int setBit)
+{
+	if (inFlags & testBit)
+	{
+		outFlags |= setBit;
+	}
+}
+
+int FileOps::toUnixPermissions(int qtPermissions)
+{
+	mode_t result = 0;
+	addFlag(qtPermissions,ReadUser,result,S_IRUSR);
+	addFlag(qtPermissions,WriteUser,result,S_IWUSR);
+	addFlag(qtPermissions,ExecUser,result,S_IXUSR);
+	addFlag(qtPermissions,ReadGroup,result,S_IRGRP);
+	addFlag(qtPermissions,WriteGroup,result,S_IWGRP);
+	addFlag(qtPermissions,ExecGroup,result,S_IXGRP);
+	addFlag(qtPermissions,ReadOther,result,S_IROTH);
+	addFlag(qtPermissions,WriteOther,result,S_IWOTH);
+	addFlag(qtPermissions,ExecOther,result,S_IXOTH);
+	return result;
 }
 
