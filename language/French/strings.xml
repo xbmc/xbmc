@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--$Revision$-->
 <strings>
   <string id="0">Programmes</string>
@@ -1199,7 +1199,7 @@
   <string id="13409">Top 250 :</string>
   <string id="13410">Envoyer sur Last.fm</string>
   <string id="13411">Vitesse du ventilateur au minimum</string>
-  
+  <string id="13412">Lire à partir de cet épisode</string>
   <string id="13413">Téléchargement</string>
   <string id="13414">Afficher les artistes apparaissant uniquement sur les compilations</string>
   <string id="13415">Méthode de rendu</string>
@@ -1480,7 +1480,7 @@
   <string id="16035">Playliste Mix de soirée</string>
   
   <string id="16100">Toutes les vidéos</string>
-  <string id="16101">Non vues</string>
+  <string id="16101">Non vus</string>
   <string id="16102">Vues</string>
   <string id="16103">Marquer comme vu</string>
   <string id="16104">Marquer comme non vu</string>
