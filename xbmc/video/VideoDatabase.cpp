@@ -1342,16 +1342,6 @@ bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return false;
     int idMovie = GetMovieId(strFilenameAndPath);
     return (idMovie > 0); // index of zero is also invalid
-
-    // work in progress
-    if (idMovie > 0)
-    {
-      // get title.  if no title, the id was "deleted" for in-place update
-      CVideoInfoTag details;
-      GetMovieInfo(strFilenameAndPath, details, idMovie);
-      if (!details.m_strTitle.IsEmpty()) return true;
-    }
-    return false;
   }
   catch (...)
   {
@@ -1368,16 +1358,6 @@ bool CVideoDatabase::HasTvShowInfo(const CStdString& strPath)
     if (NULL == m_pDS.get()) return false;
     int idTvShow = GetTvShowId(strPath);
     return (idTvShow > 0); // index of zero is also invalid
-
-    // work in progress
-    if (idTvShow > 0)
-    {
-      // get title. if no title, the id was "deleted" for in-place update
-      CVideoInfoTag details;
-      GetTvShowInfo(strPath, details, idTvShow);
-      if (!details.m_strTitle.IsEmpty()) return true;
-    }
-    return false;
   }
   catch (...)
   {
@@ -1394,16 +1374,6 @@ bool CVideoDatabase::HasEpisodeInfo(const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return false;
     int idEpisode = GetEpisodeId(strFilenameAndPath);
     return (idEpisode > 0); // index of zero is also invalid
-
-    // work in progress
-    if (idEpisode > 0)
-    {
-      // get title.  if no title, the id was "deleted" for in-place update
-      CVideoInfoTag details;
-      GetEpisodeInfo(strFilenameAndPath, details, idEpisode);
-      if (!details.m_strTitle.IsEmpty()) return true;
-    }
-    return false;
   }
   catch (...)
   {
@@ -1420,16 +1390,6 @@ bool CVideoDatabase::HasMusicVideoInfo(const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return false;
     int idMVideo = GetMusicVideoId(strFilenameAndPath);
     return (idMVideo > 0); // index of zero is also invalid
-
-    // work in progress
-    if (idMVideo > 0)
-    {
-      // get title.  if no title, the id was "deleted" for in-place update
-      CVideoInfoTag details;
-      GetMusicVideoInfo(strFilenameAndPath, details, idMVideo);
-      if (!details.m_strTitle.IsEmpty()) return true;
-    }
-    return false;
   }
   catch (...)
   {
@@ -2458,15 +2418,6 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
       strSQL=PrepareSQL("delete from movielinktvshow where idMovie=%i", idMovie);
       m_pDS->exec(strSQL.c_str());
     }
-    /*
-    // work in progress
-    else
-    {
-      // clear the title
-      strSQL=PrepareSQL("update movie set c%02d=NULL where idMovie=%i", VIDEODB_ID_TITLE, idMovie);
-      m_pDS->exec(strSQL.c_str());
-    }
-    */
 
     CStdString strPath, strFileName;
     SplitPath(strFilenameAndPath,strPath,strFileName);
@@ -2643,15 +2594,6 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
       strSQL=PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
       m_pDS->exec(strSQL.c_str());
     }
-    /*
-    // work in progress
-    else
-    {
-      // clear the title
-      strSQL=PrepareSQL("update musicvideo set c%02d=NULL where idMVideo=%i", VIDEODB_ID_MUSICVIDEO_TITLE, idMVideo);
-      m_pDS->exec(strSQL.c_str());
-    }
-    */
 
     CStdString strPath, strFileName;
     SplitPath(strFilenameAndPath,strPath,strFileName);
