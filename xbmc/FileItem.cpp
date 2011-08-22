@@ -2624,7 +2624,8 @@ CStdString CFileItem::GetUserVideoThumb() const
    || IsPlugin()
    || IsAddonsPath()
    || IsParentFolder()
-   || IsLiveTV())
+   || IsLiveTV()
+   || IsDVD())
     return "";
 
 
