@@ -34,67 +34,83 @@
 #define RECEIVEBUFFER 1024
 
 #define AIRPLAY_STATUS_OK 200
+#define AIRPLAY_STATUS_NO_RESPONSE_NEEDED 1000
 #define AIRPLAY_STATUS_SWITCHING_PROTOCOLS 101
 #define AIRPLAY_STATUS_NOT_IMPLEMENTED 501
 
 CAirPlayServer *CAirPlayServer::ServerInstance = NULL;
 
-#define PLAYBACK_INFO  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"\
-"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">"\
-"<plist version=\"1.0\">"\
-"<dict>"\
-"<key>duration</key>"\
-"<real>%f</real>"\
-"<key>loadedTimeRanges</key>"\
-"<array>"\
-"    <dict>"\
-"        <key>duration</key>"\
-"        <real>%f</real>"\
-"        <key>start</key>"\
-"        <real>0.0</real>"\
-"    </dict>"\
-"</array>"\
-"<key>playbackBufferEmpty</key>"\
-"<true/>"\
-"<key>playbackBufferFull</key>"\
-"<false/>"\
-"<key>playbackLikelyToKeepUp</key>"\
-"<true/>"\
-"<key>position</key>"\
-"<real>%f</real>"\
-"<key>rate</key>"\
-"<real>%d</real>"\
-"<key>readyToPlay</key>"\
-"<true/>"\
-"<key>seekableTimeRanges</key>"\
-"<array>"\
-"    <dict>"\
-"        <key>duration</key>"\
-"        <real>%f</real>"\
-"        <key>start</key>"\
-"        <real>0.0</real>"\
-"    </dict>"\
-"</array>"\
-"</dict>"\
-"</plist>"
+#define EVENT_PLAYING   0
+#define EVENT_PAUSED    1
+#define EVENT_LOADING   2
+char *eventStrings[] = {"playing", "paused", "loading"};
 
-//"<string>58:55:CA:06:BD:9E</string>"
-#define SERVER_INFO  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"\
-"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">"\
-"<plist version=\"1.0\">"\
-"<dict>"\
-"<key>deviceid</key>"\
-"<string>%s</string>"\
-"<key>features</key>"\
-"<integer>119</integer>"\
-"<key>model</key>"\
-"<string>AppleTV2,1</string>"\
-"<key>protovers</key>"\
-"<string>1.0</string>"\
-"<key>srcvers</key>"\
-"<string>101.10</string>"\
-"</dict>"\
-"</plist>"
+#define PLAYBACK_INFO  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"\
+"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r\n"\
+"<plist version=\"1.0\">\r\n"\
+"<dict>\r\n"\
+"<key>duration</key>\r\n"\
+"<real>%f</real>\r\n"\
+"<key>loadedTimeRanges</key>\r\n"\
+"<array>\r\n"\
+"\t\t<dict>\r\n"\
+"\t\t\t<key>duration</key>\r\n"\
+"\t\t\t<real>%f</real>\r\n"\
+"\t\t\t<key>start</key>\r\n"\
+"\t\t\t<real>0.0</real>\r\n"\
+"\t\t</dict>\r\n"\
+"</array>\r\n"\
+"<key>playbackBufferEmpty</key>\r\n"\
+"<true/>\r\n"\
+"<key>playbackBufferFull</key>\r\n"\
+"<false/>\r\n"\
+"<key>playbackLikelyToKeepUp</key>\r\n"\
+"<true/>\r\n"\
+"<key>position</key>\r\n"\
+"<real>%f</real>\r\n"\
+"<key>rate</key>\r\n"\
+"<real>%d</real>\r\n"\
+"<key>readyToPlay</key>\r\n"\
+"<true/>\r\n"\
+"<key>seekableTimeRanges</key>\r\n"\
+"<array>\r\n"\
+"\t\t<dict>\r\n"\
+"\t\t\t<key>duration</key>\r\n"\
+"\t\t\t<real>%f</real>\r\n"\
+"\t\t\t<key>start</key>\r\n"\
+"\t\t\t<real>0.0</real>\r\n"\
+"\t\t</dict>\r\n"\
+"</array>\r\n"\
+"</dict>\r\n"\
+"</plist>\r\n"
+
+#define SERVER_INFO  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"\
+"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r\n"\
+"<plist version=\"1.0\">\r\n"\
+"<dict>\r\n"\
+"<key>deviceid</key>\r\n"\
+"<string>%s</string>\r\n"\
+"<key>features</key>\r\n"\
+"<integer>119</integer>\r\n"\
+"<key>model</key>\r\n"\
+"<string>AppleTV2,1</string>\r\n"\
+"<key>protovers</key>\r\n"\
+"<string>1.0</string>\r\n"\
+"<key>srcvers</key>\r\n"\
+"<string>101.10</string>\r\n"\
+"</dict>\r\n"\
+"</plist>\r\n"
+
+#define EVENT_INFO "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\r\n"\
+"<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n\r\n"\
+"<plist version=\"1.0\">\r\n"\
+"<dict>\r\n"\
+"<key>category</key>\r\n"\
+"<string>video</string>\r\n"\
+"<key>state</key>\r\n"\
+"<string>%s</string>\r\n"\
+"</dict>\r\n"\
+"</plist>\r\n"\
 
 bool CAirPlayServer::StartServer(int port, bool nonlocal)
 {
@@ -170,7 +186,8 @@ void CAirPlayServer::Process()
           nread = recv(socket, (char*)&buffer, RECEIVEBUFFER, 0);
           if (nread > 0)
           {
-            m_connections[i].PushBuffer(this, buffer, nread);
+            CStdString sessionId="";
+            m_connections[i].PushBuffer(this, buffer, nread, sessionId, m_reverseSockets);
           }
           if (nread <= 0)
           {
@@ -248,6 +265,7 @@ void CAirPlayServer::Deinitialize()
     m_connections[i].Disconnect();
 
   m_connections.clear();
+  m_reverseSockets.clear();
 
   if (m_ServerSocket != INVALID_SOCKET)
   {
@@ -287,17 +305,20 @@ CAirPlayServer::CTCPClient& CAirPlayServer::CTCPClient::operator=(const CTCPClie
   return *this;
 }
 
-void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *buffer, int length)
+void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *buffer, int length, CStdString &sessionId, std::map<CStdString, int> &reverseSockets)
 {
   HttpParser::status_t status = m_httpParser->addBytes(buffer, length);
 
   if (status == HttpParser::Done)
   {
     // Parse the request
-    CStdString responseHeader;
-    CStdString responseBody;
-    int status = ProcessRequest(responseHeader, responseBody);
+    CStdString responseHeader="";
+    CStdString responseBody="";
+    CStdString reverseHeader="";
+    CStdString reverseBody="";
+    int status = ProcessRequest(responseHeader, responseBody, reverseHeader, reverseBody, sessionId);
     CStdString statusMsg = "OK";
+    int reverseSocket = INVALID_SOCKET;
     
     switch(status)
     {
@@ -306,6 +327,7 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
         break;
       case AIRPLAY_STATUS_SWITCHING_PROTOCOLS:
         statusMsg = "Switching Protocols";
+        reverseSockets[sessionId] = m_socket;//save this socket as reverse http socket for this sessionid
         break;
     }
 
@@ -332,7 +354,32 @@ void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *bu
     }
 
     // Send the response
-    send(m_socket, response.c_str(), response.size(), 0);
+    //don't send response on AIRPLAY_STATUS_NO_RESPONSE_NEEDED
+    if (status != AIRPLAY_STATUS_NO_RESPONSE_NEEDED)
+    {
+      send(m_socket, response.c_str(), response.size(), 0);
+    }
+    
+    // Send event status per reverse http socket (play, loading, paused)
+    // if we have a reverse header and a reverse socket
+    if (reverseHeader.size() > 0 && reverseSockets.find(sessionId) != reverseSockets.end())
+    {
+      //search the reverse socket to this sessionid
+      response.Format("POST /event HTTP/1.1\r\n");
+      reverseSocket = reverseSockets[sessionId]; //that is our reverse socket
+      response += reverseHeader;
+    }
+    response += "\r\n";
+    
+    if (reverseBody.size() > 0)
+    {
+      response += reverseBody;
+    }
+    
+    if (reverseSocket != INVALID_SOCKET)
+    {
+      send(reverseSocket, response.c_str(), response.size(), 0);//send the event status on the eventSocket
+    }
 
     // We need a new parser...
     delete m_httpParser;
@@ -360,14 +407,30 @@ void CAirPlayServer::CTCPClient::Copy(const CTCPClient& client)
   m_httpParser        = client.m_httpParser;
 }
 
-int CAirPlayServer::CTCPClient::ProcessRequest(CStdString& responseHeader, CStdString& responseBody)
+
+void CAirPlayServer::CTCPClient::ComposeReverseEvent(CStdString& reverseHeader, CStdString& reverseBody, CStdString sessionId, int state)
+{   
+    switch(state)
+    {
+      case EVENT_PLAYING:
+      case EVENT_LOADING:
+      case EVENT_PAUSED:     
+        reverseBody.Format(EVENT_INFO, eventStrings[state]);
+        break;      
+    }
+    reverseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
+    reverseHeader.Format("%sContent-Length: %d",reverseHeader.c_str(),reverseBody.size());    
+    reverseHeader.Format("%sx-apple-session-id: %s\r\n",reverseHeader.c_str(),sessionId.c_str());
+}
+
+int CAirPlayServer::CTCPClient::ProcessRequest(CStdString& responseHeader, CStdString& responseBody, CStdString& reverseHeader, CStdString& reverseBody, CStdString& sessionId)
 {
   CStdString method = m_httpParser->getMethod();
   CStdString uri = m_httpParser->getUri();
   CStdString queryString = m_httpParser->getQueryString();
   CStdString body = m_httpParser->getBody();
-
-  CStdString contentType = m_httpParser->getValue("content-type");
+  CStdString contentType = m_httpParser->getValue("content-type");  
+  sessionId = m_httpParser->getValue("x-apple-session-id");  
   int status = AIRPLAY_STATUS_OK;
 
   int startQs = uri.Find('?');
@@ -378,8 +441,8 @@ int CAirPlayServer::CTCPClient::ProcessRequest(CStdString& responseHeader, CStdS
 
   //printf("method = %s uri = %s qs = %s\n body=%s", method.c_str(), uri.c_str(), queryString.c_str(), body.c_str());
 
-  // The reverse command is the first command sent by Airplay,
-  // it's a handshake.
+  // This is the socket which will be used for reverse HTTP
+  // negotiate reverse HTTP via upgrade
   if (uri == "/reverse")
   {
     status = AIRPLAY_STATUS_SWITCHING_PROTOCOLS;
@@ -542,16 +605,35 @@ int CAirPlayServer::CTCPClient::ProcessRequest(CStdString& responseHeader, CStdS
   {
     float position = 0.0f;
     float duration = 0.0f;
-    bool playing = g_application.m_pPlayer ? !g_application.m_pPlayer->IsPaused() : false;
-
-    if (g_application.m_pPlayer && g_application.m_pPlayer->GetTotalTime())
+    float cacheDuration = 0.0f;
+    bool playing = false;
+    
+    if (g_application.m_pPlayer)
     {
-      position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
-      duration = (float) g_application.m_pPlayer->GetTotalTime();
-    }
+      if (g_application.m_pPlayer->GetTotalTime())
+      {
+        position = ((float) g_application.m_pPlayer->GetTime()) / 1000;
+        duration = (float) g_application.m_pPlayer->GetTotalTime();
+        playing = g_application.m_pPlayer ? !g_application.m_pPlayer->IsPaused() : false;
+        cacheDuration = (float) g_application.m_pPlayer->GetTotalTime() * g_application.GetCachePercentage()/100.0f; 
+      }
 
-    responseBody.Format(PLAYBACK_INFO, duration, duration, position, (playing ? 1 : 0), duration);
-    responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
+      responseBody.Format(PLAYBACK_INFO, duration, cacheDuration, position, (playing ? 1 : 0), duration);
+      responseHeader = "Content-Type: text/x-apple-plist+xml\r\n";
+    
+      if (g_application.m_pPlayer->IsCaching())
+      {
+        ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_LOADING);
+      }
+      else if(playing)
+      {
+        ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PLAYING);
+      }
+      else
+      {
+        ComposeReverseEvent(reverseHeader, reverseBody, sessionId, EVENT_PAUSED);
+      }
+    }
   }
 
   else if (uri == "/server-info")
@@ -570,6 +652,10 @@ int CAirPlayServer::CTCPClient::ProcessRequest(CStdString& responseHeader, CStdS
     // DRM, ignore for now.
   }
 
+  else if (uri == "200") //response OK from the event reverse message
+  {
+    status = AIRPLAY_STATUS_NO_RESPONSE_NEEDED;
+  }
   else
   {
     CLog::Log(LOGERROR, "AIRPLAY Server: unhandled request [%s]\n", uri.c_str());

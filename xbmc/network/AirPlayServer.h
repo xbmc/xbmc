@@ -26,6 +26,7 @@
 #include "system.h"
 #ifdef HAS_AIRPLAY
 
+#include <map>
 #include <sys/socket.h>
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
@@ -57,7 +58,7 @@ private:
     //when adding a member variable, make sure to copy it in CTCPClient::Copy
     CTCPClient(const CTCPClient& client);
     CTCPClient& operator=(const CTCPClient& client);
-    void PushBuffer(CAirPlayServer *host, const char *buffer, int length);
+    void PushBuffer(CAirPlayServer *host, const char *buffer, int length, CStdString &sessionId, std::map<CStdString, int> &reverseSockets);
     void Disconnect();
 
     int m_socket;
@@ -66,13 +67,15 @@ private:
     CCriticalSection m_critSection;
 
   private:
-    int ProcessRequest(CStdString& responseHeader, CStdString& response);
+    int ProcessRequest(CStdString& responseHeader, CStdString& response, CStdString& reverseHeader, CStdString& reverseBody, CStdString& sessionId);
+    void ComposeReverseEvent(CStdString& reverseHeader, CStdString& reverseBody, CStdString sessionId, int state);
     void Copy(const CTCPClient& client);
     HttpParser* m_httpParser;
     DllLibPlist *m_pLibPlist;//the lib  
   };
 
   std::vector<CTCPClient> m_connections;
+  std::map<CStdString, int> m_reverseSockets;
   int m_ServerSocket;
   int m_port;
   bool m_nonlocal;
