@@ -147,6 +147,12 @@ LRESULT WINAPI UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM w
 {
 	switch (message)
 	{
+	case WM_CLOSE:
+		if (window == m_window.GetHwnd())
+		{
+			return 0;
+		}
+		break;
 	case WM_COMMAND:
 		{
 			if (reinterpret_cast<HWND>(lParam) == m_finishButton.GetHwnd())
