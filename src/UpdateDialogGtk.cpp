@@ -42,7 +42,7 @@ void UpdateDialogGtk::init(int argc, char** argv)
 	gtk_container_add(GTK_CONTAINER(windowLayout),buttonLayout);
 
 	gtk_box_pack_start(GTK_BOX(buttonLayout),m_finishButton,true,false,0);
-
+	
 	gtk_widget_show(m_progressLabel);
 	gtk_widget_show(windowLayout);
 	gtk_widget_show(buttonLayout);
@@ -57,7 +57,7 @@ void UpdateDialogGtk::exec()
 	gtk_main();
 }
 
-void UpdateDialogGtk::finish(void* _dialog)
+void UpdateDialogGtk::finish(GtkWidget* widget, gpointer _dialog)
 {
 	UpdateDialogGtk* dialog = static_cast<UpdateDialogGtk*>(_dialog);
 	dialog->m_restartApp = true;

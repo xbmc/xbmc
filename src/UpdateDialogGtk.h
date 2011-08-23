@@ -43,7 +43,7 @@ class UpdateDialogGtk : public UpdateObserver
 			int progress;
 		};
 
-		static void finish(void* dialog);
+		static void finish(GtkWidget* widget, gpointer dialog);
 		static gboolean notify(void* message);
 
 		GtkWidget* m_window;
