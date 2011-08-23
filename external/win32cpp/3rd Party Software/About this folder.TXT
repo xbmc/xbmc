@@ -1,0 +1,10 @@
+This folder contains a collection software written by other authors.
+They are included here in the hope that they might prove a useful addition for 
+Win32++ users.
+
+The original authors retain all rights over their software. Each folder contains information
+regarding where the software was download from. Refer to the original download sites to
+ensure your use of the software is consistant with any copyright or license.
+
+ 
+
