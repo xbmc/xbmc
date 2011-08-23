@@ -22,10 +22,12 @@ void UpdateDialogGtk::init(int argc, char** argv)
 
 	m_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(m_window),"Mendeley Updater");
+	gtk_window_set_resizable(GTK_WINDOW(m_window),false);
 
 	m_progressLabel = gtk_label_new("Installing Updates");
 	GtkWidget* windowLayout = gtk_vbox_new(FALSE,3);
 	GtkWidget* buttonLayout = gtk_hbox_new(FALSE,3);
+	GtkWidget* labelLayout = gtk_hbox_new(FALSE,3);
 
 	m_finishButton = gtk_button_new_with_label("Finish");
 	gtk_widget_set_sensitive(m_finishButton,false);
@@ -36,19 +38,24 @@ void UpdateDialogGtk::init(int argc, char** argv)
 	                   GTK_SIGNAL_FUNC(UpdateDialogGtk::finish),this);
 
 	gtk_container_add(GTK_CONTAINER(m_window),windowLayout);
-	gtk_container_set_border_width(GTK_CONTAINER(m_window),8);
-	gtk_container_add(GTK_CONTAINER(windowLayout),m_progressLabel);
-	gtk_container_add(GTK_CONTAINER(windowLayout),m_progressBar);
-	gtk_container_add(GTK_CONTAINER(windowLayout),buttonLayout);
+	gtk_container_set_border_width(GTK_CONTAINER(m_window),12);
 
-	gtk_box_pack_start(GTK_BOX(buttonLayout),m_finishButton,true,false,0);
+	gtk_box_pack_start(GTK_BOX(labelLayout),m_progressLabel,false,false,0);
+	gtk_box_pack_end(GTK_BOX(buttonLayout),m_finishButton,false,false,0);
+
+	gtk_box_pack_start(GTK_BOX(windowLayout),labelLayout,false,false,0);
+	gtk_box_pack_start(GTK_BOX(windowLayout),m_progressBar,false,false,0);
+	gtk_box_pack_start(GTK_BOX(windowLayout),buttonLayout,false,false,0);
+
 	
 	gtk_widget_show(m_progressLabel);
+	gtk_widget_show(labelLayout);
 	gtk_widget_show(windowLayout);
 	gtk_widget_show(buttonLayout);
 	gtk_widget_show(m_finishButton);
 	gtk_widget_show(m_progressBar);
 
+	gtk_window_set_position(GTK_WINDOW(m_window),GTK_WIN_POS_CENTER);
 	gtk_widget_show(m_window);
 }
 
