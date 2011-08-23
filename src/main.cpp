@@ -69,7 +69,6 @@ int main(int argc, char** argv)
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
 #ifdef ENABLE_GTK
-	LOG(Info,"setting up GTK UI");
 	UpdateDialogGtk dialog;
 	installer->setObserver(&dialog);
 	dialog.init(argc,argv);
