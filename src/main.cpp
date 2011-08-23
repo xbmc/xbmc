@@ -29,6 +29,7 @@ void runUpdaterThread(void* arg)
 
 int main(int argc, char** argv)
 {
+	Log::instance()->open(Log::defaultPath());
 	UpdaterOptions options;
 	options.parse(argc,argv);
 
