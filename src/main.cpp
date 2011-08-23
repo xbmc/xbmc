@@ -14,6 +14,10 @@
   #include "UpdateDialogCocoa.h"
 #endif
 
+#if defined(PLATFORM_WINDOWS)
+  #include "UpdateDialogWin32.h"
+#endif
+
 #include <iostream>
 
 void runWithUi(int argc, char** argv, UpdateInstaller* installer);
@@ -118,7 +122,12 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 #ifdef PLATFORM_WINDOWS
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
-	// TODO - Windows UI
-	installer->run();
+	UpdateDialogWin32 dialog;
+	installer->setObserver(&dialog);
+	dialog.init();
+	tthread::thread updaterThread(runUpdaterThread,installer);
+	dialog.exec();
+	updaterThread.join();
+	installer->restartMainApp();
 }
 #endif

@@ -32,6 +32,9 @@ endif()
 if (APPLE)
 	set(SOURCES ${SOURCES} UpdateDialogCocoa.mm)
 endif()
+if (WIN32)
+	set(SOURCES ${SOURCES} UpdateDialogWin32.cpp)
+endif()
 
 set (HEADERS
   Dir.h
@@ -47,7 +50,10 @@ if (ENABLE_GTK)
 	set(HEADERS ${HEADERS} UpdateDialogGtk.h)
 endif()
 if (APPLE)
-	set(SOURCES ${SOURCES} UpdateDialogCocoa.h)
+	set(HEADERS ${HEADERS} UpdateDialogCocoa.h)
+endif()
+if (WIN32)
+    set(HEADERS ${HEADERS} UpdateDialogWin32.h)
 endif()
 
 add_library(updatershared
