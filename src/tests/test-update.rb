@@ -1,15 +1,24 @@
 #!/usr/bin/ruby
 
 require 'fileutils.rb'
+require 'rbconfig'
 
 INSTALL_DIR = "install-dir/"
 PACKAGE_DIR = "package-dir/"
 
-OLDAPP_NAME = "oldapp.exe"
-NEWAPP_NAME = "newapp.exe"
-APP_NAME = "app.exe"
-UPDATER_NAME = "updater.exe"
-ZIP_TOOL = "C:/Cygwin/bin/zip.exe"
+if (RbConfig::CONFIG['host_os'] =~ /mswin|mingw/)
+	OLDAPP_NAME = "oldapp.exe"
+	NEWAPP_NAME = "newapp.exe"
+	APP_NAME = "app.exe"
+	UPDATER_NAME = "updater.exe"
+	ZIP_TOOL = "C:/Cygwin/bin/zip.exe"
+else
+	OLDAPP_NAME = "oldapp"
+	NEWAPP_NAME = "newapp"
+	APP_NAME = "app"
+	UPDATER_NAME = "updater"
+	ZIP_TOOL = "zip"
+end
 
 file_list_vars = {
   "APP_FILENAME" => APP_NAME
