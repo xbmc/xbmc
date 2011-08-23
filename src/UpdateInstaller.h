@@ -30,6 +30,8 @@ class UpdateInstaller
 
 		void run() throw ();
 
+		void restartMainApp();
+
 	private:
 		void cleanup();
 		void revert();

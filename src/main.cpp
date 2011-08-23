@@ -6,17 +6,13 @@
 
 #include "tinythread.h"
 
-#if defined(PLATFORM_WINDOWS)
-  #include "UpdateDialogWin32.h"
-#elif defined(PLATFORM_MAC)
-  #include "UpdateDialogCocoa.h"
-#elif defined(PLATFORM_LINUX)
+#if defined(PLATFORM_LINUX) and defined(ENABLE_GTK)
   #include "UpdateDialogGtk.h"
 #endif
 
 #include <iostream>
 
-void setupUi(UpdateInstaller* installer);
+void runWithUi(int argc, char** argv, UpdateInstaller* installer);
 
 void runUpdaterThread(void* arg)
 {
@@ -44,11 +40,6 @@ int main(int argc, char** argv)
 		script.parse(options.script);
 	}
 
-	if (options.mode == UpdateInstaller::Main)
-	{
-		setupUi(&installer);
-	}
-
 	LOG(Info,"started updater. install-dir: " + options.installDir
 	         + ", package-dir: " + options.packageDir
 	         + ", wait-pid: " + intToStr(options.waitPid)
@@ -61,20 +52,55 @@ int main(int argc, char** argv)
 	installer.setScript(&script);
 	installer.setWaitPid(options.waitPid);
 
-	tthread::thread updaterThread(runUpdaterThread,&installer);
-	updaterThread.join();
+	if (options.mode == UpdateInstaller::Main)
+	{
+		runWithUi(argc,argv,&installer);
+	}
+	else
+	{
+		installer.run();
+	}
 
 	return 0;
 }
 
-void setupUi(UpdateInstaller* installer)
+#ifdef PLATFORM_LINUX
+void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
-#if defined(PLATFORM_WINDOWS)
-	UpdateDialogWin32 dialog;
-#elif defined(PLATFORM_MAC)
-	UpdateDialogCocoa dialog;
-#elif defined(PLATFORM_LINUX)
+#ifdef ENABLE_GTK
+	LOG(Info,"setting up GTK UI");
 	UpdateDialogGtk dialog;
+	installer->setObserver(&dialog);
+	dialog.init(argc,argv);
+	tthread::thread updaterThread(runUpdaterThread,installer);
+	dialog.exec();
+	updaterThread.join();
+
+	if (dialog.restartApp())
+	{
+		LOG(Info,"Restarting app after install");
+		installer->restartMainApp();
+	}
+#else
+	// no UI available - do a silent install
+	installer->run();
+	installer->restartMainApp();
 #endif
 }
+#endif
 
+#ifdef PLATFORM_MAC
+void runWithUi(int argc, char** argv, UpdateInstaller* installer)
+{
+	// TODO - Cocoa UI
+	installer->run();
+}
+#endif
+
+#ifdef PLATFORM_WINDOWS
+void runWithUi(int argc, char** argv, UpdateInstaller* installer)
+{
+	// TODO - Windows UI
+	installer->run();
+}
+#endif

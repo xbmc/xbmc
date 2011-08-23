@@ -1,0 +1,118 @@
+#include "UpdateDialogGtk.h"
+
+#include "Log.h"
+#include "StringUtils.h"
+
+#include <glib.h>
+#include <gtk/gtk.h>
+
+UpdateDialogGtk::UpdateDialogGtk()
+: m_restartApp(false)
+{
+}
+
+bool UpdateDialogGtk::restartApp() const
+{
+	return m_restartApp;
+}
+
+void UpdateDialogGtk::init(int argc, char** argv)
+{
+	gtk_init(&argc,&argv);
+
+	m_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_title(GTK_WINDOW(m_window),"Mendeley Updater");
+
+	m_progressLabel = gtk_label_new("Installing Updates");
+	GtkWidget* windowLayout = gtk_vbox_new(FALSE,3);
+	GtkWidget* buttonLayout = gtk_hbox_new(FALSE,3);
+
+	m_finishButton = gtk_button_new_with_label("Finish");
+	gtk_widget_set_sensitive(m_finishButton,false);
+
+	m_progressBar = gtk_progress_bar_new();
+
+	gtk_signal_connect(GTK_OBJECT(m_finishButton),"clicked",
+	                   GTK_SIGNAL_FUNC(UpdateDialogGtk::finish),this);
+
+	gtk_container_add(GTK_CONTAINER(m_window),windowLayout);
+	gtk_container_set_border_width(GTK_CONTAINER(m_window),8);
+	gtk_container_add(GTK_CONTAINER(windowLayout),m_progressLabel);
+	gtk_container_add(GTK_CONTAINER(windowLayout),m_progressBar);
+	gtk_container_add(GTK_CONTAINER(windowLayout),buttonLayout);
+
+	gtk_box_pack_start(GTK_BOX(buttonLayout),m_finishButton,true,false,0);
+
+	gtk_widget_show(m_progressLabel);
+	gtk_widget_show(windowLayout);
+	gtk_widget_show(buttonLayout);
+	gtk_widget_show(m_finishButton);
+	gtk_widget_show(m_progressBar);
+
+	gtk_widget_show(m_window);
+}
+
+void UpdateDialogGtk::exec()
+{
+	gtk_main();
+}
+
+void UpdateDialogGtk::finish(void* _dialog)
+{
+	UpdateDialogGtk* dialog = static_cast<UpdateDialogGtk*>(_dialog);
+	dialog->m_restartApp = true;
+	gtk_main_quit();
+}
+
+gboolean UpdateDialogGtk::notify(void* _message)
+{
+	Message* message = static_cast<Message*>(_message);
+	switch (message->type)
+	{
+		case Message::UpdateProgress:
+			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(message->dialog->m_progressBar),message->progress/100.0);
+			break;
+		case Message::UpdateFailed:
+			gtk_label_set_text(GTK_LABEL(message->dialog->m_progressLabel),
+			  ("There was a problem installing the update: " + message->message).c_str());;
+			gtk_widget_set_sensitive(message->dialog->m_finishButton,true);
+			break;
+		case Message::UpdateFinished:
+			gtk_label_set_text(GTK_LABEL(message->dialog->m_progressLabel),
+			  "Update installed.  Click 'Finish' to restart the application.");
+			gtk_widget_set_sensitive(message->dialog->m_finishButton,true);
+			break;
+	}
+	delete message;
+
+	// do not invoke this function again
+	return false;
+}
+
+// callbacks during update installation
+void UpdateDialogGtk::updateError(const std::string& errorMessage)
+{
+	Message* message = new Message(this,Message::UpdateFailed);
+	message->message = errorMessage;
+	g_idle_add(&UpdateDialogGtk::notify,message);
+}
+
+bool UpdateDialogGtk::updateRetryCancel(const std::string& message)
+{
+	// TODO
+}
+
+void UpdateDialogGtk::updateProgress(int percentage)
+{
+	Message* message = new Message(this,Message::UpdateProgress);
+	message->progress = percentage;
+	g_idle_add(&UpdateDialogGtk::notify,message);
+}
+
+void UpdateDialogGtk::updateFinished()
+{
+	Message* message = new Message(this,Message::UpdateFinished);
+	g_idle_add(&UpdateDialogGtk::notify,message);
+}
+
+

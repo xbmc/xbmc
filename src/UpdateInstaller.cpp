@@ -302,3 +302,13 @@ bool UpdateInstaller::checkAccess()
 	}
 }
 
+void UpdateInstaller::setObserver(UpdateObserver* observer)
+{
+	m_observer = observer;
+}
+
+void UpdateInstaller::restartMainApp()
+{
+	LOG(Warn,"Restarting main app not implemented");
+}
+
