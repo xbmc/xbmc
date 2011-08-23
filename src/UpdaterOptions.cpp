@@ -70,7 +70,7 @@ void UpdaterOptions::parseOldFormatArgs(int argc, char** argv)
 		}
 		else if (key == "UpdateScriptFileName")
 		{
-			script = value;
+			scriptPath = value;
 		}
 		else if (key == "AppFileName")
 		{
@@ -116,7 +116,7 @@ void UpdaterOptions::parse(int argc, char** argv)
 	}
 	if (parser.getValue("script"))
 	{
-		script = parser.getValue("script");
+		scriptPath = parser.getValue("script");
 	}
 	if (parser.getValue("wait"))
 	{

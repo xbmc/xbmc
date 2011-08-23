@@ -12,7 +12,7 @@ class UpdaterOptions
 		UpdateInstaller::Mode mode;
 		std::string installDir;
 		std::string packageDir;
-		std::string script;
+		std::string scriptPath;
 		long long waitPid;
 		std::string logFile;
 

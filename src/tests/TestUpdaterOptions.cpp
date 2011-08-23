@@ -20,7 +20,7 @@ void TestUpdaterOptions::testOldFormatArgs()
 	TEST_COMPARE(options.mode,UpdateInstaller::Setup);
 	TEST_COMPARE(options.installDir,"/path/to/app");
 	TEST_COMPARE(options.packageDir,"/tmp/updater");
-	TEST_COMPARE(options.script,"/tmp/updater/file_list.xml");
+	TEST_COMPARE(options.scriptPath,"/tmp/updater/file_list.xml");
 	TEST_COMPARE(options.waitPid,123456);
 }
 
