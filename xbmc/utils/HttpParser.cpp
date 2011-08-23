@@ -10,14 +10,14 @@
 HttpParser::HttpParser() :
     _headerStart(0),
     _bodyStart(0),
-    _status( Incomplete ),
-    _state( 0 ),
     _parsedTo( 0 ),
+    _state( 0 ),
     _keyIndex(0),
     _valueIndex(0),
     _contentLength(0),
     _contentStart(0),
-    _uriIndex(0)
+    _uriIndex(0),
+    _status( Incomplete )
 {
 
 }
