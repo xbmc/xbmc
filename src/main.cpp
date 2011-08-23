@@ -78,7 +78,6 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 
 	if (dialog.restartApp())
 	{
-		LOG(Info,"Restarting app after install");
 		installer->restartMainApp();
 	}
 #else

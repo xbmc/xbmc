@@ -31,19 +31,22 @@ class UpdateScriptFile
 	public:
 		UpdateScriptFile()
 		: permissions(0)
+		, isMainBinary(false)
 		{}
 
 		std::string path;
 		std::string package;
 		int permissions;
 		std::string linkTarget;
+		bool isMainBinary;
 
 		bool operator==(const UpdateScriptFile& other) const
 		{
 			return path == other.path &&
 			       package == other.package &&
 			       permissions == other.permissions &&
-			       linkTarget == other.linkTarget;
+			       linkTarget == other.linkTarget &&
+			       isMainBinary == other.isMainBinary;
 		}
 };
 

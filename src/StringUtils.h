@@ -2,6 +2,7 @@
 
 #include <string>
 #include <sstream>
+#include <stdlib.h>
 
 inline std::string intToStr(int i)
 {
@@ -10,4 +11,7 @@ inline std::string intToStr(int i)
 	return stream.str();
 }
 
-
+inline bool strToBool(const std::string& str)
+{
+	return str == "true" || atoi(str.c_str()) != 0;
+}

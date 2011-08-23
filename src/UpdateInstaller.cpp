@@ -309,6 +309,28 @@ void UpdateInstaller::setObserver(UpdateObserver* observer)
 
 void UpdateInstaller::restartMainApp()
 {
-	LOG(Warn,"Restarting main app not implemented");
+	LOG(Info,"restarting main app");
+	std::string command;
+	std::list<std::string> args;
+
+	for (std::vector<UpdateScriptFile>::const_iterator iter = m_script->filesToInstall().begin();
+	     iter != m_script->filesToInstall().end();
+	     iter++)
+	{
+		if (iter->isMainBinary)
+		{
+			command = m_installDir + '/' + iter->path;
+		}
+	}
+
+	if (!command.empty())
+	{
+		LOG(Info,"Starting main application " + command);
+		ProcessUtils::runAsync(command,args);
+	}
+	else
+	{
+		LOG(Error,"No main binary specified in update script");
+	}
 }
 
