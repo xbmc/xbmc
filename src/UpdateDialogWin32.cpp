@@ -62,7 +62,6 @@ UpdateDialogWin32::UpdateDialogWin32()
 	registerWindowClass();
 }
 
-
 UpdateDialogWin32::~UpdateDialogWin32()
 {
 	for (std::map<HWND,UpdateDialogWin32*>::iterator iter = windowDialogMap.begin();
