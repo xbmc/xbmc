@@ -19,6 +19,9 @@ class UpdateDialogCocoa : public UpdateObserver
 		virtual void updateProgress(int percentage);
 		virtual void updateFinished();
 
+		static void* createAutoreleasePool();
+		static void releaseAutoreleasePool(void* data);
+
 	private:
 		UpdateDialogPrivate* d;
 };

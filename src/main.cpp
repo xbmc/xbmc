@@ -20,6 +20,12 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer);
 
 void runUpdaterThread(void* arg)
 {
+#ifdef PLATFORM_MAC
+	// create an autorelease pool to free any temporary objects
+	// created by Cocoa whilst handling notifications from the UpdateInstaller
+	void* pool = UpdateDialogCocoa::createAutoreleasePool();
+#endif
+
 	try
 	{
 		UpdateInstaller* installer = static_cast<UpdateInstaller*>(arg);
@@ -29,6 +35,10 @@ void runUpdaterThread(void* arg)
 	{
 		LOG(Error,"Unexpected exception " + std::string(ex.what()));
 	}
+
+#ifdef PLATFORM_MAC
+	UpdateDialogCocoa::releaseAutoreleasePool(pool);
+#endif
 }
 
 int main(int argc, char** argv)

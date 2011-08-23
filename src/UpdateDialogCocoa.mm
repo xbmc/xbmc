@@ -137,4 +137,14 @@ void UpdateDialogCocoa::updateFinished()
 	             waitUntilDone:false];
 }
 
+void* UpdateDialogCocoa::createAutoreleasePool()
+{
+	return [[NSAutoreleasePool alloc] init];
+}
+
+void UpdateDialogCocoa::releaseAutoreleasePool(void* arg)
+{
+	[(id)arg release];
+}
+
 
