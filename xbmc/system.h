@@ -117,6 +117,7 @@
   #endif
   #define HAS_ZEROCONF
   #define HAS_LINUX_NETWORK
+  #define HAS_AIRPLAY
 #endif
 
 /*****************
@@ -146,6 +147,7 @@
 #ifdef HAVE_LIBXRANDR
 #define HAS_XRANDR
 #endif
+#define HAS_AIRPLAY
 #endif
 
 #ifdef HAVE_LIBSSH

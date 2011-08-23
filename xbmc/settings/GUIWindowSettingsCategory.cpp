@@ -1348,6 +1348,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
       CZeroconf::GetInstance()->Start();
 #endif
   }
+  else if (strSetting.Equals("services.airplay"))
+  {  
+#ifdef HAS_AIRPLAY
+    g_application.StopAirplayServer(true);
+    if (g_guiSettings.GetBool("services.airplay"))
+      g_application.StartAirplayServer();
+#endif         
+  }
   else if (strSetting.Equals("network.ipaddress"))
   {
     if (g_guiSettings.GetInt("network.assignment") == NETWORK_STATIC)
