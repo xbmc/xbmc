@@ -7,6 +7,8 @@
  #include <dirent.h>
 #endif
 
+#include <string.h>
+
 bool endsWith(const std::string& str, const char* text)
 {
 	int length = strlen(text);
