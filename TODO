@@ -17,6 +17,7 @@ General Updater Tasks:
  * Retry/cancel support if updater cannot overwrite file (eg. due to
    file being in use by Microsoft Word or another application)
  * Write log file entries to an actual log file
+ * Fix package dir cleanup failing on Win32 due to executable being in use
    
 Mendeley-specific Updater Tasks:
  * Use the Mendeley icon for the window on Windows
