@@ -214,6 +214,8 @@ private:
 class CScroller
 {
 public:
+  enum ESCROLLSTATE { NOT_SCROLLING = 0, SCROLLING, SCROLL_FINISHED };
+
   CScroller(unsigned int duration = 200, Tweener *tweener = NULL);
   CScroller(const CScroller& right);
   const CScroller &operator=(const CScroller &src);
@@ -234,7 +236,7 @@ public:
    * @param time time point
    * @return True if we are scrolling at given time point
    */
-  bool Update(unsigned int time);
+  ESCROLLSTATE Update(unsigned int time);
 
   /**
    * Value of scroll
