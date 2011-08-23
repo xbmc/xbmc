@@ -10,6 +10,10 @@
   #include "UpdateDialogGtk.h"
 #endif
 
+#if defined(PLATFORM_MAC)
+  #include "UpdateDialogCocoa.h"
+#endif
+
 #include <iostream>
 
 void runWithUi(int argc, char** argv, UpdateInstaller* installer);
@@ -91,8 +95,13 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 #ifdef PLATFORM_MAC
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
-	// TODO - Cocoa UI
-	installer->run();
+	UpdateDialogCocoa dialog;
+	installer->setObserver(&dialog);
+	dialog.init();
+	tthread::thread updaterThread(runUpdaterThread,installer);
+	dialog.exec();
+	updaterThread.join();
+	installer->restartMainApp();
 }
 #endif
 

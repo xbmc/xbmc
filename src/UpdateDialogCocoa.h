@@ -1,7 +1,25 @@
 #pragma once
 
-class UpdateDialogCocoa
+#include "UpdateObserver.h"
+
+class UpdateDialogPrivate;
+
+class UpdateDialogCocoa : public UpdateObserver
 {
-	// TODO - Update dialog using Cocoa on Mac
+	public:
+		UpdateDialogCocoa();
+		~UpdateDialogCocoa();
+
+		void init();
+		void exec();
+
+		// implements UpdateObserver
+		virtual void updateError(const std::string& errorMessage);
+		virtual bool updateRetryCancel(const std::string& message);
+		virtual void updateProgress(int percentage);
+		virtual void updateFinished();
+
+	private:
+		UpdateDialogPrivate* d;
 };
 
