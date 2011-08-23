@@ -52,5 +52,6 @@ class UpdateDialogWin32 : public UpdateObserver
 		CStatic m_progressLabel;
 		CProgressBar m_progressBar;
 		CButton m_finishButton;
+		bool m_hadError;
 };
 

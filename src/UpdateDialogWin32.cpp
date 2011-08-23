@@ -58,6 +58,7 @@ void registerWindowClass()
 }
 
 UpdateDialogWin32::UpdateDialogWin32()
+: m_hadError(false)
 {
 	registerWindowClass();
 }
@@ -123,6 +124,9 @@ void UpdateDialogWin32::exec()
 
 void UpdateDialogWin32::updateError(const std::string& errorMessage)
 {
+	Message* message = new Message(Message::UpdateFailed);
+	message->message = errorMessage;
+	SendNotifyMessage(m_window.GetHwnd(),WM_USER,reinterpret_cast<WPARAM>(message),0);
 }
 
 bool UpdateDialogWin32::updateRetryCancel(const std::string& message)
@@ -169,13 +173,31 @@ LRESULT WINAPI UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM w
 				switch (message->type)
 				{
 				case Message::UpdateFailed:
+					{
+						m_hadError = true;
+						std::string text = "There was a problem installing the update:\n\n" +
+						                   message->message;
+						MessageBox(m_window.GetHwnd(),text.c_str(),"Update Problem",MB_OK);
+					}
 					break;
 				case Message::UpdateProgress:
 					m_progressBar.SetPos(message->progress);
 					break;
 				case Message::UpdateFinished:
-					m_finishButton.EnableWindow(true);
-					m_progressLabel.SetWindowText("Updates installed.  Click 'Finish' to restart the application.");
+					{
+						std::string message;
+						m_finishButton.EnableWindow(true);
+						if (m_hadError)
+						{
+							message = "Update failed.";
+						}
+						else
+						{
+							message = "Updates installed.";
+						}
+						message += "  Click 'Finish' to restart the application.";
+						m_progressLabel.SetWindowText(message.c_str());
+					}
 					break;
 				}
 				delete message;
