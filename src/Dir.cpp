@@ -21,6 +21,7 @@ Dir::Dir(const char* path)
 
 #ifdef PLATFORM_UNIX
 	m_dir = opendir(path);
+	m_entry = 0;
 #else
 	// to list the contents of a directory, the first
 	// argument to FindFirstFile needs to be a wildcard
