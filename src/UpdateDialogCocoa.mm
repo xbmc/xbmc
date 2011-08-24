@@ -33,10 +33,11 @@ class UpdateDialogPrivate
 }
 - (void) reportUpdateError: (id)arg
 {
-	NSMutableString* message;
+	NSMutableString* message = [[NSMutableString alloc] init];
 	[message appendString:@"There was a problem installing the update: "];
 	[message appendString:arg];
 	[dialog->progressLabel setTitleWithMnemonic: message];
+	[message release];
 }
 - (void) reportUpdateProgress: (id)arg
 {
