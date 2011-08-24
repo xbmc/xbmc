@@ -108,6 +108,7 @@ void UpdateDialogGtk::updateError(const std::string& errorMessage)
 bool UpdateDialogGtk::updateRetryCancel(const std::string& message)
 {
 	// TODO
+	return false;
 }
 
 void UpdateDialogGtk::updateProgress(int percentage)

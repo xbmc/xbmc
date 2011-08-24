@@ -31,7 +31,7 @@ class ProcessUtils
 		static void runElevatedWindows(const std::string& executable,
 		                               const std::list<std::string>& args);
 
-		static int runAsyncUnix(const std::string& executable,
+		static PLATFORM_PID runAsyncUnix(const std::string& executable,
 		                         const std::list<std::string>& args);
 		static void runAsyncWindows(const std::string& executable,
 		                            const std::list<std::string>& args);

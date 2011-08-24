@@ -3,6 +3,9 @@
 #include "TestUtils.h"
 #include "UpdaterOptions.h"
 
+#include <string.h>
+#include <stdlib.h>
+
 void TestUpdaterOptions::testOldFormatArgs()
 {
 	const int argc = 6;

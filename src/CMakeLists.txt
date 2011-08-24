@@ -3,6 +3,10 @@ add_subdirectory(tests)
 
 find_package(Threads REQUIRED)
 
+if (UNIX)
+	add_definitions(-Wall -Werror)
+endif()
+
 include(UsePkgConfig)
 pkgconfig(gtk+-2.0 GTK2_INCLUDE_DIR GTK2_LINK_DIR GTK2_LINK_FLAGS GTK2_CFLAGS)
 
