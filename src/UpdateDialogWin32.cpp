@@ -46,7 +46,7 @@ void registerWindowClass()
 	wcex.lpfnWndProc	= updateDialogWindowProc;
 	wcex.cbClsExtra		= 0;
 	wcex.cbWndExtra		= 0;
-	wcex.hIcon			= 0;
+	wcex.hIcon          = LoadIcon(GetModuleHandle(0),"IDI_APPICON");
 	wcex.hCursor		= LoadCursor(0,IDC_ARROW);
 	wcex.hbrBackground	= (HBRUSH)background;
 	wcex.lpszMenuName	= (LPCTSTR)0;
