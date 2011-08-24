@@ -45,7 +45,7 @@ int ProcessUtils::runSync(const std::string& executable,
 int ProcessUtils::runSyncUnix(const std::string& executable,
 		                        const std::list<std::string>& args)
 {
-	int pid = runAsyncUnix(executable,args);
+	PLATFORM_PID pid = runAsyncUnix(executable,args);
 	int status = 0;
 	waitpid(pid,&status,0);
 	return status;
@@ -124,7 +124,7 @@ void ProcessUtils::runElevatedLinux(const std::string& executable,
 	sudos.push_back("gksudo");
 	sudos.push_back("gksu");
 
-	for (int i=0; i < sudos.size(); i++)
+	for (unsigned int i=0; i < sudos.size(); i++)
 	{
 		const std::string& sudoBinary = sudos.at(i);
 
@@ -312,7 +312,7 @@ void ProcessUtils::runElevatedWindows(const std::string& executable,
 #endif
 
 #ifdef PLATFORM_UNIX
-int ProcessUtils::runAsyncUnix(const std::string& executable,
+PLATFORM_PID ProcessUtils::runAsyncUnix(const std::string& executable,
 						const std::list<std::string>& args)
 {
 	pid_t child = fork();
@@ -339,6 +339,7 @@ int ProcessUtils::runAsyncUnix(const std::string& executable,
 	{
 		LOG(Info,"Started child process " + intToStr(child));
 	}
+	return child;
 }
 #endif
 

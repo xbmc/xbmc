@@ -7,8 +7,8 @@
 
 UpdateInstaller::UpdateInstaller()
 : m_mode(Setup)
-, m_script(0)
 , m_waitPid(0)
+, m_script(0)
 , m_observer(0)
 {
 }
@@ -269,7 +269,6 @@ void UpdateInstaller::removeBackups()
 	std::map<std::string,std::string>::const_iterator iter = m_backups.begin();
 	for (;iter != m_backups.end();iter++)
 	{
-		const std::string& installedFile = iter->first;
 		const std::string& backupFile = iter->second;
 		FileOps::removeFile(backupFile.c_str());
 	}
