@@ -1,6 +1,6 @@
 #include "FileOps.h"
 
-#include "Dir.h"
+#include "DirIterator.h"
 #include "Log.h"
 #include "Platform.h"
 #include "StringUtils.h"
@@ -266,7 +266,7 @@ void FileOps::touch(const char* path) throw (IOException)
 void FileOps::rmdirRecursive(const char* path) throw (IOException)
 {
 	// remove dir contents
-	Dir dir(path);
+	DirIterator dir(path);
 	while (dir.next())
 	{
 		std::string name = dir.fileName();

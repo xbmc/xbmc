@@ -8,11 +8,11 @@
 #include <dirent.h>
 #endif
 
-class Dir
+class DirIterator
 {
 	public:
-		Dir(const char* path);
-		~Dir();
+		DirIterator(const char* path);
+		~DirIterator();
 
 		// iterate to the next entry in the directory
 		bool next();

@@ -21,7 +21,7 @@ endif()
 add_definitions(-DTIXML_USE_STL)
 
 set (SOURCES
-  Dir.cpp
+  DirIterator.cpp
   FileOps.cpp
   Log.cpp
   ProcessUtils.cpp
@@ -41,7 +41,7 @@ if (WIN32)
 endif()
 
 set (HEADERS
-  Dir.h
+  DirIterator.h
   FileOps.h
   Log.h
   ProcessUtils.h

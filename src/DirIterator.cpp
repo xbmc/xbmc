@@ -1,4 +1,4 @@
-#include "Dir.h"
+#include "DirIterator.h"
 
 #include "Log.h"
 #include "StringUtils.h"
@@ -15,7 +15,7 @@ bool endsWith(const std::string& str, const char* text)
 	return str.find(text,str.size() - length) != 0;
 }
 
-Dir::Dir(const char* path)
+DirIterator::DirIterator(const char* path)
 {
 	m_path = path;
 
@@ -37,7 +37,7 @@ Dir::Dir(const char* path)
 #endif
 }
 
-Dir::~Dir()
+DirIterator::~DirIterator()
 {
 #ifdef PLATFORM_UNIX
 	closedir(m_dir);
@@ -46,7 +46,7 @@ Dir::~Dir()
 #endif
 }
 
-bool Dir::next()
+bool DirIterator::next()
 {
 #ifdef PLATFORM_UNIX
 	m_entry = readdir(m_dir);
@@ -66,7 +66,7 @@ bool Dir::next()
 #endif
 }
 
-std::string Dir::fileName() const
+std::string DirIterator::fileName() const
 {
 #ifdef PLATFORM_UNIX
 	return m_entry->d_name;
@@ -75,12 +75,12 @@ std::string Dir::fileName() const
 #endif
 }
 
-std::string Dir::filePath() const
+std::string DirIterator::filePath() const
 {
 	return m_path + '/' + fileName();
 }
 
-bool Dir::isDir() const
+bool DirIterator::isDir() const
 {
 #ifdef PLATFORM_UNIX
 	return m_entry->d_type == DT_DIR;
