@@ -401,4 +401,40 @@ std::string ProcessUtils::currentProcessPath()
 	return fileName;
 #endif
 }
+void ProcessUtils::convertWindowsCommandLine(LPCWSTR commandLine, int& argc, char**& argv)
+{
+	argc = 0;
+	LPWSTR* argvUnicode = CommandLineToArgvW(commandLine,&argc);
 
+	argv = new char*[argc];
+	for (int i=0; i < argc; i++)
+	{
+		const int BUFFER_SIZE = 4096;
+		char buffer[BUFFER_SIZE];
+
+		int length = WideCharToMultiByte(CP_ACP,
+		  0 /* flags */,
+		  argvUnicode[i],
+		  -1, /* argvUnicode is null terminated*/
+		  buffer,
+		  BUFFER_SIZE,
+		  0,
+		  false);
+
+		// note: if WideCharToMultiByte() fails it will return zero,
+		// in which case we store a zero-length argument in argv
+		if (length == 0)
+		{
+			argv[i] = new char[1];
+			argv[i][0] = '\0';
+		}
+		else
+		{
+			// if the input string to WideCharToMultiByte is null-terminated,
+			// the output is also null-terminated
+			argv[i] = new char[length];
+			strncpy(argv[i],buffer,length);
+		}
+	}
+	LocalFree(argvUnicode);
+}

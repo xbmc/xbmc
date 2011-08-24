@@ -82,9 +82,11 @@ if (UNIX)
   target_link_libraries(updatershared pthread)
 endif()
 
-add_executable(updater
-  main.cpp
-)
+if (WIN32)
+	set(EXE_FLAGS WIN32)
+endif()
+
+add_executable(updater ${EXE_FLAGS} main.cpp)
 
 if(APPLE)
 	set_target_properties(

@@ -1,5 +1,6 @@
 #include "Log.h"
 #include "Platform.h"
+#include "ProcessUtils.h"
 #include "StringUtils.h"
 #include "UpdateScript.h"
 #include "UpdaterOptions.h"
@@ -120,6 +121,18 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 #endif
 
 #ifdef PLATFORM_WINDOWS
+// application entry point under Windows
+int CALLBACK WinMain(HINSTANCE hInstance,
+                     HINSTANCE hPrevInstance,
+                     LPSTR lpCmdLine,
+                     int nCmdShow)
+{
+	int argc = 0;
+	char** argv;
+	ProcessUtils::convertWindowsCommandLine(GetCommandLineW(),argc,argv);
+	return main(argc,argv);
+}
+
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
 	UpdateDialogWin32 dialog;
