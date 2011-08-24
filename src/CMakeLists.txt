@@ -83,7 +83,7 @@ if (UNIX)
 endif()
 
 if (WIN32)
-	set(EXE_FLAGS WIN32)
+	set(EXE_FLAGS WIN32 resources/updater.rc)
 endif()
 
 add_executable(updater ${EXE_FLAGS} main.cpp)
