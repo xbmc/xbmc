@@ -195,7 +195,7 @@ void ProcessUtils::runElevatedMac(const std::string& executable,
 			char** argv;
 			argv = (char**) malloc(sizeof(char*) * args.size() + 1);
 		
-			int i = 0;
+			unsigned int i = 0;
 			for (std::list<std::string>::const_iterator iter = args.begin(); iter != args.end(); iter++)
 			{
 				argv[i] = strdup(iter->c_str());

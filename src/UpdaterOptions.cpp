@@ -43,7 +43,7 @@ UpdateInstaller::Mode stringToMode(const std::string& modeStr)
 
 void UpdaterOptions::parseOldFormatArg(const std::string& arg, std::string* key, std::string* value)
 {
-	unsigned int pos = arg.find('=');
+	size_t pos = arg.find('=');
 	if (pos != std::string::npos)
 	{
 		*key = arg.substr(0,pos);

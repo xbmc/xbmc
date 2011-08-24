@@ -18,12 +18,18 @@
 class UpdateDialogPrivate
 {
 	public:
+		UpdateDialogPrivate()
+		: hadError(false)
+		{
+		}
+
 		UpdateDialogDelegate* delegate;
 		NSAutoreleasePool* pool;
 		NSWindow* window;
 		NSButton* finishButton;
 		NSTextField* progressLabel;
 		NSProgressIndicator* progressBar;
+		bool hadError;
 };
 
 @implementation UpdateDialogDelegate
@@ -33,10 +39,19 @@ class UpdateDialogPrivate
 }
 - (void) reportUpdateError: (id)arg
 {
-	NSMutableString* message;
-	[message appendString:@"There was a problem installing the update: "];
+	dialog->hadError = true;
+	NSMutableString* message = [[NSMutableString alloc] init];
+	[message appendString:@"There was a problem installing the update:\n"];
 	[message appendString:arg];
-	[dialog->progressLabel setTitleWithMnemonic: message];
+
+	NSAlert* alert = [NSAlert 
+		alertWithMessageText: @"Update Problem"
+	    defaultButton: nil
+	    alternateButton: nil
+	    otherButton: nil
+	    informativeTextWithFormat: message];
+	[alert runModal];
+	[message release];
 }
 - (void) reportUpdateProgress: (id)arg
 {
@@ -45,7 +60,19 @@ class UpdateDialogPrivate
 }
 - (void) reportUpdateFinished: (id)arg
 {
-	[dialog->progressLabel setTitleWithMnemonic:@"Updates installed.  Click 'Finish' to restart the application."];
+	NSMutableString* message = [[NSMutableString alloc] init];
+	if (!dialog->hadError)
+	{
+		[message appendString:@"Updates installed."];
+	}
+	else
+	{
+		[message appendString:@"Update failed."];
+	}
+
+	[message appendString:@"  Click 'Finish' to restart the application."];	
+	[dialog->progressLabel setTitleWithMnemonic:message];
+	[message release];
 }
 @end
 
@@ -120,6 +147,7 @@ void UpdateDialogCocoa::updateError(const std::string& errorMessage)
 bool UpdateDialogCocoa::updateRetryCancel(const std::string& message)
 {
 	// TODO
+	return false;
 }
 
 void UpdateDialogCocoa::updateProgress(int percentage)
