@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Platform.h"
 #include "UpdateScript.h"
 
 #include <list>
@@ -24,7 +25,7 @@ class UpdateInstaller
 		void setBackupDir(const std::string& path);
 		void setMode(Mode mode);
 		void setScript(UpdateScript* script);
-		void setWaitPid(long long pid);
+		void setWaitPid(PLATFORM_PID pid);
 
 		void setObserver(UpdateObserver* observer);
 
@@ -49,7 +50,7 @@ class UpdateInstaller
 		std::string m_installDir;
 		std::string m_packageDir;
 		std::string m_backupDir;
-		long long m_waitPid;
+		PLATFORM_PID m_waitPid;
 		UpdateScript* m_script;
 		UpdateObserver* m_observer;
 		std::map<std::string,std::string> m_backups;

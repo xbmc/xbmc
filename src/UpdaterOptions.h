@@ -13,7 +13,7 @@ class UpdaterOptions
 		std::string installDir;
 		std::string packageDir;
 		std::string scriptPath;
-		long long waitPid;
+		PLATFORM_PID waitPid;
 		std::string logFile;
 
 	private:

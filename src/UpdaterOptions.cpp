@@ -78,7 +78,7 @@ void UpdaterOptions::parseOldFormatArgs(int argc, char** argv)
 		}
 		else if (key == "PID")
 		{
-			waitPid = atoll(value.c_str());
+			waitPid = static_cast<PLATFORM_PID>(atoll(value.c_str()));
 		}
 		else if (key == "--main")
 		{
@@ -120,7 +120,7 @@ void UpdaterOptions::parse(int argc, char** argv)
 	}
 	if (parser.getValue("wait"))
 	{
-		waitPid = atoll(parser.getValue("wait"));
+		waitPid = static_cast<PLATFORM_PID>(atoll(parser.getValue("wait")));
 	}
 	
 	if (installDir.empty())

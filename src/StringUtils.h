@@ -4,7 +4,8 @@
 #include <sstream>
 #include <stdlib.h>
 
-inline std::string intToStr(int i)
+template <class T>
+inline std::string intToStr(T i)
 {
 	std::stringstream stream;
 	stream << i;

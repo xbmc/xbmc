@@ -4,7 +4,7 @@ add_subdirectory(tests)
 find_package(Threads REQUIRED)
 
 if (UNIX)
-	add_definitions(-Wall -Werror)
+	add_definitions(-Wall -Werror -Wconversion)
 endif()
 
 include(UsePkgConfig)

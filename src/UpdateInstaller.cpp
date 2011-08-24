@@ -13,7 +13,7 @@ UpdateInstaller::UpdateInstaller()
 {
 }
 
-void UpdateInstaller::setWaitPid(long long pid)
+void UpdateInstaller::setWaitPid(PLATFORM_PID pid)
 {
 	m_waitPid = pid;
 }
@@ -228,7 +228,8 @@ void UpdateInstaller::installFiles()
 		++filesInstalled;
 		if (m_observer)
 		{
-			m_observer->updateProgress(static_cast<float>(filesInstalled) / m_script->filesToInstall().size() * 100);
+			double percentage = filesInstalled / (m_script->filesToInstall().size() * 100.0);
+			m_observer->updateProgress(static_cast<int>(percentage));
 		}
 	}
 }
