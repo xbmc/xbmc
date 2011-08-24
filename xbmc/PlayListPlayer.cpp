@@ -426,7 +426,7 @@ bool CPlayListPlayer::RepeatedOne(int iPlaylist) const
   return false;
 }
 
-void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
+void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo, bool bNotify /* = false */)
 {
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
@@ -449,6 +449,13 @@ void CPlayListPlayer::SetShuffle(int iPlaylist, bool bYesNo)
       playlist.Shuffle();
     else
       playlist.UnShuffle();
+
+    if (bNotify)
+    {
+      CStdString shuffleStr;
+      shuffleStr.Format("%s: %s", g_localizeStrings.Get(191), g_localizeStrings.Get(bYesNo ? 593 : 591)); // Shuffle: All/Off
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559),  shuffleStr);
+    }
 
     // find the previous order value and fix the current song marker
     if (iOrder >= 0)

@@ -729,7 +729,10 @@ int CBuiltins::Execute(const CStdString& execString)
       bool shuffled = g_playlistPlayer.IsShuffled(iPlaylist);
       if ((shuffled && parameter.Equals("randomon")) || (!shuffled && parameter.Equals("randomoff")))
         return 0;
-      g_playlistPlayer.SetShuffle(iPlaylist, !shuffled);
+
+      // check to see if we should notify the user
+      bool notify = (params.size() == 2 && params[1].Equals("notify"));
+      g_playlistPlayer.SetShuffle(iPlaylist, !shuffled, notify);
 
       // save settings for now playing windows
       switch (iPlaylist)

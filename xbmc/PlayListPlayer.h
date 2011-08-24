@@ -126,9 +126,10 @@ public:
    Has no effect if Party Mode is enabled.
    \param playlist the playlist to (un)shuffle, PLAYLIST_MUSIC or PLAYLIST_VIDEO.
    \param shuffle set true to shuffle, false to unshuffle.
+   \param notify notify the user with a Toast notification (defaults to false)
    \sa IsShuffled
    */
-  void SetShuffle(int playlist, bool shuffle);
+  void SetShuffle(int playlist, bool shuffle, bool notify = false);
   
   /*! \brief Return whether a playlist is shuffled.
    If partymode is enabled, this always returns false.
