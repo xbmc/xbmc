@@ -31,5 +31,6 @@ class UpdateDialogGtk : public UpdateObserver
 		GtkWidget* m_finishButton;
 		GtkWidget* m_progressBar;
 		bool m_restartApp;
+		bool m_hadError;
 };
 

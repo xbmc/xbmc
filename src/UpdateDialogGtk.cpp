@@ -8,6 +8,7 @@
 
 UpdateDialogGtk::UpdateDialogGtk()
 : m_restartApp(false)
+, m_hadError(false)
 {
 }
 
@@ -81,14 +82,35 @@ gboolean UpdateDialogGtk::notify(void* _message)
 			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(dialog->m_progressBar),message->progress/100.0);
 			break;
 		case UpdateMessage::UpdateFailed:
-			gtk_label_set_text(GTK_LABEL(dialog->m_progressLabel),
-			  ("There was a problem installing the update: " + message->message).c_str());;
-			gtk_widget_set_sensitive(dialog->m_finishButton,true);
+			{
+				dialog->m_hadError = true;
+				std::string errorMessage = "There was a problem installing the update:\n\n" + message->message;
+				GtkWidget* errorDialog = gtk_message_dialog_new (GTK_WINDOW(dialog->m_window),
+						GTK_DIALOG_DESTROY_WITH_PARENT,
+						GTK_MESSAGE_ERROR,
+						GTK_BUTTONS_CLOSE,
+						"%s",
+						errorMessage.c_str());
+				gtk_dialog_run (GTK_DIALOG (errorDialog));
+				gtk_widget_destroy (errorDialog);
+				gtk_widget_set_sensitive(dialog->m_finishButton,true);
+			}
 			break;
 		case UpdateMessage::UpdateFinished:
-			gtk_label_set_text(GTK_LABEL(dialog->m_progressLabel),
-			  "Update installed.  Click 'Finish' to restart the application.");
-			gtk_widget_set_sensitive(dialog->m_finishButton,true);
+			{
+				std::string message;
+				if (dialog->m_hadError)
+				{
+					message = "Update failed.";
+				}
+				else
+				{
+					message = "Update installed.";
+				}
+				message += "  Click 'Finish' to restart the application.";
+				gtk_label_set_text(GTK_LABEL(dialog->m_progressLabel),message.c_str());
+				gtk_widget_set_sensitive(dialog->m_finishButton,true);
+			}
 			break;
 	}
 	delete message;
