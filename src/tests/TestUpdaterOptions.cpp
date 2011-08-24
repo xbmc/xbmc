@@ -7,12 +7,12 @@ void TestUpdaterOptions::testOldFormatArgs()
 {
 	const int argc = 6;
 	char* argv[argc];
-	argv[0] = "updater";
-	argv[1] = "CurrentDir=/path/to/app";
-	argv[2] = "TempDir=/tmp/updater";
-	argv[3] = "UpdateScriptFileName=/tmp/updater/file_list.xml";
-	argv[4] = "AppFileName=/path/to/app/theapp";
-	argv[5] = "PID=123456";
+	argv[0] = strdup("updater");
+	argv[1] = strdup("CurrentDir=/path/to/app");
+	argv[2] = strdup("TempDir=/tmp/updater");
+	argv[3] = strdup("UpdateScriptFileName=/tmp/updater/file_list.xml");
+	argv[4] = strdup("AppFileName=/path/to/app/theapp");
+	argv[5] = strdup("PID=123456");
 
 	UpdaterOptions options;
 	options.parse(argc,argv);
@@ -22,6 +22,11 @@ void TestUpdaterOptions::testOldFormatArgs()
 	TEST_COMPARE(options.packageDir,"/tmp/updater");
 	TEST_COMPARE(options.scriptPath,"/tmp/updater/file_list.xml");
 	TEST_COMPARE(options.waitPid,123456);
+
+	for (int i=0; i < argc; i++)
+	{
+		free(argv[i]);
+	}
 }
 
 int main(int,char**)
