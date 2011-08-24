@@ -481,7 +481,7 @@ bool CPlayListPlayer::IsShuffled(int iPlaylist) const
   return false;
 }
 
-void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
+void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state, bool bNotify /* = false */)
 {
   if (iPlaylist != PLAYLIST_MUSIC && iPlaylist != PLAYLIST_VIDEO)
     return;
@@ -489,6 +489,19 @@ void CPlayListPlayer::SetRepeat(int iPlaylist, REPEAT_STATE state)
   // disable repeat in party mode
   if (g_partyModeManager.IsEnabled() && iPlaylist == PLAYLIST_MUSIC)
     state = REPEAT_NONE;
+
+  // notify the user if there was a change in the repeat state
+  if (m_repeatState[iPlaylist] != state && bNotify)
+  {
+    int iLocalizedString;
+    if (state == REPEAT_NONE)
+      iLocalizedString = 595; // Repeat: Off
+    else if (state == REPEAT_ONE)
+      iLocalizedString = 596; // Repeat: One
+    else
+      iLocalizedString = 597; // Repeat: All
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(559), g_localizeStrings.Get(iLocalizedString));
+  }
 
   m_repeatState[iPlaylist] = state;
 }

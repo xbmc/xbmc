@@ -773,7 +773,10 @@ int CBuiltins::Execute(const CStdString& execString)
 
       if (state == previous_state)
         return 0;
-      g_playlistPlayer.SetRepeat(iPlaylist, state);
+
+      // check to see if we should notify the user
+      bool notify = (params.size() == 2 && params[1].Equals("notify"));
+      g_playlistPlayer.SetRepeat(iPlaylist, state, notify);
 
       // save settings for now playing windows
       switch (iPlaylist)
