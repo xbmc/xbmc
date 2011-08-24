@@ -19,12 +19,17 @@ General Updater Tasks:
    file being in use by Microsoft Word or another application)
  * Write log file entries to an actual log file [partially done - needs to write to correct location]
  * Fix package dir cleanup failing on Win32 due to executable being in use
+ * Test updater on an old Windows system without Visual Studio installed and statically
+   link C++ runtime libraries if necessary
    
 Mendeley-specific Updater Tasks:
  * Use the Mendeley icon for the window on Windows
- * Use the Mendeley icon for the window on Mac
+ * Use the Mendeley icon for the window on Mac (N/A? - No icon in window decorations on Mac) 
  * Use the Mendeley icon for the window on Linux
  * Use the Mendeley icon for the binary on Windows
+
+ * Advise the user to download Mendeley Desktop afresh from http://www.mendeley.com/download-mendeley-desktop
+   in the event of an updater problem
 
 Mendeley Desktop <= 1.0 auto-update system compatibility:
 
@@ -37,6 +42,13 @@ Auto-update preparation tools:
    upload them to S3
  * Tool to generate backwards-compatible structure for XML file
  * Tool to generate new structure for XML file
+
+Nice To Have
+============
+
+Telemetry:
+ * Call a project-specific URL to report successful/failed update installation
+   and starting of new app after update
 
 Source:
  * Ensure no Mendeley branding in standalone project and publish code
