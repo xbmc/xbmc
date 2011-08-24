@@ -234,7 +234,7 @@ public:
   /**
    * Update the scroller to where it would be at the given time point, calculating a new Value.
    * @param time time point
-   * @return True if we are scrolling at given time point
+   * @return CScroller::SCROLLING if we are scrolling at given time point, CScroller::SCROLL_FINISHED if scrolling just finished or CScroller::NOT_SCROLLING if not scrolling
    */
   ESCROLLSTATE Update(unsigned int time);
 
