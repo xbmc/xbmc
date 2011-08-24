@@ -29,6 +29,12 @@ set (SOURCES
 if (ENABLE_GTK)
 	set(SOURCES ${SOURCES} UpdateDialogGtk.cpp)
 endif()
+if (APPLE)
+	set(SOURCES ${SOURCES} UpdateDialogCocoa.mm)
+endif()
+if (WIN32)
+	set(SOURCES ${SOURCES} UpdateDialogWin32.cpp)
+endif()
 
 set (HEADERS
   Dir.h
@@ -42,6 +48,12 @@ set (HEADERS
 
 if (ENABLE_GTK)
 	set(HEADERS ${HEADERS} UpdateDialogGtk.h)
+endif()
+if (APPLE)
+	set(HEADERS ${HEADERS} UpdateDialogCocoa.h)
+endif()
+if (WIN32)
+    set(HEADERS ${HEADERS} UpdateDialogWin32.h)
 endif()
 
 add_library(updatershared
@@ -73,7 +85,7 @@ add_executable(updater
 if(APPLE)
 	set_target_properties(
 		updater
-		PROPERTIES LINK_FLAGS "-framework Security"
+		PROPERTIES LINK_FLAGS "-framework Security -framework Cocoa"
 	)
 endif()
 

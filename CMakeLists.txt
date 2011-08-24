@@ -7,6 +7,7 @@ include_directories(external/TinyThread/source)
 
 if (WIN32)
 include_directories(external/zlib/)
+include_directories(external/win32cpp/include)
 endif()
 
 add_subdirectory(src)

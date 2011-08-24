@@ -1,20 +1,29 @@
-Updater Tasks:
+General Updater Tasks:
 
- * Elevation for Linux [done - needs testing]
+ * Elevation for Linux [done]
  * Set file permissions for Unix [done]
  * Elevation for Mac [done]
  * Basic functionality for Mac [done]
  * Unit test working under Mac [done]
- * Set file permissions for Windows
- * Basic functionality for Windows
- * Elevation for Windows
- * Win32 UI for Windows
- * Cocoa UI for Mac
- * Gtk or Qt UI for Linux
+ * Set file permissions for Windows [skipped for now]
+ * Basic functionality for Windows [done]
+ * Elevation for Windows [done]
+ * Win32 UI for Windows [done]
+ * Cocoa UI for Mac [done]
+ * Gtk or Qt UI for Linux [done - GTK UI]
+ * Unit test working under Windows [done]
+ * Start new application once installation is finished [done]
+ 
  * Retry/cancel support if updater cannot overwrite file (eg. due to
    file being in use by Microsoft Word or another application)
- * Unit test working under Windows
- * Start new application once installation is finished
+ * Write log file entries to an actual log file
+ * Fix package dir cleanup failing on Win32 due to executable being in use
+   
+Mendeley-specific Updater Tasks:
+ * Use the Mendeley icon for the window on Windows
+ * Use the Mendeley icon for the window on Mac
+ * Use the Mendeley icon for the window on Linux
+ * Use the Mendeley icon for the binary on Windows
 
 Mendeley Desktop <= 1.0 auto-update system compatibility:
 
@@ -28,3 +37,5 @@ Auto-update preparation tools:
  * Tool to generate backwards-compatible structure for XML file
  * Tool to generate new structure for XML file
 
+Source:
+ * Ensure no Mendeley branding in standalone project and publish code

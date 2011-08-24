@@ -1,0 +1,7 @@
+This software provides a DataGrid control.
+It was written by Darkoman. It was downloaded from CodeProject at:
+http://www.codeproject.com/KB/miscctrl/DataGridControl.aspx
+
+This software remains the property of the author (Darkoman). Refer to the 
+original download  site to ensure your use of the software is consistant
+with any copyright or license.

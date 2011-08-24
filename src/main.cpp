@@ -10,12 +10,26 @@
   #include "UpdateDialogGtk.h"
 #endif
 
+#if defined(PLATFORM_MAC)
+  #include "UpdateDialogCocoa.h"
+#endif
+
+#if defined(PLATFORM_WINDOWS)
+  #include "UpdateDialogWin32.h"
+#endif
+
 #include <iostream>
 
 void runWithUi(int argc, char** argv, UpdateInstaller* installer);
 
 void runUpdaterThread(void* arg)
 {
+#ifdef PLATFORM_MAC
+	// create an autorelease pool to free any temporary objects
+	// created by Cocoa whilst handling notifications from the UpdateInstaller
+	void* pool = UpdateDialogCocoa::createAutoreleasePool();
+#endif
+
 	try
 	{
 		UpdateInstaller* installer = static_cast<UpdateInstaller*>(arg);
@@ -25,6 +39,10 @@ void runUpdaterThread(void* arg)
 	{
 		LOG(Error,"Unexpected exception " + std::string(ex.what()));
 	}
+
+#ifdef PLATFORM_MAC
+	UpdateDialogCocoa::releaseAutoreleasePool(pool);
+#endif
 }
 
 int main(int argc, char** argv)
@@ -91,15 +109,25 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 #ifdef PLATFORM_MAC
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
-	// TODO - Cocoa UI
-	installer->run();
+	UpdateDialogCocoa dialog;
+	installer->setObserver(&dialog);
+	dialog.init();
+	tthread::thread updaterThread(runUpdaterThread,installer);
+	dialog.exec();
+	updaterThread.join();
+	installer->restartMainApp();
 }
 #endif
 
 #ifdef PLATFORM_WINDOWS
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
-	// TODO - Windows UI
-	installer->run();
+	UpdateDialogWin32 dialog;
+	installer->setObserver(&dialog);
+	dialog.init();
+	tthread::thread updaterThread(runUpdaterThread,installer);
+	dialog.exec();
+	updaterThread.join();
+	installer->restartMainApp();
 }
 #endif
