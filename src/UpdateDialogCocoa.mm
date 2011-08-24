@@ -70,8 +70,7 @@ void UpdateDialogCocoa::init()
 	int height = 100;
 
 	d->window = [[NSWindow alloc] initWithContentRect:NSMakeRect(200, 200, width, height)
-	        styleMask:NSTitledWindowMask | NSClosableWindowMask |
-		              NSMiniaturizableWindowMask
+	        styleMask:NSTitledWindowMask | NSMiniaturizableWindowMask
 	        backing:NSBackingStoreBuffered defer:NO];
 	[d->window setTitle:@"Mendeley Updater"];
 

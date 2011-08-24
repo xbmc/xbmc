@@ -10,6 +10,10 @@ include_directories(external/zlib/)
 include_directories(external/win32cpp/include)
 endif()
 
+if (APPLE)
+	set(CMAKE_OSX_ARCHITECTURES i386;x86_64)
+endif()
+
 add_subdirectory(src)
 add_subdirectory(external/AnyOption)
 add_subdirectory(external/minizip)

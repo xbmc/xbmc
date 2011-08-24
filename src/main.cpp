@@ -54,15 +54,15 @@ int main(int argc, char** argv)
 	UpdateInstaller installer;
 	UpdateScript script;
 
-	if (!options.script.empty())
+	if (!options.scriptPath.empty())
 	{
-		script.parse(options.script);
+		script.parse(options.scriptPath);
 	}
 
 	LOG(Info,"started updater. install-dir: " + options.installDir
 	         + ", package-dir: " + options.packageDir
 	         + ", wait-pid: " + intToStr(options.waitPid)
-	         + ", script-path: " + options.script
+	         + ", script-path: " + options.scriptPath
 	         + ", mode: " + intToStr(options.mode));
 
 	installer.setMode(options.mode);
