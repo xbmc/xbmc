@@ -43,6 +43,7 @@ class UpdateInstaller
 		void uninstallFiles();
 		void installFile(const UpdateScriptFile& file);
 		void backupFile(const std::string& path);
+		void reportError(const std::string& error);
 
 		std::list<std::string> updaterArgs() const;
 

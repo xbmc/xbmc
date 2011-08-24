@@ -55,8 +55,27 @@ std::list<std::string> UpdateInstaller::updaterArgs() const
 	return args;
 }
 
+void UpdateInstaller::reportError(const std::string& error)
+{
+	if (m_observer)
+	{
+		m_observer->updateError(error);
+	}
+}
+
 void UpdateInstaller::run() throw ()
 {
+	if (!m_script || !m_script->isValid())
+	{
+		reportError("Unable to read update script");
+		return;
+	}
+	if (m_installDir.empty())
+	{
+		reportError("No installation directory specified");
+		return;
+	}
+
 	std::string updaterPath;
 	try
 	{

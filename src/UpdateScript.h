@@ -57,6 +57,7 @@ class UpdateScript
 
 		void parse(const std::string& path);
 
+		bool isValid() const;
 		const std::string path() const;
 		const std::vector<std::string>& dependencies() const;
 		const std::vector<UpdateScriptPackage>& packages() const;

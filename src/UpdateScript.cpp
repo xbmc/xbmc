@@ -11,6 +11,8 @@ UpdateScript::UpdateScript()
 
 void UpdateScript::parse(const std::string& path)
 {
+	m_path.clear();
+
 	TiXmlDocument document(path);
 	if (document.LoadFile())
 	{
@@ -36,6 +38,11 @@ void UpdateScript::parse(const std::string& path)
 	{
 		LOG(Error,"Unable to load script " + path);
 	}
+}
+
+bool UpdateScript::isValid() const
+{
+	return !m_path.empty();
 }
 
 void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
