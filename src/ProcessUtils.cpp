@@ -280,7 +280,7 @@ void ProcessUtils::runElevatedWindows(const std::string& executable,
 	{
 		std::string arg = *iter;
 
-		if (arg.at(0) != '"' && arg.at(arg.size()-1) != '"')
+		if (!arg.empty() && arg.at(0) != '"' && arg.at(arg.size()-1) != '"')
         {
 			arg.insert(0,"\"");
 			arg.append("\"");
