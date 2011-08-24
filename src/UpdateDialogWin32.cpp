@@ -124,7 +124,7 @@ void UpdateDialogWin32::exec()
 
 void UpdateDialogWin32::updateError(const std::string& errorMessage)
 {
-	Message* message = new Message(Message::UpdateFailed);
+	UpdateMessage* message = new UpdateMessage(UpdateMessage::UpdateFailed);
 	message->message = errorMessage;
 	SendNotifyMessage(m_window.GetHwnd(),WM_USER,reinterpret_cast<WPARAM>(message),0);
 }
@@ -136,14 +136,14 @@ bool UpdateDialogWin32::updateRetryCancel(const std::string& message)
 
 void UpdateDialogWin32::updateProgress(int percentage)
 {
-	Message* message = new Message(Message::UpdateProgress);
+	UpdateMessage* message = new UpdateMessage(UpdateMessage::UpdateProgress);
 	message->progress = percentage;
 	SendNotifyMessage(m_window.GetHwnd(),WM_USER,reinterpret_cast<WPARAM>(message),0);
 }
 
 void UpdateDialogWin32::updateFinished()
 {
-	Message* message = new Message(Message::UpdateFinished);
+	UpdateMessage* message = new UpdateMessage(UpdateMessage::UpdateFinished);
 	SendNotifyMessage(m_window.GetHwnd(),WM_USER,reinterpret_cast<WPARAM>(message),0);
 }
 
@@ -169,10 +169,10 @@ LRESULT WINAPI UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM w
 		{
 			if (window == m_window.GetHwnd())
 			{
-				Message* message = reinterpret_cast<Message*>(wParam);
+				UpdateMessage* message = reinterpret_cast<UpdateMessage*>(wParam);
 				switch (message->type)
 				{
-				case Message::UpdateFailed:
+				case UpdateMessage::UpdateFailed:
 					{
 						m_hadError = true;
 						std::string text = "There was a problem installing the update:\n\n" +
@@ -180,10 +180,10 @@ LRESULT WINAPI UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM w
 						MessageBox(m_window.GetHwnd(),text.c_str(),"Update Problem",MB_OK);
 					}
 					break;
-				case Message::UpdateProgress:
+				case UpdateMessage::UpdateProgress:
 					m_progressBar.SetPos(message->progress);
 					break;
-				case Message::UpdateFinished:
+				case UpdateMessage::UpdateFinished:
 					{
 						std::string message;
 						m_finishButton.EnableWindow(true);

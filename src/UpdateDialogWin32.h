@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Platform.h"
+#include "UpdateMessage.h"
 #include "UpdateObserver.h"
 
 #include "wincore.h"
@@ -25,26 +26,6 @@ class UpdateDialogWin32 : public UpdateObserver
 		LRESULT WINAPI windowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
 
 	private:
-		struct Message
-		{
-			enum Type
-			{
-				UpdateFailed,
-				UpdateProgress,
-				UpdateFinished
-			};
-
-			Message(Type _type)
-			: type(_type)
-			, progress(0)
-			{
-			}
-
-			Type type;
-			std::string message;
-			int progress;
-		};
-
 		void installWindowProc(CWnd* window);
 
 		CWinApp m_app;

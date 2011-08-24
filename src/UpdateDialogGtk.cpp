@@ -73,21 +73,22 @@ void UpdateDialogGtk::finish(GtkWidget* widget, gpointer _dialog)
 
 gboolean UpdateDialogGtk::notify(void* _message)
 {
-	Message* message = static_cast<Message*>(_message);
+	UpdateMessage* message = static_cast<UpdateMessage*>(_message);
+	UpdateDialogGtk* dialog = static_cast<UpdateDialogGtk*>(message->receiver);
 	switch (message->type)
 	{
-		case Message::UpdateProgress:
-			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(message->dialog->m_progressBar),message->progress/100.0);
+		case UpdateMessage::UpdateProgress:
+			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(dialog->m_progressBar),message->progress/100.0);
 			break;
-		case Message::UpdateFailed:
-			gtk_label_set_text(GTK_LABEL(message->dialog->m_progressLabel),
+		case UpdateMessage::UpdateFailed:
+			gtk_label_set_text(GTK_LABEL(dialog->m_progressLabel),
 			  ("There was a problem installing the update: " + message->message).c_str());;
-			gtk_widget_set_sensitive(message->dialog->m_finishButton,true);
+			gtk_widget_set_sensitive(dialog->m_finishButton,true);
 			break;
-		case Message::UpdateFinished:
-			gtk_label_set_text(GTK_LABEL(message->dialog->m_progressLabel),
+		case UpdateMessage::UpdateFinished:
+			gtk_label_set_text(GTK_LABEL(dialog->m_progressLabel),
 			  "Update installed.  Click 'Finish' to restart the application.");
-			gtk_widget_set_sensitive(message->dialog->m_finishButton,true);
+			gtk_widget_set_sensitive(dialog->m_finishButton,true);
 			break;
 	}
 	delete message;
@@ -99,7 +100,7 @@ gboolean UpdateDialogGtk::notify(void* _message)
 // callbacks during update installation
 void UpdateDialogGtk::updateError(const std::string& errorMessage)
 {
-	Message* message = new Message(this,Message::UpdateFailed);
+	UpdateMessage* message = new UpdateMessage(this,UpdateMessage::UpdateFailed);
 	message->message = errorMessage;
 	g_idle_add(&UpdateDialogGtk::notify,message);
 }
@@ -111,14 +112,14 @@ bool UpdateDialogGtk::updateRetryCancel(const std::string& message)
 
 void UpdateDialogGtk::updateProgress(int percentage)
 {
-	Message* message = new Message(this,Message::UpdateProgress);
+	UpdateMessage* message = new UpdateMessage(this,UpdateMessage::UpdateProgress);
 	message->progress = percentage;
 	g_idle_add(&UpdateDialogGtk::notify,message);
 }
 
 void UpdateDialogGtk::updateFinished()
 {
-	Message* message = new Message(this,Message::UpdateFinished);
+	UpdateMessage* message = new UpdateMessage(this,UpdateMessage::UpdateFinished);
 	g_idle_add(&UpdateDialogGtk::notify,message);
 }
 

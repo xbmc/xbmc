@@ -1,5 +1,6 @@
 #pragma once
 
+#include "UpdateMessage.h"
 #include "UpdateObserver.h"
 
 #include <gtk/gtk.h>
@@ -22,27 +23,6 @@ class UpdateDialogGtk : public UpdateObserver
 		virtual void updateFinished();
 
 	private:
-		struct Message
-		{
-			enum Type
-			{
-				UpdateFailed,
-				UpdateProgress,
-				UpdateFinished
-			};
-
-			Message(UpdateDialogGtk* _dialog, Type _type)
-			: dialog(_dialog)
-			, type(_type)
-			{
-			}
-
-			UpdateDialogGtk* dialog;
-			Type type;
-			std::string message;
-			int progress;
-		};
-
 		static void finish(GtkWidget* widget, gpointer dialog);
 		static gboolean notify(void* message);
 
