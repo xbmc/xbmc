@@ -22,10 +22,12 @@ void UpdateDialogGtk::init(int argc, char** argv)
 
 	m_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(m_window),"Mendeley Updater");
+	gtk_window_set_resizable(GTK_WINDOW(m_window),false);
 
 	m_progressLabel = gtk_label_new("Installing Updates");
 	GtkWidget* windowLayout = gtk_vbox_new(FALSE,3);
 	GtkWidget* buttonLayout = gtk_hbox_new(FALSE,3);
+	GtkWidget* labelLayout = gtk_hbox_new(FALSE,3);
 
 	m_finishButton = gtk_button_new_with_label("Finish");
 	gtk_widget_set_sensitive(m_finishButton,false);
@@ -36,19 +38,24 @@ void UpdateDialogGtk::init(int argc, char** argv)
 	                   GTK_SIGNAL_FUNC(UpdateDialogGtk::finish),this);
 
 	gtk_container_add(GTK_CONTAINER(m_window),windowLayout);
-	gtk_container_set_border_width(GTK_CONTAINER(m_window),8);
-	gtk_container_add(GTK_CONTAINER(windowLayout),m_progressLabel);
-	gtk_container_add(GTK_CONTAINER(windowLayout),m_progressBar);
-	gtk_container_add(GTK_CONTAINER(windowLayout),buttonLayout);
+	gtk_container_set_border_width(GTK_CONTAINER(m_window),12);
 
-	gtk_box_pack_start(GTK_BOX(buttonLayout),m_finishButton,true,false,0);
+	gtk_box_pack_start(GTK_BOX(labelLayout),m_progressLabel,false,false,0);
+	gtk_box_pack_end(GTK_BOX(buttonLayout),m_finishButton,false,false,0);
+
+	gtk_box_pack_start(GTK_BOX(windowLayout),labelLayout,false,false,0);
+	gtk_box_pack_start(GTK_BOX(windowLayout),m_progressBar,false,false,0);
+	gtk_box_pack_start(GTK_BOX(windowLayout),buttonLayout,false,false,0);
+
 	
 	gtk_widget_show(m_progressLabel);
+	gtk_widget_show(labelLayout);
 	gtk_widget_show(windowLayout);
 	gtk_widget_show(buttonLayout);
 	gtk_widget_show(m_finishButton);
 	gtk_widget_show(m_progressBar);
 
+	gtk_window_set_position(GTK_WINDOW(m_window),GTK_WIN_POS_CENTER);
 	gtk_widget_show(m_window);
 }
 
@@ -66,21 +73,22 @@ void UpdateDialogGtk::finish(GtkWidget* widget, gpointer _dialog)
 
 gboolean UpdateDialogGtk::notify(void* _message)
 {
-	Message* message = static_cast<Message*>(_message);
+	UpdateMessage* message = static_cast<UpdateMessage*>(_message);
+	UpdateDialogGtk* dialog = static_cast<UpdateDialogGtk*>(message->receiver);
 	switch (message->type)
 	{
-		case Message::UpdateProgress:
-			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(message->dialog->m_progressBar),message->progress/100.0);
+		case UpdateMessage::UpdateProgress:
+			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(dialog->m_progressBar),message->progress/100.0);
 			break;
-		case Message::UpdateFailed:
-			gtk_label_set_text(GTK_LABEL(message->dialog->m_progressLabel),
+		case UpdateMessage::UpdateFailed:
+			gtk_label_set_text(GTK_LABEL(dialog->m_progressLabel),
 			  ("There was a problem installing the update: " + message->message).c_str());;
-			gtk_widget_set_sensitive(message->dialog->m_finishButton,true);
+			gtk_widget_set_sensitive(dialog->m_finishButton,true);
 			break;
-		case Message::UpdateFinished:
-			gtk_label_set_text(GTK_LABEL(message->dialog->m_progressLabel),
+		case UpdateMessage::UpdateFinished:
+			gtk_label_set_text(GTK_LABEL(dialog->m_progressLabel),
 			  "Update installed.  Click 'Finish' to restart the application.");
-			gtk_widget_set_sensitive(message->dialog->m_finishButton,true);
+			gtk_widget_set_sensitive(dialog->m_finishButton,true);
 			break;
 	}
 	delete message;
@@ -92,7 +100,7 @@ gboolean UpdateDialogGtk::notify(void* _message)
 // callbacks during update installation
 void UpdateDialogGtk::updateError(const std::string& errorMessage)
 {
-	Message* message = new Message(this,Message::UpdateFailed);
+	UpdateMessage* message = new UpdateMessage(this,UpdateMessage::UpdateFailed);
 	message->message = errorMessage;
 	g_idle_add(&UpdateDialogGtk::notify,message);
 }
@@ -104,14 +112,14 @@ bool UpdateDialogGtk::updateRetryCancel(const std::string& message)
 
 void UpdateDialogGtk::updateProgress(int percentage)
 {
-	Message* message = new Message(this,Message::UpdateProgress);
+	UpdateMessage* message = new UpdateMessage(this,UpdateMessage::UpdateProgress);
 	message->progress = percentage;
 	g_idle_add(&UpdateDialogGtk::notify,message);
 }
 
 void UpdateDialogGtk::updateFinished()
 {
-	Message* message = new Message(this,Message::UpdateFinished);
+	UpdateMessage* message = new UpdateMessage(this,UpdateMessage::UpdateFinished);
 	g_idle_add(&UpdateDialogGtk::notify,message);
 }
 

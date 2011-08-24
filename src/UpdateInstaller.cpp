@@ -70,7 +70,6 @@ void UpdateInstaller::run() throw ()
 
 	if (m_mode == Setup)
 	{
-		LOG(Info,"Preparing update installation");
 		LOG(Info,"Waiting for main app process to finish");
 		ProcessUtils::waitForProcess(m_waitPid);
 
@@ -309,7 +308,6 @@ void UpdateInstaller::setObserver(UpdateObserver* observer)
 
 void UpdateInstaller::restartMainApp()
 {
-	LOG(Info,"restarting main app");
 	std::string command;
 	std::list<std::string> args;
 

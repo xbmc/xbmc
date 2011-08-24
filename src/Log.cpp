@@ -80,3 +80,9 @@ void Log::write(Type type, const char* text)
 	}
 }
 
+std::string Log::defaultPath()
+{
+	std::string path = "update-log.txt";
+	return path;
+}
+

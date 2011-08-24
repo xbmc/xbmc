@@ -14,6 +14,10 @@
   #include "UpdateDialogCocoa.h"
 #endif
 
+#if defined(PLATFORM_WINDOWS)
+  #include "UpdateDialogWin32.h"
+#endif
+
 #include <iostream>
 
 void runWithUi(int argc, char** argv, UpdateInstaller* installer);
@@ -43,6 +47,7 @@ void runUpdaterThread(void* arg)
 
 int main(int argc, char** argv)
 {
+	Log::instance()->open(Log::defaultPath());
 	UpdaterOptions options;
 	options.parse(argc,argv);
 
@@ -82,7 +87,6 @@ int main(int argc, char** argv)
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
 #ifdef ENABLE_GTK
-	LOG(Info,"setting up GTK UI");
 	UpdateDialogGtk dialog;
 	installer->setObserver(&dialog);
 	dialog.init(argc,argv);
@@ -118,7 +122,12 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 #ifdef PLATFORM_WINDOWS
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
-	// TODO - Windows UI
-	installer->run();
+	UpdateDialogWin32 dialog;
+	installer->setObserver(&dialog);
+	dialog.init();
+	tthread::thread updaterThread(runUpdaterThread,installer);
+	dialog.exec();
+	updaterThread.join();
+	installer->restartMainApp();
 }
 #endif
