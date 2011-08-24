@@ -147,6 +147,7 @@ void UpdateDialogCocoa::updateError(const std::string& errorMessage)
 bool UpdateDialogCocoa::updateRetryCancel(const std::string& message)
 {
 	// TODO
+	return false;
 }
 
 void UpdateDialogCocoa::updateProgress(int percentage)
