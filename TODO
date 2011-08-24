@@ -23,10 +23,10 @@ General Updater Tasks:
    link C++ runtime libraries if necessary
    
 Mendeley-specific Updater Tasks:
- * Use the Mendeley icon for the window on Windows
+ * Use the Mendeley icon for the window on Windows [done]
+ * Use the Mendeley icon for the binary on Windows [done]
  * Use the Mendeley icon for the window on Mac (N/A? - No icon in window decorations on Mac) 
  * Use the Mendeley icon for the window on Linux
- * Use the Mendeley icon for the binary on Windows
 
  * Advise the user to download Mendeley Desktop afresh from http://www.mendeley.com/download-mendeley-desktop
    in the event of an updater problem
