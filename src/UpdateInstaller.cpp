@@ -228,7 +228,7 @@ void UpdateInstaller::installFiles()
 		++filesInstalled;
 		if (m_observer)
 		{
-			double percentage = filesInstalled / (m_script->filesToInstall().size() * 100.0);
+			double percentage = (1.0 * filesInstalled / m_script->filesToInstall().size()) * 100.0;
 			m_observer->updateProgress(static_cast<int>(percentage));
 		}
 	}
