@@ -1,46 +1,53 @@
 <?xml version="1.0"?>
-<update version="3">
- <!-- Update script designed for backwards compatibility with MD <= 1.0.
-      The packages to download are listed as if they were ordinary files
-	  to install in a top-level <install> section.
 
-	  The standard V3 version of the update XML format is then wrapped inside
-	  an <update-v3> element.
- !-->
- <update-v3>
-	<targetVersion>2.0</targetVersion>
-	<platform>Test</platform>
-	<dependencies>
-	<!-- The new updater is standalone and has no dependencies,
-			except for standard system libraries.
-		!-->
-	</dependencies>
-	<packages>
-	<package>
-	<name>app-pkg</name>
-	<hash>$APP_PACKAGE_HASH</hash>
-	<size>$APP_PACKAGE_SIZE</size>
-	<source>http://some/dummy/URL</source>
-	</package>
-	</packages>
-	<install>
-	<file>
-	<name>app</name>
-	<hash>$UPDATED_APP_HASH</hash>
-	<size>$UPDATED_APP_SIZE</size>
-	<permissions>30549</permissions>
-	<package>app-pkg</package>
-	<is-main-binary>true</is-main-binary>
-	</file>
-	<!-- Test symlink !-->
-	<file>
-	<name>test-dir/app-symlink</name>
-	<target>../app</target>
-	</file>
-	</install>
-	<uninstall>
-	<!-- TODO - List some files to uninstall here !-->
-	<file>file-to-uninstall.txt</file>
-	</uninstall>
- </update-v3>
+<!-- The v2-compatible attribute lets the update script parser
+     know that it is dealing with a script structured for backwards
+     compatibility with the MD <= 1.0 updater.
+!-->
+<update version="3" v2-compatible="true">
+ <targetVersion>2.0</targetVersion>
+ <platform>Test</platform>
+ <dependencies>
+   <!-- The new updater is standalone and has no dependencies,
+        except for standard system libraries and itself.
+    !-->
+ </dependencies>
+ <packages>
+  <package>
+   <name>app-pkg</name>
+   <hash>$APP_PACKAGE_HASH</hash>
+   <size>$APP_PACKAGE_SIZE</size>
+   <source>http://some/dummy/URL</source>
+  </package>
+ </packages>
+
+ <!-- For compatibility with the update download in MD <= 1.0,
+      an <install> section lists the packages to download and
+      the real list of files to install is in the <install-v3>
+      section. !-->
+ <install>
+   <!-- A duplicate of the <packages> section should appear here,
+        except that each package is listed using the same structure
+	    as files in the install-v3/files section.
+	!-->
+ </install>
+ <install-v3>
+  <file>
+   <name>$APP_FILENAME</name>
+   <hash>$UPDATED_APP_HASH</hash>
+   <size>$UPDATED_APP_SIZE</size>
+   <permissions>30549</permissions>
+   <package>app-pkg</package>
+   <is-main-binary>true</is-main-binary>
+  </file>
+  <!-- Test symlink !-->
+  <file>
+   <name>test-dir/app-symlink</name>
+   <target>../app</target>
+  </file>
+ </install-v3>
+ <uninstall>
+  <!-- TODO - List some files to uninstall here !-->
+  <file>file-to-uninstall.txt</file>
+ </uninstall>
 </update>

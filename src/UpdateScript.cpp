@@ -5,6 +5,15 @@
 
 #include "tinyxml/tinyxml.h"
 
+std::string elementText(const TiXmlElement* element)
+{
+	if (!element)
+	{
+		return std::string();
+	}
+	return element->GetText();
+}
+
 UpdateScript::UpdateScript()
 {
 }
@@ -21,18 +30,7 @@ void UpdateScript::parse(const std::string& path)
 		LOG(Info,"Loaded script from " + path);
 
 		const TiXmlElement* updateNode = document.RootElement();
-		const TiXmlElement* v3UpdateNode = updateNode->FirstChildElement("update-v3");
-		if (v3UpdateNode)
-		{
-			// this XML file is structured for backwards compatibility
-			// with Mendeley Desktop <= 1.0 clients.  The normal update XML contents
-			// are wrapped in an <update-v3> node.
-			parseUpdate(v3UpdateNode);
-		}
-		else
-		{
-			parseUpdate(updateNode);
-		}
+		parseUpdate(updateNode);
 	}
 	else
 	{
@@ -47,6 +45,8 @@ bool UpdateScript::isValid() const
 
 void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
 {
+	bool isV2Compatible = strToBool(notNullString(updateNode->Attribute("v2-compatible")));
+
 	const TiXmlElement* depsNode = updateNode->FirstChildElement("dependencies");
 	const TiXmlElement* depFileNode = depsNode->FirstChildElement("file");
 	while (depFileNode)
@@ -55,7 +55,22 @@ void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
 		depFileNode = depFileNode->NextSiblingElement("file");
 	}
 
-	const TiXmlElement* installNode = updateNode->FirstChildElement("install");
+	const char* installNodeName;
+	if (isV2Compatible)
+	{
+		// this update script has been generated for backwards compatibility with
+		// Mendeley Desktop 1.0 which downloads files specified in the <install>
+		// section instead of the <packages> section.  The <install> section
+		// in this case lists the packages and the real list of files to install
+		// is in the <install-v3> section
+		installNodeName = "install-v3";
+	}
+	else
+	{
+		installNodeName = "install";
+	}
+
+	const TiXmlElement* installNode = updateNode->FirstChildElement(installNodeName);
 	if (installNode)
 	{
 		const TiXmlElement* installFileNode = installNode->FirstChildElement("file");
@@ -87,15 +102,6 @@ void UpdateScript::parseUpdate(const TiXmlElement* updateNode)
 			packageNode = packageNode->NextSiblingElement("package");
 		}
 	}
-}
-
-std::string elementText(const TiXmlElement* element)
-{
-	if (!element)
-	{
-		return std::string();
-	}
-	return element->GetText();
 }
 
 UpdateScriptFile UpdateScript::parseFile(const TiXmlElement* element)
