@@ -273,7 +273,7 @@ void CGUISettings::Initialize()
   AddDefaultAddon(ml, "musiclibrary.albumsscraper", 20193, "metadata.albums.allmusic.com", ADDON_SCRAPER_ALBUMS);
   AddDefaultAddon(ml, "musiclibrary.artistsscraper", 20194, "metadata.artists.allmusic.com", ADDON_SCRAPER_ARTISTS);
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
-  AddBool(NULL, "musiclibrary.backgroundupdate", 22001, false);
+  AddBool(ml, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(ml,"musiclibrary.sep2");
   AddString(ml, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(ml, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
