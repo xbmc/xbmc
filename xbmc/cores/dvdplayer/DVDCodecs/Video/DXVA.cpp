@@ -1050,7 +1050,8 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
 
   CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
 
-  CHECK(m_service->GetVideoProcessorCaps(m_device, &m_desc, D3DFMT_X8R8G8B8, &m_caps))
+  D3DFORMAT rtFormat = D3DFMT_X8R8G8B8;
+  CHECK(m_service->GetVideoProcessorCaps(m_device, &m_desc, rtFormat, &m_caps))
 
   if (m_caps.DeviceCaps & DXVA2_VPDev_SoftwareDevice)
     CLog::Log(LOGDEBUG, "DXVA - processor is software device");
@@ -1061,18 +1062,12 @@ bool CProcessor::Open(const DXVA2_VideoDesc& dsc)
   CLog::Log(LOGDEBUG, "DXVA - processor requires %d past frames and %d future frames", m_caps.NumBackwardRefSamples, m_caps.NumForwardRefSamples);
   m_size = 3 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
 
-  D3DFORMAT output = m_desc.Format;
-  if(FAILED(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process)))
-  {
-    CLog::Log(LOGDEBUG, "DXVA - unable to use source format, use RGB output instead\n");
-    output = D3DFMT_X8R8G8B8;
-    CHECK(m_service->CreateVideoProcessor(m_device, &m_desc, output, 0, &m_process));
-  }
+  CHECK(m_service->CreateVideoProcessor(m_device, &m_desc, rtFormat, 0, &m_process));
 
-  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Brightness, &m_brightness));
-  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Contrast  , &m_contrast));
-  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Hue       , &m_hue));
-  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, output, DXVA2_ProcAmp_Saturation, &m_saturation));
+  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, rtFormat, DXVA2_ProcAmp_Brightness, &m_brightness));
+  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, rtFormat, DXVA2_ProcAmp_Contrast  , &m_contrast));
+  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, rtFormat, DXVA2_ProcAmp_Hue       , &m_hue));
+  CHECK(m_service->GetProcAmpRange(m_device, &m_desc, rtFormat, DXVA2_ProcAmp_Saturation, &m_saturation));
 
   m_time = 0;
 
