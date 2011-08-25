@@ -1,0 +1,14 @@
+This directory contains a set of tools for preparing auto-updates.
+
+ * create-packages.rb
+
+	Given a directory containing the set of files that make up a release,
+	laid out as they are when installed and a JSON file mapping files
+	to packages, this tool generates a set of packages for the release
+	and a file_list.xml listing all the files that make up the release.
+
+ * single-package-map.json
+
+    This is the simplest possible package map, where all files for
+	a release are placed in a single package.  This means that the whole
+	package will need to be downloaded to install the update.
