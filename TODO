@@ -14,6 +14,9 @@ General Updater Tasks:
  * Unit test working under Windows [done]
  * Start new application once installation is finished [done]
  * Use message box for errors [done]
+ * See if it is possible to overwrite application files that are in use on Windows -
+   http://stackoverflow.com/questions/2077550/how-can-i-enable-auto-updates-in-a-qt-cross-platform-app
+   suggests that it is possible to move the file, even if it cannot be deleted.
  
  * Retry/cancel support if updater cannot overwrite file (eg. due to
    file being in use by Microsoft Word or another application)
