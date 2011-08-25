@@ -54,6 +54,10 @@ class TestUtils
 					tests.runTest(&testInstance,i);
 				}
 			}
+			catch (const std::exception& ex)
+			{
+				errorText = ex.what();
+			}
 			catch (const std::string& error)
 			{
 				errorText = error;
