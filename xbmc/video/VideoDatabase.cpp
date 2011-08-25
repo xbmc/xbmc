@@ -5159,7 +5159,11 @@ bool CVideoDatabase::HasSets() const
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    m_pDS->query( "select idSet from sets" );
+    m_pDS->query("SELECT sets.idSet,COUNT(1) AS c FROM sets "
+                 "JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet "
+                 "JOIN movie ON setlinkmovie.idMovie=movie.idMovie "
+                 "GROUP BY sets.idSet HAVING c>1");
+
     bool bResult = (m_pDS->num_rows() > 0);
     m_pDS->close();
     return bResult;
