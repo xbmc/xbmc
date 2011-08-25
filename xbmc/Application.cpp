@@ -4348,7 +4348,7 @@ void CApplication::CheckShutdown()
 
   // first check if we should reset the timer
   bool resetTimer = false;
-  if (IsPlaying()) // is something playing?
+  if (IsPlaying() || IsPaused()) // is something playing?
     resetTimer = true;
 
   if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
