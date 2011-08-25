@@ -167,11 +167,13 @@ ifneq (@DISABLE_GOOM@,1)
 endif
 
 ifeq (@USE_OPENGLES@,1)
-  ifeq ($(findstring osx,@ARCH@), osx)
-    ifeq (@ARCH@, arm-osx)
-      VIS_DIRS+=xbmc/visualizations/EGLSpectrum
-    endif
-  endif
+ifeq ($(findstring osx,@ARCH@), osx)
+ifeq (@ARCH@, arm-osx)
+VIS_DIRS+=\
+	xbmc/visualizations/OpenGLSpectrum \
+	xbmc/visualizations/Waveform/
+endif
+endif
 endif
 
 PVR_DIRS=\
