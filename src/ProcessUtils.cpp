@@ -401,6 +401,8 @@ std::string ProcessUtils::currentProcessPath()
 	return fileName;
 #endif
 }
+
+#ifdef PLATFORM_WINDOWS
 void ProcessUtils::convertWindowsCommandLine(LPCWSTR commandLine, int& argc, char**& argv)
 {
 	argc = 0;
@@ -438,3 +440,5 @@ void ProcessUtils::convertWindowsCommandLine(LPCWSTR commandLine, int& argc, cha
 	}
 	LocalFree(argvUnicode);
 }
+#endif
+

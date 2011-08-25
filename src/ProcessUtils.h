@@ -23,11 +23,13 @@ class ProcessUtils
 
 		static bool waitForProcess(PLATFORM_PID pid);
 
+#ifdef PLATFORM_WINDOWS
 		/** Convert a unicode command line returned by GetCommandLineW()
 		 * to a standard (argc,argv) pair.  The resulting argv array and each
 		 * element of argv must be freed using free()
 		 */
 		static void convertWindowsCommandLine(LPCWSTR commandLine, int& argc, char**& argv);
+#endif
 
 	private:
 		static void runElevatedLinux(const std::string& executable,
