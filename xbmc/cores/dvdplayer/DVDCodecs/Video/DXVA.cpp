@@ -1084,17 +1084,17 @@ bool CProcessor::CreateSurfaces()
 {
   CSingleLock lock(m_section);
 
+  LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
   m_surfaces_count = m_size;
   m_surfaces = (LPDIRECT3DSURFACE9*)calloc(m_surfaces_count, sizeof(LPDIRECT3DSURFACE9));
-  CHECK(m_service->CreateSurface((m_desc.SampleWidth + 15) & ~15,
-                                 (m_desc.SampleHeight + 15) & ~15,
-                                  m_surfaces_count - 1,
-                                  m_desc.Format,
-                                  D3DPOOL_DEFAULT,
-                                  0,
-                                  DXVA2_VideoSoftwareRenderTarget,
-                                  m_surfaces,
-                                  NULL));
+  for (unsigned idx = 0; idx < m_surfaces_count; idx++)
+    CHECK(pD3DDevice->CreateOffscreenPlainSurface(
+                                (m_desc.SampleWidth + 15) & ~15,
+                                (m_desc.SampleHeight + 15) & ~15,
+                                m_desc.Format,
+                                D3DPOOL_DEFAULT,
+                                &m_surfaces[idx],
+                                NULL));
 
   return true;
 }
