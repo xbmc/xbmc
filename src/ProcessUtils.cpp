@@ -152,7 +152,7 @@ int ProcessUtils::runElevatedLinux(const std::string& executable,
 #endif
 
 #ifdef PLATFORM_MAC
-void ProcessUtils::runElevatedMac(const std::string& executable,
+int ProcessUtils::runElevatedMac(const std::string& executable,
 						const std::list<std::string>& args)
 {
 	// request elevation using the Security Service.
