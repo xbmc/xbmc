@@ -23,7 +23,7 @@ The external dependencies of the updater binary are:
  * The C++ runtime library (Linux, Mac),
  * pthreads (Linux, Mac),
  * zlib (Linux, Mac)
- * native UI library (Win32 API on Windows, Cocoa on Mac).
+ * native UI library (Win32 API on Windows, Cocoa on Mac, GTK on Linux if available)
 
 To perform an update, the application (or another separate tool) needs to download
 the updater binary, an XML file describing the update and one or more zip packages
