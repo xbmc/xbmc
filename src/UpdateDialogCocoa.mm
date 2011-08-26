@@ -2,6 +2,7 @@
 
 #include <Cocoa/Cocoa.h>
 
+#include "AppInfo.h"
 #include "Log.h"
 #include "StringUtils.h"
 
@@ -99,7 +100,7 @@ void UpdateDialogCocoa::init()
 	d->window = [[NSWindow alloc] initWithContentRect:NSMakeRect(200, 200, width, height)
 	        styleMask:NSTitledWindowMask | NSMiniaturizableWindowMask
 	        backing:NSBackingStoreBuffered defer:NO];
-	[d->window setTitle:@"Mendeley Updater"];
+	[d->window setTitle:[NSString stringWithUTF8String:AppInfo::name().c_str()]];
 
 	d->finishButton = [[NSButton alloc] init];
 	[d->finishButton setTitle:@"Finish"];
