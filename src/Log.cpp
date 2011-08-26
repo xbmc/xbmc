@@ -51,7 +51,7 @@ Log::~Log()
 
 void Log::open(const std::string& path)
 {
-	m_output.open(path.c_str());
+	m_output.open(path.c_str(),std::ios_base::out | std::ios_base::app);
 }
 
 void Log::writeToStream(std::ostream& stream, Type type, const char* text)
