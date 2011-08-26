@@ -296,9 +296,9 @@ package_file_map.each do |package,files|
 
 	output_path = File.expand_path(output_dir)
 	Dir.chdir(input_dir) do
-#if (!system("zip #{output_path}/#{package}.zip #{quoted_file_list}"))
-#			raise "Failed to generate package #{package}"
-#		end
+	if (!system("zip #{output_path}/#{package}.zip #{quoted_file_list}"))
+			raise "Failed to generate package #{package}"
+		end
 	end
 end
 
