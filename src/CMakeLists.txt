@@ -49,6 +49,11 @@ set (HEADERS
   UpdaterOptions.h
 )
 
+if (UNIX)
+	set(HEADERS ${HEADERS} UpdateDialogAscii.h)
+	set(SOURCES ${SOURCES} UpdateDialogAscii.cpp)
+endif()
+
 if (ENABLE_GTK)
 	# embed the GTK helper library into the updater binary.
 	# At runtime it will be extracted and loaded if the

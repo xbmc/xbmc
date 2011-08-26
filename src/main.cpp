@@ -7,8 +7,11 @@
 
 #include "tinythread.h"
 
-#if defined(PLATFORM_LINUX) and defined(ENABLE_GTK)
-  #include "UpdateDialogGtkWrapper.h"
+#if defined(PLATFORM_LINUX)
+  #if defined(ENABLE_GTK)
+  	#include "UpdateDialogGtkWrapper.h"
+  #endif
+  #include "UpdateDialogAscii.h"
 #endif
 
 #if defined(PLATFORM_MAC)
@@ -88,11 +91,17 @@ int main(int argc, char** argv)
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
 #ifdef ENABLE_GTK
+	UpdateDialogAscii asciiDialog;
 	UpdateDialogGtkWrapper dialog;
 	bool useGtk = dialog.init(argc,argv);
 	if (useGtk)
 	{
 		installer->setObserver(&dialog);
+	}
+	else
+	{
+		asciiDialog.init();
+		installer->setObserver(&asciiDialog);
 	}
 	tthread::thread updaterThread(runUpdaterThread,installer);
 	if (useGtk)
