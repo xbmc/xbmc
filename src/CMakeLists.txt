@@ -88,7 +88,7 @@ target_link_libraries(updatershared
 )
 
 if (UNIX)
-  target_link_libraries(updatershared pthread)
+  target_link_libraries(updatershared pthread dl)
 endif()
 
 if (WIN32)
@@ -106,7 +106,6 @@ endif()
 
 target_link_libraries(updater
   updatershared
-  dl
 )
 
 install(TARGETS updater RUNTIME DESTINATION bin)
