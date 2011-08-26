@@ -1,5 +1,6 @@
 #include "UpdateDialogGtk.h"
 
+#include "AppInfo.h"
 #include "StringUtils.h"
 
 #include <glib.h>
@@ -42,7 +43,7 @@ void UpdateDialogGtk::init(int argc, char** argv)
 	gtk_init(&argc,&argv);
 
 	m_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_title(GTK_WINDOW(m_window),"Mendeley Updater");
+	gtk_window_set_title(GTK_WINDOW(m_window),AppInfo::name().c_str());
 	gtk_window_set_resizable(GTK_WINDOW(m_window),false);
 
 	m_progressLabel = gtk_label_new("Installing Updates");

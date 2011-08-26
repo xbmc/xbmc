@@ -40,6 +40,7 @@ if (WIN32)
 endif()
 
 set (HEADERS
+  AppInfo.h
   DirIterator.h
   FileOps.h
   Log.h

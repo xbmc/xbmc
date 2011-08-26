@@ -1,5 +1,6 @@
 #include "UpdateDialogWin32.h"
 
+#include "AppInfo.h"
 #include "Log.h"
 
 // enable themed controls
@@ -90,7 +91,7 @@ void UpdateDialogWin32::init()
 	DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 	m_window.CreateEx(0 /* dwExStyle */,
 	                  updateDialogClassName /* class name */,
-                      "Mendeley Updater",
+                      AppInfo::name(),
                       style,
 					  0, 0, width, height,
 					  0 /* parent */, 0 /* menu */, 0 /* reserved */);

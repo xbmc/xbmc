@@ -1,13 +1,14 @@
 #include "UpdateDialogAscii.h"
 
+#include "AppInfo.h"
 #include "ProcessUtils.h"
 #include "StringUtils.h"
 
 const char* introMessage = 
- "Mendeley Updater (ASCII-art edition)\n"
+ "%s (ASCII-art edition)\n"
  "====================================\n"
  "\n"
- "We have a nice graphical interface for the Mendeley Updater, but unfortunately\n"
+ "We have a nice graphical interface for the %s, but unfortunately\n"
  "we can't show it to you :(\n"
  "\n"
  "You can fix this by installing the GTK 2 libraries.\n\n"
@@ -17,13 +18,16 @@ void UpdateDialogAscii::init()
 {
 	const char* path = "/tmp/update-progress";
 	m_output.open(path);
-	m_output << introMessage;
+
+	char message[4096];
+	sprintf(message,introMessage,AppInfo::name().c_str());
+	m_output << message;
 
 	std::string command = "xterm";
 	std::list<std::string> args;
 	args.push_back("-hold");
 	args.push_back("-T");
-	args.push_back("Mendeley Updater");
+	args.push_back(AppInfo::name());
 	args.push_back("-e");
 	args.push_back("tail");
 	args.push_back("-n+1");
