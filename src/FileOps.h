@@ -41,10 +41,20 @@ class FileOps
 			ExecOther  = 0x0001
 		};
 
+		/** Remove a file.  Throws an exception if the file
+		 * could not be removed.
+		 *
+		 * On Unix, a file can be removed even if it is in use if the user
+		 * has the necessary permissions.  removeFile() tries to simulate
+		 * this behavior on Windows.  If a file cannot be removed on Windows
+		 * because it is in use it will be moved to a temporary directory and
+		 * scheduled for deletion on the next restart.
+		 */
+		static void removeFile(const char* src) throw (IOException);
+
 		static void setQtPermissions(const char* path, int permissions) throw (IOException);
 		static bool fileExists(const char* path) throw (IOException);
 		static void moveFile(const char* src, const char* dest) throw (IOException);
-		static void removeFile(const char* src) throw (IOException);
 		static void extractFromZip(const char* zipFile, const char* src, const char* dest) throw (IOException);
 		static void mkdir(const char* dir) throw (IOException);
 		static void rmdir(const char* dir) throw (IOException);
@@ -54,8 +64,13 @@ class FileOps
 		static std::string dirname(const char* path);
 		static void rmdirRecursive(const char* dir) throw (IOException);
 		static std::string canonicalPath(const char* path);
+		static std::string tempPath();
 
 	private:
 		static int toUnixPermissions(int qtPermissions);
+
+		// returns a copy of the path 'str' with Windows-style '\'
+		// dir separators converted to Unix-style '/' separators
+		static std::string toUnixPathSeparators(const std::string& str);
 };
 

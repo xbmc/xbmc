@@ -195,7 +195,29 @@ void FileOps::removeFile(const char* src) throw (IOException)
 #else
 	if (!DeleteFile(src))
 	{
-		if (GetLastError() != ERROR_FILE_NOT_FOUND)
+		if (GetLastError() == ERROR_ACCESS_DENIED)
+		{
+			// if another process is using the file, try moving it to
+			// a temporary directory and then
+			// scheduling it for deletion on reboot
+			std::string tempDeletePathBase = tempPath();
+			tempDeletePathBase += '/';
+			tempDeletePathBase += fileName(src);
+
+			int suffix = 0;
+			std::string tempDeletePath = tempDeletePathBase;
+			while (fileExists(tempDeletePath.c_str()))
+			{
+				++suffix;
+				tempDeletePath = tempDeletePathBase + '_' + intToStr(suffix);
+			}
+
+			LOG(Warn,"Unable to remove file " + std::string(src) + " - it may be in use.  Moving to "
+			         + tempDeletePath + " and scheduling delete on reboot.");
+			moveFile(src,tempDeletePath.c_str());
+			MoveFileEx(tempDeletePath.c_str(),0,MOVEFILE_DELAY_UNTIL_REBOOT);
+		}
+		else if (GetLastError() != ERROR_FILE_NOT_FOUND)
 		{
 			throw IOException("Unable to remove file " + std::string(src));
 		}
@@ -332,4 +354,28 @@ int FileOps::toUnixPermissions(int qtPermissions)
 	return result;
 }
 #endif
+
+std::string FileOps::toUnixPathSeparators(const std::string& str)
+{
+	std::string result = str;
+	for (int i=0; i < result.size(); i++)
+	{
+		if (result[i] == '\\')
+		{
+			result[i] = '/';
+		}
+	}
+	return result;
+}
+
+std::string FileOps::tempPath()
+{
+#ifdef PLATFORM_UNIX
+	return "/tmp";
+#else
+	char buffer[MAX_PATH+1];
+	GetTempPath(MAX_PATH+1,buffer);
+	return toUnixPathSeparators(buffer);
+#endif
+}
 
