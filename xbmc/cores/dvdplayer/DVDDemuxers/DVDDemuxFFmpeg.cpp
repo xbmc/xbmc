@@ -998,6 +998,12 @@ void CDVDDemuxFFmpeg::AddStream(int iId)
         {
           st->iFpsRate = pStream->r_frame_rate.num;
           st->iFpsScale = pStream->r_frame_rate.den;
+          if (pStream->codec_info_nb_frames <= 2 && pStream->codec_info_nb_frames > 0)
+          {
+            CLog::Log(LOGDEBUG, "%s - fps may be unreliable since ffmpeg decoded only %d frame(s)", __FUNCTION__, pStream->codec_info_nb_frames);
+            st->iFpsRate  = 0;
+            st->iFpsScale = 0;
+          }
         }
         else
         {
