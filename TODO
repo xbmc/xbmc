@@ -14,6 +14,7 @@ General Updater Tasks:
  * Unit test working under Windows [done]
  * Start new application once installation is finished [done]
  * Use message box for errors [done]
+ * Newly installed binary needs to be launched un-elevated
  * See if it is possible to overwrite application files that are in use on Windows -
    http://stackoverflow.com/questions/2077550/how-can-i-enable-auto-updates-in-a-qt-cross-platform-app
    suggests that it is possible to move the file, even if it cannot be deleted.
@@ -33,6 +34,8 @@ Mendeley-specific Updater Tasks:
 
  * Advise the user to download Mendeley Desktop afresh from http://www.mendeley.com/download-mendeley-desktop
    in the event of an updater problem
+ * Exclude Uninstall.exe from updates on Windows - see comments in utilities/autoupdate-setup/main.cpp in
+   the desktop source tree.
 
 Mendeley Desktop <= 1.0 auto-update system compatibility:
 
