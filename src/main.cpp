@@ -94,15 +94,9 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 	tthread::thread updaterThread(runUpdaterThread,installer);
 	dialog.exec();
 	updaterThread.join();
-
-	if (dialog.restartApp())
-	{
-		installer->restartMainApp();
-	}
 #else
 	// no UI available - do a silent install
 	installer->run();
-	installer->restartMainApp();
 #endif
 }
 #endif
@@ -116,7 +110,6 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 	tthread::thread updaterThread(runUpdaterThread,installer);
 	dialog.exec();
 	updaterThread.join();
-	installer->restartMainApp();
 }
 #endif
 
@@ -141,6 +134,5 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 	tthread::thread updaterThread(runUpdaterThread,installer);
 	dialog.exec();
 	updaterThread.join();
-	installer->restartMainApp();
 }
 #endif

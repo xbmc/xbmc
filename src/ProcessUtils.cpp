@@ -71,15 +71,15 @@ void ProcessUtils::runAsync(const std::string& executable,
 #endif
 }
 
-void ProcessUtils::runElevated(const std::string& executable,
+int ProcessUtils::runElevated(const std::string& executable,
 					const std::list<std::string>& args)
 {
 #ifdef PLATFORM_WINDOWS
-	runElevatedWindows(executable,args);
+	return runElevatedWindows(executable,args);
 #elif defined(PLATFORM_MAC)
-	runElevatedMac(executable,args);
+	return runElevatedMac(executable,args);
 #elif defined(PLATFORM_LINUX)
-	runElevatedLinux(executable,args);
+	return runElevatedLinux(executable,args);
 #endif
 }
 
@@ -114,7 +114,7 @@ bool ProcessUtils::waitForProcess(PLATFORM_PID pid)
 }
 
 #ifdef PLATFORM_LINUX
-void ProcessUtils::runElevatedLinux(const std::string& executable,
+int ProcessUtils::runElevatedLinux(const std::string& executable,
 							const std::list<std::string>& args)
 {
 	std::string sudoMessage = FileOps::fileName(executable.c_str()) + " needs administrative privileges.  Please enter your password.";
@@ -152,9 +152,11 @@ void ProcessUtils::runElevatedLinux(const std::string& executable,
 		int result = ProcessUtils::runSync(sudoBinary,sudoArgs);
 		if (result != 255)
 		{
+			return result;
 			break;
 		}
 	}
+	return RUN_ELEVATED_FAILED;
 }
 #endif
 
@@ -245,10 +247,13 @@ void ProcessUtils::runElevatedMac(const std::string& executable,
 				{
 					LOG(Info,"elevated process succeded with pid " + intToStr(childPid));
 				}
+
+				return childStatus;
 			}
 			else
 			{
 				LOG(Error,"failed to launch elevated process " + intToStr(status));
+				return RUN_ELEVATED_FAILED;
 			}
 			
 			// If we want to know more information about what has happened:
@@ -262,13 +267,18 @@ void ProcessUtils::runElevatedMac(const std::string& executable,
 		else
 		{
 			LOG(Error,"failed to get rights to launch elevated process. status: " + intToStr(status));
+			return RUN_ELEVATED_FAILED;
 		}
+	}
+	else
+	{
+		return RUN_ELEVATED_FAILED;
 	}
 }
 #endif
 
 #ifdef PLATFORM_WINDOWS
-void ProcessUtils::runElevatedWindows(const std::string& executable,
+int ProcessUtils::runElevatedWindows(const std::string& executable,
 							const std::list<std::string>& arguments)
 {
 	std::string args;
@@ -304,10 +314,14 @@ void ProcessUtils::runElevatedWindows(const std::string& executable,
 	if (!ShellExecuteEx(&executeInfo))
 	{
 		LOG(Error,"Failed to start with admin priviledges using ShellExecuteEx()");
-		return;
+		return RUN_ELEVATED_FAILED;
 	}
 
 	WaitForSingleObject(executeInfo.hProcess, INFINITE);
+
+	// this assumes the process succeeded - we need to check whether
+	// this is actually the case.
+	return 0;
 }
 #endif
 

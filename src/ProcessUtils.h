@@ -8,6 +8,14 @@
 class ProcessUtils
 {
 	public:
+		enum Errors
+		{
+			/** Status code returned by runElevated() if launching
+			  * the elevated process fails.
+			  */
+			RUN_ELEVATED_FAILED = 255
+		};
+
 		static PLATFORM_PID currentProcessId();
 
 		static std::string currentProcessPath();
@@ -18,7 +26,13 @@ class ProcessUtils
 		static void runAsync(const std::string& executable,
 		                     const std::list<std::string>& args);
 
-		static void runElevated(const std::string& executable,
+		/** Run a process with administrative privileges and return the
+		  * status code of the process, or 0 on Windows.
+		  *
+		  * Returns RUN_ELEVATED_FAILED if the elevated process could
+		  * not be started.
+		  */
+		static int runElevated(const std::string& executable,
 		                        const std::list<std::string>& args);
 
 		static bool waitForProcess(PLATFORM_PID pid);
@@ -32,11 +46,11 @@ class ProcessUtils
 #endif
 
 	private:
-		static void runElevatedLinux(const std::string& executable,
+		static int runElevatedLinux(const std::string& executable,
 		                             const std::list<std::string>& args);
-		static void runElevatedMac(const std::string& executable,
+		static int runElevatedMac(const std::string& executable,
 		                           const std::list<std::string>& args);
-		static void runElevatedWindows(const std::string& executable,
+		static int runElevatedWindows(const std::string& executable,
 		                               const std::list<std::string>& args);
 
 		static PLATFORM_PID runAsyncUnix(const std::string& executable,

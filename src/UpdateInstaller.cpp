@@ -98,20 +98,40 @@ void UpdateInstaller::run() throw ()
 		args.push_back("--wait");
 		args.push_back(intToStr(ProcessUtils::currentProcessId()));
 
+		int installStatus = 0;
 		if (!checkAccess())
 		{
 			LOG(Info,"Insufficient rights to install app to " + m_installDir + " requesting elevation");
 
 			// start a copy of the updater with admin rights
-			ProcessUtils::runElevated(updaterPath,args);
+			installStatus = ProcessUtils::runElevated(updaterPath,args);
 		}
 		else
 		{
 			LOG(Info,"Sufficient rights to install app - restarting with same permissions");
-
-			// TODO - Change this to run synchronously
-			ProcessUtils::runAsync(updaterPath,args);
+			installStatus = ProcessUtils::runSync(updaterPath,args);
 		}
+
+		if (installStatus == 0)
+		{
+			LOG(Info,"Update install completed");
+		}
+		else
+		{
+			LOG(Error,"Update install failed with status " + intToStr(installStatus));
+		}
+
+		// restart the main application - this is currently done
+		// regardless of whether the installation succeeds or not
+		restartMainApp();
+
+		// clean up files created by the updater
+		std::list<std::string> cleanupArgs = updaterArgs();
+		cleanupArgs.push_back("--mode");
+		cleanupArgs.push_back("cleanup");
+		cleanupArgs.push_back("--wait");
+		cleanupArgs.push_back(intToStr(ProcessUtils::currentProcessId()));
+		ProcessUtils::runAsync(updaterPath,cleanupArgs);
 	}
 	else if (m_mode == Main)
 	{
@@ -152,13 +172,6 @@ void UpdateInstaller::run() throw ()
 		{
 			m_observer->updateFinished();
 		}
-
-		std::list<std::string> args = updaterArgs();
-		args.push_back("--mode");
-		args.push_back("cleanup");
-		args.push_back("--wait");
-		args.push_back(intToStr(ProcessUtils::currentProcessId()));
-		ProcessUtils::runAsync(updaterPath,args);
 	}
 	else if (m_mode == Cleanup)
 	{
