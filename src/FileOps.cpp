@@ -358,7 +358,7 @@ int FileOps::toUnixPermissions(int qtPermissions)
 std::string FileOps::toUnixPathSeparators(const std::string& str)
 {
 	std::string result = str;
-	for (int i=0; i < result.size(); i++)
+	for (size_t i=0; i < result.size(); i++)
 	{
 		if (result[i] == '\\')
 		{
