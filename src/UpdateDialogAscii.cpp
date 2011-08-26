@@ -54,7 +54,7 @@ void UpdateDialogAscii::updateProgress(int percentage)
 void UpdateDialogAscii::updateFinished()
 {
 	m_mutex.lock();
-	m_output << "\nUpdate Finished.  You can now restart Mendeley Desktop." << std::endl;
+	m_output << "\nUpdate Finished.  You can now restart " << AppInfo::appName() << "." << std::endl;
 	m_mutex.unlock();
 }
 
