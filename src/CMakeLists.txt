@@ -23,6 +23,7 @@ endif()
 add_definitions(-DTIXML_USE_STL)
 
 set (SOURCES
+  AppInfo.cpp
   DirIterator.cpp
   FileOps.cpp
   Log.cpp
