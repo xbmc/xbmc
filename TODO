@@ -56,3 +56,6 @@ Telemetry:
 
 Source:
  * Ensure no Mendeley branding in standalone project and publish code
+
+Reliability:
+ * Consider using file system transactions on Windows to make update installation atomic
