@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 
+require 'fileutils'
 require 'rubygems'
 require 'find'
 require 'json'
@@ -258,6 +259,8 @@ end
 input_dir = ARGV[0]
 package_map_file = ARGV[1]
 output_dir = ARGV[2]
+
+FileUtils.mkpath(output_dir)
 
 # get the details of each input file
 input_file_list = []
