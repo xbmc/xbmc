@@ -29,14 +29,14 @@ class CPluginSource : public CAddon
 {
 public:
 
-  enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO };
+  enum Content { UNKNOWN, AUDIO, IMAGE, EXECUTABLE, VIDEO, MEDIA };
 
   CPluginSource(const cp_extension_t *ext);
   CPluginSource(const AddonProps &props);
   virtual ~CPluginSource() {}
   virtual bool IsType(TYPE type) const;
   bool Provides(const Content& content) const {
-    return content == UNKNOWN ? false : m_providedContent.count(content) > 0; }
+    return content == UNKNOWN ? false : content == MEDIA ? m_providedContent.size() > 0 : m_providedContent.count(content) > 0; }
 
   static Content Translate(const CStdString &content);
 private:
