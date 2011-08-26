@@ -16,7 +16,6 @@ class UpdateDialogGtk : public UpdateObserver
 		// observer callbacks - these may be called
 		// from a background thread
 		virtual void updateError(const std::string& errorMessage);
-		virtual bool updateRetryCancel(const std::string& message);
 		virtual void updateProgress(int percentage);
 		virtual void updateFinished();
 

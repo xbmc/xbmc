@@ -119,12 +119,6 @@ void UpdateDialogGtk::updateError(const std::string& errorMessage)
 	g_idle_add(&UpdateDialogGtk::notify,message);
 }
 
-bool UpdateDialogGtk::updateRetryCancel(const std::string& message)
-{
-	// TODO
-	return false;
-}
-
 void UpdateDialogGtk::updateProgress(int percentage)
 {
 	UpdateMessage* message = new UpdateMessage(this,UpdateMessage::UpdateProgress);

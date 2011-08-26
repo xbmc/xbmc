@@ -144,12 +144,6 @@ void UpdateDialogCocoa::updateError(const std::string& errorMessage)
 	             waitUntilDone:false];
 }
 
-bool UpdateDialogCocoa::updateRetryCancel(const std::string& message)
-{
-	// TODO
-	return false;
-}
-
 void UpdateDialogCocoa::updateProgress(int percentage)
 {
 	[d->delegate performSelectorOnMainThread:@selector(reportUpdateProgress:)

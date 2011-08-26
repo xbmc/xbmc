@@ -129,11 +129,6 @@ void UpdateDialogWin32::updateError(const std::string& errorMessage)
 	SendNotifyMessage(m_window.GetHwnd(),WM_USER,reinterpret_cast<WPARAM>(message),0);
 }
 
-bool UpdateDialogWin32::updateRetryCancel(const std::string& message)
-{
-	return false;
-}
-
 void UpdateDialogWin32::updateProgress(int percentage)
 {
 	UpdateMessage* message = new UpdateMessage(UpdateMessage::UpdateProgress);

@@ -19,7 +19,6 @@ class UpdateDialogWin32 : public UpdateObserver
 
 		// implements UpdateObserver
 		virtual void updateError(const std::string& errorMessage);
-		virtual bool updateRetryCancel(const std::string& message);
 		virtual void updateProgress(int percentage);
 		virtual void updateFinished();
 
