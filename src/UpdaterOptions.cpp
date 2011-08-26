@@ -27,10 +27,6 @@ UpdateInstaller::Mode stringToMode(const std::string& modeStr)
 	{
 		return UpdateInstaller::Main;
 	}
-	else if (modeStr == "cleanup")
-	{
-		return UpdateInstaller::Cleanup;
-	}
 	else
 	{
 		if (!modeStr.empty())
@@ -83,10 +79,6 @@ void UpdaterOptions::parseOldFormatArgs(int argc, char** argv)
 		else if (key == "--main")
 		{
 			mode = UpdateInstaller::Main;
-		}
-		else if (key == "--clean")
-		{
-			mode = UpdateInstaller::Cleanup;
 		}
 	}
 }

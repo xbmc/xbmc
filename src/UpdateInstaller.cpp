@@ -126,12 +126,7 @@ void UpdateInstaller::run() throw ()
 		restartMainApp();
 
 		// clean up files created by the updater
-		std::list<std::string> cleanupArgs = updaterArgs();
-		cleanupArgs.push_back("--mode");
-		cleanupArgs.push_back("cleanup");
-		cleanupArgs.push_back("--wait");
-		cleanupArgs.push_back(intToStr(ProcessUtils::currentProcessId()));
-		ProcessUtils::runAsync(updaterPath,cleanupArgs);
+		cleanup();
 	}
 	else if (m_mode == Main)
 	{
@@ -173,27 +168,19 @@ void UpdateInstaller::run() throw ()
 			m_observer->updateFinished();
 		}
 	}
-	else if (m_mode == Cleanup)
-	{
-		LOG(Info,"Cleaning up temporary updater files");
-
-		ProcessUtils::waitForProcess(m_waitPid);
-
-		try
-		{
-			cleanup();
-		}
-		catch (const FileOps::IOException& ex)
-		{
-			LOG(Error,"Error cleaning up updater " + std::string(ex.what()));
-		}
-		LOG(Info,"Updater files removed");
-	}
 }
 
 void UpdateInstaller::cleanup()
 {
-	FileOps::rmdirRecursive(m_packageDir.c_str());
+	try
+	{
+		FileOps::rmdirRecursive(m_packageDir.c_str());
+	}
+	catch (const FileOps::IOException& ex)
+	{
+		LOG(Error,"Error cleaning up updater " + std::string(ex.what()));
+	}
+	LOG(Info,"Updater files removed");
 }
 
 void UpdateInstaller::revert()

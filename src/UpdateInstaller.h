@@ -15,8 +15,7 @@ class UpdateInstaller
 		enum Mode
 		{
 			Setup,
-			Main,
-			Cleanup
+			Main
 		};
 
 		UpdateInstaller();
