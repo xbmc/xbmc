@@ -46,6 +46,11 @@ class ProcessUtils
 #endif
 
 	private:
+		enum RunMode
+		{
+			RunSync,
+			RunAsync
+		};
 		static int runElevatedLinux(const std::string& executable,
 		                             const std::list<std::string>& args);
 		static int runElevatedMac(const std::string& executable,
@@ -55,11 +60,10 @@ class ProcessUtils
 
 		static PLATFORM_PID runAsyncUnix(const std::string& executable,
 		                         const std::list<std::string>& args);
-		static void runAsyncWindows(const std::string& executable,
-		                            const std::list<std::string>& args);
+		static int runWindows(const std::string& executable,
+		                      const std::list<std::string>& args,
+	                          RunMode runMode);
 		static int runSyncUnix(const std::string& executable,
-		                        const std::list<std::string>& args);
-		static int runSyncWindows(const std::string& executable,
 		                        const std::list<std::string>& args);
 };
 

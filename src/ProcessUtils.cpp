@@ -37,7 +37,7 @@ int ProcessUtils::runSync(const std::string& executable,
 #ifdef PLATFORM_UNIX
 	return runSyncUnix(executable,args);
 #else
-	return runSyncWindows(executable,args);
+	return runWindows(executable,args,RunSync);
 #endif
 }
 
@@ -52,20 +52,11 @@ int ProcessUtils::runSyncUnix(const std::string& executable,
 }
 #endif
 
-#ifdef PLATFORM_WINDOWS
-int ProcessUtils::runSyncWindows(const std::string& executable,
-		                         const std::list<std::string>& args)
-{
-	// TODO - Implement me
-	return 0;
-}
-#endif
-
 void ProcessUtils::runAsync(const std::string& executable,
 		      const std::list<std::string>& args)
 {
 #ifdef PLATFORM_WINDOWS
-	runAsyncWindows(executable,args);
+	runWindows(executable,args,RunAsync);
 #elif defined(PLATFORM_UNIX)
 	runAsyncUnix(executable,args);
 #endif
@@ -358,8 +349,9 @@ PLATFORM_PID ProcessUtils::runAsyncUnix(const std::string& executable,
 #endif
 
 #ifdef PLATFORM_WINDOWS
-void ProcessUtils::runAsyncWindows(const std::string& executable,
-						const std::list<std::string>& args)
+int ProcessUtils::runWindows(const std::string& executable,
+                             const std::list<std::string>& args,
+                             RunMode runMode)
 {
 	std::string commandLine = executable;
 	for (std::list<std::string>::const_iterator iter = args.begin(); iter != args.end(); iter++)
@@ -391,9 +383,37 @@ void ProcessUtils::runAsyncWindows(const std::string& executable,
 		&startupInfo /* startup info */,
 		&processInfo /* process information */
 	);
+
 	if (!result)
 	{
 		LOG(Error,"Failed to start child process. " + executable + " Last error: " + intToStr(GetLastError()));
+		return -1;
+	}
+	else
+	{
+		if (runMode == RunSync)
+		{
+			if (WaitForSingleObject(processInfo.hProcess,INFINITE) == WAIT_OBJECT_0)
+			{
+				DWORD status = -1;
+				if (GetExitCodeProcess(processInfo.hProcess,&status) != 0)
+				{
+					LOG(Error,"Failed to get exit code for process");
+				}
+				return status;
+			}
+			else
+			{
+				LOG(Error,"Failed to wait for process to finish");
+				return -1;
+			}
+		}
+		else
+		{
+			// process is being run asynchronously - return zero as if it had
+			// succeeded
+			return 0;
+		}
 	}
 }
 #endif
