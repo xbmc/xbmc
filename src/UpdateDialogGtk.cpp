@@ -1,10 +1,36 @@
 #include "UpdateDialogGtk.h"
 
-#include "Log.h"
 #include "StringUtils.h"
 
 #include <glib.h>
 #include <gtk/gtk.h>
+
+UpdateDialogGtk* update_dialog_gtk_new(int argc, char** argv)
+{
+	UpdateDialogGtk* dialog = new UpdateDialogGtk;
+	dialog->init(argc,argv);
+	return dialog;
+}
+
+void update_dialog_gtk_exec(UpdateDialogGtk* dialog)
+{
+	dialog->exec();
+}
+
+void update_dialog_gtk_handle_error(UpdateDialogGtk* dialog, const std::string& errorMessage)
+{
+	dialog->updateError(errorMessage);
+}
+
+void update_dialog_gtk_handle_progress(UpdateDialogGtk* dialog, int percentage)
+{
+	dialog->updateProgress(percentage);
+}
+
+void update_dialog_gtk_handle_finished(UpdateDialogGtk* dialog)
+{
+	dialog->updateFinished();
+}
 
 UpdateDialogGtk::UpdateDialogGtk()
 : m_hadError(false)

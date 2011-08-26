@@ -30,3 +30,14 @@ class UpdateDialogGtk : public UpdateObserver
 		bool m_hadError;
 };
 
+// helper functions which allow the GTK dialog to be loaded dynamically
+// at runtime and used only if the GTK libraries are actually present
+extern "C" {
+	UpdateDialogGtk* update_dialog_gtk_new(int argc, char** argv);
+	void update_dialog_gtk_exec(UpdateDialogGtk* dialog);
+	void update_dialog_gtk_handle_error(UpdateDialogGtk* dialog, const std::string& errorMessage);
+	void update_dialog_gtk_handle_progress(UpdateDialogGtk* dialog, int percentage);
+	void update_dialog_gtk_handle_finished(UpdateDialogGtk* dialog);
+}
+
+

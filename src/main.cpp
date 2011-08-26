@@ -8,7 +8,7 @@
 #include "tinythread.h"
 
 #if defined(PLATFORM_LINUX) and defined(ENABLE_GTK)
-  #include "UpdateDialogGtk.h"
+  #include "UpdateDialogGtkWrapper.h"
 #endif
 
 #if defined(PLATFORM_MAC)
@@ -88,11 +88,17 @@ int main(int argc, char** argv)
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
 #ifdef ENABLE_GTK
-	UpdateDialogGtk dialog;
-	installer->setObserver(&dialog);
-	dialog.init(argc,argv);
+	UpdateDialogGtkWrapper dialog;
+	bool useGtk = dialog.init(argc,argv);
+	if (useGtk)
+	{
+		installer->setObserver(&dialog);
+	}
 	tthread::thread updaterThread(runUpdaterThread,installer);
-	dialog.exec();
+	if (useGtk)
+	{
+		dialog.exec();
+	}
 	updaterThread.join();
 #else
 	// no UI available - do a silent install

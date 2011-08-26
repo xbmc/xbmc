@@ -16,6 +16,8 @@ if (ENABLE_GTK)
 	include_directories(${GTK2_INCLUDE_DIR})
 	add_definitions(${GTK2_CFLAGS})
 	add_definitions(-DENABLE_GTK)
+	add_library(updatergtk SHARED UpdateDialogGtk.cpp UpdateDialogGtk.h)
+	target_link_libraries(updatergtk ${GTK2_LINK_FLAGS})
 endif()
 
 add_definitions(-DTIXML_USE_STL)
@@ -30,9 +32,6 @@ set (SOURCES
   UpdaterOptions.cpp
 )
 
-if (ENABLE_GTK)
-	set(SOURCES ${SOURCES} UpdateDialogGtk.cpp)
-endif()
 if (APPLE)
 	set(SOURCES ${SOURCES} UpdateDialogCocoa.mm)
 endif()
@@ -51,8 +50,19 @@ set (HEADERS
 )
 
 if (ENABLE_GTK)
-	set(HEADERS ${HEADERS} UpdateDialogGtk.h)
+	# embed the GTK helper library into the updater binary.
+	# At runtime it will be extracted and loaded if the
+	# GTK libraries are available
+
+	set(GTK_UPDATER_LIB libupdatergtk.so)
+	set(GTK_BIN_FILE ${CMAKE_CURRENT_BINARY_DIR}/libupdatergtk.cpp)
+	add_custom_command(OUTPUT ${GTK_BIN_FILE}
+	                   COMMAND xxd -i ${GTK_UPDATER_LIB} ${GTK_BIN_FILE}
+	                   DEPENDS updatergtk)
+	set(SOURCES ${SOURCES} UpdateDialogGtkWrapper.cpp ${GTK_BIN_FILE})
+	set(HEADERS ${HEADERS} UpdateDialogGtkWrapper.h)
 endif()
+
 if (APPLE)
 	set(HEADERS ${HEADERS} UpdateDialogCocoa.h)
 endif()
@@ -70,13 +80,7 @@ target_link_libraries(updatershared
   tinyxml
   minizip
   tinythread
-  ${GTK2_LINK_FLAGS}
 )
-
-if (ENABLE_GTK)
-	target_link_libraries(updatershared
-	${GTK2_LINK_FLAGS})
-endif()
 
 if (UNIX)
   target_link_libraries(updatershared pthread)
@@ -97,6 +101,7 @@ endif()
 
 target_link_libraries(updater
   updatershared
+  dl
 )
 
 install(TARGETS updater RUNTIME DESTINATION bin)
