@@ -16,11 +16,10 @@ General Updater Tasks:
  * Use message box for errors [done]
  * Newly installed binary needs to be launched un-elevated [done]
  * See if it is possible to overwrite application files that are in use on Windows [done - it is possible]
+ * Fix package dir cleanup failing on Win32 due to executable being in use [done]
  
- * Retry/cancel support if updater cannot overwrite file (eg. due to
-   file being in use by Microsoft Word or another application)
+ * Test installing update if Microsoft Word with Mendeley plugin is active
  * Write log file entries to an actual log file [partially done - needs to write to correct location]
- * Fix package dir cleanup failing on Win32 due to executable being in use
  * Test updater on an old Windows system without Visual Studio installed and statically
    link C++ runtime libraries if necessary
    
