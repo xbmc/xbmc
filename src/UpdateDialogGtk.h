@@ -10,8 +10,6 @@ class UpdateDialogGtk : public UpdateObserver
 	public:
 		UpdateDialogGtk();
 
-		bool restartApp() const;
-
 		void init(int argc, char** argv);
 		void exec();
 
@@ -30,7 +28,6 @@ class UpdateDialogGtk : public UpdateObserver
 		GtkWidget* m_progressLabel;
 		GtkWidget* m_finishButton;
 		GtkWidget* m_progressBar;
-		bool m_restartApp;
 		bool m_hadError;
 };
 

@@ -7,14 +7,8 @@
 #include <gtk/gtk.h>
 
 UpdateDialogGtk::UpdateDialogGtk()
-: m_restartApp(false)
-, m_hadError(false)
+: m_hadError(false)
 {
-}
-
-bool UpdateDialogGtk::restartApp() const
-{
-	return m_restartApp;
 }
 
 void UpdateDialogGtk::init(int argc, char** argv)
@@ -67,8 +61,6 @@ void UpdateDialogGtk::exec()
 
 void UpdateDialogGtk::finish(GtkWidget* widget, gpointer _dialog)
 {
-	UpdateDialogGtk* dialog = static_cast<UpdateDialogGtk*>(_dialog);
-	dialog->m_restartApp = true;
 	gtk_main_quit();
 }
 
