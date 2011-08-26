@@ -4673,20 +4673,17 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL = "select * from movieview ";
-    if (fetchSets && !g_guiSettings.GetBool("videolibrary.flattenmoviesets"))
-    {
-      // not getting a set, so grab all sets that match this where clause first
-      CStdString setsWhere;
-      if (where.size())
-        setsWhere = " where movie.idMovie in (select movieview.idMovie from movieview " + where + ")";
-      GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES, setsWhere);
-      if (where.size())
-        strSQL += where + PrepareSQL(" and movieview.idMovie NOT in (SELECT idMovie FROM setlinkmovie GROUP BY idSet HAVING COUNT(idMovie) > 1)");
-      else
-        strSQL += PrepareSQL("WHERE movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)");
-    }
-    else
+
+    if (where.size())
       strSQL += where;
+    else
+    {
+      if (fetchSets && !g_guiSettings.GetBool("videolibrary.flattenmoviesets"))
+      {
+        GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES, "");
+        strSQL += PrepareSQL("WHERE movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)");
+      }
+    }
 
     if (order.size())
       strSQL += " " + order;
