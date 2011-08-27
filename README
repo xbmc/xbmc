@@ -1,6 +1,6 @@
-This tool is a component of an auto-update system.  It is responsible for performing
-the installation of an update after the necessary files have been downloaded
-to a temporary directory.
+This tool is a component of a cross-platform auto-update system.
+It is responsible for performing the installation of an update after
+the necessary files have been downloaded to a temporary directory.
 
 This tool is responsible for:
 
@@ -15,12 +15,12 @@ This tool is responsible for:
  * Displaying a simple updater UI and re-launching the main application
    once the update is installed.
 
-The tool consists of a single small binary which only has a small number of external 
-dependencies that need to be present on the target system.
+The tool consists of a single small binary which depends only on libraries
+that are part of the base system.
 
 The external dependencies of the updater binary are:
 
- * The C++ runtime library (Linux, Mac),
+ * The C/C++ runtime libraries (Linux, Mac),
  * pthreads (Linux, Mac),
  * zlib (Linux, Mac)
  * native UI library (Win32 API on Windows, Cocoa on Mac, GTK on Linux if available)
@@ -31,3 +31,61 @@ containing the files for the update to a temporary directory.  It then needs
 to invoke the updater, specifying the installation directory, temporary package
 directory and path to the update script file.  The updater then installs the
 update and restarts the application when done.
+
+Preparing an Update
+===================
+
+ 1. Create a directory containing your application's files,
+    laid out and with the same permissions as they would be when installed.
+
+ 2. Create a config file specifying how the application's files should be
+    partitioned into packages - see tools/config-template.json
+
+ 3. Use the tools/create-packages.rb script to create a file_list.xml file
+    and a set of package files required for updates.
+
+ 4. Upload the file_list.xml file and packages to a server
+
+ After step 4 is done, you need to notify existing installs that an update
+ is available.  The installed application then needs to download the
+ relevant packages, file_list.xml file and updater binary to a temporary
+ directory and invoke the updater.
+
+Delta Updates
+=============
+
+ The simplest possible auto-update implementation is for existing installs
+ to download a complete copy of the new version and install it.  This is
+ appropriate if a full download and install will not take a long time for most users
+ (eg. if the application is small or they have a fast internet connection).
+
+ To reduce the download size, delta updates can be created which only include
+ the necessary files or components to update from the old to the new version.
+
+ The file_list.xml file format can be used to represent either a complete
+ install - in which every file that makes up the application is included,
+ or a delta update - in which case only new or updated files and packages
+ are included.
+
+ There are several ways in which this can be done:
+
+ Pre-computed Delta Updates
+   - For each release, create a full update plus delta updates from the
+     previous N releases.  Users of recent releases will receive a small
+     delta update.  Users of older releases will receive the full update.
+
+ Server-computed Delta Updates
+   - The server receives a request for an update from client version X and in response,
+     computes an update from version X to the current version Y, possibly
+     caching that information for future use.  The client then receives the
+     delta file_list.xml file and downloads only the listed packages.
+
+     Applications such as Chrome and Firefox use a mixture of the above methods.
+
+ Client-computed Delta Updates
+   - The client downloads the file_list.xml file for the latest version and
+     computes a delta update file locally.  It then downloads only the required
+     packages and invokes the updater, which installs only the changed or updated
+     files from those packages.
+
+	 This is similar to Linux package management systems.
