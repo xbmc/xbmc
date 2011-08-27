@@ -205,6 +205,7 @@ const BUILT_IN commands[] = {
   { "LCD.Suspend",                false,  "Suspends LCDproc" },
   { "LCD.Resume",                 false,  "Resumes LCDproc" },
 #endif
+  { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -1523,6 +1524,11 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, 0);
     g_windowManager.SendMessage(msg, WINDOW_WEATHER);
+  }
+  else if (execute.Equals("videolibrary.search"))
+  {
+    CGUIMessage msg(GUI_MSG_SEARCH, 0, 0, 0);
+    g_windowManager.SendMessage(msg, WINDOW_VIDEO_NAV);
   }
   else
     return -1;
