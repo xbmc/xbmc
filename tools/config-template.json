@@ -1,0 +1,11 @@
+{
+	"packages" : {
+		"app" : [
+			".*"
+		]
+	},
+	
+	"updater-binary" : "updater",
+
+	"main-binary" : "myapp"
+}

@@ -9,10 +9,12 @@ require 'optparse'
 
 # syntax:
 #
-# create-packages.rb <input directory> <package map> <output directory>
+# create-packages.rb <input directory> <config file> <output directory>
 #
 #  Takes the set of files that make up a release and splits them up into
-#  a set of .zip packages
+#  a set of .zip packages along with a file_list.xml file listing all
+#  the files in the release and mapping them to their respective
+#  packages.
 #
 #  Outputs:
 #
@@ -41,8 +43,8 @@ class UpdateScriptFile
 	#               flags from the QFile::Permission enum in Qt
 	# size - The size of the file in bytes
 	# package - The name of the package containing this file
-	attr_reader :path,:hash,:permissions,:size,:package,:target
-	attr_writer :path,:hash,:permissions,:size,:package,:target
+	attr_reader :path,:hash,:permissions,:size,:package,:target,:is_main_binary
+	attr_writer :path,:hash,:permissions,:size,:package,:target,:is_main_binary
 end
 
 # Utility method - convert a hash map to an REXML element
@@ -77,12 +79,23 @@ def strip_prefix(string,prefix)
 end
 
 class UpdateScriptGenerator
-	def initialize(input_dir,output_dir, file_list, package_file_map)
+
+	# input_dir - The directory containing files that make up the install
+	# output_dir - The directory containing the generated packages
+	# package_config - The PackageConfig specifying the file -> package map
+	#                  for the application and other config options
+	# file_list - A list of all files in 'input_dir' which make up the install
+	# package_file_map - A map of (package name -> [paths of files in this package])
+
+	def initialize(input_dir, output_dir, package_config, file_list, package_file_map)
+		@config = package_config
+
 		# List of files to install in this version
 		@files_to_install = []
 		file_list.each do |path|
 			file = UpdateScriptFile.new
 			file.path = strip_prefix(path,input_dir)
+			file.is_main_binary = (file.path == package_config.main_binary)
 			
 			if (File.symlink?(path))
 				file.target = File.readlink(path)
@@ -113,7 +126,7 @@ class UpdateScriptGenerator
 		end
 	end
 
-	def toXML()
+	def to_xml()
 		doc = REXML::Document.new
 		update_elem = REXML::Element.new("update")
 		doc.add_element update_elem
@@ -129,7 +142,7 @@ class UpdateScriptGenerator
 
 	def deps_to_xml()
 		deps_elem = REXML::Element.new("dependencies")
-		deps = ["updater.exe"]
+		deps = @config.updater_binary
 		deps.each do |dependency|
 			dep_elem = REXML::Element.new("file")
 			dep_elem.text = dependency
@@ -167,6 +180,11 @@ class UpdateScriptGenerator
 				attributes["hash"] = file.hash
 				attributes["package"] = file.package
 			end
+
+			if (file.is_main_binary)
+				attributes["is-main-binary"] = "true"
+			end
+
 			hash_to_xml(file_elem,attributes)
 		end
 		return install_elem
@@ -226,16 +244,21 @@ class UpdateScriptGenerator
 	end
 end
 
-class PackageMap
+class PackageConfig
+	attr_reader :main_binary, :updater_binary
+
 	def initialize(map_file)
 		@rule_map = {}
-		map_json = JSON.parse(File.read(map_file))
-		map_json.each do |package,rules|
+		config_json = JSON.parse(File.read(map_file))
+		config_json["packages"].each do |package,rules|
 			rules.each do |rule|
 				rule_regex = Regexp.new(rule)
 				@rule_map[rule_regex] = package
 			end
 		end
+
+		@main_binary = config_json["main-binary"]
+		@updater_binary = config_json["updater-binary"]
 	end
 
 	def package_for_file(file)
@@ -272,14 +295,14 @@ end
 # map each input file to a corresponding package
 
 # read the package map
-package_map = PackageMap.new(package_map_file)
+package_config = PackageConfig.new(package_map_file)
 
 # map of package name -> array of files
 package_file_map = {}
 input_file_list.each do |file|
 	next if File.symlink?(file)
 
-	package = package_map.package_for_file(file)
+	package = package_config.package_for_file(file)
 	if (!package)
 		raise "Unable to find package for file #{file}"
 	end
@@ -298,6 +321,10 @@ package_file_map.each do |package,files|
 	quoted_file_list = quoted_files.join(" ")
 
 	output_path = File.expand_path(output_dir)
+	output_file = "#{output_path}/#{package}.zip"
+
+	File.unlink(output_file) if File.exist?(output_file)
+
 	Dir.chdir(input_dir) do
 	if (!system("zip #{output_path}/#{package}.zip #{quoted_file_list}"))
 			raise "Failed to generate package #{package}"
@@ -306,10 +333,10 @@ package_file_map.each do |package,files|
 end
 
 # output the file_list.xml file
-update_script = UpdateScriptGenerator.new(input_dir,output_dir,input_file_list,package_file_map)
+update_script = UpdateScriptGenerator.new(input_dir,output_dir,package_config,input_file_list,package_file_map)
 output_xml_file = "#{output_dir}/file_list.unformatted.xml"
 File.open(output_xml_file,'w') do |file|
-	file.write update_script.toXML()
+	file.write update_script.to_xml()
 end
 
 # xmllint generates more readable formatted XML than REXML, so write unformatted
