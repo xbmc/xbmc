@@ -2,6 +2,7 @@
 
 #include "UpdateInstaller.h"
 
+/** Parses the command-line options to the updater binary. */
 class UpdaterOptions
 {
 	public:

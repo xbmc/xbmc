@@ -2,6 +2,9 @@
 
 #include <string>
 
+/** Base class for observers of update installation status.
+  * See UpdateInstaller::setObserver()
+  */
 class UpdateObserver
 {
 	public:

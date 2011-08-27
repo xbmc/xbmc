@@ -2,6 +2,10 @@
 
 #include <string>
 
+/** This class provides project-specific updater properties,
+  * such as the name of the application being updated and
+  * the path to log details of the update install to.
+  */
 class AppInfo
 {
 	public:

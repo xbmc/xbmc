@@ -2,6 +2,10 @@
 
 #include <string>
 
+/** UpdateMessage stores information for a message
+  * about the status of update installation sent
+  * between threads.
+  */
 class UpdateMessage
 {
 	public:

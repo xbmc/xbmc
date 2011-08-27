@@ -5,6 +5,9 @@
 
 class TiXmlElement;
 
+/** Represents a package containing one or more
+  * files for an update.
+  */
 class UpdateScriptPackage
 {
 	public:
@@ -26,6 +29,7 @@ class UpdateScriptPackage
 		}
 };
 
+/** Represents a file to be installed as part of an update. */
 class UpdateScriptFile
 {
 	public:
@@ -50,11 +54,17 @@ class UpdateScriptFile
 		}
 };
 
+/** Stores information about the packages and files included
+  * in an update, parsed from an XML file.
+  */
 class UpdateScript
 {
 	public:
 		UpdateScript();
 
+		/** Initialize this UpdateScript with the script stored
+		  * in the XML file at @p path.
+		  */
 		void parse(const std::string& path);
 
 		bool isValid() const;

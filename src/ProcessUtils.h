@@ -5,6 +5,9 @@
 #include <list>
 #include <string>
 
+/** A set of functions to get information about the current
+  * process and launch new processes.
+  */
 class ProcessUtils
 {
 	public:
@@ -18,11 +21,22 @@ class ProcessUtils
 
 		static PLATFORM_PID currentProcessId();
 
+		/** Returns the absolute path to the main binary for
+		  * the current process.
+		  */
 		static std::string currentProcessPath();
 
+		/** Start a process and wait for it to finish before
+		  * returning its exit code.
+		  *
+		  * Returns -1 if the process cannot be started.
+		  */
 		static int runSync(const std::string& executable,
 		                    const std::list<std::string>& args);
 
+		/** Start a process and return without waiting for
+		  * it to finish.
+		  */
 		static void runAsync(const std::string& executable,
 		                     const std::list<std::string>& args);
 
@@ -35,6 +49,10 @@ class ProcessUtils
 		static int runElevated(const std::string& executable,
 		                        const std::list<std::string>& args);
 
+		/** Wait for a process to exit.
+		  * Returns true if the process was found and has exited or false
+		  * otherwise.
+		  */
 		static bool waitForProcess(PLATFORM_PID pid);
 
 #ifdef PLATFORM_WINDOWS

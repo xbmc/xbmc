@@ -9,6 +9,11 @@
 
 class UpdateObserver;
 
+/** Central class responsible for installing updates,
+  * launching an elevated copy of the updater if required
+  * and restarting the main application once the update
+  * is installed.
+  */
 class UpdateInstaller
 {
 	public:
