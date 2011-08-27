@@ -43,7 +43,7 @@ CAirPlayServer *CAirPlayServer::ServerInstance = NULL;
 #define EVENT_PLAYING   0
 #define EVENT_PAUSED    1
 #define EVENT_LOADING   2
-char *eventStrings[] = {"playing", "paused", "loading"};
+const char *eventStrings[] = {"playing", "paused", "loading"};
 
 #define PLAYBACK_INFO  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"\
 "<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\r\n"\
