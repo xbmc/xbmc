@@ -392,6 +392,7 @@
       <delete>Delete</delete>
       <space>Playlist</space>
       <w>ToggleWatched</w>
+      <f7>VideoLibrary.Search</f7>
     </keyboard>
   </MyVideoLibrary>
   <MyVideoFiles>
@@ -399,6 +400,7 @@
       <space>Playlist</space>
       <q>Queue</q>
       <w>ToggleWatched</w>
+      <f7>VideoLibrary.Search</f7>
     </keyboard>
   </MyVideoFiles>
   <MyVideoPlaylist>
