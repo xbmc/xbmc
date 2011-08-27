@@ -2,10 +2,8 @@
 <includes>
 	<include file="Defaults.xml"/>
 	<include file="IncludesDims.xml"/>
-	<include file="revision.xml"/>
 	<include file="OptionsMenu.xml"/>
 	<include file="ViewsMusic.xml"/>
-	<include file="ViewsCoverflow.xml"/>
 	<include file="ViewsCommon.xml"/>
 	<include file="ViewsVideo.xml"/>
 	<include file="ViewsMusic.xml"/>
@@ -858,6 +856,24 @@
 			<control type="group">
 				<description>Programs Background Image</description>
 				<visible>Window.IsVisible(MyPrograms)</visible>
+				<control type="largeimage">
+					<description>Fanart background</description>
+					<include>FullScreenBGImage</include>
+					<info>ListItem.Property(fanart_image)</info>
+					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
+					<include>BackgroundFade</include>
+				</control>
+				<control type="largeimage">
+					<description>Fanart background (from directory)</description>
+					<include>FullScreenBGImage</include>
+					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
+					<info>FanArt.Image</info>
+					<include>BackgroundFade</include>
+				</control>
+			</control>
+			<control type="group">
+				<description>Programs Background Image</description>
+				<visible>Window.IsVisible(plugins)</visible>
 				<control type="largeimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
