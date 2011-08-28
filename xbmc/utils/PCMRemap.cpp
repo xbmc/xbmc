@@ -565,6 +565,15 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples, float gain /*
         m_attenuationInc = 1.0f - m_attenuation;
         m_holdCounter = MathUtils::round_int(m_sampleRate * g_advancedSettings.m_limiterHold);
       }
+      else if (m_attenuation < 1.0f)
+      {
+        //if we're attenuating, and we get within 5% of clipping, hold the current attenuation
+        if (value * m_attenuation < (float)INT16_MIN * 0.95 || value * m_attenuation > (float)INT16_MAX * 0.95)
+        {
+          m_holdCounter = MathUtils::round_int(m_sampleRate * g_advancedSettings.m_limiterHold);
+          m_attenuationInc = 1.0f - m_attenuation;
+        }
+      }
 
       //convert to signed int and clamp to 16 bit
       int outvalue = MathUtils::round_int(value * m_attenuation);
