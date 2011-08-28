@@ -558,13 +558,6 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		goto out;
 	}
 
-	/*
-	 * XXX: for some reason, this seems to return an error, even though
-	 *      it succeeds...
-	 */
-
-	ret = 0;
-
     out:
 	pthread_mutex_unlock(&mutex);
 
@@ -1410,13 +1403,6 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		ret = err;
 		goto out;
 	}
-
-	/*
-	 * XXX: for some reason, this seems to return an error, even though
-	 *      it succeeds...
-	 */
-
-	ret = 0;
 
     out:
 	return ret;
