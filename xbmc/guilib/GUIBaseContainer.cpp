@@ -932,8 +932,7 @@ void CGUIBaseContainer::SetContainerMoving(int direction)
 
 void CGUIBaseContainer::UpdateScrollOffset(unsigned int currentTime)
 {
-  CScroller::ESCROLLSTATE scrollState = m_scroller.Update(currentTime);
-  if (scrollState != CScroller::NOT_SCROLLING)
+  if (m_scroller.Update(currentTime))
     MarkDirtyRegion();
   else if (m_lastScrollStartTimer.GetElapsedMilliseconds() >= SCROLLING_GAP)
   {
