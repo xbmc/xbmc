@@ -393,10 +393,10 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 	char rec_end_ts[CMYTH_TIMESTAMP_LEN + 1];
 	char originalairdate[CMYTH_TIMESTAMP_LEN + 1];
 	char lastmodified[CMYTH_TIMESTAMP_LEN + 1];
-	int err;
-	int count;
-	long r;
-	int ret;
+	int err = 0;
+	int count = 0;
+	long r = 0;
+	int ret = 0;
 
 	if (!prog) {
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: no program info\n",
@@ -1243,8 +1243,8 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 	char rec_end_ts[CMYTH_TIMESTAMP_LEN + 1];
 	char originalairdate[CMYTH_TIMESTAMP_LEN + 1];
 	char lastmodified[CMYTH_TIMESTAMP_LEN + 1];
-	int err;
-	int ret;
+	int err = 0;
+	int ret = 0;
 	char *host = "mediamvp";
 
 	if (!prog) {
