@@ -465,7 +465,7 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_chanId);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chanstr));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chansign));
-		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chanicon));
+		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_channame));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_url));
 		sprintf(buf + strlen(buf), "%d[]:[]",  (int32_t)(prog->proginfo_Length >> 32));
 		sprintf(buf + strlen(buf), "%d[]:[]",  (int32_t)(prog->proginfo_Length & 0xffffffff));
@@ -1312,7 +1312,7 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_chanId);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chanstr));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chansign));
-		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chanicon));
+		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_channame));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_url));
 		sprintf(buf + strlen(buf), "%d[]:[]",  (int32_t)(prog->proginfo_Length >> 32));
 		sprintf(buf + strlen(buf), "%d[]:[]",  (int32_t)(prog->proginfo_Length & 0xffffffff));
