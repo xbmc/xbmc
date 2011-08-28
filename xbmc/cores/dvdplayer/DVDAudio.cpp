@@ -27,6 +27,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
+#include "settings/Settings.h"
 
 using namespace std;
 
@@ -98,6 +99,8 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 
   if(m_pCallback && !m_bPassthrough)
     m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
+
+  SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
 
   return true;
 }

@@ -106,6 +106,7 @@ bool CALSADirectSound::Initialize(IAudioCallback* pCallback, const CStdString& d
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBitsPerSample = uiBitsPerSample;
   m_bPassthrough = bPassthrough;
+  m_drc = 0;
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
   if (!m_bPassthrough)
@@ -522,9 +523,13 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
   {
     if (m_remap.CanRemap())
     {
+      float gain = 1.0f;
+      if (m_drc > 0)
+        gain = pow(10.0f, (float)m_drc / 1000.0f);
+
       /* remap the data to the correct channels */
       uint8_t outData[bytesToWrite];
-      m_remap.Remap((void *)data, outData, framesToWrite);
+      m_remap.Remap((void *)data, outData, framesToWrite, gain);
       writeResult = snd_pcm_writei(m_pPlayHandle, outData, framesToWrite);
     }
     else

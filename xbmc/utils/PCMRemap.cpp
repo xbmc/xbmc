@@ -507,7 +507,7 @@ void CPCMRemap::SetOutputFormat(unsigned int channels, enum PCMChannels *channel
 }
 
 /* remap the supplied data into out, which must be pre-allocated */
-void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
+void CPCMRemap::Remap(void *data, void *out, unsigned int samples, float gain /*= 1.0f*/)
 {
   unsigned int i, ch;
   uint8_t      *insample, *outsample;
@@ -532,7 +532,7 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
       if (info->channel == PCM_INVALID) continue;
 
       /* if it is a 1-1 map, we just copy the data to avoid rounding errors */
-      if (info->copy)
+      if (info->copy && gain == 1.0f)
       {
         src = insample  + info->in_offset;
         dst = outsample + ch * m_inSampleSize;
@@ -546,6 +546,8 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
         value += (float)(*(int16_t*)src) * info->level;
       }
       dst = outsample + ch * m_inSampleSize;
+
+      value *= gain;
 
       //if value * m_attenuation clips (above INT16_MAX or below INT16_MIN),
       //adjust m_attenuation so that INT16_MIN <= value * m_attenuation <= INT16_MAX
