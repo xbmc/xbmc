@@ -36,6 +36,8 @@ using namespace std;
 
 #define HOLD_TIME_START 100
 #define HOLD_TIME_END   3000
+#define SCROLLING_GAP   200U
+#define SCROLLING_THRESHOLD 300U
 
 CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
@@ -660,6 +662,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     m_scroller.SetValue(m_scroller.GetValue() - ((m_orientation == HORIZONTAL) ? event.m_offsetX : event.m_offsetY));
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
     int offset = (int)MathUtils::round_int(m_scroller.GetValue() / size);
+    m_lastScrollStartTimer.Stop();
     m_scrollTimer.Start();
     SetOffset(offset);
     ValidateOffset();
@@ -669,6 +672,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
   { // release exclusive access
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
     SendWindowMessage(msg);
+    m_scrollTimer.Stop();
     // and compute the nearest offset from this and scroll there
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
     float offset = m_scroller.GetValue() / size;
@@ -908,6 +912,7 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
     m_scroller.SetValue((offset - range) * size);
   }
   m_scroller.ScrollTo(offset * size);
+  m_lastScrollStartTimer.StartZero();
   if (!m_wasReset)
   {
     SetContainerMoving(offset - GetOffset());
@@ -930,8 +935,11 @@ void CGUIBaseContainer::UpdateScrollOffset(unsigned int currentTime)
   CScroller::ESCROLLSTATE scrollState = m_scroller.Update(currentTime);
   if (scrollState != CScroller::NOT_SCROLLING)
     MarkDirtyRegion();
-  if (scrollState == CScroller::SCROLL_FINISHED)
+  else if (m_lastScrollStartTimer.GetElapsedMilliseconds() >= SCROLLING_GAP)
+  {
     m_scrollTimer.Stop();
+    m_lastScrollStartTimer.Stop();
+  }
 }
 
 int CGUIBaseContainer::CorrectOffset(int offset, int cursor) const
@@ -1064,7 +1072,7 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
       return layout ? (layout->GetFocusedItem() == (unsigned int)data) : false;
     }
   case CONTAINER_SCROLLING:
-    return (m_scrollTimer.GetElapsedMilliseconds() > m_scroller.GetDuration() || m_pageChangeTimer.IsRunning());
+    return (m_scrollTimer.GetElapsedMilliseconds() > std::max(m_scroller.GetDuration(), SCROLLING_THRESHOLD) || m_pageChangeTimer.IsRunning());
   default:
     return false;
   }
