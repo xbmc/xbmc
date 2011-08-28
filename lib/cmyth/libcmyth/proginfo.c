@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <inttypes.h>
 #include <cmyth_local.h>
 
 /*
@@ -467,12 +468,18 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chansign));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_channame));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_url));
-		sprintf(buf + strlen(buf), "%d[]:[]",  (int32_t)(prog->proginfo_Length >> 32));
-		sprintf(buf + strlen(buf), "%d[]:[]",  (int32_t)(prog->proginfo_Length & 0xffffffff));
+		if (control->conn_version >= 57) {
+			sprintf(buf + strlen(buf), "%"PRId64"[]:[]", prog->proginfo_Length);
+		} else {
+			sprintf(buf + strlen(buf), "%d[]:[]", (int32_t)(prog->proginfo_Length >> 32));
+			sprintf(buf + strlen(buf), "%d[]:[]", (int32_t)(prog->proginfo_Length & 0xffffffff));
+		}
 		sprintf(buf + strlen(buf), "%s[]:[]",  start_ts);
 		sprintf(buf + strlen(buf), "%s[]:[]",  end_ts);
-		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_unknown_0)); // "duplicate"
-		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "shareable"
+		if (control->conn_version < 57) {
+			sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_unknown_0)); // "duplicate"
+			sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "shareable"
+		}
 		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "findid"
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_hostname));
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_source_id);
@@ -486,17 +493,21 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_unknown_1); // "dupmethod"
 		sprintf(buf + strlen(buf), "%s[]:[]",  rec_start_ts);
 		sprintf(buf + strlen(buf), "%s[]:[]",  rec_end_ts);
-		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_repeat);
+		if (control->conn_version < 57) {
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_repeat);
+		}
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_program_flags);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_recgroup));
-		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chancommfree));
+		if (control->conn_version < 57) {
+			sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chancommfree));
+		}
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chan_output_filters));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_seriesid));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_programid));
 		sprintf(buf + strlen(buf), "%s[]:[]",  lastmodified);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_stars));
 		sprintf(buf + strlen(buf), "%s[]:[]",  originalairdate);
-		if (control->conn_version >= 15) {
+		if (control->conn_version >= 15 && control->conn_version < 57) {
 			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_hasairdate);
 		}
 		if (control->conn_version >= 18) {
@@ -1307,12 +1318,18 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chansign));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_channame));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_url));
-		sprintf(buf + strlen(buf), "%d[]:[]",  (int32_t)(prog->proginfo_Length >> 32));
-		sprintf(buf + strlen(buf), "%d[]:[]",  (int32_t)(prog->proginfo_Length & 0xffffffff));
+		if (control->conn_version >= 57) {
+			sprintf(buf + strlen(buf), "%"PRId64"[]:[]", prog->proginfo_Length);
+		} else {
+			sprintf(buf + strlen(buf), "%d[]:[]", (int32_t)(prog->proginfo_Length >> 32));
+			sprintf(buf + strlen(buf), "%d[]:[]", (int32_t)(prog->proginfo_Length & 0xffffffff));
+		}
 		sprintf(buf + strlen(buf), "%s[]:[]",  start_ts);
 		sprintf(buf + strlen(buf), "%s[]:[]",  end_ts);
-		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_unknown_0)); // "duplicate"
-		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "shareable"
+		if (control->conn_version < 57) {
+			sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_unknown_0)); // "duplicate"
+			sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "shareable"
+		}
 		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "findid"
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_hostname));
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_source_id);
@@ -1326,17 +1343,21 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_unknown_1); // "dupmethod"
 		sprintf(buf + strlen(buf), "%s[]:[]",  rec_start_ts);
 		sprintf(buf + strlen(buf), "%s[]:[]",  rec_end_ts);
-		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_repeat);
+		if (control->conn_version < 57) {
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_repeat);
+		}
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_program_flags);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_recgroup));
-		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chancommfree));
+		if (control->conn_version < 57) {
+			sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chancommfree));
+		}
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_chan_output_filters));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_seriesid));
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_programid));
 		sprintf(buf + strlen(buf), "%s[]:[]",  lastmodified);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_stars));
 		sprintf(buf + strlen(buf), "%s[]:[]",  originalairdate);
-		if (control->conn_version >= 15) {
+		if (control->conn_version >= 15 && control->conn_version < 57) {
 			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_hasairdate);
 		}
 		if (control->conn_version >= 18) {
