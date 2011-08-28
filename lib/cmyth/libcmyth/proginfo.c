@@ -472,8 +472,8 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  start_ts);
 		sprintf(buf + strlen(buf), "%s[]:[]",  end_ts);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_unknown_0)); // "duplicate"
-		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_recording);
-		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_override);
+		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "shareable"
+		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "findid"
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_hostname));
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_source_id);
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_card_id);
@@ -1319,8 +1319,8 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  start_ts);
 		sprintf(buf + strlen(buf), "%s[]:[]",  end_ts);
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_unknown_0)); // "duplicate"
-		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_recording);
-		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_override);
+		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "shareable"
+		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "findid"
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_hostname));
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_source_id);
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_card_id);
