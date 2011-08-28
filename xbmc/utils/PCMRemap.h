@@ -104,6 +104,11 @@ protected:
   struct PCMMapInfo  m_lookupMap[PCM_MAX_CH + 1][PCM_MAX_CH + 1];
   int                m_counts[PCM_MAX_CH];
 
+  float              m_attenuation;
+  float              m_attenuationInc;
+  float              m_sampleRate;
+  unsigned int       m_holdCounter;
+
   struct PCMMapInfo* ResolveChannel(enum PCMChannels channel, float level, bool ifExists, std::vector<enum PCMChannels> path, struct PCMMapInfo *tablePtr);
   void               ResolveChannels(); //!< Partial BuildMap(), just enough to see which output channels are active
   void               BuildMap();
@@ -117,7 +122,7 @@ public:
   ~CPCMRemap();
 
   void Reset();
-  enum PCMChannels *SetInputFormat (unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize);
+  enum PCMChannels *SetInputFormat (unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize, unsigned int sampleRate);
   void SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap, bool ignoreLayout = false);
   void Remap(void *data, void *out, unsigned int samples);
   bool CanRemap();

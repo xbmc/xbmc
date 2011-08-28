@@ -30,6 +30,7 @@
 #include "PCMRemap.h"
 #include "utils/log.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 #ifdef _WIN32
 #include "../win32/PlatformDefs.h"
 #endif
@@ -167,7 +168,11 @@ CPCMRemap::CPCMRemap() :
   m_inChannels  (0),
   m_outChannels (0),
   m_inSampleSize(0),
-  m_ignoreLayout(false)
+  m_ignoreLayout(false),
+  m_attenuation (1.0),
+  m_attenuationInc(0.0),
+  m_sampleRate  (48000.0), //safe default
+  m_holdCounter (0)
 {
   Dispose();
 }
@@ -432,10 +437,11 @@ void CPCMRemap::Reset()
 }
 
 /* sets the input format, and returns the requested channel layout */
-enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize)
+enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize, unsigned int sampleRate)
 {
   m_inChannels   = channels;
   m_inSampleSize = sampleSize;
+  m_sampleRate   = sampleRate;
   m_inSet        = channelMap != NULL;
   if (channelMap)
     memcpy(m_inMap, channelMap, sizeof(enum PCMChannels) * channels);
@@ -476,6 +482,10 @@ enum PCMChannels *CPCMRemap::SetInputFormat(unsigned int channels, enum PCMChann
   } else
     memcpy(m_layoutMap, PCMLayoutMap[m_channelLayout], sizeof(PCMLayoutMap[m_channelLayout]));
 
+  m_attenuation = 1.0;
+  m_attenuationInc = 1.0;
+  m_holdCounter = 0;
+
   return m_layoutMap;
 }
 
@@ -490,6 +500,10 @@ void CPCMRemap::SetOutputFormat(unsigned int channels, enum PCMChannels *channel
 
   DumpMap("O", channels, channelMap);
   BuildMap();
+
+  m_attenuation = 1.0;
+  m_attenuationInc = 1.0;
+  m_holdCounter = 0;
 }
 
 /* remap the supplied data into out, which must be pre-allocated */
@@ -533,14 +547,46 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples)
       }
       dst = outsample + ch * m_inSampleSize;
 
+      //if value * m_attenuation clips (above INT16_MAX or below INT16_MIN),
+      //adjust m_attenuation so that INT16_MIN <= value * m_attenuation <= INT16_MAX
+      if (value * m_attenuation > (float)INT16_MAX && m_attenuation > (float)INT16_MAX / value)
+      {
+        m_attenuation = (float)INT16_MAX / value;
+        //value to add to m_attenuation so that m_attenuation + m_attenuationinc = 1.0
+        m_attenuationInc = 1.0f - m_attenuation;
+        //hold m_attenuation at this value for g_advancedSettings.m_limiterHold seconds
+        m_holdCounter = MathUtils::round_int(m_sampleRate * g_advancedSettings.m_limiterHold);
+      }
+      else if (value * m_attenuation < (float)INT16_MIN && m_attenuation > (float)INT16_MIN / value)
+      {
+        m_attenuation = (float)INT16_MIN / value;
+        m_attenuationInc = 1.0f - m_attenuation;
+        m_holdCounter = MathUtils::round_int(m_sampleRate * g_advancedSettings.m_limiterHold);
+      }
+
       //convert to signed int and clamp to 16 bit
-      int outvalue = MathUtils::round_int(value);
+      int outvalue = MathUtils::round_int(value * m_attenuation);
       if (outvalue > INT16_MAX)
         outvalue = INT16_MAX;
       else if (outvalue < INT16_MIN)
         outvalue = INT16_MIN;
 
       *(int16_t*)dst = outvalue;
+    }
+
+    if (m_holdCounter)
+    {
+      m_holdCounter--; //hold m_attenuation
+    }
+    else if (m_attenuationInc > 0.0f)
+    {
+      //move m_attenuation to 1.0 in g_advancedSettings.m_limiterRelease seconds
+      m_attenuation += m_attenuationInc / m_sampleRate / g_advancedSettings.m_limiterRelease;
+      if (m_attenuation > 1.0f)
+      {
+        m_attenuation = 1.0f;
+        m_attenuationInc = 0.0f;
+      }
     }
 
     insample  += m_inStride;

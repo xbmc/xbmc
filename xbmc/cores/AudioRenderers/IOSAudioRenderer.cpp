@@ -83,7 +83,7 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
     enum PCMChannels *outLayout;
 
     /* set the input format, and get the channel layout so we know what we need to open */
-    outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
+    outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
     unsigned int outChannels = 0;
     unsigned int ch = 0, map;
     while(outLayout[ch] != PCM_INVALID)
