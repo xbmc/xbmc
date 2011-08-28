@@ -497,34 +497,27 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_stars));
 		sprintf(buf + strlen(buf), "%s[]:[]",  originalairdate);
 		if (control->conn_version >= 15) {
-		    sprintf(buf + strlen(buf), "%ld[]:[]",
-		    		prog->proginfo_hasairdate);
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_hasairdate);
 		}
 		if (control->conn_version >= 18) {
-		    sprintf(buf + strlen(buf), "%s[]:[]",
-			    S(prog->proginfo_playgroup));
+			sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_playgroup));
 		}
-		if (control->conn_version >= 25){
-		    sprintf(buf + strlen(buf), "%s[]:[]",
-			    S(prog->proginfo_recpriority_2));
+		if (control->conn_version >= 25) {
+			sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_recpriority_2));
 		}
 		if (control->conn_version >= 31) {
-		    sprintf(buf + strlen(buf), "%ld[]:[]",
-		    		prog->proginfo_parentid);
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_parentid);
 		}
 		if (control->conn_version >= 32) {
-		    sprintf(buf + strlen(buf), "%s[]:[]",
-			    S(prog->proginfo_storagegroup));
+			sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_storagegroup));
 		}
 		if (control->conn_version >= 35) {
-		    sprintf(buf + strlen(buf), "%ld[]:[]%ld[]:[]%ld[]:[]",
-		    		prog->proginfo_audioproperties,
-				prog->proginfo_videoproperties,
-				prog->proginfo_subtitletype);
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_audioproperties);
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_videoproperties);
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_subtitletype);
 		}
 		if (control->conn_version >= 41) {
-		    sprintf(buf + strlen(buf), "%s[]:[]",
-			    S(prog->proginfo_prodyear));
+			sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_prodyear));
 		}
 	}
 #undef S
@@ -1344,34 +1337,27 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_stars));
 		sprintf(buf + strlen(buf), "%s[]:[]",  originalairdate);
 		if(control->conn_version >= 15) {
-		    sprintf(buf+strlen(buf),"%ld[]:[]",
-			    prog->proginfo_hasairdate);
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_hasairdate);
 		}
 		if(control->conn_version >= 18) {
-		    sprintf(buf+strlen(buf),"%s[]:[]",
-			    S(prog->proginfo_playgroup));
+			sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_playgroup));
 		}
 		if(control->conn_version >= 25) {
-		    sprintf(buf+strlen(buf),"%s[]:[]",
-			    S(prog->proginfo_recpriority_2));
+			sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_recpriority_2));
 		}
 		if(control->conn_version >= 31) {
-		    sprintf(buf+strlen(buf),"%ld[]:[]",
-			    prog->proginfo_parentid);
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_parentid);
 		}
 		if(control->conn_version >= 32) {
-		    sprintf(buf+strlen(buf),"%s[]:[]",
-			    S(prog->proginfo_storagegroup));
+			sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_storagegroup));
 		}
 		if(control->conn_version >= 35) {
-		    sprintf(buf+strlen(buf),"%ld[]:[]%ld[]:[]%ld[]:[]",
-		    	    prog->proginfo_audioproperties,
-			    prog->proginfo_videoproperties,
-			    prog->proginfo_subtitletype);
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_audioproperties);
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_videoproperties);
+			sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_subtitletype);
 		}
 		if(control->conn_version >= 41) {
-		    sprintf(buf+strlen(buf),"%s[]:[]",
-			    S(prog->proginfo_prodyear));
+			sprintf(buf + strlen(buf), "%s[]:[]", S(prog->proginfo_prodyear));
 		}
 	}
 #undef S
