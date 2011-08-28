@@ -404,9 +404,14 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
         {
           WINDOWPLACEMENT lpwndpl;
           lpwndpl.length = sizeof(lpwndpl);
-          if (LOWORD(wParam) != WA_INACTIVE && GetWindowPlacement(hWnd, &lpwndpl))
+          if (LOWORD(wParam) != WA_INACTIVE)
           {
-            g_application.m_AppActive = lpwndpl.showCmd != SW_HIDE;
+            if (GetWindowPlacement(hWnd, &lpwndpl))
+              g_application.m_AppActive = lpwndpl.showCmd != SW_HIDE;
+          }
+          else
+          {
+            g_application.m_AppActive = g_Windowing.WindowedMode();
           }
         }
         if (g_application.m_AppActive != active)

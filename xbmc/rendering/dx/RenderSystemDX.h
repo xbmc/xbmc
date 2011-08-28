@@ -81,7 +81,7 @@ public:
   DWORD   DefaultD3DUsage() { return m_defaultD3DUsage; }
   D3DPOOL DefaultD3DPool()  { return m_defaultD3DPool; }
   D3DADAPTER_IDENTIFIER9 GetAIdentifier() { return m_AIdentifier; }
-
+  bool    WindowedMode()    { return m_useWindowedDX; }
   bool    Interlaced()      { return m_interlaced; }
 
   /*!
