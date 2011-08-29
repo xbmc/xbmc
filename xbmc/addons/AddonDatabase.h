@@ -60,8 +60,7 @@ public:
   bool GetSystemEnabled(const CStdString& id);
   bool SetSystemEnabled(const CStdString& id, bool enabled);
   bool Search(const CStdString& search, ADDON::VECADDONS& items);
-  bool SearchTitle(const CStdString& strSearch, ADDON::VECADDONS& items);
-  static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item);
+  static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
 
   /*! \brief Disable an addon.
    Sets a flag that this addon has been disabled.  If disabled, it is usually still available on disk.
