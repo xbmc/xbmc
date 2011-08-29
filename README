@@ -32,6 +32,20 @@ to invoke the updater, specifying the installation directory, temporary package
 directory and path to the update script file.  The updater then installs the
 update and restarts the application when done.
 
+Building the Updater
+====================
+
+ Create a new directory for the build and from that directory run:
+
+ cmake <path to source directory>
+ make
+
+Customizing the Updater
+=======================
+
+ To customize the application name, organization and messages displayed by the updater,
+ edit the AppInfo class and the icons in src/resources
+
 Preparing an Update
 ===================
 
