@@ -737,8 +737,12 @@ void CWinEventsWin32::OnGestureNotify(HWND hWnd, LPARAM lParam)
       gc[1].dwWant |= GC_ROTATE;
     if (gestures == EVENT_RESULT_PAN_VERTICAL)
       gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_VERTICALLY | GC_PAN_WITH_GUTTER | GC_PAN_WITH_INERTIA;
+    if (gestures == EVENT_RESULT_PAN_VERTICAL_WITHOUT_INERTIAL)
+      gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_VERTICALLY;
     if (gestures == EVENT_RESULT_PAN_HORIZONTAL)
       gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY | GC_PAN_WITH_GUTTER | GC_PAN_WITH_INERTIA;
+    if (gestures == EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIALL)
+      gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY;
     gc[0].dwBlock = gc[0].dwWant ^ 1;
     gc[1].dwBlock = gc[1].dwWant ^ 1;
     gc[2].dwBlock = gc[2].dwWant ^ 30;
