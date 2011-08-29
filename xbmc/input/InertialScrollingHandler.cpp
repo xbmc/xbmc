@@ -26,6 +26,7 @@
 #include "utils/TimeUtils.h"
 #include "guilib/Key.h"
 #include "guilib/GUIWindowManager.h"
+#include "windowing/WindowingFactory.h"
 
 #include <cmath>
 
@@ -51,6 +52,11 @@ CInertialScrollingHandler::CInertialScrollingHandler()
 bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
 {
   bool ret = false;//return value - false no inertial scrolling - true - inertial scrolling
+  
+  if(g_Windowing.HasInertialGestures())
+  {
+    return ret;//no need for emulating inertial scrolling - windowing does support it nativly.
+  }
   
   //reset screensaver during pan
   if( action->GetID() == ACTION_GESTURE_PAN )
