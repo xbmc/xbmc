@@ -12,6 +12,7 @@ class AppInfo
 		// Basic application information
 		static std::string name();
 		static std::string appName();
+		static std::string organizationName();
 
 		static std::string logFilePath();
 };
@@ -24,5 +25,10 @@ inline std::string AppInfo::name()
 inline std::string AppInfo::appName()
 {
 	return "Mendeley Desktop";
+}
+
+inline std::string AppInfo::organizationName()
+{
+	return "Mendeley Ltd.";
 }
 
