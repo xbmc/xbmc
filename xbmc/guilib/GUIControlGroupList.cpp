@@ -325,7 +325,7 @@ void CGUIControlGroupList::SetMinSize(float minWidth, float minHeight)
     m_minSize = minWidth;
 }
 
-inline float CGUIControlGroupList::Size(const CGUIControl *control) const
+float CGUIControlGroupList::Size(const CGUIControl *control) const
 {
   return (m_orientation == VERTICAL) ? control->GetYPosition() + control->GetHeight() : control->GetXPosition() + control->GetWidth();
 }
