@@ -26,16 +26,17 @@ class UpdateMessage
 			init(0,type);
 		}
 
+		void* receiver;
+		Type type;
+		std::string message;
+		int progress;
+
+	private:
 		void init(void* receiver, Type type)
 		{
 			this->progress = 0;
 			this->receiver = receiver;
 			this->type = type;
 		}
-
-		void* receiver;
-		Type type;
-		std::string message;
-		int progress;
 };
 
