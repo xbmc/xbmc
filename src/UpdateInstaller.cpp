@@ -89,8 +89,11 @@ void UpdateInstaller::run() throw ()
 
 	if (m_mode == Setup)
 	{
-		LOG(Info,"Waiting for main app process to finish");
-		ProcessUtils::waitForProcess(m_waitPid);
+		if (m_waitPid != 0)
+		{
+			LOG(Info,"Waiting for main app process to finish");
+			ProcessUtils::waitForProcess(m_waitPid);
+		}
 
 		std::list<std::string> args = updaterArgs();
 		args.push_back("--mode");
