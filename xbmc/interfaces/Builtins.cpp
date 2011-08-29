@@ -763,7 +763,10 @@ int CBuiltins::Execute(const CStdString& execString)
       bool shuffled = g_playlistPlayer.IsShuffled(iPlaylist);
       if ((shuffled && parameter.Equals("randomon")) || (!shuffled && parameter.Equals("randomoff")))
         return 0;
-      g_playlistPlayer.SetShuffle(iPlaylist, !shuffled);
+
+      // check to see if we should notify the user
+      bool notify = (params.size() == 2 && params[1].Equals("notify"));
+      g_playlistPlayer.SetShuffle(iPlaylist, !shuffled, notify);
 
       // save settings for now playing windows
       switch (iPlaylist)
@@ -786,22 +789,28 @@ int CBuiltins::Execute(const CStdString& execString)
     {
       // get current playlist
       int iPlaylist = g_playlistPlayer.GetCurrentPlaylist();
-      PLAYLIST::REPEAT_STATE state = g_playlistPlayer.GetRepeat(iPlaylist);
+      PLAYLIST::REPEAT_STATE previous_state = g_playlistPlayer.GetRepeat(iPlaylist);
 
+      PLAYLIST::REPEAT_STATE state;
       if (parameter.Equals("repeatall"))
         state = PLAYLIST::REPEAT_ALL;
       else if (parameter.Equals("repeatone"))
         state = PLAYLIST::REPEAT_ONE;
       else if (parameter.Equals("repeatoff"))
         state = PLAYLIST::REPEAT_NONE;
-      else if (state == PLAYLIST::REPEAT_NONE)
+      else if (previous_state == PLAYLIST::REPEAT_NONE)
         state = PLAYLIST::REPEAT_ALL;
-      else if (state == PLAYLIST::REPEAT_ALL)
+      else if (previous_state == PLAYLIST::REPEAT_ALL)
         state = PLAYLIST::REPEAT_ONE;
       else
         state = PLAYLIST::REPEAT_NONE;
 
-      g_playlistPlayer.SetRepeat(iPlaylist, state);
+      if (state == previous_state)
+        return 0;
+
+      // check to see if we should notify the user
+      bool notify = (params.size() == 2 && params[1].Equals("notify"));
+      g_playlistPlayer.SetRepeat(iPlaylist, state, notify);
 
       // save settings for now playing windows
       switch (iPlaylist)
@@ -948,7 +957,10 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("playdvd"))
   {
 #ifdef HAS_DVD_DRIVE
-    CAutorun::PlayDisc();
+    bool restart = false;
+    if (params.size() > 0 && params[0].CompareNoCase("restart") == 0)
+      restart = true;
+    CAutorun::PlayDisc(restart);
 #endif
   }
   else if (execute.Equals("ripcd"))

@@ -112,7 +112,7 @@ public:
   void           Close();
   void           HoldSurface(IDirect3DSurface9* surface);
   REFERENCE_TIME Add(IDirect3DSurface9* source);
-  bool           ProcessPicture(DVDVideoPicture* picture);
+  REFERENCE_TIME Add(DVDVideoPicture* picture);
   bool           Render(const RECT& src, const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
   int            Size() { return m_size; }
 

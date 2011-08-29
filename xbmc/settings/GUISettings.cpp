@@ -276,7 +276,7 @@ void CGUISettings::Initialize()
   AddDefaultAddon(ml, "musiclibrary.albumsscraper", 20193, "metadata.albums.allmusic.com", ADDON_SCRAPER_ALBUMS);
   AddDefaultAddon(ml, "musiclibrary.artistsscraper", 20194, "metadata.artists.allmusic.com", ADDON_SCRAPER_ARTISTS);
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
-  AddBool(NULL, "musiclibrary.backgroundupdate", 22001, false);
+  AddBool(ml, "musiclibrary.backgroundupdate", 22001, false);
   AddSeparator(ml,"musiclibrary.sep2");
   AddString(ml, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(ml, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
@@ -668,6 +668,7 @@ void CGUISettings::Initialize()
   AddString(sub, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(sub, "subtitles.sep1");
   AddPath(sub, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
+  AddInt(sub, "subtitles.align", 21460, SUBTITLE_ALIGN_MANUAL, SUBTITLE_ALIGN_MANUAL, 1, SUBTITLE_ALIGN_TOP_OUTSIDE, SPIN_CONTROL_TEXT);
 
   CSettingsCategory* dvd = AddCategory(5, "dvds", 14087);
   AddBool(dvd, "dvds.autorun", 14088, false);
@@ -710,6 +711,10 @@ void CGUISettings::Initialize()
 #ifdef HAS_ZEROCONF
   AddSeparator(srv, "services.sep2");
   AddBool(srv, "services.zeroconf", 1260, true);
+#endif
+
+#ifdef HAS_AIRPLAY
+  AddBool(srv, "services.airplay", 1270, false);
 #endif
 
 #ifndef _WIN32

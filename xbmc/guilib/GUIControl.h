@@ -32,8 +32,8 @@
 #include "GUIMessage.h"     // needed by practically all controls
 #include "VisibleEffect.h"  // needed for the CAnimation members
 #include "GUIInfoTypes.h"   // needed for CGUIInfoColor to handle infolabel'ed colors
-#include "GUIActionDescriptor.h"
 #include "DirtyRegion.h"
+#include "GUIAction.h"
 
 class CGUIListItem; // forward
 class CAction;
@@ -180,23 +180,22 @@ public:
 
   /*! \brief Set actions to perform on navigation
    Navigations are set if replace is true or if there is no previously set action
-   \param up vector of CGUIActionDescriptors to execute on up
-   \param down vector of CGUIActionDescriptors to execute on down
-   \param left vector of CGUIActionDescriptors to execute on left
-   \param right vector of CGUIActionDescriptors to execute on right
-   \param back vector of CGUIActionDescriptors to execute on back
+   \param up CGUIAction to execute on up
+   \param down CGUIAction to execute on down
+   \param left CGUIAction to execute on left
+   \param right CGUIAction to execute on right
+   \param back CGUIAction to execute on back
    \param replace Actions are set only if replace is true or there is no previously set action.  Defaults to true
-   \sa SetNavigation, ExecuteActions
+   \sa SetNavigation
    */
-  virtual void SetNavigationActions(const std::vector<CGUIActionDescriptor> &up, const std::vector<CGUIActionDescriptor> &down,
-                                    const std::vector<CGUIActionDescriptor> &left, const std::vector<CGUIActionDescriptor> &right,
-                                    const std::vector<CGUIActionDescriptor> &back, bool replace = true);
-  void ExecuteActions(const std::vector<CGUIActionDescriptor> &actions);
-  int GetControlIdUp() const { return m_controlUp;};
-  int GetControlIdDown() const { return m_controlDown;};
-  int GetControlIdLeft() const { return m_controlLeft;};
-  int GetControlIdRight() const { return m_controlRight;};
-  int GetControlIdBack() const { return m_controlBack; };
+  virtual void SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
+                                    const CGUIAction &left, const CGUIAction &right,
+                                    const CGUIAction &back, bool replace = true);
+  int GetControlIdUp() const { return m_actionUp.GetNavigation(); };
+  int GetControlIdDown() const { return  m_actionDown.GetNavigation(); };
+  int GetControlIdLeft() const { return m_actionLeft.GetNavigation(); };
+  int GetControlIdRight() const { return m_actionRight.GetNavigation(); };
+  int GetControlIdBack() const { return m_actionBack.GetNavigation(); };
   virtual int GetNextControl(int direction) const;
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
@@ -306,22 +305,14 @@ protected:
   void UpdateStates(ANIMATION_TYPE type, ANIMATION_PROCESS currentProcess, ANIMATION_STATE currentState);
   bool SendWindowMessage(CGUIMessage &message);
 
-  // navigation
-  int m_controlLeft;
-  int m_controlRight;
-  int m_controlUp;
-  int m_controlDown;
-  int m_controlBack;
-  int m_controlNext;
-  int m_controlPrev;
-
-  std::vector<CGUIActionDescriptor> m_leftActions;
-  std::vector<CGUIActionDescriptor> m_rightActions;
-  std::vector<CGUIActionDescriptor> m_upActions;
-  std::vector<CGUIActionDescriptor> m_downActions;
-  std::vector<CGUIActionDescriptor> m_backActions;
-  std::vector<CGUIActionDescriptor> m_nextActions;
-  std::vector<CGUIActionDescriptor> m_prevActions;
+  // navigation and actions
+  CGUIAction m_actionLeft;
+  CGUIAction m_actionRight;
+  CGUIAction m_actionUp;
+  CGUIAction m_actionDown;
+  CGUIAction m_actionBack;
+  CGUIAction m_actionNext;
+  CGUIAction m_actionPrev;
 
   float m_posX;
   float m_posY;

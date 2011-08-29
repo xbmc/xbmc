@@ -75,5 +75,4 @@ void CGUIPythonWindowDialog::OnDeinitWindow(int nextWindowID)
 {
   g_windowManager.RemoveDialog(GetID());
   CGUIWindow::OnDeinitWindow(nextWindowID);
-  g_windowManager.Delete(GetID());
 }

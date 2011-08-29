@@ -30,11 +30,6 @@
 #include "utils/TimeUtils.h"
 #include "input/XBMC_keytable.h"
 
-#if defined(_LINUX) && !defined(__APPLE__)
-#include <X11/Xlib.h>
-#include <X11/XKBlib.h>
-#endif
-
 CKeyboardStat g_Keyboard;
 
 CKeyboardStat::CKeyboardStat()

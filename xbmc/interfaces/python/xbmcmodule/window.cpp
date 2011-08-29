@@ -73,9 +73,6 @@ namespace PYXBMC
         PyErr_SetString(PyExc_ValueError, "Window id does not exist");
         return false;
       }
-      pWindow->iOldWindowId = 0;
-      pWindow->bModal = false;
-      pWindow->iCurrentControlId = 3000;
       pWindow->bIsPythonWindow = false;
     }
     else
@@ -92,8 +89,6 @@ namespace PYXBMC
       while(id < WINDOW_PYTHON_END && g_windowManager.GetWindow(id) != NULL) id++;
 
       pWindow->iWindowId = id;
-      pWindow->iOldWindowId = 0;
-      pWindow->bModal = false;
       pWindow->bIsPythonWindow = true;
 
       if (pWindow->bUsingXML)
@@ -115,6 +110,9 @@ namespace PYXBMC
 
       g_windowManager.Add(pWindow->pWindow);
     }
+    pWindow->iOldWindowId = 0;
+    pWindow->bModal = false;
+    pWindow->iCurrentControlId = 3000;
     return true;
   }
 
@@ -383,7 +381,7 @@ namespace PYXBMC
       ++it;
     }
 
-    if (self->bIsPythonWindow && !self->pWindow->IsDialog())
+    if (self->bIsPythonWindow)
       g_windowManager.Delete(self->pWindow->GetID());
 
     lock.Leave();

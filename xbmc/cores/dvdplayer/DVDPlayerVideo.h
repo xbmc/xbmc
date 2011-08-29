@@ -116,7 +116,7 @@ protected:
   void AutoCrop(DVDVideoPicture *pPicture, RECT &crop);
   CRect m_crop;
 
-  int OutputPicture(DVDVideoPicture* pPicture, double pts);
+  int OutputPicture(const DVDVideoPicture* src, double pts);
 #ifdef HAS_VIDEO_PLAYBACK
   void ProcessOverlays(DVDVideoPicture* pSource, double pts);
 #endif
@@ -142,6 +142,8 @@ protected:
   int    m_iFrameRateErr;    //how many frames we couldn't calculate the framerate, we give up after a while
   int    m_iFrameRateLength; //how many seconds we should measure the framerate
                              //this is increased exponentially from CDVDPlayerVideo::CalcFrameRate()
+
+  bool   m_bFpsInvalid;      // needed to ignore fps (e.g. dvd stills)
 
   struct SOutputConfiguration
   {

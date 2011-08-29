@@ -303,6 +303,10 @@
 // system mappings.
 #define ACTION_NOOP                   999
 
+#define ACTION_SUBTITLE_VSHIFT_UP     230 // shift up subtitles in DVDPlayer
+#define ACTION_SUBTITLE_VSHIFT_DOWN   231 // shift down subtitles in DVDPlayer
+#define ACTION_SUBTITLE_ALIGN         232 // toggle vertical alignment of subtitles
+
 // Window ID defines to make the code a bit more readable
 #define WINDOW_INVALID                     9999
 #define WINDOW_HOME                       10000

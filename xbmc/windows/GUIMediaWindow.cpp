@@ -664,7 +664,8 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
   CStdStringArray regexps;
   int iWindow = GetID();
 
-  if (iWindow == WINDOW_VIDEO_FILES)
+  // TODO: Do we want to limit the directories we apply the video ones to?
+  if (iWindow == WINDOW_VIDEO_NAV)
     regexps = g_advancedSettings.m_videoExcludeFromListingRegExps;
   if (iWindow == WINDOW_MUSIC_FILES)
     regexps = g_advancedSettings.m_audioExcludeFromListingRegExps;

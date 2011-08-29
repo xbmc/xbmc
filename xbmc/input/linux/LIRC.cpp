@@ -18,6 +18,9 @@
 *  http://www.gnu.org/copyleft/gpl.html
 *
 */
+#include "system.h"
+
+#if defined (HAS_LIRC)
 
 #include "threads/SystemClock.h"
 #include <sys/time.h>
@@ -353,3 +356,4 @@ void CRemoteControl::AddSendCommand(const CStdString& command)
   m_sendData += '\n';
 }
 
+#endif

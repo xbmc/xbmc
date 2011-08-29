@@ -427,6 +427,17 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInCharSets(pSetting);
     }
+    else if (strSetting.Equals("subtitles.align"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(21461), SUBTITLE_ALIGN_MANUAL);
+      pControl->AddLabel(g_localizeStrings.Get(21462), SUBTITLE_ALIGN_BOTTOM_INSIDE);
+      pControl->AddLabel(g_localizeStrings.Get(21463), SUBTITLE_ALIGN_BOTTOM_OUTSIDE);
+      pControl->AddLabel(g_localizeStrings.Get(21464), SUBTITLE_ALIGN_TOP_INSIDE);
+      pControl->AddLabel(g_localizeStrings.Get(21465), SUBTITLE_ALIGN_TOP_OUTSIDE);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("lookandfeel.font"))
     {
       FillInSkinFonts(pSetting);
@@ -1369,6 +1380,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if(g_guiSettings.GetBool("services.zeroconf"))
       CZeroconf::GetInstance()->Start();
 #endif
+  }
+  else if (strSetting.Equals("services.airplay"))
+  {  
+#ifdef HAS_AIRPLAY
+    g_application.StopAirplayServer(true);
+    if (g_guiSettings.GetBool("services.airplay"))
+      g_application.StartAirplayServer();
+#endif         
   }
   else if (strSetting.Equals("network.ipaddress"))
   {

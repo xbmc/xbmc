@@ -263,18 +263,12 @@ int cmyth_rcv_commbreaklist(cmyth_conn_t conn, int *err,
 					__FUNCTION__, type);
 		}
 	}
-	if (start >= 0) {
-		/*
-		 * The last entry may be a start without and end mark. We need to make the end_mark really big
-		 * (but not too big)
-		 */
-		commbreak = cmyth_commbreak_create();
-		commbreak->start_mark = start;
-		commbreak->end_mark = 1 << 30;
-		breaklist->commbreak_list = realloc(breaklist->commbreak_list,
-			(++breaklist->commbreak_count) * sizeof(cmyth_commbreak_t));
-		breaklist->commbreak_list[breaklist->commbreak_count - 1] = commbreak;
-	}
+
+	/*
+	 * If the last entry is a start marker then it doesn't have an associated end marker. In this
+	 * case we choose to simply ignore it. Another option is to put in a really large fake end marker
+	 * but that may cause strange seek behaviour in a client application.
+	 */
 
 	return total;
 

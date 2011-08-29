@@ -695,7 +695,8 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
     return -1;
 
 #ifdef HAS_DX
-  m_pRenderer->AddProcessor(&pic);
+  if(m_pRenderer->AddVideoPicture(&pic))
+    return 1;
 #endif
 
   YV12Image image;

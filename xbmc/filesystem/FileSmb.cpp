@@ -126,6 +126,9 @@ void CSMB::Init()
       fprintf(f, "\tclient lanman auth = yes\n");
       fprintf(f, "\tlanman auth = yes\n");
 
+#if defined(TARGET_DARWIN)
+      fprintf(f, "\tmax protocol = smb2\n");
+#endif
       // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
       // if no WINS server has been specified the wins method will be ignored.
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )

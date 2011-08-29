@@ -97,6 +97,8 @@ public:
   void StopServices();
   bool StartWebServer();
   void StopWebServer();
+  void StartAirplayServer();  
+  void StopAirplayServer(bool bWait);   
   bool StartJSONRPCServer();
   void StopJSONRPCServer(bool bWait);
   void StartUPnP();
@@ -198,7 +200,6 @@ public:
   void CheckMusicPlaylist();
 
   bool ExecuteXBMCAction(std::string action);
-  bool ExecuteAction(CGUIActionDescriptor action);
 
   static bool OnEvent(XBMC_Event& newEvent);
 

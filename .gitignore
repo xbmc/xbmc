@@ -324,7 +324,7 @@ lib/cmyth/Makefile
 /project/output
 
 # /project/Win32BuildSetup/
-/project/Win32BuildSetup/BuildLog.htm
+/project/Win32BuildSetup/XBMC.log
 /project/Win32BuildSetup/XBMCSetup*.exe
 /project/Win32BuildSetup/languages.nsi
 /project/Win32BuildSetup/BUILD_WIN32/

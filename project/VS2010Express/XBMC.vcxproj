@@ -375,6 +375,7 @@
     <ClCompile Include="..\..\xbmc\guilib\DirtyRegionTracker.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\FrameBufferObject.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GraphicContext.cpp" />
+    <ClCompile Include="..\..\xbmc\guilib\GUIAction.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIAudioManager.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIBaseContainer.cpp" />
     <ClCompile Include="..\..\xbmc\guilib\GUIBorderedImage.cpp" />
@@ -1333,7 +1334,7 @@
     <ClInclude Include="..\..\xbmc\guilib\Geometry.h" />
     <ClInclude Include="..\..\xbmc\guilib\GraphicContext.h" />
     <ClInclude Include="..\..\xbmc\guilib\gui3d.h" />
-    <ClInclude Include="..\..\xbmc\guilib\GUIActionDescriptor.h" />
+    <ClInclude Include="..\..\xbmc\guilib\GUIAction.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIAudioManager.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIBaseContainer.h" />
     <ClInclude Include="..\..\xbmc\guilib\GUIBorderedImage.h" />

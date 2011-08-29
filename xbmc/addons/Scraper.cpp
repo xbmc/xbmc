@@ -424,11 +424,24 @@ CScraperUrl CScraper::NfoUrl(const CStdString &sNfoContent)
        with start and end-tags we're not able to use it.
        Check for the desired Elements instead.
       */
-      TiXmlElement* pId = doc.FirstChildElement("id");
+      TiXmlElement* pxeUrl=NULL;
+      TiXmlElement* pId=NULL;
+      if (!strcmp(doc.RootElement()->Value(),"details"))
+      {
+        pxeUrl = doc.RootElement()->FirstChildElement("url");
+        pId = doc.RootElement()->FirstChildElement("id");
+      }
+      else
+      {
+        pId = doc.FirstChildElement("id");
+        pxeUrl = doc.FirstChildElement("url");
+      }
       if (pId && pId->FirstChild())
         scurlRet.strId = pId->FirstChild()->Value();
 
-      TiXmlElement* pxeUrl = doc.FirstChildElement("url");
+      if (pxeUrl && pxeUrl->Attribute("function"))
+        continue;
+
       if (pxeUrl)
         scurlRet.ParseElement(pxeUrl);
       else if (!strcmp(doc.RootElement()->Value(), "url"))

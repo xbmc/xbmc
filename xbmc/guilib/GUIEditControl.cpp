@@ -320,13 +320,7 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
   {
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 
-    vector<CGUIActionDescriptor> textChangeActions = m_textChangeActions;
-    for (unsigned int i = 0; i < textChangeActions.size(); i++)
-    {
-      CGUIMessage message(GUI_MSG_EXECUTE, GetID(), GetParentID());
-      message.SetAction(textChangeActions[i]);
-      g_windowManager.SendMessage(message);
-    }
+    m_textChangeActions.Execute(GetID(), GetParentID());
   }
   SetInvalid();
 }

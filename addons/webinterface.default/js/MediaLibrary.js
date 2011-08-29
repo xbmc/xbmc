@@ -35,6 +35,7 @@ MediaLibrary.prototype = {
 			$('#movieLibrary').click(jQuery.proxy(this.movieLibraryOpen, this));
 			$('#tvshowLibrary').click(jQuery.proxy(this.tvshowLibraryOpen, this));
 			$('#pictureLibrary').click(jQuery.proxy(this.pictureLibraryOpen, this));
+			$('#remoteControl').click(jQuery.proxy(this.remoteControlOpen, this));
 			$('#overlay').click(jQuery.proxy(this.hideOverlay, this));
 			$(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
 		},
@@ -42,6 +43,7 @@ MediaLibrary.prototype = {
 			$('#musicLibrary').removeClass('selected');
 			$('#movieLibrary').removeClass('selected');
 			$('#tvshowLibrary').removeClass('selected');
+			$('#remoteControl').removeClass('selected');
 			$('#pictureLibrary').removeClass('selected');
 			this.hideOverlay();
 		},
@@ -61,6 +63,228 @@ MediaLibrary.prototype = {
 			
 			return result;
 		},
+
+		remoteControlOpen: function(event) {
+			this.resetPage();
+			$('#remoteControl').addClass('selected');
+			$('.contentContainer').hide();
+			var libraryContainer = $('#remoteContainer');
+			if (!libraryContainer || libraryContainer.length == 0) {
+				$('#spinner').show();
+				libraryContainer = $('<div>');
+				libraryContainer.attr('id', 'remoteContainer')
+								.addClass('contentContainer');
+				$('#content').append(libraryContainer);
+				var keys=[
+						{name:'up',width:'40px',height:'30px',top:'28px',left:'58px'}
+						,{name:'down',width:'40px',height:'30px',top:'122px',left:'58px'}
+						,{name:'left',width:'40px',height:'30px',top:'74px',left:'15px'}
+						,{name:'right',width:'40px',height:'30px',top:'74px',left:'104px'}
+						,{name:'ok',width:'40px',height:'30px',top:'74px',left:'58px'}
+						,{name:'back',width:'40px',height:'30px',top:'13px',left:'161px'}
+						,{name:'home',width:'40px',height:'30px',top:'154px',left:'8px'}
+						,{name:'mute',width:'40px',height:'30px',top:'107px',left:'391px'}
+						,{name:'power',width:'30px',height:'30px',top:'-3px',left:'13px'}
+						,{name:'volumeup',width:'30px',height:'30px',top:'49px',left:'422px'}
+						,{name:'volumedown',width:'30px',height:'30px',top:'49px',left:'367px'}
+						,{name:'playpause',width:'32px',height:'23px',top:'62px',left:'260px'}
+						,{name:'stop',width:'32px',height:'23px',top:'62px',left:'211px'}
+						,{name:'next',width:'38px',height:'25px',top:'102px',left:'304px'}
+						,{name:'previous',width:'38px',height:'25px',top:'101px',left:'160px'}
+						,{name:'forward',width:'32px',height:'23px',top:'102px',left:'259px'}
+						,{name:'rewind',width:'32px',height:'23px',top:'101px',left:'211px'}
+						,{name:'cleanlib_a',width:'46px',height:'26px',top:'47px',left:'553px'}
+						,{name:'updatelib_a',width:'46px',height:'26px',top:'47px',left:'492px'}
+						,{name:'cleanlib_v',width:'46px',height:'26px',top:'111px',left:'553px'}
+						,{name:'updatelib_v',width:'46px',height:'26px',top:'111px',left:'492px'}
+					 ];
+				for (var akey in keys) {
+					var aremotekey=$('<p>').attr('id',keys[akey]['name']);
+					aremotekey.addClass('remote_key')
+						.css('height',keys[akey]['height'])
+						.css('width',keys[akey]['width'])
+						.css('top',keys[akey]['top'])
+						.css('left',keys[akey]['left'])
+						//.css('border','1px solid black')
+						.bind('click',{key: keys[akey]['name']},jQuery.proxy(this.pressRemoteKey,this));
+						libraryContainer.append(aremotekey);
+				}
+				
+	
+			} else {
+				libraryContainer.show();
+				libraryContainer.trigger('scroll');
+			}
+
+			$('#spinner').hide();
+		},
+
+		pressRemoteKey: function(event) {
+			var keyPressed=event.data.key;
+			$('#spinner').show();
+			var player='other';
+			if($('#videoDescription').is(':visible'))
+			{
+			  player='video'	
+			}
+			else if($('#audioDescription').is(':visible'))
+			{
+			  player='audio'	
+			}
+			//common part
+			switch(keyPressed) {
+				case 'cleanlib_a':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioLibrary.Clean", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;	
+				case 'updatelib_a':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioLibrary.Scan", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;	
+				case 'cleanlib_v':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoLibrary.Clean", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;	
+				case 'updatelib_v':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;	
+				case 'back':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Back", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;	
+				case 'home':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Home", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;
+				case 'mute':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "XBMC.ToggleMute", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;
+				case 'power':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "System.Shutdown", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;
+				case 'volumeup':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "XBMC.GetVolume", "id": 1}', function(data){
+						var volume=data.result + 1;
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "XBMC.SetVolume", "params": {"value": '+volume+'},"id": 1}', function(data){
+					
+						$('#spinner').hide();
+			  			 }, 'json');
+			   }, 'json');
+					return;
+				case 'volumedown':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "XBMC.GetVolume", "id": 1}', function(data){
+						var volume=data.result - 1;
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "XBMC.SetVolume", "params": {"value": '+volume+'},"id": 1}', function(data){
+					
+						$('#spinner').hide();
+			  			 }, 'json');
+			   }, 'json');
+					return;
+			}
+			//menus or other sections
+			if(player=='other')
+			{	
+				switch(keyPressed) {
+					
+					case 'up':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Up", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'down':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Down", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+	
+					case 'left':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Left", "id": 1}', function(data){$('#spinner').hide();}, 'json');	
+						return;
+	
+					case 'right':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Right", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+	
+					case 'ok':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Select", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;				
+				}
+			}
+			//videoplaying
+			if(player=='video')
+			{
+				switch(keyPressed) {
+	
+					
+					case 'up':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.BigSkipForward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'down':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.BigSkipBackward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+	
+					case 'left':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.SmallSkipBackward", "id": 1}', function(data){$('#spinner').hide();}, 'json');	
+						return;
+	
+					case 'right':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.SmallSkipForward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'playpause':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.PlayPause", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'stop':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.Stop", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'next':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.SkipNext", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'previous':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.SkipPrevious", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'forward':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.Forward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'rewind':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.Rewind", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+						
+				}			
+			}
+			if(player=='audio')
+			{
+				switch(keyPressed) {
+	
+					
+					case 'up':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.BigSkipForward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'down':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.BigSkipBackward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+	
+					case 'left':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.SmallSkipBackward", "id": 1}', function(data){$('#spinner').hide();}, 'json');	
+						return;
+	
+					case 'right':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.SmallSkipForward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'playpause':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.PlayPause", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'stop':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.Stop", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'next':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.SkipNext", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'previous':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.SkipPrevious", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'forward':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.Forward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'rewind':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.Rewind", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+						
+				}			
+			}
+
+		},
+
 		musicLibraryOpen: function(event) {
 			this.resetPage();
 			$('#musicLibrary').addClass('selected');
@@ -294,7 +518,6 @@ MediaLibrary.prototype = {
 										  .addClass('contentContainer')
 										  .addClass('tvshowContainer');
 					var showThumb = this.generateThumb('tvshowseason', event.data.tvshow.thumbnail, event.data.tvshow.title);
-					
 					if (data && data.result && data.result.seasons && data.result.seasons.length > 0) {
 						var showDetails = $('<div>').addClass('showDetails');
 						showDetails.append(toggle);
@@ -450,7 +673,6 @@ MediaLibrary.prototype = {
 		},
 		playMovie: function(event) {
 			var file = this.replaceAll(event.data.movie.file, "\\", "\\\\");
-			alert(file);
 			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "file": "' + file + '" }, "id": 1}', jQuery.proxy(function(data) {
 				this.hideOverlay();
 			}, this), 'json');

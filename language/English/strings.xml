@@ -804,6 +804,7 @@
   <string id="1257">Would you like to connect to the auto-detected system?</string>
 
   <string id="1260">Announce these services to other systems via Zeroconf</string>
+  <string id="1270">Allow XBMC to receive AirPlay content</string>
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
@@ -2434,6 +2435,13 @@
   <string id="21451">Internet connection required.</string>
   <string id="21452">Get More...</string>
   <string id="21453">Root filesystem</string>
+
+  <string id="21460">Subtitle location</string>
+  <string id="21461">Fixed</string>
+  <string id="21462">Bottom of video</string>
+  <string id="21463">Below video</string>
+  <string id="21464">Top of video</string>
+  <string id="21465">Above video</string>
 
   <string id="21800">File name</string>
   <string id="21801">File path</string>
