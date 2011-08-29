@@ -32,6 +32,7 @@
 #include "guilib/TextureManager.h"
 #include "File.h"
 #include "utils/URIUtils.h"
+#include "dialogs/GUIDialogKeyboard.h"
 
 using namespace ADDON;
 
@@ -95,6 +96,21 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     database.GetAddons(addons);
     items.SetProperty("reponame",g_localizeStrings.Get(24032));
     items.SetLabel(g_localizeStrings.Get(24032));
+  }
+  else if (path.GetHostName().Equals("search"))
+  {
+    CStdString search;
+    if (!CGUIDialogKeyboard::ShowAndGetInput(search, g_localizeStrings.Get(16017), false))
+      return true;
+
+    items.SetProperty("reponame",g_localizeStrings.Get(283));
+    items.SetLabel(g_localizeStrings.Get(283));
+
+    CAddonDatabase database;
+    database.Open();
+    database.Search(search, addons);
+    GenerateListing(path, addons, items, true);
+    return true;
   }
   else
   {
@@ -221,7 +237,13 @@ CFileItemPtr CAddonsDirectory::FileItemFromAddon(AddonPtr &addon, const CStdStri
     URIUtils::AddSlashAtEnd(path);
 
   CFileItemPtr item(new CFileItem(path, folder));
-  item->SetLabel(addon->Name());
+
+  CStdString strLabel(addon->Name());
+  if (url.GetHostName().Equals("search"))
+    strLabel.Format("%s - %s", TranslateType(addon->Type(), true), addon->Name());
+
+  item->SetLabel(strLabel);
+
   if (!(basePath.Equals("addons://") && addon->Type() == ADDON_REPOSITORY))
     item->SetLabel2(addon->Version().c_str());
   item->SetThumbnailImage(addon->Icon());
