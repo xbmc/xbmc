@@ -705,7 +705,7 @@ protected:
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
-  int ConditionalStringParameter(const CStdString &strParameter);
+  int ConditionalStringParameter(const CStdString &strParameter, bool caseSensitive = false);
   int AddMultiInfo(const GUIInfo &info);
   int AddListItemProp(const CStdString &str, int offset=0);
 

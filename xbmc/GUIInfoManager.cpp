@@ -3659,11 +3659,11 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
   return id;
 }
 
-int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
+int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter, bool caseSensitive /*= false*/)
 {
   // check to see if we have this parameter already
   for (unsigned int i = 0; i < m_stringParameters.size(); i++)
-    if (parameter.Equals(m_stringParameters[i]))
+    if (parameter.Equals(m_stringParameters[i], caseSensitive))
       return (int)i;
   // return the new offset
   m_stringParameters.push_back(parameter);
