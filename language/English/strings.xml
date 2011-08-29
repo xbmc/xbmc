@@ -2351,4 +2351,28 @@
 
   <string id="34201">Can't find a next item to play</string>
   <string id="34202">Can't find a previous item to play</string>
+
+  <string id="35000">Peripherals</string>
+
+  <string id="35001">Generic HID device</string>
+  <string id="35002">Generic network adapter</string>
+  <string id="35003">Generic disk</string>
+  <string id="35004">There are no settings available&#10;for this peripheral.</string>
+  <string id="35005">New device configured</string>
+  <string id="35006">Device removed</string>
+  <string id="35007">Keymap to use for this device</string>
+  <string id="35008">Keymap enabled</string>
+
+  <string id="35500">Location</string>
+  <string id="35501">Class</string>
+  <string id="35502">Name</string>
+  <string id="35503">Vendor</string>
+  <string id="35504">Product ID</string>
+  
+  <string id="36000">Pulse-Eight CEC adapter</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">Switch to keyboard side command</string>
+  <string id="36003">Switch to remote side command</string>
+  <string id="36004">Press "user" button command</string>
+  <string id="36005">Enable switch side commands</string>
 </strings>
