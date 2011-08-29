@@ -19,7 +19,7 @@ General Updater Tasks:
  * Fix package dir cleanup failing on Win32 due to executable being in use [done]
  
  * Test installing update if Microsoft Word with Mendeley plugin is active
- * Write log file entries to an actual log file [partially done - needs to write to correct location]
+ * Write log file entries to an actual log file [Linux: done, Windows/Mac: TODO]
  * Test updater on an old Windows system without Visual Studio installed and statically
    link C++ runtime libraries if necessary
    
@@ -33,6 +33,8 @@ Mendeley-specific Updater Tasks:
    in the event of an updater problem
  * Exclude Uninstall.exe from updates on Windows - see comments in utilities/autoupdate-setup/main.cpp in
    the desktop source tree.
+
+ * Updater binary needs to be signed under Windows
 
 Mendeley Desktop <= 1.0 auto-update system compatibility:
 
