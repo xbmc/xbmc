@@ -19,13 +19,10 @@
 *
 */
 
-
-#include "system.h"
-
-#if HAS_GLES == 2
+#ifdef HAS_GLES
 
 #include "GUIShader.h"
-#include "MatrixGLES.h"
+#include "../../guilib/MatrixGLES.h"
 #include "utils/log.h"
 
 CGUIShader::CGUIShader( const std::string& vert, const std::string& frag ) : CGLSLShaderProgram(vert, frag)
@@ -70,8 +67,8 @@ bool CGUIShader::OnEnabled()
 {
   // This is called after glUseProgram()
 
-  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, g_matricesSpectrum.GetMatrix(MM_PROJECTION));
-  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, g_matricesSpectrum.GetMatrix(MM_MODELVIEW));
+  glUniformMatrix4fv(m_hProj,  1, GL_FALSE, g_matrices.GetMatrix(MM_PROJECTION));
+  glUniformMatrix4fv(m_hModel, 1, GL_FALSE, g_matrices.GetMatrix(MM_MODELVIEW));
 
   return true;
 }
