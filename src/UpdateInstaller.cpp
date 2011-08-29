@@ -146,6 +146,8 @@ void UpdateInstaller::run() throw ()
 
 			LOG(Info,"Removing backups");
 			removeBackups();
+
+			postInstallUpdate();
 		}
 		catch (const FileUtils::IOException& exception)
 		{
@@ -352,5 +354,17 @@ void UpdateInstaller::restartMainApp()
 	{
 		LOG(Error,"No main binary specified in update script");
 	}
+}
+
+void UpdateInstaller::postInstallUpdate()
+{
+	// perform post-install actions
+
+#ifdef PLATFORM_MAC
+	// touch the application's bundle directory so that
+	// OS X' Launch Services notices any changes in the application's
+	// Info.plist file.
+	FileUtils::touch(m_installDir.c_str());
+#endif
 }
 

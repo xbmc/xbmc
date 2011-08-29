@@ -48,6 +48,7 @@ class UpdateInstaller
 		void installFile(const UpdateScriptFile& file);
 		void backupFile(const std::string& path);
 		void reportError(const std::string& error);
+		void postInstallUpdate();
 
 		std::list<std::string> updaterArgs() const;
 
