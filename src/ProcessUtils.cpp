@@ -451,7 +451,7 @@ void ProcessUtils::convertWindowsCommandLine(LPCWSTR commandLine, int& argc, cha
 		int length = WideCharToMultiByte(CP_ACP,
 		  0 /* flags */,
 		  argvUnicode[i],
-		  -1, /* argvUnicode is null terminated*/
+		  -1, /* argvUnicode is null terminated */
 		  buffer,
 		  BUFFER_SIZE,
 		  0,
