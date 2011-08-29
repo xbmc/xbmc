@@ -15,6 +15,11 @@ class AppInfo
 		static std::string organizationName();
 
 		static std::string logFilePath();
+
+		/** Returns a message to display to the user in the event
+		  * of a problem installing the update.
+		  */
+		static std::string updateErrorMessage(const std::string& details);
 };
 
 inline std::string AppInfo::name()

@@ -103,7 +103,7 @@ gboolean UpdateDialogGtk::notify(void* _message)
 		case UpdateMessage::UpdateFailed:
 			{
 				dialog->m_hadError = true;
-				std::string errorMessage = "There was a problem installing the update:\n\n" + message->message;
+				std::string errorMessage = AppInfo::updateErrorMessage(message->message);
 				GtkWidget* errorDialog = gtk_message_dialog_new (GTK_WINDOW(dialog->m_window),
 						GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_MESSAGE_ERROR,

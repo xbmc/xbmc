@@ -171,8 +171,7 @@ LRESULT WINAPI UpdateDialogWin32::windowProc(HWND window, UINT message, WPARAM w
 				case UpdateMessage::UpdateFailed:
 					{
 						m_hadError = true;
-						std::string text = "There was a problem installing the update:\n\n" +
-						                   message->message;
+						std::string text = AppInfo::updateErrorMessage(message->message);
 						MessageBox(m_window.GetHwnd(),text.c_str(),"Update Problem",MB_OK);
 					}
 					break;
