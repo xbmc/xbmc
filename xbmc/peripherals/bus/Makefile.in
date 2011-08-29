@@ -1,7 +1,11 @@
 SRCS=PeripheralBus.cpp
 
 ifeq (@HAVE_LIBUSB@,1)
-SRCS+=linux/PeripheralBusUSB.cpp
+ifeq (@HAVE_LIBUDEV@,1)
+SRCS+=linux/PeripheralBusUSBLibUdev.cpp
+else
+SRCS+=linux/PeripheralBusUSBLibUSB.cpp
+endif
 endif
 
 ifeq ($(findstring osx,@ARCH@),osx)

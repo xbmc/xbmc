@@ -21,6 +21,7 @@
 
 #include "PeripheralBus.h"
 #include "peripherals/Peripherals.h"
+#include "utils/Variant.h"
 #include "utils/log.h"
 #include "FileItem.h"
 
@@ -143,9 +144,11 @@ void CPeripheralBus::UnregisterRemovedDevices(const PeripheralScanResults &resul
       /* device removed */
       if (peripheral->Type() != PERIPHERAL_UNKNOWN)
         CLog::Log(LOGNOTICE, "%s - device removed from %s/%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
+      m_peripherals.erase(m_peripherals.begin() + iDevicePtr);
+      lock.Leave();
+
       m_manager->OnDeviceDeleted(*this, peripheral->FileLocation());
       delete peripheral;
-      m_peripherals.erase(m_peripherals.begin() + iDevicePtr);
     }
   }
 }
@@ -276,8 +279,10 @@ void CPeripheralBus::Register(CPeripheral *peripheral)
   if (!HasPeripheral(peripheral->Location()))
   {
     m_peripherals.push_back(peripheral);
-    m_manager->OnDeviceAdded(*this, peripheral->FileLocation());
     CLog::Log(LOGNOTICE, "%s - new %s device registered on %s->%s: %s (%s:%s)", __FUNCTION__, PeripheralTypeTranslator::TypeToString(peripheral->Type()), PeripheralTypeTranslator::BusTypeToString(m_type), peripheral->Location().c_str(), peripheral->DeviceName().c_str(), peripheral->VendorIdAsString(), peripheral->ProductIdAsString());
+    lock.Leave();
+
+    m_manager->OnDeviceAdded(*this, peripheral->FileLocation());
   }
 }
 

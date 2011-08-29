@@ -41,7 +41,8 @@ CPeripheral::CPeripheral(const PeripheralType type, const PeripheralBusType busT
   m_iProductId(iProductId),
   m_strProductId(PeripheralTypeTranslator::IntToHexString(iProductId)),
   m_bInitialised(false),
-  m_bHidden(false)
+  m_bHidden(false),
+  m_bError(false)
 {
   m_strFileLocation.Format("peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(busType), strLocation.c_str());
 }
@@ -124,7 +125,12 @@ void CPeripheral::GetFeatures(std::vector<PeripheralFeature> &features) const
 
 bool CPeripheral::Initialise(void)
 {
-  bool bReturn(true);
+  bool bReturn(false);
+
+  if (m_bError)
+    return bReturn;
+
+  bReturn = true;
   if (m_bInitialised)
     return bReturn;
 
@@ -315,7 +321,7 @@ void CPeripheral::SetSetting(const CStdString &strKey, bool bValue)
     {
       bool bChanged(boolSetting->GetData() != bValue);
       boolSetting->SetData(bValue);
-      if (bChanged)
+      if (bChanged && m_bInitialised)
         OnSettingChanged(strKey);
     }
   }
@@ -331,7 +337,7 @@ void CPeripheral::SetSetting(const CStdString &strKey, int iValue)
     {
       bool bChanged(intSetting->GetData() != iValue);
       intSetting->SetData(iValue);
-      if (bChanged)
+      if (bChanged && m_bInitialised)
         OnSettingChanged(strKey);
     }
   }
@@ -347,7 +353,7 @@ void CPeripheral::SetSetting(const CStdString &strKey, float fValue)
     {
       bool bChanged(floatSetting->GetData() != fValue);
       floatSetting->SetData(fValue);
-      if (bChanged)
+      if (bChanged && m_bInitialised)
         OnSettingChanged(strKey);
     }
   }
@@ -365,7 +371,7 @@ void CPeripheral::SetSetting(const CStdString &strKey, const CStdString &strValu
       {
         bool bChanged(!stringSetting->GetData().Equals(strValue));
         stringSetting->SetData(strValue);
-        if (bChanged)
+        if (bChanged && m_bInitialised)
           OnSettingChanged(strKey);
       }
     }

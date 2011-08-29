@@ -77,7 +77,7 @@ BIN_DIRS=	\
 	xbmc/peripherals \
 	xbmc/peripherals/bus \
 	xbmc/peripherals/devices \
-	xbmc/peripherals/dialogs
+	xbmc/peripherals/dialogs \
 
 ifeq (@USE_OPENGL@,1)
 BIN_DIRS += xbmc/rendering/gl
@@ -498,7 +498,7 @@ OBJSXBMC=	\
 	xbmc/peripherals/peripherals.a \
 	xbmc/peripherals/bus/peripheral-bus.a \
 	xbmc/peripherals/devices/peripheral-devices.a \
-	xbmc/peripherals/dialogs/peripheral-dialogs.a
+	xbmc/peripherals/dialogs/peripheral-dialogs.a 
 
 ifeq (@USE_OPENGL@,1)
 OBJSXBMC += xbmc/rendering/gl/rendering_gl.a

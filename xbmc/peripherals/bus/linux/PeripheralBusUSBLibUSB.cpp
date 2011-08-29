@@ -19,14 +19,10 @@
  *
  */
 
-#include "PeripheralBusUSB.h"
+#include "PeripheralBusUSBLibUSB.h"
 #include "peripherals/Peripherals.h"
 #include <usb.h>
-#if defined(HAVE_LIBUDEV)
-#include <libudev.h>
-#include <poll.h>
 #include "utils/log.h"
-#endif
 
 using namespace PERIPHERALS;
 
@@ -36,10 +32,7 @@ CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
   usb_init();
   usb_find_busses();
   m_busses = usb_get_busses();
-
-#if defined(HAVE_LIBUDEV)
-  InitialiseUdev();
-#endif
+  CLog::Log(LOGDEBUG, "%s - using libusb peripheral scanning", __FUNCTION__);
 }
 
 bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
@@ -89,82 +82,3 @@ const PeripheralType CPeripheralBusUSB::GetType(int iDeviceClass)
     return PERIPHERAL_UNKNOWN;
   }
 }
-
-#if defined(HAVE_LIBUDEV)
-void CPeripheralBusUSB::Process(void)
-{
-  bool bUpdated(false);
-  ScanForDevices();
-  while (!m_bStop)
-  {
-    bUpdated = WaitForUpdate();
-    if (bUpdated && !m_bStop)
-      ScanForDevices();
-  }
-
-  m_bIsStarted = false;
-}
-
-void CPeripheralBusUSB::Clear(void)
-{
-  StopThread(false);
-  if (m_udevFd != -1)
-    close(m_udevFd);
-
-  udev_unref(m_udev);
-
-  CPeripheralBus::Clear();
-}
-
-void CPeripheralBusUSB::InitialiseUdev(void)
-{
-  m_udev = NULL;
-  m_udevMon = NULL;
-  m_udevFd = -1;
-
-  if (!(m_udev = udev_new()))
-  {
-    CLog::Log(LOGERROR, "%s - failed to allocate udev context", __FUNCTION__);
-    return;
-  }
-
-  /* set up a devices monitor that listen for any device change */
-  m_udevMon = udev_monitor_new_from_netlink(m_udev, "udev");
-  udev_monitor_enable_receiving(m_udevMon);
-  m_udevFd = udev_monitor_get_fd(m_udevMon);
-
-  CLog::Log(LOGDEBUG, "%s - initialised udev monitor: %d", __FUNCTION__, m_udevFd);
-}
-
-bool CPeripheralBusUSB::WaitForUpdate()
-{
-  if (!m_udevFd)
-    return false;
-
-  /* poll for udev changes */
-  struct pollfd pollFd;
-  pollFd.fd = m_udevFd;
-  pollFd.events = POLLIN;
-  int iPollResult;
-  while (!m_bStop && ((iPollResult = poll(&pollFd, 1, 100)) <= 0))
-    if (errno != EINTR && iPollResult != 0)
-      break;
-
-  /* the thread is being stopped, so just return false */
-  if (m_bStop)
-    return false;
-
-  /* we have to read the message from the queue, even though we're not actually using it */
-  struct udev_device *dev = udev_monitor_receive_device(m_udevMon);
-  if (dev)
-    udev_device_unref(dev);
-  else
-  {
-    CLog::Log(LOGERROR, "%s - failed to get device from udev_monitor_receive_device()", __FUNCTION__);
-    Clear();
-    return false;
-  }
-
-  return true;
-}
-#endif

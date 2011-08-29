@@ -22,12 +22,15 @@
 #include "Peripherals.h"
 #include "bus/PeripheralBus.h"
 #include "devices/PeripheralBluetooth.h"
-#include "devices/PeripheralCecAdapter.h"
 #include "devices/PeripheralDisk.h"
 #include "devices/PeripheralHID.h"
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
+#ifdef HAVE_LIBCEC
+#include "devices/PeripheralCecAdapter.h"
+#endif
+#include "bus/PeripheralBusUSB.h"
 #include "dialogs/GUIDialogPeripheralManager.h"
 
 #include "threads/SingleLock.h"
@@ -40,14 +43,6 @@
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "utils/StringUtils.h"
-
-#if   defined(TARGET_WINDOWS)
-#include "bus/win32/PeripheralBusUSB.h"
-#elif defined(TARGET_LINUX) && defined(HAVE_LIBUSB)
-#include "bus/linux/PeripheralBusUSB.h"
-#elif defined(TARGET_DARWIN)
-#include "bus/osx/PeripheralBusUSB.h"
-#endif
 
 using namespace PERIPHERALS;
 using namespace XFILE;
@@ -81,14 +76,7 @@ void CPeripherals::Initialise(void)
     /* load mappings from peripherals.xml */
     LoadMappings();
 
-#if defined(TARGET_WINDOWS)
-    /* add all busses for win32 */
-    m_busses.push_back(new CPeripheralBusUSB(this));
-#elif defined(TARGET_LINUX) && defined(HAVE_LIBUSB)
-    /* add all busses for linux */
-    m_busses.push_back(new CPeripheralBusUSB(this));
-#elif defined(TARGET_DARWIN)
-    /* add all busses for darwin */
+#if defined(HAVE_PERIPHERAL_BUS_USB)
     m_busses.push_back(new CPeripheralBusUSB(this));
 #endif
 
@@ -250,10 +238,6 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
       peripheral = new CPeripheralNyxboard(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
       break;
 
-    case PERIPHERAL_CEC:
-      peripheral = new CPeripheralCecAdapter(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
-      break;
-
     case PERIPHERAL_TUNER:
       peripheral = new CPeripheralTuner(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
       break;
@@ -261,6 +245,12 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
     case PERIPHERAL_BLUETOOTH:
       peripheral = new CPeripheralBluetooth(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
       break;
+
+#ifdef HAVE_LIBCEC
+    case PERIPHERAL_CEC:
+      peripheral = new CPeripheralCecAdapter(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+      break;
+#endif
 
     default:
       peripheral = new CPeripheral(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);

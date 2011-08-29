@@ -149,6 +149,7 @@
 #endif
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
+#include "peripherals/devices/PeripheralCecAdapter.h"
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 
@@ -2678,6 +2679,7 @@ void CApplication::FrameMove(bool processEvents)
     ProcessRemote(frameTime);
     ProcessGamepad(frameTime);
     ProcessEventServer(frameTime);
+    ProcessPeripherals(frameTime);
     m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
   }
   if (!m_bStop)
@@ -2796,6 +2798,26 @@ bool CApplication::ProcessRemote(float frameTime)
     return OnKey(key);
   }
 #endif
+  return false;
+}
+
+bool CApplication::ProcessPeripherals(float frameTime)
+{
+  vector<CPeripheral *> peripherals;
+  if (g_peripherals.GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  {
+    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+    {
+      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+      if (cecDevice && cecDevice->GetButton())
+      {
+        CKey key(cecDevice->GetButton(), cecDevice->GetHoldTime());
+        cecDevice->ResetButton();
+        return OnKey(key);
+      }
+    }
+  }
+
   return false;
 }
 

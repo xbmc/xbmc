@@ -147,6 +147,8 @@ namespace PERIPHERALS
     virtual void LoadPersistedSettings(void);
     virtual void ResetDefaultSettings(void);
 
+    virtual bool ErrorOccured(void) const { return m_bError; }
+
   protected:
     virtual void ClearSettings(void);
 
@@ -162,6 +164,7 @@ namespace PERIPHERALS
     char *                           m_strProductId;
     bool                             m_bInitialised;
     bool                             m_bHidden;
+    bool                             m_bError;
     std::vector<PeripheralFeature>   m_features;
     std::vector<CPeripheral *>       m_subDevices;
     std::map<CStdString, CSetting *> m_settings;

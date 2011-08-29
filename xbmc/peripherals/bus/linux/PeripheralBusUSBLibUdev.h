@@ -23,12 +23,8 @@
 #include "peripherals/bus/PeripheralBus.h"
 #include "peripherals/devices/Peripheral.h"
 
-struct usb_bus;
-
-#if defined(HAVE_LIBUDEV)
 struct udev;
 struct udev_monitor;
-#endif
 
 namespace PERIPHERALS
 {
@@ -38,10 +34,7 @@ namespace PERIPHERALS
   {
   public:
     CPeripheralBusUSB(CPeripherals *manager);
-
-#if defined(HAVE_LIBUDEV)
     virtual void Clear(void);
-#endif
 
     /*!
      * @see PeripheralBus::PerformDeviceScan()
@@ -50,16 +43,12 @@ namespace PERIPHERALS
 
   protected:
     static const PeripheralType GetType(int iDeviceClass);
-    struct usb_bus *m_busses;
 
-#if defined(HAVE_LIBUDEV)
     virtual void Process(void);
-    void InitialiseUdev(void);
     bool WaitForUpdate(void);
 
     struct udev *        m_udev;
     struct udev_monitor *m_udevMon;
     int                  m_udevFd;
-#endif
   };
 }

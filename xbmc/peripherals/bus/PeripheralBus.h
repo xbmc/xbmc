@@ -165,6 +165,8 @@ namespace PERIPHERALS
      */
     virtual void Register(CPeripheral *peripheral);
 
+    virtual bool FindComPort(CStdString &strLocation) { return false; }
+
   protected:
     virtual void Process(void);
     virtual bool ScanForDevices(void);
