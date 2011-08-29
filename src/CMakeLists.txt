@@ -26,7 +26,7 @@ add_definitions(-DTIXML_USE_STL)
 set (SOURCES
   AppInfo.cpp
   DirIterator.cpp
-  FileOps.cpp
+  FileUtils.cpp
   Log.cpp
   ProcessUtils.cpp
   UpdateInstaller.cpp
@@ -44,7 +44,7 @@ endif()
 set (HEADERS
   AppInfo.h
   DirIterator.h
-  FileOps.h
+  FileUtils.h
   Log.h
   ProcessUtils.h
   UpdateInstaller.h

@@ -8,11 +8,11 @@
 /** A set of functions for performing common operations
   * on files, throwing exceptions if an operation fails.
   */
-class FileOps
+class FileUtils
 {
 	public:
 		/** Base class for exceptions reported by
-		  * FileOps methods if an operation fails.
+		  * FileUtils methods if an operation fails.
 		  */
 		class IOException : public std::exception
 		{

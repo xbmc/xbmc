@@ -1,4 +1,4 @@
-#include "FileOps.h"
+#include "FileUtils.h"
 
 #include "DirIterator.h"
 #include "Log.h"
@@ -20,7 +20,7 @@
 #include <libgen.h>
 #endif
 
-FileOps::IOException::IOException(const std::string& error)
+FileUtils::IOException::IOException(const std::string& error)
 : m_errno(0)
 {
 	m_error = error;
@@ -39,11 +39,11 @@ FileOps::IOException::IOException(const std::string& error)
 #endif
 }
 
-FileOps::IOException::~IOException() throw ()
+FileUtils::IOException::~IOException() throw ()
 {
 }
 
-bool FileOps::fileExists(const char* path) throw (IOException)
+bool FileUtils::fileExists(const char* path) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	struct stat fileInfo;
@@ -69,7 +69,7 @@ bool FileOps::fileExists(const char* path) throw (IOException)
 #endif
 }
 
-void FileOps::setQtPermissions(const char* path, int qtPermissions) throw (IOException)
+void FileUtils::setQtPermissions(const char* path, int qtPermissions) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	int mode = toUnixPermissions(qtPermissions);
@@ -83,7 +83,7 @@ void FileOps::setQtPermissions(const char* path, int qtPermissions) throw (IOExc
 #endif
 }
 
-void FileOps::moveFile(const char* src, const char* dest) throw (IOException)
+void FileUtils::moveFile(const char* src, const char* dest) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	if (rename(src,dest) != 0)
@@ -98,7 +98,7 @@ void FileOps::moveFile(const char* src, const char* dest) throw (IOException)
 #endif
 }
 
-void FileOps::extractFromZip(const char* zipFilePath, const char* src, const char* dest) throw (IOException)
+void FileUtils::extractFromZip(const char* zipFilePath, const char* src, const char* dest) throw (IOException)
 {
 	unzFile zipFile = unzOpen(zipFilePath);
 	int result = unzLocateFile(zipFile,src,0);
@@ -138,7 +138,7 @@ void FileOps::extractFromZip(const char* zipFilePath, const char* src, const cha
 	unzClose(zipFile);
 }
 
-void FileOps::mkdir(const char* dir) throw (IOException)
+void FileUtils::mkdir(const char* dir) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	if (::mkdir(dir,S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) != 0)
@@ -153,7 +153,7 @@ void FileOps::mkdir(const char* dir) throw (IOException)
 #endif
 }
 
-void FileOps::rmdir(const char* dir) throw (IOException)
+void FileUtils::rmdir(const char* dir) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	if (::rmdir(dir) != 0)
@@ -168,7 +168,7 @@ void FileOps::rmdir(const char* dir) throw (IOException)
 #endif
 }
 
-void FileOps::createSymLink(const char* link, const char* target) throw (IOException)
+void FileUtils::createSymLink(const char* link, const char* target) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	if (symlink(target,link) != 0)
@@ -182,7 +182,7 @@ void FileOps::createSymLink(const char* link, const char* target) throw (IOExcep
 #endif
 }
 
-void FileOps::removeFile(const char* src) throw (IOException)
+void FileUtils::removeFile(const char* src) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	if (unlink(src) != 0)
@@ -225,7 +225,7 @@ void FileOps::removeFile(const char* src) throw (IOException)
 #endif
 }
 
-std::string FileOps::fileName(const char* path)
+std::string FileUtils::fileName(const char* path)
 {
 #ifdef PLATFORM_UNIX
 	char* pathCopy = strdup(path);
@@ -240,7 +240,7 @@ std::string FileOps::fileName(const char* path)
 #endif
 }
 
-std::string FileOps::dirname(const char* path)
+std::string FileUtils::dirname(const char* path)
 {
 #ifdef PLATFORM_UNIX
 	char* pathCopy = strdup(path);
@@ -254,7 +254,7 @@ std::string FileOps::dirname(const char* path)
 #endif
 }
 
-void FileOps::touch(const char* path) throw (IOException)
+void FileUtils::touch(const char* path) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	// see http://pubs.opengroup.org/onlinepubs/9699919799/utilities/touch.html
@@ -285,7 +285,7 @@ void FileOps::touch(const char* path) throw (IOException)
 #endif
 }
 
-void FileOps::rmdirRecursive(const char* path) throw (IOException)
+void FileUtils::rmdirRecursive(const char* path) throw (IOException)
 {
 	// remove dir contents
 	DirIterator dir(path);
@@ -309,7 +309,7 @@ void FileOps::rmdirRecursive(const char* path) throw (IOException)
 	rmdir(path);
 }
 
-std::string FileOps::canonicalPath(const char* path)
+std::string FileUtils::canonicalPath(const char* path)
 {
 #ifdef PLATFORM_UNIX
 	// on Linux and Mac OS 10.6, realpath() can allocate the required
@@ -339,7 +339,7 @@ void addFlag(InFlags inFlags, int testBit, OutFlags& outFlags, int setBit)
 }
 
 #ifdef PLATFORM_UNIX
-int FileOps::toUnixPermissions(int qtPermissions)
+int FileUtils::toUnixPermissions(int qtPermissions)
 {
 	mode_t result = 0;
 	addFlag(qtPermissions,ReadUser,result,S_IRUSR);
@@ -355,7 +355,7 @@ int FileOps::toUnixPermissions(int qtPermissions)
 }
 #endif
 
-std::string FileOps::toUnixPathSeparators(const std::string& str)
+std::string FileUtils::toUnixPathSeparators(const std::string& str)
 {
 	std::string result = str;
 	for (size_t i=0; i < result.size(); i++)
@@ -368,7 +368,7 @@ std::string FileOps::toUnixPathSeparators(const std::string& str)
 	return result;
 }
 
-std::string FileOps::tempPath()
+std::string FileUtils::tempPath()
 {
 #ifdef PLATFORM_UNIX
 	return "/tmp";
