@@ -258,14 +258,22 @@ void FileUtils::touch(const char* path) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	// see http://pubs.opengroup.org/onlinepubs/9699919799/utilities/touch.html
-	int fd = creat(path,S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
-	if (fd != -1)
+	if (fileExists(path))
 	{
-		close(fd);
+		utimensat(AT_FDCWD,path,0 /* use current date/time */,0);
 	}
 	else
 	{
-		throw IOException("Unable to touch file " + std::string(path));
+		int fd = creat(path,S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
+		if (fd != -1)
+		{
+			futimens(fd,0 /* use current date/time */);
+			close(fd);
+		}
+		else
+		{
+			throw IOException("Unable to touch file " + std::string(path));
+		}
 	}
 #else
 	HANDLE result = CreateFile(path,GENERIC_WRITE,
