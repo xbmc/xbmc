@@ -4,9 +4,15 @@
 #include "Platform.h"
 #include "StringUtils.h"
 
+#include <iostream>
+
 #ifdef PLATFORM_UNIX
  #include <stdlib.h>
  #include <pwd.h>
+#endif
+
+#ifdef PLATFORM_WINDOWS
+#include <shlobj.h>
 #endif
 
 #ifdef PLATFORM_UNIX
@@ -43,7 +49,17 @@ std::string appDataPath(const std::string& organizationName,
 	// TODO - Mac implementation
 
 #elif defined(PLATFORM_WINDOWS)
-	// TODO - Windows implementation
+	char buffer[MAX_PATH+1];
+	if (SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0 /* hToken */, SHGFP_TYPE_CURRENT, buffer) == S_OK)
+	{
+		std::string path = FileUtils::toUnixPathSeparators(notNullString(buffer));
+		path += '/' + organizationName + '/' + appName;
+		return path;
+	}
+	else
+	{
+		return std::string();
+	}
 #endif
 }
 

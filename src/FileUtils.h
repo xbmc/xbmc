@@ -92,11 +92,12 @@ class FileUtils
 		  */
 		static void extractFromZip(const char* zipFile, const char* src, const char* dest) throw (IOException);
 
+		/** Returns a copy of the path 'str' with Windows-style '\'
+		 * dir separators converted to Unix-style '/' separators
+		 */
+		static std::string toUnixPathSeparators(const std::string& str);
+
 	private:
 		static int toUnixPermissions(int qtPermissions);
-
-		// returns a copy of the path 'str' with Windows-style '\'
-		// dir separators converted to Unix-style '/' separators
-		static std::string toUnixPathSeparators(const std::string& str);
 };
 
