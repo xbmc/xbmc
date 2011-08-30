@@ -831,12 +831,15 @@ if test "$use_rsxs" = "no" || test "$use_gl" == "no"; then
 else
   AC_MSG_NOTICE($rsxs_enabled)
   DISABLE_RSXS=0
-  PKG_CHECK_MODULES([XT],    [xt],
-    [INCLUDES="$INCLUDES $XT_CFLAGS"; LIBS="$LIBS $XT_LIBS"],
-    AC_MSG_ERROR($missing_library))
-  PKG_CHECK_MODULES([XMU],   [xmu],
-    [INCLUDES="$INCLUDES $XMU_CFLAGS"; LIBS="$LIBS $XMU_LIBS"],
-    AC_MSG_ERROR($missing_library))
+  # darwin osx can do rsxs but does not use x11, so do not pkg-config check for them
+  if test "$host_vendor" != "apple" ; then
+    PKG_CHECK_MODULES([XT],    [xt],
+      [INCLUDES="$INCLUDES $XT_CFLAGS"; LIBS="$LIBS $XT_LIBS"],
+      AC_MSG_ERROR($missing_library))
+    PKG_CHECK_MODULES([XMU],   [xmu],
+      [INCLUDES="$INCLUDES $XMU_CFLAGS"; LIBS="$LIBS $XMU_LIBS"],
+      AC_MSG_ERROR($missing_library))
+  fi
 fi
 
 # libRTMP
