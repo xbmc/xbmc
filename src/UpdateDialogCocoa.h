@@ -22,6 +22,8 @@ class UpdateDialogCocoa : public UpdateObserver
 		static void releaseAutoreleasePool(void* data);
 
 	private:
+		void enableDockIcon();
+
 		UpdateDialogPrivate* d;
 };
 

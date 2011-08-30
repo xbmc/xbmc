@@ -1,6 +1,7 @@
 #include "UpdateDialogCocoa.h"
 
 #include <Cocoa/Cocoa.h>
+#include <Carbon/Carbon.h>
 
 #include "AppInfo.h"
 #include "Log.h"
@@ -89,8 +90,37 @@ UpdateDialogCocoa::~UpdateDialogCocoa()
 	[d->pool release];
 }
 
+extern unsigned char mac_dock_png[];
+extern unsigned int mac_dock_png_len;
+
+void UpdateDialogCocoa::enableDockIcon()
+{
+	// convert the application to a foreground application and in
+	// the process, enable the dock icon
+
+	// the reverse transformation is not possible, according to
+	//  http://stackoverflow.com/questions/2832961/is-it-possible-to-hide-the-dock-icon-programmatically 
+	ProcessSerialNumber psn;
+	GetCurrentProcess(&psn);
+	TransformProcessType(&psn,kProcessTransformToForegroundApplication);
+
+	// loading the icon for the app has to be done after
+	// changing the process type
+	NSData* iconData = [NSData dataWithBytes:mac_dock_png length:mac_dock_png_len];
+	NSImage* iconImage = [[NSImage alloc] initWithData: iconData];
+	[NSApp setApplicationIconImage:iconImage];
+	[iconImage release];
+}
+
 void UpdateDialogCocoa::init()
 {
+	enableDockIcon();
+	
+	// make the updater the active application.  This does not
+	// happen automatically because the updater starts as a
+	// background application
+	[NSApp activateIgnoringOtherApps:YES];
+
 	d->delegate = [[UpdateDialogDelegate alloc] init];
 	d->delegate->dialog = d;
 

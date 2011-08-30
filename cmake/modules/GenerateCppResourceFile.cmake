@@ -14,8 +14,8 @@
 #
 # INPUT_FILE_TARGET : The name of the target which generates INPUT_FILE
 #
-function (generate_cpp_resource_file INPUT_FILE CPP_FILE INPUT_FILE_TARGET)
-	add_custom_command(OUTPUT ${CPP_FILE}
-	                   COMMAND xxd -i ${INPUT_FILE} ${CPP_FILE}
-	                   DEPENDS ${INPUT_FILE_TARGET})
+function (generate_cpp_resource_file TARGET_NAME INPUT_DIR INPUT_FILE CPP_FILE)
+	add_custom_command(OUTPUT ${CPP_FILE} COMMAND cd ${INPUT_DIR} && xxd -i ${INPUT_FILE} ${CPP_FILE}
+	                   DEPENDS ${INPUT_DIR}/${INPUT_FILE})
+	add_custom_target(${TARGET_NAME} ALL DEPENDS ${CPP_FILE})
 endfunction()

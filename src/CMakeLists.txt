@@ -36,8 +36,13 @@ set (SOURCES
 )
 
 if (APPLE)
-	set(SOURCES ${SOURCES} StandardDirs.mm UpdateDialogCocoa.mm)
+	set(MAC_DOCK_ICON_CPP_FILE ${CMAKE_CURRENT_BINARY_DIR}/mac_dock_icon.cpp)
+	generate_cpp_resource_file(resource_macdockicon
+	                           ${CMAKE_CURRENT_SOURCE_DIR}/resources
+	                           mac-dock.png ${MAC_DOCK_ICON_CPP_FILE})
+	set(SOURCES ${SOURCES} StandardDirs.mm UpdateDialogCocoa.mm mac_dock_icon.cpp)
 endif()
+
 if (WIN32)
 	set(SOURCES ${SOURCES} UpdateDialogWin32.cpp)
 endif()
@@ -65,7 +70,8 @@ if (ENABLE_GTK)
 	# GTK libraries are available
 	set(GTK_UPDATER_LIB libupdatergtk.so)
 	set(GTK_BIN_CPP_FILE ${CMAKE_CURRENT_BINARY_DIR}/libupdatergtk.cpp)
-	generate_cpp_resource_file(${GTK_UPDATER_LIB} ${GTK_BIN_CPP_FILE} updatergtk)
+	generate_cpp_resource_file(resource_updatergtk ${CMAKE_CURRENT_BINARY_DIR} ${GTK_UPDATER_LIB} ${GTK_BIN_CPP_FILE})
+	add_dependencies(resource_updatergtk updatergtk)
 
 	set(SOURCES ${SOURCES} UpdateDialogGtkWrapper.cpp ${GTK_BIN_CPP_FILE})
 	set(HEADERS ${HEADERS} UpdateDialogGtkWrapper.h)
