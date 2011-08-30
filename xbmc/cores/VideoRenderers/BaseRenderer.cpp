@@ -46,9 +46,8 @@ CBaseRenderer::~CBaseRenderer()
 
 void CBaseRenderer::ChooseBestResolution(float fps)
 {
-  m_resolution = g_guiSettings.m_LookAndFeelResolution;
-  if ( m_resolution == RES_WINDOW )
-    m_resolution = RES_DESKTOP;
+  if (fps == 0.0) return;
+
   // Adjust refreshrate to match source fps
 #if !defined(__APPLE__)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))

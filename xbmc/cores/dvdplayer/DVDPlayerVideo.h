@@ -143,6 +143,8 @@ protected:
   int    m_iFrameRateLength; //how many seconds we should measure the framerate
                              //this is increased exponentially from CDVDPlayerVideo::CalcFrameRate()
 
+  bool   m_bFpsInvalid;      // needed to ignore fps (e.g. dvd stills)
+
   struct SOutputConfiguration
   {
     unsigned int width;

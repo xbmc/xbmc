@@ -171,16 +171,12 @@ void CGUIDialogContextMenu::SetupButtons()
       if (pGroupList->GetOrientation() == VERTICAL)
       {
         // keep gap between bottom edges of grouplist and background image
-        float diff = pControl->GetHeight() - pGroupList->GetHeight();
-        pGroupList->SetHeight(pGroupList->GetTotalSize());
-        pControl->SetHeight(diff + pGroupList->GetHeight());
+        pControl->SetHeight(pControl->GetHeight() - pGroupList->Size() + pGroupList->GetHeight());
       }
       else
       {
         // keep gap between right edges of grouplist and background image
-        float diff = pControl->GetWidth() - pGroupList->GetWidth();
-        pGroupList->SetWidth(pGroupList->GetTotalSize());
-        pControl->SetWidth(diff + pGroupList->GetWidth());
+        pControl->SetWidth(pControl->GetWidth() - pGroupList->Size() + pGroupList->GetWidth());
       }
     }
 #if PRE_SKIN_VERSION_11_COMPATIBILITY

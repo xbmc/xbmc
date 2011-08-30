@@ -25,7 +25,7 @@
 
 #include "CoreAudio.h"
 #include "PlatformDefs.h"
-#include "utils/Log.h"
+#include "utils/log.h"
 #include "math.h"
 
 #define MAX_CHANNEL_LABEL 15

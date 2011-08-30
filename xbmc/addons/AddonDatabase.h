@@ -58,7 +58,6 @@ public:
   CDateTime GetRepoTimestamp(const CStdString& id);
 
   bool Search(const CStdString& search, ADDON::VECADDONS& items);
-  bool SearchTitle(const CStdString& strSearch, ADDON::VECADDONS& items);
   static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
 
   /*! \brief Disable an addon.

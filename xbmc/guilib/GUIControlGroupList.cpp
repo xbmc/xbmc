@@ -31,11 +31,12 @@ CGUIControlGroupList::CGUIControlGroupList(int parentID, int controlID, float po
 {
   m_itemGap = itemGap;
   m_pageControl = pageControl;
-  m_totalSize = 10;
+  m_totalSize = 0;
   m_orientation = orientation;
   m_alignment = alignment;
   m_useControlPositions = useControlPositions;
   ControlType = GUICONTROL_GROUPLIST;
+  m_minSize = 0;
 }
 
 CGUIControlGroupList::~CGUIControlGroupList(void)
@@ -288,17 +289,43 @@ void CGUIControlGroupList::AddControl(CGUIControl *control, int position /*= -1*
 
     if (!m_useControlPositions)
       control->SetPosition(0,0);
+    m_totalSize += (m_children.size() > 0 ? m_itemGap : 0) + Size(control);
     CGUIControlGroup::AddControl(control, position);
   }
 }
 
 void CGUIControlGroupList::ClearAll()
 {
+  m_totalSize = 0;
   CGUIControlGroup::ClearAll();
   m_scroller.SetValue(0);
 }
 
-inline float CGUIControlGroupList::Size(const CGUIControl *control) const
+#define CLAMP(x, low, high)  (((x) > (high)) ? (high) : (((x) < (low)) ? (low) : (x)))
+
+float CGUIControlGroupList::GetWidth() const
+{
+  if (m_orientation == HORIZONTAL)
+    return CLAMP(m_totalSize, m_minSize, m_width);
+  return CGUIControlGroup::GetWidth();
+}
+
+float CGUIControlGroupList::GetHeight() const
+{
+  if (m_orientation == VERTICAL)
+    return CLAMP(m_totalSize, m_minSize, m_height);
+  return CGUIControlGroup::GetHeight();
+}
+
+void CGUIControlGroupList::SetMinSize(float minWidth, float minHeight)
+{
+  if (m_orientation == VERTICAL)
+    m_minSize = minHeight;
+  else
+    m_minSize = minWidth;
+}
+
+float CGUIControlGroupList::Size(const CGUIControl *control) const
 {
   return (m_orientation == VERTICAL) ? control->GetYPosition() + control->GetHeight() : control->GetXPosition() + control->GetWidth();
 }

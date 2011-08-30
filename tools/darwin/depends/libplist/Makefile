@@ -8,8 +8,6 @@ SOURCE=$(LIBNAME)-$(VERSION)
 FILENAME=v$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
-BASE_URL=http://cgit.sukimashita.com/libplist.git/snapshot
-
 LIBDYLIB=$(SOURCE)/build/src/$(LIBNAME).dylib
 
 all: $(LIBDYLIB) .installed

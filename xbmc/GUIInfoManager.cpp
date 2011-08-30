@@ -737,7 +737,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         if (prop.num_params() == 2)
           return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(prop.param(0)) % 10000, StringUtils::DateStringToYYYYMMDD(prop.param(1)) % 10000));
         else if (prop.num_params() == 1)
-          return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(prop.param(0)) % 10000));
+        {
+          int dateformat = StringUtils::DateStringToYYYYMMDD(prop.param(0));
+          if (dateformat <= 0) // not concrete date
+            return AddMultiInfo(GUIInfo(SYSTEM_DATE, ConditionalStringParameter(prop.param(0), true), -1));
+          else
+            return AddMultiInfo(GUIInfo(SYSTEM_DATE, dateformat % 10000));
+        }
         return SYSTEM_DATE;
       }
       else if (prop.name == "time")
@@ -1029,6 +1035,7 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   else if (format.Equals("hh:mm:ss")) return TIME_FORMAT_HH_MM_SS;
   else if (format.Equals("h")) return TIME_FORMAT_H;
   else if (format.Equals("h:mm:ss")) return TIME_FORMAT_H_MM_SS;
+  else if (format.Equals("xx")) return TIME_FORMAT_XX;
   return TIME_FORMAT_GUESS;
 }
 
@@ -2476,6 +2483,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       }
       case SYSTEM_DATE:
         {
+          if (info.GetData2() == -1) // info doesn't contain valid startDate
+            return false;
           CDateTime date = CDateTime::GetCurrentDateTime();
           int currentDate = date.GetMonth()*100+date.GetDay();
           int startDate = info.GetData1();
@@ -2637,6 +2646,11 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   else if (info.m_info == SYSTEM_TIME)
   {
     return GetTime((TIME_FORMAT)info.GetData1());
+  }
+  else if (info.m_info == SYSTEM_DATE)
+  {
+    CDateTime time=CDateTime::GetCurrentDateTime();
+    return time.GetAsLocalizedDate(m_stringParameters[info.GetData1()],false);
   }
   else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
            info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION)
@@ -2905,6 +2919,8 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
     return time.GetAsLocalizedTime("h", false);
   case TIME_FORMAT_H_MM_SS:
     return time.GetAsLocalizedTime("h:mm:ss", true);
+  case TIME_FORMAT_XX:
+    return use12hourclock ? time.GetAsLocalizedTime("xx", false) : "";
   default:
     break;
   }
@@ -3656,11 +3672,11 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
   return id;
 }
 
-int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
+int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter, bool caseSensitive /*= false*/)
 {
   // check to see if we have this parameter already
   for (unsigned int i = 0; i < m_stringParameters.size(); i++)
-    if (parameter.Equals(m_stringParameters[i]))
+    if (parameter.Equals(m_stringParameters[i], caseSensitive))
       return (int)i;
   // return the new offset
   m_stringParameters.push_back(parameter);
@@ -3853,9 +3869,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString duration;
       if (item->HasVideoInfoTag())
       {
-        if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
-          duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() / 60);
-        else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
+        if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }
       if (item->HasMusicInfoTag())

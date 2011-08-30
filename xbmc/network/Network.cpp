@@ -294,6 +294,9 @@ void CNetwork::StartServices()
 #ifdef HAS_ZEROCONF
   g_application.StartZeroconf();
 #endif
+#ifdef HAS_AIRPLAY
+  g_application.StartAirplayServer();
+#endif
   CLastfmScrobbler::GetInstance()->Init();
   CLibrefmScrobbler::GetInstance()->Init();
   g_rssManager.Start();

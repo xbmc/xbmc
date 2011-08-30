@@ -193,6 +193,7 @@ private:
   int m_offset;
   int m_cacheItems;
   CStopWatch m_scrollTimer;
+  CStopWatch m_lastScrollStartTimer;
   CStopWatch m_pageChangeTimer;
 
   // letter match searching

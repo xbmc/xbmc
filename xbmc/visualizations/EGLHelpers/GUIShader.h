@@ -26,7 +26,7 @@
 
 #include "Shader.h"
 
-#if HAS_GLES == 2
+#ifdef HAS_GLES
 
 using namespace Shaders;
 

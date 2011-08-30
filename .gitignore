@@ -106,7 +106,6 @@ config.log
 /addons/skin.confluence/media/Textures.xbt
 /addons/skin.pm3-hd/media/Textures.xbt
 /addons/visualization.dxspectrum/Spectrum_win32dx.vis
-/addons/visualization.glesspectrum/gles_spectrum.vis
 /addons/visualization.glspectrum/opengl_spectrum.vis
 /addons/visualization.milkdrop/MilkDrop_win32dx.vis
 /addons/visualization.projectm/projectM.vis
@@ -299,7 +298,7 @@ lib/cmyth/Makefile
 /project/output
 
 # /project/Win32BuildSetup/
-/project/Win32BuildSetup/BuildLog.htm
+/project/Win32BuildSetup/XBMC.log
 /project/Win32BuildSetup/XBMCSetup*.exe
 /project/Win32BuildSetup/languages.nsi
 /project/Win32BuildSetup/BUILD_WIN32/
@@ -1181,7 +1180,6 @@ lib/cmyth/Makefile
 /xbmc/visualizations/Milkdrop/Release
 
 /xbmc/visualizations/OpenGLSpectrum/Makefile
-/xbmc/visualizations/EGLSpectrum/Makefile
 
 /xbmc/visualizations/WaveForm/Makefile
 /xbmc/visualizations/WaveForm/Debug (DirectX)

@@ -22,9 +22,14 @@
  *
  */
 
-#include "system.h" // for HAS_GL/HAS_GLES
+#ifdef HAS_GLES
 
-#if HAS_GLES == 2
+#if defined(__APPLE__)                                                                                                                                                                                           
+#include <OpenGLES/ES2/gl.h>                                                                                                                                                                                     
+#include <OpenGLES/ES2/glext.h>                                                                                                                                                                                  
+#else                                                                                                                                                                                                            
+#include <GLES/gl.h>                                                                                                                                                                                             
+#endif//__APPLE__
 
 #include <vector>
 #include <string>

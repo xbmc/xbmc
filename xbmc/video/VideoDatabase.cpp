@@ -1342,16 +1342,6 @@ bool CVideoDatabase::HasMovieInfo(const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return false;
     int idMovie = GetMovieId(strFilenameAndPath);
     return (idMovie > 0); // index of zero is also invalid
-
-    // work in progress
-    if (idMovie > 0)
-    {
-      // get title.  if no title, the id was "deleted" for in-place update
-      CVideoInfoTag details;
-      GetMovieInfo(strFilenameAndPath, details, idMovie);
-      if (!details.m_strTitle.IsEmpty()) return true;
-    }
-    return false;
   }
   catch (...)
   {
@@ -1368,16 +1358,6 @@ bool CVideoDatabase::HasTvShowInfo(const CStdString& strPath)
     if (NULL == m_pDS.get()) return false;
     int idTvShow = GetTvShowId(strPath);
     return (idTvShow > 0); // index of zero is also invalid
-
-    // work in progress
-    if (idTvShow > 0)
-    {
-      // get title. if no title, the id was "deleted" for in-place update
-      CVideoInfoTag details;
-      GetTvShowInfo(strPath, details, idTvShow);
-      if (!details.m_strTitle.IsEmpty()) return true;
-    }
-    return false;
   }
   catch (...)
   {
@@ -1394,16 +1374,6 @@ bool CVideoDatabase::HasEpisodeInfo(const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return false;
     int idEpisode = GetEpisodeId(strFilenameAndPath);
     return (idEpisode > 0); // index of zero is also invalid
-
-    // work in progress
-    if (idEpisode > 0)
-    {
-      // get title.  if no title, the id was "deleted" for in-place update
-      CVideoInfoTag details;
-      GetEpisodeInfo(strFilenameAndPath, details, idEpisode);
-      if (!details.m_strTitle.IsEmpty()) return true;
-    }
-    return false;
   }
   catch (...)
   {
@@ -1420,16 +1390,6 @@ bool CVideoDatabase::HasMusicVideoInfo(const CStdString& strFilenameAndPath)
     if (NULL == m_pDS.get()) return false;
     int idMVideo = GetMusicVideoId(strFilenameAndPath);
     return (idMVideo > 0); // index of zero is also invalid
-
-    // work in progress
-    if (idMVideo > 0)
-    {
-      // get title.  if no title, the id was "deleted" for in-place update
-      CVideoInfoTag details;
-      GetMusicVideoInfo(strFilenameAndPath, details, idMVideo);
-      if (!details.m_strTitle.IsEmpty()) return true;
-    }
-    return false;
   }
   catch (...)
   {
@@ -2458,15 +2418,6 @@ void CVideoDatabase::DeleteMovie(const CStdString& strFilenameAndPath, bool bKee
       strSQL=PrepareSQL("delete from movielinktvshow where idMovie=%i", idMovie);
       m_pDS->exec(strSQL.c_str());
     }
-    /*
-    // work in progress
-    else
-    {
-      // clear the title
-      strSQL=PrepareSQL("update movie set c%02d=NULL where idMovie=%i", VIDEODB_ID_TITLE, idMovie);
-      m_pDS->exec(strSQL.c_str());
-    }
-    */
 
     CStdString strPath, strFileName;
     SplitPath(strFilenameAndPath,strPath,strFileName);
@@ -2643,15 +2594,6 @@ void CVideoDatabase::DeleteMusicVideo(const CStdString& strFilenameAndPath, bool
       strSQL=PrepareSQL("delete from musicvideo where idMVideo=%i", idMVideo);
       m_pDS->exec(strSQL.c_str());
     }
-    /*
-    // work in progress
-    else
-    {
-      // clear the title
-      strSQL=PrepareSQL("update musicvideo set c%02d=NULL where idMVideo=%i", VIDEODB_ID_MUSICVIDEO_TITLE, idMVideo);
-      m_pDS->exec(strSQL.c_str());
-    }
-    */
 
     CStdString strPath, strFileName;
     SplitPath(strFilenameAndPath,strPath,strFileName);
@@ -4731,20 +4673,17 @@ bool CVideoDatabase::GetMoviesByWhere(const CStdString& strBaseDir, const CStdSt
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL = "select * from movieview ";
-    if (fetchSets && !g_guiSettings.GetBool("videolibrary.flattenmoviesets"))
-    {
-      // not getting a set, so grab all sets that match this where clause first
-      CStdString setsWhere;
-      if (where.size())
-        setsWhere = " where movie.idMovie in (select movieview.idMovie from movieview " + where + ")";
-      GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES, setsWhere);
-      if (where.size())
-        strSQL += where + PrepareSQL(" and movieview.idMovie NOT in (select idMovie from setlinkmovie)");
-      else
-        strSQL += PrepareSQL("WHERE movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)");
-    }
-    else
+
+    if (where.size())
       strSQL += where;
+    else
+    {
+      if (fetchSets && !g_guiSettings.GetBool("videolibrary.flattenmoviesets"))
+      {
+        GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES, "");
+        strSQL += PrepareSQL("WHERE movieview.idMovie NOT IN (SELECT idMovie FROM setlinkmovie s1 JOIN(SELECT idSet, COUNT(1) AS c FROM setlinkmovie GROUP BY idSet HAVING c>1) s2 ON s2.idSet=s1.idSet)");
+      }
+    }
 
     if (order.size())
       strSQL += " " + order;
@@ -5217,7 +5156,11 @@ bool CVideoDatabase::HasSets() const
     if (NULL == m_pDB.get()) return false;
     if (NULL == m_pDS.get()) return false;
 
-    m_pDS->query( "select idSet from sets" );
+    m_pDS->query("SELECT sets.idSet,COUNT(1) AS c FROM sets "
+                 "JOIN setlinkmovie ON sets.idSet=setlinkmovie.idSet "
+                 "JOIN movie ON setlinkmovie.idMovie=movie.idMovie "
+                 "GROUP BY sets.idSet HAVING c>1");
+
     bool bResult = (m_pDS->num_rows() > 0);
     m_pDS->close();
     return bResult;

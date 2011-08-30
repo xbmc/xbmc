@@ -367,7 +367,9 @@ unsigned int CWinRenderer::PreInit()
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
-  m_resolution = RES_PAL_4x3;
+  m_resolution = g_guiSettings.m_LookAndFeelResolution;
+  if ( m_resolution == RES_WINDOW )
+    m_resolution = RES_DESKTOP;
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;

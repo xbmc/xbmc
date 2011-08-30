@@ -126,6 +126,10 @@ void CSMB::Init()
       fprintf(f, "\tclient lanman auth = yes\n");
       fprintf(f, "\tlanman auth = yes\n");
 
+#if defined(TARGET_DARWIN)
+      fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
+      fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
+#endif
       // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
       // if no WINS server has been specified the wins method will be ignored.
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
