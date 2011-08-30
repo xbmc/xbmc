@@ -896,11 +896,17 @@ inline float CGUIBaseContainer::Size() const
   return (m_orientation == HORIZONTAL) ? m_width : m_height;
 }
 
+inline int CGUIBaseContainer::ScrollCorrectionRange() const
+{
+  int range = m_itemsPerPage / 4;
+  if (range <= 0) range = 1;
+  return range;
+}
+
 void CGUIBaseContainer::ScrollToOffset(int offset)
 {
   float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
-  int range = m_itemsPerPage / 4;
-  if (range <= 0) range = 1;
+  int range = ScrollCorrectionRange();
   if (offset * size < m_scroller.GetValue() &&  m_scroller.GetValue() - offset * size > size * range)
   { // scrolling up, and we're jumping more than 0.5 of a screen
     m_scroller.SetValue((offset + range) * size);
