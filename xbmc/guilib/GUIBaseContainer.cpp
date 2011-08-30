@@ -896,8 +896,6 @@ inline float CGUIBaseContainer::Size() const
   return (m_orientation == HORIZONTAL) ? m_width : m_height;
 }
 
-#define MAX_SCROLL_AMOUNT 0.4f
-
 void CGUIBaseContainer::ScrollToOffset(int offset)
 {
   float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
