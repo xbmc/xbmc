@@ -52,6 +52,10 @@ void runUpdaterThread(void* arg)
 
 int main(int argc, char** argv)
 {
+#ifdef PLATFORM_MAC
+	void* pool = UpdateDialogCocoa::createAutoreleasePool();
+#endif
+
 	Log::instance()->open(AppInfo::logFilePath());
 	UpdaterOptions options;
 	options.parse(argc,argv);
@@ -84,6 +88,10 @@ int main(int argc, char** argv)
 	{
 		installer.run();
 	}
+
+#ifdef PLATFORM_MAC
+	UpdateDialogCocoa::releaseAutoreleasePool(pool);
+#endif
 
 	return 0;
 }

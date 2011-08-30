@@ -29,13 +29,14 @@ set (SOURCES
   FileUtils.cpp
   Log.cpp
   ProcessUtils.cpp
+  StandardDirs.cpp
   UpdateInstaller.cpp
   UpdateScript.cpp
   UpdaterOptions.cpp
 )
 
 if (APPLE)
-	set(SOURCES ${SOURCES} UpdateDialogCocoa.mm)
+	set(SOURCES ${SOURCES} StandardDirs.mm UpdateDialogCocoa.mm)
 endif()
 if (WIN32)
 	set(SOURCES ${SOURCES} UpdateDialogWin32.cpp)
@@ -47,6 +48,7 @@ set (HEADERS
   FileUtils.h
   Log.h
   ProcessUtils.h
+  StandardDirs.h
   UpdateInstaller.h
   UpdateScript.h
   UpdaterOptions.h

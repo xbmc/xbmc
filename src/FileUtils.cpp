@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/types.h>
+#include <sys/time.h>
 #include <sys/stat.h>
 #include <errno.h>
 #include <libgen.h>
@@ -258,16 +259,20 @@ void FileUtils::touch(const char* path) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
 	// see http://pubs.opengroup.org/onlinepubs/9699919799/utilities/touch.html
+	//
+	// we use utimes/futimes instead of utimensat/futimens for compatibility
+	// with older Linux and Mac
+
 	if (fileExists(path))
 	{
-		utimensat(AT_FDCWD,path,0 /* use current date/time */,0);
+		utimes(path,0 /* use current date/time */);
 	}
 	else
 	{
 		int fd = creat(path,S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH);
 		if (fd != -1)
 		{
-			futimens(fd,0 /* use current date/time */);
+			futimes(fd,0 /* use current date/time */);
 			close(fd);
 		}
 		else
