@@ -1662,6 +1662,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
     Clear();
   Append(itemlist);
   SetPath(itemlist.GetPath());
+  SetLabel(itemlist.GetLabel());
   m_sortDetails = itemlist.m_sortDetails;
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;
