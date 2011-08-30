@@ -41,7 +41,7 @@ void CGUIWrappingListContainer::UpdatePageControl(int offset)
 {
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update (offset it by our cursor position)
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset, GetCursor()));
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset, GetCursor()) % GetNumItems());
     SendWindowMessage(msg);
   }
 }
@@ -242,7 +242,7 @@ void CGUIWrappingListContainer::SetPageControlRange()
 {
   if (m_pageControl)
   {
-    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, m_items.size() + m_itemsPerPage - 1);
+    CGUIMessage msg(GUI_MSG_LABEL_RESET, GetID(), m_pageControl, m_itemsPerPage, GetNumItems());
     SendWindowMessage(msg);
   }
 }
