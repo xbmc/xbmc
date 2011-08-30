@@ -1,4 +1,8 @@
 {
+  "Optional.Boolean": {
+    "type": [ "null", "boolean" ],
+    "default": null
+  },
   "Global.Time": {
     "type": "object",
     "properties": {

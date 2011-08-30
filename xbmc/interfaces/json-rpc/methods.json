@@ -870,6 +870,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
+      { "name": "albumartistsonly", "$ref": "Optional.Boolean", "description": "Whether or not to include artists only appearing in compilations. If the parameter is not passed or is passed as null the GUI setting will be used" },
       { "name": "genreid", "$ref": "Library.Id" },
       { "name": "fields", "$ref": "Audio.Fields.Artist" },
       { "name": "limits", "$ref": "List.Limits" },
