@@ -60,6 +60,7 @@ void UpdateInstaller::reportError(const std::string& error)
 	if (m_observer)
 	{
 		m_observer->updateError(error);
+		m_observer->updateFinished();
 	}
 }
 
@@ -84,6 +85,7 @@ void UpdateInstaller::run() throw ()
 	catch (const FileUtils::IOException& ex)
 	{
 		LOG(Error,"error reading process path with mode " + intToStr(m_mode));
+		reportError("Unable to determine path of updater");
 		return;
 	}
 
