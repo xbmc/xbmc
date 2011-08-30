@@ -1,6 +1,6 @@
 #include "UpdateInstaller.h"
 
-#include "FileOps.h"
+#include "FileUtils.h"
 #include "Log.h"
 #include "ProcessUtils.h"
 #include "UpdateObserver.h"
@@ -60,6 +60,7 @@ void UpdateInstaller::reportError(const std::string& error)
 	if (m_observer)
 	{
 		m_observer->updateError(error);
+		m_observer->updateFinished();
 	}
 }
 
@@ -81,16 +82,20 @@ void UpdateInstaller::run() throw ()
 	{
 		updaterPath = ProcessUtils::currentProcessPath();
 	}
-	catch (const FileOps::IOException& ex)
+	catch (const FileUtils::IOException& ex)
 	{
 		LOG(Error,"error reading process path with mode " + intToStr(m_mode));
+		reportError("Unable to determine path of updater");
 		return;
 	}
 
 	if (m_mode == Setup)
 	{
-		LOG(Info,"Waiting for main app process to finish");
-		ProcessUtils::waitForProcess(m_waitPid);
+		if (m_waitPid != 0)
+		{
+			LOG(Info,"Waiting for main app process to finish");
+			ProcessUtils::waitForProcess(m_waitPid);
+		}
 
 		std::list<std::string> args = updaterArgs();
 		args.push_back("--mode");
@@ -143,8 +148,10 @@ void UpdateInstaller::run() throw ()
 
 			LOG(Info,"Removing backups");
 			removeBackups();
+
+			postInstallUpdate();
 		}
-		catch (const FileOps::IOException& exception)
+		catch (const FileUtils::IOException& exception)
 		{
 			error = exception.what();
 		}
@@ -174,9 +181,9 @@ void UpdateInstaller::cleanup()
 {
 	try
 	{
-		FileOps::rmdirRecursive(m_packageDir.c_str());
+		FileUtils::rmdirRecursive(m_packageDir.c_str());
 	}
-	catch (const FileOps::IOException& ex)
+	catch (const FileUtils::IOException& ex)
 	{
 		LOG(Error,"Error cleaning up updater " + std::string(ex.what()));
 	}
@@ -191,11 +198,11 @@ void UpdateInstaller::revert()
 		const std::string& installedFile = iter->first;
 		const std::string& backupFile = iter->second;
 
-		if (FileOps::fileExists(installedFile.c_str()))
+		if (FileUtils::fileExists(installedFile.c_str()))
 		{
-			FileOps::removeFile(installedFile.c_str());
+			FileUtils::removeFile(installedFile.c_str());
 		}
-		FileOps::moveFile(backupFile.c_str(),installedFile.c_str());
+		FileUtils::moveFile(backupFile.c_str(),installedFile.c_str());
 	}
 }
 
@@ -208,32 +215,32 @@ void UpdateInstaller::installFile(const UpdateScriptFile& file)
 	backupFile(destPath);
 
 	// create the target directory if it does not exist
-	std::string destDir = FileOps::dirname(destPath.c_str());
-	if (!FileOps::fileExists(destDir.c_str()))
+	std::string destDir = FileUtils::dirname(destPath.c_str());
+	if (!FileUtils::fileExists(destDir.c_str()))
 	{
-		FileOps::mkdir(destDir.c_str());
+		FileUtils::mkdir(destDir.c_str());
 	}
 
 	if (target.empty())
 	{
 		// locate the package containing the file
 		std::string packageFile = m_packageDir + '/' + file.package + ".zip";
-		if (!FileOps::fileExists(packageFile.c_str()))
+		if (!FileUtils::fileExists(packageFile.c_str()))
 		{
 			throw "Package file does not exist: " + packageFile;
 		}
 
 		// extract the file from the package and copy it to
 		// the destination
-		FileOps::extractFromZip(packageFile.c_str(),file.path.c_str(),destPath.c_str());
+		FileUtils::extractFromZip(packageFile.c_str(),file.path.c_str(),destPath.c_str());
 
 		// set the permissions on the newly extracted file
-		FileOps::setQtPermissions(destPath.c_str(),file.permissions);
+		FileUtils::setQtPermissions(destPath.c_str(),file.permissions);
 	}
 	else
 	{
 		// create the symlink
-		FileOps::createSymLink(destPath.c_str(),target.c_str());
+		FileUtils::createSymLink(destPath.c_str(),target.c_str());
 	}
 }
 
@@ -259,9 +266,9 @@ void UpdateInstaller::uninstallFiles()
 	for (;iter != m_script->filesToUninstall().end();iter++)
 	{
 		std::string path = m_installDir + '/' + iter->c_str();
-		if (FileOps::fileExists(path.c_str()))
+		if (FileUtils::fileExists(path.c_str()))
 		{
-			FileOps::removeFile(path.c_str());
+			FileUtils::removeFile(path.c_str());
 		}
 		else
 		{
@@ -272,15 +279,15 @@ void UpdateInstaller::uninstallFiles()
 
 void UpdateInstaller::backupFile(const std::string& path)
 {
-	if (!FileOps::fileExists(path.c_str()))
+	if (!FileUtils::fileExists(path.c_str()))
 	{
 		// no existing file to backup
 		return;
 	}
 	
 	std::string backupPath = path + ".bak";
-	FileOps::removeFile(backupPath.c_str());
-	FileOps::moveFile(path.c_str(), backupPath.c_str());
+	FileUtils::removeFile(backupPath.c_str());
+	FileUtils::moveFile(path.c_str(), backupPath.c_str());
 	m_backups[path] = backupPath;
 }
 
@@ -290,7 +297,7 @@ void UpdateInstaller::removeBackups()
 	for (;iter != m_backups.end();iter++)
 	{
 		const std::string& backupFile = iter->second;
-		FileOps::removeFile(backupFile.c_str());
+		FileUtils::removeFile(backupFile.c_str());
 	}
 }
 
@@ -300,20 +307,20 @@ bool UpdateInstaller::checkAccess()
 
 	try
 	{
-		FileOps::removeFile(testFile.c_str());
+		FileUtils::removeFile(testFile.c_str());
 	}
-	catch (const FileOps::IOException& error)
+	catch (const FileUtils::IOException& error)
 	{
 		LOG(Info,"Removing existing access check file failed " + std::string(error.what()));
 	}
 
 	try
 	{
-		FileOps::touch(testFile.c_str());
-		FileOps::removeFile(testFile.c_str());
+		FileUtils::touch(testFile.c_str());
+		FileUtils::removeFile(testFile.c_str());
 		return true;
 	}
-	catch (const FileOps::IOException& error)
+	catch (const FileUtils::IOException& error)
 	{
 		LOG(Info,"checkAccess() failed " + std::string(error.what()));
 		return false;
@@ -349,5 +356,17 @@ void UpdateInstaller::restartMainApp()
 	{
 		LOG(Error,"No main binary specified in update script");
 	}
+}
+
+void UpdateInstaller::postInstallUpdate()
+{
+	// perform post-install actions
+
+#ifdef PLATFORM_MAC
+	// touch the application's bundle directory so that
+	// OS X' Launch Services notices any changes in the application's
+	// Info.plist file.
+	FileUtils::touch(m_installDir.c_str());
+#endif
 }
 

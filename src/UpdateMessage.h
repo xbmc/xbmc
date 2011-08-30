@@ -2,6 +2,10 @@
 
 #include <string>
 
+/** UpdateMessage stores information for a message
+  * about the status of update installation sent
+  * between threads.
+  */
 class UpdateMessage
 {
 	public:
@@ -22,16 +26,17 @@ class UpdateMessage
 			init(0,type);
 		}
 
+		void* receiver;
+		Type type;
+		std::string message;
+		int progress;
+
+	private:
 		void init(void* receiver, Type type)
 		{
 			this->progress = 0;
 			this->receiver = receiver;
 			this->type = type;
 		}
-
-		void* receiver;
-		Type type;
-		std::string message;
-		int progress;
 };
 

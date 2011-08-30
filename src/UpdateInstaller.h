@@ -9,6 +9,11 @@
 
 class UpdateObserver;
 
+/** Central class responsible for installing updates,
+  * launching an elevated copy of the updater if required
+  * and restarting the main application once the update
+  * is installed.
+  */
 class UpdateInstaller
 {
 	public:
@@ -43,6 +48,7 @@ class UpdateInstaller
 		void installFile(const UpdateScriptFile& file);
 		void backupFile(const std::string& path);
 		void reportError(const std::string& error);
+		void postInstallUpdate();
 
 		std::list<std::string> updaterArgs() const;
 

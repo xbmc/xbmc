@@ -2,6 +2,7 @@
 add_subdirectory(tests)
 
 find_package(Threads REQUIRED)
+include(GenerateCppResourceFile)
 
 if (UNIX)
 	add_definitions(-Wall -Werror -Wconversion)
@@ -23,8 +24,9 @@ endif()
 add_definitions(-DTIXML_USE_STL)
 
 set (SOURCES
+  AppInfo.cpp
   DirIterator.cpp
-  FileOps.cpp
+  FileUtils.cpp
   Log.cpp
   ProcessUtils.cpp
   UpdateInstaller.cpp
@@ -42,7 +44,7 @@ endif()
 set (HEADERS
   AppInfo.h
   DirIterator.h
-  FileOps.h
+  FileUtils.h
   Log.h
   ProcessUtils.h
   UpdateInstaller.h
@@ -59,13 +61,11 @@ if (ENABLE_GTK)
 	# embed the GTK helper library into the updater binary.
 	# At runtime it will be extracted and loaded if the
 	# GTK libraries are available
-
 	set(GTK_UPDATER_LIB libupdatergtk.so)
-	set(GTK_BIN_FILE ${CMAKE_CURRENT_BINARY_DIR}/libupdatergtk.cpp)
-	add_custom_command(OUTPUT ${GTK_BIN_FILE}
-	                   COMMAND xxd -i ${GTK_UPDATER_LIB} ${GTK_BIN_FILE}
-	                   DEPENDS updatergtk)
-	set(SOURCES ${SOURCES} UpdateDialogGtkWrapper.cpp ${GTK_BIN_FILE})
+	set(GTK_BIN_CPP_FILE ${CMAKE_CURRENT_BINARY_DIR}/libupdatergtk.cpp)
+	generate_cpp_resource_file(${GTK_UPDATER_LIB} ${GTK_BIN_CPP_FILE} updatergtk)
+
+	set(SOURCES ${SOURCES} UpdateDialogGtkWrapper.cpp ${GTK_BIN_CPP_FILE})
 	set(HEADERS ${HEADERS} UpdateDialogGtkWrapper.h)
 endif()
 

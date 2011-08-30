@@ -22,7 +22,6 @@ class Log
 		void write(Type type, const char* text);
 
 		static Log* instance();
-		static std::string defaultPath();
 	
 	private:
 		static void writeToStream(std::ostream& stream, Type type, const char* text);

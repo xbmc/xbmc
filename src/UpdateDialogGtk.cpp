@@ -44,9 +44,9 @@ void UpdateDialogGtk::init(int argc, char** argv)
 
 	m_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(m_window),AppInfo::name().c_str());
-	gtk_window_set_resizable(GTK_WINDOW(m_window),false);
 
 	m_progressLabel = gtk_label_new("Installing Updates");
+
 	GtkWidget* windowLayout = gtk_vbox_new(FALSE,3);
 	GtkWidget* buttonLayout = gtk_hbox_new(FALSE,3);
 	GtkWidget* labelLayout = gtk_hbox_new(FALSE,3);
@@ -55,6 +55,12 @@ void UpdateDialogGtk::init(int argc, char** argv)
 	gtk_widget_set_sensitive(m_finishButton,false);
 
 	m_progressBar = gtk_progress_bar_new();
+
+	// give the dialog a sensible default size by setting a minimum
+	// width on the progress bar.  This is used instead of setting
+	// a default size for the dialog since gtk_window_set_default_size()
+	// is ignored when a dialog is marked as non-resizable
+	gtk_widget_set_usize(m_progressBar,350,-1);
 
 	gtk_signal_connect(GTK_OBJECT(m_finishButton),"clicked",
 	                   GTK_SIGNAL_FUNC(UpdateDialogGtk::finish),this);
@@ -77,7 +83,9 @@ void UpdateDialogGtk::init(int argc, char** argv)
 	gtk_widget_show(m_finishButton);
 	gtk_widget_show(m_progressBar);
 
+	gtk_window_set_resizable(GTK_WINDOW(m_window),false);
 	gtk_window_set_position(GTK_WINDOW(m_window),GTK_WIN_POS_CENTER);
+
 	gtk_widget_show(m_window);
 }
 
@@ -103,7 +111,7 @@ gboolean UpdateDialogGtk::notify(void* _message)
 		case UpdateMessage::UpdateFailed:
 			{
 				dialog->m_hadError = true;
-				std::string errorMessage = "There was a problem installing the update:\n\n" + message->message;
+				std::string errorMessage = AppInfo::updateErrorMessage(message->message);
 				GtkWidget* errorDialog = gtk_message_dialog_new (GTK_WINDOW(dialog->m_window),
 						GTK_DIALOG_DESTROY_WITH_PARENT,
 						GTK_MESSAGE_ERROR,

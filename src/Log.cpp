@@ -2,39 +2,12 @@
 
 #include "Platform.h"
 #include "StringUtils.h"
+#include "ProcessUtils.h"
 
 #include <string.h>
 #include <iostream>
 
-#ifdef PLATFORM_UNIX
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#endif
-
 Log m_globalLog;
-
-#ifdef PLATFORM_UNIX
-pid_t currentProcessId = 0;
-pid_t processId()
-{
-	if (currentProcessId == 0)
-	{
-		currentProcessId = getpid();
-	}
-	return currentProcessId;
-}
-#else
-DWORD currentProcessId = 0;
-DWORD processId()
-{
-	if (currentProcessId == 0)
-	{
-		currentProcessId = GetCurrentProcessId();
-	}
-	return currentProcessId;
-}
-#endif
 
 Log* Log::instance()
 {
@@ -68,7 +41,7 @@ void Log::writeToStream(std::ostream& stream, Type type, const char* text)
 			stream << "ERROR ";
 			break;
 	}
-	stream << '(' << intToStr(processId()) << ") " << text << std::endl;
+	stream << '(' << intToStr(ProcessUtils::currentProcessId()) << ") " << text << std::endl;
 }
 
 void Log::write(Type type, const char* text)
@@ -78,11 +51,5 @@ void Log::write(Type type, const char* text)
 	{
 		writeToStream(m_output,type,text);
 	}
-}
-
-std::string Log::defaultPath()
-{
-	std::string path = "update-log.txt";
-	return path;
 }
 

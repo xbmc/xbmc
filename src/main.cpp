@@ -1,3 +1,4 @@
+#include "AppInfo.h"
 #include "Log.h"
 #include "Platform.h"
 #include "ProcessUtils.h"
@@ -51,7 +52,7 @@ void runUpdaterThread(void* arg)
 
 int main(int argc, char** argv)
 {
-	Log::instance()->open(Log::defaultPath());
+	Log::instance()->open(AppInfo::logFilePath());
 	UpdaterOptions options;
 	options.parse(argc,argv);
 

@@ -1,6 +1,6 @@
 #include "ProcessUtils.h"
 
-#include "FileOps.h"
+#include "FileUtils.h"
 #include "Platform.h"
 #include "StringUtils.h"
 #include "Log.h"
@@ -108,7 +108,7 @@ bool ProcessUtils::waitForProcess(PLATFORM_PID pid)
 int ProcessUtils::runElevatedLinux(const std::string& executable,
 							const std::list<std::string>& args)
 {
-	std::string sudoMessage = FileOps::fileName(executable.c_str()) + " needs administrative privileges.  Please enter your password.";
+	std::string sudoMessage = FileUtils::fileName(executable.c_str()) + " needs administrative privileges.  Please enter your password.";
 
 	std::vector<std::string> sudos;
 	sudos.push_back("kdesudo");
@@ -421,7 +421,7 @@ int ProcessUtils::runWindows(const std::string& executable,
 std::string ProcessUtils::currentProcessPath()
 {
 #ifdef PLATFORM_LINUX
-	std::string path = FileOps::canonicalPath("/proc/self/exe");
+	std::string path = FileUtils::canonicalPath("/proc/self/exe");
 	LOG(Info,"Current process path " + path);
 	return path;
 #elif defined(PLATFORM_MAC)
@@ -451,7 +451,7 @@ void ProcessUtils::convertWindowsCommandLine(LPCWSTR commandLine, int& argc, cha
 		int length = WideCharToMultiByte(CP_ACP,
 		  0 /* flags */,
 		  argvUnicode[i],
-		  -1, /* argvUnicode is null terminated*/
+		  -1, /* argvUnicode is null terminated */
 		  buffer,
 		  BUFFER_SIZE,
 		  0,

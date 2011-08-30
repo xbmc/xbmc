@@ -8,6 +8,9 @@
 #include <dirent.h>
 #endif
 
+/** Simple class for iterating over the files in a directory
+  * and reporting their names and types.
+  */
 class DirIterator
 {
 	public:
