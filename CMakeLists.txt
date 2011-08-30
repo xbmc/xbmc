@@ -15,7 +15,7 @@ if (APPLE)
 	set(CMAKE_OSX_ARCHITECTURES i386;x86_64)
 
 	# Build the updater so that it works on OS X 10.5 and above.
-	# If you are building on OS X 10.7 or newer, you will need to up
+	# If you are building with XCode 4 or newer, you will need to up
 	# this target - depending on the versions of the Mac OS X SDK that
 	# are available to build with in /Developer/SDKs/
 
