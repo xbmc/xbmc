@@ -127,7 +127,6 @@ void CSMB::Init()
       fprintf(f, "\tlanman auth = yes\n");
 
 #if defined(TARGET_DARWIN)
-      fprintf(f, "\tmax protocol = smb2\n");
       fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
       fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
 #endif
