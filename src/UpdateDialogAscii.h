@@ -5,6 +5,12 @@
 #include <fstream>
 #include "tinythread.h"
 
+/** A fallback auto-update progress 'dialog' for use on
+  * Linux when the GTK UI cannot be loaded.
+  *
+  * The 'dialog' consists of an xterm tailing the contents
+  * of a file, into which progress messages are written.
+  */
 class UpdateDialogAscii : public UpdateObserver
 {
 	public:
