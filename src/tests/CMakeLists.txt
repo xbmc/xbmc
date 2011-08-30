@@ -37,3 +37,8 @@ target_link_libraries(TestUpdaterOptions
   updatershared
 )
   
+if (APPLE)
+	set_target_properties(TestUpdateScript PROPERTIES LINK_FLAGS "-framework Security -framework Cocoa")
+	set_target_properties(TestUpdaterOptions PROPERTIES LINK_FLAGS "-framework Security -framework Cocoa")
+endif()
+
