@@ -59,4 +59,6 @@ Source:
  * Ensure no Mendeley branding in standalone project and publish code
 
 Reliability:
+ * Create a lock to prevent Mendeley being started whilst updates are
+   in progress and to prevent multiple updates being run at once.
  * Consider using file system transactions on Windows to make update installation atomic
