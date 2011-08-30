@@ -121,6 +121,7 @@ protected:
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
 
+  inline int ScrollCorrectionRange() const;
   inline float Size() const;
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);
@@ -166,6 +167,7 @@ protected:
 
   void UpdateScrollByLetter();
   void GetCacheOffsets(int &cacheBefore, int &cacheAfter);
+  int GetCacheCount() const { return m_cacheItems; };
   bool ScrollingDown() const { return m_scroller.IsScrollingDown(); };
   bool ScrollingUp() const { return m_scroller.IsScrollingUp(); };
   void OnNextLetter();
