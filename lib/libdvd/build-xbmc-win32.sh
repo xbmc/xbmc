@@ -3,7 +3,7 @@
 MAKECLEAN=0
 MAKEFLAGS=""
 
-if [ "$1" == "clean" ]
+if [ "$1" = "clean" ]
 then
 MAKECLEAN=1
 fi
@@ -15,7 +15,7 @@ fi
 #libdvdcss
 cd libdvdcss
 echo "***** Cleaning libdvdcss *****"
-if [ $MAKECLEAN == 1 ]
+if [ $MAKECLEAN = 1 ]
 then
 make distclean
 fi
@@ -36,7 +36,7 @@ cp libdvdcss/src/.libs/libdvdcss-2.dll /xbmc/system/players/dvdplayer/
 #libdvdread
 cd libdvdread
 echo "***** Cleaning libdvdread *****"
-if [ $MAKECLEAN == 1 ]
+if [ $MAKECLEAN = 1 ]
 then
 make distclean
 fi
@@ -54,7 +54,7 @@ cd ..
 #libdvdnav
 cd libdvdnav
 echo "***** Cleaning libdvdnav *****"
-if [ $MAKECLEAN == 1 ]
+if [ $MAKECLEAN = 1 ]
 then
 make distclean
 fi
