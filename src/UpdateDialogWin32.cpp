@@ -91,7 +91,7 @@ void UpdateDialogWin32::init()
 	DWORD style = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 	m_window.CreateEx(0 /* dwExStyle */,
 	                  updateDialogClassName /* class name */,
-                      AppInfo::name(),
+                      AppInfo::name().c_str(),
                       style,
 					  0, 0, width, height,
 					  0 /* parent */, 0 /* menu */, 0 /* reserved */);
