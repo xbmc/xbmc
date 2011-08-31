@@ -101,18 +101,28 @@ void CGUIControlGroup::Process(unsigned int currentTime, CDirtyRegionList &dirty
 
   CRect rect;
   for (iControls it = m_children.begin(); it != m_children.end(); ++it)
-  {
-    CGUIControl *control = *it;
-    control->UpdateVisibility();
-    unsigned int oldDirty = dirtyregions.size();
-    control->DoProcess(currentTime, dirtyregions);
-    if (control->IsVisible() || (oldDirty != dirtyregions.size())) // visible or dirty (was visible?)
-      rect.Union(control->GetRenderRegion());
-  }
+    if (!(*it)->IsSlaveControl())
+      ProcessItem(currentTime, dirtyregions, *it, rect);
 
   g_graphicsContext.RestoreOrigin();
   CGUIControl::Process(currentTime, dirtyregions);
   m_renderRegion = rect;
+}
+
+void CGUIControlGroup::ProcessItem(unsigned int currentTime, CDirtyRegionList &dirtyregions, CGUIControl* control, CRect& rect)
+{
+  control->UpdateVisibility();
+  unsigned int oldDirty = dirtyregions.size();
+  control->DoProcess(currentTime, dirtyregions);
+  if (control->IsVisible() || (oldDirty != dirtyregions.size())) // visible or dirty (was visible?)
+    rect.Union(control->GetRenderRegion());
+
+  const vector<CGUIControl*>* slaves = control->GetSlaveControls();
+  if (slaves)
+  {
+    for (vector<CGUIControl*>::const_iterator it = slaves->begin() ; it != slaves->end() ; ++it)
+      ProcessItem(currentTime, dirtyregions, *it, rect);
+  }
 }
 
 void CGUIControlGroup::Render()

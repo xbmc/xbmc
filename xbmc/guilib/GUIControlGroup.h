@@ -42,6 +42,7 @@ public:
   virtual CGUIControlGroup *Clone() const { return new CGUIControlGroup(*this); };
 
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
+  void ProcessItem(unsigned int currentTime, CDirtyRegionList &dirtyregions, CGUIControl* control, CRect& rect);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual bool OnMessage(CGUIMessage& message);
