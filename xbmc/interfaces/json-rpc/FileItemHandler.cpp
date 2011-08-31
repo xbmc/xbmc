@@ -30,6 +30,7 @@
 #include "utils/Variant.h"
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
+#include "pictures/PictureInfoTag.h"
 #include "video/VideoDatabase.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -173,6 +174,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
             break;
         }
       }
+      else if (item->HasPictureInfoTag())
+        object["type"] = "picture";
 
       if (!object.isMember("type"))
         object["type"] = "unknown";
@@ -186,6 +189,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     FillDetails(item->GetVideoInfoTag(), item, validFields, object);
   if (item->HasMusicInfoTag())
     FillDetails(item->GetMusicInfoTag(), item, validFields, object);
+  if (item->HasPictureInfoTag())
+    FillDetails(item->GetPictureInfoTag(), item, validFields, object);
 
   object["label"] = item->GetLabel().c_str();
 
@@ -200,7 +205,6 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
 bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileItemList &list)
 {
-  CPlaylistOperations::FillFileItemList(parameterObject, list);
   CAudioLibrary::FillFileItemList(parameterObject, list);
   CVideoLibrary::FillFileItemList(parameterObject, list);
   CFileOperations::FillFileItemList(parameterObject, list);

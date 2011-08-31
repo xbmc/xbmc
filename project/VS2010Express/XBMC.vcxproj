@@ -460,14 +460,11 @@
     <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AudioLibrary.cpp" />
-    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AVPlayerOperations.cpp" />
-    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AVPlaylistOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\FileItemHandler.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\FileOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\InputOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\JSONRPC.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.cpp" />
-    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\PicturePlayerOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\PlayerOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\PlaylistOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\SystemOperations.cpp" />
@@ -1385,8 +1382,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AudioLibrary.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AVPlayerOperations.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AVPlaylistOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\FileItemHandler.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\FileOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\IClient.h" />
@@ -1395,7 +1390,6 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\JSONRPC.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\JSONServiceDescription.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\JSONUtils.h" />
-    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PicturePlayerOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PlayerOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\PlaylistOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ServiceDescription.h" />
