@@ -32,7 +32,6 @@
 #include "guilib/TextureManager.h"
 #include "File.h"
 #include "utils/URIUtils.h"
-#include "dialogs/GUIDialogKeyboard.h"
 
 using namespace ADDON;
 
@@ -100,8 +99,8 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   else if (path.GetHostName().Equals("search"))
   {
     CStdString search;
-    if (!CGUIDialogKeyboard::ShowAndGetInput(search, g_localizeStrings.Get(16017), false))
-      return true;
+    if (!GetKeyboardInput(16017, search))
+      return false;
 
     items.SetProperty("reponame",g_localizeStrings.Get(283));
     items.SetLabel(g_localizeStrings.Get(283));
