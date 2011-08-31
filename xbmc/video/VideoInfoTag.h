@@ -68,8 +68,8 @@ public:
   CStdString m_strArtist;
   std::vector< SActorInfo > m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
-  CStdString m_strSet;
-  CStdString m_strSetId;
+  std::vector<std::string> m_set;
+  std::vector<int> m_setId;
   CStdString m_strRuntime;
   CStdString m_strFile;
   CStdString m_strPath;
