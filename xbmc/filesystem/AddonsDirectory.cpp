@@ -98,8 +98,8 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
   }
   else if (path.GetHostName().Equals("search"))
   {
-    CStdString search;
-    if (!GetKeyboardInput(16017, search))
+    CStdString search(path.GetFileName());
+    if (search.IsEmpty() && !GetKeyboardInput(16017, search))
       return false;
 
     items.SetProperty("reponame",g_localizeStrings.Get(283));
@@ -109,6 +109,9 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     database.Open();
     database.Search(search, addons);
     GenerateListing(path, addons, items, true);
+
+    path.SetFileName(search);
+    items.SetPath(path.Get());
     return true;
   }
   else
