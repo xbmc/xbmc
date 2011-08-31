@@ -3,6 +3,14 @@
     "type": [ "null", "boolean" ],
     "default": null
   },
+  "Array.String": {
+    "type": "array",
+    "items": { "type": "string" }
+  },
+  "Array.Integer": {
+    "type": "array",
+    "items": { "type": "integer" }
+  },
   "Global.Time": {
     "type": "object",
     "properties": {
@@ -321,13 +329,13 @@
       "premiered": { "type": "string" },
       "productioncode": { "type": "string" },
       "runtime": { "type": "string" },
-      "set": { "type": "string" },
+      "set": { "$ref": "Array.String" },
       "showlink": { "type": "string" },
       "streamDetails": { "$ref": "Video.Streams" },
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
       "resume": { "$ref": "Video.Resume" },
-      "setid": { "type": "string", "description": "Comma-separated list of sets" }
+      "setid": { "$ref": "Array.Integer" }
     }
   },
   "Video.Details.MovieSet": {
@@ -604,7 +612,7 @@
         "premiered": { "type": "string" },
         "productioncode": { "type": "string" },
         "runtime": { "type": "string" },
-        "set": { "type": "string" },
+        "set": { "$ref": "Array.String" },
         "showlink": { "type": "string" },
         "streamDetails": { "$ref": "Video.Streams" },
         "top250": { "type": "integer" },
@@ -616,7 +624,7 @@
         "resume": { "$ref": "Video.Resume" },
         "artistid": { "$ref": "Library.Id" },
         "albumid": { "$ref": "Library.Id" },
-        "setid": { "type": "string", "description": "Comma-separated list of sets" },
+        "setid": { "$ref": "Array.Integer" },
         "tvshowid": { "$ref": "Library.Id" }
       }
     }
@@ -753,7 +761,7 @@
         "premiered": { "type": "string" },
         "productioncode": { "type": "string" },
         "runtime": { "type": "string" },
-        "set": { "type": "string" },
+        "set": { "$ref": "Array.String" },
         "showlink": { "type": "string" },
         "streamDetails": { "$ref": "Video.Streams" },
         "top250": { "type": "integer" },
@@ -765,7 +773,7 @@
         "resume": { "$ref": "Video.Resume" },
         "artistid": { "$ref": "Library.Id" },
         "albumid": { "$ref": "Library.Id" },
-        "setid": { "type": "string", "description": "Comma-separated list of sets" },
+        "setid": { "$ref": "Array.Integer" },
         "tvshowid": { "$ref": "Library.Id" }
       }
     }

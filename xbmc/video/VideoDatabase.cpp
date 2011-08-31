@@ -1750,13 +1750,11 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     }
 
     // add sets...
-    if (!info.m_strSet.IsEmpty())
+    if (info.m_set.size() > 0)
     {
-      CStdStringArray sets;
-      StringUtils::SplitString(info.m_strSet, g_advancedSettings.m_videoItemSeparator, sets);
-      for (unsigned int i = 0; i < sets.size(); i++)
+      for (unsigned int i = 0; i < info.m_set.size(); i++)
       {
-        CStdString set(sets[i]);
+        CStdString set(info.m_set[i]);
         set.Trim();
         int idSet = AddSet(set);
         AddSetToMovie(idMovie, idSet);
@@ -2821,15 +2819,8 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
-      CStdString setName = m_pDS2->fv("sets.strSet").get_asString();
-      if (!details.m_strSet.IsEmpty())
-        details.m_strSet += g_advancedSettings.m_videoItemSeparator;
-      details.m_strSet += setName;
-
-      CStdString setId = m_pDS2->fv("sets.idSet").get_asString();
-      if (!details.m_strSetId.IsEmpty())
-        details.m_strSetId += g_advancedSettings.m_videoItemSeparator;
-      details.m_strSetId += setId;
+      details.m_set.push_back(m_pDS2->fv("sets.strSet").get_asString());
+      details.m_setId.push_back(m_pDS2->fv("sets.idSet").get_asInt());
 
       m_pDS2->next();
     }
