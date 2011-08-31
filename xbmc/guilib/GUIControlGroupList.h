@@ -46,6 +46,7 @@ public:
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
+  virtual const void GetSlaveControlsIDs(std::vector<int>& controlIDs) const;
 
   virtual EVENT_RESULT SendMouseEvent(const CPoint &point, const CMouseEvent &event);
   virtual void UnfocusFromPoint(const CPoint &point);

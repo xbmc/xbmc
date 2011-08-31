@@ -52,6 +52,8 @@ CGUIControl::CGUIControl()
   m_bInvalidated = true;
   m_bAllocated=false;
   m_parentControl = NULL;
+  m_slaveControls = NULL;
+  m_masterControl = NULL;
   m_hasCamera = false;
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
@@ -80,6 +82,8 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_bAllocated=false;
   m_hasRendered = false;
   m_parentControl = NULL;
+  m_slaveControls = NULL;
+  m_masterControl = NULL;
   m_hasCamera = false;
   m_pushedUpdates = false;
   m_pulseOnSelect = false;
@@ -88,7 +92,7 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
 
 CGUIControl::~CGUIControl(void)
 {
-
+  delete m_slaveControls;
 }
 
 void CGUIControl::AllocResources()
@@ -930,4 +934,26 @@ CPoint CGUIControl::GetRenderPosition() const
   if (m_parentControl)
     point += m_parentControl->GetRenderPosition();
   return point;
+}
+
+void CGUIControl::AddSlaveControl(CGUIControl *control)
+{
+  if (!control) return;
+  if (!m_slaveControls)
+    m_slaveControls = new vector<CGUIControl*>(); // lazy initialization
+
+  if (find(m_slaveControls->begin(), m_slaveControls->end(), control) == m_slaveControls->end())
+    m_slaveControls->push_back(control);
+
+  control->m_masterControl = this;
+}
+
+bool CGUIControl::IsSlaveControl() const
+{
+  return m_masterControl != NULL;
+}
+
+const vector<CGUIControl*>* CGUIControl::GetSlaveControls() const
+{
+  return m_slaveControls;
 }

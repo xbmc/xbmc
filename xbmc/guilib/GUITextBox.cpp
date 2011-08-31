@@ -282,6 +282,13 @@ void CGUITextBox::UpdatePageControl()
   }
 }
 
+const void CGUITextBox::GetSlaveControlsIDs(std::vector<int>& controlIDs) const
+{
+  if (m_pageControl)
+    controlIDs.push_back(m_pageControl);
+  CGUIControl::GetSlaveControlsIDs(controlIDs);
+}
+
 bool CGUITextBox::CanFocus() const
 {
   return false;

@@ -53,6 +53,7 @@ public:
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
+  virtual const void GetSlaveControlsIDs(std::vector<int>& controlIDs) const;
 
   void SetPageControl(int pageControl);
 
