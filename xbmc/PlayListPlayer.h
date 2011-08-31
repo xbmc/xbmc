@@ -26,6 +26,7 @@
 #define PLAYLIST_NONE    -1
 #define PLAYLIST_MUSIC   0
 #define PLAYLIST_VIDEO   1
+#define PLAYLIST_PICTURE 2
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
