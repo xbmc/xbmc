@@ -9,9 +9,7 @@
 #include "tinythread.h"
 
 #if defined(PLATFORM_LINUX)
-  #if defined(ENABLE_GTK)
-  	#include "UpdateDialogGtkWrapper.h"
-  #endif
+  #include "UpdateDialogGtkWrapper.h"
   #include "UpdateDialogAscii.h"
 #endif
 
@@ -99,7 +97,6 @@ int main(int argc, char** argv)
 #ifdef PLATFORM_LINUX
 void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 {
-#ifdef ENABLE_GTK
 	UpdateDialogAscii asciiDialog;
 	UpdateDialogGtkWrapper dialog;
 	bool useGtk = dialog.init(argc,argv);
@@ -118,10 +115,6 @@ void runWithUi(int argc, char** argv, UpdateInstaller* installer)
 		dialog.exec();
 	}
 	updaterThread.join();
-#else
-	// no UI available - do a silent install
-	installer->run();
-#endif
 }
 #endif
 

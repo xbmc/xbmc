@@ -11,12 +11,13 @@ endif()
 include(UsePkgConfig)
 pkgconfig(gtk+-2.0 GTK2_INCLUDE_DIR GTK2_LINK_DIR GTK2_LINK_FLAGS GTK2_CFLAGS)
 
-option(ENABLE_GTK ON)
+if (UNIX AND NOT APPLE)
+	set(LINUX TRUE)
+endif()
 
-if (ENABLE_GTK)
+if (LINUX)
 	include_directories(${GTK2_INCLUDE_DIR})
 	add_definitions(${GTK2_CFLAGS})
-	add_definitions(-DENABLE_GTK)
 	add_library(updatergtk SHARED UpdateDialogGtk.cpp UpdateDialogGtk.h)
 	target_link_libraries(updatergtk ${GTK2_LINK_FLAGS})
 endif()
@@ -64,7 +65,7 @@ if (UNIX)
 	set(SOURCES ${SOURCES} UpdateDialogAscii.cpp)
 endif()
 
-if (ENABLE_GTK)
+if (LINUX)
 	# embed the GTK helper library into the updater binary.
 	# At runtime it will be extracted and loaded if the
 	# GTK libraries are available
