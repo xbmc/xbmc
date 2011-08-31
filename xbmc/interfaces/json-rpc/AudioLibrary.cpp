@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "settings/GUISettings.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
