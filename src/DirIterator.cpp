@@ -11,7 +11,7 @@
 
 bool endsWith(const std::string& str, const char* text)
 {
-	int length = strlen(text);
+	size_t length = strlen(text);
 	return str.find(text,str.size() - length) != 0;
 }
 
