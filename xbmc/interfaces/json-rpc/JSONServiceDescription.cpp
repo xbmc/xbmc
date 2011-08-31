@@ -282,7 +282,7 @@ bool CJSONServiceDescription::prepareDescription(std::string &description, CVari
   if (member != descriptionObject.end_map())
     name = member->first;
 
-  if (name.empty() || !descriptionObject[name].isMember("type") || !descriptionObject[name]["type"].isString())
+  if (name.empty() || !descriptionObject[name].isMember("type"))
   {
     CLog::Log(LOGERROR, "JSONRPC: Invalid JSON Schema definition for \"%s\"", name.c_str());
     return false;
