@@ -121,7 +121,7 @@ protected:
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
 
-  inline int ScrollCorrectionRange() const;
+  int ScrollCorrectionRange() const;
   inline float Size() const;
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);

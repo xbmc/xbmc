@@ -896,7 +896,7 @@ inline float CGUIBaseContainer::Size() const
   return (m_orientation == HORIZONTAL) ? m_width : m_height;
 }
 
-inline int CGUIBaseContainer::ScrollCorrectionRange() const
+int CGUIBaseContainer::ScrollCorrectionRange() const
 {
   int range = m_itemsPerPage / 4;
   if (range <= 0) range = 1;
