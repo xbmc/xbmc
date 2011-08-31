@@ -1451,25 +1451,31 @@ void CVideoDatabase::DeleteDetailsForTvShow(const CStdString& strPath)
 //********************************************************************************************************************************
 void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, CFileItemList& items)
 {
-  CStdString where = PrepareSQL("join actorlinkmovie on actorlinkmovie.idMovie=movieview.idMovie "
-                                "join actors on actors.idActor=actorlinkmovie.idActor "
-                                "where actors.strActor='%s'", strActor.c_str());
+  CStdString where = PrepareSQL("JOIN actorlinkmovie ON actorlinkmovie.idMovie=movieview.idMovie "
+                                "JOIN actors a ON a.idActor=actorlinkmovie.idActor "
+                                "JOIN directorlinkmovie ON directorlinkmovie.idMovie=movieview.idMovie "
+                                "JOIN actors d ON d.idActor=directorlinkmovie.idDirector "
+                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY idMovie", strActor.c_str(), strActor.c_str());
   GetMoviesByWhere("videodb://1/2/", where, "", items);
 }
 
 void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, CFileItemList& items)
 {
-  CStdString where = PrepareSQL("join actorlinktvshow on actorlinktvshow.idShow=tvshowview.idShow "
-                               "join actors on actors.idActor=actorlinktvshow.idActor "
-                               "where actors.strActor='%s'", strActor.c_str());
+  CStdString where = PrepareSQL("JOIN actorlinktvshow ON actorlinktvshow.idShow=tvshowview.idShow "
+                                "JOIN actors a ON a.idActor=actorlinktvshow.idActor "
+                                "JOIN directorlinktvshow ON directorlinktvshow.idShow=tvshowview.idShow "
+                                "JOIN actors d ON d.idActor=directorlinktvshow.idDirector "
+                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY idShow", strActor.c_str(), strActor.c_str());
   GetTvShowsByWhere("videodb://2/2/", where, items);
 }
 
 void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, CFileItemList& items)
 {
-  CStdString where = PrepareSQL("join actorlinkepisode on actorlinkepisode.idEpisode=episodeview.idEpisode "
-                               "join actors on actors.idActor=actorlinkepisode.idActor "
-                               "where actors.strActor='%s'", strActor.c_str());
+  CStdString where = PrepareSQL("JOIN actorlinkepisode ON actorlinkepisode.idEpisode=episodeview.idEpisode "
+                                "JOIN actors a ON a.idActor=actorlinkepisode.idActor "
+                                "JOIN directorlinkepisode ON directorlinkepisode.idEpisode=episodeview.idEpisode "
+                                "JOIN actors d ON d.idActor=directorlinkepisode.idDirector "
+                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY idEpisode", strActor.c_str(), strActor.c_str());
   GetEpisodesByWhere("videodb://2/2/", where, items);
 }
 
