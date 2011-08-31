@@ -256,7 +256,7 @@
 							<item>
 								<label>$LOCALIZE[20339]:</label>
 								<label2>$INFO[ListItem.Director]</label2>
-								<onclick>-</onclick>
+								<onclick>SendClick(2003,13)</onclick>
 								<visible>!IsEmpty(ListItem.Director)</visible>
 							</item>
 							<item>
@@ -749,7 +749,7 @@
 							<item>
 								<label>$LOCALIZE[20339]:</label>
 								<label2>$INFO[ListItem.Director]</label2>
-								<onclick>-</onclick>
+								<onclick>SendClick(2003,13)</onclick>
 								<visible>!IsEmpty(ListItem.Director)</visible>
 							</item>
 							<item>
