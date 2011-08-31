@@ -1,5 +1,6 @@
 #include "StandardDirs.h"
 
+#include "FileUtils.h"
 #include "StringUtils.h"
 
 #ifdef PLATFORM_UNIX
