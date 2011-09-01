@@ -1798,16 +1798,8 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     }
 
     // add sets...
-    if (info.m_set.size() > 0)
-    {
-      for (unsigned int i = 0; i < info.m_set.size(); i++)
-      {
-        CStdString set(info.m_set[i]);
-        set.Trim();
-        int idSet = AddSet(set);
-        AddSetToMovie(idMovie, idSet);
-      }
-    }
+    for (unsigned int i = 0; i < info.m_set.size(); i++)
+      AddSetToMovie(idMovie, AddSet(info.m_set[i]));
 
     // add countries...
     if (!info.m_strCountry.IsEmpty())
