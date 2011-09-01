@@ -61,7 +61,7 @@ void CVideoInfoTag::Reset()
   m_strStatus.clear();
   m_strProductionCode.clear();
   m_strFirstAired.clear();
-  m_strStudio.clear();
+  m_studio.clear();
   m_strAlbum.clear();
   m_strArtist.clear();
   m_strTrailer.clear();
@@ -177,8 +177,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetString(movie, "status", m_strStatus);
   XMLUtils::SetString(movie, "code", m_strProductionCode);
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
-  XMLUtils::SetAdditiveString(movie, "studio",
-                          g_advancedSettings.m_videoItemSeparator, m_strStudio);
+  XMLUtils::SetStringArray(movie, "studio", m_studio);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
 
   if (m_streamDetails.HasItems())
@@ -275,7 +274,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strTitle;
     ar << m_strSortTitle;
     ar << m_strVotes;
-    ar << m_strStudio;
+    ar << m_studio;
     ar << m_strTrailer;
     ar << (int)m_cast.size();
     for (unsigned int i=0;i<m_cast.size();++i)
@@ -343,7 +342,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strTitle;
     ar >> m_strSortTitle;
     ar >> m_strVotes;
-    ar >> m_strStudio;
+    ar >> m_studio;
     ar >> m_strTrailer;
     int iCastSize;
     ar >> iCastSize;
@@ -415,7 +414,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["plot"] = m_strPlot;
   value["title"] = m_strTitle;
   value["votes"] = m_strVotes;
-  value["studio"] = m_strStudio;
+  value["studio"] = m_studio;
   value["trailer"] = m_strTrailer;
   value["cast"] = CVariant(CVariant::VariantTypeArray);
   for (unsigned int i = 0; i < m_cast.size(); ++i)
@@ -592,7 +591,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   }
 
   XMLUtils::GetStringArray(movie, "set", m_set, prioritise);
-  XMLUtils::GetAdditiveString(movie, "studio", g_advancedSettings.m_videoItemSeparator, m_strStudio, prioritise);
+  XMLUtils::GetStringArray(movie, "studio", m_studio, prioritise);
   // artists
   node = movie->FirstChildElement("artist");
   if (node && node->FirstChild() && prioritise)

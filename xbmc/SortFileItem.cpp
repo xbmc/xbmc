@@ -440,13 +440,13 @@ void SSortFileItem::ByMPAARating(CFileItemPtr &item)
 void SSortFileItem::ByStudio(CFileItemPtr &item)
 {
   if (!item) return;
-  item->SetSortLabel(item->GetVideoInfoTag()->m_strStudio);
+  item->SetSortLabel(StringUtils::Join(item->GetVideoInfoTag()->m_studio, g_advancedSettings.m_videoItemSeparator));
 }
 
 void SSortFileItem::ByStudioNoThe(CFileItemPtr &item)
 {
   if (!item) return;
-  CStdString studio = item->GetVideoInfoTag()->m_strStudio;
+  CStdString studio = StringUtils::Join(item->GetVideoInfoTag()->m_studio, g_advancedSettings.m_videoItemSeparator);
   item->SetSortLabel(RemoveArticles(studio));
 }
 

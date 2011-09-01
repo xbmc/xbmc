@@ -1399,8 +1399,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
         //if still here, continue collecting info
         if (!tagVal->m_genre.empty())
           output+=closeTag+openTag+"Genre"+tag+":"+StringUtils::Join(tagVal->m_genre, g_advancedSettings.m_videoItemSeparator);
-        if (!tagVal->m_strStudio.IsEmpty())
-          output+=closeTag+openTag+"Studio"+tag+":"+tagVal->m_strStudio;
+        if (!tagVal->m_studio.empty())
+          output+=closeTag+openTag+"Studio"+tag+":"+StringUtils::Join(tagVal->m_studio, g_advancedSettings.m_videoItemSeparator);
         if (tagVal && tagVal->m_director.size() > 0)
           output+=closeTag+openTag+"Director"+tag+":"+StringUtils::Join(tagVal->m_director, g_advancedSettings.m_videoItemSeparator);
         if (tagVal->m_writingCredits.size() > 0)

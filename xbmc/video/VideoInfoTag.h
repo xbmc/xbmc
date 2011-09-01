@@ -106,7 +106,7 @@ public:
   CStdString m_strProductionCode;
   CStdString m_strFirstAired;
   CStdString m_strShowTitle;
-  CStdString m_strStudio;
+  std::vector<std::string> m_studio;
   CStdString m_strAlbum;
   CStdString m_lastPlayed;
   CStdString m_strShowLink;

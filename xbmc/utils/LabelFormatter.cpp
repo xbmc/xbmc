@@ -289,9 +289,9 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     }
     break;
   case 'U':
-    if (movie && movie->m_strStudio)
-    {// MPAA Rating
-      value = movie ->m_strStudio;
+    if (movie && movie->m_studio.size() > 0)
+    {// Studios
+      value = StringUtils::Join(movie ->m_studio, g_advancedSettings.m_videoItemSeparator);
     }
     break;
   case 'V': // Playcount

@@ -250,7 +250,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
     }
   }
   else if(name == "copyright")
-    vtag->m_strStudio = text;
+    vtag->m_studio = StringUtils::Split(text, g_advancedSettings.m_videoItemSeparator);
   else if(name == "keywords")
     item->SetProperty("keywords", text);
 
