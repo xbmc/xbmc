@@ -370,7 +370,7 @@ void SSortFileItem::ByGenre(CFileItemPtr &item)
 void SSortFileItem::ByCountry(CFileItemPtr &item)
 {
   if (!item) return;
-  item->SetSortLabel(item->GetVideoInfoTag()->m_strCountry);
+  item->SetSortLabel(StringUtils::Join(item->GetVideoInfoTag()->m_country, g_advancedSettings.m_videoItemSeparator));
 }
 
 

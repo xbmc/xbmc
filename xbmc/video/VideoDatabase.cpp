@@ -1802,18 +1802,8 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
       AddSetToMovie(idMovie, AddSet(info.m_set[i]));
 
     // add countries...
-    if (!info.m_strCountry.IsEmpty())
-    {
-      CStdStringArray countries;
-      StringUtils::SplitString(info.m_strCountry, g_advancedSettings.m_videoItemSeparator, countries);
-      for (unsigned int i = 0; i < countries.size(); i++)
-      {
-        CStdString country(countries[i]);
-        country.Trim();
-        int idCountry = AddCountry(country);
-        AddCountryToMovie(idMovie, idCountry);
-      }
-    }
+    for (unsigned int i = 0; i < info.m_country.size(); i++)
+      AddCountryToMovie(idMovie, AddCountry(info.m_country[i]));
 
     if (details.HasStreamDetails())
       SetStreamDetailsForFileId(details.m_streamDetails, GetFileId(strFilenameAndPath));

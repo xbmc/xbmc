@@ -79,7 +79,7 @@ public:
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
   std::vector<std::string> m_genre;
-  CStdString m_strCountry;
+  std::vector<std::string> m_country;
   CStdString m_strTagLine;
   CStdString m_strPlotOutline;
   CStdString m_strTrailer;
