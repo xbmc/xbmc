@@ -537,7 +537,8 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
     }
 
     object.m_People.director = StringUtils::Join(tag.m_director, g_advancedSettings.m_videoItemSeparator);
-    object.m_People.authors.Add(tag.m_strWritingCredits.c_str());
+    for (unsigned int index = 0; index < tag.m_writingCredits.size(); index++)
+      object.m_People.authors.Add(tag.m_writingCredits[index].c_str());
 
     object.m_Description.description = tag.m_strTagLine;
     object.m_Description.long_description = tag.m_strPlot;
@@ -749,7 +750,8 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                   }
 
                   container->m_People.director = StringUtils::Join(tag.m_director, g_advancedSettings.m_videoItemSeparator);;
-                  container->m_People.authors.Add(tag.m_strWritingCredits.c_str());
+                  for (unsigned int index = 0; index < tag.m_writingCredits.size(); index++)
+                    container->m_People.authors.Add(tag.m_writingCredits[index].c_str());
 
                   container->m_Description.description = tag.m_strTagLine;
                   container->m_Description.long_description = tag.m_strPlot;

@@ -241,7 +241,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
       vtag->m_director.push_back(text);
     else if(role == "author"
          || role == "writer")
-      vtag->m_strWritingCredits += ", " + text;
+      vtag->m_writingCredits.push_back(text);
     else if(role == "actor")
     {
       SActorInfo actor;
@@ -274,7 +274,7 @@ static void ParseItemItunes(CFileItem* item, SResources& resources, TiXmlElement
   else if(name == "subtitle")
     vtag->m_strPlotOutline = text;
   else if(name == "author")
-    vtag->m_strWritingCredits += ", " + text;
+    vtag->m_writingCredits.push_back(text);
   else if(name == "duration")
     vtag->m_strRuntime = text;
   else if(name == "keywords")
@@ -562,8 +562,6 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
   if(item->HasVideoInfoTag())
   {
     CVideoInfoTag* vtag = item->GetVideoInfoTag();
-    // clean up ", " added during build
-    vtag->m_strWritingCredits.Delete(0, 2);
 
     if(item->HasProperty("duration")    && vtag->m_strRuntime.IsEmpty())
       vtag->m_strRuntime = item->GetProperty("duration").asString();

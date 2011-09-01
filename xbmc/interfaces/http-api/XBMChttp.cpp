@@ -1403,8 +1403,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
           output+=closeTag+openTag+"Studio"+tag+":"+tagVal->m_strStudio;
         if (tagVal && tagVal->m_director.size() > 0)
           output+=closeTag+openTag+"Director"+tag+":"+StringUtils::Join(tagVal->m_director, g_advancedSettings.m_videoItemSeparator);
-        if (!tagVal->m_strWritingCredits.IsEmpty())
-          output+=closeTag+openTag+"Writer"+tag+":"+tagVal->m_strWritingCredits;
+        if (tagVal->m_writingCredits.size() > 0)
+          output+=closeTag+openTag+"Writer"+tag+":"+StringUtils::Join(tagVal->m_writingCredits, g_advancedSettings.m_videoItemSeparator);
         if (!tagVal->m_strTagLine.IsEmpty())
           output+=closeTag+openTag+"Tagline"+tag+":"+tagVal->m_strTagLine;
         if (!tagVal->m_strPlotOutline.IsEmpty())

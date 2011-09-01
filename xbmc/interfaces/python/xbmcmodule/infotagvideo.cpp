@@ -66,7 +66,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetWritingCredits(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strWritingCredits.c_str());
+    return Py_BuildValue((char*)"s", StringUtils::Join(self->infoTag.m_writingCredits, g_advancedSettings.m_videoItemSeparator).c_str());
   }
 
   // InfoTagVideo_GetGenre
