@@ -5,6 +5,7 @@
 #include "Platform.h"
 #include "StringUtils.h"
 
+#include <assert.h>
 #include <string.h>
 #include <fstream>
 #include <iostream>
@@ -449,6 +450,7 @@ std::string FileUtils::makeAbsolute(const char* path, const char* basePath)
 {
 	if (isRelative(path))
 	{
+		assert(!isRelative(basePath));
 		return std::string(basePath) + '/' + std::string(path);
 	}
 	else
