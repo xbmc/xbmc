@@ -82,6 +82,10 @@ def strip_prefix(string,prefix)
 	return string.sub(prefix,"")
 end
 
+def file_sha1(path)
+		return `sha1sum "#{path}"`.split(' ')[0]
+end
+
 class UpdateScriptGenerator
 
 	# target_version - The version string for the build in this update
@@ -152,6 +156,7 @@ class UpdateScriptGenerator
 		platform_elem = REXML::Element.new("platform")
 		platform_elem.text = @platform
 
+		update_elem.add_attribute("version","3")
 		update_elem.add_element version_elem
 		update_elem.add_element platform_elem
 		update_elem.add_element deps_to_xml()
@@ -211,10 +216,6 @@ class UpdateScriptGenerator
 			hash_to_xml(file_elem,attributes)
 		end
 		return install_elem
-	end
-
-	def file_sha1(path)
-		return `sha1sum "#{path}"`.split(' ')[0]
 	end
 
 	# Unix permission flags
@@ -289,12 +290,16 @@ class PackageConfig
 	end
 
 	def package_for_file(file)
+		match = nil
 		@rule_map.each do |rule,package|
 			if (file =~ rule)
-				return package
+				if match && match != package
+					raise "Multiple packages match file #{file} - found '#{match}' and '#{package}'"
+				end
+				match = package
 			end
 		end
-		return nil
+		return match
 	end
 end
 
@@ -346,15 +351,6 @@ package_file_map = {}
 input_file_list.each do |file|
 	next if File.symlink?(file)
 
-	# do not package the updater binary - leave
-	# it as a separate standalone tool
-	if package_config.is_updater(file)
-		# unless an updater binary has been explicitly specified, use
-		# the one included with the application
-		updater_binary_input_path = file if !updater_binary_input_path
-		next
-	end
-
 	package = package_config.package_for_file(file)
 	if (!package)
 		raise "Unable to find package for file #{file}"
@@ -371,6 +367,24 @@ package_file_map.each do |package,files|
 	files.each do |file|
 		quoted_files << "\"#{strip_prefix(file,input_dir)}\""
 	end
+
+	if (quoted_files.empty?)
+		puts "Skipping generation of empty package #{package}"
+		next
+	end
+
+	# sort the files in alphabetical order to ensure
+	# that if the input files for a package have the same
+	# name and content, the resulting package will have the
+	# same SHA-1
+	#
+	# This means that repeated runs of the package creation tool
+	# on the same set of files should generated packages with the
+	# same SHA-1
+	quoted_files.sort! do |a,b|
+		a <=> b
+	end
+	
 	quoted_file_list = quoted_files.join(" ")
 
 	output_path = File.expand_path(output_dir)
@@ -379,8 +393,10 @@ package_file_map.each do |package,files|
 	File.unlink(output_file) if File.exist?(output_file)
 
 	Dir.chdir(input_dir) do
-	if (!system("zip #{output_path}/#{package}.zip #{quoted_file_list}"))
+		if (!system("zip #{output_file} #{quoted_file_list}"))
 			raise "Failed to generate package #{package}"
+		else
+			puts "Generated package #{package} : #{file_sha1(output_file)}"
 		end
 	end
 end
