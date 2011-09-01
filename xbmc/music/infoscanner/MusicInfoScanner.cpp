@@ -998,7 +998,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
     albumInfo = scraper.GetAlbum(iSelectedAlbum);
     album = scraper.GetAlbum(iSelectedAlbum).GetAlbum();
     if (result == CNfoFile::COMBINED_NFO)
-      nfoReader.GetDetails(album);
+      nfoReader.GetDetails(album,NULL,true);
     m_musicDatabase.SetAlbumInfo(params.GetAlbumId(), album, scraper.GetAlbum(iSelectedAlbum).GetSongs(),false);
   }
   else
@@ -1179,7 +1179,7 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
   {
     artist = scraper.GetArtist(iSelectedArtist).GetArtist();
     if (result == CNfoFile::COMBINED_NFO)
-      nfoReader.GetDetails(artist);
+      nfoReader.GetDetails(artist,NULL,true);
     m_musicDatabase.SetArtistInfo(params.GetArtistId(), artist);
   }
 

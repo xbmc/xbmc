@@ -248,14 +248,15 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   return true;
 }
 
-bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
+bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */,
+                         bool prefix /* = false */)
 {
   if (!movie) return false;
 
   // reset our details if we aren't chained.
   if (!chained) Reset();
 
-  ParseNative(movie);
+  ParseNative(movie,prefix);
 
   return true;
 }
@@ -502,7 +503,7 @@ const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   return strLabel.TrimRight("\n");
 }
 
-void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
+void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
 {
   XMLUtils::GetString(movie, "title", m_strTitle);
   XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
@@ -550,11 +551,29 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetString(movie, "trailer", m_strTrailer);
   XMLUtils::GetString(movie, "basepath", m_basePath);
 
+  size_t iThumbCount = m_strPictureURL.m_url.size();
+  CStdString xmlAdd = m_strPictureURL.m_xml;
+
   const TiXmlElement* thumb = movie->FirstChildElement("thumb");
   while (thumb)
   {
     m_strPictureURL.ParseElement(thumb);
+    if (prefix)
+    {
+      CStdString temp;
+      temp << *thumb;
+      xmlAdd = temp+xmlAdd;
+    }
     thumb = thumb->NextSiblingElement("thumb");
+  }
+
+  // prefix thumbs from nfos
+  if (prefix && iThumbCount && iThumbCount != m_strPictureURL.m_url.size())
+  {
+    rotate(m_strPictureURL.m_url.begin(),
+           m_strPictureURL.m_url.begin()+iThumbCount, 
+           m_strPictureURL.m_url.end());
+    m_strPictureURL.m_xml = xmlAdd;
   }
 
   XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
@@ -683,7 +702,15 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   const TiXmlElement *fanart = movie->FirstChildElement("fanart");
   if (fanart)
   {
-    m_fanart.m_xml << *fanart;
+    // we prefix to handle mixed-mode nfo's with fanart set
+    if (prefix)
+    {
+      CStdString temp;
+      temp << *fanart;
+      m_fanart.m_xml = temp+m_fanart.m_xml;
+    }
+    else
+      m_fanart.m_xml << *fanart;
     m_fanart.Unpack();
   }
 

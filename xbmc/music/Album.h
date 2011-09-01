@@ -62,7 +62,7 @@ public:
     songs.clear();
   }
 
-  bool Load(const TiXmlElement *movie, bool chained=false);
+  bool Load(const TiXmlElement *movie, bool chained=false, bool prefix=false);
   bool Save(TiXmlNode *node, const CStdString &tag, const CStdString& strPath);
 
   long idAlbum;
