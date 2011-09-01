@@ -349,7 +349,7 @@ FileUtils.mkpath(output_dir)
 # get the details of each input file
 input_file_list = []
 Find.find(input_dir) do |path|
-	next if (File.directory?(path))
+	next if (File.directory?(path) && !File.symlink?(path))
 	input_file_list << path
 end
 
