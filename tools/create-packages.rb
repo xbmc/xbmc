@@ -114,6 +114,14 @@ class UpdateScriptGenerator
 		file_list.each do |path|
 			file = UpdateScriptFile.new
 			file.path = strip_prefix(path,input_dir)
+
+			if (File.basename(path) == @config.updater_binary)
+				# for the updater binary, use the possibly substituted
+				# version in the output directory
+				path = "#{output_dir}/#{@config.updater_binary}"	
+				file.path = strip_prefix(path,"#{output_dir}/")
+			end
+
 			file.is_main_binary = (file.path == package_config.main_binary)
 			
 			if (File.symlink?(path))
@@ -136,7 +144,12 @@ class UpdateScriptGenerator
 		# List of packages containing files for this version
 		@packages = []
 		package_file_map.each do |package_name,files|
-			path = "#{output_dir}/#{package_name}.zip"
+			if (package_name == @config.updater_binary)
+				path = "#{output_dir}/#{package_name}"
+			else
+				path = "#{output_dir}/#{package_name}.zip"
+			end
+
 			package = UpdateScriptPackage.new
 			package.name = package_name
 			package.size = File.size(path)
@@ -276,7 +289,7 @@ class PackageConfig
 		config_json = JSON.parse(File.read(map_file))
 		config_json["packages"].each do |package,rules|
 			rules.each do |rule|
-				rule_regex = Regexp.new(rule)
+				rule_regex = Regexp.new("^#{rule}")
 				@rule_map[rule_regex] = package
 			end
 		end
@@ -286,7 +299,7 @@ class PackageConfig
 	end
 
 	def is_updater(file)
-		return file == @updater_binary
+		return File.basename(file) == @updater_binary
 	end
 
 	def package_for_file(file)
@@ -351,7 +364,8 @@ package_file_map = {}
 input_file_list.each do |file|
 	next if File.symlink?(file)
 
-	package = package_config.package_for_file(file)
+	relative_file = strip_prefix(file,input_dir)
+	package = package_config.package_for_file(relative_file)
 	if (!package)
 		raise "Unable to find package for file #{file}"
 	end
@@ -365,6 +379,11 @@ package_file_map.each do |package,files|
 
 	quoted_files = []
 	files.each do |file|
+		# do not package the updater binary into a zip file -
+		# it must be downloaded uncompressed
+		if package_config.is_updater(file)
+			next
+		end
 		quoted_files << "\"#{strip_prefix(file,input_dir)}\""
 	end
 
