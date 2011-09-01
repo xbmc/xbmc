@@ -25,6 +25,10 @@ require 'optparse'
 #     This file lists all the files contained in this version of the software and
 #     the packages which they are contained in.
 #
+#   <output-dir>/$UPDATER_BINARY
+#     The standalone auto-update installer binary.  This is not compressed so that
+#     it can be downloaded and executed directly.
+#
 
 # Represents a group of updates in a release
 class UpdateScriptPackage
@@ -80,6 +84,8 @@ end
 
 class UpdateScriptGenerator
 
+	# target_version - The version string for the build in this update
+	# platform - The platform which this build is for
 	# input_dir - The directory containing files that make up the install
 	# output_dir - The directory containing the generated packages
 	# package_config - The PackageConfig specifying the file -> package map
@@ -87,7 +93,16 @@ class UpdateScriptGenerator
 	# file_list - A list of all files in 'input_dir' which make up the install
 	# package_file_map - A map of (package name -> [paths of files in this package])
 
-	def initialize(input_dir, output_dir, package_config, file_list, package_file_map)
+	def initialize(target_version,
+	               platform,
+	               input_dir,
+	               output_dir,
+	               package_config,
+	               file_list,
+	               package_file_map)
+
+		@target_version = target_version
+		@platform = platform
 		@config = package_config
 
 		# List of files to install in this version
@@ -131,6 +146,14 @@ class UpdateScriptGenerator
 		update_elem = REXML::Element.new("update")
 		doc.add_element update_elem
 
+		version_elem = REXML::Element.new("targetVersion")
+		version_elem.text = @target_version
+
+		platform_elem = REXML::Element.new("platform")
+		platform_elem.text = @platform
+
+		update_elem.add_element version_elem
+		update_elem.add_element platform_elem
 		update_elem.add_element deps_to_xml()
 		update_elem.add_element packages_to_xml()
 		update_elem.add_element install_to_xml()
@@ -261,6 +284,10 @@ class PackageConfig
 		@updater_binary = config_json["updater-binary"]
 	end
 
+	def is_updater(file)
+		return file == @updater_binary
+	end
+
 	def package_for_file(file)
 		@rule_map.each do |rule,package|
 			if (file =~ rule)
@@ -271,9 +298,25 @@ class PackageConfig
 	end
 end
 
+updater_binary_input_path = nil
+target_version = nil
+target_platform = nil
+
 OptionParser.new do |parser|
-	parser.banner = "#{$0} <input dir> <package map file> <output dir>"
+	parser.banner = "#{$0} [options] <input dir> <package map file> <output dir>"
+	parser.on("-u","--updater [updater binary]","Specifies the updater binary to use") do |updater|
+		updater_binary_input_path = updater
+	end
+	parser.on("-v","--version [version]","Specifies the target version string for this update") do |version|
+		target_version = version
+	end
+	parser.on("-p","--platform [platform]","Specifies the target platform for this update") do |platform|
+		target_platform = platform
+	end
 end.parse!
+
+raise "Platform not specified (use -p option)" if !target_platform
+raise "Target version not specified (use -v option)" if !target_version
 
 if ARGV.length < 3
 	raise "Missing arguments"
@@ -299,8 +342,18 @@ package_config = PackageConfig.new(package_map_file)
 
 # map of package name -> array of files
 package_file_map = {}
+
 input_file_list.each do |file|
 	next if File.symlink?(file)
+
+	# do not package the updater binary - leave
+	# it as a separate standalone tool
+	if package_config.is_updater(file)
+		# unless an updater binary has been explicitly specified, use
+		# the one included with the application
+		updater_binary_input_path = file if !updater_binary_input_path
+		next
+	end
 
 	package = package_config.package_for_file(file)
 	if (!package)
@@ -332,8 +385,17 @@ package_file_map.each do |package,files|
 	end
 end
 
+# copy the updater to the output directory
+if !updater_binary_input_path
+	puts "Updater binary not found in input directory: #{input_dir}"
+	exit(1)
+end
+
+FileUtils.cp(updater_binary_input_path,"#{output_dir}/#{File.basename(updater_binary_input_path)}")
+
 # output the file_list.xml file
-update_script = UpdateScriptGenerator.new(input_dir,output_dir,package_config,input_file_list,package_file_map)
+update_script = UpdateScriptGenerator.new(target_version,target_platform,input_dir,
+                  output_dir,package_config,input_file_list,package_file_map)
 output_xml_file = "#{output_dir}/file_list.unformatted.xml"
 File.open(output_xml_file,'w') do |file|
 	file.write update_script.to_xml()
