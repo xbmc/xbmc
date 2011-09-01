@@ -99,6 +99,7 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   m_fileResult->Reset();
   m_listItems->Clear();
   m_listItems->SetPath(strPath);
+  m_listItems->SetLabel(m_addon->Name());
   m_cancelled = false;
   m_success = false;
   m_totalItems = 0;

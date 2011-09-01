@@ -143,8 +143,8 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
   SetDefaults();
 
   CGUIControlFactory::GetInfoColor(pRootElement, "backgroundcolor", m_clearBackground);
-  CGUIControlFactory::GetMultipleString(pRootElement, "onload", m_loadActions);
-  CGUIControlFactory::GetMultipleString(pRootElement, "onunload", m_unloadActions);
+  CGUIControlFactory::GetActions(pRootElement, "onload", m_loadActions);
+  CGUIControlFactory::GetActions(pRootElement, "onunload", m_unloadActions);
   CGUIControlFactory::GetHitRect(pRootElement, m_hitRect);
 
   TiXmlElement *pChild = pRootElement->FirstChildElement();
@@ -339,21 +339,23 @@ void CGUIWindow::Close_Internal(bool forceClose /*= false*/, int nextWindowID /*
     return;
 
   forceClose |= (nextWindowID == WINDOW_FULLSCREEN_VIDEO);
-  if (!forceClose && m_active && !m_closing && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
+  if (!forceClose && HasAnimation(ANIM_TYPE_WINDOW_CLOSE))
   {
-    if (enableSound && IsSoundEnabled())
-      g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
-    
-    // Perform the window out effect
-    QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
-    m_closing = true;
+    if (!m_closing)
+    {
+      if (enableSound && IsSoundEnabled())
+        g_audioManager.PlayWindowSound(GetID(), SOUND_DEINIT);
+
+      // Perform the window out effect
+      QueueAnimation(ANIM_TYPE_WINDOW_CLOSE);
+      m_closing = true;
+    }
+    return;
   }
-  else if (forceClose)
-  {
-    CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
-    OnMessage(msg);
-    m_closing = false;
-  }
+
+  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0);
+  OnMessage(msg);
+  m_closing = false;
 }
 
 void CGUIWindow::Close(bool forceClose /*= false*/, int nextWindowID /*= 0*/, bool enableSound /*= true*/)
@@ -961,19 +963,6 @@ void CGUIWindow::ClearProperties()
   m_mapProperties.clear();
 }
 
-void CGUIWindow::RunActions(std::vector<CGUIActionDescriptor>& actions)
-{
-  vector<CGUIActionDescriptor> tempActions = actions;
-
-  // and execute our actions
-  for (unsigned int i = 0; i < tempActions.size(); i++)
-  {
-    CGUIMessage message(GUI_MSG_EXECUTE, 0, GetID());
-    message.SetAction(tempActions[i]);
-    g_windowManager.SendMessage(message);
-  }
-}
-
 void CGUIWindow::SetRunActionsManually()
 {
   m_manualRunActions = true;
@@ -981,12 +970,12 @@ void CGUIWindow::SetRunActionsManually()
 
 void CGUIWindow::RunLoadActions()
 {
-  RunActions(m_loadActions);
+  m_loadActions.Execute(GetID(), GetParentID());
 }
 
 void CGUIWindow::RunUnloadActions()
 {
-  RunActions(m_unloadActions);
+  m_unloadActions.Execute(GetID(), GetParentID());
 }
 
 void CGUIWindow::ClearBackground()

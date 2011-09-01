@@ -7,7 +7,7 @@ CALL dlextract.bat librtmp %FILES%
 
 cd %TMP_PATH%
 
-xcopy librtmp-2.4-win32\include\*.h "%CUR_PATH%\include\librtmp\" /E /Q /I /Y
-xcopy librtmp-2.4-win32\lib\*.dll "%XBMC_PATH%\system\players\dvdplayer\" /Y
+xcopy librtmp-20110723-git-b627335-win32\include\*.h "%CUR_PATH%\include\librtmp\" /E /Q /I /Y
+xcopy librtmp-20110723-git-b627335-win32\lib\*.dll "%XBMC_PATH%\system\players\dvdplayer\" /E /Q /I /Y
 
 cd %LOC_PATH%

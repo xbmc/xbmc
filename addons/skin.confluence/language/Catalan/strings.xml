@@ -35,7 +35,7 @@
   <string id="31043">EN PAUSA</string>
   <string id="31044">AVANÇA RÀPID</string>
   <string id="31045">REBOBINA</string>
-  <string id="31046">Propietats d'àudio</string>
+  <string id="31046">Propietats de l'àudio</string>
   <string id="31047">Predefinit actual</string>
   <string id="31048">Visualitzacions predefinides</string>
   <string id="31049">Hora de finalització</string>
@@ -80,8 +80,8 @@
   <string id="31124">Mostra el vídeo en reproducció en el fons</string>
   <string id="31125">Mostra la visualització en reproducció en el fons</string>
 
-  <string id="31126"></string>  <!-- blanked 2010-11-12 -->
-  <string id="31127"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31126">Play TV theme songs in video library (TvTunes add-on)</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">Lletres</string>
   <string id="31129"></string>  <!-- blanked 2010-11-12 -->
   <string id="31130"></string>  <!-- blanked 2010-11-12 -->

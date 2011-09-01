@@ -54,6 +54,12 @@ enum
   RENDER_CAPS_BGRA_APPLE = (1 << 4)
 };
 
+enum
+{
+  RENDER_QUIRKS_MAJORMEMLEAK_OVERLAYRENDERER = 1 << 0,
+  RENDER_QUIRKS_YV12_PREFERED                = 1 << 1,
+};
+
 class CRenderSystemBase
 {
 public:
@@ -101,6 +107,7 @@ public:
   bool SupportsNPOT(bool dxt) const;
   unsigned int GetMaxTextureSize() const { return m_maxTextureSize; }
   unsigned int GetMinDXTPitch() const { return m_minDXTPitch; }
+  unsigned int GetRenderQuirks() const { return m_renderQuirks; }
 
 protected:
   bool                m_bRenderCreated;
@@ -115,6 +122,7 @@ protected:
   int          m_RenderVersionMinor;
   int          m_RenderVersionMajor;
   unsigned int m_renderCaps;
+  unsigned int m_renderQuirks;
 };
 
 #endif // RENDER_SYSTEM_H

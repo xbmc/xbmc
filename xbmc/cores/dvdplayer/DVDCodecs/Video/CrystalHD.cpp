@@ -37,6 +37,7 @@
 #include "utils/fastmemcpy.h"
 #include "DllSwScale.h"
 #include "utils/TimeUtils.h"
+#include "windowing/WindowingFactory.h"
 
 namespace BCM
 {
@@ -231,6 +232,7 @@ protected:
   int                 m_width;
   int                 m_height;
   uint64_t            m_timestamp;
+  bool                m_output_YV12;
   uint64_t            m_PictureNumber;
   uint8_t             m_color_space;
   unsigned int        m_color_range;
@@ -333,6 +335,12 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_sw_scale_ctx = NULL;
   m_dllSwScale = new DllSwScale;
   m_dllSwScale->Load();
+
+  
+  if (g_Windowing.GetRenderQuirks() & RENDER_QUIRKS_YV12_PREFERED)
+    m_output_YV12 = true;
+  else
+    m_output_YV12 = false;
 }
 
 CMPCOutputThread::~CMPCOutputThread()
@@ -771,15 +779,19 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           if (!pBuffer)
           {
             // No free pre-allocated buffers so make one
-#if 0
-            // force Windows to use YV12 until DX renderer gets NV12 or YUY2 capability.
-            pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
-#else
-            if (m_color_space == BCM::MODE422_YUY2)
-              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
+            if (m_output_YV12)
+            {
+              // output YV12, nouveau driver has slow NV12, YUY2 capability.
+              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
+            }
             else
-              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
-#endif
+            {
+              if (m_color_space == BCM::MODE422_YUY2)
+                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
+              else
+                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
+            }
+
             CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
             while (!m_bStop && m_ReadyList.Count() > 10)
               Sleep(1);

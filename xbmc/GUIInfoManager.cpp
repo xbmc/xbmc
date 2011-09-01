@@ -506,6 +506,9 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
                                   { "isrepeat",         PLAYLIST_ISREPEAT },
                                   { "isrepeatone",      PLAYLIST_ISREPEATONE }};
 
+const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
+                                  { "israndom",         SLIDESHOW_ISRANDOM }};
+
 CGUIInfoManager::Property::Property(const CStdString &property, const CStdString &parameters)
 : name(property)
 {
@@ -734,7 +737,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         if (prop.num_params() == 2)
           return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(prop.param(0)) % 10000, StringUtils::DateStringToYYYYMMDD(prop.param(1)) % 10000));
         else if (prop.num_params() == 1)
-          return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(prop.param(0)) % 10000));
+        {
+          int dateformat = StringUtils::DateStringToYYYYMMDD(prop.param(0));
+          if (dateformat <= 0) // not concrete date
+            return AddMultiInfo(GUIInfo(SYSTEM_DATE, ConditionalStringParameter(prop.param(0), true), -1));
+          else
+            return AddMultiInfo(GUIInfo(SYSTEM_DATE, dateformat % 10000));
+        }
         return SYSTEM_DATE;
       }
       else if (prop.name == "time")
@@ -794,7 +803,14 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       }
     }
     else if (cat.name == "slideshow")
+    {
+      for (size_t i = 0; i < sizeof(slideshow) / sizeof(infomap); i++)
+      {
+        if (prop.name == slideshow[i].str)
+          return slideshow[i].val;
+      }
       return CPictureInfoTag::TranslateString(prop.name);
+    }
     else if (cat.name == "container")
     {
       for (size_t i = 0; i < sizeof(mediacontainer) / sizeof(infomap); i++) // these ones don't have or need an id
@@ -1019,6 +1035,7 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   else if (format.Equals("hh:mm:ss")) return TIME_FORMAT_HH_MM_SS;
   else if (format.Equals("h")) return TIME_FORMAT_H;
   else if (format.Equals("h:mm:ss")) return TIME_FORMAT_H_MM_SS;
+  else if (format.Equals("xx")) return TIME_FORMAT_XX;
   return TIME_FORMAT_GUESS;
 }
 
@@ -1611,8 +1628,14 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 }
 
 // tries to get a integer value for use in progressbars/sliders and such
-int CGUIInfoManager::GetInt(int info, int contextWindow) const
+int CGUIInfoManager::GetInt(int info, int contextWindow, const CGUIListItem *item /* = NULL */) const
 {
+  if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
+    return GetMultiInfoInt(m_multiInfo[info - MULTI_INFO_START], contextWindow);
+
+  if (info >= LISTITEM_START && info <= LISTITEM_END)
+    return GetItemInt(item, info);
+
   switch( info )
   {
     case PLAYER_VOLUME:
@@ -1926,6 +1949,16 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
           bReturn = it->second <= std::min(condition - CONTAINER_STATIC, -1);
       }
     }
+  }
+  else if (condition == SLIDESHOW_ISPAUSED)
+  {
+    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    bReturn = (slideShow && slideShow->IsPaused());
+  }
+  else if (condition == SLIDESHOW_ISRANDOM)
+  {
+    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    bReturn = (slideShow && slideShow->IsShuffled());
   }
   else if (g_application.IsPlaying())
   {
@@ -2450,6 +2483,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       }
       case SYSTEM_DATE:
         {
+          if (info.GetData2() == -1) // info doesn't contain valid startDate
+            return false;
           CDateTime date = CDateTime::GetCurrentDateTime();
           int currentDate = date.GetMonth()*100+date.GetDay();
           int startDate = info.GetData1();
@@ -2491,6 +2526,38 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
     }
   }
   return (info.m_info < 0) ? !bReturn : bReturn;
+}
+
+int CGUIInfoManager::GetMultiInfoInt(const GUIInfo &info, int contextWindow) const
+{
+  if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
+  {
+    CFileItemPtr item;
+    CGUIWindow *window = NULL;
+
+    int data1 = info.GetData1();
+    if (!data1) // No container specified, so we lookup the current view container
+    {
+      window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_HAS_LIST_ITEMS);
+      if (window && window->IsMediaWindow())
+        data1 = ((CGUIMediaWindow*)(window))->GetViewContainerID();
+    }
+
+    if (!window) // If we don't have a window already (from lookup above), get one
+      window = GetWindowWithCondition(contextWindow, 0);
+
+    if (window)
+    {
+      const CGUIControl *control = window->GetControl(data1);
+      if (control && control->IsContainer())
+        item = boost::static_pointer_cast<CFileItem>(((CGUIBaseContainer *)control)->GetListItem(info.GetData2(), info.GetInfoFlag()));
+    }
+
+    if (item) // If we got a valid item, do the lookup
+      return GetItemInt(item.get(), info.m_info);
+  }
+
+  return 0;
 }
 
 /// \brief Examines the multi information sent and returns the string as appropriate
@@ -2579,6 +2646,11 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   else if (info.m_info == SYSTEM_TIME)
   {
     return GetTime((TIME_FORMAT)info.GetData1());
+  }
+  else if (info.m_info == SYSTEM_DATE)
+  {
+    CDateTime time=CDateTime::GetCurrentDateTime();
+    return time.GetAsLocalizedDate(m_stringParameters[info.GetData1()],false);
   }
   else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
            info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION)
@@ -2847,6 +2919,8 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
     return time.GetAsLocalizedTime("h", false);
   case TIME_FORMAT_H_MM_SS:
     return time.GetAsLocalizedTime("h:mm:ss", true);
+  case TIME_FORMAT_XX:
+    return use12hourclock ? time.GetAsLocalizedTime("xx", false) : "";
   default:
     break;
   }
@@ -3598,15 +3672,35 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
   return id;
 }
 
-int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
+int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter, bool caseSensitive /*= false*/)
 {
   // check to see if we have this parameter already
   for (unsigned int i = 0; i < m_stringParameters.size(); i++)
-    if (parameter.Equals(m_stringParameters[i]))
+    if (parameter.Equals(m_stringParameters[i], caseSensitive))
       return (int)i;
   // return the new offset
   m_stringParameters.push_back(parameter);
   return (int)m_stringParameters.size() - 1;
+}
+
+int CGUIInfoManager::GetItemInt(const CGUIListItem *item, int info) const
+{
+  if (!item) return 0;
+
+  if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
+  { // grab the property
+    CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
+    CStdString val = item->GetProperty(property);
+    return atoi(val);
+  }
+
+  switch (info)
+  {
+    /* add integer LISTITEM_ here */
+    break;
+  }
+
+  return 0;
 }
 
 CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
@@ -3775,9 +3869,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       CStdString duration;
       if (item->HasVideoInfoTag())
       {
-        if (item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() > 0)
-          duration.Format("%i", item->GetVideoInfoTag()->m_streamDetails.GetVideoDuration() / 60);
-        else if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
+        if (!item->GetVideoInfoTag()->m_strRuntime.IsEmpty())
           duration = item->GetVideoInfoTag()->m_strRuntime;
       }
       if (item->HasMusicInfoTag())

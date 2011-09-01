@@ -1,31 +1,9 @@
 <window id="25">
-	<defaultcontrol always="true">9999</defaultcontrol>
+	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<views>50,51,500,550,551,560,501,508,504,503,505,511</views>
+	<onload condition="Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True&amp;loop=False)</onload>
 	<controls>
-		<control type="button" id="9999">
-			<description>TvTunes trigger</description>
-			<posx>-10</posx>
-			<posy>-10</posy>
-			<width>1</width>
-			<height>1</height>
-			<onfocus>XBMC.RunScript(script.tvtunes,backend=True&amp;loop=False)</onfocus>
-			<onfocus>SetFocus(50)</onfocus>
-			<texturenofocus>-</texturenofocus>
-			<texturefocus>-</texturefocus>
-			<visible>Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes)</visible>
-		</control>
-		<control type="button" id="9999">
-			<description>Don't trigger TvTunes if its not installed or active (Saves log errors)</description>
-			<posx>-10</posx>
-			<posy>-10</posy>
-			<width>1</width>
-			<height>1</height>
-			<onfocus>SetFocus(50)</onfocus>
-			<texturenofocus>-</texturenofocus>
-			<texturefocus>-</texturefocus>
-			<visible>!Skin.HasSetting(ActivateTvTunes) | !System.HasAddon(script.tvtunes)</visible>
-		</control>
 		<include>CommonVideoBackground</include>
 		<include>CommonMediaPlayingBackground</include>
 		<include>ContentPanelBackgrounds</include>

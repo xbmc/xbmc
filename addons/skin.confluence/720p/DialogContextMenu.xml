@@ -12,15 +12,15 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>340</width>
-			<height>200</height>
-			<texture border="20,19,20,19">DialogBack.png</texture>
+			<height>720</height>
+			<texture border="20">DialogBack.png</texture>
 		</control>
 		<control type="grouplist" id="996">
 			<description>grouplist for context buttons</description>
 			<posx>20</posx>
 			<posy>30</posy>
 			<width>300</width>
-			<height>145</height>
+			<height max="670">auto</height>
 			<itemgap>2</itemgap>
 		</control>
 		<control type="button">

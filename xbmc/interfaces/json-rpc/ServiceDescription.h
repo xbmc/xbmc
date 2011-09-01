@@ -27,6 +27,10 @@ namespace JSONRPC
   const char* const JSONRPC_SERVICE_DESCRIPTION = "JSON RPC API of XBMC";
 
   const char* const JSONRPC_SERVICE_TYPES[] = {  
+    "\"Optional.Boolean\": {"
+      "\"type\": [ \"null\", \"boolean\" ],"
+      "\"default\": null"
+    "}",
     "\"Global.Time\": {"
       "\"type\": \"object\","
       "\"properties\": {"
@@ -1647,6 +1651,7 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ReadData\","
       "\"params\": ["
+        "{ \"name\": \"albumartistsonly\", \"$ref\": \"Optional.Boolean\", \"description\": \"Whether or not to include artists only appearing in compilations. If the parameter is not passed or is passed as null the GUI setting will be used\" },"
         "{ \"name\": \"genreid\", \"$ref\": \"Library.Id\" },"
         "{ \"name\": \"fields\", \"$ref\": \"Audio.Fields.Artist\" },"
         "{ \"name\": \"limits\", \"$ref\": \"List.Limits\" },"

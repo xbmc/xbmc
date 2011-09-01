@@ -20,9 +20,9 @@
  */
 #include "system.h"
 
-#ifdef HAS_EGL
+#ifdef HAS_GLES
 
-#include "WinSystemEGL.h"
+#include "WinSystemX11GLES.h"
 #include "utils/log.h"
 #include <SDL/SDL_syswm.h>
 #include "filesystem/SpecialProtocol.h"
@@ -73,7 +73,7 @@ static int contextAttributes[] =
   EGL_NONE
 };
 
-CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
+CWinSystemX11GLES::CWinSystemX11GLES() : CWinSystemBase()
 , m_eglOMXContext(0)
 {
   m_eWindowSystem = WINDOW_SYSTEM_EGL;
@@ -90,11 +90,11 @@ CWinSystemEGL::CWinSystemEGL() : CWinSystemBase()
   m_iVSyncErrors = 0;
 }
 
-CWinSystemEGL::~CWinSystemEGL()
+CWinSystemX11GLES::~CWinSystemX11GLES()
 {
 }
 
-bool CWinSystemEGL::InitWindowSystem()
+bool CWinSystemX11GLES::InitWindowSystem()
 {
   EGLBoolean val = false;
   EGLint maj, min;
@@ -121,7 +121,7 @@ bool CWinSystemEGL::InitWindowSystem()
   return false;
 }
 
-bool CWinSystemEGL::DestroyWindowSystem()
+bool CWinSystemX11GLES::DestroyWindowSystem()
 {
   if (m_eglContext)
   {
@@ -164,7 +164,7 @@ bool CWinSystemEGL::DestroyWindowSystem()
   return true;
 }
 
-bool CWinSystemEGL::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
+bool CWinSystemX11GLES::CreateNewWindow(const CStdString& name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction)
 {
   if(!SetFullScreen(fullScreen, res, false))
 	return false;
@@ -186,12 +186,12 @@ bool CWinSystemEGL::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   return true;
 }
 
-bool CWinSystemEGL::DestroyWindow()
+bool CWinSystemX11GLES::DestroyWindow()
 {
   return true;
 }
 
-bool CWinSystemEGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
+bool CWinSystemX11GLES::ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop)
 {
   if (m_nWidth != newWidth || m_nHeight != newHeight)
   {
@@ -219,7 +219,7 @@ bool CWinSystemEGL::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   return true;
 }
 
-bool CWinSystemEGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
+bool CWinSystemX11GLES::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
@@ -263,7 +263,7 @@ bool CWinSystemEGL::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   return true;
 }
 
-void CWinSystemEGL::UpdateResolutions()
+void CWinSystemX11GLES::UpdateResolutions()
 {
   CWinSystemBase::UpdateResolutions();
 
@@ -332,7 +332,7 @@ void CWinSystemEGL::UpdateResolutions()
 #endif
 }
 
-bool CWinSystemEGL::IsExtSupported(const char* extension)
+bool CWinSystemX11GLES::IsExtSupported(const char* extension)
 {
   if(strncmp(extension, "EGL_", 4) != 0)
     return CRenderSystemGLES::IsExtSupported(extension);
@@ -346,7 +346,7 @@ bool CWinSystemEGL::IsExtSupported(const char* extension)
   return m_eglext.find(name) != string::npos;
 }
 
-bool CWinSystemEGL::RefreshEGLContext()
+bool CWinSystemX11GLES::RefreshEGLContext()
 {
   SDL_SysWMinfo info;
   SDL_VERSION(&info.version);
@@ -416,7 +416,7 @@ bool CWinSystemEGL::RefreshEGLContext()
   return true;
 }
 
-bool CWinSystemEGL::PresentRenderImpl(const CDirtyRegionList &dirty)
+bool CWinSystemX11GLES::PresentRenderImpl(const CDirtyRegionList &dirty)
 {
 //  glFinish();	// Needed???
   eglSwapBuffers(m_eglDisplay, m_eglSurface);
@@ -424,7 +424,7 @@ bool CWinSystemEGL::PresentRenderImpl(const CDirtyRegionList &dirty)
   return true;
 }
 
-void CWinSystemEGL::SetVSyncImpl(bool enable)
+void CWinSystemX11GLES::SetVSyncImpl(bool enable)
 {
   if (eglSwapInterval(m_eglDisplay, enable ? 1 : 0) == EGL_FALSE)
   {
@@ -432,20 +432,20 @@ void CWinSystemEGL::SetVSyncImpl(bool enable)
   }
 }
 
-void CWinSystemEGL::ShowOSMouse(bool show)
+void CWinSystemX11GLES::ShowOSMouse(bool show)
 {
   SDL_ShowCursor(show ? 1 : 0);
   // On BB have show the cursor, otherwise it hangs! (FIXME verify it if fixed)
   //SDL_ShowCursor(1);
 }
 
-void CWinSystemEGL::NotifyAppActiveChange(bool bActivated)
+void CWinSystemX11GLES::NotifyAppActiveChange(bool bActivated)
 {
   if (bActivated && m_bWasFullScreenBeforeMinimize && !g_graphicsContext.IsFullScreenRoot())
     g_graphicsContext.ToggleFullScreenRoot();
 }
 
-bool CWinSystemEGL::Minimize()
+bool CWinSystemX11GLES::Minimize()
 {
   m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
   if (m_bWasFullScreenBeforeMinimize)
@@ -455,36 +455,36 @@ bool CWinSystemEGL::Minimize()
   return true;
 }
 
-bool CWinSystemEGL::Restore()
+bool CWinSystemX11GLES::Restore()
 {
   return false;
 }
 
-bool CWinSystemEGL::Hide()
+bool CWinSystemX11GLES::Hide()
 {
   XUnmapWindow(m_dpy, m_wmWindow);
   XSync(m_dpy, False);
   return true;
 }
 
-bool CWinSystemEGL::Show(bool raise)
+bool CWinSystemX11GLES::Show(bool raise)
 {
   XMapWindow(m_dpy, m_wmWindow);
   XSync(m_dpy, False);
   return true;
 }
 
-EGLContext CWinSystemEGL::GetEGLContext() const
+EGLContext CWinSystemX11GLES::GetEGLContext() const
 {
   return m_eglContext;
 }
 
-EGLDisplay CWinSystemEGL::GetEGLDisplay() const
+EGLDisplay CWinSystemX11GLES::GetEGLDisplay() const
 {
   return m_eglDisplay;
 }
 
-bool CWinSystemEGL::makeOMXCurrent()
+bool CWinSystemX11GLES::makeOMXCurrent()
 {
   return true;
 }

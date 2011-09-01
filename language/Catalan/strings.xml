@@ -82,15 +82,15 @@
   <string id="99">Vista: Auto gran</string>
   <string id="100">Vista: Icones</string>
   <string id="101">Vista: Llista</string>
-  <string id="102">Escanejar</string>
-  <string id="103">Ordenar per: Nom</string>
-  <string id="104">Ordenar per: Data</string>
-  <string id="105">Ordenar per: Mida</string>
+  <string id="102">Escaneja</string>
+  <string id="103">Ordena per: Nom</string>
+  <string id="104">Ordena per: Data</string>
+  <string id="105">Ordena per: Mida</string>
   <string id="106">No</string>
   <string id="107">Sí</string>
   <string id="108">Presentació amb diapositives</string>
-  <string id="109">Crear miniatures</string>
-  <string id="110">Crear miniatures</string>
+  <string id="109">Crea miniatures</string>
+  <string id="110">Crea miniatures</string>
   <string id="111">Dreceres</string>
   <string id="112">En pausa</string>
   <string id="113">Ha fallat l'actualització</string>
@@ -244,7 +244,7 @@
   <string id="268">Ordena per: Títol</string>
   <string id="269">Ordena per: Artista</string>
   <string id="270">Ordena per: Àlbum</string>
-  <string id="271">Top 100</string>
+  <string id="271">100 millors</string>
   <string id="272">Compensació cantonada superior esquerra</string>
   <string id="273">Compensació cantonada inferior dreta</string>
   <string id="274">Posició dels subtítols</string>
@@ -565,7 +565,7 @@
   <string id="612">Bits/Mostra</string>
   <string id="613">Freqüència de mostreig</string>
 
-  <string id="620">CDs d'àudio</string>
+  <string id="620">Els CD d'àudio</string>
   <string id="621">Codificador</string>
   <string id="622">Qualitat</string>
   <string id="623">Taxa de bits</string>
@@ -612,7 +612,7 @@
 
   <string id="700">S'està netejant la biblioteca</string>
   <string id="701">S'estan eliminant les cançons velles de la biblioteca</string>
-  <string id="702">Aquesta ruta ja ha estat explorada.</string>
+  <string id="702">Aquest camí ja ha estat explorat.</string>
   <string id="705">Xarxa</string>
   <string id="706">- Servidor</string>
 
@@ -723,7 +723,7 @@
   <string id="1008">Protocol</string>
   <string id="1009">Adreça del servidor</string>
   <string id="1010">Nom del servidor</string>
-  <string id="1011">Ruta d'accés remota</string>
+  <string id="1011">Camí d'accés remot</string>
   <string id="1012">Carpeta compartida</string>
   <string id="1013">Port</string>
   <string id="1014">Nom d'usuari</string>
@@ -808,6 +808,8 @@
   <string id="1257">Voleu connectar amb el sistema autodetectat?</string>
 
   <string id="1260">Anuncia aquests serveis a altres sistemes a través de Zeroconf</string>
+  
+  <string id="1270">Allow XBMC to receive AirPlay content</string>
 
   <string id="1300">Dispositiu d'àudio personalitzat</string>
   <string id="1301">Custom passthrough device</string>
@@ -843,7 +845,7 @@
 
   <!-- strings through to 1450 reserved for weather translation -->
 
-  <string id="1450">Put display to sleep when idle</string>
+  <string id="1450">Activa l'estalvi d'energia de la pantalla quan estigui inactiu</string>
   <!-- strings through to 1470 reserved for power-saving -->
 
   <string id="2050">Temps d'execució</string>
@@ -883,7 +885,7 @@
   <string id="10101">Diàleg de progrés</string>
 
   <string id="10210">S'estan cercant els subtítols...</string>
-  <string id="10211">Looking for or caching subtitles...</string>
+  <string id="10211">S'estan cercant o posant a la memòria cau els subtítols...</string>
   <string id="10212">s'està finalitzant</string>
   <string id="10213">S'està emplenant la memòria intermèdia</string>
   <string id="10214">S'està obrint el flux de dades</string>
@@ -892,8 +894,8 @@
   <string id="10501">Música/Fitxers</string>
   <string id="10502">Música/Biblioteca</string>
   <string id="10503">Editor de la llista de reproducció</string>
-  <string id="10504">Top 100 cançons</string>
-  <string id="10505">Top 100 àlbums</string>
+  <string id="10504">Les 100 millors cançons</string>
+  <string id="10505">Els 100 millors àlbums</string>
   <string id="10506">Programes</string>
   <string id="10507">Configuració</string>
   <string id="10508">Predicció del temps</string>
@@ -1207,7 +1209,7 @@
   <string id="13406">Informació de la imatge</string>
   <string id="13407">%s predefinits</string>
   <string id="13408">(Valoració d'usuaris d'IMDb)</string>
-  <string id="13409">Top 250</string>
+  <string id="13409">250 millors</string>
   <string id="13410">Connecta't a Last.fm</string>
   <string id="13411">Velocitat mínima del ventilador</string>
   <string id="13412">Reprodueix des d'aquí</string>
@@ -1221,7 +1223,7 @@
   <string id="13420">Treu de forma segura</string>
   <string id="13421">VDPAU</string>
   <string id="13422">Comença la presentació aquí</string>
-  <string id="13423">Recorda aquesta ruta</string>
+  <string id="13423">Recorda aquest camí</string>
   <string id="13424">Use pixel buffer objects</string>
   <string id="13425">Permet l'acceleració per maquinari (VDPAU)</string>
   <string id="13426">Permet l'acceleració per maquinari (VAAPI)</string>
@@ -1343,10 +1345,10 @@
   <string id="14082">Mostra la informació EXIF de la imatge</string>
   <string id="14083">Use a fullscreen window rather than true fullscreen</string>
   <string id="14084">Posa les cançons a la cua al seleccionar-les</string>
-  <string id="14085">Reprodueix els CDs d'àudio de forma automàtica</string>
+  <string id="14085">Reprodueix els CD d'àudio de forma automàtica</string>
   <string id="14086">Reprodueix</string>
   <string id="14087">DVDs</string>
-  <string id="14088">Reprodueix els DVDs de forma automàtica</string>
+  <string id="14088">Reprodueix els DVD de forma automàtica</string>
   <string id="14089">Font to use for text subtitles</string>
   <string id="14090">Internacional</string>
   <string id="14091">Joc de caràcters</string>
@@ -1405,9 +1407,9 @@
   <string id="15254">Cerca etiquetes semblants...</string>
   <string id="15255">El vostre perfil (%name%)</string>
   <string id="15256">Etiquetes globals</string>
-  <string id="15257">Top artistes per etiqueta %name%</string>
-  <string id="15258">Top àlbums per etiqueta %name%</string>
-  <string id="15259">Top pistes per etiqueta %name%</string>
+  <string id="15257">Artistes més populars amb l'etiqueta %name%</string>
+  <string id="15258">Àlbums més populars amb l'etiqueta %name%</string>
+  <string id="15259">Pistes més populars amb l'etiqueta %name%</string>
   <string id="15260">Escolta la ràdio de Last.fm amb l'etiqueta %name%</string>
   <string id="15261">Artistes semblants com %name%</string>
   <string id="15262">Top %name% àlbums</string>
@@ -1416,9 +1418,9 @@
   <string id="15265">Majors fans de %name%</string>
   <string id="15266">Escolta els %name% fans</string>
   <string id="15267">Escolta artistes similars de %name% </string>
-  <string id="15268">Top artistes de l'usuari %name%</string>
-  <string id="15269">Top àlbums de l'usuari %name%</string>
-  <string id="15270">Top pistes de l'usuari %name%</string>
+  <string id="15268">Artistes preferits de l'usuari %name%</string>
+  <string id="15269">Àlbums preferits de l'usuari %name%</string>
+  <string id="15270">Pistes preferides de l'usuari %name%</string>
   <string id="15271">Amics de l'usuari %name%</string>
   <string id="15272">Veïns de l'usuari %name%</string>
   <string id="15273">Taula d'artistes setmanals per %name%</string>
@@ -1433,7 +1435,7 @@
   <string id="15282">Introduïu un nom d'etiqueta per trobar-ne de similars</string>
   <string id="15283">Pistes escoltades recentment per %name%</string>
   <string id="15284">Listen to %name%'s recommendations Last.fm radio</string>
-  <string id="15285">Top tags for user %name%</string>
+  <string id="15285">Etiquetes preferides per l'usuari %name%</string>
 
   <string id="15287">Do you want to add the current track to your loved tracks?</string>
   <string id="15288">Do you want to ban the current track?</string>
@@ -1443,18 +1445,18 @@
   <string id="15292">Could not ban '%s'.</string>
   <string id="15293">Tracks recently loved by %name%</string>
   <string id="15294">Tracks recently banned by %name%</string>
-  <string id="15295">Remove from loved tracks</string>
-  <string id="15296">Un-ban</string>
+  <string id="15295">Elimina de la llista de preferides</string>
+  <string id="15296">Desbloca</string>
   <string id="15297">Do you want to remove this track from your loved tracks?</string>
   <string id="15298">Do you want to un-ban this track?</string>
 
   <string id="15300">Path not found or invalid</string>
-  <string id="15301">Could not connect to network server</string>
+  <string id="15301">No s'ha pogut connectar al servidor de xarxa</string>
   <string id="15302">No s'han trobat servidors</string>
   <string id="15303">No s'ha trobat el grup de treball</string>
 
-  <string id="15310">Obrint marcador multi-ruta</string>
-  <string id="15311">Ruta:</string>
+  <string id="15310">S'està obrint una font multi-camí</string>
+  <string id="15311">Camí:</string>
 
   <string id="16000">General</string>
 
@@ -1709,7 +1711,7 @@
   <string id="20180">Símbols</string>
   <string id="20181">Retrocés</string>
   <string id="20182">Espai</string>
-  <string id="20183">Actualitzar l'aparença</string>
+  <string id="20183">Actualitza l'aparença</string>
   <string id="20184">Gira les imatges utilitzant la informació EXIF</string>
   <string id="20185">Use poster view styles for TV shows</string>
   <string id="20186">Si us plau, espereu</string>
@@ -1846,13 +1848,13 @@
   <string id="20410">Trailer</string>
   <string id="20411">Flatten</string>
   <string id="20412">Flatten TV shows</string>
-  <string id="20413">Get Fanart</string>
+  <string id="20413">Get fanart</string>
   <string id="20414">Show Fanart in video and music libraries</string>
   <string id="20415">S'està cercant nou contingut</string>
   <string id="20416">Emés per primera vegada</string>
   <string id="20417">Escriptor</string>
-  <string id="20418">Neteja el nom dels fitxers i les carpetes</string>
-
+  <string id="20418"></string>
+  <string id="20419">Mostra les metadades en la vista de fitxers</string>
   <string id="20420">Mai</string>
   <string id="20421">Si només hi ha una temporada</string>
   <string id="20422">Sempre</string>
@@ -1996,6 +1998,13 @@
   <string id="21451">Es necessita connexió a Internet.</string>
   <string id="21452">Aconseguiu-ne més...</string>
   <string id="21453">Sistema de fitxers arrel</string>
+  
+  <string id="21460">Subtitle location</string>
+  <string id="21461">Fixed</string>
+  <string id="21462">Bottom of video</string>
+  <string id="21463">Below video</string>
+  <string id="21464">Top of video</string>
+  <string id="21465">Above video</string>
 
   <string id="21800">Nom del fitxer</string>
   <string id="21801">Cami del fitxer</string>
@@ -2110,9 +2119,9 @@
   <string id="22033">- Joc de caràcters</string>
   <string id="22034">Exporta els títols del karaoke com a HTML</string>
   <string id="22035">Exporta els títols del karaoke com a CSV</string>
-  <string id="22036">Importa els títols del karaoke...</string>
+  <string id="22036">Importa els títols del karaoke</string>
   <string id="22037">Mostra el selector de cançons de forma automàtica</string>
-  <string id="22038">Exporta els títols del karaoke...</string>
+  <string id="22038">Exporta els títols del karaoke</string>
   <string id="22039">Introduïu el número de cançó</string>
   <string id="22040">blanc/verd</string>
   <string id="22041">blanc/vermell</string>
@@ -2180,6 +2189,9 @@
   <string id="24043">Actualitzacions disponibles</string>
   <string id="24044">Les dependències no es compleixen</string>
   <string id="24045">El complement no té l'estructura correcta</string>
+  <string id="24046">%s és utilitzat per la instal·lació dels següents complements</string>
+  <string id="24047">Aquest complement no es pot desinstal·lar</string>
+  <string id="24048">Rollback</string>
 
   <string id="24050">Complements disponibles</string>
   <string id="24051">Versió:</string>
@@ -2207,7 +2219,9 @@
   <string id="24080">Voleu tornar a provar de connectar?</string>
   <string id="24089">Reinicia el complement</string>
   <string id="24090">Bloqueja el gestor de complements</string>
-
+  
+  <string id="24094">(current)</string>
+  <string id="24095">(blacklisted)</string>
   <string id="24096">El complement s'ha marcat com trencat al dipòsit.</string>
   <string id="24097">Voleu desactivar-lo en el sistema?</string>
   <string id="24098">Trencat</string>

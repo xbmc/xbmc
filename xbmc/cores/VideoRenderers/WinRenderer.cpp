@@ -253,25 +253,27 @@ int CWinRenderer::NextYV12Texture()
     return -1;
 }
 
-void CWinRenderer::AddProcessor(DVDVideoPicture* picture)
+bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture)
 {
   if (m_renderMethod == RENDER_DXVA)
   {
     int source = NextYV12Texture();
     if(source < 0)
-      return;
+      return true;
 
     DXVA::CProcessor* processor = m_processor;
     if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
       processor = picture->proc;
 
-    processor->ProcessPicture(picture);
+
 
     DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
     SAFE_RELEASE(buf->proc);
     buf->proc = processor->Acquire();
-    buf->id   = picture->proc_id;
+    buf->id   = processor->Add(picture);
+    return true;
   }
+  return false;
 }
 
 int CWinRenderer::GetImage(YV12Image *image, int source, bool readonly)
@@ -365,7 +367,9 @@ unsigned int CWinRenderer::PreInit()
   CSingleLock lock(g_graphicsContext);
   m_bConfigured = false;
   UnInit();
-  m_resolution = RES_PAL_4x3;
+  m_resolution = g_guiSettings.m_LookAndFeelResolution;
+  if ( m_resolution == RES_WINDOW )
+    m_resolution = RES_DESKTOP;
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;

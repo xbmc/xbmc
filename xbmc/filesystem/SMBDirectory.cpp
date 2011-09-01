@@ -212,7 +212,7 @@ bool CSMBDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           rooturl.SetHostName("");
           path = smb.URLEncode(rooturl);
         }
-        path += aDir.name;
+        path = URIUtils::AddFileToFolder(path,aDir.name);
         URIUtils::AddSlashAtEnd(path);
         pItem->SetPath(path);
         pItem->m_bIsFolder = true;

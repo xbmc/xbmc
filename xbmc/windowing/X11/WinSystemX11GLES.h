@@ -29,11 +29,11 @@
 #include "rendering/gles/RenderSystemGLES.h"
 #include "utils/GlobalsHandling.h"
 
-class CWinSystemEGL : public CWinSystemBase, public CRenderSystemGLES
+class CWinSystemX11GLES : public CWinSystemBase, public CRenderSystemGLES
 {
 public:
-  CWinSystemEGL();
-  virtual ~CWinSystemEGL();
+  CWinSystemX11GLES();
+  virtual ~CWinSystemX11GLES();
 
   virtual bool InitWindowSystem();
   virtual bool DestroyWindowSystem();
@@ -80,7 +80,7 @@ protected:
   int m_iVSyncErrors;
 };
 
-XBMC_GLOBAL_REF(CWinSystemEGL,g_Windowing);
-#define g_Windowing XBMC_GLOBAL_USE(CWinSystemEGL)
+XBMC_GLOBAL_REF(CWinSystemX11GLES,g_Windowing);
+#define g_Windowing XBMC_GLOBAL_USE(CWinSystemX11GLES)
 
 #endif // WINDOW_SYSTEM_H

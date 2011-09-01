@@ -19,9 +19,7 @@
  *
  */
 
-#include "system.h"
-
-#if HAS_GLES == 2
+#ifdef HAS_GLES
 
 #include "Shader.h"
 #include "utils/GLUtils.h"

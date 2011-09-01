@@ -58,7 +58,7 @@ echo "Icon: file:///Applications/Cydia.app/Sources/mirrors.xbmc.org.png" >> $DIR
 
 # prerm: called on remove and upgrade - get rid of existing bits.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "rm -rf /Applications/XBMC.app"              >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "find /Applications/XBMC.app -delete"        >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 
 # postinst: nothing for now.
