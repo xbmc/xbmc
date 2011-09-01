@@ -3305,7 +3305,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
       break;
     case VIDEOPLAYER_DIRECTOR:
-      return m_currentFile->GetVideoInfoTag()->m_strDirector;
+      return StringUtils::Join(m_currentFile->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
       break;
     case VIDEOPLAYER_RATING:
       {
@@ -3863,7 +3863,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     break;
   case LISTITEM_DIRECTOR:
     if (item->HasVideoInfoTag())
-      return item->GetVideoInfoTag()->m_strDirector;
+      return StringUtils::Join(item->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator);
   case LISTITEM_ALBUM:
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strAlbum;
@@ -4289,11 +4289,11 @@ void CGUIInfoManager::UpdateFromTuxBox()
     m_currentFile->GetVideoInfoTag()->m_genre = StringUtils::Split(genre, g_advancedSettings.m_videoItemSeparator);
   }
 
-  //Set m_currentMovie.m_strDirector
+  //Set m_currentMovie.m_director
   if (!g_tuxbox.sCurSrvData.current_event_details.Equals("-") &&
     !g_tuxbox.sCurSrvData.current_event_details.IsEmpty())
   {
-    m_currentFile->GetVideoInfoTag()->m_strDirector = g_tuxbox.sCurSrvData.current_event_details;
+    m_currentFile->GetVideoInfoTag()->m_director = StringUtils::Split(g_tuxbox.sCurSrvData.current_event_details, g_advancedSettings.m_videoItemSeparator);
   }
 }
 

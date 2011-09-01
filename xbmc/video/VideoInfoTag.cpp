@@ -36,7 +36,7 @@ using namespace std;
 
 void CVideoInfoTag::Reset()
 {
-  m_strDirector.clear();
+  m_director.clear();
   m_strWritingCredits.clear();
   m_genre.clear();
   m_country.clear();
@@ -173,8 +173,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetStringArray(movie, "set", m_set);
   XMLUtils::SetAdditiveString(movie, "credits",
                           g_advancedSettings.m_videoItemSeparator, m_strWritingCredits);
-  XMLUtils::SetAdditiveString(movie, "director",
-                          g_advancedSettings.m_videoItemSeparator, m_strDirector);
+  XMLUtils::SetStringArray(movie, "director", m_director);
   XMLUtils::SetString(movie, "premiered", m_strPremiered);
   XMLUtils::SetString(movie, "status", m_strStatus);
   XMLUtils::SetString(movie, "code", m_strProductionCode);
@@ -264,7 +263,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
 {
   if (ar.IsStoring())
   {
-    ar << m_strDirector;
+    ar << m_director;
     ar << m_strWritingCredits;
     ar << m_genre;
     ar << m_country;
@@ -330,7 +329,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
   }
   else
   {
-    ar >> m_strDirector;
+    ar >> m_director;
     ar >> m_strWritingCredits;
     ar >> m_genre;
     ar >> m_country;
@@ -408,7 +407,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
 
 void CVideoInfoTag::Serialize(CVariant& value)
 {
-  value["director"] = m_strDirector;
+  value["director"] = m_director;
   value["writer"] = m_strWritingCredits;
   value["genre"] = m_genre;
   value["country"] = m_country;
@@ -562,7 +561,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   XMLUtils::GetStringArray(movie, "genre", m_genre, prioritise);
   XMLUtils::GetStringArray(movie, "country", m_country, prioritise);
   XMLUtils::GetAdditiveString(movie, "credits", g_advancedSettings.m_videoItemSeparator, m_strWritingCredits, prioritise);
-  XMLUtils::GetAdditiveString(movie, "director", g_advancedSettings.m_videoItemSeparator, m_strDirector, prioritise);
+  XMLUtils::GetStringArray(movie, "director", m_director, prioritise);
   XMLUtils::GetAdditiveString(movie, "showlink", g_advancedSettings.m_videoItemSeparator, m_strShowLink, prioritise);
 
   // cast

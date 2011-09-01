@@ -147,7 +147,7 @@ const struct SDbTableOffsets
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strMPAARating) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iTop250) },
   { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_genre) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strDirector) },
+  { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strOriginalTitle) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strStudio) },
@@ -242,7 +242,7 @@ const struct SDbTableOffsets DbEpisodeOffsets[] =
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
   { VIDEODB_TYPE_COUNT, my_offsetof(CVideoInfoTag,m_playCount) }, // unused
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strRuntime) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strDirector) },
+  { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strProductionCode) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iSeason) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iEpisode) },
@@ -282,7 +282,7 @@ const struct SDbTableOffsets DbMusicVideoOffsets[] =
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPictureURL.m_spoof) },
   { VIDEODB_TYPE_COUNT, my_offsetof(CVideoInfoTag,m_playCount) }, // unused
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strRuntime) },
-  { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strDirector) },
+  { VIDEODB_TYPE_STRINGARRAY, my_offsetof(CVideoInfoTag,m_director) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strStudio) },
   { VIDEODB_TYPE_INT, my_offsetof(CVideoInfoTag,m_iYear) },
   { VIDEODB_TYPE_STRING, my_offsetof(CVideoInfoTag,m_strPlot) },

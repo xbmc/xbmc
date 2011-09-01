@@ -552,7 +552,7 @@ namespace JSONRPC
       "\"extends\": \"Video.Details.Item\","
       "\"properties\": {"
         "\"runtime\": { \"type\": \"string\" },"
-        "\"director\": { \"type\": \"string\" },"
+        "\"director\": { \"$ref\": \"Array.String\" },"
         "\"streamdetails\": { \"$ref\": \"Video.Streams\" },"
         "\"resume\": { \"$ref\": \"Video.Resume\" }"
       "}"

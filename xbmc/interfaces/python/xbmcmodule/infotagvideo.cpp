@@ -57,7 +57,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetDirector(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strDirector.c_str());
+    return Py_BuildValue((char*)"s",  StringUtils::Join(self->infoTag.m_director, g_advancedSettings.m_videoItemSeparator).c_str());
   }
 
   // InfoTagVideo_GetWritingCredits

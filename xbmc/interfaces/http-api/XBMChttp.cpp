@@ -1239,7 +1239,7 @@ int CXbmcHttp::xbmcGetMovieDetails(int numParas, CStdString paras[])
         m_database.GetMovieInfo(paras[0].c_str(),aMovieRec);
         tmp.Format("%i", aMovieRec.m_iYear);
         output = closeTag+openTag+"Year:" + tmp;
-        output += closeTag+openTag+"Director:" + aMovieRec.m_strDirector;
+        output += closeTag+openTag+"Director:" + StringUtils::Join(aMovieRec.m_director, g_advancedSettings.m_videoItemSeparator);
         output += closeTag+openTag+"Title:" + aMovieRec.m_strTitle;
         output += closeTag+openTag+"Plot:" + aMovieRec.m_strPlot;
         output += closeTag+openTag+"Genre:" + StringUtils::Join(aMovieRec.m_genre, g_advancedSettings.m_videoItemSeparator);
@@ -1401,8 +1401,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
           output+=closeTag+openTag+"Genre"+tag+":"+StringUtils::Join(tagVal->m_genre, g_advancedSettings.m_videoItemSeparator);
         if (!tagVal->m_strStudio.IsEmpty())
           output+=closeTag+openTag+"Studio"+tag+":"+tagVal->m_strStudio;
-        if (tagVal && !tagVal->m_strDirector.IsEmpty())
-          output+=closeTag+openTag+"Director"+tag+":"+tagVal->m_strDirector;
+        if (tagVal && tagVal->m_director.size() > 0)
+          output+=closeTag+openTag+"Director"+tag+":"+StringUtils::Join(tagVal->m_director, g_advancedSettings.m_videoItemSeparator);
         if (!tagVal->m_strWritingCredits.IsEmpty())
           output+=closeTag+openTag+"Writer"+tag+":"+tagVal->m_strWritingCredits;
         if (!tagVal->m_strTagLine.IsEmpty())

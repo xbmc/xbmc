@@ -238,7 +238,7 @@ static void ParseItemMRSS(CFileItem* item, SResources& resources, TiXmlElement* 
   {
     CStdString role = item_child->Attribute("role");
     if     (role == "director")
-      vtag->m_strDirector += ", " + text;
+      vtag->m_director.push_back(text);
     else if(role == "author"
          || role == "writer")
       vtag->m_strWritingCredits += ", " + text;
@@ -563,7 +563,6 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
   {
     CVideoInfoTag* vtag = item->GetVideoInfoTag();
     // clean up ", " added during build
-    vtag->m_strDirector.Delete(0, 2);
     vtag->m_strWritingCredits.Delete(0, 2);
 
     if(item->HasProperty("duration")    && vtag->m_strRuntime.IsEmpty())

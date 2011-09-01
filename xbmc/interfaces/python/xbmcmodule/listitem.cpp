@@ -478,7 +478,7 @@ namespace PYXBMC
           if (strcmpi(PyString_AsString(key), "genre") == 0)
             self->item->GetVideoInfoTag()->m_genre = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "director") == 0)
-            self->item->GetVideoInfoTag()->m_strDirector = tmp;
+            self->item->GetVideoInfoTag()->m_director = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "mpaa") == 0)
             self->item->GetVideoInfoTag()->m_strMPAARating = tmp;
           else if (strcmpi(PyString_AsString(key), "plot") == 0)

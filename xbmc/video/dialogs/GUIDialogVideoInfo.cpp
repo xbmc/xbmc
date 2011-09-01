@@ -178,7 +178,7 @@ bool CGUIDialogVideoInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_DIRECTOR)
       {
-        OnSearch(m_movieItem->GetVideoInfoTag()->m_strDirector);
+        OnSearch(StringUtils::Join(m_movieItem->GetVideoInfoTag()->m_director, g_advancedSettings.m_videoItemSeparator));
       }
       else if (iControl == CONTROL_LIST)
       {

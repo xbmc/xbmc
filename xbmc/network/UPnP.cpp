@@ -50,6 +50,7 @@
 #include "settings/GUISettings.h"
 #include "GUIUserMessages.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/StringUtils.h"
 #include "FileItem.h"
 #include "guilib/GUIWindowManager.h"
@@ -535,7 +536,7 @@ CUPnPServer::PopulateObjectFromTag(CVideoInfoTag&         tag,
         object.m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
     }
 
-    object.m_People.director = tag.m_strDirector;
+    object.m_People.director = StringUtils::Join(tag.m_director, g_advancedSettings.m_videoItemSeparator);
     object.m_People.authors.Add(tag.m_strWritingCredits.c_str());
 
     object.m_Description.description = tag.m_strTagLine;
@@ -747,7 +748,7 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                       container->m_People.actors.Add(it->strName.c_str(), it->strRole.c_str());
                   }
 
-                  container->m_People.director = tag.m_strDirector;
+                  container->m_People.director = StringUtils::Join(tag.m_director, g_advancedSettings.m_videoItemSeparator);;
                   container->m_People.authors.Add(tag.m_strWritingCredits.c_str());
 
                   container->m_Description.description = tag.m_strTagLine;
@@ -2430,7 +2431,7 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
     tag.m_iYear       = date.GetYear();
     for (unsigned int index = 0; index < object.m_Affiliation.genre.GetItemCount(); index++)
       tag.m_genre.push_back(object.m_Affiliation.genre.GetItem(index)->GetChars());
-    tag.m_strDirector = object.m_People.director;
+    tag.m_director = StringUtils::Split((CStdString)object.m_People.director, g_advancedSettings.m_videoItemSeparator);
     tag.m_strTagLine  = object.m_Description.description;
     tag.m_strPlot     = object.m_Description.long_description;
     tag.m_strShowTitle = object.m_Recorded.series_title;

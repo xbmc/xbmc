@@ -76,7 +76,7 @@ public:
 
   CStdString m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
-  CStdString m_strDirector;
+  std::vector<std::string> m_director;
   CStdString m_strWritingCredits;
   std::vector<std::string> m_genre;
   std::vector<std::string> m_country;

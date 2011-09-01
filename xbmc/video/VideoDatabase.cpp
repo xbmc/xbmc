@@ -1673,18 +1673,8 @@ bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details)
 void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, vector<int>& vecDirectors, vector<int>& vecGenres, vector<int>& vecStudios)
 {
   // add all directors
-  if (!details.m_strDirector.IsEmpty())
-  {
-    CStdStringArray directors;
-    StringUtils::SplitString(details.m_strDirector, g_advancedSettings.m_videoItemSeparator, directors);
-    for (unsigned int i = 0; i < directors.size(); i++)
-    {
-      CStdString strDirector(directors[i]);
-      strDirector.Trim();
-      int idDirector = AddActor(strDirector,"");
-      vecDirectors.push_back(idDirector);
-    }
-  }
+  for (unsigned int i = 0; i < details.m_director.size(); i++)
+    vecDirectors.push_back(AddActor(details.m_director[i],""));
 
   // add all genres
   for (unsigned int i = 0; i < details.m_genre.size(); i++)
