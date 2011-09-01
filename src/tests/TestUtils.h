@@ -37,9 +37,15 @@ class TestUtils
 			if (x != y)
 			{
 				throw "Actual and expected values differ.  "
-				      "Actual: " + std::string(xString) +
-				      " Expected: " + std::string(yString);
+				      "Actual: " + toString(x,xString) +
+				      " Expected: " + toString(y,yString);
 			}
+		}
+
+		template <typename T>
+		static std::string toString(T value, const char* context)
+		{
+			return "Unprintable: " + std::string(context);
 		}
 
 		template <class T>
@@ -79,6 +85,22 @@ class TestUtils
 			}
 		}
 };
+
+template <>
+inline std::string TestUtils::toString(const std::string& value, const char*)
+{
+	return value;
+}
+template <>
+inline std::string TestUtils::toString(std::string value, const char*)
+{
+	return value;
+}
+template <>
+inline std::string TestUtils::toString(const char* value, const char*)
+{
+	return value;
+}
 
 #define TEST_COMPARE(x,y) \
 	TestUtils::compare(x,y,#x,#y);
