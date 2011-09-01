@@ -680,11 +680,13 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   // get the full artist string
   song.strArtist = m_pDS->fv(song_strArtist).get_asString();
   song.strArtist += m_pDS->fv(song_strExtraArtists).get_asString();
+  song.iArtistId = m_pDS->fv(song_idArtist).get_asInt();
   // and the full genre string
   song.strGenre = m_pDS->fv(song_strGenre).get_asString();
   song.strGenre += m_pDS->fv(song_strExtraGenres).get_asString();
   // and the rest...
   song.strAlbum = m_pDS->fv(song_strAlbum).get_asString();
+  song.iAlbumId = m_pDS->fv(song_idAlbum).get_asInt();
   song.iTrack = m_pDS->fv(song_iTrack).get_asInt() ;
   song.iDuration = m_pDS->fv(song_iDuration).get_asInt() ;
   song.iYear = m_pDS->fv(song_iYear).get_asInt() ;
@@ -726,12 +728,14 @@ void CMusicDatabase::GetFileItemFromDataset(CFileItem* item, const CStdString& s
   CStdString strArtist=m_pDS->fv(song_strArtist).get_asString();
   strArtist += m_pDS->fv(song_strExtraArtists).get_asString();
   item->GetMusicInfoTag()->SetArtist(strArtist);
+  item->GetMusicInfoTag()->SetArtistId(m_pDS->fv(song_idArtist).get_asInt());
   // and the full genre string
   CStdString strGenre = m_pDS->fv(song_strGenre).get_asString();
   strGenre += m_pDS->fv(song_strExtraGenres).get_asString();
   item->GetMusicInfoTag()->SetGenre(strGenre);
   // and the rest...
   item->GetMusicInfoTag()->SetAlbum(m_pDS->fv(song_strAlbum).get_asString());
+  item->GetMusicInfoTag()->SetAlbumId(m_pDS->fv(song_idAlbum).get_asInt());
   item->GetMusicInfoTag()->SetTrackAndDiskNumber(m_pDS->fv(song_iTrack).get_asInt());
   item->GetMusicInfoTag()->SetDuration(m_pDS->fv(song_iDuration).get_asInt());
   item->GetMusicInfoTag()->SetDatabaseId(m_pDS->fv(song_idSong).get_asInt());
@@ -781,6 +785,7 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL 
     album.strAlbum = g_localizeStrings.Get(1050);
   album.strArtist = pDS->fv(album_strArtist).get_asString();
   album.strArtist += pDS->fv(album_strExtraArtists).get_asString();
+  album.idArtist = pDS->fv(album_idArtist).get_asInt();
   album.strGenre = pDS->fv(album_strGenre).get_asString();
   album.strGenre += pDS->fv(album_strExtraGenres).get_asString();
   album.iYear = pDS->fv(album_iYear).get_asInt();
