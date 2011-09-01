@@ -379,7 +379,7 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
   }
   else if (event.m_id == ACTION_GESTURE_NOTIFY)
   {
-    return EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIAL;
+    return EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA;
   }  
   else if (event.m_id == ACTION_GESTURE_BEGIN)
   { // grab exclusive access

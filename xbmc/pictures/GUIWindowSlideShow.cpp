@@ -513,7 +513,7 @@ EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouse
   {
     if( m_iZoomFactor == 1)//zoomed out - no inertial scrolling
     {
-      return EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIAL;
+      return EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA;
     }
     else//zoomed in - with inertia 
     {
