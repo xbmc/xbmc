@@ -402,7 +402,7 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
 {
-  // If this is a URL like http://whatever just return as no change is needed
+  // Check if the filename is a fully qualified URL such as protocol://path/to/file
   CURL plItemUrl(strFilename);
   if (!plItemUrl.GetProtocol().IsEmpty())
     return;
