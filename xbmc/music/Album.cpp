@@ -28,7 +28,7 @@
 using namespace std;
 using namespace MUSIC_INFO;
 
-bool CAlbum::Load(const TiXmlElement *album, bool chained)
+bool CAlbum::Load(const TiXmlElement *album, bool chained, bool prefix)
 {
   if (!album) return false;
   if (!chained)
@@ -58,11 +58,28 @@ bool CAlbum::Load(const TiXmlElement *album, bool chained)
       rating *= (5.f / max_rating); // Normalise the Rating to between 0 and 5 
     iRating = MathUtils::round_int(rating);
   }
+
+  size_t iThumbCount = thumbURL.m_url.size();
+  CStdString xmlAdd = thumbURL.m_xml;
   const TiXmlElement* thumb = album->FirstChildElement("thumb");
   while (thumb)
   {
     thumbURL.ParseElement(thumb);
+    if (prefix)
+    {
+      CStdString temp;
+      temp << *thumb;
+      xmlAdd = temp+xmlAdd;
+    }
     thumb = thumb->NextSiblingElement("thumb");
+  }
+  // prefix thumbs from nfos
+  if (prefix && iThumbCount && iThumbCount != thumbURL.m_url.size())
+  {
+    rotate(thumbURL.m_url.begin(),
+           thumbURL.m_url.begin()+iThumbCount, 
+           thumbURL.m_url.end());
+    thumbURL.m_xml = xmlAdd;
   }
 
   const TiXmlElement* node = album->FirstChildElement("track");

@@ -25,7 +25,7 @@
 
 using namespace std;
 
-bool CArtist::Load(const TiXmlElement *artist, bool chained)
+bool CArtist::Load(const TiXmlElement *artist, bool chained, bool prefix)
 {
   if (!artist) return false;
   if (!chained)
@@ -44,11 +44,28 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained)
   XMLUtils::GetString(artist,"died",strDied);
   XMLUtils::GetString(artist,"disbanded",strDisbanded);
 
+  size_t iThumbCount = thumbURL.m_url.size();
+  CStdString xmlAdd = thumbURL.m_xml;
+
   const TiXmlElement* thumb = artist->FirstChildElement("thumb");
   while (thumb)
   {
     thumbURL.ParseElement(thumb);
+    if (prefix)
+    {
+      CStdString temp;
+      temp << *thumb;
+      xmlAdd = temp+xmlAdd;
+    }
     thumb = thumb->NextSiblingElement("thumb");
+  }
+  // prefix thumbs from nfos
+  if (prefix && iThumbCount && iThumbCount != thumbURL.m_url.size())
+  {
+    rotate(thumbURL.m_url.begin(),
+           thumbURL.m_url.begin()+iThumbCount, 
+           thumbURL.m_url.end());
+    thumbURL.m_xml = xmlAdd;
   }
   const TiXmlElement* node = artist->FirstChildElement("album");
   while (node)
@@ -70,7 +87,15 @@ bool CArtist::Load(const TiXmlElement *artist, bool chained)
   const TiXmlElement *fanart2 = artist->FirstChildElement("fanart");
   if (fanart2)
   {
-    fanart.m_xml << *fanart2;
+    // we prefix to handle mixed-mode nfo's with fanart set
+    if (prefix)
+    {
+      CStdString temp;
+      temp << *fanart2;
+      fanart.m_xml = temp+fanart.m_xml;
+    }
+    else
+      fanart.m_xml << *fanart2;
     fanart.Unpack();
   }
 

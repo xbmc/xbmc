@@ -1491,7 +1491,7 @@ namespace VIDEO
     if ( imdb.GetDetails(url, movieDetails, pDialog) )
     {
       if (nfoFile)
-        nfoFile->GetDetails(movieDetails);
+        nfoFile->GetDetails(movieDetails,NULL,true);
 
       if (m_pObserver && url.strTitle.IsEmpty())
         m_pObserver->OnSetTitle(movieDetails.m_strTitle);
