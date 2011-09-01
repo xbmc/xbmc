@@ -450,7 +450,7 @@ JSON_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &parameterOb
   for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
-    if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "showlink" || fieldValue == "resume")
+    if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "setid" || fieldValue == "showlink" || fieldValue == "resume")
       additionalInfo = true;
   }
 

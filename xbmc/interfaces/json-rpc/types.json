@@ -3,6 +3,14 @@
     "type": [ "null", "boolean" ],
     "default": null
   },
+  "Array.String": {
+    "type": "array",
+    "items": { "type": "string" }
+  },
+  "Array.Integer": {
+    "type": "array",
+    "items": { "type": "integer" }
+  },
   "Global.Time": {
     "type": "object",
     "properties": {
@@ -92,7 +100,8 @@
       "enum": [ "title", "description", "artist", "genre",
                 "theme", "mood", "style", "type", "label",
                 "rating", "year", "musicbrainzalbumid",
-                "musicbrainzalbumartistid", "fanart", "thumbnail" ]
+                "musicbrainzalbumartistid", "fanart", "thumbnail",
+                "artistid" ]
     }
   },
   "Audio.Fields.Song": {
@@ -103,7 +112,8 @@
                 "rating", "album", "track", "duration", "comment",
                 "lyrics", "musicbrainztrackid", "musicbrainzartistid",
                 "musicbrainzalbumid", "musicbrainzalbumartistid",
-                "playcount", "fanart", "thumbnail", "file" ]
+                "playcount", "fanart", "thumbnail", "file", "artistid",
+                "albumid" ]
     }
   },
   "Audio.Details.Artist": {
@@ -146,7 +156,8 @@
       "rating": { "type": "integer" },
       "year": { "type": "integer" },
       "musicbrainzalbumid": { "type": "string" },
-      "musicbrainzalbumartistid": { "type": "string" }
+      "musicbrainzalbumartistid": { "type": "string" },
+      "artistid": { "$ref": "Library.Id" }
     }
   },
   "Audio.Details.Song": {
@@ -172,7 +183,9 @@
       "musicbrainztrackid": { "type": "string" },
       "musicbrainzartistid": { "type": "string" },
       "musicbrainzalbumid": { "type": "string" },
-      "musicbrainzalbumartistid": { "type": "string" }
+      "musicbrainzalbumartistid": { "type": "string" },
+      "artistid": { "$ref": "Library.Id" },
+      "albumid": { "$ref": "Library.Id" }
     }
   },
   "Video.Fields.Movie": {
@@ -184,8 +197,8 @@
                 "tagline", "plot", "plotoutline", "originaltitle", "lastplayed",
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "premiered", "productioncode", "runtime", "set",
-                "showlink", "streamDetails", "top250", "votes",
-                "fanart", "thumbnail", "file", "sorttitle", "resume" ]
+                "showlink", "streamDetails", "top250", "votes", "fanart",
+                "thumbnail", "file", "sorttitle", "resume", "setid" ]
     }
   },
   "Video.Fields.MovieSet": {
@@ -211,7 +224,7 @@
     "type": "array",
     "uniqueItems": true,
     "items": { "type": "string",
-      "enum": [ "season", "showtitle", "playcount", "episode", "fanart", "thumbnail" ]
+      "enum": [ "season", "showtitle", "playcount", "episode", "fanart", "thumbnail", "tvshowid" ]
     }
   },
   "Video.Fields.Episode": {
@@ -223,7 +236,7 @@
                 "firstaired", "playcount", "runtime", "director",
                 "productioncode", "season", "episode", "originaltitle",
                 "showtitle", "cast", "streamDetails", "lastplayed", "fanart",
-                "thumbnail", "file", "resume"  ]
+                "thumbnail", "file", "resume", "tvshowid" ]
     }
   },
   "Video.Fields.MusicVideo": {
@@ -316,12 +329,13 @@
       "premiered": { "type": "string" },
       "productioncode": { "type": "string" },
       "runtime": { "type": "string" },
-      "set": { "type": "string" },
+      "set": { "$ref": "Array.String" },
       "showlink": { "type": "string" },
       "streamDetails": { "$ref": "Video.Streams" },
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
-      "resume": { "$ref": "Video.Resume" }
+      "resume": { "$ref": "Video.Resume" },
+      "setid": { "$ref": "Array.Integer" }
     }
   },
   "Video.Details.MovieSet": {
@@ -385,7 +399,8 @@
       "thumbnail": { "type": "string" },
       "showtitle": { "type": "string" },
       "playcount": { "type": "integer" },
-      "episode": { "type": "integer" }
+      "episode": { "type": "integer" },
+      "tvshowid": { "$ref": "Library.Id" }
     }
   },
   "Video.Details.Episode": {
@@ -413,7 +428,8 @@
       "cast": { "$ref": "Video.Cast" },
       "streamDetails": { "$ref": "Video.Streams" },
       "lastplayed": { "type": "string" },
-      "resume": { "$ref": "Video.Resume" }
+      "resume": { "$ref": "Video.Resume" },
+      "tvshowid": { "$ref": "Library.Id" }
     }
   },
   "Video.Details.MusicVideo": {
@@ -537,7 +553,8 @@
                 "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
                 "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
                 "runtime", "set", "showlink", "streamDetails", "top250", "votes",
-                "firstaired", "season", "episode", "showtitle", "thumbnail", "file", "resume" ]
+                "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
+                "resume", "artistid", "albumid", "tvshowid", "setid" ]
     }
   },
   "List.Fields.Video": {
@@ -549,8 +566,8 @@
                   "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
                   "mpaa", "country", "imdbnumber", "premiered", "productioncode",
                   "runtime", "showlink", "streamDetails", "top250", "votes",
-                  "firstaired", "season", "episode", "showtitle",
-                  "thumbnail", "file", "sorttitle", "episodeguide", "resume" ]
+                  "firstaired", "season", "episode", "showtitle", "thumbnail",
+                  "file", "sorttitle", "episodeguide", "resume", "tvshowid", "setid" ]
     }
   },
   "List.Items.All": {
@@ -595,7 +612,7 @@
         "premiered": { "type": "string" },
         "productioncode": { "type": "string" },
         "runtime": { "type": "string" },
-        "set": { "type": "string" },
+        "set": { "$ref": "Array.String" },
         "showlink": { "type": "string" },
         "streamDetails": { "$ref": "Video.Streams" },
         "top250": { "type": "integer" },
@@ -604,7 +621,11 @@
         "season": { "type": "integer" },
         "episode": { "type": "integer" },
         "showtitle": { "type": "string" },
-        "resume": { "$ref": "Video.Resume" }
+        "resume": { "$ref": "Video.Resume" },
+        "artistid": { "$ref": "Library.Id" },
+        "albumid": { "$ref": "Library.Id" },
+        "setid": { "$ref": "Array.Integer" },
+        "tvshowid": { "$ref": "Library.Id" }
       }
     }
   },
@@ -650,7 +671,9 @@
         "season": { "type": "integer" },
         "episode": { "type": "integer" },
         "episodeguide": { "type": "string" },
-        "showtitle": { "type": "string" }
+        "showtitle": { "type": "string" },
+        "setid": { "type": "string", "description": "Comma-separated list of sets" },
+        "tvshowid": { "$ref": "Library.Id" }
       }
     }
   },
@@ -679,7 +702,9 @@
         "musicbrainztrackid": { "type": "string" },
         "musicbrainzartistid": { "type": "string" },
         "musicbrainzalbumid": { "type": "string" },
-        "musicbrainzalbumartistid": { "type": "string" }
+        "musicbrainzalbumartistid": { "type": "string" },
+        "artistid": { "$ref": "Library.Id" },
+        "albumid": { "$ref": "Library.Id" }
       }
     }
   },
@@ -736,7 +761,7 @@
         "premiered": { "type": "string" },
         "productioncode": { "type": "string" },
         "runtime": { "type": "string" },
-        "set": { "type": "string" },
+        "set": { "$ref": "Array.String" },
         "showlink": { "type": "string" },
         "streamDetails": { "$ref": "Video.Streams" },
         "top250": { "type": "integer" },
@@ -745,7 +770,11 @@
         "season": { "type": "integer" },
         "episode": { "type": "integer" },
         "showtitle": { "type": "string" },
-        "resume": { "$ref": "Video.Resume" }
+        "resume": { "$ref": "Video.Resume" },
+        "artistid": { "$ref": "Library.Id" },
+        "albumid": { "$ref": "Library.Id" },
+        "setid": { "$ref": "Array.Integer" },
+        "tvshowid": { "$ref": "Library.Id" }
       }
     }
   }
