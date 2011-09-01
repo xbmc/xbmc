@@ -119,7 +119,6 @@ class UpdateScriptGenerator
 				# for the updater binary, use the possibly substituted
 				# version in the output directory
 				path = "#{output_dir}/#{@config.updater_binary}"	
-				file.path = strip_prefix(path,"#{output_dir}/")
 			end
 
 			file.is_main_binary = (file.path == package_config.main_binary)
@@ -130,11 +129,10 @@ class UpdateScriptGenerator
 				file.hash = file_sha1(path)
 				file.permissions = get_file_permissions(path)
 				file.size = File.size(path)
-				package_file_map.each do |package,files|
-					if files.include?(path)
-						file.package = package
-						break
-					end
+				file.package = @config.package_for_file(file.path)
+
+				if (!file.package)
+					raise "Could not find package for file #{file.path}"
 				end
 			end
 
