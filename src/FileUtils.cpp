@@ -410,3 +410,49 @@ std::string FileUtils::tempPath()
 #endif
 }
 
+bool startsWithDriveLetter(const char* path)
+{
+	return strlen(path) >= 2 &&
+	      (path[0] >= 'A' && path[0] <= 'Z') &&
+	       path[1] == ':';
+}
+
+bool FileUtils::isRelative(const char* path)
+{
+#ifdef PLATFORM_UNIX
+	return strlen(path) == 0 || path[0] != '/';
+#else
+	// on Windows, a path is relative if it does not start with:
+	// - '\\' (a UNC name)
+	// - '[Drive Letter]:\'
+	// - A single backslash
+	//
+	// the input path is assumed to have already been converted to use
+	// Unix-style path separators
+
+	std::string pathStr(path);
+
+	if ((!pathStr.empty() && pathStr.at(0) == '/') ||
+	    (startsWith(pathStr,"//")) ||
+	    (startsWithDriveLetter(pathStr.c_str())))
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
+#endif
+}
+
+std::string FileUtils::makeAbsolute(const char* path, const char* basePath)
+{
+	if (isRelative(path))
+	{
+		return std::string(basePath) + '/' + std::string(path);
+	}
+	else
+	{
+		return path;
+	}
+}

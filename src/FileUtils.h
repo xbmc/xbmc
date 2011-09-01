@@ -7,6 +7,9 @@
 
 /** A set of functions for performing common operations
   * on files, throwing exceptions if an operation fails.
+  *
+  * Path arguments to FileUtils functions should use Unix-style path
+  * separators.
   */
 class FileUtils
 {
@@ -101,6 +104,18 @@ class FileUtils
 		 * dir separators converted to Unix-style '/' separators
 		 */
 		static std::string toUnixPathSeparators(const std::string& str);
+
+		/** Returns true if the provided path is relative.
+		  * Or false if absolute.
+		  */
+		static bool isRelative(const char* path);
+
+		/** Converts @p path to an absolute path.  If @p path is already absolute,
+		  * just returns @p path, otherwise prefixes it with @p basePath to make it absolute.
+		  *
+		  * @p basePath should be absolute.
+		  */
+		static std::string makeAbsolute(const char* path, const char* basePath);
 
 	private:
 		static int toUnixPermissions(int qtPermissions);

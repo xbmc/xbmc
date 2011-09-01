@@ -3,8 +3,8 @@
 require 'fileutils.rb'
 require 'rbconfig'
 
-INSTALL_DIR = "install-dir/"
-PACKAGE_DIR = "package-dir/"
+INSTALL_DIR = File.expand_path("install-dir/")
+PACKAGE_DIR = File.expand_path("package-dir/")
 
 if (RbConfig::CONFIG['host_os'] =~ /mswin|mingw/)
 	OLDAPP_NAME = "oldapp.exe"
@@ -61,7 +61,14 @@ replace_vars("file_list.xml","#{PACKAGE_DIR}/file_list.xml",file_list_vars)
 FileUtils.cp("../#{UPDATER_NAME}","#{PACKAGE_DIR}/#{UPDATER_NAME}")
 
 # Run the updater using the new syntax
-system("#{PACKAGE_DIR}/#{UPDATER_NAME} --install-dir #{INSTALL_DIR} --package-dir #{PACKAGE_DIR} --script #{PACKAGE_DIR}/file_list.xml")
+#
+# Run the application from the install directory to
+# make sure that it looks in the correct directory for
+# the file_list.xml file and packages
+#
+Dir.chdir(INSTALL_DIR) do
+	system("#{PACKAGE_DIR}/#{UPDATER_NAME} --install-dir #{INSTALL_DIR} --package-dir #{PACKAGE_DIR} --script file_list.xml")
+end
 
 # TODO - Correctly wait until updater has finished
 sleep(1)

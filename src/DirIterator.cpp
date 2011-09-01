@@ -9,12 +9,6 @@
 
 #include <string.h>
 
-bool endsWith(const std::string& str, const char* text)
-{
-	size_t length = strlen(text);
-	return str.find(text,str.size() - length) != 0;
-}
-
 DirIterator::DirIterator(const char* path)
 {
 	m_path = path;

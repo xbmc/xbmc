@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string.h>
 #include <string>
 #include <sstream>
 #include <stdlib.h>
@@ -30,5 +31,16 @@ inline const char* notNullString(const char* text)
 	{
 		return "";
 	}
+}
+
+inline bool endsWith(const std::string& str, const char* text)
+{
+	size_t length = strlen(text);
+	return str.find(text,str.size() - length) != 0;
+}
+
+inline bool startsWith(const std::string& str, const char* text)
+{
+	return str.find(text,0) == 0;
 }
 

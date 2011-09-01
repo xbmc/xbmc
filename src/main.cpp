@@ -1,4 +1,5 @@
 #include "AppInfo.h"
+#include "FileUtils.h"
 #include "Log.h"
 #include "Platform.h"
 #include "ProcessUtils.h"
@@ -63,7 +64,7 @@ int main(int argc, char** argv)
 
 	if (!options.scriptPath.empty())
 	{
-		script.parse(options.scriptPath);
+		script.parse(FileUtils::makeAbsolute(options.scriptPath.c_str(),options.packageDir.c_str()));
 	}
 
 	LOG(Info,"started updater. install-dir: " + options.installDir
