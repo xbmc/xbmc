@@ -41,8 +41,11 @@ void TestUpdaterOptions::testOldFormatArgs()
 	options.parse(argc,argv);
 
 	TEST_COMPARE(options.mode,UpdateInstaller::Setup);
-#ifdef PLATFORM_UNIX
+#ifdef PLATFORM_LINUX
 	TEST_COMPARE(options.installDir,"/tmp/path-to-app");
+#elif defined(PLATFORM_MAC)
+	// /tmp is a symlink to /private/tmp on Mac
+	TEST_COMPARE(options.installDir,"/private/tmp/path-to-app");
 #else
 	TEST_COMPARE(options.installDir,"C:/path/to/app/");
 #endif
