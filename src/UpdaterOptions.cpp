@@ -2,6 +2,7 @@
 
 #include "Log.h"
 #include "AnyOption/anyoption.h"
+#include "FileUtils.h"
 #include "Platform.h"
 #include "StringUtils.h"
 
@@ -47,6 +48,10 @@ void UpdaterOptions::parseOldFormatArg(const std::string& arg, std::string* key,
 	}
 }
 
+// this is a compatibility function to allow the updater binary
+// to be involved by legacy versions of Mendeley Desktop
+// which used a different syntax for the updater's command-line
+// arguments
 void UpdaterOptions::parseOldFormatArgs(int argc, char** argv)
 {
 	for (int i=0; i < argc; i++)
@@ -58,7 +63,22 @@ void UpdaterOptions::parseOldFormatArgs(int argc, char** argv)
 
 		if (key == "CurrentDir")
 		{
+			// CurrentDir is the directory containing the main application
+			// binary.  On Mac and Linux this differs from the root of
+			// the installation directory
+
+#ifdef PLATFORM_LINUX
+			// the main binary is in lib/mendeleydesktop/libexec,
+			// go up 3 levels
+			installDir = FileUtils::canonicalPath((value + "/../../../").c_str());
+#elif defined(PLATFORM_MAC)
+			// the main binary is in Contents/MacOS,
+			// go up 2 levels
+			installDir = FileUtils::canonicalPath((value + "/../../").c_str());
+#elif defined(PLATFORM_WINDOWS)
+			// the main binary is in the root of the install directory
 			installDir = value;
+#endif
 		}
 		else if (key == "TempDir")
 		{

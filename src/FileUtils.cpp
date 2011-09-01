@@ -7,6 +7,7 @@
 
 #include <string.h>
 #include <fstream>
+#include <iostream>
 
 #include "minizip/unzip.h"
 
@@ -137,6 +138,23 @@ void FileUtils::extractFromZip(const char* zipFilePath, const char* src, const c
 		throw IOException("Unable to find file " + std::string(src) + " in zip archive " + std::string(zipFilePath));
 	}
 	unzClose(zipFile);
+}
+
+void FileUtils::mkpath(const char* dir) throw (IOException)
+{
+	std::string currentPath;
+	std::istringstream stream(dir);
+	while (!stream.eof())
+	{
+		std::string segment;
+		std::getline(stream,segment,'/');
+		currentPath += segment;
+		if (!currentPath.empty() && !fileExists(currentPath.c_str()))
+		{
+			mkdir(currentPath.c_str());
+		}
+		currentPath += '/';
+	}
 }
 
 void FileUtils::mkdir(const char* dir) throw (IOException)

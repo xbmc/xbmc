@@ -70,6 +70,11 @@ class FileUtils
 		static void createSymLink(const char* link, const char* target) throw (IOException);
 		static void touch(const char* path) throw (IOException);
 
+		/** Create all the directories in @p path which do not yet exist.
+		  * @p path may be relative or absolute.
+		  */
+		static void mkpath(const char* path) throw (IOException);
+
 		/** Returns the file name part of a file path, including the extension. */
 		static std::string fileName(const char* path);
 
