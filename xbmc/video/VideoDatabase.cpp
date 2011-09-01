@@ -2816,11 +2816,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
                          VIDEODB_ID_TV_TITLE,links[i]);
       m_pDS2->query(strSQL.c_str());
       if (!m_pDS2->eof())
-      {
-        if (!details.m_strShowLink.IsEmpty())
-          details.m_strShowLink += g_advancedSettings.m_videoItemSeparator;
-        details.m_strShowLink += m_pDS2->fv(0).get_asString();
-      }
+        details.m_showLink.push_back(m_pDS2->fv(0).get_asString());
     }
     m_pDS2->close();
   }

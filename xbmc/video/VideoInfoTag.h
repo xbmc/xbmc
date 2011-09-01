@@ -109,7 +109,7 @@ public:
   std::vector<std::string> m_studio;
   CStdString m_strAlbum;
   CStdString m_lastPlayed;
-  CStdString m_strShowLink;
+  std::vector<std::string> m_showLink;
   CStdString m_strShowPath;
   int m_playCount;
   int m_iTop250;

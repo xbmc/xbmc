@@ -550,7 +550,7 @@
       "premiered": { "type": "string" },
       "productioncode": { "type": "string" },
       "set": { "$ref": "Array.String" },
-      "showlink": { "type": "string" },
+      "showlink": { "type": "Array.String" },
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
       "setid": { "$ref": "Array.Integer" }
@@ -709,7 +709,7 @@
       "premiered": { "type": "string" },
       "productioncode": { "type": "string" },
       "set": { "$ref": "Array.String" },
-      "showlink": { "type": "string" },
+      "showlink": { "$ref": "Array.String" },
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
       "firstaired": { "type": "string" },

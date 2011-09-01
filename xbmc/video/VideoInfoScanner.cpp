@@ -1051,19 +1051,14 @@ namespace VIDEO
       movieDetails.m_iDbId = lResult;
 
       // setup links to shows if the linked shows are in the db
-      if (!movieDetails.m_strShowLink.IsEmpty())
+      for (unsigned int i=0; i < movieDetails.m_showLink.size(); ++i)
       {
-        CStdStringArray list;
-        StringUtils::SplitString(movieDetails.m_strShowLink, g_advancedSettings.m_videoItemSeparator,list);
-        for (unsigned int i=0; i < list.size(); ++i)
-        {
-          CFileItemList items;
-          m_database.GetTvShowsByName(list[i], items);
-          if (items.Size())
-            m_database.LinkMovieToTvshow(lResult, items[0]->GetVideoInfoTag()->m_iDbId, false);
-          else
-            CLog::Log(LOGDEBUG, "VideoInfoScanner: Failed to link movie %s to show %s", movieDetails.m_strTitle.c_str(), list[i].c_str());
-        }
+        CFileItemList items;
+        m_database.GetTvShowsByName(movieDetails.m_showLink[i], items);
+        if (items.Size())
+          m_database.LinkMovieToTvshow(lResult, items[0]->GetVideoInfoTag()->m_iDbId, false);
+        else
+          CLog::Log(LOGDEBUG, "VideoInfoScanner: Failed to link movie %s to show %s", movieDetails.m_strTitle.c_str(), movieDetails.m_showLink[i].c_str());
       }
     }
     else if (content == CONTENT_TVSHOWS)
