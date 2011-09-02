@@ -3,6 +3,8 @@
 #include <string>
 #include <fstream>
 
+#include "tinythread.h"
+
 class Log
 {
 	public:
@@ -18,7 +20,9 @@ class Log
 
 		void open(const std::string& path);
 
+		/** Write @p text to the log.  This method is thread-safe. */
 		void write(Type type, const std::string& text);
+		/** Write @p text to the log.  This method is thread-safe. */
 		void write(Type type, const char* text);
 
 		static Log* instance();
@@ -26,6 +30,7 @@ class Log
 	private:
 		static void writeToStream(std::ostream& stream, Type type, const char* text);
 
+		tthread::mutex m_mutex;
 		std::ofstream m_output;
 };
 

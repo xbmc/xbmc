@@ -24,7 +24,9 @@ Log::~Log()
 
 void Log::open(const std::string& path)
 {
+	m_mutex.lock();
 	m_output.open(path.c_str(),std::ios_base::out | std::ios_base::app);
+	m_mutex.unlock();
 }
 
 void Log::writeToStream(std::ostream& stream, Type type, const char* text)
@@ -46,10 +48,12 @@ void Log::writeToStream(std::ostream& stream, Type type, const char* text)
 
 void Log::write(Type type, const char* text)
 {
+	m_mutex.lock();
 	writeToStream(std::cerr,type,text);
 	if (m_output.is_open())
 	{
 		writeToStream(m_output,type,text);
 	}
+	m_mutex.unlock();
 }
 
