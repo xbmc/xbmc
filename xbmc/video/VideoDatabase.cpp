@@ -1455,7 +1455,7 @@ void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, CFileItemList&
                                 "JOIN actors a ON a.idActor=actorlinkmovie.idActor "
                                 "JOIN directorlinkmovie ON directorlinkmovie.idMovie=movieview.idMovie "
                                 "JOIN actors d ON d.idActor=directorlinkmovie.idDirector "
-                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY idMovie", strActor.c_str(), strActor.c_str());
+                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY movieview.idMovie", strActor.c_str(), strActor.c_str());
   GetMoviesByWhere("videodb://1/2/", where, "", items);
 }
 
@@ -1465,7 +1465,7 @@ void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, CFileItemList
                                 "JOIN actors a ON a.idActor=actorlinktvshow.idActor "
                                 "JOIN directorlinktvshow ON directorlinktvshow.idShow=tvshowview.idShow "
                                 "JOIN actors d ON d.idActor=directorlinktvshow.idDirector "
-                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY idShow", strActor.c_str(), strActor.c_str());
+                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY tvshowview.idShow", strActor.c_str(), strActor.c_str());
   GetTvShowsByWhere("videodb://2/2/", where, items);
 }
 
@@ -1475,7 +1475,7 @@ void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, CFileItemLis
                                 "JOIN actors a ON a.idActor=actorlinkepisode.idActor "
                                 "JOIN directorlinkepisode ON directorlinkepisode.idEpisode=episodeview.idEpisode "
                                 "JOIN actors d ON d.idActor=directorlinkepisode.idDirector "
-                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY idEpisode", strActor.c_str(), strActor.c_str());
+                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY episodeview.idEpisode", strActor.c_str(), strActor.c_str());
   GetEpisodesByWhere("videodb://2/2/", where, items);
 }
 
