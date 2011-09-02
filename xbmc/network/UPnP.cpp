@@ -2428,7 +2428,7 @@ int CUPnP::PopulateTagFromObject(CVideoInfoTag&         tag,
     else
     {
         tag.m_strTitle     = object.m_Title;
-        tag.m_strPremiered = date.GetAsLocalizedDate();
+        tag.m_premiered    = date;
     }
     tag.m_iYear       = date.GetYear();
     for (unsigned int index = 0; index < object.m_Affiliation.genre.GetItemCount(); index++)

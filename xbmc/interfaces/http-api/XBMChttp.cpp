@@ -1415,8 +1415,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
           output.Format("%s%03.1f (%s %s)",output+closeTag+openTag+"Rating"+tag+":",tagVal->m_fRating, tagVal->m_strVotes, g_localizeStrings.Get(20350));
         if (!tagVal->m_strOriginalTitle.IsEmpty())
           output+=closeTag+openTag+"Original Title"+tag+":"+tagVal->m_strOriginalTitle;
-        if (!tagVal->m_strPremiered.IsEmpty())
-          output+=closeTag+openTag+"Premiered"+tag+":"+tagVal->m_strPremiered;
+        if (tagVal->m_premiered.IsValid())
+          output+=closeTag+openTag+"Premiered"+tag+":"+tagVal->m_premiered.GetAsLocalizedDate();
         if (!tagVal->m_strStatus.IsEmpty())
           output+=closeTag+openTag+"Status"+tag+":"+tagVal->m_strStatus;
         if (!tagVal->m_strProductionCode.IsEmpty())

@@ -500,7 +500,7 @@ namespace PYXBMC
           else if (strcmpi(PyString_AsString(key), "tvshowtitle") == 0)
             self->item->GetVideoInfoTag()->m_strShowTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "premiered") == 0)
-            self->item->GetVideoInfoTag()->m_strPremiered = tmp;
+            self->item->GetVideoInfoTag()->m_premiered.SetFromDateString(tmp);
           else if (strcmpi(PyString_AsString(key), "status") == 0)
             self->item->GetVideoInfoTag()->m_strStatus = tmp;
           else if (strcmpi(PyString_AsString(key), "code") == 0)

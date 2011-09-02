@@ -382,7 +382,7 @@ void SSortFileItem::ByYear(CFileItemPtr &item)
   if (item->HasMusicInfoTag())
     label.Format("%i %s", item->GetMusicInfoTag()->GetYear(), item->GetLabel().c_str());
   else
-    label.Format("%s %s %i %s", item->GetVideoInfoTag()->m_strPremiered.c_str(), item->GetVideoInfoTag()->m_strFirstAired, item->GetVideoInfoTag()->m_iYear, item->GetLabel().c_str());
+    label.Format("%s %s %i %s", item->GetVideoInfoTag()->m_premiered.GetAsDBDate().c_str(), item->GetVideoInfoTag()->m_strFirstAired, item->GetVideoInfoTag()->m_iYear, item->GetLabel().c_str());
   item->SetSortLabel(label);
 }
 

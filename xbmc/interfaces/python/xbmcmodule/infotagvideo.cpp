@@ -192,7 +192,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetPremiered(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_strPremiered.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_premiered.GetAsLocalizedDate().c_str());
   }
 
   // InfoTagVideo_GetFirstAired

@@ -57,7 +57,7 @@ void CVideoInfoTag::Reset()
   m_strIMDBNumber.clear();
   m_strMPAARating.clear();
   m_strFileNameAndPath.clear();
-  m_strPremiered.clear();
+  m_premiered.Reset();
   m_strStatus.clear();
   m_strProductionCode.clear();
   m_strFirstAired.clear();
@@ -173,7 +173,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetStringArray(movie, "set", m_set);
   XMLUtils::SetStringArray(movie, "credits", m_writingCredits);
   XMLUtils::SetStringArray(movie, "director", m_director);
-  XMLUtils::SetString(movie, "premiered", m_strPremiered);
+  XMLUtils::SetDate(movie, "premiered", m_premiered);
   XMLUtils::SetString(movie, "status", m_strStatus);
   XMLUtils::SetString(movie, "code", m_strProductionCode);
   XMLUtils::SetString(movie, "aired", m_strFirstAired);
@@ -293,7 +293,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_strFileNameAndPath;
     ar << m_strOriginalTitle;
     ar << m_strEpisodeGuide;
-    ar << m_strPremiered;
+    ar << m_premiered;
     ar << m_strStatus;
     ar << m_strProductionCode;
     ar << m_strFirstAired;
@@ -366,7 +366,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_strFileNameAndPath;
     ar >> m_strOriginalTitle;
     ar >> m_strEpisodeGuide;
-    ar >> m_strPremiered;
+    ar >> m_premiered;
     ar >> m_strStatus;
     ar >> m_strProductionCode;
     ar >> m_strFirstAired;
@@ -439,7 +439,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["originaltitle"] = m_strOriginalTitle;
   value["sorttitle"] = m_strSortTitle;
   value["episodeguide"] = m_strEpisodeGuide;
-  value["premiered"] = m_strPremiered;
+  value["premiered"] = m_premiered.GetAsDBDate();
   value["status"] = m_strStatus;
   value["productioncode"] = m_strProductionCode;
   value["firstaired"] = m_strFirstAired;
@@ -522,7 +522,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "id", m_strIMDBNumber);
   XMLUtils::GetString(movie, "filenameandpath", m_strFileNameAndPath);
-  XMLUtils::GetString(movie, "premiered", m_strPremiered);
+  XMLUtils::GetDate(movie, "premiered", m_premiered);
   XMLUtils::GetString(movie, "status", m_strStatus);
   XMLUtils::GetString(movie, "code", m_strProductionCode);
   XMLUtils::GetString(movie, "aired", m_strFirstAired);
