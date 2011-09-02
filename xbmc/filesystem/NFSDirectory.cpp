@@ -31,6 +31,7 @@
 using namespace XFILE;
 using namespace std;
 #include <nfsc/libnfs-raw-mount.h>
+#include <nfsc/libnfs-raw-nfs.h>
 
 CNFSDirectory::CNFSDirectory(void)
 {
@@ -128,7 +129,6 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     }    
   }
       
-  vector<CStdString> vecEntries;
   struct nfsdir *nfsdir = NULL;
   struct nfsdirent *nfsdirent = NULL;
 
@@ -140,44 +140,22 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     return false;
   }
   lock.Leave();
+  
   while((nfsdirent = gNfsConnection.GetImpl()->nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != NULL) 
   {
-    vecEntries.push_back(nfsdirent->name);
-  }
-
-  lock.Enter();
-  gNfsConnection.GetImpl()->nfs_closedir(gNfsConnection.GetNfsContext(), nfsdir);//close the dir
-  lock.Leave();
-
-  for (size_t i=0; i<vecEntries.size(); i++)
-  {
-    CStdString strName = vecEntries[i];
-   
+    CStdString strName = nfsdirent->name;
+    int64_t iSize = nfsdirent->size;
+    bool bIsDir = nfsdirent->type == NF3DIR;
+    int64_t lTimeDate = nfsdirent->mtime.tv_sec;
+    
     if (!strName.Equals(".") && !strName.Equals("..")
       && !strName.Equals("lost+found"))
     {
-      int64_t iSize = 0;
-      bool bIsDir = false;
-      int64_t lTimeDate = 0;
-      struct stat info = {0};
-
-      CStdString strFullName = strDirName + strName;          
-
-      lock.Enter();
-      ret = gNfsConnection.GetImpl()->nfs_stat(gNfsConnection.GetNfsContext(), strFullName.c_str(), &info);
-      lock.Leave();
-      
-      if( ret == 0 )
+      if(lTimeDate == 0) // if modification date is missing, use create date
       {
-        bIsDir = (info.st_mode & S_IFDIR) ? true : false;
-        lTimeDate = info.st_mtime;
-        if(lTimeDate == 0) // if modification date is missing, use create date
-          lTimeDate = info.st_ctime;
-        iSize = info.st_size;
+        lTimeDate = nfsdirent->ctime.tv_sec;
       }
-      else
-        CLog::Log(LOGERROR, "NFS; Failed to stat(%s) %s\n", strFullName.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
-      
+
       LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000ll;
       fileTime.dwLowDateTime = (DWORD) (ll & 0xffffffff);
       fileTime.dwHighDateTime = (DWORD)(ll >> 32);
@@ -185,12 +163,13 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
       CFileItemPtr pItem(new CFileItem(strName));
       CStdString path(strPath + strName);
-      pItem->m_dateTime=localTime;      
+      pItem->m_dateTime=localTime;   
 
       if (bIsDir)
       {
         URIUtils::AddSlashAtEnd(path);
         pItem->m_bIsFolder = true;
+        pItem->m_dwSize = iSize;        
       }
       else
       {
@@ -206,6 +185,10 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       items.Add(pItem);
     }
   }
+
+  lock.Enter();
+  gNfsConnection.GetImpl()->nfs_closedir(gNfsConnection.GetNfsContext(), nfsdir);//close the dir
+  lock.Leave();
   return true;
 }
 
