@@ -12,6 +12,9 @@ include_directories(external/win32cpp/include)
 endif()
 
 if (APPLE)
+	# Build the updater as a dual 32/64bit binary.  If only one architecture
+	# is required, removing the other architecture will reduce the size
+	# of the updater binary
 	set(CMAKE_OSX_ARCHITECTURES i386;x86_64)
 
 	# Build the updater so that it works on OS X 10.5 and above.
