@@ -108,6 +108,8 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CSingleLock lock(gNfsConnection); 
   CURL url(strPath);
   CStdString strDirName="";
+  CStdString myStrPath(strPath);
+  URIUtils::AddSlashAtEnd(myStrPath); //be sure the dir ends with a slash
    
   if(!gNfsConnection.Connect(url,strDirName))
   {
@@ -120,7 +122,7 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       }
       else 
       {
-        return GetDirectoryFromExportList(strPath, items); 
+        return GetDirectoryFromExportList(myStrPath, items); 
       }
     }
     else
@@ -147,7 +149,7 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     int64_t iSize = nfsdirent->size;
     bool bIsDir = nfsdirent->type == NF3DIR;
     int64_t lTimeDate = nfsdirent->mtime.tv_sec;
-    
+
     if (!strName.Equals(".") && !strName.Equals("..")
       && !strName.Equals("lost+found"))
     {
@@ -162,7 +164,7 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       FileTimeToLocalFileTime(&fileTime, &localTime);
 
       CFileItemPtr pItem(new CFileItem(strName));
-      CStdString path(strPath + strName);
+      CStdString path(myStrPath + strName);
       pItem->m_dateTime=localTime;   
 
       if (bIsDir)
