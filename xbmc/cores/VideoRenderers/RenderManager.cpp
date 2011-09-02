@@ -599,7 +599,7 @@ void CXBMCRenderManager::Present()
   m_overlays.Render();
 
   /* wait for this present to be valid */
-  if(g_graphicsContext.IsFullScreenVideo())
+  if(g_graphicsContext.IsFullScreenVideo() && m_presentstep == PRESENT_IDLE)
     WaitPresentTime(m_presenttime);
 
   m_presentevent.Set();
