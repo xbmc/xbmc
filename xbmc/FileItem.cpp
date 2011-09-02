@@ -526,6 +526,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_mimetype = item.m_mimetype;
   m_extrainfo = item.m_extrainfo;
   m_specialSort = item.m_specialSort;
+  m_bIsAlbum = item.m_bIsAlbum;
   return *this;
 }
 
