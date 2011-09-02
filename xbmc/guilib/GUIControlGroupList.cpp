@@ -207,6 +207,13 @@ bool CGUIControlGroupList::OnMessage(CGUIMessage& message)
   return CGUIControlGroup::OnMessage(message);
 }
 
+const void CGUIControlGroupList::GetSlaveControlsIDs(std::vector<int>& controlIDs) const
+{
+  if (m_pageControl)
+    controlIDs.push_back(m_pageControl);
+  CGUIControl::GetSlaveControlsIDs(controlIDs);
+}
+
 void CGUIControlGroupList::ValidateOffset()
 {
   // calculate how many items we have on this page

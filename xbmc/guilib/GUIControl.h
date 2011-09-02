@@ -233,6 +233,20 @@ public:
   CGUIControl *GetParentControl(void) const { return m_parentControl; };
   virtual void SaveStates(std::vector<CControlState> &states);
 
+  /*! \brief Set master-slave relation.
+   \param control Control that will be added as slave to current object, this automaticly set current object as master for param
+   */
+  void AddSlaveControl(CGUIControl *control);
+
+  // True if control has defined master control
+  bool IsSlaveControl() const;
+
+  // Get vector of slave controls
+  const std::vector<CGUIControl*>* GetSlaveControls() const;
+
+  // Method used to generate vector of slave controls IDs that is used to build master-slave relations during window loading
+  virtual const void GetSlaveControlsIDs(std::vector<int>& controlIDs) const {};
+
   enum GUICONTROLTYPES {
     GUICONTROL_UNKNOWN,
     GUICONTROL_BUTTON,
@@ -351,6 +365,9 @@ protected:
 
   bool  m_controlIsDirty;
   CRect m_renderRegion;         // In screen coordinates
+private:
+  std::vector<CGUIControl*>* m_slaveControls;
+  CGUIControl* m_masterControl;
 };
 
 #endif

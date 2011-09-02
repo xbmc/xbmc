@@ -251,6 +251,7 @@ protected:
   MAPCONTROLSELECTEDEVENTS m_mapSelectedEvents;
 
   void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup);
+  void LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, std::map<int,CGUIControl*>& pendingSlavesMasterRelation);
 
 //#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
   void ChangeButtonToEdit(int id, bool singleLabel = false);

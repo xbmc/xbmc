@@ -239,6 +239,12 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
 
 void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
 {
+  map<int,CGUIControl*> pendingSlavesMasterRelation;
+  LoadControl(pControl, pGroup, pendingSlavesMasterRelation);
+}
+
+void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup, map<int,CGUIControl*>& pendingSlavesMasterRelation)
+{
   // get control type
   CGUIControlFactory factory;
 
@@ -264,6 +270,28 @@ void CGUIWindow::LoadControl(TiXmlElement* pControl, CGUIControlGroup *pGroup)
     {
       m_height = maxY;
     }
+
+    vector<int> slaves;
+    pGUIControl->GetSlaveControlsIDs(slaves);
+    for (vector<int>::const_iterator it = slaves.begin() ; it != slaves.end() ; ++it)
+    {
+      if (*it) // non-zero id
+      {
+        CGUIControl* slave = (CGUIControl*)GetControl(*it);
+        if (slave)
+          pGUIControl->AddSlaveControl(slave);
+        else
+          pendingSlavesMasterRelation[*it] = pGUIControl;
+      }
+    }
+
+    map<int,CGUIControl*>::const_iterator iMaster = pendingSlavesMasterRelation.find(pGUIControl->GetID());
+    if (iMaster != pendingSlavesMasterRelation.end())
+    {
+      iMaster->second->AddSlaveControl(pGUIControl);
+      pendingSlavesMasterRelation.erase(iMaster);
+    }
+
     // if we are in a group, add to the group, else add to our window
     if (pGroup)
       pGroup->AddControl(pGUIControl);

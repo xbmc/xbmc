@@ -747,6 +747,13 @@ void CGUIBaseContainer::SetPageControl(int id)
   m_pageControl = id;
 }
 
+const void CGUIBaseContainer::GetSlaveControlsIDs(vector<int>& controlIDs) const
+{
+  if (m_pageControl)
+    controlIDs.push_back(m_pageControl);
+  CGUIControl::GetSlaveControlsIDs(controlIDs);
+}
+
 void CGUIBaseContainer::ValidateOffset()
 {
 }
