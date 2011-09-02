@@ -31,6 +31,12 @@ void Log::open(const std::string& path)
 
 void Log::writeToStream(std::ostream& stream, Type type, const char* text)
 {
+	// Multiple processes may be writing to the same log file during
+	// an update.  No attempt is made to synchronize access to the file.
+	//
+	// Under Unix, appends to a single file on a local FS by multiple writers should be atomic
+	// provided that the length of 'text' is less than PIPE_BUF
+	//
 	switch (type)
 	{
 		case Info:
