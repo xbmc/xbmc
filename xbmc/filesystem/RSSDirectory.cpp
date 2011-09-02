@@ -403,7 +403,7 @@ static void ParseItemZink(CFileItem* item, SResources& resources, TiXmlElement* 
   else if(name == "views")
     vtag->m_playCount = atoi(text);
   else if(name == "airdate")
-    vtag->m_strFirstAired = text;
+    vtag->m_firstAired.SetFromDateString(text);
   else if(name == "userrating")
     vtag->m_fRating = (float)atof(text.c_str());
   else if(name == "duration")

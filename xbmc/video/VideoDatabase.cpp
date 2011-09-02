@@ -5096,7 +5096,7 @@ bool CVideoDatabase::GetEpisodesByWhere(const CStdString& strBaseDir, const CStd
           path.Format("%s%ld",strBaseDir.c_str(), idEpisode);
         pItem->SetPath(path);
         pItem->SetOverlayImage(CGUIListItem::ICON_OVERLAY_UNWATCHED,movie.m_playCount > 0);
-        pItem->m_dateTime.SetFromDateString(movie.m_strFirstAired);
+        pItem->m_dateTime = movie.m_firstAired;
         pItem->GetVideoInfoTag()->m_iYear = pItem->m_dateTime.GetYear();
         items.Add(pItem);
       }

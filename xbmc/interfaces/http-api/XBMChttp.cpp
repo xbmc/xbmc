@@ -1421,8 +1421,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
           output+=closeTag+openTag+"Status"+tag+":"+tagVal->m_strStatus;
         if (!tagVal->m_strProductionCode.IsEmpty())
           output+=closeTag+openTag+"Production Code"+tag+":"+tagVal->m_strProductionCode;
-        if (!tagVal->m_strFirstAired.IsEmpty())
-          output+=closeTag+openTag+"First Aired"+tag+":"+tagVal->m_strFirstAired;
+        if (tagVal->m_firstAired.IsValid())
+          output+=closeTag+openTag+"First Aired"+tag+":"+tagVal->m_firstAired.GetAsLocalizedDate();
         if (tagVal->m_iYear != 0)
           output.Format("%s%i",output+closeTag+openTag+"Year"+tag+":",tagVal->m_iYear);
         if (tagVal->m_iSeason != -1)

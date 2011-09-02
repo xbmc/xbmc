@@ -195,8 +195,8 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
       value = music->GetYearString();
     if (movie)
     {
-      if (!movie->m_strFirstAired.IsEmpty())
-        value = movie->m_strFirstAired;
+      if (movie->m_firstAired.IsValid())
+        value = movie->m_firstAired.GetAsLocalizedDate();
       else if (movie->m_premiered.IsValid())
         value = movie->m_premiered.GetAsLocalizedDate();
       else if (movie->m_iYear > 0)

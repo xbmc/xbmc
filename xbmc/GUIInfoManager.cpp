@@ -3338,8 +3338,8 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
       break;
     case VIDEOPLAYER_PREMIERED:
       {
-        if (!m_currentFile->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-          return m_currentFile->GetVideoInfoTag()->m_strFirstAired;
+        if (m_currentFile->GetVideoInfoTag()->m_firstAired.IsValid())
+          return m_currentFile->GetVideoInfoTag()->m_firstAired.GetAsLocalizedDate();
         if (m_currentFile->GetVideoInfoTag()->m_premiered.IsValid())
           return m_currentFile->GetVideoInfoTag()->m_premiered.GetAsLocalizedDate();
       }
@@ -3884,8 +3884,8 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   case LISTITEM_PREMIERED:
     if (item->HasVideoInfoTag())
     {
-      if (!item->GetVideoInfoTag()->m_strFirstAired.IsEmpty())
-        return item->GetVideoInfoTag()->m_strFirstAired;
+      if (item->GetVideoInfoTag()->m_firstAired.IsValid())
+        return item->GetVideoInfoTag()->m_firstAired.GetAsLocalizedDate();
       if (item->GetVideoInfoTag()->m_premiered.IsValid())
         return item->GetVideoInfoTag()->m_premiered.GetAsLocalizedDate();
     }

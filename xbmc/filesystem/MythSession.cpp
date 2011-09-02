@@ -179,7 +179,7 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
   CStdString originalairdate = GetValue(m_dll->proginfo_originalairdate(program)).GetAsDBDate();
   if (originalairdate != "1970-01-01"
   &&  originalairdate != "1969-12-31")
-    tag->m_strFirstAired = originalairdate;
+  tag->m_firstAired.SetFromDateString(originalairdate);
 
   /*
    * Video sort title is the raw title with the date appended on the end in a sortable format so

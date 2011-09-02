@@ -506,7 +506,7 @@ namespace PYXBMC
           else if (strcmpi(PyString_AsString(key), "code") == 0)
             self->item->GetVideoInfoTag()->m_strProductionCode = tmp;
           else if (strcmpi(PyString_AsString(key), "aired") == 0)
-            self->item->GetVideoInfoTag()->m_strFirstAired = tmp;
+            self->item->GetVideoInfoTag()->m_firstAired.SetFromDateString(tmp);
           else if (strcmpi(PyString_AsString(key), "credits") == 0)
             self->item->GetVideoInfoTag()->m_writingCredits = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "lastplayed") == 0)

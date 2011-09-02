@@ -105,7 +105,7 @@ public:
   CDateTime m_premiered;
   CStdString m_strStatus;
   CStdString m_strProductionCode;
-  CStdString m_strFirstAired;
+  CDateTime m_firstAired;
   CStdString m_strShowTitle;
   std::vector<std::string> m_studio;
   CStdString m_strAlbum;

@@ -60,7 +60,7 @@ void CVideoInfoTag::Reset()
   m_premiered.Reset();
   m_strStatus.clear();
   m_strProductionCode.clear();
-  m_strFirstAired.clear();
+  m_firstAired.Reset();
   m_studio.clear();
   m_strAlbum.clear();
   m_strArtist.clear();
@@ -176,7 +176,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   XMLUtils::SetDate(movie, "premiered", m_premiered);
   XMLUtils::SetString(movie, "status", m_strStatus);
   XMLUtils::SetString(movie, "code", m_strProductionCode);
-  XMLUtils::SetString(movie, "aired", m_strFirstAired);
+  XMLUtils::SetDate(movie, "aired", m_firstAired);
   XMLUtils::SetStringArray(movie, "studio", m_studio);
   XMLUtils::SetString(movie, "trailer", m_strTrailer);
 
@@ -296,7 +296,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_premiered;
     ar << m_strStatus;
     ar << m_strProductionCode;
-    ar << m_strFirstAired;
+    ar << m_firstAired;
     ar << m_strShowTitle;
     ar << m_strAlbum;
     ar << m_strArtist;
@@ -369,7 +369,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_premiered;
     ar >> m_strStatus;
     ar >> m_strProductionCode;
-    ar >> m_strFirstAired;
+    ar >> m_firstAired;
     ar >> m_strShowTitle;
     ar >> m_strAlbum;
     ar >> m_strArtist;
@@ -442,7 +442,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["premiered"] = m_premiered.GetAsDBDate();
   value["status"] = m_strStatus;
   value["productioncode"] = m_strProductionCode;
-  value["firstaired"] = m_strFirstAired;
+  value["firstaired"] = m_firstAired.GetAsDBDate();
   value["showtitle"] = m_strShowTitle;
   value["album"] = m_strAlbum;
   value["artist"] = m_strArtist;
@@ -525,7 +525,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   XMLUtils::GetDate(movie, "premiered", m_premiered);
   XMLUtils::GetString(movie, "status", m_strStatus);
   XMLUtils::GetString(movie, "code", m_strProductionCode);
-  XMLUtils::GetString(movie, "aired", m_strFirstAired);
+  XMLUtils::GetDate(movie, "aired", m_firstAired);
   XMLUtils::GetString(movie, "album", m_strAlbum);
   XMLUtils::GetString(movie, "trailer", m_strTrailer);
   XMLUtils::GetString(movie, "basepath", m_basePath);

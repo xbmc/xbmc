@@ -770,7 +770,7 @@ namespace VIDEO
      * Next preference is the first aired date. If it exists use that for matching the TV Show
      * information. Also set the title in case there are multiple matches for the first aired date.
      */
-    if (!tag->m_strFirstAired.IsEmpty())
+    if (tag->m_firstAired.IsValid())
     {
       SEpisode episode;
       episode.strPath = item->GetPath();
@@ -784,10 +784,10 @@ namespace VIDEO
       /*
        * The first aired date string must be parseable.
        */
-      episode.cDate.SetFromDateString(item->GetVideoInfoTag()->m_strFirstAired);
+      episode.cDate = item->GetVideoInfoTag()->m_firstAired;
       episodeList.push_back(episode);
       CLog::Log(LOGDEBUG, "%s - found match for: '%s', firstAired: '%s' = '%s', title: '%s'",
-                __FUNCTION__, episode.strPath.c_str(), tag->m_strFirstAired.c_str(),
+        __FUNCTION__, episode.strPath.c_str(), tag->m_firstAired.GetAsDBDateTime().c_str(),
                 episode.cDate.GetAsLocalizedDate().c_str(), episode.strTitle.c_str());
       return true;
     }
