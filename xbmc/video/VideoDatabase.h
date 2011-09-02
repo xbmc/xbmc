@@ -86,6 +86,8 @@ namespace VIDEO
 #define VIDEODB_TYPE_BOOL 4
 #define VIDEODB_TYPE_COUNT 5
 #define VIDEODB_TYPE_STRINGARRAY 6
+#define VIDEODB_TYPE_DATE 7
+#define VIDEODB_TYPE_DATETIME 8
 
 typedef enum
 {

@@ -1715,6 +1715,12 @@ CStdString CVideoDatabase::GetValueString(const CVideoInfoTag &details, int min,
     case VIDEODB_TYPE_STRINGARRAY:
       sql += PrepareSQL("c%02d='%s',", i, StringUtils::Join(*((std::vector<std::string>*)(((char*)&details)+offsets[i].offset)), g_advancedSettings.m_videoItemSeparator).c_str());
       break;
+    case VIDEODB_TYPE_DATE:
+      sql += PrepareSQL("c%02d='%s',", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDate().c_str());
+      break;
+    case VIDEODB_TYPE_DATETIME:
+      sql += PrepareSQL("c%02d='%s',", i, ((CDateTime*)(((char*)&details)+offsets[i].offset))->GetAsDBDateTime().c_str());
+      break;
     }
   }
   sql.TrimRight(',');
@@ -2637,6 +2643,12 @@ void CVideoDatabase::GetDetailsFromDB(auto_ptr<Dataset> &pDS, int min, int max, 
       break;
     case VIDEODB_TYPE_STRINGARRAY:
       *(std::vector<std::string>*)(((char*)&details)+offsets[i].offset) = StringUtils::Split(pDS->fv(i+idxOffset).get_asString(), g_advancedSettings.m_videoItemSeparator);
+      break;
+    case VIDEODB_TYPE_DATE:
+      ((CDateTime*)(((char*)&details)+offsets[i].offset))->SetFromDBDate(pDS->fv(i+idxOffset).get_asString());
+      break;
+    case VIDEODB_TYPE_DATETIME:
+      ((CDateTime*)(((char*)&details)+offsets[i].offset))->SetFromDBDateTime(pDS->fv(i+idxOffset).get_asString());
       break;
     }
   }
