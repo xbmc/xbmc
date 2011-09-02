@@ -1622,6 +1622,8 @@ if test "x$use_ccache" != "xno"; then
       final_message="$final_message\n  ccache:\tNo"
     fi
   else
+    ORIGCC=$CC
+    ORIGCXX=$CXX
     CC="$ac_cv_path_CCACHE $CC"
     CXX="$ac_cv_path_CCACHE $CXX"
     AC_MSG_NOTICE(enabling ccache)
@@ -2071,7 +2073,7 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   set -x
-  rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake    \
+  rm -f CMakeCache.txt && CC="$ORIGCC" CXX="$ORIGCXX" cmake    \
     -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF        \
     -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}"     \
     -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
