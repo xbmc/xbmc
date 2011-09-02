@@ -490,7 +490,7 @@ void CXBMCRenderManager::ManageCaptures()
 void CXBMCRenderManager::RenderCapture(CRenderCapture* capture)
 {
   CSharedLock lock(m_sharedSection);
-  //if (!m_pRenderer || !m_pRenderer->RenderCapture(capture))
+  if (!m_pRenderer || !m_pRenderer->RenderCapture(capture))
     capture->SetState(CAPTURESTATE_FAILED);
 }
 
@@ -720,8 +720,8 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
     return -1;
 
 #ifdef HAS_DX
-  /*if(m_pRenderer->AddVideoPicture(&pic))
-    return 1;*/
+  if(m_pRenderer->AddVideoPicture(&pic))
+    return 1;
 #endif
 
   YV12Image image;
