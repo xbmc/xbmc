@@ -35,6 +35,7 @@
 #include "StreamsManager.h"
 #include "Filters\DX9AllocatorPresenter.h"
 #include "IPaintCallback.h"
+#include "settings/GUISettings.h"
 
 CWinDsRenderer::CWinDsRenderer():
   m_bConfigured(false), m_paintCallback(NULL)
@@ -104,7 +105,9 @@ unsigned int CWinDsRenderer::PreInit()
   m_bConfigured = false;
 
   UnInit();
-  m_resolution = RES_PAL_4x3;
+  m_resolution = g_guiSettings.m_LookAndFeelResolution;
+  if ( m_resolution == RES_WINDOW )
+    m_resolution = RES_DESKTOP;
 
   // setup the background colour
   m_clearColour = (g_advancedSettings.m_videoBlackBarColour & 0xff) * 0x010101;
