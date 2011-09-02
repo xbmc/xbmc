@@ -184,7 +184,6 @@ void CGUIControl::DoRender()
 
 void CGUIControl::Render()
 {
-  m_bInvalidated = false;
   m_hasRendered = true;
 }
 
