@@ -935,6 +935,8 @@ bool CProcessor::UpdateSize(const DXVA2_VideoDesc& dsc)
       m_size = caps.NumBackwardRefSamples + caps.NumForwardRefSamples;
       CLog::Log(LOGDEBUG, "DXVA - updated maximum samples count to %d", m_size);
     }
+    m_max_back_refs = std::max(caps.NumBackwardRefSamples, m_max_back_refs);
+    m_max_fwd_refs = std::max(caps.NumForwardRefSamples, m_max_fwd_refs);
   }
 
   return true;
@@ -960,6 +962,9 @@ bool CProcessor::PreInit()
   dsc.SampleHeight = 480;
   dsc.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedOddFirst;
 
+  m_max_back_refs = 0;
+  m_max_fwd_refs = 0;
+
   for (unsigned i = 0; render_targets[i] != D3DFMT_UNKNOWN; i++)
   {
     dsc.Format = render_targets[i];
@@ -967,7 +972,7 @@ bool CProcessor::PreInit()
       CLog::Log(LOGDEBUG, "DXVA - render target not supported by processor");
   }
 
-  m_size += 3;  // 1 display + 2 safety frames
+  m_size = m_max_back_refs + 1 + m_max_fwd_refs + 2;  // refs + 1 display + 2 safety frames
 
   return true;
 }
@@ -1266,10 +1271,9 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 {
   CSingleLock lock(m_section);
 
-  // MinTime and MaxTime are the first and last samples to feed the processor.
-  // MinTime is also the first sample to keep.
-  REFERENCE_TIME MinTime = time - m_caps.NumBackwardRefSamples*2;
-  REFERENCE_TIME MaxTime = time + m_caps.NumForwardRefSamples*2;
+  // MinTime and MaxTime are the first and last samples to keep. Delete the rest.
+  REFERENCE_TIME MinTime = time - m_max_back_refs*2;
+  REFERENCE_TIME MaxTime = time + m_max_fwd_refs*2;
 
   SSamples::iterator it = m_sample.begin();
   while (it != m_sample.end())
@@ -1286,6 +1290,10 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   if(m_sample.empty())
     return false;
+
+  // MinTime and MaxTime are now the first and last samples to feed the processor.
+  MinTime = time - m_caps.NumBackwardRefSamples*2;
+  MaxTime = time + m_caps.NumForwardRefSamples*2;
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
@@ -1306,7 +1314,7 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   for(it = m_sample.begin(); it != m_sample.end() && valid < count; it++)
   {
-    if (it->sample.Start <= MaxTime)
+    if (it->sample.Start >= MinTime && it->sample.Start <= MaxTime)
     {
       DXVA2_VideoSample& vs = samp[(it->sample.Start - MinTime) / 2];
       vs = it->sample;

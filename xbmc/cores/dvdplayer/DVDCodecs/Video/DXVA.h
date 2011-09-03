@@ -147,7 +147,8 @@ protected:
   DXVA2_ValueRange m_saturation;
   REFERENCE_TIME   m_time;
   unsigned         m_size;
-
+  unsigned         m_max_back_refs;
+  unsigned         m_max_fwd_refs;
   unsigned         m_index;
 
   struct SVideoSample
