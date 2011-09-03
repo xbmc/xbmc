@@ -586,7 +586,8 @@ void CXBMCRenderManager::Present()
   CSharedLock lock(m_sharedSection);
 
   if     ( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB
-        || m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+        || m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
+        || m_presentmethod == VS_INTERLACEMETHOD_DXVA_BOB)
     PresentBob();
   else if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
         || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
