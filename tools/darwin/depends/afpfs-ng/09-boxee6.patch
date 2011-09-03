@@ -1,0 +1,24 @@
+--- afpfs-ng-0.8.1/lib/Makefile.am	2011-08-26 22:00:06.000000000 +0200
++++ afpfs-ng-0.8.1/lib/Makefile.am.new	2011-08-26 22:02:55.000000000 +0200
+@@ -1,4 +1,4 @@
+-
++afpdir = $(includedir)/afp
+ 
+ libafpclient_la_CFLAGS = -D_FILE_OFFSET_BITS=64 -I$(top_srcdir)/include @CFLAGS@
+ 
+@@ -8,4 +8,13 @@
+ 
+ # libafpclient_la_LDFLAGS = -module -avoid-version
+ 
+-
++dist_afp_HEADERS = \
++	../include/afp.h \
++	../include/afp_protocol.h \
++	../include/codepage.h \
++	../include/dsi.h \
++	../include/libafpclient.h \
++	../include/map_def.h \
++	../include/midlevel.h \
++	../include/uams_def.h \
++	../include/utils.h
+\ No newline at end of file
