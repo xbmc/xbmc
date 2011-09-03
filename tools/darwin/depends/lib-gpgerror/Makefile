@@ -1,18 +1,18 @@
 include ../Makefile.include
-include ../config.site.mk
 
 # lib name, version
-LIBNAME=afpfs-ng
-VERSION=0.8.1
+LIBNAME=libgpg-error
+VERSION=1.10
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
 # configuration settings
-export PATH:=$(TOOLCHAIN)/bin:$(PATH) 
 CONFIGURE=./configure --prefix=$(PREFIX) \
-  --disable-fuse
+ --with-libintl-prefix=$(PREFIX)/lib
 
-LIBDYLIB=$(SOURCE)/lib/.libs/libafpclient.dylib
+LIBDYLIB=$(SOURCE)/.libs/libgpg-error.dylib
+
+CLEAN_FILES=$(ARCHIVE) $(SOURCE)
 
 all: $(LIBDYLIB) .installed
 
@@ -23,22 +23,12 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
-	cd $(SOURCE); patch -p1 <../01-gcrypt.patch
-	cd $(SOURCE); patch -p1 <../02-pointer.patch
-	cd $(SOURCE); patch -p1 <../04-boxee1.patch
-	cd $(SOURCE); patch -p1 <../05-boxee2.patch	
-	cd $(SOURCE); patch -p1 <../06-boxee3.patch
-	cd $(SOURCE); patch -p1 <../07-boxee4.patch
-	cd $(SOURCE); patch -p1 <../08-boxee5.patch
-	cd $(SOURCE); patch -p1 <../09-boxee6.patch
-	cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
 	make -j $(MAKE_JOBS) -C $(SOURCE)
 
 .installed:
-	cd $(SOURCE); patch -p1 <../03-include.patch
 	make -C $(SOURCE) install
 	touch $@
 
@@ -48,3 +38,4 @@ clean:
 
 distclean::
 	rm -rf $(SOURCE) .installed
+
