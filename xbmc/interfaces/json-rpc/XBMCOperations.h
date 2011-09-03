@@ -36,8 +36,6 @@ namespace JSONRPC
     static JSON_STATUS Play(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSON_STATUS StartSlideshow(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
-    static JSON_STATUS Log(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
-
     static JSON_STATUS Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
   private:
     inline static int ParseLogLevel(const char *level);

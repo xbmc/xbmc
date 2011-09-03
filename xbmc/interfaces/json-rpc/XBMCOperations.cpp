@@ -86,20 +86,6 @@ JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransport
   return ACK;
 }
 
-JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  CStdString message = parameterObject["message"].asString();
-  if (message.IsEmpty())
-    return InvalidParams;
-
-  CStdString strLevel = parameterObject["level"].asString();
-  int level = ParseLogLevel(strLevel.ToLower().c_str());
-
-  CLog::Log(level, "%s", message.c_str());
-
-  return ACK;
-}
-
 JSON_STATUS CXBMCOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().Quit();
