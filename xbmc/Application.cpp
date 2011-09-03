@@ -254,11 +254,13 @@
 #ifdef HAS_XRANDR
 #include "windowing/X11/XRandR.h"
 #endif
-#ifdef __APPLE__
-#if !defined(__arm__)
+
+#ifdef TARGET_DARWIN_OSX
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
+#ifdef TARGET_DARWIN
+#include "DarwinUtils.h"
 #endif
 
 #ifdef HAS_DVD_DRIVE
@@ -4400,6 +4402,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_STARTED:
     {
+#ifdef TARGET_DARWIN
+      DarwinSetScheduling(message.GetMessage());
+#endif
       // Update our infoManager with the new details etc.
       if (m_nextPlaylistItem >= 0)
       { // we've started a previously queued item
@@ -4486,7 +4491,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (m_pKaraokeMgr )
         m_pKaraokeMgr->Stop();
 #endif
-
+#ifdef TARGET_DARWIN
+      DarwinSetScheduling(message.GetMessage());
+#endif
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
