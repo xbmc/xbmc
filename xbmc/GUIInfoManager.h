@@ -616,12 +616,12 @@ public:
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
   CStdString GetMusicLabel(int item);
-  CStdString GetMusicTagLabel(int info, const CFileItem *item) const;
+  CStdString GetMusicTagLabel(int info, const CFileItem *item);
   CStdString GetVideoLabel(int item);
   CStdString GetPlaylistLabel(int item) const;
   CStdString GetMusicPartyModeLabel(int item);
-  const CStdString GetMusicPlaylistInfo(const GUIInfo& info) const;
-  CStdString GetPictureLabel(int item) const;
+  const CStdString GetMusicPlaylistInfo(const GUIInfo& info);
+  CStdString GetPictureLabel(int item);
 
   __int64 GetPlayTime() const;  // in ms
   CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
@@ -652,8 +652,8 @@ public:
 
   void ResetCache();
   bool GetItemInt(int &value, const CGUIListItem *item, int info) const;
-  CStdString GetItemLabel(const CFileItem *item, int info) const;
-  CStdString GetItemImage(const CFileItem *item, int info) const;
+  CStdString GetItemLabel(const CFileItem *item, int info);
+  CStdString GetItemImage(const CFileItem *item, int info);
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
@@ -704,7 +704,7 @@ protected:
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
-  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
+  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
