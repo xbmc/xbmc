@@ -57,6 +57,17 @@ AC_DEFUN([XB_FIND_SONAME],
   fi
 ])
 
+# Function to push and pop libs and includes for a command
+AC_DEFUN([XB_PUSH_FLAGS], [
+  SAVE_LIBS="$LIBS"
+  SAVE_INCLUDES="$INCLUDES"
+  LIBS="[$2]"
+  INCLUDES="[$1]"
+  [$3]
+  LIBS="$SAVE_LIBS"
+  INCLUDES="$SAVE_INCLUDES"
+])
+
 # General message strings
 configure_debug="ERROR: this is a configure debug statement"
 missing_library="Could not find a required library. Please see the README for your platform."
@@ -664,6 +675,32 @@ AS_CASE([x$use_libbluray],
     XB_FIND_SONAME([BLURAY], [bluray], [use_libbluray])
     AC_DEFINE([HAVE_LIBBLURAY], 1, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 1)
+
+	XB_PUSH_FLAGS(
+        [$LIBBLURAY_CFLAGS]
+      , [$LIBBLURAY_LIBS]
+
+      , AC_MSG_CHECKING([libbluray version])
+        AC_COMPILE_IFELSE(
+            AC_LANG_PROGRAM(
+                [#include <libbluray/bluray.h>]
+               ,[bd_get_playlist_info(0, 0)])
+          ,[AC_MSG_RESULT(version has old angle api)
+            AC_DEFINE([HAVE_LIBBLURAY_NOANGLE],[],[System has an old api libbluray without angle support])]
+          ,[AC_MSG_RESULT(normal)]
+        )
+
+        AC_MSG_CHECKING([for libbluray log control])
+        AC_LINK_IFELSE(
+            AC_LANG_PROGRAM(
+               [#include <libbluray/bluray.h>
+                #include <libbluray/log_control.h>]
+              ,[bd_set_debug_mask(0)])
+          , AC_MSG_RESULT(yes)
+          ,[AC_MSG_RESULT(no)
+            AC_DEFINE([HAVE_LIBBLURAY_NOLOGCONTROL],[],[System has an old api libbluray without log support])]
+        )
+    )
   ],[
 #    AC_DEFINE([HAVE_LIBBLURAY], 0, [System has libbluray library])
     AC_SUBST([HAVE_LIBBLURAY], 0)
