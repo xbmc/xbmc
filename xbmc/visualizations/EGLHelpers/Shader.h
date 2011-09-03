@@ -35,7 +35,7 @@
 #include <vector>
 #include <string>
 
-namespace Shaders {
+namespace VisShaders {
 
   using namespace std;
 

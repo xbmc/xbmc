@@ -28,7 +28,7 @@
 #define LOG_SIZE 1024
 #define GLchar char
 
-using namespace Shaders;
+using namespace VisShaders;
 using namespace std;
 
 //////////////////////////////////////////////////////////////////////
