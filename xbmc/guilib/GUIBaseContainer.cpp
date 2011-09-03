@@ -912,6 +912,9 @@ int CGUIBaseContainer::ScrollCorrectionRange() const
 
 void CGUIBaseContainer::ScrollToOffset(int offset)
 {
+  int minOffset, maxOffset;
+  if(GetOffsetRange(minOffset, maxOffset))
+    offset = std::max(minOffset, std::min(offset, maxOffset));
   float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
   int range = ScrollCorrectionRange();
   if (offset * size < m_scroller.GetValue() &&  m_scroller.GetValue() - offset * size > size * range)
