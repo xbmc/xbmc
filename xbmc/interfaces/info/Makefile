@@ -1,4 +1,5 @@
 SRCS=InfoBool.cpp \
+     SkinVariable.cpp \
      
 LIB=info.a
 
