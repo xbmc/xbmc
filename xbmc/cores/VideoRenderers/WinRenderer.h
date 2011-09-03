@@ -62,6 +62,9 @@
 #define RENDER_FLAG_NOLOCK      0x10   /* don't attempt to lock texture before rendering */
 #define RENDER_FLAG_NOUNLOCK    0x20   /* don't unlock texture after rendering */
 
+#define RENDER_FLAG_FIELD0      0x80
+#define RENDER_FLAG_FIELD1      0x100
+
 /* this defines what color translation coefficients */
 #define CONF_FLAGS_YUVCOEF_MASK(a) ((a) & 0x07)
 #define CONF_FLAGS_YUVCOEF_BT709 0x01
