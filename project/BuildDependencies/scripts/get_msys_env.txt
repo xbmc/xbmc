@@ -29,3 +29,4 @@ findutils-4.4.2-2-msys-1.0.13-bin.tar.lzma              http://mirrors.xbmc.org/
 automake-1.11.1-1-msys-1.0.13-bin.tar.lzma              http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/automake/automake-1.11.1-1/
 mktemp-1.6-2-msys-1.0.13-bin.tar.lzma                   http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/mktemp/mktemp-1.6-2/
 texinfo-4.13a-2-msys-1.0.13-bin.tar.lzma				http://mirrors.xbmc.org/build-deps/win32/mingw-msys/	  http://downloads.sourceforge.net/project/mingw/MSYS/texinfo/texinfo-4.13a-2/
+libtool-2.4-1-msys-1.0.15-bin.tar.lzm                   http://mirrors.xbmc.org/build-deps/win32/mingw-msys/      http://downloads.sourceforge.net/project/mingw/MSYS/libtool/libtool-2.4-1/libtool-2.4-1-msys-1.0.15-bin.tar.lzma
