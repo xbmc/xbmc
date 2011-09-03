@@ -34,6 +34,9 @@ extern "C"
 {
 #include <libbluray/bluray.h>
 #include <libbluray/filesystem.h>
+#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
+#include <libbluray/log_control.h>
+#endif
 }
 
 class DllLibblurayInterface
@@ -64,6 +67,12 @@ public:
   virtual uint64_t bd_tell_time(BLURAY *bd)=0;
   virtual BD_FILE_OPEN bd_register_file(BD_FILE_OPEN p)=0;
   virtual BD_DIR_OPEN bd_register_dir(BD_DIR_OPEN p)=0;
+
+#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
+  virtual void     bd_set_debug_handler(BD_LOG_FUNC)=0;
+  virtual void     bd_set_debug_mask(uint32_t mask)=0;
+  virtual uint32_t bd_get_debug_mask(void)=0;
+#endif
 };
 
 class DllLibbluray : public DllDynamic, DllLibblurayInterface
@@ -100,6 +109,12 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
   DEFINE_METHOD1(BD_FILE_OPEN,        bd_register_file,       (BD_FILE_OPEN p1))
   DEFINE_METHOD1(BD_DIR_OPEN,         bd_register_dir,        (BD_DIR_OPEN p1))
 
+#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
+  DEFINE_METHOD1(void,                bd_set_debug_handler,   (BD_LOG_FUNC p1))
+  DEFINE_METHOD1(void,                bd_set_debug_mask,      (uint32_t p1))
+  DEFINE_METHOD0(uint32_t,            bd_get_debug_mask)
+#endif
+
   BEGIN_METHOD_RESOLVE()
 #ifdef HAVE_LIBBBLURAY_HAVE_LIBBLURAY_NOANGLE
     RESOLVE_METHOD_RENAME(bd_get_titles,        bd_get_titles_noangle)
@@ -131,6 +146,11 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD_RENAME(bd_tell_time,         bd_tell_time)
     RESOLVE_METHOD_RENAME(bd_register_file,     bd_register_file)
     RESOLVE_METHOD_RENAME(bd_register_dir,      bd_register_dir)
+#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
+    RESOLVE_METHOD(bd_set_debug_handler)
+    RESOLVE_METHOD(bd_set_debug_mask)
+    RESOLVE_METHOD(bd_get_debug_mask)
+#endif
   END_METHOD_RESOLVE()
 
 #ifdef HAVE_LIBBBLURAY_HAVE_LIBBLURAY_NOANGLE
@@ -304,6 +324,14 @@ static BD_DIR_H *dir_open(const char* dirname)
     return dir;
 }
 
+
+#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
+static void bluray_logger(const char* msg)
+{
+  CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Logger - %s", msg);
+}
+#endif
+
 CDVDInputStreamBluray::CDVDInputStreamBluray() :
   CDVDInputStream(DVDSTREAM_TYPE_BLURAY)
 {
@@ -351,6 +379,10 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
 
   m_dll->bd_register_dir(dir_open);
   m_dll->bd_register_file(file_open);
+#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
+  m_dll->bd_set_debug_handler(bluray_logger);
+  m_dll->bd_set_debug_mask(DBG_CRIT);
+#endif
 
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", strPath.c_str());
   m_bd = m_dll->bd_open(strPath.c_str(), NULL);
