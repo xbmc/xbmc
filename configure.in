@@ -20,10 +20,10 @@ AC_DEFUN([XB_FIND_SONAME],
 [
   if [[ "$host_vendor" != "apple" ]]; then
     AC_MSG_CHECKING([for lib$2 soname])
-    $1_SONAME=$( $CC -print-file-name=lib$2.so | \
-      while read output; do objdump -p $output | \
-        grep "SONAME" | \
-        sed -e 's/  *SONAME  *//'; done 2> /dev/null )
+    $1_FILENAME=$($LD $LDFLAGS -l$2 -M -o /dev/null 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
+    if [[ ! -z $$1_FILENAME ]]; then
+      $1_SONAME=$(objdump -p $$1_FILENAME | grep "SONAME.*$2" | awk '{V=2; print $V}')
+    fi
   else
     AC_MSG_CHECKING([for lib$2 dylib])
     gcc_lib_path=[`$CC -print-search-dirs 2>/dev/null | fgrep libraries: | sed 's/[^=]*=\(.*\)/\1/' | sed 's/:/ /g'`]
