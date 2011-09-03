@@ -810,7 +810,7 @@ bool CGUIControl::Animate(unsigned int currentTime)
   m_transform.Reset();
   bool changed = false;
 
-  CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
+  CPoint center(GetXPosition() + GetWidth() * 0.5f, GetYPosition() + GetHeight() * 0.5f);
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
