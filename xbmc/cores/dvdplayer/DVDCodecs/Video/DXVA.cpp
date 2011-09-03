@@ -878,6 +878,7 @@ CProcessor::CProcessor()
   m_surfaces = NULL;
   m_context = NULL;
   m_index = 0;
+  m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
 }
 
 CProcessor::~CProcessor()
@@ -991,7 +992,6 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
 
   dsc.SampleWidth = width;
   dsc.SampleHeight = height;
-  dsc.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
   dsc.SampleFormat.VideoLighting = DXVA2_VideoLighting_dim;
 
   switch (CONF_FLAGS_CHROMA_MASK(flags))
@@ -1079,6 +1079,23 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
       return false;
   }
 
+  if (!OpenProcessor())
+    return false;
+
+  m_time = 0;
+
+  return true;
+}
+
+bool CProcessor::OpenProcessor()
+{
+  SAFE_RELEASE(m_process);
+
+  if (m_interlace_method == VS_INTERLACEMETHOD_NONE)
+    m_desc.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+  else
+    m_desc.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+
   GUID*    guid_list;
   unsigned guid_count;
   CHECK(m_service->GetVideoProcessorDeviceGuids(&m_desc, &guid_count, &guid_list));
@@ -1096,8 +1113,16 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
     GUID* g = &guid_list[i];
     CLog::Log(LOGDEBUG, "DXVA - processor found %s", GUIDToString(*g).c_str());
 
-    if(IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
-      m_device = *g;
+    if (m_interlace_method == VS_INTERLACEMETHOD_NONE)
+    {
+      if(IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
+        m_device = *g;
+    }
+    else
+    {
+      if(IsEqualGUID(*g, DXVA2_VideoProcBobDevice))
+        m_device = *g;
+    }
   }
 
   CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
@@ -1125,8 +1150,6 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, rtFormat, DXVA2_ProcAmp_Contrast  , &m_contrast));
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, rtFormat, DXVA2_ProcAmp_Hue       , &m_hue));
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, rtFormat, DXVA2_ProcAmp_Saturation, &m_saturation));
-
-  m_time = 0;
 
   return true;
 }
@@ -1233,9 +1256,23 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
   vs.sample.Start          = m_time;
   vs.sample.End            = 0; 
   vs.sample.SampleFormat   = m_desc.SampleFormat;
+
+  if (picture->iFlags & DVP_FLAG_INTERLACED)
+  {
+    if (picture->iFlags & DVP_FLAG_TOP_FIELD_FIRST)
+      vs.sample.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+    else
+      vs.sample.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedOddFirst;
+  }
+  else
+  {
+    vs.sample.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+  }
+
   vs.sample.PlanarAlpha    = DXVA2_Fixed32OpaqueAlpha();
   vs.sample.SampleData     = 0;
   vs.sample.SrcSurface     = surface;
+
 
   vs.context = context;
 
@@ -1270,6 +1307,14 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
 bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE_TIME time)
 {
   CSingleLock lock(m_section);
+
+  if (m_interlace_method != g_settings.m_currentVideoSettings.m_InterlaceMethod || !m_process)
+  {
+    m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    if (!OpenProcessor())
+      return false;
+  }
+
 
   // MinTime and MaxTime are the first and last samples to keep. Delete the rest.
   REFERENCE_TIME MinTime = time - m_max_back_refs*2;
@@ -1322,6 +1367,12 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
       vs.DstRect = dst;
       if(vs.End == 0)
         vs.End = vs.Start + 2;
+
+      if (m_interlace_method == VS_INTERLACEMETHOD_NONE)
+        vs.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+      else if (m_interlace_method == VS_INTERLACEMETHOD_DXVA_BOB && vs.SampleFormat.SampleFormat == DXVA2_SampleProgressiveFrame)
+        vs.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+
       valid++;
     }
   }
