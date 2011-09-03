@@ -88,37 +88,48 @@ JSON_STATUS CJSONRPC::Ping(const CStdString &method, ITransportLayer *transport,
   return OK;
 }
 
-JSON_STATUS CJSONRPC::GetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
+JSON_STATUS CJSONRPC::GetConfiguration(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
   int flags = client->GetAnnouncementFlags();
 
   for (int i = 1; i <= ANNOUNCE_ALL; i *= 2)
-    result[CAnnouncementUtils::AnnouncementFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
+    result["notifications"][CAnnouncementUtils::AnnouncementFlagToString((EAnnouncementFlag)i)] = (flags & i) > 0;
 
   return OK;
 }
 
-JSON_STATUS CJSONRPC::SetNotificationFlags(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
+JSON_STATUS CJSONRPC::SetConfiguration(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
   int flags = 0;
+  int oldFlags = client->GetAnnouncementFlags();
 
-  if (parameterObject["Player"].asBoolean())
-    flags |= Player;
-  if (parameterObject["GUI"].asBoolean())
-    flags |= GUI;
-  if (parameterObject["System"].asBoolean())
-    flags |= System;
-  if (parameterObject["VideoLibrary"].asBoolean())
-    flags |= VideoLibrary;
-  if (parameterObject["AudioLibrary"].asBoolean())
-    flags |= AudioLibrary;
-  if (parameterObject["Other"].asBoolean())
-    flags |= Other;
+  if (parameterObject.isMember("notifications"))
+  {
+    CVariant notifications = parameterObject["notifications"];
+    if ((notifications["Player"].isNull() && (oldFlags & Player)) ||
+        (notifications["Player"].isBoolean() && notifications["Player"].asBoolean()))
+      flags |= Player;
+    if ((notifications["GUI"].isNull() && (oldFlags & GUI)) ||
+        (notifications["GUI"].isBoolean() && notifications["GUI"].asBoolean()))
+      flags |= GUI;
+    if ((notifications["System"].isNull() && (oldFlags & System)) ||
+        (notifications["System"].isBoolean() && notifications["System"].asBoolean()))
+      flags |= System;
+    if ((notifications["VideoLibrary"].isNull() && (oldFlags & VideoLibrary)) ||
+        (notifications["VideoLibrary"].isBoolean() && notifications["VideoLibrary"].asBoolean()))
+      flags |= VideoLibrary;
+    if ((notifications["AudioLibrary"].isNull() && (oldFlags & AudioLibrary)) ||
+        (notifications["AudioLibrary"].isBoolean() && notifications["AudioLibrary"].asBoolean()))
+      flags |= AudioLibrary;
+    if ((notifications["Other"].isNull() && (oldFlags & Other)) ||
+        (notifications["Other"].isBoolean() && notifications["Other"].asBoolean()))
+      flags |= Other;
+  }
 
-  if (client->SetAnnouncementFlags(flags))
-    return GetNotificationFlags(method, transport, client, parameterObject, result);
+  if (!client->SetAnnouncementFlags(flags))
+    return BadPermission;
 
-  return BadPermission;
+  return GetConfiguration(method, transport, client, parameterObject, result);
 }
 
 JSON_STATUS CJSONRPC::NotifyAll(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)

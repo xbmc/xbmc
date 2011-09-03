@@ -20,39 +20,45 @@
       "milliseconds": { "type": "integer", "required": true, "minimum": 0, "maximum": 999 }
     }
   },
-  "Notification.Flags": {
+  "Configuration.Notifications": {
     "type": "object",
     "properties": {
-      "Player": { "type": "boolean", "required": true, "description": "" },
-      "GUI": { "type": "boolean", "required": true, "description": "" },
-      "System": { "type": "boolean", "required": true, "description": "" },
-      "VideoLibrary": { "type": "boolean", "required": true, "description": "" },
-      "AudioLibrary": { "type": "boolean", "required": true, "description": "" },
-      "Other": { "type": "boolean", "required": true, "description": "" }
+      "Player": { "type": "boolean", "required": true },
+      "GUI": { "type": "boolean", "required": true },
+      "System": { "type": "boolean", "required": true },
+      "VideoLibrary": { "type": "boolean", "required": true },
+      "AudioLibrary": { "type": "boolean", "required": true },
+      "Other": { "type": "boolean", "required": true }
+    }
+  },
+  "Configuration": {
+    "type": "object", "required": true,
+    "properties": {
+      "notifications": { "$ref": "Configuration.Notifications", "required": true }
     }
   },
   "Player.State.Extended": {
     "type": "object",
     "properties": {
-      "playing": { "type": "boolean", "required": true, "description": "" },
-      "paused": { "type": "boolean", "required": true, "description": "" },
-      "partymode": { "type": "boolean", "required": true, "description": "" }
+      "playing": { "type": "boolean", "required": true },
+      "paused": { "type": "boolean", "required": true },
+      "partymode": { "type": "boolean", "required": true }
     }
   },
   "Player.State": {
     "type": "object",
     "properties": {
-      "playing": { "type": "boolean", "required": true, "description": "" },
-      "paused": { "type": "boolean", "required": true, "description": "" }
+      "playing": { "type": "boolean", "required": true },
+      "paused": { "type": "boolean", "required": true }
     }
   },
   "Player.TimeValues": {
     "type": "object",
     "properties": {
-      "time": { "$ref": "Global.Time", "required": true, "description": "" },
-      "total": { "$ref": "Global.Time", "required": true, "description": "" },
-      "playing": { "type": "boolean", "required": true, "description": "" },
-      "paused": { "type": "boolean", "required": true, "description": "" }
+      "time": { "$ref": "Global.Time", "required": true },
+      "total": { "$ref": "Global.Time", "required": true },
+      "playing": { "type": "boolean", "required": true },
+      "paused": { "type": "boolean", "required": true }
     }
   },
   "Player.SeekTime": {

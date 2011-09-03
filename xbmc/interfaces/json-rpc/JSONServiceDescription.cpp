@@ -83,8 +83,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "JSONRPC.Version",                              CJSONRPC::Version },
   { "JSONRPC.Permission",                           CJSONRPC::Permission },
   { "JSONRPC.Ping",                                 CJSONRPC::Ping },
-  { "JSONRPC.GetNotificationFlags",                 CJSONRPC::GetNotificationFlags },
-  { "JSONRPC.SetNotificationFlags",                 CJSONRPC::SetNotificationFlags },
+  { "JSONRPC.GetConfiguration",                     CJSONRPC::GetConfiguration },
+  { "JSONRPC.SetConfiguration",                     CJSONRPC::SetConfiguration },
   { "JSONRPC.NotifyAll",                            CJSONRPC::NotifyAll },
 
 // Player
