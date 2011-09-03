@@ -23,8 +23,10 @@
 
 #include "Shader.h"
 #include "utils/GLUtils.h"
+#include <stdio.h>
 
 #define LOG_SIZE 1024
+#define GLchar char
 
 using namespace Shaders;
 using namespace std;
