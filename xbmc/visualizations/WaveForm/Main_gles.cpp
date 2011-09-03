@@ -189,6 +189,12 @@ extern "C" void Render()
   glEnable(GL_BLEND);
   
 }
+
+extern "C" void Start(int iChannels, int iSamplesPerSec, int iBitsPerSample, const char* szSongName)
+{
+  //printf("Got Start Command\n");
+}
+
 extern "C" void AudioData(const short* pAudioData, int iAudioDataLength, float *pFreqData, int iFreqDataLength)
 {
   int ipos=0;
