@@ -624,18 +624,18 @@ void CXBMCRenderManager::PresentBob()
   if(m_presentstep == PRESENT_FRAME)
   {
     if( m_presentfield == FS_BOT)
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, 255);
     else
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, 255);
     m_presentstep = PRESENT_FRAME2;
     g_application.NewFrame();
   }
   else
   {
     if( m_presentfield == FS_TOP)
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, 255);
     else
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, 255);
     m_presentstep = PRESENT_IDLE;
   }
 }

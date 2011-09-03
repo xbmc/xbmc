@@ -959,7 +959,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  m_processor.Render(sourceRect, destRect, target, image->id);
+  m_processor.Render(sourceRect, destRect, target, image->id, flags);
 
   target->Release();
 }

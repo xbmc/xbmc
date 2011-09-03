@@ -1304,7 +1304,7 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
     return range.DefaultValue;
 }
 
-bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE_TIME time)
+bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE_TIME time, DWORD flags)
 {
   CSingleLock lock(m_section);
 
@@ -1400,6 +1400,8 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   DXVA2_VideoProcessBltParams blt = {};
   blt.TargetFrame = time;
+  if (flags & RENDER_FLAG_FIELD1)
+    blt.TargetFrame += 1;
   blt.TargetRect  = dst;
   blt.ConstrictionSize.cx = 0;
   blt.ConstrictionSize.cy = 0;
