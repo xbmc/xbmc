@@ -54,28 +54,32 @@
     "params": [],
     "returns": "string"
   },
-  "JSONRPC.GetNotificationFlags": {
+  "JSONRPC.GetConfiguration": {
     "type": "method",
-    "description": "Get notification flags",
+    "description": "Get client-specific configurations",
     "transport": "Announcing",
     "permission": "ReadData",
     "params": [],
-    "returns": { "$ref": "Notification.Flags" }
+    "returns": { "$ref": "Configuration" }
   },
-  "JSONRPC.SetNotificationFlags": {
+  "JSONRPC.SetConfiguration": {
     "type": "method",
-    "description": "Change the notification flags",
+    "description": "Change the client-specific configuration",
     "transport": "Announcing",
     "permission": "ControlNotify",
     "params": [
-      { "name": "Playback", "type": "boolean", "default": false },
-      { "name": "GUI", "type": "boolean", "default": false },
-      { "name": "System", "type": "boolean", "default": false },
-      { "name": "AudioLibrary", "type": "boolean", "default": false },
-      { "name": "VideoLibrary", "type": "boolean", "default": false },
-      { "name": "Other", "type": "boolean", "default": false }
+      { "name": "notifications", "type": "object",
+        "properties": {
+          "Player": { "$ref": "Optional.Boolean" },
+          "GUI": { "$ref": "Optional.Boolean" },
+          "System": { "$ref": "Optional.Boolean" },
+          "AudioLibrary": { "$ref": "Optional.Boolean" },
+          "VideoLibrary": { "$ref": "Optional.Boolean" },
+          "Other": { "$ref": "Optional.Boolean" }
+        }
+      }
     ],
-    "returns": { "$ref": "Notification.Flags" }
+    "returns": { "$ref": "Configuration" }
   },
   "JSONRPC.NotifyAll": {
     "type": "method",
