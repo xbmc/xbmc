@@ -28,6 +28,7 @@
 #include <dxva2api.h>
 #include <deque>
 #include <vector>
+#include "settings/VideoSettings.h"
 
 namespace DXVA {
 
@@ -133,6 +134,7 @@ public:
 protected:
   bool UpdateSize(const DXVA2_VideoDesc& dsc);
   bool CreateSurfaces();
+  bool OpenProcessor();
 
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
@@ -149,6 +151,7 @@ protected:
   unsigned         m_size;
   unsigned         m_max_back_refs;
   unsigned         m_max_fwd_refs;
+  EINTERLACEMETHOD m_interlace_method;
   unsigned         m_index;
 
   struct SVideoSample
