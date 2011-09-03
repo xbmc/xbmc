@@ -250,7 +250,6 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "XBMC.ToggleMute",                              CXBMCOperations::ToggleMute },
   { "XBMC.Play",                                    CXBMCOperations::Play },
   { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow },
-  { "XBMC.Log",                                     CXBMCOperations::Log },
   { "XBMC.Quit",                                    CXBMCOperations::Quit }
 };
 
