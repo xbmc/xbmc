@@ -35,11 +35,11 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
-	make -j $(MAKE_JOBS) -C $(SOURCE)
+	make -j 1 -C $(SOURCE)
 
 .installed:
-	cd $(SOURCE); patch -p1 <../03-include.patch
 	make -C $(SOURCE) install
+	patch -p1 $(PREFIX)/include/afp/afp.h 03-include.patch
 	touch $@
 
 clean:
