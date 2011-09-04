@@ -783,5 +783,16 @@
         "tvshowid": { "$ref": "Library.Id" }
       }
     }
+  },  
+  "XBMC.Property.Name": {
+    "type": "string",
+    "enum": [ "volume", "muted" ]
+  },
+  "XBMC.Property.Value": {
+    "type": "object",
+    "properties": {
+      "volume": { "type": "integer" },
+      "muted": { "type": "boolean" }
+    }
   }
 }

@@ -28,10 +28,22 @@
 
 using namespace JSONRPC;
 
-JSON_STATUS CXBMCOperations::GetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSON_STATUS CXBMCOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CVariant val = g_application.GetVolume();
-  result.swap(val);
+  CVariant properties = CVariant(CVariant::VariantTypeObject);
+  for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
+  {
+    CStdString propertyName = parameterObject["properties"][index].asString();
+    CVariant property;
+    JSON_STATUS ret;
+    if ((ret = GetPropertyValue(propertyName, property)) != OK)
+      return ret;
+
+    properties[propertyName] = property;
+  }
+
+  result = properties;
+
   return OK;
 }
 
@@ -44,13 +56,13 @@ JSON_STATUS CXBMCOperations::SetVolume(const CStdString &method, ITransportLayer
 
   g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);
 
-  return GetVolume(method, transport, client, parameterObject, result);
+  return GetPropertyValue("volume", result);
 }
 
 JSON_STATUS CXBMCOperations::ToggleMute(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   g_application.getApplicationMessenger().SendAction(CAction(ACTION_MUTE));
-  return GetVolume(method, transport, client, parameterObject, result);
+  return GetPropertyValue("volume", result);
 }
 
 JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
@@ -112,4 +124,16 @@ int CXBMCOperations::ParseLogLevel(const char *level)
     return LOGNONE;
   else
     return LOGNONE;
+}
+
+JSON_STATUS CXBMCOperations::GetPropertyValue(const CStdString &property, CVariant &result)
+{
+  if (property.Equals("volume"))
+    result = g_application.GetVolume();
+  else if (property.Equals("muted"))
+    result = g_application.IsMuted();
+  else
+    return InvalidParams;
+
+  return OK;
 }

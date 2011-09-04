@@ -811,6 +811,17 @@ namespace JSONRPC
           "\"tvshowid\": { \"$ref\": \"Library.Id\" }"
         "}"
       "}"
+    "}",
+    "\"XBMC.Property.Name\": {"
+      "\"type\": \"string\","
+      "\"enum\": [ \"volume\", \"muted\" ]"
+    "}",
+    "\"XBMC.Property.Value\": {"
+      "\"type\": \"object\","
+      "\"properties\": {"
+        "\"volume\": { \"type\": \"integer\" },"
+        "\"muted\": { \"type\": \"boolean\" }"
+      "}"
     "}"
   };
 
@@ -2310,13 +2321,15 @@ namespace JSONRPC
       "\"params\": [],"
       "\"returns\": \"string\""
     "}",
-    "\"XBMC.GetVolume\": {"
+    "\"XBMC.GetProperties\": {"
       "\"type\": \"method\","
-      "\"description\": \"Retrieve the current volume\","
+      "\"description\": \"Retrieves the values of the given properties\","
       "\"transport\": \"Response\","
       "\"permission\": \"ReadData\","
-      "\"params\": [],"
-      "\"returns\": \"integer\""
+      "\"params\": ["
+        "{ \"name\": \"properties\", \"type\": \"array\", \"uniqueItems\": true, \"required\": true, \"items\": { \"$ref\": \"XBMC.Property.Name\" } }"
+      "],"
+      "\"returns\":  { \"$ref\": \"XBMC.Property.Value\", \"required\": true }"
     "}",
     "\"XBMC.SetVolume\": {"
       "\"type\": \"method\","
