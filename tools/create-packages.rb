@@ -319,7 +319,7 @@ target_version = nil
 target_platform = nil
 
 OptionParser.new do |parser|
-	parser.banner = "#{$0} [options] <input dir> <package map file> <output dir>"
+	parser.banner = "#{$0} [options] <input dir> <config file> <output dir>"
 	parser.on("-u","--updater [updater binary]","Specifies the updater binary to use") do |updater|
 		updater_binary_input_path = updater
 	end
