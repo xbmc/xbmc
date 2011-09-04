@@ -2684,6 +2684,9 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
   CStdString strMovieName = GetBaseMoviePath(bUseFolderNames);
 
+  if (URIUtils::IsStack(strMovieName))
+    strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
+
   URIUtils::RemoveSlashAtEnd(strMovieName);
   strMovieName = URIUtils::GetFileName(strMovieName);
   CURL::Decode(strMovieName);
@@ -2697,9 +2700,6 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 
   if (IsMultiPath())
     strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
-
-  if (URIUtils::IsStack(strMovieName))
-    strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
 
   int pos;
   if ((pos=strMovieName.Find("BDMV/")) != -1 ||
@@ -2720,6 +2720,47 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 
   return strMovieName;
 }
+
+#ifdef UNIT_TESTING
+bool CFileItem::testGetBaseMoviePath()
+{
+  CFileItem item;
+  CStdString path;
+  bool result = true;
+  
+  item.SetPath("c:\\dir\\filename.avi");
+  path = item.GetBaseMoviePath(false);
+  if (path != "c:\\dir\\filename.avi")
+    result = false;
+
+  item.SetPath("ftp://somepath/file.avi");
+  path = item.GetBaseMoviePath(false);
+  if (path != "ftp://somepath/file.avi")
+    result = false;
+  
+  item.SetPath("stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi");
+  path = item.GetBaseMoviePath(false);
+  if (path != "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi")
+    result = false;
+
+  item.SetPath("stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "/path/to/movie_name/")
+    result = false;
+
+  item.SetPath("/home/user/TV Shows/Dexter/S1/1x01.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "/home/user/TV Shows/Dexter/S1/")
+    result = false;
+  
+  item.SetPath("rar://g%3a%5cmultimedia%5cmovies%5cSphere%2erar/Sphere.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "g:\\multimedia\\movies\\")
+    result = false;
+
+  return result;
+}
+#endif
 
 void CFileItem::SetVideoThumb()
 {

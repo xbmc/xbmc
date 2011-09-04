@@ -244,6 +244,10 @@ public:
    */
   CStdString GetBaseMoviePath(bool useFolderNames) const;
 
+#ifdef UNIT_TESTING
+  static bool testGetBaseMoviePath();
+#endif
+
   // Gets the user thumb, if it exists
   CStdString GetUserVideoThumb() const;
   CStdString GetUserMusicThumb(bool alwaysCheckRemote = false) const;
