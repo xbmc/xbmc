@@ -99,6 +99,9 @@
 #ifdef HAS_FILESYSTEM_NFS
 #include "NFSDirectory.h"
 #endif
+#ifdef HAS_FILESYSTEM_AFP
+#include "AFPDirectory.h"
+#endif
 
 using namespace XFILE;
 
@@ -196,7 +199,9 @@ IDirectory* CFactoryDirectory::Create(const CStdString& strPath)
 #ifdef HAS_FILESYSTEM_NFS
     if (strProtocol == "nfs") return new CNFSDirectory();
 #endif
-    
+#ifdef HAS_FILESYSTEM_AFP
+      if (strProtocol == "afp") return new CAFPDirectory();
+#endif
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );
