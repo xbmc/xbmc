@@ -36,7 +36,7 @@
    <name>$APP_FILENAME</name>
    <hash>$UPDATED_APP_HASH</hash>
    <size>$UPDATED_APP_SIZE</size>
-   <permissions>30549</permissions>
+   <permissions>0755</permissions>
    <package>app-pkg</package>
    <is-main-binary>true</is-main-binary>
   </file>

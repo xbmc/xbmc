@@ -34,23 +34,6 @@ class FileUtils
 				int m_errno;
 		};
 
-		/** Reproduction of Qt's QFile::Permission enum. */
-		enum QtFilePermission
-		{
-			ReadOwner  = 0x4000,
-			WriteOwner = 0x2000,
-			ExecOwner  = 0x1000,
-			ReadUser   = 0x0400,
-			WriteUser  = 0x0200,
-			ExecUser   = 0x0100,
-			ReadGroup  = 0x0040,
-			WriteGroup = 0x0020,
-			ExecGroup  = 0x0010,
-			ReadOther  = 0x0004,
-			WriteOther = 0x0002,
-			ExecOther  = 0x0001
-		};
-
 		/** Remove a file.  Throws an exception if the file
 		 * could not be removed.
 		 *
@@ -62,10 +45,10 @@ class FileUtils
 		 */
 		static void removeFile(const char* src) throw (IOException);
 
-		/** Set the permissions of a file using a combination of flags
-		  * from the QtFilePermission enum.
+		/** Set the permissions of a file.  @p permissions uses the standard
+		  * Unix mode_t values.
 		  */
-		static void setQtPermissions(const char* path, int permissions) throw (IOException);
+		static void chmod(const char* path, int permissions) throw (IOException);
 		static bool fileExists(const char* path) throw (IOException);
 		static void moveFile(const char* src, const char* dest) throw (IOException);
 		static void mkdir(const char* dir) throw (IOException);
@@ -116,8 +99,5 @@ class FileUtils
 		  * @p basePath should be absolute.
 		  */
 		static std::string makeAbsolute(const char* path, const char* basePath);
-
-	private:
-		static int toUnixPermissions(int qtPermissions);
 };
 

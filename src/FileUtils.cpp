@@ -72,13 +72,12 @@ bool FileUtils::fileExists(const char* path) throw (IOException)
 #endif
 }
 
-void FileUtils::setQtPermissions(const char* path, int qtPermissions) throw (IOException)
+void FileUtils::chmod(const char* path, int mode) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
-	int mode = toUnixPermissions(qtPermissions);
-	if (chmod(path,mode) != 0)
+	if (::chmod(path,mode) != 0)
 	{
-		throw IOException("Failed to set permissions on " + std::string(path) + " to " + intToStr(qtPermissions));
+		throw IOException("Failed to set permissions on " + std::string(path) + " to " + intToStr(mode));
 	}
 #else
 	// TODO - Not implemented under Windows - all files
@@ -360,32 +359,6 @@ std::string FileUtils::canonicalPath(const char* path)
 	throw IOException("canonicalPath() not implemented");
 #endif
 }
-
-template <class InFlags, class OutFlags>
-void addFlag(InFlags inFlags, int testBit, OutFlags& outFlags, int setBit)
-{
-	if (inFlags & testBit)
-	{
-		outFlags |= setBit;
-	}
-}
-
-#ifdef PLATFORM_UNIX
-int FileUtils::toUnixPermissions(int qtPermissions)
-{
-	mode_t result = 0;
-	addFlag(qtPermissions,ReadUser,result,S_IRUSR);
-	addFlag(qtPermissions,WriteUser,result,S_IWUSR);
-	addFlag(qtPermissions,ExecUser,result,S_IXUSR);
-	addFlag(qtPermissions,ReadGroup,result,S_IRGRP);
-	addFlag(qtPermissions,WriteGroup,result,S_IWGRP);
-	addFlag(qtPermissions,ExecGroup,result,S_IXGRP);
-	addFlag(qtPermissions,ReadOther,result,S_IROTH);
-	addFlag(qtPermissions,WriteOther,result,S_IWOTH);
-	addFlag(qtPermissions,ExecOther,result,S_IXOTH);
-	return result;
-}
-#endif
 
 std::string FileUtils::toUnixPathSeparators(const std::string& str)
 {

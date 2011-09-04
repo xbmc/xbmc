@@ -235,7 +235,7 @@ void UpdateInstaller::installFile(const UpdateScriptFile& file)
 		FileUtils::extractFromZip(packageFile.c_str(),file.path.c_str(),destPath.c_str());
 
 		// set the permissions on the newly extracted file
-		FileUtils::setQtPermissions(destPath.c_str(),file.permissions);
+		FileUtils::chmod(destPath.c_str(),file.permissions);
 	}
 	else
 	{

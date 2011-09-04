@@ -109,7 +109,10 @@ UpdateScriptFile UpdateScript::parseFile(const TiXmlElement* element)
 	UpdateScriptFile file;
 	file.path = elementText(element->FirstChildElement("name"));
 	file.package = elementText(element->FirstChildElement("package"));
-	file.permissions = atoi(elementText(element->FirstChildElement("permissions")).c_str());
+
+	std::string modeString = elementText(element->FirstChildElement("permissions"));
+	sscanf(modeString.c_str(),"%i",&file.permissions);
+
 	file.linkTarget = elementText(element->FirstChildElement("target"));
 	file.isMainBinary = strToBool(elementText(element->FirstChildElement("is-main-binary")));
 	return file;

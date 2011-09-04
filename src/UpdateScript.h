@@ -40,8 +40,13 @@ class UpdateScriptFile
 
 		std::string path;
 		std::string package;
-		int permissions;
 		std::string linkTarget;
+
+		/** The permissions for this file, specified
+		  * using the standard Unix mode_t values.
+		  */
+		int permissions;
+
 		bool isMainBinary;
 
 		bool operator==(const UpdateScriptFile& other) const

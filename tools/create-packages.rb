@@ -43,8 +43,7 @@ end
 class UpdateScriptFile
 	# path - The path of the file relative to the installation directory
 	# hash - The SHA-1 hash of the file
-	# permissions - The permissions of the file expressed using
-	#               flags from the QFile::Permission enum in Qt
+	# permissions - The permissions of the file (See File::stat)
 	# size - The size of the file in bytes
 	# package - The name of the package containing this file
 	attr_reader :path,:hash,:permissions,:size,:package,:target,:is_main_binary
@@ -127,7 +126,7 @@ class UpdateScriptGenerator
 				file.target = File.readlink(path)
 			else
 				file.hash = file_sha1(path)
-				file.permissions = get_file_permissions(path)
+				file.permissions = File.stat(path).mode
 				file.size = File.size(path)
 				file.package = @config.package_for_file(file.path)
 
@@ -215,7 +214,7 @@ class UpdateScriptGenerator
 				attributes["target"] = file.target
 			else
 				attributes["size"] = file.size.to_s
-				attributes["permissions"] = file.permissions.to_s
+				attributes["permissions"] = file_mode_string(file.permissions)
 				attributes["hash"] = file.hash
 				attributes["package"] = file.package
 			end
@@ -229,53 +228,9 @@ class UpdateScriptGenerator
 		return install_elem
 	end
 
-	# Unix permission flags
-	# from <sys/stat.h>
-	S_IRUSR = 0400
-	S_IWUSR = 0200
-	S_IXUSR = 0100
-	S_IRGRP = (S_IRUSR >> 3)
-	S_IWGRP = (S_IWUSR >> 3)
-	S_IXGRP = (S_IXUSR >> 3)
-	S_IROTH = (S_IRGRP >> 3)
-	S_IWOTH = (S_IWGRP >> 3)
-	S_IXOTH = (S_IXGRP >> 3)
-
-	# Qt permission flags
-	# (taken from QFile::Permission)
-	QT_READ_OWNER  = 0x4000
-	QT_WRITE_OWNER = 0x2000
-	QT_EXEC_OWNER  = 0x1000
-	QT_READ_USER   = 0x0400
-	QT_WRITE_USER  = 0x0200
-	QT_EXEC_USER   = 0x0100
-	QT_READ_GROUP  = 0x0040
-	QT_WRITE_GROUP = 0x0020
-	QT_EXEC_GROUP  = 0x0010
-	QT_READ_OTHER  = 0x0004
-	QT_WRITE_OTHER = 0x0002
-	QT_EXEC_OTHER  = 0x0001
-
-	def get_file_permissions(path)
-		unix_to_qt = {
-			S_IRUSR => QT_READ_USER  | QT_READ_OWNER,
-			S_IWUSR => QT_WRITE_USER | QT_WRITE_OWNER,
-			S_IXUSR => QT_EXEC_USER  | QT_EXEC_OWNER,
-			S_IRGRP => QT_READ_GROUP,
-			S_IWGRP => QT_WRITE_GROUP,
-			S_IXGRP => QT_EXEC_GROUP,
-			S_IROTH => QT_READ_OTHER,
-			S_IWOTH => QT_WRITE_OTHER,
-			S_IXOTH => QT_EXEC_OTHER
-		}
-
-		qt_permissions = 0
-		unix_permissions = File.stat(path).mode
-		unix_to_qt.each do |unix_flag,qt_flags|
-			qt_permissions |= qt_flags if ((unix_permissions & unix_flag) != 0)
-		end
-
-		return qt_permissions.to_i
+	def file_mode_string(mode)
+		mode_octal = (mode & 0777).to_s(8)
+		return "0#{mode_octal}"
 	end
 end
 

@@ -4,6 +4,7 @@
 #include "UpdateScript.h"
 
 #include <iostream>
+#include <algorithm>
 
 void TestUpdateScript::testV2Script()
 {
@@ -19,10 +20,31 @@ void TestUpdateScript::testV2Script()
 	TEST_COMPARE(newFormat.filesToUninstall(),oldFormat.filesToUninstall());
 }
 
+void TestUpdateScript::testPermissions()
+{
+	UpdateScript script;
+	script.parse("file_list.xml");
+
+	for (std::vector<UpdateScriptFile>::const_iterator iter = script.filesToInstall().begin();
+	     iter != script.filesToInstall().end();
+	     iter++)
+	{
+		if (iter->isMainBinary)
+		{
+			TEST_COMPARE(iter->permissions,0755);
+		}
+		if (!iter->linkTarget.empty())
+		{
+			TEST_COMPARE(iter->permissions,0);
+		}
+	}
+}
+
 int main(int,char**)
 {
 	TestList<TestUpdateScript> tests;
 	tests.addTest(&TestUpdateScript::testV2Script);
+	tests.addTest(&TestUpdateScript::testPermissions);
 	return TestUtils::runTest(tests);
 }
 
