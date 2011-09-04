@@ -478,9 +478,9 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  end_ts);
 		if (control->conn_version < 57) {
 			sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_unknown_0)); // "duplicate"
-			sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "shareable"
+			sprintf(buf + strlen(buf), "%ld[]:[]", 0L); // "shareable"
 		}
-		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "findid"
+		sprintf(buf + strlen(buf), "%ld[]:[]", 0L); // "findid"
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_hostname));
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_source_id);
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_card_id);
@@ -1352,9 +1352,9 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  end_ts);
 		if (control->conn_version < 57) {
 			sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_unknown_0)); // "duplicate"
-			sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "shareable"
+			sprintf(buf + strlen(buf), "%ld[]:[]", 0L); // "shareable"
 		}
-		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "findid"
+		sprintf(buf + strlen(buf), "%ld[]:[]", 0L); // "findid"
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_hostname));
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_source_id);
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_card_id);
