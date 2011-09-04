@@ -22,8 +22,16 @@
 
 #include "guilib/GUIInfoTypes.h"
 
+class TiXmlElement;
+
 namespace INFO
 {
+class CSkinVariable
+{
+public:
+  static void LoadFromXML(const TiXmlElement *root);
+};
+
 class CSkinVariableString
 {
 public:
@@ -42,6 +50,8 @@ private:
 
   typedef std::vector<ConditionLabelPair> VECCONDITIONLABELPAIR;
   VECCONDITIONLABELPAIR m_conditionLabelPairs;
+
+  friend class CSkinVariable;
 };
 
 }
