@@ -131,6 +131,7 @@ EXPORTS
 	cmyth_proginfo_rec_start
 	cmyth_proginfo_rec_end
 	cmyth_proginfo_rec_status
+	cmyth_proginfo_flags
 	cmyth_proginfo_get_detail
 	cmyth_proginfo_compare
 	cmyth_proginfo_host
