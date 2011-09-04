@@ -4882,6 +4882,11 @@ void CApplication::ShowVolumeBar(const CAction *action)
   }
 }
 
+bool CApplication::IsMuted() const
+{
+  return g_settings.m_bMute;
+}
+
 void CApplication::ToggleMute(void)
 {
   if (g_settings.m_bMute)

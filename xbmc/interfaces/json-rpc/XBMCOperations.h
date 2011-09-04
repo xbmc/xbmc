@@ -29,7 +29,8 @@ namespace JSONRPC
   class CXBMCOperations : CFileItemHandler
   {
   public:
-    static JSON_STATUS GetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+    static JSON_STATUS GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
+
     static JSON_STATUS SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
     static JSON_STATUS ToggleMute(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
 
@@ -39,5 +40,6 @@ namespace JSONRPC
     static JSON_STATUS Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result);
   private:
     inline static int ParseLogLevel(const char *level);
+    static JSON_STATUS GetPropertyValue(const CStdString &property, CVariant &result);
   };
 }

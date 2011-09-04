@@ -245,7 +245,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Input.Home",                                   CInputOperations::Home },
 
 // XBMC operations
-  { "XBMC.GetVolume",                               CXBMCOperations::GetVolume },
+  { "XBMC.GetProperties",                           CXBMCOperations::GetProperties },
   { "XBMC.SetVolume",                               CXBMCOperations::SetVolume },
   { "XBMC.ToggleMute",                              CXBMCOperations::ToggleMute },
   { "XBMC.Play",                                    CXBMCOperations::Play },
