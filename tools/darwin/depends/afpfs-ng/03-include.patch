@@ -1,5 +1,5 @@
---- afpfs-ng-0.8.1/include/afp.h	2011-08-25 20:58:17.000000000 +0200
-+++ afpfs-ng-0.8.1/include/afp.h	2011-08-25 21:15:14.000000000 +0200
+--- include/afp.h	2011-08-25 20:58:17.000000000 +0200
++++ include/afp.h	2011-08-25 21:15:14.000000000 +0200
 @@ -7,8 +7,8 @@
  #include <netdb.h>
  #include <sys/statvfs.h>
