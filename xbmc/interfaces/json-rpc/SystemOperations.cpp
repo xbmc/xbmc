@@ -25,6 +25,25 @@
 
 using namespace JSONRPC;
 
+JSON_STATUS CSystemOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CVariant properties = CVariant(CVariant::VariantTypeObject);
+  for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
+  {
+    CStdString propertyName = parameterObject["properties"][index].asString();
+    CVariant property;
+    JSON_STATUS ret;
+    if ((ret = GetPropertyValue(client->GetPermissionFlags(), propertyName, property)) != OK)
+      return ret;
+
+    properties[propertyName] = property;
+  }
+
+  result = properties;
+
+  return OK;
+}
+
 JSON_STATUS CSystemOperations::Shutdown(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if (g_powerManager.CanPowerdown())
@@ -132,6 +151,22 @@ JSON_STATUS CSystemOperations::GetInfoBooleans(const CStdString &method, ITransp
       result[info[i].c_str()] = CVariant(infoLabels[i]);
     }
   }
+
+  return OK;
+}
+
+JSON_STATUS CSystemOperations::GetPropertyValue(int permissions, const CStdString &property, CVariant &result)
+{
+  if (property.Equals("canshutdown"))
+    result = g_powerManager.CanPowerdown() && (permissions & ControlPower);
+  else if (property.Equals("cansuspend"))
+    result = g_powerManager.CanSuspend() && (permissions & ControlPower);
+  else if (property.Equals("canhibernate"))
+    result = g_powerManager.CanHibernate() && (permissions & ControlPower);
+  else if (property.Equals("canreboot"))
+    result = g_powerManager.CanReboot() && (permissions & ControlPower);
+  else
+    return InvalidParams;
 
   return OK;
 }
