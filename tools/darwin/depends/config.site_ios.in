@@ -86,3 +86,8 @@ if test "${PACKAGE_NAME}" = "libcdio" ; then
   with_iso_info=no
   with_iso_read=no
 fi
+
+# tweaks for libgcrypt
+if test "${PACKAGE_NAME}" = "libgcrypt" ; then
+  export CFLAGS="${CFLAGS} -fgnu89-inline"
+fi
