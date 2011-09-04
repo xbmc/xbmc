@@ -31,6 +31,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); patch -p1 <../07-boxee4.patch
 	cd $(SOURCE); patch -p1 <../08-boxee5.patch
 	cd $(SOURCE); patch -p1 <../09-boxee6.patch
+	cd $(SOURCE); patch -p1 <../10-fix-errno.patch
 	cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); $(CONFIGURE)
 
