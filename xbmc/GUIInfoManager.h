@@ -32,6 +32,7 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "inttypes.h"
 #include "XBDateTime.h"
+#include "interfaces/info/SkinVariable.h"
 
 #include <list>
 #include <map>
@@ -492,6 +493,9 @@ namespace INFO
 
 #define MUSICPLAYER_PROPERTY_OFFSET 900 // last 100 id's reserved for musicplayer props.
 
+#define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 36001
+#define CONDITIONAL_LABEL_END         37000
+
 // the multiple information vector
 #define MULTI_INFO_START              40000
 #define MULTI_INFO_END                99999
@@ -672,6 +676,9 @@ public:
 
   int TranslateSingleString(const CStdString &strCondition);
 
+  int RegisterSkinVariableString(const INFO::CSkinVariableString& info);
+  int TranslateSkinVariableString(const CStdString& name);
+  CStdString GetSkinVariableString(int info, int contextWindow, bool preferImage = false, const CGUIListItem *item=NULL);
 protected:
   friend class INFO::InfoSingle;
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
@@ -763,6 +770,7 @@ protected:
   int m_prevWindowID;
 
   std::vector<INFO::InfoBool*> m_bools;
+  std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
   unsigned int m_updateTime;
 
   int m_libraryHasMusic;

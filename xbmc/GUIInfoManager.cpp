@@ -3668,6 +3668,8 @@ void CGUIInfoManager::Clear()
   for (unsigned int i = 0; i < m_bools.size(); ++i)
     delete m_bools[i];
   m_bools.clear();
+
+  m_skinVariableStrings.clear();
 }
 
 void CGUIInfoManager::UpdateFPS()
@@ -4479,4 +4481,37 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
             GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS));
   }
   return false;
+}
+
+int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString& info)
+{
+  CSingleLock lock(m_critInfo);
+  int id = TranslateSkinVariableString(info.GetName());
+  if (id != 0)
+    return id;
+
+  m_skinVariableStrings.push_back(info);
+  return CONDITIONAL_LABEL_START + m_skinVariableStrings.size() - 1;
+}
+
+int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name)
+{
+  for (vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
+       it != m_skinVariableStrings.end(); ++it)
+  {
+    if (it->GetName().Equals(name))
+      return it - m_skinVariableStrings.begin() + CONDITIONAL_LABEL_START;
+  }
+  return 0;
+}
+
+CStdString CGUIInfoManager::GetSkinVariableString(int info, int contextWindow, 
+                                                  bool preferImage /*= false*/,
+                                                  const CGUIListItem *item /*= NULL*/)
+{
+  info -= CONDITIONAL_LABEL_START;
+  if (info >= 0 && info < (int)m_skinVariableStrings.size())
+    return m_skinVariableStrings[info].GetValue(contextWindow, preferImage, item);
+
+  return "";
 }
