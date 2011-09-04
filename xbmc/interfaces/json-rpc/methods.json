@@ -1380,6 +1380,16 @@
     "params": [ ],
     "returns": "string"
   },
+  "System.GetProperties": {
+    "type": "method",
+    "description": "Retrieves the values of the given properties",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "System.Property.Name" } }
+    ],
+    "returns":  { "$ref": "System.Property.Value", "required": true }
+  },
   "System.Shutdown": {
     "type": "method",
     "description": "Shuts the system running XBMC down",
@@ -1503,7 +1513,7 @@
       { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "XBMC.Property.Name" } }
     ],
     "returns":  { "$ref": "XBMC.Property.Value", "required": true }
-  },  
+  },
   "XBMC.SetVolume": {
     "type": "method",
     "description": "Set the current volume",

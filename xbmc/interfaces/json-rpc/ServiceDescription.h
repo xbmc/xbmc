@@ -812,6 +812,19 @@ namespace JSONRPC
         "}"
       "}"
     "}",
+    "\"System.Property.Name\": {"
+      "\"type\": \"string\","
+      "\"enum\": [ \"canshutdown\", \"cansuspend\", \"canhibernate\", \"canreboot\" ]"
+    "}",
+    "\"System.Property.Value\": {"
+      "\"type\": \"object\","
+      "\"properties\": {"
+        "\"canshutdown\": { \"type\": \"boolean\" },"
+        "\"cansuspend\": { \"type\": \"boolean\" },"
+        "\"canhibernate\": { \"type\": \"boolean\" },"
+        "\"canreboot\": { \"type\": \"boolean\" }"
+      "}"
+    "}",
     "\"XBMC.Property.Name\": {"
       "\"type\": \"string\","
       "\"enum\": [ \"volume\", \"muted\" ]"
@@ -2206,6 +2219,16 @@ namespace JSONRPC
       "\"permission\": \"RemoveData\","
       "\"params\": [ ],"
       "\"returns\": \"string\""
+    "}",
+    "\"System.GetProperties\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Retrieves the values of the given properties\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": ["
+        "{ \"name\": \"properties\", \"type\": \"array\", \"uniqueItems\": true, \"required\": true, \"items\": { \"$ref\": \"System.Property.Name\" } }"
+      "],"
+      "\"returns\":  { \"$ref\": \"System.Property.Value\", \"required\": true }"
     "}",
     "\"System.Shutdown\": {"
       "\"type\": \"method\","

@@ -228,6 +228,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
 
 // System operations
+  { "System.GetProperties",                         CSystemOperations::GetProperties },
   { "System.Shutdown",                              CSystemOperations::Shutdown },
   { "System.Suspend",                               CSystemOperations::Suspend },
   { "System.Hibernate",                             CSystemOperations::Hibernate },

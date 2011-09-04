@@ -783,7 +783,20 @@
         "tvshowid": { "$ref": "Library.Id" }
       }
     }
-  },  
+  },
+  "System.Property.Name": {
+    "type": "string",
+    "enum": [ "canshutdown", "cansuspend", "canhibernate", "canreboot" ]
+  },
+  "System.Property.Value": {
+    "type": "object",
+    "properties": {
+      "canshutdown": { "type": "boolean" },
+      "cansuspend": { "type": "boolean" },
+      "canhibernate": { "type": "boolean" },
+      "canreboot": { "type": "boolean" }
+    }
+  },
   "XBMC.Property.Name": {
     "type": "string",
     "enum": [ "volume", "muted" ]
