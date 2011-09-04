@@ -1050,7 +1050,8 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
   if (m_renderMethod == RENDER_DXVA)
   {
-    if(method == VS_INTERLACEMETHOD_DXVA_BOB)
+    if(method == VS_INTERLACEMETHOD_DXVA_BOB
+    || method == VS_INTERLACEMETHOD_DXVA_BEST)
       return true;
     return false;
   }

@@ -1109,23 +1109,25 @@ bool CProcessor::OpenProcessor()
   }
 
   m_device = guid_list[0];
-  for(unsigned i = 0; i < guid_count; i++)
+  if (m_interlace_method != VS_INTERLACEMETHOD_DXVA_BEST)
   {
-    GUID* g = &guid_list[i];
-    CLog::Log(LOGDEBUG, "DXVA - processor found %s", GUIDToString(*g).c_str());
+    for(unsigned i = 0; i < guid_count; i++)
+    {
+      GUID* g = &guid_list[i];
+      CLog::Log(LOGDEBUG, "DXVA - processor found %s", GUIDToString(*g).c_str());
 
-    if (m_interlace_method == VS_INTERLACEMETHOD_NONE)
-    {
-      if(IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
-        m_device = *g;
-    }
-    else
-    {
-      if(IsEqualGUID(*g, DXVA2_VideoProcBobDevice))
-        m_device = *g;
+      if (m_interlace_method == VS_INTERLACEMETHOD_NONE)
+      {
+        if(IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
+          m_device = *g;
+      }
+      else
+      {
+        if(IsEqualGUID(*g, DXVA2_VideoProcBobDevice))
+          m_device = *g;
+      }
     }
   }
-
   CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
 
   D3DFORMAT rtFormat = D3DFMT_X8R8G8B8;
@@ -1371,7 +1373,7 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
       if (m_interlace_method == VS_INTERLACEMETHOD_NONE)
         vs.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
-      else if (m_interlace_method == VS_INTERLACEMETHOD_DXVA_BOB && vs.SampleFormat.SampleFormat == DXVA2_SampleProgressiveFrame)
+      else if ((m_interlace_method == VS_INTERLACEMETHOD_DXVA_BOB || m_interlace_method == VS_INTERLACEMETHOD_DXVA_BEST) && vs.SampleFormat.SampleFormat == DXVA2_SampleProgressiveFrame)
         vs.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
 
       valid++;
