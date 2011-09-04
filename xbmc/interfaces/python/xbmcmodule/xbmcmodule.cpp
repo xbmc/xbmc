@@ -129,8 +129,8 @@ namespace PYXBMC
 
   // output() method
   PyDoc_STRVAR(output__doc__,
-               "'xbmc.output()' is depreciated and will be removed in future releases,\n"
-               "please use 'xbmc.log()' instead");
+    "'xbmc.output()' is depreciated and will be removed in future releases,\n"
+    "please use 'xbmc.log()' instead");
   
   PyObject* XBMC_Output(PyObject *self, PyObject *args, PyObject *kwds)
   {
