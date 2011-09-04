@@ -729,6 +729,16 @@ bool URIUtils::IsNfs(const CStdString& strFile)
   return strFile2.Left(4).Equals("nfs:");
 }
 
+bool URIUtils::IsAfp(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+  
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+  
+  return strFile2.Left(4).Equals("afp:");
+}
+
 
 bool URIUtils::IsVideoDb(const CStdString& strFile)
 {
