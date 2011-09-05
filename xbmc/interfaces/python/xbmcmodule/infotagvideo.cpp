@@ -228,7 +228,7 @@ namespace PYXBMC
 
   PyObject* InfoTagVideo_GetLastPlayed(InfoTagVideo *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.m_lastPlayed.c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.m_lastPlayed.GetAsLocalizedDateTime().c_str());
   }
 
   PyMethodDef InfoTagVideo_methods[] = {

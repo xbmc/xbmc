@@ -510,7 +510,7 @@ namespace PYXBMC
           else if (strcmpi(PyString_AsString(key), "credits") == 0)
             self->item->GetVideoInfoTag()->m_writingCredits = StringUtils::Split(tmp, g_advancedSettings.m_videoItemSeparator);
           else if (strcmpi(PyString_AsString(key), "lastplayed") == 0)
-            self->item->GetVideoInfoTag()->m_lastPlayed = tmp;
+            self->item->GetVideoInfoTag()->m_lastPlayed.SetFromDBDateTime(tmp);
           else if (strcmpi(PyString_AsString(key), "album") == 0)
             self->item->GetVideoInfoTag()->m_strAlbum = tmp;
           else if (strcmpi(PyString_AsString(key), "votes") == 0)

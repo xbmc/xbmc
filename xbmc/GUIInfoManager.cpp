@@ -3400,7 +3400,7 @@ CStdString CGUIInfoManager::GetVideoLabel(int item)
     case VIDEOPLAYER_TAGLINE:
       return m_currentFile->GetVideoInfoTag()->m_strTagLine;
     case VIDEOPLAYER_LASTPLAYED:
-      return m_currentFile->GetVideoInfoTag()->m_lastPlayed;
+      return m_currentFile->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDateTime();
     case VIDEOPLAYER_PLAYCOUNT:
       {
         CStdString strPlayCount;
@@ -3831,7 +3831,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     {
       CStdString strLastPlayed;
       if (item->HasVideoInfoTag())
-        return item->GetVideoInfoTag()->m_lastPlayed;
+        return item->GetVideoInfoTag()->m_lastPlayed.GetAsLocalizedDate();
       if (item->HasMusicInfoTag())
         return item->GetMusicInfoTag()->GetLastPlayed();
       break;

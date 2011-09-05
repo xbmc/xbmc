@@ -141,7 +141,7 @@ void SSortFileItem::ByLastPlayed(CFileItemPtr &item)
   if (!item) return;
 
   if (item->HasVideoInfoTag())
-    item->SetSortLabel(item->GetVideoInfoTag()->m_lastPlayed);
+    item->SetSortLabel(item->GetVideoInfoTag()->m_lastPlayed.GetAsDBDateTime());
   else if (item->HasMusicInfoTag()) // TODO: No last played info in the fileitem for music
     item->SetSortLabel(item->GetMusicInfoTag()->GetTitle());
   else

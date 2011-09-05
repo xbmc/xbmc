@@ -78,7 +78,7 @@ void CVideoInfoTag::Reset()
   m_iTrack = -1;
   m_fanart.m_xml.clear();
   m_strRuntime.clear();
-  m_lastPlayed.clear();
+  m_lastPlayed.Reset();
   m_showLink.clear();
   m_streamDetails.Reset();
   m_playCount = 0;
@@ -149,7 +149,7 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   }
   XMLUtils::SetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::SetInt(movie, "playcount", m_playCount);
-  XMLUtils::SetString(movie, "lastplayed", m_lastPlayed);
+  XMLUtils::SetDate(movie, "lastplayed", m_lastPlayed);
   if (savePathInfo)
   {
     XMLUtils::SetString(movie, "file", m_strFile);
@@ -447,7 +447,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["album"] = m_strAlbum;
   value["artist"] = m_strArtist;
   value["playcount"] = m_playCount;
-  value["lastplayed"] = m_lastPlayed;
+  value["lastplayed"] = m_lastPlayed.GetAsDBDateTime();
   value["top250"] = m_iTop250;
   value["year"] = m_iYear;
   value["season"] = m_iSeason;
@@ -517,7 +517,7 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prioritise)
   XMLUtils::GetString(movie, "runtime", m_strRuntime);
   XMLUtils::GetString(movie, "mpaa", m_strMPAARating);
   XMLUtils::GetInt(movie, "playcount", m_playCount);
-  XMLUtils::GetString(movie, "lastplayed", m_lastPlayed);
+  XMLUtils::GetDate(movie, "lastplayed", m_lastPlayed);
   XMLUtils::GetString(movie, "file", m_strFile);
   XMLUtils::GetString(movie, "path", m_strPath);
   XMLUtils::GetString(movie, "id", m_strIMDBNumber);

@@ -337,7 +337,7 @@ public:
    \param date The date the file was last viewed (does not denote the video was watched to completion).  If empty we current datetime (if count > 0) or never viewed (if count = 0).
    \sa GetPlayCount, IncrementPlayCount, UpdateLastPlayed
    */
-  void SetPlayCount(const CFileItem &item, int count, const CStdString &date = "");
+  void SetPlayCount(const CFileItem &item, int count, const CDateTime &date = CDateTime());
 
   /*! \brief Increment the playcount of an item
    Increments the playcount and updates the last played date
