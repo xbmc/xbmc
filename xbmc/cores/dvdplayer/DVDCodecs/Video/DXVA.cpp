@@ -1109,7 +1109,7 @@ bool CProcessor::OpenProcessor()
   }
 
   m_device = guid_list[0];
-  if (m_interlace_method != VS_INTERLACEMETHOD_DXVA_BEST)
+  if (m_interlace_method != VS_INTERLACEMETHOD_DXVA_BEST && m_interlace_method != VS_INTERLACEMETHOD_AUTO)
   {
     for(unsigned i = 0; i < guid_count; i++)
     {

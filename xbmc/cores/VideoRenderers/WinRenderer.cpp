@@ -1045,19 +1045,20 @@ bool CWinRenderer::CreateYV12Texture(int index)
 
 bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 {
-  if (method == VS_INTERLACEMETHOD_NONE)
+  if(method == VS_INTERLACEMETHOD_NONE
+  || method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
   if (m_renderMethod == RENDER_DXVA)
   {
-    if(method == VS_INTERLACEMETHOD_DXVA_BOB
+    if(method == VS_INTERLACEMETHOD_DXVA_ANY
+    || method == VS_INTERLACEMETHOD_DXVA_BOB
     || method == VS_INTERLACEMETHOD_DXVA_BEST)
       return true;
     return false;
   }
 
-  if(method == VS_INTERLACEMETHOD_AUTO
-  || method == VS_INTERLACEMETHOD_DEINTERLACE
+  if(method == VS_INTERLACEMETHOD_DEINTERLACE
   || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
     return true;
 
