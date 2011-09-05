@@ -724,16 +724,15 @@ bool CDecoder::OpenTarget(const GUID &guid)
   CHECK(m_service->GetDecoderRenderTargets(guid, &output_count, &output_list))
   SCOPE(D3DFORMAT, output_list);
 
-  for(unsigned k = 0; k < output_count; k++)
-  {
-    if(output_list[k] == MAKEFOURCC('Y','V','1','2')
-    || output_list[k] == MAKEFOURCC('N','V','1','2'))
-    {
-      m_input         = guid;
-      m_format.Format = output_list[k];
-      return true;
-    }
-  }
+  for (unsigned i = 0; render_targets[i] != D3DFMT_UNKNOWN; i++)
+      for(unsigned k = 0; k < output_count; k++)
+          if (output_list[k] == render_targets[i])
+          {
+              m_input = guid;
+              m_format.Format = output_list[k];
+              return true;
+          }
+
   return false;
 }
 
