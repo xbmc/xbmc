@@ -722,6 +722,13 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
       if (type.divisibleBy > 0)
         output["divisibleBy"] = type.divisibleBy;
     }
+    if (HasType(type.type, StringValue))
+    {
+      if (type.minLength >= 0)
+        output["minLength"] = type.minLength;
+      if (type.maxLength >= 0)
+        output["maxLength"] = type.maxLength;
+    }
 
     // Print array fields
     if (HasType(type.type, ArrayValue))
@@ -1118,6 +1125,27 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
     }
   }
 
+  // If we have a string, we need to check the length
+  if (HasType(type.type, StringValue) && value.isString())
+  {
+    int size = strlen(value.asString());
+    if (size < type.minLength)
+    {
+      CLog::Log(LOGWARNING, "JSONRPC: Value does not meet minLength requirements in type %s", type.name.c_str());
+      errorMessage.Format("Value should have a minimum length of %d but has a length of %d", type.minLength, size);
+      errorData["message"] = errorMessage.c_str();
+      return InvalidParams;
+    }
+
+    if (type.maxLength >= 0 && size > type.maxLength)
+    {
+      CLog::Log(LOGWARNING, "JSONRPC: Value does not meet maxLength requirements in type %s", type.name.c_str());
+      errorMessage.Format("Value should have a maximum length of %d but has a length of %d", type.maxLength, size);
+      errorData["message"] = errorMessage.c_str();
+      return InvalidParams;
+    }
+  }
+
   // Otherwise it can have any value
   outputValue = value;
   return OK;
@@ -1320,7 +1348,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
     type.type = parseJSONSchemaType(value["type"]);
   }
 
-  if (type.type == ObjectValue)
+  if (HasType(type.type, ObjectValue))
   {
     // If the type definition is of type "object"
     // and has a "properties" definition we need
@@ -1376,7 +1404,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
     // If the defined parameter is an array
     // we need to check for detailed definitions
     // of the array items
-    if (type.type == ArrayValue)
+    if (HasType(type.type, ArrayValue))
     {
       // Check for "uniqueItems" field
       if (value.isMember("uniqueItems") && value["uniqueItems"].isBoolean())
@@ -1445,7 +1473,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
     // The type is whether an object nor an array
     else 
     {
-      if ((type.type & NumberValue) == NumberValue || (type.type  & IntegerValue) == IntegerValue)
+      if (HasType(type.type, NumberValue) || HasType(type.type, IntegerValue))
       {
         if ((type.type & NumberValue) == NumberValue)
         {
@@ -1461,6 +1489,12 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
         type.exclusiveMinimum = value["exclusiveMinimum"].asBoolean(false);
         type.exclusiveMaximum = value["exclusiveMaximum"].asBoolean(false);
         type.divisibleBy = (unsigned int)value["divisibleBy"].asUnsignedInteger(0);
+      }
+      
+      if (HasType(type.type, StringValue))
+      {
+        type.minLength = (int)value["minLength"].asInteger(-1);
+        type.maxLength = (int)value["maxLength"].asInteger(-1);
       }
 
       // If the type definition is neither an

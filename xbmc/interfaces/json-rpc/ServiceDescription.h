@@ -33,7 +33,7 @@ namespace JSONRPC
     "}",
     "\"Array.String\": {"
       "\"type\": \"array\","
-      "\"items\": { \"type\": \"string\" }"
+      "\"items\": { \"type\": \"string\", \"minLength\": 1 }"
     "}",
     "\"Array.Integer\": {"
       "\"type\": \"array\","
@@ -467,8 +467,8 @@ namespace JSONRPC
     "\"Playlist.Id\": {"
       "\"type\": \"object\","
       "\"properties\": {"
-        "\"id\": { \"type\": \"string\", \"description\": \"Identification of a virtual playlist\" },"
-        "\"file\": { \"type\": \"string\", \"description\": \"File from which to load a playlist\" }"
+        "\"id\": { \"type\": \"string\", \"minLength\": 1, \"description\": \"Identification of a virtual playlist\" },"
+        "\"file\": { \"type\": \"string\", \"minLength\": 5, \"description\": \"File from which to load a playlist\" }"
       "}"
     "}",
     "\"Playlist.Item.Position\": {"
