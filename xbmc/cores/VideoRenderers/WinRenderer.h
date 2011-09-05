@@ -30,6 +30,8 @@
 #include "RenderCapture.h"
 #include "settings/VideoSettings.h"
 #include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
+#include "cores/VideoRenderers/RenderFlags.h"
+
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING
@@ -49,31 +51,6 @@
 #define IMAGE_FLAG_RESERVED  0x08 /* image is reserved, must be asked for specifically used to preserve images */
 
 #define IMAGE_FLAG_INUSE (IMAGE_FLAG_WRITING | IMAGE_FLAG_READING | IMAGE_FLAG_RESERVED)
-
-
-#define RENDER_FLAG_BOT         0x01
-#define RENDER_FLAG_TOP         0x02
-#define RENDER_FLAG_BOTH (RENDER_FLAG_BOT | RENDER_FLAG_TOP)
-#define RENDER_FLAG_FIELDMASK   0x03
-
-#define RENDER_FLAG_NOOSD       0x04 /* don't draw any osd */
-
-/* these two flags will be used if we need to render same image twice (bob deinterlacing) */
-#define RENDER_FLAG_NOLOCK      0x10   /* don't attempt to lock texture before rendering */
-#define RENDER_FLAG_NOUNLOCK    0x20   /* don't unlock texture after rendering */
-
-#define RENDER_FLAG_FIELD0      0x80
-#define RENDER_FLAG_FIELD1      0x100
-
-/* this defines what color translation coefficients */
-#define CONF_FLAGS_YUVCOEF_MASK(a) ((a) & 0x07)
-#define CONF_FLAGS_YUVCOEF_BT709 0x01
-#define CONF_FLAGS_YUVCOEF_BT601 0x02
-#define CONF_FLAGS_YUVCOEF_240M  0x03
-#define CONF_FLAGS_YUVCOEF_EBU   0x04
-
-#define CONF_FLAGS_YUV_FULLRANGE 0x08
-#define CONF_FLAGS_FULLSCREEN    0x10
 
 class CBaseTexture;
 class CYUV2RGBShader;
