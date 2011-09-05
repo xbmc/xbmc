@@ -1,6 +1,7 @@
 INCLUDES=-I. -I../.. -I../../linux
 
-SRCS=WinBindingEGL
+SRCS=WinBindingEGL.cpp \
+     WinSystemGLES.cpp \
      
 LIB=windowing_egl.a
 
