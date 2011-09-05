@@ -21,7 +21,7 @@
  *
  */
 
-#if defined(HAVE_CONFIG_H) && !defined(_WIN32)
+#if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
 #include "config.h"
 #endif
 
@@ -70,19 +70,19 @@
  * Non-free Components
  **********************/
 
-#if defined(_LINUX) || defined(__APPLE__)
+#if defined(TARGET_WINDOWS)
+  #define HAS_FILESYSTEM_RAR
+#else
   #if defined(HAVE_XBMC_NONFREE)
     #define HAS_FILESYSTEM_RAR
   #endif
-#else
-  #define HAS_FILESYSTEM_RAR
 #endif
 
 /*****************
  * Win32 Specific
  *****************/
 
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
 #define HAS_SDL
 #define HAS_SDL_JOYSTICK
 #define HAS_DVD_DRIVE
@@ -103,10 +103,8 @@
  * Mac Specific
  *****************/
 
-#ifdef __APPLE__
-  #if defined(__arm__)
-    #define HAS_XBMC_MUTEX
-  #else
+#if defined(TARGET_DARWIN)
+  #if defined(TARGET_DARWIN_OSX)
     #define HAS_GL
     #define HAS_SDL
     #define HAS_SDL_AUDIO
@@ -122,7 +120,7 @@
  * Linux Specific
  *****************/
 
-#if defined(_LINUX) && !defined(__APPLE__)
+#if defined(TARGET_LINUX)
 #if defined(HAVE_LIBAVAHI_COMMON) && defined(HAVE_LIBAVAHI_CLIENT)
 #define HAS_ZEROCONF
 #define HAS_AVAHI
@@ -163,7 +161,7 @@
  * Git revision
  *****************/
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "../git_revision.h"
 #endif
 
@@ -175,7 +173,7 @@
  * Additional platform specific includes
  ****************************************/
 
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
 #include <windows.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "mmsystem.h"
@@ -196,7 +194,7 @@
 #endif
 #endif
 
-#ifdef _LINUX
+#if defined(TARGET_POSIX)
 #include <time.h>
 #include <sys/time.h>
 #include <sys/types.h>
@@ -232,22 +230,22 @@
 
 
 #ifdef HAS_GL
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
 #include "GL/glew.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
 //#include <GL/wglext.h>
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
 #include <GL/glew.h>
 #include <OpenGL/gl.h>
-#elif defined(_LINUX)
+#elif defined(TARGET_LINUX)
 #include <GL/glew.h>
 #include <GL/gl.h>
 #endif
 #endif
 
 #if HAS_GLES == 2
-  #if defined(__APPLE__)
+  #if defined(TARGET_DARWIN)
     #include <OpenGLES/ES2/gl.h>
     #include <OpenGLES/ES2/glext.h>
   #else
