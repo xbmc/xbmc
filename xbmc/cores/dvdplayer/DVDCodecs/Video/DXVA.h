@@ -135,6 +135,7 @@ protected:
   bool UpdateSize(const DXVA2_VideoDesc& dsc);
   bool CreateSurfaces();
   bool OpenProcessor();
+  bool SelectProcessor();
 
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;

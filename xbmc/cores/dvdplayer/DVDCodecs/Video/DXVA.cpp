@@ -1088,10 +1088,8 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
   return true;
 }
 
-bool CProcessor::OpenProcessor()
+bool CProcessor::SelectProcessor()
 {
-  SAFE_RELEASE(m_process);
-
   if(m_interlace_method != VS_INTERLACEMETHOD_AUTO
   && m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB
   && m_interlace_method != VS_INTERLACEMETHOD_DXVA_BEST)
@@ -1130,6 +1128,16 @@ bool CProcessor::OpenProcessor()
       }
     }
   }
+  return true;
+}
+
+bool CProcessor::OpenProcessor()
+{
+  if (!SelectProcessor())
+    return false;
+
+  SAFE_RELEASE(m_process);
+
   CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
 
   D3DFORMAT rtFormat = D3DFMT_X8R8G8B8;
