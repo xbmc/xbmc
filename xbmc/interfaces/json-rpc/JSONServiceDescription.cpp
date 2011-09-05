@@ -37,6 +37,7 @@
 #include "SystemOperations.h"
 #include "InputOperations.h"
 #include "XBMCOperations.h"
+#include "ApplicationOperations.h"
 
 using namespace std;
 using namespace JSONRPC;
@@ -245,13 +246,15 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Input.Back",                                   CInputOperations::Back },
   { "Input.Home",                                   CInputOperations::Home },
 
+// Application operations
+  { "Application.GetProperties",                    CApplicationOperations::GetProperties },
+  { "Application.SetVolume",                        CApplicationOperations::SetVolume },
+  { "Application.ToggleMute",                       CApplicationOperations::ToggleMute },
+  { "Application.Quit",                             CApplicationOperations::Quit },
+
 // XBMC operations
-  { "XBMC.GetProperties",                           CXBMCOperations::GetProperties },
-  { "XBMC.SetVolume",                               CXBMCOperations::SetVolume },
-  { "XBMC.ToggleMute",                              CXBMCOperations::ToggleMute },
   { "XBMC.Play",                                    CXBMCOperations::Play },
-  { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow },
-  { "XBMC.Quit",                                    CXBMCOperations::Quit }
+  { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow }
 };
 
 bool CJSONServiceDescription::prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name)

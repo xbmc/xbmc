@@ -797,11 +797,11 @@
       "canreboot": { "type": "boolean" }
     }
   },
-  "XBMC.Property.Name": {
+  "Application.Property.Name": {
     "type": "string",
     "enum": [ "volume", "muted" ]
   },
-  "XBMC.Property.Value": {
+  "Application.Property.Value": {
     "type": "object",
     "properties": {
       "volume": { "type": "integer" },

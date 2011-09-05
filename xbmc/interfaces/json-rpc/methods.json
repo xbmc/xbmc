@@ -1504,17 +1504,17 @@
     "params": [],
     "returns": "string"
   },
-  "XBMC.GetProperties": {
+  "Application.GetProperties": {
     "type": "method",
     "description": "Retrieves the values of the given properties",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "XBMC.Property.Name" } }
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "Application.Property.Name" } }
     ],
-    "returns":  { "$ref": "XBMC.Property.Value", "required": true }
+    "returns":  { "$ref": "Application.Property.Value", "required": true }
   },
-  "XBMC.SetVolume": {
+  "Application.SetVolume": {
     "type": "method",
     "description": "Set the current volume",
     "transport": "Response",
@@ -1524,13 +1524,21 @@
     ],
     "returns": "integer"
   },
-  "XBMC.ToggleMute": {
+  "Application.ToggleMute": {
     "type": "method",
     "description": "Toggle mute/unmute",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [],
     "returns": { "type": "integer", "description": "New volume" }
+  },
+  "Application.Quit": {
+    "type": "method",
+    "description": "Quit application",
+    "transport": "Response",
+    "permission": "ControlPower",
+    "params": [],
+    "returns": "string"
   },
   "XBMC.Play": {
     "type": "method",
@@ -1552,14 +1560,6 @@
       { "name": "random", "type": "boolean", "default": true },
       { "name": "recursive", "type": "boolean", "default": true }
     ],
-    "returns": "string"
-  },
-  "XBMC.Quit": {
-    "type": "method",
-    "description": "Quit XBMC",
-    "transport": "Response",
-    "permission": "ControlPower",
-    "params": [],
     "returns": "string"
   }
 }

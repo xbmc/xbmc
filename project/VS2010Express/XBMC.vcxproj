@@ -471,6 +471,7 @@
     <ClCompile Include="..\..\xbmc\interfaces\http-api\HttpApi.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\http-api\XBMChttp.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp" />
+    <ClCompile Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AudioLibrary.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AVPlayerOperations.cpp" />
     <ClCompile Include="..\..\xbmc\interfaces\json-rpc\AVPlaylistOperations.cpp" />
@@ -1443,6 +1444,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\http-api\XBMChttp.h" />
     <ClInclude Include="..\..\xbmc\interfaces\IAnnouncer.h" />
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h" />
+    <ClInclude Include="..\..\xbmc\interfaces\json-rpc\ApplicationOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AudioLibrary.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AVPlayerOperations.h" />
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\AVPlaylistOperations.h" />
