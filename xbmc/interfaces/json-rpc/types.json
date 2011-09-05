@@ -158,7 +158,7 @@
       "mood": { "type": "string" },
       "style": { "type": "string" },
       "type": { "type": "string" },
-      "album_label": { "type": "string" },
+      "albumlabel": { "type": "string" },
       "rating": { "type": "integer" },
       "year": { "type": "integer" },
       "musicbrainzalbumid": { "type": "string" },
@@ -203,7 +203,7 @@
                 "tagline", "plot", "plotoutline", "originaltitle", "lastplayed",
                 "playcount", "writer", "studio", "mpaa", "cast", "country",
                 "imdbnumber", "premiered", "productioncode", "runtime", "set",
-                "showlink", "streamDetails", "top250", "votes", "fanart",
+                "showlink", "streamdetails", "top250", "votes", "fanart",
                 "thumbnail", "file", "sorttitle", "resume", "setid" ]
     }
   },
@@ -241,7 +241,7 @@
       "enum": [ "title", "plot", "votes", "rating", "writer",
                 "firstaired", "playcount", "runtime", "director",
                 "productioncode", "season", "episode", "originaltitle",
-                "showtitle", "cast", "streamDetails", "lastplayed", "fanart",
+                "showtitle", "cast", "streamdetails", "lastplayed", "fanart",
                 "thumbnail", "file", "resume", "tvshowid" ]
     }
   },
@@ -252,7 +252,7 @@
       "description": "Requesting the resume field will result in increased response times",
       "enum": [ "title", "playcount", "runtime", "director",
                 "studio", "year", "plot", "album", "artist",
-                "genre", "track", "streamDetails", "lastplayed",
+                "genre", "track", "streamdetails", "lastplayed",
                 "fanart", "thumbnail", "file", "resume" ]
     }
   },
@@ -337,7 +337,7 @@
       "runtime": { "type": "string" },
       "set": { "$ref": "Array.String" },
       "showlink": { "type": "string" },
-      "streamDetails": { "$ref": "Video.Streams" },
+      "streamdetails": { "$ref": "Video.Streams" },
       "top250": { "type": "integer" },
       "votes": { "type": "string" },
       "resume": { "$ref": "Video.Resume" },
@@ -432,7 +432,7 @@
       "originaltitle": { "type": "string" },
       "showtitle": { "type": "string" },
       "cast": { "$ref": "Video.Cast" },
-      "streamDetails": { "$ref": "Video.Streams" },
+      "streamdetails": { "$ref": "Video.Streams" },
       "lastplayed": { "type": "string" },
       "resume": { "$ref": "Video.Resume" },
       "tvshowid": { "$ref": "Library.Id" }
@@ -457,7 +457,7 @@
       "artist": { "type": "string" },
       "genre": { "type": "string" },
       "track": { "type": "integer" },
-      "streamDetails": { "$ref": "Video.Streams" },
+      "streamdetails": { "$ref": "Video.Streams" },
       "lastplayed": { "type": "string" },
       "resume": { "$ref": "Video.Resume" }
     }
@@ -558,7 +558,7 @@
                 "playcount", "fanart", "director", "trailer", "tagline", "plot",
                 "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
                 "mpaa", "cast", "country", "imdbnumber", "premiered", "productioncode",
-                "runtime", "set", "showlink", "streamDetails", "top250", "votes",
+                "runtime", "set", "showlink", "streamdetails", "top250", "votes",
                 "firstaired", "season", "episode", "showtitle", "thumbnail", "file",
                 "resume", "artistid", "albumid", "tvshowid", "setid" ]
     }
@@ -571,7 +571,7 @@
                   "playcount", "fanart", "director", "trailer", "tagline", "plot",
                   "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
                   "mpaa", "country", "imdbnumber", "premiered", "productioncode",
-                  "runtime", "showlink", "streamDetails", "top250", "votes",
+                  "runtime", "showlink", "streamdetails", "top250", "votes",
                   "firstaired", "season", "episode", "showtitle", "thumbnail",
                   "file", "sorttitle", "episodeguide", "resume", "tvshowid", "setid" ]
     }
@@ -620,7 +620,7 @@
         "runtime": { "type": "string" },
         "set": { "$ref": "Array.String" },
         "showlink": { "type": "string" },
-        "streamDetails": { "$ref": "Video.Streams" },
+        "streamdetails": { "$ref": "Video.Streams" },
         "top250": { "type": "integer" },
         "votes": { "type": "string" },
         "firstaired": { "type": "string" },
@@ -670,7 +670,7 @@
         "productioncode": { "type": "string" },
         "runtime": { "type": "string" },
         "showlink": { "type": "string" },
-        "streamDetails": { "$ref": "Video.Streams" },
+        "streamdetails": { "$ref": "Video.Streams" },
         "top250": { "type": "integer" },
         "votes": { "type": "string" },
         "firstaired": { "type": "string" },
@@ -769,7 +769,7 @@
         "runtime": { "type": "string" },
         "set": { "$ref": "Array.String" },
         "showlink": { "type": "string" },
-        "streamDetails": { "$ref": "Video.Streams" },
+        "streamdetails": { "$ref": "Video.Streams" },
         "top250": { "type": "integer" },
         "votes": { "type": "string" },
         "firstaired": { "type": "string" },
