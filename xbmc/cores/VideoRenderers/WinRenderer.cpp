@@ -32,7 +32,6 @@
 #include "utils/log.h"
 #include "filesystem/File.h"
 #include "utils/MathUtils.h"
-#include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
 #include "VideoShaders/WinVideoFilter.h"
 #include "DllSwScale.h"
 #include "guilib/LocalizeStrings.h"
@@ -67,6 +66,8 @@ CWinRenderer::CWinRenderer()
   m_colorShader = NULL;
   m_scalerShader = NULL;
 
+  m_iRequestedMethod = RENDER_METHOD_AUTO;
+
   m_renderMethod = RENDER_PS;
   m_scalingMethod = VS_SCALINGMETHOD_LINEAR;
   m_scalingMethodGui = (ESCALINGMETHOD)-1;
@@ -80,7 +81,6 @@ CWinRenderer::CWinRenderer()
 
   m_sw_scale_ctx = NULL;
   m_dllSwScale = NULL;
-  m_processor = NULL;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -129,34 +129,20 @@ void CWinRenderer::ManageTextures()
 
 void CWinRenderer::SelectRenderMethod()
 {
-  if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
-  {
-    m_renderMethod = RENDER_DXVA;
-  }
-  else
-  {
-    int requestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
-    CLog::Log(LOGDEBUG, __FUNCTION__": Requested render method: %d", requestedMethod);
+    CLog::Log(LOGDEBUG, __FUNCTION__": Requested render method: %d", m_iRequestedMethod);
 
-    switch(requestedMethod)
+    switch(m_iRequestedMethod)
     {
       case RENDER_METHOD_DXVA:
-        if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_YV12)
+        if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format))
         {
-          if (m_processor == NULL)
-            m_processor = new DXVA::CProcessor();
-
-          if (m_processor->Open(m_sourceWidth, m_sourceHeight, m_flags)
-           && m_processor->CreateSurfaces())
-          {
             m_renderMethod = RENDER_DXVA;
             break;
-          }
-          else
-          {
-            m_processor->Close();
-            SAFE_RELEASE(m_processor);
-          }
+        }
+        else
+        {
+          CLog::Log(LOGNOTICE, "D3D: unable to open DXVA2 processor");
+          m_processor.Close();
         }
       // Drop through to pixel shader
       case RENDER_METHOD_AUTO:
@@ -188,7 +174,28 @@ void CWinRenderer::SelectRenderMethod()
         m_renderMethod = RENDER_SW;
         break;
     }
+
+  // Update flags for DXVA2 pictures
+  if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  {
+    m_flags &= ~CONF_FLAGS_FORMAT_DXVA;
+    switch (m_format)
+    {
+      case MAKEFOURCC('Y','V','1','2'):
+        m_flags |= CONF_FLAGS_FORMAT_YV12;
+        break;
+      case MAKEFOURCC('N','V','1','2'):
+        m_flags |= CONF_FLAGS_FORMAT_NV12;
+        break;
+      case MAKEFOURCC('U','Y','V','Y'):
+        m_flags |= CONF_FLAGS_FORMAT_UYVY;
+        break;
+      case MAKEFOURCC('Y','U','Y','2'):
+        m_flags |= CONF_FLAGS_FORMAT_YUY2;
+        break;
+    }
   }
+
   RenderMethodDetail *rmdet = FindRenderMethod(m_renderMethod);
   CLog::Log(LOGDEBUG, __FUNCTION__": Selected render method %d: %s", m_renderMethod, rmdet != NULL ? rmdet->name : "unknown");
 }
@@ -214,7 +221,7 @@ bool CWinRenderer::UpdateRenderMethod()
   return true;
 }
 
-bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
+bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format)
 {
   if(m_sourceWidth  != width
   || m_sourceHeight != height)
@@ -230,6 +237,7 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
 
   m_fps = fps;
   m_flags = flags;
+  m_format = format;
 
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
@@ -261,18 +269,10 @@ bool CWinRenderer::AddVideoPicture(DVDVideoPicture* picture)
   {
     int source = NextYV12Texture();
     if(source < 0)
-      return true;
-
-    DXVA::CProcessor* processor = m_processor;
-    if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
-      processor = picture->proc;
-
-
+      return false;
 
     DXVABuffer *buf = (DXVABuffer*)m_VideoBuffers[source];
-    SAFE_RELEASE(buf->proc);
-    buf->proc = processor->Acquire();
-    buf->id   = processor->Add(picture);
+    buf->id = m_processor.Add(picture);
     return true;
   }
   return false;
@@ -378,18 +378,17 @@ unsigned int CWinRenderer::PreInit()
 
   g_Windowing.Get3DDevice()->GetDeviceCaps(&m_deviceCaps);
 
+  m_iRequestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
+
+  if (m_iRequestedMethod == RENDER_METHOD_DXVA && !m_processor.PreInit())
+    CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA2 processor - skipping");
+
   return 0;
 }
 
 void CWinRenderer::UnInit()
 {
   CSingleLock lock(g_graphicsContext);
-
-  if (m_processor)
-  {
-    m_processor->Close();
-    SAFE_RELEASE(m_processor);
-  }
 
   if (m_SWTarget.Get())
     m_SWTarget.Release();
@@ -414,6 +413,8 @@ void CWinRenderer::UnInit()
     m_sw_scale_ctx = NULL;
   }
   SAFE_DELETE(m_dllSwScale);
+
+  m_processor.UnInit();
 }
 
 bool CWinRenderer::CreateIntermediateRenderTarget()
@@ -934,8 +935,6 @@ void CWinRenderer::RenderProcessor(DWORD flags)
   destRect.right  = m_destRect.x2;
 
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
-  if(image->proc == NULL)
-    return;
 
   IDirect3DSurface9* target;
   if(FAILED(hr = g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
@@ -944,7 +943,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  image->proc->Render(sourceRect, destRect, target, image->id);
+  m_processor.Render(sourceRect, destRect, target, image->id);
 
   target->Release();
 }
@@ -1030,7 +1029,7 @@ bool CWinRenderer::CreateYV12Texture(int index)
 
 bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 {
-  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  if (m_renderMethod == RENDER_DXVA)
   {
     if(method == VS_INTERLACEMETHOD_NONE)
       return true;
@@ -1229,7 +1228,6 @@ DXVABuffer::~DXVABuffer()
 
 void DXVABuffer::Release()
 {
-  SAFE_RELEASE(proc);
   id = 0;
 }
 

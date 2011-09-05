@@ -176,8 +176,18 @@ double CDVDPlayerVideo::GetOutputDelay()
 
 bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
+  unsigned int surfaces = 0;
+#ifdef HAS_VIDEO_PLAYBACK
+  if(!m_output.inited)
+  {
+    g_renderManager.PreInit();
+    m_output.inited = true;
+  }
+  surfaces = g_renderManager.GetProcessorSize();
+#endif
+
   CLog::Log(LOGNOTICE, "Creating video codec with codec id: %i", hint.codec);
-  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec( hint );
+  CDVDVideoCodec* codec = CDVDFactoryCodec::CreateVideoCodec(hint, surfaces);
   if(!codec)
   {
     CLog::Log(LOGERROR, "Unsupported video codec");
@@ -283,13 +293,6 @@ void CDVDPlayerVideo::OnStartup()
   m_iCurrentPts = DVD_NOPTS_VALUE;
   m_FlipTimeStamp = m_pClock->GetAbsoluteClock();
 
-#ifdef HAS_VIDEO_PLAYBACK
-  if(!m_output.inited)
-  {
-    g_renderManager.PreInit();
-    m_output.inited = true;
-  }
-#endif
   g_dvdPerformanceCounter.EnableVideoDecodePerformance(ThreadHandle());
 }
 
@@ -739,6 +742,8 @@ void CDVDPlayerVideo::OnExit()
     m_pOverlayCodecCC = NULL;
   }
 
+  m_output.inited = false;
+
   CLog::Log(LOGNOTICE, "thread end: video_thread");
 }
 
@@ -921,6 +926,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
    || m_output.dheight != pPicture->iDisplayHeight
    || m_output.framerate != m_fFrameRate
    || m_output.color_format != (unsigned int)pPicture->format
+   || m_output.extended_format != pPicture->extended_format
    || ( m_output.color_matrix != pPicture->color_matrix && pPicture->color_matrix != 0 ) // don't reconfigure on unspecified
    || ( m_output.chroma_position != pPicture->chroma_position && pPicture->chroma_position != 0 )
    || ( m_output.color_primaries != pPicture->color_primaries && pPicture->color_primaries != 0 )
@@ -1049,7 +1055,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     }
 
     CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, m_bFpsInvalid ? 0.0 : m_fFrameRate, formatstr.c_str());
-    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_bFpsInvalid ? 0.0 : m_fFrameRate, flags))
+    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_bFpsInvalid ? 0.0 : m_fFrameRate, flags, pPicture->extended_format))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
@@ -1061,6 +1067,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     m_output.dheight = pPicture->iDisplayHeight;
     m_output.framerate = m_fFrameRate;
     m_output.color_format = pPicture->format;
+    m_output.extended_format = pPicture->extended_format;
     m_output.color_matrix = pPicture->color_matrix;
     m_output.chroma_position = pPicture->chroma_position;
     m_output.color_primaries = pPicture->color_primaries;

@@ -210,7 +210,7 @@ CStdString CXBMCRenderManager::GetVSyncState()
   return state;
 }
 
-bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
+bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format)
 {
   /* make sure any queued frame was fully presented */
   double timeout = m_presenttime + 0.1;
@@ -230,7 +230,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     return false;
   }
 
-  bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
+  bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags, format);
   if(result)
   {
     if( flags & CONF_FLAGS_FULLSCREEN )
@@ -694,10 +694,8 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
   if (!m_pRenderer)
     return -1;
 
-#ifdef HAS_DX
   if(m_pRenderer->AddVideoPicture(&pic))
     return 1;
-#endif
 
   YV12Image image;
   int index = m_pRenderer->GetImage(&image);
@@ -717,6 +715,10 @@ int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
        || pic.format == DVDVideoPicture::FMT_UYVY)
   {
     CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
+  }
+  else if(pic.format == DVDVideoPicture::FMT_DXVA)
+  {
+    CDVDCodecUtils::CopyDXVA2Picture(&image, &pic);
   }
 #ifdef HAVE_LIBVDPAU
   else if(pic.format == DVDVideoPicture::FMT_VDPAU)
