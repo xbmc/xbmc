@@ -719,6 +719,7 @@ if test "$host_vendor" = "apple" ; then
   if test "$use_arch" != "arm"; then
     AC_CHECK_LIB([SDL_mixer],[main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL],      [main],, AC_MSG_ERROR($missing_library))
+    AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
 else
   AC_CHECK_LIB([dl],         [main],, AC_MSG_ERROR($missing_library))
@@ -740,6 +741,7 @@ else
       AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL_mixer],  [main],, AC_MSG_ERROR($missing_library))
     AC_CHECK_LIB([SDL_image],  [main],, AC_MSG_ERROR($missing_library))
+    AC_DEFINE([HAVE_SDL],[1],["Define to 1 if using sdl"])
   fi
 fi
 

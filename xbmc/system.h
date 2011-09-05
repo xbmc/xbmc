@@ -28,10 +28,6 @@
 /*****************
  * All platforms
  *****************/
-#ifndef HAS_SDL
-#define HAS_SDL
-#endif
-
 #define HAS_DVD_SWSCALE
 #define HAS_DVDPLAYER
 #define HAS_EVENT_SERVER
@@ -87,8 +83,9 @@
  *****************/
 
 #ifdef _WIN32
-#define HAS_DVD_DRIVE
+#define HAS_SDL
 #define HAS_SDL_JOYSTICK
+#define HAS_DVD_DRIVE
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
 #define HAS_AUDIO
@@ -108,10 +105,10 @@
 
 #ifdef __APPLE__
   #if defined(__arm__)
-    #undef HAS_SDL
     #define HAS_XBMC_MUTEX
   #else
     #define HAS_GL
+    #define HAS_SDL
     #define HAS_SDL_AUDIO
     #define HAS_SDL_OPENGL
     #define HAS_SDL_WIN_EVENTS
@@ -126,9 +123,6 @@
  *****************/
 
 #if defined(_LINUX) && !defined(__APPLE__)
-#ifndef HAS_SDL_OPENGL
-#define HAS_SDL_OPENGL
-#endif
 #if defined(HAVE_LIBAVAHI_COMMON) && defined(HAVE_LIBAVAHI_CLIENT)
 #define HAS_ZEROCONF
 #define HAS_AVAHI
@@ -142,10 +136,16 @@
 #ifdef HAVE_X11
 #define HAS_GLX
 #endif
-#define HAS_LINUX_NETWORK
+#ifdef HAVE_SDL
+#define HAS_SDL
+#ifndef HAS_SDL_OPENGL
+#define HAS_SDL_OPENGL
+#endif
 #define HAS_SDL_AUDIO
-#define HAS_LIRC
 #define HAS_SDL_WIN_EVENTS
+#endif
+#define HAS_LINUX_NETWORK
+#define HAS_LIRC
 #ifdef HAVE_LIBPULSE
 #define HAS_PULSEAUDIO
 #endif
