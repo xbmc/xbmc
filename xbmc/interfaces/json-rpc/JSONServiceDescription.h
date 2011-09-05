@@ -39,7 +39,7 @@ namespace JSONRPC
   typedef struct JSONSchemaTypeDefinition
   {
     JSONSchemaTypeDefinition()
-      : type(AnyValue)
+      : type(AnyValue), minLength(-1), maxLength(-1)
     { }
 
     /*!
@@ -112,6 +112,16 @@ namespace JSONRPC
      Integer) must be divisible without rest
      */
     unsigned int divisibleBy;
+
+    /*!
+     \brief Minimum length for String types
+     */
+    int minLength;
+
+    /*!
+     \brief Maximum length for String types
+     */
+    int maxLength;
 
     /*!
      \brief (Optional) List of allowed values
