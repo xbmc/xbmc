@@ -108,21 +108,20 @@ void PCMCodec::SetMimeParams(const CStdString& strMimeParams)
 	{
 		for (int i = 0; i < paramCount; i++)
 		{
-			if (mimeParams[i].Find("rate=") >= 0)
-			{
-				CStdStringArray rate;
+			CStdStringArray thisParam;
 
-				int strCount = StringUtils::SplitString(mimeParams[i], "=", rate, 2);
-				if (strCount > 1)
-					m_SampleRate = atoi(rate[1].Trim());
-			}
-			else if (mimeParams[i].Find("channels=") >= 0)
+			int strCount = StringUtils::SplitString(mimeParams[i], "=", thisParam, 2);
+			
+			if (strCount > 1)
 			{
-				CStdStringArray channel;
-
-				int strCount = StringUtils::SplitString(mimeParams[i], "=", channel, 2);
-				if (strCount > 1)
-					m_Channels = atoi(channel[1].Trim());
+				if (thisParam[0] == "rate")
+				{
+					m_SampleRate = atoi(thisParam[1].Trim());
+				}
+				else if (thisParam[0] == "channels")
+				{
+					m_Channels = atoi(thisParam[1].Trim());
+				}
 			}
 		}
 	}
