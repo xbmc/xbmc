@@ -34,6 +34,22 @@ def replace_vars(src_file,dest_file,vars)
 	end
 end
 
+def zip_supports_bzip2(zip_tool)
+	# 'zip -h' returns "Zip <Version>" on the second line
+	# This will break if the major version exceeds 9
+	zip_major_version = /Zip ([0-9\.]+)/.match(`#{zip_tool} -h`.lines.to_a[1])[1][0..0].to_i
+	return zip_major_version >= 3
+end
+
+BZIP2_AVAILABLE = zip_supports_bzip2(ZIP_TOOL)
+ZIP_FLAGS = "-Z bzip2" if BZIP2_AVAILABLE
+
+if (BZIP2_AVAILABLE)
+	puts "Using bzip2 compression"
+else
+	puts "Using plain old deflate compression - the 'zip' tool does not support bzip2"
+end
+
 # Remove the install and package dirs if they
 # already exist
 FileUtils.rm_rf(INSTALL_DIR)
@@ -52,7 +68,7 @@ end
 # Create the update archive containing the new app
 Dir.mkdir(PACKAGE_DIR)
 FileUtils.cp(NEWAPP_NAME,"#{PACKAGE_DIR}/#{APP_NAME}")
-system("#{ZIP_TOOL} #{PACKAGE_DIR}/app-pkg.zip -j #{PACKAGE_DIR}/#{APP_NAME}")
+system("#{ZIP_TOOL} #{ZIP_FLAGS} #{PACKAGE_DIR}/app-pkg.zip -j #{PACKAGE_DIR}/#{APP_NAME}")
 FileUtils.rm("#{PACKAGE_DIR}/#{APP_NAME}")
 
 # Copy the install script and updater to the target
