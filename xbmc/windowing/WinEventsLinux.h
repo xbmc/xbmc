@@ -19,42 +19,24 @@
 *
 */
 
-#ifndef WINDOW_EVENTS_H
-#define WINDOW_EVENTS_H
+#ifndef WINDOW_EVENTS_LINUX_H
+#define WINDOW_EVENTS_LINUX_H
 
 #pragma once
+#include "windowing/WinEvents.h"
+#include "input/linux/LinuxInputDevices.h"
 
-#include "utils/StdString.h"
-#include "XBMC_events.h"
-
-typedef bool (* PHANDLE_EVENT_FUNC)(XBMC_Event& newEvent);
-
-class CWinEventsBase
+class CWinEventsLinux : public CWinEventsBase
 {
 public:
-  static PHANDLE_EVENT_FUNC m_pEventFunc;
+  CWinEventsLinux();
+  static bool MessagePump();
+  static void RefreshDevices();
+  static bool IsRemoteLowBattery();
+
+private:
+  static bool m_initialized;
+  static CLinuxInputDevices m_devices;
 };
 
-#if   defined(TARGET_WINDOWS)
-#include "windows/WinEventsWin32.h"
-#define CWinEvents CWinEventsWin32
-
-#elif defined(TARGET_DARWIN_OSX)
-#include "osx/WinEventsOSX.h"
-#define CWinEvents CWinEventsOSX
-
-#elif defined(TARGET_DARWIN_IOS)
-#include "osx/WinEventsIOS.h"
-#define CWinEvents CWinEventsIOS
-
-#elif defined(TARGET_LINUX) && defined(HAS_SDL_WIN_EVENTS)
-#include "WinEventsSDL.h"
-#define CWinEvents CWinEventsSDL
-
-#elif defined(TARGET_LINUX) && defined(HAS_LINUX_EVENTS)
-#include "WinEventsLinux.h"
-#define CWinEvents CWinEventsLinux
-
 #endif
-
-#endif // WINDOW_EVENTS_H
