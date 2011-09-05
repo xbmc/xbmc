@@ -118,5 +118,9 @@ target_link_libraries(updater
   updatershared
 )
 
+if (SIGN_UPDATER)
+	add_custom_command(TARGET updater POST_BUILD COMMAND sign-updater.bat updater.exe)
+endif()
+
 install(TARGETS updater RUNTIME DESTINATION bin)
 
