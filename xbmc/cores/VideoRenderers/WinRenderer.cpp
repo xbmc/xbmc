@@ -234,6 +234,8 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
   // calculate the input frame aspect ratio
   CalculateFrameAspectRatio(d_width, d_height);
   ChooseBestResolution(fps);
+  m_destWidth = g_settings.m_ResInfo[m_resolution].iWidth;
+  m_destHeight = g_settings.m_ResInfo[m_resolution].iHeight;
   SetViewMode(g_settings.m_currentVideoSettings.m_ViewMode);
   ManageDisplay();
 
@@ -513,12 +515,26 @@ void CWinRenderer::UpdatePSVideoFilter()
 
   if (m_bUseHQScaler)
   {
-    m_scalerShader = new CConvolutionShader();
+    // First try the more efficient two pass convolution scaler
+    m_scalerShader = new CConvolutionShaderSeparable();
+
     if (!m_scalerShader->Create(m_scalingMethod))
     {
       SAFE_DELETE(m_scalerShader);
-      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
-      m_bUseHQScaler = false;
+      CLog::Log(LOGNOTICE, __FUNCTION__": two pass convolution shader init problem, falling back to one pass.");
+    }
+
+    // Fallback on the one pass version
+    if (m_scalerShader == NULL)
+    {
+      m_scalerShader = new CConvolutionShader1Pass();
+
+      if (!m_scalerShader->Create(m_scalingMethod))
+      {
+        SAFE_DELETE(m_scalerShader);
+        CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, "Video Renderering", "Failed to init video scaler, falling back to bilinear scaling.");
+        m_bUseHQScaler = false;
+      }
     }
   }
 
@@ -899,7 +915,7 @@ void CWinRenderer::Stage1()
 
 void CWinRenderer::Stage2()
 {
-  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_sourceRect, m_destRect);
+  m_scalerShader->Render(m_IntermediateTarget, m_sourceWidth, m_sourceHeight, m_destWidth, m_destHeight, m_sourceRect, m_destRect);
 }
 
 void CWinRenderer::RenderProcessor(DWORD flags)
@@ -1060,11 +1076,8 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
     {
       if(method == VS_SCALINGMETHOD_CUBIC
       || method == VS_SCALINGMETHOD_LANCZOS2
-      || method == VS_SCALINGMETHOD_LANCZOS3_FAST)
-        return true;
-
-      //lanczos3 is only allowed through advancedsettings.xml because it's very slow
-      if (g_advancedSettings.m_videoAllowLanczos3 && method == VS_SCALINGMETHOD_LANCZOS3)
+      || method == VS_SCALINGMETHOD_LANCZOS3_FAST
+      || method == VS_SCALINGMETHOD_LANCZOS3)
         return true;
     }
   }
