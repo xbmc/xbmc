@@ -3301,6 +3301,14 @@ void CApplication::Stop(int exitCode)
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 {
+	//If item is a plugin, expand out now and run ourselves again
+	if (item.IsPlugin())
+	{
+		CFileItem item_new(item);
+		if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
+			return PlayMedia(item_new, iPlaylist);
+		return false;
+	}
   if (item.IsLastFM())
   {
     g_partyModeManager.Disable();
