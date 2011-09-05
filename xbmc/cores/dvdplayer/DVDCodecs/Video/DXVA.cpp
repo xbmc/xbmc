@@ -879,6 +879,7 @@ CProcessor::CProcessor()
   m_context = NULL;
   m_index = 0;
   m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+  m_last_field_rendered = 0;
 }
 
 CProcessor::~CProcessor()
@@ -1400,8 +1401,10 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   DXVA2_VideoProcessBltParams blt = {};
   blt.TargetFrame = time;
-  if (flags & RENDER_FLAG_FIELD1)
+  if (flags & RENDER_FLAG_FIELD1 || (flags & RENDER_FLAG_LAST && m_last_field_rendered == 1))
     blt.TargetFrame += 1;
+  if (flags & (RENDER_FLAG_FIELD0 | RENDER_FLAG_FIELD1))
+    m_last_field_rendered = (flags & RENDER_FLAG_FIELD1) != 0;
   blt.TargetRect  = dst;
   blt.ConstrictionSize.cx = 0;
   blt.ConstrictionSize.cy = 0;

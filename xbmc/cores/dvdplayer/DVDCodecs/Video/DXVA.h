@@ -153,6 +153,7 @@ protected:
   unsigned         m_max_fwd_refs;
   EINTERLACEMETHOD m_interlace_method;
   unsigned         m_index;
+  unsigned         m_last_field_rendered;
 
   struct SVideoSample
   {
