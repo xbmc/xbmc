@@ -35,7 +35,10 @@ add_library(minizip
 if (UNIX)
 	target_link_libraries(minizip z bz2)
 else()
-	target_link_libraries(minizip "${CMAKE_CURRENT_SOURCE_DIR}/../zlib/prebuilt/zlib.lib")
+	target_link_libraries(minizip
+		"${CMAKE_CURRENT_SOURCE_DIR}/../zlib/prebuilt/zlib.lib"
+		"${CMAKE_CURRENT_SOURCE_DIR}/../bzip2/libbz2.lib"
+	)
 endif()
 
 
