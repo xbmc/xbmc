@@ -1144,39 +1144,6 @@ bool CProcessor::CreateSurfaces()
   return true;
 }
 
-REFERENCE_TIME CProcessor::Add(IDirect3DSurface9* source, CSurfaceContext* context)
-{
-  CSingleLock lock(m_section);
-
-  m_time += 2;
-
-  context->Acquire();
-  source->AddRef();
-
-  SVideoSample vs = {};
-  vs.sample.Start          = m_time;
-  vs.sample.End            = 0; 
-  vs.sample.SampleFormat   = m_desc.SampleFormat;
-  vs.sample.PlanarAlpha    = DXVA2_Fixed32OpaqueAlpha();
-  vs.sample.SampleData     = 0;
-  vs.sample.SrcSurface     = source;
-
-  vs.context = context;
-
-  if(!m_sample.empty())
-    m_sample.back().sample.End = vs.sample.Start;
-
-  m_sample.push_back(vs);
-  if(m_sample.size() > m_size)
-  {
-    SAFE_RELEASE(m_sample.front().sample.SrcSurface);
-    SAFE_RELEASE(m_sample.front().context);
-    m_sample.pop_front();
-  }
-
-  return m_time;
-}
-
 REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
 {
   CSingleLock lock(m_section);
@@ -1252,7 +1219,33 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
   if (!surface || !context)
     return 0;
 
-  return Add(surface, context);
+  m_time += 2;
+
+  surface->AddRef();
+  context->Acquire();
+
+  SVideoSample vs = {};
+  vs.sample.Start          = m_time;
+  vs.sample.End            = 0; 
+  vs.sample.SampleFormat   = m_desc.SampleFormat;
+  vs.sample.PlanarAlpha    = DXVA2_Fixed32OpaqueAlpha();
+  vs.sample.SampleData     = 0;
+  vs.sample.SrcSurface     = surface;
+
+  vs.context = context;
+
+  if(!m_sample.empty())
+    m_sample.back().sample.End = vs.sample.Start;
+
+  m_sample.push_back(vs);
+  if (m_sample.size() > m_size)
+  {
+    SAFE_RELEASE(m_sample.front().context);
+    SAFE_RELEASE(m_sample.front().sample.SrcSurface);
+    m_sample.pop_front();
+  }
+
+  return m_time;
 }
 
 static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int min, int max, int def)
