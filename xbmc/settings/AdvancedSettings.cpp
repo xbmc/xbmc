@@ -91,6 +91,7 @@ void CAdvancedSettings::Initialize()
   m_videoAllowMpeg4VDPAU = false;
   m_DXVACheckCompatibility = false;
   m_DXVACheckCompatibilityPresent = false;
+  m_DXVAForceProcessorRenderer = true;
 
   m_musicUseTimeSeeking = true;
   m_musicTimeSeekForward = 10;
@@ -539,6 +540,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
     m_DXVACheckCompatibilityPresent = XMLUtils::GetBoolean(pElement,"checkdxvacompatibility", m_DXVACheckCompatibility);
 
+    XMLUtils::GetBoolean(pElement,"forcedxvarenderer", m_DXVAForceProcessorRenderer);
   }
 
   pElement = pRootElement->FirstChildElement("musiclibrary");
