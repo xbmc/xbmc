@@ -32,7 +32,7 @@
 #define FRAME_TYPE_B 3
 #define FRAME_TYPE_D 4
 
-namespace DXVA { class CProcessor; }
+namespace DXVA { class CSurfaceContext; }
 namespace VAAPI { struct CHolder; }
 class CVDPAU;
 class COpenMax;
@@ -56,8 +56,7 @@ struct DVDVideoPicture
       int iLineSize[4];   // [4] = alpha channel, currently not used
     };
     struct {
-      DXVA::CProcessor* proc;
-      int64_t           proc_id;
+      DXVA::CSurfaceContext* context;
     };
     struct {
       CVDPAU* vdpau;
@@ -88,6 +87,7 @@ struct DVDVideoPicture
   unsigned int chroma_position;
   unsigned int color_primaries;
   unsigned int color_transfer;
+  unsigned int extended_format;
   int iGroupId;
 
   int8_t* qscale_table; // Quantization parameters, primarily used by filters

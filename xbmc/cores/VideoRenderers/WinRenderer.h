@@ -29,6 +29,7 @@
 #include "guilib/D3DResource.h"
 #include "RenderCapture.h"
 #include "settings/VideoSettings.h"
+#include "cores/dvdplayer/DVDCodecs/Video/DXVA.h"
 //#define MP_DIRECTRENDERING
 
 #ifdef MP_DIRECTRENDERING
@@ -79,7 +80,6 @@ class DllAvUtil;
 class DllAvCodec;
 class DllSwScale;
 
-namespace DXVA { class CProcessor; }
 struct DVDVideoPicture;
 
 struct DRAWRECT
@@ -171,14 +171,12 @@ struct DXVABuffer : SVideoBuffer
 {
   DXVABuffer()
   {
-    proc = NULL;
     id   = 0;
   }
   ~DXVABuffer();
   virtual void Release();
   virtual void StartDecode();
 
-  DXVA::CProcessor* proc;
   int64_t           id;
 };
 
@@ -194,7 +192,7 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
   virtual bool         AddVideoPicture(DVDVideoPicture* picture);
@@ -209,6 +207,8 @@ public:
   virtual bool         Supports(ESCALINGMETHOD method);
 
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
+
+  virtual unsigned int GetProcessorSize() { return m_processor.Size(); }
 
   static void          CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc);
 
@@ -242,7 +242,7 @@ protected:
   bool                 m_bConfigured;
   SVideoBuffer        *m_VideoBuffers[NUM_BUFFERS];
   RenderMethod         m_renderMethod;
-  DXVA::CProcessor*    m_processor;
+  DXVA::CProcessor     m_processor;
 
   // software scale libraries (fallback if required pixel shaders version is not available)
   DllAvUtil           *m_dllAvUtil;
@@ -268,9 +268,12 @@ protected:
 
   bool                 m_bFilterInitialized;
 
+  int                  m_iRequestedMethod;
+
   // clear colour for "black" bars
   DWORD                m_clearColour;
   unsigned int         m_flags;
+  unsigned int         m_format;
 
   // Width and height of the render target
   // the separable HQ scalers need this info, but could the m_destRect be used instead?

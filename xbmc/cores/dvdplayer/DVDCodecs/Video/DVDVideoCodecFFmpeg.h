@@ -40,7 +40,7 @@ public:
     public:
              IHardwareDecoder() {}
     virtual ~IHardwareDecoder() {};
-    virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat) = 0;
+    virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces) = 0;
     virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
@@ -94,6 +94,8 @@ protected:
 
   int m_iScreenWidth;
   int m_iScreenHeight;
+
+  unsigned int m_uSurfacesCount;
 
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;
