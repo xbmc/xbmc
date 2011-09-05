@@ -272,6 +272,7 @@ end
 updater_binary_input_path = nil
 target_version = nil
 target_platform = nil
+zip_flags = nil
 
 OptionParser.new do |parser|
 	parser.banner = "#{$0} [options] <input dir> <config file> <output dir>"
@@ -283,6 +284,9 @@ OptionParser.new do |parser|
 	end
 	parser.on("-p","--platform [platform]","Specifies the target platform for this update") do |platform|
 		target_platform = platform
+	end
+	parser.on(nil,"--bzip2","Use bzip2 compression (requires that 'zip' supports the -Z bz2 argument)") do
+		zip_flags = "-Z bzip2"
 	end
 end.parse!
 
@@ -365,7 +369,7 @@ package_file_map.each do |package,files|
 	File.unlink(output_file) if File.exist?(output_file)
 
 	Dir.chdir(input_dir) do
-		if (!system("zip #{output_file} #{quoted_file_list}"))
+		if (!system("zip #{zip_flags} #{output_file} #{quoted_file_list}"))
 			raise "Failed to generate package #{package}"
 		else
 			puts "Generated package #{package} : #{file_sha1(output_file)}"
