@@ -42,7 +42,11 @@ def zip_supports_bzip2(zip_tool)
 end
 
 BZIP2_AVAILABLE = zip_supports_bzip2(ZIP_TOOL)
-ZIP_FLAGS = "-Z bzip2" if BZIP2_AVAILABLE
+if (BZIP2_AVAILABLE)
+	ZIP_FLAGS = "-Z bzip2"
+else
+	ZIP_FLAGS = ""
+end
 
 if (BZIP2_AVAILABLE)
 	puts "Using bzip2 compression"
