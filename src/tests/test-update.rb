@@ -35,10 +35,10 @@ def replace_vars(src_file,dest_file,vars)
 end
 
 def zip_supports_bzip2(zip_tool)
-	# 'zip -h' returns "Zip <Version>" on the second line
-	# This will break if the major version exceeds 9
-	zip_major_version = /Zip ([0-9\.]+)/.match(`#{zip_tool} -h`.lines.to_a[1])[1][0..0].to_i
-	return zip_major_version >= 3
+	# Try making an empty zip file with bzip2 compression, if bzip2 is not
+	# supported, the tool will output an error, otherwise it will output
+	# "Nothing to do"
+	return `#{zip_tool} -Z bzip2 testing-bzip2-support.zip`.strip.include?("Nothing to do")
 end
 
 BZIP2_AVAILABLE = zip_supports_bzip2(ZIP_TOOL)
