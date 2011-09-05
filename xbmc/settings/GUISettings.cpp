@@ -705,13 +705,13 @@ void CGUISettings::Initialize()
   AddInt(NULL,   "services.esinitialdelay",    795, 750, 5, 5, 10000, SPIN_CONTROL_INT);
   AddInt(NULL,   "services.escontinuousdelay", 796, 25, 5, 5, 10000, SPIN_CONTROL_INT);
 #endif
-#ifdef HAS_ZEROCONF
-  AddSeparator(srv, "services.sep2");
-  AddBool(srv, "services.zeroconf", 1260, true);
-#endif
-
 #ifdef HAS_AIRPLAY
+  AddSeparator(srv, "services.sep2");
   AddBool(srv, "services.airplay", 1270, false);
+#endif
+#ifdef HAS_ZEROCONF
+  AddSeparator(srv, "services.sep3");
+  AddBool(srv, "services.zeroconf", 1260, true);
 #endif
 
 #ifndef _WIN32
