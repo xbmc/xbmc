@@ -25,13 +25,15 @@ if (APPLE)
 	add_definitions("-DUSE_FILE32API")
 endif()
 
+add_definitions("-DHAVE_BZIP2")
+
 add_library(minizip
  ${SOURCES}
  ${HEADERS}
 )
 
 if (UNIX)
-	target_link_libraries(minizip z)
+	target_link_libraries(minizip z bz2)
 else()
 	target_link_libraries(minizip "${CMAKE_CURRENT_SOURCE_DIR}/../zlib/prebuilt/zlib.lib")
 endif()
