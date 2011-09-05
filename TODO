@@ -54,6 +54,7 @@ Nice To Have
 Update size:
  * Support for applying binary patches (eg. with bspatch/bsdiff)
  * Try using bzip2 compression instead of standard zip compression
+   (requires recent version of zip/unzip tools)
 
 Telemetry:
  * Call a project-specific URL to report successful/failed update installation
