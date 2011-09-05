@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "settings/GUISettings.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
@@ -49,8 +50,12 @@ JSON_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer 
     param["fields"] = CVariant(CVariant::VariantTypeArray);
   param["fields"].append("artist");
 
+  bool albumArtistsOnly = !g_guiSettings.GetBool("musiclibrary.showcompilationartists");
+  if (parameterObject["albumartistsonly"].isBoolean())
+    albumArtistsOnly = parameterObject["albumartistsonly"].asBoolean();
+
   CFileItemList items;
-  if (musicdatabase.GetArtistsNav("", items, genreID, false))
+  if (musicdatabase.GetArtistsNav("", items, genreID, albumArtistsOnly))
     HandleFileItemList("artistid", false, "artists", items, param, result);
 
   musicdatabase.Close();

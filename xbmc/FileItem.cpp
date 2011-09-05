@@ -297,6 +297,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_mimetype = item.m_mimetype;
   m_extrainfo = item.m_extrainfo;
   m_specialSort = item.m_specialSort;
+  m_bIsAlbum = item.m_bIsAlbum;
   return *this;
 }
 
@@ -1370,6 +1371,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
     Clear();
   Append(itemlist);
   SetPath(itemlist.GetPath());
+  SetLabel(itemlist.GetLabel());
   m_sortDetails = itemlist.m_sortDetails;
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;

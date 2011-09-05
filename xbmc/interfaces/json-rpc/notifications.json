@@ -1,14 +1,22 @@
 {
   "Player.OnPlay": {
     "type": "notification",
-    "description": "Playback of a media item has been started or the playback speed has changed.",
+    "description": "Playback of a media item has been started or the playback speed has changed. If there is no ID available extra information will be provided.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "object", "required": true,
         "properties": {
           "speed": { "type": "integer", "required": true },
           "type": { "type": "string", "id": "Notifications.Player.Type", "enum": [ "unknown", "movie", "episode", "musicvideo", "song" ], "required": true },
-          "id": { "$ref": "Library.Id" }
+          "id": { "$ref": "Library.Id" },
+          "title": { "type": "string" },
+          "year": { "type": "integer" },
+          "episode": { "type": "integer" },
+          "season": { "type": "integer" },
+          "showtitle": { "type": "string" },
+          "album": { "type": "string" },
+          "artist": { "type": "string" },
+          "track": { "type": "integer" }
         }
       }
     ],
@@ -16,13 +24,21 @@
   },
   "Player.OnPause": {
     "type": "notification",
-    "description": "Playback of a media item has been paused.",
+    "description": "Playback of a media item has been paused. If there is no ID available extra information will be provided.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "object", "required": true,
         "properties": {
           "type": { "$ref": "Notifications.Player.Type", "required": true },
-          "id": { "$ref": "Library.Id" }
+          "id": { "$ref": "Library.Id" },
+          "title": { "type": "string" },
+          "year": { "type": "integer" },
+          "episode": { "type": "integer" },
+          "season": { "type": "integer" },
+          "showtitle": { "type": "string" },
+          "album": { "type": "string" },
+          "artist": { "type": "string" },
+          "track": { "type": "integer" }
         }
       }
     ],
@@ -30,13 +46,21 @@
   },
   "Player.OnStop": {
     "type": "notification",
-    "description": "Playback of a media item has been stopped.",
+    "description": "Playback of a media item has been stopped. If there is no ID available extra information will be provided.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
       { "name": "data", "type": "object", "required": true,
         "properties": {
           "type": { "$ref": "Notifications.Player.Type" },
-          "id": { "$ref": "Library.Id" }
+          "id": { "$ref": "Library.Id" },
+          "title": { "type": "string" },
+          "year": { "type": "integer" },
+          "episode": { "type": "integer" },
+          "season": { "type": "integer" },
+          "showtitle": { "type": "string" },
+          "album": { "type": "string" },
+          "artist": { "type": "string" },
+          "track": { "type": "integer" }
         }
       }
     ],

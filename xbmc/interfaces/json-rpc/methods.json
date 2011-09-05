@@ -39,7 +39,6 @@
         "ControlPlayback": { "type": "boolean", "required": true },
         "ControlNotify": { "type": "boolean", "required": true },
         "ControlPower": { "type": "boolean", "required": true },
-        "Logging": { "type": "boolean", "required": true },
         "UpdateData": { "type": "boolean", "required": true },
         "RemoveData": { "type": "boolean", "required": true },
         "WriteFile": { "type": "boolean", "required": true }
@@ -54,28 +53,32 @@
     "params": [],
     "returns": "string"
   },
-  "JSONRPC.GetNotificationFlags": {
+  "JSONRPC.GetConfiguration": {
     "type": "method",
-    "description": "Get notification flags",
+    "description": "Get client-specific configurations",
     "transport": "Announcing",
     "permission": "ReadData",
     "params": [],
-    "returns": { "$ref": "Notification.Flags" }
+    "returns": { "$ref": "Configuration" }
   },
-  "JSONRPC.SetNotificationFlags": {
+  "JSONRPC.SetConfiguration": {
     "type": "method",
-    "description": "Change the notification flags",
+    "description": "Change the client-specific configuration",
     "transport": "Announcing",
     "permission": "ControlNotify",
     "params": [
-      { "name": "Playback", "type": "boolean", "default": false },
-      { "name": "GUI", "type": "boolean", "default": false },
-      { "name": "System", "type": "boolean", "default": false },
-      { "name": "AudioLibrary", "type": "boolean", "default": false },
-      { "name": "VideoLibrary", "type": "boolean", "default": false },
-      { "name": "Other", "type": "boolean", "default": false }
+      { "name": "notifications", "type": "object",
+        "properties": {
+          "Player": { "$ref": "Optional.Boolean" },
+          "GUI": { "$ref": "Optional.Boolean" },
+          "System": { "$ref": "Optional.Boolean" },
+          "AudioLibrary": { "$ref": "Optional.Boolean" },
+          "VideoLibrary": { "$ref": "Optional.Boolean" },
+          "Other": { "$ref": "Optional.Boolean" }
+        }
+      }
     ],
-    "returns": { "$ref": "Notification.Flags" }
+    "returns": { "$ref": "Configuration" }
   },
   "JSONRPC.NotifyAll": {
     "type": "method",
@@ -870,6 +873,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
+      { "name": "albumartistsonly", "$ref": "Optional.Boolean", "description": "Whether or not to include artists only appearing in compilations. If the parameter is not passed or is passed as null the GUI setting will be used" },
       { "name": "genreid", "$ref": "Library.Id" },
       { "name": "fields", "$ref": "Audio.Fields.Artist" },
       { "name": "limits", "$ref": "List.Limits" },
@@ -1376,6 +1380,16 @@
     "params": [ ],
     "returns": "string"
   },
+  "System.GetProperties": {
+    "type": "method",
+    "description": "Retrieves the values of the given properties",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "System.Property.Name" } }
+    ],
+    "returns":  { "$ref": "System.Property.Value", "required": true }
+  },
   "System.Shutdown": {
     "type": "method",
     "description": "Shuts the system running XBMC down",
@@ -1407,32 +1421,6 @@
     "permission": "ControlPower",
     "params": [],
     "returns": "string"
-  },
-  "System.GetInfoLabels": {
-    "type": "method",
-    "description": "Retrieve info labels about the system",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "labels", "type": "array", "required": true, "items": { "type": "string" }, "minItems": 1, "description": "See http://wiki.xbmc.org/index.php?title=InfoLabels for a list of possible info labels" }
-    ],
-    "returns": {
-      "type": "object",
-      "description": "List of key-value pairs of the retrieved info labels"
-    }
-  },
-  "System.GetInfoBooleans": {
-    "type": "method",
-    "description": "Retrieve info booleans about the system",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "booleans", "type": "array", "required": true, "items": { "type": "string" }, "minItems": 1 }
-    ],
-    "returns": {
-      "type": "object",
-      "description": "List of key-value pairs of the retrieved info booleans"
-    }
   },
   "Input.Left": {
     "type": "method",
@@ -1490,15 +1478,17 @@
     "params": [],
     "returns": "string"
   },
-  "XBMC.GetVolume": {
+  "Application.GetProperties": {
     "type": "method",
-    "description": "Retrieve the current volume",
+    "description": "Retrieves the values of the given properties",
     "transport": "Response",
     "permission": "ReadData",
-    "params": [],
-    "returns": "integer"
+    "params": [
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "Application.Property.Name" } }
+    ],
+    "returns":  { "$ref": "Application.Property.Value", "required": true }
   },
-  "XBMC.SetVolume": {
+  "Application.SetVolume": {
     "type": "method",
     "description": "Set the current volume",
     "transport": "Response",
@@ -1508,13 +1498,21 @@
     ],
     "returns": "integer"
   },
-  "XBMC.ToggleMute": {
+  "Application.ToggleMute": {
     "type": "method",
     "description": "Toggle mute/unmute",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [],
     "returns": { "type": "integer", "description": "New volume" }
+  },
+  "Application.Quit": {
+    "type": "method",
+    "description": "Quit application",
+    "transport": "Response",
+    "permission": "ControlPower",
+    "params": [],
+    "returns": "string"
   },
   "XBMC.Play": {
     "type": "method",
@@ -1538,23 +1536,30 @@
     ],
     "returns": "string"
   },
-  "XBMC.Log": {
+  "XBMC.GetInfoLabels": {
     "type": "method",
-    "description": "Logs a line in the xbmc.log",
+    "description": "Retrieve info labels about XBMC and the system",
     "transport": "Response",
-    "permission": "Logging",
+    "permission": "ReadData",
     "params": [
-      { "name": "message", "type": "string", "required": true },
-      { "name": "level", "type": "string", "default": "debug", "enum": [ "debug", "info", "notice", "warning", "error", " severe", "fatal", "none" ] }
+      { "name": "labels", "type": "array", "required": true, "items": { "type": "string" }, "minItems": 1, "description": "See http://wiki.xbmc.org/index.php?title=InfoLabels for a list of possible info labels" }
     ],
-    "returns": "string"
+    "returns": {
+      "type": "object",
+      "description": "List of key-value pairs of the retrieved info labels"
+    }
   },
-  "XBMC.Quit": {
+  "XBMC.GetInfoBooleans": {
     "type": "method",
-    "description": "Quit XBMC",
+    "description": "Retrieve info booleans about XBMC and the system",
     "transport": "Response",
-    "permission": "ControlPower",
-    "params": [],
-    "returns": "string"
+    "permission": "ReadData",
+    "params": [
+      { "name": "booleans", "type": "array", "required": true, "items": { "type": "string" }, "minItems": 1 }
+    ],
+    "returns": {
+      "type": "object",
+      "description": "List of key-value pairs of the retrieved info booleans"
+    }
   }
 }

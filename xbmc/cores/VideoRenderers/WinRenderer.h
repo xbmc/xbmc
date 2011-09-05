@@ -281,6 +281,11 @@ protected:
   // clear colour for "black" bars
   DWORD                m_clearColour;
   unsigned int         m_flags;
+
+  // Width and height of the render target
+  // the separable HQ scalers need this info, but could the m_destRect be used instead?
+  unsigned int         m_destWidth;
+  unsigned int         m_destHeight;
 };
 
 #else

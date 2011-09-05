@@ -50,7 +50,8 @@ void CVideoInfoTag::Reset()
   m_strSortTitle = "";
   m_strVotes = "";
   m_cast.clear();
-  m_strSet = "";
+  m_set.clear();
+  m_setId.clear();
   m_strFile = "";
   m_strPath = "";
   m_strIMDBNumber = "";
@@ -85,6 +86,7 @@ void CVideoInfoTag::Reset()
   m_parentPathID = -1;
   m_resumePoint.Reset();
   m_resumePoint.type = CBookmark::RESUME;
+  m_iIdShow = -1;
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -167,8 +169,8 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
                           g_advancedSettings.m_videoItemSeparator, m_strGenre);
   XMLUtils::SetAdditiveString(movie, "country",
                           g_advancedSettings.m_videoItemSeparator, m_strCountry);
-  XMLUtils::SetAdditiveString(movie, "set",
-                          g_advancedSettings.m_videoItemSeparator, m_strSet);
+  for (unsigned int i = 0; i < m_set.size(); i++)
+    XMLUtils::SetString(movie, "set", m_set[i]);
   XMLUtils::SetAdditiveString(movie, "credits",
                           g_advancedSettings.m_videoItemSeparator, m_strWritingCredits);
   XMLUtils::SetAdditiveString(movie, "director",
@@ -246,14 +248,15 @@ bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathIn
   return true;
 }
 
-bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */)
+bool CVideoInfoTag::Load(const TiXmlElement *movie, bool chained /* = false */,
+                         bool prefix /* = false */)
 {
   if (!movie) return false;
 
   // reset our details if we aren't chained.
   if (!chained) Reset();
 
-  ParseNative(movie);
+  ParseNative(movie,prefix);
 
   return true;
 }
@@ -285,7 +288,14 @@ void CVideoInfoTag::Archive(CArchive& ar)
       ar << m_cast[i].thumbUrl.m_xml;
     }
 
-    ar << m_strSet;
+    ar << (int)m_set.size();
+    for (unsigned int i=0;i<m_set.size();++i)
+      ar << (CStdString)m_set[i];
+
+    ar << (int)m_setId.size();
+    for (unsigned int i=0;i<m_setId.size();++i)
+      ar << m_setId[i];
+
     ar << m_strRuntime;
     ar << m_strFile;
     ar << m_strPath;
@@ -321,6 +331,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_parentPathID;
     ar << m_resumePoint.timeInSeconds;
     ar << m_resumePoint.totalTimeInSeconds;
+    ar << m_iIdShow;
   }
   else
   {
@@ -354,7 +365,25 @@ void CVideoInfoTag::Archive(CArchive& ar)
       m_cast.push_back(info);
     }
 
-    ar >> m_strSet;
+    m_set.clear();
+    int iSetSize;
+    ar >> iSetSize;
+    for (int i=0;i<iSetSize;++i)
+    {
+      CStdString strSet;
+      ar >> strSet;
+      m_set.push_back(strSet);
+    }
+
+    m_setId.clear();
+    ar >> iSetSize;
+    for (int i=0;i<iSetSize;++i)
+    {
+      int iSetId;
+      ar >> iSetId;
+      m_setId.push_back(iSetId);
+    }
+
     ar >> m_strRuntime;
     ar >> m_strFile;
     ar >> m_strPath;
@@ -390,6 +419,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_parentPathID;
     ar >> m_resumePoint.timeInSeconds;
     ar >> m_resumePoint.totalTimeInSeconds;
+    ar >> m_iIdShow;
   }
 }
 
@@ -417,7 +447,12 @@ void CVideoInfoTag::Serialize(CVariant& value)
       actor["thumbnail"] = thumb;
     value["cast"].push_back(actor);
   }
-  value["set"] = m_strSet;
+  value["set"] = CVariant(CVariant::VariantTypeArray);
+  for (unsigned int i = 0; i < m_set.size(); i++)
+    value["set"].push_back(m_set[i]);
+  value["setid"] = CVariant(CVariant::VariantTypeArray);
+  for (unsigned int i = 0; i < m_setId.size(); i++)
+    value["setid"].push_back(m_setId[i]);
   value["runtime"] = m_strRuntime;
   value["file"] = m_strFile;
   value["path"] = m_strPath;
@@ -445,11 +480,12 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["fileid"] = m_iFileId;
   value["track"] = m_iTrack;
   value["showlink"] = m_strShowLink;
-  m_streamDetails.Serialize(value["streamDetails"]);
+  m_streamDetails.Serialize(value["streamdetails"]);
   CVariant resume = CVariant(CVariant::VariantTypeObject);
   resume["position"] = (float)m_resumePoint.timeInSeconds;
   resume["total"] = (float)m_resumePoint.totalTimeInSeconds;
   value["resume"] = resume;
+  value["tvshowid"] = m_iIdShow;
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
@@ -467,7 +503,7 @@ const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const
   return strLabel.TrimRight("\n");
 }
 
-void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
+void CVideoInfoTag::ParseNative(const TiXmlElement* movie, bool prefix)
 {
   XMLUtils::GetString(movie, "title", m_strTitle);
   XMLUtils::GetString(movie, "originaltitle", m_strOriginalTitle);
@@ -515,11 +551,29 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   XMLUtils::GetString(movie, "trailer", m_strTrailer);
   XMLUtils::GetString(movie, "basepath", m_basePath);
 
+  size_t iThumbCount = m_strPictureURL.m_url.size();
+  CStdString xmlAdd = m_strPictureURL.m_xml;
+
   const TiXmlElement* thumb = movie->FirstChildElement("thumb");
   while (thumb)
   {
     m_strPictureURL.ParseElement(thumb);
+    if (prefix)
+    {
+      CStdString temp;
+      temp << *thumb;
+      xmlAdd = temp+xmlAdd;
+    }
     thumb = thumb->NextSiblingElement("thumb");
+  }
+
+  // prefix thumbs from nfos
+  if (prefix && iThumbCount && iThumbCount != m_strPictureURL.m_url.size())
+  {
+    rotate(m_strPictureURL.m_url.begin(),
+           m_strPictureURL.m_url.begin()+iThumbCount, 
+           m_strPictureURL.m_url.end());
+    m_strPictureURL.m_xml = xmlAdd;
   }
 
   XMLUtils::GetAdditiveString(movie,"genre",g_advancedSettings.m_videoItemSeparator,m_strGenre);
@@ -553,7 +607,18 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
     }
     node = node->NextSiblingElement("actor");
   }
-  XMLUtils::GetAdditiveString(movie,"set",g_advancedSettings.m_videoItemSeparator,m_strSet);
+
+  m_set.clear();
+  m_setId.clear();
+  node = movie->FirstChildElement("set");
+  while (node)
+  {
+    if (node->FirstChild())
+      m_set.push_back(node->FirstChild()->Value());
+
+    node = node->NextSiblingElement("set");
+  }
+
   XMLUtils::GetAdditiveString(movie,"studio",g_advancedSettings.m_videoItemSeparator,m_strStudio);
   // artists
   node = movie->FirstChildElement("artist");
@@ -637,7 +702,15 @@ void CVideoInfoTag::ParseNative(const TiXmlElement* movie)
   const TiXmlElement *fanart = movie->FirstChildElement("fanart");
   if (fanart)
   {
-    m_fanart.m_xml << *fanart;
+    // we prefix to handle mixed-mode nfo's with fanart set
+    if (prefix)
+    {
+      CStdString temp;
+      temp << *fanart;
+      m_fanart.m_xml = temp+m_fanart.m_xml;
+    }
+    else
+      m_fanart.m_xml << *fanart;
     m_fanart.Unpack();
   }
 
