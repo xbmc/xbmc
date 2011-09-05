@@ -129,6 +129,21 @@ void CWinRenderer::ManageTextures()
 
 void CWinRenderer::SelectRenderMethod()
 {
+  // Force dxva renderer after dxva decoding: PS and SW renderers have performance issues after dxva decode.
+  if (g_advancedSettings.m_DXVAForceProcessorRenderer && CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
+  {
+    CLog::Log(LOGNOTICE, "D3D: rendering method forced to DXVA2 processor");
+    if (m_processor.Open(m_sourceWidth, m_sourceHeight, m_flags, m_format))
+        m_renderMethod = RENDER_DXVA;
+    else
+    {
+      CLog::Log(LOGNOTICE, "D3D: unable to open DXVA2 processor");
+      m_processor.Close();
+      m_renderMethod = RENDER_INVALID;
+    }
+  }
+  else
+  {
     CLog::Log(LOGDEBUG, __FUNCTION__": Requested render method: %d", m_iRequestedMethod);
 
     switch(m_iRequestedMethod)
@@ -174,6 +189,7 @@ void CWinRenderer::SelectRenderMethod()
         m_renderMethod = RENDER_SW;
         break;
     }
+  }
 
   // Update flags for DXVA2 pictures
   if (CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
@@ -380,7 +396,7 @@ unsigned int CWinRenderer::PreInit()
 
   m_iRequestedMethod = g_guiSettings.GetInt("videoplayer.rendermethod");
 
-  if (m_iRequestedMethod == RENDER_METHOD_DXVA && !m_processor.PreInit())
+  if ((g_advancedSettings.m_DXVAForceProcessorRenderer || m_iRequestedMethod == RENDER_METHOD_DXVA) && !m_processor.PreInit())
     CLog::Log(LOGNOTICE, "CWinRenderer::Preinit - could not init DXVA2 processor - skipping");
 
   return 0;
