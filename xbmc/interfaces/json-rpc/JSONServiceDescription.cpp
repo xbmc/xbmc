@@ -1399,128 +1399,126 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
         CLog::Log(LOGWARNING, "JSONRPC: Invalid additionalProperties definition in type %s", type.name.c_str());
     }
   }
-  else 
-  {
-    // If the defined parameter is an array
-    // we need to check for detailed definitions
-    // of the array items
-    if (HasType(type.type, ArrayValue))
-    {
-      // Check for "uniqueItems" field
-      if (value.isMember("uniqueItems") && value["uniqueItems"].isBoolean())
-        type.uniqueItems = value["uniqueItems"].asBoolean();
-      else
-        type.uniqueItems = false;
 
-      // Check for "additionalItems" field
-      if (value.isMember("additionalItems"))
+  // If the defined parameter is an array
+  // we need to check for detailed definitions
+  // of the array items
+  if (HasType(type.type, ArrayValue))
+  {
+    // Check for "uniqueItems" field
+    if (value.isMember("uniqueItems") && value["uniqueItems"].isBoolean())
+      type.uniqueItems = value["uniqueItems"].asBoolean();
+    else
+      type.uniqueItems = false;
+
+    // Check for "additionalItems" field
+    if (value.isMember("additionalItems"))
+    {
+      // If it is an object, there is only one schema for it
+      if (value["additionalItems"].isObject())
       {
-        // If it is an object, there is only one schema for it
-        if (value["additionalItems"].isObject())
+        JSONSchemaTypeDefinition additionalItem;
+
+        if (parseTypeDefinition(value["additionalItems"], additionalItem, false))
+          type.additionalItems.push_back(additionalItem);
+      }
+      // If it is an array there may be multiple schema definitions
+      else if (value["additionalItems"].isArray())
+      {
+        for (unsigned int itemIndex = 0; itemIndex < value["additionalItems"].size(); itemIndex++)
         {
           JSONSchemaTypeDefinition additionalItem;
 
-          if (parseTypeDefinition(value["additionalItems"], additionalItem, false))
+          if (parseTypeDefinition(value["additionalItems"][itemIndex], additionalItem, false))
             type.additionalItems.push_back(additionalItem);
         }
-        // If it is an array there may be multiple schema definitions
-        else if (value["additionalItems"].isArray())
-        {
-          for (unsigned int itemIndex = 0; itemIndex < value["additionalItems"].size(); itemIndex++)
-          {
-            JSONSchemaTypeDefinition additionalItem;
-
-            if (parseTypeDefinition(value["additionalItems"][itemIndex], additionalItem, false))
-              type.additionalItems.push_back(additionalItem);
-          }
-        }
-        // If it is not a (array of) schema and not a bool (default value is false)
-        // it has an invalid value
-        else if (!value["additionalItems"].isBoolean())
-          CLog::Log(LOGWARNING, "Invalid \"additionalItems\" value for type %s", type.name.c_str());
       }
+      // If it is not a (array of) schema and not a bool (default value is false)
+      // it has an invalid value
+      else if (!value["additionalItems"].isBoolean())
+        CLog::Log(LOGWARNING, "Invalid \"additionalItems\" value for type %s", type.name.c_str());
+    }
 
-      // If the "items" field is a single object
-      // we can parse that directly
-      if (value.isMember("items"))
+    // If the "items" field is a single object
+    // we can parse that directly
+    if (value.isMember("items"))
+    {
+      if (value["items"].isObject())
       {
-        if (value["items"].isObject())
+        JSONSchemaTypeDefinition item;
+
+        if (!parseTypeDefinition(value["items"], item, false))
+          return false;
+        type.items.push_back(item);
+      }
+      // Otherwise if it is an array we need to
+      // parse all elements and store them
+      else if (value["items"].isArray())
+      {
+        for (CVariant::const_iterator_array itemItr = value["items"].begin_array(); itemItr != value["items"].end_array(); itemItr++)
         {
           JSONSchemaTypeDefinition item;
 
-          if (!parseTypeDefinition(value["items"], item, false))
+          if (!parseTypeDefinition(*itemItr, item, false))
             return false;
           type.items.push_back(item);
         }
-        // Otherwise if it is an array we need to
-        // parse all elements and store them
-        else if (value["items"].isArray())
-        {
-          for (CVariant::const_iterator_array itemItr = value["items"].begin_array(); itemItr != value["items"].end_array(); itemItr++)
-          {
-            JSONSchemaTypeDefinition item;
-
-            if (!parseTypeDefinition(*itemItr, item, false))
-              return false;
-            type.items.push_back(item);
-          }
-        }
       }
-
-      type.minItems = (unsigned int)value["minItems"].asUnsignedInteger(0);
-      type.maxItems = (unsigned int)value["maxItems"].asUnsignedInteger(0);
     }
-    // The type is whether an object nor an array
-    else 
+
+    type.minItems = (unsigned int)value["minItems"].asUnsignedInteger(0);
+    type.maxItems = (unsigned int)value["maxItems"].asUnsignedInteger(0);
+  }
+
+  if (HasType(type.type, NumberValue) || HasType(type.type, IntegerValue))
+  {
+    if ((type.type & NumberValue) == NumberValue)
     {
-      if (HasType(type.type, NumberValue) || HasType(type.type, IntegerValue))
-      {
-        if ((type.type & NumberValue) == NumberValue)
-        {
-          type.minimum = value["minimum"].asDouble(-numeric_limits<double>::max());
-          type.maximum = value["maximum"].asDouble(numeric_limits<double>::max());
-        }
-        else if ((type.type  & IntegerValue) == IntegerValue)
-        {
-          type.minimum = (double)value["minimum"].asInteger(numeric_limits<int>::min());
-          type.maximum = (double)value["maximum"].asInteger(numeric_limits<int>::max());
-        }
+      type.minimum = value["minimum"].asDouble(-numeric_limits<double>::max());
+      type.maximum = value["maximum"].asDouble(numeric_limits<double>::max());
+    }
+    else if ((type.type  & IntegerValue) == IntegerValue)
+    {
+      type.minimum = (double)value["minimum"].asInteger(numeric_limits<int>::min());
+      type.maximum = (double)value["maximum"].asInteger(numeric_limits<int>::max());
+    }
 
-        type.exclusiveMinimum = value["exclusiveMinimum"].asBoolean(false);
-        type.exclusiveMaximum = value["exclusiveMaximum"].asBoolean(false);
-        type.divisibleBy = (unsigned int)value["divisibleBy"].asUnsignedInteger(0);
-      }
+    type.exclusiveMinimum = value["exclusiveMinimum"].asBoolean(false);
+    type.exclusiveMaximum = value["exclusiveMaximum"].asBoolean(false);
+    type.divisibleBy = (unsigned int)value["divisibleBy"].asUnsignedInteger(0);
+  }
       
-      if (HasType(type.type, StringValue))
-      {
-        type.minLength = (int)value["minLength"].asInteger(-1);
-        type.maxLength = (int)value["maxLength"].asInteger(-1);
-      }
+  if (HasType(type.type, StringValue))
+  {
+    type.minLength = (int)value["minLength"].asInteger(-1);
+    type.maxLength = (int)value["maxLength"].asInteger(-1);
+  }
 
-      // If the type definition is neither an
-      // "object" nor an "array" we can check
-      // for an "enum" definition
-      if (value.isMember("enum") && value["enum"].isArray())
+  if (!HasType(type.type, ObjectValue) && !HasType(type.type, ArrayValue))
+  {
+    // If the type definition is neither an
+    // "object" nor an "array" we can check
+    // for an "enum" definition
+    if (value.isMember("enum") && value["enum"].isArray())
+    {
+      // Loop through all elements in the "enum" array
+      for (CVariant::const_iterator_array enumItr = value["enum"].begin_array(); enumItr != value["enum"].end_array(); enumItr++)
       {
-        // Loop through all elements in the "enum" array
-        for (CVariant::const_iterator_array enumItr = value["enum"].begin_array(); enumItr != value["enum"].end_array(); enumItr++)
+        // Check for duplicates and eliminate them
+        bool approved = true;
+        for (unsigned int approvedIndex = 0; approvedIndex < type.enums.size(); approvedIndex++)
         {
-          // Check for duplicates and eliminate them
-          bool approved = true;
-          for (unsigned int approvedIndex = 0; approvedIndex < type.enums.size(); approvedIndex++)
+          if (*enumItr == type.enums.at(approvedIndex))
           {
-            if (*enumItr == type.enums.at(approvedIndex))
-            {
-              approved = false;
-              break;
-            }
+            approved = false;
+            break;
           }
-
-          // Only add the current item to the enum value 
-          // list if it is not duplicate
-          if (approved)
-            type.enums.push_back(*enumItr);
         }
+
+        // Only add the current item to the enum value 
+        // list if it is not duplicate
+        if (approved)
+          type.enums.push_back(*enumItr);
       }
     }
 
