@@ -1422,32 +1422,6 @@
     "params": [],
     "returns": "string"
   },
-  "System.GetInfoLabels": {
-    "type": "method",
-    "description": "Retrieve info labels about the system",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "labels", "type": "array", "required": true, "items": { "type": "string" }, "minItems": 1, "description": "See http://wiki.xbmc.org/index.php?title=InfoLabels for a list of possible info labels" }
-    ],
-    "returns": {
-      "type": "object",
-      "description": "List of key-value pairs of the retrieved info labels"
-    }
-  },
-  "System.GetInfoBooleans": {
-    "type": "method",
-    "description": "Retrieve info booleans about the system",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "booleans", "type": "array", "required": true, "items": { "type": "string" }, "minItems": 1 }
-    ],
-    "returns": {
-      "type": "object",
-      "description": "List of key-value pairs of the retrieved info booleans"
-    }
-  },
   "Input.Left": {
     "type": "method",
     "description": "Navigate left in GUI",
@@ -1561,5 +1535,31 @@
       { "name": "recursive", "type": "boolean", "default": true }
     ],
     "returns": "string"
+  },
+  "XBMC.GetInfoLabels": {
+    "type": "method",
+    "description": "Retrieve info labels about XBMC and the system",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "labels", "type": "array", "required": true, "items": { "type": "string" }, "minItems": 1, "description": "See http://wiki.xbmc.org/index.php?title=InfoLabels for a list of possible info labels" }
+    ],
+    "returns": {
+      "type": "object",
+      "description": "List of key-value pairs of the retrieved info labels"
+    }
+  },
+  "XBMC.GetInfoBooleans": {
+    "type": "method",
+    "description": "Retrieve info booleans about XBMC and the system",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "booleans", "type": "array", "required": true, "items": { "type": "string" }, "minItems": 1 }
+    ],
+    "returns": {
+      "type": "object",
+      "description": "List of key-value pairs of the retrieved info booleans"
+    }
   }
 }
