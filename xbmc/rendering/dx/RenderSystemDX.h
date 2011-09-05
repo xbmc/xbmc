@@ -22,6 +22,8 @@
 #ifndef RENDER_SYSTEM_DX_H
 #define RENDER_SYSTEM_DX_H
 
+#ifdef HAS_DX
+
 #pragma once
 
 #include <vector>
@@ -150,5 +152,7 @@ protected:
 
   bool                        m_inScene; ///< True if we're in a BeginScene()/EndScene() block
 };
+
+#endif
 
 #endif // RENDER_SYSTEM_DX
