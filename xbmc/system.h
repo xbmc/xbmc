@@ -185,8 +185,12 @@
 #define LPDIRECTSOUND8 LPDIRECTSOUND
 #undef GetFreeSpace
 #include "PlatformInclude.h"
+#ifdef HAS_DX
 #include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
 #include "D3DX9.h"  // or the reference video clock.
+#else
+#include <d3d9types.h>
+#endif
 #ifdef HAS_SDL
 #include "SDL\SDL.h"
 #endif

@@ -31,7 +31,9 @@
 #include "utils/TimeUtils.h"
 #include "utils/CharsetConverter.h"
 
+#ifdef HAS_DX
 #pragma comment(lib, "dxguid.lib")
+#endif
 
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_IEEE_FLOAT, WAVE_FORMAT_IEEE_FLOAT, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );
 DEFINE_GUID( _KSDATAFORMAT_SUBTYPE_PCM, WAVE_FORMAT_PCM, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71 );

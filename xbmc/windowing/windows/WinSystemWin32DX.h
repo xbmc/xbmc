@@ -22,6 +22,8 @@
 #ifndef WIN_SYSTEM_WIN32_DX_H
 #define WIN_SYSTEM_WIN32_DX_H
 
+#ifdef HAS_DX
+
 #pragma once
 
 #include <d3d9.h>
@@ -31,7 +33,6 @@
 #include "rendering/dx/RenderSystemDX.h"
 #include "utils/GlobalsHandling.h"
 
-#ifdef HAS_DX
 
 class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemDX
 {
