@@ -121,6 +121,50 @@ static const dxva2_mode_t dxva2_modes[] = {
     { NULL, NULL, 0 }
 };
 
+DEFINE_GUID(DXVA2_VideoProcATIVectorAdaptiveDevice,   0x3C5323C1,0x6fb7,0x44f5,0x90,0x81,0x05,0x6b,0xf2,0xee,0x44,0x9d);
+DEFINE_GUID(DXVA2_VideoProcATIMotionAdaptiveDevice,   0x552C0DAD,0xccbc,0x420b,0x83,0xc8,0x74,0x94,0x3c,0xf9,0xf1,0xa6);
+DEFINE_GUID(DXVA2_VideoProcATIAdaptiveDevice,         0x6E8329FF,0xb642,0x418b,0xbc,0xf0,0xbc,0xb6,0x59,0x1e,0x25,0x5f);
+DEFINE_GUID(DXVA2_VideoProcNVidiaAdaptiveDevice,      0x6CB69578,0x7617,0x4637,0x91,0xE5,0x1C,0x02,0xDB,0x81,0x02,0x85);
+DEFINE_GUID(DXVA2_VideoProcIntelEdgeDevice,           0xBF752EF6,0x8CC4,0x457A,0xBE,0x1B,0x08,0xBD,0x1C,0xAE,0xEE,0x9F);
+DEFINE_GUID(DXVA2_VideoProcNVidiaUnknownDevice,       0xF9F19DA5,0x3B09,0x4B2F,0x9D,0x89,0xC6,0x47,0x53,0xE3,0xEA,0xAB);
+
+typedef struct {
+    const char   *name;
+    const GUID   *guid;
+} dxva2_device_t;
+
+static const dxva2_device_t dxva2_devices[] = {
+  { "Progressive Device",           &DXVA2_VideoProcProgressiveDevice         },
+  { "Bob Device",                   &DXVA2_VideoProcBobDevice                 },
+  { "Vector Adaptative Device",     &DXVA2_VideoProcATIVectorAdaptiveDevice   },
+  { "Motion Adaptative Device",     &DXVA2_VideoProcATIMotionAdaptiveDevice   },
+  { "Adaptative Device",            &DXVA2_VideoProcATIAdaptiveDevice         },
+  { "Spatial-temporal device",      &DXVA2_VideoProcNVidiaAdaptiveDevice      },
+  { "Edge directed device",         &DXVA2_VideoProcIntelEdgeDevice           },
+  { "Unknown device (nVidia)",      &DXVA2_VideoProcNVidiaUnknownDevice       },
+  { NULL, NULL }
+};
+
+typedef struct {
+    const char   *name;
+    unsigned      flags;
+} dxva2_deinterlacetech_t;
+
+static const dxva2_deinterlacetech_t dxva2_deinterlacetechs[] = {
+  { "Inverse Telecine",                   DXVA2_DeinterlaceTech_InverseTelecine        },
+  { "Motion vector steered",              DXVA2_DeinterlaceTech_MotionVectorSteered    },
+  { "Pixel adaptive",                     DXVA2_DeinterlaceTech_PixelAdaptive          },
+  { "Field adaptive",                     DXVA2_DeinterlaceTech_FieldAdaptive          },
+  { "Edge filtering",                     DXVA2_DeinterlaceTech_EdgeFiltering          },
+  { "Median filtering",                   DXVA2_DeinterlaceTech_MedianFiltering        },
+  { "Bob vertical stretch 4-tap",         DXVA2_DeinterlaceTech_BOBVerticalStretch4Tap },
+  { "Bob vertical stretch",               DXVA2_DeinterlaceTech_BOBVerticalStretch     },
+  { "Bob line replicate",                 DXVA2_DeinterlaceTech_BOBLineReplicate       },
+  { "Unknown",                            DXVA2_DeinterlaceTech_Unknown                },
+  { NULL, 0 }
+};
+
+
 // Prefered targets must be first
 static const D3DFORMAT render_targets[] = {
     (D3DFORMAT)MAKEFOURCC('N','V','1','2'),
@@ -199,7 +243,7 @@ static DWORD VP3DeviceID [] = {
 static CStdString GUIDToString(const GUID& guid)
 {
   CStdString buffer;
-  buffer.Format("%08X-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x\n"
+  buffer.Format("%08X-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x"
               , guid.Data1, guid.Data2, guid.Data3
               , guid.Data4[0], guid.Data4[1]
               , guid.Data4[2], guid.Data4[3], guid.Data4[4]
@@ -207,7 +251,7 @@ static CStdString GUIDToString(const GUID& guid)
   return buffer;
 }
 
-static const dxva2_mode_t *dxva2_find(const GUID *guid)
+static const dxva2_mode_t *dxva2_find_mode(const GUID *guid)
 {
     for (unsigned i = 0; dxva2_modes[i].name; i++) {
         if (IsEqualGUID(*dxva2_modes[i].guid, *guid))
@@ -216,6 +260,23 @@ static const dxva2_mode_t *dxva2_find(const GUID *guid)
     return NULL;
 }
 
+static const dxva2_device_t *dxva2_find_device(const GUID *guid)
+{
+    for (unsigned i = 0; dxva2_devices[i].name; i++) {
+        if (IsEqualGUID(*dxva2_devices[i].guid, *guid))
+            return &dxva2_devices[i];
+    }
+    return NULL;
+}
+
+static const dxva2_deinterlacetech_t *dxva2_find_deinterlacetech(unsigned flags)
+{
+    for (unsigned i = 0; dxva2_deinterlacetechs[i].name; i++) {
+        if (dxva2_deinterlacetechs[i].flags == flags)
+            return &dxva2_deinterlacetechs[i];
+    }
+    return NULL;
+}
 
 #define SCOPE(type, var) boost::shared_ptr<type> var##_holder(var, CoTaskMemFree);
 
@@ -406,7 +467,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   for(unsigned i = 0; i < input_count; i++)
   {
     const GUID *g            = &input_list[i];
-    const dxva2_mode_t *mode = dxva2_find(g);
+    const dxva2_mode_t *mode = dxva2_find_mode(g);
     if(mode)
       CLog::Log(LOGDEBUG, "DXVA - supports '%s'", mode->name);
     else
@@ -1113,8 +1174,22 @@ bool CProcessor::SelectProcessor()
   {
     for(unsigned i = 0; i < guid_count; i++)
     {
-      GUID* g = &guid_list[i];
-      CLog::Log(LOGDEBUG, "DXVA - processor found %s", GUIDToString(*g).c_str());
+      const GUID* g = &guid_list[i];
+      const dxva2_device_t* device = dxva2_find_device(g);
+
+      if (device)
+      {
+        CLog::Log(LOGDEBUG, "DXVA - processor found %s", device->name);
+      }
+      else
+      {
+        CHECK(m_service->GetVideoProcessorCaps(*g, &m_desc, D3DFMT_X8R8G8B8, &m_caps));
+        const dxva2_deinterlacetech_t* tech = dxva2_find_deinterlacetech(m_caps.DeinterlaceTechnology);
+        if (tech != NULL)
+          CLog::Log(LOGDEBUG, "DXVA - unknown processor %s found, deinterlace technology %s", GUIDToString(*g).c_str(), tech->name);
+        else
+          CLog::Log(LOGDEBUG, "DXVA - unknown processor %s found, unknown technology", GUIDToString(*g).c_str());
+      }
 
       if (m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB)
       {
@@ -1138,7 +1213,11 @@ bool CProcessor::OpenProcessor()
 
   SAFE_RELEASE(m_process);
 
-  CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
+  const dxva2_device_t* device = dxva2_find_device(&m_device);
+  if (device)
+    CLog::Log(LOGDEBUG, "DXVA - processor selected %s", device->name);
+  else
+    CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
 
   D3DFORMAT rtFormat = D3DFMT_X8R8G8B8;
   CHECK(m_service->GetVideoProcessorCaps(m_device, &m_desc, rtFormat, &m_caps))
