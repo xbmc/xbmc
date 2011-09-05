@@ -1092,7 +1092,9 @@ bool CProcessor::OpenProcessor()
 {
   SAFE_RELEASE(m_process);
 
-  if (m_interlace_method == VS_INTERLACEMETHOD_NONE)
+  if(m_interlace_method != VS_INTERLACEMETHOD_AUTO
+  && m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB
+  && m_interlace_method != VS_INTERLACEMETHOD_DXVA_BEST)
     m_desc.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
   else
     m_desc.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
@@ -1116,7 +1118,7 @@ bool CProcessor::OpenProcessor()
       GUID* g = &guid_list[i];
       CLog::Log(LOGDEBUG, "DXVA - processor found %s", GUIDToString(*g).c_str());
 
-      if (m_interlace_method == VS_INTERLACEMETHOD_NONE)
+      if (m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB)
       {
         if(IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
           m_device = *g;

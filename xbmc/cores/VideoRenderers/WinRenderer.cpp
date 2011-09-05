@@ -81,6 +81,7 @@ CWinRenderer::CWinRenderer()
 
   m_sw_scale_ctx = NULL;
   m_dllSwScale = NULL;
+  m_dxvaDecoding = false;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -250,6 +251,11 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
     // reinitialize the filters/shaders
     m_bFilterInitialized = false;
   }
+
+  if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_DXVA)
+    m_dxvaDecoding = true;
+  else
+    m_dxvaDecoding = false;
 
   m_fps = fps;
   m_flags = flags;
@@ -1055,11 +1061,11 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
     || method == VS_INTERLACEMETHOD_DXVA_BOB
     || method == VS_INTERLACEMETHOD_DXVA_BEST)
       return true;
-    return false;
   }
 
-  if(method == VS_INTERLACEMETHOD_DEINTERLACE
-  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+  if(!m_dxvaDecoding 
+  && (   method == VS_INTERLACEMETHOD_DEINTERLACE
+      || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF))
     return true;
 
   return false;

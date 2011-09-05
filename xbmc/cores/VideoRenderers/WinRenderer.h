@@ -277,6 +277,7 @@ protected:
   DWORD                m_clearColour;
   unsigned int         m_flags;
   unsigned int         m_format;
+  bool                 m_dxvaDecoding;
 
   // Width and height of the render target
   // the separable HQ scalers need this info, but could the m_destRect be used instead?
