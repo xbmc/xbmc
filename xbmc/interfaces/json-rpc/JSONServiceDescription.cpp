@@ -234,8 +234,6 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "System.Suspend",                               CSystemOperations::Suspend },
   { "System.Hibernate",                             CSystemOperations::Hibernate },
   { "System.Reboot",                                CSystemOperations::Reboot },
-  { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels },
-  { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans },
 
 // Input operations
   { "Input.Left",                                   CInputOperations::Left },
@@ -254,7 +252,9 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 
 // XBMC operations
   { "XBMC.Play",                                    CXBMCOperations::Play },
-  { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow }
+  { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow },
+  { "XBMC.GetInfoLabels",                           CXBMCOperations::GetInfoLabels },
+  { "XBMC.GetInfoBooleans",                         CXBMCOperations::GetInfoBooleans }
 };
 
 bool CJSONServiceDescription::prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name)
