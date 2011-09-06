@@ -31,6 +31,7 @@
 #define DLL_PATH_LIBHDHOMERUN  "special://xbmcbin/system/hdhomerun.dll"
 #define DLL_PATH_LIBCURL       "special://xbmcbin/system/libcurl.dll"
 #define DLL_PATH_LIBMICROHTTP  "special://xbmcbin/system/webserver/libmicrohttpd-5.dll"
+#define DLL_PATH_LIBNFS        "special://xbmcbin/system/libnfs.dll"
 
 /* paplayer */
 #define DLL_PATH_ADPCM_CODEC   "special://xbmcbin/system/players/paplayer/adpcm.dll"
