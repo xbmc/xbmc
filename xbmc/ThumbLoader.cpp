@@ -191,8 +191,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     db.Open();
     db.GetResumePoint(*pItem->GetVideoInfoTag());
     db.Close();
-    CFileItemPtr pItem(new CFileItem(*pItem));
-    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
+    CFileItemPtr pi(new CFileItem(*pItem));
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pi);
     g_windowManager.SendThreadMessage(msg);
   }
 
