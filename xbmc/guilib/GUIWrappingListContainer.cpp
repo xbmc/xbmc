@@ -120,6 +120,11 @@ void CGUIWrappingListContainer::Scroll(int amount)
   ScrollToOffset(GetOffset() + amount);
 }
 
+bool CGUIWrappingListContainer::GetOffsetRange(int &minOffset, int &maxOffset) const
+{
+  return false;
+}
+
 void CGUIWrappingListContainer::ValidateOffset()
 {
   // our minimal amount of items - we need to take into acount extra items to display wrapped items when scrolling

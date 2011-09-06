@@ -402,20 +402,19 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
 {
-  //Make sure you have a full path in the filename, otherwise adds the base path before.
+  // Check if the filename is a fully qualified URL such as protocol://path/to/file
   CURL plItemUrl(strFilename);
+  if (!plItemUrl.GetProtocol().IsEmpty())
+    return;
 
-  if (!plItemUrl.IsLocal())
-    return; // non-local path, don't do anything
-  else if (strFilename.size() > 1)
-  { // local path - see if it's fully qualified
+  // If the filename starts "x:" or "/" it's already fully qualified so return
+  if (strFilename.size() > 1)
 #ifdef _LINUX
     if ( (strFilename[1] == ':') || (strFilename[0] == '/') )
 #else
     if ( strFilename[1] == ':' )
 #endif
       return;
-  }
 
   // add to base path and then clean
   strFilename = URIUtils::AddFileToFolder(strBasePath, strFilename);

@@ -394,7 +394,6 @@ bool CWinEventsSDL::ProcessOSXShortcuts(SDL_Event& event)
     switch(event.key.keysym.sym)
     {
     case SDLK_q:  // CMD-q to quit
-    case SDLK_w:  // CMD-w to quit
       if (!g_application.m_bStop)
         g_application.getApplicationMessenger().Quit();
       return true;

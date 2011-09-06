@@ -28,7 +28,7 @@
 
 #ifdef HAS_GLES
 
-using namespace Shaders;
+using namespace VisShaders;
 
 class CGUIShader : public CGLSLShaderProgram
 {

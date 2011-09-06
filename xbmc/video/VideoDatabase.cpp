@@ -1455,7 +1455,7 @@ void CVideoDatabase::GetMoviesByActor(const CStdString& strActor, CFileItemList&
                                 "JOIN actors a ON a.idActor=actorlinkmovie.idActor "
                                 "JOIN directorlinkmovie ON directorlinkmovie.idMovie=movieview.idMovie "
                                 "JOIN actors d ON d.idActor=directorlinkmovie.idDirector "
-                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY idMovie", strActor.c_str(), strActor.c_str());
+                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY movieview.idMovie", strActor.c_str(), strActor.c_str());
   GetMoviesByWhere("videodb://1/2/", where, "", items);
 }
 
@@ -1465,7 +1465,7 @@ void CVideoDatabase::GetTvShowsByActor(const CStdString& strActor, CFileItemList
                                 "JOIN actors a ON a.idActor=actorlinktvshow.idActor "
                                 "JOIN directorlinktvshow ON directorlinktvshow.idShow=tvshowview.idShow "
                                 "JOIN actors d ON d.idActor=directorlinktvshow.idDirector "
-                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY idShow", strActor.c_str(), strActor.c_str());
+                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY tvshowview.idShow", strActor.c_str(), strActor.c_str());
   GetTvShowsByWhere("videodb://2/2/", where, items);
 }
 
@@ -1475,7 +1475,7 @@ void CVideoDatabase::GetEpisodesByActor(const CStdString& strActor, CFileItemLis
                                 "JOIN actors a ON a.idActor=actorlinkepisode.idActor "
                                 "JOIN directorlinkepisode ON directorlinkepisode.idEpisode=episodeview.idEpisode "
                                 "JOIN actors d ON d.idActor=directorlinkepisode.idDirector "
-                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY idEpisode", strActor.c_str(), strActor.c_str());
+                                "WHERE a.strActor='%s' OR d.strActor='%s' GROUP BY episodeview.idEpisode", strActor.c_str(), strActor.c_str());
   GetEpisodesByWhere("videodb://2/2/", where, items);
 }
 
@@ -1750,13 +1750,11 @@ int CVideoDatabase::SetDetailsForMovie(const CStdString& strFilenameAndPath, con
     }
 
     // add sets...
-    if (!info.m_strSet.IsEmpty())
+    if (info.m_set.size() > 0)
     {
-      CStdStringArray sets;
-      StringUtils::SplitString(info.m_strSet, g_advancedSettings.m_videoItemSeparator, sets);
-      for (unsigned int i = 0; i < sets.size(); i++)
+      for (unsigned int i = 0; i < info.m_set.size(); i++)
       {
-        CStdString set(sets[i]);
+        CStdString set(info.m_set[i]);
         set.Trim();
         int idSet = AddSet(set);
         AddSetToMovie(idMovie, idSet);
@@ -2817,14 +2815,13 @@ CVideoInfoTag CVideoDatabase::GetDetailsForMovie(auto_ptr<Dataset> &pDS, bool ne
     details.m_strPictureURL.Parse();
 
     // create sets string
-    strSQL = PrepareSQL("SELECT sets.strSet FROM sets,setlinkmovie WHERE setlinkmovie.idMovie=%i AND setlinkmovie.idSet=sets.idSet ORDER BY sets.idSet",idMovie);
+    strSQL = PrepareSQL("SELECT sets.idSet, sets.strSet FROM sets,setlinkmovie WHERE setlinkmovie.idMovie=%i AND setlinkmovie.idSet=sets.idSet ORDER BY sets.idSet",idMovie);
     m_pDS2->query(strSQL.c_str());
     while (!m_pDS2->eof())
     {
-      CStdString setName = m_pDS2->fv("sets.strSet").get_asString();
-      if (!details.m_strSet.IsEmpty())
-        details.m_strSet += g_advancedSettings.m_videoItemSeparator;
-      details.m_strSet += setName;
+      details.m_set.push_back(m_pDS2->fv("sets.strSet").get_asString());
+      details.m_setId.push_back(m_pDS2->fv("sets.idSet").get_asInt());
+
       m_pDS2->next();
     }
 
@@ -2902,6 +2899,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   details.m_strShowTitle = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_NAME).get_asString();
   details.m_strStudio = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString();
   details.m_strPremiered = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString();
+  details.m_iIdShow = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt();
 
   GetStreamDetails(details);
 

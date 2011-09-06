@@ -92,6 +92,8 @@ public:
   CStdString lastPlayed;
   int iStartOffset;
   int iEndOffset;
+  int iArtistId;
+  int iAlbumId;
 
   // Karaoke-specific information
   long       iKaraokeNumber;        //! Karaoke song number to "select by number". 0 for non-karaoke

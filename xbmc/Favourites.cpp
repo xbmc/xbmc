@@ -175,8 +175,6 @@ CStdString CFavourites::GetExecutePath(const CFileItem *item, int contextWindow)
     execute.Format("ActivateWindow(%i,%s)", contextWindow, Paramify(item->GetPath()));
   else if (item->IsScript())
     execute.Format("RunScript(%s)", Paramify(item->GetPath().Mid(9)));
-  else if (contextWindow == WINDOW_PROGRAMS)
-    execute.Format("RunXBE(%s)", Paramify(item->GetPath()));
   else  // assume a media file
   {
     if (item->IsVideoDb() && item->HasVideoInfoTag())

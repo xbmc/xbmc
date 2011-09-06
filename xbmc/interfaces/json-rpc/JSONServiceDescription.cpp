@@ -37,6 +37,7 @@
 #include "SystemOperations.h"
 #include "InputOperations.h"
 #include "XBMCOperations.h"
+#include "ApplicationOperations.h"
 
 using namespace std;
 using namespace JSONRPC;
@@ -83,8 +84,8 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "JSONRPC.Version",                              CJSONRPC::Version },
   { "JSONRPC.Permission",                           CJSONRPC::Permission },
   { "JSONRPC.Ping",                                 CJSONRPC::Ping },
-  { "JSONRPC.GetNotificationFlags",                 CJSONRPC::GetNotificationFlags },
-  { "JSONRPC.SetNotificationFlags",                 CJSONRPC::SetNotificationFlags },
+  { "JSONRPC.GetConfiguration",                     CJSONRPC::GetConfiguration },
+  { "JSONRPC.SetConfiguration",                     CJSONRPC::SetConfiguration },
   { "JSONRPC.NotifyAll",                            CJSONRPC::NotifyAll },
 
 // Player
@@ -228,12 +229,11 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
 
 // System operations
+  { "System.GetProperties",                         CSystemOperations::GetProperties },
   { "System.Shutdown",                              CSystemOperations::Shutdown },
   { "System.Suspend",                               CSystemOperations::Suspend },
   { "System.Hibernate",                             CSystemOperations::Hibernate },
   { "System.Reboot",                                CSystemOperations::Reboot },
-  { "System.GetInfoLabels",                         CSystemOperations::GetInfoLabels },
-  { "System.GetInfoBooleans",                       CSystemOperations::GetInfoBooleans },
 
 // Input operations
   { "Input.Left",                                   CInputOperations::Left },
@@ -244,14 +244,17 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Input.Back",                                   CInputOperations::Back },
   { "Input.Home",                                   CInputOperations::Home },
 
+// Application operations
+  { "Application.GetProperties",                    CApplicationOperations::GetProperties },
+  { "Application.SetVolume",                        CApplicationOperations::SetVolume },
+  { "Application.ToggleMute",                       CApplicationOperations::ToggleMute },
+  { "Application.Quit",                             CApplicationOperations::Quit },
+
 // XBMC operations
-  { "XBMC.GetVolume",                               CXBMCOperations::GetVolume },
-  { "XBMC.SetVolume",                               CXBMCOperations::SetVolume },
-  { "XBMC.ToggleMute",                              CXBMCOperations::ToggleMute },
   { "XBMC.Play",                                    CXBMCOperations::Play },
   { "XBMC.StartSlideshow",                          CXBMCOperations::StartSlideshow },
-  { "XBMC.Log",                                     CXBMCOperations::Log },
-  { "XBMC.Quit",                                    CXBMCOperations::Quit }
+  { "XBMC.GetInfoLabels",                           CXBMCOperations::GetInfoLabels },
+  { "XBMC.GetInfoBooleans",                         CXBMCOperations::GetInfoBooleans }
 };
 
 bool CJSONServiceDescription::prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name)
@@ -955,22 +958,22 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
     JSONSchemaTypeDefinition::CJsonSchemaPropertiesMap::JSONSchemaPropertiesIterator propertiesIterator;
     for (propertiesIterator = type.properties.begin(); propertiesIterator != propertiesEnd; propertiesIterator++)
     {
-      if (value.isMember(propertiesIterator->first))
+      if (value.isMember(propertiesIterator->second.name))
       {
-        JSON_STATUS status = checkType(value[propertiesIterator->first], propertiesIterator->second, outputValue[propertiesIterator->first], errorData["property"]);
+        JSON_STATUS status = checkType(value[propertiesIterator->second.name], propertiesIterator->second, outputValue[propertiesIterator->second.name], errorData["property"]);
         if (status != OK)
         {
-          CLog::Log(LOGWARNING, "JSONRPC: Invalid property \"%s\" in type %s", propertiesIterator->first.c_str(), type.name.c_str());
+          CLog::Log(LOGWARNING, "JSONRPC: Invalid property \"%s\" in type %s", propertiesIterator->second.name.c_str(), type.name.c_str());
           return status;
         }
         handled++;
       }
       else if (propertiesIterator->second.optional)
-        outputValue[propertiesIterator->first] = propertiesIterator->second.defaultValue;
+        outputValue[propertiesIterator->second.name] = propertiesIterator->second.defaultValue;
       else
       {
-        CLog::Log(LOGWARNING, "JSONRPC: Missing property \"%s\" in type %s", propertiesIterator->first.c_str(), type.name.c_str());
-        errorData["property"]["name"] = propertiesIterator->first.c_str();
+        CLog::Log(LOGWARNING, "JSONRPC: Missing property \"%s\" in type %s", propertiesIterator->second.name.c_str(), type.name.c_str());
+        errorData["property"]["name"] = propertiesIterator->second.name.c_str();
         errorData["property"]["type"] = SchemaValueTypeToString(propertiesIterator->second.type);
         errorData["message"] = "Missing property";
         return InvalidParams;
