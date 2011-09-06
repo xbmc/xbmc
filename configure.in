@@ -79,6 +79,8 @@ goom_enabled="== GOOM enabled. =="
 goom_disabled="== GOOM disabled. =="
 rsxs_enabled="== RSXS enabled. =="
 rsxs_disabled="== RSXS disabled. =="
+projectm_enabled="== ProjectM enabled. =="
+projectm_disabled="== ProjectM disabled. =="
 x11_enabled="== X11 enabled. =="
 x11_disabled="== X11 disabled. =="
 pulse_not_found="== Could not find libpulse. PulseAudio support disabled. =="
@@ -235,6 +237,12 @@ AC_ARG_ENABLE([rsxs],
   [enable really slick X screensavers (default is yes)])],
   [use_rsxs=$enableval],
   [use_rsxs=yes])
+
+AC_ARG_ENABLE([projectm],
+  [AS_HELP_STRING([--enable-projectm],
+  [enable ProjectM visualisation (default is yes)])],
+  [use_projectm=$enableval],
+  [use_projectm=yes])
 
 AC_ARG_ENABLE([x11],
   [AS_HELP_STRING([--enable-x11],
@@ -890,6 +898,15 @@ else
   fi
 fi
 
+# PROJECTM
+if test "$use_projectm" = "no" || test "$use_gl" = "no"; then
+  AC_MSG_NOTICE($projectm_disabled)
+  DISABLE_PROJECTM=1
+else
+  AC_MSG_NOTICE($projectm_enabled)
+  DISABLE_PROJECTM=0
+fi
+
 # libRTMP
 if test "$use_librtmp" != "no"; then
   AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
@@ -1365,6 +1382,12 @@ else
   final_message="$final_message\n  RSXS:\t\tNo"
 fi
 
+if test "$use_projectm" = "yes"; then
+  final_message="$final_message\n  ProjectM:\t\tYes"
+else
+  final_message="$final_message\n  ProjectM:\t\tNo"
+fi
+
 if test "$use_x11" = "yes"; then
   final_message="$final_message\n  X11:\t\tYes"
 else
@@ -1608,6 +1631,7 @@ AC_SUBST(SDL_DEFINES)
 AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(DISABLE_GOOM)
 AC_SUBST(DISABLE_RSXS)
+AC_SUBST(DISABLE_PROJECTM)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
@@ -1832,27 +1856,25 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 ], [0])
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
-if test "$use_gl" = "no"; then :; else
-set -x
-    rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake    \
-      -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF        \
-      -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}"     \
-      -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
-      -DCMAKE_INSTALL_PREFIX="${prefix}"                 \
-      -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}"            \
-      -DINCLUDE_INSTALL_DIR:PATH="${includedir}"         \
-      -DLIB_INSTALL_DIR:PATH="${libdir}"                 \
-      -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}"         \
-      -DSHARE_INSTALL_PREFIX:PATH="${datadir}" . &&
-    if test "$host_vendor" = "apple" ; then
-      # cmake has hardcoded paths to macports which bork our darwin depends cross/ppc, remove them
-      sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/link.txt
-      sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/flags.make
-      sed -i "" -e "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
-    fi
-set +x
-fi
-], [0])
+  set -x
+  rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake    \
+    -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF        \
+    -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}"     \
+    -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
+    -DCMAKE_INSTALL_PREFIX="${prefix}"                 \
+    -DCMAKE_INSTALL_LIBDIR:PATH="${libdir}"            \
+    -DINCLUDE_INSTALL_DIR:PATH="${includedir}"         \
+    -DLIB_INSTALL_DIR:PATH="${libdir}"                 \
+    -DSYSCONF_INSTALL_DIR:PATH="${sysconfdir}"         \
+    -DSHARE_INSTALL_PREFIX:PATH="${datadir}" . &&
+  if test "$host_vendor" = "apple" ; then
+    # cmake has hardcoded paths to macports which bork our darwin depends cross/ppc, remove them
+    sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/link.txt
+    sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/flags.make
+    sed -i "" -e "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
+  fi
+  set +x
+], [$DISABLE_PROJECTM])
 
 XB_CONFIG_MODULE([xbmc/visualizations/Goom/goom2k4-0],[
   ./configure  \
