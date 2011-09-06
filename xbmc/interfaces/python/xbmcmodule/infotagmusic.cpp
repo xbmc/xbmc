@@ -174,7 +174,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetLastPlayed(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetLastPlayed().c_str());
+    return Py_BuildValue((char*)"s", self->infoTag.GetLastPlayed().GetAsLocalizedDate().c_str());
   }
 
   // InfoTagMusic_GetComment
