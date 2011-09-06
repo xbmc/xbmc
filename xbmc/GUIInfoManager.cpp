@@ -4111,6 +4111,16 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_streamDetails.GetSubtitleLanguage();
     break;
+  case LISTITEM_PERCENT_PLAYED:
+    {
+      int val;
+      if (GetItemInt(val, item, info))
+      {
+        CStdString str;
+        str.Format("%d", val);
+        return str;
+      }
+    }
   }
   return "";
 }
