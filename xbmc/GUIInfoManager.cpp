@@ -4561,6 +4561,16 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return rating;
     }
     break;
+  case LISTITEM_PERCENT_PLAYED:
+    {
+      int val;
+      if (GetItemInt(val, item, info))
+      {
+        CStdString str;
+        str.Format("%d", val);
+        return str;
+      }
+    }
   }
   return "";
 }
