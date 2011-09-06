@@ -1266,9 +1266,6 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 {
   CSingleLock lock(m_section);
 
-  if(m_sample.empty())
-    return false;
-
   // MinTime and MaxTime are the first and last samples to feed the processor.
   // MinTime is also the first sample to keep.
   REFERENCE_TIME MinTime = time - m_caps.NumBackwardRefSamples*2;
@@ -1286,6 +1283,9 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
     else
       it++;
   }
+
+  if(m_sample.empty())
+    return false;
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
