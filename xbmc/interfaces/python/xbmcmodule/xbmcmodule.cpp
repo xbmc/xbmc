@@ -898,7 +898,7 @@ namespace PYXBMC
     "file        : file to calculate subtitle hash and size for\n"
     "\n"
     "example:\n"
-    " - size,hash = xbmcvfs.subHashAndFileSize(file)\n"); 
+    " - size,hash = xbmc.subHashAndFileSize(file)\n"); 
   PyObject* XBMC_subHashAndFileSize(PyObject *self, PyObject *args, PyObject *kwds)
   {
     PyObject *f_line;
