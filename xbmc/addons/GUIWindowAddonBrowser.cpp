@@ -356,30 +356,30 @@ int CGUIWindowAddonBrowser::SelectAddonID(vector<ADDON::TYPE> types, CStdStringA
   int iTypes = 0;
   for (vector<ADDON::TYPE>::const_iterator it = types.begin(); it != types.end(); ++it)
   {
-  if (*it == ADDON_UNKNOWN)
-    continue;
-  ADDON::VECADDONS addons;
-  iTypes++;
-  if (*it == ADDON_AUDIO)
-    CAddonsDirectory::GetScriptsAndPlugins("audio",addons);
-  else if (*it == ADDON_EXECUTABLE)
-    CAddonsDirectory::GetScriptsAndPlugins("executable",addons);
-  else if (*it == ADDON_IMAGE)
-    CAddonsDirectory::GetScriptsAndPlugins("image",addons);
-  else if (*it == ADDON_VIDEO)
-    CAddonsDirectory::GetScriptsAndPlugins("video",addons);
-  else
-    CAddonMgr::Get().GetAddons(*it, addons);
-  for (ADDON::IVECADDONS it2 = addons.begin() ; it2 != addons.end() ; ++it2)
-  {
-    CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*it2, ""));
-    if (!items.Contains(item->GetPath()))
-      items.Add(item);
-  }
+    if (*it == ADDON_UNKNOWN)
+      continue;
+    ADDON::VECADDONS addons;
+    iTypes++;
+    if (*it == ADDON_AUDIO)
+      CAddonsDirectory::GetScriptsAndPlugins("audio",addons);
+    else if (*it == ADDON_EXECUTABLE)
+      CAddonsDirectory::GetScriptsAndPlugins("executable",addons);
+    else if (*it == ADDON_IMAGE)
+      CAddonsDirectory::GetScriptsAndPlugins("image",addons);
+    else if (*it == ADDON_VIDEO)
+      CAddonsDirectory::GetScriptsAndPlugins("video",addons);
+    else
+      CAddonMgr::Get().GetAddons(*it, addons);
+    for (ADDON::IVECADDONS it2 = addons.begin() ; it2 != addons.end() ; ++it2)
+    {
+      CFileItemPtr item(CAddonsDirectory::FileItemFromAddon(*it2, ""));
+      if (!items.Contains(item->GetPath()))
+        items.Add(item);
+    }
 
-  if (!heading.IsEmpty())
-    heading += ", ";
-  heading += TranslateType(*it, true);
+    if (!heading.IsEmpty())
+      heading += ", ";
+    heading += TranslateType(*it, true);
   }
 
   if (iTypes == 0)
