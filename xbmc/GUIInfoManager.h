@@ -392,6 +392,7 @@ namespace INFO
 
 #define SLIDESHOW_ISPAUSED          800
 #define SLIDESHOW_ISRANDOM          801
+#define SLIDESHOW_ISACTIVE          802
 
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980

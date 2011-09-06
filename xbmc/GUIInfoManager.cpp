@@ -509,6 +509,7 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
                                   { "isrepeatone",      PLAYLIST_ISREPEATONE }};
 
 const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
+                                  { "isactive",         SLIDESHOW_ISACTIVE },
                                   { "israndom",         SLIDESHOW_ISRANDOM }};
 
 CGUIInfoManager::Property::Property(const CStdString &property, const CStdString &parameters)
@@ -1977,6 +1978,11 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
   {
     CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     bReturn = (slideShow && slideShow->IsShuffled());
+  }
+  else if (condition == SLIDESHOW_ISACTIVE)
+  {
+    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    bReturn = (slideShow && slideShow->InSlideShow());
   }
   else if (g_application.IsPlaying())
   {
