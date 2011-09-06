@@ -122,7 +122,7 @@ public:
   bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format);
   void           Close();
   REFERENCE_TIME Add(DVDVideoPicture* picture);
-  bool           Render(const RECT& src, const RECT& dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
+  bool           Render(RECT src, RECT dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
   unsigned       Size() { if (m_service) return m_size; return 0; }
 
   virtual void OnCreateDevice()  {}

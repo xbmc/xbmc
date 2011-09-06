@@ -1262,7 +1262,7 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
     return range.DefaultValue;
 }
 
-bool CProcessor::Render(const RECT &src, const RECT &dst, IDirect3DSurface9* target, REFERENCE_TIME time)
+bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE_TIME time)
 {
   CSingleLock lock(m_section);
 
@@ -1290,6 +1290,8 @@ bool CProcessor::Render(const RECT &src, const RECT &dst, IDirect3DSurface9* tar
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
 
+  CWinRenderer::CropSource(src, dst, desc);
+
   // How to prepare the samples array for VideoProcessBlt
   // - always provide current picture + the number of forward and backward references required by the current processor.
   // - provide the surfaces in the array in increasing temporal order
@@ -1312,7 +1314,6 @@ bool CProcessor::Render(const RECT &src, const RECT &dst, IDirect3DSurface9* tar
       vs.DstRect = dst;
       if(vs.End == 0)
         vs.End = vs.Start + 2;
-      CWinRenderer::CropSource(vs.SrcRect, vs.DstRect, desc);
       valid++;
     }
   }
@@ -1323,7 +1324,7 @@ bool CProcessor::Render(const RECT &src, const RECT &dst, IDirect3DSurface9* tar
 
   DXVA2_VideoProcessBltParams blt = {};
   blt.TargetFrame = time;
-  blt.TargetRect  = samp[0].DstRect;
+  blt.TargetRect  = dst;
   blt.ConstrictionSize.cx = 0;
   blt.ConstrictionSize.cy = 0;
 
