@@ -185,6 +185,17 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   ||  pItem->IsParentFolder())
     return false;
 
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds == 0)
+  {
+    CVideoDatabase db;
+    db.Open();
+    db.GetResumePoint(*pItem->GetVideoInfoTag());
+    db.Close();
+    CFileItemPtr pItem(new CFileItem(*pItem));
+    CGUIMessage msg(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_UPDATE_ITEM, 0, pItem);
+    g_windowManager.SendThreadMessage(msg);
+  }
+
   CFileItem item(*pItem);
   CStdString cachedThumb(item.GetCachedVideoThumb());
 
@@ -241,13 +252,6 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     AddJob(extract);
   }
 
-  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds == 0)
-  {
-    CVideoDatabase db;
-    db.Open();
-    db.GetResumePoint(*pItem->GetVideoInfoTag());
-    db.Close();
-  }
   return true;
 }
 
