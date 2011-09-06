@@ -2733,11 +2733,31 @@ bool CFileItem::testGetBaseMoviePath()
   if (path != "c:\\dir\\filename.avi")
     result = false;
 
-  item.SetPath("ftp://somepath/file.avi");
+  item.SetPath("c:\\dir\\filename.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "c:\\dir\\")
+    result = false;
+
+  item.SetPath("/dir/filename.avi");
   path = item.GetBaseMoviePath(false);
-  if (path != "ftp://somepath/file.avi")
+  if (path != "/dir/filename.avi")
+    result = false;
+
+  item.SetPath("/dir/filename.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "/dir/")
+    result = false;
+
+  item.SetPath("smb://somepath/file.avi");
+  path = item.GetBaseMoviePath(false);
+  if (path != "smb://somepath/file.avi")
     result = false;
   
+  item.SetPath("smb://somepath/file.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "smb://somepath/")
+    result = false;
+
   item.SetPath("stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi");
   path = item.GetBaseMoviePath(false);
   if (path != "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi")
