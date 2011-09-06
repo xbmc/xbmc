@@ -1383,9 +1383,9 @@ else
 fi
 
 if test "$use_projectm" = "yes"; then
-  final_message="$final_message\n  ProjectM:\t\tYes"
+  final_message="$final_message\n  ProjectM:\tYes"
 else
-  final_message="$final_message\n  ProjectM:\t\tNo"
+  final_message="$final_message\n  ProjectM:\tNo"
 fi
 
 if test "$use_x11" = "yes"; then
