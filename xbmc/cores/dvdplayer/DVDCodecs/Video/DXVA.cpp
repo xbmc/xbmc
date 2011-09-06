@@ -1317,10 +1317,27 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
       valid++;
     }
   }
-
-  // The D3D debug runtime complains about DXVA2_SampleUnknown surfaces but this is recommended in the dxva processor documentation.
+  
+  // MS' guidelines above don't work. The blit fails when the processor is given DXVA2_SampleUnknown samples (with ATI at least).
+  // The ATI driver works with a reduced number of samples though, support that for now.
+  // Problem is an ambiguity if there are future refs requested by the processor. There are no such implementations at the moment.
+  int offset = 0;
   if(valid < count)
-    CLog::Log(LOGWARNING, __FUNCTION__" - did not find all required samples.");
+  {
+    CLog::Log(LOGWARNING, __FUNCTION__" - did not find all required samples, adjusting the sample array.");
+
+    for (int i = 0; i < count; i++)
+    {
+      if (samp[i].SampleFormat.SampleFormat == DXVA2_SampleUnknown)
+        offset = i+1;
+    }
+    count -= offset;
+    if (count == 0)
+    {
+      CLog::Log(LOGWARNING, __FUNCTION__" - no usable samples.");
+      return false;
+    }
+  }
 
   DXVA2_VideoProcessBltParams blt = {};
   blt.TargetFrame = time;
@@ -1351,7 +1368,7 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
   float verts[2][3]= {};
   g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 1, verts, 3*sizeof(float));
 
-  CHECK(m_process->VideoProcessBlt(target, &blt, samp.get(), count, NULL));
+  CHECK(m_process->VideoProcessBlt(target, &blt, &samp[offset], count, NULL));
   return true;
 }
 
