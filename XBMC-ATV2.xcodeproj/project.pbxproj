@@ -28,6 +28,7 @@
 		C8EC5D51136954E400CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D4F136954E400CCC10D /* XBMC_keytable.cpp */; };
 		DF0DF16C13A3AF82008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF16813A3AF82008ED511 /* FileNFS.cpp */; };
 		DF0DF16D13A3AF82008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */; };
+		DF34885513FD73810026A711 /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34885313FD73810026A711 /* InertialScrollingHandler.cpp */; };
 		DF7E662313ED4ADF003ED690 /* Observer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7E662213ED4ADF003ED690 /* Observer.cpp */; };
 		DF7E663413ED4BF8003ED690 /* Epg.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7E662713ED4BF8003ED690 /* Epg.cpp */; };
 		DF7E663513ED4BF8003ED690 /* EpgContainer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7E662913ED4BF8003ED690 /* EpgContainer.cpp */; };
@@ -80,10 +81,9 @@
 		DF7E681613ED5152003ED690 /* TimeSmoother.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF88787913E8912900B4ECE2 /* TimeSmoother.cpp */; };
 		DF7E683B13ED52B7003ED690 /* PVRDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7E683713ED52B7003ED690 /* PVRDirectory.cpp */; };
 		DF7E683C13ED52B7003ED690 /* PVRFile.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7E683913ED52B7003ED690 /* PVRFile.cpp */; };
-		DF34890913FD96390026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34890713FD96390026A711 /* GUIAction.cpp */; };
-		DFA6BE8713FED2A10048CC11 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE8513FED2A10048CC11 /* AirPlayServer.cpp */; };
-		DFA6BE8A13FED2B40048CC11 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE8813FED2B40048CC11 /* HttpParser.cpp */; };
-		DFAB04C113F8385F00B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB04BF13F8385F00B70BFB /* InertialScrollingHandler.cpp */; };
+		DFB8A87C14154B810075EAE6 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB8A87A14154B810075EAE6 /* AirPlayServer.cpp */; };
+		DFB8A8A214154C8C0075EAE6 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB8A8A014154C8C0075EAE6 /* HttpParser.cpp */; };
+		DFB8A8A514154CA70075EAE6 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFB8A8A314154CA70075EAE6 /* GUIAction.cpp */; };
 		DFD4D22013D7286E00A47C47 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D21413D7286E00A47C47 /* Implementation.cpp */; };
 		DFD4D22113D7286E00A47C47 /* README.platform in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D21613D7286E00A47C47 /* README.platform */; };
 		DFD4D22213D7286E00A47C47 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D21C13D7286E00A47C47 /* SystemClock.cpp */; };
@@ -1023,6 +1023,8 @@
 		DF0DF16913A3AF82008ED511 /* FileNFS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileNFS.h; sourceTree = "<group>"; };
 		DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF16B13A3AF82008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
+		DF34885313FD73810026A711 /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
+		DF34885413FD73810026A711 /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
 		DF7E662213ED4ADF003ED690 /* Observer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Observer.cpp; sourceTree = "<group>"; };
 		DF7E662713ED4BF8003ED690 /* Epg.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Epg.cpp; sourceTree = "<group>"; };
 		DF7E662813ED4BF8003ED690 /* Epg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Epg.h; sourceTree = "<group>"; };
@@ -1125,14 +1127,12 @@
 		DF7E683A13ED52B7003ED690 /* PVRFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PVRFile.h; sourceTree = "<group>"; };
 		DF88787813E8912900B4ECE2 /* TimeSmoother.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeSmoother.h; sourceTree = "<group>"; };
 		DF88787913E8912900B4ECE2 /* TimeSmoother.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = TimeSmoother.cpp; sourceTree = "<group>"; };
-		DF34890713FD96390026A711 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
-		DF34890813FD96390026A711 /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
-		DFA6BE8513FED2A10048CC11 /* AirPlayServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayServer.cpp; sourceTree = "<group>"; };
-		DFA6BE8613FED2A10048CC11 /* AirPlayServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirPlayServer.h; sourceTree = "<group>"; };
-		DFA6BE8813FED2B40048CC11 /* HttpParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpParser.cpp; sourceTree = "<group>"; };
-		DFA6BE8913FED2B40048CC11 /* HttpParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpParser.h; sourceTree = "<group>"; };
-		DFAB04BF13F8385F00B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
-		DFAB04C013F8385F00B70BFB /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
+		DFB8A87A14154B810075EAE6 /* AirPlayServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayServer.cpp; sourceTree = "<group>"; };
+		DFB8A87B14154B810075EAE6 /* AirPlayServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirPlayServer.h; sourceTree = "<group>"; };
+		DFB8A8A014154C8C0075EAE6 /* HttpParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpParser.cpp; sourceTree = "<group>"; };
+		DFB8A8A114154C8C0075EAE6 /* HttpParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpParser.h; sourceTree = "<group>"; };
+		DFB8A8A314154CA70075EAE6 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
+		DFB8A8A414154CA70075EAE6 /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
 		DFD4D20D13D7286E00A47C47 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		DFD4D20E13D7286E00A47C47 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
 		DFD4D21213D7286E00A47C47 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
@@ -4586,8 +4586,8 @@
 				F56C74A6131EC152000AD0F6 /* Geometry.h */,
 				F56C74A7131EC152000AD0F6 /* GraphicContext.h */,
 				F56C74A8131EC152000AD0F6 /* gui3d.h */,
-				DF34890713FD96390026A711 /* GUIAction.cpp */,
-				DF34890813FD96390026A711 /* GUIAction.h */,
+				DFB8A8A314154CA70075EAE6 /* GUIAction.cpp */,
+				DFB8A8A414154CA70075EAE6 /* GUIAction.h */,
 				F56C74AA131EC152000AD0F6 /* GUIAudioManager.h */,
 				F56C74AB131EC152000AD0F6 /* GUIBaseContainer.h */,
 				F56C74AC131EC152000AD0F6 /* GUIBorderedImage.h */,
@@ -5090,8 +5090,8 @@
 				F56C7648131EC153000AD0F6 /* libscrobbler */,
 				F56C7650131EC153000AD0F6 /* linux */,
 				F56C7653131EC153000AD0F6 /* osx */,
-				DFA6BE8513FED2A10048CC11 /* AirPlayServer.cpp */,
-				DFA6BE8613FED2A10048CC11 /* AirPlayServer.h */,
+				DFB8A87A14154B810075EAE6 /* AirPlayServer.cpp */,
+				DFB8A87B14154B810075EAE6 /* AirPlayServer.h */,
 				F56C7658131EC153000AD0F6 /* DNSNameCache.cpp */,
 				F56C7659131EC153000AD0F6 /* DNSNameCache.h */,
 				F56C765A131EC153000AD0F6 /* EventClient.cpp */,
@@ -5423,14 +5423,14 @@
 				F56C7738131EC154000AD0F6 /* FileUtils.cpp */,
 				F56C7739131EC154000AD0F6 /* FileUtils.h */,
 				F56C773A131EC154000AD0F6 /* fstrcmp.h */,
+				DFB8A8A014154C8C0075EAE6 /* HttpParser.cpp */,
+				DFB8A8A114154C8C0075EAE6 /* HttpParser.h */,
 				F56C773B131EC154000AD0F6 /* HTMLTable.cpp */,
 				F56C773C131EC154000AD0F6 /* HTMLTable.h */,
 				F56C773D131EC154000AD0F6 /* HTMLUtil.cpp */,
 				F56C773E131EC154000AD0F6 /* HTMLUtil.h */,
 				F56C773F131EC154000AD0F6 /* HttpHeader.cpp */,
 				F56C7740131EC154000AD0F6 /* HttpHeader.h */,
-				DFA6BE8813FED2B40048CC11 /* HttpParser.cpp */,
-				DFA6BE8913FED2B40048CC11 /* HttpParser.h */,
 				F56C7741131EC154000AD0F6 /* InfoLoader.cpp */,
 				F56C7742131EC154000AD0F6 /* InfoLoader.h */,
 				F56C7743131EC154000AD0F6 /* LabelFormatter.cpp */,
@@ -7142,10 +7142,10 @@
 				DF7E681613ED5152003ED690 /* TimeSmoother.cpp in Sources */,
 				DF7E683B13ED52B7003ED690 /* PVRDirectory.cpp in Sources */,
 				DF7E683C13ED52B7003ED690 /* PVRFile.cpp in Sources */,
-				DFAB04C113F8385F00B70BFB /* InertialScrollingHandler.cpp in Sources */,
-				DF34890913FD96390026A711 /* GUIAction.cpp in Sources */,
-				DFA6BE8713FED2A10048CC11 /* AirPlayServer.cpp in Sources */,
-				DFA6BE8A13FED2B40048CC11 /* HttpParser.cpp in Sources */,
+				DF34885513FD73810026A711 /* InertialScrollingHandler.cpp in Sources */,
+				DFB8A87C14154B810075EAE6 /* AirPlayServer.cpp in Sources */,
+				DFB8A8A214154C8C0075EAE6 /* HttpParser.cpp in Sources */,
+				DFB8A8A514154CA70075EAE6 /* GUIAction.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
