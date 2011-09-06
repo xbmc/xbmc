@@ -96,6 +96,7 @@
 #define HAVE_LIBBLURAY
 #define HAS_ASAP_CODEC
 #define HAVE_YAJL_YAJL_VERSION_H
+#define HAS_FILESYSTEM_NFS
 #endif
 
 /*****************
