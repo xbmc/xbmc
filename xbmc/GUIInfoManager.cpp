@@ -1873,6 +1873,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
       value = g_powerManager.BatteryLevel();
       return true;
   }
+  value = 0;
   return false;
 }
 
@@ -3975,7 +3976,11 @@ int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter, boo
 
 bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info) const
 {
-  if (!item) return 0;
+  if (!item)
+  {
+    value = 0;
+    return false;
+  }
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
@@ -4011,9 +4016,12 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   case LISTITEM_PERCENT_PLAYED:
     if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0)
       value = (int)(100 * ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+    else
+      value = 0;
     return true;
   }
 
+  value = 0;
   return false;
 }
 
