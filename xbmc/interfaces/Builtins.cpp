@@ -1109,9 +1109,15 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("skin.setaddon") && params.size() > 1)
   {
     int string = g_settings.TranslateSkinString(params[0]);
-    ADDON::TYPE type = TranslateType(params[1]);
+    vector<ADDON::TYPE> types;
+    for (unsigned int i = 1 ; i < params.size() ; i++)
+    {
+      ADDON::TYPE type = TranslateType(params[i]);
+      if (type != ADDON_UNKNOWN)
+        types.push_back(type);
+    }
     CStdString result;
-    if (CGUIWindowAddonBrowser::SelectAddonID(type, result, true) == 1)
+    if (types.size() > 0 && CGUIWindowAddonBrowser::SelectAddonID(types, result, true) == 1)
     {
       g_settings.SetSkinString(string, result);
       g_settings.Save();
