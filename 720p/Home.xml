@@ -15,6 +15,13 @@
 			<include>FullScreenBGImage</include>
 		</control>
 		<!-- THE FANART BACKGROUNDS -->
+		<!-- grainy fallback bg when all else fails and there is nigh hope -->
+		<control type="image">
+			<texture>grainy_black_bg.png</texture>
+			<animation effect="fade" start="0" end="100" time="600">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="600">WindowClose</animation>
+			<include>FullScreenBGImage</include>
+		</control>
 		<control type="group">
 			<!-- generic autopopulated fanart slideshow -->
 			<control type="multiimage" id="10101">
@@ -92,7 +99,7 @@
 				<height>720</height>
 				<texture>black.png</texture>
 				<aspectratio>stretch</aspectratio>
-				<animation effect="fade" start="0" end="40" time="0" condition="true">Conditional</animation>
+				<animation effect="fade" start="0" end="10" time="0" condition="true">Conditional</animation>
 			</control>
 			<!-- second dimmer when new lists are visible -->
 			<control type="image">

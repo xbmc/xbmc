@@ -284,7 +284,7 @@
 							<visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
 							<posx>520</posx>
 							<posy>9</posy>
-							<width>44</width>
+							<width>57</width>
 							<height>29</height>
 							<aspectratio>keep</aspectratio>
 							<texture>Unwatchedcount.png</texture>
@@ -293,7 +293,7 @@
 							<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 						</control>
 						<control type="image">
-							<visible>[Container.Content(albums) | Container.Content(Songs) | !Container.Content(plugincontent)] + !IsEmpty(ListItem.Label2) + !ListItem.Type(clip)</visible>
+							<visible>[Container.Content(albums) | Container.Content(Songs) | !Container.Content(plugincontent)] + !IsEmpty(ListItem.Label2) + !ListItem.Type(clip) + ![Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Movies)]</visible>
 							<posx>520</posx>
 							<posy>9</posy>
 							<width>57</width>
@@ -337,7 +337,7 @@
 							<visible>!Container.Content(episodes)</visible>
 						</control>
 						<control type="label">
-							<posx>542</posx>
+							<posx>547</posx>
 							<posy>8</posy>
 							<width>40</width>
 							<align>center</align>
@@ -389,7 +389,7 @@
 							<visible>Container.Content(TVShows) | Container.Content(Seasons)</visible>
 							<posx>520</posx>
 							<posy>9</posy>
-							<width>44</width>
+							<width>57</width>
 							<height>29</height>
 							<aspectratio>keep</aspectratio>
 							<texture>UnwatchedcountFocused.png</texture>
@@ -398,7 +398,7 @@
 							<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 						</control>
 						<control type="image">
-							<visible>[Container.Content(albums) | Container.Content(Songs) | !Container.Content(plugincontent)] + !IsEmpty(ListItem.Label2) + !ListItem.Type(clip)</visible>
+							<visible>[Container.Content(albums) | Container.Content(Songs) | !Container.Content(plugincontent)] + !IsEmpty(ListItem.Label2) + !ListItem.Type(clip) + ![Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Movies)]</visible>
 							<posx>520</posx>
 							<posy>9</posy>
 							<width>57</width>
@@ -445,7 +445,7 @@
 							<visible>Container.Content(episodes) + !IsEmpty(Container.Property(mixedParents))</visible>
 						</control>
 						<control type="label">
-							<posx>542</posx>
+							<posx>547</posx>
 							<posy>8</posy>
 							<width>40</width>
 							<align>center</align>
@@ -824,9 +824,9 @@
 						<posx>400</posx>
 						<posy>0</posy>
 						<!-- generic big thumb  -->
-						<!--<control type="image">
+						<control type="image">
 							<description>Thumb image</description>
-							<visible>!Container.Content(Secondary) + !Container.Content(Episodes) + !Container.Content(plugincontent) + ![Container.Content(songs) | Container.Content(artists) | Container.Content(albums) | Container.Content(clip)]</visible>
+							<visible>[Container.Content(movies) | Container.Content(tvshows)]</visible>
 							<posy>-6</posy>
 							<posx>20</posx>
 							<width>256</width>
@@ -836,14 +836,14 @@
 						</control>
 						<control type="image">
 							<description>Thumb image</description>
-							<visible>!Container.Content(Secondary) + !Container.Content(Episodes) + !Container.Content(plugincontent) + ![Container.Content(songs) | Container.Content(artists) | Container.Content(albums) | Container.Content(clip)]</visible>
+							<visible>[Container.Content(movies) | Container.Content(tvshows)]</visible>
 							<posy>3</posy>
 							<posx>28</posx>
 							<width>238</width>
 							<height>360</height>
 							<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
 							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
-						</control>-->
+						</control>
 						<!-- secondary screens - pms logo -->
 						<control type="group">
 							<posx>-400</posx>
@@ -1518,6 +1518,15 @@
 						</control>
 					</control>
 					<!-- media flags -->
+					<control type="image">
+						<posy>135</posy>
+						<posx>10</posx>
+						<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating)) + Container.Content(tvshows)</visible>
+						<height>20</height>
+						<width min="1" max="95">auto</width>
+						<info>Listitem.Property(mediaTag::contentRating)</info>
+						<aspectratio>keep</aspectratio>
+					</control>
 					<control type="group">
 						<visible>![Container.Content(Episodes) | Container.Content(songs) | Container.Content(Secondary) | Container.Content(Artists) | Container.Content(Albums)]</visible>
 						<posy>430</posy>

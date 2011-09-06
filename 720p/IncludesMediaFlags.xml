@@ -40,7 +40,7 @@
 			<orientation>horizontal</orientation>
 			<itemgap>20</itemgap>
 			<control type="image">
-				<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating))</visible>
+				<visible>!IsEmpty(Listitem.Property(mediaTag::contentRating)) + !Container.Content(tvshows)</visible>
 				<height>20</height>
 				<width min="1" max="95">auto</width>
 				<info>Listitem.Property(mediaTag::contentRating)</info>
