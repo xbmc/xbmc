@@ -123,7 +123,7 @@ CVDPAU::CVDPAU()
   upScale = g_advancedSettings.m_videoVDPAUScaling;
 }
 
-bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
+bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces)
 {
   if(avctx->width  == 0
   || avctx->height == 0)
