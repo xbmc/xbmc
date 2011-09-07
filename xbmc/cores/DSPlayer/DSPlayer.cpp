@@ -194,7 +194,6 @@ void CDSPlayer::GetGeneralInfo(CStdString& strGeneralInfo)
 void CDSPlayer::OnStartup()
 {
   CoInitializeEx(NULL, COINIT_MULTITHREADED);
-  //CThread::SetName("CDSPlayer graph thread messages");
 
   START_PERFORMANCE_COUNTER
   if (FAILED(g_dsGraph->SetFile(currentFileItem, m_PlayerOptions)))
@@ -415,7 +414,6 @@ CGraphManagementThread::CGraphManagementThread(CDSPlayer * pPlayer)
 
 void CGraphManagementThread::OnStartup()
 {
-  //CThread::SetName("DSPlayer graph management thread");
 }
 
 void CGraphManagementThread::Process()
