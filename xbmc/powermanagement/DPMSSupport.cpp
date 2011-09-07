@@ -212,8 +212,8 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
     // Set display to low power
     return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1) == 0;
   default:
+    return true;
   }
-  return true;
 }
 
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
