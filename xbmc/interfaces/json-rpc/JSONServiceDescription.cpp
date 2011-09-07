@@ -1494,34 +1494,34 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
     type.maxLength = (int)value["maxLength"].asInteger(-1);
   }
 
-  if (!HasType(type.type, ObjectValue) && !HasType(type.type, ArrayValue))
+  // If the type definition is neither an
+  // "object" nor an "array" we can check
+  // for an "enum" definition
+  if (value.isMember("enum") && value["enum"].isArray())
   {
-    // If the type definition is neither an
-    // "object" nor an "array" we can check
-    // for an "enum" definition
-    if (value.isMember("enum") && value["enum"].isArray())
+    // Loop through all elements in the "enum" array
+    for (CVariant::const_iterator_array enumItr = value["enum"].begin_array(); enumItr != value["enum"].end_array(); enumItr++)
     {
-      // Loop through all elements in the "enum" array
-      for (CVariant::const_iterator_array enumItr = value["enum"].begin_array(); enumItr != value["enum"].end_array(); enumItr++)
+      // Check for duplicates and eliminate them
+      bool approved = true;
+      for (unsigned int approvedIndex = 0; approvedIndex < type.enums.size(); approvedIndex++)
       {
-        // Check for duplicates and eliminate them
-        bool approved = true;
-        for (unsigned int approvedIndex = 0; approvedIndex < type.enums.size(); approvedIndex++)
+        if (*enumItr == type.enums.at(approvedIndex))
         {
-          if (*enumItr == type.enums.at(approvedIndex))
-          {
-            approved = false;
-            break;
-          }
+          approved = false;
+          break;
         }
-
-        // Only add the current item to the enum value 
-        // list if it is not duplicate
-        if (approved)
-          type.enums.push_back(*enumItr);
       }
-    }
 
+      // Only add the current item to the enum value 
+      // list if it is not duplicate
+      if (approved)
+        type.enums.push_back(*enumItr);
+    }
+  }
+
+  if (type.type != ObjectValue)
+  {
     // If there is a definition for a default value and its type
     // matches the type of the parameter we can parse it
     bool ok = false;
