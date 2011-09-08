@@ -511,42 +511,53 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_presentfield = sync;
     m_presentstep  = PRESENT_FLIP;
     m_presentsource = source;
+    EINTERLACEMODE interlacemode = g_settings.m_currentVideoSettings.m_InterlaceMode;
     EINTERLACEMETHOD interlacemethod = g_settings.m_currentVideoSettings.m_InterlaceMethod;
     bool invert = false;
 
-    if      (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)            m_presentmethod = PRESENT_METHOD_BLEND;
-    else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE)            m_presentmethod = PRESENT_METHOD_WEAVE;
-    else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED) { m_presentmethod = PRESENT_METHOD_WEAVE ; invert = true; }
-    else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB)              m_presentmethod = PRESENT_METHOD_BOB;
-    else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)   { m_presentmethod = PRESENT_METHOD_BOB; invert = true; }
-    else if (interlacemethod == VS_INTERLACEMETHOD_DXVA_BOB)                m_presentmethod = PRESENT_METHOD_BOB;
-    else if (interlacemethod == VS_INTERLACEMETHOD_DXVA_BEST)               m_presentmethod = PRESENT_METHOD_BOB;
-    else if (interlacemethod == VS_INTERLACEMETHOD_AUTO)
-    {
-      if(m_presentfield == FS_NONE)
-        m_presentmethod = PRESENT_METHOD_SINGLE;
-      else if(m_pRenderer->Supports(VS_INTERLACEMETHOD_RENDER_BOB) || m_pRenderer->Supports(VS_INTERLACEMETHOD_DXVA_ANY))
-        m_presentmethod = PRESENT_METHOD_BOB;
-      else
-        m_presentmethod = PRESENT_METHOD_SINGLE;
-    }
+    if (interlacemode == VS_INTERLACEMODE_OFF)
+      m_presentmethod = PRESENT_METHOD_SINGLE;
     else
     {
-      m_presentmethod = PRESENT_METHOD_SINGLE;
-    }
-    
-    /* default to odd field if we want to deinterlace and don't know better */
-    if(m_presentfield == FS_NONE && m_presentmethod != PRESENT_METHOD_SINGLE)
-      m_presentfield = FS_TOP;
-
-    /* invert present field */
-    if(invert)
-    {
-      if( m_presentfield == FS_BOT )
-        m_presentfield = FS_TOP;
+      if (interlacemode == VS_INTERLACEMODE_AUTO && m_presentfield == FS_NONE)
+        m_presentmethod = PRESENT_METHOD_SINGLE;
       else
-        m_presentfield = FS_BOT;
+      {
+        if      (interlacemethod == VS_INTERLACEMETHOD_RENDER_BLEND)            m_presentmethod = PRESENT_METHOD_BLEND;
+        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE)            m_presentmethod = PRESENT_METHOD_WEAVE;
+        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED) { m_presentmethod = PRESENT_METHOD_WEAVE ; invert = true; }
+        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB)              m_presentmethod = PRESENT_METHOD_BOB;
+        else if (interlacemethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)   { m_presentmethod = PRESENT_METHOD_BOB; invert = true; }
+        else if (interlacemethod == VS_INTERLACEMETHOD_DXVA_BOB)                m_presentmethod = PRESENT_METHOD_BOB;
+        else if (interlacemethod == VS_INTERLACEMETHOD_DXVA_BEST)               m_presentmethod = PRESENT_METHOD_BOB;
+        else if (interlacemethod == VS_INTERLACEMETHOD_AUTO)
+        {
+          if(m_pRenderer->Supports(VS_INTERLACEMETHOD_RENDER_BOB)
+          || m_pRenderer->Supports(VS_INTERLACEMETHOD_DXVA_ANY))
+            m_presentmethod = PRESENT_METHOD_BOB;
+          else
+            m_presentmethod = PRESENT_METHOD_SINGLE;
+        }
+        else
+        {
+          m_presentmethod = PRESENT_METHOD_SINGLE;
+        }
+
+        /* default to odd field if we want to deinterlace and don't know better */
+        if (interlacemode == VS_INTERLACEMODE_FORCE && m_presentfield == FS_NONE)
+          m_presentfield = FS_TOP;
+
+        /* invert present field */
+        if(invert)
+        {
+          if( m_presentfield == FS_BOT )
+            m_presentfield = FS_TOP;
+          else
+            m_presentfield = FS_BOT;
+        }
+      }
     }
+
   }
 
   g_application.NewFrame();
