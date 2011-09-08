@@ -117,6 +117,15 @@ public:
       return false;
   }
 
+  bool Supports(EINTERLACEMODE method)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->Supports(method);
+    else
+      return false;
+  }
+
   bool Supports(EINTERLACEMETHOD method)
   {
     CSharedLock lock(m_sharedSection);

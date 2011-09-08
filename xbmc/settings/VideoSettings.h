@@ -29,9 +29,16 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+enum EINTERLACEMODE
+{
+  VS_INTERLACEMODE_OFF=0,
+  VS_INTERLACEMODE_AUTO=1,
+  VS_INTERLACEMODE_FORCE=2
+};
+
 enum EINTERLACEMETHOD
 {
-  VS_INTERLACEMETHOD_NONE=0,
+  VS_INTERLACEMETHOD_NONE=0, // Legacy
   VS_INTERLACEMETHOD_AUTO=1,
   VS_INTERLACEMETHOD_RENDER_BLEND=2,
 
@@ -89,6 +96,7 @@ public:
 
   bool operator!=(const CVideoSettings &right) const;
 
+  EINTERLACEMODE   m_InterlaceMode;
   EINTERLACEMETHOD m_InterlaceMethod;
   ESCALINGMETHOD   m_ScalingMethod;
   int m_ViewMode;   // current view mode
