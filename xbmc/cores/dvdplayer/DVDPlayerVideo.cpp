@@ -501,15 +501,22 @@ void CDVDPlayerVideo::Process()
       m_pVideoCodec->SetDropState(bRequestDrop);
 
       // ask codec to do deinterlacing if possible
-      EINTERLACEMETHOD mInt = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+      EINTERLACEMODE   mIntMode = g_settings.m_currentVideoSettings.m_InterlaceMode;
+      EINTERLACEMETHOD mInt     = g_settings.m_currentVideoSettings.m_InterlaceMethod;
       unsigned int     mFilters = 0;
 
-      if(mInt == VS_INTERLACEMETHOD_DEINTERLACE)
-        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
-      else if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
-        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
-      else if(mInt == VS_INTERLACEMETHOD_AUTO && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_ANY))
-        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED | CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
+      if (mIntMode != VS_INTERLACEMODE_OFF)
+      {
+        if(mInt == VS_INTERLACEMETHOD_AUTO && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_ANY))
+          mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
+        else if (mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+          mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY;
+        else if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+          mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
+
+        if (mIntMode == VS_INTERLACEMODE_AUTO && mFilters)
+          mFilters |=  CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
+      }
 
       mFilters = m_pVideoCodec->SetFilters(mFilters);
 
@@ -604,16 +611,18 @@ void CDVDPlayerVideo::Process()
 
             //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
             //this video
-            if(!(mFilters & CDVDVideoCodec::FILTER_DEINTERLACE_ANY))
+            if ((mIntMode == VS_INTERLACEMODE_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)) || mIntMode == VS_INTERLACEMODE_FORCE)
             {
-              if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
-              || (mInt == VS_INTERLACEMETHOD_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)
-                                                  && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)
-                                                  && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_ANY)))
+              if(!(mFilters & CDVDVideoCodec::FILTER_DEINTERLACE_ANY))
               {
-                if (!sPostProcessType.empty())
-                  sPostProcessType += ",";
-                sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
+                if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+                || (mInt == VS_INTERLACEMETHOD_AUTO && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)
+                                                    && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_ANY)))
+                {
+                  if (!sPostProcessType.empty())
+                    sPostProcessType += ",";
+                  sPostProcessType += g_advancedSettings.m_videoPPFFmpegDeint;
+                }
               }
             }
 
