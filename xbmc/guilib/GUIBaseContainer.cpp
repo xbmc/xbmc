@@ -53,6 +53,8 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_lastItem = NULL;
   m_staticContent = false;
   m_staticUpdateTime = 0;
+  m_staticDefaultItem = -1;
+  m_staticDefaultAlways = false;
   m_wasReset = false;
   m_layout = NULL;
   m_focusedLayout = NULL;
@@ -739,7 +741,8 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
 
 void CGUIBaseContainer::SaveStates(vector<CControlState> &states)
 {
-  states.push_back(CControlState(GetID(), GetSelectedItem()));
+  if (!m_staticDefaultAlways)
+    states.push_back(CControlState(GetID(), GetSelectedItem()));
 }
 
 void CGUIBaseContainer::SetPageControl(int id)
@@ -761,6 +764,8 @@ void CGUIBaseContainer::ValidateOffset()
 void CGUIBaseContainer::AllocResources()
 {
   CalculateLayout();
+  if (m_staticDefaultItem != -1) // select default item
+    SelectStaticItemById(m_staticDefaultItem);
 }
 
 void CGUIBaseContainer::FreeResources(bool immediately)
@@ -1198,4 +1203,28 @@ void CGUIBaseContainer::SetOffset(int offset)
 bool CGUIBaseContainer::CanFocus() const
 {
   return (!m_items.empty() && CGUIControl::CanFocus());
+}
+
+void CGUIBaseContainer::SelectStaticItemById(int id)
+{
+  if (m_staticContent)
+  {
+    for (unsigned int i = 0 ; i < m_items.size() ; i++)
+    {
+      CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_items[i]);
+      if (item->m_iprogramCount == id)
+      {
+        SelectItem(i);
+        return;
+      }
+    }
+  }
+}
+
+void CGUIBaseContainer::OnFocus()
+{
+  if (m_staticDefaultAlways)
+    SelectStaticItemById(m_staticDefaultItem);
+
+  CGUIControl::OnFocus();
 }
