@@ -943,6 +943,7 @@ if test "$use_libnfs" != "no"; then
     elif test "$use_libnfs" != "no"; then
       AC_MSG_NOTICE($libnfs_not_found)
       use_libnfs="no"
+      USE_LIBNFS=0
     fi
    ])
   if test "$use_libnfs" != "no"; then
