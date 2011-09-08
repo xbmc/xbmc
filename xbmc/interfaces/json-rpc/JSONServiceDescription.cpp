@@ -596,7 +596,7 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
   std::map<std::string, CVariant>::const_iterator notificationIterator;
   std::map<std::string, CVariant>::const_iterator notificationIteratorEnd = notifications.end();
   for (notificationIterator = notifications.begin(); notificationIterator != notificationIteratorEnd; notificationIterator++)
-    result["notifications"][notificationIterator->first] = notificationIterator->second;
+    result["notifications"][notificationIterator->first] = notificationIterator->second[notificationIterator->first];
 
   return OK;
 }
