@@ -168,7 +168,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
       //GetFileName returns path without leading "/"
       //but we need it because the export paths start with "/"
       //and path.Find(*it) wouldn't work else
-      if(path[0] != '/')
+      if(!path.empty() && path[0] != '/')
       {
         path = "/" + path;
       }
