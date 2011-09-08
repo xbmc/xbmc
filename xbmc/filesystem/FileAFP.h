@@ -30,14 +30,14 @@
 #include "URL.h"
 #include "threads/CriticalSection.h"
 
-//libafpclient includes
+// libafpclient includes
 #ifdef __cplusplus
 extern "C" {
-#endif   
+#endif
 #ifdef __cplusplus
 }
 #endif
-        
+
 CStdString URLEncode(CStdString str);
 
 struct libafpclient;
@@ -45,12 +45,10 @@ struct afp_server;
 struct afp_file_info;
 struct afp_volume;
 struct afp_url;
-class DllLibAfp;
+class  DllLibAfp;
 
 class CAfpConnection : public CCriticalSection
 {
-    
-    
 public:
     enum eAfpConnectError
     {
@@ -60,31 +58,30 @@ public:
     };
     typedef enum eAfpConnectError afpConnnectError;
 
-    
-  CAfpConnection();
+   CAfpConnection();
   ~CAfpConnection();
-  afpConnnectError Connect(const CURL &url);
-  void Disconnect();
+  afpConnnectError   Connect(const CURL &url);
+  void               Disconnect(void);
   struct afp_server *GetServer(){return m_pAfpServer;}
   struct afp_volume *GetVolume(){return m_pAfpVol;};
-  struct afp_url *GetUrl(){return m_pAfpUrl;};  
-  CStdString GetPath(const CURL &url);
-  DllLibAfp *GetImpl(){return m_pLibAfp;}   
-    
+  struct afp_url    *GetUrl(){return m_pAfpUrl;};
+  CStdString        GetPath(const CURL &url);
+  DllLibAfp         *GetImpl(){return m_pLibAfp;}
+
 private:
   int m_OpenConnections;
   int m_LastActive;
-  struct afp_server * m_pAfpServer;
-  struct afp_volume * m_pAfpVol; 
-  struct afp_url    * m_pAfpUrl;
+  struct afp_server   *m_pAfpServer;
+  struct afp_volume   *m_pAfpVol;
+  struct afp_url      *m_pAfpUrl;
   struct libafpclient *m_pAfpClient;
-  DllLibAfp *m_pLibAfp;//the lib
-  bool  m_bDllInited;
+  DllLibAfp           *m_pLibAfp; //the lib
+  bool                m_bDllInited;
 
-  bool initLib();    
+  bool initLib(void);
   bool connectVolume(const char * volumename);
-  void disconnectVolume();
-  CStdString getAuthenticatedPath(const CURL &url);    
+  void disconnectVolume(void);
+  CStdString getAuthenticatedPath(const CURL &url);
 };
 
 extern CAfpConnection gAfpConnection;
@@ -111,16 +108,15 @@ public:
   virtual bool Delete(const CURL& url);
   virtual bool Rename(const CURL& url, const CURL& urlnew);
   virtual int  GetChunkSize() {return 1;}
-  //implement iocontrol for seek_possible for preventing the stat in File class for
-  //getting this info ...
-  virtual int IoControl(EIoControl request, void* param){ if(request == IOCTRL_SEEK_POSSIBLE) return 1;return -1;};
-  
+  // implement iocontrol for seek_possible for preventing the stat in File class for
+  // getting this info ...
+  virtual int IoControl(EIoControl request, void* param) {if(request == IOCTRL_SEEK_POSSIBLE) return 1;return -1;};
 
 protected:
   CURL m_url;
   bool IsValidFile(const CStdString& strFileName);
   int64_t m_fileSize;
-  off_t m_fileOffset;                     //current SEEK pointer
+  off_t m_fileOffset;                     // current SEEK pointer
   struct afp_file_info * m_pFp;
 };
 }

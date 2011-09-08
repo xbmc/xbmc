@@ -1,4 +1,3 @@
-
 /*
  *      Copyright (C) 2011 Team XBMC
  *      http://www.xbmc.org
@@ -57,82 +56,80 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 {
   // We accept afp://[[user[:password@]]server[/share[/path[/file]]]]
   bool bListVolumes = false;
-  FILETIME fileTime, localTime;    
+  FILETIME fileTime, localTime;
 
   CSingleLock lock(gAfpConnection);
-  /* we need an url to do proper escaping */
+  // we need an url to do proper escaping
   CURL url(strPath);
   CAfpConnection::afpConnnectError afpError=gAfpConnection.Connect(url);
-    
-  if(afpError!=CAfpConnection::AfpOk || (!url.GetShareName().IsEmpty() && !gAfpConnection.GetVolume()))
+
+  if (afpError!=CAfpConnection::AfpOk || (!url.GetShareName().IsEmpty() && !gAfpConnection.GetVolume()))
   {
-      if(afpError == CAfpConnection::AfpAuth)
-      {
-          if (m_allowPrompting)
-          {
-              RequireAuthentication(url.Get());
-          }
-      }
+    if (afpError == CAfpConnection::AfpAuth)
+    {
+       if (m_allowPrompting)
+       {
+         RequireAuthentication(url.Get());
+       }
+    }
     return false;
   }
   CStdString strDirName=gAfpConnection.GetPath(url);
-    
-  vector<CachedDirEntry> vecEntries;
-  struct afp_file_info *dirEnt=NULL;
-  struct afp_file_info *curDirPtr=NULL;
 
-  //if no share name in url - try to fetch the volumes on the server and treat them like folders
-  if( url.GetShareName().IsEmpty() )  
+  vector<CachedDirEntry> vecEntries;
+  struct afp_file_info *dirEnt = NULL;
+  struct afp_file_info *curDirPtr = NULL;
+
+  // if no share name in url - try to fetch the volumes on the server and treat them like folders
+  if (url.GetShareName().IsEmpty())
   {
-      bListVolumes = true;
-      struct afp_server *serv=gAfpConnection.GetServer();
-      for(int i=0;i < serv->num_volumes; i++)
-      {
-          CachedDirEntry aDir;
-          aDir.type = 1;
-          aDir.name = serv->volumes[i].volume_name;
-          vecEntries.push_back(aDir);
-      }
+    bListVolumes = true;
+    struct afp_server *serv = gAfpConnection.GetServer();
+    for (int i = 0;i < serv->num_volumes; i++)
+    {
+      CachedDirEntry aDir;
+      aDir.type = 1;
+      aDir.name = serv->volumes[i].volume_name;
+      vecEntries.push_back(aDir);
+    }
   }
-  
-    
-  //if we not only list volumes - read the dir
-  if(!bListVolumes)
-  { 
-      if(gAfpConnection.GetImpl()->afp_wrap_readdir(gAfpConnection.GetVolume(), strDirName.c_str(), &dirEnt))
-          return false;
-      lock.Leave();
-      
-      for (curDirPtr=dirEnt;curDirPtr;curDirPtr=curDirPtr->next) 
-      {
-          CachedDirEntry aDir;
-          aDir.type = curDirPtr->isdir;
+
+  // if we not only list volumes - read the dir
+  if (!bListVolumes)
+  {
+    if (gAfpConnection.GetImpl()->afp_wrap_readdir(gAfpConnection.GetVolume(), strDirName.c_str(), &dirEnt))
+      return false;
+    lock.Leave();
+
+    for (curDirPtr = dirEnt; curDirPtr; curDirPtr = curDirPtr->next)
+    {
+      CachedDirEntry aDir;
+      aDir.type = curDirPtr->isdir;
 #ifdef USE_CVS_AFPFS
-          aDir.name = curDirPtr->basic.name;
+      aDir.name = curDirPtr->basic.name;
 #else
-          aDir.name = curDirPtr->name;
+      aDir.name = curDirPtr->name;
 #endif
-          vecEntries.push_back(aDir);
-      }
-      gAfpConnection.GetImpl()->afp_ml_filebase_free(&dirEnt);      
+      vecEntries.push_back(aDir);
+    }
+    gAfpConnection.GetImpl()->afp_ml_filebase_free(&dirEnt);
   }
-    
-  for (size_t i=0; i<vecEntries.size(); i++)
+
+  for (size_t i = 0; i < vecEntries.size(); i++)
   {
     CachedDirEntry aDir = vecEntries[i];
 
     // We use UTF-8 internally, as does AFP
     CStdString strFile = aDir.name;
 
-    if (!strFile.Equals(".") && !strFile.Equals("..")
-      && !strFile.Equals("lost+found"))
+    if (!strFile.Equals(".") && !strFile.Equals("..") && !strFile.Equals("lost+found"))
     {
       int64_t iSize = 0;
       bool bIsDir = aDir.type;
       int64_t lTimeDate = 0;
 
-      //if we not only list volumes - stat the files in folder
-      if(!bListVolumes)
+      // if we not only list volumes - stat the files in folder
+      if (!bListVolumes)
       {
         struct stat info = {0};
 
@@ -141,38 +138,39 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           // make sure we use the authenticated path wich contains any default username
           CStdString strFullName = strDirName + strFile;
 
-          lock.Enter();          
+          lock.Enter();
 
-          if( gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(),strFullName.c_str(), &info) == 0 )
+          if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strFullName.c_str(), &info) == 0)
           {
-
             bool statIsDir=(info.st_mode & S_IFDIR) ? true : false;
-            if(bIsDir == statIsDir)                                         //fixme senseless
+            if (bIsDir == statIsDir)                                         // fixme senseless
             {
                 bIsDir = (info.st_mode & S_IFDIR) ? true : false;
             }
             lTimeDate = info.st_mtime;
-            if(lTimeDate == 0) // if modification date is missing, use create date
+            if (lTimeDate == 0) // if modification date is missing, use create date
               lTimeDate = info.st_ctime;
             iSize = info.st_size;
           }
           else
+          {
             CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
+          }
 
           lock.Leave();
         }
         LONGLONG ll = Int32x32To64(lTimeDate & 0xffffffff, 10000000) + 116444736000000000ll;
-        fileTime.dwLowDateTime = (DWORD) (ll & 0xffffffff);
+        fileTime.dwLowDateTime  = (DWORD)(ll & 0xffffffff);
         fileTime.dwHighDateTime = (DWORD)(ll >> 32);
         FileTimeToLocalFileTime(&fileTime, &localTime);
       }
       else
       {
-          bIsDir = true;
-          localTime.dwHighDateTime=0;
-          localTime.dwLowDateTime=0;
+        bIsDir = true;
+        localTime.dwHighDateTime=0;
+        localTime.dwLowDateTime=0;
       }
-        
+
       if (bIsDir)
       {
         CFileItemPtr pItem(new CFileItem(strFile));
@@ -188,7 +186,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         pItem->SetPath(strPath + aDir.name);
         pItem->m_bIsFolder = false;
         pItem->m_dwSize = iSize;
-        pItem->m_dateTime=localTime;
+        pItem->m_dateTime = localTime;
         items.Add(pItem);
       }
     }
@@ -202,33 +200,33 @@ bool CAFPDirectory::Create(const char* strPath)
   CSingleLock lock(gAfpConnection);
 
   CURL url(strPath);
-    
-  if(gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
+
+  if (gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
     return false;
-  
+
   CStdString strFilename = gAfpConnection.GetPath(url);
 
-  int result = gAfpConnection.GetImpl()->afp_wrap_mkdir(gAfpConnection.GetVolume(),strFilename.c_str(), 0);
+  int result = gAfpConnection.GetImpl()->afp_wrap_mkdir(gAfpConnection.GetVolume(), strFilename.c_str(), 0);
 
-  if(result != 0)
+  if (result != 0)
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
 
   return (result == 0 || EEXIST == result);
 }
 
-bool CAFPDirectory::Remove(const char* strPath)
+bool CAFPDirectory::Remove(const char *strPath)
 {
   CSingleLock lock(gAfpConnection);
+
   CURL url(strPath);
-  
-  if(gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
+  if (gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
     return false;
-  
+
   CStdString strFileName = gAfpConnection.GetPath(url);
 
   int result = gAfpConnection.GetImpl()->afp_wrap_rmdir(gAfpConnection.GetVolume(),strFileName.c_str());
 
-  if(result != 0 && errno != ENOENT)
+  if (result != 0 && errno != ENOENT)
   {
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
     return false;
@@ -237,17 +235,18 @@ bool CAFPDirectory::Remove(const char* strPath)
   return true;
 }
 
-bool CAFPDirectory::Exists(const char* strPath)
+bool CAFPDirectory::Exists(const char *strPath)
 {
   CSingleLock lock(gAfpConnection);
+
   CURL url(strPath);
-  if(gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
+  if (gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
     return false;
-  
+
   CStdString strFileName(gAfpConnection.GetPath(url));
 
   struct stat info;
-  if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(),strFileName.c_str(), &info) != 0)
+  if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strFileName.c_str(), &info) != 0)
     return false;
 
   return (info.st_mode & S_IFDIR) ? true : false;
