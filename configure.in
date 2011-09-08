@@ -959,12 +959,14 @@ fi
 
 
 # libafpclient
-if test "$use_libafpclient" != "no"; then
+if test "$host_vendor" = "apple" && "$use_libafpclient" != "no"; then
   AC_CHECK_HEADERS([afp/libafpclient.h],,
    [if test "$use_libafpclient" = "yes"; then
       AC_MSG_ERROR($libafpclient_not_found)
+      USE_LIBAFPCLIENT=0
     elif test "$use_libafpclient" != "no"; then
       AC_MSG_NOTICE($libafpclient_not_found)
+      USE_LIBAFPCLIENT=0
       use_libafpclient="no"
     fi
    ])
@@ -973,8 +975,10 @@ if test "$use_libafpclient" != "no"; then
   fi
   if test "$use_libafpclient" != "no"; then
     AC_DEFINE([HAVE_LIBAFPCLIENT], [1], [Whether to use libafpclient library.])
+    USE_LIBAFPCLIENT=1
   fi
 else
+  USE_LIBAFPCLIENT=0
   AC_MSG_NOTICE($libafpclient_disabled)
 fi
 
