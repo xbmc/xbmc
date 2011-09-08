@@ -1815,9 +1815,9 @@ bool CLinuxRendererGLES::SupportsMultiPassRendering()
   return false;
 }
 
-bool CLinuxRendererGLES::Supports(EINTERLACEMODE mode)
+bool CLinuxRendererGLES::Supports(EDEINTERLACEMODE mode)
 {
-  if (mode == VS_INTERLACEMODE_OFF)
+  if (mode == VS_DEINTERLACEMODE_OFF)
     return true;
 
   if(m_renderMethod & RENDER_OMXEGL)
@@ -1826,8 +1826,8 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMODE mode)
   if(m_renderMethod & RENDER_CVREF)
     return false;
 
-  if(mode == VS_INTERLACEMODE_AUTO
-  || mode == VS_INTERLACEMODE_FORCE)
+  if(mode == VS_DEINTERLACEMODE_AUTO
+  || mode == VS_DEINTERLACEMODE_FORCE)
     return true;
 
   return false;

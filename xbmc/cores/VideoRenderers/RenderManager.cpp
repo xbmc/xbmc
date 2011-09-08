@@ -511,15 +511,15 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     m_presentfield = sync;
     m_presentstep  = PRESENT_FLIP;
     m_presentsource = source;
-    EINTERLACEMODE interlacemode = g_settings.m_currentVideoSettings.m_InterlaceMode;
+    EDEINTERLACEMODE deinterlacemode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
     EINTERLACEMETHOD interlacemethod = g_settings.m_currentVideoSettings.m_InterlaceMethod;
     bool invert = false;
 
-    if (interlacemode == VS_INTERLACEMODE_OFF)
+    if (deinterlacemode == VS_DEINTERLACEMODE_OFF)
       m_presentmethod = PRESENT_METHOD_SINGLE;
     else
     {
-      if (interlacemode == VS_INTERLACEMODE_AUTO && m_presentfield == FS_NONE)
+      if (deinterlacemode == VS_DEINTERLACEMODE_AUTO && m_presentfield == FS_NONE)
         m_presentmethod = PRESENT_METHOD_SINGLE;
       else
       {
@@ -544,7 +544,7 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
         }
 
         /* default to odd field if we want to deinterlace and don't know better */
-        if (interlacemode == VS_INTERLACEMODE_FORCE && m_presentfield == FS_NONE)
+        if (deinterlacemode == VS_DEINTERLACEMODE_FORCE && m_presentfield == FS_NONE)
           m_presentfield = FS_TOP;
 
         /* invert present field */

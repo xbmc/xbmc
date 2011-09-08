@@ -604,13 +604,13 @@ void CVDPAU::SetHWUpscaling()
 void CVDPAU::SetDeinterlacing()
 {
   VdpStatus vdp_st;
-  EINTERLACEMODE   mode   = g_settings.m_currentVideoSettings.m_InterlaceMode;
+  EDEINTERLACEMODE   mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
   EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
 
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
                                      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
                                      VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE };
-  if (mode == VS_INTERLACEMODE_OFF)
+  if (mode == VS_DEINTERLACEMODE_OFF)
   {
     VdpBool enabled[]={0,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
@@ -1156,7 +1156,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.y1 = OutHeight;
   }
 
-  EINTERLACEMODE   mode   = g_settings.m_currentVideoSettings.m_InterlaceMode;
+  EDEINTERLACEMODE   mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
   EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
 
   if(pFrame)
@@ -1192,8 +1192,8 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
         m_DVDVideoPics.pop();
     }
 
-    if (mode == VS_INTERLACEMODE_FORCE
-    || (mode == VS_INTERLACEMODE_AUTO && m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED))
+    if (mode == VS_DEINTERLACEMODE_FORCE
+    || (mode == VS_DEINTERLACEMODE_AUTO && m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED))
     {
       if((method == VS_INTERLACEMETHOD_AUTO
       || (method == VS_INTERLACEMETHOD_AUTO_ION && m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED)

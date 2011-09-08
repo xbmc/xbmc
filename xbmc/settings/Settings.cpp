@@ -678,8 +678,8 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   if (pElement)
   {
     int interlaceMode;
-    GetInteger(pElement, "interlacemode", interlaceMode, VS_INTERLACEMODE_OFF, VS_INTERLACEMODE_OFF, VS_INTERLACEMODE_FORCE);
-    m_defaultVideoSettings.m_InterlaceMode = (EINTERLACEMODE)interlaceMode;
+    GetInteger(pElement, "interlacemode", interlaceMode, VS_DEINTERLACEMODE_OFF, VS_DEINTERLACEMODE_OFF, VS_DEINTERLACEMODE_FORCE);
+    m_defaultVideoSettings.m_DeinterlaceMode = (EDEINTERLACEMODE)interlaceMode;
     int interlaceMethod;
     GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_AUTO, VS_INTERLACEMETHOD_AUTO, VS_INTERLACEMETHOD_AUTO_ION);
     m_defaultVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD)interlaceMethod;

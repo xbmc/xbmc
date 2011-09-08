@@ -501,11 +501,11 @@ void CDVDPlayerVideo::Process()
       m_pVideoCodec->SetDropState(bRequestDrop);
 
       // ask codec to do deinterlacing if possible
-      EINTERLACEMODE   mIntMode = g_settings.m_currentVideoSettings.m_InterlaceMode;
+      EDEINTERLACEMODE mDeintMode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
       EINTERLACEMETHOD mInt     = g_settings.m_currentVideoSettings.m_InterlaceMethod;
       unsigned int     mFilters = 0;
 
-      if (mIntMode != VS_INTERLACEMODE_OFF)
+      if (mDeintMode != VS_DEINTERLACEMODE_OFF)
       {
         if(mInt == VS_INTERLACEMETHOD_AUTO && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_ANY))
           mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
@@ -514,7 +514,7 @@ void CDVDPlayerVideo::Process()
         else if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
           mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
 
-        if (mIntMode == VS_INTERLACEMODE_AUTO && mFilters)
+        if (mDeintMode == VS_DEINTERLACEMODE_AUTO && mFilters)
           mFilters |=  CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
       }
 
@@ -611,7 +611,7 @@ void CDVDPlayerVideo::Process()
 
             //Deinterlace if codec said format was interlaced or if we have selected we want to deinterlace
             //this video
-            if ((mIntMode == VS_INTERLACEMODE_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)) || mIntMode == VS_INTERLACEMODE_FORCE)
+            if ((mDeintMode == VS_DEINTERLACEMODE_AUTO && (picture.iFlags & DVP_FLAG_INTERLACED)) || mDeintMode == VS_DEINTERLACEMODE_FORCE)
             {
               if(!(mFilters & CDVDVideoCodec::FILTER_DEINTERLACE_ANY))
               {
