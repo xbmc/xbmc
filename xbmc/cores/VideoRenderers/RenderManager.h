@@ -198,13 +198,22 @@ protected:
   , PRESENT_FRAME2
   };
 
+  enum EPRESENTMETHOD
+  {
+    PRESENT_METHOD_SINGLE = 0,
+    PRESENT_METHOD_BLEND,
+    PRESENT_METHOD_WEAVE,
+    PRESENT_METHOD_BOB,
+  };
+
+
   double     m_presenttime;
   double     m_presentcorr;
   double     m_presenterr;
   double     m_errorbuff[ERRORBUFFSIZE];
   int        m_errorindex;
   EFIELDSYNC m_presentfield;
-  EINTERLACEMETHOD m_presentmethod;
+  EPRESENTMETHOD m_presentmethod;
   EPRESENTSTEP     m_presentstep;
   int        m_presentsource;
   CEvent     m_presentevent;
