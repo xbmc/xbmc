@@ -1051,11 +1051,11 @@ bool CWinRenderer::CreateYV12Texture(int index)
   return true;
 }
 
-bool CWinRenderer::Supports(EINTERLACEMODE mode)
+bool CWinRenderer::Supports(EDEINTERLACEMODE mode)
 {
-  if(mode == VS_INTERLACEMODE_OFF
-  || mode == VS_INTERLACEMODE_AUTO
-  || mode == VS_INTERLACEMODE_FORCE)
+  if(mode == VS_DEINTERLACEMODE_OFF
+  || mode == VS_DEINTERLACEMODE_AUTO
+  || mode == VS_DEINTERLACEMODE_FORCE)
     return true;
 
   return false;

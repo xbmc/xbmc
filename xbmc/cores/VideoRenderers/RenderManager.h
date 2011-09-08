@@ -117,7 +117,7 @@ public:
       return false;
   }
 
-  bool Supports(EINTERLACEMODE method)
+  bool Supports(EDEINTERLACEMODE method)
   {
     CSharedLock lock(m_sharedSection);
     if (m_pRenderer)
