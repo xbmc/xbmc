@@ -55,6 +55,7 @@ CAFPDirectory::~CAFPDirectory(void)
 bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   // We accept afp://[[user[:password@]]server[/share[/path[/file]]]]
+  // silence gdb breaking on signal SIGUSR2 with "handle SIGUSR2 nostop noprint"
   bool bListVolumes = false;
   FILETIME fileTime, localTime;
 
