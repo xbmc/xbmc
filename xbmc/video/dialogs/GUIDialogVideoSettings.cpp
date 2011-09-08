@@ -121,6 +121,8 @@ void CGUIDialogVideoSettings::CreateSettings()
     }
 
     AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16038, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
+    if (g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF)
+      EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, false);
   }
   {
     vector<pair<int, int> > entries;
@@ -233,6 +235,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
       g_settings.m_defaultVideoSettings.m_AudioStream = -1;
       g_settings.Save();
     }
+  }
+  else if (setting.id == VIDEO_SETTINGS_DEINTERLACEMODE)
+  {
+    EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, g_settings.m_currentVideoSettings.m_DeinterlaceMode != VS_DEINTERLACEMODE_OFF);
   }
 }
 
