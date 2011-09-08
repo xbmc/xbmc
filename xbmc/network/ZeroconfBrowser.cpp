@@ -62,6 +62,9 @@ CZeroconfBrowser::CZeroconfBrowser():mp_crit_sec(new CCriticalSection),m_started
 #ifdef HAS_FILESYSTEM_NFS
   AddServiceType("_nfs._tcp.");  
 #endif// HAS_FILESYSTEM_NFS
+#ifdef HAS_FILESYSTEM_AFP
+  AddServiceType("_afpovertcp._tcp.");   
+#endif
   AddServiceType("_sftp-ssh._tcp."); 
 }
 

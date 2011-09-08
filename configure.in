@@ -109,6 +109,8 @@ librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
 libnfs_not_found="== Could not find libnfs. NFS support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
+libafpclient_not_found="== Could not find libafpclient. AFP support disabled. =="
+libafpclient_disabled="== AFP support disabled. =="
 alsa_not_found="== Could not find ALSA. ALSA support disabled. =="
 dbus_not_found="== Could not find DBUS. DBUS support disabled. =="
 
@@ -274,6 +276,11 @@ AC_ARG_ENABLE([nfs],
   [use_libnfs=$enableval],
   [use_libnfs=auto])
 
+AC_ARG_ENABLE([afpclient],
+  [AS_HELP_STRING([--enable-afp],
+  [enable AFP support via libafpclient (default is auto)])],
+  [use_libafpclient=$enableval],
+  [use_libafpclient=auto])
 
 AC_ARG_ENABLE([ffmpeg_libvorbis],
   [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
@@ -950,6 +957,31 @@ else
   AC_MSG_NOTICE($libnfs_disabled)
 fi
 
+
+# libafpclient
+if test "$host_vendor" = "apple" && "$use_libafpclient" != "no"; then
+  AC_CHECK_HEADERS([afp/libafpclient.h],,
+   [if test "$use_libafpclient" = "yes"; then
+      AC_MSG_ERROR($libafpclient_not_found)
+      USE_LIBAFPCLIENT=0
+    elif test "$use_libafpclient" != "no"; then
+      AC_MSG_NOTICE($libafpclient_not_found)
+      USE_LIBAFPCLIENT=0
+      use_libafpclient="no"
+    fi
+   ])
+  if test "$use_libafpclient" != "no"; then
+    XB_FIND_SONAME([AFPCLIENT], [afpclient], [use_libafpclient])
+  fi
+  if test "$use_libafpclient" != "no"; then
+    AC_DEFINE([HAVE_LIBAFPCLIENT], [1], [Whether to use libafpclient library.])
+    USE_LIBAFPCLIENT=1
+  fi
+else
+  USE_LIBAFPCLIENT=0
+  AC_MSG_NOTICE($libafpclient_disabled)
+fi
+
 ### External libraries checks
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
@@ -1535,6 +1567,11 @@ else
   final_message="$final_message\n  libnfs support:\tNo"
 fi
 
+if test "$use_libafpclient" != "no"; then
+  final_message="$final_message\n  libafpclient support:\tYes"
+else  
+  final_message="$final_message\n  libafpclient support:\tNo"
+fi
 
 if test "$use_optical_drive" = "yes"; then
   final_message="$final_message\n  Optical drive:\tYes"
@@ -1646,6 +1683,7 @@ AC_SUBST(USE_VDPAU)
 AC_SUBST(USE_VAAPI)
 AC_SUBST(USE_CRYSTALHD)
 AC_SUBST(USE_LIBNFS)
+AC_SUBST(USE_LIBAFPCLIENT)
 AC_SUBST(USE_VDA)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)

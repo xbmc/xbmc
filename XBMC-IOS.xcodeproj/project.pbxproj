@@ -35,6 +35,8 @@
 		DFA6BE4313FECA010048CC11 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE4113FECA010048CC11 /* AirPlayServer.cpp */; };
 		DFA6BE7713FED09C0048CC11 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE7513FED09C0048CC11 /* HttpParser.cpp */; };
 		DFAB04B013F8383300B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */; };
+		DFCFC52A1413F7D60004D0BF /* AFPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCFC5261413F7D60004D0BF /* AFPDirectory.cpp */; };
+		DFCFC52B1413F7D60004D0BF /* FileAFP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFCFC5281413F7D60004D0BF /* FileAFP.cpp */; };
 		DFD4D1E213D725ED00A47C47 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1D813D725ED00A47C47 /* Implementation.cpp */; };
 		DFD4D1E713D7263000A47C47 /* README.platform in Resources */ = {isa = PBXBuildFile; fileRef = DFD4D1E613D7263000A47C47 /* README.platform */; };
 		DFD4D1FE13D7283500A47C47 /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFD4D1FC13D7283500A47C47 /* SystemClock.cpp */; };
@@ -985,6 +987,10 @@
 		DFA6BE7613FED09C0048CC11 /* HttpParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpParser.h; sourceTree = "<group>"; };
 		DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
 		DFAB04AF13F8383300B70BFB /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
+		DFCFC5261413F7D60004D0BF /* AFPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPDirectory.cpp; sourceTree = "<group>"; };
+		DFCFC5271413F7D60004D0BF /* AFPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPDirectory.h; sourceTree = "<group>"; };
+		DFCFC5281413F7D60004D0BF /* FileAFP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileAFP.cpp; sourceTree = "<group>"; };
+		DFCFC5291413F7D60004D0BF /* FileAFP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileAFP.h; sourceTree = "<group>"; };
 		DFD4D1D113D725ED00A47C47 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
 		DFD4D1D213D725ED00A47C47 /* CriticalSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CriticalSection.h; sourceTree = "<group>"; };
 		DFD4D1D613D725ED00A47C47 /* Condition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Condition.h; sourceTree = "<group>"; };
@@ -4333,6 +4339,8 @@
 		F56C8378131F42E8000AD0F6 /* filesystem */ = {
 			isa = PBXGroup;
 			children = (
+				DFCFC5261413F7D60004D0BF /* AFPDirectory.cpp */,
+				DFCFC5271413F7D60004D0BF /* AFPDirectory.h */,
 				DF0DF17B13A3AF9F008ED511 /* FileNFS.cpp */,
 				DF0DF17C13A3AF9F008ED511 /* FileNFS.h */,
 				DF0DF17D13A3AF9F008ED511 /* NFSDirectory.cpp */,
@@ -4388,6 +4396,8 @@
 				F56C83A5131F42E8000AD0F6 /* FactoryFileDirectory.h */,
 				F56C83A6131F42E8000AD0F6 /* File.cpp */,
 				F56C83A7131F42E8000AD0F6 /* File.h */,
+				DFCFC5281413F7D60004D0BF /* FileAFP.cpp */,
+				DFCFC5291413F7D60004D0BF /* FileAFP.h */,
 				F56C83A8131F42E8000AD0F6 /* FileCache.cpp */,
 				F56C83A9131F42E8000AD0F6 /* FileCache.h */,
 				F56C83AA131F42E8000AD0F6 /* FileCDDA.cpp */,
@@ -6801,6 +6811,8 @@
 				DFA6BE4313FECA010048CC11 /* AirPlayServer.cpp in Sources */,
 				DFA6BE7713FED09C0048CC11 /* HttpParser.cpp in Sources */,
 				18968DDE14155E01005BA742 /* ApplicationOperations.cpp in Sources */,
+				DFCFC52A1413F7D60004D0BF /* AFPDirectory.cpp in Sources */,
+				DFCFC52B1413F7D60004D0BF /* FileAFP.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
