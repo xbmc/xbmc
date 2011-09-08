@@ -861,10 +861,9 @@ cChannel* cPVRClientForTheRecord::FetchChannel(std::string channelid)
   return NULL;
 }
 
-
-bool cPVRClientForTheRecord::OpenLiveStream(const PVR_CHANNEL &channelinfo)
+bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
-  XBMC->Log(LOG_DEBUG, "->OpenLiveStream(%i)", channelinfo.iUniqueId);
+  XBMC->Log(LOG_DEBUG, "->_OpenLiveStream(%i)", channelinfo.iUniqueId);
 
   cChannel* channel = FetchChannel(channelinfo.iUniqueId);
 
@@ -922,6 +921,16 @@ bool cPVRClientForTheRecord::OpenLiveStream(const PVR_CHANNEL &channelinfo)
   }
 
   return false;
+}
+
+bool cPVRClientForTheRecord::OpenLiveStream(const PVR_CHANNEL &channelinfo)
+{
+#ifdef TSREADER
+  return _OpenLiveStream(channelinfo);
+#else
+  // RTSP version will start stream when GetLiveStreamURL is called
+  return true;
+#endif
 }
 
 int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int iBufferSize)
@@ -1005,12 +1014,16 @@ void cPVRClientForTheRecord::CloseLiveStream()
 bool cPVRClientForTheRecord::SwitchChannel(const PVR_CHANNEL &channelinfo)
 {
   XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channelinfo.iUniqueId);
+  bool fRc = false;
 
 #ifndef TSREADER
   CloseLiveStream();
   usleep(10000000);
+  fRc = _OpenLiveStream(channelinfo);
+#else
+  fRc = OpenLiveStream(channelinfo);
 #endif
-  return OpenLiveStream(channelinfo);
+  return fRc;
 }
 
 
@@ -1049,8 +1062,16 @@ int cPVRClientForTheRecord::ReadRecordedStream(unsigned char* pBuffer, unsigned 
  */
 const char* cPVRClientForTheRecord::GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
+  XBMC->Log(LOG_DEBUG, "->GetLiveStreamURL(%i)", channelinfo.iUniqueId);
+  bool rc = _OpenLiveStream(channelinfo);
+  if (!rc) rc = _OpenLiveStream(channelinfo);
+  if (rc)
+  {
+    m_bTimeShiftStarted = true;
+  }
   // sigh, the only reason to use a class member here is to have storage for the const char *
   // pointing to the std::string when this method returns (and locals would go out of scope)
   m_PlaybackURL = ForTheRecord::GetLiveStreamURL();
+  XBMC->Log(LOG_DEBUG, "<-GetLiveStreamURL returns URL(%s)", m_PlaybackURL.c_str());
   return m_PlaybackURL.c_str();
 }

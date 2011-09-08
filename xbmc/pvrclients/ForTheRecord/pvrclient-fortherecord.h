@@ -106,6 +106,7 @@ private:
   void Close();
   bool FetchRecordingDetails(const Json::Value& data, cRecording& recording);
   bool FetchGuideProgramDetails(std::string Id, cGuideProgram& guideprogram);
+  bool _OpenLiveStream(const PVR_CHANNEL &channel);
 
   int                     m_iCurrentChannel;
   bool                    m_bConnected;

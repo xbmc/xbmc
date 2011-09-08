@@ -116,6 +116,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\AutoLock.cpp" />
+    <ClCompile Include="..\..\CriticalSection.cpp" />
     <ClCompile Include="..\..\thread.cpp" />
     <ClCompile Include="..\..\tools.cpp" />
     <ClCompile Include="..\..\\activerecording.cpp" />
@@ -138,6 +140,8 @@
     <ClCompile Include="..\..\lib\jsoncpp\src\lib_json\json_writer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\AutoLock.h" />
+    <ClInclude Include="..\..\CriticalSection.h" />
     <ClInclude Include="..\..\thread.h" />
     <ClInclude Include="..\..\tools.h" />
     <ClInclude Include="..\..\\activerecording.h" />

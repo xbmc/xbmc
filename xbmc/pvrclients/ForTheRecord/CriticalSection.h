@@ -17,7 +17,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "os-dependent.h"
+#include "libPlatform/os-dependent.h"
+typedef CRITICAL_SECTION criticalsection_t;
 
 class CCriticalSection
 {
