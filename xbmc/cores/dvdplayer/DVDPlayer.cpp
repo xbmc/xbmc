@@ -2401,7 +2401,9 @@ bool CDVDPlayer::HasVideo() const
 {
   if (m_pInputStream)
   {
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_CurrentVideo.id >= 0) return true;
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) ||
+        m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) ||
+        m_CurrentVideo.id >= 0) return true;
   }
   return false;
 }
