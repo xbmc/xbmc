@@ -66,6 +66,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTINGS_NONLIN_STRETCH     21
 #define VIDEO_SETTINGS_POSTPROCESS        22
 #define VIDEO_SETTINGS_VERTICAL_SHIFT     23
+#define VIDEO_SETTINGS_INTERLACEMODE      24
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -75,7 +76,23 @@ void CGUIDialogVideoSettings::CreateSettings()
   // create our settings
   {
     vector<pair<int, int> > entries;
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_NONE                 , 16018));
+    entries.push_back(make_pair(VS_INTERLACEMODE_OFF    , 16039));
+    entries.push_back(make_pair(VS_INTERLACEMODE_AUTO   , 16040));
+    entries.push_back(make_pair(VS_INTERLACEMODE_FORCE  , 16041));
+
+    /* remove unsupported methods */
+    for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
+    {
+      if(g_renderManager.Supports((EINTERLACEMODE)it->first))
+        it++;
+      else
+        it = entries.erase(it);
+    }
+
+    AddSpin(VIDEO_SETTINGS_INTERLACEMODE, 16037, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMode, entries);
+  }
+  {
+    vector<pair<int, int> > entries;
     entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO                 , 16019));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BLEND         , 20131));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED, 20130));
@@ -103,7 +120,7 @@ void CGUIDialogVideoSettings::CreateSettings()
         it = entries.erase(it);
     }
 
-    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
+    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16038, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
   }
   {
     vector<pair<int, int> > entries;
