@@ -960,27 +960,27 @@ fi
 
 
 # libafpclient
-if test "$host_vendor" = "apple" && "$use_libafpclient" != "no"; then
-  AC_CHECK_HEADERS([afp/libafpclient.h],,
-   [if test "$use_libafpclient" = "yes"; then
-      AC_MSG_ERROR($libafpclient_not_found)
-      USE_LIBAFPCLIENT=0
-    elif test "$use_libafpclient" != "no"; then
-      AC_MSG_NOTICE($libafpclient_not_found)
-      USE_LIBAFPCLIENT=0
-      use_libafpclient="no"
+USE_LIBAFPCLIENT=0
+if test "$host_vendor" = "apple" ; then
+  if test "x$use_libafpclient" != "xno"; then
+    AC_CHECK_HEADERS([afp/libafpclient.h],,
+     [if test "x$use_libafpclient" = "xyes"; then
+        AC_MSG_ERROR($libafpclient_not_found)
+      elif test "x$use_libafpclient" != "xno"; then
+        AC_MSG_NOTICE($libafpclient_not_found)
+        use_libafpclient="no"
+      fi
+     ])
+    if test "x$use_libafpclient" != "xno"; then
+      XB_FIND_SONAME([AFPCLIENT], [afpclient], [use_libafpclient])
+      AC_DEFINE([HAVE_LIBAFPCLIENT], [1], [Whether to use libafpclient library.])
+      USE_LIBAFPCLIENT=1
     fi
-   ])
-  if test "$use_libafpclient" != "no"; then
-    XB_FIND_SONAME([AFPCLIENT], [afpclient], [use_libafpclient])
-  fi
-  if test "$use_libafpclient" != "no"; then
-    AC_DEFINE([HAVE_LIBAFPCLIENT], [1], [Whether to use libafpclient library.])
-    USE_LIBAFPCLIENT=1
+  else
+    AC_MSG_NOTICE($libafpclient_disabled)
   fi
 else
-  USE_LIBAFPCLIENT=0
-  AC_MSG_NOTICE($libafpclient_disabled)
+  use_libafpclient="no"
 fi
 
 ### External libraries checks
@@ -1568,7 +1568,7 @@ else
   final_message="$final_message\n  libnfs support:\tNo"
 fi
 
-if test "$use_libafpclient" != "no"; then
+if test "x$use_libafpclient" != "xno"; then
   final_message="$final_message\n  libafpclient support:\tYes"
 else  
   final_message="$final_message\n  libafpclient support:\tNo"
