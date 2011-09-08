@@ -276,15 +276,10 @@ int DarwinBatteryLevel(void)
     policy = SCHED_OTHER;
     thread_extended_policy_data_t theFixedPolicy={true};
 
-    switch(message)
+    if (message == GUI_MSG_PLAYBACK_STARTED && g_application.IsPlayingVideo())
     {
-      case GUI_MSG_PLAYBACK_STARTED:
-        if (g_application.IsPlayingVideo())
-        {
-          policy = SCHED_RR;
-          theFixedPolicy.timeshare = false;
-        }
-      break;
+      policy = SCHED_RR;
+      theFixedPolicy.timeshare = false;
     }
 
     result = thread_policy_set(pthread_mach_thread_np(this_pthread_self),
