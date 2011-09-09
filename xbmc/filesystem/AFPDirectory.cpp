@@ -226,7 +226,7 @@ bool CAFPDirectory::Remove(const char *strPath)
 
   CStdString strFileName = gAfpConnection.GetPath(url);
 
-  int result = gAfpConnection.GetImpl()->afp_wrap_rmdir(gAfpConnection.GetVolume(),strFileName.c_str());
+  int result = gAfpConnection.GetImpl()->afp_wrap_rmdir(gAfpConnection.GetVolume(), strFileName.c_str());
 
   if (result != 0 && errno != ENOENT)
   {

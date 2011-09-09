@@ -143,7 +143,7 @@ bool CAfpConnection::connectVolume(const char *volumename)
     unsigned int len = 0;
     char mesg[1024];
 
-    if ((m_pAfpVol = m_pLibAfp->find_volume_by_name(m_pAfpServer,volumename)) == NULL)
+    if ((m_pAfpVol = m_pLibAfp->find_volume_by_name(m_pAfpServer, volumename)) == NULL)
     {
       CLog::Log(LOGDEBUG, "AFP: Could not find a volume called %s\n", volumename);
     }
@@ -152,9 +152,9 @@ bool CAfpConnection::connectVolume(const char *volumename)
       m_pAfpVol->mapping = AFP_MAPPING_LOGINIDS;
       m_pAfpVol->extra_flags |= VOLUME_EXTRA_FLAGS_NO_LOCKING;
 
-      if (m_pLibAfp->afp_connect_volume(m_pAfpVol,m_pAfpServer,mesg,&len,1024 ))
+      if (m_pLibAfp->afp_connect_volume(m_pAfpVol, m_pAfpServer, mesg, &len, 1024 ))
       {
-        CLog::Log(LOGDEBUG, "AFP: Could not access volume %s (error: %s)\n", m_pAfpVol->volume_name,mesg);
+        CLog::Log(LOGDEBUG, "AFP: Could not access volume %s (error: %s)\n", m_pAfpVol->volume_name, mesg);
         m_pAfpVol = NULL;
       }
       else
@@ -206,7 +206,7 @@ CAfpConnection::afpConnnectError CAfpConnection::Connect(const CURL& url)
   }
 
   // first, try to parse the URL
-  if (m_pLibAfp->afp_parse_url(&tmpurl, nonConstUrl.Get().c_str(),0) != 0)
+  if (m_pLibAfp->afp_parse_url(&tmpurl, nonConstUrl.Get().c_str(), 0) != 0)
   {
     // Okay, this isn't a real URL
     CLog::Log(LOGDEBUG, "AFP: Could not parse url: %s!\n", nonConstUrl.Get().c_str());
@@ -301,7 +301,7 @@ CStdString CAfpConnection::GetPath(const CURL &url)
   m_pLibAfp->afp_default_url(&tmpurl);
 
   // First, try to parse the URL
-  if (m_pLibAfp->afp_parse_url(&tmpurl, url.Get().c_str(),0) != 0 )
+  if (m_pLibAfp->afp_parse_url(&tmpurl, url.Get().c_str(), 0) != 0 )
   {
     // Okay, this isn't a real URL
     CLog::Log(LOGDEBUG, "AFP: Could not parse url.\n");
@@ -367,7 +367,7 @@ bool CFileAFP::Open(const CURL& url)
   }
 
 
-  CLog::Log(LOGDEBUG,"CFileAFP::Open - opened %s, fd=%d", url.GetFileName().c_str(), m_pFp ? m_pFp->fileid:-1);
+  CLog::Log(LOGDEBUG, "CFileAFP::Open - opened %s, fd=%d", url.GetFileName().c_str(), m_pFp ? m_pFp->fileid:-1);
   m_url = url;
 
   struct stat tmpBuffer;
@@ -394,7 +394,7 @@ int CFileAFP::Stat(struct __stat64* buffer)
 {
   if (m_pFp == NULL)
     return -1;
-  return Stat(m_url,buffer);
+  return Stat(m_url, buffer);
 }
 
 // TODO - maybe check returncode!
@@ -447,7 +447,7 @@ unsigned int CFileAFP::Read(void *lpBuf, int64_t uiBufSize)
 #endif
   int eof = 0;
   int bytesRead = gAfpConnection.GetImpl()->afp_wrap_read(gAfpConnection.GetVolume(),
-    name, (char *)lpBuf,(size_t)uiBufSize, m_fileOffset,m_pFp,&eof);
+    name, (char *)lpBuf,(size_t)uiBufSize, m_fileOffset, m_pFp, &eof);
   if (bytesRead > 0)
     m_fileOffset += bytesRead;
 
@@ -493,7 +493,7 @@ void CFileAFP::Close()
   CSingleLock lock(gAfpConnection);
   if (m_pFp != NULL && gAfpConnection.GetVolume())
   {
-    CLog::Log(LOGDEBUG,"CFileAFP::Close closing fd %d", m_pFp->fileid);
+    CLog::Log(LOGDEBUG, "CFileAFP::Close closing fd %d", m_pFp->fileid);
 #ifdef USE_CVS_AFPFS
     char *name = m_pFp->basename;
 #else
@@ -528,7 +528,7 @@ int CFileAFP::Write(const void* lpBuf, int64_t uiBufSize)
     name = m_pFp->basename;
 #endif
   numberOfBytesWritten = gAfpConnection.GetImpl()->afp_wrap_write(gAfpConnection.GetVolume(),
-    name, (const char *)lpBuf, (size_t)uiBufSize, m_fileOffset, m_pFp,uid,gid);
+    name, (const char *)lpBuf, (size_t)uiBufSize, m_fileOffset, m_pFp, uid, gid);
 
   return numberOfBytesWritten;
 }
