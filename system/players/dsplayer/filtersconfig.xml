@@ -43,6 +43,10 @@
       <guid>{2DE1D17E-46B1-42A8-9AEC-E20E80D9B1A9}</guid>
       <osdname>Broadcom VideoDecoder</osdname>
     </filter>
+    <filter name="lavvideodec" type="videodec">
+      <guid>{EE30215D-164F-4A92-A4EB-9D4C13390F9F}</guid>
+      <osdname>LAV Video Decoder</osdname>
+    </filter>
     
     <!-- Audio decoders -->
     <filter name="mpaaudiodec" type="audiodec">
@@ -63,6 +67,10 @@
     <filter name="realaudiodec" type="audiodec">
       <guid>{941A4793-A705-4312-8DFC-C11CA05F397E}</guid>
       <osdname>RealAlternative Audio Decoder</osdname>
+    </filter>
+    <filter name="lavaudiodec" type="audiodec">
+      <guid>{E8E73B6B-4CB3-44A4-BE99-4F7BCB96E491}</guid>
+      <osdname>LAV Audio Decoder</osdname>
     </filter>
     
     <!-- Audio Stream Switcher-->
@@ -139,10 +147,10 @@
       <issplitter>false</issplitter>
       <osdname>File Source (Async.)</osdname>
     </filter>
-    <filter name="lavf" type="source">
-      <path>LAVFDShowSplitter.ax</path>
+    <filter name="lavfsplitter" type="source">
+      <path>LAVSplitter.ax</path>
       <guid>{B98D13E7-55DB-4385-A33D-09FD1BA26338}</guid>
-      <osdname>LAVF DShow</osdname>
+      <osdname>LAV Splitter Source</osdname>
     </filter>
     
     <!-- Splitters -->
@@ -188,6 +196,9 @@
       <guid>{5B00F980-F0B1-484B-ADE7-69408D9525F7}</guid>
       <osdname>SolveigMM Matroska Splitter</osdname>
     </filter>
-    
+    <filter name="lavf_splitter" type="splitter">
+      <guid>{171252A0-8820-4AFE-9DF8-5C92B2D66B04}</guid>
+      <osdname>LAV Splitter</osdname>
+    </filter>
   </filters>
 </filtersconfig>

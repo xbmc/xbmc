@@ -130,6 +130,23 @@ static INT_PTR CALLBACK prop_sheet_proc(HWND hwnd, UINT msg, WPARAM wparam,
 
 void CDSPropertyPage::Process()
 {
+  bool wasfullscreen = false;
+  if (g_Windowing.IsFullScreen() && !g_guiSettings.GetBool("videoscreen.fakefullscreen"))
+  {
+    wasfullscreen = true;
+    CLog::Log(LOGERROR,"true fullscreen and com property page don't mix so switching to windowed");
+    SendMessage(g_Windowing.GetHwnd(), WM_SYSKEYDOWN, VK_RETURN, 0);
+	  /*g_graphicsContext.Lock();
+	  g_graphicsContext.ToggleFullScreenRoot();
+    g_graphicsContext.Unlock();*/
+    do 
+    {
+      Sleep(10);
+      if (!g_Windowing.IsFullScreen())
+        break;
+    }
+    while (1);
+  }
 
   HRESULT hr;
   Com::SmartPtr<ISpecifyPropertyPages> pProp = NULL;
@@ -232,6 +249,8 @@ void CDSPropertyPage::Process()
     HeapFree(GetProcessHeap(), 0, hpsp);
     HeapFree(GetProcessHeap(), 0, opf);
     CoTaskMemFree(pPages.pElems);  
+    if (wasfullscreen)
+      SendMessage(g_Windowing.GetHwnd(), WM_SYSKEYDOWN, VK_RETURN, 0);
   }
 }
 

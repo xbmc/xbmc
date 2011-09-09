@@ -200,9 +200,9 @@ HRESULT CSubManager::GetTexture(Com::SmartPtr<IDirect3DTexture9>& pTexture, Com:
   {
     if (SUCCEEDED (pSubPic->GetSourceAndDest(&renderSize, pSrc, pDest)))
     {
-      TRACE(L"Got source/dest rect: %d %d %d %d | %d %d %d %d with render size %d %d", pSrc.left, pSrc.top, pSrc.Width(), pSrc.Height(),
+      /*TRACE(L"Got source/dest rect: %d %d %d %d | %d %d %d %d with render size %d %d", pSrc.left, pSrc.top, pSrc.Width(), pSrc.Height(),
         pDest.left, pDest.top, pDest.Width(), pDest.Height(),
-        renderSize.cx, renderSize.cy);
+        renderSize.cx, renderSize.cy);*/
       return pSubPic->GetTexture(pTexture);
     }
   }

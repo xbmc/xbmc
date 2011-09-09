@@ -3,10 +3,10 @@
     <!-- DVD RULES -->
     <!-- Iso still return a crash on this filter. -->
     <rule filetypes="iso">
-      <source filter="tsfilesource" />
-      <splitter filter="mpeg2demultiplexer" />
+      <source filter="lavfsplitter" />
+      <splitter filter="lavfsplitter" />
       <video filter="ffdvideodec" />
-      <audio filter="ffdaudiodec" />
+      <audio filter="lavaudiodec" />
     </rule>
     <!-- If you want to play a dvd select the file /dvdfolder/VIDEO_TS/VIDEO_TS.ifo -->
     <rule filetypes="ifo">
@@ -61,7 +61,7 @@
     <rule filetypes="mkv">
       <source filter="mkvsource" />
       <splitter filter="mkvsplitter" />
-      <video filter="mpcvideodec" />
+      <video filter="ffdvideodec" />
       <!-- You can do like that to specifie a DXVA only filters.
       If you want to use the same filter for DXVA and non DXVA media, just add
       a single <video> line.
@@ -69,7 +69,7 @@
         <video dxva="true" filter="mpcvideodec" />
         <video filter="mpcvideodec" />
       </video> -->
-      <audio filter="ffdaudiodec" />
+      <audio filter="lavaudiodec" />
       <!--<extra>
         <extra filter="ac3filter" />
         <extra filter="dcgraphiceq" />
