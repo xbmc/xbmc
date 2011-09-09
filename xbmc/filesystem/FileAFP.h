@@ -113,11 +113,12 @@ public:
   virtual int IoControl(EIoControl request, void* param) {if(request == IOCTRL_SEEK_POSSIBLE) return 1;return -1;};
 
 protected:
-  CURL m_url;
   bool IsValidFile(const CStdString& strFileName);
+
+  CURL    m_url;
   int64_t m_fileSize;
-  off_t m_fileOffset;                     // current SEEK pointer
-  struct afp_file_info * m_pFp;
+  off_t   m_fileOffset;                     // current SEEK pointer
+  struct afp_file_info *m_pFp;
 };
 }
 #endif // _LINUX

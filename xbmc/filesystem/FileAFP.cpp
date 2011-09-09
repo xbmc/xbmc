@@ -191,7 +191,7 @@ CAfpConnection::afpConnnectError CAfpConnection::Connect(const CURL& url)
   m_pLibAfp->afp_default_url(&tmpurl);
 
   // if hostname has changed - assume server changed
-  if (!nonConstUrl.GetHostName().Equals(m_pAfpUrl->servername, false)|| (m_pAfpServer && m_pAfpServer->connect_state==0))
+  if (!nonConstUrl.GetHostName().Equals(m_pAfpUrl->servername, false)|| (m_pAfpServer && m_pAfpServer->connect_state == 0))
   {
     serverChanged = true;
     Disconnect();
@@ -301,7 +301,7 @@ CStdString CAfpConnection::GetPath(const CURL &url)
   m_pLibAfp->afp_default_url(&tmpurl);
 
   // First, try to parse the URL
-  if (m_pLibAfp->afp_parse_url(&tmpurl, url.Get().c_str(),0) !=0 )
+  if (m_pLibAfp->afp_parse_url(&tmpurl, url.Get().c_str(),0) != 0 )
   {
     // Okay, this isn't a real URL
     CLog::Log(LOGDEBUG, "AFP: Could not parse url.\n");
@@ -351,7 +351,7 @@ bool CFileAFP::Open(const CURL& url)
   }
 
   CSingleLock lock(gAfpConnection);
-  if(gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
+  if (gAfpConnection.Connect(url) != CAfpConnection::AfpOk || !gAfpConnection.GetVolume())
     return false;
 
   CStdString strPath = gAfpConnection.GetPath(url);
@@ -525,7 +525,7 @@ int CFileAFP::Write(const void* lpBuf, int64_t uiBufSize)
 #else
   char *name = m_pFp->name;
   if (strlen(name) == 0)
-    name=m_pFp->basename;
+    name = m_pFp->basename;
 #endif
   numberOfBytesWritten = gAfpConnection.GetImpl()->afp_wrap_write(gAfpConnection.GetVolume(),
     name, (const char *)lpBuf, (size_t)uiBufSize, m_fileOffset, m_pFp,uid,gid);
