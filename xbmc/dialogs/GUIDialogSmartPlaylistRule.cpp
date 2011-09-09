@@ -203,6 +203,11 @@ void CGUIDialogSmartPlaylistRule::OnBrowse()
     UpdateButtons();
     return;
   }
+  else if (m_rule.m_field == CSmartPlaylistRule::FIELD_SET)
+  {
+    videodatabase.GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES);
+    iLabel = 20434;
+  }
   else
   { // TODO: Add browseability in here.
     assert(false);
