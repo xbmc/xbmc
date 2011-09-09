@@ -1418,15 +1418,15 @@ int CBuiltins::Execute(const CStdString& execString)
       g_application.getApplicationMessenger().SendAction(CAction(actionID), windowID);
     }
   }
-  else if (execute.Equals("setproperty") && params.size() == 2)
+  else if (execute.Equals("setproperty") && params.size() >= 2)
   {
-    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+    CGUIWindow *window = g_windowManager.GetWindow(params.size() > 2 ? atoi(params[2].c_str()) : g_windowManager.GetFocusedWindow());
     if (window)
       window->SetProperty(params[0],params[1]);
   }
   else if (execute.Equals("clearproperty") && params.size())
   {
-    CGUIWindow *window = g_windowManager.GetWindow(g_windowManager.GetFocusedWindow());
+    CGUIWindow *window = g_windowManager.GetWindow(params.size() > 1 ? atoi(params[1].c_str()) : g_windowManager.GetFocusedWindow());
     if (window)
       window->SetProperty(params[0],"");
   }
