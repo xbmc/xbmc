@@ -23,6 +23,7 @@
 
 #if defined(HAS_FILESYSTEM_AFP)
 #include "AFPDirectory.h"
+#include "FileAFP.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
 #include "Application.h"
@@ -62,9 +63,9 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   CSingleLock lock(gAfpConnection);
   // we need an url to do proper escaping
   CURL url(strPath);
-  CAfpConnection::afpConnnectError afpError=gAfpConnection.Connect(url);
+  CAfpConnection::afpConnnectError afpError = gAfpConnection.Connect(url);
 
-  if (afpError!=CAfpConnection::AfpOk || (!url.GetShareName().IsEmpty() && !gAfpConnection.GetVolume()))
+  if (afpError != CAfpConnection::AfpOk || (!url.GetShareName().IsEmpty() && !gAfpConnection.GetVolume()))
   {
     if (afpError == CAfpConnection::AfpAuth)
     {
@@ -75,7 +76,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     }
     return false;
   }
-  CStdString strDirName=gAfpConnection.GetPath(url);
+  CStdString strDirName = gAfpConnection.GetPath(url);
 
   vector<CachedDirEntry> vecEntries;
   struct afp_file_info *dirEnt = NULL;
@@ -86,7 +87,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   {
     bListVolumes = true;
     struct afp_server *serv = gAfpConnection.GetServer();
-    for (int i = 0;i < serv->num_volumes; i++)
+    for (int i = 0; i < serv->num_volumes; i++)
     {
       CachedDirEntry aDir;
       aDir.type = 1;
@@ -143,7 +144,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
           if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strFullName.c_str(), &info) == 0)
           {
-            bool statIsDir=(info.st_mode & S_IFDIR) ? true : false;
+            bool statIsDir = (info.st_mode & S_IFDIR) ? true : false;
             if (bIsDir == statIsDir)                                         // fixme senseless
             {
                 bIsDir = (info.st_mode & S_IFDIR) ? true : false;
@@ -168,8 +169,8 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       else
       {
         bIsDir = true;
-        localTime.dwHighDateTime=0;
-        localTime.dwLowDateTime=0;
+        localTime.dwHighDateTime = 0;
+        localTime.dwLowDateTime = 0;
       }
 
       if (bIsDir)
@@ -178,7 +179,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         URIUtils::AddSlashAtEnd(aDir.name);
         pItem->SetPath(strPath + aDir.name);
         pItem->m_bIsFolder = true;
-        pItem->m_dateTime=localTime;
+        pItem->m_dateTime  = localTime;
         items.Add(pItem);
       }
       else
@@ -186,8 +187,8 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         CFileItemPtr pItem(new CFileItem(strFile));
         pItem->SetPath(strPath + aDir.name);
         pItem->m_bIsFolder = false;
-        pItem->m_dwSize = iSize;
-        pItem->m_dateTime = localTime;
+        pItem->m_dwSize    = iSize;
+        pItem->m_dateTime  = localTime;
         items.Add(pItem);
       }
     }

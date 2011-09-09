@@ -21,8 +21,10 @@
  */
 
 #include "IDirectory.h"
-#include "FileAFP.h"
 #include "MediaSource.h"
+#include "URL.h"
+
+struct afp_file_info;
 
 namespace XFILE
 {
