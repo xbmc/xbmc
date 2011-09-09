@@ -387,7 +387,7 @@ bool CFileAFP::Open(const CURL& url)
 
 bool CFileAFP::Exists(const CURL& url)
 {
-  return Stat(NULL) == 0;
+  return Stat(url, NULL) == 0;
 }
 
 int CFileAFP::Stat(struct __stat64* buffer)
