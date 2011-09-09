@@ -56,13 +56,13 @@ void AfpConnectionLog(void *priv, enum loglevels loglevel, int logtype, const ch
   switch(logtype)
   {
     case LOG_WARNING:
-      CLog::Log(LOGWARNING, msg.c_str());
+      CLog::Log(LOGWARNING, "%s", msg.c_str());
       break;
     case LOG_ERR:
-      CLog::Log(LOGERROR, msg.c_str());
+      CLog::Log(LOGERROR, "%s", msg.c_str());
       break;
     default:
-      CLog::Log(LOGDEBUG, msg.c_str());
+      CLog::Log(LOGDEBUG, "%s", msg.c_str());
       break;
   }
 }
