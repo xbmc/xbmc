@@ -52,36 +52,37 @@ class CAfpConnection : public CCriticalSection
 public:
     enum eAfpConnectError
     {
-        AfpOk = 0,
-        AfpFailed = 1,
-        AfpAuth = 2,
+      AfpOk     = 0,
+      AfpFailed = 1,
+      AfpAuth   = 2,
     };
     typedef enum eAfpConnectError afpConnnectError;
 
    CAfpConnection();
   ~CAfpConnection();
-  afpConnnectError   Connect(const CURL &url);
-  void               Disconnect(void);
-  struct afp_server *GetServer(){return m_pAfpServer;}
-  struct afp_volume *GetVolume(){return m_pAfpVol;};
-  struct afp_url    *GetUrl(){return m_pAfpUrl;};
-  CStdString        GetPath(const CURL &url);
-  DllLibAfp         *GetImpl(){return m_pLibAfp;}
+
+  afpConnnectError      Connect(const CURL &url);
+  void                  Disconnect(void);
+  struct afp_server     *GetServer()    {return m_pAfpServer;}
+  struct afp_volume     *GetVolume()    {return m_pAfpVol;};
+  struct afp_url        *GetUrl()       {return m_pAfpUrl;};
+  CStdString            GetPath(const CURL &url);
+  DllLibAfp             *GetImpl()      {return m_pLibAfp;}
 
 private:
-  int m_OpenConnections;
-  int m_LastActive;
-  struct afp_server   *m_pAfpServer;
-  struct afp_volume   *m_pAfpVol;
-  struct afp_url      *m_pAfpUrl;
-  struct libafpclient *m_pAfpClient;
-  DllLibAfp           *m_pLibAfp; //the lib
-  bool                m_bDllInited;
+  bool                  initLib(void);
+  bool                  connectVolume(const char *volumename);
+  void                  disconnectVolume(void);
+  CStdString            getAuthenticatedPath(const CURL &url);
 
-  bool initLib(void);
-  bool connectVolume(const char * volumename);
-  void disconnectVolume(void);
-  CStdString getAuthenticatedPath(const CURL &url);
+  int                   m_OpenConnections;
+  int                   m_LastActive;
+  struct afp_server     *m_pAfpServer;
+  struct afp_volume     *m_pAfpVol;
+  struct afp_url        *m_pAfpUrl;
+  struct libafpclient   *m_pAfpClient;
+  DllLibAfp             *m_pLibAfp;
+  bool                  m_bDllInited;
 };
 
 extern CAfpConnection gAfpConnection;
@@ -93,31 +94,34 @@ class CFileAFP : public IFile
 public:
   CFileAFP();
   virtual ~CFileAFP();
-  virtual void Close();
-  virtual int64_t Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
-  virtual unsigned int Read(void* lpBuf, int64_t uiBufSize);
-  virtual bool Open(const CURL& url);
-  virtual bool Exists(const CURL& url);
-  virtual int Stat(const CURL& url, struct __stat64* buffer);
-  virtual int Stat(struct __stat64* buffer);
-  virtual int64_t GetLength();
-  virtual int64_t GetPosition();
-  virtual int Write(const void* lpBuf, int64_t uiBufSize);
+  virtual void          Close();
+  virtual int64_t       Seek(int64_t iFilePosition, int iWhence = SEEK_SET);
+  virtual unsigned int  Read(void* lpBuf, int64_t uiBufSize);
+  virtual bool          Open(const CURL& url);
+  virtual bool          Exists(const CURL& url);
+  virtual int           Stat(const CURL& url, struct __stat64* buffer);
+  virtual int           Stat(struct __stat64* buffer);
+  virtual int64_t       GetLength();
+  virtual int64_t       GetPosition();
+  virtual int           Write(const void* lpBuf, int64_t uiBufSize);
 
-  virtual bool OpenForWrite(const CURL& url, bool bOverWrite = false);
-  virtual bool Delete(const CURL& url);
-  virtual bool Rename(const CURL& url, const CURL& urlnew);
-  virtual int  GetChunkSize() {return 1;}
+  virtual bool          OpenForWrite(const CURL& url, bool bOverWrite = false);
+  virtual bool          Delete(const CURL& url);
+  virtual bool          Rename(const CURL& url, const CURL& urlnew);
+  virtual int           GetChunkSize() {return 1;}
   // implement iocontrol for seek_possible for preventing the stat in File class for
   // getting this info ...
-  virtual int IoControl(EIoControl request, void* param) {if(request == IOCTRL_SEEK_POSSIBLE) return 1;return -1;};
+  virtual int           IoControl(EIoControl request, void* param)
+                        { if (request == IOCTRL_SEEK_POSSIBLE) return 1;
+                          return -1;
+                        };
 
 protected:
-  bool IsValidFile(const CStdString& strFileName);
+  bool                  IsValidFile(const CStdString& strFileName);
 
-  CURL    m_url;
-  int64_t m_fileSize;
-  off_t   m_fileOffset;                     // current SEEK pointer
+  CURL                  m_url;
+  int64_t               m_fileSize;
+  off_t                 m_fileOffset; // current SEEK pointer
   struct afp_file_info *m_pFp;
 };
 }
