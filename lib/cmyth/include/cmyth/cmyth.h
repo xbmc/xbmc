@@ -841,6 +841,14 @@ extern cmyth_proginfo_rec_status_t cmyth_proginfo_rec_status(
 	cmyth_proginfo_t prog);
 
 /**
+ * Retrieve the flags associated with a program.
+ * \param prog proginfo handle
+ * \return flags
+ */
+extern unsigned long cmyth_proginfo_flags(
+  cmyth_proginfo_t prog);
+
+/**
  * Retrieve the size, in bytes, of a program.
  * \param prog proginfo handle
  * \return program length
