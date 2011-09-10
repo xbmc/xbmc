@@ -6,8 +6,8 @@
  #include <sys/socket.h>
 -#include <errno.h>
  
- #include "afp_protocol.h"
- #include "libafpclient.h"
+ #include <afpfs-ng/afp_protocol.h>
+ #include <afpfs-ng/libafpclient.h>
 --- afpfs-ng-0.8.1/lib/afp_url.c	2011-09-04 19:42:42.000000000 +0200
 +++ afpfs-ng-0.8.1/lib/afp_url.c	2011-09-04 19:40:27.000000000 +0200
 @@ -21,7 +21,9 @@

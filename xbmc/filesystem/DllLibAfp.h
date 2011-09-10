@@ -27,9 +27,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif   
-#include <afp/libafpclient.h>
-#include <afp/map_def.h>
-#include <afp/midlevel.h>
+#include <afpfs-ng/libafpclient.h>
+#include <afpfs-ng/map_def.h>
+#include <afpfs-ng/midlevel.h>
 #ifdef __cplusplus
 }
 #endif

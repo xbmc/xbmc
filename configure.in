@@ -963,7 +963,7 @@ fi
 USE_LIBAFPCLIENT=0
 if test "$host_vendor" = "apple" ; then
   if test "x$use_libafpclient" != "xno"; then
-    AC_CHECK_HEADERS([afp/libafpclient.h],,
+    AC_CHECK_HEADERS([afpfs-ng/libafpclient.h],,
      [if test "x$use_libafpclient" = "xyes"; then
         AC_MSG_ERROR($libafpclient_not_found)
       elif test "x$use_libafpclient" != "xno"; then
