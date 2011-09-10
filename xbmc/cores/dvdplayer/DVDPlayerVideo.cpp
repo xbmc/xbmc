@@ -509,7 +509,7 @@ void CDVDPlayerVideo::Process()
       else if(mInt == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
         mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED;
       else if(mInt == VS_INTERLACEMETHOD_AUTO && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_ANY))
-        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
+        mFilters = CDVDVideoCodec::FILTER_DEINTERLACE_ANY | CDVDVideoCodec::FILTER_DEINTERLACE_HALFED | CDVDVideoCodec::FILTER_DEINTERLACE_FLAGGED;
 
       mFilters = m_pVideoCodec->SetFilters(mFilters);
 
