@@ -544,6 +544,110 @@ JSON_STATUS CPlayerOperations::Repeat(const CStdString &method, ITransportLayer 
   return ACK;
 }
 
+JSON_STATUS CPlayerOperations::SetAudioStream(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  switch (GetPlayer(parameterObject["playerid"]))
+  {
+    case Video:
+      if (g_application.m_pPlayer)
+      {
+        int index = -1;
+        if (parameterObject["stream"].isString())
+        {
+          std::string action = parameterObject["stream"].asString();
+          if (action.compare("previous") == 0)
+          {
+            index = g_application.m_pPlayer->GetAudioStream() - 1;
+            if (index < 0)
+              index = g_application.m_pPlayer->GetAudioStreamCount() - 1;
+          }
+          else if (action.compare("next") == 0)
+          {
+            index = g_application.m_pPlayer->GetAudioStream() + 1;
+            if (index >= g_application.m_pPlayer->GetAudioStreamCount())
+              index = 0;
+          }
+          else
+            return InvalidParams;
+        }
+        else if (parameterObject["stream"].isInteger())
+          index = (int)parameterObject["stream"].asInteger();
+
+        if (index < 0 || g_application.m_pPlayer->GetAudioStreamCount() <= index)
+          return InvalidParams;
+
+        g_application.m_pPlayer->SetAudioStream(index);
+      }
+      else
+        FailedToExecute;
+      break;
+      
+    case Audio:
+    case Picture:
+    default:
+      return FailedToExecute;
+  }
+
+  return ACK;
+}
+
+JSON_STATUS CPlayerOperations::SetSubtitle(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  switch (GetPlayer(parameterObject["playerid"]))
+  {
+    case Video:
+      if (g_application.m_pPlayer)
+      {
+        int index = -1;
+        if (parameterObject["subtitle"].isString())
+        {
+          std::string action = parameterObject["subtitle"].asString();
+          if (action.compare("previous") == 0)
+          {
+            index = g_application.m_pPlayer->GetSubtitle() - 1;
+            if (index < 0)
+              index = g_application.m_pPlayer->GetSubtitleCount() - 1;
+          }
+          else if (action.compare("next") == 0)
+          {
+            index = g_application.m_pPlayer->GetSubtitle() + 1;
+            if (index >= g_application.m_pPlayer->GetSubtitleCount())
+              index = 0;
+          }
+          else if (action.compare("off") == 0)
+          {
+            g_application.m_pPlayer->SetSubtitleVisible(false);
+            return ACK;
+          }
+          else if (action.compare("on") == 0)
+          {
+            g_application.m_pPlayer->SetSubtitleVisible(true);
+            return ACK;
+          }
+          else
+            return InvalidParams;
+        }
+        else if (parameterObject["subtitle"].isInteger())
+          index = (int)parameterObject["subtitle"].asInteger();
+
+        if (index < 0 || g_application.m_pPlayer->GetSubtitleCount() <= index)
+          return InvalidParams;
+
+        g_application.m_pPlayer->SetSubtitle(index);
+      }
+      else
+        FailedToExecute;
+      break;
+      
+    case Audio:
+    case Picture:
+    default:
+      return FailedToExecute;
+  }
+
+  return ACK;
+}
+
 int CPlayerOperations::GetActivePlayers()
 {
   int activePlayers = 0;
@@ -907,6 +1011,147 @@ JSON_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStdStr
       case Picture:
       default:
         result = false;
+        break;
+    }
+  }
+  else if (property.Equals("currentaudiostream"))
+  {
+    switch (player)
+    {
+      case Video:
+      case Audio:
+        if (g_application.m_pPlayer)
+        {
+          result = CVariant(CVariant::VariantTypeObject);
+          int index = g_application.m_pPlayer->GetAudioStream();
+          if (index >= 0)
+          {
+            result["index"] = index;
+            CStdString value;
+            g_application.m_pPlayer->GetAudioStreamName(index, value);
+            result["name"] = value;
+            value.Empty();
+            g_application.m_pPlayer->GetAudioStreamLanguage(index, value);
+            result["language"] = value;
+          }
+          result["codec"] = g_application.m_pPlayer->GetAudioCodecName();
+          result["bitrate"] = g_application.m_pPlayer->GetAudioBitrate();
+          result["channels"] = g_application.m_pPlayer->GetChannels();
+        }
+        else
+          result = CVariant(CVariant::VariantTypeNull);
+        break;
+        
+      case Picture:
+      default:
+        result = CVariant(CVariant::VariantTypeNull);
+        break;
+    }
+  }
+  else if (property.Equals("audiostreams"))
+  {
+    result = CVariant(CVariant::VariantTypeArray);
+    switch (player)
+    {
+      case Video:
+        if (g_application.m_pPlayer)
+        {
+          for (int index = 0; index < g_application.m_pPlayer->GetAudioStreamCount(); index++)
+          {
+            CVariant audioStream(CVariant::VariantTypeObject);
+            audioStream["index"] = index;
+            CStdString value;
+            g_application.m_pPlayer->GetAudioStreamName(index, value);
+            audioStream["name"] = value;
+            value.Empty();
+            g_application.m_pPlayer->GetAudioStreamLanguage(index, value);
+            audioStream["language"] = value;
+
+            result.append(audioStream);
+          }
+        }
+        break;
+        
+      case Audio:
+      case Picture:
+      default:
+        break;
+    }
+  }
+  else if (property.Equals("subtitleenabled"))
+  {
+    switch (player)
+    {
+      case Video:
+        if (g_application.m_pPlayer)
+          result = g_application.m_pPlayer->GetSubtitleVisible();
+        break;
+        
+      case Audio:
+      case Picture:
+      default:
+        result = false;
+        break;
+    }
+  }
+  else if (property.Equals("currentsubtitle"))
+  {
+    switch (player)
+    {
+      case Video:
+        if (g_application.m_pPlayer)
+        {
+          result = CVariant(CVariant::VariantTypeObject);
+          int index = g_application.m_pPlayer->GetSubtitle();
+          if (index >= 0)
+          {
+            result["index"] = index;
+            CStdString value;
+            g_application.m_pPlayer->GetSubtitleName(index, value);
+            result["name"] = value;
+            value.Empty();
+            g_application.m_pPlayer->GetSubtitleLanguage(index, value);
+            result["language"] = value;
+          }
+        }
+        else
+          result = CVariant(CVariant::VariantTypeNull);
+        break;
+        
+      case Audio:
+      case Picture:
+      default:
+        result = CVariant(CVariant::VariantTypeNull);
+        break;
+    }
+  }
+  else if (property.Equals("subtitles"))
+  {
+    result = CVariant(CVariant::VariantTypeArray);
+    switch (player)
+    {
+      case Video:
+        if (g_application.m_pPlayer)
+        {
+          for (int index = 0; index < g_application.m_pPlayer->GetSubtitleCount(); index++)
+          {
+            CVariant subtitle(CVariant::VariantTypeObject);
+            subtitle["index"] = index;
+            CStdString value;
+            g_application.m_pPlayer->GetSubtitleName(index, value);
+            subtitle["name"] = value;
+            value.Empty();
+            g_application.m_pPlayer->GetSubtitleLanguage(index, value);
+            subtitle["language"] = value;
+
+            result.append(subtitle);
+          }
+        }
+        break;
+        
+      case Audio:
+      case Picture:
+      default:
         break;
     }
   }
