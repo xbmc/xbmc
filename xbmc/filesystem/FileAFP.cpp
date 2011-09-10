@@ -365,13 +365,16 @@ bool CFileAFP::Open(const CURL& url)
       return false;
     }
   }
-
-
-  CLog::Log(LOGDEBUG, "CFileAFP::Open - opened %s, fd=%d", url.GetFileName().c_str(), m_pFp ? m_pFp->fileid:-1);
+  
+  CLog::Log(LOGDEBUG,"CFileAFP::Open - opened %s, fd=%d",url.GetFileName().c_str(), m_pFp ? m_pFp->fileid:-1);
   m_url = url;
-
+  
+#ifdef _LINUX
+  struct __stat64 tmpBuffer;
+#else
   struct stat tmpBuffer;
-  if (Stat(&tmpBuffer))
+#endif  
+  if(Stat(&tmpBuffer))
   {
     m_url.Reset();
     Close();
