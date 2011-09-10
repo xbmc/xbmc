@@ -81,6 +81,7 @@ CWinRenderer::CWinRenderer()
 
   m_sw_scale_ctx = NULL;
   m_dllSwScale = NULL;
+  m_dxvaDecoding = false;
 }
 
 CWinRenderer::~CWinRenderer()
@@ -250,6 +251,11 @@ bool CWinRenderer::Configure(unsigned int width, unsigned int height, unsigned i
     // reinitialize the filters/shaders
     m_bFilterInitialized = false;
   }
+
+  if (CONF_FLAGS_FORMAT_MASK(flags) == CONF_FLAGS_FORMAT_DXVA)
+    m_dxvaDecoding = true;
+  else
+    m_dxvaDecoding = false;
 
   m_fps = fps;
   m_flags = flags;
@@ -959,7 +965,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  m_processor.Render(sourceRect, destRect, target, image->id);
+  m_processor.Render(sourceRect, destRect, target, image->id, flags);
 
   target->Release();
 }
@@ -1045,17 +1051,21 @@ bool CWinRenderer::CreateYV12Texture(int index)
 
 bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 {
+  if(method == VS_INTERLACEMETHOD_NONE
+  || method == VS_INTERLACEMETHOD_AUTO)
+    return true;
+
   if (m_renderMethod == RENDER_DXVA)
   {
-    if(method == VS_INTERLACEMETHOD_NONE)
+    if(method == VS_INTERLACEMETHOD_DXVA_ANY
+    || method == VS_INTERLACEMETHOD_DXVA_BOB
+    || method == VS_INTERLACEMETHOD_DXVA_BEST)
       return true;
-    return false;
   }
 
-  if(method == VS_INTERLACEMETHOD_NONE
-  || method == VS_INTERLACEMETHOD_AUTO
-  || method == VS_INTERLACEMETHOD_DEINTERLACE
-  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+  if(!m_dxvaDecoding 
+  && (   method == VS_INTERLACEMETHOD_DEINTERLACE
+      || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF))
     return true;
 
   return false;

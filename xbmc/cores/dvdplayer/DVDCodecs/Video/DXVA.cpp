@@ -121,6 +121,50 @@ static const dxva2_mode_t dxva2_modes[] = {
     { NULL, NULL, 0 }
 };
 
+DEFINE_GUID(DXVA2_VideoProcATIVectorAdaptiveDevice,   0x3C5323C1,0x6fb7,0x44f5,0x90,0x81,0x05,0x6b,0xf2,0xee,0x44,0x9d);
+DEFINE_GUID(DXVA2_VideoProcATIMotionAdaptiveDevice,   0x552C0DAD,0xccbc,0x420b,0x83,0xc8,0x74,0x94,0x3c,0xf9,0xf1,0xa6);
+DEFINE_GUID(DXVA2_VideoProcATIAdaptiveDevice,         0x6E8329FF,0xb642,0x418b,0xbc,0xf0,0xbc,0xb6,0x59,0x1e,0x25,0x5f);
+DEFINE_GUID(DXVA2_VideoProcNVidiaAdaptiveDevice,      0x6CB69578,0x7617,0x4637,0x91,0xE5,0x1C,0x02,0xDB,0x81,0x02,0x85);
+DEFINE_GUID(DXVA2_VideoProcIntelEdgeDevice,           0xBF752EF6,0x8CC4,0x457A,0xBE,0x1B,0x08,0xBD,0x1C,0xAE,0xEE,0x9F);
+DEFINE_GUID(DXVA2_VideoProcNVidiaUnknownDevice,       0xF9F19DA5,0x3B09,0x4B2F,0x9D,0x89,0xC6,0x47,0x53,0xE3,0xEA,0xAB);
+
+typedef struct {
+    const char   *name;
+    const GUID   *guid;
+} dxva2_device_t;
+
+static const dxva2_device_t dxva2_devices[] = {
+  { "Progressive Device",           &DXVA2_VideoProcProgressiveDevice         },
+  { "Bob Device",                   &DXVA2_VideoProcBobDevice                 },
+  { "Vector Adaptative Device",     &DXVA2_VideoProcATIVectorAdaptiveDevice   },
+  { "Motion Adaptative Device",     &DXVA2_VideoProcATIMotionAdaptiveDevice   },
+  { "Adaptative Device",            &DXVA2_VideoProcATIAdaptiveDevice         },
+  { "Spatial-temporal device",      &DXVA2_VideoProcNVidiaAdaptiveDevice      },
+  { "Edge directed device",         &DXVA2_VideoProcIntelEdgeDevice           },
+  { "Unknown device (nVidia)",      &DXVA2_VideoProcNVidiaUnknownDevice       },
+  { NULL, NULL }
+};
+
+typedef struct {
+    const char   *name;
+    unsigned      flags;
+} dxva2_deinterlacetech_t;
+
+static const dxva2_deinterlacetech_t dxva2_deinterlacetechs[] = {
+  { "Inverse Telecine",                   DXVA2_DeinterlaceTech_InverseTelecine        },
+  { "Motion vector steered",              DXVA2_DeinterlaceTech_MotionVectorSteered    },
+  { "Pixel adaptive",                     DXVA2_DeinterlaceTech_PixelAdaptive          },
+  { "Field adaptive",                     DXVA2_DeinterlaceTech_FieldAdaptive          },
+  { "Edge filtering",                     DXVA2_DeinterlaceTech_EdgeFiltering          },
+  { "Median filtering",                   DXVA2_DeinterlaceTech_MedianFiltering        },
+  { "Bob vertical stretch 4-tap",         DXVA2_DeinterlaceTech_BOBVerticalStretch4Tap },
+  { "Bob vertical stretch",               DXVA2_DeinterlaceTech_BOBVerticalStretch     },
+  { "Bob line replicate",                 DXVA2_DeinterlaceTech_BOBLineReplicate       },
+  { "Unknown",                            DXVA2_DeinterlaceTech_Unknown                },
+  { NULL, 0 }
+};
+
+
 // Prefered targets must be first
 static const D3DFORMAT render_targets[] = {
     (D3DFORMAT)MAKEFOURCC('N','V','1','2'),
@@ -199,7 +243,7 @@ static DWORD VP3DeviceID [] = {
 static CStdString GUIDToString(const GUID& guid)
 {
   CStdString buffer;
-  buffer.Format("%08X-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x\n"
+  buffer.Format("%08X-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x"
               , guid.Data1, guid.Data2, guid.Data3
               , guid.Data4[0], guid.Data4[1]
               , guid.Data4[2], guid.Data4[3], guid.Data4[4]
@@ -207,7 +251,7 @@ static CStdString GUIDToString(const GUID& guid)
   return buffer;
 }
 
-static const dxva2_mode_t *dxva2_find(const GUID *guid)
+static const dxva2_mode_t *dxva2_find_mode(const GUID *guid)
 {
     for (unsigned i = 0; dxva2_modes[i].name; i++) {
         if (IsEqualGUID(*dxva2_modes[i].guid, *guid))
@@ -216,6 +260,23 @@ static const dxva2_mode_t *dxva2_find(const GUID *guid)
     return NULL;
 }
 
+static const dxva2_device_t *dxva2_find_device(const GUID *guid)
+{
+    for (unsigned i = 0; dxva2_devices[i].name; i++) {
+        if (IsEqualGUID(*dxva2_devices[i].guid, *guid))
+            return &dxva2_devices[i];
+    }
+    return NULL;
+}
+
+static const dxva2_deinterlacetech_t *dxva2_find_deinterlacetech(unsigned flags)
+{
+    for (unsigned i = 0; dxva2_deinterlacetechs[i].name; i++) {
+        if (dxva2_deinterlacetechs[i].flags == flags)
+            return &dxva2_deinterlacetechs[i];
+    }
+    return NULL;
+}
 
 #define SCOPE(type, var) boost::shared_ptr<type> var##_holder(var, CoTaskMemFree);
 
@@ -406,7 +467,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
   for(unsigned i = 0; i < input_count; i++)
   {
     const GUID *g            = &input_list[i];
-    const dxva2_mode_t *mode = dxva2_find(g);
+    const dxva2_mode_t *mode = dxva2_find_mode(g);
     if(mode)
       CLog::Log(LOGDEBUG, "DXVA - supports '%s'", mode->name);
     else
@@ -878,6 +939,8 @@ CProcessor::CProcessor()
   m_surfaces = NULL;
   m_context = NULL;
   m_index = 0;
+  m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+  m_last_field_rendered = 0;
 }
 
 CProcessor::~CProcessor()
@@ -935,6 +998,8 @@ bool CProcessor::UpdateSize(const DXVA2_VideoDesc& dsc)
       m_size = caps.NumBackwardRefSamples + caps.NumForwardRefSamples;
       CLog::Log(LOGDEBUG, "DXVA - updated maximum samples count to %d", m_size);
     }
+    m_max_back_refs = std::max(caps.NumBackwardRefSamples, m_max_back_refs);
+    m_max_fwd_refs = std::max(caps.NumForwardRefSamples, m_max_fwd_refs);
   }
 
   return true;
@@ -960,6 +1025,9 @@ bool CProcessor::PreInit()
   dsc.SampleHeight = 480;
   dsc.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedOddFirst;
 
+  m_max_back_refs = 0;
+  m_max_fwd_refs = 0;
+
   for (unsigned i = 0; render_targets[i] != D3DFMT_UNKNOWN; i++)
   {
     dsc.Format = render_targets[i];
@@ -967,7 +1035,7 @@ bool CProcessor::PreInit()
       CLog::Log(LOGDEBUG, "DXVA - render target not supported by processor");
   }
 
-  m_size += 3;  // 1 display + 2 safety frames
+  m_size = m_max_back_refs + 1 + m_max_fwd_refs + 2;  // refs + 1 display + 2 safety frames
 
   return true;
 }
@@ -986,7 +1054,6 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
 
   dsc.SampleWidth = width;
   dsc.SampleHeight = height;
-  dsc.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
   dsc.SampleFormat.VideoLighting = DXVA2_VideoLighting_dim;
 
   switch (CONF_FLAGS_CHROMA_MASK(flags))
@@ -1074,6 +1141,23 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
       return false;
   }
 
+  if (!OpenProcessor())
+    return false;
+
+  m_time = 0;
+
+  return true;
+}
+
+bool CProcessor::SelectProcessor()
+{
+  if(m_interlace_method != VS_INTERLACEMETHOD_AUTO
+  && m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB
+  && m_interlace_method != VS_INTERLACEMETHOD_DXVA_BEST)
+    m_desc.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+  else
+    m_desc.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+
   GUID*    guid_list;
   unsigned guid_count;
   CHECK(m_service->GetVideoProcessorDeviceGuids(&m_desc, &guid_count, &guid_list));
@@ -1085,17 +1169,50 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
     return false;
   }
 
-  m_device = guid_list[0];
   for(unsigned i = 0; i < guid_count; i++)
   {
-    GUID* g = &guid_list[i];
-    CLog::Log(LOGDEBUG, "DXVA - processor found %s", GUIDToString(*g).c_str());
+    const GUID* g = &guid_list[i];
+    const dxva2_device_t* device = dxva2_find_device(g);
 
-    if(IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
-      m_device = *g;
+    if (device)
+    {
+      CLog::Log(LOGDEBUG, "DXVA - processor found %s", device->name);
+    }
+    else
+    {
+      CHECK(m_service->GetVideoProcessorCaps(*g, &m_desc, D3DFMT_X8R8G8B8, &m_caps));
+      const dxva2_deinterlacetech_t* tech = dxva2_find_deinterlacetech(m_caps.DeinterlaceTechnology);
+      if (tech != NULL)
+        CLog::Log(LOGDEBUG, "DXVA - unknown processor %s found, deinterlace technology %s", GUIDToString(*g).c_str(), tech->name);
+      else
+        CLog::Log(LOGDEBUG, "DXVA - unknown processor %s found, unknown technology", GUIDToString(*g).c_str());
+    }
   }
 
-  CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
+  m_device = guid_list[0];
+  if (m_interlace_method != VS_INTERLACEMETHOD_DXVA_BEST && m_interlace_method != VS_INTERLACEMETHOD_AUTO)
+  {
+    if (m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB)
+      m_device = DXVA2_VideoProcProgressiveDevice;
+    else
+      m_device = DXVA2_VideoProcBobDevice;
+  }
+
+  return true;
+}
+
+bool CProcessor::OpenProcessor()
+{
+  if (!SelectProcessor())
+    return false;
+
+  SAFE_RELEASE(m_process);
+
+  const dxva2_device_t* device = dxva2_find_device(&m_device);
+  if (device)
+    CLog::Log(LOGDEBUG, "DXVA - processor selected %s", device->name);
+  else
+    CLog::Log(LOGDEBUG, "DXVA - processor selected %s", GUIDToString(m_device).c_str());
 
   D3DFORMAT rtFormat = D3DFMT_X8R8G8B8;
   CHECK(m_service->GetVideoProcessorCaps(m_device, &m_desc, rtFormat, &m_caps))
@@ -1120,8 +1237,6 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, rtFormat, DXVA2_ProcAmp_Contrast  , &m_contrast));
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, rtFormat, DXVA2_ProcAmp_Hue       , &m_hue));
   CHECK(m_service->GetProcAmpRange(m_device, &m_desc, rtFormat, DXVA2_ProcAmp_Saturation, &m_saturation));
-
-  m_time = 0;
 
   return true;
 }
@@ -1228,9 +1343,23 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
   vs.sample.Start          = m_time;
   vs.sample.End            = 0; 
   vs.sample.SampleFormat   = m_desc.SampleFormat;
+
+  if (picture->iFlags & DVP_FLAG_INTERLACED)
+  {
+    if (picture->iFlags & DVP_FLAG_TOP_FIELD_FIRST)
+      vs.sample.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+    else
+      vs.sample.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedOddFirst;
+  }
+  else
+  {
+    vs.sample.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+  }
+
   vs.sample.PlanarAlpha    = DXVA2_Fixed32OpaqueAlpha();
   vs.sample.SampleData     = 0;
   vs.sample.SrcSurface     = surface;
+
 
   vs.context = context;
 
@@ -1262,14 +1391,21 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
     return range.DefaultValue;
 }
 
-bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE_TIME time)
+bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE_TIME time, DWORD flags)
 {
   CSingleLock lock(m_section);
 
-  // MinTime and MaxTime are the first and last samples to feed the processor.
-  // MinTime is also the first sample to keep.
-  REFERENCE_TIME MinTime = time - m_caps.NumBackwardRefSamples*2;
-  REFERENCE_TIME MaxTime = time + m_caps.NumForwardRefSamples*2;
+  if (m_interlace_method != g_settings.m_currentVideoSettings.m_InterlaceMethod || !m_process)
+  {
+    m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    if (!OpenProcessor())
+      return false;
+  }
+
+
+  // MinTime and MaxTime are the first and last samples to keep. Delete the rest.
+  REFERENCE_TIME MinTime = time - m_max_back_refs*2;
+  REFERENCE_TIME MaxTime = time + m_max_fwd_refs*2;
 
   SSamples::iterator it = m_sample.begin();
   while (it != m_sample.end())
@@ -1286,6 +1422,10 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   if(m_sample.empty())
     return false;
+
+  // MinTime and MaxTime are now the first and last samples to feed the processor.
+  MinTime = time - m_caps.NumBackwardRefSamples*2;
+  MaxTime = time + m_caps.NumForwardRefSamples*2;
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
@@ -1306,7 +1446,7 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   for(it = m_sample.begin(); it != m_sample.end() && valid < count; it++)
   {
-    if (it->sample.Start <= MaxTime)
+    if (it->sample.Start >= MinTime && it->sample.Start <= MaxTime)
     {
       DXVA2_VideoSample& vs = samp[(it->sample.Start - MinTime) / 2];
       vs = it->sample;
@@ -1314,6 +1454,12 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
       vs.DstRect = dst;
       if(vs.End == 0)
         vs.End = vs.Start + 2;
+
+      if (m_interlace_method == VS_INTERLACEMETHOD_NONE)
+        vs.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+      else if ((m_interlace_method == VS_INTERLACEMETHOD_DXVA_BOB || m_interlace_method == VS_INTERLACEMETHOD_DXVA_BEST) && vs.SampleFormat.SampleFormat == DXVA2_SampleProgressiveFrame)
+        vs.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+
       valid++;
     }
   }
@@ -1341,6 +1487,10 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   DXVA2_VideoProcessBltParams blt = {};
   blt.TargetFrame = time;
+  if (flags & RENDER_FLAG_FIELD1 || (flags & RENDER_FLAG_LAST && m_last_field_rendered == 1))
+    blt.TargetFrame += 1;
+  if (flags & (RENDER_FLAG_FIELD0 | RENDER_FLAG_FIELD1))
+    m_last_field_rendered = (flags & RENDER_FLAG_FIELD1) != 0;
   blt.TargetRect  = dst;
   blt.ConstrictionSize.cx = 0;
   blt.ConstrictionSize.cy = 0;
