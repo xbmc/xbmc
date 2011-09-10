@@ -63,7 +63,7 @@ public:
   virtual void av_register_all_dont_call(void)=0;
   virtual AVInputFormat *av_find_input_format(const char *short_name)=0;
   virtual int url_feof(AVIOContext *s)=0;
-  virtual AVMetadataTag *av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int flags)=0;
+  virtual AVDictionaryEntry *av_metadata_get(AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags)=0;
   virtual void av_close_input_file(AVFormatContext *s)=0;
   virtual void av_close_input_stream(AVFormatContext *s)=0;
   virtual int av_read_frame(AVFormatContext *s, AVPacket *pkt)=0;
@@ -108,7 +108,7 @@ public:
   virtual int av_write_header (AVFormatContext *s)=0;
   virtual int av_write_trailer(AVFormatContext *s)=0;
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt)=0;
-  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags)=0;
+  virtual int av_metadata_set2(AVDictionary **pm, const char *key, const char *value, int flags)=0;
 };
 
 #if (defined USE_EXTERNAL_FFMPEG)
@@ -128,9 +128,9 @@ public:
   virtual int url_feof(AVIOContext *s) { return ::url_feof(s); }
 #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,31,0)
   // API added on: 2009-03-01
-  virtual AVMetadataTag *av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int flags){ return ::av_metadata_get(m, key, prev, flags); }
+  virtual AVDictionaryEntry *av_metadata_get(AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags){ return ::av_metadata_get(m, key, prev, flags); }
 #else
-  virtual AVMetadataTag *av_metadata_get(AVMetadata *m, const char *key, const AVMetadataTag *prev, int flags){ return NULL; }
+  virtual AVDictionaryEntry *av_metadata_get(AVDictionary *m, const char *key, const AVDictionaryEntry *prev, int flags){ return NULL; }
 #endif
   virtual void av_close_input_file(AVFormatContext *s) { ::av_close_input_file(s); }
   virtual void av_close_input_stream(AVFormatContext *s) { ::av_close_input_stream(s); }
@@ -190,12 +190,12 @@ public:
   virtual int av_write_frame  (AVFormatContext *s, AVPacket *pkt) { return ::av_write_frame(s, pkt); }
 #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,43,0)
   // API added on: 2009-12-13
-  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set2(pm, key, value, flags); }
+  virtual int av_metadata_set2(AVDictionary **pm, const char *key, const char *value, int flags) { return ::av_metadata_set2(pm, key, value, flags); }
 #elif LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,31,0)
   // API added on: 2009-03-01
-  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return ::av_metadata_set(pm, key, value); }
+  virtual int av_metadata_set2(AVDictionary **pm, const char *key, const char *value, int flags) { return ::av_metadata_set(pm, key, value); }
 #else
-  virtual int av_metadata_set2(AVMetadata **pm, const char *key, const char *value, int flags) { return -1; }
+  virtual int av_metadata_set2(AVDictionary **pm, const char *key, const char *value, int flags) { return -1; }
 #endif
 
   // DLL faking.
@@ -218,7 +218,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD0(void, av_register_all_dont_call)
   DEFINE_METHOD1(AVInputFormat*, av_find_input_format, (const char *p1))
   DEFINE_METHOD1(int, url_feof, (AVIOContext *p1))
-  DEFINE_METHOD4(AVMetadataTag*, av_metadata_get, (AVMetadata *p1, const char *p2, const AVMetadataTag *p3, int p4))
+  DEFINE_METHOD4(AVDictionaryEntry*, av_metadata_get, (AVDictionary *p1, const char *p2, const AVDictionaryEntry *p3, int p4))
   DEFINE_METHOD1(void, av_close_input_file, (AVFormatContext *p1))
   DEFINE_METHOD1(void, av_close_input_stream, (AVFormatContext *p1))
   DEFINE_METHOD1(int, av_read_play, (AVFormatContext *p1))
@@ -265,7 +265,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD1(int, av_write_header , (AVFormatContext *p1))
   DEFINE_METHOD1(int, av_write_trailer, (AVFormatContext *p1))
   DEFINE_METHOD2(int, av_write_frame  , (AVFormatContext *p1, AVPacket *p2))
-  DEFINE_METHOD4(int, av_metadata_set2, (AVMetadata **p1, const char *p2, const char *p3, int p4));
+  DEFINE_METHOD4(int, av_metadata_set2, (AVDictionary **p1, const char *p2, const char *p3, int p4));
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD_RENAME(av_register_all, av_register_all_dont_call)
     RESOLVE_METHOD(av_find_input_format)
