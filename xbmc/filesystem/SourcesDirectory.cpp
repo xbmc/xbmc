@@ -67,8 +67,6 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
     CFileItemPtr pItem(new CFileItem(share));
     if (pItem->IsLastFM() || (pItem->GetPath().Left(14).Equals("musicsearch://")))
       pItem->SetCanQueue(false);
-    CStdString strPathUpper = pItem->GetPath();
-    strPathUpper.ToUpper();
     
     CStdString strIcon;
     // We have the real DVD-ROM, set icon on disktype
