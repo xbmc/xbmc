@@ -111,6 +111,9 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Player.Shuffle",                               CPlayerOperations::Shuffle },
   { "Player.UnShuffle",                             CPlayerOperations::UnShuffle },
   { "Player.Repeat",                                CPlayerOperations::Repeat },
+  
+  { "Player.SetAudioStream",                        CPlayerOperations::SetAudioStream },
+  { "Player.SetSubtitle",                           CPlayerOperations::SetSubtitle },
 
 // Playlist
   { "Playlist.GetPlaylists",                        CPlaylistOperations::GetPlaylists },

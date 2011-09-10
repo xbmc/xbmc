@@ -352,6 +352,36 @@
     ],
     "returns": "string"
   },
+  "Player.SetAudioStream": {
+    "type": "method",
+    "description": "Set the audio stream played by the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "stream", "required": true, "type": [
+          { "type": "string", "enum": [ "previous", "next" ] },
+          { "type": "integer", "minimum": 0, "description": "Index of the audio stream to play" }
+        ]
+      }
+    ],
+    "returns": "string"
+  },
+  "Player.SetSubtitle": {
+    "type": "method",
+    "description": "Set the subtitle displayed by the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "subtitle", "required": true, "type": [
+          { "type": "string", "enum": [ "previous", "next", "off", "on" ] },
+          { "type": "integer", "minimum": 0, "description": "Index of the subtitle to display" }
+        ]
+      }
+    ],
+    "returns": "string"
+  },
   "Playlist.GetPlaylists": {
     "type": "method",
     "description": "Returns all existing playlists",
