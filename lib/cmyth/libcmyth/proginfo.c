@@ -478,9 +478,9 @@ delete_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  end_ts);
 		if (control->conn_version < 57) {
 			sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_unknown_0)); // "duplicate"
-			sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "shareable"
+			sprintf(buf + strlen(buf), "%ld[]:[]", 0L); // "shareable"
 		}
-		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "findid"
+		sprintf(buf + strlen(buf), "%ld[]:[]", 0L); // "findid"
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_hostname));
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_source_id);
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_card_id);
@@ -1201,6 +1201,30 @@ cmyth_proginfo_rec_status(cmyth_proginfo_t prog)
 }
 
 /*
+ * cmyth_proginfo_flags(cmyth_proginfo_t prog)
+ *
+ * Scope: PUBLIC
+ *
+ * Description
+ *
+ * Retrieves the flags mask from a program info structure.
+ *
+ * Return Value:
+ *
+ * Success: The program flag mask.
+ *
+ * Failure: 0 (an invalid status)
+ */
+unsigned long
+cmyth_proginfo_flags(cmyth_proginfo_t prog)
+{
+  if (!prog) {
+    return 0;
+  }
+  return prog->proginfo_program_flags;
+}
+
+/*
  * cmyth_proginfo_prodyear(cmyth_proginfo_t prog)
  *
  *
@@ -1328,9 +1352,9 @@ fill_command(cmyth_conn_t control, cmyth_proginfo_t prog, char *cmd)
 		sprintf(buf + strlen(buf), "%s[]:[]",  end_ts);
 		if (control->conn_version < 57) {
 			sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_unknown_0)); // "duplicate"
-			sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "shareable"
+			sprintf(buf + strlen(buf), "%ld[]:[]", 0L); // "shareable"
 		}
-		sprintf(buf + strlen(buf), "%ld[]:[]", 0); // "findid"
+		sprintf(buf + strlen(buf), "%ld[]:[]", 0L); // "findid"
 		sprintf(buf + strlen(buf), "%s[]:[]",  S(prog->proginfo_hostname));
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_source_id);
 		sprintf(buf + strlen(buf), "%ld[]:[]", prog->proginfo_card_id);
