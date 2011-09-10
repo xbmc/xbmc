@@ -33,9 +33,9 @@ diff -up afpfs-ng-0.8.1/fuse/fuse_int.c.pointer afpfs-ng-0.8.1/fuse/fuse_int.c
  
  	return ret;
  }
-diff -up afpfs-ng-0.8.1/include/afp.h.pointer afpfs-ng-0.8.1/include/afp.h
---- afpfs-ng-0.8.1/include/afp.h.pointer	2008-03-08 17:08:18.000000000 +0100
-+++ afpfs-ng-0.8.1/include/afp.h	2011-06-14 17:02:15.000000000 +0200
+diff -up afpfs-ng-0.8.1/include/afpfs-ng/afp.h.pointer afpfs-ng-0.8.1/include/afp.h
+--- afpfs-ng-0.8.1/include/afpfs-ng/afp.h.pointer	2008-03-08 17:08:18.000000000 +0100
++++ afpfs-ng-0.8.1/include/afpfs-ng/afp.h	2011-06-14 17:02:15.000000000 +0200
 @@ -370,7 +370,7 @@ int afp_unmount_all_volumes(struct afp_s
  
  int afp_opendt(struct afp_volume *volume, unsigned short * refnum);
@@ -45,9 +45,9 @@ diff -up afpfs-ng-0.8.1/include/afp.h.pointer afpfs-ng-0.8.1/include/afp.h
  
  int afp_getcomment(struct afp_volume *volume, unsigned int did,
          const char * pathname, struct afp_comment * comment);
-diff -up afpfs-ng-0.8.1/include/utils.h.pointer afpfs-ng-0.8.1/include/utils.h
---- afpfs-ng-0.8.1/include/utils.h.pointer	2008-02-18 04:33:58.000000000 +0100
-+++ afpfs-ng-0.8.1/include/utils.h	2011-06-14 17:02:15.000000000 +0200
+diff -up afpfs-ng-0.8.1/include/afpfs-gn/utils.h.pointer afpfs-ng-0.8.1/include/utils.h
+--- afpfs-ng-0.8.1/include/afpfs-ng/utils.h.pointer	2008-02-18 04:33:58.000000000 +0100
++++ afpfs-ng-0.8.1/include/afpfs-ng/utils.h	2011-06-14 17:02:15.000000000 +0200
 @@ -8,8 +8,8 @@
  #define hton64(x)       (x)
  #define ntoh64(x)       (x)
