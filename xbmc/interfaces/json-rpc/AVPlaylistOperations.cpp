@@ -141,7 +141,12 @@ JSON_STATUS CAVPlaylistOperations::Insert(const CStdString &method, ITransportLa
 
 JSON_STATUS CAVPlaylistOperations::Remove(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  g_application.getApplicationMessenger().PlayListPlayerRemove(GetPlaylist(method), (int)parameterObject["item"].asInteger());
+  int playlist = GetPlaylist(method);
+  int item = (int)parameterObject["item"].asInteger();
+  if (g_playlistPlayer.GetCurrentPlaylist() == playlist && item == g_playlistPlayer.GetCurrentSong())
+    return InvalidParams;
+
+  g_application.getApplicationMessenger().PlayListPlayerRemove(playlist, item);
 
   NotifyAll();
   return ACK;
