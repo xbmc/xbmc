@@ -28,6 +28,7 @@
 #include <dxva2api.h>
 #include <deque>
 #include <vector>
+#include "settings/VideoSettings.h"
 
 namespace DXVA {
 
@@ -122,7 +123,7 @@ public:
   bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format);
   void           Close();
   REFERENCE_TIME Add(DVDVideoPicture* picture);
-  bool           Render(RECT src, RECT dst, IDirect3DSurface9* target, const REFERENCE_TIME time);
+  bool           Render(RECT src, RECT dst, IDirect3DSurface9* target, const REFERENCE_TIME time, DWORD flags);
   unsigned       Size() { if (m_service) return m_size; return 0; }
 
   virtual void OnCreateDevice()  {}
@@ -133,6 +134,8 @@ public:
 protected:
   bool UpdateSize(const DXVA2_VideoDesc& dsc);
   bool CreateSurfaces();
+  bool OpenProcessor();
+  bool SelectProcessor();
 
   IDirectXVideoProcessorService* m_service;
   IDirectXVideoProcessor*        m_process;
@@ -147,8 +150,11 @@ protected:
   DXVA2_ValueRange m_saturation;
   REFERENCE_TIME   m_time;
   unsigned         m_size;
-
+  unsigned         m_max_back_refs;
+  unsigned         m_max_fwd_refs;
+  EINTERLACEMETHOD m_interlace_method;
   unsigned         m_index;
+  unsigned         m_last_field_rendered;
 
   struct SVideoSample
   {
