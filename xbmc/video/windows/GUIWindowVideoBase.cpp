@@ -703,7 +703,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 
 void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
-  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return ;
+  // don't re-queue items from playlist window
+  if ( iItem < 0 || iItem >= m_vecItems->Size() || GetID() == WINDOW_VIDEO_PLAYLIST ) return ;
 
   // we take a copy so that we can alter the queue state
   CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
