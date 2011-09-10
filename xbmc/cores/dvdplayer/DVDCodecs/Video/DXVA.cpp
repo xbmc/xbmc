@@ -1169,40 +1169,35 @@ bool CProcessor::SelectProcessor()
     return false;
   }
 
+  for(unsigned i = 0; i < guid_count; i++)
+  {
+    const GUID* g = &guid_list[i];
+    const dxva2_device_t* device = dxva2_find_device(g);
+
+    if (device)
+    {
+      CLog::Log(LOGDEBUG, "DXVA - processor found %s", device->name);
+    }
+    else
+    {
+      CHECK(m_service->GetVideoProcessorCaps(*g, &m_desc, D3DFMT_X8R8G8B8, &m_caps));
+      const dxva2_deinterlacetech_t* tech = dxva2_find_deinterlacetech(m_caps.DeinterlaceTechnology);
+      if (tech != NULL)
+        CLog::Log(LOGDEBUG, "DXVA - unknown processor %s found, deinterlace technology %s", GUIDToString(*g).c_str(), tech->name);
+      else
+        CLog::Log(LOGDEBUG, "DXVA - unknown processor %s found, unknown technology", GUIDToString(*g).c_str());
+    }
+  }
+
   m_device = guid_list[0];
   if (m_interlace_method != VS_INTERLACEMETHOD_DXVA_BEST && m_interlace_method != VS_INTERLACEMETHOD_AUTO)
   {
-    for(unsigned i = 0; i < guid_count; i++)
-    {
-      const GUID* g = &guid_list[i];
-      const dxva2_device_t* device = dxva2_find_device(g);
-
-      if (device)
-      {
-        CLog::Log(LOGDEBUG, "DXVA - processor found %s", device->name);
-      }
-      else
-      {
-        CHECK(m_service->GetVideoProcessorCaps(*g, &m_desc, D3DFMT_X8R8G8B8, &m_caps));
-        const dxva2_deinterlacetech_t* tech = dxva2_find_deinterlacetech(m_caps.DeinterlaceTechnology);
-        if (tech != NULL)
-          CLog::Log(LOGDEBUG, "DXVA - unknown processor %s found, deinterlace technology %s", GUIDToString(*g).c_str(), tech->name);
-        else
-          CLog::Log(LOGDEBUG, "DXVA - unknown processor %s found, unknown technology", GUIDToString(*g).c_str());
-      }
-
-      if (m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB)
-      {
-        if(IsEqualGUID(*g, DXVA2_VideoProcProgressiveDevice))
-          m_device = *g;
-      }
-      else
-      {
-        if(IsEqualGUID(*g, DXVA2_VideoProcBobDevice))
-          m_device = *g;
-      }
-    }
+    if (m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB)
+      m_device = DXVA2_VideoProcProgressiveDevice;
+    else
+      m_device = DXVA2_VideoProcBobDevice;
   }
+
   return true;
 }
 
