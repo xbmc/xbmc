@@ -75,8 +75,7 @@
     eaglLayer.opaque = TRUE;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
       [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
-      kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat,
-      //kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
+      kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
       nil];
 		
     EAGLContext *aContext = [[EAGLContext alloc] 
