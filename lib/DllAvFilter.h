@@ -223,13 +223,8 @@ class DllAvFilter : public DllDynamic, DllAvFilterInterface
 #else
   DEFINE_METHOD2(int, avfilter_graph_config_dont_call, (AVFilterGraph *p1, AVClass *p2))
 #endif
-#ifdef _LINUX
-  DEFINE_METHOD1(int, avfilter_poll_frame, (AVFilterLink *p1))
-  DEFINE_METHOD1(int, avfilter_request_frame, (AVFilterLink* p1))
-#else
   DEFINE_FUNC_ALIGNED1(int, __cdecl, avfilter_poll_frame, AVFilterLink *)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, avfilter_request_frame, AVFilterLink*)
-#endif
 #if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,13,0)
   DEFINE_METHOD3(int, av_vsrc_buffer_add_frame, (AVFilterContext *p1, AVFrame *p2, int p3))
 #elif LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,7,0)
