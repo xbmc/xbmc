@@ -218,10 +218,7 @@ CFileItem::CFileItem(const CMediaSource& share)
   m_strThumbnailImage = share.m_strThumbnailImage;
   SetLabelPreformated(true);
   if (IsDVD())
-  {
-    GetVideoInfoTag()->m_strFileNameAndPath = "removable://";
-    GetVideoInfoTag()->m_strFileNameAndPath += share.strStatus; // share.strStatus contains disc volume label
-  }
+    GetVideoInfoTag()->m_strFileNameAndPath = share.strDiskUniqueId; // share.strDiskUniqueId contains disc unique id
 }
 
 CFileItem::~CFileItem(void)

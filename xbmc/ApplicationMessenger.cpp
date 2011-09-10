@@ -713,6 +713,7 @@ case TMSG_POWERDOWN:
       {
         CMediaSource share;
         share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
+        share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
         share.strPath = pMsg->strParam;
         if(g_mediaManager.IsAudio(share.strPath))
           share.strStatus = "Audio-CD";
