@@ -4625,7 +4625,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   }
   else if (condition == LISTITEM_ISPLAYING)
   {
-    if (item->IsFileItem() && !m_currentFile->GetPath().IsEmpty())
+    if (item->HasProperty("playlistposition"))
+      return item->GetPropertyInt("playlisttype") == g_playlistPlayer.GetCurrentPlaylist() && item->GetPropertyInt("playlistposition") == g_playlistPlayer.GetCurrentSong();
+    else if (item->IsFileItem() && !m_currentFile->GetPath().IsEmpty())
     {
       if (!g_application.m_strPlayListFile.IsEmpty())
       {
