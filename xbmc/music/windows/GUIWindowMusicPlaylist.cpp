@@ -346,18 +346,7 @@ void CGUIWindowMusicPlayList::RemovePlayListItem(int iItem)
       && g_playlistPlayer.GetCurrentSong() == iItem)
     return ;
 
-  g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(iItem);
-
-  // Correct the current playing song in playlistplayer
-  if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio())
-  {
-    int iCurrentSong = g_playlistPlayer.GetCurrentSong();
-    if (iItem <= iCurrentSong)
-    {
-      iCurrentSong--;
-      g_playlistPlayer.SetCurrentSong(iCurrentSong);
-    }
-  }
+  g_playlistPlayer.Remove(PLAYLIST_MUSIC, iItem);
 
   Update(m_vecItems->GetPath());
 
