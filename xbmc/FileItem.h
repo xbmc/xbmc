@@ -104,6 +104,7 @@ public:
   bool IsPlugin() const;
   bool IsScript() const;
   bool IsAddonsPath() const;
+  bool IsSourcesPath() const;
   bool IsShortCut() const;
   bool IsNFO() const;
   bool IsDVDImage() const;

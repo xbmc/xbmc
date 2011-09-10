@@ -585,6 +585,12 @@ bool URIUtils::IsAddonsPath(const CStdString& strFile)
   return url.GetProtocol().Equals("addons");
 }
 
+bool URIUtils::IsSourcesPath(const CStdString& strPath)
+{
+  CURL url(strPath);
+  return url.GetProtocol().Equals("sources");
+}
+
 bool URIUtils::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");
