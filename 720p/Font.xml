@@ -1,4 +1,8 @@
 <fonts>
+	<aliases>
+		<alias font="HelveticaNeue" variant="Condensed Bold" alias="Arial" aliasStyle="bold" />
+	</aliases>
+
 	<fontset id="Default" unicode="false">
 		<!-- -->
 		<font>
