@@ -1868,7 +1868,8 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
     case PVR_PLAYING_PROGRESS:
     case PVR_ACTUAL_STREAM_SIG_PROGR:
     case PVR_ACTUAL_STREAM_SNR_PROGR:
-      return g_PVRManager.TranslateIntInfo(info);
+      value = g_PVRManager.TranslateIntInfo(info);
+      return true;
     case SYSTEM_BATTERY_LEVEL:
       value = g_powerManager.BatteryLevel();
       return true;
