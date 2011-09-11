@@ -349,7 +349,7 @@
   displayLink = [NSClassFromString(@"CADisplayLink") 
     displayLinkWithTarget:self
     selector:@selector(runDisplayLink)];
-  [displayLink setFrameInterval:2];
+  [displayLink setFrameInterval:1];
   [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
   displayFPS = 1.0 / ([displayLink duration] * [displayLink frameInterval]);
 }
