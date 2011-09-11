@@ -1309,7 +1309,7 @@ bool CMusicDatabase::GetTop100Albums(VECALBUMS& albums)
     //       consistently - possibly an SQLite bug, as it works fine in SQLiteSpy (v3.3.17)
     CStdString strSQL = "select albumview.*, sum(song.iTimesPlayed) as total, song.idAlbum from song "
                     "join albumview on albumview.idAlbum=song.idAlbum "
-                    "where song.iTimesPlayed>0 "
+                    "where song.iTimesPlayed>0 and albumview.strAlbum != '' "
                     "group by song.idAlbum "
                     "order by total desc "
                     "limit 100 ";
