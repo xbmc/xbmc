@@ -71,16 +71,15 @@ namespace JSONRPC
     ControlPlayback =   0x2,
     ControlNotify   =   0x4,
     ControlPower    =   0x8,
-    Logging         =  0x10,
-    UpdateData      =  0x20,
-    RemoveData      =  0x40,
-    Navigate        =  0x80,
-    WriteFile       = 0x100
+    UpdateData      =  0x10,
+    RemoveData      =  0x20,
+    Navigate        =  0x40,
+    WriteFile       =  0x80
   };
 
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | UpdateData | RemoveData | Navigate | WriteFile);
+  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
 
-  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | UpdateData | RemoveData | Navigate | WriteFile);
+  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
 
   /*!
    \brief Possible value types of a parameter or return type
@@ -194,8 +193,6 @@ namespace JSONRPC
         return "ControlNotify";
       case ControlPower:
         return "ControlPower";
-      case Logging:
-        return "Logging";
       case UpdateData:
         return "UpdateData";
       case RemoveData:
@@ -223,8 +220,6 @@ namespace JSONRPC
         return ControlNotify;
       if (permission.compare("ControlPower") == 0)
         return ControlPower;
-      if (permission.compare("Logging") == 0)
-        return Logging;
       if (permission.compare("UpdateData") == 0)
         return UpdateData;
       if (permission.compare("RemoveData") == 0)

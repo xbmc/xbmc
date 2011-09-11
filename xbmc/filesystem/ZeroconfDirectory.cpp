@@ -56,6 +56,8 @@ namespace
       return "WebDAV";   
     else if(fcr_service_type == "_nfs._tcp.")
       return "NFS";   
+    else if(fcr_service_type == "_afpovertcp._tcp.")
+      return "AFP";   
     else if(fcr_service_type == "_sftp-ssh._tcp.")
       return "SFTP";
     //fallback, just return the received type
@@ -75,6 +77,8 @@ namespace
       fr_protocol = "dav";
     else if(fcr_service_type == "_nfs._tcp.")
       fr_protocol = "nfs";      
+    else if(fcr_service_type == "_afpovertcp._tcp.")
+      fr_protocol = "afp";      
     else if(fcr_service_type == "_sftp-ssh._tcp.")
       fr_protocol = "sftp";
     else

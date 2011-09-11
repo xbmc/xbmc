@@ -171,12 +171,12 @@
   <string id="196">Film-Auswahl:</string>
   <string id="197">Online-Datenbank wird abgefragt...</string>
   <string id="198">Lade Filminformationen</string>
-  <string id="199">Web Benutzerschnittstelle</string>
+  <string id="199">Webinterface Skin</string>
 
   <string id="202">Kurzinfo</string>
   <string id="203">Handlung</string>
 
-  <string id="205">Stimmen:</string>
+  <string id="205">Stimmen</string>
   <string id="206">Besetzung</string>
   <string id="207">Handlung</string>
   <string id="208">Abspielen</string>
@@ -231,7 +231,7 @@
   <string id="260">Shoutcast</string>
   <string id="261">Warte auf Start...</string>
   <string id="262">Skript-Ausgabe</string>
-  <string id="263">Erlaube Kontrolle von XBMC über HTTP</string>
+  <string id="263">Steuerung über Webinterface zulassen</string>
   <string id="264">Aufnehmen</string>
   <string id="265">Aufnahme beenden</string>
   <string id="266">Nach: Titel-Nr.</string>
@@ -695,10 +695,10 @@
   <string id="788">Netzwerkkarte erfolgreich deaktiviert.</string>
   <string id="789">Wireless Netzwerkname (ESSID)</string>
 
-  <string id="791">Programmen auf diesem System Kontrolle über XBMC erlauben</string>
+  <string id="791">Steuerung über lokale Programme zulassen</string>
   <string id="792">Port</string>
   <string id="793">Port-Bereich</string>
-  <string id="794">Programmen auf anderen Systemen Kontrolle über XBMC erlauben</string>
+  <string id="794">Steuerung über entfernte Programme zulassen</string>
   <string id="795">Anfängliche Wiederholungsverzögerung (ms)</string>
   <string id="796">Kontinuierliche Wiederholungsverzögerung (ms)</string>
   <string id="797">Maximale Anzahl der Clients</string>
@@ -810,6 +810,7 @@
   <string id="1257">Soll eine Verbindung zum automatisch gefundenen System aufgebaut werden?</string>
 
   <string id="1260">Zeroconf-Veröffentlichung</string>
+  <string id="1270">AirPlay Inhalte empfangen</string>
 
   <string id="1300">Benutzerdefiniertes Audiogerät</string>
   <string id="1301">Benutzerdefiniertes Audiogerät für Passthrough</string>
@@ -2354,6 +2355,7 @@
   <string id="20453">Episoden</string>
 
   <string id="20456">Filmset Fanart setzen</string>
+  <string id="20457">Zusammenstellung</string>
 
   <string id="21330">Versteckte Ordner und Dateien anzeigen</string>
   <string id="21331">TuxBox Client</string>

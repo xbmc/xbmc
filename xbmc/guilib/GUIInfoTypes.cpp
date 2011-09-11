@@ -211,7 +211,7 @@ CStdString CGUIInfoLabel::ReplaceLocalize(const CStdString &label)
     }
     else
     {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
+      CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", label.c_str());
       return "";
     }
     pos1 = work.Find("$LOCALIZE[", pos1);
@@ -240,7 +240,7 @@ CStdString CGUIInfoLabel::ReplaceAddonStrings(const CStdString &label)
     }
     else
     {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
+      CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", label.c_str());
       return "";
     }
     pos1 = work.Find("$ADDON[", pos1);
@@ -291,7 +291,7 @@ void CGUIInfoLabel::Parse(const CStdString &label)
     }
     else
     {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']'");
+      CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", label.c_str());
       return;
     }
     pos1 = work.Find("$INFO[");

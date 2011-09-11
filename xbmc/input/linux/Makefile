@@ -1,4 +1,5 @@
-SRCS=LIRC.cpp
+SRCS=LIRC.cpp \
+  LinuxInputDevices.cpp
 
 LIB=input_linux.a
 

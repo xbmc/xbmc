@@ -68,6 +68,7 @@
       <s mod="ctrl">Screenshot</s>
       <minus>VolumeDown</minus>
       <plus>VolumeUp</plus>
+      <equals>VolumeUp</equals>
       <zero>Number0</zero>
       <one>Number1</one>
       <two>Number2</two>

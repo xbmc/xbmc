@@ -21,12 +21,15 @@
 
 #define BOOL XBMC_BOOL 
 #include "system.h"
+#include "Application.h"
 #include "DllPaths.h"
+#include "GUIUserMessages.h"
 #include "utils/log.h"
+
 #undef BOOL
 
-#if defined(__APPLE__)
-#if defined(__arm__)
+#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN_IOS)
   #import <Foundation/Foundation.h>
   #import <UIKit/UIKit.h>
   #import <mach/mach_host.h>
@@ -44,7 +47,7 @@
 bool DarwinIsAppleTV2(void)
 {
   static int result = -1;
-#if defined(__APPLE__) && defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
   if( result == -1 )
   {
     char        buffer[512];
@@ -66,7 +69,7 @@ float GetIOSVersion(void)
 {
   CCocoaAutoPool pool;
   float version;
-#if defined(__arm__)
+#if defined(TARGET_DARWIN_IOS)
   version = [[[UIDevice currentDevice] systemVersion] floatValue];
 #else
   version = 0.0f;
@@ -260,6 +263,31 @@ int DarwinBatteryLevel(void)
   }
 #endif
   return batteryLevel * 100;  
+}
+
+void DarwinSetScheduling(int message)
+{
+  int policy;
+  struct sched_param param;
+  pthread_t this_pthread_self = pthread_self();
+
+  int32_t result = pthread_getschedparam(this_pthread_self, &policy, &param );
+
+  policy = SCHED_OTHER;
+  thread_extended_policy_data_t theFixedPolicy={true};
+
+  if (message == GUI_MSG_PLAYBACK_STARTED && g_application.IsPlayingVideo())
+  {
+    policy = SCHED_RR;
+    theFixedPolicy.timeshare = false;
+  }
+
+  result = thread_policy_set(pthread_mach_thread_np(this_pthread_self),
+    THREAD_EXTENDED_POLICY, 
+    (thread_policy_t)&theFixedPolicy,
+    THREAD_EXTENDED_POLICY_COUNT);
+
+  result = pthread_setschedparam(this_pthread_self, policy, &param );
 }
 
 #endif

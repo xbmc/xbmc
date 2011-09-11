@@ -322,13 +322,25 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
   return true;
 }
 
-int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone)
+int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone /*= false*/)
+{
+  CStdStringArray addonIDs;
+  if (!addonID.IsEmpty())
+    addonIDs.push_back(addonID);
+  int retval = SelectAddonID(type, addonIDs, showNone, false);
+  if (addonIDs.size() > 0)
+    addonID = addonIDs.at(0);
+  else
+    addonID = "";
+  return retval;
+}
+
+int CGUIWindowAddonBrowser::SelectAddonID(ADDON::TYPE type, CStdStringArray &addonIDs, bool showNone /*= false*/, bool multipleSelection /*= true*/)
 {
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (type == ADDON_UNKNOWN || !dialog)
     return 0;
 
-  int selectedIdx = 0;
   ADDON::VECADDONS addons;
   if (type == ADDON_AUDIO)
     CAddonsDirectory::GetScriptsAndPlugins("audio",addons);
@@ -348,7 +360,13 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
   dialog->SetHeading(TranslateType(type, true));
   dialog->Reset();
   dialog->SetUseDetails(true);
-  dialog->EnableButton(true, 21452);
+  if (multipleSelection)
+  {
+    showNone = false;
+    dialog->EnableButton(true, 186);
+  }
+  else
+    dialog->EnableButton(true, 21452);
   if (showNone)
   {
     CFileItemPtr item(new CFileItem("", false));
@@ -359,15 +377,20 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
     items.Add(item);
   }
   items.Sort(SORT_METHOD_LABEL, SORT_ORDER_ASC);
-  for (int i = 0; i < items.Size(); ++i)
+
+  if (addonIDs.size() > 0)
   {
-    if (addonID.Equals(items[i]->GetProperty("Addon.ID")))
-      selectedIdx = i;
+    for (CStdStringArray::const_iterator it = addonIDs.begin(); it != addonIDs.end() ; it++)
+    {
+      CFileItemPtr item = items.Get(*it);
+      if (item)
+        item->Select(true);
+    }
   }
   dialog->SetItems(&items);
-  dialog->SetSelected(selectedIdx);
+  dialog->SetMultiSelection(multipleSelection);
   dialog->DoModal();
-  if (dialog->IsButtonPressed())
+  if (!multipleSelection && dialog->IsButtonPressed())
   { // switch to the addons browser.
     vector<CStdString> params;
     params.push_back("addons://all/"+TranslateType(type,false)+"/");
@@ -375,12 +398,13 @@ int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool s
     g_windowManager.ActivateWindow(WINDOW_ADDON_BROWSER, params);
     return 2;
   }
-  if (dialog->GetSelectedLabel() >= 0)
-  {
-    addonID = dialog->GetSelectedItem().GetPath();
-    return 1;
-  }
-  return 0;
+  if (!multipleSelection && dialog->GetSelectedLabel() == -1)
+    return 0;
+  addonIDs.clear();
+  const CFileItemList& list = dialog->GetSelectedItems();
+  for (int i = 0 ; i < list.Size() ; i++)
+    addonIDs.push_back(list.Get(i)->GetPath());
+  return 1;
 }
 
 CStdString CGUIWindowAddonBrowser::GetStartFolder(const CStdString &dir)

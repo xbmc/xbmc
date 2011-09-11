@@ -22,6 +22,8 @@
 #ifndef WIN_SYSTEM_WIN32_DX_H
 #define WIN_SYSTEM_WIN32_DX_H
 
+#ifdef HAS_DX
+
 #pragma once
 
 #include <d3d9.h>
@@ -31,7 +33,6 @@
 #include "rendering/dx/RenderSystemDX.h"
 #include "utils/GlobalsHandling.h"
 
-#ifdef HAS_DX
 
 class CWinSystemWin32DX : public CWinSystemWin32, public CRenderSystemDX
 {
@@ -42,6 +43,7 @@ public:
   virtual bool CreateNewWindow(CStdString name, bool fullScreen, RESOLUTION_INFO& res, PHANDLE_EVENT_FUNC userFunction);
   virtual bool ResizeWindow(int newWidth, int newHeight, int newLeft, int newTop);
   virtual bool SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays);
+  virtual bool WindowedMode() { return CRenderSystemDX::m_useWindowedDX; }
 
 protected:
   virtual void UpdateMonitor();

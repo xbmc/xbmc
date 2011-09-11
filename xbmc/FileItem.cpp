@@ -526,6 +526,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   m_mimetype = item.m_mimetype;
   m_extrainfo = item.m_extrainfo;
   m_specialSort = item.m_specialSort;
+  m_bIsAlbum = item.m_bIsAlbum;
   return *this;
 }
 
@@ -1007,6 +1008,11 @@ bool CFileItem::IsAddonsPath() const
   return URIUtils::IsAddonsPath(m_strPath);
 }
 
+bool CFileItem::IsSourcesPath() const
+{
+  return URIUtils::IsSourcesPath(m_strPath);
+}
+
 bool CFileItem::IsMultiPath() const
 {
   return URIUtils::IsMultiPath(m_strPath);
@@ -1030,6 +1036,11 @@ bool CFileItem::IsOnDVD() const
 bool CFileItem::IsNfs() const
 {
   return URIUtils::IsNfs(m_strPath);
+}
+
+bool CFileItem::IsAfp() const
+{
+  return URIUtils::IsAfp(m_strPath);
 }
 
 bool CFileItem::IsOnLAN() const
@@ -1662,6 +1673,7 @@ void CFileItemList::Assign(const CFileItemList& itemlist, bool append)
     Clear();
   Append(itemlist);
   SetPath(itemlist.GetPath());
+  SetLabel(itemlist.GetLabel());
   m_sortDetails = itemlist.m_sortDetails;
   m_replaceListing = itemlist.m_replaceListing;
   m_content = itemlist.m_content;
@@ -2275,7 +2287,7 @@ void CFileItemList::Stack(bool stackFiles /* = true */)
   CSingleLock lock(m_lock);
 
   // not allowed here
-  if (IsVirtualDirectoryRoot() || IsLiveTV() || GetPath().Left(10).Equals("sources://"))
+  if (IsVirtualDirectoryRoot() || IsLiveTV() || IsSourcesPath())
     return;
 
   SetProperty("isstacked", "1");
@@ -2321,6 +2333,7 @@ void CFileItemList::StackFolders()
       if( !item->IsRemote()
         || item->IsSmb()
         || item->IsNfs() 
+        || item->IsAfp()
         || URIUtils::IsInRAR(item->GetPath())
         || URIUtils::IsInZIP(item->GetPath())
         )
@@ -2985,6 +2998,9 @@ CStdString CFileItem::GetMovieName(bool bUseFolderNames /* = false */) const
 
   CStdString strMovieName = GetBaseMoviePath(bUseFolderNames);
 
+  if (URIUtils::IsStack(strMovieName))
+    strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
+
   URIUtils::RemoveSlashAtEnd(strMovieName);
   strMovieName = URIUtils::GetFileName(strMovieName);
   CURL::Decode(strMovieName);
@@ -2998,9 +3014,6 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 
   if (IsMultiPath())
     strMovieName = CMultiPathDirectory::GetFirstPath(m_strPath);
-
-  if (URIUtils::IsStack(strMovieName))
-    strMovieName = CStackDirectory::GetStackedTitlePath(strMovieName);
 
   int pos;
   if ((pos=strMovieName.Find("BDMV/")) != -1 ||
@@ -3021,6 +3034,67 @@ CStdString CFileItem::GetBaseMoviePath(bool bUseFolderNames) const
 
   return strMovieName;
 }
+
+#ifdef UNIT_TESTING
+bool CFileItem::testGetBaseMoviePath()
+{
+  CFileItem item;
+  CStdString path;
+  bool result = true;
+  
+  item.SetPath("c:\\dir\\filename.avi");
+  path = item.GetBaseMoviePath(false);
+  if (path != "c:\\dir\\filename.avi")
+    result = false;
+
+  item.SetPath("c:\\dir\\filename.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "c:\\dir\\")
+    result = false;
+
+  item.SetPath("/dir/filename.avi");
+  path = item.GetBaseMoviePath(false);
+  if (path != "/dir/filename.avi")
+    result = false;
+
+  item.SetPath("/dir/filename.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "/dir/")
+    result = false;
+
+  item.SetPath("smb://somepath/file.avi");
+  path = item.GetBaseMoviePath(false);
+  if (path != "smb://somepath/file.avi")
+    result = false;
+  
+  item.SetPath("smb://somepath/file.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "smb://somepath/")
+    result = false;
+
+  item.SetPath("stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi");
+  path = item.GetBaseMoviePath(false);
+  if (path != "stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi")
+    result = false;
+
+  item.SetPath("stack:///path/to/movie_name/cd1/some_file1.avi , /path/to/movie_name/cd2/some_file2.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "/path/to/movie_name/")
+    result = false;
+
+  item.SetPath("/home/user/TV Shows/Dexter/S1/1x01.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "/home/user/TV Shows/Dexter/S1/")
+    result = false;
+  
+  item.SetPath("rar://g%3a%5cmultimedia%5cmovies%5cSphere%2erar/Sphere.avi");
+  path = item.GetBaseMoviePath(true);
+  if (path != "g:\\multimedia\\movies\\")
+    result = false;
+
+  return result;
+}
+#endif
 
 void CFileItem::SetVideoThumb()
 {

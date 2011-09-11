@@ -69,7 +69,9 @@ public:
   void SetURL(const CStdString& strURL);
   void SetTitle(const CStdString& strTitle);
   void SetArtist(const CStdString& strArtist);
+  void SetArtistId(const int iArtistId);
   void SetAlbum(const CStdString& strAlbum);
+  void SetAlbumId(const int iAlbumId);
   void SetAlbumArtist(const CStdString& strAlbumArtist);
   void SetGenre(const CStdString& strGenre);
   void SetYear(int year);
@@ -144,6 +146,8 @@ protected:
   char m_rating;
   int m_listeners;
   int m_iTimesPlayed;
+  int m_iArtistId;
+  int m_iAlbumId;
   SYSTEMTIME m_dwReleaseDate;
 };
 }

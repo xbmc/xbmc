@@ -791,7 +791,7 @@ float CScroller::Tween(float progress)
     return progress;
 }
 
-CScroller::ESCROLLSTATE CScroller::Update(unsigned int time)
+bool CScroller::Update(unsigned int time)
 {
   m_lastTime = time;
   if (m_delta != 0)
@@ -803,14 +803,11 @@ CScroller::ESCROLLSTATE CScroller::Update(unsigned int time)
       m_hasResumePoint = false;
       m_delta = 0;
       m_startPosition = 0;
-      return SCROLL_FINISHED;
     }
     else
-    {
       m_scrollValue = m_startPosition + Tween((float)(time - m_startTime) / m_duration) * m_delta;
-      return SCROLLING;
-    }
+    return true;
   }
   else
-    return NOT_SCROLLING;
+    return false;
 }

@@ -36,6 +36,8 @@ using namespace std;
 
 #define HOLD_TIME_START 100
 #define HOLD_TIME_END   3000
+#define SCROLLING_GAP   200U
+#define SCROLLING_THRESHOLD 300U
 
 CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
     : CGUIControl(parentID, controlID, posX, posY, width, height)
@@ -51,6 +53,8 @@ CGUIBaseContainer::CGUIBaseContainer(int parentID, int controlID, float posX, fl
   m_lastItem = NULL;
   m_staticContent = false;
   m_staticUpdateTime = 0;
+  m_staticDefaultItem = -1;
+  m_staticDefaultAlways = false;
   m_wasReset = false;
   m_layout = NULL;
   m_focusedLayout = NULL;
@@ -660,6 +664,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
     m_scroller.SetValue(m_scroller.GetValue() - ((m_orientation == HORIZONTAL) ? event.m_offsetX : event.m_offsetY));
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
     int offset = (int)MathUtils::round_int(m_scroller.GetValue() / size);
+    m_lastScrollStartTimer.Stop();
     m_scrollTimer.Start();
     SetOffset(offset);
     ValidateOffset();
@@ -669,6 +674,7 @@ EVENT_RESULT CGUIBaseContainer::OnMouseEvent(const CPoint &point, const CMouseEv
   { // release exclusive access
     CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
     SendWindowMessage(msg);
+    m_scrollTimer.Stop();
     // and compute the nearest offset from this and scroll there
     float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
     float offset = m_scroller.GetValue() / size;
@@ -735,12 +741,20 @@ void CGUIBaseContainer::SetFocus(bool bOnOff)
 
 void CGUIBaseContainer::SaveStates(vector<CControlState> &states)
 {
-  states.push_back(CControlState(GetID(), GetSelectedItem()));
+  if (!m_staticDefaultAlways)
+    states.push_back(CControlState(GetID(), GetSelectedItem()));
 }
 
 void CGUIBaseContainer::SetPageControl(int id)
 {
   m_pageControl = id;
+}
+
+bool CGUIBaseContainer::GetOffsetRange(int &minOffset, int &maxOffset) const
+{
+  minOffset = 0;
+  maxOffset = GetRows() - m_itemsPerPage;
+  return true;
 }
 
 void CGUIBaseContainer::ValidateOffset()
@@ -750,6 +764,8 @@ void CGUIBaseContainer::ValidateOffset()
 void CGUIBaseContainer::AllocResources()
 {
   CalculateLayout();
+  if (m_staticDefaultItem != -1) // select default item
+    SelectStaticItemById(m_staticDefaultItem);
 }
 
 void CGUIBaseContainer::FreeResources(bool immediately)
@@ -892,13 +908,20 @@ inline float CGUIBaseContainer::Size() const
   return (m_orientation == HORIZONTAL) ? m_width : m_height;
 }
 
-#define MAX_SCROLL_AMOUNT 0.4f
+int CGUIBaseContainer::ScrollCorrectionRange() const
+{
+  int range = m_itemsPerPage / 4;
+  if (range <= 0) range = 1;
+  return range;
+}
 
 void CGUIBaseContainer::ScrollToOffset(int offset)
 {
+  int minOffset, maxOffset;
+  if(GetOffsetRange(minOffset, maxOffset))
+    offset = std::max(minOffset, std::min(offset, maxOffset));
   float size = (m_layout) ? m_layout->Size(m_orientation) : 10.0f;
-  int range = m_itemsPerPage / 4;
-  if (range <= 0) range = 1;
+  int range = ScrollCorrectionRange();
   if (offset * size < m_scroller.GetValue() &&  m_scroller.GetValue() - offset * size > size * range)
   { // scrolling up, and we're jumping more than 0.5 of a screen
     m_scroller.SetValue((offset + range) * size);
@@ -908,6 +931,7 @@ void CGUIBaseContainer::ScrollToOffset(int offset)
     m_scroller.SetValue((offset - range) * size);
   }
   m_scroller.ScrollTo(offset * size);
+  m_lastScrollStartTimer.StartZero();
   if (!m_wasReset)
   {
     SetContainerMoving(offset - GetOffset());
@@ -927,11 +951,13 @@ void CGUIBaseContainer::SetContainerMoving(int direction)
 
 void CGUIBaseContainer::UpdateScrollOffset(unsigned int currentTime)
 {
-  CScroller::ESCROLLSTATE scrollState = m_scroller.Update(currentTime);
-  if (scrollState != CScroller::NOT_SCROLLING)
+  if (m_scroller.Update(currentTime))
     MarkDirtyRegion();
-  if (scrollState == CScroller::SCROLL_FINISHED)
+  else if (m_lastScrollStartTimer.GetElapsedMilliseconds() >= SCROLLING_GAP)
+  {
     m_scrollTimer.Stop();
+    m_lastScrollStartTimer.Stop();
+  }
 }
 
 int CGUIBaseContainer::CorrectOffset(int offset, int cursor) const
@@ -1064,7 +1090,7 @@ bool CGUIBaseContainer::GetCondition(int condition, int data) const
       return layout ? (layout->GetFocusedItem() == (unsigned int)data) : false;
     }
   case CONTAINER_SCROLLING:
-    return (m_scrollTimer.GetElapsedMilliseconds() > m_scroller.GetDuration() || m_pageChangeTimer.IsRunning());
+    return (m_scrollTimer.GetElapsedMilliseconds() > std::max(m_scroller.GetDuration(), SCROLLING_THRESHOLD) || m_pageChangeTimer.IsRunning());
   default:
     return false;
   }
@@ -1177,4 +1203,28 @@ void CGUIBaseContainer::SetOffset(int offset)
 bool CGUIBaseContainer::CanFocus() const
 {
   return (!m_items.empty() && CGUIControl::CanFocus());
+}
+
+void CGUIBaseContainer::SelectStaticItemById(int id)
+{
+  if (m_staticContent)
+  {
+    for (unsigned int i = 0 ; i < m_items.size() ; i++)
+    {
+      CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_items[i]);
+      if (item->m_iprogramCount == id)
+      {
+        SelectItem(i);
+        return;
+      }
+    }
+  }
+}
+
+void CGUIBaseContainer::OnFocus()
+{
+  if (m_staticDefaultAlways)
+    SelectStaticItemById(m_staticDefaultItem);
+
+  CGUIControl::OnFocus();
 }

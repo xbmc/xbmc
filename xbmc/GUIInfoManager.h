@@ -410,6 +410,7 @@ namespace INFO
 
 #define SLIDESHOW_ISPAUSED          800
 #define SLIDESHOW_ISRANDOM          801
+#define SLIDESHOW_ISACTIVE          802
 
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
@@ -570,6 +571,8 @@ namespace INFO
 #define LISTITEM_PARENTALRATING     (LISTITEM_START + 79)
 #define LISTITEM_PROGRESS           (LISTITEM_START + 80)
 #define LISTITEM_FILE_EXTENSION     (LISTITEM_START + 81)
+#define LISTITEM_IS_RESUMABLE       (LISTITEM_START + 61)
+#define LISTITEM_PERCENT_PLAYED     (LISTITEM_START + 62)
 
 #define LISTITEM_PROPERTY_START     (LISTITEM_START + 200)
 #define LISTITEM_PROPERTY_END       (LISTITEM_PROPERTY_START + 1000)
@@ -661,7 +664,16 @@ public:
   bool EvaluateBool(const CStdString &expression, int context = 0);
 
   int TranslateString(const CStdString &strCondition);
-  int GetInt(int info, int contextWindow = 0, const CGUIListItem *item = NULL) const;
+
+  /*! \brief Get integer value of info.
+   \param value int reference to pass value of given info
+   \param info id of info
+   \param context the context in which to evaluate the expression (currently windows)
+   \param item optional listitem if want to get listitem related int
+   \return true if given info was handled
+   \sa GetItemInt, GetMultiInfoInt
+   */
+  bool GetInt(int &value, int info, int contextWindow = 0, const CGUIListItem *item = NULL) const;
   CStdString GetLabel(int info, int contextWindow = 0);
 
   CStdString GetImage(int info, int contextWindow);
@@ -723,8 +735,7 @@ public:
   void SetPreviousWindow(int windowID) { m_prevWindowID = windowID; };
 
   void ResetCache();
-
-  int GetItemInt(const CGUIListItem *item, int info) const;
+  bool GetItemInt(int &value, const CGUIListItem *item, int info) const;
   CStdString GetItemLabel(const CFileItem *item, int info) const;
   CStdString GetItemImage(const CFileItem *item, int info) const;
 
@@ -773,7 +784,7 @@ protected:
   };
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
-  int GetMultiInfoInt(const GUIInfo &info, int contextWindow = 0) const;
+  bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
   CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
@@ -794,7 +805,7 @@ protected:
 
   // Conditional string parameters for testing are stored in a vector for later retrieval.
   // The offset into the string parameters array is returned.
-  int ConditionalStringParameter(const CStdString &strParameter);
+  int ConditionalStringParameter(const CStdString &strParameter, bool caseSensitive = false);
   int AddMultiInfo(const GUIInfo &info);
   int AddListItemProp(const CStdString &str, int offset=0);
 

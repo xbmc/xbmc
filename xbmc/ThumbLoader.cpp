@@ -34,7 +34,7 @@
 #include "utils/log.h"
 #include "programs/Shortcut.h"
 #include "video/VideoInfoTag.h"
-
+#include "video/VideoDatabase.h"
 #include "cores/dvdplayer/DVDFileInfo.h"
 
 using namespace XFILE;
@@ -185,6 +185,14 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   ||  pItem->IsParentFolder())
     return false;
 
+  if (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds == 0)
+  {
+    CVideoDatabase db;
+    db.Open();
+    db.GetResumePoint(*pItem->GetVideoInfoTag());
+    db.Close();
+  }
+
   CFileItem item(*pItem);
   CStdString cachedThumb(item.GetCachedVideoThumb());
 
@@ -240,6 +248,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
     CThumbExtractor* extract = new CThumbExtractor(*pItem,pItem->GetPath(),false);
     AddJob(extract);
   }
+
   return true;
 }
 

@@ -24,6 +24,7 @@
 #ifdef HAS_XRANDR
 
 #include <string.h>
+#include <sys/wait.h>
 #include "system.h"
 #include "PlatformInclude.h"
 #include "tinyXML/tinyxml.h"

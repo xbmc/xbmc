@@ -137,6 +137,7 @@ public:
   virtual void NotifyAppFocusChange(bool bGaining);
   virtual int  GetNumScreens() { return m_MonitorsInfo.size(); };
   virtual void ShowOSMouse(bool show);
+  virtual bool WindowedMode() { return true; }
 
   virtual bool Minimize();
   virtual bool Restore();

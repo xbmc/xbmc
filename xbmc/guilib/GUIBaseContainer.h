@@ -73,6 +73,7 @@ public:
 
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
+  void SetDefaultControl(int id, bool always) { m_staticDefaultItem = id; m_staticDefaultAlways = always; };
 
   VIEW_TYPE GetType() const { return m_type; };
   const CStdString &GetLabel() const { return m_label; };
@@ -107,6 +108,7 @@ protected:
   virtual void Scroll(int amount);
   virtual bool MoveDown(bool wrapAround);
   virtual bool MoveUp(bool wrapAround);
+  virtual bool GetOffsetRange(int &minOffset, int &maxOffset) const;
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout(bool refreshAllItems = false);
@@ -114,13 +116,16 @@ protected:
   virtual void UpdatePageControl(int offset);
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
+  void SelectStaticItemById(int id);
   virtual bool SelectItemFromPoint(const CPoint &point) { return false; };
   virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const { return -1; };
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size(); };
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
+  virtual void OnFocus();
 
+  int ScrollCorrectionRange() const;
   inline float Size() const;
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);
@@ -157,6 +162,8 @@ protected:
   CStdString m_label;
 
   bool m_staticContent;
+  bool m_staticDefaultAlways;
+  int  m_staticDefaultItem;
   unsigned int m_staticUpdateTime;
   std::vector<CGUIListItemPtr> m_staticItems;
   bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
@@ -166,6 +173,7 @@ protected:
 
   void UpdateScrollByLetter();
   void GetCacheOffsets(int &cacheBefore, int &cacheAfter);
+  int GetCacheCount() const { return m_cacheItems; };
   bool ScrollingDown() const { return m_scroller.IsScrollingDown(); };
   bool ScrollingUp() const { return m_scroller.IsScrollingUp(); };
   void OnNextLetter();
@@ -193,6 +201,7 @@ private:
   int m_offset;
   int m_cacheItems;
   CStopWatch m_scrollTimer;
+  CStopWatch m_lastScrollStartTimer;
   CStopWatch m_pageChangeTimer;
 
   // letter match searching

@@ -129,8 +129,8 @@ namespace PYXBMC
 
   // output() method
   PyDoc_STRVAR(output__doc__,
-               "'xbmc.output()' is depreciated and will be removed in future releases,\n"
-               "please use 'xbmc.log()' instead");
+    "'xbmc.output()' is depreciated and will be removed in future releases,\n"
+    "please use 'xbmc.log()' instead");
   
   PyObject* XBMC_Output(PyObject *self, PyObject *args, PyObject *kwds)
   {
@@ -901,7 +901,7 @@ namespace PYXBMC
     "file        : file to calculate subtitle hash and size for\n"
     "\n"
     "example:\n"
-    " - size,hash = xbmcvfs.subHashAndFileSize(file)\n"); 
+    " - size,hash = xbmc.subHashAndFileSize(file)\n"); 
   PyObject* XBMC_subHashAndFileSize(PyObject *self, PyObject *args, PyObject *kwds)
   {
     PyObject *f_line;

@@ -22,6 +22,8 @@
 #ifndef WINDOW_BINDING_EGL_H
 #define WINDOW_BINDING_EGL_H
 
+#include "utils/StringUtils.h"
+
 #include <EGL/egl.h>
 #ifndef TARGET_WINDOWS
 #include <EGL/eglext.h>
@@ -33,23 +35,27 @@ public:
   CWinBindingEGL();
   ~CWinBindingEGL();
 
-  bool CreateWindow(EGLNativeDisplayType nativeDisplay, EGLNativeWindowType nativeWindow);
-  bool DestroyWindow();
-  bool ReleaseSurface();
+  bool  CreateWindow(EGLNativeDisplayType nativeDisplay, EGLNativeWindowType nativeWindow);
+  bool  DestroyWindow();
+  bool  ReleaseSurface();
+  void  SwapBuffers();
+  bool  SetVSync(bool enable);
+  bool  IsExtSupported(const char* extension);
 
-  EGLNativeWindowType GetNativeWindow() { return m_nativeWindow; }
-  EGLNativeDisplayType GetNativeDisplay() { return m_nativeDisplay; }
-  EGLDisplay GetDisplay() { return m_display; }
-  EGLSurface GetSurface() { return m_surface; }
-  EGLContext GetContext() { return m_context; }
+  EGLNativeWindowType   GetNativeWindow();
+  EGLNativeDisplayType  GetNativeDisplay();
+  EGLDisplay            GetDisplay();
+  EGLSurface            GetSurface();
+  EGLContext            GetContext();
 
 protected:
-  EGLNativeWindowType  m_nativeWindow;
-  EGLNativeDisplayType m_nativeDisplay;
-  EGLDisplay           m_display;
-  EGLSurface           m_surface;
-  EGLConfig            m_config;
-  EGLContext           m_context;
+  EGLNativeWindowType   m_nativeWindow;
+  EGLNativeDisplayType  m_nativeDisplay;
+  EGLDisplay            m_display;
+  EGLSurface            m_surface;
+  EGLConfig             m_config;
+  EGLContext            m_context;
+  CStdString            m_eglext;
 };
 
 #endif // WINDOW_BINDING_EGL_H

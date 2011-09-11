@@ -155,6 +155,7 @@ protected:
 class ICoreAudioSource
 {
 public:
+  virtual ~ICoreAudioSource() {};
   // Function to request rendered data from a data source
   virtual OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList) = 0;
 };

@@ -168,8 +168,8 @@ public:
    */
   void PositionAtCurrentFocus();
 
-  float GetWidth();
-  float GetHeight();
+  virtual float GetWidth() const;
+  virtual float GetHeight() const;
 protected:
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
