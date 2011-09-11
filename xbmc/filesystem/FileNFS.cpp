@@ -34,6 +34,15 @@
 
 #include <nfsc/libnfs-raw-mount.h>
 
+#ifdef TARGET_WINDOWS
+#include <fcntl.h>
+#include <sys\stat.h>
+#define S_IRGRP 0
+#define S_IROTH 0
+#define	S_IWUSR		_S_IWRITE
+#define	S_IRUSR		_S_IREAD
+#endif
+
 //KEEP_ALIVE_TIMEOUT is decremented every half a second
 //480 * 0.5s == 240s == 4mins
 //so when no read was done for 4mins and files are open
@@ -159,7 +168,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
       //GetFileName returns path without leading "/"
       //but we need it because the export paths start with "/"
       //and path.Find(*it) wouldn't work else
-      if(path[0] != '/')
+      if(!path.empty() && path[0] != '/')
       {
         path = "/" + path;
       }
@@ -385,7 +394,7 @@ bool CFileNFS::Open(const CURL& url)
   CLog::Log(LOGDEBUG,"CFileNFS::Open - opened %s",url.GetFileName().c_str());
   m_url=url;
   
-#ifdef _LINUX
+#if defined(_LINUX) || defined(_WIN32)
   struct __stat64 tmpBuffer;
 #else
   struct stat tmpBuffer;
@@ -631,7 +640,7 @@ bool CFileNFS::OpenForWrite(const CURL& url, bool bOverWrite)
   }
   m_url=url;
   
-#ifdef _LINUX
+#if defined(_LINUX) || defined(_WIN32)
   struct __stat64 tmpBuffer = {0};
 #else
   struct stat tmpBuffer = {0};
