@@ -479,9 +479,11 @@ bool CConvolutionShader1Pass::Create(ESCALINGMETHOD method)
   {
     case VS_SCALINGMETHOD_CUBIC:
     case VS_SCALINGMETHOD_LANCZOS2:
+    case VS_SCALINGMETHOD_SPLINE36_FAST:
     case VS_SCALINGMETHOD_LANCZOS3_FAST:
       effectString = "special://xbmc/system/shaders/convolution-4x4_d3d.fx";
       break;
+    case VS_SCALINGMETHOD_SPLINE36:
     case VS_SCALINGMETHOD_LANCZOS3:
       effectString = "special://xbmc/system/shaders/convolution-6x6_d3d.fx";
       break;
@@ -602,9 +604,11 @@ bool CConvolutionShaderSeparable::Create(ESCALINGMETHOD method)
   {
     case VS_SCALINGMETHOD_CUBIC:
     case VS_SCALINGMETHOD_LANCZOS2:
+    case VS_SCALINGMETHOD_SPLINE36_FAST:
     case VS_SCALINGMETHOD_LANCZOS3_FAST:
       effectString = "special://xbmc/system/shaders/convolutionsep-4x4_d3d.fx";
       break;
+    case VS_SCALINGMETHOD_SPLINE36:
     case VS_SCALINGMETHOD_LANCZOS3:
       effectString = "special://xbmc/system/shaders/convolutionsep-6x6_d3d.fx";
       break;

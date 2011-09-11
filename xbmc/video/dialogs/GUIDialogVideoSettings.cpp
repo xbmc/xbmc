@@ -95,7 +95,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE     , 16314));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_DXVA_BOB                   , 16320));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_DXVA_BEST                  , 16321));
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO_ION                   , 16322));
+    entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO_ION                   , 16324));
 
     /* remove unsupported methods */
     for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
@@ -114,7 +114,9 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_SCALINGMETHOD_LINEAR           , 16302));
     entries.push_back(make_pair(VS_SCALINGMETHOD_CUBIC            , 16303));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS2         , 16304));
+    entries.push_back(make_pair(VS_SCALINGMETHOD_SPLINE36_FAST    , 16323));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3_FAST    , 16315));
+    entries.push_back(make_pair(VS_SCALINGMETHOD_SPLINE36         , 16322));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3         , 16305));
     entries.push_back(make_pair(VS_SCALINGMETHOD_SINC8            , 16306));
 //    entries.push_back(make_pair(VS_SCALINGMETHOD_NEDI             , ?????));
