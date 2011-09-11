@@ -26,6 +26,9 @@
 #pragma warning(disable:4005) // Disable "warning C4005: '_WINSOCKAPI_' : macro redefinition"
 #include <winsock2.h>
 #pragma warning(default:4005)
+#include <ws2spi.h>
+#include <ws2ipdef.h>
+#include <ws2tcpip.h>
 #include <io.h>
 
 #define SHUT_RDWR SD_BOTH

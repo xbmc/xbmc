@@ -24,7 +24,6 @@
 #include <string.h>
 #include <stdarg.h>
 #include <errno.h>
-#include <ws2tcpip.h>
 
 #include "../os-dependent_socket.h"
 
