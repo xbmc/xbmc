@@ -159,9 +159,9 @@ public:
 
 protected:
 
-  void PresentSingle(bool clear, DWORD flags, DWORD alpha);
+  void PresentSingle();
   void PresentWeave();
-  void PresentBob(bool clear, DWORD flags, DWORD alpha);
+  void PresentBob();
   void PresentBlend();
 
   bool m_bPauseDrawing;   // true if we should pause rendering

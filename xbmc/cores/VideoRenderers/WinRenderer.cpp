@@ -928,7 +928,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  image->proc->Render(sourceRect, destRect, target, image->id, flags == RENDER_FLAG_BOT ? 1 : 0);
+  image->proc->Render(sourceRect, destRect, target, image->id);
 
   target->Release();
 }
@@ -1014,14 +1014,9 @@ bool CWinRenderer::CreateYV12Texture(int index)
 
 bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 {
-  if (m_renderMethod == RENDER_DXVA)
+  if(CONF_FLAGS_FORMAT_MASK(m_flags) == CONF_FLAGS_FORMAT_DXVA)
   {
-    if(method == VS_INTERLACEMETHOD_NONE
-    || method == VS_INTERLACEMETHOD_DXVA_BOB
-    || method == VS_INTERLACEMETHOD_DXVA_BOB_INVERTED
-    || method == VS_INTERLACEMETHOD_DXVA_HQ
-    || method == VS_INTERLACEMETHOD_DXVA_HQ_INVERTED
-    || method == VS_INTERLACEMETHOD_AUTO)
+    if(method == VS_INTERLACEMETHOD_NONE)
       return true;
     return false;
   }
