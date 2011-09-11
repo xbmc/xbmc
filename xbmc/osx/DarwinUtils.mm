@@ -265,29 +265,29 @@ int DarwinBatteryLevel(void)
   return batteryLevel * 100;  
 }
 
-  void DarwinSetScheduling(int message)
+void DarwinSetScheduling(int message)
+{
+  int policy;
+  struct sched_param param;
+  pthread_t this_pthread_self = pthread_self();
+
+  int32_t result = pthread_getschedparam(this_pthread_self, &policy, &param );
+
+  policy = SCHED_OTHER;
+  thread_extended_policy_data_t theFixedPolicy={true};
+
+  if (message == GUI_MSG_PLAYBACK_STARTED && g_application.IsPlayingVideo())
   {
-    int policy;
-    struct sched_param param;
-    pthread_t this_pthread_self = pthread_self();
-
-    int32_t result = pthread_getschedparam(this_pthread_self, &policy, &param );
-
-    policy = SCHED_OTHER;
-    thread_extended_policy_data_t theFixedPolicy={true};
-
-    if (message == GUI_MSG_PLAYBACK_STARTED && g_application.IsPlayingVideo())
-    {
-      policy = SCHED_RR;
-      theFixedPolicy.timeshare = false;
-    }
-
-    result = thread_policy_set(pthread_mach_thread_np(this_pthread_self),
-      THREAD_EXTENDED_POLICY, 
-      (thread_policy_t)&theFixedPolicy,
-      THREAD_EXTENDED_POLICY_COUNT);
-
-    result = pthread_setschedparam(this_pthread_self, policy, &param );
+    policy = SCHED_RR;
+    theFixedPolicy.timeshare = false;
   }
+
+  result = thread_policy_set(pthread_mach_thread_np(this_pthread_self),
+    THREAD_EXTENDED_POLICY, 
+    (thread_policy_t)&theFixedPolicy,
+    THREAD_EXTENDED_POLICY_COUNT);
+
+  result = pthread_setschedparam(this_pthread_self, policy, &param );
+}
 
 #endif
