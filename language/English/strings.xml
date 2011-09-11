@@ -176,7 +176,7 @@
   <string id="202">Tagline</string>
   <string id="203">Plot outline</string>
 
-  <string id="205">Votes:</string>
+  <string id="205">Votes</string>
   <string id="206">Cast</string>
   <string id="207">Plot</string>
   <string id="208">Play</string>
@@ -805,6 +805,7 @@
 
   <string id="1260">Announce these services to other systems via Zeroconf</string>
   <string id="1270">Allow XBMC to receive AirPlay content</string>
+  <string id="1271">Device name</string>
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>
@@ -1524,6 +1525,8 @@
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
 
   <string id="16400">Post-processing</string>
 
@@ -1736,6 +1739,7 @@
   <string id="20258">MythTV client</string>
   <string id="20259">Network Filesystem (NFS)</string>
   <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple File Protocol (AFP)</string>
 
   <string id="20300">Web server directory (HTTP)</string>
   <string id="20301">Web server directory (HTTPS)</string>
@@ -1888,6 +1892,7 @@
   <string id="20454">Listener</string>
   <string id="20455">Listeners</string>
   <string id="20456">Set movieset fanart</string>
+  <string id="20457">Movie set</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Show hidden files and directories</string>

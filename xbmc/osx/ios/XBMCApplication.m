@@ -30,7 +30,7 @@ UIWindow *m_window;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-  [m_xbmcController resumeAnimation];
+  [m_xbmcController pauseAnimation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application

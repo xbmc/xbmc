@@ -2,7 +2,7 @@
 +++ afpfs-ng-0.8.1/lib/identify.c	2011-08-26 21:33:33.000000000 +0200
 @@ -0,0 +1,24 @@
 +#include <string.h>
-+#include "afp.h"
++#include <afpfs-ng/afp.h>
 +
 +
 +/* 

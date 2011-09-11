@@ -1,7 +1,6 @@
 #pragma once
-
 /*
- *      Copyright (C) 2005-2008 Team XBMC
+ *      Copyright (C) 2011 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -21,33 +20,27 @@
  *
  */
 
-#include "DllLibass.h"
-#include "DVDResource.h"
-#include "threads/CriticalSection.h"
+#include "IDirectory.h"
+#include "MediaSource.h"
+#include "URL.h"
 
-/** Wrapper for Libass **/
+struct afp_file_info;
 
-class CDVDSubtitlesLibass : public IDVDResourceCounted<CDVDSubtitlesLibass>
+namespace XFILE
+{
+class CAFPDirectory : public IDirectory
 {
 public:
-  CDVDSubtitlesLibass();
-  virtual ~CDVDSubtitlesLibass();
+  CAFPDirectory(void);
+  virtual ~CAFPDirectory(void);
+  virtual bool GetDirectory(const CStdString& strPath, CFileItemList &items);
+  virtual DIR_CACHE_TYPE GetCacheType(const CStdString &strPath) const { return DIR_CACHE_ONCE; };
+  virtual bool Create(const char* strPath);
+  virtual bool Exists(const char* strPath);
+  virtual bool Remove(const char* strPath);
 
-  ASS_Image* RenderImage(int imageWidth, int imageHeight, double pts);
-  ASS_Event* GetEvents();
-
-  int GetNrOfEvents();
-
-  bool DecodeHeader(char* data, int size);
-  bool DecodeDemuxPkt(char* data, int size, double start, double duration);
-  bool CreateTrack(char* buf);
-
+  afp_file_info *Open(const CURL &url);
 private:
-  DllLibass m_dll;
-  long m_references;
-  ASS_Library* m_library;
-  ASS_Track* m_track;
-  ASS_Renderer* m_renderer;
-  CCriticalSection m_section;
+  afp_file_info *OpenDir(const CURL &url, CStdString& strAuth);
 };
-
+}

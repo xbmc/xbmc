@@ -50,6 +50,7 @@ public:
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
 
   static bool IsAddonsPath(const CStdString& strFile);
+  static bool IsSourcesPath(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsDOSPath(const CStdString &path);
@@ -70,6 +71,7 @@ public:
   static bool IsMusicDb(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
   static bool IsNfs(const CStdString& strFile);  
+  static bool IsAfp(const CStdString& strFile);    
   static bool IsOnDVD(const CStdString& strFile);
   static bool IsOnLAN(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile);

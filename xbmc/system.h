@@ -64,6 +64,9 @@
   #define HAS_FILESYSTEM_NFS
 #endif
 
+#ifdef HAVE_LIBAFPCLIENT
+  #define HAS_FILESYSTEM_AFP
+#endif
 
 /**********************
  * Non-free Components

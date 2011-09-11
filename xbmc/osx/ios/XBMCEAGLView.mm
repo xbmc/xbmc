@@ -75,8 +75,7 @@
     eaglLayer.opaque = TRUE;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
       [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
-      kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat,
-      //kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
+      kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
       nil];
 		
     EAGLContext *aContext = [[EAGLContext alloc] 
@@ -350,7 +349,7 @@
   displayLink = [NSClassFromString(@"CADisplayLink") 
     displayLinkWithTarget:self
     selector:@selector(runDisplayLink)];
-  [displayLink setFrameInterval:2];
+  [displayLink setFrameInterval:1];
   [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
   displayFPS = 1.0 / ([displayLink duration] * [displayLink frameInterval]);
 }

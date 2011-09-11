@@ -619,6 +619,10 @@
 		C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		DF0DF15B13A3ADA7008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15713A3ADA7008ED511 /* FileNFS.cpp */; };
 		DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */; };
+		DF24A6B41406C7C500C7721E /* AFPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF24A6B01406C7C500C7721E /* AFPDirectory.cpp */; };
+		DF24A6B51406C7C500C7721E /* FileAFP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF24A6B21406C7C500C7721E /* FileAFP.cpp */; };
+		DF24A6B61406C7C500C7721E /* AFPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF24A6B01406C7C500C7721E /* AFPDirectory.cpp */; };
+		DF24A6B71406C7C500C7721E /* FileAFP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF24A6B21406C7C500C7721E /* FileAFP.cpp */; };
 		DF3488E713FD958F0026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF3488E513FD958F0026A711 /* GUIAction.cpp */; };
 		DF3488E813FD958F0026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF3488E513FD958F0026A711 /* GUIAction.cpp */; };
 		DF34892A13FD9C780026A711 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34892813FD9C780026A711 /* AirPlayServer.cpp */; };
@@ -2551,6 +2555,10 @@
 		DF0DF15813A3ADA7008ED511 /* FileNFS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileNFS.h; sourceTree = "<group>"; };
 		DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF15A13A3ADA7008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
+		DF24A6B01406C7C500C7721E /* AFPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPDirectory.cpp; sourceTree = "<group>"; };
+		DF24A6B11406C7C500C7721E /* AFPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPDirectory.h; sourceTree = "<group>"; };
+		DF24A6B21406C7C500C7721E /* FileAFP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileAFP.cpp; sourceTree = "<group>"; };
+		DF24A6B31406C7C500C7721E /* FileAFP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileAFP.h; sourceTree = "<group>"; };
 		DF3488E513FD958F0026A711 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
 		DF3488E613FD958F0026A711 /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
 		DF34892813FD9C780026A711 /* AirPlayServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayServer.cpp; sourceTree = "<group>"; };
@@ -5577,6 +5585,8 @@
 				810C9FA70D67D1FB0095F5DD /* MythFile.cpp */,
 				810C9FA80D67D1FB0095F5DD /* MythFile.h */,
 				E38F12C10D29FF200035C331 /* FileShoutcast.cpp */,
+				DF24A6B01406C7C500C7721E /* AFPDirectory.cpp */,
+				DF24A6B11406C7C500C7721E /* AFPDirectory.h */,
 				7C99B6A2133D342100FC2B16 /* CacheCircular.cpp */,
 				7C99B6A3133D342100FC2B16 /* CacheCircular.h */,
 				E38E16970D25F9FA00618676 /* CacheMemBuffer.cpp */,
@@ -5605,6 +5615,8 @@
 				E38E16B90D25F9FA00618676 /* FactoryFileDirectory.h */,
 				E38E16BA0D25F9FA00618676 /* File.cpp */,
 				E38E16BB0D25F9FA00618676 /* File.h */,
+				DF24A6B21406C7C500C7721E /* FileAFP.cpp */,
+				DF24A6B31406C7C500C7721E /* FileAFP.h */,
 				E38E16BC0D25F9FA00618676 /* FileCache.cpp */,
 				E38E16BD0D25F9FA00618676 /* FileCache.h */,
 				E38E16BE0D25F9FA00618676 /* FileCDDA.cpp */,
@@ -8108,6 +8120,8 @@
 				DF34892A13FD9C780026A711 /* AirPlayServer.cpp in Sources */,
 				DF34898213FDAAF60026A711 /* HttpParser.cpp in Sources */,
 				18968DC814155D7C005BA742 /* ApplicationOperations.cpp in Sources */,
+				DF24A6B41406C7C500C7721E /* AFPDirectory.cpp in Sources */,
+				DF24A6B51406C7C500C7721E /* FileAFP.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9007,6 +9021,8 @@
 				DF34892B13FD9C780026A711 /* AirPlayServer.cpp in Sources */,
 				DF34898313FDAAF60026A711 /* HttpParser.cpp in Sources */,
 				18968DC914155D7C005BA742 /* ApplicationOperations.cpp in Sources */,
+				DF24A6B61406C7C500C7721E /* AFPDirectory.cpp in Sources */,
+				DF24A6B71406C7C500C7721E /* FileAFP.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

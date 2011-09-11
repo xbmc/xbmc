@@ -596,7 +596,7 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
   std::map<std::string, CVariant>::const_iterator notificationIterator;
   std::map<std::string, CVariant>::const_iterator notificationIteratorEnd = notifications.end();
   for (notificationIterator = notifications.begin(); notificationIterator != notificationIteratorEnd; notificationIterator++)
-    result["notifications"][notificationIterator->first] = notificationIterator->second;
+    result["notifications"][notificationIterator->first] = notificationIterator->second[notificationIterator->first];
 
   return OK;
 }
@@ -1016,22 +1016,30 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
 
   // If we have a number or an integer type, we need
   // to check the minimum and maximum values
-  if ((HasType(type.type, NumberValue) || HasType(type.type, IntegerValue)) && value.isDouble())
+  if ((HasType(type.type, NumberValue) && value.isDouble()) || (HasType(type.type, IntegerValue) && value.isInteger()))
   {
-    double numberValue = value.asDouble();
+    double numberValue;
+    if (value.isDouble())
+      numberValue = value.asDouble();
+    else
+      numberValue = (double)value.asInteger();
     // Check minimum
     if ((type.exclusiveMinimum && numberValue <= type.minimum) || (!type.exclusiveMinimum && numberValue < type.minimum) ||
     // Check maximum
         (type.exclusiveMaximum && numberValue >= type.maximum) || (!type.exclusiveMaximum && numberValue > type.maximum))        
     {
       CLog::Log(LOGWARNING, "JSONRPC: Value does not lay between minimum and maximum in type %s", type.name.c_str());
-      errorMessage.Format("Value between %f (%s) and %f (%s) expected but %f received", 
-        type.minimum, type.exclusiveMinimum ? "exclusive" : "inclusive", type.maximum, type.exclusiveMaximum ? "exclusive" : "inclusive", numberValue);
+      if (value.isDouble())
+        errorMessage.Format("Value between %f (%s) and %f (%s) expected but %f received", 
+          type.minimum, type.exclusiveMinimum ? "exclusive" : "inclusive", type.maximum, type.exclusiveMaximum ? "exclusive" : "inclusive", numberValue);
+      else
+        errorMessage.Format("Value between %d (%s) and %d (%s) expected but %d received", 
+          (int)type.minimum, type.exclusiveMinimum ? "exclusive" : "inclusive", (int)type.maximum, type.exclusiveMaximum ? "exclusive" : "inclusive", (int)numberValue);
       errorData["message"] = errorMessage.c_str();
       return InvalidParams;
     }
     // Check divisibleBy
-    else if ((HasType(type.type, IntegerValue) && type.divisibleBy > 0 && ((int)numberValue % type.divisibleBy) != 0))
+    if ((HasType(type.type, IntegerValue) && type.divisibleBy > 0 && ((int)numberValue % type.divisibleBy) != 0))
     {
       CLog::Log(LOGWARNING, "JSONRPC: Value does not meet divisibleBy requirements in type %s", type.name.c_str());
       errorMessage.Format("Value should be divisible by %d but %d received", type.divisibleBy, (int)numberValue);

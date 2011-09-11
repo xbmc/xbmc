@@ -585,6 +585,12 @@ bool URIUtils::IsAddonsPath(const CStdString& strFile)
   return url.GetProtocol().Equals("addons");
 }
 
+bool URIUtils::IsSourcesPath(const CStdString& strPath)
+{
+  CURL url(strPath);
+  return url.GetProtocol().Equals("sources");
+}
+
 bool URIUtils::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");
@@ -719,6 +725,16 @@ bool URIUtils::IsNfs(const CStdString& strFile)
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
   
   return strFile2.Left(4).Equals("nfs:");
+}
+
+bool URIUtils::IsAfp(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+  
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+  
+  return strFile2.Left(4).Equals("afp:");
 }
 
 
