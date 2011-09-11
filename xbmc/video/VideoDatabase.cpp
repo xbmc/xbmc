@@ -7842,3 +7842,29 @@ bool CVideoDatabase::GetItemsForPath(const CStdString &content, const CStdString
     items[i]->SetPath(items[i]->GetVideoInfoTag()->m_basePath);
   return items.Size() > 0;
 }
+
+bool CVideoDatabase::GetAllAudioLanguages(vector<CStdString>& vecLangs)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString strSQL = "SELECT DISTINCT strAudioLanguage FROM streamdetails";
+    int iRowsFound = RunQuery(strSQL);
+    if (iRowsFound <= 0)
+      return iRowsFound == 0;
+    while (!m_pDS->eof())
+    {
+      vecLangs.push_back(m_pDS->fv("strAudioLanguage").get_asString());
+      m_pDS->next();
+    }
+    m_pDS->close();
+    return true;  
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}

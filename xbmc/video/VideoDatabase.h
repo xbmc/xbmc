@@ -609,6 +609,12 @@ public:
     }
   }
 
+  /*! \brief List all languages found in audio tracks
+   \param vecLangs vector to store the langcodes
+   \return true if query successful, else false
+   */
+  bool GetAllAudioLanguages(std::vector<CStdString>& vecLangs);
+
 protected:
   int GetMovieId(const CStdString& strFilenameAndPath);
   int GetMusicVideoId(const CStdString& strFilenameAndPath);

@@ -103,6 +103,7 @@
 #include "LangInfo.h"
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
+#include "utils/LangCodeExpander.h"
 #include "windowing/WindowingFactory.h"
 
 #if defined(HAVE_LIBCRYSTALHD)
@@ -613,6 +614,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
       pControl->SetValue(pSettingInt->GetData());
     }
+    else if (strSetting.Equals("preferredlanguage.audio"))
+    {
+      FillInAudioLanguages(pSetting);
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -1036,6 +1041,16 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (pControl) pControl->SetEnabled(g_guiSettings.GetString("audiooutput.audiodevice").Equals("custom"));
     }
 #endif
+    else if (strSetting.Equals("preferredlanguage.audio"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("preferredlanguage.setaudio"));
+    }
+    else if (strSetting.Equals("preferredlanguage.subtitle"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl) pControl->SetEnabled(g_guiSettings.GetBool("preferredlanguage.setsubtitle"));
+    }
   }
 }
 
@@ -2108,6 +2123,52 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
        g_guiSettings.SetString("network.gateway", m_strNetworkGateway);
        g_guiSettings.SetString("network.dns", m_strNetworkDNS);*/
   }
+}
+
+void CGUIWindowSettingsCategory::FillInAudioLanguages(CSetting *pSetting)
+{
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  int iCurrentLanguage = 0;
+  int iLanguage = 0;
+  vector<CStdString> vecLanguages;
+  vector<CStdString> vecLanguageCodes;
+  CLangCodeExpander expander;
+  CVideoDatabase videodatabase;
+
+  videodatabase.Open();
+  videodatabase.GetAllAudioLanguages(vecLanguageCodes);
+  videodatabase.Close();
+  if (vecLanguageCodes.size() > 0)
+  {
+    // If there are streams in the DB, get use languages in the DB
+    for (unsigned int i = 0; i < vecLanguageCodes.size(); ++i)
+    {
+      CStdString language;
+      if (expander.Lookup(language, vecLanguageCodes[i]))
+        vecLanguages.push_back(language);
+    }
+  }
+  else
+  {
+    // Otherwise, get the full list of iso639_1 languages
+    for (unsigned int i = 0; i < sizeof(expander.g_iso639_1) / sizeof(expander.g_iso639_1[0]); i++)
+      vecLanguages.push_back(expander.g_iso639_1[i].name);
+  }
+
+  sort(vecLanguages.begin(), vecLanguages.end(), sortstringbyname());
+  for (int i = 0; i < (int) vecLanguages.size(); ++i)
+  {
+    CStdString strLanguage = vecLanguages[i];
+    if (strcmpi(strLanguage.c_str(), g_guiSettings.GetString("preferredlanguage.audio").c_str()) == 0)
+    {
+      iCurrentLanguage = iLanguage;
+    }
+    pControl->AddLabel(strLanguage, iLanguage++);
+  }
+  pControl->SetValue(iCurrentLanguage);
+  return ;
 }
 
 void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)

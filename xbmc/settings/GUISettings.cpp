@@ -657,6 +657,10 @@ void CGUISettings::Initialize()
   AddBool(vid, "myvideos.filemetadata", 20419, true);
   AddBool(NULL, "myvideos.extractthumb",20433, true);
 
+  CSettingsCategory* lang = AddCategory(5, "preferredlanguage", 577);
+  AddBool(lang, "preferredlanguage.setaudio", 578, false);
+  AddString(lang, "preferredlanguage.audio", 579, "", SPIN_CONTROL_TEXT);
+
   CSettingsCategory* sub = AddCategory(5, "subtitles", 287);
   AddString(sub, "subtitles.font", 14089, "arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
