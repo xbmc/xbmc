@@ -10,7 +10,7 @@
     <subtitle>no</subtitle>
   </dvd>
   <regions>
-    <region name="Norwegian (bokmål)" locale="NO">
+    <region name="Norway" locale="NO">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
