@@ -692,6 +692,12 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
        m_database.DeleteSet(params.GetSetId());
     }
   }
+  else if (m_vecItems->GetPath().Equals(CUtil::VideoPlaylistsLocation()) ||
+           m_vecItems->GetPath().Equals("special://videoplaylists/"))
+  {
+    pItem->m_bIsFolder = false;
+    CFileUtils::DeleteItem(pItem);
+  }
   else
   {
     if (!DeleteItem(pItem.get()))
@@ -917,6 +923,9 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
   }
   else
   {
+    // are we in the playlists location?
+    bool inPlaylists = m_vecItems->GetPath().Equals(CUtil::VideoPlaylistsLocation()) ||
+                       m_vecItems->GetPath().Equals("special://videoplaylists/");
 
     if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strArtist.IsEmpty())
     {
@@ -1045,8 +1054,10 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
 
       if (!m_vecItems->IsVideoDb() && !m_vecItems->IsVirtualDirectoryRoot())
       { // non-video db items, file operations are allowed
-        if (g_guiSettings.GetBool("filelists.allowfiledeletion") &&
-            CUtil::SupportsFileOperations(item->GetPath()))
+        if ((g_guiSettings.GetBool("filelists.allowfiledeletion") &&
+            CUtil::SupportsFileOperations(item->GetPath())) ||
+            (inPlaylists && !URIUtils::GetFileName(item->GetPath()).Equals("PartyMode-Video.xsp")
+                         && (item->IsPlayList() || item->IsSmartPlayList())))
         {
           buttons.Add(CONTEXT_BUTTON_DELETE, 117);
           buttons.Add(CONTEXT_BUTTON_RENAME, 118);

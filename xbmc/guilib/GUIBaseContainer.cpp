@@ -427,7 +427,7 @@ bool CGUIBaseContainer::OnMessage(CGUIMessage& message)
 
 void CGUIBaseContainer::OnUp()
 {
-  bool wrapAround = m_controlUp == GetID() || !(m_controlUp || m_upActions.size());
+  bool wrapAround = m_actionUp.GetNavigation() == GetID() || !m_actionUp.HasActionsMeetingCondition();
   if (m_orientation == VERTICAL && MoveUp(wrapAround))
     return;
   // with horizontal lists it doesn't make much sense to have multiselect labels
@@ -436,7 +436,7 @@ void CGUIBaseContainer::OnUp()
 
 void CGUIBaseContainer::OnDown()
 {
-  bool wrapAround = m_controlDown == GetID() || !(m_controlDown || m_downActions.size());
+  bool wrapAround = m_actionDown.GetNavigation() == GetID() || !m_actionDown.HasActionsMeetingCondition();
   if (m_orientation == VERTICAL && MoveDown(wrapAround))
     return;
   // with horizontal lists it doesn't make much sense to have multiselect labels
@@ -445,7 +445,7 @@ void CGUIBaseContainer::OnDown()
 
 void CGUIBaseContainer::OnLeft()
 {
-  bool wrapAround = m_controlLeft == GetID() || !(m_controlLeft || m_leftActions.size());
+  bool wrapAround = m_actionLeft.GetNavigation() == GetID() || !m_actionLeft.HasActionsMeetingCondition();
   if (m_orientation == HORIZONTAL && MoveUp(wrapAround))
     return;
   else if (m_orientation == VERTICAL)
@@ -459,7 +459,7 @@ void CGUIBaseContainer::OnLeft()
 
 void CGUIBaseContainer::OnRight()
 {
-  bool wrapAround = m_controlRight == GetID() || !(m_controlRight || m_rightActions.size());
+  bool wrapAround = m_actionRight.GetNavigation() == GetID() || !m_actionRight.HasActionsMeetingCondition();
   if (m_orientation == HORIZONTAL && MoveDown(wrapAround))
     return;
   else if (m_orientation == VERTICAL)
@@ -693,20 +693,8 @@ bool CGUIBaseContainer::OnClick(int actionID)
       int selected = GetSelectedItem();
       if (selected >= 0 && selected < (int)m_items.size())
       {
-        CFileItemPtr item = boost::static_pointer_cast<CFileItem>(m_items[selected]);
-        // multiple action strings are concat'd together, separated with " , "
-        int controlID = GetID(); // save as these could go away as we send messages
-        int parentID = GetParentID();
-        vector<CStdString> actions;
-        StringUtils::SplitString(item->GetPath(), " , ", actions);
-        for (unsigned int i = 0; i < actions.size(); i++)
-        {
-          CStdString action = actions[i];
-          action.Replace(",,", ",");
-          CGUIMessage message(GUI_MSG_EXECUTE, controlID, parentID);
-          message.SetStringParam(action);
-          g_windowManager.SendMessage(message);
-        }
+        CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_items[selected]);
+        item->GetClickActions().Execute(GetID(), GetParentID());
       }
       return true;
     }
@@ -939,9 +927,10 @@ void CGUIBaseContainer::SetContainerMoving(int direction)
 
 void CGUIBaseContainer::UpdateScrollOffset(unsigned int currentTime)
 {
-  if (m_scroller.Update(currentTime))
+  CScroller::ESCROLLSTATE scrollState = m_scroller.Update(currentTime);
+  if (scrollState != CScroller::NOT_SCROLLING)
     MarkDirtyRegion();
-  else
+  if (scrollState == CScroller::SCROLL_FINISHED)
     m_scrollTimer.Stop();
 }
 

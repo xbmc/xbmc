@@ -94,10 +94,10 @@ BIN_DIRS += xbmc/windowing/egl
 endif
 
 ifeq ($(findstring osx,@ARCH@),osx)
-BIN_DIRS += xbmc/windowing/osx
 BIN_DIRS += xbmc/network/osx
 BIN_DIRS += xbmc/storage/osx
 BIN_DIRS += xbmc/powermanagement/osx
+BIN_DIRS += xbmc/windowing/osx
 else
 BIN_DIRS += xbmc/windowing/X11
 endif
@@ -296,8 +296,6 @@ xbmc/powermanagement/linux/powermanagement_linux.a: force
 	$(MAKE) -C xbmc/powermanagement/linux
 xbmc/powermanagement/osx/powermanagement.a: force
 	$(MAKE) -C xbmc/powermanagement/osx
-xbmc/windowing/X11/windowing_X11.a: force
-	$(MAKE) -C xbmc/windowing/X11
 xbmc/rendering/rendering.a: force
 	$(MAKE) -C xbmc/rendering
 xbmc/rendering/gl/rendering_gl.a: force
@@ -310,6 +308,8 @@ xbmc/windowing/egl/windowing_egl.a: force
 	$(MAKE) -C xbmc/windowing/egl
 xbmc/windowing/osx/windowing_osx.a: force
 	$(MAKE) -C xbmc/windowing/osx
+xbmc/windowing/X11/windowing_X11.a: force
+	$(MAKE) -C xbmc/windowing/X11
 xbmc/storage/storage.a: force
 	$(MAKE) -C xbmc/storage
 xbmc/storage/linux/storage_linux.a: force
@@ -544,48 +544,38 @@ OBJSXBMC=	\
 	lib/libsquish/libsquish.a \
 	lib/SlingboxLib/SlingboxLib.a \
 	lib/libapetag/.libs/libapetag.a \
+	lib/libhts/libhts.a \
 	lib/xbmc-dll-symbols/dll-symbols.a \
 	xbmc/rendering/rendering.a \
-	xbmc/windowing/windowing.a
+	xbmc/windowing/windowing.a \
+	lib/libTcpSocket/libTcpSocket.a
 
 ifeq (@USE_OPENGL@,1)
-OBJSXBMC+= \
-	xbmc/rendering/gl/rendering_gl.a
+OBJSXBMC += xbmc/rendering/gl/rendering_gl.a
 endif
 ifeq (@USE_OPENGLES@,1)
-OBJSXBMC+= \
-	xbmc/rendering/gles/rendering_gles.a \
-	xbmc/windowing/egl/windowing_egl.a
+OBJSXBMC += xbmc/rendering/gles/rendering_gles.a
+OBJSXBMC += xbmc/windowing/egl/windowing_egl.a
 endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
-OBJSXBMC+= \
-	lib/UnrarXLib/UnrarXLib.a
+OBJSXBMC += lib/UnrarXLib/UnrarXLib.a
 endif
-
-OBJSXBMC+= \
-	lib/libTcpSocket/libTcpSocket.a \
-	lib/libhts/libhts.a
 
 # platform dependend objects
 ifeq ($(findstring osx,@ARCH@), osx)
-OBJSXBMC += \
-	xbmc/osx/osx.a \
-	xbmc/windowing/osx/windowing_osx.a \
-	xbmc/powermanagement/osx/powermanagement.a \
-	xbmc/network/osx/network.a \
-	xbmc/storage/osx/storage.a \
-	xbmc/network/linux/network_linux.a
+OBJSXBMC += xbmc/osx/osx.a
+OBJSXBMC += xbmc/network/osx/network.a
+OBJSXBMC += xbmc/network/linux/network_linux.a
+OBJSXBMC += xbmc/powermanagement/osx/powermanagement.a
+OBJSXBMC += xbmc/storage/osx/storage.a
+OBJSXBMC += xbmc/windowing/osx/windowing_osx.a
 else
-OBJSXBMC += \
-	xbmc/input/linux/input_linux.a \
-	xbmc/network/linux/network_linux.a \
-	xbmc/powermanagement/linux/powermanagement_linux.a \
-	xbmc/storage/linux/storage_linux.a
-ifeq (@USE_OPENGL@,1)
-OBJSXBMC+= \
-	xbmc/windowing/X11/windowing_X11.a
-endif
+OBJSXBMC += xbmc/input/linux/input_linux.a
+OBJSXBMC += xbmc/network/linux/network_linux.a
+OBJSXBMC += xbmc/powermanagement/linux/powermanagement_linux.a
+OBJSXBMC += xbmc/storage/linux/storage_linux.a
+OBJSXBMC += xbmc/windowing/X11/windowing_X11.a
 endif
 
 DYNOBJSXBMC= \

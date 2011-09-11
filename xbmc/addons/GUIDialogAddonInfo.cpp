@@ -235,12 +235,12 @@ void CGUIDialogAddonInfo::OnSettings()
 void CGUIDialogAddonInfo::OnChangeLog()
 {
   CGUIDialogTextViewer* pDlgInfo = (CGUIDialogTextViewer*)g_windowManager.GetWindow(WINDOW_DIALOG_TEXT_VIEWER);
-
-  if (m_localAddon && !m_item->GetProperty("Addon.UpdateAvail").Equals("true"))
-    pDlgInfo->SetHeading(g_localizeStrings.Get(24054)+" - "+m_localAddon->Name());
-  else
-    pDlgInfo->SetHeading(g_localizeStrings.Get(24054)+" - "+m_addon->Name());
-
+  CStdString name;
+  if (m_addon)
+    name = m_addon->Name();
+  else if (m_localAddon)
+    name = m_localAddon->Name();
+  pDlgInfo->SetHeading(g_localizeStrings.Get(24054)+" - "+name);
   if (m_item->GetProperty("Addon.Changelog").IsEmpty())
   {
     pDlgInfo->SetText(g_localizeStrings.Get(13413));
@@ -317,6 +317,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
 
   // grab the local addon, if it's available
   m_localAddon.reset();
+  m_addon.reset();
   if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID"), m_localAddon)) // sets m_addon if installed regardless of enabled state
     m_item->SetProperty("Addon.Enabled", "true");
   else

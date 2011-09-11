@@ -408,6 +408,9 @@ namespace INFO
 #define SYSTEM_CAN_HIBERNATE        752
 #define SYSTEM_CAN_REBOOT           753
 
+#define SLIDESHOW_ISPAUSED          800
+#define SLIDESHOW_ISRANDOM          801
+
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
 

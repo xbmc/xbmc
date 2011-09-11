@@ -948,10 +948,18 @@ void CDVDPlayer::Process()
    */
   CEdl::Cut cut;
   int starttime = 0;
-  if(m_PlayerOptions.starttime > 0)
+  if(m_PlayerOptions.starttime > 0 || m_PlayerOptions.startpercent > 0)
   {
-    starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms
-    CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);
+    if (m_PlayerOptions.startpercent > 0 && m_pDemuxer)
+    {
+      int64_t playerStartTime = (int64_t) ( ( (float) m_pDemuxer->GetStreamLength() ) * ( m_PlayerOptions.startpercent/(float)100 ) );
+      starttime = m_Edl.RestoreCutTime(playerStartTime);
+    }
+    else
+    {  
+      starttime = m_Edl.RestoreCutTime((__int64)m_PlayerOptions.starttime * 1000); // s to ms
+    }
+    CLog::Log(LOGDEBUG, "%s - Start position set to last stopped position: %d", __FUNCTION__, starttime);          
   }
   else if(m_Edl.InCut(0, &cut)
       && (cut.action == CEdl::CUT || cut.action == CEdl::COMM_BREAK))

@@ -39,6 +39,10 @@ public:
   virtual ~CGUIControlGroupList(void);
   virtual CGUIControlGroupList *Clone() const { return new CGUIControlGroupList(*this); };
 
+  virtual float GetWidth() const;
+  virtual float GetHeight() const;
+  virtual float Size() const;
+
   virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnMessage(CGUIMessage& message);
@@ -55,13 +59,15 @@ public:
    */
   float GetTotalSize() const;
   ORIENTATION GetOrientation() const { return m_orientation; }
+
+  // based on grouplist orientation pick one value as minSize;
+  void SetMinSize(float minWidth, float minHeight);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
   bool IsFirstFocusableControl(const CGUIControl *control) const;
   bool IsLastFocusableControl(const CGUIControl *control) const;
   void ValidateOffset();
   inline float Size(const CGUIControl *control) const;
-  inline float Size() const;
   void ScrollTo(float offset);
   float GetAlignOffset() const;
 
@@ -75,5 +81,8 @@ protected:
   bool m_useControlPositions;
   ORIENTATION m_orientation;
   uint32_t m_alignment;
+
+  // for autosizing
+  float m_minSize;
 };
 

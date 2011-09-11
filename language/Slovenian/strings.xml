@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Tadej Novak-->
 <!--Email: tadej@tano.si-->
-<!--Date of translation: 02/06/2011-->
-<!--$Revision: 32586 $-->
+<!--Date of translation: 20/08/2011-->
+<!--$Revision$-->
 <strings>
   <string id="0">Programi</string>
   <string id="1">Slike</string>
@@ -983,6 +983,7 @@
   <string id="12392">Ure</string>
   <string id="12393">Dnevi</string>
   <string id="12394">Skupni čas delovanja</string>
+  <string id="12395">Nivo baterije</string>
 
   <string id="12600">Vreme</string>
 
@@ -1017,6 +1018,7 @@
 
   <string id="13100">Filter proti utripanju</string>
   <string id="13101">Izbere gonilnik (zahteva ponovni zagon)</string>
+
   <string id="13105">Vertikalna sinhronizacija</string>
   <string id="13106">Onemogočeno</string>
   <string id="13107">Vključeno med predvajanjem videa</string>
@@ -1064,9 +1066,11 @@
 
   <string id="13200">Profili</string>
   <string id="13201">Izbriši profil '%s'?</string>
+
   <string id="13204">Zadnji naložen profil:</string>
   <string id="13205">Neznano</string>
   <string id="13206">Prepiši</string>
+
   <string id="13208">Budilka</string>
   <string id="13209">Interval budilke (v minutah)</string>
   <string id="13210">Zagon, alarm v %im</string>
@@ -1167,6 +1171,7 @@
   <string id="13359">Nastavi sličico izvajalca</string>
   <string id="13360">Generiraj sličice</string>
   <string id="13361">Uporabi govor</string>
+
   <string id="13375">Vključi napravo</string>
   <string id="13376">Glasnost</string>
   <string id="13377">Privzet pogled</string>
@@ -1484,6 +1489,7 @@
   <string id="16033">Ne morem odpreti podatkovne baze.</string>
   <string id="16034">Ne morem pridobiti pesmi iz baze</string>
   <string id="16035">Predvajalni seznam zabavnega načina</string>
+  <string id="16036">Razpletanje (Polovično)</string>
 
   <string id="16100">Vsi posnetki</string>
   <string id="16101">Nepogledani</string>
@@ -2162,6 +2168,8 @@
   <string id="20256">HTS Tvheadend odjemalec</string>
   <string id="20257">VDR Streamdev odjemalec</string>
   <string id="20258">MythTV odjemalec</string>
+  <string id="20259">Omrežni datotečni sistem (NFS)</string>
+  <string id="20260">Varna lupina (SSH/SFTP)</string>
 
   <string id="20300">Mapa spletnega strežnika (HTTP)</string>
   <string id="20301">Mapa spletnega strežnika (HTTPS)</string>
@@ -2274,7 +2282,8 @@
   <string id="20415">Iščem nove vsebine</string>
   <string id="20416">Prvič na sporedu</string>
   <string id="20417">Scenarist</string>
-  <string id="20418">Čista imena datotek in map</string>
+  <string id="20418"></string>
+  <string id="20419">Prikaži podrobnosti v pogledu datotek</string>
 
   <string id="20420">Nikoli</string>
   <string id="20421">Če vsebuje le eno sezono</string>
@@ -2312,6 +2321,7 @@
   <string id="20453">epizode</string>
   <string id="20454">Listener</string>
   <string id="20455">Listeners</string>
+  <string id="20456">Nastavi ozadje filmske zbirke</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Prikaži skrite datoteke in mape</string>
@@ -2603,6 +2613,9 @@
   <string id="24043">Na voljo so posodobitve</string>
   <string id="24044">Odvisnostim ni zadoščeno</string>
   <string id="24045">Dodatek nima pravilne strukture</string>
+  <string id="24046">%s je v uporabi s strani sledečih dodatkov</string>
+  <string id="24047">Dodatka ni mogoče odstraniti</string>
+  <string id="24048">Razveljavi</string>
 
   <string id="24050">Dodatki na voljo</string>
   <string id="24051">Različica:</string>
@@ -2631,6 +2644,8 @@
   <string id="24089">Ponovni zagoni dodatkov</string>
   <string id="24090">Zakleni upravljalnik z dodatki</string>
 
+  <string id="24094">(trenuten)</string>
+  <string id="24095">(nedelujoč)</string>
   <string id="24096">Dodatek je bil v skladišču označen kot nedelujoč.</string>
   <string id="24097">Ga želite onemogočiti na vašem sistemu?</string>
   <string id="24098">Nedelujoč</string>
@@ -2744,4 +2759,7 @@
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
+
+  <string id="34201">Ni mogoče najti naslednjega predmeta za predvajanje</string>
+  <string id="34202">Ni mogoče najti prejšnjega predmeta za predvajanje</string>
 </strings>

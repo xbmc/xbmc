@@ -20,6 +20,7 @@ SRCS=AlarmClock.cpp \
      HTMLTable.cpp \
      HTMLUtil.cpp \
      HttpHeader.cpp \
+     HttpParser.cpp \
      InfoLoader.cpp \
      JobManager.cpp \
      JSONVariantParser.cpp \

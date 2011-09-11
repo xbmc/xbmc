@@ -138,6 +138,9 @@
 #include "interfaces/json-rpc/JSONRPC.h"
 #include "network/TCPServer.h"
 #endif
+#ifdef HAS_AIRPLAY
+#include "network/AirPlayServer.h"
+#endif
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
@@ -1262,16 +1265,17 @@ bool CApplication::StartWebServer()
     bool started = false;
     if (m_WebServer.Start(webPort, g_guiSettings.GetString("services.webserverusername"), g_guiSettings.GetString("services.webserverpassword")))
     {
+      std::map<std::string, std::string> txt; 
       started = true;
       // publish web frontend and API services
 #ifdef HAS_WEB_INTERFACE
-      CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webserver", "_http._tcp", "XBMC Web Server", webPort, txt);
 #endif
 #ifdef HAS_HTTPAPI
-      CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webapi", "_xbmc-web._tcp", "XBMC HTTP API", webPort, txt);
 #endif
 #ifdef HAS_JSONRPC
-      CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", webPort);
+      CZeroconf::GetInstance()->PublishService("servers.webjsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", webPort, txt);
 #endif
     }
 #ifdef HAS_HTTPAPI
@@ -1305,6 +1309,32 @@ void CApplication::StopWebServer()
 #endif
 }
 
+void CApplication::StartAirplayServer()
+{
+#ifdef HAS_AIRPLAY
+  if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
+  {
+    if (CAirPlayServer::StartServer(9091, true))
+    {
+      std::map<std::string, std::string> txt;
+      txt["deviceid"] = m_network.GetFirstConnectedInterface()->GetMacAddress();
+      txt["features"] = "0x77";
+      txt["model"] = "AppleTV2,1";
+      txt["srcvers"] = "101.10";
+      CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", "XBMC", 9091, txt);
+    }
+  }
+#endif
+}
+
+void CApplication::StopAirplayServer(bool bWait)
+{
+#ifdef HAS_AIRPLAY
+  CAirPlayServer::StopServer(bWait);
+  CZeroconf::GetInstance()->RemoveService("servers.airplay");
+#endif
+}
+
 bool CApplication::StartJSONRPCServer()
 {
 #ifdef HAS_JSONRPC
@@ -1314,7 +1344,8 @@ bool CApplication::StartJSONRPCServer()
 
     if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
     {
-      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.m_jsonTcpPort);
+      std::map<std::string, std::string> txt;  
+      CZeroconf::GetInstance()->PublishService("servers.jsonrpc", "_xbmc-jsonrpc._tcp", "XBMC JSONRPC", g_advancedSettings.m_jsonTcpPort, txt);
       return true;
     }
     else
@@ -3551,7 +3582,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #ifdef HAS_DVD_DRIVE
     // Display the Play Eject dialog
     if (CGUIDialogPlayEject::ShowAndGetInput(item))
-      return MEDIA_DETECT::CAutorun::PlayDisc();
+      return MEDIA_DETECT::CAutorun::PlayDisc(!MEDIA_DETECT::CAutorun::CanResumePlayDVD() || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
 #endif
     return true;
   }
@@ -3610,6 +3641,12 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   }
 
   CPlayerOptions options;
+  
+  if( item.HasProperty("StartPercent") )
+  {
+    options.startpercent = item.GetPropertyDouble("StartPercent");                    
+  }
+  
   PLAYERCOREID eNewCore = EPC_NONE;
   if( bRestart )
   {
@@ -4391,7 +4428,7 @@ void CApplication::CheckShutdown()
 
   // first check if we should reset the timer
   bool resetTimer = false;
-  if (IsPlaying()) // is something playing?
+  if (IsPlaying() || IsPaused()) // is something playing?
     resetTimer = true;
 
   if (pMusicScan && pMusicScan->IsScanning()) // music scanning?
@@ -4617,13 +4654,6 @@ bool CApplication::OnMessage(CGUIMessage& message)
   case GUI_MSG_EXECUTE:
     if (message.GetNumStringParams())
       return ExecuteXBMCAction(message.GetStringParam());
-    else
-    {
-      CGUIActionDescriptor action = message.GetAction();
-      action.m_sourceWindowId = message.GetControlId(); // set source window id,
-      return ExecuteAction(action);
-    }
-
     break;
   }
   return false;
@@ -4666,26 +4696,6 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr)
       }
       return true;
     }
-
-bool CApplication::ExecuteAction(CGUIActionDescriptor action)
-{
-  if (action.m_lang == CGUIActionDescriptor::LANG_XBMC)
-  {
-    return ExecuteXBMCAction(action.m_action);
-  }
-  else if (action.m_lang == CGUIActionDescriptor::LANG_PYTHON)
-  {
-#ifdef HAS_PYTHON
-    // Determine the context of the action, if possible
-    vector<CStdString> argv;
-    g_pythonParser.evalString(action.m_action, argv);
-    return true;
-#else
-    return false;
-#endif
-  }
-  return false;
-}
 
 void CApplication::Process()
 {

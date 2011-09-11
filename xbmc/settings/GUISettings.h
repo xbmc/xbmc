@@ -199,6 +199,15 @@ enum VideoSelectAction
   SELECT_ACTION_PLAY
 };
 
+enum SubtitleAlign
+{
+  SUBTITLE_ALIGN_MANUAL = 0,
+  SUBTITLE_ALIGN_BOTTOM_INSIDE,
+  SUBTITLE_ALIGN_BOTTOM_OUTSIDE,
+  SUBTITLE_ALIGN_TOP_INSIDE,
+  SUBTITLE_ALIGN_TOP_OUTSIDE
+};
+
 // replay gain settings struct for quick access by the player multiple
 // times per second (saves doing settings lookup)
 struct ReplayGainSettings

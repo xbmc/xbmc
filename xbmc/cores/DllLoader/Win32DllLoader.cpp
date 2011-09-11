@@ -162,7 +162,12 @@ bool Win32DllLoader::Load()
   m_dllHandle = LoadLibraryExW(strDllW.c_str(), NULL, LOAD_WITH_ALTERED_SEARCH_PATH);
   if (!m_dllHandle)
   {
-    CLog::Log(LOGERROR, "%s: Unable to load %s (%d)", __FUNCTION__, strFileName.c_str(), GetLastError());
+    LPVOID lpMsgBuf;
+    DWORD dw = GetLastError(); 
+
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS, NULL, dw, 0, (LPTSTR) &lpMsgBuf, 0, NULL );
+    CLog::Log(LOGERROR, "%s: Failed to load %s with error %d:%s", __FUNCTION__, _P(strFileName).c_str(), dw, lpMsgBuf);
+    LocalFree(lpMsgBuf);
     return false;
   }
 
