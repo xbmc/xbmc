@@ -341,9 +341,11 @@
     <ClCompile Include="..\..\xbmc\Favourites.cpp" />
     <ClCompile Include="..\..\xbmc\FileItem.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\FileNFS.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\iso9660.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\ISO9660Directory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\Slingbox.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\udf25.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\UDFDirectory.cpp" />
@@ -1242,6 +1244,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\File.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FileFactory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FileHD.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\FileNFS.h" />
     <ClInclude Include="..\..\xbmc\filesystem\HDDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\IDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\IFile.h" />
@@ -1250,6 +1253,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\iso9660.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\ISO9660Directory.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\FileUDF.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\NFSDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\Slingbox.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\udf25.h" />
     <ClInclude Include="..\..\xbmc\FileSystem\UDFDirectory.h" />
