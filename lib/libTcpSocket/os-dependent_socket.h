@@ -97,7 +97,6 @@ void tcp_shutdown(socket_t fdSock);
  * @return The number of bytes written.
  */
 int tcp_send(socket_t fdSock, void *buf, int len, int flags);
-int tcp_send(socket_t fdSock, void *buf, int len, int flags);
 
 #ifdef __cplusplus
 } //extern C
