@@ -1462,12 +1462,12 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   OSStatus status;
 
   #if defined(__arm__)
-    // decoding, scaling and rendering above 1920 x 900 runs into
+    // decoding, scaling and rendering above 1920 x 800 runs into
     // some bandwidth limit. detect and scale down to reduce
     // the bandwidth requirements.
     int width_clamp = 1280;
-    if ((width * height) > (1920 * 900))
-      width_clamp = 1024;
+    if ((width * height) > (1920 * 800))
+      width_clamp = 960;
 
     int new_width = CheckNP2(width);
     if (width != new_width)
