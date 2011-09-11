@@ -62,6 +62,8 @@ Preparing an Update
  relevant packages, file_list.xml file and updater binary to a temporary
  directory and invoke the updater.
 
+ See doc/update-hosting for more details on hosting and delivering the updates.
+
 Invoking the Updater
 ====================
 
