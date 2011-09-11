@@ -394,11 +394,8 @@ bool CFileNFS::Open(const CURL& url)
   CLog::Log(LOGDEBUG,"CFileNFS::Open - opened %s",url.GetFileName().c_str());
   m_url=url;
   
-#if defined(TARGET_LINUX) || defined(TARGET_WINDOWS)
   struct __stat64 tmpBuffer;
-#else
-  struct stat tmpBuffer;
-#endif
+
   if( Stat(&tmpBuffer) )
   {
     m_url.Reset();
@@ -640,11 +637,8 @@ bool CFileNFS::OpenForWrite(const CURL& url, bool bOverWrite)
   }
   m_url=url;
   
-#if defined(TARGET_LINUX) || defined(TARGET_WINDOWS)
   struct __stat64 tmpBuffer = {0};
-#else
-  struct stat tmpBuffer = {0};
-#endif
+
   //only stat if file was not created
   if(!bOverWrite) 
   {
