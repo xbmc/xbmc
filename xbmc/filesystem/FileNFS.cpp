@@ -39,8 +39,8 @@
 #include <sys\stat.h>
 #define S_IRGRP 0
 #define S_IROTH 0
-#define	S_IWUSR		_S_IWRITE
-#define	S_IRUSR		_S_IREAD
+#define S_IWUSR _S_IWRITE
+#define S_IRUSR _S_IREAD
 #endif
 
 //KEEP_ALIVE_TIMEOUT is decremented every half a second
@@ -394,7 +394,7 @@ bool CFileNFS::Open(const CURL& url)
   CLog::Log(LOGDEBUG,"CFileNFS::Open - opened %s",url.GetFileName().c_str());
   m_url=url;
   
-#if defined(_LINUX) || defined(_WIN32)
+#if defined(TARGET_LINUX) || defined(TARGET_WINDOWS)
   struct __stat64 tmpBuffer;
 #else
   struct stat tmpBuffer;
@@ -640,7 +640,7 @@ bool CFileNFS::OpenForWrite(const CURL& url, bool bOverWrite)
   }
   m_url=url;
   
-#if defined(_LINUX) || defined(_WIN32)
+#if defined(TARGET_LINUX) || defined(TARGET_WINDOWS)
   struct __stat64 tmpBuffer = {0};
 #else
   struct stat tmpBuffer = {0};
