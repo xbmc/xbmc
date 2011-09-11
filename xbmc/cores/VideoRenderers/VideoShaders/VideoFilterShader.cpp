@@ -82,6 +82,7 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
 
   if (m_method == VS_SCALINGMETHOD_CUBIC ||
       m_method == VS_SCALINGMETHOD_LANCZOS2 ||
+      m_method == VS_SCALINGMETHOD_SPLINE36_FAST ||
       m_method == VS_SCALINGMETHOD_LANCZOS3_FAST)
   {
     shadername = "convolution-4x4.glsl";
@@ -92,7 +93,8 @@ ConvolutionFilterShader::ConvolutionFilterShader(ESCALINGMETHOD method, bool str
 #endif
       m_internalformat = GL_RGBA;
   }
-  else if (m_method == VS_SCALINGMETHOD_LANCZOS3)
+  else if (m_method == VS_SCALINGMETHOD_SPLINE36 || 
+           m_method == VS_SCALINGMETHOD_LANCZOS3)
   {
     shadername = "convolution-6x6.glsl";
 #if defined(HAS_GL)

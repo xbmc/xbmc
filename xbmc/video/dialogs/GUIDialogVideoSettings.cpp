@@ -111,7 +111,9 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(VS_SCALINGMETHOD_LINEAR           , 16302));
     entries.push_back(make_pair(VS_SCALINGMETHOD_CUBIC            , 16303));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS2         , 16304));
+    entries.push_back(make_pair(VS_SCALINGMETHOD_SPLINE36_FAST    , 16323));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3_FAST    , 16315));
+    entries.push_back(make_pair(VS_SCALINGMETHOD_SPLINE36         , 16322));
     entries.push_back(make_pair(VS_SCALINGMETHOD_LANCZOS3         , 16305));
     entries.push_back(make_pair(VS_SCALINGMETHOD_SINC8            , 16306));
 //    entries.push_back(make_pair(VS_SCALINGMETHOD_NEDI             , ?????));
