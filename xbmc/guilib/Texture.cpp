@@ -440,6 +440,8 @@ unsigned int CBaseTexture::GetPitch(unsigned int width) const
     return ((width + 3) / 4) * 16;
   case XB_FMT_A8:
     return width;
+  case XB_FMT_RGB8:
+    return (((width + 1)* 3 / 4) * 4);
   case XB_FMT_RGBA8:
   case XB_FMT_A8R8G8B8:
   default:
