@@ -158,6 +158,8 @@
 	</include>
 	<include name="ImageStream">
 		<control type="group">
+			<visible>!Container.Content(Secondary) + !Container.Content(plugins)</visible>
+		<control type="group">
 			<include>ImageStreamVisible</include>
 			<include>BackgroundOverlayFade</include>
 			<control type="image">
@@ -291,10 +293,11 @@
 				</control>
 			</control>
 		</control>
+	</control>
 	</include>
 	<include name="InfoListPics">
 		<control type="group">
-			<visible>Container.Content(Secondary)</visible>
+			<visible>Container.Content(Secondary) + !Container.Content(plugins)</visible>
 			<control type="group">
 				<include>MediaViewBGOverlay</include>
 			</control>

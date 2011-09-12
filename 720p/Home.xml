@@ -2258,7 +2258,10 @@
 								<visible>ListItem.Type(album)</visible>
 							</control>
 							<!-- tv show episode -->
-							<control type="image">
+							<!-- deactivated for the moment, not allowed yet -->
+							<control type="group">
+								<visible>false</visible>
+								<control type="image">
 								<posx>15</posx>
 								<posy>27</posy>
 								<width>140</width>
@@ -2269,7 +2272,7 @@
 								<texture diffuse="episodeMaskSmall.png" background="true">$INFO[ListItem.Thumb]</texture>
 								<visible>ListItem.Type(episode)</visible>
 							</control>
-							<control type="label">
+								<control type="label">
 								<posx>81</posx>
 								<posy>152</posy>
 								<width>145</width>
@@ -2282,7 +2285,7 @@
 								<wrapmultiline>false</wrapmultiline>
 								<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
 							</control>
-							<control type="label">
+								<control type="label">
 								<posx>81</posx>
 								<posy>182</posy>
 								<width>140</width>
@@ -2294,6 +2297,7 @@
 								<textcolor>FFdddddd</textcolor>
 								<wrapmultiline>false</wrapmultiline>
 								<visible>!IsEmpty(ListItem.TVShowTitle) + ListItem.Type(episode)</visible>
+							</control>
 							</control>
 							<!-- clip -->
 							<control type="group">
@@ -2431,6 +2435,16 @@
 						<!-- tv specific -->
 						<control type="label">
 							<align>left</align>
+							<label>$INFO[Container(11003).ListItem(0).Title] &#xB7; </label>
+							<font>SearchResult</font>
+							<scroll>false</scroll>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+							<width min="1" max="300">auto</width>
+							<visible>ControlGroup(7003).HasFocus + !IsEmpty(Container(11003).ListItem(0).Title) + Container(11003).ListItem(0).Type(episode)</visible>
+						</control>
+						<control type="label">
+							<align>left</align>
 							<label>$INFO[Container(11003).ListItem(0).TVShowTitle] &#xB7; </label>
 							<font>SearchResult</font>
 							<scroll>false</scroll>
@@ -2499,7 +2513,7 @@
 							<textcolor>FFFFFFFF</textcolor>
 							<wrapmultiline>false</wrapmultiline>
 							<width min="1" max="300">auto</width>
-							<visible>ControlGroup(7003).HasFocus + [Container(11003).ListItem(0).Type(movie) | Container(11003).ListItem(0).Type(episode)]</visible>
+							<visible>ControlGroup(7003).HasFocus + [Container(11003).ListItem(0).Type(movie)]</visible>
 						</control>
 						<control type="label">
 							<align>left</align>
@@ -2542,7 +2556,7 @@
 							<width min="1" max="200">auto</width>
 							<visible>ControlGroup(7003).HasFocus + !IsEmpty(Container(11003).ListItem(0).Property(sourceTitle)) + Container(11003).ListItem(0).Type(clip)</visible>
 						</control>
-						<!-- general -->
+						<!-- generic -->
 						<control type="label">
 							<align>left</align>
 							<label> &#xB7; $INFO[Container(11003).ListItem(0).Duration]</label>

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <window id="501">
-	<defaultcontrol>56</defaultcontrol>
-	<views>56</views>
+	<defaultcontrol>59</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<control type="group">
 		<include>Background</include>
 		<animation effect="fade" end="40" time="300" delay="0" condition="true">Conditional</animation>
 		</control>
+		<include>PluginStream</include>
 		<include>InfoList</include>
 		<control type="group">
 			<posy>9</posy>

@@ -4,10 +4,8 @@
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<include>Background</include>
-		<!--><include>List</include>-->
 		<include>InfoList</include>
 		<include>PanelStream</include>
-		<include>PluginStream</include>
 		<control type="group">
 			<posy>9</posy>
 			<include>TopOverlayTitlePos</include>

@@ -32,7 +32,7 @@
 		<include>OptionsMenuUI</include>
 	</include>
 	<include name="OptionsMenuVisible">
-		<visible allowhiddenfocus="true">ControlGroup(9009).HasFocus()</visible>
+		<visible allowhiddenfocus="true">ControlGroup(9009).HasFocus() + !Container.Content(Plugins)</visible>
 	</include>
 	<include name="OMTitleItem">
 		<align>center</align>
@@ -396,14 +396,14 @@
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
 				</control>-->
-				<!--<control type="button" id="960">
+				<control type="button" id="960">
 					<description>Plugin Stream view button</description>
 					<visible>!Control.IsVisible(59) + Container.Content(Plugins)</visible>
 					<label>$LOCALIZE[31722]</label>
 					<onclick>Container.SetViewMode(59)</onclick>
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
-				</control>-->
+				</control>
 				<!-- Setup Options -->
 				<control type="label" id="1000">
 					<description>Setup Options</description>

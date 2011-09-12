@@ -1180,7 +1180,17 @@
 						<label>$INFO[ListItem.Episode]. $INFO[Listitem.Title]</label>
 						<font>MediaPreviewSummary</font>
 						<textcolor>FF999999</textcolor>
-						<visible>!Container.Content(clip)</visible>
+						<visible>!Container.Content(clip) + !IsEmpty(ListItem.Episode)</visible>
+					</control>
+					<control type="label">
+						<posx>160</posx>
+						<posy>200</posy>
+						<width>180</width>
+						<align>center</align>
+						<label>$INFO[Listitem.Title]</label>
+						<font>MediaPreviewSummary</font>
+						<textcolor>FF999999</textcolor>
+						<visible>!Container.Content(clip) + IsEmpty(ListItem.Episode)</visible>
 					</control>
 					<control type="label">
 						<posx>160</posx>
@@ -1228,7 +1238,16 @@
 						<align>center</align>
 						<label>$INFO[ListItem.Episode]. $INFO[Listitem.Title]</label>
 						<font>MediaPreviewSummary</font>
-						<visible>!Container.Content(clip)</visible>
+						<visible>!Container.Content(clip) + !IsEmpty(ListItem.Episode)</visible>
+					</control>
+					<control type="label">
+						<posx>163</posx>
+						<posy>200</posy>
+						<width>180</width>
+						<align>center</align>
+						<label>$INFO[Listitem.Title]</label>
+						<font>MediaPreviewSummary</font>
+						<visible>!Container.Content(clip) + IsEmpty(ListItem.Episode)</visible>
 					</control>
 					<control type="label">
 						<posx>163</posx>

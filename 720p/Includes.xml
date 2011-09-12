@@ -763,7 +763,7 @@
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
 					<info background="true">ListItem.Property(fanart_image)</info>
-					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
+					<visible>!IsEmpty(ListItem.Property(fanart_image)) + !Container.Content(plugincontent)</visible>
 					<include>BackgroundFade</include>
 				</control>
 				<control type="largeimage">
@@ -878,7 +878,6 @@
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
 					<info>ListItem.Property(fanart_image)</info>
-					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
 					<include>BackgroundFade</include>
 				</control>
 				<control type="largeimage">
@@ -1514,25 +1513,87 @@
 		</focusedlayout>
 		<!-- Plugins main pages -->
 		<itemlayout condition="Container.content(plugins)" width="154" height="160">
+			<!-- drop shadow -->
+			<control type="image">
+				<posx>9</posx>
+				<posy>-7</posy>
+				<width>140</width>
+				<height>140</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+			</control>
 			<control type="image">
 				<description>Poster image</description>
 				<posx>18</posx>
 				<posy>3</posy>
 				<width>122</width>
 				<height>122</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Icon]</texture>
-				<aspectratio scalediffuse="false" align="center" aligny="center">keep</aspectratio>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+			<control type="image">
+				<posx>14</posx>
+				<posy>130</posy>
+				<width>130</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>80</posx>
+				<posy>141</posy>
+				<width>110</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Label]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>FFdddddd</textcolor>
+				<wrapmultiline>false</wrapmultiline>
 			</control>
 		</itemlayout>
-		<focusedlayout condition="Container.content(plugins)" width="158" height="160">
+		<focusedlayout condition="Container.content(plugins)" width="154" height="160">
+			<!-- drop shadow -->
+			<control type="image">
+				<posx>9</posx>
+				<posy>-7</posy>
+				<width>140</width>
+				<height>140</height>
+				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+			</control>
 			<control type="image">
 				<description>Poster image</description>
-				<posx>18</posx>
-				<posy>3</posy>
-				<width>142</width>
-				<height>142</height>
-				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Icon]</texture>
-				<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
+				<posx>15</posx>
+				<posy>0</posy>
+				<width>128</width>
+				<height>128</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<bordertexture border="10">frameOrange.png</bordertexture>
+				<bordersize>3</bordersize>
+			</control>
+			<control type="image">
+				<posx>14</posx>
+				<posy>130</posy>
+				<width>130</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>80</posx>
+				<posy>141</posy>
+				<width>110</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Label]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>orange</textcolor>
+				<wrapmultiline>false</wrapmultiline>
 			</control>
 		</focusedlayout>
 		<!-- Albums & Songs -->

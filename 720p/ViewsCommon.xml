@@ -292,7 +292,7 @@
 							<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 							<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 						</control>
-						<control type="image">
+						<!--<control type="image">
 							<visible>[Container.Content(albums) | Container.Content(Songs) | !Container.Content(plugincontent)] + !IsEmpty(ListItem.Label2) + !ListItem.Type(clip) + ![Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Movies)]</visible>
 							<posx>520</posx>
 							<posy>9</posy>
@@ -302,7 +302,7 @@
 							<texture>Unwatchedcount.png</texture>
 							<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
 							<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
-						</control>
+						</control>-->						
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
@@ -312,7 +312,18 @@
 							<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
 							<font>MediumSmallDefaultCapsFont</font>
 							<textcolor>Unfocused</textcolor>
-							<visible>Container.Content(episodes) + IsEmpty(Container.Property(mixedParents))</visible>
+							<visible>Container.Content(episodes) + IsEmpty(Container.Property(mixedParents)) + !IsEmpty(ListItem.episode)</visible>
+						</control>
+						<control type="label">
+							<posx>60</posx>
+							<width>454</width>
+							<height>42</height>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>$INFO[ListItem.Label]</label>
+							<font>MediumSmallDefaultCapsFont</font>
+							<textcolor>Unfocused</textcolor>
+							<visible>Container.Content(episodes) + IsEmpty(Container.Property(mixedParents)) + IsEmpty(ListItem.episode)</visible>
 						</control>
 						<control type="label">
 							<posx>60</posx>
@@ -397,7 +408,7 @@
 							<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
 							<visible>IsEmpty(ListItem.Property(ZeroEpisodeCount))</visible>
 						</control>
-						<control type="image">
+						<!--<control type="image">
 							<visible>[Container.Content(albums) | Container.Content(Songs) | !Container.Content(plugincontent)] + !IsEmpty(ListItem.Label2) + !ListItem.Type(clip) + ![Container.Content(TVShows) | Container.Content(Seasons) | Container.Content(Movies)]</visible>
 							<posx>520</posx>
 							<posy>9</posy>
@@ -407,7 +418,7 @@
 							<texture>UnwatchedcountFocused.png</texture>
 							<animation effect="slide" start="0,-42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnNext">focus</animation>
 							<animation effect="slide" start="0,42" end="0,0" time="MediaListSlideTime" reversible="false" tween="quadratic" easing="out" condition="Container.OnPrevious">focus</animation>
-						</control>
+						</control>-->
 						<control type="label">
 							<posx>60</posx>
 							<width>454</width>
@@ -419,18 +430,6 @@
 							<textcolor>Unfocused</textcolor>
 							<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
 							<visible>!Container.Content(episodes)</visible>
-						</control>
-						<control type="label">
-							<posx>60</posx>
-							<width>454</width>
-							<height>42</height>
-							<align>left</align>
-							<aligny>center</aligny>
-							<label>$INFO[ListItem.episode]. $INFO[ListItem.Label]</label>
-							<font>MediumSmallDefaultCapsFont</font>
-							<textcolor>Unfocused</textcolor>
-							<animation effect="fade" start="100" end="0" time="100" delay="100" reversible="false">Focus</animation>
-							<visible>Container.Content(episodes) + IsEmpty(Container.Property(mixedParents))</visible>
 						</control>
 						<control type="label">
 							<posx>60</posx>
@@ -481,6 +480,20 @@
 								<scroll>true</scroll>
 								<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
 								<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+								<visible>!IsEmpty(ListItem.episode)</visible>
+							</control>
+							<control type="label">
+								<posx>60</posx>
+								<width>454</width>
+								<height>42</height>
+								<align>left</align>
+								<aligny>center</aligny>
+								<label>$INFO[ListItem.Label]</label>
+								<font>MediumSmallDefaultCapsFont</font>
+								<scroll>true</scroll>
+								<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnNext">Focus</animation>
+								<animation effect="fade" start="0" end="100" time="100" delay="100" reversible="false" condition="Container.OnPrevious">Focus</animation>
+								<visible>IsEmpty(ListItem.episode)</visible>
 							</control>
 						</control>
 						<control type="group">
@@ -1234,7 +1247,7 @@
 							<control type="image">
 								<posx>-397</posx>
 								<posy>55</posy>
-								<width>406</width>
+								<width>476</width>
 								<height>227</height>
 								<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 								<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
@@ -1245,7 +1258,7 @@
 								<visible>Container.Content(Episodes)</visible>
 								<posx>-389</posx>
 								<posy>64</posy>
-								<width>390</width>
+								<width>460</width>
 								<height>210</height>
 								<aspectratio scalediffuse="false" align="top">scale</aspectratio>
 								<texture diffuse="bigPosterHorizMask.png" background="true">$INFO[ListItem.Thumb]</texture>
@@ -1558,6 +1571,16 @@
 							<width>650</width>
 							<height>80</height>
 							<font>MediumTitleFont</font>
+							<label>$INFO[ListItem.Title]</label>
+							<visible>Container.Content(Episodes) + IsEmpty(ListItem.TVShowTitle)</visible>
+						</control>
+						<control type="textbox">
+							<description>Title</description>
+							<posx>11</posx>
+							<posy>-7</posy>
+							<width>650</width>
+							<height>80</height>
+							<font>MediumTitleFont</font>
 							<label>$INFO[ListItem.Label]</label>
 							<visible>Container.Content(clip)</visible>
 						</control>
@@ -1568,7 +1591,7 @@
 							<width>650</width>
 							<height>30</height>
 							<label>[COLOR orange]$LOCALIZE[20373] $INFO[ListItem.Season], $LOCALIZE[20359] $INFO[ListItem.Episode]: [/COLOR] [COLOR FFFFFFFF]$INFO[ListItem.Title] [/COLOR]</label>
-							<visible>Container.Content(Episodes)</visible>
+							<visible>Container.Content(Episodes) + !IsEmpty(ListItem.Season) + !IsEmpty(ListItem.Episode)</visible>
 						</control>
 					</control>
 					<control type="grouplist">
@@ -1643,11 +1666,18 @@
 	<include name="PanelStream">
 		<control type="group">
 			<include>PanelStreamVisible</include>
-			<!--<include>MediaViewBGOverlay</include>-->
 			<control type="image">
 				<description>Background Overlay</description>
 				<include>FullScreenOverlayDims</include>
 				<texture>TVFanartOverlay2.png</texture>
+				<visible>!Container.Content(plugins)</visible>
+			</control>
+			<!-- wide presentation for plugins -->
+			<control type="image">
+				<description>Background Overlay</description>
+				<include>FullScreenOverlayDims</include>
+				<texture>TVFanartOverlay.png</texture>
+				<visible>Container.Content(plugins)</visible>
 			</control>
 			<!-- new "transparency" overlay for fanart -->
 			<control type="largeimage">
@@ -1655,7 +1685,7 @@
 				<posx>0</posx>
 				<width>1280</width>
 				<height>720</height>
-				<aspectratio aligny="bottom">stretch</aspectratio>
+				<aspectratio aligny="bottom">scale</aspectratio>
 				<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 				<visible>true</visible>
 				<animation effect="fade" start="0" end="3" time="0" condition="true">Conditional</animation>
@@ -1679,8 +1709,7 @@
 				<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 				<onright>9009</onright>
 				<orientation>vertical</orientation>
-				<include condition="Window.IsMedia + !Skin.HasSetting(HideFocusDetailForPanel)">PanelStreamContentWithDetail</include>
-				<include condition="!Window.IsMedia | Skin.HasSetting(HideFocusDetailForPanel)">PanelStreamContent</include>
+				<include>PanelStreamContentWithDetail</include>
 			</control>
 			<control type="group">
 				<visible>!Skin.HasSetting(HideFocusDetailForPanel)</visible>
@@ -2501,6 +2530,115 @@
 					<posy>554</posy>
 					<include>WallStreamEpisodesFourthRowInfo</include>
 				</control>
+			</control>
+		</control>
+	</include>
+	<include name="PluginStream">
+		<control type="group">
+			<control type="group">
+				<visible>Control.IsVisible(59)</visible>
+				<include>MediaViewBGOverlay</include>
+			</control>
+			<control type="group">
+				<posy>206</posy>
+				<visible>Control.IsVisible(59)</visible>
+				<include>MediaViewFade</include>
+				<control type="panel" id="59">
+					<viewtype label="Plugin Stream">panel</viewtype>
+					<onup>59</onup>
+					<ondown>59</ondown>
+					<onleft>59</onleft>
+					<onright>59</onright>
+					<orientation>vertical</orientation>
+					<posx>10</posx>
+					<posy>34</posy>
+					<width>1260</width>
+					<height>500</height>
+					<itemlayout condition="Container.content(plugins)" width="154" height="160">
+						<!-- drop shadow -->
+						<control type="image">
+							<posx>9</posx>
+							<posy>-7</posy>
+							<width>140</width>
+							<height>140</height>
+							<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+							<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+						</control>
+						<control type="image">
+							<description>Poster image</description>
+							<posx>18</posx>
+							<posy>3</posy>
+							<width>122</width>
+							<height>122</height>
+							<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Icon]</texture>
+							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+						</control>
+						<control type="image">
+							<posx>14</posx>
+							<posy>130</posy>
+							<width>130</width>
+							<height>25</height>
+							<texture border="10">whitewiderounded.png</texture>
+							<colordiffuse>FF000000</colordiffuse>
+							<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+						</control>
+						<control type="label">
+							<posx>80</posx>
+							<posy>141</posy>
+							<width>110</width>
+							<align>center</align>
+							<aligny>center</aligny>
+							<scroll>false</scroll>
+							<label>$INFO[ListItem.Label]</label>
+							<font>SearchResultSmaller</font>
+							<textcolor>FFdddddd</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+						</control>
+					</itemlayout>
+					<focusedlayout condition="Container.content(plugins)" width="154" height="160">
+						<!-- drop shadow -->
+						<control type="image">
+							<posx>9</posx>
+							<posy>-7</posy>
+							<width>140</width>
+							<height>140</height>
+							<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
+							<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
+						</control>
+						<control type="image">
+							<description>Poster image</description>
+							<posx>15</posx>
+							<posy>0</posy>
+							<width>128</width>
+							<height>128</height>
+							<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Icon]</texture>
+							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+							<bordertexture border="10">frameOrange.png</bordertexture>
+							<bordersize>3</bordersize>
+						</control>
+						<control type="image">
+							<posx>14</posx>
+							<posy>130</posy>
+							<width>130</width>
+							<height>25</height>
+							<texture border="10">whitewiderounded.png</texture>
+							<colordiffuse>FF000000</colordiffuse>
+							<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+						</control>
+						<control type="label">
+							<posx>80</posx>
+							<posy>141</posy>
+							<width>110</width>
+							<align>center</align>
+							<aligny>center</aligny>
+							<scroll>false</scroll>
+							<label>$INFO[ListItem.Label]</label>
+							<font>SearchResultSmaller</font>
+							<textcolor>orange</textcolor>
+							<wrapmultiline>false</wrapmultiline>
+						</control>
+					</focusedlayout>
+					</control>
 			</control>
 		</control>
 	</include>
