@@ -160,12 +160,14 @@ protected:
 
   struct SVideoSample
   {
-    DXVA2_VideoSample sample;
+    REFERENCE_TIME start;
+    REFERENCE_TIME end;
+    UINT format;
     CSurfaceContext* context;
+    IDirect3DSurface9* surface;
   };
 
-  typedef std::deque<SVideoSample> SSamples;
-  SSamples          m_sample;
+  SVideoSample* m_samples;
 
   CCriticalSection  m_section;
 

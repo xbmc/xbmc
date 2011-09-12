@@ -933,12 +933,11 @@ CProcessor::CProcessor()
 {
   m_service = NULL;
   m_process = NULL;
-  m_time    = 0;
   g_Windowing.Register(this);
 
   m_surfaces = NULL;
   m_context = NULL;
-  m_index = 0;
+  m_samples = NULL;
   m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
   m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
   m_progressive = true;
@@ -962,12 +961,17 @@ void CProcessor::Close()
 {
   CSingleLock lock(m_section);
   SAFE_RELEASE(m_process);
-  for(unsigned i = 0; i < m_sample.size(); i++)
+
+  if (m_samples)
   {
-    SAFE_RELEASE(m_sample[i].context);
-    SAFE_RELEASE(m_sample[i].sample.SrcSurface);
+    for (unsigned i = 0; i < m_size; i++)
+    {
+      SAFE_RELEASE(m_samples[i].context);
+      SAFE_RELEASE(m_samples[i].surface);
+    }
+	  free(m_samples);
+	  m_samples = NULL;
   }
-  m_sample.clear();
 
   SAFE_RELEASE(m_context);
   if (m_surfaces)
@@ -1146,6 +1150,9 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
   if (!OpenProcessor())
     return false;
 
+  m_samples = (SVideoSample*)calloc(m_size, sizeof(SVideoSample));
+  m_index = 0;
+
   m_time = 0;
 
   return true;
@@ -1286,8 +1293,6 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
     case DVDVideoPicture::FMT_YUV420P:
     {
       surface = m_surfaces[m_index];
-      m_index = (m_index + 1) % m_size;
-
       context = m_context;
   
       D3DLOCKED_RECT rectangle;
@@ -1341,43 +1346,28 @@ REFERENCE_TIME CProcessor::Add(DVDVideoPicture* picture)
 
   m_time += 2;
 
-  surface->AddRef();
-  context->Acquire();
-
-  SVideoSample vs = {};
-  vs.sample.Start          = m_time;
-  vs.sample.End            = 0; 
-  vs.sample.SampleFormat   = m_desc.SampleFormat;
+  m_samples[m_index].start = m_time;
+  m_samples[m_index].end = m_time + 2;
 
   if (picture->iFlags & DVP_FLAG_INTERLACED)
   {
     if (picture->iFlags & DVP_FLAG_TOP_FIELD_FIRST)
-      vs.sample.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+      m_samples[m_index].format = DXVA2_SampleFieldInterleavedEvenFirst;
     else
-      vs.sample.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedOddFirst;
+      m_samples[m_index].format = DXVA2_SampleFieldInterleavedOddFirst;
   }
   else
-  {
-    vs.sample.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
-  }
+      m_samples[m_index].format = DXVA2_SampleProgressiveFrame;
 
-  vs.sample.PlanarAlpha    = DXVA2_Fixed32OpaqueAlpha();
-  vs.sample.SampleData     = 0;
-  vs.sample.SrcSurface     = surface;
+  context->Acquire();
+  SAFE_RELEASE(m_samples[m_index].context);
+  m_samples[m_index].context = context;
 
+  surface->AddRef();
+  SAFE_RELEASE(m_samples[m_index].surface);
+  m_samples[m_index].surface = surface;
 
-  vs.context = context;
-
-  if(!m_sample.empty())
-    m_sample.back().sample.End = vs.sample.Start;
-
-  m_sample.push_back(vs);
-  if (m_sample.size() > m_size)
-  {
-    SAFE_RELEASE(m_sample.front().context);
-    SAFE_RELEASE(m_sample.front().sample.SrcSurface);
-    m_sample.pop_front();
-  }
+  m_index = (m_index + 1) % m_size;
 
   return m_time;
 }
@@ -1409,88 +1399,59 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
     if (!OpenProcessor())
       return false;
   }
-  
-  // MinTime and MaxTime are the first and last samples to keep. Delete the rest.
-  REFERENCE_TIME MinTime = time - m_max_back_refs*2;
-  REFERENCE_TIME MaxTime = time + m_max_fwd_refs*2;
 
-  SSamples::iterator it = m_sample.begin();
-  while (it != m_sample.end())
+  // Check to be sure we have enough samples in buffer to process frame with reference time requested
+  // Reference time for a sample is count multiplied by 2
+  if (time > m_time || time < ((m_caps.NumBackwardRefSamples + 1) << 1))
   {
-    if (it->sample.Start < MinTime)
-    {
-      SAFE_RELEASE(it->context);
-      SAFE_RELEASE(it->sample.SrcSurface);
-      it = m_sample.erase(it);
-    }
-    else
-      it++;
+    CLog::Log(LOGDEBUG, "CProcessor::Render - No enough required samples in buffer to render frame %I64d, skipping frame", time);
+    return false;
   }
 
-  if(m_sample.empty())
-    return false;
+  // We need an offset from last reference time in buffer converted to sample count (divide by 2)
+  unsigned offset = (m_time - time) >> 1;
 
-  // MinTime and MaxTime are now the first and last samples to feed the processor.
-  MinTime = time - m_caps.NumBackwardRefSamples*2;
-  MaxTime = time + m_caps.NumForwardRefSamples*2;
+  // Check if offset is within buffer limits to include the required samples
+  if (offset < m_caps.NumForwardRefSamples || offset > m_size - m_caps.NumBackwardRefSamples)
+  {
+    CLog::Log(LOGDEBUG, "CProcessor::Render - Samples required to render frame %I64d not present in sample buffer, skipping frame", time);
+    return false;
+  }
+
+  // Now we are sure required samples are in buffer and also are ordered in increasing reference time and index order
+  // Starting index is easily obtained substracting offset and backward sample count from m_index - 1
+  // Don't forget we are substracting in a circular buffer so add m_size and handle overflow over m_size
+  unsigned index = (m_size + m_index - offset - m_caps.NumBackwardRefSamples - 1) % m_size;
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
 
   CWinRenderer::CropSource(src, dst, desc);
 
-  // How to prepare the samples array for VideoProcessBlt
-  // - always provide current picture + the number of forward and backward references required by the current processor.
-  // - provide the surfaces in the array in increasing temporal order
-  // - at the start of playback, there may not be enough samples available. Use SampleFormat.SampleFormat = DXVA2_SampleUnknown for the missing samples.
+  // Get the number of samples required for VideoProcessBlt() using current processor (backward + present + forward).
+  unsigned count = 1 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
 
-  int count = 1 + m_caps.NumBackwardRefSamples + m_caps.NumForwardRefSamples;
-  int valid = 0;
-  auto_aptr<DXVA2_VideoSample> samp(new DXVA2_VideoSample[count]);
-
-  for (int i = 0; i < count; i++)
-    samp[i].SampleFormat.SampleFormat = DXVA2_SampleUnknown;
-
-  for(it = m_sample.begin(); it != m_sample.end() && valid < count; it++)
+  // It's now easy to create the samples array and simply copy using index and count
+  auto_aptr<DXVA2_VideoSample> samples(new DXVA2_VideoSample[count]);
+  for (unsigned i = 0; i < count; i++)
   {
-    if (it->sample.Start >= MinTime && it->sample.Start <= MaxTime)
-    {
-      DXVA2_VideoSample& vs = samp[(it->sample.Start - MinTime) / 2];
-      vs = it->sample;
-      vs.SrcRect = src;
-      vs.DstRect = dst;
-      if(vs.End == 0)
-        vs.End = vs.Start + 2;
-
-      // Override the sample format when the processor doesn't need to deinterlace or when deinterlacing is forced and flags are missing.
-      if (m_progressive)
-        vs.SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
-      else if (g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_FORCE && vs.SampleFormat.SampleFormat == DXVA2_SampleProgressiveFrame)
-        vs.SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
-
-      valid++;
-    }
-  }
-  
-  // MS' guidelines above don't work. The blit fails when the processor is given DXVA2_SampleUnknown samples (with ATI at least).
-  // The ATI driver works with a reduced number of samples though, support that for now.
-  // Problem is an ambiguity if there are future refs requested by the processor. There are no such implementations at the moment.
-  int offset = 0;
-  if(valid < count)
-  {
-    CLog::Log(LOGWARNING, __FUNCTION__" - did not find all required samples, adjusting the sample array.");
-
-    for (int i = 0; i < count; i++)
-    {
-      if (samp[i].SampleFormat.SampleFormat == DXVA2_SampleUnknown)
-        offset = i+1;
-    }
-    count -= offset;
-    if (count == 0)
-    {
-      CLog::Log(LOGWARNING, __FUNCTION__" - no usable samples.");
-      return false;
-    }
+    SVideoSample* sample = &m_samples[index];
+    samples[i].Start = sample->start;
+    samples[i].End = sample->end;
+    samples[i].SampleFormat = m_desc.SampleFormat;
+    // Override the sample format when the processor doesn't need to deinterlace or when deinterlacing is forced and flags are missing.
+    if (m_progressive)
+      samples[i].SampleFormat.SampleFormat = DXVA2_SampleProgressiveFrame;
+    else if (m_deinterlace_mode == VS_DEINTERLACEMODE_FORCE && sample->format == DXVA2_SampleProgressiveFrame)
+      samples[i].SampleFormat.SampleFormat = DXVA2_SampleFieldInterleavedEvenFirst;
+    else
+      samples[i].SampleFormat.SampleFormat = sample->format;
+    samples[i].SrcSurface = sample->surface;
+    samples[i].SrcRect = src;
+    samples[i].DstRect = dst;
+    samples[i].PlanarAlpha = DXVA2_Fixed32OpaqueAlpha();
+    samples[i].SampleData = 0;
+    index = (index + 1) % m_size;
   }
 
   DXVA2_VideoProcessBltParams blt = {};
@@ -1526,7 +1487,7 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
   float verts[2][3]= {};
   g_Windowing.Get3DDevice()->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 1, verts, 3*sizeof(float));
 
-  CHECK(m_process->VideoProcessBlt(target, &blt, &samp[offset], count, NULL));
+  CHECK(m_process->VideoProcessBlt(target, &blt, samples.get(), count, NULL));
   return true;
 }
 
