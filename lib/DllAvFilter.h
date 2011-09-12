@@ -151,7 +151,9 @@ public:
   virtual int avfilter_graph_parse(AVFilterGraph *graph, const char *filters, AVFilterInOut **inputs, AVFilterInOut **outputs, void *log_ctx)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
-#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,16,0)
+#if   (   LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(1,79,0) \
+       && LIBAVFILTER_VERSION_INT <  AV_VERSION_INT(2,0,0) ) \
+    ||(   LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,16,0))
     return ::avfilter_graph_parse(graph, filters, inputs, outputs, log_ctx);
 #elif LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,15,1)
     return ::avfilter_graph_parse(graph, filters, *inputs, *outputs, log_ctx);
