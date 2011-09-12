@@ -267,10 +267,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   CFileItem item(*pItem);
   if (item.IsVideoDb() && item.HasVideoInfoTag())
   {
-    if (item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-      item.SetPath(item.GetVideoInfoTag()->m_strPath);
-    else
-      item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+    item.SetPath(item.GetVideoInfoTag()->GetPath());
   }
   else
   {
