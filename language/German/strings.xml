@@ -2461,6 +2461,13 @@
   <string id="21452">Mehr...</string>
   <string id="21453">Root Dateisystem</string>
 
+  <string id="21460">Position der Untertitel</string>
+  <string id="21461">Fixiert</string>
+  <string id="21462">Unterhalb des Bildes</string>
+  <string id="21463">Unten</string>
+  <string id="21464">Oberhalb des Bildes</string>
+  <string id="21465">Oben</string>
+
   <string id="21800">Dateiname</string>
   <string id="21801">Dateipfad</string>
   <string id="21802">Dateigröße</string>
@@ -2615,6 +2622,7 @@
   <string id="24015">Musikvideo-Informationen</string>
   <string id="24016">Album-Informationen</string>
   <string id="24017">Interpret-Informationen</string>
+  <string id="24018">Dienste</string>
 
   <string id="24020">Konfigurieren</string>
   <string id="24021">Deaktivieren</string>
