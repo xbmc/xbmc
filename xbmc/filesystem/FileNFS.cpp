@@ -271,11 +271,11 @@ void CNfsConnection::CheckIfIdle()
       }
       else
       {
+        lock.Leave();
         keepAlive(it->first);
         //reset timeout
-        it->second = KEEP_ALIVE_TIMEOUT;
+        resetKeepAlive(it->first);
       }
-      lock.Leave();      
     }
   }
 }
@@ -469,7 +469,11 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
   if (m_pFileHandle == NULL || gNfsConnection.GetNfsContext()==NULL ) return 0;
 
   numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(gNfsConnection.GetNfsContext(), m_pFileHandle, uiBufSize, (char *)lpBuf);  
+
+  lock.Leave();//no need to keep the connection lock after that
+  
   gNfsConnection.resetKeepAlive(m_pFileHandle);//triggers keep alive timer reset for this filehandle
+  
   //something went wrong ...
   if (numberOfBytesRead < 0) 
   {
