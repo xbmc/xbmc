@@ -1,5 +1,5 @@
-v0.0.2.117-- (unfinished)
-- Implementing RTSP
+v0.0.1.117 (unfinished)
+- Adaptation to many changes within XBMC
 v0.0.1.116 (16-06-2011)
 - Greatly improved channel zapping
 - Add timer will now force a recording when no matching show title 
