@@ -3237,7 +3237,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     if (tag.GetYear()) { return tag.GetYearString(); }
     break;
   case MUSICPLAYER_GENRE:
-    if (tag.GetGenre().size()) { return tag.GetGenre(); }
+    if (tag.GetGenre().size()) { return StringUtils::Join(tag.GetGenre(), g_advancedSettings.m_musicItemSeparator); }
     break;
   case MUSICPLAYER_LYRICS:
     if (tag.GetLyrics().size()) { return tag.GetLyrics(); }
@@ -3894,7 +3894,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
       return StringUtils::Join(item->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator);
     if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetGenre();
+      return StringUtils::Join(item->GetMusicInfoTag()->GetGenre(), g_advancedSettings.m_musicItemSeparator);
     break;
   case LISTITEM_FILENAME:
   case LISTITEM_FILE_EXTENSION:

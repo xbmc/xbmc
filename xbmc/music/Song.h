@@ -76,7 +76,7 @@ public:
   CStdString strArtist;
   CStdString strAlbum;
   CStdString strAlbumArtist;
-  CStdString strGenre;
+  std::vector<std::string> genre;
   CStdString strThumb;
   CStdString strMusicBrainzTrackID;
   CStdString strMusicBrainzArtistID;

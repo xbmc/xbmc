@@ -460,7 +460,9 @@ CUPnPServer::PopulateObjectFromTag(CMusicInfoTag&         tag,
     if (!tag.GetURL().IsEmpty() && file_path)
       *file_path = tag.GetURL();
 
-    object.m_Affiliation.genre = NPT_String(tag.GetGenre().c_str()).Split(" / ");
+    std::vector<std::string> genres = tag.GetGenre();
+    for (unsigned int index = 0; index < genres.size(); index++)
+      object.m_Affiliation.genre.Add(genres.at(index).c_str());
     object.m_Title = tag.GetTitle();
     object.m_Affiliation.album = tag.GetAlbum();
     object.m_People.artists.Add(tag.GetArtist().c_str());

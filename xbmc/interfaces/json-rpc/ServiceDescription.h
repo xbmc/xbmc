@@ -352,7 +352,7 @@ namespace JSONRPC
     "\"Audio.Details.Base\": {"
       "\"extends\": \"Media.Details.Base\","
       "\"properties\": {"
-        "\"genre\": { \"type\": \"string\" }"
+        "\"genre\": { \"type\": \"Array.String\" }"
       "}"
     "}",
     "\"Audio.Details.Media\": {"

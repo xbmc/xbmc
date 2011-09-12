@@ -45,7 +45,7 @@ public:
   const CStdString& GetArtist() const;
   const CStdString& GetAlbum() const;
   const CStdString& GetAlbumArtist() const;
-  const CStdString& GetGenre() const;
+  const std::vector<std::string> GetGenre() const;
   int GetTrackNumber() const;
   int GetDiscNumber() const;
   int GetTrackAndDiskNumber() const;
@@ -75,6 +75,7 @@ public:
   void SetAlbumId(const int iAlbumId);
   void SetAlbumArtist(const CStdString& strAlbumArtist);
   void SetGenre(const CStdString& strGenre);
+  void SetGenre(const std::vector<std::string>& genres);
   void SetYear(int year);
   void SetDatabaseId(long id);
   void SetReleaseDate(SYSTEMTIME& dateTime);
@@ -132,7 +133,7 @@ protected:
   CStdString m_strArtist;
   CStdString m_strAlbum;
   CStdString m_strAlbumArtist;
-  CStdString m_strGenre;
+  std::vector<std::string> m_genre;
   CStdString m_strMusicBrainzTrackID;
   CStdString m_strMusicBrainzArtistID;
   CStdString m_strMusicBrainzAlbumID;

@@ -186,7 +186,7 @@ CStdString CLabelFormatter::GetMaskContent(const CMaskString &mask, const CFileI
     break;
   case 'G':
     if (music && music->GetGenre().size())
-      value = music->GetGenre();
+      value = StringUtils::Join(music->GetGenre(), g_advancedSettings.m_musicItemSeparator);
     if (movie && movie->m_genre.size())
       value = StringUtils::Join(movie->m_genre, g_advancedSettings.m_videoItemSeparator);
     break;

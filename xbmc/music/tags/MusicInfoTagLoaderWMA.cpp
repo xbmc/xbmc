@@ -29,6 +29,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "ThumbnailCache.h"
+#include "utils/StringUtils.h"
 
 using namespace AUTOPTR;
 using namespace XFILE;
@@ -435,10 +436,14 @@ void CMusicInfoTagLoaderWMA::SetTagValueString(const CStdString& strFrameName, c
   {
     // Multiple genres are stared in multiple "WM/Genre" tags we have to get them
     // separatly and merge them to our system
-    if (tag.GetGenre().IsEmpty())
+    if (tag.GetGenre().empty())
       tag.SetGenre(strValue);
     else
-      tag.SetGenre(tag.GetGenre() + g_advancedSettings.m_musicItemSeparator + strValue);
+    {
+      std::vector<std::string> genres = StringUtils::Split(strValue, g_advancedSettings.m_musicItemSeparator);
+      for (unsigned int index = 0; index < genres.size(); index++)
+        tag.AppendGenre(genres.at(index));
+    }
   }
   else if (strFrameName == "WM/Lyrics")
   {

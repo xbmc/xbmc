@@ -362,7 +362,7 @@ void SSortFileItem::ByGenre(CFileItemPtr &item)
   if (!item) return;
 
   if (item->HasMusicInfoTag())
-    item->SetSortLabel(item->GetMusicInfoTag()->GetGenre());
+    item->SetSortLabel(StringUtils::Join(item->GetMusicInfoTag()->GetGenre(), g_advancedSettings.m_musicItemSeparator));
   else
     item->SetSortLabel(StringUtils::Join(item->GetVideoInfoTag()->m_genre, g_advancedSettings.m_videoItemSeparator));
 }

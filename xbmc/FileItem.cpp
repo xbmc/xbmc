@@ -1944,7 +1944,7 @@ void CFileItemList::FilterCueItems()
                   {
                     if (song.strAlbum.empty() && !tag.GetAlbum().empty()) song.strAlbum = tag.GetAlbum();
                     if (song.strAlbumArtist.empty() && !tag.GetAlbumArtist().empty()) song.strAlbumArtist = tag.GetAlbumArtist();
-                    if (song.strGenre.empty() && !tag.GetGenre().empty()) song.strGenre = tag.GetGenre();
+                    if (song.genre.empty() && !tag.GetGenre().empty()) song.genre = tag.GetGenre();
                     if (song.strArtist.empty() && !tag.GetArtist().empty()) song.strArtist = tag.GetArtist();
                     if (tag.GetDiscNumber()) song.iTrack |= (tag.GetDiscNumber() << 16); // see CMusicInfoTag::GetDiscNumber()
                     SYSTEMTIME dateTime;

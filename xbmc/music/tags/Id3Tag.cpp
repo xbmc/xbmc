@@ -223,7 +223,7 @@ bool CID3Tag::Write(const CStdString& strFile)
   SetAlbum(m_musicInfoTag.GetAlbum());
   SetAlbumArtist(m_musicInfoTag.GetAlbumArtist());
   SetTrack(m_musicInfoTag.GetTrackNumber());
-  SetGenre(m_musicInfoTag.GetGenre());
+  SetGenre(StringUtils::Join(m_musicInfoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator));
   SetYear(m_musicInfoTag.GetYearString());
   SetEncodedBy("XBMC");
 

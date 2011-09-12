@@ -1147,7 +1147,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     tag->SetTrackNumber(song.iTrack);
     tag->SetAlbum(song.strAlbum);
     tag->SetArtist(song.strArtist);
-    tag->SetGenre(song.strGenre);
+    tag->SetGenre(song.genre);
     tag->SetTitle(song.strTitle);
     tag->SetDuration(song.iDuration);
     tag->SetLoaded(true);
@@ -1183,7 +1183,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     output += closeTag+openTag+"Track number:" + tmp;
     tmp.Format("%i", tag->GetDuration());
     output += closeTag+openTag+"Duration:" + tmp;
-    output += closeTag+openTag+"Genre:" + tag->GetGenre();
+    output += closeTag+openTag+"Genre:" + StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator);
     SYSTEMTIME stTime;
     tag->GetReleaseDate(stTime);
     tmp.Format("%i", stTime.wYear);
@@ -1474,8 +1474,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
       if (justChange && !changed && !slideChanged)
         return SetResponse(openTag+"Changed:False");
       //if still here, continue collecting info
-      if (tagVal && !tagVal->GetGenre().IsEmpty())
-        output+=closeTag+openTag+"Genre"+tag+":"+tagVal->GetGenre();
+      if (tagVal && !tagVal->GetGenre().empty())
+        output+=closeTag+openTag+"Genre"+tag+":"+StringUtils::Join(tagVal->GetGenre(), g_advancedSettings.m_musicItemSeparator);
       if (tagVal && tagVal->GetYear())
         output+=closeTag+openTag+"Year"+tag+":"+tagVal->GetYearString();
       if (tagVal && tagVal->GetURL())

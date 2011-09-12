@@ -172,7 +172,7 @@ void CMusicInfoScanner::Process()
         }
 
         CMusicAlbumInfo albumInfo;
-        DownloadAlbumInfo(it->strGenre,it->strArtist,it->strAlbum, bCanceled, albumInfo); // genre field holds path - see fetchalbuminfo()
+        DownloadAlbumInfo(it->genre[0],it->strArtist,it->strAlbum, bCanceled, albumInfo); // genre field holds path - see fetchalbuminfo()
 
         if (m_bStop || bCanceled)
           break;
@@ -192,7 +192,7 @@ void CMusicInfoScanner::Process()
           m_pObserver->OnSetProgress(iCurrentItem++, m_artistsToScan.size());
         }
 
-        DownloadArtistInfo(it->strGenre,it->strArtist,bCanceled); // genre field holds path - see fetchartistinfo()
+        DownloadArtistInfo(it->genre[0],it->strArtist,bCanceled); // genre field holds path - see fetchartistinfo()
 
         if (m_bStop || bCanceled)
           break;
@@ -262,7 +262,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory)
     CAlbum album;
     album.strAlbum = items[i]->GetMusicInfoTag()->GetAlbum();
     album.strArtist = items[i]->GetMusicInfoTag()->GetArtist();
-    album.strGenre = items[i]->GetPath(); // a bit hacky use of field
+    album.genre.push_back(items[i]->GetPath()); // a bit hacky use of field
     m_albumsToScan.insert(album);
   }
 
@@ -302,7 +302,7 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory)
 
     CArtist artist;
     artist.strArtist = items[i]->GetMusicInfoTag()->GetArtist();
-    artist.strGenre = items[i]->GetPath(); // a bit hacky use of field
+    artist.genre.push_back(items[i]->GetPath()); // a bit hacky use of field
     m_artistsToScan.insert(artist);
   }
 
@@ -1125,8 +1125,8 @@ bool CMusicInfoScanner::DownloadArtistInfo(const CStdString& strPath, const CStd
             CStdString strTemp=scraper.GetArtist(i).GetArtist().strArtist;
             if (!scraper.GetArtist(i).GetArtist().strBorn.IsEmpty())
               strTemp += " ("+scraper.GetArtist(i).GetArtist().strBorn+")";
-            if (!scraper.GetArtist(i).GetArtist().strGenre.IsEmpty())
-              strTemp.Format("[%s] %s",scraper.GetArtist(i).GetArtist().strGenre.c_str(),strTemp.c_str());
+            if (!scraper.GetArtist(i).GetArtist().genre.empty())
+              strTemp.Format("[%s] %s",StringUtils::Join(scraper.GetArtist(i).GetArtist().genre, g_advancedSettings.m_musicItemSeparator).c_str(),strTemp.c_str());
             item.SetLabel(strTemp);
             item.m_idepth = i; // use this to hold the index of the album in the scraper
             pDlg->Add(&item);

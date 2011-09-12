@@ -225,7 +225,7 @@ protected:
   void AddExtraAlbumArtists(const CStdStringArray& vecArtists, int idAlbum);
   void AddExtraSongArtists(const CStdStringArray& vecArtists, int idSong, bool bCheck = true);
   void AddKaraokeData(const CSong& song);
-  void AddExtraGenres(const CStdStringArray& vecGenres, int idSong, int idAlbum, bool bCheck = true);
+  void AddExtraGenres(const std::vector<std::string>& vecGenres, int idSong, int idAlbum, bool bCheck = true);
   bool SetAlbumInfoSongs(int idAlbumInfo, const VECSONGS& songs);
   bool GetAlbumInfoSongs(int idAlbumInfo, VECSONGS& songs);
 private:
