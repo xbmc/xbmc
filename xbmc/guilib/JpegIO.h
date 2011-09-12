@@ -22,6 +22,11 @@
 #ifndef GUILIB_JPEGIO_H
 #define GUILIB_JPEGIO_H
 
+#ifdef TARGET_WINDOWS
+#define XMD_H
+#pragma comment(lib, "jpeg-static.lib")
+#endif
+
 #include <jpeglib.h>
 #include "utils/StdString.h"
 
