@@ -367,8 +367,8 @@ CUPnPServer::GetMimeType(const CFileItem& item,
                             const PLT_HttpRequestContext* context /* = NULL */)
 {
     CStdString path = item.GetPath();
-    if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) {
-        path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+    if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->GetPath().IsEmpty()) {
+        path = item.GetVideoInfoTag()->GetPath();
     } else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().IsEmpty()) {
         path = item.GetMusicInfoTag()->GetURL();
     }
