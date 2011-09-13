@@ -268,28 +268,37 @@ int ProcessUtils::runElevatedMac(const std::string& executable,
 }
 #endif
 
-#ifdef PLATFORM_WINDOWS
-int ProcessUtils::runElevatedWindows(const std::string& executable,
-							const std::list<std::string>& arguments)
+// convert a list of arguments in a space-separated string.
+// Arguments containing spaces are enclosed in quotes
+std::string quoteArgs(const std::list<std::string>& arguments)
 {
-	std::string args;
-
-	// quote process arguments
+	std::string quotedArgs;
 	for (std::list<std::string>::const_iterator iter = arguments.begin();
 	     iter != arguments.end();
 	     iter++)
 	{
 		std::string arg = *iter;
 
-		if (!arg.empty() && arg.at(0) != '"' && arg.at(arg.size()-1) != '"')
-        {
+		bool isQuoted = !arg.empty() &&
+		                 arg.at(0) == '"' &&
+		                 arg.at(arg.size()-1) == '"';
+
+		if (!isQuoted && arg.find(' ') != std::string::npos)
+		{
 			arg.insert(0,"\"");
 			arg.append("\"");
-        }
+		}
+		quotedArgs += arg;
+		quotedArgs += " ";
+	}
+	return quotedArgs;
+}
 
-		args += arg;
-		args += " ";
-    }
+#ifdef PLATFORM_WINDOWS
+int ProcessUtils::runElevatedWindows(const std::string& executable,
+							const std::list<std::string>& arguments)
+{
+	std::string args = quoteArgs(arguments);
 
 	SHELLEXECUTEINFO executeInfo;
 	ZeroMemory(&executeInfo,sizeof(executeInfo));
@@ -350,18 +359,12 @@ PLATFORM_PID ProcessUtils::runAsyncUnix(const std::string& executable,
 
 #ifdef PLATFORM_WINDOWS
 int ProcessUtils::runWindows(const std::string& executable,
-                             const std::list<std::string>& args,
+                             const std::list<std::string>& _args,
                              RunMode runMode)
 {
-	std::string commandLine = executable;
-	for (std::list<std::string>::const_iterator iter = args.begin(); iter != args.end(); iter++)
-	{
-		if (!commandLine.empty())
-		{
-			commandLine.append(" ");
-		}
-		commandLine.append(*iter);
-	}
+	std::list<std::string> args(_args);
+	args.push_front(executable);
+	std::string commandLine = quoteArgs(args);
 
 	STARTUPINFO startupInfo;
 	ZeroMemory(&startupInfo,sizeof(startupInfo));

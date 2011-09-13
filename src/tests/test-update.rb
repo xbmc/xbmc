@@ -3,7 +3,10 @@
 require 'fileutils.rb'
 require 'rbconfig'
 
-INSTALL_DIR = File.expand_path("install-dir/")
+# Install directory - this contains a space to check
+# for correct escaping of paths when passing comamnd
+# line arguments under Windows
+INSTALL_DIR = File.expand_path("install dir/")
 PACKAGE_DIR = File.expand_path("package-dir/")
 
 if (RbConfig::CONFIG['host_os'] =~ /mswin|mingw/)
@@ -86,8 +89,11 @@ FileUtils.cp("../#{UPDATER_NAME}","#{PACKAGE_DIR}/#{UPDATER_NAME}")
 # make sure that it looks in the correct directory for
 # the file_list.xml file and packages
 #
+install_path = File.absolute_path(INSTALL_DIR)
 Dir.chdir(INSTALL_DIR) do
-	system("#{PACKAGE_DIR}/#{UPDATER_NAME} --install-dir #{INSTALL_DIR} --package-dir #{PACKAGE_DIR} --script file_list.xml")
+	cmd = "#{PACKAGE_DIR}/#{UPDATER_NAME} --install-dir \"#{install_path}\" --package-dir \"#{PACKAGE_DIR}\" --script file_list.xml"
+	puts "Running '#{cmd}'"
+	system(cmd)
 end
 
 # TODO - Correctly wait until updater has finished
