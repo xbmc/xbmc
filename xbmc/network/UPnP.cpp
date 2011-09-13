@@ -2201,7 +2201,7 @@ CUPnPServer*
 CUPnP::CreateServer(int port /* = 0 */)
 {
     CUPnPServer* device =
-        new CUPnPServer(g_guiSettings.GetString("services.friendlyname"),
+        new CUPnPServer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME),
                         g_settings.m_UPnPUUIDServer.length()?g_settings.m_UPnPUUIDServer.c_str():NULL,
                         port);
 
@@ -2295,8 +2295,8 @@ CUPnPRenderer*
 CUPnP::CreateRenderer(int port /* = 0 */)
 {
     CUPnPRenderer* device =
-        new CUPnPRenderer(g_guiSettings.GetString("services.friendlyname"),
-                          (g_guiSettings.GetString("services.friendlyname") != "XBMC" ? false : true),
+        new CUPnPRenderer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str(),
+                          false,
                           (g_settings.m_UPnPUUIDRenderer.length() ? g_settings.m_UPnPUUIDRenderer.c_str() : NULL),
                           port);
 
