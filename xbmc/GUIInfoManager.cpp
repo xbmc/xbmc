@@ -261,6 +261,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "profilecount",     SYSTEM_PROFILECOUNT },
                                   { "progressbar",      SYSTEM_PROGRESS_BAR },
                                   { "batterylevel",     SYSTEM_BATTERY_LEVEL },
+                                  { "friendlyname",     SYSTEM_FRIENDLY_NAME },
                                   { "alarmpos",         SYSTEM_ALARM_POS }};
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
@@ -1608,6 +1609,15 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       int percent;
       if (GetInt(percent, SYSTEM_PROGRESS_BAR) && percent > 0)
         strLabel.Format("%i", percent);
+    }
+    break;
+  case SYSTEM_FRIENDLY_NAME:
+    {
+      CStdString friendlyName = g_guiSettings.GetString("services.friendlyname");
+      if (friendlyName.Equals("XBMC"))
+        strLabel.Format("%s (%s)", friendlyName.c_str(), g_application.getNetwork().GetHostName().c_str());
+      else
+        strLabel = friendlyName;
     }
     break;
   case LCD_PLAY_ICON:
