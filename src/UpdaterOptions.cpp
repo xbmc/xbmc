@@ -19,6 +19,7 @@ long long atoll(const char* string)
 UpdaterOptions::UpdaterOptions()
 : mode(UpdateInstaller::Setup)
 , waitPid(0)
+, showVersion(false)
 {
 }
 
@@ -111,6 +112,7 @@ void UpdaterOptions::parse(int argc, char** argv)
 	parser.setOption("script");
 	parser.setOption("wait");
 	parser.setOption("mode");
+	parser.setFlag("version");
 
 	parser.processCommandArgs(argc,argv);
 
@@ -134,7 +136,9 @@ void UpdaterOptions::parse(int argc, char** argv)
 	{
 		waitPid = static_cast<PLATFORM_PID>(atoll(parser.getValue("wait")));
 	}
-	
+
+	showVersion = parser.getFlag("version");
+		
 	if (installDir.empty())
 	{
 		// if no --install-dir argument is present, try parsing

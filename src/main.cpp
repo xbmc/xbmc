@@ -24,6 +24,8 @@
 
 #include <iostream>
 
+#define UPDATER_VERSION "0.4"
+
 void runWithUi(int argc, char** argv, UpdateInstaller* installer);
 
 void runUpdaterThread(void* arg)
@@ -58,6 +60,11 @@ int main(int argc, char** argv)
 	Log::instance()->open(AppInfo::logFilePath());
 	UpdaterOptions options;
 	options.parse(argc,argv);
+	if (options.showVersion)
+	{
+		std::cout << "Update installer version " << UPDATER_VERSION << std::endl;
+		return 0;
+	}
 
 	UpdateInstaller installer;
 	UpdateScript script;

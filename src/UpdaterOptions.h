@@ -16,6 +16,7 @@ class UpdaterOptions
 		std::string scriptPath;
 		PLATFORM_PID waitPid;
 		std::string logFile;
+		bool showVersion;
 
 	private:
 		void parseOldFormatArgs(int argc, char** argv);
