@@ -73,6 +73,12 @@ namespace JSONRPC
     JSONSchemaType type;
 
     /*!
+     \brief JSON schema type definitions in case
+     of a union type
+     */
+    std::vector<JSONSchemaTypeDefinition> unionTypes;
+
+    /*!
      \brief Whether or not the parameter is
      optional
      */
@@ -354,7 +360,7 @@ namespace JSONRPC
     static bool parseParameter(CVariant &value, JSONSchemaTypeDefinition &parameter);
     static bool parseTypeDefinition(const CVariant &value, JSONSchemaTypeDefinition &type, bool isParameter);
     static void parseReturn(const CVariant &value, JSONSchemaTypeDefinition &returns);
-    static JSONSchemaType parseJSONSchemaType(const CVariant &value);
+    static JSONSchemaType parseJSONSchemaType(const CVariant &value, std::vector<JSONSchemaTypeDefinition>& typeDefinitions);
     static void addReferenceTypeDefinition(JSONSchemaTypeDefinition &typeDefinition);
 
     static void getReferencedTypes(const JSONSchemaTypeDefinition &type, std::vector<std::string> &referencedTypes);

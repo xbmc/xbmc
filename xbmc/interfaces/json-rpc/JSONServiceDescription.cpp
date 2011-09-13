@@ -686,6 +686,16 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
       for (unsigned int extendsIndex = 0; extendsIndex < type.extends.size(); extendsIndex++)
         output["extends"].append(type.extends.at(extendsIndex).ID);
     }
+    else if (type.unionTypes.size() > 0)
+    {
+      output["type"] = CVariant(CVariant::VariantTypeArray);
+      for (unsigned int unionIndex = 0; unionIndex < type.unionTypes.size(); unionIndex++)
+      {
+        CVariant unionOutput = CVariant(CVariant::VariantTypeObject);
+        printType(type.unionTypes.at(unionIndex), false, false, true, printDescriptions, unionOutput);
+        output["type"].append(unionOutput);
+      }
+    }
     else
       SchemaValueTypeToJson(type.type, output["type"]);
 
@@ -844,6 +854,30 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
     CLog::Log(LOGWARNING, "JSONRPC: Value is NULL in type %s", type.name.c_str());
     errorData["message"] = "Received value is null";
     return InvalidParams;
+  }
+
+  // Let's check if we have to handle a union type
+  if (type.unionTypes.size() > 0)
+  {
+    bool ok = false;
+    for (unsigned int unionIndex = 0; unionIndex < type.unionTypes.size(); unionIndex++)
+    {
+      CVariant dummyError;
+      CVariant testOutput = outputValue;
+      if (checkType(value, type.unionTypes.at(unionIndex), testOutput, dummyError) == OK)
+      {
+        ok = true;
+        outputValue = testOutput;
+        break;
+      }
+    }
+
+    if (!ok)
+    {
+      CLog::Log(LOGWARNING, "JSONRPC: Value in type %s does not match any of the union type definitions", type.name.c_str());
+      errorData["message"] = "Received value does not match any of the union type definitions";
+      return InvalidParams;
+    }
   }
 
   // First we need to check if this type extends another
@@ -1345,7 +1379,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
   if (type.extends.size() <= 0)
   {
     // Get the defined type of the parameter
-    type.type = parseJSONSchemaType(value["type"]);
+    type.type = parseJSONSchemaType(value["type"], type.unionTypes);
   }
 
   if (HasType(type.type, ObjectValue))
@@ -1581,14 +1615,14 @@ void CJSONServiceDescription::parseReturn(const CVariant &value, JSONSchemaTypeD
   // If the type of the return value is defined as a simple string we can parse it directly
   if (value["returns"].isString())
   {
-    returns.type = parseJSONSchemaType(value["returns"]);
+    returns.type = parseJSONSchemaType(value["returns"], returns.unionTypes);
   }
   // otherwise we have to parse the whole type definition
   else
     parseTypeDefinition(value["returns"], returns, false);
 }
 
-JSONSchemaType CJSONServiceDescription::parseJSONSchemaType(const CVariant &value)
+JSONSchemaType CJSONServiceDescription::parseJSONSchemaType(const CVariant &value, std::vector<JSONSchemaTypeDefinition>& typeDefinitions)
 {
   if (value.isArray())
   {
@@ -1597,9 +1631,27 @@ JSONSchemaType CJSONServiceDescription::parseJSONSchemaType(const CVariant &valu
     // to handle a union type
     for (unsigned int typeIndex = 0; typeIndex < value.size(); typeIndex++)
     {
+      JSONSchemaType type;
+      JSONSchemaTypeDefinition definition;
       // If the type is a string try to parse it
       if (value[typeIndex].isString())
-        parsedType |= StringToSchemaValueType(value[typeIndex].asString());
+      {
+        type = StringToSchemaValueType(value[typeIndex].asString());
+        definition.type = type;
+        typeDefinitions.push_back(definition);
+        parsedType |= type;
+      }
+      else if (value[typeIndex].isObject())
+      {
+        if (!parseTypeDefinition(value[typeIndex], definition, false))
+        {
+          CLog::Log(LOGERROR, "JSONRPC: Invalid type schema in union type definition");
+          continue;
+        }
+
+        typeDefinitions.push_back(definition);
+        parsedType |= definition.type;
+      }
       else
         CLog::Log(LOGWARNING, "JSONRPC: Invalid type in union type definition");
     }
