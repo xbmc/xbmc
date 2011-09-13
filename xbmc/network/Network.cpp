@@ -120,6 +120,16 @@ int CNetwork::ParseHex(char *str, unsigned char *addr)
    return len;
 }
 
+CStdString CNetwork::GetHostName(void)
+{
+  char hostName[128];
+  if (gethostname(hostName, sizeof(hostName)))
+    return CStdString("unknown");
+  else
+    return CStdString(hostName);
+}
+
+
 CNetworkInterface* CNetwork::GetFirstConnectedInterface()
 {
    vector<CNetworkInterface*>& ifaces = GetInterfaceList();
