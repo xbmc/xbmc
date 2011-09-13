@@ -10,6 +10,7 @@ UpdateInstaller::UpdateInstaller()
 , m_waitPid(0)
 , m_script(0)
 , m_observer(0)
+, m_forceElevated(false)
 {
 }
 
@@ -41,6 +42,11 @@ void UpdateInstaller::setMode(Mode mode)
 void UpdateInstaller::setScript(UpdateScript* script)
 {
 	m_script = script;
+}
+
+void UpdateInstaller::setForceElevated(bool elevated)
+{
+	m_forceElevated = elevated;
 }
 
 std::list<std::string> UpdateInstaller::updaterArgs() const
@@ -104,7 +110,7 @@ void UpdateInstaller::run() throw ()
 		args.push_back(intToStr(ProcessUtils::currentProcessId()));
 
 		int installStatus = 0;
-		if (!checkAccess())
+		if (m_forceElevated || !checkAccess())
 		{
 			LOG(Info,"Insufficient rights to install app to " + m_installDir + " requesting elevation");
 

@@ -85,6 +85,7 @@ int main(int argc, char** argv)
 	installer.setPackageDir(options.packageDir);
 	installer.setScript(&script);
 	installer.setWaitPid(options.waitPid);
+	installer.setForceElevated(options.forceElevated);
 
 	if (options.mode == UpdateInstaller::Main)
 	{

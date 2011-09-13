@@ -20,6 +20,7 @@ UpdaterOptions::UpdaterOptions()
 : mode(UpdateInstaller::Setup)
 , waitPid(0)
 , showVersion(false)
+, forceElevated(false)
 {
 }
 
@@ -113,6 +114,7 @@ void UpdaterOptions::parse(int argc, char** argv)
 	parser.setOption("wait");
 	parser.setOption("mode");
 	parser.setFlag("version");
+	parser.setFlag("force-elevated");
 
 	parser.processCommandArgs(argc,argv);
 
@@ -138,6 +140,7 @@ void UpdaterOptions::parse(int argc, char** argv)
 	}
 
 	showVersion = parser.getFlag("version");
+	forceElevated = parser.getFlag("force-elevated");
 		
 	if (installDir.empty())
 	{

@@ -30,6 +30,7 @@ class UpdateInstaller
 		void setMode(Mode mode);
 		void setScript(UpdateScript* script);
 		void setWaitPid(PLATFORM_PID pid);
+		void setForceElevated(bool elevated);
 
 		void setObserver(UpdateObserver* observer);
 
@@ -60,5 +61,6 @@ class UpdateInstaller
 		UpdateScript* m_script;
 		UpdateObserver* m_observer;
 		std::map<std::string,std::string> m_backups;
+		bool m_forceElevated;
 };
 
