@@ -370,6 +370,7 @@ namespace INFO
 #define SYSTEM_ADDON_ICON           713
 #define SYSTEM_BATTERY_LEVEL        714
 #define SYSTEM_IDLE_TIME            715
+#define SYSTEM_FRIENDLY_NAME        716
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
