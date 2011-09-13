@@ -1613,7 +1613,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
   case SYSTEM_FRIENDLY_NAME:
     {
-      CStdString friendlyName = g_guiSettings.GetString("services.friendlyname");
+      CStdString friendlyName = g_guiSettings.GetString("services.devicename");
       if (friendlyName.Equals("XBMC"))
         strLabel.Format("%s (%s)", friendlyName.c_str(), g_application.getNetwork().GetHostName().c_str());
       else
