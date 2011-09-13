@@ -339,6 +339,9 @@ package_file_map.each do |package,files|
 		# do not package the updater binary into a zip file -
 		# it must be downloaded uncompressed
 		if package_config.is_updater(file)
+			if (!updater_binary_input_path)
+				updater_binary_input_path = file
+			end
 			next
 		end
 		quoted_files << "\"#{strip_prefix(file,input_dir)}\""
@@ -378,6 +381,7 @@ package_file_map.each do |package,files|
 end
 
 # copy the updater to the output directory
+puts "Using updater binary: #{updater_binary_input_path}"
 if !updater_binary_input_path
 	puts "Updater binary not found in input directory: #{input_dir}"
 	exit(1)
