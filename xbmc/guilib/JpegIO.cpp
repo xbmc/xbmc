@@ -55,8 +55,7 @@ CJpegIO::~CJpegIO()
 
 void CJpegIO::Close()
 {
-  if (m_inputBuff)
-    delete [] m_inputBuff;
+  delete [] m_inputBuff;
 }
 
 bool CJpegIO::Open(const CStdString& texturePath,  unsigned int minx, unsigned int miny)
@@ -73,7 +72,7 @@ bool CJpegIO::Open(const CStdString& texturePath,  unsigned int minx, unsigned i
     m_inputBuffSize = file.Read(m_inputBuff, m_imgsize);
     file.Close();
 
-    if ((m_imgsize != m_inputBuffSize) || (m_inputBuffSize <= 0))
+    if ((m_imgsize != m_inputBuffSize) || (m_inputBuffSize == 0))
       return false;
   }
   else
@@ -95,7 +94,7 @@ bool CJpegIO::Open(const CStdString& texturePath,  unsigned int minx, unsigned i
     If the res is greater than the one desired, use that one since there's no need
     to decode a bigger one just to squish it back down. If the res is greater than
     the gpu can hold, use the previous one.*/
-    if (m_minx <= 0 || m_miny <= 0)
+    if (m_minx == 0 || m_miny == 0)
     {
       m_minx = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iWidth;
       m_miny = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
