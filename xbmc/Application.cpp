@@ -1280,13 +1280,17 @@ void CApplication::StartAirplayServer()
 #ifdef HAS_AIRPLAY
   if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
   {
+    CStdString password = g_guiSettings.GetString("services.airplaypassword");
+    bool usePassword = g_guiSettings.GetBool("services.useairplaypassword");
+    
     if (CAirPlayServer::StartServer(9091, true))
     {
+      CAirPlayServer::SetCredentials(usePassword, password);
       std::map<std::string, std::string> txt;
       txt["deviceid"] = m_network.GetFirstConnectedInterface()->GetMacAddress();
       txt["features"] = "0x77";
       txt["model"] = "AppleTV2,1";
-      txt["srcvers"] = "101.10";
+      txt["srcvers"] = "101.28";
       CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", "XBMC", 9091, txt);
     }
   }

@@ -40,12 +40,14 @@ class CAirPlayServer : public CThread
 public:
   static bool StartServer(int port, bool nonlocal);
   static void StopServer(bool bWait);
+  static bool SetCredentials(bool usePassword, CStdString& password);
 
 protected:
   void Process();
 
 private:
   CAirPlayServer(int port, bool nonlocal);
+  bool SetInternalCredentials(bool usePassword, CStdString& password);  
   bool Initialize();
   void Deinitialize();
 
@@ -69,9 +71,13 @@ private:
   private:
     int ProcessRequest(CStdString& responseHeader, CStdString& response, CStdString& reverseHeader, CStdString& reverseBody, CStdString& sessionId);
     void ComposeReverseEvent(CStdString& reverseHeader, CStdString& reverseBody, CStdString sessionId, int state);
+    void ComposeAuthRequestAnswer(CStdString& responseHeader, CStdString& responseBody);
+    bool checkAuthorization(CStdString& authStr, CStdString& method, CStdString& uri);
     void Copy(const CTCPClient& client);
     HttpParser* m_httpParser;
     DllLibPlist *m_pLibPlist;//the lib  
+    bool m_bAuthenticated;
+    CStdString m_authNonce;
   };
 
   std::vector<CTCPClient> m_connections;
@@ -79,7 +85,9 @@ private:
   int m_ServerSocket;
   int m_port;
   bool m_nonlocal;
-
+  bool m_usePassword;
+  CStdString m_password;  
+  
   static CAirPlayServer *ServerInstance;
 };
 
