@@ -24,6 +24,12 @@
    <package>app-pkg</package>
    <is-main-binary>true</is-main-binary>
   </file>
+  <file>
+   <name>$UPDATER_FILENAME</name>
+   <hash>$UPDATER_HASH</hash>
+   <size>$UPDATER_SIZE</size>
+   <permissions>0755</permissions>
+  </file>
   <!-- Test symlink !-->
   <file>
    <name>test-dir/app-symlink</name>

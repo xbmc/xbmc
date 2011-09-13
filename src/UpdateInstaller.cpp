@@ -224,15 +224,29 @@ void UpdateInstaller::installFile(const UpdateScriptFile& file)
 	if (target.empty())
 	{
 		// locate the package containing the file
-		std::string packageFile = m_packageDir + '/' + file.package + ".zip";
-		if (!FileUtils::fileExists(packageFile.c_str()))
+		if (!file.package.empty())
 		{
-			throw "Package file does not exist: " + packageFile;
-		}
+			std::string packageFile = m_packageDir + '/' + file.package + ".zip";
+			if (!FileUtils::fileExists(packageFile.c_str()))
+			{
+				throw "Package file does not exist: " + packageFile;
+			}
 
-		// extract the file from the package and copy it to
-		// the destination
-		FileUtils::extractFromZip(packageFile.c_str(),file.path.c_str(),destPath.c_str());
+			// extract the file from the package and copy it to
+			// the destination
+			FileUtils::extractFromZip(packageFile.c_str(),file.path.c_str(),destPath.c_str());
+		}
+		else
+		{
+			// if no package is specified, look for an uncompressed file in the
+			// root of the package directory
+			std::string sourceFile = m_packageDir + '/' + FileUtils::fileName(file.path.c_str());
+			if (!FileUtils::fileExists(sourceFile.c_str()))
+			{
+				throw "Source file does not exist: " + sourceFile;
+			}
+			FileUtils::copyFile(sourceFile.c_str(),destPath.c_str());
+		}
 
 		// set the permissions on the newly extracted file
 		FileUtils::chmod(destPath.c_str(),file.permissions);

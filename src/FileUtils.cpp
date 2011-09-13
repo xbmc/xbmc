@@ -419,6 +419,39 @@ bool FileUtils::isRelative(const char* path)
 #endif
 }
 
+void FileUtils::copyFile(const char* src, const char* dest) throw (IOException)
+{
+#ifdef PLATFORM_UNIX
+	std::ifstream inputFile(src,std::ios::binary);
+	std::ofstream outputFile(dest,std::ios::binary | std::ios::trunc);
+
+	if (!inputFile.good())
+	{
+		throw IOException("Failed to read file " + std::string(src));
+	}
+	if (!outputFile.good())
+	{
+		throw IOException("Failed to write file " + std::string(dest));
+	}
+	
+	outputFile << inputFile.rdbuf();
+
+	if (inputFile.bad())
+	{
+		throw IOException("Error reading file " + std::string(src));
+	}
+	if (outputFile.bad())
+	{
+		throw IOException("Error writing file " + std::string(dest));
+	}
+#else
+	if (!CopyFile(src,dest,FALSE))
+	{
+		throw IOException("Failed to copy " + std::string(src) + " to " + std::string(dest));
+	}
+#endif
+}
+
 std::string FileUtils::makeAbsolute(const char* path, const char* basePath)
 {
 	if (isRelative(path))

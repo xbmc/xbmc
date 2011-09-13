@@ -24,7 +24,8 @@ else
 end
 
 file_list_vars = {
-  "APP_FILENAME" => APP_NAME
+  "APP_FILENAME" => APP_NAME,
+  "UPDATER_FILENAME" => UPDATER_NAME
 }
 
 def replace_vars(src_file,dest_file,vars)
@@ -89,7 +90,7 @@ FileUtils.cp("../#{UPDATER_NAME}","#{PACKAGE_DIR}/#{UPDATER_NAME}")
 # make sure that it looks in the correct directory for
 # the file_list.xml file and packages
 #
-install_path = File.absolute_path(INSTALL_DIR)
+install_path = File.expand_path(INSTALL_DIR)
 Dir.chdir(INSTALL_DIR) do
 	cmd = "#{PACKAGE_DIR}/#{UPDATER_NAME} --install-dir \"#{install_path}\" --package-dir \"#{PACKAGE_DIR}\" --script file_list.xml"
 	puts "Running '#{cmd}'"
@@ -101,7 +102,7 @@ sleep(1)
 
 # Check that the app was updated
 app_path = "#{INSTALL_DIR}/#{APP_NAME}"
-output = `#{app_path}`
+output = `"#{app_path}"`
 if (output.strip != "new app starting")
 	throw "Updated app produced unexpected output: #{output}"
 end

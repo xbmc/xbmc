@@ -55,6 +55,7 @@ class FileUtils
 		static void rmdir(const char* dir) throw (IOException);
 		static void createSymLink(const char* link, const char* target) throw (IOException);
 		static void touch(const char* path) throw (IOException);
+		static void copyFile(const char* src, const char* dest) throw (IOException);
 
 		/** Create all the directories in @p path which do not yet exist.
 		  * @p path may be relative or absolute.
