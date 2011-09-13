@@ -63,14 +63,17 @@ void ProcessUtils::runAsync(const std::string& executable,
 }
 
 int ProcessUtils::runElevated(const std::string& executable,
-					const std::list<std::string>& args)
+                              const std::list<std::string>& args,
+                              const std::string& task)
 {
 #ifdef PLATFORM_WINDOWS
+	(void)task;
 	return runElevatedWindows(executable,args);
 #elif defined(PLATFORM_MAC)
+	(void)task;
 	return runElevatedMac(executable,args);
 #elif defined(PLATFORM_LINUX)
-	return runElevatedLinux(executable,args);
+	return runElevatedLinux(executable,args,task);
 #endif
 }
 
@@ -106,9 +109,16 @@ bool ProcessUtils::waitForProcess(PLATFORM_PID pid)
 
 #ifdef PLATFORM_LINUX
 int ProcessUtils::runElevatedLinux(const std::string& executable,
-							const std::list<std::string>& args)
+                                   const std::list<std::string>& args,
+                                   const std::string& _task)
 {
-	std::string sudoMessage = FileUtils::fileName(executable.c_str()) + " needs administrative privileges.  Please enter your password.";
+	std::string task(_task);
+	if (task.empty())
+	{
+		task = FileUtils::fileName(executable.c_str());
+	}
+
+	std::string sudoMessage = task + " needs administrative privileges.  Please enter your password.";
 
 	std::vector<std::string> sudos;
 	sudos.push_back("kdesudo");

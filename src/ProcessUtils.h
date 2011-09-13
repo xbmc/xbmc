@@ -47,7 +47,8 @@ class ProcessUtils
 		  * not be started.
 		  */
 		static int runElevated(const std::string& executable,
-		                        const std::list<std::string>& args);
+		                       const std::list<std::string>& args,
+		                       const std::string& task);
 
 		/** Wait for a process to exit.
 		  * Returns true if the process was found and has exited or false
@@ -70,7 +71,8 @@ class ProcessUtils
 			RunAsync
 		};
 		static int runElevatedLinux(const std::string& executable,
-		                             const std::list<std::string>& args);
+		                             const std::list<std::string>& args,
+		                            const std::string& task);
 		static int runElevatedMac(const std::string& executable,
 		                           const std::list<std::string>& args);
 		static int runElevatedWindows(const std::string& executable,

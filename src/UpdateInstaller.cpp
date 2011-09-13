@@ -1,5 +1,6 @@
 #include "UpdateInstaller.h"
 
+#include "AppInfo.h"
 #include "FileUtils.h"
 #include "Log.h"
 #include "ProcessUtils.h"
@@ -115,7 +116,7 @@ void UpdateInstaller::run() throw ()
 			LOG(Info,"Insufficient rights to install app to " + m_installDir + " requesting elevation");
 
 			// start a copy of the updater with admin rights
-			installStatus = ProcessUtils::runElevated(updaterPath,args);
+			installStatus = ProcessUtils::runElevated(updaterPath,args,AppInfo::name());
 		}
 		else
 		{
