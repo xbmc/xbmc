@@ -15,6 +15,7 @@
 #endif
 
 #if defined(PLATFORM_MAC)
+  #include "MacBundle.h"
   #include "UpdateDialogCocoa.h"
 #endif
 
@@ -51,13 +52,58 @@ void runUpdaterThread(void* arg)
 #endif
 }
 
+#ifdef PLATFORM_MAC
+extern unsigned char Info_plist[];
+extern unsigned int Info_plist_len;
+
+extern unsigned char mac_icns[];
+extern unsigned int mac_icns_len;
+
+bool unpackBundle(int argc, char** argv)
+{
+	MacBundle bundle(FileUtils::tempPath(),AppInfo::name());
+	std::string currentExePath = ProcessUtils::currentProcessPath();
+
+	if (currentExePath.find(bundle.bundlePath()) != std::string::npos)
+	{
+		// already running from a bundle
+		return false;
+	}
+	LOG(Info,"Creating bundle " + bundle.bundlePath());
+
+	// create a Mac app bundle
+	std::string plistContent(reinterpret_cast<const char*>(Info_plist),Info_plist_len);
+	std::string iconContent(reinterpret_cast<const char*>(mac_icns),mac_icns_len);
+	bundle.create(plistContent,iconContent,ProcessUtils::currentProcessPath());
+
+	std::list<std::string> args;
+	for (int i = 1; i < argc; i++)
+	{
+		args.push_back(argv[i]);
+	}
+	ProcessUtils::runSync(bundle.executablePath(),args);
+	return true;
+}
+#endif
+
 int main(int argc, char** argv)
 {
 #ifdef PLATFORM_MAC
 	void* pool = UpdateDialogCocoa::createAutoreleasePool();
 #endif
-
+	
 	Log::instance()->open(AppInfo::logFilePath());
+
+#ifdef PLATFORM_MAC
+	// when the updater is run for the first time, create a Mac app bundle
+	// and re-launch the application from the bundle.  This permits
+	// setting up bundle properties (such as application icon)
+	if (unpackBundle(argc,argv))
+	{
+		return 0;
+	}
+#endif
+
 	UpdaterOptions options;
 	options.parse(argc,argv);
 	if (options.showVersion)

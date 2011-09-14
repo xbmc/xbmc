@@ -90,9 +90,6 @@ UpdateDialogCocoa::~UpdateDialogCocoa()
 	[d->pool release];
 }
 
-extern unsigned char mac_dock_png[];
-extern unsigned int mac_dock_png_len;
-
 void UpdateDialogCocoa::enableDockIcon()
 {
 	// convert the application to a foreground application and in
@@ -103,13 +100,6 @@ void UpdateDialogCocoa::enableDockIcon()
 	ProcessSerialNumber psn;
 	GetCurrentProcess(&psn);
 	TransformProcessType(&psn,kProcessTransformToForegroundApplication);
-
-	// loading the icon for the app has to be done after
-	// changing the process type
-	NSData* iconData = [NSData dataWithBytes:mac_dock_png length:mac_dock_png_len];
-	NSImage* iconImage = [[NSImage alloc] initWithData: iconData];
-	[NSApp setApplicationIconImage:iconImage];
-	[iconImage release];
 }
 
 void UpdateDialogCocoa::init()

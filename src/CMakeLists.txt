@@ -38,10 +38,20 @@ set (SOURCES
 
 if (APPLE)
 	set(MAC_DOCK_ICON_CPP_FILE ${CMAKE_CURRENT_BINARY_DIR}/mac_dock_icon.cpp)
+	set(MAC_INFO_PLIST_FILE ${CMAKE_CURRENT_BINARY_DIR}/mac_info_plist.cpp)
 	generate_cpp_resource_file(resource_macdockicon
 	                           ${CMAKE_CURRENT_SOURCE_DIR}/resources
-	                           mac-dock.png ${MAC_DOCK_ICON_CPP_FILE})
-	set(SOURCES ${SOURCES} StandardDirs.mm UpdateDialogCocoa.mm mac_dock_icon.cpp)
+	                           mac.icns ${MAC_DOCK_ICON_CPP_FILE})
+	generate_cpp_resource_file(resource_macplist
+	                           ${CMAKE_CURRENT_SOURCE_DIR}/resources
+	                           Info.plist ${MAC_INFO_PLIST_FILE})
+	set(HEADERS ${HEADERS} MacBundle.h)
+	set(SOURCES ${SOURCES}
+	  MacBundle.cpp
+	  StandardDirs.mm
+	  UpdateDialogCocoa.mm
+	  mac_dock_icon.cpp
+	  mac_info_plist.cpp)
 endif()
 
 if (WIN32)
