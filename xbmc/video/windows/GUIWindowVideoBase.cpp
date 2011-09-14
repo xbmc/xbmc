@@ -947,43 +947,35 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
   ADDON::ScraperPtr scraper;
   if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
   {
-    CStdString strDir(item->GetPath());
-    if (item->IsVideoDb() && item->HasVideoInfoTag() &&
-        !item->GetVideoInfoTag()->GetPath().IsEmpty())
+    CStdString strDir;
+    if (item->IsVideoDb()       &&
+        item->HasVideoInfoTag() &&
+        !item->GetVideoInfoTag()->m_strPath.IsEmpty())
     {
-      strDir = item->GetVideoInfoTag()->GetPath();
-    }
-
-    CVideoInfoTag details;
-    if (m_database.LoadVideoInfo(strDir, details))
-    {
-      CGUIDialogVideoInfo* pDlgInfo = (CGUIDialogVideoInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_INFO);
-
-      if (!pDlgInfo)
-        return false;
-
-      *item->GetVideoInfoTag() = details;
-      pDlgInfo->SetMovie(item.get());
-      pDlgInfo->DoModal();
-      return true;
+      strDir = item->GetVideoInfoTag()->m_strPath;
     }
     else
+      URIUtils::GetDirectory(item->GetPath(),strDir);
+
+    SScanSettings settings;
+    bool foundDirectly = false;
+    scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
+
+    if (!scraper &&
+        !(m_database.HasMovieInfo(item->GetPath()) ||
+          m_database.HasTvShowInfo(strDir)           ||
+          m_database.HasEpisodeInfo(item->GetPath())))
     {
-      SScanSettings settings;
-      bool foundDirectly = false;
-      scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
-
-      if (!scraper)
-        return false;
-
-      if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly && !settings.parent_name_root) // dont lookup on root tvshow folder
-        return true;
-
-      OnInfo(item.get(), scraper);
-      return true;
+      return false;
     }
+
+    if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly && !settings.parent_name_root) // dont lookup on root tvshow folder
+      return true;
   }
-  return false;
+
+  OnInfo(item.get(), scraper);
+
+  return true;
 }
 
 void CGUIWindowVideoBase::OnRestartItem(int iItem)
