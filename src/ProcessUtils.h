@@ -16,7 +16,15 @@ class ProcessUtils
 			/** Status code returned by runElevated() if launching
 			  * the elevated process fails.
 			  */
-			RUN_ELEVATED_FAILED = 255
+			RUN_ELEVATED_FAILED = 255,
+			/** Status code returned by runSync() if the application
+                          * cannot be started.
+                          */
+                        RUN_FAILED = -8,
+			/** Status code returned by runSync() if waiting for
+                          * the application to exit and reading its status code fails.
+                          */
+                        WAIT_FAILED = -1
 		};
 
 		static PLATFORM_PID currentProcessId();

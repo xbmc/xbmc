@@ -32,7 +32,7 @@ PLATFORM_PID ProcessUtils::currentProcessId()
 }
 
 int ProcessUtils::runSync(const std::string& executable,
-		                   const std::list<std::string>& args)
+                          const std::list<std::string>& args)
 {
 #ifdef PLATFORM_UNIX
 	return runSyncUnix(executable,args);
@@ -47,8 +47,23 @@ int ProcessUtils::runSyncUnix(const std::string& executable,
 {
 	PLATFORM_PID pid = runAsyncUnix(executable,args);
 	int status = 0;
-	waitpid(pid,&status,0);
-	return status;
+	if (waitpid(pid,&status,0) != -1)
+	{
+		if (WIFEXITED(status))
+		{
+			return static_cast<char>(WEXITSTATUS(status));
+		}
+		else
+		{
+			LOG(Warn,"Child exited abnormally");
+			return -1;
+		}
+	}
+	else
+	{
+		LOG(Warn,"Failed to get exit status of child " + intToStr(pid));
+		return WAIT_FAILED;
+	}
 }
 #endif
 
@@ -118,12 +133,24 @@ int ProcessUtils::runElevatedLinux(const std::string& executable,
 		task = FileUtils::fileName(executable.c_str());
 	}
 
-	std::string sudoMessage = task + " needs administrative privileges.  Please enter your password.";
+	// try available graphical sudo instances until we find one that works.
+	// The different sudo front-ends have different behaviors with respect to error codes:
+	//
+	// - 'kdesudo': return 1 if the user enters the wrong password 3 times or if
+	//              they cancel elevation
+	//
+	// - recent 'gksudo' versions: return 1 if the user enters the wrong password
+	//                           : return -1 if the user cancels elevation
+	//
+	// - older 'gksudo' versions : return 0 if the user cancels elevation
 
 	std::vector<std::string> sudos;
-	sudos.push_back("kdesudo");
+
+	if (getenv("KDE_SESSION_VERSION"))
+	{
+		sudos.push_back("kdesudo");
+	}
 	sudos.push_back("gksudo");
-	sudos.push_back("gksu");
 
 	for (unsigned int i=0; i < sudos.size(); i++)
 	{
@@ -137,21 +164,28 @@ int ProcessUtils::runElevatedLinux(const std::string& executable,
 		{
 			sudoArgs.push_back("-d");
 			sudoArgs.push_back("--comment");
+			std::string sudoMessage = task + " needs administrative privileges.  Please enter your password.";
 			sudoArgs.push_back(sudoMessage);
+		}
+		else if (sudoBinary == "gksudo")
+		{
+			sudoArgs.push_back("--description");
+			sudoArgs.push_back(task);
 		}
 		else
 		{
-			sudoArgs.push_back(sudoMessage);
+			sudoArgs.push_back(task);
 		}
 
 		sudoArgs.push_back("--");
 		sudoArgs.push_back(executable);
 		std::copy(args.begin(),args.end(),std::back_inserter(sudoArgs));
 
-		// != 255: some sudo has been found and user failed to authenticate
-		// or user authenticated correctly
 		int result = ProcessUtils::runSync(sudoBinary,sudoArgs);
-		if (result != 255)
+
+		LOG(Info,"Tried to use sudo " + sudoBinary + " with response " + intToStr(result));
+
+		if (result != RUN_FAILED)
 		{
 			return result;
 			break;
@@ -356,7 +390,7 @@ PLATFORM_PID ProcessUtils::runAsyncUnix(const std::string& executable,
 		if (execvp(executable.c_str(),argBuffer) == -1)
 		{
 			LOG(Error,"error starting child: " + std::string(strerror(errno)));
-			exit(1);
+			exit(RUN_FAILED);
 		}
 	}
 	else
@@ -400,7 +434,7 @@ int ProcessUtils::runWindows(const std::string& executable,
 	if (!result)
 	{
 		LOG(Error,"Failed to start child process. " + executable + " Last error: " + intToStr(GetLastError()));
-		return -1;
+		return RUN_FAILED;
 	}
 	else
 	{
@@ -408,7 +442,7 @@ int ProcessUtils::runWindows(const std::string& executable,
 		{
 			if (WaitForSingleObject(processInfo.hProcess,INFINITE) == WAIT_OBJECT_0)
 			{
-				DWORD status = -1;
+				DWORD status = WAIT_FAILED;
 				if (GetExitCodeProcess(processInfo.hProcess,&status) != 0)
 				{
 					LOG(Error,"Failed to get exit code for process");
@@ -418,7 +452,7 @@ int ProcessUtils::runWindows(const std::string& executable,
 			else
 			{
 				LOG(Error,"Failed to wait for process to finish");
-				return -1;
+				return WAIT_FAILED;
 			}
 		}
 		else
