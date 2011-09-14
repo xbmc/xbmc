@@ -68,7 +68,7 @@ int CWinEventsWin32::m_lastGesturePosY = 0;
 #define WM_MEDIA_CHANGE (WM_USER + 666)
 SHChangeNotifyEntry shcne;
 
-void CWinEventsWin32::DIB_InitOSKeymap()
+void DIB_InitOSKeymap()
 {
   char current_layout[KL_NAMELENGTH];
 
