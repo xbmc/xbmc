@@ -62,7 +62,7 @@ int ProcessUtils::runSyncUnix(const std::string& executable,
 	else
 	{
 		LOG(Warn,"Failed to get exit status of child " + intToStr(pid));
-		return WAIT_FAILED;
+		return WaitFailed;
 	}
 }
 #endif
@@ -185,13 +185,13 @@ int ProcessUtils::runElevatedLinux(const std::string& executable,
 
 		LOG(Info,"Tried to use sudo " + sudoBinary + " with response " + intToStr(result));
 
-		if (result != RUN_FAILED)
+		if (result != RunFailed)
 		{
 			return result;
 			break;
 		}
 	}
-	return RUN_ELEVATED_FAILED;
+	return RunElevatedFailed;
 }
 #endif
 
@@ -288,7 +288,7 @@ int ProcessUtils::runElevatedMac(const std::string& executable,
 			else
 			{
 				LOG(Error,"failed to launch elevated process " + intToStr(status));
-				return RUN_ELEVATED_FAILED;
+				return RunElevatedFailed;
 			}
 			
 			// If we want to know more information about what has happened:
@@ -302,12 +302,12 @@ int ProcessUtils::runElevatedMac(const std::string& executable,
 		else
 		{
 			LOG(Error,"failed to get rights to launch elevated process. status: " + intToStr(status));
-			return RUN_ELEVATED_FAILED;
+			return RunElevatedFailed;
 		}
 	}
 	else
 	{
-		return RUN_ELEVATED_FAILED;
+		return RunElevatedFailed;
 	}
 }
 #endif
@@ -358,7 +358,7 @@ int ProcessUtils::runElevatedWindows(const std::string& executable,
 	if (!ShellExecuteEx(&executeInfo))
 	{
 		LOG(Error,"Failed to start with admin priviledges using ShellExecuteEx()");
-		return RUN_ELEVATED_FAILED;
+		return RunElevatedFailed;
 	}
 
 	WaitForSingleObject(executeInfo.hProcess, INFINITE);
@@ -390,7 +390,7 @@ PLATFORM_PID ProcessUtils::runAsyncUnix(const std::string& executable,
 		if (execvp(executable.c_str(),argBuffer) == -1)
 		{
 			LOG(Error,"error starting child: " + std::string(strerror(errno)));
-			exit(RUN_FAILED);
+			exit(RunFailed);
 		}
 	}
 	else
@@ -434,7 +434,7 @@ int ProcessUtils::runWindows(const std::string& executable,
 	if (!result)
 	{
 		LOG(Error,"Failed to start child process. " + executable + " Last error: " + intToStr(GetLastError()));
-		return RUN_FAILED;
+		return RunFailed;
 	}
 	else
 	{
@@ -442,7 +442,7 @@ int ProcessUtils::runWindows(const std::string& executable,
 		{
 			if (WaitForSingleObject(processInfo.hProcess,INFINITE) == WAIT_OBJECT_0)
 			{
-				DWORD status = WAIT_FAILED;
+				DWORD status = WaitFailed;
 				if (GetExitCodeProcess(processInfo.hProcess,&status) != 0)
 				{
 					LOG(Error,"Failed to get exit code for process");
@@ -452,7 +452,7 @@ int ProcessUtils::runWindows(const std::string& executable,
 			else
 			{
 				LOG(Error,"Failed to wait for process to finish");
-				return WAIT_FAILED;
+				return WaitFailed;
 			}
 		}
 		else

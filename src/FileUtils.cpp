@@ -83,6 +83,7 @@ int FileUtils::fileMode(const char* path) throw (IOException)
 	return fileInfo.st_mode;
 #else
 	// not implemented for Windows
+	return 0;
 #endif
 }
 

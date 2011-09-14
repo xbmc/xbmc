@@ -16,15 +16,15 @@ class ProcessUtils
 			/** Status code returned by runElevated() if launching
 			  * the elevated process fails.
 			  */
-			RUN_ELEVATED_FAILED = 255,
+			RunElevatedFailed = 255,
 			/** Status code returned by runSync() if the application
                           * cannot be started.
                           */
-                        RUN_FAILED = -8,
+                        RunFailed = -8,
 			/** Status code returned by runSync() if waiting for
                           * the application to exit and reading its status code fails.
                           */
-                        WAIT_FAILED = -1
+                        WaitFailed = -1
 		};
 
 		static PLATFORM_PID currentProcessId();
@@ -51,7 +51,7 @@ class ProcessUtils
 		/** Run a process with administrative privileges and return the
 		  * status code of the process, or 0 on Windows.
 		  *
-		  * Returns RUN_ELEVATED_FAILED if the elevated process could
+		  * Returns RunElevatedFailed if the elevated process could
 		  * not be started.
 		  */
 		static int runElevated(const std::string& executable,
