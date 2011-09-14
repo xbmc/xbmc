@@ -972,6 +972,7 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
       *item->GetVideoInfoTag() = details;
       pDlgInfo->SetMovie(item.get());
       pDlgInfo->DoModal();
+      return true;
     }
     else
     {
