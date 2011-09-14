@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "WinEvents.h"
+#include "windowing/WinEvents.h"
 
 class CWinEventsWin32 : public CWinEventsBase
 {
