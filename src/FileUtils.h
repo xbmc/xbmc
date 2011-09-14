@@ -50,6 +50,7 @@ class FileUtils
 		  */
 		static void chmod(const char* path, int permissions) throw (IOException);
 		static bool fileExists(const char* path) throw (IOException);
+		static int fileMode(const char* path) throw (IOException);
 		static void moveFile(const char* src, const char* dest) throw (IOException);
 		static void mkdir(const char* dir) throw (IOException);
 		static void rmdir(const char* dir) throw (IOException);
@@ -100,5 +101,7 @@ class FileUtils
 		  * @p basePath should be absolute.
 		  */
 		static std::string makeAbsolute(const char* path, const char* basePath);
+
+		static void writeFile(const char* path, const char* data, int length) throw (IOException);
 };
 

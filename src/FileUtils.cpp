@@ -72,6 +72,20 @@ bool FileUtils::fileExists(const char* path) throw (IOException)
 #endif
 }
 
+int FileUtils::fileMode(const char* path) throw (IOException)
+{
+#ifdef PLATFORM_UNIX
+	struct stat fileInfo;
+	if (stat(path,&fileInfo) != 0)
+	{
+		throw IOException("Error reading file permissions for " + std::string(path));
+	}
+	return fileInfo.st_mode;
+#else
+	// not implemented for Windows
+#endif
+}
+
 void FileUtils::chmod(const char* path, int mode) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
@@ -419,6 +433,12 @@ bool FileUtils::isRelative(const char* path)
 #endif
 }
 
+void FileUtils::writeFile(const char* path, const char* data, int length) throw (IOException)
+{
+	std::ofstream stream(path,std::ios::binary | std::ios::trunc);
+	stream.write(data,length);
+}
+
 void FileUtils::copyFile(const char* src, const char* dest) throw (IOException)
 {
 #ifdef PLATFORM_UNIX
@@ -444,6 +464,8 @@ void FileUtils::copyFile(const char* src, const char* dest) throw (IOException)
 	{
 		throw IOException("Error writing file " + std::string(dest));
 	}
+
+	chmod(dest,fileMode(src));
 #else
 	if (!CopyFile(src,dest,FALSE))
 	{
