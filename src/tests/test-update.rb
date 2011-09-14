@@ -2,6 +2,7 @@
 
 require 'fileutils.rb'
 require 'rbconfig'
+require 'optparse'
 
 # Install directory - this contains a space to check
 # for correct escaping of paths when passing comamnd
@@ -44,6 +45,14 @@ def zip_supports_bzip2(zip_tool)
 	# "Nothing to do"
 	return `#{zip_tool} -Z bzip2 testing-bzip2-support.zip`.strip.include?("Nothing to do")
 end
+
+force_elevation = false
+
+OptionParser.new do |parser|
+	parser.on("-f","--force-elevated","Force the updater to elevate itself") do
+		force_elevation = true
+	end
+end.parse!
 
 BZIP2_AVAILABLE = zip_supports_bzip2(ZIP_TOOL)
 if (BZIP2_AVAILABLE)
@@ -92,7 +101,8 @@ FileUtils.cp("../#{UPDATER_NAME}","#{PACKAGE_DIR}/#{UPDATER_NAME}")
 #
 install_path = File.expand_path(INSTALL_DIR)
 Dir.chdir(INSTALL_DIR) do
-	cmd = "#{PACKAGE_DIR}/#{UPDATER_NAME} --install-dir \"#{install_path}\" --package-dir \"#{PACKAGE_DIR}\" --script file_list.xml"
+	flags = "--force-elevated" if force_elevation
+	cmd = "#{PACKAGE_DIR}/#{UPDATER_NAME} #{flags} --install-dir \"#{install_path}\" --package-dir \"#{PACKAGE_DIR}\" --script file_list.xml"
 	puts "Running '#{cmd}'"
 	system(cmd)
 end
