@@ -18,7 +18,7 @@ General Updater Tasks:
  * See if it is possible to overwrite application files that are in use on Windows [done - it is possible]
  * Fix package dir cleanup failing on Win32 due to executable being in use [done]
  
- * Test installing update if Microsoft Word with Mendeley plugin is active
+ * Test installing update if Microsoft Word with Mendeley plugin is active [done]
  * Write log file entries to an actual log file [done]
  * Test updater on an old Windows system without Visual Studio installed and statically
    link C++ runtime libraries if necessary
@@ -26,15 +26,17 @@ General Updater Tasks:
 Mendeley-specific Updater Tasks:
  * Use the Mendeley icon for the window on Windows [done]
  * Use the Mendeley icon for the binary on Windows [done]
- * Use the Mendeley icon for the window on Mac (N/A? - No icon in window decorations on Mac) 
+ * Use the Mendeley icon for the window on Mac [done]
  * Use the Mendeley icon for the window on Linux
 
  * Advise the user to download Mendeley Desktop afresh from http://www.mendeley.com/download-mendeley-desktop
-   in the event of an updater problem
+   in the event of an updater problem [done]
  * Exclude Uninstall.exe from updates on Windows - see comments in utilities/autoupdate-setup/main.cpp in
    the desktop source tree.
 
- * Updater binary needs to be signed under Windows
+ * Updater binary needs to be signed under Windows [done]
+
+ * Improve elevation dialog on Mac - use correct app icon and description for app
 
 Mendeley Desktop <= 1.0 auto-update system compatibility:
 
@@ -54,14 +56,15 @@ Nice To Have
 Update size:
  * Support for applying binary patches (eg. with bspatch/bsdiff)
  * Try using bzip2 compression instead of standard zip compression
-   (requires recent version of zip/unzip tools)
+   (requires recent version of zip/unzip tools) [done]
 
 Telemetry:
  * Call a project-specific URL to report successful/failed update installation
    and starting of new app after update
 
 Source:
- * Ensure no Mendeley branding in standalone project and publish code
+ * Ensure no Mendeley branding in standalone project and publish code [done - left Mendeley icons in
+   code and make a note that anyone re-using the code will need to replace them]
 
 Reliability:
  * Create a lock to prevent Mendeley being started whilst updates are
