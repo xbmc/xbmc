@@ -957,35 +957,25 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
     else
       URIUtils::GetDirectory(item->GetPath(),strDir);
 
-    CVideoInfoTag details;
-    if (m_database.LoadVideoInfo(strDir, details))
+    SScanSettings settings;
+    bool foundDirectly = false;
+    scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
+
+    if (!scraper &&
+        !(m_database.HasMovieInfo(item->GetPath()) ||
+          m_database.HasTvShowInfo(strDir)           ||
+          m_database.HasEpisodeInfo(item->GetPath())))
     {
-      CGUIDialogVideoInfo* pDlgInfo = (CGUIDialogVideoInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_INFO);
-
-      if (!pDlgInfo)
-        return false;
-
-      *item->GetVideoInfoTag() = details;
-      pDlgInfo->SetMovie(item.get());
-      pDlgInfo->DoModal();
+      return false;
     }
-    else
-    {
-      SScanSettings settings;
-      bool foundDirectly = false;
-      scraper = m_database.GetScraperForPath(strDir, settings, foundDirectly);
 
-      if (!scraper)
-        return false;
-
-      if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly && !settings.parent_name_root) // dont lookup on root tvshow folder
-        return true;
-
-      OnInfo(item.get(), scraper);
+    if (scraper && scraper->Content() == CONTENT_TVSHOWS && foundDirectly && !settings.parent_name_root) // dont lookup on root tvshow folder
       return true;
-    }
   }
-  return false;
+
+  OnInfo(item.get(), scraper);
+
+  return true;
 }
 
 void CGUIWindowVideoBase::OnRestartItem(int iItem)

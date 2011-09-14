@@ -1343,7 +1343,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
     else if (value["extends"].isArray())
     {
       std::string extends;
-      JSONSchemaType extendedType;
+      JSONSchemaType extendedType = AnyValue;
       for (unsigned int extendsIndex = 0; extendsIndex < value["extends"].size(); extendsIndex++)
       {
         extends = GetString(value["extends"][extendsIndex], "");
