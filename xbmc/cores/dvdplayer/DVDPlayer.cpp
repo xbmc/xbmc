@@ -1590,8 +1590,8 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   {
     if (CachePVRStream())
     {
-      if ((current.type == STREAM_AUDIO && m_dvdPlayerAudio.m_messageQueue.GetLevel() == 0) ||
-         (current.type == STREAM_VIDEO && m_dvdPlayerVideo.m_messageQueue.GetLevel() == 0))
+      if ((current.type == STREAM_AUDIO && current.started && m_dvdPlayerAudio.m_messageQueue.GetLevel() == 0) ||
+         (current.type == STREAM_VIDEO && current.started && m_dvdPlayerVideo.m_messageQueue.GetLevel() == 0))
       {
         CLog::Log(LOGDEBUG, "%s stream stalled. start buffering", current.type == STREAM_AUDIO ? "audio" : "video");
         SetCaching(CACHESTATE_PVR);
