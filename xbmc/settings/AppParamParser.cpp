@@ -21,15 +21,19 @@
 
 #include "AppParamParser.h"
 #include "AdvancedSettings.h"
+#include "GUIInfoManager.h"
 #include "PlayListPlayer.h"
 #include "FileItem.h"
 #include "Application.h"
 #include "utils/log.h"
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 #include "WIN32Util.h"
 #endif
 #ifdef HAS_LIRC
 #include "input/linux/LIRC.h"
+#endif
+#ifndef TARGET_WINDOWS
+#include "linux/XTimeUtils.h"
 #endif
 
 CAppParamParser::CAppParamParser()
@@ -61,15 +65,33 @@ void CAppParamParser::Parse(const char* argv[], int nArgs)
       else if (strnicmp(argv[i], "-n", 2) == 0 || strnicmp(argv[i], "--nolirc", 8) == 0)
          g_RemoteControl.setUsed(false);
 #endif
+      if (stricmp(argv[i], "-d") == 0)
+      {
+        if (i + 1 < nArgs)
+        {
+          int sleeptime = atoi(argv[i + 1]);
+          if (sleeptime > 0 && sleeptime < 360)
+            Sleep(sleeptime*1000);
+        }
+        i++;
+      }
     }
   }
   PlayPlaylist();
+}
+
+void CAppParamParser::DisplayVersion()
+{
+  printf("XBMC Media Center %s\n", g_infoManager.GetVersion().c_str());
+  printf("Copyright (C) 2005-2011 Team XBMC - http://www.xbmc.org\n");
+  exit(0);
 }
 
 void CAppParamParser::DisplayHelp()
 {
   printf("Usage: xbmc [OPTION]... [FILE]...\n\n");
   printf("Arguments:\n");
+  printf("  -d <n>\t\tdelay <n> seconds before starting\n");
   printf("  -fs\t\t\tRuns XBMC in full screen\n");
   printf("  --standalone\t\tXBMC runs in a stand alone environment without a window \n");
   printf("\t\t\tmanager and supporting applications. For example, that\n");
@@ -81,6 +103,7 @@ void CAppParamParser::DisplayHelp()
   printf("  -n or --nolirc\tdo not use Lirc, i.e. no remote input.\n");
 #endif
   printf("  --debug\t\tEnable debug logging\n");
+  printf("  --version\t\tPrint version information\n");
   printf("  --test\t\tEnable test mode. [FILE] required.\n");
   printf("  --settings=<filename>\t\tLoads specified file after advancedsettings.xml replacing any settings specified\n");
   printf("  \t\t\t\tspecified file must exist in special://xbmc/system/\n");
@@ -100,6 +123,8 @@ void CAppParamParser::ParseArg(const CStdString &arg)
     g_advancedSettings.m_startFullScreen = true;
   else if (arg == "-h" || arg == "--help")
     DisplayHelp();
+  else if (arg == "-v" || arg == "--version")
+    DisplayVersion();
   else if (arg == "--standalone")
     g_application.SetStandAlone(true);
   else if (arg == "-p" || arg  == "--portable")
@@ -117,7 +142,7 @@ void CAppParamParser::ParseArg(const CStdString &arg)
     if (m_testmode)
       g_application.SetEnableTestMode(true);
     CFileItemPtr pItem(new CFileItem(arg));
-    pItem->m_strPath = arg;
+    pItem->SetPath(arg);
     m_playlist.Add(pItem);
   }
 }

@@ -57,7 +57,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
         if (field == "rating")
           result[field] = item->GetPropertyInt("album_rating");
         else if (field == "label")
-          result["album_label"] = item->GetProperty("album_label");
+          result["albumlabel"] = item->GetProperty("album_label");
         else
           result[field] = item->GetProperty("album_" + field);
 
@@ -127,19 +127,26 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
   if (allowFile && hasFileField)
   {
-    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-      object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
+    if (item->HasVideoInfoTag())
+    {
+      if (!item->GetVideoInfoTag()->GetPath().IsEmpty())
+        object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
+    }
     if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
       object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
 
     if (!object.isMember("file"))
-      object["file"] = item->m_strPath.c_str();
+      object["file"] = item->GetPath().c_str();
   }
 
   if (ID)
   {
     if (stricmp(ID, "genreid") == 0)
-      object[ID] = atoi(item->m_strPath.TrimRight('/').c_str());
+    {
+      CStdString genre = item->GetPath();
+      genre.TrimRight('/');
+      object[ID] = atoi(genre.c_str());
+    }
     else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
       object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
     else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
@@ -204,7 +211,7 @@ bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileIt
     bool added = false;
     for (int index = 0; index < list.Size(); index++)
     {
-      if (list[index]->m_strPath == file)
+      if (list[index]->GetPath() == file)
       {
         added = true;
         break;

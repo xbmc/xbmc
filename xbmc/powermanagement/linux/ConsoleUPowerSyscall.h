@@ -22,6 +22,25 @@
 #ifdef HAS_DBUS
 #include "powermanagement/IPowerSyscall.h"
 #include "DBusUtil.h"
+#include "utils/StdString.h"
+
+#include <list>
+
+class CUPowerSource
+{
+public:
+  CUPowerSource(const char *powerSource);
+  ~CUPowerSource();
+
+  void    Update();
+  bool    IsRechargeable();
+  double  BatteryLevel();
+
+private:
+  CStdString m_powerSource;
+  bool m_isRechargeable;
+  double m_batteryLevel;
+};
 
 class CConsoleUPowerSyscall : public IPowerSyscall
 {
@@ -38,6 +57,7 @@ public:
   virtual bool CanSuspend();
   virtual bool CanHibernate();
   virtual bool CanReboot();
+  virtual int  BatteryLevel();
 
   virtual bool PumpPowerEvents(IPowerEventsCallback *callback);
 
@@ -52,6 +72,9 @@ private:
   bool m_CanReboot;
 
   bool m_lowBattery;
+
+  void EnumeratePowerSources();
+  std::list<CUPowerSource> m_powerSources;
 
   DBusConnection *m_connection;
   DBusError m_error;

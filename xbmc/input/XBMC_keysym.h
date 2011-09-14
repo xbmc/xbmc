@@ -49,6 +49,7 @@ typedef enum {
   XBMCK_QUOTEDBL    = 0x22,
   XBMCK_HASH        = 0x23,
   XBMCK_DOLLAR      = 0x24,
+  XBMCK_PERCENT     = 0x25,
   XBMCK_AMPERSAND   = 0x26,
   XBMCK_QUOTE       = 0x27,
   XBMCK_LEFTPAREN   = 0x28,
@@ -109,6 +110,10 @@ typedef enum {
   XBMCK_x           = 0x78,
   XBMCK_y           = 0x79,
   XBMCK_z           = 0x7A,
+  XBMCK_LEFTBRACE   = 0x7b,
+  XBMCK_PIPE        = 0x7C,
+  XBMCK_RIGHTBRACE  = 0x7D,
+  XBMCK_TILDE       = 0x7E,
   XBMCK_DELETE = 0x7F,
   // End of ASCII mapped keysyms
 
@@ -211,6 +216,16 @@ typedef enum {
   XBMCK_UNDO        = 0x142,    // Atari keyboard has Undo
 
   // Add any other keys here
+
+	/* Media keys */
+  XBMCK_EJECT             = 333,
+  XBMCK_STOP              = 337,
+  XBMCK_RECORD            = 338,
+  XBMCK_REWIND            = 339,
+  XBMCK_PHONE             = 340,
+  XBMCK_PLAY              = 341,
+  XBMCK_SHUFFLE           = 342,
+  XBMCK_FASTFORWARD       = 343,
 
   XBMCK_LAST
 } XBMCKey;

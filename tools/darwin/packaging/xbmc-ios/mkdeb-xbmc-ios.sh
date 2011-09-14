@@ -20,7 +20,9 @@ if [ ! -d $XBMC ]; then
   echo "XBMC.app not found! are you sure you built $1 target?"
   exit 1
 fi
-if [ -f "/usr/bin/sudo" ]; then
+if [ -f "/usr/libexec/fauxsu/libfauxsu.dylib" ]; then
+  export DYLD_INSERT_LIBRARIES=/usr/libexec/fauxsu/libfauxsu.dylib
+elif [ -f "/usr/bin/sudo" ]; then
   SUDO="/usr/bin/sudo"
 fi
 if [ -f "/Users/Shared/xbmc-depends/toolchain/bin/dpkg-deb" ]; then
@@ -56,7 +58,7 @@ echo "Icon: file:///Applications/Cydia.app/Sources/mirrors.xbmc.org.png" >> $DIR
 
 # prerm: called on remove and upgrade - get rid of existing bits.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "rm -rf /Applications/XBMC.app"              >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "find /Applications/XBMC.app -delete"        >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 
 # postinst: nothing for now.

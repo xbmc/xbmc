@@ -6,6 +6,7 @@
   <extension point="xbmc.python.weather" library=""/>
   <extension point="xbmc.addon.metadata">
     <summary lang="br">Condições meteorológicas atuais.</summary>
+    <summary lang="ca">Condicions meteorològiques actuals.</summary>
     <summary lang="en">Current weather conditions.</summary>
     <summary lang="es">Condiciones meteorológicas actuales.</summary>
     <summary lang="de">Aktuelle Wetterbedingungen</summary>
@@ -20,6 +21,7 @@
     <summary lang="se">Aktuella väderförhållanden.</summary>
     <summary lang="zh">当前天气状况</summary>
     <description lang="br">Esta é a origem padrão de informação meteorológicas.[CR][CR]Ela provê as condições atuais e previsão para quatro dias.</description>
+    <description lang="ca">Aquesta és la font per defecte de la informació meteorològica.[CR][CR]Proporciona les condicions meteorològiques actuals i una predicció a 4 dies.</description>
     <description lang="en">This is the default weather source.[CR][CR]It provides current weather conditions and a four day outlook.</description>
     <description lang="es">Fuente para las condiciones meteorológicas.[CR][CR]Proporciona las condiciones meteorológicas actuales y una previsión para 4 días.</description>
     <description lang="de">Standardquelle für Wetterinformationen[CR][CR]Das aktuelle Wetter sowie eine 4 tägige Vorausschau werden angezeigt</description>

@@ -41,7 +41,7 @@ typedef boost::shared_ptr<CGUIListItem> CGUIListItemPtr;
 class CGUIBaseContainer : public CGUIControl
 {
 public:
-  CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems);
+  CGUIBaseContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems);
   virtual ~CGUIBaseContainer(void);
 
   virtual bool OnAction(const CAction &action);
@@ -73,6 +73,7 @@ public:
 
   void LoadLayout(TiXmlElement *layout);
   void LoadContent(TiXmlElement *content);
+  void SetDefaultControl(int id, bool always) { m_staticDefaultItem = id; m_staticDefaultAlways = always; };
 
   VIEW_TYPE GetType() const { return m_type; };
   const CStdString &GetLabel() const { return m_label; };
@@ -107,6 +108,7 @@ protected:
   virtual void Scroll(int amount);
   virtual bool MoveDown(bool wrapAround);
   virtual bool MoveUp(bool wrapAround);
+  virtual bool GetOffsetRange(int &minOffset, int &maxOffset) const;
   virtual void ValidateOffset();
   virtual int  CorrectOffset(int offset, int cursor) const;
   virtual void UpdateLayout(bool refreshAllItems = false);
@@ -114,13 +116,16 @@ protected:
   virtual void UpdatePageControl(int offset);
   virtual void CalculateLayout();
   virtual void SelectItem(int item) {};
+  void SelectStaticItemById(int id);
   virtual bool SelectItemFromPoint(const CPoint &point) { return false; };
   virtual int GetCursorFromPoint(const CPoint &point, CPoint *itemPoint = NULL) const { return -1; };
   virtual void Reset();
   virtual unsigned int GetNumItems() const { return m_items.size(); };
   virtual int GetCurrentPage() const;
   bool InsideLayout(const CGUIListItemLayout *layout, const CPoint &point) const;
+  virtual void OnFocus();
 
+  int ScrollCorrectionRange() const;
   inline float Size() const;
   void MoveToRow(int row);
   void FreeMemory(int keepStart, int keepEnd);
@@ -151,14 +156,14 @@ protected:
   void SetContainerMoving(int direction);
   void UpdateScrollOffset(unsigned int currentTime);
 
-  unsigned int m_scrollLastTime;
-  int          m_scrollTime;
-  float        m_scrollOffset;
+  CScroller m_scroller;
 
   VIEW_TYPE m_type;
   CStdString m_label;
 
   bool m_staticContent;
+  bool m_staticDefaultAlways;
+  int  m_staticDefaultItem;
   unsigned int m_staticUpdateTime;
   std::vector<CGUIListItemPtr> m_staticItems;
   bool m_wasReset;  // true if we've received a Reset message until we've rendered once.  Allows
@@ -168,8 +173,9 @@ protected:
 
   void UpdateScrollByLetter();
   void GetCacheOffsets(int &cacheBefore, int &cacheAfter);
-  bool ScrollingDown() const { return m_scrollSpeed > 0; };
-  bool ScrollingUp() const { return m_scrollSpeed < 0; };
+  int GetCacheCount() const { return m_cacheItems; };
+  bool ScrollingDown() const { return m_scroller.IsScrollingDown(); };
+  bool ScrollingUp() const { return m_scroller.IsScrollingUp(); };
   void OnNextLetter();
   void OnPrevLetter();
   void OnJumpLetter(char letter);
@@ -194,8 +200,8 @@ private:
   int m_cursor;
   int m_offset;
   int m_cacheItems;
-  float m_scrollSpeed;
   CStopWatch m_scrollTimer;
+  CStopWatch m_lastScrollStartTimer;
   CStopWatch m_pageChangeTimer;
 
   // letter match searching

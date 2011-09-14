@@ -90,7 +90,8 @@ or
 
 5. Gesture Handling on iPad/iPhone/iPod touch
 
-  Double Tap : Right Mouse Click
-  Swipe Left : Backspace
-  Swipe Right : Tab
+double finger swipe left -> back
+double finger tap -> right mouse
+single finger tap -> left mouse
+panning, and flicking ->  panning and flicking works for media lists only at the moment ... scrollbars and other stuff are only clickable (single tap), for now
 

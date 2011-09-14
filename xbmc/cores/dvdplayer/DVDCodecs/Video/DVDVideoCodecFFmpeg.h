@@ -22,6 +22,7 @@
  */
 
 #include "DVDVideoCodec.h"
+#include "DVDResource.h"
 #include "DllAvCodec.h"
 #include "DllAvFormat.h"
 #include "DllAvUtil.h"
@@ -34,22 +35,18 @@ class CCriticalSection;
 class CDVDVideoCodecFFmpeg : public CDVDVideoCodec
 {
 public:
-  class IHardwareDecoder
+  class IHardwareDecoder : public IDVDResourceCounted<IHardwareDecoder>
   {
     public:
-             IHardwareDecoder() : m_references(1) {}
+             IHardwareDecoder() {}
     virtual ~IHardwareDecoder() {};
-    virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat) = 0;
+    virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces) = 0;
     virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame) = 0;
     virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture) = 0;
     virtual int  Check     (AVCodecContext* avctx) = 0;
     virtual void Reset     () {}
     virtual const std::string Name() = 0;
     virtual CCriticalSection* Section() { return NULL; }
-    virtual long              Release();
-    virtual IHardwareDecoder* Acquire();
-    protected:
-    long m_references;
   };
 
   CDVDVideoCodecFFmpeg();
@@ -97,6 +94,8 @@ protected:
 
   int m_iScreenWidth;
   int m_iScreenHeight;
+
+  unsigned int m_uSurfacesCount;
 
   DllAvCodec m_dllAvCodec;
   DllAvUtil  m_dllAvUtil;

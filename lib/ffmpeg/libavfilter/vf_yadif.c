@@ -43,7 +43,6 @@ typedef struct {
     int parity;
 
     int frame_pending;
-    int skip;
 
     /**
      *  0: deinterlace all frames
@@ -183,9 +182,12 @@ static void return_frame(AVFilterContext *ctx, int is_second)
         tff = yadif->parity^1;
     }
 
-    if (is_second)
+    if (is_second) {
         yadif->out = avfilter_get_video_buffer(link, AV_PERM_WRITE | AV_PERM_PRESERVE |
                                                AV_PERM_REUSE, link->w, link->h);
+        avfilter_copy_buffer_ref_props(yadif->out, yadif->cur);
+        yadif->out->video->interlaced = 0;
+    }
 
     filter(ctx, yadif->out, tff ^ !is_second, tff);
 
@@ -219,17 +221,14 @@ static void start_frame(AVFilterLink *link, AVFilterBufferRef *picref)
     yadif->prev = yadif->cur;
     yadif->cur  = yadif->next;
     yadif->next = picref;
-    yadif->skip = 0;
 
     if (!yadif->cur)
         return;
 
     if (yadif->auto_enable && !yadif->cur->video->interlaced) {
-        yadif->out  = yadif->cur;
+        yadif->out  = avfilter_ref_buffer(yadif->cur, AV_PERM_READ);
         avfilter_unref_buffer(yadif->prev);
-        yadif->cur  = NULL;
         yadif->prev = NULL;
-        yadif->skip = 1;
         avfilter_start_frame(ctx->outputs[0], yadif->out);
         return;
     }
@@ -250,14 +249,14 @@ static void end_frame(AVFilterLink *link)
     AVFilterContext *ctx = link->dst;
     YADIFContext *yadif = ctx->priv;
 
-    if (yadif->skip) {
+    if (!yadif->out)
+        return;
+
+    if (yadif->auto_enable && !yadif->cur->video->interlaced) {
         avfilter_draw_slice(ctx->outputs[0], 0, link->h, 1);
         avfilter_end_frame(ctx->outputs[0]);
         return;
     }
-
-    if (!yadif->out)
-        return;
 
     return_frame(ctx, 0);
 }
@@ -277,7 +276,7 @@ static int request_frame(AVFilterLink *link)
 
         if ((ret = avfilter_request_frame(link->src->inputs[0])))
             return ret;
-    } while (!yadif->out);
+    } while (!yadif->cur);
 
     return 0;
 }
@@ -299,7 +298,7 @@ static int poll_frame(AVFilterLink *link)
     }
     assert(yadif->next);
 
-    if (yadif->skip)
+    if (yadif->auto_enable && yadif->next && !yadif->next->video->interlaced)
         return val;
 
     return val * ((yadif->mode&1)+1);

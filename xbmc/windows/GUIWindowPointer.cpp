@@ -21,6 +21,7 @@
 
 #include "GUIWindowPointer.h"
 #include "input/MouseStat.h"
+#include "windowing/WindowingFactory.h"
 #include <climits>
 #define ID_POINTER 10
 
@@ -56,10 +57,13 @@ void CGUIWindowPointer::SetPointer(int pointer)
 
 void CGUIWindowPointer::UpdateVisibility()
 {
-  if (g_Mouse.IsActive())
-    Show();
-  else
-    Close();
+  if(g_Windowing.HasCursor())
+  {
+    if (g_Mouse.IsActive())
+      Show();
+    else
+      Close();
+  }
 }
 
 void CGUIWindowPointer::OnWindowLoaded()

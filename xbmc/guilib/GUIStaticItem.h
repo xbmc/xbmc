@@ -28,6 +28,7 @@
 
 #include "GUIInfoTypes.h"
 #include "../xbmc/FileItem.h"
+#include "GUIAction.h"
 
 class TiXmlElement;
 
@@ -77,11 +78,14 @@ public:
   /*! \brief whether this item is visible or not
    */
   bool IsVisible() const;
+
+  const CGUIAction &GetClickActions() const { return m_clickActions; };
 private:
   typedef std::vector< std::pair<CGUIInfoLabel, CStdString> > InfoVector;
   InfoVector m_info;
-  int  m_visCondition;
+  unsigned int m_visCondition;
   bool m_visState;
+  CGUIAction m_clickActions;
 };
 
 typedef boost::shared_ptr<CGUIStaticItem> CGUIStaticItemPtr;

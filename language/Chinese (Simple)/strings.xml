@@ -980,6 +980,7 @@
   <string id="12392">小时</string>
   <string id="12393">天</string>
   <string id="12394">累计开机时间</string>
+  <string id="12395">电池电量</string>
 
   <string id="12600">天气</string>
 
@@ -1465,10 +1466,10 @@
   <string id="16017">输入查询字符串</string>
   <string id="16018">关闭</string>
   <string id="16019">自动选择</string>
-  <string id="16020">去交错</string>
+  <string id="16020">去隔行</string>
   <string id="16021">抖动</string>
   <string id="16022">抖动（倒转）</string>
-  <string id="16023">交错设置</string>
+  <string id="16023">隔行扫描处理</string>
   <string id="16024">取消中...</string>
   <string id="16025">输入艺人名字</string>
   <string id="16026">播放失败</string>
@@ -1481,6 +1482,7 @@
   <string id="16033">无法打开资料库！</string>
   <string id="16034">无法从资料库获取歌曲文件！</string>
   <string id="16035">舞会模式播放列表</string>
+  <string id="16036">去隔行（半速）</string>
  
   <string id="16100">所有视频文件</string>
   <string id="16101">未观看的</string>
@@ -1727,6 +1729,8 @@
   <string id="20256">HTS Tvheadend 客户端</string>
   <string id="20257">VDR Streamdev 客户端</string>
   <string id="20258">MythTV 客户端</string>
+  <string id="20259">网络文件系统（NFS）</string>
+  <string id="20260">安全壳（SSH/SFTP）</string>
 
   <string id="20300">WEB服务器目录（HTTP）</string>
   <string id="20301">WEB服务器目录（HTTPS）</string>
@@ -1839,7 +1843,8 @@
   <string id="20415">扫描新内容</string>
   <string id="20416">最初发表</string>
   <string id="20417">编剧</string>
-  <string id="20418">自动显示整齐的文件和目录名</string>
+  <string id="20418"></string>
+  <string id="20419">文件视图显示媒体标识信息</string>
 
   <string id="20420">从不</string>
   <string id="20421">如果只有一季</string>
@@ -1877,6 +1882,7 @@
   <string id="20453">集</string>
   <string id="20454">收听者</string>
   <string id="20455">听众</string>
+  <string id="20456">设置影片集同人画</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -2167,6 +2173,9 @@
   <string id="24043">可更新项</string>
   <string id="24044">依赖项目未找到</string>
   <string id="24045">扩展功能程序结构不完整</string>
+  <string id="24046">下列已安装扩展功能依赖 %s</string>
+  <string id="24047">此扩展功能无法卸载</string>
+  <string id="24048">撤消</string>
 
   <string id="24050">可用扩展功能</string>
   <string id="24051">版本：</string>
@@ -2195,6 +2204,8 @@
   <string id="24089">重新启动扩展功能</string>
   <string id="24090">锁定扩展功能管理器</string>
 
+  <string id="24094">（当前使用）</string>
+  <string id="24095">（列入黑名单）</string>
   <string id="24096">库中的扩展功能被标记为已失效。</string>
   <string id="24097">要在系统中禁用它吗？</string>
   <string id="24098">已失效</string>
@@ -2308,4 +2319,7 @@
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
   <!-- 34112-34200 reserved for future use -->
+
+  <string id="34201">未找到下一播放项目</string>
+  <string id="34202">未找到上一播放项目</string>
 </strings>

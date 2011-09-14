@@ -6,11 +6,11 @@ SRCS=AnimatedGif.cpp \
      DirtyRegionTracker.cpp \
      FrameBufferObject.cpp \
      GraphicContext.cpp \
+     GUIAction.cpp \
      GUIAudioManager.cpp \
      GUIBaseContainer.cpp \
      GUIBorderedImage.cpp \
      GUIButtonControl.cpp \
-     GUIButtonScroller.cpp \
      GUICheckMarkControl.cpp \
      GUIColorManager.cpp \
      GUIControl.cpp \

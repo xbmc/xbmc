@@ -764,7 +764,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
       uint32_t sps_size = VDA_RB16(spc);
       if (sps_size)
         parseh264_sps(spc+3, sps_size-1, &interlaced, &m_max_ref_frames);
-      if (interlaced)
+      if (false)
+      //if (interlaced)
       {
         CFRelease(avcCData);
         return false;
@@ -1124,7 +1125,7 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
   if ((format_type != kCVPixelFormatType_422YpCbCr8) && (format_type != kCVPixelFormatType_32BGRA) )
   {
     CLog::Log(LOGERROR, "%s - imageBuffer format is not '2vuy' or 'BGRA',is reporting 0x%x",
-      __FUNCTION__, format_type);
+      __FUNCTION__, (unsigned int)format_type);
     return;
   }
   if (kVDADecodeInfo_FrameDropped & infoFlags)

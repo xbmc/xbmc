@@ -51,11 +51,13 @@ public:
   CPlayerOptions()
   {
     starttime = 0LL;
+    startpercent = 0LL;
     identify = false;
     fullscreen = false;
     video_only = false;
   }
   double  starttime; /* start time in seconds */
+  double  startpercent; /* start time in percent */  
   bool    identify;  /* identify mode, used for checking format and length of a file */
   CStdString state;  /* potential playerstate to restore to */
   bool    fullscreen; /* player is allowed to switch to fullscreen */
@@ -109,6 +111,7 @@ public:
   virtual int  GetSubtitleCount()     { return 0; }
   virtual int  GetSubtitle()          { return -1; }
   virtual void GetSubtitleName(int iStream, CStdString &strStreamName){};
+  virtual void GetSubtitleLanguage(int iStream, CStdString &strStreamLang){};
   virtual void SetSubtitle(int iStream){};
   virtual bool GetSubtitleVisible(){ return false;};
   virtual void SetSubtitleVisible(bool bVisible){};

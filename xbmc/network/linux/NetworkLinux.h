@@ -31,7 +31,7 @@ class CNetworkLinux;
 class CNetworkInterfaceLinux : public CNetworkInterface
 {
 public:
-   CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName);
+   CNetworkInterfaceLinux(CNetworkLinux* network, CStdString interfaceName, CStdString interfaceMacAdr);
    ~CNetworkInterfaceLinux(void);
 
    virtual CStdString& GetName(void);
@@ -56,6 +56,7 @@ public:
 private:
    void WriteSettings(FILE* fw, NetworkAssignment assignment, CStdString& ipAddress, CStdString& networkMask, CStdString& defaultGateway, CStdString& essId, CStdString& key, EncMode& encryptionMode);
    CStdString     m_interfaceName;
+   CStdString     m_interfaceMacAdr;
    CNetworkLinux* m_network;
 };
 
@@ -82,9 +83,11 @@ public:
 
 private:
    int GetSocket() { return m_sock; }
+   CStdString GetMacAddress(CStdString interfaceName);
    void queryInterfaceList();
    std::vector<CNetworkInterface*> m_interfaces;
    int m_sock;
 };
 
 #endif
+

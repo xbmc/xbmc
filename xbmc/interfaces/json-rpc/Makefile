@@ -1,4 +1,5 @@
-SRCS=AudioLibrary.cpp \
+SRCS=ApplicationOperations.cpp \
+     AudioLibrary.cpp \
      AVPlayerOperations.cpp \
      AVPlaylistOperations.cpp \
      FileItemHandler.cpp \

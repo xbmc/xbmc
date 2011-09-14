@@ -49,6 +49,7 @@ public:
   bool Init(const char* strFileName);
   bool DeInit();
   int GetPercent();
+  int GetTrackLength();
 protected:
   void Process();
   int ReadChunk();

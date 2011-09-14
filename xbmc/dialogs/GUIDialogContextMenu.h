@@ -152,8 +152,8 @@ protected:
    */
   void PositionAtCurrentFocus();
 
-  float GetWidth();
-  float GetHeight();
+  virtual float GetWidth() const;
+  virtual float GetHeight() const;
   virtual void OnInitWindow();
   virtual void OnWindowLoaded();
   virtual void OnWindowUnload();

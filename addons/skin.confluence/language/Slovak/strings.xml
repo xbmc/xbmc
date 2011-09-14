@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--Translator: Michal Iro, mixo@frco.sk-->
+<!--Date of translation: 21/08/2011-->
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Zmeniť</string>
+  <string id="31001">Milovať</string>
+  <string id="31002">Nenávidieť</string>
+  <string id="31003">Napájanie</string>
+
+  <string id="31004">Pracujem...</string>
+  <string id="31005">Skryť informácie</string>
+  <string id="31006">Nastavenie zobrazenia</string>
+  <string id="31007">Pluginy</string>
+  <string id="31008">Celá obrazovka</string>
+
+  <string id="31020">Posledné pridané</string>
+
+  <string id="31021">Video - Súbory</string>
+  <string id="31022">Music - Súbory</string>
+  <string id="31023">Prehráva sa</string>
+  <string id="31024">Strana</string>
+  <string id="31025">Položky</string>
+  <string id="31026">Ďaľšie nastavenia</string>
+
+  <string id="31027">Umiestnenie</string>
+ 
+  <!-- View Type labels -->
+  <string id="31028">Obaly</string>
+  <string id="31029">Fanart</string>
+  <string id="31030">Celý Zoznam</string>
+  <string id="31031">Náhľady</string>
+
+  <string id="31032">Obrázky</string>
+  <string id="31033">Info</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Práve hráme</string>
+
+  <string id="31042">Prehráva sa</string>
+  <string id="31043">PAUZA</string>
+
+  <string id="31044">PRETÁČA SA DOPREDU</string>
+  <string id="31045">PRETÁČA SA DOZADU</string>
+  <string id="31046">Vlastnosti zvuku</string>
+  <string id="31047">Aktuálna predvolba</string>
+  <string id="31048">Predvolby Vizualizácií</string>
+  <string id="31049">Film končí</string>
+
+  <string id="31050">Zoradiť: Vzostupne</string>
+  <string id="31051">Zoradiť: Zostupne</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Otvoriť playlist</string>
+  <string id="31056">Uložiť playlist</string>
+  <string id="31057">Zatvoriť playlist</string>
+
+  <string id="31058">Hudobné súbory systému</string>
+  <string id="31059">Aktuálny playlist</string>
+  <string id="31060">Tento súbor sa skladá z viac častí. Vyberte tu, od ktorej chcete spustit prehrávaníe.</string>
+  <string id="31061">Aktuálne vybraný</string>
+  
+  <!-- Skin Settings labels -->
+  <string id="31100"></string>
+  <string id="31101">Informácie na Domovskej stránke</string>
+
+  <string id="31102">Pozadie</string>
+  <string id="31103">Zobraziť "PAUZA" pri prezentácií obrázkov</string>
+  <string id="31104">Prehrávať trailer v okne [COLOR=grey3](iba z okna Informácie o videu)[/COLOR]</string>
+  <string id="31105">"Videá" tlačítko vždy ide do "Súbory"</string>
+  <string id="31106">Rôzne nastavenia</string>
+  <string id="31107">Nezobrazovať ikonky zdroja videí [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
+
+  <string id="31108">Schovať tlačítka hlavného menu</string>
+  <string id="31109">Pozadie Domovskej stránky</string>
+  <string id="31110">Zmeniť pozadie domovskej stránky - sekcia</string>
+  <string id="31111">Schovať</string>
+  <string id="31112">Možnosti</string>
+  <string id="31113">Jeden obrázok</string>
+
+  <string id="31114">Viac obrázkov</string>
+  <string id="31115">Prispôsobenie</string>
+  <string id="31116"></string>
+  <string id="31117">Zobraziť Posledné pridané</string>
+  <string id="31118">Domovská stránka</string>
+  <string id="31119">Schovať Fanart na pozadí</string>
+
+  <string id="31120">NÁZOV POLOŽKY</string>
+  <string id="31121"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31122">Počasie</string>
+  <string id="31123">Použiť u TV seriálov klasické náhlady namiesto širokouhlých</string>
+  <string id="31124">Zobraziť na pozadí "Práve hráme" Video</string>
+  <string id="31125">Zobraziť na pozadí "Práve hráme" Vizualizáciu</string>
+
+  <string id="31126">Prehrávať skladbu TV seriálu vo video knižnici (TvTunes doplnok)</string>
+  <string id="31127">TvTunes</string>
+  <string id="31128">Texty skladieb</string>
+  <string id="31129"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31130"></string>  <!-- blanked 2010-11-12 -->
+  
+  <string id="31131"></string> <!-- blanked 2010-12-23 -->
+  <string id="31132">Texty skladieb Doplnok</string>
+  <string id="31133">Titulky Doplnok</string>
+  <string id="31134">Domovská stránka Videá Podmenu</string>
+  <string id="31135">Domovská stránka Hudba Podmenu</string>
+  <string id="31136">Domovská stránka Obrázky Podmenu</string>
+
+  <string id="31140">Hudobný OSD</string>
+  <string id="31141">Video OSD</string>
+
+  <!-- Script labels -->
+  <string id="31200">Odkazy</string>
+  <string id="31201">Kategórie</string>
+  <string id="31202">Zobraziť účinkujúcich</string>
+
+  <string id="31203">Vyberte Vašu skladbu</string>
+  <string id="31204">Odkazy Sekcií</string>
+  <string id="31205">Zdroj textov skladieb</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Aktuálna teplota</string>
+  <string id="31301">Naposledy aktualizované</string>
+
+  <string id="31302">Menu</string>
+  <string id="31303"></string>
+  <string id="31304">Obrázok</string>
+  <string id="31305">Židny disk nie je vložený</string>
+  <string id="31306">Vysunúť</string>
+  <string id="31307">Schovať Fanart</string>
+
+  <string id="31308">Detaili o filme</string>
+  <string id="31309">Použitá pamäť:</string>
+  <string id="31310">Číslo skladby</string>
+  <string id="31311">Fanart obrázok[CR][CR]Nedostupný[CR][CR] Klik pre nastavenie</string>
+  <string id="31312">Aktuálny sťahovač</string>
+  <string id="31313">Vyber sťahovač</string>
+
+  <string id="31314">Možnosti vyhľadávania obsahu</string>
+  <string id="31315">Základné</string>
+  <string id="31316"></string>
+  <string id="31317">Umiestneni FanArtu</string>
+  <string id="31318">Malý Fanart</string>
+  <string id="31319">Vybratý Profil</string>
+
+  <string id="31320">Posledné prihlásenie</string>
+  <string id="31321">Výber Karaoke skladby</string>
+  <string id="31322">Vysielané</string>
+  <string id="31323">Posledné Filmy</string>
+  <string id="31324">Posledné Epizódy</string>
+  <string id="31325">Nastavenia Playlistu</string>
+
+  <string id="31326">Vytvorené</string>
+  <string id="31327">Rozlíšenie</string>
+  <string id="31328">Posledné pridané</string>
+  <string id="31329">[B]Časovač nastavený![/B] [COLOR=grey2] - Systém sa automaticky vypne za[/COLOR]</string>
+  <string id="31330">Pre prehratie traileru[CR][CR]stlačte tlačítko</string>
+  <string id="31331">Album Details</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pauza</string>
+  <string id="31352">Zastaviť</string>
+  <string id="31353">Pretočiť dopredu</string>
+  <string id="31354">Pretočiť dozadu</string>
+  <string id="31355">Menu filmu</string>
+
+  <string id="31356">Stiahnuť titulky</string>
+  <string id="31357"></string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Predvolený Skin</string>
+  <string id="31391">Predvolený Skin bez Caps</string>
+  <string id="31392">Arial</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">[B]MOŽNOSTI PROSTREDIA[/B][CR][CR]Zmena vzhľadu · Výber jazyka a oblasti · Možnosti zobrazenia súborov[CR]Nastavenie šporiča obrazovky</string>
+  <string id="31401">[B]MOŽNOSTI VIDEA[/B][CR][CR]Správa knižnice videí · Možnosti prehrávania videa · Možnosti zobrazenia video súborov[CR]Nastavenie fontu titulkov</string>
+  <string id="31402">[B]MOŽNOSTI HUDBY[/B][CR][CR]Správa knižnice hudby · Možnosti prehrávania hudby · Možnosti zobrazenia hud. súborov[CR]Služby pre odosielanie informácií o prehrávaných skladbách · Nastavenie karaoke</string>
+  <string id="31403">[B]MOŽNOSTI OBRÁZKOV[/B][CR][CR]Možnosti zobrazenia obrázkov · Konfigurácia prezentácie</string>
+  <string id="31404">[B]MOŽNOSTI POČASIA[/B][CR][CR]Nastavenie oblastí pre predpoveď počasia</string>
+
+  <string id="31405">[B]MOŽNOSTI SIETE[/B][CR][CR]Možnosti ovládania XBMC cez UPnP a HTTP · Nastavenie zdieľania médií[CR]Nastavenie prístupu na internet</string>
+  <string id="31406">[B]MOŽNOSTI SYSTÉMU[/B][CR][CR]Nastavenie a kalibrácia obrazovky · Konfigurácia výstupu zvuku · Nastavenie ovládača[CR]Možnosti úsporného režimu · Ukladanie informácií · Konfigurácia rodičovského zámku</string>
+  <string id="31407">[B]MOŽNOSTI VZHĽADU[/B][CR][CR]Prispôsobenie vzhľadu Confluence · Správa sekcií na domovskej stránke[CR]Nastavenia pozadí vzhľadu</string>
+  <string id="31408">[B]MOŽNOSTI DOPLNKOV[/B][CR][CR]Správa nainštalovaných doplnkov · Vyhľadávanie a inštalácia doplnkov z xbmc.org[CR]Nastavenie doplnkov</string>
+
+  <string id="31421">Prihlásenie užívateľa[CR]Pokračujte výberom profilu</string>
+  
+  <!-- Weather plugin -->
+
+  <string id="31900">Mapy Počasia</string>
+  <string id="31901">36 Hodinová Predpoveď</string>
+  <string id="31902">Hodinová Predpoveď</string>
+  <string id="31903">Predpoveď na víkend</string>
+  <string id="31904">Predpoveď na 10 dní</string>
+  <string id="31905">Predpoveď</string>
+
+  <string id="31906">Mapy &amp; Video</string>
+  <string id="31907">Video Predpoveď [COLOR=grey2](Prehrávanie na celej obrazovke)[/COLOR]</string>
+  <string id="31908">Šanca zrážok</string>
+  <string id="31909">Zisťujem info o počasí...</string>
+</strings>
+

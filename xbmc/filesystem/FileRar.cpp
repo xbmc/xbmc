@@ -54,7 +54,7 @@ CFileRarExtractThread::CFileRarExtractThread() : hRunning(true), hQuit(true)
 CFileRarExtractThread::~CFileRarExtractThread()
 {
   hQuit.Set();
-  hRestart.Wait();
+  AbortableWait(hRestart);
   StopThread();
 }
 
@@ -85,9 +85,9 @@ void CFileRarExtractThread::OnExit()
 
 void CFileRarExtractThread::Process()
 {
-  while (!hQuit.WaitMSec(1))
+  while (AbortableWait(hQuit,1) != WAIT_SIGNALED)
   {
-    if (hRestart.WaitMSec(1))
+    if (AbortableWait(hRestart,1) == WAIT_SIGNALED)
     {
       bool Repeat = false;
       m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat);

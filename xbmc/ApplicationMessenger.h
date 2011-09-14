@@ -26,12 +26,14 @@
 #include "guilib/Key.h"
 #include "threads/Thread.h"
 #include "threads/Event.h"
+#include <boost/shared_ptr.hpp>
 
 #include <queue>
 
 class CFileItem;
 class CFileItemList;
 class CGUIDialog;
+class CGUIWindow;
 
 // defines here
 #define TMSG_DIALOG_DOMODAL       100
@@ -55,6 +57,8 @@ class CGUIDialog;
 #define TMSG_PLAYLISTPLAYER_PLAY_SONG_ID 217
 #define TMSG_PLAYLISTPLAYER_INSERT 218
 #define TMSG_PLAYLISTPLAYER_REMOVE 219
+#define TMSG_PLAYLISTPLAYER_SWAP 223
+#define TMSG_PLAYLISTPLAYER_REPEAT 224
 
 #define TMSG_PICTURE_SHOW         220
 #define TMSG_PICTURE_SLIDESHOW    221
@@ -63,7 +67,6 @@ class CGUIDialog;
 #define TMSG_SHUTDOWN             300
 #define TMSG_POWERDOWN            301
 #define TMSG_QUIT                 302
-#define TMSG_DASHBOARD            TMSG_QUIT
 #define TMSG_HIBERNATE            303
 #define TMSG_SUSPEND              304
 #define TMSG_RESTART              305
@@ -81,7 +84,7 @@ class CGUIDialog;
 #define TMSG_GUI_SHOW                 601
 #define TMSG_GUI_ACTIVATE_WINDOW      604
 #define TMSG_GUI_PYTHON_DIALOG        605
-#define TMSG_GUI_DIALOG_CLOSE         606
+#define TMSG_GUI_WINDOW_CLOSE         606
 #define TMSG_GUI_ACTION               607
 #define TMSG_GUI_INFOLABEL            608
 #define TMSG_GUI_INFOBOOL             609
@@ -100,7 +103,7 @@ typedef struct
   DWORD dwParam2;
   CStdString strParam;
   std::vector<CStdString> params;
-  CEvent* hWaitEvent;
+  boost::shared_ptr<CEvent> waitEvent;
   LPVOID lpVoid;
 }
 ThreadMessage;
@@ -155,6 +158,8 @@ public:
   void PlayListPlayerInsert(int playlist, const CFileItem &item, int position); 
   void PlayListPlayerInsert(int playlist, const CFileItemList &list, int position);
   void PlayListPlayerRemove(int playlist, int position);
+  void PlayListPlayerSwap(int playlist, int indexItem1, int indexItem2);
+  void PlayListPlayerRepeat(int playlist, int repeatState);
 
   void PlayFile(const CFileItem &item, bool bRestart = false); // thread safe version of g_application.PlayFile()
   void PictureShow(std::string filename);
@@ -165,7 +170,6 @@ public:
   void Hibernate();
   void Suspend();
   void Restart();
-  void RebootToDashBoard();
   void RestartApp();
   void Reset();
   void SwitchToFullscreen(); //
@@ -182,7 +186,7 @@ public:
 
   void DoModal(CGUIDialog *pDialog, int iWindowID, const CStdString &param = "");
   void Show(CGUIDialog *pDialog);
-  void Close(CGUIDialog *pDialog, bool forceClose, bool waitResult=true);
+  void Close(CGUIWindow *window, bool forceClose, bool waitResult = true, int nextWindowID = 0, bool enableSound = true);
   void ActivateWindow(int windowID, const std::vector<CStdString> &params, bool swappingWindows);
   void SendAction(const CAction &action, int windowID = WINDOW_INVALID, bool waitResult=true);
   std::vector<CStdString> GetInfoLabels(const std::vector<CStdString> &properties);

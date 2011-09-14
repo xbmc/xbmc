@@ -48,12 +48,6 @@ CGUIControl::CGUIControl()
   m_posY = 0;
   m_width = 0;
   m_height = 0;
-  m_controlLeft = 0;
-  m_controlRight = 0;
-  m_controlUp = 0;
-  m_controlDown = 0;
-  m_controlNext = 0;
-  m_controlPrev = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -81,12 +75,6 @@ CGUIControl::CGUIControl(int parentID, int controlID, float posX, float posY, fl
   m_visibleCondition = 0;
   m_enableCondition = 0;
   m_enabled = true;
-  m_controlLeft = 0;
-  m_controlRight = 0;
-  m_controlUp = 0;
-  m_controlDown = 0;
-  m_controlNext = 0;
-  m_controlPrev = 0;
   ControlType = GUICONTROL_UNKNOWN;
   m_bInvalidated = true;
   m_bAllocated=false;
@@ -154,7 +142,7 @@ void CGUIControl::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyreg
 
   changed |=  m_controlIsDirty;
 
-  if (changed)
+  if (changed || dirtyRegion != m_renderRegion)
   {
     dirtyRegion.Union(m_renderRegion);
     dirtyregions.push_back(dirtyRegion);
@@ -196,49 +184,42 @@ void CGUIControl::DoRender()
 
 void CGUIControl::Render()
 {
-  m_bInvalidated = false;
   m_hasRendered = true;
 }
 
 bool CGUIControl::OnAction(const CAction &action)
 {
-  switch (action.GetID())
+  if (HasFocus())
   {
-  case ACTION_MOVE_DOWN:
-    if (!HasFocus()) return false;
-    OnDown();
-    return true;
-    break;
+    switch (action.GetID())
+    {
+    case ACTION_MOVE_DOWN:
+      OnDown();
+      return true;
 
-  case ACTION_MOVE_UP:
-    if (!HasFocus()) return false;
-    OnUp();
-    return true;
-    break;
+    case ACTION_MOVE_UP:
+      OnUp();
+      return true;
 
-  case ACTION_MOVE_LEFT:
-    if (!HasFocus()) return false;
-    OnLeft();
-    return true;
-    break;
+    case ACTION_MOVE_LEFT:
+      OnLeft();
+      return true;
 
-  case ACTION_MOVE_RIGHT:
-    if (!HasFocus()) return false;
-    OnRight();
-    return true;
-    break;
+    case ACTION_MOVE_RIGHT:
+      OnRight();
+      return true;
 
-  case ACTION_NEXT_CONTROL:
-      if (!HasFocus()) return false;
+    case ACTION_NAV_BACK:
+      return OnBack();
+
+    case ACTION_NEXT_CONTROL:
       OnNextControl();
       return true;
-      break;
 
-  case ACTION_PREV_CONTROL:
-      if (!HasFocus()) return false;
+    case ACTION_PREV_CONTROL:
       OnPrevControl();
       return true;
-      break;
+    }
   }
   return false;
 }
@@ -247,81 +228,42 @@ bool CGUIControl::OnAction(const CAction &action)
 void CGUIControl::OnUp()
 {
   if (HasFocus())
-  {
-    if (m_upActions.size())
-      ExecuteActions(m_upActions);
-    else if (m_controlID != m_controlUp)
-    {
-      // Send a message to the window with the sender set as the window
-      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_UP);
-      SendWindowMessage(msg);
-    }
-  }
+    m_actionUp.Execute(GetID(), GetParentID(), ACTION_MOVE_UP);
 }
 
 void CGUIControl::OnDown()
 {
   if (HasFocus())
-  {
-    if (m_downActions.size())
-      ExecuteActions(m_downActions);
-    else if (m_controlID != m_controlDown)
-    {
-      // Send a message to the window with the sender set as the window
-      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_DOWN);
-      SendWindowMessage(msg);
-    }
-  }
+    m_actionDown.Execute(GetID(), GetParentID(), ACTION_MOVE_DOWN);
 }
 
 void CGUIControl::OnLeft()
 {
   if (HasFocus())
-  {
-    if (m_leftActions.size())
-      ExecuteActions(m_leftActions);
-    else if (m_controlID != m_controlLeft)
-    {
-      // Send a message to the window with the sender set as the window
-      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_LEFT);
-      SendWindowMessage(msg);
-    }
-  }
+    m_actionLeft.Execute(GetID(), GetParentID(), ACTION_MOVE_LEFT);
 }
 
 void CGUIControl::OnRight()
 {
   if (HasFocus())
-  {
-    if (m_rightActions.size())
-      ExecuteActions(m_rightActions);
-    else if (m_controlID != m_controlRight)
-    {
-      // Send a message to the window with the sender set as the window
-      CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_MOVE_RIGHT);
-      SendWindowMessage(msg);
-    }
-  }
+    m_actionRight.Execute(GetID(), GetParentID(), ACTION_MOVE_RIGHT);
+}
+
+bool CGUIControl::OnBack()
+{
+  return HasFocus() ? m_actionBack.Execute(GetID(), GetParentID(), ACTION_NAV_BACK) : false;
 }
 
 void CGUIControl::OnNextControl()
 {
-  if (m_controlID != m_controlNext)
-  {
-    // Send a message to the window with the sender set as the window
-    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_NEXT_CONTROL, m_controlNext);
-    SendWindowMessage(msg);
-  }
+  if (HasFocus())
+    m_actionNext.Execute(GetID(), GetParentID(), ACTION_NEXT_CONTROL);
 }
 
 void CGUIControl::OnPrevControl()
 {
-  if (m_controlID != m_controlPrev)
-  {
-    // Send a message to the window with the sender set as the window
-    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), ACTION_PREV_CONTROL, m_controlPrev);
-    SendWindowMessage(msg);
-  }
+  if (HasFocus())
+    m_actionPrev.Execute(GetID(), GetParentID(), ACTION_PREV_CONTROL);
 }
 
 bool CGUIControl::SendWindowMessage(CGUIMessage &message)
@@ -446,9 +388,14 @@ void CGUIControl::SetEnabled(bool bEnable)
   }
 }
 
-void CGUIControl::SetEnableCondition(int condition)
+void CGUIControl::SetEnableCondition(const CStdString &expression)
 {
-  m_enableCondition = condition;
+  if (expression == "true")
+    m_enabled = true;
+  else if (expression == "false")
+    m_enabled = false;
+  else
+    m_enableCondition = g_infoManager.Register(expression, GetParentID());
 }
 
 void CGUIControl::SetPosition(float posX, float posY)
@@ -505,27 +452,30 @@ CRect CGUIControl::CalcRenderRegion() const
   return CRect(tl.x, tl.y, br.x, br.y);
 }
 
-void CGUIControl::SetNavigation(int up, int down, int left, int right)
+void CGUIControl::SetNavigation(int up, int down, int left, int right, int back)
 {
-  m_controlUp = up;
-  m_controlDown = down;
-  m_controlLeft = left;
-  m_controlRight = right;
+  m_actionUp.SetNavigation(up);
+  m_actionDown.SetNavigation(down);
+  m_actionLeft.SetNavigation(left);
+  m_actionRight.SetNavigation(right);
+  m_actionBack.SetNavigation(back);
 }
 
 void CGUIControl::SetTabNavigation(int next, int prev)
 {
-  m_controlNext = next;
-  m_controlPrev = prev;
+  m_actionNext.SetNavigation(next);
+  m_actionPrev.SetNavigation(prev);
 }
 
-void CGUIControl::SetNavigationActions(const vector<CGUIActionDescriptor> &up, const vector<CGUIActionDescriptor> &down,
-                                       const vector<CGUIActionDescriptor> &left, const vector<CGUIActionDescriptor> &right, bool replace)
+void CGUIControl::SetNavigationActions(const CGUIAction &up, const CGUIAction &down,
+                                       const CGUIAction &left, const CGUIAction &right,
+                                       const CGUIAction &back, bool replace)
 {
-  if (m_leftActions.empty()  || replace) m_leftActions  = left;
-  if (m_rightActions.empty() || replace) m_rightActions = right;
-  if (m_upActions.empty()    || replace) m_upActions    = up;
-  if (m_downActions.empty()  || replace) m_downActions  = down;
+  if (!m_actionLeft.HasAnyActions()  || replace) m_actionLeft  = left;
+  if (!m_actionRight.HasAnyActions() || replace) m_actionRight = right;
+  if (!m_actionUp.HasAnyActions()    || replace) m_actionUp    = up;
+  if (!m_actionDown.HasAnyActions()  || replace) m_actionDown  = down;
+  if (!m_actionBack.HasAnyActions()  || replace) m_actionBack  = back;
 }
 
 void CGUIControl::SetWidth(float width)
@@ -557,7 +507,7 @@ void CGUIControl::SetVisible(bool bVisible, bool setVisState)
      //       otherwise we just set m_forceHidden
     GUIVISIBLE visible = m_visible;
     if (m_visibleCondition)
-      visible = g_infoManager.GetBool(m_visibleCondition, m_parentID) ? VISIBLE : HIDDEN;
+      visible = g_infoManager.GetBoolValue(m_visibleCondition) ? VISIBLE : HIDDEN;
     else
       visible = VISIBLE;
     if (visible != m_visible)
@@ -617,7 +567,7 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   if (m_visibleCondition)
   {
     bool bWasVisible = m_visibleFromSkinCondition;
-    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_parentID, item);
+    m_visibleFromSkinCondition = g_infoManager.GetBoolValue(m_visibleCondition, item);
     if (!bWasVisible && m_visibleFromSkinCondition)
     { // automatic change of visibility - queue the in effect
   //    CLog::Log(LOGDEBUG, "Visibility changed to visible for control id %i", m_controlID);
@@ -634,18 +584,18 @@ void CGUIControl::UpdateVisibility(const CGUIListItem *item)
   {
     CAnimation &anim = m_animations[i];
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
-      anim.UpdateCondition(GetParentID(), item);
+      anim.UpdateCondition(item);
   }
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
   bool enabled = m_enabled;
   if (m_enableCondition)
-    m_enabled = g_infoManager.GetBool(m_enableCondition, m_parentID, item);
+    m_enabled = g_infoManager.GetBoolValue(m_enableCondition, item);
 
   if (m_enabled != enabled)
     MarkDirtyRegion();
 
-  m_allowHiddenFocus.Update(m_parentID, item);
+  m_allowHiddenFocus.Update(item);
   if (UpdateColors())
     MarkDirtyRegion();
   // and finally, update our control information (if not pushed)
@@ -662,34 +612,36 @@ void CGUIControl::SetInitialVisibility()
 {
   if (m_visibleCondition)
   {
-    m_visibleFromSkinCondition = g_infoManager.GetBool(m_visibleCondition, m_parentID);
+    m_visibleFromSkinCondition = g_infoManager.GetBoolValue(m_visibleCondition);
     m_visible = m_visibleFromSkinCondition ? VISIBLE : HIDDEN;
   //  CLog::Log(LOGDEBUG, "Set initial visibility for control %i: %s", m_controlID, m_visible == VISIBLE ? "visible" : "hidden");
-    // no need to enquire every frame if we are always visible or always hidden
-    if (m_visibleCondition == SYSTEM_ALWAYS_TRUE || m_visibleCondition == SYSTEM_ALWAYS_FALSE)
-      m_visibleCondition = 0;
   }
   // and handle animation conditions as well
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
     if (anim.GetType() == ANIM_TYPE_CONDITIONAL)
-      anim.SetInitialCondition(GetParentID());
+      anim.SetInitialCondition();
   }
   // and check for conditional enabling - note this overrides SetEnabled() from the code currently
   // this may need to be reviewed at a later date
   if (m_enableCondition)
-    m_enabled = g_infoManager.GetBool(m_enableCondition, m_parentID);
-  m_allowHiddenFocus.Update(m_parentID);
+    m_enabled = g_infoManager.GetBoolValue(m_enableCondition);
+  m_allowHiddenFocus.Update();
   UpdateColors();
 
   MarkDirtyRegion();
 }
 
-void CGUIControl::SetVisibleCondition(int visible, const CGUIInfoBool &allowHiddenFocus)
+void CGUIControl::SetVisibleCondition(const CStdString &expression, const CStdString &allowHiddenFocus)
 {
-  m_visibleCondition = visible;
-  m_allowHiddenFocus = allowHiddenFocus;
+  if (expression == "true")
+    m_visible = VISIBLE;
+  else if (expression == "false")
+    m_visible = HIDDEN;
+  else  // register with the infomanager for updates
+    m_visibleCondition = g_infoManager.Register(expression, GetParentID());
+  m_allowHiddenFocus.Parse(allowHiddenFocus, GetParentID());
 }
 
 void CGUIControl::SetAnimations(const vector<CAnimation> &animations)
@@ -778,7 +730,7 @@ CAnimation *CGUIControl::GetAnimation(ANIMATION_TYPE type, bool checkConditions 
     CAnimation &anim = m_animations[i];
     if (anim.GetType() == type)
     {
-      if (!checkConditions || !anim.GetCondition() || g_infoManager.GetBool(anim.GetCondition()))
+      if (!checkConditions || anim.CheckCondition())
         return &anim;
     }
   }
@@ -858,7 +810,7 @@ bool CGUIControl::Animate(unsigned int currentTime)
   m_transform.Reset();
   bool changed = false;
 
-  CPoint center(m_posX + m_width * 0.5f, m_posY + m_height * 0.5f);
+  CPoint center(GetXPosition() + GetWidth() * 0.5f, GetYPosition() + GetHeight() * 0.5f);
   for (unsigned int i = 0; i < m_animations.size(); i++)
   {
     CAnimation &anim = m_animations[i];
@@ -916,13 +868,15 @@ int CGUIControl::GetNextControl(int direction) const
   switch (direction)
   {
   case ACTION_MOVE_UP:
-    return m_controlUp;
+    return m_actionUp.GetNavigation();
   case ACTION_MOVE_DOWN:
-    return m_controlDown;
+    return m_actionDown.GetNavigation();
   case ACTION_MOVE_LEFT:
-    return m_controlLeft;
+    return m_actionLeft.GetNavigation();
   case ACTION_MOVE_RIGHT:
-    return m_controlRight;
+    return m_actionRight.GetNavigation();
+  case ACTION_NAV_BACK:
+    return m_actionBack.GetNavigation();
   default:
     return -1;
   }
@@ -965,21 +919,6 @@ void CGUIControl::SetCamera(const CPoint &camera)
 {
   m_camera = camera;
   m_hasCamera = true;
-}
-
-void CGUIControl::ExecuteActions(const vector<CGUIActionDescriptor> &actions)
-{
-  // we should really save anything we need, as the action may cause the window to close
-  int savedID = GetID();
-  int savedParent = GetParentID();
-  vector<CGUIActionDescriptor> savedActions = actions;
-
-  for (unsigned int i = 0; i < savedActions.size(); i++)
-  {
-    CGUIMessage message(GUI_MSG_EXECUTE, savedID, savedParent);
-    message.SetAction(savedActions[i]);
-    g_windowManager.SendMessage(message);
-  }
 }
 
 CPoint CGUIControl::GetRenderPosition() const

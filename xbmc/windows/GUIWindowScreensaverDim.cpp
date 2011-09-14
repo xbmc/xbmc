@@ -28,7 +28,6 @@
 CGUIWindowScreensaverDim::CGUIWindowScreensaverDim(void)
     : CGUIDialog(97, "")
 {
-  m_loadOnDemand = false;
   m_needsScaling = false;
   m_dimLevel = 100.0f;
   m_animations.push_back(CAnimation::CreateFader(0, 100, 0, 1000, ANIM_TYPE_WINDOW_OPEN));
@@ -55,18 +54,15 @@ void CGUIWindowScreensaverDim::UpdateVisibility()
 void CGUIWindowScreensaverDim::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   CGUIDialog::Process(currentTime, dirtyregions);
-  m_renderRegion.SetRect(0, 0, g_graphicsContext.GetWidth(), g_graphicsContext.GetHeight());
+  m_renderRegion.SetRect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
 }
 
 void CGUIWindowScreensaverDim::Render()
 {
-  g_graphicsContext.SetRenderingResolution(g_graphicsContext.GetResInfo(), false);
-  g_graphicsContext.SetTransform(m_cachedTransform);
   // draw a translucent black quad - fading is handled by the window animation
   color_t color = ((color_t)(m_dimLevel * 2.55f) & 0xff) << 24;
   color = g_graphicsContext.MergeAlpha(color);
   CRect rect(0, 0, (float)g_graphicsContext.GetWidth(), (float)g_graphicsContext.GetHeight());
   CGUITexture::DrawQuad(rect, color);
-  g_graphicsContext.RemoveTransform();
   CGUIDialog::Render();
 }

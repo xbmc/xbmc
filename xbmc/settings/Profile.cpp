@@ -45,8 +45,9 @@ void CProfile::CLock::Validate()
     code = "-";
 }
 
-CProfile::CProfile(const CStdString &directory, const CStdString &name)
+CProfile::CProfile(const CStdString &directory, const CStdString &name, const int id)
 {
+  m_id = id;
   m_directory = directory;
   m_name = name;
   m_bDatabases = true;
@@ -69,8 +70,11 @@ void CProfile::setDate()
     setDate(strDate+" - "+strTime);
 }
 
-void CProfile::Load(const TiXmlNode *node)
+void CProfile::Load(const TiXmlNode *node, int nextIdProfile)
 {
+  if (!XMLUtils::GetInt(node, "id", m_id))
+    m_id = nextIdProfile; 
+
   XMLUtils::GetString(node, "name", m_name);
   XMLUtils::GetPath(node, "directory", m_directory);
   XMLUtils::GetPath(node, "thumbnail", m_thumb);
@@ -101,6 +105,7 @@ void CProfile::Save(TiXmlNode *root) const
   TiXmlElement profileNode("profile");
   TiXmlNode *node = root->InsertEndChild(profileNode);
 
+  XMLUtils::SetInt(node, "id", m_id);
   XMLUtils::SetString(node, "name", m_name);
   XMLUtils::SetPath(node, "directory", m_directory);
   XMLUtils::SetPath(node, "thumbnail", m_thumb);

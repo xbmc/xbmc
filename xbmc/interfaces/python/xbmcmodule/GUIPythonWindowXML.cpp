@@ -64,8 +64,8 @@ bool CGUIPythonWindowXML::Update(const CStdString &strPath)
 
 bool CGUIPythonWindowXML::OnAction(const CAction &action)
 {
-  // do the base class window first, and the call to python after this
-  bool ret = CGUIWindow::OnAction(action);  // we don't currently want the mediawindow actions here
+  // call the base class first, then call python
+  bool ret = CGUIWindow::OnAction(action);
   if(pCallbackWindow)
   {
     PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
@@ -76,6 +76,14 @@ bool CGUIPythonWindowXML::OnAction(const CAction &action)
     PulseActionEvent();
   }
   return ret;
+}
+
+bool CGUIPythonWindowXML::OnBack(int actionID)
+{
+  // if we have a callback window then python handles the closing
+  if (!pCallbackWindow)
+    return CGUIWindow::OnBack(actionID);
+  return true;
 }
 
 bool CGUIPythonWindowXML::OnClick(int iItem) {

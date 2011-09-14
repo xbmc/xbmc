@@ -41,9 +41,12 @@ class CConvolutionKernel
     void Lanczos2();
     void Lanczos3Fast();
     void Lanczos3();
+    void Spline36Fast();
+    void Spline36();
     void Bicubic(double B, double C);
 
     double LanczosWeight(double x, double radius);
+    double Spline36Weight(double x);
     double BicubicWeight(double x, double B, double C);
 
     void ToIntFract();

@@ -49,13 +49,14 @@ public:
     bool programs;
   };
 
-  CProfile(const CStdString &directory = "", const CStdString &name = "");
+  CProfile(const CStdString &directory = "", const CStdString &name = "", const int id = -1);
   ~CProfile(void);
   
-  void Load(const TiXmlNode *node);
+  void Load(const TiXmlNode *node, int nextIdProfile);
   void Save(TiXmlNode *root) const;
 
   const CStdString& getDate() const { return m_date;}
+  const int getId() const { return m_id; }
   const CStdString& getName() const { return m_name;}
   const CStdString& getDirectory() const { return m_directory;}
   const CStdString& getThumb() const { return m_thumb;}
@@ -89,6 +90,7 @@ public:
 
 private:
   CStdString m_directory;
+  int m_id;
   CStdString m_name;
   CStdString m_date;
   CStdString m_thumb;

@@ -95,6 +95,18 @@ bool CRenderSystemGLES::InitRenderSystem()
     m_renderCaps |= RENDER_CAPS_NPOT;
   }
 
+  if (IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+  {
+    m_renderCaps |= RENDER_CAPS_BGRA;
+  }
+
+  if (IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+  {
+    m_renderCaps |= RENDER_CAPS_BGRA_APPLE;
+  }
+
+
+
   m_bRenderCreated = true;
   
   InitialiseGUIShader();
@@ -227,7 +239,7 @@ static int64_t abs64(int64_t a)
   return a;
 }
 
-bool CRenderSystemGLES::PresentRender()
+bool CRenderSystemGLES::PresentRender(const CDirtyRegionList &dirty)
 {
   if (!m_bRenderCreated)
     return false;
@@ -254,7 +266,7 @@ bool CRenderSystemGLES::PresentRender()
       Sleep((DWORD)diff);
   }
   
-  bool result = PresentRenderImpl();
+  bool result = PresentRenderImpl(dirty);
   
   if (m_iVSyncMode && m_iSwapRate != 0)
   {

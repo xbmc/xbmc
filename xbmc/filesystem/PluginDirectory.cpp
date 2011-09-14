@@ -20,6 +20,7 @@
  */
 
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "PluginDirectory.h"
 #include "utils/URIUtils.h"
@@ -97,7 +98,8 @@ bool CPluginDirectory::StartScript(const CStdString& strPath, bool retrievingDir
   // clear out our status variables
   m_fileResult->Reset();
   m_listItems->Clear();
-  m_listItems->m_strPath = strPath;
+  m_listItems->SetPath(strPath);
+  m_listItems->SetLabel(m_addon->Name());
   m_cancelled = false;
   m_success = false;
   m_totalItems = 0;
@@ -140,8 +142,8 @@ bool CPluginDirectory::GetPluginResult(const CStdString& strPath, CFileItem &res
   if (success)
   { // update the play path and metadata, saving the old one as needed
     if (!resultItem.HasProperty("original_listitem_url"))
-      resultItem.SetProperty("original_listitem_url", resultItem.m_strPath);
-    resultItem.m_strPath = newDir->m_fileResult->m_strPath;
+      resultItem.SetProperty("original_listitem_url", resultItem.GetPath());
+    resultItem.SetPath(newDir->m_fileResult->GetPath());
     resultItem.SetMimeType(newDir->m_fileResult->GetMimeType(false));
     resultItem.UpdateInfo(*newDir->m_fileResult);
   }
@@ -446,7 +448,7 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
   const unsigned int timeBeforeProgressBar = 1500;
   const unsigned int timeToKillScript = 1000;
 
-  unsigned int startTime = CTimeUtils::GetTimeMS();
+  unsigned int startTime = XbmcThreads::SystemClockMillis();
   CGUIDialogProgress *progressBar = NULL;
 
   CLog::Log(LOGDEBUG, "%s - waiting on the %s plugin...", __FUNCTION__, scriptName.c_str());
@@ -475,14 +477,14 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
     }
 
     // check whether we should pop up the progress dialog
-    if (!progressBar && CTimeUtils::GetTimeMS() - startTime > timeBeforeProgressBar)
+    if (!progressBar && XbmcThreads::SystemClockMillis() - startTime > timeBeforeProgressBar)
     { // loading takes more then 1.5 secs, show a progress dialog
       progressBar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // if script has shown progressbar don't override it
       if (progressBar && progressBar->IsActive())
       {
-        startTime = CTimeUtils::GetTimeMS();
+        startTime = XbmcThreads::SystemClockMillis();
         progressBar = NULL;
       }
 
@@ -518,9 +520,9 @@ bool CPluginDirectory::WaitOnScriptResult(const CStdString &scriptPath, const CS
         if (!m_cancelled)
         {
           m_cancelled = true;
-          startTime = CTimeUtils::GetTimeMS();
+          startTime = XbmcThreads::SystemClockMillis();
         }
-        if (m_cancelled && CTimeUtils::GetTimeMS() - startTime > timeToKillScript)
+        if (m_cancelled && XbmcThreads::SystemClockMillis() - startTime > timeToKillScript)
         { // cancel our script
 #ifdef HAS_PYTHON
           int id = g_pythonParser.getScriptId(scriptPath.c_str());

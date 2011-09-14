@@ -535,17 +535,17 @@ static void ParseItem(CFileItem* item, TiXmlElement* root, const CStdString& pat
   if(best != resources.end())
   {
     item->SetMimeType(best->mime);
-    item->m_strPath = best->path;
+    item->SetPath(best->path);
     item->m_dwSize  = best->size;
 
     if(best->duration)
       item->SetProperty("duration", StringUtils::SecondsToTimeString(best->duration));    
 
     /* handling of mimetypes fo directories are sub optimal at best */
-    if(best->mime == "application/rss+xml" && item->m_strPath.Left(7).Equals("http://"))
-      item->m_strPath.replace(0, 7, "rss://");
+    if(best->mime == "application/rss+xml" && item->GetPath().Left(7).Equals("http://"))
+      item->SetPath("rss://" + item->GetPath().Mid(7));
 
-    if(item->m_strPath.Left(6).Equals("rss://"))
+    if(item->GetPath().Left(6).Equals("rss://"))
       item->m_bIsFolder = true;
     else
       item->m_bIsFolder = false;
@@ -630,7 +630,7 @@ bool CRSSDirectory::GetDirectory(const CStdString& path, CFileItemList &items)
 
     item->SetProperty("isrss", "1");
 
-    if (!item->m_strPath.IsEmpty())
+    if (!item->GetPath().IsEmpty())
       items.Add(item);
   }
 

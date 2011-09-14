@@ -55,6 +55,7 @@
 #include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogProgress.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "addons/Visualisation.h"
 #include "addons/AddonManager.h"
 #include "storage/MediaManager.h"
@@ -66,7 +67,7 @@
 #include "LinuxTimezone.h"
 #include <dlfcn.h>
 #include "cores/AudioRenderers/AudioRendererFactory.h"
-#ifndef __APPLE__
+#if defined(USE_ALSA)
 #include "cores/AudioRenderers/ALSADirectSound.h"
 #endif
 #ifdef HAS_HAL
@@ -143,9 +144,6 @@ CGUIWindowSettingsCategory::CGUIWindowSettingsCategory(void)
   m_strErrorMessage = "";
   m_strOldTrackFormat = "";
   m_strOldTrackFormatRight = "";
-  m_iSectionBeforeJump=-1;
-  m_iControlBeforeJump=-1;
-  m_iWindowBeforeJump=WINDOW_INVALID;
   m_returningFromSkinLoad = false;
   m_delayedSetting = NULL;
 }
@@ -156,21 +154,11 @@ CGUIWindowSettingsCategory::~CGUIWindowSettingsCategory(void)
   delete m_pOriginalEdit;
 }
 
-bool CGUIWindowSettingsCategory::OnAction(const CAction &action)
+bool CGUIWindowSettingsCategory::OnBack(int actionID)
 {
-  if (action.GetID() == ACTION_PREVIOUS_MENU || action.GetID() == ACTION_PARENT_DIR)
-  {
-    g_settings.Save();
-    if (m_iWindowBeforeJump!=WINDOW_INVALID)
-    {
-      JumpToPreviousSection();
-      return true;
-    }
-    m_lastControlID = 0; // don't save the control as we go to a different window each time
-    g_windowManager.PreviousWindow();
-    return true;
-  }
-  return CGUIWindow::OnAction(action);
+  g_settings.Save();
+  m_lastControlID = 0; // don't save the control as we go to a different window each time
+  return CGUIWindow::OnBack(actionID);
 }
 
 bool CGUIWindowSettingsCategory::OnMessage(CGUIMessage &message)
@@ -435,6 +423,17 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       FillInCharSets(pSetting);
     }
+    else if (strSetting.Equals("subtitles.align"))
+    {
+      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      pControl->AddLabel(g_localizeStrings.Get(21461), SUBTITLE_ALIGN_MANUAL);
+      pControl->AddLabel(g_localizeStrings.Get(21462), SUBTITLE_ALIGN_BOTTOM_INSIDE);
+      pControl->AddLabel(g_localizeStrings.Get(21463), SUBTITLE_ALIGN_BOTTOM_OUTSIDE);
+      pControl->AddLabel(g_localizeStrings.Get(21464), SUBTITLE_ALIGN_TOP_INSIDE);
+      pControl->AddLabel(g_localizeStrings.Get(21465), SUBTITLE_ALIGN_TOP_OUTSIDE);
+      pControl->SetValue(pSettingInt->GetData());
+    }
     else if (strSetting.Equals("lookandfeel.font"))
     {
       FillInSkinFonts(pSetting);
@@ -697,7 +696,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       {
         g_guiSettings.SetBool("services.esenabled", true);
         if (!g_application.StartEventServer())
-          g_application.m_guiDialogKaiToast.QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
+          CGUIDialogKaiToast::QueueNotification("DefaultIconWarning.png", g_localizeStrings.Get(33102), g_localizeStrings.Get(33100));
       }
 
       // if XBMC helper is running, prompt user before effecting change
@@ -1348,6 +1347,14 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     if(g_guiSettings.GetBool("services.zeroconf"))
       CZeroconf::GetInstance()->Start();
 #endif
+  }
+  else if (strSetting.Equals("services.airplay"))
+  {  
+#ifdef HAS_AIRPLAY
+    g_application.StopAirplayServer(true);
+    if (g_guiSettings.GetBool("services.airplay"))
+      g_application.StartAirplayServer();
+#endif         
   }
   else if (strSetting.Equals("network.ipaddress"))
   {
@@ -2557,49 +2564,6 @@ CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &st
       return m_vecSettings[i];
   }
   return NULL;
-}
-
-void CGUIWindowSettingsCategory::JumpToSection(int windowId, const CStdString &section)
-{
-  // grab our section
-  CSettingsGroup *pSettingsGroup = g_guiSettings.GetGroup(windowId - WINDOW_SETTINGS_MYPICTURES);
-  if (!pSettingsGroup) return;
-  // get the categories we need
-  vecSettingsCategory categories;
-  pSettingsGroup->GetCategories(categories);
-  // iterate through them and check for the required section
-  int iSection = -1;
-  for (unsigned int i = 0; i < categories.size(); i++)
-    if (categories[i]->m_strCategory.Equals(section))
-      iSection = i;
-  if (iSection == -1) return;
-
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
-  OnMessage(msg);
-  m_iSectionBeforeJump=m_iSection;
-  m_iControlBeforeJump=m_lastControlID;
-  m_iWindowBeforeJump=GetID();
-
-  m_iSection=iSection;
-  m_lastControlID=CONTROL_START_CONTROL;
-  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, windowId);
-  OnMessage(msg1);
-  for (unsigned int i=0; i<m_vecSections.size(); ++i)
-    CONTROL_DISABLE(CONTROL_START_BUTTONS+i);
-}
-
-void CGUIWindowSettingsCategory::JumpToPreviousSection()
-{
-  CGUIMessage msg(GUI_MSG_WINDOW_DEINIT, 0, 0, 0, 0);
-  OnMessage(msg);
-  m_iSection=m_iSectionBeforeJump;
-  m_lastControlID=m_iControlBeforeJump;
-  CGUIMessage msg1(GUI_MSG_WINDOW_INIT, 0, 0, WINDOW_INVALID, m_iWindowBeforeJump);
-  OnMessage(msg1);
-
-  m_iSectionBeforeJump=-1;
-  m_iControlBeforeJump=-1;
-  m_iWindowBeforeJump=WINDOW_INVALID;
 }
 
 void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)

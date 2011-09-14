@@ -60,7 +60,7 @@ extern "C"
   char* dll_getenv(const char* szKey);
 }
 
-XBPyThread::XBPyThread(XBPython *pExecuter, int id)
+XBPyThread::XBPyThread(XBPython *pExecuter, int id) : CThread("XBPyThread")
 {
   CLog::Log(LOGDEBUG,"new python thread created. id=%d", id);
   m_pExecuter   = pExecuter;
@@ -129,11 +129,6 @@ int XBPyThread::setArgv(const std::vector<CStdString> &argv)
   return 0;
 }
 
-void XBPyThread::OnStartup()
-{
-  CThread::SetName("Python Thread");
-}
-
 void XBPyThread::Process()
 {
   CLog::Log(LOGDEBUG,"Python thread: start processing");
@@ -172,31 +167,29 @@ void XBPyThread::Process()
   // and add on whatever our default path is
   path += PY_PATH_SEP;
 
-  {
-    // we want to use sys.path so it includes site-packages
-    // if this fails, default to using Py_GetPath
-    PyObject *sysMod(PyImport_ImportModule((char*)"sys")); // must call Py_DECREF when finished
-    PyObject *sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
-    PyObject *pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
+  // we want to use sys.path so it includes site-packages
+  // if this fails, default to using Py_GetPath
+  PyObject *sysMod(PyImport_ImportModule((char*)"sys")); // must call Py_DECREF when finished
+  PyObject *sysModDict(PyModule_GetDict(sysMod)); // borrowed ref, no need to delete
+  PyObject *pathObj(PyDict_GetItemString(sysModDict, "path")); // borrowed ref, no need to delete
 
-    if( pathObj && PyList_Check(pathObj) )
+  if( pathObj && PyList_Check(pathObj) )
+  {
+    for( int i = 0; i < PyList_Size(pathObj); i++ )
     {
-      for( int i = 0; i < PyList_Size(pathObj); i++ )
+      PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
+      if( e && PyString_Check(e) )
       {
-        PyObject *e = PyList_GetItem(pathObj, i); // borrowed ref, no need to delete
-        if( e && PyString_Check(e) )
-        {
-            path += PyString_AsString(e); // returns internal data, don't delete or modify
-            path += PY_PATH_SEP;
-        }
+          path += PyString_AsString(e); // returns internal data, don't delete or modify
+          path += PY_PATH_SEP;
       }
     }
-    else
-    {
-      path += Py_GetPath();
-    }
-    Py_DECREF(sysMod); // release ref to sysMod
   }
+  else
+  {
+    path += Py_GetPath();
+  }
+  Py_DECREF(sysMod); // release ref to sysMod
 
   // set current directory and python's path.
   if (m_argv != NULL)

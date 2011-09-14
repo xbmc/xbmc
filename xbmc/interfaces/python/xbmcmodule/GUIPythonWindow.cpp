@@ -69,7 +69,7 @@ CGUIPythonWindow::~CGUIPythonWindow(void)
 
 bool CGUIPythonWindow::OnAction(const CAction &action)
 {
-  // do the base class window first, and the call to python after this
+  // call the base class first, then call python
   bool ret = CGUIWindow::OnAction(action);
 
   // workaround - for scripts which try to access the active control (focused) when there is none.
@@ -88,6 +88,14 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
     PulseActionEvent();
   }
   return ret;
+}
+
+bool CGUIPythonWindow::OnBack(int actionID)
+{
+  // if we have a callback window then python handles the closing
+  if (!pCallbackWindow)
+    return CGUIWindow::OnBack(actionID);
+  return true;
 }
 
 bool CGUIPythonWindow::OnMessage(CGUIMessage& message)

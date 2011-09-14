@@ -146,12 +146,7 @@ void CGUIMultiImage::Process(unsigned int currentTime, CDirtyRegionList &dirtyre
 void CGUIMultiImage::Render()
 {
   if (!m_files.empty())
-  {
-    // Set a viewport so that we don't render outside the defined area
-    g_graphicsContext.SetClipRegion(m_posX, m_posY, m_width, m_height);
     m_image.Render();
-    g_graphicsContext.RestoreClipRegion();
-  }
 
   CGUIControl::Render();
 }
@@ -251,7 +246,7 @@ void CGUIMultiImage::LoadDirectory()
     {
       CFileItemPtr pItem = items[i];
       if (pItem->IsPicture())
-        m_files.push_back(pItem->m_strPath);
+        m_files.push_back(pItem->GetPath());
     }
   }
 

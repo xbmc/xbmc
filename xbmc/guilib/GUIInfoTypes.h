@@ -37,12 +37,14 @@ class CGUIInfoBool
 {
 public:
   CGUIInfoBool(bool value = false);
+  virtual ~CGUIInfoBool();
+
   operator bool() const { return m_value; };
 
-  void Update(int parentID = 0, const CGUIListItem *item = NULL);
-  void Parse(const CStdString &info);
+  void Update(const CGUIListItem *item = NULL);
+  void Parse(const CStdString &expression, int context);
 private:
-  int m_info;
+  unsigned int m_info;
   bool m_value;
 };
 

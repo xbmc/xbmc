@@ -47,7 +47,7 @@ using namespace std;
 /* CEventServer                                                         */
 /************************************************************************/
 CEventServer* CEventServer::m_pInstance = NULL;
-CEventServer::CEventServer()
+CEventServer::CEventServer() : CThread("CEventServer")
 {
   m_pSocket       = NULL;
   m_pPacketBuffer = NULL;
@@ -98,7 +98,6 @@ void CEventServer::StartServer()
   }
 
   CThread::Create();
-  CThread::SetName("EventServer");
 }
 
 void CEventServer::StopServer(bool bWait)
@@ -156,6 +155,7 @@ void CEventServer::Run()
   CAddress any_addr;
   CSocketListener listener;
   int packetSize = 0;
+  std::map<std::string, std::string> txt;  
 
   CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s:%d", any_addr.Address(), m_iPort);
 
@@ -193,7 +193,8 @@ void CEventServer::Run()
   CZeroconf::GetInstance()->PublishService("servers.eventserver",
                                "_xbmc-events._udp",
                                "XBMC Event Server",
-                               m_iPort);
+                               m_iPort,
+                               txt);
 
   // add our socket to the 'select' listener
   listener.AddSocket(m_pSocket);

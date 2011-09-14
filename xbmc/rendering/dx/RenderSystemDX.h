@@ -22,6 +22,8 @@
 #ifndef RENDER_SYSTEM_DX_H
 #define RENDER_SYSTEM_DX_H
 
+#ifdef HAS_DX
+
 #pragma once
 
 #include <vector>
@@ -50,7 +52,7 @@ public:
 
   virtual bool BeginRender();
   virtual bool EndRender();
-  virtual bool PresentRender();
+  virtual bool PresentRender(const CDirtyRegionList &dirty);
   virtual bool ClearBuffers(color_t color);
   virtual bool IsExtSupported(const char* extension);
   virtual bool IsSurfaceFormatOk(D3DFORMAT surfFormat, DWORD usage);
@@ -81,7 +83,6 @@ public:
   DWORD   DefaultD3DUsage() { return m_defaultD3DUsage; }
   D3DPOOL DefaultD3DPool()  { return m_defaultD3DPool; }
   D3DADAPTER_IDENTIFIER9 GetAIdentifier() { return m_AIdentifier; }
-
   bool    Interlaced()      { return m_interlaced; }
 
   /*!
@@ -109,7 +110,7 @@ protected:
   void DeleteDevice();
   void OnDeviceLost();
   void OnDeviceReset();
-  bool PresentRenderImpl();
+  bool PresentRenderImpl(const CDirtyRegionList &dirty);
 
   void SetFocusWnd(HWND wnd) { m_hFocusWnd = wnd; }
   void SetDeviceWnd(HWND wnd) { m_hDeviceWnd = wnd; }
@@ -151,5 +152,7 @@ protected:
 
   bool                        m_inScene; ///< True if we're in a BeginScene()/EndScene() block
 };
+
+#endif
 
 #endif // RENDER_SYSTEM_DX

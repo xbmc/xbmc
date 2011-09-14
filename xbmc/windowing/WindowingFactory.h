@@ -24,28 +24,27 @@
 
 #include "system.h"
 
-#if defined(_WIN32) && defined(HAS_GL)
+#if   defined(TARGET_WINDOWS) && defined(HAS_GL)
 #include "windows/WinSystemWin32GL.h"
-#endif
 
-#if defined(_WIN32) && defined(HAS_DX)
+#elif defined(TARGET_WINDOWS) && defined(HAS_DX)
 #include "windows/WinSystemWin32DX.h"
-#endif
 
-#if defined(__APPLE__)
-#if defined(__arm__)
-#include "osx/WinSystemIOS.h"
-#else
-#include "osx/WinSystemOSXGL.h"
-#endif
-#endif
-
-#if defined(HAS_GLX)
+#elif defined(TARGET_LINUX)   && defined(HAS_GLX)
 #include "X11/WinSystemX11GL.h"
-#endif
 
-#if defined(HAS_EGL) && !defined(__APPLE__)
-#include "egl/WinSystemEGL.h"
+#elif defined(TARGET_LINUX)   &&  defined(HAS_X11) && defined(HAS_GLES)
+#include "X11/WinSystemX11GLES.h"
+
+#elif defined(TARGET_LINUX)   && !defined(HAS_X11) && defined(HAS_GLES)
+#include "egl/WinSystemGLES.h"
+
+#elif defined(TARGET_DARWIN_OSX)
+#include "osx/WinSystemOSXGL.h"
+
+#elif defined(TARGET_DARWIN_IOS)
+#include "osx/WinSystemIOS.h"
+
 #endif
 
 #endif // WINDOWING_FACTORY_H

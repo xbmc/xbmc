@@ -20,7 +20,9 @@ if [ ! -d $XBMC ]; then
   echo "XBMC.frappliance not found! are you sure you built $1 target?"
   exit 1
 fi
-if [ -f "/usr/bin/sudo" ]; then
+if [ -f "/usr/libexec/fauxsu/libfauxsu.dylib" ]; then
+  export DYLD_INSERT_LIBRARIES=/usr/libexec/fauxsu/libfauxsu.dylib
+elif [ -f "/usr/bin/sudo" ]; then
   SUDO="/usr/bin/sudo"
 fi
 if [ -f "/Users/Shared/xbmc-depends/toolchain/bin/dpkg-deb" ]; then
@@ -55,11 +57,11 @@ echo "Section: Multimedia"                        >> $DIRNAME/$PACKAGE/DEBIAN/co
 
 # prerm: called on remove and upgrade - get rid of existing bits.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "rm -rf /Applications/XBMC.frappliance"      >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "find /Applications/XBMC.frappliance -delete" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 echo "if [ \"\`uname -r\`\" = \"10.3.1\" ]; then" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "  rm -rf /Applications/Lowtide.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "  find /Applications/Lowtide.app/Appliances/XBMC.frappliance -delete" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 echo "else"                                       >> $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "  rm -rf /Applications/AppleTV.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "  find /Applications/AppleTV.app/Appliances/XBMC.frappliance -delete" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 echo "fi"                                         >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 

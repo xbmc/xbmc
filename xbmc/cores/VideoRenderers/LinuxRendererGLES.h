@@ -86,11 +86,12 @@ struct YUVCOEF
 
 enum RenderMethod
 {
-  RENDER_GLSL=0x01,
-  RENDER_SW=0x04,
-  RENDER_POT=0x10,
-  RENDER_OMXEGL=0x40,
-  RENDER_CVREF=0x80
+  RENDER_GLSL   = 0x001,
+  RENDER_SW     = 0x004,
+  RENDER_POT    = 0x010,
+  RENDER_OMXEGL = 0x040,
+  RENDER_CVREF  = 0x080,
+  RENDER_BYPASS = 0x100
 };
 
 enum RenderQuality
@@ -133,11 +134,10 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
@@ -179,6 +179,10 @@ protected:
   void UploadCVRefTexture(int index);
   void DeleteCVRefTexture(int index);
   bool CreateCVRefTexture(int index);
+
+  void UploadBYPASSTexture(int index);
+  void DeleteBYPASSTexture(int index);
+  bool CreateBYPASSTexture(int index);
 
   void CalculateTextureSourceRects(int source, int num_planes);
 

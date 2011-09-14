@@ -35,6 +35,7 @@ class TiXmlElement;
 #define RENDER_METHOD_GLSL      2
 #define RENDER_METHOD_SOFTWARE  3
 #define RENDER_METHOD_D3D_PS    4
+#define RENDER_METHOD_DXVA      5
 #define RENDER_OVERLAYS         99   // to retain compatibility
 
 // Scaling options.
@@ -186,6 +187,15 @@ enum VideoSelectAction
   SELECT_ACTION_INFO,
   SELECT_ACTION_MORE,
   SELECT_ACTION_PLAY
+};
+
+enum SubtitleAlign
+{
+  SUBTITLE_ALIGN_MANUAL = 0,
+  SUBTITLE_ALIGN_BOTTOM_INSIDE,
+  SUBTITLE_ALIGN_BOTTOM_OUTSIDE,
+  SUBTITLE_ALIGN_TOP_INSIDE,
+  SUBTITLE_ALIGN_TOP_OUTSIDE
 };
 
 // replay gain settings struct for quick access by the player multiple

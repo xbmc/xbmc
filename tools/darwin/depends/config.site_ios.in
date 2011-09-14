@@ -42,6 +42,8 @@ if test "${PACKAGE_NAME}" = "Samba" ; then
   ac_cv_header_libunwind_h=no
   ac_cv_header_execinfo_h=no
   ac_cv_header_rpcsvc_ypclnt_h=no
+  ac_cv_file__proc_sys_kernel_core_pattern=no
+  libreplace_cv_HAVE_GETADDRINFO=no
   libreplace_cv_HAVE_C99_VSNPRINTF=yes
   samba_cv_SYSCONF_SC_NPROCESSORS_ONLN=no
   samba_cv_CC_NEGATIVE_ENUM_VALUES=yes
@@ -83,4 +85,9 @@ if test "${PACKAGE_NAME}" = "libcdio" ; then
   with_cdda_player=no
   with_iso_info=no
   with_iso_read=no
+fi
+
+# tweaks for libgcrypt
+if test "${PACKAGE_NAME}" = "libgcrypt" ; then
+  export CFLAGS="${CFLAGS} -fgnu89-inline"
 fi

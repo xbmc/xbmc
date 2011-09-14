@@ -2,6 +2,7 @@
 	<defaultcontrol always="true">50</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<views>50,51,500,550,551,560,501,508,504,503,505,511</views>
+	<onload condition="Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes)">XBMC.RunScript(script.tvtunes,backend=True&amp;loop=False)</onload>
 	<controls>
 		<include>CommonVideoBackground</include>
 		<include>CommonMediaPlayingBackground</include>
@@ -37,6 +38,7 @@
 				<onright>50</onright>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
+				<onback>50</onback>
 				<itemgap>0</itemgap>
 				<control type="label" id="200">
 					<width>250</width>
@@ -65,7 +67,7 @@
 					<alttexturenofocus>-</alttexturenofocus>
 					<label>31051</label>
 					<altlabel>31050</altlabel>
-					<usealtlabel>Container.SortDirection(Ascending)</usealtlabel>
+					<usealttexture>Container.SortDirection(Ascending)</usealttexture>
 				</control>
 				<control type="edit" id="19">
 					<description>Filter</description>

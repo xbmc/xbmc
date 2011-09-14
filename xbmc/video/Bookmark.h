@@ -28,6 +28,7 @@ class CBookmark
 {
 public:
   CBookmark();
+  void Reset();
   double timeInSeconds;
   double totalTimeInSeconds;
   CStdString thumbNailImage;

@@ -24,8 +24,8 @@
 #include "GUIInfoManager.h"
 #include "Key.h"
 
-CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, int scrollTime, int preloadItems)
-    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scrollTime, preloadItems)
+CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, float posY, float width, float height, ORIENTATION orientation, const CScroller& scroller, int preloadItems)
+    : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, orientation, scroller, preloadItems)
 {
   ControlType = GUICONTAINER_LIST;
   m_type = VIEW_TYPE_LIST;
@@ -194,17 +194,21 @@ void CGUIListContainer::Scroll(int amount)
 }
 
 void CGUIListContainer::ValidateOffset()
-{ // first thing is we check the range of our offset
+{
   if (!m_layout) return;
-  if (GetOffset() > (int)m_items.size() - m_itemsPerPage || m_scrollOffset > ((int)m_items.size() - m_itemsPerPage) * m_layout->Size(m_orientation))
+  // first thing is we check the range of our offset
+  // don't validate offset if we are scrolling in case the tween image exceed <0, 1> range
+  int minOffset, maxOffset;
+  GetOffsetRange(minOffset, maxOffset);
+  if (GetOffset() > maxOffset || (!m_scroller.IsScrolling() && m_scroller.GetValue() > maxOffset * m_layout->Size(m_orientation)))
   {
-    SetOffset(std::max(0, (int)m_items.size() - m_itemsPerPage));
-    m_scrollOffset = GetOffset() * m_layout->Size(m_orientation);
+    SetOffset(std::max(0, maxOffset));
+    m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
   }
-  if (GetOffset() < 0 || m_scrollOffset < 0)
+  if (GetOffset() < 0 || (!m_scroller.IsScrolling() && m_scroller.GetValue() < 0))
   {
     SetOffset(0);
-    m_scrollOffset = 0;
+    m_scroller.SetValue(0);
   }
 }
 
@@ -289,13 +293,13 @@ CGUIListContainer::CGUIListContainer(int parentID, int controlID, float posX, fl
 : CGUIBaseContainer(parentID, controlID, posX, posY, width, height, VERTICAL, 200, 0)
 {
   CGUIListItemLayout layout;
-  layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, 0, 0);
+  layout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, false, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, "", "");
   m_layouts.push_back(layout);
   CStdString condition;
   condition.Format("control.hasfocus(%i)", controlID);
   CStdString condition2 = "!" + condition;
   CGUIListItemLayout focusLayout;
-  focusLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, g_infoManager.TranslateString(condition2), g_infoManager.TranslateString(condition));
+  focusLayout.CreateListControlLayouts(width, textureHeight + spaceBetweenItems, true, labelInfo, labelInfo2, textureButton, textureButtonFocus, textureHeight, itemWidth, itemHeight, condition2, condition);
   m_focusedLayouts.push_back(focusLayout);
   m_height = floor(m_height / (textureHeight + spaceBetweenItems)) * (textureHeight + spaceBetweenItems);
   ControlType = GUICONTAINER_LIST;

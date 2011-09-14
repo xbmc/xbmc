@@ -347,6 +347,64 @@ bool CDVDCodecUtils::CopyYUV422PackedPicture(YV12Image* pImage, DVDVideoPicture 
   return true;
 }
 
+bool CDVDCodecUtils::CopyDXVA2Picture(YV12Image* pImage, DVDVideoPicture *pSrc)
+{
+#ifdef HAS_DX
+  // TODO: Optimize this later using shaders/swscale/etc.
+  switch (pSrc->extended_format)
+  {
+    case MAKEFOURCC('N','V','1','2'):
+      {
+        IDirect3DSurface9* surface = (IDirect3DSurface9*)pSrc->data[3];
+
+        D3DLOCKED_RECT rectangle;
+        if (FAILED(surface->LockRect(&rectangle, NULL, 0)))
+          return false;
+
+        // Copy Y
+        uint8_t* bits = (uint8_t*)(rectangle.pBits);
+        uint8_t* d = pImage->plane[0];
+        for (unsigned y = 0; y < pSrc->iHeight; y++)
+        {
+          memcpy(d, bits, pSrc->iWidth);
+          bits += rectangle.Pitch;
+          d += pImage->stride[0];
+        }
+
+        D3DSURFACE_DESC desc;
+        if (FAILED(surface->GetDesc(&desc)))
+          return false;
+        
+        // Copy packed UV
+        uint8_t *s_uv = ((uint8_t*)(rectangle.pBits)) + desc.Height * rectangle.Pitch;
+        uint8_t *d_uv = pImage->plane[1];
+        for (unsigned y = 0; y < pSrc->iHeight >> 1; y++)
+        {
+          memcpy(d_uv, s_uv, pSrc->iWidth);
+          s_uv += rectangle.Pitch;
+          d_uv += pImage->stride[1];
+        }
+
+        if (FAILED(surface->UnlockRect()))
+          return false;
+      }
+      return true;
+
+    // Future...
+    /*case MAKEFOURCC('Y','V','1','2'):
+      return true;*/
+
+    /*case MAKEFOURCC('Y','V','V','Y'):
+      return true;*/
+
+    default:
+      CLog::Log(LOGWARNING, "CDVDCodecUtils::CopyDXVA2Picture colorspace not supported");
+      return false;
+  }
+#endif
+  return false;
+}
+
 bool CDVDCodecUtils::IsVP3CompatibleWidth(int width)
 {
   // known hardware limitation of purevideo 3 (VP3). (the Nvidia 9400 is a purevideo 3 chip)

@@ -30,7 +30,7 @@ UIWindow *m_window;
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-  [m_xbmcController resumeAnimation];
+  [m_xbmcController pauseAnimation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -55,6 +55,8 @@ UIWindow *m_window;
 
 - (void)applicationDidFinishLaunching:(UIApplication *)application 
 {
+  [[UIDevice currentDevice] setBatteryMonitoringEnabled:YES];
+  
   m_window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
   /* Turn off autoresizing */

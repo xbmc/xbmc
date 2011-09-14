@@ -32,6 +32,8 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	# http://bugs.python.org/issue6869
+	cd $(SOURCE); patch -p1 < ../Python-2.6-ctypes.patch
 	cd $(SOURCE); $(CONFIGURE_NATIVE)
 	cd $(SOURCE); make python.exe Parser/pgen
 	cd $(SOURCE); mv python.exe hostpython

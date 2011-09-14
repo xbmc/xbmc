@@ -31,6 +31,7 @@
 
 #include "GUIControlGroup.h"
 #include "boost/shared_ptr.hpp"
+#include "threads/CriticalSection.h"
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 
@@ -66,16 +67,17 @@ public:
   };
   float x;
   float y;
-  int condition;
+  unsigned int condition;
 };
 
 /*!
  \ingroup winmsg
  \brief
  */
-class CGUIWindow : public CGUIControlGroup
+class CGUIWindow : public CGUIControlGroup, protected CCriticalSection
 {
 public:
+
   enum WINDOW_TYPE { WINDOW = 0, MODAL_DIALOG, MODELESS_DIALOG, BUTTON_MENU, SUB_MENU };
 
   CGUIWindow(int id, const CStdString &xmlFile);
@@ -90,10 +92,11 @@ public:
   
   /*! \brief Main render function, called every frame.
    Window classes should override this only if they need to alter how something is rendered.
-   General updating on a per-frame basis should be handled in FrameMove instead, as Render
+   General updating on a per-frame basis should be handled in FrameMove instead, as DoRender
    is not necessarily re-entrant.
    \sa FrameMove
    */
+  virtual void DoRender();
   virtual void Render();
   
   /*! \brief Main update function, called every frame prior to rendering
@@ -102,8 +105,7 @@ public:
    */
   virtual void FrameMove() {};
 
-  // Close should never be called on this base class (only on derivatives) - its here so that window-manager can use a general close
-  virtual void Close(bool forceClose = false);
+  void Close(bool forceClose = false, int nextWindowID = 0, bool enableSound = true);
 
   // OnAction() is called by our window manager.  We should process any messages
   // that should be handled at the window level in the derived classes, and any
@@ -111,6 +113,8 @@ public:
   // on to the currently focused control.  Returns true if the action has been handled
   // and does not need to be passed further down the line (to our global action handlers)
   virtual bool OnAction(const CAction &action);
+  
+  virtual bool OnBack(int actionID);
 
   /*! \brief Clear the background (if necessary) prior to rendering the window
    */
@@ -134,6 +138,7 @@ public:
   virtual bool IsModalDialog() const { return false; };
   virtual bool IsMediaWindow() const { return false; };
   virtual bool HasListItems() const { return false; };
+  virtual bool IsSoundEnabled() const { return true; };
   virtual CFileItemPtr GetCurrentListItem(int offset = 0) { return CFileItemPtr(); };
   virtual int GetViewContainerID() const { return 0; };
   virtual bool IsActive() const;
@@ -143,6 +148,9 @@ public:
   bool GetLoadOnDemand() { return m_loadOnDemand; }
   int GetRenderOrder() { return m_renderOrder; };
   virtual void SetInitialVisibility();
+  virtual bool IsVisible() const { return true; }; // windows are always considered visible as they implement their own
+                                                   // versions of UpdateVisibility, and are deemed visible if they're in
+                                                   // the window manager's active list.
 
   enum OVERLAY_STATE { OVERLAY_STATE_PARENT_WINDOW=0, OVERLAY_STATE_SHOWN, OVERLAY_STATE_HIDDEN };
 
@@ -219,6 +227,7 @@ protected:
   virtual void OnWindowLoaded();
   virtual void OnInitWindow();
   virtual void OnDeinitWindow(int nextWindowID);
+  void Close_Internal(bool forceClose = false, int nextWindowID = 0, bool enableSound = true);
   EVENT_RESULT OnMouseAction(const CAction &action);
   virtual bool Animate(unsigned int currentTime);
   virtual bool CheckAnimation(ANIMATION_TYPE animType);
@@ -247,8 +256,6 @@ protected:
   void ChangeButtonToEdit(int id, bool singleLabel = false);
 //#endif
 
-  void RunActions(std::vector<CGUIActionDescriptor>& actions);
-
   int m_idRange;
   OVERLAY_STATE m_overlayState;
   RESOLUTION_INFO m_coordsRes; // resolution that the window coordinates are in.
@@ -257,6 +264,8 @@ protected:
   bool m_loadOnDemand;  // true if the window should be loaded only as needed
   bool m_isDialog;      // true if we have a dialog, false otherwise.
   bool m_dynamicResourceAlloc;
+  bool m_closing;
+  bool m_active;        // true if window is active or dialog is running
   CGUIInfoColor m_clearBackground; // colour to clear the window
 
   int m_renderOrder;      // for render order of dialogs
@@ -283,14 +292,16 @@ protected:
     }
   };
 
-  std::map<CStdString, CStdString, icompare> m_mapProperties;
-
-  std::vector<CGUIActionDescriptor> m_loadActions;
-  std::vector<CGUIActionDescriptor> m_unloadActions;
+  CGUIAction m_loadActions;
+  CGUIAction m_unloadActions;
 
   bool m_manualRunActions;
 
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
+
+private:
+  std::map<CStdString, CStdString, icompare> m_mapProperties;
+
 };
 
 #endif

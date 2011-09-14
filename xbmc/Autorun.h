@@ -47,7 +47,8 @@ class CAutorun
 public:
   CAutorun();
   virtual ~CAutorun();
-  static bool PlayDisc(bool restart = false);
+  static bool CanResumePlayDVD();
+  static bool PlayDisc(bool restart);
   bool IsEnabled() const;
   void Enable();
   void Disable();

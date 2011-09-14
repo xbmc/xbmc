@@ -49,6 +49,8 @@
 
 /* to use the same as player */
 #include "../dvdplayer/DVDClock.h"
+#include "../dvdplayer/DVDCodecs/Video/DVDVideoCodec.h"
+#include "../dvdplayer/DVDCodecs/DVDCodecUtils.h"
 
 #define MAXPRESENTDELAY 0.500
 
@@ -111,7 +113,7 @@ CXBMCRenderManager::~CXBMCRenderManager()
 /* These is based on CurrentHostCounter() */
 double CXBMCRenderManager::GetPresentTime()
 {
-  return CDVDClock::GetAbsoluteClock() / DVD_TIME_BASE;
+  return CDVDClock::GetAbsoluteClock(false) / DVD_TIME_BASE;
 }
 
 static double wrap(double x, double minimum, double maximum)
@@ -208,7 +210,7 @@ CStdString CXBMCRenderManager::GetVSyncState()
   return state;
 }
 
-bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
+bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format)
 {
   /* make sure any queued frame was fully presented */
   double timeout = m_presenttime + 0.1;
@@ -228,7 +230,7 @@ bool CXBMCRenderManager::Configure(unsigned int width, unsigned int height, unsi
     return false;
   }
 
-  bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags);
+  bool result = m_pRenderer->Configure(width, height, d_width, d_height, fps, flags, format);
   if(result)
   {
     if( flags & CONF_FLAGS_FULLSCREEN )
@@ -517,7 +519,7 @@ void CXBMCRenderManager::FlipPage(volatile bool& bStop, double timestamp /* = 0L
     {
       if(m_presentfield == FS_NONE)
         m_presentmethod = VS_INTERLACEMETHOD_NONE;
-      else if(m_pRenderer->Supports(VS_INTERLACEMETHOD_RENDER_BOB))
+      else if(m_pRenderer->Supports(VS_INTERLACEMETHOD_RENDER_BOB) || m_pRenderer->Supports(VS_INTERLACEMETHOD_DXVA_ANY))
         m_presentmethod = VS_INTERLACEMETHOD_RENDER_BOB;
       else
         m_presentmethod = VS_INTERLACEMETHOD_NONE;
@@ -584,7 +586,9 @@ void CXBMCRenderManager::Present()
   CSharedLock lock(m_sharedSection);
 
   if     ( m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB
-        || m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED)
+        || m_presentmethod == VS_INTERLACEMETHOD_RENDER_BOB_INVERTED
+        || m_presentmethod == VS_INTERLACEMETHOD_DXVA_BOB
+        || m_presentmethod == VS_INTERLACEMETHOD_DXVA_BEST)
     PresentBob();
   else if( m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE
         || m_presentmethod == VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED)
@@ -621,18 +625,18 @@ void CXBMCRenderManager::PresentBob()
   if(m_presentstep == PRESENT_FRAME)
   {
     if( m_presentfield == FS_BOT)
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, 255);
     else
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, 255);
     m_presentstep = PRESENT_FRAME2;
     g_application.NewFrame();
   }
   else
   {
     if( m_presentfield == FS_TOP)
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, 255);
     else
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP, 255);
+      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, 255);
     m_presentstep = PRESENT_IDLE;
   }
 }
@@ -666,7 +670,7 @@ void CXBMCRenderManager::PresentWeave()
 
 void CXBMCRenderManager::Recover()
 {
-#ifdef HAS_GL
+#if defined(HAS_GL) && !defined(TARGET_DARWIN)
   glFlush(); // attempt to have gpu done with pixmap and vdpau
 #endif
 }
@@ -683,4 +687,58 @@ void CXBMCRenderManager::UpdateResolution()
     }
     m_bReconfigured = false;
   }
+}
+
+
+int CXBMCRenderManager::AddVideoPicture(DVDVideoPicture& pic)
+{
+  CSharedLock lock(m_sharedSection);
+  if (!m_pRenderer)
+    return -1;
+
+  if(m_pRenderer->AddVideoPicture(&pic))
+    return 1;
+
+  YV12Image image;
+  int index = m_pRenderer->GetImage(&image);
+
+  if(index < 0)
+    return index;
+
+  if(pic.format == DVDVideoPicture::FMT_YUV420P)
+  {
+    CDVDCodecUtils::CopyPicture(&image, &pic);
+  }
+  else if(pic.format == DVDVideoPicture::FMT_NV12)
+  {
+    CDVDCodecUtils::CopyNV12Picture(&image, &pic);
+  }
+  else if(pic.format == DVDVideoPicture::FMT_YUY2
+       || pic.format == DVDVideoPicture::FMT_UYVY)
+  {
+    CDVDCodecUtils::CopyYUV422PackedPicture(&image, &pic);
+  }
+  else if(pic.format == DVDVideoPicture::FMT_DXVA)
+  {
+    CDVDCodecUtils::CopyDXVA2Picture(&image, &pic);
+  }
+#ifdef HAVE_LIBVDPAU
+  else if(pic.format == DVDVideoPicture::FMT_VDPAU)
+    m_pRenderer->AddProcessor(pic.vdpau);
+#endif
+#ifdef HAVE_LIBOPENMAX
+  else if(pic.format == DVDVideoPicture::FMT_OMXEGL)
+    m_pRenderer->AddProcessor(pic.openMax, &pic);
+#endif
+#ifdef HAVE_VIDEOTOOLBOXDECODER
+  else if(pic.format == DVDVideoPicture::FMT_CVBREF)
+    m_pRenderer->AddProcessor(pic.vtb, &pic);
+#endif
+#ifdef HAVE_LIBVA
+  else if(pic.format == DVDVideoPicture::FMT_VAAPI)
+    m_pRenderer->AddProcessor(*pic.vaapi);
+#endif
+  m_pRenderer->ReleaseImage(index, false);
+
+  return index;
 }

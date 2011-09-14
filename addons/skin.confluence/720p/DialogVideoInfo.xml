@@ -256,7 +256,7 @@
 							<item>
 								<label>$LOCALIZE[20339]:</label>
 								<label2>$INFO[ListItem.Director]</label2>
-								<onclick>-</onclick>
+								<onclick>SendClick(2003,13)</onclick>
 								<visible>!IsEmpty(ListItem.Director)</visible>
 							</item>
 							<item>
@@ -749,7 +749,7 @@
 							<item>
 								<label>$LOCALIZE[20339]:</label>
 								<label2>$INFO[ListItem.Director]</label2>
-								<onclick>-</onclick>
+								<onclick>SendClick(2003,13)</onclick>
 								<visible>!IsEmpty(ListItem.Director)</visible>
 							</item>
 							<item>
@@ -1127,6 +1127,13 @@
 						<label>20410</label>
 						<onclick>PlayMedia($INFO[ListItem.Trailer],1)</onclick>
 						<visible>!IsEmpty(ListItem.Trailer) + Skin.HasSetting(WindowedTrailer)</visible>
+					</control>
+					<control type="button" id="100">
+						<description>Fetch TvTunes stuff</description>
+						<include>ButtonInfoDialogsCommonValues</include>
+						<label>31127</label>
+						<onclick>XBMC.RunScript(script.tvtunes,mode=solo&amp;tvpath=$INFO[ListItem.FilenameAndPath]&amp;tvname=$INFO[ListItem.TVShowTitle])</onclick>
+						<visible>Skin.HasSetting(ActivateTvTunes) + System.HasAddon(script.tvtunes) + Container.Content(TVShows)</visible>
 					</control>
 				</control>
 			</control>

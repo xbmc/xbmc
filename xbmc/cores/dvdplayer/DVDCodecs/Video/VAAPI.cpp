@@ -205,6 +205,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   pic->linesize[1]    = 0;
   pic->linesize[2]    = 0;
   pic->linesize[3]    = 0;
+  pic->reordered_opaque= avctx->reordered_opaque;
   return 0;
 }
 
@@ -228,7 +229,7 @@ void CDecoder::Close()
   m_holder.surface.reset();
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
+bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int surfaces)
 {
   VAEntrypoint entrypoint = VAEntrypointVLD;
   VAProfile    profile;

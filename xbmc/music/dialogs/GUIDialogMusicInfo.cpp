@@ -166,6 +166,9 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
   artist.SetCachedArtistThumb();
   if (CFile::Exists(artist.GetThumbnailImage()))
     m_albumItem->SetProperty("artistthumb", artist.GetThumbnailImage());
+  CStdString strFanart = m_albumItem->GetCachedFanart();
+  if (CFile::Exists(strFanart))
+    m_albumItem->SetProperty("fanart_image",strFanart);
   m_hasUpdatedThumb = false;
   m_bArtistInfo = false;
   m_albumSongs->SetContent("albums");
@@ -328,7 +331,12 @@ void CGUIDialogMusicInfo::RefreshThumb()
     }
   }
   if (!CFile::Exists(thumbImage) )
-    thumbImage.Empty();
+  {
+    if (m_bArtistInfo)
+      thumbImage = "DefaultArtist.png";
+    else
+      thumbImage = "DefaultAlbumCover.png";
+  }
 
   m_albumItem->SetThumbnailImage(thumbImage);
 }

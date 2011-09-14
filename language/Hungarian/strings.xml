@@ -2170,6 +2170,8 @@
   <string id="24043">Elérhető frissítések</string>
   <string id="24044">Előfeltételek nem teljesülnek</string>
   <string id="24045">A kiegészítőnek nem megfelelő a felépítése</string>
+  <string id="24046">%s haszálatban van az alábbi kiegészítő(k) által</string>
+  <string id="24047">Ez a kiegészítő nem törölhető</string>
 
   <string id="24050">Elérhető kiegészítők</string>
   <string id="24051">Verzió:</string>

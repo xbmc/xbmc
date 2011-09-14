@@ -22,6 +22,8 @@ $(LIBDYLIB): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	# http://bugs.python.org/issue6869
+	cd $(SOURCE); patch -p1 < ../Python-2.6-ctypes.patch
 	cd $(SOURCE); $(CONFIGURE)
 	# python2.6 has an issue detecting and using the same version of openssl in configure and setup.py
 	# this forces python2.6 hashlib to be compatible with osx 10.4 boxes.

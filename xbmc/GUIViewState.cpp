@@ -95,7 +95,7 @@ CGUIViewState* CGUIViewState::GetViewState(int windowId, const CFileItemList& it
   if (url.GetProtocol() == "lastfm")
     return new CGUIViewStateMusicLastFM(items);
 
-  if (items.m_strPath == "special://musicplaylists/")
+  if (items.GetPath() == "special://musicplaylists/")
     return new CGUIViewStateWindowMusicSongs(items);
 
   if (windowId==WINDOW_MUSIC_NAV)
@@ -379,7 +379,7 @@ void CGUIViewState::AddLiveTVSources()
       source.strName = (*it).strName;
       source.vecPaths = (*it).vecPaths;
       source.m_strThumbnailImage = "";
-      source.m_iDriveType = CMediaSource::SOURCE_TYPE_REMOTE;
+      source.FromNameAndPaths("video", source.strName, source.vecPaths);
       m_sources.push_back(source);
     }
   }
@@ -453,7 +453,7 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
   SetSortOrder(SORT_ORDER_ASC);
   if (items.IsPlugin())
   {
-    CURL url(items.m_strPath);
+    CURL url(items.GetPath());
     AddonPtr addon;
     if (CAddonMgr::Get().GetAddon(url.GetHostName(),addon) && addon)
     {
@@ -464,12 +464,12 @@ CGUIViewStateFromItems::CGUIViewStateFromItems(const CFileItemList &items) : CGU
         m_playlist = PLAYLIST_VIDEO;
     }
   }
-  LoadViewState(items.m_strPath, g_windowManager.GetActiveWindow());
+  LoadViewState(items.GetPath(), g_windowManager.GetActiveWindow());
 }
 
 void CGUIViewStateFromItems::SaveViewState()
 {
-  SaveViewToDb(m_items.m_strPath, g_windowManager.GetActiveWindow());
+  SaveViewToDb(m_items.GetPath(), g_windowManager.GetActiveWindow());
 }
 
 

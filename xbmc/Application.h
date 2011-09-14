@@ -27,6 +27,8 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "threads/Condition.h"
 
+#include <map>
+
 class CFileItem;
 class CFileItemList;
 namespace ADDON
@@ -35,11 +37,6 @@ namespace ADDON
   class IAddon;
   typedef boost::shared_ptr<IAddon> AddonPtr;
 }
-
-#include "dialogs/GUIDialogSeekBar.h"
-#include "dialogs/GUIDialogKaiToast.h"
-#include "dialogs/GUIDialogVolumeBar.h"
-#include "dialogs/GUIDialogMuteBug.h"
 
 #include "cores/IPlayer.h"
 #include "cores/playercorefactory/PlayerCoreFactory.h"
@@ -67,6 +64,7 @@ namespace ADDON
 #endif
 
 class CKaraokeLyricsManager;
+class CInertialScrollingHandler;
 class CApplicationMessenger;
 class DPMSSupport;
 class CSplash;
@@ -88,7 +86,7 @@ public:
   CApplication(void);
   virtual ~CApplication(void);
   virtual bool Initialize();
-  virtual void FrameMove();
+  virtual void FrameMove(bool processEvents);
   virtual void Render();
   virtual bool RenderNoPresent();
   virtual void Preflight();
@@ -99,6 +97,8 @@ public:
   void StopServices();
   bool StartWebServer();
   void StopWebServer();
+  void StartAirplayServer();  
+  void StopAirplayServer(bool bWait);   
   bool StartJSONRPCServer();
   void StopJSONRPCServer(bool bWait);
   void StartUPnP();
@@ -165,8 +165,9 @@ public:
   void ProcessSlow();
   void ResetScreenSaver();
   int GetVolume() const;
-  void SetVolume(int iPercent);
-  void Mute(void);
+  void SetVolume(long iValue, bool isPercentage = true);
+  bool IsMuted() const;
+  void ToggleMute(void);
   void ShowVolumeBar(const CAction *action = NULL);
   int GetPlaySpeed() const;
   int GetSubtitleDelay() const;
@@ -196,10 +197,8 @@ public:
   void CheckMusicPlaylist();
 
   bool ExecuteXBMCAction(std::string action);
-  bool ExecuteAction(CGUIActionDescriptor action);
 
   static bool OnEvent(XBMC_Event& newEvent);
-
 
   CApplicationMessenger& getApplicationMessenger();
 #if defined(HAS_LINUX_NETWORK)
@@ -212,11 +211,6 @@ public:
 #ifdef HAS_PERFORMANCE_SAMPLE
   CPerformanceStats &GetPerformanceStats();
 #endif
-
-  CGUIDialogVolumeBar m_guiDialogVolumeBar;
-  CGUIDialogSeekBar m_guiDialogSeekBar;
-  CGUIDialogKaiToast m_guiDialogKaiToast;
-  CGUIDialogMuteBug m_guiDialogMuteBug;
 
 #ifdef HAS_DVD_DRIVE
   MEDIA_DETECT::CAutorun m_Autorun;
@@ -349,11 +343,12 @@ protected:
   bool m_bTestMode;
   bool m_bSystemScreenSaverEnable;
   
-#if defined(HAS_SDL) || defined(HAS_XBMC_MUTEX)
   int        m_frameCount;
   CCriticalSection m_frameMutex;
   XbmcThreads::ConditionVariable  m_frameCond;
-#endif
+
+  void Mute();
+  void UnMute();
 
   void SetHardwareVolume(long hardwareVolume);
   void UpdateLCD();
@@ -378,6 +373,7 @@ protected:
   bool InitDirectoriesWin32();
   void CreateUserDirs();
 
+  CInertialScrollingHandler *m_pInertialScrollingHandler;
   CApplicationMessenger m_applicationMessenger;
 #if defined(HAS_LINUX_NETWORK)
   CNetworkLinux m_network;
@@ -393,6 +389,7 @@ protected:
 #ifdef HAS_EVENT_SERVER
   std::map<std::string, std::map<int, float> > m_lastAxisMap;
 #endif
+
 };
 
 extern CApplication g_application;
