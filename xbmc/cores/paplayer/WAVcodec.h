@@ -39,8 +39,8 @@ public:
 
 private:
   bool m_bHasFloat;
-  long m_iDataStart;
-  long m_iDataLen;
+  uint32_t m_iDataStart;
+  uint32_t m_iDataLen;
   DWORD m_ChannelMask;
 };
 
