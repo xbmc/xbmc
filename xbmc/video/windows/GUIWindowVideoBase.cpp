@@ -951,15 +951,12 @@ bool CGUIWindowVideoBase::OnInfo(int iItem)
   ADDON::ScraperPtr scraper;
   if (!m_vecItems->IsPlugin() && !m_vecItems->IsRSS() && !m_vecItems->IsLiveTV())
   {
-    CStdString strDir;
-    if (item->IsVideoDb()       &&
-        item->HasVideoInfoTag() &&
-        !item->GetVideoInfoTag()->m_strPath.IsEmpty())
+    CStdString strDir(item->GetPath());
+    if (item->IsVideoDb() && item->HasVideoInfoTag() &&
+        !item->GetVideoInfoTag()->GetPath().IsEmpty())
     {
-      strDir = item->GetVideoInfoTag()->m_strPath;
+      strDir = item->GetVideoInfoTag()->GetPath();
     }
-    else
-      URIUtils::GetDirectory(item->GetPath(),strDir);
 
     CVideoInfoTag details;
     if (m_database.LoadVideoInfo(strDir, details))
