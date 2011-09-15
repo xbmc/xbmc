@@ -234,9 +234,48 @@ void CGUISettings::Initialize()
 {
   ZeroMemory(&m_replayGain, sizeof(ReplayGainSettings));
 
-  // Pictures settings
-  AddGroup(0, 1);
+  AddGroup(0, 1); //PICTURES
   CSettingsCategory* pic = AddCategory(0, "pictures", 14081);
+  CSettingsCategory* cat = AddCategory(0, "slideshow", 108);
+  AddGroup(2, 8); //WEATHER
+  CSettingsCategory* wea = AddCategory(2, "weather", 16000);
+  AddGroup(3, 10022); //MUSIC & AUDIO
+  CSettingsCategory* ml = AddCategory(3,"musiclibrary",14022);
+  CSettingsCategory* mp = AddCategory(3, "musicplayer", 14086);
+  CSettingsCategory* mf = AddCategory(3, "musicfiles", 14081);
+  CSettingsCategory* scr = AddCategory(3, "scrobbler", 15221);
+  CSettingsCategory* acd = AddCategory(3, "audiocds", 620);
+  CSettingsCategory* ao = AddCategory(3, "audiooutput", 772);
+#ifdef HAS_KARAOKE
+  CSettingsCategory* kar = AddCategory(3, "karaoke", 13327);
+#endif
+  AddGroup(5, 3); //VIDEOS
+  CSettingsCategory* vdl = AddCategory(5, "videolibrary", 14022);
+  CSettingsCategory* vp = AddCategory(5, "videoplayer", 14086);
+  CSettingsCategory* vid = AddCategory(5, "myvideos", 14081);
+  CSettingsCategory* sub = AddCategory(5, "subtitles", 287);
+  CSettingsCategory* dvd = AddCategory(5, "dvds", 14087);
+  CSettingsCategory* vs = AddCategory(5, "videoscreen", 21373);
+  AddGroup(6, 705);
+  CSettingsCategory* srv = AddCategory(6, "services", 14036);
+#ifndef _WIN32
+  CSettingsCategory* smb = AddCategory(6, "smb", 1200);
+#endif
+  CSettingsCategory* net = AddCategory(6, "network", 798);
+  AddGroup(7, 480);
+  CSettingsCategory* laf = AddCategory(7,"lookandfeel", 166);
+  CSettingsCategory* loc = AddCategory(7, "locale", 14090);
+  CSettingsCategory* fl = AddCategory(7, "filelists", 14081);
+  CSettingsCategory* ss = AddCategory(7, "screensaver", 360);
+  AddCategory(7, "window", 0);
+  AddGroup(4, 13000); //Advanced
+  CSettingsCategory* in = AddCategory(4, "input", 14094);
+  CSettingsCategory* pwm = AddCategory(4, "powermanagement", 14095);
+  CSettingsCategory* dbg = AddCategory(4, "debug", 14092);
+  CSettingsCategory* mst = AddCategory(4, "masterlock", 12360);
+  AddCategory(4, "cache", 439);
+
+  // Pictures settings
   AddBool(pic, "pictures.usetags", 14082, true);
   AddBool(pic,"pictures.generatethumbs",13360,true);
   AddBool(pic, "pictures.useexifrotation", 20184, true);
@@ -244,17 +283,11 @@ void CGUISettings::Initialize()
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   AddInt(NULL, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
 
-  CSettingsCategory* cat = AddCategory(0, "slideshow", 108);
   AddInt(cat, "slideshow.staytime", 12378, 5, 1, 1, 100, SPIN_CONTROL_INT_PLUS, MASK_SECS);
   AddBool(cat, "slideshow.displayeffects", 12379, true);
   AddBool(NULL, "slideshow.shuffle", 13319, false);
 
-  // Programs settings
-//  AddGroup(1, 0);
-
   // My Weather settings
-  AddGroup(2, 8);
-  CSettingsCategory* wea = AddCategory(2, "weather", 16000);
   AddInt(NULL, "weather.currentlocation", 0, 1, 1, 1, 3, SPIN_CONTROL_INT_PLUS);
   AddString(wea, "weather.areacode1", 14019, "USNY0996 - New York, NY", BUTTON_CONTROL_STANDARD);
   AddString(wea, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
@@ -264,8 +297,6 @@ void CGUISettings::Initialize()
   AddString(wea, "weather.scriptsettings", 21417, "", BUTTON_CONTROL_STANDARD, true);
 
   // My Music Settings
-  AddGroup(3, 2);
-  CSettingsCategory* ml = AddCategory(3,"musiclibrary",14022);
   AddBool(NULL, "musiclibrary.enabled", 418, true);
   AddBool(ml, "musiclibrary.showcompilationartists", 13414, true);
   AddSeparator(ml,"musiclibrary.sep1");
@@ -279,7 +310,6 @@ void CGUISettings::Initialize()
   AddString(ml, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
   AddString(ml, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
 
-  CSettingsCategory* mp = AddCategory(3, "musicplayer", 14086);
   AddBool(mp, "musicplayer.autoplaynextitem", 489, true);
   AddBool(mp, "musicplayer.queuebydefault", 14084, false);
   AddSeparator(mp, "musicplayer.sep1");
@@ -297,7 +327,6 @@ void CGUISettings::Initialize()
   AddSeparator(mp, "musicplayer.sep3");
   AddDefaultAddon(mp, "musicplayer.visualisation", 250, DEFAULT_VISUALISATION, ADDON_VIZ);
 
-  CSettingsCategory* mf = AddCategory(3, "musicfiles", 14081);
   AddBool(mf, "musicfiles.usetags", 258, true);
   AddString(mf, "musicfiles.trackformat", 13307, "[%N. ]%A - %T", EDIT_CONTROL_INPUT, false, 16016);
   AddString(mf, "musicfiles.trackformatright", 13387, "%D", EDIT_CONTROL_INPUT, false, 16016);
@@ -308,7 +337,6 @@ void CGUISettings::Initialize()
   AddString(NULL, "musicfiles.librarytrackformatright", 13387, "", EDIT_CONTROL_INPUT, false, 16016);
   AddBool(mf, "musicfiles.findremotethumbs", 14059, true);
 
-  CSettingsCategory* scr = AddCategory(3, "scrobbler", 15221);
   AddBool(scr, "scrobbler.lastfmsubmit", 15201, false);
   AddBool(scr, "scrobbler.lastfmsubmitradio", 15250, false);
   AddString(scr,"scrobbler.lastfmusername", 15202, "", EDIT_CONTROL_INPUT, false, 15202);
@@ -318,7 +346,6 @@ void CGUISettings::Initialize()
   AddString(scr, "scrobbler.librefmusername", 15218, "", EDIT_CONTROL_INPUT, false, 15218);
   AddString(scr, "scrobbler.librefmpass", 15219, "", EDIT_CONTROL_MD5_INPUT, false, 15219);
 
-  CSettingsCategory* acd = AddCategory(3, "audiocds", 620);
   AddBool(acd, "audiocds.autorun", 14085, false);
   AddBool(acd, "audiocds.usecddb", 227, true);
   AddSeparator(acd, "audiocds.sep1");
@@ -341,7 +368,6 @@ void CGUISettings::Initialize()
   AddInt(acd, "audiocds.compressionlevel", 665, 5, 0, 1, 8, SPIN_CONTROL_INT_PLUS);
 
 #ifdef HAS_KARAOKE
-  CSettingsCategory* kar = AddCategory(3, "karaoke", 13327);
   AddBool(kar, "karaoke.enabled", 13323, false);
   // auto-popup the song selector dialog when the karaoke song was just finished and playlist is empty.
   AddBool(kar, "karaoke.autopopupselector", 22037, false);
@@ -359,8 +385,6 @@ void CGUISettings::Initialize()
 #endif
 
   // System settings
-  AddGroup(4, 13000);
-  CSettingsCategory* vs = AddCategory(4, "videoscreen", 21373);
 
 #if (defined(__APPLE__) && defined(__arm__))
   // define but hide display, resolution and blankdisplays settings on atv2/ios, they are not user controlled
@@ -426,8 +450,6 @@ void CGUISettings::Initialize()
   AddBool(NULL, "videoscreen.haslcd", 4501, false);
 #endif
 
-  CSettingsCategory* ao = AddCategory(4, "audiooutput", 772);
-
   map<int,int> audiomode;
   audiomode.insert(make_pair(338,AUDIO_ANALOG));
   audiomode.insert(make_pair(339,AUDIO_IEC958));
@@ -466,7 +488,6 @@ void CGUISettings::Initialize()
   AddString(ao, "audiooutput.audiodevice", 545, "Default", SPIN_CONTROL_TEXT);
 #endif
 
-  CSettingsCategory* in = AddCategory(4, "input", 14094);
 #if defined(__APPLE__)
   map<int,int> remotemode;
   remotemode.insert(make_pair(13610,APPLE_REMOTE_DISABLED));
@@ -489,7 +510,6 @@ void CGUISettings::Initialize()
   AddBool(in, "input.enablemouse", 21369, true);
 #endif
 
-  CSettingsCategory* pwm = AddCategory(4, "powermanagement", 14095);
   // Note: Application.cpp might hide powersaving settings if not supported.
   AddInt(pwm, "powermanagement.displaysoff", 1450, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   AddInt(pwm, "powermanagement.shutdowntime", 357, 0, 0, 5, 120, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
@@ -514,17 +534,14 @@ void CGUISettings::Initialize()
     AddInt(pwm, "powermanagement.shutdownstate", 13008, POWERSTATE_QUIT, shutdown, SPIN_CONTROL_TEXT);
   }
 
-  CSettingsCategory* dbg = AddCategory(4, "debug", 14092);
   AddBool(dbg, "debug.showloginfo", 20191, false);
   AddPath(dbg, "debug.screenshotpath",20004,"select writable folder",BUTTON_CONTROL_PATH_INPUT,false,657);
 
-  CSettingsCategory* mst = AddCategory(4, "masterlock", 12360);
   AddString(mst, "masterlock.lockcode"       , 20100, "-", BUTTON_CONTROL_STANDARD);
   AddBool(mst, "masterlock.startuplock"      , 20076,false);
   // hidden masterlock settings
   AddInt(NULL,"masterlock.maxretries", 12364, 3, 3, 1, 100, SPIN_CONTROL_TEXT);
 
-  AddCategory(4, "cache", 439);
   AddInt(NULL, "cache.harddisk", 14025, 256, 0, 256, 4096, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
   AddSeparator(NULL, "cache.sep1");
   AddInt(NULL, "cachevideo.dvdrom", 14026, 2048, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
@@ -541,8 +558,6 @@ void CGUISettings::Initialize()
   AddInt(NULL, "cacheunknown.internet", 14060, 4096, 0, 256, 16384, SPIN_CONTROL_INT_PLUS, MASK_KB, TEXT_OFF);
 
   // video settings
-  AddGroup(5, 3);
-  CSettingsCategory* vdl = AddCategory(5, "videolibrary", 14022);
   AddBool(NULL, "videolibrary.enabled", 418, true);
   AddBool(vdl, "videolibrary.showunwatchedplots", 20369, true);
   AddBool(NULL, "videolibrary.seasonthumbs", 20382, true);
@@ -561,8 +576,6 @@ void CGUISettings::Initialize()
   AddString(vdl, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(vdl, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(vdl, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);
-
-  CSettingsCategory* vp = AddCategory(5, "videoplayer", 14086);
 
   map<int, int> renderers;
   renderers.insert(make_pair(13416, RENDER_METHOD_AUTO));
@@ -659,7 +672,6 @@ void CGUISettings::Initialize()
   AddSeparator(vp, "videoplayer.sep5");
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
 
-  CSettingsCategory* vid = AddCategory(5, "myvideos", 14081);
 
   map<int, int> myVideosSelectActions;
   myVideosSelectActions.insert(make_pair(22080, SELECT_ACTION_CHOOSE));
@@ -673,7 +685,6 @@ void CGUISettings::Initialize()
   AddBool(vid, "myvideos.filemetadata", 20419, true);
   AddBool(NULL, "myvideos.extractthumb",20433, true);
 
-  CSettingsCategory* sub = AddCategory(5, "subtitles", 287);
   AddString(sub, "subtitles.font", 14089, "arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
 
@@ -697,7 +708,6 @@ void CGUISettings::Initialize()
   subtitleAlignments.insert(make_pair(21465, SUBTITLE_ALIGN_TOP_OUTSIDE));
   AddInt(sub, "subtitles.align", 21460, SUBTITLE_ALIGN_MANUAL, subtitleAlignments, SPIN_CONTROL_TEXT);
 
-  CSettingsCategory* dvd = AddCategory(5, "dvds", 14087);
   AddBool(dvd, "dvds.autorun", 14088, false);
   AddInt(dvd, "dvds.playerregion", 21372, 0, 0, 1, 8, SPIN_CONTROL_INT_PLUS, -1, TEXT_OFF);
   AddBool(dvd, "dvds.automenu", 21882, false);
@@ -708,9 +718,6 @@ void CGUISettings::Initialize()
   AddBool(NULL, "scrapers.langfallback", 21416, false);
 
   // network settings
-  AddGroup(6, 705);
-
-  CSettingsCategory* srv = AddCategory(6, "services", 14036);
   AddString(srv,"services.devicename", 1271, "XBMC", EDIT_CONTROL_INPUT);
   AddSeparator(srv,"services.sep4");
   AddBool(srv, "services.upnpserver", 21360, false);
@@ -747,12 +754,10 @@ void CGUISettings::Initialize()
 #endif
 
 #ifndef _WIN32
-  CSettingsCategory* smb = AddCategory(6, "smb", 1200);
   AddString(smb, "smb.winsserver",  1207,   "",  EDIT_CONTROL_IP_INPUT);
   AddString(smb, "smb.workgroup",   1202,   "WORKGROUP", EDIT_CONTROL_INPUT, false, 1202);
 #endif
 
-  CSettingsCategory* net = AddCategory(6, "network", 798);
   if (g_application.IsStandAlone())
   {
 #ifndef __APPLE__
@@ -791,8 +796,6 @@ void CGUISettings::Initialize()
   AddInt(net, "network.bandwidth", 14041, 0, 0, 512, 100*1024, SPIN_CONTROL_INT_PLUS, MASK_KBPS, TEXT_OFF);
 
   // appearance settings
-  AddGroup(7, 480);
-  CSettingsCategory* laf = AddCategory(7,"lookandfeel", 166);
   AddDefaultAddon(laf, "lookandfeel.skin",166,DEFAULT_SKIN, ADDON_SKIN);
   AddString(laf, "lookandfeel.skintheme",15111,"SKINDEFAULT", SPIN_CONTROL_TEXT);
   AddString(laf, "lookandfeel.skincolors",14078, "SKINDEFAULT", SPIN_CONTROL_TEXT);
@@ -804,7 +807,6 @@ void CGUISettings::Initialize()
   AddBool(laf, "lookandfeel.enablerssfeeds",13305,  true);
   AddString(laf, "lookandfeel.rssedit", 21450, "", BUTTON_CONTROL_STANDARD);
 
-  CSettingsCategory* loc = AddCategory(7, "locale", 14090);
   AddString(loc, "locale.language",248,"english", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.country", 20026, "USA", SPIN_CONTROL_TEXT);
   AddString(loc, "locale.charset", 14091, "DEFAULT", SPIN_CONTROL_TEXT); // charset is set by the language file
@@ -830,7 +832,6 @@ void CGUISettings::Initialize()
   AddString(loc, "locale.timeserveraddress", 731, "pool.ntp.org", EDIT_CONTROL_INPUT);
 #endif
 
-  CSettingsCategory* fl = AddCategory(7, "filelists", 14081);
   AddBool(fl, "filelists.showparentdiritems", 13306, true);
   AddBool(fl, "filelists.showextensions", 497, true);
   AddBool(fl, "filelists.ignorethewhensorting", 13399, true);
@@ -838,7 +839,6 @@ void CGUISettings::Initialize()
   AddBool(fl, "filelists.showaddsourcebuttons", 21382,  true);
   AddBool(fl, "filelists.showhidden", 21330, false);
 
-  CSettingsCategory* ss = AddCategory(7, "screensaver", 360);
   AddInt(ss, "screensaver.time", 355, 3, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddDefaultAddon(ss, "screensaver.mode", 356, "screensaver.xbmc.builtin.dim", ADDON_SCREENSAVER);
   AddString(ss, "screensaver.settings", 21417, "", BUTTON_CONTROL_STANDARD);
@@ -847,7 +847,6 @@ void CGUISettings::Initialize()
   AddBool(ss, "screensaver.usemusicvisinstead", 13392, true);
   AddBool(ss, "screensaver.usedimonpause", 22014, true);
 
-  AddCategory(7, "window", 0);
   AddInt(NULL, "window.width",  0, 720, 10, 1, INT_MAX, SPIN_CONTROL_INT);
   AddInt(NULL, "window.height", 0, 480, 10, 1, INT_MAX, SPIN_CONTROL_INT);
 

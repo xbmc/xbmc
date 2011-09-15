@@ -674,7 +674,7 @@
 
   <string id="770">Error %i: share not available</string>
 
-  <string id="772">Audio output</string>
+  <string id="772">Output</string>
   <string id="773">Seeking</string>
   <string id="774">Slideshow folder</string>
   <string id="775">Network interface</string>
@@ -873,7 +873,7 @@
   <string id="10019">Settings - Appearance</string>
   <string id="10020">Scripts</string>
   <string id="10021">Web Browser</string>
-
+  <string id="10022">Music & Audio</string>
   <string id="10028">Videos/Playlist</string>
   <string id="10034">Settings - Profiles</string>
 
@@ -988,7 +988,7 @@
 
   <string id="12900">Screensaver</string>
   <string id="12901">Fullscreen OSD</string>
-
+  <string id="12999">Advanced</string>
   <string id="13000">System</string>
   <string id="13001">Immediate HD spindown</string>
   <string id="13002">Video only</string>
@@ -1925,7 +1925,7 @@
   <string id="21370">Play navigation sounds during media playback</string>
   <string id="21371">Thumbnail</string>
   <string id="21372">Forced DVD player region</string>
-  <string id="21373">Video output</string>
+  <string id="21373">Output</string>
   <string id="21374">Video aspect</string>
   <string id="21375">Normal</string>
   <string id="21376">Letterbox</string>

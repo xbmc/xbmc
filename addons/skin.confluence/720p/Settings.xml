@@ -129,7 +129,7 @@
 						<icon>special://skin/backgrounds/videos.jpg</icon>
 					</item>
 					<item id="3">
-						<label>2</label>
+						<label>10022</label>
 						<label2>31402</label2>
 						<onclick>ActivateWindow(MusicSettings)</onclick>
 						<icon>special://skin/backgrounds/music.jpg</icon>
@@ -159,7 +159,7 @@
 						<icon>special://skin/backgrounds/network.jpg</icon>
 					</item>
 					<item id="8">
-						<label>13000</label>
+						<label>12999</label>
 						<label2>31406</label2>
 						<onclick>ActivateWindow(SystemSettings)</onclick>
 						<icon>special://skin/backgrounds/system.jpg</icon>
