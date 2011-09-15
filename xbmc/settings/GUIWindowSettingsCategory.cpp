@@ -327,6 +327,19 @@ void CGUIWindowSettingsCategory::SetupControls()
   m_defaultControl = CONTROL_START_BUTTONS;
 }
 
+CGUIControl* CGUIWindowSettingsCategory::AddIntBasedSpinControl(CSetting *pSetting, float groupWidth, int &iControlID)
+{
+  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, groupWidth, iControlID);
+  if (!pSettingInt->m_entries.empty())
+  {
+    for (map<int,int>::iterator it=pSettingInt->m_entries.begin(); it != pSettingInt->m_entries.end();++it)
+      pControl->AddLabel(g_localizeStrings.Get(it->first), it->second);
+    pControl->SetValue(pSettingInt->GetData());
+  }
+  return pControl;
+}
+
 void CGUIWindowSettingsCategory::CreateSettings()
 {
   FreeSettingsControls();
@@ -344,20 +357,62 @@ void CGUIWindowSettingsCategory::CreateSettings()
     CStdString strSetting = pSetting->GetSetting();
     if (pSetting->GetType() == SETTINGS_TYPE_INT)
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddIntBasedSpinControl(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      if (!pSettingInt->m_entries.empty())
+      if (strSetting.Equals("videolibrary.flattentvshows"))
       {
-        CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-        for (map<int,int>::iterator it=pSettingInt->m_entries.begin();
-             it != pSettingInt->m_entries.end();++it)
+        pControl->AddLabel(g_localizeStrings.Get(20420), 0); // Never
+        pControl->AddLabel(g_localizeStrings.Get(20421), 1); // One Season
+        pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
+        pControl->SetValue(pSettingInt->GetData());
+      }
+      else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
+      {
+        pControl->AddLabel(g_localizeStrings.Get(13551), 0);
+
+        for (int i = 1; i <= MAXREFRESHCHANGEDELAY; i++)
         {
-          pControl->AddLabel(g_localizeStrings.Get(it->first), it->second);
+          CStdString delayText;
+          if (i < 20)
+            delayText.Format(g_localizeStrings.Get(13552).c_str(), (double)i / 10.0);
+          else
+            delayText.Format(g_localizeStrings.Get(13553).c_str(), (double)i / 10.0);
+
+          pControl->AddLabel(delayText, i);
         }
         pControl->SetValue(pSettingInt->GetData());
-        continue;
       }
-      bSettingAdded = true;
+      else if (strSetting.Equals("myvideos.selectaction"))
+      {
+        pControl->AddLabel(g_localizeStrings.Get(22080), SELECT_ACTION_CHOOSE);
+        pControl->AddLabel(g_localizeStrings.Get(208),   SELECT_ACTION_PLAY_OR_RESUME);
+        pControl->AddLabel(g_localizeStrings.Get(13404), SELECT_ACTION_RESUME);
+        pControl->AddLabel(g_localizeStrings.Get(22081), SELECT_ACTION_INFO);
+        pControl->SetValue(pSettingInt->GetData());
+      }
+      else if (strSetting.Equals("subtitles.style"))
+      {
+        pControl->AddLabel(g_localizeStrings.Get(738), FONT_STYLE_NORMAL);
+        pControl->AddLabel(g_localizeStrings.Get(739), FONT_STYLE_BOLD);
+        pControl->AddLabel(g_localizeStrings.Get(740), FONT_STYLE_ITALICS);
+        pControl->AddLabel(g_localizeStrings.Get(741), FONT_STYLE_BOLD_ITALICS);
+        pControl->SetValue(pSettingInt->GetData());
+      }
+      else if (strSetting.Equals("subtitles.color"))
+      {
+        for (int i = SUBTITLE_COLOR_START; i <= SUBTITLE_COLOR_END; i++)
+          pControl->AddLabel(g_localizeStrings.Get(760 + i), i);
+        pControl->SetValue(pSettingInt->GetData());
+      }
+      else if (strSetting.Equals("lookandfeel.startupwindow"))
+        FillInStartupWindow(pSetting);
+      else if (strSetting.Equals("subtitles.height") || strSetting.Equals("karaoke.fontheight") )
+        FillInSubtitleHeights(pSetting, pControl);
+      else if (strSetting.Equals("videoscreen.screen"))
+        FillInScreens(strSetting, g_guiSettings.GetResolution());
+      else if (strSetting.Equals("videoscreen.resolution"))
+        FillInResolutions(strSetting, g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
+      continue;
     }
     if (strSetting.Equals("videooutput.aspect"))
     {
@@ -402,32 +457,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       AddSetting(pSetting, group->GetWidth(), iControlID);
       CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
       control->SetDelayed();
-      continue;
-    }
-    else if (strSetting.Equals("subtitles.style"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(738), FONT_STYLE_NORMAL);
-      pControl->AddLabel(g_localizeStrings.Get(739), FONT_STYLE_BOLD);
-      pControl->AddLabel(g_localizeStrings.Get(740), FONT_STYLE_ITALICS);
-      pControl->AddLabel(g_localizeStrings.Get(741), FONT_STYLE_BOLD_ITALICS);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
-    else if (strSetting.Equals("subtitles.color"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      for (int i = SUBTITLE_COLOR_START; i <= SUBTITLE_COLOR_END; i++)
-        pControl->AddLabel(g_localizeStrings.Get(760 + i), i);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
-    else if (strSetting.Equals("subtitles.height") || strSetting.Equals("karaoke.fontheight") )
-    {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
-      FillInSubtitleHeights(pSetting);
       continue;
     }
     else if (strSetting.Equals("subtitles.font") || strSetting.Equals("karaoke.font") )
@@ -507,18 +536,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       continue;
     }
 #endif
-    else if (strSetting.Equals("videoscreen.screen"))
-    {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
-      FillInScreens(strSetting, g_guiSettings.GetResolution());
-      continue;
-    }
-    else if (strSetting.Equals("videoscreen.resolution"))
-    {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
-      FillInResolutions(strSetting,  g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
-      continue;
-    }
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
@@ -563,27 +580,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
       continue;
     }
-    else if (strSetting.Equals("videolibrary.flattentvshows"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(20420), 0); // Never
-      pControl->AddLabel(g_localizeStrings.Get(20421), 1); // One Season
-      pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
-    else if (strSetting.Equals("myvideos.selectaction"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(22080), SELECT_ACTION_CHOOSE);
-      pControl->AddLabel(g_localizeStrings.Get(208), SELECT_ACTION_PLAY_OR_RESUME);
-      pControl->AddLabel(g_localizeStrings.Get(13404), SELECT_ACTION_RESUME);
-      pControl->AddLabel(g_localizeStrings.Get(22081), SELECT_ACTION_INFO);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
     else if (strSetting.Equals("network.enc"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
@@ -593,11 +589,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(782), ENC_WPA);
       pControl->AddLabel(g_localizeStrings.Get(783), ENC_WPA2);
       pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
-    else if (strSetting.Equals("lookandfeel.startupwindow"))
-    {
-      FillInStartupWindow(pSetting);
       continue;
     }
     else if (strSetting.Equals("locale.country"))
@@ -622,26 +613,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInAudioDevices(pSetting,true);
-      continue;
-    }
-    else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(13551), 0);
-
-      for (int i = 1; i <= MAXREFRESHCHANGEDELAY; i++)
-      {
-        CStdString delayText;
-        if (i < 20)
-          delayText.Format(g_localizeStrings.Get(13552).c_str(), (double)i / 10.0);
-        else
-          delayText.Format(g_localizeStrings.Get(13553).c_str(), (double)i / 10.0);
-
-        pControl->AddLabel(delayText, i);
-      }
-
-      pControl->SetValue(pSettingInt->GetData());
       continue;
     }
     else if (strSetting.Equals("videoplayer.synctype"))
@@ -1459,7 +1430,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     pSettingString->SetData(pControl->GetCurrentLabel());
-    FillInSubtitleHeights(g_guiSettings.GetSetting("subtitles.height"));
+    CSetting *pSetting = (CSetting *)g_guiSettings.GetSetting("subtitles.height");
+    FillInSubtitleHeights(pSetting, (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID()));
   }
   else if (strSetting.Equals("subtitles.charset"))
   {
@@ -1484,7 +1456,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CSettingString *pSettingString = (CSettingString *)pSettingControl->GetSetting();
     CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(pSettingControl->GetID());
     pSettingString->SetData(pControl->GetCurrentLabel());
-    FillInSubtitleHeights(g_guiSettings.GetSetting("karaoke.fontheight"));
+    CSetting *pSetting = (CSetting *)g_guiSettings.GetSetting("karaoke.fontheight");
+    FillInSubtitleHeights(pSetting, (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID()));
   }
   else if (strSetting.Equals("karaoke.charset"))
   {
@@ -2176,10 +2149,9 @@ void CGUIWindowSettingsCategory::CheckNetworkSettings()
   }
 }
 
-void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting)
+void CGUIWindowSettingsCategory::FillInSubtitleHeights(CSetting *pSetting, CGUISpinControlEx *pControl)
 {
   CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
   pControl->SetType(SPIN_CONTROL_TYPE_TEXT);
   pControl->Clear();
   if (CUtil::IsUsingTTFSubtitles())

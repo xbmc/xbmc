@@ -43,7 +43,7 @@ protected:
   virtual void OnInitWindow();
 
   void CheckNetworkSettings();
-  void FillInSubtitleHeights(CSetting *pSetting);
+  void FillInSubtitleHeights(CSetting *pSetting, CGUISpinControlEx *pControl);
   void FillInSubtitleFonts(CSetting *pSetting);
   void FillInCharSets(CSetting *pSetting);
   void FillInSkinFonts(CSetting *pSetting);
@@ -67,6 +67,7 @@ protected:
   void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);
 
   virtual void SetupControls();
+  CGUIControl* AddIntBasedSpinControl(CSetting *pSetting, float groupWidth, int &iControlID);
   void CreateSettings();
   void UpdateSettings();
   void UpdateRealTimeSettings();
