@@ -46,7 +46,6 @@ void CGUITextureGLES::Begin(color_t color)
     m_diffuse.m_textures[0]->LoadToGPU();
 
   glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
-  glEnable(GL_TEXTURE_2D);
 
   // Setup Colors
   for (int i = 0; i < 4; i++)
@@ -86,7 +85,6 @@ void CGUITextureGLES::Begin(color_t color)
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m_diffuse.m_textures[0]->GetTextureObject());
-    glEnable(GL_TEXTURE_2D);
 
     GLint tex1Loc = g_Windowing.GUIShaderGetCoord1();
     glVertexAttribPointer(tex1Loc, 2, GL_FLOAT, 0, 0, m_tex1);
@@ -123,12 +121,10 @@ void CGUITextureGLES::End()
 {
   if (m_diffuse.size())
   {
-    glDisable(GL_TEXTURE_2D);
     glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord1());
     glActiveTexture(GL_TEXTURE0);
   }
 
-  glDisable(GL_TEXTURE_2D);
   glDisableVertexAttribArray(g_Windowing.GUIShaderGetPos());
   glDisableVertexAttribArray(g_Windowing.GUIShaderGetCol());
   glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord0());
@@ -221,10 +217,7 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
     glActiveTexture(GL_TEXTURE0);
     texture->LoadToGPU();
     glBindTexture(GL_TEXTURE_2D, texture->GetTextureObject());
-    glEnable(GL_TEXTURE_2D);
   }
-  else
-    glDisable(GL_TEXTURE_2D);
 
   glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
   glEnable(GL_BLEND);          // Turn Blending On
@@ -295,9 +288,6 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
     glDisableVertexAttribArray(tex0Loc);
 
   g_Windowing.DisableGUIShader();
-
-  if (texture)
-    glDisable(GL_TEXTURE_2D);
 }
 
 #endif

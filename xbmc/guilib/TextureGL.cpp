@@ -141,6 +141,7 @@ void CGLTexture::LoadToGPU()
 
   switch (m_format)
   {
+    default:
     case XB_FMT_RGBA8:
       internalformat = pixelformat = GL_RGBA;
       break;
