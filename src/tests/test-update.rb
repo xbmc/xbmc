@@ -47,10 +47,14 @@ def zip_supports_bzip2(zip_tool)
 end
 
 force_elevation = false
+run_in_debugger = false
 
 OptionParser.new do |parser|
 	parser.on("-f","--force-elevated","Force the updater to elevate itself") do
 		force_elevation = true
+	end
+	parser.on("-d","--debug","Run the updater under GDB") do
+		run_in_debugger = true
 	end
 end.parse!
 
@@ -102,7 +106,8 @@ FileUtils.cp("../#{UPDATER_NAME}","#{PACKAGE_DIR}/#{UPDATER_NAME}")
 install_path = File.expand_path(INSTALL_DIR)
 Dir.chdir(INSTALL_DIR) do
 	flags = "--force-elevated" if force_elevation
-	cmd = "#{PACKAGE_DIR}/#{UPDATER_NAME} #{flags} --install-dir \"#{install_path}\" --package-dir \"#{PACKAGE_DIR}\" --script file_list.xml"
+	debug_flags = "gdb --args" if run_in_debugger
+	cmd = "#{debug_flags} #{PACKAGE_DIR}/#{UPDATER_NAME} #{flags} --install-dir \"#{install_path}\" --package-dir \"#{PACKAGE_DIR}\" --script file_list.xml"
 	puts "Running '#{cmd}'"
 	system(cmd)
 end
