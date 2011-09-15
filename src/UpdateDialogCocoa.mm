@@ -43,7 +43,7 @@ class UpdateDialogPrivate
 {
 	dialog->hadError = true;
 	NSMutableString* message = [[NSMutableString alloc] init];
-	[message appendString:@"There was a problem installing the update:\n"];
+	[message appendString:@"There was a problem installing the update:\n\n"];
 	[message appendString:arg];
 
 	NSAlert* alert = [NSAlert 
