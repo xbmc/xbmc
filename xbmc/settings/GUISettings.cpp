@@ -766,7 +766,13 @@ void CGUISettings::Initialize()
     AddString(NULL, "network.dns", 722, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
     AddString(NULL, "network.dnssuffix", 22002, "", EDIT_CONTROL_INPUT, true);
     AddString(NULL, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
-    AddInt(NULL, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
+
+    map<int, int> networkEncapsulations;
+    networkEncapsulations.insert(make_pair(780, ENC_NONE));
+    networkEncapsulations.insert(make_pair(781, ENC_WEP));
+    networkEncapsulations.insert(make_pair(782, ENC_WPA));
+    networkEncapsulations.insert(make_pair(783, ENC_WPA2));
+    AddInt(NULL, "network.enc", 778, ENC_NONE, networkEncapsulations, SPIN_CONTROL_TEXT);
     AddString(NULL, "network.key", 777, "0.0.0.0", EDIT_CONTROL_INPUT);
 #ifndef _WIN32
     AddString(NULL, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
