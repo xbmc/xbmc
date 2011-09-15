@@ -391,16 +391,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
         FillInResolutions(strSetting, g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
       continue;
     }
-    if (strSetting.Equals("videooutput.aspect"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(21375), VIDEO_NORMAL);
-      pControl->AddLabel(g_localizeStrings.Get(21376), VIDEO_LETTERBOX);
-      pControl->AddLabel(g_localizeStrings.Get(21377), VIDEO_WIDESCREEN);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
 #ifdef HAS_WEB_SERVER
     else if (strSetting.Equals("services.webserverport"))
     {
