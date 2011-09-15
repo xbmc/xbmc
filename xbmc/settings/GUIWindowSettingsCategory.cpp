@@ -339,11 +339,12 @@ void CGUIWindowSettingsCategory::CreateSettings()
   int iControlID = CONTROL_START_CONTROL;
   for (unsigned int i = 0; i < settings.size(); i++)
   {
+    bool bSettingAdded = false;
     CSetting *pSetting = settings[i];
-    AddSetting(pSetting, group->GetWidth(), iControlID);
     CStdString strSetting = pSetting->GetSetting();
     if (pSetting->GetType() == SETTINGS_TYPE_INT)
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       if (!pSettingInt->m_entries.empty())
       {
@@ -356,46 +357,58 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->SetValue(pSettingInt->GetData());
         continue;
       }
+      bSettingAdded = true;
     }
     if (strSetting.Equals("videooutput.aspect"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(21375), VIDEO_NORMAL);
       pControl->AddLabel(g_localizeStrings.Get(21376), VIDEO_LETTERBOX);
       pControl->AddLabel(g_localizeStrings.Get(21377), VIDEO_WIDESCREEN);
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
 #ifdef HAS_WEB_SERVER
     else if (strSetting.Equals("services.webserverport"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
       control->SetDelayed();
+      continue;
     }
 #endif
     else if (strSetting.Equals("services.esport"))
     {
 #ifdef HAS_EVENT_SERVER
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
       control->SetDelayed();
+      continue;
 #endif
     }
     else if (strSetting.Equals("network.assignment"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(716), NETWORK_DHCP);
       pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
       pControl->AddLabel(g_localizeStrings.Get(787), NETWORK_DISABLED);
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
     else if (strSetting.Equals("network.httpproxyport"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CBaseSettingControl *control = GetSetting(pSetting->GetSetting());
       control->SetDelayed();
+      continue;
     }
     else if (strSetting.Equals("subtitles.style"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(738), FONT_STYLE_NORMAL);
@@ -403,29 +416,39 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(740), FONT_STYLE_ITALICS);
       pControl->AddLabel(g_localizeStrings.Get(741), FONT_STYLE_BOLD_ITALICS);
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
     else if (strSetting.Equals("subtitles.color"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       for (int i = SUBTITLE_COLOR_START; i <= SUBTITLE_COLOR_END; i++)
         pControl->AddLabel(g_localizeStrings.Get(760 + i), i);
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
     else if (strSetting.Equals("subtitles.height") || strSetting.Equals("karaoke.fontheight") )
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInSubtitleHeights(pSetting);
+      continue;
     }
     else if (strSetting.Equals("subtitles.font") || strSetting.Equals("karaoke.font") )
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInSubtitleFonts(pSetting);
+      continue;
     }
     else if (strSetting.Equals("subtitles.charset") || strSetting.Equals("locale.charset") || strSetting.Equals("karaoke.charset"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInCharSets(pSetting);
+      continue;
     }
     else if (strSetting.Equals("subtitles.align"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(21461), SUBTITLE_ALIGN_MANUAL);
@@ -437,19 +460,26 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("lookandfeel.font"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInSkinFonts(pSetting);
+      continue;
     }
     else if (strSetting.Equals("lookandfeel.soundskin"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInSoundSkins(pSetting);
+      continue;
     }
     else if (strSetting.Equals("locale.language"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInLanguages(pSetting);
+      continue;
     }
 #ifdef _LINUX
     else if (strSetting.Equals("locale.timezonecountry"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CStdString myTimezoneCountry = g_guiSettings.GetString("locale.timezonecountry");
       int myTimezeoneCountryIndex = 0;
 
@@ -462,9 +492,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(countries[i], i);
       }
       pControl->SetValue(myTimezeoneCountryIndex);
+      continue;
     }
     else if (strSetting.Equals("locale.timezone"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CStdString myTimezoneCountry = g_guiSettings.GetString("locale.timezonecountry");
       CStdString myTimezone = g_guiSettings.GetString("locale.timezone");
       int myTimezoneIndex = 0;
@@ -479,27 +511,36 @@ void CGUIWindowSettingsCategory::CreateSettings()
         pControl->AddLabel(timezones[i], i);
       }
       pControl->SetValue(myTimezoneIndex);
+      continue;
     }
 #endif
     else if (strSetting.Equals("videoscreen.screen"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInScreens(strSetting, g_guiSettings.GetResolution());
+      continue;
     }
     else if (strSetting.Equals("videoscreen.resolution"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInResolutions(strSetting,  g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
+      continue;
     }
     else if (strSetting.Equals("videoscreen.screenmode"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInRefreshRates(strSetting, g_guiSettings.GetResolution(), false);
+      continue;
     }
     else if (strSetting.Equals("lookandfeel.skintheme"))
     {
-      FillInSkinThemes(pSetting);
+      FillInSkinThemes(pSetting, group->GetWidth());
+      continue;
     }
     else if (strSetting.Equals("lookandfeel.skincolors"))
     {
-      FillInSkinColors(pSetting);
+      FillInSkinColors(pSetting, group->GetWidth());
+      continue;
     }
     /*
     FIXME: setting is hidden in GUI because not supported properly.
@@ -510,15 +551,18 @@ void CGUIWindowSettingsCategory::CreateSettings()
     */
     else if (strSetting.Equals("videoplayer.highqualityupscaling"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(13113), SOFTWARE_UPSCALING_DISABLED);
       pControl->AddLabel(g_localizeStrings.Get(13114), SOFTWARE_UPSCALING_SD_CONTENT);
       pControl->AddLabel(g_localizeStrings.Get(13115), SOFTWARE_UPSCALING_ALWAYS);
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
     else if (strSetting.Equals("videoplayer.upscalingalgorithm"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(13117), VS_SCALINGMETHOD_BICUBIC_SOFTWARE);
@@ -526,18 +570,22 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
       pControl->AddLabel(g_localizeStrings.Get(13120), VS_SCALINGMETHOD_VDPAU_HARDWARE);
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
     else if (strSetting.Equals("videolibrary.flattentvshows"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(20420), 0); // Never
       pControl->AddLabel(g_localizeStrings.Get(20421), 1); // One Season
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
     else if (strSetting.Equals("myvideos.selectaction"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(22080), SELECT_ACTION_CHOOSE);
@@ -545,9 +593,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13404), SELECT_ACTION_RESUME);
       pControl->AddLabel(g_localizeStrings.Get(22081), SELECT_ACTION_INFO);
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
     else if (strSetting.Equals("network.enc"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(780), ENC_NONE);
@@ -555,29 +605,40 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(782), ENC_WPA);
       pControl->AddLabel(g_localizeStrings.Get(783), ENC_WPA2);
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
     else if (strSetting.Equals("lookandfeel.startupwindow"))
     {
       FillInStartupWindow(pSetting);
+      continue;
     }
     else if (strSetting.Equals("locale.country"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInRegions(pSetting);
+      continue;
     }
     else if (strSetting.Equals("network.interface"))
     {
-       FillInNetworkInterfaces(pSetting);
+      AddSetting(pSetting, group->GetWidth(), iControlID);
+      FillInNetworkInterfaces(pSetting);
+      continue;
     }
     else if (strSetting.Equals("audiooutput.audiodevice"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInAudioDevices(pSetting);
+      continue;
     }
     else if (strSetting.Equals("audiooutput.passthroughdevice"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInAudioDevices(pSetting,true);
+      continue;
     }
     else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(13551), 0);
@@ -594,18 +655,22 @@ void CGUIWindowSettingsCategory::CreateSettings()
       }
 
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(13501), SYNC_DISCON);
       pControl->AddLabel(g_localizeStrings.Get(13502), SYNC_SKIPDUP);
       pControl->AddLabel(g_localizeStrings.Get(13503), SYNC_RESAMPLE);
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
     else if (strSetting.Equals("videoplayer.resamplequality"))
     {
+      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
       pControl->AddLabel(g_localizeStrings.Get(13506), RESAMPLE_LOW);
@@ -613,7 +678,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->AddLabel(g_localizeStrings.Get(13508), RESAMPLE_HIGH);
       pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
       pControl->SetValue(pSettingInt->GetData());
+      continue;
     }
+    if (!bSettingAdded)
+      AddSetting(pSetting, group->GetWidth(), iControlID);
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
@@ -1948,15 +2016,15 @@ void CGUIWindowSettingsCategory::FreeSettingsControls()
   m_vecSettings.clear();
 }
 
-void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int &iControlID)
+CGUIControl* CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int &iControlID)
 {
-  if (!pSetting->IsVisible()) return;  // not displayed in current session
+  if (!pSetting->IsVisible()) return NULL;  // not displayed in current session
   CBaseSettingControl *pSettingControl = NULL;
   CGUIControl *pControl = NULL;
   if (pSetting->GetControlType() == CHECKMARK_CONTROL)
   {
     pControl = new CGUIRadioButtonControl(*m_pOriginalRadioButton);
-    if (!pControl) return ;
+    if (!pControl) return NULL;
     ((CGUIRadioButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(width);
     pSettingControl = new CRadioButtonSettingControl((CGUIRadioButtonControl *)pControl, iControlID, pSetting);
@@ -1964,7 +2032,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
   else if (pSetting->GetControlType() == SPIN_CONTROL_FLOAT || pSetting->GetControlType() == SPIN_CONTROL_INT_PLUS || pSetting->GetControlType() == SPIN_CONTROL_TEXT || pSetting->GetControlType() == SPIN_CONTROL_INT)
   {
     pControl = new CGUISpinControlEx(*m_pOriginalSpin);
-    if (!pControl) return ;
+    if (!pControl) return NULL;
     pControl->SetWidth(width);
     ((CGUISpinControlEx *)pControl)->SetText(g_localizeStrings.Get(pSetting->GetLabel()));
     pSettingControl = new CSpinExSettingControl((CGUISpinControlEx *)pControl, iControlID, pSetting);
@@ -1972,7 +2040,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
   else if (pSetting->GetControlType() == SEPARATOR_CONTROL && m_pOriginalImage)
   {
     pControl = new CGUIImage(*m_pOriginalImage);
-    if (!pControl) return;
+    if (!pControl) return NULL;
     pControl->SetWidth(width);
     pSettingControl = new CSeparatorSettingControl((CGUIImage *)pControl, iControlID, pSetting);
   }
@@ -1983,7 +2051,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
            pSetting->GetControlType() == EDIT_CONTROL_IP_INPUT)
   {
     pControl = new CGUIEditControl(*m_pOriginalEdit);
-    if (!pControl) return ;
+    if (!pControl) return NULL;
     ((CGUIEditControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
     ((CGUIEditControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(width);
@@ -1992,7 +2060,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
   else if (pSetting->GetControlType() != SEPARATOR_CONTROL) // button control
   {
     pControl = new CGUIButtonControl(*m_pOriginalButton);
-    if (!pControl) return ;
+    if (!pControl) return NULL;
     ((CGUIButtonControl *)pControl)->SettingsCategorySetTextAlign(XBFONT_CENTER_Y);
     ((CGUIButtonControl *)pControl)->SetLabel(g_localizeStrings.Get(pSetting->GetLabel()));
     pControl->SetWidth(width);
@@ -2001,7 +2069,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
   if (!pControl)
   {
     delete pSettingControl;
-    return;
+    return NULL;
   }
   pControl->SetID(iControlID++);
   pControl->SetVisible(true);
@@ -2012,6 +2080,7 @@ void CGUIWindowSettingsCategory::AddSetting(CSetting *pSetting, float width, int
     group->AddControl(pControl);
     m_vecSettings.push_back(pSettingControl);
   }
+  return pControl;
 }
 
 void CGUIWindowSettingsCategory::FrameMove()
@@ -2575,66 +2644,59 @@ CBaseSettingControl *CGUIWindowSettingsCategory::GetSetting(const CStdString &st
   return NULL;
 }
 
-void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting)
+void CGUIWindowSettingsCategory::FillInSkinThemes(CSetting *pSetting, float groupWidth)
 {
-  // There is a default theme (just Textures.xpr/xbt)
-  // any other *.xpr|*.xbt files are additional themes on top of this one.
-  CSettingString *pSettingString = (CSettingString *)pSetting;
-  CBaseSettingControl *setting = GetSetting(pSetting->GetSetting());
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(setting->GetID());
-  CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skintheme");
-  setting->SetDelayed();
-
-  // Clear and add. the Default Label
-  pControl->Clear();
-  pControl->SetShowRange(true);
-  pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT" The standard Textures.xpr/xbt will be used
-
-  CStdString strDefaultTheme = pSettingString->GetData();
-
   // Search for Themes in the Current skin!
   vector<CStdString> vecTheme;
   CUtil::GetSkinThemes(vecTheme);
-
-  // Remove the extension from the current Theme (backward compat)
-  URIUtils::RemoveExtension(strSettingString);
-
-  // Sort the Themes for GUI and list them
-  int iCurrentTheme = 0;
-  for (int i = 0; i < (int) vecTheme.size(); ++i)
+  if (vecTheme.size() > 0)
   {
-    CStdString strTheme = vecTheme[i];
-    // Is the Current Theme our Used Theme! If yes set the ID!
-    if (strTheme.CompareNoCase(strSettingString) == 0 )
-      iCurrentTheme = i + 1; // 1: #of Predefined Theme [Label]
-    pControl->AddLabel(strTheme, i + 1);
+    int controlID = -110;
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, groupWidth, controlID);
+
+    // There is a default theme (just Textures.xpr/xbt)
+    // any other *.xpr|*.xbt files are additional themes on top of this one.
+    CSettingString *pSettingString = (CSettingString *)pSetting;
+    CBaseSettingControl *setting = GetSetting(pSetting->GetSetting());
+    CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skintheme");
+    setting->SetDelayed();
+
+    // Clear and add. the Default Label
+    pControl->Clear();
+    pControl->SetShowRange(true);
+    pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT" The standard Textures.xpr/xbt will be used
+
+    CStdString strDefaultTheme = pSettingString->GetData();
+
+    // Remove the extension from the current Theme (backward compat)
+    URIUtils::RemoveExtension(strSettingString);
+
+    // Sort the Themes for GUI and list them
+    int iCurrentTheme = 0;
+    for (int i = 0; i < (int) vecTheme.size(); ++i)
+    {
+      CStdString strTheme = vecTheme[i];
+      // Is the Current Theme our Used Theme! If yes set the ID!
+      if (strTheme.CompareNoCase(strSettingString) == 0 )
+        iCurrentTheme = i + 1; // 1: #of Predefined Theme [Label]
+      pControl->AddLabel(strTheme, i + 1);
+    }
+    // Set the Choosen Theme
+    pControl->SetValue(iCurrentTheme);
   }
-  // Set the Choosen Theme
-  pControl->SetValue(iCurrentTheme);
 }
 
-void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
+void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting, float groupWidth)
 {
-  // There is a default theme (just defaults.xml)
-  // any other *.xml files are additional color themes on top of this one.
-  CBaseSettingControl *setting = GetSetting(pSetting->GetSetting());
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(setting->GetID());
-  CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skincolors");
-  setting->SetDelayed();
-
-  // Clear and add. the Default Label
-  pControl->Clear();
-  pControl->SetShowRange(true);
-  pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standard defaults.xml will be used!
-
-  // Search for colors in the Current skin!
-  vector<CStdString> vecColors;
-
   CStdString strPath;
   URIUtils::AddFileToFolder(g_SkinInfo->Path(),"colors",strPath);
 
   CFileItemList items;
   CDirectory::GetDirectory(PTH_IC(strPath), items, ".xml");
+
+  // Search for colors in the Current skin!
+  vector<CStdString> vecColors;
+
   // Search for Themes in the Current skin!
   for (int i = 0; i < items.Size(); ++i)
   {
@@ -2645,23 +2707,41 @@ void CGUIWindowSettingsCategory::FillInSkinColors(CSetting *pSetting)
       vecColors.push_back(strLabel.Mid(0, strLabel.size() - 4));
     }
   }
-  sort(vecColors.begin(), vecColors.end(), sortstringbyname());
 
-  // Remove the .xml extension from the Themes
-  if (URIUtils::GetExtension(strSettingString) == ".xml")
-    URIUtils::RemoveExtension(strSettingString);
-
-  int iCurrentColor = 0;
-  for (int i = 0; i < (int) vecColors.size(); ++i)
+  if (vecColors.size() > 0)
   {
-    CStdString strColor = vecColors[i];
-    // Is the Current Theme our Used Theme! If yes set the ID!
-    if (strColor.CompareNoCase(strSettingString) == 0 )
-      iCurrentColor = i + 1; // 1: #of Predefined Theme [Label]
-    pControl->AddLabel(strColor, i + 1);
+    int controlID = -100;
+    CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, groupWidth, controlID);
+
+    // There is a default theme (just defaults.xml)
+    // any other *.xml files are additional color themes on top of this one.
+    CBaseSettingControl *setting = GetSetting(pSetting->GetSetting());
+    CStdString strSettingString = g_guiSettings.GetString("lookandfeel.skincolors");
+    setting->SetDelayed();
+
+    // Clear and add. the Default Label
+    pControl->Clear();
+    pControl->SetShowRange(true);
+    pControl->AddLabel(g_localizeStrings.Get(15109), 0); // "SKINDEFAULT"! The standard defaults.xml will be used!
+
+    sort(vecColors.begin(), vecColors.end(), sortstringbyname());
+
+    // Remove the .xml extension from the Themes
+    if (URIUtils::GetExtension(strSettingString) == ".xml")
+      URIUtils::RemoveExtension(strSettingString);
+
+    int iCurrentColor = 0;
+    for (int i = 0; i < (int) vecColors.size(); ++i)
+    {
+      CStdString strColor = vecColors[i];
+      // Is the Current Theme our Used Theme! If yes set the ID!
+      if (strColor.CompareNoCase(strSettingString) == 0 )
+        iCurrentColor = i + 1; // 1: #of Predefined Theme [Label]
+      pControl->AddLabel(strColor, i + 1);
+    }
+    // Set the Choosen Theme
+    pControl->SetValue(iCurrentColor);
   }
-  // Set the Choosen Theme
-  pControl->SetValue(iCurrentColor);
 }
 
 void CGUIWindowSettingsCategory::FillInStartupWindow(CSetting *pSetting)

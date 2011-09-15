@@ -58,8 +58,8 @@ protected:
   void FillInViewModes(CSetting *pSetting, int windowID);
   void FillInSortMethods(CSetting *pSetting, int windowID);
 
-  void FillInSkinThemes(CSetting *pSetting);
-  void FillInSkinColors(CSetting *pSetting);
+  void FillInSkinThemes(CSetting *pSetting, float groupWidth);
+  void FillInSkinColors(CSetting *pSetting, float groupWidth);
 
   void FillInNetworkInterfaces(CSetting *pSetting);
   void NetworkInterfaceChanged(void);
@@ -75,7 +75,7 @@ protected:
   virtual void FreeControls();
   virtual void OnClick(CBaseSettingControl *pSettingControl);
   virtual void OnSettingChanged(CBaseSettingControl *pSettingControl);
-  void AddSetting(CSetting *pSetting, float width, int &iControlID);
+  CGUIControl* AddSetting(CSetting *pSetting, float width, int &iControlID);
   CBaseSettingControl* GetSetting(const CStdString &strSetting);
 
   void ValidatePortNumber(CBaseSettingControl* pSettingControl, const CStdString& userPort, const CStdString& privPort, bool listening=true);
