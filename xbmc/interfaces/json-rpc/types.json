@@ -648,7 +648,7 @@
       }
     }
   },
-  "List.Items.Shares": {
+  "List.Items.Sources": {
     "type": "array",
     "items": {
       "extends": "Item.Details.Base",

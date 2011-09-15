@@ -59,7 +59,7 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
     param["fields"] = CVariant(CVariant::VariantTypeArray);
     param["fields"].append("file");
 
-    HandleFileItemList(NULL, true, "shares", items, param, result);
+    HandleFileItemList(NULL, true, "sources", items, param, result);
   }
 
   return OK;

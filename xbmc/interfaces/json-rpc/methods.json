@@ -831,7 +831,7 @@
       "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "shares": { "$ref": "List.Items.Shares", "required": true }
+        "sources": { "$ref": "List.Items.Sources", "required": true }
       }
     }
   },
