@@ -930,7 +930,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
       items.RemoveDiscCache(GetID());
 
     CFileItem directory(*pItem);
-    if (!Update(directory.GetPath()))
+    if (!Update(directory.GetPath()) && !directory.GetPath().Equals("addons://search/"))
       ShowShareErrorMessage(&directory);
 
     return true;
