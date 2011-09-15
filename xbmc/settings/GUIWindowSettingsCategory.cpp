@@ -529,16 +529,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       FillInAudioDevices(pSetting,true);
       continue;
     }
-    else if (strSetting.Equals("videoplayer.synctype"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(13501), SYNC_DISCON);
-      pControl->AddLabel(g_localizeStrings.Get(13502), SYNC_SKIPDUP);
-      pControl->AddLabel(g_localizeStrings.Get(13503), SYNC_RESAMPLE);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
     else if (strSetting.Equals("videoplayer.resamplequality"))
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
