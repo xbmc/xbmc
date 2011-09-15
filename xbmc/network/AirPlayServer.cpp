@@ -131,7 +131,7 @@ bool CAirPlayServer::StartServer(int port, bool nonlocal)
     return false;
 }
 
-bool CAirPlayServer::SetCredentials(bool usePassword, CStdString& password)
+bool CAirPlayServer::SetCredentials(bool usePassword, const CStdString& password)
 {
   bool ret = false;
 
@@ -142,7 +142,7 @@ bool CAirPlayServer::SetCredentials(bool usePassword, CStdString& password)
   return ret;
 }
 
-bool CAirPlayServer::SetInternalCredentials(bool usePassword, CStdString& password)
+bool CAirPlayServer::SetInternalCredentials(bool usePassword, const CStdString& password)
 {
   m_usePassword = usePassword;
   m_password = password;
@@ -168,7 +168,6 @@ CAirPlayServer::CAirPlayServer(int port, bool nonlocal)
   m_nonlocal = nonlocal;
   m_ServerSocket = INVALID_SOCKET;
   m_usePassword = false;
-  m_password = "";
 }
 
 void CAirPlayServer::Process()
@@ -211,7 +210,7 @@ void CAirPlayServer::Process()
           nread = recv(socket, (char*)&buffer, RECEIVEBUFFER, 0);
           if (nread > 0)
           {
-            CStdString sessionId="";
+            CStdString sessionId;
             m_connections[i].PushBuffer(this, buffer, nread, sessionId, m_reverseSockets);
           }
           if (nread <= 0)
@@ -309,7 +308,6 @@ CAirPlayServer::CTCPClient::CTCPClient()
   m_pLibPlist = new DllLibPlist();  
   
   m_bAuthenticated = false;
-  m_authNonce = "";
 }
 
 CAirPlayServer::CTCPClient::CTCPClient(const CTCPClient& client)
@@ -333,17 +331,19 @@ CAirPlayServer::CTCPClient& CAirPlayServer::CTCPClient::operator=(const CTCPClie
   return *this;
 }
 
-void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *buffer, int length, CStdString &sessionId, std::map<CStdString, int> &reverseSockets)
+void CAirPlayServer::CTCPClient::PushBuffer(CAirPlayServer *host, const char *buffer, 
+                                            int length, CStdString &sessionId, std::map<CStdString, 
+                                            int> &reverseSockets)
 {
   HttpParser::status_t status = m_httpParser->addBytes(buffer, length);
 
   if (status == HttpParser::Done)
   {
     // Parse the request
-    CStdString responseHeader="";
-    CStdString responseBody="";
-    CStdString reverseHeader="";
-    CStdString reverseBody="";
+    CStdString responseHeader;
+    CStdString responseBody;
+    CStdString reverseHeader;
+    CStdString reverseBody;
     int status = ProcessRequest(responseHeader, responseBody, reverseHeader, reverseBody, sessionId);
     CStdString statusMsg = "OK";
     int reverseSocket = INVALID_SOCKET;
@@ -441,7 +441,10 @@ void CAirPlayServer::CTCPClient::Copy(const CTCPClient& client)
 }
 
 
-void CAirPlayServer::CTCPClient::ComposeReverseEvent(CStdString& reverseHeader, CStdString& reverseBody, CStdString sessionId, int state)
+void CAirPlayServer::CTCPClient::ComposeReverseEvent( CStdString& reverseHeader, 
+                                                      CStdString& reverseBody, 
+                                                      CStdString sessionId, 
+                                                      int state)
 {   
     switch(state)
     {
@@ -458,21 +461,26 @@ void CAirPlayServer::CTCPClient::ComposeReverseEvent(CStdString& reverseHeader, 
 
 void CAirPlayServer::CTCPClient::ComposeAuthRequestAnswer(CStdString& responseHeader, CStdString& responseBody)
 {
-  CStdString randomStr=""; 
+  CStdString randomStr; 
   int16_t random=rand();
   randomStr.Format("%i", random);
   m_authNonce=XBMC::XBMC_MD5::GetMD5(randomStr);
   responseHeader.Format(AUTH_REQUIRED,m_authNonce);
-  responseBody = "";
+  responseBody.clear();
 }
 
 
 //as of rfc 2617
-CStdString calcResponse(CStdString& username, CStdString& password, CStdString& realm, CStdString& method, CStdString& digestUri, CStdString& nonce)
+CStdString calcResponse(const CStdString& username, 
+                        const CStdString& password, 
+                        const CStdString& realm, 
+                        const CStdString& method, 
+                        const CStdString& digestUri, 
+                        const CStdString& nonce)
 {
   CStdString response;
-  CStdString HA1 = "";
-  CStdString HA2 = "";
+  CStdString HA1;
+  CStdString HA2;
    
   HA1 = XBMC::XBMC_MD5::GetMD5(username + ":" + realm + ":" + password);
   HA2 = XBMC::XBMC_MD5::GetMD5(method + ":" + digestUri);
@@ -482,7 +490,7 @@ CStdString calcResponse(CStdString& username, CStdString& password, CStdString& 
 
 //helper function
 //from a string field1="value1", field2="value2" it parses the value to a field
-CStdString getFieldFromString(CStdString &str, const char* field)
+CStdString getFieldFromString(const CStdString &str, const char* field)
 {
   int tmpPos = 0;
   int tmpPos2 = 0;
@@ -504,11 +512,13 @@ CStdString getFieldFromString(CStdString &str, const char* field)
   return "";
 }
 
-bool CAirPlayServer::CTCPClient::checkAuthorization(CStdString& authStr, CStdString& method, CStdString& uri)
+bool CAirPlayServer::CTCPClient::checkAuthorization(const CStdString& authStr, 
+                                                    const CStdString& method, 
+                                                    const CStdString& uri)
 {
   bool authValid = true;
 
-  CStdString username = "";
+  CStdString username;
   
   if(authStr.empty())
     return false;
@@ -567,7 +577,11 @@ bool CAirPlayServer::CTCPClient::checkAuthorization(CStdString& authStr, CStdStr
   return m_bAuthenticated;
 }
 
-int CAirPlayServer::CTCPClient::ProcessRequest(CStdString& responseHeader, CStdString& responseBody, CStdString& reverseHeader, CStdString& reverseBody, CStdString& sessionId)
+int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader, 
+                                                CStdString& responseBody, 
+                                                CStdString& reverseHeader, 
+                                                CStdString& reverseBody, 
+                                                CStdString& sessionId)
 {
   CStdString method = m_httpParser->getMethod();
   CStdString uri = m_httpParser->getUri();
@@ -589,8 +603,6 @@ int CAirPlayServer::CTCPClient::ProcessRequest(CStdString& responseHeader, CStdS
   {
     uri = uri.Left(startQs);
   }
-
-  //printf("method = %s uri = %s qs = %s\n body=%s", method.c_str(), uri.c_str(), queryString.c_str(), body.c_str());
 
   // This is the socket which will be used for reverse HTTP
   // negotiate reverse HTTP via upgrade
