@@ -361,9 +361,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     if (strSetting.Equals("videooutput.aspect"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(21375), VIDEO_NORMAL);
       pControl->AddLabel(g_localizeStrings.Get(21376), VIDEO_LETTERBOX);
       pControl->AddLabel(g_localizeStrings.Get(21377), VIDEO_WIDESCREEN);
@@ -390,9 +389,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("network.assignment"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(716), NETWORK_DHCP);
       pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
       pControl->AddLabel(g_localizeStrings.Get(787), NETWORK_DISABLED);
@@ -408,9 +406,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("subtitles.style"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(738), FONT_STYLE_NORMAL);
       pControl->AddLabel(g_localizeStrings.Get(739), FONT_STYLE_BOLD);
       pControl->AddLabel(g_localizeStrings.Get(740), FONT_STYLE_ITALICS);
@@ -420,9 +417,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("subtitles.color"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       for (int i = SUBTITLE_COLOR_START; i <= SUBTITLE_COLOR_END; i++)
         pControl->AddLabel(g_localizeStrings.Get(760 + i), i);
       pControl->SetValue(pSettingInt->GetData());
@@ -448,9 +444,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("subtitles.align"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(21461), SUBTITLE_ALIGN_MANUAL);
       pControl->AddLabel(g_localizeStrings.Get(21462), SUBTITLE_ALIGN_BOTTOM_INSIDE);
       pControl->AddLabel(g_localizeStrings.Get(21463), SUBTITLE_ALIGN_BOTTOM_OUTSIDE);
@@ -479,11 +474,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
 #ifdef _LINUX
     else if (strSetting.Equals("locale.timezonecountry"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CStdString myTimezoneCountry = g_guiSettings.GetString("locale.timezonecountry");
       int myTimezeoneCountryIndex = 0;
 
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       vector<CStdString> countries = g_timezone.GetCounties();
       for (unsigned int i=0; i < countries.size(); i++)
       {
@@ -496,12 +490,11 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("locale.timezone"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CStdString myTimezoneCountry = g_guiSettings.GetString("locale.timezonecountry");
       CStdString myTimezone = g_guiSettings.GetString("locale.timezone");
       int myTimezoneIndex = 0;
 
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->Clear();
       vector<CStdString> timezones = g_timezone.GetTimezonesByCountry(myTimezoneCountry);
       for (unsigned int i=0; i < timezones.size(); i++)
@@ -551,9 +544,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     */
     else if (strSetting.Equals("videoplayer.highqualityupscaling"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(13113), SOFTWARE_UPSCALING_DISABLED);
       pControl->AddLabel(g_localizeStrings.Get(13114), SOFTWARE_UPSCALING_SD_CONTENT);
       pControl->AddLabel(g_localizeStrings.Get(13115), SOFTWARE_UPSCALING_ALWAYS);
@@ -562,9 +554,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("videoplayer.upscalingalgorithm"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(13117), VS_SCALINGMETHOD_BICUBIC_SOFTWARE);
       pControl->AddLabel(g_localizeStrings.Get(13118), VS_SCALINGMETHOD_LANCZOS_SOFTWARE);
       pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
@@ -574,9 +565,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("videolibrary.flattentvshows"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(20420), 0); // Never
       pControl->AddLabel(g_localizeStrings.Get(20421), 1); // One Season
       pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
@@ -585,9 +575,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("myvideos.selectaction"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(22080), SELECT_ACTION_CHOOSE);
       pControl->AddLabel(g_localizeStrings.Get(208), SELECT_ACTION_PLAY_OR_RESUME);
       pControl->AddLabel(g_localizeStrings.Get(13404), SELECT_ACTION_RESUME);
@@ -597,9 +586,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("network.enc"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(780), ENC_NONE);
       pControl->AddLabel(g_localizeStrings.Get(781), ENC_WEP);
       pControl->AddLabel(g_localizeStrings.Get(782), ENC_WPA);
@@ -638,9 +626,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(13551), 0);
 
       for (int i = 1; i <= MAXREFRESHCHANGEDELAY; i++)
@@ -659,9 +646,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("videoplayer.synctype"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(13501), SYNC_DISCON);
       pControl->AddLabel(g_localizeStrings.Get(13502), SYNC_SKIPDUP);
       pControl->AddLabel(g_localizeStrings.Get(13503), SYNC_RESAMPLE);
@@ -670,9 +656,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("videoplayer.resamplequality"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
+      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
       pControl->AddLabel(g_localizeStrings.Get(13506), RESAMPLE_LOW);
       pControl->AddLabel(g_localizeStrings.Get(13507), RESAMPLE_MID);
       pControl->AddLabel(g_localizeStrings.Get(13508), RESAMPLE_HIGH);
@@ -681,7 +666,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
       continue;
     }
     if (!bSettingAdded)
+    {
       AddSetting(pSetting, group->GetWidth(), iControlID);
+      continue;
+    }
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
