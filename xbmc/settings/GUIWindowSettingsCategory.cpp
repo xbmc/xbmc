@@ -352,7 +352,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
   int iControlID = CONTROL_START_CONTROL;
   for (unsigned int i = 0; i < settings.size(); i++)
   {
-    bool bSettingAdded = false;
     CSetting *pSetting = settings[i];
     CStdString strSetting = pSetting->GetSetting();
     if (pSetting->GetType() == SETTINGS_TYPE_INT)
@@ -540,11 +539,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
       continue;
     }
-    if (!bSettingAdded)
-    {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
-      continue;
-    }
+    AddSetting(pSetting, group->GetWidth(), iControlID);
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
