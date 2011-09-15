@@ -17,6 +17,11 @@ if (WIN32)
 include_directories(external/zlib/)
 include_directories(external/bzip2)
 include_directories(external/win32cpp/include)
+
+# Link the updater binary statically with the Visual C++ runtime
+# so that the executable can function standalone
+set(CMAKE_CXX_FLAGS_RELEASE "/MT /O2 /Ob2 /D NDEBUG")
+set(CMAKE_C_FLAGS_RELEASE "/MT /O2 /Ob2 /D NDEBUG")
 endif()
 
 if (APPLE)
