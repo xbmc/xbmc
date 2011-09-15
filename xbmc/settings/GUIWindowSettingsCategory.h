@@ -61,7 +61,7 @@ protected:
   void FillInSkinThemes(CSetting *pSetting, float groupWidth);
   void FillInSkinColors(CSetting *pSetting, float groupWidth);
 
-  void FillInNetworkInterfaces(CSetting *pSetting);
+  void FillInNetworkInterfaces(CSetting *pSetting, float groupWidth, int &iControlID);
   void NetworkInterfaceChanged(void);
 
   void FillInAudioDevices(CSetting* pSetting, bool Passthrough = false);

@@ -512,8 +512,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     }
     else if (strSetting.Equals("network.interface"))
     {
-      AddSetting(pSetting, group->GetWidth(), iControlID);
-      FillInNetworkInterfaces(pSetting);
+      FillInNetworkInterfaces(pSetting, group->GetWidth(), iControlID);
       continue;
     }
     else if (strSetting.Equals("audiooutput.audiodevice"))
@@ -532,9 +531,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
   }
 
   if (m_vecSections[m_iSection]->m_strCategory == "network")
-  {
      NetworkInterfaceChanged();
-  }
 
   // update our settings (turns controls on/off as appropriate)
   UpdateSettings();
@@ -2693,9 +2690,9 @@ void CGUIWindowSettingsCategory::FillInSortMethods(CSetting *pSetting, int windo
   delete state;
 }
 
-void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
+void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting, float groupWidth, int &iControlID)
 {
-  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, groupWidth, iControlID);
   pControl->Clear();
 
   // query list of interfaces
@@ -2712,9 +2709,7 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting)
 
   int iInterface = 0;
   for (unsigned int i = 0; i < vecInterfaces.size(); ++i)
-  {
     pControl->AddLabel(vecInterfaces[i], iInterface++);
-  }
 }
 
 void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Passthrough)
