@@ -66,6 +66,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTINGS_NONLIN_STRETCH     21
 #define VIDEO_SETTINGS_POSTPROCESS        22
 #define VIDEO_SETTINGS_VERTICAL_SHIFT     23
+#define VIDEO_SETTINGS_DEINTERLACEMODE    24
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -75,7 +76,23 @@ void CGUIDialogVideoSettings::CreateSettings()
   // create our settings
   {
     vector<pair<int, int> > entries;
-    entries.push_back(make_pair(VS_INTERLACEMETHOD_NONE                 , 16018));
+    entries.push_back(make_pair(VS_DEINTERLACEMODE_OFF    , 16039));
+    entries.push_back(make_pair(VS_DEINTERLACEMODE_AUTO   , 16040));
+    entries.push_back(make_pair(VS_DEINTERLACEMODE_FORCE  , 16041));
+
+    /* remove unsupported methods */
+    for(vector<pair<int, int> >::iterator it = entries.begin(); it != entries.end();)
+    {
+      if(g_renderManager.Supports((EDEINTERLACEMODE)it->first))
+        it++;
+      else
+        it = entries.erase(it);
+    }
+
+    AddSpin(VIDEO_SETTINGS_DEINTERLACEMODE, 16037, (int*)&g_settings.m_currentVideoSettings.m_DeinterlaceMode, entries);
+  }
+  {
+    vector<pair<int, int> > entries;
     entries.push_back(make_pair(VS_INTERLACEMETHOD_AUTO                 , 16019));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_BLEND         , 20131));
     entries.push_back(make_pair(VS_INTERLACEMETHOD_RENDER_WEAVE_INVERTED, 20130));
@@ -103,7 +120,9 @@ void CGUIDialogVideoSettings::CreateSettings()
         it = entries.erase(it);
     }
 
-    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16023, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
+    AddSpin(VIDEO_SETTINGS_INTERLACEMETHOD, 16038, (int*)&g_settings.m_currentVideoSettings.m_InterlaceMethod, entries);
+    if (g_settings.m_currentVideoSettings.m_DeinterlaceMode == VS_DEINTERLACEMODE_OFF)
+      EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, false);
   }
   {
     vector<pair<int, int> > entries;
@@ -216,6 +235,10 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
       g_settings.m_defaultVideoSettings.m_AudioStream = -1;
       g_settings.Save();
     }
+  }
+  else if (setting.id == VIDEO_SETTINGS_DEINTERLACEMODE)
+  {
+    EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, g_settings.m_currentVideoSettings.m_DeinterlaceMode != VS_DEINTERLACEMODE_OFF);
   }
 }
 

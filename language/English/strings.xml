@@ -1475,7 +1475,7 @@
   <string id="16020">De-interlace</string>
   <string id="16021">Bob</string>
   <string id="16022">Bob (inverted)</string>
-  <string id="16023">Interlaced handling</string>
+  <string id="16023"></string>
   <string id="16024">Canceling...</string>
   <string id="16025">Enter the artist name</string>
   <string id="16026">Playback failed</string>
@@ -1489,7 +1489,12 @@
   <string id="16034">Could not get songs from database.</string>
   <string id="16035">Party mode playlist</string>
   <string id="16036">De-interlace (Half)</string>
-
+  <string id="16037">Deinterlace video</string>
+  <string id="16038">Deinterlace method</string>
+  <string id="16039">Off</string>
+  <string id="16040">Auto</string>
+  <string id="16041">On</string>
+  
   <string id="16100">All Videos</string>
   <string id="16101">Unwatched</string>
   <string id="16102">Watched</string>
