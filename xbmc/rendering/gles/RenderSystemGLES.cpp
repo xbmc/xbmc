@@ -95,6 +95,11 @@ bool CRenderSystemGLES::InitRenderSystem()
     m_renderCaps |= RENDER_CAPS_NPOT;
   }
 
+  if (IsExtSupported("GL_EXT_texture_format_BGRA8888"))
+  {
+    m_renderCaps |= RENDER_CAPS_BGRA;
+  }
+
   if (IsExtSupported("GL_IMG_texture_format_BGRA8888"))
   {
     m_renderCaps |= RENDER_CAPS_BGRA;
@@ -120,13 +125,11 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height, bool fullScreen
   m_height = height;
   
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-  
   CalculateMaxTexturesize();
 
   CRect rect( 0, 0, width, height );
   SetViewPort( rect );
 
-  glEnable(GL_TEXTURE_2D); 
   glEnable(GL_SCISSOR_TEST); 
 
   g_matrices.MatrixMode(MM_PROJECTION);
@@ -348,7 +351,6 @@ void CRenderSystemGLES::CaptureStateBlock()
   g_matrices.PushMatrix();
   glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
   glActiveTexture(GL_TEXTURE0);
-  glDisable(GL_TEXTURE_2D);
 //TODO - NOTE: Only for Screensavers & Visualisations
 //  glColor3f(1.0, 1.0, 1.0);
 }
@@ -365,7 +367,6 @@ void CRenderSystemGLES::ApplyStateBlock()
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PopMatrix();
   glActiveTexture(GL_TEXTURE0);
-  glEnable(GL_TEXTURE_2D);
   glEnable(GL_BLEND);
   glEnable(GL_SCISSOR_TEST);  
 }
