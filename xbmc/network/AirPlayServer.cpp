@@ -25,6 +25,7 @@
 #include <arpa/inet.h>
 #include "DllLibPlist.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
 #include "filesystem/File.h"
 #include "Util.h"
@@ -492,21 +493,21 @@ CStdString calcResponse(const CStdString& username,
 //from a string field1="value1", field2="value2" it parses the value to a field
 CStdString getFieldFromString(const CStdString &str, const char* field)
 {
-  int tmpPos = 0;
-  int tmpPos2 = 0;
   CStdString tmpStr;
-
-  tmpPos = str.Find(field);//find the start of the fieldpos
-  if( tmpPos >= 0 )
+  CStdStringArray tmpAr1;
+  CStdStringArray tmpAr2;  
+  
+  StringUtils::SplitString(str, ",", tmpAr1);
+  
+  for(unsigned int i = 0;i<tmpAr1.size();i++)
   {
-    if((unsigned)str.GetLength() >= (tmpPos+strlen(field)+2) ) //jump over the ="
+    if(tmpAr1[i].Find(field) != -1)
     {
-      tmpStr = &str[tmpPos + strlen(field)+2];//tmpStr points to start of value now
-      tmpPos2 = tmpStr.Find("\"");//find the closing "
-      if( tmpPos2 >= 0 )
+      if(StringUtils::SplitString(tmpAr1[i], "=", tmpAr2) == 2)
       {
-        return tmpStr.Left(tmpPos2);//cut the rest
-      }    
+        tmpAr2[1].Remove('\"');//remove quotes
+        return tmpAr2[1];
+      }
     }
   }
   return "";
