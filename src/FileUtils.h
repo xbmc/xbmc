@@ -21,7 +21,7 @@ class FileUtils
 		{
 			public:
 				IOException(const std::string& error);
-				IOException(int errno, const std::string& error);
+				IOException(int errorCode, const std::string& error);
 
 				virtual ~IOException() throw ();
 

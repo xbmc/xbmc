@@ -50,8 +50,6 @@ void FileUtils::IOException::init(int errorCode, const std::string& error)
 	m_errorCode = 0;
 	m_error += " GetLastError returned: " + intToStr(GetLastError());
 #endif
-
-	LOG(Info,"created IOException with errno " + intToStr(m_errorCode) + " rofs " + intToStr(EROFS));
 }
 
 FileUtils::IOException::~IOException() throw ()
