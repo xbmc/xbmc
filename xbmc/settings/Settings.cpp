@@ -677,8 +677,28 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
   pElement = pRootElement->FirstChildElement("defaultvideosettings");
   if (pElement)
   {
+    int deinterlaceMode;
+    bool deinterlaceModePresent = GetInteger(pElement, "deinterlacemode", deinterlaceMode, VS_DEINTERLACEMODE_OFF, VS_DEINTERLACEMODE_OFF, VS_DEINTERLACEMODE_FORCE);
     int interlaceMethod;
-    GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_NONE, VS_INTERLACEMETHOD_INVERSE_TELECINE);
+    bool interlaceMethodPresent = GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_AUTO, VS_INTERLACEMETHOD_RENDER_BLEND, VS_INTERLACEMETHOD_INVERSE_TELECINE);
+    // For smooth conversion of settings stored before the deinterlaceMode existed
+    if (!deinterlaceModePresent && interlaceMethodPresent)
+    {
+      if (interlaceMethod == VS_INTERLACEMETHOD_NONE)
+      {
+        deinterlaceMode = VS_DEINTERLACEMODE_OFF;
+        interlaceMethod = VS_INTERLACEMETHOD_AUTO;
+      }
+      else if (interlaceMethod == VS_INTERLACEMETHOD_AUTO)
+      {
+        deinterlaceMode = VS_DEINTERLACEMODE_AUTO;
+      }
+      else
+      {
+        deinterlaceMode = VS_DEINTERLACEMODE_FORCE;
+      }
+    }
+    m_defaultVideoSettings.m_DeinterlaceMode = (EDEINTERLACEMODE)deinterlaceMode;
     m_defaultVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD)interlaceMethod;
     int scalingMethod;
     GetInteger(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_LINEAR, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_AUTO);

@@ -115,7 +115,7 @@ public:
   pictureAge picAge;
   bool       recover;
   vdpau_render_state *past[2], *current, *future;
-  int        tmpDeint;
+  int        tmpDeintMode, tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
   int        OutWidth, OutHeight;
