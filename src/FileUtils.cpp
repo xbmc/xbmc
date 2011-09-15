@@ -67,6 +67,8 @@ FileUtils::IOException::Type FileUtils::IOException::type() const
 			return NoError;
 		case EROFS:
 			return ReadOnlyFileSystem;
+		case ENOSPC:
+			return DiskFull;
 		default:
 			return Unknown;
 	}

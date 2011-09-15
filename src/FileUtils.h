@@ -32,7 +32,8 @@ class FileUtils
 					  * provided by the OS.
 					  */
 					Unknown,
-					ReadOnlyFileSystem
+					ReadOnlyFileSystem,
+					DiskFull
 				};
 
 				virtual const char* what() const throw ()

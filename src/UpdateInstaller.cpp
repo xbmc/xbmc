@@ -87,6 +87,9 @@ std::string UpdateInstaller::friendlyErrorForError(const FileUtils::IOException&
 							"Re-install it to a location that can be updated and run it from there.";
 #endif
 			break;
+		case FileUtils::IOException::DiskFull:
+			friendlyError = "The disk is full.  Please free up some space and try again.";
+			break;
 		default:
 			break;
 	}
