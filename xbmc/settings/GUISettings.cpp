@@ -639,6 +639,12 @@ void CGUISettings::Initialize()
   syncTypes.insert(make_pair(13503, SYNC_RESAMPLE));
   AddInt(SYNCSETTINGS ? vp : NULL, "videoplayer.synctype", 13500, SYNC_RESAMPLE, syncTypes, SPIN_CONTROL_TEXT);
   AddFloat(NULL, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
+
+  map<int, int> resampleQualities;
+  resampleQualities.insert(make_pair(13506, RESAMPLE_LOW));
+  resampleQualities.insert(make_pair(13507, RESAMPLE_MID));
+  resampleQualities.insert(make_pair(13508, RESAMPLE_HIGH));
+  resampleQualities.insert(make_pair(13509, RESAMPLE_REALLYHIGH));
   AddInt(NULL, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
   AddInt(vp, "videoplayer.errorinaspect", 22021, 0, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
 

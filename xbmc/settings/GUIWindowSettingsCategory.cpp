@@ -528,17 +528,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       FillInAudioDevices(pSetting,true);
       continue;
     }
-    else if (strSetting.Equals("videoplayer.resamplequality"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(13506), RESAMPLE_LOW);
-      pControl->AddLabel(g_localizeStrings.Get(13507), RESAMPLE_MID);
-      pControl->AddLabel(g_localizeStrings.Get(13508), RESAMPLE_HIGH);
-      pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
     AddSetting(pSetting, group->GetWidth(), iControlID);
   }
 
