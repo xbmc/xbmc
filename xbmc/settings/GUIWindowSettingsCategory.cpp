@@ -58,6 +58,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "addons/Visualisation.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonInstaller.h"
 #include "storage/MediaManager.h"
 #include "network/Network.h"
 #include "guilib/GUIControlGroupList.h"
@@ -973,9 +974,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      AddonPtr addon;
-      CAddonMgr::Get().GetAddon("script.rss.editor",addon);
-      pControl->SetEnabled(addon && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
+      pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
     else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
     {
@@ -1075,7 +1074,17 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
+  {
+    AddonPtr addon;
+    CAddonMgr::Get().GetAddon("script.rss.editor",addon);
+    if (!addon)
+    {
+      if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24076), g_localizeStrings.Get(24100),"RSS Editor",g_localizeStrings.Get(24101)))
+        return;
+      CAddonInstaller::Get().Install("script.rss.editor", true, "", false);
+    }
     CBuiltins::Execute("RunScript(script.rss.editor)");
+  }
   else if (pSettingControl->GetSetting()->GetType() == SETTINGS_TYPE_ADDON)
   { // prompt for the addon
     CSettingAddon *setting = (CSettingAddon *)pSettingControl->GetSetting();
