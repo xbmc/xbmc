@@ -362,14 +362,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddIntBasedSpinControl(pSetting, group->GetWidth(), iControlID);
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      if (strSetting.Equals("videolibrary.flattentvshows"))
-      {
-        pControl->AddLabel(g_localizeStrings.Get(20420), 0); // Never
-        pControl->AddLabel(g_localizeStrings.Get(20421), 1); // One Season
-        pControl->AddLabel(g_localizeStrings.Get(20422), 2); // Always
-        pControl->SetValue(pSettingInt->GetData());
-      }
-      else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
+      if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
       {
         pControl->AddLabel(g_localizeStrings.Get(13551), 0);
 
@@ -379,22 +372,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
           delayText.Format(g_localizeStrings.Get(13553).c_str(), (double)i / 10.0);
           pControl->AddLabel(delayText, i);
         }
-        pControl->SetValue(pSettingInt->GetData());
-      }
-      else if (strSetting.Equals("myvideos.selectaction"))
-      {
-        pControl->AddLabel(g_localizeStrings.Get(22080), SELECT_ACTION_CHOOSE);
-        pControl->AddLabel(g_localizeStrings.Get(208),   SELECT_ACTION_PLAY_OR_RESUME);
-        pControl->AddLabel(g_localizeStrings.Get(13404), SELECT_ACTION_RESUME);
-        pControl->AddLabel(g_localizeStrings.Get(22081), SELECT_ACTION_INFO);
-        pControl->SetValue(pSettingInt->GetData());
-      }
-      else if (strSetting.Equals("subtitles.style"))
-      {
-        pControl->AddLabel(g_localizeStrings.Get(738), FONT_STYLE_NORMAL);
-        pControl->AddLabel(g_localizeStrings.Get(739), FONT_STYLE_BOLD);
-        pControl->AddLabel(g_localizeStrings.Get(740), FONT_STYLE_ITALICS);
-        pControl->AddLabel(g_localizeStrings.Get(741), FONT_STYLE_BOLD_ITALICS);
         pControl->SetValue(pSettingInt->GetData());
       }
       else if (strSetting.Equals("subtitles.color"))
@@ -441,16 +418,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       continue;
 #endif
     }
-    else if (strSetting.Equals("network.assignment"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(716), NETWORK_DHCP);
-      pControl->AddLabel(g_localizeStrings.Get(717), NETWORK_STATIC);
-      pControl->AddLabel(g_localizeStrings.Get(787), NETWORK_DISABLED);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
     else if (strSetting.Equals("network.httpproxyport"))
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
@@ -469,17 +436,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInCharSets(pSetting);
       continue;
-    }
-    else if (strSetting.Equals("subtitles.align"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(21461), SUBTITLE_ALIGN_MANUAL);
-      pControl->AddLabel(g_localizeStrings.Get(21462), SUBTITLE_ALIGN_BOTTOM_INSIDE);
-      pControl->AddLabel(g_localizeStrings.Get(21463), SUBTITLE_ALIGN_BOTTOM_OUTSIDE);
-      pControl->AddLabel(g_localizeStrings.Get(21464), SUBTITLE_ALIGN_TOP_INSIDE);
-      pControl->AddLabel(g_localizeStrings.Get(21465), SUBTITLE_ALIGN_TOP_OUTSIDE);
-      pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("lookandfeel.font"))
     {
@@ -581,17 +537,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       pControl->SetValue(pSettingInt->GetData());
       continue;
     }
-    else if (strSetting.Equals("network.enc"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(780), ENC_NONE);
-      pControl->AddLabel(g_localizeStrings.Get(781), ENC_WEP);
-      pControl->AddLabel(g_localizeStrings.Get(782), ENC_WPA);
-      pControl->AddLabel(g_localizeStrings.Get(783), ENC_WPA2);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
     else if (strSetting.Equals("locale.country"))
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
@@ -614,27 +559,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInAudioDevices(pSetting,true);
-      continue;
-    }
-    else if (strSetting.Equals("videoplayer.synctype"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(13501), SYNC_DISCON);
-      pControl->AddLabel(g_localizeStrings.Get(13502), SYNC_SKIPDUP);
-      pControl->AddLabel(g_localizeStrings.Get(13503), SYNC_RESAMPLE);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
-    else if (strSetting.Equals("videoplayer.resamplequality"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(13506), RESAMPLE_LOW);
-      pControl->AddLabel(g_localizeStrings.Get(13507), RESAMPLE_MID);
-      pControl->AddLabel(g_localizeStrings.Get(13508), RESAMPLE_HIGH);
-      pControl->AddLabel(g_localizeStrings.Get(13509), RESAMPLE_REALLYHIGH);
-      pControl->SetValue(pSettingInt->GetData());
       continue;
     }
     AddSetting(pSetting, group->GetWidth(), iControlID);
