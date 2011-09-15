@@ -21,17 +21,32 @@ class FileUtils
 		{
 			public:
 				IOException(const std::string& error);
+				IOException(int errno, const std::string& error);
 
 				virtual ~IOException() throw ();
+
+				enum Type
+				{
+					NoError,
+					/** Unknown error type.  Call what() to get the description
+					  * provided by the OS.
+					  */
+					Unknown,
+					ReadOnlyFileSystem
+				};
 
 				virtual const char* what() const throw ()
 				{
 					return m_error.c_str();
 				}
 
+				Type type() const;
+
 			private:
+				void init(int errorCode, const std::string& error);
+
 				std::string m_error;
-				int m_errno;
+				int m_errorCode;
 		};
 
 		/** Remove a file.  Throws an exception if the file

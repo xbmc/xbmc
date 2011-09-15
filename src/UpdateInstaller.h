@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Platform.h"
+#include "FileUtils.h"
 #include "UpdateScript.h"
 
 #include <list>
@@ -52,6 +53,7 @@ class UpdateInstaller
 		void postInstallUpdate();
 
 		std::list<std::string> updaterArgs() const;
+		std::string friendlyErrorForError(const FileUtils::IOException& ex) const;
 
 		Mode m_mode;
 		std::string m_installDir;

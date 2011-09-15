@@ -24,26 +24,55 @@
 #endif
 
 FileUtils::IOException::IOException(const std::string& error)
-: m_errno(0)
+{
+	init(errno,error);
+}
+
+FileUtils::IOException::IOException(int errorCode, const std::string& error)
+{
+	init(errorCode,error);
+}
+
+void FileUtils::IOException::init(int errorCode, const std::string& error)
 {
 	m_error = error;
 
 #ifdef PLATFORM_UNIX
-	m_errno = errno;
+	m_errorCode = errorCode;
 
-	if (m_errno > 0)
+	if (m_errorCode > 0)
 	{
-		m_error += " details: " + std::string(strerror(m_errno));
+		m_error += " details: " + std::string(strerror(m_errorCode));
 	}
 #endif
 
 #ifdef PLATFORM_WINDOWS
+	m_errorCode = 0;
 	m_error += " GetLastError returned: " + intToStr(GetLastError());
 #endif
+
+	LOG(Info,"created IOException with errno " + intToStr(m_errorCode) + " rofs " + intToStr(EROFS));
 }
 
 FileUtils::IOException::~IOException() throw ()
 {
+}
+
+FileUtils::IOException::Type FileUtils::IOException::type() const
+{
+#ifdef PLATFORM_UNIX
+	switch (m_errorCode)
+	{
+		case 0:
+			return NoError;
+		case EROFS:
+			return ReadOnlyFileSystem;
+		default:
+			return Unknown;
+	}
+#else
+	return Unknown;
+#endif
 }
 
 bool FileUtils::fileExists(const char* path) throw (IOException)

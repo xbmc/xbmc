@@ -71,6 +71,29 @@ void UpdateInstaller::reportError(const std::string& error)
 	}
 }
 
+std::string UpdateInstaller::friendlyErrorForError(const FileUtils::IOException& exception) const
+{
+	std::string friendlyError;
+
+	switch (exception.type())
+	{
+		case FileUtils::IOException::ReadOnlyFileSystem:
+#ifdef PLATFORM_MAC
+			friendlyError = AppInfo::appName() + " was started from a read-only location.  "
+			                "Copy it to the Applications folder on your Mac and run "
+			                "it from there.";
+#else
+			friendlyError = AppInfo::appName() + " was started from a read-only location.  "
+							"Re-install it to a location that can be updated and run it from there.";
+#endif
+			break;
+		default:
+			break;
+	}
+
+	return friendlyError;
+}
+
 void UpdateInstaller::run() throw ()
 {
 	if (!m_script || !m_script->isValid())
@@ -144,7 +167,13 @@ void UpdateInstaller::run() throw ()
 	{
 		LOG(Info,"Starting update installation");
 
+		// the detailed error string returned by the OS
 		std::string error;
+		// the message to present to the user.  This may be the same
+		// as 'error' or may be different if a more helpful suggestion
+		// can be made for a particular problem
+		std::string friendlyError;
+
 		try
 		{
 			LOG(Info,"Installing new and updated files");
@@ -161,6 +190,7 @@ void UpdateInstaller::run() throw ()
 		catch (const FileUtils::IOException& exception)
 		{
 			error = exception.what();
+			friendlyError = friendlyErrorForError(exception);
 		}
 		catch (const std::string& genericError)
 		{
@@ -170,10 +200,23 @@ void UpdateInstaller::run() throw ()
 		if (!error.empty())
 		{
 			LOG(Error,std::string("Error installing update ") + error);
-			revert();
+
+			try
+			{
+				revert();
+			}
+			catch (const FileUtils::IOException& exception)
+			{
+				LOG(Error,"Error reverting partial update " + std::string(exception.what()));
+			}
+
 			if (m_observer)
 			{
-				m_observer->updateError(error);
+				if (friendlyError.empty())
+				{
+					friendlyError = error;
+				}
+				m_observer->updateError(friendlyError);
 			}
 		}
 
