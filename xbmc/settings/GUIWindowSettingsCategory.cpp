@@ -390,16 +390,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
         FillInResolutions(strSetting, g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
       continue;
     }
-    if (strSetting.Equals("videooutput.aspect"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(21375), VIDEO_NORMAL);
-      pControl->AddLabel(g_localizeStrings.Get(21376), VIDEO_LETTERBOX);
-      pControl->AddLabel(g_localizeStrings.Get(21377), VIDEO_WIDESCREEN);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
 #ifdef HAS_WEB_SERVER
     else if (strSetting.Equals("services.webserverport"))
     {
@@ -516,27 +506,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
       FillInResolutions(pSetting);
     }
     */
-    else if (strSetting.Equals("videoplayer.highqualityupscaling"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(13113), SOFTWARE_UPSCALING_DISABLED);
-      pControl->AddLabel(g_localizeStrings.Get(13114), SOFTWARE_UPSCALING_SD_CONTENT);
-      pControl->AddLabel(g_localizeStrings.Get(13115), SOFTWARE_UPSCALING_ALWAYS);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
-    else if (strSetting.Equals("videoplayer.upscalingalgorithm"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)AddSetting(pSetting, group->GetWidth(), iControlID);
-      pControl->AddLabel(g_localizeStrings.Get(13117), VS_SCALINGMETHOD_BICUBIC_SOFTWARE);
-      pControl->AddLabel(g_localizeStrings.Get(13118), VS_SCALINGMETHOD_LANCZOS_SOFTWARE);
-      pControl->AddLabel(g_localizeStrings.Get(13119), VS_SCALINGMETHOD_SINC_SOFTWARE);
-      pControl->AddLabel(g_localizeStrings.Get(13120), VS_SCALINGMETHOD_VDPAU_HARDWARE);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
     else if (strSetting.Equals("locale.country"))
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
@@ -580,21 +549,8 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     CBaseSettingControl *pSettingControl = m_vecSettings[i];
     pSettingControl->Update();
     CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-    if (strSetting.Equals("videoplayer.upscalingalgorithm"))
-    {
-      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      if (pControl)
-      {
-        int value = g_guiSettings.GetInt("videoplayer.highqualityupscaling");
-
-        if (value == SOFTWARE_UPSCALING_DISABLED)
-          pControl->SetEnabled(false);
-        else
-          pControl->SetEnabled(true);
-      }
-    }
 #ifdef HAVE_LIBVDPAU
-    else if (strSetting.Equals("videoplayer.vdpauUpscalingLevel"))
+    if (strSetting.Equals("videoplayer.vdpauUpscalingLevel"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
@@ -602,8 +558,9 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(true);
       }
     }
+    else
 #endif
-    else if (strSetting.Equals("videoscreen.resolution"))
+    if (strSetting.Equals("videoscreen.resolution"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
       if (pControl)
