@@ -2672,6 +2672,7 @@
   <string id="24073">Die Verbindung kann nicht hergestellt werden</string>
   <string id="24074">Neustart erforderlich</string>
   <string id="24075">Deaktivieren</string>
+  <string id="24076">Add-on benötigt</string>
   <string id="24080">Nochmals Verbindungsherstellung versuchen?</string>
   <string id="24089">Add-on startet neu</string>
   <string id="24090">Add-on Verwaltung sperren</string>
@@ -2686,6 +2687,8 @@
   <string id="24097">Wollen Sie es in Ihrem System deaktivieren?</string>
   <string id="24098">Defekt</string>
   <string id="24099">Möchten Sie zu diesem Skin wechseln?</string>
+  <string id="24100">Für diese Funktion wird ein Add-on benötigt:</string>
+  <string id="24101">Soll das Add-on heruntergeladen werden?</string>
   <string id="25000">Benachrichtigungen</string>
 
   <string id="29800">Datenbankmodus</string>
