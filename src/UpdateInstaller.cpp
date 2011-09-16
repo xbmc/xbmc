@@ -115,7 +115,7 @@ void UpdateInstaller::run() throw ()
 	{
 		updaterPath = ProcessUtils::currentProcessPath();
 	}
-	catch (const FileUtils::IOException& ex)
+	catch (const FileUtils::IOException&)
 	{
 		LOG(Error,"error reading process path with mode " + intToStr(m_mode));
 		reportError("Unable to determine path of updater");

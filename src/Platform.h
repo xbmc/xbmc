@@ -8,6 +8,10 @@
 #ifdef WIN32
  #define PLATFORM_WINDOWS
  #include <windows.h>
+
+ // disable warnings about exception specifications,
+ // which are not implemented in Visual C++
+ #pragma warning(disable:4290)
 #endif
 
 #ifdef __APPLE__
