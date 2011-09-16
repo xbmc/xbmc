@@ -516,3 +516,38 @@ std::string FileUtils::makeAbsolute(const char* path, const char* basePath)
 		return path;
 	}
 }
+
+void FileUtils::chdir(const char* path) throw (IOException)
+{
+#ifdef PLATFORM_UNIX
+	if (::chdir(path) != 0)
+	{
+		throw FileUtils::IOException("Unable to change directory");
+	}
+#else
+	if (!SetCurrentDirectory(path))
+	{
+		throw FileUtils::IOException("Unable to change directory");
+	}
+#endif
+}
+
+std::string FileUtils::getcwd() throw (IOException)
+{
+#ifdef PLATFORM_UNIX
+	char path[PATH_MAX];
+	if (!::getcwd(path,PATH_MAX))
+	{
+		throw FileUtils::IOException("Failed to get current directory");
+	}
+	return std::string(path);
+#else
+	char path[MAX_PATH];
+	if (GetCurrentDirectory(MAX_PATH,path) != 0)
+	{
+		throw FileUtils::IOException("Failed to get current directory");
+	}
+	return toUnixPathSeparators(std::string(path));
+#endif
+}
+

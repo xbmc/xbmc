@@ -402,27 +402,44 @@ void UpdateInstaller::setObserver(UpdateObserver* observer)
 
 void UpdateInstaller::restartMainApp()
 {
-	std::string command;
-	std::list<std::string> args;
-
-	for (std::vector<UpdateScriptFile>::const_iterator iter = m_script->filesToInstall().begin();
-	     iter != m_script->filesToInstall().end();
-	     iter++)
+	try
 	{
-		if (iter->isMainBinary)
+		std::string command;
+		std::list<std::string> args;
+
+		for (std::vector<UpdateScriptFile>::const_iterator iter = m_script->filesToInstall().begin();
+			iter != m_script->filesToInstall().end();
+			iter++)
 		{
-			command = m_installDir + '/' + iter->path;
+			if (iter->isMainBinary)
+			{
+				command = m_installDir + '/' + iter->path;
+			}
+		}
+
+		if (!command.empty())
+		{
+			LOG(Info,"Starting main application " + command);
+
+			// change the current directory to that of the application binary,
+			// so that on Windows the application can find shared libraries
+			// that it depends on which are in the same directory
+			std::string appDir = FileUtils::dirname(command.c_str());
+			std::string currentDir = FileUtils::getcwd();
+			FileUtils::chdir(appDir.c_str());
+
+			ProcessUtils::runAsync(command,args);
+
+			FileUtils::chdir(currentDir.c_str());
+		}
+		else
+		{
+			LOG(Error,"No main binary specified in update script");
 		}
 	}
-
-	if (!command.empty())
+	catch (const std::exception& ex)
 	{
-		LOG(Info,"Starting main application " + command);
-		ProcessUtils::runAsync(command,args);
-	}
-	else
-	{
-		LOG(Error,"No main binary specified in update script");
+		LOG(Error,"Unable to restart main app " + std::string(ex.what()));
 	}
 }
 

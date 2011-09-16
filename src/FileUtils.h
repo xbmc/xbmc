@@ -119,5 +119,11 @@ class FileUtils
 		static std::string makeAbsolute(const char* path, const char* basePath);
 
 		static void writeFile(const char* path, const char* data, int length) throw (IOException);
+
+		/** Changes the current working directory to @p path */
+		static void chdir(const char* path) throw (IOException);
+
+		/** Returns the current working directory of the application. */
+		static std::string getcwd() throw (IOException);
 };
 
