@@ -3,7 +3,9 @@
 #include <exception>
 #include <string>
 
+#include "Platform.h"
 #include "StringUtils.h"
+
 
 /** A set of functions for performing common operations
   * on files, throwing exceptions if an operation fails.
