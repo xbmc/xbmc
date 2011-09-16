@@ -28,6 +28,7 @@
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "URL.h"
 #include "StringUtils.h"
 
@@ -340,6 +341,17 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   url.SetFileName(strFile);
   strParent = url.Get();
   return true;
+}
+
+CStdString URIUtils::SubstitutePath(const CStdString& strPath)
+{
+  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin();
+      i != g_advancedSettings.m_pathSubstitutions.end(); i++)
+  {
+    if (strncmp(strPath.c_str(), i->first.c_str(), i->first.size()) == 0)
+      return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+  }
+  return strPath;
 }
 
 bool URIUtils::IsRemote(const CStdString& strFile)
@@ -919,4 +931,3 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
   strUrlPath += strBuffer;
 #endif
 }
-

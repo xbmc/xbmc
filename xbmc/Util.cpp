@@ -1819,17 +1819,6 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
   return fRelevance;
 }
 
-CStdString CUtil::SubstitutePath(const CStdString& strFileName)
-{
-  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin(); 
-                                                  i != g_advancedSettings.m_pathSubstitutions.end(); i++)
-  {
-    if (strncmp(strFileName.c_str(), i->first.c_str(), i->first.size()) == 0)
-      return URIUtils::AddFileToFolder(i->second, strFileName.Mid(i->first.size()));
-  }
-  return strFileName;
-}
-
 bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength)
 {
   int iStrInputSize = StrInput.size();
