@@ -873,6 +873,7 @@ bool CSettings::SaveSettings(const CStdString& strSettingsFile, CGUISettings *lo
   TiXmlElement videoSettingsNode("defaultvideosettings");
   pNode = pRoot->InsertEndChild(videoSettingsNode);
   if (!pNode) return false;
+  XMLUtils::SetInt(pNode, "deinterlacemode", m_defaultVideoSettings.m_DeinterlaceMode);
   XMLUtils::SetInt(pNode, "interlacemethod", m_defaultVideoSettings.m_InterlaceMethod);
   XMLUtils::SetInt(pNode, "scalingmethod", m_defaultVideoSettings.m_ScalingMethod);
   XMLUtils::SetFloat(pNode, "noisereduction", m_defaultVideoSettings.m_NoiseReduction);
