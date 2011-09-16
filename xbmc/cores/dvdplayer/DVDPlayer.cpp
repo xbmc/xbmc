@@ -68,6 +68,7 @@
 #include "utils/TimeUtils.h"
 #include "utils/StreamDetails.h"
 #include "utils/StreamUtils.h"
+#include "utils/Variant.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -462,7 +463,7 @@ retry:
         m_mimetype = "bluray/iso";
         filename = m_filename;
         filename = filename + "/BDMV/index.bdmv";
-        int title = m_item.GetPropertyInt("BlurayStartingTitle");
+        int title = (int)m_item.GetProperty("BlurayStartingTitle").asInteger();
         if( title )
           filename.AppendFormat("?title=%d",title);
         
@@ -485,7 +486,7 @@ retry:
     // find any upnp subtitles
     CStdString key("upnp:subtitle:1");
     for(unsigned s = 1; m_item.HasProperty(key); key.Format("upnp:subtitle:%u", ++s))
-      filenames.push_back(m_item.GetProperty(key));
+      filenames.push_back(m_item.GetProperty(key).asString());
 
     for(unsigned int i=0;i<filenames.size();i++)
     {

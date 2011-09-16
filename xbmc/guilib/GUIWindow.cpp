@@ -41,6 +41,7 @@
 #include "utils/XMLUtils.h"
 #include "GUIAudioManager.h"
 #include "Application.h"
+#include "utils/Variant.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
@@ -636,7 +637,7 @@ void CGUIWindow::AllocResources(bool forceLoad /*= FALSE */)
   start = CurrentHostCounter();
 #endif
   // load skin xml fil
-  CStdString xmlFile = GetProperty("xmlfile");
+  CStdString xmlFile = GetProperty("xmlfile").asString();
   bool bHasPath=false;
   if (xmlFile.Find("\\") > -1 || xmlFile.Find("/") > -1 )
     bHasPath = true;
@@ -685,7 +686,7 @@ bool CGUIWindow::Initialize()
 {
   if (!g_windowManager.Initialized())
     return false;     // can't load if we have no skin yet
-  return Load(GetProperty("xmlfile"));
+  return Load(GetProperty("xmlfile").asString());
 }
 
 void CGUIWindow::SetInitialVisibility()
@@ -901,60 +902,20 @@ void CGUIWindow::ChangeButtonToEdit(int id, bool singleLabel /* = false*/)
 #endif
 }
 
-void CGUIWindow::SetProperty(const CStdString &key, const CStdString &value)
+void CGUIWindow::SetProperty(const CStdString &strKey, const CVariant &value)
 {
   CSingleLock lock(*this);
-  m_mapProperties[key] = value;
+  m_mapProperties[strKey] = value;
 }
 
-void CGUIWindow::SetProperty(const CStdString &key, const char *value)
+CVariant CGUIWindow::GetProperty(const CStdString &strKey) const
 {
   CSingleLock lock(*this);
-  m_mapProperties[key] = value;
-}
-
-void CGUIWindow::SetProperty(const CStdString &key, int value)
-{
-  CStdString strVal;
-  strVal.Format("%d", value);
-  SetProperty(key, strVal);
-}
-
-void CGUIWindow::SetProperty(const CStdString &key, bool value)
-{
-  SetProperty(key, value ? "1" : "0");
-}
-
-void CGUIWindow::SetProperty(const CStdString &key, double value)
-{
-  CStdString strVal;
-  strVal.Format("%f", value);
-  SetProperty(key, strVal);
-}
-
-CStdString CGUIWindow::GetProperty(const CStdString &key) const
-{
-  CSingleLock lock(*this);
-  std::map<CStdString,CStdString,icompare>::const_iterator iter = m_mapProperties.find(key);
+  std::map<CStdString, CVariant, icompare>::const_iterator iter = m_mapProperties.find(strKey);
   if (iter == m_mapProperties.end())
-    return "";
+    return CVariant(CVariant::VariantTypeNull);
 
   return iter->second;
-}
-
-int CGUIWindow::GetPropertyInt(const CStdString &key) const
-{
-  return atoi(GetProperty(key).c_str());
-}
-
-bool CGUIWindow::GetPropertyBool(const CStdString &key) const
-{
-  return GetProperty(key) == "1";
-}
-
-double CGUIWindow::GetPropertyDouble(const CStdString &key) const
-{
-  return atof(GetProperty(key).c_str());
 }
 
 void CGUIWindow::ClearProperties()

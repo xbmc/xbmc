@@ -30,6 +30,7 @@
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
+#include "utils/Variant.h"
 
 #define NUM_ITEMS 10
 

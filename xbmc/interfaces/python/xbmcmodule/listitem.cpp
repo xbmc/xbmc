@@ -27,6 +27,7 @@
 #include "pictures/PictureInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
@@ -716,7 +717,7 @@ namespace PYXBMC
       value.Format("%f", self->item->m_lStartOffset / 75.0);
     }
     else
-      value = self->item->GetProperty(lowerKey.ToLower());
+      value = self->item->GetProperty(lowerKey.ToLower()).asString();
     PyXBMCGUIUnlock();
 
     return Py_BuildValue((char*)"s", value.c_str());

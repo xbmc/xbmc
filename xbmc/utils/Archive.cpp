@@ -238,7 +238,7 @@ CArchive& CArchive::operator<<(const CVariant& variant)
     *this << variant.asBoolean();
     break;
   case CVariant::VariantTypeString:
-    *this << variant.asString();
+    *this << CStdString(variant.asString());
     break;
   case CVariant::VariantTypeDouble:
     *this << variant.asDouble();
@@ -252,7 +252,7 @@ CArchive& CArchive::operator<<(const CVariant& variant)
     *this << variant.size();
     for (CVariant::const_iterator_map itr = variant.begin_map(); itr != variant.end_map(); itr++)
     {
-      *this << itr->first.c_str();
+      *this << CStdString(itr->first);
       *this << itr->second;
     }
     break;
