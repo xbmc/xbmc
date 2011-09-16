@@ -32,6 +32,7 @@ using namespace std;
 CGUIListItemLayout::CGUIListItemLayout()
 : m_group(0, 0, 0, 0, 0, 0)
 {
+  m_autoWidth = false;
   m_width = 0;
   m_height = 0;
   m_condition = 0;
@@ -43,6 +44,7 @@ CGUIListItemLayout::CGUIListItemLayout()
 CGUIListItemLayout::CGUIListItemLayout(const CGUIListItemLayout &from)
 : m_group(from.m_group), m_isPlaying(from.m_isPlaying)
 {
+  m_autoWidth = from.m_autoWidth;
   m_width = from.m_width;
   m_height = from.m_height;
   m_focused = from.m_focused;
@@ -64,9 +66,19 @@ void CGUIListItemLayout::ResetAnimation(ANIMATION_TYPE animType)
   return m_group.ResetAnimation(animType);
 }
 
+bool CGUIListItemLayout::AutoWidth() const
+{
+  return m_autoWidth;
+}
+
 float CGUIListItemLayout::Size(ORIENTATION orientation) const
 {
   return (orientation == HORIZONTAL) ? m_width : m_height;
+}
+
+float CGUIListItemLayout::SubItemSize(ORIENTATION orientation, const CStdString &strLabel) const
+{
+  return m_group.GetChildrenTotalWidth(strLabel);
 }
 
 void CGUIListItemLayout::Process(CGUIListItem *item, int parentID, unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -153,7 +165,10 @@ void CGUIListItemLayout::LoadControl(TiXmlElement *child, CGUIControlGroup *grou
 void CGUIListItemLayout::LoadLayout(TiXmlElement *layout, int context, bool focused)
 {
   m_focused = focused;
-  layout->QueryFloatAttribute("width", &m_width);
+  if (CStdString(layout->Attribute("width")) == "auto")
+    m_autoWidth = true;
+  else
+    layout->QueryFloatAttribute("width", &m_width);
   layout->QueryFloatAttribute("height", &m_height);
   const char *condition = layout->Attribute("condition");
   if (condition)
