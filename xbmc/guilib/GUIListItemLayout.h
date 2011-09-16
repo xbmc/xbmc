@@ -38,7 +38,9 @@ public:
   void LoadLayout(TiXmlElement *layout, int context, bool focused);
   void Process(CGUIListItem *item, int parentID, unsigned int currentTime, CDirtyRegionList &dirtyregions);
   void Render(CGUIListItem *item, int parentID);
+  bool AutoWidth() const;
   float Size(ORIENTATION orientation) const;
+  float SubItemSize(ORIENTATION orientation, const CStdString &strLabel) const;
   unsigned int GetFocusedItem() const;
   void SetFocusedItem(unsigned int focus);
   bool IsAnimating(ANIMATION_TYPE animType);
@@ -63,7 +65,7 @@ protected:
   void Update(CFileItem *item);
 
   CGUIListGroup m_group;
-
+  bool m_autoWidth;
   float m_width;
   float m_height;
   bool m_focused;
