@@ -543,7 +543,7 @@ std::string FileUtils::getcwd() throw (IOException)
 	return std::string(path);
 #else
 	char path[MAX_PATH];
-	if (GetCurrentDirectory(MAX_PATH,path) != 0)
+	if (GetCurrentDirectory(MAX_PATH,path) == 0)
 	{
 		throw FileUtils::IOException("Failed to get current directory");
 	}
