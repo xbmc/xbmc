@@ -56,17 +56,13 @@ bool CSaveFileStateJob::DoWork()
 
           if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != m_bookmark.timeInSeconds)
           {
-          if (m_bookmark.timeInSeconds < 0.0f)
-          {
-            videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
-          }
-          else if (m_bookmark.timeInSeconds > 0.0f)
-          {
-            videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
-          }
-          if (m_item.HasVideoInfoTag())
-            m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
-          updateListing = true;
+            if (m_bookmark.timeInSeconds < 0.0f)
+              videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
+            else if (m_bookmark.timeInSeconds > 0.0f)
+              videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
+            if (m_item.HasVideoInfoTag())
+              m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
+            updateListing = true;
           }
         }
 
