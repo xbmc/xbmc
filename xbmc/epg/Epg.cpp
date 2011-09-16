@@ -512,9 +512,12 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   for (unsigned int iTagPtr = 0; iTagPtr < epg.size(); iTagPtr++)
   {
     CEpgInfoTag *newTag = CreateTag();
-    newTag->Update(*epg.at(iTagPtr));
-    newTag->m_Epg = this;
-    push_back(newTag);
+    if (newTag)
+    {
+      newTag->Update(*epg.at(iTagPtr));
+      newTag->m_Epg = this;
+      push_back(newTag);
+    }
   }
 
   /* sort the list */
