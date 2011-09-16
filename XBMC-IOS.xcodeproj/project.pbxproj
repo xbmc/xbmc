@@ -18,6 +18,7 @@
 		18B700F613A6A7850009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B700F413A6A7850009C1AF /* AddonVersion.cpp */; };
 		18ECC99D13CF17D200A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC99B13CF17D200A9ED6C /* StreamUtils.cpp */; };
 		3255316612B2D02400837CD2 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3255316512B2D02400837CD2 /* CoreAudio.framework */; };
+		3291892B1423A9B700E878CD /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 329189291423A9B700E878CD /* JpegIO.cpp */; };
 		4D5D2E1E1301758F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */; };
 		7C0A7EDE13A5DC2800AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */; };
 		7C0A7F9D13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7F9B13A9E70800AFC2BD /* GUIWindowDebugInfo.cpp */; };
@@ -950,6 +951,8 @@
 		18ECC99B13CF17D200A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC99C13CF17D200A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
 		3255316512B2D02400837CD2 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		329189291423A9B700E878CD /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
+		3291892A1423A9B700E878CD /* JpegIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JpegIO.h; sourceTree = "<group>"; };
 		4D5D2E1D1301758F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C0A7EDC13A5DC2800AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7EDD13A5DC2800AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
@@ -4632,6 +4635,8 @@
 		F56C8482131F42E9000AD0F6 /* guilib */ = {
 			isa = PBXGroup;
 			children = (
+				329189291423A9B700E878CD /* JpegIO.cpp */,
+				3291892A1423A9B700E878CD /* JpegIO.h */,
 				F56C8483131F42E9000AD0F6 /* AnimatedGif.h */,
 				F56C8484131F42E9000AD0F6 /* AudioContext.h */,
 				F56C8485131F42E9000AD0F6 /* D3DResource.h */,
@@ -6813,6 +6818,7 @@
 				18968DDE14155E01005BA742 /* ApplicationOperations.cpp in Sources */,
 				DFCFC52A1413F7D60004D0BF /* AFPDirectory.cpp in Sources */,
 				DFCFC52B1413F7D60004D0BF /* FileAFP.cpp in Sources */,
+				3291892B1423A9B700E878CD /* JpegIO.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6910,6 +6916,7 @@
 					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
+					"-ljpeg",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PRODUCT_NAME = XBMC;
@@ -7004,6 +7011,7 @@
 					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
+					"-ljpeg",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PRODUCT_NAME = XBMC;

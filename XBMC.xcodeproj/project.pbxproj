@@ -379,6 +379,7 @@
 		18CCEAEE1112F5B800615FC6 /* PCMRemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */; };
 		18CCEAEF1112F5B800615FC6 /* PCMRemap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18CCEAEC1112F5B800615FC6 /* PCMRemap.cpp */; };
 		18ECC96213CF178D00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */; };
+		32C631281423A90F00F18420 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
 		3802709A13D5A653009493DD /* SystemClock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3802709813D5A653009493DD /* SystemClock.cpp */; };
 		384718D81325BA04000486D6 /* XBDateTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 384718D61325BA04000486D6 /* XBDateTime.cpp */; };
 		38F4E57013CCCB3B00664821 /* Implementation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 38F4E56C13CCCB3B00664821 /* Implementation.cpp */; };
@@ -2261,6 +2262,8 @@
 		18CCEAED1112F5B800615FC6 /* PCMRemap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCMRemap.h; sourceTree = "<group>"; };
 		18ECC96013CF178D00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC96113CF178D00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
+		32C631261423A90F00F18420 /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
+		32C631271423A90F00F18420 /* JpegIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JpegIO.h; sourceTree = "<group>"; };
 		3802709713D5A62D009493DD /* ThreadLocal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThreadLocal.h; sourceTree = "<group>"; };
 		3802709813D5A653009493DD /* SystemClock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SystemClock.cpp; sourceTree = "<group>"; };
 		3802709913D5A653009493DD /* SystemClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SystemClock.h; sourceTree = "<group>"; };
@@ -4046,6 +4049,8 @@
 		18B7C3AA1294219F009E7A26 /* guilib */ = {
 			isa = PBXGroup;
 			children = (
+				32C631261423A90F00F18420 /* JpegIO.cpp */,
+				32C631271423A90F00F18420 /* JpegIO.h */,
 				18B7C6F61294222D009E7A26 /* AnimatedGif.h */,
 				18B7C6F71294222D009E7A26 /* AudioContext.h */,
 				18B7C6F81294222D009E7A26 /* D3DResource.h */,
@@ -8122,6 +8127,7 @@
 				18968DC814155D7C005BA742 /* ApplicationOperations.cpp in Sources */,
 				DF24A6B41406C7C500C7721E /* AFPDirectory.cpp in Sources */,
 				DF24A6B51406C7C500C7721E /* FileAFP.cpp in Sources */,
+				32C631281423A90F00F18420 /* JpegIO.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9124,6 +9130,7 @@
 					"-lpython2.6",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
+					"-ljpeg",
 				);
 				PRODUCT_NAME = XBMC;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
@@ -9219,6 +9226,7 @@
 					"-lpython2.6",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
+					"-ljpeg",
 				);
 				PRODUCT_NAME = XBMC;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
@@ -9373,6 +9381,7 @@
 					"-lboost_thread",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
+					"-ljpeg",
 				);
 				PRODUCT_NAME = XBMC;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
@@ -9470,6 +9479,7 @@
 					"-lboost_thread",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
+					"-ljpeg",
 				);
 				PRODUCT_NAME = XBMC;
 				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";

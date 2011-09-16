@@ -17,6 +17,7 @@
 		18B7013C13A6ABBA0009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7013A13A6ABBA0009C1AF /* AddonVersion.cpp */; };
 		18B7013F13A6ABD20009C1AF /* KeymapLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7013D13A6ABD20009C1AF /* KeymapLoader.cpp */; };
 		18ECC9AA13CF17EB00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC9A813CF17EB00A9ED6C /* StreamUtils.cpp */; };
+		32D6D47C1423A9D8003641AC /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32D6D47A1423A9D8003641AC /* JpegIO.cpp */; };
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
 		7C0A7ECD13A5DBF900AFC2BD /* AppParamParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7ECB13A5DBF900AFC2BD /* AppParamParser.cpp */; };
 		7C0A7FC813A9E75400AFC2BD /* DirtyRegionSolvers.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7FC413A9E75400AFC2BD /* DirtyRegionSolvers.cpp */; };
@@ -949,6 +950,8 @@
 		18B7013E13A6ABD20009C1AF /* KeymapLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeymapLoader.h; sourceTree = "<group>"; };
 		18ECC9A813CF17EB00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC9A913CF17EB00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
+		32D6D47A1423A9D8003641AC /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
+		32D6D47B1423A9D8003641AC /* JpegIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JpegIO.h; sourceTree = "<group>"; };
 		4D5D2E121301753F006ABC13 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		7C0A7ECB13A5DBF900AFC2BD /* AppParamParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AppParamParser.cpp; sourceTree = "<group>"; };
 		7C0A7ECC13A5DBF900AFC2BD /* AppParamParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppParamParser.h; sourceTree = "<group>"; };
@@ -4273,6 +4276,8 @@
 		F56C749F131EC152000AD0F6 /* guilib */ = {
 			isa = PBXGroup;
 			children = (
+				32D6D47A1423A9D8003641AC /* JpegIO.cpp */,
+				32D6D47B1423A9D8003641AC /* JpegIO.h */,
 				F56C74A0131EC152000AD0F6 /* AnimatedGif.h */,
 				F56C74A1131EC152000AD0F6 /* AudioContext.h */,
 				F56C74A2131EC152000AD0F6 /* D3DResource.h */,
@@ -6798,6 +6803,7 @@
 				18968DE814155E1D005BA742 /* ApplicationOperations.cpp in Sources */,
 				DFCFC53D1413F7F70004D0BF /* AFPDirectory.cpp in Sources */,
 				DFCFC53E1413F7F70004D0BF /* FileAFP.cpp in Sources */,
+				32D6D47C1423A9D8003641AC /* JpegIO.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6899,6 +6905,7 @@
 					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
+					"-ljpeg",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PRODUCT_NAME = XBMC;
@@ -6993,6 +7000,7 @@
 					"-lyajl",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
+					"-ljpeg",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PRODUCT_NAME = XBMC;
