@@ -121,9 +121,15 @@ void CGUIBaseContainer::Process(unsigned int currentTime, CDirtyRegionList &dirt
         ProcessItem(origin.x, pos, item.get(), focused, currentTime, dirtyregions);
       else
         ProcessItem(pos, origin.y, item.get(), focused, currentTime, dirtyregions);
-    }
+    
     // increment our position
-    pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
+    if (focused ? m_focusedLayout->AutoWidth() : m_layout->AutoWidth())
+    {
+      pos += focused ? m_focusedLayout->SubItemSize(m_orientation, item->GetLabel()) : m_layout->SubItemSize(m_orientation, item->GetLabel());
+    }
+    else
+      pos += focused ? m_focusedLayout->Size(m_orientation) : m_layout->Size(m_orientation);
+    }
     current++;
   }
 

@@ -47,6 +47,7 @@ public:
   virtual void UpdateInfo(const CGUIListItem *item = NULL);
   virtual void SetFocus(bool focus);
   virtual void SetInvalid();
+  float GetTextWidth(const CStdString &strLabel) const;
 
   void SetLabel(const CStdString &label);
   void SetSelected(bool selected);
