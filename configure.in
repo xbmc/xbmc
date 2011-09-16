@@ -277,7 +277,7 @@ AC_ARG_ENABLE([nfs],
   [use_libnfs=auto])
 
 AC_ARG_ENABLE([afpclient],
-  [AS_HELP_STRING([--enable-afp],
+  [AS_HELP_STRING([--enable-afpclient],
   [enable AFP support via libafpclient (default is auto)])],
   [use_libafpclient=$enableval],
   [use_libafpclient=auto])
