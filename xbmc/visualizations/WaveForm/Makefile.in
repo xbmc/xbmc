@@ -24,7 +24,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 	@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS)
   endif
 else
-	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(SLIB) $(OBJS)
+	$(CXX) $(CFLAGS) $(LDFLAGS) -shared -g -o $(SLIB) -Wl,--unresolved-symbols=ignore-all $(OBJS)
 endif
 
 include @abs_top_srcdir@/Makefile.include
