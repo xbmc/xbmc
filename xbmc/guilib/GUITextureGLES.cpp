@@ -32,6 +32,7 @@
 
 #if defined(HAS_GLES)
 
+
 CGUITextureGLES::CGUITextureGLES(float posX, float posY, float width, float height, const CTextureInfo &texture)
 : CGUITextureBase(posX, posY, width, height, texture)
 {
@@ -97,11 +98,13 @@ void CGUITextureGLES::Begin(color_t color)
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc, 3, GL_FLOAT, 0, 0, m_vert);
-  glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, m_col);
+  if(colLoc >= 0)
+    glVertexAttribPointer(colLoc, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, m_col);
   glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, m_tex0);
 
   glEnableVertexAttribArray(posLoc);
-  glEnableVertexAttribArray(colLoc);
+  if(colLoc >= 0)
+    glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
 
   if ( hasAlpha )
@@ -113,7 +116,6 @@ void CGUITextureGLES::Begin(color_t color)
   {
     glDisable(GL_BLEND);
   }
-
 }
 
 void CGUITextureGLES::End()
@@ -125,7 +127,9 @@ void CGUITextureGLES::End()
   }
 
   glDisableVertexAttribArray(g_Windowing.GUIShaderGetPos());
-  glDisableVertexAttribArray(g_Windowing.GUIShaderGetCol());
+  GLint colLoc  = g_Windowing.GUIShaderGetCol();
+  if(colLoc >= 0)
+    glDisableVertexAttribArray(g_Windowing.GUIShaderGetCol());
   glDisableVertexAttribArray(g_Windowing.GUIShaderGetCoord0());
 
   glEnable(GL_BLEND);
@@ -238,14 +242,16 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   GLint tex0Loc  = g_Windowing.GUIShaderGetCoord0();
 
   glVertexAttribPointer(posLoc,  3, GL_FLOAT, 0, 0, ver);
-  glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, 0, col);
+  if(colLoc >= 0)
+    glVertexAttribPointer(colLoc,  4, GL_UNSIGNED_BYTE, GL_TRUE, 0, col);
   if (texture)
     glVertexAttribPointer(tex0Loc, 2, GL_FLOAT, 0, 0, tex);
 
   glEnableVertexAttribArray(posLoc);
   if (texture)
     glEnableVertexAttribArray(tex0Loc);
-  glEnableVertexAttribArray(colLoc);
+  if(colLoc >= 0)
+    glEnableVertexAttribArray(colLoc);
 
   for (int i=0; i<4; i++)
   {
@@ -282,7 +288,8 @@ void CGUITextureGLES::DrawQuad(const CRect &rect, color_t color, CBaseTexture *t
   glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, idx);
 
   glDisableVertexAttribArray(posLoc);
-  glDisableVertexAttribArray(colLoc);
+  if(colLoc >= 0)
+    glDisableVertexAttribArray(colLoc);
   if (texture)
     glDisableVertexAttribArray(tex0Loc);
 
