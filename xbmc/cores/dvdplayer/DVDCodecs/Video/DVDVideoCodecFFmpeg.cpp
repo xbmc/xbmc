@@ -78,7 +78,7 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
         
       CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::GetFormat - Creating VDPAU(%ix%i)", avctx->width, avctx->height);
       CVDPAU* vdp = new CVDPAU();
-      if(vdp->Open(avctx, *cur, ctx->m_uSurfacesCount))
+      if(vdp->Open(avctx, *cur))
       {
         ctx->SetHardware(vdp);
         return *cur;
@@ -104,13 +104,13 @@ enum PixelFormat CDVDVideoCodecFFmpeg::GetFormat( struct AVCodecContext * avctx
     if(*cur == PIX_FMT_VAAPI_VLD && g_guiSettings.GetBool("videoplayer.usevaapi"))
     {
       VAAPI::CDecoder* dec = new VAAPI::CDecoder();
-      if(dec->Open(avctx, *cur, ctx->m_uSurfacesCount))
+      if(dec->Open(avctx, *cur))
       {
         ctx->SetHardware(dec);
         return *cur;
       }
       else
-        dec->Release();      
+        dec->Release();
     }
 #endif
     cur++;

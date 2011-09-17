@@ -495,10 +495,12 @@ void CWinRenderer::SelectPSVideoFilter()
 
   case VS_SCALINGMETHOD_CUBIC:
   case VS_SCALINGMETHOD_LANCZOS2:
+  case VS_SCALINGMETHOD_SPLINE36_FAST:
   case VS_SCALINGMETHOD_LANCZOS3_FAST:
     m_bUseHQScaler = true;
     break;
 
+  case VS_SCALINGMETHOD_SPLINE36:
   case VS_SCALINGMETHOD_LANCZOS3:
     m_bUseHQScaler = true;
     break;
@@ -1049,10 +1051,19 @@ bool CWinRenderer::CreateYV12Texture(int index)
   return true;
 }
 
+bool CWinRenderer::Supports(EDEINTERLACEMODE mode)
+{
+  if(mode == VS_DEINTERLACEMODE_OFF
+  || mode == VS_DEINTERLACEMODE_AUTO
+  || mode == VS_DEINTERLACEMODE_FORCE)
+    return true;
+
+  return false;
+}
+
 bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 {
-  if(method == VS_INTERLACEMETHOD_NONE
-  || method == VS_INTERLACEMETHOD_AUTO)
+  if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
   if (m_renderMethod == RENDER_DXVA)
@@ -1101,7 +1112,9 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
     {
       if(method == VS_SCALINGMETHOD_CUBIC
       || method == VS_SCALINGMETHOD_LANCZOS2
+      || method == VS_SCALINGMETHOD_SPLINE36_FAST
       || method == VS_SCALINGMETHOD_LANCZOS3_FAST
+      || method == VS_SCALINGMETHOD_SPLINE36
       || method == VS_SCALINGMETHOD_LANCZOS3)
         return true;
     }

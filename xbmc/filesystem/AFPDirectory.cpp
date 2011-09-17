@@ -144,11 +144,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
           if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strFullName.c_str(), &info) == 0)
           {
-            bool statIsDir = (info.st_mode & S_IFDIR) ? true : false;
-            if (bIsDir == statIsDir)                                         // fixme senseless
-            {
-                bIsDir = (info.st_mode & S_IFDIR) ? true : false;
-            }
+            bIsDir = (info.st_mode & S_IFDIR) ? true : false;
             lTimeDate = info.st_mtime;
             if (lTimeDate == 0) // if modification date is missing, use create date
               lTimeDate = info.st_ctime;
@@ -172,25 +168,30 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         localTime.dwHighDateTime = 0;
         localTime.dwLowDateTime = 0;
       }
+      
+      CFileItemPtr pItem(new CFileItem(strFile));      
 
       if (bIsDir)
       {
-        CFileItemPtr pItem(new CFileItem(strFile));
         URIUtils::AddSlashAtEnd(aDir.name);
         pItem->SetPath(strPath + aDir.name);
         pItem->m_bIsFolder = true;
         pItem->m_dateTime  = localTime;
-        items.Add(pItem);
       }
       else
       {
-        CFileItemPtr pItem(new CFileItem(strFile));
         pItem->SetPath(strPath + aDir.name);
         pItem->m_bIsFolder = false;
         pItem->m_dwSize    = iSize;
         pItem->m_dateTime  = localTime;
-        items.Add(pItem);
       }
+ 
+      if (!aDir.name.empty() && aDir.name[0] == '.')
+      {
+        pItem->SetProperty("file:hidden", true);
+      }
+      
+      items.Add(pItem);      
     }
   }
 

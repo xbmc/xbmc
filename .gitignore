@@ -377,6 +377,7 @@ lib/cmyth/Makefile
 /system/ssh.dll
 /system/sqlite3.dll
 /system/libsamplerate-0.dll
+/system/libnfs.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll

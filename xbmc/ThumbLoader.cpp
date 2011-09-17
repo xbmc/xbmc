@@ -189,7 +189,8 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
   {
     CVideoDatabase db;
     db.Open();
-    db.GetResumePoint(*pItem->GetVideoInfoTag());
+    if (db.GetResumePoint(*pItem->GetVideoInfoTag()))
+      pItem->SetInvalid();
     db.Close();
   }
 

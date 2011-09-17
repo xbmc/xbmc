@@ -811,6 +811,7 @@
 
   <string id="1260">Zeroconf-Veröffentlichung</string>
   <string id="1270">AirPlay Inhalte empfangen</string>
+  <string id="1271">Gerätename</string>
 
   <string id="1300">Benutzerdefiniertes Audiogerät</string>
   <string id="1301">Benutzerdefiniertes Audiogerät für Passthrough</string>
@@ -2460,6 +2461,13 @@
   <string id="21452">Mehr...</string>
   <string id="21453">Root Dateisystem</string>
 
+  <string id="21460">Position der Untertitel</string>
+  <string id="21461">Fixiert</string>
+  <string id="21462">Unterhalb des Bildes</string>
+  <string id="21463">Unten</string>
+  <string id="21464">Oberhalb des Bildes</string>
+  <string id="21465">Oben</string>
+
   <string id="21800">Dateiname</string>
   <string id="21801">Dateipfad</string>
   <string id="21802">Dateigröße</string>
@@ -2614,6 +2622,7 @@
   <string id="24015">Musikvideo-Informationen</string>
   <string id="24016">Album-Informationen</string>
   <string id="24017">Interpret-Informationen</string>
+  <string id="24018">Dienste</string>
 
   <string id="24020">Konfigurieren</string>
   <string id="24021">Deaktivieren</string>
@@ -2639,6 +2648,7 @@
   <string id="24045">Add-on verfügt nicht über die richtige Struktur</string>
   <string id="24046">%s wird von den folgenden Add-ons verwendet</string>
   <string id="24047">Das Add-on kann nicht deinstalliert werden</string>
+  <string id="24048">Vorherige Version</string>
 
   <string id="24050">Verfügbare Add-ons</string>
   <string id="24051">Version:</string>
@@ -2663,6 +2673,7 @@
   <string id="24073">Die Verbindung kann nicht hergestellt werden</string>
   <string id="24074">Neustart erforderlich</string>
   <string id="24075">Deaktivieren</string>
+  <string id="24076">Add-on benötigt</string>
   <string id="24080">Nochmals Verbindungsherstellung versuchen?</string>
   <string id="24089">Add-on startet neu</string>
   <string id="24090">Add-on Verwaltung sperren</string>
@@ -2677,6 +2688,8 @@
   <string id="24097">Wollen Sie es in Ihrem System deaktivieren?</string>
   <string id="24098">Defekt</string>
   <string id="24099">Möchten Sie zu diesem Skin wechseln?</string>
+  <string id="24100">Für diese Funktion wird ein Add-on benötigt:</string>
+  <string id="24101">Soll das Add-on heruntergeladen werden?</string>
   <string id="25000">Benachrichtigungen</string>
 
   <string id="29800">Datenbankmodus</string>

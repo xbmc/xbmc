@@ -8,8 +8,10 @@ SLIB=@abs_top_srcdir@/addons/visualization.waveform/Waveform.vis
 ifeq (@USE_OPENGLES@,1)
   OBJS=Main_gles.o ../EGLHelpers/Shader.o ../EGLHelpers/GUIShader.o ../../guilib/MatrixGLES.o
   DEFINES+=-DHAS_GLES
+  LDFLAGS+=-lGLESv2
 else
   DEFINES+=-DHAS_SDL_OPENGL
+  LDFLAGS+=-lGL -lGLU
 endif
 
 $(SLIB): $(OBJS)

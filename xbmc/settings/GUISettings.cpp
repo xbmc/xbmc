@@ -684,6 +684,8 @@ void CGUISettings::Initialize()
   AddGroup(6, 705);
 
   CSettingsCategory* srv = AddCategory(6, "services", 14036);
+  AddString(srv,"services.devicename", 1271, "XBMC", EDIT_CONTROL_INPUT);
+  AddSeparator(srv,"services.sep4");
   AddBool(srv, "services.upnpserver", 21360, false);
   AddBool(srv, "services.upnprenderer", 21881, false);
   AddSeparator(srv,"services.sep3");

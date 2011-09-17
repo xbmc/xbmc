@@ -390,10 +390,10 @@ bool CVideoLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
   CVideoDatabase videodatabase;
   if (videodatabase.Open())
   {
-    CStdString file   = parameterObject["file"].asString();
-    int movieID       = (int)parameterObject["movieid"].asInteger();
-    int episodeID     = (int)parameterObject["episodeid"].asInteger();
-    int musicVideoID  = (int)parameterObject["musicvideoid"].asInteger();
+    CStdString file = parameterObject["file"].asString();
+    int movieID = (int)parameterObject["movieid"].asInteger(-1);
+    int episodeID = (int)parameterObject["episodeid"].asInteger(-1);
+    int musicVideoID = (int)parameterObject["musicvideoid"].asInteger(-1);
 
     bool success = false;
     CFileItem fileItem;

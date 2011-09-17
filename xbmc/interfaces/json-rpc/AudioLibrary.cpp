@@ -299,10 +299,10 @@ bool CAudioLibrary::FillFileItemList(const CVariant &parameterObject, CFileItemL
 
   if (musicdatabase.Open())
   {
-    CStdString file       = parameterObject["file"].asString();
-    int artistID          = (int)parameterObject["artistid"].asInteger();
-    int albumID           = (int)parameterObject["albumid"].asInteger();
-    int genreID           = (int)parameterObject["genreid"].asInteger();
+    CStdString file = parameterObject["file"].asString();
+    int artistID = (int)parameterObject["artistid"].asInteger(-1);
+    int albumID = (int)parameterObject["albumid"].asInteger(-1);
+    int genreID = (int)parameterObject["genreid"].asInteger(-1);
 
     CFileItem fileItem;
     if (FillFileItem(file, fileItem))
