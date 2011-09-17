@@ -22,29 +22,7 @@
 #define PVRCLIENT_MEDIAPORTAL_OS_POSIX_H
 
 #define _FILE_OFFSET_BITS 64
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/time.h>
-#include <sys/timeb.h>
-#include <sys/wait.h>
-#include <sys/signal.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <pthread.h>
-#include <semaphore.h>
 
-typedef int bool_t;
-//
 // Success codes
 #define S_OK                             0L
 #define S_FALSE                          1L
@@ -53,47 +31,11 @@ typedef int bool_t;
 #define ERROR_FILENAME_EXCED_RANGE       206L
 #define E_OUTOFMEMORY                    0x8007000EL
 
-// Socket related:
-typedef int SOCKET;
-//#define closesocket(a) close(a)
-//#define SOCKET_ERROR   (-1)
-//#define INVALID_SOCKET (-1)
-#define SD_BOTH SHUT_RDWR
-#define sock_getlasterror errno
-#define sock_getlasterror_socktimeout (errno == EAGAIN)
-#define LIBTYPE
-
-//#define console_vprintf vprintf
-//#define console_printf printf
 #define THREAD_FUNC_PREFIX void *
 
 typedef pthread_mutex_t criticalsection_t;
 typedef sem_t waitevent_t;
 
 #define PATH_SEPARATOR_CHAR '/'
-
-// re-definition error on Linux and OSX, therefore currently
-// excluded
-#if 0
-static inline uint64_t getcurrenttime(void)
-{
-	struct timeval t;
-	gettimeofday(&t, NULL);
-	return ((uint64_t)t.tv_sec * 1000) + (t.tv_usec / 1000);
-}
-#endif
-
-static inline int setsocktimeout(int s, int level, int optname, uint64_t timeout)
-{
-	struct timeval t;
-	t.tv_sec = timeout / 1000;
-	t.tv_usec = (timeout % 1000) * 1000;
-	return setsockopt(s, level, optname, (char *)&t, sizeof(t));
-}
-
-static inline void Sleep(unsigned long dwMilliseconds)
-{
-  usleep(dwMilliseconds*1000);
-}
 
 #endif

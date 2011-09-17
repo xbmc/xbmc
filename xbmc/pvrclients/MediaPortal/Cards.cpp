@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
@@ -18,6 +17,7 @@
  *
  */
 
+#include <stdlib.h>
 #include "Cards.h"
 #include "uri.h"
 #include "utils.h"
