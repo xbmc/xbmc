@@ -723,7 +723,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio
   {
     XBMC->Log(LOG_DEBUG, "RequestChannelList for TV group:%s", g_szTVGroup.c_str());
     if (!SendCommand2("ListRadioGroups\n", code, lines))
-      PVR_ERROR_SERVER_ERROR;
+      return PVR_ERROR_SERVER_ERROR;
   }
 
   memset(&tag, 0 , sizeof(PVR_CHANNEL_GROUP));
@@ -1107,24 +1107,15 @@ PVR_ERROR cPVRClientMediaPortal::DeleteTimer(const PVR_TIMER &timer, bool bForce
 
   snprintf(command, 256, "DeleteSchedule:%i\n",timer.iClientIndex);
 
-  if (timer.iClientIndex == -1)
+  XBMC->Log(LOG_DEBUG, "DeleteTimer: About to delete MediaPortal schedule index=%i", timer.iClientIndex);
+  result = SendCommand(command);
+
+  if(result.find("True") ==  string::npos)
   {
-    XBMC->Log(LOG_DEBUG, "DeleteTimer: schedule index = -1", timer.iClientIndex);
+    XBMC->Log(LOG_DEBUG, "DeleteTimer %i [failed]", timer.iClientIndex);
     return PVR_ERROR_NOT_DELETED;
   }
-  else
-  {
-    XBMC->Log(LOG_DEBUG, "DeleteTimer: About to delete MediaPortal schedule index=%i", timer.iClientIndex);
-    result = SendCommand(command);
-
-    if(result.find("True") ==  string::npos)
-    {
-      XBMC->Log(LOG_DEBUG, "DeleteTimer %i [failed]", timer.iClientIndex);
-      return PVR_ERROR_NOT_DELETED;
-    }
-    XBMC->Log(LOG_DEBUG, "DeleteTimer %i [done]", timer.iClientIndex);
-
-  }
+  XBMC->Log(LOG_DEBUG, "DeleteTimer %i [done]", timer.iClientIndex);
 
   // Although XBMC deletes this timer, we still have to trigger XBMC to update its timer list to
   // remove the timer from the XBMC list
@@ -1682,45 +1673,45 @@ bool cPVRClientMediaPortal::LoadGenreXML(const std::string &filename)
   XBMC->Log(LOG_DEBUG, "Opened %s to read genre string to type/subtype translation table", filename.c_str());
 
   TiXmlHandle hDoc(&xmlDoc);
-	TiXmlElement* pElem;
-	TiXmlHandle hRoot(0);
+  TiXmlElement* pElem;
+  TiXmlHandle hRoot(0);
   string sGenre;
   const char* sGenreType = NULL;
   const char* sGenreSubType = NULL;
   genre_t genre;
 
-	// block: genrestrings
-	pElem = hDoc.FirstChildElement("genrestrings").Element();
-	// should always have a valid root but handle gracefully if it does
-	if (!pElem)
+  // block: genrestrings
+  pElem = hDoc.FirstChildElement("genrestrings").Element();
+  // should always have a valid root but handle gracefully if it does
+  if (!pElem)
   {
     XBMC->Log(LOG_DEBUG, "Could not find <genrestrings> element");    
     return false;
   }
-		
+
   //This should hold: pElem->Value() == "genrestrings"
 
-	// save this for later
-	hRoot=TiXmlHandle(pElem);
+  // save this for later
+  hRoot=TiXmlHandle(pElem);
 
   // iterate through all genre elements
   TiXmlElement* pGenreNode = hRoot.FirstChildElement("genre").Element();
   //This should hold: pGenreNode->Value() == "genre"
 
-  if (!pElem)
+  if (!pGenreNode)
   {
-    XBMC->Log(LOG_DEBUG, "Could not find <genre> element");    
+    XBMC->Log(LOG_DEBUG, "Could not find <genre> element");
     return false;
   }
 
-  for (pGenreNode; pGenreNode; pGenreNode = pGenreNode->NextSiblingElement("genre"))
+  for (; pGenreNode != NULL; pGenreNode = pGenreNode->NextSiblingElement("genre"))
   {
     const char* sGenreString = pGenreNode->GetText();
 
     if (sGenreString)
     {
       sGenreType = pGenreNode->Attribute("type");
-		  sGenreSubType = pGenreNode->Attribute("subtype");
+      sGenreSubType = pGenreNode->Attribute("subtype");
 
       if ((sGenreType) && (strlen(sGenreType) > 2))
       {
@@ -1748,7 +1739,7 @@ bool cPVRClientMediaPortal::LoadGenreXML(const std::string &filename)
         m_genremap.insert(std::pair<std::string, genre_t>(sGenreString, genre));
       }
     }
-	}
+  }
 
   return true;
 }
