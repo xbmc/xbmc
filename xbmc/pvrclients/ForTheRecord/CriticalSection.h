@@ -18,7 +18,12 @@
  */
 
 #include "libPlatform/os-dependent.h"
+
+#ifdef __WINDOWS__
 typedef CRITICAL_SECTION criticalsection_t;
+#else
+typedef pthread_mutex_t criticalsection_t;
+#endif
 
 class CCriticalSection
 {
