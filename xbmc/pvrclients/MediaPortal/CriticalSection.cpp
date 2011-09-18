@@ -20,7 +20,7 @@
 
 CCriticalSection::CCriticalSection(void)
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   InitializeCriticalSection(&m_CriticalSection);
 #else
   pthread_mutexattr_t attr;
@@ -34,7 +34,7 @@ CCriticalSection::CCriticalSection(void)
 
 CCriticalSection::~CCriticalSection(void)
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   DeleteCriticalSection(&m_CriticalSection);
 #else
   pthread_mutex_destroy(&m_CriticalSection);
@@ -43,7 +43,7 @@ CCriticalSection::~CCriticalSection(void)
 
 void CCriticalSection::Lock(void)
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   EnterCriticalSection(&m_CriticalSection);
 #else
   (void)pthread_mutex_lock(&m_CriticalSection);
@@ -52,7 +52,7 @@ void CCriticalSection::Lock(void)
 
 void CCriticalSection::Unlock(void)
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   LeaveCriticalSection(&m_CriticalSection);
 #else
   pthread_mutex_unlock(&m_CriticalSection);

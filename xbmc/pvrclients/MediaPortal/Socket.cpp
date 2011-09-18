@@ -490,7 +490,7 @@ bool Socket::is_valid() const
   return (_sd != INVALID_SOCKET);
 }
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(TARGET_WINDOWS)
 bool Socket::set_non_blocking ( const bool b )
 {
   u_long iMode;
@@ -632,7 +632,7 @@ void Socket::osCleanup()
   }
 }
 
-#elif defined _LINUX
+#elif defined TARGET_LINUX
 bool Socket::set_non_blocking ( const bool b )
 {
   int opts;
@@ -744,6 +744,6 @@ void Socket::osCleanup()
 {
   // Not needed for Linux
 }
-#endif //_WINDOWS || _LINUX
+#endif //TARGET_WINDOWS || TARGET_LINUX
 
 } //namespace MPTV

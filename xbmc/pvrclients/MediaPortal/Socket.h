@@ -22,7 +22,7 @@ namespace MPTV //Prevent name clash with Live555 Socket
 {
 
 //Include platform specific datatypes, header files, defines and constants:
-#if defined __WINDOWS__ || defined WIN32 || defined _WINDOWS
+#if defined TARGET_WINDOWS
   #ifdef _WINSOCKAPI_
     #undef _WINSOCKAPI_
   #endif
@@ -42,7 +42,7 @@ namespace MPTV //Prevent name clash with Live555 Socket
   #ifndef port_t
     typedef unsigned short port_t;
   #endif
-#elif defined _LINUX
+#elif defined TARGET_LINUX
   #include <sys/types.h>     /* for socket,connect */
   #include <sys/socket.h>    /* for socket,connect */
   #include <sys/un.h>        /* for Unix socket */
@@ -79,7 +79,7 @@ enum SocketFamily
 
 enum SocketDomain
 {
-  #if defined _LINUX
+  #if defined TARGET_LINUX
     pf_unix  = PF_UNIX,
     pf_local = PF_LOCAL,
   #endif
@@ -287,7 +287,7 @@ class Socket
     enum SocketType _type;              ///< Socket Type
     enum SocketDomain _domain;          ///< Socket domain
 
-    #ifdef _WINDOWS
+    #ifdef TARGET_WINDOWS
       WSADATA _wsaData;                 ///< Windows Socket data
       static int win_usage_count;       ///< Internal Windows usage counter used to prevent a global WSACleanup when more than one Socket object is used
     #endif

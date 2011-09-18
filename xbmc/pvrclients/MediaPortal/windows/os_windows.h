@@ -18,6 +18,8 @@
  *
  */
 
+#ifdef TARGET_WINDOWS
+
 #define WIN32_LEAN_AND_MEAN           // Enable LEAN_AND_MEAN support
 #include <windows.h>
 
@@ -31,8 +33,5 @@ typedef unsigned __int32 uint;
 
 
 #define PATH_SEPARATOR_CHAR '\\'
-//
-//static inline void usleep(unsigned long usec)
-//{
-//  Sleep(usec/1000);
-//}
+
+#endif //TARGET_WINDOWS
