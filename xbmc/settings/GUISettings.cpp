@@ -871,6 +871,8 @@ void CGUISettings::Initialize()
   AddGroup(8, 19180);
   CSettingsCategory* pvr = AddCategory(8, "pvrmanager", 128);
   AddBool(pvr, "pvrmanager.enabled", 449, false);
+  AddBool(pvr, "pvrmanager.localbackend", 19244, false);
+  AddInt(pvr, "pvrmanager.backendidletime", 19245, 15, 0, 5, 360, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddSeparator(pvr, "pvrmanager.sep1");
   AddBool(pvr, "pvrmanager.syncchannelgroups", 19221, true);
   AddBool(pvr, "pvrmanager.backendchannelorder", 19231, false);

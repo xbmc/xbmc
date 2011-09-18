@@ -245,6 +245,7 @@
 
 /* PVR related include Files */
 #include "pvr/PVRManager.h"
+#include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
@@ -4515,6 +4516,33 @@ void CApplication::CheckShutdown()
 
   if (g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // progress dialog is onscreen
     resetTimer = true;
+
+  if (g_guiSettings.GetBool("pvrmanager.enabled") &&
+	  g_guiSettings.GetBool("pvrmanager.localbackend"))
+  {
+	  if(g_PVRManager.IsRecording()) // pvr recording?
+	  {
+		  resetTimer = true;
+	  }
+
+	  if(g_PVRManager.HasTimer()) // has active timers?
+	  {
+		  CPVRTimerInfoTag timer;
+		  if (g_PVRManager.Timers()->GetNextActiveTimer(&timer))
+		  {
+			  const CDateTime start = timer.StartAsUTC();
+			  const CDateTime now = CDateTime::GetUTCDateTime();
+
+			  const CDateTimeSpan delta = start - now;
+			  const int mins = delta.GetMinutes();
+			  const int idle = g_guiSettings.GetInt("pvrmanager.backendidletime");
+			  if (mins < idle)
+			  {
+				  resetTimer = true;
+			  }
+		  }
+	  }
+  }
 
   if (resetTimer)
   {
