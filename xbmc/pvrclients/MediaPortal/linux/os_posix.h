@@ -50,7 +50,7 @@ typedef struct _SECURITY_ATTRIBUTES {
 
 // Retrieve the number of milliseconds that have elapsed since the system was started
 #include <time.h>
-unsigned long GetTickCount(void)
+inline unsigned long GetTickCount(void)
 {
   struct timespec ts;
   if(clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
