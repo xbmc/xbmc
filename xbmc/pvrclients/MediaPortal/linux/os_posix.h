@@ -34,7 +34,7 @@
 #define THREAD_FUNC_PREFIX void *
 
 typedef pthread_mutex_t criticalsection_t;
-typedef sem_t waitevent_t;
+typedef sem_t wait_event_t;
 
 #define PATH_SEPARATOR_CHAR '/'
 
