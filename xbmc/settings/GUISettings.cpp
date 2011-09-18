@@ -713,7 +713,11 @@ void CGUISettings::Initialize()
 #endif
 
 #ifdef HAS_AIRPLAY
+  AddSeparator(srv, "services.sep5");
   AddBool(srv, "services.airplay", 1270, false);
+  AddBool(srv, "services.useairplaypassword", 1272, false);
+  AddString(srv, "services.airplaypassword", 733, "", EDIT_CONTROL_HIDDEN_INPUT, false, 733);
+  AddSeparator(srv, "services.sep6");  
 #endif
 
 #ifndef _WIN32

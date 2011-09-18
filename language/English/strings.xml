@@ -806,6 +806,7 @@
   <string id="1260">Announce these services to other systems via Zeroconf</string>
   <string id="1270">Allow XBMC to receive AirPlay content</string>
   <string id="1271">Device name</string>
+  <string id="1272">- Use password protection</string>
 
   <string id="1300">Custom audio device</string>
   <string id="1301">Custom passthrough device</string>

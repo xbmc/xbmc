@@ -110,6 +110,10 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
 
+#if defined(HAS_AIRPLAY)
+#include "network/AirPlayServer.h"
+#endif
+
 using namespace std;
 using namespace XFILE;
 using namespace ADDON;
@@ -829,6 +833,32 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
 #endif
+#ifdef HAS_AIRPLAY
+    else if ( strSetting.Equals("services.airplaypassword") || 
+              strSetting.Equals("services.useairplaypassword"))
+    {
+      if (strSetting.Equals("services.airplaypassword"))
+      {
+        CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
+        if (pControl)
+          pControl->SetEnabled(g_guiSettings.GetBool("services.useairplaypassword"));
+      }
+      else//useairplaypassword
+      {
+        CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(pSettingControl->GetID());    
+        if (pControl)
+          pControl->SetEnabled(g_guiSettings.GetBool("services.airplay"));      
+      }
+
+      //set credentials to airplay server
+      if (g_guiSettings.GetBool("services.airplay"))
+      {
+        CStdString password = g_guiSettings.GetString("services.airplaypassword");
+        CAirPlayServer::SetCredentials(g_guiSettings.GetBool("services.useairplaypassword"), 
+                                       password);
+      }      
+    }  
+#endif//HAS_AIRPLAY
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
     {
 #ifdef _LINUX
@@ -1359,11 +1389,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("services.airplay"))
   {  
-#ifdef HAS_AIRPLAY
-    g_application.StopAirplayServer(true);
+#ifdef HAS_AIRPLAY  
     if (g_guiSettings.GetBool("services.airplay"))
-      g_application.StartAirplayServer();
-#endif         
+      g_application.StartAirplayServer();//will stop the server before internal
+#endif//HAS_AIRPLAY      
   }
   else if (strSetting.Equals("network.ipaddress"))
   {
