@@ -22,8 +22,8 @@ else
 	CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
 endif
 
-include ../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
-$(LIB): $(OBJS)
+%.pvr: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
