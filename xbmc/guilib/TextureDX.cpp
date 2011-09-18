@@ -54,6 +54,7 @@ void CDXTexture::CreateTextureObject()
   case XB_FMT_DXT5_YCoCg:
     format = D3DFMT_DXT5;
     break;
+  case XB_FMT_RGB8:
   case XB_FMT_A8R8G8B8:
     format = D3DFMT_A8R8G8B8;
     break;
@@ -100,7 +101,24 @@ void CDXTexture::LoadToGPU()
     unsigned int minPitch = std::min(srcPitch, dstPitch);
 
     unsigned int rows = GetRows();
-    if (srcPitch == dstPitch)
+    if (m_format == XB_FMT_RGB8)
+    {
+      for (unsigned int y = 0; y < rows; y++)
+      {
+        unsigned char *dst2 = dst;
+        unsigned char *src2 = src;
+        for (unsigned int x = 0; x < srcPitch / 3; x++, dst2 += 4, src2 += 3)
+        {
+          dst2[0] = src2[2];
+          dst2[1] = src2[1];
+          dst2[2] = src2[0];
+          dst2[3] = 0xff;
+        }
+        src += srcPitch;
+        dst += dstPitch;
+      }
+    }
+    else if (srcPitch == dstPitch)
     {
       memcpy(dst, src, srcPitch * rows);
     }
