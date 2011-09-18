@@ -547,13 +547,48 @@ CStdString CSysInfo::GetUnameVersion()
 }
 #endif
 
+#if defined(TARGET_WINDOWS)
+CStdString CSysInfo::GetUAWindowsVersion()
+{
+  OSVERSIONINFOEX osvi = {};
+
+  osvi.dwOSVersionInfoSize = sizeof(osvi);
+  CStdString strVersion = "Windows NT";
+
+  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  {
+    strVersion.AppendFormat(" %d.%d", osvi.dwMajorVersion, osvi.dwMinorVersion);
+  }
+
+  SYSTEM_INFO si = {};
+  GetSystemInfo(&si);
+
+  BOOL bIsWow = FALSE;
+  if (IsWow64Process(GetCurrentProcess(), &bIsWow))
+  {
+    if (bIsWow)
+    {
+      strVersion.append(";WOW64");
+      GetNativeSystemInfo(&si);     // different function to read the info under Wow
+    }
+  }
+
+  if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_AMD64)
+    strVersion.append(";Win64;x64");
+  else if (si.wProcessorArchitecture==PROCESSOR_ARCHITECTURE_IA64)
+    strVersion.append(";Win64;IA64");
+
+  return strVersion;
+}
+#endif
+
+
 CStdString CSysInfo::GetUserAgent()
 {
   CStdString result;
   result = "XBMC/" + g_infoManager.GetLabel(SYSTEM_BUILD_VERSION) + " (";
 #if defined(_WIN32)
-  result += "Windows; ";
-  result += GetKernelVersion();
+  result += GetUAWindowsVersion();
 #elif defined(__APPLE__)
 #if defined(__arm__)
   result += "iOS; ";
