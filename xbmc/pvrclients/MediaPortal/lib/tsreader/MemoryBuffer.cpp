@@ -104,7 +104,15 @@ unsigned long CMemoryBuffer::ReadFromBuffer(unsigned char *pbData, long lDataLen
     }
     BUFFERITEM *item = m_Array.at(0);
 
-    long copyLength = std::min((long)(item->nDataLength - item->nOffset), lDataLength-bytesWritten);
+    long copyLength;
+    if ( (long) (item->nDataLength - item->nOffset) < (lDataLength - bytesWritten) )
+    {
+      copyLength = (long) (item->nDataLength - item->nOffset);
+    }
+    else
+    {
+      copyLength = (lDataLength - bytesWritten);
+    }
     memcpy(&pbData[bytesWritten], &item->data[item->nOffset], copyLength);
 
     bytesWritten += copyLength;
