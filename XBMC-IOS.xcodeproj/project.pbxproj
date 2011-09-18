@@ -965,12 +965,9 @@
 		F5AE413D1341754C0004BD79 /* HttpApi.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE41391341754C0004BD79 /* HttpApi.cpp */; };
 		F5AE413E1341754C0004BD79 /* XBMChttp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE413B1341754C0004BD79 /* XBMChttp.cpp */; };
 		F5AE415B134175520004BD79 /* AudioLibrary.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4140134175520004BD79 /* AudioLibrary.cpp */; };
-		F5AE415C134175520004BD79 /* AVPlayerOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4142134175520004BD79 /* AVPlayerOperations.cpp */; };
-		F5AE415D134175520004BD79 /* AVPlaylistOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4144134175520004BD79 /* AVPlaylistOperations.cpp */; };
 		F5AE415E134175520004BD79 /* FileItemHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4146134175520004BD79 /* FileItemHandler.cpp */; };
 		F5AE415F134175520004BD79 /* FileOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4148134175520004BD79 /* FileOperations.cpp */; };
 		F5AE4160134175520004BD79 /* JSONRPC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE414C134175520004BD79 /* JSONRPC.cpp */; };
-		F5AE4161134175520004BD79 /* PicturePlayerOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE414F134175520004BD79 /* PicturePlayerOperations.cpp */; };
 		F5AE4162134175520004BD79 /* PlayerOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4151134175520004BD79 /* PlayerOperations.cpp */; };
 		F5AE4163134175520004BD79 /* PlaylistOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4153134175520004BD79 /* PlaylistOperations.cpp */; };
 		F5AE4164134175520004BD79 /* SystemOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4155134175520004BD79 /* SystemOperations.cpp */; };
@@ -3025,10 +3022,6 @@
 		F5AE413C1341754C0004BD79 /* XBMChttp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XBMChttp.h; sourceTree = "<group>"; };
 		F5AE4140134175520004BD79 /* AudioLibrary.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AudioLibrary.cpp; sourceTree = "<group>"; };
 		F5AE4141134175520004BD79 /* AudioLibrary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioLibrary.h; sourceTree = "<group>"; };
-		F5AE4142134175520004BD79 /* AVPlayerOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AVPlayerOperations.cpp; sourceTree = "<group>"; };
-		F5AE4143134175520004BD79 /* AVPlayerOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVPlayerOperations.h; sourceTree = "<group>"; };
-		F5AE4144134175520004BD79 /* AVPlaylistOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AVPlaylistOperations.cpp; sourceTree = "<group>"; };
-		F5AE4145134175520004BD79 /* AVPlaylistOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVPlaylistOperations.h; sourceTree = "<group>"; };
 		F5AE4146134175520004BD79 /* FileItemHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileItemHandler.cpp; sourceTree = "<group>"; };
 		F5AE4147134175520004BD79 /* FileItemHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileItemHandler.h; sourceTree = "<group>"; };
 		F5AE4148134175520004BD79 /* FileOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileOperations.cpp; sourceTree = "<group>"; };
@@ -3038,8 +3031,6 @@
 		F5AE414C134175520004BD79 /* JSONRPC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JSONRPC.cpp; sourceTree = "<group>"; };
 		F5AE414D134175520004BD79 /* JSONRPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONRPC.h; sourceTree = "<group>"; };
 		F5AE414E134175520004BD79 /* JSONUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONUtils.h; sourceTree = "<group>"; };
-		F5AE414F134175520004BD79 /* PicturePlayerOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PicturePlayerOperations.cpp; sourceTree = "<group>"; };
-		F5AE4150134175520004BD79 /* PicturePlayerOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PicturePlayerOperations.h; sourceTree = "<group>"; };
 		F5AE4151134175520004BD79 /* PlayerOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlayerOperations.cpp; sourceTree = "<group>"; };
 		F5AE4152134175520004BD79 /* PlayerOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayerOperations.h; sourceTree = "<group>"; };
 		F5AE4153134175520004BD79 /* PlaylistOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlaylistOperations.cpp; sourceTree = "<group>"; };
@@ -6070,10 +6061,6 @@
 				18968DDD14155E01005BA742 /* ApplicationOperations.h */,
 				F5AE4140134175520004BD79 /* AudioLibrary.cpp */,
 				F5AE4141134175520004BD79 /* AudioLibrary.h */,
-				F5AE4142134175520004BD79 /* AVPlayerOperations.cpp */,
-				F5AE4143134175520004BD79 /* AVPlayerOperations.h */,
-				F5AE4144134175520004BD79 /* AVPlaylistOperations.cpp */,
-				F5AE4145134175520004BD79 /* AVPlaylistOperations.h */,
 				F5AE4146134175520004BD79 /* FileItemHandler.cpp */,
 				F5AE4147134175520004BD79 /* FileItemHandler.h */,
 				F5AE4148134175520004BD79 /* FileOperations.cpp */,
@@ -6087,8 +6074,6 @@
 				F5AE452E134D2E3E0004BD79 /* JSONServiceDescription.cpp */,
 				F5AE452F134D2E3E0004BD79 /* JSONServiceDescription.h */,
 				F5AE414E134175520004BD79 /* JSONUtils.h */,
-				F5AE414F134175520004BD79 /* PicturePlayerOperations.cpp */,
-				F5AE4150134175520004BD79 /* PicturePlayerOperations.h */,
 				F5AE4151134175520004BD79 /* PlayerOperations.cpp */,
 				F5AE4152134175520004BD79 /* PlayerOperations.h */,
 				F5AE4153134175520004BD79 /* PlaylistOperations.cpp */,
@@ -7076,12 +7061,9 @@
 				F5AE413D1341754C0004BD79 /* HttpApi.cpp in Sources */,
 				F5AE413E1341754C0004BD79 /* XBMChttp.cpp in Sources */,
 				F5AE415B134175520004BD79 /* AudioLibrary.cpp in Sources */,
-				F5AE415C134175520004BD79 /* AVPlayerOperations.cpp in Sources */,
-				F5AE415D134175520004BD79 /* AVPlaylistOperations.cpp in Sources */,
 				F5AE415E134175520004BD79 /* FileItemHandler.cpp in Sources */,
 				F5AE415F134175520004BD79 /* FileOperations.cpp in Sources */,
 				F5AE4160134175520004BD79 /* JSONRPC.cpp in Sources */,
-				F5AE4161134175520004BD79 /* PicturePlayerOperations.cpp in Sources */,
 				F5AE4162134175520004BD79 /* PlayerOperations.cpp in Sources */,
 				F5AE4163134175520004BD79 /* PlaylistOperations.cpp in Sources */,
 				F5AE4164134175520004BD79 /* SystemOperations.cpp in Sources */,
