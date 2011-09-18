@@ -579,7 +579,7 @@ JSON_STATUS CPlayerOperations::SetAudioStream(const CStdString &method, ITranspo
         g_application.m_pPlayer->SetAudioStream(index);
       }
       else
-        FailedToExecute;
+        return FailedToExecute;
       break;
       
     case Audio:
@@ -636,7 +636,7 @@ JSON_STATUS CPlayerOperations::SetSubtitle(const CStdString &method, ITransportL
         g_application.m_pPlayer->SetSubtitle(index);
       }
       else
-        FailedToExecute;
+        return FailedToExecute;
       break;
       
     case Audio:
@@ -665,7 +665,7 @@ int CPlayerOperations::GetActivePlayers()
 PlayerType CPlayerOperations::GetPlayer(const CVariant &player)
 {
   int activePlayers = GetActivePlayers();
-  int playerID = PlayerImplicit;
+  int playerID;
 
   switch ((int)player.asInteger())
   {
@@ -679,6 +679,10 @@ PlayerType CPlayerOperations::GetPlayer(const CVariant &player)
 
     case PLAYLIST_PICTURE:
       playerID = Picture;
+      break;
+
+    default:
+      playerID = PlayerImplicit;
       break;
   }
 
@@ -746,6 +750,9 @@ JSON_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStdStr
       case Picture:
         result = "picture";
         break;
+
+      default:
+        return FailedToExecute;
     }
   }
   else if (property.Equals("partymode"))
@@ -760,6 +767,9 @@ JSON_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStdStr
       case Picture:
         result = false;
         break;
+
+      default:
+        return FailedToExecute;
     }
   }
   else if (property.Equals("speed"))
@@ -779,6 +789,9 @@ JSON_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStdStr
         else
           result = 0;
         break;
+
+      default:
+        return FailedToExecute;
     }
   }
   else if (property.Equals("time"))
@@ -793,6 +806,9 @@ JSON_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStdStr
       case Picture:
         MillisecondsToTimeObject(0, result);
         break;
+
+      default:
+        return FailedToExecute;
     }
   }
   else if (property.Equals("percentage"))
@@ -812,6 +828,9 @@ JSON_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStdStr
         else
           result = 0.0;
         break;
+
+      default:
+        return FailedToExecute;
     }
   }
   else if (property.Equals("totaltime"))
@@ -826,6 +845,9 @@ JSON_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStdStr
       case Picture:
         MillisecondsToTimeObject(0, result);
         break;
+
+      default:
+        return FailedToExecute;
     }
   }
   else if (property.Equals("playlistid"))
@@ -881,6 +903,7 @@ JSON_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStdStr
       case Picture:
       default:
         result = "off";
+        break;
     }
   }
   else if (property.Equals("shuffled"))
