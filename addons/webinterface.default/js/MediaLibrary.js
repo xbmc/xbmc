@@ -221,16 +221,16 @@ MediaLibrary.prototype = {
       {
         switch(keyPressed) {
           case 'up':
-            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.BigSkipForward", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "bigforward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
             return;
           case 'down':
-            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.BigSkipBackward", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "bigbackward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
             return;
           case 'left':
-            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.SmallSkipBackward", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');	
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "smallbackward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');	
             return;
           case 'right':
-            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.SmallSkipForward", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "smallforward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
             return;
           case 'playpause':
             jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.PlayPause", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
@@ -239,16 +239,16 @@ MediaLibrary.prototype = {
             jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
             return;
           case 'next':
-            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.SkipNext", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.GoNext", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
             return;
           case 'previous':
-            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.SkipPrevious", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.GoPrevious", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
             return;
           case 'forward':
-            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Forward", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + player + ', "speed": "increment" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
             return;
           case 'rewind':
-            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Rewind", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + player + ', "speed": "decrement" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
             return;
         }
       }
@@ -604,7 +604,7 @@ MediaLibrary.prototype = {
 		},
 		
 		playTVShow: function(event) {
-      jQuery.post(JSON_RPC + '?AddTvShowToPlaylist', '{"jsonrpc": "2.0", "method": "Player.Play", "params": { "item": { "episodeid": ' + event.data.episode.episodeid + ' } }, "id": 1}', jQuery.proxy(function(data) {
+      jQuery.post(JSON_RPC + '?AddTvShowToPlaylist', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "episodeid": ' + event.data.episode.episodeid + ' } }, "id": 1}', jQuery.proxy(function(data) {
         this.hideOverlay();
       }, this), 'json');
 		},
@@ -637,7 +637,7 @@ MediaLibrary.prototype = {
 			}
 		},
 		playMovie: function(event) {
-			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "Player.Play", "params": { "item": { "movieid": ' + event.data.movie.movieid + ' } }, "id": 1}', jQuery.proxy(function(data) {
+			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "movieid": ' + event.data.movie.movieid + ' } }, "id": 1}', jQuery.proxy(function(data) {
 				this.hideOverlay();
 			}, this), 'json');
 		},
@@ -675,7 +675,7 @@ MediaLibrary.prototype = {
 				//check that clear worked.
 				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "playlistid": ' + this.playlists["audio"] + ', "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}', jQuery.proxy(function(data) {
 					//play specific song in playlist
-					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "Player.Play", "params": { "playlist": { "playlistid": ' + this.playlists["audio"] + ', "position": '+ event.data.itmnbr + ' } }, "id": 1}', function() {}, 'json');
+					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "playlist": { "playlistid": ' + this.playlists["audio"] + ', "position": '+ event.data.itmnbr + ' } }, "id": 1}', function() {}, 'json');
 				}, this), 'json');
 			}, this), 'json');
 		},
@@ -782,7 +782,7 @@ MediaLibrary.prototype = {
 			}
 		},
 		startSlideshow: function(event) {
-			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "Player.Play", "params": { "slideshow": { "recursive" : "true", "random":"true", "directory" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" } }, "id": 1}', null, 'json');
+			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "slideshow": { "recursive" : "true", "random":"true", "directory" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" } }, "id": 1}', null, 'json');
 		},
 		showDirectory: function(event) {
 			var directory = event.data.directory.file;
