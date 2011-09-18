@@ -247,6 +247,24 @@ namespace PVR
     int GetPreviousChannel(void);
 
     /*!
+     * @brief Check whether there are active timers.
+     * @return True if there are active timers, false otherwise.
+     */
+    bool HasTimer(void) const;
+
+    /*!
+     * @brief Check whether there are active recordings.
+     * @return True if there are active recordings, false otherwise.
+     */
+    bool IsRecording(void) const;
+
+    /*!
+     * @brief Check whether the pvr backend is idle.
+     * @return True if there are no active timers/recordings/wake-ups within the configured time span.
+     */
+    bool IsIdle(void) const;
+
+    /*!
      * @brief Set the current playing group, used to load the right channel.
      * @param group The new group.
      */
@@ -421,6 +439,11 @@ namespace PVR
      * @brief Update all timers.
      */
     void UpdateTimers(void);
+
+    /*!
+     * @brief Calculate next event time (timer or daily wake up)
+     */
+    CDateTime CalcNextEventTime(void) const;
 
     /*!
      * @brief Update all channels.

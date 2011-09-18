@@ -871,8 +871,6 @@ void CGUISettings::Initialize()
   AddGroup(8, 19180);
   CSettingsCategory* pvr = AddCategory(8, "pvrmanager", 128);
   AddBool(pvr, "pvrmanager.enabled", 449, false);
-  AddBool(pvr, "pvrmanager.localbackend", 19244, false);
-  AddInt(pvr, "pvrmanager.backendidletime", 19245, 15, 0, 5, 360, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddSeparator(pvr, "pvrmanager.sep1");
   AddBool(pvr, "pvrmanager.syncchannelgroups", 19221, true);
   AddBool(pvr, "pvrmanager.backendchannelorder", 19231, false);
@@ -918,6 +916,16 @@ void CGUISettings::Initialize()
   AddInt(pvrr, "pvrrecord.marginend", 19176, 10, 1, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
   AddSeparator(pvrr, "pvrrecord.sep1");
   AddBool(pvr, "pvrrecord.timernotifications", 19233, true);
+
+  CSettingsCategory* pvrpwr = AddCategory(8, "pvrpowermanagement", 19246);
+  AddBool(pvrpwr, "pvrpowermanagement.localbackend", 19244, false);
+  AddSeparator(pvrpwr, "pvrpowermanagement.sep1");
+  AddInt(pvrpwr, "pvrpowermanagement.backendidletime", 19245, 15, 0, 5, 360, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddString(pvrpwr, "pvrpowermanagement.setwakeupcmd", 19247, "", BUTTON_CONTROL_PATH_INPUT, true, 655);
+  AddInt(pvrpwr, "pvrpowermanagement.prewakeup", 19248, 15, 0, 1, 60, SPIN_CONTROL_INT_PLUS, MASK_MINS);
+  AddSeparator(pvrpwr, "pvrpowermanagement.sep2");
+  AddBool(pvrpwr, "pvrpowermanagement.dailywakeup", 19249, false);
+  AddString(pvrpwr, "pvrpowermanagement.dailywakeuptime", 19250, "00:00:00", EDIT_CONTROL_INPUT);
 }
 
 CGUISettings::~CGUISettings(void)
