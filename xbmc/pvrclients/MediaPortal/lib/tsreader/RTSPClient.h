@@ -43,7 +43,7 @@ public:
   bool Pause();
   bool IsPaused();
   void Continue();
-  void FillBuffer(DWORD byteCount);
+  void FillBuffer(unsigned long byteCount);
 
   char* getSDPDescription();
   bool UpdateDuration();

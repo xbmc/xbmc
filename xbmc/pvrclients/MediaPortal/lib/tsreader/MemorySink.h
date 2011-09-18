@@ -23,7 +23,7 @@
   #include "MediaSink.hh" //Live555 header
 #endif
 
-#include "memorybuffer.h" 
+#include "MemoryBuffer.h" 
 
 class CMemorySink: public MediaSink
 {

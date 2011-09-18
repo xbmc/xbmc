@@ -31,7 +31,7 @@
 
 #include "os-dependent.h"
 
-class TSThread  
+class TSThread
 {
   public:
     TSThread();
@@ -50,8 +50,13 @@ class TSThread
 
   private:
     bool   m_bThreadRunning;
+#ifdef TARGET_WINDOWS
     HANDLE m_threadHandle;
     static void __cdecl thread_function(void* p);
+#else
+    pthread_t m_threadHandle;
+    static int thread_function(void* p);
+#endif
 };
 
 #endif //TSREADER

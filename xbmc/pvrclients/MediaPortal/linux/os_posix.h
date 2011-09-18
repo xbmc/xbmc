@@ -30,12 +30,34 @@
 // Error codes
 #define ERROR_FILENAME_EXCED_RANGE       206L
 #define E_OUTOFMEMORY                    0x8007000EL
+#define E_FAIL                           0x8004005EL
 
 #define THREAD_FUNC_PREFIX void *
 
 typedef pthread_mutex_t criticalsection_t;
 typedef sem_t wait_event_t;
+typedef unsigned char byte;
+
+// Various Windows typedefs
+// Unused for Linux, but needed for compilation at the moment
+typedef struct _SECURITY_ATTRIBUTES {
+    unsigned long  nLength;
+    void*          lpSecurityDescriptor;
+    int            bInheritHandle;
+} SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
 
 #define PATH_SEPARATOR_CHAR '/'
+
+// Retrieve the number of milliseconds that have elapsed since the system was started
+#include <time.h>
+unsigned long GetTickCount(void)
+{
+  struct timespec ts;
+  if(clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
+  {
+    return 0;
+  }
+  return (unsigned long)( (ts.tv_sec * 1000) + (ts.tv_nsec / 1000) );
+};
 
 #endif

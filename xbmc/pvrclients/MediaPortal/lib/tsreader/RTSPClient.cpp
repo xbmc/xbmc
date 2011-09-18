@@ -19,9 +19,7 @@
 #if defined TSREADER && defined LIVE555
 
 #include "os-dependent.h"
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include "rtspclient.h"
+#include "RTSPClient.h"
 #include "MemorySink.h"
 #include "client.h"
 
@@ -151,7 +149,7 @@ Boolean CRTSPClient::clientStartPlayingSession(Medium* client,MediaSession* sess
     if (fStart<0) fStart=0 ;
   }
 
-  long diff = (long) abs((int)((double) dur - m_fStart));
+//  long diff = (long) abs((int)((double) dur - m_fStart));
 //  if (diff <20 && m_fStart>1 )
 //  {
 //    m_fStart=dur+5;
@@ -504,13 +502,13 @@ long CRTSPClient::Duration()
   return m_duration;
 }
 
-void CRTSPClient::FillBuffer(DWORD byteCount)
+void CRTSPClient::FillBuffer(unsigned long byteCount)
 {
   XBMC->Log(LOG_DEBUG, "CRTSPClient::Fillbuffer...%d\n",byteCount);
-  DWORD tickCount=GetTickCount();
+  unsigned long tickCount=GetTickCount();
   while ( IsRunning() && m_buffer->Size() < byteCount)
   {
-    Sleep(5);
+    usleep(5000);
     if (GetTickCount()-tickCount > 3000) break;
   }
   XBMC->Log(LOG_DEBUG, "CRTSPClient::Fillbuffer...%d/%d\n", byteCount, m_buffer->Size() );
@@ -521,8 +519,12 @@ void CRTSPClient::ThreadProc()
   //HRESULT hr = S_OK;
   m_BufferThreadActive = TRUE;
   m_bRunning=true;
+#ifdef __WINDOWS__
   ::SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_ABOVE_NORMAL);
   XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread started:%d", GetCurrentThreadId());
+#else
+#warning TODO: make crossplatform
+#endif
   while (m_env!=NULL && !ThreadIsStopping(0))
   {
     for (int i=0; i < 10;++i)
@@ -532,7 +534,11 @@ void CRTSPClient::ThreadProc()
     }
     if (m_bRunning==false) break;
   }
+#ifdef __WINDOWS__
   XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread stopped:%d", GetCurrentThreadId());
+#else
+#warning TODO: make cross platform
+#endif
   m_BufferThreadActive = false;
   return;
 }
@@ -551,7 +557,7 @@ void CRTSPClient::Continue()
     rtspClient->playMediaSession(*m_session,-1.0);
     StartBufferThread();
     m_bPaused=false;
-    int x=1;
+    //int x=1;
   }
 }
 
@@ -571,7 +577,7 @@ bool CRTSPClient::Pause()
     RTSPClient* rtspClient=(RTSPClient*)m_ourClient;
     rtspClient->pauseMediaSession(*m_session);
     m_bPaused=true;
-    int x=1;
+    //int x=1;
   }
   XBMC->Log(LOG_DEBUG, "CRTSPClient::Pause() done");
   

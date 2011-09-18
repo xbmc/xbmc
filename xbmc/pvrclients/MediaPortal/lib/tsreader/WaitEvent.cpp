@@ -90,7 +90,7 @@ bool CWaitEvent::Wait()
   ts.tv_nsec = 500000000;
   int retCode = sem_timedwait(&m_waitevent, &ts);
 
-  if (retCode = 0) {
+  if (retCode == 0) {
     return true;
   } else {
     return false;
