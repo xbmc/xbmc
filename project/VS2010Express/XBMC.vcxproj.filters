@@ -2475,9 +2475,6 @@
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
       <Filter>threads</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\platform\win\FairMonitor.cpp">
-      <Filter>threads\platform\win</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp">
       <Filter>interfaces\info</Filter>
     </ClCompile>
