@@ -108,7 +108,7 @@ void CFileItemHandler::HandleFileItemList(const char *ID, bool allowFile, const 
   {
     CVariant object;
     CFileItemPtr item = items.Get(i);
-    HandleFileItem(ID, allowFile, resultname, item, parameterObject, parameterObject["fields"], result);
+    HandleFileItem(ID, allowFile, resultname, item, parameterObject, parameterObject["properties"], result);
   }
 }
 

@@ -59,7 +59,7 @@ JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportL
     return InvalidParams;
   }
 
-  HandleFileItem("movieid", true, "moviedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("movieid", true, "moviedetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
 
   videodatabase.Close();
   return OK;
@@ -96,7 +96,7 @@ JSON_STATUS CVideoLibrary::GetMovieSetDetails(const CStdString &method, ITranspo
     return InvalidParams;
   }
 
-  HandleFileItem("setid", false, "setdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("setid", false, "setdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
 
   // Get movies from the set
   CFileItemList items;
@@ -120,7 +120,7 @@ JSON_STATUS CVideoLibrary::GetTVShows(const CStdString &method, ITransportLayer 
   if (videodatabase.GetTvShowsNav("videodb://", items))
   {
     bool additionalInfo = false;
-    for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
+    for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
     {
       CStdString fieldValue = itr->asString();
       if (fieldValue == "cast")
@@ -155,7 +155,7 @@ JSON_STATUS CVideoLibrary::GetTVShowDetails(const CStdString &method, ITransport
     return InvalidParams;
   }
 
-  HandleFileItem("tvshowid", true, "tvshowdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("tvshowid", true, "tvshowdetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
 
   videodatabase.Close();
   return OK;
@@ -217,7 +217,7 @@ JSON_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITranspor
   CStdString basePath; basePath.Format("videodb://2/2/%ld/%ld/%ld", tvshowid, infos.m_iSeason, id);
   pItem->SetPath(basePath);
 
-  HandleFileItem("episodeid", true, "episodedetails", pItem, parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("episodeid", true, "episodedetails", pItem, parameterObject, parameterObject["properties"], result, false);
 
   videodatabase.Close();
   return OK;
@@ -256,7 +256,7 @@ JSON_STATUS CVideoLibrary::GetMusicVideoDetails(const CStdString &method, ITrans
     return InvalidParams;
   }
 
-  HandleFileItem("musicvideoid", true, "musicvideodetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("musicvideoid", true, "musicvideodetails", CFileItemPtr(new CFileItem(infos)), parameterObject, parameterObject["properties"], result, false);
 
   videodatabase.Close();
   return OK;
@@ -450,7 +450,7 @@ JSON_STATUS CVideoLibrary::GetAdditionalMovieDetails(const CVariant &parameterOb
     return InternalError;
 
   bool additionalInfo = false;
-  for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
+  for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
     if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "setid" || fieldValue == "showlink" || fieldValue == "resume")
@@ -474,7 +474,7 @@ JSON_STATUS CVideoLibrary::GetAdditionalEpisodeDetails(const CVariant &parameter
     return InternalError;
 
   bool additionalInfo = false;
-  for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
+  for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
     if (fieldValue == "cast" || fieldValue == "resume")
@@ -498,7 +498,7 @@ JSON_STATUS CVideoLibrary::GetAdditionalMusicVideoDetails(const CVariant &parame
     return InternalError;
 
   bool additionalInfo = false;
-  for (CVariant::const_iterator_array itr = parameterObject["fields"].begin_array(); itr != parameterObject["fields"].end_array(); itr++)
+  for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
   {
     CStdString fieldValue = itr->asString();
     if (fieldValue == "resume")

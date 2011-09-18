@@ -55,9 +55,9 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
       }
     }
 
-    CVariant param = parameterObject["fields"];
-    param["fields"] = CVariant(CVariant::VariantTypeArray);
-    param["fields"].append("file");
+    CVariant param = parameterObject["properties"];
+    param["properties"] = CVariant(CVariant::VariantTypeArray);
+    param["properties"].append("file");
 
     HandleFileItemList(NULL, true, "sources", items, param, result);
   }
@@ -119,15 +119,15 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
       }
     }
 
-    // Check if the "fields" list exists
+    // Check if the "properties" list exists
     // and make sure it contains the "file"
     // field
     CVariant param = parameterObject;
-    if (!param.isMember("fields"))
-      param["fields"] = CVariant(CVariant::VariantTypeArray);
+    if (!param.isMember("properties"))
+      param["properties"] = CVariant(CVariant::VariantTypeArray);
 
     bool hasFileField = false;
-    for (CVariant::const_iterator_array itr = param["fields"].begin_array(); itr != param["fields"].end_array(); itr++)
+    for (CVariant::const_iterator_array itr = param["properties"].begin_array(); itr != param["properties"].end_array(); itr++)
     {
       if (*itr == CVariant("file"))
       {
@@ -137,7 +137,7 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
     }
 
     if (!hasFileField)
-      param["fields"].append("file");
+      param["properties"].append("file");
 
     HandleFileItemList(NULL, true, "files", filteredDirectories, param, result);
     for (unsigned int index = 0; index < result["files"].size(); index++)

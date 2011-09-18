@@ -44,11 +44,11 @@ JSON_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer 
 
   int genreID = (int)parameterObject["genreid"].asInteger();
 
-  // Add "artist" to "fields" array by default
+  // Add "artist" to "properties" array by default
   CVariant param = parameterObject;
-  if (!param.isMember("fields"))
-    param["fields"] = CVariant(CVariant::VariantTypeArray);
-  param["fields"].append("artist");
+  if (!param.isMember("properties"))
+    param["properties"] = CVariant(CVariant::VariantTypeArray);
+  param["properties"].append("artist");
 
   bool albumArtistsOnly = !g_guiSettings.GetBool("musiclibrary.showcompilationartists");
   if (parameterObject["albumartistsonly"].isBoolean())
@@ -82,7 +82,7 @@ JSON_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransport
   m_artistItem->GetMusicInfoTag()->SetDatabaseId(artistID);
   CMusicDatabase::SetPropertiesFromArtist(*m_artistItem, artist);
   m_artistItem->SetCachedArtistThumb();
-  HandleFileItem("artistid", false, "artistdetails", m_artistItem, parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("artistid", false, "artistdetails", m_artistItem, parameterObject, parameterObject["properties"], result, false);
 
   musicdatabase.Close();
   return OK;
@@ -125,7 +125,7 @@ JSON_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITransportL
 
   CFileItemPtr m_albumItem;
   FillAlbumItem(album, path, m_albumItem);
-  HandleFileItem("albumid", false, "albumdetails", m_albumItem, parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("albumid", false, "albumdetails", m_albumItem, parameterObject, parameterObject["properties"], result, false);
 
   musicdatabase.Close();
   return OK;
@@ -164,7 +164,7 @@ JSON_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLa
     return InvalidParams;
   }
 
-  HandleFileItem("songid", false, "songdetails", CFileItemPtr( new CFileItem(song) ), parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("songid", false, "songdetails", CFileItemPtr( new CFileItem(song) ), parameterObject, parameterObject["properties"], result, false);
 
   musicdatabase.Close();
   return OK;
