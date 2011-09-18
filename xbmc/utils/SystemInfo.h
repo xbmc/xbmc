@@ -95,6 +95,9 @@ public:
 #ifdef _LINUX
   CStdString GetUnameVersion();
 #endif
+#if defined(TARGET_WINDOWS)
+  CStdString CSysInfo::GetUAWindowsVersion();
+#endif
   CStdString GetUserAgent();
   bool HasInternet();
   bool IsAppleTV();
