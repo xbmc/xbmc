@@ -37,7 +37,7 @@ TSThread::TSThread()
 {
   m_hStopEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
   m_hDoneEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
-  m_threadHandle = INVALID_HANDLE_VALUE;
+  m_ThreadHandle = INVALID_HANDLE_VALUE;
   m_bThreadRunning=FALSE;
 }
 
@@ -56,8 +56,8 @@ bool TSThread::IsThreadRunning()
 long TSThread::StartThread()
 {
   ResetEvent(m_hStopEvent);
-  m_threadHandle = (HANDLE) _beginthread(&TSThread::thread_function, 0, (void *) this);
-  if (m_threadHandle == INVALID_HANDLE_VALUE)
+  m_ThreadHandle = (HANDLE) _beginthread(&TSThread::thread_function, 0, (void *) this);
+  if (m_ThreadHandle == INVALID_HANDLE_VALUE)
     return E_FAIL;
 
   return S_OK;
@@ -70,10 +70,10 @@ long TSThread::StopThread(unsigned long dwTimeoutMilliseconds)
   SetEvent(m_hStopEvent);
   long result = WaitForSingleObject(m_hDoneEvent, dwTimeoutMilliseconds);
 
-  if ((result == WAIT_TIMEOUT) && (m_threadHandle != INVALID_HANDLE_VALUE))
+  if ((result == WAIT_TIMEOUT) && (m_ThreadHandle != INVALID_HANDLE_VALUE))
   {
-    TerminateThread(m_threadHandle, -1);
-    CloseHandle(m_threadHandle);
+    TerminateThread(m_ThreadHandle, -1);
+    CloseHandle(m_ThreadHandle);
     hr = S_FALSE;
   }
   else if (result != WAIT_OBJECT_0)
@@ -82,7 +82,7 @@ long TSThread::StopThread(unsigned long dwTimeoutMilliseconds)
     return HRESULT_FROM_WIN32(err);
   }
 
-  m_threadHandle = INVALID_HANDLE_VALUE;
+  m_ThreadHandle = INVALID_HANDLE_VALUE;
 
   return hr;
 }
@@ -114,4 +114,36 @@ void TSThread::thread_function(void* p)
   TSThread *thread = reinterpret_cast<TSThread *>(p);
   thread->InternalThreadProc();
 }
+
+tThreadId TSThread::ThreadId(void)
+{
+#ifdef __APPLE__
+    return (int)pthread_self();
+#else
+#ifdef TARGET_WINDOWS
+  return GetCurrentThreadId();
+#else
+  return syscall(__NR_gettid);
+#endif
+#endif
+}
+
+bool TSThread::SetPriority(const int iPriority)
+// Set thread priority
+// Return true for success
+{
+  bool rtn = false;
+
+#ifdef TARGET_WINDOWS
+  if (m_ThreadHandle)
+  {
+    rtn = SetThreadPriority( m_ThreadHandle, iPriority ) == TRUE;
+  }
+#else
+#warning TODO: implement me
+#endif
+
+  return(rtn);
+}
+
 #endif //TSREADER

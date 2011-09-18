@@ -519,12 +519,8 @@ void CRTSPClient::ThreadProc()
   //HRESULT hr = S_OK;
   m_BufferThreadActive = TRUE;
   m_bRunning=true;
-#ifdef __WINDOWS__
-  ::SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_ABOVE_NORMAL);
-  XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread started:%d", GetCurrentThreadId());
-#else
-#warning TODO: make crossplatform
-#endif
+  this->SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
+  XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread started: %d", (unsigned long) this->ThreadId());
   while (m_env!=NULL && !ThreadIsStopping(0))
   {
     for (int i=0; i < 10;++i)
@@ -534,11 +530,9 @@ void CRTSPClient::ThreadProc()
     }
     if (m_bRunning==false) break;
   }
-#ifdef __WINDOWS__
-  XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread stopped:%d", GetCurrentThreadId());
-#else
-#warning TODO: make cross platform
-#endif
+
+  XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread stopped:%d", (unsigned long) this->ThreadId());
+
   m_BufferThreadActive = false;
   return;
 }

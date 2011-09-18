@@ -43,7 +43,9 @@ class TSThread
 
     bool ThreadIsStopping(unsigned long dwTimeoutMilliseconds = 10);
     bool IsThreadRunning();
+    tThreadId ThreadId(void);
   protected:
+    bool SetPriority(const int iPriority);
     virtual void InternalThreadProc();
     wait_event_t m_hDoneEvent;
     wait_event_t m_hStopEvent;
@@ -51,10 +53,10 @@ class TSThread
   private:
     bool   m_bThreadRunning;
 #ifdef TARGET_WINDOWS
-    HANDLE m_threadHandle;
+    HANDLE m_ThreadHandle;
     static void __cdecl thread_function(void* p);
 #else
-    pthread_t m_threadHandle;
+    pthread_t m_ThreadHandle;
     static int thread_function(void* p);
 #endif
 };

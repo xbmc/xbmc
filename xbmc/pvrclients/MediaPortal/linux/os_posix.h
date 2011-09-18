@@ -33,10 +33,20 @@
 #define E_FAIL                           0x8004005EL
 
 #define THREAD_FUNC_PREFIX void *
+#define THREAD_PRIORITY_LOWEST          THREAD_BASE_PRIORITY_MIN
+#define THREAD_PRIORITY_BELOW_NORMAL    (THREAD_PRIORITY_LOWEST+1)
+#define THREAD_PRIORITY_NORMAL          0
+#define THREAD_PRIORITY_HIGHEST         THREAD_BASE_PRIORITY_MAX
+#define THREAD_PRIORITY_ABOVE_NORMAL    (THREAD_PRIORITY_HIGHEST-1)
+#define THREAD_PRIORITY_ERROR_RETURN    (MAXLONG)
+
+#define THREAD_PRIORITY_TIME_CRITICAL   THREAD_BASE_PRIORITY_LOWRT
+#define THREAD_PRIORITY_IDLE            THREAD_BASE_PRIORITY_IDLE
 
 typedef pthread_mutex_t criticalsection_t;
 typedef sem_t wait_event_t;
 typedef unsigned char byte;
+typedef pid_t tThreadId;
 
 // Various Windows typedefs
 // Unused for Linux, but needed for compilation at the moment
