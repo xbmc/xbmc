@@ -31,7 +31,6 @@ SRCS=AddonsDirectory.cpp \
      FileRTV.cpp \
      FileShoutcast.cpp \
      FileSFTP.cpp \
-     FileSmb.cpp \
      FileSpecialProtocol.cpp \
      FileTuxBox.cpp \
      FileUDF.cpp \
@@ -70,7 +69,6 @@ SRCS=AddonsDirectory.cpp \
      SIDFileDirectory.cpp \
      Slingbox.cpp \
      SmartPlaylistDirectory.cpp \
-     SMBDirectory.cpp \
      SourcesDirectory.cpp \
      SpecialProtocol.cpp \
      SpecialProtocolDirectory.cpp \
@@ -91,6 +89,11 @@ ifeq (@HAVE_XBMC_NONFREE@,1)
 SRCS+=FileRar.cpp
 SRCS+=RarDirectory.cpp
 SRCS+=RarManager.cpp
+endif
+
+ifeq (@USE_LIBSMBCLIENT@,1)
+SRCS+=FileSmb.cpp
+SRCS+=SMBDirectory.cpp
 endif
 
 ifeq (@USE_LIBNFS@,1)
