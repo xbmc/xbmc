@@ -755,6 +755,7 @@ void CMPCOutputThread::CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer)
   {
     default:
     case DVDVideoPicture::FMT_YUV420P:
+    {
       uint8_t *d_u = pBuffer->m_u_buffer_ptr;
       uint8_t *d_v = pBuffer->m_v_buffer_ptr;
       if (d_u[0] == 0 && d_v[0] == 0)
@@ -762,24 +763,29 @@ void CMPCOutputThread::CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer)
         d_u[0] = d_u[1];
         d_v[0] = d_v[1];
       }
+    }
     break;
 
     case DVDVideoPicture::FMT_NV12:
+    {
       uint8_t *d_uv = pBuffer->m_uv_buffer_ptr;
       if (d_uv[0] == 0 && d_uv[1] == 0)
       {
         d_uv[0] = d_uv[2];
         d_uv[1] = d_uv[3];
       }
+    }
     break;
 
     case DVDVideoPicture::FMT_YUY2:
+    {
       uint8_t *d_yuyv = pBuffer->m_y_buffer_ptr;
       if (d_yuyv[1] == 0 && d_yuyv[3] == 0)
       {
         d_yuyv[1] = d_yuyv[5];
         d_yuyv[3] = d_yuyv[7];
       }
+    }
     break;
   }
 }
