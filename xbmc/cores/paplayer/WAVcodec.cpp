@@ -263,6 +263,18 @@ int WAVCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
   return READ_ERROR;
 }
 
+int WAVCodec::ReadSamples(float *pBuffer, int numsamples, int *actualsamples)
+{
+  int ret = READ_ERROR;
+  *actualsamples = 0;
+  if (m_bHasFloat)
+  {
+    ret = ReadPCM((BYTE*)pBuffer, numsamples * (m_BitsPerSample >> 3), actualsamples);
+    *actualsamples /= (m_BitsPerSample >> 3);
+  }
+  return ret;
+}
+
 bool WAVCodec::CanInit()
 {
   return true;
