@@ -6896,9 +6896,9 @@
 					"-lsmbclient",
 					"-lpython2.6",
 					"-lyajl",
+					"-ljpeg",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
-					"-ljpeg",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PRODUCT_NAME = XBMC;
@@ -6991,9 +6991,9 @@
 					"-lsmbclient",
 					"-lpython2.6",
 					"-lyajl",
+					"-ljpeg",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
-					"-ljpeg",
 				);
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PRODUCT_NAME = XBMC;
