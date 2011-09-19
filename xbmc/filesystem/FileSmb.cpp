@@ -24,8 +24,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "system.h"
-
-#if defined(HAS_FILESYSTEM_SMB)
 #include "FileSmb.h"
 #include "PasswordManager.h"
 #include "SMBDirectory.h"
@@ -777,4 +775,3 @@ CStdString CFileSMB::GetAuthenticatedPath(const CURL &url)
   CPasswordManager::GetInstance().AuthenticateURL(authURL);
   return smb.URLEncode(authURL);
 }
-#endif
