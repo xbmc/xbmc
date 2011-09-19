@@ -66,8 +66,6 @@ namespace PVR
     virtual void UpdateViewNext(void);
     virtual void UpdateViewTimeline(void);
 
-    bool            m_bEpgCacheUpdateRequired;
     int             m_iGuideView;
-    CFileItemList * m_localItems;
   };
 }

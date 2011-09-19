@@ -302,12 +302,6 @@ namespace EPG
     virtual bool FixOverlappingEvents(bool bStore = true);
 
     /*!
-     * @brief Create a new tag.
-     * @return The new tag.
-     */
-    virtual CEpgInfoTag *CreateTag(void);
-
-    /*!
      * @brief Sort all entries in this EPG by date.
      */
     virtual void Sort(void);

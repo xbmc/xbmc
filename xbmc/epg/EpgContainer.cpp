@@ -261,7 +261,6 @@ void CEpgContainer::InsertEpg(CEpg *epg)
   WaitForUpdateFinish(true);
 
   CSingleLock lock(m_critSection);
-
   DeleteEpg(*epg, false);
   m_epgs.push_back(epg);
   m_bPreventUpdates = false;
@@ -394,11 +393,11 @@ void CEpgContainer::WaitForUpdateFinish(bool bInterrupt /* = true */)
 {
   {
     CSingleLock lock(m_critSection);
-    if (!m_bIsUpdating)
-      return;
-
     if (bInterrupt)
       m_bPreventUpdates = true;
+
+    if (!m_bIsUpdating)
+      return;
 
     m_updateEvent.Reset();
   }
