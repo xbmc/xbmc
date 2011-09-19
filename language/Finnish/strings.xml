@@ -807,6 +807,9 @@
   <string id="1257">Yhdistetäänkö havaittuun järjestelmään?</string>
 
   <string id="1260">Julkista nämä palvelut toisiin järjestelmiin Zeroconf publishing:in kautta</string>
+  <string id="1270">Salli XBMC:n vastaanottaa AirPlay sisältöä</string>
+  <string id="1271">Laitteen nimi</string>
+  <string id="1272">- Käytä salasanaa</string>
 
   <string id="1300">Valinnainen äänilaite</string>
   <string id="1301">Valinnainen äänen ulostulon laite</string>
@@ -1490,6 +1493,11 @@
   <string id="16034">Tietokannasta ei voitu hakea kappaleita.</string>
   <string id="16035">Jukeboksi toistolista</string>
   <string id="16036">Lomituksenpoisto (Half)</string>
+  <string id="16037">Videon lomituksenpoisto</string>
+  <string id="16038">Lomituksenpoistomenetelmä</string>
+  <string id="16039">Pois päältä</string>
+  <string id="16040">Automaattinen</string>
+  <string id="16041">Päällä</string>
 
   <string id="16100">Kaikki videot</string>
   <string id="16101">katsomatonta</string>
@@ -1526,6 +1534,10 @@
   <string id="16317">Temporal (Half)</string>
   <string id="16318">Temporal/Spatial (Half)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Synk. parittomat</string>
+  <string id="16321">DXVA Paras</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimized</string>
 
   <string id="16400">Videon jälkikäsittely</string>
 
@@ -1651,8 +1663,8 @@
   <string id="20122">Nyt voit rentoutua</string>
   <string id="20123">Arvotaan kuunneltavia kappaleita</string>
   <string id="20124">Valmiina nauttimaan musiikista</string>
-  <string id="20125">Kirjautuneena :</string>
-  <string id="20126">Kirjaudu ulos :</string>
+  <string id="20125">Kirjautuneena:</string>
+  <string id="20126">Kirjaudu ulos:</string>
   <string id="20128">Siirry päähakemistoon</string>
   <string id="20129">Liitä</string>
   <string id="20130">Liitä (käänteisesti)</string>
@@ -1738,6 +1750,7 @@
   <string id="20258">MythTV-asiakas</string>
   <string id="20259">Verkkotiedostojärjestelmä (NFS)</string>
   <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple File Protocol (AFP)</string>
 
   <string id="20300">Web-palvelimen hakemisto (HTTP)</string>
   <string id="20301">Web-palvelimen hakemisto (HTTPS)</string>
@@ -1850,7 +1863,8 @@
   <string id="20415">Etsitään uutta sisältöä</string>
   <string id="20416">Ensiesitys</string>
   <string id="20417">Käsikirjoittaja</string>
-  <string id="20418">Siisti tiedostojen ja kansioiden nimet</string>
+  <string id="20418"></string>
+  <string id="20419">Näytä metatiedot "Tiedostot"-näkymässä</string>
 
   <string id="20420">Ei koskaan</string>
   <string id="20421">Jos samalta tuotantokaudelta</string>
@@ -1889,6 +1903,7 @@
   <string id="20454">Kuuntelija</string>
   <string id="20455">Kuuntelijat</string>
   <string id="20456">Aseta elokuvasetin fanitaide</string>
+  <string id="20457">Elokuvasetti</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Näytä piilotetut tiedostot ja kansiot</string>
@@ -1995,6 +2010,13 @@
   <string id="21451">Internet-yhteys vaaditaan.</string>
   <string id="21452">Nouda lisää...</string>
   <string id="21453">Juurikansio</string>
+
+  <string id="21460">Tekstityksen sijainti</string>
+  <string id="21461">Kiinteä</string>
+  <string id="21462">Videon alalaidassa</string>
+  <string id="21463">Videon alapuolella</string>
+  <string id="21464">Videon ylälaidassa</string>
+  <string id="21465">Videon yläpuolella</string>
 
   <string id="21800">Tiedoston nimi</string>
   <string id="21801">Tiedoston polku</string>
@@ -2181,6 +2203,7 @@
   <string id="24045">Lisäosan rakenne on väärä</string>
   <string id="24046">Seuraavat asennetut lisäosat tarvitsevat lisäosaa %s</string>
   <string id="24047">Tätä lisäosaa ei voi poistaa</string>
+  <string id="24048">Palauta</string>
 
   <string id="24050">Saatavilla olevat lisäosat</string>
   <string id="24051">Versio:</string>
@@ -2205,14 +2228,19 @@
   <string id="24073">Ei voida yhdistää</string>
   <string id="24074">Uudelleenkäynnistys vaaditaan</string>
   <string id="24075">Poista käytöstä</string>
+  <string id="24076">Tarvitaan lisäosa</string>
   <string id="24080">Yritetäänkö yhdistää uudelleen?</string>
   <string id="24089">Lisäosa käynnistyy uudelleen</string>
   <string id="24090">Lukitse lisäosien asennus</string>
 
+  <string id="24094">(nykyinen)</string>
+  <string id="24095">(estetty)</string>
   <string id="24096">Ohjelmavarasto on merkinnyt lisäosan vialliseksi.</string>
   <string id="24097">Poistetaanko lisäosa käytöstä?</string>
   <string id="24098">Viallinen</string>
   <string id="24099">Haluatko vaihtaa tähän ulkoasuun?</string>
+  <string id="24100">Tämä toiminto tarvitsee seuraavan lisäosan:</string>
+  <string id="24101">Haluatko ladata tämän lisäosan?</string>
   <string id="25000">Ilmoitukset</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
@@ -2300,7 +2328,7 @@
   <string id="33100">Käynnistys epäonnistui:</string>
   <string id="33101">WWW-palvelin</string>
   <string id="33102">Tapahtumapalvelin</string>
-  <string id="33103">Etäyhteyspalvelin</string>
+  <string id="33103">Etäviestipalvelin</string>
 
   <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
