@@ -22,108 +22,74 @@
 #include "XBMCOperations.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "FileItem.h"
 #include "Util.h"
-#include "utils/log.h"
+#include "powermanagement/PowerManager.h"
 
 using namespace JSONRPC;
 
-JSON_STATUS CXBMCOperations::GetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSON_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CVariant val = g_application.GetVolume();
-  result.swap(val);
+  std::vector<CStdString> info;
+
+  for (unsigned int i = 0; i < parameterObject["labels"].size(); i++)
+  {
+   CStdString field = parameterObject["labels"][i].asString();
+    field = field.ToLower();
+
+    info.push_back(parameterObject["labels"][i].asString());
+  }
+
+  if (info.size() > 0)
+  {
+    std::vector<CStdString> infoLabels = g_application.getApplicationMessenger().GetInfoLabels(info);
+    for (unsigned int i = 0; i < info.size(); i++)
+    {
+      if (i >= infoLabels.size())
+        break;
+      result[info[i].c_str()] = infoLabels[i];
+    }
+  }
+
   return OK;
 }
 
-JSON_STATUS CXBMCOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+JSON_STATUS CXBMCOperations::GetInfoBooleans(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  int oldVolume = g_application.GetVolume();
-  int volume = (int)parameterObject["value"].asInteger();
-  
-  g_application.SetVolume(volume);
+  std::vector<CStdString> info;
 
-  g_application.getApplicationMessenger().ShowVolumeBar(oldVolume < volume);
+  bool CanControlPower = (client->GetPermissionFlags() & ControlPower) > 0;
 
-  return GetVolume(method, transport, client, parameterObject, result);
-}
-
-JSON_STATUS CXBMCOperations::ToggleMute(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  g_application.getApplicationMessenger().SendAction(CAction(ACTION_MUTE));
-  return GetVolume(method, transport, client, parameterObject, result);
-}
-
-JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  CFileItemList list;
-  if (FillFileItemList(parameterObject, list) && list.Size() > 0)
+  for (unsigned int i = 0; i < parameterObject["booleans"].size(); i++)
   {
-    g_application.getApplicationMessenger().MediaPlay(list);
-    return ACK;
+    CStdString field = parameterObject["booleans"][i].asString();
+    field = field.ToLower();
+
+    // Need to override power management of whats in infomanager since jsonrpc
+    // have a security layer aswell.
+    if (field.Equals("system.canshutdown"))
+      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
+    else if (field.Equals("system.canpowerdown"))
+      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanPowerdown() && CanControlPower);
+    else if (field.Equals("system.cansuspend"))
+      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanSuspend() && CanControlPower);
+    else if (field.Equals("system.canhibernate"))
+      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanHibernate() && CanControlPower);
+    else if (field.Equals("system.canreboot"))
+      result[parameterObject["booleans"][i].asString()] = (g_powerManager.CanReboot() && CanControlPower);
+    else
+      info.push_back(parameterObject["booleans"][i].asString());
   }
-  else
-    return InvalidParams;
-}
 
-JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  CStdString exec = "slideShow(";
+  if (info.size() > 0)
+  {
+    std::vector<bool> infoLabels = g_application.getApplicationMessenger().GetInfoBooleans(info);
+    for (unsigned int i = 0; i < info.size(); i++)
+    {
+      if (i >= infoLabels.size())
+        break;
+      result[info[i].c_str()] = CVariant(infoLabels[i]);
+    }
+  }
 
-  exec += parameterObject["directory"].asString();
-
-  if (parameterObject["random"].asBoolean())
-    exec += ", random";
-  else
-    exec += ", notrandom";
-
-  if (parameterObject["recursive"].asBoolean())
-    exec += ", recursive";
-
-  exec += ")";
-  ThreadMessage msg = { TMSG_EXECUTE_BUILT_IN, (DWORD)0, (DWORD)0, exec };
-  g_application.getApplicationMessenger().SendMessage(msg);
-
-  return ACK;
-}
-
-JSON_STATUS CXBMCOperations::Log(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  CStdString message = parameterObject["message"].asString();
-  if (message.IsEmpty())
-    return InvalidParams;
-
-  CStdString strLevel = parameterObject["level"].asString();
-  int level = ParseLogLevel(strLevel.ToLower().c_str());
-
-  CLog::Log(level, "%s", message.c_str());
-
-  return ACK;
-}
-
-JSON_STATUS CXBMCOperations::Quit(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  g_application.getApplicationMessenger().Quit();
-  return ACK;
-}
-
-int CXBMCOperations::ParseLogLevel(const char *level)
-{
-  if (strcmp(level, "debug") == 0)
-    return LOGDEBUG;
-  else if (strcmp(level, "info") == 0)
-    return LOGINFO;
-  else if (strcmp(level, "notice") == 0)
-    return LOGNOTICE;
-  else if (strcmp(level, "warning") == 0)
-    return LOGWARNING;
-  else if (strcmp(level, "error") == 0)
-    return LOGERROR;
-  else if (strcmp(level, "severe") == 0)
-    return LOGSEVERE;
-  else if (strcmp(level, "fatal") == 0)
-    return LOGFATAL;
-  else if (strcmp(level, "none") == 0)
-    return LOGNONE;
-  else
-    return LOGNONE;
+  return OK;
 }

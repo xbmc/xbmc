@@ -30,6 +30,7 @@
 #include "utils/Variant.h"
 #include "video/VideoInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
+#include "pictures/PictureInfoTag.h"
 #include "video/VideoDatabase.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -57,7 +58,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
         if (field == "rating")
           result[field] = item->GetPropertyInt("album_rating");
         else if (field == "label")
-          result["album_label"] = item->GetProperty("album_label");
+          result["albumlabel"] = item->GetProperty("album_label");
         else
           result[field] = item->GetProperty("album_" + field);
 
@@ -129,10 +130,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
   {
     if (item->HasVideoInfoTag())
     {
-      if (!item->GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+      if (!item->GetVideoInfoTag()->GetPath().IsEmpty())
         object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
-      else if (!item->GetVideoInfoTag()->m_strPath.IsEmpty())
-        object["file"] = item->GetVideoInfoTag()->m_strPath.c_str();
     }
     if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
       object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
@@ -175,6 +174,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
             break;
         }
       }
+      else if (item->HasPictureInfoTag())
+        object["type"] = "picture";
 
       if (!object.isMember("type"))
         object["type"] = "unknown";
@@ -188,6 +189,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     FillDetails(item->GetVideoInfoTag(), item, validFields, object);
   if (item->HasMusicInfoTag())
     FillDetails(item->GetMusicInfoTag(), item, validFields, object);
+  if (item->HasPictureInfoTag())
+    FillDetails(item->GetPictureInfoTag(), item, validFields, object);
 
   object["label"] = item->GetLabel().c_str();
 
@@ -202,7 +205,6 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
 bool CFileItemHandler::FillFileItemList(const CVariant &parameterObject, CFileItemList &list)
 {
-  CPlaylistOperations::FillFileItemList(parameterObject, list);
   CAudioLibrary::FillFileItemList(parameterObject, list);
   CVideoLibrary::FillFileItemList(parameterObject, list);
   CFileOperations::FillFileItemList(parameterObject, list);

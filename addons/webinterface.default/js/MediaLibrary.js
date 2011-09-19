@@ -25,9 +25,11 @@ var MediaLibrary = function() {
 	}
 
 MediaLibrary.prototype = {
-		
+    playlists: { },  
+  
 		init: function() {
-			this.bindControls();		
+			this.bindControls();
+      this.getPlaylists();
 		},
 		
 		bindControls: function() {
@@ -64,6 +66,25 @@ MediaLibrary.prototype = {
 			return result;
 		},
 
+    getPlaylists: function() {
+      jQuery.ajax({
+				type: 'POST', 
+				url: JSON_RPC + '?GetPlaylists', 
+				data: '{"jsonrpc": "2.0", "method": "Playlist.GetPlaylists", "id": 1}', 
+				timeout: 3000,
+				success: jQuery.proxy(function(data) {
+					if (data && data.result && data.result.length > 0) {
+            $.each($(data.result), jQuery.proxy(function(i, item) {
+              this.playlists[item.type] = item.playlistid;
+            }, this));
+          }
+				}, this),
+				error: jQuery.proxy(function(data, error) {
+					displayCommunicationError();
+					setTimeout(jQuery.proxy(this.updateState, this), 2000);
+				}, this), 
+				dataType: 'json'});
+    },
 		remoteControlOpen: function(event) {
 			this.resetPage();
 			$('#remoteControl').addClass('selected');
@@ -122,15 +143,13 @@ MediaLibrary.prototype = {
 		pressRemoteKey: function(event) {
 			var keyPressed=event.data.key;
 			$('#spinner').show();
-			var player='other';
+			var player = -1;
+      // TODO: Get active player
 			if($('#videoDescription').is(':visible'))
-			{
-			  player='video'	
-			}
+			  player = this.playlists["video"];
 			else if($('#audioDescription').is(':visible'))
-			{
-			  player='audio'	
-			}
+        player = this.playlists["audio"];
+        
 			//common part
 			switch(keyPressed) {
 				case 'cleanlib_a':
@@ -152,24 +171,24 @@ MediaLibrary.prototype = {
 					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Home", "id": 1}', function(data){$('#spinner').hide();}, 'json');
 					return;
 				case 'mute':
-					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "XBMC.ToggleMute", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.ToggleMute", "id": 1}', function(data){$('#spinner').hide();}, 'json');
 					return;
 				case 'power':
 					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "System.Shutdown", "id": 1}', function(data){$('#spinner').hide();}, 'json');
 					return;
 				case 'volumeup':
-					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "XBMC.GetVolume", "id": 1}', function(data){
-						var volume=data.result + 1;
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "XBMC.SetVolume", "params": {"value": '+volume+'},"id": 1}', function(data){
+        jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume" ] }, "id": 1}', function(data){
+						var volume = data.result.volume + 1;
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "value": '+volume+' }, "id": 1}', function(data){
 					
 						$('#spinner').hide();
 			  			 }, 'json');
 			   }, 'json');
 					return;
 				case 'volumedown':
-					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "XBMC.GetVolume", "id": 1}', function(data){
-						var volume=data.result - 1;
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "XBMC.SetVolume", "params": {"value": '+volume+'},"id": 1}', function(data){
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume" ] }, "id": 1}', function(data){
+						var volume = data.result.volume - 1;
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "value": '+volume+' }, "id": 1}', function(data){
 					
 						$('#spinner').hide();
 			  			 }, 'json');
@@ -177,112 +196,62 @@ MediaLibrary.prototype = {
 					return;
 			}
 			//menus or other sections
-			if(player=='other')
+			if (player == -1)
 			{	
 				switch(keyPressed) {
-					
 					case 'up':
 						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Up", "id": 1}', function(data){$('#spinner').hide();}, 'json');
 						return;
 					case 'down':
 						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Down", "id": 1}', function(data){$('#spinner').hide();}, 'json');
 						return;
-	
 					case 'left':
 						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Left", "id": 1}', function(data){$('#spinner').hide();}, 'json');	
 						return;
-	
 					case 'right':
 						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Right", "id": 1}', function(data){$('#spinner').hide();}, 'json');
 						return;
-	
 					case 'ok':
 						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Select", "id": 1}', function(data){$('#spinner').hide();}, 'json');
 						return;				
 				}
 			}
-			//videoplaying
-			if(player=='video')
-			{
-				switch(keyPressed) {
-	
-					
-					case 'up':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.BigSkipForward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'down':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.BigSkipBackward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-	
-					case 'left':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.SmallSkipBackward", "id": 1}', function(data){$('#spinner').hide();}, 'json');	
-						return;
-	
-					case 'right':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.SmallSkipForward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'playpause':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.PlayPause", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'stop':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.Stop", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'next':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.SkipNext", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'previous':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.SkipPrevious", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'forward':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.Forward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'rewind':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoPlayer.Rewind", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-						
-				}			
-			}
-			if(player=='audio')
-			{
-				switch(keyPressed) {
-	
-					
-					case 'up':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.BigSkipForward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'down':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.BigSkipBackward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-	
-					case 'left':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.SmallSkipBackward", "id": 1}', function(data){$('#spinner').hide();}, 'json');	
-						return;
-	
-					case 'right':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.SmallSkipForward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'playpause':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.PlayPause", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'stop':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.Stop", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'next':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.SkipNext", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'previous':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.SkipPrevious", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'forward':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.Forward", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-					case 'rewind':
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioPlayer.Rewind", "id": 1}', function(data){$('#spinner').hide();}, 'json');
-						return;
-						
-				}			
-			}
-
+      
+      if (player >= 0)
+      {
+        switch(keyPressed) {
+          case 'up':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "bigforward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'down':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "bigbackward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'left':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "smallbackward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');	
+            return;
+          case 'right':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "smallforward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'playpause':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.PlayPause", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'stop':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'next':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.GoNext", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'previous':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.GoPrevious", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'forward':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + player + ', "speed": "increment" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'rewind':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + player + ', "speed": "decrement" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+        }
+      }
 		},
 
 		musicLibraryOpen: function(event) {
@@ -635,13 +604,9 @@ MediaLibrary.prototype = {
 		},
 		
 		playTVShow: function(event) {
-			jQuery.post(JSON_RPC + '?ClearPlaylist', '{"jsonrpc": "2.0", "method": "VideoPlaylist.Clear", "id": 1}', jQuery.proxy(function(data) {
-				//check that clear worked.
-				jQuery.post(JSON_RPC + '?AddTvShowToPlaylist', '{"jsonrpc": "2.0", "method": "VideoPlaylist.Add", "params": { "item": { "episodeid": ' + event.data.episode.episodeid + ' } }, "id": 1}', jQuery.proxy(function(data) {
-					//play specific song in playlist
-					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "VideoPlaylist.Play", "params": { "item": 0 }, "id": 1}', function(data) {this.hideOverlay();}, 'json');
-				}, this), 'json');
-			}, this), 'json');
+      jQuery.post(JSON_RPC + '?AddTvShowToPlaylist', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "episodeid": ' + event.data.episode.episodeid + ' } }, "id": 1}', jQuery.proxy(function(data) {
+        this.hideOverlay();
+      }, this), 'json');
 		},
 		hideOverlay: function(event) {
 			if (this.activeCover) {
@@ -672,8 +637,7 @@ MediaLibrary.prototype = {
 			}
 		},
 		playMovie: function(event) {
-			var file = this.replaceAll(event.data.movie.file, "\\", "\\\\");
-			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "file": "' + file + '" }, "id": 1}', jQuery.proxy(function(data) {
+			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "movieid": ' + event.data.movie.movieid + ' } }, "id": 1}', jQuery.proxy(function(data) {
 				this.hideOverlay();
 			}, this), 'json');
 		},
@@ -707,11 +671,11 @@ MediaLibrary.prototype = {
 			this.updatePlayButtonLocation();
 		},
 		playTrack: function(event) {
-			jQuery.post(JSON_RPC + '?ClearPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Clear", "id": 1}', jQuery.proxy(function(data) {
+			jQuery.post(JSON_RPC + '?ClearPlaylist', '{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": { "playlistid": ' + this.playlists["audio"] + ' }, "id": 1}', jQuery.proxy(function(data) {
 				//check that clear worked.
-				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Add", "params": { "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "playlistid": ' + this.playlists["audio"] + ', "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}', jQuery.proxy(function(data) {
 					//play specific song in playlist
-					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Play", "params": { "item": '+ event.data.itmnbr + ' }, "id": 1}', function() {}, 'json');
+					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "playlist": { "playlistid": ' + this.playlists["audio"] + ', "position": '+ event.data.itmnbr + ' } }, "id": 1}', function() {}, 'json');
 				}, this), 'json');
 			}, this), 'json');
 		},
@@ -818,7 +782,7 @@ MediaLibrary.prototype = {
 			}
 		},
 		startSlideshow: function(event) {
-			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "XBMC.StartSlideshow", "params": { "recursive" : "true", "random":"true", "directory" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" }, "id": 1}', null, 'json');
+			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "slideshow": { "recursive" : "true", "random":"true", "directory" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" } }, "id": 1}', null, 'json');
 		},
 		showDirectory: function(event) {
 			var directory = event.data.directory.file;

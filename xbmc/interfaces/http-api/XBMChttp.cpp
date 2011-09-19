@@ -2023,18 +2023,7 @@ int CXbmcHttp::xbmcRemoveFromPlayList(int numParas, CStdString paras[])
       return SetResponse(openTag+"Error:Can't remove current playing song");
     if (itemToRemove<0 || itemToRemove>=g_playlistPlayer.GetPlaylist(iPlaylist).size())
       return SetResponse(openTag+"Error:Item not found or parameter out of range");
-    g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC).Remove(itemToRemove);
-
-    // Correct the current playing song in playlistplayer
-    if (g_playlistPlayer.GetCurrentPlaylist() == PLAYLIST_MUSIC && g_application.IsPlayingAudio())
-    {
-      int iCurrentSong = g_playlistPlayer.GetCurrentSong();
-      if (itemToRemove <= iCurrentSong)
-      {
-        iCurrentSong--;
-        g_playlistPlayer.SetCurrentSong(iCurrentSong);
-      }
-    }
+    g_playlistPlayer.Remove(PLAYLIST_MUSIC, itemToRemove);
     return SetResponse(openTag+"OK");
   }
   else

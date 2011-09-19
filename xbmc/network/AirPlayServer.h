@@ -40,12 +40,14 @@ class CAirPlayServer : public CThread
 public:
   static bool StartServer(int port, bool nonlocal);
   static void StopServer(bool bWait);
+  static bool SetCredentials(bool usePassword, const CStdString& password);
 
 protected:
   void Process();
 
 private:
   CAirPlayServer(int port, bool nonlocal);
+  bool SetInternalCredentials(bool usePassword, const CStdString& password);  
   bool Initialize();
   void Deinitialize();
 
@@ -58,7 +60,10 @@ private:
     //when adding a member variable, make sure to copy it in CTCPClient::Copy
     CTCPClient(const CTCPClient& client);
     CTCPClient& operator=(const CTCPClient& client);
-    void PushBuffer(CAirPlayServer *host, const char *buffer, int length, CStdString &sessionId, std::map<CStdString, int> &reverseSockets);
+    void PushBuffer(CAirPlayServer *host, const char *buffer, 
+                    int length, CStdString &sessionId, 
+                    std::map<CStdString, int> &reverseSockets);
+                    
     void Disconnect();
 
     int m_socket;
@@ -67,11 +72,21 @@ private:
     CCriticalSection m_critSection;
 
   private:
-    int ProcessRequest(CStdString& responseHeader, CStdString& response, CStdString& reverseHeader, CStdString& reverseBody, CStdString& sessionId);
+    int ProcessRequest( CStdString& responseHeader, 
+                        CStdString& response, 
+                        CStdString& reverseHeader, 
+                        CStdString& reverseBody, 
+                        CStdString& sessionId);
+                        
     void ComposeReverseEvent(CStdString& reverseHeader, CStdString& reverseBody, CStdString sessionId, int state);
+    void ComposeAuthRequestAnswer(CStdString& responseHeader, CStdString& responseBody);
+    bool checkAuthorization(const CStdString& authStr, const CStdString& method, const CStdString& uri);
     void Copy(const CTCPClient& client);
+    
     HttpParser* m_httpParser;
     DllLibPlist *m_pLibPlist;//the lib  
+    bool m_bAuthenticated;
+    CStdString m_authNonce;
   };
 
   std::vector<CTCPClient> m_connections;
@@ -79,7 +94,9 @@ private:
   int m_ServerSocket;
   int m_port;
   bool m_nonlocal;
-
+  bool m_usePassword;
+  CStdString m_password;  
+  
   static CAirPlayServer *ServerInstance;
 };
 

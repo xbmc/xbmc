@@ -59,6 +59,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "addons/Visualisation.h"
 #include "addons/AddonManager.h"
+#include "addons/AddonInstaller.h"
 #include "storage/MediaManager.h"
 #include "network/Network.h"
 #include "guilib/GUIControlGroupList.h"
@@ -110,6 +111,10 @@
 
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
+#endif
+
+#if defined(HAS_AIRPLAY)
+#include "network/AirPlayServer.h"
 #endif
 
 using namespace std;
@@ -858,6 +863,32 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(g_guiSettings.GetBool("services.webserver"));
     }
 #endif
+#ifdef HAS_AIRPLAY
+    else if ( strSetting.Equals("services.airplaypassword") || 
+              strSetting.Equals("services.useairplaypassword"))
+    {
+      if (strSetting.Equals("services.airplaypassword"))
+      {
+        CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
+        if (pControl)
+          pControl->SetEnabled(g_guiSettings.GetBool("services.useairplaypassword"));
+      }
+      else//useairplaypassword
+      {
+        CGUIRadioButtonControl *pControl = (CGUIRadioButtonControl *)GetControl(pSettingControl->GetID());    
+        if (pControl)
+          pControl->SetEnabled(g_guiSettings.GetBool("services.airplay"));      
+      }
+
+      //set credentials to airplay server
+      if (g_guiSettings.GetBool("services.airplay"))
+      {
+        CStdString password = g_guiSettings.GetString("services.airplaypassword");
+        CAirPlayServer::SetCredentials(g_guiSettings.GetBool("services.useairplaypassword"), 
+                                       password);
+      }      
+    }  
+#endif//HAS_AIRPLAY
     else if (strSetting.Equals("network.ipaddress") || strSetting.Equals("network.subnet") || strSetting.Equals("network.gateway") || strSetting.Equals("network.dns"))
     {
 #ifdef _LINUX
@@ -1003,9 +1034,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     else if (strSetting.Equals("lookandfeel.rssedit"))
     {
       CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
-      AddonPtr addon;
-      CAddonMgr::Get().GetAddon("script.rss.editor",addon);
-      pControl->SetEnabled(addon && g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
+      pControl->SetEnabled(g_guiSettings.GetBool("lookandfeel.enablerssfeeds"));
     }
     else if (strSetting.Equals("videoplayer.pauseafterrefreshchange"))
     {
@@ -1108,7 +1137,17 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     }
   }
   else if (strSetting.Equals("lookandfeel.rssedit"))
+  {
+    AddonPtr addon;
+    CAddonMgr::Get().GetAddon("script.rss.editor",addon);
+    if (!addon)
+    {
+      if (!CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24076), g_localizeStrings.Get(24100),"RSS Editor",g_localizeStrings.Get(24101)))
+        return;
+      CAddonInstaller::Get().Install("script.rss.editor", true, "", false);
+    }
     CBuiltins::Execute("RunScript(script.rss.editor)");
+  }
   else if (pSettingControl->GetSetting()->GetType() == SETTINGS_TYPE_ADDON)
   { // prompt for the addon
     CSettingAddon *setting = (CSettingAddon *)pSettingControl->GetSetting();
@@ -1383,11 +1422,10 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   }
   else if (strSetting.Equals("services.airplay"))
   {  
-#ifdef HAS_AIRPLAY
-    g_application.StopAirplayServer(true);
+#ifdef HAS_AIRPLAY  
     if (g_guiSettings.GetBool("services.airplay"))
-      g_application.StartAirplayServer();
-#endif         
+      g_application.StartAirplayServer();//will stop the server before internal
+#endif//HAS_AIRPLAY      
   }
   else if (strSetting.Equals("network.ipaddress"))
   {

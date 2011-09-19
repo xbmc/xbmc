@@ -63,7 +63,7 @@ public:
   CVDPAU();
   virtual ~CVDPAU();
   
-  virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
+  virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces = 0);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual void Reset();
@@ -115,7 +115,7 @@ public:
   pictureAge picAge;
   bool       recover;
   vdpau_render_state *past[2], *current, *future;
-  int        tmpDeint;
+  int        tmpDeintMode, tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
   int        OutWidth, OutHeight;

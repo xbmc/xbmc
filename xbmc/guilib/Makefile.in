@@ -64,6 +64,7 @@ SRCS=AnimatedGif.cpp \
      GUIWindowManager.cpp \
      GUIWrappingListContainer.cpp \
      IWindowManagerCallback.cpp \
+     JpegIO.cpp \
      Key.cpp \
      LocalizeStrings.cpp \
      Shader.cpp \

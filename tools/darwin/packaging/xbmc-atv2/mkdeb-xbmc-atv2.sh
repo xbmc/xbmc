@@ -3,18 +3,29 @@
 # Allows us to run mkdeb-xbmc-atv2.sh from anywhere in the three, rather than the tools/darwin/packaging/xbmc-atv2 folder only
 SWITCH=`echo $1 | tr [A-Z] [a-z]`
 DIRNAME=`dirname $0`
+DSYM_TARGET_DIR=/Users/Shared/xbmc-depends/dSyms
+DSYM_FILENAME=XBMC.frappliance.dSYM
 
 if [ ${SWITCH:-""} = "debug" ]; then
   echo "Packaging Debug target for ATV2"
   XBMC="$DIRNAME/../../../../build/Debug-iphoneos/XBMC.frappliance"
+  DSYM="$DIRNAME/../../../../build/Debug-iphoneos/$DSYM_FILENAME"
 elif [ ${SWITCH:-""} = "release" ]; then
   echo "Packaging Release target for ATV2"
   XBMC="$DIRNAME/../../../../build/Release-iphoneos/XBMC.frappliance"
+  DSYM="$DIRNAME/../../../../build/Release-iphoneos/$DSYM_FILENAME"  
   echo $XBMC
 else
   echo "You need to specify the build target"
   exit 1 
 fi 
+
+#copy bzip2 of dsym to xbmc-depends install dir
+if [ -d $DSYM ]; then
+  if [ -d $DSYM_TARGET_DIR ]; then
+    tar -C $DSYM/.. -c $DSYM_FILENAME/ | bzip2 > $DSYM_TARGET_DIR/`../../../buildbot/gitrev-posix`-${DSYM_FILENAME}.tar.bz2
+  fi
+fi
 
 if [ ! -d $XBMC ]; then
   echo "XBMC.frappliance not found! are you sure you built $1 target?"
@@ -57,11 +68,11 @@ echo "Section: Multimedia"                        >> $DIRNAME/$PACKAGE/DEBIAN/co
 
 # prerm: called on remove and upgrade - get rid of existing bits.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "rm -rf /Applications/XBMC.frappliance"      >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "find /Applications/XBMC.frappliance -delete" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 echo "if [ \"\`uname -r\`\" = \"10.3.1\" ]; then" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "  rm -rf /Applications/Lowtide.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "  find /Applications/Lowtide.app/Appliances/XBMC.frappliance -delete" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 echo "else"                                       >> $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "  rm -rf /Applications/AppleTV.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "  find /Applications/AppleTV.app/Appliances/XBMC.frappliance -delete" >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 echo "fi"                                         >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 

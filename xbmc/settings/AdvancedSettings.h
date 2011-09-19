@@ -117,12 +117,13 @@ class CAdvancedSettings
 
     bool  m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
-    bool  m_videoAllowLanczos3;
+    bool  m_videoEnableHighQualityHwScalers;
     float m_videoAutoScaleMaxFps;
     bool  m_videoAllowMpeg4VDPAU;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
     bool m_DXVACheckCompatibility;
     bool m_DXVACheckCompatibilityPresent;
+    bool m_DXVAForceProcessorRenderer;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;

@@ -33,6 +33,7 @@ extern "C"
   int   GetDarwinExecutablePath(char* path, uint32_t *pathsize);
   bool  DarwinHasVideoToolboxDecoder(void);
   int   DarwinBatteryLevel(void);
+  void  DarwinSetScheduling(int message);
 #ifdef __cplusplus
 }
 #endif

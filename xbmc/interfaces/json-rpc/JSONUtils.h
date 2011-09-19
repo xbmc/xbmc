@@ -71,16 +71,15 @@ namespace JSONRPC
     ControlPlayback =   0x2,
     ControlNotify   =   0x4,
     ControlPower    =   0x8,
-    Logging         =  0x10,
-    UpdateData      =  0x20,
-    RemoveData      =  0x40,
-    Navigate        =  0x80,
-    WriteFile       = 0x100
+    UpdateData      =  0x10,
+    RemoveData      =  0x20,
+    Navigate        =  0x40,
+    WriteFile       =  0x80
   };
 
-  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | Logging | UpdateData | RemoveData | Navigate | WriteFile);
+  static const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
 
-  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | Logging | UpdateData | RemoveData | Navigate | WriteFile);
+  static const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
 
   /*!
    \brief Possible value types of a parameter or return type
@@ -103,6 +102,24 @@ namespace JSONRPC
    json rpc method calls.*/
   class CJSONUtils
   {
+  public:
+    static void MillisecondsToTimeObject(int time, CVariant &result)
+    {
+      int ms = time % 1000;
+      result["milliseconds"] = ms;
+      time = (time - ms) / 1000;
+
+      int s = time % 60;
+      result["seconds"] = s;
+      time = (time - s) / 60;
+
+      int m = time % 60;
+      result["minutes"] = m;
+      time = (time -m) / 60;
+
+      result["hours"] = time;
+    }
+
   protected:
     /*!
      \brief Checks if the given object contains a parameter
@@ -194,8 +211,6 @@ namespace JSONRPC
         return "ControlNotify";
       case ControlPower:
         return "ControlPower";
-      case Logging:
-        return "Logging";
       case UpdateData:
         return "UpdateData";
       case RemoveData:
@@ -223,8 +238,6 @@ namespace JSONRPC
         return ControlNotify;
       if (permission.compare("ControlPower") == 0)
         return ControlPower;
-      if (permission.compare("Logging") == 0)
-        return Logging;
       if (permission.compare("UpdateData") == 0)
         return UpdateData;
       if (permission.compare("RemoveData") == 0)

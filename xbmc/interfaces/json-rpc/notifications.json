@@ -1,56 +1,53 @@
 {
   "Player.OnPlay": {
     "type": "notification",
-    "description": "Playback of a media item has been started or the playback speed has changed.",
+    "description": "Playback of a media item has been started or the playback speed has changed. If there is no ID available extra information will be provided.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
-      { "name": "data", "type": "object", "required": true,
-        "properties": {
-          "speed": { "type": "integer", "required": true },
-          "type": { "type": "string", "id": "Notifications.Player.Type", "enum": [ "unknown", "movie", "episode", "musicvideo", "song" ], "required": true },
-          "id": { "$ref": "Library.Id" }
-        }
-      }
+      { "name": "data", "$ref": "Player.Notifications.Data", "required": true }
     ],
     "returns": null
   },
   "Player.OnPause": {
     "type": "notification",
-    "description": "Playback of a media item has been paused.",
+    "description": "Playback of a media item has been paused. If there is no ID available extra information will be provided.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
-      { "name": "data", "type": "object", "required": true,
-        "properties": {
-          "type": { "$ref": "Notifications.Player.Type", "required": true },
-          "id": { "$ref": "Library.Id" }
-        }
-      }
+      { "name": "data", "$ref": "Player.Notifications.Data", "required": true }
     ],
     "returns": null
   },
   "Player.OnStop": {
     "type": "notification",
-    "description": "Playback of a media item has been stopped.",
+    "description": "Playback of a media item has been stopped. If there is no ID available extra information will be provided.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
-      { "name": "data", "type": "object", "required": true,
+      { "name": "data", "type": "object", "required": true, 
         "properties": {
-          "type": { "$ref": "Notifications.Player.Type" },
-          "id": { "$ref": "Library.Id" }
+          "item": { "$ref": "Player.Notifications.Item" }
         }
       }
     ],
     "returns": null
   },
-  "Player.OnSeek": {
+  "Player.OnSpeedChanged": {
     "type": "notification",
-    "description": "The playback position has been changed.",
+    "description": "Speed of the playback of a media item has been changed. If there is no ID available extra information will be provided.",
     "params": [
       { "name": "sender", "type": "string", "required": true },
-      { "name": "data", "type": "object", "required": true,
+      { "name": "data", "$ref": "Player.Notifications.Data", "required": true }
+    ],
+    "returns": null
+  },
+  "Player.OnSeek": {
+    "type": "notification",
+    "description": "The playback position has been changed. If there is no ID available extra information will be provided.",
+    "params": [
+      { "name": "sender", "type": "string", "required": true },
+      { "name": "data", "type": "object", "required": true, 
         "properties": {
-          "time": { "type": "integer", "required": true },
-          "seekoffset": { "type": "integer", "required": true }
+          "item": { "$ref": "Player.Notifications.Item" },
+          "player": { "$ref": "Player.Notifications.Player.Seek", "required": true }
         }
       }
     ],

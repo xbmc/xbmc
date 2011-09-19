@@ -272,11 +272,13 @@
 #ifdef HAS_XRANDR
 #include "windowing/X11/XRandR.h"
 #endif
-#ifdef __APPLE__
-#if !defined(__arm__)
+
+#ifdef TARGET_DARWIN_OSX
 #include "CocoaInterface.h"
 #include "XBMCHelper.h"
 #endif
+#ifdef TARGET_DARWIN
+#include "DarwinUtils.h"
 #endif
 
 #ifdef HAS_DVD_DRIVE
@@ -1314,13 +1316,17 @@ void CApplication::StartAirplayServer()
 #ifdef HAS_AIRPLAY
   if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
   {
+    CStdString password = g_guiSettings.GetString("services.airplaypassword");
+    bool usePassword = g_guiSettings.GetBool("services.useairplaypassword");
+    
     if (CAirPlayServer::StartServer(9091, true))
     {
+      CAirPlayServer::SetCredentials(usePassword, password);
       std::map<std::string, std::string> txt;
       txt["deviceid"] = m_network.GetFirstConnectedInterface()->GetMacAddress();
       txt["features"] = "0x77";
       txt["model"] = "AppleTV2,1";
-      txt["srcvers"] = "101.10";
+      txt["srcvers"] = "101.28";
       CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", "XBMC", 9091, txt);
     }
   }
@@ -3409,6 +3415,14 @@ void CApplication::Stop(int exitCode)
 
 bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
 {
+  //If item is a plugin, expand out now and run ourselves again
+  if (item.IsPlugin())
+  {
+    CFileItem item_new(item);
+    if (XFILE::CPluginDirectory::GetPluginResult(item.GetPath(), item_new))
+      return PlayMedia(item_new, iPlaylist);
+    return false;
+  }
   if (item.IsLastFM())
   {
     g_partyModeManager.Disable();
@@ -3965,7 +3979,10 @@ void CApplication::OnPlayBackPaused()
     getApplicationMessenger().HttpApi("broadcastlevel; OnPlayBackPaused;1");
 #endif
 
-  CAnnouncementManager::Announce(Player, "xbmc", "OnPause", m_itemCurrentFile);
+  CVariant param;
+  param["player"]["speed"] = 0;
+  param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
+  CAnnouncementManager::Announce(Player, "xbmc", "OnPause", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackResumed()
@@ -3981,7 +3998,8 @@ void CApplication::OnPlayBackResumed()
 #endif
 
   CVariant param;
-  param["speed"] = 1;
+  param["player"]["speed"] = 1;
+  param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
   CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 }
 
@@ -4002,8 +4020,9 @@ void CApplication::OnPlayBackSpeedChanged(int iSpeed)
 #endif
 
   CVariant param;
-  param["speed"] = iSpeed;
-  CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
+  param["player"]["speed"] = iSpeed;
+  param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
+  CAnnouncementManager::Announce(Player, "xbmc", "OnSpeedChanged", m_itemCurrentFile, param);
 }
 
 void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
@@ -4023,9 +4042,11 @@ void CApplication::OnPlayBackSeek(int iTime, int seekOffset)
 #endif
 
   CVariant param;
-  param["time"] = iTime;
-  param["seekoffset"] = seekOffset;
-  CAnnouncementManager::Announce(Player, "xbmc", "OnSeek", param);
+  CJSONUtils::MillisecondsToTimeObject(iTime, param["player"]["time"]);
+  CJSONUtils::MillisecondsToTimeObject(seekOffset, param["player"]["seekoffset"]);;
+  param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
+  param["player"]["speed"] = GetPlaySpeed();
+  CAnnouncementManager::Announce(Player, "xbmc", "OnSeek", m_itemCurrentFile, param);
   g_infoManager.SetDisplayAfterSeek(2500, seekOffset/1000);
 }
 
@@ -4480,6 +4501,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
 
   case GUI_MSG_PLAYBACK_STARTED:
     {
+#ifdef TARGET_DARWIN
+      DarwinSetScheduling(message.GetMessage());
+#endif
       // Update our infoManager with the new details etc.
       if (m_nextPlaylistItem >= 0)
       { // we've started a previously queued item
@@ -4497,7 +4521,8 @@ bool CApplication::OnMessage(CGUIMessage& message)
       g_partyModeManager.OnSongChange(true);
 
       CVariant param;
-      param["speed"] = 1;
+      param["player"]["speed"] = 1;
+      param["player"]["playerid"] = g_playlistPlayer.GetCurrentPlaylist();
       CAnnouncementManager::Announce(Player, "xbmc", "OnPlay", m_itemCurrentFile, param);
 
       DimLCDOnPlayback(true);
@@ -4566,7 +4591,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       if (m_pKaraokeMgr )
         m_pKaraokeMgr->Stop();
 #endif
-
+#ifdef TARGET_DARWIN
+      DarwinSetScheduling(message.GetMessage());
+#endif
       // first check if we still have items in the stack to play
       if (message.GetMessage() == GUI_MSG_PLAYBACK_ENDED)
       {
@@ -4953,6 +4980,11 @@ void CApplication::ShowVolumeBar(const CAction *action)
     if (action)
       volumeBar->OnAction(*action);
   }
+}
+
+bool CApplication::IsMuted() const
+{
+  return g_settings.m_bMute;
 }
 
 void CApplication::ToggleMute(void)

@@ -133,6 +133,14 @@ void CGUIFixedListContainer::Scroll(int amount)
   ScrollToOffset(offset);
 }
 
+bool CGUIFixedListContainer::GetOffsetRange(int &minOffset, int &maxOffset) const
+{
+  GetCursorRange(minOffset, maxOffset);
+  minOffset = -minOffset;
+  maxOffset = m_items.size() - maxOffset - 1;
+  return true;
+}
+
 void CGUIFixedListContainer::ValidateOffset()
 {
   if (!m_layout) return;
@@ -147,16 +155,18 @@ void CGUIFixedListContainer::ValidateOffset()
   // assure our cursor is between these limits
   SetCursor(std::max(GetCursor(), minCursor));
   SetCursor(std::min(GetCursor(), maxCursor));
+  int minOffset, maxOffset;
+  GetOffsetRange(minOffset, maxOffset);
   // and finally ensure our offset is valid
   // don't validate offset if we are scrolling in case the tween image exceed <0, 1> range
-  if (GetOffset() + maxCursor >= (int)m_items.size() || (!m_scroller.IsScrolling() && m_scroller.GetValue() > ((int)m_items.size() - maxCursor - 1) * m_layout->Size(m_orientation)))
+  if (GetOffset() > maxOffset || (!m_scroller.IsScrolling() && m_scroller.GetValue() > maxOffset * m_layout->Size(m_orientation)))
   {
-    SetOffset(std::max(-minCursor, (int)m_items.size() - maxCursor - 1));
+    SetOffset(std::max(-minCursor, maxOffset));
     m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
   }
-  if (GetOffset() < -minCursor || (!m_scroller.IsScrolling() && m_scroller.GetValue() < -minCursor * m_layout->Size(m_orientation)))
+  if (GetOffset() < minOffset || (!m_scroller.IsScrolling() && m_scroller.GetValue() < minOffset * m_layout->Size(m_orientation)))
   {
-    SetOffset(-minCursor);
+    SetOffset(minOffset);
     m_scroller.SetValue(GetOffset() * m_layout->Size(m_orientation));
   }
 }

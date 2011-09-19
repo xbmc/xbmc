@@ -26,6 +26,8 @@
 #include "WinBindingEGL.h"
 #include "utils/log.h"
 
+#include <string>
+
 CWinBindingEGL::CWinBindingEGL()
 {
   m_surface = EGL_NO_SURFACE;
@@ -68,7 +70,7 @@ bool CWinBindingEGL::CreateWindow(EGLNativeDisplayType nativeDisplay, EGLNativeW
   EGLConfig* configList = NULL;  
 
   m_nativeDisplay = nativeDisplay;
-  m_nativeWindow = nativeWindow;
+  m_nativeWindow  = nativeWindow;
 
   m_display = eglGetDisplay(nativeDisplay);
   if (m_display == EGL_NO_DISPLAY) 
@@ -91,6 +93,7 @@ bool CWinBindingEGL::CreateWindow(EGLNativeDisplayType nativeDisplay, EGLNativeW
         EGL_STENCIL_SIZE,    0,
         EGL_SAMPLE_BUFFERS,  0,
         EGL_SAMPLES,         0,
+        EGL_SURFACE_TYPE,    EGL_WINDOW_BIT,
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
         EGL_NONE
   };
@@ -123,22 +126,12 @@ bool CWinBindingEGL::CreateWindow(EGLNativeDisplayType nativeDisplay, EGLNativeW
   // Select an EGL configuration that matches the native window
   m_config = configList[0];
 
-  EGLint* attribList = NULL;
-#ifdef EMPOWER
-  EGLint windowAttrs[3];
-  int windowIndex = 0;
-  windowAttrs[windowIndex++] = EGL_RENDER_BUFFER;
-  windowAttrs[windowIndex++] = EGL_BACK_BUFFER;
-  windowAttrs[windowIndex++] = EGL_NONE;
-  attribList = windowAttrs;
-#endif
-
   if (m_surface != EGL_NO_SURFACE)
   {
     ReleaseSurface();
   }
 
-  m_surface = eglCreateWindowSurface(m_display, m_config, m_nativeWindow, attribList);
+  m_surface = eglCreateWindowSurface(m_display, m_config, m_nativeWindow, NULL);
   if (!m_surface)
   { 
     CLog::Log(LOGERROR, "EGL couldn't create window surface");
@@ -169,7 +162,7 @@ bool CWinBindingEGL::CreateWindow(EGLNativeDisplayType nativeDisplay, EGLNativeW
     }
   }
 
-  // Make the context and surface current for rendering
+  // Make the context and surface current to this thread for rendering
   eglStatus = eglMakeCurrent(m_display, m_surface, m_surface, m_context);
   if (!eglStatus) 
   {
@@ -194,6 +187,14 @@ bool CWinBindingEGL::CreateWindow(EGLNativeDisplayType nativeDisplay, EGLNativeW
 
   glClear (GL_COLOR_BUFFER_BIT);
   eglSwapBuffers(m_display, m_surface);
+
+  m_eglext  = " ";
+  m_eglext += eglQueryString(m_display, EGL_EXTENSIONS);
+  m_eglext += " ";
+  CLog::Log(LOGDEBUG, "EGL extensions:%s", m_eglext.c_str());
+
+  // setup for vsync disabled
+  eglSwapInterval(m_display, 0);
 
   CLog::Log(LOGINFO, "EGL window and context creation complete");
 
@@ -230,6 +231,54 @@ bool CWinBindingEGL::DestroyWindow()
   }
 
   return true;
+}
+
+void CWinBindingEGL::SwapBuffers()
+{
+  eglSwapBuffers(m_display, m_surface);
+}
+
+bool CWinBindingEGL::SetVSync(bool enable)
+{
+  // depending how buffers are setup, eglSwapInterval
+  // might fail so let caller decide if this is an error.
+  return eglSwapInterval(m_display, enable ? 1 : 0);
+}
+
+bool CWinBindingEGL::IsExtSupported(const char* extension)
+{
+  CStdString name;
+
+  name  = " ";
+  name += extension;
+  name += " ";
+
+  return m_eglext.find(name) != std::string::npos;
+}
+
+EGLNativeWindowType CWinBindingEGL::GetNativeWindow()
+{
+  return m_nativeWindow;
+}
+
+EGLNativeDisplayType CWinBindingEGL::GetNativeDisplay()
+{
+  return m_nativeDisplay;
+}
+
+EGLDisplay CWinBindingEGL::GetDisplay()
+{
+  return m_display;
+}
+
+EGLSurface CWinBindingEGL::GetSurface()
+{
+  return m_surface;
+}
+
+EGLContext CWinBindingEGL::GetContext()
+{
+  return m_context;
 }
 
 #endif

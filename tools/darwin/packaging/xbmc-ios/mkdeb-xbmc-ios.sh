@@ -4,17 +4,29 @@
 # Allows us to run mkdeb-xbmc-ios.sh from anywhere in the three, rather than the tools/darwin/packaging/xbmc-ios folder only
 SWITCH=`echo $1 | tr [A-Z] [a-z]`
 DIRNAME=`dirname $0`
+DSYM_TARGET_DIR=/Users/Shared/xbmc-depends/dSyms
+DSYM_FILENAME=XBMC.app.dSYM
 
 if [ ${SWITCH:-""} = "debug" ]; then
   echo "Packaging Debug target for iOS"
   XBMC="$DIRNAME/../../../../build/Debug-iphoneos/XBMC.app"
+  DSYM="$DIRNAME/../../../../build/Debug-iphoneos/$DSYM_FILENAME"  
 elif [ ${SWITCH:-""} = "release" ]; then
   echo "Packaging Release target for iOS"
   XBMC="$DIRNAME/../../../../build/Release-iphoneos/XBMC.app"
+  DSYM="$DIRNAME/../../../../build/Release-iphoneos/$DSYM_FILENAME"   
 else
   echo "You need to specify the build target"
   exit 1 
 fi  
+
+#copy bzip2 of dsym to xbmc-depends install dir
+if [ -d $DSYM ]; then
+  if [ -d $DSYM_TARGET_DIR ]; then
+    tar -C $DSYM/.. -c $DSYM_FILENAME/ | bzip2 > $DSYM_TARGET_DIR/`../../../buildbot/gitrev-posix`-${DSYM_FILENAME}.tar.bz2
+  fi
+fi
+
 
 if [ ! -d $XBMC ]; then
   echo "XBMC.app not found! are you sure you built $1 target?"
@@ -58,7 +70,7 @@ echo "Icon: file:///Applications/Cydia.app/Sources/mirrors.xbmc.org.png" >> $DIR
 
 # prerm: called on remove and upgrade - get rid of existing bits.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/prerm
-echo "rm -rf /Applications/XBMC.app"              >> $DIRNAME/$PACKAGE/DEBIAN/prerm
+echo "find /Applications/XBMC.app -delete"        >> $DIRNAME/$PACKAGE/DEBIAN/prerm
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 
 # postinst: nothing for now.

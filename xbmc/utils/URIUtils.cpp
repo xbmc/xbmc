@@ -28,6 +28,7 @@
 #include "filesystem/StackDirectory.h"
 #include "network/DNSNameCache.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "URL.h"
 #include "StringUtils.h"
 
@@ -342,6 +343,17 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
   return true;
 }
 
+CStdString URIUtils::SubstitutePath(const CStdString& strPath)
+{
+  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin();
+      i != g_advancedSettings.m_pathSubstitutions.end(); i++)
+  {
+    if (strncmp(strPath.c_str(), i->first.c_str(), i->first.size()) == 0)
+      return URIUtils::AddFileToFolder(i->second, strPath.Mid(i->first.size()));
+  }
+  return strPath;
+}
+
 bool URIUtils::IsRemote(const CStdString& strFile)
 {
   if (IsCDDA(strFile) || IsISO9660(strFile))
@@ -585,6 +597,12 @@ bool URIUtils::IsAddonsPath(const CStdString& strFile)
   return url.GetProtocol().Equals("addons");
 }
 
+bool URIUtils::IsSourcesPath(const CStdString& strPath)
+{
+  CURL url(strPath);
+  return url.GetProtocol().Equals("sources");
+}
+
 bool URIUtils::IsCDDA(const CStdString& strFile)
 {
   return strFile.Left(5).Equals("cdda:");
@@ -727,6 +745,16 @@ bool URIUtils::IsNfs(const CStdString& strFile)
     strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
   
   return strFile2.Left(4).Equals("nfs:");
+}
+
+bool URIUtils::IsAfp(const CStdString& strFile)
+{
+  CStdString strFile2(strFile);
+  
+  if (IsStack(strFile))
+    strFile2 = CStackDirectory::GetFirstStackedFile(strFile);
+  
+  return strFile2.Left(4).Equals("afp:");
 }
 
 
@@ -911,4 +939,3 @@ void URIUtils::CreateArchivePath(CStdString& strUrlPath,
   strUrlPath += strBuffer;
 #endif
 }
-

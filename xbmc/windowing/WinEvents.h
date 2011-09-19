@@ -47,9 +47,13 @@ public:
 #include "osx/WinEventsIOS.h"
 #define CWinEvents CWinEventsIOS
 
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) && defined(HAS_SDL_WIN_EVENTS)
 #include "WinEventsSDL.h"
 #define CWinEvents CWinEventsSDL
+
+#elif defined(TARGET_LINUX) && defined(HAS_LINUX_EVENTS)
+#include "WinEventsLinux.h"
+#define CWinEvents CWinEventsLinux
 
 #endif
 

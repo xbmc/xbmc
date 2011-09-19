@@ -85,22 +85,57 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
     CVideoDatabase::VideoContentTypeToString((VIDEODB_CONTENT_TYPE)item->GetVideoContentType(), type);
 
     id = item->GetVideoInfoTag()->m_iDbId;
+
+    if (id <= 0)
+    {
+      object["title"] = item->GetVideoInfoTag()->m_strTitle;
+
+      switch (item->GetVideoContentType())
+      {
+      case VIDEODB_CONTENT_MOVIES:
+        if (item->GetVideoInfoTag()->m_iYear > 0)
+          object["year"] = item->GetVideoInfoTag()->m_iYear;
+        break;
+      case VIDEODB_CONTENT_EPISODES:
+        if (item->GetVideoInfoTag()->m_iEpisode >= 0)
+          object["episode"] = item->GetVideoInfoTag()->m_iEpisode;
+        if (item->GetVideoInfoTag()->m_iSeason >= 0)
+          object["season"] = item->GetVideoInfoTag()->m_iSeason;
+        if (!item->GetVideoInfoTag()->m_strShowTitle.empty())
+          object["showtitle"] = item->GetVideoInfoTag()->m_strShowTitle;
+        break;
+      case VIDEODB_CONTENT_MUSICVIDEOS:
+        if (!item->GetVideoInfoTag()->m_strAlbum.empty())
+          object["album"] = item->GetVideoInfoTag()->m_strAlbum;
+        if (!item->GetVideoInfoTag()->m_strArtist.empty())
+          object["artist"] = item->GetVideoInfoTag()->m_strArtist;
+        break;
+      }
+    }
   }
   else if (item->HasMusicInfoTag())
   {
-    if (item->IsAlbum())
-      type = "album";
-    else
-      type = "song";
-
     id = item->GetMusicInfoTag()->GetDatabaseId();
+    type = "song";
+
+    if (id <= 0)
+    {
+      object["title"] = item->GetMusicInfoTag()->GetTitle();
+
+      if (item->GetMusicInfoTag()->GetTrackNumber() > 0)
+        object["track"] = item->GetMusicInfoTag()->GetTrackNumber();
+      if (!item->GetMusicInfoTag()->GetAlbum().empty())
+        object["album"] = item->GetMusicInfoTag()->GetAlbum();
+      if (!item->GetMusicInfoTag()->GetArtist().empty())
+        object["artist"] = item->GetMusicInfoTag()->GetArtist();
+    }
   }
   else
     type = "unknown";
 
-  object["type"] = type;
+  object["item"]["type"] = type;
   if (id > 0)
-    object["id"] = id;
+    object["item"]["id"] = id;
 
   Announce(flag, sender, message, object);
 }

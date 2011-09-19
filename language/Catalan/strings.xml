@@ -181,7 +181,7 @@
   <string id="202">Lema</string>
   <string id="203">Argument</string>
 
-  <string id="205">Vots:</string>
+  <string id="205">Vots</string>
   <string id="206">Repartiment</string>
   <string id="207">Trama</string>
   <string id="208">Reprodueix</string>
@@ -385,7 +385,7 @@
   <string id="420">HDMI</string>
 
   <string id="422">Esborra la informació de l'àlbum</string>
-  <string id="423">Esborraa la informació del CD</string>
+  <string id="423">Esborra la informació del CD</string>
   <string id="424">Seleccioneu</string>
   <string id="425">No s'ha trobat la informació de l'àlbum.</string>
   <string id="426">No s'ha trobat la informació del CD.</string>
@@ -451,12 +451,12 @@
   <string id="492">Redimensiona els subtítols VOB</string>
   <string id="493">Opcions avançades (Només experts!)</string>
   <string id="494">Overall audio headroom</string>
-  <string id="495">Reescalar Videos a la resolució del entorn (GUI)</string>
+  <string id="495">Reescala els vídeos a la resolució de l'entorn (GUI)</string>
   <string id="496">Calibratge</string>
-  <string id="497">Mostra les extensions d'arxiu</string>
+  <string id="497">Mostra les extensions de fitxer</string>
   <string id="498">Ordena per: Tipus</string>
   <string id="499">No es pot connectar al servei de cerca en línia</string>
-  <string id="500">Descarrega d'informació d'àlbum fallida</string>
+  <string id="500">Descarrega de la informació de l'àlbum fallida</string>
   <string id="501">S'està cercant el nom dels àlbums...</string>
   <string id="502">Obre</string>
   <string id="503">Ocupat</string>
@@ -560,7 +560,7 @@
   <string id="607">A:</string>
   <string id="608">No es pot extreure el CD o la pista</string>
   <string id="609">CDDARipPath no està definit.</string>
-  <string id="610">Extreu pista d'àudio</string>
+  <string id="610">Extreu la pista d'àudio</string>
   <string id="611">Introduïu el número</string>
   <string id="612">Bits/Mostra</string>
   <string id="613">Freqüència de mostreig</string>
@@ -586,8 +586,8 @@
   <string id="641">Nivell del preamplificador - Replay gained files</string>
   <string id="642">Nivell del preamplificador - Non replay gained files</string>
   <string id="643">Avoid clipping on replay gained files</string>
-  <string id="644">Crop black bars</string>
-  <string id="645">Need to unpack a big file. Continue?</string>
+  <string id="644">Elimina les vores negres</string>
+  <string id="645">Es necessita descomprimir un fitxer gran. Voleu continuar?</string>
   <string id="646">Elimina de la biblioteca</string>
   <string id="647">Exporta la biblioteca de vídeo</string>
   <string id="648">Importa la biblioteca de vídeo</string>
@@ -809,7 +809,8 @@
 
   <string id="1260">Anuncia aquests serveis a altres sistemes a través de Zeroconf</string>
   
-  <string id="1270">Allow XBMC to receive AirPlay content</string>
+  <string id="1270">Permet que l'XBMC rebi contingut de l'AirPlay</string>
+  <string id="1271">Nom del dispositiu</string>
 
   <string id="1300">Dispositiu d'àudio personalitzat</string>
   <string id="1301">Custom passthrough device</string>
@@ -853,7 +854,7 @@
   <string id="2100">L'script ha fallat : %s</string>
   <string id="2101">Es necessita un versió més recent - Veure el registre</string>
 
-  <string id="4501">Activaa l'LCD/VFD</string>
+  <string id="4501">Activa l'LCD/VFD</string>
 
   <string id="10000">Inici</string>
   <string id="10001">Programes</string>
@@ -1015,7 +1016,7 @@
   <string id="13022">La extracció del dispositiu no és segura</string>
   <string id="13023">El dispositiu s'ha extret amb èxit</string>
   <string id="13024">S'ha connectat un joystick</string>
-  <string id="13025">S'ha desconnectat un joystick unplugged</string>
+  <string id="13025">S'ha desconnectat el joystick</string>
 
   <string id="13050">La càrrega de la bateria és baixa</string>
 
@@ -1224,7 +1225,7 @@
   <string id="13421">VDPAU</string>
   <string id="13422">Comença la presentació aquí</string>
   <string id="13423">Recorda aquest camí</string>
-  <string id="13424">Use pixel buffer objects</string>
+  <string id="13424">Utilitza objectes de memòria intermèdia de píxels</string>
   <string id="13425">Permet l'acceleració per maquinari (VDPAU)</string>
   <string id="13426">Permet l'acceleració per maquinari (VAAPI)</string>
   <string id="13427">Permet l'acceleració per maquinari (DXVA2)</string>
@@ -1238,7 +1239,7 @@
   <string id="13501">Rellotge d'àudio</string>
   <string id="13502">Rellotge del vídeo (Drop/Dupe àudio)</string>
   <string id="13503">Rellotge del vídeo (Remostreja l'àudio)</string>
-  <string id="13504">Maximum resample amount (%)</string>
+  <string id="13504">Quantitat màxima de remostreig (%)</string>
   <string id="13505">Qualitat del remostreig</string>
   <string id="13506">Baix (ràpid)</string>
   <string id="13507">Mitja</string>
@@ -1527,8 +1528,12 @@
   <string id="16315">Lanczos3 optimitzat</string>
   <string id="16316">Auto</string>
   <string id="16317">Temporal (Half)</string>
-  <string id="16318">Temporal/Spatial (Half)</string>
+  <string id="16318">Temporal/Espacial (Half)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimitzat</string>
 
   <string id="16400">Postprocessament</string>
 
@@ -1741,6 +1746,7 @@
   <string id="20258">Client de MythTV</string>
   <string id="20259">Network Filesystem (NFS)</string>
   <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple File Protocol (AFP)</string>
 
   <string id="20300">Directori del servidor web (HTTP)</string>
   <string id="20301">Directori dels servidor web (HTTPS)</string>
@@ -1892,6 +1898,7 @@
   <string id="20454">Oient</string>
   <string id="20455">Oients</string>
   <string id="20456">Set movieset fanart</string>
+  <string id="20457">Movie set</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Mostra els fitxers i directoris ocults</string>

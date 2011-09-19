@@ -261,6 +261,7 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "profilecount",     SYSTEM_PROFILECOUNT },
                                   { "progressbar",      SYSTEM_PROGRESS_BAR },
                                   { "batterylevel",     SYSTEM_BATTERY_LEVEL },
+                                  { "friendlyname",     SYSTEM_FRIENDLY_NAME },
                                   { "alarmpos",         SYSTEM_ALARM_POS }};
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
@@ -490,6 +491,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "audiochannels",    LISTITEM_AUDIO_CHANNELS },
                                   { "audiolanguage",    LISTITEM_AUDIO_LANGUAGE },
                                   { "subtitlelanguage", LISTITEM_SUBTITLE_LANGUAGE },
+                                  { "isresumable",      LISTITEM_IS_RESUMABLE},
+                                  { "percentplayed",    LISTITEM_PERCENT_PLAYED},
                                   { "isfolder",         LISTITEM_IS_FOLDER },
                                   { "originaltitle",    LISTITEM_ORIGINALTITLE },
                                   { "lastplayed",       LISTITEM_LASTPLAYED },
@@ -596,6 +599,7 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "actstreamencryptionname",  PVR_ACTUAL_STREAM_CRYPTION }};
 
 const infomap slideshow[] =      {{ "ispaused",         SLIDESHOW_ISPAUSED },
+                                  { "isactive",         SLIDESHOW_ISACTIVE },
                                   { "israndom",         SLIDESHOW_ISRANDOM }};
 
 CGUIInfoManager::Property::Property(const CStdString &property, const CStdString &parameters)
@@ -826,7 +830,13 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
         if (prop.num_params() == 2)
           return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(prop.param(0)) % 10000, StringUtils::DateStringToYYYYMMDD(prop.param(1)) % 10000));
         else if (prop.num_params() == 1)
-          return AddMultiInfo(GUIInfo(SYSTEM_DATE, StringUtils::DateStringToYYYYMMDD(prop.param(0)) % 10000));
+        {
+          int dateformat = StringUtils::DateStringToYYYYMMDD(prop.param(0));
+          if (dateformat <= 0) // not concrete date
+            return AddMultiInfo(GUIInfo(SYSTEM_DATE, ConditionalStringParameter(prop.param(0), true), -1));
+          else
+            return AddMultiInfo(GUIInfo(SYSTEM_DATE, dateformat % 10000));
+        }
         return SYSTEM_DATE;
       }
       else if (prop.name == "time")
@@ -1126,6 +1136,7 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
   else if (format.Equals("hh:mm:ss")) return TIME_FORMAT_HH_MM_SS;
   else if (format.Equals("h")) return TIME_FORMAT_H;
   else if (format.Equals("h:mm:ss")) return TIME_FORMAT_H_MM_SS;
+  else if (format.Equals("xx")) return TIME_FORMAT_XX;
   return TIME_FORMAT_GUESS;
 }
 
@@ -1248,7 +1259,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
   case PLAYER_CACHELEVEL:
     {
       int iLevel = 0;
-      if(g_application.IsPlaying() && ((iLevel = GetInt(PLAYER_CACHELEVEL)) >= 0))
+      if(g_application.IsPlaying() && GetInt(iLevel, PLAYER_CACHELEVEL) && iLevel >= 0)
         strLabel.Format("%i", iLevel);
     }
     break;
@@ -1595,9 +1606,18 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     break;
   case SYSTEM_PROGRESS_BAR:
     {
-      int percent = GetInt(SYSTEM_PROGRESS_BAR);
-      if (percent)
+      int percent;
+      if (GetInt(percent, SYSTEM_PROGRESS_BAR) && percent > 0)
         strLabel.Format("%i", percent);
+    }
+    break;
+  case SYSTEM_FRIENDLY_NAME:
+    {
+      CStdString friendlyName = g_guiSettings.GetString("services.devicename");
+      if (friendlyName.Equals("XBMC"))
+        strLabel.Format("%s (%s)", friendlyName.c_str(), g_application.getNetwork().GetHostName().c_str());
+      else
+        strLabel = friendlyName;
     }
     break;
   case LCD_PLAY_ICON:
@@ -1770,22 +1790,25 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 }
 
 // tries to get a integer value for use in progressbars/sliders and such
-int CGUIInfoManager::GetInt(int info, int contextWindow, const CGUIListItem *item /* = NULL */) const
+bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUIListItem *item /* = NULL */) const
 {
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
-    return GetMultiInfoInt(m_multiInfo[info - MULTI_INFO_START], contextWindow);
+    return GetMultiInfoInt(value, m_multiInfo[info - MULTI_INFO_START], contextWindow);
 
   if (info >= LISTITEM_START && info <= LISTITEM_END)
-    return GetItemInt(item, info);
+    return GetItemInt(value, item, info);
 
   switch( info )
   {
     case PLAYER_VOLUME:
-      return g_application.GetVolume();
+      value = g_application.GetVolume();
+      return true;
     case PLAYER_SUBTITLE_DELAY:
-      return g_application.GetSubtitleDelay();
+      value = g_application.GetSubtitleDelay();
+      return true;
     case PLAYER_AUDIO_DELAY:
-      return g_application.GetAudioDelay();
+      value = g_application.GetAudioDelay();
+      return true;
     case PLAYER_PROGRESS:
     case PLAYER_PROGRESS_CACHE:
     case PLAYER_SEEKBAR:
@@ -1798,20 +1821,26 @@ int CGUIInfoManager::GetInt(int info, int contextWindow, const CGUIListItem *ite
           switch( info )
           {
           case PLAYER_PROGRESS:
-            return (int)(g_application.GetPercentage());
+            value = (int)(g_application.GetPercentage());
+            return true;
           case PLAYER_PROGRESS_CACHE:
-            return (int)(g_application.GetCachePercentage());
+            value = (int)(g_application.GetCachePercentage());
+            return true;
           case PLAYER_SEEKBAR:
             {
               CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
-              return seekBar ? (int)seekBar->GetPercentage() : 0;
+              value = seekBar ? (int)seekBar->GetPercentage() : 0;
+              return true;
             }
           case PLAYER_CACHELEVEL:
-            return (int)(g_application.m_pPlayer->GetCacheLevel());
+            value = (int)(g_application.m_pPlayer->GetCacheLevel());
+            return true;
           case PLAYER_CHAPTER:
-            return g_application.m_pPlayer->GetChapter();
+            value = g_application.m_pPlayer->GetChapter();
+            return true;
           case PLAYER_CHAPTERCOUNT:
-            return g_application.m_pPlayer->GetChapterCount();
+            value = g_application.m_pPlayer->GetChapterCount();
+            return true;
           }
         }
       }
@@ -1823,32 +1852,40 @@ int CGUIInfoManager::GetInt(int info, int contextWindow, const CGUIListItem *ite
         GlobalMemoryStatus(&stat);
         int memPercentUsed = (int)( 100.0f* (stat.dwTotalPhys - stat.dwAvailPhys)/stat.dwTotalPhys + 0.5f );
         if (info == SYSTEM_FREE_MEMORY)
-          return 100 - memPercentUsed;
-        return memPercentUsed;
+          value = 100 - memPercentUsed;
+        else
+          value = memPercentUsed;
+        return true;
       }
     case SYSTEM_PROGRESS_BAR:
       {
         CGUIDialogProgress *bar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
         if (bar && bar->IsDialogRunning())
-          return bar->GetPercentage();
+        {
+          value = bar->GetPercentage();
+          return true;
+        }
       }
     case SYSTEM_FREE_SPACE:
     case SYSTEM_USED_SPACE:
       {
-        int ret = 0;
-        g_sysinfo.GetHddSpaceInfo(ret, info, true);
-        return ret;
+        g_sysinfo.GetHddSpaceInfo(value, info, true);
+        return true;
       }
     case SYSTEM_CPU_USAGE:
-      return g_cpuInfo.getUsedPercentage();
+      value = g_cpuInfo.getUsedPercentage();
+      return true;
     case PVR_PLAYING_PROGRESS:
     case PVR_ACTUAL_STREAM_SIG_PROGR:
     case PVR_ACTUAL_STREAM_SNR_PROGR:
-      return g_PVRManager.TranslateIntInfo(info);
+      value = g_PVRManager.TranslateIntInfo(info);
+      return true;
     case SYSTEM_BATTERY_LEVEL:
-      return g_powerManager.BatteryLevel();
+      value = g_powerManager.BatteryLevel();
+      return true;
   }
-  return 0;
+  value = 0;
+  return false;
 }
 
 unsigned int CGUIInfoManager::Register(const CStdString &expression, int context)
@@ -2110,6 +2147,11 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
     bReturn = (slideShow && slideShow->IsShuffled());
   }
+  else if (condition == SLIDESHOW_ISACTIVE)
+  {
+    CGUIWindowSlideShow *slideShow = (CGUIWindowSlideShow *)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+    bReturn = (slideShow && slideShow->InSlideShow());
+  }
   else if (g_application.IsPlaying())
   {
     switch (condition)
@@ -2276,7 +2318,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
       bReturn = !g_guiSettings.GetString("musicplayer.visualisation").IsEmpty();
     break;
     default: // default, use integer value different from 0 as true
-      bReturn = GetInt(condition) != 0;
+      {
+        int val;
+        bReturn = GetInt(val, condition) && val != 0;
+      }
     }
   }
   if (condition1 < 0)
@@ -2371,19 +2416,25 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         break;
       case INTEGER_GREATER_THAN:
         {
-          CStdString value;
-
-          if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
-            value = GetItemImage((const CFileItem *)item, info.GetData1());
+          int integer;
+          if (GetInt(integer, info.GetData1(), contextWindow, item))
+            bReturn = integer > info.GetData2();
           else
-            value = GetImage(info.GetData1(), contextWindow);
+          {
+            CStdString value;
 
-          // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
-          // useful for Player.Time* members without adding a separate set of members returning time in seconds
-          if ( value.find_first_of( ':' ) != value.npos )
-            bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
-          else
-            bReturn = atoi( value.c_str() ) > info.GetData2();
+            if (item && item->IsFileItem() && info.GetData1() >= LISTITEM_START && info.GetData1() < LISTITEM_END)
+              value = GetItemImage((const CFileItem *)item, info.GetData1());
+            else
+              value = GetImage(info.GetData1(), contextWindow);
+
+            // Handle the case when a value contains time separator (:). This makes IntegerGreaterThan
+            // useful for Player.Time* members without adding a separate set of members returning time in seconds
+            if ( value.find_first_of( ':' ) != value.npos )
+              bReturn = StringUtils::TimeStringToSeconds( value ) > info.GetData2();
+            else
+              bReturn = atoi( value.c_str() ) > info.GetData2();
+          }
         }
         break;
       case STRING_STR:
@@ -2635,6 +2686,8 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
       }
       case SYSTEM_DATE:
         {
+          if (info.GetData2() == -1) // info doesn't contain valid startDate
+            return false;
           CDateTime date = CDateTime::GetCurrentDateTime();
           int currentDate = date.GetMonth()*100+date.GetDay();
           int startDate = info.GetData1();
@@ -2678,7 +2731,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
   return (info.m_info < 0) ? !bReturn : bReturn;
 }
 
-int CGUIInfoManager::GetMultiInfoInt(const GUIInfo &info, int contextWindow) const
+bool CGUIInfoManager::GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow) const
 {
   if (info.m_info >= LISTITEM_START && info.m_info <= LISTITEM_END)
   {
@@ -2704,7 +2757,7 @@ int CGUIInfoManager::GetMultiInfoInt(const GUIInfo &info, int contextWindow) con
     }
 
     if (item) // If we got a valid item, do the lookup
-      return GetItemInt(item.get(), info.m_info);
+      return GetItemInt(value, item.get(), info.m_info);
   }
 
   return 0;
@@ -2796,6 +2849,11 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
   else if (info.m_info == SYSTEM_TIME)
   {
     return GetTime((TIME_FORMAT)info.GetData1());
+  }
+  else if (info.m_info == SYSTEM_DATE)
+  {
+    CDateTime time=CDateTime::GetCurrentDateTime();
+    return time.GetAsLocalizedDate(m_stringParameters[info.GetData1()],false);
   }
   else if (info.m_info == CONTAINER_NUM_PAGES || info.m_info == CONTAINER_CURRENT_PAGE ||
            info.m_info == CONTAINER_NUM_ITEMS || info.m_info == CONTAINER_POSITION)
@@ -3064,6 +3122,8 @@ CStdString CGUIInfoManager::LocalizeTime(const CDateTime &time, TIME_FORMAT form
     return time.GetAsLocalizedTime("h", false);
   case TIME_FORMAT_H_MM_SS:
     return time.GetAsLocalizedTime("h:mm:ss", true);
+  case TIME_FORMAT_XX:
+    return use12hourclock ? time.GetAsLocalizedTime("xx", false) : "";
   default:
     break;
   }
@@ -3919,26 +3979,31 @@ int CGUIInfoManager::AddMultiInfo(const GUIInfo &info)
   return id;
 }
 
-int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter)
+int CGUIInfoManager::ConditionalStringParameter(const CStdString &parameter, bool caseSensitive /*= false*/)
 {
   // check to see if we have this parameter already
   for (unsigned int i = 0; i < m_stringParameters.size(); i++)
-    if (parameter.Equals(m_stringParameters[i]))
+    if (parameter.Equals(m_stringParameters[i], caseSensitive))
       return (int)i;
   // return the new offset
   m_stringParameters.push_back(parameter);
   return (int)m_stringParameters.size() - 1;
 }
 
-int CGUIInfoManager::GetItemInt(const CGUIListItem *item, int info) const
+bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info) const
 {
-  if (!item) return 0;
+  if (!item)
+  {
+    value = 0;
+    return false;
+  }
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
     CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
     CStdString val = item->GetProperty(property);
-    return atoi(val);
+    value = atoi(val);
+    return true;
   }
 
   switch (info)
@@ -3964,9 +4029,16 @@ int CGUIInfoManager::GetItemInt(const CGUIListItem *item, int info) const
       return iProgress;
     }
     break;
+  case LISTITEM_PERCENT_PLAYED:
+    if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0)
+      value = (int)(100 * ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+    else
+      value = 0;
+    return true;
   }
 
-  return 0;
+  value = 0;
+  return false;
 }
 
 CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
@@ -4505,6 +4577,16 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return rating;
     }
     break;
+  case LISTITEM_PERCENT_PLAYED:
+    {
+      int val;
+      if (GetItemInt(val, item, info))
+      {
+        CStdString str;
+        str.Format("%d", val);
+        return str;
+      }
+    }
   }
   return "";
 }
@@ -4553,7 +4635,9 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   }
   else if (condition == LISTITEM_ISPLAYING)
   {
-    if (item->IsFileItem() && !m_currentFile->GetPath().IsEmpty())
+    if (item->HasProperty("playlistposition"))
+      return item->GetPropertyInt("playlisttype") == g_playlistPlayer.GetCurrentPlaylist() && item->GetPropertyInt("playlistposition") == g_playlistPlayer.GetCurrentSong();
+    else if (item->IsFileItem() && !m_currentFile->GetPath().IsEmpty())
     {
       if (!g_application.m_strPlayListFile.IsEmpty())
       {
@@ -4567,6 +4651,8 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
+  else if (condition == LISTITEM_IS_RESUMABLE)
+    return (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0);
 
   if (item->IsFileItem())
   {

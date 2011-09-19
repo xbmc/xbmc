@@ -229,7 +229,7 @@ void CDecoder::Close()
   m_holder.surface.reset();
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
+bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int surfaces)
 {
   VAEntrypoint entrypoint = VAEntrypointVLD;
   VAProfile    profile;

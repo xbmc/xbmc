@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<!-- NOTE: Do not remove or add extra empty lines or strings in this file. They are added to match
-the English template, and make it easier for translators to see which line belongs to where-->
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--$Revision$-->
 <strings>
   <string id="0">Programmer</string>
@@ -13,7 +11,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="7">Filbehandler</string>
   <string id="8">Vær</string>
   <string id="9">xbmc media center</string>
-  
+
   <string id="11">Mandag</string>
   <string id="12">Tirsdag</string>
   <string id="13">Onsdag</string>
@@ -21,7 +19,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="15">Fredag</string>
   <string id="16">Lørdag</string>
   <string id="17">Søndag</string>
-  
+
   <string id="21">januar</string>
   <string id="22">februar</string>
   <string id="23">mars</string>
@@ -34,7 +32,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="30">oktober</string>
   <string id="31">november</string>
   <string id="32">desember</string>
-  
+
   <string id="41">Man</string>
   <string id="42">Tir</string>
   <string id="43">Ons</string>
@@ -42,7 +40,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="45">Fre</string>
   <string id="46">Lør</string>
   <string id="47">Søn</string>
-  
+
   <string id="51">Jan</string>
   <string id="52">Feb</string>
   <string id="53">Mar</string>
@@ -55,7 +53,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="60">Okt</string>
   <string id="61">Nov</string>
   <string id="62">Des</string>
-  
+
   <string id="71">N</string>
   <string id="72">NNØ</string>
   <string id="73">NØ</string>
@@ -73,7 +71,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="85">NV</string>
   <string id="86">NNV</string>
   <string id="87">VAR</string>
-  
+
   <string id="98">Visning: Auto</string>
   <string id="99">Visning: Auto stor</string>
   <string id="100">Visning: Ikoner</string>
@@ -137,24 +135,22 @@ the English template, and make it easier for translators to see which line belon
   <string id="158">Ledig minne</string>
   <string id="159">Ingen forbindelse</string>
   <string id="160">Ledig</string>
-  <string id="161">Ikke tilgjengelig</string>
+  <string id="161">Utilgjengelig</string>
   <string id="162">Skuff åpen</string>
   <string id="163">Leser</string>
   <string id="164">Ingen disk</string>
   <string id="165">Disk tilstede</string>
   <string id="166">Skinn</string>
-  <string id="167"></string>
-  <string id="168"></string>
+
   <string id="169">Oppløsning</string>
   <string id="170">Sett oppdateringsfrekvens til å samsvare med video</string>
-  <string id="171"></string>
-  
+
   <string id="172">Utgitt</string>
   <string id="173">Vis 4:3-videoer som</string>
-  
+
   <string id="175">Stemninger</string>
   <string id="176">Stiler</string>
-  
+
   <string id="179">Sang</string>
   <string id="180">Lengde</string>
   <string id="181">Velg album</string>
@@ -176,11 +172,11 @@ the English template, and make it easier for translators to see which line belon
   <string id="197">Spør etter %s informasjon</string>
   <string id="198">Laster filmdetaljer</string>
   <string id="199">Webgrensesnitt</string>
-  
+
   <string id="202">Slagord</string>
   <string id="203">Handling</string>
-  
-  <string id="205">Stemmer:</string>
+
+  <string id="205">Stemmer</string>
   <string id="206">Skuesp.</string>
   <string id="207">Plott</string>
   <string id="208">Spill</string>
@@ -197,7 +193,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="221">Ingen nettverkstilkobling</string>
   <string id="222">Avbryt</string>
   <string id="224">Hastighet</string>
-  
+  <string id="225">Vertikalt skift</string>
   <string id="226">Testbilder...</string>
   <string id="227">Hent CD-informasjon fra freedb.org</string>
   <string id="228">Bland spillelisten ved lasting</string>
@@ -217,8 +213,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="242">Vindu</string>
   <string id="243">Oppdateringsfrekvens</string>
   <string id="244">Fullskjerm</string>
-  <string id="245">Skalering: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Piksler: %2.2f:1)</string>
-  
+  <string id="245">Skalering: (%i,%i)->(%i,%i) (Zoom x%2.2f) AR:%2.2f:1 (Piksler: %2.2f:1) (Vskift: %2.2f)</string>
+
   <string id="247">Skript</string>
   <string id="248">Språk</string>
   <string id="249">Musikk</string>
@@ -257,9 +253,9 @@ the English template, and make it easier for translators to see which line belon
   <string id="282">Fant %i treff</string>
   <string id="283">Søkeresultater</string>
   <string id="284">Ingen resultater funnet</string>
-  <string id="286"></string>
+
   <string id="287">Undertekster</string>
-  <string id="288">Skrifttype</string>
+  <string id="288">Font</string>
   <string id="289">- Størrelse</string>
   <string id="290">Volumutjevning (DNR)</string>
   <string id="291">Video</string>
@@ -277,12 +273,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="304">Språk</string>
   <string id="305">Aktivert</string>
   <string id="306">Ikke-innfelt</string>
-  <string id="307"></string>
-  <string id="308"></string>
-  <string id="309"></string>
-  <string id="310"></string>
-  <string id="311"></string>
-  <string id="312">(0=automatisk)</string>
+
+  <string id="312">(0=auto)</string>
   <string id="313">Renser database</string>
   <string id="314">Forbereder...</string>
   <string id="315">Databasefeil</string>
@@ -374,8 +366,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="404">Vind</string>
   <string id="405">Duggpunkt</string>
   <string id="406">Fuktighet</string>
-  <string id="407"></string>
-  <string id="408"></string>
+
   <string id="409">Standard</string>
   <string id="410">Kobler til værtjeneste</string>
   <string id="411">Henter værdata for:</string>
@@ -388,7 +379,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="418">Lav</string>
   <string id="419">Høy</string>
   <string id="420">HDMI</string>
-  
+
   <string id="422">Slett albuminformasjon</string>
   <string id="423">Slett CD-informasjon</string>
   <string id="424">Velg</string>
@@ -401,9 +392,9 @@ the English template, and make it easier for translators to see which line belon
   <string id="431">Ingen mellomlagring</string>
   <string id="432">Slett film fra bibliotek</string>
   <string id="433">Er du sikker på at du vil slette '%s'?</string>
-  <string id="434">Fra %s, %i %s</string> <!--From <wind dir.> at <speed> <unit>--> 
+  <string id="434">Fra %s, %i %s</string> <!--From <wind dir.> at <speed> <unit>-->
 
-  <string id="437">Flyttbare medier</string>
+  <string id="437">Flyttbar media</string>
   <string id="438">Åpner filen</string>
   <string id="439">Mellomlagring</string>
   <string id="440">Harddisk</string>
@@ -446,7 +437,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="480">Utseende</string>
   <string id="481">Lydinnstillinger</string>
   <string id="482">Om XBMC</string>
-  
+
   <string id="485">Slett album</string>
   <string id="486">Gjenta</string>
   <string id="487">Gjenta én</string>
@@ -474,11 +465,11 @@ the English template, and make it easier for translators to see which line belon
   <string id="513">Hovedmeny</string>
   <string id="514">Manuelle innstillinger</string>
   <string id="515">Sjanger</string>
-  
+
   <string id="517">Nylig spilte album</string>
   <string id="518">Start</string>
   <string id="519">Start som..</string>
-  <string id="520"></string>
+
   <string id="521">Samlinger</string>
   <string id="522">Fjern kilde</string>
   <string id="523">Bytt media</string>
@@ -507,7 +498,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="546">Passthrough lydenhet</string>
   <string id="547">Ingen biografi for denne artist</string>
   <string id="548">Miks multikanals audio til stereo</string>
-  
+
   <string id="550">Sort.: %s</string>
   <string id="551">Navn</string>
   <string id="552">Dato</string>
@@ -534,6 +525,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="573">Sti</string>
   <string id="574">Land</string>
   <string id="575">Pågår</string>   <!-- 'In progress' in English -->
+  <string id="576">Ganger spilt</string>
 
   <string id="580">Sorteringsretning</string>
   <string id="581">Sorteringsmetode</string>
@@ -553,14 +545,14 @@ the English template, and make it easier for translators to see which line belon
   <string id="595">Gjenta: Av</string>
   <string id="596">Gjenta: En</string>
   <string id="597">Gjenta: Alle</string>
-  
+
   <string id="600">Ripp musikk-CD</string>
   <string id="601">Middels</string>
   <string id="602">Standard</string>
   <string id="603">Ekstrem</string>
   <string id="604">Konstant bitrate</string>
   <string id="605">Ripper fra CD...</string>
-  
+
   <string id="607">Til:</string>
   <string id="608">Kunne ikke rippe CD eller spor</string>
   <string id="609">CDDA-sti for ripping er ikke satt</string>
@@ -568,7 +560,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="611">Skriv inn nummer</string>
   <string id="612">Bits/Sample</string>
   <string id="613">Samplingsfrekvens</string>
-  
+
   <string id="620">CD-ripping</string>
   <string id="621">Koder</string>
   <string id="622">Kvalitet</string>
@@ -606,30 +598,30 @@ the English template, and make it easier for translators to see which line belon
   <string id="657">Bla etter mappe</string>
   <string id="658">Sanginformasjon</string>
   <string id="659">Ikke-lineær strekking </string>
-  
+
   <string id="660">Lydforsterkning</string>
   <string id="661">Velg eksportmappe</string>
   <string id="662">Denne filen er ikke lenger tilgjengelig.</string>
   <string id="663">Vil du fjerne den fra biblioteket?</string>
   <string id="664">Let etter script</string>
-  <string id="665">Kompresjonsnivå</string>
-  
+  <string id="665">Komprimeringsnivå</string>
+
   <string id="700">Renser bibliotek</string>
   <string id="701">Fjerner gamle sanger fra biblioteket</string>
-  <string id="702">Denne katalogen har blitt skannet før.</string>
+  <string id="702">Denne katalogen har blitt skannet før</string>
   <string id="705">Nettverk</string>
   <string id="706">- Server</string>
-  
+
   <string id="708">Bruk HTTP proxy for å få tilgang til Internett</string>
-  
+
   <string id="711">Internettprotokoll (IP)</string>
   <string id="712">Ugyldig port spesifisert. Verdien må være mellom 1 og 65535.</string>
   <string id="713">HTTP proxy</string>
-  
+
   <string id="715">- Tilordning</string>
   <string id="716">Automatisk (DHCP)</string>
   <string id="717">Manuell (statisk)</string>
-  <string id="718"></string>
+
   <string id="719">- IP adresse</string>
   <string id="720">- Nettmaske</string>
   <string id="721">- Standard gateway</string>
@@ -640,10 +632,10 @@ the English template, and make it easier for translators to see which line belon
   <string id="726">Forandringer er ikke lagret. Vil du fortsette uten å lagre?</string>
   <string id="727">Webserver</string>
   <string id="728">FTP-server</string>
-  <string id="729"></string>
+
   <string id="730">- Port</string>
-  <string id="731"></string>
-  <string id="732">Lagre &amp; bruke</string>
+
+  <string id="732">Lagre og aktiver</string>
   <string id="733">- Passord</string>
   <string id="734">Intet passord</string>
   <string id="735">- Tegnsett</string>
@@ -659,16 +651,16 @@ the English template, and make it easier for translators to see which line belon
   <string id="745">Ingen skannet informasjon for denne visningen</string>
   <string id="746">Skru av biblioteksmodus</string>
   <string id="747">Feil ved lasting av bilde</string>
-  <string id="748">Forandre sti</string>
+  <string id="748">Endre sti</string>
   <string id="749">Speil bilde</string>
   <string id="750">Er du sikker?</string>
-  <string id="751">Fjern kilde</string>
-  
+  <string id="751">Fjerner kilde</string>
+
   <string id="754">Legg til programlenke</string>
   <string id="755">Rediger programsti</string>
   <string id="756">Rediger programnavn</string>
   <string id="757">Rediger stidybden</string>
-  
+
   <string id="759">Vis: Stor liste</string>
   <string id="760">Gul</string>
   <string id="761">Hvit</string>
@@ -681,7 +673,7 @@ the English template, and make it easier for translators to see which line belon
   <!-- strings 768 and 769 reserved for more subtitle colors -->
 
   <string id="770">Feil %i: delt mappe ikke tilgjengelig</string>
-  <string id="771"></string>
+
   <string id="772">Lydmaskinvare</string>
   <string id="773">Søker</string>
   <string id="774">Mappe for bildefremvisning</string>
@@ -694,13 +686,13 @@ the English template, and make it easier for translators to see which line belon
   <string id="781">WEP</string>
   <string id="782">WPA</string>
   <string id="783">WPA2</string>
-  <string id="784">Lagrer innstillingene for nettverksenheten, Vennligst vent.</string>
+  <string id="784">Lagrer innstillingene for nettverksenheten. Vennligst vent.</string>
   <string id="785">Nettverksenheten startet uten feil.</string>
   <string id="786">Nettverksenheten startet ikke korrekt.</string>
-  <string id="787">Enheten deaktivert.</string>
+  <string id="787">Enheten deaktivert</string>
   <string id="788">Nettverksenheten deaktivert uten feil.</string>
   <string id="789">Trådløst nettverknavn (ESSID)</string>
-  
+
   <string id="791">Tillat programmer på dette systemet å styre XBMC</string>
   <string id="792">Port</string>
   <string id="793">Portområde</string>
@@ -709,17 +701,19 @@ the English template, and make it easier for translators to see which line belon
   <string id="796">Forsinkelse for kontinuerlig repetisjon (ms)</string>
   <string id="797">Maksimalt antall klienter</string>
   <string id="798">Internettilgang</string>
-  
+
   <string id="850">Ugyldig portnummer</string>
   <string id="851">Gyldig område er 1-65535</string>
   <string id="852">Gyldig område er 1024-65535</string>
-  
+
+  <string id="998">Legg til musikk..</string>
+  <string id="999">Legg til video..</string>
   <string id="1000">Forhåndsvisning</string>
   <string id="1001">Kan ikke koble til</string>
   <string id="1002">XBMC kunne ikke koble til nettverksplasseringen.</string>
   <string id="1003">Dette kan være fordi nettverket ikke er tilkoblet.</string>
   <string id="1004">Ønsker du å legge den til likevel?</string>
-  
+
   <string id="1006">IP-adresse</string>
   <string id="1007">Legg til nettverksplassering</string>
   <string id="1008">Protokoll</string>
@@ -766,15 +760,15 @@ the English template, and make it easier for translators to see which line belon
   <string id="1049">Skript-innstillinger</string>
   <string id="1050">Singler</string>
   <string id="1051">Skriv inn webadresse</string>
-  
+
   <string id="1200">SMB-klient</string>
   <string id="1202">Arbeidsgruppe</string>
   <string id="1203">Standard brukernavn</string>
   <string id="1204">Standard passord</string>
-  
+
   <string id="1207">WINS-server</string>
   <string id="1208">Monter delte SMB-mapper</string>
-  
+
   <string id="1210">Fjern</string>
   <string id="1211">Musikk</string>
   <string id="1212">Video</string>
@@ -799,25 +793,23 @@ the English template, and make it easier for translators to see which line belon
   <string id="1233">Programmer &amp; video &amp; musikk</string>
   <string id="1234">Programmer &amp; bilder &amp; musikk</string>
   <string id="1235">Programmer &amp; bilder &amp; video</string>
-  
-  <string id="1245"></string>
-  <string id="1246"></string>
-  <string id="1247"></string>
-  
+
   <string id="1250">Autooppdagelse</string>
   <string id="1251">Autooppdag system</string>
   <string id="1252">Kallenavn</string>
-  
+
   <string id="1254">Spør om det skal kobles til</string>
   <string id="1255">Send FTP brukernavn og passord</string>
   <string id="1256">Ping-intervall</string>
   <string id="1257">Ønsker du å koble til det oppdagede systemet?</string>
-  
-  <string id="1260">Zeroconf publisering</string>
-  
+
+  <string id="1260">Annonser disse tjenestene med Zeroconf</string>
+  <string id="1270">Tillat XBMC å motta AirPlay-innhold</string>
+  <string id="1271">Enhetsnavn</string>
+
   <string id="1300">Egendefinert lydenhet</string>
   <string id="1301">Egendefinert passthrough-enhet</string>
-  
+
   <string id="1396">forbigående</string>
   <string id="1397">og</string>
   <string id="1398">kjølig</string>
@@ -846,22 +838,20 @@ the English template, and make it easier for translators to see which line belon
   <string id="1421">mye</string> <!-- 'very high' -->
   <string id="1422">vind</string>
   <string id="1423">disig</string>
-  
+
   <!-- strings through to 1450 reserved for weather translation -->
-  
+
   <string id="1450">Slukk skjerm når ikke i bruk</string>
   <!-- strings through to 1470 reserved for power-saving -->
 
   <string id="2050">Spilletid</string>
-  
+
   <string id="2100">Skript mislyktes! : %s</string>
   <string id="2101">Nyere versjon trengs - se logg</string>
-  <string id="2102"></string>
-  <string id="2103"></string>
-  
+
   <string id="4501">Aktiver LCD/VFD</string>
-  
-  <string id="10000">Forside</string>
+
+  <string id="10000">Hjem</string>
   <string id="10001">Programmer</string>
   <string id="10002">Bilder</string>
   <string id="10003">Filbehandler</string>
@@ -883,19 +873,19 @@ the English template, and make it easier for translators to see which line belon
   <string id="10019">Innstillinger - Utseende</string>
   <string id="10020">Skript</string>
   <string id="10021">Nettleser</string>
-  
+
   <string id="10028">Videoer/Spilleliste</string>
   <string id="10034">Innstillinger - Profiler</string>
-  
+
   <string id="10100">Ja/Nei dialog</string>
   <string id="10101">Forløpsdialgboks</string>
-  
+
   <string id="10210">Leter etter undertekster...</string>
   <string id="10211">Leter etter eller henter undertekster...</string>
   <string id="10212">avslutter</string>
   <string id="10213">mellomlagrer</string>
   <string id="10214">Åpner datastrøm</string>
-  
+
   <string id="10500">Musikk/Spilleliste</string>
   <string id="10501">Musikk/Filer</string>
   <string id="10502">Musikk/Bibliotek</string>
@@ -908,14 +898,14 @@ the English template, and make it easier for translators to see which line belon
   <string id="10509">Spilling over nettverk</string>
   <string id="10510">Tillegg</string>
   <string id="10511">Systeminformasjon</string>
-  
+
   <string id="10516">Musikk - bibliotek</string>
   <string id="10517">Spilles nå - Musikk</string>
-  
+
   <string id="10522">Spilles nå - Videoer</string>
   <string id="10523">Albuminformasjon</string>
   <string id="10524">Informasjon om film</string>
-  
+
   <string id="12000">Velg dialog</string>
   <string id="12001">Musikk/Info</string>
   <string id="12002">Dialog OK</string>
@@ -923,24 +913,15 @@ the English template, and make it easier for translators to see which line belon
   <string id="12004">Skript/Info</string>
   <string id="12005">Fullskjermsvideo</string>
   <string id="12006">Lydvisualisering</string>
-  
+
   <string id="12008">Filstablingsdialog</string>
   <string id="12009">Gjenoppbygg indeks...</string>
-  <string id="12010">Returner til musikk</string>
-  <string id="12011">Returner til videoer</string>
-  <string id="12012"></string>
-  <string id="12013"></string>
-  <string id="12014"></string>
-  <string id="12015"></string>
-  <string id="12016"></string>
-  <string id="12017"></string>
-  <string id="12018"></string>
-  <string id="12019"></string>
-  <string id="12020"></string>
+  <string id="12010">Returner til musikkvindu</string>
+  <string id="12011">Returner til videovindu</string>
+
   <string id="12021">Start fra begynnelsen</string>
   <string id="12022">Fortsett fra %s</string>
-  <string id="12023"></string>
-  
+
   <string id="12310">0</string>
   <string id="12311">1</string>
   <string id="12312">2</string>
@@ -990,33 +971,31 @@ the English template, and make it easier for translators to see which line belon
   <string id="12377">Dette vil slette alle tidligere innstillinger</string>
   <string id="12378">Vis hvert bilde i</string>
   <string id="12379">Bruk effekter med panorering og zooming</string>
-  <string id="12380"></string>
-  <string id="12381"></string>
-  <string id="12382"></string>
+
   <string id="12383">12-timers klokke</string>
   <string id="12384">24-timers klokke</string>
   <string id="12385">Dag/måned</string>
   <string id="12386">Måned/dag</string>
-  
+
   <string id="12390">Systemets oppetid</string>
   <string id="12391">Minutter</string>
   <string id="12392">Timer</string>
   <string id="12393">Dager</string>
   <string id="12394">Total oppetid</string>
-  
-  <string id="12600">Været</string>
-  
+  <string id="12395">Batterinivå</string>
+
+  <string id="12600">Vær</string>
+
   <string id="12900">Skjermbeskytter</string>
   <string id="12901">Fullskjerm OSD</string>
-  
+
   <string id="13000">System</string>
   <string id="13001">Spinn ned harddisk umiddelbart</string>
   <string id="13002">Kun video</string>
   <string id="13003">- Forsinkelse</string>
   <string id="13004">- Minimum filvarighet</string>
   <string id="13005">Slå av</string>
-  <string id="13006"></string>
-  <string id="13007"></string>
+
   <string id="13008">Standardinnstilling for avslutning</string>
   <string id="13009">Avslutt</string>
   <string id="13010">Dvalemodus</string>
@@ -1024,32 +1003,34 @@ the English template, and make it easier for translators to see which line belon
   <string id="13012">Avslutt</string>
   <string id="13013">Omstart</string>
   <string id="13014">Minimer</string>
-  <string id="13015">Hendelse ved trykk på av/på-knapp</string>
-  
-  <string id="13020">Er en annen sesjon aktiv, eventuelt over ssh?</string>
+  <string id="13015">Av/på-knapp funksjon</string>
+  <string id="13016">Slå av system</string>
+
+  <string id="13020">Er en annen sesjon aktiv, kanskje over ssh?</string>
   <string id="13021">Montert utskiftbar harddisk</string>
   <string id="13022">Usikker fjerning av enhet</string>
   <string id="13023">Enhet ble fjernet</string>
   <string id="13024">Joystick ble plugget inn</string>
   <string id="13025">Joystick ble plugget ut</string>
-  
-  <string id="13050">Batterinivå lavt</string>
-  
+
+  <string id="13050">Lavt batterinivå</string>
+
   <string id="13100">Flimmerfilter</string>
   <string id="13101">La skjermdriver velge (krever omstart)</string>
+
   <string id="13105">Vertical blank sync</string>
-  <string id="13106">Frakoblet</string>
+  <string id="13106">Deaktivert</string>
   <string id="13107">Aktivert under filmavspilling</string>
   <string id="13108">Alltid aktivert</string>
   <string id="13109">Test oppløsning</string>
   <string id="13110">Lagre oppløsning?</string>
   <string id="13111">Vil du beholde denne oppløsningen?</string>
-  
-  <string id="13112">Programvareoppskalering</string>
+
+  <string id="13112">Høy kvalitet oppskalering</string>
   <string id="13113">Deaktivert</string>
   <string id="13114">Aktivert for SD materiale</string>
   <string id="13115">Alltid aktivert</string>
-  
+
   <string id="13116">Oppskaleringsmetode</string>
   <string id="13117">Bikubisk</string>
   <string id="13118">Lanczos</string>
@@ -1057,71 +1038,55 @@ the English template, and make it easier for translators to see which line belon
   <string id="13120">VDPAU-</string>
   <string id="13121">VDPAU HQ oppskaleringsnivå</string>
   <string id="13122">VDPAU studionivå fargekonvertering</string>
-  
+
   <string id="13130">Blank andre skjermer</string>
   <string id="13131">Deaktivert</string>
   <string id="13132">Blank skjermer</string>
-  
+
   <string id="13140">Aktive tilkoblinger oppdaget!</string>
   <string id="13141">Om du fortsetter kan det hende du ikke greier kontrollere XBMC</string>
   <string id="13142">lengre. Er du sikker på du vil stoppe hendelseserveren?</string>
-  
+
   <string id="13144">Endre Apple fjernkontrollmodus?</string>
-  <string id="13145">Om du nå bruker Apple fjernkontroll for å styre</string>
-  <string id="13146">XBMC, kan denne innstillingen påvirke muligheten</string>
-  <string id="13147">for fortsatt gjøre det. Vil du fortsette?</string>
-  
-  <string id="13150"></string>
-  <string id="13151"></string>
-  <string id="13152"></string>
-  <string id="13153"></string>
-  <string id="13154"></string>
-  <string id="13155"></string>
-  <string id="13156"></string>
-  <string id="13157"></string>
-  <string id="13158"></string>
-  <string id="13159">Nettverksmaske:</string>
-  <string id="13160">Gateway:</string>
+  <string id="13145">Hvis du bruker Apple fjernkontroll til å styre</string>
+  <string id="13146">XBMC nå, kan denne innstillingen påvirke muligheten</string>
+  <string id="13147">for fortsette styring. Ønsker du å gå videre?</string>
+
+  <string id="13159">Nettverksmaske</string>
+  <string id="13160">Gateway</string>
   <string id="13161">Primær DNS</string>
   <string id="13162">Initialisering mislyktes</string>
-  
-  <string id="13163"></string>
-  <string id="13164"></string>
-  <string id="13165"></string>
-  <string id="13166"></string>
-  <string id="13167"></string>
-  <string id="13168"></string>
-  <string id="13169"></string>
-  
-  
+
   <string id="13170">Aldri</string>
   <string id="13171">Umiddelbart</string>
   <string id="13172">Etter %i sek</string>
   <string id="13173">Harddisk installert dato:</string>
   <string id="13174">Harddisk antall oppstarter:</string>
-  
+
   <string id="13200">Profiler</string>
-  <string id="13201">Vil du slette profilen '%s'?</string>
+  <string id="13201">Slett profil '%s'?</string>
+
   <string id="13204">Sist lastede profil:</string>
   <string id="13205">Ukjent</string>
-  <string id="13206">Erstatt</string>
+  <string id="13206">Overskriv</string>
+
   <string id="13208">Alarm</string>
   <string id="13209">Alarmintervall (i minutter)</string>
   <string id="13210">Startet, alarm om %im</string>
   <string id="13211">Alarm!</string>
-  <string id="13212">Avbrutt med %im%er igjen</string>
+  <string id="13212">Avbrutt med %im%is igjen</string>
   <string id="13213">%2.0fm</string> <!--minutes (left from countdown)-->
   <string id="13214">%2.0fs</string> <!--seconds (left from countdown)-->
-  
-  <string id="13249">Søk etter undertekster i RAR filer</string>
+
+  <string id="13249">Søk etter undertekster i RAR-filer</string>
   <string id="13250">Bla etter undertekst...</string>
   <string id="13251">Flytt oppføring</string>
   <string id="13252">Flytt hit</string>
   <string id="13253">Avbryt flytting</string>
-  
+
   <string id="13270">Maskinvare:</string>
   <string id="13271">Prosessorbruk:</string>
-  
+
   <string id="13274">Tilkoblet, men ingen DNS er tilgjengelig.</string>
   <string id="13275">Harddisk</string>
   <string id="13276">DVD spiller</string>
@@ -1130,28 +1095,25 @@ the English template, and make it easier for translators to see which line belon
   <string id="13279">Nettverk</string>
   <string id="13280">Skjermkort</string>
   <string id="13281">Maskinvare</string>
-  
+
   <string id="13283">Operativsystem:</string>
   <string id="13284">Prosessorhastighet:</string>
-  <string id="13285"></string>
-  <string id="13286">Videobrikke:</string>
+
+  <string id="13286">Videoprosessor:</string>
   <string id="13287">Skjermoppløsning:</string>
-  <string id="13288"></string>
-  <string id="13289"></string>
-  <string id="13290"></string>
-  <string id="13291"></string>
+
   <string id="13292">A/V kabel:</string>
-  <string id="13293"></string>
+
   <string id="13294">DVD region:</string>
   <string id="13295">Internett:</string>
   <string id="13296">Tilkoblet</string>
   <string id="13297">Ikke tilkoblet. Sjekk nettverksinnstillinger.</string>
-  <string id="13298"></string>
+
   <string id="13299">Temperaturmål</string>
   <string id="13300">Viftehastighet</string>
   <string id="13301">Automatisk temperaturkontroll</string>
   <string id="13302">Hastighetskontroll for vifte</string>
-  <string id="13303">- Skrifttyper</string>
+  <string id="13303">- Fonter</string>
   <string id="13304">Snu tekststrenger</string>
   <string id="13305">Vis RSS-nyhetsstrømmer</string>
   <string id="13306">Vis oppføring i overordnet mappe</string>
@@ -1185,9 +1147,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="13334">Rediger knapp</string>
   <string id="13335">Gjør til standard</string>
   <string id="13336">Fjern knapp</string>
-  <string id="13338"></string>
-  <string id="13339"></string>
-  <string id="13340">Standard</string>
+
+  <string id="13340">Standard</string> <!-- "Leave as is"? -->
   <string id="13341">Grønn</string>
   <string id="13342">Oransje</string>
   <string id="13343">Rød</string>
@@ -1209,6 +1170,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="13359">Sett artistbilde</string>
   <string id="13360">Generer miniatyrbilder automatisk</string>
   <string id="13361">Aktiver tale</string>
+
   <string id="13375">Aktiver enhet</string>
   <string id="13376">Volum</string>
   <string id="13377">Standard visningsmodus</string>
@@ -1246,7 +1208,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="13409">Topp 250</string>
   <string id="13410">Still inn på Last.FM</string>
   <string id="13411">Minimum viftehastighet</string>
-  
+  <string id="13412">Spill herfra</string>
   <string id="13413">Laster ned</string>
   <string id="13414">Inkluder artister som bare opptrer i samlinger</string>
   <string id="13415">Rendringsmetode</string>
@@ -1259,39 +1221,45 @@ the English template, and make it easier for translators to see which line belon
   <string id="13422">Start bildefremvisning her</string>
   <string id="13423">Husk for denne katalogen</string>
   <string id="13424">Bruk 'Pixel buffer objects'</string>
-  <string id="13425">Broadcom Crystal HD</string>
+  <string id="13425">Tillat maskinvareakselerasjon (VDPAU)</string>
   <string id="13426">Tillat maskinvareakselerasjon (VAAPI)</string>
   <string id="13427">Tillat maskinvareakselerasjon (DXVA2)</string>
   <string id="13428">Tillat maskinvareakselerasjon (CrystalHD)</string>
   <string id="13429">Tillat maskinvareakselerasjon (VDADecoder)</string>
   <string id="13430">Tillat maskinvareakselerasjon (OpenMax)</string>
-  <string id="13431">Piksel shader</string> <!-- improve here -->
-  
+  <string id="13431">Piksel Shaders</string> <!-- "Pixel Shaders" -->
+  <string id="13432">Tillat maskinvareakselerasjon (VideoToolbox)</string>
+
   <string id="13500">A/V synkmetode</string>
   <string id="13501">Lydklokking</string>
   <string id="13502">Videoklokking (dropp/dupliser lyd)</string>
   <string id="13503">Videoklokking (resample lyd)</string>
-  <string id="13504">Maksimal resampling (%)</string>
+  <string id="13504">Maksimum resamplingsnivå (%)</string>
   <string id="13505">Resamplingskvalitet</string>
   <string id="13506">Lav (rask)</string>
   <string id="13507">Medium</string>
   <string id="13508">Høy</string>
-  <string id="13509">Veldig høy (sakte)</string>
+  <string id="13509">Veldig høy (treg!)</string>
   <string id="13510">Synkroniser avspilling til skjerm</string>
-  
+
+  <string id="13550">Pause under endring av oppdateringsfrekvens</string>
+  <string id="13551">Av</string>
+  <string id="13552">%.1f sekund</string>
+  <string id="13553">%.1f sekunder</string>
+
   <string id="13600">Apple fjernkontroll</string>
-  
+
   <string id="13602">Tillat oppstart av XBMC fra fjernkontrollen</string>
   <string id="13603">Sekvensforsinkelse</string>
-  
+
   <string id="13610">Deaktivert</string>
   <string id="13611">Standard</string>
   <string id="13612">Universal fjernkontroll</string>
   <string id="13613">Multifjernkontroll (Harmony)</string>
-  
+
   <string id="13620">Feil med Apple fjernkontroll</string>
-  <string id="13621">Apple fjernkontroll kan aktiveres</string>
-  
+  <string id="13621">Apple fjernkontroll kunne aktiveres</string>
+
   <string id="14000">Stable</string>
   <string id="14001">Avstable</string>
   <string id="14003">Laster ned spilleliste...</string>
@@ -1299,8 +1267,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="14005">Analyserer liste av strømmer...</string>
   <string id="14006">Kunne ikke laste ned liste av strømmer</string>
   <string id="14007">Kunne ikke laste ned spilleliste</string>
-  
-  <string id="14009">Spill mappe</string>
+
+  <string id="14009">Spillmappe</string>
   <string id="14010">Bytt automatisk til miniatyrbilder ved</string>
   <string id="14011">Aktiver automatisk bytte til miniatyrvisning</string>
   <string id="14012">- Bruk store ikoner</string>
@@ -1326,12 +1294,12 @@ the English template, and make it easier for translators to see which line belon
   <string id="14034">DVD-mellomlager - DVD-spiller</string>
   <string id="14035">- Lokalt nettverk</string>
   <string id="14036">Tjenester</string>
-  
+
   <string id="14038">Nettverksinnstillingene er forandret</string>
   <string id="14039">XBMC må starte på nytt for å forandre</string>
   <string id="14040">nettverksinnstillingene. Vil du starte på nytt nå?</string>
-  <string id="14041"></string>
-  
+  <string id="14041">Båndbreddebegrensning</string> <!-- "Internet connection bandwidth limitation" -->
+
   <string id="14043">- Skru av maskin under spilling</string>
   <string id="14044">%i min</string>
   <string id="14045">%i sek</string>
@@ -1343,7 +1311,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="14051">Tidsformat</string>
   <string id="14052">Datoformat</string>
   <string id="14053">GUI-filtre</string>
-  
+
   <string id="14055">Bruk bakgrunnsskanning</string>
   <string id="14056">Stopp skanning</string>
   <string id="14057">Ikke mulig når det skannes etter mediainformasjon</string>
@@ -1359,9 +1327,9 @@ the English template, and make it easier for translators to see which line belon
   <string id="14067">Skriv inn datoen i DD/MM/ÅÅÅÅ format</string>
   <string id="14068">Skriv inn IP-adressen</string>
   <string id="14069">Bruk disse innstillingene nå?</string>
-  <string id="14070">Lagre innstillinger nå</string>
+  <string id="14070">Lagre endringer nå</string>
   <string id="14071">Tillat endring av filnavn og sletting</string>
-  
+
   <string id="14074">Sett tidssone</string>
   <string id="14075">Bruk sommertid</string>
   <string id="14076">Legg til favoritter</string>
@@ -1384,27 +1352,27 @@ the English template, and make it easier for translators to see which line belon
   <string id="14093">Sikkerhet</string>
   <string id="14094">Inn-enheter</string>
   <string id="14095">Strømsparing</string>
-  
+
   <string id="15015">Fjern</string>
   <string id="15016">Spill</string>
-  
+
   <string id="15019">Legg til</string>
-  
+
   <string id="15052">Passord</string>
-  
+
   <string id="15100">Bibliotek</string>
   <string id="15101">Database</string>
   <string id="15102">* Alle album</string>
   <string id="15103">* Alle artister</string>
   <string id="15104">* Alle sanger</string>
   <string id="15105">* Alle sjangre</string>
-  
+
   <string id="15107">Mellomlagrer...</string>
   <string id="15108">Navigasjonslyder</string>
   <string id="15109">Standard for skinnet</string>
   <string id="15111">- Tema</string>
   <string id="15112">Standardtema</string>
-  
+
   <string id="15200">Last.fm</string>
   <string id="15201">Send sanger til Last.fm</string>
   <string id="15202">Last.fm brukernavn</string>
@@ -1414,7 +1382,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="15206">Feil ved autorisasjon: Sjekk brukernavn og passord</string>
   <string id="15207">Tilkoblet</string>
   <string id="15208">Ikke tilkoblet</string>
-  <string id="15209">Avgi intervall %i</string>
+  <string id="15209">Innsendingsintervall %i</string>
   <string id="15210">Cachet %i sanger</string>
   <string id="15211">Sender...</string>
   <string id="15212">Sender om %i sekunder</string>
@@ -1426,8 +1394,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="15218">Libre.fm brukernavn</string>
   <string id="15219">Libre.fm passord</string>
   <string id="15220">Libre.fm</string>
-  <string id="15221">Scrobbler</string>
-  
+  <string id="15221">Innsending av sang</string> <!-- "Song submission" -->
+
   <string id="15250">Send inn Last.fm-radio til Last.fm</string>
   <string id="15251">Kobler til Last.fm...</string>
   <string id="15252">Velger stasjon...</string>
@@ -1463,10 +1431,10 @@ the English template, and make it easier for translators to see which line belon
   <string id="15282">Skriv inn et tagg-navn for å finne liknende</string>
   <string id="15283">Spor nylig lyttet til av %name%</string>
   <string id="15284">Hør på %name%'s anbefalinger for Last.fm radio</string>
-  <string id="15285">Toppliste for bruker %name%</string>
-  <string id="15286">Hør på %name%'s spilleliste i Last.fm radio</string>
+  <string id="15285">Topp tagger for bruker %name%</string>
+
   <string id="15287">Legge valgte sang til favoritter?</string>
-  <string id="15288">Sperre for valgte sang?</string>
+  <string id="15288">Vil du sperre valgte sang?</string>
   <string id="15289">Lagt til dine favoritter: '%s'.</string>
   <string id="15290">Kunne ikke legge '%s' til dine favoritter.</string>
   <string id="15291">Sperret: '%s'.</string>
@@ -1477,21 +1445,21 @@ the English template, and make it easier for translators to see which line belon
   <string id="15296">Opphev sperre.</string>
   <string id="15297">Ønsker du å fjerne denne sangen fra dine favoritter?</string>
   <string id="15298">Ønsker du å oppheve sperringen av denne sangen?</string>
-  
+
   <string id="15300">Sti ble ikke funnet eller er ugyldig</string>
   <string id="15301">Kunne ikke koble til nettverksserver</string>
   <string id="15302">Ingen servere funnet</string>
   <string id="15303">Arbeidsgruppe ikke funnet</string>
-  
+
   <string id="15310">Åpner kilde med flere stier</string>
   <string id="15311">Sti:</string>
-  
+
   <string id="16000">Generelt</string>
-  
+
   <string id="16002">Internettoppslag</string>
   <string id="16003">Spiller</string>
   <string id="16004">Spill media fra plate</string>
-  
+
   <string id="16008">Skriv inn ny tittel</string>
   <string id="16009">Skriv inn filmens navn</string>
   <string id="16010">Skriv inn profilnavnet</string>
@@ -1520,27 +1488,23 @@ the English template, and make it easier for translators to see which line belon
   <string id="16033">Kunne ikke åpne databasen.</string>
   <string id="16034">Kunne ikke hente sanger fra databasen.</string>
   <string id="16035">Partymode spilleliste</string>
-  
+  <string id="16036">De-interlace (Halve)</string> <!-- "De-interlace (Half)" -->
+
   <string id="16100">Alle filmer</string>
   <string id="16101">Usette</string>
   <string id="16102">Sette</string>
   <string id="16103">Merk som sett</string>
   <string id="16104">Merk som usett</string>
   <string id="16105">Rediger tittel</string>
-  <string id="16106"></string>
-  <string id="16107"></string>
-  <string id="16108"></string>
-  <string id="16109"></string>
-  <string id="16110"></string>
-  
+
   <string id="16200">Handlingen ble avbrutt</string>
   <string id="16201">Kopiering mislykket</string>
-  <string id="16202">Kunne ikke kopiere en eller flere av filene</string>
+  <string id="16202">Kunne ikke kopiere en eller flere filer</string>
   <string id="16203">Flytting mislykket</string>
-  <string id="16204">Kunne ikke flytte en eller flere av filene</string>
+  <string id="16204">Kunne ikke flytte en eller flere filer</string>
   <string id="16205">Sletting mislykket</string>
-  <string id="16206">Kunne ikke slette en eller flere av filene</string>
-  
+  <string id="16206">Kunne ikke slette en eller flere filer</string>
+
   <string id="16300">Videoskaleringsmetode</string>
   <string id="16301">Nærmeste nabo</string>
   <string id="16302">Bilineær</string>
@@ -1553,37 +1517,38 @@ the English template, and make it easier for translators to see which line belon
   <string id="16309">Sinc (programvare)</string>
   <string id="16310">Temporær</string>
   <string id="16311">Temporær/romlig</string>
-  <string id="16312">(VDPAU) Støyreduksjon</string>
-  <string id="16313">(VDPAU) Skarphet</string>
+  <string id="16312">(VDPAU)Støyreduksjon</string>
+  <string id="16313">(VDPAU)Skarphet</string>
   <string id="16314">Omvendt telecine</string>
   <string id="16315">Lanczos3-optimalisert</string>
   <string id="16316">Automatisk</string>
   <string id="16317">Temporær (halv)</string>
   <string id="16318">Temporær/romlig (halv)</string>
   <string id="16319">DXVA</string>
-  
-  <string id="16400">Post-prosessering av video</string>
-  <string id="16401">Deaktivert</string>
-  <string id="16402">Aktivert for SD-innhold</string>
-  <string id="16403">Alltid aktivert</string>
-  
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimert</string>
+
+  <string id="16400">Post-prosessering</string>
+
   <string id="17500">Slå av skjerm etter</string>
-  
+
   <string id="19000">Bytt til kanal</string>
-  
+
   <string id="20000">Mappe for lagret musikk</string>
   <string id="20001">Bruk ekstern DVD-spiller</string>
   <string id="20002">Ekstern DVD-spiller</string>
   <string id="20003">Mappe for trainere</string>
   <string id="20004">Mappe for skjermbilder</string>
-  
+
   <string id="20006">Mappe for spillelister</string>
   <string id="20007">Opptak</string>
   <string id="20008">Skjermbilder</string>
   <string id="20009">Bruk XBMC</string>
-  
+
   <string id="20011">Musikkspillelister</string>
-  <string id="20012">Filmspillelister</string>
+  <string id="20012">Videospillelister</string>
   <string id="20013">Ønsker du å starte spillet?</string>
   <string id="20014">Sorter etter: Spilleliste</string>
   <string id="20015">Ekstern miniatyr</string>
@@ -1591,14 +1556,14 @@ the English template, and make it easier for translators to see which line belon
   <string id="20017">Lokal miniatyr</string>
   <string id="20018">Ingen miniatyr</string>
   <string id="20019">Velg miniatyr</string>
-  
+
   <!-- string id 20022 will always be set to an empty string (LocalizeStrings.cpp)-->
   <string id="20022"></string>
   <string id="20023">Konflikt</string>
   <string id="20024">Skann nye</string>
   <string id="20025">Skann alle</string>
   <string id="20026">Region</string>
-  
+
   <!-- string id's 20027 thru 20034 are reserved for temperature strings (LocalizeStrings.cpp)-->
 
   <string id="20037">Sammendrag</string>
@@ -1620,7 +1585,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="20053">Forlot mastermodus</string>
   <string id="20054">Gikk i mastermodus</string>
   <string id="20055">Allmusic.com miniatyr</string>
-  
+
   <string id="20057">Fjern miniatyrbilde</string>
   <string id="20058">Legg til profil...</string>
   <string id="20059">Spør etter info for alle album</string>
@@ -1693,9 +1658,9 @@ the English template, and make it easier for translators to see which line belon
   <string id="20126">Logg av</string>
   <string id="20128">Gå til rot</string>
   <string id="20129">Weave</string>
-  <string id="20130">Weave (inverted)</string>
+  <string id="20130">Weave (invertert)</string>
   <string id="20131">Blend</string>
-  <string id="20132">Start film på nytt</string>
+  <string id="20132">Start video på nytt</string>
   <string id="20133">Endre nettverkssteder</string>
   <string id="20134">Fjern nettverkssted</string>
   <string id="20135">Vil du skanne mappen?</string>
@@ -1746,12 +1711,11 @@ the English template, and make it easier for translators to see which line belon
   <string id="20180">Symboler</string>
   <string id="20181">Tilbake</string>
   <string id="20182">Mellomrom</string>
-  <string id="20183">Last skinn om igjen</string>
+  <string id="20183">Last skinn på ny</string>
   <string id="20184">Roter bilde i henhold til EXIF-informasjon</string>
   <string id="20185">Bruk plakatvisninger for TV-serier</string>
   <string id="20186">Vennligst vent</string>
-  <string id="20187"></string>
-  <string id="20188"></string>
+
   <string id="20189">Aktiver autorulling for plott og anmeldelse</string>
   <string id="20190">Egendefinert</string>
   <string id="20191">Aktiver feilsøkingslogging</string>
@@ -1763,9 +1727,9 @@ the English template, and make it easier for translators to see which line belon
   <string id="20197">Importer musikkbibliotek</string>
   <string id="20198">Ingen artist funnet!</string>
   <string id="20199">Nedlasting av artistinfo mislyktes</string>
-  
- 
- 
+
+  <!-- string id's 20200 thru 20211 are reserved for speedstrings (LocalizeStrings.cpp)-->
+
   <string id="20250">Party on! (filmer)</string>
   <string id="20251">Mikser drinker (filmer)</string>
   <string id="20252">Fyller glassene (filmer)</string>
@@ -1774,37 +1738,34 @@ the English template, and make it easier for translators to see which line belon
   <string id="20255">Første pålogging, editer profilen din</string>
   <string id="20256">HTS Tvheadend-klient</string>
   <string id="20257">VDR Streamdev-klient</string>
-  
+  <string id="20258">MythTV-klient</string>
+  <string id="20259">Nettverksfilsystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple Filprotokoll (AFP)</string>
+
   <string id="20300">Webserverkatalog (HTTP)</string>
   <string id="20301">Webserverkatalog (HTTPS)</string>
   <string id="20302">Kunne ikke skrive til mappe:</string>
-  <string id="20303">Vil du ignorere problemet og fortsette?</string>
+  <string id="20303">Vil du ignorere og fortsette?</string>
   <string id="20304">RSS-strøm</string>
-  
-  <string id="20306"></string>
+
   <string id="20307">Sekundær DNS</string>
   <string id="20308">DHCP-server:</string>
   <string id="20309">Lag ny mappe</string>
   <string id="20310">Dim LCD ved avspilling</string>
   <string id="20311">Ukjent eller integrert (beskyttet)</string>
   <string id="20312">Dim LCD ved pause</string>
-  <string id="20313"></string>
+
   <string id="20314">Videoer - Bibliotek</string>
-  <string id="20315"></string>
+
   <string id="20316">Sorter etter: ID</string>
-  <string id="20317"></string>
-  <string id="20318"></string>
-  <string id="20319"></string>
-  <string id="20320"></string>
-  <string id="20321"></string>
-  <string id="20322"></string>
-  <string id="20323"></string>
+
   <string id="20324">Spill del...</string>
   <string id="20325">Nullstill kalibrering</string>
   <string id="20326">Dette vil sette kalibreringen for %s</string>
   <string id="20327">til standardverdiene.</string>
   <string id="20328">Bla etter mål</string>
-  
+
   <string id="20330">Bruk mappenavn ved oppslag</string>
   <string id="20331">Fil</string>
   <string id="20332">Bruk fil- eller mappenavn ved oppslag?</string>
@@ -1851,7 +1812,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="20373">Sesong</string>
   <string id="20374">Laster ned informasjon om film</string>
   <string id="20375">Opphev tilordning av innhold</string>
-  
+  <string id="20376">Original tittel</string>
   <string id="20377">Oppdater informasjon om TV-serie</string>
   <string id="20378">Oppdater informasjon for alle episoder?</string>
   <string id="20379">Valgt mappe inneholder kun én TV-serie</string>
@@ -1879,7 +1840,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="20401">Spill musikkvideo</string>
   <string id="20402">Hent bilder for skuespiller automatisk når en legger til i bibliotek</string>
   <string id="20403">Sett miniatyr for skuespiller</string>
-  
+
   <string id="20405">Fjern bokmerke for episode</string>
   <string id="20406">Sett bokmerke for episode</string>
   <string id="20407">Skraperinnstillinger</string>
@@ -1893,10 +1854,11 @@ the English template, and make it easier for translators to see which line belon
   <string id="20415">Søker etter nytt innhold</string>
   <string id="20416">Første gang sendt</string>
   <string id="20417">Forfatter</string>
-  <string id="20418">Rens fil- og katalognavn</string>
-  
+  <string id="20418"></string>
+  <string id="20419">Vis metadata i filvisning</string>
+
   <string id="20420">Aldri</string>
-  <string id="20421">Hvis bare én sesong</string>
+  <string id="20421">Bare hvis én sesong</string>
   <string id="20422">Alltid</string>
   <string id="20423">Har trailer</string>
   <string id="20424">Usann</string>
@@ -1929,27 +1891,31 @@ the English template, and make it easier for translators to see which line belon
   <string id="20451">Land</string>
   <string id="20452">episode</string>
   <string id="20453">episoder</string>
-  
-  
+  <string id="20456">Lytter</string>
+  <string id="20457">Lyttere</string>
+  <string id="20456">Sett FanArt for filmsett</string>
+  <string id="20457">Filmsett</string>
+  <!-- up to 21329 is reserved for the video db !! !-->
+
   <string id="21330">Vis skjulte filer og mapper</string>
-  
+
   <string id="21331">TuxBox klient</string>
   <string id="21332">ADVARSEL: TuxBoxen er i opptaksmodus!</string>
   <string id="21333">Streamingen vil bli stoppet!</string>
   <string id="21334">Zap til kanal: %s mislyktes!</string>
   <string id="21335">Vil du starte streamingen?</string>
-  <string id="21336">Kobler opp til: %s</string>
+  <string id="21336">Kobler til: %s</string>
   <string id="21337">TuxBox enhet</string>
-  
-  
+  <!-- up to 21355 is reserved for the TuxBox Client!! !-->
+
   <string id="21359">Legg til delt media....</string>
   <string id="21360">Del video- og musikkbibliotek gjennom UPnP</string>
-  
+
   <string id="21364">Rediger delt media</string>
   <string id="21365">Fjern delt media</string>
   <string id="21366">Mappe for undertekst</string>
   <string id="21367">Film &amp; alternativ mappe for undertekst</string>
-  
+
   <string id="21369">Aktiver mus</string>
   <string id="21370">Aktiver navigasjonslyder under medieavspilling</string>
   <string id="21371">Miniatyr</string>
@@ -2035,7 +2001,14 @@ the English template, and make it easier for translators to see which line belon
   <string id="21451">Internettilkobling kreves.</string>
   <string id="21452">Hent flere...</string>
   <string id="21453">Rotfilsystem</string>
-  
+
+  <string id="21460">Plassering av undertittel</string>
+  <string id="21461">Fikset</string>
+  <string id="21462">Bunnen av video</string>
+  <string id="21463">Under video</string>
+  <string id="21464">Toppen av video</string>
+  <string id="21465">Over video</string>
+
   <string id="21800">Filnavn</string>
   <string id="21801">Filsti</string>
   <string id="21802">Filstørrelse</string>
@@ -2045,7 +2018,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="21806">Kommentar</string>
   <string id="21807">Farge/svart-hvit</string>
   <string id="21808">JPEG-prosess</string>
-  
+
   <string id="21820">Dato/tid</string>
   <string id="21821">Beskrivelse</string>
   <string id="21822">Kameramerke</string>
@@ -2070,7 +2043,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="21841">Lengdegrad (GPS)</string>
   <string id="21842">Høyde over havet (GPS)</string>
   <string id="21843">Orientering </string>
-  
+
   <string id="21860">Tilleggskategorier</string>
   <string id="21861">Nøkkelord </string>
   <string id="21862">Bildetekst</string>
@@ -2112,16 +2085,16 @@ the English template, and make it easier for translators to see which line belon
   <string id="21898">År aktiv</string>
   <string id="21899">Plateselskap</string>
   <string id="21900">Etablert/startet</string>
-  
-  
-  
+
+  <!-- strings 21900 thru 21999 reserved for slideshow info -->
+
   <string id="22000">Oppdater bibliotek ved oppstart</string>
   <string id="22001">Ikke vis biblioteksoppdateringer som skjer i bakgrunnen</string>
   <string id="22002">- DNS suffiks</string>
-  
+
   <string id="22003">%2.3fs</string>
   <string id="22004">Forsinket med: %2.3fs</string>
-  <string id="22005">Framskyndet med: %2.3fs</string>
+  <string id="22005">Fremskyndet: %2.3fs</string>
   <string id="22006">Tidsforskyvning for undertekst </string>
   <string id="22007">OpenGL leverandør:</string>
   <string id="22008">OpenGL renderer:</string>
@@ -2141,9 +2114,9 @@ the English template, and make it easier for translators to see which line belon
   <string id="22022">Vis filmfiler i lister</string>
   <string id="22023">DirectX forhandler:</string>
   <string id="22024">Direct3D versjon:</string>
-  
-  
-  <string id="22030">Skrifttype</string>
+
+  <!-- strings 22030 thru 22060 reserved for karaoke -->
+  <string id="22030">Font</string>
   <string id="22031">- Størrelse</string>
   <string id="22032">- Farger</string>
   <string id="22033">- Tegnsett</string>
@@ -2157,32 +2130,32 @@ the English template, and make it easier for translators to see which line belon
   <string id="22041">hvitt/rødt</string>
   <string id="22042">hvitt/blått</string>
   <string id="22043">svart/hvitt</string>
-  
+
   <string id="22079">Standardhandling for «velg»</string>
   <string id="22080">Velg</string>
   <string id="22081">Vis informasjon</string>
   <string id="22082">Mer...</string>
   <string id="22083">Spill alle</string>
-  
+
   <string id="23049">Tekst-tv utilgjengelig</string>
   <string id="23050">Aktiver tekst-tv</string>
   <string id="23051">Del %i</string>
   <string id="23052">Bufrer %i byte</string>
   <string id="23053">Stopper</string>
   <string id="23054">Kjører</string>
-  
-  
+
+  <!-- strings 23100 thru 23150 reserved for external player -->
   <string id="23100">Ekstern spiller aktiv</string>
   <string id="23101">Trykk OK for å avslutte spilleren</string>
-  
+
   <string id="23104">Trykk OK når avspilling er ferdig</string>
-  
-  
+
+  <!-- strings 24000 thru 24299 reserved for the Add-ons framework -->
   <string id="24000">Tillegg</string>
   <string id="24001">Tillegg</string>
   <string id="24002">Alternativer for tillegg</string>
   <string id="24003">Informasjon om tillegg</string>
-  
+
   <string id="24005">Mediekilder</string>
   <string id="24007">Filminformasjon</string>
   <string id="24008">Skjermsparer</string>
@@ -2195,7 +2168,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="24015">Musikkvideoinformasjon</string>
   <string id="24016">Albuminformasjon</string>
   <string id="24017">Artistinformasjon</string>
-  
+  <string id="24018">Tjenester</string>
+
   <string id="24020">Konfigurer</string>
   <string id="24021">Deaktiver</string>
   <string id="24022">Aktiver</string>
@@ -2211,12 +2185,17 @@ the English template, and make it easier for translators to see which line belon
   <string id="24036">Endringslogg</string>
   <string id="24037">Avinstaller</string>
   <string id="24038">Installer</string>
-  <string id="24039">Deaktivere tillegg</string>
+  <string id="24039">Deaktiverte tillegg</string>
   <string id="24040">(Tilbakestill innstilling)</string>
   <string id="24041">Installer fra zip-fil</string>
   <string id="24042">Laster ned %i%%</string>
   <string id="24043">Tilgjengelige oppdateringer</string>
-  
+  <string id="24044">Programkrav ikke møtt</string> <!-- "Dependencies not met" -->
+  <string id="24045">Tillegg har ikke den korrekte strukturen</string>
+  <string id="24046">%s benyttes av følgende tillegg</string>
+  <string id="24047">Dette tillegget kan ikke bli avinstallert</string>
+  <string id="24048">Tilbakestill</string>
+
   <string id="24050">Tilgjengelige tillegg</string>
   <string id="24051">Versjon:</string>
   <string id="24052">Fraskrivelse:</string>
@@ -2233,7 +2212,7 @@ the English template, and make it easier for translators to see which line belon
   <string id="24067">Laster ned tillegg</string>
   <string id="24068">Oppdatering tilgjengelig</string>
   <string id="24069">Oppdater</string>
-  
+
   <string id="24070">Tillegg kunne ikke lastes inn.</string>
   <string id="24071">En ukjent feil har oppstått.</string>
   <string id="24072">Innstillinger påkrevet</string>
@@ -2243,30 +2222,24 @@ the English template, and make it easier for translators to see which line belon
   <string id="24080">Forsøk ny oppkobling?</string>
   <string id="24089">Tillegg starter på nytt</string>
   <string id="24090">Lås tilleggsbehandler</string>
-  
-  <string id="24091"></string>
-  <string id="24092"></string>
-  <string id="24093"></string>
-  <string id="24094"></string>
-  <string id="24095"></string>
-  
+
+  <string id="24094">(nåværende)</string>
+  <string id="24095">(svartelistet)</string>
   <string id="24096">Tillegget er markert som ødelagt i pakkebrønnen.</string>
   <string id="24097">Vil du deaktivere tillegget?</string>
   <string id="24098">Ødelagt</string>
   <string id="24099">Ønsker du å bytte til dette skinnet nå?</string>
   <string id="25000">Varslinger</string>
-  
-  
+
+  <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
   <string id="29800">Biblioteksmodus</string>
   <string id="29801">QWERTY-tastatur</string>
   <string id="29802">Passthrough-lyd i bruk</string>
-  
-  <string id="29999"></string>
-  
-  
-  
-  
-  
+
+  <!-- strings 30000 thru 30999 reserved for plugins and plugin settings -->
+  <!-- strings 31000 thru 31999 reserved for skins -->
+  <!-- strings 32000 thru 32999 reserved for scripts -->
+  <!-- strings 33000 thru 33999 reserved for common strings used in addons -->
   <string id="33001">Kvalitet på trailer</string>
   <string id="33002">Strøm</string>
   <string id="33003">Last ned</string>
@@ -2339,15 +2312,20 @@ the English template, and make it easier for translators to see which line belon
   <string id="33081">Denne filen er stablet, velg den delen du vil spille fra.</string>
   <string id="33082">Sti til skript</string>
   <string id="33083">Aktiver knapp for egendefinert skript</string>
-  
-  
+
+  <string id="33100">Kunne ikke starte</string> <!-- Disse trenger gjennomgang -->
+  <string id="33101">Webserver</string>
+  <string id="33102">Event Server</string>
+  <string id="33103">Remote communication server</string>
+
+  <!-- translators: no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
   <string id="34002">Wav</string>
   <string id="34003">DXVA2</string>
   <string id="34004">VAAPI</string>
   <string id="34005">Flac</string>
-  
+
   <string id="34100">Høyttalerkonfigurasjon</string>
   <string id="34101">2.0</string>
   <string id="34102">2.1</string>
@@ -2359,6 +2337,8 @@ the English template, and make it easier for translators to see which line belon
   <string id="34108">5.1</string>
   <string id="34109">7,0</string>
   <string id="34110">7.1</string>
-  
-  
+  <!-- 34112-34200 reserved for future use -->
+
+  <string id="34201">Kan ikke finne neste ting å spille</string> <!-- item? -->
+  <string id="34202">Kan ikke finne tidligere ting å spille</string>
 </strings>

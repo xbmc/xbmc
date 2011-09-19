@@ -68,7 +68,7 @@ public:
   void SetViewMode(int iViewMode) { CSharedLock lock(m_sharedSection); if (m_pRenderer) m_pRenderer->SetViewMode(iViewMode); };
 
   // Functions called from mplayer
-  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
   bool IsConfigured();
 
   int AddVideoPicture(DVDVideoPicture& picture);
@@ -117,6 +117,15 @@ public:
       return false;
   }
 
+  bool Supports(EDEINTERLACEMODE method)
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->Supports(method);
+    else
+      return false;
+  }
+
   bool Supports(EINTERLACEMETHOD method)
   {
     CSharedLock lock(m_sharedSection);
@@ -141,6 +150,14 @@ public:
   CStdString GetVSyncState();
 
   void UpdateResolution();
+
+  unsigned int GetProcessorSize()
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->GetProcessorSize();
+    return 0;
+  }
 
 #ifdef HAS_GL
   CLinuxRendererGL *m_pRenderer;
@@ -181,13 +198,22 @@ protected:
   , PRESENT_FRAME2
   };
 
+  enum EPRESENTMETHOD
+  {
+    PRESENT_METHOD_SINGLE = 0,
+    PRESENT_METHOD_BLEND,
+    PRESENT_METHOD_WEAVE,
+    PRESENT_METHOD_BOB,
+  };
+
+
   double     m_presenttime;
   double     m_presentcorr;
   double     m_presenterr;
   double     m_errorbuff[ERRORBUFFSIZE];
   int        m_errorindex;
   EFIELDSYNC m_presentfield;
-  EINTERLACEMETHOD m_presentmethod;
+  EPRESENTMETHOD m_presentmethod;
   EPRESENTSTEP     m_presentstep;
   int        m_presentsource;
   CEvent     m_presentevent;

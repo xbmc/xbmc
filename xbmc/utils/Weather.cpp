@@ -109,8 +109,6 @@ FIXME'S
 //#define WEATHER_USE_RAR 1
 //#define WEATHER_SOURCE_FILE "special://xbmc/media/weather.rar"
 
-CWeather g_weatherManager;
-
 bool CWeatherJob::m_imagesOkay = false;
 
 CWeatherJob::CWeatherJob(const CStdString &areaCode)

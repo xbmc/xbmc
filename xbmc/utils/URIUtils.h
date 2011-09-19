@@ -48,8 +48,10 @@ public:
   static void GetCommonPath(CStdString& strPath, const CStdString& strPath2);
   static CStdString GetParentPath(const CStdString& strPath);
   static bool GetParentPath(const CStdString& strPath, CStdString& strParent);
+  static CStdString SubstitutePath(const CStdString& strPath);
 
   static bool IsAddonsPath(const CStdString& strFile);
+  static bool IsSourcesPath(const CStdString& strFile);
   static bool IsCDDA(const CStdString& strFile);
   static bool IsDAAP(const CStdString& strFile);
   static bool IsDOSPath(const CStdString &path);
@@ -70,6 +72,7 @@ public:
   static bool IsMusicDb(const CStdString& strFile);
   static bool IsMythTV(const CStdString& strFile);
   static bool IsNfs(const CStdString& strFile);  
+  static bool IsAfp(const CStdString& strFile);    
   static bool IsOnDVD(const CStdString& strFile);
   static bool IsOnLAN(const CStdString& strFile);
   static bool IsPlugin(const CStdString& strFile);

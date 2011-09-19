@@ -228,7 +228,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD1(int, av_read_play, (AVFormatContext *p1))
   DEFINE_METHOD1(int, av_read_pause, (AVFormatContext *p1))
   DEFINE_METHOD1(void, av_read_frame_flush, (AVFormatContext *p1))
-#ifndef _LINUX
   DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, av_seek_frame, AVFormatContext*, int, int64_t, int)
   DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info_dont_call, AVFormatContext*)
@@ -244,23 +243,6 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be24, ByteIOContext*, unsigned int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be32, ByteIOContext*, unsigned int)
   DEFINE_FUNC_ALIGNED2(void, __cdecl, put_be16, ByteIOContext*, unsigned int)
-#else
-  DEFINE_METHOD2(int, av_read_frame, (AVFormatContext *p1, AVPacket *p2))
-  DEFINE_METHOD4(int, av_seek_frame, (AVFormatContext *p1, int p2, int64_t p3, int p4))
-  DEFINE_METHOD1(int, av_find_stream_info_dont_call, (AVFormatContext *p1))
-  DEFINE_METHOD5(int, av_open_input_file, (AVFormatContext **p1, const char *p2, AVInputFormat *p3, int p4, AVFormatParameters *p5))
-  DEFINE_METHOD5(int, av_open_input_stream, (AVFormatContext **p1, ByteIOContext *p2, const char *p3, AVInputFormat *p4, AVFormatParameters *p5))
-  DEFINE_METHOD2(AVInputFormat*, av_probe_input_format, (AVProbeData* p1 , int p2))
-  DEFINE_METHOD3(AVInputFormat*, av_probe_input_format2, (AVProbeData* p1 , int p2, int *p3))
-  DEFINE_METHOD6(int, av_probe_input_buffer, (ByteIOContext *p1, AVInputFormat **p2, const char *p3, void *p4, unsigned int p5, unsigned int p6))
-  DEFINE_METHOD3(int, get_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
-  DEFINE_METHOD3(int, get_partial_buffer, (ByteIOContext* p1, unsigned char *p2, int p3))
-  DEFINE_METHOD2(void, put_byte, (ByteIOContext* p1, int p2))
-  DEFINE_METHOD3(void, put_buffer, (ByteIOContext* p1, const unsigned char *p2, int p3))
-  DEFINE_METHOD2(void, put_be24, (ByteIOContext* p1, unsigned int p2))
-  DEFINE_METHOD2(void, put_be32, (ByteIOContext* p1, unsigned int p2))
-  DEFINE_METHOD2(void, put_be16, (ByteIOContext* p1, unsigned int p2))
-#endif
   DEFINE_METHOD1(void, url_set_interrupt_cb, (URLInterruptCB *p1))
   DEFINE_METHOD8(int, init_put_byte, (ByteIOContext *p1, unsigned char *p2, int p3, int p4, void *p5, 
                   int (*p6)(void *opaque, uint8_t *buf, int buf_size),

@@ -1,7 +1,7 @@
 
 OSTYPE=$(shell uname)
 VERSION=1.1.7
-BASE_URL=http://www.effbot.org/downloads
+BASE_URL=http://mirrors.xbmc.org/build-deps/darwin-libs
 SOURCE=Imaging-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 

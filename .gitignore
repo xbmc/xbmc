@@ -50,6 +50,7 @@ config.log
 /build/
 .DS_Store
 *.dSYM
+._*
 /tools/darwin/depends/config.site
 /tools/darwin/depends/config.site.mk
 /tools/darwin/depends/Makefile
@@ -58,11 +59,6 @@ config.log
 /tools/darwin/depends/python26/Makefile
 /tools/darwin/depends/**/.gitignore
 /tools/darwin/depends/**/.installed
-/tools/osx/osx-depends/**/.gitignore
-/tools/osx/osx-depends/**/.installed
-/tools/osx/ios-depends/**/.gitignore
-/tools/osx/ios-depends/**/.installed
-/tools/osx/ios-depends/**/.compiled
 
 .libs/
 .deps/
@@ -113,7 +109,6 @@ autom4te.cache
 /addons/skin.confluence/media/Textures.xbt
 /addons/skin.pm3-hd/media/Textures.xbt
 /addons/visualization.dxspectrum/Spectrum_win32dx.vis
-/addons/visualization.glesspectrum/gles_spectrum.vis
 /addons/visualization.glspectrum/opengl_spectrum.vis
 /addons/visualization.milkdrop/MilkDrop_win32dx.vis
 /addons/visualization.projectm/projectM.vis
@@ -382,6 +377,7 @@ lib/cmyth/Makefile
 /system/ssh.dll
 /system/sqlite3.dll
 /system/libsamplerate-0.dll
+/system/libnfs.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
@@ -1217,7 +1213,6 @@ lib/cmyth/Makefile
 /xbmc/visualizations/Milkdrop/Release
 
 /xbmc/visualizations/OpenGLSpectrum/Makefile
-/xbmc/visualizations/EGLSpectrum/Makefile
 
 /xbmc/visualizations/WaveForm/Makefile
 /xbmc/visualizations/WaveForm/Debug (DirectX)

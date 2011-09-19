@@ -146,16 +146,15 @@ LIB_DIRS=\
 	lib/xbmc-dll-symbols
 
 SS_DIRS=
-ifeq (@USE_OPENGL@,1)
+ifneq (@DISABLE_RSXS@,1)
   SS_DIRS+= xbmc/screensavers/rsxs-0.9/xbmc
 endif
 
-VIS_DIRS=
-ifeq (@USE_OPENGL@,1)
-VIS_DIRS+=\
-	xbmc/visualizations/OpenGLSpectrum \
-	xbmc/visualizations/WaveForm \
-	xbmc/visualizations/XBMCProjectM
+VIS_DIRS=xbmc/visualizations/OpenGLSpectrum \
+         xbmc/visualizations/WaveForm
+
+ifneq (@DISABLE_PROJECTM@,1)
+  VIS_DIRS+= xbmc/visualizations/XBMCProjectM
 endif
 
 ifeq (($(findstring osx,@ARCH@), osx),(@USE_OPENGL@,1))
@@ -164,14 +163,6 @@ endif
 
 ifneq (@DISABLE_GOOM@,1)
   VIS_DIRS+=xbmc/visualizations/Goom
-endif
-
-ifeq (@USE_OPENGLES@,1)
-  ifeq ($(findstring osx,@ARCH@), osx)
-    ifeq (@ARCH@, arm-osx)
-      VIS_DIRS+=xbmc/visualizations/EGLSpectrum
-    endif
-  endif
 endif
 
 PVR_DIRS=\

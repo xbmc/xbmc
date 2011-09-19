@@ -403,20 +403,19 @@ void CUtil::CleanString(const CStdString& strFileName, CStdString& strTitle, CSt
 
 void CUtil::GetQualifiedFilename(const CStdString &strBasePath, CStdString &strFilename)
 {
-  //Make sure you have a full path in the filename, otherwise adds the base path before.
+  // Check if the filename is a fully qualified URL such as protocol://path/to/file
   CURL plItemUrl(strFilename);
+  if (!plItemUrl.GetProtocol().IsEmpty())
+    return;
 
-  if (!plItemUrl.IsLocal())
-    return; // non-local path, don't do anything
-  else if (strFilename.size() > 1)
-  { // local path - see if it's fully qualified
+  // If the filename starts "x:" or "/" it's already fully qualified so return
+  if (strFilename.size() > 1)
 #ifdef _LINUX
     if ( (strFilename[1] == ':') || (strFilename[0] == '/') )
 #else
     if ( strFilename[1] == ':' )
 #endif
       return;
-  }
 
   // add to base path and then clean
   strFilename = URIUtils::AddFileToFolder(strBasePath, strFilename);
@@ -1201,8 +1200,8 @@ bool CUtil::CreateDirectoryEx(const CStdString& strPath)
   // return true if directory already exist
   if (CDirectory::Exists(strPath)) return true;
 
-  // we currently only allow HD and smb and nfs paths
-  if (!URIUtils::IsHD(strPath) && !URIUtils::IsSmb(strPath) && !URIUtils::IsNfs(strPath))
+  // we currently only allow HD and smb, nfs and afp paths
+  if (!URIUtils::IsHD(strPath) && !URIUtils::IsSmb(strPath) && !URIUtils::IsNfs(strPath) && !URIUtils::IsAfp(strPath))
   {
     CLog::Log(LOGERROR,"%s called with an unsupported path: %s", __FUNCTION__, strPath.c_str());
     return false;
@@ -1253,8 +1252,8 @@ CStdString CUtil::MakeLegalPath(const CStdString &strPathAndFile, int LegalType)
     return MakeLegalPath(CStackDirectory::GetFirstStackedFile(strPathAndFile));
   if (URIUtils::IsMultiPath(strPathAndFile))
     return MakeLegalPath(CMultiPathDirectory::GetFirstPath(strPathAndFile));
-  if (!URIUtils::IsHD(strPathAndFile) && !URIUtils::IsSmb(strPathAndFile) && !URIUtils::IsNfs(strPathAndFile))
-    return strPathAndFile; // we don't support writing anywhere except HD, SMB and NFS - no need to legalize path
+  if (!URIUtils::IsHD(strPathAndFile) && !URIUtils::IsSmb(strPathAndFile) && !URIUtils::IsNfs(strPathAndFile) && !URIUtils::IsAfp(strPathAndFile))
+    return strPathAndFile; // we don't support writing anywhere except HD, SMB, NFS and AFP - no need to legalize path
 
   bool trailingSlash = URIUtils::HasSlashAtEnd(strPathAndFile);
   CStdStringArray dirs = URIUtils::SplitPath(strPathAndFile);
@@ -1854,17 +1853,6 @@ double CUtil::AlbumRelevance(const CStdString& strAlbumTemp1, const CStdString& 
   return fRelevance;
 }
 
-CStdString CUtil::SubstitutePath(const CStdString& strFileName)
-{
-  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin(); 
-                                                  i != g_advancedSettings.m_pathSubstitutions.end(); i++)
-  {
-    if (strncmp(strFileName.c_str(), i->first.c_str(), i->first.size()) == 0)
-      return URIUtils::AddFileToFolder(i->second, strFileName.Mid(i->first.size()));
-  }
-  return strFileName;
-}
-
 bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTextMaxLength)
 {
   int iStrInputSize = StrInput.size();
@@ -1923,7 +1911,7 @@ bool CUtil::MakeShortenPath(CStdString StrInput, CStdString& StrOutput, int iTex
 
 bool CUtil::SupportsFileOperations(const CStdString& strPath)
 {
-  // currently only hd, smb and nfs support delete and rename
+  // currently only hd, smb, nfs and afp support delete and rename
   if (URIUtils::IsHD(strPath))
     return true;
   if (URIUtils::IsSmb(strPath))
@@ -1931,6 +1919,8 @@ bool CUtil::SupportsFileOperations(const CStdString& strPath)
   if (CUtil::IsTVRecording(strPath))
     return CPVRDirectory::SupportsFileOperations(strPath);
   if (URIUtils::IsNfs(strPath))
+    return true;
+  if (URIUtils::IsAfp(strPath))
     return true;
   if (URIUtils::IsMythTV(strPath))
   {
