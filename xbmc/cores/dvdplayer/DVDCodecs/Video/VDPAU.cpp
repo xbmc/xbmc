@@ -1196,7 +1196,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     || (mode == VS_DEINTERLACEMODE_AUTO && m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED))
     {
       if((method == VS_INTERLACEMETHOD_AUTO
-      || (method == VS_INTERLACEMETHOD_AUTO_ION && m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED)
+      ||  method == VS_INTERLACEMETHOD_AUTO_ION
       ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
