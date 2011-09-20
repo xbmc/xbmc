@@ -91,6 +91,7 @@ void CGLTexture::LoadToGPU()
   }
 
   GLenum format;
+  GLint numcomponents;
 
   switch (m_format)
   {
@@ -104,15 +105,20 @@ void CGLTexture::LoadToGPU()
   case XB_FMT_DXT5_YCoCg:
     format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT;
     break;
+  case XB_FMT_RGB8:
+    format = GL_RGB;
+    numcomponents = GL_RGB;
+    break;
   case XB_FMT_A8R8G8B8:
   default:
     format = GL_BGRA;
+    numcomponents = GL_RGBA;
     break;
   }
 
   if ((m_format & XB_FMT_DXT_MASK) == 0)
   {
-    glTexImage2D(GL_TEXTURE_2D, 0, 4, m_textureWidth, m_textureHeight, 0,
+    glTexImage2D(GL_TEXTURE_2D, 0, numcomponents, m_textureWidth, m_textureHeight, 0,
       format, GL_UNSIGNED_BYTE, m_pixels);
   }
   else
@@ -141,8 +147,12 @@ void CGLTexture::LoadToGPU()
 
   switch (m_format)
   {
+    default:
     case XB_FMT_RGBA8:
       internalformat = pixelformat = GL_RGBA;
+      break;
+    case XB_FMT_RGB8:
+      internalformat = pixelformat = GL_RGB;
       break;
     case XB_FMT_A8R8G8B8:
       if (g_Windowing.SupportsBGRA())

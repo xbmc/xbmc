@@ -51,6 +51,7 @@ CPVRClients::CPVRClients(void) :
     m_bChannelScanRunning(false),
     m_bAllClientsConnected(false),
     m_bIsSwitchingChannels(false),
+    m_bIsValidChannelSettings(false),
     m_currentChannel(NULL),
     m_currentRecording(NULL),
     m_scanStart(0),
@@ -549,6 +550,7 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
       lock.Enter();
       m_currentChannel = &channel;
       ResetQualityData();
+      m_bIsValidChannelSettings = false;
       lock.Leave();
 
       bReturn = true;
@@ -1239,7 +1241,7 @@ void CPVRClients::UpdateCharInfoSignalStatus(void)
 void CPVRClients::SaveCurrentChannelSettings(void)
 {
   CSingleLock lock(m_critSection);
-  if (!m_currentChannel)
+  if (!m_currentChannel || !m_bIsValidChannelSettings)
     return;
 
   CPVRDatabase *database = OpenPVRDatabase();
@@ -1331,5 +1333,8 @@ void CPVRClients::LoadCurrentChannelSettings(void)
     g_application.m_pPlayer->SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
     g_application.m_pPlayer->SetSubtitleVisible(g_settings.m_currentVideoSettings.m_SubtitleOn);
     g_application.m_pPlayer->SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
+
+    /* settings can be saved on next channel switch */
+    m_bIsValidChannelSettings = true;
   }
 }

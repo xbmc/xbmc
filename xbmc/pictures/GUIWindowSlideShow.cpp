@@ -257,6 +257,12 @@ const CFileItemList &CGUIWindowSlideShow::GetSlideShowContents()
   return *m_slides;
 }
 
+void CGUIWindowSlideShow::GetSlideShowContents(CFileItemList &list)
+{
+  for (int index = 0; index < m_slides->Size(); index++)
+    list.Add(CFileItemPtr(new CFileItem(*m_slides->Get(index))));
+}
+
 const CFileItemPtr CGUIWindowSlideShow::GetCurrentSlide()
 {
   if (m_iCurrentSlide >= 0 && m_iCurrentSlide < m_slides->Size())

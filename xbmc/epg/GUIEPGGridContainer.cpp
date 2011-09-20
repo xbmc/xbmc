@@ -94,6 +94,7 @@ CGUIEPGGridContainer::CGUIEPGGridContainer(int parentID, int controlID, float po
 
 CGUIEPGGridContainer::~CGUIEPGGridContainer(void)
 {
+  Reset();
 }
 
 void CGUIEPGGridContainer::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
@@ -709,6 +710,7 @@ bool CGUIEPGGridContainer::OnMessage(CGUIMessage& message)
       for (int i = 0; i < items->Size(); i++)
         m_programmeItems.push_back(items->Get(i));
 
+      ClearGridIndex();
       m_gridIndex = (struct GridItemsPtr **) calloc(1,m_channelItems.size()*sizeof(struct GridItemsPtr));
       if (m_gridIndex != NULL)
       {
@@ -1529,14 +1531,26 @@ CStdString CGUIEPGGridContainer::GetDescription() const
   return strLabel;
 }
 
-void CGUIEPGGridContainer::Reset()
+void CGUIEPGGridContainer::ClearGridIndex(void)
 {
   if (m_gridIndex)
   {
     for (unsigned int i = 0; i < m_channelItems.size(); i++)
+    {
+      for (int block = 0; block < m_blocks; block++)
+      {
+        if (m_gridIndex[i][block].item)
+          m_gridIndex[i][block].item.get()->ClearProperties();
+      }
       free(m_gridIndex[i]);
+    }
     free(m_gridIndex);
   }
+}
+
+void CGUIEPGGridContainer::Reset()
+{
+  ClearGridIndex();
 
   m_wasReset = true;
   m_channelItems.clear();

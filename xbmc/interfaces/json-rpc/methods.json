@@ -92,6 +92,33 @@
     ],
     "returns": "any"
   },
+  "Player.Open": {
+    "type": "method",
+    "description": "Start playback of either the playlist with the given ID, a slideshow with the pictures from the given directory or a single file or an item from the database.",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "item", 
+        "type": [
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "playlistid": { "$ref": "Playlist.Id", "required": true },
+              "position": { "$ref": "Playlist.Position", "default": 0 }
+            }
+          },
+          { "$ref": "Playlist.Item", "required": true },
+          { "type": "object", "required": true, "additionalProperties": false,
+            "properties": {
+              "path": { "type": "string", "required": true },
+              "random": { "type": "boolean", "default": true },
+              "recursive": { "type": "boolean", "default": true }
+            }
+          }
+        ]
+      }
+    ],
+    "returns": "string"
+  },
   "Player.GetActivePlayers": {
     "type": "method",
     "description": "Returns all active players",
@@ -99,390 +126,304 @@
     "permission": "ReadData",
     "params": [],
     "returns": {
-      "type": "object",
-      "properties": {
-        "video": { "type": "boolean", "required": true },
-        "audio": { "type": "boolean", "required": true },
-        "picture": { "type": "boolean", "required": true }
+      "type": "array",
+      "uniqueItems": true,
+      "items": { 
+        "type": "object",
+        "properties": {
+          "playerid": { "$ref": "Player.Id", "required": true },
+          "type": { "$ref": "Player.Type", "required": true }
+        }
       }
     }
   },
-  "AudioPlayer.State": {
+  "Player.GetProperties": {
     "type": "method",
-    "description": "Returns playback state of the audio player (if it is active)",
+    "description": "Retrieves the values of the given properties",
     "transport": "Response",
     "permission": "ReadData",
-    "params": [],
-    "returns": { "$ref": "Player.State.Extended" }
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "Player.Property.Name" } }
+    ],
+    "returns":  { "$ref": "Player.Property.Value", "required": true }
   },
-  "AudioPlayer.PlayPause": {
+  "Player.PlayPause": {
     "type": "method",
     "description": "Pauses or unpause playback and returns the new state",
     "transport": "Response",
     "permission": "ControlPlayback",
-    "params": [],
-    "returns": { "$ref": "Player.State" }
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
+    "returns": { "$ref": "Player.Speed" }
   },
-  "AudioPlayer.Stop": {
+  "Player.Stop": {
     "type": "method",
     "description": "Stops playback",
     "transport": "Response",
     "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "AudioPlayer.SkipPrevious": {
-    "type": "method",
-    "description": "Skips to previous item on the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "AudioPlayer.SkipNext": {
-    "type": "method",
-    "description": "Skips to next item on the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "AudioPlayer.BigSkipBackward": {
-    "type": "method",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "AudioPlayer.BigSkipForward": {
-    "type": "method",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "AudioPlayer.SmallSkipBackward": {
-    "type": "method",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "AudioPlayer.SmallSkipForward": {
-    "type": "method",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "AudioPlayer.Rewind": {
-    "type": "method",
-    "description": "Rewind current playback",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "AudioPlayer.Forward": {
-    "type": "method",
-    "description": "Forward current playback",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "AudioPlayer.GetTime": {
-    "type": "method",
-    "description": "Retrieves the current and total time of the currently playing file",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [],
-    "returns": { "$ref": "Player.TimeValues" }
-  },
-  "AudioPlayer.GetPercentage": {
-    "type": "method",
-    "description": "Retrieve current playback progress in percentage",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [],
-    "returns": "number"
-  },
-  "AudioPlayer.SeekTime": {
-    "type": "method",
-    "description": "Seek to a specific time",
-    "transport": "Response",
-    "permission": "ControlPlayback",
     "params": [
-      { "name": "value", "$ref": "Player.SeekTime", "required": true, "description": "Time to seek to in seconds" }
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
     ],
     "returns": "string"
   },
-  "AudioPlayer.SeekPercentage": {
+  "Player.SetSpeed": {
     "type": "method",
-    "description": "Seek to a specific percentage",
+    "description": "Set the speed of the current playback",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "value", "$ref": "Player.SeekPercentage", "required": true, "description": "Percentage value to seek to" }
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "speed", "type": [ "integer", "string" ], "enum": [ -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, "increment", "decrement" ], "required": true }
     ],
-    "returns": "string"
+    "returns": { "$ref": "Player.Speed" }
   },
-  "VideoPlayer.State": {
+  "Player.Seek": {
     "type": "method",
-    "description": "Returns playback state of the video player (if it is active)",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [],
-    "returns": { "$ref": "Player.State.Extended" }
-  },
-  "VideoPlayer.PlayPause": {
-    "type": "method",
-    "description": "Pauses or unpause playback and returns the new state",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": { "$ref": "Player.State" }
-  },
-  "VideoPlayer.Stop": {
-    "type": "method",
-    "description": "Stops playback",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "VideoPlayer.SkipPrevious": {
-    "type": "method",
-    "description": "Skips to previous item on the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "VideoPlayer.SkipNext": {
-    "type": "method",
-    "description": "Skips to next item on the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "VideoPlayer.BigSkipBackward": {
-    "type": "method",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "VideoPlayer.BigSkipForward": {
-    "type": "method",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "VideoPlayer.SmallSkipBackward": {
-    "type": "method",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "VideoPlayer.SmallSkipForward": {
-    "type": "method",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "VideoPlayer.Rewind": {
-    "type": "method",
-    "description": "Rewind current playback",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "VideoPlayer.Forward": {
-    "type": "method",
-    "description": "Forward current playback",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "VideoPlayer.GetTime": {
-    "type": "method",
-    "description": "Retrieves the current and total time of the currently playing file",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [],
-    "returns": { "$ref": "Player.TimeValues" }
-  },
-  "VideoPlayer.GetPercentage": {
-    "type": "method",
-    "description": "Retrieve current playback progress in percentage",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [],
-    "returns": "number"
-  },
-  "VideoPlayer.SeekTime": {
-    "type": "method",
-    "description": "Seek to a specific time",
+    "description": "Seek through the playing item",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "value", "$ref": "Player.SeekTime", "required": true }
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "value", "required": true, "type": [
+          { "$ref": "Player.Position.Percentage", "required": true, "description": "Percentage value to seek to" },
+          { "type": "object", "additionalProperties": false, "required": true, "description": "Time to seek to",
+            "properties": {
+              "hours": { "type": "integer", "minimum": 0, "maximum": 23 },
+              "minutes": { "type": "integer", "minimum": 0, "maximum": 59 },
+              "seconds": { "type": "integer", "minimum": 0, "maximum": 59 },
+              "milliseconds": { "type": "integer", "minimum": 0, "maximum": 999 }
+            }
+          },
+          { "type": "string", "enum": [ "smallforward", "smallbackward", "bigforward", "bigbackward" ], "required": true, "description": "Seek by predefined jumps" }
+        ]
+      }
     ],
-    "returns": "string"
+    "returns": {
+      "type": "object",
+      "properties": {
+        "percentage": { "$ref": "Player.Position.Percentage" },
+        "time": { "$ref": "Global.Time" },
+        "totaltime": { "$ref": "Global.Time" }
+      }
+    }
   },
-  "VideoPlayer.SeekPercentage": {
-    "type": "method",
-    "description": "Seek to a specific percentage",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "value", "$ref": "Player.SeekPercentage", "required": true }
-    ],
-    "returns": "string"
-  },
-  "PicturePlayer.PlayPause": {
-    "type": "method",
-    "description": "Pauses or unpause slideshow",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "PicturePlayer.Stop": {
-    "type": "method",
-    "description": "Stops slideshow",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "PicturePlayer.SkipPrevious": {
-    "type": "method",
-    "description": "Skips to previous picture in the slideshow",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "PicturePlayer.SkipNext": {
-    "type": "method",
-    "description": "Skips to next picture in the slideshow",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [],
-    "returns": "string"
-  },
-  "PicturePlayer.MoveLeft": {
+  "Player.MoveLeft": {
     "type": "method",
     "description": "If picture is zoomed move viewport left otherwise skip previous",
     "transport": "Response",
     "permission": "ControlPlayback",
-    "params": [],
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
     "returns": "string"
   },
-  "PicturePlayer.MoveRight": {
+  "Player.MoveRight": {
     "type": "method",
     "description": "If picture is zoomed move viewport right otherwise skip next",
     "transport": "Response",
     "permission": "ControlPlayback",
-    "params": [],
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
     "returns": "string"
   },
-  "PicturePlayer.MoveDown": {
+  "Player.MoveDown": {
     "type": "method",
     "description": "If picture is zoomed move viewport down",
     "transport": "Response",
     "permission": "ControlPlayback",
-    "params": [],
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
     "returns": "string"
   },
-  "PicturePlayer.MoveUp": {
+  "Player.MoveUp": {
     "type": "method",
     "description": "If picture is zoomed move viewport up",
     "transport": "Response",
     "permission": "ControlPlayback",
-    "params": [],
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
     "returns": "string"
   },
-  "PicturePlayer.ZoomOut": {
+  "Player.ZoomOut": {
     "type": "method",
     "description": "Zoom out once",
     "transport": "Response",
     "permission": "ControlPlayback",
-    "params": [],
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
     "returns": "string"
   },
-  "PicturePlayer.ZoomIn": {
+  "Player.ZoomIn": {
     "type": "method",
     "description": "Zoom in once",
     "transport": "Response",
     "permission": "ControlPlayback",
-    "params": [],
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
     "returns": "string"
   },
-  "PicturePlayer.Zoom": {
+  "Player.Zoom": {
     "type": "method",
     "description": "Zooms current picture",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
       { "name": "value", "type": "integer", "required": true, "minimum": 1, "maximum": 10, "description": "Zoom level" }
     ],
     "returns": "string"
   },
-  "PicturePlayer.Rotate": {
+  "Player.Rotate": {
     "type": "method",
     "description": "Rotates current picture",
     "transport": "Response",
     "permission": "ControlPlayback",
-    "params": [],
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
     "returns": "string"
   },
-  "Playlist.Create": {
+  "Player.GoPrevious": {
     "type": "method",
-    "description": "Creates a virtual playlist from a given one from a file",
+    "description": "Go to previous item on the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
+    "returns": "string"
+  },
+  "Player.GoNext": {
+    "type": "method",
+    "description": "Go to next item on the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
+    "returns": "string"
+  },
+  "Player.GoTo": {
+    "type": "method",
+    "description": "Go to item at the given position in the playlist",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "position", "$ref": "Playlist.Position", "required": true }
+    ],
+    "returns": "string"
+  },
+  "Player.Shuffle": {
+    "type": "method",
+    "description": "Shuffle items in the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
+    "returns": "string"
+  },
+  "Player.UnShuffle": {
+    "type": "method",
+    "description": "Unshuffle items in the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true }
+    ],
+    "returns": "string"
+  },
+  "Player.Repeat": {
+    "type": "method",
+    "description": "Set the repeat mode of the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "state", "$ref": "Player.Repeat", "required": true }
+    ],
+    "returns": "string"
+  },
+  "Player.SetAudioStream": {
+    "type": "method",
+    "description": "Set the audio stream played by the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "stream", "required": true, "type": [
+          { "type": "string", "enum": [ "previous", "next" ] },
+          { "type": "integer", "minimum": 0, "description": "Index of the audio stream to play" }
+        ]
+      }
+    ],
+    "returns": "string"
+  },
+  "Player.SetSubtitle": {
+    "type": "method",
+    "description": "Set the subtitle displayed by the player",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "subtitle", "required": true, "type": [
+          { "type": "string", "enum": [ "previous", "next", "off", "on" ] },
+          { "type": "integer", "minimum": 0, "description": "Index of the subtitle to display" }
+        ]
+      }
+    ],
+    "returns": "string"
+  },
+  "Playlist.GetPlaylists": {
+    "type": "method",
+    "description": "Returns all existing playlists",
     "transport": "Response",
     "permission": "ReadData",
-    "params": [
-      { "name": "playlist", "$ref": "Playlist.Id", "required": true }
-    ],
-    "returns": { "type": "object",
-      "properties": {
-        "playlistid": { "type": "string", "required": true }
+    "params": [],
+    "returns": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { 
+        "type": "object",
+        "properties": {
+          "playlistid": { "$ref": "Playlist.Id", "required": true },
+          "type": { "$ref": "Playlist.Type", "required": true }
+        }
       }
     }
   },
-  "Playlist.Destroy": {
+  "Playlist.GetProperties": {
     "type": "method",
-    "description": "Destroys a virtual playlist",
+    "description": "Retrieves the values of the given properties",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "playlistid", "type": "string", "required": true, "description": "Identification of the playlist" }
+      { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "Playlist.Property.Name" } }
     ],
-    "returns": "string"
+    "returns":  { "$ref": "Playlist.Property.Value", "required": true }
   },
   "Playlist.GetItems": {
     "type": "method",
-    "description": "Retrieve items in the playlist",
+    "description": "Get all items from playlist",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "playlist", "$ref": "Playlist.Id", "required": true },
+      { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
       { "name": "fields", "$ref": "List.Fields.All" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": { "type": "object",
       "properties": {
-        "name": { "type": "string", "description": "Name of the playlist (if available)" },
         "limits": { "$ref": "List.LimitsReturned", "required": true },
         "items": { "$ref": "List.Items.All", "required": true }
       }
@@ -490,35 +431,35 @@
   },
   "Playlist.Add": {
     "type": "method",
-    "description": "Add items to the playlist",
+    "description": "Add item(s) to playlist",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "playlist", "$ref": "Playlist.Id", "required": true },
-      { "name": "items", "$ref": "Playlist.Id", "required": true, "description": "Adds items from given virtual and/or file based playlist" }
+      { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
+      { "name": "item", "$ref": "Playlist.Item", "required": true }
+    ],
+    "returns": "string"
+  },
+  "Playlist.Insert": {
+    "type": "method",
+    "description": "Insert item(s) into playlist. Does not work for picture playlists (aka slideshows).",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
+      { "name": "position", "$ref": "Playlist.Position", "required": true },
+      { "name": "item", "$ref": "Playlist.Item", "required": true }
     ],
     "returns": "string"
   },
   "Playlist.Remove": {
     "type": "method",
-    "description": "Remove item from the playlist",
+    "description": "Remove item from playlist. Does not work for picture playlists (aka slideshows).",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "playlist", "$ref": "Playlist.Id", "required": true },
-      { "name": "item", "type": [ "integer", "string" ], "required": true }
-    ],
-    "returns": "string"
-  },
-  "Playlist.Swap": {
-    "type": "method",
-    "description": "Swap items in the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playlist", "$ref": "Playlist.Id", "required": true },
-      { "name": "item1", "$ref": "Playlist.Item.Position", "required": true },
-      { "name": "item2", "$ref": "Playlist.Item.Position", "required": true }
+      { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
+      { "name": "position", "$ref": "Playlist.Position", "required": true }
     ],
     "returns": "string"
   },
@@ -528,292 +469,19 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "playlist", "$ref": "Playlist.Id", "required": true }
+      { "name": "playlistid", "$ref": "Playlist.Id", "required": true }
     ],
     "returns": "string"
   },
-  "Playlist.Shuffle": {
+  "Playlist.Swap": {
     "type": "method",
-    "description": "Shuffle playlist",
+    "description": "Swap items in the playlist. Does not work for picture playlists (aka slideshows).",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "playlist", "$ref": "Playlist.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "Playlist.UnShuffle": {
-    "type": "method",
-    "description": "Unshuffle playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "playlist", "$ref": "Playlist.Id", "required": true }
-    ],
-    "returns": "string"
-  },
-  "VideoPlaylist.State": {
-    "type": "method",
-    "description": "Provides information about the current state of the playlist",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [ ],
-    "returns":  { "$ref": "Playlist.State", "required": true }
-  },
-  "VideoPlaylist.Play": {
-    "type": "method",
-    "description": "Play current or a specific item",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "item", "$ref": "Playlist.Item.Position", "description": "Position of the item" }
-    ],
-    "returns":  { "type": "object",
-      "properties": {
-        "success": { "type": "boolean", "required": true }
-      }
-    }
-  },
-  "VideoPlaylist.SkipPrevious": {
-    "type": "method",
-    "description": "Skip current item and play previous item",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [ ],
-    "returns": "string"
-  },
-  "VideoPlaylist.SkipNext": {
-    "type": "method",
-    "description": "Skip current item and play next item",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [ ],
-    "returns": "string"
-  },
-  "VideoPlaylist.GetItems": {
-    "type": "method",
-    "description": "Get all items from playlist",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "fields", "$ref": "List.Fields.Video" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" }
-    ],
-    "returns": { "type": "object",
-      "properties": {
-        "state": { "$ref": "Playlist.State" },
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "items": { "$ref": "List.Items.Video", "required": true }
-      }
-    }
-  },
-  "VideoPlaylist.Add": {
-    "type": "method",
-    "description": "Add item(s) to playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "item", "$ref": "Playlist.Video.Item", "required": true }
-    ],
-    "returns": "string"
-  },
-  "VideoPlaylist.Insert": {
-    "type": "method",
-    "description": "Insert item(s) into playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "index", "$ref": "Playlist.Item.Position", "required": true },
-      { "name": "item", "$ref": "Playlist.Video.Item", "required": true }
-    ],
-    "returns": "string"
-  },
-  "VideoPlaylist.Remove": {
-    "type": "method",
-    "description": "Remove item from playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "item", "$ref": "Playlist.Item.Position", "required": true }
-    ],
-    "returns": "string"
-  },
-  "VideoPlaylist.Clear": {
-    "type": "method",
-    "description": "Clear playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [ ],
-    "returns": "string"
-  },
-  "VideoPlaylist.Shuffle": {
-    "type": "method",
-    "description": "Shuffle playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [ ],
-    "returns": "string"
-  },
-  "VideoPlaylist.UnShuffle": {
-    "type": "method",
-    "description": "Unshuffle playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [ ],
-    "returns": "string"
-  },
-  "VideoPlaylist.Repeat": {
-    "type": "method",
-    "description": "Set the repeat mode of the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "state", "$ref": "Playlist.Repeat", "required": true }
-    ],
-    "returns": "string"
-  },
-  "VideoPlaylist.Swap": {
-    "type": "method",
-    "description": "Swap items in the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "item1", "$ref": "Playlist.Item.Position", "required": true },
-      { "name": "item2", "$ref": "Playlist.Item.Position", "required": true }
-    ],
-    "returns": "string"
-  },
-  "AudioPlaylist.State": {
-    "type": "method",
-    "description": "Provides information about the current state of the playlist",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [ ],
-    "returns":  { "$ref": "Playlist.State", "required": true }
-  },
-  "AudioPlaylist.Play": {
-    "type": "method",
-    "description": "Play current or a specific item",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "item", "$ref": "Playlist.Item.Position" },
-      { "name": "songid", "$ref": "Library.Id", "description": "Identification of a song from the audio library" }
-    ],
-    "returns":  { "type": "object",
-      "properties": {
-        "success": { "type": "boolean", "required": true }
-      }
-    }
-  },
-  "AudioPlaylist.SkipPrevious": {
-    "type": "method",
-    "description": "Skip current item and play previous item",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [ ],
-    "returns": "string"
-  },
-  "AudioPlaylist.SkipNext": {
-    "type": "method",
-    "description": "Skip current item and play next item",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [ ],
-    "returns": "string"
-  },
-  "AudioPlaylist.GetItems": {
-    "type": "method",
-    "description": "Get all items from playlist",
-    "transport": "Response",
-    "permission": "ReadData",
-    "params": [
-      { "name": "fields", "$ref": "Audio.Fields.Song" },
-      { "name": "limits", "$ref": "List.Limits" },
-      { "name": "sort", "$ref": "List.Sort" }
-    ],
-    "returns": { "type": "object",
-      "properties": {
-        "state": { "$ref": "Playlist.State" },
-        "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "items": { "$ref": "List.Items.Audio", "required": true }
-      }
-    }
-  },
-  "AudioPlaylist.Add": {
-    "type": "method",
-    "description": "Add item(s) to playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "item", "$ref": "Playlist.Audio.Item", "required": true }
-    ],
-    "returns": "string"
-  },
-  "AudioPlaylist.Insert": {
-    "type": "method",
-    "description": "Insert item(s) into playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "index", "$ref": "Playlist.Item.Position", "required": true },
-      { "name": "item", "$ref": "Playlist.Audio.Item", "required": true }
-    ],
-    "returns": "string"
-  },
-  "AudioPlaylist.Remove": {
-    "type": "method",
-    "description": "Remove item from playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "item", "$ref": "Playlist.Item.Position", "required": true }
-    ],
-    "returns": "string"
-  },
-  "AudioPlaylist.Clear": {
-    "type": "method",
-    "description": "Clear playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [ ],
-    "returns": "string"
-  },
-  "AudioPlaylist.Shuffle": {
-    "type": "method",
-    "description": "Shuffle playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [ ],
-    "returns": "string"
-  },
-  "AudioPlaylist.UnShuffle": {
-    "type": "method",
-    "description": "Unshuffle playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [ ],
-    "returns": "string"
-  },
-  "AudioPlaylist.Repeat": {
-    "type": "method",
-    "description": "Set the repeat mode of the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "state", "$ref": "Playlist.Repeat", "required": true }
-    ],
-    "returns": "string"
-  },
-  "AudioPlaylist.Swap": {
-    "type": "method",
-    "description": "Swap items in the playlist",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "item1", "$ref": "Playlist.Item.Position", "required": true },
-      { "name": "item2", "$ref": "Playlist.Item.Position", "required": true }
+      { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
+      { "name": "position1", "$ref": "Playlist.Position", "required": true },
+      { "name": "position2", "$ref": "Playlist.Position", "required": true }
     ],
     "returns": "string"
   },
@@ -1512,28 +1180,6 @@
     "transport": "Response",
     "permission": "ControlPower",
     "params": [],
-    "returns": "string"
-  },
-  "XBMC.Play": {
-    "type": "method",
-    "description": "Starts playback of the given file",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "file", "type": "string", "required": true }
-    ],
-    "returns": "string"
-  },
-  "XBMC.StartSlideshow": {
-    "type": "method",
-    "description": "Starts slideshow with the images from the given directory",
-    "transport": "Response",
-    "permission": "ControlPlayback",
-    "params": [
-      { "name": "directory", "type": "string", "required": true },
-      { "name": "random", "type": "boolean", "default": true },
-      { "name": "recursive", "type": "boolean", "default": true }
-    ],
     "returns": "string"
   },
   "XBMC.GetInfoLabels": {

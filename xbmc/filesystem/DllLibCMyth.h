@@ -112,7 +112,6 @@ public:
   virtual cmyth_timestamp_t proginfo_rec_start      (cmyth_proginfo_t prog)=0;
   virtual cmyth_timestamp_t proginfo_rec_end        (cmyth_proginfo_t prog)=0;
   virtual cmyth_proginfo_rec_status_t proginfo_rec_status(cmyth_proginfo_t prog)=0;
-  virtual long              proginfo_card_id        (cmyth_proginfo_t prog)=0;
   virtual char*             proginfo_prodyear       (cmyth_proginfo_t prog)=0;
   virtual cmyth_proginfo_t  proginfo_get_from_basename   (cmyth_conn_t control, const char* basename)=0;
   virtual int               proginfo_delete_recording(cmyth_conn_t control, cmyth_proginfo_t prog)=0;
@@ -219,7 +218,6 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
   DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_rec_start,       (cmyth_proginfo_t p1))
   DEFINE_METHOD1(cmyth_timestamp_t,   proginfo_rec_end,         (cmyth_proginfo_t p1))
   DEFINE_METHOD1(cmyth_proginfo_rec_status_t, proginfo_rec_status, (cmyth_proginfo_t p1))
-  DEFINE_METHOD1(long,                proginfo_card_id,         (cmyth_proginfo_t p1))
   DEFINE_METHOD1(unsigned long,       proginfo_flags,           (cmyth_proginfo_t p1))
   DEFINE_METHOD1(char*,               proginfo_prodyear,        (cmyth_proginfo_t p1))
   DEFINE_METHOD2(cmyth_proginfo_t,    proginfo_get_from_basename,    (cmyth_conn_t p1, const char* p2))
@@ -320,7 +318,6 @@ class DllLibCMyth : public DllDynamic, DllLibCMythInterface
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_start, proginfo_rec_start)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_end, proginfo_rec_end)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_rec_status, proginfo_rec_status)
-    RESOLVE_METHOD_RENAME(cmyth_proginfo_card_id, proginfo_card_id)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_flags, proginfo_flags)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_prodyear, proginfo_prodyear)
     RESOLVE_METHOD_RENAME(cmyth_proginfo_get_from_basename, proginfo_get_from_basename)

@@ -100,6 +100,7 @@ namespace EPG
     void UpdateLayout(bool refreshAllItems = false);
     void CalculateLayout();
     void Reset();
+    void ClearGridIndex(void);
 
     GridItemsPtr *GetItem(const int &channel);
     GridItemsPtr *GetNextItem(const int &channel);

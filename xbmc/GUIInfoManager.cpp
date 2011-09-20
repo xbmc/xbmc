@@ -4008,12 +4008,6 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
 
   switch (info)
   {
-  case LISTITEM_PERCENT_PLAYED:
-    if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0)
-      value = (int)(100 * ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
-    else
-      value = 0;
-    return true;
     case LISTITEM_PROGRESS:
     {
       if (item->IsFileItem())
@@ -4034,6 +4028,12 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
       return true;
     }
     break;
+  case LISTITEM_PERCENT_PLAYED:
+    if (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0)
+      value = (int)(100 * ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.timeInSeconds / ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds);
+    else
+      value = 0;
+    return true;
   }
 
   value = 0;
@@ -4462,16 +4462,6 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_streamDetails.GetSubtitleLanguage();
     break;
-  case LISTITEM_PERCENT_PLAYED:
-    {
-      int val;
-      if (GetItemInt(val, item, info))
-      {
-        CStdString str;
-        str.Format("%d", val);
-        return str;
-      }
-    }
   case LISTITEM_STARTTIME:
     if (item->HasPVRChannelInfoTag())
       return item->GetPVRChannelInfoTag()->GetEPGNow() ? item->GetPVRChannelInfoTag()->GetEPGNow()->StartAsLocalTime().GetAsLocalizedTime("", false) : CDateTime::GetCurrentDateTime().GetAsLocalizedTime("", false);
@@ -4586,6 +4576,16 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
       return rating;
     }
     break;
+  case LISTITEM_PERCENT_PLAYED:
+    {
+      int val;
+      if (GetItemInt(val, item, info))
+      {
+        CStdString str;
+        str.Format("%d", val);
+        return str;
+      }
+    }
   }
   return "";
 }

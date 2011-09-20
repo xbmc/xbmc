@@ -231,31 +231,18 @@ void CEpg::RemoveTagsBetween(time_t start, time_t end, bool bRemoveFromDb /* = f
 {
   CSingleLock lock(m_critSection);
 
-  unsigned int iSize = size();
-  for (unsigned int iTagPtr = 0; iTagPtr < iSize; iTagPtr++)
+  Sort();
+  m_nowActive = NULL;
+
+  time_t tagBegin, tagEnd;
+  for (int iTagPtr = (int) size() - 1; iTagPtr >= 0; iTagPtr--)
   {
-    CEpgInfoTag *tag = at(iTagPtr);
-    time_t tagBegin, tagEnd;
-    if (tag)
-    {
-      bool bMatch(true);
-      tag->StartAsUTC().GetAsTime(tagBegin);
-      tag->EndAsUTC().GetAsTime(tagEnd);
+    at(iTagPtr)->StartAsUTC().GetAsTime(tagBegin);
+    at(iTagPtr)->EndAsUTC().GetAsTime(tagEnd);
 
-      if (start > 0 && tagBegin < start)
-        bMatch = false;
-      if (end > 0 && tagEnd > end)
-        bMatch = false;
-      if (!IsRemovableTag(tag))
-        bMatch = false;
-
-      if (bMatch)
-      {
-        erase(begin() + iTagPtr);
-        --iSize;
-        --iTagPtr;
-      }
-    }
+    if ((start > 0 && tagBegin >= start) ||
+        (end > 0 && tagEnd <= end))
+      erase(begin() + iTagPtr);
   }
 
   Sort();
@@ -411,7 +398,7 @@ const CEpgInfoTag *CEpg::GetTagAround(const CDateTime &time) const
 
 void CEpg::AddEntry(const CEpgInfoTag &tag)
 {
-  CEpgInfoTag *newTag = CreateTag();
+  CEpgInfoTag *newTag = new CEpgInfoTag();
   if (newTag)
   {
     push_back(newTag);
@@ -431,7 +418,7 @@ bool CEpg::UpdateEntry(const CEpgInfoTag &tag, bool bUpdateDatabase /* = false *
   /* create a new tag if no tag with this ID exists */
   if (!infoTag)
   {
-    infoTag = CreateTag();
+    infoTag = new CEpgInfoTag();
     infoTag->SetUniqueBroadcastID(tag.UniqueBroadcastID());
     push_back(infoTag);
   }
@@ -511,10 +498,13 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   /* copy over tags */
   for (unsigned int iTagPtr = 0; iTagPtr < epg.size(); iTagPtr++)
   {
-    CEpgInfoTag *newTag = CreateTag();
-    newTag->Update(*epg.at(iTagPtr));
-    newTag->m_Epg = this;
-    push_back(newTag);
+    CEpgInfoTag *newTag = new CEpgInfoTag();
+    if (newTag)
+    {
+      newTag->Update(*epg.at(iTagPtr));
+      newTag->m_Epg = this;
+      push_back(newTag);
+    }
   }
 
   /* sort the list */
@@ -629,9 +619,6 @@ int CEpg::Get(CFileItemList &results) const
 
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
-    if (at(iTagPtr)->EndAsLocalTime() < CDateTime::GetCurrentDateTime() - CDateTimeSpan(0, g_advancedSettings.m_iEpgLingerTime / 60, g_advancedSettings.m_iEpgLingerTime % 60, 0))
-      continue;
-
     CFileItemPtr entry(new CFileItem(*at(iTagPtr)));
     entry->SetLabel2(at(iTagPtr)->StartAsLocalTime().GetAsLocalizedDateTime(false, false));
     results.Add(entry);
@@ -850,18 +837,6 @@ bool CEpg::PersistTags(bool bQueueWrite /* = false */) const
     bReturn = true;
 
   return bReturn;
-}
-
-CEpgInfoTag *CEpg::CreateTag(void)
-{
-  CEpgInfoTag *newTag = new CEpgInfoTag();
-  if (!newTag)
-  {
-    CLog::Log(LOGERROR, "EPG - %s - couldn't create new infotag",
-        __FUNCTION__);
-  }
-
-  return newTag;
 }
 
 //@}

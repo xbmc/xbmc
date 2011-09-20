@@ -116,25 +116,16 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
   else if (item->HasMusicInfoTag())
   {
     id = item->GetMusicInfoTag()->GetDatabaseId();
-
-    if (item->IsAlbum())
-      type = "album";
-    else
-    {
-      type = "song";
-
-      if (id <= 0)
-      {
-        if (item->GetMusicInfoTag()->GetTrackNumber() > 0)
-          object["track"] = item->GetMusicInfoTag()->GetTrackNumber();
-        if (!item->GetMusicInfoTag()->GetAlbum().empty())
-          object["album"] = item->GetMusicInfoTag()->GetAlbum();
-      }
-    }
+    type = "song";
 
     if (id <= 0)
     {
       object["title"] = item->GetMusicInfoTag()->GetTitle();
+
+      if (item->GetMusicInfoTag()->GetTrackNumber() > 0)
+        object["track"] = item->GetMusicInfoTag()->GetTrackNumber();
+      if (!item->GetMusicInfoTag()->GetAlbum().empty())
+        object["album"] = item->GetMusicInfoTag()->GetAlbum();
       if (!item->GetMusicInfoTag()->GetArtist().empty())
         object["artist"] = item->GetMusicInfoTag()->GetArtist();
     }
@@ -142,9 +133,9 @@ void CAnnouncementManager::Announce(EAnnouncementFlag flag, const char *sender, 
   else
     type = "unknown";
 
-  object["type"] = type;
+  object["item"]["type"] = type;
   if (id > 0)
-    object["id"] = id;
+    object["item"]["id"] = id;
 
   Announce(flag, sender, message, object);
 }

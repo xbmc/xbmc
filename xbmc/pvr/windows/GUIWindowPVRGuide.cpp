@@ -42,16 +42,13 @@ using namespace EPG;
 CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
   CGUIWindowPVRCommon(parent, PVR_WINDOW_EPG, CONTROL_BTNGUIDE, CONTROL_LIST_GUIDE_NOW_NEXT),
   Observer(),
-  m_bEpgCacheUpdateRequired(true),
-  m_iGuideView(g_guiSettings.GetInt("epg.defaultguideview")),
-  m_localItems(new CFileItemList)
+  m_iGuideView(g_guiSettings.GetInt("epg.defaultguideview"))
 {
 }
 
 CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
 {
   g_EpgContainer.UnregisterObserver(this);
-  delete m_localItems;
 }
 
 void CGUIWindowPVRGuide::ResetObservers(void)
@@ -64,8 +61,6 @@ void CGUIWindowPVRGuide::Notify(const Observable &obs, const CStdString& msg)
 {
   if (msg.Equals("epg"))
   {
-    m_bEpgCacheUpdateRequired = true;
-
     /* update the current window if the EPG timeline view is visible */
     if (IsVisible() && m_iGuideView == GUIDE_VIEW_TIMELINE)
       UpdateData();
@@ -219,18 +214,10 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-  if (m_bEpgCacheUpdateRequired)
-  {
-    m_localItems->ClearItems();
-    g_PVRChannelGroups->GetGroupAll(bRadio)->GetEPGAll(*m_localItems);
-    m_bEpgCacheUpdateRequired = false;
-  }
-  m_parent->m_vecItems->ClearItems();
-  m_parent->m_vecItems->Copy(*m_localItems);
+  g_PVRChannelGroups->GetGroupAll(bRadio)->GetEPGAll(*m_parent->m_vecItems);
 
   m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
-  m_bEpgCacheUpdateRequired = false;
   SelectPlayingFile();
 }
 

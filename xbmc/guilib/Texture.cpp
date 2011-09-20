@@ -26,6 +26,7 @@
 #include "pictures/DllImageLib.h"
 #include "DDSImage.h"
 #include "filesystem/SpecialProtocol.h"
+#include "JpegIO.h"
 #if defined(__APPLE__) && defined(__arm__)
 #include <ImageIO/ImageIO.h>
 #include "filesystem/File.h"
@@ -82,7 +83,6 @@ void CBaseTexture::Allocate(unsigned int width, unsigned int height, unsigned in
   CLAMP(m_textureHeight, g_Windowing.GetMaxTextureSize());
   CLAMP(m_imageWidth, m_textureWidth);
   CLAMP(m_imageHeight, m_textureHeight);
-
   delete[] m_pixels;
   m_pixels = new unsigned char[GetPitch() * GetRows()];
 }
@@ -299,6 +299,26 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
   CFRelease(cfdata);
   delete [] imageBuff;
 #else
+  //ImageLib is sooo sloow for jpegs. Try our own decoder first. If it fails, fall back to ImageLib.
+  if (URIUtils::GetExtension(texturePath).Equals(".jpg") || URIUtils::GetExtension(texturePath).Equals(".tbn"))
+  {
+    CJpegIO jpegfile;
+    if (jpegfile.Open(texturePath))
+    {
+      if (jpegfile.Width() > 0 && jpegfile.Height() > 0)
+      {
+        Allocate(jpegfile.Width(), jpegfile.Height(), XB_FMT_RGB8);
+        if (jpegfile.Decode(m_pixels))
+        {
+          if (autoRotate && jpegfile.Orientation())
+            m_orientation = jpegfile.Orientation() - 1;
+          m_hasAlpha=false;
+          return true;
+        }
+      }
+    }
+  }
+
   DllImageLib dll;
   if (!dll.Load())
     return false;
@@ -440,6 +460,8 @@ unsigned int CBaseTexture::GetPitch(unsigned int width) const
     return ((width + 3) / 4) * 16;
   case XB_FMT_A8:
     return width;
+  case XB_FMT_RGB8:
+    return (((width + 1)* 3 / 4) * 4);
   case XB_FMT_RGBA8:
   case XB_FMT_A8R8G8B8:
   default:

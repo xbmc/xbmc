@@ -1501,7 +1501,7 @@ void CDVDPlayer::HandlePlaySpeed()
     if (/* if all streams got at least g_advancedSettings.m_iPVRMinCacheLevel in their buffers, we're done */
         ((bGotVideo || bGotAudio) && (!bGotAudio || bAudioLevelOk) && (!bGotVideo || bVideoLevelOk)) ||
         /* or if one of the buffers is full but the stream hasn't been started */
-        (m_CurrentAudio.id >= 0 && m_CurrentVideo.id >= 0 && (bAudioFullNotStarted || bVideoFullNotStarted)))
+        ((bAudioFullNotStarted || bVideoFullNotStarted)))
     {
       CLog::Log(LOGDEBUG, "set caching from pvr to done. audio (%d) = %d. video (%d) = %d",
           bGotAudio, m_dvdPlayerAudio.m_messageQueue.GetLevel(),
@@ -1590,8 +1590,8 @@ bool CDVDPlayer::CheckStartCaching(CCurrentStream& current)
   {
     if (CachePVRStream())
     {
-      if ((current.type == STREAM_AUDIO && m_dvdPlayerAudio.m_messageQueue.GetLevel() == 0) ||
-         (current.type == STREAM_VIDEO && m_dvdPlayerVideo.m_messageQueue.GetLevel() == 0))
+      if ((current.type == STREAM_AUDIO && current.started && m_dvdPlayerAudio.m_messageQueue.GetLevel() == 0) ||
+         (current.type == STREAM_VIDEO && current.started && m_dvdPlayerVideo.m_messageQueue.GetLevel() == 0))
       {
         CLog::Log(LOGDEBUG, "%s stream stalled. start buffering", current.type == STREAM_AUDIO ? "audio" : "video");
         SetCaching(CACHESTATE_PVR);
@@ -2401,7 +2401,9 @@ bool CDVDPlayer::HasVideo() const
 {
   if (m_pInputStream)
   {
-    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) || m_CurrentVideo.id >= 0) return true;
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD) ||
+        m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER) ||
+        m_CurrentVideo.id >= 0) return true;
   }
   return false;
 }

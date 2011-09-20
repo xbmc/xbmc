@@ -39,34 +39,207 @@
       "notifications": { "$ref": "Configuration.Notifications", "required": true }
     }
   },
-  "Player.State": {
+  "Library.Id": {
+    "type": "integer",
+    "default": -1,
+    "minimum": 1
+  },  
+  "Playlist.Id": {
+    "type": "integer",
+    "minimum": 0,
+    "maximum": 2,
+    "default": -1
+  },
+  "Playlist.Type": {
+    "type": "string",
+    "enum": [ "unknown", "video", "audio", "picture", "mixed" ]
+  },
+  "Playlist.Property.Name": {
+    "type": "string",
+    "enum": [ "type", "size" ]
+  },
+  "Playlist.Property.Value": {
     "type": "object",
     "properties": {
-      "playing": { "type": "boolean", "required": true, "description": "" },
-      "paused": { "type": "boolean", "required": true, "description": "" }
+      "type": { "$ref": "Playlist.Type" },
+      "size": { "type": "integer", "minimum": 0 }
     }
   },
-  "Player.State.Extended": {
-    "extends": "Player.State",
-    "properties": {
-      "partymode": { "type": "boolean", "required": true, "description": "" }
-    }
-  },
-  "Player.TimeValues": {
-    "extends": "Player.State",
-    "properties": {
-      "time": { "$ref": "Global.Time", "required": true, "description": "" },
-      "total": { "$ref": "Global.Time", "required": true, "description": "" }
-    }
-  },
-  "Player.SeekTime": {
+  "Playlist.Position": {
     "type": "integer",
-    "minimum": 0
+    "minimum": 0,
+    "default": -1
   },
-  "Player.SeekPercentage": {
+  "Playlist.Item": {
+    "type": [
+      { "type": "object", "properties": { "file": { "type": "string", "description": "Path to a file (not a directory) to be added to the playlist", "required": true } }, "additionalProperties": false },
+      { "type": "object", "properties": { "directory": { "type": "string", "required": true } }, "additionalProperties": false },
+      { "type": "object", "properties": { "movieid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+      { "type": "object", "properties": { "episodeid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+      { "type": "object", "properties": { "musicvideoid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+      { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+      { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+      { "type": "object", "properties": { "songid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
+      { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true, "description": "Identification of a genre from the AudioLibrary" } }, "additionalProperties": false }
+    ]
+  },
+  "Player.Id": {
+    "type": "integer",
+    "minimum": 0,
+    "maximum": 2,
+    "default": -1
+  },
+  "Player.Type": {
+    "type": "string",
+    "enum": [ "video", "audio", "picture" ]
+  },
+  "Player.Position.Percentage": {
     "type": "number",
     "minimum": 0.0,
     "maximum": 100.0
+  },
+  "Player.Speed": {
+    "type": "object",
+    "required": true,
+    "properties": {
+      "speed": { "type": "integer" }
+    }
+  },
+  "Player.Repeat": {
+    "type": "string",
+    "enum": [ "off", "one", "all" ]
+  },
+  "Player.Audio.Stream": {
+    "type": "object",
+    "properties": {
+      "index": { "type": "integer", "minimum": 0, "required": true },
+      "name": { "type": "string", "required": true },
+      "language": { "type": "string", "required": true }
+    }
+  },
+  "Player.Audio.Stream.Extended": {
+    "extends": "Player.Audio.Stream",
+    "properties": {
+      "codec": { "type": "string", "required": true },
+      "bitrate": { "type": "integer", "required": true },
+      "channels": { "type": "integer", "required": true }
+    }
+  },
+  "Player.Subtitle": {
+    "type": "object",
+    "properties": {
+      "index": { "type": "integer", "minimum": 0, "required": true },
+      "name": { "type": "string", "required": true },
+      "language": { "type": "string", "required": true }
+    }
+  },
+  "Player.Property.Name": {
+    "type": "string",
+    "enum": [ "type", "partymode", "speed", "time", "percentage",
+              "totaltime", "playlistid", "position", "repeat", "shuffled",
+              "canseek", "canchangespeed", "canmove", "canzoom", "canrotate",
+              "canshuffle", "canrepeat", "currentaudiostream", "audiostreams",
+              "subtitleenabled", "currentsubtitle", "subtitles" ]
+  },
+  "Player.Property.Value": {
+    "type": "object",
+    "properties": {
+      "type": { "$ref": "Player.Type" },
+      "partymode": { "type": "boolean" },
+      "speed": { "type": "integer" },
+      "time": { "$ref": "Global.Time" },
+      "percentage": { "$ref": "Player.Position.Percentage" },
+      "totaltime": { "$ref": "Global.Time" },
+      "playlistid": { "$ref": "Playlist.Id" },
+      "position": { "$ref": "Playlist.Position" },
+      "repeat": { "$ref": "Player.Repeat" },
+      "shuffled": { "type": "boolean" },
+      "canseek": { "type": "boolean" },
+      "canchangespeed": { "type": "boolean" },
+      "canmove": { "type": "boolean" },
+      "canzoom": { "type": "boolean" },
+      "canrotate": { "type": "boolean" },
+      "canshuffle": { "type": "boolean" },
+      "canrepeat": { "type": "boolean" },
+      "currentaudiostream": { "$ref": "Player.Audio.Stream.Extended" },
+      "audiostreams": { "type": "array", "items": { "$ref": "Player.Audio.Stream.Extended" } },
+      "subtitleenabled": { "type": "boolean" },
+      "currentsubtitle": { "$ref": "Player.Subtitle" },
+      "subtitles": { "type": "array", "items": { "$ref": "Player.Subtitle" } }
+    }
+  },
+  "Player.Notifications.Item.Type": {
+    "type": "string",
+    "enum": [ "unknown", "movie", "episode", "musicvideo", "song" ]
+  },
+  "Player.Notifications.Item": {
+    "type": [
+      { "type": "object", "description": "An unknown item does not have any additional information.",
+        "properties": {
+          "type": { "$ref": "Player.Notifications.Item.Type", "required": true }
+        }
+      },
+      { "type": "object", "description": "An item known to the database has an identification.",
+        "properties": {
+          "type": { "$ref": "Player.Notifications.Item.Type", "required": true },
+          "id": { "$ref": "Library.Id", "required": true  }
+        }
+      },
+      { "type": "object", "description": "A movie item has a title and may have a release year.",
+        "properties": {
+          "type": { "$ref": "Player.Notifications.Item.Type", "required": true },
+          "title": { "type": "string", "required": true },
+          "year": { "type": "integer" }
+        }
+      },
+      { "type": "object", "description": "A tv episode has a title and may have an episode number, season number and the title of the show it belongs to.",
+        "properties": {
+          "type": { "$ref": "Player.Notifications.Item.Type", "required": true },
+          "title": { "type": "string", "required": true },
+          "episode": { "type": "integer" },
+          "season": { "type": "integer" },
+          "showtitle": { "type": "string" }
+        }
+      },
+      { "type": "object", "description": "A music video has a title and may have an album and an artist.",
+        "properties": {
+          "type": { "$ref": "Player.Notifications.Item.Type", "required": true },
+          "title": { "type": "string", "required": true },
+          "album": { "type": "string" },
+          "artist": { "type": "string" }
+        }
+      },
+      { "type": "object", "description": "A song has a title and may have an album, an artist and a track number.",
+        "properties": {
+          "type": { "$ref": "Player.Notifications.Item.Type", "required": true },
+          "title": { "type": "string", "required": true },
+          "album": { "type": "string" },
+          "artist": { "type": "string" },
+          "track": { "type": "integer" }
+        }
+      }
+    ]
+  },
+  "Player.Notifications.Player": {
+    "type": "object",
+    "properties": {
+      "playerid": { "$ref": "Player.Id", "required": true },
+      "speed": { "type": "integer" }
+    }
+  },
+  "Player.Notifications.Player.Seek": {
+    "extends": "Player.Notifications.Player",
+    "properties": {
+      "time": { "$ref": "Global.Time" },
+      "seekoffset": { "$ref": "Global.Time" }
+    }
+  },
+  "Player.Notifications.Data": {
+    "type": "object",
+    "properties": {
+      "item": { "$ref": "Player.Notifications.Item", "required": true },
+      "player": { "$ref": "Player.Notifications.Player", "required": true }
+    }
   },
   "Item.Fields.Base": {
     "type": "array",
@@ -85,11 +258,6 @@
       "fanart": { "type": "string" },
       "thumbnail": { "type": "string" }
     }
-  },
-  "Library.Id": {
-    "type": "integer",
-    "default": -1,
-    "minimum": 1
   },
   "Library.Fields.Genre": {
     "extends": "Item.Fields.Base",
@@ -436,51 +604,6 @@
       "track": { "type": "integer" }
     }
   },
-  "Playlist.Id": {
-    "type": [
-      { "type": "object", "properties": { "id": { "type": "string", "minLength": 1, "description": "Identification of a virtual playlist", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "file": { "type": "string", "minLength": 5, "description": "File from which to load a playlist", "required": true } }, "additionalProperties": false }
-    ]
-  },
-  "Playlist.Item.Position": {
-    "type": "integer",
-    "minimum": 0,
-    "default": -1
-  },
-  "Playlist.Repeat": {
-    "type": "string",
-    "enum": [ "off", "one", "all" ]
-  },
-  "Playlist.State": {
-    "extends": "Player.State",
-    "properties": {
-      "current": { "type": "integer", "required": true },
-      "repeat": { "$ref": "Playlist.Repeat", "required": true },
-      "shuffled": { "type": "boolean", "required": true }
-    },
-    "additionalProperties": false
-  },
-  "Playlist.Video.Item": {
-    "type": [
-      { "type": "object", "properties": { "file": { "type": "string", "description": "Path to a file (not a directory) to be added to the playlist", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "directory": { "type": "string", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "movieid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "episodeid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "musicvideoid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "playlist": { "$ref": "Playlist.Id", "required": true } }, "additionalProperties": false }
-    ]
-  },
-  "Playlist.Audio.Item": {
-    "type": [
-      { "type": "object", "properties": { "file": { "type": "string", "description": "Path to a file (not a directory) to be added to the playlist", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "directory": { "type": "string", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "artistid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "albumid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "songid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "genreid": { "$ref": "Library.Id", "required": true } }, "additionalProperties": false },
-      { "type": "object", "properties": { "playlist": { "$ref": "Playlist.Id", "required": true } }, "additionalProperties": false }
-    ]
-  },
   "Files.Media": {
     "type": "string",
     "enum": [ "video", "music", "pictures", "files", "programs" ]
@@ -534,25 +657,13 @@
                 "resume", "artistid", "albumid", "tvshowid", "setid" ]
     }
   },
-  "List.Fields.Video": {
-    "extends": "Item.Fields.Base",
-    "items": { "type": "string",
-      "enum": [ "title", "artist", "genre", "year", "rating", "album", "track",
-                  "playcount", "fanart", "director", "trailer", "tagline", "plot",
-                  "plotoutline", "originaltitle", "lastplayed", "writer", "studio",
-                  "mpaa", "country", "imdbnumber", "premiered", "productioncode",
-                  "runtime", "showlink", "streamdetails", "top250", "votes",
-                  "firstaired", "season", "episode", "showtitle", "thumbnail",
-                  "file", "sorttitle", "episodeguide", "resume", "tvshowid", "setid" ]
-    }
-  },
   "List.Items.All": {
     "type": "array",
     "items": { 
       "extends": [ "Video.Details.File", "Audio.Details.Media" ],
       "properties": {
         "id": { "$ref": "Library.Id" },
-        "type": { "type": "string", "enum": [ "unknown", "movie", "episode", "musicvideo", "song" ] },
+        "type": { "type": "string", "enum": [ "unknown", "movie", "episode", "musicvideo", "song", "picture" ] },
         "albumartist": { "type": "string" },
         "album": { "type": "string" },
         "track": { "type": "integer" },
@@ -585,66 +696,6 @@
         "albumid": { "$ref": "Library.Id" },
         "setid": { "$ref": "Array.Integer" },
         "tvshowid": { "$ref": "Library.Id" }
-      }
-    }
-  },
-  "List.Items.Video": {
-    "type": "array",
-    "items": { 
-      "extends": "Video.Details.File",
-      "properties": {
-        "id": { "$ref": "Library.Id" },
-        "type": { "type": "string", "enum": [ "unknown", "movie", "episode", "musicvideo" ] },
-        "artist": { "type": "string" },
-        "genre": { "type": "string" },
-        "year": { "type": "integer" },
-        "rating": { "type": "number" },
-        "album": { "type": "string" },
-        "track": { "type": "integer" },
-        "trailer": { "type": "string" },
-        "tagline": { "type": "string" },
-        "plotoutline": { "type": "string" },
-        "originaltitle": { "type": "string" },
-        "sorttitle": { "type": "string" },
-        "writer": { "type": "string" },
-        "studio": { "type": "string" },
-        "mpaa": { "type": "string" },
-        "country": { "type": "string" },
-        "imdbnumber": { "type": "string" },
-        "premiered": { "type": "string" },
-        "productioncode": { "type": "string" },
-        "showlink": { "type": "string" },
-        "top250": { "type": "integer" },
-        "votes": { "type": "string" },
-        "firstaired": { "type": "string" },
-        "season": { "type": "integer" },
-        "episode": { "type": "integer" },
-        "episodeguide": { "type": "string" },
-        "showtitle": { "type": "string" },
-        "setid": { "type": "string", "description": "Comma-separated list of sets" },
-        "tvshowid": { "$ref": "Library.Id" }
-      }
-    }
-  },
-  "List.Items.Audio": {
-    "type": "array",
-    "items": { 
-      "extends": "Audio.Details.Media",
-      "properties": {
-        "id": { "$ref": "Library.Id" },
-        "type": { "type": "string", "enum": [ "unknown", "song" ] },
-        "file": { "type": "string" },
-        "albumartist": { "type": "string" },
-        "album": { "type": "string" },
-        "track": { "type": "integer" },
-        "duration": { "type": "integer" },
-        "comment": { "type": "string" },
-        "lyrics": { "type": "string" },
-        "playcount": { "type": "integer" },
-        "musicbrainztrackid": { "type": "string" },
-        "musicbrainzalbumid": { "type": "string" },
-        "artistid": { "$ref": "Library.Id" },
-        "albumid": { "$ref": "Library.Id" }
       }
     }
   },
