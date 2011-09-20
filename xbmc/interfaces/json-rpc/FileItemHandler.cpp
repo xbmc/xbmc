@@ -128,11 +128,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
   if (allowFile && hasFileField)
   {
-    if (item->HasVideoInfoTag())
-    {
-      if (!item->GetVideoInfoTag()->GetPath().IsEmpty())
-        object["file"] = item->GetVideoInfoTag()->m_strFileNameAndPath.c_str();
-    }
+    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().IsEmpty())
+        object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
     if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
       object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
 
