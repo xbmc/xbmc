@@ -4010,6 +4010,7 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   {
     case LISTITEM_PROGRESS:
     {
+      value = 0;
       if (item->IsFileItem())
       {
         const CFileItem *pItem = (const CFileItem *)item;
