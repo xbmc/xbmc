@@ -53,6 +53,8 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
 
     if (item)
     {
+      if (item->IsAlbum() && field.Equals("albumlabel"))
+        field = "label";
       if (item->IsAlbum() && item->HasProperty("album_" + field))
       {
         if (field == "rating")

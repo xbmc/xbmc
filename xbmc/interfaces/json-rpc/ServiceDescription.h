@@ -312,7 +312,7 @@ namespace JSONRPC
       "\"extends\": \"Item.Fields.Base\","
       "\"items\": { \"type\": \"string\","
         "\"enum\": [ \"title\", \"description\", \"artist\", \"genre\","
-                  "\"theme\", \"mood\", \"style\", \"type\", \"label\","
+                  "\"theme\", \"mood\", \"style\", \"type\", \"albumlabel\","
                   "\"rating\", \"year\", \"musicbrainzalbumid\","
                   "\"musicbrainzalbumartistid\", \"fanart\", \"thumbnail\","
                   "\"artistid\" ]"
