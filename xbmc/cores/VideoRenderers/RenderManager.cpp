@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -284,7 +285,13 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     }
   }
 
-  Render(clear, flags, alpha);
+  if (g_advancedSettings.m_videoDisableBackgroundDeinterlace)
+  {
+    CSharedLock lock(m_sharedSection);
+    PresentSingle(clear, flags, alpha);
+  }
+  else
+    Render(clear, flags, alpha);
 
   m_presentevent.Set();
 }
