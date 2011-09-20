@@ -417,9 +417,9 @@ namespace INFO
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS           30000
 
-// Version string MUST NOT contain spaces.  It is used
-// in the HTTP request user agent.
-#define VERSION_STRING "PRE-11.0"
+#define VERSION_MAJOR 11
+#define VERSION_MINOR 0
+#define VERSION_TAG "PRE-"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)

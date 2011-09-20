@@ -25,6 +25,8 @@
 #include "FileItem.h"
 #include "Util.h"
 #include "utils/log.h"
+#include "GUIInfoManager.h"
+#include "system.h"
 
 using namespace JSONRPC;
 
@@ -77,6 +79,28 @@ JSON_STATUS CApplicationOperations::GetPropertyValue(const CStdString &property,
     result = g_application.GetVolume();
   else if (property.Equals("muted"))
     result = g_application.IsMuted();
+  else if (property.Equals("name"))
+    result = "XBMC";
+  else if (property.Equals("version"))
+  {
+    result = CVariant(CVariant::VariantTypeObject);
+    result["major"] = VERSION_MAJOR;
+    result["minor"] = VERSION_MINOR;
+#ifdef GIT_REV
+    result["revision"] = GIT_REV;
+#endif
+    CStdString tag(VERSION_TAG);
+    if (tag.Equals("PRE-"))
+      result["tag"] = "alpha";
+    else if (tag.Equals("BETA-"))
+      result["tag"] = "beta";
+    else if (tag.Left(2).Equals("RC"))
+      result["tag"] = "releasecandidate";
+    else if (tag.empty())
+      result["tag"] = "stable";
+    else
+      result["tag"] = "prealpha";
+  }
   else
     return InvalidParams;
 

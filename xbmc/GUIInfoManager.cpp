@@ -3603,13 +3603,15 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
   return CTemperature();
 }
 
+// Version string MUST NOT contain spaces.  It is used
+// in the HTTP request user agent.
 CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp;
 #ifdef GIT_REV
-  tmp.Format("%s Git:%s", VERSION_STRING, GIT_REV);
+  tmp.Format("%s%d.%d Git:%s", VERSION_TAG, VERSION_MAJOR, VERSION_MINOR, GIT_REV);
 #else
-  tmp.Format("%s", VERSION_STRING);
+  tmp.Format("%s%d.%d", VERSION_TAG, VERSION_MAJOR, VERSION_MINOR);
 #endif
   return tmp;
 }
