@@ -219,7 +219,9 @@ CStdString CThumbnailCache::GetFanart(const CFileItem &item)
     {
       CVideoDatabase database;
       database.Open();
-      int iShowId = database.GetTvShowId(item.GetVideoInfoTag()->m_strPath);
+      int iShowId = item.GetVideoInfoTag()->m_iIdShow;
+      if (iShowId <= 0)
+        iShowId = database.GetTvShowId(item.GetVideoInfoTag()->m_strPath);
       CStdString showPath;
       database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
       return GetThumb(showPath,g_settings.GetVideoFanartFolder());

@@ -211,7 +211,10 @@ JSON_STATUS CVideoLibrary::GetEpisodeDetails(const CStdString &method, ITranspor
   }
   CFileItemPtr pItem = CFileItemPtr(new CFileItem(infos));
   // We need to set the correct base path to get the valid fanart
-  CStdString basePath; basePath.Format("videodb://2/2/%ld/%ld/%ld", videodatabase.GetTvShowForEpisode(id), infos.m_iSeason, id);
+  int tvshowid = infos.m_iIdShow;
+  if (tvshowid <= 0)
+    tvshowid = videodatabase.GetTvShowForEpisode(id);
+  CStdString basePath; basePath.Format("videodb://2/2/%ld/%ld/%ld", tvshowid, infos.m_iSeason, id);
   pItem->SetPath(basePath);
 
   HandleFileItem("episodeid", true, "episodedetails", pItem, parameterObject, parameterObject["fields"], result, false);
