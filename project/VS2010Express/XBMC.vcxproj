@@ -734,7 +734,6 @@
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
     <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp" />
-    <ClCompile Include="..\..\xbmc\threads\platform\win\FairMonitor.cpp" />
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
