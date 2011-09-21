@@ -43,7 +43,6 @@ public:
   unsigned int   FileSize()    { return m_imgsize; }
   unsigned int   Width()       { return m_width; }
   unsigned int   Height()      { return m_height; }
-  unsigned int   Pitch()       { return m_pitch; }
   unsigned int   Orientation() { return m_orientation; }
 
 protected:
@@ -59,7 +58,6 @@ protected:
   unsigned int   m_imgsize;
   unsigned int   m_width;
   unsigned int   m_height;
-  unsigned int   m_pitch;
   unsigned int   m_orientation;
 };
 

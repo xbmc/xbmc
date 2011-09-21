@@ -69,7 +69,7 @@ static boolean x_fill_mem_input_buffer (j_decompress_ptr cinfo)
   cinfo->src->next_input_byte = mybuffer;
   cinfo->src->bytes_in_buffer = 2;
 
-  return TRUE;
+  return true;
 }
 
 static void x_skip_input_data (j_decompress_ptr cinfo, long num_bytes)
@@ -179,7 +179,7 @@ bool CJpegIO::Open(const CStdString& texturePath,  unsigned int minx, unsigned i
 
   try
   {
-    jpeg_read_header(&m_cinfo, TRUE);
+    jpeg_read_header(&m_cinfo, true);
 
     /*  libjpeg can scale the image for us if it is too big. It must be in the format
     num/denom, where (for our purposes) that is [1-8]/8 where 8/8 is the unscaled image.
@@ -209,7 +209,6 @@ bool CJpegIO::Open(const CStdString& texturePath,  unsigned int minx, unsigned i
     jpeg_calc_output_dimensions (&m_cinfo);
     m_width = m_cinfo.output_width;
     m_height = m_cinfo.output_height;
-    m_pitch = (((m_cinfo.output_width + 1)* 3 / 4) * 4); //align to 4-bytes
 
     GetExif();
     return true;
@@ -243,33 +242,36 @@ bool CJpegIO::GetExif()
 bool CJpegIO::Decode(const unsigned char *pixels, unsigned int format)
 {
   unsigned char *dst = (unsigned char *) pixels;
+  unsigned int pitch;
   try
   {
     jpeg_start_decompress( &m_cinfo );
 
     if (format == XB_FMT_RGB8)
     {
+    pitch = ((m_width + 1)* 3 / 4) * 4; //align to 4-bytes
       while( m_cinfo.output_scanline < m_height )
       {
-       jpeg_read_scanlines( &m_cinfo, &dst, 1 );
-       dst+=m_pitch;
+        jpeg_read_scanlines( &m_cinfo, &dst, 1 );
+        dst += pitch;
       }
     }
     else if (format == XB_FMT_A8R8G8B8)
     {
       unsigned char* row = new unsigned char[m_width * 3];
+      pitch = m_width*4;
       while( m_cinfo.output_scanline < m_height)
       {
         jpeg_read_scanlines( &m_cinfo, &row, 1 );
         unsigned char *dst2 = dst;
-        for (unsigned int x = 0; x < m_width; x++, dst2 += 4)
+        for (unsigned int x = 0; x < m_width; x++)
         {
-          dst2[0] = row[(x*3)+2];
-          dst2[1] = row[(x*3)+1];
-          dst2[2] = row[(x*3)+0];
-          dst2[3] = 0xff;
+          *dst2++ = row[(x*3)+2];
+          *dst2++ = row[(x*3)+1];
+          *dst2++ = row[(x*3)+0];
+          *dst2++ = 0xff;
         }
-        dst += m_width * 4;
+        dst += pitch;
       }
     }
     else
