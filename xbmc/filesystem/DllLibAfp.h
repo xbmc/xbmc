@@ -47,6 +47,7 @@ extern "C" {
 #define afp_wrap_rename               afp_ml_rename
 #define afp_wrap_creat                afp_ml_creat
 #define afp_wrap_readdir              afp_ml_readdir
+#define afp_wrap_readlink             afp_ml_readlink
 #define afp_wrap_mkdir                afp_ml_mkdir
 #define afp_wrap_rmdir                afp_ml_rmdir
 #else
@@ -60,6 +61,7 @@ extern "C" {
 #define afp_wrap_rename               ml_rename
 #define afp_wrap_creat                ml_creat
 #define afp_wrap_readdir              ml_readdir
+#define afp_wrap_readlink             ml_readlink
 #define afp_wrap_mkdir                ml_mkdir
 #define afp_wrap_rmdir                ml_rmdir
 #endif
@@ -95,6 +97,7 @@ public:
   virtual int afp_ml_rename(struct afp_volume * vol, const char * path_from, const char * path_to)=0;
   virtual int afp_ml_creat(struct afp_volume * volume, const char *path, mode_t mode)=0;
   virtual int afp_ml_readdir(struct afp_volume * volume, const char *path, struct afp_file_info **base)=0;
+  virtual int afp_ml_readlink(struct afp_volume * vol, const char * path, char *buf, size_t size)=0;  
   virtual int afp_ml_mkdir(struct afp_volume * vol, const char * path, mode_t mode)=0;
   virtual int afp_ml_rmdir(struct afp_volume * vol, const char *path)=0;
 
@@ -109,55 +112,13 @@ public:
   virtual int ml_rename(struct afp_volume * vol, const char * path_from, const char * path_to)=0;
   virtual int ml_creat(struct afp_volume * volume, const char *path, mode_t mode)=0;
   virtual int ml_readdir(struct afp_volume * volume, const char *path, struct afp_file_info **base)=0;
+  virtual int ml_readlink(struct afp_volume * vol, const char * path, char *buf, size_t size)=0;
   virtual int ml_mkdir(struct afp_volume * vol, const char * path, mode_t mode)=0;
   virtual int ml_rmdir(struct afp_volume * vol, const char *path)=0;
 
 #endif
 
 };
-
-/*
-#ifdef USE_CVS_AFPFS
-  DEFINE_METHOD3(struct afp_server *,   afp_server_full_connect,     (void *p1, struct afp_connection_request *p2, int *p3))        
-
-  DEFINE_METHOD2(int,                   afp_ml_unlink,                  (struct afp_volume *p1, const char *p2))          
-  DEFINE_METHOD2(int,                   afp_ml_rmdir,                   (struct afp_volume *p1, const char *p2))            
-
-  DEFINE_METHOD3(int,                   afp_ml_close,                   (struct afp_volume *p1, const char *p2, struct afp_file_info *p3))        
-  DEFINE_METHOD3(int,                   afp_ml_getattr,                 (struct afp_volume *p1, const char *p2, struct stat *p3))          
-  DEFINE_METHOD3(int,                   afp_ml_rename,                  (struct afp_volume *p1, const char *p2, const char *p3))            
-  DEFINE_METHOD3(int,                   afp_ml_creat,                   (struct afp_volume *p1, const char *p2, mode_t p3))              
-  DEFINE_METHOD3(int,                   afp_ml_readdir,                 (struct afp_volume *p1, const char *p2, struct afp_file_info **p3))                
-  DEFINE_METHOD3(int,                   afp_ml_mkdir,                   (struct afp_volume *p1, const char *p2, mode_t p3))                  
-
-  DEFINE_METHOD4(int,                   afp_ml_open,                    (struct afp_volume *p1, const char *p2, int p3, struct afp_file_info **p4))        
-
-  DEFINE_METHOD7(int,                   afp_ml_read,                    (struct afp_volume *p1, const char *p2, char *p3, size_t p4, off_t p5, struct afp_file_info *p6, int *p7))
-  
-  DEFINE_METHOD8(int,                   afp_ml_write,                   (struct afp_volume *p1, const char *p2, const char *p3, size_t p4, off_t p5, struct afp_file_info *p6, uid_t p7, gid_t p8))
-
-#else
-  DEFINE_METHOD2(struct afp_server *,   afp_server_full_connect,    (void *p1, struct afp_connection_request *p2))        
-
-  DEFINE_METHOD2(int,                   ml_unlink,                  (struct afp_volume *p1, const char *p2))          
-  DEFINE_METHOD2(int,                   ml_rmdir,                   (struct afp_volume *p1, const char *p2))            
-
-  DEFINE_METHOD3(int,                   ml_close,                   (struct afp_volume *p1, const char *p2, struct afp_file_info *p3))        
-  DEFINE_METHOD3(int,                   ml_getattr,                 (struct afp_volume *p1, const char *p2, struct stat *p3))          
-  DEFINE_METHOD3(int,                   ml_rename,                  (struct afp_volume *p1, const char *p2, const char *p3))            
-  DEFINE_METHOD3(int,                   ml_creat,                   (struct afp_volume *p1, const char *p2, mode_t p3))              
-  DEFINE_METHOD3(int,                   ml_readdir,                 (struct afp_volume *p1, const char *p2, struct afp_file_info **p3))                
-  DEFINE_METHOD3(int,                   ml_mkdir,                   (struct afp_volume *p1, const char *p2, mode_t p3))                  
-
-  DEFINE_METHOD4(int,                   ml_open,                    (struct afp_volume *p1, const char *p2, int p3, struct afp_file_info **p4))        
-
-  DEFINE_METHOD7(int,                   ml_read,                    (struct afp_volume *p1, const char *p2, char *p3, size_t p4, off_t p5, struct afp_file_info *p6, int *p7))
-  
-  DEFINE_METHOD8(int,                   ml_write,                   (struct afp_volume *p1, const char *p2, const char *p3, size_t p4, off_t p5, struct afp_file_info *p6, uid_t p7, gid_t p8))
-
-#endif
-
-*/
 
 class DllLibAfp : public DllDynamic, DllLibAfpInterface
 {
@@ -189,10 +150,11 @@ class DllLibAfp : public DllDynamic, DllLibAfpInterface
   DEFINE_METHOD3(int,                   afp_wrap_getattr,                 (struct afp_volume *p1, const char *p2, struct stat *p3))          
   DEFINE_METHOD3(int,                   afp_wrap_rename,                  (struct afp_volume *p1, const char *p2, const char *p3))            
   DEFINE_METHOD3(int,                   afp_wrap_creat,                   (struct afp_volume *p1, const char *p2, mode_t p3))              
-  DEFINE_METHOD3(int,                   afp_wrap_readdir,                 (struct afp_volume *p1, const char *p2, struct afp_file_info **p3))                
+  DEFINE_METHOD3(int,                   afp_wrap_readdir,                 (struct afp_volume *p1, const char *p2, struct afp_file_info **p3))                 
   DEFINE_METHOD3(int,                   afp_wrap_mkdir,                   (struct afp_volume *p1, const char *p2, mode_t p3))                  
 
   DEFINE_METHOD4(int,                   afp_wrap_open,                    (struct afp_volume *p1, const char *p2, int p3, struct afp_file_info **p4))        
+  DEFINE_METHOD4(int,                   afp_wrap_readlink,                (struct afp_volume *p1, const char *p2, char *p3, size_t p4))
   
   DEFINE_METHOD5(int,                   afp_connect_volume,               (struct afp_volume *p1, struct afp_server *p2, char *p3, unsigned int *p4, unsigned int p5))        
   
@@ -227,7 +189,8 @@ class DllLibAfp : public DllDynamic, DllLibAfpInterface
     RESOLVE_METHOD_RENAME(afp_ml_unlink, afp_ml_unlink)                                                
     RESOLVE_METHOD_RENAME(afp_ml_rename, afp_ml_rename)                                                    
     RESOLVE_METHOD_RENAME(afp_ml_creat, afp_ml_creat)                                                        
-    RESOLVE_METHOD_RENAME(afp_ml_readdir, afp_ml_readdir)                                                            
+    RESOLVE_METHOD_RENAME(afp_ml_readdir, afp_ml_readdir)
+    RESOLVE_METHOD_RENAME(afp_ml_readlink, afp_ml_readlink)    
     RESOLVE_METHOD_RENAME(afp_ml_mkdir, afp_ml_mkdir)                                                                
     RESOLVE_METHOD_RENAME(afp_ml_rmdir, afp_ml_rmdir)  
 #else
@@ -240,7 +203,8 @@ class DllLibAfp : public DllDynamic, DllLibAfpInterface
     RESOLVE_METHOD_RENAME(ml_unlink, ml_unlink)                                                
     RESOLVE_METHOD_RENAME(ml_rename, ml_rename)                                                    
     RESOLVE_METHOD_RENAME(ml_creat, ml_creat)                                                        
-    RESOLVE_METHOD_RENAME(ml_readdir, ml_readdir)                                                            
+    RESOLVE_METHOD_RENAME(ml_readdir, ml_readdir)
+    RESOLVE_METHOD_RENAME(ml_readlink, ml_readlink)
     RESOLVE_METHOD_RENAME(ml_mkdir, ml_mkdir)                                                                
     RESOLVE_METHOD_RENAME(ml_rmdir, ml_rmdir) 
 #endif

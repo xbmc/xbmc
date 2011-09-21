@@ -53,6 +53,48 @@ CAFPDirectory::~CAFPDirectory(void)
 {
 }
 
+bool CAFPDirectory::ResolveSymlink( const CStdString &dirName, const CStdString &fileName, 
+                                    struct stat *stat, CStdString &resolvedName)
+{
+  CSingleLock lock(gAfpConnection); 
+  int ret = 0;  
+  bool retVal = true;
+  char resolvedLink[MAX_PATH];
+  CStdString fullpath = dirName;
+  URIUtils::AddSlashAtEnd(fullpath);
+  fullpath += fileName;
+  
+  ret = gAfpConnection.GetImpl()->afp_wrap_readlink(gAfpConnection.GetVolume(), fullpath.c_str(), resolvedLink, MAX_PATH);    
+  
+  if(ret == 0)
+  {
+    struct stat tmpBuffer = {0};      
+    fullpath = dirName;
+    URIUtils::AddSlashAtEnd(fullpath);
+    fullpath.append(resolvedLink);
+ 
+    ret = gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), fullpath.c_str(), &tmpBuffer);
+
+    if (ret != 0) 
+    {
+      CLog::Log(LOGERROR, "AFP: Failed to stat(%s) on link resolve %s\n", fullpath.c_str(), strerror(errno));
+      retVal = false;;
+    }
+    else
+    {  
+        memcpy(stat, &tmpBuffer, sizeof(struct stat));
+    }      
+    resolvedName = resolvedLink;
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "Failed to readlink(%s) %s\n", fullpath.c_str(), strerror(errno));
+    retVal = false;
+  }
+  return retVal;
+}
+
+
 bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   // We accept afp://[[user[:password@]]server[/share[/path[/file]]]]
@@ -120,6 +162,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   for (size_t i = 0; i < vecEntries.size(); i++)
   {
     CachedDirEntry aDir = vecEntries[i];
+    CStdString resolvedLink;    
 
     // We use UTF-8 internally, as does AFP
     CStdString strFile = aDir.name;
@@ -144,6 +187,16 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
           if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strFullName.c_str(), &info) == 0)
           {
+            //resolve symlinks
+            if(S_ISLNK(info.st_mode))
+            {
+              if(!ResolveSymlink(strDirName, strFile, &info, resolvedLink))
+              {
+                continue;
+              }
+              aDir.name = resolvedLink.c_str();              
+            }
+          
             bIsDir = (info.st_mode & S_IFDIR) ? true : false;
             lTimeDate = info.st_mtime;
             if (lTimeDate == 0) // if modification date is missing, use create date
@@ -152,7 +205,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           }
           else
           {
-            CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
+            CLog::Log(LOGERROR, "%s - Failed to stat file %s (%s)", __FUNCTION__, strFullName.c_str(),strerror(errno));
           }
 
           lock.Leave();
