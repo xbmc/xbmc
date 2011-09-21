@@ -307,8 +307,8 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     {
       if (jpegfile.Width() > 0 && jpegfile.Height() > 0)
       {
-        Allocate(jpegfile.Width(), jpegfile.Height(), XB_FMT_RGB8);
-        if (jpegfile.Decode(m_pixels))
+        Allocate(jpegfile.Width(), jpegfile.Height(), XB_FMT_A8R8G8B8);
+        if (jpegfile.Decode(m_pixels, XB_FMT_A8R8G8B8))
         {
           if (autoRotate && jpegfile.Orientation())
             m_orientation = jpegfile.Orientation() - 1;

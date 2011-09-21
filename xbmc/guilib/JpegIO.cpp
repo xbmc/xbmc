@@ -26,6 +26,7 @@
 #include "settings/Settings.h"
 #include "filesystem/File.h"
 #include "utils/log.h"
+#include "XBTF.h"
 #include "JpegIO.h"
 
 /*Override libjpeg's error function to avoid an exit() call.*/
@@ -239,17 +240,42 @@ bool CJpegIO::GetExif()
   return false;
 }
 
-bool CJpegIO::Decode(const unsigned char *pixels)
+bool CJpegIO::Decode(const unsigned char *pixels, unsigned int format)
 {
-  //requires a pre-allocated buffer of size pitch*3
   unsigned char *dst = (unsigned char *) pixels;
   try
   {
     jpeg_start_decompress( &m_cinfo );
-    while( m_cinfo.output_scanline < m_height )
+
+    if (format == XB_FMT_RGB8)
     {
-      jpeg_read_scanlines( &m_cinfo, &dst, 1 );
-      dst+=m_pitch;
+      while( m_cinfo.output_scanline < m_height )
+      {
+       jpeg_read_scanlines( &m_cinfo, &dst, 1 );
+       dst+=m_pitch;
+      }
+    }
+    else if (format == XB_FMT_A8R8G8B8)
+    {
+      unsigned char* row = new unsigned char[m_width * 3];
+      while( m_cinfo.output_scanline < m_height)
+      {
+        jpeg_read_scanlines( &m_cinfo, &row, 1 );
+        unsigned char *dst2 = dst;
+        for (unsigned int x = 0; x < m_width; x++, dst2 += 4)
+        {
+          dst2[0] = row[(x*3)+2];
+          dst2[1] = row[(x*3)+1];
+          dst2[2] = row[(x*3)+0];
+          dst2[3] = 0xff;
+        }
+        dst += m_width * 4;
+      }
+    }
+    else
+    {
+      CLog::Log(LOGWARNING, "JpegIO: Incorrect output format specified");
+      return false;
     }
     jpeg_finish_decompress( &m_cinfo );
   }

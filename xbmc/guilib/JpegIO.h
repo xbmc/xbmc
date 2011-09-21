@@ -37,7 +37,7 @@ public:
   CJpegIO();
   ~CJpegIO();
   bool           Open(const CStdString& m_texturePath,  unsigned int m_minx=0, unsigned int m_miny=0);
-  bool           Decode(const unsigned char *pixels);
+  bool           Decode(const unsigned char *pixels, unsigned int format);
   void           Close();
 
   unsigned int   FileSize()    { return m_imgsize; }
