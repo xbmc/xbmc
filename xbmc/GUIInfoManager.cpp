@@ -4010,7 +4010,7 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   {
     case LISTITEM_PROGRESS:
     {
-      int iProgress(0);
+      value = 0;
       if (item->IsFileItem())
       {
         const CFileItem *pItem = (const CFileItem *)item;
@@ -4018,15 +4018,15 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
         {
           const CEpgInfoTag *epgNow = pItem->GetPVRChannelInfoTag()->GetEPGNow();
           if (epgNow)
-            iProgress = (int) epgNow->ProgressPercentage();
+            value = (int) epgNow->ProgressPercentage();
         }
         else if (pItem && pItem->HasEPGInfoTag())
         {
-          iProgress = (int) pItem->GetEPGInfoTag()->ProgressPercentage();
+          value = (int) pItem->GetEPGInfoTag()->ProgressPercentage();
         }
       }
 
-      return iProgress;
+      return true;
     }
     break;
   case LISTITEM_PERCENT_PLAYED:
@@ -4651,13 +4651,13 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     return item->IsSelected();
   else if (condition == LISTITEM_IS_FOLDER)
     return item->m_bIsFolder;
-  else if (condition == LISTITEM_IS_RESUMABLE)
-    return (item->IsFileItem() && ((const CFileItem *)item)->HasVideoInfoTag() && ((const CFileItem *)item)->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0);
 
   if (item->IsFileItem())
   {
     const CFileItem *pItem = (const CFileItem *)item;
-    if (condition == LISTITEM_ISRECORDING)
+    if (condition == LISTITEM_IS_RESUMABLE)
+      return (pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_resumePoint.totalTimeInSeconds > 0);
+    else if (condition == LISTITEM_ISRECORDING)
     {
       if (pItem->HasPVRChannelInfoTag())
       {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <setting id="host" type="text" label="30000" option="urlencoded" default="127.0.0.1" />
-    <setting id="port" type="integer" label="30001" default="9596" />
+    <setting id="port" type="number" label="30001" default="9596" />
     <setting id="ftaonly" type="bool" label="30002" default="false" />
     <setting id="useradio" type="bool" label="30003" default="true" />
 
