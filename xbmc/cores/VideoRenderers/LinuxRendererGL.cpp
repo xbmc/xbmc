@@ -3011,7 +3011,8 @@ bool CLinuxRendererGL::Supports(EINTERLACEMETHOD method)
     return false;
 
   if(method == VS_INTERLACEMETHOD_DEINTERLACE
-  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF)
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
+  || method == VS_INTERLACEMETHOD_SW_BLEND)
     return true;
 
   if((method == VS_INTERLACEMETHOD_RENDER_BLEND

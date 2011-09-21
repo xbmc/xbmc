@@ -615,7 +615,7 @@ void CDVDPlayerVideo::Process()
             {
               if(!(mFilters & CDVDVideoCodec::FILTER_DEINTERLACE_ANY))
               {
-                if((mInt == VS_INTERLACEMETHOD_DEINTERLACE)
+                if((mInt == VS_INTERLACEMETHOD_SW_BLEND)
                 || (mInt == VS_INTERLACEMETHOD_AUTO && !g_renderManager.Supports(VS_INTERLACEMETHOD_RENDER_BOB)
                                                     && !g_renderManager.Supports(VS_INTERLACEMETHOD_DXVA_ANY)))
                 {
