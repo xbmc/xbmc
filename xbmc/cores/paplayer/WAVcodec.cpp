@@ -249,7 +249,7 @@ __int64 WAVCodec::Seek(__int64 iSeekTime)
 int WAVCodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
 {
   *actualsize=0;
-  int iPos=(int)m_file.GetPosition();
+  unsigned int iPos=(int)m_file.GetPosition();
   if (iPos >= m_iDataStart+m_iDataLen)
     return READ_EOF;
 
