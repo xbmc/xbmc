@@ -21,11 +21,14 @@
 
 #pragma once
 
-#include <boost/thread/thread.hpp>
+#include <unittest++/UnitTest++.h>
 
-#define BOOST_MILLIS(x) (boost::get_system_time() + boost::posix_time::milliseconds(x))
+#include "threads/Thread.h"
+#include "threads/Atomics.h"
 
-inline static void Sleep(unsigned int millis) { boost::thread::sleep(BOOST_MILLIS(millis)); }
+#define MILLIS(x) x
+
+inline static void SleepMillis(unsigned int millis) { XbmcThreads::ThreadSleep(millis); }
 
 template<class E> inline static bool waitForWaiters(E& event, int numWaiters, int milliseconds)
 {
@@ -33,7 +36,7 @@ template<class E> inline static bool waitForWaiters(E& event, int numWaiters, in
   {
     if (event.getNumWaits() == numWaiters)
       return true;
-    Sleep(1);
+    SleepMillis(1);
   }
   return false;
 }
@@ -49,7 +52,7 @@ inline static bool waitForThread(volatile long& mutex, int numWaiters, int milli
     {
       CSingleLock tmplock(sec); // kick any memory syncs
     }
-    Sleep(1);
+    SleepMillis(1);
   }
   return false;
 }
@@ -62,3 +65,65 @@ public:
   inline ~AtomicGuard() { if (val) AtomicDecrement(val); }
 };
 
+class thread
+{
+  template <class F> class FunctorRunnable : public IRunnable
+  {
+    F f;
+  public:
+    inline explicit FunctorRunnable(F f_) : f(f_) { }
+    inline virtual ~FunctorRunnable(){ }
+    inline virtual void Run() { f (); }
+  };
+
+  IRunnable* f;
+  CThread* cthread;
+
+//  inline thread(const thread& other) { }
+public:
+  template <class F> inline explicit thread(F functor) : 
+    f(new FunctorRunnable<F>(functor)), 
+    cthread(new CThread(f, "dumb thread"))
+  {
+    cthread->Create();
+  }
+
+  inline thread() : f(NULL), cthread(NULL) {}
+
+  inline thread(thread& other) : f(other.f), cthread(other.cthread) { other.f = NULL; other.cthread = NULL; }
+  inline thread& operator=(const thread& other) { f = other.f; ((thread&)other).f = NULL; cthread = other.cthread; ((thread&)other).cthread = NULL; return *this; }
+
+  virtual ~thread()
+  {
+//    if (cthread && cthread->IsRunning())
+//      cthread->StopThread();
+
+    if (f)
+      delete f;
+  }
+
+  void join()
+  {
+    cthread->WaitForThreadExit((unsigned int)-1);
+  }
+
+  bool timed_join(unsigned int millis)
+  {
+    return cthread->WaitForThreadExit(millis);
+  }
+};
+
+template <class F> class FunctorReference
+{
+  F& f;
+ public:
+  inline FunctorReference(F& f_) : f(f_) {}
+  inline FunctorReference(const FunctorReference<F>& fr) : f(fr.f) {}
+
+  inline void operator() ()
+  {
+    f ();
+  }
+};
+
+template<class F> inline FunctorReference<F> ref(F& f) { return FunctorReference<F>(f); }
