@@ -28,7 +28,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
 {
   if (m_ThreadId != 0)
   {
-    CLog::Log(LOGERROR, "%s - fatal error creating thread- old thread id not null", __FUNCTION__);
+    if (logger) logger->Log(LOGERROR, "%s - fatal error creating thread- old thread id not null", __FUNCTION__);
     exit(1);
   }
   m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
@@ -47,7 +47,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
   if (pthread_create(&m_ThreadId, &attr, (void*(*)(void*))staticThread, this) != 0)
   {
-    CLog::Log(LOGNOTICE, "%s - fatal error creating thread",__FUNCTION__);
+    if (logger) logger->Log(LOGNOTICE, "%s - fatal error creating thread",__FUNCTION__);
   }
   pthread_attr_destroy(&attr);
 }
@@ -64,7 +64,7 @@ void CThread::SetThreadInfo()
   // start thread with nice level of appication
   int appNice = getpriority(PRIO_PROCESS, getpid());
   if (setpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId, appNice) != 0)
-    CLog::Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
+    if (logger) logger->Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
 }
 
 ThreadIdentifier CThread::GetCurrentThreadId()
@@ -138,7 +138,7 @@ bool CThread::SetPriority(const int iPriority)
     if (setpriority(PRIO_PROCESS, m_ThreadOpaque.LwpId, prio) == 0)
       bReturn = true;
     else
-      CLog::Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
+      if (logger) logger->Log(LOGERROR, "%s: error %s", __FUNCTION__, strerror(errno));
   }
 
   return bReturn;

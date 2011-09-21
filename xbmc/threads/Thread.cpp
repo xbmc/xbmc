@@ -21,13 +21,15 @@
 #include "threads/SystemClock.h"
 #include "Thread.h"
 #include "utils/log.h"
-#include "utils/TimeUtils.h"
 #include "threads/ThreadLocal.h"
+#include "threads/SingleLock.h"
 
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 static XbmcThreads::ThreadLocal<CThread> currentThread;
+
+XbmcCommons::ILogger* CThread::logger = NULL;
 
 #include "threads/platform/ThreadImpl.cpp"
 
@@ -87,7 +89,7 @@ THREADFUNC CThread::staticThread(void* data)
   bool autodelete;
 
   if (!pThread) {
-    CLog::Log(LOGERROR,"%s, sanity failed. thread is NULL.",__FUNCTION__);
+    if(logger) logger->Log(LOGERROR,"%s, sanity failed. thread is NULL.",__FUNCTION__);
     return 1;
   }
 
@@ -97,7 +99,7 @@ THREADFUNC CThread::staticThread(void* data)
 
   pThread->SetThreadInfo();
 
-  CLog::Log(LOGNOTICE,"Thread %s start, auto delete: %s", name.c_str(), (autodelete ? "true" : "false"));
+  if(logger) logger->Log(LOGNOTICE,"Thread %s start, auto delete: %s", name.c_str(), (autodelete ? "true" : "false"));
 
   currentThread.set(pThread);
   pThread->m_StartEvent.Set();
@@ -117,12 +119,12 @@ THREADFUNC CThread::staticThread(void* data)
 
   if (autodelete)
   {
-    CLog::Log(LOGDEBUG,"Thread %s %"PRIu64" terminating (autodelete)", name.c_str(), (uint64_t)id);
+    if(logger) logger->Log(LOGDEBUG,"Thread %s %"PRIu64" terminating (autodelete)", name.c_str(), (uint64_t)id);
     delete pThread;
     pThread = NULL;
   }
   else
-    CLog::Log(LOGDEBUG,"Thread %s %"PRIu64" terminating", name.c_str(), (uint64_t)id);
+    if(logger) logger->Log(LOGDEBUG,"Thread %s %"PRIu64" terminating", name.c_str(), (uint64_t)id);
 
   return 0;
 }

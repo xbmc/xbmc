@@ -30,6 +30,7 @@
 #include "Event.h"
 #include "threads/ThreadImpl.h"
 #include "threads/ThreadLocal.h"
+#include "commons/ilog.h"
 
 class IRunnable
 {
@@ -41,10 +42,16 @@ public:
 // minimum as mandated by XTL
 #define THREAD_MINSTACKSIZE 0x10000
 
+namespace XbmcThreads { class ThreadSettings; }
+
 class CThread
 {
-public:
+  static XbmcCommons::ILogger* logger;
+
+protected:
   CThread(const char* ThreadName);
+
+public:
   CThread(IRunnable* pRunnable, const char* ThreadName);
   virtual ~CThread();
   void Create(bool bAutoDelete = false, unsigned stacksize = 0);
@@ -68,6 +75,7 @@ public:
   static ThreadIdentifier GetCurrentThreadId();
   static CThread* GetCurrentThread();
   static int64_t GetCurrentThreadUsage();
+  static inline void SetLogger(XbmcCommons::ILogger* logger_) { CThread::logger = logger_; }
 protected:
   virtual void OnStartup(){};
   virtual void OnExit(){};
@@ -87,7 +95,7 @@ protected:
   {
     XbmcThreads::CEventGroup group(&event, &m_StopEvent, NULL);
     CEvent* result = group.wait(timeoutMillis);
-    return  result == &event ? WAIT_SIGNALED : 
+    return  result == &event ? WAIT_SIGNALED :
       (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
   }
 
@@ -95,7 +103,7 @@ protected:
   {
     XbmcThreads::CEventGroup group(&event, &m_StopEvent, NULL);
     CEvent* result = group.wait();
-    return  result == &event ? WAIT_SIGNALED : 
+    return  result == &event ? WAIT_SIGNALED :
       (result == NULL ? WAIT_TIMEDOUT : WAIT_INTERRUPTED);
   }
 

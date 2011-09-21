@@ -26,7 +26,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
 {
   if (m_ThreadId != 0)
   {
-    CLog::Log(LOGERROR, "%s - fatal error creating thread- old thread id not null", __FUNCTION__);
+    if (logger) logger->Log(LOGERROR, "%s - fatal error creating thread- old thread id not null", __FUNCTION__);
     exit(1);
   }
   m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
@@ -41,7 +41,7 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   m_ThreadOpaque.handle = CreateThread(NULL,stacksize, (LPTHREAD_START_ROUTINE)&staticThread, this, 0, &m_ThreadId);
   if (m_ThreadOpaque.handle == NULL)
   {
-    CLog::Log(LOGERROR, "%s - fatal error creating thread", __FUNCTION__);
+    if (logger) logger->Log(LOGERROR, "%s - fatal error creating thread", __FUNCTION__);
   }
 }
 
