@@ -70,6 +70,7 @@ namespace VIDEO
 #define VIDEODB_DETAILS_EPISODE_TVSHOW_ID	VIDEODB_MAX_COLUMNS + 8
 #define VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED	VIDEODB_MAX_COLUMNS + 9
 #define VIDEODB_DETAILS_EPISODE_TVSHOW_MPAA	VIDEODB_MAX_COLUMNS + 10
+#define VIDEODB_DETAILS_EPISODE_TVSHOW_PATH	VIDEODB_MAX_COLUMNS + 11
 						
 #define VIDEODB_DETAILS_TVSHOW_PATH		VIDEODB_MAX_COLUMNS + 1
 #define VIDEODB_DETAILS_TVSHOW_NUM_EPISODES	VIDEODB_MAX_COLUMNS + 2
@@ -720,7 +721,7 @@ private:
    */
   bool LookupByFolders(const CStdString &path, bool shows = false);
 
-  virtual int GetMinVersion() const { return 55; };
+  virtual int GetMinVersion() const { return 56; };
   virtual int GetExportVersion() const { return 1; };
   const char *GetBaseDBName() const { return "MyVideos"; };
 

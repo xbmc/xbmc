@@ -87,6 +87,7 @@ void CVideoInfoTag::Reset()
   m_resumePoint.Reset();
   m_resumePoint.type = CBookmark::RESUME;
   m_iIdShow = -1;
+  m_strShowPath.clear();
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -332,6 +333,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_resumePoint.timeInSeconds;
     ar << m_resumePoint.totalTimeInSeconds;
     ar << m_iIdShow;
+    ar << m_strShowPath;
   }
   else
   {
@@ -420,6 +422,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_resumePoint.timeInSeconds;
     ar >> m_resumePoint.totalTimeInSeconds;
     ar >> m_iIdShow;
+    ar >> m_strShowPath;
   }
 }
 
@@ -486,6 +489,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   resume["total"] = (float)m_resumePoint.totalTimeInSeconds;
   value["resume"] = resume;
   value["tvshowid"] = m_iIdShow;
+  value["tvshowpath"] = m_strShowPath;
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const

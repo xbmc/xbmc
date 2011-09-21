@@ -327,11 +327,11 @@ void CVideoDatabase::CreateViews()
   m_pDS->exec("DROP VIEW IF EXISTS episodeview");
   CStdString episodeview = PrepareSQL("create view episodeview as select episode.*,files.strFileName as strFileName,"
                                       "path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,tvshow.c%02d as strTitle,tvshow.c%02d as strStudio,tvshow.idShow as idShow,"
-                                      "tvshow.c%02d as premiered, tvshow.c%02d as mpaa from episode "
+                                      "tvshow.c%02d as premiered, tvshow.c%02d as mpaa, tvshow.c%02d as strShowPath from episode "
                                       "join files on files.idFile=episode.idFile "
                                       "join tvshowlinkepisode on episode.idEpisode=tvshowlinkepisode.idEpisode "
                                       "join tvshow on tvshow.idShow=tvshowlinkepisode.idShow "
-                                      "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA);
+                                      "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA, VIDEODB_ID_TV_BASEPATH);
   m_pDS->exec(episodeview.c_str());
 
   CLog::Log(LOGINFO, "create tvshowview");
@@ -2901,6 +2901,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForEpisode(auto_ptr<Dataset> &pDS, bool 
   details.m_strStudio = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_STUDIO).get_asString();
   details.m_strPremiered = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_AIRED).get_asString();
   details.m_iIdShow = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_ID).get_asInt();
+  details.m_strShowPath = pDS->fv(VIDEODB_DETAILS_EPISODE_TVSHOW_PATH).get_asString();
 
   GetStreamDetails(details);
 
@@ -3485,6 +3486,19 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("UPDATE settings SET DeinterlaceMode = 2 WHERE Deinterlace NOT IN (0,1)"); // anything other than none: method auto => mode force
       m_pDS->exec("UPDATE settings SET DeinterlaceMode = 1 WHERE Deinterlace = 1"); // method auto => mode auto
       m_pDS->exec("UPDATE settings SET DeinterlaceMode = 0, Deinterlace = 1 WHERE Deinterlace = 0"); // method none => mode off, method auto
+    }
+    if ( iVersion < 56 )
+    {
+      // Add the tv shows basepath to the episodeview
+      m_pDS->exec("DROP VIEW IF EXISTS episodeview");
+      CStdString episodeview = PrepareSQL("create view episodeview as select episode.*,files.strFileName as strFileName,"
+                                          "path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,tvshow.c%02d as strTitle,tvshow.c%02d as strStudio,tvshow.idShow as idShow,"
+                                          "tvshow.c%02d as premiered, tvshow.c%02d as mpaa, tvshow.c%02d as strShowPath from episode "
+                                          "join files on files.idFile=episode.idFile "
+                                          "join tvshowlinkepisode on episode.idEpisode=tvshowlinkepisode.idEpisode "
+                                          "join tvshow on tvshow.idShow=tvshowlinkepisode.idShow "
+                                          "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA, VIDEODB_ID_TV_BASEPATH);
+      m_pDS->exec(episodeview.c_str());
     }
   }
   catch (...)
