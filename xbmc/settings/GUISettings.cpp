@@ -441,16 +441,8 @@ void CGUISettings::Initialize()
   AddBool(ao, "audiooutput.dontnormalizelevels", 346, true);
 
 #if (defined(__APPLE__) && defined(__arm__))
-  if (g_sysinfo.IsAppleTV2())
-  {
-    AddBool(ao, "audiooutput.ac3passthrough", 364, false);
-    AddBool(ao, "audiooutput.dtspassthrough", 254, false);
-  }
-  else
-  {
-    AddBool(NULL, "audiooutput.ac3passthrough", 364, false);
-    AddBool(NULL, "audiooutput.dtspassthrough", 254, false);
-  }
+  AddBool(g_sysinfo.IsAppleTV2() ? ao : NULL, "audiooutput.ac3passthrough", 364, false);
+  AddBool(g_sysinfo.IsAppleTV2() ? ao : NULL, "audiooutput.dtspassthrough", 254, false);
 #else
   AddBool(ao, "audiooutput.ac3passthrough", 364, true);
   AddBool(ao, "audiooutput.dtspassthrough", 254, true);
@@ -555,7 +547,13 @@ void CGUISettings::Initialize()
   AddBool(vdl, "videolibrary.showunwatchedplots", 20369, true);
   AddBool(NULL, "videolibrary.seasonthumbs", 20382, true);
   AddBool(vdl, "videolibrary.actorthumbs", 20402, true);
-  AddInt(vdl, "videolibrary.flattentvshows", 20412, 1, 0, 1, 2, SPIN_CONTROL_TEXT);
+
+  map<int, int> flattenTVShowOptions;
+  flattenTVShowOptions.insert(make_pair(20420, 0));
+  flattenTVShowOptions.insert(make_pair(20421, 1));
+  flattenTVShowOptions.insert(make_pair(20422, 2));
+  AddInt(vdl, "videolibrary.flattentvshows", 20412, 1, flattenTVShowOptions, SPIN_CONTROL_TEXT);
+
   AddBool(NULL, "videolibrary.flattenmoviesets", 22002, false);
   AddBool(vdl, "videolibrary.updateonstartup", 22000, false);
   AddBool(vdl, "videolibrary.backgroundupdate", 22001, false);
@@ -626,9 +624,20 @@ void CGUISettings::Initialize()
   #define SYNCSETTINGS 1
 #endif
   AddBool(SYNCSETTINGS ? vp : NULL, "videoplayer.usedisplayasclock", 13510, false);
-  AddInt(SYNCSETTINGS ? vp : NULL, "videoplayer.synctype", 13500, SYNC_RESAMPLE, SYNC_DISCON, 1, SYNC_RESAMPLE, SPIN_CONTROL_TEXT);
+
+  map<int, int> syncTypes;
+  syncTypes.insert(make_pair(13501, SYNC_DISCON));
+  syncTypes.insert(make_pair(13502, SYNC_SKIPDUP));
+  syncTypes.insert(make_pair(13503, SYNC_RESAMPLE));
+  AddInt(SYNCSETTINGS ? vp : NULL, "videoplayer.synctype", 13500, SYNC_RESAMPLE, syncTypes, SPIN_CONTROL_TEXT);
   AddFloat(NULL, "videoplayer.maxspeedadjust", 13504, 5.0f, 0.0f, 0.1f, 10.0f);
-  AddInt(NULL, "videoplayer.resamplequality", 13505, RESAMPLE_MID, RESAMPLE_LOW, 1, RESAMPLE_REALLYHIGH, SPIN_CONTROL_TEXT);
+
+  map<int, int> resampleQualities;
+  resampleQualities.insert(make_pair(13506, RESAMPLE_LOW));
+  resampleQualities.insert(make_pair(13507, RESAMPLE_MID));
+  resampleQualities.insert(make_pair(13508, RESAMPLE_HIGH));
+  resampleQualities.insert(make_pair(13509, RESAMPLE_REALLYHIGH));
+  AddInt(NULL, "videoplayer.resamplequality", 13505, RESAMPLE_MID, resampleQualities, SPIN_CONTROL_TEXT);
   AddInt(vp, "videoplayer.errorinaspect", 22021, 0, 0, 1, 20, SPIN_CONTROL_INT_PLUS, MASK_PERCENT, TEXT_NONE);
 
   map<int,int> stretch;
@@ -651,7 +660,14 @@ void CGUISettings::Initialize()
   AddBool(vp, "videoplayer.teletextenabled", 23050, true);
 
   CSettingsCategory* vid = AddCategory(5, "myvideos", 14081);
-  AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, SELECT_ACTION_CHOOSE, 1, SELECT_ACTION_INFO, SPIN_CONTROL_TEXT);
+
+  map<int, int> myVideosSelectActions;
+  myVideosSelectActions.insert(make_pair(22080, SELECT_ACTION_CHOOSE));
+  myVideosSelectActions.insert(make_pair(208,   SELECT_ACTION_PLAY_OR_RESUME));
+  myVideosSelectActions.insert(make_pair(13404, SELECT_ACTION_RESUME));
+  myVideosSelectActions.insert(make_pair(22081, SELECT_ACTION_INFO));
+  
+  AddInt(vid, "myvideos.selectaction", 22079, SELECT_ACTION_PLAY_OR_RESUME, myVideosSelectActions, SPIN_CONTROL_TEXT);
   AddBool(NULL, "myvideos.treatstackasfile", 20051, true);
   AddBool(vid, "myvideos.extractflags",20433, true);
   AddBool(vid, "myvideos.filemetadata", 20419, true);
@@ -660,12 +676,26 @@ void CGUISettings::Initialize()
   CSettingsCategory* sub = AddCategory(5, "subtitles", 287);
   AddString(sub, "subtitles.font", 14089, "arial.ttf", SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.height", 289, 28, 16, 2, 74, SPIN_CONTROL_TEXT); // use text as there is a disk based lookup needed
-  AddInt(sub, "subtitles.style", 736, FONT_STYLE_BOLD, FONT_STYLE_NORMAL, 1, FONT_STYLE_BOLD_ITALICS, SPIN_CONTROL_TEXT);
+
+  map<int, int> fontStyles;
+  fontStyles.insert(make_pair(738, FONT_STYLE_NORMAL));
+  fontStyles.insert(make_pair(739, FONT_STYLE_BOLD));
+  fontStyles.insert(make_pair(740, FONT_STYLE_ITALICS));
+  fontStyles.insert(make_pair(741, FONT_STYLE_BOLD_ITALICS));
+
+  AddInt(sub, "subtitles.style", 736, FONT_STYLE_BOLD, fontStyles, SPIN_CONTROL_TEXT);
   AddInt(sub, "subtitles.color", 737, SUBTITLE_COLOR_START + 1, SUBTITLE_COLOR_START, 1, SUBTITLE_COLOR_END, SPIN_CONTROL_TEXT);
   AddString(sub, "subtitles.charset", 735, "DEFAULT", SPIN_CONTROL_TEXT);
   AddSeparator(sub, "subtitles.sep1");
   AddPath(sub, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
-  AddInt(sub, "subtitles.align", 21460, SUBTITLE_ALIGN_MANUAL, SUBTITLE_ALIGN_MANUAL, 1, SUBTITLE_ALIGN_TOP_OUTSIDE, SPIN_CONTROL_TEXT);
+
+  map<int, int> subtitleAlignments;
+  subtitleAlignments.insert(make_pair(21461, SUBTITLE_ALIGN_MANUAL));
+  subtitleAlignments.insert(make_pair(21462, SUBTITLE_ALIGN_BOTTOM_INSIDE));
+  subtitleAlignments.insert(make_pair(21463, SUBTITLE_ALIGN_BOTTOM_OUTSIDE));
+  subtitleAlignments.insert(make_pair(21464, SUBTITLE_ALIGN_TOP_INSIDE));
+  subtitleAlignments.insert(make_pair(21465, SUBTITLE_ALIGN_TOP_OUTSIDE));
+  AddInt(sub, "subtitles.align", 21460, SUBTITLE_ALIGN_MANUAL, subtitleAlignments, SPIN_CONTROL_TEXT);
 
   CSettingsCategory* dvd = AddCategory(5, "dvds", 14087);
   AddBool(dvd, "dvds.autorun", 14088, false);
@@ -731,14 +761,25 @@ void CGUISettings::Initialize()
   {
 #ifndef __APPLE__
     AddString(NULL, "network.interface",775,"", SPIN_CONTROL_TEXT);
-    AddInt(NULL, "network.assignment", 715, NETWORK_DHCP, NETWORK_DHCP, 1, NETWORK_DISABLED, SPIN_CONTROL_TEXT);
+
+    map<int, int> networkAssignments;
+    networkAssignments.insert(make_pair(716, NETWORK_DHCP));
+    networkAssignments.insert(make_pair(717, NETWORK_STATIC));
+    networkAssignments.insert(make_pair(787, NETWORK_DISABLED));
+    AddInt(NULL, "network.assignment", 715, NETWORK_DHCP, networkAssignments, SPIN_CONTROL_TEXT);
     AddString(NULL, "network.ipaddress", 719, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
     AddString(NULL, "network.subnet", 720, "255.255.255.0", EDIT_CONTROL_IP_INPUT);
     AddString(NULL, "network.gateway", 721, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
     AddString(NULL, "network.dns", 722, "0.0.0.0", EDIT_CONTROL_IP_INPUT);
     AddString(NULL, "network.dnssuffix", 22002, "", EDIT_CONTROL_INPUT, true);
     AddString(NULL, "network.essid", 776, "0.0.0.0", BUTTON_CONTROL_STANDARD);
-    AddInt(NULL, "network.enc", 778, ENC_NONE, ENC_NONE, 1, ENC_WPA2, SPIN_CONTROL_TEXT);
+
+    map<int, int> networkEncapsulations;
+    networkEncapsulations.insert(make_pair(780, ENC_NONE));
+    networkEncapsulations.insert(make_pair(781, ENC_WEP));
+    networkEncapsulations.insert(make_pair(782, ENC_WPA));
+    networkEncapsulations.insert(make_pair(783, ENC_WPA2));
+    AddInt(NULL, "network.enc", 778, ENC_NONE, networkEncapsulations, SPIN_CONTROL_TEXT);
     AddString(NULL, "network.key", 777, "0.0.0.0", EDIT_CONTROL_INPUT);
 #ifndef _WIN32
     AddString(NULL, "network.save", 779, "", BUTTON_CONTROL_STANDARD);
