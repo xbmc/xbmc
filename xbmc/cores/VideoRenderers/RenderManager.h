@@ -175,11 +175,12 @@ public:
   CSharedSection& GetSection() { return m_sharedSection; };
 
 protected:
+  void Render(bool clear, DWORD flags, DWORD alpha);
 
-  void PresentSingle();
-  void PresentWeave();
-  void PresentBob();
-  void PresentBlend();
+  void PresentSingle(bool clear, DWORD flags, DWORD alpha);
+  void PresentWeave(bool clear, DWORD flags, DWORD alpha);
+  void PresentBob(bool clear, DWORD flags, DWORD alpha);
+  void PresentBlend(bool clear, DWORD flags, DWORD alpha);
 
   bool m_bPauseDrawing;   // true if we should pause rendering
 
