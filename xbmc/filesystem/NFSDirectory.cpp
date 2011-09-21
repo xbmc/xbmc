@@ -100,6 +100,62 @@ bool CNFSDirectory::GetServerList(CFileItemList &items)
   return ret;
 }
 
+bool CNFSDirectory::ResolveSymlink( CStdString dirName, struct nfsdirent *dirent, CStdString &resolvedName)
+{
+  CSingleLock lock(gNfsConnection); 
+  int ret = 0;  
+  bool retVal = true;
+  CStdString fullpath = dirName;
+  char resolvedLink[MAX_PATH];
+  
+  URIUtils::AddSlashAtEnd(fullpath);
+  fullpath.append(dirent->name);
+  
+  ret = gNfsConnection.GetImpl()->nfs_readlink(gNfsConnection.GetNfsContext(), fullpath.c_str(), resolvedLink, MAX_PATH);    
+  
+  if(ret == 0)
+  {
+    struct stat tmpBuffer = {0};      
+    fullpath = dirName;
+    URIUtils::AddSlashAtEnd(fullpath);
+    fullpath.append(resolvedLink);
+ 
+    ret = gNfsConnection.GetImpl()->nfs_stat(gNfsConnection.GetNfsContext(), fullpath.c_str(), &tmpBuffer);
+
+    if (ret != 0) 
+    {
+      CLog::Log(LOGERROR, "NFS: Failed to stat(%s) on link resolve %s\n", fullpath.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+      retVal = false;;
+    }
+    else
+    {  
+      dirent->inode = tmpBuffer.st_ino;
+      dirent->mode = tmpBuffer.st_mode;
+      dirent->size = tmpBuffer.st_size;
+      dirent->atime.tv_sec = tmpBuffer.st_atime;
+      dirent->mtime.tv_sec = tmpBuffer.st_mtime;
+      dirent->ctime.tv_sec = tmpBuffer.st_ctime;
+      
+      //map stat mode to nf3type
+      if(S_ISBLK(tmpBuffer.st_mode)){ dirent->type = NF3BLK; }
+      else if(S_ISCHR(tmpBuffer.st_mode)){ dirent->type = NF3CHR; }
+      else if(S_ISDIR(tmpBuffer.st_mode)){ dirent->type = NF3DIR; }
+      else if(S_ISFIFO(tmpBuffer.st_mode)){ dirent->type = NF3FIFO; }
+      else if(S_ISREG(tmpBuffer.st_mode)){ dirent->type = NF3REG; }      
+      else if(S_ISLNK(tmpBuffer.st_mode)){ dirent->type = NF3LNK; }      
+      else if(S_ISSOCK(tmpBuffer.st_mode)){ dirent->type = NF3SOCK; }            
+      
+      resolvedName = resolvedLink;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "Failed to readlink(%s) %s\n", fullpath.c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+    retVal = false;
+  }
+  return retVal;
+}
+
 bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   // We accept nfs://server/path[/file]]]]
@@ -146,9 +202,23 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   while((nfsdirent = gNfsConnection.GetImpl()->nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != NULL) 
   {
     CStdString strName = nfsdirent->name;
-    int64_t iSize = nfsdirent->size;
-    bool bIsDir = nfsdirent->type == NF3DIR;
-    int64_t lTimeDate = nfsdirent->mtime.tv_sec;
+    int64_t iSize = 0;
+    bool bIsDir = false;
+    int64_t lTimeDate = 0;
+
+    //reslove symlinks
+    if(nfsdirent->type == NF3LNK)
+    {
+      //resolve symlink changes nfsdirent and strName
+      if(!ResolveSymlink(strDirName,nfsdirent,strName))
+      { 
+        continue;
+      }
+    }
+    
+    iSize = nfsdirent->size;
+    bIsDir = nfsdirent->type == NF3DIR;
+    lTimeDate = nfsdirent->mtime.tv_sec;
 
     if (!strName.Equals(".") && !strName.Equals("..")
       && !strName.Equals("lost+found"))
@@ -163,7 +233,7 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       fileTime.dwHighDateTime = (DWORD)(ll >> 32);
       FileTimeToLocalFileTime(&fileTime, &localTime);
 
-      CFileItemPtr pItem(new CFileItem(strName));
+      CFileItemPtr pItem(new CFileItem(nfsdirent->name));
       CStdString path(myStrPath + strName);
       pItem->m_dateTime=localTime;   
 
