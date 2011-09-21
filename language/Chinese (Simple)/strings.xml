@@ -176,7 +176,7 @@
   <string id="202">标语</string>
   <string id="203">大纲</string>
 
-  <string id="205">得票：</string>
+  <string id="205">得票</string>
   <string id="206">演员表</string>
   <string id="207">剧情简介</string>
   <string id="208">播放</string>
@@ -804,6 +804,9 @@
   <string id="1257">是否连接到自动发现的系统？</string>
 
   <string id="1260">通过 Zeroconf 协议发布这些服务</string>
+  <string id="1270">允许 XBMC 接收 AirPlay 内容</string>
+  <string id="1271">设备名</string>
+  <string id="1272">- 使用密码保护</string>
 
   <string id="1300">自定义音频设备</string>
   <string id="1301">自定义直通输出设备</string>
@@ -1467,9 +1470,9 @@
   <string id="16018">关闭</string>
   <string id="16019">自动选择</string>
   <string id="16020">去隔行</string>
-  <string id="16021">抖动</string>
-  <string id="16022">抖动（倒转）</string>
-  <string id="16023">隔行扫描处理</string>
+  <string id="16021">场内插值法</string>
+  <string id="16022">场内插值法（反向）</string>
+  <string id="16023"></string>
   <string id="16024">取消中...</string>
   <string id="16025">输入艺人名字</string>
   <string id="16026">播放失败</string>
@@ -1483,6 +1486,11 @@
   <string id="16034">无法从资料库获取歌曲文件！</string>
   <string id="16035">舞会模式播放列表</string>
   <string id="16036">去隔行（半速）</string>
+  <string id="16037">去隔行视频</string>
+  <string id="16038">去隔行算法</string>
+  <string id="16039">关</string>
+  <string id="16040">自动</string>
+  <string id="16041">开</string>
  
   <string id="16100">所有视频文件</string>
   <string id="16101">未观看的</string>
@@ -1514,11 +1522,15 @@
   <string id="16312">（VDPAU）降噪</string>
   <string id="16313">（VDPAU）锐化</string>
   <string id="16314">帧率逆转换</string>
-  <string id="16315">Lanczos3优化</string>
+  <string id="16315">Lanczos3 优化</string>
   <string id="16316">自动</string>
   <string id="16317">时间平滑（半速）</string>
   <string id="16318">时间/空间平滑（半速）</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA 场内插值</string>
+  <string id="16321">DXVA 最优</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 优化</string>
 
   <string id="16400">后处理</string>
 
@@ -1731,6 +1743,7 @@
   <string id="20258">MythTV 客户端</string>
   <string id="20259">网络文件系统（NFS）</string>
   <string id="20260">安全壳（SSH/SFTP）</string>
+  <string id="20261">Apple 文件协议（AFP）</string>
 
   <string id="20300">WEB服务器目录（HTTP）</string>
   <string id="20301">WEB服务器目录（HTTPS）</string>
@@ -1883,6 +1896,7 @@
   <string id="20454">收听者</string>
   <string id="20455">听众</string>
   <string id="20456">设置影片集同人画</string>
+  <string id="20457">影片集</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">显示隐藏文件和目录</string>
@@ -1989,6 +2003,13 @@
   <string id="21451">需要访问互联网。</string>
   <string id="21452">获取更多...</string>
   <string id="21453">根文件系统</string>
+
+  <string id="21460">字幕位置</string>
+  <string id="21461">固定</string>
+  <string id="21462">视频内底部</string>
+  <string id="21463">视频外下方</string>
+  <string id="21464">视频内顶部</string>
+  <string id="21465">视频外上方</string>
 
   <string id="21800">文件名称</string>
   <string id="21801">文件路径</string>
@@ -2200,6 +2221,7 @@
   <string id="24073">无法连接</string>
   <string id="24074">需要重新启动</string>
   <string id="24075">禁用</string>
+  <string id="24076">依赖扩展功能</string>
   <string id="24080">尝试重新连接？</string>
   <string id="24089">重新启动扩展功能</string>
   <string id="24090">锁定扩展功能管理器</string>
@@ -2210,6 +2232,8 @@
   <string id="24097">要在系统中禁用它吗？</string>
   <string id="24098">已失效</string>
   <string id="24099">要切换到此皮肤吗？</string>
+  <string id="24100">使用此功能需要下载扩展功能：</string>
+  <string id="24101">你确定要下载此扩展功能吗？</string>
   <string id="25000">提示信息</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
