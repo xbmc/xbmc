@@ -23,6 +23,12 @@
 
 #ifdef HAS_FILESYSTEM_NFS
 #include "DllLibNfs.h"
+
+#ifdef TARGET_WINDOWS
+#include <fcntl.h>
+#include <sys\stat.h>
+#endif
+
 #include "NFSDirectory.h"
 #include "FileItem.h"
 #include "utils/log.h"
@@ -329,7 +335,7 @@ bool CNFSDirectory::Exists(const char* strPath)
   {
     return false;
   }
-  return (info.st_mode & S_IFDIR) ? true : false;
+  return S_ISDIR(info.st_mode) ? true : false;
 }
 
 #endif

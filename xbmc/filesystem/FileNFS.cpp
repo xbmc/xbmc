@@ -37,10 +37,6 @@
 #ifdef TARGET_WINDOWS
 #include <fcntl.h>
 #include <sys\stat.h>
-#define S_IRGRP 0
-#define S_IROTH 0
-#define S_IWUSR _S_IWRITE
-#define S_IRUSR _S_IREAD
 #endif
 
 //KEEP_ALIVE_TIMEOUT is decremented every half a second
