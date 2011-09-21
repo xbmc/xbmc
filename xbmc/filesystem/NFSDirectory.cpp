@@ -100,7 +100,7 @@ bool CNFSDirectory::GetServerList(CFileItemList &items)
   return ret;
 }
 
-bool CNFSDirectory::ResolveSymlink( CStdString dirName, struct nfsdirent *dirent, CStdString &resolvedName)
+bool CNFSDirectory::ResolveSymlink( const CStdString &dirName, struct nfsdirent *dirent, CStdString &resolvedName)
 {
   CSingleLock lock(gNfsConnection); 
   int ret = 0;  
