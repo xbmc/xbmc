@@ -30,6 +30,7 @@
 #include "Application.h"
 #include "settings/Settings.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 
 #ifdef _LINUX
 #include "PlatformInclude.h"
@@ -284,16 +285,14 @@ void CXBMCRenderManager::RenderUpdate(bool clear, DWORD flags, DWORD alpha)
     }
   }
 
-  CSharedLock lock(m_sharedSection);
-
-  if (m_presentmethod == PRESENT_METHOD_WEAVE)
-    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOTH, alpha);
+  if (g_advancedSettings.m_videoDisableBackgroundDeinterlace)
+  {
+    CSharedLock lock(m_sharedSection);
+    PresentSingle(clear, flags, alpha);
+  }
   else
-    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_LAST, alpha);
+    Render(clear, flags, alpha);
 
-  m_overlays.Render();
-
-  m_presentstep = PRESENT_IDLE;
   m_presentevent.Set();
 }
 
@@ -588,6 +587,22 @@ float CXBMCRenderManager::GetMaximumFPS()
   return fps;
 }
 
+void CXBMCRenderManager::Render(bool clear, DWORD flags, DWORD alpha)
+{
+  CSharedLock lock(m_sharedSection);
+
+  if( m_presentmethod == PRESENT_METHOD_BOB )
+    PresentBob(clear, flags, alpha);
+  else if( m_presentmethod == PRESENT_METHOD_WEAVE )
+    PresentWeave(clear, flags, alpha);
+  else if( m_presentmethod == PRESENT_METHOD_BLEND )
+    PresentBlend(clear, flags, alpha);
+  else
+    PresentSingle(clear, flags, alpha);
+
+  m_overlays.Render();
+}
+
 void CXBMCRenderManager::Present()
 {
   { CRetakeLock<CExclusiveLock> lock(m_sharedSection);
@@ -603,18 +618,7 @@ void CXBMCRenderManager::Present()
     }
   }
 
-  CSharedLock lock(m_sharedSection);
-
-  if     ( m_presentmethod == PRESENT_METHOD_BOB )
-    PresentBob();
-  else if( m_presentmethod == PRESENT_METHOD_WEAVE )
-    PresentWeave();
-  else if( m_presentmethod == PRESENT_METHOD_BLEND )
-    PresentBlend();
-  else
-    PresentSingle();
-
-  m_overlays.Render();
+  Render(true, 0, 255);
 
   /* wait for this present to be valid */
   if(g_graphicsContext.IsFullScreenVideo())
@@ -624,63 +628,63 @@ void CXBMCRenderManager::Present()
 }
 
 /* simple present method */
-void CXBMCRenderManager::PresentSingle()
+void CXBMCRenderManager::PresentSingle(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
 
-  m_pRenderer->RenderUpdate(true, 0, 255);
+  m_pRenderer->RenderUpdate(clear, flags, alpha);
   m_presentstep = PRESENT_IDLE;
 }
 
 /* new simpler method of handling interlaced material, *
  * we just render the two fields right after eachother */
-void CXBMCRenderManager::PresentBob()
+void CXBMCRenderManager::PresentBob(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
 
   if(m_presentstep == PRESENT_FRAME)
   {
     if( m_presentfield == FS_BOT)
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, 255);
+      m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD0, alpha);
     else
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, 255);
+      m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD0, alpha);
     m_presentstep = PRESENT_FRAME2;
     g_application.NewFrame();
   }
   else
   {
     if( m_presentfield == FS_TOP)
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, 255);
+      m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_FIELD1, alpha);
     else
-      m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, 255);
+      m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_FIELD1, alpha);
     m_presentstep = PRESENT_IDLE;
   }
 }
 
-void CXBMCRenderManager::PresentBlend()
+void CXBMCRenderManager::PresentBlend(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
 
   if( m_presentfield == FS_BOT )
   {
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOT | RENDER_FLAG_NOOSD, 255);
-    m_pRenderer->RenderUpdate(false, RENDER_FLAG_TOP, 128);
+    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOT | RENDER_FLAG_NOOSD, alpha);
+    m_pRenderer->RenderUpdate(false, flags | RENDER_FLAG_TOP, alpha / 2);
   }
   else
   {
-    m_pRenderer->RenderUpdate(true, RENDER_FLAG_TOP | RENDER_FLAG_NOOSD, 255);
-    m_pRenderer->RenderUpdate(false, RENDER_FLAG_BOT, 128);
+    m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_TOP | RENDER_FLAG_NOOSD, alpha);
+    m_pRenderer->RenderUpdate(false, flags | RENDER_FLAG_BOT, alpha / 2);
   }
   m_presentstep = PRESENT_IDLE;
 }
 
 /* renders the two fields as one, but doing fieldbased *
  * scaling then reinterlaceing resulting image         */
-void CXBMCRenderManager::PresentWeave()
+void CXBMCRenderManager::PresentWeave(bool clear, DWORD flags, DWORD alpha)
 {
   CSingleLock lock(g_graphicsContext);
 
-  m_pRenderer->RenderUpdate(true, RENDER_FLAG_BOTH, 255);
+  m_pRenderer->RenderUpdate(clear, flags | RENDER_FLAG_BOTH, alpha);
   m_presentstep = PRESENT_IDLE;
 }
 
