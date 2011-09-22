@@ -239,17 +239,15 @@ bool CJpegIO::GetExif()
   return false;
 }
 
-bool CJpegIO::Decode(const unsigned char *pixels, unsigned int format)
+bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format)
 {
   unsigned char *dst = (unsigned char *) pixels;
-  unsigned int pitch;
   try
   {
     jpeg_start_decompress( &m_cinfo );
 
     if (format == XB_FMT_RGB8)
     {
-    pitch = ((m_width + 1)* 3 / 4) * 4; //align to 4-bytes
       while( m_cinfo.output_scanline < m_height )
       {
         jpeg_read_scanlines( &m_cinfo, &dst, 1 );
@@ -259,7 +257,6 @@ bool CJpegIO::Decode(const unsigned char *pixels, unsigned int format)
     else if (format == XB_FMT_A8R8G8B8)
     {
       unsigned char* row = new unsigned char[m_width * 3];
-      pitch = m_width*4;
       while( m_cinfo.output_scanline < m_height)
       {
         jpeg_read_scanlines( &m_cinfo, &row, 1 );
