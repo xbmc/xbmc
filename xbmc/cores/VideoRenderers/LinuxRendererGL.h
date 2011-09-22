@@ -157,6 +157,8 @@ public:
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
 
+  virtual EINTERLACEMETHOD AutoInterlaceMethod();
+
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
   void         ClearBackBuffer();
