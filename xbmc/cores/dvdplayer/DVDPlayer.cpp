@@ -537,7 +537,7 @@ bool CDVDPlayer::OpenDemuxStream()
     while(!m_bStop && attempts-- > 0)
     {
       m_pDemuxer = CDVDFactoryDemuxer::CreateDemuxer(m_pInputStream);
-      if(!m_pDemuxer && m_pInputStream->NextStream())
+      if(!m_pDemuxer && m_pInputStream->NextStream() != CDVDInputStream::NEXTSTREAM_NONE)
       {
         CLog::Log(LOGDEBUG, "%s - New stream available from input, retry open", __FUNCTION__);
         continue;
@@ -1033,7 +1033,7 @@ void CDVDPlayer::Process()
     // should we open a new demuxer?
     if(!m_pDemuxer)
     {
-      if (m_pInputStream->NextStream() == false)
+      if (m_pInputStream->NextStream() == CDVDInputStream::NEXTSTREAM_NONE)
         break;
 
       if (m_pInputStream->IsEOF())
@@ -1088,24 +1088,10 @@ void CDVDPlayer::Process()
       if (m_playSpeed == DVD_PLAYSPEED_PAUSE)
         continue;
 
-      // if there is another stream available, let
-      // player reopen demuxer
-      if(m_pInputStream->NextStream())
-      {
-        SAFE_DELETE(m_pDemuxer);
-        continue;
-      }
-
+      // check for a still frame state
       if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
       {
         CDVDInputStreamNavigator* pStream = static_cast<CDVDInputStreamNavigator*>(m_pInputStream);
-
-        // stream is holding back data until demuxer has flushed
-        if(pStream->IsHeld())
-        {
-          pStream->SkipHold();
-          continue;
-        }
 
         // stills will be skipped
         if(m_dvd.state == DVDSTATE_STILL)
@@ -1122,13 +1108,19 @@ void CDVDPlayer::Process()
             }
           }
         }
+      }
 
-        // if playing a main title DVD/ISO rip, there is no menu structure so
-        // dvdnav will tell us it's done by setting EOF on the stream.
-        if (pStream->IsEOF())
-          break;
+      // if there is another stream available, reopen demuxer
+      CDVDInputStream::ENextStream next = m_pInputStream->NextStream();
+      if(next == CDVDInputStream::NEXTSTREAM_OPEN)
+      {
+        SAFE_DELETE(m_pDemuxer);
+        continue;
+      }
 
-        // always continue on dvd's
+      // input stream asked us to just retry
+      if(next == CDVDInputStream::NEXTSTREAM_RETRY)
+      {
         Sleep(100);
         continue;
       }
