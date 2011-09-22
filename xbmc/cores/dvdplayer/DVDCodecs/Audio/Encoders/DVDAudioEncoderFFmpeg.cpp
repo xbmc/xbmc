@@ -37,9 +37,16 @@ CDVDAudioEncoderFFmpeg::CDVDAudioEncoderFFmpeg():
 CDVDAudioEncoderFFmpeg::~CDVDAudioEncoderFFmpeg()
 {
   Reset();
-  m_dllAvUtil.av_freep(&m_CodecCtx);
-  if (m_AudioConvert)
-    m_dllAvCodec.av_audio_convert_free(m_AudioConvert);
+  if(m_dllAvUtil.IsLoaded())
+  {
+    m_dllAvUtil.av_freep(&m_CodecCtx);
+  }
+
+  if(m_dllAvCodec.IsLoaded())
+  {
+    if (m_AudioConvert)
+      m_dllAvCodec.av_audio_convert_free(m_AudioConvert);
+  }
   delete[] m_Buffer;
   delete[] m_TmpBuffer;
   delete[] m_TmpBuffer2;
