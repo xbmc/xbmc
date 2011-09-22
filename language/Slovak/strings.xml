@@ -119,11 +119,11 @@
   <string id="129">Prezentácia</string>
   <string id="130">Systémové informácie</string>
   <string id="131">Obrazovka</string>
-  <string id="132">Albumy</string>
-  <string id="133">Interpréti</string>
+  <string id="132">Album</string>
+  <string id="133">Interprét</string>
 
-  <string id="134">Skladby</string>
-  <string id="135">Štýly</string>
+  <string id="134">Skladba</string>
+  <string id="135">Štýl/Žáner</string>
   <string id="136">Playlist-y</string>
   <string id="137">Hľadať</string>
   <string id="138">SYSTÉMOVÉ INFORMÁCIE</string>
@@ -342,7 +342,7 @@
   <string id="341">CD/DVD</string>
   <string id="342">Filmy</string>
   <string id="343">Prispôsobenie snímkovania</string>
-  <string id="344">Herci</string>
+  <string id="344">Herec</string>
   <string id="345">Rok</string>
   <string id="346">Zvyšovať hlasitosť pri downmixe</string>
 
@@ -822,14 +822,14 @@
   <string id="1035">Povoliť tlačítka podmenu</string>
   <string id="1036">Obľúbené</string>
 
-  <string id="1037">Video doplnky</string>
-  <string id="1038">Hudobné doplnky</string>
-  <string id="1039">Obrázkové doplnky</string>
+  <string id="1037">Doplnky - Video</string>
+  <string id="1038">Doplnky - Hudba</string>
+  <string id="1039">Doplnky - Obrázky</string>
   <string id="1040">Prebieha načítanie priečinku</string>
   <string id="1041">Načítaných %i položiek</string>
   <string id="1042">Načítaných %i z %i položiek</string>
 
-  <string id="1043">Programové doplnky</string>
+  <string id="1043">Doplnky - Programy</string>
   <string id="1044">Nastavenie náhľadu doplnku</string>
   <string id="1045">Nastavenie doplnku</string>
   <string id="1046">Prístupové body (AP)</string>
@@ -1915,7 +1915,7 @@
 
   <string id="20346">Vyhľadávať v podpriečinkoch</string>
   <string id="20347">ako</string>
-  <string id="20348">Režiséri</string>
+  <string id="20348">Režisér</string>
   <string id="20349">Na tejto ceste nebol nájdený žiadny video súbor!</string>
   <string id="20350">hlasov</string>
   <string id="20351">Informácie o seriáli</string>
@@ -1962,7 +1962,7 @@
   <string id="20386">Naposledy pridané filmy</string>
   <string id="20387">Naposledy pridané epizódy</string>
 
-  <string id="20388">Štúdia</string>
+  <string id="20388">Štúdio</string>
   <string id="20389">Videoklipy</string>
   <string id="20390">Naposledy pridané videoklipy</string>
   <string id="20391">Videoklip</string>
