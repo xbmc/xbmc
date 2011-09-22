@@ -84,6 +84,13 @@ public:
     virtual bool SeekChapter(int ch) = 0;
   };
 
+  enum ENextStream
+  {
+    NEXTSTREAM_NONE,
+    NEXTSTREAM_OPEN,
+    NEXTSTREAM_RETRY,
+  };
+
   CDVDInputStream(DVDStreamType m_streamType);
   virtual ~CDVDInputStream();
   virtual bool Open(const char* strFileName, const std::string& content);
@@ -94,7 +101,7 @@ public:
   virtual __int64 GetLength() = 0;
   virtual std::string& GetContent() { return m_content; };
   virtual std::string& GetFileName() { return m_strFileName; }
-  virtual bool NextStream() { return false; }
+  virtual ENextStream NextStream() { return NEXTSTREAM_NONE; }
   virtual void Abort() {}
   virtual int GetBlockSize() { return 0; }
 

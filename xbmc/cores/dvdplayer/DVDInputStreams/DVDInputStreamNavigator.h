@@ -72,12 +72,12 @@ public:
   virtual int GetBlockSize() { return DVDSTREAM_BLOCK_SIZE_DVD; }
   virtual bool IsEOF() { return m_bEOF; }
   virtual __int64 GetLength()             { return 0; }
+  virtual ENextStream NextStream() ;
 
   void ActivateButton();
   void SelectButton(int iButton);
   void SkipStill();
   void SkipWait();
-  void SkipHold();
   void OnUp();
   void OnDown();
   void OnLeft();
@@ -94,7 +94,6 @@ public:
   bool GetCurrentButtonInfo(CDVDOverlaySpu* pOverlayPicture, CDVDDemuxSPU* pSPU, int iButtonType /* 0 = selection, 1 = action (clicked)*/);
 
   bool IsInMenu() { return m_bInMenu; }
-  bool IsHeld();
 
   int GetActiveSubtitleStream();
   std::string GetSubtitleStreamLanguage(int iId);

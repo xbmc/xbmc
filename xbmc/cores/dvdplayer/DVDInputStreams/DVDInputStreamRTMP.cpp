@@ -216,11 +216,6 @@ __int64 CDVDInputStreamRTMP::GetLength()
   return -1;
 }
 
-bool CDVDInputStreamRTMP::NextStream()
-{
-  return false;
-}
-
 bool CDVDInputStreamRTMP::Pause(double dTime)
 {
   CSingleLock lock(m_RTMPSection);
