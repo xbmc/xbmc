@@ -3,19 +3,17 @@
  *
  * This file is part of libass.
  *
- * libass is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
  *
- * libass is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with libass; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 #include "config.h"
@@ -338,7 +336,6 @@ static int ass_strike_outline_glyph(FT_Face face, ASS_Font *font,
         if (pos > 0 || size <= 0)
             return 1;
 
-        
         points[0].x = bear;
         points[0].y = pos + size;
         points[1].x = advance;
@@ -458,13 +455,13 @@ FT_Glyph ass_font_get_glyph(void *fontconfig_priv, ASS_Font *font,
             face = font->faces[face_idx];
             index = FT_Get_Char_Index(face, ch);
             if (index == 0 && face->num_charmaps > 0) {
-                FT_CharMap cur;
+                int i;
                 ass_msg(font->library, MSGL_WARN,
-                    "Glyph 0x%X not found, falling back to first charmap", ch);
-                cur = face->charmap;
-                FT_Set_Charmap(face, face->charmaps[0]);
-                index = FT_Get_Char_Index(face, ch);
-                FT_Set_Charmap(face, cur);
+                    "Glyph 0x%X not found, broken font? Trying all charmaps", ch);
+                for (i = 0; i < face->num_charmaps; i++) {
+                    FT_Set_Charmap(face, face->charmaps[i]);
+                    if ((index = FT_Get_Char_Index(face, ch)) != 0) break;
+                }
             }
             if (index == 0) {
                 ass_msg(font->library, MSGL_ERR,
@@ -618,8 +615,20 @@ static int get_contour_direction(FT_Vector *points, int start, int end)
 }
 
 /**
- * \brief Fix-up stroker result for huge borders by removing inside contours
- * that would reverse in size
+ * \brief Apply fixups to please the FreeType stroker and improve the
+ * rendering result, especially in case the outline has some anomalies.
+ * At the moment, the following fixes are done:
+ *
+ * 1. Reverse contours that have "inside" winding direction but are not
+ *    contained in any other contours' cbox.
+ * 2. Remove "inside" contours depending on border size, so that large
+ *    borders do not reverse the winding direction, which leads to "holes"
+ *    inside the border. The inside will be filled by the border of the
+ *    outside contour anyway in this case.
+ *
+ * \param outline FreeType outline, modified in-place
+ * \param border_x border size, x direction, d6 format
+ * \param border_x border size, y direction, d6 format
  */
 void fix_freetype_stroker(FT_OutlineGlyph glyph, int border_x, int border_y)
 {
@@ -678,8 +687,7 @@ void fix_freetype_stroker(FT_OutlineGlyph glyph, int border_x, int border_y)
         check_inside:
         if (dir == inside_direction) {
             FT_BBox box;
-            int width;
-            int height;
+            int width, height;
             get_contour_cbox(&box, glyph->outline.points, start, end);
             width = box.xMax - box.xMin;
             height = box.yMax - box.yMin;
@@ -690,19 +698,27 @@ void fix_freetype_stroker(FT_OutlineGlyph glyph, int border_x, int border_y)
         }
     }
 
-    // zero-out contours that can be removed; much simpler than copying
+    // if we need to modify the outline, rewrite it and skip
+    // the contours that we determined should be removed.
     if (modified) {
+        FT_Outline *outline = &glyph->outline;
+        int p = 0, c = 0;
         for (i = 0; i < nc; i++) {
-            if (valid_cont[i])
+            if (!valid_cont[i])
                 continue;
             begin = (i == 0) ? 0 : glyph->outline.contours[i - 1] + 1;
             stop = glyph->outline.contours[i];
             for (j = begin; j <= stop; j++) {
-                glyph->outline.points[j].x = 0;
-                glyph->outline.points[j].y = 0;
-                glyph->outline.tags[j] = 0;
+                outline->points[p].x = outline->points[j].x;
+                outline->points[p].y = outline->points[j].y;
+                outline->tags[p] = outline->tags[j];
+                p++;
             }
+            outline->contours[c] = p - 1;
+            c++;
         }
+        outline->n_points = p;
+        outline->n_contours = c;
     }
 
     free(boxes);
