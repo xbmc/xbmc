@@ -2528,9 +2528,6 @@ void CVideoDatabase::DeleteEpisode(const CStdString& strFilenameAndPath, int idE
     strSQL=PrepareSQL("delete from directorlinkepisode where idEpisode=%i", idEpisode);
     m_pDS->exec(strSQL.c_str());
 
-    strSQL=PrepareSQL("select tvshowlinkepisode.idShow from tvshowlinkepisode where idEpisode=%i",idEpisode);
-    m_pDS->query(strSQL.c_str());
-
     strSQL=PrepareSQL("delete from tvshowlinkepisode where idEpisode=%i", idEpisode);
     m_pDS->exec(strSQL.c_str());
 
