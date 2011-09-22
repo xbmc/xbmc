@@ -273,6 +273,7 @@ bool CJpegIO::Decode(const unsigned char *pixels, unsigned int format)
         }
         dst += pitch;
       }
+      delete[] row;
     }
     else
     {
