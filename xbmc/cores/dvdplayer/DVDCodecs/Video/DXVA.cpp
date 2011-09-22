@@ -940,8 +940,6 @@ CProcessor::CProcessor()
   m_surfaces = NULL;
   m_context = NULL;
   m_index = 0;
-  m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-  m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
   m_progressive = true;
 }
 
