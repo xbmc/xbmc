@@ -156,7 +156,6 @@ protected:
   EINTERLACEMETHOD m_interlace_method;
   bool             m_progressive; // true for progressive source or to force ignoring interlacing flags.
   unsigned         m_index;
-  unsigned         m_last_field_rendered;
 
   struct SVideoSample
   {

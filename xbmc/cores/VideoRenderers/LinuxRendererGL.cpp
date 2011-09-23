@@ -1074,19 +1074,6 @@ void CLinuxRendererGL::Render(DWORD flags, int renderBuffer)
   else if (flags & RENDER_FLAG_BOT)
     m_currentField = FIELD_BOT;
 
-  else if (flags & RENDER_FLAG_LAST)
-  {
-    switch(m_currentField)
-    {
-    case FIELD_TOP:
-      flags = RENDER_FLAG_TOP;
-      break;
-
-    case FIELD_BOT:
-      flags = RENDER_FLAG_BOT;
-      break;
-    }
-  }
   else
     m_currentField = FIELD_FULL;
 
