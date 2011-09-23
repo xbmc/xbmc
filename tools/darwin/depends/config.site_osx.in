@@ -58,3 +58,9 @@ fi
 if test "${PACKAGE_NAME}" = "python" ; then
   export OPT="${CFLAGS}"
 fi
+
+# tweaks for libjpeg-turbo
+if test "${PACKAGE_NAME}" = "libjpeg-turbo" ; then
+  export NASM="@use_toolchain@/bin/yasm"
+fi
+

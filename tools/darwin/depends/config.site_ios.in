@@ -91,3 +91,9 @@ fi
 if test "${PACKAGE_NAME}" = "libgcrypt" ; then
   export CFLAGS="${CFLAGS} -fgnu89-inline"
 fi
+
+# tweaks for libjpeg-turbo
+if test "${PACKAGE_NAME}" = "libjpeg-turbo" ; then
+  export CCAS="${AS}"
+fi
+
