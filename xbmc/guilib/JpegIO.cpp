@@ -260,12 +260,13 @@ bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
       while (m_cinfo.output_scanline < m_height)
       {
         jpeg_read_scanlines(&m_cinfo, &row, 1);
+        unsigned char *src2 = row;
         unsigned char *dst2 = dst;
-        for (unsigned int x = 0; x < m_width; x++)
+        for (unsigned int x = 0; x < m_width; x++, src2 += 3)
         {
-          *dst2++ = row[(x*3)+2];
-          *dst2++ = row[(x*3)+1];
-          *dst2++ = row[(x*3)+0];
+          *dst2++ = src2[2];
+          *dst2++ = src2[1];
+          *dst2++ = src2[0];
           *dst2++ = 0xff;
         }
         dst += pitch;
