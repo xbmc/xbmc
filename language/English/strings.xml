@@ -1006,6 +1006,8 @@
   <string id="13014">Minimize</string>
   <string id="13015">Power button action</string>
   <string id="13016">Power off System</string>
+  <string id="13017">Inhibit idle shutdown</string>
+  <string id="13018">Allow idle shutdown</string>
 
   <string id="13020">Is another session active, perhaps over ssh?</string>
   <string id="13021">Mounted removable harddrive</string>
@@ -1791,8 +1793,7 @@
   <string id="19242">enabled PVR add-on. Enable at least one add-on</string>
   <string id="19243">in order to use the PVR functionality.</string>
   <string id="19244">Consider local backend</string>
-  <string id="19245">Backend idle time (minutes)</string>
-  <string id="19246">Backend Powermanagement</string>
+  <string id="19245">Backend idle time (minutes)</string>  
   <string id="19247">Set wakup command (cmd [timestamp])</string>
   <string id="19248">Wakup before recording (minutes)</string>
   <string id="19249">Daily wakeup</string>

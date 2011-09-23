@@ -1252,6 +1252,25 @@
 				<onright>21</onright>
 				<onup>9002</onup>
 				<ondown>9003</ondown>
+				<visible>!System.IsInhibit</visible>
+			</control>
+			<control type="button" id="22">
+				<description>Power push button</description>
+				<posx>55</posx>
+				<posy>15</posy>
+				<width>43</width>
+				<height>43</height>
+				<label>31003</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(ShutdownMenu)</onclick>
+				<texturefocus>home-power-inhibit-FO.png</texturefocus>
+				<texturenofocus>home-power-inhibit.png</texturenofocus>
+				<onleft>21</onleft>
+				<onright>21</onright>
+				<onup>9002</onup>
+				<ondown>9003</ondown>
+				<visible>System.IsInhibit</visible>
 			</control>
 			<control type="button" id="21">
 				<description>Favourites push button</description>

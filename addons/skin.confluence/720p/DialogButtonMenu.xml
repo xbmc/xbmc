@@ -226,6 +226,38 @@
 					<label>$LOCALIZE[31329] [B]$INFO[System.Alarmpos][/B]</label>
 				</control>
 			</control>
+			<control type="button" id="12">
+				<description>Inhibit idle shutdown</description>
+				<width>340</width>
+				<height>40</height>
+				<textcolor>grey2</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<align>center</align>
+				<textwidth>290</textwidth>
+				<texturefocus border="25,5,25,5">ShutdownButtonFocus.png</texturefocus>
+				<texturenofocus border="25,5,25,5">ShutdownButtonNoFocus.png</texturenofocus>
+				<onclick>XBMC.InhibitIdleShutdown(true)</onclick>
+				<pulseonselect>no</pulseonselect>
+				<font>font13</font>
+				<label>13017</label>
+				<visible>!System.IsInhibit</visible>
+			</control>
+			<control type="button" id="13">
+				<description>Allow idle shutdown</description>
+				<width>340</width>
+				<height>40</height>
+				<textcolor>grey2</textcolor>
+				<focusedcolor>white</focusedcolor>
+				<align>center</align>
+				<textwidth>290</textwidth>
+				<texturefocus border="25,5,25,5">ShutdownButtonFocus.png</texturefocus>
+				<texturenofocus border="25,5,25,5">ShutdownButtonNoFocus.png</texturenofocus>
+				<onclick>XBMC.InhibitIdleShutdown(false)</onclick>
+				<pulseonselect>no</pulseonselect>
+				<font>font13</font>
+				<label>13018</label>
+				<visible>System.IsInhibit</visible>
+			</control>
 			<control type="image" id="10">
 				<description>background bottom image</description>
 				<posx>0</posx>
