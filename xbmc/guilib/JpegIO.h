@@ -47,6 +47,9 @@ public:
 
 protected:
   bool           GetExif();
+  unsigned int   findExifMarker( unsigned char *jpegData, 
+                                 unsigned int dataSize, 
+                                 unsigned char *&exifPtr);
   unsigned char  *m_inputBuff;
   unsigned int   m_inputBuffSize;
   unsigned int   m_minx;
