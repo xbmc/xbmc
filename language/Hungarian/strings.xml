@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Bence Nádas and Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Based on English 282f5a5b809ab387129f (10.04.2011)-->
-<!--$Revision$-->
+<!--Based on English e8661128e59fd7add19180f56410dbd01df584b9 (21.09.2011)-->
 <strings>
   <string id="0">Programok</string>
   <string id="1">Képek</string>
@@ -807,6 +806,9 @@
   <string id="1257">Kapcsolódás az automatikusan felismert rendszerhez?</string>
 
   <string id="1260">Szolgáltatások hirdetése más rendszerek felé a Zeroconf segítségével</string>
+  <string id="1270">AirPlay tartalom vételének engedélyezése az XBMC számára</string>
+  <string id="1271">Eszköz neve</string>
+  <string id="1272">- Jelszavas védelem használata</string>
 
   <string id="1300">Egyedi hanglejátszó eszköz megadása</string>
   <string id="1301">Egyedi hangtovábbító eszköz megadása</string>
@@ -983,6 +985,7 @@
   <string id="12392">óra</string>
   <string id="12393">nap</string>
   <string id="12394">Folyamatos üzemidő</string>
+  <string id="12395">Akkumlátor töltöttsége</string>
 
   <string id="12600">Időjárás</string>
 
@@ -1017,6 +1020,7 @@
 
   <string id="13100">Villogásszűrő</string>
   <string id="13101">Automatikus (újraindítás szükséges)</string>
+
   <string id="13105">Függőleges szinkronizálás</string>
   <string id="13106">Letiltva</string>
   <string id="13107">Lejátszáskor</string>
@@ -1064,9 +1068,11 @@
 
   <string id="13200">Profilok</string>
   <string id="13201">Törlöd ezt a profilt: '%s'?</string>
+
   <string id="13204">Utoljára betöltött profil:</string>
   <string id="13205">Ismeretlen</string>
   <string id="13206">Felülírás</string>
+
   <string id="13208">Ébresztőóra</string>
   <string id="13209">Jelzés intervalluma (hány perc múlva)</string>
   <string id="13210">Elindítva, ébresztés %i perc múlva</string>
@@ -1167,6 +1173,7 @@
   <string id="13359">Előadó bélyegkép</string>
   <string id="13360">Automatikus bélyegkép generálás</string>
   <string id="13361">Hang engedélyezése</string>
+
   <string id="13375">Eszköz engedélyezése</string>
   <string id="13376">Hangerő</string>
   <string id="13377">Alapértelmezett nézet</string>
@@ -1467,10 +1474,10 @@
   <string id="16017">Keresőszó</string>
   <string id="16018">Nincs</string>
   <string id="16019">Automatikus kiválasztás</string>
-  <string id="16020">De-interlace</string>
+  <string id="16020">Teljes képkockasebességgel</string>
   <string id="16021">Bob</string>
   <string id="16022">Bob (fordított)</string>
-  <string id="16023">Váltottsorosság (Interlace) kezelés</string>
+  <string id="16023"></string>
   <string id="16024">Megszakítás...</string>
   <string id="16025">Előadó neve</string>
   <string id="16026">Lejátszás sikertelen</string>
@@ -1483,6 +1490,12 @@
   <string id="16033">Adatbázis nem nyitható meg.</string>
   <string id="16034">Nincs elérhető zeneszám az adatbázisban.</string>
   <string id="16035">Partymód lejátszáslista</string>
+  <string id="16036">Fél képkockasebességgel (Half)</string>
+  <string id="16037">Videó váltottsorosság mentesítése (Deinterlace)</string>
+  <string id="16038">A mentesítés módja</string>
+  <string id="16039">Ki</string>
+  <string id="16040">Auto</string>
+  <string id="16041">Be</string>
 
   <string id="16100">Minden videó</string>
   <string id="16101">Nem látott</string>
@@ -1519,6 +1532,11 @@
   <string id="16317">Temporal (fél)</string>
   <string id="16318">Temporal/Spatial (fél)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Legjobb</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimalizált</string>
+  <string id="16324">Software Blend</string>
 
   <string id="16400">Videó minőségjavítás (post processing)</string>
 
@@ -1729,6 +1747,9 @@
   <string id="20256">HTS Tvheadend TV kliens</string>
   <string id="20257">VDR Streamdev TV kliens</string>
   <string id="20258">MythTV kliens</string>
+  <string id="20259">Hálózati fájlrendszer (NFS)</string>
+  <string id="20260">Biztonsági héj (SSH/SFTP)</string>
+  <string id="20261">Apple fájlrendszer (AFP)</string>
 
   <string id="20300">Webkiszolgáló könyvtár (HTTP)</string>
   <string id="20301">Webkiszolgáló könyvtár (HTTPS)</string>
@@ -1841,7 +1862,8 @@
   <string id="20415">Új tartalom keresése</string>
   <string id="20416">Első adás</string>
   <string id="20417">Írta</string>
-  <string id="20418">Fájl- és mappanevek tisztítása</string>
+  <string id="20418"></string>
+  <string id="20419">Metaadatok mutatása a fájlnézetben</string>
 
   <string id="20420">Soha</string>
   <string id="20421">Csak, ha egy évad van</string>
@@ -1879,6 +1901,8 @@
   <string id="20453">epizód</string>
   <string id="20454">Hallgató</string>
   <string id="20455">Hallgató</string>
+  <string id="20456">Filmkészlet fanart beállítása</string>
+  <string id="20457">Filmkészlet</string>
   <!-- 21329-ig videó-adatbázisra fenntartva  !! !-->
 
   <string id="21330">Rejtett fájlok és mappák megjelenítése</string>
@@ -1987,6 +2011,13 @@
   <string id="21453">Fájlrendszer</string>
   <string id="21454">Hallgató</string>
   <string id="21455">Hallgató</string>
+
+  <string id="21460">Felirat helye</string>
+  <string id="21461">Rögzített</string>
+  <string id="21462">Videó alján</string>
+  <string id="21463">Videó alatt</string>
+  <string id="21464">Videó tetején</string>
+  <string id="21465">Videó felett</string>
 
   <string id="21800">Fájlnév</string>
   <string id="21801">Fájl helye</string>
@@ -2172,6 +2203,7 @@
   <string id="24045">A kiegészítőnek nem megfelelő a felépítése</string>
   <string id="24046">%s haszálatban van az alábbi kiegészítő(k) által</string>
   <string id="24047">Ez a kiegészítő nem törölhető</string>
+  <string id="24048">Visszacsinálás</string>
 
   <string id="24050">Elérhető kiegészítők</string>
   <string id="24051">Verzió:</string>
@@ -2196,14 +2228,19 @@
   <string id="24073">Nem tudott csatlakozni</string>
   <string id="24074">Újraindítás szükséges</string>
   <string id="24075">Kikapcsolás</string>
+  <string id="24076">Kiegészítő szükséges</string>
   <string id="24080">Próbáljon újra csatlakozni?</string>
   <string id="24089">Kiegészítő újraindul</string>
   <string id="24090">Kiegészítő-kezelő zárolása</string>
 
+  <string id="24094">(jelenlegi)</string>
+  <string id="24095">(letiltott)</string>
   <string id="24096">A kiegészítőt működésképtelennek jelölték a tárhelyen.</string>
   <string id="24097">Akarod letiltani a számítógépeden?</string>
   <string id="24098">Működésképtelen</string>
   <string id="24099">Átváltasz erre az arculatra ?</string>
+  <string id="24100">A funkció használatához le kell töltened egy kiegészítőt:</string>
+  <string id="24101">Szeretnéd letölteni ezt a kiegészítőt?</string>
   <string id="25000">Értesítések</string>
 
   <!-- 29800-tól 29998 a default PM3 arculat-hoz foglalva -->
@@ -2294,4 +2331,7 @@
   <string id="33103">Távoli kommunikációs kiszolgáló</string>
 
   <string id="34100">Hangfalkiépítés</string>
+
+  <string id="34201">Nem található következő lejátszandó elem</string>
+  <string id="34202">Nem található előző lejátszandó elem</string>
 </strings>
