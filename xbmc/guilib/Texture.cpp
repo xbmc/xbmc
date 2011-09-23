@@ -170,7 +170,8 @@ bool CBaseTexture::LoadFromFile(const CStdString& texturePath, unsigned int maxW
     return false;
   }
 
-#if defined(__APPLE__) && defined(__arm__)
+#if 0
+//#if defined(__APPLE__) && defined(__arm__)
   XFILE::CFile file;
   UInt8 *imageBuff      = NULL;
   int64_t imageBuffSize = 0;
