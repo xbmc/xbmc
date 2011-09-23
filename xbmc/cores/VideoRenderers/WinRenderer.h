@@ -75,7 +75,6 @@ enum EFIELDSYNC
   FS_NONE,
   FS_TOP,
   FS_BOT,
-  FS_BOTH,
 };
 
 
