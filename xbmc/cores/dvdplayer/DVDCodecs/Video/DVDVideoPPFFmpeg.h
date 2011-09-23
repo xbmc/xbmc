@@ -32,7 +32,7 @@ public:
   ~CDVDVideoPPFFmpeg();
 
 
-  void SetType(const CStdString& mType);
+  void SetType(const CStdString& mType, bool deinterlace);
   void SetTarget(DVDVideoPicture *pPicture){ m_pTarget = pPicture; };
   bool Process   (DVDVideoPicture *pPicture);
   bool GetPicture(DVDVideoPicture *pPicture);
@@ -42,6 +42,7 @@ protected:
 
   void *m_pContext;
   void *m_pMode;
+  bool m_deinterlace;
 
   DVDVideoPicture m_FrameBuffer;
   DVDVideoPicture *m_pSource;
