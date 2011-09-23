@@ -6,7 +6,7 @@ SUBDIRS := \
 	Backrow pcre expat gettext readline sqlite3 \
 	liblzo2 freetype2 fontconfig \
 	openssl libssh libssh2 curl \
-	jpeg tiff libpng libogg \
+	libjpeg-turbo tiff libpng libogg \
 	libvorbis libflac libmad fribidi libmpeg2 \
 	libass libcdio libsamplerate librtmp libcrystalhd libnfs \
 	libGLEW libsdl libsdl_mixer libsdl_image \
