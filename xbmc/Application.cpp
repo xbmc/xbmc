@@ -3010,6 +3010,11 @@ bool CApplication::ProcessEventServer(float frameTime)
   bool isAxis = false;
   float fAmount = 0.0;
 
+  // es->ExecuteNextAction() invalidates the ref to the CEventServer instance
+  // when the action exits XBMC
+  es = CEventServer::GetInstance();
+  if (!es || !es->Running() || es->GetNumberOfClients()==0)
+    return false;
   WORD wKeyID = es->GetButtonCode(joystickName, isAxis, fAmount);
 
   if (wKeyID)
