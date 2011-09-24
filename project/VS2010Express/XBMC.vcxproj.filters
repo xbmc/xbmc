@@ -5120,6 +5120,9 @@
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyrendercapture.h">
       <Filter>interfaces\python\xbmcmodule</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp">
+      <Filter>threads\platform\win</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\xbmc\win32\XBMC_PC.rc">
