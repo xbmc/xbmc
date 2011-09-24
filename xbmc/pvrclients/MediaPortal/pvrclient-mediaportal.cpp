@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "libPlatform/os-dependent.h"
+#include "os-dependent.h"
 
 #include "client.h"
 #include "timers.h"
@@ -30,6 +30,7 @@
 #include "epg.h"
 #include "utils.h"
 #include "pvrclient-mediaportal.h"
+#include "AutoLock.h"
 #include "lib/tinyxml/tinyxml.h"
 
 using namespace std;
@@ -70,6 +71,7 @@ string cPVRClientMediaPortal::SendCommand(string command)
 {
   int code;
   vector<string> lines;
+  CAutoLock critsec(&m_mutex);
 
   if ( !m_tcpclient->send(command) )
   {
@@ -99,6 +101,8 @@ string cPVRClientMediaPortal::SendCommand(string command)
 
 bool cPVRClientMediaPortal::SendCommand2(string command, int& code, vector<string>& lines)
 {
+  CAutoLock critsec(&m_mutex);
+
   if ( !m_tcpclient->send(command) )
   {
     if ( !m_tcpclient->is_valid() )

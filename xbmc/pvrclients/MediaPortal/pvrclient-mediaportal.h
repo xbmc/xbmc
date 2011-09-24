@@ -27,6 +27,7 @@
 #include "Socket.h"
 #include "Cards.h"
 #include "epg.h"
+#include "CriticalSection.h"
 
 class cPVRClientMediaPortal
 {
@@ -111,6 +112,7 @@ private:
   time_t                  m_BackendTime;
   CCards                  m_cCards;
   GenreMap                m_genremap;
+  CCriticalSection        m_mutex;
   void Close();
 
   //Used for TV Server communication:
