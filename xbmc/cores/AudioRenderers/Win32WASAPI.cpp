@@ -144,6 +144,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
   m_pcmAmplifier.SetVolume(m_nCurrentVolume);
+  m_drc = 0;
   
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
@@ -668,6 +669,10 @@ void CWin32WASAPI::WaitCompletion()
 //***********************************************************************************************
 void CWin32WASAPI::AddDataToBuffer(unsigned char* pData, unsigned int len, unsigned char* pOut)
 {
+  float gain = 1.0f;
+  if (m_drc > 0)
+    gain = pow(10.0f, (float)m_drc / 1000.0f);
+
   // Remap the data to the correct channels
   if(m_remap.CanRemap() && !m_bPassthrough)
     m_remap.Remap((void*)pData, pOut, len / m_uiBytesPerSrcFrame);
