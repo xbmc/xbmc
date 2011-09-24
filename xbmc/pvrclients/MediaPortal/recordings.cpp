@@ -32,11 +32,17 @@ cRecording::cRecording()
   m_StartTime       = 0;
   m_Duration        = 0;
   m_Index           = -1;
+  m_cardSettings    = NULL;
 }
 
 
 cRecording::~cRecording()
 {
+}
+
+void cRecording::SetCardSettings(CCards* cardSettings)
+{
+  m_cardSettings = cardSettings;
 }
 
 bool cRecording::ParseLine(const std::string& data)
@@ -113,16 +119,45 @@ bool cRecording::ParseLine(const std::string& data)
 
     if( m_filePath.length() > 0 )
     {
-      size_t found = m_filePath.find_last_of("/\\");
-      if (found != string::npos)
+      size_t found = string::npos;
+
+      if ((m_cardSettings) && (m_cardSettings->size() > 0))
       {
-        m_fileName = m_filePath.substr(found+1);
-        m_directory = m_filePath.substr(0, found+1);
+        for (CCards::iterator it = m_cardSettings->begin(); it < m_cardSettings->end(); it++)
+        {
+          // Determine whether the first part of the recording file name is shared with this card
+          found = m_filePath.find(it->RecordingFolder);
+          if (found != string::npos)
+          {
+            m_basePath = it->RecordingFolder + "\\";
+            // Remove the base path
+            m_fileName = m_filePath.substr(it->RecordingFolder.length()+1);
+
+            // Extract subdirectories below the base path
+            size_t found2 = m_fileName.find_last_of("/\\");
+            if (found2 != string::npos)
+            {
+              m_directory = m_fileName.substr(0, found2+1);
+              m_fileName = m_fileName.substr(found2+1);
+            }
+
+            break;
+          }
+        }
       }
-      else
+
+      if (found == string::npos)
       {
-        m_fileName = m_filePath;
-        m_directory = "";
+        if (found != string::npos)
+        {
+          m_fileName = m_filePath.substr(found+1);
+          m_directory = m_filePath.substr(0, found+1);
+        }
+        else
+        {
+          m_fileName = m_filePath;
+          m_directory = "";
+        }
       }
     }
     else
@@ -161,8 +196,8 @@ bool cRecording::ParseLine(const std::string& data)
 
 void cRecording::SetDirectory( string& directory )
 {
-  m_directory = directory;
-  m_filePath = m_directory + m_fileName;
+  m_basePath = directory;
+  m_filePath = m_basePath + m_directory + m_fileName;
 }
 
 int cRecording::Lifetime(void) const
