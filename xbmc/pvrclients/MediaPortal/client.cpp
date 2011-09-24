@@ -624,7 +624,7 @@ PVR_ERROR UpdateTimer(const PVR_TIMER &timer)
 bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
   if (!g_client)
-    return PVR_ERROR_SERVER_ERROR;
+    return false;
   else
     return g_client->OpenLiveStream(channelinfo);
 }
@@ -632,7 +632,7 @@ bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 void CloseLiveStream()
 {
   if (g_client)
-    CloseLiveStream();
+    g_client->CloseLiveStream();
 }
 
 int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
