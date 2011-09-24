@@ -1279,12 +1279,14 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
         m_tsreader->SetCardSettings(&m_cCards);
         m_tsreader->SetDirectory(g_szTimeshiftDir);
       }
-      m_tsreader->Open(timeshiftfields[2].c_str());
+      if ( m_tsreader->Open(timeshiftfields[2].c_str()) != S_OK )
+        return false;
     }
     else
     {
       // RTSP url
-      m_tsreader->Open(timeshiftfields[0].c_str());
+      if ( m_tsreader->Open(timeshiftfields[0].c_str()) != S_OK)
+        return false;
       usleep(400000);
     }
   }
@@ -1504,8 +1506,10 @@ bool cPVRClientMediaPortal::OpenRecordedStream(const PVR_RECORDING &recording)
   if (recfile.length() > 0)
   {
     m_tsreader = new CTsReader();
-    m_tsreader->Open(recfile.c_str());
-    return true;
+    if ( m_tsreader->Open(recfile.c_str()) != S_OK )
+      return false;
+    else
+      return true;
   }
 #endif
 

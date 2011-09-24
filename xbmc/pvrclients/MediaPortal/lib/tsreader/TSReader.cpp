@@ -80,7 +80,7 @@ std::string CTsReader::TranslatePath(const char*  pszFileName)
 
 long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
 {
-  XBMC->Log(LOG_DEBUG, "CTsReader::Open(%s)", pszFileName);
+  XBMC->Log(LOG_NOTICE, "CTsReader::Open(%s)", pszFileName);
 
   m_fileName = TranslatePath(pszFileName);
 
@@ -102,7 +102,7 @@ long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
     if (bytesRead >= 0) url[bytesRead] = 0;
     fclose(fd);
 
-    XBMC->Log(LOG_DEBUG, "open %s", url);
+    XBMC->Log(LOG_NOTICE, "open %s", url);
 #ifdef LIVE555
     if ( !m_rtspClient.OpenStream(url)) return E_FAIL;
 
@@ -203,7 +203,12 @@ long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
 
     //open file
     m_fileReader->SetFileName(m_fileName.c_str());
-    m_fileReader->OpenFile();
+    long retval = m_fileReader->OpenFile();
+    if (retval != S_OK)
+    {
+      XBMC->Log(LOG_ERROR, "Failed to open file %s", m_fileName.c_str());
+      return retval;
+    }
 
     //m_fileDuration->SetFileName(m_fileName.c_str());
     //m_fileDuration->OpenFile();
