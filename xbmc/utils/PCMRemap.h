@@ -104,6 +104,8 @@ protected:
   struct PCMMapInfo  m_lookupMap[PCM_MAX_CH + 1][PCM_MAX_CH + 1];
   int                m_counts[PCM_MAX_CH];
 
+  float*             m_buf;
+  int                m_bufsize;
   float              m_attenuation;
   float              m_attenuationInc;
   float              m_sampleRate;
@@ -116,6 +118,13 @@ protected:
   void               Dispose();
   CStdString         PCMChannelStr(enum PCMChannels ename);
   CStdString         PCMLayoutStr(enum PCMLayout ename);
+
+  void               CheckBufferSize(int size);
+  void               ProcessInput(void* data, void* out, unsigned int samples, float gain);
+  void               AddGain(float* buf, unsigned int samples, float gain);
+  void               ProcessLimiter(unsigned int samples, float gain);
+  void               ProcessOutput(void* out, unsigned int samples, float gain);
+
 public:
 
   CPCMRemap();

@@ -169,6 +169,8 @@ CPCMRemap::CPCMRemap() :
   m_outChannels (0),
   m_inSampleSize(0),
   m_ignoreLayout(false),
+  m_buf(NULL),
+  m_bufsize(0),
   m_attenuation (1.0),
   m_attenuationInc(0.0),
   m_sampleRate  (48000.0), //safe default
@@ -184,6 +186,9 @@ CPCMRemap::~CPCMRemap()
 
 void CPCMRemap::Dispose()
 {
+  free(m_buf);
+  m_buf = NULL;
+  m_bufsize = 0;
 }
 
 /* resolves the channels recursively and returns the new index of tablePtr */
@@ -509,99 +514,180 @@ void CPCMRemap::SetOutputFormat(unsigned int channels, enum PCMChannels *channel
 /* remap the supplied data into out, which must be pre-allocated */
 void CPCMRemap::Remap(void *data, void *out, unsigned int samples, float gain /*= 1.0f*/)
 {
-  unsigned int i, ch;
-  uint8_t      *insample, *outsample;
-  uint8_t      *src, *dst;
+  CheckBufferSize(samples * m_outChannels * sizeof(float));
 
-  insample  = (uint8_t*)data;
-  outsample = (uint8_t*)out;
+  //set output buffer to 0
+  memset(out, 0, samples * m_outChannels * m_inSampleSize);
 
-  /*
-    the output may have channels the input does not have, so zero the data
-    to stop random data being sent to them.
-  */
-  memset(out, 0, samples * (m_inSampleSize * m_outChannels));
-  for(i = 0; i < samples; ++i)
+  //set intermediate buffer to 0
+  memset(m_buf, 0, m_bufsize);
+
+  ProcessInput(data, out, samples, gain);
+  AddGain(m_buf, samples * m_outChannels, gain);
+  ProcessLimiter(samples, gain);
+  ProcessOutput(out, samples, gain);
+}
+
+void CPCMRemap::CheckBufferSize(int size)
+{
+  if (m_bufsize < size)
   {
-    for(ch = 0; ch < m_outChannels; ++ch)
+    m_bufsize = size;
+    m_buf = (float*)realloc(m_buf, m_bufsize);
+  }
+}
+
+void CPCMRemap::ProcessInput(void* data, void* out, unsigned int samples, float gain)
+{
+  for (unsigned int ch = 0; ch < m_outChannels; ch++)
+  {
+    struct PCMMapInfo *info = m_lookupMap[m_outMap[ch]];
+    if (info->channel == PCM_INVALID)
+      continue;
+
+    if (info->copy && gain == 1.0f) //do direct copy
     {
-      struct PCMMapInfo *info;
-      float value = 0;
-
-      info = m_lookupMap[m_outMap[ch]];
-      if (info->channel == PCM_INVALID) continue;
-
-      /* if it is a 1-1 map, we just copy the data to avoid rounding errors */
-      if (info->copy && gain == 1.0f)
+      uint8_t* src = (uint8_t*)data + info->in_offset;
+      uint8_t* dst = (uint8_t*)out  + ch * m_inSampleSize;
+      uint8_t* dstend = dst + samples * m_outStride;
+      while (dst < dstend)
       {
-        src = insample  + info->in_offset;
-        dst = outsample + ch * m_inSampleSize;
         *(int16_t*)dst = *(int16_t*)src;
-        continue;
+        src += m_inStride;
+        dst += m_outStride;
       }
-
-      for(; info->channel != PCM_INVALID; ++info)
+    }
+    else //needs some volume change or mixing, put into intermediate buffer
+    {
+      for(; info->channel != PCM_INVALID; info++)
       {
-        src    = insample + info->in_offset;
-        value += (float)(*(int16_t*)src) * info->level;
-      }
-      dst = outsample + ch * m_inSampleSize;
-
-      value *= gain;
-
-      //if value * m_attenuation clips (above INT16_MAX or below INT16_MIN),
-      //adjust m_attenuation so that INT16_MIN <= value * m_attenuation <= INT16_MAX
-      if (value * m_attenuation > (float)INT16_MAX && m_attenuation > (float)INT16_MAX / value)
-      {
-        m_attenuation = (float)INT16_MAX / value;
-        //value to add to m_attenuation so that m_attenuation + m_attenuationinc = 1.0
-        m_attenuationInc = 1.0f - m_attenuation;
-        //hold m_attenuation at this value for g_advancedSettings.m_limiterHold seconds
-        m_holdCounter = MathUtils::round_int(m_sampleRate * g_advancedSettings.m_limiterHold);
-      }
-      else if (value * m_attenuation < (float)INT16_MIN && m_attenuation > (float)INT16_MIN / value)
-      {
-        m_attenuation = (float)INT16_MIN / value;
-        m_attenuationInc = 1.0f - m_attenuation;
-        m_holdCounter = MathUtils::round_int(m_sampleRate * g_advancedSettings.m_limiterHold);
-      }
-      else if (m_attenuation < 1.0f)
-      {
-        //if we're attenuating, and we get within 5% of clipping, hold the current attenuation
-        if (value * m_attenuation < (float)INT16_MIN * 0.95 || value * m_attenuation > (float)INT16_MAX * 0.95)
+        uint8_t* src = (uint8_t*)data + info->in_offset;
+        float*   dst = m_buf + ch;
+        float*   dstend = dst + samples * m_outChannels;
+        while (dst < dstend)
         {
-          m_holdCounter = MathUtils::round_int(m_sampleRate * g_advancedSettings.m_limiterHold);
-          m_attenuationInc = 1.0f - m_attenuation;
+          *dst += (float)(*(int16_t*)src) * info->level;
+          src += m_inStride;
+          dst += m_outChannels;
         }
       }
-
-      //convert to signed int and clamp to 16 bit
-      int outvalue = MathUtils::round_int(value * m_attenuation);
-      if (outvalue > INT16_MAX)
-        outvalue = INT16_MAX;
-      else if (outvalue < INT16_MIN)
-        outvalue = INT16_MIN;
-
-      *(int16_t*)dst = outvalue;
     }
+  }
+}
 
-    if (m_holdCounter)
+void CPCMRemap::AddGain(float* buf, unsigned int samples, float gain)
+{
+  if (gain != 1.0f) //needs a gain change
+  {
+    float* ptr = m_buf;
+    float* end = m_buf + samples;
+    while (ptr < end)
+      *(ptr++) *= gain;
+  }
+}
+
+void CPCMRemap::ProcessLimiter(unsigned int samples, float gain)
+{
+  //check total gain for each output channel
+  float highestgain = 1.0f;
+  for (unsigned int ch = 0; ch < m_outChannels; ch++)
+  {
+    struct PCMMapInfo *info = m_lookupMap[m_outMap[ch]];
+    if (info->channel == PCM_INVALID)
+      continue;
+
+    float chgain = 0.0f;
+    for(; info->channel != PCM_INVALID; info++)
+      chgain += info->level * gain;
+
+    if (chgain > highestgain)
+      highestgain = chgain;
+  }
+
+  //if one of the channels can clip, enable a limiter
+  if (highestgain > 1.0001f) 
+  {
+    for (unsigned int i = 0; i < samples; i++)
     {
-      m_holdCounter--; //hold m_attenuation
-    }
-    else if (m_attenuationInc > 0.0f)
-    {
-      //move m_attenuation to 1.0 in g_advancedSettings.m_limiterRelease seconds
-      m_attenuation += m_attenuationInc / m_sampleRate / g_advancedSettings.m_limiterRelease;
-      if (m_attenuation > 1.0f)
+      //for each collection of samples, get the highest absolute value
+      float maxAbs = 0.0f;
+      for (unsigned int outch = 0; outch < m_outChannels; outch++)
       {
-        m_attenuation = 1.0f;
-        m_attenuationInc = 0.0f;
+        float absval = fabs(m_buf[i * m_outChannels + outch]) / 32768.0f;
+        if (maxAbs < absval)
+          maxAbs = absval;
+      }
+
+      //if attenuatedAbs is higher than 1.0f, audio is clipping
+      float attenuatedAbs = maxAbs * m_attenuation;
+      if (attenuatedAbs > 1.0f)
+      {
+        //set m_attenuation so that m_attenuation * sample is the maximum output value
+        m_attenuation = 1.0f / maxAbs;
+        //value to add to m_attenuation to make it 1.0f
+        m_attenuationInc = 1.0f - m_attenuation;
+        //amount of samples to hold m_attenuation
+        m_holdCounter = MathUtils::round_int(m_sampleRate * g_advancedSettings.m_limiterHold);
+      }
+      else if (m_attenuation < 1.0f && attenuatedAbs > 0.95f)
+      {
+        //if we're attenuating and we get within 5% of clipping, hold m_attenuation
+        m_attenuationInc = 1.0f - m_attenuation;
+        m_holdCounter = MathUtils::round_int(m_sampleRate * g_advancedSettings.m_limiterHold);
+      }
+
+      //apply attenuation
+      for (unsigned int outch = 0; outch < m_outChannels; outch++)
+        m_buf[i * m_outChannels + outch] *= m_attenuation;
+
+      if (m_holdCounter)
+      {
+        //hold m_attenuation
+        m_holdCounter--;
+      }
+      else if (m_attenuationInc > 0.0f)
+      {
+        //move m_attenuation to 1.0 in g_advancedSettings.m_limiterRelease seconds
+        m_attenuation += m_attenuationInc / m_sampleRate / g_advancedSettings.m_limiterRelease;
+        if (m_attenuation > 1.0f)
+        {
+          m_attenuation = 1.0f;
+          m_attenuationInc = 0.0f;
+        }
       }
     }
+  }
+  else
+  {
+    //reset the limiter
+    m_attenuation = 1.0f;
+    m_attenuationInc = 0.0f;
+    m_holdCounter = 0;
+  }
+}
 
-    insample  += m_inStride;
-    outsample += m_outStride;
+void CPCMRemap::ProcessOutput(void* out, unsigned int samples, float gain)
+{
+  //copy from intermediate buffer to output
+  for (unsigned int ch = 0; ch < m_outChannels; ch++)
+  {
+    struct PCMMapInfo *info = m_lookupMap[m_outMap[ch]];
+    if (info->channel == PCM_INVALID)
+      continue;
+
+    if (!info->copy || gain != 1.0f)
+    {
+      float* src = m_buf + ch;
+      uint8_t* dst = (uint8_t*)out + ch * m_inSampleSize;
+      uint8_t* dstend = dst + samples * m_outStride;
+
+      while(dst < dstend)
+      {
+        *(int16_t*)dst = MathUtils::round_int(std::min(std::max(*src, (float)INT16_MIN), (float)INT16_MAX));
+        src += m_outChannels;
+        dst += m_outStride;
+      }
+    }
   }
 }
 
