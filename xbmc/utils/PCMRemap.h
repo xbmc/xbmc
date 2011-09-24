@@ -110,6 +110,7 @@ protected:
   float              m_attenuationInc;
   float              m_sampleRate;
   unsigned int       m_holdCounter;
+  bool               m_limiterEnabled;
 
   struct PCMMapInfo* ResolveChannel(enum PCMChannels channel, float level, bool ifExists, std::vector<enum PCMChannels> path, struct PCMMapInfo *tablePtr);
   void               ResolveChannels(); //!< Partial BuildMap(), just enough to see which output channels are active
