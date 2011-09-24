@@ -240,7 +240,7 @@
 				<pulseonselect>no</pulseonselect>
 				<font>font13</font>
 				<label>13017</label>
-				<visible>!System.IsInhibit</visible>
+				<visible>System.HasShutdown +!System.IsInhibit</visible>
 			</control>
 			<control type="button" id="13">
 				<description>Allow idle shutdown</description>
@@ -256,7 +256,7 @@
 				<pulseonselect>no</pulseonselect>
 				<font>font13</font>
 				<label>13018</label>
-				<visible>System.IsInhibit</visible>
+				<visible>System.HasShutdown + System.IsInhibit</visible>
 			</control>
 			<control type="image" id="10">
 				<description>background bottom image</description>

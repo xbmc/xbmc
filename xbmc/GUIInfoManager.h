@@ -180,6 +180,7 @@ namespace INFO
 #define SYSTEM_ISFULLSCREEN         182
 #define SYSTEM_ISSTANDALONE         183
 #define SYSTEM_ISINHIBIT            184
+#define SYSTEM_HAS_SHUTDOWN         185
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191

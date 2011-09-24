@@ -1793,9 +1793,9 @@
   <string id="19242">enabled PVR add-on. Enable at least one add-on</string>
   <string id="19243">in order to use the PVR functionality.</string>
   <string id="19244">Consider local backend</string>
-  <string id="19245">Backend idle time (minutes)</string>  
+  <string id="19245">Backend idle time</string>  
   <string id="19247">Set wakup command (cmd [timestamp])</string>
-  <string id="19248">Wakup before recording (minutes)</string>
+  <string id="19248">Wakup before recording</string>
   <string id="19249">Daily wakeup</string>
   <string id="19250">Daily wakeup time (HH:MM:SS)</string>
   
