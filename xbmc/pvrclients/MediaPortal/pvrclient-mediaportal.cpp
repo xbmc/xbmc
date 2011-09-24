@@ -63,7 +63,7 @@ cPVRClientMediaPortal::~cPVRClientMediaPortal()
   XBMC->Log(LOG_DEBUG, "->~cPVRClientMediaPortal()");
   if (m_bConnected)
     Disconnect();
-  delete_null(m_tcpclient);
+  SAFE_DELETE(m_tcpclient);
 }
 
 string cPVRClientMediaPortal::SendCommand(string command)
