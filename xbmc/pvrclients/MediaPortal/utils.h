@@ -43,3 +43,10 @@ bool stringtobool(const std::string& s);
  * Assumes the usage of somedatetimeval.ToString("u") in C#
  */
 time_t DateTimeToTimeT(const std::string& datetime);
+
+/* Platform dependent path separator */
+#if defined(_WIN32) || defined(_WIN64)
+#  define PATH_SEPARATOR_CHAR '\\'
+#else
+#  define PATH_SEPARATOR_CHAR '/'
+#endif

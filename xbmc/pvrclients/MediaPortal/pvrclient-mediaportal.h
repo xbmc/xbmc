@@ -26,6 +26,7 @@
 /* Local includes */
 #include "Socket.h"
 #include "Cards.h"
+#include "epg.h"
 
 class cPVRClientMediaPortal
 {
@@ -96,6 +97,7 @@ protected:
 
 private:
   bool GetChannel(unsigned int number, PVR_CHANNEL &channeldata);
+  bool LoadGenreXML(const std::string &filename);
 
   int                     m_iCurrentChannel;
   bool                    m_bConnected;
@@ -108,6 +110,7 @@ private:
   time_t                  m_BackendUTCoffset;
   time_t                  m_BackendTime;
   CCards                  m_cCards;
+  GenreMap                m_genremap;
   void Close();
 
   //Used for TV Server communication:
