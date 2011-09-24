@@ -15,6 +15,10 @@
     <string id="30011">Opnames direct afspelen (niet streamen)</string>
     <string id="30012">Mediaportal directory met opnames</string>
 
+    <!-- category labels -->
+    <string id="30040">Verbinding</string>
+    <string id="30041">MediaPortal</string>
+
     <!-- on-screen error messages -->
     <string id="30050">Uw TVServerXBMC plugin v%s is te oud. U heeft minimaal versie v%s of nieuwer nodig!</string>
     <string id="30050">Uw TVServerXBMC plugin is te oud. U heeft minimaal versie v%s of nieuwer nodig!</string>	
