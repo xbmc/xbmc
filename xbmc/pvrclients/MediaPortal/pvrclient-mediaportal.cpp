@@ -203,7 +203,9 @@ bool cPVRClientMediaPortal::Connect()
           XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version v%s to v%s or higher!", fields[1].c_str(), TVSERVERXBMC_RECOMMENDED_VERSION_STRING);
         }
       }
-    } else {
+    }
+    else
+    {
       XBMC->Log(LOG_ERROR, "Your TVServerXBMC version is too old. Please upgrade to v%s or higher!", TVSERVERXBMC_MIN_VERSION_STRING);
       XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30051), TVSERVERXBMC_MIN_VERSION_STRING);
       return false;
@@ -349,8 +351,11 @@ PVR_ERROR cPVRClientMediaPortal::GetDriveSpace(long long *iTotal, long long *iUs
 
     Tokenize(result, fields, "|");
 
-    *iTotal = (long long) atoi(fields[0].c_str());
-    *iUsed = (long long) atoi(fields[1].c_str());
+    if(fields.size() >= 2)
+    {
+      *iTotal = (long long) atoi(fields[0].c_str());
+      *iUsed = (long long) atoi(fields[1].c_str());
+    }
   }
 
   return PVR_ERROR_NO_ERROR;
@@ -686,7 +691,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio
   {
     XBMC->Log(LOG_DEBUG, "RequestChannelList for TV group:%s", g_szTVGroup.c_str());
     if (!SendCommand2("ListRadioGroups\n", code, lines))
-      PVR_ERROR_SERVER_ERROR;
+      return PVR_ERROR_SERVER_ERROR;
   }
 
   memset(&tag, 0 , sizeof(PVR_CHANNEL_GROUP));
@@ -832,10 +837,6 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 
     XBMC->Log(LOG_DEBUG, "RECORDING: %s", data.c_str() );
 
-    ///* Convert to UTF8 string format */
-    //if (m_bCharsetConv)
-    //  XBMC_unknown_to_utf8(str_result);
-
     CStdString strRecordingId;
     cRecording recording;
     recording.SetCardSettings(&m_cCards);
@@ -858,7 +859,8 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       tag.iGenreSubType  = 0; //TODO?
 
       if (g_bUseRecordingsDir == true)
-      { //Replace path by given path in g_szRecordingsDir
+      {
+        //Replace path by given path in g_szRecordingsDir
         if (g_szRecordingsDir.length() > 0)
         {
           recording.SetDirectory(g_szRecordingsDir);
@@ -873,7 +875,6 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       {
         tag.strStreamURL    = recording.Stream();
       }
-
       PVR->TransferRecordingEntry(handle, &tag);
     }
   }
@@ -1153,7 +1154,10 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
     result = SendCommand("StopTimeshift:\n");
     XBMC->Log(LOG_INFO, "CloseLiveStream: %s", result.c_str());
     m_bTimeShiftStarted = false;
-  } else {
+    m_iCurrentChannel = 0;
+  }
+  else
+  {
     XBMC->Log(LOG_DEBUG, "CloseLiveStream: Nothing to do.");
   }
 }
@@ -1316,44 +1320,45 @@ bool cPVRClientMediaPortal::LoadGenreXML(const std::string &filename)
   XBMC->Log(LOG_DEBUG, "Opened %s to read genre string to type/subtype translation table", filename.c_str());
 
   TiXmlHandle hDoc(&xmlDoc);
-	TiXmlElement* pElem;
-	TiXmlHandle hRoot(0);
+  TiXmlElement* pElem;
+  TiXmlHandle hRoot(0);
   string sGenre;
   const char* sGenreType = NULL;
   const char* sGenreSubType = NULL;
   genre_t genre;
 
-	// block: genrestrings
-	pElem = hDoc.FirstChildElement("genrestrings").Element();
-	// should always have a valid root but handle gracefully if it does
-	if (!pElem)
+  // block: genrestrings
+  pElem = hDoc.FirstChildElement("genrestrings").Element();
+  // should always have a valid root but handle gracefully if it does
+  if (!pElem)
   {
     XBMC->Log(LOG_DEBUG, "Could not find <genrestrings> element");
     return false;
   }
+
   //This should hold: pElem->Value() == "genrestrings"
 
-	// save this for later
-	hRoot=TiXmlHandle(pElem);
+  // save this for later
+  hRoot=TiXmlHandle(pElem);
 
   // iterate through all genre elements
   TiXmlElement* pGenreNode = hRoot.FirstChildElement("genre").Element();
   //This should hold: pGenreNode->Value() == "genre"
 
-  if (!pElem)
+  if (!pGenreNode)
   {
     XBMC->Log(LOG_DEBUG, "Could not find <genre> element");
     return false;
   }
 
-  for (pGenreNode; pGenreNode; pGenreNode = pGenreNode->NextSiblingElement("genre"))
+  for (; pGenreNode != NULL; pGenreNode = pGenreNode->NextSiblingElement("genre"))
   {
     const char* sGenreString = pGenreNode->GetText();
 
     if (sGenreString)
     {
       sGenreType = pGenreNode->Attribute("type");
-		  sGenreSubType = pGenreNode->Attribute("subtype");
+      sGenreSubType = pGenreNode->Attribute("subtype");
 
       if ((sGenreType) && (strlen(sGenreType) > 2))
       {
@@ -1381,7 +1386,7 @@ bool cPVRClientMediaPortal::LoadGenreXML(const std::string &filename)
         m_genremap.insert(std::pair<std::string, genre_t>(sGenreString, genre));
       }
     }
-	}
+  }
 
   return true;
 }
