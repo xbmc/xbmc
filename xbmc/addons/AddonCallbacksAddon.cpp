@@ -174,7 +174,7 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
             strcpy((char*) settingValue, addonHelper->m_addon->GetSetting(id).c_str());
             return true;
           }
-          else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
+          else if (strcmpi(type, "number") == 0 || strcmpi(type, "enum") == 0 ||
                    strcmpi(type, "labelenum") == 0)
           {
             *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id));
