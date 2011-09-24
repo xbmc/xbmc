@@ -301,7 +301,6 @@
     <ClCompile Include="..\..\xbmc\Autorun.cpp" />
     <ClCompile Include="..\..\xbmc\AutoSwitch.cpp" />
     <ClCompile Include="..\..\xbmc\BackgroundInfoLoader.cpp" />
-    <ClCompile Include="..\..\xbmc\commons\ilog.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.cpp" />
     <ClCompile Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.cpp" />
     <ClCompile Include="..\..\xbmc\cores\paplayer\BXAcodec.cpp" />
@@ -1002,6 +1001,7 @@
     <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp" />
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
+    <ClInclude Include="..\..\xbmc\filesystem\FileUPnP.h" />
     <ClCompile Include="..\..\xbmc\ThumbLoader.cpp" />
     <ClCompile Include="..\..\xbmc\ThumbnailCache.cpp" />
     <ClCompile Include="..\..\xbmc\URL.cpp" />
@@ -1407,7 +1407,6 @@
     <ClInclude Include="..\..\xbmc\Autorun.h" />
     <ClInclude Include="..\..\xbmc\AutoSwitch.h" />
     <ClInclude Include="..\..\xbmc\BackgroundInfoLoader.h" />
-    <ClInclude Include="..\..\xbmc\commons\ilog.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDCodecs\Video\CrystalHD.h" />
     <ClInclude Include="..\..\xbmc\cores\dvdplayer\DVDInputStreams\DVDInputStreamBluray.h" />
     <ClInclude Include="..\..\xbmc\cores\paplayer\BXAcodec.h" />
@@ -1809,22 +1808,6 @@
     <ClInclude Include="..\..\xbmc\TextureCache.h" />
     <ClInclude Include="..\..\xbmc\TextureCacheJob.h" />
     <ClInclude Include="..\..\xbmc\TextureDatabase.h" />
-    <ClInclude Include="..\..\xbmc\threads\Atomics.h" />
-    <ClInclude Include="..\..\xbmc\threads\Condition.h" />
-    <ClInclude Include="..\..\xbmc\threads\CriticalSection.h" />
-    <ClInclude Include="..\..\xbmc\threads\Event.h" />
-    <ClInclude Include="..\..\xbmc\threads\LockFree.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\Condition.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\win\Condition.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h" />
-    <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h" />
-    <ClInclude Include="..\..\xbmc\threads\SharedSection.h" />
-    <ClInclude Include="..\..\xbmc\threads\SingleLock.h" />
-    <ClInclude Include="..\..\xbmc\threads\SystemClock.h" />
-    <ClInclude Include="..\..\xbmc\threads\Thread.h" />
-    <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h" />
     <ClInclude Include="..\..\xbmc\ThumbLoader.h" />
     <ClInclude Include="..\..\xbmc\ThumbnailCache.h" />
     <ClInclude Include="..\..\xbmc\URL.h" />
@@ -2252,6 +2235,12 @@
     <ProjectReference Include="UnrarXLib.vcxproj">
       <Project>{fe0a91c0-e30a-47cd-8a92-a508c9292452}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="XbmcCommons.vcxproj">
+      <Project>{87da0a1e-3f33-4927-a5e5-2d58f2c58e17}</Project>
+    </ProjectReference>
+    <ProjectReference Include="XbmcThreads.vcxproj">
+      <Project>{034b1d02-ca92-455d-8866-db95bee49c10}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

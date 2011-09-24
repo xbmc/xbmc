@@ -115,9 +115,6 @@
     <Filter Include="storage">
       <UniqueIdentifier>{2500f45e-2a56-4434-87bd-727050d0d1aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="threads">
-      <UniqueIdentifier>{5af9347f-8e02-4e0b-96aa-c659144e9385}</UniqueIdentifier>
-    </Filter>
     <Filter Include="utils">
       <UniqueIdentifier>{acd585b0-c319-43f0-9149-b3b5dddf5122}</UniqueIdentifier>
     </Filter>
@@ -228,12 +225,6 @@
     </Filter>
     <Filter Include="libs\SlingboxLib">
       <UniqueIdentifier>{dfa70c36-927b-4540-b505-35919e64eb3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="threads\platform">
-      <UniqueIdentifier>{2165ba63-177d-4746-b1c6-e5e425c9f0a0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="threads\platform\win">
-      <UniqueIdentifier>{1f49caed-1c84-46a1-83fc-b1fa6cfd749e}</UniqueIdentifier>
     </Filter>
     <Filter Include="interfaces\info">
       <UniqueIdentifier>{cea579fc-bdd7-499e-a6a6-07d681d1ab24}</UniqueIdentifier>
@@ -1603,18 +1594,6 @@
     <ClCompile Include="..\..\xbmc\storage\windows\Win32StorageProvider.cpp">
       <Filter>storage\windows</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\Atomics.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\Event.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\LockFree.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\Thread.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\AlarmClock.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -2234,12 +2213,6 @@
     <ClCompile Include="..\..\xbmc\input\InertialScrollingHandler.cpp">
       <Filter>input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp">
-      <Filter>threads\platform</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
-      <Filter>threads</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp">
       <Filter>interfaces\info</Filter>
     </ClCompile>
@@ -2649,6 +2622,7 @@
     <ClCompile Include="..\..\xbmc\commons\ilog.cpp">
       <Filter>commons</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -4231,27 +4205,6 @@
     <ClInclude Include="..\..\xbmc\storage\windows\Win32StorageProvider.h">
       <Filter>storage\windows</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\Atomics.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\CriticalSection.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\Event.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\LockFree.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\SharedSection.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\SingleLock.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\Thread.h">
-      <Filter>threads</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\AlarmClock.h">
       <Filter>utils</Filter>
     </ClInclude>
@@ -4859,35 +4812,8 @@
     <ClInclude Include="..\..\xbmc\guilib\DirtyRegionSolvers.h">
       <Filter>guilib</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\Condition.h">
-      <Filter>threads</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\ThreadLocal.h">
-      <Filter>threads</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\input\InertialScrollingHandler.h">
       <Filter>input</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\platform\Condition.h">
-      <Filter>threads\platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\platform\CriticalSection.h">
-      <Filter>threads\platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\platform\ThreadLocal.h">
-      <Filter>threads\platform</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\platform\win\Condition.h">
-      <Filter>threads\platform\win</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\platform\win\CriticalSection.h">
-      <Filter>threads\platform\win</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\platform\win\ThreadLocal.h">
-      <Filter>threads\platform\win</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\threads\SystemClock.h">
-      <Filter>threads</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\info\InfoBool.h">
       <Filter>interfaces\info</Filter>

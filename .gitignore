@@ -335,6 +335,7 @@ lib/cmyth/Makefile
 /project/VS2010Express/guilib
 /project/VS2010Express/libPlatinum
 /project/VS2010Express/UnrarXLib
+/project/VS2010Express/test-XbmcThreads
 /project/VS2010Express/libs
 /project/VS2010Express/objs
 /project/VS2010Express/ipch
