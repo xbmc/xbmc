@@ -1290,6 +1290,8 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
 #ifdef HAS_AIRPLAY  
     if (g_guiSettings.GetBool("services.airplay"))
       g_application.StartAirplayServer();//will stop the server before internal
+    else
+      g_application.StopAirplayServer(true);//will stop the server before internal    
 #endif//HAS_AIRPLAY      
   }
   else if (strSetting.Equals("network.ipaddress"))
