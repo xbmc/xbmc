@@ -508,10 +508,6 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
     return 0;
   }
 
-  // handle volume de-amp
-  if (!m_bPassthrough)
-    m_amp.DeAmplify((short *)data, framesToWrite * m_uiDataChannels);
-
   int writeResult;
   if (m_bPassthrough && m_nCurrentVolume == VOLUME_MINIMUM)
   {
@@ -526,10 +522,16 @@ unsigned int CALSADirectSound::AddPackets(const void* data, unsigned int len)
       /* remap the data to the correct channels */
       uint8_t outData[bytesToWrite];
       m_remap.Remap((void *)data, outData, framesToWrite, m_drc);
+      m_amp.DeAmplify((short *)outData, bytesToWrite / 2);
       writeResult = snd_pcm_writei(m_pPlayHandle, outData, framesToWrite);
     }
     else
+    {
+      if (!m_bPassthrough)
+        m_amp.DeAmplify((short *)data, framesToWrite * m_uiDataChannels);
+
       writeResult = snd_pcm_writei(m_pPlayHandle, data, framesToWrite);
+    }
   }
   if (  writeResult == -EPIPE  )
   {
