@@ -272,6 +272,15 @@ void CDVDAudio::SetDynamicRangeCompression(long drc)
   if (m_pAudioDecoder) m_pAudioDecoder->SetDynamicRangeCompression(drc);
 }
 
+float CDVDAudio::GetCurrentAttenuation()
+{
+  CSingleLock lock (m_critSection);
+  if (m_pAudioDecoder)
+    return m_pAudioDecoder->GetCurrentAttenuation();
+  else
+    return 1.0f;
+}
+
 void CDVDAudio::Pause()
 {
   CSingleLock lock (m_critSection);

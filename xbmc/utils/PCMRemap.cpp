@@ -173,6 +173,7 @@ CPCMRemap::CPCMRemap() :
   m_bufsize(0),
   m_attenuation (1.0),
   m_attenuationInc(0.0),
+  m_attenuationMin(1.0),
   m_sampleRate  (48000.0), //safe default
   m_holdCounter (0),
   m_limiterEnabled(false)
@@ -605,9 +606,13 @@ void CPCMRemap::ProcessLimiter(unsigned int samples, float gain)
       highestgain = chgain;
   }
 
+  m_attenuationMin = 1.0f;
+
   //if one of the channels can clip, enable a limiter
   if (highestgain > 1.0001f) 
   {
+    m_attenuationMin = m_attenuation;
+
     if (!m_limiterEnabled)
     {
       CLog::Log(LOGDEBUG, "CPCMRemap:: max gain: %f, enabling limiter", highestgain);
@@ -631,6 +636,8 @@ void CPCMRemap::ProcessLimiter(unsigned int samples, float gain)
       {
         //set m_attenuation so that m_attenuation * sample is the maximum output value
         m_attenuation = 1.0f / maxAbs;
+        if (m_attenuation < m_attenuationMin)
+          m_attenuationMin = m_attenuation;
         //value to add to m_attenuation to make it 1.0f
         m_attenuationInc = 1.0f - m_attenuation;
         //amount of samples to hold m_attenuation

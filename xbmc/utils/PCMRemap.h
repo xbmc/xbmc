@@ -108,6 +108,7 @@ protected:
   int                m_bufsize;
   float              m_attenuation;
   float              m_attenuationInc;
+  float              m_attenuationMin; //lowest attenuation value during a call of Remap(), used for the codec info
   float              m_sampleRate;
   unsigned int       m_holdCounter;
   bool               m_limiterEnabled;
@@ -139,6 +140,7 @@ public:
   int  InBytesToFrames (int bytes );
   int  FramesToOutBytes(int frames);
   int  FramesToInBytes (int frames);
+  float GetCurrentAttenuation() { return m_attenuationMin; }
 };
 
 #endif
