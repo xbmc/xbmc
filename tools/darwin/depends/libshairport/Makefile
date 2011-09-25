@@ -22,6 +22,11 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	cd $(SOURCE); patch -p0 < ../001_add_ao.patch
+	cd $(SOURCE); patch -p0 < ../002_fix_install_header.patch
+	cd $(SOURCE); patch -p0 < ../003_fix_deadlock.patch
+	cd $(SOURCE); patch -p0 < ../004_fix_bad_access.patch
+	cd $(SOURCE); patch -p0 < ../005_fix_shutdown.patch
 	cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); $(CONFIGURE)
 
