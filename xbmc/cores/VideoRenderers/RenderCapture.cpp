@@ -71,6 +71,15 @@ CRenderCaptureGL::~CRenderCaptureGL()
   delete[] m_pixels;
 }
 
+int CRenderCaptureGL::GetCaptureFormat()
+{
+#ifdef HAS_GLES
+  return CAPTUREFORMAT_RGBA;
+#else
+  return CAPTUREFORMAT_BGRA;
+#endif
+}
+
 void CRenderCaptureGL::BeginRender()
 {
   if (!m_asyncChecked)
@@ -233,6 +242,11 @@ CRenderCaptureDX::~CRenderCaptureDX()
   delete[] m_pixels;
 
   g_Windowing.Unregister(this);
+}
+
+int CRenderCaptureDX::GetCaptureFormat()
+{
+  return CAPTUREFORMAT_BGRA;
 }
 
 void CRenderCaptureDX::BeginRender()
