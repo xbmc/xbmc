@@ -824,6 +824,7 @@ namespace JSONRPC
           "\"ControlPower\": { \"type\": \"boolean\", \"required\": true },"
           "\"UpdateData\": { \"type\": \"boolean\", \"required\": true },"
           "\"RemoveData\": { \"type\": \"boolean\", \"required\": true },"
+          "\"Navigate\": { \"type\": \"boolean\", \"required\": true },"
           "\"WriteFile\": { \"type\": \"boolean\", \"required\": true }"
         "}"
       "}"
