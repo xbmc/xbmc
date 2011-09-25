@@ -1856,7 +1856,11 @@ EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
   if(m_renderMethod & RENDER_CVREF)
     return VS_INTERLACEMETHOD_NONE;
 
+#if defined(__i386__) || defined(__x86_64__)
+  return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
+#else
   return VS_INTERLACEMETHOD_SW_BLEND;
+#endif
 }
 
 #ifdef HAVE_LIBOPENMAX
