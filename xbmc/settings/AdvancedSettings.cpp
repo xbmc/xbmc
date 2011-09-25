@@ -52,7 +52,7 @@ void CAdvancedSettings::Initialize()
 
   //default hold time of 25 ms, this allows a 20 hertz sine to pass undistorted
   m_limiterHold = 0.025f;
-  m_limiterRelease = 1.0f;
+  m_limiterRelease = 0.1f;
 
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
