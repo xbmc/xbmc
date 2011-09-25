@@ -20,6 +20,10 @@
 
 CCriticalSection::CCriticalSection(void)
 {
+}
+
+void CCriticalSection::Initialize(void)
+{
 #ifdef TARGET_WINDOWS
   InitializeCriticalSection(&m_CriticalSection);
 #else
@@ -46,7 +50,7 @@ void CCriticalSection::Lock(void)
 #ifdef TARGET_WINDOWS
   EnterCriticalSection(&m_CriticalSection);
 #else
-  (void)pthread_mutex_lock(&m_CriticalSection);
+  pthread_mutex_lock(&m_CriticalSection);
 #endif
 }
 
