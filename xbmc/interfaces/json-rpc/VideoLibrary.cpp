@@ -29,7 +29,6 @@
 #include "addons/Scraper.h"
 
 using namespace JSONRPC;
-/*using namespace ADDON;*/
 
 JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
