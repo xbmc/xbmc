@@ -163,7 +163,7 @@ JSON_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportLaye
         return InvalidParams;
 
       result["speed"] = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
-      return ACK;
+      return OK;
 
     case Picture:
     case None:
