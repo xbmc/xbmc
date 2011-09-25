@@ -361,7 +361,7 @@ unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
     {
       // Remap the data to the correct channels into the buffer
       if (m_remap.CanRemap())
-        m_remap.Remap((void*)pBuffer, startWrap, sizeWrap / m_uiBytesPerFrame, gain);
+        m_remap.Remap((void*)pBuffer, startWrap, sizeWrap / m_uiBytesPerFrame, m_drc);
       else
         memcpy(startWrap, pBuffer, sizeWrap);
       m_BufferOffset = sizeWrap;
