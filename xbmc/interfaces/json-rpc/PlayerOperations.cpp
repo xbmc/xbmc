@@ -346,7 +346,6 @@ JSON_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *t
   if (parameterObject["item"].isObject() && parameterObject["item"].isMember("playlistid"))
   {
     int playlistid = (int)parameterObject["item"]["playlistid"].asInteger();
-    CGUIWindowSlideShow *slideshow = NULL;
     switch (playlistid)
     {
       case PLAYLIST_MUSIC:
@@ -360,24 +359,7 @@ JSON_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *t
         break;
 
       case PLAYLIST_PICTURE:
-        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-        if (slideshow && slideshow->NumSlides() > 0)
-        {
-          if (g_application.IsPlayingVideo())
-            g_application.StopPlaying();
-
-          g_graphicsContext.Lock();
-
-          g_application.WakeUpScreenSaverAndDPMS();
-          slideshow->StartSlideShow();
-
-          if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
-            g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
-
-          g_graphicsContext.Unlock();
-        }
-        else
-          return FailedToExecute;
+        return StartSlideshow();
         break;
     }
 
@@ -408,7 +390,32 @@ JSON_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *t
     CFileItemList list;
     if (FillFileItemList(parameterObject["item"], list) && list.Size() > 0)
     {
-      g_application.getApplicationMessenger().MediaPlay(list);
+      bool slideshow = true;
+      for (int index = 0; index < list.Size(); index++)
+      {
+        if (!list[index]->HasPictureInfoTag())
+        {
+          slideshow = false;
+          break;
+        }
+      }
+
+      if (slideshow)
+      {
+        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        if (!slideshow)
+          return FailedToExecute;
+
+        SendSlideshowAction(ACTION_STOP);
+        slideshow->Reset();
+        for (int index = 0; index < list.Size(); index++)
+          slideshow->Add(list[index].get());
+
+        return StartSlideshow();
+      }
+      else
+        g_application.getApplicationMessenger().MediaPlay(list);
+
       return ACK;
     }
     else
@@ -715,6 +722,28 @@ int CPlayerOperations::GetPlaylist(PlayerType player)
     default:
       return PLAYLIST_NONE;
   }
+}
+
+JSON_STATUS CPlayerOperations::StartSlideshow()
+{
+  CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+  if (!slideshow && slideshow->NumSlides() <= 0)
+    return FailedToExecute;
+
+  if (g_application.IsPlayingVideo())
+    g_application.StopPlaying();
+
+  g_graphicsContext.Lock();
+
+  g_application.WakeUpScreenSaverAndDPMS();
+  slideshow->StartSlideShow();
+
+  if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
+    g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+
+  g_graphicsContext.Unlock();
+
+  return ACK;
 }
 
 void CPlayerOperations::SendSlideshowAction(int actionID)

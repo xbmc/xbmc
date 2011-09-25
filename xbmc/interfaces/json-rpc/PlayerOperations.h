@@ -71,6 +71,7 @@ namespace JSONRPC
     static int GetActivePlayers();
     static PlayerType GetPlayer(const CVariant &player);
     static int GetPlaylist(PlayerType player);
+    static JSON_STATUS StartSlideshow();
     static void SendSlideshowAction(int actionID);
     static void OnPlaylistChanged();
     static JSON_STATUS GetPropertyValue(PlayerType player, const CStdString &property, CVariant &result);
