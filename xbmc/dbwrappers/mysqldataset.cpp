@@ -117,6 +117,9 @@ int MysqlDatabase::connect(bool create_new) {
     if (conn == NULL)
     {
       conn = mysql_init(conn);
+      unsigned int timeout = 5; // connect timeout in seconds
+      mysql_options(conn,MYSQL_OPT_CONNECT_TIMEOUT,&timeout);
+      
     }
 
     // TODO block to avoid multiple connect on db
