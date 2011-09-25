@@ -25,8 +25,11 @@
 #include "Util.h"
 #include "utils/URIUtils.h"
 #include "Application.h"
+#include "video/VideoInfoDownloader.h"
+#include "addons/Scraper.h"
 
 using namespace JSONRPC;
+/*using namespace ADDON;*/
 
 JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -41,6 +44,50 @@ JSON_STATUS CVideoLibrary::GetMovies(const CStdString &method, ITransportLayer *
 
   videodatabase.Close();
   return ret;
+}
+
+JSON_STATUS CVideoLibrary::SearchForDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CStdString strPath = parameterObject["path"].asString();
+  CStdString movieName = parameterObject["title"].asString();
+  /*empty title will return no result*/
+
+  CVideoDatabase videodatabase;
+  if (!videodatabase.Open())
+    return InternalError;
+  
+  ADDON::ScraperPtr scraper;
+  scraper = videodatabase.GetScraperForPath(strPath);
+  
+  /* path need to be checked otherwise send error */
+  if (!scraper || scraper->Content() == CONTENT_NONE)
+    return FailedToExecute;
+
+  CVideoInfoDownloader imdb(scraper);
+  typedef std::vector<CScraperUrl> MOVIELIST;
+  MOVIELIST movieList;
+  int m_found = 0;
+  m_found= imdb.FindMovie(movieName, movieList);
+
+  CFileItemList items;
+  for (unsigned int i = 0; i < movieList.size(); i++)
+  {
+    CVideoInfoTag movie;	
+    movie.m_strPath = movieList[i].m_url[0].m_url;
+    movie.m_strTitle = movieList[i].strTitle.c_str();
+    CFileItemPtr pItem(new CFileItem(movie));
+    pItem->SetLabel(movieList[i].strTitle.c_str());
+    items.Add(pItem);
+  }
+
+  CVariant param = parameterObject;
+  /*param["fields"] = CVariant(arrayValue);*/
+  param["fields"].append("path");
+  param["fields"].append("title");
+
+  HandleFileItemList(NULL, true, "movies", items, param, result);
+
+  return OK;    
 }
 
 JSON_STATUS CVideoLibrary::GetMovieDetails(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
