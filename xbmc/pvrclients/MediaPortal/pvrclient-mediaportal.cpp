@@ -62,6 +62,7 @@ cPVRClientMediaPortal::cPVRClientMediaPortal()
   m_BackendUTCoffset       = 0;
   m_BackendTime            = 0;
   m_bStop                  = true;
+  m_mutex.Initialize();
 #ifdef TSREADER
   m_noSignalStreamSize     = 0;
   m_noSignalStreamReadPos  = 0;
