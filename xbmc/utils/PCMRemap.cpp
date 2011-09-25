@@ -513,6 +513,15 @@ void CPCMRemap::SetOutputFormat(unsigned int channels, enum PCMChannels *channel
   m_holdCounter = 0;
 }
 
+void CPCMRemap::Remap(void *data, void *out, unsigned int samples, long drc)
+{
+  float gain = 1.0f;
+  if (drc > 0)
+    gain = pow(10.0f, (float)drc / 1000.0f);
+
+  Remap(data, out, samples, gain);
+}
+
 /* remap the supplied data into out, which must be pre-allocated */
 void CPCMRemap::Remap(void *data, void *out, unsigned int samples, float gain /*= 1.0f*/)
 {

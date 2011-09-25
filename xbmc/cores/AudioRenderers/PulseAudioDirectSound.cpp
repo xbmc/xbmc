@@ -522,13 +522,9 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
 
   if (m_remap.CanRemap())
   {
-    float gain = 1.0f;
-    if (m_drc > 0)
-      gain = pow(10.0f, (float)m_drc / 1000.0f);
-
     /* remap the data to the correct channels */
     uint8_t outData[length];
-    m_remap.Remap((void *)data, outData, frames, gain);
+    m_remap.Remap((void *)data, outData, frames, m_drc);
     if (pa_stream_write(m_Stream, outData, length, NULL, 0, PA_SEEK_RELATIVE) < 0)
       CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed\n");
 

@@ -135,6 +135,7 @@ public:
   void Reset();
   enum PCMChannels *SetInputFormat (unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize, unsigned int sampleRate);
   void SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap, bool ignoreLayout = false);
+  void Remap(void *data, void *out, unsigned int samples, long drc);
   void Remap(void *data, void *out, unsigned int samples, float gain = 1.0f);
   bool CanRemap();
   int  InBytesToFrames (int bytes );
