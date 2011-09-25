@@ -19,7 +19,6 @@
  *
  */
 
-#include <limits>
 #include "ServiceDescription.h"
 #include "JSONServiceDescription.h"
 #include "utils/log.h"
@@ -626,7 +625,7 @@ void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bo
       for (unsigned int unionIndex = 0; unionIndex < type.unionTypes.size(); unionIndex++)
       {
         CVariant unionOutput = CVariant(CVariant::VariantTypeObject);
-        printType(type.unionTypes.at(unionIndex), false, false, true, printDescriptions, unionOutput);
+        printType(type.unionTypes.at(unionIndex), false, false, false, printDescriptions, unionOutput);
         output["type"].append(unionOutput);
       }
     }
@@ -1565,16 +1564,10 @@ JSONSchemaType CJSONServiceDescription::parseJSONSchemaType(const CVariant &valu
     // to handle a union type
     for (unsigned int typeIndex = 0; typeIndex < value.size(); typeIndex++)
     {
-      JSONSchemaType type;
       JSONSchemaTypeDefinition definition;
       // If the type is a string try to parse it
       if (value[typeIndex].isString())
-      {
-        type = StringToSchemaValueType(value[typeIndex].asString());
-        definition.type = type;
-        typeDefinitions.push_back(definition);
-        parsedType |= type;
-      }
+        definition.type = StringToSchemaValueType(value[typeIndex].asString());
       else if (value[typeIndex].isObject())
       {
         if (!parseTypeDefinition(value[typeIndex], definition, false))
@@ -1582,12 +1575,16 @@ JSONSchemaType CJSONServiceDescription::parseJSONSchemaType(const CVariant &valu
           CLog::Log(LOGERROR, "JSONRPC: Invalid type schema in union type definition");
           continue;
         }
-
-        typeDefinitions.push_back(definition);
-        parsedType |= definition.type;
       }
       else
+      {
         CLog::Log(LOGWARNING, "JSONRPC: Invalid type in union type definition");
+        continue;
+      }
+
+      definition.optional = false;
+      typeDefinitions.push_back(definition);
+      parsedType |= definition.type;
     }
 
     // If the type has not been set yet set it to "any"

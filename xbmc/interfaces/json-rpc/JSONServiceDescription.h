@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include <limits>
 #include "JSONUtils.h"
 
 namespace JSONRPC
@@ -39,7 +40,11 @@ namespace JSONRPC
   typedef struct JSONSchemaTypeDefinition
   {
     JSONSchemaTypeDefinition()
-      : type(AnyValue), minLength(-1), maxLength(-1)
+      : type(AnyValue), minLength(-1), maxLength(-1),
+        divisibleBy(0), exclusiveMinimum(false), exclusiveMaximum(false),
+        minimum(std::numeric_limits<double>::min()), maximum(std::numeric_limits<double>::max()),
+        minItems(0), maxItems(0), uniqueItems(false),
+        hasAdditionalProperties(false), additionalProperties(NULL)
     { }
 
     /*!
@@ -143,12 +148,12 @@ namespace JSONRPC
     /*!
      \brief Minimum amount of items in the array
      */
-    unsigned minItems;
+    unsigned int minItems;
 
     /*!
      \brief Maximum amount of items in the array
      */
-    unsigned maxItems;
+    unsigned int maxItems;
 
     /*!
      \brief Whether every value in the array
