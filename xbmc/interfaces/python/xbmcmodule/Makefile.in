@@ -30,6 +30,7 @@ SRCS=action.cpp \
      window.cpp \
      winxml.cpp \
      winxmldialog.cpp \
+     pyrendercapture.cpp \
      xbmcaddonmodule.cpp \
      xbmcguimodule.cpp \
      xbmcmodule.cpp \
