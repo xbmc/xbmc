@@ -26,7 +26,6 @@
 #include "utils/URIUtils.h"
 #include "Application.h"
 #include "video/VideoInfoDownloader.h"
-#include "addons/Scraper.h"
 
 using namespace JSONRPC;
 
