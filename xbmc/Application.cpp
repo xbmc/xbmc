@@ -1595,11 +1595,13 @@ void CApplication::StopPVRManager()
   CLog::Log(LOGINFO, "stopping PVRManager");
   StopPlaying();
   g_PVRManager.Stop();
+  g_PVRManager.Cleanup();
 }
 
 void CApplication::StopEPGManager(void)
 {
   g_EpgContainer.Stop();
+  g_EpgContainer.Clear();
 }
 
 void CApplication::DimLCDOnPlayback(bool dim)
