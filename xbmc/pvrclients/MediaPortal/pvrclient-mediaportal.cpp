@@ -31,7 +31,6 @@
 #include "utils.h"
 #include "pvrclient-mediaportal.h"
 #include "AutoLock.h"
-//#include <ctime>
 #include "lib/tinyxml/tinyxml.h"
 
 #ifdef TSREADER
@@ -463,7 +462,6 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
 
   starttime = *gmtime( &iStart );
   endtime = *gmtime( &iEnd );
-  //XBMC->Log(LOG_DEBUG, "->RequestEPGForChannel(%i)", channel.iUniqueId);
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
@@ -880,7 +878,7 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 
       tag.strRecordingId = strRecordingId.c_str();
       tag.strTitle       = recording.Title();
-      tag.strDirectory   = recording.Directory(); //used in XBMC as directory structure below "Recordings"
+      tag.strDirectory   = recording.Directory(); // used in XBMC as directory structure below "Recordings"
       tag.strPlotOutline = g_iTVServerXBMCBuild >= 105 ? recording.EpisodeName() : tag.strTitle;
       tag.strPlot        = recording.Description();
       tag.strChannelName = recording.ChannelName();
@@ -891,42 +889,28 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       tag.iGenreType     = 0; //TODO?
       tag.iGenreSubType  = 0; //TODO?
 
+      if (g_bUseRecordingsDir == true)
+      {
+        // Replace path by given path in g_szRecordingsDir
+        if (g_szRecordingsDir.length() > 0)
+        {
+          recording.SetDirectory(g_szRecordingsDir);
+          tag.strStreamURL  = recording.FilePath();
+        }
+        else
+        {
+          tag.strStreamURL  = recording.FilePath();
+        }
+      }
+      else
+      {
+        // Use rtsp url
 #ifdef TSREADER
-      if (g_bUseRecordingsDir == true)
-      { //Replace path by given path in g_szRecordingsDir
-        if (g_szRecordingsDir.length() > 0)
-        {
-          recording.SetDirectory(g_szRecordingsDir);
-          tag.strStreamURL  = recording.FilePath();
-        }
-        else
-        {
-          tag.strStreamURL  = recording.FilePath();
-        }
-      }
-      else
-      { //Use rtsp url
         tag.strStreamURL = "";
-      }
 #else
-      if (g_bUseRecordingsDir == true)
-      {
-        //Replace path by given path in g_szRecordingsDir
-        if (g_szRecordingsDir.length() > 0)
-        {
-          recording.SetDirectory(g_szRecordingsDir);
-          tag.strStreamURL  = recording.FilePath();
-        }
-        else
-        {
-          tag.strStreamURL  = recording.FilePath();
-        }
-      }
-      else
-      {
         tag.strStreamURL    = recording.Stream();
-      }
 #endif
+      }
       PVR->TransferRecordingEntry(handle, &tag);
     }
   }
@@ -1223,12 +1207,6 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
   }
   else
   {
-    if (g_iSleepOnRTSPurl > 0)
-    {
-      XBMC->Log(LOG_DEBUG, "Sleeping %i ms before opening stream: %s", g_iSleepOnRTSPurl, result.c_str());
-      usleep(g_iSleepOnRTSPurl * 1000);
-    }
-
     vector<string> timeshiftfields;
 
     Tokenize(result, timeshiftfields, "|");
@@ -1241,6 +1219,12 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
     XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", timeshiftfields[0].c_str(), timeshiftfields[2].c_str());
     m_iCurrentChannel = channel;
     m_ConnectionString = timeshiftfields[0];
+
+    if (g_iSleepOnRTSPurl > 0)
+    {
+      XBMC->Log(LOG_DEBUG, "Sleeping %i ms before opening stream: %s", g_iSleepOnRTSPurl, timeshiftfields[0].c_str());
+      usleep(g_iSleepOnRTSPurl * 1000);
+    }
 
     // Check the returned stream URL. When the URL is an rtsp stream, we need
     // to close it again after watching to stop the timeshift.

@@ -53,7 +53,6 @@ private:
   CCards* m_cardSettings;     ///< Pointer to the MediaPortal card settings. Will be used to determine the base path of the recordings
 
 public:
-  //cRecording(const PVR_RECORDING *Recording);
   cRecording();
   virtual ~cRecording();
 

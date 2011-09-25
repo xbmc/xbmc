@@ -19,7 +19,7 @@
 
 #include "CriticalSection.h"
 
-class  CAutoLock  
+class CAutoLock
 {
   public:
     CAutoLock(CCriticalSection* pCritSec);

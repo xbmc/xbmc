@@ -72,7 +72,8 @@ public:
   time_t EndTime(void) const { return m_EndTime; }
   time_t Duration(void) const { return m_Duration; }
   time_t OriginalAirDate(void) const { return m_originalAirDate; }
-  const char *Title(void) const { return m_title.c_str(); }  const char *ShortText(void) const { return m_shortText.c_str(); }
+  const char *Title(void) const { return m_title.c_str(); }
+  const char *ShortText(void) const { return m_shortText.c_str(); }
   const char *Description(void) const { return m_description.c_str(); }
   const char *Genre(void) const { return m_genre.c_str(); }
   int GenreType(void) const { return m_genre_type; }

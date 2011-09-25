@@ -24,81 +24,8 @@
 using namespace std;
 
 #include "epg.h"
-#include "xbmc_pvr_types.h"
 #include "utils.h"
 #include "client.h"
-
-// For the main EPG event types, see xbmc_pvr_types.h
-// Subtypes below are derived from English strings.xml and CEpg::ConvertGenreIdToString()
-// TODO: Finish me... This list is not yet complete
-// EPG_EVENT_CONTENTMASK_MOVIEDRAMA                  0x10
-// Subtypes MOVIE/DRAMA
-#define DETECTIVE_THRILLER                           0x01
-#define ADVENTURE_WESTERN_WAR                        0x02
-#define SF_FANTASY_HORROR                            0x03
-#define COMEDY                                       0x04
-#define SOAP_MELODRAMA_FOLKLORIC                     0x05
-#define ROMANCE                                      0x06
-#define SERIOUS_CLASSICAL_RELIGIOUS_HISTORICAL_DRAMA 0x07
-#define ADULTMOVIE_DRAMA                             0x08
-
-// EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS          0x20
-// subtypes:
-#define NEWS_WEATHER_REPORT                          0x01
-#define NEWS_MAGAZINE                                0x02
-#define DOCUMENTARY                                  0x03
-#define DISCUSSION_INTERVIEW_DEBATE                  0x04
-
-// EPG_EVENT_CONTENTMASK_SHOW                        0x30
-// subtypes:
-#define GAMESHOW_QUIZ_CONTEST                        0x01
-#define VARIETY_SHOW                                 0x02
-#define TALK_SHOW                                    0x03
-
-// EPG_EVENT_CONTENTMASK_SPORTS                      0x40
-
-// EPG_EVENT_CONTENTMASK_CHILDRENYOUTH               0x50
-// subtypes
-#define PRESCHOOL_CHILD_PROGRAM                      0x01
-#define ENTERTAINMENT_6TO14                          0x02
-#define ENTERTAINMENT_10TO16                         0x03
-#define INFO_EDUC_SCHOOL_PROGRAM                     0x04
-#define CARTOONS_PUPPETS                             0x05
-
-// EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE            0x60
-// EPG_EVENT_CONTENTMASK_ARTSCULTURE                 0x70
-// subtypes
-#define PERFORMING_ARTS                              0x01
-#define FINE_ARTS                                    0x02
-#define RELIGION                                     0x03
-#define POP_CULTURE_TRAD_ARTS                        0x04
-#define LITERATURE                                   0x05
-#define FILM_CINEMA                                  0x06
-#define EXP_FILM_VIDEO                               0x07
-#define BROADCASTING_PRESS                           0x08
-#define NEW_MEDIA                                    0x09
-#define ARTS_CULTURE_MAGAZINES                       0x10
-#define FASHION                                      0x11
-
-// EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS    0x80
-// subtype
-#define MAGAZINES_REPORTS_DOCUMENTARY                0x01
-#define ECONOMICS_SOCIAL_ADVISORY                    0x02
-#define REMARKABLE_PEOPLE                            0x03
-
-// EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE          0x90
-// subtypes
-#define NATURE_ANIMALS_ENVIRONMENT                   0x01
-#define TECHNOLOGY_NATURAL_SCIENCES                  0x02
-#define MEDICINE_PHYSIOLOGY_PSYCHOLOGY               0x03
-#define FOREIGN_COUNTRIES_EXPEDITIONS                0x04
-#define SOCIAL_SPIRITUAL_SCIENCES                    0x05
-#define FURTHER_EDUCATION                            0x06
-#define LANGUAGES                                    0x07
-
-// EPG_EVENT_CONTENTMASK_LEISUREHOBBIES              0xA0
-// EPG_EVENT_CONTENTMASK_SPECIAL                     0xB0
-// EPG_EVENT_CONTENTMASK_USERDEFINED                 0xF0
 
 cEpg::cEpg()
 {
@@ -220,11 +147,11 @@ void cEpg::SetGenreMap(GenreMap* genremap)
 
 void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
 {
-  //TODO: The xmltv plugin from the MediaPortal TV Server can return genre
-  //      strings in local language (depending on the external TV guide source).
-  //      The only way to solve this at the XMBC side is to transfer the
-  //      genre string to XBMC or to let this plugin (or the TVServerXBMC
-  //      plugin) translate it into XBMC compatible (numbered) genre types
+  // The xmltv plugin from the MediaPortal TV Server can return genre
+  // strings in local language (depending on the external TV guide source).
+  // The only way to solve this at the XMBC side is to transfer the
+  // genre string to XBMC or to let this plugin (or the TVServerXBMC
+  // plugin) translate it into XBMC compatible (numbered) genre types
   m_genre = Genre;
   m_genre_subtype = 0;
 
@@ -240,52 +167,9 @@ void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
       m_genre_type = it->second.type;
       m_genre_subtype = it->second.subtype;
     }
-    //if(m_genre.compare("news/current affairs (general)") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS;
-    //} else if (m_genre.compare("magazines/reports/documentary") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS;
-    //  m_genre_subtype = MAGAZINES_REPORTS_DOCUMENTARY;
-    //} else if (m_genre.compare("sports (general)") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_SPORTS;
-    //} else if (m_genre.compare("arts/culture (without music, general)") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_ARTSCULTURE;
-    //} else if (m_genre.compare("childrens's/youth program (general)") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_CHILDRENYOUTH;
-    //} else if (m_genre.compare("show/game show (general)") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_SHOW;
-    //} else if (m_genre.compare("detective/thriller") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-    //  m_genre_subtype = DETECTIVE_THRILLER;
-    //} else if (m_genre.compare("religion") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_ARTSCULTURE;
-    //  m_genre_subtype = RELIGION;
-    //} else if (m_genre.compare("documentary") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS;
-    //  m_genre_subtype = DOCUMENTARY;
-    //} else if (m_genre.compare("education/science/factual topics (general)") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE;
-    //} else if (m_genre.compare("comedy") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-    //  m_genre_subtype = COMEDY;
-    //} else if (m_genre.compare("soap/melodram/folkloric") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-    //  m_genre_subtype = SOAP_MELODRAMA_FOLKLORIC;
-    //} else if (m_genre.compare("cartoon/puppets") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_CHILDRENYOUTH;
-    //  m_genre_subtype = CARTOONS_PUPPETS;
-    //} else if (m_genre.compare("movie/drama (general)") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-    //} else if (m_genre.compare("nature/animals/environment") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE;
-    //  m_genre_subtype = NATURE_ANIMALS_ENVIRONMENT;
-    //} else if (m_genre.compare("adult movie/drama") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_MOVIEDRAMA;
-    //  m_genre_subtype = ADULTMOVIE_DRAMA;
-    //} else if (m_genre.compare("music/ballet/dance (general)") == 0) {
-    //  m_genre_type = EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE;
     else
     {
-      XBMC->Log(LOG_DEBUG, "No mapping of '%s' to type/subtype found.", Genre.c_str());
+      XBMC->Log(LOG_DEBUG, "EPG: No mapping of '%s' to genre type/subtype found.", Genre.c_str());
       m_genre_type     = EPG_GENRE_USE_STRING;
       m_genre_subtype  = 0;
     }
