@@ -43,7 +43,7 @@
 
 #ifdef _WIN32
 #pragma comment(lib, "libiconv.lib")
-#pragma comment(lib, "freetype244MT.lib")
+#pragma comment(lib, "freetype246MT.lib")
 #endif
 
 #define ass_atof(STR) (ass_strtod((STR),NULL))
