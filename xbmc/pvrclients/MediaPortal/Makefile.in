@@ -5,7 +5,7 @@
 # how to reach the author.
 #
 
-LIBS   = @abs_top_srcdir@/lib/libTcpSocket/libTcpSocket.a -ldl
+LIBS   = @abs_top_srcdir@/lib/libTcpSocket/libTcpSocket.a lib/tinyxml/tinyxml.a -ldl
 LIBDIR = @abs_top_srcdir@/addons/pvr.team-mediaportal.tvserver
 LIB    = @abs_top_srcdir@/addons/pvr.team-mediaportal.tvserver/XBMC_MPTV.pvr
 
@@ -17,14 +17,19 @@ SRCS   = channels.cpp \
 	timers.cpp \
 	Socket.cpp \
 	uri.cpp \
-	utils.cpp
+	utils.cpp \
+	CriticalSection.cpp \
+	AutoLock.cpp \
+	Cards.cpp
 
 include ../Makefile.include
 
 clean:
 	-rm -f $(OBJS) $(LIB) *.P *~
+	$(MAKE) -C lib/tinyxml clean
 	$(MAKE) -C @abs_top_srcdir@/lib/libTcpSocket clean
 
 $(LIB): $(OBJS)
-	${MAKE} -C @abs_top_srcdir@/lib/libTcpSocket
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)
+	$(MAKE) -C @abs_top_srcdir@/lib/libTcpSocket
+	$(MAKE) -C lib/tinyxml
+	$(SILENT_CPP) $(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)

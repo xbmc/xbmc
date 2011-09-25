@@ -1056,24 +1056,15 @@ PVR_ERROR cPVRClientMediaPortal::DeleteTimer(const PVR_TIMER &timer, bool bForce
 
   snprintf(command, 256, "DeleteSchedule:%i\n",timer.iClientIndex);
 
-  if (timer.iClientIndex == -1)
+  XBMC->Log(LOG_DEBUG, "DeleteTimer: About to delete MediaPortal schedule index=%i", timer.iClientIndex);
+  result = SendCommand(command);
+
+  if(result.find("True") ==  string::npos)
   {
-    XBMC->Log(LOG_DEBUG, "DeleteTimer: schedule index = -1", timer.iClientIndex);
+    XBMC->Log(LOG_DEBUG, "DeleteTimer %i [failed]", timer.iClientIndex);
     return PVR_ERROR_NOT_DELETED;
   }
-  else
-  {
-    XBMC->Log(LOG_DEBUG, "DeleteTimer: About to delete MediaPortal schedule index=%i", timer.iClientIndex);
-    result = SendCommand(command);
-
-    if(result.find("True") ==  string::npos)
-    {
-      XBMC->Log(LOG_DEBUG, "DeleteTimer %i [failed]", timer.iClientIndex);
-      return PVR_ERROR_NOT_DELETED;
-    }
-    XBMC->Log(LOG_DEBUG, "DeleteTimer %i [done]", timer.iClientIndex);
-
-  }
+  XBMC->Log(LOG_DEBUG, "DeleteTimer %i [done]", timer.iClientIndex);
 
   // Although XBMC deletes this timer, we still have to trigger XBMC to update its timer list to
   // remove the timer from the XBMC list
