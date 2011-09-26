@@ -62,5 +62,5 @@ fi
 # tweaks for libjpeg-turbo
 if test "${PACKAGE_NAME}" = "libjpeg-turbo" ; then
   export NASM="@use_toolchain@/bin/yasm"
+  export CFLAGS="${CFLAGS} -fexceptions"
 fi
-

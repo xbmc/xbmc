@@ -95,5 +95,5 @@ fi
 # tweaks for libjpeg-turbo
 if test "${PACKAGE_NAME}" = "libjpeg-turbo" ; then
   export CCAS="${AS}"
+  export CFLAGS="${CFLAGS} -fexceptions"
 fi
-
