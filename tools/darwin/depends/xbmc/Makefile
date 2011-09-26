@@ -6,7 +6,8 @@ SOURCE=../../../../
 export PATH:=$(TOOLCHAIN)/bin:$(PREFIX)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(PREFIX) \
   PKG_CONFIG_PATH=$(PREFIX)/lib/pkgconfig \
-  PYTHON=$(PREFIX)/bin/python
+  PYTHON=$(PREFIX)/bin/python \
+  --enable-airtunes
 
 all: configure
 

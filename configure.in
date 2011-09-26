@@ -111,6 +111,8 @@ libnfs_not_found="== Could not find libnfs. NFS support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
 libafpclient_not_found="== Could not find libafpclient. AFP support disabled. =="
 libafpclient_disabled="== AFP support disabled. =="
+libshairport_not_found="== Could not find libshairport. AirTunes support disabled. =="
+libshairport_disabled="== AirTunes support disabled. =="
 samba_disabled="== SAMBA support disabled. =="
 libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
 libplist_disabled="== AirPlay support disabled. =="
@@ -296,6 +298,12 @@ AC_ARG_ENABLE([airplay],
   [enable AirPlay support(default is auto)])],
   [use_airplay=$enableval],
   [use_airplay=auto])
+
+AC_ARG_ENABLE([airtunes],
+  [AS_HELP_STRING([--enable-airtunes],
+  [enable AirTunes support(default is no)])],
+  [use_airtunes=$enableval],
+  [use_airtunes=no])
 
 AC_ARG_ENABLE([ffmpeg_libvorbis],
   [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
@@ -1028,6 +1036,23 @@ if test "$use_airplay" != "no"; then
   fi
 fi
 
+# libshairport for AirTunes
+USE_AIRTUNES=0
+if test "x$use_airtunes" != "xno"; then
+  AC_CHECK_LIB([shairport], [shairport_set_ao],,
+   [if test "x$use_airtunes" = "xyes"; then
+      AC_MSG_ERROR($libshairport_not_found)
+    elif test "x$use_airtunes" != "xno"; then
+      AC_MSG_NOTICE($libshairport_not_found)
+      use_airtunes="no"
+    fi
+   ])
+
+  if test "x$use_airtunes" != "xno"; then
+    XB_FIND_SONAME([SHAIRPORT], [shairport], [use_airtunes])
+    USE_AIRTUNES=1
+  fi
+fi
 
 ### External libraries checks
 # External FFmpeg
@@ -1631,6 +1656,12 @@ else
   final_message="$final_message\n  AirPLay support:\tNo"
 fi
 
+if test "x$use_airtunes" != "xno"; then
+  final_message="$final_message\n  AirTunes support:\tYes"  
+else
+  final_message="$final_message\n  AirTunes support:\tNo"
+fi
+
 if test "$use_optical_drive" = "yes"; then
   final_message="$final_message\n  Optical drive:\tYes"
 else
@@ -1752,6 +1783,7 @@ AC_SUBST(USE_ALSA)
 AC_SUBST(USE_TEXTUREPACKER)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE_ROOT)
+AC_SUBST(USE_AIRTUNES)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
