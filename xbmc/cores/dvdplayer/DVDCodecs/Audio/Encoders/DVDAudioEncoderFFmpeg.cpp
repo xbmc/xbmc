@@ -124,7 +124,7 @@ bool CDVDAudioEncoderFFmpeg::Initialize(unsigned int channels, enum PCMChannels 
   if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_CENTER      ) m_ChannelMap[index++] = PCM_TOP_BACK_CENTER      ;
   if (m_CodecCtx->channel_layout & AV_CH_TOP_BACK_RIGHT       ) m_ChannelMap[index++] = PCM_TOP_BACK_RIGHT       ;
 
-  m_Remap.SetInputFormat (channels, channelMap, bitsPerSample / 8);
+  m_Remap.SetInputFormat (channels, channelMap, bitsPerSample / 8, sampleRate);
   m_Remap.SetOutputFormat(index, m_ChannelMap, true);
 
   if (!m_Remap.CanRemap())

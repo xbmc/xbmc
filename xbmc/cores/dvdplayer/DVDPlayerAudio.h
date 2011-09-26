@@ -114,6 +114,7 @@ public:
 
   void SetVolume(long nVolume)                          { m_dvdAudio.SetVolume(nVolume); }
   void SetDynamicRangeCompression(long drc)             { m_dvdAudio.SetDynamicRangeCompression(drc); }
+  float GetCurrentAttenuation()                         { return m_dvdAudio.GetCurrentAttenuation(); }
 
   std::string GetPlayerInfo();
   int GetAudioBitrate();

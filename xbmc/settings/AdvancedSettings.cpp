@@ -50,6 +50,10 @@ void CAdvancedSettings::Initialize()
   m_audioApplyDrc = true;
   m_dvdplayerIgnoreDTSinWAV = false;
 
+  //default hold time of 25 ms, this allows a 20 hertz sine to pass undistorted
+  m_limiterHold = 0.025f;
+  m_limiterRelease = 0.1f;
+
   m_karaokeSyncDelayCDG = 0.0f;
   m_karaokeSyncDelayLRC = 0.0f;
   m_karaokeChangeGenreForKaraokeSongs = false;
@@ -365,6 +369,9 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pElement, "audiohost", m_audioHost);
     XMLUtils::GetBoolean(pElement, "applydrc", m_audioApplyDrc);
     XMLUtils::GetBoolean(pElement, "dvdplayerignoredtsinwav", m_dvdplayerIgnoreDTSinWAV);
+
+    XMLUtils::GetFloat(pElement, "limiterhold", m_limiterHold, 0.0f, 100.0f);
+    XMLUtils::GetFloat(pElement, "limiterrelease", m_limiterRelease, 0.001f, 100.0f);
   }
 
   pElement = pRootElement->FirstChildElement("karaoke");
