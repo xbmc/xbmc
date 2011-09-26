@@ -749,42 +749,34 @@ void CMPCOutputThread::CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer)
   // driver cannot do the restore and zeros the pixel. This is wrong for
   // yuv color space, uv values should be set to 128 otherwise we get a
   // bright green pixel in upper left.
-  // We fix this by checking if the 1st pixel uv values are zero and if yes,
-  // replicating the uv values from the 2nd pixel to the 1st.
+  // We fix this by replicating the 2nd pixel to the 1st.
   switch(pBuffer->m_format)
   {
     default:
     case DVDVideoPicture::FMT_YUV420P:
     {
+      uint8_t *d_y = pBuffer->m_y_buffer_ptr;
       uint8_t *d_u = pBuffer->m_u_buffer_ptr;
       uint8_t *d_v = pBuffer->m_v_buffer_ptr;
-      if (d_u[0] == 0 && d_v[0] == 0)
-      {
-        d_u[0] = d_u[1];
-        d_v[0] = d_v[1];
-      }
+      d_y[0] = d_y[1];
+      d_u[0] = d_u[1];
+      d_v[0] = d_v[1];
     }
     break;
 
     case DVDVideoPicture::FMT_NV12:
     {
-      uint8_t *d_uv = pBuffer->m_uv_buffer_ptr;
-      if (d_uv[0] == 0 && d_uv[1] == 0)
-      {
-        d_uv[0] = d_uv[2];
-        d_uv[1] = d_uv[3];
-      }
+      uint8_t  *d_y  = pBuffer->m_y_buffer_ptr;
+      uint16_t *d_uv = (uint16_t*)pBuffer->m_uv_buffer_ptr;
+      d_y[0] = d_y[1];
+      d_uv[0] = d_uv[1];
     }
     break;
 
     case DVDVideoPicture::FMT_YUY2:
     {
-      uint8_t *d_yuyv = pBuffer->m_y_buffer_ptr;
-      if (d_yuyv[1] == 0 && d_yuyv[3] == 0)
-      {
-        d_yuyv[1] = d_yuyv[5];
-        d_yuyv[3] = d_yuyv[7];
-      }
+      uint32_t *d_yuyv = (uint32_t*)pBuffer->m_y_buffer_ptr;
+      d_yuyv[0] = d_yuyv[1];
     }
     break;
   }
