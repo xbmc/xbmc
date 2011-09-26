@@ -40,9 +40,9 @@ namespace JSONRPC
   typedef struct JSONSchemaTypeDefinition
   {
     JSONSchemaTypeDefinition()
-      : type(AnyValue), minLength(-1), maxLength(-1),
-        divisibleBy(0), exclusiveMinimum(false), exclusiveMaximum(false),
-        minimum(std::numeric_limits<double>::min()), maximum(std::numeric_limits<double>::max()),
+      : type(AnyValue), minimum(std::numeric_limits<double>::min()), maximum(std::numeric_limits<double>::max()),
+        exclusiveMinimum(false), exclusiveMaximum(false), divisibleBy(0),
+        minLength(-1), maxLength(-1),
         minItems(0), maxItems(0), uniqueItems(false),
         hasAdditionalProperties(false), additionalProperties(NULL)
     { }
