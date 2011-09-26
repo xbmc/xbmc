@@ -83,6 +83,7 @@ public:
   void StartSlideShow(bool screensaver=false);
   bool InSlideShow() const;
   virtual bool OnMessage(CGUIMessage& message);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);  
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
@@ -134,4 +135,5 @@ private:
   RESOLUTION m_Resolution;
   CCriticalSection m_slideSection;
   CStdString m_strExtensions;
+  CPoint m_firstGesturePoint;
 };
