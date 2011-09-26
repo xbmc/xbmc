@@ -1028,8 +1028,8 @@ bool CCoreAudioRenderer::InitializePCM(UInt32 channels, UInt32 samplesPerSecond,
       
       // Configure compander parameters
       // TODO: Uncomment when limiter params are pushed for other platforms
-//      m_AUCompressor.SetAttackTime(g_advancedSettings.m_limiterHold);
-//      m_AUCompressor.SetReleaseTime(g_advancedSettings.m_limiterRelease);
+      m_AUCompressor.SetAttackTime(g_advancedSettings.m_limiterHold);
+      m_AUCompressor.SetReleaseTime(g_advancedSettings.m_limiterRelease);
       
       // Copy format for the Output AU
       outputFormat = fmt;
