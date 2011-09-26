@@ -139,7 +139,7 @@ namespace PYXBMC
 		  "height   : Height capture image should should be rendered to\n"
 		  "flags    : Optional. Flags that control the capture processing.\n"
 		  "\n"
-		  "The value for 'flags' could be or'ed from the following constants:"
+		  "The value for 'flags' could be or'ed from the following constants:\n"
 		  "xbmc.CAPTURE_FLAG_CONTINUOUS    : after a capture is done, issue a new capture request immediately\n"
 		  "xbmc.CAPTURE_FLAG_IMMEDIATELY   : read out immediately when capture() is called, this can cause a busy wait\n");
 
