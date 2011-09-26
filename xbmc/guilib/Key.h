@@ -287,7 +287,7 @@
 
 #define ACTION_GESTURE_NOTIFY         221
 #define ACTION_GESTURE_BEGIN          222
-#define ACTION_GESTURE_ZOOM           223
+#define ACTION_GESTURE_ZOOM           223 //sendaction with point and currentPinchScale (fingers together < 1.0 -> fingers apart > 1.0)
 #define ACTION_GESTURE_ROTATE         224
 #define ACTION_GESTURE_PAN            225
 #define ACTION_GESTURE_END            226

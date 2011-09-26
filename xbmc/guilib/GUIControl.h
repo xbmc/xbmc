@@ -61,6 +61,8 @@ enum EVENT_RESULT { EVENT_RESULT_UNHANDLED = 0,
                     EVENT_RESULT_HANDLED,
                     EVENT_RESULT_PAN_HORIZONTAL,
                     EVENT_RESULT_PAN_VERTICAL,
+                    EVENT_RESULT_PAN_VERTICAL_WITHOUT_INERTIA,
+                    EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA,                    
                     EVENT_RESULT_ROTATE,
                     EVENT_RESULT_ZOOM };
 
