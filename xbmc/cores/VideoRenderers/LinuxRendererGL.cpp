@@ -3046,6 +3046,23 @@ bool CLinuxRendererGL::Supports(ESCALINGMETHOD method)
   return false;
 }
 
+EINTERLACEMETHOD CLinuxRendererGL::AutoInterlaceMethod()
+{
+  if(m_renderMethod & RENDER_VDPAU)
+  {
+#ifdef HAVE_LIBVDPAU
+    CVDPAU *vdpau = m_buffers[m_iYV12RenderBuffer].vdpau;
+    if(vdpau)
+      return vdpau->AutoInterlaceMethod();
+#endif
+    return VS_INTERLACEMETHOD_NONE;
+  }
+
+  if(m_renderMethod & RENDER_VAAPI)
+    return VS_INTERLACEMETHOD_NONE;
+
+  return VS_INTERLACEMETHOD_RENDER_BOB;
+}
 
 void CLinuxRendererGL::BindPbo(YUVBUFFER& buff)
 {

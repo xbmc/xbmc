@@ -115,7 +115,7 @@ public:
   pictureAge picAge;
   bool       recover;
   vdpau_render_state *past[2], *current, *future;
-  int        tmpDeintMode, tmpDeint;
+  int        tmpDeintMode, tmpDeintGUI, tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
   int        OutWidth, OutHeight;
@@ -216,6 +216,7 @@ public:
 
   bool Supports(VdpVideoMixerFeature feature);
   bool Supports(EINTERLACEMETHOD method);
+  EINTERLACEMETHOD AutoInterlaceMethod();
 
   VdpVideoMixerFeature m_features[10];
   int                  m_feature_count;

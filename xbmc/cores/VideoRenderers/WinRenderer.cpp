@@ -1068,8 +1068,7 @@ bool CWinRenderer::Supports(EINTERLACEMETHOD method)
 
   if (m_renderMethod == RENDER_DXVA)
   {
-    if(method == VS_INTERLACEMETHOD_DXVA_ANY
-    || method == VS_INTERLACEMETHOD_DXVA_BOB
+    if(method == VS_INTERLACEMETHOD_DXVA_BOB
     || method == VS_INTERLACEMETHOD_DXVA_BEST)
       return true;
   }
@@ -1131,6 +1130,14 @@ bool CWinRenderer::Supports(ESCALINGMETHOD method)
       return true;
   }
   return false;
+}
+
+EINTERLACEMETHOD CWinRenderer::AutoInterlaceMethod()
+{
+  if (m_renderMethod == RENDER_DXVA)
+    return VS_INTERLACEMETHOD_DXVA_BOB;
+  else
+    return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
 }
 
 //============================================
