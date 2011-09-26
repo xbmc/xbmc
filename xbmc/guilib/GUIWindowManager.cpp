@@ -507,8 +507,11 @@ void CGUIWindowManager::Process(unsigned int currentTime)
       pWindow->DoProcess(currentTime, dirtyregions);
   }
 
-  for (CDirtyRegionList::iterator itr = dirtyregions.begin(); itr != dirtyregions.end(); itr++)
-    m_tracker.MarkDirtyRegion(*itr);
+  if (g_application.m_AppActive)
+  {
+    for (CDirtyRegionList::iterator itr = dirtyregions.begin(); itr != dirtyregions.end(); itr++)
+      m_tracker.MarkDirtyRegion(*itr);
+  }
 }
 
 void CGUIWindowManager::MarkDirty()
