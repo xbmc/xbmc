@@ -1624,6 +1624,7 @@ if test "x$use_libafpclient" != "xno"; then
   final_message="$final_message\n  libafpclient support:\tYes"
 else  
   final_message="$final_message\n  libafpclient support:\tNo"
+fi
 
 if test "$use_airplay" != "no"; then
   final_message="$final_message\n  AirPlay support:\tYes"
