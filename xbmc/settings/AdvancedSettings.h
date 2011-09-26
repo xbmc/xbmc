@@ -82,6 +82,8 @@ class CAdvancedSettings
     CStdString m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
     bool m_dvdplayerIgnoreDTSinWAV;
+    float m_limiterHold;
+    float m_limiterRelease;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
