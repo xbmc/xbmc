@@ -25,7 +25,7 @@ LIBSHAIRPORT_CONFIGOPTS ?= --prefix=$(PREFIX)
 CONFIGURE=./configure $(LIBSHAIRPORT_CONFIGOPTS)
 
 
-SO_NAME=$(SOURCE)/.libs/$(LIBNAME).dylib
+SO_NAME=$(SOURCE)/.libs/$(LIBNAME).so
 
 all: $(SO_NAME)
 
