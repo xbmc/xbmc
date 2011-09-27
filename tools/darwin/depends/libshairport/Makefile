@@ -1,5 +1,5 @@
 include ../Makefile.include
-#include ../config.site.mk
+include ../config.site.mk
 
 # lib name, version
 LIBNAME=libshairport
