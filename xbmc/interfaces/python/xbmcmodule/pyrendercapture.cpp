@@ -19,12 +19,8 @@
  *
  */
 
-#include "system.h"
 #include "pyutil.h"
 #include "pythreadstate.h"
-
-#ifdef HAS_VIDEO_PLAYBACK
-
 #include "pyrendercapture.h"
 #include "cores/VideoRenderers/RenderManager.h"
 
@@ -229,4 +225,3 @@ namespace PYXBMC
 }
 #endif
 
-#endif
