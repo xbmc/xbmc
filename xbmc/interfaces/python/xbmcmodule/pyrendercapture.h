@@ -19,11 +19,11 @@
  *
  */
 
+#pragma once
+
 #include <Python.h>
 
 #include "cores/VideoRenderers/RenderCapture.h"
-
-#pragma once
 
 #ifdef __cplusplus
 extern "C" {

@@ -27,7 +27,6 @@
 #include "pyrendercapture.h"
 #include "cores/VideoRenderers/RenderManager.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -37,10 +36,12 @@ namespace PYXBMC
   PyObject* RenderCapture_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
   {
     RenderCapture *self = (RenderCapture*)type->tp_alloc(type, 0);
-    if (!self) return NULL;
+    if (!self)
+      return NULL;
 
     self->capture = g_renderManager.AllocRenderCapture();
-    if (!self->capture) {
+    if (!self->capture)
+    {
         self->ob_type->tp_free((PyObject*)self);
         return PyErr_NoMemory();
     }
@@ -50,7 +51,7 @@ namespace PYXBMC
 
   void RenderCapture_Dealloc(RenderCapture* self)
   {
-	g_renderManager.ReleaseRenderCapture(self->capture);
+    g_renderManager.ReleaseRenderCapture(self->capture);
     self->ob_type->tp_free((PyObject*)self);
   }
 
@@ -75,12 +76,12 @@ namespace PYXBMC
   // RenderCapture_GetCaptureState
   PyDoc_STRVAR(getCaptureState__doc__,
     "getCaptureState() -- returns processing state of capture request.\n"
-		  "\n"
-		  "The returned value could be compared against the following constants:\n"
-		  "xbmc.CAPTURE_STATE_DONE     : Capture request done. The image could be retrieved with getImage()\n"
-		  "xbmc.CAPTURE_STATE_FAILED   : Capture request failed.\n"
-		  "\n"
-		  "Any other value returned means capture request is in progress.\n");
+    "\n"
+    "The returned value could be compared against the following constants:\n"
+    "xbmc.CAPTURE_STATE_DONE     : Capture request done. The image could be retrieved with getImage()\n"
+    "xbmc.CAPTURE_STATE_FAILED   : Capture request failed.\n"
+    "\n"
+    "Any other value returned means capture request is in progress.\n");
 
   PyObject* RenderCapture_GetCaptureState(RenderCapture *self, PyObject *args)
   {
@@ -117,74 +118,76 @@ namespace PYXBMC
   // RenderCapture_GetImage
   PyDoc_STRVAR(getImage__doc__,
     "getImage() -- returns captured image as a bytearray.\n"
-		  "\n"
-		  "The size of the image is getWidth() * getHeight() * 4\n");
+    "\n"
+    "The size of the image is getWidth() * getHeight() * 4\n");
 
   PyObject* RenderCapture_GetImage(RenderCapture *self, PyObject *args)
   {
-	  if (self->capture->GetUserState() != CAPTURESTATE_DONE) {
-		  PyErr_SetString(PyExc_SystemError, "illegal user state");
-		  return NULL;
-	  }
+    if (self->capture->GetUserState() != CAPTURESTATE_DONE)
+    {
+      PyErr_SetString(PyExc_SystemError, "illegal user state");
+      return NULL;
+    }
 
-	  Py_ssize_t size = self->capture->GetWidth() * self->capture->GetHeight() * 4;
-	  return PyByteArray_FromStringAndSize((const char *)self->capture->GetPixels(), size);
+    Py_ssize_t size = self->capture->GetWidth() * self->capture->GetHeight() * 4;
+    return PyByteArray_FromStringAndSize((const char *)self->capture->GetPixels(), size);
   }
 
   // RenderCapture_Capture
   PyDoc_STRVAR(capture__doc__,
     "capture(width, height [, flags]) -- issue capture request.\n"
-		  "\n"
-		  "width    : Width capture image should be rendered to\n"
-		  "height   : Height capture image should should be rendered to\n"
-		  "flags    : Optional. Flags that control the capture processing.\n"
-		  "\n"
-		  "The value for 'flags' could be or'ed from the following constants:\n"
-		  "xbmc.CAPTURE_FLAG_CONTINUOUS    : after a capture is done, issue a new capture request immediately\n"
-		  "xbmc.CAPTURE_FLAG_IMMEDIATELY   : read out immediately when capture() is called, this can cause a busy wait\n");
+    "\n"
+    "width    : Width capture image should be rendered to\n"
+    "height   : Height capture image should should be rendered to\n"
+    "flags    : Optional. Flags that control the capture processing.\n"
+    "\n"
+    "The value for 'flags' could be or'ed from the following constants:\n"
+    "xbmc.CAPTURE_FLAG_CONTINUOUS    : after a capture is done, issue a new capture request immediately\n"
+    "xbmc.CAPTURE_FLAG_IMMEDIATELY   : read out immediately when capture() is called, this can cause a busy wait\n");
 
   PyObject* RenderCapture_Capture(RenderCapture *self, PyObject *args)
   {
-	  if (self->capture->GetUserState() != CAPTURESTATE_DONE && self->capture->GetUserState() != CAPTURESTATE_FAILED) {
-		  PyErr_SetString(PyExc_SystemError, "illegal user state");
-		  return NULL;
-	  }
+    if (self->capture->GetUserState() != CAPTURESTATE_DONE && self->capture->GetUserState() != CAPTURESTATE_FAILED)
+    {
+      PyErr_SetString(PyExc_SystemError, "illegal user state");
+      return NULL;
+    }
 
-	  int width, height, flags = 0;
-	  if (!PyArg_ParseTuple(args, "ii|i", &width, &height, &flags))
-		  return NULL;
+    int width, height, flags = 0;
+    if (!PyArg_ParseTuple(args, "ii|i", &width, &height, &flags))
+      return NULL;
 
-	  Py_BEGIN_ALLOW_THREADS
-	  g_renderManager.Capture(self->capture, (unsigned int)width, (unsigned int)height, flags);
-	  Py_END_ALLOW_THREADS
+    Py_BEGIN_ALLOW_THREADS
+    g_renderManager.Capture(self->capture, (unsigned int)width, (unsigned int)height, flags);
+    Py_END_ALLOW_THREADS
 
-	  Py_INCREF(Py_None);
-	  return Py_None;
+    Py_INCREF(Py_None);
+    return Py_None;
   }
 
   // RenderCapture_WaitForCaptureStateChangeEvent
   PyDoc_STRVAR(waitForCaptureStateChangeEvent__doc__,
     "waitForCaptureStateChangeEvent([msecs]) -- wait for capture state change event.\n"
-		  "\n"
-		  "msecs     : Milliseconds to wait. Waits forever if not specified.\n"
-		  "\n"
-		  "The method will return 1 if the Event was triggered. Otherwise it will return 0.\n");
+    "\n"
+    "msecs     : Milliseconds to wait. Waits forever if not specified.\n"
+    "\n"
+    "The method will return 1 if the Event was triggered. Otherwise it will return 0.\n");
 
   PyObject* RenderCapture_WaitForCaptureStateChangeEvent(RenderCapture *self, PyObject *args)
   {
-	  bool rc;
-	  int msecs = 0;
-	  if (!PyArg_ParseTuple(args, "|i", &msecs))
-		  return NULL;
+    bool rc;
+    int msecs = 0;
+    if (!PyArg_ParseTuple(args, "|i", &msecs))
+      return NULL;
 
-	  Py_BEGIN_ALLOW_THREADS
-	  if (msecs)
-		  rc = self->capture->GetEvent().WaitMSec((unsigned int)msecs);
-	  else
-		  rc = self->capture->GetEvent().Wait();
-	  Py_END_ALLOW_THREADS
+    Py_BEGIN_ALLOW_THREADS
+    if (msecs)
+      rc = self->capture->GetEvent().WaitMSec((unsigned int)msecs);
+    else
+      rc = self->capture->GetEvent().Wait();
+    Py_END_ALLOW_THREADS
 
-	  return Py_BuildValue((char*)"i", (rc ? 1: 0));
+    return Py_BuildValue((char*)"i", (rc ? 1: 0));
   }
 
 
@@ -213,14 +216,14 @@ namespace PYXBMC
   {
     PyXBMCInitializeTypeObject(&RenderCapture_Type);
 
-    RenderCapture_Type.tp_name = (char*)"xbmc.RenderCapture";
+    RenderCapture_Type.tp_name      = (char*)"xbmc.RenderCapture";
     RenderCapture_Type.tp_basicsize = sizeof(RenderCapture);
-    RenderCapture_Type.tp_dealloc = (destructor)RenderCapture_Dealloc;
-    RenderCapture_Type.tp_flags = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
-    RenderCapture_Type.tp_doc = RenderCapture__doc__;
-    RenderCapture_Type.tp_methods = RenderCapture_methods;
-    RenderCapture_Type.tp_base = 0;
-    RenderCapture_Type.tp_new = RenderCapture_New;
+    RenderCapture_Type.tp_dealloc   = (destructor)RenderCapture_Dealloc;
+    RenderCapture_Type.tp_flags     = Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE;
+    RenderCapture_Type.tp_doc       = RenderCapture__doc__;
+    RenderCapture_Type.tp_methods   = RenderCapture_methods;
+    RenderCapture_Type.tp_base      = 0;
+    RenderCapture_Type.tp_new       = RenderCapture_New;
   }
 }
 
