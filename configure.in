@@ -301,9 +301,9 @@ AC_ARG_ENABLE([airplay],
 
 AC_ARG_ENABLE([airtunes],
   [AS_HELP_STRING([--enable-airtunes],
-  [enable AirTunes support(default is no)])],
+  [enable AirTunes support(default is auto)])],
   [use_airtunes=$enableval],
-  [use_airtunes=no])
+  [use_airtunes=auto])
 
 AC_ARG_ENABLE([ffmpeg_libvorbis],
   [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
