@@ -40,6 +40,7 @@
 #include "boost/shared_ptr.hpp"
 #include "utils/AutoPtrHandle.h"
 #include "settings/AdvancedSettings.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 #define ALLOW_ADDING_SURFACES 0
 
@@ -939,8 +940,6 @@ CProcessor::CProcessor()
   m_surfaces = NULL;
   m_context = NULL;
   m_index = 0;
-  m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-  m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
   m_progressive = true;
 }
 
@@ -1153,9 +1152,11 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
 bool CProcessor::SelectProcessor()
 {
   // The CProcessor can be run after dxva or software decoding, possibly after software deinterlacing.
+
+  // Deinterlace mode off: force progressive
+  // Deinterlace mode auto or force, with a dxva deinterlacing method: create an deinterlacing capable processor. The frame flags will tell it to deinterlace or not.
   m_progressive = m_deinterlace_mode == VS_DEINTERLACEMODE_OFF
-                  || (   m_interlace_method != VS_INTERLACEMETHOD_AUTO
-                      && m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB
+                  || (   m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB
                       && m_interlace_method != VS_INTERLACEMETHOD_DXVA_BEST);
 
   if (m_progressive)
@@ -1196,8 +1197,7 @@ bool CProcessor::SelectProcessor()
 
   if (m_progressive)
     m_device = DXVA2_VideoProcProgressiveDevice;
-  else if(m_interlace_method == VS_INTERLACEMETHOD_AUTO
-       || m_interlace_method == VS_INTERLACEMETHOD_DXVA_BEST)
+  else if(m_interlace_method == VS_INTERLACEMETHOD_DXVA_BEST)
     m_device = guid_list[0];
   else
     m_device = DXVA2_VideoProcBobDevice;
@@ -1399,12 +1399,16 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 {
   CSingleLock lock(m_section);
 
-  if(m_interlace_method != g_settings.m_currentVideoSettings.m_InterlaceMethod
+  if(m_interlace_methodGUI != g_settings.m_currentVideoSettings.m_InterlaceMethod
+  || (m_interlace_methodGUI == VS_INTERLACEMETHOD_AUTO && m_interlace_method != g_renderManager.AutoInterlaceMethod())
   || m_deinterlace_mode != g_settings.m_currentVideoSettings.m_DeinterlaceMode
   || !m_process)
   {
     m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-    m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    m_interlace_method = m_interlace_methodGUI = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    if (m_interlace_methodGUI == VS_INTERLACEMETHOD_AUTO)
+      m_interlace_method = g_renderManager.AutoInterlaceMethod();
+
     if (!OpenProcessor())
       return false;
   }

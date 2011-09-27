@@ -144,6 +144,15 @@ public:
       return false;
   }
 
+  EINTERLACEMETHOD AutoInterlaceMethod()
+  {
+    CSharedLock lock(m_sharedSection);
+    if (m_pRenderer)
+      return m_pRenderer->AutoInterlaceMethod();
+    else
+      return VS_INTERLACEMETHOD_NONE;
+  }
+
   double GetPresentTime();
   void  WaitPresentTime(double presenttime);
 

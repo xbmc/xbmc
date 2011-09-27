@@ -152,6 +152,8 @@ public:
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
 
+  virtual EINTERLACEMETHOD AutoInterlaceMethod();
+
 #ifdef HAVE_LIBOPENMAX
   virtual void         AddProcessor(COpenMax* openMax, DVDVideoPicture *picture);
 #endif
