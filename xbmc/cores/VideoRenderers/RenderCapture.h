@@ -96,6 +96,9 @@ enum ECAPTURESTATE
 #define CAPTUREFLAG_CONTINUOUS  0x01 //after a render is done, render a new one immediately
 #define CAPTUREFLAG_IMMEDIATELY 0x02 //read out immediately after render, this can cause a busy wait
 
+#define CAPTUREFORMAT_BGRA 0x01
+#define CAPTUREFORMAT_RGBA 0x02
+
 class CRenderCaptureBase
 {
   public:
@@ -176,6 +179,8 @@ class CRenderCaptureGL : public CRenderCaptureBase
     CRenderCaptureGL();
     ~CRenderCaptureGL();
 
+    int   GetCaptureFormat();
+
     void  BeginRender();
     void  EndRender();
     void  ReadOut();
@@ -203,6 +208,8 @@ class CRenderCaptureDX : public CRenderCaptureBase, public ID3DResource
   public:
     CRenderCaptureDX();
     ~CRenderCaptureDX();
+
+    int  GetCaptureFormat();
 
     void BeginRender();
     void EndRender();

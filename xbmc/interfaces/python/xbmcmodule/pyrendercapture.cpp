@@ -104,16 +104,13 @@ namespace PYXBMC
 
   PyObject* RenderCapture_GetImageFormat(RenderCapture *self, PyObject *args)
   {
-#ifdef HAS_GL
-    return Py_BuildValue((char*)"s", "BGRA");
-#elif HAS_GLES == 2
-    return Py_BuildValue((char*)"s", "RGBA");
-#elif defined(HAS_DX)
-    return Py_BuildValue((char*)"s", "BGRA");
-#else
+    if (self->capture->GetCaptureFormat() == CAPTUREFORMAT_BGRA)
+      return Py_BuildValue((char*)"s", "BGRA");
+    else if (self->capture->GetCaptureFormat() == CAPTUREFORMAT_RGBA)
+      return Py_BuildValue((char*)"s", "RGBA");
+
     Py_INCREF(Py_None);
     return Py_None;
-#endif
   }
 
   // RenderCapture_GetImage
