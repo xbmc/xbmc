@@ -24,13 +24,13 @@ SRCS=action.cpp \
      listitem.cpp \
      player.cpp \
      pyplaylist.cpp \
+     pyrendercapture.cpp \
      PythonAddon.cpp \
      PythonPlayer.cpp \
      pyutil.cpp \
      window.cpp \
      winxml.cpp \
      winxmldialog.cpp \
-     pyrendercapture.cpp \
      xbmcaddonmodule.cpp \
      xbmcguimodule.cpp \
      xbmcmodule.cpp \
