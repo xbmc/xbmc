@@ -19,8 +19,9 @@
  *
  */
 
-#include "pyutil.h"
 #include "system.h"
+#include "pyutil.h"
+#include "pythreadstate.h"
 
 #ifdef HAS_VIDEO_PLAYBACK
 
@@ -157,9 +158,9 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "ii|i", &width, &height, &flags))
       return NULL;
 
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState threadstate;
     g_renderManager.Capture(self->capture, (unsigned int)width, (unsigned int)height, flags);
-    Py_END_ALLOW_THREADS
+    threadstate.Restore();
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -180,12 +181,12 @@ namespace PYXBMC
     if (!PyArg_ParseTuple(args, "|i", &msecs))
       return NULL;
 
-    Py_BEGIN_ALLOW_THREADS
+    CPyThreadState threadstate;
     if (msecs)
       rc = self->capture->GetEvent().WaitMSec((unsigned int)msecs);
     else
       rc = self->capture->GetEvent().Wait();
-    Py_END_ALLOW_THREADS
+    threadstate.Restore();
 
     return Py_BuildValue((char*)"i", (rc ? 1: 0));
   }
