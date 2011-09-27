@@ -5,6 +5,7 @@
 #include "Platform.h"
 #include "StringUtils.h"
 
+#include <algorithm>
 #include <assert.h>
 #include <string.h>
 #include <fstream>
@@ -320,10 +321,12 @@ std::string FileUtils::dirname(const char* path)
 	free(pathCopy);
 	return dirname;
 #else
+	char drive[3];
 	char dir[MAX_PATH];
+
 	_splitpath_s(path,
-	  0, /* drive */ 
-	  0, /* drive length */
+	  drive, /* drive */ 
+	  3, /* drive length */
 	  dir,
 	  MAX_PATH, /* dir length */
 	  0, /* filename */
@@ -331,6 +334,7 @@ std::string FileUtils::dirname(const char* path)
 	  0, /* extension */
 	  0  /* extension length */
 	);
+
 	return std::string(dir);
 #endif
 }
@@ -422,16 +426,17 @@ std::string FileUtils::canonicalPath(const char* path)
 #endif
 }
 
+std::string FileUtils::toWindowsPathSeparators(const std::string& str)
+{
+	std::string result = str;
+	std::replace(result.begin(),result.end(),'/','\\');
+	return result;
+}
+
 std::string FileUtils::toUnixPathSeparators(const std::string& str)
 {
 	std::string result = str;
-	for (size_t i=0; i < result.size(); i++)
-	{
-		if (result[i] == '\\')
-		{
-			result[i] = '/';
-		}
-	}
+	std::replace(result.begin(),result.end(),'\\','/');
 	return result;
 }
 

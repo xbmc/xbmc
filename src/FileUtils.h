@@ -108,6 +108,8 @@ class FileUtils
 		 */
 		static std::string toUnixPathSeparators(const std::string& str);
 
+		static std::string toWindowsPathSeparators(const std::string& str);
+
 		/** Returns true if the provided path is relative.
 		  * Or false if absolute.
 		  */

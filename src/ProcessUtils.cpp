@@ -402,10 +402,20 @@ PLATFORM_PID ProcessUtils::runAsyncUnix(const std::string& executable,
 #endif
 
 #ifdef PLATFORM_WINDOWS
-int ProcessUtils::runWindows(const std::string& executable,
+int ProcessUtils::runWindows(const std::string& _executable,
                              const std::list<std::string>& _args,
                              RunMode runMode)
 {
+	// most Windows API functions allow back and forward slashes to be
+	// used interchangeably.  However, an application started with
+	// CreateProcess() may fail to find Side-by-Side library dependencies
+	// in the same directory as the executable if forward slashes are
+	// used as path separators, so convert the path to use back slashes here.
+	//
+	// This may be related to LoadLibrary() requiring backslashes instead
+	// of forward slashes.
+	std::string executable = FileUtils::toWindowsPathSeparators(_executable);
+
 	std::list<std::string> args(_args);
 	args.push_front(executable);
 	std::string commandLine = quoteArgs(args);

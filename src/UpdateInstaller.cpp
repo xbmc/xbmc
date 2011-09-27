@@ -420,17 +420,7 @@ void UpdateInstaller::restartMainApp()
 		if (!command.empty())
 		{
 			LOG(Info,"Starting main application " + command);
-
-			// change the current directory to that of the application binary,
-			// so that on Windows the application can find shared libraries
-			// that it depends on which are in the same directory
-			std::string appDir = FileUtils::dirname(command.c_str());
-			std::string currentDir = FileUtils::getcwd();
-			FileUtils::chdir(appDir.c_str());
-
 			ProcessUtils::runAsync(command,args);
-
-			FileUtils::chdir(currentDir.c_str());
 		}
 		else
 		{
