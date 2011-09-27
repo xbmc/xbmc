@@ -86,6 +86,17 @@ bool unpackBundle(int argc, char** argv)
 }
 #endif
 
+void setupConsole()
+{
+#ifdef PLATFORM_WINDOWS
+	// see http://stackoverflow.com/questions/587767/how-to-output-to-console-in-c-windows
+	// and http://www.libsdl.org/cgi/docwiki.cgi/FAQ_Console
+	AttachConsole(ATTACH_PARENT_PROCESS);
+	freopen( "CON", "w", stdout );
+	freopen( "CON", "w", stderr );
+#endif
+}
+
 int main(int argc, char** argv)
 {
 #ifdef PLATFORM_MAC
@@ -108,6 +119,7 @@ int main(int argc, char** argv)
 	options.parse(argc,argv);
 	if (options.showVersion)
 	{
+		setupConsole();
 		std::cout << "Update installer version " << UPDATER_VERSION << std::endl;
 		return 0;
 	}
