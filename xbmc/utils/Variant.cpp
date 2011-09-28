@@ -20,6 +20,7 @@
  */
 #include "Variant.h"
 #include <string.h>
+#include <sstream>
 
 using namespace std;
 
