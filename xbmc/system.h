@@ -75,6 +75,10 @@
   #define HAS_AIRPLAY
 #endif
 
+#ifdef HAVE_LIBSHAIRPORT
+  #define HAS_AIRTUNES
+#endif
+
 /**********************
  * Non-free Components
  **********************/

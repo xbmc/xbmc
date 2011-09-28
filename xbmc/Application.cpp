@@ -141,6 +141,9 @@
 #ifdef HAS_AIRPLAY
 #include "network/AirPlayServer.h"
 #endif
+#ifdef HAS_AIRTUNES
+#include "network/AirTunesServer.h"
+#endif
 #if defined(HAVE_LIBCRYSTALHD)
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
@@ -1295,6 +1298,18 @@ void CApplication::StartAirplayServer()
     }
   }
 #endif
+#ifdef HAS_AIRTUNES
+  if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
+  {   
+    CStdString password = g_guiSettings.GetString("services.airplaypassword");
+    bool usePassword = g_guiSettings.GetBool("services.useairplaypassword");
+      
+    if (!CAirTunesServer::StartServer(5000, true, usePassword, password))
+    {
+      CLog::Log(LOGERROR, "Failed to start AirTunes Server");
+    }
+  }
+#endif
 }
 
 void CApplication::StopAirplayServer(bool bWait)
@@ -1302,6 +1317,9 @@ void CApplication::StopAirplayServer(bool bWait)
 #ifdef HAS_AIRPLAY
   CAirPlayServer::StopServer(bWait);
   CZeroconf::GetInstance()->RemoveService("servers.airplay");
+#endif
+#ifdef HAS_AIRTUNES
+  CAirTunesServer::StopServer(bWait);
 #endif
 }
 
