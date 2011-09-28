@@ -490,7 +490,7 @@ int CBuiltins::Execute(const CStdString& execString)
        (params.size() == 2 && params[1].Equals("isdir")))
       item.m_bIsFolder = true;
     else if (item.IsPlugin())
-      item.SetProperty("IsPlayable","true");
+      item.SetProperty("IsPlayable", true);
 
     // restore to previous window if needed
     if( g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||

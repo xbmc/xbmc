@@ -26,6 +26,7 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "utils/Variant.h"
 #include "Util.h"
 #include <fcntl.h>
 #include <sstream>

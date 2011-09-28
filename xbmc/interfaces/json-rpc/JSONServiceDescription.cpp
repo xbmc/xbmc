@@ -1095,7 +1095,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
   // If we have a string, we need to check the length
   if (HasType(type.type, StringValue) && value.isString())
   {
-    int size = strlen(value.asString());
+    int size = value.asString().size();
     if (size < type.minLength)
     {
       CLog::Log(LOGWARNING, "JSONRPC: Value does not meet minLength requirements in type %s", type.name.c_str());

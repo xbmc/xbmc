@@ -154,7 +154,7 @@ JSON_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportLaye
       else if (parameterObject["speed"].isString())
       {
         speed = g_application.GetPlaySpeed();
-        if (stricmp(parameterObject["speed"].asString(), "increment") == 0)
+        if (parameterObject["speed"].asString().compare("increment") == 0)
           CBuiltins::Execute("playercontrol(forward)");
         else
           CBuiltins::Execute("playercontrol(rewind)");

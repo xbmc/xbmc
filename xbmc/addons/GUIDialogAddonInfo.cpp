@@ -93,7 +93,7 @@ bool CGUIDialogAddonInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_ENABLE)
       {
-        OnEnable(!m_item->GetProperty("Addon.Enabled").Equals("true"));
+        OnEnable(!m_item->GetProperty("Addon.Enabled").asBoolean());
         return true;
       }
       else if (iControl == CONTROL_BTN_SETTINGS)
@@ -132,14 +132,14 @@ void CGUIDialogAddonInfo::UpdateControls()
   CStdString xbmcPath = _P("special://xbmc/addons");
   bool isInstalled = NULL != m_localAddon.get();
   bool isSystem = isInstalled && m_localAddon->Path().Left(xbmcPath.size()).Equals(xbmcPath);
-  bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").Equals("true");
-  bool isUpdatable = isInstalled && m_item->GetProperty("Addon.UpdateAvail").Equals("true");
+  bool isEnabled = isInstalled && m_item->GetProperty("Addon.Enabled").asBoolean();
+  bool isUpdatable = isInstalled && m_item->GetProperty("Addon.UpdateAvail").asBoolean();
   if (isInstalled)
     GrabRollbackVersions();
 
   // TODO: System addons should be able to be disabled
   bool canDisable = isInstalled && !isSystem && !m_localAddon->IsInUse();
-  bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").IsEmpty();
+  bool canInstall = !isInstalled && m_item->GetProperty("Addon.Broken").empty();
   bool isRepo = (isInstalled && m_localAddon->Type() == ADDON_REPOSITORY) || (m_addon && m_addon->Type() == ADDON_REPOSITORY);
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_INSTALL, canDisable || canInstall);
@@ -230,12 +230,12 @@ void CGUIDialogAddonInfo::OnChangeLog()
   else if (m_localAddon)
     name = m_localAddon->Name();
   pDlgInfo->SetHeading(g_localizeStrings.Get(24054)+" - "+name);
-  if (m_item->GetProperty("Addon.Changelog").IsEmpty())
+  if (m_item->GetProperty("Addon.Changelog").empty())
   {
     pDlgInfo->SetText(g_localizeStrings.Get(13413));
     CFileItemList items;
     if (m_localAddon && 
-        !m_item->GetProperty("Addon.UpdateAvail").Equals("true"))
+        !m_item->GetProperty("Addon.UpdateAvail").asBoolean())
     {
       items.Add(CFileItemPtr(new CFileItem(m_localAddon->ChangeLog(),false)));
     }
@@ -247,7 +247,7 @@ void CGUIDialogAddonInfo::OnChangeLog()
                             "special://temp/"),this);
   }
   else
-    pDlgInfo->SetText(m_item->GetProperty("Addon.Changelog"));
+    pDlgInfo->SetText(m_item->GetProperty("Addon.Changelog").asString());
 
   m_changelog = true;
   pDlgInfo->DoModal();
@@ -307,7 +307,7 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
   // grab the local addon, if it's available
   m_localAddon.reset();
   m_addon.reset();
-  if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID"), m_localAddon)) // sets m_addon if installed regardless of enabled state
+  if (CAddonMgr::Get().GetAddon(item->GetProperty("Addon.ID").asString(), m_localAddon)) // sets m_addon if installed regardless of enabled state
     m_item->SetProperty("Addon.Enabled", "true");
   else
     m_item->SetProperty("Addon.Enabled", "false");
@@ -315,9 +315,9 @@ bool CGUIDialogAddonInfo::SetItem(const CFileItemPtr& item)
 
   CAddonDatabase database;
   database.Open();
-  database.GetAddon(item->GetProperty("Addon.ID"),m_addon);
+  database.GetAddon(item->GetProperty("Addon.ID").asString(),m_addon);
 
-  if (TranslateType(item->GetProperty("Addon.intType")) == ADDON_REPOSITORY)
+  if (TranslateType(item->GetProperty("Addon.intType").asString()) == ADDON_REPOSITORY)
   {
     CAddonDatabase database;
     database.Open();

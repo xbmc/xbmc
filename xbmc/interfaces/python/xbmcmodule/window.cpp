@@ -956,7 +956,7 @@ namespace PYXBMC
 
     GilSafeSingleLock lock(g_graphicsContext);
     CStdString lowerKey = key;
-    string value = self->pWindow->GetProperty(lowerKey.ToLower());
+    string value = self->pWindow->GetProperty(lowerKey.ToLower()).asString();
 
     return Py_BuildValue((char*)"s", value.c_str());
   }

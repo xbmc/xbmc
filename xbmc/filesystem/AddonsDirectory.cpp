@@ -181,12 +181,12 @@ bool CAddonsDirectory::GetDirectory(const CStdString& strPath, CFileItemList &it
     for (int i=0;i<items.Size();++i)
     {
       AddonPtr addon2;
-      database.GetAddon(items[i]->GetProperty("Addon.ID"),addon2);
-      if (addon2 && addon2->Version() > AddonVersion(items[i]->GetProperty("Addon.Version"))
+      database.GetAddon(items[i]->GetProperty("Addon.ID").asString(),addon2);
+      if (addon2 && addon2->Version() > AddonVersion(items[i]->GetProperty("Addon.Version").asString())
                  && !database.IsAddonBlacklisted(addon2->ID(),addon2->Version().c_str()))
       {
         items[i]->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
-        items[i]->SetProperty("Addon.UpdateAvail","true");
+        items[i]->SetProperty("Addon.UpdateAvail", true);
       }
     }
   }
@@ -219,7 +219,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     if (addon2 && addon2->Version() < addon->Version())
     {
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24068));
-      pItem->SetProperty("Addon.UpdateAvail","true");
+      pItem->SetProperty("Addon.UpdateAvail", true);
     }
     CAddonDatabase::SetPropertiesFromAddon(addon,pItem);
     items.Add(pItem);

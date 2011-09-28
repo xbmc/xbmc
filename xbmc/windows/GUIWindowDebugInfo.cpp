@@ -33,6 +33,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIControlProfiler.h"
 #include "GUIInfoManager.h"
+#include "utils/Variant.h"
 
 CGUIWindowDebugInfo::CGUIWindowDebugInfo(void)
     : CGUIDialog(98, "")
@@ -124,9 +125,9 @@ void CGUIWindowDebugInfo::Process(unsigned int currentTime, CDirtyRegionList &di
     {
       CStdString windowName = CButtonTranslator::TranslateWindow(window->GetID());
       if (!windowName.IsEmpty())
-        windowName += " (" + window->GetProperty("xmlfile") + ")";
+        windowName += " (" + CStdString(window->GetProperty("xmlfile").asString()) + ")";
       else
-        windowName = window->GetProperty("xmlfile");
+        windowName = window->GetProperty("xmlfile").asString();
       info += "Window: " + windowName + "  ";
       // transform the mouse coordinates to this window's coordinates
       g_graphicsContext.SetScalingResolution(window->GetCoordsRes(), true);
