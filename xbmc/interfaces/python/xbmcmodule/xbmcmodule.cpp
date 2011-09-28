@@ -53,9 +53,7 @@
 #include "utils/FileUtils.h"
 #include "pythreadstate.h"
 #include "utils/log.h"
-#ifdef HAS_VIDEO_PLAYBACK
 #include "pyrendercapture.h"
-#endif
 
 // include for constants
 #include "pyutil.h"
@@ -983,9 +981,7 @@ namespace PYXBMC
   InitXBMCTypes(bool bInitTypes)
   {
     initKeyboard_Type();
-#ifdef HAS_VIDEO_PLAYBACK
     initRenderCapture_Type();
-#endif
     initPlayer_Type();
     initPlayList_Type();
     initPlayListItem_Type();
@@ -993,9 +989,7 @@ namespace PYXBMC
     initInfoTagVideo_Type();
 
     if (PyType_Ready(&Keyboard_Type) < 0 ||
-#ifdef HAS_VIDEO_PLAYBACK
         PyType_Ready(&RenderCapture_Type) < 0 ||
-#endif
         PyType_Ready(&Player_Type) < 0 ||
         PyType_Ready(&PlayList_Type) < 0 ||
         PyType_Ready(&PlayListItem_Type) < 0 ||
@@ -1017,9 +1011,7 @@ namespace PYXBMC
     PyObject* pXbmcModule;
 
     Py_INCREF(&Keyboard_Type);
-#ifdef HAS_VIDEO_PLAYBACK
     Py_INCREF(&RenderCapture_Type);
-#endif
     Py_INCREF(&Player_Type);
     Py_INCREF(&PlayList_Type);
     Py_INCREF(&PlayListItem_Type);
@@ -1072,7 +1064,6 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGNONE", LOGNONE);
     PyModule_AddObject(pXbmcModule, (char*)"abortRequested", PyBool_FromLong(0));
 
-#ifdef HAS_VIDEO_PLAYBACK
     PyModule_AddObject(pXbmcModule, (char*)"RenderCapture", (PyObject*)&RenderCapture_Type);
 
     // render capture user states
@@ -1082,7 +1073,6 @@ namespace PYXBMC
     // render capture flags
     PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_FLAG_CONTINUOUS", (int)CAPTUREFLAG_CONTINUOUS);
     PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_FLAG_IMMEDIATELY", (int)CAPTUREFLAG_IMMEDIATELY);
-#endif
   }
 }
 
