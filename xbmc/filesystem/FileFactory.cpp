@@ -68,6 +68,8 @@
 #ifdef HAS_FILESYSTEM_AFP
 #include "FileAFP.h"
 #endif
+#include "PipesManager.h"
+#include "FilePipe.h"
 #include "FileMusicDatabase.h"
 #include "FileSpecialProtocol.h"
 #include "MultiPathFile.h"
@@ -166,6 +168,7 @@ IFile* CFileFactory::CreateLoader(const CURL& url)
 #ifdef HAS_FILESYSTEM_AFP
     else if (strProtocol == "afp") return new CFileAFP();
 #endif
+    else if (strProtocol == "pipe") return new CFilePipe();    
   }
 
   CLog::Log(LOGWARNING, "%s - Unsupported protocol(%s) in %s", __FUNCTION__, strProtocol.c_str(), url.Get().c_str() );

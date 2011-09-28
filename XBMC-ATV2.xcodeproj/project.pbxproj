@@ -32,6 +32,10 @@
 		DF0DF16C13A3AF82008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF16813A3AF82008ED511 /* FileNFS.cpp */; };
 		DF0DF16D13A3AF82008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF16A13A3AF82008ED511 /* NFSDirectory.cpp */; };
 		DF34890913FD96390026A711 /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34890713FD96390026A711 /* GUIAction.cpp */; };
+		DF44852F140064F40069344B /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44852D140064F40069344B /* BXAcodec.cpp */; };
+		DF4485341400651B0069344B /* FilePipe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485301400651B0069344B /* FilePipe.cpp */; };
+		DF4485351400651B0069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485321400651B0069344B /* PipesManager.cpp */; };
+		DF4485381400654A0069344B /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485361400654A0069344B /* AirTunesServer.cpp */; };
 		DFA6BE8713FED2A10048CC11 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE8513FED2A10048CC11 /* AirPlayServer.cpp */; };
 		DFA6BE8A13FED2B40048CC11 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE8813FED2B40048CC11 /* HttpParser.cpp */; };
 		DFAB04C113F8385F00B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB04BF13F8385F00B70BFB /* InertialScrollingHandler.cpp */; };
@@ -981,6 +985,14 @@
 		DF0DF16B13A3AF82008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
 		DF34890713FD96390026A711 /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
 		DF34890813FD96390026A711 /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
+		DF44852D140064F40069344B /* BXAcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BXAcodec.cpp; sourceTree = "<group>"; };
+		DF44852E140064F40069344B /* BXAcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BXAcodec.h; sourceTree = "<group>"; };
+		DF4485301400651B0069344B /* FilePipe.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FilePipe.cpp; sourceTree = "<group>"; };
+		DF4485311400651B0069344B /* FilePipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePipe.h; sourceTree = "<group>"; };
+		DF4485321400651B0069344B /* PipesManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PipesManager.cpp; sourceTree = "<group>"; };
+		DF4485331400651B0069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
+		DF4485361400654A0069344B /* AirTunesServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirTunesServer.cpp; sourceTree = "<group>"; };
+		DF4485371400654A0069344B /* AirTunesServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirTunesServer.h; sourceTree = "<group>"; };
 		DFA6BE8513FED2A10048CC11 /* AirPlayServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayServer.cpp; sourceTree = "<group>"; };
 		DFA6BE8613FED2A10048CC11 /* AirPlayServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirPlayServer.h; sourceTree = "<group>"; };
 		DFA6BE8813FED2B40048CC11 /* HttpParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpParser.cpp; sourceTree = "<group>"; };
@@ -3804,6 +3816,8 @@
 				F56C7309131EC151000AD0F6 /* ADPCMCodec.h */,
 				F56C730C131EC151000AD0F6 /* AudioDecoder.cpp */,
 				F56C730D131EC151000AD0F6 /* AudioDecoder.h */,
+				DF44852D140064F40069344B /* BXAcodec.cpp */,
+				DF44852E140064F40069344B /* BXAcodec.h */,
 				F56C730E131EC151000AD0F6 /* CachingCodec.h */,
 				F56C730F131EC151000AD0F6 /* CDDAcodec.cpp */,
 				F56C7310131EC151000AD0F6 /* CDDAcodec.h */,
@@ -4053,6 +4067,8 @@
 				F56C73D6131EC151000AD0F6 /* FileLastFM.h */,
 				F56C73D7131EC151000AD0F6 /* FileMusicDatabase.cpp */,
 				F56C73D8131EC151000AD0F6 /* FileMusicDatabase.h */,
+				DF4485301400651B0069344B /* FilePipe.cpp */,
+				DF4485311400651B0069344B /* FilePipe.h */,
 				F56C73D9131EC151000AD0F6 /* FileRar.cpp */,
 				F56C73DA131EC151000AD0F6 /* FileRar.h */,
 				F56C73DB131EC151000AD0F6 /* FileRTV.cpp */,
@@ -4106,6 +4122,8 @@
 				F56C7439131EC152000AD0F6 /* NSFFileDirectory.h */,
 				F56C743A131EC152000AD0F6 /* OGGFileDirectory.cpp */,
 				F56C743B131EC152000AD0F6 /* OGGFileDirectory.h */,
+				DF4485321400651B0069344B /* PipesManager.cpp */,
+				DF4485331400651B0069344B /* PipesManager.h */,
 				F56C743C131EC152000AD0F6 /* PlaylistDirectory.cpp */,
 				F56C743D131EC152000AD0F6 /* PlaylistDirectory.h */,
 				F56C743E131EC152000AD0F6 /* PlaylistFileDirectory.cpp */,
@@ -4789,6 +4807,8 @@
 				F56C7653131EC153000AD0F6 /* osx */,
 				DFA6BE8513FED2A10048CC11 /* AirPlayServer.cpp */,
 				DFA6BE8613FED2A10048CC11 /* AirPlayServer.h */,
+				DF4485361400654A0069344B /* AirTunesServer.cpp */,
+				DF4485371400654A0069344B /* AirTunesServer.h */,
 				F56C7658131EC153000AD0F6 /* DNSNameCache.cpp */,
 				F56C7659131EC153000AD0F6 /* DNSNameCache.h */,
 				F56C765A131EC153000AD0F6 /* EventClient.cpp */,
@@ -6786,6 +6806,10 @@
 				DFCFC53D1413F7F70004D0BF /* AFPDirectory.cpp in Sources */,
 				DFCFC53E1413F7F70004D0BF /* FileAFP.cpp in Sources */,
 				32D6D47C1423A9D8003641AC /* JpegIO.cpp in Sources */,
+				DF44852F140064F40069344B /* BXAcodec.cpp in Sources */,
+				DF4485341400651B0069344B /* FilePipe.cpp in Sources */,
+				DF4485351400651B0069344B /* PipesManager.cpp in Sources */,
+				DF4485381400654A0069344B /* AirTunesServer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6864,6 +6888,7 @@
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
+					"\"$(SRCROOT)/lib/shairport\"",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-headerpad_max_install_names",
@@ -6959,6 +6984,7 @@
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
+					"\"$(SRCROOT)/lib/shairport\"",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-headerpad_max_install_names",

@@ -28,6 +28,7 @@ SRCS=AddonsDirectory.cpp \
      FileISO.cpp \
      FileLastFM.cpp \
      FileMusicDatabase.cpp \
+     FilePipe.cpp \
      FileRTV.cpp \
      FileShoutcast.cpp \
      FileSFTP.cpp \
@@ -60,6 +61,7 @@ SRCS=AddonsDirectory.cpp \
      OGGFileDirectory.cpp \
      PlaylistDirectory.cpp \
      PlaylistFileDirectory.cpp \
+     PipesManager.cpp \
      PluginDirectory.cpp \
      RSSDirectory.cpp \
      RTVDirectory.cpp \
