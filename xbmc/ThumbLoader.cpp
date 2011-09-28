@@ -141,7 +141,7 @@ bool CThumbExtractor::DoWork()
     result = CDVDFileInfo::ExtractThumb(m_path, m_target, &m_item.GetVideoInfoTag()->m_streamDetails);
     if(result)
     {
-      m_item.SetProperty("HasAutoThumb", "1");
+      m_item.SetProperty("HasAutoThumb", true);
       m_item.SetProperty("AutoThumbImage", m_target);
       m_item.SetThumbnailImage(m_target);
     }
@@ -218,7 +218,7 @@ bool CVideoThumbLoader::LoadItem(CFileItem* pItem)
         struct __stat64 st;
         if(CFile::Stat(cachedThumb, &st) == 0 && st.st_size > 0)
         {
-          pItem->SetProperty("HasAutoThumb", "1");
+          pItem->SetProperty("HasAutoThumb", true);
           pItem->SetProperty("AutoThumbImage", cachedThumb);
           pItem->SetThumbnailImage(cachedThumb);
         }

@@ -270,9 +270,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           OnFilterItems(selected.GetLabel());
           return true;
         }
-        if (GetProperty("filter").IsEmpty())
+        if (GetProperty("filter").empty())
         {
-          CStdString filter = GetProperty("filter");
+          CStdString filter = GetProperty("filter").asString();
           CGUIDialogKeyboard::ShowAndGetFilter(filter, false);
           SetProperty("filter", filter);
         }
@@ -400,7 +400,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
       {
-        CStdString filter(GetProperty("filter"));
+        CStdString filter(GetProperty("filter").asString());
         if (message.GetParam2() == 1) // append
           filter += message.GetStringParam();
         else if (message.GetParam2() == 2)
@@ -547,8 +547,8 @@ void CGUIMediaWindow::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   //#ifdef PRE_SKIN_VERSION_3
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !GetProperty("filter").IsEmpty());
-  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter"));
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !GetProperty("filter").empty());
+  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter").asString());
   //#endif
 }
 
@@ -844,7 +844,7 @@ void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
 {
   m_unfilteredItems->Append(items);
   
-  CStdString filter(GetProperty("filter"));
+  CStdString filter(GetProperty("filter").asString());
   if (!filter.IsEmpty())
   {
     items.ClearItems();
@@ -935,7 +935,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
-  else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") != "true")
+  else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
   {
     return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath());
   }
@@ -1402,17 +1402,17 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   for (int i = CONTEXT_BUTTON_USER1; i <= CONTEXT_BUTTON_USER10; i++)
   {
     label.Format("contextmenulabel(%i)", i - CONTEXT_BUTTON_USER1);
-    if (item->GetProperty(label).IsEmpty())
+    if (item->GetProperty(label).empty())
       break;
 
     action.Format("contextmenuaction(%i)", i - CONTEXT_BUTTON_USER1);
-    if (item->GetProperty(action).IsEmpty())
+    if (item->GetProperty(action).empty())
       break;
 
-    buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
+    buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label).asString());
   }
 
-  if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+  if (item->GetProperty("pluginreplacecontextitems").asBoolean())
     return;
 
   // TODO: FAVOURITES Conditions on masterlock and localisation
@@ -1458,7 +1458,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CStdString action;
       action.Format("contextmenuaction(%i)", button - CONTEXT_BUTTON_USER1);
-      g_application.getApplicationMessenger().ExecBuiltIn(m_vecItems->Get(itemNumber)->GetProperty(action));
+      g_application.getApplicationMessenger().ExecBuiltIn(m_vecItems->Get(itemNumber)->GetProperty(action).asString());
       return true;
     }
   default:

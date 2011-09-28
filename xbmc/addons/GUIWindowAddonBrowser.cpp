@@ -109,7 +109,7 @@ bool CGUIWindowAddonBrowser::OnMessage(CGUIMessage& message)
         // iItem is checked for validity inside these routines
         if (iAction == ACTION_SHOW_INFO)
         {
-          if (!m_vecItems->Get(iItem)->GetProperty("Addon.ID").IsEmpty())
+          if (!m_vecItems->Get(iItem)->GetProperty("Addon.ID").empty())
             return CGUIDialogAddonInfo::ShowForItem((*m_vecItems)[iItem]);
           return false;
         }
@@ -146,7 +146,7 @@ void CGUIWindowAddonBrowser::GetContextButtons(int itemNumber,
     buttons.Add(CONTEXT_BUTTON_SCAN,24034);
   
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon, ADDON_UNKNOWN, false)) // allow disabled addons
+  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID").asString(), addon, ADDON_UNKNOWN, false)) // allow disabled addons
     return;
 
   if (addon->Type() == ADDON_REPOSITORY && pItem->m_bIsFolder)
@@ -174,7 +174,7 @@ bool CGUIWindowAddonBrowser::OnContextButton(int itemNumber,
     }
   }
   AddonPtr addon;
-  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID"), addon, ADDON_UNKNOWN, false)) // allow disabled addons
+  if (!CAddonMgr::Get().GetAddon(pItem->GetProperty("Addon.ID").asString(), addon, ADDON_UNKNOWN, false)) // allow disabled addons
     return false;
 
   if (button == CONTEXT_BUTTON_SETTINGS)
@@ -223,10 +223,10 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     if (item->HasProperty("Addon.Downloading"))
     {
       if (CGUIDialogYesNo::ShowAndGetInput(g_localizeStrings.Get(24000),
-                                           item->GetProperty("Addon.Name"),
+                                           item->GetProperty("Addon.Name").asString(),
                                            g_localizeStrings.Get(24066),""))
       {
-        if (CAddonInstaller::Get().Cancel(item->GetProperty("Addon.ID")))
+        if (CAddonInstaller::Get().Cancel(item->GetProperty("Addon.ID").asString()))
           Update(m_vecItems->GetPath());
       }
       return true;
@@ -295,7 +295,7 @@ void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
 {
   if (!item || item->m_bIsFolder) return;
   unsigned int percent;
-  if (CAddonInstaller::Get().GetProgress(item->GetProperty("Addon.ID"), percent))
+  if (CAddonInstaller::Get().GetProgress(item->GetProperty("Addon.ID").asString(), percent))
   {
     CStdString progress;
     progress.Format(g_localizeStrings.Get(24042).c_str(), percent);
@@ -304,7 +304,7 @@ void CGUIWindowAddonBrowser::SetItemLabel2(CFileItemPtr item)
   }
   else
     item->ClearProperty("Addon.Downloading");
-  item->SetLabel2(item->GetProperty("Addon.Status"));
+  item->SetLabel2(item->GetProperty("Addon.Status").asString());
   // to avoid the view state overriding label 2
   item->SetLabelPreformated(true);
 }

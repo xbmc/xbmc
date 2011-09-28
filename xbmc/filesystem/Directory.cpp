@@ -199,7 +199,7 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       // TODO: we shouldn't be checking the gui setting here;
       // callers should use getHidden instead
       if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath())) ||
-          (item->GetPropertyBOOL("file:hidden") && !getHidden && !g_guiSettings.GetBool("filelists.showhidden")))
+          (item->GetProperty("file:hidden").asBoolean() && !getHidden && !g_guiSettings.GetBool("filelists.showhidden")))
       {
         items.Remove(i);
         i--; // don't confuse loop

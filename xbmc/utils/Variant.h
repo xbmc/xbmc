@@ -69,7 +69,7 @@ public:
   int64_t asInteger(int64_t fallback = 0) const;
   uint64_t asUnsignedInteger(uint64_t fallback = 0u) const;
   bool asBoolean(bool fallback = false) const;
-  const char *asString(const char *fallback = "") const;
+  std::string asString(std::string fallback = "") const;
   double asDouble(double fallback = 0.0) const;
   float asFloat(float fallback = 0.0f) const;
 

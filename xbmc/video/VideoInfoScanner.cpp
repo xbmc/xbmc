@@ -442,7 +442,7 @@ namespace VIDEO
     {
       INFO_RET ret = RetrieveInfoForEpisodes(pItem, idTvShow, info2, useLocal, pDlgProgress);
       if (ret == INFO_ADDED)
-        m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash"));
+        m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
       return ret;
     }
 
@@ -476,7 +476,7 @@ namespace VIDEO
       {
         INFO_RET ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress);
         if (ret == INFO_ADDED)
-          m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash"));
+          m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
         return ret;
       }
       return INFO_ADDED;
@@ -502,7 +502,7 @@ namespace VIDEO
     {
       INFO_RET ret = RetrieveInfoForEpisodes(pItem, lResult, info2, useLocal, pDlgProgress);
       if (ret == INFO_ADDED)
-        m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash"));
+        m_database.SetPathHash(pItem->GetPath(), pItem->GetProperty("hash").asString());
     }
     else
       if (g_guiSettings.GetBool("videolibrary.seasonthumbs"))

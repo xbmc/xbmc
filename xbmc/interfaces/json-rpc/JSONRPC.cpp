@@ -135,13 +135,13 @@ JSON_STATUS CJSONRPC::SetConfiguration(const CStdString &method, ITransportLayer
 JSON_STATUS CJSONRPC::NotifyAll(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant& parameterObject, CVariant &result)
 {
   if (parameterObject["data"].isNull())
-    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString(),  
-      parameterObject["message"].asString());
+    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(),  
+      parameterObject["message"].asString().c_str());
   else
   {
     CVariant data(parameterObject["data"].asString());
-    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString(),  
-      parameterObject["message"].asString(), data);
+    CAnnouncementManager::Announce(Other, parameterObject["sender"].asString().c_str(),  
+      parameterObject["message"].asString().c_str(), data);
   }
 
   return ACK;

@@ -57,9 +57,7 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
         field = "label";
       if (item->IsAlbum() && item->HasProperty("album_" + field))
       {
-        if (field == "rating")
-          result[field] = item->GetPropertyInt("album_rating");
-        else if (field == "label")
+        if (field == "label")
           result["albumlabel"] = item->GetProperty("album_label");
         else
           result[field] = item->GetProperty("album_" + field);
