@@ -1067,6 +1067,7 @@ namespace PYXBMC
     PyModule_AddObject(pXbmcModule, (char*)"RenderCapture", (PyObject*)&RenderCapture_Type);
 
     // render capture user states
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_STATE_WORKING", (int)CAPTURESTATE_WORKING);
     PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_STATE_DONE", (int)CAPTURESTATE_DONE);
     PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_STATE_FAILED", (int)CAPTURESTATE_FAILED);
 

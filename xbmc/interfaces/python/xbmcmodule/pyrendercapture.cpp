@@ -75,10 +75,9 @@ namespace PYXBMC
     "getCaptureState() -- returns processing state of capture request.\n"
     "\n"
     "The returned value could be compared against the following constants:\n"
+    "xbmc.CAPTURE_STATE_WORKING  : Capture request in progress.\n"
     "xbmc.CAPTURE_STATE_DONE     : Capture request done. The image could be retrieved with getImage()\n"
-    "xbmc.CAPTURE_STATE_FAILED   : Capture request failed.\n"
-    "\n"
-    "Any other value returned means capture request is in progress.\n");
+    "xbmc.CAPTURE_STATE_FAILED   : Capture request failed.\n");
 
   PyObject* RenderCapture_GetCaptureState(RenderCapture *self, PyObject *args)
   {
