@@ -391,13 +391,22 @@
 							</control>
 						</control>
 					</control>
+					<control type="image">
+						<posx>-420</posx>
+						<posy>170</posy>
+						<width>660</width>
+						<height>203</height>
+						<texture border="10">whitewiderounded.png</texture>
+						<colordiffuse>FF000000</colordiffuse>
+						<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+					</control>
 					<control type="group">
-						<posy>177</posy>
-						<posx>-417</posx>
+						<posy>180</posy>
+						<posx>-402</posx>
 						<control type="textbox">
 							<description>Plot</description>
-							<width>650</width>
-							<height>196</height>
+							<width>630</width>
+							<height>177</height>
 							<info>ListItem.Plot</info>
 							<visible>Container.Content(TVShows)</visible>
 						</control>

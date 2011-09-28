@@ -1218,7 +1218,7 @@
 								<width>334</width>
 								<height>334</height>
 								<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
-								<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+								<aspectratio scalediffuse="false" align="center" aligny="top">keep</aspectratio>
 							</control>
 							<!-- with plot -->
 							<control type="image">
@@ -2536,12 +2536,11 @@
 	<include name="PluginStream">
 		<control type="group">
 			<control type="group">
-				<visible>Control.IsVisible(59)</visible>
+				<visible>Container.content(plugins)</visible>
 				<include>MediaViewBGOverlay</include>
 			</control>
 			<control type="group">
 				<posy>206</posy>
-				<visible>Control.IsVisible(59)</visible>
 				<include>MediaViewFade</include>
 				<control type="panel" id="59">
 					<viewtype label="Plugin Stream">panel</viewtype>

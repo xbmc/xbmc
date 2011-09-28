@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <window id="2">
-	<defaultcontrol>59</defaultcontrol>
-	<views>56,57,59,561</views>
+	<defaultcontrol always="false">57</defaultcontrol>
+	<views>591,57,561,56</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<include>Background</include>
 		<include>Pictures</include>
 		<include>ImageStream</include>
 		<include>InfoListPics</include>
-		<include>PluginStream</include>
+		<include>PluginStreamPics</include>
 		<!-- section titles -->
 		<control type="group">
 			<posy>9</posy>

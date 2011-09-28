@@ -837,6 +837,26 @@
 			<control type="group">
 				<description>Pictures Background Image</description>
 				<visible>Window.IsVisible(MyPictures)</visible>
+				<control type="group">
+					<visible>IsEmpty(ListItem.Property(fanart_image)) + IsEmpty(FanArt.Image)</visible>
+					<include>BackgroundFade</include>
+					<control type="group">
+						<include>PicturesBGVisible</include>
+						<control type="image">
+							<include>BackgroundLeftImage</include>
+							<texture>HomeBGPicturesLeft.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundMidImage</include>
+							<texture>HomeBGPicturesMid.jpg</texture>
+						</control>
+						<control type="image">
+							<include>BackgroundRightImage</include>
+							<texture>HomeBGPicturesRight.jpg</texture>
+						</control>
+					</control>
+					<include>CustomPicturesBackground</include>
+				</control>
 				<control type="largeimage">
 					<description>Fanart background</description>
 					<include>FullScreenBGImage</include>
@@ -844,12 +864,11 @@
 					<visible>!IsEmpty(ListItem.Property(fanart_image))</visible>
 					<include>BackgroundFade</include>
 				</control>
-				<control type="multiimage">
+				<control type="largeimage">
 					<description>Fanart background (from directory)</description>
 					<include>FullScreenBGImage</include>
 					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
-					<info background="true">FanArt.Image</info>
-					<fadetime>300</fadetime>
+					<info>FanArt.Image</info>
 					<include>BackgroundFade</include>
 				</control>
 			</control>
@@ -872,7 +891,7 @@
 				</control>
 			</control>
 			<control type="group">
-				<description>Programs Background Image</description>
+				<description>Plugins Background Image</description>
 				<visible>Window.IsVisible(plugins)</visible>
 				<control type="largeimage">
 					<description>Fanart background</description>
@@ -1688,25 +1707,6 @@
 				<scrollsuffix>...</scrollsuffix>
 			</control>
 		</focusedlayout>
-		<!--
-		<itemlayout condition="Container.content(albums)" width="180" height="180">
-			<control type="image">
-				<description>Album cover</description>
-				<include>PanelStreamAlbumImage</include>
-			</control>
-		</itemlayout>
-		<focusedlayout condition="Container.content(albums)" width="180" height="180">
-			<control type="image">
-				<description>Album cover</description>
-				<include>PanelStreamAlbumImageFocusAnim</include>
-				<include>PanelStreamAlbumImage</include>
-			</control>
-			<control type="label">
-				<include>PanelStreamAlbumNoThumbFocusAnim</include>
-				<include>PanelStreamAlbumNoThumb</include>
-			</control>
-		</focusedlayout>
-	-->
 		<!-- Episodes & Clips -->
 		<itemlayout condition="Container.content(episodes) | Container.content(clip)" width="252" height="160">
 			<control type="image">
@@ -1911,26 +1911,6 @@
 				<scrollsuffix>...</scrollsuffix>
 			</control>
 		</focusedlayout>
-		<!-- songs -->
-		<!--
-		<itemlayout condition="!Container.content(artists) + [Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="180">
-			<control type="image">
-				<description>Album cover</description>
-				<include>PanelStreamAlbumImage</include>
-			</control>
-		</itemlayout>
-		<focusedlayout condition="!Container.content(artists) + [Container.content(albums) | Window.IsVisible(MyMusicFiles)]" width="180" height="180">
-			<control type="image">
-				<description>Album cover</description>
-				<include>PanelStreamAlbumImageFocusAnim</include>
-				<include>PanelStreamAlbumImage</include>
-			</control>
-			<control type="label">
-				<include>PanelStreamAlbumNoThumbFocusAnim</include>
-				<include>PanelStreamAlbumNoThumb</include>
-			</control>
-		</focusedlayout>
-	-->
 	</include>
 	<include name="PanelStreamContent">
 		<posx>6</posx>
@@ -4756,7 +4736,7 @@
 	</include>
 	<!-- Pictures -->
 	<include name="PicturesViewVisible">
-		<visible>Window.IsVisible(MyPictures) + Control.IsVisible(51)</visible>
+		<visible>Window.IsVisible(MyPictures) + Control.IsVisible(561)</visible>
 	</include>
 	<include name="PicturesThumbBG">
 		<width>105</width>
@@ -4773,7 +4753,7 @@
 	</include>
 	<constant name="PicturesInfoTextWidth">640</constant>
 	<include name="ImageStreamVisible">
-		<visible>Window.IsVisible(MyPictures) + Control.IsVisible(57)</visible>
+		<!--><visible>Window.IsVisible(MyPictures) + Control.IsVisible(57) + !Control.IsVisible(561)</visible>-->
 	</include>
 	<include name="ImageStreamLargeImage">
 		<posx>0</posx>
