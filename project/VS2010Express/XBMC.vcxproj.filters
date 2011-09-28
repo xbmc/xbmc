@@ -2493,6 +2493,15 @@
     <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\FilePipe.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PipesManager.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\paplayer\BXAcodec.cpp">
+      <Filter>cores\paplayer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5008,6 +5017,15 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\NFSDirectory.h">
       <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\FilePipe.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PipesManager.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\paplayer\BXAcodec.h">
+      <Filter>cores\paplayer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
