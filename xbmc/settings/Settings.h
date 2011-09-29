@@ -74,6 +74,16 @@
    like special://masterprofile/ */
 #define PROFILES_FILE "special://masterprofile/profiles.xml"
 
+struct DatabaseSettings
+{
+  CStdString type;
+  CStdString host;
+  CStdString port;
+  CStdString user;
+  CStdString pass;
+  CStdString name;
+};
+
 class CSkinString
 {
 public:
@@ -127,6 +137,9 @@ public:
   int TranslateSkinBool(const CStdString &setting);
   bool GetSkinBool(int setting) const;
   void SetSkinBool(int setting, bool set);
+  
+  DatabaseSettings m_databaseMusic; // music database setup
+  DatabaseSettings m_databaseVideo; // video database setup
 
   /*! \brief Retreive the watched mode for the given content type
    \param content Current content type

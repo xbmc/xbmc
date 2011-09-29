@@ -272,9 +272,23 @@ void CGUISettings::Initialize()
   AddBool(ml,"musiclibrary.downloadinfo", 20192, false);
   AddDefaultAddon(ml, "musiclibrary.albumsscraper", 20193, "metadata.albums.allmusic.com", ADDON_SCRAPER_ALBUMS);
   AddDefaultAddon(ml, "musiclibrary.artistsscraper", 20194, "metadata.artists.allmusic.com", ADDON_SCRAPER_ARTISTS);
+
+  AddSeparator(ml,"musiclibrary.sep2");
+  map<int,int> musicDatabase;
+  musicDatabase.insert(make_pair(802,0));
+  musicDatabase.insert(make_pair(803,1));
+  
+  AddInt(ml, "musiclibrary.type", 801, 1, musicDatabase, SPIN_CONTROL_TEXT);
+  
+  AddString(ml,"musiclibrary.host", 706, "127.0.0.1", EDIT_CONTROL_INPUT);
+  AddString(ml,"musiclibrary.port", 730, "3306", EDIT_CONTROL_NUMBER_INPUT);
+  AddString(ml,"musiclibrary.user", 1048, "xbmc", EDIT_CONTROL_INPUT);
+  AddString(ml,"musiclibrary.pass", 733, "xbmc", EDIT_CONTROL_HIDDEN_INPUT);
+  AddString(ml,"musiclibrary.name", 806, "xbmc_music", EDIT_CONTROL_INPUT);
+  AddString(ml, "musiclibrary.test", 805, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(ml,"musiclibrary.sep3");
   AddBool(ml, "musiclibrary.updateonstartup", 22000, false);
   AddBool(ml, "musiclibrary.backgroundupdate", 22001, false);
-  AddSeparator(ml,"musiclibrary.sep2");
   AddString(ml, "musiclibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(ml, "musiclibrary.export", 20196, "", BUTTON_CONTROL_STANDARD);
   AddString(ml, "musiclibrary.import", 20197, "", BUTTON_CONTROL_STANDARD);
@@ -555,9 +569,23 @@ void CGUISettings::Initialize()
   AddInt(vdl, "videolibrary.flattentvshows", 20412, 1, flattenTVShowOptions, SPIN_CONTROL_TEXT);
 
   AddBool(NULL, "videolibrary.flattenmoviesets", 22002, false);
+ 
+  AddSeparator(vdl, "videolibrary.sep3");
+  map<int,int> videoDatabase;
+  videoDatabase.insert(make_pair(802,0));
+  videoDatabase.insert(make_pair(803,1));
+
+  AddInt(vdl, "videolibrary.type", 801, 1, videoDatabase, SPIN_CONTROL_TEXT);
+  
+  AddString(vdl,"videolibrary.host", 706, "127.0.0.1", EDIT_CONTROL_INPUT);
+  AddString(vdl,"videolibrary.port", 730, "3306", EDIT_CONTROL_NUMBER_INPUT);
+  AddString(vdl,"videolibrary.user", 1048, "xbmc", EDIT_CONTROL_INPUT);
+  AddString(vdl,"videolibrary.pass", 733, "xbmc", EDIT_CONTROL_HIDDEN_INPUT);
+  AddString(vdl,"videolibrary.name", 806, "xbmc_video", EDIT_CONTROL_INPUT);
+  AddString(vdl, "videolibrary.test", 805, "", BUTTON_CONTROL_STANDARD);
+  AddSeparator(vdl, "videolibrary.sep4");
   AddBool(vdl, "videolibrary.updateonstartup", 22000, false);
   AddBool(vdl, "videolibrary.backgroundupdate", 22001, false);
-  AddSeparator(vdl, "videolibrary.sep3");
   AddString(vdl, "videolibrary.cleanup", 334, "", BUTTON_CONTROL_STANDARD);
   AddString(vdl, "videolibrary.export", 647, "", BUTTON_CONTROL_STANDARD);
   AddString(vdl, "videolibrary.import", 648, "", BUTTON_CONTROL_STANDARD);

@@ -87,7 +87,20 @@ CMusicDatabase::~CMusicDatabase(void)
 
 bool CMusicDatabase::Open()
 {
-  return CDatabase::Open(g_advancedSettings.m_databaseMusic);
+  g_settings.m_databaseMusic.type = (CStdString*)g_guiSettings.GetInt("musiclibrary.type") > 0 ? "mysql" : "sqlite3";
+  g_settings.m_databaseMusic.host = g_guiSettings.GetString("musiclibrary.host");
+  g_settings.m_databaseMusic.port = g_guiSettings.GetString("musiclibrary.port");
+  g_settings.m_databaseMusic.user = g_guiSettings.GetString("musiclibrary.user");
+  g_settings.m_databaseMusic.pass = g_guiSettings.GetString("musiclibrary.pass");
+  g_settings.m_databaseMusic.name = g_guiSettings.GetString("musiclibrary.name");
+  
+  if (CDatabase::Open(g_settings.m_databaseMusic))
+  {
+    CommitTransaction();
+    return true;
+  }
+  g_guiSettings.SetInt("musiclibrary.type", 0);
+  return false;
 }
 
 bool CMusicDatabase::CreateTables()

@@ -70,7 +70,20 @@ CVideoDatabase::~CVideoDatabase(void)
 //********************************************************************************************************************************
 bool CVideoDatabase::Open()
 {
-  return CDatabase::Open(g_advancedSettings.m_databaseVideo);
+  g_settings.m_databaseVideo.type = (CStdString*)g_guiSettings.GetInt("videolibrary.type") > 0 ? "mysql" : "sqlite3";
+  g_settings.m_databaseVideo.host = g_guiSettings.GetString("videolibrary.host");
+  g_settings.m_databaseVideo.port = g_guiSettings.GetString("videolibrary.port");
+  g_settings.m_databaseVideo.user = g_guiSettings.GetString("videolibrary.user");
+  g_settings.m_databaseVideo.pass = g_guiSettings.GetString("videolibrary.pass");
+  g_settings.m_databaseVideo.name = g_guiSettings.GetString("videolibrary.name");
+  
+  if (CDatabase::Open(g_settings.m_databaseVideo))
+  {
+    CommitTransaction();
+    return true;
+  }
+  g_guiSettings.SetInt("videolibrary.type", 0);
+  return false;
 }
 
 bool CVideoDatabase::CreateTables()

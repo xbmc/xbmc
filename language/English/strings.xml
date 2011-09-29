@@ -701,7 +701,15 @@
   <string id="796">Continuous repeat delay (ms)</string>
   <string id="797">Maximum number of clients</string>
   <string id="798">Internet access</string>
+  <string id="799">Connected to MySQL database successfully</string>
+  <string id="800">Could not connect to MySQL database</string>
+  <string id="801">Database</string>
+  <string id="802">SQLite</string>
+  <string id="803">MySQL</string>
 
+  <string id="805">Test Database Settings</string>
+  <string id="806">- Name</string>
+  
   <string id="850">Invalid port number entered</string>
   <string id="851">Valid port range is 1-65535</string>
   <string id="852">Valid port range is 1024-65535</string>
