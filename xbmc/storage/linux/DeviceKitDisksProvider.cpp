@@ -53,7 +53,7 @@ void CDeviceKitDiskDeviceOldAPI::Update()
   m_isSystemInternal = properties["device-is-system-internal"].asBoolean();
   m_isOptical = properties["device-is-optical-disc"].asBoolean();
   if (m_isPartition)
-    m_isRemovable = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", properties["partition-slave"].asString(), "org.freedesktop.DeviceKit.Disks.Device", "device-is-removable").asBoolean();
+    m_isRemovable = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", properties["partition-slave"].asString().c_str(), "org.freedesktop.DeviceKit.Disks.Device", "device-is-removable").asBoolean();
   else
     m_isRemovable = properties["device-is-removable"].asBoolean();
 }
@@ -87,7 +87,7 @@ void CDeviceKitDiskDeviceNewAPI::Update()
   m_isSystemInternal = properties["DeviceIsSystemInternal"].asBoolean();
   m_isOptical = properties["DeviceIsOpticalDisc"].asBoolean();
   if (m_isPartition)
-    m_isRemovable = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].asString(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable").asBoolean();
+    m_isRemovable = CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", properties["PartitionSlave"].asString().c_str(), "org.freedesktop.DeviceKit.Disks.Device", "DeviceIsRemovable").asBoolean();
   else
     m_isRemovable = properties["DeviceIsRemovable"].asBoolean();
 }
@@ -238,7 +238,7 @@ CDeviceKitDisksProvider::~CDeviceKitDisksProvider()
 void CDeviceKitDisksProvider::Initialize()
 {
   CLog::Log(LOGDEBUG, "Selected DeviceKit.Disks as storage provider");
-  m_DaemonVersion = atoi(CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "DaemonVersion").asString());
+  m_DaemonVersion = atoi(CDBusUtil::GetVariant("org.freedesktop.DeviceKit.Disks", "/org/freedesktop/DeviceKit/Disks", "org.freedesktop.DeviceKit.Disks", "DaemonVersion").asString().c_str());
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: DaemonVersion %i", m_DaemonVersion);
 
   CLog::Log(LOGDEBUG, "DeviceKit.Disks: Querying available devices");

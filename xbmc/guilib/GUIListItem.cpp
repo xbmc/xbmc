@@ -346,7 +346,7 @@ bool CGUIListItem::HasProperty(const CStdString &strKey) const
 
 void CGUIListItem::ClearProperty(const CStdString &strKey)
 {
-  PropertyMap::const_iterator iter = m_mapProperties.find(strKey);
+  PropertyMap::iterator iter = m_mapProperties.find(strKey);
   if (iter != m_mapProperties.end())
     m_mapProperties.erase(iter);
 }

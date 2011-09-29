@@ -32,6 +32,7 @@
 #include "FileItem.h"
 #include "Application.h"
 #include "utils/md5.h"
+#include "utils/Variant.h"
 
 #define RECEIVEBUFFER 1024
 
@@ -719,7 +720,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
     if( status != AIRPLAY_STATUS_NEED_AUTH )
     {
       CFileItem fileToPlay(location, false);
-      fileToPlay.SetProperty("StartPercent", position*100);
+      fileToPlay.SetProperty(CStdString("StartPercent"), CVariant(position*100.0f));
       g_application.getApplicationMessenger().MediaPlay(fileToPlay);
     }
   }
