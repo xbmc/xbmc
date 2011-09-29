@@ -178,11 +178,6 @@ bool CDVDPlayerVideo::OpenStream( CDVDStreamInfo &hint )
 {
   unsigned int surfaces = 0;
 #ifdef HAS_VIDEO_PLAYBACK
-  if(!m_output.inited)
-  {
-    g_renderManager.PreInit();
-    m_output.inited = true;
-  }
   surfaces = g_renderManager.GetProcessorSize();
 #endif
 
@@ -749,8 +744,6 @@ void CDVDPlayerVideo::OnExit()
     m_pOverlayCodecCC->Dispose();
     m_pOverlayCodecCC = NULL;
   }
-
-  m_output.inited = false;
 
   CLog::Log(LOGNOTICE, "thread end: video_thread");
 }

@@ -159,7 +159,6 @@ protected:
     unsigned int color_primaries;
     unsigned int color_transfer;
     double       framerate;
-    bool         inited;
   } m_output; //holds currently configured output
 
   bool m_bAllowFullscreen;
