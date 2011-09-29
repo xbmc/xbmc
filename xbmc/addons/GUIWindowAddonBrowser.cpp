@@ -350,6 +350,8 @@ int CGUIWindowAddonBrowser::SelectAddonID(ADDON::TYPE type, CStdStringArray &add
     CAddonsDirectory::GetScriptsAndPlugins("image",addons);
   else if (type == ADDON_VIDEO)
     CAddonsDirectory::GetScriptsAndPlugins("video",addons);
+  else if (type == ADDON_MEDIA)
+    CAddonsDirectory::GetScriptsAndPlugins("media",addons);
   else
     CAddonMgr::Get().GetAddons(type, addons);
 
