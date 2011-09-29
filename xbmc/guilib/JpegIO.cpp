@@ -30,15 +30,15 @@
 #include "XBTF.h"
 #include "JpegIO.h"
 
+#include <setjmp.h>
+
 #define EXIF_TAG_ORIENTATION    0x0112
 
-/*Override libjpeg's error function to avoid an exit() call.*/
-static void jpeg_error_exit (j_common_ptr cinfo)
+struct my_error_mgr
 {
-  CStdString msg;
-  msg.Format("Error %i: %s",cinfo->err->msg_code, cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
-  throw msg;
-}
+  struct jpeg_error_mgr pub;    // "public" fields
+  jmp_buf setjmp_buffer;        // for return to caller
+};
 
 #if JPEG_LIB_VERSION < 80
 
@@ -170,8 +170,9 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
   else
     return false;
 
-  m_cinfo.err = jpeg_std_error(&m_jerr);
-  m_jerr.error_exit = jpeg_error_exit;
+  struct my_error_mgr jerr;
+  m_cinfo.err = jpeg_std_error(&jerr.pub);
+  jerr.pub.error_exit = jpeg_error_exit;
   jpeg_create_decompress(&m_cinfo);
 #if JPEG_LIB_VERSION < 80
   x_mem_src(&m_cinfo, m_inputBuff, m_inputBuffSize);
@@ -179,8 +180,12 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
   jpeg_mem_src(&m_cinfo, m_inputBuff, m_inputBuffSize);
 #endif
 
-
-  try
+  if (setjmp(jerr.setjmp_buffer))
+  {
+    jpeg_destroy_decompress(&m_cinfo);
+    return false;
+  }
+  else
   {
     jpeg_read_header(&m_cinfo, true);
 
@@ -217,18 +222,22 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
     GetExif();
     return true;
   }
-  catch (CStdString &msg)
-  {
-    CLog::Log(LOGWARNING, "JpegIO: %s", msg.c_str());
-    jpeg_destroy_decompress(&m_cinfo);
-    return false;
-  }
 }
 
 bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned int format)
 {
   unsigned char *dst = (unsigned char*)pixels;
-  try
+
+  struct my_error_mgr jerr;
+  m_cinfo.err = jpeg_std_error(&jerr.pub);
+  jerr.pub.error_exit = jpeg_error_exit;
+
+  if (setjmp(jerr.setjmp_buffer))
+  {
+    jpeg_destroy_decompress(&m_cinfo);
+    return false;
+  }
+  else
   {
     jpeg_start_decompress(&m_cinfo);
 
@@ -262,18 +271,24 @@ bool CJpegIO::Decode(const unsigned char *pixels, unsigned int pitch, unsigned i
     else
     {
       CLog::Log(LOGWARNING, "JpegIO: Incorrect output format specified");
+      jpeg_destroy_decompress(&m_cinfo);
       return false;
     }
     jpeg_finish_decompress(&m_cinfo);
   }
-  catch (CStdString &msg)
-  {
-    CLog::Log(LOGWARNING, "JpegIO: %s", msg.c_str());
-    jpeg_destroy_decompress(&m_cinfo);
-    return false;
-  }
   jpeg_destroy_decompress(&m_cinfo);
   return true;
+}
+
+// override libjpeg's error function to avoid an exit() call
+void CJpegIO::jpeg_error_exit(j_common_ptr cinfo)
+{
+  CStdString msg;
+  msg.Format("Error %i: %s",cinfo->err->msg_code, cinfo->err->jpeg_message_table[cinfo->err->msg_code]);
+  CLog::Log(LOGWARNING, "JpegIO: %s", msg.c_str());
+
+  my_error_mgr *myerr = (my_error_mgr*)cinfo->err;
+  longjmp(myerr->setjmp_buffer, 1);
 }
 
 /*helper function

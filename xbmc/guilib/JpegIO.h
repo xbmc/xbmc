@@ -46,6 +46,8 @@ public:
   unsigned int   Orientation() { return m_orientation; }
 
 protected:
+  static  void   jpeg_error_exit(j_common_ptr cinfo);
+
   bool           GetExif();
   unsigned int   findExifMarker( unsigned char *jpegData, 
                                  unsigned int dataSize, 
@@ -55,7 +57,6 @@ protected:
   unsigned int   m_minx;
   unsigned int   m_miny;
   struct         jpeg_decompress_struct m_cinfo;
-  struct         jpeg_error_mgr m_jerr;
   CStdString     m_texturePath;
 
   unsigned int   m_imgsize;
