@@ -2511,6 +2511,15 @@
     <ClCompile Include="..\..\xbmc\interfaces\info\SkinVariable.cpp">
       <Filter>interfaces\info</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\AirPlayServer.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\HttpParser.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\windows\ZeroconfWIN.cpp">
+      <Filter>network\windows</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\peripherals\Peripherals.cpp">
       <Filter>peripherals</Filter>
     </ClCompile>
@@ -5074,6 +5083,18 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\interfaces\info\SkinVariable.h">
       <Filter>interfaces\info</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\AirPlayServer.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\HttpParser.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\windows\ZeroconfWIN.h">
+      <Filter>network\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\DllLibPlist.h">
+      <Filter>network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\peripherals\Peripherals.h">
       <Filter>peripherals</Filter>
