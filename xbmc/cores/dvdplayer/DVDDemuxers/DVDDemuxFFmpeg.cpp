@@ -236,6 +236,8 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
   m_speed = DVD_PLAYSPEED_NORMAL;
   g_demuxer = this;
   m_program = UINT_MAX;
+  m_bHasSeenKeyFrame = false;
+  m_iKeyFrameTryCount = 0;
 
   if (!pInput) return false;
 
@@ -689,9 +691,29 @@ DemuxPacket* CDVDDemuxFFmpeg::Read()
 
       m_dllAvCodec.av_free_packet(&pkt);
     }
+    // skip packets until we have seen first key frame for video
+    else if (!(pkt.flags & AV_PKT_FLAG_KEY) && !m_bHasSeenKeyFrame)
+    {
+      AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
+      if (stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
+      {
+        bReturnEmpty = true;
+        m_dllAvCodec.av_free_packet(&pkt);
+        m_iKeyFrameTryCount++;
+
+        if (m_iKeyFrameTryCount > 50)
+        {
+          CLog::Log(LOGWARNING, "%s cound not find keyframe");
+          m_bHasSeenKeyFrame = true;
+        }
+      }
+    }
     else
     {
       AVStream *stream = m_pFormatContext->streams[pkt.stream_index];
+
+      if (stream->codec->codec_type == AVMEDIA_TYPE_VIDEO)
+        m_bHasSeenKeyFrame = true;
 
       if (m_program != UINT_MAX)
       {
