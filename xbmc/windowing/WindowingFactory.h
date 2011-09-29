@@ -33,10 +33,10 @@
 #elif defined(TARGET_LINUX)   && defined(HAS_GLX)
 #include "X11/WinSystemX11GL.h"
 
-#elif defined(TARGET_LINUX)   &&  defined(HAS_X11) && defined(HAS_GLES)
+#elif defined(TARGET_LINUX)   &&  defined(HAVE_X11) && defined(HAS_GLES)
 #include "X11/WinSystemX11GLES.h"
 
-#elif defined(TARGET_LINUX)   && !defined(HAS_X11) && defined(HAS_GLES)
+#elif defined(TARGET_LINUX)   && !defined(HAVE_X11) && defined(HAS_GLES)
 #include "egl/WinSystemGLES.h"
 
 #elif defined(TARGET_DARWIN_OSX)
