@@ -899,7 +899,7 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($goom_disabled)
   DISABLE_GOOM=1
 else
-  if test "$use_goom" = "yes" && test "use_gl" = "yes"; then
+  if test "$use_goom" = "yes" && test "$use_gl" = "yes"; then
     AC_MSG_NOTICE($goom_enabled)
     DISABLE_GOOM=0
   else
