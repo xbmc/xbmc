@@ -2,7 +2,7 @@
 /*
  * Many concepts and protocol specification in this code are taken from
  * the Boxee project. http://www.boxee.tv
- * 
+ *
  *      Copyright (C) 2011 Team XBMC
  *      http://www.xbmc.org
  *
@@ -57,13 +57,13 @@ private:
   void Deinitialize();
 
   int m_port;
-  static DllLibShairport *m_pLibShairport;//the lib    
+  static DllLibShairport *m_pLibShairport;//the lib
   static CAirTunesServer *ServerInstance;
   static CStdString m_macAddress;
-  
+
   class AudioOutputFunctions
   {
-    public:     
+    public:
       static void ao_initialize(void);
       static int ao_play(ao_device *device, char *output_samples, uint32_t num_bytes);
       static int ao_default_driver_id(void);
