@@ -157,11 +157,15 @@ int CAirTunesServer::AudioOutputFunctions::ao_append_option(ao_option **options,
   op->value = strdup(value?value:"");
   op->next = NULL;
 
-  if ((list = *options) != NULL) {
+  if ((list = *options) != NULL)
+  {
     list = *options;
-    while (list->next != NULL) list = list->next;
+    while (list->next != NULL)
+      list = list->next;
     list->next = op;
-  } else {
+  }
+  else
+  {
     *options = op;
   }
 
@@ -172,7 +176,8 @@ void CAirTunesServer::AudioOutputFunctions::ao_free_options(ao_option *options)
 {
   ao_option *rest;
 
-  while (options != NULL) {
+  while (options != NULL)
+  {
     rest = options->next;
     free(options->key);
     free(options->value);
@@ -200,9 +205,9 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
   bool success = false;
   CStdString pw = password;
   CNetworkInterface *net = g_application.getNetwork().GetFirstConnectedInterface();
-  StopServer(true);  
+  StopServer(true);
 
-  if( net )
+  if (net)
   {
     m_macAddress = net->GetMacAddress();
     m_macAddress.Replace(":","");
@@ -215,8 +220,8 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
   {
     m_macAddress = "000102030405";
   }
-  
-  if(!usePassword)
+
+  if (!usePassword)
   {
     pw.Empty();
   }
@@ -257,12 +262,12 @@ void CAirTunesServer::StopServer(bool bWait)
 {
   if (ServerInstance)
   {
-    if( m_pLibShairport->IsLoaded())
+    if (m_pLibShairport->IsLoaded())
     {
       m_pLibShairport->shairport_exit();
     }
     ServerInstance->StopThread(bWait);
-    ServerInstance->Deinitialize();    
+    ServerInstance->Deinitialize();
     if (bWait)
     {
       delete ServerInstance;
@@ -281,7 +286,7 @@ CAirTunesServer::CAirTunesServer(int port, bool nonlocal)
 
 CAirTunesServer::~CAirTunesServer()
 {
-  if( m_pLibShairport->IsLoaded())
+  if (m_pLibShairport->IsLoaded())
   {
     m_pLibShairport->Unload();
   }
@@ -304,22 +309,22 @@ bool CAirTunesServer::Initialize(const CStdString &password)
   int numArgs = 3;
   CStdString hwStr;
   CStdString pwStr;
-  
+
   Deinitialize();
 
   hwStr.Format("--mac=%s", m_macAddress.c_str());
   pwStr.Format("--password=%s",password.c_str());
-  
-  if(!password.empty())
+
+  if (!password.empty())
   {
     numArgs++;
   }
-   
+
   char *argv[] = { "--apname=XBMC", "--server_port=5000", (char*) hwStr.c_str(), (char *)pwStr.c_str(), NULL };
-  
-  if( m_pLibShairport->Load() ) 
+
+  if (m_pLibShairport->Load())
   {
-  
+
     struct AudioOutput ao;
     ao.ao_initialize = AudioOutputFunctions::ao_initialize;
     ao.ao_play = AudioOutputFunctions::ao_play;
@@ -329,7 +334,7 @@ bool CAirTunesServer::Initialize(const CStdString &password)
     ao.ao_append_option = AudioOutputFunctions::ao_append_option;
     ao.ao_free_options = AudioOutputFunctions::ao_free_options;
     ao.ao_get_option = AudioOutputFunctions::ao_get_option;
-  
+
     m_pLibShairport->EnableDelayedUnload(false);
     m_pLibShairport->shairport_set_ao(&ao);
     m_pLibShairport->shairport_main(numArgs, argv);
@@ -340,7 +345,7 @@ bool CAirTunesServer::Initialize(const CStdString &password)
 
 void CAirTunesServer::Deinitialize()
 {
-  if(m_pLibShairport && m_pLibShairport->IsLoaded())
+  if (m_pLibShairport && m_pLibShairport->IsLoaded())
   {
     m_pLibShairport->shairport_exit();
     m_pLibShairport->Unload();
