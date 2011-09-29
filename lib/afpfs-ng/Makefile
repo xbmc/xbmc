@@ -17,7 +17,7 @@ RETRIEVE_TOOL=/usr/bin/curl
 RETRIEVE_TOOL_FLAGS=-Ls --create-dirs --output $(TARBALLS_LOCATION)/$(ARCHIVE)
 ARCHIVE_TOOL=tar
 ARCHIVE_TOOL_FLAGS=xf
-PREFIX ?= /usr
+PREFIX ?= /usr/local
 AFPFSNG_CONFIGOPTS ?= --prefix=$(PREFIX)
 
 
