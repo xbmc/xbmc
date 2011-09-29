@@ -331,7 +331,7 @@ CNetworkInterface* CNetworkLinux::GetFirstConnectedInterface(void)
 CStdString CNetworkLinux::GetMacAddress(CStdString interfaceName)
 {
   CStdString result = "00:00:00:00:00:00";
-#if defined(TARGET_DARWIN)
+#if defined(TARGET_DARWIN) || defined(TARGET_FREEBSD)
 
 #if !defined(IFT_ETHER)
 #define IFT_ETHER 0x6/* Ethernet CSMACD */
