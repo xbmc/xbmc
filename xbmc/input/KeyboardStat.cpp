@@ -29,6 +29,16 @@
 #include "windowing/XBMC_events.h"
 #include "utils/TimeUtils.h"
 #include "input/XBMC_keytable.h"
+#include "peripherals/Peripherals.h"
+#include "peripherals/devices/PeripheralHID.h"
+
+#if defined(_LINUX) && !defined(__APPLE__)
+#include <X11/Xlib.h>
+#include <X11/XKBlib.h>
+#endif
+
+using namespace std;
+using namespace PERIPHERALS;
 
 CKeyboardStat g_Keyboard;
 
@@ -44,6 +54,20 @@ CKeyboardStat::~CKeyboardStat()
 
 void CKeyboardStat::Initialize()
 {
+}
+
+bool CKeyboardStat::LookupSymAndUnicodePeripherals(XBMC_keysym &keysym, uint8_t *key, char *unicode)
+{
+  vector<CPeripheral *> hidDevices;
+  g_peripherals.GetPeripheralsWithFeature(hidDevices, FEATURE_HID);
+  for (unsigned int iDevicePtr = 0; iDevicePtr < hidDevices.size(); iDevicePtr++)
+  {
+    CPeripheralHID *hidDevice = (CPeripheralHID *) hidDevices.at(iDevicePtr);
+    if (hidDevice && hidDevice->LookupSymAndUnicode(keysym, key, unicode))
+      return true;
+  }
+
+  return false;
 }
 
 const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
@@ -74,9 +98,15 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
   vkey = 0;
   held = 0;
 
-  // Start by trying to match both the sym and unicode. This will identify
+  // Start by check whether any of the HID peripherals wants to translate this keypress
+  if (LookupSymAndUnicodePeripherals(keysym, &vkey, &ascii))
+  {
+    CLog::Log(LOGDEBUG, "%s - keypress translated by a HID peripheral", __FUNCTION__);
+  }
+
+  // Continue by trying to match both the sym and unicode. This will identify
   // the majority of keypresses
-  if (KeyTableLookupSymAndUnicode(keysym.sym, keysym.unicode, &keytable))
+  else if (KeyTableLookupSymAndUnicode(keysym.sym, keysym.unicode, &keytable))
   {
     vkey = keytable.vkey;
     ascii = keytable.ascii;

@@ -73,7 +73,11 @@ BIN_DIRS=	\
 	xbmc/input/linux \
 	xbmc/osx \
 	xbmc/threads \
-	xbmc/windowing
+	xbmc/windowing \
+	xbmc/peripherals \
+	xbmc/peripherals/bus \
+	xbmc/peripherals/devices \
+	xbmc/peripherals/dialogs \
 
 ifeq (@USE_OPENGL@,1)
 BIN_DIRS += xbmc/rendering/gl
@@ -348,6 +352,14 @@ xbmc/utils/utils.a: force
 	$(MAKE) -C xbmc/utils
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
+xbmc/peripherals/peripherals.a: force
+	$(MAKE) -C xbmc/peripherals
+xbmc/peripherals/bus/peripheral-bus.a: force
+	$(MAKE) -C xbmc/peripherals/bus
+xbmc/peripherals/devices/peripheral-devices.a: force
+	$(MAKE) -C xbmc/peripherals/devices
+xbmc/peripherals/dialogs/peripheral-dialogs.a: force
+	$(MAKE) -C xbmc/peripherals/dialogs
 lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C lib/libapetag
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
@@ -482,7 +494,11 @@ OBJSXBMC=	\
 	lib/libhts/libhts.a \
 	lib/xbmc-dll-symbols/dll-symbols.a \
 	xbmc/rendering/rendering.a \
-	xbmc/windowing/windowing.a
+	xbmc/windowing/windowing.a \
+	xbmc/peripherals/peripherals.a \
+	xbmc/peripherals/bus/peripheral-bus.a \
+	xbmc/peripherals/devices/peripheral-devices.a \
+	xbmc/peripherals/dialogs/peripheral-dialogs.a 
 
 ifeq (@USE_OPENGL@,1)
 OBJSXBMC += xbmc/rendering/gl/rendering_gl.a

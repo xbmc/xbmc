@@ -62,7 +62,7 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
-
+#include "GUIUserMessages.h"
 #include "addons/Skin.h"
 
 using namespace std;
@@ -216,6 +216,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
         }
       }
     }
+    break;
+  case GUI_MSG_SEARCH:
+    OnSearch();
     break;
   }
   return CGUIMediaWindow::OnMessage(message);
