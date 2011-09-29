@@ -222,6 +222,62 @@ bool CDVDInputStreamBluray::IsEOF()
   return false;
 }
 
+BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleLongest()
+{
+  int titles = m_dll->bd_get_titles(m_bd, TITLES_RELEVANT, 0);
+
+  BLURAY_TITLE_INFO *t, *s = NULL;
+  for(int i=0; i < titles; i++)
+  {
+    t = m_dll->bd_get_title_info(m_bd, i, 0);
+    if(!t)
+    {
+      CLog::Log(LOGDEBUG, "get_main_title - unable to get title %d", i);
+      continue;
+    }
+    if(!s || s->duration < t->duration)
+      std::swap(s, t);
+
+    if(t)
+      m_dll->bd_free_title_info(t);
+  }
+  return s;
+}
+
+BLURAY_TITLE_INFO* CDVDInputStreamBluray::GetTitleFile(const std::string& filename)
+{
+  unsigned int playlist;
+  if(sscanf(filename.c_str(), "%05d.mpls", &playlist) != 1)
+  {
+    CLog::Log(LOGERROR, "get_playlist_title - unsupported playlist file selected %s", filename.c_str());
+    return NULL;
+  }
+
+  int titles = m_dll->bd_get_titles(m_bd, TITLES_ALL, 0);
+  if(titles < 0)
+  {
+    CLog::Log(LOGERROR, "get_playlist_title - unable to get list of titles");
+    return NULL;
+  }
+
+  BLURAY_TITLE_INFO *t;
+  for(int i=0; i < titles; i++)
+  {
+    t = m_dll->bd_get_title_info(m_bd, i, 0);
+    if(!t)
+    {
+      CLog::Log(LOGDEBUG, "get_playlist_title - unable to get title %d", i);
+      continue;
+    }
+    if(t->playlist == playlist)
+      return t;
+    m_dll->bd_free_title_info(t);
+  }
+
+  return NULL;
+}
+
+
 bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content)
 {
   CStdString strPath;
@@ -262,66 +318,11 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
   CStdString filename = URIUtils::GetFileName(strFile);
   if(filename.Equals("index.bdmv"))
   {
-    int titles = m_dll->bd_get_titles(m_bd, TITLES_RELEVANT, 0);
-
-    BLURAY_TITLE_INFO *t, *s = NULL;
-    for(int i=0; i < titles; i++)
-    {
-      t = m_dll->bd_get_title_info(m_bd, i, 0);
-      if(!t)
-      {
-        CLog::Log(LOGDEBUG, "get_main_title - unable to get title %d", i);
-        continue;
-      }
-      if(!s || s->duration < t->duration)
-        std::swap(s, t);
-
-      if(t)
-        m_dll->bd_free_title_info(t);
-    }
-    m_title = s;
+    m_title = GetTitleLongest();
   }
   else if(URIUtils::GetExtension(filename).Equals(".mpls"))
   {
-    int titles = m_dll->bd_get_titles(m_bd, TITLES_ALL, 0);
-    do
-    {
-      if(titles < 0)
-      {
-        CLog::Log(LOGERROR, "get_playlist_title - unable to get list of titles");
-        m_title = NULL;
-        break;
-      }
-
-      unsigned int playlist;
-      if(sscanf(filename.c_str(), "%05d.mpls", &playlist) != 1)
-      {
-        CLog::Log(LOGERROR, "get_playlist_title - unsupported playlist file selected %s", filename.c_str());
-        m_title = NULL;
-        break;
-      }
-
-      BLURAY_TITLE_INFO *t;
-      for(int i=0; i < titles; i++)
-      {
-        t = m_dll->bd_get_title_info(m_bd, i, 0);
-        if(!t)
-        {
-          CLog::Log(LOGDEBUG, "get_playlist_title - unable to get title %d", i);
-          continue;
-        }
-        if(t->playlist == playlist)
-        {
-          m_title = t;
-          break;
-        }
-        m_dll->bd_free_title_info(t);
-      }
-
-      m_title = NULL;
-      break;
-
-    } while(false);
+    m_title = GetTitleFile(filename);
   }
   else
   {
