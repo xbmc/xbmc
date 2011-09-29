@@ -56,6 +56,9 @@ public:
 
   void GetStreamInfo(int pid, char* language);
 
+  BLURAY_TITLE_INFO* GetTitleLongest();
+  BLURAY_TITLE_INFO* GetTitleFile(const std::string& name);
+
 protected:
   DllLibbluray *m_dll;
   BLURAY* m_bd;
