@@ -2502,6 +2502,9 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\BXAcodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\info\SkinVariable.cpp">
+      <Filter>interfaces\info</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5026,6 +5029,9 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\cores\paplayer\BXAcodec.h">
       <Filter>cores\paplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\info\SkinVariable.h">
+      <Filter>interfaces\info</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
