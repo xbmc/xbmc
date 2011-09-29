@@ -45,12 +45,10 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
                       unsigned int f_port,
                       std::map<std::string, std::string> txt)
 {
-
   DNSServiceFlags flags = 0;
   DNSServiceRef netService   = NULL;
 
   CLog::Log(LOGDEBUG, "CZeroconfWIN::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
-  
 
   //add txt records
   if(!txt.empty())
@@ -59,7 +57,7 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     for(std::map<std::string, std::string>::const_iterator it = txt.begin(); it != txt.end(); ++it)
     {
       CLog::Log(LOGDEBUG, "CZeroconfWIN: key:%4, value:%s",it->first.c_str(),it->second.c_str());
-    }        
+    }
   }
 
   DNSServiceErrorType err = DNSServiceRegister(&netService, flags, 0, fcr_name.c_str(), fcr_type.c_str(), NULL, NULL, f_port, 0, NULL, registerCallback, NULL);
@@ -67,7 +65,7 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
   if (err != kDNSServiceErr_NoError)
   {
     // Something went wrong so lets clean up.
-    if (netService) 
+    if (netService)
       DNSServiceRefDeallocate(netService);
 
     CLog::Log(LOGERROR, "CZeroconfWIN::doPublishService CFNetServiceRegister returned (error = %ld)\n", (int) err);
@@ -109,9 +107,9 @@ void DNSSD_API CZeroconfWIN::registerCallback(DNSServiceRef sdref, const DNSServ
 
   if (errorCode == kDNSServiceErr_NoError)
   {
-    if (flags & kDNSServiceFlagsAdd) 
+    if (flags & kDNSServiceFlagsAdd)
       CLog::Log(LOGDEBUG, "CZeroconfWIN: %s.%s%s now registered and active", name, regtype, domain);
-    else 
+    else
       CLog::Log(LOGDEBUG, "CZeroconfWIN: %s.%s%s registration removed", name, regtype, domain);
   }
   else if (errorCode == kDNSServiceErr_NameConflict)
