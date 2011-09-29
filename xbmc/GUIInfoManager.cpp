@@ -1673,29 +1673,29 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
           {
           case PLAYER_PROGRESS:
             value = (int)(g_application.GetPercentage());
-            return true;
+            break;
           case PLAYER_PROGRESS_CACHE:
             value = (int)(g_application.GetCachePercentage());
-            return true;
+            break;
           case PLAYER_SEEKBAR:
             {
               CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
               value = seekBar ? (int)seekBar->GetPercentage() : 0;
-              return true;
+              break;
             }
           case PLAYER_CACHELEVEL:
             value = (int)(g_application.m_pPlayer->GetCacheLevel());
-            return true;
+            break;
           case PLAYER_CHAPTER:
             value = g_application.m_pPlayer->GetChapter();
-            return true;
+            break;
           case PLAYER_CHAPTERCOUNT:
             value = g_application.m_pPlayer->GetChapterCount();
-            return true;
+            break;
           }
         }
       }
-      break;
+      return true;
     case SYSTEM_FREE_MEMORY:
     case SYSTEM_USED_MEMORY:
       {
@@ -1712,10 +1712,8 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
       {
         CGUIDialogProgress *bar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
         if (bar && bar->IsDialogRunning())
-        {
           value = bar->GetPercentage();
-          return true;
-        }
+        return true;
       }
     case SYSTEM_FREE_SPACE:
     case SYSTEM_USED_SPACE:
