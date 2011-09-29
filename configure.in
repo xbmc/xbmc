@@ -996,26 +996,22 @@ fi
 
 # libafpclient
 USE_LIBAFPCLIENT=0
-if test "$host_vendor" = "apple" ; then
-  if test "x$use_libafpclient" != "xno"; then
-    AC_CHECK_HEADERS([afpfs-ng/libafpclient.h],,
-     [if test "x$use_libafpclient" = "xyes"; then
-        AC_MSG_ERROR($libafpclient_not_found)
-      elif test "x$use_libafpclient" != "xno"; then
-        AC_MSG_NOTICE($libafpclient_not_found)
-        use_libafpclient="no"
-      fi
-     ])
-    if test "x$use_libafpclient" != "xno"; then
-      XB_FIND_SONAME([AFPCLIENT], [afpclient], [use_libafpclient])
-      AC_DEFINE([HAVE_LIBAFPCLIENT], [1], [Whether to use libafpclient library.])
-      USE_LIBAFPCLIENT=1
+if test "x$use_libafpclient" != "xno"; then
+  AC_CHECK_HEADERS([afpfs-ng/libafpclient.h],,
+   [if test "x$use_libafpclient" = "xyes"; then
+      AC_MSG_ERROR($libafpclient_not_found)
+    elif test "x$use_libafpclient" != "xno"; then
+      AC_MSG_NOTICE($libafpclient_not_found)
+      use_libafpclient="no"
     fi
-  else
-    AC_MSG_NOTICE($libafpclient_disabled)
+   ])
+  if test "x$use_libafpclient" != "xno"; then
+    XB_FIND_SONAME([AFPCLIENT], [afpclient], [use_libafpclient])
+    AC_DEFINE([HAVE_LIBAFPCLIENT], [1], [Whether to use libafpclient library.])
+    USE_LIBAFPCLIENT=1
   fi
 else
-  use_libafpclient="no"
+  AC_MSG_NOTICE($libafpclient_disabled)
 fi
 
 # libplist for airplay feature
