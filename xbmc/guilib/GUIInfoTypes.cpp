@@ -248,6 +248,18 @@ CStdString CGUIInfoLabel::ReplaceAddonStrings(const CStdString &label)
   return work;
 }
 
+enum EINFOFORMAT { NONE = 0, FORMATINFO, FORMATESCINFO, FORMATVAR };
+
+typedef struct
+{
+  const char *str;
+  EINFOFORMAT  val;
+} infoformat;
+
+const static infoformat infoformatmap[] = {{ "$INFO[",    FORMATINFO },
+                                           { "$ESCINFO[", FORMATESCINFO},
+                                           { "$VAR[",     FORMATVAR}};
+
 void CGUIInfoLabel::Parse(const CStdString &label)
 {
   m_info.clear();
@@ -256,22 +268,27 @@ void CGUIInfoLabel::Parse(const CStdString &label)
   // Step 2: Replace all $ADDON[id number] with the real string
   work = ReplaceAddonStrings(work);
   // Step 3: Find all $INFO[info,prefix,postfix] blocks
-  int pos1 = work.Find("$INFO[");
-  int pos2 = work.Find("$ESCINFO[");
-  bool escaped = false;
-  if (pos2 >= 0 && (pos1 < 0 || pos2 < pos1))
+  EINFOFORMAT format;
+  do
   {
-    escaped = true;
-    pos1 = pos2;
-  }
-  while (pos1 >= 0)
-  {
-    // output the first block (contents before first $INFO)
+    format = NONE;
+    int pos1 = work.size();
+    int pos2;
+    int len = 0;
+    for (size_t i = 0; i < sizeof(infoformatmap) / sizeof(infoformat); i++)
+    {
+      pos2 = work.Find(infoformatmap[i].str);
+      if (pos2 != string::npos && pos2 < pos1)
+      {
+        pos1 = pos2;
+        len = strlen(infoformatmap[i].str);
+        format = infoformatmap[i].val;
+      }
+    }
+
     if (pos1 > 0)
       m_info.push_back(CInfoPortion(0, work.Left(pos1), ""));
 
-    // ok, now decipher the $INFO block
-    int len = escaped ? 9 : 6;
     pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + len);
     if (pos2 > pos1)
     {
@@ -279,13 +296,24 @@ void CGUIInfoLabel::Parse(const CStdString &label)
       CStdString block = work.Mid(pos1 + len, pos2 - pos1 - len);
       CStdStringArray params;
       StringUtils::SplitString(block, ",", params);
-      int info = g_infoManager.TranslateString(params[0]);
+      int info;
+      if (format == FORMATVAR)
+      {
+        info = g_infoManager.TranslateSkinVariableString(params[0]);
+        if (info == 0)
+        {
+          // we didn't register this conditional label yet!
+          CLog::Log(LOGWARNING, "Label Formating: $VAR[%s] is not yet defined", params[0].c_str());
+        }
+      }
+      else
+       info = g_infoManager.TranslateString(params[0]);
       CStdString prefix, postfix;
       if (params.size() > 1)
         prefix = params[1];
       if (params.size() > 2)
         postfix = params[2];
-      m_info.push_back(CInfoPortion(info, prefix, postfix, escaped));
+      m_info.push_back(CInfoPortion(info, prefix, postfix, format == FORMATESCINFO));
       // and delete it from our work string
       work = work.Mid(pos2 + 1);
     }
@@ -294,16 +322,9 @@ void CGUIInfoLabel::Parse(const CStdString &label)
       CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", label.c_str());
       return;
     }
-    pos1 = work.Find("$INFO[");
-    pos2 = work.Find("$ESCINFO[");
-    escaped = false;
-    if (pos2 >= 0 && (pos1 < 0 || pos2 < pos1))
-    {
-      escaped = true;
-      pos1 = pos2;
-    }
   }
-  // add any last block
+  while (format != NONE);
+
   if (!work.IsEmpty())
     m_info.push_back(CInfoPortion(0, work, ""));
 }

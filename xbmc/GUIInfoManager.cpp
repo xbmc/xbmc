@@ -1045,6 +1045,9 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
 
 CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 {
+  if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+    return GetSkinVariableString(info, contextWindow, false);
+
   CStdString strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
@@ -2602,7 +2605,7 @@ bool CGUIInfoManager::GetMultiInfoInt(int &value, const GUIInfo &info, int conte
 }
 
 /// \brief Examines the multi information sent and returns the string as appropriate
-CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow) const
+CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow)
 {
   if (info.m_info == SKIN_STRING)
   {
@@ -2784,6 +2787,9 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
 CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 {
+  if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+    return GetSkinVariableString(info, contextWindow, false);
+
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
@@ -3032,7 +3038,7 @@ CStdString CGUIInfoManager::GetMusicPartyModeLabel(int item)
   return "";
 }
 
-const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) const
+const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
 {
   PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   if (playlist.size() < 1)
@@ -3184,7 +3190,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   return GetMusicTagLabel(item, m_currentFile);
 }
 
-CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) const
+CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
 {
   if (!item->HasMusicInfoTag()) return "";
   const CMusicInfoTag &tag = *item->GetMusicInfoTag();
@@ -3668,6 +3674,8 @@ void CGUIInfoManager::Clear()
   for (unsigned int i = 0; i < m_bools.size(); ++i)
     delete m_bools[i];
   m_bools.clear();
+
+  m_skinVariableStrings.clear();
 }
 
 void CGUIInfoManager::UpdateFPS()
@@ -3756,9 +3764,12 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   return false;
 }
 
-CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
+CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 {
   if (!item) return "";
+
+  if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+    return GetSkinVariableString(info, 0, false, item);
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
@@ -4141,8 +4152,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   return "";
 }
 
-CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
+CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 {
+  if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+    return GetSkinVariableString(info, 0, false, item);
+
   switch (info)
   {
   case LISTITEM_RATING:  // old song rating format
@@ -4256,7 +4270,7 @@ void CGUIInfoManager::UpdateFromTuxBox()
   }
 }
 
-CStdString CGUIInfoManager::GetPictureLabel(int info) const
+CStdString CGUIInfoManager::GetPictureLabel(int info)
 {
   if (info == SLIDE_FILE_NAME)
     return GetItemLabel(m_currentSlide, LISTITEM_FILENAME);
@@ -4479,4 +4493,37 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
             GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS));
   }
   return false;
+}
+
+int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString& info)
+{
+  CSingleLock lock(m_critInfo);
+  int id = TranslateSkinVariableString(info.GetName());
+  if (id != 0)
+    return id;
+
+  m_skinVariableStrings.push_back(info);
+  return CONDITIONAL_LABEL_START + m_skinVariableStrings.size() - 1;
+}
+
+int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name)
+{
+  for (vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
+       it != m_skinVariableStrings.end(); ++it)
+  {
+    if (it->GetName().Equals(name))
+      return it - m_skinVariableStrings.begin() + CONDITIONAL_LABEL_START;
+  }
+  return 0;
+}
+
+CStdString CGUIInfoManager::GetSkinVariableString(int info, int contextWindow, 
+                                                  bool preferImage /*= false*/,
+                                                  const CGUIListItem *item /*= NULL*/)
+{
+  info -= CONDITIONAL_LABEL_START;
+  if (info >= 0 && info < (int)m_skinVariableStrings.size())
+    return m_skinVariableStrings[info].GetValue(contextWindow, preferImage, item);
+
+  return "";
 }
