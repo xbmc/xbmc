@@ -638,6 +638,8 @@
 		DF448460140048C80069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44845B140048C80069344B /* PipesManager.cpp */; };
 		DF4484EE140054530069344B /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4484EC140054530069344B /* BXAcodec.cpp */; };
 		DF4484EF140054530069344B /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4484EC140054530069344B /* BXAcodec.cpp */; };
+		DF98D98C1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
+		DF98D98D1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
 		DFAB049913F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
 		E306D12E0DDF7B590052C2AD /* XBMCHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */; };
@@ -2579,6 +2581,8 @@
 		DF44845C140048C80069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
 		DF4484EC140054530069344B /* BXAcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BXAcodec.cpp; sourceTree = "<group>"; };
 		DF4484ED140054530069344B /* BXAcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BXAcodec.h; sourceTree = "<group>"; };
+		DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
+		DF98D98B1434F47D00A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
 		DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
 		DFAB049713F8376700B70BFB /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
 		E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = XBMCHelper.cpp; sourceTree = "<group>"; };
@@ -4958,6 +4962,8 @@
 		7C89674213C03B21003631FE /* info */ = {
 			isa = PBXGroup;
 			children = (
+				DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */,
+				DF98D98B1434F47D00A6EBE1 /* SkinVariable.h */,
 				7C89674313C03B22003631FE /* InfoBool.cpp */,
 				7C89674413C03B22003631FE /* InfoBool.h */,
 			);
@@ -8136,6 +8142,7 @@
 				DF44845D140048C80069344B /* FilePipe.cpp in Sources */,
 				DF44845E140048C80069344B /* PipesManager.cpp in Sources */,
 				DF4484EE140054530069344B /* BXAcodec.cpp in Sources */,
+				DF98D98C1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9039,6 +9046,7 @@
 				DF44845F140048C80069344B /* FilePipe.cpp in Sources */,
 				DF448460140048C80069344B /* PipesManager.cpp in Sources */,
 				DF4484EF140054530069344B /* BXAcodec.cpp in Sources */,
+				DF98D98D1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

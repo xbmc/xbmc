@@ -37,6 +37,7 @@
 		DF448571140065E10069344B /* FilePipe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44856D140065E10069344B /* FilePipe.cpp */; };
 		DF448572140065E10069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44856F140065E10069344B /* PipesManager.cpp */; };
 		DF4485751400662D0069344B /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485731400662D0069344B /* AirTunesServer.cpp */; };
+		DF98D9991434F49500A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D9971434F49500A6EBE1 /* SkinVariable.cpp */; };
 		DFA6BE4313FECA010048CC11 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE4113FECA010048CC11 /* AirPlayServer.cpp */; };
 		DFA6BE7713FED09C0048CC11 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE7513FED09C0048CC11 /* HttpParser.cpp */; };
 		DFAB04B013F8383300B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB04AE13F8383300B70BFB /* InertialScrollingHandler.cpp */; };
@@ -993,6 +994,8 @@
 		DF448570140065E10069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
 		DF4485731400662D0069344B /* AirTunesServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirTunesServer.cpp; sourceTree = "<group>"; };
 		DF4485741400662D0069344B /* AirTunesServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirTunesServer.h; sourceTree = "<group>"; };
+		DF98D9971434F49500A6EBE1 /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
+		DF98D9981434F49500A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
 		DFA6BE4113FECA010048CC11 /* AirPlayServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayServer.cpp; sourceTree = "<group>"; };
 		DFA6BE4213FECA010048CC11 /* AirPlayServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirPlayServer.h; sourceTree = "<group>"; };
 		DFA6BE7513FED09C0048CC11 /* HttpParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpParser.cpp; sourceTree = "<group>"; };
@@ -5813,6 +5816,8 @@
 			children = (
 				F5E6209413E907E200D5F2CD /* InfoBool.cpp */,
 				F5E6209513E907E200D5F2CD /* InfoBool.h */,
+				DF98D9971434F49500A6EBE1 /* SkinVariable.cpp */,
+				DF98D9981434F49500A6EBE1 /* SkinVariable.h */,
 			);
 			path = info;
 			sourceTree = "<group>";
@@ -6825,6 +6830,7 @@
 				DF448571140065E10069344B /* FilePipe.cpp in Sources */,
 				DF448572140065E10069344B /* PipesManager.cpp in Sources */,
 				DF4485751400662D0069344B /* AirTunesServer.cpp in Sources */,
+				DF98D9991434F49500A6EBE1 /* SkinVariable.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
