@@ -32,6 +32,8 @@
 #include "cores/paplayer/BXAcodec.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
+#include "utils/Variant.h"
+
 using namespace XFILE;
 
 DllLibShairport *CAirTunesServer::m_pLibShairport = NULL;
