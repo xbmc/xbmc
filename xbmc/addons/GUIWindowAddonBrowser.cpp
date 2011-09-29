@@ -324,15 +324,19 @@ bool CGUIWindowAddonBrowser::Update(const CStdString &strDirectory)
 
 int CGUIWindowAddonBrowser::SelectAddonID(TYPE type, CStdString &addonID, bool showNone /*= false*/)
 {
-  return SelectAddonID(vector<ADDON::TYPE>(type), addonID, showNone);
+  vector<ADDON::TYPE> types;
+  types.push_back(type);
+  return SelectAddonID(types, addonID, showNone);
 }
 
 int CGUIWindowAddonBrowser::SelectAddonID(ADDON::TYPE type, CStdStringArray &addonIDs, bool showNone /*= false*/, bool multipleSelection /*= true*/)
 {
-  return SelectAddonID(vector<ADDON::TYPE>(type), addonIDs, showNone, multipleSelection);
+  vector<ADDON::TYPE> types;
+  types.push_back(type);
+  return SelectAddonID(types, addonIDs, showNone, multipleSelection);
 }
 
-int CGUIWindowAddonBrowser::SelectAddonID(vector<ADDON::TYPE> types, CStdString &addonID, bool showNone /*= false*/)
+int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStdString &addonID, bool showNone /*= false*/)
 {
   CStdStringArray addonIDs;
   if (!addonID.IsEmpty())
@@ -345,7 +349,7 @@ int CGUIWindowAddonBrowser::SelectAddonID(vector<ADDON::TYPE> types, CStdString 
   return retval;
 }
 
-int CGUIWindowAddonBrowser::SelectAddonID(vector<ADDON::TYPE> types, CStdStringArray &addonIDs, bool showNone /*= false*/, bool multipleSelection /*= true*/)
+int CGUIWindowAddonBrowser::SelectAddonID(const vector<ADDON::TYPE> &types, CStdStringArray &addonIDs, bool showNone /*= false*/, bool multipleSelection /*= true*/)
 {
   CGUIDialogSelect *dialog = (CGUIDialogSelect*)g_windowManager.GetWindow(WINDOW_DIALOG_SELECT);
   if (!dialog)
