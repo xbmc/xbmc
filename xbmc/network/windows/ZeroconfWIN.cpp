@@ -69,7 +69,8 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
       DNSServiceRefDeallocate(netService);
 
     CLog::Log(LOGERROR, "CZeroconfWIN::doPublishService CFNetServiceRegister returned (error = %ld)\n", (int) err);
-  } else
+  } 
+  else
   {
     CSingleLock lock(m_data_guard);
     m_services.insert(make_pair(fcr_identifier, netService));
@@ -87,7 +88,8 @@ bool CZeroconfWIN::doRemoveService(const std::string& fcr_ident)
     DNSServiceRefDeallocate(it->second);
     m_services.erase(it);
     return true;
-  } else
+  } 
+  else
     return false;
 }
 
