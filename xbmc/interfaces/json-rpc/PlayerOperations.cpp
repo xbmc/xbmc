@@ -182,7 +182,7 @@ JSON_STATUS CPlayerOperations::Seek(const CStdString &method, ITransportLayer *t
       if (parameterObject["value"].isObject())
         g_application.SeekTime(((parameterObject["value"]["hours"].asInteger() * 60) + parameterObject["value"]["minutes"].asInteger()) * 60 + 
           parameterObject["value"]["seconds"].asInteger() + ((double)parameterObject["value"]["milliseconds"].asInteger() / 1000.0));
-      else if (parameterObject["value"].isDouble())
+      else if (IsType(parameterObject["value"], NumberValue))
         g_application.SeekPercentage(parameterObject["value"].asFloat());
       else if (parameterObject["value"].isString())
       {
