@@ -304,14 +304,14 @@ unsigned int CJpegIO::findExifMarker( unsigned char *jpegData,
 {
   unsigned char *buffPtr = jpegData+2;//SKIP 0xFFD8
   unsigned char *endOfFile = jpegData + dataSize;
-  
+
   if(!jpegData || dataSize < 2 || jpegData[0] != 0xFF || jpegData[1] != 0xD8)
     return 0;
-  
+
   for(;;)
   {
     BYTE marker = 0;
-    for (int a=0; a<7 && (buffPtr < endOfFile); a++) 
+    for (int a=0; a<7 && (buffPtr < endOfFile); a++)
     {
       marker = *buffPtr;
       if (marker != 0xFF)
@@ -326,16 +326,16 @@ unsigned int CJpegIO::findExifMarker( unsigned char *jpegData,
     // 0xff is legal padding, but if we get that many, something's wrong.
     if (marker == 0xff)
       return 0;
-    
-    buffPtr++;//move to start of itemlen field   
-    if((buffPtr + 1) >= endOfFile)
-      return 0;    
+
+    buffPtr++;//move to start of itemlen field
+    if ((buffPtr + 1) >= endOfFile)
+      return 0;
 
     // Read the length of the section.
     unsigned short itemlen = (*buffPtr++) << 8;
     itemlen += *buffPtr;
-    
-    if(itemlen < sizeof(itemlen))
+
+    if (itemlen < sizeof(itemlen))
       return 0;
 
     switch(marker)
@@ -343,10 +343,10 @@ unsigned int CJpegIO::findExifMarker( unsigned char *jpegData,
       case M_EOI:
       case M_SOS:   // stop before hitting compressed data
         return 0;
-      case M_EXIF: 
-        /* found exifdata
-           buffPtr was pointing at the second length byte
-           +1 for getting the exif tag */
+      case M_EXIF:
+        // found exifdata
+        //   buffPtr was pointing at the second length byte
+        //   +1 for getting the exif tag
         exifPtr = buffPtr + 1;
         return itemlen;
       default://skip all other sections
@@ -354,7 +354,7 @@ unsigned int CJpegIO::findExifMarker( unsigned char *jpegData,
         break;
     }
   }
-  
+
   return 0;
 }
 
@@ -366,15 +366,14 @@ bool CJpegIO::GetExif()
   unsigned int tagNumber = 0;
   bool isMotorola = false;
   unsigned char *exif_data = NULL;
-  unsigned const char ExifHeader[]     = "Exif\0\0";  
-  
+  unsigned const char ExifHeader[] = "Exif\0\0";
+
   length = findExifMarker(m_inputBuff, m_imgsize, exif_data);
-  
-  /* read exif head, check for "Exif"
-     next we want to read to current offset + length
-     check if buffer is big enough*/
-  if (length                              &&
-      memcmp(exif_data, ExifHeader, 6) == 0)
+
+  // read exif head, check for "Exif"
+  //   next we want to read to current offset + length
+  //   check if buffer is big enough
+  if (length && memcmp(exif_data, ExifHeader, 6) == 0)
   {
     //read exif body
     exif_data += 6;
@@ -383,9 +382,9 @@ bool CJpegIO::GetExif()
   {
     return false;
   }
-  
+
   //check for broken files
-  if( (m_inputBuff + m_imgsize) < (exif_data + length))
+  if ((m_inputBuff + m_imgsize) < (exif_data + length))
   {
     return false;
   }
@@ -397,96 +396,96 @@ bool CJpegIO::GetExif()
     isMotorola = true;
   else
     return false;
-   
+
   // Check Tag Mark
-  if (isMotorola) 
+  if (isMotorola)
   {
     if (exif_data[2] != 0 || exif_data[3] != 0x2A)
       return false;
-  } 
-  else 
+  }
+  else
   {
-    if (exif_data[3] != 0 || exif_data[2] != 0x2A) 
+    if (exif_data[3] != 0 || exif_data[2] != 0x2A)
       return false;
   }
-  
+
   // Get first IFD offset (offset to IFD0)
-  if (isMotorola) 
+  if (isMotorola)
   {
-    if (exif_data[4] != 0 || exif_data[5] != 0) 
+    if (exif_data[4] != 0 || exif_data[5] != 0)
       return false;
     offset = exif_data[6];
     offset <<= 8;
     offset += exif_data[7];
-  } 
-  else 
+  }
+  else
   {
-    if (exif_data[7] != 0 || exif_data[6] != 0) 
+    if (exif_data[7] != 0 || exif_data[6] != 0)
       return false;
     offset = exif_data[5];
     offset <<= 8;
     offset += exif_data[4];
   }
-  
+
   if (offset > length - 2)
     return false; // check end of data segment
-  
+
   // Get the number of directory entries contained in this IFD
-  if (isMotorola) 
+  if (isMotorola)
   {
     numberOfTags = exif_data[offset];
     numberOfTags <<= 8;
     numberOfTags += exif_data[offset+1];
-  } 
-  else 
+  }
+  else
   {
     numberOfTags = exif_data[offset+1];
     numberOfTags <<= 8;
     numberOfTags += exif_data[offset];
   }
-  
-  if (numberOfTags == 0) 
+
+  if (numberOfTags == 0)
     return false;
   offset += 2;
-  
+
   // Search for Orientation Tag in IFD0 - hey almost there! :D
   while(1)//hopefully this jpeg has correct exif data...
   {
     if (offset > length - 12)
       return false; // check end of data segment
-    
+
     // Get Tag number
-    if (isMotorola) 
+    if (isMotorola)
     {
       tagNumber = exif_data[offset];
       tagNumber <<= 8;
       tagNumber += exif_data[offset+1];
-    } 
-    else 
+    }
+    else
     {
       tagNumber = exif_data[offset+1];
       tagNumber <<= 8;
       tagNumber += exif_data[offset];
     }
-    
-    if (tagNumber == EXIF_TAG_ORIENTATION) 
+
+    if (tagNumber == EXIF_TAG_ORIENTATION)
       break; //found orientation tag
-      
-    if ( --numberOfTags == 0) 
+
+    if ( --numberOfTags == 0)
       return false;//no orientation found
     offset += 12;//jump to next tag
   }
-  
+
   // Get the Orientation value
-  if (isMotorola) 
+  if (isMotorola)
   {
-    if (exif_data[offset+8] != 0) 
+    if (exif_data[offset+8] != 0)
       return false;
     m_orientation = exif_data[offset+9];
-  } 
-  else 
+  }
+  else
   {
-    if (exif_data[offset+9] != 0) 
+    if (exif_data[offset+9] != 0)
       return false;
     m_orientation = exif_data[offset+8];
   }
@@ -495,6 +494,6 @@ bool CJpegIO::GetExif()
     m_orientation = 0;
     return false;
   }
-  
+
   return true;//done
 }
