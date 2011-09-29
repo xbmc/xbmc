@@ -197,6 +197,7 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
       m_miny = g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution].iHeight;
     }
     m_cinfo.scale_denom = 8;
+    m_cinfo.out_color_space = JCS_RGB;
     unsigned int maxtexsize = g_Windowing.GetMaxTextureSize();
     for (m_cinfo.scale_num = 1; m_cinfo.scale_num <= 8; m_cinfo.scale_num++)
     {
