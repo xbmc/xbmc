@@ -26,6 +26,11 @@
 #include "threads/CriticalSection.h"
 #include <queue>
 
+namespace CEC
+{
+  class ICECDevice;
+};
+
 namespace PERIPHERALS
 {
   typedef struct
@@ -35,7 +40,6 @@ namespace PERIPHERALS
     unsigned int iButtonReleased;
   } CecButtonPress;
 
-  class CEC::ICECDevice;
 
   class CPeripheralCecAdapter : public CPeripheralHID, public ANNOUNCEMENT::IAnnouncer, private CThread
   {
