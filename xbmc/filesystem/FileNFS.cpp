@@ -305,6 +305,47 @@ void CNfsConnection::keepAlive(struct nfsfh  *_pFileHandle)
   m_pLibNfs->nfs_lseek(m_pNfsContext, _pFileHandle, offset, SEEK_SET, &offset);
 }
 
+int CNfsConnection::stat(const CURL &url, struct stat *statbuff)
+{
+  CSingleLock lock(*this);
+  int nfsRet = 0;
+  CStdString exportPath;
+  CStdString relativePath;
+  struct nfs_context *pTmpContext = NULL;
+  
+  if(!HandleDyLoad())
+  {
+    return -1;
+  }
+  
+  resolveHost(url);
+  
+  if(splitUrlIntoExportAndPath(url, exportPath, relativePath))
+  {    
+    pTmpContext = m_pLibNfs->nfs_init_context();
+    
+    if(pTmpContext)
+    {  
+      //we connect to the directory of the path. This will be the "root" path of this connection then.
+      //So all fileoperations are relative to this mountpoint...
+      nfsRet = m_pLibNfs->nfs_mount(pTmpContext, m_resolvedHostName.c_str(), exportPath.c_str());
+      
+      if(nfsRet == 0) 
+      {
+        nfsRet = m_pLibNfs->nfs_stat(pTmpContext, relativePath.c_str(), statbuff);      
+      }
+      else
+      {
+        CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)\n", exportPath.c_str(), m_pLibNfs->nfs_get_error(m_pNfsContext));
+      }
+      
+      m_pLibNfs->nfs_destroy_context(pTmpContext);
+      CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s in tmpContext\n", url.GetHostName().c_str(), exportPath.c_str());
+    }
+  }
+  return nfsRet;
+}
+
 /* The following two function is used to keep track on how many Opened files/directories there are.
 needed for unloading the dylib*/
 void CNfsConnection::AddActiveConnection()

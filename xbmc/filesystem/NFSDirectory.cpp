@@ -106,7 +106,7 @@ bool CNFSDirectory::GetServerList(CFileItemList &items)
   return ret;
 }
 
-bool CNFSDirectory::ResolveSymlink( const CStdString &dirName, struct nfsdirent *dirent, CStdString &resolvedName)
+bool CNFSDirectory::ResolveSymlink( const CStdString &dirName, struct nfsdirent *dirent, CURL &resolvedUrl)
 {
   CSingleLock lock(gNfsConnection); 
   int ret = 0;  
@@ -117,6 +117,11 @@ bool CNFSDirectory::ResolveSymlink( const CStdString &dirName, struct nfsdirent 
   URIUtils::AddSlashAtEnd(fullpath);
   fullpath.append(dirent->name);
   
+  resolvedUrl.Reset();
+  resolvedUrl.SetPort(2049);
+  resolvedUrl.SetProtocol("nfs");
+  resolvedUrl.SetHostName(gNfsConnection.GetConnectedIp()); 
+  
   ret = gNfsConnection.GetImpl()->nfs_readlink(gNfsConnection.GetNfsContext(), fullpath.c_str(), resolvedLink, MAX_PATH);    
   
   if(ret == 0)
@@ -125,8 +130,24 @@ bool CNFSDirectory::ResolveSymlink( const CStdString &dirName, struct nfsdirent 
     fullpath = dirName;
     URIUtils::AddSlashAtEnd(fullpath);
     fullpath.append(resolvedLink);
- 
-    ret = gNfsConnection.GetImpl()->nfs_stat(gNfsConnection.GetNfsContext(), fullpath.c_str(), &tmpBuffer);
+  
+    //special case - if link target is absolute it could be even another export
+    //intervolume symlinks baby ...
+    if(resolvedLink[0] == '/')
+    {    
+      //use the special stat function for using an extra context
+      //because we are inside of a dir traversation
+      //and just can't change the global nfs context here
+      //without destroying something...
+      fullpath = resolvedLink;
+      resolvedUrl.SetFileName(fullpath);            
+      ret = gNfsConnection.stat(resolvedUrl, &tmpBuffer);
+    }
+    else
+    {
+      ret = gNfsConnection.GetImpl()->nfs_stat(gNfsConnection.GetNfsContext(), fullpath.c_str(), &tmpBuffer);
+      resolvedUrl.SetFileName(gNfsConnection.GetConnectedExport() + fullpath);      
+    }
 
     if (ret != 0) 
     {
@@ -150,8 +171,6 @@ bool CNFSDirectory::ResolveSymlink( const CStdString &dirName, struct nfsdirent 
       else if(S_ISREG(tmpBuffer.st_mode)){ dirent->type = NF3REG; }      
       else if(S_ISLNK(tmpBuffer.st_mode)){ dirent->type = NF3LNK; }      
       else if(S_ISSOCK(tmpBuffer.st_mode)){ dirent->type = NF3SOCK; }            
-      
-      resolvedName = resolvedLink;
     }
   }
   else
@@ -208,6 +227,7 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   while((nfsdirent = gNfsConnection.GetImpl()->nfs_readdir(gNfsConnection.GetNfsContext(), nfsdir)) != NULL) 
   {
     CStdString strName = nfsdirent->name;
+    CStdString path(myStrPath + strName);    
     int64_t iSize = 0;
     bool bIsDir = false;
     int64_t lTimeDate = 0;
@@ -215,11 +235,14 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
     //reslove symlinks
     if(nfsdirent->type == NF3LNK)
     {
+      CURL linkUrl;
       //resolve symlink changes nfsdirent and strName
-      if(!ResolveSymlink(strDirName,nfsdirent,strName))
+      if(!ResolveSymlink(strDirName,nfsdirent,linkUrl))
       { 
         continue;
       }
+      
+      path = linkUrl.Get();
     }
     
     iSize = nfsdirent->size;
@@ -240,7 +263,6 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       FileTimeToLocalFileTime(&fileTime, &localTime);
 
       CFileItemPtr pItem(new CFileItem(nfsdirent->name));
-      CStdString path(myStrPath + strName);
       pItem->m_dateTime=localTime;   
 
       if (bIsDir)

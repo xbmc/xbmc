@@ -64,6 +64,10 @@ public:
   //this functions splits the url into the exportpath (feed to mount) and the rest of the path
   //relative to the mounted export
   bool splitUrlIntoExportAndPath(const CURL& url, CStdString &exportPath, CStdString &relativePath);
+  
+  //special stat which uses its own context
+  //needed for getting intervolume symlinks to work
+  int stat(const CURL &url, struct stat *statbuff);
 
   void AddActiveConnection();
   void AddIdleConnection();
@@ -76,6 +80,9 @@ public:
   void resetKeepAlive(struct nfsfh  *_pFileHandle);
   //removes file handle from keep alive list
   void removeFromKeepAliveList(struct nfsfh  *_pFileHandle);  
+  
+  const CStdString& GetConnectedIp() const {return m_resolvedHostName;}
+  const CStdString& GetConnectedExport() const {return m_exportPath;}
 
 private:
   struct nfs_context *m_pNfsContext;//current nfs context
