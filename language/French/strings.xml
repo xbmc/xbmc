@@ -706,6 +706,8 @@
   <string id="851">Port valide compris entre 1-65535</string>
   <string id="852">Port valide compris entre 1024-65535</string>
   
+  <string id="998">Ajouter une source musicale...</string>
+  <string id="999">Ajouter une source vidéo...</string>
   <string id="1000">- Prévisualiser</string>
   <string id="1001">Impossible de se connecter</string>
   <string id="1002">XBMC ne peut pas se connecter au chemin réseau.</string>
@@ -978,6 +980,7 @@
   <string id="12392">Heures</string>
   <string id="12393">Jours</string>
   <string id="12394">Temps de Fonctionnement Total</string>
+  <string id="12395">Niveau de batterie</string>
   
   <string id="12600">Météo</string>
   
@@ -1012,6 +1015,7 @@
 
   <string id="13100">Filtre de scintillement</string>
   <string id="13101">Laisser le pilote choisir (redémarrage nécessaire)</string>
+
   <string id="13105">Sync. Verticale</string>
   <string id="13106">Désactivée</string>
   <string id="13107">Activée pendant la lecture vidéo</string>
@@ -1162,6 +1166,7 @@
   <string id="13359">Définir image artiste</string>
   <string id="13360">Générer automatiquement les vignettes</string>
   <string id="13361">Activer la voix</string>
+
   <string id="13375">Activer le périphérique</string>
   <string id="13376">Volume</string>
   <string id="13377">Affichage par défaut</string>
@@ -1219,6 +1224,7 @@
   <string id="13429">Activer l'accélération matérielle (VDADecoder)</string>
   <string id="13430">Activer l'accélération matérielle (OpenMax)</string>
   <string id="13431">Pixel Shaders</string>
+  <string id="13432">Autoriser l'accélération matérielle (VideoToolbox)</string>
   
   <string id="13500">Méthode de synchro. A/V</string>
   <string id="13501">Horloge audio</string>
@@ -1478,6 +1484,12 @@
   <string id="16033">Impossible d'ouvrir la base de données.</string>
   <string id="16034">Impossible de récupérer les chansons depuis la BDD.</string>
   <string id="16035">Playliste Mix de soirée</string>
+  <string id="16036">Désentrelacer (moitié)</string>
+  <string id="16037">Désentrelacer la vidéo</string>
+  <string id="16038">Méthode de désentrelacement</string>
+  <string id="16039">Off</string>
+  <string id="16040">Auto</string>
+  <string id="16041">On</string>
   
   <string id="16100">Toutes les vidéos</string>
   <string id="16101">Non vus</string>
@@ -1514,6 +1526,11 @@
   <string id="16317">Temporel (Demi)</string>
   <string id="16318">Temporel/Spatial (Demi)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimized</string>
+  <string id="16324">Software Blend</string>
 
   <string id="16400">Post-processing Vidéo</string>
   
@@ -1728,6 +1745,9 @@
   <string id="20256">Client HTS Tvheadend</string>
   <string id="20257">Client VDR Streamdev</string>
   <string id="20258">Client MythTV</string>
+  <string id="20259">Network Filesystem (NFS)</string>
+  <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Apple File Protocol (AFP)</string>
    
   <string id="20300">Dossier Server Web (HTTP)</string>
   <string id="20301">Dossier Server Web (HTTPS)</string>
@@ -1841,7 +1861,8 @@
   <string id="20416">Diffusion</string>
   <string id="20417">Scénariste</string>
   <string id="20418">Nettoyer les noms de fichiers et dossiers</string>
-  
+  <string id="20419">Montrer les métadonnées en vue fichiers</string>
+
   <string id="20420">Jamais</string>
   <string id="20421">Si 1 saison seulement</string>
   <string id="20422">Toujours</string>
@@ -1878,6 +1899,8 @@
   <string id="20453">épisodes</string>
   <string id="20454">Auditeur</string>
   <string id="20455">Auditeurs</string>  
+  <string id="20456">Choisir le Fanart de la saga</string>
+  <string id="20457">Saga</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Afficher les dossiers et les fichiers cachés</string>
@@ -1984,6 +2007,13 @@
   <string id="21451">Connexion Internet requise.</string>
   <string id="21452">Plus...</string>
   <string id="21453">Racine</string>
+
+  <string id="21460">Emplacement du sous-titre</string>
+  <string id="21461">Fixe</string>
+  <string id="21462">Au pied de la vidéo</string>
+  <string id="21463">Sous la vidéo</string>
+  <string id="21464">En haut de la vidéo</string>
+  <string id="21465">Au-dessus de la vidéo</string>
   
   <string id="21800">Nom du fichier</string>
   <string id="21801">Répertoire du fichier</string>
@@ -2166,7 +2196,12 @@
   <string id="24041">Installer depuis un fichier zip</string>
   <string id="24042">Téléchargement %i%%</string>
   <string id="24043">Mises-à-jour disponibles</string>
-  
+  <string id="24044">Dépendances non supportées</string>
+  <string id="24045">Structure de l'add-on incorrecte</string>
+  <string id="24046">%s est utilisé par les add-ons suivants</string>
+  <string id="24047">Cet add-on ne peut être désinstallé</string>
+  <string id="24048">Rollback</string>
+
   <string id="24050">Add-on disponibles</string>
   <string id="24051">Version :</string>
   <string id="24052">Responsabilités</string>
@@ -2194,6 +2229,8 @@
   <string id="24089">Redémarrage de l'Add-on</string>
   <string id="24090">Vérouiller le gestionnaire d'Add-on</string>
   
+  <string id="24094">(actuel)</string>
+  <string id="24095">(blacklisté)</string>
   <string id="24096">L'Add-on est indiqué non-fonctionnel dans le dépot.</string>
   <string id="24097">Voulez-vous le désactiver sur votre système ?</string>
   <string id="24098">Cassé</string>
@@ -2282,6 +2319,11 @@
   <string id="33082">Chemin du script</string>
   <string id="33083">Activer le bouton de script personnalisé</string>
   
+  <string id="33100">Echec du lancement</string>
+  <string id="33101">Serveur Web</string>
+  <string id="33102">Evènement serveur</string>
+  <string id="33103">Communication à distance avec le serveur</string>
+
   <!-- translators : no need to add these to your language files -->
   <string id="34000">Lame</string>
   <string id="34001">Vorbis</string>
