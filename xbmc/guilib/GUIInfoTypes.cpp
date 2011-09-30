@@ -288,42 +288,42 @@ void CGUIInfoLabel::Parse(const CStdString &label)
 
     if (format != NONE)
     {
-    if (pos1 > 0)
-      m_info.push_back(CInfoPortion(0, work.Left(pos1), ""));
+      if (pos1 > 0)
+        m_info.push_back(CInfoPortion(0, work.Left(pos1), ""));
 
-    pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + len);
-    if (pos2 > pos1)
-    {
-      // decipher the block
-      CStdString block = work.Mid(pos1 + len, pos2 - pos1 - len);
-      CStdStringArray params;
-      StringUtils::SplitString(block, ",", params);
-      int info;
-      if (format == FORMATVAR)
+      pos2 = StringUtils::FindEndBracket(work, '[', ']', pos1 + len);
+      if (pos2 > pos1)
       {
-        info = g_infoManager.TranslateSkinVariableString(params[0]);
-        if (info == 0)
+        // decipher the block
+        CStdString block = work.Mid(pos1 + len, pos2 - pos1 - len);
+        CStdStringArray params;
+        StringUtils::SplitString(block, ",", params);
+        int info;
+        if (format == FORMATVAR)
         {
-          // we didn't register this conditional label yet!
-          CLog::Log(LOGWARNING, "Label Formating: $VAR[%s] is not yet defined", params[0].c_str());
+          info = g_infoManager.TranslateSkinVariableString(params[0]);
+          if (info == 0)
+          {
+            // we didn't register this conditional label yet!
+            CLog::Log(LOGWARNING, "Label Formating: $VAR[%s] is not yet defined", params[0].c_str());
+          }
         }
+        else
+          info = g_infoManager.TranslateString(params[0]);
+        CStdString prefix, postfix;
+        if (params.size() > 1)
+          prefix = params[1];
+        if (params.size() > 2)
+          postfix = params[2];
+        m_info.push_back(CInfoPortion(info, prefix, postfix, format == FORMATESCINFO));
+        // and delete it from our work string
+        work = work.Mid(pos2 + 1);
       }
       else
-       info = g_infoManager.TranslateString(params[0]);
-      CStdString prefix, postfix;
-      if (params.size() > 1)
-        prefix = params[1];
-      if (params.size() > 2)
-        postfix = params[2];
-      m_info.push_back(CInfoPortion(info, prefix, postfix, format == FORMATESCINFO));
-      // and delete it from our work string
-      work = work.Mid(pos2 + 1);
-    }
-    else
-    {
-      CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", label.c_str());
-      return;
-    }
+      {
+        CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", label.c_str());
+        return;
+      }
     }
   }
   while (format != NONE);
