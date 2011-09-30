@@ -23,7 +23,7 @@
 extern "C" {
 #endif
 
-#if !defined(TARGET_WINDOWS) && !defined(__ppc__) && !defined(__powerpc__) && !defined(TARGET_ANDROID) && !defined(TARGET_DARWIN_IOS)
+#if !defined(TARGET_WINDOWS) && !defined(__ppc__) && !defined(__powerpc__) && !defined(__mips__) && !defined(TARGET_ANDROID) && !defined(TARGET_DARWIN_IOS)
 void * fast_memcpy(void * to, const void * from, size_t len);
 //#define fast_memcpy memcpy
 #else

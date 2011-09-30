@@ -25,7 +25,7 @@
  *  <http://www.gnu.org/licenses/>.
  *
  */
-#if !defined(TARGET_WINDOWS) && !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) 
+#if !defined(TARGET_WINDOWS) && !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__) && !defined(__mips__)
 #define HAVE_MMX2
 #define HAVE_SSE
 
