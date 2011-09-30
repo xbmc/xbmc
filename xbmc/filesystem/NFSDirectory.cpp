@@ -264,17 +264,16 @@ bool CNFSDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
       CFileItemPtr pItem(new CFileItem(nfsdirent->name));
       pItem->m_dateTime=localTime;   
-
+      pItem->m_dwSize = iSize;        
+      
       if (bIsDir)
       {
         URIUtils::AddSlashAtEnd(path);
         pItem->m_bIsFolder = true;
-        pItem->m_dwSize = iSize;        
       }
       else
       {
         pItem->m_bIsFolder = false;
-        pItem->m_dwSize = iSize;
       }
 
       if (strName[0] == '.')
