@@ -691,6 +691,16 @@ case $host in
      use_wayland=no
      build_shared_lib=yes
      ;;
+  mips*-*-linux-gnu*)
+     ARCH="mips"
+     use_arch="mips"
+     use_joystick=no
+     use_gles=no
+     use_gl=yes
+     use_sdl=yes
+     use_wayland=no
+     USE_STATIC_FFMPEG=1
+     ;;
   *)
      AC_MSG_ERROR(unsupported host ($host))
 esac
