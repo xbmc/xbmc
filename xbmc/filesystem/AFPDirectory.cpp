@@ -54,7 +54,7 @@ CAFPDirectory::~CAFPDirectory(void)
 }
 
 bool CAFPDirectory::ResolveSymlink( const CStdString &dirName, const CStdString &fileName, 
-                                    struct stat *stat, CStdString &resolvedName)
+                                    struct stat *stat, CURL &resolvedUrl)
 {
   CSingleLock lock(gAfpConnection); 
   int ret = 0;  
@@ -64,27 +64,46 @@ bool CAFPDirectory::ResolveSymlink( const CStdString &dirName, const CStdString 
   URIUtils::AddSlashAtEnd(fullpath);
   fullpath += fileName;
   
+  resolvedUrl.Reset();
+  resolvedUrl.SetProtocol("afp");
+  resolvedUrl.SetHostName(gAfpConnection.GetConnectedIp());   
+  
   ret = gAfpConnection.GetImpl()->afp_wrap_readlink(gAfpConnection.GetVolume(), fullpath.c_str(), resolvedLink, MAX_PATH);    
   
   if(ret == 0)
   {
-    struct stat tmpBuffer = {0};      
     fullpath = dirName;
     URIUtils::AddSlashAtEnd(fullpath);
     fullpath.append(resolvedLink);
  
-    ret = gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), fullpath.c_str(), &tmpBuffer);
+    if(resolvedLink[0] == '/')
+    {
+      //use the special stat function for using an extra context
+      //because we are inside of a dir traversation
+      //and just can't change the global nfs context here
+      //without destroying something...    
+      fullpath = resolvedLink;
+      fullpath = fullpath.Right(fullpath.length()-1);
+      resolvedUrl.SetFileName(fullpath);     
+      ret = gAfpConnection.stat(resolvedUrl, stat);
+      if(ret < 0)
+      {
+        URIUtils::AddSlashAtEnd(fullpath);
+        resolvedUrl.SetFileName(fullpath);     
+        ret = gAfpConnection.stat(resolvedUrl, stat);
+      }
+    }
+    else
+    {
+      ret = gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), fullpath.c_str(), stat);
+      resolvedUrl.SetFileName(gAfpConnection.GetUrl()->volumename + fullpath);            
+    }
 
     if (ret != 0) 
     {
       CLog::Log(LOGERROR, "AFP: Failed to stat(%s) on link resolve %s\n", fullpath.c_str(), strerror(errno));
       retVal = false;;
     }
-    else
-    {  
-        memcpy(stat, &tmpBuffer, sizeof(struct stat));
-    }      
-    resolvedName = resolvedLink;
   }
   else
   {
@@ -162,10 +181,11 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   for (size_t i = 0; i < vecEntries.size(); i++)
   {
     CachedDirEntry aDir = vecEntries[i];
-    CStdString resolvedLink;    
-
     // We use UTF-8 internally, as does AFP
     CStdString strFile = aDir.name;
+    CStdString myStrPath(strPath);
+    URIUtils::AddSlashAtEnd(myStrPath); //be sure the dir ends with a slash    
+    CStdString path(myStrPath + strFile);
 
     if (!strFile.Equals(".") && !strFile.Equals("..") && !strFile.Equals("lost+found"))
     {
@@ -190,11 +210,12 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
             //resolve symlinks
             if(S_ISLNK(info.st_mode))
             {
-              if(!ResolveSymlink(strDirName, strFile, &info, resolvedLink))
+              CURL linkUrl;
+              if(!ResolveSymlink(strDirName, strFile, &info, linkUrl))
               {
                 continue;
               }
-              aDir.name = resolvedLink.c_str();              
+              path = linkUrl.Get();              
             }
           
             bIsDir = (info.st_mode & S_IFDIR) ? true : false;
@@ -223,27 +244,25 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       }
       
       CFileItemPtr pItem(new CFileItem(strFile));      
-
+      pItem->m_dateTime  = localTime;    
+      pItem->m_dwSize    = iSize;
+      
       if (bIsDir)
       {
-        URIUtils::AddSlashAtEnd(aDir.name);
-        pItem->SetPath(strPath + aDir.name);
+        URIUtils::AddSlashAtEnd(path);
         pItem->m_bIsFolder = true;
-        pItem->m_dateTime  = localTime;
       }
       else
       {
-        pItem->SetPath(strPath + aDir.name);
         pItem->m_bIsFolder = false;
-        pItem->m_dwSize    = iSize;
-        pItem->m_dateTime  = localTime;
       }
  
       if (!aDir.name.empty() && aDir.name[0] == '.')
       {
         pItem->SetProperty("file:hidden", true);
       }
-      
+
+      pItem->SetPath(path);      
       items.Add(pItem);      
     }
   }

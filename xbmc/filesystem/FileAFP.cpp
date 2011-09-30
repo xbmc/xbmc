@@ -35,7 +35,6 @@
 #include "threads/SingleLock.h"
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
-#include "DllLibAfp.h"
 
 using namespace XFILE;
 
@@ -134,7 +133,7 @@ void CAfpConnection::disconnectVolume()
 }
 
 // taken from cmdline tool
-bool CAfpConnection::connectVolume(const char *volumename)
+bool CAfpConnection::connectVolume(const char *volumename, struct afp_volume *&pVolume)
 {
   bool ret = false;
   if (strlen(volumename) != 0)
@@ -143,23 +142,23 @@ bool CAfpConnection::connectVolume(const char *volumename)
     unsigned int len = 0;
     char mesg[1024];
 
-    if ((m_pAfpVol = m_pLibAfp->find_volume_by_name(m_pAfpServer, volumename)) == NULL)
+    if ((pVolume = m_pLibAfp->find_volume_by_name(m_pAfpServer, volumename)) == NULL)
     {
       CLog::Log(LOGDEBUG, "AFP: Could not find a volume called %s\n", volumename);
     }
     else
     {
-      m_pAfpVol->mapping = AFP_MAPPING_LOGINIDS;
-      m_pAfpVol->extra_flags |= VOLUME_EXTRA_FLAGS_NO_LOCKING;
+      pVolume->mapping = AFP_MAPPING_LOGINIDS;
+      pVolume->extra_flags |= VOLUME_EXTRA_FLAGS_NO_LOCKING;
 
-      if (m_pLibAfp->afp_connect_volume(m_pAfpVol, m_pAfpServer, mesg, &len, 1024 ))
+      if (m_pLibAfp->afp_connect_volume(pVolume, m_pAfpServer, mesg, &len, 1024 ))
       {
-        CLog::Log(LOGDEBUG, "AFP: Could not access volume %s (error: %s)\n", m_pAfpVol->volume_name, mesg);
-        m_pAfpVol = NULL;
+        CLog::Log(LOGDEBUG, "AFP: Could not access volume %s (error: %s)\n", pVolume->volume_name, mesg);
+        pVolume = NULL;
       }
       else
       {
-        CLog::Log(LOGDEBUG, "AFP: Connected to volume %s\n", m_pAfpVol->volume_name_printable);
+        CLog::Log(LOGDEBUG, "AFP: Connected to volume %s\n", pVolume->volume_name_printable);
         ret = true;
       }
     }
@@ -288,9 +287,64 @@ CAfpConnection::afpConnnectError CAfpConnection::Connect(const CURL& url)
   if (serverChanged)
   {
     disconnectVolume();                   // disconnect old volume
-    connectVolume(m_pAfpUrl->volumename); // connect new volume
+    connectVolume(m_pAfpUrl->volumename, m_pAfpVol); // connect new volume
   }
   return AfpOk;
+}
+
+int CAfpConnection::stat(const CURL &url, struct stat *statbuff)
+{
+  CSingleLock lock(*this);
+  CStdString strPath = gAfpConnection.GetPath(url);
+  struct afp_volume *pTmpVol = NULL;
+  struct afp_url tmpurl;
+  int iResult = -1;
+  CURL nonConstUrl(getAuthenticatedPath(url)); // we need a editable copy of the url
+
+  if (!initLib() || !m_pAfpServer)
+    return -1;
+
+  m_pLibAfp->afp_default_url(&tmpurl);
+
+  // first, try to parse the URL
+  if (m_pLibAfp->afp_parse_url(&tmpurl, nonConstUrl.Get().c_str(), 0) != 0)
+  {
+    // Okay, this isn't a real URL
+    CLog::Log(LOGDEBUG, "AFP: Could not parse url: %s!\n", nonConstUrl.Get().c_str());
+    return -1;
+  }
+
+  // if no username and password is set - use no user authent uam
+  if (strlen(tmpurl.password) == 0 && strlen(tmpurl.username) == 0)
+  {
+    // try anonymous
+    strncpy(tmpurl.uamname, "No User Authent", sizeof(tmpurl.uamname));
+    CLog::Log(LOGDEBUG, "AFP: Using anonymous authentication.");
+  }
+  else if ((nonConstUrl.GetPassWord().IsEmpty() || nonConstUrl.GetUserName().IsEmpty()))
+  {
+    // this is our current url object whe are connected to (at least we try)
+    return -1;
+  }
+
+  // we got a password in the url
+  if (!nonConstUrl.GetPassWord().IsEmpty())
+  {
+    // copy password because afp_parse_url just puts garbage into the password field :(
+    strncpy(tmpurl.password, nonConstUrl.GetPassWord().c_str(), 127);
+  }
+
+  // connect new volume
+  if(connectVolume(tmpurl.volumename, pTmpVol) && pTmpVol)
+  {
+    iResult = m_pLibAfp->afp_wrap_getattr(pTmpVol, strPath.c_str(), statbuff);
+    //unmount single volume crashs
+    //we will get rid of the mounted volume
+    //once the context is changed in connect function
+    //ppppooooorrrr!!
+    //m_pLibAfp->afp_unmount_volume(pTmpVol);
+  }
+  return iResult;
 }
 
 CStdString CAfpConnection::GetPath(const CURL &url)

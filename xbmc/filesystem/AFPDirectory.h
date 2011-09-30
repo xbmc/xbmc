@@ -43,6 +43,6 @@ public:
 private:
   afp_file_info *OpenDir(const CURL &url, CStdString& strAuth);
   bool ResolveSymlink( const CStdString &dirName, const CStdString &fileName, 
-                       struct stat *stat, CStdString &resolvedName);
+                       struct stat *stat, CURL &resolvedUrl);
 };
 }

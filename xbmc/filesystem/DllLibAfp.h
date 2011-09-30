@@ -76,6 +76,7 @@ public:
   virtual int init_uams(void)=0;
   virtual int afp_main_quick_startup(pthread_t * thread)=0;
   virtual int afp_unmount_all_volumes(struct afp_server * server)=0;
+  virtual int afp_unmount_volume(struct afp_volume * volume)=0;
   virtual struct afp_volume * find_volume_by_name(struct afp_server * server, const char * volname)=0;
   virtual int afp_connect_volume(struct afp_volume * volume, struct afp_server * server, char * mesg, unsigned int * l, unsigned int max)=0;
   virtual int afp_parse_url(struct afp_url * url, const char * toparse, int verbose)=0;
@@ -130,6 +131,7 @@ class DllLibAfp : public DllDynamic, DllLibAfpInterface
   DEFINE_METHOD1(void,                  libafpclient_register,            (struct libafpclient *p1))
   DEFINE_METHOD1(int,                   afp_main_quick_startup,           (pthread_t *p1))  
   DEFINE_METHOD1(int,                   afp_unmount_all_volumes,          (struct afp_server *p1))    
+  DEFINE_METHOD1(int,                   afp_unmount_volume,               (struct afp_volume *p1))
   DEFINE_METHOD1(unsigned int,          find_uam_by_name,                 (const char *p1))      
   DEFINE_METHOD1(char *,                uam_bitmap_to_string,             (unsigned int p1))        
   DEFINE_METHOD1(void,                  afp_default_url,                  (struct afp_url *p1))  
@@ -169,6 +171,7 @@ class DllLibAfp : public DllDynamic, DllLibAfpInterface
     RESOLVE_METHOD_RENAME(libafpclient_register, libafpclient_register)
     RESOLVE_METHOD_RENAME(afp_main_quick_startup, afp_main_quick_startup)
     RESOLVE_METHOD_RENAME(afp_unmount_all_volumes, afp_unmount_all_volumes)        
+    RESOLVE_METHOD_RENAME(afp_unmount_all_volumes, afp_unmount_all_volumes)
     RESOLVE_METHOD_RENAME(find_volume_by_name, find_volume_by_name)    
     RESOLVE_METHOD_RENAME(afp_connect_volume, afp_connect_volume)        
     RESOLVE_METHOD_RENAME(afp_parse_url, afp_parse_url)            
