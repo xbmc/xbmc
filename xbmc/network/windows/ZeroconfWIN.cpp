@@ -50,17 +50,21 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
 
   CLog::Log(LOGDEBUG, "CZeroconfWIN::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
 
+  TXTRecordRef txtRecord;
+  TXTRecordCreate(&txtRecord, 0, NULL);
+
   //add txt records
   if(!txt.empty())
   {
-    // nothin useful yet and I dunno what to do with it
     for(std::map<std::string, std::string>::const_iterator it = txt.begin(); it != txt.end(); ++it)
     {
-      CLog::Log(LOGDEBUG, "CZeroconfWIN: key:%4, value:%s",it->first.c_str(),it->second.c_str());
+      CLog::Log(LOGDEBUG, "CZeroconfWIN: key:%s, value:%s",it->first.c_str(),it->second.c_str());
+      uint8_t txtLen = (uint8_t)strlen(it->second.c_str());
+      TXTRecordSetValue(&txtRecord, it->first.c_str(), txtLen, it->second.c_str());
     }
   }
 
-  DNSServiceErrorType err = DNSServiceRegister(&netService, flags, 0, fcr_name.c_str(), fcr_type.c_str(), NULL, NULL, f_port, 0, NULL, registerCallback, NULL);
+  DNSServiceErrorType err = DNSServiceRegister(&netService, flags, 0, fcr_name.c_str(), fcr_type.c_str(), NULL, NULL, f_port, TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
 
   if (err != kDNSServiceErr_NoError)
   {
@@ -75,6 +79,8 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     CSingleLock lock(m_data_guard);
     m_services.insert(make_pair(fcr_identifier, netService));
   }
+
+  TXTRecordDeallocate(&txtRecord);
 
   return err == kDNSServiceErr_NoError;
 }
