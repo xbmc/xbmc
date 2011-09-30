@@ -149,7 +149,9 @@
 #endif
 #include "interfaces/AnnouncementManager.h"
 #include "peripherals/Peripherals.h"
+#ifdef HAVE_LIBCEC
 #include "peripherals/devices/PeripheralCecAdapter.h"
+#endif
 #include "peripherals/dialogs/GUIDialogPeripheralManager.h"
 #include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 
@@ -2804,6 +2806,7 @@ bool CApplication::ProcessRemote(float frameTime)
 bool CApplication::ProcessPeripherals(float frameTime)
 {
   vector<CPeripheral *> peripherals;
+#ifdef HAVE_LIBCEC
   if (g_peripherals.GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
   {
     for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
@@ -2817,6 +2820,7 @@ bool CApplication::ProcessPeripherals(float frameTime)
       }
     }
   }
+#endif
 
   return false;
 }
