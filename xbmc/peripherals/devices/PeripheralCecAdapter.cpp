@@ -22,7 +22,6 @@
 
 #ifdef HAVE_LIBCEC
 #include "PeripheralCecAdapter.h"
-#include "dialogs/GUIDialogOK.h"
 #include "input/XBIRRemote.h"
 #include "Application.h"
 #include "threads/SingleLock.h"
@@ -128,13 +127,13 @@ void CPeripheralCecAdapter::Process(void)
 {
   if (!GetSettingBool("enabled"))
   {
+    CLog::Log(LOGDEBUG, "%s - CEC adapter is disabled in peripheral settings", __FUNCTION__);
     m_bStarted = false;
     return;
   }
 
   // the device needs a second to settle after it's plugged in
   Sleep(CEC_SETTLE_DOWN_TIME);
-
 
   CStdString strPort = GetSettingString("port");
   if (strPort.IsEmpty())
@@ -151,7 +150,7 @@ void CPeripheralCecAdapter::Process(void)
       m_bStarted = false;
       return;
     }
-    else if (iFound > 0)
+    else
     {
       cec_device dev = deviceList[0];
       if (iFound > 1)
@@ -167,18 +166,18 @@ void CPeripheralCecAdapter::Process(void)
   }
 
   // open the CEC adapter
-  CLog::Log(LOGDEBUG, "%s - opening CEC adapter: %s", __FUNCTION__, strPort.c_str());
+  CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, strPort.c_str());
 
   if (!m_cecParser->Open(strPort.c_str(), 10000))
   {
     FlushLog();
-    CGUIDialogOK::ShowAndGetInput(257, 0, 36006, 0);
+    CLog::Log(LOGERROR, "%s - could not opening a connection to the CEC adapter", __FUNCTION__);
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), g_localizeStrings.Get(36012));
     m_bStarted = false;
     return;
   }
 
-  CLog::Log(LOGDEBUG, "%s - CEC adapter opened", __FUNCTION__);
+  CLog::Log(LOGDEBUG, "%s - connection to the CEC adapter opened", __FUNCTION__);
   m_bIsReady = true;
   CAnnouncementManager::AddAnnouncer(this);
 
