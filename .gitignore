@@ -1210,3 +1210,5 @@ lib/cmyth/Makefile
 /xbmc/visualizations/XBMCProjectM/libprojectM/config.inp
 
 /xbmc/win32/git_rev.h
+
+/xbmc/windowing/dfb/Makefile

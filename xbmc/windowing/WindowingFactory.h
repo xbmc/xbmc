@@ -36,6 +36,9 @@
 #elif defined(TARGET_LINUX)   && defined(HAS_GLES) && defined(HAVE_X11)
 #include "X11/WinSystemX11GLES.h"
 
+#elif defined(TARGET_LINUX)   && defined(HAS_GLES) && defined(HAS_DIRECTFB)
+#include "dfb/WinSystemDFB.h"
+
 #elif defined(TARGET_LINUX) && defined(HAS_GLES) && defined(HAS_EGL)
 #include "egl/WinSystemGLES.h"
 

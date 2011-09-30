@@ -86,6 +86,9 @@ ifeq (@USE_OPENGLES@,1)
 BIN_DIRS += xbmc/rendering/gles
 BIN_DIRS += xbmc/windowing/egl
 endif
+ifeq (@USE_DIRECTFB@,1)
+BIN_DIRS += xbmc/windowing/dfb
+endif
 
 ifeq ($(findstring osx,@ARCH@),osx)
 BIN_DIRS += xbmc/network/osx
@@ -280,6 +283,8 @@ xbmc/windowing/windowing.a: force
 	$(MAKE) -C xbmc/windowing
 xbmc/windowing/egl/windowing_egl.a: force
 	$(MAKE) -C xbmc/windowing/egl
+xbmc/windowing/dfb/windowing_dfb.a: force
+	$(MAKE) -C xbmc/windowing/dfb
 xbmc/windowing/osx/windowing_osx.a: force
 	$(MAKE) -C xbmc/windowing/osx
 xbmc/windowing/X11/windowing_X11.a: force
@@ -506,6 +511,9 @@ endif
 ifeq (@USE_OPENGLES@,1)
 OBJSXBMC += xbmc/rendering/gles/rendering_gles.a
 OBJSXBMC += xbmc/windowing/egl/windowing_egl.a
+endif
+ifeq (@USE_DIRECTFB@,1)
+OBJSXBMC += xbmc/windowing/dfb/windowing_dfb.a
 endif
 
 ifeq (@HAVE_XBMC_NONFREE@,1)
