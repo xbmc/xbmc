@@ -20,6 +20,10 @@
  */
 
 #include "Atomics.h"
+#if defined(__mips__)
+#include "MipsAtomics.h"
+pthread_mutex_t cmpxchg_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif
 
 ///////////////////////////////////////////////////////////////////////////
 // 32-bit atomic compare-and-swap
@@ -69,7 +73,10 @@ long cas(volatile long* pAddr, long expectedVal, long swapVal)
 }
 
 #elif defined(__mips__)
-// TODO:
+long cas(volatile long* pAddr,long expectedVal, long swapVal)
+{
+  return cmpxchg32(pAddr, expectedVal, swapVal);
+}
 
 #elif defined(WIN32)
 
@@ -115,9 +122,15 @@ long cas(volatile long* pAddr,long expectedVal, long swapVal)
 // 64-bit atomic compare-and-swap
 // Returns previous value of *pAddr
 ///////////////////////////////////////////////////////////////////////////
-#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__) || defined(__mips__) // PowerPC, ARM, and MIPS
+#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__)// PowerPC and ARM
 
 // Not available/required
+
+#elif defined(__mips__)
+long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
+{
+  return cmpxchg64(pAddr, expectedVal, swapVal);
+}
 
 #elif defined(WIN32)
 
@@ -210,7 +223,12 @@ long AtomicIncrement(volatile long* pAddr)
 }
 
 #elif defined(__mips__)
-// TODO:
+
+long AtomicIncrement(volatile long* pAddr)
+{
+  return atomic_add(1, pAddr);
+}
+
 
 #elif defined(WIN32)
 
@@ -289,7 +307,12 @@ long AtomicAdd(volatile long* pAddr, long amount)
 }
 
 #elif defined(__mips__)
-// TODO:
+
+long AtomicAdd(volatile long* pAddr, long amount)
+{
+  return atomic_add(amount, pAddr);
+}
+
 
 #elif defined(WIN32)
 
@@ -368,7 +391,11 @@ long AtomicDecrement(volatile long* pAddr)
 }
 
 #elif defined(__mips__)
-// TODO:
+
+long AtomicDecrement(volatile long* pAddr)
+{
+  return atomic_sub(1, pAddr);
+}
 
 #elif defined(WIN32)
 
@@ -448,7 +475,11 @@ long AtomicSubtract(volatile long* pAddr, long amount)
 }
 
 #elif defined(__mips__)
-// TODO:
+
+long AtomicSubtract(volatile long* pAddr, long amount)
+{
+  return atomic_sub(amount, pAddr);
+}
 
 #elif defined(WIN32)
 
