@@ -900,6 +900,13 @@ bool CPVRManager::IsRecording(void) const
 
 bool CPVRManager::IsIdle(void) const
 {
+  CSingleLock lock(m_critSection);
+  if (!m_bLoaded)
+  {
+    return true;
+  }
+  lock.Leave();
+
   if (IsRecording()) // pvr recording?
   {
     return false;
