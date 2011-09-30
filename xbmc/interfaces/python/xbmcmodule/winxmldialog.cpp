@@ -75,22 +75,31 @@ namespace PYXBMC
 
     if (!XFILE::CFile::Exists(strSkinPath))
     {
-      // Check for the matching folder for the skin in the fallback skins folder
+      CStdString str("none");
+      AddonProps props(str, ADDON_SKIN, "", "");
+      CSkinInfo::TranslateResolution(resolution, res);
+
       CStdString fallbackPath = URIUtils::AddFileToFolder(strFallbackPath, "resources");
       fallbackPath = URIUtils::AddFileToFolder(fallbackPath, "skins");
       CStdString basePath = URIUtils::AddFileToFolder(fallbackPath, g_SkinInfo->ID());
-      strSkinPath = g_SkinInfo->GetSkinPath(strXMLname, &res, basePath);
+
+      // Check for the matching folder for the skin in the fallback skins folder (if it exists)
+      if (XFILE::CFile::Exists(basePath))
+      {
+        props.path = basePath;
+        CSkinInfo skinInfo(props, res);
+        skinInfo.Start();
+        strSkinPath = skinInfo.GetSkinPath(strXMLname, &res);
+      }
+
       if (!XFILE::CFile::Exists(strSkinPath))
       {
         // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
-        CStdString str("none");
-        AddonProps props(str, ADDON_SKIN, "", "");
         props.path = URIUtils::AddFileToFolder(fallbackPath, strDefault);
-        CSkinInfo::TranslateResolution(resolution, res);
         CSkinInfo skinInfo(props, res);
 
         skinInfo.Start();
-        strSkinPath = skinInfo.GetSkinPath(strXMLname, &res);        
+        strSkinPath = skinInfo.GetSkinPath(strXMLname, &res);
         if (!XFILE::CFile::Exists(strSkinPath))
         {
           PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");
