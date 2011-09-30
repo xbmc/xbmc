@@ -23,6 +23,8 @@
 #include "peripherals/Peripherals.h"
 #include "utils/log.h"
 
+using namespace PERIPHERALS;
+
 #ifdef TARGET_DARWIN_OSX
 #include <IOKit/IOCFPlugIn.h>
 #include <IOKit/usb/IOUSBLib.h>
@@ -36,8 +38,6 @@ typedef struct USBDevicePrivateData {
   PeripheralScanResult  result;
 } USBDevicePrivateData;
 #endif
-
-using namespace PERIPHERALS;
 
 CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
     CPeripheralBus(manager, PERIPHERAL_BUS_USB)
