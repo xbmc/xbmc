@@ -15,7 +15,6 @@
 		18968DE814155E1D005BA742 /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DE614155E1D005BA742 /* ApplicationOperations.cpp */; };
 		18ACF8E313597B0000B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF8E113597B0000B67371 /* RecentlyAddedJob.cpp */; };
 		18B7013C13A6ABBA0009C1AF /* AddonVersion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7013A13A6ABBA0009C1AF /* AddonVersion.cpp */; };
-		18B7013F13A6ABD20009C1AF /* KeymapLoader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B7013D13A6ABD20009C1AF /* KeymapLoader.cpp */; };
 		18ECC9AA13CF17EB00A9ED6C /* StreamUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ECC9A813CF17EB00A9ED6C /* StreamUtils.cpp */; };
 		32D6D47C1423A9D8003641AC /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32D6D47A1423A9D8003641AC /* JpegIO.cpp */; };
 		4D5D2E131301753F006ABC13 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D5D2E121301753F006ABC13 /* CFNetwork.framework */; };
@@ -930,6 +929,19 @@
 		F5AE453B134D2E720004BD79 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4539134D2E720004BD79 /* JSONServiceDescription.cpp */; };
 		F5B13E0113344F310045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13E0013344F310045076D /* DarwinUtils.mm */; };
 		F5CEE72C13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE72B13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp */; };
+		F5E1131D14357B6500175026 /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112FF14357B6500175026 /* PeripheralBusUSB.cpp */; };
+		F5E1131E14357B6500175026 /* PeripheralBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1130114357B6500175026 /* PeripheralBus.cpp */; };
+		F5E1131F14357B6500175026 /* Peripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1130514357B6500175026 /* Peripheral.cpp */; };
+		F5E1132014357B6500175026 /* PeripheralBluetooth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1130714357B6500175026 /* PeripheralBluetooth.cpp */; };
+		F5E1132114357B6500175026 /* PeripheralCecAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1130914357B6500175026 /* PeripheralCecAdapter.cpp */; };
+		F5E1132214357B6500175026 /* PeripheralDisk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1130B14357B6500175026 /* PeripheralDisk.cpp */; };
+		F5E1132314357B6500175026 /* PeripheralHID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1130D14357B6500175026 /* PeripheralHID.cpp */; };
+		F5E1132414357B6500175026 /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1130F14357B6500175026 /* PeripheralNIC.cpp */; };
+		F5E1132514357B6500175026 /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1131114357B6500175026 /* PeripheralNyxboard.cpp */; };
+		F5E1132614357B6500175026 /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1131314357B6500175026 /* PeripheralTuner.cpp */; };
+		F5E1132714357B6500175026 /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1131614357B6500175026 /* GUIDialogPeripheralManager.cpp */; };
+		F5E1132814357B6500175026 /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1131814357B6500175026 /* GUIDialogPeripheralSettings.cpp */; };
+		F5E1132914357B6500175026 /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1131A14357B6500175026 /* Peripherals.cpp */; };
 		F5E6209F13E9081400D5F2CD /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E6209D13E9081400D5F2CD /* InfoBool.cpp */; };
 /* End PBXBuildFile section */
 
@@ -948,8 +960,6 @@
 		18ACF8E213597B0000B67371 /* RecentlyAddedJob.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentlyAddedJob.h; sourceTree = "<group>"; };
 		18B7013A13A6ABBA0009C1AF /* AddonVersion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonVersion.cpp; sourceTree = "<group>"; };
 		18B7013B13A6ABBA0009C1AF /* AddonVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonVersion.h; sourceTree = "<group>"; };
-		18B7013D13A6ABD20009C1AF /* KeymapLoader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = KeymapLoader.cpp; sourceTree = "<group>"; };
-		18B7013E13A6ABD20009C1AF /* KeymapLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KeymapLoader.h; sourceTree = "<group>"; };
 		18ECC9A813CF17EB00A9ED6C /* StreamUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StreamUtils.cpp; sourceTree = "<group>"; };
 		18ECC9A913CF17EB00A9ED6C /* StreamUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamUtils.h; sourceTree = "<group>"; };
 		32D6D47A1423A9D8003641AC /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
@@ -2906,6 +2916,34 @@
 		F5B13E0013344F310045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 		F5CEE72B13D3F9AC00225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
 		F5CEE72D13D3F9B300225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
+		F5E112FF14357B6500175026 /* PeripheralBusUSB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusUSB.cpp; sourceTree = "<group>"; };
+		F5E1130014357B6500175026 /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
+		F5E1130114357B6500175026 /* PeripheralBus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBus.cpp; sourceTree = "<group>"; };
+		F5E1130214357B6500175026 /* PeripheralBus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBus.h; sourceTree = "<group>"; };
+		F5E1130314357B6500175026 /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
+		F5E1130514357B6500175026 /* Peripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripheral.cpp; sourceTree = "<group>"; };
+		F5E1130614357B6500175026 /* Peripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Peripheral.h; sourceTree = "<group>"; };
+		F5E1130714357B6500175026 /* PeripheralBluetooth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBluetooth.cpp; sourceTree = "<group>"; };
+		F5E1130814357B6500175026 /* PeripheralBluetooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBluetooth.h; sourceTree = "<group>"; };
+		F5E1130914357B6500175026 /* PeripheralCecAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralCecAdapter.cpp; sourceTree = "<group>"; };
+		F5E1130A14357B6500175026 /* PeripheralCecAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralCecAdapter.h; sourceTree = "<group>"; };
+		F5E1130B14357B6500175026 /* PeripheralDisk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralDisk.cpp; sourceTree = "<group>"; };
+		F5E1130C14357B6500175026 /* PeripheralDisk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralDisk.h; sourceTree = "<group>"; };
+		F5E1130D14357B6500175026 /* PeripheralHID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralHID.cpp; sourceTree = "<group>"; };
+		F5E1130E14357B6500175026 /* PeripheralHID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralHID.h; sourceTree = "<group>"; };
+		F5E1130F14357B6500175026 /* PeripheralNIC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralNIC.cpp; sourceTree = "<group>"; };
+		F5E1131014357B6500175026 /* PeripheralNIC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralNIC.h; sourceTree = "<group>"; };
+		F5E1131114357B6500175026 /* PeripheralNyxboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralNyxboard.cpp; sourceTree = "<group>"; };
+		F5E1131214357B6500175026 /* PeripheralNyxboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralNyxboard.h; sourceTree = "<group>"; };
+		F5E1131314357B6500175026 /* PeripheralTuner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralTuner.cpp; sourceTree = "<group>"; };
+		F5E1131414357B6500175026 /* PeripheralTuner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTuner.h; sourceTree = "<group>"; };
+		F5E1131614357B6500175026 /* GUIDialogPeripheralManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralManager.cpp; sourceTree = "<group>"; };
+		F5E1131714357B6500175026 /* GUIDialogPeripheralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralManager.h; sourceTree = "<group>"; };
+		F5E1131814357B6500175026 /* GUIDialogPeripheralSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralSettings.cpp; sourceTree = "<group>"; };
+		F5E1131914357B6500175026 /* GUIDialogPeripheralSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralSettings.h; sourceTree = "<group>"; };
+		F5E1131A14357B6500175026 /* Peripherals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripherals.cpp; sourceTree = "<group>"; };
+		F5E1131B14357B6500175026 /* Peripherals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Peripherals.h; sourceTree = "<group>"; };
+		F5E1131C14357B6500175026 /* PeripheralTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTypes.h; sourceTree = "<group>"; };
 		F5E6209D13E9081400D5F2CD /* InfoBool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoBool.cpp; sourceTree = "<group>"; };
 		F5E6209E13E9081400D5F2CD /* InfoBool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoBool.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -3264,6 +3302,7 @@
 				F56C75C5131EC153000AD0F6 /* music */,
 				F56C7647131EC153000AD0F6 /* network */,
 				F56C7675131EC153000AD0F6 /* osx */,
+				F5E112FC14357B6500175026 /* peripherals */,
 				F56C7683131EC153000AD0F6 /* pictures */,
 				F56C7698131EC153000AD0F6 /* playlists */,
 				F56C76AB131EC153000AD0F6 /* powermanagement */,
@@ -4488,8 +4527,6 @@
 				F56C7557131EC152000AD0F6 /* KeyboardLayoutConfiguration.h */,
 				F56C7558131EC152000AD0F6 /* KeyboardStat.cpp */,
 				F56C7559131EC152000AD0F6 /* KeyboardStat.h */,
-				18B7013D13A6ABD20009C1AF /* KeymapLoader.cpp */,
-				18B7013E13A6ABD20009C1AF /* KeymapLoader.h */,
 				F56C755A131EC152000AD0F6 /* MouseStat.cpp */,
 				F56C755B131EC152000AD0F6 /* MouseStat.h */,
 				F56C755C131EC152000AD0F6 /* SDLJoystick.cpp */,
@@ -4537,10 +4574,6 @@
 		F56C7566131EC152000AD0F6 /* xbmcmodule */ = {
 			isa = PBXGroup;
 			children = (
-				F56C7567131EC152000AD0F6 /* xbmcvfsmodule.cpp */,
-				F56C7568131EC152000AD0F6 /* PythonAddon.cpp */,
-				F56C7569131EC152000AD0F6 /* PythonAddon.h */,
-				F56C756A131EC152000AD0F6 /* xbmcaddonmodule.cpp */,
 				F56C756B131EC152000AD0F6 /* controlslider.cpp */,
 				F56C756C131EC152000AD0F6 /* controlradiobutton.cpp */,
 				F56C756D131EC152000AD0F6 /* action.cpp */,
@@ -4580,6 +4613,8 @@
 				F56C758E131EC152000AD0F6 /* player.h */,
 				F56C758F131EC152000AD0F6 /* pyplaylist.cpp */,
 				F56C7590131EC152000AD0F6 /* pyplaylist.h */,
+				F56C7568131EC152000AD0F6 /* PythonAddon.cpp */,
+				F56C7569131EC152000AD0F6 /* PythonAddon.h */,
 				F56C7591131EC152000AD0F6 /* PythonPlayer.cpp */,
 				F56C7592131EC152000AD0F6 /* PythonPlayer.h */,
 				F56C7593131EC152000AD0F6 /* pyutil.cpp */,
@@ -4590,8 +4625,10 @@
 				F56C7598131EC152000AD0F6 /* winxml.h */,
 				F56C7599131EC152000AD0F6 /* winxmldialog.cpp */,
 				F56C759A131EC152000AD0F6 /* xbmcguimodule.cpp */,
+				F56C756A131EC152000AD0F6 /* xbmcaddonmodule.cpp */,
 				F56C759B131EC152000AD0F6 /* xbmcmodule.cpp */,
 				F56C759C131EC152000AD0F6 /* xbmcplugin.cpp */,
+				F56C7567131EC152000AD0F6 /* xbmcvfsmodule.cpp */,
 			);
 			path = xbmcmodule;
 			sourceTree = "<group>";
@@ -5811,6 +5848,73 @@
 			path = "json-rpc";
 			sourceTree = "<group>";
 		};
+		F5E112FC14357B6500175026 /* peripherals */ = {
+			isa = PBXGroup;
+			children = (
+				F5E112FD14357B6500175026 /* bus */,
+				F5E1130414357B6500175026 /* devices */,
+				F5E1131514357B6500175026 /* dialogs */,
+				F5E1131A14357B6500175026 /* Peripherals.cpp */,
+				F5E1131B14357B6500175026 /* Peripherals.h */,
+				F5E1131C14357B6500175026 /* PeripheralTypes.h */,
+			);
+			path = peripherals;
+			sourceTree = "<group>";
+		};
+		F5E112FD14357B6500175026 /* bus */ = {
+			isa = PBXGroup;
+			children = (
+				F5E112FE14357B6500175026 /* osx */,
+				F5E1130114357B6500175026 /* PeripheralBus.cpp */,
+				F5E1130214357B6500175026 /* PeripheralBus.h */,
+				F5E1130314357B6500175026 /* PeripheralBusUSB.h */,
+			);
+			path = bus;
+			sourceTree = "<group>";
+		};
+		F5E112FE14357B6500175026 /* osx */ = {
+			isa = PBXGroup;
+			children = (
+				F5E112FF14357B6500175026 /* PeripheralBusUSB.cpp */,
+				F5E1130014357B6500175026 /* PeripheralBusUSB.h */,
+			);
+			path = osx;
+			sourceTree = "<group>";
+		};
+		F5E1130414357B6500175026 /* devices */ = {
+			isa = PBXGroup;
+			children = (
+				F5E1130514357B6500175026 /* Peripheral.cpp */,
+				F5E1130614357B6500175026 /* Peripheral.h */,
+				F5E1130714357B6500175026 /* PeripheralBluetooth.cpp */,
+				F5E1130814357B6500175026 /* PeripheralBluetooth.h */,
+				F5E1130914357B6500175026 /* PeripheralCecAdapter.cpp */,
+				F5E1130A14357B6500175026 /* PeripheralCecAdapter.h */,
+				F5E1130B14357B6500175026 /* PeripheralDisk.cpp */,
+				F5E1130C14357B6500175026 /* PeripheralDisk.h */,
+				F5E1130D14357B6500175026 /* PeripheralHID.cpp */,
+				F5E1130E14357B6500175026 /* PeripheralHID.h */,
+				F5E1130F14357B6500175026 /* PeripheralNIC.cpp */,
+				F5E1131014357B6500175026 /* PeripheralNIC.h */,
+				F5E1131114357B6500175026 /* PeripheralNyxboard.cpp */,
+				F5E1131214357B6500175026 /* PeripheralNyxboard.h */,
+				F5E1131314357B6500175026 /* PeripheralTuner.cpp */,
+				F5E1131414357B6500175026 /* PeripheralTuner.h */,
+			);
+			path = devices;
+			sourceTree = "<group>";
+		};
+		F5E1131514357B6500175026 /* dialogs */ = {
+			isa = PBXGroup;
+			children = (
+				F5E1131614357B6500175026 /* GUIDialogPeripheralManager.cpp */,
+				F5E1131714357B6500175026 /* GUIDialogPeripheralManager.h */,
+				F5E1131814357B6500175026 /* GUIDialogPeripheralSettings.cpp */,
+				F5E1131914357B6500175026 /* GUIDialogPeripheralSettings.h */,
+			);
+			path = dialogs;
+			sourceTree = "<group>";
+		};
 		F5E6209C13E9081400D5F2CD /* info */ = {
 			isa = PBXGroup;
 			children = (
@@ -6789,7 +6893,6 @@
 				1840B797139968DB007C848B /* JSONVariantWriter.cpp in Sources */,
 				7C0A7ECD13A5DBF900AFC2BD /* AppParamParser.cpp in Sources */,
 				18B7013C13A6ABBA0009C1AF /* AddonVersion.cpp in Sources */,
-				18B7013F13A6ABD20009C1AF /* KeymapLoader.cpp in Sources */,
 				7C0A7FC813A9E75400AFC2BD /* DirtyRegionSolvers.cpp in Sources */,
 				7C0A7FC913A9E75400AFC2BD /* DirtyRegionTracker.cpp in Sources */,
 				7C0A7FCC13A9E76E00AFC2BD /* GUIWindowDebugInfo.cpp in Sources */,
@@ -6816,6 +6919,19 @@
 				DF4485351400651B0069344B /* PipesManager.cpp in Sources */,
 				DF4485381400654A0069344B /* AirTunesServer.cpp in Sources */,
 				DF98D9A81434F4B400A6EBE1 /* SkinVariable.cpp in Sources */,
+				F5E1131D14357B6500175026 /* PeripheralBusUSB.cpp in Sources */,
+				F5E1131E14357B6500175026 /* PeripheralBus.cpp in Sources */,
+				F5E1131F14357B6500175026 /* Peripheral.cpp in Sources */,
+				F5E1132014357B6500175026 /* PeripheralBluetooth.cpp in Sources */,
+				F5E1132114357B6500175026 /* PeripheralCecAdapter.cpp in Sources */,
+				F5E1132214357B6500175026 /* PeripheralDisk.cpp in Sources */,
+				F5E1132314357B6500175026 /* PeripheralHID.cpp in Sources */,
+				F5E1132414357B6500175026 /* PeripheralNIC.cpp in Sources */,
+				F5E1132514357B6500175026 /* PeripheralNyxboard.cpp in Sources */,
+				F5E1132614357B6500175026 /* PeripheralTuner.cpp in Sources */,
+				F5E1132714357B6500175026 /* GUIDialogPeripheralManager.cpp in Sources */,
+				F5E1132814357B6500175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
+				F5E1132914357B6500175026 /* Peripherals.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -6990,7 +7106,6 @@
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
 					"\"$(SRCROOT)/lib/SlingboxLib\"",
-					"\"$(SRCROOT)/lib/shairport\"",
 				);
 				OTHER_LDFLAGS = (
 					"-Wl,-headerpad_max_install_names",
