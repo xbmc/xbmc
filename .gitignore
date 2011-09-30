@@ -125,6 +125,10 @@ config.log
 /xbmc/guilib/Profile
 /xbmc/guilib/Profile_FastCap
 
+# /xbmc/peripherals/
+/xbmc/peripherals/bus/Makefile
+/xbmc/peripherals/devices/Makefile
+
 # /lib/
 /lib/Makefile
 
@@ -225,6 +229,20 @@ lib/cmyth/Makefile
 /lib/libass/m4/ltsugar.m4
 /lib/libass/m4/ltversion.m4
 /lib/libass/m4/lt~obsolete.m4
+
+# /lib/libcec
+/lib/libcec/Makefile
+/lib/libcec/Makefile.in
+/lib/libcec/aclocal.m4
+/lib/libcec/config.guess
+/lib/libcec/config.sub
+/lib/libcec/configure
+/lib/libcec/depcomp
+/lib/libcec/install-sh
+/lib/libcec/ltmain.sh
+/lib/libcec/missing
+/lib/libcec/src/lib/Makefile.in
+/lib/libcec/src/testclient/Makefile.in
 
 # /lib/libiconv
 /lib/libiconv/libiconv_win32/Debug

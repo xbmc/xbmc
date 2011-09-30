@@ -1,0 +1,381 @@
+<window id="10140">
+	<defaultcontrol always="true">20</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<coordinates>
+		<system>1</system>
+		<posx>190</posx>
+		<posy>30</posy>
+	</coordinates>
+	<include>dialogeffect</include>
+
+	<controls>
+		<control type="image">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>900</width>
+			<height>660</height>
+			<texture border="40">DialogBack.png</texture>
+		</control>
+		<control type="image">
+			<description>Dialog Header image</description>
+			<posx>40</posx>
+			<posy>16</posy>
+			<width>820</width>
+			<height>40</height>
+			<texture>dialogheader.png</texture>
+		</control>
+		<control type="label">
+			<description>header label</description>
+			<posx>40</posx>
+			<posy>20</posy>
+			<width>820</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>$LOCALIZE[35000]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>selected</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="label">
+			<description>header label</description>
+			<posx>40</posx>
+			<posy>20</posy>
+			<width>820</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>$LOCALIZE[35000]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>selected</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="button">
+			<description>Close Window button</description>
+			<posx>810</posx>
+			<posy>15</posy>
+			<width>64</width>
+			<height>32</height>
+			<label>-</label>
+			<font>-</font>
+			<onclick>PreviousMenu</onclick>
+			<texturefocus>DialogCloseButton-focus.png</texturefocus>
+			<texturenofocus>DialogCloseButton.png</texturenofocus>
+			<onleft>10</onleft>
+			<onright>10</onright>
+			<onup>10</onup>
+			<ondown>10</ondown>
+			<visible>system.getbool(input.enablemouse)</visible>
+		</control>
+
+		<control type="group">
+			<description>Peripheral list</description>
+			<posx>20</posx>
+			<posy>70</posy>
+			<control type="label">
+				<description>peripheral option header</description>
+				<posx>130</posx>
+				<posy>0</posy>
+				<width>380</width>
+				<height>20</height>
+				<font>font12_title</font>
+				<label>$LOCALIZE[35000]</label>
+				<align>left</align>
+				<aligny>center</aligny>
+				<textcolor>blue</textcolor>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="scrollbar" id="60">
+				<posx>0</posx>
+				<posy>40</posy>
+				<width>25</width>
+				<height>445</height>
+				<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
+				<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
+				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+				<textureslidernib>ScrollBarNib.png</textureslidernib>
+				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
+				<onleft>9000</onleft>
+				<onright>20</onright>
+				<showonepage>false</showonepage>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="image">
+				<posx>25</posx>
+				<posy>35</posy>
+				<width>330</width>
+				<height>440</height>
+				<texture border="5">button-nofocus.png</texture>
+			</control>
+			
+			<control type="list" id="20">
+				<posx>30</posx>
+				<posy>40</posy>
+				<width>320</width>
+				<height>445</height>
+				<onup>20</onup>
+				<ondown>20</ondown>
+				<onleft>60</onleft>
+				<onright>9000</onright>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="45" width="320">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>320</width>
+						<height>40</height>
+						<texture border="5">button-nofocus.png</texture>
+					</control>
+					<control type="label">
+						<posx>10</posx>
+						<posy>0</posy>
+						<width>320</width>
+						<height>40</height>
+						<font>font12</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<info>ListItem.Label</info>
+					</control>
+				</itemlayout>
+				<focusedlayout height="45" width="320">
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>320</width>
+						<height>40</height>
+						<texture border="5">button-nofocus.png</texture>
+						<visible>!Control.HasFocus(20)</visible>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>0</posy>
+						<width>320</width>
+						<height>40</height>
+						<texture border="5">button-focus2.png</texture>
+						<visible>Control.HasFocus(20)</visible>
+					</control>
+					<control type="label">
+						<posx>10</posx>
+						<posy>0</posy>
+						<width>320</width>
+						<height>40</height>
+						<font>font12</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textcolor>white</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<info>ListItem.Label</info>
+					</control>
+				</focusedlayout>
+			</control>
+
+			<control type="label">
+				<description>Page Count Label</description>
+				<posx>80</posx>
+				<posy>480</posy>
+				<width>420</width>
+				<height>20</height>
+				<font>font12</font>
+				<textcolor>grey</textcolor>
+				<scroll>false</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>([COLOR=blue]$INFO[Container(20).NumItems][/COLOR]) $LOCALIZE[19019] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(20).CurrentPage]/$INFO[Container(20).NumPages][/COLOR])</label>
+			</control>
+		</control>
+
+		<control type="group" id="9002">
+			<control type="group">
+				<posx>400</posx>
+				<posy>70</posy>
+				<control type="label">
+					<description>peripheral option header</description>
+					<posx>150</posx>
+					<posy>0</posy>
+					<width>380</width>
+					<height>20</height>
+					<font>font12_title</font>
+					<label>$LOCALIZE[33029]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+
+				<control type="label">
+					<description>name</description>
+					<posx>0</posx>
+					<posy>35</posy>
+					<width>380</width>
+					<height>20</height>
+					<label>$LOCALIZE[35502]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>name value</description>
+					<posx>150</posx>
+					<posy>35</posy>
+					<width>330</width>
+					<height>20</height>
+					<label fallback="13205">$INFO[Container(20).ListItem.Label]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<scroll>true</scroll>
+					<shadowcolor>black</shadowcolor>
+				</control>
+
+				<control type="label">
+					<description>location</description>
+					<posx>0</posx>
+					<posy>60</posy>
+					<width>380</width>
+					<height>20</height>
+					<label>$LOCALIZE[35500]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>location value</description>
+					<posx>150</posx>
+					<posy>60</posy>
+					<width>330</width>
+					<height>20</height>
+					<label fallback="13205">$INFO[Container(20).ListItem.Property(Bus)] - $INFO[Container(20).ListItem.Property(Location)]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<scroll>true</scroll>
+					<shadowcolor>black</shadowcolor>
+				</control>
+
+				<control type="label">
+					<description>class</description>
+					<posx>0</posx>
+					<posy>85</posy>
+					<width>380</width>
+					<height>20</height>
+					<label>$LOCALIZE[35501]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>class value</description>
+					<posx>150</posx>
+					<posy>85</posy>
+					<width>330</width>
+					<height>20</height>
+					<label fallback="13205">$INFO[Container(20).ListItem.Property(Class)]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<scroll>true</scroll>
+					<shadowcolor>black</shadowcolor>
+				</control>
+
+				<control type="label">
+					<description>vendor</description>
+					<posx>0</posx>
+					<posy>110</posy>
+					<width>380</width>
+					<height>20</height>
+					<label>$LOCALIZE[35503]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>vendor value</description>
+					<posx>150</posx>
+					<posy>110</posy>
+					<width>330</width>
+					<height>20</height>
+					<label fallback="13205">$INFO[Container(20).ListItem.Property(Vendor)]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<scroll>true</scroll>
+					<shadowcolor>black</shadowcolor>
+				</control>
+
+				<control type="label">
+					<description>product</description>
+					<posx>0</posx>
+					<posy>135</posy>
+					<width>380</width>
+					<height>20</height>
+					<label>$LOCALIZE[35504]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<textcolor>blue</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>product value</description>
+					<posx>150</posx>
+					<posy>135</posy>
+					<width>330</width>
+					<height>20</height>
+					<label fallback="13205">$INFO[Container(20).ListItem.Property(Product)]</label>
+					<align>left</align>
+					<aligny>center</aligny>
+					<font>font12</font>
+					<scroll>true</scroll>
+					<shadowcolor>black</shadowcolor>
+				</control>
+
+			</control>
+		</control>
+
+		<control type="group" id="9000">
+			<posx>70</posx>
+			<posy>590</posy>
+			<control type="button" id="10">
+				<description>Close Button</description>
+				<posy>0</posy>
+				<posx>100</posx>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12_title</font>
+				<label>186</label>
+				<onleft>11</onleft>
+				<onright>11</onright>
+				<onup>20</onup>
+				<ondown>20</ondown>
+			</control>
+			<control type="button" id="11">
+				<description>Settings Button</description>
+				<posy>0</posy>
+				<posx>400</posx>
+				<width>200</width>
+				<height>40</height>
+				<align>center</align>
+				<aligny>center</aligny>
+				<font>font12_title</font>
+				<label>5</label>
+				<onleft>10</onleft>
+				<onright>10</onright>
+				<onup>20</onup>
+				<ondown>20</ondown>
+			</control>
+		</control>
+	</controls>
+</window>

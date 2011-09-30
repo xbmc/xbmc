@@ -119,6 +119,12 @@ libplist_disabled="== AirPlay support disabled. =="
 alsa_not_found="== Could not find ALSA. ALSA support disabled. =="
 dbus_not_found="== Could not find DBUS. DBUS support disabled. =="
 
+libudev_not_found="== Could not find libudev. Will use polling to check for device changes. =="
+libudev_disabled="== udev support disabled. Will use polling to check for device changes. =="
+libusb_not_found="== Could not find libusb. Plug and play USB device support will not be available. =="
+libusb_disabled="== libusb disabled. Plug and play USB device support will not be available. =="
+libcec_not_found="== Could not find libcec. CEC device support will not be available. =="
+libcec_disabled="== libcec disabled. CEC device support will not be available. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -377,6 +383,24 @@ AC_ARG_WITH([lirc-device],
   [lirc_device=$withval],
   [lirc_device=/dev/lircd])
 AC_DEFINE_UNQUOTED([LIRC_DEVICE], ["$lirc_device"], [Default LIRC device])
+
+AC_ARG_ENABLE([udev],
+  [AS_HELP_STRING([--enable-udev],
+  [enable udev support (default is auto)])],
+  [use_libudev=$enableval],
+  [use_libudev=auto])
+
+AC_ARG_ENABLE([libusb],
+  [AS_HELP_STRING([--enable-libusb],
+  [enable libusb support (default is auto)])],
+  [use_libusb=$enableval],
+  [use_libusb=auto])
+
+AC_ARG_ENABLE([libcec],
+  [AS_HELP_STRING([--enable-libcec],
+  [enable libcec support (default is auto)])],
+  [use_libcec=$enableval],
+  [use_libcec=auto])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -1048,6 +1072,69 @@ if test "x$use_airtunes" != "xno"; then
     XB_FIND_SONAME([SHAIRPORT], [shairport], [use_airtunes])
     USE_AIRTUNES=1
   fi
+fi
+
+# libusb
+if test "$host_vendor" = "apple" ; then
+  use_libusb="no"
+  AC_MSG_NOTICE($libusb_disabled)
+else
+  if test "$use_libusb" = "auto"; then
+    PKG_CHECK_MODULES([USB], [libusb],
+      use_libusb="yes"; HAVE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; HAVE_LIBUSB=1]; \
+      AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
+      use_libusb="no"; AC_MSG_RESULT($libusb_not_found))
+  elif test "$use_libusb" = "yes"; then
+    PKG_CHECK_MODULES([USB], [libusb],
+      use_libusb="yes"; HAVE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; HAVE_LIBUSB=1]; \
+      AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
+      use_libusb="no"; AC_MSG_ERROR($libusb_not_found))
+  else
+    use_libusb="no"
+    AC_MSG_NOTICE($libusb_disabled)
+  fi
+fi
+
+# udev
+if test "$use_libusb" = "yes"; then
+  if test "$host_vendor" = "apple" ; then
+    use_libudev="no"
+    AC_MSG_NOTICE($libudev_disabled)
+  else
+    if test "$use_libudev" = "auto"; then
+      PKG_CHECK_MODULES([UDEV], [libudev],
+        use_libudev="yes"; use_libusb="no"; HAVE_LIBUDEV=1; [INCLUDES="$INCLUDES $UDEV_CFLAGS"; LIBS="$LIBS $UDEV_LIBS"]; \
+        AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"]),
+	    AC_MSG_RESULT($libudev_not_found))
+    elif test "$use_libudev" = "yes" ; then
+      PKG_CHECK_MODULES([UDEV], [libudev],
+        use_libudev="yes"; use_libusb="no"; HAVE_LIBUDEV=1; [INCLUDES="$INCLUDES $UDEV_CFLAGS"; LIBS="$LIBS $UDEV_LIBS"]; \
+        AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"]),
+	    AC_MSG_ERROR($libudev_not_found))
+    else
+      use_libudev="no"
+      AC_MSG_NOTICE($libudev_disabled)
+    fi
+  fi
+else
+  use_libudev="no"
+  AC_MSG_NOTICE($libudev_disabled)
+fi
+
+# libcec
+if test "$use_libcec" = "auto"; then
+  PKG_CHECK_MODULES([CEC], [libcec],
+    use_libcec="yes"; HAVE_LIBCEC=1; [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS";] \
+    AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libcec is installed"]),
+	use_libcec="no"; AC_MSG_RESULT($libcec_not_found))
+elif test "$use_libcec" = "yes"; then
+  PKG_CHECK_MODULES([CEC], [libcec],
+    use_libcec="yes"; HAVE_LIBCEC=1; [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS";] \
+    AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libcec is installed"]),
+	use_libcec="no"; AC_MSG_ERROR($libcec_not_found))
+else
+  use_libcec="no"
+  AC_MSG_NOTICE($libcec_disabled)
 fi
 
 ### External libraries checks
@@ -1729,7 +1816,9 @@ OUTPUT_FILES="Makefile \
     tools/Linux/xbmc.sh \
     tools/Linux/xbmc-standalone.sh \
     tools/TexturePacker/Makefile \
-    tools/EventClients/Clients/OSXRemote/Makefile"
+    tools/EventClients/Clients/OSXRemote/Makefile \
+    xbmc/peripherals/bus/Makefile \
+    xbmc/peripherals/devices/Makefile"
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
@@ -1781,6 +1870,9 @@ AC_SUBST(USE_TEXTUREPACKER)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE_ROOT)
 AC_SUBST(USE_AIRTUNES)
+AC_SUBST(HAVE_LIBUDEV)
+AC_SUBST(HAVE_LIBUSB)
+AC_SUBST(HAVE_LIBCEC)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

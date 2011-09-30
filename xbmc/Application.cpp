@@ -148,6 +148,10 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #endif
 #include "interfaces/AnnouncementManager.h"
+#include "peripherals/Peripherals.h"
+#include "peripherals/devices/PeripheralCecAdapter.h"
+#include "peripherals/dialogs/GUIDialogPeripheralManager.h"
+#include "peripherals/dialogs/GUIDialogPeripheralSettings.h"
 
 // Windows includes
 #include "guilib/GUIWindowManager.h"
@@ -252,7 +256,6 @@
 #ifdef _WIN32
 #include <shlobj.h>
 #include "win32util.h"
-#include "win32/WIN32USBScan.h"
 #endif
 #ifdef HAS_XRANDR
 #include "windowing/X11/XRandR.h"
@@ -309,6 +312,7 @@ using namespace DBUSSERVER;
 using namespace JSONRPC;
 #endif
 using namespace ANNOUNCEMENT;
+using namespace PERIPHERALS;
 
 using namespace XbmcThreads;
 
@@ -612,10 +616,6 @@ bool CApplication::Create()
 
   g_powerManager.Initialize();
 
-#ifdef _WIN32
-  CWIN32USBScan();
-#endif
-
   CLog::Log(LOGNOTICE, "load settings...");
 
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
@@ -660,6 +660,8 @@ bool CApplication::Create()
     CLog::Log(LOGFATAL, "CApplication::Create: Unable to start CAddonMgr");
     FatalErrorHandler(true, true, true);
   }
+
+  g_peripherals.Initialise();
 
   // Create the Mouse, Keyboard, Remote, and Joystick devices
   // Initialize after loading settings to get joystick deadzone setting
@@ -1121,6 +1123,9 @@ bool CApplication::Initialize()
 
   g_windowManager.Add(new CGUIDialogPlayEject);
 
+  g_windowManager.Add(new CGUIDialogPeripheralManager);
+  g_windowManager.Add(new CGUIDialogPeripheralSettings);
+
   g_windowManager.Add(new CGUIWindowMusicPlayList);          // window id = 500
   g_windowManager.Add(new CGUIWindowMusicSongs);             // window id = 501
   g_windowManager.Add(new CGUIWindowMusicNav);               // window id = 502
@@ -1579,6 +1584,8 @@ void CApplication::StopServices()
   CLog::Log(LOGNOTICE, "stop dvd detect media");
   m_DetectDVDType.StopThread();
 #endif
+
+  g_peripherals.Clear();
 }
 
 void CApplication::ReloadSkin()
@@ -2672,6 +2679,7 @@ void CApplication::FrameMove(bool processEvents)
     ProcessRemote(frameTime);
     ProcessGamepad(frameTime);
     ProcessEventServer(frameTime);
+    ProcessPeripherals(frameTime);
     m_pInertialScrollingHandler->ProcessInertialScroll(frameTime);
   }
   if (!m_bStop)
@@ -2790,6 +2798,26 @@ bool CApplication::ProcessRemote(float frameTime)
     return OnKey(key);
   }
 #endif
+  return false;
+}
+
+bool CApplication::ProcessPeripherals(float frameTime)
+{
+  vector<CPeripheral *> peripherals;
+  if (g_peripherals.GetPeripheralsWithFeature(peripherals, FEATURE_CEC))
+  {
+    for (unsigned int iPeripheralPtr = 0; iPeripheralPtr < peripherals.size(); iPeripheralPtr++)
+    {
+      CPeripheralCecAdapter *cecDevice = (CPeripheralCecAdapter *) peripherals.at(iPeripheralPtr);
+      if (cecDevice && cecDevice->GetButton())
+      {
+        CKey key(cecDevice->GetButton(), cecDevice->GetHoldTime());
+        cecDevice->ResetButton();
+        return OnKey(key);
+      }
+    }
+  }
+
   return false;
 }
 
