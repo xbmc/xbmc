@@ -1,7 +1,7 @@
 SRCS=PeripheralBus.cpp
 
-ifeq (@HAVE_LIBUSB@,1)
-ifeq (@HAVE_LIBUDEV@,1)
+ifeq (@USE_LIBUSB@,1)
+ifeq (@USE_LIBUDEV@,1)
 SRCS+=linux/PeripheralBusUSBLibUdev.cpp
 else
 SRCS+=linux/PeripheralBusUSBLibUSB.cpp

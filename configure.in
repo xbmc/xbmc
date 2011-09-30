@@ -1075,18 +1075,19 @@ if test "x$use_airtunes" != "xno"; then
 fi
 
 # libusb
+USE_LIBUSB=0
 if test "$host_vendor" = "apple" ; then
   use_libusb="no"
   AC_MSG_NOTICE($libusb_disabled)
 else
   if test "$use_libusb" = "auto"; then
     PKG_CHECK_MODULES([USB], [libusb],
-      use_libusb="yes"; HAVE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; HAVE_LIBUSB=1]; \
+      use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
       AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
       use_libusb="no"; AC_MSG_RESULT($libusb_not_found))
   elif test "$use_libusb" = "yes"; then
     PKG_CHECK_MODULES([USB], [libusb],
-      use_libusb="yes"; HAVE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; HAVE_LIBUSB=1]; \
+      use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
       AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
       use_libusb="no"; AC_MSG_ERROR($libusb_not_found))
   else
@@ -1096,6 +1097,7 @@ else
 fi
 
 # udev
+USE_LIBUDEV=0
 if test "$use_libusb" = "yes"; then
   if test "$host_vendor" = "apple" ; then
     use_libudev="no"
@@ -1103,12 +1105,12 @@ if test "$use_libusb" = "yes"; then
   else
     if test "$use_libudev" = "auto"; then
       PKG_CHECK_MODULES([UDEV], [libudev],
-        use_libudev="yes"; use_libusb="no"; HAVE_LIBUDEV=1; [INCLUDES="$INCLUDES $UDEV_CFLAGS"; LIBS="$LIBS $UDEV_LIBS"]; \
+        use_libudev="yes"; use_libusb="no"; USE_LIBUDEV=1; [INCLUDES="$INCLUDES $UDEV_CFLAGS"; LIBS="$LIBS $UDEV_LIBS"]; \
         AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"]),
 	    AC_MSG_RESULT($libudev_not_found))
     elif test "$use_libudev" = "yes" ; then
       PKG_CHECK_MODULES([UDEV], [libudev],
-        use_libudev="yes"; use_libusb="no"; HAVE_LIBUDEV=1; [INCLUDES="$INCLUDES $UDEV_CFLAGS"; LIBS="$LIBS $UDEV_LIBS"]; \
+        use_libudev="yes"; use_libusb="no"; USE_LIBUDEV=1; [INCLUDES="$INCLUDES $UDEV_CFLAGS"; LIBS="$LIBS $UDEV_LIBS"]; \
         AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"]),
 	    AC_MSG_ERROR($libudev_not_found))
     else
@@ -1122,14 +1124,15 @@ else
 fi
 
 # libcec
+USE_LIBCEC=0
 if test "$use_libcec" = "auto"; then
   PKG_CHECK_MODULES([CEC], [libcec],
-    use_libcec="yes"; HAVE_LIBCEC=1; [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS";] \
+    use_libcec="yes"; USE_LIBCEC=1; [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS";] \
     AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libcec is installed"]),
 	use_libcec="no"; AC_MSG_RESULT($libcec_not_found))
 elif test "$use_libcec" = "yes"; then
   PKG_CHECK_MODULES([CEC], [libcec],
-    use_libcec="yes"; HAVE_LIBCEC=1; [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS";] \
+    use_libcec="yes"; USE_LIBCEC=1; [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS";] \
     AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libcec is installed"]),
 	use_libcec="no"; AC_MSG_ERROR($libcec_not_found))
 else
@@ -1870,9 +1873,9 @@ AC_SUBST(USE_TEXTUREPACKER)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE_ROOT)
 AC_SUBST(USE_AIRTUNES)
-AC_SUBST(HAVE_LIBUDEV)
-AC_SUBST(HAVE_LIBUSB)
-AC_SUBST(HAVE_LIBCEC)
+AC_SUBST(USE_LIBUDEV)
+AC_SUBST(USE_LIBUSB)
+AC_SUBST(USE_LIBCEC)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions

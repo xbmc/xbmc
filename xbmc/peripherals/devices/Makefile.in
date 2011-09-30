@@ -6,7 +6,7 @@ SRCS=Peripheral.cpp \
      PeripheralNyxboard.cpp \
      PeripheralTuner.cpp
 
-ifeq (@HAVE_LIBCEC@,1)
+ifeq (@USE_LIBCEC@,1)
 SRCS+=PeripheralCecAdapter.cpp
 endif
 
