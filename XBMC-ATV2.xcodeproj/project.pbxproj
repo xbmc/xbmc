@@ -942,6 +942,7 @@
 		F5E1132714357B6500175026 /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1131614357B6500175026 /* GUIDialogPeripheralManager.cpp */; };
 		F5E1132814357B6500175026 /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1131814357B6500175026 /* GUIDialogPeripheralSettings.cpp */; };
 		F5E1132914357B6500175026 /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1131A14357B6500175026 /* Peripherals.cpp */; };
+		F5E113AD1435882400175026 /* pyrendercapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E113AC1435882400175026 /* pyrendercapture.cpp */; };
 		F5E6209F13E9081400D5F2CD /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E6209D13E9081400D5F2CD /* InfoBool.cpp */; };
 /* End PBXBuildFile section */
 
@@ -2944,6 +2945,8 @@
 		F5E1131A14357B6500175026 /* Peripherals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripherals.cpp; sourceTree = "<group>"; };
 		F5E1131B14357B6500175026 /* Peripherals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Peripherals.h; sourceTree = "<group>"; };
 		F5E1131C14357B6500175026 /* PeripheralTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTypes.h; sourceTree = "<group>"; };
+		F5E113AC1435882400175026 /* pyrendercapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pyrendercapture.cpp; sourceTree = "<group>"; };
+		F5E113AE1435882900175026 /* pyrendercapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pyrendercapture.h; sourceTree = "<group>"; };
 		F5E6209D13E9081400D5F2CD /* InfoBool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoBool.cpp; sourceTree = "<group>"; };
 		F5E6209E13E9081400D5F2CD /* InfoBool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoBool.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -4613,6 +4616,8 @@
 				F56C758E131EC152000AD0F6 /* player.h */,
 				F56C758F131EC152000AD0F6 /* pyplaylist.cpp */,
 				F56C7590131EC152000AD0F6 /* pyplaylist.h */,
+				F5E113AC1435882400175026 /* pyrendercapture.cpp */,
+				F5E113AE1435882900175026 /* pyrendercapture.h */,
 				F56C7568131EC152000AD0F6 /* PythonAddon.cpp */,
 				F56C7569131EC152000AD0F6 /* PythonAddon.h */,
 				F56C7591131EC152000AD0F6 /* PythonPlayer.cpp */,
@@ -6932,6 +6937,7 @@
 				F5E1132714357B6500175026 /* GUIDialogPeripheralManager.cpp in Sources */,
 				F5E1132814357B6500175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				F5E1132914357B6500175026 /* Peripherals.cpp in Sources */,
+				F5E113AD1435882400175026 /* pyrendercapture.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
