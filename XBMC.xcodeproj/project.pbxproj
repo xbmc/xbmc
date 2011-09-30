@@ -1875,6 +1875,8 @@
 		F5E10D381428426B00175026 /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 32C631261423A90F00F18420 /* JpegIO.cpp */; };
 		F5E1125E14356B2400175026 /* pyrendercapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1125C14356B2400175026 /* pyrendercapture.cpp */; };
 		F5E1125F14356B2400175026 /* pyrendercapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1125C14356B2400175026 /* pyrendercapture.cpp */; };
+		F5E1138014357F3800175026 /* PeripheralCecAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10520140AA38000175026 /* PeripheralCecAdapter.cpp */; };
+		F5E1138114357F3900175026 /* PeripheralCecAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E10520140AA38000175026 /* PeripheralCecAdapter.cpp */; };
 		F5E55B5D10741272006E788A /* DVDPlayerTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */; };
 		F5E55B5E10741272006E788A /* DVDPlayerTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B5B10741272006E788A /* DVDPlayerTeletext.cpp */; };
 		F5E55B66107412DE006E788A /* GUIDialogTeletext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E55B65107412DE006E788A /* GUIDialogTeletext.cpp */; };
@@ -8273,6 +8275,7 @@
 				F5E10544140AA38100175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				F5E10547140AA38100175026 /* Peripherals.cpp in Sources */,
 				F5E1125E14356B2400175026 /* pyrendercapture.cpp in Sources */,
+				F5E1138014357F3800175026 /* PeripheralCecAdapter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9189,6 +9192,7 @@
 				F5E10556140AA38100175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				F5E10559140AA38100175026 /* Peripherals.cpp in Sources */,
 				F5E1125F14356B2400175026 /* pyrendercapture.cpp in Sources */,
+				F5E1138114357F3900175026 /* PeripheralCecAdapter.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
