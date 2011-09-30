@@ -286,6 +286,8 @@ void CGUIInfoLabel::Parse(const CStdString &label)
       }
     }
 
+    if (format != NONE)
+    {
     if (pos1 > 0)
       m_info.push_back(CInfoPortion(0, work.Left(pos1), ""));
 
@@ -321,6 +323,7 @@ void CGUIInfoLabel::Parse(const CStdString &label)
     {
       CLog::Log(LOGERROR, "Error parsing label - missing ']' in \"%s\"", label.c_str());
       return;
+    }
     }
   }
   while (format != NONE);
