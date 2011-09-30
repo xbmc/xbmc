@@ -502,6 +502,15 @@ case $host in
      use_arch="arm"
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX -D_ARMEL")
      ;;
+  mips-*-linux-gnu)
+     ARCH="mipsel-linux"
+     PYTHON_VERSION="2.6"
+     PYTHON_LDFLAGS="$LDFLAGS -lpython2.6"
+     PYTHON_NOVERSIONCHECK="no-check"
+     use_texturepacker_native=yes
+     AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_LINUX -D_LINUX")
+     ;;
+
   *)
      AC_MSG_ERROR(unsupported host ($host))
 esac
@@ -584,6 +593,8 @@ elif test "$use_arch" = "arm"; then
     CXXFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
     FFMPEG_EXTRACFLAGS+=" -mfpu=neon"
   fi
+elif expr "X$host_cpu" : 'Xmips.*' > /dev/null; then
+  use_arch=mips
 fi
 
 # Checks for library functions.
