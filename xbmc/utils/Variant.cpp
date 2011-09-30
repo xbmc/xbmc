@@ -199,6 +199,8 @@ int64_t CVariant::asInteger(int64_t fallback) const
       return (int64_t)m_data.unsignedinteger;
     case VariantTypeDouble:
       return (int64_t)m_data.dvalue;
+    default:
+      return fallback;
   }
   
   return fallback;
@@ -214,6 +216,8 @@ uint64_t CVariant::asUnsignedInteger(uint64_t fallback) const
       return (uint64_t)m_data.integer;
     case VariantTypeDouble:
       return (uint64_t)m_data.dvalue;
+    default:
+      return fallback;
   }
   
   return fallback;
@@ -229,6 +233,8 @@ double CVariant::asDouble(double fallback) const
       return (double)m_data.integer;
     case VariantTypeUnsignedInteger:
       return (double)m_data.unsignedinteger;
+    default:
+      return fallback;
   }
   
   return fallback;
@@ -244,6 +250,8 @@ float CVariant::asFloat(float fallback) const
       return (float)m_data.integer;
     case VariantTypeUnsignedInteger:
       return (float)m_data.unsignedinteger;
+    default:
+      return fallback;
   }
   
   return fallback;
@@ -265,6 +273,8 @@ bool CVariant::asBoolean(bool fallback) const
       if (m_data.string->empty() || m_data.string->compare("0") || m_data.string->compare("false"))
         return false;
       return true;
+    default:
+      return fallback;
   }
   
   return fallback;
@@ -291,6 +301,8 @@ std::string CVariant::asString(std::string fallback) const
         strStream << m_data.dvalue;
       return strStream.str();
     }
+    default:
+      return fallback;
   }
   
   return fallback;
