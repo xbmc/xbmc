@@ -278,7 +278,7 @@ void CGUIInfoLabel::Parse(const CStdString &label)
     for (size_t i = 0; i < sizeof(infoformatmap) / sizeof(infoformat); i++)
     {
       pos2 = work.Find(infoformatmap[i].str);
-      if (pos2 != string::npos && pos2 < pos1)
+      if (pos2 != (int)string::npos && pos2 < pos1)
       {
         pos1 = pos2;
         len = strlen(infoformatmap[i].str);
