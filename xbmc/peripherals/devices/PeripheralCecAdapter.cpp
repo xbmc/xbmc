@@ -98,17 +98,24 @@ void CPeripheralCecAdapter::Announce(EAnnouncementFlag flag, const char *sender,
   {
     if (GetSettingBool("cec_power_off_shutdown") && m_bIsReady)
       m_cecParser->PowerOffDevices();
-
-    m_bStop = true;
-    m_cecParser->Close(500);
-    WaitForThreadExit(2000);
-    CLog::Log(LOGDEBUG, "%s - closing the connection to the CEC adapter while in standby mode", __FUNCTION__);
   }
   else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnWake"))
   {
     CLog::Log(LOGDEBUG, "%s - reconnecting to the CEC adapter after standby mode", __FUNCTION__);
-    m_bStop = false;
-    Create();
+    m_cecParser->Close();
+
+    CStdString strPort = GetSettingString("port");
+    if (!m_cecParser->Open(strPort.c_str(), 10000))
+    {
+      CLog::Log(LOGERROR, "%s - failed to reconnect to the CEC adapter", __FUNCTION__);
+      m_bStop = true;
+    }
+    else
+    {
+      if (GetSettingBool("cec_power_on_startup"))
+        PowerOnCecDevices();
+      m_cecParser->SetActiveView();
+    }
   }
 }
 
@@ -193,6 +200,9 @@ void CPeripheralCecAdapter::Process(void)
     Sleep(50);
   }
 
+  m_cecParser->Close(500);
+
+  CLog::Log(LOGDEBUG, "%s - CEC adapter processor thread ended", __FUNCTION__);
   m_bStarted = false;
 }
 

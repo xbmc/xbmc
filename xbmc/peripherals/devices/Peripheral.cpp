@@ -149,7 +149,7 @@ bool CPeripheral::Initialise(void)
 
   if (bReturn)
   {
-    CLog::Log(LOGDEBUG, "%s - initialised peripheral on '%s' with %ld features and %ld sub devices", __FUNCTION__, m_strLocation.c_str(), m_features.size(), m_subDevices.size());
+    CLog::Log(LOGDEBUG, "%s - initialised peripheral on '%s' with %d features and %d sub devices", __FUNCTION__, m_strLocation.c_str(), m_features.size(), m_subDevices.size());
     m_bInitialised = true;
   }
 
