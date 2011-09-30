@@ -133,12 +133,12 @@
       <m mod="ctrl">ActivateWindow(music)</m>    <!-- MCE My music -->
       <i mod="ctrl">ActivateWindow(pictures)</i> <!-- MCE My pictures -->
       <e mod="ctrl">ActivateWindow(video)</e>    <!-- MCE videos -->
+      <m mod="ctrl,shift">PlayerControl(ShowVideoMenu)</m> <!-- MCE DVD menu -->
       <!-- MCE keypresses without an obvious use in XBMC -->
       <o mod="ctrl">Notification(MCEKeypress, Recorded TV, 3)</o>
       <t mod="ctrl">Notification(MCEKeypress, Live TV, 3)</t>
       <t mod="ctrl,shift">Notification(MCEKeypress, My TV, 3)</t>
       <a mod="ctrl">Notification(MCEKeypress, Radio, 3)</a>
-      <m mod="ctrl,shift">Notification(MCEKeypress, DVD menu, 3)</m>
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
     </keyboard>
