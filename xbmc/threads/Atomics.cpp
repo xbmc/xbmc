@@ -20,6 +20,12 @@
 
 #include "Atomics.h"
 #include "system.h"
+
+#if defined(__mips__)
+#include "MipsAtomics.h"
+pthread_mutex_t cmpxchg_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif
+
 ///////////////////////////////////////////////////////////////////////////
 // 32-bit atomic compare-and-swap
 // Returns previous value of *pAddr
@@ -63,10 +69,7 @@ long cas(volatile long *pAddr, long expectedVal, long swapVal)
   return prev;
 
 #elif defined(__mips__)
-// TODO:
-  unsigned int prev;
-  #error atomic cas undefined for mips
-  return prev;
+  return cmpxchg32(pAddr, expectedVal, swapVal);
 
 #elif defined(TARGET_WINDOWS)
   long prev;
@@ -103,10 +106,13 @@ long cas(volatile long *pAddr, long expectedVal, long swapVal)
 ///////////////////////////////////////////////////////////////////////////
 long long cas2(volatile long long* pAddr, long long expectedVal, long long swapVal)
 {
-#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__) || defined(__mips__) // PowerPC, ARM, and MIPS
+#if defined(__ppc__) || defined(__powerpc__) || defined(__arm__)// PowerPC and ARM
 // Not available/required
 // Hack to allow compilation
   throw "cas2 is not implemented";
+
+#elif defined(__mips__)
+  return cmpxchg64(pAddr, expectedVal, swapVal);
 
 #elif defined(TARGET_WINDOWS)
   long long prev;
@@ -183,10 +189,7 @@ long AtomicIncrement(volatile long* pAddr)
   return val;
 
 #elif defined(__mips__)
-// TODO:
-  long val;
-  #error AtomicIncrement undefined for mips
-  return val;
+  return atomic_add(1, pAddr);
 
 #elif defined(TARGET_WINDOWS)
   long val;
@@ -261,10 +264,7 @@ long AtomicAdd(volatile long* pAddr, long amount)
   return val;
 
 #elif defined(__mips__)
-// TODO:
-  long val;
-  #error AtomicAdd undefined for mips
-  return val;
+  return atomic_add(amount, pAddr);
 
 #elif defined(TARGET_WINDOWS)
   __asm
@@ -339,10 +339,7 @@ long AtomicDecrement(volatile long* pAddr)
   return val;
 
 #elif defined(__mips__)
-// TODO:
-  long val;
-  #error AtomicDecrement undefined for mips
-  return val;
+  return atomic_sub(1, pAddr);
 
 #elif defined(TARGET_WINDOWS)
   long val;
@@ -418,9 +415,7 @@ long AtomicSubtract(volatile long* pAddr, long amount)
   return val;
 
 #elif defined(__mips__)
-// TODO:
-  #error AtomicSubtract undefined for mips
-  return val;
+  return atomic_sub(amount, pAddr);
 
 #elif defined(TARGET_WINDOWS)
   amount *= -1;
