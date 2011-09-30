@@ -18,7 +18,9 @@
  *  http://www.gnu.org/copyleft/gpl.html
  *
  */
+#include "system.h"
 
+#ifdef HAVE_LIBCEC
 #include "PeripheralCecAdapter.h"
 #include "dialogs/GUIDialogOK.h"
 #include "input/XBIRRemote.h"
@@ -29,6 +31,8 @@
 #include "peripherals/Peripherals.h"
 #include "peripherals/bus/PeripheralBus.h"
 #include "utils/log.h"
+
+#include <libcec/CECExports.h>
 
 using namespace PERIPHERALS;
 using namespace ANNOUNCEMENT;
@@ -552,3 +556,4 @@ bool CPeripheralCecAdapter::TranslateComPort(CStdString &strLocation)
 
   return false;
 }
+#endif

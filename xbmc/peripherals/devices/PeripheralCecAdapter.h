@@ -24,7 +24,6 @@
 #include "interfaces/AnnouncementManager.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
-#include <libcec/CECExports.h>
 #include <queue>
 
 namespace PERIPHERALS
@@ -35,6 +34,8 @@ namespace PERIPHERALS
     unsigned int iButtonPressed;
     unsigned int iButtonReleased;
   } CecButtonPress;
+
+  class CEC::ICECDevice;
 
   class CPeripheralCecAdapter : public CPeripheralHID, public ANNOUNCEMENT::IAnnouncer, private CThread
   {
