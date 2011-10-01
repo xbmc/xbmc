@@ -153,6 +153,7 @@ class CAdvancedSettings
     int m_busyDialogDelay;
     int m_logLevel;
     int m_logLevelHint;
+    bool m_logEnableAirtunes;//airtunes spams alot - so make it an option
     CStdString m_cddbAddress;
 
     bool m_handleMounting;
