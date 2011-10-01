@@ -175,6 +175,8 @@ void ADDON_ReadSettings(void)
   if (!XBMC)
     return;
 
+  /* Connection settings */
+  /***********************/
   if (XBMC->GetSetting("host", &buffer))
   {
     g_szHostname = buffer;
@@ -195,6 +197,17 @@ void ADDON_ReadSettings(void)
     g_iPort = DEFAULT_PORT;
   }
 
+  /* Read setting "timeout" from settings.xml */
+  if (!XBMC->GetSetting("timeout", &g_iConnectTimeout))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
+    g_iConnectTimeout = DEFAULT_TIMEOUT;
+  }
+
+  /* MediaPortal settings */
+  /***********************/
+
   /* Read setting "ftaonly" from settings.xml */
   if (!XBMC->GetSetting("ftaonly", &g_bOnlyFTA))
   {
@@ -209,14 +222,6 @@ void ADDON_ReadSettings(void)
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'useradio' setting, falling back to 'true' as default");
     g_bRadioEnabled = DEFAULT_RADIO;
-  }
-
-  /* Read setting "timeout" from settings.xml */
-  if (!XBMC->GetSetting("timeout", &g_iConnectTimeout))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
-    g_iConnectTimeout = DEFAULT_TIMEOUT;
   }
 
   if (!XBMC->GetSetting("tvgroup", &buffer))
@@ -277,6 +282,9 @@ void ADDON_ReadSettings(void)
     g_szRecordingsDir = buffer;
   }
 #ifdef TSREADER
+  /* TSReader settings */
+  /*********************/
+
   /* Read setting "directtsfileread" from settings.xml */
   if (!XBMC->GetSetting("directtsfileread", &g_bDirectTSFileRead))
   {
@@ -294,6 +302,17 @@ void ADDON_ReadSettings(void)
   }
 #else
   g_bDirectTSFileRead = false;
+#endif
+
+  /* Log the current settings for debugging purposes */
+  XBMC->Log(LOG_DEBUG, "settings: host='%s', port=%i, timeout=%i", g_szHostname.c_str(), g_iPort, g_iConnectTimeout);
+  XBMC->Log(LOG_DEBUG, "settings: ftaonly=%i, useradio=%i, tvgroup='%s', radiogroup='%s'", (int) g_bOnlyFTA, (int) g_bRadioEnabled, g_szTVGroup.c_str(), g_szRadioGroup.c_str());
+  XBMC->Log(LOG_DEBUG, "settings: readgenre=%i, sleeponrtspurl=%i", (int) g_bReadGenre, g_iSleepOnRTSPurl);
+  XBMC->Log(LOG_DEBUG, "settings: userecordingsdir=%i, recordingsdir='%s'", (int) g_bUseRecordingsDir, g_szRecordingsDir.c_str());
+#ifndef TSREADER
+  XBMC->Log(LOG_DEBUG, "settings: resolvertsphostname=%i", (int) g_bResolveRTSPHostname);
+#else
+  XBMC->Log(LOG_DEBUG, "settings: directsfileread=%i, timeshiftdir='%s'", (int) g_bDirectTSFileRead, g_szTimeshiftDir.c_str());
 #endif
 }
 
