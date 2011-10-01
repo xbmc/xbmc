@@ -1445,8 +1445,41 @@
 				<include>PanelStreamImageFocus</include>
 			</control>
 		</focusedlayout>
-		<!-- Plugins -->
-		<itemlayout condition="Container.content(plugincontent)" width="154" height="160">
+		<!-- Plex Online -->
+		<itemlayout condition="Container.content(plugincontent) + Window.IsActive(1)" width="154" height="160">
+			<!-- drop shadow -->
+			<control type="image">
+				<description>Poster image</description>
+				<posx>18</posx>
+				<posy>3</posy>
+				<width>122</width>
+				<height>122</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+			</control>
+			<control type="image">
+				<posx>14</posx>
+				<posy>130</posy>
+				<width>130</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>80</posx>
+				<posy>141</posy>
+				<width>110</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Label]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>FFdddddd</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+		</itemlayout>
+		<focusedlayout condition="Container.content(plugincontent) + Window.IsActive(1)" width="154" height="160">
 			<!-- drop shadow -->
 			<control type="image">
 				<posx>9</posx>
@@ -1456,6 +1489,41 @@
 				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
 				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
 			</control>
+			<control type="image">
+				<description>Poster image</description>
+				<posx>15</posx>
+				<posy>0</posy>
+				<width>128</width>
+				<height>128</height>
+				<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
+				<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
+				<bordertexture border="10">frameOrange.png</bordertexture>
+				<bordersize>3</bordersize>
+			</control>
+			<control type="image">
+				<posx>14</posx>
+				<posy>130</posy>
+				<width>130</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="label">
+				<posx>80</posx>
+				<posy>141</posy>
+				<width>110</width>
+				<align>center</align>
+				<aligny>center</aligny>
+				<scroll>false</scroll>
+				<label>$INFO[ListItem.Label]</label>
+				<font>SearchResultSmaller</font>
+				<textcolor>orange</textcolor>
+				<wrapmultiline>false</wrapmultiline>
+			</control>
+		</focusedlayout>		
+		<!-- Plugins -->
+		<itemlayout condition="Container.content(plugincontent)" width="154" height="160">
 			<control type="image">
 				<description>Poster image</description>
 				<posx>18</posx>
@@ -1488,15 +1556,6 @@
 			</control>
 		</itemlayout>
 		<focusedlayout condition="Container.content(plugincontent)" width="154" height="160">
-			<!-- drop shadow -->
-			<control type="image">
-				<posx>9</posx>
-				<posy>-7</posy>
-				<width>140</width>
-				<height>140</height>
-				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
-			</control>
 			<control type="image">
 				<description>Poster image</description>
 				<posx>15</posx>
