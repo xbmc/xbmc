@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">변경</string>
+  <string id="31001">닫기</string>
+  <string id="31002">오디오 설정</string>
+  <string id="31003">IP</string>
+  <string id="31004">Caps[CR]Lock</string>
+  <string id="31005">시각화 옵션</string>
+  <string id="31006">시각화 사전설정</string>
+  <string id="31007">컨텍스트 메뉴</string>
+  <string id="31008">전체 화면</string>
+  <string id="31009">작업중...</string>
+  <string id="31010">로그인한 프로파일</string>
+  <string id="31011">N/A</string> <!-- Used for subtitle button in the OSD -->
+  <string id="31012">음악 - 파일</string>
+  
+  <string id="31024">페이지</string>
+  <string id="31025">항목</string>
+
+  <!-- ViewType labels -->
+  <string id="31030">정보표시 목록</string>
+  <string id="31031">정보표시 배너</string>
+
+  <!-- Extra labels -->
+  <string id="31040">지금 재생중</string>
+
+  <string id="31042">재생중</string>
+  <string id="31043">일시정지</string>
+  <string id="31044">빠르게</string>
+  <string id="31045">뒤로</string>
+  <string id="31046">오디오 속성</string>
+  <string id="31047">현재 사전설정</string>
+  <string id="31048">시각화 사전설정</string>
+  <string id="31049">종료 시간</string>
+  <string id="31050">정렬: 오름차</string>
+  <string id="31051">정렬: 내림차</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">재생목록 열기</string>
+  <string id="31056">재생목록 저장</string>
+  <string id="31057">재생목록 닫기</string>
+  <string id="31058">시스템 음악 파일</string>
+  <string id="31059">현재 재생목록</string>
+  <string id="31060">이 파일은 연결되었습니다, 재생할 부분을 선택하세요.</string>
+
+  <!-- Submenu Icon labels -->
+  <string id="31200">뒤로</string>
+  <string id="31201">위치</string>
+
+  <!-- Extra labels -->
+  <string id="31300">현재 온도</string>
+  <string id="31301">마지막 업데이트</string>
+
+  <string id="31309">사용 메모리:</string>
+  <string id="31312">현재 자료수집기</string>
+  <string id="31313">자료수집기 선택</string>
+  <string id="31314">컨텐츠 검색 옵션</string>
+
+  <string id="31319">사용가능한 프로파일</string>
+  <string id="31320">마지막 로그인</string>
+  <string id="31321">노래방 노래 선택기</string>
+  <string id="31322">방송</string>
+
+  <string id="31325">재생목록 옵션</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">일시정지</string>
+  <string id="31352">정지</string>
+  <string id="31353">빠르게</string>
+  <string id="31354">뒤로</string>
+  <string id="31355">비디오 메뉴</string>
+  <string id="31356">자막 다운로드</string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">스킨 기본값</string>
+  <string id="31391">Arial 기본값</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">스킨 변경 · 언어 및 지역 설정 · 파일 목록 옵션 변경 · 화면보호기 설정</string>
+  <string id="31401">비디오 라이브러리 관리 · 비디오 재생 옵션 변경 · 비디오 목록 옵션 변경 · 자막 글꼴 설정</string>
+  <string id="31402">음악 라이브러리 관리 · 음악 재생 옵션 변경 · 음악 목록 옵션 변경 · 노래 전송 설정 · 노래방 옵션 설정</string>
+  <string id="31403">사진 목록 옵션 변경 · 슬라이드쇼 설정</string>
+  <string id="31404">날씨 정보를 수집할 세 도시 설정</string>
+  <string id="31405">UPnP 및 HTTP 를 통한 XBMC 제어 설정 · 파일 공유 설정 · 인터넷 접근 옵션 설정</string>
+  <string id="31406">화면 설정 및 조정 · 오디오 출력 설정 · 원격 제어 설정 · 전원 절약 옵션 설정 · 디버깅 사용 · 마스터 잠금 설정</string>
+  <string id="31407">Confluence 스킨 설정 · 홈 메뉴 항목 추가 및 제거 · 스킨 배경 변경</string>
+  <string id="31408">설치된 추가기능 관리 · xbmc.org 에서 추가기능 찾기 및 설치 · 추가기능 설정 변경</string>
+
+  <string id="31421">로그인할 XBMC 사용자 프로파일을[CR]선택하고 계속하세요</string>
+</strings>

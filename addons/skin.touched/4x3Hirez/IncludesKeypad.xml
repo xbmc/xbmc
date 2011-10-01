@@ -1,0 +1,224 @@
+<includes>
+	<include name="KeypadButtons">
+		<control type="button">
+			<description>1 button</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>95</width>
+			<height>80</height>
+			<font>font16</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKey.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<label>12311</label>
+			<textcolor>black</textcolor>
+			<onleft>23</onleft>
+			<onright>12</onright>
+			<onup>20</onup>
+			<ondown>14</ondown>
+			<onclick>Number1</onclick>
+		</control>
+		<control type="button">
+			<description>2 button</description>
+			<posx>100</posx>
+			<posy>0</posy>
+			<width>95</width>
+			<height>80</height>
+			<font>font16</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKey.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<label>12312</label>
+			<textcolor>black</textcolor>
+			<onleft>11</onleft>
+			<onright>13</onright>
+			<onup>10</onup>
+			<ondown>15</ondown>
+			<onclick>Number2</onclick>
+		</control>
+		<control type="button">
+			<description>3 button</description>
+			<posx>200</posx>
+			<posy>0</posy>
+			<width>95</width>
+			<height>80</height>
+			<font>font16</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKey.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<label>12313</label>
+			<textcolor>black</textcolor>
+			<onleft>12</onleft>
+			<onright>23</onright>
+			<onup>22</onup>
+			<ondown>16</ondown>
+			<onclick>Number3</onclick>
+		</control>
+		<control type="button">
+			<description>0 button</description>
+			<posx>300</posx>
+			<posy>0</posy>
+			<width>95</width>
+			<height>80</height>
+			<font>font16</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKey.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<label>12310</label>
+			<textcolor>black</textcolor>
+			<onleft>20</onleft>
+			<onright>22</onright>
+			<onup>18</onup>
+			<ondown>12</ondown>
+			<onclick>Number0</onclick>
+		</control>
+		<control type="button">
+			<description>4 button</description>
+			<posx>0</posx>
+			<posy>85</posy>
+			<width>95</width>
+			<height>80</height>
+			<font>font16</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKey.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<label>12314</label>
+			<textcolor>black</textcolor>
+			<onleft>23</onleft>
+			<onright>15</onright>
+			<onup>11</onup>
+			<ondown>17</ondown>
+			<onclick>Number4</onclick>
+		</control>
+		<control type="button">
+			<description>5 button</description>
+			<posx>100</posx>
+			<posy>85</posy>
+			<width>95</width>
+			<height>80</height>
+			<font>font16</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKey.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<label>12315</label>
+			<textcolor>black</textcolor>
+			<onleft>14</onleft>
+			<onright>16</onright>
+			<onup>12</onup>
+			<ondown>18</ondown>
+			<onclick>Number5</onclick>
+		</control>
+		<control type="button">
+			<description>6 button</description>
+			<posx>200</posx>
+			<posy>85</posy>
+			<width>95</width>
+			<height>80</height>
+			<font>font16</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKey.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<label>12316</label>
+			<textcolor>black</textcolor>
+			<onleft>15</onleft>
+			<onright>23</onright>
+			<onup>13</onup>
+			<ondown>19</ondown>
+			<onclick>Number6</onclick>
+		</control>
+		<control type="button">
+			<description>7 button</description>
+			<posx>0</posx>
+			<posy>170</posy>
+			<width>95</width>
+			<height>80</height>
+			<font>font16</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKey.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<label>12317</label>
+			<textcolor>black</textcolor>
+			<onleft>21</onleft>
+			<onright>18</onright>
+			<onup>14</onup>
+			<ondown>20</ondown>
+			<onclick>Number7</onclick>
+		</control>
+		<control type="button">
+			<description>8 button</description>
+			<posx>100</posx>
+			<posy>170</posy>
+			<width>95</width>
+			<height>80</height>
+			<font>font16</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKey.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<label>12318</label>
+			<textcolor>black</textcolor>
+			<onleft>17</onleft>
+			<onright>19</onright>
+			<onup>15</onup>
+			<ondown>10</ondown>
+			<onclick>Number8</onclick>
+		</control>
+		<control type="button">
+			<description>9 button</description>
+			<posx>200</posx>
+			<posy>170</posy>
+			<width>95</width>
+			<height>80</height>
+			<font>font16</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKey.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<label>12319</label>
+			<textcolor>black</textcolor>
+			<onleft>18</onleft>
+			<onright>21</onright>
+			<onup>16</onup>
+			<ondown>22</ondown>
+			<onclick>Number9</onclick>
+		</control>
+		<control type="button">
+			<description>Done button</description>
+			<posx>300</posx>
+			<posy>85</posy>
+			<width>95</width>
+			<height>165</height>
+			<font>font12</font>
+			<align>center</align>
+			<aligny>center</aligny>
+			<texturenofocus border="8">KeyboardKeyDark.png</texturenofocus>
+			<texturefocus border="8">KeyboardKeyFocus.png</texturefocus>
+			<textwidth>120</textwidth>
+			<label>-</label>
+			<textcolor>white</textcolor>
+			<angle>270</angle>
+			<onleft>19</onleft>
+			<onright>17</onright>
+			<onup>23</onup>
+			<ondown>23</ondown>
+			<onclick>Select</onclick>
+		</control>
+		<control type="image">
+			<description>Enter\done Icon image</description>
+			<posx>320</posx>
+			<posy>135</posy>
+			<width>50</width>
+			<height>50</height>
+			<aspectratio>keep</aspectratio>
+			<texture>icon_enter.png</texture>
+		</control>
+	</include>
+</includes>

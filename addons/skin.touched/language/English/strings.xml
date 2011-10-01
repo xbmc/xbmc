@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Change Your</string>
+  <string id="31001">Close</string>
+  <string id="31002">Audio Settings</string>
+  <string id="31003">IP</string>
+  <string id="31004">Caps[CR]Lock</string>
+  <string id="31005">Visualization Options</string>
+  <string id="31006">Visualization Presets</string>
+  <string id="31007">Context Menu</string>
+  <string id="31008">Fullscreen</string>
+  <string id="31009">Working...</string>
+  <string id="31010">Currently logged in as</string>
+  <string id="31011">N/A</string> <!-- Used for subtitle button in the OSD -->
+  <string id="31012">Music - Files</string>
+
+  <string id="31024">Page</string>
+  <string id="31025">Items</string>
+ 
+  <!-- ViewType labels -->
+  <string id="31030">Info List</string>
+  <string id="31031">Info Wide</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Now Playing</string>
+
+  <string id="31042">PLAYING</string>
+  <string id="31043">PAUSED</string>
+  <string id="31044">FAST FORWARD</string>
+  <string id="31045">REWIND</string>
+  <string id="31046">Audio Properties</string>
+  <string id="31047">Current Preset</string>
+  <string id="31048">Visualization Presets</string>
+  <string id="31049">End Time</string>
+  <string id="31050">Sort: Ascending</string>
+  <string id="31051">Sort: Descending</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Open playlist</string>
+  <string id="31056">Save playlist</string>
+  <string id="31057">Close playlist</string>
+  <string id="31058">System music files</string>
+  <string id="31059">Current playlist</string>
+  <string id="31060">This file is stacked, select the part you want to play from.</string>
+  
+  <!-- Submenu labels -->
+  <string id="31200">Back</string>
+  <string id="31201">Location</string>
+  <string id="31202">View</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Current Temp</string>
+  <string id="31301">Last Updated</string>
+
+  <string id="31309">Memory Used:</string>
+  <string id="31312">Current Scraper</string>
+  <string id="31313">Choose a Scraper</string>
+  <string id="31314">Content Scanning Options</string>
+
+  <string id="31319">Currently available XBMC user profiles</string>
+  <string id="31320">Last Logged In</string>
+  <string id="31321">Karaoke Song Selector</string>
+  <string id="31322">Aired</string>
+
+  <string id="31325">Playlist Options</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pause</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Fast Forward</string>
+  <string id="31354">Rewind</string>
+  <string id="31355">Video Menu</string>
+  <string id="31356">Download Subtitles</string>
+  <string id="31357">Image Info</string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Skin default</string>
+  <string id="31391">Arial based</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">Change the skin · Set language and region · Change file listing options · Set up a screensaver</string>
+  <string id="31401">Manage your video library · Set video playback options · Change video listing options · Set subtitle fonts</string>
+  <string id="31402">Manage your music library · Set music playback options · Change music listing options · Setup song submission · Set karaoke options</string>
+  <string id="31403">Set picture listing options · Configure slideshows</string>
+  <string id="31404">Set three cities to collect weather information</string>
+  <string id="31405">Setup control of XBMC via UPnP and HTTP · Configure file sharing · Set internet access options</string>
+  <string id="31406">Setup and calibrate displays · Configure audio output · Setup remote controls · Set power saving options · Enable debugging · Setup master lock</string>
+  <string id="31407">Setup the Confluence skin · Add and remove home menu items · Change skin backgrounds</string>
+  <string id="31408">Manage your installed Add-ons · Browse for and install Add-ons from xbmc.org · Modify Add-on settings</string>
+
+  <string id="31421">Select your XBMC user Profile[CR]to login and continue</string>
+
+  <!-- Skin Setting Headers  -->
+  <string id="31500">Home Menu Catagory Buttons</string>
+  <string id="31501">Home Page Add-on Quick Links</string>
+  <string id="31502">Miscellaneous Options</string>
+  <string id="31503">Media Window Add-ons</string>
+
+  <!-- Skin Setting Options  -->
+  <string id="31550">Home Screen Weather Info and button</string>
+  <string id="31551">Add-on Shortcut</string>
+  <string id="31552">Set Add-on to use for subtitles</string>
+  <string id="31553">"Videos" always goes to video root path</string>
+
+  </strings>

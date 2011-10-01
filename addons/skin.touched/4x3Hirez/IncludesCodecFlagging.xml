@@ -1,0 +1,97 @@
+<includes>
+	<include name="VideoCodecFlaggingConditions">
+		<control type="image">
+			<description>Video rez Image</description>
+			<width>70</width>
+			<height>45</height>
+			<aspectratio align="right">keep</aspectratio>
+			<texture>$INFO[ListItem.VideoResolution,flagging/video/,.png]</texture>
+		</control>
+		<control type="image">
+			<description>Common Codec Image</description>
+			<width>100</width>
+			<height>45</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture>$INFO[ListItem.VideoCodec,flagging/video/,.png]</texture>
+			<!-- Don't show if its one of the 500 divx codecs -->
+			<visible>![substring(ListItem.VideoCodec,div,left) | stringcompare(ListItem.VideoCodec,dx50)]</visible>
+		</control>
+		<control type="image">
+			<description>Divx Codec Image</description>
+			<width>100</width>
+			<height>45</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture>flagging/video/divx.png</texture>
+			<visible>[substring(ListItem.VideoCodec,div,left) | stringcompare(ListItem.VideoCodec,dx50)]</visible>
+		</control>
+	</include>
+	<include name="VideoTypeHackFlaggingConditions">
+		<control type="image">
+			<description>Bluray Image</description>
+			<width>100</width>
+			<height>45</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture>flagging/video/bluray.png</texture>
+			<visible>[substring(ListItem.FilenameAndPath,bluray) | substring(ListItem.FilenameAndPath,bdrip)] + !Skin.HasSetting(HideFilenameFlagging)</visible>
+		</control>
+		<control type="image">
+			<description>HDDVD Image</description>
+			<width>100</width>
+			<height>45</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture>flagging/video/hddvd.png</texture>
+			<visible>substring(ListItem.FilenameAndPath,hddvd) + !Skin.HasSetting(HideFilenameFlagging)</visible>
+		</control>
+		<control type="image">
+			<description>DVD Image</description>
+			<width>100</width>
+			<height>45</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture>flagging/video/dvd.png</texture>
+			<visible>[substring(ListItem.FilenameAndPath,dvd) + ![substring(ListItem.FilenameAndPath,hddvd) | substring(ListItem.FilenameAndPath,bluray) | substring(ListItem.FilenameAndPath,bdrip)]] + !Skin.HasSetting(HideFilenameFlagging)</visible>
+		</control>
+		<control type="image">
+			<description>TV Types Image</description>
+			<width>100</width>
+			<height>45</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture>flagging/video/TV.png</texture>
+			<visible>[substring(ListItem.FilenameAndPath,pdtv) | substring(ListItem.FilenameAndPath,hdtv) | substring(ListItem.FilenameAndPath,dsr)] + !Skin.HasSetting(HideFilenameFlagging)</visible>
+		</control>
+		<control type="image">
+			<description>VHS Image</description>
+			<width>100</width>
+			<height>45</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture>flagging/video/vhs.png</texture>
+			<visible>substring(ListItem.FilenameAndPath,vhs) + !Skin.HasSetting(HideFilenameFlagging)</visible>
+		</control>
+	</include>
+	<include name="AudioCodecFlaggingConditions">
+		<control type="image">
+			<description>Audio Codec Image</description>
+			<width>100</width>
+			<height>45</height>
+			<aspectratio align="right">keep</aspectratio>
+			<texture>$INFO[ListItem.AudioCodec,flagging/audio/,.png]</texture>
+		</control>
+	</include>
+	<include name="AudioChannelsFlaggingConditions">
+		<control type="image">
+			<description>Audio Codec Image</description>
+			<width>70</width>
+			<height>45</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture>$INFO[ListItem.AudioChannels,flagging/audio/,.png]</texture>
+		</control>
+	</include>
+	<include name="AspectCodecFlaggingConditions">
+		<control type="image">
+			<description>Aspectratio Image</description>
+			<width>70</width>
+			<height>45</height>
+			<aspectratio align="right">keep</aspectratio>
+			<texture>$INFO[ListItem.VideoAspect,flagging/aspectratio/,.png]</texture>
+		</control>
+	</include>
+</includes>

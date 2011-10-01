@@ -1,0 +1,153 @@
+<window id="25">
+	<defaultcontrol always="true">50</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<views>50,550,500,502,552</views>
+	<onunload>Skin.Reset(MediaSubMenuVisible)</onunload>
+	<controls>
+		<include>CommonBackground</include>
+		<include>FileCountCommons</include>
+		<include>HomeButtonCommons</include>
+		<include>CommonNowPlaying</include>
+		<include>OptionsButtonCommons</include>
+		<control type="label">
+			<description>Window label</description>
+			<include>MediaWindowTitleCommons</include>
+			<label>$LOCALIZE[3]</label>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Animation_Zoom</include>
+			<include>CommonRootViewVideo</include> <!-- view id = 50 -->
+			<include>ThumbnailView</include> <!-- view id = 500 -->
+			<include>WideIconView</include> <!-- view id = 502 -->
+			<include>RootViewMetaDataVideo</include> <!-- view id = 550 -->
+			<include>WideIconMetaDataView</include> <!-- view id = 552 -->
+			<include>ScrollArrowsCommons</include>
+		</control>
+		<include>MediaSubMenu</include>
+		<control type="group">
+			<visible>Skin.HasSetting(MediaSubMenuVisible)</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="button">
+				<description>Hidden button to close the sort when its focused</description>
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>ScreenWidth</width>
+				<height>ScreenHeight</height>
+				<texturenofocus>-</texturenofocus>
+				<texturefocus>-</texturefocus>
+				<onclick>Skin.Reset(MediaSubMenuVisible)</onclick>
+			</control>
+			<control type="group">
+				<posx>340r</posx>
+				<posy>130</posy>
+				<control type="image">
+					<description>Shadow Background</description>
+					<posx>-30</posx>
+					<posy>-30</posy>
+					<width>380</width>
+					<height>500</height>
+					<texture border="30">ShadowBorder.png</texture>
+				</control>
+				<control type="button">
+					<description>Panel Background image</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>320</width>
+					<height>440</height>
+					<texturefocus border="5">SubBack.png</texturefocus>
+					<texturenofocus border="5">SubBack.png</texturenofocus>
+					<onclick>-</onclick>
+				</control>
+				<control type="image">
+					<description>Panel Forground image</description>
+					<posx>10</posx>
+					<posy>10</posy>
+					<width>300</width>
+					<height>420</height>
+					<texture border="5">SubBack2.png</texture>
+				</control>
+				<control type="image">
+					<description>Panel Arrow image</description>
+					<posx>270</posx>
+					<posy>-34</posy>
+					<width>40</width>
+					<height>40</height>
+					<texture>arrow-big-up.png</texture>
+				</control>
+				<control type="grouplist">
+					<posx>11</posx>
+					<posy>10</posy>
+					<width>298</width>
+					<height>420</height>
+					<onleft>9000</onleft>
+					<onright>50</onright>
+					<onup>9000</onup>
+					<ondown>9000</ondown>
+					<itemgap>0</itemgap>
+					<control type="button" id="3">
+						<description>Sort by button</description>
+						<include>ButtonCommonValues2</include>
+						<label>103</label>
+					</control>
+					<control type="togglebutton" id="4">
+						<description>Sort asc</description>
+						<include>ButtonCommonValues2</include>
+						<alttexturefocus>button-focus2.png</alttexturefocus>
+						<alttexturenofocus>button-nofocus.png</alttexturenofocus>
+						<label>31051</label>
+						<altlabel>31050</altlabel>
+						<usealttexture>Container.SortDirection(Ascending)</usealttexture>
+					</control>
+					<control type="radiobutton" id="14">
+						<description>Watched Toggle</description>
+						<textwidth>170</textwidth>
+						<include>ButtonCommonValues2</include>
+						<label>20367</label>
+					</control>
+					<control type="button" id="8">
+						<description>Search</description>
+						<include>ButtonCommonValues2</include>
+						<label>137</label>
+						<visible>false</visible>
+					</control>
+					<control type="radiobutton" id="7">
+						<description>Stack Toggle</description>
+						<textwidth>170</textwidth>
+						<include>ButtonCommonValues2</include>
+						<label>346</label>
+					</control>
+					<control type="radiobutton" id="17">
+						<description>Flatten</description>
+						<textwidth>170</textwidth>
+						<include>ButtonCommonValues2</include>
+						<label>20411</label>
+					</control>
+					<control type="radiobutton" id="16">
+						<description>PartyMode</description>
+						<label>589</label>
+						<include>ButtonCommonValues2</include>
+						<visible>Library.HasContent(MusicVideos)</visible>
+					</control>
+					<control type="radiobutton" id="11">
+						<description>Unlock Shares</description>
+						<textwidth>170</textwidth>
+						<include>ButtonCommonValues2</include>
+						<label>20336</label>
+						<onclick>xbmc.mastermode</onclick>
+						<selected>system.ismaster</selected>
+						<visible>false</visible>
+					</control>
+					<control type="image">
+						<posx>0</posx>
+						<posy>100</posy>
+						<width>298</width>
+						<height>10</height>
+						<texture>shelf_shadow.png</texture>
+					</control>
+				</control>
+			</control>
+		</control>
+		<include>ScrollOffsetLabel</include>
+		<include>BehindDialogFadeOut</include>
+	</controls>
+</window>

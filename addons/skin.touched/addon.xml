@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="skin.touched"
+  version="0.8.5"
+  name="Touched"
+  provider-name="Jezz_X">
+  <requires>
+    <import addon="xbmc.gui" version="3.00"/>
+  </requires>
+  <extension
+    point="xbmc.gui.skin"
+    defaultthemename="textures.xbt"
+    debugging="false">
+    <res width="1280" height="960" aspect="4:3" default="true" folder="4x3Hirez" />
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Touched skin by Jezz_X designed to be used on touch screen devices</summary>
+    <description lang="en">Skin designed from the ground up to be used on touch screen devices like the iPad</description>
+    <disclaimer lang="en">Do not use this skin unless you have either touch screen or a mouse connected or you may lose navigation</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>
