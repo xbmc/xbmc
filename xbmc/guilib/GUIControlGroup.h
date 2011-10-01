@@ -80,7 +80,7 @@ public:
   void SetRenderFocusedLast(bool renderLast) { m_renderFocusedLast = renderLast; };
 
   virtual void SaveStates(std::vector<CControlState> &states);
-
+  float GetChildrenTotalWidth(const CStdString &strLabel) const;
   virtual bool IsGroup() const { return true; };
 
 #ifdef _DEBUG

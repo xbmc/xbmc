@@ -105,6 +105,17 @@ void CGUIListLabel::SetInvalid()
   CGUIControl::SetInvalid();
 }
 
+float CGUIListLabel::GetTextWidth(const CStdString &strLabel) const
+{
+  if (m_width == 0)
+  {
+    CGUILabel tempLabel(m_label);
+    tempLabel.SetText(strLabel);
+    return tempLabel.GetTextWidth();
+  }
+  return CGUIControl::GetWidth();
+}
+
 void CGUIListLabel::SetLabel(const CStdString &label)
 {
   m_label.SetText(label);

@@ -21,6 +21,7 @@
 
 #include "GUIControlGroup.h"
 #include "GUIControlProfiler.h"
+#include "GUIListLabel.h"
 
 using namespace std;
 
@@ -654,3 +655,20 @@ void CGUIControlGroup::DumpTextureUse()
     (*it)->DumpTextureUse();
 }
 #endif
+
+float CGUIControlGroup::GetChildrenTotalWidth(const CStdString &strLabel) const
+{
+  float totalWidth = 0;
+  for (unsigned int i = 0; i < m_children.size(); i++)
+  {
+    CGUIControl *child = m_children[i];
+    const CGUIListLabel* listLabel = dynamic_cast<const CGUIListLabel*>(child);
+    if (listLabel && listLabel->GetWidth() == 0)
+    {
+      totalWidth += listLabel->GetTextWidth(strLabel);
+      continue;
+    }
+    totalWidth += child->GetWidth();
+  }
+  return totalWidth;
+}
