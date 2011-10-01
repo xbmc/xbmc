@@ -70,7 +70,8 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
 //buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 12022);
   buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
   buttons.Add(CONTEXT_BUTTON_DELETE, 117);      /* Delete this recording */
-
+  buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* sort by name */
+  buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* sort by date */
   // Update sort by button
 //if (m_guiState->GetSortMethod()!=SORT_METHOD_NONE)
 //{
@@ -142,6 +143,7 @@ void CGUIWindowPVRRecordings::UpdateData(void)
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
   m_parent->m_vecItems->SetPath("pvr://recordings/");
   m_parent->Update(m_strSelectedPath);
+  m_parent->m_vecItems->Sort(m_iSortMethod, m_iSortOrder);
   m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
   if (!SelectPlayingFile())
     m_parent->m_viewControl.SetSelectedItem(m_iSelected);
