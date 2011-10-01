@@ -33,6 +33,7 @@
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
 #include "utils/Variant.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace XFILE;
 
@@ -199,7 +200,6 @@ char* CAirTunesServer::AudioOutputFunctions::ao_get_option(ao_option *options, c
   return NULL;
 }
 
-
 bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, const CStdString &password/*=""*/)
 {
   bool success = false;
@@ -303,6 +303,15 @@ void CAirTunesServer::Process()
   }
 }
 
+int shairport_log(const char* msg, size_t msgSize)
+{
+  if( g_advancedSettings.m_logEnableAirtunes)
+  {
+    CLog::Log(LOGDEBUG, "AIRTUNES: %s", msg);
+  }
+  return 1;
+}
+
 bool CAirTunesServer::Initialize(const CStdString &password)
 {
   bool ret = false;
@@ -334,9 +343,12 @@ bool CAirTunesServer::Initialize(const CStdString &password)
     ao.ao_append_option = AudioOutputFunctions::ao_append_option;
     ao.ao_free_options = AudioOutputFunctions::ao_free_options;
     ao.ao_get_option = AudioOutputFunctions::ao_get_option;
+    struct printfPtr funcPtr;
+    funcPtr.extprintf = shairport_log;
 
     m_pLibShairport->EnableDelayedUnload(false);
     m_pLibShairport->shairport_set_ao(&ao);
+    m_pLibShairport->shairport_set_printf(&funcPtr);
     m_pLibShairport->shairport_main(numArgs, argv);
     ret = true;
   }

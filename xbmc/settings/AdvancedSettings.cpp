@@ -289,6 +289,7 @@ void CAdvancedSettings::Initialize()
   m_guiVisualizeDirtyRegions = false;
   m_guiAlgorithmDirtyRegions = 0;
   m_guiDirtyRegionNoFlipTimeout = -1;
+  m_logEnableAirtunes = false;
 }
 
 bool CAdvancedSettings::Load()
@@ -651,6 +652,9 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     g_advancedSettings.m_logLevel = std::max(g_advancedSettings.m_logLevel, g_advancedSettings.m_logLevelHint);
     CLog::SetLogLevel(g_advancedSettings.m_logLevel);
   }
+  
+  XMLUtils::GetBoolean(pRootElement, "enableairtunesdebuglog", m_logEnableAirtunes);
+    
   XMLUtils::GetString(pRootElement, "cddbaddress", m_cddbAddress);
 
   XMLUtils::GetBoolean(pRootElement, "handlemounting", m_handleMounting);
