@@ -206,16 +206,10 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           lock.Enter();
 
           if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strFullName.c_str(), &info) == 0)
-          {
-            bool statIsDir = (info.st_mode & S_IFDIR) ? true : false;
-            //check if stat isdir is same as
-            //dirent is dir
-            //this fixes a bug with netatalk server
-            //where stat seems b0rked in conjunction with afpclient
-            if (bIsDir == statIsDir)                                        
-            {
-              bIsDir = (info.st_mode & S_IFDIR) ? true : false;
-            }
+          {            
+            //we don't overwrite bIsDir from info.stmode here
+            //because it isn't filled in some client/server constellations
+            //e.x. libafpclient and netatalk server
             
             //resolve symlinks
             if(S_ISLNK(info.st_mode))
