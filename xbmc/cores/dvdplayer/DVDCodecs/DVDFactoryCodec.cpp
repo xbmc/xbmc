@@ -171,12 +171,15 @@ CDVDVideoCodec* CDVDFactoryCodec::CreateVideoCodec(CDVDStreamInfo &hint, unsigne
     if( (pCodec = OpenCodec(new CDVDVideoCodecLibMpeg2(), hint, options)) ) return pCodec;
   }
 #if defined(HAVE_LIBVDADECODER)
-  if (hint.width > 720 && g_sysinfo.HasVDADecoder())
+  if (!hint.software && g_guiSettings.GetBool("videoplayer.usevda"))
   {
-    if (g_guiSettings.GetBool("videoplayer.usevda") && !hint.software && hint.codec == CODEC_ID_H264)
+    if (g_sysinfo.HasVDADecoder())
     {
-      CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
-      if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+      if (hint.codec == CODEC_ID_H264 && !hint.ptsinvalid)
+      {
+        CLog::Log(LOGINFO, "Trying Apple VDA Decoder...");
+        if ( (pCodec = OpenCodec(new CDVDVideoCodecVDA(), hint, options)) ) return pCodec;
+      }
     }
   }
 #endif
