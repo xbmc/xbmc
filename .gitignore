@@ -371,6 +371,7 @@ lib/cmyth/Makefile
 /system/sqlite3.dll
 /system/libsamplerate-0.dll
 /system/libnfs.dll
+/system/dnssd.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
@@ -420,6 +421,8 @@ lib/cmyth/Makefile
 
 # /system/webserver
 /system/webserver
+
+/system/airplay
 
 # /system
 /system/zlib1.dll
