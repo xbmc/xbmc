@@ -2186,8 +2186,14 @@ bool CApplication::OnKey(const CKey& key)
       CGUIControl *control = window->GetFocusedControl();
       if (control)
       {
-        if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT ||
-           (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT)) // shift and no other modifiers
+        // If this is an edit control set usekeyboard to true. This causes the
+        // keypress to be processed directly not through the key mappings.
+        if (control->GetControlType() == CGUIControl::GUICONTROL_EDIT)
+          useKeyboard = true;
+
+        // If the key pressed is shift-A to shift-Z set usekeyboard to true.
+        // This causes the keypress to be used for list navigation.
+        if (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT && key.GetVKey() >= 'a' && key.GetVKey() <= 'z')
           useKeyboard = true;
       }
     }
