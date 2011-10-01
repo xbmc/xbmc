@@ -2788,7 +2788,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
-    return GetSkinVariableString(info, contextWindow, false);
+    return GetSkinVariableString(info, contextWindow, true);
 
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
@@ -4155,7 +4155,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
-    return GetSkinVariableString(info, 0, false, item);
+    return GetSkinVariableString(info, 0, true, item);
 
   switch (info)
   {
