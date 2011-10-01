@@ -101,7 +101,8 @@
 					<posx>595</posx>
 					<control type="group">
 						<description>Large Picture Thumb</description>
-						<posy>-8</posy>
+						<posy>-5</posy>
+						<!-- compressed thumb when no HQ file available -->
 						<control type="largeimage">
 							<visible>![Container(561).OnNext | Container(561).OnPrevious]</visible>
 							<animation effect="fade" start="0" end="100" time="1000" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
@@ -110,12 +111,29 @@
 							<animation effect="fade" start="0" end="100" time="500">Visible</animation>
 							<description>Preview thumb</description>
 							<width>656</width>
-							<height>406</height>
+							<height>403</height>
 							<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
 							<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
 							<bordersize>9</bordersize>
 							<texture background="true">$INFO[ListItem.Thumb]</texture>
 							<align>center</align>
+						</control>
+						<!-- HQ preview image -->
+						<control type="largeimage">
+							<visible>![Container(561).OnNext | Container(561).OnPrevious]</visible>
+							<animation effect="fade" start="0" end="100" time="1000" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
+							<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
+							<animation effect="fade" start="100" end="0" time="500">Hidden</animation>
+							<animation effect="fade" start="0" end="100" time="500">Visible</animation>
+							<description>Preview thumb</description>
+							<width>656</width>
+							<height>403</height>
+							<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
+							<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+							<bordersize>9</bordersize>
+							<texture background="true">$INFO[ListItem.FileNameAndPath]</texture>
+							<align>center</align>
+							<visible>!IsEmpty(ListItem.FileNameAndPath)</visible>
 						</control>
 					</control>
 					<control type="group">
@@ -207,7 +225,17 @@
 							<height>455</height>
 							<width min="200" max="800">auto</width>
 							<aspectratio>keep</aspectratio>
+							<texture background="true">$INFO[ListItem(0).FileNameAndPath]</texture>							
 							<info>ListItem(0).Thumb</info>
+							<visible>Container.Content(plugincontent)</visible>
+						</control>
+						<control type="largeimage" id="444">
+							<description>Image</description>
+							<height>455</height>
+							<width min="200" max="800">auto</width>
+							<aspectratio>keep</aspectratio>
+							<texture background="true">$INFO[ListItem(0).FileNameAndPath]</texture>
+							<visible>!Container.Content(plugincontent)</visible>
 						</control>
 						<!-- right photo -->
 						<control type="largeimage">
