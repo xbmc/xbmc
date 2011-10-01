@@ -4,7 +4,6 @@
 	<views>591,57,561,56</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
-		<include>Background</include>
 		<include>Pictures</include>
 		<include>ImageStream</include>
 		<include>InfoListPics</include>
