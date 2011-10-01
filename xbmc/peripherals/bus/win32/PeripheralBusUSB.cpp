@@ -45,7 +45,9 @@ bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
   /* add device scans for non-generic devices here */
 
   bReturn |= PerformDeviceScan(&USB_HID_GUID, PERIPHERAL_HID, results);
-  bReturn |= PerformDeviceScan(&USB_DISK_GUID, PERIPHERAL_DISK, results);
+  //disabled scanning for disks, since nothing is being done with them
+  // bReturn |= PerformDeviceScan(&USB_DISK_GUID, PERIPHERAL_DISK, results);
+  bReturn |= PerformDeviceScan(&USB_RAW_GUID, PERIPHERAL_UNKNOWN, results);
 
   return bReturn;
 }
@@ -112,14 +114,11 @@ bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType
 
     CStdString strVendorId(StringUtils::EmptyString);
     CStdString strProductId(StringUtils::EmptyString);
-    if (type == PERIPHERAL_HID)
-    {
-      CStdString strTmp(devicedetailData->DevicePath);
-      strVendorId = strTmp.substr(strTmp.Find("vid_") + 4, 4);
-      strProductId = strTmp.substr(strTmp.Find("pid_") + 4, 4);
-      if (strTmp.Find("&mi_") >= 0 && strTmp.Find("&mi_00") < 0)
-        continue;
-    }
+    CStdString strTmp(devicedetailData->DevicePath);
+    strVendorId = strTmp.substr(strTmp.Find("vid_") + 4, 4);
+    strProductId = strTmp.substr(strTmp.Find("pid_") + 4, 4);
+    if (strTmp.Find("&mi_") >= 0 && strTmp.Find("&mi_00") < 0)
+      continue;
 
     PeripheralScanResult prevDevice;
     if (!results.GetDeviceOnLocation(devicedetailData->DevicePath, &prevDevice))
