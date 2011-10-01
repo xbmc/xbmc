@@ -350,8 +350,8 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
         channel->m_iClientEncryptionSystem = m_pDS->fv("iEncryptionSystem").get_asInt();
         channel->m_iEpgId                  = m_pDS->fv("idEpg").get_asInt();
 
-        CLog::Log(LOGDEBUG, "PVRDB - %s - channel '%s' loaded from the database",
-            __FUNCTION__, channel->m_strChannelName.c_str());
+        CLog::Log(LOGDEBUG, "PVRDB - %s - channel '%s' (id: %i) loaded from the database (client id: %i channel uid: %i channel nr: %i)",
+            __FUNCTION__, channel->m_strChannelName.c_str(), channel->m_iChannelId, channel->m_iClientId, channel->m_iUniqueId, channel->m_iClientChannelNumber);
         results.InsertInGroup(*channel, m_pDS->fv("iChannelNumber").get_asInt(), false);
         m_pDS->next();
         ++iReturn;
@@ -612,8 +612,16 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
 
         results.Update(data);
 
-        CLog::Log(LOGDEBUG, "PVRDB - %s - group '%s' loaded from the database",
-            __FUNCTION__, data.GroupName().c_str());
+        if (data.IsRadio())
+        {
+          CLog::Log(LOGDEBUG, "PVRDB - %s - radio group '%s' loaded from the database",
+            __FUNCTION__, data.GroupName().c_str() );
+        }
+        else
+        {
+          CLog::Log(LOGDEBUG, "PVRDB - %s - TV group '%s' loaded from the database",
+            __FUNCTION__, data.GroupName().c_str() );
+        }
 
         m_pDS->next();
       }
@@ -622,7 +630,7 @@ bool CPVRDatabase::Get(CPVRChannelGroups &results)
     }
     catch (...)
     {
-      CLog::Log(LOGERROR, "%s - couldn't load channels from the database", __FUNCTION__);
+      CLog::Log(LOGERROR, "%s - couldn't load channelgroups from the database", __FUNCTION__);
     }
   }
 
