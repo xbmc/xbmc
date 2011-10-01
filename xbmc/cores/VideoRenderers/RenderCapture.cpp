@@ -275,19 +275,13 @@ void CRenderCaptureDX::BeginRender()
 
   if (!m_asyncChecked)
   {
-    //check if occlusion query is supported
-    if (UseOcclusionQuery())
+    m_asyncSupported = pD3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, NULL) == D3D_OK;
+    if (m_flags & CAPTUREFLAG_CONTINUOUS)
     {
-      m_asyncSupported = pD3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, NULL) == D3D_OK;
-      if (!m_asyncSupported && (m_flags & CAPTUREFLAG_CONTINUOUS))
+      if (!m_asyncSupported)
         CLog::Log(LOGWARNING, "CRenderCaptureDX: D3DQUERYTYPE_OCCLUSION not supported, performance might suffer");
-    }
-    else
-    {
-      if (m_flags & CAPTUREFLAG_CONTINUOUS)
+      if (!UseOcclusionQuery())
         CLog::Log(LOGWARNING, "CRenderCaptureDX: D3DQUERYTYPE_OCCLUSION disabled, performance might suffer");
-
-      m_asyncSupported = false;
     }
 
     m_asyncChecked = true;
@@ -347,18 +341,36 @@ void CRenderCaptureDX::BeginRender()
     return;
   }
 
-  if (m_asyncSupported && !m_query)
+  if (m_asyncSupported && UseOcclusionQuery())
   {
-    result = pD3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, &m_query);
-    if (result != D3D_OK)
+    //generate an occlusion query if we don't have one
+    if (!m_query)
     {
-      CLog::Log(LOGERROR, "CRenderCaptureDX::BeginRender: CreateQuery failed %s",
-                g_Windowing.GetErrorDescription(result).c_str());
-      m_asyncSupported = false;
+      result = pD3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, &m_query);
+      if (result != D3D_OK)
+      {
+        CLog::Log(LOGERROR, "CRenderCaptureDX::BeginRender: CreateQuery failed %s",
+                  g_Windowing.GetErrorDescription(result).c_str());
+        m_asyncSupported = false;
+        if (m_query)
+        {
+          while (m_query->Release() > 0);
+          m_query = NULL;
+        }
+      }
+    }
+  }
+  else
+  {
+    //don't use an occlusion query, clean up any old one
+    if (m_query)
+    {
+      while (m_query->Release() > 0);
+      m_query = NULL;
     }
   }
 
-  if (m_asyncSupported)
+  if (m_query)
     m_query->Issue(D3DISSUE_BEGIN);
 }
 
@@ -369,7 +381,7 @@ void CRenderCaptureDX::EndRender()
   //so the render thread doesn't have to wait for the gpu to copy the data to m_copySurface
   pD3DDevice->GetRenderTargetData(m_renderSurface, m_copySurface);
 
-  if (m_asyncSupported)
+  if (m_query)
   {
     m_query->Issue(D3DISSUE_END);
     m_query->GetData(NULL, 0, D3DGETDATA_FLUSH); //flush the query request
@@ -383,7 +395,7 @@ void CRenderCaptureDX::EndRender()
 
 void CRenderCaptureDX::ReadOut()
 {
-  if (m_asyncSupported)
+  if (m_query)
   {
     //if the result of the occlusion query is available, the data is probably also written into m_copySurface
     HRESULT result = m_query->GetData(NULL, 0, D3DGETDATA_FLUSH);
@@ -454,7 +466,7 @@ void CRenderCaptureDX::CleanupDX()
     m_copySurface = NULL;
   }
 
-  if (m_asyncSupported && m_query)
+  if (m_query)
   {
     while (m_query->Release() > 0);
     m_query = NULL;
