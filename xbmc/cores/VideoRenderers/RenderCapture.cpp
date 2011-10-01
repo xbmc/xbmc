@@ -24,6 +24,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/fastmemcpy.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 
 CRenderCaptureBase::CRenderCaptureBase()
 {
@@ -40,6 +41,18 @@ CRenderCaptureBase::CRenderCaptureBase()
 
 CRenderCaptureBase::~CRenderCaptureBase()
 {
+}
+
+bool CRenderCaptureBase::UseOcclusionQuery()
+{
+  if (m_flags & CAPTUREFLAG_IMMEDIATELY)
+    return false;
+  else if ((g_advancedSettings.m_videoCaptureUseOcclusionQuery == 0) ||
+           (g_advancedSettings.m_videoCaptureUseOcclusionQuery == -1 &&
+            g_Windowing.GetRenderQuirks() & RENDER_QUIRKS_BROKEN_OCCLUSION_QUERY))
+    return false;
+  else
+    return true;
 }
 
 #if defined(HAS_GL) || defined(HAS_GLES)
@@ -109,15 +122,20 @@ void CRenderCaptureGL::BeginRender()
     if (!m_pbo)
       glGenBuffersARB(1, &m_pbo);
 
-    //only use a query when not capturing immediately
-    if (!m_query && !(m_flags & CAPTUREFLAG_IMMEDIATELY))
+    if (UseOcclusionQuery())
     {
-      glGenQueriesARB(1, &m_query);
+      //generate an occlusion query if we don't have one
+      if (!m_query)
+        glGenQueriesARB(1, &m_query);
     }
-    else if (m_query && (m_flags & CAPTUREFLAG_IMMEDIATELY))
-    { //clean up any old query if the previous capture was not immediately
-      glDeleteQueriesARB(1, &m_query);
-      m_query = 0;
+    else
+    {
+      //don't use an occlusion query, clean up any old one
+      if (m_query)
+      {
+        glDeleteQueriesARB(1, &m_query);
+        m_query = 0;
+      }
     }
 
     //start the occlusion query
@@ -256,9 +274,16 @@ void CRenderCaptureDX::BeginRender()
   if (!m_asyncChecked)
   {
     //check if occlusion query is supported
-    m_asyncSupported = pD3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, NULL) == D3D_OK;
-    if (!m_asyncSupported && (m_flags & CAPTUREFLAG_CONTINUOUS))
-      CLog::Log(LOGWARNING, "CRenderCaptureDX: D3DQUERYTYPE_OCCLUSION not supported, performance might suffer");
+    if (UseOcclusionQuery())
+    {
+      m_asyncSupported = pD3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, NULL) == D3D_OK;
+      if (!m_asyncSupported && (m_flags & CAPTUREFLAG_CONTINUOUS))
+        CLog::Log(LOGWARNING, "CRenderCaptureDX: D3DQUERYTYPE_OCCLUSION not supported, performance might suffer");
+    }
+    else
+    {
+      m_asyncSupported = false;
+    }
 
     m_asyncChecked = true;
   }

@@ -156,6 +156,8 @@ class CRenderCaptureBase
     bool         IsAsync()                      { return m_asyncSupported; }
 
   protected:
+    bool             UseOcclusionQuery();
+
     ECAPTURESTATE    m_state;     //state for the rendermanager
     ECAPTURESTATE    m_userState; //state for the thread that wants the capture
     int              m_flags;

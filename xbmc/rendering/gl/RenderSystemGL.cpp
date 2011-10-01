@@ -94,6 +94,8 @@ void CRenderSystemGL::CheckOpenGLQuirks()
 
     if(m_RenderRenderer.Find("Poulsbo") >= 0)
       m_renderCaps &= ~RENDER_CAPS_DXT_NPOT;
+
+    m_renderQuirks |= RENDER_QUIRKS_BROKEN_OCCLUSION_QUERY;
   }
 }	
 

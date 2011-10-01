@@ -124,6 +124,7 @@ class CAdvancedSettings
     bool  m_videoAllowMpeg4VDPAU;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
     bool m_videoDisableBackgroundDeinterlace;
+    int  m_videoCaptureUseOcclusionQuery;
     bool m_DXVACheckCompatibility;
     bool m_DXVACheckCompatibilityPresent;
     bool m_DXVAForceProcessorRenderer;
