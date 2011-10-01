@@ -24,7 +24,7 @@
 
 #include "network/Zeroconf.h"
 #include "threads/CriticalSection.h"
-#include <mDNS/dns_sd.h>
+#include <dns_sd.h>
 
 class CZeroconfWIN : public CZeroconf
 {
