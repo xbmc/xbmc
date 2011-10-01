@@ -73,6 +73,8 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
       DNSServiceRefDeallocate(netService);
 
     CLog::Log(LOGERROR, "CZeroconfWIN::doPublishService CFNetServiceRegister returned (error = %ld)\n", (int) err);
+    if(err == kDNSServiceErr_ServiceNotRunning)
+      CLog::Log(LOGERROR, "CZeroconfWIN: Apples Bonjour Service not installed?");
   } 
   else
   {
