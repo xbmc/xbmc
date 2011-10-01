@@ -64,7 +64,6 @@ cPVRClientMediaPortal::cPVRClientMediaPortal()
   m_BackendUTCoffset       = 0;
   m_BackendTime            = 0;
   m_bStop                  = true;
-  m_mutex.Initialize();
 #ifdef TSREADER
   m_noSignalStreamSize     = 0;
   m_noSignalStreamReadPos  = 0;
@@ -1243,13 +1242,19 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
     if (m_tsreader != NULL)
     {
-      //TODO: add check for changed rtsp url or timeshift buffer file...
-      //      In that case, we should open a new TsReader...
       if (g_iTVServerXBMCBuild >=90 )
       { // Continue with the existing TsReader.
         XBMC->Log(LOG_INFO, "Re-using existing TsReader...");
-        m_tsreader->OnZap();
-        return true;
+        if(g_bDirectTSFileRead)
+        {
+          // Timeshift buffer
+          return m_tsreader->OnZap(timeshiftfields[2].c_str());
+        }
+        else
+        {
+          // RTSP url
+          return m_tsreader->OnZap(timeshiftfields[0].c_str());
+        }
       }
       else
       {

@@ -261,12 +261,31 @@ void CTsReader::Close()
   }
 }
 
-void CTsReader::OnZap(void)
+bool CTsReader::OnZap(const char* pszFileName)
 {
-  if (m_fileReader)
+  string newFileName;
+  long result;
+
+  XBMC->Log(LOG_NOTICE, "CTsReader::OnZap(%s)", pszFileName);
+
+  // Check whether the new channel url/timeshift buffer is changed
+  // In case of a new url/timeshift buffer file, close the old one first
+  newFileName = TranslatePath(pszFileName);
+  if (newFileName != m_fileName)
   {
-    m_fileReader->SetFilePointer(0LL, FILE_END);
-    usleep(100000);
+    Close();
+    result = Open(pszFileName);
+    return (result==S_OK);
+  }
+  else
+  {
+    if (m_fileReader)
+    {
+      result = m_fileReader->SetFilePointer(0LL, FILE_END);
+      usleep(100000);
+      return (result==S_OK);
+    }
+    return S_FALSE;
   }
 }
 
