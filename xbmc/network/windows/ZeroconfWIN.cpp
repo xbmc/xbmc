@@ -66,6 +66,8 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
 
   DNSServiceErrorType err = DNSServiceRegister(&netService, flags, 0, assemblePublishedName(fcr_name).c_str(), fcr_type.c_str(), NULL, NULL, f_port, TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
 
+  DNSServiceProcessResult(netService);
+  
   if (err != kDNSServiceErr_NoError)
   {
     // Something went wrong so lets clean up.
