@@ -207,6 +207,16 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
 
           if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strFullName.c_str(), &info) == 0)
           {
+            bool statIsDir = (info.st_mode & S_IFDIR) ? true : false;
+            //check if stat isdir is same as
+            //dirent is dir
+            //this fixes a bug with netatalk server
+            //where stat seems b0rked in conjunction with afpclient
+            if (bIsDir == statIsDir)                                        
+            {
+              bIsDir = (info.st_mode & S_IFDIR) ? true : false;
+            }
+            
             //resolve symlinks
             if(S_ISLNK(info.st_mode))
             {
@@ -217,8 +227,6 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
               }
               path = linkUrl.Get();              
             }
-          
-            bIsDir = (info.st_mode & S_IFDIR) ? true : false;
             lTimeDate = info.st_mtime;
             if (lTimeDate == 0) // if modification date is missing, use create date
               lTimeDate = info.st_ctime;
