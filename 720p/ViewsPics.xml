@@ -172,7 +172,7 @@
 					<aspectratio aligny="top">scale</aspectratio>
 					<texture background="true">grainy_black_bg.png</texture>
 					<align>center</align>
-				</control>				
+				</control>
 				<control type="group">
 					<visible>!Container.OnNext + !Container.OnPrevious</visible>
 					<animation effect="fade" start="0" end="100" time="1000" delay="300" condition="Control.HasFocus(57)" reversible="false">Conditional</animation>
@@ -406,6 +406,17 @@
 		<control type="group">
 			<visible>Control.IsVisible(591)</visible>
 			<control type="group">
+				<control type="largeimage">
+					<visible>Window.IsVisible(2)</visible>
+					<posy>0</posy>
+					<posx>0</posx>
+					<width>1280</width>
+					<height>720</height>
+					<aspectratio aligny="top">scale</aspectratio>
+					<texture background="true">$INFO[ListItem.Thumb]</texture>
+					<visible>true</visible>
+					<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
+				</control>
 				<visible>Control.IsVisible(591)</visible>
 				<include>MediaViewBGOverlay</include>
 			</control>
@@ -508,7 +519,7 @@
 							<wrapmultiline>false</wrapmultiline>
 						</control>
 					</focusedlayout>
-					</control>
+				</control>
 			</control>
 		</control>
 	</include>

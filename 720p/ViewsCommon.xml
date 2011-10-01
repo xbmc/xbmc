@@ -2536,8 +2536,28 @@
 	<include name="PluginStream">
 		<control type="group">
 			<control type="group">
+				<control type="largeimage">
+					<posy>0</posy>
+					<posx>0</posx>
+					<width>1280</width>
+					<height>720</height>
+					<aspectratio aligny="top">scale</aspectratio>
+					<texture background="true">$INFO[ListItem.Thumb]</texture>
+					<visible>true</visible>
+					<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
+				</control>
 				<visible>Container.content(plugins)</visible>
 				<include>MediaViewBGOverlay</include>
+				<control type="largeimage">
+					<posy>0</posy>
+					<posx>0</posx>
+					<width>1280</width>
+					<height>720</height>
+					<aspectratio aligny="top">scale</aspectratio>
+					<texture background="true">$INFO[ListItem.Thumb]</texture>
+					<visible>true</visible>
+					<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>
+				</control>
 			</control>
 			<control type="group">
 				<posy>206</posy>
