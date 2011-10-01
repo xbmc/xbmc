@@ -26,16 +26,4 @@
     <setting key="standby_pc_on_tv_standby" type="bool" value="1" label="36014" />
     <setting key="cec_debug_logging" type="bool" value="0" label="20191" />
   </peripheral>
-
-  <peripheral class="hid" name="Generic HID device" mapTo="hid">
-    <setting key="keymap_enabled" type="bool" value="0" label="35008" />
-    <setting key="keymap" value="" label="35007" />
-  </peripheral>
-
-  <peripheral vendor="1234" product="5678" bus="usb" name="Demo Device" mapTo="hid">
-    <setting key="demo1" type="int" label="1" value="50" min="0" max="100" step="5" />
-    <setting key="demo2" type="float" label="2" value="13.37" min="0" max="100" step="0.50" />
-    <setting key="demo3" type="string" label="3" value="demoOrigValue" />
-    <setting key="demo4" type="bool" label="4" value="1" />
-  </peripheral>
 </peripherals>
