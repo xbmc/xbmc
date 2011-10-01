@@ -29,6 +29,7 @@
 #include "windowing/XBMC_events.h"
 #include "utils/TimeUtils.h"
 #include "input/XBMC_keytable.h"
+#include "input/XBMC_vkeys.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/devices/PeripheralHID.h"
 
@@ -163,10 +164,14 @@ const CKey CKeyboardStat::ProcessKeyDown(XBMC_keysym& keysym)
     held = 0;
   }
 
-  // If the shift modifier is used alone, it is ignored unless it is
-  // combined with a - z
+  // For all shift-X keys except shift-A to shift-Z and shift-F1 to shift-F24 the
+  // shift modifier is ignored. This so that, for example, the * keypress (shift-8)
+  // is seen as <asterisk> not <asterisk mod="shift">.
+  // The A-Z keys are exempted because shift-A-Z is used for navigation in lists.
+  // The function keys are exempted because function keys have no shifted value and
+  // the Nyxboard remote uses keys like Shift-F3 for some buttons.
   if (modifiers == CKey::MODIFIER_SHIFT)
-    if ((unicode < 'A' || unicode > 'Z') && (unicode < 'a' || unicode > 'z'))
+    if ((unicode < 'A' || unicode > 'Z') && (unicode < 'a' || unicode > 'z') && (vkey < XBMCVK_F1 || vkey > XBMCVK_F24))
       modifiers = 0;
 
   // Create and return a CKey
