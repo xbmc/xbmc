@@ -193,6 +193,7 @@ class CRenderCaptureGL : public CRenderCaptureBase
     void   PboToBuffer();
     GLuint m_pbo;
     GLuint m_query;
+    bool   m_occlusionQuerySupported;
 };
 
 //used instead of typedef CRenderCaptureGL CRenderCapture
