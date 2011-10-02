@@ -1662,7 +1662,6 @@ void CApplication::LoadSkin(const SkinPtr& skin)
 
   CLog::Log(LOGINFO, "  load skin from:%s", skin->Path().c_str());
   g_SkinInfo = skin;
-  g_SkinInfo->Start();
 
   CLog::Log(LOGINFO, "  load fonts for skin...");
   g_graphicsContext.SetMediaDir(skin->Path());
@@ -1695,6 +1694,8 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   URIUtils::AddFileToFolder(skinEnglishPath, "strings.xml", skinEnglishPath);
 
   g_localizeStrings.LoadSkinStrings(langPath, skinEnglishPath);
+
+  g_SkinInfo->Start();
 
   int64_t start;
   start = CurrentHostCounter();
