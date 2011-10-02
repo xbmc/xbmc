@@ -2574,8 +2574,6 @@
 					<width>1260</width>
 					<height>500</height>
 					<itemlayout condition="Container.content(plugins)" width="154" height="160">
-						<!-- drop shadow -->
-						
 						<control type="image">
 							<description>Poster image</description>
 							<posx>18</posx>
@@ -2607,8 +2605,7 @@
 							<wrapmultiline>false</wrapmultiline>
 						</control>
 					</itemlayout>
-					<focusedlayout condition="Container.content(plugins)" width="154" height="160">
-						
+					<focusedlayout condition="Container.content(plugins)" width="154" height="160">					
 						<control type="image">
 							<description>Poster image</description>
 							<posx>15</posx>

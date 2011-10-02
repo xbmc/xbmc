@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <window id="1">
-	<defaultcontrol>56</defaultcontrol>
+	<defaultcontrol>52</defaultcontrol>
+	<views>52,56</views>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<include>Background</include>
-		<include>InfoList</include>
 		<include>PanelStream</include>
+		<include>InfoList</include>
 		<control type="group">
 			<posy>9</posy>
 			<include>TopOverlayTitlePos</include>
@@ -79,7 +80,7 @@
 			</control>	
 		</control>
 		<include>Clock</include>
-		<include condition="!Skin.HasSetting(HideOptionsMenu)">OptionsMenu</include>
+		<include>OptionsMenu</include>
 		<include>MediaCount</include>
 		<include>MusicNowPlayingIndicators</include>
 	</controls>

@@ -38,6 +38,9 @@
 				<visible>![ControlGroup(7001).HasFocus | ControlGroup(7002).HasFocus | ControlGroup(7003).HasFocus | ControlGroup(7004).HasFocus]</visible>
 				<animation effect="fade" end="100" time="500" delay="100">Visible</animation>
 				<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
+				<animation type="WindowClose">
+					<effect type="fade" start="100" end="0" time="800"/>
+				</animation>
 			</control>
 			<!-- "new list" focused item fanart while using inside the list -->
 			<!-- on deck -->

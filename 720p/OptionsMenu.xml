@@ -314,18 +314,20 @@
 				<height>522</height>
 				<orientation>vertical</orientation>
 				<itemgap>2</itemgap>
+				<onup>9011</onup>
+				<ondown>9011</ondown>
 				<onleft>56</onleft>
 				<include>OMNoViewThumbSlide</include>
-				<!--<control type="button" id="911">
+				<control type="button" id="911">
 					<description>List view button</description>
-					<visible>![Control.IsVisible(50) | Container.Content(Episodes) | Container.Content(TVShows) | Container.Content(Movies) | Container.Content(Artists) | Container.Content(Albums) | Container.Content(Songs)| Container.Content(Secondary) | Container.Content(clip) | Container.Content(plugincontent)]</visible>
+					<visible>false</visible>
 					<label>$LOCALIZE[535]</label>
 					<onclick>Container.SetViewMode(50)</onclick>
 					<onclick>SetFocus(50)</onclick>
 					<include>OMButtonItem</include>
-				</control>-->
+				</control>
 				<control type="button" id="912">
-					<visible>!Control.IsVisible(56) | Container.Content(secondary)</visible>
+					<visible>!Control.IsVisible(56) + [Container.Content(secondary) | Window.IsActive(1)]</visible>
 					<description>Info List view button</description>
 					<label>$LOCALIZE[31711]</label>
 					<onclick>Container.SetViewMode(56)</onclick>
@@ -374,7 +376,7 @@
 				</control>-->
 				<control type="button" id="957">
 					<description>Panel Stream view button</description>
-					<visible>!Control.IsVisible(52) + !Window.IsVisible(MyPictures) + !Container.Content(Secondary) + !Window.IsVisible(501)</visible>
+					<visible>!Control.IsVisible(52) + !Container.Content(Secondary) + ![Window.IsVisible(501) | Window.IsVisible(MyPictures)]</visible>
 					<label>$LOCALIZE[31715]</label>
 					<onclick>Container.SetViewMode(52)</onclick>
 					<onclick>SetFocus(52)</onclick>

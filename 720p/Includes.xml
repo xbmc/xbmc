@@ -1482,14 +1482,6 @@
 		<focusedlayout condition="Container.content(plugincontent) + Window.IsActive(1)" width="154" height="160">
 			<!-- drop shadow -->
 			<control type="image">
-				<posx>9</posx>
-				<posy>-7</posy>
-				<width>140</width>
-				<height>140</height>
-				<aspectratio scalediffuse="true" align="center">stretch</aspectratio>
-				<texture background="true" border="13">posterFrameSmallShadow3.png</texture>
-			</control>
-			<control type="image">
 				<description>Poster image</description>
 				<posx>15</posx>
 				<posy>0</posy>
