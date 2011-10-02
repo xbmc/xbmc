@@ -35,10 +35,9 @@
 				<fadetime>1000</fadetime>
 				<randomize>true</randomize>
 				<loop>yes</loop>
-				<visible>!ControlGroup(7001).HasFocus + !ControlGroup(7002).HasFocus</visible>
-				<animation type="WindowOpen" condition="true">
-					<effect type="fade" start="0" end="100" time="300" delay="0"/>
-				</animation>
+				<visible>![ControlGroup(7001).HasFocus | ControlGroup(7002).HasFocus | ControlGroup(7003).HasFocus | ControlGroup(7004).HasFocus]</visible>
+				<animation effect="fade" end="100" time="500" delay="100">Visible</animation>
+				<animation effect="fade" end="0" time="300" delay="0">Hidden</animation>
 			</control>
 			<!-- "new list" focused item fanart while using inside the list -->
 			<!-- on deck -->
@@ -100,6 +99,7 @@
 				<texture>black.png</texture>
 				<aspectratio>stretch</aspectratio>
 				<animation effect="fade" start="0" end="10" time="0" condition="true">Conditional</animation>
+				<visible>true</visible>
 			</control>
 			<!-- second dimmer when new lists are visible -->
 			<control type="image">
@@ -659,17 +659,15 @@
 			<control type="group">
 				<posy>127</posy>
 				<posx>1</posx>
-				<visible>Control.IsVisible(11001)</visible>
-				<animation effect="fade" start="0" end="100" time="500" delay="0">Visible</animation>
-				<animation effect="fade" end="0" time="0" delay="0">Hidden</animation>
+				<visible>Control.IsVisible(11001)</visible>				
 				<control type="image">
 					<height>488</height>
-					<texture background="true">newlistdoublebgunfocused.png</texture>
+					<texture background="true">newlistdoublebgunfocused1.png</texture>
 				</control>
 				<control type="image">
 					<height>488</height>
-					<visible>Control.HasFocus(11000) | Control.HasFocus(11001)</visible>
-					<texture background="true">newlistdoublebgfocused.png</texture>
+					<visible>[Control.HasFocus(11000) | Control.HasFocus(11001)]</visible>
+					<texture background="true">newlistdoublebgfocused2.png</texture>
 				</control>
 			</control>
 			<!-- list bg when only "Recently Added" or "Queue" is visible -->
@@ -678,13 +676,13 @@
 				<posx>1</posx>
 				<visible>!Control.IsVisible(11001) | Control.IsVisible(11003) | Control.HasFocus(11002)</visible>
 				<animation effect="fade" start="0" end="100" time="500" delay="0">Visible</animation>
-				<animation effect="fade" end="0" time="0" delay="0">Hidden</animation>
+				<animation effect="fade" start="100" end="0" time="100" delay="0">Hidden</animation>
 				<control type="image">
-					<texture background="true">newlistsinglebgunfocused.png</texture>
+					<texture background="true">newlistsinglebgunfocused1.png</texture>
 				</control>
 				<control type="image">
-					<visible>Control.HasFocus(11000) | Control.HasFocus(11003) | Control.HasFocus(11002)</visible>
-					<texture background="true">newlistsinglebgfocused.png</texture>
+					<visible>[Control.HasFocus(11000) | Control.HasFocus(11003) | Control.HasFocus(11002)]</visible>
+					<texture background="true">newlistsinglebgfocused2.png</texture>
 				</control>
 			</control>
 			<!-- Container for the new lists -->
