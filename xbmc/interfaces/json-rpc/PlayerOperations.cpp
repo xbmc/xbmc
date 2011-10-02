@@ -899,7 +899,7 @@ JSON_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStdStr
       case Picture:
         slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
         if (slideshow && slideshow->IsPlaying())
-          result = slideshow->CurrentSlide();
+          result = slideshow->CurrentSlide() - 1;
         else
           result = -1;
         break;
