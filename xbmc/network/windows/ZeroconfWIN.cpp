@@ -45,13 +45,11 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
                       unsigned int f_port,
                       std::map<std::string, std::string> txt)
 {
-  DNSServiceFlags flags = 0;
-  DNSServiceRef netService   = NULL;
-
-  CLog::Log(LOGDEBUG, "CZeroconfWIN::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
-
+  DNSServiceRef netService = NULL;
   TXTRecordRef txtRecord;
   TXTRecordCreate(&txtRecord, 0, NULL);
+
+  CLog::Log(LOGDEBUG, "CZeroconfWIN::doPublishService identifier: %s type: %s name:%s port:%i", fcr_identifier.c_str(), fcr_type.c_str(), fcr_name.c_str(), f_port);
 
   //add txt records
   if(!txt.empty())
