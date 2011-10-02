@@ -240,11 +240,13 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     if (NULL == m_pDS.get()) return ;
 
     // split our (possibly) multiple artist string into individual artists
-    CStdStringArray vecArtists; CStdString extraArtists;
-    SplitString(song.strArtist, vecArtists, extraArtists);
+    std::vector<std::string> extraArtists;
+    for (unsigned int index = 1; index < song.artist.size(); index++)
+      extraArtists.push_back(song.artist.at(index));
+    CStdString strExtraArtists = StringUtils::Join(extraArtists, g_advancedSettings.m_musicItemSeparator);
 
     // do the same with our albumartist
-    CStdStringArray vecAlbumArtists; CStdString extraAlbumArtists;
+    std::vector<std::string> vecAlbumArtists; CStdString extraAlbumArtists;
     SplitString(song.strAlbumArtist, vecAlbumArtists, extraAlbumArtists);
 
     // and the same for our genres
@@ -255,11 +257,11 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
 
     // add the primary artist/genre
     // SplitString returns >= 1 so no worries referencing the first item here
-    int idArtist = AddArtist(vecArtists[0]);
+    int idArtist = AddArtist(song.artist[0]);
     int idGenre = AddGenre(song.genre[0]);
     // and also the primary album artist (if applicable)
     int idAlbumArtist = -1;
-    if (!vecAlbumArtists[0].IsEmpty())
+    if (!vecAlbumArtists[0].empty())
       idAlbumArtist = AddArtist(vecAlbumArtists[0]);
 
     int idPath = AddPath(strPath);
@@ -268,7 +270,7 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     if (idAlbumArtist > -1)  // have an album artist
       idAlbum = AddAlbum(song.strAlbum, idAlbumArtist, extraAlbumArtists, song.strAlbumArtist, idThumb, idGenre, strExtraGenres, song.iYear);
     else
-      idAlbum = AddAlbum(song.strAlbum, idArtist, extraArtists, song.strArtist, idThumb, idGenre, strExtraGenres, song.iYear);
+      idAlbum = AddAlbum(song.strAlbum, idArtist, strExtraArtists, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator), idThumb, idGenre, strExtraGenres, song.iYear);
 
     DWORD crc = ComputeCRC(song.strFileName);
 
@@ -303,7 +305,7 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
       CStdString strSQL1;
 
       strSQL=PrepareSQL("insert into song (idSong,idAlbum,idPath,idArtist,strExtraArtists,idGenre,strExtraGenres,strTitle,iTrack,iDuration,iYear,dwFileNameCRC,strFileName,strMusicBrainzTrackID,strMusicBrainzArtistID,strMusicBrainzAlbumID,strMusicBrainzAlbumArtistID,strMusicBrainzTRMID,iTimesPlayed,iStartOffset,iEndOffset,idThumb,lastplayed,rating,comment) values (NULL,%i,%i,%i,'%s',%i,'%s','%s',%i,%i,%i,'%ul','%s','%s','%s','%s','%s','%s'",
-                    idAlbum, idPath, idArtist, extraArtists.c_str(), idGenre, strExtraGenres.c_str(),
+                    idAlbum, idPath, idArtist, strExtraArtists.c_str(), idGenre, strExtraGenres.c_str(),
                     song.strTitle.c_str(),
                     song.iTrack, song.iDuration, song.iYear,
                     crc, strFileName.c_str(),
@@ -326,11 +328,11 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     }
 
     // add extra artists and genres
-    AddExtraSongArtists(vecArtists, idSong, bCheck);
+    AddExtraSongArtists(song.artist, idSong, bCheck);
     if (idAlbumArtist > -1)
       AddExtraAlbumArtists(vecAlbumArtists, idAlbum);
     else
-      AddExtraAlbumArtists(vecArtists, idAlbum);
+      AddExtraAlbumArtists(song.artist, idAlbum);
     AddExtraGenres(song.genre, idSong, idAlbum, bCheck);
 
     song.idSong = idSong;
@@ -386,8 +388,8 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, int idArtist, const CS
       album.idAlbum = (int)m_pDS->lastinsertid();
       album.strAlbum = strAlbum;
       album.idArtist = idArtist;
-      album.strArtist = strArtist;
-      m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + album.strArtist, album));
+      album.artist = StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator);
+      m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + strArtist, album));
       return album.idAlbum;
     }
     else
@@ -398,8 +400,8 @@ int CMusicDatabase::AddAlbum(const CStdString& strAlbum1, int idArtist, const CS
       album.idAlbum = m_pDS->fv("idAlbum").get_asInt();
       album.strAlbum = strAlbum;
       album.idArtist = idArtist;
-      album.strArtist = strArtist;
-      m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + album.strArtist, album));
+      album.artist = StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator);
+      m_albumCache.insert(pair<CStdString, CAlbumCache>(album.strAlbum + strArtist, album));
       m_pDS->close();
       strSQL=PrepareSQL("update album set strExtraArtists='%s', idGenre=%i, strExtraGenres='%s', iYear=%i, idThumb=%i where idAlbum=%i", extraArtists.c_str(), idGenre, extraGenres.c_str(), year, idThumb, album.idAlbum);
       m_pDS->exec(strSQL.c_str());
@@ -519,7 +521,7 @@ int CMusicDatabase::AddArtist(const CStdString& strArtist1)
   return -1;
 }
 
-void CMusicDatabase::AddExtraSongArtists(const CStdStringArray &vecArtists, int idSong, bool bCheck)
+void CMusicDatabase::AddExtraSongArtists(const std::vector<std::string> &vecArtists, int idSong, bool bCheck)
 {
   try
   {
@@ -557,7 +559,7 @@ void CMusicDatabase::AddExtraSongArtists(const CStdStringArray &vecArtists, int 
   }
 }
 
-void CMusicDatabase::AddExtraAlbumArtists(const CStdStringArray &vecArtists, int idAlbum)
+void CMusicDatabase::AddExtraAlbumArtists(const std::vector<std::string> &vecArtists, int idAlbum)
 {
   try
   {
@@ -701,8 +703,10 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   CSong song;
   song.idSong = m_pDS->fv(song_idSong).get_asInt();
   // get the full artist string
-  song.strArtist = m_pDS->fv(song_strArtist).get_asString();
-  song.strArtist += m_pDS->fv(song_strExtraArtists).get_asString();
+  song.artist = StringUtils::Split(m_pDS->fv(song_strArtist).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv(song_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  for (unsigned int index = 0; index < extraArtists.size(); index++)
+    song.artist.push_back(extraArtists.at(index));
   song.iArtistId = m_pDS->fv(song_idArtist).get_asInt();
   // and the full genre string
   song.genre.push_back(m_pDS->fv(song_strGenre).get_asString());
@@ -808,8 +812,10 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL 
   album.strAlbum = pDS->fv(album_strAlbum).get_asString();
   if (album.strAlbum.IsEmpty())
     album.strAlbum = g_localizeStrings.Get(1050);
-  album.strArtist = pDS->fv(album_strArtist).get_asString();
-  album.strArtist += pDS->fv(album_strExtraArtists).get_asString();
+  album.artist = StringUtils::Split(pDS->fv(album_strArtist).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  std::vector<std::string> extraArtists = StringUtils::Split(pDS->fv(album_strExtraArtists).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  for (unsigned int index = 0; index < extraArtists.size(); index++)
+    album.artist.push_back(extraArtists.at(index));
   album.idArtist = pDS->fv(album_idArtist).get_asInt();
   album.genre = StringUtils::Split(pDS->fv(album_strGenre).get_asString(), g_advancedSettings.m_musicItemSeparator);
   std::vector<std::string> extraGenres = StringUtils::Split(pDS->fv(album_strExtraGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
@@ -2292,8 +2298,10 @@ void CMusicDatabase::DeleteAlbumInfo()
     CAlbumCache album;
     album.idAlbum = m_pDS->fv("album.idAlbum").get_asInt() ;
     album.strAlbum = m_pDS->fv("album.strAlbum").get_asString();
-    album.strArtist = m_pDS->fv("artist.strArtist").get_asString();
-    album.strArtist += m_pDS->fv("album.strExtraArtists").get_asString();
+    album.artist = StringUtils::Split(m_pDS->fv("artist.strArtist").get_asString(), g_advancedSettings.m_musicItemSeparator);
+    std::vector<std::string> extraArtists = StringUtils::Split(m_pDS->fv("album.strExtraArtists").get_asString(), g_advancedSettings.m_musicItemSeparator);
+    for (unsigned int index = 0; index < extraArtists.size(); index++)
+      album.artist.push_back(extraArtists.at(index));
     vecAlbums.push_back(album);
     m_pDS->next();
   }
@@ -2308,7 +2316,7 @@ void CMusicDatabase::DeleteAlbumInfo()
     for (int i = 0; i < (int)vecAlbums.size(); ++i)
     {
       CMusicDatabase::CAlbumCache& album = vecAlbums[i];
-      pDlg->Add(album.strAlbum + " - " + album.strArtist);
+      pDlg->Add(album.strAlbum + " - " + StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
     }
     pDlg->DoModal();
 
@@ -3557,6 +3565,11 @@ int CMusicDatabase::GetAlbumByName(const CStdString& strAlbum, const CStdString&
   return -1;
 }
 
+int CMusicDatabase::GetAlbumByName(const CStdString& strAlbum, const std::vector<std::string>& artist)
+{
+  return GetAlbumByName(strAlbum, StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator));
+}
+
 CStdString CMusicDatabase::GetGenreById(int id)
 {
   return GetSingleValue("genre", "strGenre", PrepareSQL("idGenre=%i", id));
@@ -3735,11 +3748,11 @@ bool CMusicDatabase::GetVariousArtistsAlbumsSongs(const CStdString& strBaseDir, 
   return false;
 }
 
-void CMusicDatabase::SplitString(const CStdString &multiString, vector<CStdString> &vecStrings, CStdString &extraStrings)
+void CMusicDatabase::SplitString(const CStdString &multiString, vector<string> &vecStrings, CStdString &extraStrings)
 {
-  int numStrings = StringUtils::SplitString(multiString, g_advancedSettings.m_musicItemSeparator, vecStrings);
-  for (int i = 1; i < numStrings; i++)
-    extraStrings += g_advancedSettings.m_musicItemSeparator + vecStrings[i];
+  vecStrings = StringUtils::Split(multiString, g_advancedSettings.m_musicItemSeparator);
+  for (unsigned int i = 1; i < vecStrings.size(); i++)
+    extraStrings += g_advancedSettings.m_musicItemSeparator + CStdString(vecStrings[i]);
 }
 
 bool CMusicDatabase::SetPathHash(const CStdString &path, const CStdString &hash)
@@ -4351,7 +4364,7 @@ void CMusicDatabase::ImportFromXML(const CStdString &xmlFile)
         CAlbum album;
         album.Load(entry);
         strTitle = album.strAlbum;
-        int idAlbum = GetAlbumByName(album.strAlbum,album.strArtist);
+        int idAlbum = GetAlbumByName(album.strAlbum,album.artist);
         if (idAlbum > -1)
           SetAlbumInfo(idAlbum,album,album.songs,false);
 
@@ -4508,9 +4521,9 @@ void CMusicDatabase::ExportKaraokeInfo(const CStdString & outFile, bool asHTML)
       songnum.Format( "%06d", song.iKaraokeNumber );
 
       if ( asHTML )
-        outdoc = "<tr><td>" + songnum + "</td><td>" + song.strArtist + "</td><td>" + song.strTitle + "</td></tr>\r\n";
+        outdoc = "<tr><td>" + songnum + "</td><td>" + StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) + "</td><td>" + song.strTitle + "</td></tr>\r\n";
       else
-        outdoc = songnum + "\t" + song.strArtist + "\t" + song.strTitle + "\t" + song.strFileName + "\r\n";
+        outdoc = songnum + "\t" + StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) + "\t" + song.strTitle + "\t" + song.strFileName + "\r\n";
 
       file.Write( outdoc, outdoc.size() );
 
@@ -4757,7 +4770,7 @@ void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album
   item.SetProperty("album_style", album.strStyles);
   item.SetProperty("album_type", album.strType);
   item.SetProperty("album_label", album.strLabel);
-  item.SetProperty("album_artist", album.strArtist);
+  item.SetProperty("album_artist", album.artist);
   item.SetProperty("album_genre", album.genre);
   item.SetProperty("album_title", album.strAlbum);
   if (album.iRating > 0)
@@ -4768,7 +4781,7 @@ void CMusicDatabase::SetPropertiesForFileItem(CFileItem& item)
 {
   if (!item.HasMusicInfoTag())
     return;
-  int idArtist = GetArtistByName(item.GetMusicInfoTag()->GetArtist());
+  int idArtist = GetArtistByName(StringUtils::Join(item.GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator));
   if (idArtist > -1)
   {
     CArtist artist;

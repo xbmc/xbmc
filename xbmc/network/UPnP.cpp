@@ -465,11 +465,14 @@ CUPnPServer::PopulateObjectFromTag(CMusicInfoTag&         tag,
       object.m_Affiliation.genre.Add(genres.at(index).c_str());
     object.m_Title = tag.GetTitle();
     object.m_Affiliation.album = tag.GetAlbum();
-    object.m_People.artists.Add(tag.GetArtist().c_str());
-    object.m_People.artists.Add(tag.GetArtist().c_str(), "Performer");
-    object.m_People.artists.Add(!tag.GetAlbumArtist().empty()?tag.GetAlbumArtist().c_str():tag.GetArtist().c_str(), "AlbumArtist");
+    for (unsigned int index = 0; index < tag.GetArtist().size(); index++)
+    {
+      object.m_People.artists.Add(tag.GetArtist().at(index).c_str());
+      object.m_People.artists.Add(tag.GetArtist().at(index).c_str(), "Performer");
+    }
+    object.m_People.artists.Add(!tag.GetAlbumArtist().empty()?tag.GetAlbumArtist().c_str():StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str(), "AlbumArtist");
     if(tag.GetAlbumArtist().IsEmpty())
-        object.m_Creator = tag.GetArtist();
+        object.m_Creator = StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
     else
         object.m_Creator = tag.GetAlbumArtist();
     object.m_MiscInfo.original_track_number = tag.GetTrackNumber();
@@ -682,9 +685,9 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                       CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
                       if (tag) {
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(tag->GetArtist()).c_str(), "Performer");
+                              CorrectAllItemsSortHack(StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "Performer");
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(!tag->GetAlbumArtist().empty()?tag->GetAlbumArtist():tag->GetArtist()).c_str(), "AlbumArtist");
+                              CorrectAllItemsSortHack(!tag->GetAlbumArtist().empty()?tag->GetAlbumArtist():StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "AlbumArtist");
                       }
 #ifdef WMP_ID_MAPPING
                       // Some upnp clients expect all artists to have parent root id 107
@@ -701,9 +704,9 @@ CUPnPServer::BuildObject(const CFileItem&              item,
                       CMusicInfoTag *tag = (CMusicInfoTag*)item.GetMusicInfoTag();
                       if (tag) {
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(tag->GetArtist()).c_str(), "Performer");
+                              CorrectAllItemsSortHack(StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "Performer");
                           container->m_People.artists.Add(
-                              CorrectAllItemsSortHack(!tag->GetAlbumArtist().empty()?tag->GetAlbumArtist():tag->GetArtist()).c_str(), "AlbumArtist");
+                              CorrectAllItemsSortHack(!tag->GetAlbumArtist().empty()?tag->GetAlbumArtist():StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator)).c_str(), "AlbumArtist");
                           container->m_Affiliation.album = CorrectAllItemsSortHack(tag->GetAlbum()).c_str();
                       }
 #ifdef WMP_ID_MAPPING

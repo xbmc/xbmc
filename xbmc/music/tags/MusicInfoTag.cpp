@@ -45,7 +45,7 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   if (this == &tag) return * this;
 
   m_strURL = tag.m_strURL;
-  m_strArtist = tag.m_strArtist;
+  m_artist = tag.m_artist;
   m_strAlbumArtist = tag.m_strAlbumArtist;
   m_strAlbum = tag.m_strAlbum;
   m_genre = tag.m_genre;
@@ -76,7 +76,12 @@ bool CMusicInfoTag::operator !=(const CMusicInfoTag& tag) const
   if (this == &tag) return false;
   if (m_strURL != tag.m_strURL) return true;
   if (m_strTitle != tag.m_strTitle) return true;
-  if (m_strArtist != tag.m_strArtist) return true;
+  for (unsigned int index = 0; index < m_artist.size(); index++)
+  {
+    if (tag.m_artist.at(index).compare(m_artist.at(index)) != 0)
+      return true;
+  }
+  if (m_artist != tag.m_artist) return true;
   if (m_strAlbumArtist != tag.m_strAlbumArtist) return true;
   if (m_strAlbum != tag.m_strAlbum) return true;
   if (m_iDuration != tag.m_iDuration) return true;
@@ -114,9 +119,9 @@ const CStdString& CMusicInfoTag::GetURL() const
   return m_strURL;
 }
 
-const CStdString& CMusicInfoTag::GetArtist() const
+const std::vector<std::string> CMusicInfoTag::GetArtist() const
 {
-  return m_strArtist;
+  return m_artist;
 }
 
 const CStdString& CMusicInfoTag::GetAlbum() const
@@ -198,7 +203,12 @@ void CMusicInfoTag::SetTitle(const CStdString& strTitle)
 
 void CMusicInfoTag::SetArtist(const CStdString& strArtist)
 {
-  m_strArtist = Trim(strArtist);
+  SetArtist(StringUtils::Split(strArtist, g_advancedSettings.m_musicItemSeparator));
+}
+
+void CMusicInfoTag::SetArtist(const std::vector<std::string>& artists)
+{
+  m_artist = artists;
 }
 
 void CMusicInfoTag::SetArtistId(const int iArtistId)
@@ -364,9 +374,9 @@ void CMusicInfoTag::SetMusicBrainzTRMID(const CStdString& strTRMID)
 
 void CMusicInfoTag::SetAlbum(const CAlbum& album)
 {
-  SetArtist(album.strArtist);
+  SetArtist(album.artist);
   SetAlbum(album.strAlbum);
-  SetAlbumArtist(album.strArtist);
+  SetAlbumArtist(StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
   SetGenre(album.genre);
   SetRating('0' + (album.iRating + 1) / 2);
   SYSTEMTIME stTime;
@@ -381,7 +391,7 @@ void CMusicInfoTag::SetSong(const CSong& song)
 {
   SetTitle(song.strTitle);
   SetGenre(song.genre);
-  SetArtist(song.strArtist);
+  SetArtist(song.artist);
   SetAlbum(song.strAlbum);
   SetAlbumArtist(song.strAlbumArtist);
   SetMusicBrainzTrackID(song.strMusicBrainzTrackID);
@@ -410,7 +420,7 @@ void CMusicInfoTag::Serialize(CVariant& value)
 {
   value["url"] = m_strURL;
   value["title"] = m_strTitle;
-  value["artist"] = m_strArtist;
+  value["artist"] = m_artist;
   value["album"] = m_strAlbum;
   value["albumartist"] = m_strAlbumArtist;
   value["genre"] = m_genre;
@@ -436,7 +446,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
   {
     ar << m_strURL;
     ar << m_strTitle;
-    ar << m_strArtist;
+    ar << m_artist;
     ar << m_strAlbum;
     ar << m_strAlbumArtist;
     ar << m_genre;
@@ -460,7 +470,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
   {
     ar >> m_strURL;
     ar >> m_strTitle;
-    ar >> m_strArtist;
+    ar >> m_artist;
     ar >> m_strAlbum;
     ar >> m_strAlbumArtist;
     ar >> m_genre;
@@ -485,7 +495,7 @@ void CMusicInfoTag::Archive(CArchive& ar)
 void CMusicInfoTag::Clear()
 {
   m_strURL.Empty();
-  m_strArtist.Empty();
+  m_artist.clear();
   m_strAlbum.Empty();
   m_strAlbumArtist.Empty();
   m_genre.clear();
@@ -510,13 +520,13 @@ void CMusicInfoTag::Clear()
 
 void CMusicInfoTag::AppendArtist(const CStdString &artist)
 {
-  if (m_strArtist.IsEmpty())
-    return SetArtist(artist);
-  std::vector<CStdString> values;
-  CStdString value(Trim(artist));
-  StringUtils::SplitString(m_strArtist, g_advancedSettings.m_musicItemSeparator, values);
-  if (std::find(values.begin(), values.end(), value) == values.end())
-    m_strArtist += g_advancedSettings.m_musicItemSeparator + value;
+  for (unsigned int index = 0; index < m_artist.size(); index++)
+  {
+    if (artist.Equals(m_artist.at(index).c_str()))
+      return;
+  }
+
+  m_artist.push_back(artist);
 }
 
 void CMusicInfoTag::AppendAlbumArtist(const CStdString &albumArtist)

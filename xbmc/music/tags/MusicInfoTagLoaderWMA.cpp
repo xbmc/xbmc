@@ -412,10 +412,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueString(const CStdString& strFrameName, c
   {
     // Multiple artists are stored in multiple "Author" tags we have get them
     // separatly and merge them to our system
-    if (tag.GetArtist().IsEmpty())
-      tag.SetArtist(strValue);
-    else
-      tag.SetArtist(tag.GetArtist() + g_advancedSettings.m_musicItemSeparator + strValue);
+    tag.AppendArtist(strValue);
   }
   else if (strFrameName == "WM/TrackNumber")
   {
@@ -521,7 +518,7 @@ void CMusicInfoTagLoaderWMA::SetTagValueBinary(const CStdString& strFrameName, c
       // if we don't have an album tag, cache with the full file path so that
       // other non-tagged files don't get this album image
       CStdString strCoverArt;
-      if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().IsEmpty() || !tag.GetArtist().IsEmpty()))
+      if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().IsEmpty() || !tag.GetArtist().empty()))
         strCoverArt = CThumbnailCache::GetAlbumThumb(&tag);
       else
         strCoverArt = CThumbnailCache::GetMusicThumb(tag.GetURL());

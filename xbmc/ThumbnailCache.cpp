@@ -32,7 +32,9 @@
 #include "settings/Settings.h"
 #include "utils/URIUtils.h"
 #include "utils/Crc32.h"
+#include "utils/StringUtils.h"
 #include "filesystem/StackDirectory.h"
+#include "settings/AdvancedSettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -120,12 +122,12 @@ CStdString CThumbnailCache::GetAlbumThumb(const CMusicInfoTag *musicInfo)
   if (!musicInfo)
     return CStdString();
 
-  return GetAlbumThumb(musicInfo->GetAlbum(), !musicInfo->GetAlbumArtist().empty() ? musicInfo->GetAlbumArtist() : musicInfo->GetArtist());
+  return GetAlbumThumb(musicInfo->GetAlbum(), !musicInfo->GetAlbumArtist().empty() ? musicInfo->GetAlbumArtist() : StringUtils::Join(musicInfo->GetArtist(), g_advancedSettings.m_musicItemSeparator));
 }
 
 CStdString CThumbnailCache::GetAlbumThumb(const CAlbum &album)
 {
-  return GetAlbumThumb(album.strAlbum, album.strArtist);
+  return GetAlbumThumb(album.strAlbum, StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
 }
 
 CStdString CThumbnailCache::GetAlbumThumb(const CStdString& album, const CStdString& artist)
@@ -238,7 +240,7 @@ CStdString CThumbnailCache::GetFanart(const CFileItem &item)
     return GetThumb(path,g_settings.GetVideoFanartFolder());
   }
   if (item.HasMusicInfoTag())
-    return GetThumb(item.GetMusicInfoTag()->GetArtist(),g_settings.GetMusicFanartFolder());
+    return GetThumb(StringUtils::Join(item.GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator),g_settings.GetMusicFanartFolder());
 
   return GetThumb(item.GetPath(),g_settings.GetVideoFanartFolder());
 }

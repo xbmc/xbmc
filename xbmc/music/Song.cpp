@@ -33,7 +33,7 @@ CSong::CSong(CMusicInfoTag& tag)
   strTitle = tag.GetTitle();
   genre = tag.GetGenre();
   strFileName = tag.GetURL();
-  strArtist = tag.GetArtist();
+  artist = tag.GetArtist();
   strAlbum = tag.GetAlbum();
   strAlbumArtist = tag.GetAlbumArtist();
   strMusicBrainzTrackID = tag.GetMusicBrainzTrackID();
@@ -66,7 +66,7 @@ void CSong::Serialize(CVariant& value)
 {
   value["filename"] = strFileName;
   value["title"] = strTitle;
-  value["artist"] = strArtist;
+  value["artist"] = artist;
   value["album"] = strAlbum;
   value["albumartist"] = strAlbumArtist;
   value["genre"] = genre;
@@ -90,7 +90,7 @@ void CSong::Clear()
 {
   strFileName.Empty();
   strTitle.Empty();
-  strArtist.Empty();
+  artist.clear();
   strAlbum.Empty();
   strAlbumArtist.Empty();
   genre.clear();

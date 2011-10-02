@@ -3228,7 +3228,7 @@ CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
     if (tag.GetAlbum().size()) { return tag.GetAlbum(); }
     break;
   case MUSICPLAYER_ARTIST:
-    if (tag.GetArtist().size()) { return tag.GetArtist(); }
+    if (tag.GetArtist().size()) { return StringUtils::Join(tag.GetArtist(), g_advancedSettings.m_musicItemSeparator); }
     break;
   case MUSICPLAYER_ALBUM_ARTIST:
     if (tag.GetAlbumArtist().size()) { return tag.GetAlbumArtist(); }
@@ -3855,7 +3855,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
     if (item->HasVideoInfoTag())
       return item->GetVideoInfoTag()->m_strArtist;
     if (item->HasMusicInfoTag())
-      return item->GetMusicInfoTag()->GetArtist();
+      return StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
     break;
   case LISTITEM_ALBUM_ARTIST:
     if (item->HasMusicInfoTag())

@@ -73,7 +73,7 @@ public:
   long idSong;
   CStdString strFileName;
   CStdString strTitle;
-  CStdString strArtist;
+  std::vector<std::string> artist;
   CStdString strAlbum;
   CStdString strAlbumArtist;
   std::vector<std::string> genre;

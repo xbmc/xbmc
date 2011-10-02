@@ -236,7 +236,7 @@ bool CVisualisation::OnAction(VIS_ACTION action, void *param)
         const CMusicInfoTag* tag = (const CMusicInfoTag*)param;
         VisTrack track;
         track.title       = tag->GetTitle().c_str();
-        track.artist      = tag->GetArtist().c_str();
+        track.artist      = StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str();
         track.album       = tag->GetAlbum().c_str();
         track.albumArtist = tag->GetAlbumArtist().c_str();
         track.genre       = StringUtils::Join(tag->GetGenre(), g_advancedSettings.m_musicItemSeparator).c_str();

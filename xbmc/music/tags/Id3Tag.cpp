@@ -131,7 +131,7 @@ bool CID3Tag::Parse()
   if (partOfCompilation && tag.GetAlbumArtist().IsEmpty())
     tag.SetAlbumArtist(g_localizeStrings.Get(340)); // Various Artists
 
-  if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().IsEmpty() || !tag.GetAlbum().IsEmpty())
+  if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().empty() || !tag.GetAlbum().IsEmpty())
     tag.SetLoaded();
 
   SYSTEMTIME dateTime;
@@ -170,7 +170,7 @@ bool CID3Tag::Parse()
   // if we don't have an album tag, cache with the full file path so that
   // other non-tagged files don't get this album image
   CStdString strCoverArt;
-  if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().IsEmpty() || !tag.GetArtist().IsEmpty()))
+  if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().IsEmpty() || !tag.GetArtist().empty()))
     strCoverArt = CThumbnailCache::GetAlbumThumb(&tag);
   else
     strCoverArt = CThumbnailCache::GetMusicThumb(tag.GetURL());
@@ -219,7 +219,7 @@ bool CID3Tag::Write(const CStdString& strFile)
   }
 
   SetTitle(m_musicInfoTag.GetTitle());
-  SetArtist(m_musicInfoTag.GetArtist());
+  SetArtist(StringUtils::Join(m_musicInfoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator));
   SetAlbum(m_musicInfoTag.GetAlbum());
   SetAlbumArtist(m_musicInfoTag.GetAlbumArtist());
   SetTrack(m_musicInfoTag.GetTrackNumber());

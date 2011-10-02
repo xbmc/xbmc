@@ -28,6 +28,11 @@
 using namespace std;
 using namespace MUSIC_INFO;
 
+bool CAlbum::operator<(const CAlbum &a) const
+{
+  return strAlbum +StringUtils::Join(artist, g_advancedSettings.m_musicItemSeparator) < a.strAlbum + StringUtils::Join(a.artist, g_advancedSettings.m_musicItemSeparator);
+}
+
 bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 {
   if (!album) return false;
@@ -36,7 +41,7 @@ bool CAlbum::Load(const TiXmlElement *album, bool append, bool prioritise)
 
   XMLUtils::GetString(album,"title",strAlbum);
 
-  XMLUtils::GetAdditiveString(album, "artist", g_advancedSettings.m_musicItemSeparator, strArtist, prioritise);
+  XMLUtils::GetStringArray(album, "artist", artist, prioritise);
   XMLUtils::GetStringArray(album, "genre", genre, prioritise);
   XMLUtils::GetAdditiveString(album, "style", g_advancedSettings.m_musicItemSeparator, strStyles, prioritise);
   XMLUtils::GetAdditiveString(album, "mood", g_advancedSettings.m_musicItemSeparator, strMoods, prioritise);
@@ -125,8 +130,7 @@ bool CAlbum::Save(TiXmlNode *node, const CStdString &tag, const CStdString& strP
   if (!album) return false;
 
   XMLUtils::SetString(album,  "title", strAlbum);
-  XMLUtils::SetAdditiveString(album, "artist",
-                           g_advancedSettings.m_musicItemSeparator, strArtist);
+  XMLUtils::SetStringArray(album, "artist", artist);
   XMLUtils::SetStringArray(album, "genre", genre);
   XMLUtils::SetAdditiveString(album, "style",
                            g_advancedSettings.m_musicItemSeparator, strStyles);

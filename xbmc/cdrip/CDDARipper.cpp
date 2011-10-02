@@ -90,7 +90,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   strTrack.Format("%i", atoi(strTrackFile.substr(13, strTrackFile.size() - 13 - 5).c_str()));
 
   m_pEncoder->SetComment("Ripped with XBMC");
-  m_pEncoder->SetArtist(infoTag.GetArtist().c_str());
+  m_pEncoder->SetArtist(StringUtils::Join(infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str());
   m_pEncoder->SetTitle(infoTag.GetTitle().c_str());
   m_pEncoder->SetAlbum(infoTag.GetAlbum().c_str());
   m_pEncoder->SetAlbumArtist(infoTag.GetAlbumArtist().c_str());
@@ -407,7 +407,7 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   {
     CStdString strAlbumArtist = infoTag.GetAlbumArtist();
     if (strAlbumArtist.IsEmpty())
-      strAlbumArtist = infoTag.GetArtist();
+      strAlbumArtist = StringUtils::Join(infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
     if (strAlbumArtist.IsEmpty())
       strAlbumArtist = "Unknown Artist";
     else

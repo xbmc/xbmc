@@ -37,16 +37,13 @@ class CAlbum
 {
 public:
   CAlbum() { idAlbum = 0; iRating = 0; iYear = 0; };
-  bool operator<(const CAlbum &a) const
-  {
-    return strAlbum + strArtist < a.strAlbum + a.strArtist;
-  }
+  bool operator<(const CAlbum &a) const;
 
   void Reset()
   {
     idAlbum = -1;
     strAlbum.Empty();
-    strArtist.Empty();
+    artist.clear();
     genre.clear();
     thumbURL.Clear();
     strMoods.Empty();
@@ -74,7 +71,7 @@ public:
 
   long idAlbum;
   CStdString strAlbum;
-  CStdString strArtist;
+  std::vector<std::string> artist;
   std::vector<std::string> genre;
   CScraperUrl thumbURL;
   CStdString strMoods;

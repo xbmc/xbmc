@@ -31,6 +31,8 @@
 #include "music/tags/MusicInfoTag.h"
 #include "settings/Settings.h"
 #include "utils/Variant.h"
+#include "utils/StringUtils.h"
+#include "settings/AdvancedSettings.h"
 
 #define NUM_ITEMS 10
 
@@ -227,7 +229,7 @@ bool CRecentlyAddedJob::UpdateMusic()
       CStdString   strThumb;
       CStdString   strRating;
       CStdString   strAlbum  = item->GetMusicInfoTag()->GetAlbum();
-      CStdString   strArtist = item->GetMusicInfoTag()->GetArtist();
+      CStdString   strArtist = StringUtils::Join(item->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
       
       long idAlbum = musicdatabase.GetAlbumByName(strAlbum,strArtist);
       if (idAlbum != -1)

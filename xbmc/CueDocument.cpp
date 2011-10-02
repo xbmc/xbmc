@@ -229,9 +229,9 @@ void CCueDocument::GetSongs(VECSONGS &songs)
   {
     CSong song;
     if ((m_Track[i].strArtist.length() == 0) && (m_strArtist.length() > 0))
-      song.strArtist = m_strArtist;
+      song.artist = StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator);
     else
-      song.strArtist = m_Track[i].strArtist;
+      song.artist = StringUtils::Split(m_Track[i].strArtist, g_advancedSettings.m_musicItemSeparator);
     song.strAlbumArtist = m_strArtist;
     song.strAlbum = m_strAlbum;
     song.genre = StringUtils::Split(m_strGenre, g_advancedSettings.m_musicItemSeparator);

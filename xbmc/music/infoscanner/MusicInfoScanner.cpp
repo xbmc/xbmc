@@ -167,12 +167,12 @@ void CMusicInfoScanner::Process()
       {
         if (m_pObserver)
         {
-          m_pObserver->OnDirectoryChanged(it->strArtist+" - "+it->strAlbum);
+          m_pObserver->OnDirectoryChanged(StringUtils::Join(it->artist, g_advancedSettings.m_musicItemSeparator)+" - "+it->strAlbum);
           m_pObserver->OnSetProgress(iCurrentItem++, m_albumsToScan.size());
         }
 
         CMusicAlbumInfo albumInfo;
-        DownloadAlbumInfo(it->genre[0],it->strArtist,it->strAlbum, bCanceled, albumInfo); // genre field holds path - see fetchalbuminfo()
+        DownloadAlbumInfo(it->genre[0],StringUtils::Join(it->artist, g_advancedSettings.m_musicItemSeparator),it->strAlbum, bCanceled, albumInfo); // genre field holds path - see fetchalbuminfo()
 
         if (m_bStop || bCanceled)
           break;
@@ -261,7 +261,7 @@ void CMusicInfoScanner::FetchAlbumInfo(const CStdString& strDirectory)
 
     CAlbum album;
     album.strAlbum = items[i]->GetMusicInfoTag()->GetAlbum();
-    album.strArtist = items[i]->GetMusicInfoTag()->GetArtist();
+    album.artist = items[i]->GetMusicInfoTag()->GetArtist();
     album.genre.push_back(items[i]->GetPath()); // a bit hacky use of field
     m_albumsToScan.insert(album);
   }
@@ -301,7 +301,7 @@ void CMusicInfoScanner::FetchArtistInfo(const CStdString& strDirectory)
       continue;
 
     CArtist artist;
-    artist.strArtist = items[i]->GetMusicInfoTag()->GetArtist();
+    artist.strArtist = StringUtils::Join(items[i]->GetMusicInfoTag()->GetArtist(), g_advancedSettings.m_musicItemSeparator);
     artist.genre.push_back(items[i]->GetPath()); // a bit hacky use of field
     m_artistsToScan.insert(artist);
   }
@@ -528,8 +528,8 @@ int CMusicInfoScanner::RetrieveMusicInfo(CFileItemList& items, const CStdString&
     CSong &song = songsToAdd[i];
     m_musicDatabase.AddSong(song, false);
 
-    artistsToScan.insert(song.strArtist);
-    albumsToScan.insert(make_pair(song.strAlbum, song.strArtist));
+    artistsToScan.insert(StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator));
+    albumsToScan.insert(make_pair(song.strAlbum, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator)));
   }
   m_musicDatabase.CommitTransaction();
 
@@ -647,17 +647,14 @@ void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
       {
         CSong *song1 = songs[i];
         CSong *song2 = songs[i+1];
-        CStdStringArray vecArtists1, vecArtists2;
-        StringUtils::SplitString(song1->strArtist, g_advancedSettings.m_musicItemSeparator, vecArtists1);
-        StringUtils::SplitString(song2->strArtist, g_advancedSettings.m_musicItemSeparator, vecArtists2);
-        CStdString primaryArtist1 = vecArtists1[0]; primaryArtist1.TrimRight();
-        CStdString primaryArtist2 = vecArtists2[0]; primaryArtist2.TrimRight();
+        CStdString primaryArtist1 = song1->artist[0]; primaryArtist1.TrimRight();
+        CStdString primaryArtist2 = song2->artist[0]; primaryArtist2.TrimRight();
         if (primaryArtist1 != primaryArtist2)
         { // primary artist differs -> a various artists album
           variousArtists = true;
           break;
         }
-        else if (song1->strArtist != song2->strArtist)
+        else if (StringUtils::Join(song1->artist, g_advancedSettings.m_musicItemSeparator) != StringUtils::Join(song2->artist, g_advancedSettings.m_musicItemSeparator))
         { // have more than one artist, the first artist(s) agree, but the full artist name doesn't
           // so this is likely a single-artist compilation (ie with other artists featured on some tracks) album
           singleArtistWithFeaturedArtists = true;
@@ -673,9 +670,7 @@ void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
       }
       else if (singleArtistWithFeaturedArtists)
       { // have an album where all the first artists agree - make this the album artist
-        CStdStringArray vecArtists;
-        StringUtils::SplitString(songs[0]->strArtist, g_advancedSettings.m_musicItemSeparator, vecArtists);
-        CStdString albumArtist(vecArtists[0]);
+        CStdString albumArtist(songs[0]->artist[0]);
         for (unsigned int i = 0; i < songs.size(); i++)
         {
           CSong *song = songs[i];
@@ -698,7 +693,7 @@ bool CMusicInfoScanner::HasSingleAlbum(const VECSONGS &songs, CStdString &album,
     if (song.strAlbum.IsEmpty())
       return false;
 
-    CStdString albumArtist = song.strAlbumArtist.IsEmpty() ? song.strArtist : song.strAlbumArtist;
+    CStdString albumArtist = song.strAlbumArtist.IsEmpty() ? StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) : song.strAlbumArtist;
 
     if (!album.IsEmpty() && (album != song.strAlbum || artist != albumArtist))
       return false; // have more than one album
@@ -905,7 +900,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
           CMusicAlbumInfo& info = scraper.GetAlbum(i);
           double relevance = info.GetRelevance();
           if (relevance < 0)
-            relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
+            relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, StringUtils::Join(info.GetAlbum().artist, g_advancedSettings.m_musicItemSeparator), strArtist);
 
           // if we're doing auto-selection (ie querying all albums at once, then allow 95->100% for perfect matches)
           // otherwise, perfect matches only
@@ -932,7 +927,7 @@ bool CMusicInfoScanner::DownloadAlbumInfo(const CStdString& strPath, const CStdS
         CMusicAlbumInfo& info = scraper.GetAlbum(0);
         double relevance = info.GetRelevance();
         if (relevance < 0)
-          relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, info.GetAlbum().strArtist, strArtist);
+          relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, strAlbum, StringUtils::Join(info.GetAlbum().artist, g_advancedSettings.m_musicItemSeparator), strArtist);
         if (relevance < THRESHOLD)
         {
           m_musicDatabase.Close();

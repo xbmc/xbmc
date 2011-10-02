@@ -40,6 +40,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/StringUtils.h"
 #include "TextureCache.h"
 #include "ThumbnailCache.h"
 
@@ -129,7 +130,7 @@ bool CGUIDialogMusicInfo::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_BTN_LASTFM)
       {
-        CStdString strArtist = m_album.strArtist;
+        CStdString strArtist = StringUtils::Join(m_album.artist, g_advancedSettings.m_musicItemSeparator);
         CURL::Encode(strArtist);
         CStdString strLink;
         strLink.Format("lastfm://artist/%s/similarartists", strArtist.c_str());
@@ -153,8 +154,8 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
   SetSongs(m_album.songs);
   *m_albumItem = CFileItem(path, true);
   m_albumItem->GetMusicInfoTag()->SetAlbum(m_album.strAlbum);
-  m_albumItem->GetMusicInfoTag()->SetAlbumArtist(m_album.strArtist);
-  m_albumItem->GetMusicInfoTag()->SetArtist(m_album.strArtist);
+  m_albumItem->GetMusicInfoTag()->SetAlbumArtist(StringUtils::Join(m_album.artist, g_advancedSettings.m_musicItemSeparator));
+  m_albumItem->GetMusicInfoTag()->SetArtist(m_album.artist);
   m_albumItem->GetMusicInfoTag()->SetYear(m_album.iYear);
   m_albumItem->GetMusicInfoTag()->SetLoaded(true);
   m_albumItem->GetMusicInfoTag()->SetRating('0' + (m_album.iRating + 1) / 2);
@@ -162,7 +163,7 @@ void CGUIDialogMusicInfo::SetAlbum(const CAlbum& album, const CStdString &path)
   CMusicDatabase::SetPropertiesFromAlbum(*m_albumItem,m_album);
   m_albumItem->SetMusicThumb();
   // set the artist thumb
-  CFileItem artist(m_album.strArtist);
+  CFileItem artist(StringUtils::Join(m_album.artist, g_advancedSettings.m_musicItemSeparator));
   artist.SetCachedArtistThumb();
   if (CFile::Exists(artist.GetThumbnailImage()))
     m_albumItem->SetProperty("artistthumb", artist.GetThumbnailImage());
@@ -291,7 +292,7 @@ void CGUIDialogMusicInfo::Update()
   // disable the GetThumb button if the user isn't allowed it
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTN_GET_THUMB, g_settings.GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser);
 
-  if (!m_album.strArtist.IsEmpty() && CLastFmManager::GetInstance()->IsLastFmEnabled())
+  if (!m_album.artist.empty() && CLastFmManager::GetInstance()->IsLastFmEnabled())
   {
     SET_CONTROL_VISIBLE(CONTROL_BTN_LASTFM);
   }

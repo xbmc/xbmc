@@ -1146,7 +1146,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
     tag->SetReleaseDate(systime);
     tag->SetTrackNumber(song.iTrack);
     tag->SetAlbum(song.strAlbum);
-    tag->SetArtist(song.strArtist);
+    tag->SetArtist(song.artist);
     tag->SetGenre(song.genre);
     tag->SetTitle(song.strTitle);
     tag->SetDuration(song.iDuration);
@@ -1176,7 +1176,7 @@ int CXbmcHttp::xbmcGetTagFromFilename(int numParas, CStdString paras[])
   {
     CStdString output, tmp;
 
-    output = openTag+"Artist:" + tag->GetArtist();
+    output = openTag+"Artist:" + StringUtils::Join(tag->GetArtist(), g_advancedSettings.m_musicItemSeparator);
     output += closeTag+openTag+"Album:" + tag->GetAlbum();
     output += closeTag+openTag+"Title:" + tag->GetTitle();
     tmp.Format("%i", tag->GetTrackNumber());
@@ -1461,8 +1461,8 @@ int CXbmcHttp::xbmcGetCurrentlyPlaying(int numParas, CStdString paras[])
         tmp.Format("%i",(int)tagVal->GetTrackNumber());
         output+=closeTag+openTag+"Track"+tag+":"+tmp;
       }
-      if (tagVal && !tagVal->GetArtist().IsEmpty())
-        output+=closeTag+openTag+"Artist"+tag+":"+tagVal->GetArtist();
+      if (tagVal && !tagVal->GetArtist().empty())
+        output+=closeTag+openTag+"Artist"+tag+":"+StringUtils::Join(tagVal->GetArtist(), g_advancedSettings.m_musicItemSeparator);
       if (tagVal && !tagVal->GetAlbum().IsEmpty())
         output+=closeTag+openTag+"Album"+tag+":"+tagVal->GetAlbum();
       //now have enough info to check for a change
@@ -2273,7 +2273,7 @@ int CXbmcHttp::xbmcLookupAlbum(int numParas, CStdString paras[])
             albums += closeTag+openTag + info.GetTitle2() + "<@@>" + info.GetAlbumURL().m_url[0].m_url;
             if (rel)
             {
-              relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album, info.GetAlbum().strArtist, artist);
+              relevance = CUtil::AlbumRelevance(info.GetAlbum().strAlbum, album, StringUtils::Join(info.GetAlbum().artist, g_advancedSettings.m_musicItemSeparator), artist);
               tmp.Format("%f",relevance);
               albums += "<@@@>"+tmp;
             }

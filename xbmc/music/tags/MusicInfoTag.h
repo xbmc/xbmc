@@ -42,7 +42,7 @@ public:
   bool Loaded() const;
   const CStdString& GetTitle() const;
   const CStdString& GetURL() const;
-  const CStdString& GetArtist() const;
+  const std::vector<std::string> GetArtist() const;
   const CStdString& GetAlbum() const;
   const CStdString& GetAlbumArtist() const;
   const std::vector<std::string> GetGenre() const;
@@ -70,6 +70,7 @@ public:
   void SetURL(const CStdString& strURL);
   void SetTitle(const CStdString& strTitle);
   void SetArtist(const CStdString& strArtist);
+  void SetArtist(const std::vector<std::string>& artists);
   void SetArtistId(const int iArtistId);
   void SetAlbum(const CStdString& strAlbum);
   void SetAlbumId(const int iAlbumId);
@@ -130,7 +131,7 @@ protected:
 
   CStdString m_strURL;
   CStdString m_strTitle;
-  CStdString m_strArtist;
+  std::vector<std::string> m_artist;
   CStdString m_strAlbum;
   CStdString m_strAlbumArtist;
   std::vector<std::string> m_genre;
