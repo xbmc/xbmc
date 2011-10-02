@@ -108,6 +108,7 @@ public:
 
 //  static bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
   static double GetMinVersion();
+  void LoadIncludes();
 protected:
   /*! \brief Given a resolution, retrieve the corresponding directory name
    \param res RESOLUTION to translate
@@ -123,7 +124,6 @@ protected:
    */
   void GetDefaultResolution(const cp_extension_t *ext, const char *tag, RESOLUTION &res, const RESOLUTION &def) const;
 
-  void LoadIncludes();
   bool LoadStartupWindows(const cp_extension_t *ext);
 
   RESOLUTION_INFO m_defaultRes;
