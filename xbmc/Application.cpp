@@ -1276,9 +1276,9 @@ void CApplication::StopWebServer()
     if(! m_WebServer.IsStarted() )
     {
       CLog::Log(LOGNOTICE, "Webserver: Stopped...");
-      CZeroconf::GetInstance()->RemoveService("services.webserver");
+      CZeroconf::GetInstance()->RemoveService("servers.webserver");
       CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
-      CZeroconf::GetInstance()->RemoveService("services.webapi");
+      CZeroconf::GetInstance()->RemoveService("servers.webapi");
     } else
       CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
   }
