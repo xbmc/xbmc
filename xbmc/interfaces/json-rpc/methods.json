@@ -149,6 +149,21 @@
     ],
     "returns":  { "$ref": "Player.Property.Value", "required": true }
   },
+	"Player.GetItem": {
+    "type": "method",
+    "description": "Retrieves the currently played item",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "properties", "$ref": "List.Fields.All" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "item": { "$ref": "List.Item.All", "required": true }
+      }
+    }
+  },
   "Player.PlayPause": {
     "type": "method",
     "description": "Pauses or unpause playback and returns the new state",
@@ -426,7 +441,7 @@
     "returns": { "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "items": { "$ref": "List.Items.All", "required": true }
+				"items": { "type": "array", "items": { "$ref": "List.Item.All" }, "required": true }
       }
     }
   },
@@ -532,7 +547,7 @@
       "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "files": { "$ref": "List.Items.Files", "required": true }
+				"files": { "type": "array", "items": { "$ref": "List.Item.File" }, "required": true }
       }
     }
   },

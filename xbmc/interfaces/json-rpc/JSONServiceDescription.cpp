@@ -87,6 +87,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // Player
   { "Player.GetActivePlayers",                      CPlayerOperations::GetActivePlayers },
   { "Player.GetProperties",                         CPlayerOperations::GetProperties },
+  { "Player.GetItem",                               CPlayerOperations::GetItem },
 
   { "Player.PlayPause",                             CPlayerOperations::PlayPause },
   { "Player.Stop",                                  CPlayerOperations::Stop },

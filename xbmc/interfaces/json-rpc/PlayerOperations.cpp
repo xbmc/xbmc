@@ -23,14 +23,17 @@
 #include "Application.h"
 #include "Util.h"
 #include "PlayListPlayer.h"
+#include "playlists/PlayList.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "interfaces/Builtins.h"
-#include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 #include "ApplicationMessenger.h"
 #include "FileItem.h"
+#include "VideoLibrary.h"
+#include "video/VideoDatabase.h"
+#include "AudioLibrary.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
@@ -83,6 +86,92 @@ JSON_STATUS CPlayerOperations::GetProperties(const CStdString &method, ITranspor
 
   result = properties;
 
+  return OK;
+}
+
+JSON_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  PlayerType player = GetPlayer(parameterObject["playerid"]);
+  CFileItemPtr fileItem;
+
+  switch (player)
+  {
+    case Video:
+    case Audio:
+    {
+      if (g_application.CurrentFileItem().GetLabel().empty())
+      {
+        CFileItem tmpItem;
+        if (player == Video)
+          CVideoLibrary::FillFileItem(g_application.CurrentFile(), tmpItem);
+        else
+          CAudioLibrary::FillFileItem(g_application.CurrentFile(), tmpItem);
+
+        fileItem = CFileItemPtr(new CFileItem(tmpItem));
+      }
+      else
+        fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
+
+      if (player == Video)
+      {
+        bool additionalInfo = false;
+        for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
+        {
+          CStdString fieldValue = itr->asString();
+          if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "setid" || fieldValue == "showlink" || fieldValue == "resume")
+            additionalInfo = true;
+        }
+
+        if (additionalInfo)
+        {
+          CVideoDatabase videodatabase;
+          if (videodatabase.Open())
+          {
+            switch (fileItem->GetVideoContentType())
+            {
+              case VIDEODB_CONTENT_MOVIES:
+                videodatabase.GetMovieInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
+                break;
+
+              case VIDEODB_CONTENT_MUSICVIDEOS:
+                videodatabase.GetMusicVideoInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
+                break;
+
+              case VIDEODB_CONTENT_EPISODES:
+                videodatabase.GetEpisodeInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
+                break;
+
+              case VIDEODB_CONTENT_TVSHOWS:
+              case VIDEODB_CONTENT_MOVIE_SETS:
+              default:
+                break;
+            }
+
+            videodatabase.Close();
+          }
+        }
+      }
+      break;
+    }
+
+    case Picture:
+    {
+      CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+      if (!slideshow)
+        return FailedToExecute;
+
+      CFileItemList slides;
+      slideshow->GetSlideShowContents(slides);
+      fileItem = slides[slideshow->CurrentSlide() - 1];
+      break;
+    }
+
+    case None:
+    default:
+      return FailedToExecute;
+  }
+
+  HandleFileItem("id", true, "item", fileItem, parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
 

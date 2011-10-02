@@ -116,80 +116,85 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
   bool hasFileField = false;
   bool hasThumbnailField = false;
 
-  for (unsigned int i = 0; i < validFields.size(); i++)
+  if (item.get())
   {
-    CStdString field = validFields[i].asString();
-
-    if (field == "file")
-      hasFileField = true;
-    if (field == "thumbnail")
-      hasThumbnailField = true;
-  }
-
-  if (allowFile && hasFileField)
-  {
-    if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().IsEmpty())
-        object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
-    if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
-      object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
-
-    if (!object.isMember("file"))
-      object["file"] = item->GetPath().c_str();
-  }
-
-  if (ID)
-  {
-    if (stricmp(ID, "genreid") == 0)
+    for (unsigned int i = 0; i < validFields.size(); i++)
     {
-      CStdString genre = item->GetPath();
-      genre.TrimRight('/');
-      object[ID] = atoi(genre.c_str());
+      CStdString field = validFields[i].asString();
+
+      if (field == "file")
+        hasFileField = true;
+      if (field == "thumbnail")
+        hasThumbnailField = true;
     }
-    else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
-      object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
-    else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
-      object[ID] = item->GetVideoInfoTag()->m_iDbId;
 
-    if (stricmp(ID, "id") == 0)
+    if (allowFile && hasFileField)
     {
-      if (item->HasMusicInfoTag())
-        object["type"] = "song";
-      else if (item->HasVideoInfoTag())
+      if (item->HasVideoInfoTag() && !item->GetVideoInfoTag()->GetPath().IsEmpty())
+          object["file"] = item->GetVideoInfoTag()->GetPath().c_str();
+      if (item->HasMusicInfoTag() && !item->GetMusicInfoTag()->GetURL().IsEmpty())
+        object["file"] = item->GetMusicInfoTag()->GetURL().c_str();
+
+      if (!object.isMember("file"))
+        object["file"] = item->GetPath().c_str();
+    }
+
+    if (ID)
+    {
+      if (stricmp(ID, "genreid") == 0)
       {
-        switch (item->GetVideoContentType())
-        {
-          case VIDEODB_CONTENT_EPISODES:
-            object["type"] = "episode";
-            break;
-
-          case VIDEODB_CONTENT_MUSICVIDEOS:
-            object["type"] = "musicvideo";
-            break;
-
-          case VIDEODB_CONTENT_MOVIES:
-            object["type"] = "movie";
-            break;
-        }
+        CStdString genre = item->GetPath();
+        genre.TrimRight('/');
+        object[ID] = atoi(genre.c_str());
       }
-      else if (item->HasPictureInfoTag())
-        object["type"] = "picture";
+      else if (item->HasMusicInfoTag() && item->GetMusicInfoTag()->GetDatabaseId() > 0)
+        object[ID] = (int)item->GetMusicInfoTag()->GetDatabaseId();
+      else if (item->HasVideoInfoTag() && item->GetVideoInfoTag()->m_iDbId > 0)
+        object[ID] = item->GetVideoInfoTag()->m_iDbId;
 
-      if (!object.isMember("type"))
-        object["type"] = "unknown";
+      if (stricmp(ID, "id") == 0)
+      {
+        if (item->HasMusicInfoTag())
+          object["type"] = "song";
+        else if (item->HasVideoInfoTag())
+        {
+          switch (item->GetVideoContentType())
+          {
+            case VIDEODB_CONTENT_EPISODES:
+              object["type"] = "episode";
+              break;
+
+            case VIDEODB_CONTENT_MUSICVIDEOS:
+              object["type"] = "musicvideo";
+              break;
+
+            case VIDEODB_CONTENT_MOVIES:
+              object["type"] = "movie";
+              break;
+          }
+        }
+        else if (item->HasPictureInfoTag())
+          object["type"] = "picture";
+
+        if (!object.isMember("type"))
+          object["type"] = "unknown";
+      }
     }
+
+    if (hasThumbnailField)
+      object["thumbnail"] = item->GetThumbnailImage().c_str();
+
+    if (item->HasVideoInfoTag())
+      FillDetails(item->GetVideoInfoTag(), item, validFields, object);
+    if (item->HasMusicInfoTag())
+      FillDetails(item->GetMusicInfoTag(), item, validFields, object);
+    if (item->HasPictureInfoTag())
+      FillDetails(item->GetPictureInfoTag(), item, validFields, object);
+
+    object["label"] = item->GetLabel().c_str();
   }
-
-  if (hasThumbnailField)
-    object["thumbnail"] = item->GetThumbnailImage().c_str();
-
-  if (item->HasVideoInfoTag())
-    FillDetails(item->GetVideoInfoTag(), item, validFields, object);
-  if (item->HasMusicInfoTag())
-    FillDetails(item->GetMusicInfoTag(), item, validFields, object);
-  if (item->HasPictureInfoTag())
-    FillDetails(item->GetPictureInfoTag(), item, validFields, object);
-
-  object["label"] = item->GetLabel().c_str();
+  else
+    object = CVariant(CVariant::VariantTypeNull);
 
   if (resultname)
   {
