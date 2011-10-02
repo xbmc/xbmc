@@ -57,7 +57,7 @@ namespace XbmcThreads
         inline Semaphore() : count(0L), sem(NULL) {  }
         inline ~Semaphore() { if (sem) CloseHandle(sem); }
 
-    inline void Init() { sem = CreateSemaphore(NULL,0,32*1024,NULL); }
+        inline void Init() { sem = CreateSemaphore(NULL,0,32*1024,NULL); }
 
         inline bool wait(DWORD dwMilliseconds)
         {
@@ -83,7 +83,7 @@ namespace XbmcThreads
       inline ConditionVariableXp() : waiting(0), signals(0) { }
       inline ~ConditionVariableXp() {}
 
-    inline void Init() { wait_sem.Init(); wait_done.Init(); }
+      inline void Init() { wait_sem.Init(); wait_done.Init(); }
 
       inline void wait(CCriticalSection& mutex) 
       {
