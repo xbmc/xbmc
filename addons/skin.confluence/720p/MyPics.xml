@@ -33,6 +33,7 @@
 		<include>BehindDialogFadeOut</include>
 		<include>ScrollOffsetLabel</include>
 		<control type="group">
+			<visible>!Skin.HasSetting(kiosk)</visible>
 			<posx>-250</posx>
 			<include>SideBladeLeft</include>
 			<control type="grouplist" id="9000">
