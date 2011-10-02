@@ -36,29 +36,36 @@ CGUISettingsSliderControl::~CGUISettingsSliderControl(void)
 
 void CGUISettingsSliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
+  m_buttonControl.SetFocus(HasFocus());
+  m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
+  m_buttonControl.SetEnabled(m_enabled);
   m_buttonControl.Process(currentTime, dirtyregions);
+  ProcessText();
   CGUISliderControl::Process(currentTime, dirtyregions);
 }
 
 void CGUISettingsSliderControl::Render()
 {
-  // make sure the button has focus if it should have...
-  m_buttonControl.SetFocus(HasFocus());
-  m_buttonControl.SetPulseOnSelect(m_pulseOnSelect);
-  m_buttonControl.SetEnabled(m_enabled);
   m_buttonControl.Render();
   CGUISliderControl::Render();
-
-  // now render our text
-  m_label.SetMaxRect(m_buttonControl.GetXPosition(), m_posY, m_posX - m_buttonControl.GetXPosition(), m_height);
-  m_label.SetText(CGUISliderControl::GetDescription());
-  if (IsDisabled())
-    m_label.SetColor(CGUILabel::COLOR_DISABLED);
-  else if (HasFocus())
-    m_label.SetColor(CGUILabel::COLOR_FOCUSED);
-  else
-    m_label.SetColor(CGUILabel::COLOR_TEXT);
   m_label.Render();
+}
+
+void CGUISettingsSliderControl::ProcessText()
+{
+  bool changed = false;
+
+  changed |= m_label.SetMaxRect(m_buttonControl.GetXPosition(), m_posY, m_posX - m_buttonControl.GetXPosition(), m_height);
+  changed |= m_label.SetText(CGUISliderControl::GetDescription());
+  if (IsDisabled())
+    changed |= m_label.SetColor(CGUILabel::COLOR_DISABLED);
+  else if (HasFocus())
+    changed |= m_label.SetColor(CGUILabel::COLOR_FOCUSED);
+  else
+    changed |= m_label.SetColor(CGUILabel::COLOR_TEXT);
+
+  if (changed)
+    MarkDirtyRegion();
 }
 
 bool CGUISettingsSliderControl::OnAction(const CAction &action)
