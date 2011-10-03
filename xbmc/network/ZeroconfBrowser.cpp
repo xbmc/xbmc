@@ -37,7 +37,7 @@
 #include "threads/SingleLock.h"
 #include "threads/Atomics.h"
 
-#ifndef HAS_ZEROCONF
+#if !defined(HAS_ZEROCONF) || defined(TARGET_WINDOWS)
 //dummy implementation used if no zeroconf is present
 //should be optimized away
 class CZeroconfBrowserDummy : public CZeroconfBrowser
@@ -153,7 +153,7 @@ CZeroconfBrowser*  CZeroconfBrowser::GetInstance()
     CAtomicSpinLock lock(sm_singleton_guard);
     if(!smp_instance)
     {
-#ifndef HAS_ZEROCONF
+#if !defined(HAS_ZEROCONF) || defined(TARGET_WINDOWS)
       smp_instance = new CZeroconfBrowserDummy;
 #else
 #ifdef __APPLE__

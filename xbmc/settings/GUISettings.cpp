@@ -740,7 +740,11 @@ void CGUISettings::Initialize()
 #endif
 #ifdef HAS_ZEROCONF
   AddSeparator(srv, "services.sep2");
+#ifdef TARGET_WINDOWS
+  AddBool(srv, "services.zeroconf", 1260, false);
+#else
   AddBool(srv, "services.zeroconf", 1260, true);
+#endif
 #endif
 
 #ifdef HAS_AIRPLAY
