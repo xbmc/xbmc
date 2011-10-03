@@ -300,6 +300,12 @@ static void setupWindowMenu(void)
     selector:@selector(playPauseKeyNotification)
     name:MediaKeyPlayPauseNotification object:nil];
   [center addObserver:self
+    selector:@selector(fastKeyNotification)
+    name:MediaKeyFastNotification object:nil];
+  [center addObserver:self
+    selector:@selector(rewindKeyNotification)
+    name:MediaKeyRewindNotification object:nil];
+  [center addObserver:self
     selector:@selector(nextKeyNotification)
     name:MediaKeyNextNotification object:nil];
   [center addObserver:self
@@ -435,6 +441,8 @@ static void setupWindowMenu(void)
 #define VK_MEDIA_PREV_TRACK 0xB1
 #define VK_MEDIA_STOP       0xB2
 #define VK_MEDIA_PLAY_PAUSE 0xB3
+#define VK_REWIND           0x9D
+#define VK_FAST_FWD         0x9E
 
 - (void)MediaKeyPower
 {
@@ -476,6 +484,24 @@ static void setupWindowMenu(void)
   memset(&event, 0, sizeof(event));
   event.type = SDL_KEYDOWN;
   event.key.keysym.sym = (SDLKey)VK_MEDIA_PLAY_PAUSE;
+  SDL_PushEvent(&event);
+}
+
+- (void)fastKeyNotification
+{
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_KEYDOWN;
+  event.key.keysym.sym = (SDLKey)VK_FAST_FWD;
+  SDL_PushEvent(&event);
+}
+
+- (void)rewindKeyNotification
+{
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_KEYDOWN;
+  event.key.keysym.sym = (SDLKey)VK_REWIND;
   SDL_PushEvent(&event);
 }
 

@@ -31,6 +31,8 @@ extern NSString* const MediaKeySoundMute;
 extern NSString* const MediaKeySoundUp;
 extern NSString* const MediaKeySoundDown;
 extern NSString* const MediaKeyPlayPauseNotification;
+extern NSString* const MediaKeyFastNotification;
+extern NSString* const MediaKeyRewindNotification;
 extern NSString* const MediaKeyNextNotification;
 extern NSString* const MediaKeyPreviousNotification;
 

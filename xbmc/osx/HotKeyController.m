@@ -45,6 +45,8 @@ NSString* const MediaKeySoundMute             = @"MediaKeySoundMute";
 NSString* const MediaKeySoundUp               = @"MediaKeySoundUp";
 NSString* const MediaKeySoundDown             = @"MediaKeySoundDown";
 NSString* const MediaKeyPlayPauseNotification = @"MediaKeyPlayPauseNotification";
+NSString* const MediaKeyFastNotification      = @"MediaKeyFastNotification";
+NSString* const MediaKeyRewindNotification    = @"MediaKeyRewindNotification";
 NSString* const MediaKeyNextNotification      = @"MediaKeyNextNotification";
 NSString* const MediaKeyPreviousNotification  = @"MediaKeyPreviousNotification";
 
@@ -156,6 +158,8 @@ CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef 
   int keyState = (keyFlags & 0xFF00) >> 8;
   BOOL keyIsRepeat = (keyFlags & 0x1) > 0;
   
+  //NSLog(@"%s keyCode %d", __PRETTY_FUNCTION__, keyCode);
+
   if (keyIsRepeat) 
     return event;
   
@@ -206,11 +210,23 @@ CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef 
     break;
     case NX_KEYTYPE_FAST:
       if (keyState == NX_KEYSTATE_DOWN)
-        [center postNotificationName:MediaKeyNextNotification object:(HotKeyController *)refcon];
+        [center postNotificationName:MediaKeyFastNotification object:(HotKeyController *)refcon];
       if (keyState == NX_KEYSTATE_UP || keyState == NX_KEYSTATE_DOWN)
         return NULL;
     break;
     case NX_KEYTYPE_REWIND:
+      if (keyState == NX_KEYSTATE_DOWN)
+        [center postNotificationName:MediaKeyRewindNotification object:(HotKeyController *)refcon];
+      if (keyState == NX_KEYSTATE_UP || keyState == NX_KEYSTATE_DOWN)
+        return NULL;
+    break;
+    case NX_KEYTYPE_NEXT:
+      if (keyState == NX_KEYSTATE_DOWN)
+        [center postNotificationName:MediaKeyNextNotification object:(HotKeyController *)refcon];
+      if (keyState == NX_KEYSTATE_UP || keyState == NX_KEYSTATE_DOWN)
+        return NULL;
+    break;
+    case NX_KEYTYPE_PREVIOUS:
       if (keyState == NX_KEYSTATE_DOWN)
         [center postNotificationName:MediaKeyPreviousNotification object:(HotKeyController *)refcon];
       if (keyState == NX_KEYSTATE_UP || keyState == NX_KEYSTATE_DOWN)
