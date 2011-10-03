@@ -135,7 +135,7 @@ NSString* const MediaKeyPreviousNotification  = @"MediaKeyPreviousNotification";
 // WARNING: do not debugger breakpoint in this routine.
 // It's a system level call back that taps ALL Events
 // and you WILL lose all key control :)
-CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
+static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
 {
   if (type == kCGEventTapDisabledByTimeout)
     CGEventTapEnable([[HotKeyController sharedController] eventPort], TRUE);
@@ -236,13 +236,28 @@ CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef 
   return event;
 }
 
+static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
+{
+  NSAutoreleasePool *pool = [NSAutoreleasePool new];
+  CGEventRef ret = tapEventCallback2(proxy, type, event, refcon);
+  [pool drain];
+  return ret;
+}
+
+
+-(void)eventTapThread
+{
+  CFRunLoopSourceRef runLoopSource;
+
+  runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorSystemDefault, m_eventPort, 0);
+  CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+  CFRunLoopRun();
+}
+
 - (id)init
 {
   if (self = [super init])
   {
-    CFRunLoopRef runLoop;
-    CFRunLoopSourceRef runLoopSource;
-
     m_active = NO;
     m_controlSysPower = NO;
     m_controlSysVolume = NO;
@@ -255,21 +270,8 @@ CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEventRef 
       return self;
     }
 
-    runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorSystemDefault, m_eventPort, 0);
-    if (runLoopSource == NULL)
-    {
-      NSLog(@"Fatal Error: Run Loop Source could not be created");
-      return self;
-    }
-
-    runLoop = CFRunLoopGetCurrent();
-    if (runLoop == NULL)
-    {
-      NSLog(@"Fatal Error: Couldn't get current threads Run Loop");
-      return self;
-    }
-    CFRunLoopAddSource(runLoop, runLoopSource, kCFRunLoopCommonModes);
-    CFRelease(runLoopSource);
+    // Run this in a separate thread so that a slow app doesn't lag the event tap
+    [NSThread detachNewThreadSelector:@selector(eventTapThread) toTarget:self withObject:nil];
   }
   return self;
 }
