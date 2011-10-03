@@ -28,8 +28,12 @@
 namespace XbmcThreads
 {
 
-  // forward declare in preparation for the friend declaration
-  class ConditionVariable;
+  namespace intern
+  {
+    // forward declare in preparation for the friend declaration
+    class ConditionVariableVista;
+    class ConditionVariableXp;
+  }
 
   namespace windows
   {
@@ -38,7 +42,8 @@ namespace XbmcThreads
       CRITICAL_SECTION mutex;
 
       // needs acces to 'mutex'
-      friend class XbmcThreads::ConditionVariable;
+      friend class XbmcThreads::intern::ConditionVariableVista;
+      friend class XbmcThreads::intern::ConditionVariableXp;
     public:
       inline RecursiveMutex()
       {
