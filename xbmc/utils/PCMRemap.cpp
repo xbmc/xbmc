@@ -561,7 +561,7 @@ void CPCMRemap::ProcessInput(void* data, void* out, unsigned int samples, float 
       uint8_t* src = (uint8_t*)data + info->in_offset;
       uint8_t* dst = (uint8_t*)out  + ch * m_inSampleSize;
       uint8_t* dstend = dst + samples * m_outStride;
-      while (dst < dstend)
+      while (dst != dstend)
       {
         *(int16_t*)dst = *(int16_t*)src;
         src += m_inStride;
@@ -575,7 +575,7 @@ void CPCMRemap::ProcessInput(void* data, void* out, unsigned int samples, float 
         uint8_t* src = (uint8_t*)data + info->in_offset;
         float*   dst = m_buf + ch;
         float*   dstend = dst + samples * m_outChannels;
-        while (dst < dstend)
+        while (dst != dstend)
         {
           *dst += (float)(*(int16_t*)src) * info->level;
           src += m_inStride;
@@ -592,7 +592,7 @@ void CPCMRemap::AddGain(float* buf, unsigned int samples, float gain)
   {
     float* ptr = m_buf;
     float* end = m_buf + samples;
-    while (ptr < end)
+    while (ptr != end)
       *(ptr++) *= gain;
   }
 }
@@ -710,7 +710,7 @@ void CPCMRemap::ProcessOutput(void* out, unsigned int samples, float gain)
       uint8_t* dst = (uint8_t*)out + ch * m_inSampleSize;
       uint8_t* dstend = dst + samples * m_outStride;
 
-      while(dst < dstend)
+      while(dst != dstend)
       {
         *(int16_t*)dst = MathUtils::round_int(std::min(std::max(*src, (float)INT16_MIN), (float)INT16_MAX));
         src += m_outChannels;
