@@ -112,6 +112,8 @@
 #define HAVE_YAJL_YAJL_VERSION_H
 #define HAS_FILESYSTEM_SMB
 #define HAS_FILESYSTEM_NFS
+#define HAS_ZEROCONF
+#define HAS_AIRPLAY
 #endif
 
 /*****************
