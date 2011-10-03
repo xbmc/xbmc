@@ -662,7 +662,7 @@ void CGUIWindowVideoNav::OnDeleteItem(CFileItemPtr pItem)
   if (m_vecItems->IsParentFolder())
     return;
 
-  if (!m_vecItems->IsVideoDb())
+  if (!m_vecItems->IsVideoDb() && !pItem->IsVideoDb())
   {
     if (!pItem->GetPath().Equals("newsmartplaylist://video") &&
         !pItem->GetPath().Equals("special://videoplaylists/") &&
