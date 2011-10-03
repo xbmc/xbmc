@@ -42,7 +42,7 @@ CVariant::CVariant(VariantType type)
       m_data.boolean = false;
       break;
     case VariantTypeString:
-      m_data.string = NULL;
+      m_data.string = new string();
       break;
     case VariantTypeDouble:
       m_data.dvalue = 0.0;
@@ -280,7 +280,7 @@ bool CVariant::asBoolean(bool fallback) const
   return fallback;
 }
 
-std::string CVariant::asString(std::string fallback) const
+std::string CVariant::asString(const std::string &fallback /* = "" */) const
 {
   switch (m_type)
   {
@@ -308,7 +308,7 @@ std::string CVariant::asString(std::string fallback) const
   return fallback;
 }
 
-CVariant &CVariant::operator[](string key)
+CVariant &CVariant::operator[](const std::string &key)
 {
   if (m_type == VariantTypeNull)
   {
@@ -322,7 +322,7 @@ CVariant &CVariant::operator[](string key)
     return ConstNullVariant;
 }
 
-const CVariant &CVariant::operator[](std::string key) const
+const CVariant &CVariant::operator[](const std::string &key) const
 {
   if (m_type == VariantTypeObject)
     return (*m_data.map)[key];
@@ -418,7 +418,7 @@ bool CVariant::operator==(const CVariant &rhs) const
   return false;
 }
 
-void CVariant::push_back(CVariant variant)
+void CVariant::push_back(const CVariant &variant)
 {
   if (m_type == VariantTypeNull)
   {
@@ -430,7 +430,7 @@ void CVariant::push_back(CVariant variant)
     m_data.array->push_back(variant);
 }
 
-void CVariant::append(CVariant variant)
+void CVariant::append(const CVariant &variant)
 {
   push_back(variant);
 }
@@ -551,7 +551,7 @@ void CVariant::clear()
     m_data.array->clear();
 }
 
-void CVariant::erase(std::string key)
+void CVariant::erase(const std::string &key)
 {
   if (m_type == VariantTypeNull)
   {
@@ -574,7 +574,7 @@ void CVariant::erase(unsigned int position)
     m_data.array->erase(m_data.array->begin() + position);
 }
 
-bool CVariant::isMember(string key) const
+bool CVariant::isMember(const std::string &key) const
 {
   if (m_type == VariantTypeObject)
     return m_data.map->find(key) != m_data.map->end();

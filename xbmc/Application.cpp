@@ -1276,9 +1276,9 @@ void CApplication::StopWebServer()
     if(! m_WebServer.IsStarted() )
     {
       CLog::Log(LOGNOTICE, "Webserver: Stopped...");
-      CZeroconf::GetInstance()->RemoveService("services.webserver");
+      CZeroconf::GetInstance()->RemoveService("servers.webserver");
       CZeroconf::GetInstance()->RemoveService("servers.webjsonrpc");
-      CZeroconf::GetInstance()->RemoveService("services.webapi");
+      CZeroconf::GetInstance()->RemoveService("servers.webapi");
     } else
       CLog::Log(LOGWARNING, "Webserver: Failed to stop.");
   }
@@ -1695,6 +1695,8 @@ void CApplication::LoadSkin(const SkinPtr& skin)
   URIUtils::AddFileToFolder(skinEnglishPath, "strings.xml", skinEnglishPath);
 
   g_localizeStrings.LoadSkinStrings(langPath, skinEnglishPath);
+
+  g_SkinInfo->LoadIncludes();
 
   int64_t start;
   start = CurrentHostCounter();

@@ -219,6 +219,11 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
       mappedType    = m_mappings[iMappingPtr].m_mappedTo;
       strDeviceName = m_mappings[iMappingPtr].m_strDeviceName;
     }
+    else
+    {
+      /* don't create instances for devices that aren't mapped in peripherals.xml */
+      return NULL;
+    }
 
     switch(mappedType)
     {

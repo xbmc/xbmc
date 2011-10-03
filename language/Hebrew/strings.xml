@@ -12,6 +12,8 @@
   <string id="5">הגדרות</string>
   <string id="7">מנהל קבצים</string>
   <string id="8">מזג האויר</string>
+  <string id="9">xbmc מדיה סנטר</string>
+  
   <string id="11">יום שני</string>
   <string id="12">יום שלישי</string>
   <string id="13">יום רביעי</string>
@@ -19,6 +21,7 @@
   <string id="15">יום שישי</string>
   <string id="16">יום שבת</string>
   <string id="17">יום ראשון</string>
+  
   <string id="21">ינואר</string>
   <string id="22">פברואר</string>
   <string id="23">מרץ</string>
@@ -31,13 +34,28 @@
   <string id="30">אוקטובר</string>
   <string id="31">נובמבר</string>
   <string id="32">דצמבר</string>
-  <string id="41">ינש םוי</string>
-  <string id="42">ישילש םוי</string>
-  <string id="43">יעיבר םוי</string>
-  <string id="44">ישימח םוי</string>
-  <string id="45">ישיש םוי</string>
-  <string id="46">תבש םוי</string>
-  <string id="47">ןושאר םוי</string>
+  
+  <string id="41">שני</string>
+  <string id="42">שלישי</string>
+  <string id="43">רביעי</string>
+  <string id="44">חמישי</string>
+  <string id="45">שישי</string>
+  <string id="46">שבת</string>
+  <string id="47">ראשון</string>
+  
+  <string id="51">ינו</string>
+  <string id="52">פבר</string>
+  <string id="53">מרץ</string>
+  <string id="54">אפר</string>
+  <string id="55">מאי</string>
+  <string id="56">יונ</string>
+  <string id="57">יול</string>
+  <string id="58">אוג</string>
+  <string id="59">ספט</string>
+  <string id="60">אוק</string>
+  <string id="61">נוב</string>
+  <string id="62">דצמ</string>
+  
   <string id="98">תצוגה: אוטומטי</string>
   <string id="99">תצוגה: אוטומטי גדול</string>
   <string id="100">תצוגה: צלמיות</string>
@@ -165,6 +183,13 @@
   <string id="237">צמצום</string>
   <string id="238">הגדלה</string>
   <string id="239">נקה רשימת השמעה בסיום</string>
+  <string id="240">סגנון מסך</string>
+  <string id="241">מסך מלא #%d</string>
+  <string id="242">חלון</string>
+  <string id="243">רענון</string>
+  <string id="244">מסך מלא</string>
+  <string id="245">גודל: (%i,%i)->(%i,%i) (זום x%2.2f) AR:%2.2f:1 (פיקסלים: %2.2f:1) (VShift: %2.2f)</string>
+  
   <string id="247">סקריפטים</string>
   <string id="248">שפה</string>
   <string id="249">מוסיקה</string>
@@ -258,6 +283,7 @@
   <string id="343">סדר קצב פריימים</string>
   <string id="344">שחקנים</string>
   <string id="345">שנה</string>
+  <string id="346">הגבר קול ב downmix</string>
   <string id="350">תוכנות</string>
   <string id="351">כבה</string>
   <string id="352">עמעם</string>
@@ -1741,8 +1767,95 @@
   <string id="23000">תוסף מזג האויר</string>
   <string id="23001">- הגדרות תוסף</string>
   <string id="23050">הפעל טלטקסט</string>
+  
+  <!-- strings 24000 thru 24299 reserved for the Add-ons framework -->
+  <string id="24000">תוסף</string>
+  <string id="24001">תוספים</string>
+  <string id="24002">אפשרויות תוספים</string>
+  <string id="24003">מידע תוסף</string>
+
+  <string id="24005">מקורות מדיה</string>
+  <string id="24007">מידע סרט</string>
+  <string id="24008">שומר מסך</string>
+  <string id="24009">Script</string>
+  <string id="24010">Visualization</string>
+  <string id="24011">מאגר תוספים</string>
+  <string id="24012">כתוביות</string>
+  <string id="24013">מילות שירים</string>
+  <string id="24014">מידע טלויזיה</string>
+  <string id="24015">מידע קליפים</string>
+  <string id="24016">מידע אלבומים</string>
+  <string id="24017">מידע אומנים</string>
+  <string id="24018">שירותים</string>
+
+  <string id="24020">הגדר</string>
+  <string id="24021">נטרל</string>
+  <string id="24022">הפעל</string>
+  <string id="24023">תוסף מנוטרל</string>
+  <string id="24027">מזג אויר</string>
+  <string id="24028">Weather.com (standard)</string>
+  <string id="24030">תוסף זה אינו ניתן להגדרה</string>
+  <string id="24031">תקלה בעת טעינת הגדרות</string>
+  <string id="24032">כל התוספים</string>
+  <string id="24033">קבל תוספים</string>
+  <string id="24034">חפש עדכונים</string>
+  <string id="24035">רענן בכוח</string>
+  <string id="24036">שינויים</string>
+  <string id="24037">הסר תוסף</string>
+  <string id="24038">התקן תוסף</string>
+  <string id="24039">תוספים מנוטרלים</string>
+  <string id="24040">(נקה הגדרות קיימות)</string>
+  <string id="24041">התקן מקובץ zip</string>
+  <string id="24042">מוריד %i%%</string>
+  <string id="24043">שדרוגים קיימים</string>
+  <string id="24044">אין התאמה בתלויות</string>
+  <string id="24045">לתוסף אין את המבנה הנכון</string>
+  <string id="24046">%s בשימוש ע"י התוסף/ים המותקנים הבאים</string>
+  <string id="24047">התקן זה אינו ניתן להסרה</string>
+  <string id="24048">חזור לאחור</string>
+
+  <string id="24050">תוספים אפשריים</string>
+  <string id="24051">גרסה:</string>
+  <string id="24052">הצהרת אחריות</string>
+  <string id="24053">רישיון:</string>
+  <string id="24054">רשימת שינויים</string>
+  <string id="24059">האם תרצה/י להפעיל תוסף זה?</string>
+  <string id="24060">האם תרצה/י לנטרל תוסף זה?</string>
+  <string id="24061">יש עדכון לתוסף זה!</string>
+  <string id="24062">תוספים מופעלים</string>
+  <string id="24063">עדכון אוטומטי</string>
+  <string id="24064">תוסף מופעל</string>
+  <string id="24065">תוסף מעודכן</string>
+  <string id="24066">בטל הורדת תוסף?</string>
+  <string id="24067">בתהליך הורדת תוספים</string>
+  <string id="24068">קיים עדכון</string>
+  <string id="24069">עדכן</string>
+
+  <string id="24070">לא ניתן לטעון את התוסף</string>
+  <string id="24071">ארעה תקלה בלתי ידועה</string>
+  <string id="24072">דרושות הגדרות</string>
+  <string id="24073">לא מצליח להתחבר</string>
+  <string id="24074">צריך לבצע אתחול</string>
+  <string id="24075">נטרל</string>
+  <string id="24076">דרוש תוסף מתאים</string>
+  <string id="24080">לנסות להתחבר מחדש?</string>
+  <string id="24089">התוסף מאותחל מחדש</string>
+  <string id="24090">נעל מנהל תוסף!</string>
+
+  <string id="24094">(עדכני)</string>
+  <string id="24095">(רשימה שחורה)</string>
+  <string id="24096">התוסף מסומן כלא תקין במאגר</string>
+  <string id="24097">תרצה לנטרל אותו אצלך במערכת?</string>
+  <string id="24098">לא תקין</string>
+  <string id="24099">תרצה להחליף לסקין זה?</string>
+  <string id="24100">לשימוש ביכולת זו עליך להתקין תוסף מתאים</string>
+  <string id="24101">תרצה/י להוריד תוסף זה?</string>
+  <string id="25000">הודעות</string>
+  
   <string id="29800">מצב ספריה</string>
   <string id="29801">מקלדת QWERTY</string>
+  <string id="29802">שימוש בהעברת קול ישירה (passthrough)</string>
+  
   <string id="29999">Auto Flicker Filter Patch</string>
   <string id="33001">איכות הקדימון</string>
   <string id="33002">הזרם</string>
@@ -1805,4 +1918,17 @@
   <string id="33071">רקעים מותאמים אישית</string>
   <string id="33072">צפה בקובץ README</string>
   <string id="33073">צפה בקובץ שינויים</string>
+  <string id="33074">גרסה זו של %s דורשת</string>
+  <string id="33075">דרושה גרסה %s של XBMC או יותר כדי לרוץ</string>
+  <string id="33076">אנא עדכן את xbmc.</string>
+  <string id="33077">לא נמצא מידע!</string>
+  <string id="33078">עמוד הבא</string>
+  <string id="33079">אוהב</string>
+  <string id="33080">לא אוהב</string>
+  <string id="33081">קובץ זה שייך לערמה. בחר נקודת התחלה</string>
+
+  <string id="33100">אתחול נכשל</string>
+  <string id="33101">שרת www</string>
+  <string id="33102">שרת הודעות</string>
+  <string id="33103">שרת התחברות מרחוק</string>
 </strings>
