@@ -62,7 +62,7 @@ bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
     }
   }
 
-  DNSServiceErrorType err = DNSServiceRegister(&netService, flags, 0, assemblePublishedName(fcr_name).c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
+  DNSServiceErrorType err = DNSServiceRegister(&netService, 0, 0, assemblePublishedName(fcr_name).c_str(), fcr_type.c_str(), NULL, NULL, htons(f_port), TXTRecordGetLength(&txtRecord), TXTRecordGetBytesPtr(&txtRecord), registerCallback, NULL);
 
   if(err != kDNSServiceErr_ServiceNotRunning)
     DNSServiceProcessResult(netService);
