@@ -25,6 +25,8 @@
 #import "storage/osx/DarwinStorageProvider.h"
 #undef BOOL
 
+#import "HotKeyController.h"
+
 // For some reaon, Apple removed setAppleMenu from the headers in 10.4,
 // but the method still is there and works. To avoid warnings, we declare
 // it ourselves here.
@@ -227,10 +229,16 @@ static void setupWindowMenu(void)
 
 - (void) applicationWillResignActive:(NSNotification *) note
 {
+  //[[HotKeyController sharedController] sysPower:NO];
+  //[[HotKeyController sharedController] sysVolume:NO];
+  [[HotKeyController sharedController] setActive:NO];
 }
 
 - (void) applicationWillBecomeActive:(NSNotification *) note
 {
+  //[[HotKeyController sharedController] sysPower:YES];
+  //[[HotKeyController sharedController] sysVolume:YES];
+  [[HotKeyController sharedController] setActive:YES];
 }
 
 // To use Cocoa on secondary POSIX threads, your application must first detach
@@ -263,16 +271,41 @@ static void setupWindowMenu(void)
     name:NSWorkspaceDidUnmountNotification
     object:nil];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-    selector:@selector(windowDidMoveNotification:)
-    name:NSWindowDidMoveNotification
-    object:nil];
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
+  [center addObserver:self
+    selector:@selector(windowDidMoveNotification:)
+    name:NSWindowDidMoveNotification object:nil];
+
+  [center addObserver:self
     selector:@selector(windowDidReSizeNotification:)
-    name:NSWindowDidResizeNotification
-    object:nil];
-      
+    name:NSWindowDidResizeNotification object:nil];
+
+  // create media key handler singlton
+  [HotKeyController sharedController];
+  // add media key notifications
+  [center addObserver:self
+    selector:@selector(powerKeyNotification)
+    name:MediaKeyPower object:nil];
+  [center addObserver:self
+    selector:@selector(muteKeyNotification)
+    name:MediaKeySoundMute object:nil];
+  [center addObserver:self
+    selector:@selector(soundUpKeyNotification)
+    name:MediaKeySoundUp object:nil];
+  [center addObserver:self
+    selector:@selector(soundDownKeyNotification)
+    name:MediaKeySoundDown object:nil];
+  [center addObserver:self
+    selector:@selector(playPauseKeyNotification)
+    name:MediaKeyPlayPauseNotification object:nil];
+  [center addObserver:self
+    selector:@selector(nextKeyNotification)
+    name:MediaKeyNextNotification object:nil];
+  [center addObserver:self
+    selector:@selector(previousKeyNotification)
+    name:MediaKeyPreviousNotification object:nil];
+
   // We're going to manually manage the screensaver.
   setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", true);
 
@@ -393,6 +426,77 @@ static void setupWindowMenu(void)
   }
   */
 }
+
+#define VK_SLEEP            0x5F
+#define VK_VOLUME_MUTE      0xAD
+#define VK_VOLUME_DOWN      0xAE
+#define VK_VOLUME_UP        0xAF
+#define VK_MEDIA_NEXT_TRACK 0xB0
+#define VK_MEDIA_PREV_TRACK 0xB1
+#define VK_MEDIA_STOP       0xB2
+#define VK_MEDIA_PLAY_PAUSE 0xB3
+
+- (void)MediaKeyPower
+{
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_KEYDOWN;
+  event.key.keysym.sym = (SDLKey)VK_SLEEP;
+  SDL_PushEvent(&event);
+}
+
+- (void)muteKeyNotification
+{
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_KEYDOWN;
+  event.key.keysym.sym = (SDLKey)VK_VOLUME_MUTE;
+  SDL_PushEvent(&event);
+}
+- (void)soundUpKeyNotification
+{
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_KEYDOWN;
+  event.key.keysym.sym = (SDLKey)VK_VOLUME_UP;
+  SDL_PushEvent(&event);
+}
+- (void)soundDownKeyNotification
+{
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_KEYDOWN;
+  event.key.keysym.sym = (SDLKey)VK_VOLUME_DOWN;
+  SDL_PushEvent(&event);
+}
+
+- (void)playPauseKeyNotification
+{
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_KEYDOWN;
+  event.key.keysym.sym = (SDLKey)VK_MEDIA_PLAY_PAUSE;
+  SDL_PushEvent(&event);
+}
+
+- (void)nextKeyNotification
+{
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_KEYDOWN;
+  event.key.keysym.sym = (SDLKey)VK_MEDIA_NEXT_TRACK;
+  SDL_PushEvent(&event);
+}
+
+- (void)previousKeyNotification
+{
+  SDL_Event event;
+  memset(&event, 0, sizeof(event));
+  event.type = SDL_KEYDOWN;
+  event.key.keysym.sym = (SDLKey)VK_MEDIA_PREV_TRACK;
+  SDL_PushEvent(&event);
+}
+
 @end
 
 #ifdef main
