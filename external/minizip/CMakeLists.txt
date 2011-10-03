@@ -33,7 +33,19 @@ add_library(minizip
 )
 
 if (UNIX)
-	target_link_libraries(minizip z bz2)
+	# on Mac, link to libbz2 dynamically, on Linux
+	# we link statically to libbz2 so that an updater binary
+	# build on Debian (where the packaged libbz2 has a SONAME of "libbz2.so.1.0"
+	# works on Fedora/openSUSE (where no libbz2.so.1.0 symlink exists)
+	# 
+	# see http://stackoverflow.com/questions/1835489/linking-an-application-to-libbz2-so-1-rather-than-libbz2-so-1-0
+	#
+	set(BZ2_LIB_NAME bz2)
+	if (NOT APPLE)
+		set(BZ2_LIB_NAME bz2.a)
+	endif()
+
+	target_link_libraries(minizip z ${BZ2_LIB_NAME})
 else()
 	target_link_libraries(minizip
 		"${CMAKE_CURRENT_SOURCE_DIR}/../zlib/prebuilt/zlib_static.lib"
