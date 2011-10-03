@@ -346,6 +346,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\AFPDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\AFPFile.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\ASAPFileDirectory.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\BlurayDirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CacheStrategy.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CDDADirectory.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\CDDAFile.cpp" />
@@ -907,6 +908,7 @@
     <ClInclude Include="..\..\xbmc\filesystem\AFPDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\AFPFile.h" />
     <ClInclude Include="..\..\xbmc\filesystem\ASAPFileDirectory.h" />
+    <ClInclude Include="..\..\xbmc\filesystem\BlurayDirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\CacheStrategy.h" />
     <ClInclude Include="..\..\xbmc\filesystem\CDDADirectory.h" />
     <ClInclude Include="..\..\xbmc\filesystem\CDDAFile.h" />

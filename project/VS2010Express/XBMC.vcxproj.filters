@@ -2640,6 +2640,9 @@
     <ClCompile Include="..\..\xbmc\filesystem\MemBufferCache.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\BlurayDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5263,6 +5266,9 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\FileCache.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\BlurayDirectory.h">
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\Base64.h">
