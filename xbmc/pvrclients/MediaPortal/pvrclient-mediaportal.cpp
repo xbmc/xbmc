@@ -1395,10 +1395,34 @@ int cPVRClientMediaPortal::GetCurrentClientChannel()
   return m_iCurrentChannel;
 }
 
-PVR_ERROR cPVRClientMediaPortal::SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
+PVR_ERROR cPVRClientMediaPortal::GetSignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 {
-  //XBMC->Log(LOG_DEBUG, "->SignalQuality(): Not yet supported.");
+  if (g_iTVServerXBMCBuild < 108)
+  {
+    // Not yet supported
+    return PVR_ERROR_NO_ERROR;
+  }
 
+  vector<string>  lines;
+  string          result;
+
+  result = SendCommand("GetSignalQuality\n");
+
+  if (result.length() > 0)
+  {
+    int signallevel = 0;
+    int signalquality = 0;
+
+    if (sscanf(result.c_str(),"%i|%i", &signallevel, &signalquality) == 2)
+    {
+      signalStatus.iSignal = (int) (signallevel * 655.35); // 100% is 0xFFFF 65535
+      signalStatus.iSNR = (int) (signalquality * 655.35); // 100% is 0xFFFF 65535
+      signalStatus.iBER = 0;
+      strncpy(signalStatus.strAdapterStatus, "timeshifting", 1023); // hardcoded for now...
+      // TODO: fetch the name of the correct card and not just the first one...
+      strncpy(signalStatus.strAdapterName, m_cCards[0].Name.c_str(), 1023); //Size buffer is 1024 in xbmc_pvr_types.h
+    }
+  }
   return PVR_ERROR_NO_ERROR;
 }
 

@@ -722,7 +722,7 @@ PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
   if (!g_client)
     return PVR_ERROR_SERVER_ERROR;
   else
-    return g_client->SignalStatus(signalStatus);
+    return g_client->GetSignalStatus(signalStatus);
 }
 
 /*******************************************/
