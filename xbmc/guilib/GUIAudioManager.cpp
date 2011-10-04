@@ -423,14 +423,16 @@ void CGUIAudioManager::SetVolume(int iLevel)
 {
   CSingleLock lock(m_cs);
 
+  int vol = g_guiSettings.GetInt("lookandfeel.soundvol");
+
   if (m_actionSound)
-    m_actionSound->SetVolume(iLevel);
+    m_actionSound->SetVolume(iLevel*vol/100);
 
   windowSoundsMap::iterator it=m_windowSounds.begin();
   while (it!=m_windowSounds.end())
   {
     if (it->second)
-      it->second->SetVolume(iLevel);
+      it->second->SetVolume(iLevel*vol/100);
 
     ++it;
   }
@@ -439,7 +441,7 @@ void CGUIAudioManager::SetVolume(int iLevel)
   while (it1!=m_pythonSounds.end())
   {
     if (it1->second)
-      it1->second->SetVolume(iLevel);
+      it1->second->SetVolume(iLevel*vol/100);
 
     ++it1;
   }
