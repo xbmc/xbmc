@@ -22,6 +22,11 @@ include_directories(external/win32cpp/include)
 # so that the executable can function standalone
 set(CMAKE_CXX_FLAGS_RELEASE "/MT /O2 /Ob2 /D NDEBUG")
 set(CMAKE_C_FLAGS_RELEASE "/MT /O2 /Ob2 /D NDEBUG")
+
+else()
+	# optimize for reduced code size
+	set(CMAKE_CXX_FLAGS_RELEASE "-Os")
+	set(CMAKE_C_FLAGS_RELEASE "-Os")
 endif()
 
 if (APPLE)
