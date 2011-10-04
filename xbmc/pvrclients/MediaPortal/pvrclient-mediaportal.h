@@ -104,6 +104,7 @@ private:
   bool LoadGenreXML(const std::string &filename);
 
   int                     m_iCurrentChannel;
+  int                     m_iCurrentCard;
   bool                    m_bConnected;
   bool                    m_bStop;
   bool                    m_bTimeShiftStarted;
