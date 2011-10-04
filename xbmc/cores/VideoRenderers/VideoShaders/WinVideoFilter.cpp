@@ -770,18 +770,18 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
 
     v[5].x = destRect.x2;
     v[5].y = destRect.y1;
-    v[5].tu = (destRect.x2 - destRect.x1) / m_destWidth;
+    v[5].tu = (destRect.x2 - destRect.x1) / destWidth;
     v[5].tv = 0;
 
     v[6].x = destRect.x2;
     v[6].y = destRect.y2;
-    v[6].tu = (destRect.x2 - destRect.x1) / m_destWidth;
-    v[6].tv = (sourceRect.y2 - sourceRect.y1) / m_sourceHeight;
+    v[6].tu = (destRect.x2 - destRect.x1) / destWidth;
+    v[6].tv = (sourceRect.y2 - sourceRect.y1) / sourceHeight;
 
     v[7].x = destRect.x1;
     v[7].y = destRect.y2;
     v[7].tu = 0;
-    v[7].tv = (sourceRect.y2 - sourceRect.y1) / m_sourceHeight;
+    v[7].tv = (sourceRect.y2 - sourceRect.y1) / sourceHeight;
 
     // -0.5 offset to compensate for D3D rasterization
     // set z and rhw
