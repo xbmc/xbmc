@@ -634,35 +634,36 @@ void CWinRenderer::UpdateVideoFilter()
   }
 }
 
-void CWinRenderer::CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc)
+// Adjust the src rectangle so that the dst is always contained in the target rectangle.
+void CWinRenderer::CropSource(RECT& src, RECT& dst, RECT target)
 {
-  if(dst.left < 0)
+  if(dst.left < target.left)
   {
-    src.left -= dst.left
+    src.left -= (dst.left - target.left)
               * (src.right - src.left)
               / (dst.right - dst.left);
-    dst.left  = 0;
+    dst.left  = target.left;
   }
-  if(dst.top < 0)
+  if(dst.top < target.top)
   {
-    src.top -= dst.top
+    src.top -= (dst.top - target.top)
              * (src.bottom - src.top)
              / (dst.bottom - dst.top);
-    dst.top  = 0;
+    dst.top  = target.top;
   }
-  if(dst.right > (LONG)desc.Width)
+  if(dst.right > target.right)
   {
-    src.right -= (dst.right - desc.Width)
+    src.right -= (dst.right - target.right)
                * (src.right - src.left)
                / (dst.right - dst.left);
-    dst.right  = desc.Width;
+    dst.right  = target.right;
   }
-  if(dst.bottom > (LONG)desc.Height)
+  if(dst.bottom > target.bottom)
   {
-    src.bottom -= (dst.bottom - desc.Height)
+    src.bottom -= (dst.bottom - target.bottom)
                 * (src.bottom - src.top)
                 / (dst.bottom - dst.top);
-    dst.bottom  = desc.Height;
+    dst.bottom  = target.bottom;
   }
 }
 
@@ -782,9 +783,10 @@ void CWinRenderer::ScaleStretchRect()
   D3DSURFACE_DESC desc;
   if (FAILED(target->GetDesc(&desc)))
     CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer description");
+  RECT tgtRect = { 0, 0, desc.Width, desc.Height };
 
   // Need to manipulate the coordinates since StretchRect doesn't accept off-screen coordinates.
-  CropSource(srcRect, dstRect, desc);
+  CropSource(srcRect, dstRect, tgtRect);
 
   HRESULT hr;
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();

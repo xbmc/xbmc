@@ -1439,8 +1439,8 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
-
-  CWinRenderer::CropSource(src, dst, desc);
+  RECT recttarget = { 0, 0, desc.Width, desc.Height };
+  CWinRenderer::CropSource(src, dst, recttarget);
 
   // How to prepare the samples array for VideoProcessBlt
   // - always provide current picture + the number of forward and backward references required by the current processor.
