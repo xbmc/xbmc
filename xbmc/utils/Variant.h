@@ -53,8 +53,6 @@ public:
   CVariant(const std::string &str);
   CVariant(const CVariant &variant);
 
-  ~CVariant();
-
   bool isInteger() const;
   bool isUnsignedInteger() const;
   bool isBoolean() const;
@@ -124,13 +122,13 @@ private:
     uint64_t unsignedinteger;
     bool boolean;
     double dvalue;
-    std::string *string;
-    VariantArray *array;
-    VariantMap *map;
   };
 
   VariantType m_type;
   VariantUnion m_data;
+  std::string m_string;
+  VariantArray m_array;
+  VariantMap m_map;
 
   static CVariant ConstNullVariant;
 };
