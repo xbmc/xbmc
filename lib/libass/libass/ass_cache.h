@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2006 Evgeniy Stepanov <eugeni.stepanov@gmail.com>
+ * Copyright (C) 2011 Grigori Goronzy <greg@chown.ath.cx>
  *
  * This file is part of libass.
  *
@@ -23,51 +24,9 @@
 #include "ass_font.h"
 #include "ass_bitmap.h"
 
-typedef void (*HashmapItemDtor) (void *key, size_t key_size,
-                                 void *value, size_t value_size);
-typedef int (*HashmapKeyCompare) (void *key1, void *key2,
-                                  size_t key_size);
-typedef unsigned (*HashmapHash) (void *key, size_t key_size);
+typedef struct cache Cache;
 
-typedef struct hashmap_item {
-    void *key;
-    void *value;
-    struct hashmap_item *next;
-} HashmapItem;
-typedef HashmapItem *hashmap_item_p;
-
-typedef struct {
-    int nbuckets;
-    size_t key_size, value_size;
-    hashmap_item_p *root;
-    HashmapItemDtor item_dtor;      // a destructor for hashmap key/value pairs
-    HashmapKeyCompare key_compare;
-    HashmapHash hash;
-    size_t cache_size;
-    // stats
-    int hit_count;
-    int miss_count;
-    int count;
-    ASS_Library *library;
-} Hashmap;
-
-Hashmap *hashmap_init(ASS_Library *library, size_t key_size,
-                      size_t value_size, int nbuckets,
-                      HashmapItemDtor item_dtor,
-                      HashmapKeyCompare key_compare,
-                      HashmapHash hash);
-void hashmap_done(Hashmap *map);
-void *hashmap_insert(Hashmap *map, void *key, void *value);
-void *hashmap_find(Hashmap *map, void *key);
-
-Hashmap *ass_font_cache_init(ASS_Library *library);
-ASS_Font *ass_font_cache_find(Hashmap *, ASS_FontDesc *desc);
-void *ass_font_cache_add(Hashmap *, ASS_Font *font);
-void ass_font_cache_done(Hashmap *);
-
-// Create definitions for bitmap_hash_key and glyph_hash_key
-#define CREATE_STRUCT_DEFINITIONS
-#include "ass_cache_template.h"
+// cache values
 
 typedef struct {
     Bitmap *bm;               // the actual bitmaps
@@ -75,43 +34,71 @@ typedef struct {
     Bitmap *bm_s;
 } BitmapHashValue;
 
-Hashmap *ass_bitmap_cache_init(ASS_Library *library);
-void *cache_add_bitmap(Hashmap *, BitmapHashKey *key,
-                       BitmapHashValue *val);
-BitmapHashValue *cache_find_bitmap(Hashmap *bitmap_cache,
-                                   BitmapHashKey *key);
-Hashmap *ass_bitmap_cache_reset(Hashmap *bitmap_cache);
-void ass_bitmap_cache_done(Hashmap *bitmap_cache);
-
-
 typedef struct {
     unsigned char *a;
     unsigned char *b;
 } CompositeHashValue;
 
-Hashmap *ass_composite_cache_init(ASS_Library *library);
-void *cache_add_composite(Hashmap *, CompositeHashKey *key,
-                          CompositeHashValue *val);
-CompositeHashValue *cache_find_composite(Hashmap *composite_cache,
-                                         CompositeHashKey *key);
-Hashmap *ass_composite_cache_reset(Hashmap *composite_cache);
-void ass_composite_cache_done(Hashmap *composite_cache);
-
+typedef struct {
+    FT_Library lib;
+    FT_Outline *outline;
+    FT_Outline *border;
+    FT_BBox bbox_scaled;        // bbox after scaling, but before rotation
+    FT_Vector advance;          // 26.6, advance distance to the next outline in line
+    int asc, desc;              // ascender/descender
+} OutlineHashValue;
 
 typedef struct {
-    FT_Glyph glyph;
-    FT_Glyph outline_glyph;
-    FT_BBox bbox_scaled;        // bbox after scaling, but before rotation
-    FT_Vector advance;          // 26.6, advance distance to the next bitmap in line
-    int asc, desc;              // ascender/descender of a drawing
-} GlyphHashValue;
+    FT_Glyph_Metrics metrics;
+} GlyphMetricsHashValue;
 
-Hashmap *ass_glyph_cache_init(ASS_Library *library);
-void *cache_add_glyph(Hashmap *, GlyphHashKey *key,
-                      GlyphHashValue *val);
-GlyphHashValue *cache_find_glyph(Hashmap *glyph_cache,
-                                 GlyphHashKey *key);
-Hashmap *ass_glyph_cache_reset(Hashmap *glyph_cache);
-void ass_glyph_cache_done(Hashmap *glyph_cache);
+// Create definitions for bitmap, outline and composite hash keys
+#define CREATE_STRUCT_DEFINITIONS
+#include "ass_cache_template.h"
+
+// Type-specific function pointers
+typedef unsigned(*HashFunction)(void *key, size_t key_size);
+typedef size_t(*ItemSize)(void *value, size_t value_size);
+typedef unsigned(*HashCompare)(void *a, void *b, size_t key_size);
+typedef void(*CacheItemDestructor)(void *key, void *value);
+
+// cache hash keys
+
+typedef struct outline_hash_key {
+    enum {
+        OUTLINE_GLYPH,
+        OUTLINE_DRAWING,
+    } type;
+    union {
+        GlyphHashKey glyph;
+        DrawingHashKey drawing;
+    } u;
+} OutlineHashKey;
+
+typedef struct bitmap_hash_key {
+    enum {
+        BITMAP_OUTLINE,
+        BITMAP_CLIP,
+    } type;
+    union {
+        OutlineBitmapHashKey outline;
+        ClipMaskHashKey clip;
+    } u;
+} BitmapHashKey;
+
+Cache *ass_cache_create(HashFunction hash_func, HashCompare compare_func,
+                        CacheItemDestructor destruct_func, ItemSize size_func,
+                        size_t key_size, size_t value_size);
+void *ass_cache_put(Cache *cache, void *key, void *value);
+void *ass_cache_get(Cache *cache, void *key);
+int ass_cache_empty(Cache *cache, size_t max_size);
+void ass_cache_stats(Cache *cache, size_t *size, unsigned *hits,
+                     unsigned *misses, unsigned *count);
+void ass_cache_done(Cache *cache);
+Cache *ass_font_cache_create(void);
+Cache *ass_outline_cache_create(void);
+Cache *ass_glyph_metrics_cache_create(void);
+Cache *ass_bitmap_cache_create(void);
+Cache *ass_composite_cache_create(void);
 
 #endif                          /* LIBASS_CACHE_H */
