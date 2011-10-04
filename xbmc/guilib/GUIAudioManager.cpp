@@ -195,6 +195,7 @@ void CGUIAudioManager::PlayActionSound(const CAction& action)
     return;
   }
 
+  m_actionSound->SetVolume(m_iVolume);
   m_actionSound->Play();
 }
 
@@ -246,6 +247,7 @@ void CGUIAudioManager::PlayWindowSound(int id, WINDOW_SOUND event)
   }
 
   m_windowSounds.insert(pair<int, CGUISound*>(id, sound));
+  sound->SetVolume(m_iVolume);
   sound->Play();
 }
 
@@ -279,6 +281,7 @@ void CGUIAudioManager::PlayPythonSound(const CStdString& strFileName)
   }
 
   m_pythonSounds.insert(pair<CStdString, CGUISound*>(strFileName, sound));
+  sound->SetVolume(m_iVolume);
   sound->Play();
 }
 
@@ -423,16 +426,16 @@ void CGUIAudioManager::SetVolume(int iLevel)
 {
   CSingleLock lock(m_cs);
 
-  int vol = g_guiSettings.GetInt("lookandfeel.soundvol");
+  m_iVolume = iLevel * g_guiSettings.GetInt("lookandfeel.soundvol") / 100;
 
   if (m_actionSound)
-    m_actionSound->SetVolume(iLevel*vol/100);
+    m_actionSound->SetVolume(m_iVolume);
 
   windowSoundsMap::iterator it=m_windowSounds.begin();
   while (it!=m_windowSounds.end())
   {
     if (it->second)
-      it->second->SetVolume(iLevel*vol/100);
+      it->second->SetVolume(m_iVolume);
 
     ++it;
   }
@@ -441,7 +444,7 @@ void CGUIAudioManager::SetVolume(int iLevel)
   while (it1!=m_pythonSounds.end())
   {
     if (it1->second)
-      it1->second->SetVolume(iLevel*vol/100);
+      it1->second->SetVolume(m_iVolume);
 
     ++it1;
   }
