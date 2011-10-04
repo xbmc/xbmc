@@ -735,6 +735,12 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
 
     // Manipulate the coordinates to work only on the active parts of the textures,
     // and therefore avoid the need to clear surfaces/render targets
+
+    // Pass 1:
+    // Horizontal dimension: crop/zoom, so that it is completely done with the convolution shader. Scaling to display width in pass1 and
+    // cropping/zooming in pass 2 would use bilinear in pass2, which we don't want.
+    // Vertical dimension: crop using sourceRect to save memory bandwidth for high zoom values, but don't stretch/shrink in any way in this pass.
+    
     v[0].x = 0;
     v[0].y = 0;
     v[0].tu = sourceRect.x1 / sourceWidth;
@@ -754,6 +760,8 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     v[3].y = sourceRect.y2 - sourceRect.y1;
     v[3].tu = sourceRect.x1 / sourceWidth;
     v[3].tv = sourceRect.y2 / sourceHeight;
+
+    // Pass 2: pass the horizontal data untouched, resize vertical dimension for final result.
 
     v[4].x = destRect.x1;
     v[4].y = destRect.y1;
