@@ -635,35 +635,35 @@ void CWinRenderer::UpdateVideoFilter()
 }
 
 // Adjust the src rectangle so that the dst is always contained in the target rectangle.
-void CWinRenderer::CropSource(RECT& src, RECT& dst, RECT target)
+void CWinRenderer::CropSource(CRect& src, CRect& dst, CRect target)
 {
-  if(dst.left < target.left)
+  if(dst.x1 < target.x1)
   {
-    src.left -= (dst.left - target.left)
-              * (src.right - src.left)
-              / (dst.right - dst.left);
-    dst.left  = target.left;
+    src.x1 -= (dst.x1 - target.x1)
+            * (src.x2 - src.x1)
+            / (dst.x2 - dst.x1);
+    dst.x1  = target.x1;
   }
-  if(dst.top < target.top)
+  if(dst.y1 < target.y1)
   {
-    src.top -= (dst.top - target.top)
-             * (src.bottom - src.top)
-             / (dst.bottom - dst.top);
-    dst.top  = target.top;
+    src.y1 -= (dst.y1 - target.y1)
+            * (src.y2 - src.y1)
+            / (dst.y2 - dst.y1);
+    dst.y1  = target.y1;
   }
-  if(dst.right > target.right)
+  if(dst.x2 > target.x2)
   {
-    src.right -= (dst.right - target.right)
-               * (src.right - src.left)
-               / (dst.right - dst.left);
-    dst.right  = target.right;
+    src.x2 -= (dst.x2 - target.x2)
+            * (src.x2 - src.x1)
+            / (dst.x2 - dst.x1);
+    dst.x2  = target.x2;
   }
-  if(dst.bottom > target.bottom)
+  if(dst.y2 > target.y2)
   {
-    src.bottom -= (dst.bottom - target.bottom)
-                * (src.bottom - src.top)
-                / (dst.bottom - dst.top);
-    dst.bottom  = target.bottom;
+    src.y2 -= (dst.y2 - target.y2)
+            * (src.y2 - src.y1)
+            / (dst.y2 - dst.y1);
+    dst.y2  = target.y2;
   }
 }
 
@@ -770,23 +770,26 @@ void CWinRenderer::ScaleStretchRect()
   //  m_StretchRectSupported = true;
   //}
 
-  RECT srcRect = { m_sourceRect.x1, m_sourceRect.y1, m_sourceRect.x2, m_sourceRect.y2 };
-  IDirect3DSurface9* source;
-  if(!m_SWTarget.GetSurfaceLevel(0, &source))
-    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get source");
-
-  RECT dstRect = { m_destRect.x1, m_destRect.y1, m_destRect.x2, m_destRect.y2 };
-  IDirect3DSurface9* target;
-  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
-    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer");
+  CRect sourceRect = m_sourceRect;
+  CRect destRect = m_destRect;
 
   D3DSURFACE_DESC desc;
   if (FAILED(target->GetDesc(&desc)))
     CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer description");
-  RECT tgtRect = { 0, 0, desc.Width, desc.Height };
+  CRect tgtRect(0, 0, desc.Width, desc.Height);
 
   // Need to manipulate the coordinates since StretchRect doesn't accept off-screen coordinates.
-  CropSource(srcRect, dstRect, tgtRect);
+  CropSource(sourceRect, destRect, tgtRect);
+
+  RECT srcRect = { sourceRect.x1, sourceRect.y1, sourceRect.x2, sourceRect.y2 };
+  IDirect3DSurface9* source;
+  if(!m_SWTarget.GetSurfaceLevel(0, &source))
+    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get source");
+
+  RECT dstRect = { destRect.x1, destRect.y1, destRect.x2, destRect.y2 };
+  IDirect3DSurface9* target;
+  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
+    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer");
 
   HRESULT hr;
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
@@ -949,8 +952,6 @@ void CWinRenderer::RenderProcessor(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
   HRESULT hr;
-  RECT sourceRect = { m_sourceRect.x1, m_sourceRect.y1, m_sourceRect.x2, m_sourceRect.y2 };
-  RECT destRect   = { m_destRect.x1,   m_destRect.y1,   m_destRect.x2,   m_destRect.y2   };
 
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 
@@ -961,7 +962,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  m_processor.Render(sourceRect, destRect, target, image->id, flags);
+  m_processor.Render(m_sourceRect, m_destRect, target, image->id, flags);
 
   target->Release();
 }

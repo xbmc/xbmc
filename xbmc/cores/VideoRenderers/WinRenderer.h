@@ -192,7 +192,7 @@ public:
 
   virtual unsigned int GetProcessorSize() { return m_processor.Size(); }
 
-  static void          CropSource(RECT& src, RECT& dst, RECT target);
+  static void          CropSource(CRect& src, CRect& dst, CRect target);
 
 protected:
   virtual void Render(DWORD flags);
