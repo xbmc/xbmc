@@ -947,16 +947,8 @@ void CWinRenderer::RenderProcessor(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
   HRESULT hr;
-  RECT sourceRect;
-  sourceRect.top    = m_sourceRect.y1;
-  sourceRect.bottom = m_sourceRect.y2;
-  sourceRect.left   = m_sourceRect.x1;
-  sourceRect.right  = m_sourceRect.x2;
-  RECT destRect;
-  destRect.top    = m_destRect.y1;
-  destRect.bottom = m_destRect.y2;
-  destRect.left   = m_destRect.x1;
-  destRect.right  = m_destRect.x2;
+  RECT sourceRect = { m_sourceRect.x1, m_sourceRect.y1, m_sourceRect.x2, m_sourceRect.y2 };
+  RECT destRect   = { m_destRect.x1,   m_destRect.y1,   m_destRect.x2,   m_destRect.y2   };
 
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 
