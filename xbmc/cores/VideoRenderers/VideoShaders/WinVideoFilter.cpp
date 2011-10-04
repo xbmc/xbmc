@@ -28,7 +28,7 @@
 #include <map>
 #include "ConvolutionKernels.h"
 #include "YUV2RGBShader.h"
-
+#include "../WinRenderer.h"
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
@@ -732,6 +732,11 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
 
     CUSTOMVERTEX* v;
     CWinShader::LockVertexBuffer((void**)&v);
+
+    // Alter rectangles the destination rectangle exceeds the intermediate target width when zooming and causes artifacts.
+    // Work on the parameters rather than the members to avoid disturbing the parameter change detection the next time the function is called
+    CRect tgtRect(0, 0, destWidth, destHeight);
+    CWinRenderer::CropSource(sourceRect, destRect, tgtRect);
 
     // Manipulate the coordinates to work only on the active parts of the textures,
     // and therefore avoid the need to clear surfaces/render targets
