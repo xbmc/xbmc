@@ -89,6 +89,7 @@
 #include "utils/CPUInfo.h"
 
 #include "input/KeyboardStat.h"
+#include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
 
 #if defined(FILESYSTEM) && !defined(_LINUX)
@@ -2195,7 +2196,7 @@ bool CApplication::OnKey(const CKey& key)
 
         // If the key pressed is shift-A to shift-Z set usekeyboard to true.
         // This causes the keypress to be used for list navigation.
-        if (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT && key.GetVKey() >= 'a' && key.GetVKey() <= 'z')
+        if (control->IsContainer() && key.GetModifiers() == CKey::MODIFIER_SHIFT && key.GetVKey() >= XBMCVK_A && key.GetVKey() <= XBMCVK_Z)
           useKeyboard = true;
       }
     }
