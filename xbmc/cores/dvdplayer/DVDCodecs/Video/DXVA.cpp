@@ -41,6 +41,7 @@
 #include "utils/AutoPtrHandle.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "win32/WIN32Util.h"
 
 #define ALLOW_ADDING_SURFACES 0
 
@@ -1440,7 +1441,7 @@ bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFEREN
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
   CRect rectTarget(0, 0, desc.Width, desc.Height);
-  CWinRenderer::CropSource(src, dst, rectTarget);
+  CWIN32Util::CropSource(src, dst, rectTarget);
   RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
   RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
 

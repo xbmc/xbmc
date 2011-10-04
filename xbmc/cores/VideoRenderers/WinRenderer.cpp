@@ -36,6 +36,7 @@
 #include "DllSwScale.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "win32/WIN32Util.h"
 
 typedef struct {
   RenderMethod  method;
@@ -634,39 +635,6 @@ void CWinRenderer::UpdateVideoFilter()
   }
 }
 
-// Adjust the src rectangle so that the dst is always contained in the target rectangle.
-void CWinRenderer::CropSource(CRect& src, CRect& dst, CRect target)
-{
-  if(dst.x1 < target.x1)
-  {
-    src.x1 -= (dst.x1 - target.x1)
-            * (src.x2 - src.x1)
-            / (dst.x2 - dst.x1);
-    dst.x1  = target.x1;
-  }
-  if(dst.y1 < target.y1)
-  {
-    src.y1 -= (dst.y1 - target.y1)
-            * (src.y2 - src.y1)
-            / (dst.y2 - dst.y1);
-    dst.y1  = target.y1;
-  }
-  if(dst.x2 > target.x2)
-  {
-    src.x2 -= (dst.x2 - target.x2)
-            * (src.x2 - src.x1)
-            / (dst.x2 - dst.x1);
-    dst.x2  = target.x2;
-  }
-  if(dst.y2 > target.y2)
-  {
-    src.y2 -= (dst.y2 - target.y2)
-            * (src.y2 - src.y1)
-            / (dst.y2 - dst.y1);
-    dst.y2  = target.y2;
-  }
-}
-
 void CWinRenderer::Render(DWORD flags)
 {
   if (m_renderMethod == RENDER_DXVA)
@@ -779,7 +747,7 @@ void CWinRenderer::ScaleStretchRect()
   CRect tgtRect(0, 0, desc.Width, desc.Height);
 
   // Need to manipulate the coordinates since StretchRect doesn't accept off-screen coordinates.
-  CropSource(sourceRect, destRect, tgtRect);
+  CWIN32Util::CropSource(sourceRect, destRect, tgtRect);
 
   RECT srcRect = { sourceRect.x1, sourceRect.y1, sourceRect.x2, sourceRect.y2 };
   IDirect3DSurface9* source;
