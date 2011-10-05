@@ -31,7 +31,8 @@ using namespace PVR;
 CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) :
   CGUIViewState(items)
 {
-  if (GetActiveView() == PVR_WINDOW_RECORDINGS)
+  PVRWindow ActiveView = GetActiveView();
+  if (ActiveView == PVR_WINDOW_RECORDINGS)
   {
     if (g_guiSettings.GetBool("filelists.ignorethewhensorting"))
       AddSortMethod(SORT_METHOD_LABEL_IGNORE_THE, 551, LABEL_MASKS("%L", "%I", "%L", ""));  // FileName, Size | Foldername, e
@@ -40,13 +41,9 @@ CGUIViewStatePVR::CGUIViewStatePVR(const CFileItemList& items) :
     AddSortMethod(SORT_METHOD_SIZE, 553, LABEL_MASKS("%L", "%I", "%L", "%I"));  // FileName, Size | Foldername, Size
     AddSortMethod(SORT_METHOD_DATE, 552, LABEL_MASKS("%L", "%J", "%L", "%J"));  // FileName, Date | Foldername, Date
     AddSortMethod(SORT_METHOD_FILE, 561, LABEL_MASKS("%L", "%I", "%L", ""));  // Filename, Size | FolderName, empty
-
-    SetSortMethod(g_settings.m_viewStateVideoFiles.m_sortMethod);
-    SetViewAsControl(g_settings.m_viewStateVideoFiles.m_viewMode);
-    SetSortOrder(g_settings.m_viewStateVideoFiles.m_sortOrder);
   }
 
-  LoadViewState(items.GetPath(), WINDOW_PVR);
+  LoadViewState(items.GetPath(), ActiveView == PVR_WINDOW_UNKNOWN ? WINDOW_PVR : WINDOW_PVR + 100 - ActiveView );
 }
 
 PVRWindow CGUIViewStatePVR::GetActiveView()
@@ -63,4 +60,10 @@ PVRWindow CGUIViewStatePVR::GetActiveView()
   }
 
   return returnWindow;
+}
+
+void CGUIViewStatePVR::SaveViewState(void) 
+{
+  PVRWindow ActiveView = GetActiveView();
+  SaveViewToDb(m_items.GetPath(), ActiveView == PVR_WINDOW_UNKNOWN ? WINDOW_PVR : WINDOW_PVR + 100 - ActiveView, NULL);
 }
