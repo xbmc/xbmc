@@ -53,7 +53,9 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "Util.h"
+#if defined(__APPLE__)
 #include "osx/CoreAudio.h"
+#endif
 
 #include "filesystem/PluginDirectory.h"
 #ifdef HAS_FILESYSTEM_RAR
