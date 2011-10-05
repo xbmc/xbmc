@@ -1,0 +1,59 @@
+From 9afd569e13e9c0a823e11f4dd68ba9cb5e3ad3f1 Mon Sep 17 00:00:00 2001
+From: CrystalP <CrystalP@xbmc.org>
+Date: Wed, 5 Oct 2011 12:53:38 -0400
+Subject: [PATCH 3/6] dxva-vc1 Take BI into account for forward and backward pictures
+
+See ticket #11643, sample on team ftp, samples/11643/vc-1 test.wmv
+---
+ lib/ffmpeg/libavcodec/dxva2_vc1.c |   16 +++++++++-------
+ 1 files changed, 9 insertions(+), 7 deletions(-)
+
+diff --git a/lib/ffmpeg/libavcodec/dxva2_vc1.c b/lib/ffmpeg/libavcodec/dxva2_vc1.c
+index 2b9a690..86cdf2f 100644
+--- a/lib/ffmpeg/libavcodec/dxva2_vc1.c
++++ b/lib/ffmpeg/libavcodec/dxva2_vc1.c
+@@ -38,15 +38,17 @@ static void fill_picture_parameters(AVCodecContext *avctx,
+ {
+     const MpegEncContext *s = &v->s;
+     const Picture *current_picture = s->current_picture_ptr;
++    BYTE bPicIntra = s->pict_type == FF_I_TYPE || v->bi_type == 1;
++    BYTE bPicBackwardPrediction = s->pict_type == FF_B_TYPE && v->bi_type == 0;
+ 
+     memset(pp, 0, sizeof(*pp));
+     pp->wDecodedPictureIndex    =
+     pp->wDeblockedPictureIndex  = ff_dxva2_get_surface_index(ctx, current_picture);
+-    if (s->pict_type != FF_I_TYPE)
+-        pp->wForwardRefPictureIndex = ff_dxva2_get_surface_index(ctx, &s->last_picture);
+-    else
++    if (bPicIntra)
+         pp->wForwardRefPictureIndex = 0xffff;
+-    if (s->pict_type == FF_B_TYPE)
++    else
++        pp->wForwardRefPictureIndex = ff_dxva2_get_surface_index(ctx, &s->last_picture);
++    if (bPicBackwardPrediction)
+         pp->wBackwardRefPictureIndex = ff_dxva2_get_surface_index(ctx, &s->next_picture);
+     else
+         pp->wBackwardRefPictureIndex = 0xffff;
+@@ -69,8 +71,8 @@ static void fill_picture_parameters(AVCodecContext *avctx,
+     if (s->picture_structure & PICT_BOTTOM_FIELD)
+         pp->bPicStructure      |= 0x02;
+     pp->bSecondField            = v->interlace && v->fcm != 0x03 && !s->first_field;
+-    pp->bPicIntra               = s->pict_type == FF_I_TYPE;
+-    pp->bPicBackwardPrediction  = s->pict_type == FF_B_TYPE;
++    pp->bPicIntra               = bPicIntra;
++    pp->bPicBackwardPrediction  = bPicBackwardPrediction;
+     pp->bBidirectionalAveragingMode = (1                                           << 7) |
+                                       ((ctx->cfg->ConfigIntraResidUnsigned != 0)   << 6) |
+                                       ((ctx->cfg->ConfigResidDiffAccelerator != 0) << 5) |
+@@ -108,7 +110,7 @@ static void fill_picture_parameters(AVCodecContext *avctx,
+                                   (v->interlace                << 5) |
+                                   (v->tfcntrflag               << 4) |
+                                   (v->finterpflag              << 3) |
+-                                  ((s->pict_type != FF_B_TYPE) << 2) |
++                                  ((s->pict_type != FF_B_TYPE) << 2) | //includes BI
+                                   (v->psf                      << 1) |
+                                   (v->extended_dmv                 );
+     if (s->pict_type != FF_I_TYPE)
+-- 
+1.7.3.1.msysgit.0
+
