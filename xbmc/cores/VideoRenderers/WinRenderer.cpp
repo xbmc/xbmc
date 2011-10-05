@@ -36,6 +36,7 @@
 #include "DllSwScale.h"
 #include "guilib/LocalizeStrings.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "win32/WIN32Util.h"
 
 typedef struct {
   RenderMethod  method;
@@ -634,38 +635,6 @@ void CWinRenderer::UpdateVideoFilter()
   }
 }
 
-void CWinRenderer::CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc)
-{
-  if(dst.left < 0)
-  {
-    src.left -= dst.left
-              * (src.right - src.left)
-              / (dst.right - dst.left);
-    dst.left  = 0;
-  }
-  if(dst.top < 0)
-  {
-    src.top -= dst.top
-             * (src.bottom - src.top)
-             / (dst.bottom - dst.top);
-    dst.top  = 0;
-  }
-  if(dst.right > (LONG)desc.Width)
-  {
-    src.right -= (dst.right - desc.Width)
-               * (src.right - src.left)
-               / (dst.right - dst.left);
-    dst.right  = desc.Width;
-  }
-  if(dst.bottom > (LONG)desc.Height)
-  {
-    src.bottom -= (dst.bottom - desc.Height)
-                * (src.bottom - src.top)
-                / (dst.bottom - dst.top);
-    dst.bottom  = desc.Height;
-  }
-}
-
 void CWinRenderer::Render(DWORD flags)
 {
   if (m_renderMethod == RENDER_DXVA)
@@ -769,22 +738,26 @@ void CWinRenderer::ScaleStretchRect()
   //  m_StretchRectSupported = true;
   //}
 
-  RECT srcRect = { m_sourceRect.x1, m_sourceRect.y1, m_sourceRect.x2, m_sourceRect.y2 };
-  IDirect3DSurface9* source;
-  if(!m_SWTarget.GetSurfaceLevel(0, &source))
-    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get source");
-
-  RECT dstRect = { m_destRect.x1, m_destRect.y1, m_destRect.x2, m_destRect.y2 };
-  IDirect3DSurface9* target;
-  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
-    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer");
+  CRect sourceRect = m_sourceRect;
+  CRect destRect = m_destRect;
 
   D3DSURFACE_DESC desc;
   if (FAILED(target->GetDesc(&desc)))
     CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer description");
+  CRect tgtRect(0, 0, desc.Width, desc.Height);
 
   // Need to manipulate the coordinates since StretchRect doesn't accept off-screen coordinates.
-  CropSource(srcRect, dstRect, desc);
+  CWIN32Util::CropSource(sourceRect, destRect, tgtRect);
+
+  RECT srcRect = { sourceRect.x1, sourceRect.y1, sourceRect.x2, sourceRect.y2 };
+  IDirect3DSurface9* source;
+  if(!m_SWTarget.GetSurfaceLevel(0, &source))
+    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get source");
+
+  RECT dstRect = { destRect.x1, destRect.y1, destRect.x2, destRect.y2 };
+  IDirect3DSurface9* target;
+  if(FAILED(g_Windowing.Get3DDevice()->GetRenderTarget(0, &target)))
+    CLog::Log(LOGERROR, "CWinRenderer::Render - failed to get back buffer");
 
   HRESULT hr;
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
@@ -947,16 +920,6 @@ void CWinRenderer::RenderProcessor(DWORD flags)
 {
   CSingleLock lock(g_graphicsContext);
   HRESULT hr;
-  RECT sourceRect;
-  sourceRect.top    = m_sourceRect.y1;
-  sourceRect.bottom = m_sourceRect.y2;
-  sourceRect.left   = m_sourceRect.x1;
-  sourceRect.right  = m_sourceRect.x2;
-  RECT destRect;
-  destRect.top    = m_destRect.y1;
-  destRect.bottom = m_destRect.y2;
-  destRect.left   = m_destRect.x1;
-  destRect.right  = m_destRect.x2;
 
   DXVABuffer *image = (DXVABuffer*)m_VideoBuffers[m_iYV12RenderBuffer];
 
@@ -967,7 +930,7 @@ void CWinRenderer::RenderProcessor(DWORD flags)
     return;
   }
 
-  m_processor.Render(sourceRect, destRect, target, image->id, flags);
+  m_processor.Render(m_sourceRect, m_destRect, target, image->id, flags);
 
   target->Release();
 }

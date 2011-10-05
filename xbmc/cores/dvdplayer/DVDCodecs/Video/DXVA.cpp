@@ -41,6 +41,7 @@
 #include "utils/AutoPtrHandle.h"
 #include "settings/AdvancedSettings.h"
 #include "cores/VideoRenderers/RenderManager.h"
+#include "win32/WIN32Util.h"
 
 #define ALLOW_ADDING_SURFACES 0
 
@@ -1395,7 +1396,7 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
     return range.DefaultValue;
 }
 
-bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE_TIME time, DWORD flags)
+bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFERENCE_TIME time, DWORD flags)
 {
   CSingleLock lock(m_section);
 
@@ -1439,8 +1440,11 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
+  CRect rectTarget(0, 0, desc.Width, desc.Height);
+  CWIN32Util::CropSource(src, dst, rectTarget);
+  RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
+  RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
 
-  CWinRenderer::CropSource(src, dst, desc);
 
   // How to prepare the samples array for VideoProcessBlt
   // - always provide current picture + the number of forward and backward references required by the current processor.
@@ -1460,8 +1464,8 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
     {
       DXVA2_VideoSample& vs = samp[(it->sample.Start - MinTime) / 2];
       vs = it->sample;
-      vs.SrcRect = src;
-      vs.DstRect = dst;
+      vs.SrcRect = sourceRECT;
+      vs.DstRect = dstRECT;
       if(vs.End == 0)
         vs.End = vs.Start + 2;
 
@@ -1500,7 +1504,7 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
   blt.TargetFrame = time;
   if (flags & RENDER_FLAG_FIELD1)
     blt.TargetFrame += 1;
-  blt.TargetRect  = dst;
+  blt.TargetRect  = dstRECT;
   blt.ConstrictionSize.cx = 0;
   blt.ConstrictionSize.cy = 0;
 

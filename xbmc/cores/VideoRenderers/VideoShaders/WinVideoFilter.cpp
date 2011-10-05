@@ -28,7 +28,7 @@
 #include <map>
 #include "ConvolutionKernels.h"
 #include "YUV2RGBShader.h"
-
+#include "win32/WIN32Util.h"
 
 CYUV2RGBMatrix::CYUV2RGBMatrix()
 {
@@ -733,8 +733,19 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     CUSTOMVERTEX* v;
     CWinShader::LockVertexBuffer((void**)&v);
 
+    // Alter rectangles the destination rectangle exceeds the intermediate target width when zooming and causes artifacts.
+    // Work on the parameters rather than the members to avoid disturbing the parameter change detection the next time the function is called
+    CRect tgtRect(0, 0, destWidth, destHeight);
+    CWIN32Util::CropSource(sourceRect, destRect, tgtRect);
+
     // Manipulate the coordinates to work only on the active parts of the textures,
     // and therefore avoid the need to clear surfaces/render targets
+
+    // Pass 1:
+    // Horizontal dimension: crop/zoom, so that it is completely done with the convolution shader. Scaling to display width in pass1 and
+    // cropping/zooming in pass 2 would use bilinear in pass2, which we don't want.
+    // Vertical dimension: crop using sourceRect to save memory bandwidth for high zoom values, but don't stretch/shrink in any way in this pass.
+    
     v[0].x = 0;
     v[0].y = 0;
     v[0].tu = sourceRect.x1 / sourceWidth;
@@ -755,6 +766,8 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
     v[3].tu = sourceRect.x1 / sourceWidth;
     v[3].tv = sourceRect.y2 / sourceHeight;
 
+    // Pass 2: pass the horizontal data untouched, resize vertical dimension for final result.
+
     v[4].x = destRect.x1;
     v[4].y = destRect.y1;
     v[4].tu = 0;
@@ -762,18 +775,18 @@ void CConvolutionShaderSeparable::PrepareParameters(unsigned int sourceWidth, un
 
     v[5].x = destRect.x2;
     v[5].y = destRect.y1;
-    v[5].tu = (destRect.x2 - destRect.x1) / m_destWidth;
+    v[5].tu = (destRect.x2 - destRect.x1) / destWidth;
     v[5].tv = 0;
 
     v[6].x = destRect.x2;
     v[6].y = destRect.y2;
-    v[6].tu = (destRect.x2 - destRect.x1) / m_destWidth;
-    v[6].tv = (sourceRect.y2 - sourceRect.y1) / m_sourceHeight;
+    v[6].tu = (destRect.x2 - destRect.x1) / destWidth;
+    v[6].tv = (sourceRect.y2 - sourceRect.y1) / sourceHeight;
 
     v[7].x = destRect.x1;
     v[7].y = destRect.y2;
     v[7].tu = 0;
-    v[7].tv = (sourceRect.y2 - sourceRect.y1) / m_sourceHeight;
+    v[7].tv = (sourceRect.y2 - sourceRect.y1) / sourceHeight;
 
     // -0.5 offset to compensate for D3D rasterization
     // set z and rhw
