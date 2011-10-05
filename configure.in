@@ -1612,6 +1612,8 @@ else
   final_message="$final_message\n  MID Support:\tNo"
 fi
 
+ORIGCC=$CC
+ORIGCXX=$CXX
 if test "x$use_ccache" != "xno"; then
   AC_PATH_PROG(CCACHE,ccache,none)
   if test "$ac_cv_path_CCACHE" = "none"; then
@@ -1622,8 +1624,6 @@ if test "x$use_ccache" != "xno"; then
       final_message="$final_message\n  ccache:\tNo"
     fi
   else
-    ORIGCC=$CC
-    ORIGCXX=$CXX
     CC="$ac_cv_path_CCACHE $CC"
     CXX="$ac_cv_path_CCACHE $CXX"
     AC_MSG_NOTICE(enabling ccache)
