@@ -265,24 +265,32 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
     m_active = NO;
     m_controlSysPower = NO;
     m_controlSysVolume = NO;
-    m_eventPort = CGEventTapCreate(kCGSessionEventTap,
-     kCGHeadInsertEventTap, kCGEventTapOptionDefault,
-     CGEventMaskBit(NX_SYSDEFINED), tapEventCallback, self);
-    if (m_eventPort == NULL)
+    
+    if (floor(NSAppKitVersionNumber) < 949)
     {
-      NSLog(@"Fatal Error: Event Tap could not be created");
-      return self;
+      // check runtime, we only allow this on 10.5+
+      m_eventPort = NULL;
     }
-
-    // Run this in a separate thread so that a slow app doesn't lag the event tap
-    [NSThread detachNewThreadSelector:@selector(eventTapThread) toTarget:self withObject:nil];
+    else
+    {
+      m_eventPort = CGEventTapCreate(kCGSessionEventTap,
+        kCGHeadInsertEventTap, kCGEventTapOptionDefault,
+        CGEventMaskBit(NX_SYSDEFINED), tapEventCallback, self);
+      if (m_eventPort != NULL)
+      {
+        // Run this in a separate thread so that a slow app
+        // doesn't lag the event tap
+        [NSThread detachNewThreadSelector:@selector(eventTapThread) toTarget:self withObject:nil];
+      }
+    }
   }
   return self;
 }
 
 - (void)dealloc
 {
-  CFRelease(m_eventPort);
+  if (m_eventPort)
+    CFRelease(m_eventPort);
   [super dealloc];
 }
 @end
