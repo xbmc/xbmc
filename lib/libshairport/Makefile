@@ -50,10 +50,11 @@ $(SO_NAME): $(SOURCE)
 
 install:
 	make -C $(SOURCE) install
+	ldconfig
 
 clean:
-	make -C $(SOURCE) clean
+	rm -rf $(SOURCE)
+	#make -C $(SOURCE) clean
 
 distclean::
 	rm -rf $(SOURCE)
-
