@@ -299,8 +299,9 @@ CVariant &CVariant::operator[](const std::string &key)
 
 const CVariant &CVariant::operator[](const std::string &key) const
 {
-  if (m_type == VariantTypeObject && isMember(key))
-    return m_map.at(key);
+  VariantMap::const_iterator it;
+  if (m_type == VariantTypeObject && (it = m_map.find(key)) != m_map.end())
+    return it->second;
   else
     return ConstNullVariant;
 }
