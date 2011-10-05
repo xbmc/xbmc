@@ -137,29 +137,30 @@ NSString* const MediaKeyPreviousNotification  = @"MediaKeyPreviousNotification";
 // and you WILL lose all key control :)
 static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGEventRef event, void *refcon)
 {
+  HotKeyController *hot_key_controller = (HotKeyController*)refcon;
+
   if (type == kCGEventTapDisabledByTimeout)
-    CGEventTapEnable([[HotKeyController sharedController] eventPort], TRUE);
+  {
+    CGEventTapEnable([hot_key_controller eventPort], TRUE);
+    return NULL;
+  }
   
-  if (![[HotKeyController sharedController] getActive] )
-    return event;
-    
-  if (type != NX_SYSDEFINED) 
+  if ((type != NX_SYSDEFINED) || (![hot_key_controller getActive]))
     return event;
 
-  // we get a warning on this when compiling under 10.4 SDK, ignore it.
+  // eventWithCGEvent does not exist under 10.4 SDK,
+  // but thanks to how objc works, it will resolve at runtime on 10.5+
+  // but we will get a compile warning, just ignore it.
   NSEvent *nsEvent = [NSEvent eventWithCGEvent:event];
-  
   if (!nsEvent || [nsEvent subtype] != 8) 
     return event;
     
   int data = [nsEvent data1];
-  int keyCode = (data & 0xFFFF0000) >> 16;
+  int keyCode  = (data & 0xFFFF0000) >> 16;
   int keyFlags = (data & 0xFFFF);
   int keyState = (keyFlags & 0xFF00) >> 8;
   BOOL keyIsRepeat = (keyFlags & 0x1) > 0;
   
-  //NSLog(@"%s keyCode %d", __PRETTY_FUNCTION__, keyCode);
-
   if (keyIsRepeat) 
     return event;
   
@@ -167,7 +168,7 @@ static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGE
   switch (keyCode)
   {
     case NX_POWER_KEY:
-      if ([[HotKeyController sharedController] controlPower])
+      if ([hot_key_controller controlPower])
       {
         if (keyState == NX_KEYSTATE_DOWN)
           [center postNotificationName:MediaKeyPower object:(HotKeyController *)refcon];
@@ -176,7 +177,7 @@ static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGE
       }
     break;
     case NX_KEYTYPE_MUTE:
-      if ([[HotKeyController sharedController] controlVolume])
+      if ([hot_key_controller controlVolume])
       {
         if (keyState == NX_KEYSTATE_DOWN)
           [center postNotificationName:MediaKeySoundMute object:(HotKeyController *)refcon];
@@ -185,7 +186,7 @@ static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGE
       }
     break;
     case NX_KEYTYPE_SOUND_UP:
-      if ([[HotKeyController sharedController] controlVolume])
+      if ([hot_key_controller controlVolume])
       {
         if (keyState == NX_KEYSTATE_DOWN)
           [center postNotificationName:MediaKeySoundUp object:(HotKeyController *)refcon];
@@ -194,7 +195,7 @@ static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGE
       }
     break;
     case NX_KEYTYPE_SOUND_DOWN:
-      if ([[HotKeyController sharedController] controlVolume])
+      if ([hot_key_controller controlVolume])
       {
         if (keyState == NX_KEYSTATE_DOWN)
           [center postNotificationName:MediaKeySoundDown object:(HotKeyController *)refcon];
@@ -251,6 +252,9 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 
   runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorSystemDefault, m_eventPort, 0);
   CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+  // Enable the event tap.
+  CGEventTapEnable(m_eventPort, TRUE);
+
   CFRunLoopRun();
 }
 
@@ -281,5 +285,4 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
   CFRelease(m_eventPort);
   [super dealloc];
 }
-
 @end
