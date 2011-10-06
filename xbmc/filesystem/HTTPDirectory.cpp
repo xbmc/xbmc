@@ -128,5 +128,15 @@ bool CHTTPDirectory::Exists(const char* strPath)
 {
   CFileCurl http;
   CURL url(strPath);
-  return http.Exists(url);
+  struct __stat64 buffer;
+
+  if( http.Stat(url, &buffer) != 0 )
+  {
+    return false;
+  }
+
+  if (buffer.st_mode == _S_IFDIR)
+	  return true;
+
+  return false;
 }
