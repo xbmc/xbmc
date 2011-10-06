@@ -30,7 +30,7 @@ public:
   CDirtyRegion(float left, float top, float right, float bottom) : CRect(left, top, right, bottom) { m_age = 0; }
   CDirtyRegion() : CRect() { m_age = 0; }
 
-  int UpdateAge() { return ++m_age; }
+  int UpdateAge() { return m_age++; }
 private:
   int m_age;
 };
