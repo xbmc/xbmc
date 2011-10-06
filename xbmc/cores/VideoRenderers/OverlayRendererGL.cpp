@@ -291,9 +291,6 @@ COverlayGlyphGL::COverlayGlyphGL(CDVDOverlaySSA* o, double pts)
   if(!convert_quad(o, pts, width, height, quads))
     return;
 
-  if (quads.count == 0)
-    return;
-
   glGenTextures(1, &m_texture);
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, m_texture);

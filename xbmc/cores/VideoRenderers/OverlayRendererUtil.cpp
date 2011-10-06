@@ -202,6 +202,9 @@ bool convert_quad(CDVDOverlaySSA* o, double pts, int width, int height, SQuads& 
     quads.count++;
   }
 
+  if (quads.count == 0)
+    return false;
+
   while(quads.size_x > (int)g_Windowing.GetMaxTextureSize())
     quads.size_x /= 2;
 
