@@ -53,8 +53,11 @@ public:
   void             SetCallbackWindow(void* state, void *object);
   void             WaitForActionEvent(unsigned int timeout);
   void             PulseActionEvent();
+  void             SetDestroyAfterDeinit(bool destroy = true);
 protected:
+  virtual void     OnDeinitWindow(int nextWindowID = 0);
   void* pCallbackWindow;
   void* m_threadState;
   CEvent           m_actionEvent;
+  bool             m_destroyAfterDeinit;
 };
