@@ -39,6 +39,15 @@ void CFillViewportAlwaysRegionSolver::Solve(const CDirtyRegionList &input, CDirt
   output.push_back(unifiedRegion);
 }
 
+void CFillViewportOnChangeRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
+{
+  if (input.size() > 0)
+  {
+    CDirtyRegion unifiedRegion(g_graphicsContext.GetViewWindow());
+    output.push_back(unifiedRegion);
+  }
+}
+
 CGreedyDirtyRegionSolver::CGreedyDirtyRegionSolver()
 {
   m_costNewRegion = 10.0f;

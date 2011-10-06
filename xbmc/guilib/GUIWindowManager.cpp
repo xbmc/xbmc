@@ -554,6 +554,14 @@ bool CGUIWindowManager::Render()
     RenderPass();
     hasRendered = true;
   }
+  else if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE)
+  {
+    if (dirtyRegions.size() > 0)
+    {
+      RenderPass();
+      hasRendered = true;
+    }
+  }
   else
   {
     for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
