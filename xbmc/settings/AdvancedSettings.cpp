@@ -144,8 +144,8 @@ void CAdvancedSettings::Initialize()
   m_videoCleanStringRegExps.push_back("(\\[.*\\])");
 
   m_moviesExcludeFromScanRegExps.push_back("-trailer");
-  m_moviesExcludeFromScanRegExps.push_back("[-._ \\\\/]sample[-._ \\\\/]");
-  m_tvshowExcludeFromScanRegExps.push_back("[-._ \\\\/]sample[-._ \\\\/]");
+  m_moviesExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
+  m_tvshowExcludeFromScanRegExps.push_back("[!-._ \\\\/]sample[-._ \\\\/]");
 
   m_folderStackRegExps.push_back("((cd|dvd|dis[ck])[0-9]+)$");
 
