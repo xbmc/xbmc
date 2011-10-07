@@ -318,18 +318,20 @@ bool CAirTunesServer::Initialize(const CStdString &password)
   int numArgs = 3;
   CStdString hwStr;
   CStdString pwStr;
+  CStdString portStr;
 
   Deinitialize();
 
   hwStr.Format("--mac=%s", m_macAddress.c_str());
   pwStr.Format("--password=%s",password.c_str());
+  portStr.Format("--server_port=%d",m_port);
 
   if (!password.empty())
   {
     numArgs++;
   }
 
-  char *argv[] = { "--apname=XBMC", "--server_port=5000", (char*) hwStr.c_str(), (char *)pwStr.c_str(), NULL };
+  char *argv[] = { "--apname=XBMC", (char*) portStr.c_str(), (char*) hwStr.c_str(), (char *)pwStr.c_str(), NULL };
 
   if (m_pLibShairport->Load())
   {

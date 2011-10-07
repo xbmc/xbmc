@@ -154,8 +154,12 @@ class CAdvancedSettings
     int m_busyDialogDelay;
     int m_logLevel;
     int m_logLevelHint;
-    bool m_logEnableAirtunes;//airtunes spams alot - so make it an option
     CStdString m_cddbAddress;
+    
+    //airtunes + airplay
+    bool m_logEnableAirtunes;
+    int m_airTunesPort;
+    int m_airPlayPort;    
 
     bool m_handleMounting;
 

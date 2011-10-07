@@ -1291,10 +1291,11 @@ void CApplication::StartAirplayServer()
 #ifdef HAS_AIRPLAY
   if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
   {
+    int listenPort = g_advancedSettings.m_airPlayPort;
     CStdString password = g_guiSettings.GetString("services.airplaypassword");
     bool usePassword = g_guiSettings.GetBool("services.useairplaypassword");
     
-    if (CAirPlayServer::StartServer(9091, true))
+    if (CAirPlayServer::StartServer(listenPort, true))
     {
       CAirPlayServer::SetCredentials(usePassword, password);
       std::map<std::string, std::string> txt;
@@ -1302,17 +1303,18 @@ void CApplication::StartAirplayServer()
       txt["features"] = "0x77";
       txt["model"] = "AppleTV2,1";
       txt["srcvers"] = "101.28";
-      CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", "XBMC", 9091, txt);
+      CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", "XBMC", listenPort, txt);
     }
   }
 #endif
 #ifdef HAS_AIRTUNES
   if (g_guiSettings.GetBool("services.airplay") && m_network.IsAvailable())
   {   
+    int listenPort = g_advancedSettings.m_airTunesPort;  
     CStdString password = g_guiSettings.GetString("services.airplaypassword");
     bool usePassword = g_guiSettings.GetBool("services.useairplaypassword");
       
-    if (!CAirTunesServer::StartServer(5000, true, usePassword, password))
+    if (!CAirTunesServer::StartServer(listenPort, true, usePassword, password))
     {
       CLog::Log(LOGERROR, "Failed to start AirTunes Server");
     }
