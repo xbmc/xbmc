@@ -705,7 +705,7 @@ void CGUISettings::Initialize()
 
   AddDefaultAddon(NULL, "scrapers.moviesdefault", 21413, "metadata.themoviedb.org", ADDON_SCRAPER_MOVIES);
   AddDefaultAddon(NULL, "scrapers.tvshowsdefault", 21414, "metadata.tvdb.com", ADDON_SCRAPER_TVSHOWS);
-  AddDefaultAddon(NULL, "scrapers.musicvideosdefault", 21415, "metadata.mtv.com", ADDON_SCRAPER_MUSICVIDEOS);
+  AddDefaultAddon(NULL, "scrapers.musicvideosdefault", 21415, "metadata.yahoomusic.com", ADDON_SCRAPER_MUSICVIDEOS);
   AddBool(NULL, "scrapers.langfallback", 21416, false);
 
   // network settings
