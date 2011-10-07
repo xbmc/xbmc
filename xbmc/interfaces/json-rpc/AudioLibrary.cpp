@@ -244,20 +244,13 @@ JSON_STATUS CAudioLibrary::Scan(const CStdString &method, ITransportLayer *trans
 
 JSON_STATUS CAudioLibrary::Export(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CStdString path = parameterObject["path"].asString();
-  bool singleFile = parameterObject["singlefile"].asBoolean();
-
-  if (!singleFile && path.IsEmpty())
-    return InvalidParams;
-
   CStdString cmd;
-  if (singleFile)
-    cmd.Format("exportlibrary(music, true, %s, %s, %s)",
-      parameterObject["images"].asBoolean() ? "true" : "false",
-      parameterObject["overwrite"].asBoolean() ? "true" : "false",
-      parameterObject["actorthumbs"].asBoolean() ? "true" : "false");
+  if (parameterObject["options"].isMember("path"))
+    cmd.Format("exportlibrary(music, false, %s)", parameterObject["options"]["path"].asString());
   else
-    cmd.Format("exportlibrary(music, false, %s)", path);
+    cmd.Format("exportlibrary(music, true, %s, %s)",
+      parameterObject["options"]["images"].asBoolean() ? "true" : "false",
+      parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false");
 
   g_application.getApplicationMessenger().ExecBuiltIn(cmd);
   return ACK;
