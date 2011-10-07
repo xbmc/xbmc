@@ -54,7 +54,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\;..\..\lib\jsoncpp\include;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\lib\curl-7.21.4\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;_WINSOCKAPI_;TSREADER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TARGET_WINDOWS;_WIN32;_DEBUG;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;_WINSOCKAPI_;TSREADER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -65,7 +65,7 @@
       <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libcurld.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcurld.lib;$(SolutionDir)\..\..\lib\libPlatform\pthread_win32\pthreadVC2.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>..\..\..\..\..\addons\pvr.fortherecord.argus\XBMC_ForTheRecord_win32.pvr</OutputFile>
       <AdditionalLibraryDirectories>..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
@@ -87,7 +87,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\;..\..\lib\jsoncpp\include;..\..\..\MediaPortal;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\lib\curl-7.21.4\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN32;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;_WINSOCKAPI_;TSREADER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>TARGET_WINDOWS;_WIN32;_WINDOWS;_WIN32PC;_USE_32BIT_TIME_T;_WINSOCKAPI_;TSREADER;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
