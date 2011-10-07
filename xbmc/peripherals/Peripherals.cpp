@@ -204,79 +204,74 @@ bool CPeripherals::HasPeripheralWithFeature(const PeripheralFeature feature, Per
 
 CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const PeripheralType type, const CStdString &strLocation, int iVendorId /* = 0 */, int iProductId /* = 0 */)
 {
-  CPeripheral *peripheral = GetPeripheralAtLocation(strLocation, bus.Type());
-
-  /* only create a new device instances if there's no device at the given location */
-  if (!peripheral)
+  CPeripheral *peripheral = NULL;
+  /* check whether there's something mapped in peripherals.xml */
+  PeripheralType mappedType = type;
+  CStdString strDeviceName;
+  int iMappingPtr = GetMappingForDevice(bus, type, iVendorId, iProductId);
+  bool bHasMapping(iMappingPtr >= 0);
+  if (bHasMapping)
   {
-    /* check whether there's something mapped in peripherals.xml */
-    PeripheralType mappedType = type;
-    CStdString strDeviceName;
-    int iMappingPtr = GetMappingForDevice(bus, type, iVendorId, iProductId);
-    bool bHasMapping(iMappingPtr >= 0);
-    if (bHasMapping)
+    mappedType    = m_mappings[iMappingPtr].m_mappedTo;
+    strDeviceName = m_mappings[iMappingPtr].m_strDeviceName;
+  }
+  else
+  {
+    /* don't create instances for devices that aren't mapped in peripherals.xml */
+    return NULL;
+  }
+
+  switch(mappedType)
+  {
+  case PERIPHERAL_HID:
+    peripheral = new CPeripheralHID(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    break;
+
+  case PERIPHERAL_NIC:
+    peripheral = new CPeripheralNIC(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    break;
+
+  case PERIPHERAL_DISK:
+    peripheral = new CPeripheralDisk(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    break;
+
+  case PERIPHERAL_NYXBOARD:
+    peripheral = new CPeripheralNyxboard(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    break;
+
+  case PERIPHERAL_TUNER:
+    peripheral = new CPeripheralTuner(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    break;
+
+  case PERIPHERAL_BLUETOOTH:
+    peripheral = new CPeripheralBluetooth(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    break;
+
+#if defined(HAVE_LIBCEC) || defined(__WIN32__)
+  case PERIPHERAL_CEC:
+    peripheral = new CPeripheralCecAdapter(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
+    break;
+#endif
+
+  default:
+    break;
+  }
+
+  if (peripheral)
+  {
+    /* try to initialise the new peripheral
+     * Initialise() will make sure that each device is only initialised once */
+    if (peripheral->Initialise())
     {
-      mappedType    = m_mappings[iMappingPtr].m_mappedTo;
-      strDeviceName = m_mappings[iMappingPtr].m_strDeviceName;
+      if (!bHasMapping)
+        peripheral->SetHidden(true);
+      bus.Register(peripheral);
     }
     else
     {
-      /* don't create instances for devices that aren't mapped in peripherals.xml */
-      return NULL;
-    }
-
-    switch(mappedType)
-    {
-    case PERIPHERAL_HID:
-      peripheral = new CPeripheralHID(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
-      break;
-
-    case PERIPHERAL_NIC:
-      peripheral = new CPeripheralNIC(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
-      break;
-
-    case PERIPHERAL_DISK:
-      peripheral = new CPeripheralDisk(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
-      break;
-
-    case PERIPHERAL_NYXBOARD:
-      peripheral = new CPeripheralNyxboard(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
-      break;
-
-    case PERIPHERAL_TUNER:
-      peripheral = new CPeripheralTuner(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
-      break;
-
-    case PERIPHERAL_BLUETOOTH:
-      peripheral = new CPeripheralBluetooth(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
-      break;
-
-#if defined(HAVE_LIBCEC) || defined(__WIN32__)
-    case PERIPHERAL_CEC:
-      peripheral = new CPeripheralCecAdapter(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
-      break;
-#endif
-
-    default:
-      break;
-    }
-
-    if (peripheral)
-    {
-      /* try to initialise the new peripheral
-       * Initialise() will make sure that each device is only initialised once */
-      if (peripheral->Initialise())
-      {
-        if (!bHasMapping)
-          peripheral->SetHidden(true);
-        bus.Register(peripheral);
-      }
-      else
-      {
-        CLog::Log(LOGDEBUG, "%s - failed to initialise peripheral on '%s'", __FUNCTION__, strLocation.c_str());
-        delete peripheral;
-        peripheral = NULL;
-      }
+      CLog::Log(LOGDEBUG, "%s - failed to initialise peripheral on '%s'", __FUNCTION__, strLocation.c_str());
+      delete peripheral;
+      peripheral = NULL;
     }
   }
 
