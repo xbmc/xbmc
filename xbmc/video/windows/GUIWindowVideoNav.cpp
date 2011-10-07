@@ -1069,7 +1069,11 @@ void CGUIWindowVideoNav::GetContextButtons(int itemNumber, CContextButtons &butt
           if (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning()))
           {
             if (info && info->Content() != CONTENT_NONE)
+            {
               buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20442);
+              if (info && (!pScanDlg || (pScanDlg && !pScanDlg->IsScanning())))
+                buttons.Add(CONTEXT_BUTTON_SCAN, 13349);
+            }
             else
               buttons.Add(CONTEXT_BUTTON_SET_CONTENT, 20333);
           }
@@ -1315,7 +1319,7 @@ bool CGUIWindowVideoNav::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     }
   case CONTEXT_BUTTON_UPDATE_LIBRARY:
     {
-      OnScan("");
+      OnScan("",true);
       return true;
     }
   case CONTEXT_BUTTON_UNLINK_MOVIE:
