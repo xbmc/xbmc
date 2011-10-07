@@ -645,7 +645,7 @@ bool CFileAFP::OpenForWrite(const CURL& url, bool bOverWrite)
   if (bOverWrite)
   {
     CLog::Log(LOGWARNING, "FileAFP::OpenForWrite() called with overwriting enabled! - %s", strPath.c_str());
-    ret = gAfpConnection.GetImpl()->afp_wrap_creat(gAfpConnection.GetVolume(), strPath.c_str(), 0);
+    ret = gAfpConnection.GetImpl()->afp_wrap_creat(gAfpConnection.GetVolume(), strPath.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
   }
 
   ret = gAfpConnection.GetImpl()->afp_wrap_open(gAfpConnection.GetVolume(), strPath.c_str(), O_RDWR, &m_pFp);
