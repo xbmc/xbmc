@@ -1446,7 +1446,6 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ReadData\","
       "\"params\": ["
-        "{ \"name\": \"albums\", \"$ref\": \"List.Amount\" },"
         "{ \"name\": \"properties\", \"$ref\": \"Audio.Fields.Album\" },"
         "{ \"name\": \"limits\", \"$ref\": \"List.Limits\" },"
         "{ \"name\": \"sort\", \"$ref\": \"List.Sort\" }"

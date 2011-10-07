@@ -176,12 +176,8 @@ JSON_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const CStdString &method, ITra
   if (!musicdatabase.Open())
     return InternalError;
 
-  int amount = (int)parameterObject["albums"].asInteger();
-  if (amount < 0)
-    amount = 0;
-
   VECALBUMS albums;
-  if (musicdatabase.GetRecentlyAddedAlbums(albums, (unsigned int)amount))
+  if (musicdatabase.GetRecentlyAddedAlbums(albums))
   {
     CFileItemList items;
 
