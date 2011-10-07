@@ -20,7 +20,16 @@
 #ifdef TSREADER
 
 #include "libPlatform/os-dependent.h"
+#if defined(TARGET_WINDOWS)
 typedef HANDLE wait_event_t;
+#else
+typedef sem_t wait_event_t;
+typedef struct _SECURITY_ATTRIBUTES {
+    unsigned long  nLength;
+    void*          lpSecurityDescriptor;
+    int            bInheritHandle;
+} SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
+#endif
 //#include "os-dependent.h"
 
 class CWaitEvent

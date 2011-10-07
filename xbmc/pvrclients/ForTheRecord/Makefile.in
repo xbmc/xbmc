@@ -32,6 +32,8 @@ include ../Makefile.include
 
 INCLUDES += -Ilib/jsoncpp/include/
 
+CXXFLAGS += -DTSREADER
+
 clean:
 	-rm -f $(OBJS) $(LIB) *.P *~
 
