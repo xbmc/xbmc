@@ -1466,7 +1466,7 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ReadData\","
       "\"params\": ["
-        "{ \"name\": \"albums\", \"$ref\": \"List.Amount\", \"description\": \"The amount of recently added albums from which to return the songs\" },"
+        "{ \"name\": \"albumlimit\", \"$ref\": \"List.Amount\", \"description\": \"The amount of recently added albums from which to return the songs\" },"
         "{ \"name\": \"properties\", \"$ref\": \"Audio.Fields.Song\" },"
         "{ \"name\": \"limits\", \"$ref\": \"List.Limits\" },"
         "{ \"name\": \"sort\", \"$ref\": \"List.Sort\" }"

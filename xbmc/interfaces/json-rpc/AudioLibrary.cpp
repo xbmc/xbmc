@@ -204,7 +204,7 @@ JSON_STATUS CAudioLibrary::GetRecentlyAddedSongs(const CStdString &method, ITran
   if (!musicdatabase.Open())
     return InternalError;
 
-  int amount = (int)parameterObject["albums"].asInteger();
+  int amount = (int)parameterObject["albumlimit"].asInteger();
   if (amount < 0)
     amount = 0;
 
