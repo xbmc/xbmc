@@ -1652,6 +1652,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   if (info >= LISTITEM_START && info <= LISTITEM_END)
     return GetItemInt(value, item, info);
 
+  value = 0;
   switch( info )
   {
     case PLAYER_VOLUME:
@@ -1731,7 +1732,6 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
       value = g_powerManager.BatteryLevel();
       return true;
   }
-  value = 0;
   return false;
 }
 
