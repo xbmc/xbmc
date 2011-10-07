@@ -179,7 +179,7 @@ MediaLibrary.prototype = {
 				case 'volumeup':
         jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume" ] }, "id": 1}', function(data){
 						var volume = data.result.volume + 1;
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "value": '+volume+' }, "id": 1}', function(data){
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": '+volume+' }, "id": 1}', function(data){
 					
 						$('#spinner').hide();
 			  			 }, 'json');
@@ -188,7 +188,7 @@ MediaLibrary.prototype = {
 				case 'volumedown':
 					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume" ] }, "id": 1}', function(data){
 						var volume = data.result.volume - 1;
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "value": '+volume+' }, "id": 1}', function(data){
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": '+volume+' }, "id": 1}', function(data){
 					
 						$('#spinner').hide();
 			  			 }, 'json');

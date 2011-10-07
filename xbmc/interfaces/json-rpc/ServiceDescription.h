@@ -1955,7 +1955,7 @@ namespace JSONRPC
       "\"transport\": \"Response\","
       "\"permission\": \"ControlPlayback\","
       "\"params\": ["
-        "{ \"name\": \"value\", \"type\": \"integer\", \"minimum\": 0, \"maximum\": 100, \"required\": true }"
+        "{ \"name\": \"volume\", \"type\": \"integer\", \"minimum\": 0, \"maximum\": 100, \"required\": true }"
       "],"
       "\"returns\": \"integer\""
     "}",

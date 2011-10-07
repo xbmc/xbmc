@@ -52,7 +52,7 @@ JSON_STATUS CApplicationOperations::GetProperties(const CStdString &method, ITra
 JSON_STATUS CApplicationOperations::SetVolume(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   int oldVolume = g_application.GetVolume();
-  int volume = (int)parameterObject["value"].asInteger();
+  int volume = (int)parameterObject["volume"].asInteger();
   
   g_application.SetVolume(volume);
 
