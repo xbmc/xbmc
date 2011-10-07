@@ -183,7 +183,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // Application operations
   { "Application.GetProperties",                    CApplicationOperations::GetProperties },
   { "Application.SetVolume",                        CApplicationOperations::SetVolume },
-  { "Application.ToggleMute",                       CApplicationOperations::ToggleMute },
+  { "Application.SetMute",                          CApplicationOperations::SetMute },
   { "Application.Quit",                             CApplicationOperations::Quit },
 
 // XBMC operations
