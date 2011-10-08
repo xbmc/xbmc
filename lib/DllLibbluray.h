@@ -68,6 +68,7 @@ public:
   virtual void     bd_set_debug_mask(uint32_t mask)=0;
   virtual uint32_t bd_get_debug_mask(void)=0;
 #endif
+  virtual const BLURAY_DISC_INFO *bd_get_disc_info(BLURAY *bd)=0;
 };
 
 class DllLibbluray : public DllDynamic, DllLibblurayInterface
@@ -109,6 +110,7 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
   DEFINE_METHOD1(void,                bd_set_debug_mask,      (uint32_t p1))
   DEFINE_METHOD0(uint32_t,            bd_get_debug_mask)
 #endif
+  DEFINE_METHOD1(const BLURAY_DISC_INFO*, bd_get_disc_info,      (BLURAY *p1))
 
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(bd_get_titles)
@@ -140,6 +142,7 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD(bd_set_debug_mask)
     RESOLVE_METHOD(bd_get_debug_mask)
 #endif
+    RESOLVE_METHOD(bd_get_disc_info)
   END_METHOD_RESOLVE()
 
 #ifdef HAVE_LIBBBLURAY_HAVE_LIBBLURAY_NOANGLE

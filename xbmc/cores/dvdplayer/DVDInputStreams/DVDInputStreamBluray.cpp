@@ -315,6 +315,46 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
     return false;
   }
 
+  const BLURAY_DISC_INFO *disc_info;
+
+  disc_info = m_dll->bd_get_disc_info(m_bd);
+
+  if (!disc_info)
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - bd_get_disc_info() failed");
+    return false;
+  }
+
+  if (disc_info->bluray_detected)
+  {
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - First Play supported: %d", disc_info->first_play_supported);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - Top menu supported  : %d", disc_info->top_menu_supported);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - HDMV titles         : %d", disc_info->num_hdmv_titles);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - BD-J titles         : %d", disc_info->num_bdj_titles);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - UNSUPPORTED titles  : %d", disc_info->num_unsupported_titles);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - AACS detected       : %d", disc_info->aacs_detected);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - libaacs detected    : %d", disc_info->libaacs_detected);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - AACS handled        : %d", disc_info->aacs_handled);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - BD+ detected        : %d", disc_info->bdplus_detected);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - libbdplus detected  : %d", disc_info->libbdplus_detected);
+    CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - BD+ handled         : %d", disc_info->bdplus_handled);
+  }
+  else
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - BluRay not detected");
+
+  if (disc_info->aacs_detected && !disc_info->aacs_handled)
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - Media stream scrambled/encrypted with AACS");
+    return false;
+  }
+
+  if (disc_info->bdplus_detected && !disc_info->bdplus_handled)
+  {
+    CLog::Log(LOGERROR, "CDVDInputStreamBluray::Open - Media stream scrambled/encrypted with BD+");
+    return false;
+  }
+
+
   CStdString filename = URIUtils::GetFileName(strFile);
   if(filename.Equals("index.bdmv"))
   {
