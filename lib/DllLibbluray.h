@@ -30,6 +30,8 @@ extern "C"
 #include <libbluray/bluray.h>
 #include <libbluray/filesystem.h>
 #include <libbluray/log_control.h>
+#include <libbluray/keys.h>
+#include <libbluray/overlay.h>
 }
 
 class DllLibblurayInterface
@@ -65,6 +67,16 @@ public:
   virtual void     bd_set_debug_mask(uint32_t mask)=0;
   virtual uint32_t bd_get_debug_mask(void)=0;
   virtual const BLURAY_DISC_INFO *bd_get_disc_info(BLURAY *bd)=0;
+
+  virtual int      bd_get_event                 (BLURAY *bd, BD_EVENT *event)=0;
+  virtual int      bd_play                      (BLURAY *bd)=0;
+  virtual int      bd_read_ext                  (BLURAY *bd, unsigned char *buf, int len, BD_EVENT *event)=0;
+  virtual int      bd_read_skip_still           (BLURAY *bd)=0;
+  virtual int      bd_user_input                (BLURAY *bd, int64_t pts, uint32_t key)=0;
+  virtual int      bd_set_player_setting        (BLURAY *bd, uint32_t idx, uint32_t value)=0;
+  virtual int      bd_set_player_setting_str    (BLURAY *bd, uint32_t idx, const char *s)=0;
+  virtual void     bd_register_overlay_proc     (BLURAY *bd, void *handle, bd_overlay_proc_f func)=0;
+  virtual int      bd_menu_call                 (BLURAY *bd, int64_t pts)=0;
 };
 
 class DllLibbluray : public DllDynamic, DllLibblurayInterface
@@ -100,6 +112,16 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
   DEFINE_METHOD0(uint32_t,            bd_get_debug_mask)
   DEFINE_METHOD1(const BLURAY_DISC_INFO*, bd_get_disc_info,      (BLURAY *p1))
 
+  DEFINE_METHOD2(int,                 bd_get_event,              (BLURAY *p1, BD_EVENT *p2))
+  DEFINE_METHOD1(int,                 bd_play,                   (BLURAY *p1))
+  DEFINE_METHOD4(int,                 bd_read_ext,               (BLURAY *p1, unsigned char *p2, int p3, BD_EVENT *p4))
+  DEFINE_METHOD1(int,                 bd_read_skip_still,        (BLURAY *p1))
+  DEFINE_METHOD3(int,                 bd_user_input,             (BLURAY *p1, int64_t p2, uint32_t p3))
+  DEFINE_METHOD3(int,                 bd_set_player_setting,     (BLURAY *p1, uint32_t p2, uint32_t p3))
+  DEFINE_METHOD3(int,                 bd_set_player_setting_str, (BLURAY *p1, uint32_t p2, const char *p3))
+  DEFINE_METHOD3(void,                bd_register_overlay_proc,  (BLURAY *p1, void *p2, bd_overlay_proc_f p3))
+  DEFINE_METHOD2(int,                 bd_menu_call,              (BLURAY *p1, int64_t p2))
+
   BEGIN_METHOD_RESOLVE()
     RESOLVE_METHOD(bd_get_titles)
     RESOLVE_METHOD(bd_get_title_info)
@@ -129,6 +151,16 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD(bd_set_debug_mask)
     RESOLVE_METHOD(bd_get_debug_mask)
     RESOLVE_METHOD(bd_get_disc_info)
+
+    RESOLVE_METHOD(bd_get_event)
+    RESOLVE_METHOD(bd_play)
+    RESOLVE_METHOD(bd_read_ext)
+    RESOLVE_METHOD(bd_read_skip_still)
+    RESOLVE_METHOD(bd_user_input)
+    RESOLVE_METHOD(bd_set_player_setting)
+    RESOLVE_METHOD(bd_set_player_setting_str)
+    RESOLVE_METHOD(bd_register_overlay_proc)
+    RESOLVE_METHOD(bd_menu_call)
   END_METHOD_RESOLVE()
 
 public:

@@ -855,7 +855,8 @@ bool CDVDPlayer::IsBetterStream(CCurrentStream& current, CDemuxStream* stream)
   if(m_PlayerOptions.video_only && current.type != STREAM_VIDEO)
     return false;
 
-  if (m_pInputStream && m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
+  if (m_pInputStream && ( m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD)
+                       || m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY) ) )
   {
     int source_type;
 
@@ -3064,6 +3065,22 @@ void CDVDPlayer::FlushBuffers(bool queued, double pts, bool accurate)
 // since we call ffmpeg functions to decode, this is being called in the same thread as ::Process() is
 int CDVDPlayer::OnDVDNavResult(void* pData, int iMessage)
 {
+  if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_BLURAY))
+  {
+    if(iMessage == 0)
+      m_overlayContainer.Add((CDVDOverlay*)pData);
+    else if(iMessage == 1)
+      m_messenger.Put(new CDVDMsg(CDVDMsg::GENERAL_FLUSH));
+    else if(iMessage == 2)
+      m_dvd.iSelectedAudioStream = *(int*)pData;
+    else if(iMessage == 3)
+      m_dvd.iSelectedSPUStream   = *(int*)pData;
+    else if(iMessage == 4)
+      m_dvdPlayerVideo.EnableSubtitle(*(int*)pData ? true: false);
+
+    return 0;
+  }
+
   if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_DVD))
   {
     CDVDInputStreamNavigator* pStream = (CDVDInputStreamNavigator*)m_pInputStream;
