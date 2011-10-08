@@ -1195,6 +1195,17 @@ lib/cmyth/Makefile
 /xbmc/visualizations/Goom/Makefile
 /xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
 /xbmc/visualizations/Goom/goom2k4-0/configure
+/xbmc/visualizations/Goom/goom2k4-0/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/config.guess
+/xbmc/visualizations/Goom/goom2k4-0/config.sub
+/xbmc/visualizations/Goom/goom2k4-0/depcomp
+/xbmc/visualizations/Goom/goom2k4-0/install-sh
+/xbmc/visualizations/Goom/goom2k4-0/ltmain.sh
+/xbmc/visualizations/Goom/goom2k4-0/missing
+/xbmc/visualizations/Goom/goom2k4-0/sdl-goom/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/src/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/xmms-goom/Makefile.in
+/xbmc/visualizations/Goom/goom2k4-0/ylwrap
 
 /xbmc/visualizations/Milkdrop/Debug
 /xbmc/visualizations/Milkdrop/Release
