@@ -65,12 +65,14 @@ public:
   bool             inited;
   bool             started; // has the player started
   const StreamType type;
+  const int        player;
   // stuff to handle starting after seek
   double   startpts;
   CDVDMsg* startsync;
 
-  CCurrentStream(StreamType t)
+  CCurrentStream(StreamType t, int i)
     : type(t)
+    , player(i)
   {
     startsync = NULL;
     Clear();
