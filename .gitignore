@@ -1193,6 +1193,8 @@ lib/cmyth/Makefile
 /xbmc/visualizations/DirectXSpectrum/Release (DirectX)
 
 /xbmc/visualizations/Goom/Makefile
+/xbmc/visualizations/Goom/goom2k4-0/aclocal.m4
+/xbmc/visualizations/Goom/goom2k4-0/configure
 
 /xbmc/visualizations/Milkdrop/Debug
 /xbmc/visualizations/Milkdrop/Release
