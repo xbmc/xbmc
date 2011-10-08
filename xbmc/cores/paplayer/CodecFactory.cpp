@@ -55,6 +55,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new DVDPlayerCodec();
   else if (strFileType.Equals("shn"))
     return new DVDPlayerCodec();
+  else if (strFileType.Equals("mka"))
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("flac"))
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
