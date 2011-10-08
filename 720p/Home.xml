@@ -785,11 +785,11 @@
 									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 								</control>
 								<control type="image">
-									<posx>35</posx>
+									<posx>36</posx>
 									<posy>158</posy>
-									<width>120</width>
+									<width>118</width>
 									<height>27</height>
-									<texture border="10">whitewiderounded.png</texture>
+									<texture border="10">whitewideroundedtflat.png</texture>
 									<colordiffuse>FF222222</colordiffuse>
 									<animation effect="fade" start="0" end="95" time="400" condition="true">Conditional</animation>
 								</control>
@@ -1183,11 +1183,11 @@
 									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 								</control>
 								<control type="image">
-									<posx>35</posx>
+									<posx>36</posx>
 									<posy>158</posy>
-									<width>120</width>
+									<width>118</width>
 									<height>27</height>
-									<texture border="10">whitewiderounded.png</texture>
+									<texture border="10">whitewideroundedtflat.png</texture>
 									<colordiffuse>FF222222</colordiffuse>
 									<animation effect="fade" start="0" end="95" time="400" condition="true">Conditional</animation>
 								</control>
@@ -1241,11 +1241,11 @@
 									<animation effect="fade" start="50" end="0" time="300" condition="true">Hidden</animation>
 								</control>
 								<control type="image">
-									<posx>35</posx>
+									<posx>36</posx>
 									<posy>158</posy>
-									<width>120</width>
+									<width>118</width>
 									<height>27</height>
-									<texture border="10">whitewiderounded.png</texture>
+									<texture border="10">whitewideroundedtflat.png</texture>
 									<colordiffuse>FF222222</colordiffuse>
 									<animation effect="fade" start="0" end="95" time="400" condition="true">Conditional</animation>
 								</control>
