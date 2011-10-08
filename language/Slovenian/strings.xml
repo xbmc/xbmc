@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Tadej Novak-->
 <!--Email: tadej@tano.si-->
-<!--Date of translation: 20/08/2011-->
+<!--Date of translation: 08/10/2011-->
 <!--$Revision$-->
 <strings>
   <string id="0">Programi</string>
@@ -808,6 +808,10 @@
 
   <string id="1260">Oznani storitve drugim sistemom preko Zeroconf</string>
 
+  <string id="1270">Dovoli XBMC sprejemanje vsebin AirPlay</string>
+  <string id="1271">Ime naprave</string>
+  <string id="1272">- Zaščiti z geslom</string>
+
   <string id="1300">Poljubna zvočna naprava</string>
   <string id="1301">Poljubna naprava za preusmeritev zvoka</string>
 
@@ -1476,7 +1480,7 @@
   <string id="16020">Razpletanje</string>
   <string id="16021">Bob</string>
   <string id="16022">Bob (obrnjeno)</string>
-  <string id="16023">Uporaba prepletanja</string>
+  <string id="16023"></string>
   <string id="16024">Preklic...</string>
   <string id="16025">Vnesite ime izvajalca</string>
   <string id="16026">Predvajanje ni uspelo</string>
@@ -1490,6 +1494,11 @@
   <string id="16034">Ne morem pridobiti pesmi iz baze</string>
   <string id="16035">Predvajalni seznam zabavnega načina</string>
   <string id="16036">Razpletanje (Polovično)</string>
+  <string id="16037">Uporabi razpletanje videa</string>
+  <string id="16038">Metoda razpletanja</string>
+  <string id="16039">Izključeno</string>
+  <string id="16040">Avtomatsko</string>
+  <string id="16041">Vključeno</string>
 
   <string id="16100">Vsi posnetki</string>
   <string id="16101">Nepogledani</string>
@@ -1518,14 +1527,19 @@
   <string id="16309">Sinc (programsko)</string>
   <string id="16310">Temporal</string>
   <string id="16311">Temporal/Spatial</string>
-  <string id="16312">(VDPAU)Zmanjševanje šuma</string>
-  <string id="16313">(VDPAU)Ostrenje</string>
+  <string id="16312">(VDPAU) Zmanjševanje šuma</string>
+  <string id="16313">(VDPAU) Ostrenje</string>
   <string id="16314">Inverse Telecine</string>
   <string id="16315">Lanczos3 optimalno</string>
   <string id="16316">Samodejno</string>
-  <string id="16317">Temporal (Half)</string>
-  <string id="16318">Temporal/Spatial (Half)</string>
+  <string id="16317">Temporal (Polovično)</string>
+  <string id="16318">Temporal/Spatial (Polovično)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimized</string>
+  <string id="16324">Programski Blend</string>
 
   <string id="16400">Post-procesiranje</string>
 
@@ -1738,6 +1752,7 @@
   <string id="20258">MythTV odjemalec</string>
   <string id="20259">Omrežni datotečni sistem (NFS)</string>
   <string id="20260">Varna lupina (SSH/SFTP)</string>
+  <string id="20261">Apple Filing protokol (AFP)</string>
 
   <string id="20300">Mapa spletnega strežnika (HTTP)</string>
   <string id="20301">Mapa spletnega strežnika (HTTPS)</string>
@@ -1890,6 +1905,7 @@
   <string id="20454">Listener</string>
   <string id="20455">Listeners</string>
   <string id="20456">Nastavi ozadje filmske zbirke</string>
+  <string id="20457">Filmska zbirka</string>
   <!-- up to 21329 is reserved for the video db !! !-->
 
   <string id="21330">Prikaži skrite datoteke in mape</string>
@@ -1996,6 +2012,13 @@
   <string id="21451">Potrebna je internetna povezava.</string>
   <string id="21452">Prenesi več...</string>
   <string id="21453">Korenski datotečni sistem</string>
+
+  <string id="21460">Položaj podnapisov</string>
+  <string id="21461">Fiksno</string>
+  <string id="21462">Dno videa</string>
+  <string id="21463">Pod videom</string>
+  <string id="21464">Vrh videa</string>
+  <string id="21465">Nad videom</string>
 
   <string id="21800">Ime datoteke</string>
   <string id="21801">Pot datoteke</string>
@@ -2207,6 +2230,7 @@
   <string id="24073">Ni se mogoče povezati</string>
   <string id="24074">Potrebuje ponoven zagon</string>
   <string id="24075">Onemogoči</string>
+  <string id="24076">Zahtevan dodatek</string>
   <string id="24080">Poskusim ponovno povezati?</string>
   <string id="24089">Ponovni zagoni dodatkov</string>
   <string id="24090">Zakleni upravljalnik z dodatki</string>
@@ -2217,6 +2241,8 @@
   <string id="24097">Ga želite onemogočiti na vašem sistemu?</string>
   <string id="24098">Nedelujoč</string>
   <string id="24099">Želite preklopiti na to preobleko?</string>
+  <string id="24100">Za uporabo te funkcije potrebujete dodatek:</string>
+  <string id="24101">Želite prenesti ta dodatek?</string>
   <string id="25000">Obvestila</string>
 
   <!-- strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code -->
@@ -2329,4 +2355,37 @@
 
   <string id="34201">Ni mogoče najti naslednjega predmeta za predvajanje</string>
   <string id="34202">Ni mogoče najti prejšnjega predmeta za predvajanje</string>
+
+  <string id="35000">Naprave</string>
+
+  <string id="35001">Generična naprava HID</string>
+  <string id="35002">Generični omrežni vmesnik</string>
+  <string id="35003">Generični disk</string>
+  <string id="35004">Za to napravo ni na voljo nobenih dodatnih nastavitev.</string>
+  <string id="35005">Dodana nova naprava</string>
+  <string id="35006">Odstranjena naprava</string>
+  <string id="35007">Bližnjice za uporabo te naprave</string>
+  <string id="35008">Vključene bližnjice</string>
+
+  <string id="35500">Lokacija</string>
+  <string id="35501">Razred</string>
+  <string id="35502">Ime</string>
+  <string id="35503">Proizvajalec</string>
+  <string id="35504">ID izdelka</string>
+
+  <string id="36000">Pulse-Eight CEC adapter</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">Preklopi na upravljanje s stranjo tipkovnice</string>
+  <string id="36003">Preklopi na upravljanje s stranjo daljinskega upravljalnika</string>
+  <string id="36004">Pritisni gumb "uporabnik"</string>
+  <string id="36005">Vključi ukaz za menjavo strani</string>
+  <string id="36006">Ni mogoče odpreti adapterja</string>
+  <string id="36007">Vključi naprave ob zagonu XBMC</string>
+  <string id="36008">Izključi naprave ob izhodu iz XBMC</string>
+  <string id="36009">Postavi naprave v stanje pripravljenosti ob ohranjevalniku zaslona</string>
+  <string id="36010">Nastavi kot neaktiven vir ob izhodu iz XBMC</string>
+  <string id="36011">Ni mogoče zaznati vrat CEC. Nastavite jih ročno.</string>
+  <string id="36012">Ni mogoče zaznati adapterja CEC.</string>
+  <string id="36013">Nepodprta različica libcec. %d je višja, kot jo podpira XBMC (%d)</string>
+  <string id="36014">Postavi računalnik v stanje pripravljenosti, ko se ugasne TV</string>
 </strings>
