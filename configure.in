@@ -107,9 +107,9 @@ openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
-libnfs_not_found="== Could not find libnfs. NFS support disabled. =="
+libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
-libafpclient_not_found="== Could not find libafpclient. AFP support disabled. =="
+libafpclient_not_found="== Could not find libafpclient. AFP client support disabled. =="
 libafpclient_disabled="== AFP support disabled. =="
 libshairport_not_found="== Could not find libshairport. AirTunes support disabled. =="
 libshairport_disabled="== AirTunes support disabled. =="
@@ -1725,9 +1725,9 @@ else
 fi
 
 if test "$use_libnfs" != "no"; then
-  final_message="$final_message\n  libnfs support:\tYes"
+  final_message="$final_message\n  libnfs client support:Yes"
 else
-  final_message="$final_message\n  libnfs support:\tNo"
+  final_message="$final_message\n  libnfs client support:No"
 fi
 
 if test "x$use_libafpclient" != "xno"; then
