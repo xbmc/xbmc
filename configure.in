@@ -472,6 +472,7 @@ case $host in
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_IOS -D_LINUX")
      ;;
   *86-apple-darwin*)
+     use_libusb=yes
      use_joystick=no
      use_vtbdecoder=no
      use_texturepacker_native=yes
@@ -480,6 +481,7 @@ case $host in
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
   powerpc-apple-darwin*)
+     use_libusb=yes
      use_joystick=no
      use_vdadecoder=no
      use_vtbdecoder=no
@@ -1076,24 +1078,19 @@ fi
 
 # libusb
 USE_LIBUSB=0
-if test "$host_vendor" = "apple" ; then
+if test "$use_libusb" = "auto"; then
+  PKG_CHECK_MODULES([USB], ["libusb"],
+    use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
+    AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
+    use_libusb="no"; AC_MSG_RESULT($libusb_not_found))
+elif test "$use_libusb" = "yes"; then
+  PKG_CHECK_MODULES([USB], ["libusb"],
+    use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
+    AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
+    use_libusb="no"; AC_MSG_ERROR($libusb_not_found))
+else
   use_libusb="no"
   AC_MSG_NOTICE($libusb_disabled)
-else
-  if test "$use_libusb" = "auto"; then
-    PKG_CHECK_MODULES([USB], [libusb],
-      use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
-      AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
-      use_libusb="no"; AC_MSG_RESULT($libusb_not_found))
-  elif test "$use_libusb" = "yes"; then
-    PKG_CHECK_MODULES([USB], [libusb],
-      use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
-      AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
-      use_libusb="no"; AC_MSG_ERROR($libusb_not_found))
-  else
-    use_libusb="no"
-    AC_MSG_NOTICE($libusb_disabled)
-  fi
 fi
 
 # udev
@@ -1755,6 +1752,24 @@ if test "$use_optical_drive" = "yes"; then
   final_message="$final_message\n  Optical drive:\tYes"
 else
   final_message="$final_message\n  Optical drive:\tNo"
+fi
+
+if test "x$use_libudev" != "xno"; then
+  final_message="$final_message\n  libudev support:\tYes"
+else
+  final_message="$final_message\n  libudev support:\tNo"
+fi
+
+if test "x$use_libusb" != "xno"; then
+  final_message="$final_message\n  libusb support:\tYes"
+else
+  final_message="$final_message\n  libusb support:\tNo"
+fi
+
+if test "x$use_libcec" != "xno"; then
+  final_message="$final_message\n  libcec support:\tYes"
+else
+  final_message="$final_message\n  libcec support:\tNo"
 fi
 
 ### External libraries messages
