@@ -13,7 +13,8 @@ SUBDIRS := \
 	libmicrohttpd libmodplug libbluray libyajl \
 	libgpg-error libgcrypt afpfs-ng \
 	libplist libshairport \
-	samba python26 mysqlclient boost \
+        samba python26 distribute distutilscross \
+	mysqlclient boost \
 
 ifeq ($(DARWIN), ios)
   EXCLUDED = libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image
