@@ -33,6 +33,8 @@
 #include <queue>
 #include "threads/CriticalSection.h"
 #include "settings/VideoSettings.h"
+#include "guilib/DispResource.h"
+#include "threads/Event.h"
 namespace Surface { class CSurface; }
 
 #define NUM_OUTPUT_SURFACES                4
@@ -44,6 +46,7 @@ namespace Surface { class CSurface; }
 
 class CVDPAU
  : public CDVDVideoCodecFFmpeg::IHardwareDecoder
+ , public IDispResource
 {
 public:
 
@@ -69,13 +72,8 @@ public:
   virtual void Reset();
   virtual void Close();
 
-  virtual int  Check(AVCodecContext* avctx) 
-  { 
-    if(CheckRecover(false))
-      return VC_FLUSHED;
-    else
-      return 0;
-  }
+  virtual int  Check(AVCodecContext* avctx);
+
   virtual const std::string Name() { return "vdpau"; }
 
   bool MakePixmap(int width, int height);
@@ -227,4 +225,14 @@ public:
                           , VdpChromaType     &chroma_type);
 
   std::vector<vdpau_render_state*> m_videoSurfaces;
+
+  enum EDisplayState
+  { VDPAU_OPEN
+  , VDPAU_RESET
+  , VDPAU_LOST
+  } m_DisplayState;
+  CCriticalSection m_DisplaySection;
+  CEvent           m_DisplayEvent;
+  virtual void OnLostDevice();
+  virtual void OnResetDevice();
 };
