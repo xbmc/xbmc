@@ -26,6 +26,9 @@
 #include "windowing/WinSystem.h"
 #include "utils/Stopwatch.h"
 #include <GL/glx.h>
+#include "threads/CriticalSection.h"
+
+class IDispResource;
 
 class CWinSystemX11 : public CWinSystemBase
 {
@@ -51,6 +54,8 @@ public:
   virtual bool Restore() ;
   virtual bool Hide();
   virtual bool Show(bool raise = true);
+  virtual void Register(IDispResource *resource);
+  virtual void Unregister(IDispResource *resource);
 
   // Local to WinSystemX11 only
   Display*  GetDisplay() { return m_dpy; }
@@ -58,6 +63,8 @@ public:
 
 protected:
   bool RefreshGlxContext();
+  void CheckDisplayEvents();
+  void OnLostDevice();
 
   SDL_Surface* m_SDLSurface;
   GLXContext   m_glContext;
@@ -65,6 +72,10 @@ protected:
   Window       m_wmWindow;
   Display*     m_dpy;
   bool         m_bWasFullScreenBeforeMinimize;
+  int          m_RREventBase;
+  CCriticalSection             m_resourceSection;
+  std::vector<IDispResource*>  m_resources;
+  uint64_t                     m_dpyLostTime;
 
 private:
   bool IsSuitableVisual(XVisualInfo *vInfo);

@@ -95,6 +95,7 @@ CVDPAU::CVDPAU()
   recover = false;
   m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
   m_mixerstep  = 0;
+  m_DisplayState = VDPAU_OPEN;
 
   m_glPixmap = 0;
   m_Pixmap = 0;
@@ -191,6 +192,8 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int su
     avctx->release_buffer  = CVDPAU::FFReleaseBuffer;
     avctx->draw_horiz_band = CVDPAU::FFDrawSlice;
     avctx->slice_flags=SLICE_FLAG_CODED_ORDER|SLICE_FLAG_ALLOW_FIELD;
+
+    g_Windowing.Register(this);
     return true;
   }
   return false;
@@ -207,6 +210,8 @@ void CVDPAU::Close()
 
   FiniVDPAUOutput();
   FiniVDPAUProcs();
+
+  g_Windowing.Unregister(this);
 
   if (m_glPixmap)
   {
@@ -363,6 +368,11 @@ bool CVDPAU::MakePixmap(int width, int height)
 
 void CVDPAU::BindPixmap()
 {
+  { CSingleLock lock(m_DisplaySection);
+    if (m_DisplayState != VDPAU_OPEN)
+      return;
+  }
+
   if (m_glPixmap)
   {
     if(presentSurface != VDP_INVALID_HANDLE)
@@ -389,6 +399,11 @@ void CVDPAU::BindPixmap()
 
 void CVDPAU::ReleasePixmap()
 {
+  { CSingleLock lock(m_DisplaySection);
+    if (m_DisplayState != VDPAU_OPEN)
+      return;
+  }
+
   if (m_glPixmap)
   {
     glXReleaseTexImageEXT(m_Display, m_glPixmap, GLX_FRONT_LEFT_EXT);
@@ -396,22 +411,53 @@ void CVDPAU::ReleasePixmap()
   else CLog::Log(LOGERROR,"(VDPAU) ReleasePixmap called without valid pixmap");
 }
 
-bool CVDPAU::CheckRecover(bool force)
+void CVDPAU::OnLostDevice()
 {
-  if (recover || force)
+  CSingleLock lock(m_DisplaySection);
+  m_DisplayState = VDPAU_LOST;
+  m_DisplayEvent.Reset();
+}
+
+void CVDPAU::OnResetDevice()
+{
+  CSingleLock lock(m_DisplaySection);
+
+  if (m_DisplayState == VDPAU_LOST)
+  {
+    m_DisplayState = VDPAU_RESET;
+    m_DisplayEvent.Set();
+  }
+}
+
+int CVDPAU::Check(AVCodecContext* avctx)
+{
+  CSingleLock lock(m_DisplaySection);
+
+  if (m_DisplayState == VDPAU_LOST)
+  {
+    lock.Leave();
+    if (!m_DisplayEvent.WaitMSec(2000))
+    {
+      CLog::Log(LOGERROR, "CVDPAU::Check - device didn't reset in reasonable time");
+      return VC_ERROR;
+    }
+    lock.Enter();
+  }
+  if (recover || m_DisplayState == VDPAU_RESET)
   {
     CLog::Log(LOGNOTICE,"Attempting recovery");
 
     FiniVDPAUOutput();
     FiniVDPAUProcs();
 
-    recover = false;
-
     InitVDPAUProcs();
 
-    return true;
+    recover = false;
+    m_DisplayState = VDPAU_OPEN;
+
+    return VC_FLUSHED;
   }
-  return false;
+  return 0;
 }
 
 bool CVDPAU::IsVDPAUFormat(PixelFormat format)
@@ -750,6 +796,9 @@ void CVDPAU::InitVDPAUProcs()
                                    &VDPPreemptionCallbackFunction,
                                    (void*)this);
   CheckStatus(vdp_st, __LINE__);
+
+  CSingleLock lock(m_DisplaySection);
+  m_DisplayState = VDPAU_OPEN;
 }
 
 void CVDPAU::FiniVDPAUProcs()
@@ -1132,8 +1181,9 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   VdpStatus vdp_st;
   VdpTime time;
 
-  if (CheckRecover(false))
-    return VC_FLUSHED;
+  int result = Check(avctx);
+  if (result)
+    return result;
 
   if (!vdpauConfigured)
     return VC_ERROR;
@@ -1318,6 +1368,11 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
 bool CVDPAU::GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture)
 {
+  { CSingleLock lock(m_DisplaySection);
+    if (m_DisplayState != VDPAU_OPEN)
+      return false;
+  }
+
   *picture = m_DVDVideoPics.front();
   // if this is the first field of an interlaced frame, we'll need
   // this same picture for the second field later
@@ -1358,6 +1413,12 @@ void CVDPAU::Present()
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
   VdpStatus vdp_st;
+
+  { CSingleLock lock(m_DisplaySection);
+    if (m_DisplayState != VDPAU_OPEN)
+      return;
+  }
+
   presentSurface = outputSurface;
 
   vdp_st = vdp_presentation_queue_display(vdp_flip_queue,
@@ -1370,7 +1431,7 @@ void CVDPAU::Present()
 
 void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
 {
-  CLog::Log(LOGERROR,"VDPAU Device Preempted - attempting recovery");
+  CLog::Log(LOGDEBUG,"VDPAU Device Preempted - attempting recovery");
   CVDPAU* pCtx = (CVDPAU*)context;
   pCtx->recover = true;
 }
