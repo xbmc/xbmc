@@ -190,13 +190,10 @@ BD_DIR_H *DllLibbluray::dir_open(const char* dirname)
     return dir;
 }
 
-
-#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
 void DllLibbluray::bluray_logger(const char* msg)
 {
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Logger - %s", msg);
 }
-#endif
 
 CDVDInputStreamBluray::CDVDInputStreamBluray() :
   CDVDInputStream(DVDSTREAM_TYPE_BLURAY)
@@ -301,10 +298,8 @@ bool CDVDInputStreamBluray::Open(const char* strFile, const std::string& content
 
   m_dll->bd_register_dir(DllLibbluray::dir_open);
   m_dll->bd_register_file(DllLibbluray::file_open);
-#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
   m_dll->bd_set_debug_handler(DllLibbluray::bluray_logger);
   m_dll->bd_set_debug_mask(DBG_CRIT);
-#endif
 
   CLog::Log(LOGDEBUG, "CDVDInputStreamBluray::Open - opening %s", strPath.c_str());
   m_bd = m_dll->bd_open(strPath.c_str(), NULL);

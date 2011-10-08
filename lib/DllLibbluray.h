@@ -29,9 +29,7 @@ extern "C"
 {
 #include <libbluray/bluray.h>
 #include <libbluray/filesystem.h>
-#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
 #include <libbluray/log_control.h>
-#endif
 }
 
 class DllLibblurayInterface
@@ -63,26 +61,18 @@ public:
   virtual BD_FILE_OPEN bd_register_file(BD_FILE_OPEN p)=0;
   virtual BD_DIR_OPEN bd_register_dir(BD_DIR_OPEN p)=0;
 
-#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
   virtual void     bd_set_debug_handler(BD_LOG_FUNC)=0;
   virtual void     bd_set_debug_mask(uint32_t mask)=0;
   virtual uint32_t bd_get_debug_mask(void)=0;
-#endif
   virtual const BLURAY_DISC_INFO *bd_get_disc_info(BLURAY *bd)=0;
 };
 
 class DllLibbluray : public DllDynamic, DllLibblurayInterface
 {
   DECLARE_DLL_WRAPPER(DllLibbluray, DLL_PATH_LIBBLURAY)
-#ifdef HAVE_LIBBBLURAY_HAVE_LIBBLURAY_NOANGLE
-  DEFINE_METHOD3(uint32_t,            bd_get_titles,          (BLURAY *p1, uint8_t p2))
-  DEFINE_METHOD3(BLURAY_TITLE_INFO*,  bd_get_title_info,      (BLURAY *p1, uint32_t p2))
-  DEFINE_METHOD3(BLURAY_TITLE_INFO*,  bd_get_playlist_info,   (BLURAY *p1, uint32_t p2))
-#else
   DEFINE_METHOD3(uint32_t,            bd_get_titles,          (BLURAY *p1, uint8_t p2, uint32_t p3))
   DEFINE_METHOD3(BLURAY_TITLE_INFO*,  bd_get_title_info,      (BLURAY *p1, uint32_t p2, unsigned p3))
   DEFINE_METHOD3(BLURAY_TITLE_INFO*,  bd_get_playlist_info,   (BLURAY *p1, uint32_t p2, unsigned p3))
-#endif
   DEFINE_METHOD1(void,                bd_free_title_info,     (BLURAY_TITLE_INFO *p1))
   DEFINE_METHOD2(BLURAY*,             bd_open,                (const char* p1, const char* p2))
   DEFINE_METHOD1(void,                bd_close,               (BLURAY *p1))
@@ -105,11 +95,9 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
   DEFINE_METHOD1(BD_FILE_OPEN,        bd_register_file,       (BD_FILE_OPEN p1))
   DEFINE_METHOD1(BD_DIR_OPEN,         bd_register_dir,        (BD_DIR_OPEN p1))
 
-#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
   DEFINE_METHOD1(void,                bd_set_debug_handler,   (BD_LOG_FUNC p1))
   DEFINE_METHOD1(void,                bd_set_debug_mask,      (uint32_t p1))
   DEFINE_METHOD0(uint32_t,            bd_get_debug_mask)
-#endif
   DEFINE_METHOD1(const BLURAY_DISC_INFO*, bd_get_disc_info,      (BLURAY *p1))
 
   BEGIN_METHOD_RESOLVE()
@@ -137,22 +125,11 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD_RENAME(bd_tell_time,         bd_tell_time)
     RESOLVE_METHOD_RENAME(bd_register_file,     bd_register_file)
     RESOLVE_METHOD_RENAME(bd_register_dir,      bd_register_dir)
-#ifndef HAVE_LIBBLURAY_NOLOGCONTROL
     RESOLVE_METHOD(bd_set_debug_handler)
     RESOLVE_METHOD(bd_set_debug_mask)
     RESOLVE_METHOD(bd_get_debug_mask)
-#endif
     RESOLVE_METHOD(bd_get_disc_info)
   END_METHOD_RESOLVE()
-
-#ifdef HAVE_LIBBBLURAY_HAVE_LIBBLURAY_NOANGLE
-  uint32_t bd_get_titles(BLURAY *bd, uint8_t flags, uint32_t min_title_length)
-      {return bd_get_titles_noangle(bd, flags);           }
-  BLURAY_TITLE_INFO* bd_get_title_info(BLURAY *bd, uint32_t title_idx, unsigned angle)
-      {return bd_get_title_info_noangle(bd, title_idx);   }
-  BLURAY_TITLE_INFO* bd_get_playlist_info(BLURAY *bd, uint32_t playlist, unsigned angle)
-      {return bd_get_playlist_info_noangle(bd, playlist); }
-#endif
 
 public:
   static void       file_close(BD_FILE_H *file);
