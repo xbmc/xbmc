@@ -27,78 +27,6 @@ using namespace std;
 #include "utils.h"
 #include "client.h"
 
-//Copied from PVREpg.h:
-//subtypes derived from English strings.xml and CPVREpgInfoTag::ConvertGenreIdToString
-//TODO: Finish me... This list is not yet complete
-#define EPG_EVENT_CONTENTMASK_MOVIEDRAMA                     0x10
-//Subtypes MOVIE/DRAMA
-#define DETECTIVE_THRILLER                           0x01
-#define ADVENTURE_WESTERN_WAR                        0x02
-#define SF_FANTASY_HORROR                            0x03
-#define COMEDY                                       0x04
-#define SOAP_MELODRAMA_FOLKLORIC                     0x05
-#define ROMANCE                                      0x06
-#define SERIOUS_CLASSICAL_RELIGIOUS_HISTORICAL_DRAMA 0x07
-#define ADULTMOVIE_DRAMA                             0x08
-
-#define EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS             0x20
-//subtypes:
-#define NEWS_WEATHER_REPORT                          0x01
-#define NEWS_MAGAZINE                                0x02
-#define DOCUMENTARY                                  0x03
-#define DISCUSSION_INTERVIEW_DEBATE                  0x04
-
-#define EPG_EVENT_CONTENTMASK_SHOW                           0x30
-//subtypes:
-#define GAMESHOW_QUIZ_CONTEST                        0x01
-#define VARIETY_SHOW                                 0x02
-#define TALK_SHOW                                    0x03
-
-#define EPG_EVENT_CONTENTMASK_SPORTS                         0x40
-
-#define EPG_EVENT_CONTENTMASK_CHILDRENYOUTH                  0x50
-//subtypes
-#define PRESCHOOL_CHILD_PROGRAM                      0x01
-#define ENTERTAINMENT_6TO14                          0x02
-#define ENTERTAINMENT_10TO16                         0x03
-#define INFO_EDUC_SCHOOL_PROGRAM                     0x04
-#define CARTOONS_PUPPETS                             0x05
-
-#define EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE               0x60
-#define EPG_EVENT_CONTENTMASK_ARTSCULTURE                    0x70
-//subtypes
-#define PERFORMING_ARTS                              0x01
-#define FINE_ARTS                                    0x02
-#define RELIGION                                     0x03
-#define POP_CULTURE_TRAD_ARTS                        0x04
-#define LITERATURE                                   0x05
-#define FILM_CINEMA                                  0x06
-#define EXP_FILM_VIDEO                               0x07
-#define BROADCASTING_PRESS                           0x08
-#define NEW_MEDIA                                    0x09
-#define ARTS_CULTURE_MAGAZINES                       0x10
-#define FASHION                                      0x11
-
-#define EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS       0x80
-//subtype
-#define MAGAZINES_REPORTS_DOCUMENTARY                0x01
-#define ECONOMICS_SOCIAL_ADVISORY                    0x02
-#define REMARKABLE_PEOPLE                            0x03
-
-#define EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE             0x90
-//subtypes
-#define NATURE_ANIMALS_ENVIRONMENT                   0x01
-#define TECHNOLOGY_NATURAL_SCIENCES                  0x02
-#define MEDICINE_PHYSIOLOGY_PSYCHOLOGY               0x03
-#define FOREIGN_COUNTRIES_EXPEDITIONS                0x04
-#define SOCIAL_SPIRITUAL_SCIENCES                    0x05
-#define FURTHER_EDUCATION                            0x06
-#define LANGUAGES                                    0x07
-
-#define EPG_EVENT_CONTENTMASK_LEISUREHOBBIES                 0xA0
-#define EPG_EVENT_CONTENTMASK_SPECIAL                        0xB0
-#define EPG_EVENT_CONTENTMASK_USERDEFINED                    0xF0
-
 cEpg::cEpg()
 {
   m_genremap        = NULL;
@@ -219,11 +147,11 @@ void cEpg::SetGenreMap(GenreMap* genremap)
 
 void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
 {
-  //TODO: The xmltv plugin from the MediaPortal TV Server can return genre
-  //      strings in local language (depending on the external TV guide source).
-  //      The only way to solve this at the XMBC side is to transfer the
-  //      genre string to XBMC or to let this plugin (or the TVServerXBMC
-  //      plugin) translate it into XBMC compatible (numbered) genre types
+  // The xmltv plugin from the MediaPortal TV Server can return genre
+  // strings in local language (depending on the external TV guide source).
+  // The only way to solve this at the XMBC side is to transfer the
+  // genre string to XBMC or to let this plugin (or the TVServerXBMC
+  // plugin) translate it into XBMC compatible (numbered) genre types
   m_genre = Genre;
   m_genre_subtype = 0;
 
@@ -241,7 +169,7 @@ void cEpg::SetGenre(string& Genre, int genreType, int genreSubType)
     }
     else
     {
-      XBMC->Log(LOG_DEBUG, "No mapping of '%s' to type/subtype found.", Genre.c_str());
+      XBMC->Log(LOG_DEBUG, "EPG: No mapping of '%s' to genre type/subtype found.", Genre.c_str());
       m_genre_type     = EPG_GENRE_USE_STRING;
       m_genre_subtype  = 0;
     }

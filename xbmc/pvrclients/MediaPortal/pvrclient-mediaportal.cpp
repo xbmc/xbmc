@@ -848,7 +848,7 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 
       tag.strRecordingId = strRecordingId.c_str();
       tag.strTitle       = recording.Title();
-      tag.strDirectory   = recording.Directory(); //used in XBMC as directory structure below "Recordings"
+      tag.strDirectory   = recording.Directory(); // used in XBMC as directory structure below "Recordings"
       tag.strPlotOutline = g_iTVServerXBMCBuild >= 105 ? recording.EpisodeName() : tag.strTitle;
       tag.strPlot        = recording.Description();
       tag.strChannelName = recording.ChannelName();
@@ -861,7 +861,7 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 
       if (g_bUseRecordingsDir == true)
       {
-        //Replace path by given path in g_szRecordingsDir
+        // Replace path by given path in g_szRecordingsDir
         if (g_szRecordingsDir.length() > 0)
         {
           recording.SetDirectory(g_szRecordingsDir);
@@ -874,6 +874,7 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
       }
       else
       {
+        // Use rtsp url
         tag.strStreamURL    = recording.Stream();
       }
       PVR->TransferRecordingEntry(handle, &tag);
