@@ -462,4 +462,9 @@
       <s>Back</s>
     </keyboard>
   </ShutdownMenu>
+  <AddonInformation>
+    <keyboard>
+      <i>Back</i>
+    </keyboard>
+  </AddonInformation>
 </keymap>
