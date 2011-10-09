@@ -754,6 +754,14 @@
 							<control type="group">
 							<visible>ListItem.Type(episode)</visible>
 								<posy>42</posy>
+								<!-- in progress -->
+								<control type="image">
+									<posx>130</posx>
+									<posy>25</posy>
+									<width>35</width>
+									<height>35</height>
+									<info>ListItem.Overlay</info>
+								</control>
 								<!-- drop shadow -->
 								<control type="image">
 									<posx>29</posx>
@@ -1202,7 +1210,21 @@
 									<font>SearchResultSmaller</font>
 									<textcolor>FFffffff</textcolor>
 									<wrapmultiline>false</wrapmultiline>
-									<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
+									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>170</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$INFO[ListItem.Date]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFffffff</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>[IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
 									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
 								</control>
 							</control>
