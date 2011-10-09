@@ -539,6 +539,15 @@ bool CPVRClients::SwitchChannel(const CPVRChannel &channel)
     return OpenLiveStream(channel);
   }
 
+  if( (!channel.StreamURL().IsEmpty()) || ((!m_currentChannel->StreamURL().IsEmpty()) && (channel.StreamURL().IsEmpty())))
+  {
+    lock.Leave();
+    // StreamURL should always be opened as a new file
+    CFileItem m_currentFile(channel);
+    g_application.getApplicationMessenger().PlayFile(m_currentFile, false);
+    return true;
+  }
+
   m_bIsSwitchingChannels = true;
   lock.Leave();
 
