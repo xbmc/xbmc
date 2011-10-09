@@ -686,7 +686,9 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
             char *tmpStr = NULL;
             m_pLibPlist->plist_get_string_val(tmpNode, &tmpStr);
             location=tmpStr;
+#ifndef TARGET_WINDOWS
             free(tmpStr);
+#endif
           }
 
           if (dict)

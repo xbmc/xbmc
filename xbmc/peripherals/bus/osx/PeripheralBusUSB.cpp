@@ -30,6 +30,7 @@ using namespace PERIPHERALS;
 #include <IOKit/usb/IOUSBLib.h>
 #include <IOKit/hid/IOHIDLib.h>
 #include <IOKit/hid/IOHIDKeys.h>
+#include <IOKit/serial/IOSerialKeys.h>
 
 typedef struct USBDevicePrivateData {
   CPeripheralBusUSB     *refCon;
@@ -132,7 +133,7 @@ void CPeripheralBusUSB::DeviceDetachCallback(void *refCon, io_service_t service,
     }
     privateDataRef->refCon->ScanForDevices();
     
-    CLog::Log(LOGDEBUG, "HID Device Detach:%s, %s\n",
+    CLog::Log(LOGDEBUG, "USB Device Detach:%s, %s\n",
       privateDataRef->deviceName.c_str(), privateDataRef->result.m_strLocation.c_str());
     result = IOObjectRelease(privateDataRef->notification);
     delete privateDataRef;
@@ -185,11 +186,10 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
     result = (*deviceInterface)->GetLocationID(   deviceInterface, &locationId);
     result = (*deviceInterface)->GetDeviceClass(  deviceInterface, &bDeviceClass);
 
-    // we only care about usb devices with an HID interface class
     io_service_t usbInterface;
     io_iterator_t interface_iterator;
     IOUSBFindInterfaceRequest	request;
-    request.bInterfaceClass    = kUSBHIDInterfaceClass;
+    request.bInterfaceClass    = kIOUSBFindInterfaceDontCare;
     request.bInterfaceSubClass = kIOUSBFindInterfaceDontCare;
     request.bInterfaceProtocol = kIOUSBFindInterfaceDontCare;
     request.bAlternateSetting  = kIOUSBFindInterfaceDontCare;
@@ -216,13 +216,15 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
         continue;
       }
 
-      // finally we can get to bInterfaceClass/bInterfaceProtocol
+      // finally we can get to the bInterfaceClass
       // we should also check for kHIDKeyboardInterfaceProtocol but
       // some IR remotes that emulate an HID keyboard do not report this.
       UInt8 bInterfaceClass;
       result = (*interfaceInterface)->GetInterfaceClass(interfaceInterface, &bInterfaceClass);
-      if (bInterfaceClass == kUSBHIDInterfaceClass)
+      if (bInterfaceClass == kUSBHIDInterfaceClass || bInterfaceClass == kUSBCommunicationDataInterfaceClass)
       {
+        char ttlDeviceFilePath[MAXPATHLEN] = {0};
+        CFStringRef deviceFilePathAsCFString;
         USBDevicePrivateData *privateDataRef;
         privateDataRef = new USBDevicePrivateData;
         // save the device info to our private data.
@@ -230,7 +232,33 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
         privateDataRef->deviceName = deviceName;
         privateDataRef->result.m_iVendorId  = vendorId;
         privateDataRef->result.m_iProductId = productId;
-        privateDataRef->result.m_strLocation.Format("%d", locationId);
+
+        if (bInterfaceClass == kUSBCommunicationDataInterfaceClass)
+        {
+          // fetch the bds device path if this is USB serial device.
+          // to do this we have to switch from the kIOUSBPlane to
+          // kIOServicePlane, then we can search down for the path.
+          io_registry_entry_t parent;
+          kern_return_t kresult;
+          kresult = IORegistryEntryGetParentEntry(usbInterface, kIOServicePlane, &parent);
+          if (kresult == KERN_SUCCESS)
+          {
+            deviceFilePathAsCFString = (CFStringRef)IORegistryEntrySearchCFProperty(parent,
+              kIOServicePlane, CFSTR(kIOCalloutDeviceKey), kCFAllocatorDefault, kIORegistryIterateRecursively);
+            if (deviceFilePathAsCFString)
+            {
+              // Convert the path from a CFString to a NULL-terminated C string
+              CFStringGetCString((CFStringRef)deviceFilePathAsCFString,
+                ttlDeviceFilePath, MAXPATHLEN - 1, kCFStringEncodingASCII);
+              CFRelease(deviceFilePathAsCFString);
+            }
+            IOObjectRelease(parent);
+          }
+        }
+        if (strlen(ttlDeviceFilePath))
+          privateDataRef->result.m_strLocation.Format("%s", ttlDeviceFilePath);
+        else
+          privateDataRef->result.m_strLocation.Format("%d", locationId);
 
         if (bDeviceClass == kUSBCompositeClass)
           privateDataRef->result.m_type = refCon->GetType(bInterfaceClass);
@@ -250,7 +278,7 @@ void CPeripheralBusUSB::DeviceAttachCallback(CPeripheralBusUSB* refCon, io_itera
           if (result == kIOReturnSuccess)
           {
             refCon->m_scan_results.m_results.push_back(privateDataRef->result);
-            CLog::Log(LOGDEBUG, "HID Device Attach:%s, %s\n",
+            CLog::Log(LOGDEBUG, "USB Device Attach:%s, %s\n",
               deviceName, privateDataRef->result.m_strLocation.c_str());
           }
           else

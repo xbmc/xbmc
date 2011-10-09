@@ -107,9 +107,9 @@ openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
-libnfs_not_found="== Could not find libnfs. NFS support disabled. =="
+libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
-libafpclient_not_found="== Could not find libafpclient. AFP support disabled. =="
+libafpclient_not_found="== Could not find libafpclient. AFP client support disabled. =="
 libafpclient_disabled="== AFP support disabled. =="
 libshairport_not_found="== Could not find libshairport. AirTunes support disabled. =="
 libshairport_disabled="== AirTunes support disabled. =="
@@ -1076,24 +1076,19 @@ fi
 
 # libusb
 USE_LIBUSB=0
-if test "$host_vendor" = "apple" ; then
+if test "$use_libusb" = "auto"; then
+  PKG_CHECK_MODULES([USB], ["libusb"],
+    use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
+    AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
+    use_libusb="no"; AC_MSG_RESULT($libusb_not_found))
+elif test "$use_libusb" = "yes"; then
+  PKG_CHECK_MODULES([USB], ["libusb"],
+    use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
+    AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
+    use_libusb="no"; AC_MSG_ERROR($libusb_not_found))
+else
   use_libusb="no"
   AC_MSG_NOTICE($libusb_disabled)
-else
-  if test "$use_libusb" = "auto"; then
-    PKG_CHECK_MODULES([USB], [libusb],
-      use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
-      AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
-      use_libusb="no"; AC_MSG_RESULT($libusb_not_found))
-  elif test "$use_libusb" = "yes"; then
-    PKG_CHECK_MODULES([USB], [libusb],
-      use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
-      AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
-      use_libusb="no"; AC_MSG_ERROR($libusb_not_found))
-  else
-    use_libusb="no"
-    AC_MSG_NOTICE($libusb_disabled)
-  fi
 fi
 
 # udev
@@ -1728,9 +1723,9 @@ else
 fi
 
 if test "$use_libnfs" != "no"; then
-  final_message="$final_message\n  libnfs support:\tYes"
+  final_message="$final_message\n  libnfs client support:Yes"
 else
-  final_message="$final_message\n  libnfs support:\tNo"
+  final_message="$final_message\n  libnfs client support:No"
 fi
 
 if test "x$use_libafpclient" != "xno"; then
@@ -1755,6 +1750,24 @@ if test "$use_optical_drive" = "yes"; then
   final_message="$final_message\n  Optical drive:\tYes"
 else
   final_message="$final_message\n  Optical drive:\tNo"
+fi
+
+if test "x$use_libudev" != "xno"; then
+  final_message="$final_message\n  libudev support:\tYes"
+else
+  final_message="$final_message\n  libudev support:\tNo"
+fi
+
+if test "x$use_libusb" != "xno"; then
+  final_message="$final_message\n  libusb support:\tYes"
+else
+  final_message="$final_message\n  libusb support:\tNo"
+fi
+
+if test "x$use_libcec" != "xno"; then
+  final_message="$final_message\n  libcec support:\tYes"
+else
+  final_message="$final_message\n  libcec support:\tNo"
 fi
 
 ### External libraries messages

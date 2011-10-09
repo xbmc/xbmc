@@ -17,7 +17,7 @@ SUBDIRS := \
 	mysqlclient boost \
 
 ifeq ($(DARWIN), ios)
-  EXCLUDED = libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image
+  EXCLUDED = libusb libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image
 else
   EXCLUDED = Backrow
 endif
