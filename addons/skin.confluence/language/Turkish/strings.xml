@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 20/04/2011-->
-<!--Turkish strings based on English strings commit 51ed57d4fede2c21c1ca-->
+<!--Date of translation: 08/10/2011-->
+<!--Turkish strings based on English strings commit 52a14da027966458c44b1e7899f6c9f155ee1c44 -->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Değiştir</string>
@@ -62,7 +62,7 @@
   <string id="31102">Arka Plan</string>
   <string id="31103">Resim slayt gösterisinde "DURAKLATILDI"yı göster</string>
   <string id="31104">Fragmanları pencere içinde oynat [COLOR=grey3](Sadece Video Bilgisi İletişim Kutusu İçin)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">"Videolar" düğmesi herzaman video "Dosyalar"'a gider</string>
   <string id="31106">Çeşitli seçenekler</string>
   <string id="31107">Video dosya adlarında etiket okumayı gizle [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Ana Menü Tuşlarını Gizle</string>
@@ -76,7 +76,7 @@
   <string id="31116"></string>
   <string id="31117">Son Eklenen Videoları Göster</string>
   <string id="31118">Ana Sayfa Programlar Alt Menüsü</string>
-  <string id="31119"></string>  <!-- blanked 2010-11-12 -->
+  <string id="31119">Arkaplan Fanartını Gizle</string>
   <string id="31120">TUŞ ETİKETİ</string>
   <string id="31121"></string>  <!-- blanked 2010-11-12 -->
   <string id="31122">Hava Durumu Sayfası</string>
@@ -84,14 +84,14 @@
   <string id="31124">Arkaplanda Oynatılan Videoyu göster</string>
   <string id="31125">Arkaplanda Görsel Ögeyi göster</string>
 
-  <string id="31126"></string>  <!-- blanked 2010-11-12 -->
-  <string id="31127"></string>  <!-- blanked 2010-11-12 -->
-  <string id="31128">Lyrics</string>
+  <string id="31126">Play TV theme songs in video library (TvTunes eklentisi)</string>
+  <string id="31127">TvTunes</string>
+  <string id="31128">Şarkı Sözleri</string>
   <string id="31129"></string>  <!-- blanked 2010-11-12 -->
   <string id="31130"></string>  <!-- blanked 2010-11-12 -->
   
   <string id="31131"></string>
-  <string id="31132">Lyrics Eklentisi</string>
+  <string id="31132">Şarkı Sözleri Eklentisi</string>
   <string id="31133">Altyazı Eklentisi</string>
   <string id="31134">Ana Sayfa Videolar Alt Menüsü</string>
   <string id="31135">Ana Sayfa Müzik Alt Menüsü</string>
@@ -106,7 +106,7 @@
   <string id="31202">Oyuncuları Göster</string>
   <string id="31203">Şarkını Seç</string>
   <string id="31204">Bölge Bağlantıları</string>
-  <string id="31205">Lyrics Kaynağı</string>
+  <string id="31205">Şarkı Sözleri Kaynağı</string>
 
   <!-- Extra labels -->
   <string id="31300">Mevcut Sıcaklık</string>
@@ -168,4 +168,17 @@
   <string id="31408">[B]EKLENTİLERİ YAPILANDIR[/B][CR][CR]Yüklenmiş eklentileri yönet · Eklentilere gözat ve yenilerini yükle[CR]Eklenti ayarlarını değiştir</string>
 
   <string id="31421">Oturum açıp devam etmek için[CR]XBMC kullanıcı profilinizi seçin</string>
+  
+  <!-- Weather plugin -->
+  <string id="31900">Hava Durumu Haritaları</string>
+  <string id="31901">36 Saatlik Hava Tahmini</string>
+  <string id="31902">Saatlik Hava Tahmini</string>
+  <string id="31903">Haftalık Hava Tahmini</string>
+  <string id="31904">10 Günlik Hava Tahmini</string>
+  <string id="31905">Hava Tahmini</string>
+  <string id="31906">Video ve Haritalar</string>
+  <string id="31907">Video Hava Tahmini [COLOR=grey2](Tam ekran oynatım)[/COLOR]</string>
+  <string id="31908">Chance of Precipitation</string>
+  <string id="31909">Hava tahmini bilgisi getiriliyor...</string>
+
 </strings>
