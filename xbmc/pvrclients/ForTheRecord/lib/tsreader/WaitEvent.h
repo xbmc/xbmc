@@ -24,11 +24,7 @@
 typedef HANDLE wait_event_t;
 #else
 typedef sem_t wait_event_t;
-typedef struct _SECURITY_ATTRIBUTES {
-    unsigned long  nLength;
-    void*          lpSecurityDescriptor;
-    int            bInheritHandle;
-} SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
+#include "PlatformDefs.h"
 #endif
 //#include "os-dependent.h"
 

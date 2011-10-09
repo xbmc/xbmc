@@ -15,16 +15,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+#if defined(TARGET_WINDOWS)
 #pragma warning(disable:4244) //wchar to char = loss of data
-
+#endif
 
 #include "utils.h"
 #include "client.h" //For XBMC->Log
-//#ifdef TSREADER
-//#include "os-dependent.h"
-//#else
 #include "libPlatform/os-dependent.h"
-//#endif
 #include <string>
 #include <algorithm> // sort
 

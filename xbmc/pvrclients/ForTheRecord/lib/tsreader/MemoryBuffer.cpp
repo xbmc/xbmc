@@ -23,6 +23,9 @@
 #include "MemoryBuffer.h"
 #include "AutoLock.h"
 #include "client.h"
+#if !defined(TARGET_WINDOWS)
+#include "PlatformInclude.h"
+#endif
 
 #define MAX_MEMORY_BUFFER_SIZE (1024L*1024L*12L)
 
@@ -105,7 +108,9 @@ unsigned long CMemoryBuffer::ReadFromBuffer(unsigned char *pbData, long lDataLen
     }
     BUFFERITEM *item = m_Array.at(0);
     
-    long copyLength = min(item->nDataLength - item->nOffset, lDataLength-bytesWritten);
+    // long copyLength = min(item->nDataLength - item->nOffset, lDataLength-bytesWritten);
+    long copyLength = item->nDataLength - item->nOffset;
+    if (copyLength > lDataLength-bytesWritten) copyLength = lDataLength-bytesWritten;
     memcpy(&pbData[bytesWritten], &item->data[item->nOffset], copyLength);
 
     bytesWritten += copyLength;
