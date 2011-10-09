@@ -664,6 +664,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 #endif
   }
 
+  m_state = DXVA_OPEN;
   return true;
 }
 
@@ -802,6 +803,7 @@ bool CDecoder::OpenTarget(const GUID &guid)
 bool CDecoder::OpenDecoder()
 {
   SAFE_RELEASE(m_decoder);
+  m_context->decoder = NULL;
 
   m_context->surface_count = m_refs + 1 + 1 + m_shared; // refs + 1 decode + 1 libavcodec safety + processor buffer
 
