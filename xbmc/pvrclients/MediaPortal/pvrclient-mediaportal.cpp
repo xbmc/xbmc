@@ -38,6 +38,9 @@ using namespace std;
 /* Globals */
 int g_iTVServerXBMCBuild = 0;
 
+/* PVR client version (don't forget to update also the addon.xml and the Changelog.txt files) */
+#define PVRCLIENT_MEDIAPORTAL_VERSION_STRING    "1.2.1.108"
+
 /* TVServerXBMC plugin supported versions */
 #define TVSERVERXBMC_MIN_VERSION_STRING         "1.1.0.70"
 #define TVSERVERXBMC_MIN_VERSION_BUILD          70
@@ -142,7 +145,7 @@ bool cPVRClientMediaPortal::Connect()
   string result;
 
   /* Open Connection to MediaPortal Backend TV Server via the XBMC TV Server plugin */
-  XBMC->Log(LOG_INFO, "Connecting to %s:%i", g_szHostname.c_str(), g_iPort);
+  XBMC->Log(LOG_INFO, "Mediaportal pvr addon " PVRCLIENT_MEDIAPORTAL_VERSION_STRING " connecting to %s:%i", g_szHostname.c_str(), g_iPort);
 
   if (!m_tcpclient->create())
   {
@@ -318,20 +321,19 @@ const char* cPVRClientMediaPortal::GetBackendVersion(void)
   if (!IsUp())
     return "0.0";
 
-  XBMC->Log(LOG_DEBUG, "->GetBackendVersion()");
-
   if(m_BackendVersion.length() == 0)
   {
     m_BackendVersion = SendCommand("GetVersion:\n");
   }
+
+  XBMC->Log(LOG_DEBUG, "GetBackendVersion: %s", m_BackendVersion.c_str());
 
   return m_BackendVersion.c_str();
 }
 
 const char* cPVRClientMediaPortal::GetConnectionString(void)
 {
-  XBMC->Log(LOG_DEBUG, "->GetConnectionString()");
-
+  XBMC->Log(LOG_DEBUG, "GetConnectionString: %s", m_ConnectionString.c_str());
   return m_ConnectionString.c_str();
 }
 
@@ -569,7 +571,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
 
     if (g_szRadioGroup.length() > 0)
     {
-      XBMC->Log(LOG_DEBUG, "GetChannels(radio) for radio group:%s", g_szRadioGroup.c_str());
+      XBMC->Log(LOG_DEBUG, "GetChannels(radio) for radio group: '%s'", g_szRadioGroup.c_str());
       command.Format("ListRadioChannels:%s\n", uri::encode(uri::PATH_TRAITS, g_szRadioGroup).c_str());
     }
     else
@@ -582,7 +584,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
   {
     if (g_szTVGroup.length() > 0)
     {
-      XBMC->Log(LOG_DEBUG, "GetChannels(tv) for TV group:%s", g_szTVGroup.c_str());
+      XBMC->Log(LOG_DEBUG, "GetChannels(tv) for TV group: '%s'", g_szTVGroup.c_str());
       command.Format("ListTVChannels:%s\n", uri::encode(uri::PATH_TRAITS, g_szTVGroup).c_str());
     }
     else
@@ -736,7 +738,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const
   {
     if (g_bRadioEnabled)
     {
-      XBMC->Log(LOG_DEBUG, "%s: for group '%s', radio=%i", __FUNCTION__, group.strGroupName, group.bIsRadio);
+      XBMC->Log(LOG_DEBUG, "GetChannelGroupMembers: for radio group '%s'", group.strGroupName);
       command.Format("ListRadioChannels:%s\n", uri::encode(uri::PATH_TRAITS, group.strGroupName).c_str());
     }
     else
@@ -747,7 +749,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const
   }
   else
   {
-    XBMC->Log(LOG_DEBUG, "%s: for group '%s', radio=%i", __FUNCTION__, group.strGroupName, group.bIsRadio);
+    XBMC->Log(LOG_DEBUG, "GetChannelGroupMembers: for tv group '%s'", group.strGroupName);
     command.Format("ListTVChannels:%s\n", uri::encode(uri::PATH_TRAITS, group.strGroupName).c_str());
   }
 
@@ -1158,15 +1160,14 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
 
 bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channel)
 {
-  XBMC->Log(LOG_DEBUG, "->SwitchChannel(%i)", channel.iChannelNumber);
-
-  return OpenLiveStream(channel);
+  XBMC->Log(LOG_DEBUG, "SwitchChannel(uid=%i) ffmpeg rtsp: nothing to be done here... GetLiveSteamURL() should fetch a new rtsp url from the backend.", channel.iUniqueId);
+  return false;
 }
 
 
 int cPVRClientMediaPortal::GetCurrentClientChannel()
 {
-  XBMC->Log(LOG_DEBUG, "->GetCurrentClientChannel");
+  XBMC->Log(LOG_DEBUG, "GetCurrentClientChannel: uid=%i", m_iCurrentChannel);
   return m_iCurrentChannel;
 }
 
@@ -1215,12 +1216,10 @@ int cPVRClientMediaPortal::ReadRecordedStream(unsigned char *pBuffer, unsigned i
  */
 const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
-  unsigned int channel = channelinfo.iUniqueId;
-
   string result;
   char   command[256] = "";
 
-  XBMC->Log(LOG_DEBUG, "->GetLiveStreamURL(%i)", channel);
+  XBMC->Log(LOG_DEBUG, "->GetLiveStreamURL(uid=%i)", channelinfo.iUniqueId);
   if (!IsUp())
   {
     return false;
@@ -1234,12 +1233,12 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
     if (g_iTVServerXBMCBuild < 90)
     { //old way
       // RTSP URL may contain a hostname, XBMC will do the IP resolve
-      snprintf(command, 256, "TimeshiftChannel:%i|False\n", channel);
+      snprintf(command, 256, "TimeshiftChannel:%i|False\n", channelinfo.iUniqueId);
     }
     else
     {
       //Faster, skip StopTimeShift
-      snprintf(command, 256, "TimeshiftChannel:%i|False|False\n", channel);
+      snprintf(command, 256, "TimeshiftChannel:%i|False|False\n", channelinfo.iUniqueId);
     }
   }
   else
@@ -1248,19 +1247,19 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
     { //old way
       // RTSP URL will always contain an IP address, TVServerXBMC will
       // do the IP resolve
-      snprintf(command, 256, "TimeshiftChannel:%i|True\n", channel);
+      snprintf(command, 256, "TimeshiftChannel:%i|True\n", channelinfo.iUniqueId);
     }
     else
     {
       //Faster, skip StopTimeShift
-      snprintf(command, 256, "TimeshiftChannel:%i|True|False\n", channel);
+      snprintf(command, 256, "TimeshiftChannel:%i|True|False\n", channelinfo.iUniqueId);
     }
   }
   result = SendCommand(command);
 
   if (result.find("ERROR") != std::string::npos || result.length() == 0)
   {
-    XBMC->Log(LOG_ERROR, "Could not stream channel %i. %s", channel, result.c_str());
+    XBMC->Log(LOG_ERROR, "Could not stream channel uid=%i. %s", channelinfo.iUniqueId, result.c_str());
     if (result.find("[ERROR]: TVServer answer: ") != std::string::npos)
     {
       // Skip first part: "[ERROR]: TVServer answer: "
@@ -1287,7 +1286,7 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
 
     m_PlaybackURL = timeshiftfields[0];
     XBMC->Log(LOG_INFO, "Sending channel stream URL '%s' to XBMC for playback", m_PlaybackURL.c_str());
-    m_iCurrentChannel = channel;
+    m_iCurrentChannel = channelinfo.iUniqueId;
 
     // Check the returned stream URL. When the URL is an rtsp stream, we need
     // to close it again after watching to stop the timeshift.
