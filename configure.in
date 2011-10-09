@@ -472,7 +472,6 @@ case $host in
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_IOS -D_LINUX")
      ;;
   *86-apple-darwin*)
-     use_libusb=yes
      use_joystick=no
      use_vtbdecoder=no
      use_texturepacker_native=yes
@@ -481,7 +480,6 @@ case $host in
      AC_SUBST(ARCH_DEFINES, "-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX -D_LINUX")
      ;;
   powerpc-apple-darwin*)
-     use_libusb=yes
      use_joystick=no
      use_vdadecoder=no
      use_vtbdecoder=no

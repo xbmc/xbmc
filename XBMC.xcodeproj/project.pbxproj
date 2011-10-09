@@ -9048,7 +9048,6 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
-					"-lusb",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9145,7 +9144,6 @@
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
-					"-lusb",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9303,7 +9301,6 @@
 					"-lsmbclient",
 					"-lpython2.6",
 					"-lboost_thread",
-					"-lusb",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9403,7 +9400,6 @@
 					"-lsmbclient",
 					"-lpython2.6",
 					"-lboost_thread",
-					"-lusb",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
