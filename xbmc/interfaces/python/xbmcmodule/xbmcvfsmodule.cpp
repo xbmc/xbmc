@@ -22,6 +22,7 @@
 #include <Python.h>
 
 
+#include "filesystem/Directory.h"
 #include "filesystem/File.h"
 #include "pyutil.h"
 #include "pythreadstate.h"
@@ -30,12 +31,6 @@ using namespace std;
 using namespace XFILE;
 using namespace PYXBMC;
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
@@ -57,13 +52,13 @@ extern "C" {
     
     // copy() method
     PyDoc_STRVAR(copy__doc__,
-      "copy(source, destination) -- copy file to destination, returns true/false.\n"
+      "copy(source, destination) -- Copy file to destination, returns true/false.\n"
       "\n"
       "source          : file to copy.\n"
-      "destination     : destination file"
+      "destination     : destination file\n"
       "\n"
       "example:\n"
-      "  success = xbmcvfs.copy(source, destination)\n");
+      " - success = xbmcvfs.copy(source, destination)\n");
     
     PyObject* vfs_copy(PyObject *self, PyObject *args)
     {
@@ -91,12 +86,12 @@ extern "C" {
       return Py_BuildValue((char*)"b", bResult);
     }
     PyDoc_STRVAR(delete__doc__,
-      "delete(file)\n"
+      "delete(file) -- Delete file\n"
       "\n"
-      "file        : file to delete"
+      "file        : file to delete\n"
       "\n"
       "example:\n"
-      "  xbmcvfs.delete(file)\n");
+      " - xbmcvfs.delete(file)\n");
     
     // delete a file
     PyObject* vfs_delete(File *self, PyObject *args, PyObject *kwds)
@@ -122,13 +117,13 @@ extern "C" {
     }
     
     PyDoc_STRVAR(rename__doc__,
-      "rename(file, newFileName)\n"
+      "rename(file, newFileName) -- Rename file, returns true/false.\n"
       "\n"
-      "file        : file to reaname"
-      "newFileName : new filename, including the full path"
+      "file        : file to reaname\n"
+      "newFileName : new filename, including the full path\n"
       "\n"
       "example:\n"
-      "  success = xbmcvfs.rename(file,newFileName)\n");
+      " - success = xbmcvfs.rename(file, newFileName)\n");
     
     // rename a file
     PyObject* vfs_rename(File *self, PyObject *args, PyObject *kwds)
@@ -159,12 +154,12 @@ extern "C" {
     }  
 
     PyDoc_STRVAR(exists__doc__,
-      "exists(path)\n"
+      "exists(path) -- Check if file exists, returns true/false.\n"
       "\n"
-      "path        : file or folder"
+      "path        : file or folder\n"
       "\n"
       "example:\n"
-      "  success = xbmcvfs.exists(path)\n");
+      " - success = xbmcvfs.exists(path)\n");
    
     // check for a file or folder existance, mimics Pythons os.path.exists()
     PyObject* vfs_exists(File *self, PyObject *args, PyObject *kwds)
@@ -188,12 +183,74 @@ extern "C" {
 
       return Py_BuildValue((char*)"b", bResult);
     }      
+
+    PyDoc_STRVAR(mkdir__doc__,
+      "mkdir(path) -- Create a folder.\n"
+      "\n"
+      "path        : folder\n"
+      "\n"
+      "example:\n"
+      " - success = xbmcvfs.mkdir(path)\n");
+    // make a directory
+    PyObject* vfs_mkdir(File *self, PyObject *args, PyObject *kwds)
+    {
+      PyObject *f_line;
+      if (!PyArg_ParseTuple(
+        args,
+        (char*)"O",
+        &f_line))
+      {
+        return NULL;
+      }
+      CStdString strSource;
+      if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
+     
+      bool bResult;
+     
+      CPyThreadState pyState;
+      bResult = CDirectory::Create(strSource);
+      pyState.Restore();
+
+      return Py_BuildValue((char*)"b", bResult);
+    }      
+
+    PyDoc_STRVAR(rmdir__doc__,
+      "rmdir(path) -- Remove a folder.\n"
+      "\n"
+      "path        : folder\n"
+      "\n"
+      "example:\n"
+      " - success = xbmcvfs.rmdir(path)\n");
+    // remove a directory
+    PyObject* vfs_rmdir(File *self, PyObject *args, PyObject *kwds)
+    {
+      PyObject *f_line;
+      if (!PyArg_ParseTuple(
+        args,
+        (char*)"O",
+        &f_line))
+      {
+        return NULL;
+      }
+      CStdString strSource;
+      if (!PyXBMCGetUnicodeString(strSource, f_line, 1)) return NULL;
+     
+      bool bResult;
+     
+      CPyThreadState pyState;
+      bResult = CDirectory::Remove(strSource);
+      pyState.Restore();
+
+      return Py_BuildValue((char*)"b", bResult);
+    }      
     
     // define c functions to be used in python here
     PyMethodDef xbmcvfsMethods[] = {
       {(char*)"copy", (PyCFunction)vfs_copy, METH_VARARGS, copy__doc__},
       {(char*)"delete", (PyCFunction)vfs_delete, METH_VARARGS, delete__doc__},
       {(char*)"rename", (PyCFunction)vfs_rename, METH_VARARGS, rename__doc__},
+      {(char*)"mkdir", (PyCFunction)vfs_mkdir, METH_VARARGS, mkdir__doc__},
+      {(char*)"rmdir", (PyCFunction)vfs_rmdir, METH_VARARGS, rmdir__doc__},
       {(char*)"exists", (PyCFunction)vfs_exists, METH_VARARGS, exists__doc__},
       {NULL, NULL, 0, NULL}
     };

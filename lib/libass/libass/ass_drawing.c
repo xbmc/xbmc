@@ -118,9 +118,10 @@ static void drawing_finish(ASS_Drawing *drawing, int raw_mode)
     // Close the last contour
     drawing_close_shape(drawing);
 
-    ass_msg(drawing->library, MSGL_V,
-            "Parsed drawing with %d points and %d contours", ol->n_points,
-            ol->n_contours);
+    if (drawing->library)
+        ass_msg(drawing->library, MSGL_V,
+                "Parsed drawing with %d points and %d contours", ol->n_points,
+                ol->n_contours);
 
     if (raw_mode)
         return;
@@ -269,7 +270,7 @@ static void drawing_evaluate_curve(ASS_Drawing *drawing,
 {
     double cx3, cx2, cx1, cx0, cy3, cy2, cy1, cy0;
     double t, h, max_accel, max_accel1, max_accel2;
-    int x0,y0,x1,y1,x2,y2,x3,y3;
+    int x0, y0, x1, y1, x2, y2, x3, y3;
     FT_Vector cur = {0, 0};
 
     cur = token->point;
@@ -368,7 +369,8 @@ ASS_Drawing *ass_drawing_new(void *fontconfig_priv, ASS_Font *font,
     drawing->fontconfig_priv = fontconfig_priv;
     drawing->font = font;
     drawing->ftlibrary = lib;
-    drawing->library = font->library;
+    if (font)
+        drawing->library = font->library;
 
     drawing->scale_x = 1.;
     drawing->scale_y = 1.;

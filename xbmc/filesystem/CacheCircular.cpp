@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h"
 #include "utils/log.h"
 #include "threads/SingleLock.h"
@@ -177,8 +178,8 @@ int64_t CCacheCircular::WaitForData(unsigned int minumum, unsigned int millis)
   if(minumum > m_size - m_size_back)
     minumum = m_size - m_size_back;
 
-  unsigned int time = CTimeUtils::GetTimeMS() + millis;
-  while (!IsEndOfInput() && avail < minumum && CTimeUtils::GetTimeMS() < time )
+  XbmcThreads::EndTime endtime(millis);
+  while (!IsEndOfInput() && avail < minumum && !endtime.IsTimePast() )
   {
     lock.Leave();
     m_written.WaitMSec(50); // may miss the deadline. shouldn't be a problem.

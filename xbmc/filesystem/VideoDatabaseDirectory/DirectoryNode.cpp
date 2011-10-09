@@ -50,6 +50,7 @@
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -289,7 +290,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
     return;
 
   // hack - as the season node might return episodes
-  auto_ptr<CDirectoryNode> pNode(ParseURL(items.m_strPath));
+  auto_ptr<CDirectoryNode> pNode(ParseURL(items.GetPath()));
 
   switch (pNode->GetChildType())
   {
@@ -297,15 +298,15 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
       {
         CStdString strLabel = g_localizeStrings.Get(20366);
         pItem.reset(new CFileItem(strLabel));  // "All Seasons"
-        pItem->m_strPath = BuildPath() + "-1/";
+        pItem->SetPath(BuildPath() + "-1/");
         // set the number of watched and unwatched items accordingly
         int watched = 0;
         int unwatched = 0;
         for (int i = 0; i < items.Size(); i++)
         {
           CFileItemPtr item = items[i];
-          watched += item->GetPropertyInt("watchedepisodes");
-          unwatched += item->GetPropertyInt("unwatchedepisodes");
+          watched += (int)item->GetProperty("watchedepisodes").asInteger();
+          unwatched += (int)item->GetProperty("unwatchedepisodes").asInteger();
         }
         pItem->SetProperty("totalepisodes", watched + unwatched);
         pItem->SetProperty("numepisodes", watched + unwatched); // will be changed later to reflect watchmode setting

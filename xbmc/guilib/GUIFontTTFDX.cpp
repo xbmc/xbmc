@@ -30,7 +30,7 @@
 #include "utils/log.h"
 
 // stuff for freetype
-#include "ft2build.h"
+#include <ft2build.h>
 
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
@@ -100,6 +100,9 @@ void CGUIFontTTFDX::End()
     return;
 
   if (--m_nestedBeginCount > 0)
+    return;
+
+  if (m_vertex_count == 0)
     return;
 
   unsigned index_size = m_vertex_size * 6 / 4;

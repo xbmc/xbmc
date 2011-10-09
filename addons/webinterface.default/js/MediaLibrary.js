@@ -25,14 +25,19 @@ var MediaLibrary = function() {
 	}
 
 MediaLibrary.prototype = {
+    playlists: { },  
+  
 		init: function() {
 			this.bindControls();
+      this.getPlaylists();
 		},
+		
 		bindControls: function() {
 			$('#musicLibrary').click(jQuery.proxy(this.musicLibraryOpen, this));
 			$('#movieLibrary').click(jQuery.proxy(this.movieLibraryOpen, this));
 			$('#tvshowLibrary').click(jQuery.proxy(this.tvshowLibraryOpen, this));
 			$('#pictureLibrary').click(jQuery.proxy(this.pictureLibraryOpen, this));
+			$('#remoteControl').click(jQuery.proxy(this.remoteControlOpen, this));
 			$('#overlay').click(jQuery.proxy(this.hideOverlay, this));
 			$(window).resize(jQuery.proxy(this.updatePlayButtonLocation, this));
 		},
@@ -40,6 +45,7 @@ MediaLibrary.prototype = {
 			$('#musicLibrary').removeClass('selected');
 			$('#movieLibrary').removeClass('selected');
 			$('#tvshowLibrary').removeClass('selected');
+			$('#remoteControl').removeClass('selected');
 			$('#pictureLibrary').removeClass('selected');
 			this.hideOverlay();
 		},
@@ -59,6 +65,195 @@ MediaLibrary.prototype = {
 			
 			return result;
 		},
+
+    getPlaylists: function() {
+      jQuery.ajax({
+				type: 'POST', 
+				url: JSON_RPC + '?GetPlaylists', 
+				data: '{"jsonrpc": "2.0", "method": "Playlist.GetPlaylists", "id": 1}', 
+				timeout: 3000,
+				success: jQuery.proxy(function(data) {
+					if (data && data.result && data.result.length > 0) {
+            $.each($(data.result), jQuery.proxy(function(i, item) {
+              this.playlists[item.type] = item.playlistid;
+            }, this));
+          }
+				}, this),
+				error: jQuery.proxy(function(data, error) {
+					displayCommunicationError();
+					setTimeout(jQuery.proxy(this.updateState, this), 2000);
+				}, this), 
+				dataType: 'json'});
+    },
+		remoteControlOpen: function(event) {
+			this.resetPage();
+			$('#remoteControl').addClass('selected');
+			$('.contentContainer').hide();
+			var libraryContainer = $('#remoteContainer');
+			if (!libraryContainer || libraryContainer.length == 0) {
+				$('#spinner').show();
+				libraryContainer = $('<div>');
+				libraryContainer.attr('id', 'remoteContainer')
+								.addClass('contentContainer');
+				$('#content').append(libraryContainer);
+				var keys=[
+						{name:'up',width:'40px',height:'30px',top:'28px',left:'58px'}
+						,{name:'down',width:'40px',height:'30px',top:'122px',left:'58px'}
+						,{name:'left',width:'40px',height:'30px',top:'74px',left:'15px'}
+						,{name:'right',width:'40px',height:'30px',top:'74px',left:'104px'}
+						,{name:'ok',width:'40px',height:'30px',top:'74px',left:'58px'}
+						,{name:'back',width:'40px',height:'30px',top:'13px',left:'161px'}
+						,{name:'home',width:'40px',height:'30px',top:'154px',left:'8px'}
+						,{name:'mute',width:'40px',height:'30px',top:'107px',left:'391px'}
+						,{name:'power',width:'30px',height:'30px',top:'-3px',left:'13px'}
+						,{name:'volumeup',width:'30px',height:'30px',top:'49px',left:'422px'}
+						,{name:'volumedown',width:'30px',height:'30px',top:'49px',left:'367px'}
+						,{name:'playpause',width:'32px',height:'23px',top:'62px',left:'260px'}
+						,{name:'stop',width:'32px',height:'23px',top:'62px',left:'211px'}
+						,{name:'next',width:'38px',height:'25px',top:'102px',left:'304px'}
+						,{name:'previous',width:'38px',height:'25px',top:'101px',left:'160px'}
+						,{name:'forward',width:'32px',height:'23px',top:'102px',left:'259px'}
+						,{name:'rewind',width:'32px',height:'23px',top:'101px',left:'211px'}
+						,{name:'cleanlib_a',width:'46px',height:'26px',top:'47px',left:'553px'}
+						,{name:'updatelib_a',width:'46px',height:'26px',top:'47px',left:'492px'}
+						,{name:'cleanlib_v',width:'46px',height:'26px',top:'111px',left:'553px'}
+						,{name:'updatelib_v',width:'46px',height:'26px',top:'111px',left:'492px'}
+					 ];
+				for (var akey in keys) {
+					var aremotekey=$('<p>').attr('id',keys[akey]['name']);
+					aremotekey.addClass('remote_key')
+						.css('height',keys[akey]['height'])
+						.css('width',keys[akey]['width'])
+						.css('top',keys[akey]['top'])
+						.css('left',keys[akey]['left'])
+						//.css('border','1px solid black')
+						.bind('click',{key: keys[akey]['name']},jQuery.proxy(this.pressRemoteKey,this));
+						libraryContainer.append(aremotekey);
+				}
+				
+	
+			} else {
+				libraryContainer.show();
+				libraryContainer.trigger('scroll');
+			}
+
+			$('#spinner').hide();
+		},
+
+		pressRemoteKey: function(event) {
+			var keyPressed=event.data.key;
+			$('#spinner').show();
+			var player = -1;
+      // TODO: Get active player
+			if($('#videoDescription').is(':visible'))
+			  player = this.playlists["video"];
+			else if($('#audioDescription').is(':visible'))
+        player = this.playlists["audio"];
+        
+			//common part
+			switch(keyPressed) {
+				case 'cleanlib_a':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioLibrary.Clean", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;	
+				case 'updatelib_a':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "AudioLibrary.Scan", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;	
+				case 'cleanlib_v':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoLibrary.Clean", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;	
+				case 'updatelib_v':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;	
+				case 'back':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Back", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;	
+				case 'home':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Home", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;
+				case 'mute':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetMute", "params": { "mute": "toggle" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;
+				case 'power':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "System.Shutdown", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					return;
+				case 'volumeup':
+        jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume" ] }, "id": 1}', function(data){
+						var volume = data.result.volume + 1;
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": '+volume+' }, "id": 1}', function(data){
+					
+						$('#spinner').hide();
+			  			 }, 'json');
+			   }, 'json');
+					return;
+				case 'volumedown':
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume" ] }, "id": 1}', function(data){
+						var volume = data.result.volume - 1;
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": '+volume+' }, "id": 1}', function(data){
+					
+						$('#spinner').hide();
+			  			 }, 'json');
+			   }, 'json');
+					return;
+			}
+			//menus or other sections
+			if (player == -1)
+			{	
+				switch(keyPressed) {
+					case 'up':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Up", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'down':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Down", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'left':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Left", "id": 1}', function(data){$('#spinner').hide();}, 'json');	
+						return;
+					case 'right':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Right", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;
+					case 'ok':
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Select", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+						return;				
+				}
+			}
+      
+      if (player >= 0)
+      {
+        switch(keyPressed) {
+          case 'up':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "bigforward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'down':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "bigbackward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'left':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "smallbackward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');	
+            return;
+          case 'right':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Seek", "params": { "playerid": ' + player + ', "value": "smallforward" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'playpause':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.PlayPause", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'stop':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.Stop", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'next':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.GoNext", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'previous':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.GoPrevious", "params": { "playerid": ' + player + ' }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'forward':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + player + ', "speed": "increment" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+          case 'rewind':
+            jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Player.SetSpeed", "params": { "playerid": ' + player + ', "speed": "decrement" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
+            return;
+        }
+      }
+		},
+
 		musicLibraryOpen: function(event) {
 			this.resetPage();
 			$('#musicLibrary').addClass('selected');
@@ -70,7 +265,7 @@ MediaLibrary.prototype = {
 				libraryContainer.attr('id', 'libraryContainer')
 								.addClass('contentContainer');
 				$('#content').append(libraryContainer);
-				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "limits": { "start": 0 }, "fields": ["description", "theme", "mood", "style", "type", "label", "artist", "genre", "rating", "title", "year", "thumbnail"], "sort": { "method": "artist" } }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "limits": { "start": 0 }, "properties": ["description", "theme", "mood", "style", "type", "label", "artist", "genre", "rating", "title", "year", "thumbnail"], "sort": { "method": "artist" } }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.albums) {
 						this.albumList = data.result.albums;
 						$.each($(this.albumList), jQuery.proxy(function(i, item) {
@@ -119,6 +314,9 @@ MediaLibrary.prototype = {
 					break;
 				case 'tvshow':
 					className = 'floatableTVShowCover';
+					break;
+				case 'tvshowseason':
+					className = 'floatableTVShowCoverSeason';
 					break;
 				case 'image':
 				case 'directory':
@@ -172,7 +370,7 @@ MediaLibrary.prototype = {
 			$('#topScrollFade').hide();
 			if (!albumDetailsContainer || albumDetailsContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetSongs', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "fields": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetSongs', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
 					albumDetailsContainer = $('<div>');
 					albumDetailsContainer.attr('id', 'albumDetails' + event.data.album.albumid)
 										 .addClass('contentContainer')
@@ -193,27 +391,27 @@ MediaLibrary.prototype = {
 							}
 							$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 						}
-						var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2);
+						var trackRow = $('<tr>').addClass('trackRow').addClass('tr' + i % 2).bind('click', { album: event.data.album, itmnbr: i }, jQuery.proxy(this.playTrack,this));
 						var trackNumberTD = $('<td>')
 							.html(item.track)
-							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							
 						trackRow.append(trackNumberTD);
 						var trackTitleTD = $('<td>')
 							.html(item.title);
-							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							
 						trackRow.append(trackTitleTD);
 						var trackDurationTD = $('<td>')
 							.addClass('time')
 							.html(durationToString(item.duration));
-							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							
 						trackRow.append(trackDurationTD);
 						var trackArtistTD = $('<td>')
 							.html(item.artist);
-							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							
 						trackRow.append(trackArtistTD);
 						var trackGenreTD = $('<td>')
 							.html(item.genre);
-							//.bind('click', { song: item, album: event.data.album }, jQuery.proxy(this.playTrack, this));
+							
 						trackRow.append(trackGenreTD);
 						$('#albumDetails' + event.data.album.albumid + ' .resultSet').append(trackRow);
 					}, this));
@@ -242,83 +440,173 @@ MediaLibrary.prototype = {
 				$('#albumDetails' + event.data.album.albumid).show();
 			}
 		},
+		
+		togglePosterView: function(event){
+			var view=event.data.mode;
+			var wthumblist,hthumblist,hthumbdetails;
+			$("#toggleBanner").removeClass('activeMode');
+			$("#togglePoster").removeClass('activeMode');
+			$("#toggleLandscape").removeClass('activeMode');
+			switch(view) {
+				case 'poster':
+					setCookie('TVView','poster');
+					wthumblist='135px';
+					hthumblist='199px';
+					hthumbdetails='559px';
+					$("#togglePoster").addClass('activeMode');
+					break;
+				case 'landscape':
+					setCookie('TVView','landscape');
+					wthumblist='210px';
+					hthumblist='118px';
+					hthumbdetails='213px';
+					$("#toggleLandscape").addClass('activeMode');
+					break;
+				default: //set banner view as default
+					setCookie('TVView','banner');
+					wthumblist='379px';
+					hthumblist='70px';
+					hthumbdetails='70px';
+					$("#toggleBanner").addClass('activeMode');
+					break;
+			}
+			$(".floatableTVShowCover, .floatableTVShowCover div.imgWrapper, .floatableTVShowCover img, .floatableTVShowCover div.imgWrapper div.inner").css('width',wthumblist).css('height',hthumblist);
+			$(".floatableTVShowCoverSeason div.imgWrapper, .floatableTVShowCoverSeason div.imgWrapper div.inner,.floatableTVShowCoverSeason img, .floatableTVShowCoverSeason").css('height',hthumbdetails);			
+		},
+		
 		displayTVShowDetails: function(event) {
 			var tvshowDetailsContainer = $('#tvShowDetails' + event.data.tvshow.tvshowid);
 			$('#topScrollFade').hide();
+			toggle=this.toggle.detach();	
 			if (!tvshowDetailsContainer || tvshowDetailsContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetTVShowSeasons', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": { "fields": [ "season", "showtitle", "playcount", "episode", "thumbnail" ], "tvshowid" : ' + event.data.tvshow.tvshowid + ' }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetTVShowSeasons', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": { "properties": [ "season", "showtitle", "playcount", "episode", "thumbnail","fanart" ], "tvshowid" : ' + event.data.tvshow.tvshowid + ' }, "id": 1}', jQuery.proxy(function(data) {
 					tvshowDetailsContainer = $('<div>');
 					tvshowDetailsContainer.attr('id', 'tvShowDetails' + event.data.tvshow.tvshowid)
 										  .css('display', 'none')
 										  .addClass('contentContainer')
 										  .addClass('tvshowContainer');
-					tvshowDetailsContainer.append(this.generateThumb('tvshow', event.data.tvshow.thumbnail, event.data.tvshow.title));
+					var showThumb = this.generateThumb('tvshowseason', event.data.tvshow.thumbnail, event.data.tvshow.title);
 					if (data && data.result && data.result.seasons && data.result.seasons.length > 0) {
-						var absWrapper = $('<div>').addClass('showDetailsWrapper');
 						var showDetails = $('<div>').addClass('showDetails');
+						showDetails.append(toggle);
 						showDetails.append($('<p>').html(data.result.seasons[0].showtitle).addClass('showTitle'));
-						absWrapper.append(showDetails);
-						var seasonSelectionContainer = $('<div>').addClass('seasonPicker');
-						var seasonSelectionList = $('<ul>');
-						var episodeCount = 0;
-						var firstSeason;
+						var seasonSelectionSelect = $('<select>').addClass('seasonPicker');
+						//var episodeCount = 0;
+						this.tvActiveShowContainer = tvshowDetailsContainer;
+						//var fanart;
 						$.each($(data.result.seasons), jQuery.proxy(function(i, item) {
-							episodeCount += item.episode;
-							var season = $('<li>');
-							season.text(item.title);
-							alert(season.text());
-							if (i == 0) {
-								season.addClass('activeSeason');
-								firstSeason = season;
-								this.tvActiveShowContainer = tvshowDetailsContainer;
-							}
-							season.bind('click', {tvshow: event.data.tvshow.tvshowid, season: item, element: season}, jQuery.proxy(this.displaySeasonListings, this));
-							seasonSelectionList.append(season);
+//							if(fanart==null && item.fanart!=null){
+//								fanart=item.fanart;
+//							}
+//							//episodeCount += item.episode;
+							var season = $('<option>').attr('value',i);
+							season.text(item.label);
+							seasonSelectionSelect.append(season);
+							
 						}, this));
-						showDetails.append($('<p>').html('<span class="heading">Episodes:</span> ' + episodeCount));
-						seasonSelectionContainer.append(seasonSelectionList);
-						absWrapper.append(seasonSelectionContainer);
-						tvshowDetailsContainer.append(absWrapper);
-						if (firstSeason) {
-							firstSeason.trigger('click');
-						}
+//						if(fanart!=null)
+//						{
+//							$('.contentContainer').css('background','url("'+this.getThumbnailPath(fanart)+'")').css('background-size','cover');	
+//						}
+						seasonSelectionSelect.bind('change', {tvshow: event.data.tvshow.tvshowid, seasons: data.result.seasons, element: seasonSelectionSelect}, jQuery.proxy(this.displaySeasonListings, this));
+						//showDetails.append($('<p>').html('<span class="heading">Episodes:</span> ' + episodeCount));
+						showDetails.append(seasonSelectionSelect);
+						tvshowDetailsContainer.append(showDetails);
+						tvshowDetailsContainer.append(showThumb);
+						seasonSelectionSelect.trigger('change');
 						$('#content').append(tvshowDetailsContainer);
+						if(getCookie('TVView')!=null && getCookie('TVView')!='banner'){
+						var view=getCookie('TVView');
+						switch(view) {
+							case 'poster':
+								togglePoster.trigger('click');
+								break;
+							case 'landscape':
+								toggleLandscape.trigger('click')
+								break;						
+						}
+					}
 						tvshowDetailsContainer.fadeIn();
 					}
 					$('#spinner').hide();
 				}, this), 'json');
 			} else {
 				$('.contentContainer').hide();
-				$('#tvShowDetails' + event.data.show.tvshowid);
+				$('#tvShowDetails' + event.data.tvshow.tvshowid).show();
+				$('#tvShowDetails' + event.data.tvshow.tvshowid +' select').trigger('change');
 			}
 		},
 		displaySeasonListings: function(event) {
-			if (event.data.element != this.tvActiveSeason) {
-				//Remove style from old season.
-				if (this.tvActiveSeason) {
-					$(this.tvActiveSeason).removeClass('activeSeason');
-				}
-				//Hide old listings
-				var oldListings = $('.episodeListingsContainer', this.tvActiveShowContainer).fadeOut();
-				//Update ActiveSeason
-				this.tvActiveSeason = event.data.element;
-				$(this.tvActiveSeason).addClass('activeSeason');			
-				//Populate new listings
-				jQuery.post(JSON_RPC + '?GetTVSeasonEpisodes', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "fields": [ "title", "plot", "votes", "rating", "writingcredits", "firstaired", "playcount", "runtime", "director", "productioncode", "season", "episode", "showtitle", "lastplayed", "thumbnail", "file" ], "season" : ' + event.data.season.season + ', "tvshowid" : ' + event.data.tvshow + ' }, "id": 1}', jQuery.proxy(function(data) {
-					var episodeListingsContainer = $('<div>').addClass('episodeListingsContainer');
-					var list = $('<ul>');
-					$.each($(data.result.episodes), jQuery.proxy(function(i, item) {
-						var episodePicture = $('<img>');
-						episodePicture.attr('src', this.getThumbnailPath(item.thumbnail));
-						var episodeTitle = $('<p>').html(item.title);
-						var episode = $('<li>').append(episodePicture).append(episodeTitle);
-						list.append(episode);
-					}, this));
-					episodeListingsContainer.append(list);
-					$(this.tvActiveShowContainer).prepend(episodeListingsContainer);
-				}, this), 'json');
+			//retrieve selected season
+			var selectedVal=event.data.element.val();
+			var seasons=event.data.seasons;
+			$('#topScrollFade').hide();
+			//Hide old listings
+			var oldListings = $('.episodeListingsContainer', this.tvActiveShowContainer).fadeOut();
+			//Update ActiveSeason
+			this.tvActiveSeason = selectedVal;			
+			//Populate new listings
+			jQuery.post(JSON_RPC + '?GetTVSeasonEpisodes', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "properties": [ "title", "thumbnail","episode","plot","season"], "season" : ' + seasons[selectedVal].season + ', "tvshowid" : ' + event.data.tvshow + ' }, "id": 1}', jQuery.proxy(function(data) {
+				var episodeListingsContainer = $('<div>').addClass('episodeListingsContainer');
+				var episodeTable= $('<table>').addClass('seasonView').html('<thead><tr class="headerRow"><th class="thumbHeader">N&deg;</th><th>Title</th><th class="thumbHeader">Thumb</th><th class="thumbHeader">Details</th></tr></thead><tbody class="resultSet"></tbody>');	
+				$.each($(data.result.episodes), jQuery.proxy(function(i, item) {
+					var episodeRow = $('<tr>').addClass('episodeRow').addClass('tr' + i % 2);
+					var episodePictureImg = $('<img>').bind('click', { episode: item }, jQuery.proxy(this.playTVShow, this)).css('cursor','pointer');
+					episodePictureImg.attr('src', this.getThumbnailPath(item.thumbnail));
+					var episodePicture=$('<td>').addClass('episodeThumb').append(episodePictureImg).bind('click', { episode: item }, jQuery.proxy(this.playTVShow, this));
+					var episodeNumber = $('<td>').addClass('episodeNumber').html(item.episode).bind('click', { episode: item }, jQuery.proxy(this.playTVShow, this));
+					var episodeTitle = $('<td>').html(item.title).bind('click', { episode: item }, jQuery.proxy(this.playTVShow, this));
+					var episodeDetails = $('<td class="info">').html('').bind('click',{episode:item}, jQuery.proxy(this.displayEpisodeDetails, this)).css('cursor','pointer');
+					episodeRow.append(episodeNumber).append(episodeTitle).append(episodePicture).append(episodeDetails);
+					episodeTable.append(episodeRow);
+				}, this));
+				episodeListingsContainer.append(episodeTable);
+				$(this.tvActiveShowContainer).append(episodeListingsContainer);
+			}, this), 'json');
+			
+		},
+		
+		displayEpisodeDetails: function(event) {
+			var episodeDetails = $('<div>').attr('id', 'episode-' + event.data.episode.episodeid).addClass('episodePopoverContainer');
+			episodeDetails.append($('<img>').attr('src', '/images/close-button.png').addClass('closeButton').bind('click', jQuery.proxy(this.hideOverlay, this)));
+			episodeDetails.append($('<img>').attr('src', this.getThumbnailPath(event.data.episode.thumbnail)).addClass('episodeCover'));
+			episodeDetails.append($('<div>').addClass('playIcon').bind('click', {episode: event.data.episode}, jQuery.proxy(this.playTVShow, this)));
+			var episodeTitle = $('<p>').addClass('episodeTitle');
+			var yearText = event.data.episode.year ? ' <span class="year">(' + event.data.episode.year + ')</span>' : '';
+			episodeTitle.html(event.data.episode.title + yearText);
+			episodeDetails.append(episodeTitle);
+			if (event.data.episode.runtime) {
+				episodeDetails.append($('<p>').addClass('runtime').html('<strong>Runtime:</strong> ' + event.data.epispde.runtime + ' minutes'));
 			}
+			if (event.data.episode.season) {
+				episodeDetails.append($('<p>').addClass('season').html('<strong>Season:</strong> ' + event.data.episode.season));
+			}
+			if (event.data.episode.episode) {
+				episodeDetails.append($('<p>').addClass('episode').html('<strong>Episode:</strong> ' + event.data.episode.episode));
+			}
+			if (event.data.episode.plot) {
+				episodeDetails.append($('<p>').addClass('plot').html('<strong>Plot:</strong> <br/><br/>' +event.data.episode.plot));
+			}
+			if (event.data.episode.genre) {
+				episodeDetails.append($('<p>').addClass('genre').html('<strong>Genre:</strong> ' + event.data.episode.genre));
+			}
+			if (event.data.episode.rating) {
+				//Todo
+			}
+			if (event.data.episode.director) {
+				episodeDetails.append($('<p>').addClass('director').html('<strong>Directed By:</strong> ' + event.data.episode.director));
+			}
+			this.activeCover = episodeDetails;
+			$('body').append(episodeDetails);
+			$('#overlay').show();
+			this.updatePlayButtonLocation();
+		},
+		
+		playTVShow: function(event) {
+      jQuery.post(JSON_RPC + '?AddTvShowToPlaylist', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "episodeid": ' + event.data.episode.episodeid + ' } }, "id": 1}', jQuery.proxy(function(data) {
+        this.hideOverlay();
+      }, this), 'json');
 		},
 		hideOverlay: function(event) {
 			if (this.activeCover) {
@@ -332,15 +620,24 @@ MediaLibrary.prototype = {
 			if (movieContainer.length > 0) {
 				var playIcon = $('.playIcon');
 				if (playIcon.length > 0) {
-					playIcon.width($(movieContainer[0]).width());
-					playIcon.height($(movieContainer[0]).height());
+					var heightpi=$(movieContainer[0]).height();
+					playIcon.width(Math.floor(0.65*heightpi));
+					playIcon.height(heightpi);
+				}
+			}
+			var episodeContainer = $('.episodeCover');
+			if (episodeContainer.length > 0) {
+				var playIcon = $('.playIcon');
+				if (playIcon.length > 0) {
+					var widthpi=$(episodeContainer[0]).width();
+					playIcon.width(widthpi);
+					//assume 16/9 thumb
+					playIcon.height(Math.floor(widthpi*9/16));
 				}
 			}
 		},
 		playMovie: function(event) {
-			var file = this.replaceAll(event.data.movie.file, "\\", "\\\\");
-			alert(file);
-			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "XBMC.Play", "params": { "file": "' + file + '" }, "id": 1}', jQuery.proxy(function(data) {
+			jQuery.post(JSON_RPC + '?PlayMovie', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "movieid": ' + event.data.movie.movieid + ' } }, "id": 1}', jQuery.proxy(function(data) {
 				this.hideOverlay();
 			}, this), 'json');
 		},
@@ -374,11 +671,11 @@ MediaLibrary.prototype = {
 			this.updatePlayButtonLocation();
 		},
 		playTrack: function(event) {
-			jQuery.post(JSON_RPC + '?ClearPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Clear", "id": 1}', jQuery.proxy(function(data) {
+			jQuery.post(JSON_RPC + '?ClearPlaylist', '{"jsonrpc": "2.0", "method": "Playlist.Clear", "params": { "playlistid": ' + this.playlists["audio"] + ' }, "id": 1}', jQuery.proxy(function(data) {
 				//check that clear worked.
-				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Add", "params": { "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "playlistid": ' + this.playlists["audio"] + ', "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}', jQuery.proxy(function(data) {
 					//play specific song in playlist
-					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "AudioPlaylist.Play", "params": { "item": { "file": ' + event.data.song.file + ' } }, "id": 1}', function() {}, 'json');
+					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "playlist": { "playlistid": ' + this.playlists["audio"] + ', "position": '+ event.data.itmnbr + ' } }, "id": 1}', function() {}, 'json');
 				}, this), 'json');
 			}, this), 'json');
 		},
@@ -389,7 +686,7 @@ MediaLibrary.prototype = {
 			var libraryContainer = $('#movieLibraryContainer');
 			if (!libraryContainer || libraryContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetMovies', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "limits": { "start": 0 }, "fields": [ "genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "runtime", "year", "playcount", "rating", "thumbnail", "file" ], "sort": { "method": "sorttitle", "ignorearticle": true } }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetMovies', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "limits": { "start": 0 }, "properties": [ "genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "runtime", "year", "playcount", "rating", "thumbnail", "file" ], "sort": { "method": "sorttitle", "ignorearticle": true } }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.movies) {
 							libraryContainer = $('<div>');
 							libraryContainer.attr('id', 'movieLibraryContainer')
@@ -423,9 +720,26 @@ MediaLibrary.prototype = {
 			var libraryContainer = $('#tvshowLibraryContainer');
 			if (!libraryContainer || libraryContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetTVShows', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "fields": ["genre", "plot", "title", "lastplayed", "episode", "year", "playcount", "rating", "thumbnail", "studio", "mpaa", "premiered"] }, "id": 1}', jQuery.proxy(function(data) {
+				toggle=$('<p>').addClass('toggle');
+				togglePoster= $('<span>Poster</span>');
+				togglePoster.attr('id', 'togglePoster')
+							.css('cursor','pointer')
+							.bind('click',{mode: 'poster'},jQuery.proxy(this.togglePosterView,this));
+				toggleBanner= $('<span>Banner</span>');
+				toggleBanner.attr('id', 'toggleBanner')
+							.css('cursor','pointer')
+							.addClass('activeMode')
+							.bind('click',{mode: 'banner'},jQuery.proxy(this.togglePosterView,this));
+				toggleLandscape= $('<span>Landscape</span>');
+				toggleLandscape.attr('id', 'toggleLandscape')
+							.css('cursor','pointer')
+							.bind('click',{mode: 'landscape'},jQuery.proxy(this.togglePosterView,this));
+				toggle.append(toggleBanner).append(' | ').append(togglePoster).append(' | ').append(toggleLandscape);
+				this.toggle=toggle;				
+				jQuery.post(JSON_RPC + '?GetTVShows', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["genre", "plot", "title", "lastplayed", "episode", "year", "playcount", "rating", "thumbnail", "studio", "mpaa", "premiered"] }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.tvshows) {
-							libraryContainer = $('<div>');
+							libraryContainer = $('<div>');									
+							libraryContainer.append(toggle);
 							libraryContainer.attr('id', 'tvshowLibraryContainer')
 											.addClass('contentContainer');
 							$('#content').append(libraryContainer);
@@ -442,11 +756,23 @@ MediaLibrary.prototype = {
 					libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
 					libraryContainer.trigger('scroll');
 					myScroll = new iScroll('tvshowLibraryContainer');
-				}, this), 'json');
+					if(getCookie('TVView')!=null && getCookie('TVView')!='banner'){
+						var view=getCookie('TVView');
+						switch(view) {
+							case 'poster':
+								togglePoster.trigger('click');
+								break;
+							case 'landscape':
+								toggleLandscape.trigger('click')
+								break;						
+						}
+					}
+				}, this), 'json');					
 			} else {
-				libraryContainer.show();
+				libraryContainer.prepend($(".toggle").detach()).show();
 				libraryContainer.trigger('scroll');
 			}
+			
 		},
 		updateScrollEffects: function(event) {
 			if (event.data.activeLibrary && $(event.data.activeLibrary).scrollTop() > 0) {
@@ -456,7 +782,7 @@ MediaLibrary.prototype = {
 			}
 		},
 		startSlideshow: function(event) {
-			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "XBMC.StartSlideshow", "params": { "recursive" : "true", "random":"true", "directory" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" }, "id": 1}', null, 'json');
+			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "slideshow": { "recursive" : "true", "random":"true", "directory" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" } }, "id": 1}', null, 'json');
 		},
 		showDirectory: function(event) {
 			var directory = event.data.directory.file;

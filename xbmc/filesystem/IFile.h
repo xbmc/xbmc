@@ -51,6 +51,8 @@ struct SCacheStatus
 {
   uint64_t forward;  /**< number of bytes cached forward of current position */
   unsigned maxrate;  /**< maximum number of bytes per second cache is allowed to fill */
+  unsigned currate;  /**< average read rate from source file since last position change */
+  bool     full;     /**< is the cache full */
 };
 
 typedef enum {

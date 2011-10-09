@@ -56,37 +56,56 @@ CGUISliderControl::~CGUISliderControl(void)
 {
 }
 
-void CGUISliderControl::Render()
+void CGUISliderControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
-  m_guiBackground.SetPosition( m_posX, m_posY );
+  bool dirty = false;
+
+  dirty |= m_guiBackground.SetPosition( m_posX, m_posY );
   int infoCode = m_iInfoCode;
   if (m_action && (!m_dragging || m_action->fireOnDrag))
     infoCode = m_action->infoCode;
   if (infoCode)
-    SetIntValue(g_infoManager.GetInt(infoCode));
+  {
+    int val;
+    if (g_infoManager.GetInt(val, infoCode))
+      SetIntValue(val);
+  }
 
-  float fScaleX = m_width == 0 ? 1.0f : m_width / m_guiBackground.GetTextureWidth();
   float fScaleY = m_height == 0 ? 1.0f : m_height / m_guiBackground.GetTextureHeight();
 
-  m_guiBackground.SetHeight(m_height);
-  m_guiBackground.SetWidth(m_width);
-  m_guiBackground.Render();
+  dirty |= m_guiBackground.SetHeight(m_height);
+  dirty |= m_guiBackground.SetWidth(m_width);
+  dirty |= m_guiBackground.Process(currentTime);
 
   // we render the nib centered at the appropriate percentage, except where the nib
   // would overflow the background image
   CGUITexture &nib = (m_bHasFocus && !IsDisabled()) ? m_guiMidFocus : m_guiMid;
 
-  float offset = GetProportion() * m_guiBackground.GetTextureWidth() - nib.GetTextureWidth()/2;
-  if (offset > m_guiBackground.GetTextureWidth() - nib.GetTextureWidth())
-    offset = m_guiBackground.GetTextureWidth() - nib.GetTextureWidth();
+  dirty |= nib.SetHeight(nib.GetTextureHeight() * fScaleY);
+  dirty |= nib.SetWidth(nib.GetHeight() * 2);
+  CAspectRatio ratio(CAspectRatio::AR_KEEP); ratio.align = ASPECT_ALIGN_LEFT | ASPECT_ALIGNY_CENTER;
+  dirty |= nib.SetAspectRatio(ratio);
+  CRect rect = nib.GetRenderRect();
+
+  float offset = GetProportion() * m_width - rect.Width() / 2;
+  if (offset > m_width - rect.Width())
+    offset = m_width - rect.Width();
   if (offset < 0)
     offset = 0;
+  dirty |= nib.SetPosition(m_guiBackground.GetXPosition() + offset, m_guiBackground.GetYPosition() );
+  dirty |= nib.Process(currentTime);
 
-  nib.SetPosition(m_guiBackground.GetXPosition() + offset * fScaleX, m_guiBackground.GetYPosition() );
-  nib.SetWidth(nib.GetTextureWidth() * fScaleX);
-  nib.SetHeight(nib.GetTextureHeight() * fScaleY);
+  if (dirty)
+    MarkDirtyRegion();
+
+  CGUIControl::Process(currentTime, dirtyregions);
+}
+
+void CGUISliderControl::Render()
+{
+  m_guiBackground.Render();
+  CGUITexture &nib = (m_bHasFocus && !IsDisabled()) ? m_guiMidFocus : m_guiMid;
   nib.Render();
-
   CGUIControl::Render();
 }
 
@@ -358,6 +377,27 @@ EVENT_RESULT CGUISliderControl::OnMouseEvent(const CPoint &point, const CMouseEv
     Move(-10);
     return EVENT_RESULT_HANDLED;
   }
+  else if (event.m_id == ACTION_GESTURE_NOTIFY)
+  {
+    return EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA;
+  }  
+  else if (event.m_id == ACTION_GESTURE_BEGIN)
+  { // grab exclusive access
+    CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, GetID(), GetParentID());
+    SendWindowMessage(msg);
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_PAN)
+  { // do the drag 
+    SetFromPosition(point);
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_END)
+  { // release exclusive access
+    CGUIMessage msg(GUI_MSG_EXCLUSIVE_MOUSE, 0, GetParentID());
+    SendWindowMessage(msg);
+    return EVENT_RESULT_HANDLED;
+  }
   return EVENT_RESULT_UNHANDLED;
 }
 
@@ -380,12 +420,14 @@ CStdString CGUISliderControl::GetDescription() const
   return description;
 }
 
-void CGUISliderControl::UpdateColors()
+bool CGUISliderControl::UpdateColors()
 {
-  CGUIControl::UpdateColors();
-  m_guiBackground.SetDiffuseColor(m_diffuseColor);
-  m_guiMid.SetDiffuseColor(m_diffuseColor);
-  m_guiMidFocus.SetDiffuseColor(m_diffuseColor);
+  bool changed = CGUIControl::UpdateColors();
+  changed |= m_guiBackground.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiMid.SetDiffuseColor(m_diffuseColor);
+  changed |= m_guiMidFocus.SetDiffuseColor(m_diffuseColor);
+
+  return changed;
 }
 
 float CGUISliderControl::GetProportion() const

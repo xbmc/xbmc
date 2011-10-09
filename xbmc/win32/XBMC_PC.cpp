@@ -20,6 +20,8 @@
  */
 
 #include "settings/AdvancedSettings.h"
+#include "settings/AppParamParser.h"
+#include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "WIN32Util.h"
 #include "shellapi.h"
@@ -143,44 +145,39 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR commandLine, INT )
   //Initialize COM
   CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
-  // parse the command line
-  CStdStringW strcl(commandLine);
-  LPWSTR *szArglist;
-  int nArgs;
-
+  // Handle numeric values using the default/POSIX standard
   setlocale(LC_NUMERIC, "C");
+
+  // If the command line passed to WinMain, commandLine, is not "" we need 
+  // to process the command line arguments.
+  // Note that commandLine does not include the program name and can be 
+  // equal to "" if no arguments were supplied. By contrast GetCommandLineW()
+  // does include the program name and is never equal to "".
   g_advancedSettings.Initialize();
-  szArglist = CommandLineToArgvW(strcl.c_str(), &nArgs);
-  if(szArglist != NULL)
+  if (strlen(commandLine) != 0)
   {
-    for(int i=0;i<nArgs;i++)
+    int argc;
+    LPWSTR* argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
+
+    CStdString* strargvA = new CStdString[argc];
+    const char** argv = (const char**) LocalAlloc(LMEM_FIXED, argc*sizeof(char*));
+    for (int i = 0; i < argc; i++)
     {
-      CStdStringW strArgW(szArglist[i]);
-      if(strArgW.Equals(L"-fs"))
-        g_advancedSettings.m_startFullScreen = true;
-      else if(strArgW.Equals(L"-p") || strArgW.Equals(L"--portable"))
-        g_application.EnablePlatformDirectories(false);
-      else if(strArgW.Equals(L"-d"))
-      {
-        if(++i < nArgs)
-        {
-          int iSleep = _wtoi(szArglist[i]);
-          if(iSleep > 0 && iSleep < 360)
-            Sleep(iSleep*1000);
-          else
-            --i;
-        }
-      }
-      else if(strArgW.Equals(L"--debug"))
-      {
-        g_advancedSettings.m_logLevel     = LOG_LEVEL_DEBUG;
-        g_advancedSettings.m_logLevelHint = LOG_LEVEL_DEBUG;
-        CLog::SetLogLevel(g_advancedSettings.m_logLevel);
-      }
+      g_charsetConverter.wToUTF8(argvW[i], strargvA[i]);
+      argv[i] = strargvA[i].c_str();
     }
-    LocalFree(szArglist);
+
+    // Parse the arguments
+    CAppParamParser appParamParser;
+    appParamParser.Parse(argv, argc);
+
+    // Clean up the storage we've used
+    LocalFree(argvW);
+    LocalFree(argv);
+    delete [] strargvA;
   }
 
+  // Initialise Winsock
   WSADATA wd;
   WSAStartup(MAKEWORD(2,2), &wd);
 

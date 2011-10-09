@@ -2,7 +2,8 @@
 	<defaultcontrol>-</defaultcontrol>
 	<allowoverlay>no</allowoverlay>
 	<controls>
-		<control type="visualisation">
+		<control type="visualisation" id="2">
+			<!-- FIX ME Music Visualization needs to have an id of 2 in this window to be able to lock or change preset -->
 			<description>visualisation</description>
 			<posx>0</posx>
 			<posy>0</posy>
@@ -60,6 +61,7 @@
 				<textcolor>white</textcolor>
 				<shadowcolor>black</shadowcolor>
 				<label>$INFO[System.Time]</label>
+				<animation effect="slide" start="0,0" end="-70,0" time="0" condition="Window.IsVisible(MusicOSD)">conditional</animation>
 			</control>
 			<control type="image">
 				<posx>0</posx>
@@ -93,6 +95,7 @@
 					<label>$LOCALIZE[31040]</label>
 					<textcolor>white</textcolor>
 					<shadowcolor>black</shadowcolor>
+					<animation effect="slide" start="0,0" end="0,25" time="0" condition="IsEmpty(MusicPlayer.Artist) + IsEmpty(MusicPlayer.Album)">conditional</animation>
 				</control>
 				<control type="label" id="1">
 					<description>Artist label</description>
@@ -114,7 +117,7 @@
 					<itemgap>5</itemgap>
 					<orientation>horizontal</orientation>
 					<control type="label">
-						<width min="10" max="710">auto</width>
+						<width min="10" max="700">auto</width>
 						<height>30</height>
 						<font>font30</font>
 						<align>left</align>
@@ -125,17 +128,33 @@
 					</control>
 					<control type="image">
 						<description>Audio Codec Image</description>
-						<width>90</width>
+						<width>80</width>
 						<height>35</height>
 						<aspectratio align="right">keep</aspectratio>
 						<texture>$INFO[MusicPlayer.Codec,flagging/audio/,.png]</texture>
 					</control>
-					<control type="image">
+					<control type="group">
 						<description>Rating</description>
 						<width>110</width>
 						<height>35</height>
-						<aspectratio align="center">keep</aspectratio>
-						<texture fallback="LeftRating/rating0.png">$INFO[Player.StarRating,LeftRating/]</texture>
+						<control type="image">
+							<description>rating back</description>
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>110</width>
+							<height>35</height>
+							<aspectratio align="left">stretch</aspectratio>
+							<texture border="5">flagging/blank.png</texture>
+						</control>
+						<control type="image">
+							<description>Rating</description>
+							<posx>5</posx>
+							<posy>0</posy>
+							<width>100</width>
+							<height>35</height>
+							<aspectratio align="center">keep</aspectratio>
+							<texture fallback="LeftRating/rating0.png">$INFO[Player.StarRating,LeftRating/]</texture>
+						</control>
 					</control>
 				</control>
 				<control type="label">

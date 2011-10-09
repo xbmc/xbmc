@@ -3,19 +3,17 @@
  *
  * This file is part of libass.
  *
- * libass is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * Permission to use, copy, modify, and distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
  *
- * libass is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with libass; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
 #include "config.h"
@@ -40,6 +38,11 @@
 #include "ass.h"
 #include "ass_utils.h"
 #include "ass_library.h"
+
+#ifdef _WIN32
+#pragma comment(lib, "libiconv.lib")
+#pragma comment(lib, "freetype246MT.lib")
+#endif
 
 #define ass_atof(STR) (ass_strtod((STR),NULL))
 
@@ -168,6 +171,32 @@ static void rskip_spaces(char **str, char *limit)
 }
 
 /**
+ * \brief Set up default style
+ * \param style style to edit to defaults
+ * The parameters are mostly taken directly from VSFilter source for
+ * best compatibility.
+ */
+static void set_default_style(ASS_Style *style)
+{
+    style->Name             = strdup("Default");
+    style->FontName         = strdup("Arial");
+    style->FontSize         = 18;
+    style->PrimaryColour    = 0xffffff00;
+    style->SecondaryColour  = 0x00ffff00;
+    style->OutlineColour    = 0x00000000;
+    style->BackColour       = 0x00000080;
+    style->Bold             = 200;
+    style->ScaleX           = 1.0;
+    style->ScaleY           = 1.0;
+    style->Spacing          = 0;
+    style->BorderStyle      = 1;
+    style->Outline          = 2;
+    style->Shadow           = 3;
+    style->Alignment        = 2;
+    style->MarginL = style->MarginR = style->MarginV = 20;
+}
+
+/**
  * \brief find style by name
  * \param track track
  * \param name style name
@@ -181,7 +210,6 @@ static int lookup_style(ASS_Track *track, char *name)
     if (*name == '*')
         ++name;                 // FIXME: what does '*' really mean ?
     for (i = track->n_styles - 1; i >= 0; --i) {
-        // FIXME: mb strcasecmp ?
         if (strcmp(track->styles[i].Name, name) == 0)
             return i;
     }
@@ -312,8 +340,8 @@ static int process_event_tail(ASS_Track *track, ASS_Event *event,
         // add "Default" style to the end
         // will be used if track does not contain a default style (or even does not contain styles at all)
         int sid = ass_alloc_style(track);
-        track->styles[sid].Name = strdup("Default");
-        track->styles[sid].FontName = strdup("Arial");
+        set_default_style(&track->styles[sid]);
+        track->default_style = sid;
     }
 
     for (i = 0; i < n_ignored; ++i) {
@@ -471,6 +499,14 @@ static int process_style(ASS_Track *track, char *str)
     }
 
     q = format = strdup(track->style_format);
+
+    // Add default style first
+    if (track->n_styles == 0) {
+        // will be used if track does not contain a default style (or even does not contain styles at all)
+        int sid = ass_alloc_style(track);
+        set_default_style(&track->styles[sid]);
+        track->default_style = sid;
+    }
 
     ass_msg(track->library, MSGL_V, "[%p] Style: %s", track, str);
 

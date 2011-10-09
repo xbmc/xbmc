@@ -25,6 +25,7 @@
 #include "utils/log.h"
 #include "tinyXML/tinyxml.h"
 #include "utils/StringUtils.h"
+#include "interfaces/info/SkinVariable.h"
 
 using namespace std;
 
@@ -151,6 +152,9 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     }
     node = node->NextSiblingElement("constant");
   }
+
+  INFO::CSkinVariable::LoadFromXML(root);
+
   return true;
 }
 
@@ -212,7 +216,7 @@ void CGUIIncludes::ResolveIncludesForNode(TiXmlElement *node)
     const char *condition = include->Attribute("condition");
     if (condition)
     { // check this condition
-      if (!g_infoManager.GetBool(g_infoManager.TranslateString(condition)))
+      if (!g_infoManager.EvaluateBool(condition))
       {
         include = include->NextSiblingElement("include");
         continue;

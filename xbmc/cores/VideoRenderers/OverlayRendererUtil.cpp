@@ -194,12 +194,16 @@ bool convert_quad(CDVDOverlaySSA* o, double pts, int width, int height, SQuads& 
 
   for(img = images; img; img = img->next)
   {
-    if((img->color & 0xff) == 0xff)
+    // fully transparent or width or height is 0 -> not displayed
+    if((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
       continue;
 
     quads.size_x += img->w;
     quads.count++;
   }
+
+  if (quads.count == 0)
+    return false;
 
   while(quads.size_x > (int)g_Windowing.GetMaxTextureSize())
     quads.size_x /= 2;
@@ -211,7 +215,7 @@ bool convert_quad(CDVDOverlaySSA* o, double pts, int width, int height, SQuads& 
 
   for(img = images; img; img = img->next)
   {
-    if((img->color & 0xff) == 0xff)
+    if((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
       continue;
 
     // check if we need to split to new line
@@ -245,10 +249,11 @@ bool convert_quad(CDVDOverlaySSA* o, double pts, int width, int height, SQuads& 
 
   for(img = images; img; img = img->next)
   {
+    if((img->color & 0xff) == 0xff || img->w == 0 || img->h == 0)
+      continue;
+
     unsigned int color = img->color;
     unsigned int alpha = (color & 0xff);
-    if(alpha == 0xff)
-      continue;
 
     if (curr_x + img->w >= quads.size_x)
     {

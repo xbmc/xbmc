@@ -39,6 +39,8 @@ public:
   virtual int GetBlockSize();
   virtual __int64 GetCachedBytes();
   virtual void SetReadRate(unsigned rate);
+  virtual unsigned GetReadRate();
+
 protected:
   XFILE::CFile* m_pFile;
   bool m_eof;

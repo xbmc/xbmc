@@ -53,6 +53,8 @@ CSong::CSong(CMusicInfoTag& tag)
   iTimesPlayed = 0;
   iKaraokeNumber = 0;
   iKaraokeDelay = 0;         //! Karaoke song lyrics-music delay in 1/10 seconds.
+  iArtistId = -1;
+  iAlbumId = -1;
 }
 
 CSong::CSong()
@@ -80,6 +82,8 @@ void CSong::Serialize(CVariant& value)
   value["rating"] = rating;
   value["timesplayed"] = iTimesPlayed;
   value["karaokenumber"] = (int64_t) iKaraokeNumber;
+  value["artistid"] = iArtistId;
+  value["albumid"] = iAlbumId;
 }
 
 void CSong::Clear()
@@ -109,10 +113,22 @@ void CSong::Clear()
   iKaraokeNumber = 0;
   strKaraokeLyrEncoding.Empty();
   iKaraokeDelay = 0;
+  iArtistId = -1;
+  iAlbumId = -1;
 }
 
 CSongMap::CSongMap()
 {
+}
+
+std::map<CStdString, CSong>::const_iterator CSongMap::Begin()
+{
+  return m_map.begin();
+}
+
+std::map<CStdString, CSong>::const_iterator CSongMap::End()
+{
+  return m_map.end();
 }
 
 void CSongMap::Add(const CStdString &file, const CSong &song)

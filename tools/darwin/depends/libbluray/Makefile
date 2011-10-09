@@ -10,7 +10,7 @@ ARCHIVE=$(SOURCE).tgz
 CONFIGURE=./configure --prefix=$(PREFIX) --exec-prefix=$(PREFIX) \
   --disable-examples --disable-doxygen-doc
 
-LIBDYLIB=$(SOURCE)/.libs/$(LIBNAME).dylib
+LIBDYLIB=$(SOURCE)/src/.libs/$(LIBNAME).dylib
 
 all: $(LIBDYLIB) .installed
 
@@ -22,11 +22,14 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	mkdir $(SOURCE)
 	cd $(SOURCE); $(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	# libbluray has bored Makefile.am with respect to CFLAGS, remove the offending line
+	sed -i -e "s|CFLAGS=|#CFLAGS=|" $(SOURCE)/src/Makefile.am
+	sed -i -e "s|CFLAGS=|#CFLAGS=|" $(SOURCE)/src/examples/Makefile.am
 	cd $(SOURCE); ./bootstrap
 	cd $(SOURCE); $(CONFIGURE)
 
 $(LIBDYLIB): $(SOURCE)
-	make -C $(SOURCE)
+	make -j $(MAKE_JOBS) -C $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install

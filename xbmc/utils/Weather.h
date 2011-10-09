@@ -23,6 +23,7 @@
 
 #include "InfoLoader.h"
 #include "StdString.h"
+#include "utils/GlobalsHandling.h"
 
 #include <map>
 
@@ -37,6 +38,8 @@ class TiXmlElement;
 #define WEATHER_LABEL_CURRENT_WIND 26
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
+
+#define MAX_LOCATION 3
 
 struct day_forecast
 {
@@ -56,23 +59,23 @@ public:
 
   void Reset()
   {
-    lastUpdateTime = "";
-    currentIcon = "";
-    currentConditions = "";
-    currentTemperature = "";
-    currentFeelsLike = "";
-    currentWind = "";
-    currentHumidity = "";
-    currentUVIndex = "";
-    currentDewPoint = "";
+    lastUpdateTime.clear();
+    currentIcon.clear();
+    currentConditions.clear();
+    currentTemperature.clear();
+    currentFeelsLike.clear();
+    currentWind.clear();
+    currentHumidity.clear();
+    currentUVIndex.clear();
+    currentDewPoint.clear();
 
     for (int i = 0; i < NUM_DAYS; i++)
     {
-      forecast[i].m_icon = "";
-      forecast[i].m_overview = "";
-      forecast[i].m_day = "";
-      forecast[i].m_high = "";
-      forecast[i].m_low = "";
+      forecast[i].m_icon.clear();
+      forecast[i].m_overview.clear();
+      forecast[i].m_day.clear();
+      forecast[i].m_high.clear();
+      forecast[i].m_low.clear();
     }
   };
 
@@ -135,8 +138,8 @@ public:
   bool IsFetched();
   void Reset();
 
-  void SetArea(int iArea) { m_iCurWeather = iArea; };
-  int GetArea() const { return m_iCurWeather; };
+  void SetArea(int iLocation);
+  int GetArea() const;
 
   static CStdString GetAreaCode(const CStdString &codeAndCity);
   static CStdString GetAreaCity(const CStdString &codeAndCity);
@@ -149,10 +152,10 @@ protected:
 
 private:
 
-  CStdString m_location[3];
-  unsigned int m_iCurWeather;
+  CStdString m_location[MAX_LOCATION];
 
   CWeatherInfo m_info;
 };
 
-extern CWeather g_weatherManager;
+XBMC_GLOBAL_REF(CWeather, g_weatherManager);
+#define g_weatherManager XBMC_GLOBAL_USE(CWeather)

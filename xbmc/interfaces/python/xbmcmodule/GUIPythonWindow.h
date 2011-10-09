@@ -22,6 +22,7 @@
  */
 
 #include "guilib/GUIWindow.h"
+#include "threads/Event.h"
 
 class PyXBMCAction
 {
@@ -48,11 +49,12 @@ public:
   virtual ~CGUIPythonWindow(void);
   virtual bool    OnMessage(CGUIMessage& message);
   virtual bool    OnAction(const CAction &action);
+  virtual bool    OnBack(int actionID);
   void             SetCallbackWindow(void* state, void *object);
   void             WaitForActionEvent(unsigned int timeout);
   void             PulseActionEvent();
 protected:
   void* pCallbackWindow;
   void* m_threadState;
-  HANDLE           m_actionEvent;
+  CEvent           m_actionEvent;
 };

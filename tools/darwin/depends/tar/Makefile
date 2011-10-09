@@ -7,11 +7,15 @@ SOURCE=$(APPNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 
 export LIBTOOL=builds/unix/libtool
-export PATH:=$(PREFIX)/bin:$(PATH)
-CONFIGURE=./configure --prefix=$(PREFIX) \
+export PATH:=$(TOOLCHAIN)/bin:$(PATH)
+CONFIGURE=./configure --prefix=$(TOOLCHAIN) \
 --program-transform-name=s/tar/gtar/ --disable-dependency-tracking
 
-all: $(SOURCE)/src/tar .installed
+APP=$(SOURCE)/src/tar
+APPBIN=$(TOOLCHAIN)/bin/tar
+TAR=$(PREFIX)/bin/$(APPNAME)
+
+all: $(APPBIN)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
@@ -22,18 +26,20 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); $(CONFIGURE)
 
-$(SOURCE)/src/tar: $(SOURCE)
-	cd $(SOURCE); make
+$(APP): $(SOURCE)
+	make -j $(MAKE_JOBS) -C $(SOURCE)
 
-.installed:
+$(APPBIN):
+	make $(APP)
 	make -C $(SOURCE) install
-	cd $(PREFIX)/bin; ln -s gtar tar; ln -s gtar gnutar
-	touch $@
+	rm -f $(TOOLCHAIN)/bin/tar $(TOOLCHAIN)/bin/gnutar
+	cd $(TOOLCHAIN)/bin; ln -s gtar tar; ln -s gtar gnutar
+	# remove this once we change over to darwin/depends
+	rm -f $(TAR); ln -s $(TOOLCHAIN)/bin/gtar $(TAR)
 
 clean:
 	make -C $(SOURCE) clean
-	rm -f .installed
 
 distclean::
-	rm -rf $(SOURCE) .installed
+	rm -rf $(SOURCE)
 

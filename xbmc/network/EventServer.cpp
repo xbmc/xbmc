@@ -47,7 +47,7 @@ using namespace std;
 /* CEventServer                                                         */
 /************************************************************************/
 CEventServer* CEventServer::m_pInstance = NULL;
-CEventServer::CEventServer()
+CEventServer::CEventServer() : CThread("CEventServer")
 {
   m_pSocket       = NULL;
   m_pPacketBuffer = NULL;
@@ -98,7 +98,6 @@ void CEventServer::StartServer()
   }
 
   CThread::Create();
-  CThread::SetName("EventServer");
 }
 
 void CEventServer::StopServer(bool bWait)
@@ -156,6 +155,7 @@ void CEventServer::Run()
   CAddress any_addr;
   CSocketListener listener;
   int packetSize = 0;
+  std::map<std::string, std::string> txt;  
 
   CLog::Log(LOGNOTICE, "ES: Starting UDP Event server on %s:%d", any_addr.Address(), m_iPort);
 
@@ -193,7 +193,8 @@ void CEventServer::Run()
   CZeroconf::GetInstance()->PublishService("servers.eventserver",
                                "_xbmc-events._udp",
                                "XBMC Event Server",
-                               m_iPort);
+                               m_iPort,
+                               txt);
 
   // add our socket to the 'select' listener
   listener.AddSocket(m_pSocket);
@@ -327,7 +328,7 @@ void CEventServer::ProcessEvents()
 
 bool CEventServer::ExecuteNextAction()
 {
-  EnterCriticalSection(&m_critSection);
+  CSingleLock lock(m_critSection);
 
   CEventAction actionEvent;
   map<unsigned long, CEventClient*>::iterator iter = m_clients.begin();
@@ -337,7 +338,7 @@ bool CEventServer::ExecuteNextAction()
     if (iter->second->GetNextAction(actionEvent))
     {
       // Leave critical section before processing action
-      LeaveCriticalSection(&m_critSection);
+      lock.Leave();
       switch(actionEvent.actionType)
       {
       case AT_EXEC_BUILTIN:
@@ -358,7 +359,7 @@ bool CEventServer::ExecuteNextAction()
     }
     iter++;
   }
-  LeaveCriticalSection(&m_critSection);
+
   return false;
 }
 

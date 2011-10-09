@@ -54,6 +54,7 @@
 
 @implementation XBMCEAGLView
 @synthesize animating;
+@synthesize xbmcAlive;
 @synthesize pause;
 
 // You must implement this method
@@ -74,8 +75,7 @@
     eaglLayer.opaque = TRUE;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
       [NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking,
-      kEAGLColorFormatRGB565, kEAGLDrawablePropertyColorFormat,
-      //kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
+      kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
       nil];
 		
     EAGLContext *aContext = [[EAGLContext alloc] 
@@ -90,6 +90,7 @@
     [aContext release];
 
     animating = FALSE;
+    xbmcAlive = FALSE;
     pause = FALSE;
     [self setContext:context];
     [self createFramebuffer];
@@ -149,8 +150,12 @@
     [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
-    
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+
+    glGenRenderbuffers(1, &depthRenderbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, framebufferWidth, framebufferHeight);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
     
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
       NSLog(@"Failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
@@ -174,6 +179,12 @@
     {
       glDeleteRenderbuffers(1, &colorRenderbuffer);
       colorRenderbuffer = 0;
+    }
+
+    if (depthRenderbuffer)
+    {
+      glDeleteRenderbuffers(1, &depthRenderbuffer);
+      depthRenderbuffer = 0;
     }
   }
 }
@@ -263,26 +274,6 @@
 {
   CCocoaAutoPool outerpool;
 
-  //[NSThread setThreadPriority:1]
-  // Changing to SCHED_RR is safe under OSX, you don't need elevated privileges and the
-  // OSX scheduler will monitor SCHED_RR threads and drop to SCHED_OTHER if it detects
-  // the thread running away. OSX automatically does this with the CoreAudio audio
-  // device handler thread.
-  int32_t result;
-  thread_extended_policy_data_t theFixedPolicy;
-
-  // make thread fixed, set to 'true' for a non-fixed thread
-  theFixedPolicy.timeshare = false;
-  result = thread_policy_set(pthread_mach_thread_np(pthread_self()), THREAD_EXTENDED_POLICY, 
-    (thread_policy_t)&theFixedPolicy, THREAD_EXTENDED_POLICY_COUNT);
-
-  int policy;
-  struct sched_param param;
-  result = pthread_getschedparam(pthread_self(), &policy, &param );
-  // change from default SCHED_OTHER to SCHED_RR
-  policy = SCHED_RR;
-  result = pthread_setschedparam(pthread_self(), policy, &param );
-
   // signal we are alive
   NSConditionLock* myLock = arg;
   [myLock lock];
@@ -311,6 +302,7 @@
   g_application.Preflight();
   if (g_application.Create())
   {
+    xbmcAlive = TRUE;
     try
     {
       CCocoaAutoPool innerpool;
@@ -357,7 +349,7 @@
   displayLink = [NSClassFromString(@"CADisplayLink") 
     displayLinkWithTarget:self
     selector:@selector(runDisplayLink)];
-  [displayLink setFrameInterval:2];
+  [displayLink setFrameInterval:1];
   [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
   displayFPS = 1.0 / ([displayLink duration] * [displayLink frameInterval]);
 }

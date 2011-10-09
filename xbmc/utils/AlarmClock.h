@@ -33,6 +33,7 @@ struct SAlarmClockEvent
   CStopWatch watch;
   double m_fSecs;
   CStdString m_strCommand;
+  bool m_loop;
 };
 
 class CAlarmClock : public CThread
@@ -40,7 +41,7 @@ class CAlarmClock : public CThread
 public:
   CAlarmClock();
   ~CAlarmClock();
-  void Start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent = false);
+  void Start(const CStdString& strName, float n_secs, const CStdString& strCommand, bool bSilent = false, bool bLoop = false);
   inline bool IsRunning() const
   {
     return m_bIsRunning;

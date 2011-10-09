@@ -25,11 +25,6 @@
 typedef struct struct_XBMCKEYTABLE
 {
 
-  // The scancode is the key scan code returned by the keyboard driver.
-  // The only use for this is to detect some multimedia keys that do
-  // not set the sym member in Linux.
-  uint8_t scancode;
-
   // The sym is a value that identifies which key was pressed. Note
   // that it specifies the key not the character so it is unaffected by
   // shift, control, etc.
@@ -55,6 +50,7 @@ typedef struct struct_XBMCKEYTABLE
 bool KeyTableLookupName(const char* keyname, XBMCKEYTABLE* keytable);
 bool KeyTableLookupSym(uint16_t sym, XBMCKEYTABLE* keytable);
 bool KeyTableLookupUnicode(uint16_t unicode, XBMCKEYTABLE* keytable);
+bool KeyTableLookupSymAndUnicode(uint16_t sym, uint16_t unicode, XBMCKEYTABLE* keytable);
 bool KeyTableLookupVKeyName(uint32_t vkey, XBMCKEYTABLE* keytable);
 
 #endif /* _XBMC_keytable_h */

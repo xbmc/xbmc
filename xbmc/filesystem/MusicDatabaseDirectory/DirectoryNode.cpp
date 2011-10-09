@@ -294,14 +294,14 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   /* no need for all genres
   case NODE_TYPE_GENRE:
     pItem.reset(new CFileItem(g_localizeStrings.Get(15105)));  // "All Genres"
-    pItem->m_strPath = BuildPath() + "-1/";
+    pItem->GetPath() = BuildPath() + "-1/";
     break;
   */
 
   case NODE_TYPE_ARTIST:
     if (GetType() == NODE_TYPE_OVERVIEW) return;
     pItem.reset(new CFileItem(g_localizeStrings.Get(15103)));  // "All Artists"
-    pItem->m_strPath = BuildPath() + "-1/";
+    pItem->SetPath(BuildPath() + "-1/");
     break;
 
     //  All album related nodes
@@ -313,7 +313,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   case NODE_TYPE_ALBUM_TOP100:
   case NODE_TYPE_YEAR_ALBUM:
     pItem.reset(new CFileItem(g_localizeStrings.Get(15102)));  // "All Albums"
-    pItem->m_strPath = BuildPath() + "-1/";
+    pItem->SetPath(BuildPath() + "-1/");
     break;
 
     //  All song related nodes
@@ -324,7 +324,7 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
   case NODE_TYPE_SONG_TOP100:
   case NODE_TYPE_SONG:
     pItem = new CFileItem(g_localizeStrings.Get(15104));  // "All Songs"
-    pItem->m_strPath = BuildPath() + "-1/";
+    pItem->GetPath() = BuildPath() + "-1/";
     break;*/
   default:
     break;

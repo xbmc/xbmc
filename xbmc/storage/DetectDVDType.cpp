@@ -34,7 +34,7 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <fcntl.h>
-#ifndef __APPLE__
+#if !defined(__APPLE__) && !defined(__FreeBSD__)
 #include <linux/cdrom.h>
 #endif
 #endif
@@ -65,7 +65,7 @@ CDetectDVDMedia* CDetectDVDMedia::m_pInstance = NULL;
 CStdString CDetectDVDMedia::m_diskLabel = "";
 CStdString CDetectDVDMedia::m_diskPath = "";
 
-CDetectDVDMedia::CDetectDVDMedia()
+CDetectDVDMedia::CDetectDVDMedia() : CThread("CDetectDVDMedia")
 {
   m_bAutorun = false;
   m_bStop = false;
@@ -87,7 +87,6 @@ void CDetectDVDMedia::OnStartup()
 
 void CDetectDVDMedia::Process()
 {
-  SetName("CDetectDVDMedia");
 // for apple - currently disable this check since cdio will return null if no media is loaded
 #ifndef __APPLE__
   //Before entering loop make sure we actually have a CDrom drive

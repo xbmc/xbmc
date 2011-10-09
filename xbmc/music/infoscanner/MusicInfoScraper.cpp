@@ -79,171 +79,16 @@ void CMusicInfoScraper::FindArtistInfo(const CStdString& strArtist)
   Create();
 }
 
-
 void CMusicInfoScraper::FindAlbumInfo()
 {
-  CStdString strAlbum=m_strAlbum;
-  CStdString strHTML;
-  m_vecAlbums.erase(m_vecAlbums.begin(), m_vecAlbums.end());
-
-  if (!m_scraper->Load() || !m_scraper->GetParser().HasFunction("CreateAlbumSearchUrl"))
-    return;
-
-  CLog::Log(LOGDEBUG, "%s: Searching for '%s - %s' using %s scraper (path: '%s', content: '%s', version: '%s')",
-    __FUNCTION__, m_strArtist.c_str(), strAlbum.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(),
-    ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->Version().c_str());
-  
-  vector<CStdString> extras;
-  extras.push_back(strAlbum);
-  extras.push_back(m_strArtist);
-  g_charsetConverter.utf8To(m_scraper->GetParser().GetSearchStringEncoding(), strAlbum, extras[0]);
-  g_charsetConverter.utf8To(m_scraper->GetParser().GetSearchStringEncoding(), m_strArtist, extras[1]);
-  CURL::Encode(extras[0]);
-  CURL::Encode(extras[1]);
-
-  CScraperUrl scrURL;
-  vector<CStdString> url = m_scraper->Run("CreateAlbumSearchUrl",scrURL,m_http,&extras);
-  if (url.empty())
-    return;
-  scrURL.ParseString(url[0]);
-  vector<CStdString> xml = m_scraper->Run("GetAlbumSearchResults",scrURL,m_http);
-
-  for (vector<CStdString>::iterator it  = xml.begin();
-                                    it != xml.end(); ++it)
-  {
-    // ok, now parse the xml file
-    TiXmlDocument doc;
-    doc.Parse(it->c_str(),0,TIXML_ENCODING_UTF8);
-    TiXmlHandle docHandle( &doc );
-    TiXmlElement* album = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
-
-    while (album)
-    {
-      TiXmlNode* title = album->FirstChild("title");
-      TiXmlElement* link = album->FirstChildElement("url");
-      TiXmlNode* artist = album->FirstChild("artist");
-      TiXmlNode* year = album->FirstChild("year");
-      TiXmlElement* relevance = album->FirstChildElement("relevance");
-      if (title && title->FirstChild())
-      {
-        CStdString strTitle = title->FirstChild()->Value();
-        CStdString strArtist;
-        CStdString strAlbumName;
-
-        if (artist && artist->FirstChild())
-        {
-          strArtist = artist->FirstChild()->Value();
-          strAlbumName.Format("%s - %s",strArtist.c_str(),strTitle.c_str());
-        }
-        else
-          strAlbumName = strTitle;
-
-        if (year && year->FirstChild())
-          strAlbumName.Format("%s (%s)",strAlbumName.c_str(),year->FirstChild()->Value());
-
-        CScraperUrl url;
-        if (!link)
-          url.ParseString(scrURL.m_xml);
-
-        while (link && link->FirstChild())
-        {
-          url.ParseElement(link);
-          link = link->NextSiblingElement("url");
-        }
-        CMusicAlbumInfo newAlbum(strTitle, strArtist, strAlbumName, url);
-        if (relevance && relevance->FirstChild())
-        {
-          float scale=1;
-          const char* newscale = relevance->Attribute("scale");
-          if (newscale)
-            scale = (float)atof(newscale);
-          newAlbum.SetRelevance((float)atof(relevance->FirstChild()->Value())/scale);
-        }
-        m_vecAlbums.push_back(newAlbum);
-      }
-      album = album->NextSiblingElement();
-    }
-  }
-
-  if (m_vecAlbums.size()>0)
-    m_bSucceeded=true;
-
-  return;
+  m_vecAlbums = m_scraper->FindAlbum(m_http, m_strAlbum, m_strArtist);
+  m_bSucceeded = !m_vecAlbums.empty();
 }
 
 void CMusicInfoScraper::FindArtistInfo()
 {
-  CStdString strArtist=m_strArtist;
-  CStdString strHTML;
-  m_vecArtists.erase(m_vecArtists.begin(), m_vecArtists.end());
-
-  if (!m_scraper->Load())
-    return;
-
-  vector<CStdString> extras;
-  extras.push_back(m_strArtist);
-  g_charsetConverter.utf8To(m_scraper->GetParser().GetSearchStringEncoding(), m_strArtist, extras[0]);
-  CURL::Encode(extras[0]);
-  
-  CLog::Log(LOGDEBUG, "%s: Searching for '%s' using %s scraper (file: '%s', content: '%s', version: '%s')",
-    __FUNCTION__, m_strArtist.c_str(), m_scraper->Name().c_str(), m_scraper->Path().c_str(),
-    ADDON::TranslateContent(m_scraper->Content()).c_str(), m_scraper->Version().c_str());
-
-  CScraperUrl scrURL;
-  vector<CStdString> url = m_scraper->Run("CreateArtistSearchUrl",scrURL,m_http,&extras);
-  if (url.empty())
-    return;
-  scrURL.ParseString(url[0]);
-
-  vector<CStdString> xml = m_scraper->Run("GetArtistSearchResults",scrURL,m_http,&extras);
-
-  for (vector<CStdString>::iterator it  = xml.begin();
-                                    it != xml.end(); ++it)
-  {
-    // ok, now parse the xml file
-    TiXmlDocument doc;
-    doc.Parse(it->c_str(),0,TIXML_ENCODING_UTF8);
-    if (!doc.RootElement())
-    {
-      CLog::Log(LOGERROR, "%s: Unable to parse xml",__FUNCTION__);
-      continue;
-    }
-
-    TiXmlHandle docHandle( &doc );
-    TiXmlElement* artist = docHandle.FirstChild( "results" ).FirstChild( "entity" ).Element();
-
-    while (artist)
-    {
-      TiXmlNode* title = artist->FirstChild("title");
-      TiXmlNode* year = artist->FirstChild("year");
-      TiXmlNode* genre = artist->FirstChild("genre");
-      TiXmlElement* link = artist->FirstChildElement("url");
-      if (title && title->FirstChild())
-      {
-        CStdString strTitle = title->FirstChild()->Value();
-        CScraperUrl url;
-        if (!link)
-          url.ParseString(scrURL.m_xml);
-        while (link && link->FirstChild())
-        {
-          url.ParseElement(link);
-          link = link->NextSiblingElement("url");
-        }
-        CMusicArtistInfo newArtist(strTitle, url);
-        if (genre && genre->FirstChild())
-          newArtist.GetArtist().strGenre = genre->FirstChild()->Value();
-        if (year && year->FirstChild())
-          newArtist.GetArtist().strBorn = year->FirstChild()->Value();
-        m_vecArtists.push_back(newArtist);
-      }
-      artist = artist->NextSiblingElement();
-    }
-  }
-
-  if (m_vecArtists.size()>0)
-    m_bSucceeded=true;
-
-  return;
+  m_vecArtists = m_scraper->FindArtist(m_http, m_strArtist);
+  m_bSucceeded = !m_vecArtists.empty();
 }
 
 void CMusicInfoScraper::LoadAlbumInfo(int iAlbum)
@@ -254,10 +99,11 @@ void CMusicInfoScraper::LoadAlbumInfo(int iAlbum)
   Create();
 }
 
-void CMusicInfoScraper::LoadArtistInfo(int iArtist)
+void CMusicInfoScraper::LoadArtistInfo(int iArtist, const CStdString &strSearch)
 {
   m_iAlbum=-1;
   m_iArtist=iArtist;
+  m_strSearch=strSearch;
   StopThread();
   Create();
 }
@@ -280,7 +126,7 @@ void CMusicInfoScraper::LoadArtistInfo()
 
   CMusicArtistInfo& artist=m_vecArtists[m_iArtist];
   artist.GetArtist().strArtist.Empty();
-  if (artist.Load(m_http,m_scraper))
+  if (artist.Load(m_http,m_scraper,m_strSearch))
     m_bSucceeded=true;
 }
 

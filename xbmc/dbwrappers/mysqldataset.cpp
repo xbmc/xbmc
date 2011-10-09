@@ -1221,7 +1221,29 @@ void MysqlDataset::fill_fields() {
 
 
 //------------- public functions implementation -----------------//
-//FILE* file;
+bool MysqlDataset::dropIndex(const char *table, const char *index)
+{
+  string sql;
+  string sql_prepared;
+
+  sql = "SELECT * FROM information_schema.statistics WHERE TABLE_SCHEMA=DATABASE() AND table_name='%s' AND index_name='%s'";
+  sql_prepared = static_cast<MysqlDatabase*>(db)->prepare(sql.c_str(), table, index);
+
+  if (!query(sql_prepared))
+    return false;
+
+  if (num_rows())
+  {
+    sql = "ALTER TABLE %s DROP INDEX %s";
+    sql_prepared = static_cast<MysqlDatabase*>(db)->prepare(sql.c_str(), table, index);
+
+    if (exec(sql_prepared) != MYSQL_OK)
+      return false;
+  }
+
+  return true;
+}
+
 int MysqlDataset::exec(const string &sql) {
   if (!handle()) throw DbErrors("No Database Connection");
   string qry = sql;
@@ -1230,6 +1252,7 @@ int MysqlDataset::exec(const string &sql) {
 
   // enforce the "auto_increment" keyword to be appended to "integer primary key"
   size_t loc;
+
   if ( (loc=qry.find("integer primary key")) != string::npos)
   {
     qry = qry.insert(loc + 19, " auto_increment ");
@@ -1240,9 +1263,8 @@ int MysqlDataset::exec(const string &sql) {
   {
     qry += " CHARACTER SET utf8 COLLATE utf8_general_ci";
   }
-
   // sqlite3 requires the BEGIN and END pragmas when creating triggers. mysql does not.
-  if ( qry.find("CREATE TRIGGER") != string::npos )
+  else if ( qry.find("CREATE TRIGGER") != string::npos )
   {
     if ( (loc=qry.find("BEGIN ")) != string::npos )
     {

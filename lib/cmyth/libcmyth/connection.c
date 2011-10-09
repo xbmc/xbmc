@@ -43,6 +43,8 @@
 #include <signal.h>
 #include <cmyth_local.h>
 
+static char * cmyth_conn_get_setting_unlocked(cmyth_conn_t conn, const char* hostname, const char* setting);
+
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 typedef struct {
@@ -551,7 +553,7 @@ cmyth_conn_connect_file(cmyth_proginfo_t prog,  cmyth_conn_t control,
 	cmyth_dbg(CMYTH_DBG_PROTO, "%s: connecting data connection\n",
 		  __FUNCTION__);
 	if (control->conn_version >= 17) {
-		myth_host = cmyth_conn_get_setting(control, prog->proginfo_host,
+		myth_host = cmyth_conn_get_setting_unlocked(control, prog->proginfo_host,
 		                                   "BackendServerIP");
 	}
 	if (!myth_host) {
@@ -1336,6 +1338,18 @@ cmyth_conn_get_free_recorder_count(cmyth_conn_t conn)
 char *
 cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* setting)
 {
+	char* result = NULL;
+
+	pthread_mutex_lock(&mutex);
+	result = cmyth_conn_get_setting_unlocked(conn, hostname, setting);
+	pthread_mutex_unlock(&mutex);
+
+	return result;
+}
+
+static char *
+cmyth_conn_get_setting_unlocked(cmyth_conn_t conn, const char* hostname, const char* setting)
+{
 	char msg[256];
 	int count, err;
 	char* result = NULL;
@@ -1351,8 +1365,6 @@ cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* sett
 			  __FUNCTION__);
 		return NULL;
 	}
-
-	pthread_mutex_lock(&mutex);
 
 	snprintf(msg, sizeof(msg), "QUERY_SETTING %s %s", hostname, setting);
 	if ((err = cmyth_send_message(conn, msg)) < 0) {
@@ -1386,12 +1398,11 @@ cmyth_conn_get_setting(cmyth_conn_t conn, const char* hostname, const char* sett
 		cmyth_dbg(CMYTH_DBG_ERROR, "%s: odd left over data %s\n", __FUNCTION__, buffer);
 	}
 
-	pthread_mutex_unlock(&mutex);
 	return result;
 err:
 	if(result)
 		ref_release(result);
-	pthread_mutex_unlock(&mutex);
+
 	return NULL;
 }
 

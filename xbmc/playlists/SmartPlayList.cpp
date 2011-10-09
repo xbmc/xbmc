@@ -94,7 +94,8 @@ static const translateField fields[] = { { "none", CSmartPlaylistRule::FIELD_NON
                                          { "subtitlelanguage", CSmartPlaylistRule::FIELD_SUBTITLELANGUAGE, CSmartPlaylistRule::TEXTIN_FIELD, 21448 },
                                          { "videoaspect", CSmartPlaylistRule::FIELD_VIDEOASPECT, CSmartPlaylistRule::NUMERIC_FIELD, 21374 },
                                          { "random", CSmartPlaylistRule::FIELD_RANDOM, CSmartPlaylistRule::TEXT_FIELD, 590 },
-                                         { "playlist", CSmartPlaylistRule::FIELD_PLAYLIST, CSmartPlaylistRule::PLAYLIST_FIELD, 559 }
+                                         { "playlist", CSmartPlaylistRule::FIELD_PLAYLIST, CSmartPlaylistRule::PLAYLIST_FIELD, 559 },
+                                         { "set", CSmartPlaylistRule::FIELD_SET, CSmartPlaylistRule::BROWSEABLE_FIELD, 20457 }
                                        };
 
 #define NUM_FIELDS sizeof(fields) / sizeof(translateField)
@@ -248,6 +249,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_PLAYCOUNT);
     fields.push_back(FIELD_PATH);
     fields.push_back(FIELD_STUDIO);
+    fields.push_back(FIELD_MPAA);
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
   else if (type == "episodes")
@@ -302,6 +304,7 @@ vector<CSmartPlaylistRule::DATABASE_FIELD> CSmartPlaylistRule::GetFields(const C
     fields.push_back(FIELD_HASTRAILER);
     fields.push_back(FIELD_FILENAME);
     fields.push_back(FIELD_PATH);
+    fields.push_back(FIELD_SET);
     isVideo = true;
 //    fields.push_back(FIELD_DATEADDED);  // no date added yet in db
   }
@@ -510,6 +513,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
       query = "lastPlayed is NULL or lastPlayed" + parameter;
     else if (m_field == FIELD_INPROGRESS)
       query = "idFile " + negate + " in (select idFile from bookmark where type = 1)";
+    else if (m_field == FIELD_SET)
+      query = "idMovie" + negate + " in (select idMovie from setlinkmovie join sets on sets.idSet=setlinkmovie.idSet where sets.strSet" + parameter + ")";
   }
   else if (strType == "musicvideos")
   {
@@ -533,6 +538,8 @@ CStdString CSmartPlaylistRule::GetWhereClause(CDatabase &db, const CStdString& s
     else if (m_field == FIELD_ACTOR)
       query = "idShow" + negate + " in (select idShow from actorlinktvshow join actors on actors.idActor=actorlinktvshow.idActor where actors.strActor" + parameter + ")";
     else if (m_field == FIELD_STUDIO)
+      query = "idShow" + negate + " IN (SELECT idShow FROM tvshowview WHERE " + GetDatabaseField(m_field, strType) + parameter + ")";
+    else if (m_field == FIELD_MPAA)
       query = "idShow" + negate + " IN (SELECT idShow FROM tvshowview WHERE " + GetDatabaseField(m_field, strType) + parameter + ")";
   }
   else if (strType == "episodes")
@@ -669,7 +676,8 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_FILENAME) result = "strFilename";
     else if (field == FIELD_PATH) result = "strPath";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
-    else if (field == FIELD_DATEADDED) result = "idShow";       // only used for order clauses
+    else if (field == FIELD_DATEADDED) result = "idMovie";       // only used for order clauses
+    else if (field == FIELD_SET) result = "strSet";
     return result;
   }
   else if (type == "musicvideos")
@@ -702,6 +710,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_RATING) result.Format("c%02d", VIDEODB_ID_TV_RATING);
     else if (field == FIELD_YEAR) result.Format("c%02d", VIDEODB_ID_TV_PREMIERED);
     else if (field == FIELD_GENRE) result.Format("c%02d", VIDEODB_ID_TV_GENRE);
+    else if (field == FIELD_MPAA) result.Format("c%02d", VIDEODB_ID_TV_MPAA);
     else if (field == FIELD_DIRECTOR) result = "cant_order_by_director"; // join required
     else if (field == FIELD_ACTOR) result = "cant_order_by_actor";    // join required
     else if (field == FIELD_NUMEPISODES) result = "totalcount";
@@ -735,7 +744,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_FILENAME) result = "strFilename";
     else if (field == FIELD_PATH) result = "strPath";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
-    else if (field == FIELD_DATEADDED) result = "idShow";       // only used for order clauses
+    else if (field == FIELD_DATEADDED) result = "idEpisode";       // only used for order clauses
     return result;
   }
 

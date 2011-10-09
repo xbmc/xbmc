@@ -60,6 +60,7 @@ public:
   virtual ~CGUIMoverControl(void);
   virtual CGUIMoverControl *Clone() const { return new CGUIMoverControl(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnAction(const CAction &action);
   virtual void OnUp();
@@ -78,8 +79,8 @@ public:
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual void UpdateColors();
-  void SetAlpha(unsigned char alpha);
+  virtual bool UpdateColors();
+  bool SetAlpha(unsigned char alpha);
   void UpdateSpeed(int nDirection);
   void Move(int iX, int iY);
   CGUITexture m_imgFocus;

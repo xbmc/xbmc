@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "system.h" // WIN32INCLUDES needed for the WASAPI stuff below
 
 #include <mmdeviceapi.h>
@@ -112,7 +113,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
     if(!channelMap)
       channelMap = (PCMChannels *)wasapi_default_channel_layout[iChannels - 1];
 
-    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
+    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
 
     for(PCMChannels *channel = outLayout; *channel != PCM_INVALID; channel++)
         ++layoutChannels;
@@ -143,6 +144,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
   m_pcmAmplifier.SetVolume(m_nCurrentVolume);
+  m_drc = 0;
   
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
@@ -276,7 +278,7 @@ bool CWin32WASAPI::Initialize(IAudioCallback* pCallback, const CStdString& devic
 
   m_bIsAllocated = true;
   m_CacheLen = 0;
-  m_LastCacheCheck = CTimeUtils::GetTimeMS();
+  m_LastCacheCheck = XbmcThreads::SystemClockMillis();
   
   return m_bIsAllocated;
 
@@ -464,7 +466,7 @@ unsigned int CWin32WASAPI::AddPackets(const void* data, unsigned int len)
 
 void CWin32WASAPI::UpdateCacheStatus()
 {
-  unsigned int time = CTimeUtils::GetTimeMS();
+  unsigned int time = XbmcThreads::SystemClockMillis();
   if (time == m_LastCacheCheck)
     return; // Don't recalc more frequently than once/ms (that is our max resolution anyway)
 
@@ -669,7 +671,7 @@ void CWin32WASAPI::AddDataToBuffer(unsigned char* pData, unsigned int len, unsig
 {
   // Remap the data to the correct channels
   if(m_remap.CanRemap() && !m_bPassthrough)
-    m_remap.Remap((void*)pData, pOut, len / m_uiBytesPerSrcFrame);
+    m_remap.Remap((void*)pData, pOut, len / m_uiBytesPerSrcFrame, m_drc);
   else
     memcpy(pOut, pData, len);
 }

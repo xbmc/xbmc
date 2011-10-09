@@ -1,0 +1,52 @@
+<window id="106">
+	<defaultcontrol>1000</defaultcontrol>
+	<include>dialogeffect</include>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<control type="image" id="999">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>-20</posy>
+			<width>400</width>
+			<height>760</height>
+			<texture border="5">SubBack.png</texture>
+		</control>
+		<control type="label">
+			<description>header label</description>
+			<posx>20</posx>
+			<posy>-20</posy>
+			<include>WindowTitleCommons</include>
+			<width>300</width>
+			<label>$LOCALIZE[31007]</label>
+		</control>
+		<control type="group">
+			<posx>330</posx>
+			<posy>-20</posy>
+			<include>DialogCloseButtonCommons</include>
+		</control>
+		<control type="grouplist" id="996">
+			<description>grouplist for context buttons</description>
+			<posx>10</posx>
+			<posy>40</posy>
+			<width>400</width>
+			<height max="690">auto</height>
+			<itemgap>0</itemgap>
+		</control>
+		<control type="button" id="1000">
+			<description>button template</description>
+			<posx>0</posx>
+			<posy>-</posy>
+			<width>380</width>
+			<height>60</height>
+			<font>font13</font>
+			<align>center</align>
+			<textcolor>black</textcolor>
+			<texturefocus>button-focus2.png</texturefocus>
+			<texturenofocus>button-nofocus.png</texturenofocus>
+		</control>
+	</controls>
+</window>

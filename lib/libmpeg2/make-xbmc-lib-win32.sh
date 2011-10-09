@@ -1,13 +1,18 @@
-#!/bin/bash 
+#!/bin/bash
 
-if [ -d libmpeg2/.libs ]
+MAKEFLAGS=""
+
+if [ "$1" == "clean" ]
 then
-rm -r libmpeg2/.libs
+  if [ -d libmpeg2/.libs ]
+  then
+    rm -r libmpeg2/.libs
+  fi
+  make distclean
 fi
 
-if [ -f config.log ]
-then
-make distclean
+if [ $NUMBER_OF_PROCESSORS > 1 ]; then
+  MAKEFLAGS=-j$NUMBER_OF_PROCESSORS
 fi
 
 ./configure \
@@ -18,7 +23,7 @@ fi
   --disable-sdl \
   --without-x &&
 
-make &&
+make $MAKEFLAGS &&
 
 strip libmpeg2/.libs/*.dll &&
 cp libmpeg2/.libs/*.dll /xbmc/system/players/dvdplayer/

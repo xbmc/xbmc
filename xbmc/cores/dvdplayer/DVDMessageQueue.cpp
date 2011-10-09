@@ -28,7 +28,7 @@
 
 using namespace std;
 
-CDVDMessageQueue::CDVDMessageQueue(const string &owner)
+CDVDMessageQueue::CDVDMessageQueue(const string &owner) : m_hEvent(true)
 {
   m_owner = owner;
   m_iDataSize     = 0;
@@ -40,15 +40,12 @@ CDVDMessageQueue::CDVDMessageQueue(const string &owner)
   m_TimeBack      = DVD_NOPTS_VALUE;
   m_TimeFront     = DVD_NOPTS_VALUE;
   m_TimeSize      = 1.0 / 4.0; /* 4 seconds */
-  m_hEvent = CreateEvent(NULL, true, false, NULL);
 }
 
 CDVDMessageQueue::~CDVDMessageQueue()
 {
   // remove all remaining messages
   Flush();
-
-  CloseHandle(m_hEvent);
 }
 
 void CDVDMessageQueue::Init()
@@ -88,7 +85,7 @@ void CDVDMessageQueue::Abort()
 
   m_bAbortRequest = true;
 
-  SetEvent(m_hEvent); // inform waiter for abort action
+  m_hEvent.Set(); // inform waiter for abort action
 }
 
 void CDVDMessageQueue::End()
@@ -145,7 +142,7 @@ MsgQueueReturnCode CDVDMessageQueue::Put(CDVDMsg* pMsg, int priority)
 
   pMsg->Release();
 
-  SetEvent(m_hEvent); // inform waiter for new packet
+  m_hEvent.Set(); // inform waiter for new packet
 
   return MSGQ_OK;
 }
@@ -206,11 +203,11 @@ MsgQueueReturnCode CDVDMessageQueue::Get(CDVDMsg** pMsg, unsigned int iTimeoutIn
     }
     else
     {
-      ResetEvent(m_hEvent);
+      m_hEvent.Reset();
       lock.Leave();
 
       // wait for a new message
-      if (WaitForSingleObject(m_hEvent, iTimeoutInMilliSeconds) == WAIT_TIMEOUT)
+      if (!m_hEvent.WaitMSec(iTimeoutInMilliSeconds))
         return MSGQ_TIMEOUT;
 
       lock.Enter();

@@ -32,6 +32,7 @@
 #include "utils/GLUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/SystemInfo.h"
+#include "utils/MathUtils.h"
 
 static const char* ShaderNames[SM_ESHADERCOUNT] =
     {"guishader_frag_default.glsl",
@@ -94,6 +95,23 @@ bool CRenderSystemGLES::InitRenderSystem()
     m_renderCaps |= RENDER_CAPS_NPOT;
   }
 
+  if (IsExtSupported("GL_EXT_texture_format_BGRA8888"))
+  {
+    m_renderCaps |= RENDER_CAPS_BGRA;
+  }
+
+  if (IsExtSupported("GL_IMG_texture_format_BGRA8888"))
+  {
+    m_renderCaps |= RENDER_CAPS_BGRA;
+  }
+
+  if (IsExtSupported("GL_APPLE_texture_format_BGRA8888"))
+  {
+    m_renderCaps |= RENDER_CAPS_BGRA_APPLE;
+  }
+
+
+
   m_bRenderCreated = true;
   
   InitialiseGUIShader();
@@ -107,13 +125,11 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height, bool fullScreen
   m_height = height;
   
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
-  
   CalculateMaxTexturesize();
 
   CRect rect( 0, 0, width, height );
   SetViewPort( rect );
 
-  glEnable(GL_TEXTURE_2D); 
   glEnable(GL_SCISSOR_TEST); 
 
   g_matrices.MatrixMode(MM_PROJECTION);
@@ -226,7 +242,7 @@ static int64_t abs64(int64_t a)
   return a;
 }
 
-bool CRenderSystemGLES::PresentRender()
+bool CRenderSystemGLES::PresentRender(const CDirtyRegionList &dirty)
 {
   if (!m_bRenderCreated)
     return false;
@@ -253,7 +269,7 @@ bool CRenderSystemGLES::PresentRender()
       Sleep((DWORD)diff);
   }
   
-  bool result = PresentRenderImpl();
+  bool result = PresentRenderImpl(dirty);
   
   if (m_iVSyncMode && m_iSwapRate != 0)
   {
@@ -335,7 +351,6 @@ void CRenderSystemGLES::CaptureStateBlock()
   g_matrices.PushMatrix();
   glDisable(GL_SCISSOR_TEST); // fixes FBO corruption on Macs
   glActiveTexture(GL_TEXTURE0);
-  glDisable(GL_TEXTURE_2D);
 //TODO - NOTE: Only for Screensavers & Visualisations
 //  glColor3f(1.0, 1.0, 1.0);
 }
@@ -352,7 +367,6 @@ void CRenderSystemGLES::ApplyStateBlock()
   g_matrices.MatrixMode(MM_MODELVIEW);
   g_matrices.PopMatrix();
   glActiveTexture(GL_TEXTURE0);
-  glEnable(GL_TEXTURE_2D);
   glEnable(GL_BLEND);
   glEnable(GL_SCISSOR_TEST);  
 }
@@ -475,7 +489,7 @@ void CRenderSystemGLES::GetViewPort(CRect& viewPort)
     return;
   
   GLint glvp[4];
-  glGetIntegerv(GL_SCISSOR_BOX, glvp);
+  glGetIntegerv(GL_VIEWPORT, glvp);
   
   viewPort.x1 = glvp[0];
   viewPort.y1 = m_height - glvp[1] - glvp[3];
@@ -491,6 +505,22 @@ void CRenderSystemGLES::SetViewPort(CRect& viewPort)
 
   glScissor((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
   glViewport((GLint) viewPort.x1, (GLint) (m_height - viewPort.y1 - viewPort.Height()), (GLsizei) viewPort.Width(), (GLsizei) viewPort.Height());
+}
+
+void CRenderSystemGLES::SetScissors(const CRect &rect)
+{
+  if (!m_bRenderCreated)
+    return;
+  GLint x1 = MathUtils::round_int(rect.x1);
+  GLint y1 = MathUtils::round_int(rect.y1);
+  GLint x2 = MathUtils::round_int(rect.x2);
+  GLint y2 = MathUtils::round_int(rect.y2);
+  glScissor(x1, m_height - y2, x2-x1, y2-y1);
+}
+
+void CRenderSystemGLES::ResetScissors()
+{
+  SetScissors(CRect(0, 0, (float)m_width, (float)m_height));
 }
 
 void CRenderSystemGLES::InitialiseGUIShader()

@@ -36,7 +36,6 @@
 #include "dialogs/GUIDialogBusy.h"
 #include "threads/SingleLock.h"
 #include "utils/URIUtils.h"
-#include "settings/AdvancedSettings.h"
 
 using namespace std;
 using namespace XFILE;
@@ -44,37 +43,46 @@ using namespace XFILE;
 #define TIME_TO_BUSY_DIALOG 500
 
 class CGetDirectory
-  : IJobCallback
 {
 private:
+
+  struct CResult
+  {
+    CResult(const CStdString& dir) : m_event(true), m_dir(dir), m_result(false) {}
+    CEvent        m_event;
+    CFileItemList m_list;
+    CStdString    m_dir;
+    bool          m_result;
+  };
+
   struct CGetJob
     : CJob
   {
-    CGetJob(IDirectory& imp
-          , const CStdString& dir
-          , CFileItemList& list)
-      : m_dir(dir)
-      , m_list(list)
-      , m_imp(imp)      
+    CGetJob(boost::shared_ptr<IDirectory>& imp
+          , boost::shared_ptr<CResult>& result)
+      : m_result(result)
+      , m_imp(imp)
     {}
   public:
     virtual bool DoWork()
     {
-      m_list.m_strPath = m_dir;
-      return m_imp.GetDirectory(m_dir, m_list);
+      m_result->m_list.SetPath(m_result->m_dir);
+      m_result->m_result         = m_imp->GetDirectory(m_result->m_dir, m_result->m_list);
+      m_result->m_event.Set();
+      return m_result->m_result;
     }
-    CStdString     m_dir;
-    CFileItemList& m_list;
-    IDirectory&    m_imp;
+
+    boost::shared_ptr<CResult>    m_result;
+    boost::shared_ptr<IDirectory> m_imp;
   };
 
 public:
 
-  CGetDirectory(IDirectory& imp, const CStdString& dir)
-    : m_event(true)
+  CGetDirectory(boost::shared_ptr<IDirectory>& imp, const CStdString& dir) 
+    : m_result(new CResult(dir))
   {
-    m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, dir, m_list)
-                                           , this
+    m_id = CJobManager::GetInstance().AddJob(new CGetJob(imp, m_result)
+                                           , NULL
                                            , CJob::PRIORITY_HIGH);
   }
  ~CGetDirectory()
@@ -82,37 +90,26 @@ public:
     CJobManager::GetInstance().CancelJob(m_id);
   }
 
-  virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job)
-  {
-    m_result = success;
-    m_event.Set();
-  }
-
   bool Wait(unsigned int timeout)
   {
-    return m_event.WaitMSec(timeout);
+    return m_result->m_event.WaitMSec(timeout);
   }
 
   bool GetDirectory(CFileItemList& list)
   {
-    m_event.Wait();
-    if(!m_result)
+    /* if it was not finished or failed, return failure */
+    if(!m_result->m_event.WaitMSec(0) || !m_result->m_result)
     {
       list.Clear();
       return false;
     }
-    list.Copy(m_list);
+
+    list.Copy(m_result->m_list);
     return true;
   }
-
-  bool          m_result;
-  CFileItemList m_list;
-  CEvent        m_event;
-  unsigned int  m_id;
+  boost::shared_ptr<CResult> m_result;
+  unsigned int               m_id;
 };
-
-
-
 
 
 CDirectory::CDirectory()
@@ -125,14 +122,14 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
 {
   try
   {
-    CStdString realPath = Translate(strPath);
-    auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
+    CStdString realPath = URIUtils::SubstitutePath(strPath);
+    boost::shared_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
     if (!pDirectory.get())
       return false;
 
     // check our cache for this path
     if (g_directoryCache.GetDirectory(strPath, items, cacheDirectory == DIR_CACHE_ALWAYS))
-      items.m_strPath = strPath;
+      items.SetPath(strPath);
     else
     {
       // need to clear the cache (in case the directory fetch fails)
@@ -145,40 +142,29 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       pDirectory->SetUseFileDirectories(bUseFileDirectories);
       pDirectory->SetExtFileInfo(extFileInfo);
 
-      bool result = false;
-      while (!result)
+      bool result = false, cancel = false;
+      while (!result && !cancel)
       {
         if (g_application.IsCurrentThread() && allowThreads && !URIUtils::IsSpecial(strPath))
         {
           CSingleExit ex(g_graphicsContext);
 
-          CGetDirectory get(*pDirectory, realPath);
+          CGetDirectory get(pDirectory, realPath);
           if(!get.Wait(TIME_TO_BUSY_DIALOG))
           {
-            CGUIDialogBusy* dialog = NULL;
+            CGUIDialogBusy* dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
+            dialog->Show();
+
             while(!get.Wait(10))
             {
               CSingleLock lock(g_graphicsContext);
-              if(g_windowManager.IsWindowVisible(WINDOW_DIALOG_PROGRESS)
-              || g_windowManager.IsWindowVisible(WINDOW_DIALOG_LOCK_SETTINGS))
+
+              if(dialog->IsCanceled())
               {
-                if(dialog)
-                {
-                  dialog->Close();
-                  dialog = NULL;
-                }
-                g_windowManager.Process(false);
+                cancel = true;
+                break;
               }
-              else
-              {
-                if(dialog == NULL)
-                {
-                  dialog = (CGUIDialogBusy*)g_windowManager.GetWindow(WINDOW_DIALOG_BUSY);
-                  if(dialog)
-                    dialog->Show();
-                }
-                g_windowManager.Process(true);
-              }
+              g_windowManager.ProcessRenderLoop(false);
             }
             if(dialog)
               dialog->Close();
@@ -187,13 +173,13 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
         }
         else
         {
-          items.m_strPath = strPath;
+          items.SetPath(strPath);
           result = pDirectory->GetDirectory(realPath, items);
         }
 
         if (!result)
         {
-          if (g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
+          if (!cancel && g_application.IsCurrentThread() && pDirectory->ProcessRequirements())
             continue;
           CLog::Log(LOGERROR, "%s - Error getting %s", __FUNCTION__, strPath.c_str());
           return false;
@@ -212,8 +198,8 @@ bool CDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items, C
       CFileItemPtr item = items[i];
       // TODO: we shouldn't be checking the gui setting here;
       // callers should use getHidden instead
-      if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->m_strPath)) ||
-          (item->GetPropertyBOOL("file:hidden") && !getHidden && !g_guiSettings.GetBool("filelists.showhidden")))
+      if ((!item->m_bIsFolder && !pDirectory->IsAllowed(item->GetPath())) ||
+          (item->GetProperty("file:hidden").asBoolean() && !getHidden && !g_guiSettings.GetBool("filelists.showhidden")))
       {
         items.Remove(i);
         i--; // don't confuse loop
@@ -245,7 +231,7 @@ bool CDirectory::Create(const CStdString& strPath)
 {
   try
   {
-    CStdString realPath = Translate(strPath);
+    CStdString realPath = URIUtils::SubstitutePath(strPath);
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
     if (pDirectory.get())
       if(pDirectory->Create(realPath.c_str()))
@@ -269,7 +255,7 @@ bool CDirectory::Exists(const CStdString& strPath)
 {
   try
   {
-    CStdString realPath = Translate(strPath);
+    CStdString realPath = URIUtils::SubstitutePath(strPath);
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
     if (pDirectory.get())
       return pDirectory->Exists(realPath.c_str());
@@ -292,7 +278,7 @@ bool CDirectory::Remove(const CStdString& strPath)
 {
   try
   {
-    CStdString realPath = Translate(strPath);
+    CStdString realPath = URIUtils::SubstitutePath(strPath);
     auto_ptr<IDirectory> pDirectory(CFactoryDirectory::Create(realPath));
     if (pDirectory.get())
       if(pDirectory->Remove(realPath.c_str()))
@@ -319,7 +305,7 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &m
     CFileItemPtr pItem=items[i];
     if ((!pItem->m_bIsFolder) && (!pItem->IsInternetStream()))
     {
-      auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->m_strPath,pItem.get(),mask));
+      auto_ptr<IFileDirectory> pDirectory(CFactoryFileDirectory::Create(pItem->GetPath(),pItem.get(),mask));
       if (pDirectory.get())
         pItem->m_bIsFolder = true;
       else
@@ -330,15 +316,4 @@ void CDirectory::FilterFileDirectories(CFileItemList &items, const CStdString &m
         }
     }
   }
-}
-
-CStdString CDirectory::Translate(const CStdString &path)
-{
-  for (CAdvancedSettings::StringMapping::iterator i = g_advancedSettings.m_pathSubstitutions.begin(); 
-      i != g_advancedSettings.m_pathSubstitutions.end(); i++)
-  {
-    if (strncmp(path.c_str(), i->first.c_str(), i->first.size()) == 0)
-      return URIUtils::AddFileToFolder(i->second, path.Mid(i->first.size()));
-  }
-  return path;
 }

@@ -22,6 +22,14 @@ SRCS=cddb.cpp \
      ZeroconfBrowser.cpp \
      Zeroconf.cpp \
 
+ifeq (@USE_AIRPLAY@, 1)
+SRCS+=AirPlayServer.cpp
+endif
+
+ifeq (@USE_AIRTUNES@, 1)
+SRCS+=AirTunesServer.cpp
+endif
+
 LIB=network.a
 
 include @abs_top_srcdir@/Makefile.include

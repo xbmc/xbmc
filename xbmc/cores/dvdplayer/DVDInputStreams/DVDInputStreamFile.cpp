@@ -128,6 +128,20 @@ __int64 CDVDInputStreamFile::GetCachedBytes()
     return -1;
 }
 
+unsigned CDVDInputStreamFile::GetReadRate()
+{
+  SCacheStatus status;
+  if(m_pFile && m_pFile->IoControl(IOCTRL_CACHE_STATUS, &status) >= 0)
+  {
+    if(status.full)
+      return (unsigned)-1;
+    else
+      return status.currate;
+  }
+  else
+    return (unsigned)-1;
+}
+
 BitstreamStats CDVDInputStreamFile::GetBitstreamStats() const
 {
   if (!m_pFile)

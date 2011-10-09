@@ -35,7 +35,7 @@ public:
    \return true if settings were changed and the dialog confirmed, false otherwise.
    */
   static bool ShowAndGetInput(const ADDON::AddonPtr &addon, bool saveToDisk = true);
-  virtual void Render();
+  virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
 protected:
   virtual void OnInitWindow();
@@ -55,6 +55,12 @@ private:
    \return the filenames in the path that match the mask
    */
   std::vector<CStdString> GetFileEnumValues(const CStdString &path, const CStdString &mask, const CStdString &options) const;
+
+  /*! \brief Translate list of addon IDs to list of addon names
+   \param addonIDslist comma seperated list of addon IDs
+   \return comma seperated list of addon names
+   */
+  CStdString GetAddonNames(const CStdString& addonIDslist) const;
 
   void CreateSections();
   void FreeSections();

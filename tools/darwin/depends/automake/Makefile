@@ -11,8 +11,9 @@ export PATH:=$(TOOLCHAIN)/bin:$(PATH)
 CONFIGURE=./configure --prefix=$(TOOLCHAIN)
 
 APP=$(SOURCE)/bin/$(APPNAME)
+APPBIN=$(TOOLCHAIN)/bin/$(APPNAME)
 
-all: $(APP) .installed
+all: $(APPBIN)
 
 $(TARBALLS_LOCATION)/$(ARCHIVE):
 	$(RETRIEVE_TOOL) $(RETRIEVE_TOOL_FLAGS) $(BASE_URL)/$(ARCHIVE)
@@ -24,15 +25,14 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); $(CONFIGURE)
 
 $(APP): $(SOURCE)
-	make -C $(SOURCE)
+	make -j $(MAKE_JOBS) -C $(SOURCE)
 
-.installed:
+$(APPBIN):
+	make $(APP)
 	make -C $(SOURCE) install
-	touch $@
 
 clean:
 	make -C $(SOURCE) clean
-	rm -f .installed
 
 distclean::
-	rm -rf $(SOURCE) .installed
+	rm -rf $(SOURCE)

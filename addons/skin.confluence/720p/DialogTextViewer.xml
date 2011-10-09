@@ -34,13 +34,13 @@
 				<control type="label" id="1">
 					<description>header label</description>
 					<posx>210</posx>
-					<posy>50</posy>
+					<posy>40</posy>
 					<width>1030</width>
 					<height>30</height>
-					<font>font35_title</font>
+					<font>font13_title</font>
 					<align>center</align>
 					<aligny>center</aligny>
-					<textcolor>white</textcolor>
+					<textcolor>selected</textcolor>
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="textbox" id="5">
@@ -57,7 +57,7 @@
 					<pagecontrol>61</pagecontrol>
 				</control>
 				<control type="scrollbar" id="61">
-					<posx>1215</posx>
+					<posx>1220</posx>
 					<posy>90</posy>
 					<width>25</width>
 					<height>600</height>

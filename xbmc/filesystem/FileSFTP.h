@@ -46,10 +46,13 @@
 #define ssh_session ssh_session*
 #endif
 
+//five secs timeout for SFTP
+#define SFTP_TIMEOUT 5
+
 class CSFTPSession
 {
 public:
-  CSFTPSession(const CStdString &host, const CStdString &username, const CStdString &password);
+  CSFTPSession(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password);
   virtual ~CSFTPSession();
 
   sftp_file CreateFileHande(const CStdString &file);
@@ -63,7 +66,7 @@ public:
   bool IsIdle();
 private:
   bool VerifyKnownHost(ssh_session session);
-  bool Connect(const CStdString &host, const CStdString &username, const CStdString &password);
+  bool Connect(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password);
   void Disconnect();
   CCriticalSection m_critSect;
 
@@ -78,7 +81,8 @@ typedef boost::shared_ptr<CSFTPSession> CSFTPSessionPtr;
 class CSFTPSessionManager
 {
 public:
-  static CSFTPSessionPtr CreateSession(const CStdString &host, const CStdString &username, const CStdString &password);
+  static CSFTPSessionPtr CreateSession(const CURL &url);
+  static CSFTPSessionPtr CreateSession(const CStdString &host, unsigned int port, const CStdString &username, const CStdString &password);
   static void ClearOutIdleSessions();
   static void DisconnectAllSessions();
 private:

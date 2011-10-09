@@ -26,7 +26,6 @@
 #include "OGGcodec.h"
 #include "FLACcodec.h"
 #include "WAVcodec.h"
-#include "WAVPackcodec.h"
 #include "ModplugCodec.h"
 #include "NSFCodec.h"
 #ifdef HAS_SPC_CODEC
@@ -42,6 +41,7 @@
 #endif
 #include "URL.h"
 #include "DVDPlayerCodec.h"
+#include "BXAcodec.h" 
 
 ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
 {
@@ -55,6 +55,8 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
     return new DVDPlayerCodec();
   else if (strFileType.Equals("shn"))
     return new DVDPlayerCodec();
+  else if (strFileType.Equals("mka"))
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("flac"))
     return new FLACCodec();
   else if (strFileType.Equals("wav"))
@@ -63,7 +65,7 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
            strFileType.Equals("m4a") || strFileType.Equals("aac"))
     return new DVDPlayerCodec();
   else if (strFileType.Equals("wv"))
-    return new WAVPackCodec();
+    return new DVDPlayerCodec();
   else if (strFileType.Equals("669")  ||  strFileType.Equals("abc") ||
            strFileType.Equals("amf")  ||  strFileType.Equals("ams") ||
            strFileType.Equals("dbm")  ||  strFileType.Equals("dmf") ||
@@ -128,6 +130,9 @@ ICodec* CodecFactory::CreateCodecDemux(const CStdString& strFile, const CStdStri
     return new DVDPlayerCodec();
   else if( strContent.Equals("application/ogg") || strContent.Equals("audio/ogg"))
     return CreateOGGCodec(strFile,filecache);
+  else if (strContent.Equals("audio/x-xbmc-pcm"))
+    return (ICodec*)new BXACodec();  
+    
 
   if (urlFile.GetProtocol() == "lastfm" || urlFile.GetProtocol() == "shout")
   {

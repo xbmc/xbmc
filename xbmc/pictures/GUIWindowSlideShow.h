@@ -25,6 +25,7 @@
 #include "guilib/GUIWindow.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
+#include "threads/Event.h"
 #include "SlideShowPicture.h"
 #include "DllImageLib.h"
 #include "SortFileItem.h"
@@ -51,7 +52,7 @@ private:
   int m_maxWidth;
   int m_maxHeight;
 
-  HANDLE m_loadPic;
+  CEvent m_loadPic;
   bool m_isLoading;
 
   CGUIWindowSlideShow *m_pCallback;
@@ -70,6 +71,7 @@ public:
   void ShowPrevious();
   void Select(const CStdString& strPicture);
   const CFileItemList &GetSlideShowContents();
+  void GetSlideShowContents(CFileItemList &list);
   const CFileItemPtr GetCurrentSlide();
   void RunSlideShow(const CStdString &strPath, bool bRecursive = false,
                     bool bRandom = false, bool bNotRandom = false,
@@ -81,13 +83,18 @@ public:
   void StartSlideShow(bool screensaver=false);
   bool InSlideShow() const;
   virtual bool OnMessage(CGUIMessage& message);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);  
   virtual bool OnAction(const CAction &action);
   virtual void Render();
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
   virtual void FreeResources();
   void OnLoadPic(int iPic, int iSlideNumber, CBaseTexture* pTexture, int iOriginalWidth, int iOriginalHeight, bool bFullSize);
   int NumSlides() const;
   int CurrentSlide() const;
   void Shuffle();
+  bool IsPaused() const { return m_bPause; }
+  bool IsShuffled() const { return m_bShuffled; }
+  int GetDirection() const { return m_iDirection; }
 private:
   typedef std::set<CStdString> path_set;  // set to track which paths we're adding
   void AddItems(const CStdString &strPath, path_set *recursivePaths,
@@ -99,12 +106,15 @@ private:
   void Zoom(int iZoom);
   void Move(float fX, float fY);
   void GetCheckedSize(float width, float height, int &maxWidth, int &maxHeight);
+  int  GetNextSlide();
 
   int m_iCurrentSlide;
   int m_iNextSlide;
+  int m_iDirection;
   int m_iRotate;
   int m_iZoomFactor;
 
+  bool m_bShuffled;
   bool m_bSlideShow;
   bool m_bScreensaver;
   bool m_bPause;
@@ -125,4 +135,5 @@ private:
   RESOLUTION m_Resolution;
   CCriticalSection m_slideSection;
   CStdString m_strExtensions;
+  CPoint m_firstGesturePoint;
 };

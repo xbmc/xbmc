@@ -84,7 +84,7 @@ bool CVirtualDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
     items.Clear();
 
   // return the root listing
-  items.m_strPath=strPath;
+  items.SetPath(strPath);
 
   // grab our shares
   VECSOURCES shares;

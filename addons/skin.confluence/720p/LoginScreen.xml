@@ -33,6 +33,8 @@
 				<width>1280</width>
 				<height>128</height>
 				<texture>floor.png</texture>
+				<animation effect="slide" start="0,10" end="0,0" time="200" condition="Window.Previous(Home)">WindowOpen</animation>
+				<animation effect="slide" start="0,0" end="0,10" time="200" condition="Window.Next(Home)">WindowClose</animation>
 			</control>
 			<control type="image">
 				<posx>265</posx>

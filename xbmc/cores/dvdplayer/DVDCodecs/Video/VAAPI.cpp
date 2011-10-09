@@ -115,8 +115,8 @@ CDecoder::CDecoder()
 {
   m_refs            = 0;
   m_surfaces_count  = 0;
-  m_config          = NULL;
-  m_context         = NULL;
+  m_config          = 0;
+  m_context         = 0;
   m_hwaccel         = (vaapi_context*)calloc(1, sizeof(vaapi_context));
 }
 
@@ -205,6 +205,7 @@ int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
   pic->linesize[1]    = 0;
   pic->linesize[2]    = 0;
   pic->linesize[3]    = 0;
+  pic->reordered_opaque= avctx->reordered_opaque;
   return 0;
 }
 
@@ -212,11 +213,11 @@ void CDecoder::Close()
 { 
   if(m_context)
     WARN(vaDestroyContext(m_display->get(), m_context))
-  m_context = NULL;
+  m_context = 0;
 
   if(m_config)
     WARN(vaDestroyConfig(m_display->get(), m_config))
-  m_config = NULL;
+  m_config = 0;
   
   m_surfaces_free.clear();
   m_surfaces_used.clear();
@@ -228,7 +229,7 @@ void CDecoder::Close()
   m_holder.surface.reset();
 }
 
-bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt)
+bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int surfaces)
 {
   VAEntrypoint entrypoint = VAEntrypointVLD;
   VAProfile    profile;
@@ -384,7 +385,7 @@ bool CDecoder::EnsureSurfaces(AVCodecContext *avctx, unsigned n_surfaces_count)
 
   if(m_context)
     WARN(vaDestroyContext(m_display->get(), m_context))
-  m_context = NULL;
+  m_context = 0;
 
   CHECK(vaCreateContext(m_display->get()
                       , m_config

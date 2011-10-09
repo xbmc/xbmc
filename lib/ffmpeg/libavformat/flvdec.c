@@ -30,6 +30,10 @@
 #include "avformat.h"
 #include "flv.h"
 
+#define KEYFRAMES_TAG            "keyframes"
+#define KEYFRAMES_TIMESTAMP_TAG  "times"
+#define KEYFRAMES_BYTEOFFSET_TAG "filepositions"
+
 typedef struct {
     int wrong_dts; ///< wrong dts due to negative cts
 } FLVContext;
@@ -124,6 +128,66 @@ static int amf_get_string(ByteIOContext *ioc, char *buffer, int buffsize) {
     return length;
 }
 
+static int parse_keyframes_index(AVFormatContext *s, ByteIOContext *ioc, AVStream *vstream, int64_t max_pos) {
+    unsigned int timeslen = 0, fileposlen = 0, i;
+    char str_val[256];
+    int64_t *times = NULL;
+    int64_t *filepositions = NULL;
+    int ret = AVERROR(ENOSYS);
+    int64_t initial_pos = url_ftell(ioc);
+
+    while (url_ftell(ioc) < max_pos - 2 && amf_get_string(ioc, str_val, sizeof(str_val)) > 0) {
+        int64_t** current_array;
+        unsigned int arraylen;
+
+        // Expect array object in context
+        if (get_byte(ioc) != AMF_DATA_TYPE_ARRAY)
+            break;
+
+        arraylen = get_be32(ioc);
+        if(arraylen>>28)
+            break;
+
+        if       (!strcmp(KEYFRAMES_TIMESTAMP_TAG , str_val) && !times){
+            current_array= &times;
+            timeslen= arraylen;
+        }else if (!strcmp(KEYFRAMES_BYTEOFFSET_TAG, str_val) && !filepositions){
+            current_array= &filepositions;
+            fileposlen= arraylen;
+        }else // unexpected metatag inside keyframes, will not use such metadata for indexing
+            break;
+
+        if (!(*current_array = av_mallocz(sizeof(**current_array) * arraylen))) {
+            ret = AVERROR(ENOMEM);
+            goto finish;
+        }
+
+        for (i = 0; i < arraylen && url_ftell(ioc) < max_pos - 1; i++) {
+            if (get_byte(ioc) != AMF_DATA_TYPE_NUMBER)
+                goto finish;
+            current_array[0][i] = av_int2dbl(get_be64(ioc));
+        }
+        if (times && filepositions) {
+            // All done, exiting at a position allowing amf_parse_object
+            // to finish parsing the object
+            ret = 0;
+            break;
+        }
+    }
+
+    if (timeslen == fileposlen) {
+         for(i = 0; i < timeslen; i++)
+             av_add_index_entry(vstream, filepositions[i], times[i]*1000, 0, 0, AVINDEX_KEYFRAME);
+    } else
+        av_log(s, AV_LOG_WARNING, "Invalid keyframes object, skipping.\n");
+
+finish:
+    av_freep(&times);
+    av_freep(&filepositions);
+    url_fseek(ioc, initial_pos, SEEK_SET);
+    return ret;
+}
+
 static int amf_parse_object(AVFormatContext *s, AVStream *astream, AVStream *vstream, const char *key, int64_t max_pos, int depth) {
     AVCodecContext *acodec, *vcodec;
     ByteIOContext *ioc;
@@ -147,6 +211,10 @@ static int amf_parse_object(AVFormatContext *s, AVStream *astream, AVStream *vst
             break;
         case AMF_DATA_TYPE_OBJECT: {
             unsigned int keylen;
+
+	    if (!url_is_streamed(s->pb) && key && !strcmp(KEYFRAMES_TAG, key) && depth == 1)
+                if (parse_keyframes_index(s, ioc, vstream, max_pos) < 0)
+                    av_log(s, AV_LOG_ERROR, "Keyframe index parsing failed\n");
 
             while(url_ftell(ioc) < max_pos - 2 && (keylen = get_be16(ioc))) {
                 url_fskip(ioc, keylen); //skip key string

@@ -56,22 +56,20 @@ PyXBMCAction::~PyXBMCAction() {
 }
 
 CGUIPythonWindow::CGUIPythonWindow(int id)
-: CGUIWindow(id, "")
+  : CGUIWindow(id, ""), m_actionEvent(true)
 {
   pCallbackWindow = NULL;
   m_threadState = NULL;
-  m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
 }
 
 CGUIPythonWindow::~CGUIPythonWindow(void)
 {
-  CloseHandle(m_actionEvent);
 }
 
 bool CGUIPythonWindow::OnAction(const CAction &action)
 {
-  // do the base class window first, and the call to python after this
+  // call the base class first, then call python
   bool ret = CGUIWindow::OnAction(action);
 
   // workaround - for scripts which try to access the active control (focused) when there is none.
@@ -90,6 +88,14 @@ bool CGUIPythonWindow::OnAction(const CAction &action)
     PulseActionEvent();
   }
   return ret;
+}
+
+bool CGUIPythonWindow::OnBack(int actionID)
+{
+  // if we have a callback window then python handles the closing
+  if (!pCallbackWindow)
+    return CGUIWindow::OnBack(actionID);
+  return true;
 }
 
 bool CGUIPythonWindow::OnMessage(CGUIMessage& message)
@@ -165,12 +171,12 @@ void CGUIPythonWindow::SetCallbackWindow(void *state, void *object)
 void CGUIPythonWindow::WaitForActionEvent(unsigned int timeout)
 {
   g_pythonParser.WaitForEvent(m_actionEvent, timeout);
-  ResetEvent(m_actionEvent);
+  m_actionEvent.Reset();
 }
 
 void CGUIPythonWindow::PulseActionEvent()
 {
-  SetEvent(m_actionEvent);
+  m_actionEvent.Set();
 }
 
 

@@ -44,6 +44,7 @@ public:
   virtual ~CGUICheckMarkControl(void);
   virtual CGUICheckMarkControl *Clone() const { return new CGUICheckMarkControl(*this); };
 
+  virtual void Process(unsigned int currentTime, CDirtyRegionList &dirtyregions);
   virtual void Render();
   virtual bool OnAction(const CAction &action) ;
   virtual bool OnMessage(CGUIMessage& message);
@@ -63,7 +64,7 @@ public:
 
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual void UpdateColors();
+  virtual bool UpdateColors();
   CGUILabel::COLOR GetTextColor() const;
   
   CGUITexture m_imgCheckMark;

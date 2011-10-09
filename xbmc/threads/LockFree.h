@@ -29,11 +29,19 @@
 #define SPINLOCK_RELEASE(l) l = 0
 
 // A unique-valued pointer. Version is incremented with each write.
-struct atomic_ptr
+union atomic_ptr
 {
-  void* ptr;
 #if !defined(__ppc__) && !defined(__powerpc__) && !defined(__arm__)
-  long version;
+  long long d;
+  struct {
+    void* ptr;
+    long version;
+  };
+#else
+  long d;
+  struct {
+    void* ptr;
+  };
 #endif
 };
 

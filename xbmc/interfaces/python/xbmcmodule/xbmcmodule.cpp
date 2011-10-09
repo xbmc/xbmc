@@ -52,6 +52,8 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/FileUtils.h"
 #include "pythreadstate.h"
+#include "utils/log.h"
+#include "pyrendercapture.h"
 
 // include for constants
 #include "pyutil.h"
@@ -60,12 +62,6 @@
 using namespace std;
 using namespace XFILE;
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #if defined(__GNUG__) && (__GNUC__>4) || (__GNUC__==4 && __GNUC_MINOR__>=2)
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
@@ -80,53 +76,6 @@ namespace PYXBMC
 /*****************************************************************
  * start of xbmc methods
  *****************************************************************/
-
-  // output() method
-  PyDoc_STRVAR(output__doc__,
-    "output(msg[, level]) -- Write a string to XBMC's log file and the debug window.\n"
-    "\n"
-    "msg            : string - text to output.\n"
-    "level          : [opt] integer - log level to ouput at. (default=LOGNOTICE)\n"
-    "\n"
-    "*Note, You can use the above as keywords for arguments and skip certain optional arguments.\n"
-    "       Once you use a keyword, all following arguments require the keyword.\n"
-    "\n"
-    "       Text is written to the log for the following conditions.\n"
-    "         XBMC loglevel == -1 (NONE, nothing at all is logged)"
-    "         XBMC loglevel == 0 (NORMAL, shows LOGNOTICE, LOGERROR, LOGSEVERE and LOGFATAL)"
-    "         XBMC loglevel == 1 (DEBUG, shows all)"
-    "       See pydocs for valid values for level.\n"
-    "\n"
-    "example:\n"
-    "  - xbmc.output(msg='This is a test string.', level=xbmc.LOGDEBUG)\n");
-
-  PyObject* XBMC_Output(PyObject *self, PyObject *args, PyObject *kwds)
-  {
-    static const char *keywords[] = {
-      "msg",
-      "level",
-      NULL};
-
-    char *s_line = NULL;
-    int iLevel = LOGNOTICE;
-    if (!PyArg_ParseTupleAndKeywords(
-      args,
-      kwds,
-      (char*)"s|i",
-      (char**)keywords,
-      &s_line,
-      &iLevel))
-    {
-      return NULL;
-    }
-    // check for a valid loglevel
-    if (iLevel < LOGDEBUG || iLevel > LOGNONE)
-      iLevel = LOGNOTICE;
-    CLog::Log(iLevel, "%s", s_line);
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
 
   // log() method
   PyDoc_STRVAR(log__doc__,
@@ -176,6 +125,17 @@ namespace PYXBMC
     return Py_None;
   }
 
+  // output() method
+  PyDoc_STRVAR(output__doc__,
+    "'xbmc.output()' is depreciated and will be removed in future releases,\n"
+    "please use 'xbmc.log()' instead");
+  
+  PyObject* XBMC_Output(PyObject *self, PyObject *args, PyObject *kwds)
+  {
+    CLog::Log(LOGWARNING,"'xbmc.output()' is depreciated and will be removed in future releases, please use 'xbmc.log()' instead");
+    return XBMC_Log(self, args, kwds);
+  }
+  
   // shutdown() method
   PyDoc_STRVAR(shutdown__doc__,
     "shutdown() -- Shutdown the xbox.\n"
@@ -186,22 +146,6 @@ namespace PYXBMC
   PyObject* XBMC_Shutdown(PyObject *self, PyObject *args)
   {
     ThreadMessage tMsg = {TMSG_SHUTDOWN};
-    g_application.getApplicationMessenger().SendMessage(tMsg);
-
-    Py_INCREF(Py_None);
-    return Py_None;
-  }
-
-  // dashboard() method
-  PyDoc_STRVAR(dashboard__doc__,
-    "dashboard() -- Boot to dashboard as set in My Pograms/General.\n"
-    "\n"
-    "example:\n"
-    "  - xbmc.dashboard()\n");
-
-  PyObject* XBMC_Dashboard(PyObject *self, PyObject *args)
-  {
-    ThreadMessage tMsg = {TMSG_DASHBOARD};
     g_application.getApplicationMessenger().SendMessage(tMsg);
 
     Py_INCREF(Py_None);
@@ -531,11 +475,18 @@ namespace PYXBMC
 
   PyObject* XBMC_GetInfoLabel(PyObject *self, PyObject *args)
   {
+    std::string cret;
+
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    int ret = g_infoManager.TranslateString(cLine);
-    return Py_BuildValue((char*)"s", g_infoManager.GetLabel(ret).c_str());
+    {
+      CPyThreadState gilRelease;
+
+      int ret = g_infoManager.TranslateString(cLine);
+      cret = g_infoManager.GetLabel(ret);
+    }
+    return Py_BuildValue((char*)"s", cret.c_str());
   }
 
   // getInfoImage() method
@@ -552,11 +503,19 @@ namespace PYXBMC
 
   PyObject* XBMC_GetInfoImage(PyObject *self, PyObject *args)
   {
+    std::string cret;
+
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
 
-    int ret = g_infoManager.TranslateString(cLine);
-    return Py_BuildValue((char*)"s", g_infoManager.GetImage(ret, WINDOW_INVALID).c_str());
+    {
+      CPyThreadState gilRelease;
+
+      int ret = g_infoManager.TranslateString(cLine);
+      cret = g_infoManager.GetImage(ret, WINDOW_INVALID);
+    }
+
+    return Py_BuildValue((char*)"s", cret.c_str());
   }
 
   // playSFX() method
@@ -574,9 +533,13 @@ namespace PYXBMC
 
     if (!PyArg_ParseTuple(args, (char*)"s", &cFile)) return NULL;
 
-    if (CFile::Exists(cFile))
     {
-      g_audioManager.PlayPythonSound(cFile);
+      CPyThreadState gilRelease;
+
+      if (CFile::Exists(cFile))
+      {
+        g_audioManager.PlayPythonSound(cFile);
+      }
     }
 
     Py_INCREF(Py_None);
@@ -626,10 +589,10 @@ namespace PYXBMC
     PyXBMCGUILock();
     int id = g_windowManager.GetTopMostModalDialogID();
     if (id == WINDOW_INVALID) id = g_windowManager.GetActiveWindow();
+    bool ret = g_infoManager.EvaluateBool(cLine,id);
     PyXBMCGUIUnlock();
 
-    int ret = g_infoManager.TranslateString(cLine);
-    return Py_BuildValue((char*)"b", g_infoManager.GetBool(ret,id));
+    return Py_BuildValue((char*)"b", ret);
   }
 
   // getGlobalIdleTime() method
@@ -950,12 +913,12 @@ namespace PYXBMC
   }
   
   PyDoc_STRVAR(subHashAndFileSize__doc__,
-    "subHashAndFileSize(file)\n"
+    "subHashAndFileSize(file) -- Calculate subtitle hash and size.\n"
     "\n"
-    "file        : file to calculate subtitle hash and size for"
+    "file        : file to calculate subtitle hash and size for\n"
     "\n"
     "example:\n"
-    " size,hash = xbmcvfs.subHashAndFileSize(file)\n"); 
+    " - size,hash = xbmc.subHashAndFileSize(file)\n"); 
   PyObject* XBMC_subHashAndFileSize(PyObject *self, PyObject *args, PyObject *kwds)
   {
     PyObject *f_line;
@@ -988,7 +951,6 @@ namespace PYXBMC
 
     {(char*)"sleep", (PyCFunction)XBMC_Sleep, METH_VARARGS, sleep__doc__},
     {(char*)"shutdown", (PyCFunction)XBMC_Shutdown, METH_VARARGS, shutdown__doc__},
-    {(char*)"dashboard", (PyCFunction)XBMC_Dashboard, METH_VARARGS, dashboard__doc__},
     {(char*)"restart", (PyCFunction)XBMC_Restart, METH_VARARGS, restart__doc__},
     {(char*)"getSkinDir", (PyCFunction)XBMC_GetSkinDir, METH_VARARGS, getSkinDir__doc__},
     {(char*)"getLocalizedString", (PyCFunction)XBMC_GetLocalizedString, METH_VARARGS, getLocalizedString__doc__},
@@ -1038,6 +1000,7 @@ namespace PYXBMC
   InitXBMCTypes(bool bInitTypes)
   {
     initKeyboard_Type();
+    initRenderCapture_Type();
     initPlayer_Type();
     initPlayList_Type();
     initPlayListItem_Type();
@@ -1045,6 +1008,7 @@ namespace PYXBMC
     initInfoTagVideo_Type();
 
     if (PyType_Ready(&Keyboard_Type) < 0 ||
+        PyType_Ready(&RenderCapture_Type) < 0 ||
         PyType_Ready(&Player_Type) < 0 ||
         PyType_Ready(&PlayList_Type) < 0 ||
         PyType_Ready(&PlayListItem_Type) < 0 ||
@@ -1066,6 +1030,7 @@ namespace PYXBMC
     PyObject* pXbmcModule;
 
     Py_INCREF(&Keyboard_Type);
+    Py_INCREF(&RenderCapture_Type);
     Py_INCREF(&Player_Type);
     Py_INCREF(&PlayList_Type);
     Py_INCREF(&PlayListItem_Type);
@@ -1117,6 +1082,17 @@ namespace PYXBMC
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGFATAL", LOGFATAL);
     PyModule_AddIntConstant(pXbmcModule, (char*)"LOGNONE", LOGNONE);
     PyModule_AddObject(pXbmcModule, (char*)"abortRequested", PyBool_FromLong(0));
+
+    PyModule_AddObject(pXbmcModule, (char*)"RenderCapture", (PyObject*)&RenderCapture_Type);
+
+    // render capture user states
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_STATE_WORKING", (int)CAPTURESTATE_WORKING);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_STATE_DONE", (int)CAPTURESTATE_DONE);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_STATE_FAILED", (int)CAPTURESTATE_FAILED);
+
+    // render capture flags
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_FLAG_CONTINUOUS", (int)CAPTUREFLAG_CONTINUOUS);
+    PyModule_AddIntConstant(pXbmcModule, (char*)"CAPTURE_FLAG_IMMEDIATELY", (int)CAPTUREFLAG_IMMEDIATELY);
   }
 }
 

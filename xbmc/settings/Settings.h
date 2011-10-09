@@ -21,8 +21,13 @@
  */
 
 #define PRE_SKIN_VERSION_9_10_COMPATIBILITY 1
+#define PRE_SKIN_VERSION_11_COMPATIBILITY 1
 
+#if defined(TARGET_DARWIN_IOS) && !defined(TARGET_DARWIN_IOS_ATV2)
+#define DEFAULT_SKIN          "skin.touched"
+#else
 #define DEFAULT_SKIN          "skin.confluence"
+#endif
 #define DEFAULT_FANART_HEIGHT 0
 #define DEFAULT_WEATHER_ADDON "weather.xbmc.builtin"
 #define DEFAULT_WEB_INTERFACE "webinterface.default"
@@ -156,6 +161,8 @@ public:
   CStdString m_discStubExtensions;
 
   CStdString m_logFolder;
+
+  CStdString m_activeKeyboardMapping;
 
   bool m_bMyMusicSongInfoInVis;
   bool m_bMyMusicSongThumbInVis;
@@ -317,6 +324,13 @@ public:
    */
   unsigned int GetCurrentProfileIndex() const { return m_currentProfile; };
 
+  /*! \brief Retrieve the next id to use for a new profile
+   \return the unique <id> to be used when creating a new profile
+   */
+  int GetNextProfileId() const { return m_nextIdProfile; }; // used to get the value of m_nextIdProfile for use in new profile creation
+
+  int GetCurrentProfileId() const;
+
   std::vector<RESOLUTION_INFO> m_ResInfo;
 
   // utility functions for user data folders
@@ -397,6 +411,7 @@ private:
   bool m_usingLoginScreen;
   unsigned int m_lastUsedProfile;
   unsigned int m_currentProfile;
+  int m_nextIdProfile; // for tracking the next available id to give to a new profile to ensure id's are not re-used
 };
 
 extern class CSettings g_settings;

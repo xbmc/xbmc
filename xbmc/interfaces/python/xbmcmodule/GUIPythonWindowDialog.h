@@ -31,15 +31,12 @@ public:
   CGUIPythonWindowDialog(int id);
   virtual ~CGUIPythonWindowDialog(void);
   virtual bool    OnMessage(CGUIMessage& message);
-  void            Show(bool show = true);
-  virtual bool    IsDialogRunning() const { return m_bRunning; }
+  virtual bool    IsDialogRunning() const { return m_active; }
   virtual bool    IsDialog() const { return true;};
   virtual bool    IsModalDialog() const { return true; };
 
 protected:
   friend class CApplicationMessenger;
   void Show_Internal(bool show = true);
-
-private:
-  bool             m_bRunning;
+  virtual void OnDeinitWindow(int nextWindowID = 0);
 };

@@ -31,6 +31,8 @@
 #include "guilib/GraphicContext.h"
 #include "BaseRenderer.h"
 
+#include "threads/Event.h"
+
 class CRenderCapture;
 
 class CVDPAU;
@@ -130,11 +132,10 @@ public:
   bool RenderCapture(CRenderCapture* capture);
 
   // Player functions
-  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
   virtual bool IsConfigured() { return m_bConfigured; }
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false);
   virtual void         ReleaseImage(int source, bool preserve = false);
-  virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y);
   virtual void         FlipPage(int source);
   virtual unsigned int PreInit();
   virtual void         UnInit();
@@ -152,8 +153,11 @@ public:
   // Feature support
   virtual bool SupportsMultiPassRendering();
   virtual bool Supports(ERENDERFEATURE feature);
+  virtual bool Supports(EDEINTERLACEMODE mode);
   virtual bool Supports(EINTERLACEMETHOD method);
   virtual bool Supports(ESCALINGMETHOD method);
+
+  virtual EINTERLACEMETHOD AutoInterlaceMethod();
 
 protected:
   virtual void Render(DWORD flags, int renderBuffer);
@@ -293,7 +297,7 @@ protected:
   GLuint             m_rgbPbo;
   struct SwsContext *m_context;
 
-  HANDLE m_eventTexturesDone[NUM_BUFFERS];
+  CEvent* m_eventTexturesDone[NUM_BUFFERS];
 
   void BindPbo(YUVBUFFER& buff);
   void UnBindPbo(YUVBUFFER& buff);

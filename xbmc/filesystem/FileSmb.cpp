@@ -24,8 +24,6 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "system.h"
-
-#if defined(HAS_FILESYSTEM_SMB)
 #include "FileSmb.h"
 #include "PasswordManager.h"
 #include "SMBDirectory.h"
@@ -59,7 +57,7 @@ SMBCSRV* xb_smbc_cache(SMBCCTX* c, const char* server, const char* share, const 
 
 CSMB::CSMB()
 {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   m_IdleTimeout = 0;
 #endif
   m_context = NULL;
@@ -83,7 +81,7 @@ void CSMB::Deinit()
       smbc_set_context(NULL);
       smbc_free_context(m_context, 1);
     }
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
     catch(win32_exception e)
     {
       e.writelog(__FUNCTION__);
@@ -104,7 +102,7 @@ void CSMB::Init()
   CSingleLock lock(*this);
   if (!m_context)
   {
-#ifdef _LINUX
+#ifdef TARGET_POSIX
     // Create ~/.smb/smb.conf. This file is used by libsmbclient.
     // http://us1.samba.org/samba/docs/man/manpages-3/libsmbclient.7.html
     // http://us1.samba.org/samba/docs/man/manpages-3/smb.conf.5.html
@@ -125,6 +123,9 @@ void CSMB::Init()
       // use the weaker LANMAN password hash in order to be compatible with older servers
       fprintf(f, "\tclient lanman auth = yes\n");
       fprintf(f, "\tlanman auth = yes\n");
+
+      fprintf(f, "\tsocket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536\n");      
+      fprintf(f, "\tlock directory = %s/.smb/\n", getenv("HOME"));
 
       // set wins server if there's one. name resolve order defaults to 'lmhosts host wins bcast'.
       // if no WINS server has been specified the wins method will be ignored.
@@ -148,7 +149,7 @@ void CSMB::Init()
     }
 #endif
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
     // set the log function
     set_log_callback(xb_smbc_log);
 #endif
@@ -179,7 +180,7 @@ void CSMB::Init()
       /* setup old interface to use this context */
       smbc_set_context(m_context);
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
       // if a wins-server is set, we have to change name resolve order to
       if ( g_guiSettings.GetString("smb.winsserver").length() > 0 && !g_guiSettings.GetString("smb.winsserver").Equals("0.0.0.0") )
       {
@@ -201,14 +202,14 @@ void CSMB::Init()
       m_context = NULL;
     }
   }
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   m_IdleTimeout = 180;
 #endif
 }
 
 void CSMB::Purge()
 {
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
   CSingleLock lock(*this);
   smbc_purge();
 #endif
@@ -229,7 +230,7 @@ void CSMB::PurgeEx(const CURL& url)
   CSingleLock lock(*this);
   CStdString strShare = url.GetFileName().substr(0, url.GetFileName().Find('/'));
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
   if (m_strLastShare.length() > 0 && (m_strLastShare != strShare || m_strLastHost != url.GetHostName()))
     smbc_purge();
 #endif
@@ -283,7 +284,7 @@ CStdString CSMB::URLEncode(const CStdString &value)
   return encoded;
 }
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
 DWORD CSMB::ConvertUnixToNT(int error)
 {
   DWORD nt_error;
@@ -295,7 +296,7 @@ DWORD CSMB::ConvertUnixToNT(int error)
 }
 #endif
 
-#ifdef _LINUX
+#ifdef TARGET_POSIX
 /* This is called from CApplication::ProcessSlow() and is used to tell if smbclient have been idle for too long */
 void CSMB::CheckIfIdle()
 {
@@ -349,7 +350,7 @@ CFileSMB::CFileSMB()
 {
   smb.Init();
   m_fd = -1;
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   smb.AddActiveConnection();
 #endif
 }
@@ -357,7 +358,7 @@ CFileSMB::CFileSMB()
 CFileSMB::~CFileSMB()
 {
   Close();
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   smb.AddIdleConnection();
 #endif
 }
@@ -403,7 +404,7 @@ bool CFileSMB::Open(const CURL& url)
   if (m_fd == -1)
   {
     // write error to logfile
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
     int nt_error = smb.ConvertUnixToNT(errno);
     CLog::Log(LOGINFO, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
 #else
@@ -413,7 +414,7 @@ bool CFileSMB::Open(const CURL& url)
   }
 
   CSingleLock lock(smb);
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
   struct __stat64 tmpBuffer = {0};
 #else
   struct stat tmpBuffer;
@@ -478,7 +479,7 @@ int CFileSMB::OpenFile(const CURL &url, CStdString& strAuth)
   }
 
   // file open failed, try to open the directory to force authentication
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
   if (fd < 0 && smb.ConvertUnixToNT(errno) == NT_STATUS_ACCESS_DENIED)
 #else
   if (fd < 0 && errno == EACCES)
@@ -525,7 +526,7 @@ bool CFileSMB::Exists(const CURL& url)
   smb.Init();
   CStdString strFileName = GetAuthenticatedPath(url);
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
   struct __stat64 info;
 #else
   struct stat info;
@@ -543,7 +544,7 @@ int CFileSMB::Stat(struct __stat64* buffer)
   if (m_fd == -1)
     return -1;
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
   struct __stat64 tmpBuffer = {0};
 #else
   struct stat tmpBuffer = {0};
@@ -574,7 +575,7 @@ int CFileSMB::Stat(const CURL& url, struct __stat64* buffer)
   CStdString strFileName = GetAuthenticatedPath(url);
   CSingleLock lock(smb);
 
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
   struct __stat64 tmpBuffer = {0};
 #else
   struct stat tmpBuffer = {0};
@@ -601,7 +602,7 @@ unsigned int CFileSMB::Read(void *lpBuf, int64_t uiBufSize)
 {
   if (m_fd == -1) return 0;
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   smb.SetActivityTime();
 #endif
   /* work around stupid bug in samba */
@@ -624,7 +625,7 @@ unsigned int CFileSMB::Read(void *lpBuf, int64_t uiBufSize)
 
   if ( bytesRead < 0 )
   {
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
     CLog::Log(LOGERROR, "%s - Error( %d, %d, %s )", __FUNCTION__, bytesRead, errno, strerror(errno));
@@ -640,14 +641,14 @@ int64_t CFileSMB::Seek(int64_t iFilePosition, int iWhence)
   if (m_fd == -1) return -1;
 
   CSingleLock lock(smb); // Init not called since it has to be "inited" by now
-#ifdef _LINUX
+#ifdef TARGET_POSIX
   smb.SetActivityTime();
 #endif
   int64_t pos = smbc_lseek(m_fd, iFilePosition, iWhence);
 
   if ( pos < 0 )
   {
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
     CLog::Log(LOGERROR, "%s - Error( %"PRId64", %d, %s )", __FUNCTION__, pos, errno, strerror(errno));
@@ -692,7 +693,7 @@ bool CFileSMB::Delete(const CURL& url)
   int result = smbc_unlink(strFile.c_str());
 
   if(result != 0)
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
@@ -711,7 +712,7 @@ bool CFileSMB::Rename(const CURL& url, const CURL& urlnew)
   int result = smbc_rename(strFile.c_str(), strFileNew.c_str());
 
   if(result != 0)
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, get_friendly_nt_error_msg(smb.ConvertUnixToNT(errno)));
 #else
     CLog::Log(LOGERROR, "%s - Error( %s )", __FUNCTION__, strerror(errno));
@@ -746,7 +747,7 @@ bool CFileSMB::OpenForWrite(const CURL& url, bool bOverWrite)
   if (m_fd == -1)
   {
     // write error to logfile
-#ifndef _LINUX
+#ifdef TARGET_WINDOWS
     int nt_error = map_nt_error_from_unix(errno);
     CLog::Log(LOGERROR, "FileSmb->Open: Unable to open file : '%s'\nunix_err:'%x' nt_err : '%x' error : '%s'", strFileName.c_str(), errno, nt_error, get_friendly_nt_error_msg(nt_error));
 #else
@@ -774,4 +775,3 @@ CStdString CFileSMB::GetAuthenticatedPath(const CURL &url)
   CPasswordManager::GetInstance().AuthenticateURL(authURL);
   return smb.URLEncode(authURL);
 }
-#endif

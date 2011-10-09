@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<strings>
+  <!-- Misc labels -->
+  <string id="31000">Verander je</string>
+  <string id="31001">Sluiten</string>
+  <string id="31002">Geluidsinstellingen</string>
+  <string id="31003">IP</string>
+  <string id="31004">Caps[CR]Lock</string>
+  <string id="31005">Visualisatie Opties</string>
+  <string id="31006">Visualisatie standaardinstellingen</string>
+  <string id="31007">Context Menu</string>
+  <string id="31008">Volledig Scherm</string>
+  <string id="31009">Bezig...</string>
+  <string id="31010">Momenteel ingelogd als</string>
+  <string id="31011">N/A</string> <!-- Used for subtitle button in the OSD -->
+  <string id="31012">Muziek - Bestanden</string>
+
+  <string id="31024">Pagina</string>
+  <string id="31025">Items</string>
+ 
+  <!-- ViewType labels -->
+  <string id="31030">Info Lijst</string>
+  <string id="31031">Info Breed</string>
+
+  <!-- Extra labels -->
+  <string id="31040">Speel nu</string>
+
+  <string id="31042">SPELEN</string>
+  <string id="31043">GEPAUZEERD</string>
+  <string id="31044">VOORUITSPOELEN</string>
+  <string id="31045">TERUGSPOELEN</string>
+  <string id="31046">Geluidsinstellingen</string>
+  <string id="31047">Huidige Instellingen</string>
+  <string id="31048">Visualisatie Standaardinstellingen</string>
+  <string id="31049">End Time</string>
+  <string id="31050">Sorteren: Oplopend</string>
+  <string id="31051">Sorteren: Aflopend</string>
+
+
+  <!-- Playlist Editor labels -->
+  <string id="31055">Open playlist</string>
+  <string id="31056">Save playlist</string>
+  <string id="31057">Sluit playlist</string>
+  <string id="31058">Muziek bestanden</string>
+  <string id="31059">Huidige playlist</string>
+  <string id="31060">Dit bestand is gestapeld, selecteer het deel dat u wilt afspelen.</string>
+  
+  <!-- Submenu labels -->
+  <string id="31200">Terug</string>
+  <string id="31201">Locatie</string>
+
+  <!-- Extra labels -->
+  <string id="31300">Huidige temperatuur</string>
+  <string id="31301">Laatste update</string>
+
+  <string id="31309">Geheugen-verbruik:</string>
+  <string id="31312">Huidige Scraper</string>
+  <string id="31313">Kies een Scraper</string>
+  <string id="31314">Inhoudsscan opties</string>
+
+  <string id="31319">Beschikbare XBMC gebruikersprofielen</string>
+  <string id="31320">Laatste login</string>
+  <string id="31321">Karaoke liedjeskiezer</string>
+  <string id="31322">Uitgezonden</string>
+
+  <string id="31325">Playlist Opties</string>
+
+  <!-- Video and Music OSD Labels  -->
+  <string id="31351">Pauze</string>
+  <string id="31352">Stop</string>
+  <string id="31353">Vooruitspoelen</string>
+  <string id="31354">Terugspoelen</string>
+  <string id="31355">Video Menu</string>
+  <string id="31356">Ondertitels downloaden</string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Standaard Skin</string>
+  <string id="31391">Arial lettertype</string>
+
+  <!-- Description Labels  -->
+  <string id="31400">Verander je Skin � Instellen van Taal en Land � Verander bestandslijst opties � Stel een screensaver in</string>
+  <string id="31401">Manage je video bibliotheek � Afspeelopties voor Video � Verander videolijst opties � Stel ondertitel font in</string>
+  <string id="31402">Manage je Muziek bibliotheek � Afspeelopties voor Muziek � Verander Muzieklijst opties � Stel liedjesaanbod in � Stel karaokeopties in</string>
+  <string id="31403">Stel fotolijst opties in � Configureer diashow</string>
+  <string id="31404">Stel drie steden in om weerinformatie te verzamelen</string>
+  <string id="31405">Instellingen voor bedienen XBMC via UPnP en HTTP � Instellingen voor delen van bestanden � Internet instellingen</string>
+  <string id="31406">Instellen en kalibreren van scherm � Configureer geluidsuitgang � Instellen van afstandsbediening � Instellingen voor energiebesparing � Zet debugging aan � Instellingen voor vergrendeling</string>
+  <string id="31407">Instellingen voor Confluence Skin � Toevoegen en verwijderen van Home menu items � Verander skin achtergrond</string>
+  <string id="31408">Manage je geïnstalleerde add-ons � Zoek en installeer add-ons op xbmc.org � Verander add-on instellingen</string>
+
+  <string id="31421">Kies je XBMC gebruikersprofiel[CR]om door te gaan</string>
+</strings>

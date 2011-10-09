@@ -18,17 +18,29 @@
 				<texture border="40">DialogBack.png</texture>
 			</control>
 			<control type="image">
-				<posx>80</posx>
-				<posy>10</posy>
-				<width>600</width>
-				<height>70</height>
-				<aspectratio>stretch</aspectratio>
-				<texture>GlassTitleBar.png</texture>
+				<description>Dialog Header image</description>
+				<posx>40</posx>
+				<posy>16</posy>
+				<width>680</width>
+				<height>40</height>
+				<texture>dialogheader.png</texture>
+			</control>
+			<control type="label" id="311">
+				<description>header label</description>
+				<posx>40</posx>
+				<posy>20</posy>
+				<width>720</width>
+				<height>30</height>
+				<font>font13_title</font>
+				<align>center</align>
+				<aligny>center</aligny>
+				<textcolor>selected</textcolor>
+				<shadowcolor>black</shadowcolor>
 			</control>
 			<control type="button">
 				<description>Close Window button</description>
 				<posx>670</posx>
-				<posy>9</posy>
+				<posy>15</posy>
 				<width>64</width>
 				<height>32</height>
 				<label>-</label>
@@ -66,32 +78,11 @@
 				<width>500</width>
 				<height>30</height>
 				<aspectratio>stretch</aspectratio>
-				<texture>GlassTitleBar.png</texture>
-			</control>
-			<control type="image">
-				<posx>80</posx>
-				<posy>380</posy>
-				<width>600</width>
-				<height>40</height>
-				<aspectratio>stretch</aspectratio>
-				<colordiffuse>AAFFFFFF</colordiffuse>
-				<texture flipy="true">GlassTitleBar.png</texture>
-			</control>
-			<control type="label" id="311">
-				<description>dialog Heading</description>
-				<posx>10</posx>
-				<posy>20</posy>
-				<width>740</width>
-				<height>30</height>
-				<font>font13_title</font>
-				<textcolor>white</textcolor>
-				<shadowcolor>black</shadowcolor>
-				<align>center</align>
-				<aligny>center</aligny>
+				<texture>DialogHeader.png</texture>
 			</control>
 			<control type="group">
 				<posx>30</posx>
-				<posy>135</posy>
+				<posy>140</posy>
 				<control type="button" id="300">
 					<description>DONE button</description>
 					<posx>0</posx>

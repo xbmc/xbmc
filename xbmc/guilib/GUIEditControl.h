@@ -65,6 +65,7 @@ public:
 
   virtual void SetLabel(const std::string &text);
   virtual void SetLabel2(const std::string &text);
+  void SetHint(const CGUIInfoLabel& hint);
 
   virtual CStdString GetLabel2() const;
 
@@ -73,12 +74,12 @@ public:
 
   void SetInputType(INPUT_TYPE type, int heading);
 
-  void SetTextChangeActions(const std::vector<CGUIActionDescriptor>& textChangeActions) { m_textChangeActions = textChangeActions; };
+  void SetTextChangeActions(const CGUIAction& textChangeActions) { m_textChangeActions = textChangeActions; };
 
-  bool HasTextChangeActions() { return m_textChangeActions.size() > 0; };
+  bool HasTextChangeActions() { return m_textChangeActions.HasActionsMeetingCondition(); };
 
 protected:
-  virtual void RenderText();
+  virtual void ProcessText(unsigned int currentTime);
   CStdStringW GetDisplayedText() const;
   void RecalcLabelPosition();
   void ValidateCursor();
@@ -94,6 +95,7 @@ protected:
   
   CStdStringW m_text2;
   CStdString  m_text;
+  CGUIInfoLabel m_hintInfo;
   float m_textOffset;
   float m_textWidth;
 
@@ -106,8 +108,7 @@ protected:
   INPUT_TYPE m_inputType;
   bool m_isMD5;
 
-  std::vector<CGUIActionDescriptor> m_textChangeActions;
-
+  CGUIAction m_textChangeActions;
 
   unsigned int m_smsKeyIndex;
   unsigned int m_smsLastKey;

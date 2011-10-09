@@ -146,7 +146,7 @@ public:
 
 
 CDVDPlayerAudio::CDVDPlayerAudio(CDVDClock* pClock, CDVDMessageQueue& parent)
-: CThread()
+: CThread("CDVDPlayerAudio")
 , m_messageQueue("audio")
 , m_messageParent(parent)
 , m_dvdAudio((bool&)m_bStop)
@@ -515,8 +515,6 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
 void CDVDPlayerAudio::OnStartup()
 {
-  CThread::SetName("CDVDPlayerAudio");
-
   m_decode.msg = NULL;
   m_decode.Release();
 
@@ -578,6 +576,9 @@ void CDVDPlayerAudio::Process()
     // we have succesfully decoded an audio frame, setup renderer to match
     if (!m_dvdAudio.IsValidFormat(audioframe))
     {
+      if(m_speed)
+        m_dvdAudio.Drain();
+
       m_dvdAudio.Destroy();
 
       if(m_speed)
@@ -902,6 +903,8 @@ string CDVDPlayerAudio::GetPlayerInfo()
   //if the resample ratio is 0.5, then we're playing twice as fast
   if (m_synctype == SYNC_RESAMPLE)
     s << ", rr:" << fixed << setprecision(5) << 1.0 / m_resampleratio;
+
+  s << ", att:" << fixed << setprecision(1) << log(GetCurrentAttenuation()) * 10.0f << " dB";
 
   return s.str();
 }

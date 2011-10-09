@@ -37,7 +37,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>660</posx>
+						<posx>680</posx>
 						<posy>0</posy>
 						<width>400</width>
 						<height>40</height>
@@ -47,7 +47,29 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
-						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="!Window.IsVisible(Videos)">conditional</animation>
+						<visible>!Window.IsVisible(Videos)</visible>
+					</control>
+					<control type="label">
+						<posx>620</posx>
+						<posy>0</posy>
+						<width>400</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<visible>Window.IsVisible(Videos)</visible>
+						<animation effect="slide" start="0,0" end="40,0" delay="0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">conditional</animation>
+					</control>
+					<control type="image">
+						<posx>625</posx>
+						<posy>8</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 					</control>
 					<control type="image">
 						<posx>665</posx>
@@ -79,9 +101,9 @@
 					</control>
 					<control type="image">
 						<posx>490</posx>
-						<posy>5</posy>
+						<posy>4</posy>
 						<width>200</width>
-						<height>31</height>
+						<height>33</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
 						<visible>Control.HasFocus(50) + !IsEmpty(ListItem.Label2)</visible>
 					</control>
@@ -98,7 +120,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>660</posx>
+						<posx>680</posx>
 						<posy>0</posy>
 						<width>400</width>
 						<height>40</height>
@@ -108,7 +130,29 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
-						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="!Window.IsVisible(Videos)">conditional</animation>
+						<visible>!Window.IsVisible(Videos)</visible>
+					</control>
+					<control type="label">
+						<posx>620</posx>
+						<posy>0</posy>
+						<width>400</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<visible>Window.IsVisible(Videos)</visible>
+						<animation effect="slide" start="0,0" end="40,0" delay="0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">conditional</animation>
+					</control>
+					<control type="image">
+						<posx>625</posx>
+						<posy>8</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 					</control>
 					<control type="image">
 						<posx>665</posx>
@@ -171,7 +215,7 @@
 				<posx>90</posx>
 				<posy>80</posy>
 				<width>1080</width>
-				<height>550</height>
+				<height>558</height>
 				<onleft>2</onleft>
 				<onright>60</onright>
 				<onup>500</onup>
@@ -180,21 +224,32 @@
 				<pagecontrol>60</pagecontrol>
 				<scrolltime>200</scrolltime>
 				<preloaditems>2</preloaditems>
-				<itemlayout height="275" width="270">
+				<itemlayout height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
-						<width>268</width>
-						<height>240</height>
+						<width>214</width>
+						<height>160</height>
 						<bordertexture border="5">button-nofocus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<fadetime>100</fadetime>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>!Container.Content(Episodes)</visible>
+					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>214</width>
+						<height>160</height>
+						<aspectratio>scale</aspectratio>
+						<bordertexture border="5">button-nofocus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
-						<posx>135</posx>
-						<posy>240</posy>
-						<width>260</width>
+						<posx>108</posx>
+						<posy>160</posy>
+						<width>200</width>
 						<height>25</height>
 						<font>font12</font>
 						<textcolor>grey2</textcolor>
@@ -204,29 +259,40 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
-						<posx>230</posx>
-						<posy>200</posy>
-						<width>35</width>
-						<height>35</height>
+						<posx>180</posx>
+						<posy>130</posy>
+						<width>30</width>
+						<height>30</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
 				</itemlayout>
-				<focusedlayout height="275" width="270">
+				<focusedlayout height="186" width="216">
 					<control type="image">
 						<posx>1</posx>
 						<posy>0</posy>
-						<width>268</width>
-						<height>240</height>
+						<width>214</width>
+						<height>160</height>
 						<bordertexture border="5">folder-focus.png</bordertexture>
 						<bordersize>5</bordersize>
-						<fadetime>100</fadetime>
 						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>!Container.Content(Episodes)</visible>
+					</control>
+					<control type="image">
+						<posx>1</posx>
+						<posy>0</posy>
+						<width>214</width>
+						<height>160</height>
+						<aspectratio>scale</aspectratio>
+						<bordertexture border="5">folder-focus.png</bordertexture>
+						<bordersize>5</bordersize>
+						<texture background="true">$INFO[Listitem.Icon]</texture>
+						<visible>Container.Content(Episodes)</visible>
 					</control>
 					<control type="label">
-						<posx>135</posx>
-						<posy>240</posy>
-						<width>260</width>
+						<posx>108</posx>
+						<posy>160</posy>
+						<width>200</width>
 						<height>25</height>
 						<font>font12</font>
 						<textcolor>white</textcolor>
@@ -236,10 +302,10 @@
 						<info>ListItem.Label</info>
 					</control>
 					<control type="image">
-						<posx>230</posx>
-						<posy>200</posy>
-						<width>35</width>
-						<height>35</height>
+						<posx>180</posx>
+						<posy>130</posy>
+						<width>30</width>
+						<height>30</height>
 						<aspectratio>keep</aspectratio>
 						<texture>$INFO[ListItem.Overlay]</texture>
 					</control>
@@ -382,7 +448,7 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>1045</posx>
+						<posx>1060</posx>
 						<posy>0</posy>
 						<width>1000</width>
 						<height>40</height>
@@ -392,7 +458,29 @@
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
-						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="!Window.IsVisible(Videos)">conditional</animation>
+						<visible>!Window.IsVisible(Videos)</visible>
+					</control>
+					<control type="label">
+						<posx>1005</posx>
+						<posy>0</posy>
+						<width>940</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<visible>Window.IsVisible(Videos)</visible>
+						<animation effect="slide" start="0,0" end="40,0" delay="0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">conditional</animation>
+					</control>
+					<control type="image">
+						<posx>1010</posx>
+						<posy>8</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 					</control>
 					<control type="image">
 						<posx>1050</posx>
@@ -424,9 +512,9 @@
 					</control>
 					<control type="image">
 						<posx>875</posx>
-						<posy>5</posy>
+						<posy>4</posy>
 						<width>200</width>
-						<height>31</height>
+						<height>33</height>
 						<texture border="0,0,14,0">MediaItemDetailBG.png</texture>
 						<visible>Control.HasFocus(51) + !IsEmpty(ListItem.Label2)</visible>
 					</control>
@@ -450,17 +538,39 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 					<control type="label">
-						<posx>1045</posx>
+						<posx>1060</posx>
 						<posy>0</posy>
 						<width>1000</width>
 						<height>40</height>
 						<font>font12</font>
-						<textcolor>white</textcolor>
+						<textcolor>grey2</textcolor>
 						<selectedcolor>selected</selectedcolor>
 						<align>right</align>
 						<aligny>center</aligny>
 						<label>$INFO[ListItem.Label2]</label>
-						<animation effect="slide" start="0,0" end="20,0" delay="0" time="0" condition="!Window.IsVisible(Videos)">conditional</animation>
+						<visible>!Window.IsVisible(Videos)</visible>
+					</control>
+					<control type="label">
+						<posx>1005</posx>
+						<posy>0</posy>
+						<width>940</width>
+						<height>40</height>
+						<font>font12</font>
+						<textcolor>grey2</textcolor>
+						<selectedcolor>selected</selectedcolor>
+						<align>right</align>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label2]</label>
+						<visible>Window.IsVisible(Videos)</visible>
+						<animation effect="slide" start="0,0" end="40,0" delay="0" time="0" condition="![Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]">conditional</animation>
+					</control>
+					<control type="image">
+						<posx>1010</posx>
+						<posy>8</posy>
+						<width>40</width>
+						<height>26</height>
+						<texture>$INFO[ListItem.VideoResolution,flagging/lists/,.png]</texture>
+						<visible>Window.IsVisible(Videos) + [Container.Content(Movies) | Container.Content(Episodes) | Container.Content(MusicVideos)]</visible>
 					</control>
 					<control type="image">
 						<posx>1050</posx>

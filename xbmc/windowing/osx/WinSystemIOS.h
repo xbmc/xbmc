@@ -44,6 +44,7 @@ public:
   virtual void UpdateResolutions();
 
   virtual void ShowOSMouse(bool show);
+  virtual bool HasCursor();
 
   virtual void NotifyAppActiveChange(bool bActivated);
 
@@ -62,7 +63,7 @@ public:
           double GetDisplayLinkFPS(void);
 
 protected:
-  virtual bool PresentRenderImpl();
+  virtual bool PresentRenderImpl(const CDirtyRegionList &dirty);
   virtual void SetVSyncImpl(bool enable);
 
   void        *m_glView; // EAGLView opaque

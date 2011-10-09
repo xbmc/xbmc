@@ -167,7 +167,7 @@ or insert() operations default = false) */
 /* Go to record No (starting with 0) */
   virtual bool seek(int pos=0);
 
-
+  virtual bool dropIndex(const char *table, const char *index);
 };
 } //namespace
 #endif

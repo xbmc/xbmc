@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: Attila Jakosa-->
 <!--Email: attila.jakosa@gmail.com-->
-<!--Date of translation: 05/01/2011-->
-<!--Based on English a9839fa95cb9711efe46 (04.01.2011)-->
-<!--$Revision$-->
+<!--Based on English 52a14da027966458c44b1e7899f6c9f155ee1c44 (09.08.2011)-->
 <strings>
   <!-- Vegyes feliratok -->
   <string id="31000">Választható</string>
@@ -11,9 +9,10 @@
   <string id="31002">Utálom</string>
   <string id="31003">Kikapcsolási lehetőségek</string>
   <string id="31004">Dolgozom...</string>
-  <string id="31005">Infó elrejtése</string>
-
+  <string id="31005">Információ elrejtése</string>
+  <string id="31006">Nézet lehetőségek</string>
   <string id="31007">Beépülők</string>
+  <string id="31008">Teljes képernyő</string>
 
   <string id="31020">Nemrég hozzáadott</string>
   <string id="31021">Videók - Fájlmód</string>
@@ -43,6 +42,8 @@
   <string id="31047">Jelenlegi beállítás</string>
   <string id="31048">Vizualizáció altípus</string>
   <string id="31049">Befejezés időpontja</string>
+  <string id="31050">Sorrend: Növekvő</string>
+  <string id="31051">Sorrend: Csökkenő</string>
 
 
   <!-- Lejátszáslista szerkesztő feliratai -->
@@ -60,7 +61,7 @@
   <string id="31102">Háttér</string>
   <string id="31103">"Megállítva" mutatása a diavetítés közben</string>
   <string id="31104">Filmelőzetesek lejátszása ablakban [COLOR=grey3](csak a videóinfó ablakban)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">A "Videók" gomb mindíg közvetlenül a fájlokra ugrik</string>
   <string id="31106">Vegyes beállítások</string>
   <string id="31107">Fájlnevekből olvasott filmjellemzők elrejtése [COLOR=grey3](BR, HD-DVD)[/COLOR]</string>
   <string id="31108">Főmenügombok láthatósága</string>
@@ -74,7 +75,7 @@
   <string id="31116"></string>
   <string id="31117">Nemrég hozzáadott videók mutatása</string>
   <string id="31118">Sajátképernyő programok almenü</string>
-  <string id="31119"></string>
+  <string id="31119">Fanart-háttér elrejtése</string>
   <string id="31120">GOMBFELIRAT</string>
   <string id="31121"></string>
   <string id="31122">Időjárás oldal</string>
@@ -82,8 +83,8 @@
   <string id="31124">A háttérben az éppen játszott videó megjelenítése</string>
   <string id="31125">A háttérben az éppen futó vizualizáció megjelenítése</string>
 
-  <string id="31126"></string>
-  <string id="31127"></string>
+  <string id="31126">TV főtémadalok játszása a videó médiatárban (TvTunes kiegészítő)</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">Dalszöveg</string>
   <string id="31129"></string>
   <string id="31130"></string>
@@ -138,6 +139,7 @@
   <string id="31328">Nemrég hozzáadva</string>
   <string id="31329">[B]Időzítő beállítva![/B] [COLOR=grey2] - Automatikus leállítás ennyi idő múlva:[/COLOR]</string>
   <string id="31330">Nyomd a gombot a filmelőzetes[CR][CR]Lejátszásához</string>
+  <string id="31331">Album részletek</string>
 
   <!-- Videó és Zene OSD Feliratok  -->
   <string id="31351">Pillanatmegállítás</string>
@@ -165,4 +167,17 @@
   <string id="31408">[B]KIEGÉSZÍTŐK BEÁLLÍTÁSA[/B][CR][CR]A telepített kiegészítők kezelése · Kiegészítők böngészése és telepítése az xbmc.org[CR]webhelyről · Kiegészítők beállításainak módosítása</string>
   
   <string id="31421">Válaszd ki az XBMC felhasználói profilod[CR]a belépéshez</string>
+
+  <!-- Időjárás kiegészítő  -->
+  <string id="31900">Időjárási térképek</string>
+  <string id="31901">36 órás előrejelzés</string>
+  <string id="31902">Előrejelzés óra bontással</string>
+  <string id="31903">Hétvégi előrejelzés</string>
+  <string id="31904">10 napos előrejelzés</string>
+  <string id="31905">Előrejelzés</string>
+  <string id="31906">Térképek &amp; Videó</string>
+  <string id="31907">Videó előrejelzés [COLOR=grey2](Teljesképernyős lejátszás)[/COLOR]</string>
+  <string id="31908">Csapadék esélye</string>
+  <string id="31909">Előrejelzési információ letöltése...</string>
+
 </strings>

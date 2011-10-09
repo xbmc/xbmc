@@ -14,19 +14,42 @@
 			<width>610</width>
 			<height>650</height>
 			<texture border="40">DialogBack.png</texture>
+			<visible>![Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)]</visible>
 		</control>
 		<control type="image">
+			<description>background image</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>610</width>
+			<height>650</height>
+			<texture border="40">DialogBack2.png</texture>
+			<visible>Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)</visible>
+		</control>
+		<control type="image">
+			<description>Dialog Header image</description>
 			<posx>40</posx>
-			<posy>10</posy>
+			<posy>16</posy>
 			<width>530</width>
-			<height>90</height>
-			<aspectratio>stretch</aspectratio>
-			<texture>GlassTitleBar.png</texture>
+			<height>40</height>
+			<texture>dialogheader.png</texture>
+		</control>
+		<control type="label" id="1">
+			<description>header label</description>
+			<posx>40</posx>
+			<posy>20</posy>
+			<width>530</width>
+			<height>30</height>
+			<font>font13_title</font>
+			<label>$LOCALIZE[13406]</label>
+			<align>center</align>
+			<aligny>center</aligny>
+			<textcolor>selected</textcolor>
+			<shadowcolor>black</shadowcolor>
 		</control>
 		<control type="button">
 			<description>Close Window button</description>
 			<posx>520</posx>
-			<posy>9</posy>
+			<posy>15</posy>
 			<width>64</width>
 			<height>32</height>
 			<label>-</label>
@@ -40,24 +63,11 @@
 			<ondown>10</ondown>
 			<visible>system.getbool(input.enablemouse)</visible>
 		</control>
-		<control type="label" id="1">
-			<description>header label</description>
-			<posx>20</posx>
-			<posy>18</posy>
-			<width>570</width>
-			<height>30</height>
-			<font>font13_title</font>
-			<label>$LOCALIZE[13406]</label>
-			<align>center</align>
-			<aligny>center</aligny>
-			<textcolor>white</textcolor>
-			<shadowcolor>black</shadowcolor>
-		</control>
 		<control type="list" id="3">
 			<posx>20</posx>
-			<posy>60</posy>
+			<posy>67</posy>
 			<width>550</width>
-			<height>520</height>
+			<height>506</height>
 			<onup>3</onup>
 			<ondown>3</ondown>
 			<onleft>5</onleft>
@@ -65,13 +75,13 @@
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(61)">Conditional</animation>
-			<itemlayout height="40" width="550">
+			<itemlayout height="46" width="550">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>550</width>
-					<height>41</height>
-					<texture border="0,2,0,2">MenuItemNF.png</texture>
+					<height>40</height>
+					<texture border="5">button-nofocus.png</texture>
 				</control>
 				<control type="label">
 					<posx>20</posx>
@@ -86,13 +96,13 @@
 					<label>$INFO[ListItem.Label]</label>
 				</control>
 			</itemlayout>
-			<focusedlayout height="40" width="550">
+			<focusedlayout height="46" width="550">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>550</width>
-					<height>41</height>
-					<texture border="0,2,0,2">MenuItemNF.png</texture>
+					<height>40</height>
+					<texture border="5">button-nofocus.png</texture>
 					<visible>!Control.HasFocus(3)</visible>
 					<include>VisibleFadeEffect</include>
 				</control>
@@ -100,8 +110,8 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>550</width>
-					<height>41</height>
-					<texture border="0,2,0,2">MenuItemFO.png</texture>
+					<height>40</height>
+					<texture border="5">button-focus2.png</texture>
 					<visible>Control.HasFocus(3)</visible>
 					<include>VisibleFadeEffect</include>
 				</control>
@@ -121,9 +131,9 @@
 		</control>
 		<control type="list" id="6">
 			<posx>20</posx>
-			<posy>60</posy>
+			<posy>65</posy>
 			<width>550</width>
-			<height>520</height>
+			<height>510</height>
 			<onup>6</onup>
 			<ondown>6</ondown>
 			<onleft>5</onleft>
@@ -131,27 +141,27 @@
 			<pagecontrol>61</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<animation effect="slide" start="0,0" end="10,0" time="0" condition="!Control.IsVisible(61)">Conditional</animation>
-			<itemlayout height="80" width="550">
+			<itemlayout height="85" width="550">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>550</width>
-					<height>81</height>
-					<texture border="0,2,0,2">MenuItemNF.png</texture>
+					<height>80</height>
+					<texture border="5">button-nofocus.png</texture>
 				</control>
 				<control type="image">
-					<posx>0</posx>
+					<posx>2</posx>
 					<posy>2</posy>
-					<width>120</width>
+					<width>80</width>
 					<height>76</height>
 					<texture>$INFO[Listitem.Icon]</texture>
 					<bordertexture border="3">black-back2.png</bordertexture>
 					<bordersize>2</bordersize>
 				</control>
 				<control type="label">
-					<posx>130</posx>
+					<posx>90</posx>
 					<posy>0</posy>
-					<width>410</width>
+					<width>450</width>
 					<height>30</height>
 					<font>font13</font>
 					<textcolor>grey</textcolor>
@@ -161,9 +171,9 @@
 					<label>[B]$INFO[ListItem.Label][/B]</label>
 				</control>
 				<control type="textbox">
-					<posx>130</posx>
+					<posx>90</posx>
 					<posy>30</posy>
-					<width>410</width>
+					<width>450</width>
 					<height>50</height>
 					<font>font12</font>
 					<textcolor>grey</textcolor>
@@ -172,13 +182,13 @@
 					<label>$INFO[ListItem.Property(Addon.Summary)]</label>
 				</control>
 			</itemlayout>
-			<focusedlayout height="80" width="550">
+			<focusedlayout height="85" width="550">
 				<control type="image">
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>550</width>
-					<height>81</height>
-					<texture border="0,2,0,2">MenuItemNF.png</texture>
+					<height>80</height>
+					<texture border="5">button-nofocus.png</texture>
 					<visible>!Control.HasFocus(6)</visible>
 					<include>VisibleFadeEffect</include>
 				</control>
@@ -186,24 +196,24 @@
 					<posx>0</posx>
 					<posy>0</posy>
 					<width>550</width>
-					<height>81</height>
-					<texture border="0,2,0,2">MenuItemFO.png</texture>
+					<height>80</height>
+					<texture border="5">button-focus2.png</texture>
 					<visible>Control.HasFocus(6)</visible>
 					<include>VisibleFadeEffect</include>
 				</control>
 				<control type="image">
-					<posx>0</posx>
+					<posx>2</posx>
 					<posy>2</posy>
-					<width>120</width>
+					<width>80</width>
 					<height>76</height>
 					<texture>$INFO[Listitem.Icon]</texture>
 					<bordertexture border="3">black-back2.png</bordertexture>
 					<bordersize>2</bordersize>
 				</control>
 				<control type="label">
-					<posx>130</posx>
+					<posx>90</posx>
 					<posy>0</posy>
-					<width>410</width>
+					<width>450</width>
 					<height>30</height>
 					<font>font13</font>
 					<textcolor>white</textcolor>
@@ -213,9 +223,9 @@
 					<label>[B]$INFO[ListItem.Label][/B]</label>
 				</control>
 				<control type="textbox">
-					<posx>130</posx>
+					<posx>90</posx>
 					<posy>30</posy>
-					<width>410</width>
+					<width>450</width>
 					<height>50</height>
 					<font>font12</font>
 					<textcolor>grey</textcolor>
@@ -227,9 +237,9 @@
 		</control>
 		<control type="scrollbar" id="61">
 			<posx>570</posx>
-			<posy>60</posy>
+			<posy>65</posy>
 			<width>25</width>
-			<height>520</height>
+			<height>510</height>
 			<texturesliderbackground border="0,14,0,14">ScrollBarV.png</texturesliderbackground>
 			<texturesliderbar border="0,14,0,14">ScrollBarV_bar.png</texturesliderbar>
 			<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -245,7 +255,7 @@
 		<control type="label">
 			<description>number of files/pages in list text label</description>
 			<posx>580</posx>
-			<posy>592</posy>
+			<posy>585</posy>
 			<width>300</width>
 			<height>35</height>
 			<font>font12</font>
@@ -259,7 +269,7 @@
 		<control type="label">
 			<description>number of files/pages in list text label</description>
 			<posx>580</posx>
-			<posy>592</posy>
+			<posy>587</posy>
 			<width>300</width>
 			<height>35</height>
 			<font>font12</font>
@@ -273,7 +283,7 @@
 		<control type="button" id="5">
 			<description>Manual button</description>
 			<posx>20</posx>
-			<posy>590</posy>
+			<posy>585</posy>
 			<width>200</width>
 			<height>40</height>
 			<label>186</label>
@@ -281,8 +291,6 @@
 			<textcolor>white</textcolor>
 			<focusedcolor>white</focusedcolor>
 			<align>center</align>
-			<texturenofocus border="5">MenuItemNF.png</texturenofocus>
-			<texturefocus border="5">button-focus.png</texturefocus>
 			<onleft>61</onleft>
 			<onright>3</onright>
 			<onup>3</onup>

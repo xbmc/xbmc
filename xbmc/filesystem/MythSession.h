@@ -60,7 +60,8 @@ public:
   cmyth_conn_t     GetControl();
   cmyth_database_t GetDatabase();
   DllLibCMyth*     GetLibrary();
-  cmyth_proglist_t GetAllRecordedPrograms(bool force = false);
+  cmyth_proglist_t GetAllRecordedPrograms();
+  void             ResetAllRecordedPrograms();
 
   void             SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program);
 

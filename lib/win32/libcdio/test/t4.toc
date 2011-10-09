@@ -1,8 +1,0 @@
-// non default CTL flag of track 1 
-
-TRACK AUDIO
-COPY
-PRE_EMPHASIS
-FOUR_CHANNEL_AUDIO
-FILE "cdda.bin" 1:0:0
-

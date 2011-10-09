@@ -72,7 +72,7 @@ void CUDiskDevice::Update()
   m_isOptical = properties["DeviceIsOpticalDisc"].asBoolean();
   if (m_isPartition)
   {
-    CVariant isRemovable = CDBusUtil::GetVariant("org.freedesktop.UDisks", properties["PartitionSlave"].asString(), "org.freedesktop.UDisks.Device", "DeviceIsRemovable");
+    CVariant isRemovable = CDBusUtil::GetVariant("org.freedesktop.UDisks", properties["PartitionSlave"].asString().c_str(), "org.freedesktop.UDisks.Device", "DeviceIsRemovable");
 
     if ( !isRemovable.isNull() )
       m_isRemovable = isRemovable.asBoolean();
@@ -218,7 +218,7 @@ CUDisksProvider::~CUDisksProvider()
 void CUDisksProvider::Initialize()
 {
   CLog::Log(LOGDEBUG, "Selected UDisks as storage provider");
-  m_DaemonVersion = atoi(CDBusUtil::GetVariant("org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", "DaemonVersion").asString());
+  m_DaemonVersion = atoi(CDBusUtil::GetVariant("org.freedesktop.UDisks", "/org/freedesktop/UDisks", "org.freedesktop.UDisks", "DaemonVersion").asString().c_str());
   CLog::Log(LOGDEBUG, "UDisks: DaemonVersion %i", m_DaemonVersion);
 
   CLog::Log(LOGDEBUG, "UDisks: Querying available devices");

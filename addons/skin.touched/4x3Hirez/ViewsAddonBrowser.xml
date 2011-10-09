@@ -1,0 +1,162 @@
+<includes>
+	<include name="CommonRootViewAddons">
+		<control type="panel" id="50">
+			<posx>50</posx>
+			<posy>120</posy>
+			<width>1180</width>
+			<height>720</height>
+			<onleft>2</onleft>
+			<onright>60</onright>
+			<onup>50</onup>
+			<ondown>50</ondown>
+			<viewtype label="535">list</viewtype>
+			<pagecontrol>60</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="60" width="1180">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1180</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>50</width>
+					<height>50</height>
+					<texture background="true">$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="label">
+					<posx>75</posx>
+					<posy>0</posy>
+					<width>1000</width>
+					<height>60</height>
+					<font>font16</font>
+					<textcolor>grey2</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<posx>1130</posx>
+					<posy>2</posy>
+					<width>400</width>
+					<height>30</height>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Property(Addon.Status),, - ]$INFO[ListItem.Property(Addon.Version)]</label>
+					<visible>!stringcompare(ListItem.Property(Addon.Status),$LOCALIZE[305])</visible>
+				</control>
+				<control type="label">
+					<posx>1130</posx>
+					<posy>2</posy>
+					<width>400</width>
+					<height>30</height>
+					<font>font13</font>
+					<textcolor>grey2</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Property(Addon.Version)]</label>
+					<visible>stringcompare(ListItem.Property(Addon.Status),$LOCALIZE[305])</visible>
+				</control>
+				<control type="image">
+					<description>Rating value</description>
+					<posx>1030</posx>
+					<posy>30</posy>
+					<width>100</width>
+					<height>25</height>
+					<aspectratio align="left">keep</aspectratio>
+					<texture fallback="light/left_rating/rating0.png">$INFO[ListItem.Property(Addon.StarRating),light/left_rating/]</texture>
+				</control>
+				<control type="image">
+					<posx>1140</posx>
+					<posy>15</posy>
+					<width>30</width>
+					<height>30</height>
+					<aspectratio>keep</aspectratio>
+					<texture>light/OverlayWatched.png</texture>
+					<visible>stringcompare(ListItem.Label2,$LOCALIZE[305])</visible>
+				</control>
+			</itemlayout>
+			<focusedlayout height="60" width="1180">
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1180</width>
+					<height>60</height>
+					<texture border="5">ListFO.png</texture>
+					<include>VisibleFadeEffect</include>
+				</control>
+				<control type="image">
+					<posx>10</posx>
+					<posy>5</posy>
+					<width>50</width>
+					<height>50</height>
+					<texture background="true">$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="label">
+					<posx>75</posx>
+					<posy>0</posy>
+					<width>1000</width>
+					<height>60</height>
+					<font>font16</font>
+					<textcolor>black</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+				<control type="label">
+					<posx>1130</posx>
+					<posy>2</posy>
+					<width>400</width>
+					<height>30</height>
+					<font>font13</font>
+					<textcolor>black</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Property(Addon.Status),, - ]$INFO[ListItem.Property(Addon.Version)]</label>
+					<visible>!stringcompare(ListItem.Property(Addon.Status),$LOCALIZE[305])</visible>
+				</control>
+				<control type="label">
+					<posx>1130</posx>
+					<posy>2</posy>
+					<width>400</width>
+					<height>30</height>
+					<font>font13</font>
+					<textcolor>black</textcolor>
+					<selectedcolor>selected</selectedcolor>
+					<align>right</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Property(Addon.Version)]</label>
+					<visible>stringcompare(ListItem.Property(Addon.Status),$LOCALIZE[305])</visible>
+				</control>
+				<control type="image">
+					<description>Rating value</description>
+					<posx>1030</posx>
+					<posy>30</posy>
+					<width>100</width>
+					<height>25</height>
+					<aspectratio align="left">keep</aspectratio>
+					<texture fallback="dark/left_rating/rating0.png">$INFO[ListItem.Property(Addon.StarRating),light/left_rating/]</texture>
+				</control>
+				<control type="image">
+					<posx>1140</posx>
+					<posy>15</posy>
+					<width>30</width>
+					<height>30</height>
+					<aspectratio>keep</aspectratio>
+					<texture>dark/OverlayWatched.png</texture>
+					<visible>stringcompare(ListItem.Label2,$LOCALIZE[305])</visible>
+				</control>
+			</focusedlayout>
+		</control>
+	</include>
+</includes>

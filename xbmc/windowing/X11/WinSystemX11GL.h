@@ -39,7 +39,7 @@ public:
   virtual bool IsExtSupported(const char* extension);
 
 protected:
-  virtual bool PresentRenderImpl();
+  virtual bool PresentRenderImpl(const CDirtyRegionList& dirty);
   virtual void SetVSyncImpl(bool enable);
 
   CStdString m_glxext;

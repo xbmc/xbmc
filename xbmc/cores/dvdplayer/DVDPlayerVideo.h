@@ -116,9 +116,9 @@ protected:
   void AutoCrop(DVDVideoPicture *pPicture, RECT &crop);
   CRect m_crop;
 
-  int OutputPicture(DVDVideoPicture* pPicture, double pts);
+  int OutputPicture(const DVDVideoPicture* src, double pts);
 #ifdef HAS_VIDEO_PLAYBACK
-  void ProcessOverlays(DVDVideoPicture* pSource, YV12Image* pDest, double pts);
+  void ProcessOverlays(DVDVideoPicture* pSource, double pts);
 #endif
   void ProcessVideoUserData(DVDVideoUserData* pVideoUserData, double pts);
 
@@ -143,6 +143,8 @@ protected:
   int    m_iFrameRateLength; //how many seconds we should measure the framerate
                              //this is increased exponentially from CDVDPlayerVideo::CalcFrameRate()
 
+  bool   m_bFpsInvalid;      // needed to ignore fps (e.g. dvd stills)
+
   struct SOutputConfiguration
   {
     unsigned int width;
@@ -150,10 +152,13 @@ protected:
     unsigned int dwidth;
     unsigned int dheight;
     unsigned int color_format;
+    unsigned int extended_format;
     unsigned int color_matrix : 4;
     unsigned int color_range  : 1;
+    unsigned int chroma_position;
+    unsigned int color_primaries;
+    unsigned int color_transfer;
     double       framerate;
-    bool         inited;
   } m_output; //holds currently configured output
 
   bool m_bAllowFullscreen;

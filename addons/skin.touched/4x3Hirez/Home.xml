@@ -1,0 +1,406 @@
+<window id="0">
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<allowoverlay>no</allowoverlay>	
+	<controls>
+		<include>CommonBackground</include>
+		<control type="image">
+			<description>XBMC Logo</description>
+			<posx>20</posx>
+			<posy>36</posy>
+			<width>360</width>
+			<height>48</height>
+			<aspectratio align="left">keep</aspectratio>
+			<texture>xbmc-logo.png</texture>
+			<visible>!Player.HasMedia</visible>
+			<include>VisibleFadeEffect</include>
+			<include>Window_OpenClose_Animation</include>
+		</control>
+		<include>CommonNowPlaying</include>
+		<control type="group">
+			<!-- weather Info -->
+			<include>Window_OpenClose_Animation</include>
+			<visible>Weather.IsFetched + ![Window.IsVisible(VideoScan) | Window.IsVisible(MusicScan)] + !Skin.HasSetting(HideHomeButtonWeather)</visible>
+			<include>VisibleFadeEffect</include>
+			<posx>720r</posx>
+			<posy>23</posy>
+			<control type="button">
+				<description>Goto Weather button</description>
+				<posx>610</posx>
+				<posy>0</posy>
+				<width>160</width>
+				<height>80</height>
+				<texturenofocus>-</texturenofocus>
+				<texturefocus>-</texturefocus>
+				<onclick>ActivateWindow(Weather)</onclick>
+			</control>
+			<control type="image">
+				<description>Weather image</description>
+				<posx>632</posx>
+				<posy>0</posy>
+				<width>74</width>
+				<height>74</height>
+				<aspectratio>keep</aspectratio>
+				<texture>$INFO[Weather.Conditions]</texture>
+			</control>
+			<control type="label">
+				<description>location label</description>
+				<posx>620</posx>
+				<posy>12</posy>
+				<height>25</height>
+				<width>410</width>
+				<label>[B]$INFO[Weather.Location][/B]</label>
+				<align>right</align>
+				<aligny>center</aligny>
+				<font>font13</font>
+				<shadowcolor>black</shadowcolor>
+			</control>
+			<control type="grouplist">
+				<posx>0</posx>
+				<posy>35</posy>
+				<width>620</width>
+				<height>35</height>
+				<orientation>horizontal</orientation>
+				<align>right</align>
+				<itemgap>0</itemgap>
+				<control type="label">
+					<description>Weather label</description>
+					<height>30</height>
+					<width max="400">auto</width>
+					<label>$INFO[Window(Weather).Property(Current.Condition)]  </label>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<textcolor>grey</textcolor>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>Temp Label</description>
+					<height>30</height>
+					<width max="400">auto</width>
+					<label>[B]$INFO[Window(Weather).Property(Current.Temperature)][/B]</label>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<shadowcolor>black</shadowcolor>
+				</control>
+				<control type="label">
+					<description>Temp Units Label</description>
+					<posy>2</posy>
+					<height>20</height>
+					<width max="200">auto</width>
+					<label>$INFO[System.TemperatureUnits]</label>
+					<font>font12</font>
+					<aligny>center</aligny>
+					<shadowcolor>black</shadowcolor>
+					<visible>!IsEmpty(Window(Weather).Property(Current.Temperature))</visible>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<include>Window_OpenClose_Animation_Zoom</include>
+			<control type="group">
+				<posx>0</posx>
+				<posy>130</posy>
+				<control type="button">
+					<description>left Arrow</description>
+					<posx>30</posx>
+					<posy>320</posy>
+					<width>40</width>
+					<height>60</height>
+					<texturefocus>arrow-big-left.png</texturefocus>
+					<texturenofocus>arrow-big-left.png</texturenofocus>
+					<onclick>Control.Move(9000,-1)</onclick>
+					<visible>Container(9000).HasPrevious</visible>
+					<include>VisibleFadeEffect</include>
+				</control>
+				<control type="button">
+					<description>right Arrow</description>
+					<posx>70r</posx>
+					<posy>320</posy>
+					<width>40</width>
+					<height>60</height>
+					<texturefocus>arrow-big-right.png</texturefocus>
+					<texturenofocus>arrow-big-right.png</texturenofocus>
+					<onclick>Control.Move(9000,1)</onclick>
+					<visible>Container(9000).HasNext</visible>
+					<include>VisibleFadeEffect</include>
+				</control>
+				<control type="panel" id="9000">
+					<posx>80</posx>
+					<posy>0</posy>
+					<width>1120</width>
+					<height>720</height>
+					<onleft>20</onleft>
+					<onright>22</onright>
+					<onup>9000</onup>
+					<ondown>9000</ondown>
+					<pagecontrol>-</pagecontrol>
+					<scrolltime>200</scrolltime>
+					<orientation>horizontal</orientation>
+					<preloaditems>2</preloaditems>
+					<itemlayout height="340" width="560">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>560</width>
+							<height>360</height>
+							<texture border="5">SubBack.png</texture>
+							<bordertexture border="30">ShadowBorder.png</bordertexture>
+							<bordersize>25</bordersize>
+						</control>
+						<control type="image">
+							<posx>30</posx>
+							<posy>30</posy>
+							<width>500</width>
+							<height>250</height>
+							<aspectratio>scale</aspectratio>
+							<texture>$INFO[ListItem.Icon,special://skin/background/]</texture>
+						</control>
+						<control type="image">
+							<posx>30</posx>
+							<posy>30</posy>
+							<width>300</width>
+							<height>300</height>
+							<texture>GlassOverlay.png</texture>
+						</control>
+						<control type="label">
+							<posx>40</posx>
+							<posy>290</posy>
+							<width>480</width>
+							<height>30</height>
+							<font>font13caps_title</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>[B]$INFO[ListItem.Label][/B]</label>
+						</control>
+					</itemlayout>
+					<focusedlayout height="340" width="560">
+						<control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>560</width>
+							<height>360</height>
+							<texture border="5">SubBack.png</texture>
+							<bordertexture border="30">ShadowBorder.png</bordertexture>
+							<bordersize>25</bordersize>
+						</control>
+						<control type="image">
+							<posx>30</posx>
+							<posy>30</posy>
+							<width>500</width>
+							<height>250</height>
+							<aspectratio>scale</aspectratio>
+							<texture>$INFO[ListItem.Icon,special://skin/background/]</texture>
+						</control>
+						<control type="image">
+							<posx>30</posx>
+							<posy>30</posy>
+							<width>300</width>
+							<height>300</height>
+							<texture>GlassOverlay.png</texture>
+						</control>
+						<control type="label">
+							<posx>40</posx>
+							<posy>290</posy>
+							<width>480</width>
+							<height>30</height>
+							<font>font13caps_title</font>
+							<textcolor>white</textcolor>
+							<shadowcolor>black</shadowcolor>
+							<align>left</align>
+							<aligny>center</aligny>
+							<label>[B]$INFO[ListItem.Label][/B]</label>
+						</control>
+					</focusedlayout>
+					<content>
+						<item>
+							<label>3</label>
+							<onclick condition="!Skin.HasSetting(HomeVideosGoesToRoot)">ActivateWindow(Videos)</onclick>
+							<onclick condition="Skin.HasSetting(HomeVideosGoesToRoot)">ActivateWindow(Videos,root)</onclick>
+							<icon>videos.png</icon>
+							<thumb>-</thumb>
+							<visible>!Skin.HasSetting(HideHomeButtonVideo)</visible>
+						</item>
+						<item>
+							<label>20342</label>
+							<onclick>ActivateWindow(Videos,MovieTitles,Return)</onclick>
+							<icon>movies.png</icon>
+							<thumb>-</thumb>
+							<visible>Library.HasContent(Movies)</visible>
+							<visible>!Skin.HasSetting(HideHomeButtonMovies)</visible>
+						</item>
+						<item>
+							<label>20343</label>
+							<onclick>ActivateWindow(Videos,TVShowTitles,Return)</onclick>
+							<icon>tvshows.png</icon>
+							<thumb>-</thumb>
+							<visible>Library.HasContent(TVShows)</visible>
+							<visible>!Skin.HasSetting(HideHomeButtonTVShows)</visible>
+						</item>
+						<item>
+							<label>2</label>
+							<onclick>ActivateWindow(Music)</onclick>
+							<icon>music.png</icon>
+							<thumb>-</thumb>
+							<visible>!Skin.HasSetting(HideHomeButtonMusic)</visible>
+						</item>
+						<item>
+							<label>1</label>
+							<onclick>ActivateWindow(Pictures)</onclick>
+							<icon>pictures.png</icon>
+							<thumb>-</thumb>
+							<visible>!Skin.HasSetting(HideHomeButtonPictures)</visible>
+						</item>
+						<item>
+							<label>0</label>
+							<onclick>ActivateWindow(Programs,Addons,return)</onclick>
+							<icon>programs.png</icon>
+							<thumb>-</thumb>
+							<visible>!Skin.HasSetting(HideHomeButtonPrograms)</visible>
+						</item>
+					</content>
+				</control>
+			</control>
+		</control>
+		<control type="panel" id="9002">
+			<visible>!Window.IsActive(PlayerControls)</visible>
+			<include>VisibleFadeEffect</include>
+			<include>SubMenuCommonLayout</include>
+			<content>
+				<item>
+					<label>13012</label>
+					<onclick>XBMC.Quit</onclick>
+					<icon>icon_shutdown.png</icon>
+				</item>
+				<item>
+					<label>20126</label>
+					<onclick>System.LogOff</onclick>
+					<icon>icon_logoff.png</icon>
+					<visible>System.HasLoginScreen | IntegerGreaterThan(System.ProfileCount,1)</visible>
+				</item>
+				<item>
+					<label>5</label>
+					<onclick>ActivateWindow(Settings)</onclick>
+					<icon>icon_settings.png</icon>
+				</item>
+				<item>
+					<label>13376</label>
+					<onclick>ActivateWindow(1112)</onclick>
+					<icon>icon_volume.png</icon>
+					<visible>false</visible>
+				</item>
+				<item>
+					<label>Reload Skin</label>
+					<onclick>ReloadSkin</onclick>
+					<icon>icon_refresh.png</icon>
+					<visible>false</visible>
+				</item>
+			</content>
+		</control>
+		<control type="panel" id="9003">
+			<visible>!Window.IsActive(PlayerControls)</visible>
+			<include>Window_OpenClose_Animation</include>
+			<animation effect="slide" start="0,0" end="112,0" time="0" condition="StringCompare(Container(9003).NumItems,3)">conditional</animation>
+			<animation effect="slide" start="0,0" end="224,0" time="0" condition="StringCompare(Container(9003).NumItems,2)">conditional</animation>
+			<animation effect="slide" start="0,0" end="336,0" time="0" condition="StringCompare(Container(9003).NumItems,1)">conditional</animation>
+			<posx>570r</posx>
+			<posy>105r</posy>
+			<width>448</width>
+			<height>120</height>
+			<onleft>9002</onleft>
+			<onright>9002</onright>
+			<onup>9001</onup>
+			<ondown>20</ondown>
+			<pagecontrol>-</pagecontrol>
+			<scrolltime>300</scrolltime>
+			<orientation>Horizontal</orientation>
+			<itemlayout height="200" width="112">
+				<control type="image">
+					<posx>16</posx>
+					<posy>0</posy>
+					<width>80</width>
+					<height>80</height>
+					<texture diffuse="shortcut_diffuse.png">$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="image">
+					<posx>16</posx>
+					<posy>0</posy>
+					<width>80</width>
+					<height>80</height>
+					<texture>shortcut_border.png</texture>
+				</control>
+				<control type="label">
+					<posx>56</posx>
+					<posy>82</posy>
+					<width>100</width>
+					<height>20</height>
+					<font>font11</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</itemlayout>
+			<focusedlayout height="200" width="112">
+				<control type="image">
+					<posx>16</posx>
+					<posy>0</posy>
+					<width>80</width>
+					<height>80</height>
+					<texture diffuse="shortcut_diffuse.png">$INFO[ListItem.Icon]</texture>
+				</control>
+				<control type="image">
+					<posx>16</posx>
+					<posy>0</posy>
+					<width>80</width>
+					<height>80</height>
+					<texture>shortcut_border.png</texture>
+				</control>
+				<control type="label">
+					<posx>56</posx>
+					<posy>82</posy>
+					<width>100</width>
+					<height>20</height>
+					<font>font11</font>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$INFO[ListItem.Label]</label>
+				</control>
+			</focusedlayout>
+			<content>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeAddonButton1))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeAddonButton1)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeAddonButton1))]</icon>
+					<thumb>-</thumb>
+					<visible>!IsEmpty(Skin.String(HomeAddonButton1))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeAddonButton2))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeAddonButton2)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeAddonButton2))]</icon>
+					<thumb>-</thumb>
+					<visible>!IsEmpty(Skin.String(HomeAddonButton2))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeAddonButton3))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeAddonButton3)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeAddonButton3))]</icon>
+					<thumb>-</thumb>
+					<visible>!IsEmpty(Skin.String(HomeAddonButton3))</visible>
+				</item>
+				<item>
+					<label>$INFO[system.addontitle(Skin.String(HomeAddonButton4))]</label>
+					<onclick>RunAddon($INFO[Skin.String(HomeAddonButton4)])</onclick>
+					<icon>$INFO[system.addonicon(Skin.String(HomeAddonButton4))]</icon>
+					<thumb>-</thumb>
+					<visible>!IsEmpty(Skin.String(HomeAddonButton4))</visible>
+				</item>
+			</content>
+		</control>
+		<include>BehindDialogFadeOut</include>
+	</controls>	
+</window>

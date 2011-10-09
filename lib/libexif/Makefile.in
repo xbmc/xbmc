@@ -14,7 +14,7 @@ ifeq ($(findstring osx,$(ARCH)), osx)
 		-bundle -undefined dynamic_lookup -read_only_relocs suppress -o $@ \
 		@abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o $(OBJS)
 else
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) \
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -o $@ $(OBJS) -Wl,--unresolved-symbols=ignore-all \
 		`cat @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.def` @abs_top_srcdir@/xbmc/cores/DllLoader/exports/wrapper.o
 endif
 

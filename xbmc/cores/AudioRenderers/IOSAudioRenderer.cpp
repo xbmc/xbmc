@@ -83,7 +83,7 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
     enum PCMChannels *outLayout;
 
     /* set the input format, and get the channel layout so we know what we need to open */
-    outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
+    outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
     unsigned int outChannels = 0;
     unsigned int ch = 0, map;
     while(outLayout[ch] != PCM_INVALID)
@@ -313,6 +313,7 @@ unsigned int CIOSAudioRenderer::AddPackets(const void* data, DWORD len)
     status = m_Buffer->Write((unsigned char *)data, len);
   }
 
+  Resume();
   //only return the length if buffer accepted the data
   return status == 0 ? len : 0;
 }

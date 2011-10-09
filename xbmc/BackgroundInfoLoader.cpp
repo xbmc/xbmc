@@ -91,7 +91,7 @@ void CBackgroundInfoLoader::Run()
         }
         catch (...)
         {
-          CLog::Log(LOGERROR, "%s::LoadItem - Unhandled exception for item %s", __FUNCTION__, pItem->m_strPath.c_str());
+          CLog::Log(LOGERROR, "%s::LoadItem - Unhandled exception for item %s", __FUNCTION__, pItem->GetPath().c_str());
         }
       }
     }
@@ -116,7 +116,7 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   if (items.Size() == 0)
     return;
 
-  EnterCriticalSection(m_lock);
+  CSingleLock lock(m_lock);
 
   for (int nItem=0; nItem < items.Size(); nItem++)
     m_vecItems.push_back(items[nItem]);
@@ -135,16 +135,14 @@ void CBackgroundInfoLoader::Load(CFileItemList& items)
   m_nActiveThreads = nThreads;
   for (int i=0; i < nThreads; i++)
   {
-    CThread *pThread = new CThread(this);
+    CThread *pThread = new CThread(this, "Background Loader");
     pThread->Create();
 #ifndef _LINUX
     pThread->SetPriority(THREAD_PRIORITY_BELOW_NORMAL);
 #endif
-    pThread->SetName("Background Loader");
     m_workers.push_back(pThread);
   }
 
-  LeaveCriticalSection(m_lock);
 }
 
 void CBackgroundInfoLoader::StopAsync()

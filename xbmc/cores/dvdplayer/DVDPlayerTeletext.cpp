@@ -95,7 +95,7 @@ signed int CDVDTeletextTools::deh24(unsigned char *p)
 
 
 CDVDTeletextData::CDVDTeletextData()
-: CThread()
+: CThread("CDVDTeletextData")
 , m_messageQueue("teletext")
 {
   m_speed = DVD_PLAYSPEED_NORMAL;
@@ -231,11 +231,6 @@ void CDVDTeletextData::ResetTeletextCache()
   m_TXTCache.line30                   = "";
   if (m_TXTCache.SubPage == 0xff)
     m_TXTCache.SubPage = 0;
-}
-
-void CDVDTeletextData::OnStartup()
-{
-  CThread::SetName("CDVDTeletextData");
 }
 
 void CDVDTeletextData::Process()

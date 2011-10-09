@@ -65,6 +65,8 @@ const CMusicInfoTag& CMusicInfoTag::operator =(const CMusicInfoTag& tag)
   m_listeners = tag.m_listeners;
   m_iTimesPlayed = tag.m_iTimesPlayed;
   m_iDbId = tag.m_iDbId;
+  m_iArtistId = tag.m_iArtistId;
+  m_iAlbumId = tag.m_iAlbumId;
   memcpy(&m_dwReleaseDate, &tag.m_dwReleaseDate, sizeof(m_dwReleaseDate) );
   return *this;
 }
@@ -199,9 +201,19 @@ void CMusicInfoTag::SetArtist(const CStdString& strArtist)
   m_strArtist = Trim(strArtist);
 }
 
+void CMusicInfoTag::SetArtistId(const int iArtistId)
+{
+  m_iArtistId = iArtistId;
+}
+
 void CMusicInfoTag::SetAlbum(const CStdString& strAlbum)
 {
   m_strAlbum = Trim(strAlbum);
+}
+
+void CMusicInfoTag::SetAlbumId(const int iAlbumId)
+{
+  m_iAlbumId = iAlbumId;
 }
 
 void CMusicInfoTag::SetAlbumArtist(const CStdString& strAlbumArtist)
@@ -352,6 +364,7 @@ void CMusicInfoTag::SetAlbum(const CAlbum& album)
   SetReleaseDate(stTime);
   m_iDbId = album.idAlbum;
   m_bLoaded = true;
+  m_iArtistId = album.idArtist;
 }
 
 void CMusicInfoTag::SetSong(const CSong& song)
@@ -379,6 +392,8 @@ void CMusicInfoTag::SetSong(const CSong& song)
   m_iDbId = song.idSong;
   m_bLoaded = true;
   m_iTimesPlayed = song.iTimesPlayed;
+  m_iArtistId = song.iArtistId;
+  m_iAlbumId = song.iAlbumId;
 }
 
 void CMusicInfoTag::Serialize(CVariant& value)
@@ -402,6 +417,8 @@ void CMusicInfoTag::Serialize(CVariant& value)
   value["rating"] = m_rating;
   value["playcount"] = m_iTimesPlayed;
   value["lyrics"] = m_strLyrics;
+  value["artistid"] = m_iArtistId;
+  value["albumid"] = m_iAlbumId;
 }
 void CMusicInfoTag::Archive(CArchive& ar)
 {
@@ -426,6 +443,8 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar << m_strComment;
     ar << m_rating;
     ar << m_iTimesPlayed;
+    ar << m_iArtistId;
+    ar << m_iAlbumId;
   }
   else
   {
@@ -448,6 +467,8 @@ void CMusicInfoTag::Archive(CArchive& ar)
     ar >> m_strComment;
     ar >> m_rating;
     ar >> m_iTimesPlayed;
+    ar >> m_iArtistId;
+    ar >> m_iAlbumId;
  }
 }
 
@@ -473,6 +494,8 @@ void CMusicInfoTag::Clear()
   m_iDbId = -1;
   m_iTimesPlayed = 0;
   memset(&m_dwReleaseDate, 0, sizeof(m_dwReleaseDate) );
+  m_iArtistId = -1;
+  m_iAlbumId = -1;
 }
 
 void CMusicInfoTag::AppendArtist(const CStdString &artist)

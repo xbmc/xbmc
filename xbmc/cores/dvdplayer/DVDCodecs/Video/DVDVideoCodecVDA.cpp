@@ -668,6 +668,13 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     profile = hints.profile;
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
+    
+    if (hints.profile == 77 && hints.level == 32)
+    {
+      // Main@L3.2, VDA cannot handle it
+      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VDA cannot decode.", __FUNCTION__);
+      return false;
+    }
  
     if (Cocoa_GPUForDisplayIsNvidiaPureVideo3() && !CDVDCodecUtils::IsVP3CompatibleWidth(width))
     {
@@ -678,7 +685,6 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     switch (hints.codec)
     {
       case CODEC_ID_H264:
-        // TODO: need to quality h264 encoding (profile, level and number of reference frame)
         // source must be H.264 with valid avcC atom data in extradata
         if (extrasize < 7 || extradata == NULL)
         {
@@ -770,6 +776,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
         CFRelease(avcCData);
         return false;
       }
+      if (m_max_ref_frames == 0)
+        m_max_ref_frames = 2;
     }
 
     // input stream is qualified, now we can load dlls.
@@ -864,6 +872,7 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     memset(m_videobuffer.data[2], 0, iChromaPixels);
 
     m_DropPictures = false;
+    m_max_ref_frames = std::min(m_max_ref_frames, 5);
     m_sort_time_offset = (CurrentHostCounter() * 1000.0) / CurrentHostFrequency();
 
     return true;
@@ -981,7 +990,7 @@ int CDVDVideoCodecVDA::Decode(BYTE* pData, int iSize, double dts, double pts)
     }
   }
 
-  if (m_queue_depth < m_max_ref_frames)
+  if (!m_queue_depth || m_queue_depth < m_max_ref_frames)
   {
     return VC_BUFFER;
   }
@@ -1122,7 +1131,7 @@ void CDVDVideoCodecVDA::VDADecoderCallback(
   if ((format_type != kCVPixelFormatType_422YpCbCr8) && (format_type != kCVPixelFormatType_32BGRA) )
   {
     CLog::Log(LOGERROR, "%s - imageBuffer format is not '2vuy' or 'BGRA',is reporting 0x%x",
-      __FUNCTION__, format_type);
+      __FUNCTION__, (unsigned int)format_type);
     return;
   }
   if (kVDADecodeInfo_FrameDropped & infoFlags)

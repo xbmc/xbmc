@@ -37,6 +37,7 @@
 #include "utils/fastmemcpy.h"
 #include "DllSwScale.h"
 #include "utils/TimeUtils.h"
+#include "windowing/WindowingFactory.h"
 
 namespace BCM
 {
@@ -217,6 +218,7 @@ protected:
   void                CopyOutAsNV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   void                CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   void                CopyOutAsYV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
+  void                CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer);
   bool                GetDecoderOutput(void);
   virtual void        Process(void);
 
@@ -231,6 +233,7 @@ protected:
   int                 m_width;
   int                 m_height;
   uint64_t            m_timestamp;
+  bool                m_output_YV12;
   uint64_t            m_PictureNumber;
   uint8_t             m_color_space;
   unsigned int        m_color_range;
@@ -333,6 +336,12 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_sw_scale_ctx = NULL;
   m_dllSwScale = new DllSwScale;
   m_dllSwScale->Load();
+
+  
+  if (g_Windowing.GetRenderQuirks() & RENDER_QUIRKS_YV12_PREFERED)
+    m_output_YV12 = true;
+  else
+    m_output_YV12 = false;
 }
 
 CMPCOutputThread::~CMPCOutputThread()
@@ -733,6 +742,46 @@ void CMPCOutputThread::CopyOutAsNV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC
   pBuffer->m_interlace = false;
 }
 
+void CMPCOutputThread::CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer)
+{
+  // crystalhd driver sends internal info in 1st pixel location, then restores
+  // original pixel value but sometimes, the info is broked and the
+  // driver cannot do the restore and zeros the pixel. This is wrong for
+  // yuv color space, uv values should be set to 128 otherwise we get a
+  // bright green pixel in upper left.
+  // We fix this by replicating the 2nd pixel to the 1st.
+  switch(pBuffer->m_format)
+  {
+    default:
+    case DVDVideoPicture::FMT_YUV420P:
+    {
+      uint8_t *d_y = pBuffer->m_y_buffer_ptr;
+      uint8_t *d_u = pBuffer->m_u_buffer_ptr;
+      uint8_t *d_v = pBuffer->m_v_buffer_ptr;
+      d_y[0] = d_y[1];
+      d_u[0] = d_u[1];
+      d_v[0] = d_v[1];
+    }
+    break;
+
+    case DVDVideoPicture::FMT_NV12:
+    {
+      uint8_t  *d_y  = pBuffer->m_y_buffer_ptr;
+      uint16_t *d_uv = (uint16_t*)pBuffer->m_uv_buffer_ptr;
+      d_y[0] = d_y[1];
+      d_uv[0] = d_uv[1];
+    }
+    break;
+
+    case DVDVideoPicture::FMT_YUY2:
+    {
+      uint32_t *d_yuyv = (uint32_t*)pBuffer->m_y_buffer_ptr;
+      d_yuyv[0] = d_yuyv[1];
+    }
+    break;
+  }
+}
+
 bool CMPCOutputThread::GetDecoderOutput(void)
 {
   BCM::BC_STATUS ret;
@@ -771,15 +820,19 @@ bool CMPCOutputThread::GetDecoderOutput(void)
           if (!pBuffer)
           {
             // No free pre-allocated buffers so make one
-#ifdef _WIN32
-            // force Windows to use YV12 until DX renderer gets NV12 or YUY2 capability.
-            pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
-#else
-            if (m_color_space == BCM::MODE422_YUY2)
-              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
+            if (m_output_YV12)
+            {
+              // output YV12, nouveau driver has slow NV12, YUY2 capability.
+              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUV420P, m_width, m_height);
+            }
             else
-              pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
-#endif
+            {
+              if (m_color_space == BCM::MODE422_YUY2)
+                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_YUY2, m_width, m_height);
+              else
+                pBuffer = new CPictureBuffer(DVDVideoPicture::FMT_NV12, m_width, m_height);
+            }
+
             CLog::Log(LOGDEBUG, "%s: Added a new Buffer, ReadyListCount: %d", __MODULE_NAME__, m_ReadyList.Count());
             while (!m_bStop && m_ReadyList.Count() > 10)
               Sleep(1);
@@ -880,6 +933,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             }
           }
 
+          CheckUpperLeftGreenPixelHack(pBuffer);
           m_ReadyList.Push(pBuffer);
           m_ready_event.Set();
           got_picture = true;

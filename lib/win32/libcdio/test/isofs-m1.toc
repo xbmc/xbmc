@@ -1,4 +1,0 @@
-CD_ROM
-
-TRACK MODE1_RAW
-FILE "isofs-m1.bin" 00:00:00 00:00:00

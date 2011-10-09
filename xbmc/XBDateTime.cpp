@@ -1116,9 +1116,12 @@ CStdString CDateTime::GetAsLocalizedTime(const CStdString &format, bool withSeco
 
 CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/, bool withShortNames/*=true*/) const
 {
-  CStdString strOut;
+  return GetAsLocalizedDate(g_langInfo.GetDateFormat(longDate), withShortNames);
+}
 
-  const CStdString& strFormat=g_langInfo.GetDateFormat(longDate);
+CStdString CDateTime::GetAsLocalizedDate(const CStdString &strFormat, bool withShortNames/*=true*/) const
+{
+  CStdString strOut;
 
   SYSTEMTIME dateTime;
   GetAsSystemTime(dateTime);
@@ -1150,7 +1153,7 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/, bool withShort
       strPart.Replace("''", "'");
       strOut+=strPart;
     }
-    else if (c=='D') // parse days
+    else if (c=='D' || c=='d') // parse days
     {
       int partLength=0;
 
@@ -1178,11 +1181,11 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/, bool withShort
       {
         int wday = dateTime.wDayOfWeek;
         if (wday < 1 || wday > 7) wday = 7;
-        str = g_localizeStrings.Get((withShortNames ? 40 : 10) + wday);
+        str = g_localizeStrings.Get(((withShortNames || c =='d') ? 40 : 10) + wday);
       }
       strOut+=str;
     }
-    else if (c=='M') // parse month
+    else if (c=='M' || c=='m') // parse month
     {
       int partLength=0;
 
@@ -1210,11 +1213,11 @@ CStdString CDateTime::GetAsLocalizedDate(bool longDate/*=false*/, bool withShort
       {
         int wmonth = dateTime.wMonth;
         if (wmonth < 1 || wmonth > 12) wmonth = 12;
-        str = g_localizeStrings.Get((withShortNames ? 50 : 20) + wmonth);
+        str = g_localizeStrings.Get(((withShortNames || c =='m') ? 50 : 20) + wmonth);
       }
       strOut+=str;
     }
-    else if (c=='Y') // parse year
+    else if (c=='Y' || c =='y') // parse year
     {
       int partLength=0;
 

@@ -80,14 +80,14 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         URIUtils::RemoveSlashAtEnd(strName);
 
         CFileItemPtr pItem(new CFileItem(strName));
-        pItem->m_strPath = strBasePath + strLink;
+        pItem->SetPath(strBasePath + strLink);
         pItem->SetProperty("IsHTTPDirectory", true);
 
-        if(URIUtils::HasSlashAtEnd(pItem->m_strPath))
+        if(URIUtils::HasSlashAtEnd(pItem->GetPath()))
           pItem->m_bIsFolder = true;
 
-        url.SetFileName(pItem->m_strPath);
-        pItem->m_strPath = url.Get();
+        url.SetFileName(pItem->GetPath());
+        pItem->SetPath(url.Get());
 
         if (!pItem->m_bIsFolder && g_advancedSettings.m_bHTTPDirectoryStatFilesize)
         {
@@ -128,5 +128,15 @@ bool CHTTPDirectory::Exists(const char* strPath)
 {
   CFileCurl http;
   CURL url(strPath);
-  return http.Exists(url);
+  struct __stat64 buffer;
+
+  if( http.Stat(url, &buffer) != 0 )
+  {
+    return false;
+  }
+
+  if (buffer.st_mode == _S_IFDIR)
+	  return true;
+
+  return false;
 }

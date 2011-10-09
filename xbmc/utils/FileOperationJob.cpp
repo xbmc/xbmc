@@ -109,7 +109,7 @@ bool CFileOperationJob::DoProcessFolder(FileAction action, const CStdString& str
   {
     CFileItemPtr pItem = items[i];
     pItem->Select(true);
-    CLog::Log(LOGDEBUG,"  -- %s",pItem->m_strPath.c_str());
+    CLog::Log(LOGDEBUG,"  -- %s",pItem->GetPath().c_str());
   }
 
   if (!DoProcess(action, items, strDestFile, fileOperations, totalTime)) return false;
@@ -130,12 +130,12 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
     CFileItemPtr pItem = items[iItem];
     if (pItem->IsSelected())
     {
-      CStdString strNoSlash = pItem->m_strPath;
+      CStdString strNoSlash = pItem->GetPath();
       URIUtils::RemoveSlashAtEnd(strNoSlash);
       CStdString strFileName = URIUtils::GetFileName(strNoSlash);
 
       // special case for upnp
-      if (URIUtils::IsUPnP(items.m_strPath) || URIUtils::IsUPnP(pItem->m_strPath))
+      if (URIUtils::IsUPnP(items.GetPath()) || URIUtils::IsUPnP(pItem->GetPath()))
       {
         // get filename from label instead of path
         strFileName = pItem->GetLabel();
@@ -144,7 +144,7 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
         {
           // FIXME: for now we only work well if the url has the extension
           // we should map the content type to the extension otherwise
-          strFileName += URIUtils::GetExtension(pItem->m_strPath);
+          strFileName += URIUtils::GetExtension(pItem->GetPath());
         }
 
         strFileName = CUtil::MakeLegalFileName(strFileName);
@@ -165,13 +165,13 @@ bool CFileOperationJob::DoProcess(FileAction action, CFileItemList & items, cons
           DoProcessFile(ActionCreateFolder, strnewDestFile, "", fileOperations, totalTime);
         if (action == ActionReplace && CDirectory::Exists(strnewDestFile))
           DoProcessFolder(ActionDelete, strnewDestFile, "", fileOperations, totalTime);
-        if (!DoProcessFolder(subdirAction, pItem->m_strPath, strnewDestFile, fileOperations, totalTime))
+        if (!DoProcessFolder(subdirAction, pItem->GetPath(), strnewDestFile, fileOperations, totalTime))
           return false;
         if (action == ActionDelete)
-          DoProcessFile(ActionDeleteFolder, pItem->m_strPath, "", fileOperations, totalTime);
+          DoProcessFile(ActionDeleteFolder, pItem->GetPath(), "", fileOperations, totalTime);
       }
       else
-        DoProcessFile(action, pItem->m_strPath, strnewDestFile, fileOperations, totalTime);
+        DoProcessFile(action, pItem->GetPath(), strnewDestFile, fileOperations, totalTime);
     }
   }
   return true;
@@ -225,14 +225,14 @@ bool CFileOperationJob::CFileOperation::ExecuteOperation(CFileOperationJob *base
     case ActionCopy:
     case ActionReplace:
     {
-      CLog::Log(LOGDEBUG,"FileManager: copy %s->%s\n", m_strFileA.c_str(), m_strFileB.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: copy %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
 
       bResult = CFile::Cache(m_strFileA, m_strFileB, this, &data);
     }
     break;
     case ActionMove:
     {
-      CLog::Log(LOGDEBUG,"FileManager: move %s->%s\n", m_strFileA.c_str(), m_strFileB.c_str());
+      CLog::Log(LOGDEBUG,"FileManager: move %s -> %s\n", m_strFileA.c_str(), m_strFileB.c_str());
 
       if (CanBeRenamed(m_strFileA, m_strFileB))
         bResult = CFile::Rename(m_strFileA, m_strFileB);

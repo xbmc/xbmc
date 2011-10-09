@@ -37,7 +37,9 @@ enum TIME_FORMAT { TIME_FORMAT_GUESS     =  0,
                    TIME_FORMAT_HH_MM     =  6,
                    TIME_FORMAT_HH_MM_SS  =  7,
                    TIME_FORMAT_XX        =  8, // AM/PM
-                   TIME_FORMAT_HH_MM_XX  = 14};
+                   TIME_FORMAT_HH_MM_XX  = 14,
+                   TIME_FORMAT_H         = 16,
+                   TIME_FORMAT_H_MM_SS   = 19};
 
 class CDateTime;
 
@@ -182,6 +184,7 @@ public:
   CStdString GetAsDBDateTime() const;
   CStdString GetAsDBDate() const;
   CStdString GetAsLocalizedDate(bool longDate=false, bool withShortNames=true) const;
+  CStdString GetAsLocalizedDate(const CStdString &strFormat, bool withShortNames=true) const;
   CStdString GetAsLocalizedTime(const CStdString &format, bool withSeconds=true) const;
   CStdString GetAsLocalizedDateTime(bool longDate=false, bool withSeconds=true) const;
   CStdString GetAsRFC1123DateTime() const;

@@ -38,6 +38,7 @@
 
 #include <math.h>
 #include <sstream>
+#include <time.h>
 
 using namespace std;
 
@@ -246,6 +247,8 @@ CStdString StringUtils::SecondsToTimeString(long lSeconds, TIME_FORMAT format)
   CStdString strHMS;
   if (format & TIME_FORMAT_HH)
     strHMS.AppendFormat("%02.2i", hh);
+  else if (format & TIME_FORMAT_H)
+    strHMS.AppendFormat("%i", hh);
   if (format & TIME_FORMAT_MM)
     strHMS.AppendFormat(strHMS.IsEmpty() ? "%02.2i" : ":%02.2i", mm);
   if (format & TIME_FORMAT_SS)
@@ -262,6 +265,14 @@ bool StringUtils::IsNaturalNumber(const CStdString& str)
     if ((str[i] < '0') || (str[i] > '9')) return false;
   }
   return true;
+}
+
+bool StringUtils::IsInteger(const CStdString& str)
+{
+  if (str.size() > 0 && str[0] == '-')
+    return IsNaturalNumber(str.Mid(1));
+  else
+    return IsNaturalNumber(str);
 }
 
 void StringUtils::RemoveCRLF(CStdString& strLine)
@@ -372,14 +383,13 @@ CStdString StringUtils::CreateUUID()
   char *pUuidStr = UuidStrTmp;
   int i;
 
-  /* generate hash from last generated UUID string */
-  unsigned seed = 0;
-  for (unsigned i = 0; i < m_lastUUID.length(); i++) {
-    seed = 31*seed + m_lastUUID[i];
+  static bool m_uuidInitialized = false;
+  if (!m_uuidInitialized)
+  {
+    /* use current time as the seed for rand()*/
+    srand(time(NULL));
+    m_uuidInitialized = true;
   }
-
-  /* use hash as the seed for rand()*/
-  srand(seed);
 
   /*Data1 - 8 characters.*/
   for(i = 0; i < 8; i++, pUuidStr++)

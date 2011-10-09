@@ -1,0 +1,179 @@
+<window id="115">
+	<defaultcontrol>1</defaultcontrol>
+	<visible>[Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding] + [Window.IsVisible(FullscreenVideo) | Window.IsVisible(Visualisation)] + ![Window.IsVisible(VideoOSD) | Window.IsVisible(MusicOSD) | Window.IsVisible(PlayerControls)]</visible>
+	<animation effect="fade" start="0" end="100" time="200">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
+	<controls>
+		<control type="group">
+			<posx>580r</posx>
+			<posy>0</posy>
+			<control type="image">
+				<posx>0</posx>
+				<posy>-5</posy>
+				<width>315</width>
+				<height>69</height>
+				<texture border="8">DialogHeader.png</texture>
+			</control>
+			<control type="label">
+				<description>Playing Label</description>
+				<posx>15</posx>
+				<posy>2</posy>
+				<width>370</width>
+				<height>18</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font10_title</font>
+				<textcolor>blue</textcolor>
+				<label>$LOCALIZE[31042]</label>
+				<visible>Player.Playing + !Player.Seeking + !Player.DisplayAfterSeek</visible>
+			</control>
+			<control type="label">
+				<description>Paused Label</description>
+				<posx>15</posx>
+				<posy>2</posy>
+				<width>370</width>
+				<height>18</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font10_title</font>
+				<textcolor>blue</textcolor>
+				<label>31043</label>
+				<visible>[Player.Paused + !Player.Caching] + !Player.Seeking + !Player.DisplayAfterSeek</visible>
+			</control>
+			<control type="label">
+				<description>Cache Label</description>
+				<posx>15</posx>
+				<posy>2</posy>
+				<width>370</width>
+				<height>18</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font10_title</font>
+				<textcolor>blue</textcolor>
+				<label>$LOCALIZE[15107] $INFO[Player.CacheLevel]%</label>
+				<visible>[Player.Paused + Player.Caching] + !Player.Seeking</visible>
+			</control>
+			<control type="label">
+				<description>Seeking Label</description>
+				<posx>15</posx>
+				<posy>2</posy>
+				<width>370</width>
+				<height>18</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font10_title</font>
+				<textcolor>blue</textcolor>
+				<label>[UPPERCASE]$LOCALIZE[773][/UPPERCASE]</label>
+				<visible>Player.Seeking</visible>
+			</control>
+			<control type="label">
+				<description>Final Seek amount Label</description>
+				<posx>15</posx>
+				<posy>2</posy>
+				<width>370</width>
+				<height>18</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font10_title</font>
+				<textcolor>blue</textcolor>
+				<label>[UPPERCASE]$LOCALIZE[773][/UPPERCASE][COLOR=grey] $INFO[Player.SeekOffset][/COLOR]</label>
+				<visible>Player.DisplayAfterSeek + ![player.forwarding | player.rewinding]</visible>
+			</control>
+			<control type="label">
+				<description>FF Label</description>
+				<posx>15</posx>
+				<posy>2</posy>
+				<width>370</width>
+				<height>18</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font10_title</font>
+				<textcolor>blue</textcolor>
+				<label>31044</label>
+				<visible>Player.Forwarding</visible>
+			</control>
+			<control type="label">
+				<description>RW Label</description>
+				<posx>15</posx>
+				<posy>2</posy>
+				<width>370</width>
+				<height>18</height>
+				<align>left</align>
+				<aligny>center</aligny>
+				<font>font10_title</font>
+				<textcolor>blue</textcolor>
+				<label>31045</label>
+				<visible>Player.Rewinding</visible>
+			</control>
+			<control type="label">
+				<description>Elapsed Time Label</description>
+				<posx>15</posx>
+				<posy>20</posy>
+				<width>150</width>
+				<height>15</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$INFO[Player.Time]</label>
+				<visible>!Player.Seeking</visible>
+			</control>
+			<control type="label">
+				<description>Seek Time Label</description>
+				<posx>15</posx>
+				<posy>20</posy>
+				<width>150</width>
+				<height>15</height>
+				<font>font13_title</font>
+				<textcolor>white</textcolor>
+				<align>left</align>
+				<aligny>center</aligny>
+				<label>$INFO[Player.SeekTime]</label>
+				<visible>Player.Seeking</visible>
+			</control>
+			<control type="label">
+				<description>Total Time Label</description>
+				<posx>300</posx>
+				<posy>20</posy>
+				<width>150</width>
+				<height>15</height>
+				<font>font12</font>
+				<textcolor>white</textcolor>
+				<align>right</align>
+				<aligny>center</aligny>
+				<label>$INFO[Player.Duration]</label>
+			</control>
+			<control type="progress">
+				<description>ProgressbarCache</description>
+				<posx>7</posx>
+				<posy>40</posy>
+				<width>300</width>
+				<height>15</height>
+				<info>Player.ProgressCache</info>
+				<midtexture border="16,0,16,0">OSDProgressMidLight.png</midtexture>
+				<visible>true</visible>
+			</control>
+			<control type="progress" id="23">
+				<description>Progressbar</description>
+				<posx>7</posx>
+				<posy>40</posy>
+				<width>300</width>
+				<height>15</height>
+				<info>Player.Progress</info>
+				<texturebg border="16,0,16,0">OSDProgressBack2.png</texturebg>
+				<visible>true</visible>
+			</control>
+			<control type="slider" id="401">
+				<description>Seek Slider</description>
+				<posx>7</posx>
+				<posy>40</posy>
+				<width>300</width>
+				<height>15</height>
+				<texturesliderbar>seekslider.png</texturesliderbar>
+				<textureslidernib>osd_slider_nib.png</textureslidernib>
+				<textureslidernibfocus>osd_slider_nib.png</textureslidernibfocus>
+				<visible>Player.Seeking</visible>
+			</control>
+		</control>
+	</controls>
+</window>

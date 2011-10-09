@@ -1,0 +1,5 @@
+; filename                          mirror of the file
+boost-1_46_1-xbmc-win32.7z			http://mirrors.xbmc.org/build-deps/win32/
+;boost_1_46_1-headers-win32.7z      http://mirrors.xbmc.org/build-deps/win32/
+;boost_1_46_1-libs-win32.7z         http://mirrors.xbmc.org/build-deps/win32/
+;boost_1_46_1-debug-libs-win32.7z   http://mirrors.xbmc.org/build-deps/win32/

@@ -30,6 +30,7 @@ public:
   {
     data = NULL;
     palette = NULL;
+    palette_colors = 0;
     linesize = 0;
     x = 0;
     y = 0;

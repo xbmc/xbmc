@@ -1,0 +1,170 @@
+diff -ruN mysql-5.1.55.org/configure.in mysql-5.1.55/configure.in
+--- mysql-5.1.55.org/configure.in	2011-01-25 16:04:35.000000000 +0100
++++ mysql-5.1.55/configure.in	2011-05-19 20:14:38.000000000 +0200
+@@ -1571,13 +1571,6 @@
+ esac
+ 
+ 
+-# System characteristics
+-case $SYSTEM_TYPE in
+-  *netware*) ;;
+-  *)
+-AC_SYS_RESTARTABLE_SYSCALLS
+-    ;;
+-esac
+ 
+ # Build optimized or debug version ?
+ # First check for gcc and g++
+diff -ruN mysql-5.1.55.org/storage/innodb_plugin/plug.in mysql-5.1.55/storage/innodb_plugin/plug.in
+--- mysql-5.1.55.org/storage/innodb_plugin/plug.in	2011-01-25 16:04:35.000000000 +0100
++++ mysql-5.1.55/storage/innodb_plugin/plug.in	2011-05-19 21:59:28.000000000 +0200
+@@ -56,149 +56,6 @@
+   esac
+   AC_SUBST(INNODB_DYNAMIC_CFLAGS)
+ 
+-  AC_MSG_CHECKING(whether GCC atomic builtins are available)
+-  # either define HAVE_IB_GCC_ATOMIC_BUILTINS or not
+-  AC_TRY_RUN(
+-    [
+-      int main()
+-      {
+-	long	x;
+-	long	y;
+-	long	res;
+-	char	c;
+-
+-	x = 10;
+-	y = 123;
+-	res = __sync_bool_compare_and_swap(&x, x, y);
+-	if (!res || x != y) {
+-          return(1);
+-        }
+-
+-	x = 10;
+-	y = 123;
+-	res = __sync_bool_compare_and_swap(&x, x + 1, y);
+-	if (res || x != 10) {
+-          return(1);
+-        }
+-
+-	x = 10;
+-	y = 123;
+-	res = __sync_add_and_fetch(&x, y);
+-	if (res != 123 + 10 || x != 123 + 10) {
+-	  return(1);
+-	}
+-
+-	c = 10;
+-	res = __sync_lock_test_and_set(&c, 123);
+-	if (res != 10 || c != 123) {
+-	  return(1);
+-	}
+-
+-	return(0);
+-      }
+-    ],
+-    [
+-      AC_DEFINE([HAVE_IB_GCC_ATOMIC_BUILTINS], [1],
+-                [GCC atomic builtins are available])
+-      AC_MSG_RESULT(yes)
+-    ],
+-    [
+-      AC_MSG_RESULT(no)
+-    ]
+-  )
+-
+-  AC_MSG_CHECKING(whether pthread_t can be used by GCC atomic builtins)
+-  # either define HAVE_IB_ATOMIC_PTHREAD_T_GCC or not
+-  AC_TRY_RUN(
+-    [
+-      #include <pthread.h>
+-      #include <string.h>
+-
+-      int main(int argc, char** argv) {
+-        pthread_t       x1;
+-        pthread_t       x2;
+-        pthread_t       x3;
+-
+-	memset(&x1, 0x0, sizeof(x1));
+-	memset(&x2, 0x0, sizeof(x2));
+-	memset(&x3, 0x0, sizeof(x3));
+-
+-        __sync_bool_compare_and_swap(&x1, x2, x3);
+-
+-        return(0);
+-      }
+-    ],
+-    [
+-      AC_DEFINE([HAVE_IB_ATOMIC_PTHREAD_T_GCC], [1],
+-                [pthread_t can be used by GCC atomic builtins])
+-      AC_MSG_RESULT(yes)
+-    ],
+-    [
+-      AC_MSG_RESULT(no)
+-    ]
+-  )
+-
+-  AC_MSG_CHECKING(whether Solaris libc atomic functions are available)
+-  # Define HAVE_IB_SOLARIS_ATOMICS if _all_ of the following
+-  # functions are present.
+-  AC_CHECK_FUNCS(atomic_add_long_nv \
+-		 atomic_cas_32 \
+-		 atomic_cas_64 \
+-		 atomic_cas_ulong \
+-		 atomic_swap_uchar)
+-
+-  if test "${ac_cv_func_atomic_add_long_nv}" = "yes" -a \
+-          "${ac_cv_func_atomic_cas_32}" = "yes" -a \
+-          "${ac_cv_func_atomic_cas_64}" = "yes" -a \
+-          "${ac_cv_func_atomic_cas_ulong}" = "yes" -a \
+-          "${ac_cv_func_atomic_swap_uchar}" = "yes" ; then
+-
+-    AC_DEFINE([HAVE_IB_SOLARIS_ATOMICS], [1],
+-      [Define to 1 if Solaris libc atomic functions are available]
+-    )
+-  fi
+-
+-  AC_MSG_CHECKING(whether pthread_t can be used by Solaris libc atomic functions)
+-  # either define HAVE_IB_ATOMIC_PTHREAD_T_SOLARIS or not
+-  AC_TRY_RUN(
+-    [
+-      #include <pthread.h>
+-      #include <string.h>
+-
+-      int main(int argc, char** argv) {
+-        pthread_t       x1;
+-        pthread_t       x2;
+-        pthread_t       x3;
+-
+-        memset(&x1, 0x0, sizeof(x1));
+-        memset(&x2, 0x0, sizeof(x2));
+-        memset(&x3, 0x0, sizeof(x3));
+-
+-        if (sizeof(pthread_t) == 4) {
+-        
+-          atomic_cas_32(&x1, x2, x3);
+-        
+-        } else if (sizeof(pthread_t) == 8) {
+-        
+-          atomic_cas_64(&x1, x2, x3);
+-        
+-        } else {
+-        
+-          return(1);
+-        }
+-
+-	return(0);
+-      }
+-    ],
+-    [
+-      AC_DEFINE([HAVE_IB_ATOMIC_PTHREAD_T_SOLARIS], [1],
+-                [pthread_t can be used by solaris atomics])
+-      AC_MSG_RESULT(yes)
+-    ],
+-    [
+-      AC_MSG_RESULT(no)
+-    ]
+-  )
+ 
+   # this is needed to know which one of atomic_cas_32() or atomic_cas_64()
+   # to use in the source

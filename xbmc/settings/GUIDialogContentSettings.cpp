@@ -24,13 +24,13 @@
 #include "GUISettings.h"
 #include "guilib/GUIWindowManager.h"
 #include "addons/IAddon.h"
-#include "Application.h"
 #include "FileItem.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoInfoScanner.h"
 #include "GUISettings.h"
 #include "interfaces/Builtins.h"
 #include "filesystem/AddonsDirectory.h"
+#include "dialogs/GUIDialogKaiToast.h"
 
 #define CONTROL_CONTENT_TYPE        3
 #define CONTROL_SCRAPER_LIST        4
@@ -41,7 +41,7 @@ using namespace std;
 using namespace ADDON;
 
 CGUIDialogContentSettings::CGUIDialogContentSettings(void)
-    : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml")
+  : CGUIDialogSettings(WINDOW_DIALOG_CONTENT_SETTINGS, "DialogContentSettings.xml"), m_origContent(CONTENT_NONE)
 {
   m_bNeedSave = false;
   m_content = CONTENT_NONE;
@@ -85,8 +85,8 @@ bool CGUIDialogContentSettings::OnMessage(CGUIMessage &message)
       { // Get More... item.
         // This is tricky - ideally we want to completely save the state of this dialog,
         // close it while linking to the addon manager, then reopen it on return.
-        // For now, we just close the dialog + send the message to open the addons window
-        CStdString content = m_vecItems->Get(iSelected)->m_strPath.Mid(14);
+        // For now, we just close the dialog + send the GetPath() to open the addons window
+        CStdString content = m_vecItems->Get(iSelected)->GetPath().Mid(14);
         OnCancel();
         Close();
         CBuiltins::Execute("ActivateWindow(AddonBrowser,addons://all/xbmc.metadata.scraper." + content + ",return)");
@@ -325,7 +325,7 @@ void CGUIDialogContentSettings::FillListControl()
   for (IVECADDONS iter=m_scrapers.find(m_content)->second.begin();iter!=m_scrapers.find(m_content)->second.end();++iter)
   {
     CFileItemPtr item(new CFileItem((*iter)->Name()));
-    item->m_strPath = (*iter)->ID();
+    item->SetPath((*iter)->ID());
     item->SetThumbnailImage((*iter)->Icon());
     if (m_scraper && (*iter)->ID() == m_scraper->ID())
     {
@@ -398,7 +398,7 @@ bool CGUIDialogContentSettings::Show(ADDON::ScraperPtr& scraper, VIDEO::SScanSet
     dialog->m_scraper = scraper;
     // toast selected but disabled scrapers
     if (!scraper->Enabled())
-      g_application.m_guiDialogKaiToast.QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24023), scraper->Name(), 2000, true);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(24023), scraper->Name(), 2000, true);
   }
 
   dialog->m_bRunScan = bRunScan;

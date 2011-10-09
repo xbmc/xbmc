@@ -45,6 +45,7 @@
 #include "settings/Settings.h"
 #include "GUIInfoManager.h"
 #include "dialogs/GUIDialogSelect.h"
+#include "GUIWindowAddonBrowser.h"
 #include "utils/log.h"
 
 using namespace std;
@@ -399,6 +400,41 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
             ((CGUIButtonControl*) control)->SetLabel2(value);
           }
         }
+        else if (strcmp(type, "addon") == 0)
+        {
+          const char *strType = setting->Attribute("addontype");
+          if (strType)
+          {
+            CStdStringArray addonTypes;
+            StringUtils::SplitString(strType, ",", addonTypes);
+            vector<ADDON::TYPE> types;
+            for (unsigned int i = 0 ; i < addonTypes.size() ; i++)
+            {
+              ADDON::TYPE type = TranslateType(addonTypes[i].Trim());
+              if (type != ADDON_UNKNOWN)
+                types.push_back(type);
+            }
+            if (types.size() > 0)
+            {
+              const char *strMultiselect = setting->Attribute("multiselect");
+              bool multiSelect = strMultiselect && strcmpi(strMultiselect, "true") == 0;
+              if (multiSelect)
+              {
+                // construct vector of addon IDs (IDs are comma seperated in single string)
+                CStdStringArray addonIDs;
+                StringUtils::SplitString(value, ",", addonIDs);
+                if (CGUIWindowAddonBrowser::SelectAddonID(types, addonIDs, false) == 1)
+                {
+                  StringUtils::JoinString(addonIDs, ",", value);
+                  ((CGUIButtonControl*) control)->SetLabel2(GetAddonNames(value));
+                }
+              }
+              else // no need of string splitting/joining if we select only 1 addon
+                if (CGUIWindowAddonBrowser::SelectAddonID(types, value, false) == 1)
+                  ((CGUIButtonControl*) control)->SetLabel2(GetAddonNames(value));
+            }
+          }
+        }
         m_buttonValues[id] = value;
         break;
       }
@@ -593,13 +629,14 @@ void CGUIDialogAddonSettings::CreateControls()
 
     if (type)
     {
+      bool isAddonSetting = false;
       if (strcmpi(type, "text") == 0 || strcmpi(type, "ipaddress") == 0 ||
         strcmpi(type, "number") == 0 ||strcmpi(type, "video") == 0 ||
         strcmpi(type, "audio") == 0 || strcmpi(type, "image") == 0 ||
         strcmpi(type, "folder") == 0 || strcmpi(type, "executable") == 0 ||
         strcmpi(type, "file") == 0 || strcmpi(type, "action") == 0 ||
         strcmpi(type, "date") == 0 || strcmpi(type, "time") == 0 ||
-        strcmpi(type, "select") == 0)
+        strcmpi(type, "select") == 0 || (isAddonSetting = strcmpi(type, "addon") == 0))
       {
         pControl = new CGUIButtonControl(*pOriginalButton);
         if (!pControl) return;
@@ -620,7 +657,12 @@ void CGUIDialogAddonSettings::CreateControls()
             ((CGUIButtonControl *)pControl)->SetLabel2(hiddenText);
           }
           else
-            ((CGUIButtonControl *)pControl)->SetLabel2(value);
+          {
+            if (isAddonSetting)
+              ((CGUIButtonControl *)pControl)->SetLabel2(GetAddonNames(value));
+            else
+              ((CGUIButtonControl *)pControl)->SetLabel2(value);
+          }
         }
         else
           ((CGUIButtonControl *)pControl)->SetLabel2(defaultValue);
@@ -800,6 +842,24 @@ void CGUIDialogAddonSettings::CreateControls()
     }
   }
   EnableControls();
+}
+
+CStdString CGUIDialogAddonSettings::GetAddonNames(const CStdString& addonIDslist) const
+{
+  CStdString retVal;
+  CStdStringArray addons;
+  StringUtils::SplitString(addonIDslist, ",", addons);
+  for (CStdStringArray::const_iterator it = addons.begin(); it != addons.end() ; it ++)
+  {
+    if (!retVal.IsEmpty())
+      retVal += ", ";
+    AddonPtr addon;
+    if (CAddonMgr::Get().GetAddon(*it ,addon))
+      retVal += addon->Name();
+    else
+      retVal += *it;
+  }
+  return retVal;
 }
 
 vector<CStdString> CGUIDialogAddonSettings::GetFileEnumValues(const CStdString &path, const CStdString &mask, const CStdString &options) const
@@ -1015,7 +1075,7 @@ const TiXmlElement *CGUIDialogAddonSettings::GetFirstSetting() const
   return NULL;
 }
 
-void CGUIDialogAddonSettings::Render()
+void CGUIDialogAddonSettings::DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions)
 {
   // update status of current section button
   bool alphaFaded = false;
@@ -1035,8 +1095,8 @@ void CGUIDialogAddonSettings::Render()
       alphaFaded = true;
     }
   }
-  CGUIDialogBoxBase::Render();
-  if (alphaFaded && m_bRunning) // dialog may close during Render()
+  CGUIDialogBoxBase::DoProcess(currentTime, dirtyregions);
+  if (alphaFaded && m_active) // dialog may close
   {
     control->SetFocus(false);
     if (control->GetControlType() == CGUIControl::GUICONTROL_BUTTON)

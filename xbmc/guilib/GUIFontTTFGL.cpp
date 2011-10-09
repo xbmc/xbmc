@@ -33,11 +33,7 @@
 #endif
 
 // stuff for freetype
-#ifndef _LINUX
-#include "ft2build.h"
-#else
 #include <ft2build.h>
-#endif
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
 #include FT_OUTLINE_H
@@ -67,8 +63,9 @@ void CGUIFontTTFGL::Begin()
 
       // Bind the texture object
       glBindTexture(GL_TEXTURE_2D, m_nTexture);
+#ifdef HAS_GL
       glEnable(GL_TEXTURE_2D);
-
+#endif
       // Set the texture's stretching properties
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -84,7 +81,9 @@ void CGUIFontTTFGL::Begin()
     // Turn Blending On
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
+#ifdef HAS_GL
     glEnable(GL_TEXTURE_2D);
+#endif
     glBindTexture(GL_TEXTURE_2D, m_nTexture);
 
 #ifdef HAS_GL

@@ -25,6 +25,7 @@
 #include "utils/ScraperUrl.h"
 #include "utils/Fanart.h"
 #include "utils/StreamDetails.h"
+#include "video/Bookmark.h"
 
 class CArchive;
 class TiXmlNode;
@@ -42,7 +43,7 @@ class CVideoInfoTag : public IArchivable, public ISerializable
 public:
   CVideoInfoTag() { Reset(); };
   void Reset();
-  bool Load(const TiXmlElement *movie, bool chained = false);
+  bool Load(const TiXmlElement *movie, bool chained = false, bool prefix=false);
   bool Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo = true);
   virtual void Archive(CArchive& ar);
   virtual void Serialize(CVariant& value);
@@ -50,7 +51,15 @@ public:
   bool HasStreamDetails() const;
   bool IsEmpty() const;
 
+  const CStdString& GetPath() const
+  {
+    if (m_strFileNameAndPath.IsEmpty())
+      return m_strPath;
+    return m_strFileNameAndPath;
+  };
+
   CStdString m_basePath; // the base path of the video, for folder-based lookups
+  int m_parentPathID;      // the parent path id where the base path of the video lies
   CStdString m_strDirector;
   CStdString m_strWritingCredits;
   CStdString m_strGenre;
@@ -66,7 +75,8 @@ public:
   CStdString m_strArtist;
   std::vector< SActorInfo > m_cast;
   typedef std::vector< SActorInfo >::const_iterator iCast;
-  CStdString m_strSet;
+  std::vector<std::string> m_set;
+  std::vector<int> m_setId;
   CStdString m_strRuntime;
   CStdString m_strFile;
   CStdString m_strPath;
@@ -84,6 +94,7 @@ public:
   CStdString m_strAlbum;
   CStdString m_lastPlayed;
   CStdString m_strShowLink;
+  CStdString m_strShowPath;
   int m_playCount;
   int m_iTop250;
   int m_iYear;
@@ -97,11 +108,13 @@ public:
   float m_fRating;
   float m_fEpBookmark;
   int m_iBookmarkId;
+  int m_iIdShow;
   CFanart m_fanart;
   CStreamDetails m_streamDetails;
+  CBookmark m_resumePoint;
 
 private:
-  void ParseNative(const TiXmlElement* movie);
+  void ParseNative(const TiXmlElement* movie, bool prefix);
 };
 
 typedef std::vector<CVideoInfoTag> VECMOVIES;

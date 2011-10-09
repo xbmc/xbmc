@@ -18,6 +18,7 @@
 * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "threads/SystemClock.h"
 #include "Thread.h"
 #ifndef _LINUX
 #include <process.h>
@@ -40,35 +41,16 @@ using namespace __cxxabiv1;
 
 #include "utils/log.h"
 #include "utils/TimeUtils.h"
+#include "threads/ThreadLocal.h"
 
-#ifdef __APPLE__
-//
-// Use pthread's built-in support for TLS, it's more portable.
-//
-static pthread_once_t keyOnce = PTHREAD_ONCE_INIT;
-static pthread_key_t  tlsLocalThread = 0;
-
-//
-// Called once and only once.
-//
-static void MakeTlsKeys()
-{
-  pthread_key_create(&tlsLocalThread, NULL);
-}
-
-#endif
+static XbmcThreads::ThreadLocal<CThread> currentThread;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CThread::CThread(const char* ThreadName)
+CThread::CThread(const char* ThreadName) : m_StopEvent(true,true)
 {
-#ifdef __APPLE__
-  // Initialize thread local storage and local thread pointer.
-  pthread_once(&keyOnce, MakeTlsKeys);
-#endif
-
   m_bStop = false;
 
   m_bAutoDelete = false;
@@ -77,7 +59,6 @@ CThread::CThread(const char* ThreadName)
   m_iLastTime = 0;
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
-  m_StopEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
 
   m_pRunnable=NULL;
 
@@ -85,13 +66,8 @@ CThread::CThread(const char* ThreadName)
     m_ThreadName = ThreadName;
 }
 
-CThread::CThread(IRunnable* pRunnable, const char* ThreadName)
+CThread::CThread(IRunnable* pRunnable, const char* ThreadName) : m_StopEvent(true,true)
 {
-#ifdef __APPLE__
-  // Initialize thread local storage and local thread pointer.
-  pthread_once(&keyOnce, MakeTlsKeys);
-#endif
-
   m_bStop = false;
 
   m_bAutoDelete = false;
@@ -100,7 +76,6 @@ CThread::CThread(IRunnable* pRunnable, const char* ThreadName)
   m_iLastTime = 0;
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
-  m_StopEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
 
   m_pRunnable=pRunnable;
 
@@ -116,35 +91,27 @@ CThread::~CThread()
   }
   m_ThreadHandle = NULL;
 
-  if (m_StopEvent)
-    CloseHandle(m_StopEvent);
 }
 
-#ifdef _LINUX
-#ifdef __APPLE__
-// Use pthread-based TLS.
-#define LOCAL_THREAD ((CThread* )pthread_getspecific(tlsLocalThread))
-#else
-// Use compiler-based TLS.
-__thread CThread* pLocalThread = NULL;
-#define LOCAL_THREAD pLocalThread
-#endif
+#ifndef _WIN32
 void CThread::term_handler (int signum)
 {
   CLog::Log(LOGERROR,"thread 0x%lx (%lu) got signal %d. calling OnException and terminating thread abnormally.", (long unsigned int)pthread_self(), (long unsigned int)pthread_self(), signum);
-  if (LOCAL_THREAD)
-  {
-    LOCAL_THREAD->m_bStop = TRUE;
-    if (LOCAL_THREAD->m_StopEvent)
-      SetEvent(LOCAL_THREAD->m_StopEvent);
 
-    LOCAL_THREAD->OnException();
-    if( LOCAL_THREAD->IsAutoDelete() )
-      delete LOCAL_THREAD;
+  CThread* curThread = currentThread.get();
+  if (curThread)
+  {
+    curThread->m_bStop = TRUE;
+    curThread->m_StopEvent.Set();
+
+    curThread->OnException();
+    if( curThread->IsAutoDelete() )
+      delete curThread;
   }
 
   pthread_exit(NULL);
 }
+
 int CThread::staticThread(void* data)
 #else
 DWORD WINAPI CThread::staticThread(LPVOID* data)
@@ -156,18 +123,17 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
     return 1;
   }
 
-  if (pThread->m_ThreadName.IsEmpty())
-    pThread->SetName(pThread->GetTypeName().c_str());
+  if (pThread->m_ThreadName.empty())
+    pThread->m_ThreadName = pThread->GetTypeName();
+  pThread->SetDebugCallStackName(pThread->m_ThreadName.c_str());
 
   CLog::Log(LOGDEBUG,"Thread %s start, auto delete: %d", pThread->m_ThreadName.c_str(), pThread->IsAutoDelete());
 
+  currentThread.set(pThread);
 #ifndef _LINUX
   /* install win32 exception translator */
   win32_exception::install_handler();
 #else
-#ifndef __APPLE__
-  pLocalThread = pThread;
-#endif
   struct sigaction action;
   action.sa_handler = term_handler;
   sigemptyset (&action.sa_mask);
@@ -176,11 +142,6 @@ DWORD WINAPI CThread::staticThread(LPVOID* data)
   //sigaction (SIGSEGV, &action, NULL);
 #endif
 
-
-#ifdef __APPLE__
-  // Set the TLS.
-  pthread_setspecific(tlsLocalThread, (void*)pThread);
-#endif
 
   try
   {
@@ -273,12 +234,12 @@ void CThread::Create(bool bAutoDelete, unsigned stacksize)
   {
     throw 1; //ERROR should not b possible!!!
   }
-  m_iLastTime = CTimeUtils::GetTimeMS() * 10000;
+  m_iLastTime = XbmcThreads::SystemClockMillis() * 10000;
   m_iLastUsage = 0;
   m_fLastUsage = 0.0f;
   m_bAutoDelete = bAutoDelete;
   m_bStop = false;
-  ::ResetEvent(m_StopEvent);
+  m_StopEvent.Reset();
 
   m_ThreadHandle = (HANDLE)_beginthreadex(NULL, stacksize, (PBEGINTHREADEX_THREADFUNC)staticThread, (void*)this, 0, &m_ThreadId);
 
@@ -297,7 +258,7 @@ bool CThread::IsAutoDelete() const
 void CThread::StopThread(bool bWait /*= true*/)
 {
   m_bStop = true;
-  SetEvent(m_StopEvent);
+  m_StopEvent.Set();
   if (m_ThreadHandle && bWait)
   {
     WaitForThreadExit(INFINITE);
@@ -417,10 +378,8 @@ int CThread::GetNormalPriority(void)
 }
 
 
-void CThread::SetName( LPCTSTR szThreadName )
+void CThread::SetDebugCallStackName( const char *name )
 {
-  m_ThreadName = szThreadName;
-
 #ifdef _WIN32
   const unsigned int MS_VC_EXCEPTION = 0x406d1388;
   struct THREADNAME_INFO
@@ -432,7 +391,7 @@ void CThread::SetName( LPCTSTR szThreadName )
   } info;
 
   info.dwType = 0x1000;
-  info.szName = szThreadName;
+  info.szName = name;
   info.dwThreadID = m_ThreadId;
   info.dwFlags = 0;
 
@@ -448,14 +407,14 @@ void CThread::SetName( LPCTSTR szThreadName )
 
 // Get the thread name using the implementation dependant typeid() class
 // and attempt to clean it.
-CStdString CThread::GetTypeName(void)
+std::string CThread::GetTypeName(void)
 {
-  CStdString name = typeid(*this).name();
+  std::string name = typeid(*this).name();
  
 #if defined(_MSC_VER)
   // Visual Studio 2010 returns the name as "class CThread" etc
   if (name.substr(0, 6) == "class ")
-    name = name.Right(name.length() - 6);
+    name = name.substr(6, name.length() - 6);
 #elif defined(__GNUC__) && !defined(__clang__)
   // gcc provides __cxa_demangle to demangle the name
   char* demangled = NULL;
@@ -517,7 +476,7 @@ void CThread::Process()
 
 float CThread::GetRelativeUsage()
 {
-  unsigned __int64 iTime = CTimeUtils::GetTimeMS();
+  unsigned __int64 iTime = XbmcThreads::SystemClockMillis();
   iTime *= 10000; // convert into 100ns tics
 
   // only update every 1 second
@@ -565,36 +524,12 @@ bool CThread::IsCurrentThread(const ThreadIdentifier tid)
 #endif
 }
 
-
-DWORD CThread::WaitForSingleObject(HANDLE hHandle, unsigned int milliseconds)
-{
-  if(milliseconds > 10 && IsCurrentThread())
-  {
-    HANDLE handles[2] = {hHandle, m_StopEvent};
-    DWORD result = ::WaitForMultipleObjects(2, handles, false, milliseconds);
-
-    if(result == WAIT_TIMEOUT || result == WAIT_OBJECT_0)
-      return result;
-
-    if( milliseconds == INFINITE )
-      return WAIT_ABANDONED;
-    else
-      return WAIT_TIMEOUT;
-  }
-  else
-    return ::WaitForSingleObject(hHandle, milliseconds);
-}
-
-DWORD CThread::WaitForMultipleObjects(DWORD nCount, HANDLE *lpHandles, BOOL bWaitAll, unsigned int milliseconds)
-{
-  // for now not implemented
-  return ::WaitForMultipleObjects(nCount, lpHandles, bWaitAll, milliseconds);
-}
-
 void CThread::Sleep(unsigned int milliseconds)
 {
   if(milliseconds > 10 && IsCurrentThread())
-    ::WaitForSingleObject(m_StopEvent, milliseconds);
+    m_StopEvent.WaitMSec(milliseconds);
   else
     ::Sleep(milliseconds);
 }
+
+

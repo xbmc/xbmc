@@ -1,0 +1,369 @@
+<window id="7">
+	<defaultcontrol always="true">95</defaultcontrol>
+	<allowoverlay>no</allowoverlay>
+	<controls>
+		<include>CommonBackground</include>
+		<include>HomeButtonCommons</include>
+		<include>CommonNowPlaying</include>
+		<control type="label">
+			<description>Window label</description>
+			<include>MediaWindowTitleCommons</include>
+			<label>$LOCALIZE[130]</label>
+		</control>
+		<control type="panel">
+			<visible>!Window.IsActive(PlayerControls)</visible>
+			<include>VisibleFadeEffect</include>
+			<include>SubMenuCommonLayout</include>
+			<content>
+				<item>
+					<label>31200</label>
+					<onclick>PreviousMenu</onclick>
+					<icon>icon_back.png</icon>
+				</item>
+			</content>
+		</control>
+		<control type="label" id="40">
+			<description>Hiddenlabel to pass to above</description>
+			<visible>false</visible>
+		</control>
+		<control type="group">
+			<posx>50</posx>
+			<posy>140</posy>
+			<include>Window_OpenClose_Animation_Zoom</include>
+			<control type="grouplist" id="9000">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>260</width>
+				<height>481</height>
+				<itemgap>-1</itemgap>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<control type="button" id="95">
+					<description>Button Summary Values</description>
+					<height>70</height>
+					<width>280</width>
+					<textoffsetx>20</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<focusedcolor>selected</focusedcolor>
+					<texturefocus border="5">button-nofocus2.png</texturefocus>
+					<texturenofocus border="5">button-nofocus2.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>20037</label>
+				</control>
+				<control type="button" id="94">
+					<height>70</height>
+					<width>280</width>
+					<textoffsetx>20</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<focusedcolor>selected</focusedcolor>
+					<texturefocus border="5">button-nofocus2.png</texturefocus>
+					<texturenofocus border="5">button-nofocus2.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13277</label>
+				</control>
+				<control type="button" id="96">
+					<description>Button Network</description>
+					<height>70</height>
+					<width>280</width>
+					<textoffsetx>20</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<focusedcolor>selected</focusedcolor>
+					<texturefocus border="5">button-nofocus2.png</texturefocus>
+					<texturenofocus border="5">button-nofocus2.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13279</label>
+				</control>
+				<control type="button" id="97">
+					<description>Button Video</description>
+					<height>70</height>
+					<width>280</width>
+					<textoffsetx>20</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<focusedcolor>selected</focusedcolor>
+					<texturefocus border="5">button-nofocus2.png</texturefocus>
+					<texturenofocus border="5">button-nofocus2.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13280</label>
+				</control>
+				<control type="button" id="98">
+					<description>Button Hardware</description>
+					<height>70</height>
+					<width>280</width>
+					<textoffsetx>20</textoffsetx>
+					<align>right</align>
+					<aligny>center</aligny>
+					<font>font24_title</font>
+					<textcolor>white</textcolor>
+					<focusedcolor>selected</focusedcolor>
+					<texturefocus border="5">button-nofocus2.png</texturefocus>
+					<texturenofocus border="5">button-nofocus2.png</texturenofocus>
+					<pulseonselect>false</pulseonselect>
+					<label>13281</label>
+				</control>
+			</control>
+			<control type="group">
+				<posx>300</posx>
+				<posy>0</posy>
+				<control type="image">
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>880</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+					<visible>!IsEmpty(Control.GetLabel(2))</visible>
+				</control>
+				<control type="label" id="2">
+					<description>Label 2</description>
+					<posx>10</posx>
+					<posy>0</posy>
+					<width>860</width>
+					<height>60</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>60</posy>
+					<width>880</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+					<visible>!IsEmpty(Control.GetLabel(3))</visible>
+				</control>
+				<control type="label" id="3">
+					<description>Label 3</description>
+					<posx>10</posx>
+					<posy>60</posy>
+					<width>860</width>
+					<height>60</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>120</posy>
+					<width>880</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+					<visible>!IsEmpty(Control.GetLabel(4))</visible>
+				</control>
+				<control type="label" id="4">
+					<description>Label 4</description>
+					<posx>10</posx>
+					<posy>120</posy>
+					<width>860</width>
+					<height>60</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>180</posy>
+					<width>880</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+					<visible>!IsEmpty(Control.GetLabel(5))</visible>
+				</control>
+				<control type="label" id="5">
+					<description>Label 5</description>
+					<posx>10</posx>
+					<posy>180</posy>
+					<width>860</width>
+					<height>60</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>240</posy>
+					<width>880</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+					<visible>!IsEmpty(Control.GetLabel(6))</visible>
+				</control>
+				<control type="label" id="6">
+					<description>Label 6</description>
+					<posx>10</posx>
+					<posy>240</posy>
+					<width>860</width>
+					<height>60</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>300</posy>
+					<width>880</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+					<visible>!IsEmpty(Control.GetLabel(7))</visible>
+				</control>
+				<control type="label" id="7">
+					<description>Label 7</description>
+					<posx>10</posx>
+					<posy>300</posy>
+					<width>860</width>
+					<height>60</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>360</posy>
+					<width>880</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+					<visible>!IsEmpty(Control.GetLabel(8))</visible>
+				</control>
+				<control type="label" id="8">
+					<description>Label 8</description>
+					<posx>10</posx>
+					<posy>360</posy>
+					<width>860</width>
+					<height>60</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>420</posy>
+					<width>880</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+					<visible>!IsEmpty(Control.GetLabel(9))</visible>
+				</control>
+				<control type="label" id="9">
+					<description>Label 9</description>
+					<posx>10</posx>
+					<posy>420</posy>
+					<width>860</width>
+					<height>60</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>480</posy>
+					<width>880</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+					<visible>!IsEmpty(Control.GetLabel(10))</visible>
+				</control>
+				<control type="label" id="10">
+					<description>Label 10</description>
+					<posx>10</posx>
+					<posy>480</posy>
+					<width>860</width>
+					<height>60</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+				<control type="image">
+					<posx>0</posx>
+					<posy>540</posy>
+					<width>880</width>
+					<height>60</height>
+					<texture border="5">ListNF.png</texture>
+					<visible>!IsEmpty(Control.GetLabel(11))</visible>
+				</control>
+				<control type="label" id="11">
+					<description>Label 11</description>
+					<posx>10</posx>
+					<posy>540</posy>
+					<width>860</width>
+					<height>60</height>
+					<align>left</align>
+					<aligny>center</aligny>
+					<label>-</label>
+					<font>font13</font>
+				</control>
+			</control>
+			<control type="group">
+				<posx>60</posx>
+				<posy>220r</posy>
+				<control type="label" id="52">
+					<description>XBMC BUILD Version</description>
+					<posx>1130</posx>
+					<posy>0</posy>
+					<width>730</width>
+					<label>144</label>
+					<align>right</align>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<font>font13_title</font>
+				</control>
+				<control type="label">
+					<description>CPU Text</description>
+					<posx>800</posx>
+					<posy>40</posy>
+					<width>800</width>
+					<height>25</height>
+					<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<font>font12_title</font>
+				</control>
+				<control type="progress">
+					<description>CPU BAR</description>
+					<posx>810</posx>
+					<posy>40</posy>
+					<width>320</width>
+					<height>25</height>
+					<info>System.CPUUsage</info>
+				</control>
+				<control type="label">
+					<description>Memory Text</description>
+					<posx>800</posx>
+					<posy>70</posy>
+					<width>800</width>
+					<height>25</height>
+					<label>$LOCALIZE[31309] $INFO[system.memory(used.percent)]</label>
+					<align>right</align>
+					<aligny>center</aligny>
+					<textcolor>white</textcolor>
+					<shadowcolor>black</shadowcolor>
+					<font>font12_title</font>
+				</control>
+				<control type="progress">
+					<description>Memory BAR</description>
+					<posx>810</posx>
+					<posy>70</posy>
+					<width>320</width>
+					<height>25</height>
+					<info>system.memory(used)</info>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

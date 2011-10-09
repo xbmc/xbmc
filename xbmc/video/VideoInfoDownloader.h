@@ -24,29 +24,26 @@
 #include "threads/Thread.h"
 #include "VideoInfoTag.h"
 #include "addons/Scraper.h"
+#include "Episode.h"
 #include "XBDateTime.h"
 #include "filesystem/FileCurl.h"
 
-// forward definitions
+// forward declarations
 class TiXmlDocument;
 class CGUIDialogProgress;
 
-typedef std::vector<CScraperUrl> MOVIELIST;
-
-typedef struct
+namespace ADDON
 {
-  std::pair<int,int> key;
-  CDateTime cDate;
-  CScraperUrl cScraperUrl;
-} EPISODE;
+class CScraperError;
+}
 
-typedef std::vector<EPISODE> EPISODELIST;
+typedef std::vector<CScraperUrl> MOVIELIST;
 
 class CVideoInfoDownloader : public CThread
 {
 public:
-  CVideoInfoDownloader(const ADDON::ScraperPtr &scraper);
-  virtual ~CVideoInfoDownloader();
+  CVideoInfoDownloader(const ADDON::ScraperPtr &scraper) : m_info(scraper) {}
+  virtual ~CVideoInfoDownloader() {}
 
   // threaded lookup functions
 
@@ -61,29 +58,16 @@ public:
   bool GetEpisodeDetails(const CScraperUrl& url, CVideoInfoTag &movieDetails, CGUIDialogProgress *pProgress = NULL);
   bool GetEpisodeList(const CScraperUrl& url, EPISODELIST& details, CGUIDialogProgress *pProgress = NULL);
 
-  static void ShowErrorDialog(const TiXmlElement* element);
+  static void ShowErrorDialog(const ADDON::CScraperError &sce);
+
 protected:
-  void RemoveAllAfter(char* szMovie, const char* szSearch);
-  int InternalFindMovie(const CStdString& strMovie, MOVIELIST& movielist, bool& sortMovieList, bool cleanChars = true);
-  bool InternalGetDetails(const CScraperUrl& url, CVideoInfoTag& movieDetails, const CStdString& strFunction="GetDetails");
-  bool InternalGetEpisodeList(const CScraperUrl& url, EPISODELIST& details);
-  bool ParseDetails(TiXmlDocument &doc, CVideoInfoTag &movieDetails);
-  void GetURL(const CStdString &movieFile, const CStdString &movieName, const CStdString &movieYear, CScraperUrl& strURL);
-  bool ScrapeFilename(const CStdString& strFileName, CVideoInfoTag& details);
-
-  static bool RelevanceSortFunction(const CScraperUrl& left, const CScraperUrl &right);
-
-  XFILE::CFileCurl m_http;
-
-  // threaded stuff
-  void Process();
-  void CloseThread();
-
   enum LOOKUP_STATE { DO_NOTHING = 0,
                       FIND_MOVIE = 1,
                       GET_DETAILS = 2,
                       GET_EPISODE_LIST = 3,
                       GET_EPISODE_DETAILS = 4 };
+
+  XFILE::CFileCurl m_http;
   CStdString        m_strMovie;
   MOVIELIST         m_movieList;
   CVideoInfoTag     m_movieDetails;
@@ -92,5 +76,11 @@ protected:
   LOOKUP_STATE      m_state;
   int               m_found;
   ADDON::ScraperPtr m_info;
+
+  // threaded stuff
+  void Process();
+  void CloseThread();
+
+  int InternalFindMovie(const CStdString& strMovie, MOVIELIST& movielist, bool cleanChars = true);
 };
 

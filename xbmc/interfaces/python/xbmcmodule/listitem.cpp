@@ -27,15 +27,10 @@
 #include "pictures/PictureInfoTag.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
-#ifndef __GNUC__
-#pragma code_seg("PY_TEXT")
-#pragma data_seg("PY_DATA")
-#pragma bss_seg("PY_BSS")
-#pragma const_seg("PY_RDATA")
-#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -104,7 +99,7 @@ namespace PYXBMC
     }
     if (path && PyXBMCGetUnicodeString(utf8String, path, 1))
     {
-      self->item->m_strPath = utf8String;
+      self->item->SetPath(utf8String);
     }
     return (PyObject*)self;
   }
@@ -592,7 +587,7 @@ namespace PYXBMC
           if (strcmpi(PyString_AsString(key), "title") == 0)
             self->item->m_strTitle = tmp;
           else if (strcmpi(PyString_AsString(key), "picturepath") == 0)
-            self->item->m_strPath = tmp;
+            self->item->SetPath(tmp);
           else if (strcmpi(PyString_AsString(key), "date") == 0)
           {
             if (strlen(tmp) == 10)
@@ -722,7 +717,7 @@ namespace PYXBMC
       value.Format("%f", self->item->m_lStartOffset / 75.0);
     }
     else
-      value = self->item->GetProperty(lowerKey.ToLower());
+      value = self->item->GetProperty(lowerKey.ToLower()).asString();
     PyXBMCGUIUnlock();
 
     return Py_BuildValue((char*)"s", value.c_str());
@@ -843,7 +838,7 @@ namespace PYXBMC
       return NULL;
     // set path
     PyXBMCGUILock();
-    self->item->m_strPath = path;
+    self->item->SetPath(path);
     PyXBMCGUIUnlock();
 
     Py_INCREF(Py_None);
@@ -885,12 +880,6 @@ namespace PYXBMC
     "  - listitem = xbmcgui.ListItem('Casino Royale', '[PG-13]', 'blank-poster.tbn', 'poster.tbn', path='f:\\\\movies\\\\casino_royale.mov')\n");
 
 // Restore code and data sections to normal.
-#ifndef __GNUC__
-#pragma code_seg()
-#pragma data_seg()
-#pragma bss_seg()
-#pragma const_seg()
-#endif
 
   PyTypeObject ListItem_Type;
 

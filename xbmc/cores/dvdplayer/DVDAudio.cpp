@@ -27,6 +27,7 @@
 #include "DVDCodecs/DVDCodecs.h"
 #include "DVDPlayerAudio.h"
 #include "../AudioRenderers/AudioRendererFactory.h"
+#include "settings/Settings.h"
 
 using namespace std;
 
@@ -98,6 +99,8 @@ bool CDVDAudio::Create(const DVDAudioFrame &audioframe, CodecID codec)
 
   if(m_pCallback && !m_bPassthrough)
     m_pCallback->OnInitialize(m_iChannels, m_iBitrate, m_iBitsPerSample);
+
+  SetDynamicRangeCompression((long)(g_settings.m_currentVideoSettings.m_VolumeAmplification * 100));
 
   return true;
 }
@@ -238,7 +241,7 @@ void CDVDAudio::Finish()
   if(silence > 0 && m_iBufferSize > 0)
   {
     CLog::Log(LOGDEBUG, "CDVDAudio::Drain - adding %d bytes of silence, buffer size: %d, chunk size: %d", silence, m_iBufferSize, m_dwPacketSize);
-    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_dwPacketSize);
+    m_pBuffer = (BYTE*)realloc(m_pBuffer, m_iBufferSize + silence);
     memset(m_pBuffer+m_iBufferSize, 0, silence);
     m_iBufferSize += silence;
   }
@@ -267,6 +270,15 @@ void CDVDAudio::SetDynamicRangeCompression(long drc)
 {
   CSingleLock lock (m_critSection);
   if (m_pAudioDecoder) m_pAudioDecoder->SetDynamicRangeCompression(drc);
+}
+
+float CDVDAudio::GetCurrentAttenuation()
+{
+  CSingleLock lock (m_critSection);
+  if (m_pAudioDecoder)
+    return m_pAudioDecoder->GetCurrentAttenuation();
+  else
+    return 1.0f;
 }
 
 void CDVDAudio::Pause()

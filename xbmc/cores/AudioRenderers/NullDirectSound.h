@@ -66,7 +66,7 @@ private:
   float m_timePerPacket;
   int m_packetsSent;
   bool m_paused;
-  long m_lastUpdate;
+  unsigned int m_lastUpdate;
 
   void Update();
 };

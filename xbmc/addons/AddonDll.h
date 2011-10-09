@@ -221,7 +221,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Stop()
   {
     if (m_needsavedsettings)  // If the addon supports it we save some settings to settings.xml before stop
     {
-      char   str_id[64];
+      char   str_id[64] = "";
       char   str_value[1024];
       CAddon::LoadUserSettings();
       for (unsigned int i=0; (strcmp(str_id,"###End") != 0); i++)
@@ -258,7 +258,7 @@ void CAddonDll<TheDll, TheStruct, TheProps>::Destroy()
   {
     HandleException(e, "m_pDll->Unload");
   }
-  delete m_pStruct;
+  free(m_pStruct);
   m_pStruct = NULL;
   delete m_pDll;
   m_pDll = NULL;

@@ -63,6 +63,33 @@ int Database::connectFull(const char *newHost, const char *newPort, const char *
   return connect(true);
 }
 
+string Database::prepare(const char *format, ...)
+{
+  string result = "";
+
+  va_list args;
+  va_start(args, format);
+  result = vprepare(format, args);
+  va_end(args);
+
+  return result;
+}
+
+string Database::vprepare(const char *format, va_list args)
+{
+  char *p = NULL;
+  string result = "";
+
+  vsprintf(p, format, args);
+
+  if ( p )
+  {
+    result = p;
+    free(p);
+  }
+
+  return result;
+}
 
 
 

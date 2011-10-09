@@ -19,6 +19,7 @@
  *
  */
 
+#include "threads/SystemClock.h"
 #include "RssReader.h"
 #include "utils/HTMLUtil.h"
 #include "Application.h"
@@ -117,7 +118,7 @@ void CRssReader::Process()
 {
   while (GetQueueSize())
   {
-    EnterCriticalSection(*this);
+    CSingleLock lock(*this);
 
     int iFeed = m_vecQueue.front();
     m_vecQueue.erase(m_vecQueue.begin());
@@ -130,8 +131,7 @@ void CRssReader::Process()
     http.SetTimeout(2);
     CStdString strXML;
     CStdString strUrl = m_vecUrls[iFeed];
-
-    LeaveCriticalSection(*this);
+    lock.Leave();
 
     int nRetries = 3;
     CURL url(strUrl);
@@ -141,10 +141,10 @@ void CRssReader::Process()
       strXML = "<rss><item><title>"+g_localizeStrings.Get(15301)+"</title></item></rss>";
     else
     {
-      unsigned int starttime = CTimeUtils::GetTimeMS();
+      unsigned int starttime = XbmcThreads::SystemClockMillis();
       while ( (!m_bStop) && (nRetries > 0) )
       {
-        unsigned int currenttimer = CTimeUtils::GetTimeMS() - starttime;
+        unsigned int currenttimer = XbmcThreads::SystemClockMillis() - starttime;
         if (currenttimer > 15000)
         {
           CLog::Log(LOGERROR,"Timeout whilst retrieving %s", strUrl.c_str());
@@ -414,10 +414,9 @@ void CRssReader::UpdateObserver()
   getFeed(feed);
   if (feed.size() > 0)
   {
-    g_graphicsContext.Lock();
+    CSingleLock lock(g_graphicsContext);
     if (m_pObserver) // need to check again when locked to make sure observer wasnt removed
       m_pObserver->OnFeedUpdate(feed);
-    g_graphicsContext.Unlock();
   }
 }
 

@@ -7,8 +7,9 @@
   <string id="31003">Options d'alimentation</string>
   <string id="31004">En cours...</string>
   <string id="31005">Cacher INFO</string>
-
+  <string id="31006">Options d'Affichage</string>
   <string id="31007">Plugins</string>
+  <string id="31008">Plein Ecran</string>
 
   <string id="31020">Récemment ajouté</string>
   <string id="31021">Vidéo - Fichiers</string>
@@ -38,7 +39,8 @@
   <string id="31047">Préréglage Actuel</string>
   <string id="31048">Préréglages Visualisation</string>
   <string id="31049">Echéance</string>
-
+  <string id="31050">Tri : Ascendant</string>
+  <string id="31051">Tri : Descendant</string>
 
   <!-- Playlist Editor labels -->
   <string id="31055">Ouvrir playlist</string>
@@ -133,6 +135,7 @@
   <string id="31328">Récemment ajouté</string>
   <string id="31329">[B]Réglage minuterie ![/B] [COLOR=grey2] - Fermer le système automatiquement dans[/COLOR]</string>
   <string id="31330">Cliquer sur le bouton pour voir[CR][CR]le trailer du film</string>
+  <string id="31331">Détails de l'Album</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Pause</string>
@@ -160,4 +163,17 @@
   <string id="31408">[B]CONFIGURATION DES ADD-ONS[/B][CR][CR]Gérer les Add-ons installés· Recherche et installation d'Add-ons depuis xbmc.org[CR]Modifier les paramètres Add-on</string>
   
   <string id="31421">Sélectionnez un profil d'utilisateur[CR]pour vous connecter et continuer</string>
+
+  <!-- Weather plugin -->
+  <string id="31900">Cartes Météo</string>
+  <string id="31901">Prévisions sur 36 Heures</string>
+  <string id="31902">Prévisions Heure par Heure</string>
+  <string id="31903">Prévisions pour le Weekend</string>
+  <string id="31904">Prévisions sur 10 Jours</string>
+  <string id="31905">Prévisions</string>
+  <string id="31906">Cartes &amp; Vidéo</string>
+  <string id="31907">Bulletin vidéo [COLOR=grey2](affichage en plein écran)[/COLOR]</string>
+  <string id="31908">Risque de pluie</string>
+  <string id="31909">Récupération des prévisions météo...</string>
+
 </strings>

@@ -137,6 +137,8 @@ public:
   virtual void NotifyAppFocusChange(bool bGaining);
   virtual int  GetNumScreens() { return m_MonitorsInfo.size(); };
   virtual void ShowOSMouse(bool show);
+  virtual bool WindowedMode() { return true; }
+  virtual bool HasInertialGestures(){ return true; }//if win32 has touchscreen - it uses the win32 gesture api for inertial scrolling 
 
   virtual bool Minimize();
   virtual bool Restore();

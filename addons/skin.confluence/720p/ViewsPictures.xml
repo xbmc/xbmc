@@ -183,7 +183,7 @@
 					<height>470</height>
 					<texture background="true">$INFO[ListItem.FilenameAndPath]</texture>
 					<fadetime>600</fadetime>
-					<aspectratio>stretch</aspectratio>
+					<aspectratio>keep</aspectratio>
 					<bordertexture border="8">ThumbShadow.png</bordertexture>
 					<bordersize>9</bordersize>
 				</control>

@@ -78,7 +78,7 @@ bool CGUIWindowPrograms::OnMessage(CGUIMessage& message)
       m_dlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
 
       // is this the first time accessing this window?
-      if (m_vecItems->m_strPath == "?" && message.GetStringParam().IsEmpty())
+      if (m_vecItems->GetPath() == "?" && message.GetStringParam().IsEmpty())
         message.SetStringParam(g_settings.m_defaultProgramSource);
 
       m_database.Open();
@@ -128,7 +128,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
   CFileItemPtr item = m_vecItems->Get(itemNumber);
-  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
+  if (item && !item->GetProperty("pluginreplacecontextitems").asBoolean())
   {
     if ( m_vecItems->IsVirtualDirectoryRoot() )
     {
@@ -150,7 +150,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
         }
       }
 
-      if (item->IsPlugin() || item->m_strPath.Left(9).Equals("script://") || m_vecItems->IsPlugin())
+      if (item->IsPlugin() || item->IsScript() || m_vecItems->IsPlugin())
         buttons.Add(CONTEXT_BUTTON_PLUGIN_SETTINGS, 1045);
 
       buttons.Add(CONTEXT_BUTTON_GOTO_ROOT, 20128); // Go to Root
@@ -179,7 +179,7 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
       CShortcut cut;
       if (item->IsShortCut())
       {
-        cut.Create(item->m_strPath);
+        cut.Create(item->GetPath());
         strDescription = cut.m_strLabel;
       }
       else
@@ -190,15 +190,15 @@ bool CGUIWindowPrograms::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
         if (item->IsShortCut())
         {
           cut.m_strLabel = strDescription;
-          cut.Save(item->m_strPath);
+          cut.Save(item->GetPath());
         }
         else
         {
           // SetXBEDescription will truncate to 40 characters.
-          //CUtil::SetXBEDescription(item->m_strPath,strDescription);
-          //m_database.SetDescription(item->m_strPath,strDescription);
+          //CUtil::SetXBEDescription(item->GetPath(),strDescription);
+          //m_database.SetDescription(item->GetPath(),strDescription);
         }
-        Update(m_vecItems->m_strPath);
+        Update(m_vecItems->GetPath());
       }
       return true;
     }
@@ -236,7 +236,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 
 #ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
-    return MEDIA_DETECT::CAutorun::PlayDisc();
+    return MEDIA_DETECT::CAutorun::PlayDisc(!MEDIA_DETECT::CAutorun::CanResumePlayDVD() || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
 #endif
 
   if (pItem->m_bIsFolder) return false;
@@ -260,7 +260,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
   {
     for (int i=0;i<items.Size();++i)
     {
-      items[i]->SetLabel2(items[i]->GetProperty("Addon.Version"));
+      items[i]->SetLabel2(items[i]->GetProperty("Addon.Version").asString());
       items[i]->SetLabelPreformated(true);
     }
   }

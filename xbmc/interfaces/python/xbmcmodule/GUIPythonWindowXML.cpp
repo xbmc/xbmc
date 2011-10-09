@@ -45,18 +45,16 @@ using namespace std;
 using namespace PYXBMC;
 
 CGUIPythonWindowXML::CGUIPythonWindowXML(int id, CStdString strXML, CStdString strFallBackPath)
-: CGUIMediaWindow(id, strXML)
+  : CGUIMediaWindow(id, strXML), m_actionEvent(true)
 {
   pCallbackWindow = NULL;
   m_threadState = NULL;
-  m_actionEvent = CreateEvent(NULL, true, false, NULL);
   m_loadOnDemand = false;
   m_scriptPath = strFallBackPath;
 }
 
 CGUIPythonWindowXML::~CGUIPythonWindowXML(void)
 {
-  CloseHandle(m_actionEvent);
 }
 
 bool CGUIPythonWindowXML::Update(const CStdString &strPath)
@@ -66,8 +64,8 @@ bool CGUIPythonWindowXML::Update(const CStdString &strPath)
 
 bool CGUIPythonWindowXML::OnAction(const CAction &action)
 {
-  // do the base class window first, and the call to python after this
-  bool ret = CGUIWindow::OnAction(action);  // we don't currently want the mediawindow actions here
+  // call the base class first, then call python
+  bool ret = CGUIWindow::OnAction(action);
   if(pCallbackWindow)
   {
     PyXBMCAction* inf = new PyXBMCAction(pCallbackWindow);
@@ -78,6 +76,14 @@ bool CGUIPythonWindowXML::OnAction(const CAction &action)
     PulseActionEvent();
   }
   return ret;
+}
+
+bool CGUIPythonWindowXML::OnBack(int actionID)
+{
+  // if we have a callback window then python handles the closing
+  if (!pCallbackWindow)
+    return CGUIWindow::OnBack(actionID);
+  return true;
 }
 
 bool CGUIPythonWindowXML::OnClick(int iItem) {
@@ -263,18 +269,18 @@ void CGUIPythonWindowXML::ClearList()
 void CGUIPythonWindowXML::WaitForActionEvent(unsigned int timeout)
 {
   g_pythonParser.WaitForEvent(m_actionEvent, timeout);
-  ResetEvent(m_actionEvent);
+  m_actionEvent.Reset();
 }
 
 void CGUIPythonWindowXML::PulseActionEvent()
 {
-  SetEvent(m_actionEvent);
+  m_actionEvent.Set();
 }
 
 void CGUIPythonWindowXML::AllocResources(bool forceLoad /*= FALSE */)
 {
   CStdString tmpDir;
-  URIUtils::GetDirectory(GetProperty("xmlfile"), tmpDir);
+  URIUtils::GetDirectory(GetProperty("xmlfile").asString(), tmpDir);
   CStdString fallbackMediaPath;
   URIUtils::GetParentPath(tmpDir, fallbackMediaPath);
   URIUtils::RemoveSlashAtEnd(fallbackMediaPath);
@@ -344,10 +350,10 @@ void CGUIPythonWindowXML::FreeResources(bool forceUnLoad /*= FALSE */)
   CGUIMediaWindow::FreeResources(forceUnLoad);
 }
 
-void CGUIPythonWindowXML::Render()
+void CGUIPythonWindowXML::Process(unsigned int currentTime, CDirtyRegionList &regions)
 {
   g_TextureManager.AddTexturePath(m_mediaDir);
-  CGUIMediaWindow::Render();
+  CGUIMediaWindow::Process(currentTime, regions);
   g_TextureManager.RemoveTexturePath(m_mediaDir);
 }
 

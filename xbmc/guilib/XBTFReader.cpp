@@ -25,8 +25,10 @@
 #include "utils/CharsetConverter.h"
 #ifdef _WIN32
 #include "FileSystem/SpecialProtocol.h"
-#include "PlatformDefs.h" //for PRIdS, PRId64
 #endif
+
+#include <string.h>
+#include "PlatformDefs.h"
 
 #define READ_STR(str, size, file) \
   if (!fread(str, size, 1, file)) \
@@ -187,7 +189,7 @@ bool CXBTFReader::Load(const CXBTFFrame& frame, unsigned char* buffer)
   {
     return false;
   }
-#if defined(__APPLE__)
+#if defined(__APPLE__) || defined(__FreeBSD__)
     if (fseeko(m_file, (off_t)frame.GetOffset(), SEEK_SET) == -1)
 #else
     if (fseeko64(m_file, (off_t)frame.GetOffset(), SEEK_SET) == -1)

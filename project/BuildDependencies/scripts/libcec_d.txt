@@ -1,0 +1,2 @@
+; filename                        mirror                                      source of the file
+libcec2.zip                       http://xbmc.opdenkamp.eu/                   http://packages.pulse-eight.net/

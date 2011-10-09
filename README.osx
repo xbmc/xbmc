@@ -49,7 +49,10 @@ if you are running a previous Xcode 3.x version. Xcode 3.x only runs on 10.5.
 -----------------------------------------------------------------------------
 
  $ cd $HOME/XBMC
- $ make -C tools/osx/osx-depends
+ $ cd tools/darwin/depends
+ $ ./bootstrap
+ $ ./configure --with-darwin=osx
+ $ make
 
 -----------------------------------------------------------------------------
 4. How to compile
@@ -58,7 +61,7 @@ Both Xcode and Terminal compilation require that build environment be setup
 first. This is a simple step and involves the following:
 
  $ cd $HOME/XBMC
- $ make -C tools/osx/osx-depends/xbmc
+ $ make -C tools/darwin/depends/xbmc
  $ make clean
  $ make xcode_depends
 
@@ -137,7 +140,7 @@ distribution.
 
   1. build XBMC.app from XCode so that the application bundle is correctly updated.
 
-  2. make -C tools/PackageMaker/
+  2. make -C tools/darwin/packaging/xbmc-osx
 
   3. If completed successfully, a disk image named XBMC_for_Mac.dmg will be
   present in the users XBMC build directory:

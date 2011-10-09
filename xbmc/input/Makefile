@@ -1,4 +1,5 @@
 SRCS=ButtonTranslator.cpp \
+     InertialScrollingHandler.cpp \
      KeyboardLayoutConfiguration.cpp \
      KeyboardStat.cpp \
      MouseStat.cpp \

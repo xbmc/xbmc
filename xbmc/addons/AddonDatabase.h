@@ -58,7 +58,6 @@ public:
   CDateTime GetRepoTimestamp(const CStdString& id);
 
   bool Search(const CStdString& search, ADDON::VECADDONS& items);
-  bool SearchTitle(const CStdString& strSearch, ADDON::VECADDONS& items);
   static void SetPropertiesFromAddon(const ADDON::AddonPtr& addon, CFileItemPtr& item); 
 
   /*! \brief Disable an addon.
@@ -94,10 +93,15 @@ public:
    \sa BreakAddon */
   CStdString IsAddonBroken(const CStdString &addonID);
 
+  bool BlacklistAddon(const CStdString& addonID, const CStdString& version);
+  bool IsAddonBlacklisted(const CStdString& addonID, const CStdString& version);
+  bool RemoveAddonFromBlacklist(const CStdString& addonID,
+                                const CStdString& version);
+
 protected:
   virtual bool CreateTables();
   virtual bool UpdateOldVersion(int version);
-  virtual int GetMinVersion() const { return 14; }
+  virtual int GetMinVersion() const { return 15; }
   const char *GetBaseDBName() const { return "Addons"; }
 };
 

@@ -68,7 +68,7 @@ class CAdvancedSettings
     static CAdvancedSettings* getInstance();
 
     void Initialize();
-
+    void AddSettingsFile(const CStdString &filename);
     bool Load();
     void Clear();
 
@@ -77,14 +77,13 @@ class CAdvancedSettings
     static void GetCustomRegexpReplacers(TiXmlElement *pRootElement, CStdStringArray& settings);
     static void GetCustomExtensions(TiXmlElement *pRootElement, CStdString& extensions);
 
-    // multipath testing
-    bool m_useMultipaths;
-
     int m_audioHeadRoom;
     float m_ac3Gain;
     CStdString m_audioDefaultPlayer;
     float m_audioPlayCountMinimumPercent;
     bool m_dvdplayerIgnoreDTSinWAV;
+    float m_limiterHold;
+    float m_limiterRelease;
 
     float m_videoSubsDelayRange;
     float m_videoAudioDelayRange;
@@ -120,12 +119,15 @@ class CAdvancedSettings
 
     bool  m_videoVDPAUScaling;
     float m_videoNonLinStretchRatio;
-    bool  m_videoAllowLanczos3;
+    bool  m_videoEnableHighQualityHwScalers;
     float m_videoAutoScaleMaxFps;
     bool  m_videoAllowMpeg4VDPAU;
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
+    bool m_videoDisableBackgroundDeinterlace;
+    int  m_videoCaptureUseOcclusionQuery;
     bool m_DXVACheckCompatibility;
     bool m_DXVACheckCompatibilityPresent;
+    bool m_DXVAForceProcessorRenderer;
 
     CStdString m_videoDefaultPlayer;
     CStdString m_videoDefaultDVDPlayer;
@@ -153,6 +155,11 @@ class CAdvancedSettings
     int m_logLevel;
     int m_logLevelHint;
     CStdString m_cddbAddress;
+    
+    //airtunes + airplay
+    bool m_logEnableAirtunes;
+    int m_airTunesPort;
+    int m_airPlayPort;    
 
     bool m_handleMounting;
 
@@ -168,6 +175,7 @@ class CAdvancedSettings
     CStdStringArray m_audioExcludeFromScanRegExps;
     CStdStringArray m_pictureExcludeFromListingRegExps;
     CStdStringArray m_videoStackRegExps;
+    CStdStringArray m_folderStackRegExps;
     CStdStringArray m_trailerMatchRegExps;
     SETTINGS_TVSHOWLIST m_tvshowEnumRegExps;
     CStdString m_tvshowMultiPartEnumRegExp;
@@ -217,7 +225,6 @@ class CAdvancedSettings
 
     bool m_bVideoScannerIgnoreErrors;
 
-    bool m_bUseEvilB;
     std::vector<CStdString> m_vecTokens; // cleaning strings tied to language
     //TuxBox
     int m_iTuxBoxStreamtsPort;
@@ -251,6 +258,8 @@ class CAdvancedSettings
 
     bool m_fullScreen;
     bool m_startFullScreen;
+	bool m_showExitButton; /* Ideal for appliances to hide a 'useless' button */
+    bool m_canWindowed;
     bool m_splashImage;
     bool m_alwaysOnTop;  /* makes xbmc to run always on top .. osx/win32 only .. */
     int m_playlistRetries;
@@ -286,10 +295,18 @@ class CAdvancedSettings
     DatabaseSettings m_databaseMusic; // advanced music database setup
     DatabaseSettings m_databaseVideo; // advanced video database setup
 
+    bool m_guiVisualizeDirtyRegions;
+    int  m_guiAlgorithmDirtyRegions;
+    int  m_guiDirtyRegionNoFlipTimeout;
+
     unsigned int m_cacheMemBufferSize;
 
     bool m_jsonOutputCompact;
     unsigned int m_jsonTcpPort;
+
+    bool m_enableMultimediaKeys;
+    std::vector<CStdString> m_settingsFiles;
+    void ParseSettingsFile(const CStdString &file);
 };
 
 XBMC_GLOBAL(CAdvancedSettings,g_advancedSettings);

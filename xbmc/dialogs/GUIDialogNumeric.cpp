@@ -24,6 +24,7 @@
 #include "utils/md5.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIDialogOK.h"
+#include "input/XBMC_vkeys.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
 
@@ -55,9 +56,7 @@ CGUIDialogNumeric::~CGUIDialogNumeric(void)
 
 bool CGUIDialogNumeric::OnAction(const CAction &action)
 {
-  if (action.GetID() == ACTION_CLOSE_DIALOG || action.GetID() == ACTION_PREVIOUS_MENU)
-    OnCancel();
-  else if (action.GetID() == ACTION_NEXT_ITEM)
+  if (action.GetID() == ACTION_NEXT_ITEM)
     OnNext();
   else if (action.GetID() == ACTION_PREV_ITEM)
     OnPrevious();
@@ -70,11 +69,11 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   else if (action.GetID() >= KEY_VKEY && action.GetID() < KEY_ASCII)
   { // input from the keyboard (vkey, not ascii)
     BYTE b = action.GetID() & 0xFF;
-    if (b == 0x25) OnPrevious();     // left
-    else if (b == 0x27) OnNext();  // right
-    else if (b == 0x0D) OnOK();         // enter
-    else if (b == 0x08) OnBackSpace();    // backspace
-    else if (b == 0x1B) OnCancel();        // escape
+    if (b == XBMCVK_LEFT) OnPrevious();
+    else if (b == XBMCVK_RIGHT) OnNext();
+    else if (b == XBMCVK_RETURN || b == XBMCVK_NUMPADENTER) OnOK();
+    else if (b == XBMCVK_BACK) OnBackSpace();
+    else if (b == XBMCVK_ESCAPE) OnCancel();
   }
   else if (action.GetID() >= KEY_ASCII) // FIXME make it KEY_UNICODE
   { // input from the keyboard
@@ -86,6 +85,12 @@ bool CGUIDialogNumeric::OnAction(const CAction &action)
   }
   else
     return CGUIDialog::OnAction(action);
+  return true;
+}
+
+bool CGUIDialogNumeric::OnBack(int actionID)
+{
+  OnCancel();
   return true;
 }
 

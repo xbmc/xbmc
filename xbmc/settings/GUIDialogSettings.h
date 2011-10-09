@@ -35,7 +35,7 @@ typedef CStdString (*FORMATFUNCTION) (float value, float min);
 class SettingInfo
 {
 public:
-  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, CHECK_UCHAR, SPIN, SLIDER, SEPARATOR };
+  enum SETTING_TYPE { NONE=0, BUTTON, CHECK, CHECK_UCHAR, SPIN, SLIDER, SEPARATOR, STRING };
   SettingInfo()
   {
     id = 0;
@@ -71,7 +71,7 @@ public:
 protected:
   virtual void OnOkay() {};
   virtual void OnCancel() {};
-  virtual bool OnAction(const CAction& action);
+  virtual bool OnBack(int actionID);
   virtual void OnInitWindow();
   virtual void SetupPage();
   virtual void CreateSettings() {};
@@ -85,6 +85,7 @@ protected:
 
   void AddButton(unsigned int id, int label, float *current = NULL, float min = 0, float interval = 0, float max = 0, FORMATFUNCTION function = NULL);
   void AddBool(unsigned int id, int label, bool *on, bool enabled = true);
+  void AddString(unsigned int id, int label, CStdString *current);
   void AddSpin(unsigned int id, int label, int *current, unsigned int max, const int *entries);
   void AddSpin(unsigned int id, int label, int *current, unsigned int min, unsigned int max, const char* minLabel = NULL);
   void AddSpin(unsigned int id, int label, int *current, std::vector<std::pair<int, CStdString> > &values);

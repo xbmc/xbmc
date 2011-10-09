@@ -7,6 +7,7 @@ rem dx for directx build
 rem clean to force a full rebuild
 rem noclean to force a build without clean
 rem noprompt to avoid all prompts
+rem nomingwlibs to skip building all libs built with mingw
 CLS
 COLOR 1B
 TITLE XBMC for Windows Build Script
@@ -116,6 +117,7 @@ IF %comp%==vs2010 (
   )
   ECHO Done!
   ECHO ------------------------------------------------------------
+  set buildmode=clean
   GOTO MAKE_BUILD_EXE
   
 :COMPILE_NO_CLEAN_EXE
@@ -136,6 +138,9 @@ IF %comp%==vs2010 (
     ECHO Compiling mingw libs
     ECHO bla>noprompt
     IF EXIST errormingw del errormingw > NUL
+	IF %buildmode%==clean (
+	  ECHO bla>makeclean
+	)
     call buildmingwlibs.bat
     IF EXIST errormingw (
     	set DIETEXT="failed to build mingw libs"
@@ -182,7 +187,6 @@ IF %comp%==vs2010 (
   copy ..\..\LICENSE.GPL BUILD_WIN32\Xbmc > NUL
   copy ..\..\known_issues.txt BUILD_WIN32\Xbmc > NUL
   xcopy dependencies\*.* BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
-  xcopy vs_redistributable\vs2010\vcredist_x86.exe BUILD_WIN32\Xbmc /Q /I /Y /EXCLUDE:exclude.txt  > NUL
   copy sources.xml BUILD_WIN32\Xbmc\userdata > NUL
   
   xcopy ..\..\language BUILD_WIN32\Xbmc\language /E /Q /I /Y /EXCLUDE:exclude.txt  > NUL
@@ -212,6 +216,7 @@ IF %comp%==vs2010 (
   ECHO Generating installer includes...
   call genNsisIncludes.bat
   ECHO ------------------------------------------------------------
+  call getdeploydependencies.bat
   CALL extract_git_rev.bat > NUL
   SET XBMC_SETUPFILE=XBMCSetup-%GIT_REV%-%target%.exe
   ECHO Creating installer %XBMC_SETUPFILE%...

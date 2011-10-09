@@ -20,8 +20,11 @@ SRCS=AlarmClock.cpp \
      HTMLTable.cpp \
      HTMLUtil.cpp \
      HttpHeader.cpp \
+     HttpParser.cpp \
      InfoLoader.cpp \
      JobManager.cpp \
+     JSONVariantParser.cpp \
+     JSONVariantWriter.cpp \
      LabelFormatter.cpp \
      LangCodeExpander.cpp \
      LCD.cpp \
@@ -42,8 +45,10 @@ SRCS=AlarmClock.cpp \
      ssrc.cpp \
      Stopwatch.cpp \
      StreamDetails.cpp \
+     StreamUtils.cpp \
      StringUtils.cpp \
      SystemInfo.cpp \
+     TimeSmoother.cpp \
      TimeUtils.cpp \
      TuxBoxUtil.cpp \
      URIUtils.cpp \

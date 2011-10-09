@@ -26,6 +26,7 @@
 #ifdef DVDDEBUG_MESSAGE_TRACKER
 
 #include "utils/thread.h"
+#include "threads/CriticalSection.h"
 
 class CDVDMsg;
 
@@ -65,7 +66,7 @@ protected:
 private:
   bool m_bInitialized;
   std::list<CDVDMessageTrackerItem*> m_messageList;
-  CRITICAL_SECTION m_critSection;
+  CCriticalSection m_critSection;
 };
 
 extern CDVDMessageTracker g_dvdMessageTracker;

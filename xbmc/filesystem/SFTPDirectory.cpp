@@ -37,7 +37,7 @@ bool CSFTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 {
   CURL url(strPath);
 
-  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url.GetHostName().c_str(), url.GetUserName().c_str(), url.GetPassWord().c_str());
+  CSFTPSessionPtr session = CSFTPSessionManager::CreateSession(url);
   return session->GetDirectory(url.GetWithoutFilename().c_str(), url.GetFileName().c_str(), items);
 }
 #endif

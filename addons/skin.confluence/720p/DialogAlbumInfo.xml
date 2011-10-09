@@ -39,7 +39,7 @@
 					<posy>50</posy>
 					<width>1030</width>
 					<height>30</height>
-					<font>font35_title</font>
+					<font>font24_title</font>
 					<label>$INFO[Listitem.Album]</label>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -53,7 +53,7 @@
 					<posy>50</posy>
 					<width>1030</width>
 					<height>30</height>
-					<font>font35_title</font>
+					<font>font24_title</font>
 					<label>$INFO[Listitem.Artist]</label>
 					<align>center</align>
 					<aligny>center</aligny>
@@ -138,7 +138,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13_title</font>
+								<font>font13</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -173,7 +173,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13_title</font>
+								<font>font13</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -291,7 +291,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13_title</font>
+								<font>font13</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -326,7 +326,7 @@
 								<posy>0</posy>
 								<width>160</width>
 								<height>30</height>
-								<font>font13_title</font>
+								<font>font13</font>
 								<align>right</align>
 								<aligny>center</aligny>
 								<textcolor>blue</textcolor>
@@ -549,7 +549,7 @@
 							<width>430</width>
 							<height>40</height>
 							<visible>Control.HasFocus(50)</visible>
-							<texture border="5">button-focus.png</texture>
+							<texture border="5">button-focus2.png</texture>
 						</control>
 						<control type="label">
 							<posx>10</posx>
@@ -609,7 +609,7 @@
 							<width>430</width>
 							<height>40</height>
 							<visible>Control.HasFocus(50)</visible>
-							<texture border="5">button-focus.png</texture>
+							<texture border="5">button-focus2.png</texture>
 						</control>
 						<control type="label">
 							<posx>10</posx>

@@ -1,0 +1,13 @@
+<window type="dialog" id="2901">
+	<defaultcontrol></defaultcontrol>
+	<include>dialogeffect</include>
+	<onunload>Skin.Reset(PlayerControlsSubMenuVisible)</onunload>
+	<coordinates>
+		<system>1</system>
+		<posx>0</posx>
+		<posy>0</posy>
+	</coordinates>
+	<controls>
+		<include>PlayerControlCommons</include>
+	</controls>
+</window>

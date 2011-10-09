@@ -22,6 +22,7 @@
 #include "AddonDatabase.h"
 #include "addons/AddonManager.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "XBDateTime.h"
 #include "addons/Service.h"
 #include "dbwrappers/dataset.h"
@@ -84,6 +85,10 @@ bool CAddonDatabase::CreateTables()
     CLog::Log(LOGINFO, "create broken table");
     m_pDS->exec("CREATE TABLE broken (id integer primary key, addonID text, reason text)\n");
     m_pDS->exec("CREATE UNIQUE INDEX idxBroken ON broken(addonID)");
+
+    CLog::Log(LOGINFO, "create blacklist table");
+    m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
+    m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
   }
   catch (...)
   {
@@ -108,6 +113,11 @@ bool CAddonDatabase::UpdateOldVersion(int version)
     if (version < 14)
     {
       m_pDS->exec("ALTER TABLE addon add minversion text");
+    }
+    if (version < 15)
+    {
+      m_pDS->exec("CREATE TABLE blacklist (id integer primary key, addonID text, version text)\n");
+      m_pDS->exec("CREATE UNIQUE INDEX idxBlack ON blacklist(addonID)");
     }
   }
   catch (...)
@@ -498,15 +508,7 @@ bool CAddonDatabase::GetRepository(const CStdString& id, VECADDONS& addons)
   return false;
 }
 
-bool CAddonDatabase::Search(const CStdString& search, VECADDONS& items)
-{
-  // first grab all the addons that match
-  SearchTitle(search,items);
-
-  return true;
-}
-
-bool CAddonDatabase::SearchTitle(const CStdString& search, VECADDONS& addons)
+bool CAddonDatabase::Search(const CStdString& search, VECADDONS& addons)
 {
   try
   {
@@ -514,7 +516,8 @@ bool CAddonDatabase::SearchTitle(const CStdString& search, VECADDONS& addons)
     if (NULL == m_pDS.get()) return false;
 
     CStdString strSQL;
-    strSQL=PrepareSQL("select idAddon from addon where name like '%s%%'", search.c_str());
+    strSQL=PrepareSQL("SELECT id FROM addon WHERE name LIKE '%%%s%%' OR summary LIKE '%%%s%%' OR description LIKE '%%%s%%'", search.c_str(), search.c_str(), search.c_str());
+    CLog::Log(LOGDEBUG, "%s query: %s", __FUNCTION__, strSQL.c_str());
 
     if (!m_pDS->query(strSQL.c_str())) return false;
     if (m_pDS->num_rows() == 0) return false;
@@ -692,6 +695,52 @@ bool CAddonDatabase::HasDisabledAddons()
   catch (...)
   {
     CLog::Log(LOGERROR, "%s failed", __FUNCTION__);
+  }
+  return false;
+}
+
+bool CAddonDatabase::BlacklistAddon(const CStdString& addonID,
+                                    const CStdString& version)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString sql = PrepareSQL("insert into blacklist(id, addonID, version) values(NULL, '%s', '%s')", addonID.c_str(),version.c_str());
+    m_pDS->exec(sql);
+
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s' for version '%s'", __FUNCTION__, addonID.c_str(),version.c_str());
+  }
+  return false;
+}
+
+bool CAddonDatabase::IsAddonBlacklisted(const CStdString& addonID,
+                                        const CStdString& version)
+{
+  CStdString where = PrepareSQL("addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
+  return !GetSingleValue("blacklist","addonID",where).IsEmpty();
+}
+
+bool CAddonDatabase::RemoveAddonFromBlacklist(const CStdString& addonID,
+                                              const CStdString& version)
+{
+  try
+  {
+    if (NULL == m_pDB.get()) return false;
+    if (NULL == m_pDS.get()) return false;
+
+    CStdString sql = PrepareSQL("delete from blacklist where addonID='%s' and version='%s'",addonID.c_str(),version.c_str());
+    m_pDS->exec(sql);
+    return true;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR, "%s failed on addon '%s' for version '%s'", __FUNCTION__, addonID.c_str(),version.c_str());
   }
   return false;
 }

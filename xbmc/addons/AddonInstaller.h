@@ -127,6 +127,10 @@ public:
    */
   CStdString AddonID() const;
 
+  /*! \brief Delete an addon following install failure
+   \param addonFolder - the folder to delete
+   */
+  static bool DeleteAddon(const CStdString &addonFolder);
 private:
   bool OnPreInstall();
   void OnPostInstall(bool reloadAddon);
@@ -145,13 +149,20 @@ private:
    */
   bool CheckHash(const CStdString& addonZip);
 
-  /*! \brief Delete an addon following install failure
-   \param addonFolder - the folder to delete
-   */
-  void DeleteAddon(const CStdString &addonFolder);
-
   ADDON::AddonPtr m_addon;
   CStdString m_hash;
   bool m_update;
   CStdString m_referer;
+};
+
+class CAddonUnInstallJob : public CFileOperationJob
+{
+public:
+  CAddonUnInstallJob(const ADDON::AddonPtr &addon);
+
+  virtual bool DoWork();
+private:
+  void OnPostUnInstall();
+
+  ADDON::AddonPtr m_addon;
 };

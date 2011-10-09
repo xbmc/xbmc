@@ -33,14 +33,14 @@
 
 using namespace std;
 
-CWinSystemX11::CWinSystemX11() : CWinSystemBase(), m_screensaverReset(true)
+CWinSystemX11::CWinSystemX11() : CWinSystemBase()
 {
   m_eWindowSystem = WINDOW_SYSTEM_X11;
   m_glContext = NULL;
   m_SDLSurface = NULL;
   m_dpy = NULL;
-  m_glWindow = NULL;
-  m_wmWindow = NULL;
+  m_glWindow = 0;
+  m_wmWindow = 0;
   m_bWasFullScreenBeforeMinimize = false;
 }
 

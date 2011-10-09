@@ -1,17 +1,27 @@
 include Makefile.include
 
-BUILDTOOLS = help2man autoconf automake libtool pkg-config yasm cmake
+BUILDTOOLS = gas-preprocessor help2man m4 autoconf automake libtool pkg-config yasm cmake tar dpkg
 
-SUBDIRS = \
-	pcre expat gettext readline sqlite3 \
+SUBDIRS := \
+	Backrow pcre expat gettext readline sqlite3 \
 	liblzo2 freetype2 fontconfig \
-	openssl libssh2 curl \
-	jpeg tiff libpng libogg \
-	libvorbis libflac libmad fribidi libwavpack libmpeg2 \
-	libass libcdio libsamplerate librtmp libcrystalhd \
+	openssl libssh libssh2 curl \
+	libjpeg-turbo tiff libpng libogg \
+	libvorbis libflac libmad fribidi libmpeg2 \
+	libass libcdio libsamplerate librtmp libcrystalhd libnfs \
 	libGLEW libsdl libsdl_mixer libsdl_image \
-	libmicrohttpd libmodplug libbluray \
-	samba python26 mysqlclient boost \
+	libmicrohttpd libmodplug libbluray libyajl \
+	libgpg-error libgcrypt afpfs-ng \
+	libplist libshairport \
+        samba python26 distribute distutilscross \
+	mysqlclient boost \
+
+ifeq ($(DARWIN), ios)
+  EXCLUDED = libusb libcrystalhd libGLEW libsdl libsdl_mixer libsdl_image
+else
+  EXCLUDED = Backrow
+endif
+SUBDIRS := $(filter-out $(EXCLUDED),$(SUBDIRS))
 
 .PHONY: $(BUILDTOOLS) $(SUBDIRS)
 
@@ -24,8 +34,20 @@ $(SUBDIRS):
 	$(MAKE) -C $@
 
 clean:
-	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
-	for d in $(SUBDIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
+	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+	for d in $(SUBDIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+
+cleanbuildtools:
+	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+
+cleanbuilddepends:
+	for d in $(SUBDIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done
+
+cleantoolchain:
+	rm -rf $(TOOLCHAIN)
+
+cleanprefix:
+	rm -rf $(PREFIX)
 
 distclean::
 	for d in $(BUILDTOOLS); do if test -f $$d/Makefile; then $(MAKE) -C $$d distclean; fi; done

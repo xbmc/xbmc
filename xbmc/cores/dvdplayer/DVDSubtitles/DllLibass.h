@@ -34,13 +34,12 @@ extern "C" {
 #include "DynamicDll.h"
 #include "utils/log.h"
 
-//typedefs for backwards compatiblity with libass' old api
-#if (LIBASS_VERSION < 0x00907010)
-  typedef ass_image_t    ASS_Image;
-  typedef ass_track_t    ASS_Track;
-  typedef ass_library_t  ASS_Library;
-  typedef ass_renderer_t ASS_Renderer;
-  typedef ass_event_t    ASS_Event;
+#ifndef LIBASS_VERSION /* Legacy version. */
+typedef struct ass_library_s ASS_Library;
+typedef struct render_priv_s ASS_Renderer;
+typedef ass_image_t ASS_Image;
+typedef ass_track_t ASS_Track;
+typedef ass_event_t ASS_Event;
 #endif
 
 class DllLibassInterface
@@ -69,8 +68,6 @@ public:
                                 , void (*msg_cb)(int level, const char *fmt, va_list args, void *data)
                                 , void *data)=0;
 };
-
-#if defined(WIN32) || defined(__APPLE__)
 
 class DllLibass : public DllDynamic, DllLibassInterface
 {
@@ -118,71 +115,3 @@ class DllLibass : public DllDynamic, DllLibassInterface
     RESOLVE_METHOD(ass_set_message_cb)
   END_METHOD_RESOLVE()
 };
-
-#else
-
-class DllLibass : public DllDynamic, DllLibassInterface
-{
-public:
-    virtual ~DllLibass() {}
-    virtual void ass_set_extract_fonts(ASS_Library* priv, int extract)
-        { return ::ass_set_extract_fonts(priv, extract); }
-    virtual void ass_set_fonts_dir(ASS_Library* priv, const char* fonts_dir)
-        { return ::ass_set_fonts_dir(priv, fonts_dir); }
-    virtual ASS_Library* ass_library_init(void)
-        { return ::ass_library_init(); }
-    virtual ASS_Renderer* ass_renderer_init(ASS_Library* library)
-        { return ::ass_renderer_init(library); }
-    virtual void ass_set_frame_size(ASS_Renderer* priv, int w, int h)
-        { return ::ass_set_frame_size(priv, w, h); }
-    virtual void ass_set_margins(ASS_Renderer* priv, int t, int b, int l, int r)
-        { return ::ass_set_margins(priv, t, b, l, r); }
-    virtual void ass_set_use_margins(ASS_Renderer* priv, int use)
-        { return ::ass_set_use_margins(priv, use); }
-    virtual void ass_set_font_scale(ASS_Renderer* priv, double font_scale)
-        { return ::ass_set_font_scale(priv, font_scale); }
-    virtual ASS_Image* ass_render_frame(ASS_Renderer *priv, ASS_Track* track, long long now, int* detect_change)
-        { return ::ass_render_frame(priv, track, now, detect_change); }
-    virtual ASS_Track* ass_new_track(ASS_Library* library)
-        { return ::ass_new_track(library); }
-    virtual ASS_Track* ass_read_file(ASS_Library* library, char* fname, char* codepage)
-        { return ::ass_read_file(library, fname, codepage); }
-    virtual ASS_Track* ass_read_memory(ASS_Library *library, char *buf, size_t bufsize, char *codepage)
-        { return ::ass_read_memory(library, buf, bufsize, codepage); }
-    virtual void ass_free_track(ASS_Track* track)
-        { return ::ass_free_track(track); }
-    virtual void ass_set_fonts(ASS_Renderer *priv, const char *default_font, const char *default_family, int fc, const char *config, int update)
-#ifdef LIBASS_VERSION
-        { return ::ass_set_fonts(priv, default_font, default_family, fc, config, update); }
-#else /* Legacy version. */
-        { ::ass_set_fonts(priv, default_font, default_family); return; }
-#endif
-    virtual void ass_set_style_overrides(ASS_Library* priv, char** list)
-        { return ::ass_set_style_overrides(priv, list); }
-    virtual void ass_library_done(ASS_Library* library)
-        { return ::ass_library_done(library); }
-    virtual void ass_renderer_done(ASS_Renderer* renderer)
-        { return ::ass_renderer_done(renderer); }
-    virtual void ass_process_chunk(ASS_Track* track, char *data, int size, long long timecode, long long duration)
-        { return ::ass_process_chunk(track, data, size, timecode, duration); }
-    virtual void ass_process_codec_private(ASS_Track* track, char *data, int size)
-        { return ::ass_process_codec_private(track, data, size); }
-    virtual void ass_set_message_cb(ASS_Library *priv
-                                   , void (*msg_cb)(int level, const char *fmt, va_list args, void *data)
-                                   , void *data)
-#ifdef LIBASS_VERSION
-        { return ::ass_set_message_cb(priv, msg_cb, data); }
-#else /* Legacy version. */
-        { return; }
-#endif
-
-    // DLL faking.
-    virtual bool ResolveExports() { return true; }
-    virtual bool Load() {
-        CLog::Log(LOGDEBUG, "DllLibass: Using libass system library");
-        return true;
-    }
-    virtual void Unload() {}
-    virtual bool IsLoaded() { return true; }
-};
-#endif

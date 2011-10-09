@@ -26,6 +26,7 @@
 #define PLAYLIST_NONE    -1
 #define PLAYLIST_MUSIC   0
 #define PLAYLIST_VIDEO   1
+#define PLAYLIST_PICTURE 2
 
 class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class CFileItemList;
@@ -126,9 +127,10 @@ public:
    Has no effect if Party Mode is enabled.
    \param playlist the playlist to (un)shuffle, PLAYLIST_MUSIC or PLAYLIST_VIDEO.
    \param shuffle set true to shuffle, false to unshuffle.
+   \param notify notify the user with a Toast notification (defaults to false)
    \sa IsShuffled
    */
-  void SetShuffle(int playlist, bool shuffle);
+  void SetShuffle(int playlist, bool shuffle, bool notify = false);
   
   /*! \brief Return whether a playlist is shuffled.
    If partymode is enabled, this always returns false.
@@ -143,7 +145,14 @@ public:
    */
   bool HasPlayedFirstFile() const;
 
-  void SetRepeat(int iPlaylist, REPEAT_STATE state);
+  /*! \brief Set repeat state of a playlist.
+   If called while in Party Mode, repeat is disabled.
+   \param playlist the playlist to set repeat state for, PLAYLIST_MUSIC or PLAYLIST_VIDEO.
+   \param state set to REPEAT_NONE, REPEAT_ONE or REPEAT_ALL
+   \param notify notify the user with a Toast notification
+   \sa GetRepeat
+   */
+  void SetRepeat(int iPlaylist, REPEAT_STATE state, bool notify = false);
   REPEAT_STATE GetRepeat(int iPlaylist) const;
 
   // add items via the playlist player
@@ -154,6 +163,7 @@ public:
   void Insert(int iPlaylist, const CFileItemPtr &pItem, int iIndex);
   void Insert(int iPlaylist, CFileItemList& items, int iIndex);
   void Remove(int iPlaylist, int iPosition);
+  void Swap(int iPlaylist, int indexItem1, int indexItem2);
 protected:
   /*! \brief Returns true if the given is set to repeat all
    \param playlist Playlist to be query

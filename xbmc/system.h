@@ -21,17 +21,13 @@
  *
  */
 
-#if defined(HAVE_CONFIG_H) && !defined(_WIN32)
+#if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
 #include "config.h"
 #endif
 
 /*****************
  * All platforms
  *****************/
-#ifndef HAS_SDL
-#define HAS_SDL
-#endif
-
 #define HAS_DVD_SWSCALE
 #define HAS_DVDPLAYER
 #define HAS_EVENT_SERVER
@@ -56,7 +52,6 @@
 #endif
 
 #define HAS_FILESYSTEM
-#define HAS_FILESYSTEM_SMB
 #define HAS_FILESYSTEM_CDDA
 #define HAS_FILESYSTEM_RTV
 #define HAS_FILESYSTEM_DAAP
@@ -64,47 +59,71 @@
 #define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
 
+#ifdef HAVE_LIBSMBCLIENT
+  #define HAS_FILESYSTEM_SMB
+#endif
+
+#ifdef HAVE_LIBNFS
+  #define HAS_FILESYSTEM_NFS
+#endif
+
+#ifdef HAVE_LIBAFPCLIENT
+  #define HAS_FILESYSTEM_AFP
+#endif
+
+#ifdef HAVE_LIBPLIST
+  #define HAS_AIRPLAY
+#endif
+
+#ifdef HAVE_LIBSHAIRPORT
+  #define HAS_AIRTUNES
+#endif
+
 /**********************
  * Non-free Components
  **********************/
 
-#if defined(_LINUX) || defined(__APPLE__)
+#if defined(TARGET_WINDOWS)
+  #define HAS_FILESYSTEM_RAR
+#else
   #if defined(HAVE_XBMC_NONFREE)
     #define HAS_FILESYSTEM_RAR
   #endif
-#else
-  #define HAS_FILESYSTEM_RAR
 #endif
 
 /*****************
  * Win32 Specific
  *****************/
 
-#ifdef _WIN32
-#define HAS_DVD_DRIVE
+#if defined(TARGET_WINDOWS)
+#define HAS_SDL
 #define HAS_SDL_JOYSTICK
+#define HAS_DVD_DRIVE
 #define HAS_WIN32_NETWORK
 #define HAS_IRSERVERSUITE
 #define HAS_AUDIO
-#define HAVE_LIBCRYSTALHD 1
+#define HAVE_LIBCRYSTALHD 2
 #define HAS_WEB_SERVER
 #define HAS_WEB_INTERFACE
 #define HAVE_LIBSSH
 #define HAS_LIBRTMP
 #define HAVE_LIBBLURAY
 #define HAS_ASAP_CODEC
+#define HAVE_YAJL_YAJL_VERSION_H
+#define HAS_FILESYSTEM_SMB
+#define HAS_FILESYSTEM_NFS
+#define HAS_ZEROCONF
+#define HAS_AIRPLAY
 #endif
 
 /*****************
  * Mac Specific
  *****************/
 
-#ifdef __APPLE__
-  #if defined(__arm__)
-    #undef HAS_SDL
-    #define HAS_XBMC_MUTEX
-  #else
+#if defined(TARGET_DARWIN)
+  #if defined(TARGET_DARWIN_OSX)
     #define HAS_GL
+    #define HAS_SDL
     #define HAS_SDL_AUDIO
     #define HAS_SDL_OPENGL
     #define HAS_SDL_WIN_EVENTS
@@ -117,23 +136,30 @@
  * Linux Specific
  *****************/
 
-#if defined(_LINUX) && !defined(__APPLE__)
-#ifndef HAS_SDL_OPENGL
-#define HAS_SDL_OPENGL
-#endif
+#if defined(TARGET_LINUX)
 #if defined(HAVE_LIBAVAHI_COMMON) && defined(HAVE_LIBAVAHI_CLIENT)
 #define HAS_ZEROCONF
 #define HAS_AVAHI
 #endif
 #define HAS_LCD
+#ifdef HAVE_DBUS
 #define HAS_DBUS
 #define HAS_DBUS_SERVER
+#endif
 #define HAS_GL
+#ifdef HAVE_X11
 #define HAS_GLX
-#define HAS_LINUX_NETWORK
+#endif
+#ifdef HAVE_SDL
+#define HAS_SDL
+#ifndef HAS_SDL_OPENGL
+#define HAS_SDL_OPENGL
+#endif
 #define HAS_SDL_AUDIO
-#define HAS_LIRC
 #define HAS_SDL_WIN_EVENTS
+#endif
+#define HAS_LINUX_NETWORK
+#define HAS_LIRC
 #ifdef HAVE_LIBPULSE
 #define HAS_PULSEAUDIO
 #endif
@@ -150,7 +176,7 @@
  * Git revision
  *****************/
 
-#ifdef __APPLE__
+#if defined(TARGET_DARWIN)
 #include "../git_revision.h"
 #endif
 
@@ -162,10 +188,7 @@
  * Additional platform specific includes
  ****************************************/
 
-#ifdef _WIN32
-#if !(defined(_WINSOCKAPI_) || defined(_WINSOCK_H))
-#include <winsock2.h>
-#endif
+#if defined(TARGET_WINDOWS)
 #include <windows.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include "mmsystem.h"
@@ -175,21 +198,20 @@
 #define LPDIRECTSOUND8 LPDIRECTSOUND
 #undef GetFreeSpace
 #include "PlatformInclude.h"
+#ifdef HAS_DX
 #include "D3D9.h"   // On Win32, we're always using DirectX for something, whether it be the actual rendering
 #include "D3DX9.h"  // or the reference video clock.
+#else
+#include <d3d9types.h>
+#endif
 #ifdef HAS_SDL
 #include "SDL\SDL.h"
 #endif
 #endif
 
-#ifdef _LINUX
-#include <unistd.h>
+#if defined(TARGET_POSIX)
 #include <time.h>
 #include <sys/time.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <sys/socket.h>
 #include <sys/types.h>
 #include <errno.h>
 #include "PlatformInclude.h"
@@ -223,22 +245,22 @@
 
 
 #ifdef HAS_GL
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
 #include "GL/glew.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
 //#include <GL/wglext.h>
-#elif defined(__APPLE__)
+#elif defined(TARGET_DARWIN)
 #include <GL/glew.h>
 #include <OpenGL/gl.h>
-#elif defined(_LINUX)
+#elif defined(TARGET_LINUX)
 #include <GL/glew.h>
 #include <GL/gl.h>
 #endif
 #endif
 
 #if HAS_GLES == 2
-  #if defined(__APPLE__)
+  #if defined(TARGET_DARWIN)
     #include <OpenGLES/ES2/gl.h>
     #include <OpenGLES/ES2/glext.h>
   #else
