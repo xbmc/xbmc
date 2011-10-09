@@ -657,8 +657,12 @@ bool CGUIWindowPVRCommon::PlayFile(CFileItem *item, bool bPlayMinimized /* = fal
 
     /* try a fast switch */
     if (item->IsPVRChannel() && (g_PVRManager.IsPlayingTV() || g_PVRManager.IsPlayingRadio()) &&
-        (item->GetPVRChannelInfoTag()->IsRadio() == g_PVRManager.IsPlayingRadio()))
-      bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(*item->GetPVRChannelInfoTag());
+        (item->GetPVRChannelInfoTag()->IsRadio() == g_PVRManager.IsPlayingRadio()) && g_application.m_pPlayer)
+    {
+      CPVRChannel* channel = item->GetPVRChannelInfoTag();
+      if (channel->StreamURL().IsEmpty())
+        bSwitchSuccessful = g_application.m_pPlayer->SwitchChannel(*channel);
+    }
 
     if (!bSwitchSuccessful)
     {
