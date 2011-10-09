@@ -52,7 +52,8 @@ int g_iTVServerXBMCBuild = 0;
 
 cPVRClientMediaPortal::cPVRClientMediaPortal()
 {
-  m_iCurrentChannel        = 1;
+  m_iCurrentChannel        = 0;
+  m_iCurrentCard           = 0;
   m_tcpclient              = new MPTV::Socket(MPTV::af_inet, MPTV::pf_inet, MPTV::sock_stream, MPTV::tcp);
   m_bConnected             = false;
   m_bStop                  = true;
@@ -1154,6 +1155,7 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
     XBMC->Log(LOG_INFO, "CloseLiveStream: %s", result.c_str());
     m_bTimeShiftStarted = false;
     m_iCurrentChannel = 0;
+    m_iCurrentCard = 0;
   }
   else
   {
@@ -1200,7 +1202,7 @@ PVR_ERROR cPVRClientMediaPortal::GetSignalStatus(PVR_SIGNAL_STATUS &signalStatus
       signalStatus.iBER = 0;
       strncpy(signalStatus.strAdapterStatus, "timeshifting", 1023); // hardcoded for now...
       // TODO: fetch the name of the correct card and not just the first one...
-      strncpy(signalStatus.strAdapterName, m_cCards[0].Name.c_str(), 1023); //Size buffer is 1024 in xbmc_pvr_types.h
+      strncpy(signalStatus.strAdapterName, m_cCards[m_iCurrentCard].Name.c_str(), 1023); //Size buffer is 1024 in xbmc_pvr_types.h
     }
   }
   return PVR_ERROR_NO_ERROR;
@@ -1312,9 +1314,18 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
 
     Tokenize(result, timeshiftfields, "|");
 
+    //[0] = rtsp url
+    //[1] = original (unresolved) rtsp url
+    //[2] = timeshift buffer filename
+    //[3] = card id (TVServerXBMC build >= 106)
+
     m_PlaybackURL = timeshiftfields[0];
     XBMC->Log(LOG_INFO, "Sending channel stream URL '%s' to XBMC for playback", m_PlaybackURL.c_str());
     m_iCurrentChannel = channelinfo.iUniqueId;
+    if (g_iTVServerXBMCBuild>=106)
+    {
+      m_iCurrentCard = atoi(timeshiftfields[3].c_str());
+    }
 
     // Check the returned stream URL. When the URL is an rtsp stream, we need
     // to close it again after watching to stop the timeshift.
