@@ -1298,6 +1298,7 @@ namespace JSONRPC
     "}",
     "\"Files.Download\": {"
       "\"type\": \"method\","
+      "\"description\": \"Provides a way to download a given file (e.g. providing an URL to the real file location)\","
       "\"transport\": [ \"Response\", \"FileDownload\" ],"
       "\"permission\": \"ReadData\","
       "\"params\": ["
@@ -1312,6 +1313,7 @@ namespace JSONRPC
     "}",
     "\"Files.GetDirectory\": {"
       "\"type\": \"method\","
+      "\"description\": \"Get the directories and files in the given directory\","
       "\"transport\": \"Response\","
       "\"permission\": \"ReadData\","
       "\"params\": ["
