@@ -256,6 +256,9 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
   CGEventTapEnable(m_eventPort, TRUE);
 
   CFRunLoopRun();
+  CFRelease(runLoopSource);
+  CFRelease(m_eventPort);
+  m_eventPort = NULL;
 }
 
 - (id)init
