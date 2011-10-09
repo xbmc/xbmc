@@ -780,10 +780,14 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const
       tag.iChannelNumber = g_iTVServerXBMCBuild >= 102 ? channel.ExternalID() : channel.UID();
       tag.strGroupName = group.strGroupName;
 
-      XBMC->Log(LOG_DEBUG, "%s - add channel %s (%d) to group '%s' channel number %d",
-        __FUNCTION__, channel.Name(), tag.iChannelUniqueId, group.strGroupName, channel.UID());
 
-      PVR->TransferChannelGroupMember(handle, &tag);
+      // Don't add encrypted channels when FTA only option is turned on
+      if( (!g_bOnlyFTA) || (channel.Encrypted()==false))
+      {
+        XBMC->Log(LOG_DEBUG, "GetChannelGroupMembers: add channel %s to group '%s' (Backend channel uid=%d, channelnr=%d)",
+          channel.Name(), group.strGroupName, tag.iChannelUniqueId, tag.iChannelNumber);
+        PVR->TransferChannelGroupMember(handle, &tag);
+      }
     }
   }
 
