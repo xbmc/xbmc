@@ -83,6 +83,11 @@ bool stringtobool(const std::string& s)
     return true;
 }
 
+const char* booltostring(const bool b)
+{
+  return (b==true) ? "True" : "False";
+}
+
 time_t DateTimeToTimeT(const std::string& datetime)
 {
   struct tm timeinfo;
