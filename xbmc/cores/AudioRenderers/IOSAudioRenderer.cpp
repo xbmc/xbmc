@@ -325,7 +325,8 @@ float CIOSAudioRenderer::GetDelay()
 
 float CIOSAudioRenderer::GetCacheTime()
 {
-  return (float)(m_BufferLen - GetSpace()) / (float)m_BytesPerSec;
+  unsigned int nBufferLenFull = (m_BufferLen / m_Channels) * m_DataChannels;
+  return (float)(nBufferLenFull - GetSpace()) / (float)m_BytesPerSec;
 }
 
 float CIOSAudioRenderer::GetCacheTotal()
