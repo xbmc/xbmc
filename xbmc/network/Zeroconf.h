@@ -91,6 +91,10 @@ protected:
   //removes all services (short hand for "for i in m_service_map doRemoveService(i)")
   virtual void doStop() = 0;
 
+#ifdef TARGET_WINDOWS
+  virtual bool IsServiceAvailable() = 0;
+#endif
+
 protected:
   //singleton: we don't want to get instantiated nor copied or deleted from outside
   CZeroconf();

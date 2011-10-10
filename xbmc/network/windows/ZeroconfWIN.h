@@ -43,6 +43,8 @@ protected:
 
   virtual void doStop();
 
+  virtual bool IsServiceAvailable();
+
 private:
 
   //returns the string that gets published (a.k.a. add the hostname)
