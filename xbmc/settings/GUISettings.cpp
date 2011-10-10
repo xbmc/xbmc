@@ -484,7 +484,7 @@ void CGUISettings::Initialize()
   AddSeparator(in, "input.sep1");
 #endif
   AddBool(in, "input.remoteaskeyboard", 21449, false);
-#if (defined(__APPLE__) && defined(__arm_))
+#if defined(TARGET_DARWIN_IOS)
   AddBool(NULL, "input.enablemouse", 21369, true);
 #else
   AddBool(in, "input.enablemouse", 21369, true);
