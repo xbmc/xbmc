@@ -1779,12 +1779,6 @@ else
   final_message="$final_message\n  libusb support:\tNo"
 fi
 
-if test "x$use_libcec" != "xno"; then
-  final_message="$final_message\n  libcec support:\tYes"
-else
-  final_message="$final_message\n  libcec support:\tNo"
-fi
-
 if test "$use_libcec" = "yes"; then
   final_message="$final_message\n  libCEC support:\tYes"
 else
