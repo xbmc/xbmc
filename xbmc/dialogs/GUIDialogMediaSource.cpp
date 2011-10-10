@@ -426,6 +426,7 @@ void CGUIDialogMediaSource::UpdateButtons()
     return;
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, !m_paths->Get(0)->GetPath().IsEmpty() && !m_name.IsEmpty());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_ADD, !m_paths->Get(0)->GetPath().IsEmpty());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_REMOVE, m_paths->Size() > 1);
   // name
   SET_CONTROL_LABEL2(CONTROL_NAME, m_name);
