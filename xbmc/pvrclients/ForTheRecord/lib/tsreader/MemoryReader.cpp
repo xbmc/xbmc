@@ -19,7 +19,6 @@
 #ifdef TSREADER
 
 #include "libPlatform/os-dependent.h"
-//#include "os-dependent.h"
 #include "MemoryReader.h"
 
 CMemoryReader::CMemoryReader(CMemoryBuffer& buffer)

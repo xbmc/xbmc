@@ -30,7 +30,6 @@
 #if defined TSREADER
 
 #include "libPlatform/os-dependent.h"
-//#include "os-dependent.h"
 
 class FileReader
 {

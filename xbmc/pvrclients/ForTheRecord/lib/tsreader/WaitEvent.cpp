@@ -20,7 +20,7 @@
 
 #include "WaitEvent.h"
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
 
 CWaitEvent::CWaitEvent(LPSECURITY_ATTRIBUTES lpEventAttributes, int bManualReset, int bInitialState, const char* lpName)
 {

@@ -19,7 +19,6 @@
 #ifdef TSREADER
 
 #include "libPlatform/os-dependent.h"
-//#include "os-dependent.h"
 #include "MemoryBuffer.h"
 #include "AutoLock.h"
 #include "client.h"
