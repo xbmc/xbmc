@@ -195,6 +195,9 @@ bool CRepositoryUpdateJob::DoWork()
   database.Open();
   for (unsigned int i=0;i<addons.size();++i)
   {
+    // manager told us to feck off
+    if (ShouldCancel(0,0))
+      break;
     if (!CAddonInstaller::Get().CheckDependencies(addons[i]))
       addons[i]->Props().broken = g_localizeStrings.Get(24044);
 
