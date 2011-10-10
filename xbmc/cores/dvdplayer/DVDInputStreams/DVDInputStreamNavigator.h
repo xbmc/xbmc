@@ -59,6 +59,7 @@ class CDVDInputStreamNavigator
   , public CDVDInputStream::IDisplayTime
   , public CDVDInputStream::IChapter
   , public CDVDInputStream::ISeekTime
+  , public CDVDInputStream::IMenus
 {
 public:
   CDVDInputStreamNavigator(IDVDPlayer* player);
