@@ -26,6 +26,7 @@
 #include "DllLibbluray.h"
 #include "FileItem.h"
 #include "video/VideoInfoTag.h"
+#include "addons/Scraper.h"
 
 namespace XFILE
 {
@@ -150,25 +151,30 @@ bool CBlurayDirectory::GetDirectory(const CStdString& path, CFileItemList &items
   }
 
   if(file == "") {
-    GetTitles(true, items);
+    if(m_scanningType == CONTENT_MOVIES
+    || m_scanningType == CONTENT_TVSHOWS) {
+      /* only return main titles */
+      GetTitles(true, items);
+    } else {
+      GetTitles(true, items);
 
-    CURL path(m_url);
-    CFileItemPtr item;
+      CURL path(m_url);
+      CFileItemPtr item;
 
-    path.SetFileName(URIUtils::AddFileToFolder(m_url.GetFileName(), "titles"));
-    item.reset(new CFileItem());
-    item->SetPath(path.Get());
-    item->m_bIsFolder = true;
-    item->SetLabel("All Titles");
-    items.Add(item);
+      path.SetFileName(URIUtils::AddFileToFolder(m_url.GetFileName(), "titles"));
+      item.reset(new CFileItem());
+      item->SetPath(path.Get());
+      item->m_bIsFolder = true;
+      item->SetLabel("All Titles");
+      items.Add(item);
 
-    path.SetFileName("BDMV/MovieObject.bdmv");
-    item.reset(new CFileItem());
-    item->SetPath(path.Get());
-    item->m_bIsFolder = false;
-    item->SetLabel("Menus");
-    items.Add(item);
-
+      path.SetFileName("BDMV/MovieObject.bdmv");
+      item.reset(new CFileItem());
+      item->SetPath(path.Get());
+      item->m_bIsFolder = false;
+      item->SetLabel("Menus");
+      items.Add(item);
+    }
   } else if(file == "titles") {
     GetTitles(false, items);
   } else {
