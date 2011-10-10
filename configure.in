@@ -1082,48 +1082,50 @@ if test "x$use_airtunes" != "xno"; then
   fi
 fi
 
-# libusb
-USE_LIBUSB=0
-if test "$use_libusb" = "auto"; then
-  PKG_CHECK_MODULES([USB], ["libusb"],
-    use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
-    AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
-    use_libusb="no"; AC_MSG_RESULT($libusb_not_found))
-elif test "$use_libusb" = "yes"; then
-  PKG_CHECK_MODULES([USB], ["libusb"],
-    use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
-    AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
-    use_libusb="no"; AC_MSG_ERROR($libusb_not_found))
-else
-  use_libusb="no"
-  AC_MSG_NOTICE($libusb_disabled)
-fi
-
 # udev
 USE_LIBUDEV=0
-if test "$use_libusb" = "yes"; then
   if test "$host_vendor" = "apple" ; then
+  use_libudev="no"
+  AC_MSG_NOTICE($libudev_disabled)
+else
+  if test "$use_libudev" = "auto"; then
+    PKG_CHECK_MODULES([UDEV], [libudev],
+      use_libudev="yes"; use_libusb="no"; USE_LIBUDEV=1; [INCLUDES="$INCLUDES $UDEV_CFLAGS"; LIBS="$LIBS $UDEV_LIBS"]; \
+      AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"]),
+      AC_MSG_RESULT($libudev_not_found))
+  elif test "$use_libudev" = "yes" ; then
+    PKG_CHECK_MODULES([UDEV], [libudev],
+      use_libudev="yes"; use_libusb="no"; USE_LIBUDEV=1; [INCLUDES="$INCLUDES $UDEV_CFLAGS"; LIBS="$LIBS $UDEV_LIBS"]; \
+      AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"]),
+      AC_MSG_ERROR($libudev_not_found))
     use_libudev="no"
     AC_MSG_NOTICE($libudev_disabled)
+  fi
+fi
+
+# libusb
+USE_LIBUSB=0
+if test "$use_libudev" != "yes"; then
+  if test "$host_vendor" = "apple" ; then
+    use_libusb="no"
+    AC_MSG_NOTICE($libusb_disabled)
   else
-    if test "$use_libudev" = "auto"; then
-      PKG_CHECK_MODULES([UDEV], [libudev],
-        use_libudev="yes"; use_libusb="no"; USE_LIBUDEV=1; [INCLUDES="$INCLUDES $UDEV_CFLAGS"; LIBS="$LIBS $UDEV_LIBS"]; \
-        AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"]),
-	    AC_MSG_RESULT($libudev_not_found))
-    elif test "$use_libudev" = "yes" ; then
-      PKG_CHECK_MODULES([UDEV], [libudev],
-        use_libudev="yes"; use_libusb="no"; USE_LIBUDEV=1; [INCLUDES="$INCLUDES $UDEV_CFLAGS"; LIBS="$LIBS $UDEV_LIBS"]; \
-        AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"]),
-	    AC_MSG_ERROR($libudev_not_found))
-    else
-      use_libudev="no"
-      AC_MSG_NOTICE($libudev_disabled)
+    if test "$use_libusb" = "auto"; then
+      PKG_CHECK_MODULES([USB], [libusb],
+        use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
+        AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
+        use_libusb="no"; AC_MSG_RESULT($libusb_not_found))
+    elif test "$use_libusb" = "yes"; then
+      PKG_CHECK_MODULES([USB], [libusb],
+        use_libusb="yes"; USE_LIBUSB=1; [INCLUDES="$INCLUDES $USB_CFLAGS"; LIBS="$LIBS $USB_LIBS"; USE_LIBUSB=1]; \
+        AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"]),
+        use_libusb="no"; AC_MSG_ERROR($libusb_not_found))
+      use_libusb="no"
+      AC_MSG_NOTICE($libusb_disabled)
     fi
   fi
 else
-  use_libudev="no"
-  AC_MSG_NOTICE($libudev_disabled)
+  use_libusb="no"
 fi
 
 # libcec
