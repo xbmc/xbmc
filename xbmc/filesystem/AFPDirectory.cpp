@@ -64,7 +64,7 @@ bool CAFPDirectory::ResolveSymlink( const CStdString &dirName, const CStdString 
   URIUtils::AddSlashAtEnd(fullpath);
   fullpath += fileName;
   
-  resolvedUrl.Reset();
+  CPasswordManager::GetInstance().AuthenticateURL(resolvedUrl);
   resolvedUrl.SetProtocol("afp");
   resolvedUrl.SetHostName(gAfpConnection.GetConnectedIp());   
   
@@ -210,7 +210,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
             //resolve symlinks
             if(S_ISLNK(info.st_mode))
             {
-              CURL linkUrl;
+              CURL linkUrl(url);
               if(!ResolveSymlink(strDirName, strFile, &info, linkUrl))
               {
                 lock.Leave();              
