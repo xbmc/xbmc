@@ -60,6 +60,7 @@ public:
   int              id;     // demuxerid of current playing stream
   int              source;
   double           dts;    // last dts from demuxer, used to find disncontinuities
+  double           dur;    // last frame expected duration
   CDVDStreamInfo   hint;   // stream hints, used to notice stream changes
   void*            stream; // pointer or integer, identifying stream playing. if it changes stream changed
   bool             inited;
@@ -83,6 +84,7 @@ public:
     id     = -1;
     source = STREAM_SOURCE_NONE;
     dts    = DVD_NOPTS_VALUE;
+    dur    = DVD_NOPTS_VALUE;
     hint.Clear();
     stream = NULL;
     inited = false;
@@ -91,6 +93,15 @@ public:
       startsync->Release();
     startsync = NULL;
     startpts  = DVD_NOPTS_VALUE;
+  }
+
+  double dts_end()
+  {
+    if(dts == DVD_NOPTS_VALUE)
+      return DVD_NOPTS_VALUE;
+    if(dur == DVD_NOPTS_VALUE)
+      return dts;
+    return dts + dur;
   }
 };
 
@@ -293,6 +304,7 @@ protected:
   bool CheckSceneSkip(CCurrentStream& current);
   bool CheckPlayerInit(CCurrentStream& current, unsigned int source);
   bool CheckStartCaching(CCurrentStream& current);
+  void UpdateCorrection(DemuxPacket* pkt, double correction);
   void UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket);
   void SendPlayerMessage(CDVDMsg* pMsg, unsigned int target);
 
@@ -331,6 +343,7 @@ protected:
   } m_SpeedState;
 
   int m_errorCount;
+  double m_offset_pts;
 
   CDVDMessageQueue m_messenger;     // thread messenger
 
