@@ -7,7 +7,7 @@ CALL dlextract.bat libplist %FILES%
 
 cd %TMP_PATH%
 
-xcopy libplist-1.7-win32-1\include\* "%CUR_PATH%\include\" /E /Q /I /Y
-xcopy libplist-1.7-win32-1\bin\* "%XBMC_PATH%\system\" /E /Q /I /Y
+xcopy libplist-1.7-win32-2\include\* "%CUR_PATH%\include\" /E /Q /I /Y
+xcopy libplist-1.7-win32-2\bin\* "%XBMC_PATH%\system\" /E /Q /I /Y
 
 cd %LOC_PATH%
