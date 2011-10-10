@@ -46,6 +46,8 @@ enum DVDStreamType
 #define DVDSTREAM_BLOCK_SIZE_FILE (2048 * 16)
 #define DVDSTREAM_BLOCK_SIZE_DVD  2048
 
+class CPoint;
+
 class CDVDInputStream
 {
 public:
@@ -82,6 +84,28 @@ public:
     virtual int  GetChapterCount() = 0;
     virtual void GetChapterName(std::string& name) = 0;
     virtual bool SeekChapter(int ch) = 0;
+  };
+
+  class IMenus
+  {
+    public:
+    virtual ~IMenus() {};
+    virtual void ActivateButton() = 0;
+    virtual void SelectButton(int iButton) = 0;
+    virtual int  GetCurrentButton() = 0;
+    virtual int  GetTotalButtons() = 0;
+    virtual void OnUp() = 0;
+    virtual void OnDown() = 0;
+    virtual void OnLeft() = 0;
+    virtual void OnRight() = 0;
+    virtual void OnMenu() = 0;
+    virtual void OnBack() = 0;
+    virtual void OnNext() = 0;
+    virtual void OnPrevious() = 0;
+    virtual bool OnMouseMove(const CPoint &point) = 0;
+    virtual bool OnMouseClick(const CPoint &point) = 0;
+    virtual bool IsInMenu() = 0;
+    virtual double GetTimeStampCorrection() = 0;
   };
 
   enum ENextStream
