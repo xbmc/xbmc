@@ -756,8 +756,8 @@
 								<posy>42</posy>
 								<!-- in progress -->
 								<control type="image">
-									<posx>130</posx>
-									<posy>25</posy>
+									<posx>42</posx>
+									<posy>163</posy>
 									<width>35</width>
 									<height>35</height>
 									<info>ListItem.Overlay</info>
