@@ -339,3 +339,8 @@ CPeripheral *CPeripheralBus::GetByPath(const CStdString &strPath) const
 
   return NULL;
 }
+
+size_t CPeripheralBus::GetNumberOfPeripherals() const
+{
+  return m_peripherals.size();
+}

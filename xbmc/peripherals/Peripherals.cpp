@@ -196,6 +196,18 @@ int CPeripherals::GetPeripheralsWithFeature(vector<CPeripheral *> &results, cons
   return iReturn;
 }
 
+size_t CPeripherals::GetNumberOfPeripherals() const
+{
+  size_t iReturn(0);
+  CSingleLock lock(m_critSection);
+  for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
+  {
+    iReturn += m_busses.at(iBusPtr)->GetNumberOfPeripherals();
+  }
+
+  return iReturn;
+}
+
 bool CPeripherals::HasPeripheralWithFeature(const PeripheralFeature feature, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
   vector<CPeripheral *> dummy;

@@ -947,6 +947,12 @@ void CGUIWindowSettingsCategory::UpdateSettings()
           pControl->SetEnabled(addon->HasSettings());
       }
     }
+    else if (strSetting.Equals("input.peripherals"))
+    {
+      CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
+      if (pControl)
+        pControl->SetEnabled(g_peripherals.GetNumberOfPeripherals() > 0);
+    }
 #if defined(_LINUX) && !defined(__APPLE__)
     else if (strSetting.Equals("audiooutput.custompassthrough"))
     {

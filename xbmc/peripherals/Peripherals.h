@@ -82,6 +82,8 @@ namespace PERIPHERALS
      */
     virtual int GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature, PeripheralBusType busType = PERIPHERAL_BUS_UNKNOWN) const;
 
+    size_t GetNumberOfPeripherals() const;
+
     /*!
      * @brief Check whether there is at least one device present with the given feature.
      * @param feature The feature to check for.
