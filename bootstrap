@@ -14,10 +14,6 @@ autoreconf -vif lib/cpluff
 autoreconf -vif lib/libdvd/libdvdread
 autoreconf -vif lib/libdvd/libdvdnav
 
-# remove the following line if we're keeping a permanent copy in our tree
-make -f Makefile.in -C lib/libcec download
-autoreconf -vif lib/libcec/libcec
-
 # Clean the generated files
 find . -depth -type d -name "autom4te.cache" -exec rm -rf {} \;
 

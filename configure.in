@@ -400,9 +400,9 @@ AC_ARG_ENABLE([libusb],
 
 AC_ARG_ENABLE([libcec],
   [AS_HELP_STRING([--enable-libcec],
-  [enable libcec support (default is yes)])],
+  [enable libcec support (default is no)])],
   [use_libcec=$enableval],
-  [use_libcec=yes])
+  [use_libcec=no])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
