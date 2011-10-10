@@ -12,5 +12,5 @@ endif
 
 LIB = peripheral-devices.a
 
-include ../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))

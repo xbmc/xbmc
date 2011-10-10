@@ -123,8 +123,10 @@ libudev_not_found="== Could not find libudev. Will use polling to check for devi
 libudev_disabled="== udev support disabled. Will use polling to check for device changes. =="
 libusb_not_found="== Could not find libusb. Plug and play USB device support will not be available. =="
 libusb_disabled="== libusb disabled. Plug and play USB device support will not be available. =="
-libcec_not_found="== Could not find libcec. CEC device support will not be available. =="
-libcec_disabled="== libcec disabled. CEC device support will not be available. =="
+libcec_enabled="== libCEC enabled. =="
+libcec_disabled="== libCEC disabled. CEC adapter support will not be available. =="
+libcec_internal="== Using internal libCEC. =="
+libcec_external_missing="== libCEC was not found on your system.  =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -398,9 +400,9 @@ AC_ARG_ENABLE([libusb],
 
 AC_ARG_ENABLE([libcec],
   [AS_HELP_STRING([--enable-libcec],
-  [enable libcec support (default is auto)])],
+  [enable libcec support (default is yes)])],
   [use_libcec=$enableval],
-  [use_libcec=auto])
+  [use_libcec=yes])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -408,6 +410,12 @@ AC_ARG_ENABLE([external-libraries],
   [enable use of all supported external libraries (default is no) 'Linux only'])],
   [use_external_libraries=$enableval],
   [use_external_libraries=no])
+
+AC_ARG_ENABLE([external-libcec],
+  [AS_HELP_STRING([--enable-external-libcec],
+  [external libcec support (default is no) 'Linux only'])],
+  [use_external_libcec=$enableval],
+  [use_external_libcec=no])
 
 AC_ARG_ENABLE([external-ffmpeg],
   [AS_HELP_STRING([--enable-external-ffmpeg],
@@ -1120,22 +1128,27 @@ fi
 
 # libcec
 USE_LIBCEC=0
-if test "$use_libcec" = "auto"; then
-  PKG_CHECK_MODULES([CEC], [libcec],
-    use_libcec="yes"; USE_LIBCEC=1; [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS";] \
-    AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libcec is installed"]),
-	use_libcec="no"; AC_MSG_RESULT($libcec_not_found))
-elif test "$use_libcec" = "yes"; then
-  PKG_CHECK_MODULES([CEC], [libcec],
-    use_libcec="yes"; USE_LIBCEC=1; [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS";] \
-    AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libcec is installed"]),
-	use_libcec="no"; AC_MSG_ERROR($libcec_not_found))
+if test "$use_libcec" = "yes"; then
+  USE_LIBCEC=1; AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libCEC is installed"])
+  AC_MSG_NOTICE($libcec_enabled)
 else
   use_libcec="no"
   AC_MSG_NOTICE($libcec_disabled)
 fi
 
 ### External libraries checks
+
+# external libcec
+USE_EXTERNAL_LIBCEC=0
+if test "$use_external_libcec" = "yes"; then
+  USE_EXTERNAL_LIBCEC=1; PKG_CHECK_MODULES([CEC], [libcec],
+    [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS"],
+    AC_MSG_ERROR($libcec_external_missing))
+elif test "$use_libcec" = "yes"; then
+  [INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/lib/libcec/include"]
+  AC_MSG_NOTICE($libcec_internal)
+fi
+
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
   FFMPEG_LIBNAMES="libavcodec libavfilter libavformat libavutil libpostproc libswscale"
@@ -1770,7 +1783,19 @@ else
   final_message="$final_message\n  libcec support:\tNo"
 fi
 
+if test "$use_libcec" = "yes"; then
+  final_message="$final_message\n  libCEC support:\tYes"
+else
+  final_message="$final_message\n  libCEC support:\tNo"
+fi
+
 ### External libraries messages
+if test "$use_external_libcec" = "yes"; then
+  final_message="$final_message\n  External libCEC:\tYes"
+else
+  final_message="$final_message\n  External libCEC:\tNo"
+fi
+
 if test "$use_external_ffmpeg" = "yes"; then
   final_message="$final_message\n  External FFmpeg:\tYes"
 else
@@ -1836,7 +1861,8 @@ OUTPUT_FILES="Makefile \
     tools/TexturePacker/Makefile \
     tools/EventClients/Clients/OSXRemote/Makefile \
     xbmc/peripherals/bus/Makefile \
-    xbmc/peripherals/devices/Makefile"
+    xbmc/peripherals/devices/Makefile \
+    lib/libcec/Makefile"
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
@@ -1891,6 +1917,7 @@ AC_SUBST(USE_AIRTUNES)
 AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
+AC_SUBST(USE_EXTERNAL_LIBCEC)
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
@@ -2157,6 +2184,16 @@ XB_CONFIG_MODULE([lib/cpluff], [
     --build=$build_alias \
     --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
     #LDFLAGS="$LDFLAGS -Wl,-read_only_relocs,suppress"    
+], [0])
+
+XB_CONFIG_MODULE([lib/libcec], [
+  if test "$use_libcec" = "yes" ; then
+    cd libcec ; ./configure \
+      --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
+      --host=$host_alias \
+      --build=$build_alias \
+      --target=$target_alias CFLAGS="$CFLAGS" CC="$CC" CXX="$CXX"
+  fi    
 ], [0])
 
 AC_OUTPUT
