@@ -677,7 +677,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
           {
             double tmpDouble = 0;
             m_pLibPlist->plist_get_real_val(tmpNode, &tmpDouble);
-            position = tmpDouble;
+            position = (float)tmpDouble;
           }
 
           tmpNode = m_pLibPlist->plist_dict_get_item(dict, "Content-Location");
@@ -721,7 +721,7 @@ int CAirPlayServer::CTCPClient::ProcessRequest( CStdString& responseHeader,
         start += strlen("Start-Position: ");
         int end = body.Find('\n', start);
         CStdString positionStr = body.Mid(start, end - start);
-        position = atof(positionStr.c_str());
+        position = (float)atof(positionStr.c_str());
       }
     }
 
