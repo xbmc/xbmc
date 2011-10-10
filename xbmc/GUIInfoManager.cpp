@@ -282,7 +282,8 @@ const infomap network_labels[] = {{ "isdhcp",            NETWORK_IS_DHCP },
                                   { "ipaddress",         NETWORK_IP_ADDRESS }, //labels from here
                                   { "linkstate",         NETWORK_LINK_STATE },
                                   { "macaddress",        NETWORK_MAC_ADDRESS },
-                                  { "subnetaddress",     NETWORK_SUBNET_ADDRESS },
+                                  { "subnetaddress",     NETWORK_SUBNET_MASK }, //subnetaddress is misleading/wrong. should be deprecated. use subnetmask in stead
+                                  { "subnetmask",        NETWORK_SUBNET_MASK },
                                   { "gatewayaddress",    NETWORK_GATEWAY_ADDRESS },
                                   { "dns1address",       NETWORK_DNS1_ADDRESS },
                                   { "dns2address",       NETWORK_DNS2_ADDRESS },
@@ -1524,7 +1525,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
         return iface->GetCurrentIPAddress();
     }
     break;
-  case NETWORK_SUBNET_ADDRESS:
+  case NETWORK_SUBNET_MASK:
     {
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
