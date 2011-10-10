@@ -29,38 +29,29 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
-#ifdef __APPLE__
-#include "lib/libmicrohttpd/src/include/microhttpd.h"
-#else
-#include <microhttpd.h>
-#endif
-
-#include "interfaces/json-rpc/IClient.h"
 #include "interfaces/json-rpc/ITransportLayer.h"
 #include "threads/CriticalSection.h"
-#include "utils/StdString.h"
+#include "httprequesthandler/IHTTPRequestHandler.h"
 
 class CWebServer : public JSONRPC::ITransportLayer
 {
 public:
   CWebServer();
 
-  bool Start(int port, const CStdString &username, const CStdString &password);
+  bool Start(int port, const std::string &username, const std::string &password);
   bool Stop();
   bool IsStarted();
-  void SetCredentials(const CStdString &username, const CStdString &password);
+  void SetCredentials(const std::string &username, const std::string &password);
 
   virtual bool PrepareDownload(const char *path, CVariant &details, std::string &protocol);
   virtual bool Download(const char *path, CVariant &result);
   virtual int GetCapabilities();
+
+  static void RegisterRequestHandler(IHTTPRequestHandler *handler);
+  static void UnregisterRequestHandler(IHTTPRequestHandler *handler);
+
+  static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues);
 private:
-  enum HTTPMethod
-  {
-    UNKNOWN,
-    POST,
-    GET,
-    HEAD
-  };
   struct MHD_Daemon* StartMHD(unsigned int flags, int port);
   static int AskForAuthentication (struct MHD_Connection *connection);
   static bool IsAuthenticated (CWebServer *server, struct MHD_Connection *connection);
@@ -74,26 +65,25 @@ private:
 #endif
 
 #if (MHD_VERSION >= 0x00040001)
-  static int JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connection *connection, const char *upload_data, size_t *upload_data_size);
   static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
                         const char *version, const char *upload_data,
                         size_t *upload_data_size, void **con_cls);
 #else   //libmicrohttpd < 0.4.0
-  static int JSONRPC(CWebServer *server, void **con_cls, struct MHD_Connection *connection, const char *upload_data, unsigned int *upload_data_size);
   static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
                         const char *version, const char *upload_data,
                         unsigned int *upload_data_size, void **con_cls);
 #endif
   static void ContentReaderFreeCallback (void *cls);
-  static int HttpApi(struct MHD_Connection *connection);
   static HTTPMethod GetMethod(const char *method);
-  static int CreateRedirect(struct MHD_Connection *connection, const CStdString &strURL);
-  static int CreateFileDownloadResponse(struct MHD_Connection *connection, const CStdString &strURL, HTTPMethod methodType);
-  static int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method);
-  static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size);
+  static int CreateRedirect(struct MHD_Connection *connection, const std::string &strURL, struct MHD_Response *&response);
+  static int CreateFileDownloadResponse(struct MHD_Connection *connection, const std::string &strURL, HTTPMethod methodType, struct MHD_Response *&response);
+  static int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response);
+  static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size, bool free, bool copy, struct MHD_Response *&response);
   static int CreateAddonsListResponse(struct MHD_Connection *connection);
+
+  static int SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method);
 
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
 
@@ -101,15 +91,8 @@ private:
 
   struct MHD_Daemon *m_daemon;
   bool m_running, m_needcredentials;
-  CStdString m_Credentials64Encoded;
+  std::string m_Credentials64Encoded;
   CCriticalSection m_critSection;
-
-  class CHTTPClient : public JSONRPC::IClient
-  {
-  public:
-    virtual int  GetPermissionFlags();
-    virtual int  GetAnnouncementFlags();
-    virtual bool SetAnnouncementFlags(int flags);
-  };
+  static std::vector<IHTTPRequestHandler *> m_requestHandlers;
 };
 #endif
