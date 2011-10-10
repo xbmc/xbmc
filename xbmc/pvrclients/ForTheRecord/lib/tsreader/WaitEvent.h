@@ -26,7 +26,6 @@ typedef HANDLE wait_event_t;
 typedef sem_t wait_event_t;
 #include "PlatformDefs.h"
 #endif
-//#include "os-dependent.h"
 
 class CWaitEvent
 {

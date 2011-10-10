@@ -31,7 +31,6 @@
 #include "FileReader.h"
 #include "client.h" //for XBMC->Log
 #include "libPlatform/os-dependent.h"
-//#include "os-dependent.h"
 
 using namespace ADDON;
 
@@ -114,7 +113,7 @@ long FileReader::OpenFile()
 
   do
   {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
     // do not try to open a tsbuffer file without SHARE_WRITE so skip this try if we have a buffer file
     if (strstr(m_pFileName, ".ts.tsbuffer") == NULL) 
     {
@@ -144,7 +143,7 @@ long FileReader::OpenFile()
 //              FILE_FLAG_RANDOM_ACCESS,        // More flags
 //              FILE_FLAG_SEQUENTIAL_SCAN,      // More flags
               NULL);                            // Template
-#elif defined _LINUX
+#elif defined TARGET_LINUX
     // Try to open the file
     m_hFile = open(m_pFileName,              // The filename
               O_RDONLY);                     // File access
@@ -164,7 +163,7 @@ long FileReader::OpenFile()
   }
   else
   {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
     DWORD dwErr = GetLastError();
     XBMC->Log(LOG_DEBUG, "FileReader::OpenFile(), open file %s failed. Error code %d", m_pFileName, dwErr);
     return HRESULT_FROM_WIN32(dwErr);
@@ -180,7 +179,7 @@ long FileReader::OpenFile()
   strncpy(infoName, m_pFileName, 512);
   strncat(infoName, ".info", 512 - strlen(infoName) - 1);
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   m_hInfoFile = ::CreateFile(infoName,    // The filename
       (DWORD) GENERIC_READ,               // File access
       (DWORD) (FILE_SHARE_READ |
@@ -193,7 +192,7 @@ long FileReader::OpenFile()
 //      FILE_ATTRIBUTE_NORMAL |
 //      FILE_FLAG_RANDOM_ACCESS,          // More flags
       NULL);
-#elif defined _LINUX
+#elif defined TARGET_LINUX
   m_hInfoFile = open(infoName,            // The filename
                 O_RDONLY);
 #else
@@ -230,9 +229,9 @@ long FileReader::CloseFile()
 
 //  BoostThread Boost;
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   ::CloseHandle(m_hFile);
-#elif defined _LINUX
+#elif defined TARGET_LINUX
   close(m_hFile);
 #else
 #error FIXME: Add a CloseFile() implementation for your OS
@@ -242,9 +241,9 @@ long FileReader::CloseFile()
 
   if (m_hInfoFile != INVALID_HANDLE_VALUE)
   {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
     ::CloseHandle(m_hInfoFile);
-#elif defined _LINUX
+#elif defined TARGET_LINUX
     close(m_hInfoFile);
 #else
 #error FIXME: Add a CloseFile() implementation for your OS
@@ -272,7 +271,7 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
 
   GetStartPosition(pStartPosition);
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   //Do not get file size if static file or first time 
   if (m_bReadOnly || !m_fileSize) {
     
@@ -308,7 +307,7 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
     m_fileSize = li.QuadPart;
   }
   *pLength = m_fileSize;
-#elif defined _LINUX
+#elif defined TARGET_LINUX
 #error FIXME: Finish the GetFileSize() implementation for your OS
   if (m_bReadOnly || !m_fileSize)
   {
@@ -336,7 +335,7 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
 
 long FileReader::GetInfoFileSize(int64_t *lpllsize)
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   //Do not get file size if static file or first time 
   if (m_bReadOnly || !m_infoFileSize) {
     
@@ -355,7 +354,7 @@ long FileReader::GetInfoFileSize(int64_t *lpllsize)
     m_infoFileSize = li.QuadPart;
   }
   *lpllsize = m_infoFileSize;
-#elif defined _LINUX
+#elif defined TARGET_LINUX
   if (m_bReadOnly || !m_infoFileSize) {
     struct stat filestatus;
 
@@ -388,7 +387,7 @@ long FileReader::GetStartPosition(int64_t *lpllpos)
       {
         //Get the file start pointer
         int64_t length = -1;
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
         DWORD read = 0;
         LARGE_INTEGER li;
         li.QuadPart = sizeof(int64_t);
@@ -415,7 +414,7 @@ long FileReader::GetStartPosition(int64_t *lpllpos)
 
 unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   LARGE_INTEGER li;
 
   if (dwMoveMethod == FILE_END && m_hInfoFile != INVALID_HANDLE_VALUE)
@@ -482,7 +481,7 @@ unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long
 
 int64_t FileReader::GetFilePointer()
 {
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   LARGE_INTEGER li;
   li.QuadPart = 0;
   li.LowPart = ::SetFilePointer(m_hFile, 0, &li.HighPart, FILE_CURRENT);
@@ -521,7 +520,7 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
   }
 //  BoostThread Boost;
 
-#ifdef _WIN32
+#ifdef TARGET_WINDOWS
   //Get File Position
   LARGE_INTEGER li;
   li.QuadPart = 0;
