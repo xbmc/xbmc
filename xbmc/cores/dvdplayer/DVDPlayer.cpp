@@ -1603,6 +1603,15 @@ void CDVDPlayer::UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket)
 
   current.dts = dts;
 }
+
+static void UpdateLimits(double& minimum, double& maximum, double dts)
+{
+  if(dts == DVD_NOPTS_VALUE)
+    return;
+  if(minimum == DVD_NOPTS_VALUE || minimum > dts) minimum = dts;
+  if(maximum == DVD_NOPTS_VALUE || maximum < dts) maximum = dts;
+}
+
 void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
 {
   if (m_playSpeed < DVD_PLAYSPEED_PAUSE)
@@ -1648,16 +1657,9 @@ void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
   }
 #endif
 
-  double mindts, maxdts;
-  if(m_CurrentAudio.dts == DVD_NOPTS_VALUE)
-    maxdts = mindts = m_CurrentVideo.dts;
-  else if(m_CurrentVideo.dts == DVD_NOPTS_VALUE)
-    maxdts = mindts = m_CurrentAudio.dts;
-  else
-  {
-    maxdts = max(m_CurrentAudio.dts, m_CurrentVideo.dts);
-    mindts = min(m_CurrentAudio.dts, m_CurrentVideo.dts);
-  }
+  double mindts = DVD_NOPTS_VALUE, maxdts = DVD_NOPTS_VALUE;
+  UpdateLimits(mindts, maxdts, m_CurrentAudio.dts_end());
+  UpdateLimits(mindts, maxdts, m_CurrentVideo.dts_end());
 
   /* if we don't have max and min, we can't do anything more */
   if( mindts == DVD_NOPTS_VALUE || maxdts == DVD_NOPTS_VALUE )
