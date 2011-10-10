@@ -90,7 +90,7 @@ void CmdExtract::ExtractArchiveInit(CommandData *Cmd,Archive &Arc)
 #endif
 
   if (*Cmd->Password!=0)
-    strcpy(Password,Cmd->Password);
+    strncpy(Password,Cmd->Password, MAXPASSWORD);
   PasswordAll=(*Cmd->Password!=0);
 
   DataIO.UnpVolume=false;
@@ -249,7 +249,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
   char ArcFileName[NM];
 
   IntToExt(Arc.NewLhd.FileName,Arc.NewLhd.FileName);
-  strcpy(ArcFileName,Arc.NewLhd.FileName);
+  strncpy(ArcFileName,Arc.NewLhd.FileName, NM);
 
   wchar ArcFileNameW[NM];
   *ArcFileNameW=0;
@@ -297,7 +297,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
     char Name[NM];
     WideToChar(ArcFileNameW,Name);
     if (IsNameUsable(Name))
-    strcpy(ArcFileName,Name);
+      strncpy(ArcFileName,Name, NM);
   }
 #endif
 
@@ -329,7 +329,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
   if ((Arc.NewLhd.Flags & (LHD_SPLIT_BEFORE/*|LHD_SOLID*/)) && FirstFile)
   {
     char CurVolName[NM];
-    strcpy(CurVolName,ArcName);
+    strncpy(CurVolName,ArcName, NM);
 
     VolNameToFirstName(ArcName,ArcName,(Arc.NewMhd.Flags & MHD_NEWNUMBERING) != 0);
     if (stricomp(ArcName,CurVolName)!=0 && FileExist(ArcName))
@@ -351,7 +351,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
       }
     }
 #endif
-    strcpy(ArcName,CurVolName);
+    strncpy(ArcName,CurVolName, NM);
   }
 #endif
 
@@ -393,7 +393,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
           if (Cmd->Callback==NULL ||
               Cmd->Callback(UCM_NEEDPASSWORD,Cmd->UserData,(LONG)Cmd->Password,sizeof(Cmd->Password))==-1)
             return(false);
-        strcpy(Password,Cmd->Password);
+        strncpy(Password,Cmd->Password, MAXPASSWORD);
 
 #else
         if (!GetPassword(PASSWORD_FILE,ArcFileName,Password,sizeof(Password)))
@@ -430,7 +430,7 @@ bool CmdExtract::ExtractCurrentFile(CommandData *Cmd,Archive &Arc,int HeaderSize
       WideToChar(Cmd->ExtrPathW,DestFileName);
     else
 #endif
-      strcpy(DestFileName,Cmd->ExtrPath);
+      strncpy(DestFileName,Cmd->ExtrPath, NM);
 
 
 #ifndef SFX_MODULE
