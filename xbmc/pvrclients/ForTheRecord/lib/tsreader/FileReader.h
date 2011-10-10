@@ -30,6 +30,10 @@
 #if defined TSREADER
 
 #include "libPlatform/os-dependent.h"
+#if !defined(TARGET_WINDOWS)
+#define S_OK 0x0
+#define S_FALSE 0x1
+#endif
 
 class FileReader
 {
@@ -63,14 +67,14 @@ class FileReader
 
     virtual int64_t GetFileSize();
     virtual bool IsBuffer(){return false;};
-    virtual bool HasMoreData(){return false;};
+    virtual bool HasMoreData(int bytes){return false;};
     virtual int HasData(){return 0; } ;
 
   protected:
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
     HANDLE   m_hFile;               // Handle to file for streaming
     HANDLE   m_hInfoFile;           // Handle to Infofile for filesize from FileWriter
-#elif defined _LINUX
+#elif defined(TARGET_LINUX)
     int      m_hFile;               // Handle to file for streaming
     int      m_hInfoFile;           // Handle to Infofile for filesize from FileWriter
 #endif
