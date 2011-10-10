@@ -1,0 +1,3 @@
+[submodule "touched"]
+	path = addons/skin.touched
+	url = git://github.com/xbmc/skin.touched.git
