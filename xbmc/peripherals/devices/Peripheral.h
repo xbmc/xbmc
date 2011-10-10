@@ -32,7 +32,7 @@ namespace PERIPHERALS
 
   class CPeripheral
   {
-    friend class CGUIDialogPeripheralSettings;;
+    friend class CGUIDialogPeripheralSettings;
 
   public:
     CPeripheral(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId);

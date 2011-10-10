@@ -28,7 +28,7 @@
 
 namespace CEC
 {
-  class ICECDevice;
+  class ICECAdapter;
 };
 
 namespace PERIPHERALS
@@ -48,7 +48,6 @@ namespace PERIPHERALS
     virtual ~CPeripheralCecAdapter(void);
 
     virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
-    virtual bool PowerOffCecDevices(void);
     virtual bool PowerOnCecDevices(void);
     virtual bool StandbyCecDevices(void);
 
@@ -70,11 +69,11 @@ namespace PERIPHERALS
     static bool FindConfigLocation(CStdString &strString);
     static bool TranslateComPort(CStdString &strPort);
 
-    CEC::ICECDevice *m_cecParser;
-    bool             m_bStarted;
-    bool             m_bHasButton;
-    bool             m_bIsReady;
-    CecButtonPress   m_button;
-    CCriticalSection m_critSection;
+    CEC::ICECAdapter* m_cecAdapter;
+    bool              m_bStarted;
+    bool              m_bHasButton;
+    bool              m_bIsReady;
+    CecButtonPress    m_button;
+    CCriticalSection  m_critSection;
   };
 }
