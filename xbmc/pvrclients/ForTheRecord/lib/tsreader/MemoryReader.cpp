@@ -20,6 +20,9 @@
 
 #include "libPlatform/os-dependent.h"
 #include "MemoryReader.h"
+#if !defined(TARGET_WINDOWS)
+#include "PlatformInclude.h"
+#endif
 
 CMemoryReader::CMemoryReader(CMemoryBuffer& buffer)
 :m_buffer(buffer)

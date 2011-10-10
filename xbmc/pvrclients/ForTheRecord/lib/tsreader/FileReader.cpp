@@ -31,6 +31,14 @@
 #include "FileReader.h"
 #include "client.h" //for XBMC->Log
 #include "libPlatform/os-dependent.h"
+#if !defined(TARGET_WINDOWS)
+#include "PlatformInclude.h"
+#include "limits.h"
+#undef INVALID_HANDLE_VALUE
+#define INVALID_HANDLE_VALUE (0)
+#define ERROR_FILENAME_EXCED_RANGE (206)
+#define ERROR_INVALID_NAME (123)
+#endif
 
 FileReader::FileReader() :
   m_hFile(INVALID_HANDLE_VALUE),
@@ -508,8 +516,6 @@ int64_t FileReader::GetFilePointer()
 
 long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes)
 {
-  long hr;
-
   // If the file has already been closed, don't continue
   if (m_hFile == INVALID_HANDLE_VALUE)
   {
@@ -519,6 +525,8 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
 //  BoostThread Boost;
 
 #ifdef TARGET_WINDOWS
+  long hr;
+
   //Get File Position
   LARGE_INTEGER li;
   li.QuadPart = 0;

@@ -27,6 +27,9 @@ SRCS   = utils.cpp \
         lib/jsoncpp/src/lib_json/json_value.cpp \
 	lib/tsreader/MemoryBuffer.cpp \
 	lib/tsreader/WaitEvent.cpp \
+	lib/tsreader/MemorySink.cpp \
+	lib/tsreader/MemoryReader.cpp \
+	lib/tsreader/FileReader.cpp \
         KeepAliveThread.cpp \
         fortherecordrpc.cpp \
         pvrclient-fortherecord.cpp \
@@ -36,7 +39,7 @@ include ../Makefile.include
 
 INCLUDES += -Ilib/jsoncpp/include/
 
-CXXFLAGS += -DTSREADER
+CXXFLAGS += -DTSREADER -DTARGET_LINUX
 
 clean:
 	-rm -f $(OBJS) $(LIB) *.P *~
