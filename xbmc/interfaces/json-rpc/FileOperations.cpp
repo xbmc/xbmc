@@ -55,7 +55,7 @@ JSON_STATUS CFileOperations::GetRootDirectory(const CStdString &method, ITranspo
       }
     }
 
-    CVariant param = parameterObject["properties"];
+    CVariant param(CVariant::VariantTypeObject);
     param["properties"] = CVariant(CVariant::VariantTypeArray);
     param["properties"].append("file");
 
