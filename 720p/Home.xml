@@ -812,7 +812,21 @@
 									<font>SearchResultSmaller</font>
 									<textcolor>FFffffff</textcolor>
 									<wrapmultiline>false</wrapmultiline>
-									<visible>!IsEmpty(ListItem.TVShowTitle)</visible>
+									<visible>![IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
+									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
+								</control>
+								<control type="label">
+									<posx>95</posx>
+									<posy>170</posy>
+									<width>100</width>
+									<align>center</align>
+									<aligny>center</aligny>
+									<scroll>false</scroll>
+									<label>$INFO[ListItem.Date]</label>
+									<font>SearchResultSmaller</font>
+									<textcolor>FFffffff</textcolor>
+									<wrapmultiline>false</wrapmultiline>
+									<visible>[IsEmpty(ListItem.Season) | IsEmpty(ListItem.Episode)]</visible>
 									<animation effect="fade" start="0" end="80" time="400" condition="true">Conditional</animation>
 								</control>
 							</control>
