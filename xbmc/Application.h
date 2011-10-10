@@ -69,6 +69,13 @@ class DPMSSupport;
 class CSplash;
 class CBookmark;
 class CWebServer;
+#ifdef HAS_WEB_SERVER
+class CWebServer;
+class CHTTPVfsHandler;
+#ifdef HAS_HTTPAPI
+class CHTTPApiHandler;
+#endif
+#endif
 
 class CBackgroundPlayer : public CThread
 {
@@ -225,6 +232,10 @@ public:
 
 #ifdef HAS_WEB_SERVER
   CWebServer& m_WebServer;
+  CHTTPVfsHandler& m_httpVfsHandler;
+#ifdef HAS_HTTPAPI
+  CHTTPApiHandler& m_httpApiHandler;
+#endif
 #endif
 
   inline bool IsInScreenSaver() { return m_bScreenSave; };

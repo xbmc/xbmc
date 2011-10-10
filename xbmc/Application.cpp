@@ -36,6 +36,10 @@
 #include "video/Bookmark.h"
 #ifdef HAS_WEB_SERVER
 #include "network/WebServer.h"
+#include "network/httprequesthandler/HTTPVfsHandler.h"
+#ifdef HAS_HTTPAPI
+#include "network/httprequesthandler/HTTPApiHandler.h"
+#endif
 #endif
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -335,6 +339,10 @@ CApplication::CApplication(void)
   : m_pPlayer(NULL)
 #ifdef HAS_WEB_SERVER
   , m_WebServer(*new CWebServer)
+  , m_httpVfsHandler(*new CHTTPVfsHandler)
+#ifdef HAS_HTTPAPI
+  , m_httpApiHandler(*new CHTTPApiHandler)
+#endif
 #endif
   , m_itemCurrentFile(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
@@ -384,6 +392,10 @@ CApplication::~CApplication(void)
 {
 #ifdef HAS_WEB_SERVER
   delete &m_WebServer;
+  delete &m_httpVfsHandler;
+#ifdef HAS_HTTPAPI
+  delete &m_httpApiHandler;
+#endif
 #endif
   delete &m_progressTrackingVideoResumeBookmark;
 #ifdef HAS_DVD_DRIVE
@@ -1067,6 +1079,13 @@ bool CApplication::Initialize()
   //  uses these other libraries."
   g_curlInterface.Load();
   g_curlInterface.Unload();
+
+#ifdef HAS_WEB_SERVER
+  CWebServer::RegisterRequestHandler(&m_httpVfsHandler);
+#ifdef HAS_HTTPAPI
+  CWebServer::RegisterRequestHandler(&m_httpApiHandler);
+#endif
+#endif
 
   StartServices();
 
@@ -3327,6 +3346,13 @@ void CApplication::Stop(int exitCode)
 
     StopServices();
     //Sleep(5000);
+
+#ifdef HAS_WEB_SERVER
+  CWebServer::UnregisterRequestHandler(&m_httpVfsHandler);
+#ifdef HAS_HTTPAPI
+  CWebServer::UnregisterRequestHandler(&m_httpApiHandler);
+#endif
+#endif
 
 #if defined(__APPLE__) && !defined(__arm__)
     XBMCHelper::GetInstance().ReleaseAllInput();

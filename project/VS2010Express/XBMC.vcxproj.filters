@@ -2571,6 +2571,12 @@
     <ClCompile Include="..\..\xbmc\cores\paplayer\PCMCodec.cpp">
       <Filter>cores\paplayer</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\utils\Base64.cpp">
       <Filter>utils</Filter>
     </ClCompile>
@@ -5224,6 +5230,12 @@
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.h">
       <Filter>network\httprequesthandler</Filter>
     </ClInclude>
   </ItemGroup>
