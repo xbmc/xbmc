@@ -232,7 +232,10 @@ namespace VIDEO
       }
       if (!bSkip)
       { // need to fetch the folder
-        CDirectory::GetDirectory(strDirectory, items, g_settings.m_videoExtensions);
+        CDirectory::CHints hints;
+        hints.mask          = g_settings.m_videoExtensions;
+        hints.scanning_type = content;
+        CDirectory::GetDirectory(strDirectory, items, hints);
         items.Stack();
         // compute hash
         GetPathHash(items, hash);
@@ -268,7 +271,10 @@ namespace VIDEO
 
       if (foundDirectly && !settings.parent_name_root)
       {
-        CDirectory::GetDirectory(strDirectory, items, g_settings.m_videoExtensions);
+        CDirectory::CHints hints;
+        hints.mask          = g_settings.m_videoExtensions;
+        hints.scanning_type = content;
+        CDirectory::GetDirectory(strDirectory, items, hints);
         items.SetPath(strDirectory);
         GetPathHash(items, hash);
         bSkip = true;

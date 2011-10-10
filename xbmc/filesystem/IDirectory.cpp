@@ -34,6 +34,7 @@ IDirectory::IDirectory(void)
 {
   m_strFileMask = "";
   m_flags = DIR_FLAG_DEFAULTS;
+  m_scanningType = 0;
 }
 
 IDirectory::~IDirectory(void)
