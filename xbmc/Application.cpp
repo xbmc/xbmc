@@ -40,6 +40,9 @@
 #ifdef HAS_HTTPAPI
 #include "network/httprequesthandler/HTTPApiHandler.h"
 #endif
+#ifdef HAS_WEB_INTERFACE
+#include "network/httprequesthandler/HTTPWebinterfaceHandler.h"
+#endif
 #endif
 #ifdef HAS_LCD
 #include "utils/LCDFactory.h"
@@ -343,6 +346,9 @@ CApplication::CApplication(void)
 #ifdef HAS_HTTPAPI
   , m_httpApiHandler(*new CHTTPApiHandler)
 #endif
+#ifdef HAS_WEB_INTERFACE
+  , m_httpWebinterfaceHandler(*new CHTTPWebinterfaceHandler)
+#endif
 #endif
   , m_itemCurrentFile(new CFileItem)
   , m_progressTrackingVideoResumeBookmark(*new CBookmark)
@@ -395,6 +401,9 @@ CApplication::~CApplication(void)
   delete &m_httpVfsHandler;
 #ifdef HAS_HTTPAPI
   delete &m_httpApiHandler;
+#endif
+#ifdef HAS_WEB_INTERFACE
+  delete &m_httpWebinterfaceHandler;
 #endif
 #endif
   delete &m_progressTrackingVideoResumeBookmark;
@@ -1084,6 +1093,10 @@ bool CApplication::Initialize()
   CWebServer::RegisterRequestHandler(&m_httpVfsHandler);
 #ifdef HAS_HTTPAPI
   CWebServer::RegisterRequestHandler(&m_httpApiHandler);
+#endif
+#ifdef HAS_WEB_INTERFACE
+  // Must always be registered as the last HTTP handler as it is the default handler
+  CWebServer::RegisterRequestHandler(&m_httpWebinterfaceHandler);
 #endif
 #endif
 
@@ -3351,6 +3364,9 @@ void CApplication::Stop(int exitCode)
   CWebServer::UnregisterRequestHandler(&m_httpVfsHandler);
 #ifdef HAS_HTTPAPI
   CWebServer::UnregisterRequestHandler(&m_httpApiHandler);
+#endif
+#ifdef HAS_WEB_INTERFACE
+  CWebServer::UnregisterRequestHandler(&m_httpWebinterfaceHandler);
 #endif
 #endif
 

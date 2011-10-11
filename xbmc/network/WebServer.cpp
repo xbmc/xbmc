@@ -22,14 +22,12 @@
 #include "WebServer.h"
 #ifdef HAS_WEB_SERVER
 #include "filesystem/File.h"
-#include "filesystem/Directory.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/Base64.h"
 #include "threads/SingleLock.h"
 #include "XBDateTime.h"
-#include "addons/AddonManager.h"
 
 #ifdef _WIN32
 #pragma comment(lib, "libmicrohttpd.dll.lib")
@@ -37,9 +35,7 @@
 
 #define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
 #define NOT_SUPPORTED       "<html><head><title>Not Supported</title></head><body>The method you are trying to use is not supported by this server</body></html>"
-#define DEFAULT_PAGE        "index.html"
 
-using namespace ADDON;
 using namespace XFILE;
 using namespace std;
 using namespace JSONRPC;
@@ -114,8 +110,6 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 #endif
 {
   CWebServer *server = (CWebServer *)cls;
-  CStdString strURL = url;
-  CStdString originalURL = url;
   HTTPMethod methodType = GetMethod(method);
   
   if (!IsAuthenticated(server, connection)) 
@@ -124,9 +118,9 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
   for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
   {
     IHTTPRequestHandler *handler = *it;
-    if (handler->CheckHTTPRequest(connection, strURL, methodType, version))
+    if (handler->CheckHTTPRequest(connection, url, methodType, version))
     {
-      int ret = handler->HandleHTTPRequest(connection, strURL, methodType, version, upload_data, upload_data_size, con_cls);
+      int ret = handler->HandleHTTPRequest(connection, url, methodType, version, upload_data, upload_data_size, con_cls);
       if (ret != MHD_YES)
         return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
 
@@ -170,7 +164,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
       }
 
       if (ret == MHD_NO)
-        return ret;
+        return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
 
       map<string, string> header = handler->GetHTTPResponseHeaderFields();
       for (map<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
@@ -183,7 +177,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     }
   }
 
-  return MHD_NO;
+  return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, methodType);
 }
 
 HTTPMethod CWebServer::GetMethod(const char *method)
@@ -290,26 +284,6 @@ int CWebServer::CreateMemoryDownloadResponse(struct MHD_Connection *connection, 
   if (response)
     return MHD_YES;
   return MHD_NO;
-}
-
-int CWebServer::CreateAddonsListResponse(struct MHD_Connection *connection)
-{
-  CStdString responseData = "<html><head><title>Add-on List</title></head><body>\n<h1>Available web interfaces:</h1>\n<ul>\n";
-  VECADDONS addons;
-  CAddonMgr::Get().GetAddons(ADDON_WEB_INTERFACE, addons);
-  IVECADDONS addons_it;
-  for (addons_it=addons.begin(); addons_it!=addons.end(); addons_it++)
-    responseData += "<li><a href=/addons/"+ (*addons_it)->ID() + "/>" + (*addons_it)->Name() + "</a></li>\n";
-
-  responseData += "</ul>\n</body></html>";
-
-  struct MHD_Response *response = MHD_create_response_from_data (responseData.length(), (void *)responseData.c_str(), MHD_NO, MHD_YES);
-  if (!response)
-    return MHD_NO;
-
-  int ret = MHD_queue_response (connection, MHD_HTTP_OK, response);
-  MHD_destroy_response (response);
-  return ret;
 }
 
 int CWebServer::SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method)

@@ -2607,6 +2607,9 @@
     <ClCompile Include="..\..\xbmc\utils\Mime.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.cpp">
+      <Filter>network\httprequesthandler</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\xbmc\win32\pch.h">
@@ -5236,6 +5239,9 @@
       <Filter>network\httprequesthandler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.h">
+      <Filter>network\httprequesthandler</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.h">
       <Filter>network\httprequesthandler</Filter>
     </ClInclude>
   </ItemGroup>

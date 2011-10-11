@@ -75,6 +75,9 @@ class CHTTPVfsHandler;
 #ifdef HAS_HTTPAPI
 class CHTTPApiHandler;
 #endif
+#ifdef HAS_WEB_INTERFACE
+class CHTTPWebinterfaceHandler;
+#endif
 #endif
 
 class CBackgroundPlayer : public CThread
@@ -235,6 +238,9 @@ public:
   CHTTPVfsHandler& m_httpVfsHandler;
 #ifdef HAS_HTTPAPI
   CHTTPApiHandler& m_httpApiHandler;
+#endif
+#ifdef HAS_WEB_INTERFACE
+  CHTTPWebinterfaceHandler& m_httpWebinterfaceHandler;
 #endif
 #endif
 

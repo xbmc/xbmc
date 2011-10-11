@@ -81,7 +81,6 @@ private:
   static int CreateFileDownloadResponse(struct MHD_Connection *connection, const std::string &strURL, HTTPMethod methodType, struct MHD_Response *&response);
   static int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response);
   static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size, bool free, bool copy, struct MHD_Response *&response);
-  static int CreateAddonsListResponse(struct MHD_Connection *connection);
 
   static int SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method);
 
