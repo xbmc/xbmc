@@ -536,49 +536,52 @@ JSON_STATUS CJSONServiceDescription::Print(CVariant &result, ITransportLayer *tr
   return OK;
 }
 
-JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const CVariant &requestParameters, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters)
+JSON_STATUS CJSONServiceDescription::CheckCall(const char* const method, const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters)
 {
   CJsonRpcMethodMap::JsonRpcMethodIterator iter = m_actionMap.find(method);
   if (iter != m_actionMap.end())
   {
-    if (client != NULL && (client->GetPermissionFlags() & iter->second.permission) == iter->second.permission && (!notification || (iter->second.permission & OPERATION_PERMISSION_NOTIFICATION) == iter->second.permission))
+    if (transport != NULL && (transport->GetCapabilities() & iter->second.transportneed) == iter->second.transportneed)
     {
-      methodCall = iter->second.method;
-
-      // Count the number of actually handled (present)
-      // parameters
-      unsigned int handled = 0;
-      CVariant errorData = CVariant(CVariant::VariantTypeObject);
-      errorData["method"] = iter->second.name;
-
-      // Loop through all the parameters to check
-      for (unsigned int i = 0; i < iter->second.parameters.size(); i++)
+      if (client != NULL && (client->GetPermissionFlags() & iter->second.permission) == iter->second.permission && (!notification || (iter->second.permission & OPERATION_PERMISSION_NOTIFICATION) == iter->second.permission))
       {
-        // Evaluate the current parameter
-        JSON_STATUS status = checkParameter(requestParameters, iter->second.parameters.at(i), i, outputParameters, handled, errorData);
-        if (status != OK)
+        methodCall = iter->second.method;
+
+        // Count the number of actually handled (present)
+        // parameters
+        unsigned int handled = 0;
+        CVariant errorData = CVariant(CVariant::VariantTypeObject);
+        errorData["method"] = iter->second.name;
+
+        // Loop through all the parameters to check
+        for (unsigned int i = 0; i < iter->second.parameters.size(); i++)
         {
-          // Return the error data object in the outputParameters reference
-          outputParameters = errorData;
-          return status;
+          // Evaluate the current parameter
+          JSON_STATUS status = checkParameter(requestParameters, iter->second.parameters.at(i), i, outputParameters, handled, errorData);
+          if (status != OK)
+          {
+            // Return the error data object in the outputParameters reference
+            outputParameters = errorData;
+            return status;
+          }
         }
-      }
 
-      // Check if there were unnecessary parameters
-      if (handled < requestParameters.size())
-      {
-        errorData["message"] = "Too many parameters";
-        outputParameters = errorData;
-        return InvalidParams;
-      }
+        // Check if there were unnecessary parameters
+        if (handled < requestParameters.size())
+        {
+          errorData["message"] = "Too many parameters";
+          outputParameters = errorData;
+          return InvalidParams;
+        }
 
-      return OK;
+        return OK;
+      }
+      else
+        return BadPermission;
     }
-    else
-      return BadPermission;
   }
-  else
-    return MethodNotFound;
+
+  return MethodNotFound;
 }
 
 void CJSONServiceDescription::printType(const JSONSchemaTypeDefinition &type, bool isParameter, bool isGlobal, bool printDefault, bool printDescriptions, CVariant &output)

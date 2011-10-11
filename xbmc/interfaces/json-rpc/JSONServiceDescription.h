@@ -352,7 +352,7 @@ namespace JSONRPC
      actual C/C++ implementation of the method to the "methodCall" parameter and checks the
      given parameters from the request against the json schema description for the given method.
      */
-    static JSON_STATUS CheckCall(const char* const method, const CVariant &requestParameters, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
+    static JSON_STATUS CheckCall(const char* const method, const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
 
   private:
     static bool prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name);
