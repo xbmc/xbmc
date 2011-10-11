@@ -687,6 +687,7 @@
     <ClCompile Include="..\..\xbmc\network\GUIDialogNetworkSetup.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\libscrobbler\lastfmscrobbler.cpp" />
     <ClCompile Include="..\..\xbmc\network\libscrobbler\librefmscrobbler.cpp" />
@@ -804,6 +805,7 @@
     <ClInclude Include="..\..\xbmc\interfaces\json-rpc\GUIOperations.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPApiHandler.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.h" />
+    <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.h" />
     <ClInclude Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp" />
