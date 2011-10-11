@@ -727,8 +727,7 @@ void CGUIWindowSettingsCategory::UpdateSettings()
     }
 #ifdef HAS_WEB_SERVER
     else if (strSetting.Equals("services.webserverusername") ||
-             strSetting.Equals("services.webserverpassword") ||
-             strSetting.Equals("services.webserverport"))
+             strSetting.Equals("services.webserverpassword"))
     {
       CGUIEditControl *pControl = (CGUIEditControl *)GetControl(pSettingControl->GetID());
       if (pControl)
