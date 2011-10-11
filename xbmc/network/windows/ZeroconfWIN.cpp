@@ -37,6 +37,13 @@ CZeroconfWIN::~CZeroconfWIN()
   doStop();
 }
 
+bool CZeroconfWIN::IsServiceAvailable()
+{
+  uint32_t version;
+  uint32_t size = sizeof(version);
+  DNSServiceErrorType err = DNSServiceGetProperty(kDNSServiceProperty_DaemonVersion, &version, &size);
+  return err == kDNSServiceErr_NoError;
+}
 
 //methods to implement for concrete implementations
 bool CZeroconfWIN::doPublishService(const std::string& fcr_identifier,
