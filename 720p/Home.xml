@@ -756,6 +756,7 @@
 								<posy>42</posy>
 								<!-- in progress -->
 								<control type="image">
+								  <visible>ListItem.Status(InProgress)</visible>
 									<posx>42</posx>
 									<posy>163</posy>
 									<width>35</width>
@@ -886,6 +887,7 @@
 								<posy>42</posy>
 								<!-- in progress -->
 								<control type="image">
+								  <visible>ListItem.Status(InProgress)</visible>
 									<posx>42</posx>
 									<posy>166</posy>
 									<width>35</width>
