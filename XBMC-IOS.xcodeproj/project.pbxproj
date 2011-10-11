@@ -36,6 +36,7 @@
 		DF448571140065E10069344B /* FilePipe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44856D140065E10069344B /* FilePipe.cpp */; };
 		DF448572140065E10069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44856F140065E10069344B /* PipesManager.cpp */; };
 		DF4485751400662D0069344B /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4485731400662D0069344B /* AirTunesServer.cpp */; };
+		DF6739E21443765F00A5A509 /* FileUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF6739E01443765F00A5A509 /* FileUPnP.cpp */; };
 		DF98D9991434F49500A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D9971434F49500A6EBE1 /* SkinVariable.cpp */; };
 		DFA6BE4313FECA010048CC11 /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE4113FECA010048CC11 /* AirPlayServer.cpp */; };
 		DFA6BE7713FED09C0048CC11 /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFA6BE7513FED09C0048CC11 /* HttpParser.cpp */; };
@@ -1003,6 +1004,8 @@
 		DF448570140065E10069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
 		DF4485731400662D0069344B /* AirTunesServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirTunesServer.cpp; sourceTree = "<group>"; };
 		DF4485741400662D0069344B /* AirTunesServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirTunesServer.h; sourceTree = "<group>"; };
+		DF6739E01443765F00A5A509 /* FileUPnP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUPnP.cpp; sourceTree = "<group>"; };
+		DF6739E11443765F00A5A509 /* FileUPnP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUPnP.h; sourceTree = "<group>"; };
 		DF98D9971434F49500A6EBE1 /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
 		DF98D9981434F49500A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
 		DFA6BE4113FECA010048CC11 /* AirPlayServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayServer.cpp; sourceTree = "<group>"; };
@@ -4455,6 +4458,8 @@
 				F56C83C6131F42E8000AD0F6 /* FileTuxBox.h */,
 				F56C83C7131F42E8000AD0F6 /* FileUDF.cpp */,
 				F56C83C8131F42E8000AD0F6 /* FileUDF.h */,
+				DF6739E01443765F00A5A509 /* FileUPnP.cpp */,
+				DF6739E11443765F00A5A509 /* FileUPnP.h */,
 				F56C83CB131F42E8000AD0F6 /* FileZip.cpp */,
 				F56C83CC131F42E8000AD0F6 /* FileZip.h */,
 				F56C83CD131F42E8000AD0F6 /* FTPDirectory.cpp */,
@@ -6937,6 +6942,7 @@
 				F5E112E8143577A000175026 /* GUIDialogPeripheralManager.cpp in Sources */,
 				F5E112E9143577A000175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
 				F5E112EC143577A000175026 /* Peripherals.cpp in Sources */,
+				DF6739E21443765F00A5A509 /* FileUPnP.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
