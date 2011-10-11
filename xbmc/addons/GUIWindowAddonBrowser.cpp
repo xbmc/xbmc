@@ -235,6 +235,8 @@ bool CGUIWindowAddonBrowser::OnClick(int iItem)
     CGUIDialogAddonInfo::ShowForItem(item);
     return true;
   }
+  if (item->GetPath().Equals("addons://search/"))
+    return Update(item->GetPath());
 
   return CGUIMediaWindow::OnClick(iItem);
 }
