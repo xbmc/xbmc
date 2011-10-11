@@ -20,6 +20,7 @@
  */
 
 #include "HTTPWebinterfaceHandler.h"
+#include "network/WebServer.h"
 #include "addons/AddonManager.h"
 #include "utils/URIUtils.h"
 #include "filesystem/Directory.h"
@@ -37,10 +38,10 @@ bool CHTTPWebinterfaceHandler::CheckHTTPRequest(struct MHD_Connection *connectio
 }
 
 #if (MHD_VERSION >= 0x00040001)
-int CHTTPWebinterfaceHandler::HandleHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
+int CHTTPWebinterfaceHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
                             const char *upload_data, size_t *upload_data_size, void **con_cls)
 #else
-int CHTTPWebinterfaceHandler::HandleHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
+int CHTTPWebinterfaceHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
                             const char *upload_data, unsigned int *upload_data_size, void **con_cls)
 #endif
 {

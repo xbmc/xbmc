@@ -120,7 +120,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     IHTTPRequestHandler *handler = *it;
     if (handler->CheckHTTPRequest(connection, url, methodType, version))
     {
-      int ret = handler->HandleHTTPRequest(connection, url, methodType, version, upload_data, upload_data_size, con_cls);
+      int ret = handler->HandleHTTPRequest(server, connection, url, methodType, version, upload_data, upload_data_size, con_cls);
       if (ret != MHD_YES)
         return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
 

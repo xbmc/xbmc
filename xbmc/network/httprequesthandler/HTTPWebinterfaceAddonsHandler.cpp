@@ -20,6 +20,7 @@
  */
 
 #include "HTTPWebinterfaceAddonsHandler.h"
+#include "network/WebServer.h"
 #include "addons/AddonManager.h"
 
 #define ADDON_HEADER      "<html><head><title>Add-on List</title></head><body>\n<h1>Available web interfaces:</h1>\n<ul>\n"
@@ -33,10 +34,10 @@ bool CHTTPWebinterfaceAddonsHandler::CheckHTTPRequest(struct MHD_Connection *con
 }
 
 #if (MHD_VERSION >= 0x00040001)
-int CHTTPWebinterfaceAddonsHandler::HandleHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
+int CHTTPWebinterfaceAddonsHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
                             const char *upload_data, size_t *upload_data_size, void **con_cls)
 #else
-int CHTTPWebinterfaceAddonsHandler::HandleHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
+int CHTTPWebinterfaceAddonsHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
                             const char *upload_data, unsigned int *upload_data_size, void **con_cls)
 #endif
 {

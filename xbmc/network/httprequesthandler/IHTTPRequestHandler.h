@@ -29,6 +29,8 @@
 #include <microhttpd.h>
 #endif
 
+class CWebServer;
+
 enum HTTPMethod
 {
   UNKNOWN,
@@ -57,10 +59,10 @@ public:
   virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version) = 0;
 
 #if (MHD_VERSION >= 0x00040001)
-  virtual int HandleHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
+  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
                                 const char *upload_data, size_t *upload_data_size, void **con_cls) = 0;
 #else
-  virtual int HandleHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
+  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
                                 const char *upload_data, unsigned int *upload_data_size, void **con_cls) = 0;
 #endif
   
