@@ -183,7 +183,7 @@ namespace INFO
 #define NETWORK_MAC_ADDRESS         191
 #define NETWORK_IS_DHCP             192
 #define NETWORK_LINK_STATE          193
-#define NETWORK_SUBNET_ADDRESS      194
+#define NETWORK_SUBNET_MASK         194
 #define NETWORK_GATEWAY_ADDRESS     195
 #define NETWORK_DNS1_ADDRESS        196
 #define NETWORK_DNS2_ADDRESS        197
