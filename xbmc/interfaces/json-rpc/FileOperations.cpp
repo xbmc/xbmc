@@ -162,6 +162,24 @@ JSON_STATUS CFileOperations::GetDirectory(const CStdString &method, ITransportLa
   return InvalidParams;
 }
 
+JSON_STATUS CFileOperations::PrepareDownload(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  std::string protocol;
+  if (transport->PrepareDownload(parameterObject["path"].asString().c_str(), result["details"], protocol))
+  {
+    result["protocol"] = protocol;
+
+    if ((transport->GetCapabilities() & FileDownloadDirect) == FileDownloadDirect)
+      result["mode"] = "direct";
+    else
+      result["mode"] = "redirect";
+
+    return OK;
+  }
+  
+  return InvalidParams;
+}
+
 JSON_STATUS CFileOperations::Download(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return transport->Download(parameterObject["path"].asString().c_str(), result) ? OK : InvalidParams;

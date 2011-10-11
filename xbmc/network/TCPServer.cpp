@@ -170,6 +170,11 @@ void CTCPServer::Process()
   Deinitialize();
 }
 
+bool CTCPServer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
+{
+  return false;
+}
+
 bool CTCPServer::Download(const char *path, CVariant &result)
 {
   return false;
