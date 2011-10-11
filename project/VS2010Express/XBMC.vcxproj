@@ -344,6 +344,7 @@
     <ClCompile Include="..\..\xbmc\filesystem\CacheCircular.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FileNFS.cpp" />
     <ClCompile Include="..\..\xbmc\filesystem\FilePipe.cpp" />
+    <ClCompile Include="..\..\xbmc\filesystem\FileUPnP.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\iso9660.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\ISO9660Directory.cpp" />
     <ClCompile Include="..\..\xbmc\FileSystem\FileUDF.cpp" />
@@ -753,6 +754,7 @@
     <ClCompile Include="..\..\xbmc\threads\Event.cpp" />
     <ClCompile Include="..\..\xbmc\threads\LockFree.cpp" />
     <ClCompile Include="..\..\xbmc\threads\platform\Implementation.cpp" />
+    <ClInclude Include="..\..\xbmc\filesystem\FileUPnP.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp" />
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />

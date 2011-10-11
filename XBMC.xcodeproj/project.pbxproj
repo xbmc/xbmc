@@ -57,7 +57,6 @@
 		18968DC914155D7C005BA742 /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18968DC614155D7C005BA742 /* ApplicationOperations.cpp */; };
 		18ACF84313596C9B00B67371 /* RecentlyAddedJob.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18ACF84113596C9B00B67371 /* RecentlyAddedJob.cpp */; };
 		18B4A0021152BFA5001AF8A6 /* Addon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF11152BFA5001AF8A6 /* Addon.cpp */; };
-		18B4A0031152BFA5001AF8A6 /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */; };
 		18B4A0041152BFA5001AF8A6 /* fft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF91152BFA5001AF8A6 /* fft.cpp */; };
 		18B4A0051152BFA5001AF8A6 /* Scraper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFC1152BFA5001AF8A6 /* Scraper.cpp */; };
 		18B4A0061152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FFE1152BFA5001AF8A6 /* ScreenSaver.cpp */; };
@@ -636,6 +635,9 @@
 		DF448460140048C80069344B /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF44845B140048C80069344B /* PipesManager.cpp */; };
 		DF4484EE140054530069344B /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4484EC140054530069344B /* BXAcodec.cpp */; };
 		DF4484EF140054530069344B /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF4484EC140054530069344B /* BXAcodec.cpp */; };
+		DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 18B49FF41152BFA5001AF8A6 /* AddonManager.cpp */; };
+		DF85BAB51443669A000686BE /* FileUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF85BAB41443669A000686BE /* FileUPnP.cpp */; };
+		DF85BAB61443669A000686BE /* FileUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF85BAB41443669A000686BE /* FileUPnP.cpp */; };
 		DF98D98C1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		DF98D98D1434F47D00A6EBE1 /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */; };
 		DFAB049813F8376700B70BFB /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */; };
@@ -2605,6 +2607,8 @@
 		DF44845C140048C80069344B /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
 		DF4484EC140054530069344B /* BXAcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BXAcodec.cpp; sourceTree = "<group>"; };
 		DF4484ED140054530069344B /* BXAcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BXAcodec.h; sourceTree = "<group>"; };
+		DF85BAB31443669A000686BE /* FileUPnP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUPnP.h; sourceTree = "<group>"; };
+		DF85BAB41443669A000686BE /* FileUPnP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUPnP.cpp; sourceTree = "<group>"; };
 		DF98D98A1434F47D00A6EBE1 /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
 		DF98D98B1434F47D00A6EBE1 /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
 		DFAB049613F8376700B70BFB /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
@@ -5708,6 +5712,8 @@
 				E38E16DF0D25F9FA00618676 /* FileTuxBox.h */,
 				433219D112E4C6A500CD7486 /* FileUDF.cpp */,
 				433219D212E4C6A500CD7486 /* FileUDF.h */,
+				DF85BAB41443669A000686BE /* FileUPnP.cpp */,
+				DF85BAB31443669A000686BE /* FileUPnP.h */,
 				E38E16E20D25F9FA00618676 /* FileZip.cpp */,
 				E38E16E30D25F9FA00618676 /* FileZip.h */,
 				E38E16E40D25F9FA00618676 /* FTPDirectory.cpp */,
@@ -7774,7 +7780,6 @@
 				F5A7B37E113AFB900059D6AA /* SFTPDirectory.cpp in Sources */,
 				F5A7B42C113CBB950059D6AA /* AddonsDirectory.cpp in Sources */,
 				18B4A0021152BFA5001AF8A6 /* Addon.cpp in Sources */,
-				18B4A0031152BFA5001AF8A6 /* AddonManager.cpp in Sources */,
 				18B4A0041152BFA5001AF8A6 /* fft.cpp in Sources */,
 				18B4A0051152BFA5001AF8A6 /* Scraper.cpp in Sources */,
 				18B4A0061152BFA5001AF8A6 /* ScreenSaver.cpp in Sources */,
@@ -8029,6 +8034,8 @@
 				F5E1125E14356B2400175026 /* pyrendercapture.cpp in Sources */,
 				F5E1138014357F3800175026 /* PeripheralCecAdapter.cpp in Sources */,
 				F54BCC5F1439345300F86B0F /* HotKeyController.m in Sources */,
+				DF85BAB51443669A000686BE /* FileUPnP.cpp in Sources */,
+				DF673AA51443819600A5A509 /* AddonManager.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8947,6 +8954,7 @@
 				F5E1125F14356B2400175026 /* pyrendercapture.cpp in Sources */,
 				F5E1138114357F3900175026 /* PeripheralCecAdapter.cpp in Sources */,
 				F54BCC601439345300F86B0F /* HotKeyController.m in Sources */,
+				DF85BAB61443669A000686BE /* FileUPnP.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9178,6 +9186,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = i386;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
