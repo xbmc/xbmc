@@ -41,6 +41,7 @@ $(SOURCE): $(ARCHIVE)
 	cd $(SOURCE); \
 	patch -p1 < ../Imaging-1.1.7-crosscompiling-0.1.patch; \
 	patch -p1 < ../Imaging-1.1.7-setuptools-0.1.patch; \
+	patch -p1 < ../Imaging-1.1.7-access.patch; \
 	sed -ie "s|"darwin"|"darwinNot"|g" "setup.py"; \
 	fi
 
