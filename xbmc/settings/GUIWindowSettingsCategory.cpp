@@ -1291,16 +1291,37 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
   {
 #ifdef HAS_ZEROCONF
     //ifdef zeroconf here because it's only found in guisettings if defined
-    CZeroconf::GetInstance()->Stop();
     if(g_guiSettings.GetBool("services.zeroconf"))
+    {
+      CZeroconf::GetInstance()->Stop();
       CZeroconf::GetInstance()->Start();
+    }
+#ifdef HAS_AIRPLAY
+    else
+    {
+      g_application.StopAirplayServer(true);
+      g_guiSettings.SetBool("services.airplay", false);
+      CZeroconf::GetInstance()->Stop();
+    }
+#endif
 #endif
   }
   else if (strSetting.Equals("services.airplay"))
   {  
 #ifdef HAS_AIRPLAY  
     if (g_guiSettings.GetBool("services.airplay"))
+    {
+#ifdef HAS_ZEROCONF
+      // AirPlay needs zeroconf
+      if(!g_guiSettings.GetBool("services.zeroconf"))
+      {
+        g_guiSettings.SetBool("services.zeroconf", true);
+        CZeroconf::GetInstance()->Stop();
+        CZeroconf::GetInstance()->Start();
+      }
+#endif //HAS_ZEROCONF
       g_application.StartAirplayServer();//will stop the server before internal
+    }
     else
       g_application.StopAirplayServer(true);//will stop the server before internal    
 #endif//HAS_AIRPLAY      
