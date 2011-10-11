@@ -762,7 +762,6 @@
 									<width>35</width>
 									<height>35</height>
 									<info>ListItem.Overlay</info>
-									<visible>ListItem.InProgress</visible>
 								</control>
 								<!-- drop shadow -->
 								<control type="image">
@@ -1247,11 +1246,12 @@
 							<visible>ListItem.Type(episode) + Control.IsVisible(11001)</visible>
 								<posy>144</posy>
 								<control type="image">
+								  <visible>ListItem.Status(InProgress)</visible>
 									<posx>42</posx>
 									<posy>163</posy>
 									<width>35</width>
 									<height>35</height>
-									<info>ListItem.InProgress</info>
+									<info>ListItem.Overlay</info>
 								</control>
 								<!-- drop shadow -->
 								<control type="image">
