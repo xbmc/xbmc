@@ -967,6 +967,17 @@ else
   DISABLE_PROJECTM=0
 fi
 
+# skin touched
+use_skin_touched=no
+if [[ -f "addons/skin.touched/addon.xml" ]]; then 
+  use_skin_touched=yes
+  USE_SKIN_TOUCHED=1
+  AC_DEFINE([HAS_SKIN_TOUCHED], [1], [Whether to build skin touched.])
+else
+  USE_SKIN_TOUCHED=0
+fi
+
+
 # libRTMP
 if test "$use_librtmp" != "no"; then
   AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
@@ -1588,6 +1599,12 @@ else
   final_message="$final_message\n  ProjectM:\tNo"
 fi
 
+if test "$use_skin_touched" = "yes"; then
+  final_message="$final_message\n  Skin Touched:\tYes"
+else
+  final_message="$final_message\n  Skin Touched:\tNo"
+fi
+
 if test "$use_x11" = "yes"; then
   final_message="$final_message\n  X11:\t\tYes"
 else
@@ -1860,6 +1877,10 @@ OUTPUT_FILES="Makefile \
     xbmc/peripherals/devices/Makefile \
     lib/libcec/Makefile"
 
+if test "$use_skin_touched" = "yes"; then
+OUTPUT_FILES+=" addons/skin.touched/media/Makefile"
+fi
+
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
 AC_CONFIG_FILES([.dummy])
@@ -1876,6 +1897,7 @@ AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(DISABLE_GOOM)
 AC_SUBST(DISABLE_RSXS)
 AC_SUBST(DISABLE_PROJECTM)
+AC_SUBST(USE_SKIN_TOUCHED)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
@@ -1914,6 +1936,7 @@ AC_SUBST(USE_LIBUDEV)
 AC_SUBST(USE_LIBUSB)
 AC_SUBST(USE_LIBCEC)
 AC_SUBST(USE_EXTERNAL_LIBCEC)
+
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
