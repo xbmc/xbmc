@@ -240,7 +240,7 @@ void CGUISettings::Initialize()
   AddBool(pic, "pictures.usetags", 14082, true);
   AddBool(pic,"pictures.generatethumbs",13360,true);
   AddBool(pic, "pictures.useexifrotation", 20184, true);
-  AddBool(pic, "pictures.showvideos", 22022, false);
+  AddBool(pic, "pictures.showvideos", 22022, true);
   // FIXME: hide this setting until it is properly respected. In the meanwhile, default to AUTO.
   AddInt(NULL, "pictures.displayresolution", 169, (int)RES_AUTORES, (int)RES_AUTORES, 1, (int)RES_AUTORES, SPIN_CONTROL_TEXT);
 
