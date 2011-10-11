@@ -1153,13 +1153,15 @@ fi
 
 # external libcec
 USE_EXTERNAL_LIBCEC=0
-if test "$use_external_libcec" = "yes"; then
-  USE_EXTERNAL_LIBCEC=1; PKG_CHECK_MODULES([CEC], [libcec],
-    [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS"],
-    AC_MSG_ERROR($libcec_external_missing))
-elif test "$use_libcec" = "yes"; then
-  [INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/lib/libcec/include"]
-  AC_MSG_NOTICE($libcec_internal)
+if test "$use_libcec" = "yes"; then
+  if test "$use_external_libcec" = "yes"; then
+    USE_EXTERNAL_LIBCEC=1; PKG_CHECK_MODULES([CEC], [libcec],
+      [INCLUDES="$INCLUDES $CEC_CFLAGS"; LIBS="$LIBS $CEC_LIBS"],
+      AC_MSG_ERROR($libcec_external_missing))
+  else
+    [INCLUDES="$INCLUDES -I\$(abs_top_srcdir)/lib/libcec/include"]
+    AC_MSG_NOTICE($libcec_internal)
+  fi
 fi
 
 # External FFmpeg

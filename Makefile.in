@@ -549,7 +549,7 @@ DYNOBJSXBMC= \
 
 LIBS += @PYTHON_LDFLAGS@
 
-ifneq (@USE_EXTERNAL_LIBCEC@,1)
+ifeq ((@USE_LIBCEC@,1),(@USE_EXTERNAL_LIBCEC@,0))
   DYNOBJSXBMC += lib/libcec/libcec.a
 endif
 
