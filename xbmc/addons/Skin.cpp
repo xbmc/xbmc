@@ -180,6 +180,15 @@ void CSkinInfo::LoadIncludes()
   m_includes.LoadIncludes(includesPath);
 }
 
+void CSkinInfo::AddIncludes(const CSkinInfo &startedSkin)
+{
+  if (!startedSkin.m_includes.IsEmpty())
+  {
+    CStdString includesPath = PTH_IC(startedSkin.GetSkinPath("includes.xml"));
+    m_includes.LoadIncludes(includesPath);
+  }
+}
+
 void CSkinInfo::ResolveIncludes(TiXmlElement *node)
 {
   m_includes.ResolveIncludes(node);

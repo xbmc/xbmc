@@ -84,23 +84,46 @@ namespace PYXBMC
       CStdString basePath = URIUtils::AddFileToFolder(fallbackPath, g_SkinInfo->ID());
 
       // Check for the matching folder for the skin in the fallback skins folder (if it exists)
+      bool bSkinPathFound = false; // avoid hitting fs twice
       if (XFILE::CFile::Exists(basePath))
       {
         props.path = basePath;
         CSkinInfo skinInfo(props, res);
-        skinInfo.Start();
+
+        // Load resolutions, fonts, strings and includes, IN THIS ORDER
+        skinInfo.Start(); // for resolutions
+        // additional strings can be loaded here
+        skinInfo.LoadIncludes();
+        // additional fonts can be loaded here
+
         strSkinPath = skinInfo.GetSkinPath(strXMLname, &res);
+        if (XFILE::CFile::Exists(strSkinPath))
+        {
+          // These includes are added to the skin's includes because the skin provided them
+          bSkinPathFound = true;
+          g_SkinInfo->AddIncludes(skinInfo);
+        }
       }
 
-      if (!XFILE::CFile::Exists(strSkinPath))
+      if (!bSkinPathFound)
       {
         // Finally fallback to the DefaultSkin as it didn't exist in either the XBMC Skin folder or the fallback skin folder
         props.path = URIUtils::AddFileToFolder(fallbackPath, strDefault);
         CSkinInfo skinInfo(props, res);
 
-        skinInfo.Start();
+        // Load resolutions, fonts, strings and includes, IN THIS ORDER
+        skinInfo.Start(); // for resolutions
+        // additional strings can be loaded here
+        skinInfo.LoadIncludes();
+        // additional fonts can be loaded here
+
         strSkinPath = skinInfo.GetSkinPath(strXMLname, &res);
-        if (!XFILE::CFile::Exists(strSkinPath))
+        if (XFILE::CFile::Exists(strSkinPath))
+        {
+          // Add the addon's local includes to the main include namespace
+          g_SkinInfo->AddIncludes(skinInfo);
+        }
+        else
         {
           PyErr_SetString(PyExc_TypeError, "XML File for Window is missing");
           return NULL;
