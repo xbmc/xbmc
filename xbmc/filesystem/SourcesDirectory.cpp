@@ -54,7 +54,7 @@ bool CSourcesDirectory::GetDirectory(const CStdString& strPath, CFileItemList &i
   g_mediaManager.GetRemovableDrives(sources);
 
   if (sources.empty())
-    return false;
+    return true;
 
   return GetDirectory(sources, items);
 }
