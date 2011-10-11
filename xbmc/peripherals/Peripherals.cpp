@@ -27,7 +27,7 @@
 #include "devices/PeripheralNIC.h"
 #include "devices/PeripheralNyxboard.h"
 #include "devices/PeripheralTuner.h"
-#if defined(HAVE_LIBCEC) || defined(__WIN32__)
+#if defined(HAVE_LIBCEC)
 #include "devices/PeripheralCecAdapter.h"
 #endif
 #include "bus/PeripheralBusUSB.h"
@@ -247,7 +247,7 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
     peripheral = new CPeripheralBluetooth(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
     break;
 
-#if defined(HAVE_LIBCEC) || defined(__WIN32__)
+#if defined(HAVE_LIBCEC)
   case PERIPHERAL_CEC:
     peripheral = new CPeripheralCecAdapter(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
     break;

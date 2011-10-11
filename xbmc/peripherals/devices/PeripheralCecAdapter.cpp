@@ -20,7 +20,7 @@
  */
 #include "system.h"
 
-#if defined(HAVE_LIBCEC) || defined(__WIN32__)
+#if defined(HAVE_LIBCEC)
 #include "PeripheralCecAdapter.h"
 #include "input/XBIRRemote.h"
 #include "Application.h"

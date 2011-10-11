@@ -114,6 +114,7 @@
 #define HAS_FILESYSTEM_NFS
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
+#define HAVE_LIBCEC
 #endif
 
 /*****************
