@@ -2208,7 +2208,7 @@ XB_CONFIG_MODULE([lib/cpluff], [
 ], [0])
 
 XB_CONFIG_MODULE([lib/libcec], [
-  if test "$use_libcec" = "yes" ; then
+  if test "$use_libcec" = "yes" && test "$use_external_libcec" = "no" ; then
     cd libcec ; ./configure \
       --prefix="${prefix}" --includedir="${includedir}" --libdir="${libdir}" --datadir="${datadir}" \
       --host=$host_alias \
