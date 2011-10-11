@@ -363,6 +363,8 @@ lib/cmyth/Makefile
 /system/libsamplerate-0.dll
 /system/libnfs.dll
 /system/dnssd.dll
+/system/libcec.dll
+/system/pthreadVC2.dll
 
 # /system/cdrip
 /system/cdrip/lame_enc.dll
