@@ -24,6 +24,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "PosixMountProvider.h"
 
 CUDiskDevice::CUDiskDevice(const char *DeviceKitUDI)
 {
@@ -245,21 +246,8 @@ bool CUDisksProvider::Eject(CStdString mountpath)
 
 std::vector<CStdString> CUDisksProvider::GetDiskUsage()
 {
-  std::vector<CStdString> devices;
-  DeviceMap::iterator itr;
-
-  for(itr = m_AvailableDevices.begin(); itr != m_AvailableDevices.end(); ++itr)
-  {
-    CUDiskDevice *device = itr->second;
-    if (device->m_isMounted)
-    {
-      CStdString str;
-      str.Format("%s %.1f GiB", device->m_MountPath.c_str(), device->m_PartitionSizeGiB);
-      devices.push_back(str);
-    }
-  }
-
-  return devices;
+  CPosixMountProvider legacy;
+  return legacy.GetDiskUsage();
 }
 
 bool CUDisksProvider::PumpDriveChangeEvents(IStorageEventsCallback *callback)
