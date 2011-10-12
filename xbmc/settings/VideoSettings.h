@@ -92,6 +92,13 @@ enum ESCALINGMETHOD
   VS_SCALINGMETHOD_SPLINE36
 };
 
+enum EPOSTPROCESSINGMODE
+{
+  VS_PPMODE_DEFAULT=0,
+  VS_PPMODE_AGGRESSIVE,
+  VS_PPMODE_SLOW_CPU
+};
+
 class CVideoSettings
 {
 public:
@@ -120,6 +127,7 @@ public:
   float m_Gamma;
   float m_NoiseReduction;
   bool m_PostProcess;
+  EPOSTPROCESSINGMODE m_PostProcessingMode;
   float m_Sharpness;
   float m_AudioDelay;
   int m_ResumeTime;

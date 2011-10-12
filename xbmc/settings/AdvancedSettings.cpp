@@ -82,7 +82,9 @@ void CAdvancedSettings::Initialize()
   m_videoPercentSeekBackwardBig = -10;
   m_videoBlackBarColour = 0;
   m_videoPPFFmpegDeint = "linblenddeint";
-  m_videoPPFFmpegPostProc = "ha:128:7,va,dr";
+  m_videoPPFFmpegPostProcDefault = "ha,va,dr"; // ha:32:39,va,dr
+  m_videoPPFFmpegPostProcAggressive = "ha:128:7,va,dr";
+  m_videoPPFFmpegPostProcAutoQuality = "hb:a,vb:a,dr:a"; // ":a"=automatically switch the subfilter off if the CPU is too slow
   m_videoDefaultPlayer = "dvdplayer";
   m_videoDefaultDVDPlayer = "dvdplayer";
   m_videoIgnoreSecondsAtStart = 3*60;
@@ -449,7 +451,7 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
 
     XMLUtils::GetString(pElement,"cleandatetime", m_videoCleanDateTimeRegExp);
     XMLUtils::GetString(pElement,"ppffmpegdeinterlacing",m_videoPPFFmpegDeint);
-    XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProc);
+    XMLUtils::GetString(pElement,"ppffmpegpostprocessing",m_videoPPFFmpegPostProcDefault);
     XMLUtils::GetBoolean(pElement,"vdpauscaling",m_videoVDPAUScaling);
     XMLUtils::GetFloat(pElement, "nonlinearstretchratio", m_videoNonLinStretchRatio, 0.01f, 1.0f);
     XMLUtils::GetBoolean(pElement,"enablehighqualityhwscalers", m_videoEnableHighQualityHwScalers);

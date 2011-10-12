@@ -50,6 +50,7 @@ CVideoSettings::CVideoSettings()
   m_Sharpness = 0.0f;
   m_NoiseReduction = 0;
   m_PostProcess = false;
+  m_PostProcessingMode = VS_PPMODE_DEFAULT;
   m_VolumeAmplification = 0;
   m_AudioDelay = 0.0f;
   m_OutputToAllSpeakers = false;
@@ -82,6 +83,7 @@ bool CVideoSettings::operator!=(const CVideoSettings &right) const
   if (m_Sharpness != right.m_Sharpness) return true;
   if (m_NoiseReduction != right.m_NoiseReduction) return true;
   if (m_PostProcess != right.m_PostProcess) return true;
+  if (m_PostProcessingMode != right.m_PostProcessingMode) return true;
   if (m_VolumeAmplification != right.m_VolumeAmplification) return true;
   if (m_AudioDelay != right.m_AudioDelay) return true;
   if (m_OutputToAllSpeakers != right.m_OutputToAllSpeakers) return true;
