@@ -265,7 +265,7 @@ MediaLibrary.prototype = {
 				libraryContainer.attr('id', 'libraryContainer')
 								.addClass('contentContainer');
 				$('#content').append(libraryContainer);
-				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "limits": { "start": 0 }, "properties": ["description", "theme", "mood", "style", "type", "label", "artist", "genre", "rating", "title", "year", "thumbnail"], "sort": { "method": "artist" } }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "limits": { "start": 0 }, "properties": ["description", "theme", "mood", "style", "type", "albumlabel", "artist", "genre", "rating", "title", "year", "thumbnail"], "sort": { "method": "artist" } }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.albums) {
 						this.albumList = data.result.albums;
 						$.each($(this.albumList), jQuery.proxy(function(i, item) {
