@@ -21,7 +21,7 @@ CFLAGS += -DHAVE_CONFIG_H -DHAVE_DLFCN_H
 
 L=libdvdnav
 MINI_L=libdvdnavmini
-CFLAGS += $(DVDREAD_CFLAGS)
+#CFLAGS += $(DVDREAD_CFLAGS)
 
 LIB = $(L).a
 SHLIB = $(L).so
