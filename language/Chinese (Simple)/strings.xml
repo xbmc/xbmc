@@ -1531,6 +1531,7 @@
   <string id="16321">DXVA 最优</string>
   <string id="16322">Spline36</string>
   <string id="16323">Spline36 优化</string>
+  <string id="16324">软件混合</string>
 
   <string id="16400">后处理</string>
 
@@ -1918,7 +1919,7 @@
   <string id="21366">字幕目录</string>
   <string id="21367">视频和相关字幕目录</string>
 
-  <string id="21369">使用鼠标</string>
+  <string id="21369">启用鼠标和触摸屏支持</string>
   <string id="21370">在播放媒体文件时播放导航声效</string>
   <string id="21371">缩略图</string>
   <string id="21372">强制 DVD 播放器区码</string>
@@ -2346,4 +2347,37 @@
 
   <string id="34201">未找到下一播放项目</string>
   <string id="34202">未找到上一播放项目</string>
+
+  <string id="35000">外部设备</string>
+
+  <string id="35001">通用 HID 设备</string>
+  <string id="35002">通用网络适配器</string>
+  <string id="35003">通用硬盘驱动器</string>
+  <string id="35004">此设备无可用设置。</string>
+  <string id="35005">新设备已配置</string>
+  <string id="35006">设备已移除</string>
+  <string id="35007">用于此设备的键盘映射</string>
+  <string id="35008">键盘映射已启用</string>
+
+  <string id="35500">位置</string>
+  <string id="35501">设备类型</string>
+  <string id="35502">名称</string>
+  <string id="35503">提供商</string>
+  <string id="35504">产品 ID</string>
+  
+  <string id="36000">Pulse-Eight CEC 适配器</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">切换到键盘指令</string>
+  <string id="36003">切换到遥控器指令</string>
+  <string id="36004">按“user”键指令</string>
+  <string id="36005">启用指令模式切换</string>
+  <string id="36006">无法打开适配器</string>
+  <string id="36007">启动XBMC时开启设备</string>
+  <string id="36008">退出XBMC时关闭设备</string>
+  <string id="36009">激活屏幕保护程序时设备进入待机状态</string>
+  <string id="36010">退出XBMC时设为禁用资源</string>
+  <string id="36011">未检测到 CEC 端口。需人工设置。</string>
+  <string id="36012">未检测到 CEC 适配器。</string>
+  <string id="36013">不支持的 libcec 界面版本。%d 高于 XBMC 支持的版本（%d）</string>
+  <string id="36014">电视关闭时本计算机进入待机状态</string>
 </strings>
