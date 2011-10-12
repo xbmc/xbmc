@@ -21,7 +21,9 @@
 
 #include "PeripheralBusUSBLibUdev.h"
 #include "peripherals/Peripherals.h"
+extern "C" {
 #include <libudev.h>
+}
 #include <usb.h>
 #include <poll.h>
 #include "utils/log.h"
