@@ -94,7 +94,6 @@ private:
   static int CreateAddonsListResponse(struct MHD_Connection *connection);
 
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
-  static void StringToBase64(const char *input, CStdString &output);
 
   static const char *CreateMimeTypeFromExtension(const char *ext);
 
