@@ -54,7 +54,7 @@ void CWinDsRenderer::SetupScreenshot()
   CDX9AllocatorPresenter::bPaintAll = false;
 }
 
-bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags)
+bool CWinDsRenderer::Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format)
 {
   m_sourceWidth = width;
   m_sourceHeight = height;

@@ -45,7 +45,7 @@ public:
   void                 CreateThumbnail(CBaseTexture *texture, unsigned int width, unsigned int height){};
 
   // Player functions
-  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags);
+  virtual bool         Configure(unsigned int width, unsigned int height, unsigned int d_width, unsigned int d_height, float fps, unsigned flags, unsigned int format);
   virtual int          GetImage(YV12Image *image, int source = AUTOSOURCE, bool readonly = false) { return 0; };
   virtual void         ReleaseImage(int source, bool preserve = false) {};
   virtual unsigned int DrawSlice(unsigned char *src[], int stride[], int w, int h, int x, int y) { return 0; };

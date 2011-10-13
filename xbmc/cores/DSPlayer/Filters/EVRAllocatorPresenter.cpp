@@ -1670,7 +1670,7 @@ void CEVRAllocatorPresenter::GetMixerThread()
           if (!g_renderManager.IsConfigured())
           {
             g_renderManager.Configure(m_NativeVideoSize.cx, m_NativeVideoSize.cy, m_AspectRatio.cx, m_AspectRatio.cy, m_fps,
-              CONF_FLAGS_FULLSCREEN);
+              CONF_FLAGS_FULLSCREEN, 0);
             CLog::Log(LOGDEBUG, "%s Render manager configured (FPS: %f)", __FUNCTION__, m_fps);
           }
         }
