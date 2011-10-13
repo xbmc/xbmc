@@ -77,8 +77,11 @@ public:
   virtual bool         SupportsGamma() { return false; };
 
   virtual bool         Supports(ERENDERFEATURE feature) = 0;
+  virtual bool         Supports(EDEINTERLACEMODE mode) = 0;
   virtual bool         Supports(EINTERLACEMETHOD method) = 0;
   virtual bool         Supports(ESCALINGMETHOD method) = 0;
+
+  virtual EINTERLACEMETHOD AutoInterlaceMethod() = 0;
 
   virtual void RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255) = 0;
 };

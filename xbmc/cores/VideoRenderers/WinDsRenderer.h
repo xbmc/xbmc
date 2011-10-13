@@ -60,8 +60,11 @@ public:
   virtual inline void  OnAfterPresent();
 
   virtual bool         Supports(ERENDERFEATURE feature);
+  virtual bool         Supports(EDEINTERLACEMODE mode);
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
+
+  virtual EINTERLACEMETHOD AutoInterlaceMethod();
 
   virtual void         AutoCrop(bool bCrop);
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);

@@ -152,6 +152,21 @@ inline void CWinDsRenderer::OnAfterPresent()
     m_paintCallback->OnAfterPresent();
 }
 
+EINTERLACEMETHOD CWinDsRenderer::AutoInterlaceMethod()
+{
+    return VS_INTERLACEMETHOD_NONE;
+}
+
+bool CWinDsRenderer::Supports(EDEINTERLACEMODE mode)
+{
+  if(mode == VS_DEINTERLACEMODE_OFF
+  || mode == VS_DEINTERLACEMODE_AUTO
+  || mode == VS_DEINTERLACEMODE_FORCE)
+    return true;
+
+  return false;
+}
+
 bool CWinDsRenderer::Supports(EINTERLACEMETHOD method)
 {
   if(method == VS_INTERLACEMETHOD_NONE
