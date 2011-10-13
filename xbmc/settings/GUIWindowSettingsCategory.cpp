@@ -453,8 +453,8 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingInt *pSettingInt = (CSettingInt*)pSetting;
       CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(35051), SUBTITLE_BORDER_OUTLINE);
-      pControl->AddLabel(g_localizeStrings.Get(35052), SUBTITLE_BORDER_OPAQUE);
+      pControl->AddLabel(g_localizeStrings.Get(55051), SUBTITLE_BORDER_OUTLINE);
+      pControl->AddLabel(g_localizeStrings.Get(55052), SUBTITLE_BORDER_OPAQUE);
       pControl->SetValue(pSettingInt->GetData());
     }
     else if (strSetting.Equals("subtitles.style"))
@@ -486,7 +486,7 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       CSettingString *pSettingString = (CSettingString*)pSetting;
       CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      CStdString label; label.Format(g_localizeStrings.Get(35056), pSettingString->GetData());
+      CStdString label; label.Format(g_localizeStrings.Get(55056), pSettingString->GetData());
       pControl->SetLabel(label); pControl->SettingsCategorySetTextAlign(XBFONT_LEFT);
     }
 #endif
@@ -1111,11 +1111,11 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
     if (iSelected >= 0)
       dialog->SetSelected(iSelected);
 
-    dialog->SetHeading(35057);
+    dialog->SetHeading(55057);
     dialog->DoModal();
 
     CStdString label;
-    label.Format(g_localizeStrings.Get(35056), dialog->GetSelectedLabelText());
+    label.Format(g_localizeStrings.Get(55056), dialog->GetSelectedLabelText());
     pSettingString->SetData(dialog->GetSelectedLabelText());
     pControl->SetLabel(label);
 

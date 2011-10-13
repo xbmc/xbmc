@@ -179,22 +179,22 @@ void CGUIDialogVideoSettings::CreateSettings()
   else if ( g_application.GetCurrentPlayer() == PCID_DSPLAYER )
   {
     vector<pair<int, int> > entries;
-    entries.push_back(make_pair(DS_SCALINGMETHOD_NEAREST_NEIGHBOR  , 35005));
-    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR          , 35006));
-    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2        , 35007));
-    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_60     , 35008));
-    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_75     , 35009));
-    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_100    , 35010));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_NEAREST_NEIGHBOR  , 55005));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR          , 55006));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2        , 55007));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_60     , 55008));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_75     , 55009));
+    entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_100    , 55010));
     
     //m_scalingMethod = g_settings.m_currentVideoSettings.GetDSPlayerScalingMethod();
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, &m_scalingMethod, entries);
 
     entries.clear();
-    entries.push_back(make_pair(DS_STATS_NONE, 35011));
-    entries.push_back(make_pair(DS_STATS_1, 35012));
-    entries.push_back(make_pair(DS_STATS_2, 35013));
-    entries.push_back(make_pair(DS_STATS_3, 35014));
-    AddSpin(VIDEO_SETTINGS_DS_STATS, 35015, (int *) &g_dsSettings.pRendererSettings->displayStats, entries);
+    entries.push_back(make_pair(DS_STATS_NONE, 55011));
+    entries.push_back(make_pair(DS_STATS_1, 55012));
+    entries.push_back(make_pair(DS_STATS_2, 55013));
+    entries.push_back(make_pair(DS_STATS_3, 55014));
+    AddSpin(VIDEO_SETTINGS_DS_STATS, 55015, (int *) &g_dsSettings.pRendererSettings->displayStats, entries);
   }
 #endif
   AddBool(VIDEO_SETTINGS_CROP, 644, &g_settings.m_currentVideoSettings.m_Crop);
