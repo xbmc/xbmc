@@ -39,7 +39,7 @@ class CSkinVariableString
 public:
   const CStdString& GetName() const;
   int GetContext() const;
-  CStdString GetValue(int contextWindow, bool preferImage = false, const CGUIListItem *item = NULL );
+  CStdString GetValue(bool preferImage = false, const CGUIListItem *item = NULL );
 private:
   CSkinVariableString();
 
