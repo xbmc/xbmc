@@ -176,8 +176,6 @@ lib/cmyth/Makefile
 /lib/cpluff/libcpluff/win32/Release
 
 # /lib/libcec
-/lib/libcec/Makefile
-/lib/libcec/include
 /lib/libcec/libcec
 
 # /lib/enca
