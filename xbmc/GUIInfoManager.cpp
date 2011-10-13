@@ -4496,14 +4496,14 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   return false;
 }
 
-int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString& info)
+int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString* info)
 {
-  CSingleLock lock(m_critInfo);
-  int id = TranslateSkinVariableString(info.GetName());
-  if (id != 0)
-    return id;
+  if (!info)
+    return 0;
 
-  m_skinVariableStrings.push_back(info);
+  CSingleLock lock(m_critInfo);
+  m_skinVariableStrings.push_back(*info);
+  delete info;
   return CONDITIONAL_LABEL_START + m_skinVariableStrings.size() - 1;
 }
 

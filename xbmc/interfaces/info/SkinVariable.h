@@ -26,10 +26,12 @@ class TiXmlElement;
 
 namespace INFO
 {
+class CSkinVariableString;
+
 class CSkinVariable
 {
 public:
-  static void LoadFromXML(const TiXmlElement *root);
+  static const CSkinVariableString* CreateFromXML(const TiXmlElement& node);
 };
 
 class CSkinVariableString

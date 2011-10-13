@@ -256,4 +256,9 @@ bool CSkinInfo::IsInUse() const
   return g_guiSettings.GetString("lookandfeel.skin") == ID();
 }
 
+const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const CStdString& name)
+{
+  return m_includes.CreateSkinVariable(name);
+}
+
 } /*namespace ADDON*/

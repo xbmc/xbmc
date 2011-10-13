@@ -109,6 +109,7 @@ public:
 //  static bool Check(const CStdString& strSkinDir); // checks if everything is present and accounted for without loading the skin
   static double GetMinVersion();
   void LoadIncludes();
+  const INFO::CSkinVariableString* CreateSkinVariable(const CStdString& name);
 protected:
   /*! \brief Given a resolution, retrieve the corresponding directory name
    \param res RESOLUTION to translate

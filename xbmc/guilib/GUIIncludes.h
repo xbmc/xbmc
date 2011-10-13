@@ -28,6 +28,10 @@
 
 // forward definitions
 class TiXmlElement;
+namespace INFO
+{
+  class CSkinVariableString;
+}
 
 class CGUIIncludes
 {
@@ -45,6 +49,7 @@ public:
    \param node an XML Element - all child elements are traversed.
    */
   void ResolveIncludes(TiXmlElement *node);
+  const INFO::CSkinVariableString* CreateSkinVariable(const CStdString& name);
 
 private:
   void ResolveIncludesForNode(TiXmlElement *node);

@@ -28,44 +28,36 @@ using namespace INFO;
 
 #define DEFAULT_VALUE -1
 
-void CSkinVariable::LoadFromXML(const TiXmlElement *root)
+const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node)
 {
-  const TiXmlElement* node = root->FirstChildElement("variable");
-  while (node)
+  const char* name = node.Attribute("name");
+  if (name)
   {
-    if (node->Attribute("name") && node->FirstChild())
+    CSkinVariableString* tmp = new CSkinVariableString;
+    tmp->m_name = name;
+    const TiXmlElement* valuenode = node.FirstChildElement("value");
+    while (valuenode)
     {
-      const char* type = node->Attribute("type");
-
-      // parameter type will be used in future for numeric and bool variables
-      if (!type || strnicmp(type, "text", 4) == 0)
+      if (valuenode->FirstChild())
       {
-        CSkinVariableString tmp;
-        tmp.m_name = node->Attribute("name");
-        const TiXmlElement* valuenode = node->FirstChildElement("value");
-        while (valuenode)
-        {
-          if (valuenode->FirstChild())
-          {
-            CSkinVariableString::ConditionLabelPair pair;
-            if (valuenode->Attribute("condition"))
-              pair.m_condition = g_infoManager.Register(valuenode->Attribute("condition"));
-            else
-              pair.m_condition = DEFAULT_VALUE;
+        CSkinVariableString::ConditionLabelPair pair;
+        if (valuenode->Attribute("condition"))
+          pair.m_condition = g_infoManager.Register(valuenode->Attribute("condition"));
+        else
+          pair.m_condition = DEFAULT_VALUE;
 
-            pair.m_label = CGUIInfoLabel(valuenode->FirstChild()->Value());
-            tmp.m_conditionLabelPairs.push_back(pair);
-            if (pair.m_condition == DEFAULT_VALUE)
-              break; // once we reach default value (without condition) break iterating
-          }
-          valuenode = valuenode->NextSiblingElement("value");
-        }
-        if (tmp.m_conditionLabelPairs.size() > 0)
-          g_infoManager.RegisterSkinVariableString(tmp);
+        pair.m_label = CGUIInfoLabel(valuenode->FirstChild()->Value());
+        tmp->m_conditionLabelPairs.push_back(pair);
+        if (pair.m_condition == DEFAULT_VALUE)
+          break; // once we reach default value (without condition) break iterating
       }
+      valuenode = valuenode->NextSiblingElement("value");
     }
-    node = node->NextSiblingElement("variable");
+    if (tmp->m_conditionLabelPairs.size() > 0)
+      return tmp;
+    delete tmp;
   }
+  return NULL;
 }
 
 CSkinVariableString::CSkinVariableString()
