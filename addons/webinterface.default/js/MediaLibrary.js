@@ -675,7 +675,7 @@ MediaLibrary.prototype = {
 				//check that clear worked.
 				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "playlistid": ' + this.playlists["audio"] + ', "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}', jQuery.proxy(function(data) {
 					//play specific song in playlist
-					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "playlist": { "playlistid": ' + this.playlists["audio"] + ', "position": '+ event.data.itmnbr + ' } }, "id": 1}', function() {}, 'json');
+					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "playlistid": ' + this.playlists["audio"] + ', "position": '+ event.data.itmnbr + ' } }, "id": 1}', function() {}, 'json');
 				}, this), 'json');
 			}, this), 'json');
 		},
@@ -782,7 +782,7 @@ MediaLibrary.prototype = {
 			}
 		},
 		startSlideshow: function(event) {
-			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "slideshow": { "recursive" : "true", "random":"true", "directory" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" } }, "id": 1}', null, 'json');
+			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "recursive" : "true", "random":"true", "path" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" } }, "id": 1}', null, 'json');
 		},
 		showDirectory: function(event) {
 			var directory = event.data.directory.file;
