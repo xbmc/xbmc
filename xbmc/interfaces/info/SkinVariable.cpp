@@ -28,13 +28,14 @@ using namespace INFO;
 
 #define DEFAULT_VALUE -1
 
-const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node)
+const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node, int context)
 {
   const char* name = node.Attribute("name");
   if (name)
   {
     CSkinVariableString* tmp = new CSkinVariableString;
     tmp->m_name = name;
+    tmp->m_context = context;
     const TiXmlElement* valuenode = node.FirstChildElement("value");
     while (valuenode)
     {
@@ -42,7 +43,7 @@ const CSkinVariableString* CSkinVariable::CreateFromXML(const TiXmlElement& node
       {
         CSkinVariableString::ConditionLabelPair pair;
         if (valuenode->Attribute("condition"))
-          pair.m_condition = g_infoManager.Register(valuenode->Attribute("condition"));
+          pair.m_condition = g_infoManager.Register(valuenode->Attribute("condition"), context);
         else
           pair.m_condition = DEFAULT_VALUE;
 
@@ -64,6 +65,11 @@ CSkinVariableString::CSkinVariableString()
 {
 }
 
+int CSkinVariableString::GetContext() const
+{
+  return m_context;
+}
+
 const CStdString& CSkinVariableString::GetName() const
 {
   return m_name;
@@ -78,7 +84,7 @@ CStdString CSkinVariableString::GetValue(int contextWindow, bool preferImage /* 
       if (item)
         return it->m_label.GetItemLabel(item, preferImage);
       else
-        return it->m_label.GetLabel(contextWindow, preferImage);
+        return it->m_label.GetLabel(m_context, preferImage);
     }
   }
   return "";

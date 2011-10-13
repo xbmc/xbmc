@@ -31,18 +31,20 @@ class CSkinVariableString;
 class CSkinVariable
 {
 public:
-  static const CSkinVariableString* CreateFromXML(const TiXmlElement& node);
+  static const CSkinVariableString* CreateFromXML(const TiXmlElement& node, int context);
 };
 
 class CSkinVariableString
 {
 public:
   const CStdString& GetName() const;
+  int GetContext() const;
   CStdString GetValue(int contextWindow, bool preferImage = false, const CGUIListItem *item = NULL );
 private:
   CSkinVariableString();
 
   CStdString m_name;
+  int m_context;
 
   struct ConditionLabelPair
   {

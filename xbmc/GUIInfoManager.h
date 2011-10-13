@@ -677,7 +677,7 @@ public:
   int TranslateSingleString(const CStdString &strCondition);
 
   int RegisterSkinVariableString(const INFO::CSkinVariableString* info);
-  int TranslateSkinVariableString(const CStdString& name);
+  int TranslateSkinVariableString(const CStdString& name, int context);
   CStdString GetSkinVariableString(int info, int contextWindow, bool preferImage = false, const CGUIListItem *item=NULL);
 protected:
   friend class INFO::InfoSingle;

@@ -4507,12 +4507,12 @@ int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString* info)
   return CONDITIONAL_LABEL_START + m_skinVariableStrings.size() - 1;
 }
 
-int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name)
+int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name, int context)
 {
   for (vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
        it != m_skinVariableStrings.end(); ++it)
   {
-    if (it->GetName().Equals(name))
+    if (it->GetName().Equals(name) && it->GetContext() == context)
       return it - m_skinVariableStrings.begin() + CONDITIONAL_LABEL_START;
   }
   return 0;
