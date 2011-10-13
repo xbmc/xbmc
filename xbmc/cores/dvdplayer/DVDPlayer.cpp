@@ -2114,13 +2114,8 @@ void CDVDPlayer::HandleMessages()
           m_State.timestamp =  CDVDClock::GetAbsoluteClock();
         }
 
-        if (speed != DVD_PLAYSPEED_PAUSE)
-        {
-          if (m_playSpeed != DVD_PLAYSPEED_PAUSE)
-          {
-            m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL );
-          }
-        }
+        if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
+          m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL);
 
         // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
         // audioplayer, stops outputing audio to audiorendere, but still tries to
