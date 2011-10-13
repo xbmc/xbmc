@@ -20,7 +20,7 @@
  */
 #include "system.h"
 
-#if defined(HAS_X11) && defined(HAS_GLES)
+#if defined(HAVE_X11) && defined(HAS_GLES)
 
 #include "WinSystemX11GLES.h"
 #include "utils/log.h"

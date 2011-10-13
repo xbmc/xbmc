@@ -63,7 +63,7 @@ public:
   CVDPAU();
   virtual ~CVDPAU();
   
-  virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat);
+  virtual bool Open      (AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces = 0);
   virtual int  Decode    (AVCodecContext* avctx, AVFrame* frame);
   virtual bool GetPicture(AVCodecContext* avctx, AVFrame* frame, DVDVideoPicture* picture);
   virtual void Reset();
@@ -115,7 +115,7 @@ public:
   pictureAge picAge;
   bool       recover;
   vdpau_render_state *past[2], *current, *future;
-  int        tmpDeint;
+  int        tmpDeintMode, tmpDeintGUI, tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
   float      tmpBrightness, tmpContrast;
   int        OutWidth, OutHeight;
@@ -216,6 +216,7 @@ public:
 
   bool Supports(VdpVideoMixerFeature feature);
   bool Supports(EINTERLACEMETHOD method);
+  EINTERLACEMETHOD AutoInterlaceMethod();
 
   VdpVideoMixerFeature m_features[10];
   int                  m_feature_count;

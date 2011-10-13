@@ -83,7 +83,7 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
     enum PCMChannels *outLayout;
 
     /* set the input format, and get the channel layout so we know what we need to open */
-    outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8);
+    outLayout = m_remap.SetInputFormat (iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
     unsigned int outChannels = 0;
     unsigned int ch = 0, map;
     while(outLayout[ch] != PCM_INVALID)
@@ -177,6 +177,8 @@ bool CIOSAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& 
   CLog::Log(LOGINFO, "CIOSAudioRenderer::Initialize: Successfully configured audio output.");
 
   m_DoRunout = 0;
+
+  m_drc      = 0;
 
   return true;
 }
@@ -300,7 +302,7 @@ unsigned int CIOSAudioRenderer::AddPackets(const void* data, DWORD len)
 
     uint8_t outData[length];
     // remap the audio channels using the frame count
-    m_remap.Remap((void*)data, outData, frames);
+    m_remap.Remap((void*)data, outData, frames, m_drc);
 
     status = m_Buffer->Write(outData, length);
     // return the number of input bytes we accepted
@@ -325,7 +327,8 @@ float CIOSAudioRenderer::GetDelay()
 
 float CIOSAudioRenderer::GetCacheTime()
 {
-  return (float)(m_BufferLen - GetSpace()) / (float)m_BytesPerSec;
+  unsigned int nBufferLenFull = (m_BufferLen / m_Channels) * m_DataChannels;
+  return (float)(nBufferLenFull - GetSpace()) / (float)m_BytesPerSec;
 }
 
 float CIOSAudioRenderer::GetCacheTotal()

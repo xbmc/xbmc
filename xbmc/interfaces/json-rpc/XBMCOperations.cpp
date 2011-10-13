@@ -22,44 +22,10 @@
 #include "XBMCOperations.h"
 #include "Application.h"
 #include "ApplicationMessenger.h"
-#include "FileItem.h"
 #include "Util.h"
 #include "powermanagement/PowerManager.h"
 
 using namespace JSONRPC;
-
-JSON_STATUS CXBMCOperations::Play(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  CFileItemList list;
-  if (FillFileItemList(parameterObject, list) && list.Size() > 0)
-  {
-    g_application.getApplicationMessenger().MediaPlay(list);
-    return ACK;
-  }
-  else
-    return InvalidParams;
-}
-
-JSON_STATUS CXBMCOperations::StartSlideshow(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
-{
-  CStdString exec = "slideShow(";
-
-  exec += parameterObject["directory"].asString();
-
-  if (parameterObject["random"].asBoolean())
-    exec += ", random";
-  else
-    exec += ", notrandom";
-
-  if (parameterObject["recursive"].asBoolean())
-    exec += ", recursive";
-
-  exec += ")";
-  ThreadMessage msg = { TMSG_EXECUTE_BUILT_IN, (DWORD)0, (DWORD)0, exec };
-  g_application.getApplicationMessenger().SendMessage(msg);
-
-  return ACK;
-}
 
 JSON_STATUS CXBMCOperations::GetInfoLabels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {

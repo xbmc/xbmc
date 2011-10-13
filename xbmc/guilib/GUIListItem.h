@@ -102,11 +102,7 @@ public:
 
   bool m_bIsFolder;     ///< is item a folder or a file
 
-  void SetProperty(const CStdString &strKey, const char *strValue);
-  void SetProperty(const CStdString &strKey, const CStdString &strValue);
-  void SetProperty(const CStdString &strKey, int nVal);
-  void SetProperty(const CStdString &strKey, bool bVal);
-  void SetProperty(const CStdString &strKey, double dVal);
+  void SetProperty(const CStdString &strKey, const CVariant &value);
 
   void IncrementProperty(const CStdString &strKey, int nVal);
   void IncrementProperty(const CStdString &strKey, double dVal);
@@ -127,10 +123,7 @@ public:
   bool       HasProperties() const { return m_mapProperties.size() > 0; };
   void       ClearProperty(const CStdString &strKey);
 
-  CStdString GetProperty(const CStdString &strKey) const;
-  bool       GetPropertyBOOL(const CStdString &strKey) const;
-  int        GetPropertyInt(const CStdString &strKey) const;
-  double     GetPropertyDouble(const CStdString &strKey) const;
+  CVariant   GetProperty(const CStdString &strKey) const;
 
 protected:
   CStdString m_strLabel2;     // text of column2
@@ -149,8 +142,8 @@ protected:
       return s1.CompareNoCase(s2) < 0;
     }
   };
-  
-  typedef std::map<CStdString, CStdString, icompare> PropertyMap;
+
+  typedef std::map<CStdString, CVariant, icompare> PropertyMap;
   PropertyMap m_mapProperties;
 private:
   CStdStringW m_sortLabel;    // text for sorting. Need to be UTF16 for proper sorting

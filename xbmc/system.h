@@ -52,7 +52,6 @@
 #endif
 
 #define HAS_FILESYSTEM
-#define HAS_FILESYSTEM_SMB
 #define HAS_FILESYSTEM_CDDA
 #define HAS_FILESYSTEM_RTV
 #define HAS_FILESYSTEM_DAAP
@@ -60,10 +59,25 @@
 #define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
 
+#ifdef HAVE_LIBSMBCLIENT
+  #define HAS_FILESYSTEM_SMB
+#endif
+
 #ifdef HAVE_LIBNFS
   #define HAS_FILESYSTEM_NFS
 #endif
 
+#ifdef HAVE_LIBAFPCLIENT
+  #define HAS_FILESYSTEM_AFP
+#endif
+
+#ifdef HAVE_LIBPLIST
+  #define HAS_AIRPLAY
+#endif
+
+#ifdef HAVE_LIBSHAIRPORT
+  #define HAS_AIRTUNES
+#endif
 
 /**********************
  * Non-free Components
@@ -96,6 +110,11 @@
 #define HAVE_LIBBLURAY
 #define HAS_ASAP_CODEC
 #define HAVE_YAJL_YAJL_VERSION_H
+#define HAS_FILESYSTEM_SMB
+#define HAS_FILESYSTEM_NFS
+#define HAS_ZEROCONF
+#define HAS_AIRPLAY
+#define HAVE_LIBCEC
 #endif
 
 /*****************
@@ -112,7 +131,6 @@
   #endif
   #define HAS_ZEROCONF
   #define HAS_LINUX_NETWORK
-  #define HAS_AIRPLAY
 #endif
 
 /*****************
@@ -149,7 +167,6 @@
 #ifdef HAVE_LIBXRANDR
 #define HAS_XRANDR
 #endif
-#define HAS_AIRPLAY
 #endif
 
 #ifdef HAVE_LIBSSH

@@ -71,6 +71,7 @@ public:
   void ShowPrevious();
   void Select(const CStdString& strPicture);
   const CFileItemList &GetSlideShowContents();
+  void GetSlideShowContents(CFileItemList &list);
   const CFileItemPtr GetCurrentSlide();
   void RunSlideShow(const CStdString &strPath, bool bRecursive = false,
                     bool bRandom = false, bool bNotRandom = false,
@@ -82,6 +83,7 @@ public:
   void StartSlideShow(bool screensaver=false);
   bool InSlideShow() const;
   virtual bool OnMessage(CGUIMessage& message);
+  virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);  
   virtual bool OnAction(const CAction &action);
   virtual void Render();
   virtual void Process(unsigned int currentTime, CDirtyRegionList &regions);
@@ -92,6 +94,7 @@ public:
   void Shuffle();
   bool IsPaused() const { return m_bPause; }
   bool IsShuffled() const { return m_bShuffled; }
+  int GetDirection() const { return m_iDirection; }
 private:
   typedef std::set<CStdString> path_set;  // set to track which paths we're adding
   void AddItems(const CStdString &strPath, path_set *recursivePaths,
@@ -132,4 +135,5 @@ private:
   RESOLUTION m_Resolution;
   CCriticalSection m_slideSection;
   CStdString m_strExtensions;
+  CPoint m_firstGesturePoint;
 };

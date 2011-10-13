@@ -218,6 +218,7 @@ protected:
   void                CopyOutAsNV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   void                CopyOutAsYV12(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
   void                CopyOutAsYV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC_DTS_PROC_OUT *procOut, int w, int h, int stride);
+  void                CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer);
   bool                GetDecoderOutput(void);
   virtual void        Process(void);
 
@@ -741,6 +742,46 @@ void CMPCOutputThread::CopyOutAsNV12DeInterlace(CPictureBuffer *pBuffer, BCM::BC
   pBuffer->m_interlace = false;
 }
 
+void CMPCOutputThread::CheckUpperLeftGreenPixelHack(CPictureBuffer *pBuffer)
+{
+  // crystalhd driver sends internal info in 1st pixel location, then restores
+  // original pixel value but sometimes, the info is broked and the
+  // driver cannot do the restore and zeros the pixel. This is wrong for
+  // yuv color space, uv values should be set to 128 otherwise we get a
+  // bright green pixel in upper left.
+  // We fix this by replicating the 2nd pixel to the 1st.
+  switch(pBuffer->m_format)
+  {
+    default:
+    case DVDVideoPicture::FMT_YUV420P:
+    {
+      uint8_t *d_y = pBuffer->m_y_buffer_ptr;
+      uint8_t *d_u = pBuffer->m_u_buffer_ptr;
+      uint8_t *d_v = pBuffer->m_v_buffer_ptr;
+      d_y[0] = d_y[1];
+      d_u[0] = d_u[1];
+      d_v[0] = d_v[1];
+    }
+    break;
+
+    case DVDVideoPicture::FMT_NV12:
+    {
+      uint8_t  *d_y  = pBuffer->m_y_buffer_ptr;
+      uint16_t *d_uv = (uint16_t*)pBuffer->m_uv_buffer_ptr;
+      d_y[0] = d_y[1];
+      d_uv[0] = d_uv[1];
+    }
+    break;
+
+    case DVDVideoPicture::FMT_YUY2:
+    {
+      uint32_t *d_yuyv = (uint32_t*)pBuffer->m_y_buffer_ptr;
+      d_yuyv[0] = d_yuyv[1];
+    }
+    break;
+  }
+}
+
 bool CMPCOutputThread::GetDecoderOutput(void)
 {
   BCM::BC_STATUS ret;
@@ -892,6 +933,7 @@ bool CMPCOutputThread::GetDecoderOutput(void)
             }
           }
 
+          CheckUpperLeftGreenPixelHack(pBuffer);
           m_ReadyList.Push(pBuffer);
           m_ready_event.Set();
           got_picture = true;

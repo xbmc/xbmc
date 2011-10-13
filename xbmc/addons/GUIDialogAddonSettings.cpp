@@ -403,25 +403,36 @@ bool CGUIDialogAddonSettings::ShowVirtualKeyboard(int iControl)
         else if (strcmp(type, "addon") == 0)
         {
           const char *strType = setting->Attribute("addontype");
-          TYPE type = strType ? TranslateType(strType) : ADDON_UNKNOWN;
-          if (type != ADDON_UNKNOWN)
+          if (strType)
           {
-            const char *strMultiselect = setting->Attribute("multiselect");
-            bool multiSelect = strMultiselect && strcmpi(strMultiselect, "true") == 0;
-            if (multiSelect)
+            CStdStringArray addonTypes;
+            StringUtils::SplitString(strType, ",", addonTypes);
+            vector<ADDON::TYPE> types;
+            for (unsigned int i = 0 ; i < addonTypes.size() ; i++)
             {
-              // construct vector of addon IDs (IDs are comma seperated in single string)
-              CStdStringArray addonIDs;
-              StringUtils::SplitString(value, ",", addonIDs);
-              if (CGUIWindowAddonBrowser::SelectAddonID(type, addonIDs, false) == 1)
-              {
-                StringUtils::JoinString(addonIDs, ",", value);
-                ((CGUIButtonControl*) control)->SetLabel2(GetAddonNames(value));
-              }
+              ADDON::TYPE type = TranslateType(addonTypes[i].Trim());
+              if (type != ADDON_UNKNOWN)
+                types.push_back(type);
             }
-            else // no need of string splitting/joining if we select only 1 addon
-              if (CGUIWindowAddonBrowser::SelectAddonID(type, value, false) == 1)
-                ((CGUIButtonControl*) control)->SetLabel2(GetAddonNames(value));
+            if (types.size() > 0)
+            {
+              const char *strMultiselect = setting->Attribute("multiselect");
+              bool multiSelect = strMultiselect && strcmpi(strMultiselect, "true") == 0;
+              if (multiSelect)
+              {
+                // construct vector of addon IDs (IDs are comma seperated in single string)
+                CStdStringArray addonIDs;
+                StringUtils::SplitString(value, ",", addonIDs);
+                if (CGUIWindowAddonBrowser::SelectAddonID(types, addonIDs, false) == 1)
+                {
+                  StringUtils::JoinString(addonIDs, ",", value);
+                  ((CGUIButtonControl*) control)->SetLabel2(GetAddonNames(value));
+                }
+              }
+              else // no need of string splitting/joining if we select only 1 addon
+                if (CGUIWindowAddonBrowser::SelectAddonID(types, value, false) == 1)
+                  ((CGUIButtonControl*) control)->SetLabel2(GetAddonNames(value));
+            }
           }
         }
         m_buttonValues[id] = value;

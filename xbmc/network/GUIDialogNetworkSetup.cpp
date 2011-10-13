@@ -127,7 +127,9 @@ void CGUIDialogNetworkSetup::OnInitWindow()
     return;
 
   pSpin->Clear();
+#ifdef HAS_FILESYSTEM_SMB
   pSpin->AddLabel(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB);
+#endif
   pSpin->AddLabel(g_localizeStrings.Get(20256), NET_PROTOCOL_HTSP);
   pSpin->AddLabel(g_localizeStrings.Get(20257), NET_PROTOCOL_VTP);
   pSpin->AddLabel(g_localizeStrings.Get(20258), NET_PROTOCOL_MYTH);
@@ -145,6 +147,9 @@ void CGUIDialogNetworkSetup::OnInitWindow()
 #endif
 #ifdef HAS_FILESYSTEM_SFTP
   pSpin->AddLabel(g_localizeStrings.Get(20260), NET_PROTOCOL_SFTP);
+#endif
+#ifdef HAS_FILESYSTEM_AFP
+  pSpin->AddLabel(g_localizeStrings.Get(20261), NET_PROTOCOL_AFP);
 #endif
 
   pSpin->SetValue(m_protocol);
@@ -307,7 +312,8 @@ void CGUIDialogNetworkSetup::UpdateButtons()
                                                                               m_protocol == NET_PROTOCOL_VTP ||
                                                                               m_protocol == NET_PROTOCOL_MYTH ||
                                                                               m_protocol == NET_PROTOCOL_TUXBOX||
-                                                                              m_protocol == NET_PROTOCOL_SFTP));
+                                                                              m_protocol == NET_PROTOCOL_SFTP ||
+                                                                              m_protocol == NET_PROTOCOL_AFP));
 }
 
 CStdString CGUIDialogNetworkSetup::ConstructPath() const
@@ -343,6 +349,8 @@ CStdString CGUIDialogNetworkSetup::ConstructPath() const
     url.SetProtocol("nfs");
   else if (m_protocol == NET_PROTOCOL_SFTP)
     url.SetProtocol("sftp");
+  else if (m_protocol == NET_PROTOCOL_AFP)
+    url.SetProtocol("afp");
     
   if (!m_username.IsEmpty())
   {
@@ -408,6 +416,8 @@ void CGUIDialogNetworkSetup::SetPath(const CStdString &path)
     m_protocol = NET_PROTOCOL_NFS;
   else if (protocol == "sftp" || protocol == "ssh")
     m_protocol = NET_PROTOCOL_SFTP;
+  else if (protocol == "afp")
+    m_protocol = NET_PROTOCOL_AFP;
   else
     m_protocol = NET_PROTOCOL_SMB;  // default to smb
   m_username = url.GetUserName();

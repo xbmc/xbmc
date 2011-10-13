@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <language locale="no">
   <charsets>
     <gui unicodefont="false">CP1252</gui>
@@ -10,7 +10,7 @@
     <subtitle>no</subtitle>
   </dvd>
   <regions>
-    <region locale="NO">
+    <region name="Norway" locale="NO">
       <dateshort>DD.MM.YYYY</dateshort>
       <datelong>D. MMMM YYYY</datelong>
       <time symbolAM="" symbolPM="">HH:mm:ss</time>
@@ -19,4 +19,9 @@
       <timezone>CEST</timezone>
     </region>
   </regions>
+
+  <sorttokens>
+    <token>The</token>
+  </sorttokens>
+
 </language>

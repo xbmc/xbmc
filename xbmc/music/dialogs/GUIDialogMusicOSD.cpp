@@ -80,9 +80,3 @@ void CGUIDialogMusicOSD::FrameMove()
   }
   CGUIDialog::FrameMove();
 }
-
-void CGUIDialogMusicOSD::OnInitWindow()
-{
-  ResetControlStates();
-  CGUIDialog::OnInitWindow();
-}

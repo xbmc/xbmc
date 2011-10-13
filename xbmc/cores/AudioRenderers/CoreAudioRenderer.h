@@ -140,6 +140,8 @@ public:
   virtual bool SetCurrentVolume(long nVolume);
   virtual void WaitCompletion();
   
+  virtual void SetDynamicRangeCompression(long drc);
+  
   // Unimplemented IAudioRenderer methods
   virtual int SetPlaySpeed(int iSpeed) {return 0;};
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers) {};
@@ -176,6 +178,7 @@ private:
   UInt32 m_OutputBufferIndex;
   
   CAUGenericSource m_AUConverter;
+  CAUDynamicsProcessor m_AUCompressor;
   
   bool m_Passthrough;
   bool m_EnableVolumeControl;

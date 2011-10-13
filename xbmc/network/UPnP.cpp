@@ -367,8 +367,8 @@ CUPnPServer::GetMimeType(const CFileItem& item,
                             const PLT_HttpRequestContext* context /* = NULL */)
 {
     CStdString path = item.GetPath();
-    if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) {
-        path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+    if (item.HasVideoInfoTag() && !item.GetVideoInfoTag()->GetPath().IsEmpty()) {
+        path = item.GetVideoInfoTag()->GetPath();
     } else if (item.HasMusicInfoTag() && !item.GetMusicInfoTag()->GetURL().IsEmpty()) {
         path = item.GetMusicInfoTag()->GetURL();
     }
@@ -2201,7 +2201,7 @@ CUPnPServer*
 CUPnP::CreateServer(int port /* = 0 */)
 {
     CUPnPServer* device =
-        new CUPnPServer("XBMC: Media Server:",
+        new CUPnPServer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME),
                         g_settings.m_UPnPUUIDServer.length()?g_settings.m_UPnPUUIDServer.c_str():NULL,
                         port);
 
@@ -2295,8 +2295,8 @@ CUPnPRenderer*
 CUPnP::CreateRenderer(int port /* = 0 */)
 {
     CUPnPRenderer* device =
-        new CUPnPRenderer("XBMC: Media Renderer",
-                          true,
+        new CUPnPRenderer(g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str(),
+                          false,
                           (g_settings.m_UPnPUUIDRenderer.length() ? g_settings.m_UPnPUUIDRenderer.c_str() : NULL),
                           port);
 

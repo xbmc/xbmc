@@ -54,13 +54,15 @@ bool CSaveFileStateJob::DoWork()
           else
             videodatabase.UpdateLastPlayed(m_item);
 
-          if (m_bookmark.timeInSeconds < 0.0f)
+          if (!m_item.HasVideoInfoTag() || m_item.GetVideoInfoTag()->m_resumePoint.timeInSeconds != m_bookmark.timeInSeconds)
           {
-            videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
-          }
-          else if (m_bookmark.timeInSeconds > 0.0f)
-          {
-            videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
+            if (m_bookmark.timeInSeconds < 0.0f)
+              videodatabase.ClearBookMarksOfFile(progressTrackingFile, CBookmark::RESUME);
+            else if (m_bookmark.timeInSeconds > 0.0f)
+              videodatabase.AddBookMarkToFile(progressTrackingFile, m_bookmark, CBookmark::RESUME);
+            if (m_item.HasVideoInfoTag())
+              m_item.GetVideoInfoTag()->m_resumePoint = m_bookmark;
+            updateListing = true;
           }
         }
 
@@ -84,7 +86,7 @@ bool CSaveFileStateJob::DoWork()
           CUtil::DeleteVideoDatabaseDirectoryCache();
           CFileItemPtr msgItem(new CFileItem(m_item));
           if (m_item.HasProperty("original_listitem_url"))
-            msgItem->SetPath(m_item.GetProperty("original_listitem_url"));
+            msgItem->SetPath(m_item.GetProperty("original_listitem_url").asString());
           CGUIMessage message(GUI_MSG_NOTIFY_ALL, g_windowManager.GetActiveWindow(), 0, GUI_MSG_UPDATE_ITEM, 1, msgItem); // 1 to update the listing as well
           g_windowManager.SendThreadMessage(message);
         }

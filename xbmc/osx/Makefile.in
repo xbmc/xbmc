@@ -13,6 +13,7 @@ SRCS = \
 	AutoPool.mm \
 	DarwinUtils.mm \
 	CocoaInterface.mm \
+	HotKeyController.m \
 	CoreAudio.cpp \
 	OSXGNUReplacements.c \
 	

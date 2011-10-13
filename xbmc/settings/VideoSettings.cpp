@@ -31,7 +31,8 @@
 
 CVideoSettings::CVideoSettings()
 {
-  m_InterlaceMethod = VS_INTERLACEMETHOD_NONE;
+  m_DeinterlaceMode = VS_DEINTERLACEMODE_OFF;
+  m_InterlaceMethod = VS_INTERLACEMETHOD_AUTO;
   m_ScalingMethod = GetDefaultScalingMethod();
   m_ViewMode = VIEW_MODE_NORMAL;
   m_CustomZoomAmount = 1.0f;
@@ -86,6 +87,7 @@ EDSSCALINGMETHOD CVideoSettings::GetDSPlayerScalingMethod()
 
 bool CVideoSettings::operator!=(const CVideoSettings &right) const
 {
+  if (m_DeinterlaceMode != right.m_DeinterlaceMode) return true;
   if (m_InterlaceMethod != right.m_InterlaceMethod) return true;
   if (m_ScalingMethod != right.m_ScalingMethod) return true;
   if (m_ViewMode != right.m_ViewMode) return true;

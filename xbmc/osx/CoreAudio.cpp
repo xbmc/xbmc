@@ -1685,5 +1685,255 @@ bool CAUMatrixMixer::SetOutputVolume(UInt32 element, Float32 vol)
   }
   return true;   
 }
+
+CAUMultibandCompressor::CAUMultibandCompressor()
+{
+  
+}
+
+CAUMultibandCompressor::~CAUMultibandCompressor()
+{
+  
+}
+
+bool CAUMultibandCompressor::Open()
+{
+  return CCoreAudioUnit::Open(kAudioUnitType_Effect, kAudioUnitSubType_MultiBandCompressor, kAudioUnitManufacturer_Apple);
+}
+
+bool CAUMultibandCompressor::Open(OSType type, OSType subType, OSType manufacturer)
+{
+  return Open();
+}
+
+OSStatus CAUMultibandCompressor::Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList)
+{
+  OSStatus ret = CAUGenericSource::Render(actionFlags, pTimeStamp, busNumber, frameCount, pBufList);
+  return ret;
+}
+
+bool CAUMultibandCompressor::Initialize()
+{
+  bool ret = CCoreAudioUnit::Initialize();
+  if (ret)
+  {
+    if (!SetPreGain(-30.0) ||
+        !SetAttackTime(0.02) ||
+        !SetReleaseTime(0.04))
+      return false;
+  }
+  return ret;
+}
+
+bool CAUMultibandCompressor::SetPostGain(Float32 gain)
+{
+  if (!m_Component)
+    return false;
+  
+  OSStatus ret = AudioUnitSetParameter(m_Component, kMultibandCompressorParam_Postgain, kAudioUnitScope_Global, 0, gain, 0);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CAUMultibandCompressor::SetPostGain: "
+              "Unable to set post-gain. ErrCode = Error = 0x%08x (%4.4s)",
+              (unsigned int)ret, CONVERT_OSSTATUS(ret));
+    return false;
+  }
+  return true;    
+}
+
+Float32 CAUMultibandCompressor::GetPostGain()
+{
+  if (!m_Component)
+    return 0.0f;
+  
+  Float32 gain = 0.0f;
+  OSStatus ret = AudioUnitGetParameter(m_Component, kMultibandCompressorParam_Postgain,
+                                       kAudioUnitScope_Output, 0, &gain);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CAUMultibandCompressor::GetPostGain: "
+              "Unable to get post-gain. ErrCode = Error = 0x%08x (%4.4s)",
+              (unsigned int)ret, CONVERT_OSSTATUS(ret));
+    return 0.0f;
+  }
+  return gain;  
+}
+
+bool CAUMultibandCompressor::SetPreGain(Float32 gain)
+{
+  if (!m_Component)
+    return false;
+  
+  OSStatus ret = AudioUnitSetParameter(m_Component, kMultibandCompressorParam_Pregain, kAudioUnitScope_Global, 0, gain, 0);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CAUMultibandCompressor::SetPreGain: "
+              "Unable to set pre-gain. ErrCode = Error = 0x%08x (%4.4s)",
+              (unsigned int)ret, CONVERT_OSSTATUS(ret));
+    return false;
+  }
+  return true;   
+}
+
+Float32 CAUMultibandCompressor::GetPreGain()
+{
+  if (!m_Component)
+    return 0.0f;
+  
+  Float32 gain = 0.0f;
+  OSStatus ret = AudioUnitGetParameter(m_Component, kMultibandCompressorParam_Pregain,
+                                       kAudioUnitScope_Output, 0, &gain);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CAUMultibandCompressor::GetPreGain: "
+              "Unable to get pre-gain. ErrCode = Error = 0x%08x (%4.4s)",
+              (unsigned int)ret, CONVERT_OSSTATUS(ret));
+    return 0.0f;
+  }
+  return gain;    
+}
+
+bool CAUMultibandCompressor::SetAttackTime(Float32 time)
+{
+  if (!m_Component)
+    return false;
+  
+  OSStatus ret = AudioUnitSetParameter(m_Component, kMultibandCompressorParam_AttackTime, kAudioUnitScope_Global, 0, time, 0);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CAUMultibandCompressor::SetAttackTime: "
+              "Unable to set attack time. ErrCode = Error = 0x%08x (%4.4s)",
+              (unsigned int)ret, CONVERT_OSSTATUS(ret));
+    return false;
+  }
+  return true;   
+}
+
+Float32 CAUMultibandCompressor::GetAttackTime()
+{
+  if (!m_Component)
+    return 0.0f;
+  
+  Float32 time = 0.0f;
+  OSStatus ret = AudioUnitGetParameter(m_Component, kMultibandCompressorParam_AttackTime, kAudioUnitScope_Global, 0, &time);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CAUMultibandCompressor::GetAttackTime: "
+              "Unable to get attack time. ErrCode = Error = 0x%08x (%4.4s)",
+              (unsigned int)ret, CONVERT_OSSTATUS(ret));
+    return 0.0f;
+  }
+  return time;    
+}
+
+bool CAUMultibandCompressor::SetReleaseTime(Float32 time)
+{
+  if (!m_Component)
+    return false;
+  
+  OSStatus ret = AudioUnitSetParameter(m_Component, kMultibandCompressorParam_ReleaseTime, kAudioUnitScope_Global, 0, time, 0);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CAUMultibandCompressor::SetReleaseTime: "
+              "Unable to set attack time. ErrCode = Error = 0x%08x (%4.4s)",
+              (unsigned int)ret, CONVERT_OSSTATUS(ret));
+    return false;
+  }
+  return true;   
+}
+
+Float32 CAUMultibandCompressor::GetReleaseTime()
+{
+  if (!m_Component)
+    return 0.0f;
+  
+  Float32 time = 0.0f;
+  OSStatus ret = AudioUnitGetParameter(m_Component, kMultibandCompressorParam_ReleaseTime, kAudioUnitScope_Global, 0, &time);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CAUMultibandCompressor::GetReleaseTime: "
+              "Unable to get attack time. ErrCode = Error = 0x%08x (%4.4s)",
+              (unsigned int)ret, CONVERT_OSSTATUS(ret));
+    return 0.0f;
+  }
+  return time;    
+}
+
+CAUDynamicsProcessor::CAUDynamicsProcessor()
+{
+  
+}
+
+CAUDynamicsProcessor::~CAUDynamicsProcessor()
+{
+  
+}
+
+bool CAUDynamicsProcessor::Open()
+{
+  return CCoreAudioUnit::Open(kAudioUnitType_Effect, kAudioUnitSubType_DynamicsProcessor, kAudioUnitManufacturer_Apple);
+}
+
+bool CAUDynamicsProcessor::Open(OSType type, OSType subType, OSType manufacturer)
+{
+  return Open();
+}
+
+OSStatus CAUDynamicsProcessor::Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList)
+{
+  OSStatus ret = CAUGenericSource::Render(actionFlags, pTimeStamp, busNumber, frameCount, pBufList);
+  return ret;
+}
+
+bool CAUDynamicsProcessor::Initialize()
+{
+  bool ret = CCoreAudioUnit::Initialize();
+  if (ret)
+  {
+    if (!SetMasterGain(6.0) ||
+        !SetCompressionThreshold(-35.0) ||
+        !SetHeadroom(30.0) ||
+        !SetExpansionRatio(1.0) ||
+        !SetExpansionThreshold(-100.0) ||
+        !SetAttackTime(0.03) ||
+        !SetReleaseTime(0.03))
+      return false;
+  }
+  return ret;
+}
+
+bool CAUDynamicsProcessor::SetFloatParam(UInt32 param, UInt32 element, Float32 val)
+{
+  if (!m_Component)
+    return false;
+  
+  OSStatus ret = AudioUnitSetParameter(m_Component, param, kAudioUnitScope_Global, element, val, 0);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CAUDynamicsProcessor::SetFloatParam: "
+              "Unable to set parameter (id: %d). ErrCode = Error = 0x%08x (%4.4s)",
+              param, (unsigned int)ret, CONVERT_OSSTATUS(ret));
+    return false;
+  }
+  return true;   
+}
+
+Float32 CAUDynamicsProcessor::GetFloatParam(UInt32 param, UInt32 element)
+{
+  if (!m_Component)
+    return 0.0f;
+  
+  Float32 val = 0.0f;
+  OSStatus ret = AudioUnitGetParameter(m_Component, param, kAudioUnitScope_Global, element, &val);
+  if (ret)
+  {
+    CLog::Log(LOGERROR, "CAUDynamicsProcessor::GetFloatParam: "
+              "Unable to get parameter (id: %d). ErrCode = Error = 0x%08x (%4.4s)",
+              param, (unsigned int)ret, CONVERT_OSSTATUS(ret));
+    return 0.0f;
+  }
+  return val;   
+}
+
 #endif
 #endif

@@ -457,6 +457,11 @@ bool CMythFile::Delete(const CURL& url)
       g_directoryCache.ClearDirectory(tvshows.Get());
     }
 
+    /*
+     * Reset the recorded programs cache so the updated list is retrieved from mythbackend.
+     */
+    m_session->ResetAllRecordedPrograms();
+
     return true;
   }
   return false;

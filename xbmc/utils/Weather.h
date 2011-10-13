@@ -59,23 +59,23 @@ public:
 
   void Reset()
   {
-    lastUpdateTime = "";
-    currentIcon = "";
-    currentConditions = "";
-    currentTemperature = "";
-    currentFeelsLike = "";
-    currentWind = "";
-    currentHumidity = "";
-    currentUVIndex = "";
-    currentDewPoint = "";
+    lastUpdateTime.clear();
+    currentIcon.clear();
+    currentConditions.clear();
+    currentTemperature.clear();
+    currentFeelsLike.clear();
+    currentWind.clear();
+    currentHumidity.clear();
+    currentUVIndex.clear();
+    currentDewPoint.clear();
 
     for (int i = 0; i < NUM_DAYS; i++)
     {
-      forecast[i].m_icon = "";
-      forecast[i].m_overview = "";
-      forecast[i].m_day = "";
-      forecast[i].m_high = "";
-      forecast[i].m_low = "";
+      forecast[i].m_icon.clear();
+      forecast[i].m_overview.clear();
+      forecast[i].m_day.clear();
+      forecast[i].m_high.clear();
+      forecast[i].m_low.clear();
     }
   };
 

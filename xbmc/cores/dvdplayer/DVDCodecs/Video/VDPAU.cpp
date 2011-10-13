@@ -112,6 +112,8 @@ CVDPAU::CVDPAU()
 
   tmpBrightness  = 0;
   tmpContrast    = 0;
+  tmpDeintMode   = 0;
+  tmpDeintGUI    = 0;
   tmpDeint       = 0;
   max_references = 0;
 
@@ -123,7 +125,7 @@ CVDPAU::CVDPAU()
   upScale = g_advancedSettings.m_videoVDPAUScaling;
 }
 
-bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat)
+bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces)
 {
   if(avctx->width  == 0
   || avctx->height == 0)
@@ -474,9 +476,17 @@ void CVDPAU::CheckFeatures()
     tmpSharpness = g_settings.m_currentVideoSettings.m_Sharpness;
     SetSharpness();
   }
-  if (tmpDeint != g_settings.m_currentVideoSettings.m_InterlaceMethod)
+  if (  tmpDeintMode != g_settings.m_currentVideoSettings.m_DeinterlaceMode ||
+        tmpDeintGUI  != g_settings.m_currentVideoSettings.m_InterlaceMethod ||
+       (tmpDeintGUI == VS_INTERLACEMETHOD_AUTO && tmpDeint != AutoInterlaceMethod()))
   {
-    tmpDeint = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    tmpDeintMode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
+    tmpDeintGUI  = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    if (tmpDeintGUI == VS_INTERLACEMETHOD_AUTO)
+      tmpDeint = AutoInterlaceMethod();
+    else
+      tmpDeint = tmpDeintGUI;
+
     SetDeinterlacing();
   }
 }
@@ -503,6 +513,11 @@ bool CVDPAU::Supports(EINTERLACEMETHOD method)
       return Supports(p->feature);
   }
   return false;
+}
+
+EINTERLACEMETHOD CVDPAU::AutoInterlaceMethod()
+{
+  return VS_INTERLACEMETHOD_VDPAU_TEMPORAL;
 }
 
 void CVDPAU::SetColor()
@@ -600,39 +615,45 @@ void CVDPAU::SetHWUpscaling()
 void CVDPAU::SetDeinterlacing()
 {
   VdpStatus vdp_st;
+  EDEINTERLACEMODE   mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
   EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+  if (method == VS_INTERLACEMETHOD_AUTO)
+    method = AutoInterlaceMethod();
 
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
                                      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
                                      VDP_VIDEO_MIXER_FEATURE_INVERSE_TELECINE };
-
-  if (method == VS_INTERLACEMETHOD_AUTO)
-  {
-    VdpBool enabled[]={1,0,0}; // Same features as VS_INTERLACEMETHOD_VDPAU_TEMPORAL
-    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-  }
-  else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
-       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
-  {
-    VdpBool enabled[]={1,0,0};
-    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-  }
-  else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
-       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
-  {
-    VdpBool enabled[]={1,1,0};
-    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-  }
-  else if (method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE)
-  {
-    VdpBool enabled[]={1,0,1};
-    vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-  }
-  else
+  if (mode == VS_DEINTERLACEMODE_OFF)
   {
     VdpBool enabled[]={0,0,0};
     vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
   }
+  else
+  {
+    if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
+    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF)
+    {
+      VdpBool enabled[]={1,0,0};
+      vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+    }
+    else if (method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
+         ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF)
+    {
+      VdpBool enabled[]={1,1,0};
+      vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+    }
+    else if (method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE)
+    {
+      VdpBool enabled[]={1,0,1};
+      vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+    }
+    else
+    {
+      VdpBool enabled[]={0,0,0};
+      vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
+    }
+  }
+
   CheckStatus(vdp_st, __LINE__);
 }
 
@@ -1130,7 +1151,10 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     outRectVid.y1 = OutHeight;
   }
 
+  EDEINTERLACEMODE   mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
   EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+  if (method == VS_INTERLACEMETHOD_AUTO)
+    method = AutoInterlaceMethod();
 
   if(pFrame)
   { // we have a new frame from decoder
@@ -1165,26 +1189,33 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
         m_DVDVideoPics.pop();
     }
 
-    if((method == VS_INTERLACEMETHOD_AUTO &&
-                  m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED)
-    ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
-    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
-    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
-    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
-    ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
-    ||  method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE )
+    if (mode == VS_DEINTERLACEMODE_FORCE
+    || (mode == VS_DEINTERLACEMODE_AUTO && m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED))
     {
-      if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
-      || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
-      || avctx->skip_frame == AVDISCARD_NONREF)
-        m_mixerstep = 0;
-      else
-        m_mixerstep = 1;
+      if((method == VS_INTERLACEMETHOD_VDPAU_BOB
+      ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
+      ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
+      ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL
+      ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
+      ||  method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE ))
+      {
+        if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
+        || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
+        || avctx->skip_frame == AVDISCARD_NONREF)
+          m_mixerstep = 0;
+        else
+          m_mixerstep = 1;
 
-      if(m_DVDVideoPics.front().iFlags & DVP_FLAG_TOP_FIELD_FIRST)
-        m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
+        if(m_DVDVideoPics.front().iFlags & DVP_FLAG_TOP_FIELD_FIRST)
+          m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_TOP_FIELD;
+        else
+          m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
+      }
       else
-        m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_BOTTOM_FIELD;
+      {
+        m_mixerstep  = 0;
+        m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
+      }
     }
     else
     {

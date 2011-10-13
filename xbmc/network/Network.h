@@ -87,6 +87,9 @@ public:
    CNetwork();
    virtual ~CNetwork();
 
+   // Return our hostname
+   virtual CStdString GetHostName(void);
+
    // Return the list of interfaces
    virtual std::vector<CNetworkInterface*>& GetInterfaceList(void) = 0;
    CNetworkInterface* GetInterfaceByName(CStdString& name);

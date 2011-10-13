@@ -24,6 +24,7 @@
 #include "windowing/WindowingFactory.h"
 #include "utils/fastmemcpy.h"
 #include "settings/GUISettings.h"
+#include "settings/AdvancedSettings.h"
 
 CRenderCaptureBase::CRenderCaptureBase()
 {
@@ -42,12 +43,25 @@ CRenderCaptureBase::~CRenderCaptureBase()
 {
 }
 
+bool CRenderCaptureBase::UseOcclusionQuery()
+{
+  if (m_flags & CAPTUREFLAG_IMMEDIATELY)
+    return false;
+  else if ((g_advancedSettings.m_videoCaptureUseOcclusionQuery == 0) ||
+           (g_advancedSettings.m_videoCaptureUseOcclusionQuery == -1 &&
+            g_Windowing.GetRenderQuirks() & RENDER_QUIRKS_BROKEN_OCCLUSION_QUERY))
+    return false;
+  else
+    return true;
+}
+
 #if defined(HAS_GL) || defined(HAS_GLES)
 
 CRenderCaptureGL::CRenderCaptureGL()
 {
   m_pbo   = 0;
   m_query = 0;
+  m_occlusionQuerySupported = false;
 }
 
 CRenderCaptureGL::~CRenderCaptureGL()
@@ -71,24 +85,34 @@ CRenderCaptureGL::~CRenderCaptureGL()
   delete[] m_pixels;
 }
 
+int CRenderCaptureGL::GetCaptureFormat()
+{
+#ifdef HAS_GLES
+  return CAPTUREFORMAT_RGBA;
+#else
+  return CAPTUREFORMAT_BGRA;
+#endif
+}
+
 void CRenderCaptureGL::BeginRender()
 {
   if (!m_asyncChecked)
   {
 #ifndef HAS_GLES
     bool usePbo = g_guiSettings.GetBool("videoplayer.usepbo");
-    m_asyncSupported = g_Windowing.IsExtSupported("GL_ARB_occlusion_query") &&
-                       g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object") &&
-                       usePbo;
+    m_asyncSupported = g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object") && usePbo;
+    m_occlusionQuerySupported = g_Windowing.IsExtSupported("GL_ARB_occlusion_query");
 
     if (m_flags & CAPTUREFLAG_CONTINUOUS)
     {
-      if (!g_Windowing.IsExtSupported("GL_ARB_occlusion_query"))
+      if (!m_occlusionQuerySupported)
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_occlusion_query not supported, performance might suffer");
       if (!g_Windowing.IsExtSupported("GL_ARB_pixel_buffer_object"))
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_pixel_buffer_object not supported, performance might suffer");
       if (!usePbo)
         CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_pixel_buffer_object disabled, performance might suffer");
+      if (UseOcclusionQuery())
+        CLog::Log(LOGWARNING, "CRenderCaptureGL: GL_ARB_occlusion_query disabled, performance might suffer");
     }
 #endif
     m_asyncChecked = true;
@@ -100,15 +124,20 @@ void CRenderCaptureGL::BeginRender()
     if (!m_pbo)
       glGenBuffersARB(1, &m_pbo);
 
-    //only use a query when not capturing immediately
-    if (!m_query && !(m_flags & CAPTUREFLAG_IMMEDIATELY))
+    if (UseOcclusionQuery() && m_occlusionQuerySupported)
     {
-      glGenQueriesARB(1, &m_query);
+      //generate an occlusion query if we don't have one
+      if (!m_query)
+        glGenQueriesARB(1, &m_query);
     }
-    else if (m_query && (m_flags & CAPTUREFLAG_IMMEDIATELY))
-    { //clean up any old query if the previous capture was not immediately
-      glDeleteQueriesARB(1, &m_query);
-      m_query = 0;
+    else
+    {
+      //don't use an occlusion query, clean up any old one
+      if (m_query)
+      {
+        glDeleteQueriesARB(1, &m_query);
+        m_query = 0;
+      }
     }
 
     //start the occlusion query
@@ -235,16 +264,25 @@ CRenderCaptureDX::~CRenderCaptureDX()
   g_Windowing.Unregister(this);
 }
 
+int CRenderCaptureDX::GetCaptureFormat()
+{
+  return CAPTUREFORMAT_BGRA;
+}
+
 void CRenderCaptureDX::BeginRender()
 {
   LPDIRECT3DDEVICE9 pD3DDevice = g_Windowing.Get3DDevice();
 
   if (!m_asyncChecked)
   {
-    //check if occlusion query is supported
     m_asyncSupported = pD3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, NULL) == D3D_OK;
-    if (!m_asyncSupported && (m_flags & CAPTUREFLAG_CONTINUOUS))
-      CLog::Log(LOGWARNING, "CRenderCaptureDX: D3DQUERYTYPE_OCCLUSION not supported, performance might suffer");
+    if (m_flags & CAPTUREFLAG_CONTINUOUS)
+    {
+      if (!m_asyncSupported)
+        CLog::Log(LOGWARNING, "CRenderCaptureDX: D3DQUERYTYPE_OCCLUSION not supported, performance might suffer");
+      if (!UseOcclusionQuery())
+        CLog::Log(LOGWARNING, "CRenderCaptureDX: D3DQUERYTYPE_OCCLUSION disabled, performance might suffer");
+    }
 
     m_asyncChecked = true;
   }
@@ -303,18 +341,36 @@ void CRenderCaptureDX::BeginRender()
     return;
   }
 
-  if (m_asyncSupported && !m_query)
+  if (m_asyncSupported && UseOcclusionQuery())
   {
-    result = pD3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, &m_query);
-    if (result != D3D_OK)
+    //generate an occlusion query if we don't have one
+    if (!m_query)
     {
-      CLog::Log(LOGERROR, "CRenderCaptureDX::BeginRender: CreateQuery failed %s",
-                g_Windowing.GetErrorDescription(result).c_str());
-      m_asyncSupported = false;
+      result = pD3DDevice->CreateQuery(D3DQUERYTYPE_OCCLUSION, &m_query);
+      if (result != D3D_OK)
+      {
+        CLog::Log(LOGERROR, "CRenderCaptureDX::BeginRender: CreateQuery failed %s",
+                  g_Windowing.GetErrorDescription(result).c_str());
+        m_asyncSupported = false;
+        if (m_query)
+        {
+          while (m_query->Release() > 0);
+          m_query = NULL;
+        }
+      }
+    }
+  }
+  else
+  {
+    //don't use an occlusion query, clean up any old one
+    if (m_query)
+    {
+      while (m_query->Release() > 0);
+      m_query = NULL;
     }
   }
 
-  if (m_asyncSupported)
+  if (m_query)
     m_query->Issue(D3DISSUE_BEGIN);
 }
 
@@ -325,7 +381,7 @@ void CRenderCaptureDX::EndRender()
   //so the render thread doesn't have to wait for the gpu to copy the data to m_copySurface
   pD3DDevice->GetRenderTargetData(m_renderSurface, m_copySurface);
 
-  if (m_asyncSupported)
+  if (m_query)
   {
     m_query->Issue(D3DISSUE_END);
     m_query->GetData(NULL, 0, D3DGETDATA_FLUSH); //flush the query request
@@ -339,7 +395,7 @@ void CRenderCaptureDX::EndRender()
 
 void CRenderCaptureDX::ReadOut()
 {
-  if (m_asyncSupported)
+  if (m_query)
   {
     //if the result of the occlusion query is available, the data is probably also written into m_copySurface
     HRESULT result = m_query->GetData(NULL, 0, D3DGETDATA_FLUSH);
@@ -410,7 +466,7 @@ void CRenderCaptureDX::CleanupDX()
     m_copySurface = NULL;
   }
 
-  if (m_asyncSupported && m_query)
+  if (m_query)
   {
     while (m_query->Release() > 0);
     m_query = NULL;

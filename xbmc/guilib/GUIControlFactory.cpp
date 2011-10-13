@@ -857,6 +857,10 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   // the <texture> tag can be overridden by the <info> tag
   GetInfoTexture(pControlNode, "texture", texture, textureFile);
+#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
+  if (type == CGUIControl::GUICONTROL_IMAGE && insideContainer && textureFile.IsConstant())
+    aspect.ratio = CAspectRatio::AR_STRETCH;
+#endif
 
   GetTexture(pControlNode, "bordertexture", borderTexture);
 
@@ -1195,10 +1199,6 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     else
       control = new CGUIBorderedImage(
         parentID, id, posX, posY, width, height, texture, borderTexture, borderSize);
-#ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
-    if (insideContainer && textureFile.IsConstant())
-      aspect.ratio = CAspectRatio::AR_STRETCH;
-#endif
     ((CGUIImage *)control)->SetInfo(textureFile);
     ((CGUIImage *)control)->SetAspectRatio(aspect);
     ((CGUIImage *)control)->SetCrossFade(fadeTime);
@@ -1218,6 +1218,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIListContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems);
     ((CGUIListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIListContainer *)control)->LoadContent(pControlNode);
+    ((CGUIListContainer *)control)->SetDefaultControl(defaultControl, defaultAlways);
     ((CGUIListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIListContainer *)control)->SetPageControl(pageControl);
     ((CGUIListContainer *)control)->SetRenderOffset(offset);
@@ -1230,6 +1231,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIWrappingListContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems, focusPosition);
     ((CGUIWrappingListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIWrappingListContainer *)control)->LoadContent(pControlNode);
+    ((CGUIWrappingListContainer *)control)->SetDefaultControl(defaultControl, defaultAlways);
     ((CGUIWrappingListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIWrappingListContainer *)control)->SetPageControl(pageControl);
     ((CGUIWrappingListContainer *)control)->SetRenderOffset(offset);
@@ -1242,6 +1244,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIFixedListContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems, focusPosition, iMovementRange);
     ((CGUIFixedListContainer *)control)->LoadLayout(pControlNode);
     ((CGUIFixedListContainer *)control)->LoadContent(pControlNode);
+    ((CGUIFixedListContainer *)control)->SetDefaultControl(defaultControl, defaultAlways);
     ((CGUIFixedListContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIFixedListContainer *)control)->SetPageControl(pageControl);
     ((CGUIFixedListContainer *)control)->SetRenderOffset(offset);
@@ -1254,6 +1257,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
     control = new CGUIPanelContainer(parentID, id, posX, posY, width, height, orientation, scroller, preloadItems);
     ((CGUIPanelContainer *)control)->LoadLayout(pControlNode);
     ((CGUIPanelContainer *)control)->LoadContent(pControlNode);
+    ((CGUIPanelContainer *)control)->SetDefaultControl(defaultControl, defaultAlways);
     ((CGUIPanelContainer *)control)->SetType(viewType, viewLabel);
     ((CGUIPanelContainer *)control)->SetPageControl(pageControl);
     ((CGUIPanelContainer *)control)->SetRenderOffset(offset);

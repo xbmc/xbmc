@@ -34,6 +34,11 @@
 
 #include <nfsc/libnfs-raw-mount.h>
 
+#ifdef TARGET_WINDOWS
+#include <fcntl.h>
+#include <sys\stat.h>
+#endif
+
 //KEEP_ALIVE_TIMEOUT is decremented every half a second
 //480 * 0.5s == 240s == 4mins
 //so when no read was done for 4mins and files are open
@@ -159,7 +164,7 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
       //GetFileName returns path without leading "/"
       //but we need it because the export paths start with "/"
       //and path.Find(*it) wouldn't work else
-      if(path[0] != '/')
+      if(!path.empty() && path[0] != '/')
       {
         path = "/" + path;
       }
@@ -262,11 +267,11 @@ void CNfsConnection::CheckIfIdle()
       }
       else
       {
+        lock.Leave();
         keepAlive(it->first);
         //reset timeout
-        it->second = KEEP_ALIVE_TIMEOUT;
+        resetKeepAlive(it->first);
       }
-      lock.Leave();      
     }
   }
 }
@@ -298,6 +303,47 @@ void CNfsConnection::keepAlive(struct nfsfh  *_pFileHandle)
   m_pLibNfs->nfs_lseek(m_pNfsContext, _pFileHandle, 0, SEEK_CUR, &offset);
   m_pLibNfs->nfs_read(m_pNfsContext, _pFileHandle, 32, buffer);
   m_pLibNfs->nfs_lseek(m_pNfsContext, _pFileHandle, offset, SEEK_SET, &offset);
+}
+
+int CNfsConnection::stat(const CURL &url, struct stat *statbuff)
+{
+  CSingleLock lock(*this);
+  int nfsRet = 0;
+  CStdString exportPath;
+  CStdString relativePath;
+  struct nfs_context *pTmpContext = NULL;
+  
+  if(!HandleDyLoad())
+  {
+    return -1;
+  }
+  
+  resolveHost(url);
+  
+  if(splitUrlIntoExportAndPath(url, exportPath, relativePath))
+  {    
+    pTmpContext = m_pLibNfs->nfs_init_context();
+    
+    if(pTmpContext)
+    {  
+      //we connect to the directory of the path. This will be the "root" path of this connection then.
+      //So all fileoperations are relative to this mountpoint...
+      nfsRet = m_pLibNfs->nfs_mount(pTmpContext, m_resolvedHostName.c_str(), exportPath.c_str());
+      
+      if(nfsRet == 0) 
+      {
+        nfsRet = m_pLibNfs->nfs_stat(pTmpContext, relativePath.c_str(), statbuff);      
+      }
+      else
+      {
+        CLog::Log(LOGERROR,"NFS: Failed to mount nfs share: %s (%s)\n", exportPath.c_str(), m_pLibNfs->nfs_get_error(m_pNfsContext));
+      }
+      
+      m_pLibNfs->nfs_destroy_context(pTmpContext);
+      CLog::Log(LOGDEBUG,"NFS: Connected to server %s and export %s in tmpContext\n", url.GetHostName().c_str(), exportPath.c_str());
+    }
+  }
+  return nfsRet;
 }
 
 /* The following two function is used to keep track on how many Opened files/directories there are.
@@ -385,11 +431,8 @@ bool CFileNFS::Open(const CURL& url)
   CLog::Log(LOGDEBUG,"CFileNFS::Open - opened %s",url.GetFileName().c_str());
   m_url=url;
   
-#ifdef _LINUX
   struct __stat64 tmpBuffer;
-#else
-  struct stat tmpBuffer;
-#endif
+
   if( Stat(&tmpBuffer) )
   {
     m_url.Reset();
@@ -463,7 +506,11 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
   if (m_pFileHandle == NULL || gNfsConnection.GetNfsContext()==NULL ) return 0;
 
   numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(gNfsConnection.GetNfsContext(), m_pFileHandle, uiBufSize, (char *)lpBuf);  
+
+  lock.Leave();//no need to keep the connection lock after that
+  
   gNfsConnection.resetKeepAlive(m_pFileHandle);//triggers keep alive timer reset for this filehandle
+  
   //something went wrong ...
   if (numberOfBytesRead < 0) 
   {
@@ -631,11 +678,8 @@ bool CFileNFS::OpenForWrite(const CURL& url, bool bOverWrite)
   }
   m_url=url;
   
-#ifdef _LINUX
   struct __stat64 tmpBuffer = {0};
-#else
-  struct stat tmpBuffer = {0};
-#endif
+
   //only stat if file was not created
   if(!bOverWrite) 
   {

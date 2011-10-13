@@ -1020,8 +1020,8 @@ bool validate_avcC_spc(uint8_t *extradata, uint32_t extrasize, int32_t *max_ref_
   uint32_t sps_size = VDA_RB16(spc);
   if (sps_size)
     parseh264_sps(spc+3, sps_size-1, &interlaced, max_ref_frames);
-  if (interlaced)
-    return false;
+  //if (interlaced)
+  //  return false;
   return true;
 }
 
@@ -1070,6 +1070,13 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     profile = hints.profile;
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
+ 
+    if (hints.profile == 77 && hints.level == 32)
+    {
+      // Main@L3.2, VTB cannot handle it
+      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode.", __FUNCTION__);
+      return false;
+    }
  
     switch (hints.codec)
     {
@@ -1462,12 +1469,12 @@ CDVDVideoCodecVideoToolBox::CreateVTSession(int width, int height, CMFormatDescr
   OSStatus status;
 
   #if defined(__arm__)
-    // decoding, scaling and rendering above 1920 x 900 runs into
+    // decoding, scaling and rendering above 1920 x 800 runs into
     // some bandwidth limit. detect and scale down to reduce
     // the bandwidth requirements.
     int width_clamp = 1280;
-    if ((width * height) > (1920 * 900))
-      width_clamp = 1024;
+    if ((width * height) > (1920 * 800))
+      width_clamp = 960;
 
     int new_width = CheckNP2(width);
     if (width != new_width)

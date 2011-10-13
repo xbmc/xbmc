@@ -310,9 +310,13 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
                                                      &CWebServer::ContentReaderCallback, file,
                                                      &CWebServer::ContentReaderFreeCallback); 
     } else {
+      CStdString contentLength;
+      contentLength.Format("%I64d", file->GetLength());
       file->Close();
       delete file;
+
       response = MHD_create_response_from_data (0, NULL, MHD_NO, MHD_NO);
+      MHD_add_response_header(response, "Content-Length", contentLength);
     }
 
     CStdString ext = URIUtils::GetExtension(strURL);

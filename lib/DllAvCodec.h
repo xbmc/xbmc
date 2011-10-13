@@ -284,7 +284,6 @@ public:
 class DllAvCodec : public DllDynamic, DllAvCodecInterface
 {
   DECLARE_DLL_WRAPPER(DllAvCodec, DLL_PATH_LIBAVCODEC)
-#ifndef _LINUX
   DEFINE_FUNC_ALIGNED1(void, __cdecl, avcodec_flush_buffers, AVCodecContext*)
   DEFINE_FUNC_ALIGNED2(int, __cdecl, avcodec_open_dont_call, AVCodecContext*, AVCodec *)
   DEFINE_FUNC_ALIGNED5(int, __cdecl, avcodec_decode_video, AVCodecContext*, AVFrame*, int*, uint8_t*, int)
@@ -295,18 +294,6 @@ class DllAvCodec : public DllDynamic, DllAvCodecInterface
   DEFINE_FUNC_ALIGNED0(AVCodecContext*, __cdecl, avcodec_alloc_context)
   DEFINE_FUNC_ALIGNED1(AVCodecParserContext*, __cdecl, av_parser_init, int)
   DEFINE_FUNC_ALIGNED9(int, __cdecl, av_parser_parse2, AVCodecParserContext*,AVCodecContext*, uint8_t**, int*, const uint8_t*, int, int64_t, int64_t, int64_t)
-#else
-  DEFINE_METHOD1(void, avcodec_flush_buffers, (AVCodecContext* p1))
-  DEFINE_METHOD2(int, avcodec_open_dont_call, (AVCodecContext* p1, AVCodec *p2))
-  DEFINE_METHOD5(int, avcodec_decode_video, (AVCodecContext* p1, AVFrame *p2, int *p3, uint8_t *p4, int p5))
-  DEFINE_METHOD4(int, avcodec_decode_video2, (AVCodecContext* p1, AVFrame *p2, int *p3, AVPacket *p4))
-  DEFINE_METHOD4(int, avcodec_decode_audio3, (AVCodecContext* p1, int16_t *p2, int *p3, AVPacket *p4))
-  DEFINE_METHOD4(int, avcodec_decode_subtitle2, (AVCodecContext* p1, AVSubtitle *p2, int *p3, AVPacket *p4))
-  DEFINE_METHOD4(int, avcodec_encode_audio, (AVCodecContext* p1, uint8_t *p2, int p3, const short *p4))
-  DEFINE_METHOD0(AVCodecContext*, avcodec_alloc_context)
-  DEFINE_METHOD1(AVCodecParserContext*, av_parser_init, (int p1))
-  DEFINE_METHOD9(int, av_parser_parse2, (AVCodecParserContext* p1, AVCodecContext* p2, uint8_t** p3, int* p4, const uint8_t* p5, int p6, int64_t p7, int64_t p8, int64_t p9))
-#endif
   DEFINE_METHOD1(int, av_dup_packet, (AVPacket *p1))
   DEFINE_METHOD1(void, av_init_packet, (AVPacket *p1))
   DEFINE_METHOD2(int, av_new_packet, (AVPacket *p1, int p2))

@@ -44,6 +44,8 @@ public:
   {
   };
 
+  virtual ~InfoBool() {};
+
   /*! \brief Get the value of this info bool
    This is called to update (if necessary) and fetch the value of the info bool
    \param time current time (used to test if we need to update yet)
@@ -88,6 +90,8 @@ class InfoSingle : public InfoBool
 {
 public:
   InfoSingle(const CStdString &condition, int context);
+  virtual ~InfoSingle() {};
+
   virtual void Update(const CGUIListItem *item);
 private:
   int m_condition;             ///< actual condition this represents
@@ -99,6 +103,8 @@ class InfoExpression : public InfoBool
 {
 public:
   InfoExpression(const CStdString &expression, int context);
+  virtual ~InfoExpression() {};
+
   virtual void Update(const CGUIListItem *item);
 private:
   void Parse(const CStdString &expression);

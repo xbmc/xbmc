@@ -58,6 +58,7 @@ typedef enum _RENDERERTYPE
   RENDERER_DSHOW  = 2
 } RENDERERTYPE;
 #endif
+struct DVDVideoPicture;
 
 class CBaseRenderer
 {
@@ -69,6 +70,10 @@ public:
   RESOLUTION GetResolution() const;
   void GetVideoRect(CRect &source, CRect &dest);
   float GetAspectRatio() const;
+
+  virtual bool AddVideoPicture(DVDVideoPicture* picture) { return false; }
+
+  virtual unsigned int GetProcessorSize() { return 0; }
 
 protected:
   void       ChooseBestResolution(float fps);
