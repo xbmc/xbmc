@@ -32,13 +32,13 @@
 #include "peripherals/bus/PeripheralBus.h"
 #include "utils/log.h"
 
-#include <libcec/CECExports.h>
+#include <cec.h>
 
 using namespace PERIPHERALS;
 using namespace ANNOUNCEMENT;
 using namespace CEC;
 
-#define CEC_LIB_SUPPORTED_VERSION 6
+#define CEC_LIB_SUPPORTED_VERSION 7
 
 class DllLibCECInterface
 {
