@@ -76,6 +76,7 @@ namespace PERIPHERALS
     bool              m_bStarted;
     bool              m_bHasButton;
     bool              m_bIsReady;
+    CDateTime         m_screensaverLastActivated;
     CecButtonPress    m_button;
     CCriticalSection  m_critSection;
   };

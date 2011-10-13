@@ -40,6 +40,9 @@ using namespace CEC;
 
 #define CEC_LIB_SUPPORTED_VERSION 7
 
+/* time in seconds to ignore standby commands from devices */
+#define SCREENSAVER_TIMEOUT       10
+
 class DllLibCECInterface
 {
 public:
@@ -68,6 +71,7 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   m_bHasButton(false),
   m_bIsReady(false)
 {
+  m_screensaverLastActivated.SetValid(false);
   m_dll = new DllLibCEC;
   if (m_dll->Load() && m_dll->IsLoaded())
     m_cecAdapter = m_dll->CECCreate("XBMC", CECDEVICE_PLAYBACKDEVICE1, CEC_DEFAULT_PHYSICAL_ADDRESS);
@@ -125,6 +129,7 @@ void CPeripheralCecAdapter::Announce(EAnnouncementFlag flag, const char *sender,
   }
   else if (flag == GUI && !strcmp(sender, "xbmc") && !strcmp(message, "OnScreensaverActivated") && GetSettingBool("cec_standby_screensaver"))
   {
+    m_screensaverLastActivated = CDateTime::GetCurrentDateTime();
     m_cecAdapter->StandbyDevices();
   }
   else if (flag == System && !strcmp(sender, "xbmc") && !strcmp(message, "OnSleep"))
@@ -307,8 +312,11 @@ void CPeripheralCecAdapter::ProcessNextCommand(void)
       CLog::Log(LOGDEBUG, "%s - device %d was put in standby mode", __FUNCTION__, command.initiator);
       if (command.initiator == CECDEVICE_TV && GetSettingBool("standby_pc_on_tv_standby"))
       {
-        m_bStarted = false;
-        g_application.getApplicationMessenger().Suspend();
+        if (!m_screensaverLastActivated.IsValid() || CDateTime::GetCurrentDateTime() - m_screensaverLastActivated > CDateTimeSpan(0, 0, 0, SCREENSAVER_TIMEOUT))
+        {
+          m_bStarted = false;
+          g_application.getApplicationMessenger().Suspend();
+        }
       }
       break;
     default:
