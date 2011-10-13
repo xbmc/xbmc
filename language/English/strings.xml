@@ -2385,7 +2385,7 @@
   <string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>
   <string id="36014">Put this PC in standby mode when the TV is switched off</string>
 
-    <!-- 35000-35100 reserved for DSPlayer-->
+    <!-- 55000-55100 reserved for DSPlayer-->
   <string id="55000">DSPlayer</string>
   <string id="55001">Use VMR9 instead of EVR Renderer</string>
   <string id="55002">Use EVR instead of VMR9 Renderer</string>
@@ -2407,7 +2407,7 @@
   <string id="52018">There is no shader loaded</string>
   <string id="55020">Force internal filters</string>
 
-  <!--  35050-35100 Directshow Subtitles -->
+  <!--  55050-55100 Directshow Subtitles -->
   <string id="55050">- Border line</string>
   <string id="55051">Outline</string>
   <string id="55052">Opaque</string>
