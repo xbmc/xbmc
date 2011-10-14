@@ -75,6 +75,7 @@ chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 
 # postinst: nothing for now.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "chown -R mobile:mobile /Applications/XBMC.app" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/postinst
 
 # prep XBMC.app
