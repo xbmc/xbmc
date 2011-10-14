@@ -216,7 +216,7 @@ void CAddonsDirectory::GenerateListing(CURL &path, VECADDONS& addons, CFileItemL
     AddonPtr addon2;
     if (CAddonMgr::Get().GetAddon(addon->ID(),addon2))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(305));
-    else if ((addon->Type() == ADDON_PVRDLL) && (pItem->GetProperty("Addon.Path").Left(xbmcPath.size()).Equals(xbmcPath)))
+    else if ((addon->Type() == ADDON_PVRDLL) && (CStdString(pItem->GetProperty("Addon.Path").asString()).Left(xbmcPath.size()).Equals(xbmcPath)))
       pItem->SetProperty("Addon.Status",g_localizeStrings.Get(24023));
 
     if (!addon->Props().broken.IsEmpty())

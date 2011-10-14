@@ -618,7 +618,7 @@ const char* CAddonCallbacksGUI::Window_GetProperty(void *addonData, GUIHANDLE ha
 
   Lock();
   CStdString lowerKey = key;
-  string value = pWindow->GetProperty(lowerKey.ToLower());
+  string value = pWindow->GetProperty(lowerKey.ToLower()).asString();
   Unlock();
 
   return value.c_str();
@@ -645,7 +645,7 @@ int CAddonCallbacksGUI::Window_GetPropertyInt(void *addonData, GUIHANDLE handle,
 
   Lock();
   CStdString lowerKey = key;
-  int value = pWindow->GetPropertyInt(lowerKey.ToLower());
+  int value = pWindow->GetProperty(lowerKey.ToLower()).asInteger();
   Unlock();
 
   return value;
@@ -672,7 +672,7 @@ bool CAddonCallbacksGUI::Window_GetPropertyBool(void *addonData, GUIHANDLE handl
 
   Lock();
   CStdString lowerKey = key;
-  bool value = pWindow->GetPropertyBool(lowerKey.ToLower());
+  bool value = pWindow->GetProperty(lowerKey.ToLower()).asBoolean();
   Unlock();
 
   return value;
@@ -699,7 +699,7 @@ double CAddonCallbacksGUI::Window_GetPropertyDouble(void *addonData, GUIHANDLE h
 
   Lock();
   CStdString lowerKey = key;
-  double value = pWindow->GetPropertyDouble(lowerKey.ToLower());
+  double value = pWindow->GetProperty(lowerKey.ToLower()).asDouble();
   Unlock();
 
   return value;
@@ -1202,7 +1202,7 @@ const char* CAddonCallbacksGUI::ListItem_GetProperty(void *addonData, GUIHANDLE 
   if (!helper || !handle)
     return NULL;
 
-  CStdString string = ((CFileItem*)handle)->GetProperty(key);
+  string string = ((CFileItem*)handle)->GetProperty(key).asString();
   char *buffer = (char*) malloc (string.length()+1);
   strcpy(buffer, string.c_str());
   return buffer;
@@ -1350,7 +1350,7 @@ bool CGUIAddonWindow::OnMessage(CGUIMessage& message)
 void CGUIAddonWindow::AllocResources(bool forceLoad /*= FALSE */)
 {
   CStdString tmpDir;
-  URIUtils::GetDirectory(GetProperty("xmlfile"), tmpDir);
+  URIUtils::GetDirectory(GetProperty("xmlfile").asString(), tmpDir);
   CStdString fallbackMediaPath;
   URIUtils::GetParentPath(tmpDir, fallbackMediaPath);
   URIUtils::RemoveSlashAtEnd(fallbackMediaPath);

@@ -27,6 +27,7 @@
 #include "guilib/DirtyRegion.h"
 #include "lib/tinyXML/tinyxml.h"
 #include "utils/log.h"
+#include "utils/Variant.h"
 #include "threads/SystemClock.h"
 #include "GUIInfoManager.h"
 

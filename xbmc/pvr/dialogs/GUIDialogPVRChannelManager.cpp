@@ -121,7 +121,7 @@ bool CGUIDialogPVRChannelManager::OnActionMove(const CAction &action)
       for (unsigned int iLine = 0; iLine < iLines; iLine++)
       {
         unsigned int iNewSelect = bMoveUp ? m_iSelected - 1 : m_iSelected + 1;
-        if (m_channelItems->Get(iNewSelect)->GetProperty("Number") != "-")
+        if (m_channelItems->Get(iNewSelect)->GetProperty("Number").asString() != "-")
         {
           strNumber.Format("%i", m_iSelected+1);
           m_channelItems->Get(iNewSelect)->SetProperty("Number", strNumber);
@@ -295,7 +295,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonChannelLogo(CGUIMessage &message)
   CFileItemList items;
 
   // add the current thumb, if available
-  if (!pItem->GetProperty("Icon").IsEmpty())
+  if (!pItem->GetProperty("Icon").asString().empty())
   {
     CFileItemPtr current(new CFileItem("thumb://Current", false));
     current->SetThumbnailImage(pItem->GetPVRChannelInfoTag()->IconPath());
@@ -400,9 +400,9 @@ bool CGUIDialogPVRChannelManager::OnClickButtonEditChannel(CGUIMessage &message)
   if (!pItem)
     return false;
 
-  if (pItem->GetPropertyBOOL("Virtual"))
+  if (pItem->GetProperty("Virtual").asBoolean())
   {
-    CStdString strURL = pItem->GetProperty("StreamURL");
+    CStdString strURL = pItem->GetProperty("StreamURL").asString();
     if (CGUIDialogKeyboard::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
       pItem->SetProperty("StreamURL", strURL);
     return true;
@@ -430,7 +430,7 @@ bool CGUIDialogPVRChannelManager::OnClickButtonDeleteChannel(CGUIMessage &messag
 
   if (pDialog->IsConfirmed())
   {
-    if (pItem->GetPropertyBOOL("Virtual"))
+    if (pItem->GetProperty("Virtual").asBoolean())
     {
       pItem->GetPVRChannelInfoTag()->SetVirtual(true, true);
       m_channelItems->Remove(m_iSelected);
@@ -605,7 +605,7 @@ bool CGUIDialogPVRChannelManager::OnPopupMenu(int iItem)
     return false;
 
   buttons.Add(CONTEXT_BUTTON_MOVE, 116);              /* Move channel up or down */
-  if (pItem->GetPropertyBOOL("Virtual"))
+  if (pItem->GetProperty("Virtual").asBoolean())
     buttons.Add(CONTEXT_BUTTON_EDIT_SOURCE, 1027);    /* Edit virtual channel URL */
 
   int choice = CGUIDialogContextMenu::ShowAndGetChoice(buttons);
@@ -636,7 +636,7 @@ bool CGUIDialogPVRChannelManager::OnContextButton(int itemNumber, CONTEXT_BUTTON
   }
   else if (button == CONTEXT_BUTTON_EDIT_SOURCE)
   {
-    CStdString strURL = pItem->GetProperty("StreamURL");
+    CStdString strURL = pItem->GetProperty("StreamURL").asString();
     if (CGUIDialogKeyboard::ShowAndGetInput(strURL, g_localizeStrings.Get(19214), false))
       pItem->SetProperty("StreamURL", strURL);
   }
@@ -658,15 +658,15 @@ void CGUIDialogPVRChannelManager::SetData(int iItem)
   pEdit = (CGUIEditControl *)GetControl(EDIT_NAME);
   if (pEdit)
   {
-    pEdit->SetLabel2(pItem->GetProperty("Name"));
+    pEdit->SetLabel2(pItem->GetProperty("Name").asString());
     pEdit->SetInputType(CGUIEditControl::INPUT_TYPE_TEXT, 19208);
   }
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_ACTIVE);
-  if (pRadioButton) pRadioButton->SetSelected(pItem->GetPropertyBOOL("ActiveChannel"));
+  if (pRadioButton) pRadioButton->SetSelected(pItem->GetProperty("ActiveChannel").asBoolean());
 
   pRadioButton = (CGUIRadioButtonControl *)GetControl(RADIOBUTTON_USEEPG);
-  if (pRadioButton) pRadioButton->SetSelected(pItem->GetPropertyBOOL("UseEPG"));
+  if (pRadioButton) pRadioButton->SetSelected(pItem->GetProperty("UseEPG").asBoolean());
 }
 
 void CGUIDialogPVRChannelManager::Update()
@@ -744,13 +744,13 @@ bool CGUIDialogPVRChannelManager::PersistChannel(CFileItemPtr pItem, CPVRChannel
     return false;
 
   /* get values from the form */
-  bool bHidden              = !pItem->GetPropertyBOOL("ActiveChannel");
-  bool bVirtual             = pItem->GetPropertyBOOL("Virtual");
-  bool bEPGEnabled          = pItem->GetPropertyBOOL("UseEPG");
-  int iEPGSource            = pItem->GetPropertyInt("EPGSource");
-  CStdString strChannelName = pItem->GetProperty("Name");
-  CStdString strIconPath    = pItem->GetProperty("Icon");
-  CStdString strStreamURL   = pItem->GetProperty("StreamURL");
+  bool bHidden              = !pItem->GetProperty("ActiveChannel").asBoolean();
+  bool bVirtual             = pItem->GetProperty("Virtual").asBoolean();
+  bool bEPGEnabled          = pItem->GetProperty("UseEPG").asBoolean();
+  int iEPGSource            = pItem->GetProperty("EPGSource").asInteger();
+  CStdString strChannelName = pItem->GetProperty("Name").asString();
+  CStdString strIconPath    = pItem->GetProperty("Icon").asString();
+  CStdString strStreamURL   = pItem->GetProperty("StreamURL").asString();
 
   channel->SetChannelName(strChannelName);
   channel->SetHidden(bHidden);
@@ -828,7 +828,7 @@ void CGUIDialogPVRChannelManager::Renumber(void)
   for (int iChannelPtr = 0; iChannelPtr < m_channelItems->Size(); iChannelPtr++)
   {
     pItem = m_channelItems->Get(iChannelPtr);
-    if (pItem->GetPropertyBOOL("ActiveChannel"))
+    if (pItem->GetProperty("ActiveChannel").asBoolean())
     {
       strNumber.Format("%i", ++iNextChannelNumber);
       pItem->SetProperty("Number", strNumber);
