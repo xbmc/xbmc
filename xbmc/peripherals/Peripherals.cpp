@@ -278,26 +278,22 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
   return peripheral;
 }
 
-void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CStdString &strLocation)
+void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &peripheral)
 {
   CGUIDialogPeripheralManager *dialog = (CGUIDialogPeripheralManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_MANAGER);
   if (dialog && dialog->IsActive())
     dialog->Update();
 
-  CPeripheral *peripheral = GetByPath(strLocation);
-  if (peripheral)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35005), peripheral->DeviceName());
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35005), peripheral.DeviceName());
 }
 
-void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CStdString &strLocation)
+void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral &peripheral)
 {
   CGUIDialogPeripheralManager *dialog = (CGUIDialogPeripheralManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_MANAGER);
   if (dialog && dialog->IsActive())
     dialog->Update();
 
-  CPeripheral *peripheral = GetByPath(strLocation);
-  if (peripheral)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral->DeviceName());
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
 }
 
 int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const PeripheralType classType, int iVendorId, int iProductId) const

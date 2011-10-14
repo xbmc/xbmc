@@ -310,13 +310,11 @@ void CPeripheralCecAdapter::ProcessNextCommand(void)
     case CEC_OPCODE_STANDBY:
       /* a device was put in standby mode */
       CLog::Log(LOGDEBUG, "%s - device %d was put in standby mode", __FUNCTION__, command.initiator);
-      if (command.initiator == CECDEVICE_TV && GetSettingBool("standby_pc_on_tv_standby"))
+      if (command.initiator == CECDEVICE_TV && GetSettingBool("standby_pc_on_tv_standby") &&
+          (!m_screensaverLastActivated.IsValid() || CDateTime::GetCurrentDateTime() - m_screensaverLastActivated > CDateTimeSpan(0, 0, 0, SCREENSAVER_TIMEOUT)))
       {
-        if (!m_screensaverLastActivated.IsValid() || CDateTime::GetCurrentDateTime() - m_screensaverLastActivated > CDateTimeSpan(0, 0, 0, SCREENSAVER_TIMEOUT))
-        {
-          m_bStarted = false;
-          g_application.getApplicationMessenger().Suspend();
-        }
+        m_bStarted = false;
+        g_application.getApplicationMessenger().Suspend();
       }
       break;
     default:
