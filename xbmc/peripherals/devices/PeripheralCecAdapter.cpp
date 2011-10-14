@@ -237,6 +237,8 @@ void CPeripheralCecAdapter::Process(void)
   m_cecAdapter->SetActiveView();
   FlushLog();
 
+  m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, "XBMC connected");
+
   while (!m_bStop)
   {
     FlushLog();
