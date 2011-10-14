@@ -204,11 +204,8 @@ void CPeripheralCecAdapter::Process(void)
         CLog::Log(LOGDEBUG, "%s - multiple com ports found for device. taking the first one", __FUNCTION__);
       else
         CLog::Log(LOGDEBUG, "%s - autodetect com port '%s'", __FUNCTION__, dev->comm);
-      if (!strPort.Equals(dev->comm))
-      {
-        strPort = dev->comm;
-        SetSetting("port", strPort);
-      }
+
+      strPort = dev->comm;
     }
   }
 
