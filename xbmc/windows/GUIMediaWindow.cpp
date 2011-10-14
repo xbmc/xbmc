@@ -966,7 +966,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
     bool do_not_add_karaoke = g_guiSettings.GetBool("karaoke.enabled") &&
       g_guiSettings.GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
-    int iPlaylist = m_guiState.get()?m_guiState->GetPlaylist():PLAYLIST_MUSIC;
 
     if (pItem->IsPlugin())
     {
@@ -977,7 +976,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
         if (plugin && plugin->Provides(CPluginSource::AUDIO) && pItem->IsAudio())
         {
-          iPlaylist = PLAYLIST_MUSIC;
           autoplay = g_guiSettings.GetBool("musicplayer.autoplaynextitem");
         }
       }
