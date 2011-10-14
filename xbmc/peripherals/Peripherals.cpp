@@ -400,8 +400,8 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
     {
       int iValue = currentNode->Attribute("value") ? atoi(currentNode->Attribute("value")) : 0;
       int iMin   = currentNode->Attribute("min") ? atoi(currentNode->Attribute("min")) : 0;
-      int iStep  = currentNode->Attribute("step") ? atoi(currentNode->Attribute("step")) : 0;
-      int iMax   = currentNode->Attribute("max") ? atoi(currentNode->Attribute("max")) : 0;
+      int iStep  = currentNode->Attribute("step") ? atoi(currentNode->Attribute("step")) : 1;
+      int iMax   = currentNode->Attribute("max") ? atoi(currentNode->Attribute("max")) : 255;
       CStdString strFormat(currentNode->Attribute("format"));
       setting = new CSettingInt(0, strKey, iLabelId, iValue, iMin, iStep, iMax, SPIN_CONTROL_INT, strFormat);
     }
