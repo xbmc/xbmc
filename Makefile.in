@@ -370,8 +370,6 @@ lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C lib/libapetag
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
 	$(MAKE) -C lib/cpluff/libcpluff
-lib/libcec/libcec.a: force
-	$(MAKE) -C lib/libcec libcec.a
 system/libcpluff-@ARCH@.so: lib/cpluff/libcpluff/.libs/libcpluff.a
 ifeq ($(findstring osx,@ARCH@), osx)
   ifeq (@ARCH@, arm-osx)
@@ -548,10 +546,6 @@ DYNOBJSXBMC= \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
 
 LIBS += @PYTHON_LDFLAGS@
-
-ifeq ((@USE_LIBCEC@,1),(@USE_EXTERNAL_LIBCEC@,0))
-  DYNOBJSXBMC += lib/libcec/libcec.a
-endif
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
