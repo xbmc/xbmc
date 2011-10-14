@@ -157,10 +157,10 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       if ( !strcmpi(strTagName.c_str(), "ITEM") )
       {
         const TiXmlNode *nameNode = pChild->FirstChild("DISPLAYNAME");
-        const TiXmlNode *qualityNode = pChild->FirstChild("QUALITY");
+//        const TiXmlNode *qualityNode = pChild->FirstChild("QUALITY");
         const TiXmlNode *recordedNode = pChild->FirstChild("RECORDED");
         const TiXmlNode *pathNode = pChild->FirstChild("PATH");
-        const TiXmlNode *durationNode = pChild->FirstChild("DURATION");
+//        const TiXmlNode *durationNode = pChild->FirstChild("DURATION");
         const TiXmlNode *sizeNode = pChild->FirstChild("SIZE");
         const TiXmlNode *atrbNode = pChild->FirstChild("ATTRIB");
 
@@ -182,11 +182,11 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         }
 
         // QUALITY
-        const char* szQuality = NULL;
-        if (qualityNode)
-        {
-          szQuality = qualityNode->FirstChild()->Value() ;
-        }
+//        const char* szQuality = NULL;
+//        if (qualityNode)
+//        {
+//          szQuality = qualityNode->FirstChild()->Value() ;
+//        }
 
         // RECORDED
         if (recordedNode)
@@ -224,11 +224,11 @@ bool CRTVDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
         }
 
         // DURATION
-        const char* szDuration = NULL;
-        if (durationNode)
-        {
-          szDuration = durationNode->FirstChild()->Value() ;
-        }
+//        const char* szDuration = NULL;
+//        if (durationNode)
+//        {
+//          szDuration = durationNode->FirstChild()->Value() ;
+//        }
 
         // SIZE
         // NOTE: Size here is actually just duration in minutes because

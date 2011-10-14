@@ -83,7 +83,11 @@ BIN_DIRS=	\
 	xbmc/input/linux \
 	xbmc/osx \
 	xbmc/threads \
-	xbmc/windowing
+	xbmc/windowing \
+	xbmc/peripherals \
+	xbmc/peripherals/bus \
+	xbmc/peripherals/devices \
+	xbmc/peripherals/dialogs \
 
 ifeq (@USE_OPENGL@,1)
 BIN_DIRS += xbmc/rendering/gl
@@ -177,9 +181,12 @@ LIBADDON_DIRS=\
 	lib/addons/library.xbmc.gui \
 
 CONFLUENCE_MEDIA=addons/skin.confluence/media
+SKIN_DIRS=$(CONFLUENCE_MEDIA)
 
-SKIN_DIRS=\
-	$(CONFLUENCE_MEDIA)
+ifeq (@USE_SKIN_TOUCHED@,1)
+TOUCHED_MEDIA=addons/skin.touched/media
+SKIN_DIRS+=$(TOUCHED_MEDIA)
+endif
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
 	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS)
@@ -222,6 +229,9 @@ configure: configure.in
 ifeq (@USE_TEXTUREPACKER@,1)
 skins: tools/TexturePacker/TexturePacker force
 	 $(MAKE) -C $(CONFLUENCE_MEDIA)
+ifeq (@USE_SKIN_TOUCHED@,1)
+	 $(MAKE) -C $(TOUCHED_MEDIA)
+endif
 else
 skins:
 endif
@@ -389,6 +399,14 @@ xbmc/pvrclients/pvrclient.a: force
 	$(MAKE) -C xbmc/pvrclients
 xbmc/osx/osx.a: force
 	$(MAKE) -C xbmc/osx
+xbmc/peripherals/peripherals.a: force
+	$(MAKE) -C xbmc/peripherals
+xbmc/peripherals/bus/peripheral-bus.a: force
+	$(MAKE) -C xbmc/peripherals/bus
+xbmc/peripherals/devices/peripheral-devices.a: force
+	$(MAKE) -C xbmc/peripherals/devices
+xbmc/peripherals/dialogs/peripheral-dialogs.a: force
+	$(MAKE) -C xbmc/peripherals/dialogs
 lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C lib/libapetag
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
@@ -539,7 +557,11 @@ OBJSXBMC=	\
 	lib/xbmc-dll-symbols/dll-symbols.a \
 	xbmc/rendering/rendering.a \
 	xbmc/windowing/windowing.a \
-	lib/libTcpSocket/libTcpSocket.a
+	lib/libTcpSocket/libTcpSocket.a \
+	xbmc/peripherals/peripherals.a \
+	xbmc/peripherals/bus/peripheral-bus.a \
+	xbmc/peripherals/devices/peripheral-devices.a \
+	xbmc/peripherals/dialogs/peripheral-dialogs.a 
 
 ifeq (@USE_OPENGL@,1)
 OBJSXBMC += xbmc/rendering/gl/rendering_gl.a

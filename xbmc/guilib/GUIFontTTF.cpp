@@ -41,7 +41,7 @@
 #define USE_RELEASE_LIBS
 
 #ifdef _WIN32
-#pragma comment(lib, "freetype244MT.lib")
+#pragma comment(lib, "freetype246MT.lib")
 #endif
 
 using namespace std;

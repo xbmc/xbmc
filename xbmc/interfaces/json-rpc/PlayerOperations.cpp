@@ -23,14 +23,17 @@
 #include "Application.h"
 #include "Util.h"
 #include "PlayListPlayer.h"
+#include "playlists/PlayList.h"
 #include "guilib/GUIWindowManager.h"
 #include "GUIUserMessages.h"
 #include "pictures/GUIWindowSlideShow.h"
 #include "interfaces/Builtins.h"
-#include "PlayListPlayer.h"
 #include "PartyModeManager.h"
 #include "ApplicationMessenger.h"
 #include "FileItem.h"
+#include "VideoLibrary.h"
+#include "video/VideoDatabase.h"
+#include "AudioLibrary.h"
 
 using namespace JSONRPC;
 using namespace PLAYLIST;
@@ -83,6 +86,92 @@ JSON_STATUS CPlayerOperations::GetProperties(const CStdString &method, ITranspor
 
   result = properties;
 
+  return OK;
+}
+
+JSON_STATUS CPlayerOperations::GetItem(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  PlayerType player = GetPlayer(parameterObject["playerid"]);
+  CFileItemPtr fileItem;
+
+  switch (player)
+  {
+    case Video:
+    case Audio:
+    {
+      if (g_application.CurrentFileItem().GetLabel().empty())
+      {
+        CFileItem tmpItem;
+        if (player == Video)
+          CVideoLibrary::FillFileItem(g_application.CurrentFile(), tmpItem);
+        else
+          CAudioLibrary::FillFileItem(g_application.CurrentFile(), tmpItem);
+
+        fileItem = CFileItemPtr(new CFileItem(tmpItem));
+      }
+      else
+        fileItem = CFileItemPtr(new CFileItem(g_application.CurrentFileItem()));
+
+      if (player == Video)
+      {
+        bool additionalInfo = false;
+        for (CVariant::const_iterator_array itr = parameterObject["properties"].begin_array(); itr != parameterObject["properties"].end_array(); itr++)
+        {
+          CStdString fieldValue = itr->asString();
+          if (fieldValue == "cast" || fieldValue == "set" || fieldValue == "setid" || fieldValue == "showlink" || fieldValue == "resume")
+            additionalInfo = true;
+        }
+
+        if (additionalInfo)
+        {
+          CVideoDatabase videodatabase;
+          if (videodatabase.Open())
+          {
+            switch (fileItem->GetVideoContentType())
+            {
+              case VIDEODB_CONTENT_MOVIES:
+                videodatabase.GetMovieInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
+                break;
+
+              case VIDEODB_CONTENT_MUSICVIDEOS:
+                videodatabase.GetMusicVideoInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
+                break;
+
+              case VIDEODB_CONTENT_EPISODES:
+                videodatabase.GetEpisodeInfo("", *(fileItem->GetVideoInfoTag()), fileItem->GetVideoInfoTag()->m_iDbId);
+                break;
+
+              case VIDEODB_CONTENT_TVSHOWS:
+              case VIDEODB_CONTENT_MOVIE_SETS:
+              default:
+                break;
+            }
+
+            videodatabase.Close();
+          }
+        }
+      }
+      break;
+    }
+
+    case Picture:
+    {
+      CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+      if (!slideshow)
+        return FailedToExecute;
+
+      CFileItemList slides;
+      slideshow->GetSlideShowContents(slides);
+      fileItem = slides[slideshow->CurrentSlide() - 1];
+      break;
+    }
+
+    case None:
+    default:
+      return FailedToExecute;
+  }
+
+  HandleFileItem("id", true, "item", fileItem, parameterObject, parameterObject["properties"], result, false);
   return OK;
 }
 
@@ -154,7 +243,7 @@ JSON_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportLaye
       else if (parameterObject["speed"].isString())
       {
         speed = g_application.GetPlaySpeed();
-        if (stricmp(parameterObject["speed"].asString(), "increment") == 0)
+        if (parameterObject["speed"].asString().compare("increment") == 0)
           CBuiltins::Execute("playercontrol(forward)");
         else
           CBuiltins::Execute("playercontrol(rewind)");
@@ -163,7 +252,7 @@ JSON_STATUS CPlayerOperations::SetSpeed(const CStdString &method, ITransportLaye
         return InvalidParams;
 
       result["speed"] = g_application.IsPaused() ? 0 : g_application.GetPlaySpeed();
-      return ACK;
+      return OK;
 
     case Picture:
     case None:
@@ -182,7 +271,7 @@ JSON_STATUS CPlayerOperations::Seek(const CStdString &method, ITransportLayer *t
       if (parameterObject["value"].isObject())
         g_application.SeekTime(((parameterObject["value"]["hours"].asInteger() * 60) + parameterObject["value"]["minutes"].asInteger()) * 60 + 
           parameterObject["value"]["seconds"].asInteger() + ((double)parameterObject["value"]["milliseconds"].asInteger() / 1000.0));
-      else if (parameterObject["value"].isDouble())
+      else if (IsType(parameterObject["value"], NumberValue))
         g_application.SeekPercentage(parameterObject["value"].asFloat());
       else if (parameterObject["value"].isString())
       {
@@ -346,7 +435,6 @@ JSON_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *t
   if (parameterObject["item"].isObject() && parameterObject["item"].isMember("playlistid"))
   {
     int playlistid = (int)parameterObject["item"]["playlistid"].asInteger();
-    CGUIWindowSlideShow *slideshow = NULL;
     switch (playlistid)
     {
       case PLAYLIST_MUSIC:
@@ -360,24 +448,7 @@ JSON_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *t
         break;
 
       case PLAYLIST_PICTURE:
-        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
-        if (slideshow && slideshow->NumSlides() > 0)
-        {
-          if (g_application.IsPlayingVideo())
-            g_application.StopPlaying();
-
-          g_graphicsContext.Lock();
-
-          g_application.WakeUpScreenSaverAndDPMS();
-          slideshow->StartSlideShow();
-
-          if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
-            g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
-
-          g_graphicsContext.Unlock();
-        }
-        else
-          return FailedToExecute;
+        return StartSlideshow();
         break;
     }
 
@@ -408,7 +479,32 @@ JSON_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *t
     CFileItemList list;
     if (FillFileItemList(parameterObject["item"], list) && list.Size() > 0)
     {
-      g_application.getApplicationMessenger().MediaPlay(list);
+      bool slideshow = true;
+      for (int index = 0; index < list.Size(); index++)
+      {
+        if (!list[index]->HasPictureInfoTag())
+        {
+          slideshow = false;
+          break;
+        }
+      }
+
+      if (slideshow)
+      {
+        CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+        if (!slideshow)
+          return FailedToExecute;
+
+        SendSlideshowAction(ACTION_STOP);
+        slideshow->Reset();
+        for (int index = 0; index < list.Size(); index++)
+          slideshow->Add(list[index].get());
+
+        return StartSlideshow();
+      }
+      else
+        g_application.getApplicationMessenger().MediaPlay(list);
+
       return ACK;
     }
     else
@@ -717,6 +813,28 @@ int CPlayerOperations::GetPlaylist(PlayerType player)
   }
 }
 
+JSON_STATUS CPlayerOperations::StartSlideshow()
+{
+  CGUIWindowSlideShow *slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
+  if (!slideshow && slideshow->NumSlides() <= 0)
+    return FailedToExecute;
+
+  if (g_application.IsPlayingVideo())
+    g_application.StopPlaying();
+
+  g_graphicsContext.Lock();
+
+  g_application.WakeUpScreenSaverAndDPMS();
+  slideshow->StartSlideShow();
+
+  if (g_windowManager.GetActiveWindow() != WINDOW_SLIDESHOW)
+    g_windowManager.ActivateWindow(WINDOW_SLIDESHOW);
+
+  g_graphicsContext.Unlock();
+
+  return ACK;
+}
+
 void CPlayerOperations::SendSlideshowAction(int actionID)
 {
   g_application.getApplicationMessenger().SendAction(CAction(actionID), WINDOW_SLIDESHOW);
@@ -870,7 +988,7 @@ JSON_STATUS CPlayerOperations::GetPropertyValue(PlayerType player, const CStdStr
       case Picture:
         slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
         if (slideshow && slideshow->IsPlaying())
-          result = slideshow->CurrentSlide();
+          result = slideshow->CurrentSlide() - 1;
         else
           result = -1;
         break;

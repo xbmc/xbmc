@@ -59,6 +59,7 @@ public:
 
   void SetVolume(int iVolume);
   void SetDynamicRangeCompression(long drc);
+  float GetCurrentAttenuation();
   void Pause();
   void Resume();
   bool Create(const DVDAudioFrame &audioframe, CodecID codec);

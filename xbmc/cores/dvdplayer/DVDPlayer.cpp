@@ -74,6 +74,7 @@
 #include "filesystem/PVRFile.h"
 #include "video/dialogs/GUIDialogFullScreenInfo.h"
 #include "utils/StreamUtils.h"
+#include "utils/Variant.h"
 #include "storage/MediaManager.h"
 #include "dialogs/GUIDialogBusy.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -363,6 +364,11 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     m_scanStart = 0;
 
     m_ready.Reset();
+	
+#if defined(HAS_VIDEO_PLAYBACK)
+    g_renderManager.PreInit();
+#endif
+	
     Create();
     if(!m_ready.WaitMSec(100))
     {
@@ -470,7 +476,7 @@ retry:
         m_mimetype = "bluray/iso";
         filename = m_filename;
         filename = filename + "/BDMV/index.bdmv";
-        int title = m_item.GetPropertyInt("BlurayStartingTitle");
+        int title = (int)m_item.GetProperty("BlurayStartingTitle").asInteger();
         if( title )
           filename.AppendFormat("?title=%d",title);
         
@@ -494,7 +500,7 @@ retry:
     // find any upnp subtitles
     CStdString key("upnp:subtitle:1");
     for(unsigned s = 1; m_item.HasProperty(key); key.Format("upnp:subtitle:%u", ++s))
-      filenames.push_back(m_item.GetProperty(key));
+      filenames.push_back(m_item.GetProperty(key).asString());
 
     for(unsigned int i=0;i<filenames.size();i++)
     {
@@ -1278,10 +1284,7 @@ void CDVDPlayer::ProcessAudioData(CDemuxStream* pStream, DemuxPacket* pPacket)
   CheckStartCaching(m_CurrentAudio);
 
   CheckContinuity(m_CurrentAudio, pPacket);
-  if(pPacket->dts != DVD_NOPTS_VALUE)
-    m_CurrentAudio.dts = pPacket->dts;
-  else if(pPacket->pts != DVD_NOPTS_VALUE)
-    m_CurrentAudio.dts = pPacket->pts;
+  UpdateTimestamps(m_CurrentAudio, pPacket);
 
   bool drop = false;
   if (CheckPlayerInit(m_CurrentAudio, DVDPLAYER_AUDIO))
@@ -1331,10 +1334,7 @@ void CDVDPlayer::ProcessVideoData(CDemuxStream* pStream, DemuxPacket* pPacket)
   if( pPacket->iSize != 4) //don't check the EOF_SEQUENCE of stillframes
   {
     CheckContinuity(m_CurrentVideo, pPacket);
-    if(pPacket->dts != DVD_NOPTS_VALUE)
-      m_CurrentVideo.dts = pPacket->dts;
-    else if(pPacket->pts != DVD_NOPTS_VALUE)
-      m_CurrentVideo.dts = pPacket->pts;
+    UpdateTimestamps(m_CurrentVideo, pPacket);
   }
 
   bool drop = false;
@@ -1359,10 +1359,8 @@ void CDVDPlayer::ProcessSubData(CDemuxStream* pStream, DemuxPacket* pPacket)
 
     m_CurrentSubtitle.stream = (void*)pStream;
   }
-  if(pPacket->dts != DVD_NOPTS_VALUE)
-    m_CurrentSubtitle.dts = pPacket->dts;
-  else if(pPacket->pts != DVD_NOPTS_VALUE)
-    m_CurrentSubtitle.dts = pPacket->pts;
+
+  UpdateTimestamps(m_CurrentSubtitle, pPacket);
 
   bool drop = false;
   if (CheckPlayerInit(m_CurrentSubtitle, DVDPLAYER_SUBTITLE))
@@ -1388,10 +1386,7 @@ void CDVDPlayer::ProcessTeletextData(CDemuxStream* pStream, DemuxPacket* pPacket
 
     m_CurrentTeletext.stream = (void*)pStream;
   }
-  if(pPacket->dts != DVD_NOPTS_VALUE)
-    m_CurrentTeletext.dts = pPacket->dts;
-  else if(pPacket->pts != DVD_NOPTS_VALUE)
-    m_CurrentTeletext.dts = pPacket->pts;
+  UpdateTimestamps(m_CurrentTeletext, pPacket);
 
   bool drop = false;
   if (CheckPlayerInit(m_CurrentTeletext, DVDPLAYER_TELETEXT))
@@ -1693,6 +1688,17 @@ bool CDVDPlayer::CheckPlayerInit(CCurrentStream& current, unsigned int source)
   return false;
 }
 
+void CDVDPlayer::UpdateTimestamps(CCurrentStream& current, DemuxPacket* pPacket)
+{
+  double dts = current.dts;
+  /* update stored values */
+  if(pPacket->dts != DVD_NOPTS_VALUE)
+    dts = pPacket->dts;
+  else if(pPacket->pts != DVD_NOPTS_VALUE)
+    dts = pPacket->pts;
+
+  current.dts = dts;
+}
 void CDVDPlayer::CheckContinuity(CCurrentStream& current, DemuxPacket* pPacket)
 {
   if (m_playSpeed < DVD_PLAYSPEED_PAUSE)
@@ -2209,13 +2215,8 @@ void CDVDPlayer::HandleMessages()
           m_State.timestamp =  CDVDClock::GetAbsoluteClock();
         }
 
-        if (speed != DVD_PLAYSPEED_PAUSE)
-        {
-          if (m_playSpeed != DVD_PLAYSPEED_PAUSE)
-          {
-            m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL );
-          }
-        }
+        if (speed != DVD_PLAYSPEED_PAUSE && m_playSpeed != DVD_PLAYSPEED_PAUSE && speed != m_playSpeed)
+          m_callback.OnPlayBackSpeedChanged(speed / DVD_PLAYSPEED_NORMAL);
 
         // if playspeed is different then DVD_PLAYSPEED_NORMAL or DVD_PLAYSPEED_PAUSE
         // audioplayer, stops outputing audio to audiorendere, but still tries to
@@ -4006,7 +4007,7 @@ bool CDVDPlayer::GetStreamDetails(CStreamDetails &details)
   if (m_pDemuxer)
   {
     bool result=CDVDFileInfo::DemuxerToStreamDetails(m_pInputStream, m_pDemuxer, details);
-    if (result && ((CStreamDetailVideo*)details.GetStreamCount(CStreamDetail::VIDEO) > 0)) // this is more correct (dvds in particular)
+    if (result && details.GetStreamCount(CStreamDetail::VIDEO) > 0) // this is more correct (dvds in particular)
     {
       GetVideoAspectRatio(((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_fAspect);
       ((CStreamDetailVideo*)details.GetNthStream(CStreamDetail::VIDEO,0))->m_iDuration = GetTotalTime();

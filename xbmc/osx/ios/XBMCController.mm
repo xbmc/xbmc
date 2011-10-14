@@ -64,6 +64,8 @@ XBMCEAGLView  *m_glView;
 
 @implementation XBMCController
 @synthesize lastGesturePoint;
+@synthesize lastPinchScale;
+@synthesize currentPinchScale;
 @synthesize lastEvent;
 @synthesize touchBeginSignaled;
 @synthesize screensize;
@@ -128,7 +130,7 @@ XBMCEAGLView  *m_glView;
   //single finger double tab delays single finger single tab - so we
   //go for 2 fingers here - so single finger single tap is instant
   UITapGestureRecognizer *doubleFingerSingleTap = [[UITapGestureRecognizer alloc]
-                                                   initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
+                                                    initWithTarget:self action:@selector(handleDoubleFingerSingleTap:)];  
   doubleFingerSingleTap.delaysTouchesBegan = YES;
   doubleFingerSingleTap.numberOfTapsRequired = 1;
   doubleFingerSingleTap.numberOfTouchesRequired = 2;
@@ -137,7 +139,7 @@ XBMCEAGLView  *m_glView;
   
   //double finger swipe left for backspace ... i like this fast backspace feature ;)
   UISwipeGestureRecognizer *swipeLeft = [[UISwipeGestureRecognizer alloc]
-                                         initWithTarget:self action:@selector(handleSwipeLeft:)];
+                                          initWithTarget:self action:@selector(handleSwipeLeft:)];
   swipeLeft.delaysTouchesBegan = YES;
   swipeLeft.numberOfTouchesRequired = 2;
   swipeLeft.direction = UISwipeGestureRecognizerDirectionLeft;
@@ -146,12 +148,42 @@ XBMCEAGLView  *m_glView;
   
   //for pan gestures with one finger
   UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]
-                                 initWithTarget:self action:@selector(handlePan:)];
+                                  initWithTarget:self action:@selector(handlePan:)];
   pan.delaysTouchesBegan = YES;
   pan.maximumNumberOfTouches = 1;
   [self.view addGestureRecognizer:pan];
   [pan release];
   
+  //for zoom gesture
+  UIPinchGestureRecognizer *pinch = [[UIPinchGestureRecognizer alloc]
+                                      initWithTarget:self action:@selector(handlePinch:)];
+  pinch.delaysTouchesBegan = YES;
+  [self.view addGestureRecognizer:pinch];
+  [pinch release];
+  lastPinchScale = 1.0;
+  currentPinchScale = lastPinchScale;
+}
+//--------------------------------------------------------------
+-(void)handlePinch:(UIPinchGestureRecognizer*)sender 
+{
+  if( [m_glView isXBMCAlive] )//NO GESTURES BEFORE WE ARE UP AND RUNNING
+  {
+    CGPoint point = [sender locationOfTouch:0 inView:m_glView];  
+    currentPinchScale += [sender scale] - lastPinchScale;
+    lastPinchScale = [sender scale];  
+  
+    switch(sender.state)
+    {
+      case UIGestureRecognizerStateBegan:  
+      break;
+      case UIGestureRecognizerStateChanged:
+        g_application.getApplicationMessenger().SendAction(CAction(ACTION_GESTURE_ZOOM, 0, (float)point.x, (float)point.y, 
+                                                           currentPinchScale, 0), WINDOW_INVALID,false);    
+      break;
+      case UIGestureRecognizerStateEnded:
+      break;
+    }
+  }
 }
 //--------------------------------------------------------------
 - (IBAction)handlePan:(UIPanGestureRecognizer *)sender 

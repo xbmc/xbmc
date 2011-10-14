@@ -53,6 +53,67 @@ CAFPDirectory::~CAFPDirectory(void)
 {
 }
 
+bool CAFPDirectory::ResolveSymlink( const CStdString &dirName, const CStdString &fileName, 
+                                    struct stat *stat, CURL &resolvedUrl)
+{
+  CSingleLock lock(gAfpConnection); 
+  int ret = 0;  
+  bool retVal = true;
+  char resolvedLink[MAX_PATH];
+  CStdString fullpath = dirName;
+  URIUtils::AddSlashAtEnd(fullpath);
+  fullpath += fileName;
+  
+  CPasswordManager::GetInstance().AuthenticateURL(resolvedUrl);
+  resolvedUrl.SetProtocol("afp");
+  resolvedUrl.SetHostName(gAfpConnection.GetConnectedIp());   
+  
+  ret = gAfpConnection.GetImpl()->afp_wrap_readlink(gAfpConnection.GetVolume(), fullpath.c_str(), resolvedLink, MAX_PATH);    
+  
+  if(ret == 0)
+  {
+    fullpath = dirName;
+    URIUtils::AddSlashAtEnd(fullpath);
+    fullpath.append(resolvedLink);
+ 
+    if(resolvedLink[0] == '/')
+    {
+      //use the special stat function for using an extra context
+      //because we are inside of a dir traversation
+      //and just can't change the global nfs context here
+      //without destroying something...    
+      fullpath = resolvedLink;
+      fullpath = fullpath.Right(fullpath.length()-1);
+      resolvedUrl.SetFileName(fullpath);     
+      ret = gAfpConnection.stat(resolvedUrl, stat);
+      if(ret < 0)
+      {
+        URIUtils::AddSlashAtEnd(fullpath);
+        resolvedUrl.SetFileName(fullpath);     
+        ret = gAfpConnection.stat(resolvedUrl, stat);
+      }
+    }
+    else
+    {
+      ret = gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), fullpath.c_str(), stat);
+      resolvedUrl.SetFileName(gAfpConnection.GetUrl()->volumename + fullpath);            
+    }
+
+    if (ret != 0) 
+    {
+      CLog::Log(LOGERROR, "AFP: Failed to stat(%s) on link resolve %s\n", fullpath.c_str(), strerror(errno));
+      retVal = false;;
+    }
+  }
+  else
+  {
+    CLog::Log(LOGERROR, "Failed to readlink(%s) %s\n", fullpath.c_str(), strerror(errno));
+    retVal = false;
+  }
+  return retVal;
+}
+
+
 bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items)
 {
   // We accept afp://[[user[:password@]]server[/share[/path[/file]]]]
@@ -120,9 +181,11 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
   for (size_t i = 0; i < vecEntries.size(); i++)
   {
     CachedDirEntry aDir = vecEntries[i];
-
     // We use UTF-8 internally, as does AFP
     CStdString strFile = aDir.name;
+    CStdString myStrPath(strPath);
+    URIUtils::AddSlashAtEnd(myStrPath); //be sure the dir ends with a slash    
+    CStdString path(myStrPath + strFile);
 
     if (!strFile.Equals(".") && !strFile.Equals("..") && !strFile.Equals("lost+found"))
     {
@@ -143,8 +206,19 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           lock.Enter();
 
           if (gAfpConnection.GetImpl()->afp_wrap_getattr(gAfpConnection.GetVolume(), strFullName.c_str(), &info) == 0)
-          {
-            bIsDir = (info.st_mode & S_IFDIR) ? true : false;
+          {                       
+            //resolve symlinks
+            if(S_ISLNK(info.st_mode))
+            {
+              CURL linkUrl(url);
+              if(!ResolveSymlink(strDirName, strFile, &info, linkUrl))
+              {
+                lock.Leave();              
+                continue;
+              }
+              path = linkUrl.Get();
+              bIsDir = info.st_mode & S_IFDIR;            
+            }
             lTimeDate = info.st_mtime;
             if (lTimeDate == 0) // if modification date is missing, use create date
               lTimeDate = info.st_ctime;
@@ -152,7 +226,7 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
           }
           else
           {
-            CLog::Log(LOGERROR, "%s - Failed to stat file %s", __FUNCTION__, strFullName.c_str());
+            CLog::Log(LOGERROR, "%s - Failed to stat file %s (%s)", __FUNCTION__, strFullName.c_str(),strerror(errno));
           }
 
           lock.Leave();
@@ -170,27 +244,25 @@ bool CAFPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &items
       }
       
       CFileItemPtr pItem(new CFileItem(strFile));      
-
+      pItem->m_dateTime  = localTime;    
+      pItem->m_dwSize    = iSize;
+      
       if (bIsDir)
       {
-        URIUtils::AddSlashAtEnd(aDir.name);
-        pItem->SetPath(strPath + aDir.name);
+        URIUtils::AddSlashAtEnd(path);
         pItem->m_bIsFolder = true;
-        pItem->m_dateTime  = localTime;
       }
       else
       {
-        pItem->SetPath(strPath + aDir.name);
         pItem->m_bIsFolder = false;
-        pItem->m_dwSize    = iSize;
-        pItem->m_dateTime  = localTime;
       }
  
       if (!aDir.name.empty() && aDir.name[0] == '.')
       {
         pItem->SetProperty("file:hidden", true);
       }
-      
+
+      pItem->SetPath(path);      
       items.Add(pItem);      
     }
   }

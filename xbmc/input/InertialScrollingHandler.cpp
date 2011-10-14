@@ -25,6 +25,8 @@
 #include "Application.h"
 #include "utils/TimeUtils.h"
 #include "guilib/Key.h"
+#include "guilib/GUIWindowManager.h"
+#include "windowing/WindowingFactory.h"
 
 #include <cmath>
 
@@ -50,6 +52,11 @@ CInertialScrollingHandler::CInertialScrollingHandler()
 bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
 {
   bool ret = false;//return value - false no inertial scrolling - true - inertial scrolling
+  
+  if(g_Windowing.HasInertialGestures())
+  {
+    return ret;//no need for emulating inertial scrolling - windowing does support it nativly.
+  }
   
   //reset screensaver during pan
   if( action->GetID() == ACTION_GESTURE_PAN )
@@ -77,21 +84,37 @@ bool CInertialScrollingHandler::CheckForInertialScrolling(const CAction* action)
   {
     if (action->GetID() == ACTION_GESTURE_END && ( fabs(action->GetAmount(0)) > MINIMUM_SPEED_FOR_INERTIA || fabs(action->GetAmount(1)) > MINIMUM_SPEED_FOR_INERTIA ) )
     {
-      m_iFlickVelocity.x = action->GetAmount(0)/2;//in pixels per sec
-      m_iFlickVelocity.y = action->GetAmount(1)/2;//in pixels per sec     
-      m_iLastGesturePoint.x = action->GetAmount(2);//last gesture point x
-      m_iLastGesturePoint.y = action->GetAmount(3);//last gesture point y
+      bool inertialRequested = false;
+      CGUIMessage message(GUI_MSG_GESTURE_NOTIFY, 0, 0, action->GetAmount(2), action->GetAmount(3));    
       
-      //calc deacceleration for fullstop in TIME_TO_ZERO_SPEED secs
-      //v = a*t + v0 -> set v = 0 because we want to stop scrolling
-      //a = -v0 / t
-      m_inertialDeacceleration.x = -1*m_iFlickVelocity.x/TIME_TO_ZERO_SPEED;    
-      m_inertialDeacceleration.y = -1*m_iFlickVelocity.y/TIME_TO_ZERO_SPEED;
+      //ask if the control wants inertial scrolling
+      if(g_windowManager.SendMessage(message))
+      {
+        if( message.GetParam1() == EVENT_RESULT_PAN_HORIZONTAL ||
+            message.GetParam1() == EVENT_RESULT_PAN_VERTICAL)
+        {
+          inertialRequested = true;
+        }
+      }
+
+      if( inertialRequested )                                                                                                             
+      {        
+        m_iFlickVelocity.x = action->GetAmount(0)/2;//in pixels per sec
+        m_iFlickVelocity.y = action->GetAmount(1)/2;//in pixels per sec     
+        m_iLastGesturePoint.x = action->GetAmount(2);//last gesture point x
+        m_iLastGesturePoint.y = action->GetAmount(3);//last gesture point y
       
-      //CLog::Log(LOGDEBUG, "initial vel: %f dec: %f", m_iFlickVelocity.y, m_inertialDeacceleration.y);
-      m_inertialStartTime = CTimeUtils::GetFrameTime();//start time of inertial scrolling
-      ret = true;
-      m_bScrolling = true;//activate the inertial scrolling animation
+        //calc deacceleration for fullstop in TIME_TO_ZERO_SPEED secs
+        //v = a*t + v0 -> set v = 0 because we want to stop scrolling
+        //a = -v0 / t
+        m_inertialDeacceleration.x = -1*m_iFlickVelocity.x/TIME_TO_ZERO_SPEED;    
+        m_inertialDeacceleration.y = -1*m_iFlickVelocity.y/TIME_TO_ZERO_SPEED;
+      
+        //CLog::Log(LOGDEBUG, "initial vel: %f dec: %f", m_iFlickVelocity.y, m_inertialDeacceleration.y);
+        m_inertialStartTime = CTimeUtils::GetFrameTime();//start time of inertial scrolling
+        ret = true;
+        m_bScrolling = true;//activate the inertial scrolling animation
+      }
     }
   }
   return ret;

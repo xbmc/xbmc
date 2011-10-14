@@ -726,19 +726,6 @@ void CLinuxRendererGLES::Render(DWORD flags, int index)
   else if (flags & RENDER_FLAG_BOT)
     m_currentField = FIELD_BOT;
 
-  else if (flags & RENDER_FLAG_LAST)
-  {
-    switch(m_currentField)
-    {
-    case FIELD_TOP:
-      flags = RENDER_FLAG_TOP;
-      break;
-
-    case FIELD_BOT:
-      flags = RENDER_FLAG_BOT;
-      break;
-    }
-  }
   else
     m_currentField = FIELD_FULL;
 
@@ -1844,7 +1831,9 @@ bool CLinuxRendererGLES::Supports(EINTERLACEMETHOD method)
   if(method == VS_INTERLACEMETHOD_AUTO)
     return true;
 
-  if(method == VS_INTERLACEMETHOD_DEINTERLACE)
+  if(method == VS_INTERLACEMETHOD_DEINTERLACE
+  || method == VS_INTERLACEMETHOD_DEINTERLACE_HALF
+  || method == VS_INTERLACEMETHOD_SW_BLEND)
     return true;
 
   return false;
@@ -1857,6 +1846,21 @@ bool CLinuxRendererGLES::Supports(ESCALINGMETHOD method)
     return true;
 
   return false;
+}
+
+EINTERLACEMETHOD CLinuxRendererGLES::AutoInterlaceMethod()
+{
+  if(m_renderMethod & RENDER_OMXEGL)
+    return VS_INTERLACEMETHOD_NONE;
+
+  if(m_renderMethod & RENDER_CVREF)
+    return VS_INTERLACEMETHOD_NONE;
+
+#if defined(__i386__) || defined(__x86_64__)
+  return VS_INTERLACEMETHOD_DEINTERLACE_HALF;
+#else
+  return VS_INTERLACEMETHOD_SW_BLEND;
+#endif
 }
 
 #ifdef HAVE_LIBOPENMAX

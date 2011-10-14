@@ -113,6 +113,7 @@ CVDPAU::CVDPAU()
   tmpBrightness  = 0;
   tmpContrast    = 0;
   tmpDeintMode   = 0;
+  tmpDeintGUI    = 0;
   tmpDeint       = 0;
   max_references = 0;
 
@@ -475,11 +476,17 @@ void CVDPAU::CheckFeatures()
     tmpSharpness = g_settings.m_currentVideoSettings.m_Sharpness;
     SetSharpness();
   }
-  if (tmpDeintMode != g_settings.m_currentVideoSettings.m_DeinterlaceMode ||
-      tmpDeint     != g_settings.m_currentVideoSettings.m_InterlaceMethod)
+  if (  tmpDeintMode != g_settings.m_currentVideoSettings.m_DeinterlaceMode ||
+        tmpDeintGUI  != g_settings.m_currentVideoSettings.m_InterlaceMethod ||
+       (tmpDeintGUI == VS_INTERLACEMETHOD_AUTO && tmpDeint != AutoInterlaceMethod()))
   {
     tmpDeintMode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-    tmpDeint     = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    tmpDeintGUI  = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    if (tmpDeintGUI == VS_INTERLACEMETHOD_AUTO)
+      tmpDeint = AutoInterlaceMethod();
+    else
+      tmpDeint = tmpDeintGUI;
+
     SetDeinterlacing();
   }
 }
@@ -507,6 +514,11 @@ bool CVDPAU::Supports(EINTERLACEMETHOD method)
       return Supports(p->feature);
   }
   return false;
+}
+
+EINTERLACEMETHOD CVDPAU::AutoInterlaceMethod()
+{
+  return VS_INTERLACEMETHOD_VDPAU_TEMPORAL;
 }
 
 void CVDPAU::SetColor()
@@ -606,6 +618,8 @@ void CVDPAU::SetDeinterlacing()
   VdpStatus vdp_st;
   EDEINTERLACEMODE   mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
   EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+  if (method == VS_INTERLACEMETHOD_AUTO)
+    method = AutoInterlaceMethod();
 
   VdpVideoMixerFeature feature[] = { VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL,
                                      VDP_VIDEO_MIXER_FEATURE_DEINTERLACE_TEMPORAL_SPATIAL,
@@ -617,12 +631,7 @@ void CVDPAU::SetDeinterlacing()
   }
   else
   {
-    if (method == VS_INTERLACEMETHOD_AUTO)
-    {
-      VdpBool enabled[]={1,0,0}; // Same features as VS_INTERLACEMETHOD_VDPAU_TEMPORAL
-      vdp_st = vdp_video_mixer_set_feature_enables(videoMixer, ARSIZE(feature), feature, enabled);
-    }
-    else if (method == VS_INTERLACEMETHOD_AUTO_ION)
+    if (method == VS_INTERLACEMETHOD_AUTO_ION)
     {
       if (vid_height <= 576)
       {
@@ -1158,6 +1167,8 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
   EDEINTERLACEMODE   mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
   EINTERLACEMETHOD method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+  if (method == VS_INTERLACEMETHOD_AUTO)
+    method = AutoInterlaceMethod();
 
   if(pFrame)
   { // we have a new frame from decoder
@@ -1195,8 +1206,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
     if (mode == VS_DEINTERLACEMODE_FORCE
     || (mode == VS_DEINTERLACEMODE_AUTO && m_DVDVideoPics.front().iFlags & DVP_FLAG_INTERLACED))
     {
-      if((method == VS_INTERLACEMETHOD_AUTO
-      ||  method == VS_INTERLACEMETHOD_AUTO_ION
+      if((method == VS_INTERLACEMETHOD_AUTO_ION
       ||  method == VS_INTERLACEMETHOD_VDPAU_BOB
       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL
       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF

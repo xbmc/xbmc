@@ -27,12 +27,10 @@
 #include "Application.h"
 #include "input/XBMC_vkeys.h"
 #include "input/MouseStat.h"
-#include "input/KeymapLoader.h"
 #include "storage/MediaManager.h"
 #include "windowing/WindowingFactory.h"
 #include <dbt.h>
 #include "guilib/LocalizeStrings.h"
-#include "input/KeymapLoader.h"
 #include "input/KeyboardStat.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/GUIControl.h"       // for EVENT_RESULT
@@ -40,8 +38,11 @@
 #include "Shlobj.h"
 #include "settings/Settings.h"
 #include "settings/AdvancedSettings.h"
+#include "peripherals/Peripherals.h"
 
 #ifdef _WIN32
+
+using namespace PERIPHERALS;
 
 #define XBMC_arraysize(array)	(sizeof(array)/sizeof(array[0]))
 
@@ -658,19 +659,12 @@ LRESULT CALLBACK CWinEventsWin32::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, L
     case WM_DEVICECHANGE:
       {
         PDEV_BROADCAST_DEVICEINTERFACE b = (PDEV_BROADCAST_DEVICEINTERFACE) lParam;
-        CStdString dbcc_name(b->dbcc_name);
-        dbcc_name = CKeymapLoader::ParseWin32HIDName(b->dbcc_name);
         switch (wParam)
         {
           case DBT_DEVICEARRIVAL:
-            CKeymapLoader().DeviceAdded(dbcc_name);
-            break;
           case DBT_DEVICEREMOVECOMPLETE:
-            CKeymapLoader().DeviceRemoved(dbcc_name);
-            break;
           case DBT_DEVNODES_CHANGED:
-            //CLog::Log(LOGDEBUG, "HID Device Changed");
-            //We generally don't care about Change notifications, only need to know if a device is removed or added to rescan the device list
+            g_peripherals.TriggerDeviceScan(PERIPHERAL_BUS_USB);
             break;
         }
         break;
@@ -737,8 +731,12 @@ void CWinEventsWin32::OnGestureNotify(HWND hWnd, LPARAM lParam)
       gc[1].dwWant |= GC_ROTATE;
     if (gestures == EVENT_RESULT_PAN_VERTICAL)
       gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_VERTICALLY | GC_PAN_WITH_GUTTER | GC_PAN_WITH_INERTIA;
+    if (gestures == EVENT_RESULT_PAN_VERTICAL_WITHOUT_INERTIA)
+      gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_VERTICALLY;
     if (gestures == EVENT_RESULT_PAN_HORIZONTAL)
       gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY | GC_PAN_WITH_GUTTER | GC_PAN_WITH_INERTIA;
+    if (gestures == EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA)
+      gc[2].dwWant |= GC_PAN_WITH_SINGLE_FINGER_HORIZONTALLY;
     gc[0].dwBlock = gc[0].dwWant ^ 1;
     gc[1].dwBlock = gc[1].dwWant ^ 1;
     gc[2].dwBlock = gc[2].dwWant ^ 30;

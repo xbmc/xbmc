@@ -149,18 +149,31 @@ bool CMusicDatabase::CreateTables()
 
     CLog::Log(LOGINFO, "create album index");
     m_pDS->exec("CREATE INDEX idxAlbum ON album(strAlbum)");
+    CLog::Log(LOGINFO, "create album index2");
+    m_pDS->exec("CREATE INDEX idxAlbum2 ON album(idArtist)");
+
     CLog::Log(LOGINFO, "create genre index");
     m_pDS->exec("CREATE INDEX idxGenre ON genre(strGenre)");
     CLog::Log(LOGINFO, "create artist index");
     m_pDS->exec("CREATE INDEX idxArtist ON artist(strArtist)");
     CLog::Log(LOGINFO, "create path index");
     m_pDS->exec("CREATE INDEX idxPath ON path(strPath)");
+
     CLog::Log(LOGINFO, "create song index");
     m_pDS->exec("CREATE INDEX idxSong ON song(strTitle)");
     CLog::Log(LOGINFO, "create song index1");
     m_pDS->exec("CREATE INDEX idxSong1 ON song(iTimesPlayed)");
     CLog::Log(LOGINFO, "create song index2");
     m_pDS->exec("CREATE INDEX idxSong2 ON song(lastplayed)");
+    CLog::Log(LOGINFO, "create song index3");
+    m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
+    CLog::Log(LOGINFO, "create song index4");
+    m_pDS->exec("CREATE INDEX idxSong4 ON song(idArtist)");
+    CLog::Log(LOGINFO, "create song index5");
+    m_pDS->exec("CREATE INDEX idxSong5 ON song(idGenre)");
+    CLog::Log(LOGINFO, "create song index6");
+    m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
+
     CLog::Log(LOGINFO, "create thumb index");
     m_pDS->exec("CREATE INDEX idxThumb ON thumb(strThumb)");
     //m_pDS->exec("CREATE INDEX idxSong ON song(dwFileNameCRC)");
@@ -177,18 +190,8 @@ bool CMusicDatabase::CreateTables()
     CLog::Log(LOGINFO, "create albuminfo trigger");
     m_pDS->exec("CREATE TRIGGER tgrAlbumInfo AFTER delete ON albuminfo FOR EACH ROW BEGIN delete from albuminfosong where albuminfosong.idAlbumInfo=old.idAlbumInfo; END");
 
-    // views
-    CLog::Log(LOGINFO, "create song view");
-    m_pDS->exec("create view songview as select song.idSong as idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb, iKaraNumber, iKaraDelay, strKaraEncoding from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join  artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb left outer join karaokedata on song.idSong=karaokedata.idSong");
-    CLog::Log(LOGINFO, "create album view");
-    m_pDS->exec("create view albumview as select album.idAlbum as idAlbum, strAlbum, strExtraArtists, "
-                "album.idArtist as idArtist, album.strExtraGenres as strExtraGenres, album.idGenre as idGenre, "
-                "strArtist, strGenre, album.iYear as iYear, strThumb, idAlbumInfo, strMoods, strStyles, strThemes, "
-                "strReview, strLabel, strType, strImage, iRating from album "
-                "left outer join artist on album.idArtist=artist.idArtist "
-                "left outer join genre on album.idGenre=genre.idGenre "
-                "left outer join thumb on album.idThumb=thumb.idThumb "
-                "left outer join albuminfo on album.idAlbum=albuminfo.idAlbum");
+    // we create views last to ensure all indexes are rolled in
+    CreateViews();
 
     // Add 'Karaoke' genre
     AddGenre( "Karaoke" );
@@ -201,6 +204,24 @@ bool CMusicDatabase::CreateTables()
   }
   CommitTransaction();
   return true;
+}
+
+void CMusicDatabase::CreateViews()
+{
+  CLog::Log(LOGINFO, "create song view");
+  m_pDS->exec("DROP VIEW IF EXISTS songview");
+  m_pDS->exec("create view songview as select song.idSong as idSong, song.strExtraArtists as strExtraArtists, song.strExtraGenres as strExtraGenres, strTitle, iTrack, iDuration, song.iYear as iYear, dwFileNameCRC, strFileName, strMusicBrainzTrackID, strMusicBrainzArtistID, strMusicBrainzAlbumID, strMusicBrainzAlbumArtistID, strMusicBrainzTRMID, iTimesPlayed, iStartOffset, iEndOffset, lastplayed, rating, comment, song.idAlbum as idAlbum, strAlbum, strPath, song.idArtist as idArtist, strArtist, song.idGenre as idGenre, strGenre, strThumb, iKaraNumber, iKaraDelay, strKaraEncoding from song join album on song.idAlbum=album.idAlbum join path on song.idPath=path.idPath join  artist on song.idArtist=artist.idArtist join genre on song.idGenre=genre.idGenre join thumb on song.idThumb=thumb.idThumb left outer join karaokedata on song.idSong=karaokedata.idSong");
+
+  CLog::Log(LOGINFO, "create album view");
+  m_pDS->exec("DROP VIEW IF EXISTS albumview");
+  m_pDS->exec("create view albumview as select album.idAlbum as idAlbum, strAlbum, strExtraArtists, "
+              "album.idArtist as idArtist, album.strExtraGenres as strExtraGenres, album.idGenre as idGenre, "
+              "strArtist, strGenre, album.iYear as iYear, strThumb, idAlbumInfo, strMoods, strStyles, strThemes, "
+              "strReview, strLabel, strType, strImage, iRating from album "
+              "left outer join artist on album.idArtist=artist.idArtist "
+              "left outer join genre on album.idGenre=genre.idGenre "
+              "left outer join thumb on album.idThumb=thumb.idThumb "
+              "left outer join albuminfo on album.idAlbum=albuminfo.idAlbum");
 }
 
 void CMusicDatabase::AddSong(CSong& song, bool bCheck)
@@ -3197,6 +3218,16 @@ bool CMusicDatabase::UpdateOldVersion(int version)
           m_pDS->exec(q);
         }
       }
+    }
+    if (version < 17)
+    {
+      m_pDS->exec("CREATE INDEX idxAlbum2 ON album(idArtist)");
+      m_pDS->exec("CREATE INDEX idxSong3 ON song(idAlbum)");
+      m_pDS->exec("CREATE INDEX idxSong4 ON song(idArtist)");
+      m_pDS->exec("CREATE INDEX idxSong5 ON song(idGenre)");
+      m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
+
+      CreateViews();
     }
   }
   catch (...)

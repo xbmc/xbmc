@@ -109,5 +109,8 @@ public:
     AddFileToFolder(strFolder, strFile, result);
     return result;
   }
+
+  static bool ProtocolHasParentInHostname(const CStdString& prot);
+  static bool ProtocolHasEncodedHostname(const CStdString& prot);
 };
 

@@ -270,9 +270,9 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
           OnFilterItems(selected.GetLabel());
           return true;
         }
-        if (GetProperty("filter").IsEmpty())
+        if (GetProperty("filter").empty())
         {
-          CStdString filter = GetProperty("filter");
+          CStdString filter = GetProperty("filter").asString();
           CGUIDialogKeyboard::ShowAndGetFilter(filter, false);
           SetProperty("filter", filter);
         }
@@ -400,7 +400,7 @@ bool CGUIMediaWindow::OnMessage(CGUIMessage& message)
       }
       else if (message.GetParam1() == GUI_MSG_FILTER_ITEMS && IsActive())
       {
-        CStdString filter(GetProperty("filter"));
+        CStdString filter(GetProperty("filter").asString());
         if (message.GetParam2() == 1) // append
           filter += message.GetStringParam();
         else if (message.GetParam2() == 2)
@@ -547,8 +547,8 @@ void CGUIMediaWindow::UpdateButtons()
   SET_CONTROL_LABEL(CONTROL_LABELFILES, items);
 
   //#ifdef PRE_SKIN_VERSION_3
-  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !GetProperty("filter").IsEmpty());
-  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter"));
+  SET_CONTROL_SELECTED(GetID(),CONTROL_BTN_FILTER, !GetProperty("filter").empty());
+  SET_CONTROL_LABEL2(CONTROL_BTN_FILTER, GetProperty("filter").asString());
   //#endif
 }
 
@@ -652,7 +652,7 @@ bool CGUIMediaWindow::GetDirectory(const CStdString &strDirectory, CFileItemList
       m_history.RemoveParentPath();
   }
 
-  if (m_guiState.get() && !m_guiState->HideParentDirItems() && !items.GetPath().IsEmpty())
+  if (m_guiState.get() && !m_guiState->HideParentDirItems() && items.GetPath() != m_startDirectory)
   {
     CFileItemPtr pItem(new CFileItem(".."));
     pItem->SetPath(strParentPath);
@@ -771,6 +771,18 @@ bool CGUIMediaWindow::Update(const CStdString &strDirectory)
   //  filtering on the items, setting thumbs.
   OnPrepareFileItems(*m_vecItems);
 
+  // The idea here is to ensure we have something to focus if our file list
+  // is empty.  As such, this check MUST be last and ignore the hide parent
+  // fileitems settings.
+  if (m_vecItems->IsEmpty())
+  {
+    CFileItemPtr pItem(new CFileItem(".."));
+    pItem->SetPath(m_history.GetParentPath());
+    pItem->m_bIsFolder = true;
+    pItem->m_bIsShareOrDrive = false;
+    m_vecItems->AddFront(pItem, 0);
+  }
+
   m_vecItems->FillInDefaultIcons();
 
   m_guiState.reset(CGUIViewState::GetViewState(GetID(), *m_vecItems));
@@ -833,23 +845,11 @@ void CGUIMediaWindow::OnFinalizeFileItems(CFileItemList &items)
 {
   m_unfilteredItems->Append(items);
   
-  CStdString filter(GetProperty("filter"));
+  CStdString filter(GetProperty("filter").asString());
   if (!filter.IsEmpty())
   {
     items.ClearItems();
     GetFilteredItems(filter, items);
-  }
-
-  // The idea here is to ensure we have something to focus if our file list
-  // is empty.  As such, this check MUST be last and ignore the hide parent
-  // fileitems settings.
-  if (items.IsEmpty())
-  {
-    CFileItemPtr pItem(new CFileItem(".."));
-    pItem->SetPath(m_history.GetParentPath());
-    pItem->m_bIsFolder = true;
-    pItem->m_bIsShareOrDrive = false;
-    items.AddFront(pItem, 0);
   }
 }
 
@@ -936,7 +936,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
 
     return true;
   }
-  else if (pItem->IsPlugin() && pItem->GetProperty("isplayable") != "true")
+  else if (pItem->IsPlugin() && !pItem->GetProperty("isplayable").asBoolean())
   {
     return XFILE::CPluginDirectory::RunScriptWithParams(pItem->GetPath());
   }
@@ -967,7 +967,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
     bool do_not_add_karaoke = g_guiSettings.GetBool("karaoke.enabled") &&
       g_guiSettings.GetBool("karaoke.autopopupselector") && pItem->IsKaraoke();
     bool autoplay = m_guiState.get() && m_guiState->AutoPlayNextItem();
-    int iPlaylist = m_guiState.get()?m_guiState->GetPlaylist():PLAYLIST_MUSIC;
 
     if (pItem->IsPlugin())
     {
@@ -978,7 +977,6 @@ bool CGUIMediaWindow::OnClick(int iItem)
         PluginPtr plugin = boost::dynamic_pointer_cast<CPluginSource>(addon);
         if (plugin && plugin->Provides(CPluginSource::AUDIO) && pItem->IsAudio())
         {
-          iPlaylist = PLAYLIST_MUSIC;
           autoplay = g_guiSettings.GetBool("musicplayer.autoplaynextitem");
         }
       }
@@ -1403,17 +1401,17 @@ void CGUIMediaWindow::GetContextButtons(int itemNumber, CContextButtons &buttons
   for (int i = CONTEXT_BUTTON_USER1; i <= CONTEXT_BUTTON_USER10; i++)
   {
     label.Format("contextmenulabel(%i)", i - CONTEXT_BUTTON_USER1);
-    if (item->GetProperty(label).IsEmpty())
+    if (item->GetProperty(label).empty())
       break;
 
     action.Format("contextmenuaction(%i)", i - CONTEXT_BUTTON_USER1);
-    if (item->GetProperty(action).IsEmpty())
+    if (item->GetProperty(action).empty())
       break;
 
-    buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label));
+    buttons.Add((CONTEXT_BUTTON)i, item->GetProperty(label).asString());
   }
 
-  if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+  if (item->GetProperty("pluginreplacecontextitems").asBoolean())
     return;
 
   // TODO: FAVOURITES Conditions on masterlock and localisation
@@ -1459,7 +1457,7 @@ bool CGUIMediaWindow::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
     {
       CStdString action;
       action.Format("contextmenuaction(%i)", button - CONTEXT_BUTTON_USER1);
-      g_application.getApplicationMessenger().ExecBuiltIn(m_vecItems->Get(itemNumber)->GetProperty(action));
+      g_application.getApplicationMessenger().ExecBuiltIn(m_vecItems->Get(itemNumber)->GetProperty(action).asString());
       return true;
     }
   default:
