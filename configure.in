@@ -1096,7 +1096,7 @@ else
   elif test "$use_libudev" = "yes" ; then
     PKG_CHECK_MODULES([UDEV],[libudev],,[use_libudev="no";AC_MSG_ERROR($libudev_not_found)])
   fi
-  if test "x$use_libusb" != "xno"; then
+  if test "x$use_libudev" != "xno"; then
     USE_LIBUDEV=1;INCLUDES="$INCLUDES $UDEV_CFLAGS";LIBS="$LIBS $UDEV_LIBS"
     AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"])
   else
@@ -1108,7 +1108,7 @@ fi
 USE_LIBUSB=0
 if test "$host_vendor" = "apple" ; then
   use_libusb="no"
-  AC_MSG_NOTICE($libudev_disabled)
+  AC_MSG_NOTICE($libusb_disabled)
 else
   # we can use either libudev or libusb but not both.
   if test "x$use_libusb" != "xno" && "x$use_libudev" == "xno"; then
