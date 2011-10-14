@@ -260,8 +260,10 @@ namespace JSONRPC
     {
       if (transport.compare("Announcing") == 0)
         return Announcing;
-      if (transport.compare("FileDownload") == 0)
-        return FileDownload;
+      if (transport.compare("FileDownloadDirect") == 0)
+        return FileDownloadDirect;
+      if (transport.compare("FileDownloadRedirect") == 0)
+        return FileDownloadRedirect;
 
       return Response;
     }

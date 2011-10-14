@@ -36,6 +36,7 @@ namespace JSONRPC
     static bool StartServer(int port, bool nonlocal);
     static void StopServer(bool bWait);
 
+    virtual bool PrepareDownload(const char *path, CVariant &details, std::string &protocol);
     virtual bool Download(const char *path, CVariant &result);
     virtual int GetCapabilities();
 

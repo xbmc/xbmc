@@ -127,8 +127,9 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 
 // Files
   { "Files.GetSources",                             CFileOperations::GetRootDirectory },
-  { "Files.Download",                               CFileOperations::Download },
   { "Files.GetDirectory",                           CFileOperations::GetDirectory },
+  { "Files.PrepareDownload",                        CFileOperations::PrepareDownload },
+  { "Files.Download",                               CFileOperations::Download },
 
 // Music Library
   { "AudioLibrary.GetArtists",                      CAudioLibrary::GetArtists },

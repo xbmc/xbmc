@@ -2025,12 +2025,12 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-pthreads \
       --enable-runtime-cpudetect \
       --cc="$CC" &&
-    sed -i "" -e "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
-    sed -i "" -e "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
-    sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
+    sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
+    sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
+    sed -ie "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
     if test "$use_arch" = "ppc"; then
-      sed -i "" -e "s/HAVE_GNU_AS 1/HAVE_GNU_AS 0/" config.h
-      sed -i "" -e "s/^HAVE_GNU_AS=yes/!HAVE_GNU_AS=yes/" config.mak
+      sed -ie "s/HAVE_GNU_AS 1/HAVE_GNU_AS 0/" config.h
+      sed -ie "s/^HAVE_GNU_AS=yes/!HAVE_GNU_AS=yes/" config.mak
     fi
   else
     CFLAGS="" \
@@ -2146,9 +2146,9 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
     -DSHARE_INSTALL_PREFIX:PATH="${datadir}" . &&
   if test "$host_vendor" = "apple" ; then
     # cmake has hardcoded paths to macports which bork our darwin depends cross/ppc, remove them
-    sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/link.txt
-    sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/flags.make
-    sed -i "" -e "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
+    sed -ie "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/link.txt
+    sed -ie "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/flags.make
+    sed -ie "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
   fi
   set +x
 ], [$DISABLE_PROJECTM])

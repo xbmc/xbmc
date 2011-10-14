@@ -520,7 +520,7 @@ void CWebServer::SetCredentials(const CStdString &username, const CStdString &pa
   m_needcredentials = !password.IsEmpty();
 }
 
-bool CWebServer::Download(const char *path, CVariant &result)
+bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::string &protocol)
 {
   bool exists = false;
   CFile *file = new CFile();
@@ -534,17 +534,25 @@ bool CWebServer::Download(const char *path, CVariant &result)
 
   if (exists)
   {
-    string str = "vfs/";
-    str += path;
-    result["path"] = str;
+    protocol = "http";
+    string url = "vfs/";
+    CStdString strPath = path;
+    CURL::Encode(strPath);
+    url += strPath;
+    details["path"] = url;
   }
 
   return exists;
 }
 
+bool CWebServer::Download(const char *path, CVariant &result)
+{
+  return false;
+}
+
 int CWebServer::GetCapabilities()
 {
-  return Response | FileDownload;
+  return Response | FileDownloadRedirect;
 }
 
 const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)
