@@ -26,6 +26,8 @@
 #include "threads/CriticalSection.h"
 #include <queue>
 
+class DllLibCEC;
+
 namespace CEC
 {
   class ICECAdapter;
@@ -69,6 +71,7 @@ namespace PERIPHERALS
     static bool FindConfigLocation(CStdString &strString);
     static bool TranslateComPort(CStdString &strPort);
 
+    DllLibCEC*        m_dll;
     CEC::ICECAdapter* m_cecAdapter;
     bool              m_bStarted;
     bool              m_bHasButton;

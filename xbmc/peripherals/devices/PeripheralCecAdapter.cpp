@@ -24,6 +24,7 @@
 #include "PeripheralCecAdapter.h"
 #include "input/XBIRRemote.h"
 #include "Application.h"
+#include "DynamicDll.h"
 #include "threads/SingleLock.h"
 #include "dialogs/GUIDialogKaiToast.h"
 #include "guilib/LocalizeStrings.h"
@@ -39,6 +40,27 @@ using namespace CEC;
 
 #define CEC_LIB_SUPPORTED_VERSION 6
 
+class DllLibCECInterface
+{
+public:
+  virtual ~DllLibCECInterface() {}
+  virtual ICECAdapter* CECCreate(const char *interfaceName, uint8_t logicalAddress, uint16_t physicalAddress)=0;
+  virtual void* CECDestroy(ICECAdapter *adapter)=0;
+};
+
+class DllLibCEC : public DllDynamic, DllLibCECInterface
+{
+  DECLARE_DLL_WRAPPER(DllLibCEC, DLL_PATH_LIBCEC)
+
+  DEFINE_METHOD3(ICECAdapter*, CECCreate,   (const char *p1, uint8_t p2, uint16_t p3))
+  DEFINE_METHOD1(void*       , CECDestroy,  (ICECAdapter *p1))
+
+  BEGIN_METHOD_RESOLVE()
+    RESOLVE_METHOD_RENAME(CECCreate,  CECCreate)
+    RESOLVE_METHOD_RENAME(CECDestroy, CECDestroy)
+  END_METHOD_RESOLVE()
+};
+
 CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const PeripheralBusType busType, const CStdString &strLocation, const CStdString &strDeviceName, int iVendorId, int iProductId) :
   CPeripheralHID(type, busType, strLocation, strDeviceName, iVendorId, iProductId),
   CThread("CEC Adapter"),
@@ -46,7 +68,12 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   m_bHasButton(false),
   m_bIsReady(false)
 {
-  m_cecAdapter = LoadLibCec("XBMC", CECDEVICE_PLAYBACKDEVICE1);
+  m_dll = new DllLibCEC;
+  if (m_dll->Load() && m_dll->IsLoaded())
+    m_cecAdapter = m_dll->CECCreate("XBMC", CECDEVICE_PLAYBACKDEVICE1, CEC_DEFAULT_PHYSICAL_ADDRESS);
+  else
+    m_cecAdapter = NULL;
+
   if (!m_cecAdapter || m_cecAdapter->GetMinVersion() > CEC_LIB_SUPPORTED_VERSION)
   {
     /* unsupported libcec version */
@@ -56,7 +83,8 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
     strMessage.Format(g_localizeStrings.Get(36013).c_str(), CEC_LIB_SUPPORTED_VERSION, m_cecAdapter ? m_cecAdapter->GetMinVersion() : -1);
     CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Error, g_localizeStrings.Get(36000), strMessage);
     m_bError = true;
-    UnloadLibCec(m_cecAdapter);
+    if (m_cecAdapter)
+      m_dll->CECDestroy(m_cecAdapter);
     m_cecAdapter = NULL;
   }
   else
@@ -72,11 +100,13 @@ CPeripheralCecAdapter::~CPeripheralCecAdapter(void)
   m_bStop = true;
   StopThread(true);
 
-  if (m_cecAdapter)
+  if (m_dll && m_cecAdapter)
   {
     FlushLog();
-    UnloadLibCec(m_cecAdapter);
+    m_dll->CECDestroy(m_cecAdapter);
     m_cecAdapter = NULL;
+    delete m_dll;
+    m_dll = NULL;
   }
 }
 
