@@ -25,6 +25,9 @@
 
 /* Local includes */
 #include "Socket.h"
+#include "Cards.h"
+#include "epg.h"
+#include "CriticalSection.h"
 
 class cPVRClientMediaPortal
 {
@@ -80,7 +83,7 @@ public:
   int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize);
   int GetCurrentClientChannel();
   bool SwitchChannel(const PVR_CHANNEL &channel);
-  PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus);
+  PVR_ERROR GetSignalStatus(PVR_SIGNAL_STATUS &signalStatus);
   const char* GetLiveStreamURL(const PVR_CHANNEL &channel);
 
   /* Record stream handling */
@@ -95,8 +98,10 @@ protected:
 
 private:
   bool GetChannel(unsigned int number, PVR_CHANNEL &channeldata);
+  bool LoadGenreXML(const std::string &filename);
 
   int                     m_iCurrentChannel;
+  int                     m_iCurrentCard;
   bool                    m_bConnected;
   bool                    m_bStop;
   bool                    m_bTimeShiftStarted;
@@ -106,7 +111,9 @@ private:
   std::string             m_BackendVersion;
   time_t                  m_BackendUTCoffset;
   time_t                  m_BackendTime;
-
+  CCards                  m_cCards;
+  GenreMap                m_genremap;
+  CCriticalSection        m_mutex;
   void Close();
 
   //Used for TV Server communication:

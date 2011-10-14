@@ -28,20 +28,20 @@ using namespace std;
  * Default values are defined inside client.h
  * and exported to the other source files.
  */
-std::string g_szHostname           = DEFAULT_HOST;         ///< The Host name or IP of the MediaPortal TV Server
-int         g_iPort                = DEFAULT_PORT;         ///< The TVServerXBMC listening port (default: 9596)
-int         g_iConnectTimeout      = DEFAULT_TIMEOUT;      ///< The Socket connection timeout
-int         g_iSleepOnRTSPurl      = DEFAULT_SLEEP_RTSP_URL; ///< An optional delay between tuning a channel and opening the corresponding RTSP stream in XBMC (default: 0)
-bool        g_bOnlyFTA             = DEFAULT_FTA_ONLY;     ///< Send only Free-To-Air Channels inside Channel list to XBMC
-bool        g_bRadioEnabled        = DEFAULT_RADIO;        ///< Send also Radio channels list to XBMC
-bool        g_bHandleMessages      = DEFAULT_HANDLE_MSG;   ///< Send VDR's OSD status messages to XBMC OSD
+std::string g_szHostname           = DEFAULT_HOST;                  ///< The Host name or IP of the MediaPortal TV Server
+int         g_iPort                = DEFAULT_PORT;                  ///< The TVServerXBMC listening port (default: 9596)
+int         g_iConnectTimeout      = DEFAULT_TIMEOUT;               ///< The Socket connection timeout
+int         g_iSleepOnRTSPurl      = DEFAULT_SLEEP_RTSP_URL;        ///< An optional delay between tuning a channel and opening the corresponding RTSP stream in XBMC (default: 0)
+bool        g_bOnlyFTA             = DEFAULT_FTA_ONLY;              ///< Send only Free-To-Air Channels inside Channel list to XBMC
+bool        g_bRadioEnabled        = DEFAULT_RADIO;                 ///< Send also Radio channels list to XBMC
+bool        g_bHandleMessages      = DEFAULT_HANDLE_MSG;            ///< Send VDR's OSD status messages to XBMC OSD
 bool        g_bResolveRTSPHostname = DEFAULT_RESOLVE_RTSP_HOSTNAME; ///< Resolve the server hostname in the rtsp URLs to an IP at the TV Server side (default: false)
-bool        g_bReadGenre           = DEFAULT_READ_GENRE;   ///< Read the genre strings from MediaPortal and translate them into XBMC DVB genre id's (only English)
-bool        g_bUseRecordingsDir    = DEFAULT_USE_REC_DIR;  ///< Use a normal directory if true for recordings
-std::string g_szRecordingsDir      = DEFAULT_REC_DIR;      ///< The path to the recordings directory
-std::string g_szTVGroup            = DEFAULT_TVGROUP;      ///< Import only TV channels from this TV Server TV group
-std::string g_szRadioGroup         = DEFAULT_RADIOGROUP;   ///< Import only radio channels from this TV Server radio group
-bool        g_bDirectTSFileRead    = DEFAULT_DIRECT_TS_FR; ///< Open the Live-TV timeshift buffer directly (skip RTSP streaming)
+bool        g_bReadGenre           = DEFAULT_READ_GENRE;            ///< Read the genre strings from MediaPortal and translate them into XBMC DVB genre id's (only English)
+bool        g_bUseRecordingsDir    = DEFAULT_USE_REC_DIR;           ///< Use a normal directory if true for recordings
+std::string g_szRecordingsDir      = DEFAULT_REC_DIR;               ///< The path to the recordings directory
+std::string g_szTVGroup            = DEFAULT_TVGROUP;               ///< Import only TV channels from this TV Server TV group
+std::string g_szRadioGroup         = DEFAULT_RADIOGROUP;            ///< Import only radio channels from this TV Server radio group
+bool        g_bDirectTSFileRead    = DEFAULT_DIRECT_TS_FR;          ///< Open the Live-TV timeshift buffer directly (skip RTSP streaming)
 
 /* Client member variables */
 ADDON_STATUS           m_CurStatus    = ADDON_STATUS_UNKNOWN;
@@ -54,6 +54,8 @@ CHelper_libXBMC_addon *XBMC           = NULL;
 CHelper_libXBMC_pvr   *PVR            = NULL;
 
 extern "C" {
+
+void ADDON_ReadSettings(void);
 
 /***********************************************************
  * Standard AddOn related public library functions
@@ -73,29 +75,103 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
   XBMC = new CHelper_libXBMC_addon;
   if (!XBMC->RegisterMe(hdl))
   {
-    delete_null(XBMC);
+    SAFE_DELETE(XBMC);
     return ADDON_STATUS_UNKNOWN;
   }
 
   PVR = new CHelper_libXBMC_pvr;
   if (!PVR->RegisterMe(hdl))
   {
-    delete_null(PVR);
-    delete_null(XBMC);
+    SAFE_DELETE(PVR);
+    SAFE_DELETE(XBMC);
     return ADDON_STATUS_UNKNOWN;
   }
 
   XBMC->Log(LOG_DEBUG, "Creating MediaPortal PVR-Client (ffmpeg rtsp version)");
 
   m_CurStatus    = ADDON_STATUS_UNKNOWN;
-  g_client       = new cPVRClientMediaPortal();
   g_iClientID    = pvrprops->iClientId;
   g_szUserPath   = pvrprops->strUserPath;
   g_szClientPath = pvrprops->strClientPath;
 
+  ADDON_ReadSettings();
+
+  /* Create connection to MediaPortal XBMC TV client */
+  g_client       = new cPVRClientMediaPortal();
+  if (!g_client->Connect())
+  {
+    SAFE_DELETE(g_client);
+    SAFE_DELETE(PVR);
+    SAFE_DELETE(XBMC);
+    m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
+  }
+  else
+  {
+    m_CurStatus = ADDON_STATUS_OK;
+  }
+
+  g_bCreated = true;
+
+  return m_CurStatus;
+}
+
+//-- Destroy ------------------------------------------------------------------
+// Used during destruction of the client, all steps to do clean and safe Create
+// again must be done.
+//-----------------------------------------------------------------------------
+void ADDON_Destroy()
+{
+  if ((g_bCreated) && (g_client))
+  {
+    g_client->Disconnect();
+    SAFE_DELETE(g_client);
+
+    g_bCreated = false;
+  }
+
+  if (PVR)
+  {
+    SAFE_DELETE(PVR);
+  }
+  if (XBMC)
+  {
+    SAFE_DELETE(XBMC);
+  }
+
+  m_CurStatus = ADDON_STATUS_UNKNOWN;
+}
+
+//-- GetStatus ----------------------------------------------------------------
+// Report the current Add-On Status to XBMC
+//-----------------------------------------------------------------------------
+ADDON_STATUS ADDON_GetStatus()
+{
+  return m_CurStatus;
+}
+
+//-- HasSettings --------------------------------------------------------------
+// Report "true", yes this AddOn have settings
+//-----------------------------------------------------------------------------
+bool ADDON_HasSettings()
+{
+  return true;
+}
+
+unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
+{
+  return 0;
+}
+
+void ADDON_ReadSettings(void)
+{
   /* Read setting "host" from settings.xml */
   char buffer[1024];
 
+  if (!XBMC)
+    return;
+
+  /* Connection settings */
+  /***********************/
   if (XBMC->GetSetting("host", &buffer))
   {
     g_szHostname = buffer;
@@ -116,6 +192,17 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     g_iPort = DEFAULT_PORT;
   }
 
+  /* Read setting "timeout" from settings.xml */
+  if (!XBMC->GetSetting("timeout", &g_iConnectTimeout))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
+    g_iConnectTimeout = DEFAULT_TIMEOUT;
+  }
+
+  /* MediaPortal settings */
+  /***********************/
+
   /* Read setting "ftaonly" from settings.xml */
   if (!XBMC->GetSetting("ftaonly", &g_bOnlyFTA))
   {
@@ -130,14 +217,6 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     /* If setting is unknown fallback to defaults */
     XBMC->Log(LOG_ERROR, "Couldn't get 'useradio' setting, falling back to 'true' as default");
     g_bRadioEnabled = DEFAULT_RADIO;
-  }
-
-  /* Read setting "timeout" from settings.xml */
-  if (!XBMC->GetSetting("timeout", &g_iConnectTimeout))
-  {
-    /* If setting is unknown fallback to defaults */
-    XBMC->Log(LOG_ERROR, "Couldn't get 'timeout' setting, falling back to %i seconds as default", DEFAULT_TIMEOUT);
-    g_iConnectTimeout = DEFAULT_TIMEOUT;
   }
 
   if (!XBMC->GetSetting("tvgroup", &buffer))
@@ -196,69 +275,13 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     g_szRecordingsDir = buffer;
   }
   g_bDirectTSFileRead = false;
-  /* Create connection to MediaPortal XBMC TV client */
-  if (!g_client->Connect())
-  {
-    delete_null(g_client);
-    delete_null(PVR);
-    delete_null(XBMC);
-    m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
-  }
-  else
-  {
-    m_CurStatus = ADDON_STATUS_OK;
-  }
 
-  g_bCreated = true;
-
-  return m_CurStatus;
-}
-
-//-- Destroy ------------------------------------------------------------------
-// Used during destruction of the client, all steps to do clean and safe Create
-// again must be done.
-//-----------------------------------------------------------------------------
-void ADDON_Destroy()
-{
-  if ((g_bCreated) && (g_client))
-  {
-    g_client->Disconnect();
-    delete_null(g_client);
-
-    g_bCreated = false;
-  }
-
-  if (PVR)
-  {
-    delete_null(PVR);
-  }
-  if (XBMC)
-  {
-    delete_null(XBMC);
-  }
-
-  m_CurStatus = ADDON_STATUS_UNKNOWN;
-}
-
-//-- GetStatus ----------------------------------------------------------------
-// Report the current Add-On Status to XBMC
-//-----------------------------------------------------------------------------
-ADDON_STATUS ADDON_GetStatus()
-{
-  return m_CurStatus;
-}
-
-//-- HasSettings --------------------------------------------------------------
-// Report "true", yes this AddOn have settings
-//-----------------------------------------------------------------------------
-bool ADDON_HasSettings()
-{
-  return true;
-}
-
-unsigned int ADDON_GetSettings(ADDON_StructSetting ***sSet)
-{
-  return 0;
+  /* Log the current settings for debugging purposes */
+  XBMC->Log(LOG_DEBUG, "settings: host='%s', port=%i, timeout=%i", g_szHostname.c_str(), g_iPort, g_iConnectTimeout);
+  XBMC->Log(LOG_DEBUG, "settings: ftaonly=%i, useradio=%i, tvgroup='%s', radiogroup='%s'", (int) g_bOnlyFTA, (int) g_bRadioEnabled, g_szTVGroup.c_str(), g_szRadioGroup.c_str());
+  XBMC->Log(LOG_DEBUG, "settings: readgenre=%i, sleeponrtspurl=%i", (int) g_bReadGenre, g_iSleepOnRTSPurl);
+  XBMC->Log(LOG_DEBUG, "settings: userecordingsdir=%i, recordingsdir='%s'", (int) g_bUseRecordingsDir, g_szRecordingsDir.c_str());
+  XBMC->Log(LOG_DEBUG, "settings: resolvertsphostname=%i", (int) g_bResolveRTSPHostname);
 }
 
 //-- SetSetting ---------------------------------------------------------------
@@ -613,7 +636,7 @@ PVR_ERROR UpdateTimer(const PVR_TIMER &timer)
 bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
   if (!g_client)
-    return PVR_ERROR_SERVER_ERROR;
+    return false;
   else
     return g_client->OpenLiveStream(channelinfo);
 }
@@ -621,7 +644,7 @@ bool OpenLiveStream(const PVR_CHANNEL &channelinfo)
 void CloseLiveStream()
 {
   if (g_client)
-    CloseLiveStream();
+    g_client->CloseLiveStream();
 }
 
 int ReadLiveStream(unsigned char *pBuffer, unsigned int iBufferSize)
@@ -653,7 +676,7 @@ PVR_ERROR SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
   if (!g_client)
     return PVR_ERROR_SERVER_ERROR;
   else
-    return g_client->SignalStatus(signalStatus);
+    return g_client->GetSignalStatus(signalStatus);
 }
 
 /*******************************************/

@@ -151,41 +151,46 @@ bool CAddonCallbacksAddon::GetAddonSetting(void *addonData, const char *strSetti
       return false;
     }
 
-    TiXmlElement *setting = addonHelper->m_addon->GetSettingsXML()->FirstChildElement("setting");
-    while (setting)
-    {
-      const char *id = setting->Attribute("id");
-      const char *type = setting->Attribute("type");
+    const TiXmlElement *category = addonHelper->m_addon->GetSettingsXML()->FirstChildElement("category");
+    if (!category) // add a default one...
+      category = addonHelper->m_addon->GetSettingsXML();
 
-      if (strcmpi(id, strSettingName) == 0 && type)
+    while (category)
+    {
+      const TiXmlElement *setting = category->FirstChildElement("setting");
+      while (setting)
       {
-        if (strcmpi(type, "text")   == 0 || strcmpi(type, "ipaddress") == 0 ||
-            strcmpi(type, "folder") == 0 || strcmpi(type, "action")    == 0 ||
-            strcmpi(type, "music")  == 0 || strcmpi(type, "pictures")  == 0 ||
-            strcmpi(type, "folder") == 0 || strcmpi(type, "programs")  == 0 ||
-            strcmpi(type, "files")  == 0 || strcmpi(type, "fileenum")  == 0)
+        const char *id = setting->Attribute("id");
+        const char *type = setting->Attribute("type");
+
+        if (strcmpi(id, strSettingName) == 0 && type)
         {
-          strcpy((char*) settingValue, addonHelper->m_addon->GetSetting(id).c_str());
-          return true;
+          if (strcmpi(type, "text")   == 0 || strcmpi(type, "ipaddress") == 0 ||
+              strcmpi(type, "folder") == 0 || strcmpi(type, "action")    == 0 ||
+              strcmpi(type, "music")  == 0 || strcmpi(type, "pictures")  == 0 ||
+              strcmpi(type, "folder") == 0 || strcmpi(type, "programs")  == 0 ||
+              strcmpi(type, "files")  == 0 || strcmpi(type, "fileenum")  == 0)
+          {
+            strcpy((char*) settingValue, addonHelper->m_addon->GetSetting(id).c_str());
+            return true;
+          }
+          else if (strcmpi(type, "number") == 0 || strcmpi(type, "enum") == 0 ||
+                   strcmpi(type, "labelenum") == 0)
+          {
+            *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id));
+            return true;
+          }
+          else if (strcmpi(type, "bool") == 0)
+          {
+            *(bool*) settingValue = (bool) (addonHelper->m_addon->GetSetting(id) == "true" ? true : false);
+            return true;
+          }
         }
-        else if (strcmpi(type, "integer") == 0 || strcmpi(type, "enum") == 0 ||
-                 strcmpi(type, "labelenum") == 0)
-        {
-          *(int*) settingValue = (int) atoi(addonHelper->m_addon->GetSetting(id));
-          return true;
-        }
-        else if (strcmpi(type, "bool") == 0)
-        {
-          *(bool*) settingValue = (bool) (addonHelper->m_addon->GetSetting(id) == "true" ? true : false);
-          return true;
-        }
-        else
-        {
-          CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - can't find setting with type '%s' for id '%s' in '%s'", __FUNCTION__, type, id, addonHelper->m_addon->Name().c_str());
-        }
+        setting = setting->NextSiblingElement("setting");
       }
-      setting = setting->NextSiblingElement("setting");
+      category = category->NextSiblingElement("category");
     }
+    CLog::Log(LOGERROR, "CAddonCallbacksAddon - %s - can't find setting '%s' in '%s'", __FUNCTION__, strSettingName, addonHelper->m_addon->Name().c_str());
   }
   catch (std::exception &e)
   {

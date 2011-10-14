@@ -23,7 +23,9 @@
 
 using namespace std;
 
-#define delete_null(ptr) (delete (ptr), ptr = NULL)
+/** Delete macros that make the pointer NULL again */
+#define SAFE_DELETE(p)       do { delete (p);     (p)=NULL; } while (0)
+#define SAFE_DELETE_ARRAY(p) do { delete[] (p);   (p)=NULL; } while (0)
 
 /**
  * String tokenize
@@ -35,3 +37,10 @@ std::wstring StringToWString(const std::string& s);
 std::string WStringToString(const std::wstring& s);
 std::string lowercase(const std::string& s);
 bool stringtobool(const std::string& s);
+const char* booltostring(const bool b);
+
+/**
+ * @brief Converts a C# DateTime string into a time_t value
+ * Assumes the usage of somedatetimeval.ToString("u") in C#
+ */
+time_t DateTimeToTimeT(const std::string& datetime);

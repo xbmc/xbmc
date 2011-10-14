@@ -58,7 +58,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32;_DEBUG;_WINDOWS;MPTV_EXPORTS;TARGET_WINDOWS;_WINSOCKAPI_;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -90,7 +90,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WIN32;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WIN32;_WINDOWS;MPTV_EXPORTS;TARGET_WINDOWS;_WINSOCKAPI_;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -118,10 +118,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\AutoLock.cpp" />
+    <ClCompile Include="..\..\Cards.cpp" />
     <ClCompile Include="..\..\channels.cpp" />
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
+    <ClCompile Include="..\..\CriticalSection.cpp" />
     <ClCompile Include="..\..\epg.cpp" />
+    <ClCompile Include="..\..\lib\tinyxml\tinystr.cpp" />
+    <ClCompile Include="..\..\lib\tinyxml\tinyxml.cpp" />
+    <ClCompile Include="..\..\lib\tinyxml\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
     <ClCompile Include="..\..\recordings.cpp" />
     <ClCompile Include="..\..\Socket.cpp" />
@@ -130,16 +137,24 @@
     <ClCompile Include="..\..\utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\AutoLock.h" />
+    <ClInclude Include="..\..\Cards.h" />
     <ClInclude Include="..\..\channels.h" />
     <ClInclude Include="..\..\client.h" />
     <ClInclude Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.h" />
+    <ClInclude Include="..\..\CriticalSection.h" />
     <ClInclude Include="..\..\epg.h" />
+    <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
+    <ClInclude Include="..\..\lib\tinyxml\tinyxml.h" />
+    <ClInclude Include="..\..\os-dependent.h" />
+    <ClInclude Include="..\..\posix\os_posix.h" />
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />
     <ClInclude Include="..\..\recordings.h" />
     <ClInclude Include="..\..\Socket.h" />
     <ClInclude Include="..\..\timers.h" />
     <ClInclude Include="..\..\uri.h" />
     <ClInclude Include="..\..\utils.h" />
+    <ClInclude Include="..\..\windows\os_windows.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\README" />

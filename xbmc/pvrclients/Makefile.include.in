@@ -3,10 +3,10 @@
 #
 
 ## INCLUDES
-INCLUDES  = -I. -I../.. -I../../cores/dvdplayer/DVDDemuxers -I../../addons/include
-INCLUDES += -I../../lib -I../../../guilib -I ../../../addons/library.xbmc.pvr -I../../../addons/library.xbmc.addon
+INCLUDES  = -I. -I$(abs_top_srcdir)/xbmc -I$(abs_top_srcdir)/xbmc/cores/dvdplayer/DVDDemuxers -I$(abs_top_srcdir)/xbmc/addons/include
+INCLUDES += -I$(abs_top_srcdir)/xbmc/lib -I$(abs_top_srcdir)/addons/library.xbmc.pvr -I$(abs_top_srcdir)/addons/library.xbmc.addon
 ifneq (@USE_EXTERNAL_FFMPEG@,1)
-	INCLUDES += -I../../cores/dvdplayer/Codecs/ffmpeg
+	INCLUDES += -I$(abs_top_srcdir)/xbmc/cores/dvdplayer/Codecs/ffmpeg
 endif
 ifeq ($(findstring Darwin,$(shell uname -a)), Darwin)
 	INCLUDES += -I/opt/local/include
@@ -22,8 +22,8 @@ else
 	CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual -Wno-parentheses
 endif
 
-include ../../../Makefile.include
+include @abs_top_srcdir@/Makefile.include
 -include $(patsubst %.cpp,%.P,$(patsubst %.c,%.P,$(SRCS)))
 
-$(LIB): $(OBJS)
+%.pvr: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -shared -g $(OBJS) $(LIBS) $(LIBDIRS) $(SILIB) -o $(LIB)

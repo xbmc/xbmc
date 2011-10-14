@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include "libXBMC_addon.h"
 #include "libXBMC_pvr.h"
+#include "Cards.h"
 
 using namespace std;
 
@@ -32,20 +33,26 @@ class cRecording
 private:
   int m_Index;
   string m_channelName;
-  string m_fileName;
-  string m_filePath;
-  string m_directory;
+  string m_filePath;          ///< The full recording path as returned by the backend
+  string m_basePath;          ///< The base path shared by all recordings (to be determined from the Card settings)
+  string m_directory;         ///< An optional subdirectory below the basePath
+  string m_fileName;          ///< The recording filename without path
   string m_stream;
   string m_originalurl;
-  string m_lifetime;
   time_t m_StartTime;
   int m_Duration;
   string m_title;             // Title of this event
-  string m_shortText;         // Short description of this event (typically the episode name in case of a series)
   string m_description;       // Description of this event
+  string m_episodeName;       // Short description of this event (typically the episode name in case of a series)
+  string m_seriesNumber;
+  string m_episodeNumber;
+  string m_episodePart;
+  int m_scheduleID;
+  int m_keepUntil;
+  time_t m_keepUntilDate;     ///< MediaPortal keepUntilDate
+  CCards* m_cardSettings;     ///< Pointer to the MediaPortal card settings. Will be used to determine the base path of the recordings
 
 public:
-  cRecording(const PVR_RECORDING *Recording);
   cRecording();
   virtual ~cRecording();
 
@@ -56,6 +63,12 @@ public:
   time_t Duration(void) const { return m_Duration; }
   const char *Title(void) const { return m_title.c_str(); }
   const char *Description(void) const { return m_description.c_str(); }
+  const char *EpisodeName(void) const { return m_episodeName.c_str(); }
+  const char *SeriesNumber(void) const { return m_seriesNumber.c_str(); }
+  const char *EpisodeNumber(void) const { return m_episodeNumber.c_str(); }
+  const char *EpisodePart(void) const { return m_episodePart.c_str(); }
+  int ScheduleID(void) const { return m_scheduleID; }
+  int Lifetime(void) const;
 
   /**
    * \brief Filename of this recording with full path (at server side)
@@ -90,4 +103,10 @@ public:
    * \return Stream URL
    */
   const char *OrignalURL(void) const { return m_originalurl.c_str(); }
+
+  /**
+   * \brief Pass a pointer to the MediaPortal card settings to this class
+   * \param the cardSettings
+   */
+  void SetCardSettings(CCards* cardSettings);
 };
