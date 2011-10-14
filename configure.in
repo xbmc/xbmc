@@ -1107,7 +1107,7 @@ fi
 # libusb
 USE_LIBUSB=0
 if test "$host_vendor" = "apple" ; then
-  use_libudev="no"
+  use_libusb="no"
   AC_MSG_NOTICE($libudev_disabled)
 else
   # we can use either libudev or libusb but not both.
