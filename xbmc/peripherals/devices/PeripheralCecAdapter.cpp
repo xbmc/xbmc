@@ -209,6 +209,12 @@ void CPeripheralCecAdapter::Process(void)
     }
   }
 
+  // set the correct physical address
+  int iHdmiPort = GetSettingInt("cec_hdmi_port");
+  if (iHdmiPort <= 0 || iHdmiPort > 16)
+    iHdmiPort = 1;
+  m_cecAdapter->SetPhysicalAddress(iHdmiPort << 12);
+
   // open the CEC adapter
   CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, strPort.c_str());
 
@@ -290,6 +296,20 @@ bool CPeripheralCecAdapter::StartBootloader(void)
   {
     CLog::Log(LOGDEBUG, "%s - starting the bootloader", __FUNCTION__);
     bReturn = m_cecAdapter->StartBootloader();
+  }
+
+  return bReturn;
+}
+
+bool CPeripheralCecAdapter::SetHdmiPort(int iHdmiPort)
+{
+  bool bReturn(false);
+  if (m_cecAdapter && m_bIsReady)
+  {
+    if (iHdmiPort <= 0 || iHdmiPort > 16)
+      iHdmiPort = 1;
+    CLog::Log(LOGDEBUG, "%s - changing active HDMI port to %d", __FUNCTION__, iHdmiPort);
+    bReturn = m_cecAdapter->SetPhysicalAddress(iHdmiPort << 12);
   }
 
   return bReturn;
@@ -550,6 +570,10 @@ void CPeripheralCecAdapter::OnSettingChanged(const CStdString &strChangedSetting
       StopThread(true);
     else if (bEnabled && !m_cecAdapter && m_bStarted)
       InitialiseFeature(FEATURE_CEC);
+  }
+  else if (strChangedSetting.Equals("cec_hdmi_port"))
+  {
+    SetHdmiPort(GetSettingInt("cec_hdmi_port"));
   }
 }
 

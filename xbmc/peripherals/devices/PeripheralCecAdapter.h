@@ -55,6 +55,7 @@ namespace PERIPHERALS
 
     virtual bool SendPing(void);
     virtual bool StartBootloader(void);
+    virtual bool SetHdmiPort(int iHdmiPort);
 
     virtual void OnSettingChanged(const CStdString &strChangedSetting);
 
