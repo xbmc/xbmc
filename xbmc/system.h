@@ -236,6 +236,10 @@
 #ifdef HAVE_LIBGLESV2
 #undef HAS_GL
 #define HAS_GLES 2
+#if defined(HAVE_DIRECTFB)
+#define HAS_DIRECTFB
+#define HAS_LINUX_EVENTS
+#endif
 #endif
 
 // GLES1.0 detected. Dont use GL!
