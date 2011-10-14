@@ -69,6 +69,7 @@ namespace PERIPHERALS
     virtual bool InitialiseFeature(const PeripheralFeature feature);
     virtual void Process(void);
     virtual void ProcessNextCommand(void);
+    virtual void SetMenuLanguage(const char *strLanguage);
     static bool FindConfigLocation(CStdString &strString);
     static bool TranslateComPort(CStdString &strPort);
 

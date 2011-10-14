@@ -30,6 +30,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "peripherals/Peripherals.h"
 #include "peripherals/bus/PeripheralBus.h"
+#include "settings/GUISettings.h"
 #include "utils/log.h"
 
 #include <cec.h>
@@ -315,6 +316,64 @@ bool CPeripheralCecAdapter::SetHdmiPort(int iHdmiPort)
   return bReturn;
 }
 
+void CPeripheralCecAdapter::SetMenuLanguage(const char *strLanguage)
+{
+  CStdString strGuiLanguage;
+
+  if (!strcmp(strLanguage, "bul"))
+    strGuiLanguage = "Bulgarian";
+  else if (!strcmp(strLanguage, "hrv"))
+    strGuiLanguage = "Croatian";
+  else if (!strcmp(strLanguage, "cze"))
+    strGuiLanguage = "Czech";
+  else if (!strcmp(strLanguage, "dan"))
+    strGuiLanguage = "Danish";
+  else if (!strcmp(strLanguage, "dut"))
+    strGuiLanguage = "Dutch";
+  else if (!strcmp(strLanguage, "eng"))
+    strGuiLanguage = "English";
+  else if (!strcmp(strLanguage, "fin"))
+    strGuiLanguage = "Finnish";
+  else if (!strcmp(strLanguage, "fre"))
+    strGuiLanguage = "French";
+  else if (!strcmp(strLanguage, "ger"))
+    strGuiLanguage = "German";
+  else if (!strcmp(strLanguage, "gre"))
+    strGuiLanguage = "Greek";
+  else if (!strcmp(strLanguage, "hun"))
+    strGuiLanguage = "Hungarian";
+  else if (!strcmp(strLanguage, "ita"))
+    strGuiLanguage = "Italian";
+  else if (!strcmp(strLanguage, "nor"))
+    strGuiLanguage = "Norwegian";
+  else if (!strcmp(strLanguage, "pol"))
+    strGuiLanguage = "Polish";
+  else if (!strcmp(strLanguage, "por"))
+    strGuiLanguage = "Portuguese";
+  else if (!strcmp(strLanguage, "rum"))
+    strGuiLanguage = "Romanian";
+  else if (!strcmp(strLanguage, "rus"))
+    strGuiLanguage = "Russian";
+  else if (!strcmp(strLanguage, "srp"))
+    strGuiLanguage = "Serbian";
+  else if (!strcmp(strLanguage, "slo"))
+    strGuiLanguage = "Slovenian";
+  else if (!strcmp(strLanguage, "spa"))
+    strGuiLanguage = "Spanish";
+  else if (!strcmp(strLanguage, "swe"))
+    strGuiLanguage = "Swedish";
+  else if (!strcmp(strLanguage, "tur"))
+    strGuiLanguage = "Turkish";
+
+  if (!strGuiLanguage.IsEmpty())
+  {
+    g_application.getApplicationMessenger().SetGUILanguage(strGuiLanguage);
+    CLog::Log(LOGDEBUG, "%s - language set to '%s'", __FUNCTION__, strGuiLanguage.c_str());
+  }
+  else
+    CLog::Log(LOGWARNING, "%s - TV menu language set to unknown value '%s'", __FUNCTION__, strLanguage);
+}
+
 void CPeripheralCecAdapter::ProcessNextCommand(void)
 {
   cec_command command;
@@ -332,6 +391,15 @@ void CPeripheralCecAdapter::ProcessNextCommand(void)
       {
         m_bStarted = false;
         g_application.getApplicationMessenger().Suspend();
+      }
+      break;
+    case CEC_OPCODE_SET_MENU_LANGUAGE:
+      if (command.initiator == CECDEVICE_TV && command.parameters.size == 3)
+      {
+        char strNewLanguage[3];
+        for (int iPtr = 0; iPtr < 3; iPtr++)
+          strNewLanguage[iPtr] = command.parameters[iPtr];
+        SetMenuLanguage(strNewLanguage);
       }
       break;
     default:
