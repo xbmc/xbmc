@@ -38,8 +38,7 @@ namespace PERIPHERALS
   typedef struct
   {
     WORD         iButton;
-    unsigned int iButtonPressed;
-    unsigned int iButtonReleased;
+    unsigned int iDuration;
   } CecButtonPress;
 
 
