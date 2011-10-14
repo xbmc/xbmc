@@ -536,7 +536,9 @@ bool CWebServer::PrepareDownload(const char *path, CVariant &details, std::strin
   {
     protocol = "http";
     string url = "vfs/";
-    url += path;
+    CStdString strPath = path;
+    CURL::Encode(strPath);
+    url += strPath;
     details["path"] = url;
   }
 
