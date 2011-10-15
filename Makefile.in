@@ -117,7 +117,6 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
 
 DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    lib/SlingboxLib/SlingboxLib.a \
-                   lib/UnrarXLib/UnrarXLib.a \
                    lib/libRTV/librtv.a \
                    lib/libUPnP/libupnp.a \
                    lib/libXDAAP/libxdaap.a \
@@ -144,7 +143,6 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/filesystem/filesystem.a \
                    xbmc/guilib/guilib.a \
                    xbmc/input/input.a \
-                   xbmc/input/linux/input_linux.a \
                    xbmc/interfaces/http-api/http-api.a \
                    xbmc/interfaces/info/info.a \
                    xbmc/interfaces/interfaces.a \
@@ -159,38 +157,55 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/music/tags/musictags.a \
                    xbmc/music/windows/musicwindows.a \
                    xbmc/network/libscrobbler/scrobbler.a \
-                   xbmc/network/linux/network_linux.a \
                    xbmc/network/network.a \
-                   xbmc/osx/osx.a \
                    xbmc/peripherals/bus/peripheral-bus.a \
                    xbmc/peripherals/devices/peripheral-devices.a \
                    xbmc/peripherals/dialogs/peripheral-dialogs.a \
                    xbmc/peripherals/peripherals.a \
                    xbmc/pictures/pictures.a \
                    xbmc/playlists/playlists.a \
-                   xbmc/powermanagement/linux/powermanagement_linux.a \
-                   xbmc/powermanagement/osx/powermanagement.a \
                    xbmc/powermanagement/powermanagement.a \
                    xbmc/programs/programs.a \
-                   xbmc/rendering/gl/rendering_gl.a \
-                   xbmc/rendering/gles/rendering_gles.a \
                    xbmc/rendering/rendering.a \
                    xbmc/settings/settings.a \
-                   xbmc/storage/linux/storage_linux.a \
-                   xbmc/storage/osx/storage.a \
                    xbmc/storage/storage.a \
                    xbmc/threads/threads.a \
                    xbmc/utils/utils.a \
                    xbmc/video/dialogs/videodialogs.a \
                    xbmc/video/video.a \
                    xbmc/video/windows/videowindows.a \
-                   xbmc/windowing/X11/windowing_X11.a \
-                   xbmc/windowing/egl/windowing_egl.a \
-                   xbmc/windowing/osx/windowing_osx.a \
                    xbmc/windowing/windowing.a \
                    xbmc/windows/windows.a \
                    xbmc/xbmc.a \
 
+
+ifeq (@USE_OPENGL@,1)
+DIRECTORY_ARCHIVES += xbmc/rendering/gl/rendering_gl.a
+endif
+
+ifeq (@USE_OPENGLES@,1)
+DIRECTORY_ARCHIVES += xbmc/rendering/gles/rendering_gles.a
+DIRECTORY_ARCHIVES += xbmc/windowing/egl/windowing_egl.a
+endif
+
+ifeq ($(findstring osx,@ARCH@),osx)
+DIRECTORY_ARCHIVES += xbmc/osx/osx.a
+DIRECTORY_ARCHIVES += xbmc/network/osx/network.a
+DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
+DIRECTORY_ARCHIVES += xbmc/powermanagement/osx/powermanagement.a
+DIRECTORY_ARCHIVES += xbmc/storage/osx/storage.a
+DIRECTORY_ARCHIVES += xbmc/windowing/osx/windowing_osx.a
+else
+DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
+DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
+DIRECTORY_ARCHIVES += xbmc/powermanagement/linux/powermanagement_linux.a
+DIRECTORY_ARCHIVES += xbmc/storage/linux/storage_linux.a
+DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
+endif
+
+ifeq (@HAVE_XBMC_NONFREE@,1)
+DIRECTORY_ARCHIVES += lib/UnrarXLib/UnrarXLib.a
+endif
 
 PAPCODECS_DIRS= \
 	lib/xbadpcm \
