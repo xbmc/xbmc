@@ -585,33 +585,6 @@ uninstall:
 	@rm -rf $(DESTDIR)$(datarootdir)/xsessions/XBMC.desktop
 	@echo "Done!"
 
-reallyclean:
-	@echo " This will delete ALL unversioned files in"; \
-	 echo " your XBMC source tree. If you aren't sure"; \
-	 echo " you want to do this, answer anything but"; \
-	 echo " 'Y' (case sensitive) to the following."; \
-	 echo " DISCLAIMER: Team XBMC is NOT responsible"; \
-	 echo " for ANYTHING lost if you execute this command!"; \
-	 echo -n " Damnserious? (Y/*) "; \
-	 read -n1 PROMPT; \
-	 if [[ "$$PROMPT" = "Y" ]]; then \
-		SVNV=$$(svnversion -n | cut -d':' -f1); _IFS=$$IFS; IFS=$$'\t\n'; \
-		for i in `svn st --no-ignore | grep ^[I\?] | cut -d' ' -f7-`; do \
-			if [[ $${i:(-4)} != "diff" && $${i:(-5)} != "patch" ]]; then \
-				echo "  Deleting $$i"; \
-				rm -rf "$$i"; \
-			fi; \
-		done; \
-		IFS=$$_IFS; \
-		echo " Recovering any missing files."; \
-		svn up -r $${SVNV/M/} | sed -e "s/.*'\(.*\)'/  \1/p" -e d; \
-		echo " Done."; \
-		echo " The following files may need reverted (svn revert <file>)"; \
-		svn st | sed -e "s/^M */  /p" -e d; \
-	 else \
-		echo; \
-	 fi
-
 clean-xbmc.bin:
 	rm -f xbmc.bin
 	for d in $(BIN_DIRS); do if test -f $$d/Makefile; then $(MAKE) -C $$d clean; fi; done
