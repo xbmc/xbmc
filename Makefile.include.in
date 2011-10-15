@@ -64,6 +64,7 @@ ifneq ($(V), 1)
 	SILENT_GCH=@echo "GCH     $@";
 	SILENT_MM =@echo "MM      $@";
 	SILENT_AR =@echo "AR      $@";
+	SILENT_LD =@echo "LD      $@";
 endif
 
 OBJS+=$(filter %.o,$(SRCS:.cpp=.o))

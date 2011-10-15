@@ -404,9 +404,9 @@ LIBS += @PYTHON_LDFLAGS@
 
 xbmc.bin: $(OBJSXBMC) $(DYNOBJSXBMC)
 ifeq ($(findstring osx,@ARCH@), osx)
-	$(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(LDFLAGS) -o xbmc.bin -Wl,-all_load,-ObjC $(DYNOBJSXBMC) $(OBJSXBMC) $(LIBS) -rdynamic
 else
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) -rdynamic
+	$(SILENT_LD) $(CXX) $(CXXFLAGS) $(LDFLAGS) -o xbmc.bin -Wl,--whole-archive $(DYNOBJSXBMC) $(OBJSXBMC) -Wl,--no-whole-archive $(LIBS) -rdynamic
 endif
 
 xbmc-xrandr: xbmc-xrandr.c
@@ -414,7 +414,7 @@ ifneq (1,@USE_XRANDR@)
 	# xbmc-xrandr.c gets picked up by the default make rules
 	@echo "excluding xbmc-xrandr"
 else
-	$(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11
+	$(SILENT_LD) $(CC) $(CFLAGS) $(LDFLAGS) -o xbmc-xrandr xbmc-xrandr.c -lXrandr -lX11
 endif
 
 tools/XBMCTex/XBMCTex:
