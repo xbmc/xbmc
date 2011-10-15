@@ -1137,7 +1137,7 @@ fi
 USE_LIBCEC=0
 if test "x$use_libcec" != "xno"; then
   # libcec is dyloaded, so we need to check for its headers and link any depends.
-  PKG_CHECK_MODULES([CEC],[libcec = 0.6.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
+  PKG_CHECK_MODULES([CEC],[libcec = 0.7.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
   if test "x$use_libcec" != "xno" && test "$host_vendor" != "apple"; then
     # libcec has libudev as depends under linux and we also need usb headers.
     PKG_CHECK_MODULES([USB],[libusb],,[use_libcec="no";AC_MSG_RESULT($libusb_not_found)])
