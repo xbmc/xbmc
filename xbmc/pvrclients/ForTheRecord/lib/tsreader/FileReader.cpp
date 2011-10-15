@@ -314,12 +314,20 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
   }
   *pLength = m_fileSize;
 #elif defined TARGET_LINUX
-#error FIXME: Finish the GetFileSize() implementation for your OS
+  int64_t length = -1;
   if (m_bReadOnly || !m_fileSize)
   {
     if (m_hInfoFile != INVALID_HANDLE_VALUE)
     {
-      //TODO (see Windows implementation)
+      if (lseek(m_hInfoFile, 0L, SEEK_SET) != (off_t) -1)
+      {
+        if (read(m_hInfoFile, &length, sizeof(int64_t)) != -1)
+        {
+        	m_fileSize = length;
+        	*pLength = length;
+        	return S_OK;
+        }
+      }
     }
 
     struct stat filestatus;
@@ -399,6 +407,10 @@ long FileReader::GetStartPosition(int64_t *lpllpos)
         li.QuadPart = sizeof(int64_t);
         ::SetFilePointer(m_hInfoFile, li.LowPart, &li.HighPart, FILE_BEGIN);
         ::ReadFile(m_hInfoFile, (void*)&length, (DWORD)sizeof(int64_t), &read, NULL);
+#elif defined TARGET_LINUX        
+        lseek(m_hInfoFile, sizeof(int64_t), SEEK_SET);
+        ssize_t rc = read(m_hInfoFile, &length, sizeof(int64_t));
+        (void) rc;
 #else
         //TODO: lseek (or fseek for fopen)
 #error FIXME: Add a GetStartPosition() implementation for your OS
