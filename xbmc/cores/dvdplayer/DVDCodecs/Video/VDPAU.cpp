@@ -92,7 +92,7 @@ CVDPAU::CVDPAU()
   surfaceNum      = presentSurfaceNum = 0;
   picAge.b_age    = picAge.ip_age[0] = picAge.ip_age[1] = 256*256*256*64;
   vdpauConfigured = false;
-  recover = false;
+  m_DisplayState = VDPAU_OPEN;
   m_mixerfield = VDP_VIDEO_MIXER_PICTURE_STRUCTURE_FRAME;
   m_mixerstep  = 0;
   m_DisplayState = VDPAU_OPEN;
@@ -443,7 +443,7 @@ int CVDPAU::Check(AVCodecContext* avctx)
     }
     lock.Enter();
   }
-  if (recover || m_DisplayState == VDPAU_RESET)
+  if (m_DisplayState == VDPAU_RESET)
   {
     CLog::Log(LOGNOTICE,"Attempting recovery");
 
@@ -452,7 +452,6 @@ int CVDPAU::Check(AVCodecContext* avctx)
 
     InitVDPAUProcs();
 
-    recover = false;
     m_DisplayState = VDPAU_OPEN;
 
     return VC_FLUSHED;
@@ -1038,10 +1037,12 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
   struct pictureAge*    pA         = &vdp->picAge;
 
   // while we are waiting to recover we can't do anything
-  if(vdp->recover)
-  {
-    CLog::Log(LOGWARNING, "CVDPAU::FFGetBuffer - returning due to awaiting recovery");
-    return -1;
+  { CSingleLock lock(vdp->m_DisplaySection);
+    if(vdp->m_DisplayState != VDPAU_OPEN)
+    {
+      CLog::Log(LOGWARNING, "CVDPAU::FFGetBuffer - returning due to awaiting recovery");
+      return -1;
+    }
   }
 
   vdpau_render_state * render = NULL;
@@ -1134,9 +1135,11 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   CDVDVideoCodecFFmpeg* ctx = (CDVDVideoCodecFFmpeg*)s->opaque;
   CVDPAU*               vdp = (CVDPAU*)ctx->GetHardware();
 
-  /* while we are waiting to recover we can't do anything */
-  if(vdp->recover)
-    return;
+  // while we are waiting to recover we can't do anything
+  { CSingleLock lock(vdp->m_DisplaySection);
+    if(vdp->m_DisplayState != VDPAU_OPEN)
+      return;
+  }
 
   if(src->linesize[0] || src->linesize[1] || src->linesize[2]
   || offset[0] || offset[1] || offset[2])
@@ -1433,23 +1436,31 @@ void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
 {
   CLog::Log(LOGDEBUG,"VDPAU Device Preempted - attempting recovery");
   CVDPAU* pCtx = (CVDPAU*)context;
-  pCtx->recover = true;
+
+  { CSingleLock lock(pCtx->m_DisplaySection);
+    if(pCtx->m_DisplayState == VDPAU_OPEN)
+      pCtx->m_DisplayState = VDPAU_RESET;
+  }
 }
 
 bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
 {
+  CSingleLock lock(m_DisplaySection);
+
   if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH
   ||  vdp_st == VDP_STATUS_DISPLAY_PREEMPTED)
-    recover = true;
+    if(m_DisplayState == VDPAU_OPEN)
+      m_DisplayState = VDPAU_RESET;
 
   // no need to log errors about this case, as it will happen on cleanup
-  if (vdp_st == VDP_STATUS_INVALID_HANDLE && recover && vdpauConfigured)
+  if (vdp_st == VDP_STATUS_INVALID_HANDLE && (m_DisplayState != VDPAU_OPEN) && vdpauConfigured)
     return false;
 
   if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
-    recover = true;
+    if(m_DisplayState == VDPAU_OPEN)
+      m_DisplayState = VDPAU_RESET;
     return true;
   }
   return false;
