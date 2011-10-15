@@ -196,6 +196,18 @@ int CPeripherals::GetPeripheralsWithFeature(vector<CPeripheral *> &results, cons
   return iReturn;
 }
 
+size_t CPeripherals::GetNumberOfPeripherals() const
+{
+  size_t iReturn(0);
+  CSingleLock lock(m_critSection);
+  for (unsigned int iBusPtr = 0; iBusPtr < m_busses.size(); iBusPtr++)
+  {
+    iReturn += m_busses.at(iBusPtr)->GetNumberOfPeripherals();
+  }
+
+  return iReturn;
+}
+
 bool CPeripherals::HasPeripheralWithFeature(const PeripheralFeature feature, PeripheralBusType busType /* = PERIPHERAL_BUS_UNKNOWN */) const
 {
   vector<CPeripheral *> dummy;
@@ -278,26 +290,22 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
   return peripheral;
 }
 
-void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CStdString &strLocation)
+void CPeripherals::OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &peripheral)
 {
   CGUIDialogPeripheralManager *dialog = (CGUIDialogPeripheralManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_MANAGER);
   if (dialog && dialog->IsActive())
     dialog->Update();
 
-  CPeripheral *peripheral = GetByPath(strLocation);
-  if (peripheral)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35005), peripheral->DeviceName());
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35005), peripheral.DeviceName());
 }
 
-void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CStdString &strLocation)
+void CPeripherals::OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral &peripheral)
 {
   CGUIDialogPeripheralManager *dialog = (CGUIDialogPeripheralManager *)g_windowManager.GetWindow(WINDOW_DIALOG_PERIPHERAL_MANAGER);
   if (dialog && dialog->IsActive())
     dialog->Update();
 
-  CPeripheral *peripheral = GetByPath(strLocation);
-  if (peripheral)
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral->DeviceName());
+  CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(35006), peripheral.DeviceName());
 }
 
 int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const PeripheralType classType, int iVendorId, int iProductId) const
@@ -404,8 +412,8 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
     {
       int iValue = currentNode->Attribute("value") ? atoi(currentNode->Attribute("value")) : 0;
       int iMin   = currentNode->Attribute("min") ? atoi(currentNode->Attribute("min")) : 0;
-      int iStep  = currentNode->Attribute("step") ? atoi(currentNode->Attribute("step")) : 0;
-      int iMax   = currentNode->Attribute("max") ? atoi(currentNode->Attribute("max")) : 0;
+      int iStep  = currentNode->Attribute("step") ? atoi(currentNode->Attribute("step")) : 1;
+      int iMax   = currentNode->Attribute("max") ? atoi(currentNode->Attribute("max")) : 255;
       CStdString strFormat(currentNode->Attribute("format"));
       setting = new CSettingInt(0, strKey, iLabelId, iValue, iMin, iStep, iMax, SPIN_CONTROL_INT, strFormat);
     }
