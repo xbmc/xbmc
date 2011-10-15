@@ -41,6 +41,9 @@
 #include "cores/dvdplayer/DVDCodecs/Video/CrystalHD.h"
 #include "utils/PCMRemap.h"
 #include "guilib/GUIFont.h" // for FONT_STYLE_* definitions
+#include "guilib/GUIFontManager.h"
+#include "utils/Weather.h"
+#include "LangInfo.h"
 #if defined(__APPLE__)
   #include "osx/DarwinUtils.h"
 #endif
@@ -1459,4 +1462,41 @@ void CGUISettings::SetResolution(RESOLUTION res)
   m_LookAndFeelResolution = res;
 
   SetChanged();
+}
+
+bool CGUISettings::SetLanguage(const CStdString &strLanguage)
+{
+  CStdString strPreviousLanguage = GetString("locale.language");
+  CStdString strNewLanguage = strLanguage;
+  if (strNewLanguage != strPreviousLanguage)
+  {
+    CStdString strLangInfoPath;
+    strLangInfoPath.Format("special://xbmc/language/%s/langinfo.xml", strNewLanguage.c_str());
+    if (!g_langInfo.Load(strLangInfoPath))
+      return false;
+
+    if (g_langInfo.ForceUnicodeFont() && !g_fontManager.IsFontSetUnicode())
+    {
+      CLog::Log(LOGINFO, "Language needs a ttf font, loading first ttf font available");
+      CStdString strFontSet;
+      if (g_fontManager.GetFirstFontSetUnicode(strFontSet))
+        strNewLanguage = strFontSet;
+      else
+        CLog::Log(LOGERROR, "No ttf font found but needed: %s", strFontSet.c_str());
+    }
+    SetString("locale.language", strNewLanguage);
+
+    g_charsetConverter.reset();
+
+    CStdString strLanguagePath;
+    strLanguagePath.Format("special://xbmc/language/%s/strings.xml", strNewLanguage.c_str());
+    if (!g_localizeStrings.Load(strLanguagePath))
+      return false;
+
+    // also tell our weather and skin to reload as these are localized
+    g_weatherManager.Refresh();
+    g_application.ReloadSkin();
+  }
+
+  return true;
 }
