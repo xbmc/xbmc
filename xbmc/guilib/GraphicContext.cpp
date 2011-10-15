@@ -50,6 +50,7 @@ CGraphicContext::CGraphicContext(void) :
   m_bFullScreenRoot(false), 
   m_bFullScreenVideo(false),
   m_bCalibrating(false), 
+  m_bNeedOverscanClip(false),
   m_Resolution(RES_INVALID), 
   /*m_windowResolution,*/
   m_guiScaleX(1.0f), 
@@ -607,12 +608,26 @@ void CGraphicContext::SetScalingResolution(const RESOLUTION_INFO &res, bool need
     TransformMatrix guiScaler = TransformMatrix::CreateScaler(fToWidth / fFromWidth, fToHeight / fFromHeight, fToHeight / fFromHeight);
     TransformMatrix guiOffset = TransformMatrix::CreateTranslation(fToPosX, fToPosY);
     m_guiTransform = guiOffset * guiScaler;
+
+    // check if we need clip because of overscan and store it in m_bNeedOverscanClip
+    m_bNeedOverscanClip = g_settings.m_ResInfo[m_Resolution].Overscan.left != 0 ||
+                          g_settings.m_ResInfo[m_Resolution].Overscan.top != 0 ||
+                          g_settings.m_ResInfo[m_Resolution].Overscan.right != m_iScreenWidth ||
+                          g_settings.m_ResInfo[m_Resolution].Overscan.bottom != m_iScreenHeight;
+    if (m_bNeedOverscanClip)
+    {
+      m_overscanRect.x1 = g_settings.m_ResInfo[m_Resolution].Overscan.left;
+      m_overscanRect.y1 = g_settings.m_ResInfo[m_Resolution].Overscan.top;
+      m_overscanRect.x2 = g_settings.m_ResInfo[m_Resolution].Overscan.right;
+      m_overscanRect.y2 = g_settings.m_ResInfo[m_Resolution].Overscan.bottom;
+    }
   }
   else
   {
     m_guiTransform.Reset();
     m_guiScaleX = 1.0f;
     m_guiScaleY = 1.0f;
+    m_bNeedOverscanClip = false;
   }
   // reset our origin and camera
   while (m_origins.size())
