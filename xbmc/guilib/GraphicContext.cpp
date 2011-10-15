@@ -122,16 +122,27 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
 {
   // this is the software clipping routine.  If the graphics hardware is set to do the clipping
   // (eg via SetClipPlane in D3D for instance) then this routine is unneeded.
-  if (m_clipRegions.size())
+  if (m_clipRegions.size() || m_bNeedOverscanClip)
   {
-    // take a copy of the vertex rectangle and intersect
-    // it with our clip region (moved to the same coordinate system)
+    // store original vertex to determine if we need to compute texture coords
+    CRect original(vertex);
+    if (m_clipRegions.size())
+    {
+    // intersect vertex with our clip region (moved to the same coordinate system)
     CRect clipRegion(m_clipRegions.top());
     if (m_origins.size())
       clipRegion -= m_origins.top();
-    CRect original(vertex);
     vertex.Intersect(clipRegion);
-    // and use the original to compute the texture coordinates
+    }
+    if (m_bNeedOverscanClip)
+    {
+      // intersect vertex with our overscan rect
+      CRect overscanRect(m_overscanRect);
+      InvertFinalCoords(overscanRect.x1, overscanRect.y1);
+      InvertFinalCoords(overscanRect.x2, overscanRect.y2);
+      vertex.Intersect(overscanRect); 
+    }
+    // use the original to compute the texture coordinates
     if (original != vertex)
     {
       float scaleX = texture.Width() / original.Width();
