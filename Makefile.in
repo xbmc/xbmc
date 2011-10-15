@@ -260,6 +260,9 @@ DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
         system/libcpluff-@ARCH@.so
 
 all : Makefile externals xbmc.bin xbmc-xrandr skins
+	@echo '-----------------------'
+	@echo 'XBMC built successfully'
+	@echo '-----------------------'
 
 include Makefile.include
 
