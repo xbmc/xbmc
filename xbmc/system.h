@@ -23,6 +23,7 @@
 
 #if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
 #include "config.h"
+#define DECLARE_UNUSED(a,b) a __attribute__(unused) b;
 #endif
 
 /*****************
@@ -115,6 +116,8 @@
 #define HAS_ZEROCONF
 #define HAS_AIRPLAY
 #define HAVE_LIBCEC
+
+#define DECLARE_UNUSED(a,b) a b;
 #endif
 
 /*****************
