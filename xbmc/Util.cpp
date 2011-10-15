@@ -770,7 +770,7 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
   return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
 }
 
-void CUtil::PlayDVD(const CStdString& strProtocol, bool restart)
+void CUtil::PlayDVD(const CStdString& strProtocol, bool startFromBeginning)
 {
 #if defined(HAS_DVDPLAYER) && defined(HAS_DVD_DRIVE)
   CIoSupport::Dismount("Cdrom0");
@@ -779,10 +779,12 @@ void CUtil::PlayDVD(const CStdString& strProtocol, bool restart)
   strPath.Format("%s://1", strProtocol.c_str());
   CFileItem item(strPath, false);
   item.SetLabel(g_mediaManager.GetDiskLabel());
-  item.GetVideoInfoTag()->m_strFileNameAndPath = "removable://"; // need to put volume label for resume point in videoInfoTag
-  item.GetVideoInfoTag()->m_strFileNameAndPath += g_mediaManager.GetDiskLabel();
-  if (!restart) item.m_lStartOffset = STARTOFFSET_RESUME;
-  g_application.PlayFile(item, restart);
+  item.GetVideoInfoTag()->m_strFileNameAndPath = g_mediaManager.GetDiskUniqueId();
+
+  if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) 
+    item.m_lStartOffset = STARTOFFSET_RESUME;
+
+  g_application.PlayFile(item, false);
 #endif
 }
 

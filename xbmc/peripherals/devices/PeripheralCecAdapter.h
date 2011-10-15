@@ -26,6 +26,8 @@
 #include "threads/CriticalSection.h"
 #include <queue>
 
+class DllLibCEC;
+
 namespace CEC
 {
   class ICECAdapter;
@@ -36,8 +38,7 @@ namespace PERIPHERALS
   typedef struct
   {
     WORD         iButton;
-    unsigned int iButtonPressed;
-    unsigned int iButtonReleased;
+    unsigned int iDuration;
   } CecButtonPress;
 
 
@@ -53,6 +54,7 @@ namespace PERIPHERALS
 
     virtual bool SendPing(void);
     virtual bool StartBootloader(void);
+    virtual bool SetHdmiPort(int iHdmiPort);
 
     virtual void OnSettingChanged(const CStdString &strChangedSetting);
 
@@ -66,13 +68,16 @@ namespace PERIPHERALS
     virtual bool InitialiseFeature(const PeripheralFeature feature);
     virtual void Process(void);
     virtual void ProcessNextCommand(void);
+    virtual void SetMenuLanguage(const char *strLanguage);
     static bool FindConfigLocation(CStdString &strString);
     static bool TranslateComPort(CStdString &strPort);
 
+    DllLibCEC*        m_dll;
     CEC::ICECAdapter* m_cecAdapter;
     bool              m_bStarted;
     bool              m_bHasButton;
     bool              m_bIsReady;
+    CDateTime         m_screensaverLastActivated;
     CecButtonPress    m_button;
     CCriticalSection  m_critSection;
   };

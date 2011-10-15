@@ -230,6 +230,7 @@ protected:
   bool                m_has_bcm70015;
   unsigned int        m_timeout;
   bool                m_format_valid;
+  bool                m_is_live_stream;
   int                 m_width;
   int                 m_height;
   uint64_t            m_timestamp;
@@ -328,6 +329,7 @@ CMPCOutputThread::CMPCOutputThread(void *device, DllLibCrystalHD *dll, bool has_
   m_has_bcm70015(has_bcm70015),
   m_timeout(20),
   m_format_valid(false),
+  m_is_live_stream(false),
   m_framerate_tracking(false),
   m_framerate_cnt(0),
   m_framerate_timestamp(0.0),
@@ -387,6 +389,20 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
   if (timestamp != DVD_NOPTS_VALUE)
   {
     double duration;
+    // if timestamp does not start at a low value we 
+    // came in the middle of an online live stream
+    // 250 ms is a fourth of a 25fps source
+    // if timestamp is larger than that at the beginning
+    // we are much more out of sync than with the rough 
+    // calculation. To cover these 250 ms we need
+    // roughly 5 seconds of video stream to get back
+    // in sync
+    if (m_framerate_cnt == 0 && timestamp > 250000.0)
+      m_is_live_stream = true;
+    
+    // cnt count has to be done here, cause we miss frames
+    // if framerate was not valid calculated
+    m_framerate_cnt++;
     duration = timestamp - m_framerate_timestamp;
     if (duration > 0.0)
     {
@@ -409,8 +425,9 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
         case 30:
         case 25:
         case 24:
-          m_framerate_cnt++;
-          m_framerate = DVD_TIME_BASE / (m_framerate_timestamp/m_framerate_cnt);
+          // if we have such a live stream framerate is more exact than calculating
+          // cause of m_framerate_cnt and timestamp do not match in any way
+          m_framerate = m_is_live_stream ? framerate : DVD_TIME_BASE / (m_framerate_timestamp/m_framerate_cnt);
         break;
       }
     }

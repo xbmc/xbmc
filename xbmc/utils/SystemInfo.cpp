@@ -295,19 +295,16 @@ CStdString CSysInfo::GetXBVerInfo()
 bool CSysInfo::IsAeroDisabled()
 {
 #ifdef _WIN32
-  OSVERSIONINFOEX osvi;
-  ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-  osvi.dwOSVersionInfoSize = sizeof(osvi);
-
-  if (GetVersionEx((OSVERSIONINFO *)&osvi))
+  if (IsVistaOrHigher())
   {
-    if (osvi.dwMajorVersion == 5)
-      return true; // windows XP -> no Aero
-
     BOOL aeroEnabled = FALSE;
     HRESULT res = DwmIsCompositionEnabled(&aeroEnabled);
     if (SUCCEEDED(res))
       return !aeroEnabled;
+  }
+  else
+  {
+    return true;
   }
 #endif
   return false;

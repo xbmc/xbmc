@@ -24,9 +24,56 @@
 extern "C" {
 #include <libudev.h>
 }
-#include <usb.h>
 #include <poll.h>
 #include "utils/log.h"
+
+#ifndef USB_CLASS_PER_INTERFACE
+#define USB_CLASS_PER_INTERFACE         0
+#endif
+
+#ifndef USB_CLASS_AUDIO
+#define USB_CLASS_AUDIO                 1
+#endif
+
+#ifndef USB_CLASS_COMM
+#define USB_CLASS_COMM                  2
+#endif
+
+#ifndef USB_CLASS_HID
+#define USB_CLASS_HID                   3
+#endif
+
+#ifndef USB_CLASS_PHYSICAL
+#define USB_CLASS_PHYSICAL              5
+#endif
+
+#ifndef USB_CLASS_PTP
+#define USB_CLASS_PTP 					6
+#endif
+
+#ifndef USB_CLASS_PRINTER
+#define USB_CLASS_PRINTER               7
+#endif
+
+#ifndef USB_CLASS_MASS_STORAGE
+#define USB_CLASS_MASS_STORAGE          8
+#endif
+
+#ifndef USB_CLASS_HUB
+#define USB_CLASS_HUB                   9
+#endif
+
+#ifndef USB_CLASS_DATA
+#define USB_CLASS_DATA                  10
+#endif
+
+#ifndef USB_CLASS_APP_SPEC
+#define USB_CLASS_APP_SPEC              0xfe
+#endif
+
+#ifndef USB_CLASS_VENDOR_SPEC
+#define USB_CLASS_VENDOR_SPEC           0xff
+#endif
 
 using namespace PERIPHERALS;
 
