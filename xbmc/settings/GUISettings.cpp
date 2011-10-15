@@ -44,12 +44,14 @@
 #include "guilib/GUIFontManager.h"
 #include "utils/Weather.h"
 #include "LangInfo.h"
+#include "pvr/PVRManager.h"
 #if defined(__APPLE__)
   #include "osx/DarwinUtils.h"
 #endif
 
 using namespace std;
 using namespace ADDON;
+using namespace PVR;
 
 // String id's of the masks
 #define MASK_DAYS   17999
@@ -1495,6 +1497,7 @@ bool CGUISettings::SetLanguage(const CStdString &strLanguage)
 
     // also tell our weather and skin to reload as these are localized
     g_weatherManager.Refresh();
+    g_PVRManager.LocalizationChanged();
     g_application.ReloadSkin();
   }
 
