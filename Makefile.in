@@ -304,90 +304,9 @@ xcode_depends: \
 	lib/libXDAAP/libxdaap.a \
 	lib/SlingboxLib/SlingboxLib.a
 
-# platform independend objects
-OBJSXBMC=	\
-	xbmc/xbmc.a \
-	xbmc/addons/addons.a \
-	xbmc/cores/playercorefactory/playercorefactory.a \
-	xbmc/cores/paplayer/paplayer.a \
-	xbmc/cores/VideoRenderers/VideoRenderer.a \
-	xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a \
-	lib/tinyXML/tinyxml.a \
-	xbmc/cores/cores.a \
-	xbmc/interfaces/python/python.a \
-	xbmc/cores/DllLoader/dllloader.a \
-	$(DVDPLAYER_ARCHIVES) \
-	xbmc/cores/AudioRenderers/audiorenderers.a \
-	xbmc/cores/ExternalPlayer/ExternalPlayer.a \
-	xbmc/filesystem/filesystem.a \
-	xbmc/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
-	xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
-	xbmc/input/input.a \
-	xbmc/dialogs/dialogs.a \
-	xbmc/music/karaoke/karaoke.a \
-	xbmc/music/music.a \
-	xbmc/music/dialogs/musicdialogs.a \
-	xbmc/music/infoscanner/musicscanner.a \
-	xbmc/music/tags/musictags.a \
-	xbmc/music/windows/musicwindows.a \
-	xbmc/video/dialogs/videodialogs.a \
-	xbmc/pictures/pictures.a \
-	xbmc/playlists/playlists.a \
-	xbmc/programs/programs.a \
-	xbmc/powermanagement/powermanagement.a \
-	xbmc/storage/storage.a \
-	xbmc/threads/threads.a \
-	xbmc/windows/windows.a \
-	xbmc/interfaces/python/xbmcmodule/xbmcmodule.a \
-	xbmc/network/libscrobbler/scrobbler.a \
-	lib/libRTV/librtv.a \
-	lib/libUPnP/libupnp.a \
-	lib/libXDAAP/libxdaap.a \
-	xbmc/interfaces/interfaces.a \
-	xbmc/cdrip/cdrip.a \
-	xbmc/interfaces/json-rpc/json-rpc.a \
-	xbmc/interfaces/http-api/http-api.a \
-	xbmc/interfaces/info/info.a \
-	xbmc/dbwrappers/dbwrappers.a \
-	lib/libsquish/libsquish.a \
-	lib/SlingboxLib/SlingboxLib.a \
-	lib/libapetag/.libs/libapetag.a \
-	lib/libhts/libhts.a \
-	lib/xbmc-dll-symbols/dll-symbols.a \
-	xbmc/rendering/rendering.a \
-	xbmc/windowing/windowing.a \
-	xbmc/peripherals/peripherals.a \
-	xbmc/peripherals/bus/peripheral-bus.a \
-	xbmc/peripherals/devices/peripheral-devices.a \
-	xbmc/peripherals/dialogs/peripheral-dialogs.a 
 
-ifeq (@USE_OPENGL@,1)
-OBJSXBMC += xbmc/rendering/gl/rendering_gl.a
-endif
-ifeq (@USE_OPENGLES@,1)
-OBJSXBMC += xbmc/rendering/gles/rendering_gles.a
-OBJSXBMC += xbmc/windowing/egl/windowing_egl.a
-endif
-
-ifeq (@HAVE_XBMC_NONFREE@,1)
-OBJSXBMC += lib/UnrarXLib/UnrarXLib.a
-endif
-
-# platform dependend objects
-ifeq ($(findstring osx,@ARCH@), osx)
-OBJSXBMC += xbmc/osx/osx.a
-OBJSXBMC += xbmc/network/osx/network.a
-OBJSXBMC += xbmc/network/linux/network_linux.a
-OBJSXBMC += xbmc/powermanagement/osx/powermanagement.a
-OBJSXBMC += xbmc/storage/osx/storage.a
-OBJSXBMC += xbmc/windowing/osx/windowing_osx.a
-else
-OBJSXBMC += xbmc/input/linux/input_linux.a
-OBJSXBMC += xbmc/network/linux/network_linux.a
-OBJSXBMC += xbmc/powermanagement/linux/powermanagement_linux.a
-OBJSXBMC += xbmc/storage/linux/storage_linux.a
-OBJSXBMC += xbmc/windowing/X11/windowing_X11.a
-endif
+OBJSXBMC =$(DIRECTORY_ARCHIVES)
+OBJSXBMC+=lib/libapetag/.libs/libapetag.a
 
 DYNOBJSXBMC= \
 	xbmc/linux/linux.a \
@@ -399,6 +318,8 @@ DYNOBJSXBMC= \
 	xbmc/settings/settings.a \
 	xbmc/video/video.a \
 	xbmc/guilib/guilib.a # must be dynamic to avoid linker errors
+
+OBJSXBMC:=$(filter-out $(DYNOBJSXBMC), $(OBJSXBMC))
 
 LIBS += @PYTHON_LDFLAGS@
 
