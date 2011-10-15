@@ -257,6 +257,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
 {
   // take a copy - we're gonna be messing with it and we don't want to touch the original
   DatabaseSettings dbSettings = settings;
+
   if (IsOpen())
   {
     m_openCount++;
@@ -278,19 +279,21 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   {
     dbSettings.type = "sqlite3";
     dbSettings.host = _P(g_settings.GetDatabaseFolder());
+    dbSettings.name = GetBaseDBName();
   }
 
-  // always safely fallback to sqlite3, and use separate, versioned database
+  // use separate, versioned database
   int version = GetMinVersion();
+  CStdString baseDBName = (dbSettings.name.IsEmpty() ? GetBaseDBName() : dbSettings.name.c_str());
   CStdString latestDb;
   latestDb.Format("%s%d", GetBaseDBName(), version);
 
   while (version >= 0)
   {
     if (version)
-      dbSettings.name.Format("%s%d", GetBaseDBName(), version);
+      dbSettings.name.Format("%s%d", baseDBName, version);
     else
-      dbSettings.name.Format("%s", GetBaseDBName());
+      dbSettings.name.Format("%s", baseDBName);
 
     if (Connect(dbSettings, false))
     {
@@ -326,6 +329,15 @@ bool CDatabase::Open(const DatabaseSettings &settings)
 
     // drop back to the previous version and try that
     version--;
+  }
+
+  // safely fall back to sqlite as appropriate
+  if ( ! m_sqlite )
+  {
+    CLog::Log(LOGDEBUG, "Falling back to sqlite.");
+    dbSettings = settings;
+    dbSettings.type = "sqlite3";
+    return Open(dbSettings);
   }
 
   // unable to open any version fall through to create a new one
