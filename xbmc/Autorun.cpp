@@ -53,7 +53,7 @@ CAutorun::CAutorun()
 CAutorun::~CAutorun()
 {}
 
-void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool restart )
+void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool startFromBeginning )
 {
   if ((!ignoreplaying && (g_application.IsPlayingAudio() || g_application.IsPlayingVideo() || g_windowManager.HasModalDialog())) || g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN)
     return ;
@@ -79,7 +79,7 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool res
   }
   else
   {
-    RunMedia(bypassSettings, restart);
+    RunMedia(bypassSettings, startFromBeginning);
   }
 }
 
@@ -100,7 +100,7 @@ void CAutorun::RunCdda()
   g_playlistPlayer.Play();
 }
 
-void CAutorun::RunMedia(bool bypassSettings, bool restart)
+void CAutorun::RunMedia(bool bypassSettings, bool startFromBeginning)
 {
   if ( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") && !g_guiSettings.GetBool("dvds.autorun"))
     return ;
@@ -109,7 +109,7 @@ void CAutorun::RunMedia(bool bypassSettings, bool restart)
   int nAddedToPlaylist = 0;
 #ifdef _WIN32
   auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( g_mediaManager.TranslateDevicePath("") ));
-  bool bPlaying = RunDisc(pDir.get(), g_mediaManager.TranslateDevicePath(""), nAddedToPlaylist, true, bypassSettings, restart);
+  bool bPlaying = RunDisc(pDir.get(), g_mediaManager.TranslateDevicePath(""), nAddedToPlaylist, true, bypassSettings, startFromBeginning);
 #else
   CCdInfo* pInfo = g_mediaManager.GetCdInfo();
 
@@ -120,12 +120,12 @@ void CAutorun::RunMedia(bool bypassSettings, bool restart)
   if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
   {
     auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "iso9660://" ));
-    bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings, restart);
+    bPlaying = RunDisc(pDir.get(), "iso9660://", nAddedToPlaylist, true, bypassSettings, startFromBeginning);
   }
   else
   {
     auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "D:\\" ) );
-    bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings, restart);
+    bPlaying = RunDisc(pDir.get(), "D:\\", nAddedToPlaylist, true, bypassSettings, startFromBeginning);
   }
 #endif
   if ( !bPlaying && nAddedToPlaylist > 0 )
@@ -141,7 +141,7 @@ void CAutorun::RunMedia(bool bypassSettings, bool restart)
 /**
  * This method tries to determine what type of disc is located in the given drive and starts to play the content appropriately.
  */
-bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings /* = false */, bool restart /* = false */)
+bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAddedToPlaylist, bool bRoot, bool bypassSettings /* = false */, bool startFromBeginning /* = false */)
 {
   bool bPlaying(false);
   CFileItemList vecItems;
@@ -177,7 +177,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         if (pItem->GetPath().Find( "VIDEO_TS" ) != -1 && bAllowVideo
         && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
-          CUtil::PlayDVD("dvd", restart);
+          CUtil::PlayDVD("dvd", startFromBeginning);
           bPlaying = true;
           return true;
         }
@@ -188,7 +188,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         if (pItem->GetPath().Find( "BDMV" ) != -1 && bAllowVideo
         && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
-          CUtil::PlayDVD("bd", restart);
+          CUtil::PlayDVD("bd", startFromBeginning);
           bPlaying = true;
           return true;
         }
@@ -319,7 +319,7 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       {
         if (pItem->GetPath() != "." && pItem->GetPath() != ".." )
         {
-          if (RunDisc(pDir, pItem->GetPath(), nAddedToPlaylist, false, bypassSettings, restart))
+          if (RunDisc(pDir, pItem->GetPath(), nAddedToPlaylist, false, bypassSettings, startFromBeginning))
           {
             bPlaying = true;
             break;
@@ -364,21 +364,23 @@ bool CAutorun::IsEnabled() const
   return m_bEnable;
 }
 
-bool CAutorun::PlayDisc(bool restart)
+bool CAutorun::PlayDisc(bool startFromBeginning)
 {
-  ExecuteAutorun(true,true, restart);
+  ExecuteAutorun(true,true, startFromBeginning);
   return true;
 }
 
 bool CAutorun::CanResumePlayDVD()
 {
-  CStdString strPath = "removable://"; // need to put volume label for resume point in videoInfoTag
-  strPath += g_mediaManager.GetDiskLabel();
-  CVideoDatabase dbs;
-  dbs.Open();
-  CBookmark bookmark;
-  if (dbs.GetResumeBookMark(strPath, bookmark))
-    return true;
+  CStdString strUniqueId = g_mediaManager.GetDiskUniqueId();
+  if (!strUniqueId.IsEmpty())
+  {
+    CVideoDatabase dbs;
+    dbs.Open();
+    CBookmark bookmark;
+    if (dbs.GetResumeBookMark(strUniqueId, bookmark))
+      return true;
+  }
   return false;
 }
 
