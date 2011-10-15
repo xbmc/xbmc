@@ -182,10 +182,12 @@ void CVirtualDirectory::GetSources(VECSOURCES &shares) const
       {
         share.strStatus = "Audio-CD";
         share.strPath = "cdda://local/";
+        share.strDiskUniqueId = "";
       }
       else
       {
         share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
+        share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
         if (!share.strPath.length()) // unmounted CD
         {
           if (g_mediaManager.GetDiscPath() == "iso9660://")

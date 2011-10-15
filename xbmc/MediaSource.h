@@ -51,6 +51,7 @@ public:
   bool IsWritable() const;
   CStdString strName; ///< Name of the share, can be choosen freely.
   CStdString strStatus; ///< Status of the share (eg has disk etc.)
+  CStdString strDiskUniqueId; ///< removable:// + DVD Label + DVD ID for resume point storage, if available
   CStdString strPath; ///< Path of the share, eg. iso9660:// or F:
 
   /*!
