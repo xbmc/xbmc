@@ -94,6 +94,7 @@ public:
   CStdString m_strAlbum;
   CStdString m_lastPlayed;
   CStdString m_strShowLink;
+  CStdString m_strShowPath;
   int m_playCount;
   int m_iTop250;
   int m_iYear;

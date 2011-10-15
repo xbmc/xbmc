@@ -246,7 +246,7 @@ NowPlayingManager.prototype = {
 			jQuery.ajax({
 				type: 'POST', 
 				url: JSON_RPC + '?updateAudioPlaylist',
-				data: '{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "playlistid": ' + this.playlistid + ', "fields": [ "title", "album", "artist", "duration", "thumbnail" ] }, "id": 1}', 
+				data: '{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "playlistid": ' + this.playlistid + ', "properties": [ "title", "album", "artist", "duration", "thumbnail" ] }, "id": 1}', 
 				success: jQuery.proxy(function(data) {
 					if (data && data.result && data.result.items && data.result.items.length > 0 && data.result.limits.total > 0) {
 						//Compare new playlist to active playlist, only redraw if a change is noticed
@@ -453,7 +453,7 @@ NowPlayingManager.prototype = {
 			jQuery.ajax({
 				type: 'POST', 
 				url: JSON_RPC + '?updateVideoPlaylist',
-				data: '{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "playlistid": ' + this.playlistid + ', "fields": ["title", "season", "episode", "plot", "runtime", "showtitle","thumbnail"] }, "id": 1}', 
+				data: '{"jsonrpc": "2.0", "method": "Playlist.GetItems", "params": { "playlistid": ' + this.playlistid + ', "properties": ["title", "season", "episode", "plot", "runtime", "showtitle","thumbnail"] }, "id": 1}', 
 				success: jQuery.proxy(function(data) {
 					if (data && data.result && data.result.items && data.result.items.length > 0 && data.result.limits.total > 0) {
 						//Compare new playlist to active playlist, only redraw if a change is noticed.

@@ -93,8 +93,10 @@ bool CDVDVideoPPFFmpeg::CheckInit(int iWidth, int iHeight)
     return false;
 }
 
-void CDVDVideoPPFFmpeg::SetType(const CStdString& mType)
+void CDVDVideoPPFFmpeg::SetType(const CStdString& mType, bool deinterlace)
 {
+  m_deinterlace = deinterlace;
+
   if (mType == m_sType)
     return;
 
@@ -141,6 +143,8 @@ bool CDVDVideoPPFFmpeg::Process(DVDVideoPicture* pPicture)
 
   //Copy frame information over to target, but make sure it is set as allocated should decoder have forgotten
   m_pTarget->iFlags = m_pSource->iFlags | DVP_FLAG_ALLOCATED;
+  if (m_deinterlace)
+    m_pTarget->iFlags &= ~DVP_FLAG_INTERLACED;
   m_pTarget->iFrameType = m_pSource->iFrameType;
   m_pTarget->iRepeatPicture = m_pSource->iRepeatPicture;;
   m_pTarget->iDuration = m_pSource->iDuration;

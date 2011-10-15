@@ -82,7 +82,7 @@ bool CBaseRenderer::FindResolutionFromOverride(float fps, float& weight, bool fa
     if (!fallback && (fps < override.fpsmin || fps > override.fpsmax))
       continue;
 
-    for (size_t j = (int)RES_CUSTOM; j < g_settings.m_ResInfo.size(); j++)
+    for (size_t j = (int)RES_DESKTOP; j < g_settings.m_ResInfo.size(); j++)
     {
       if (g_settings.m_ResInfo[j].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
        && g_settings.m_ResInfo[j].iHeight == g_settings.m_ResInfo[m_resolution].iHeight
@@ -136,7 +136,7 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
           g_settings.m_ResInfo[m_resolution].strMode.c_str(), m_resolution, fps, weight);
 
       //get the resolution with the refreshrate closest to 60 hertz
-      for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
+      for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
       {
         if (MathUtils::round_int(g_settings.m_ResInfo[i].fRefreshRate) == 60
          && g_settings.m_ResInfo[i].iWidth  == g_settings.m_ResInfo[m_resolution].iWidth
@@ -152,7 +152,7 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
       if (MathUtils::round_int(g_settings.m_ResInfo[m_resolution].fRefreshRate) != 60)
       {
         CLog::Log(LOGDEBUG, "60 hertz refreshrate not available, choosing highest");
-        for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
+        for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
         {
           if (g_settings.m_ResInfo[i].fRefreshRate >  g_settings.m_ResInfo[m_resolution].fRefreshRate
            && g_settings.m_ResInfo[i].iWidth       == g_settings.m_ResInfo[m_resolution].iWidth
@@ -172,7 +172,7 @@ void CBaseRenderer::FindResolutionFromFpsMatch(float fps, float& weight)
 RESOLUTION CBaseRenderer::FindClosestResolution(float fps, float multiplier, RESOLUTION current, float& weight)
 {
   // Find closest refresh rate
-  for (size_t i = (int)RES_CUSTOM; i < g_settings.m_ResInfo.size(); i++)
+  for (size_t i = (int)RES_DESKTOP; i < g_settings.m_ResInfo.size(); i++)
   {
     RESOLUTION_INFO &curr = g_settings.m_ResInfo[current];
     RESOLUTION_INFO &info = g_settings.m_ResInfo[i];

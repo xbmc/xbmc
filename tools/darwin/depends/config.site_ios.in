@@ -12,19 +12,20 @@ platform_sdk_path="${platform_path}/SDKs/iPhoneOS${platform_sdk_version}.sdk"
 export NM=/usr/bin/nm
 export CPP=/usr/bin/cpp-${platform_gcc_version}
 export CXXCPP=${CPP}
-export CPPFLAGS="-no-cpp-precomp -I${prefix}/include"
+export CPPFLAGS="${CPPFLAGS} -no-cpp-precomp -I${prefix}/include"
 export CC=${platform_path}/usr/bin/gcc-${platform_gcc_version}
-export CFLAGS="-std=gnu99 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags} -I${platform_sdk_path}/usr/include"
+export CFLAGS="${CFLAGS} -std=gnu99 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags} -I${platform_sdk_path}/usr/include"
 export LD=${platform_path}/usr/bin/ld
-export LDFLAGS="-m${platform_min_version} -isysroot ${platform_sdk_path} -L${platform_sdk_path}/usr/lib -L${platform_sdk_path}/usr/lib/system ${platform_os_ldflags} -L${prefix}/lib"
+export LDFLAGS="${LDFLAGS} -m${platform_min_version} -isysroot ${platform_sdk_path} -L${platform_sdk_path}/usr/lib -L${platform_sdk_path}/usr/lib/system ${platform_os_ldflags} -L${prefix}/lib"
 export CXX=${platform_path}/usr/bin/g++-${platform_gcc_version}
-export CXXFLAGS="-m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
+export CXXFLAGS="${CXXFLAGS} -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
 export AR=${platform_path}/usr/bin/ar
 export AS="@use_toolchain@/bin/gas-preprocessor.pl ${CC}"
+export M4=@use_toolchain@/bin/m4
 export CCAS="--tag CC @use_toolchain@/bin/gas-preprocessor.pl ${CC}"
 export STRIP=${platform_path}/usr/bin/strip
 export RANLIB=${platform_path}/usr/bin/ranlib
-export ACLOCAL="aclocal -I ${prefix}/share/aclocal -I @use_toolchain@/share/aclocal -I /Developer/usr/share/aclocal"
+export ACLOCAL="@use_toolchain@/bin/aclocal -I ${prefix}/share/aclocal -I @use_toolchain@/share/aclocal -I /Developer/usr/share/aclocal"
 export LIBTOOL=@use_toolchain@/bin/glibtool
 export LIBTOOLIZE=@use_toolchain@/bin/glibtoolize
 export PKG_CONFIG_PATH=${prefix}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
@@ -90,4 +91,10 @@ fi
 # tweaks for libgcrypt
 if test "${PACKAGE_NAME}" = "libgcrypt" ; then
   export CFLAGS="${CFLAGS} -fgnu89-inline"
+fi
+
+# tweaks for libjpeg-turbo
+if test "${PACKAGE_NAME}" = "libjpeg-turbo" ; then
+  export CCAS="${AS}"
+  export CFLAGS="${CFLAGS} -fexceptions"
 fi

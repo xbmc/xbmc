@@ -145,8 +145,6 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
 {
   bool bPlaying(false);
   CFileItemList vecItems;
-  char szSlash = '\\';
-  if (strDrive.Find("iso9660") != -1) szSlash = '/';
 
   if ( !pDir->GetDirectory( strDrive, vecItems ) )
   {
@@ -154,12 +152,12 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   }
 
   bool bAllowVideo = true;
-  bool bAllowPictures = true;
+//  bool bAllowPictures = true;
   bool bAllowMusic = true;
   if (!g_passwordManager.IsMasterLockUnlocked(false))
   {
     bAllowVideo = !g_settings.GetCurrentProfile().videoLocked();
-    bAllowPictures = !g_settings.GetCurrentProfile().picturesLocked();
+//    bAllowPictures = !g_settings.GetCurrentProfile().picturesLocked();
     bAllowMusic = !g_settings.GetCurrentProfile().musicLocked();
   }
 

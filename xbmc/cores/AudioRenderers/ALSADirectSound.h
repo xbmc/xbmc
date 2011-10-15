@@ -63,6 +63,7 @@ public:
   virtual long GetCurrentVolume() const;
   virtual void Mute(bool bMute);
   virtual bool SetCurrentVolume(long nVolume);
+  virtual void SetDynamicRangeCompression(long drc) { m_drc = drc; }
   virtual int SetPlaySpeed(int iSpeed);
   virtual void WaitCompletion();
   virtual void SwitchChannels(int iAudioStream, bool bAudioOnAllSpeakers);
@@ -78,6 +79,7 @@ private:
   IAudioCallback* m_pCallback;
   CPCMAmplifier 	m_amp;
   long m_nCurrentVolume;
+  long m_drc;
   snd_pcm_uframes_t m_dwFrameCount;
   snd_pcm_uframes_t m_uiBufferSize;
   unsigned int      m_dwNumPackets;

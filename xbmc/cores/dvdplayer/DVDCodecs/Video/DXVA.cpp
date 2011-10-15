@@ -40,6 +40,8 @@
 #include "boost/shared_ptr.hpp"
 #include "utils/AutoPtrHandle.h"
 #include "settings/AdvancedSettings.h"
+#include "cores/VideoRenderers/RenderManager.h"
+#include "win32/WIN32Util.h"
 
 #define ALLOW_ADDING_SURFACES 0
 
@@ -662,6 +664,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
 #endif
   }
 
+  m_state = DXVA_OPEN;
   return true;
 }
 
@@ -800,6 +803,7 @@ bool CDecoder::OpenTarget(const GUID &guid)
 bool CDecoder::OpenDecoder()
 {
   SAFE_RELEASE(m_decoder);
+  m_context->decoder = NULL;
 
   m_context->surface_count = m_refs + 1 + 1 + m_shared; // refs + 1 decode + 1 libavcodec safety + processor buffer
 
@@ -939,10 +943,7 @@ CProcessor::CProcessor()
   m_surfaces = NULL;
   m_context = NULL;
   m_index = 0;
-  m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-  m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
   m_progressive = true;
-  m_last_field_rendered = 0;
 }
 
 CProcessor::~CProcessor()
@@ -1154,9 +1155,11 @@ bool CProcessor::Open(UINT width, UINT height, unsigned int flags, unsigned int 
 bool CProcessor::SelectProcessor()
 {
   // The CProcessor can be run after dxva or software decoding, possibly after software deinterlacing.
+
+  // Deinterlace mode off: force progressive
+  // Deinterlace mode auto or force, with a dxva deinterlacing method: create an deinterlacing capable processor. The frame flags will tell it to deinterlace or not.
   m_progressive = m_deinterlace_mode == VS_DEINTERLACEMODE_OFF
-                  || (   m_interlace_method != VS_INTERLACEMETHOD_AUTO
-                      && m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB
+                  || (   m_interlace_method != VS_INTERLACEMETHOD_DXVA_BOB
                       && m_interlace_method != VS_INTERLACEMETHOD_DXVA_BEST);
 
   if (m_progressive)
@@ -1197,8 +1200,7 @@ bool CProcessor::SelectProcessor()
 
   if (m_progressive)
     m_device = DXVA2_VideoProcProgressiveDevice;
-  else if(m_interlace_method == VS_INTERLACEMETHOD_AUTO
-       || m_interlace_method == VS_INTERLACEMETHOD_DXVA_BEST)
+  else if(m_interlace_method == VS_INTERLACEMETHOD_DXVA_BEST)
     m_device = guid_list[0];
   else
     m_device = DXVA2_VideoProcBobDevice;
@@ -1396,16 +1398,20 @@ static DXVA2_Fixed32 ConvertRange(const DXVA2_ValueRange& range, int value, int 
     return range.DefaultValue;
 }
 
-bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE_TIME time, DWORD flags)
+bool CProcessor::Render(CRect src, CRect dst, IDirect3DSurface9* target, REFERENCE_TIME time, DWORD flags)
 {
   CSingleLock lock(m_section);
 
-  if(m_interlace_method != g_settings.m_currentVideoSettings.m_InterlaceMethod
+  if(m_interlace_methodGUI != g_settings.m_currentVideoSettings.m_InterlaceMethod
+  || (m_interlace_methodGUI == VS_INTERLACEMETHOD_AUTO && m_interlace_method != g_renderManager.AutoInterlaceMethod())
   || m_deinterlace_mode != g_settings.m_currentVideoSettings.m_DeinterlaceMode
   || !m_process)
   {
     m_deinterlace_mode = g_settings.m_currentVideoSettings.m_DeinterlaceMode;
-    m_interlace_method = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    m_interlace_method = m_interlace_methodGUI = g_settings.m_currentVideoSettings.m_InterlaceMethod;
+    if (m_interlace_methodGUI == VS_INTERLACEMETHOD_AUTO)
+      m_interlace_method = g_renderManager.AutoInterlaceMethod();
+
     if (!OpenProcessor())
       return false;
   }
@@ -1436,8 +1442,11 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   D3DSURFACE_DESC desc;
   CHECK(target->GetDesc(&desc));
+  CRect rectTarget(0, 0, desc.Width, desc.Height);
+  CWIN32Util::CropSource(src, dst, rectTarget);
+  RECT sourceRECT = { src.x1, src.y1, src.x2, src.y2 };
+  RECT dstRECT    = { dst.x1, dst.y1, dst.x2, dst.y2 };
 
-  CWinRenderer::CropSource(src, dst, desc);
 
   // How to prepare the samples array for VideoProcessBlt
   // - always provide current picture + the number of forward and backward references required by the current processor.
@@ -1457,8 +1466,8 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
     {
       DXVA2_VideoSample& vs = samp[(it->sample.Start - MinTime) / 2];
       vs = it->sample;
-      vs.SrcRect = src;
-      vs.DstRect = dst;
+      vs.SrcRect = sourceRECT;
+      vs.DstRect = dstRECT;
       if(vs.End == 0)
         vs.End = vs.Start + 2;
 
@@ -1495,11 +1504,9 @@ bool CProcessor::Render(RECT src, RECT dst, IDirect3DSurface9* target, REFERENCE
 
   DXVA2_VideoProcessBltParams blt = {};
   blt.TargetFrame = time;
-  if (flags & RENDER_FLAG_FIELD1 || (flags & RENDER_FLAG_LAST && m_last_field_rendered == 1))
+  if (flags & RENDER_FLAG_FIELD1)
     blt.TargetFrame += 1;
-  if (flags & (RENDER_FLAG_FIELD0 | RENDER_FLAG_FIELD1))
-    m_last_field_rendered = (flags & RENDER_FLAG_FIELD1) != 0;
-  blt.TargetRect  = dst;
+  blt.TargetRect  = dstRECT;
   blt.ConstrictionSize.cx = 0;
   blt.ConstrictionSize.cy = 0;
 

@@ -22,5 +22,5 @@
 #if (defined TARGET_POSIX)
 #include "threads/platform/pthreads/Implementation.cpp"
 #elif (defined TARGET_WINDOWS)
-// win has no need of an Implementation.cpp
+#include "threads/platform/win/Implementation.cpp"
 #endif

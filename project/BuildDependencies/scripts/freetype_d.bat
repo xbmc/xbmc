@@ -7,7 +7,7 @@ CALL dlextract.bat freetype %FILES%
 
 cd %TMP_PATH%
 
-xcopy freetype-2.4.4-win32\include\* "%CUR_PATH%\include\" /E /Q /I /Y
-copy freetype-2.4.4-win32\lib\freetype244MT.lib "%CUR_PATH%\lib\" /Y
+xcopy freetype-2.4.6-win32-1\include\* "%CUR_PATH%\include\" /E /Q /I /Y
+copy freetype-2.4.6-win32-1\lib\freetype246MT.lib "%CUR_PATH%\lib\" /Y
 
 cd %LOC_PATH%

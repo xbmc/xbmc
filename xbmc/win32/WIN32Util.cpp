@@ -1421,6 +1421,39 @@ bool CWIN32Util::GetFocussedProcess(CStdString &strProcessFile)
   return true;
 }
 
+// Adjust the src rectangle so that the dst is always contained in the target rectangle.
+void CWIN32Util::CropSource(CRect& src, CRect& dst, CRect target)
+{
+  if(dst.x1 < target.x1)
+  {
+    src.x1 -= (dst.x1 - target.x1)
+            * (src.x2 - src.x1)
+            / (dst.x2 - dst.x1);
+    dst.x1  = target.x1;
+  }
+  if(dst.y1 < target.y1)
+  {
+    src.y1 -= (dst.y1 - target.y1)
+            * (src.y2 - src.y1)
+            / (dst.y2 - dst.y1);
+    dst.y1  = target.y1;
+  }
+  if(dst.x2 > target.x2)
+  {
+    src.x2 -= (dst.x2 - target.x2)
+            * (src.x2 - src.x1)
+            / (dst.x2 - dst.x1);
+    dst.x2  = target.x2;
+  }
+  if(dst.y2 > target.y2)
+  {
+    src.y2 -= (dst.y2 - target.y2)
+            * (src.y2 - src.y1)
+            / (dst.y2 - dst.y1);
+    dst.y2  = target.y2;
+  }
+}
+
 void CWinIdleTimer::StartZero()
 {
   SetThreadExecutionState(ES_SYSTEM_REQUIRED);

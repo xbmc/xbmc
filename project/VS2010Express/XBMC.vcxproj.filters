@@ -262,6 +262,18 @@
     <Filter Include="interfaces\info">
       <UniqueIdentifier>{cea579fc-bdd7-499e-a6a6-07d681d1ab24}</UniqueIdentifier>
     </Filter>
+    <Filter Include="peripherals">
+      <UniqueIdentifier>{43fa1d09-88f3-4c03-92f4-27ce109a0b1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="peripherals\bus">
+      <UniqueIdentifier>{387fb53b-4497-4e2b-a37d-2efa9db0fce8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="peripherals\devices">
+      <UniqueIdentifier>{a3fe63d5-92eb-47e6-90f6-40b6e25d11d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="peripherals\dialogs">
+      <UniqueIdentifier>{9571e2bc-891d-4496-bcba-2ec3eed45704}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -1835,12 +1847,6 @@
     <ClCompile Include="..\..\xbmc\settings\VideoSettings.cpp">
       <Filter>settings</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\win32\WIN32USBScan.cpp">
-      <Filter>win32</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\xbmc\input\KeymapLoader.cpp">
-      <Filter>input</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\storage\AutorunMediaJob.cpp">
       <Filter>storage</Filter>
     </ClCompile>
@@ -2649,9 +2655,6 @@
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp">
       <Filter>threads</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\xbmc\threads\platform\win\FairMonitor.cpp">
-      <Filter>threads\platform\win</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\xbmc\interfaces\info\InfoBool.cpp">
       <Filter>interfaces\info</Filter>
     </ClCompile>
@@ -2668,6 +2671,72 @@
       <Filter>filesystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\xbmc\filesystem\NFSDirectory.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\FilePipe.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\PipesManager.cpp">
+      <Filter>filesystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\cores\paplayer\BXAcodec.cpp">
+      <Filter>cores\paplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\info\SkinVariable.cpp">
+      <Filter>interfaces\info</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\AirPlayServer.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\HttpParser.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\network\windows\ZeroconfWIN.cpp">
+      <Filter>network\windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\Peripherals.cpp">
+      <Filter>peripherals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\bus\PeripheralBus.cpp">
+      <Filter>peripherals\bus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\Peripheral.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralCecAdapter.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralDisk.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralHID.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralNIC.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralNyxboard.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\bus\win32\PeripheralBusUSB.cpp">
+      <Filter>peripherals\bus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralBluetooth.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\devices\PeripheralTuner.cpp">
+      <Filter>peripherals\devices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralManager.cpp">
+      <Filter>peripherals\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralSettings.cpp">
+      <Filter>peripherals\dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\interfaces\python\xbmcmodule\pyrendercapture.cpp">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\filesystem\FileUPnP.cpp">
       <Filter>filesystem</Filter>
     </ClCompile>
   </ItemGroup>
@@ -4480,12 +4549,6 @@
     <ClInclude Include="..\..\xbmc\settings\VideoSettings.h">
       <Filter>settings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\xbmc\win32\WIN32USBScan.h">
-      <Filter>win32</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\xbmc\input\KeymapLoader.h">
-      <Filter>input</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\xbmc\storage\AutorunMediaJob.h">
       <Filter>storage</Filter>
     </ClInclude>
@@ -5332,6 +5395,81 @@
       <Filter>filesystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\filesystem\NFSDirectory.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\FilePipe.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\PipesManager.h">
+      <Filter>filesystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\cores\paplayer\BXAcodec.h">
+      <Filter>cores\paplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\info\SkinVariable.h">
+      <Filter>interfaces\info</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\AirPlayServer.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\HttpParser.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\windows\ZeroconfWIN.h">
+      <Filter>network\windows</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\network\DllLibPlist.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\Peripherals.h">
+      <Filter>peripherals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\bus\PeripheralBus.h">
+      <Filter>peripherals\bus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\Peripheral.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralCecAdapter.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralDisk.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralHID.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralNIC.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralNyxboard.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\bus\win32\PeripheralBusUSB.h">
+      <Filter>peripherals\bus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\PeripheralTypes.h">
+      <Filter>peripherals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralBluetooth.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\devices\PeripheralTuner.h">
+      <Filter>peripherals\devices</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralManager.h">
+      <Filter>peripherals\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\peripherals\dialogs\GUIDialogPeripheralSettings.h">
+      <Filter>peripherals\dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pyrendercapture.h">
+      <Filter>interfaces\python\xbmcmodule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp">
+      <Filter>threads\platform\win</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\filesystem\FileUPnP.h">
       <Filter>filesystem</Filter>
     </ClInclude>
   </ItemGroup>

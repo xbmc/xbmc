@@ -75,7 +75,7 @@ bool CDVDDemuxVobsub::Open(const string& filename, const string& subfilename)
   hints.codec = CODEC_ID_DVD_SUBTITLE;
 
   char line[2048];
-  bool res;
+  bool __attribute__(unused) res;
 
   SState state;
   state.delay = 0;

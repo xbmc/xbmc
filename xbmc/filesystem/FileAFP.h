@@ -29,6 +29,7 @@
 #include "IFile.h"
 #include "URL.h"
 #include "threads/CriticalSection.h"
+#include "DllLibAfp.h"
 
 // libafpclient includes
 #ifdef __cplusplus
@@ -39,13 +40,6 @@ extern "C" {
 #endif
 
 CStdString URLEncode(CStdString str);
-
-struct libafpclient;
-struct afp_server;
-struct afp_file_info;
-struct afp_volume;
-struct afp_url;
-class  DllLibAfp;
 
 class CAfpConnection : public CCriticalSection
 {
@@ -68,10 +62,18 @@ public:
   struct afp_url        *GetUrl()       {return m_pAfpUrl;};
   CStdString            GetPath(const CURL &url);
   DllLibAfp             *GetImpl()      {return m_pLibAfp;}
+  
+  const char            *GetConnectedIp() const { if(m_pAfpUrl) return m_pAfpUrl->servername;else return "";}
+  
+  //special stat which uses its own context
+  //needed for getting intervolume symlinks to work
+  //it uses the same global server connection
+  //but its own volume
+  int                   stat(const CURL &url, struct stat *statbuff);
 
 private:
   bool                  initLib(void);
-  bool                  connectVolume(const char *volumename);
+  bool                  connectVolume(const char *volumename, struct afp_volume *&pVolume);
   void                  disconnectVolume(void);
   CStdString            getAuthenticatedPath(const CURL &url);
 

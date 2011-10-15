@@ -127,7 +127,9 @@ void CGUIDialogNetworkSetup::OnInitWindow()
     return;
 
   pSpin->Clear();
+#ifdef HAS_FILESYSTEM_SMB
   pSpin->AddLabel(g_localizeStrings.Get(20171), NET_PROTOCOL_SMB);
+#endif
   pSpin->AddLabel(g_localizeStrings.Get(20256), NET_PROTOCOL_HTSP);
   pSpin->AddLabel(g_localizeStrings.Get(20257), NET_PROTOCOL_VTP);
   pSpin->AddLabel(g_localizeStrings.Get(20258), NET_PROTOCOL_MYTH);

@@ -53,8 +53,6 @@ public:
   CVariant(const std::string &str);
   CVariant(const CVariant &variant);
 
-  ~CVariant();
-
   bool isInteger() const;
   bool isUnsignedInteger() const;
   bool isBoolean() const;
@@ -69,20 +67,20 @@ public:
   int64_t asInteger(int64_t fallback = 0) const;
   uint64_t asUnsignedInteger(uint64_t fallback = 0u) const;
   bool asBoolean(bool fallback = false) const;
-  const char *asString(const char *fallback = "") const;
+  std::string asString(const std::string &fallback = "") const;
   double asDouble(double fallback = 0.0) const;
   float asFloat(float fallback = 0.0f) const;
 
-  CVariant &operator[](std::string key);
-  const CVariant &operator[](std::string key) const;
+  CVariant &operator[](const std::string &key);
+  const CVariant &operator[](const std::string &key) const;
   CVariant &operator[](unsigned int position);
   const CVariant &operator[](unsigned int position) const;
 
   CVariant &operator=(const CVariant &rhs);
   bool operator==(const CVariant &rhs) const;
 
-  void push_back(CVariant variant);
-  void append(CVariant variant);
+  void push_back(const CVariant &variant);
+  void append(const CVariant &variant);
 
   const char *c_str() const;
 
@@ -112,10 +110,10 @@ public:
   unsigned int size() const;
   bool empty() const;
   void clear();
-  void erase(std::string key);
+  void erase(const std::string &key);
   void erase(unsigned int position);
 
-  bool isMember(std::string key) const;
+  bool isMember(const std::string &key) const;
 
 private:
   union VariantUnion
@@ -124,13 +122,13 @@ private:
     uint64_t unsignedinteger;
     bool boolean;
     double dvalue;
-    std::string *string;
-    VariantArray *array;
-    VariantMap *map;
   };
 
   VariantType m_type;
   VariantUnion m_data;
+  std::string m_string;
+  VariantArray m_array;
+  VariantMap m_map;
 
   static CVariant ConstNullVariant;
 };

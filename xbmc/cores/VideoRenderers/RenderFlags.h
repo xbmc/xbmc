@@ -30,7 +30,7 @@
 #define RENDER_FLAG_FIELD0      0x80
 #define RENDER_FLAG_FIELD1      0x100
 
-#define RENDER_FLAG_LAST        0x40
+// #define RENDER_FLAG_LAST        0x40
 
 #define RENDER_FLAG_NOOSD       0x04 /* don't draw any osd */
 #define RENDER_FLAG_NOOSDALPHA  0x08 /* don't allow alpha when osd is drawn */

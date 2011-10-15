@@ -204,14 +204,6 @@ void CGUIWindowLoginScreen::Update()
 bool CGUIWindowLoginScreen::OnPopupMenu(int iItem)
 {
   if ( iItem < 0 || iItem >= m_vecItems->Size() ) return false;
-  // calculate our position
-  float posX = 200, posY = 100;
-  const CGUIControl *pList = GetControl(CONTROL_BIG_LIST);
-  if (pList)
-  {
-    posX = pList->GetXPosition() + pList->GetWidth() / 2;
-    posY = pList->GetYPosition() + pList->GetHeight() / 2;
-  }
 
   bool bSelect = m_vecItems->Get(iItem)->IsSelected();
   // mark the item

@@ -113,7 +113,6 @@ void CSkinInfo::Start(const CStdString &strBaseDir)
         m_resolutions.push_back(res);
     }
   }
-  LoadIncludes();
 }
 
 struct closestRes

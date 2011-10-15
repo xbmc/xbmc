@@ -28,9 +28,9 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	cd $(SOURCE); $(CONFIGURE)
 	if test "$(DARWIN)" = "ios"; then \
-		sed -i "" -e "s|CFLAG= |CFLAG=-arch armv7 -isysroot ${platform_sdk_path} |" "$(SOURCE)/Makefile"; \
-		sed -i "" -e "s|-arch i386|-arch armv7|" "$(SOURCE)/Makefile"; \
-		sed -i "" -e "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(SOURCE)/crypto/ui/ui_openssl.c"; \
+		sed -ie "s|CFLAG= |CFLAG=-arch armv7 -isysroot ${platform_sdk_path} |" "$(SOURCE)/Makefile"; \
+		sed -ie "s|-arch i386|-arch armv7|" "$(SOURCE)/Makefile"; \
+		sed -ie "s|static volatile sig_atomic_t intr_signal;|static volatile intr_signal;|" "$(SOURCE)/crypto/ui/ui_openssl.c"; \
 	fi
 
 $(LIBDYLIB): $(SOURCE)

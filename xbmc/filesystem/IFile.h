@@ -105,9 +105,14 @@ class CRedirectException
 {
 public:
   IFile *m_pNewFileImp;
+  CURL  *m_pNewUrl;
 
-  CRedirectException() : m_pNewFileImp(NULL) { }
-  CRedirectException(IFile *pNewFileImp) : m_pNewFileImp(pNewFileImp) { }
+  CRedirectException() : m_pNewFileImp(NULL), m_pNewUrl(NULL) { }
+  
+  CRedirectException(IFile *pNewFileImp, CURL *pNewUrl=NULL) 
+  : m_pNewFileImp(pNewFileImp)
+  , m_pNewUrl(pNewUrl) 
+  { }
 };
 
 }

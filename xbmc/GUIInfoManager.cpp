@@ -291,7 +291,8 @@ const infomap network_labels[] = {{ "isdhcp",            NETWORK_IS_DHCP },
                                   { "ipaddress",         NETWORK_IP_ADDRESS }, //labels from here
                                   { "linkstate",         NETWORK_LINK_STATE },
                                   { "macaddress",        NETWORK_MAC_ADDRESS },
-                                  { "subnetaddress",     NETWORK_SUBNET_ADDRESS },
+                                  { "subnetaddress",     NETWORK_SUBNET_MASK }, //subnetaddress is misleading/wrong. should be deprecated. use subnetmask in stead
+                                  { "subnetmask",        NETWORK_SUBNET_MASK },
                                   { "gatewayaddress",    NETWORK_GATEWAY_ADDRESS },
                                   { "dns1address",       NETWORK_DNS1_ADDRESS },
                                   { "dns2address",       NETWORK_DNS2_ADDRESS },
@@ -1142,6 +1143,9 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
 
 CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 {
+  if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+    return GetSkinVariableString(info, contextWindow, false);
+
   CStdString strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
@@ -1156,7 +1160,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
       return "";
 
     CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START-MUSICPLAYER_PROPERTY_OFFSET];
-    return m_currentFile->GetProperty(property);
+    return m_currentFile->GetProperty(property).asString();
   }
 
   if (info >= LISTITEM_START && info <= LISTITEM_END)
@@ -1500,7 +1504,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot");
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("showplot").asString();
     }
     break;
   case CONTAINER_TOTALTIME:
@@ -1670,7 +1674,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
         return iface->GetCurrentIPAddress();
     }
     break;
-  case NETWORK_SUBNET_ADDRESS:
+  case NETWORK_SUBNET_MASK:
     {
       CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
       if (iface)
@@ -1751,28 +1755,28 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color1");
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color1").asString();
     }
     break;
   case FANART_COLOR2:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color2");
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color2").asString();
     }
     break;
   case FANART_COLOR3:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color3");
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_color3").asString();
     }
     break;
   case FANART_IMAGE:
     {
       CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
       if (window)
-        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_image");
+        return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("fanart_image").asString();
     }
     break;
   case SYSTEM_RENDER_VENDOR:
@@ -1798,6 +1802,7 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
   if (info >= LISTITEM_START && info <= LISTITEM_END)
     return GetItemInt(value, item, info);
 
+  value = 0;
   switch( info )
   {
     case PLAYER_VOLUME:
@@ -1822,29 +1827,29 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
           {
           case PLAYER_PROGRESS:
             value = (int)(g_application.GetPercentage());
-            return true;
+            break;
           case PLAYER_PROGRESS_CACHE:
             value = (int)(g_application.GetCachePercentage());
-            return true;
+            break;
           case PLAYER_SEEKBAR:
             {
               CGUIDialogSeekBar *seekBar = (CGUIDialogSeekBar*)g_windowManager.GetWindow(WINDOW_DIALOG_SEEK_BAR);
               value = seekBar ? (int)seekBar->GetPercentage() : 0;
-              return true;
+              break;
             }
           case PLAYER_CACHELEVEL:
             value = (int)(g_application.m_pPlayer->GetCacheLevel());
-            return true;
+            break;
           case PLAYER_CHAPTER:
             value = g_application.m_pPlayer->GetChapter();
-            return true;
+            break;
           case PLAYER_CHAPTERCOUNT:
             value = g_application.m_pPlayer->GetChapterCount();
-            return true;
+            break;
           }
         }
       }
-      break;
+      return true;
     case SYSTEM_FREE_MEMORY:
     case SYSTEM_USED_MEMORY:
       {
@@ -1861,10 +1866,8 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
       {
         CGUIDialogProgress *bar = (CGUIDialogProgress *)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
         if (bar && bar->IsDialogRunning())
-        {
           value = bar->GetPercentage();
-          return true;
-        }
+        return true;
       }
     case SYSTEM_FREE_SPACE:
     case SYSTEM_USED_SPACE:
@@ -1884,7 +1887,6 @@ bool CGUIInfoManager::GetInt(int &value, int info, int contextWindow, const CGUI
       value = g_powerManager.BatteryLevel();
       return true;
   }
-  value = 0;
   return false;
 }
 
@@ -2514,7 +2516,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = g_windowManager.GetWindow(m_nextWindowID);
-          if (window && URIUtils::GetFileName(window->GetProperty("xmlfile")).Equals(m_stringParameters[info.GetData2()]))
+          if (window && URIUtils::GetFileName(window->GetProperty("xmlfile").asString()).Equals(m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;
@@ -2524,7 +2526,7 @@ bool CGUIInfoManager::GetMultiInfoBool(const GUIInfo &info, int contextWindow, c
         else
         {
           CGUIWindow *window = g_windowManager.GetWindow(m_prevWindowID);
-          if (window && URIUtils::GetFileName(window->GetProperty("xmlfile")).Equals(m_stringParameters[info.GetData2()]))
+          if (window && URIUtils::GetFileName(window->GetProperty("xmlfile").asString()).Equals(m_stringParameters[info.GetData2()]))
             bReturn = true;
         }
         break;
@@ -2764,7 +2766,7 @@ bool CGUIInfoManager::GetMultiInfoInt(int &value, const GUIInfo &info, int conte
 }
 
 /// \brief Examines the multi information sent and returns the string as appropriate
-CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow) const
+CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWindow)
 {
   if (info.m_info == SKIN_STRING)
   {
@@ -2899,7 +2901,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
       window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     }
     if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty(m_stringParameters[info.GetData2()]);
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty(m_stringParameters[info.GetData2()]).asString();
   }
   else if (info.m_info == CONTROL_GET_LABEL)
   {
@@ -2924,7 +2926,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
     }
 
     if (window)
-      return window->GetProperty(m_stringParameters[info.GetData2()]);
+      return window->GetProperty(m_stringParameters[info.GetData2()]).asString();
   }
   else if (info.m_info == SYSTEM_ADDON_TITLE ||
            info.m_info == SYSTEM_ADDON_ICON)
@@ -2946,6 +2948,9 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 /// \brief Obtains the filename of the image to show from whichever subsystem is needed
 CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 {
+  if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+    return GetSkinVariableString(info, contextWindow, true);
+
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
     return GetMultiInfoLabel(m_multiInfo[info - MULTI_INFO_START], contextWindow);
@@ -2991,13 +2996,13 @@ CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("tvshowthumb");
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("tvshowthumb").asString();
   }
   else if (info == CONTAINER_SEASONTHUMB)
   {
     CGUIWindow *window = GetWindowWithCondition(contextWindow, WINDOW_CONDITION_IS_MEDIA_WINDOW);
     if (window)
-      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("seasonthumb");
+      return ((CGUIMediaWindow *)window)->CurrentDirectory().GetProperty("seasonthumb").asString();
   }
   else if (info == LISTITEM_THUMB || info == LISTITEM_ICON || info == LISTITEM_ACTUAL_ICON ||
           info == LISTITEM_OVERLAY || info == LISTITEM_RATING || info == LISTITEM_STAR_RATING)
@@ -3194,7 +3199,7 @@ CStdString CGUIInfoManager::GetMusicPartyModeLabel(int item)
   return "";
 }
 
-const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info) const
+const CStdString CGUIInfoManager::GetMusicPlaylistInfo(const GUIInfo& info)
 {
   PLAYLIST::CPlayList& playlist = g_playlistPlayer.GetPlaylist(PLAYLIST_MUSIC);
   if (playlist.size() < 1)
@@ -3346,7 +3351,7 @@ CStdString CGUIInfoManager::GetMusicLabel(int item)
   return GetMusicTagLabel(item, m_currentFile);
 }
 
-CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item) const
+CStdString CGUIInfoManager::GetMusicTagLabel(int info, const CFileItem *item)
 {
   if (!item->HasMusicInfoTag()) return "";
   const CMusicInfoTag &tag = *item->GetMusicInfoTag();
@@ -3867,13 +3872,15 @@ CTemperature CGUIInfoManager::GetGPUTemperature()
   return CTemperature();
 }
 
+// Version string MUST NOT contain spaces.  It is used
+// in the HTTP request user agent.
 CStdString CGUIInfoManager::GetVersion()
 {
   CStdString tmp;
 #ifdef GIT_REV
-  tmp.Format("%s Git:%s", VERSION_STRING, GIT_REV);
+  tmp.Format("%s%d.%d Git:%s", VERSION_TAG, VERSION_MAJOR, VERSION_MINOR, GIT_REV);
 #else
-  tmp.Format("%s", VERSION_STRING);
+  tmp.Format("%s%d.%d", VERSION_TAG, VERSION_MAJOR, VERSION_MINOR);
 #endif
   return tmp;
 }
@@ -3932,6 +3939,8 @@ void CGUIInfoManager::Clear()
   for (unsigned int i = 0; i < m_bools.size(); ++i)
     delete m_bools[i];
   m_bools.clear();
+
+  m_skinVariableStrings.clear();
 }
 
 void CGUIInfoManager::UpdateFPS()
@@ -4001,7 +4010,7 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
     CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
-    CStdString val = item->GetProperty(property);
+    CStdString val = item->GetProperty(property).asString();
     value = atoi(val);
     return true;
   }
@@ -4041,14 +4050,17 @@ bool CGUIInfoManager::GetItemInt(int &value, const CGUIListItem *item, int info)
   return false;
 }
 
-CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
+CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 {
   if (!item) return "";
+
+  if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+    return GetSkinVariableString(info, 0, false, item);
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
     CStdString property = m_listitemProperties[info - LISTITEM_PROPERTY_START];
-    return item->GetProperty(property);
+    return item->GetProperty(property).asString();
   }
 
   switch (info)
@@ -4591,8 +4603,11 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info) const
   return "";
 }
 
-CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info) const
+CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 {
+  if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
+    return GetSkinVariableString(info, 0, true, item);
+
   switch (info)
   {
   case LISTITEM_RATING:  // old song rating format
@@ -4630,13 +4645,12 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
   if (condition >= LISTITEM_PROPERTY_START && condition - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
     CStdString property = m_listitemProperties[condition - LISTITEM_PROPERTY_START];
-    CStdString val = item->GetProperty(property);
-    return (val == "1" || val.CompareNoCase("true") == 0);
+    return item->GetProperty(property).asBoolean();
   }
   else if (condition == LISTITEM_ISPLAYING)
   {
     if (item->HasProperty("playlistposition"))
-      return item->GetPropertyInt("playlisttype") == g_playlistPlayer.GetCurrentPlaylist() && item->GetPropertyInt("playlistposition") == g_playlistPlayer.GetCurrentSong();
+      return (int)item->GetProperty("playlisttype").asInteger() == g_playlistPlayer.GetCurrentPlaylist() && (int)item->GetProperty("playlistposition").asInteger() == g_playlistPlayer.GetCurrentSong();
     else if (item->IsFileItem() && !m_currentFile->GetPath().IsEmpty())
     {
       if (!g_application.m_strPlayListFile.IsEmpty())
@@ -4752,7 +4766,7 @@ void CGUIInfoManager::UpdateFromTuxBox()
   }
 }
 
-CStdString CGUIInfoManager::GetPictureLabel(int info) const
+CStdString CGUIInfoManager::GetPictureLabel(int info)
 {
   if (info == SLIDE_FILE_NAME)
     return GetItemLabel(m_currentSlide, LISTITEM_FILENAME);
@@ -4975,4 +4989,37 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
             GetLibraryBool(LIBRARY_HAS_MUSICVIDEOS));
   }
   return false;
+}
+
+int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString& info)
+{
+  CSingleLock lock(m_critInfo);
+  int id = TranslateSkinVariableString(info.GetName());
+  if (id != 0)
+    return id;
+
+  m_skinVariableStrings.push_back(info);
+  return CONDITIONAL_LABEL_START + m_skinVariableStrings.size() - 1;
+}
+
+int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name)
+{
+  for (vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
+       it != m_skinVariableStrings.end(); ++it)
+  {
+    if (it->GetName().Equals(name))
+      return it - m_skinVariableStrings.begin() + CONDITIONAL_LABEL_START;
+  }
+  return 0;
+}
+
+CStdString CGUIInfoManager::GetSkinVariableString(int info, int contextWindow, 
+                                                  bool preferImage /*= false*/,
+                                                  const CGUIListItem *item /*= NULL*/)
+{
+  info -= CONDITIONAL_LABEL_START;
+  if (info >= 0 && info < (int)m_skinVariableStrings.size())
+    return m_skinVariableStrings[info].GetValue(contextWindow, preferImage, item);
+
+  return "";
 }

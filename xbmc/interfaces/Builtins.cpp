@@ -206,6 +206,7 @@ const BUILT_IN commands[] = {
   { "LCD.Suspend",                false,  "Suspends LCDproc" },
   { "LCD.Resume",                 false,  "Resumes LCDproc" },
 #endif
+  { "VideoLibrary.Search",        false,  "Brings up a search dialog which will search the library" },
 };
 
 bool CBuiltins::HasCommand(const CStdString& execString)
@@ -524,7 +525,7 @@ int CBuiltins::Execute(const CStdString& execString)
        (params.size() == 2 && params[1].Equals("isdir")))
       item.m_bIsFolder = true;
     else if (item.IsPlugin())
-      item.SetProperty("IsPlayable","true");
+      item.SetProperty("IsPlayable", true);
 
     // restore to previous window if needed
     if( g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
@@ -1143,9 +1144,15 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("skin.setaddon") && params.size() > 1)
   {
     int string = g_settings.TranslateSkinString(params[0]);
-    ADDON::TYPE type = TranslateType(params[1]);
+    vector<ADDON::TYPE> types;
+    for (unsigned int i = 1 ; i < params.size() ; i++)
+    {
+      ADDON::TYPE type = TranslateType(params[i]);
+      if (type != ADDON_UNKNOWN)
+        types.push_back(type);
+    }
     CStdString result;
-    if (CGUIWindowAddonBrowser::SelectAddonID(type, result, true) == 1)
+    if (types.size() > 0 && CGUIWindowAddonBrowser::SelectAddonID(types, result, true) == 1)
     {
       g_settings.SetSkinString(string, result);
       g_settings.Save();
@@ -1566,6 +1573,11 @@ int CBuiltins::Execute(const CStdString& execString)
   {
     CGUIMessage msg(GUI_MSG_MOVE_OFFSET, 0, 0, 0);
     g_windowManager.SendMessage(msg, WINDOW_WEATHER);
+  }
+  else if (execute.Equals("videolibrary.search"))
+  {
+    CGUIMessage msg(GUI_MSG_SEARCH, 0, 0, 0);
+    g_windowManager.SendMessage(msg, WINDOW_VIDEO_NAV);
   }
   else
     return -1;

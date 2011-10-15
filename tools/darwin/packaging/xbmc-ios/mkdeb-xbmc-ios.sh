@@ -23,7 +23,7 @@ fi
 #copy bzip2 of dsym to xbmc-depends install dir
 if [ -d $DSYM ]; then
   if [ -d $DSYM_TARGET_DIR ]; then
-    tar -C $DSYM/.. -c $DSYM_FILENAME/ | bzip2 > $DSYM_TARGET_DIR/`../../../buildbot/gitrev-posix`-${DSYM_FILENAME}.tar.bz2
+    tar -C $DSYM/.. -c $DSYM_FILENAME/ | bzip2 > $DSYM_TARGET_DIR/`$DIRNAME/../../../buildbot/gitrev-posix`-${DSYM_FILENAME}.tar.bz2
   fi
 fi
 
@@ -75,6 +75,7 @@ chmod +x $DIRNAME/$PACKAGE/DEBIAN/prerm
 
 # postinst: nothing for now.
 echo "#!/bin/sh"                                  >  $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "chown -R mobile:mobile /Applications/XBMC.app" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/postinst
 
 # prep XBMC.app

@@ -369,11 +369,11 @@ void CHTSPDemux::SubscriptionStart(htsmsg_t *m)
       m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_TEXT;
       HTSPSetDemuxStreamInfoLanguage(m_Streams.stream[m_Streams.iStreamCount], sub);
     }
-//    else if(!strcmp(type, "TELETEXT"))
-//    {
-//      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_SUBTITLE;
-//      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_DVB_TELETEXT;
-//    }
+    else if(!strcmp(type, "TELETEXT"))
+    {
+      m_Streams.stream[m_Streams.iStreamCount].iCodecType = AVMEDIA_TYPE_SUBTITLE;
+      m_Streams.stream[m_Streams.iStreamCount].iCodecId   = CODEC_ID_DVB_TELETEXT;
+    }
     else
     {
       bValidStream = false;

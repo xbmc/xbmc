@@ -41,6 +41,7 @@
         "ControlPower": { "type": "boolean", "required": true },
         "UpdateData": { "type": "boolean", "required": true },
         "RemoveData": { "type": "boolean", "required": true },
+        "Navigate": { "type": "boolean", "required": true },
         "WriteFile": { "type": "boolean", "required": true }
       }
     }
@@ -148,6 +149,21 @@
     ],
     "returns":  { "$ref": "Player.Property.Value", "required": true }
   },
+	"Player.GetItem": {
+    "type": "method",
+    "description": "Retrieves the currently played item",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "playerid", "$ref": "Player.Id", "required": true },
+      { "name": "properties", "$ref": "List.Fields.All" }
+    ],
+    "returns": { "type": "object",
+      "properties": {
+        "item": { "$ref": "List.Item.All", "required": true }
+      }
+    }
+  },
   "Player.PlayPause": {
     "type": "method",
     "description": "Pauses or unpause playback and returns the new state",
@@ -175,7 +191,7 @@
     "permission": "ControlPlayback",
     "params": [
       { "name": "playerid", "$ref": "Player.Id", "required": true },
-      { "name": "speed", "type": [ "integer", "string" ], "enum": [ -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, "increment", "decrement" ], "required": true }
+      { "name": "speed", "type": [ "integer", "string" ], "enum": [ -32, -16, -8, -4, -2, -1, 0, 1, 2, 4, 8, 16, 32, "increment", "decrement" ], "required": true }
     ],
     "returns": { "$ref": "Player.Speed" }
   },
@@ -418,14 +434,14 @@
     "permission": "ReadData",
     "params": [
       { "name": "playlistid", "$ref": "Playlist.Id", "required": true },
-      { "name": "fields", "$ref": "List.Fields.All" },
+      { "name": "properties", "$ref": "List.Fields.All" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": { "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "items": { "$ref": "List.Items.All", "required": true }
+				"items": { "type": "array", "items": { "$ref": "List.Item.All" }, "required": true }
       }
     }
   },
@@ -503,9 +519,10 @@
       }
     }
   },
-  "Files.Download": {
+  "Files.PrepareDownload": {
     "type": "method",
-    "transport": [ "Response", "FileDownload" ],
+		"description": "Provides a way to download a given file (e.g. providing an URL to the real file location)",
+    "transport": [ "Response", "FileDownloadRedirect" ],
     "permission": "ReadData",
     "params": [
       { "name": "path", "type": "string", "required": true }
@@ -513,25 +530,38 @@
     "returns": {
       "type": "object",
       "properties": {
-        "path": { "type": "string", "required": true }
+				"protocol": { "type": "string", "enum": [ "http" ], "required": true },
+        "details": { "type": "any", "required": true, "description": "Transport specific details on how/from where to download the given file" },
+				"mode": { "type": "string", "enum": [ "redirect", "direct" ], "required": true, "description": "Direct mode allows using Files.Download whereas redirect mode requires the usage of a different protocol" }
       }
     }
   },
+  "Files.Download": {
+    "type": "method",
+		"description": "Downloads the given file",
+    "transport": [ "Response", "FileDownloadDirect" ],
+    "permission": "ReadData",
+    "params": [
+      { "name": "path", "type": "string", "required": true }
+    ],
+    "returns": { "type": "any", "required": true }
+  },
   "Files.GetDirectory": {
     "type": "method",
+		"description": "Get the directories and files in the given directory",
     "transport": "Response",
     "permission": "ReadData",
     "params": [
       { "name": "directory", "type": "string", "required": true },
       { "name": "media", "$ref": "Files.Media", "default": "files" },
-      { "name": "fields", "$ref": "List.Fields.All" },
+      { "name": "properties", "$ref": "List.Fields.All" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": {
       "type": "object",
       "properties": {
         "limits": { "$ref": "List.LimitsReturned", "required": true },
-        "files": { "$ref": "List.Items.Files", "required": true }
+				"files": { "type": "array", "items": { "$ref": "List.Item.File" }, "required": true }
       }
     }
   },
@@ -543,7 +573,7 @@
     "params": [
       { "name": "albumartistsonly", "$ref": "Optional.Boolean", "description": "Whether or not to include artists only appearing in compilations. If the parameter is not passed or is passed as null the GUI setting will be used" },
       { "name": "genreid", "$ref": "Library.Id" },
-      { "name": "fields", "$ref": "Audio.Fields.Artist" },
+      { "name": "properties", "$ref": "Audio.Fields.Artist" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -564,7 +594,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "artistid", "$ref": "Library.Id", "required": true },
-      { "name": "fields", "$ref": "Audio.Fields.Artist" }
+      { "name": "properties", "$ref": "Audio.Fields.Artist" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -580,7 +610,7 @@
     "params": [
       { "name": "artistid", "$ref": "Library.Id" },
       { "name": "genreid", "$ref": "Library.Id" },
-      { "name": "fields", "$ref": "Audio.Fields.Album" },
+      { "name": "properties", "$ref": "Audio.Fields.Album" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -601,7 +631,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "albumid", "$ref": "Library.Id", "required": true },
-      { "name": "fields", "$ref": "Audio.Fields.Album" }
+      { "name": "properties", "$ref": "Audio.Fields.Album" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -618,7 +648,7 @@
       { "name": "artistid", "$ref": "Library.Id" },
       { "name": "albumid", "$ref": "Library.Id" },
       { "name": "genreid", "$ref": "Library.Id" },
-      { "name": "fields", "$ref": "Audio.Fields.Song" },
+      { "name": "properties", "$ref": "Audio.Fields.Song" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -639,7 +669,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "songid", "$ref": "Library.Id", "required": true },
-      { "name": "fields", "$ref": "Audio.Fields.Song" }
+      { "name": "properties", "$ref": "Audio.Fields.Song" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -653,8 +683,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "albums", "$ref": "List.Amount" },
-      { "name": "fields", "$ref": "Audio.Fields.Album" },
+      { "name": "properties", "$ref": "Audio.Fields.Album" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -674,8 +703,8 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "albums", "$ref": "List.Amount", "description": "The amount of recently added albums from which to return the songs" },
-      { "name": "fields", "$ref": "Audio.Fields.Song" },
+      { "name": "albumlimit", "$ref": "List.Amount", "description": "The amount of recently added albums from which to return the songs" },
+      { "name": "properties", "$ref": "Audio.Fields.Song" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -695,7 +724,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "fields", "$ref": "Library.Fields.Genre" },
+      { "name": "properties", "$ref": "Library.Fields.Genre" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -723,10 +752,20 @@
     "transport": "Response",
     "permission": "WriteFile",
     "params": [
-      { "name": "singlefile", "type": "boolean", "default": true, "description": "Whether to export the data into one or multiple files" },
-      { "name": "images", "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
-      { "name": "overwrite", "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
-      { "name": "path", "type": "string", "default": "", "description": "Path to the directory to where the data should be exported" }
+			{ "name": "options", "type": [
+					{ "type": "object", "required": true, "additionalProperties": false,
+						"properties": {
+							"path": { "type": "string", "required": true, "minLength": 1, "description": "Path to the directory to where the data should be exported" }
+						}
+					},
+					{ "type": "object", "required": true, "additionalProperties": false,
+						"properties": {
+							"overwrite": { "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
+							"images": { "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" }
+						}
+					}
+				]
+			}
     ],
     "returns": "string"
   },
@@ -744,7 +783,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "fields", "$ref": "Video.Fields.Movie" },
+      { "name": "properties", "$ref": "Video.Fields.Movie" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -765,7 +804,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "movieid", "$ref": "Library.Id", "required": true },
-      { "name": "fields", "$ref": "Video.Fields.Movie" }
+      { "name": "properties", "$ref": "Video.Fields.Movie" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -779,7 +818,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "fields", "$ref": "Video.Fields.MovieSet" },
+      { "name": "properties", "$ref": "Video.Fields.MovieSet" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -799,10 +838,10 @@
     "permission": "ReadData",
     "params": [
       { "name": "setid", "$ref": "Library.Id", "required": true },
-      { "name": "fields", "$ref": "Video.Fields.MovieSet" },
+      { "name": "properties", "$ref": "Video.Fields.MovieSet" },
       { "name": "movies", "type": "object",
         "properties": {
-          "fields": { "$ref": "Video.Fields.Movie" },
+          "properties": { "$ref": "Video.Fields.Movie" },
           "limits": { "$ref": "List.Limits" },
           "sort": { "$ref": "List.Sort" }
         }
@@ -820,7 +859,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "fields", "$ref": "Video.Fields.TVShow" },
+      { "name": "properties", "$ref": "Video.Fields.TVShow" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -840,7 +879,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "tvshowid", "$ref": "Library.Id", "required": true },
-      { "name": "fields", "$ref": "Video.Fields.TVShow" }
+      { "name": "properties", "$ref": "Video.Fields.TVShow" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -855,7 +894,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "tvshowid", "$ref": "Library.Id", "required": true },
-      { "name": "fields", "$ref": "Video.Fields.Season" },
+      { "name": "properties", "$ref": "Video.Fields.Season" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -876,7 +915,7 @@
     "params": [
       { "name": "tvshowid", "$ref": "Library.Id" },
       { "name": "season", "type": "integer", "minimum": 0, "default": -1 },
-      { "name": "fields", "$ref": "Video.Fields.Episode" },
+      { "name": "properties", "$ref": "Video.Fields.Episode" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -896,7 +935,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "episodeid", "$ref": "Library.Id", "required": true },
-      { "name": "fields", "$ref": "Video.Fields.Episode" }
+      { "name": "properties", "$ref": "Video.Fields.Episode" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -912,7 +951,7 @@
     "params": [
       { "name": "artistid", "$ref": "Library.Id" },
       { "name": "albumid", "$ref": "Library.Id" },
-      { "name": "fields", "$ref": "Video.Fields.MusicVideo" },
+      { "name": "properties", "$ref": "Video.Fields.MusicVideo" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -932,7 +971,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "musicvideoid", "$ref": "Library.Id", "required": true },
-      { "name": "fields", "$ref": "Video.Fields.MusicVideo" }
+      { "name": "properties", "$ref": "Video.Fields.MusicVideo" }
     ],
     "returns": { "type": "object",
       "properties": {
@@ -946,7 +985,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "fields", "$ref": "Video.Fields.Movie" },
+      { "name": "properties", "$ref": "Video.Fields.Movie" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -965,7 +1004,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "fields", "$ref": "Video.Fields.Episode" },
+      { "name": "properties", "$ref": "Video.Fields.Episode" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -984,7 +1023,7 @@
     "transport": "Response",
     "permission": "ReadData",
     "params": [
-      { "name": "fields", "$ref": "Video.Fields.MusicVideo" },
+      { "name": "properties", "$ref": "Video.Fields.MusicVideo" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -1004,7 +1043,7 @@
     "permission": "ReadData",
     "params": [
       { "name": "type", "type": "string", "required": true, "enum": [ "movie", "tvshow", "musicvideo"] },
-      { "name": "fields", "$ref": "Library.Fields.Genre" },
+      { "name": "properties", "$ref": "Library.Fields.Genre" },
       { "name": "limits", "$ref": "List.Limits" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
@@ -1032,11 +1071,21 @@
     "transport": "Response",
     "permission": "WriteFile",
     "params": [
-      { "name": "singlefile", "type": "boolean", "default": true, "description": "Whether to export the data into one or multiple files" },
-      { "name": "images", "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
-      { "name": "actorthumbs", "type": "boolean", "default": false, "description": "Whether to export actor thumbnails" },
-      { "name": "overwrite", "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
-      { "name": "path", "type": "string", "default": "", "description": "Path to the directory to where the data should be exported" }
+			{ "name": "options", "type": [
+					{ "type": "object", "required": true, "additionalProperties": false,
+						"properties": {
+							"path": { "type": "string", "required": true, "minLength": 1, "description": "Path to the directory to where the data should be exported" }
+						}
+					},
+					{ "type": "object", "required": true, "additionalProperties": false,
+						"properties": {
+							"overwrite": { "type": "boolean", "default": false, "description": "Whether to overwrite existing exported files" },
+							"images": { "type": "boolean", "default": false, "description": "Whether to export thumbnails and fanart images" },
+							"actorthumbs": { "type": "boolean", "default": false, "description": "Whether to export actor thumbnails" }
+						}
+					}
+				]
+			}
     ],
     "returns": "string"
   },
@@ -1162,17 +1211,23 @@
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "value", "type": "integer", "minimum": 0, "maximum": 100, "required": true }
+      { "name": "volume", "type": "integer", "minimum": 0, "maximum": 100, "required": true }
     ],
     "returns": "integer"
   },
-  "Application.ToggleMute": {
+  "Application.SetMute": {
     "type": "method",
     "description": "Toggle mute/unmute",
     "transport": "Response",
     "permission": "ControlPlayback",
-    "params": [],
-    "returns": { "type": "integer", "description": "New volume" }
+    "params": [
+			{ "name": "mute", "required": true, "type": [
+					{ "type": "boolean", "required": true },
+					{ "type": "string", "enum": [ "toggle" ], "required": true }
+				]
+			}
+		],
+    "returns": { "type": "boolean", "description": "Mute state" }
   },
   "Application.Quit": {
     "type": "method",

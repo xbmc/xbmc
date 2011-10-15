@@ -153,7 +153,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   if (!bPassthrough && channelMap)
   {
     /* set the input format, and get the channel layout so we know what we need to open */
-    outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
+    outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
     enum PCMChannels *channel;
     iChannels = 0;
     for(channel = outLayout; *channel != PCM_INVALID; ++channel)
@@ -181,6 +181,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_uiBitsPerSample = uiBitsPerSample;
   m_bPassthrough = bPassthrough;
   m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
+  m_drc = 0;
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
 
@@ -523,7 +524,7 @@ unsigned int CPulseAudioDirectSound::AddPackets(const void* data, unsigned int l
   {
     /* remap the data to the correct channels */
     uint8_t outData[length];
-    m_remap.Remap((void *)data, outData, frames);
+    m_remap.Remap((void *)data, outData, frames, m_drc);
     if (pa_stream_write(m_Stream, outData, length, NULL, 0, PA_SEEK_RELATIVE) < 0)
       CLog::Log(LOGERROR, "CPulseAudioDirectSound::AddPackets - pa_stream_write failed\n");
 

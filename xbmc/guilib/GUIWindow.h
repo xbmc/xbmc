@@ -56,6 +56,7 @@ class CFileItem; typedef boost::shared_ptr<CFileItem> CFileItemPtr;
 class TiXmlNode;
 class TiXmlElement;
 class TiXmlDocument;
+class CVariant;
 
 class COrigin
 {
@@ -171,39 +172,13 @@ public:
    \param value value to set, may be a string, integer, boolean or double.
    \sa GetProperty
    */
-  void SetProperty(const CStdString &key, const CStdString &value);
-  void SetProperty(const CStdString &key, const char *value);
-  void SetProperty(const CStdString &key, int value);
-  void SetProperty(const CStdString &key, bool value);
-  void SetProperty(const CStdString &key, double value);
+  void SetProperty(const CStdString &key, const CVariant &value);
 
   /*! \brief Retreive a property
    \param key name of the property to retrieve
    \return value of the property, empty if it doesn't exist
-   \sa SetProperty, GetPropertyInt, GetPropertyBool, GetPropertyDouble
    */
-  CStdString GetProperty(const CStdString &key) const;
-
-  /*! \brief Retreive an integer property
-   \param key name of the property to retrieve
-   \return value of the property, 0 if it doesn't exist
-   \sa SetProperty, GetProperty
-   */
-  int        GetPropertyInt(const CStdString &key) const;
-
-  /*! \brief Retreive a boolean property
-   \param key name of the property to retrieve
-   \return value of the property, false if it doesn't exist
-   \sa SetProperty, GetProperty
-   */
-  bool       GetPropertyBool(const CStdString &key) const;
-
-  /*! \brief Retreive a double precision property
-   \param key name of the property to retrieve
-   \return value of the property, 0 if it doesn't exist
-   \sa SetProperty, GetProperty
-   */
-  double     GetPropertyDouble(const CStdString &key) const;
+  CVariant GetProperty(const CStdString &key) const;
 
   /*! \brief Clear a all the window's properties
    \sa SetProperty, HasProperty, GetProperty
@@ -300,7 +275,7 @@ protected:
   int m_exclusiveMouseControl; ///< \brief id of child control that wishes to receive all mouse events \sa GUI_MSG_EXCLUSIVE_MOUSE
 
 private:
-  std::map<CStdString, CStdString, icompare> m_mapProperties;
+  std::map<CStdString, CVariant, icompare> m_mapProperties;
 
 };
 

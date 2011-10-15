@@ -34,6 +34,8 @@
   /* Touch handling */
   CGSize screensize;
   CGPoint lastGesturePoint;
+  CGFloat lastPinchScale;
+  CGFloat currentPinchScale;  
   bool touchBeginSignaled;
 	
   UIInterfaceOrientation orientation;
@@ -42,6 +44,8 @@
 }
 @property (readonly, nonatomic, getter=isAnimating) BOOL animating;
 @property CGPoint lastGesturePoint;
+@property CGFloat lastPinchScale;
+@property CGFloat currentPinchScale;
 @property bool touchBeginSignaled;
 @property CGSize screensize;
 @property XBMC_Event lastEvent;
