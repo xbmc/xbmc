@@ -239,7 +239,7 @@ void CPeripheralCecAdapter::Process(void)
   m_cecAdapter->SetActiveView();
   FlushLog();
 
-  m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, "XBMC connected");
+  m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, g_localizeStrings.Get(36016).c_str());
 
   while (!m_bStop)
   {
