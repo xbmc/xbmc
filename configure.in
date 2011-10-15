@@ -1139,14 +1139,13 @@ if test "x$use_libcec" != "xno"; then
   # libcec is dyloaded, so we need to check for its headers and link any depends.
   PKG_CHECK_MODULES([CEC],[libcec = 0.7.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
   if test "x$use_libcec" != "xno" && test "$host_vendor" != "apple"; then
-    # libcec has libudev as depends under linux and we also need usb headers.
-    PKG_CHECK_MODULES([USB],[libusb],,[use_libcec="no";AC_MSG_RESULT($libusb_not_found)])
+    # libcec has libudev as depends under linux.
     PKG_CHECK_MODULES([UDEV],[libudev],,[use_libcec="no";AC_MSG_RESULT($libudev_not_found)])
   fi
   if test "x$use_libcec" != "xno"; then
     if test "$host_vendor" != "apple"; then
-      # if linux, bring in usb and udev cflags but only udev as lib.
-      INCLUDES="$INCLUDES $USB_CFLAGS $UDEV_CFLAGS";LIBS="$LIBS $UDEV_LIBS"
+      # if linux, bring in udev cflags and add lib.
+      INCLUDES="$INCLUDES $UDEV_CFLAGS";LIBS="$LIBS $UDEV_LIBS"
       USE_LIBUDEV=1;AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"])
     fi
     INCLUDES="$INCLUDES $CEC_CFLAGS"
