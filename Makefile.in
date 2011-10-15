@@ -221,7 +221,7 @@ xbmc/cores/paplayer/paplayer.a: papcodecs
 $(DVDPLAYER_ARCHIVES)         : dvdpcodecs
 
 $(DIRECTORY_ARCHIVES): force
-	@$(MAKE) -C $(@D)
+	@$(MAKE) $(if $(V),,-s) -C $(@D)
 
 lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C lib/libapetag
