@@ -128,11 +128,11 @@ void CGraphicContext::ClipRect(CRect &vertex, CRect &texture, CRect *texture2)
     CRect original(vertex);
     if (m_clipRegions.size())
     {
-    // intersect vertex with our clip region (moved to the same coordinate system)
-    CRect clipRegion(m_clipRegions.top());
-    if (m_origins.size())
-      clipRegion -= m_origins.top();
-    vertex.Intersect(clipRegion);
+      // intersect vertex with our clip region (moved to the same coordinate system)
+      CRect clipRegion(m_clipRegions.top());
+      if (m_origins.size())
+        clipRegion -= m_origins.top();
+      vertex.Intersect(clipRegion);
     }
     if (m_bNeedOverscanClip)
     {
