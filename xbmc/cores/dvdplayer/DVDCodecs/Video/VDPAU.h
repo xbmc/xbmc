@@ -102,7 +102,6 @@ public:
   void InitCSCMatrix(int Height);
   bool CheckStatus(VdpStatus vdp_st, int line);
 
-  bool CheckRecover(bool force = false);
   void CheckFeatures();
   void SetColor();
   void SetNoiseReduction();
@@ -111,7 +110,6 @@ public:
   void SetHWUpscaling();
 
   pictureAge picAge;
-  bool       recover;
   vdpau_render_state *past[2], *current, *future;
   int        tmpDeintMode, tmpDeintGUI, tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
@@ -226,6 +224,9 @@ public:
 
   std::vector<vdpau_render_state*> m_videoSurfaces;
 
+  // OnLostDevice triggers transition from all states to LOST
+  // internal errors trigger transition from OPEN to RESET
+  // OnResetDevice triggers transition from LOST to RESET
   enum EDisplayState
   { VDPAU_OPEN
   , VDPAU_RESET
