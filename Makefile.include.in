@@ -4,6 +4,7 @@ RM=rm -rf
 SHELL=@SHELL@
 ARCH=@ARCH@
 abs_top_srcdir=@abs_top_srcdir@
+rel_top_srcdir=$(subst $(abspath $(abs_top_srcdir))/,,$(abspath $(CURDIR))/)
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 bindir=@bindir@
@@ -58,12 +59,13 @@ ifeq ($(ARCH), powerpc-osx)
 endif
 
 ifneq ($(V), 1)
-	SILENT_CPP=@echo "CPP     $@";
-	SILENT_CC =@echo "CC      $@";
-	SILENT_S  =@echo "S       $@";
-	SILENT_GCH=@echo "GCH     $@";
-	SILENT_MM =@echo "MM      $@";
-	SILENT_AR =@echo "AR      $@";
+	SILENT_CPP=@echo "CPP     $(rel_top_srcdir)$@";
+	SILENT_CC =@echo "CC      $(rel_top_srcdir)$@";
+	SILENT_S  =@echo "S       $(rel_top_srcdir)$@";
+	SILENT_GCH=@echo "GCH     $(rel_top_srcdir)$@";
+	SILENT_MM =@echo "MM      $(rel_top_srcdir)$@";
+	SILENT_AR =@echo "AR      $(rel_top_srcdir)$@";
+	SILENT_LD =@echo "LD      $(rel_top_srcdir)$@";
 endif
 
 OBJS+=$(filter %.o,$(SRCS:.cpp=.o))
