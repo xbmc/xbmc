@@ -26,7 +26,7 @@ bool CSaveFileStateJob::DoWork()
   CStdString progressTrackingFile = m_item.GetPath();
 
   if (m_item.IsDVD()) 
-    progressTrackingFile = m_item.GetVideoInfoTag()->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label
+    progressTrackingFile = m_item.GetVideoInfoTag()->m_strFileNameAndPath; // this variable contains removable:// suffixed by disc label+uniqueid or is empty if label not uniquely identified
 
   if (progressTrackingFile != "")
   {
