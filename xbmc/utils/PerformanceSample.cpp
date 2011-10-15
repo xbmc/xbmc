@@ -96,7 +96,7 @@ double CPerformanceSample::GetEstimatedError()
 
   for (int i=0; i<100000;i++)
   {
-    int64_t __attribute__(unused) tmDummy;
+    DECLARE_UNUSED(int64_t,tmDummy);
     tmDummy = CurrentHostCounter();
   }
 
