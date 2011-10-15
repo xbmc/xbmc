@@ -56,7 +56,8 @@ int g_iTVServerXBMCBuild = 0;
 
 cPVRClientMediaPortal::cPVRClientMediaPortal()
 {
-  m_iCurrentChannel        = 1;
+  m_iCurrentChannel        = -1;
+  m_iCurrentCard           = 0;
   m_tcpclient              = new MPTV::Socket(MPTV::af_inet, MPTV::pf_inet, MPTV::sock_stream, MPTV::tcp);
   m_bConnected             = false;
   m_bStop                  = true;
@@ -573,6 +574,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
   CStdString      command;
   int             code;
   PVR_CHANNEL     tag;
+  CStdString      stream;
 
   if (!IsUp())
     return PVR_ERROR_SERVER_ERROR;
@@ -651,9 +653,10 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
       {
         //Use GetLiveStreamURL to fetch an rtsp stream
         if(bRadio)
-          tag.strStreamURL = "pvr://stream/radio/%i.ts"; //stream.c_str();
+          stream.Format("pvr://stream/radio/%i.ts", tag.iUniqueId);
         else
-          tag.strStreamURL = "pvr://stream/tv/%i.ts"; //stream.c_str();
+          stream.Format("pvr://stream/tv/%i.ts", tag.iUniqueId);
+        tag.strStreamURL = stream.c_str();
       }
       tag.strInputFormat = "";
 #else
@@ -1166,38 +1169,38 @@ PVR_ERROR cPVRClientMediaPortal::UpdateTimer(const PVR_TIMER &timerinfo)
 // urls or it can read directly from the timeshift buffer file.
 bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 {
-  //Case ffmpeg:
-  // Just return true for now. XBMC will later ask for the stream URL and then we will
-  // actually ask MediaPortal for the rtsp URL.
-  // TODO: optimization: request the channel stream already here and return it to
-  //       XBMC via GetLiveStreamURL
-#ifdef TSREADER
-  unsigned int channel = channelinfo.iUniqueId;
-
   string result;
   char   command[256] = "";
+  const char* sResolveRTSPHostname = booltostring(g_bResolveRTSPHostname);
 
-  XBMC->Log(LOG_DEBUG, "->OpenLiveStream(uid=%i)", channel);
+  XBMC->Log(LOG_DEBUG, "->OpenLiveStream(uid=%i)", channelinfo.iUniqueId);
   if (!IsUp())
   {
+    m_iCurrentChannel = -1;
     return false;
   }
+
+  if (channelinfo.iUniqueId == m_iCurrentChannel)
+    return true;
 
   // Start the timeshift
   if (g_iTVServerXBMCBuild>=90)
   {
-    //Use the optimized TimeshiftChannel call (don't stop a running timeshift)
-    snprintf(command, 256, "TimeshiftChannel:%i|False|False\n", channel);
+    // Use the optimized TimeshiftChannel call (don't stop a running timeshift)
+    snprintf(command, 256, "TimeshiftChannel:%i|%s|False\n", channelinfo.iUniqueId, sResolveRTSPHostname);
   }
   else
   {
-    snprintf(command, 256, "TimeshiftChannel:%i|True\n", channel);
+    // Closing existing timeshift streams will be done in the MediaPortal TV
+    // Server plugin, so we can request the new channel stream directly without
+    // stopping the existing stream
+    snprintf(command, 256, "TimeshiftChannel:%i|%s\n", channelinfo.iUniqueId, sResolveRTSPHostname);
   }
   result = SendCommand(command);
 
   if (result.find("ERROR") != std::string::npos || result.length() == 0)
   {
-    XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel %i. %s", channel, result.c_str());
+    XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel uid=%i. %s", channelinfo.iUniqueId, result.c_str());
     if (result.find("[ERROR]: TVServer answer: ") != std::string::npos)
     {
       //Skip first part: "[ERROR]: TVServer answer: "
@@ -1208,6 +1211,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
       //Skip first part: "[ERROR]: "
       XBMC->QueueNotification(QUEUE_ERROR, result.substr(7).c_str());
     }
+    m_iCurrentChannel = -1;
     return false;
   }
   else
@@ -1221,9 +1225,9 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
     //[2] = timeshift buffer filename
     //[3] = card id (TVServerXBMC build >= 106)
 
-    XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", timeshiftfields[0].c_str(), timeshiftfields[2].c_str());
-    m_iCurrentChannel = channel;
-    m_ConnectionString = timeshiftfields[0];
+    m_PlaybackURL = timeshiftfields[0];
+    XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", m_PlaybackURL.c_str(), timeshiftfields[2].c_str());
+    m_iCurrentChannel = channelinfo.iUniqueId;
 
     if (g_iSleepOnRTSPurl > 0)
     {
@@ -1240,6 +1244,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
       m_bTimeShiftStarted = true;
     }
 
+#ifdef TSREADER
     if (m_tsreader != NULL)
     {
       if (g_iTVServerXBMCBuild >=90 )
@@ -1287,8 +1292,13 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
         return false;
       usleep(400000);
     }
-  }
 #endif //TSREADER
+
+    if (g_iTVServerXBMCBuild>=106)
+    {
+      m_iCurrentCard = atoi(timeshiftfields[3].c_str());
+    }
+  }
   return true;
 }
 
@@ -1357,7 +1367,8 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
     result = SendCommand("StopTimeshift:\n");
     XBMC->Log(LOG_INFO, "CloseLiveStream: %s", result.c_str());
     m_bTimeShiftStarted = false;
-    m_iCurrentChannel = 0;
+    m_iCurrentChannel = -1;
+    m_iCurrentCard = 0;
   }
   else
   {
@@ -1368,6 +1379,9 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
 
 bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channel)
 {
+  if (channel.iUniqueId == m_iCurrentChannel)
+    return true;
+
 #ifdef TSREADER
   XBMC->Log(LOG_DEBUG, "SwitchChannel(uid=%i) tsreader: open a new live stream", channel.iUniqueId);
 
@@ -1385,7 +1399,7 @@ bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channel)
 #else
   XBMC->Log(LOG_DEBUG, "SwitchChannel(uid=%i) ffmpeg rtsp: nothing to be done here... GetLiveSteamURL() should fetch a new rtsp url from the backend.", channel.iUniqueId);
 #endif
-  return true;
+  return false;
 }
 
 
@@ -1420,7 +1434,7 @@ PVR_ERROR cPVRClientMediaPortal::GetSignalStatus(PVR_SIGNAL_STATUS &signalStatus
       signalStatus.iBER = 0;
       strncpy(signalStatus.strAdapterStatus, "timeshifting", 1023); // hardcoded for now...
       // TODO: fetch the name of the correct card and not just the first one...
-      strncpy(signalStatus.strAdapterName, m_cCards[0].Name.c_str(), 1023); //Size buffer is 1024 in xbmc_pvr_types.h
+      strncpy(signalStatus.strAdapterName, m_cCards[m_iCurrentCard].Name.c_str(), 1023); //Size buffer is 1024 in xbmc_pvr_types.h
     }
   }
   return PVR_ERROR_NO_ERROR;
@@ -1608,82 +1622,13 @@ const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelin
   char   command[256] = "";
 
   XBMC->Log(LOG_DEBUG, "->GetLiveStreamURL(uid=%i)", channelinfo.iUniqueId);
-  if (!IsUp())
-  {
-    return false;
-  }
 
-  // Closing existing timeshift streams will be done in the MediaPortal TV
-  // Server plugin, so we can request the new channel stream directly without
-  // stopping the existing stream
-  if(g_bResolveRTSPHostname == false)
+  if (!OpenLiveStream(channelinfo))
   {
-    if (g_iTVServerXBMCBuild < 90)
-    { //old way
-      // RTSP URL may contain a hostname, XBMC will do the IP resolve
-      snprintf(command, 256, "TimeshiftChannel:%i|False\n", channelinfo.iUniqueId);
-    }
-    else
-    {
-      //Faster, skip StopTimeShift
-      snprintf(command, 256, "TimeshiftChannel:%i|False|False\n", channelinfo.iUniqueId);
-    }
-  }
-  else
-  {
-    if (g_iTVServerXBMCBuild < 90)
-    { //old way
-      // RTSP URL will always contain an IP address, TVServerXBMC will
-      // do the IP resolve
-      snprintf(command, 256, "TimeshiftChannel:%i|True\n", channelinfo.iUniqueId);
-    }
-    else
-    {
-      //Faster, skip StopTimeShift
-      snprintf(command, 256, "TimeshiftChannel:%i|True|False\n", channelinfo.iUniqueId);
-    }
-  }
-  result = SendCommand(command);
-
-  if (result.find("ERROR") != std::string::npos || result.length() == 0)
-  {
-    XBMC->Log(LOG_ERROR, "Could not stream channel uid=%i. %s", channelinfo.iUniqueId, result.c_str());
-    if (result.find("[ERROR]: TVServer answer: ") != std::string::npos)
-    {
-      // Skip first part: "[ERROR]: TVServer answer: "
-      XBMC->QueueNotification(QUEUE_ERROR, "TVServer: %s", result.substr(26).c_str());
-    }
-    else
-    {
-      // Skip first part: "[ERROR]: "
-      XBMC->QueueNotification(QUEUE_ERROR, result.substr(7).c_str());
-    }
     return "";
   }
   else
   {
-    if (g_iSleepOnRTSPurl > 0)
-    {
-      XBMC->Log(LOG_DEBUG, "Sleeping %i ms before opening stream: %s", g_iSleepOnRTSPurl, result.c_str());
-      usleep(g_iSleepOnRTSPurl * 1000);
-    }
-
-    vector<string> timeshiftfields;
-
-    Tokenize(result, timeshiftfields, "|");
-
-    m_PlaybackURL = timeshiftfields[0];
-    XBMC->Log(LOG_INFO, "Sending channel stream URL '%s' to XBMC for playback", m_PlaybackURL.c_str());
-    m_iCurrentChannel = channelinfo.iUniqueId;
-
-    // Check the returned stream URL. When the URL is an rtsp stream, we need
-    // to close it again after watching to stop the timeshift.
-    // A radio web stream (added to the TV Server) will return the web stream
-    // URL without starting a timeshift.
-    if(timeshiftfields[0].compare(0,4, "rtsp") == 0)
-    {
-      m_bTimeShiftStarted = true;
-    }
     return m_PlaybackURL.c_str();
   }
 }
