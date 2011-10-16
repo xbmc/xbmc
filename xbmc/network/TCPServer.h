@@ -26,6 +26,7 @@
 #include "interfaces/json-rpc/ITransportLayer.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
+#include "websocket/WebSocket.h"
 #include "interfaces/json-rpc/JSONUtils.h"
 
 namespace JSONRPC
@@ -58,26 +59,53 @@ namespace JSONRPC
       //when adding a member variable, make sure to copy it in CTCPClient::Copy
       CTCPClient(const CTCPClient& client);
       CTCPClient& operator=(const CTCPClient& client);
+      virtual ~CTCPClient() { };
+
       virtual int  GetPermissionFlags();
       virtual int  GetAnnouncementFlags();
       virtual bool SetAnnouncementFlags(int flags);
-      void PushBuffer(CTCPServer *host, const char *buffer, int length);
-      void Disconnect();
+
+      virtual void Send(const char *data, unsigned int size);
+      virtual void PushBuffer(CTCPServer *host, const char *buffer, int length);
+      virtual void Disconnect();
+
+      virtual bool IsNew() const { return m_new; }
 
       SOCKET           m_socket;
       sockaddr_storage m_cliaddr;
       socklen_t        m_addrlen;
       CCriticalSection m_critSection;
 
-    private:
+    protected:
       void Copy(const CTCPClient& client);
+    private:
+      bool m_new;
       int m_announcementflags;
       int m_beginBrackets, m_endBrackets;
       char m_beginChar, m_endChar;
       std::string m_buffer;
     };
 
-    std::vector<CTCPClient> m_connections;
+    class CWebSocketClient : public CTCPClient
+    {
+    public:
+      CWebSocketClient(CWebSocket *websocket);
+      CWebSocketClient(const CWebSocketClient& client);
+      CWebSocketClient(CWebSocket *websocket, const CTCPClient& client);
+      CWebSocketClient& operator=(const CWebSocketClient& client);
+      ~CWebSocketClient();
+
+      virtual void Send(const char *data, unsigned int size);
+      virtual void PushBuffer(CTCPServer *host, const char *buffer, int length);
+      virtual void Disconnect();
+
+      virtual bool IsNew() const { return m_websocket == NULL; }
+
+    private:
+      CWebSocket *m_websocket;
+    };
+
+    std::vector<CTCPClient*> m_connections;
     std::vector<SOCKET> m_servers;
     int m_port;
     bool m_nonlocal;
