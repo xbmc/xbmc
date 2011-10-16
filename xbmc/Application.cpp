@@ -1213,6 +1213,10 @@ bool CApplication::Initialize()
   CCrystalHD::GetInstance();
 #endif
 
+#ifdef HAS_JSONRPC
+  CJSONRPC::Initialize();
+#endif
+
   CAddonMgr::Get().StartServices(false);
 
   CLog::Log(LOGNOTICE, "initialize done");
@@ -1338,8 +1342,6 @@ bool CApplication::StartJSONRPCServer()
 #ifdef HAS_JSONRPC
   if (g_guiSettings.GetBool("services.esenabled"))
   {
-    CJSONRPC::Initialize();
-
     if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
     {
       std::map<std::string, std::string> txt;  
