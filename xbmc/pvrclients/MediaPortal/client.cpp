@@ -284,7 +284,7 @@ void ADDON_ReadSettings(void)
 #ifdef TSREADER
   /* TSReader settings */
   /*********************/
-
+#ifdef TARGET_WINDOWS
   /* Read setting "directtsfileread" from settings.xml */
   if (!XBMC->GetSetting("directtsfileread", &g_bDirectTSFileRead))
   {
@@ -292,6 +292,11 @@ void ADDON_ReadSettings(void)
     XBMC->Log(LOG_ERROR, "Couldn't get 'directtsfileread' setting, falling back to 'false' as default");
     g_bDirectTSFileRead = DEFAULT_DIRECT_TS_FR;
   }
+#else
+  /* "directtsfileread" is not yet supported on non-Windows targets */
+   XBMC->Log(LOG_INFO, "Setting 'directtsfileread' to 'false' for non-Windows targets");
+  g_bDirectTSFileRead = false;
+#endif
 
   if (!XBMC->GetSetting("timeshiftdir", &buffer))
   {
