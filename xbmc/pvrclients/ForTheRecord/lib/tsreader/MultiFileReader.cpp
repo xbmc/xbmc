@@ -33,6 +33,13 @@
 #include <string>
 #include "utils.h"
 #include <wchar.h>
+#if !defined(TARGET_WINDOWS)
+#include <sys/time.h>
+#include "PlatformInclude.h"
+#define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
+#undef INVALID_HANDLE_VALUE
+#define INVALID_HANDLE_VALUE (-1)
+#endif
 
 //Maximum time in msec to wait for the buffer file to become available - Needed for DVB radio (this sometimes takes some time)
 #define MAX_BUFFER_TIMEOUT 1500
@@ -94,10 +101,26 @@ long MultiFileReader::OpenFile()
   long hr = m_TSBufferFile.OpenFile();
 
   //For radio the buffer sometimes needs some time to become available, so wait try it more than once
+#if defined(TARGET_WINDOWS)
   unsigned long tc=GetTickCount();
+#elif defined(TARGET_LINUX)
+  struct timeval tstart;
+  gettimeofday(&tstart, NULL);
+#else
+#error FIXME: Add some form of timeout handling for your OS
+#endif
   while (RefreshTSBufferFile()==S_FALSE)
   {
+#if defined(TARGET_WINDOWS)
     if (GetTickCount()-tc>MAX_BUFFER_TIMEOUT)
+#elif defined(TARGET_LINUX)
+    struct timeval tnow, tdelta;
+    gettimeofday(&tnow, NULL);
+    timersub(&tnow, &tstart, &tdelta);
+    if ((tdelta.tv_sec * 1000) + (tdelta.tv_usec / 1000) > MAX_BUFFER_TIMEOUT)
+#else
+#error FIXME: Add some form of timeout handling for your OS
+#endif
     {
       XBMC->Log(LOG_DEBUG, "MultiFileReader: timedout while waiting for buffer file to become available");
       XBMC->QueueNotification(QUEUE_ERROR, "Time out while waiting for buffer file");
@@ -429,7 +452,7 @@ long MultiFileReader::RefreshTSBufferFile()
 
       if (m_bDebugOutput)
       {
-        XBMC->Log(LOG_DEBUG, "MultiFileReader: Removing file %s\n", file->filename);
+        XBMC->Log(LOG_DEBUG, "MultiFileReader: Removing file %s\n", file->filename.c_str());
       }
       
       delete file;
@@ -587,7 +610,7 @@ long MultiFileReader::RefreshTSBufferFile()
 //TODO: make OS independent. Currently Windows specific
 long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
 {
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
   //USES_CONVERSION;
 
   length = 0;
@@ -619,6 +642,26 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
     XBMC->Log(LOG_DEBUG, "Failed to open file %s : 0x%x\n", pFilename, dwErr);
     XBMC->QueueNotification(QUEUE_ERROR, "Failed to open file %s", pFilename);
     return HRESULT_FROM_WIN32(dwErr);
+  }
+  return S_OK;
+#elif defined(TARGET_LINUX)
+  //USES_CONVERSION;
+
+  length = 0;
+
+  // Try to open the file
+  int hFile = open64(pFilename, O_RDONLY) ;
+  if (hFile != INVALID_HANDLE_VALUE)
+  {
+    off64_t myOffset = lseek64(hFile, 0, SEEK_END);
+    close(hFile);
+    length = myOffset;
+  }
+  else
+  {
+    XBMC->Log(LOG_DEBUG, "Failed to open file %s : 0x%x(%s)\n", pFilename, errno, strerror(errno));
+    XBMC->QueueNotification(QUEUE_ERROR, "Failed to open file %s", pFilename);
+    return S_FALSE;
   }
   return S_OK;
 #else
