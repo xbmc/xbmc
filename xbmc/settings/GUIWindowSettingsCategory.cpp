@@ -395,6 +395,10 @@ void CGUIWindowSettingsCategory::CreateSettings()
         FillInScreens(strSetting, g_guiSettings.GetResolution());
       else if (strSetting.Equals("videoscreen.resolution"))
         FillInResolutions(strSetting, g_guiSettings.GetInt("videoscreen.screen"), g_guiSettings.GetResolution(), false);
+      else if (strSetting.Equals("epg.defaultguideview"))
+        FillInEpgGuideView(pSetting);
+      else if (strSetting.Equals("pvrplayback.startlast"))
+        FillInPvrStartLastChannel(pSetting);
       continue;
     }
 #ifdef HAS_WEB_SERVER
@@ -534,27 +538,6 @@ void CGUIWindowSettingsCategory::CreateSettings()
     {
       AddSetting(pSetting, group->GetWidth(), iControlID);
       FillInAudioDevices(pSetting,true);
-      continue;
-    }
-    else if (strSetting.Equals("epg.defaultguideview"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(19029), GUIDE_VIEW_CHANNEL);
-      pControl->AddLabel(g_localizeStrings.Get(19030), GUIDE_VIEW_NOW);
-      pControl->AddLabel(g_localizeStrings.Get(19031), GUIDE_VIEW_NEXT);
-      pControl->AddLabel(g_localizeStrings.Get(19032), GUIDE_VIEW_TIMELINE);
-      pControl->SetValue(pSettingInt->GetData());
-      continue;
-    }
-    else if (strSetting.Equals("pvrplayback.startlast"))
-    {
-      CSettingInt *pSettingInt = (CSettingInt*)pSetting;
-      CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->AddLabel(g_localizeStrings.Get(106), START_LAST_CHANNEL_OFF);
-      pControl->AddLabel(g_localizeStrings.Get(19190), START_LAST_CHANNEL_MIN);
-      pControl->AddLabel(g_localizeStrings.Get(107), START_LAST_CHANNEL_ON);
-      pControl->SetValue(pSettingInt->GetData());
       continue;
     }
     AddSetting(pSetting, group->GetWidth(), iControlID);
@@ -2813,6 +2796,33 @@ void CGUIWindowSettingsCategory::FillInNetworkInterfaces(CSetting *pSetting, flo
   int iInterface = 0;
   for (unsigned int i = 0; i < vecInterfaces.size(); ++i)
     pControl->AddLabel(vecInterfaces[i], iInterface++);
+}
+
+void CGUIWindowSettingsCategory::FillInEpgGuideView(CSetting *pSetting)
+{
+  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  pControl->AddLabel(g_localizeStrings.Get(19029), GUIDE_VIEW_CHANNEL);
+  pControl->AddLabel(g_localizeStrings.Get(19030), GUIDE_VIEW_NOW);
+  pControl->AddLabel(g_localizeStrings.Get(19031), GUIDE_VIEW_NEXT);
+  pControl->AddLabel(g_localizeStrings.Get(19032), GUIDE_VIEW_TIMELINE);
+
+  pControl->SetValue(pSettingInt->GetData());
+}
+
+void CGUIWindowSettingsCategory::FillInPvrStartLastChannel(CSetting *pSetting)
+{
+  CSettingInt *pSettingInt = (CSettingInt*)pSetting;
+  CGUISpinControlEx *pControl = (CGUISpinControlEx *)GetControl(GetSetting(pSetting->GetSetting())->GetID());
+  pControl->Clear();
+
+  pControl->AddLabel(g_localizeStrings.Get(106),   START_LAST_CHANNEL_OFF);
+  pControl->AddLabel(g_localizeStrings.Get(19190), START_LAST_CHANNEL_MIN);
+  pControl->AddLabel(g_localizeStrings.Get(107),   START_LAST_CHANNEL_ON);
+
+  pControl->SetValue(pSettingInt->GetData());
 }
 
 void CGUIWindowSettingsCategory::FillInAudioDevices(CSetting* pSetting, bool Passthrough)
