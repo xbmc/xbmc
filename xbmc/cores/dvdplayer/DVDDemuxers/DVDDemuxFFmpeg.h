@@ -139,8 +139,6 @@ protected:
   bool     m_bAVI;
   int      m_speed;
   unsigned m_program;
-  bool     m_bHasSeenKeyFrame;
-  int      m_iKeyFrameTryCount;
   XbmcThreads::EndTime  m_timeout;
 
   CDVDInputStream* m_pInput;
