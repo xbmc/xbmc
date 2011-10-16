@@ -19,6 +19,7 @@
   <peripheral vendor="2548" product="1001" bus="usb" name="Pulse-Eight CEC Adaptor" mapTo="cec">
     <setting key="enabled" type="bool" value="1" label="305" />
     <setting key="port" type="string" value="" label="792" />
+    <setting key="cec_hdmi_port" type="int" value="1" min="1" max="16" label="36015" />
     <setting key="cec_power_on_startup" type="bool" value="1" label="36007" />
     <setting key="cec_power_off_shutdown" type="bool" value="1" label="36008" />
     <setting key="cec_standby_screensaver" type="bool" value="1" label="36009" />

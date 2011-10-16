@@ -82,6 +82,8 @@ namespace PERIPHERALS
      */
     virtual int GetPeripheralsWithFeature(std::vector<CPeripheral *> &results, const PeripheralFeature feature, PeripheralBusType busType = PERIPHERAL_BUS_UNKNOWN) const;
 
+    size_t GetNumberOfPeripherals() const;
+
     /*!
      * @brief Check whether there is at least one device present with the given feature.
      * @param feature The feature to check for.
@@ -93,16 +95,16 @@ namespace PERIPHERALS
     /*!
      * @brief Called when a device has been added to a bus.
      * @param bus The bus the device was added to.
-     * @param strLocation The path of the fileitem.
+     * @param peripheral The peripheral that has been added.
      */
-    virtual void OnDeviceAdded(const CPeripheralBus &bus, const CStdString &strLocation);
+    virtual void OnDeviceAdded(const CPeripheralBus &bus, const CPeripheral &peripheral);
 
     /*!
      * @brief Called when a device has been deleted from a bus.
      * @param bus The bus from which the device removed.
-     * @param strLocation The path of the fileitem.
+     * @param peripheral The peripheral that has been removed.
      */
-    virtual void OnDeviceDeleted(const CPeripheralBus &bus, const CStdString &strLocation);
+    virtual void OnDeviceDeleted(const CPeripheralBus &bus, const CPeripheral &peripheral);
 
     /*!
      * @brief Creates a new instance of a peripheral.

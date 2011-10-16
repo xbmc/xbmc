@@ -498,6 +498,7 @@ public:
   RESOLUTION GetResolution() const;
   static RESOLUTION GetResFromString(const CStdString &res);
   void SetResolution(RESOLUTION res);
+  bool SetLanguage(const CStdString &strLanguage);
 
   //m_LookAndFeelResolution holds the real gui resolution
   RESOLUTION m_LookAndFeelResolution;

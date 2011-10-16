@@ -27,6 +27,14 @@ extern "C" {
 #include "libhts/htsmsg_binary.h"
 }
 
+typedef enum {
+  DVR_PRIO_IMPORTANT,
+  DVR_PRIO_HIGH,
+  DVR_PRIO_NORMAL,
+  DVR_PRIO_LOW,
+  DVR_PRIO_UNIMPORTANT,
+} dvr_prio_t;
+
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 
 CHTSPData::CHTSPData()
@@ -500,6 +508,18 @@ PVR_ERROR CHTSPData::AddTimer(const PVR_TIMER &timer)
     GetBackendTime(&startTime, &iGmtOffset);
   }
 
+  dvr_prio_t prio = DVR_PRIO_UNIMPORTANT;
+  if (timer.iPriority <= 20)
+    prio = DVR_PRIO_UNIMPORTANT;
+  else if (timer.iPriority <= 40)
+    prio =  DVR_PRIO_LOW;
+  else if (timer.iPriority <= 60)
+    prio =  DVR_PRIO_NORMAL;
+  else if (timer.iPriority <= 80)
+    prio =  DVR_PRIO_HIGH;
+  else
+    prio = DVR_PRIO_IMPORTANT;
+
   htsmsg_t *msg = htsmsg_create_map();
   htsmsg_add_str(msg, "method",      "addDvrEntry");
   htsmsg_add_u32(msg, "eventId",     -1); // XXX tvheadend doesn't correct epg tags with wrong start and end times, so we'll use xbmc's values
@@ -507,7 +527,7 @@ PVR_ERROR CHTSPData::AddTimer(const PVR_TIMER &timer)
   htsmsg_add_u32(msg, "start",       startTime);
   htsmsg_add_u32(msg, "stop",        timer.endTime);
   htsmsg_add_u32(msg, "channelId",   timer.iClientChannelUid);
-  htsmsg_add_u32(msg, "priority",    timer.iPriority);
+  htsmsg_add_u32(msg, "priority",    prio);
   htsmsg_add_str(msg, "description", timer.strSummary);
   htsmsg_add_str(msg, "creator",     "XBMC");
 
