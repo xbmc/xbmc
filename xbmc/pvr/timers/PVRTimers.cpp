@@ -190,7 +190,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
       if (g_PVRManager.IsStarted())
       {
         CStdString strMessage;
-        strMessage.Format("%s: '%s'", (timer->EndAsUTC() >= CDateTime::GetCurrentDateTime().GetAsUTCDateTime()) ? g_localizeStrings.Get(19227) : g_localizeStrings.Get(19228), timer->m_strTitle.c_str());
+        strMessage.Format("%s: '%s'", (timer->EndAsUTC() <= CDateTime::GetCurrentDateTime().GetAsUTCDateTime()) ? g_localizeStrings.Get(19227) : g_localizeStrings.Get(19228), timer->m_strTitle.c_str());
         timerNotifications.push_back(strMessage);
       }
 
