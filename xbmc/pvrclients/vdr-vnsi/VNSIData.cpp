@@ -497,8 +497,8 @@ PVR_ERROR cVNSIData::AddTimer(const PVR_TIMER &timerinfo)
   }
 
   // use timer margin to calculate start/end times
-  uint32_t starttime = timerinfo.startTime - timerinfo.iMarginStart;
-  uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd;
+  uint32_t starttime = timerinfo.startTime - timerinfo.iMarginStart*60;
+  uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd*60;
 
   if (!vrp.add_U32(timerinfo.state == PVR_TIMER_STATE_SCHEDULED))     return PVR_ERROR_UNKNOWN;
   if (!vrp.add_U32(timerinfo.iPriority))   return PVR_ERROR_UNKNOWN;
@@ -578,8 +578,8 @@ PVR_ERROR cVNSIData::RenameTimer(const PVR_TIMER &timerinfo, const char *newname
 PVR_ERROR cVNSIData::UpdateTimer(const PVR_TIMER &timerinfo)
 {
   // use timer margin to calculate start/end times
-  uint32_t starttime = timerinfo.startTime - timerinfo.iMarginStart;
-  uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd;
+  uint32_t starttime = timerinfo.startTime - timerinfo.iMarginStart*60;
+  uint32_t endtime = timerinfo.endTime + timerinfo.iMarginEnd*60;
 
   cRequestPacket vrp;
   if (!vrp.init(VNSI_TIMER_UPDATE))        return PVR_ERROR_UNKNOWN;
