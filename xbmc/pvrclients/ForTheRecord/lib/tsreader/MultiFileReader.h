@@ -27,7 +27,7 @@
  *    http://forums.dvbowners.com/
  */
 
-#if defined _WIN32 && defined TSREADER
+#if defined TSREADER
 
 #include "FileReader.h"
 #include <vector>

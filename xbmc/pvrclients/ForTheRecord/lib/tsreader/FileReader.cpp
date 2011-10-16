@@ -35,7 +35,7 @@
 #include "PlatformInclude.h"
 #include "limits.h"
 #undef INVALID_HANDLE_VALUE
-#define INVALID_HANDLE_VALUE (0)
+#define INVALID_HANDLE_VALUE (-1)
 #define ERROR_FILENAME_EXCED_RANGE (206)
 #define ERROR_INVALID_NAME (123)
 #endif
