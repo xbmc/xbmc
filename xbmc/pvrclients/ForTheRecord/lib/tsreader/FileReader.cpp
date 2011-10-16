@@ -121,7 +121,7 @@ long FileReader::OpenFile()
 
   do
   {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
     // do not try to open a tsbuffer file without SHARE_WRITE so skip this try if we have a buffer file
     if (strstr(m_pFileName, ".ts.tsbuffer") == NULL) 
     {
@@ -151,9 +151,9 @@ long FileReader::OpenFile()
 //              FILE_FLAG_RANDOM_ACCESS,        // More flags
 //              FILE_FLAG_SEQUENTIAL_SCAN,      // More flags
               NULL);                            // Template
-#elif defined TARGET_LINUX
+#elif defined(TARGET_LINUX)
     // Try to open the file
-    m_hFile = open(m_pFileName,              // The filename
+    m_hFile = open64(m_pFileName,              // The filename
               O_RDONLY);                     // File access
 #else
 #error FIXME: Add an OpenFile() implementation for your OS
@@ -187,7 +187,7 @@ long FileReader::OpenFile()
   strncpy(infoName, m_pFileName, 512);
   strncat(infoName, ".info", 512 - strlen(infoName) - 1);
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
   m_hInfoFile = ::CreateFile(infoName,    // The filename
       (DWORD) GENERIC_READ,               // File access
       (DWORD) (FILE_SHARE_READ |
@@ -201,7 +201,7 @@ long FileReader::OpenFile()
 //      FILE_FLAG_RANDOM_ACCESS,          // More flags
       NULL);
 #elif defined TARGET_LINUX
-  m_hInfoFile = open(infoName,            // The filename
+  m_hInfoFile = open64(infoName,            // The filename
                 O_RDONLY);
 #else
 #error FIXME: Add an OpenFile() implementation for your OS
@@ -237,9 +237,9 @@ long FileReader::CloseFile()
 
 //  BoostThread Boost;
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
   ::CloseHandle(m_hFile);
-#elif defined TARGET_LINUX
+#elif defined(TARGET_LINUX)
   close(m_hFile);
 #else
 #error FIXME: Add a CloseFile() implementation for your OS
@@ -249,9 +249,9 @@ long FileReader::CloseFile()
 
   if (m_hInfoFile != INVALID_HANDLE_VALUE)
   {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
     ::CloseHandle(m_hInfoFile);
-#elif defined TARGET_LINUX
+#elif defined(TARGET_LINUX)
     close(m_hInfoFile);
 #else
 #error FIXME: Add a CloseFile() implementation for your OS
@@ -279,7 +279,7 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
 
   GetStartPosition(pStartPosition);
 
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
   //Do not get file size if static file or first time 
   if (m_bReadOnly || !m_fileSize) {
     
@@ -315,13 +315,13 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
     m_fileSize = li.QuadPart;
   }
   *pLength = m_fileSize;
-#elif defined TARGET_LINUX
+#elif defined(TARGET_LINUX)
   int64_t length = -1;
   if (m_bReadOnly || !m_fileSize)
   {
     if (m_hInfoFile != INVALID_HANDLE_VALUE)
     {
-      if (lseek(m_hInfoFile, 0L, SEEK_SET) != (off_t) -1)
+      if (lseek64(m_hInfoFile, 0, SEEK_SET) != (off64_t) -1)
       {
         if (read(m_hInfoFile, &length, sizeof(int64_t)) != -1)
         {
@@ -332,11 +332,11 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
       }
     }
 
-    struct stat filestatus;
+    struct stat64 filestatus;
 
-    if(fstat(m_hFile, &filestatus) < 0)
+    if(fstat64(m_hFile, &filestatus) < 0)
     {
-      XBMC->Log(LOG_DEBUG, "%s: stat(%s) failed. Error %d: %s", __FUNCTION__, m_hInfoFile, errno, strerror(errno));
+      XBMC->Log(LOG_DEBUG, "%s: fstat64(%s) failed. Error %d: %s", __FUNCTION__, m_hInfoFile, errno, strerror(errno));
       return E_FAIL;
     }
 
@@ -351,7 +351,7 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
 
 long FileReader::GetInfoFileSize(int64_t *lpllsize)
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
   //Do not get file size if static file or first time 
   if (m_bReadOnly || !m_infoFileSize) {
     
@@ -370,13 +370,13 @@ long FileReader::GetInfoFileSize(int64_t *lpllsize)
     m_infoFileSize = li.QuadPart;
   }
   *lpllsize = m_infoFileSize;
-#elif defined TARGET_LINUX
+#elif defined(TARGET_LINUX)
   if (m_bReadOnly || !m_infoFileSize) {
-    struct stat filestatus;
+    struct stat64 filestatus;
 
-    if(fstat(m_hInfoFile, &filestatus) < 0)
+    if (fstat64(m_hInfoFile, &filestatus) < 0)
     {
-      XBMC->Log(LOG_DEBUG, "%s: stat(%s) failed. Error %d: %s", __FUNCTION__, m_hInfoFile, errno, strerror(errno));
+      XBMC->Log(LOG_DEBUG, "%s: fstat64(%s) failed. Error %d: %s", __FUNCTION__, m_hInfoFile, errno, strerror(errno));
       return E_FAIL;
     }
 
@@ -403,16 +403,20 @@ long FileReader::GetStartPosition(int64_t *lpllpos)
       {
         //Get the file start pointer
         int64_t length = -1;
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
         DWORD read = 0;
         LARGE_INTEGER li;
         li.QuadPart = sizeof(int64_t);
         ::SetFilePointer(m_hInfoFile, li.LowPart, &li.HighPart, FILE_BEGIN);
         ::ReadFile(m_hInfoFile, (void*)&length, (DWORD)sizeof(int64_t), &read, NULL);
-#elif defined TARGET_LINUX        
-        lseek(m_hInfoFile, sizeof(int64_t), SEEK_SET);
+#elif defined(TARGET_LINUX)
+        lseek64(m_hInfoFile, sizeof(int64_t), SEEK_SET);
         ssize_t rc = read(m_hInfoFile, &length, sizeof(int64_t));
-        (void) rc;
+        if (rc < 0)
+        {
+          XBMC->Log(LOG_DEBUG, "%s: fstat64(%s) failed. Error %d: %s", __FUNCTION__, m_hInfoFile, errno, strerror(errno));
+          return E_FAIL;
+        }
 #else
         //TODO: lseek (or fseek for fopen)
 #error FIXME: Add a GetStartPosition() implementation for your OS
@@ -434,7 +438,7 @@ long FileReader::GetStartPosition(int64_t *lpllpos)
 
 unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod)
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
   LARGE_INTEGER li;
 
   if (dwMoveMethod == FILE_END && m_hInfoFile != INVALID_HANDLE_VALUE)
@@ -492,6 +496,72 @@ unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long
   }
 
   return ::SetFilePointer(m_hFile, li.LowPart, &li.HighPart, dwMoveMethod);
+#elif defined(TARGET_LINUX)
+  // Stupid but simple movement transform
+  if (dwMoveMethod == FILE_BEGIN) dwMoveMethod = SEEK_SET;
+  else if (dwMoveMethod == FILE_CURRENT) dwMoveMethod = SEEK_CUR;
+  else if (dwMoveMethod == FILE_END) dwMoveMethod = SEEK_END;
+  else
+  {
+      XBMC->Log(LOG_DEBUG, "%s: SetFilePointer invalid MoveMethod(%d)", __FUNCTION__, dwMoveMethod);
+	  dwMoveMethod = SEEK_SET;
+  }
+  off64_t myOffset;
+  if (dwMoveMethod == SEEK_END && m_hInfoFile != INVALID_HANDLE_VALUE)
+  {
+    int64_t startPos = 0;
+    GetStartPosition(&startPos);
+
+    if (startPos > 0)
+    {
+      int64_t start;
+      int64_t fileSize = 0;
+      GetFileSize(&start, &fileSize);
+
+      int64_t filePos  = (int64_t)((int64_t)fileSize + (int64_t)llDistanceToMove + (int64_t)startPos);
+
+      if (filePos >= fileSize)
+        myOffset = (int64_t)((int64_t)startPos + (int64_t)llDistanceToMove);
+      else
+        myOffset = filePos;
+
+      return lseek64(m_hFile, myOffset, SEEK_SET);
+    }
+
+    int64_t start = 0;
+    int64_t length = 0;
+    GetFileSize(&start, &length);
+
+    length  = (int64_t)((int64_t)length + (int64_t)llDistanceToMove);
+
+    myOffset = length;
+
+    dwMoveMethod = SEEK_SET;
+  }
+  else
+  {
+    int64_t startPos = 0;
+    GetStartPosition(&startPos);
+
+    if (startPos > 0)
+    {
+      int64_t start;
+      int64_t fileSize = 0;
+      GetFileSize(&start, &fileSize);
+
+      int64_t filePos  = (int64_t)((int64_t)startPos + (int64_t)llDistanceToMove);
+
+      if (filePos >= fileSize)
+        myOffset = (int64_t)((int64_t)filePos - (int64_t)fileSize);
+      else
+        myOffset = filePos;
+
+      return lseek64(m_hFile, myOffset, dwMoveMethod);
+    }
+    myOffset = llDistanceToMove;
+  }
+
+  return lseek64(m_hFile, myOffset, dwMoveMethod);
 #else
   //lseek (or fseek for fopen)
 #error FIXME: Add a SetFilePointer() implementation for your OS
@@ -501,7 +571,7 @@ unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long
 
 int64_t FileReader::GetFilePointer()
 {
-#ifdef TARGET_WINDOWS
+#if defined(TARGET_WINDOWS)
   LARGE_INTEGER li;
   li.QuadPart = 0;
   li.LowPart = ::SetFilePointer(m_hFile, 0, &li.HighPart, FILE_CURRENT);
@@ -522,6 +592,26 @@ int64_t FileReader::GetFilePointer()
   }
 
   return li.QuadPart;
+#elif defined(TARGET_LINUX)
+  off64_t myOffset;
+  myOffset = lseek64(m_hFile, 0, SEEK_CUR);
+
+  int64_t start;
+  int64_t length = 0;
+  GetFileSize(&start, &length);
+
+  int64_t startPos = 0;
+  GetStartPosition(&startPos);
+
+  if (startPos > 0)
+  {
+    if(startPos > (int64_t)myOffset)
+      myOffset = (int64_t)(length - startPos + (int64_t)myOffset);
+    else
+      myOffset = (int64_t)((int64_t)myOffset - startPos);
+  }
+
+  return myOffset;
 #else
 #error FIXME: Add a GetFilePointer() implementation for your OS
   return 0;
@@ -621,6 +711,90 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
   if (!hr)
   {
     XBMC->Log(LOG_DEBUG, "FileReader::Read() read failed - error = %d",  HRESULT_FROM_WIN32(GetLastError()));
+    return E_FAIL;
+  }
+
+  if (*dwReadBytes < (unsigned long)lDataLength)
+  {
+    XBMC->Log(LOG_DEBUG, "FileReader::Read() read to less bytes");
+    return S_FALSE;
+  }
+  return S_OK;
+#elif defined(TARGET_LINUX)
+  long hr;
+
+  //Get File Position
+  off64_t myOffset = lseek64(m_hFile, 0, SEEK_CUR);
+  if (myOffset == (off64_t)-1)
+  {
+    XBMC->Log(LOG_DEBUG, "FileReader::Read() seek failed");
+    return E_FAIL;
+  }
+  int64_t m_filecurrent = myOffset;
+
+  if (m_hInfoFile != INVALID_HANDLE_VALUE)
+  {
+    int64_t startPos = 0;
+    GetStartPosition(&startPos);
+
+    if (startPos > 0)
+    {
+      int64_t start;
+      int64_t length = 0;
+      GetFileSize(&start, &length);
+
+      if (length < (int64_t)(m_filecurrent + (int64_t)lDataLength) && m_filecurrent > startPos)
+      {
+        hr = read(m_hFile, (void*)pbData, (length - m_filecurrent) > 0 ? (length - m_filecurrent) : 0 );
+        if (hr == -1)
+          return E_FAIL;
+
+        off64_t myOffset = lseek64(m_hFile, 0, SEEK_SET);
+        if (myOffset == (off64_t) -1)
+        {
+          return E_FAIL;
+        }
+
+        unsigned long dwRead = 0;
+
+        hr = read(m_hFile,
+          (void*)(pbData + (length - m_filecurrent) > 0 ? (length - m_filecurrent) : 0),
+          ((int64_t)lDataLength -(int64_t)(length - m_filecurrent)) > 0 ? ((int64_t)lDataLength -(int64_t)(length - m_filecurrent)) : 0);
+
+        *dwReadBytes = *dwReadBytes + dwRead;
+
+      }
+      else if (startPos < (int64_t)(m_filecurrent + (int64_t)lDataLength) && m_filecurrent < startPos)
+        hr = read(m_hFile, (void*)pbData, (startPos - m_filecurrent) > 0 ? (startPos - m_filecurrent) : 0);
+
+      else
+        hr = read(m_hFile, (void*)pbData, (DWORD)lDataLength);
+
+      if (hr == -1)
+        return S_FALSE;
+
+      if (*dwReadBytes < (unsigned long)lDataLength)
+      {
+        return E_FAIL;
+      }
+
+      return S_OK;
+    }
+
+    int64_t start = 0;
+    int64_t length = 0;
+    GetFileSize(&start, &length);
+    if (length < (int64_t)(m_filecurrent + (int64_t)lDataLength))
+      hr = read(m_hFile, (void*)pbData, (length - m_filecurrent) > 0 ? (length - m_filecurrent) : 0);
+    else
+      hr = read(m_hFile, (void*)pbData, (DWORD)lDataLength);
+  }
+  else
+    hr = read(m_hFile, (void*)pbData, (DWORD)lDataLength);//Read file data into buffer
+
+  if (hr == -1)
+  {
+    XBMC->Log(LOG_DEBUG, "FileReader::Read() read failed - error = %d (%s)",  errno, strerror(errno));
     return E_FAIL;
   }
 
