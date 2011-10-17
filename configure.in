@@ -1111,7 +1111,7 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($libusb_disabled)
 else
   # we can use either libudev or libusb but not both.
-  if test "x$use_libusb" != "xno" && "x$use_libudev" == "xno"; then
+  if test "x$use_libusb" != "xno" && test "x$use_libudev" == "xno"; then
     if test "$host_vendor" = "apple" ; then
       use_libusb="no"
       AC_MSG_NOTICE($libusb_disabled)
