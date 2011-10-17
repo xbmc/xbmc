@@ -98,6 +98,7 @@ typedef struct {
     int   ISOequivalent;
     int   LightSource;
     char  Comments[MAX_COMMENT];
+    char  Description[MAX_COMMENT];
 
     unsigned ThumbnailOffset;          // Exif offset to thumbnail
     unsigned ThumbnailSize;            // Size of thumbnail.

@@ -66,6 +66,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     ar << CStdString(m_exifInfo.CameraModel);
     ar << m_exifInfo.CCDWidth;
     ar << CStdString(m_exifInfo.Comments);
+    ar << CStdString(m_exifInfo.Description);
     ar << CStdString(m_exifInfo.DateTime);
     for (int i = 0; i < 10; i++)
       ar << m_exifInfo.DateTimeOffsets[i];
@@ -128,6 +129,7 @@ void CPictureInfoTag::Archive(CArchive& ar)
     GetStringFromArchive(ar, m_exifInfo.CameraModel, sizeof(m_exifInfo.CameraModel));
     ar >> m_exifInfo.CCDWidth;
     GetStringFromArchive(ar, m_exifInfo.Comments, sizeof(m_exifInfo.Comments));
+    GetStringFromArchive(ar, m_exifInfo.Description, sizeof(m_exifInfo.Description));
     GetStringFromArchive(ar, m_exifInfo.DateTime, sizeof(m_exifInfo.DateTime));
     for (int i = 0; i < 10; i++)
       ar >> m_exifInfo.DateTimeOffsets[i];
@@ -191,6 +193,7 @@ void CPictureInfoTag::Serialize(CVariant& value)
   value["cameramodel"] = CStdString(m_exifInfo.CameraModel);
   value["ccdwidth"] = m_exifInfo.CCDWidth;
   value["comments"] = CStdString(m_exifInfo.Comments);
+  value["description"] = CStdString(m_exifInfo.Description);
   value["datetime"] = CStdString(m_exifInfo.DateTime);
   for (int i = 0; i < 10; i++)
     value["datetimeoffsets"][i] = m_exifInfo.DateTimeOffsets[i];
@@ -311,9 +314,9 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
       value = date.GetAsLocalizedDateTime();
     }
     break;
-//  case SLIDE_EXIF_DESCRIPTION:
-//    value = m_exifInfo.Description;
-//    break;
+  case SLIDE_EXIF_DESCRIPTION:
+    value = m_exifInfo.Description;
+    break;
   case SLIDE_EXIF_CAMERA_MAKE:
     value = m_exifInfo.CameraMake;
     break;
