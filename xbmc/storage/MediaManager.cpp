@@ -310,8 +310,10 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
   else
     return false;
 #else
-  // TODO: switch all ports to use auto sources
-  return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();
+  if(URIUtils::IsDVD(devicePath))
+    return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();   // TODO: switch all ports to use auto sources
+  else
+    return true; // Assume other paths to be mounted already
 #endif
 #else
   return false;
