@@ -31,6 +31,8 @@ extern "C" {
 #include "libhts/sha1.h"
 }
 
+using namespace ADDON;
+
 CHTSPDemux::CHTSPDemux() :
     m_bGotFirstIframe(false),
     m_bIsRadio(false),

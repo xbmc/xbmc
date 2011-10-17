@@ -42,7 +42,7 @@ extern CStdString   g_szHostname;         ///< The Host name or IP of the mythtv
 extern int          g_iMythXmlPort;       ///< The MYTHXML Port (default is 6544)
 extern int          g_iPin;               ///< The Mythtv server PIN (default is 0000)
 
-extern CHelper_libXBMC_addon *XBMC;
+extern ADDON::CHelper_libXBMC_addon *XBMC;
 extern CHelper_libXBMC_pvr   *PVR;
 
 #endif /* CLIENT_H */

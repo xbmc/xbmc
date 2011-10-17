@@ -26,6 +26,7 @@ extern "C" {
 #include <string>
 
 using namespace std;
+using namespace ADDON;
 
 namespace MPTV
 {

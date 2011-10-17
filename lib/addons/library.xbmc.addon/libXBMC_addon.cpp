@@ -35,6 +35,7 @@
 
 
 using namespace std;
+using namespace ADDON;
 
 AddonCB *m_Handle = NULL;
 CB_AddOnLib *m_cb = NULL;

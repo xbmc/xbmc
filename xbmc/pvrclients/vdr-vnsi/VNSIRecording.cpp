@@ -27,6 +27,8 @@
 
 #define SEEK_POSSIBLE 0x10 // flag used to check if protocol allows seeks
 
+using namespace ADDON;
+
 cVNSIRecording::cVNSIRecording()
 {
 }

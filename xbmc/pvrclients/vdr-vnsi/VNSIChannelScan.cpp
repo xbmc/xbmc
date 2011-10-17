@@ -58,6 +58,8 @@ extern "C" {
 #define PROGRESS_SIGNAL                 35
 #define LABEL_STATUS                    36
 
+using namespace ADDON;
+
 cVNSIChannelScan::cVNSIChannelScan()
 {
 }

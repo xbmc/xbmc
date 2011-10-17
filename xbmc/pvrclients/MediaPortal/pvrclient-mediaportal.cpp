@@ -34,6 +34,7 @@
 #include "lib/tinyxml/tinyxml.h"
 
 using namespace std;
+using namespace ADDON;
 
 /* Globals */
 int g_iTVServerXBMCBuild = 0;

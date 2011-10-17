@@ -28,6 +28,8 @@ using namespace std;
 #include "timers.h"
 #include "utils.h"
 
+using namespace ADDON;
+
 cTimer::cTimer()
 {
   m_index              = -1;
