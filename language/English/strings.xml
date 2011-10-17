@@ -2376,7 +2376,7 @@
   <string id="36004">Press "user" button command</string>
   <string id="36005">Enable switch side commands</string>
   <string id="36006">Could not open the adapter</string>
-  <string id="36007">Power on devices when starting XBMC</string>
+  <string id="36007">Power on the TV when starting XBMC</string>
   <string id="36008">Power off devices when stopping XBMC</string>
   <string id="36009">Put devices in standby mode when activating screensaver</string>
   <string id="36010">Set as inactive source when stopping XBMC</string>

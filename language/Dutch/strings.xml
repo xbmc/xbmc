@@ -2317,4 +2317,40 @@
  
   <string id="34201">Kan volgende item niet vinden om af te spelen</string> 
   <string id="34202">Kan vorige item niet vinden om af te spelen</string> 
+
+  <string id="35000">Randapparatuur</string>
+
+  <string id="35001">Generiek HID apparaat</string>
+  <string id="35002">Generieke netwerk adapter</string>
+  <string id="35003">Generieke schijf</string>
+  <string id="35004">Er zijn geen instellingen beschikbaar&#10;voor dit apparaat.</string>
+  <string id="35005">Nieuw apparaat geconfigureerd</string>
+  <string id="35006">Apparaat verwijderd</string>
+  <string id="35007">Keymap voor dit apparaat</string>
+  <string id="35008">Keymap ingeschakeld</string>
+
+  <string id="35500">Locatie</string>
+  <string id="35501">Klasse</string>
+  <string id="35502">Naam</string>
+  <string id="35503">Fabrikant</string>
+  <string id="35504">Product ID</string>
+
+  <string id="36000">Pulse-Eight CEC adapter</string>
+  <string id="36001">Pulse-Eight Nyxboard</string>
+  <string id="36002">Wissel naar toetsenbord commando</string>
+  <string id="36003">Wissel naar afstandbediening commando</string>
+  <string id="36004">Druk op "user" knop commando</string>
+  <string id="36005">Schakel commando's in bij het wisselen van kant</string>
+  <string id="36006">Kon de adapter niet openen</string>
+  <string id="36007">Schakel de TV in bij het opstarten van XBMC</string>
+  <string id="36008">Schakel apparatuur uit bij het stoppen van XBMC</string>
+  <string id="36009">Schakel app. uit zolang de schermbeveiliging actief is</string>
+  <string id="36010">Markeer als inactieve bron bij het stoppen van XBMC</string>
+  <string id="36011">Kon de CEC poort niet detecteren. Stel het manueel in.</string>
+  <string id="36012">Kon de CEC adapter niet detecteren.</string>
+  <string id="36013">Versie %d van de libcec interface version wordt niet ondersteund door XBMC (> %d)</string>
+  <string id="36014">Zet XBMC in standby wanneer de TV uitgeschakeld wordt</string>
+  <string id="36015">HDMI poort nummer</string>
+  <string id="36016">XBMC verbonden</string>
+  <string id="36017">Adapter gevonden, maar libcec is niet beschikbaar</string>
 </strings>
