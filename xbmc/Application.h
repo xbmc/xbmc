@@ -110,8 +110,6 @@ public:
   bool StartEventServer();
   bool StopEventServer(bool bWait, bool promptuser);
   void RefreshEventServer();
-  void StartDbusServer();
-  bool StopDbusServer(bool bWait);
   void StartZeroconf();
   void StopZeroconf();
   void DimLCDOnPlayback(bool dim);
