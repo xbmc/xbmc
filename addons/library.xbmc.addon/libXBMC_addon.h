@@ -52,6 +52,19 @@
 #endif /* __x86_64__ */
 #endif /* _LINUX */
 
+#ifdef LOG_DEBUG
+#undef LOG_DEBUG
+#endif
+#ifdef LOG_INFO
+#undef LOG_INFO
+#endif
+#ifdef LOG_NOTICE
+#undef LOG_NOTICE
+#endif
+#ifdef LOG_ERROR
+#undef LOG_ERROR
+#endif
+
 namespace ADDON
 {
   typedef enum addon_log
