@@ -46,9 +46,9 @@ public:
     artist.clear();
     genre.clear();
     thumbURL.Clear();
-    strMoods.Empty();
-    strStyles.Empty();
-    strThemes.Empty();
+    moods.clear();
+    styles.clear();
+    themes.clear();
     strReview.Empty();
     strLabel.Empty();
     strType.Empty();
@@ -74,9 +74,9 @@ public:
   std::vector<std::string> artist;
   std::vector<std::string> genre;
   CScraperUrl thumbURL;
-  CStdString strMoods;
-  CStdString strStyles;
-  CStdString strThemes;
+  std::vector<std::string> moods;
+  std::vector<std::string> styles;
+  std::vector<std::string> themes;
   CStdString strReview;
   CStdString strLabel;
   CStdString strType;

@@ -43,8 +43,8 @@ public:
     strArtist.Empty();
     genre.clear();
     strBiography.Empty();
-    strStyles.Empty();
-    strMoods.Empty();
+    styles.clear();
+    moods.clear();
     strInstruments.Empty();
     strBorn.Empty();
     strFormed.Empty();
@@ -69,8 +69,8 @@ public:
   CStdString strArtist;
   std::vector<std::string> genre;
   CStdString strBiography;
-  CStdString strStyles;
-  CStdString strMoods;
+  std::vector<std::string> styles;
+  std::vector<std::string> moods;
   CStdString strInstruments;
   CStdString strBorn;
   CStdString strFormed;

@@ -835,9 +835,9 @@ CAlbum CMusicDatabase::GetAlbumFromDataset(dbiplus::Dataset* pDS, bool imageURL 
   album.iRating = pDS->fv(album_iRating).get_asInt();
   album.iYear = pDS->fv(album_iYear).get_asInt();
   album.strReview = pDS->fv(album_strReview).get_asString();
-  album.strStyles = pDS->fv(album_strStyles).get_asString();
-  album.strMoods = pDS->fv(album_strMoods).get_asString();
-  album.strThemes = pDS->fv(album_strThemes).get_asString();
+  album.styles = StringUtils::Split(pDS->fv(album_strStyles).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.moods = StringUtils::Split(pDS->fv(album_strMoods).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  album.themes = StringUtils::Split(pDS->fv(album_strThemes).get_asString(), g_advancedSettings.m_musicItemSeparator);
   album.strLabel = pDS->fv(album_strLabel).get_asString();
   album.strType = pDS->fv(album_strType).get_asString();
   return album;
@@ -850,8 +850,8 @@ CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThu
   artist.strArtist = pDS->fv("artist.strArtist").get_asString();
   artist.genre = StringUtils::Split(pDS->fv(artist_strGenres).get_asString(), g_advancedSettings.m_musicItemSeparator);
   artist.strBiography = pDS->fv(artist_strBiography).get_asString();
-  artist.strStyles = pDS->fv(artist_strStyles).get_asString();
-  artist.strMoods = pDS->fv(artist_strMoods).get_asString();
+  artist.styles = StringUtils::Split(pDS->fv(artist_strStyles).get_asString(), g_advancedSettings.m_musicItemSeparator);
+  artist.moods = StringUtils::Split(pDS->fv(artist_strMoods).get_asString(), g_advancedSettings.m_musicItemSeparator);
   artist.strBorn = pDS->fv(artist_strBorn).get_asString();
   artist.strFormed = pDS->fv(artist_strFormed).get_asString();
   artist.strDied = pDS->fv(artist_strDied).get_asString();
@@ -1758,9 +1758,9 @@ int CMusicDatabase::SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONG
     // insert the albuminfo
     strSQL=PrepareSQL("insert into albuminfo (idAlbumInfo,idAlbum,idGenre,strExtraGenres,strMoods,strStyles,strThemes,strReview,strImage,strLabel,strType,iRating,iYear) values(NULL,%i,%i,'%s','%s','%s','%s','%s','%s','%s','%s',%i,%i)",
                   idAlbum, idGenre, strExtraGenres.c_str(),
-                  album.strMoods.c_str(),
-                  album.strStyles.c_str(),
-                  album.strThemes.c_str(),
+                  StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator).c_str(),
+                  StringUtils::Join(album.styles, g_advancedSettings.m_musicItemSeparator).c_str(),
+                  StringUtils::Join(album.themes, g_advancedSettings.m_musicItemSeparator).c_str(),
                   album.strReview.c_str(),
                   album.thumbURL.m_xml.c_str(),
                   album.strLabel.c_str(),
@@ -1814,8 +1814,8 @@ int CMusicDatabase::SetArtistInfo(int idArtist, const CArtist& artist)
                   idArtist, artist.strBorn.c_str(),
                   artist.strFormed.c_str(),
                   StringUtils::Join(artist.genre, g_advancedSettings.m_musicItemSeparator).c_str(),
-                  artist.strMoods.c_str(),
-                  artist.strStyles.c_str(),
+                  StringUtils::Join(artist.moods, g_advancedSettings.m_musicItemSeparator).c_str(),
+                  StringUtils::Join(artist.styles, g_advancedSettings.m_musicItemSeparator).c_str(),
                   artist.strInstruments.c_str(),
                   artist.strBiography.c_str(),
                   artist.strDied.c_str(),
@@ -4753,8 +4753,8 @@ int CMusicDatabase::GetKaraokeSongsCount()
 void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& artist)
 {
   item.SetProperty("artist_instrument",artist.strInstruments);
-  item.SetProperty("artist_style",artist.strStyles);
-  item.SetProperty("artist_mood",artist.strMoods);
+  item.SetProperty("artist_style",artist.styles);
+  item.SetProperty("artist_mood",artist.moods);
   item.SetProperty("artist_born",artist.strBorn);
   item.SetProperty("artist_formed",artist.strFormed);
   item.SetProperty("artist_description",artist.strBiography);
@@ -4767,9 +4767,9 @@ void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& art
 void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album)
 {
   item.SetProperty("album_description", album.strReview);
-  item.SetProperty("album_theme", album.strThemes);
-  item.SetProperty("album_mood", album.strMoods);
-  item.SetProperty("album_style", album.strStyles);
+  item.SetProperty("album_theme", album.themes);
+  item.SetProperty("album_mood", album.moods);
+  item.SetProperty("album_style", album.styles);
   item.SetProperty("album_type", album.strType);
   item.SetProperty("album_label", album.strLabel);
   item.SetProperty("album_artist", album.artist);

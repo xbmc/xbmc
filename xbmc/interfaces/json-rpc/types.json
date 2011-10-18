@@ -344,8 +344,8 @@
       "artistid": { "$ref": "Library.Id", "required": true },
       "artist": { "type": "string", "required": true },
       "instrument": { "type": "string" },
-      "style": { "type": "string" },
-      "mood": { "type": "string" },
+      "style": { "$ref": "Array.String" },
+      "mood": { "$ref": "Array.String" },
       "born": { "type": "string" },
       "formed": { "type": "string" },
       "description": { "type": "string" },
@@ -360,9 +360,9 @@
     "properties": {
       "albumid": { "$ref": "Library.Id", "required": true },
       "description": { "type": "string" },
-      "theme": { "type": "string" },
-      "mood": { "type": "string" },
-      "style": { "type": "string" },
+      "theme": { "$ref": "Array.String" },
+      "mood": { "$ref": "Array.String" },
+      "style": { "$ref": "Array.String" },
       "type": { "type": "string" },
       "albumlabel": { "type": "string" },
       "artistid": { "$ref": "Library.Id" }
