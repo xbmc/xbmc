@@ -3413,7 +3413,12 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
     {
 
       if (iPlaylist != PLAYLIST_NONE)
-        return ProcessAndStartPlaylist(item.GetPath(), *pPlayList, iPlaylist);
+      {
+        int track=0;
+        if (item.HasProperty("start_offset"))
+          track = item.GetProperty("start_offset").asInteger();
+        return ProcessAndStartPlaylist(item.GetPath(), *pPlayList, iPlaylist, track);
+      }
       else
       {
         CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.GetPath().c_str());
@@ -5297,7 +5302,7 @@ void CApplication::CheckPlayingProgress()
   }
 }
 
-bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist)
+bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist, int track)
 {
   CLog::Log(LOGDEBUG,"CApplication::ProcessAndStartPlaylist(%s, %i)",strPlayList.c_str(), iPlaylist);
 
@@ -5326,7 +5331,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     // start playing it
     g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
-    g_playlistPlayer.Play();
+    g_playlistPlayer.Play(track);
     return true;
   }
   return false;
