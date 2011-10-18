@@ -379,7 +379,7 @@ namespace JSONRPC
         "\"description\": { \"type\": \"string\" },"
         "\"died\": { \"type\": \"string\" },"
         "\"disbanded\": { \"type\": \"string\" },"
-        "\"yearsactive\": { \"type\": \"string\" },"
+        "\"yearsactive\": { \"$ref\": \"Array.String\" },"
         "\"musicbrainzartistid\": { \"type\": \"string\" }"
       "}"
     "}",

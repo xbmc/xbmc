@@ -856,7 +856,7 @@ CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThu
   artist.strFormed = pDS->fv(artist_strFormed).get_asString();
   artist.strDied = pDS->fv(artist_strDied).get_asString();
   artist.strDisbanded = pDS->fv(artist_strDisbanded).get_asString();
-  artist.strYearsActive = pDS->fv(artist_strYearsActive).get_asString();
+  artist.yearsActive = StringUtils::Split(pDS->fv(artist_strYearsActive).get_asString(), g_advancedSettings.m_musicItemSeparator);
   artist.strInstruments = pDS->fv(artist_strInstruments).get_asString();
 
   if (needThumb)
@@ -1820,7 +1820,7 @@ int CMusicDatabase::SetArtistInfo(int idArtist, const CArtist& artist)
                   artist.strBiography.c_str(),
                   artist.strDied.c_str(),
                   artist.strDisbanded.c_str(),
-                  artist.strYearsActive.c_str(),
+                  StringUtils::Join(artist.yearsActive, g_advancedSettings.m_musicItemSeparator).c_str(),
                   artist.thumbURL.m_xml.c_str(),
                   artist.fanart.m_xml.c_str());
     m_pDS->exec(strSQL.c_str());
@@ -4761,7 +4761,7 @@ void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& art
   item.SetProperty("artist_genre", artist.genre);
   item.SetProperty("artist_died",artist.strDied);
   item.SetProperty("artist_disbanded",artist.strDisbanded);
-  item.SetProperty("artist_yearsactive",artist.strYearsActive);
+  item.SetProperty("artist_yearsactive",artist.yearsActive);
 }
 
 void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album)
