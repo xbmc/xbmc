@@ -25,6 +25,7 @@
 #include "HTSPDemux.h"
 
 using namespace std;
+using namespace ADDON;
 
 bool         m_bCreated  = false;
 ADDON_STATUS m_CurStatus = ADDON_STATUS_UNKNOWN;

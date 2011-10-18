@@ -37,6 +37,8 @@ typedef enum {
 
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 
+using namespace ADDON;
+
 CHTSPData::CHTSPData()
 {
   m_session = new CHTSPConnection();

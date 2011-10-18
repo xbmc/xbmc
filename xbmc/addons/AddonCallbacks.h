@@ -25,8 +25,8 @@
 #include "../../addons/library.xbmc.addon/libXBMC_addon.h"
 #include "../../addons/library.xbmc.gui/libXBMC_gui.h"
 
-typedef void (*AddOnLogCallback)(void *addonData, const addon_log_t loglevel, const char *msg);
-typedef void (*AddOnQueueNotification)(void *addonData, const queue_msg_t type, const char *msg);
+typedef void (*AddOnLogCallback)(void *addonData, const ADDON::addon_log_t loglevel, const char *msg);
+typedef void (*AddOnQueueNotification)(void *addonData, const ADDON::queue_msg_t type, const char *msg);
 typedef bool (*AddOnGetSetting)(void *addonData, const char *settingName, void *settingValue);
 typedef char* (*AddOnUnknownToUTF8)(const char *sourceDest);
 typedef const char* (*AddOnGetLocalizedString)(const void* addonData, long dwCode);

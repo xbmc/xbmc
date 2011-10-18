@@ -28,6 +28,8 @@
 #include "requestpacket.h"
 #include "vnsicommand.h"
 
+using namespace ADDON;
+
 cVNSIDemux::cVNSIDemux()
 {
   m_Streams.iStreamCount = 0;

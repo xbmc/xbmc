@@ -30,6 +30,7 @@ extern "C" {
 }
 
 using namespace std;
+using namespace ADDON;
 
 CHTSPConnection::CHTSPConnection() :
     m_fd(INVALID_SOCKET),

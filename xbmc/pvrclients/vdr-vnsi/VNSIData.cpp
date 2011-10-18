@@ -31,6 +31,8 @@ extern "C" {
 
 #define CMD_LOCK cMutexLock CmdLock((cMutex*)&m_Mutex)
 
+using namespace ADDON;
+
 cVNSIData::cVNSIData()
  : m_aborting(false)
 {
