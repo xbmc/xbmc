@@ -192,11 +192,7 @@ typedef CXHandle* HANDLE;
 typedef void* HINSTANCE;
 typedef void* HMODULE;
 
-#if defined(__FreeBSD__)
-typedef unsigned long  DWORD;
-#else
 typedef unsigned int  DWORD;
-#endif
 typedef unsigned short  WORD;
 typedef unsigned char   BYTE;
 typedef char        CHAR;
@@ -245,11 +241,7 @@ typedef __int64     __time64_t;
 typedef intptr_t (*FARPROC)(void);
 
 #define MAXWORD   0xffff
-#if defined(__FreeBSD__) && defined(__amd64__)
-#define MAXDWORD  0xffffffffffffffff
-#else
 #define MAXDWORD  0xffffffff
-#endif
 
 typedef DWORD LCID;
 typedef WORD* LPWORD;
@@ -304,11 +296,7 @@ typedef struct _TIME_ZONE_INFORMATION {
   LONG DaylightBias;
 } TIME_ZONE_INFORMATION, *PTIME_ZONE_INFORMATION, *LPTIME_ZONE_INFORMATION;
 
-#if defined(__FreeBSD__) && defined(__amd64__)
-#define TIME_ZONE_ID_INVALID    ((DWORD)0xFFFFFFFFFFFFFFFF)
-#else
 #define TIME_ZONE_ID_INVALID    ((DWORD)0xFFFFFFFF)
-#endif
 #define TIME_ZONE_ID_UNKNOWN    0
 #define TIME_ZONE_ID_STANDARD   1
 #define TIME_ZONE_ID_DAYLIGHT   2
