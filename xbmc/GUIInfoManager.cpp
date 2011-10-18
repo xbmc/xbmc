@@ -974,7 +974,10 @@ int CGUIInfoManager::TranslateSingleString(const CStdString &strCondition)
       CStdString platform = info[2].name;
       if (platform == "linux") return SYSTEM_PLATFORM_LINUX;
       else if (platform == "windows") return SYSTEM_PLATFORM_WINDOWS;
-      else if (platform == "osx") return SYSTEM_PLATFORM_OSX;
+      else if (platform == "osx")  return SYSTEM_PLATFORM_OSX;
+      else if (platform == "osx")  return SYSTEM_PLATFORM_DARWIN_OSX;
+      else if (platform == "ios")  return SYSTEM_PLATFORM_DARWIN_IOS;
+      else if (platform == "atv2") return SYSTEM_PLATFORM_DARWIN_ATV2;
     }
     if (info[0].name == "musicplayer")
     { // TODO: these two don't allow duration(foo) and also don't allow more than this number of levels...
