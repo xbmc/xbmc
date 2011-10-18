@@ -82,6 +82,10 @@ DEFINE_GUID(DXVADDI_Intel_ModeH264_C, 0x604F8E66,0x4951,0x4c54,0x88,0xFE,0xAB,0x
 DEFINE_GUID(DXVADDI_Intel_ModeH264_E, 0x604F8E68,0x4951,0x4c54,0x88,0xFE,0xAB,0xD2,0x5C,0x15,0xB3,0xD6);
 DEFINE_GUID(DXVADDI_Intel_ModeVC1_E , 0xBCC5DB6D,0xA2B6,0x4AF0,0xAC,0xE4,0xAD,0xB1,0xF7,0x87,0xBC,0x89);
 
+DEFINE_GUID(DXVA_ModeMPEG2and1_VLD,   0x86695f12,0x340e,0x4f04,0x9f,0xd3,0x92,0x53,0xdd,0x32,0x74,0x60);
+// When exposed by an accelerator, indicates compliance with the August 2010 spec update
+DEFINE_GUID(DXVA_ModeVC1_D2010,       0x1b81beA4,0xa0c7,0x11d3,0xb9,0x84,0x00,0xc0,0x4f,0x2e,0x73,0xc5);
+
 typedef struct {
     const char   *name;
     const GUID   *guid;
@@ -91,6 +95,7 @@ typedef struct {
 /* XXX Prefered modes must come first */
 static const dxva2_mode_t dxva2_modes[] = {
     { "MPEG2 VLD",    &DXVA2_ModeMPEG2_VLD,     CODEC_ID_MPEG2VIDEO },
+    { "MPEG1/2 VLD",  &DXVA_ModeMPEG2and1_VLD,  CODEC_ID_MPEG2VIDEO },
     { "MPEG2 MoComp", &DXVA2_ModeMPEG2_MoComp,  0 },
     { "MPEG2 IDCT",   &DXVA2_ModeMPEG2_IDCT,    0 },
 
@@ -114,11 +119,13 @@ static const dxva2_mode_t dxva2_modes[] = {
     { "Windows Media Video 9 MoComp",           &DXVA2_ModeWMV9_B, 0 },
     { "Windows Media Video 9 post processing",  &DXVA2_ModeWMV9_A, 0 },
 
-    { "VC-1 VLD",             &DXVA2_ModeVC1_D, CODEC_ID_VC1 },
-    { "VC-1 VLD",             &DXVA2_ModeVC1_D, CODEC_ID_WMV3 },
-    { "VC-1 IDCT",            &DXVA2_ModeVC1_C, 0 },
-    { "VC-1 MoComp",          &DXVA2_ModeVC1_B, 0 },
-    { "VC-1 post processing", &DXVA2_ModeVC1_A, 0 },
+    { "VC-1 VLD",             &DXVA2_ModeVC1_D,    CODEC_ID_VC1 },
+    { "VC-1 VLD",             &DXVA2_ModeVC1_D,    CODEC_ID_WMV3 },
+    { "VC-1 VLD 2010",        &DXVA_ModeVC1_D2010, CODEC_ID_VC1 },
+    { "VC-1 VLD 2010",        &DXVA_ModeVC1_D2010, CODEC_ID_WMV3 },
+    { "VC-1 IDCT",            &DXVA2_ModeVC1_C,    0 },
+    { "VC-1 MoComp",          &DXVA2_ModeVC1_B,    0 },
+    { "VC-1 post processing", &DXVA2_ModeVC1_A,    0 },
 
     { NULL, NULL, 0 }
 };

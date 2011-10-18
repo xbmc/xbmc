@@ -31,6 +31,12 @@
 
 #define XBMCAppliance_CAT [BRApplianceCategory categoryWithName:@"XBMC" identifier:@"xbmc" preferredOrder:-5]
 
+// ATVVersionInfo declare to shut up compiler warning
+@interface ATVVersionInfo : NSObject
+{
+}
++ (id)currentOSVersion;
+@end
 //--------------------------------------------------------------
 //--------------------------------------------------------------
 @interface BRTopShelfView (specialAdditions)
@@ -82,6 +88,35 @@
 //--------------------------------------------------------------
 @implementation XBMCAppliance
 @synthesize topShelfController=_topShelfController;
+
+-(void)XBMCfixUIDevice
+{
+  // iOS 5.x has removed the internal load of UIKit in AppleTV app
+  // and there is an overlap of some UIKit and AppleTV methods.
+  // This voodoo seems to clear up the wonkiness. :)
+  Class cls = NSClassFromString(@"ATVVersionInfo");
+  if (cls != nil && [[cls currentOSVersion] isEqualToString:@"5.0"])
+  {
+    id cd = nil;
+
+    @try
+    {
+      cd = [UIDevice currentDevice];
+    }
+    
+    @catch (NSException *e)
+    {
+      NSLog(@"exception: %@", e);
+    }
+    
+    @finally
+    {
+      //NSLog(@"will it work the second try?");
+      cd = [UIDevice currentDevice];
+      NSLog(@"current device fixed: %@", cd);
+    }
+  }
+}
 
 -(id) init
 {
@@ -144,6 +179,7 @@
 {
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   
+  [self XBMCfixUIDevice];
   XBMCController *controller = [[[XBMCController alloc] init] autorelease];
   //XBMCController *controller = [XBMCController sharedInstance];
   return controller;

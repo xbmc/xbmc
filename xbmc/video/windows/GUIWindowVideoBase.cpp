@@ -722,6 +722,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
   }
 
   g_playlistPlayer.Add(PLAYLIST_VIDEO, queuedItems);
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
   // video does not auto play on queue like music
   m_viewControl.SetSelectedItem(iItem + 1);
 }

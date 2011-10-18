@@ -257,6 +257,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
 {
   // take a copy - we're gonna be messing with it and we don't want to touch the original
   DatabaseSettings dbSettings = settings;
+
   if (IsOpen())
   {
     m_openCount++;
@@ -268,64 +269,83 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   if ( dbSettings.type.Equals("mysql") )
   {
     // check we have all information before we cancel the fallback
-    if ( ! (dbSettings.host.IsEmpty() || dbSettings.name.IsEmpty() ||
+    if ( ! (dbSettings.host.IsEmpty() ||
             dbSettings.user.IsEmpty() || dbSettings.pass.IsEmpty()) )
       m_sqlite = false;
     else
-      CLog::Log(LOGINFO, "essential mysql database information is missing (eg. host, name, user, pass)");
+      CLog::Log(LOGINFO, "Essential mysql database information is missing. Require at least host, user and pass defined.");
   }
-
-  // always safely fallback to sqlite3, and use separate, versioned database
-  if (m_sqlite)
+  else
   {
     dbSettings.type = "sqlite3";
     dbSettings.host = _P(g_settings.GetDatabaseFolder());
-
-    int version = GetMinVersion();
-    CStdString latestDb;
-    latestDb.Format("%s%d.db", GetBaseDBName(), version);
-    while (version >= 0)
-    {
-      if (version)
-        dbSettings.name.Format("%s%d.db", GetBaseDBName(), version);
-      else
-        dbSettings.name.Format("%s.db", GetBaseDBName());
-      if (Connect(dbSettings, false))
-      { 
-        // Database exists, take a copy for our current version (if needed) and reopen that one
-        if (version < GetMinVersion())
-        {
-          CLog::Log(LOGNOTICE, "Old database found - updating from version %i to %i", version, GetMinVersion());
-          Close();
-          CStdString currentDb = URIUtils::AddFileToFolder(dbSettings.host, dbSettings.name);
-          CStdString newPath = URIUtils::AddFileToFolder(dbSettings.host, latestDb);
-          if (!XFILE::CFile::Cache(currentDb, newPath))
-          {
-            CLog::Log(LOGERROR, "Unable to copy old database %s to new version %s", dbSettings.name.c_str(), latestDb.c_str());
-            return false;
-          }
-          dbSettings.name = latestDb;
-          if (!Connect(dbSettings, false))
-          {
-            CLog::Log(LOGERROR, "Unable to open freshly copied database %s", dbSettings.name.c_str());
-            return false;
-          }
-        }
-        // yay - we have a copy of our db, now do our worst with it
-        if (UpdateVersion(dbSettings.name))
-          return true;
-        // update failed - loop around and see if we have another one available
-        Close();
-      }
-      // drop back to the previous version and try that
-      version--;
-    }
-    // unable to open any version fall through to create a new one
-    dbSettings.name = latestDb;
+    dbSettings.name = GetBaseDBName();
   }
+
+  // use separate, versioned database
+  int version = GetMinVersion();
+  CStdString baseDBName = (dbSettings.name.IsEmpty() ? GetBaseDBName() : dbSettings.name.c_str());
+  CStdString latestDb;
+  latestDb.Format("%s%d", GetBaseDBName(), version);
+
+  while (version >= 0)
+  {
+    if (version)
+      dbSettings.name.Format("%s%d", baseDBName, version);
+    else
+      dbSettings.name.Format("%s", baseDBName);
+
+    if (Connect(dbSettings, false))
+    {
+      // Database exists, take a copy for our current version (if needed) and reopen that one
+      if (version < GetMinVersion())
+      {
+        CLog::Log(LOGNOTICE, "Old database found - updating from version %i to %i", version, GetMinVersion());
+
+        if ( ! m_pDB->copy(latestDb) )
+        {
+          CLog::Log(LOGERROR, "Unable to copy old database %s to new version %s", dbSettings.name.c_str(), latestDb.c_str());
+          Close();
+          return false;
+        }
+
+        Close();
+
+        dbSettings.name = latestDb;
+        if (!Connect(dbSettings, false))
+        {
+          CLog::Log(LOGERROR, "Unable to open freshly copied database %s", dbSettings.name.c_str());
+          return false;
+        }
+      }
+
+      // yay - we have a copy of our db, now do our worst with it
+      if (UpdateVersion(dbSettings.name))
+        return true;
+
+      // update failed - loop around and see if we have another one available
+      Close();
+    }
+
+    // drop back to the previous version and try that
+    version--;
+  }
+
+  // safely fall back to sqlite as appropriate
+  if ( ! m_sqlite )
+  {
+    CLog::Log(LOGDEBUG, "Falling back to sqlite.");
+    dbSettings = settings;
+    dbSettings.type = "sqlite3";
+    return Open(dbSettings);
+  }
+
+  // unable to open any version fall through to create a new one
+  dbSettings.name = latestDb;
 
   if (Connect(dbSettings, true) && UpdateVersion(dbSettings.name))
     return true;
+
   // failed to update or open the database
   Close();
   CLog::Log(LOGERROR, "Unable to open database %s", dbSettings.name.c_str());
@@ -558,6 +578,8 @@ bool CDatabase::UpdateVersionNumber()
   {
     CStdString strSQL=PrepareSQL("UPDATE version SET idVersion=%i\n", GetMinVersion());
     m_pDS->exec(strSQL.c_str());
+
+    CommitTransaction();
   }
   catch(...)
   {

@@ -28,6 +28,7 @@
 #include "GUIColorManager.h"
 #include "GUIListItem.h"
 #include "utils/StringUtils.h"
+#include "addons/Skin.h"
 
 using namespace std;
 using ADDON::CAddonMgr;
@@ -118,15 +119,15 @@ CGUIInfoLabel::CGUIInfoLabel()
 {
 }
 
-CGUIInfoLabel::CGUIInfoLabel(const CStdString &label, const CStdString &fallback)
+CGUIInfoLabel::CGUIInfoLabel(const CStdString &label, const CStdString &fallback, int context)
 {
-  SetLabel(label, fallback);
+  SetLabel(label, fallback, context);
 }
 
-void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback)
+void CGUIInfoLabel::SetLabel(const CStdString &label, const CStdString &fallback, int context)
 {
   m_fallback = fallback;
-  Parse(label);
+  Parse(label, context);
 }
 
 CStdString CGUIInfoLabel::GetLabel(int contextWindow, bool preferImage) const
@@ -260,7 +261,7 @@ const static infoformat infoformatmap[] = {{ "$INFO[",    FORMATINFO },
                                            { "$ESCINFO[", FORMATESCINFO},
                                            { "$VAR[",     FORMATVAR}};
 
-void CGUIInfoLabel::Parse(const CStdString &label)
+void CGUIInfoLabel::Parse(const CStdString &label, int context)
 {
   m_info.clear();
   // Step 1: Replace all $LOCALIZE[number] with the real string
@@ -301,12 +302,11 @@ void CGUIInfoLabel::Parse(const CStdString &label)
         int info;
         if (format == FORMATVAR)
         {
-          info = g_infoManager.TranslateSkinVariableString(params[0]);
+          info = g_infoManager.TranslateSkinVariableString(params[0], context);
           if (info == 0)
-          {
-            // we didn't register this conditional label yet!
-            CLog::Log(LOGWARNING, "Label Formating: $VAR[%s] is not yet defined", params[0].c_str());
-          }
+            info = g_infoManager.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(params[0], context));
+          if (info == 0) // skinner didn't define this conditional label!
+            CLog::Log(LOGWARNING, "Label Formating: $VAR[%s] is not defined", params[0].c_str());
         }
         else
           info = g_infoManager.TranslateString(params[0]);
@@ -358,6 +358,6 @@ CStdString CGUIInfoLabel::CInfoPortion::GetLabel(const CStdString &info) const
 
 CStdString CGUIInfoLabel::GetLabel(const CStdString &label, int contextWindow, bool preferImage)
 { // translate the label
-  CGUIInfoLabel info(label, "");
+  CGUIInfoLabel info(label, "", contextWindow);
   return info.GetLabel(contextWindow, preferImage);
 }

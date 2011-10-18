@@ -26,21 +26,25 @@ class TiXmlElement;
 
 namespace INFO
 {
+class CSkinVariableString;
+
 class CSkinVariable
 {
 public:
-  static void LoadFromXML(const TiXmlElement *root);
+  static const CSkinVariableString* CreateFromXML(const TiXmlElement& node, int context);
 };
 
 class CSkinVariableString
 {
 public:
   const CStdString& GetName() const;
-  CStdString GetValue(int contextWindow, bool preferImage = false, const CGUIListItem *item = NULL );
+  int GetContext() const;
+  CStdString GetValue(bool preferImage = false, const CGUIListItem *item = NULL );
 private:
   CSkinVariableString();
 
   CStdString m_name;
+  int m_context;
 
   struct ConditionLabelPair
   {

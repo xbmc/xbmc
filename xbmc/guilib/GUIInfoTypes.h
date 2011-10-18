@@ -72,9 +72,9 @@ class CGUIInfoLabel
 {
 public:
   CGUIInfoLabel();
-  CGUIInfoLabel(const CStdString &label, const CStdString &fallback = "");
+  CGUIInfoLabel(const CStdString &label, const CStdString &fallback = "", int context = 0);
 
-  void SetLabel(const CStdString &label, const CStdString &fallback);
+  void SetLabel(const CStdString &label, const CStdString &fallback, int context = 0);
   CStdString GetLabel(int contextWindow, bool preferImage = false) const;
   CStdString GetItemLabel(const CGUIListItem *item, bool preferImage = false) const;
   bool IsConstant() const;
@@ -99,7 +99,7 @@ public:
   static CStdString ReplaceAddonStrings(const CStdString &label);
 
 private:
-  void Parse(const CStdString &label);
+  void Parse(const CStdString &label, int context);
 
   class CInfoPortion
   {
