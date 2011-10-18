@@ -1855,7 +1855,26 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = false;
 #endif
   else if (condition == SYSTEM_PLATFORM_OSX)
-#ifdef __APPLE__
+  // TODO: rename SYSTEM_PLATFORM_OSX to SYSTEM_PLATFORM_DARWIN after eden release.
+#ifdef TARGET_OS_DARWIN
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_DARWIN_OSX)
+#ifdef TARGET_DARWIN_OSX
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_DARWIN_IOS)
+#ifdef TARGET_DARWIN_IOS
+    bReturn = true;
+#else
+    bReturn = false;
+#endif
+  else if (condition == SYSTEM_PLATFORM_DARWIN_ATV2)
+#ifdef TARGET_DARWIN_IOS_ATV2
     bReturn = true;
 #else
     bReturn = false;
