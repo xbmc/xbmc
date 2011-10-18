@@ -30,3 +30,9 @@
 #else
 #  include "linux/os_posix.h"
 #endif
+
+#if defined(TARGET_DARWIN)
+#  ifndef PTHREAD_MUTEX_RECURSIVE_NP
+#    define PTHREAD_MUTEX_RECURSIVE_NP PTHREAD_MUTEX_RECURSIVE
+#  endif
+#endif
