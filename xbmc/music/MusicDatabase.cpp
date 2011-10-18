@@ -317,9 +317,9 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
                     song.strMusicBrainzAlbumArtistID.c_str(),
                     song.strMusicBrainzTRMID.c_str());
 
-      if (song.lastPlayed.GetLength())
+      if (song.lastPlayed.IsValid())
         strSQL1=PrepareSQL(",%i,%i,%i,%i,'%s','%c','%s')",
-                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, idThumb, song.lastPlayed.c_str(), song.rating, song.strComment.c_str());
+                      song.iTimesPlayed, song.iStartOffset, song.iEndOffset, idThumb, song.lastPlayed.GetAsDBDateTime().c_str(), song.rating, song.strComment.c_str());
       else
         strSQL1=PrepareSQL(",%i,%i,%i,%i,NULL,'%c','%s')",
                       song.iTimesPlayed, song.iStartOffset, song.iEndOffset, idThumb, song.rating, song.strComment.c_str());
@@ -723,7 +723,7 @@ CSong CMusicDatabase::GetSongFromDataset(bool bWithMusicDbPath/*=false*/)
   song.iYear = m_pDS->fv(song_iYear).get_asInt() ;
   song.strTitle = m_pDS->fv(song_strTitle).get_asString();
   song.iTimesPlayed = m_pDS->fv(song_iTimesPlayed).get_asInt();
-  song.lastPlayed = m_pDS->fv(song_lastplayed).get_asString();
+  song.lastPlayed.SetFromDBDateTime(m_pDS->fv(song_lastplayed).get_asString());
   song.iStartOffset = m_pDS->fv(song_iStartOffset).get_asInt();
   song.iEndOffset = m_pDS->fv(song_iEndOffset).get_asInt();
   song.strMusicBrainzTrackID = m_pDS->fv(song_strMusicBrainzTrackID).get_asString();
