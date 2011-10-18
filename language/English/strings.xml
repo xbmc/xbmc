@@ -1538,6 +1538,10 @@
   <string id="16324">Software Blend</string>
   
   <string id="16400">Post-processing</string>
+  <string id="16401">Post-processing Mode</string>
+  <string id="16402">Default</string>
+  <string id="16403">Aggressive</string>
+  <string id="16404">Auto (slow CPU)</string>
 
   <string id="17500">Display sleep timeout</string>
 

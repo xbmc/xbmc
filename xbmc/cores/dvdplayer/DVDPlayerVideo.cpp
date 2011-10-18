@@ -623,8 +623,26 @@ void CDVDPlayerVideo::Process()
             {
               if (!sPostProcessType.empty())
                 sPostProcessType += ",";
-              // This is what mplayer uses for its "high-quality filter combination"
-              sPostProcessType += g_advancedSettings.m_videoPPFFmpegPostProc;
+
+              switch (g_settings.m_currentVideoSettings.m_PostProcessingMode)
+              {
+              case VS_PPMODE_DEFAULT:
+                {
+                  // this is the one that will be overwritten by settings in Advancedsettings.xml
+                  sPostProcessType += g_advancedSettings.m_videoPPFFmpegPostProcDefault;
+                }
+                break;
+              case VS_PPMODE_AGGRESSIVE:
+                {
+                  sPostProcessType += g_advancedSettings.m_videoPPFFmpegPostProcAggressive;
+                }
+                break;
+              case VS_PPMODE_SLOW_CPU:
+                {
+                  sPostProcessType += g_advancedSettings.m_videoPPFFmpegPostProcAutoQuality;
+                }
+                break;
+              }
             }
 
             if (!sPostProcessType.empty())

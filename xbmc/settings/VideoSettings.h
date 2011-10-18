@@ -96,6 +96,13 @@ enum ESCALINGMETHOD
   VS_SCALINGMETHOD_MAX // do not use and keep as last enum value.
 };
 
+enum EPOSTPROCESSINGMODE
+{
+  VS_PPMODE_DEFAULT=0,
+  VS_PPMODE_AGGRESSIVE,
+  VS_PPMODE_SLOW_CPU
+};
+
 class CVideoSettings
 {
 public:
@@ -124,6 +131,7 @@ public:
   float m_Gamma;
   float m_NoiseReduction;
   bool m_PostProcess;
+  EPOSTPROCESSINGMODE m_PostProcessingMode;
   float m_Sharpness;
   float m_AudioDelay;
   int m_ResumeTime;

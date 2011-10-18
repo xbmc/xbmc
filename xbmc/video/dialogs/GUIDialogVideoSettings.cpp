@@ -67,6 +67,7 @@ CGUIDialogVideoSettings::~CGUIDialogVideoSettings(void)
 #define VIDEO_SETTINGS_POSTPROCESS        22
 #define VIDEO_SETTINGS_VERTICAL_SHIFT     23
 #define VIDEO_SETTINGS_DEINTERLACEMODE    24
+#define VIDEO_SETTINGS_POSTPROCESS_MODE   25
 
 void CGUIDialogVideoSettings::CreateSettings()
 {
@@ -164,7 +165,12 @@ void CGUIDialogVideoSettings::CreateSettings()
   AddSlider(VIDEO_SETTINGS_VERTICAL_SHIFT, 225, &g_settings.m_currentVideoSettings.m_CustomVerticalShift, -2.0f, 0.01f, 2.0f, FormatFloat);
   AddSlider(VIDEO_SETTINGS_PIXEL_RATIO, 217, &g_settings.m_currentVideoSettings.m_CustomPixelRatio, 0.5f, 0.01f, 2.0f, FormatFloat);
   AddBool(VIDEO_SETTINGS_POSTPROCESS, 16400, &g_settings.m_currentVideoSettings.m_PostProcess);
-
+  {
+    const int entries[] = {16402, 16403, 16404};
+    AddSpin(VIDEO_SETTINGS_POSTPROCESS_MODE, 16401, (int*)&g_settings.m_currentVideoSettings.m_PostProcessingMode, 3, entries);
+    EnableSettings(VIDEO_SETTINGS_POSTPROCESS_MODE, g_settings.m_currentVideoSettings.m_PostProcess);
+    UpdateSetting(VIDEO_SETTINGS_POSTPROCESS_MODE);
+  }
 #ifdef HAS_VIDEO_PLAYBACK
   if (g_renderManager.Supports(RENDERFEATURE_BRIGHTNESS))
     AddSlider(VIDEO_SETTINGS_BRIGHTNESS, 464, &g_settings.m_currentVideoSettings.m_Brightness, 0, 1, 100, FormatInteger);
@@ -240,6 +246,11 @@ void CGUIDialogVideoSettings::OnSettingChanged(SettingInfo &setting)
   else if (setting.id == VIDEO_SETTINGS_DEINTERLACEMODE)
   {
     EnableSettings(VIDEO_SETTINGS_INTERLACEMETHOD, g_settings.m_currentVideoSettings.m_DeinterlaceMode != VS_DEINTERLACEMODE_OFF);
+  }
+  else if (setting.id == VIDEO_SETTINGS_POSTPROCESS)
+  {
+    EnableSettings(VIDEO_SETTINGS_POSTPROCESS_MODE, g_settings.m_currentVideoSettings.m_PostProcess);
+    UpdateSetting(VIDEO_SETTINGS_POSTPROCESS_MODE);
   }
 }
 
