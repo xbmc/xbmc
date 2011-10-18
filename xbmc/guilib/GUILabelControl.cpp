@@ -142,7 +142,7 @@ bool CGUILabelControl::CanFocus() const
 
 void CGUILabelControl::SetLabel(const string &strLabel)
 {
-  m_infoLabel.SetLabel(strLabel, "");
+  m_infoLabel.SetLabel(strLabel, "", GetParentID());
   if (m_iCursorPos > (int)strLabel.size())
     m_iCursorPos = strLabel.size();
 

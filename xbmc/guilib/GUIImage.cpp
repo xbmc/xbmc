@@ -302,7 +302,7 @@ void CGUIImage::SetCrossFade(unsigned int time)
 void CGUIImage::SetFileName(const CStdString& strFileName, bool setConstant)
 {
   if (setConstant)
-    m_info.SetLabel(strFileName, "");
+    m_info.SetLabel(strFileName, "", GetParentID());
 
   if (m_crossFadeTime)
   {

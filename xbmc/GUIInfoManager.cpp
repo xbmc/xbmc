@@ -1047,7 +1047,7 @@ TIME_FORMAT CGUIInfoManager::TranslateTimeFormat(const CStdString &format)
 CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
-    return GetSkinVariableString(info, contextWindow, false);
+    return GetSkinVariableString(info, false);
 
   CStdString strLabel;
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
@@ -2789,7 +2789,7 @@ CStdString CGUIInfoManager::GetMultiInfoLabel(const GUIInfo &info, int contextWi
 CStdString CGUIInfoManager::GetImage(int info, int contextWindow)
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
-    return GetSkinVariableString(info, contextWindow, true);
+    return GetSkinVariableString(info, true);
 
   if (info >= MULTI_INFO_START && info <= MULTI_INFO_END)
   {
@@ -3770,7 +3770,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
   if (!item) return "";
 
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
-    return GetSkinVariableString(info, 0, false, item);
+    return GetSkinVariableString(info, false, item);
 
   if (info >= LISTITEM_PROPERTY_START && info - LISTITEM_PROPERTY_START < (int)m_listitemProperties.size())
   { // grab the property
@@ -4156,7 +4156,7 @@ CStdString CGUIInfoManager::GetItemLabel(const CFileItem *item, int info)
 CStdString CGUIInfoManager::GetItemImage(const CFileItem *item, int info)
 {
   if (info >= CONDITIONAL_LABEL_START && info <= CONDITIONAL_LABEL_END)
-    return GetSkinVariableString(info, 0, true, item);
+    return GetSkinVariableString(info, true, item);
 
   switch (info)
   {
@@ -4496,35 +4496,35 @@ bool CGUIInfoManager::GetLibraryBool(int condition)
   return false;
 }
 
-int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString& info)
+int CGUIInfoManager::RegisterSkinVariableString(const CSkinVariableString* info)
 {
-  CSingleLock lock(m_critInfo);
-  int id = TranslateSkinVariableString(info.GetName());
-  if (id != 0)
-    return id;
+  if (!info)
+    return 0;
 
-  m_skinVariableStrings.push_back(info);
+  CSingleLock lock(m_critInfo);
+  m_skinVariableStrings.push_back(*info);
+  delete info;
   return CONDITIONAL_LABEL_START + m_skinVariableStrings.size() - 1;
 }
 
-int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name)
+int CGUIInfoManager::TranslateSkinVariableString(const CStdString& name, int context)
 {
   for (vector<CSkinVariableString>::const_iterator it = m_skinVariableStrings.begin();
        it != m_skinVariableStrings.end(); ++it)
   {
-    if (it->GetName().Equals(name))
+    if (it->GetName().Equals(name) && it->GetContext() == context)
       return it - m_skinVariableStrings.begin() + CONDITIONAL_LABEL_START;
   }
   return 0;
 }
 
-CStdString CGUIInfoManager::GetSkinVariableString(int info, int contextWindow, 
+CStdString CGUIInfoManager::GetSkinVariableString(int info,
                                                   bool preferImage /*= false*/,
                                                   const CGUIListItem *item /*= NULL*/)
 {
   info -= CONDITIONAL_LABEL_START;
   if (info >= 0 && info < (int)m_skinVariableStrings.size())
-    return m_skinVariableStrings[info].GetValue(contextWindow, preferImage, item);
+    return m_skinVariableStrings[info].GetValue(preferImage, item);
 
   return "";
 }
