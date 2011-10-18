@@ -45,7 +45,7 @@ public:
     strBiography.Empty();
     styles.clear();
     moods.clear();
-    strInstruments.Empty();
+    instruments.clear();
     strBorn.Empty();
     strFormed.Empty();
     strDied.Empty();
@@ -71,7 +71,7 @@ public:
   CStdString strBiography;
   std::vector<std::string> styles;
   std::vector<std::string> moods;
-  CStdString strInstruments;
+  std::vector<std::string> instruments;
   CStdString strBorn;
   CStdString strFormed;
   CStdString strDied;

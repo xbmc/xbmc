@@ -36,13 +36,13 @@ bool CArtist::Load(const TiXmlElement *artist, bool append, bool prioritise)
   XMLUtils::GetStringArray(artist, "style", styles, prioritise);
   XMLUtils::GetStringArray(artist, "mood", moods, prioritise);
   XMLUtils::GetStringArray(artist, "yearsactive", yearsActive, prioritise);
-  XMLUtils::GetAdditiveString(artist, "instruments", g_advancedSettings.m_musicItemSeparator, strInstruments, prioritise);
+  XMLUtils::GetStringArray(artist, "instruments", instruments, prioritise);
 
-  XMLUtils::GetString(artist,"born",strBorn);
-  XMLUtils::GetString(artist,"formed",strFormed);
-  XMLUtils::GetString(artist,"biography",strBiography);
-  XMLUtils::GetString(artist,"died",strDied);
-  XMLUtils::GetString(artist,"disbanded",strDisbanded);
+  XMLUtils::GetString(artist, "born", strBorn);
+  XMLUtils::GetString(artist, "formed", strFormed);
+  XMLUtils::GetString(artist, "biography", strBiography);
+  XMLUtils::GetString(artist, "died", strDied);
+  XMLUtils::GetString(artist, "disbanded", strDisbanded);
 
   size_t iThumbCount = thumbURL.m_url.size();
   CStdString xmlAdd = thumbURL.m_xml;
@@ -117,8 +117,7 @@ bool CArtist::Save(TiXmlNode *node, const CStdString &tag, const CStdString& str
   XMLUtils::SetStringArray(artist, "style", styles);
   XMLUtils::SetStringArray(artist,  "mood", moods);
   XMLUtils::SetStringArray(artist, "yearsactive", yearsActive);
-  XMLUtils::SetAdditiveString(artist, "instruments",
-                            g_advancedSettings.m_musicItemSeparator, strInstruments);
+  XMLUtils::SetStringArray(artist, "instruments", instruments);
   XMLUtils::SetString(artist,        "born", strBorn);
   XMLUtils::SetString(artist,      "formed", strFormed);
   XMLUtils::SetString(artist,   "biography", strBiography);

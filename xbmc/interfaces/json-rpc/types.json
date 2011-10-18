@@ -343,7 +343,7 @@
     "properties": {
       "artistid": { "$ref": "Library.Id", "required": true },
       "artist": { "type": "string", "required": true },
-      "instrument": { "type": "string" },
+      "instrument": { "$ref": "Array.String" },
       "style": { "$ref": "Array.String" },
       "mood": { "$ref": "Array.String" },
       "born": { "type": "string" },

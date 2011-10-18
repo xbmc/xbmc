@@ -857,7 +857,7 @@ CArtist CMusicDatabase::GetArtistFromDataset(dbiplus::Dataset* pDS, bool needThu
   artist.strDied = pDS->fv(artist_strDied).get_asString();
   artist.strDisbanded = pDS->fv(artist_strDisbanded).get_asString();
   artist.yearsActive = StringUtils::Split(pDS->fv(artist_strYearsActive).get_asString(), g_advancedSettings.m_musicItemSeparator);
-  artist.strInstruments = pDS->fv(artist_strInstruments).get_asString();
+  artist.instruments = StringUtils::Split(pDS->fv(artist_strInstruments).get_asString(), g_advancedSettings.m_musicItemSeparator);
 
   if (needThumb)
   {
@@ -1816,7 +1816,7 @@ int CMusicDatabase::SetArtistInfo(int idArtist, const CArtist& artist)
                   StringUtils::Join(artist.genre, g_advancedSettings.m_musicItemSeparator).c_str(),
                   StringUtils::Join(artist.moods, g_advancedSettings.m_musicItemSeparator).c_str(),
                   StringUtils::Join(artist.styles, g_advancedSettings.m_musicItemSeparator).c_str(),
-                  artist.strInstruments.c_str(),
+                  StringUtils::Join(artist.instruments, g_advancedSettings.m_musicItemSeparator).c_str(),
                   artist.strBiography.c_str(),
                   artist.strDied.c_str(),
                   artist.strDisbanded.c_str(),
@@ -4752,16 +4752,16 @@ int CMusicDatabase::GetKaraokeSongsCount()
 
 void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& artist)
 {
-  item.SetProperty("artist_instrument",artist.strInstruments);
-  item.SetProperty("artist_style",artist.styles);
-  item.SetProperty("artist_mood",artist.moods);
-  item.SetProperty("artist_born",artist.strBorn);
-  item.SetProperty("artist_formed",artist.strFormed);
-  item.SetProperty("artist_description",artist.strBiography);
+  item.SetProperty("artist_instrument", artist.instruments);
+  item.SetProperty("artist_style", artist.styles);
+  item.SetProperty("artist_mood", artist.moods);
+  item.SetProperty("artist_born", artist.strBorn);
+  item.SetProperty("artist_formed", artist.strFormed);
+  item.SetProperty("artist_description", artist.strBiography);
   item.SetProperty("artist_genre", artist.genre);
-  item.SetProperty("artist_died",artist.strDied);
-  item.SetProperty("artist_disbanded",artist.strDisbanded);
-  item.SetProperty("artist_yearsactive",artist.yearsActive);
+  item.SetProperty("artist_died", artist.strDied);
+  item.SetProperty("artist_disbanded", artist.strDisbanded);
+  item.SetProperty("artist_yearsactive", artist.yearsActive);
 }
 
 void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album)
