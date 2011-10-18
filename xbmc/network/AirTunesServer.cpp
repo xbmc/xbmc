@@ -32,6 +32,7 @@
 #include "cores/paplayer/BXAcodec.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "utils/Variant.h"
 #include "settings/AdvancedSettings.h"
 
@@ -235,9 +236,6 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
 
   if (success)
   {
-    CStdString appName;
-    appName.Format("%s@XBMC", m_macAddress.c_str());
-
     std::map<std::string, std::string> txt;
     txt["cn"] = "0,1";
     txt["ch"] = "2";
@@ -252,7 +250,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
     txt["vn"] = "3";
     txt["txtvers"] = "1";
 
-    CZeroconf::GetInstance()->PublishService("servers.airtunes", "_raop._tcp", appName, port, txt);
+    CZeroconf::GetInstance()->PublishService("servers.airtunes", "_raop._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), port, txt);
   }
 
   return success;
