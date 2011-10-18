@@ -122,7 +122,7 @@ CStdString CThumbnailCache::GetAlbumThumb(const CMusicInfoTag *musicInfo)
   if (!musicInfo)
     return CStdString();
 
-  return GetAlbumThumb(musicInfo->GetAlbum(), !musicInfo->GetAlbumArtist().empty() ? musicInfo->GetAlbumArtist() : StringUtils::Join(musicInfo->GetArtist(), g_advancedSettings.m_musicItemSeparator));
+  return GetAlbumThumb(musicInfo->GetAlbum(), StringUtils::Join(!musicInfo->GetAlbumArtist().empty() ? musicInfo->GetAlbumArtist() : musicInfo->GetArtist(), g_advancedSettings.m_musicItemSeparator));
 }
 
 CStdString CThumbnailCache::GetAlbumThumb(const CAlbum &album)

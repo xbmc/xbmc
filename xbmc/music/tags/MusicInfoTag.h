@@ -42,9 +42,9 @@ public:
   bool Loaded() const;
   const CStdString& GetTitle() const;
   const CStdString& GetURL() const;
-  const std::vector<std::string> GetArtist() const;
+  const std::vector<std::string>& GetArtist() const;
   const CStdString& GetAlbum() const;
-  const CStdString& GetAlbumArtist() const;
+  const std::vector<std::string>& GetAlbumArtist() const;
   const std::vector<std::string> GetGenre() const;
   int GetTrackNumber() const;
   int GetDiscNumber() const;
@@ -75,6 +75,7 @@ public:
   void SetAlbum(const CStdString& strAlbum);
   void SetAlbumId(const int iAlbumId);
   void SetAlbumArtist(const CStdString& strAlbumArtist);
+  void SetAlbumArtist(const std::vector<std::string>& albumArtists);
   void SetGenre(const CStdString& strGenre);
   void SetGenre(const std::vector<std::string>& genres);
   void SetYear(int year);
@@ -133,7 +134,7 @@ protected:
   CStdString m_strTitle;
   std::vector<std::string> m_artist;
   CStdString m_strAlbum;
-  CStdString m_strAlbumArtist;
+  std::vector<std::string> m_albumArtist;
   std::vector<std::string> m_genre;
   CStdString m_strMusicBrainzTrackID;
   CStdString m_strMusicBrainzArtistID;

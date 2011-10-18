@@ -417,7 +417,7 @@ bool CMusicInfoTagLoaderMP4::Load(const CStdString& strFileName, CMusicInfoTag& 
 
     if (m_isCompilation)
     { // iTunes compilation flag is set - this could be a various artists file
-      if (tag.GetAlbumArtist().IsEmpty())
+      if (tag.GetAlbumArtist().empty())
         tag.SetAlbumArtist(g_localizeStrings.Get(340)); // Various Artists
     }
     // Close the file..

@@ -86,7 +86,7 @@ namespace PYXBMC
 
   PyObject* InfoTagMusic_GetAlbumArtist(InfoTagMusic *self, PyObject *args)
   {
-    return Py_BuildValue((char*)"s", self->infoTag.GetAlbumArtist().c_str());
+    return Py_BuildValue((char*)"s", StringUtils::Join(self->infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator).c_str());
   }
 
   // InfoTagMusic_GetAlbum

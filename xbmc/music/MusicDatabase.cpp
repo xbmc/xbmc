@@ -246,8 +246,10 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     CStdString strExtraArtists = StringUtils::Join(extraArtists, g_advancedSettings.m_musicItemSeparator);
 
     // do the same with our albumartist
-    std::vector<std::string> vecAlbumArtists; CStdString extraAlbumArtists;
-    SplitString(song.strAlbumArtist, vecAlbumArtists, extraAlbumArtists);
+    std::vector<std::string> extraAlbumArtists;
+    for (unsigned int index = 1; index < song.albumArtist.size(); index++)
+      extraAlbumArtists.push_back(song.albumArtist.at(index));
+    CStdString strExtraAlbumArtists = StringUtils::Join(extraAlbumArtists, g_advancedSettings.m_musicItemSeparator);
 
     // and the same for our genres
     std::vector<std::string> extraGenres;
@@ -261,14 +263,14 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     int idGenre = AddGenre(song.genre[0]);
     // and also the primary album artist (if applicable)
     int idAlbumArtist = -1;
-    if (!vecAlbumArtists[0].empty())
-      idAlbumArtist = AddArtist(vecAlbumArtists[0]);
+    if (!song.albumArtist[0].empty())
+      idAlbumArtist = AddArtist(song.albumArtist[0]);
 
     int idPath = AddPath(strPath);
     int idThumb = AddThumb(song.strThumb);
     int idAlbum;
     if (idAlbumArtist > -1)  // have an album artist
-      idAlbum = AddAlbum(song.strAlbum, idAlbumArtist, extraAlbumArtists, song.strAlbumArtist, idThumb, idGenre, strExtraGenres, song.iYear);
+      idAlbum = AddAlbum(song.strAlbum, idAlbumArtist, strExtraAlbumArtists, StringUtils::Join(song.albumArtist, g_advancedSettings.m_musicItemSeparator), idThumb, idGenre, strExtraGenres, song.iYear);
     else
       idAlbum = AddAlbum(song.strAlbum, idArtist, strExtraArtists, StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator), idThumb, idGenre, strExtraGenres, song.iYear);
 
@@ -330,7 +332,7 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
     // add extra artists and genres
     AddExtraSongArtists(song.artist, idSong, bCheck);
     if (idAlbumArtist > -1)
-      AddExtraAlbumArtists(vecAlbumArtists, idAlbum);
+      AddExtraAlbumArtists(song.albumArtist, idAlbum);
     else
       AddExtraAlbumArtists(song.artist, idAlbum);
     AddExtraGenres(song.genre, idSong, idAlbum, bCheck);

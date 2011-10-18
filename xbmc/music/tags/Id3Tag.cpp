@@ -128,7 +128,7 @@ bool CID3Tag::Parse()
   // TODO: Better compilation album support (should work on a flag in the table not just on the albumartist,
   //       which is localized and should instead be using a hardcoded value that we localize at presentation time)
   bool partOfCompilation = GetCompilation();
-  if (partOfCompilation && tag.GetAlbumArtist().IsEmpty())
+  if (partOfCompilation && tag.GetAlbumArtist().empty())
     tag.SetAlbumArtist(g_localizeStrings.Get(340)); // Various Artists
 
   if (!tag.GetTitle().IsEmpty() || !tag.GetArtist().empty() || !tag.GetAlbum().IsEmpty())
@@ -170,7 +170,7 @@ bool CID3Tag::Parse()
   // if we don't have an album tag, cache with the full file path so that
   // other non-tagged files don't get this album image
   CStdString strCoverArt;
-  if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().IsEmpty() || !tag.GetArtist().empty()))
+  if (!tag.GetAlbum().IsEmpty() && (!tag.GetAlbumArtist().empty() || !tag.GetArtist().empty()))
     strCoverArt = CThumbnailCache::GetAlbumThumb(&tag);
   else
     strCoverArt = CThumbnailCache::GetMusicThumb(tag.GetURL());
@@ -221,7 +221,7 @@ bool CID3Tag::Write(const CStdString& strFile)
   SetTitle(m_musicInfoTag.GetTitle());
   SetArtist(StringUtils::Join(m_musicInfoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator));
   SetAlbum(m_musicInfoTag.GetAlbum());
-  SetAlbumArtist(m_musicInfoTag.GetAlbumArtist());
+  SetAlbumArtist(StringUtils::Join(m_musicInfoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator));
   SetTrack(m_musicInfoTag.GetTrackNumber());
   SetGenre(StringUtils::Join(m_musicInfoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator));
   SetYear(m_musicInfoTag.GetYearString());

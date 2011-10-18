@@ -344,7 +344,7 @@ void CGUIWindowMusicBase::OnInfo(CFileItem *pItem, bool bShowInfo)
         { // album isn't in the database - construct it from the tag info we have
           CMusicInfoTag *tag = pItem->GetMusicInfoTag();
           album.strAlbum = tag->GetAlbum();
-          album.artist = tag->GetAlbumArtist().IsEmpty() ? tag->GetArtist() : StringUtils::Split(tag->GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
+          album.artist = tag->GetAlbumArtist().empty() ? tag->GetArtist() : tag->GetAlbumArtist();
           album.idAlbum = -1; // the -1 indicates it's not in the database
         }
         foundAlbum = true;
@@ -1220,7 +1220,7 @@ void CGUIWindowMusicBase::UpdateThumb(const CAlbum &album, const CStdString &pat
       // really, this may not be enough as it is to reliably update this item.  eg think of various artists albums
       // that aren't tagged as such (and aren't yet scanned).  But we probably can't do anything better than this
       // in that case
-      if (album.strAlbum == tag->GetAlbum() && (StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator) == tag->GetAlbumArtist() ||
+      if (album.strAlbum == tag->GetAlbum() && (album.artist == tag->GetAlbumArtist() ||
                                                 album.artist == tag->GetArtist()))
       {
         g_infoManager.SetCurrentAlbumThumb(albumThumb);

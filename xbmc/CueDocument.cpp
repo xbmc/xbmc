@@ -232,7 +232,7 @@ void CCueDocument::GetSongs(VECSONGS &songs)
       song.artist = StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator);
     else
       song.artist = StringUtils::Split(m_Track[i].strArtist, g_advancedSettings.m_musicItemSeparator);
-    song.strAlbumArtist = m_strArtist;
+    song.albumArtist = StringUtils::Split(m_strArtist, g_advancedSettings.m_musicItemSeparator);
     song.strAlbum = m_strAlbum;
     song.genre = StringUtils::Split(m_strGenre, g_advancedSettings.m_musicItemSeparator);
     song.iYear = m_iYear;

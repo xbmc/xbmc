@@ -592,7 +592,7 @@ void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
   for (unsigned int i = 0; i < songsToCheck.size(); ++i)
   {
     CSong &song = songsToCheck[i];
-    if (!song.strAlbumArtist.IsEmpty()) // albumartist specified, so assume the user knows what they're doing
+    if (!song.albumArtist.empty()) // albumartist specified, so assume the user knows what they're doing
       continue;
     it = albumsToAdd.find(song.strAlbum);
     if (it == albumsToAdd.end())
@@ -665,7 +665,8 @@ void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
         for (unsigned int i = 0; i < songs.size(); i++)
         {
           CSong *song = songs[i];
-          song->strAlbumArtist = g_localizeStrings.Get(340); // Various Artists
+          song->albumArtist.clear();
+          song->albumArtist.push_back(g_localizeStrings.Get(340)); // Various Artists
         }
       }
       else if (singleArtistWithFeaturedArtists)
@@ -674,7 +675,7 @@ void CMusicInfoScanner::CheckForVariousArtists(VECSONGS &songsToCheck)
         for (unsigned int i = 0; i < songs.size(); i++)
         {
           CSong *song = songs[i];
-          song->strAlbumArtist = albumArtist; // first artist of all tracks
+          song->albumArtist = StringUtils::Split(albumArtist, g_advancedSettings.m_musicItemSeparator); // first artist of all tracks
         }
       }
     }
@@ -693,7 +694,7 @@ bool CMusicInfoScanner::HasSingleAlbum(const VECSONGS &songs, CStdString &album,
     if (song.strAlbum.IsEmpty())
       return false;
 
-    CStdString albumArtist = song.strAlbumArtist.IsEmpty() ? StringUtils::Join(song.artist, g_advancedSettings.m_musicItemSeparator) : song.strAlbumArtist;
+    CStdString albumArtist = StringUtils::Join(song.albumArtist.empty() ? song.artist : song.albumArtist, g_advancedSettings.m_musicItemSeparator);
 
     if (!album.IsEmpty() && (album != song.strAlbum || artist != albumArtist))
       return false; // have more than one album

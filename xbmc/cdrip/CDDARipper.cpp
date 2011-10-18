@@ -93,7 +93,7 @@ bool CCDDARipper::Init(const CStdString& strTrackFile, const CStdString& strFile
   m_pEncoder->SetArtist(StringUtils::Join(infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator).c_str());
   m_pEncoder->SetTitle(infoTag.GetTitle().c_str());
   m_pEncoder->SetAlbum(infoTag.GetAlbum().c_str());
-  m_pEncoder->SetAlbumArtist(infoTag.GetAlbumArtist().c_str());
+  m_pEncoder->SetAlbumArtist(StringUtils::Join(infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator).c_str());
   m_pEncoder->SetGenre(StringUtils::Join(infoTag.GetGenre(), g_advancedSettings.m_musicItemSeparator).c_str());
   m_pEncoder->SetTrack(strTrack.c_str());
   m_pEncoder->SetTrackLength(m_cdReader.GetTrackLength());
@@ -405,7 +405,7 @@ CStdString CCDDARipper::GetAlbumDirName(const MUSIC_INFO::CMusicInfoTag& infoTag
   // replace %A with album artist name
   if (strAlbumDir.Find("%A") != -1)
   {
-    CStdString strAlbumArtist = infoTag.GetAlbumArtist();
+    CStdString strAlbumArtist = StringUtils::Join(infoTag.GetAlbumArtist(), g_advancedSettings.m_musicItemSeparator);
     if (strAlbumArtist.IsEmpty())
       strAlbumArtist = StringUtils::Join(infoTag.GetArtist(), g_advancedSettings.m_musicItemSeparator);
     if (strAlbumArtist.IsEmpty())
