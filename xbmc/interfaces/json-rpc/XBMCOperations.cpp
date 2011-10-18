@@ -23,6 +23,7 @@
 #include "Application.h"
 #include "ApplicationMessenger.h"
 #include "Util.h"
+#include "utils/Variant.h"
 #include "powermanagement/PowerManager.h"
 
 using namespace JSONRPC;
