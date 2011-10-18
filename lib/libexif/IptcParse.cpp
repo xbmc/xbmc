@@ -37,6 +37,7 @@
 #include "ExifParse.h"
 
 // Supported IPTC entry types
+#define IPTC_RECORD_VERSION         0x00
 #define IPTC_SUPLEMENTAL_CATEGORIES 0x14
 #define IPTC_KEYWORDS               0x19
 #define IPTC_CAPTION                0x78
@@ -58,6 +59,9 @@
 #define IPTC_COPYRIGHT              0x0A
 #define IPTC_COUNTRY_CODE           0x64
 #define IPTC_REFERENCE_SERVICE      0x2D
+#define IPTC_TIME_CREATED           0x3C
+#define IPTC_SUB_LOCATION           0x5C
+#define IPTC_IMAGE_TYPE             0x82
 
 
 //--------------------------------------------------------------------------
@@ -89,66 +93,103 @@ bool CIptcParse::Process (const unsigned char* const Data, const unsigned short 
 
   // Check IPTC signatures
   char* pos = (char*)(Data + sizeof(short));  // position data pointer after length field
+  char* maxpos = (char*)(Data+itemlen);
+  unsigned char headerLen = 0;
+  unsigned char dataLen = 0;
+  memset(info, 0, sizeof(IPTCInfo_t));
 
-  if (memcmp(pos, IptcSignature1, strlen(IptcSignature1)) != 0) return false;
-  pos += strlen(IptcSignature1) + 1;          // move data pointer to the next field
+  if (itemlen < 25) return false;
 
-  if (memcmp(pos, IptcSignature2, strlen(IptcSignature2)) != 0) return false;
-  pos += strlen(IptcSignature2);              // move data pointer to the next field
+  if (memcmp(pos, IptcSignature1, strlen(IptcSignature1)-1) != 0) return false;
+  pos += sizeof(IptcSignature1);          // move data pointer to the next field
 
-  if (memcmp(pos, IptcSignature3, sizeof(IptcSignature3)) != 0) return false;
-  pos += sizeof(IptcSignature3);              // move data pointer to the next field
+  if (memcmp(pos, IptcSignature2, strlen(IptcSignature2)-1) != 0) return false;
+  pos += sizeof(IptcSignature2)-1;              // move data pointer to the next field
+
+  while (memcmp(pos, IptcSignature3, sizeof(IptcSignature3)) != 0) { // loop on valid Photoshop blocks
+
+    pos += sizeof(IptcSignature3); // move data pointer to the Header Length
+    // Skip header
+    headerLen = *pos; // get header length and move data pointer to the next field
+    pos += (headerLen & 0xfe) + 2; // move data pointer to the next field (Header is padded to even length, counting the length byte)
+
+    pos += 3; // move data pointer to length, assume only one byte, TODO: use all 4 bytes
+
+    dataLen = *pos++;
+    pos += dataLen; // skip data section
+
+    if (memcmp(pos, IptcSignature2, sizeof(IptcSignature2) - 1) != 0) return false;
+    pos += sizeof(IptcSignature2) - 1; // move data pointer to the next field
+  }
+
+  pos += sizeof(IptcSignature3);          // move data pointer to the next field
+  if (pos >= maxpos) return false;
 
   // IPTC section found
 
   // Skip header
-  unsigned char headerLen = *pos++;           // get header length and move data pointer to the next field
+  headerLen = *pos++;           // get header length and move data pointer to the next field
   pos += headerLen + 1 - (headerLen % 2);     // move data pointer to the next field (Header is padded to even length, counting the length byte)
 
+  if (pos + 4 >= maxpos) return false;
+
   // Get length (Motorola format)
-  unsigned long length = CExifParse::Get32(pos);
+  //unsigned long length = CExifParse::Get32(pos);
+
   pos += 4;                                   // move data pointer to the next field
 
   // Now read IPTC data
   while (pos < (char*)(Data + itemlen-5))
   {
+    if (pos + 5 > maxpos) return false;
+
     short signature = (*pos << 8) + (*(pos+1));
 
     pos += sizeof(short);
-    if (signature != 0x1C02)
+    if (signature != 0x1C01 && signature != 0x1C02)
       break;
 
     unsigned char  type = *pos++;
     unsigned short length  = (*pos << 8) + (*(pos+1));
     pos += sizeof(short);                   // Skip tag length
+
+    if (pos + length > maxpos) return false;
+
     // Process tag here
     char *tag = NULL;
-    switch (type)
+    if (signature == 0x1C02)
     {
-      case IPTC_SUPLEMENTAL_CATEGORIES:   tag = info->SupplementalCategories;  break;
-      case IPTC_KEYWORDS:                 tag = info->Keywords;                break;
-      case IPTC_CAPTION:                  tag = info->Caption;                 break;
-      case IPTC_AUTHOR:                   tag = info->Author;                  break;
-      case IPTC_HEADLINE:                 tag = info->Headline;                break;
-      case IPTC_SPECIAL_INSTRUCTIONS:     tag = info->SpecialInstructions;     break;
-      case IPTC_CATEGORY:                 tag = info->Category;                break;
-      case IPTC_BYLINE:                   tag = info->Byline;                  break;
-      case IPTC_BYLINE_TITLE:             tag = info->BylineTitle;             break;
-      case IPTC_CREDIT:                   tag = info->Credit;                  break;
-      case IPTC_SOURCE:                   tag = info->Source;                  break;
-      case IPTC_COPYRIGHT_NOTICE:         tag = info->CopyrightNotice;         break;
-      case IPTC_OBJECT_NAME:              tag = info->ObjectName;              break;
-      case IPTC_CITY:                     tag = info->City;                    break;
-      case IPTC_STATE:                    tag = info->State;                   break;
-      case IPTC_COUNTRY:                  tag = info->Country;                 break;
-      case IPTC_TRANSMISSION_REFERENCE:   tag = info->TransmissionReference;   break;
-      case IPTC_DATE:                     tag = info->Date;                    break;
-      case IPTC_COPYRIGHT:                tag = info->Copyright;               break;
-      case IPTC_REFERENCE_SERVICE:        tag = info->ReferenceService;        break;
-      case IPTC_COUNTRY_CODE:             tag = info->CountryCode;             break;
-      default:
-        printf("IptcParse: Unrecognised IPTC tag: 0x%02x", type);
-      break;
+      switch (type)
+      {
+        case IPTC_RECORD_VERSION:           tag = info->RecordVersion;           break;
+        case IPTC_SUPLEMENTAL_CATEGORIES:   tag = info->SupplementalCategories;  break;
+        case IPTC_KEYWORDS:                 tag = info->Keywords;                break;
+        case IPTC_CAPTION:                  tag = info->Caption;                 break;
+        case IPTC_AUTHOR:                   tag = info->Author;                  break;
+        case IPTC_HEADLINE:                 tag = info->Headline;                break;
+        case IPTC_SPECIAL_INSTRUCTIONS:     tag = info->SpecialInstructions;     break;
+        case IPTC_CATEGORY:                 tag = info->Category;                break;
+        case IPTC_BYLINE:                   tag = info->Byline;                  break;
+        case IPTC_BYLINE_TITLE:             tag = info->BylineTitle;             break;
+        case IPTC_CREDIT:                   tag = info->Credit;                  break;
+        case IPTC_SOURCE:                   tag = info->Source;                  break;
+        case IPTC_COPYRIGHT_NOTICE:         tag = info->CopyrightNotice;         break;
+        case IPTC_OBJECT_NAME:              tag = info->ObjectName;              break;
+        case IPTC_CITY:                     tag = info->City;                    break;
+        case IPTC_STATE:                    tag = info->State;                   break;
+        case IPTC_COUNTRY:                  tag = info->Country;                 break;
+        case IPTC_TRANSMISSION_REFERENCE:   tag = info->TransmissionReference;   break;
+        case IPTC_DATE:                     tag = info->Date;                    break;
+        case IPTC_COPYRIGHT:                tag = info->Copyright;               break;
+        case IPTC_REFERENCE_SERVICE:        tag = info->ReferenceService;        break;
+        case IPTC_COUNTRY_CODE:             tag = info->CountryCode;             break;
+        case IPTC_TIME_CREATED:             tag = info->TimeCreated;             break;
+        case IPTC_SUB_LOCATION:             tag = info->SubLocation;             break;
+        case IPTC_IMAGE_TYPE:               tag = info->ImageType;               break;
+        default:
+          printf("IptcParse: Unrecognised IPTC tag: 0x%02x", type);
+          break;
+      }
     }
 
     if (tag)
