@@ -36,6 +36,8 @@
 #include "utils.h"
 #include "MemoryReader.h"
 
+using namespace ADDON;
+
 CTsReader::CTsReader()
 {
   m_fileReader      = NULL;
