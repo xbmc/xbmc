@@ -1622,7 +1622,7 @@
   <string id="19070">Ohjelmatietojen haun aikakatkaisu</string>
   <string id="19071">Ohjelmatietojen päivitysväli</string>
   <string id="19072">Älä tallenna ohjelmatietoja tietokantaan</string>
-  <string id="19073">Vaihda kanavaa jos toisto ei ala</string>
+  <string id="19073">Viivytä kanavanvaihtoa</string>
   <string id="19074">Käytössä:</string>
   <string id="19075">Nimi:</string>
   <string id="19076">Kansio:</string>
@@ -1781,6 +1781,16 @@
   <string id="19231">Käytä taustaosien kanavajärjestystä</string>
   <string id="19232">Tyhjennä hakutulokset</string>
   <string id="19233">Näytä ilmoitus ajastustietojen päivityksen yhteydessä</string>
+  <string id="19234">Käytä taustaosan kanavanumeroita (vain 1 PVR-lisäosa kerrallaan)</string>
+  <string id="19235">PVR-hallinta käynnistyy</string>
+  <string id="19236">tuodaan kanavat</string>
+  <string id="19237">tuodaan ajastukset</string>
+  <string id="19238">tuodaan nauhoitukset</string>
+  <string id="19239">käynnistetään taustasäikeet</string>
+  <string id="19240">Ei käytössä olevia PVR-lisäosia</string>
+  <string id="19241">PVR-hallinta on otettu käyttöön ilman yhtään</string>
+  <string id="19242">käytössä olevaa PVR-lisäosaa. Ota käyttöön vähintään</string>
+  <string id="19243">yksi lisäosa mikäli haluat käyttää PVR toimintoja.</string>
 
   <string id="19499">Muu/Tuntematon</string>
   <string id="19500">Elokuva/Draama</string>
