@@ -67,7 +67,7 @@ void CGUIFadeLabelControl::SetInfo(const vector<CGUIInfoLabel> &infoLabels)
 
 void CGUIFadeLabelControl::AddLabel(const string &label)
 {
-  m_infoLabels.push_back(CGUIInfoLabel(label));
+  m_infoLabels.push_back(CGUIInfoLabel(label, "", GetParentID()));
 }
 
 void CGUIFadeLabelControl::Process(unsigned int currentTime, CDirtyRegionList &dirtyregions)
