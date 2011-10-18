@@ -47,4 +47,5 @@
     <string id="30043">Kanavahaku virhe</string>
     <string id="30044">Yhteys VDR-palvelimeen menetetty</string>
     <string id="30045">Yhteys VDR-palvelimeen palautettu</string>
+    <string id="30046">Luo kanavaryhmät automaattisesti palvelimella</string>
 </strings>
