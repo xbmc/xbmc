@@ -3415,8 +3415,8 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
       if (iPlaylist != PLAYLIST_NONE)
       {
         int track=0;
-        if (item.HasProperty("start_offset"))
-          track = item.GetProperty("start_offset").asInteger();
+        if (item.HasProperty("playlist_starting_track"))
+          track = item.GetProperty("playlist_starting_track").asInteger();
         return ProcessAndStartPlaylist(item.GetPath(), *pPlayList, iPlaylist, track);
       }
       else
