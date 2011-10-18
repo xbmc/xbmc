@@ -34,6 +34,8 @@
 #include "utils.h"
 #include <wchar.h>
 
+using namespace ADDON;
+
 //Maximum time in msec to wait for the buffer file to become available - Needed for DVB radio (this sometimes takes some time)
 #define MAX_BUFFER_TIMEOUT 1500
 

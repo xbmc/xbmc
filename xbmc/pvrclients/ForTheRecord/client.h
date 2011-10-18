@@ -45,7 +45,7 @@ extern bool         g_bRadioEnabled;
 
 extern std::string  g_szBaseURL;
 
-extern CHelper_libXBMC_addon *XBMC;
+extern ADDON::CHelper_libXBMC_addon *XBMC;
 extern CHelper_libXBMC_pvr   *PVR;
 
 #endif /* CLIENT_H */

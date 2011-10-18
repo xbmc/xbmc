@@ -33,6 +33,8 @@
 #include "libPlatform/os-dependent.h"
 //#include "os-dependent.h"
 
+using namespace ADDON;
+
 FileReader::FileReader() :
   m_hFile(INVALID_HANDLE_VALUE),
   m_hInfoFile(INVALID_HANDLE_VALUE),

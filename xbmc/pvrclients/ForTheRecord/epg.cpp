@@ -26,6 +26,8 @@ using namespace std;
 #include "client.h"
 #include "pvrclient-fortherecord.h"
 
+using namespace ADDON;
+
 cEpg::cEpg()
 {
   m_starttime       = 0;

@@ -24,6 +24,8 @@
 #include "fortherecordrpc.h"
 #include "KeepAliveThread.h"
 
+using namespace ADDON;
+
 CKeepAliveThread::CKeepAliveThread()
 {
   XBMC->Log(LOG_DEBUG, "CKeepAliveThread:: constructor");

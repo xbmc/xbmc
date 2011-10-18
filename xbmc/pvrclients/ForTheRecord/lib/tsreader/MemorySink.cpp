@@ -26,6 +26,8 @@
 #include "AutoLock.h"
 #include "client.h"
 
+using namespace ADDON;
+
 #define SUBMIT_BUF_SIZE (1316*30)
 
 CMemorySink::CMemorySink(UsageEnvironment& env,CMemoryBuffer& buffer, unsigned bufferSize) 
