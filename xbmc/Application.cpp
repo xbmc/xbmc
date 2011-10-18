@@ -129,6 +129,9 @@
 #ifdef HAS_EVENT_SERVER
 #include "network/EventServer.h"
 #endif
+#ifdef HAS_DBUS
+#include <dbus/dbus.h>
+#endif
 #ifdef HAS_HTTPAPI
 #include "interfaces/http-api/XBMChttp.h"
 #endif
