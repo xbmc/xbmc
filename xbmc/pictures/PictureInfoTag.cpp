@@ -345,9 +345,9 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
   case SLIDE_EXIF_FOCAL_LENGTH:
     if (m_exifInfo.FocalLength)
     {
-      value.Format("%4.2fmm", m_exifInfo.FocalLength);
+      value.Format("%2.0fmm", m_exifInfo.FocalLength);
       if (m_exifInfo.FocalLength35mmEquiv != 0)
-        value.AppendFormat("  (35mm Equivalent = %umm)", m_exifInfo.FocalLength35mmEquiv);
+        value.AppendFormat(" (%umm)", m_exifInfo.FocalLength35mmEquiv);
     }
     break;
   case SLIDE_EXIF_FOCUS_DIST:
@@ -372,12 +372,10 @@ const CStdString CPictureInfoTag::GetInfo(int info) const
   case SLIDE_EXIF_EXPOSURE_TIME:
     if (m_exifInfo.ExposureTime)
     {
-      if (m_exifInfo.ExposureTime < 0.010f)
-        value.Format("%6.4fs", m_exifInfo.ExposureTime);
-      else
-        value.Format("%5.3fs", m_exifInfo.ExposureTime);
       if (m_exifInfo.ExposureTime <= 0.5)
-        value.AppendFormat(" (1/%d)", (int)(0.5 + 1/m_exifInfo.ExposureTime));
+        value.Format("1/%ds", (int)(0.5 + 1/m_exifInfo.ExposureTime));
+      else
+        value.Format("%2.0fs", m_exifInfo.ExposureTime);
     }
     break;
   case SLIDE_EXIF_EXPOSURE_BIAS:
