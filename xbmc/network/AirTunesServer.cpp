@@ -236,6 +236,9 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
 
   if (success)
   {
+    CStdString appName;
+    appName.Format("%s@%s", m_macAddress.c_str(), g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str());
+
     std::map<std::string, std::string> txt;
     txt["cn"] = "0,1";
     txt["ch"] = "2";
@@ -250,7 +253,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
     txt["vn"] = "3";
     txt["txtvers"] = "1";
 
-    CZeroconf::GetInstance()->PublishService("servers.airtunes", "_raop._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), port, txt);
+    CZeroconf::GetInstance()->PublishService("servers.airtunes", "_raop._tcp", appName, port, txt);
   }
 
   return success;
