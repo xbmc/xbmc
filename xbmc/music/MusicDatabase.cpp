@@ -3134,6 +3134,8 @@ bool CMusicDatabase::UpdateOldVersion(int version)
   if (NULL == m_pDS.get()) return false;
   if (NULL == m_pDS2.get()) return false;
 
+  BeginTransaction();
+
   try
   {
     if (version < 16)
@@ -3226,9 +3228,12 @@ bool CMusicDatabase::UpdateOldVersion(int version)
       m_pDS->exec("CREATE INDEX idxSong4 ON song(idArtist)");
       m_pDS->exec("CREATE INDEX idxSong5 ON song(idGenre)");
       m_pDS->exec("CREATE INDEX idxSong6 ON song(idPath)");
-
-      CreateViews();
     }
+
+    // always recreate the views after any table change
+    CreateViews();
+
+    CommitTransaction();
   }
   catch (...)
   {

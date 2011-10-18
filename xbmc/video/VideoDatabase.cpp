@@ -3328,9 +3328,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
 {
   BeginTransaction();
 
-  // when adding/removing an index or altering the table ensure that you call
-  // CreateViews() after all modifications.
-
   try
   {
     if (iVersion < 43)
@@ -3431,10 +3428,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("CREATE INDEX ixEpisodeBasePath ON episode ( c18(255) )");
       m_pDS->exec("CREATE INDEX ixTVShowBasePath ON tvshow ( c16(255) )");
     }
-    if(iVersion < 49)
-    {
-      CreateViews();
-    }
     if (iVersion < 50)
     {
       m_pDS->exec("ALTER TABLE settings ADD ScalingMethod integer");
@@ -3468,10 +3461,6 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       UpdateBasePathID("episode", "idEpisode", VIDEODB_ID_EPISODE_BASEPATH, VIDEODB_ID_EPISODE_PARENTPATHID);
       UpdateBasePathID("tvshow", "idShow", VIDEODB_ID_TV_BASEPATH, VIDEODB_ID_TV_PARENTPATHID);
     }
-    if ( iVersion < 53 )
-    {
-      CreateViews();
-    }
     if (iVersion < 54)
     { // Change INDEX for bookmark table
       m_pDS->dropIndex("bookmark", "ix_bookmark");
@@ -3484,19 +3473,9 @@ bool CVideoDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("UPDATE settings SET DeinterlaceMode = 1 WHERE Deinterlace = 1"); // method auto => mode auto
       m_pDS->exec("UPDATE settings SET DeinterlaceMode = 0, Deinterlace = 1 WHERE Deinterlace = 0"); // method none => mode off, method auto
     }
-    if ( iVersion < 56 )
-    {
-      // Add the tv shows basepath to the episodeview
-      m_pDS->exec("DROP VIEW IF EXISTS episodeview");
-      CStdString episodeview = PrepareSQL("create view episodeview as select episode.*,files.strFileName as strFileName,"
-                                          "path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed,tvshow.c%02d as strTitle,tvshow.c%02d as strStudio,tvshow.idShow as idShow,"
-                                          "tvshow.c%02d as premiered, tvshow.c%02d as mpaa, tvshow.c%02d as strShowPath from episode "
-                                          "join files on files.idFile=episode.idFile "
-                                          "join tvshowlinkepisode on episode.idEpisode=tvshowlinkepisode.idEpisode "
-                                          "join tvshow on tvshow.idShow=tvshowlinkepisode.idShow "
-                                          "join path on files.idPath=path.idPath",VIDEODB_ID_TV_TITLE, VIDEODB_ID_TV_STUDIOS, VIDEODB_ID_TV_PREMIERED, VIDEODB_ID_TV_MPAA, VIDEODB_ID_TV_BASEPATH);
-      m_pDS->exec(episodeview.c_str());
-    }
+
+    // always recreate the view after any table change
+    CreateViews();
   }
   catch (...)
   {
