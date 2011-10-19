@@ -84,7 +84,9 @@ class FileUtils
 		/** Returns the file name part of a file path, including the extension. */
 		static std::string fileName(const char* path);
 
-		/** Returns the directory part of a file path. */
+		/** Returns the directory part of a file path.
+		 * On Windows this includes the drive letter, if present in @p path.
+		 */
 		static std::string dirname(const char* path);
 
 		/** Remove a directory and all of its contents. */

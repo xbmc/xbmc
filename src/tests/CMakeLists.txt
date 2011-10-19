@@ -36,6 +36,12 @@ add_executable(TestUpdaterOptions
 target_link_libraries(TestUpdaterOptions
   updatershared
 )
+add_executable(TestFileUtils
+  TestFileUtils.cpp
+)
+target_link_libraries(TestFileUtils
+  updatershared
+)
   
 if (APPLE)
 	set_target_properties(TestUpdateScript PROPERTIES LINK_FLAGS "-framework Security -framework Cocoa")

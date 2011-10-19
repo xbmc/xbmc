@@ -335,7 +335,14 @@ std::string FileUtils::dirname(const char* path)
 	  0  /* extension length */
 	);
 
-	return std::string(dir);
+	std::string result;
+	if (drive[0])
+	{
+		result += std::string(drive);
+	}
+	result += dir;
+
+	return result;
 #endif
 }
 
