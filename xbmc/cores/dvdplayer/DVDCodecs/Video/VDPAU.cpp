@@ -151,6 +151,9 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int su
     }
   }
 
+  if (!m_dllAvUtil.Load())
+    return false;
+
   InitVDPAUProcs();
 
   if (vdp_device != VDP_INVALID_HANDLE)
@@ -212,6 +215,7 @@ void CVDPAU::Close()
   FiniVDPAUProcs();
 
   g_Windowing.Unregister(this);
+  m_dllAvUtil.Unload();
 
   if (m_glPixmap)
   {
@@ -431,19 +435,24 @@ void CVDPAU::OnResetDevice()
 
 int CVDPAU::Check(AVCodecContext* avctx)
 {
-  CSingleLock lock(m_DisplaySection);
+  EDisplayState state;
 
-  if (m_DisplayState == VDPAU_LOST)
+  { CSingleLock lock(m_DisplaySection);
+    state = m_DisplayState;
+  }
+
+  if (state == VDPAU_LOST)
   {
-    lock.Leave();
     if (!m_DisplayEvent.WaitMSec(2000))
     {
       CLog::Log(LOGERROR, "CVDPAU::Check - device didn't reset in reasonable time");
       return VC_ERROR;
     }
-    lock.Enter();
+    { CSingleLock lock(m_DisplaySection);
+      state = m_DisplayState;
+    }
   }
-  if (m_DisplayState == VDPAU_RESET)
+  if (state == VDPAU_RESET)
   {
     CLog::Log(LOGNOTICE,"Attempting recovery");
 
@@ -451,8 +460,6 @@ int CVDPAU::Check(AVCodecContext* avctx)
     FiniVDPAUProcs();
 
     InitVDPAUProcs();
-
-    m_DisplayState = VDPAU_OPEN;
 
     return VC_FLUSHED;
   }
@@ -863,6 +870,7 @@ void CVDPAU::FiniVDPAUOutput()
     vdp_st = vdp_video_surface_destroy(m_videoSurfaces[i]->surface);
     CheckStatus(vdp_st, __LINE__);
     m_videoSurfaces[i]->surface = VDP_INVALID_HANDLE;
+    m_dllAvUtil.av_freep(&m_videoSurfaces[i]->bitstream_buffers);
     free(m_videoSurfaces[i]);
   }
   m_videoSurfaces.clear();
@@ -1065,6 +1073,11 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     VdpDecoderProfile profile;
     ReadFormatOf(avctx->pix_fmt, profile, vdp->vdp_chroma_type);
     render = (vdpau_render_state*)calloc(sizeof(vdpau_render_state), 1);
+    if (render == NULL)
+    {
+      CLog::Log(LOGWARNING, "CVDPAU::FFGetBuffer - calloc failed");
+      return -1;
+    }
     vdp_st = vdp->vdp_video_surface_create(vdp->vdp_device,
                                            vdp->vdp_chroma_type,
                                            avctx->width,
@@ -1112,19 +1125,38 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 void CVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
-  vdpau_render_state * render;
-  int i;
+  CDVDVideoCodecFFmpeg* ctx        = (CDVDVideoCodecFFmpeg*)avctx->opaque;
+  CVDPAU*               vdp        = (CVDPAU*)ctx->GetHardware();
+  vdpau_render_state  * render;
+  unsigned int i;
 
   render=(vdpau_render_state*)pic->data[0];
   if(!render)
   {
-    CLog::Log(LOGERROR, "CVDPAU::FFDrawSlice - invalid context handle provided");
+    CLog::Log(LOGERROR, "CVDPAU::FFReleaseBuffer - invalid context handle provided");
+    return;
+  }
+
+  for(i=0; i<4; i++)
+    pic->data[i]= NULL;
+
+  // find render state in queue
+  bool found(false);
+  for(i = 0; i < vdp->m_videoSurfaces.size(); ++i)
+  {
+    if(vdp->m_videoSurfaces[i] == render)
+    {
+      found = true;
+      break;
+    }
+  }
+  if (!found)
+  {
+    CLog::Log(LOGDEBUG, "CVDPAU::FFReleaseBuffer - buffer not found");
     return;
   }
 
   render->state &= ~FF_VDPAU_STATE_USED_FOR_REFERENCE;
-  for(i=0; i<4; i++)
-    pic->data[i]= NULL;
 }
 
 
