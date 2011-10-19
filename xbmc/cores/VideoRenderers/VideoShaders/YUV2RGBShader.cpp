@@ -239,7 +239,7 @@ bool BaseYUV2RGBGLSLShader::OnEnabled()
 #if HAS_GLES == 2
   glUniformMatrix4fv(m_hProj,  1, GL_FALSE, m_proj);
   glUniformMatrix4fv(m_hModel, 1, GL_FALSE, m_model);
-  glUniform1i(m_hAlpha, m_alpha);
+  glUniform1f(m_hAlpha, m_alpha);
 #endif
   VerifyGLState();
   return true;
