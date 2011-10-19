@@ -2026,6 +2026,7 @@ void CApplication::Render()
   if(!g_Windowing.BeginRender())
     return;
 
+  CDirtyRegionList dirtyRegions = g_windowManager.GetDirty();
   if (RenderNoPresent())
     hasRendered = true;
 
@@ -2065,7 +2066,7 @@ void CApplication::Render()
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
 
   if (flip)
-    g_graphicsContext.Flip(g_windowManager.GetDirty());
+    g_graphicsContext.Flip(dirtyRegions);
   CTimeUtils::UpdateFrameTime(flip);
 
   g_renderManager.UpdateResolution();
