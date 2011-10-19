@@ -324,7 +324,10 @@ int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const Periphera
 
     if (bBusMatch && bVendorMatch && bProductMatch && bClassMatch)
     {
-      CLog::Log(LOGDEBUG, "%s - device (%s:%s) mapped to %s (type = %s)", __FUNCTION__, PeripheralTypeTranslator::IntToHexString(iVendorId), PeripheralTypeTranslator::IntToHexString(iProductId), mapping.m_strDeviceName.c_str(), PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
+      CStdString strVendorId, strProductId;
+      PeripheralTypeTranslator::FormatHexString(iVendorId, strVendorId);
+      PeripheralTypeTranslator::FormatHexString(iProductId, strProductId);
+      CLog::Log(LOGDEBUG, "%s - device (%s:%s) mapped to %s (type = %s)", __FUNCTION__, strVendorId.c_str(), strProductId.c_str(), mapping.m_strDeviceName.c_str(), PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
       return iMappingPtr;
     }
   }

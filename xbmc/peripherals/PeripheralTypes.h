@@ -155,16 +155,14 @@ namespace PERIPHERALS
       return iVal;
     };
 
-    static char *IntToHexString(int iVal)
+    static void FormatHexString(int iVal, CStdString &strHexString)
     {
       if (iVal < 0)
         iVal = 0;
       if (iVal > 65536)
         iVal = 65536;
 
-      char *buf = new char[4];
-      sprintf(buf, "%04X", iVal);
-      return buf;
+      strHexString.Format("%04X", iVal);
     };
   };
 }
