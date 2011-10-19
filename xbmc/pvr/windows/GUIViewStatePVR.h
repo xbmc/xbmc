@@ -35,6 +35,6 @@ namespace PVR
   protected:
     virtual bool AutoPlayNextItem(void) { return false; };
     virtual bool HideParentDirItems(void) { return true; }
-    virtual void SaveViewState(void) {};
+    virtual void SaveViewState(void);
   };
 }

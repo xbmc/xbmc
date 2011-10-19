@@ -104,6 +104,15 @@ protected:
   struct PCMMapInfo  m_lookupMap[PCM_MAX_CH + 1][PCM_MAX_CH + 1];
   int                m_counts[PCM_MAX_CH];
 
+  float*             m_buf;
+  int                m_bufsize;
+  float              m_attenuation;
+  float              m_attenuationInc;
+  float              m_attenuationMin; //lowest attenuation value during a call of Remap(), used for the codec info
+  float              m_sampleRate;
+  unsigned int       m_holdCounter;
+  bool               m_limiterEnabled;
+
   struct PCMMapInfo* ResolveChannel(enum PCMChannels channel, float level, bool ifExists, std::vector<enum PCMChannels> path, struct PCMMapInfo *tablePtr);
   void               ResolveChannels(); //!< Partial BuildMap(), just enough to see which output channels are active
   void               BuildMap();
@@ -111,19 +120,28 @@ protected:
   void               Dispose();
   CStdString         PCMChannelStr(enum PCMChannels ename);
   CStdString         PCMLayoutStr(enum PCMLayout ename);
+
+  void               CheckBufferSize(int size);
+  void               ProcessInput(void* data, void* out, unsigned int samples, float gain);
+  void               AddGain(float* buf, unsigned int samples, float gain);
+  void               ProcessLimiter(unsigned int samples, float gain);
+  void               ProcessOutput(void* out, unsigned int samples, float gain);
+
 public:
 
   CPCMRemap();
   ~CPCMRemap();
 
   void Reset();
-  enum PCMChannels *SetInputFormat (unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize);
+  enum PCMChannels *SetInputFormat (unsigned int channels, enum PCMChannels *channelMap, unsigned int sampleSize, unsigned int sampleRate);
   void SetOutputFormat(unsigned int channels, enum PCMChannels *channelMap, bool ignoreLayout = false);
-  void Remap(void *data, void *out, unsigned int samples);
+  void Remap(void *data, void *out, unsigned int samples, long drc);
+  void Remap(void *data, void *out, unsigned int samples, float gain = 1.0f);
   bool CanRemap();
   int  InBytesToFrames (int bytes );
   int  FramesToOutBytes(int frames);
   int  FramesToInBytes (int frames);
+  float GetCurrentAttenuation() { return m_attenuationMin; }
 };
 
 #endif

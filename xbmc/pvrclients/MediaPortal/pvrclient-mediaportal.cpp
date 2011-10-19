@@ -38,6 +38,7 @@
 #endif
 
 using namespace std;
+using namespace ADDON;
 
 /* Globals */
 int g_iTVServerXBMCBuild = 0;
@@ -1250,12 +1251,14 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
       if (g_iTVServerXBMCBuild >=90 )
       { // Continue with the existing TsReader.
         XBMC->Log(LOG_INFO, "Re-using existing TsReader...");
+#ifdef TARGET_WINDOWS
         if(g_bDirectTSFileRead)
         {
           // Timeshift buffer
           return m_tsreader->OnZap(timeshiftfields[2].c_str());
         }
         else
+#endif //TARGET_WINDOWS
         {
           // RTSP url
           return m_tsreader->OnZap(timeshiftfields[0].c_str());
@@ -1274,8 +1277,9 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
       XBMC->Log(LOG_INFO, "Creating a new TsReader...");
       m_tsreader = new CTsReader();
     }
-
-    if(g_bDirectTSFileRead)
+#ifdef TARGET_WINDOWS
+    // Reading directly from the timeshift buffer is only supported under Windows at the moment
+    if (g_bDirectTSFileRead)
     { // Timeshift buffer
       if (g_szTimeshiftDir.length() > 0)
       {
@@ -1286,8 +1290,9 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
         return false;
     }
     else
+#endif //TARGET_WINDOWS
     {
-      // RTSP url
+      // use the RTSP url and live555
       if ( m_tsreader->Open(timeshiftfields[0].c_str()) != S_OK)
         return false;
       usleep(400000);

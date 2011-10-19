@@ -228,6 +228,18 @@ void URIUtils::GetCommonPath(CStdString& strParent, const CStdString& strPath)
   }
 }
 
+bool URIUtils::ProtocolHasParentInHostname(const CStdString& prot)
+{
+  return prot.Equals("zip")
+      || prot.Equals("rar");
+}
+
+bool URIUtils::ProtocolHasEncodedHostname(const CStdString& prot)
+{
+  return ProtocolHasParentInHostname(prot)
+      || prot.Equals("musicsearch");
+}
+
 CStdString URIUtils::GetParentPath(const CStdString& strPath)
 {
   CStdString strReturn;
@@ -241,7 +253,7 @@ bool URIUtils::GetParentPath(const CStdString& strPath, CStdString& strParent)
 
   CURL url(strPath);
   CStdString strFile = url.GetFileName();
-  if ( ((url.GetProtocol() == "rar") || (url.GetProtocol() == "zip")) && strFile.IsEmpty())
+  if ( URIUtils::ProtocolHasParentInHostname(url.GetProtocol()) && strFile.IsEmpty())
   {
     strFile = url.GetHostName();
     return GetParentPath(strFile, strParent);

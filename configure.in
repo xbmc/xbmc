@@ -20,7 +20,7 @@ AC_DEFUN([XB_FIND_SONAME],
 [
   if [[ "$host_vendor" != "apple" ]]; then
     AC_MSG_CHECKING([for lib$2 soname])
-    $1_FILENAME=$($CC -nostdlib $LDFLAGS -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
+    $1_FILENAME=$($CC -nostdlib -o /dev/null $LDFLAGS -l$2 -Wl,-M 2>/dev/null | grep "^LOAD.*$2" | awk '{V=2; print $V}')
     if [[ ! -z $$1_FILENAME ]]; then
       $1_SONAME=$(objdump -p $$1_FILENAME | grep "SONAME.*$2" | awk '{V=2; print $V}')
     fi
@@ -107,13 +107,24 @@ openmax_not_found="== Could not find libnvomx. OpenMax support disabled. =="
 ssh_not_found="== Could not find libssh. SSH FTP VFS support disabled. =="
 librtmp_not_found="== Could not find libRTMP. RTMP support disabled. =="
 librtmp_disabled="== RTMP support disabled. =="
-libnfs_not_found="== Could not find libnfs. NFS support disabled. =="
+libnfs_not_found="== Could not find libnfs. NFS client support disabled. =="
 libnfs_disabled="== NFS support disabled. =="
-libafpclient_not_found="== Could not find libafpclient. AFP support disabled. =="
+libafpclient_not_found="== Could not find libafpclient. AFP client support disabled. =="
 libafpclient_disabled="== AFP support disabled. =="
+libshairport_not_found="== Could not find libshairport. AirTunes support disabled. =="
+libshairport_disabled="== AirTunes support disabled. =="
+samba_disabled="== SAMBA support disabled. =="
+libplist_not_found="== Could not find libplist. AirPlay support disabled. =="
+libplist_disabled="== AirPlay support disabled. =="
 alsa_not_found="== Could not find ALSA. ALSA support disabled. =="
 dbus_not_found="== Could not find DBUS. DBUS support disabled. =="
 
+libudev_not_found="== Could not find libudev. Will use polling to check for device changes. =="
+libudev_disabled="== udev support disabled. Will use polling to check for device changes. =="
+libusb_not_found="== Could not find libusb. Plug and play USB device support will not be available. =="
+libusb_disabled="== libusb disabled. Plug and play USB device support will not be available. =="
+libcec_enabled="== libcec enabled. =="
+libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -270,6 +281,12 @@ AC_ARG_ENABLE([rtmp],
   [use_librtmp=$enableval],
   [use_librtmp=auto])
 
+AC_ARG_ENABLE([samba],
+  [AS_HELP_STRING([--disable-samba],
+  [disable SAMBA support (default is enabled)])],
+  [use_samba=$enableval],
+  [use_samba=yes])
+
 AC_ARG_ENABLE([nfs],
   [AS_HELP_STRING([--enable-nfs],
   [enable NFS support via libnfs (default is auto)])],
@@ -281,6 +298,18 @@ AC_ARG_ENABLE([afpclient],
   [enable AFP support via libafpclient (default is auto)])],
   [use_libafpclient=$enableval],
   [use_libafpclient=auto])
+
+AC_ARG_ENABLE([airplay],
+  [AS_HELP_STRING([--enable-airplay],
+  [enable AirPlay support(default is auto)])],
+  [use_airplay=$enableval],
+  [use_airplay=auto])
+
+AC_ARG_ENABLE([airtunes],
+  [AS_HELP_STRING([--enable-airtunes],
+  [enable AirTunes support(default is auto)])],
+  [use_airtunes=$enableval],
+  [use_airtunes=auto])
 
 AC_ARG_ENABLE([ffmpeg_libvorbis],
   [AS_HELP_STRING([--enable-ffmpeg-libvorbis],
@@ -354,6 +383,24 @@ AC_ARG_WITH([lirc-device],
   [lirc_device=$withval],
   [lirc_device=/dev/lircd])
 AC_DEFINE_UNQUOTED([LIRC_DEVICE], ["$lirc_device"], [Default LIRC device])
+
+AC_ARG_ENABLE([udev],
+  [AS_HELP_STRING([--enable-udev],
+  [enable udev support (default is auto)])],
+  [use_libudev=$enableval],
+  [use_libudev=auto])
+
+AC_ARG_ENABLE([libusb],
+  [AS_HELP_STRING([--enable-libusb],
+  [enable libusb support (default is auto)])],
+  [use_libusb=$enableval],
+  [use_libusb=auto])
+
+AC_ARG_ENABLE([libcec],
+  [AS_HELP_STRING([--enable-libcec],
+  [enable libcec support (default is auto)])],
+  [use_libcec=$enableval],
+  [use_libcec=auto])
 
 ### External libraries options
 AC_ARG_ENABLE([external-libraries],
@@ -647,7 +694,6 @@ AC_CHECK_LIB([crypto],      [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssl],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([mysqlclient], [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([ssh],         [sftp_tell64],, AC_MSG_RESULT([Could not find suitable version of libssh]))
-AC_CHECK_LIB([smbclient],   [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([bluetooth],   [hci_devid],, AC_MSG_RESULT([Could not find suitable version of libbluetooth]))
 AC_CHECK_LIB([yajl],        [main],, AC_MSG_ERROR($missing_library))
 
@@ -770,7 +816,6 @@ XB_FIND_SONAME([VORBISFILE],  [vorbisfile])
 XB_FIND_SONAME([MODPLUG],     [modplug])
 XB_FIND_SONAME([ASS],         [ass])
 XB_FIND_SONAME([MPEG2],       [mpeg2])
-XB_FIND_SONAME([PLIST],       [plist])
 
 # WebServer
 if test "$use_webserver" = "yes"; then
@@ -878,7 +923,7 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($goom_disabled)
   DISABLE_GOOM=1
 else
-  if test "$use_goom" = "yes" && test "use_gl" = "yes"; then
+  if test "$use_goom" = "yes" && test "$use_gl" = "yes"; then
     AC_MSG_NOTICE($goom_enabled)
     DISABLE_GOOM=0
   else
@@ -914,6 +959,17 @@ else
   DISABLE_PROJECTM=0
 fi
 
+# skin touched
+use_skin_touched=no
+if [[ -f "addons/skin.touched/addon.xml" ]]; then 
+  use_skin_touched=yes
+  USE_SKIN_TOUCHED=1
+  AC_DEFINE([HAS_SKIN_TOUCHED], [1], [Whether to build skin touched.])
+else
+  USE_SKIN_TOUCHED=0
+fi
+
+
 # libRTMP
 if test "$use_librtmp" != "no"; then
   AC_CHECK_HEADERS([librtmp/log.h librtmp/amf.h librtmp/rtmp.h],,
@@ -932,6 +988,21 @@ if test "$use_librtmp" != "no"; then
   fi
 else
   AC_MSG_NOTICE($librtmp_disabled)
+fi
+
+# samba
+if test "x$use_samba" != "xno"; then
+  AC_CHECK_LIB([smbclient], [main],,
+    use_samba=no;AC_MSG_ERROR($missing_library))
+    USE_LIBSMBCLIENT=0
+else
+  AC_MSG_RESULT($samba_disabled)
+  USE_LIBSMBCLIENT=0
+fi
+
+if test "x$use_samba" != "xno"; then
+  AC_DEFINE([HAVE_LIBSMBCLIENT], [1], [Define to 1 if you have Samba installed])
+  USE_LIBSMBCLIENT=1
 fi
 
 # libnfs
@@ -958,32 +1029,141 @@ else
   AC_MSG_NOTICE($libnfs_disabled)
 fi
 
-
 # libafpclient
 USE_LIBAFPCLIENT=0
-if test "$host_vendor" = "apple" ; then
-  if test "x$use_libafpclient" != "xno"; then
-    AC_CHECK_HEADERS([afpfs-ng/libafpclient.h],,
-     [if test "x$use_libafpclient" = "xyes"; then
-        AC_MSG_ERROR($libafpclient_not_found)
-      elif test "x$use_libafpclient" != "xno"; then
-        AC_MSG_NOTICE($libafpclient_not_found)
-        use_libafpclient="no"
-      fi
-     ])
-    if test "x$use_libafpclient" != "xno"; then
-      XB_FIND_SONAME([AFPCLIENT], [afpclient], [use_libafpclient])
-      AC_DEFINE([HAVE_LIBAFPCLIENT], [1], [Whether to use libafpclient library.])
-      USE_LIBAFPCLIENT=1
+if test "x$use_libafpclient" != "xno"; then
+  AC_CHECK_HEADERS([afpfs-ng/libafpclient.h],,
+   [if test "x$use_libafpclient" = "xyes"; then
+      AC_MSG_ERROR($libafpclient_not_found)
+    elif test "x$use_libafpclient" != "xno"; then
+      AC_MSG_NOTICE($libafpclient_not_found)
+      use_libafpclient="no"
     fi
-  else
-    AC_MSG_NOTICE($libafpclient_disabled)
+   ])
+  if test "x$use_libafpclient" != "xno"; then
+    XB_FIND_SONAME([AFPCLIENT], [afpclient], [use_libafpclient])
+    AC_DEFINE([HAVE_LIBAFPCLIENT], [1], [Whether to use libafpclient library.])
+    USE_LIBAFPCLIENT=1
   fi
 else
-  use_libafpclient="no"
+  AC_MSG_NOTICE($libafpclient_disabled)
+fi
+
+# libplist for airplay feature
+USE_AIRPLAY=0
+if test "$use_airplay" != "no"; then
+  AC_CHECK_LIB([plist],[main],,
+   [if test "$use_airplay" = "yes"; then
+      AC_MSG_ERROR($libplist_not_found)
+    elif test "$use_airplay" != "no"; then
+      AC_MSG_NOTICE($libplist_not_found)
+      use_airplay="no"
+    fi
+   ])
+
+  if test "$use_airplay" != "no"; then
+    XB_FIND_SONAME([PLIST], [plist], [use_airplay])
+    USE_AIRPLAY=1
+  fi
+fi
+
+# libshairport for AirTunes
+USE_AIRTUNES=0
+if test "x$use_airtunes" != "xno"; then
+  AC_CHECK_LIB([shairport], [shairport_set_ao],,
+   [if test "x$use_airtunes" = "xyes"; then
+      AC_MSG_ERROR($libshairport_not_found)
+    elif test "x$use_airtunes" != "xno"; then
+      AC_MSG_NOTICE($libshairport_not_found)
+      use_airtunes="no"
+    fi
+   ])
+
+  if test "x$use_airtunes" != "xno"; then
+    XB_FIND_SONAME([SHAIRPORT], [shairport], [use_airtunes])
+    USE_AIRTUNES=1
+  fi
+fi
+
+# libudev
+USE_LIBUDEV=0
+if test "$host_vendor" = "apple" ; then
+  use_libudev="no"
+  AC_MSG_NOTICE($libudev_disabled)
+else
+  if test "$use_libudev" = "auto"; then
+    PKG_CHECK_MODULES([UDEV],[libudev],,[use_libudev="no";AC_MSG_RESULT($libudev_not_found)])
+  elif test "$use_libudev" = "yes" ; then
+    PKG_CHECK_MODULES([UDEV],[libudev],,[use_libudev="no";AC_MSG_ERROR($libudev_not_found)])
+  fi
+  if test "x$use_libudev" != "xno"; then
+    USE_LIBUDEV=1;INCLUDES="$INCLUDES $UDEV_CFLAGS";LIBS="$LIBS $UDEV_LIBS"
+    AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"])
+  else
+     AC_MSG_NOTICE($libudev_disabled)
+  fi
+fi
+
+# libusb
+USE_LIBUSB=0
+if test "$host_vendor" = "apple" ; then
+  use_libusb="no"
+  AC_MSG_NOTICE($libusb_disabled)
+else
+  # we can use either libudev or libusb but not both.
+  if test "x$use_libusb" != "xno" && "x$use_libudev" == "xno"; then
+    if test "$host_vendor" = "apple" ; then
+      use_libusb="no"
+      AC_MSG_NOTICE($libusb_disabled)
+    else
+      if test "$use_libusb" = "auto"; then
+        PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_RESULT($libusb_not_found)])
+      elif test "$use_libusb" = "yes"; then
+        PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_ERROR($libusb_not_found)])
+      fi
+    fi
+    if test "x$use_libusb" != "xno"; then
+      USE_LIBUSB=1;INCLUDES="$INCLUDES $USB_CFLAGS";LIBS="$LIBS $USB_LIBS"
+      AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"])
+    else
+       AC_MSG_NOTICE($libusb_disabled)
+    fi
+  else
+    use_libusb="no"
+  fi
+fi
+
+# libcec
+USE_LIBCEC=0
+if test "x$use_libcec" != "xno"; then
+  # libcec is dyloaded, so we need to check for its headers and link any depends.
+  PKG_CHECK_MODULES([CEC],[libcec = 0.7.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
+  if test "x$use_libcec" != "xno" && test "$host_vendor" != "apple"; then
+    # libcec has libudev as depends under linux and we also need usb headers.
+    PKG_CHECK_MODULES([USB],[libusb],,[use_libcec="no";AC_MSG_RESULT($libusb_not_found)])
+    PKG_CHECK_MODULES([UDEV],[libudev],,[use_libcec="no";AC_MSG_RESULT($libudev_not_found)])
+  fi
+  if test "x$use_libcec" != "xno"; then
+    if test "$host_vendor" != "apple"; then
+      # if linux, bring in usb and udev cflags but only udev as lib.
+      INCLUDES="$INCLUDES $USB_CFLAGS $UDEV_CFLAGS";LIBS="$LIBS $UDEV_LIBS"
+      USE_LIBUDEV=1;AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"])
+    fi
+    INCLUDES="$INCLUDES $CEC_CFLAGS"
+    USE_LIBCEC=1;AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libcec is installed"])
+    XB_FIND_SONAME([LIBCEC],[cec],[use_libcec])
+    AC_MSG_NOTICE($libcec_enabled)
+  else
+    use_libcec="no"
+    AC_MSG_NOTICE($libcec_disabled)
+  fi
+else
+  use_libcec="no"
+  AC_MSG_NOTICE($libcec_disabled)
 fi
 
 ### External libraries checks
+
 # External FFmpeg
 if test "$use_external_ffmpeg" = "yes"; then
   FFMPEG_LIBNAMES="libavcodec libavfilter libavformat libavutil libpostproc libswscale"
@@ -1421,6 +1601,12 @@ else
   final_message="$final_message\n  ProjectM:\tNo"
 fi
 
+if test "$use_skin_touched" = "yes"; then
+  final_message="$final_message\n  Skin Touched:\tYes"
+else
+  final_message="$final_message\n  Skin Touched:\tNo"
+fi
+
 if test "$use_x11" = "yes"; then
   final_message="$final_message\n  X11:\t\tYes"
 else
@@ -1455,6 +1641,8 @@ else
   final_message="$final_message\n  MID Support:\tNo"
 fi
 
+ORIGCC=$CC
+ORIGCXX=$CXX
 if test "x$use_ccache" != "xno"; then
   AC_PATH_PROG(CCACHE,ccache,none)
   if test "$ac_cv_path_CCACHE" = "none"; then
@@ -1562,10 +1750,16 @@ else
   final_message="$final_message\n  libRTMP support:\tNo"
 fi
 
-if test "$use_libnfs" != "no"; then
-  final_message="$final_message\n  libnfs support:\tYes"
+if test "x$use_samba" != "xno"; then
+  final_message="$final_message\n  libsmbclient support:\tYes"
 else
-  final_message="$final_message\n  libnfs support:\tNo"
+  final_message="$final_message\n  libsmbclient support:\tNo"
+fi
+
+if test "$use_libnfs" != "no"; then
+  final_message="$final_message\n  libnfs client support:Yes"
+else
+  final_message="$final_message\n  libnfs client support:No"
 fi
 
 if test "x$use_libafpclient" != "xno"; then
@@ -1574,13 +1768,44 @@ else
   final_message="$final_message\n  libafpclient support:\tNo"
 fi
 
+if test "$use_airplay" != "no"; then
+  final_message="$final_message\n  AirPlay support:\tYes"
+else
+  final_message="$final_message\n  AirPLay support:\tNo"
+fi
+
+if test "x$use_airtunes" != "xno"; then
+  final_message="$final_message\n  AirTunes support:\tYes"  
+else
+  final_message="$final_message\n  AirTunes support:\tNo"
+fi
+
 if test "$use_optical_drive" = "yes"; then
   final_message="$final_message\n  Optical drive:\tYes"
 else
   final_message="$final_message\n  Optical drive:\tNo"
 fi
 
+if test "x$use_libudev" != "xno"; then
+  final_message="$final_message\n  libudev support:\tYes"
+else
+  final_message="$final_message\n  libudev support:\tNo"
+fi
+
+if test "x$use_libusb" != "xno"; then
+  final_message="$final_message\n  libusb support:\tYes"
+else
+  final_message="$final_message\n  libusb support:\tNo"
+fi
+
+if test "x$use_libcec" != "xno"; then
+  final_message="$final_message\n  libcec support:\tYes"
+else
+  final_message="$final_message\n  libcec support:\tNo"
+fi
+
 ### External libraries messages
+
 if test "$use_external_ffmpeg" = "yes"; then
   final_message="$final_message\n  External FFmpeg:\tYes"
 else
@@ -1653,7 +1878,13 @@ OUTPUT_FILES="Makefile \
     tools/Linux/xbmc.sh \
     tools/Linux/xbmc-standalone.sh \
     tools/TexturePacker/Makefile \
-    tools/EventClients/Clients/OSXRemote/Makefile"
+    tools/EventClients/Clients/OSXRemote/Makefile \
+    xbmc/peripherals/bus/Makefile \
+    xbmc/peripherals/devices/Makefile"
+
+if test "$use_skin_touched" = "yes"; then
+OUTPUT_FILES+=" addons/skin.touched/media/Makefile"
+fi
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
 # .dummy.am does nothing.
@@ -1671,6 +1902,7 @@ AC_SUBST(BUILD_DVDCSS)
 AC_SUBST(DISABLE_GOOM)
 AC_SUBST(DISABLE_RSXS)
 AC_SUBST(DISABLE_PROJECTM)
+AC_SUBST(USE_SKIN_TOUCHED)
 AC_SUBST(USE_EXTERNAL_FFMPEG)
 AC_SUBST(PYTHON_VERSION)
 AC_SUBST(OUTPUT_FILES)
@@ -1692,8 +1924,10 @@ AC_SUBST(USE_OPENGLES)
 AC_SUBST(USE_VDPAU)
 AC_SUBST(USE_VAAPI)
 AC_SUBST(USE_CRYSTALHD)
+AC_SUBST(USE_LIBSMBCLIENT)
 AC_SUBST(USE_LIBNFS)
 AC_SUBST(USE_LIBAFPCLIENT)
+AC_SUBST(USE_AIRPLAY)
 AC_SUBST(USE_VDA)
 AC_SUBST(USE_OPENMAX)
 AC_SUBST(USE_PULSE)
@@ -1702,6 +1936,11 @@ AC_SUBST(USE_ALSA)
 AC_SUBST(USE_TEXTUREPACKER)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE)
 AC_SUBST(USE_TEXTUREPACKER_NATIVE_ROOT)
+AC_SUBST(USE_AIRTUNES)
+AC_SUBST(USE_LIBUDEV)
+AC_SUBST(USE_LIBUSB)
+AC_SUBST(USE_LIBCEC)
+
 
 # pushd and popd are not available in other shells besides bash, so implement
 # our own pushd/popd functions
@@ -1788,12 +2027,12 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       --enable-pthreads \
       --enable-runtime-cpudetect \
       --cc="$CC" &&
-    sed -i "" -e "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
-    sed -i "" -e "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
-    sed -i "" -e "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
+    sed -ie "s#YASM=yasm#YASM=${prefix}/bin/yasm#" config.mak &&
+    sed -ie "s#YASMDEP=yasm#YASMDEP=${prefix}/bin/yasm#" config.mak &&
+    sed -ie "s# -D_ISOC99_SOURCE -D_POSIX_C_SOURCE=200112 # #" config.mak
     if test "$use_arch" = "ppc"; then
-      sed -i "" -e "s/HAVE_GNU_AS 1/HAVE_GNU_AS 0/" config.h
-      sed -i "" -e "s/^HAVE_GNU_AS=yes/!HAVE_GNU_AS=yes/" config.mak
+      sed -ie "s/HAVE_GNU_AS 1/HAVE_GNU_AS 0/" config.h
+      sed -ie "s/^HAVE_GNU_AS=yes/!HAVE_GNU_AS=yes/" config.mak
     fi
   else
     CFLAGS="" \
@@ -1897,7 +2136,7 @@ XB_CONFIG_MODULE([lib/libid3tag/libid3tag],[
 
 XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
   set -x
-  rm -f CMakeCache.txt && CC="$CC" CXX="$CXX" cmake    \
+  rm -f CMakeCache.txt && CC="$ORIGCC" CXX="$ORIGCXX" cmake    \
     -DCMAKE_BUILD_TYPE=None -DUSE_FTGL:BOOL=OFF        \
     -DCMAKE_C_FLAGS:STRING="${CPPFLAGS} ${CFLAGS}"     \
     -DCMAKE_CXX_FLAGS:STRING="${CPPFLAGS} ${CXXFLAGS}" \
@@ -1909,9 +2148,9 @@ XB_CONFIG_MODULE([xbmc/visualizations/XBMCProjectM/libprojectM],[
     -DSHARE_INSTALL_PREFIX:PATH="${datadir}" . &&
   if test "$host_vendor" = "apple" ; then
     # cmake has hardcoded paths to macports which bork our darwin depends cross/ppc, remove them
-    sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/link.txt
-    sed -i "" -e "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/flags.make
-    sed -i "" -e "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
+    sed -ie "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/link.txt
+    sed -ie "s|-L/opt/local/lib| |" CMakeFiles/projectM.dir/flags.make
+    sed -ie "s|-I/opt/local/include| |" CMakeFiles/projectM.dir/flags.make
   fi
   set +x
 ], [$DISABLE_PROJECTM])

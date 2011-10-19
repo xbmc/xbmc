@@ -563,6 +563,8 @@
   <string id="609">CD Ziel-Pfad ist nicht konfiguriert.</string>
   <string id="610">Titel kopieren</string>
   <string id="611">Nummer eingeben</string>
+  <string id="612">Bits/Sample</string>
+  <string id="613">Sample Frequenz</string>
 
   <string id="620">Musik CDs</string>
   <string id="621">Encoder für Umwandlung</string>
@@ -812,6 +814,7 @@
   <string id="1260">Zeroconf-Veröffentlichung</string>
   <string id="1270">AirPlay Inhalte empfangen</string>
   <string id="1271">Gerätename</string>
+  <string id="1272">- Kennwortschutz verwenden</string>
 
   <string id="1300">Benutzerdefiniertes Audiogerät</string>
   <string id="1301">Benutzerdefiniertes Audiogerät für Passthrough</string>

@@ -30,6 +30,22 @@
 #include "SectionLoader.h"
 #include <map>
 
+#ifdef TARGET_WINDOWS
+#define S_IRGRP 0
+#define S_IROTH 0
+#define S_IWUSR _S_IWRITE
+#define S_IRUSR _S_IREAD
+#define	S_IFLNK 0120000
+
+#define S_ISBLK(m) (0)
+#define S_ISSOCK(m) (0)
+#define S_ISLNK(m) ((m & S_IFLNK) != 0)
+#define S_ISCHR(m) ((m & _S_IFCHR) != 0)
+#define S_ISDIR(m) ((m & _S_IFDIR) != 0)
+#define S_ISFIFO(m) ((m & _S_IFIFO) != 0)
+#define S_ISREG(m) ((m & _S_IFREG) != 0)
+#endif
+
 class DllLibNfs;
 
 class CNfsConnection : public CCriticalSection
@@ -48,6 +64,10 @@ public:
   //this functions splits the url into the exportpath (feed to mount) and the rest of the path
   //relative to the mounted export
   bool splitUrlIntoExportAndPath(const CURL& url, CStdString &exportPath, CStdString &relativePath);
+  
+  //special stat which uses its own context
+  //needed for getting intervolume symlinks to work
+  int stat(const CURL &url, struct stat *statbuff);
 
   void AddActiveConnection();
   void AddIdleConnection();
@@ -60,6 +80,9 @@ public:
   void resetKeepAlive(struct nfsfh  *_pFileHandle);
   //removes file handle from keep alive list
   void removeFromKeepAliveList(struct nfsfh  *_pFileHandle);  
+  
+  const CStdString& GetConnectedIp() const {return m_resolvedHostName;}
+  const CStdString& GetConnectedExport() const {return m_exportPath;}
 
 private:
   struct nfs_context *m_pNfsContext;//current nfs context

@@ -26,6 +26,8 @@
 #include "PlatformInclude.h"
 #endif
 
+using namespace ADDON;
+
 #define MAX_MEMORY_BUFFER_SIZE (1024L*1024L*12L)
 
 CMemoryBuffer::CMemoryBuffer(void) :m_event(NULL,FALSE,FALSE,NULL)

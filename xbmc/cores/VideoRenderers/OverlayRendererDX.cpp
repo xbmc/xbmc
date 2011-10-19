@@ -171,6 +171,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
   m_pos    = POSITION_RELATIVE;
   m_x      = 0.0f;
   m_y      = 0.0f;
+  m_count  = 0;
 
   int width  = MathUtils::round_int(dst.Width());
   int height = MathUtils::round_int(dst.Height());
@@ -180,7 +181,7 @@ COverlayQuadsDX::COverlayQuadsDX(CDVDOverlaySSA* o, double pts)
   SQuads quads;
   if(!convert_quad(o, pts, width, height, quads))
     return;
-
+  
   float u, v;
   if(!LoadTexture(quads.size_x
                 , quads.size_y

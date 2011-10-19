@@ -2846,7 +2846,7 @@ bool Cssrc::InitFilters(void)
   if (UpSampling)
   {
     double aa = AA; // stop band attenuation(dB)
-    double lpf, delta, d, df, alp, iza;
+    double lpf, d, df, alp, iza;
     double guard = 2;
 
     frqgcd = gcd(sfrq, dfrq);
@@ -2862,7 +2862,6 @@ bool Cssrc::InitFilters(void)
     df = (dfrq * osf / 2 - sfrq / 2) * 2 / guard;
     lpf = sfrq / 2 + (dfrq * osf / 2 - sfrq / 2) / guard;
 
-    delta = pow(10.0, -aa / 20);
     if (aa <= 21) d = 0.9222; else d = (aa - 7.95) / 14.36;
 
     n1 = (int)(fs1 / df * d + 1);
@@ -2905,7 +2904,7 @@ bool Cssrc::InitFilters(void)
   else
   {
     double aa = AA; // stop band attenuation(dB)
-    double lpf, delta, d, df, alp, iza;
+    double lpf, d, df, alp, iza;
     int ipsize, wsize;
 
     frqgcd = gcd(sfrq, dfrq);
@@ -2918,7 +2917,6 @@ bool Cssrc::InitFilters(void)
 
     fs1 = sfrq * osf;
 
-    delta = pow(10.0, -aa / 20);
     if (aa <= 21) d = 0.9222; else d = (aa - 7.95) / 14.36;
 
     n1 = filter1len;
@@ -2961,10 +2959,9 @@ bool Cssrc::InitFilters(void)
   if (UpSampling)
   {
     double aa = AA; // stop band attenuation(dB)
-    double lpf, delta, d, df, alp, iza;
+    double lpf, d, df, alp, iza;
     int ipsize, wsize;
 
-    delta = pow(10.0, -aa / 20);
     if (aa <= 21) d = 0.9222; else d = (aa - 7.95) / 14.36;
 
     fs2 = dfrq * osf;
@@ -3020,7 +3017,7 @@ bool Cssrc::InitFilters(void)
     else
     {
       double aa = AA; // stop band attenuation(dB)
-      double lpf, delta, d, df, alp, iza;
+      double lpf, d, df, alp, iza;
       double guard = 2;
 
       fs2 = sfrq / frqgcd * dfrq ;
@@ -3028,7 +3025,6 @@ bool Cssrc::InitFilters(void)
       df = (fs1 / 2 - sfrq / 2) * 2 / guard;
       lpf = sfrq / 2 + (fs1 / 2 - sfrq / 2) / guard;
 
-      delta = pow(10.0, -aa / 20);
       if (aa <= 21) d = 0.9222; else d = (aa - 7.95) / 14.36;
 
       n2 = (int)(fs2 / df * d + 1);

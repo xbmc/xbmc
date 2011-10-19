@@ -316,7 +316,7 @@ void CURL::Parse(const CStdString& strURL1)
   SetFileName(m_strFileName);
 
   /* decode urlencoding on this stuff */
-  if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
+  if(URIUtils::ProtocolHasEncodedHostname(m_strProtocol))
   {
     Decode(m_strHostName);
     // Validate it as it is likely to contain a filename
@@ -558,7 +558,7 @@ CStdString CURL::GetWithoutUserDetails() const
 
   if (m_strHostName != "")
   {
-    if (m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip"))
+    if (URIUtils::ProtocolHasParentInHostname(m_strProtocol))
       strURL += CURL(m_strHostName).GetWithoutUserDetails();
     else
       strURL += m_strHostName;
@@ -620,7 +620,7 @@ CStdString CURL::GetWithoutFilename() const
 
   if (m_strHostName != "")
   {
-    if( m_strProtocol.Equals("rar") || m_strProtocol.Equals("zip") || m_strProtocol.Equals("musicsearch"))
+    if( URIUtils::ProtocolHasEncodedHostname(m_strProtocol) )
       strURL += URLEncodeInline(m_strHostName);
     else
       strURL += m_strHostName;

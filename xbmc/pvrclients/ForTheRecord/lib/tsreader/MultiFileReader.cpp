@@ -41,6 +41,8 @@
 #define INVALID_HANDLE_VALUE (-1)
 #endif
 
+using namespace ADDON;
+
 //Maximum time in msec to wait for the buffer file to become available - Needed for DVB radio (this sometimes takes some time)
 #define MAX_BUFFER_TIMEOUT 1500
 

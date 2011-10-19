@@ -44,11 +44,11 @@ JSON_STATUS CAudioLibrary::GetArtists(const CStdString &method, ITransportLayer 
 
   int genreID = (int)parameterObject["genreid"].asInteger();
 
-  // Add "artist" to "fields" array by default
+  // Add "artist" to "properties" array by default
   CVariant param = parameterObject;
-  if (!param.isMember("fields"))
-    param["fields"] = CVariant(CVariant::VariantTypeArray);
-  param["fields"].append("artist");
+  if (!param.isMember("properties"))
+    param["properties"] = CVariant(CVariant::VariantTypeArray);
+  param["properties"].append("artist");
 
   bool albumArtistsOnly = !g_guiSettings.GetBool("musiclibrary.showcompilationartists");
   if (parameterObject["albumartistsonly"].isBoolean())
@@ -82,7 +82,7 @@ JSON_STATUS CAudioLibrary::GetArtistDetails(const CStdString &method, ITransport
   m_artistItem->GetMusicInfoTag()->SetDatabaseId(artistID);
   CMusicDatabase::SetPropertiesFromArtist(*m_artistItem, artist);
   m_artistItem->SetCachedArtistThumb();
-  HandleFileItem("artistid", false, "artistdetails", m_artistItem, parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("artistid", false, "artistdetails", m_artistItem, parameterObject, parameterObject["properties"], result, false);
 
   musicdatabase.Close();
   return OK;
@@ -125,7 +125,7 @@ JSON_STATUS CAudioLibrary::GetAlbumDetails(const CStdString &method, ITransportL
 
   CFileItemPtr m_albumItem;
   FillAlbumItem(album, path, m_albumItem);
-  HandleFileItem("albumid", false, "albumdetails", m_albumItem, parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("albumid", false, "albumdetails", m_albumItem, parameterObject, parameterObject["properties"], result, false);
 
   musicdatabase.Close();
   return OK;
@@ -164,7 +164,7 @@ JSON_STATUS CAudioLibrary::GetSongDetails(const CStdString &method, ITransportLa
     return InvalidParams;
   }
 
-  HandleFileItem("songid", false, "songdetails", CFileItemPtr( new CFileItem(song) ), parameterObject, parameterObject["fields"], result, false);
+  HandleFileItem("songid", false, "songdetails", CFileItemPtr( new CFileItem(song) ), parameterObject, parameterObject["properties"], result, false);
 
   musicdatabase.Close();
   return OK;
@@ -176,12 +176,8 @@ JSON_STATUS CAudioLibrary::GetRecentlyAddedAlbums(const CStdString &method, ITra
   if (!musicdatabase.Open())
     return InternalError;
 
-  int amount = (int)parameterObject["albums"].asInteger();
-  if (amount < 0)
-    amount = 0;
-
   VECALBUMS albums;
-  if (musicdatabase.GetRecentlyAddedAlbums(albums, (unsigned int)amount))
+  if (musicdatabase.GetRecentlyAddedAlbums(albums))
   {
     CFileItemList items;
 
@@ -208,7 +204,7 @@ JSON_STATUS CAudioLibrary::GetRecentlyAddedSongs(const CStdString &method, ITran
   if (!musicdatabase.Open())
     return InternalError;
 
-  int amount = (int)parameterObject["albums"].asInteger();
+  int amount = (int)parameterObject["albumlimit"].asInteger();
   if (amount < 0)
     amount = 0;
 
@@ -248,20 +244,13 @@ JSON_STATUS CAudioLibrary::Scan(const CStdString &method, ITransportLayer *trans
 
 JSON_STATUS CAudioLibrary::Export(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  CStdString path = parameterObject["path"].asString();
-  bool singleFile = parameterObject["singlefile"].asBoolean();
-
-  if (!singleFile && path.IsEmpty())
-    return InvalidParams;
-
   CStdString cmd;
-  if (singleFile)
-    cmd.Format("exportlibrary(music, true, %s, %s, %s)",
-      parameterObject["images"].asBoolean() ? "true" : "false",
-      parameterObject["overwrite"].asBoolean() ? "true" : "false",
-      parameterObject["actorthumbs"].asBoolean() ? "true" : "false");
+  if (parameterObject["options"].isMember("path"))
+    cmd.Format("exportlibrary(music, false, %s)", parameterObject["options"]["path"].asString());
   else
-    cmd.Format("exportlibrary(music, false, %s)", path);
+    cmd.Format("exportlibrary(music, true, %s, %s)",
+      parameterObject["options"]["images"].asBoolean() ? "true" : "false",
+      parameterObject["options"]["overwrite"].asBoolean() ? "true" : "false");
 
   g_application.getApplicationMessenger().ExecBuiltIn(cmd);
   return ACK;

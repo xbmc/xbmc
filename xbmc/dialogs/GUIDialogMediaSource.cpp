@@ -239,9 +239,11 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.m_ignore = true;
     extraShares.push_back(share1);
 
+#ifdef HAS_FILESYSTEM_SMB
     share1.strPath = "smb://";
     share1.strName = g_localizeStrings.Get(20171);
     extraShares.push_back(share1);
+#endif
 
 #ifdef HAS_FILESYSTEM_NFS
     share1.strPath = "nfs://";
@@ -287,9 +289,11 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
     share1.strName = "ReplayTV Devices";
     extraShares.push_back(share1);
 
+#ifdef HAS_FILESYSTEM_SMB
     share1.strPath = "smb://";
     share1.strName = g_localizeStrings.Get(20171);
     extraShares.push_back(share1);
+#endif
 
 #ifdef HAS_FILESYSTEM_NFS
     share1.strPath = "nfs://";
@@ -332,9 +336,11 @@ void CGUIDialogMediaSource::OnPathBrowse(int item)
       extraShares.push_back(share1);
     }
 
+#ifdef HAS_FILESYSTEM_SMB
     share1.strPath = "smb://";
     share1.strName = g_localizeStrings.Get(20171);
     extraShares.push_back(share1);
+#endif
 
 #ifdef HAS_FILESYSTEM_NFS
     share1.strPath = "nfs://";
@@ -430,6 +436,7 @@ void CGUIDialogMediaSource::UpdateButtons()
     return;
 
   CONTROL_ENABLE_ON_CONDITION(CONTROL_OK, !m_paths->Get(0)->GetPath().IsEmpty() && !m_name.IsEmpty());
+  CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_ADD, !m_paths->Get(0)->GetPath().IsEmpty());
   CONTROL_ENABLE_ON_CONDITION(CONTROL_PATH_REMOVE, m_paths->Size() > 1);
   // name
   SET_CONTROL_LABEL2(CONTROL_NAME, m_name);

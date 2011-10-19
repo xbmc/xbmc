@@ -289,7 +289,7 @@
 
 #define ACTION_GESTURE_NOTIFY         221
 #define ACTION_GESTURE_BEGIN          222
-#define ACTION_GESTURE_ZOOM           223
+#define ACTION_GESTURE_ZOOM           223 //sendaction with point and currentPinchScale (fingers together < 1.0 -> fingers apart > 1.0)
 #define ACTION_GESTURE_ROTATE         224
 #define ACTION_GESTURE_PAN            225
 #define ACTION_GESTURE_END            226
@@ -384,6 +384,8 @@
 #define WINDOW_DIALOG_TEXT_VIEWER         10147
 #define WINDOW_DIALOG_EXT_PROGRESS        10148
 #define WINDOW_DIALOG_PLAY_EJECT          10149
+#define WINDOW_DIALOG_PERIPHERAL_MANAGER  10150
+#define WINDOW_DIALOG_PERIPHERAL_SETTINGS 10151
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501
@@ -405,7 +407,7 @@
 #define WINDOW_DIALOG_PVR_OSD_DIRECTOR    10611
 #define WINDOW_DIALOG_PVR_OSD_CUTTER      10612
 #define WINDOW_DIALOG_OSD_TELETEXT        10613
-
+// PVR_WINDOW VIEWS = 10694-10699
 //#define WINDOW_VIRTUAL_KEYBOARD           11000
 #define WINDOW_DIALOG_SELECT              12000
 #define WINDOW_DIALOG_MUSIC_INFO          12001

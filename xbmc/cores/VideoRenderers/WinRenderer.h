@@ -75,7 +75,6 @@ enum EFIELDSYNC
   FS_NONE,
   FS_TOP,
   FS_BOT,
-  FS_BOTH,
 };
 
 
@@ -187,11 +186,11 @@ public:
   virtual bool         Supports(EINTERLACEMETHOD method);
   virtual bool         Supports(ESCALINGMETHOD method);
 
+  virtual EINTERLACEMETHOD AutoInterlaceMethod();
+
   void                 RenderUpdate(bool clear, DWORD flags = 0, DWORD alpha = 255);
 
   virtual unsigned int GetProcessorSize() { return m_processor.Size(); }
-
-  static void          CropSource(RECT& src, RECT& dst, const D3DSURFACE_DESC& desc);
 
 protected:
   virtual void Render(DWORD flags);

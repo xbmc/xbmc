@@ -200,6 +200,7 @@ JSON_STATUS CPlaylistOperations::Clear(const CStdString &method, ITransportLayer
        slideshow = (CGUIWindowSlideShow*)g_windowManager.GetWindow(WINDOW_SLIDESHOW);
        if (!slideshow)
          return FailedToExecute;
+       g_application.getApplicationMessenger().SendAction(CAction(ACTION_STOP), WINDOW_SLIDESHOW);
        slideshow->Reset();
        break;
   }

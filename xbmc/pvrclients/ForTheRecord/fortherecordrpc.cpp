@@ -34,6 +34,8 @@
 #include "CriticalSection.h"
 #include "AutoLock.h"
 
+using namespace ADDON;
+
 // Some version dependent API strings
 #define FTR_GETEPG_40 "ForTheRecord/Guide/Programs/%s/%i-%02i-%02iT%02i:%02i:%02i/%i-%02i-%02iT%02i:%02i:%02i"
 #define FTR_GETEPG_45 "ForTheRecord/Guide/FullPrograms/%s/%i-%02i-%02iT%02i:%02i:%02i/%i-%02i-%02iT%02i:%02i:%02i/false"

@@ -22,9 +22,6 @@
 #include <d3d9types.h>
 #endif
 #include "boost/shared_ptr.hpp"
-#include "boost/thread/condition_variable.hpp"
-#include "boost/thread/recursive_mutex.hpp"
-#include "boost/thread/shared_mutex.hpp"
 #include "SDL\SDL.h"
 // anything below here should be headers that very rarely (hopefully never)
 // change yet are included almost everywhere.

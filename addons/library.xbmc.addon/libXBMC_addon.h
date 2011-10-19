@@ -52,103 +52,121 @@
 #endif /* __x86_64__ */
 #endif /* _LINUX */
 
-typedef enum addon_log {
-  LOG_DEBUG,
-  LOG_INFO,
-  LOG_NOTICE,
-  LOG_ERROR
-} addon_log_t;
+#ifdef LOG_DEBUG
+#undef LOG_DEBUG
+#endif
+#ifdef LOG_INFO
+#undef LOG_INFO
+#endif
+#ifdef LOG_NOTICE
+#undef LOG_NOTICE
+#endif
+#ifdef LOG_ERROR
+#undef LOG_ERROR
+#endif
 
-typedef enum queue_msg {
-  QUEUE_INFO,
-  QUEUE_WARNING,
-  QUEUE_ERROR
-} queue_msg_t;
-
-class CHelper_libXBMC_addon
+namespace ADDON
 {
-public:
-  CHelper_libXBMC_addon()
+  typedef enum addon_log
   {
-    m_libXBMC_addon = NULL;
-    m_Handle        = NULL;
-  }
+    LOG_DEBUG,
+    LOG_INFO,
+    LOG_NOTICE,
+    LOG_ERROR
+  } addon_log_t;
 
-  ~CHelper_libXBMC_addon()
+  typedef enum queue_msg
   {
-    if (m_libXBMC_addon)
+    QUEUE_INFO,
+    QUEUE_WARNING,
+    QUEUE_ERROR
+  } queue_msg_t;
+
+  class CHelper_libXBMC_addon
+  {
+  public:
+    CHelper_libXBMC_addon()
     {
-      XBMC_unregister_me();
-      dlclose(m_libXBMC_addon);
-    }
-  }
-
-  bool RegisterMe(void *Handle)
-  {
-    m_Handle = Handle;
-
-    std::string libBasePath;
-    libBasePath  = ((cb_array*)m_Handle)->libPath;
-    libBasePath += ADDON_DLL;
-
-    m_libXBMC_addon = dlopen(libBasePath.c_str(), RTLD_LAZY);
-    if (m_libXBMC_addon == NULL)
-    {
-      fprintf(stderr, "Unable to load %s\n", dlerror());
-      return false;
+      m_libXBMC_addon = NULL;
+      m_Handle        = NULL;
     }
 
-    XBMC_register_me   = (int (*)(void *HANDLE))
-      dlsym(m_libXBMC_addon, "XBMC_register_me");
-    if (XBMC_register_me == NULL)   { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    ~CHelper_libXBMC_addon()
+    {
+      if (m_libXBMC_addon)
+      {
+        XBMC_unregister_me();
+        dlclose(m_libXBMC_addon);
+      }
+    }
 
-    XBMC_unregister_me = (void (*)())
-      dlsym(m_libXBMC_addon, "XBMC_unregister_me");
-    if (XBMC_unregister_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+    bool RegisterMe(void *Handle)
+    {
+      m_Handle = Handle;
 
-    Log                = (void (*)(const addon_log_t loglevel, const char *format, ... ))
-      dlsym(m_libXBMC_addon, "XBMC_log");
-    if (Log == NULL)                { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+      std::string libBasePath;
+      libBasePath  = ((cb_array*)m_Handle)->libPath;
+      libBasePath += ADDON_DLL;
 
-    GetSetting         = (bool (*)(const char* settingName, void *settingValue))
-      dlsym(m_libXBMC_addon, "XBMC_get_setting");
-    if (GetSetting == NULL)         { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+      m_libXBMC_addon = dlopen(libBasePath.c_str(), RTLD_LAZY);
+      if (m_libXBMC_addon == NULL)
+      {
+        fprintf(stderr, "Unable to load %s\n", dlerror());
+        return false;
+      }
 
-    QueueNotification  = (void (*)(const queue_msg_t loglevel, const char *format, ... ))
-      dlsym(m_libXBMC_addon, "XBMC_queue_notification");
-    if (QueueNotification == NULL)  { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+      XBMC_register_me   = (int (*)(void *HANDLE))
+        dlsym(m_libXBMC_addon, "XBMC_register_me");
+      if (XBMC_register_me == NULL)   { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    UnknownToUTF8      = (void (*)(std::string &str))
-      dlsym(m_libXBMC_addon, "XBMC_unknown_to_utf8");
-    if (UnknownToUTF8 == NULL)      { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+      XBMC_unregister_me = (void (*)())
+        dlsym(m_libXBMC_addon, "XBMC_unregister_me");
+      if (XBMC_unregister_me == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    GetLocalizedString = (const char* (*)(int dwCode))
-      dlsym(m_libXBMC_addon, "XBMC_get_localized_string");
-    if (GetLocalizedString == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+      Log                = (void (*)(const addon_log_t loglevel, const char *format, ... ))
+        dlsym(m_libXBMC_addon, "XBMC_log");
+      if (Log == NULL)                { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    GetDVDMenuLanguage = (const char* (*)())
-      dlsym(m_libXBMC_addon, "XBMC_get_dvd_menu_language");
-    if (GetDVDMenuLanguage == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+      GetSetting         = (bool (*)(const char* settingName, void *settingValue))
+        dlsym(m_libXBMC_addon, "XBMC_get_setting");
+      if (GetSetting == NULL)         { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-    return XBMC_register_me(m_Handle) > 0;
-  }
+      QueueNotification  = (void (*)(const queue_msg_t loglevel, const char *format, ... ))
+        dlsym(m_libXBMC_addon, "XBMC_queue_notification");
+      if (QueueNotification == NULL)  { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-  void (*Log)(const addon_log_t loglevel, const char *format, ... );
-  bool (*GetSetting)(const char* settingName, void *settingValue);
-  void (*QueueNotification)(const queue_msg_t type, const char *format, ... );
-  void (*UnknownToUTF8)(std::string &str);
-  const char* (*GetLocalizedString)(int dwCode);
-  const char* (*GetDVDMenuLanguage)();
+      UnknownToUTF8      = (void (*)(std::string &str))
+        dlsym(m_libXBMC_addon, "XBMC_unknown_to_utf8");
+      if (UnknownToUTF8 == NULL)      { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-protected:
-  int (*XBMC_register_me)(void *HANDLE);
-  void (*XBMC_unregister_me)();
+      GetLocalizedString = (const char* (*)(int dwCode))
+        dlsym(m_libXBMC_addon, "XBMC_get_localized_string");
+      if (GetLocalizedString == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
 
-private:
-  void *m_libXBMC_addon;
-  void *m_Handle;
-  struct cb_array
-  {
-    const char* libPath;
+      GetDVDMenuLanguage = (const char* (*)())
+        dlsym(m_libXBMC_addon, "XBMC_get_dvd_menu_language");
+      if (GetDVDMenuLanguage == NULL) { fprintf(stderr, "Unable to assign function %s\n", dlerror()); return false; }
+
+      return XBMC_register_me(m_Handle) > 0;
+    }
+
+    void (*Log)(const addon_log_t loglevel, const char *format, ... );
+    bool (*GetSetting)(const char* settingName, void *settingValue);
+    void (*QueueNotification)(const queue_msg_t type, const char *format, ... );
+    void (*UnknownToUTF8)(std::string &str);
+    const char* (*GetLocalizedString)(int dwCode);
+    const char* (*GetDVDMenuLanguage)();
+
+  protected:
+    int (*XBMC_register_me)(void *HANDLE);
+    void (*XBMC_unregister_me)();
+
+  private:
+    void *m_libXBMC_addon;
+    void *m_Handle;
+    struct cb_array
+    {
+      const char* libPath;
+    };
   };
 };

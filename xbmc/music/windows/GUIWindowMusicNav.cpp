@@ -160,7 +160,7 @@ bool CGUIWindowMusicNav::OnMessage(CGUIMessage& message)
           SetProperty("search", selected.GetLabel());
           return true;
         }
-        CStdString search(GetProperty("search"));
+        CStdString search(GetProperty("search").asString());
         CGUIDialogKeyboard::ShowAndGetFilter(search, true);
         SetProperty("search", search);
         return true;
@@ -251,7 +251,7 @@ bool CGUIWindowMusicNav::OnClick(int iItem)
       OnSearchUpdate();
     else
     {
-      CStdString search(GetProperty("search"));
+      CStdString search(GetProperty("search").asString());
       CGUIDialogKeyboard::ShowAndGetFilter(search, true);
       SetProperty("search", search);
     }
@@ -399,7 +399,7 @@ void CGUIWindowMusicNav::OnWindowLoaded()
   if (m_searchWithEdit)
   {
     SendMessage(GUI_MSG_SET_TYPE, CONTROL_SEARCH, CGUIEditControl::INPUT_TYPE_SEARCH);
-    SET_CONTROL_LABEL2(CONTROL_SEARCH, GetProperty("search"));
+    SET_CONTROL_LABEL2(CONTROL_SEARCH, GetProperty("search").asString());
   }
 }
 
@@ -754,7 +754,7 @@ void CGUIWindowMusicNav::DisplayEmptyDatabaseMessage(bool bDisplay)
 
 void CGUIWindowMusicNav::OnSearchUpdate()
 {
-  CStdString search(GetProperty("search"));
+  CStdString search(GetProperty("search").asString());
   CURL::Encode(search);
   if (!search.IsEmpty())
   {
@@ -803,7 +803,7 @@ void CGUIWindowMusicNav::AddSearchFolder()
     // add our remove the musicsearch source
     VECSOURCES &sources = viewState->GetSources();
     bool haveSearchSource = false;
-    bool needSearchSource = !GetProperty("search").IsEmpty() || !m_searchWithEdit; // we always need it if we don't have the edit control
+    bool needSearchSource = !GetProperty("search").empty() || !m_searchWithEdit; // we always need it if we don't have the edit control
     for (IVECSOURCES it = sources.begin(); it != sources.end(); ++it)
     {
       CMediaSource& share = *it;

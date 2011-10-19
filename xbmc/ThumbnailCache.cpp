@@ -217,11 +217,19 @@ CStdString CThumbnailCache::GetFanart(const CFileItem &item)
       return GetThumb(item.GetVideoInfoTag()->m_strArtist,g_settings.GetMusicFanartFolder());
     if (!item.m_bIsFolder && !item.GetVideoInfoTag()->m_strShowTitle.IsEmpty())
     {
-      CVideoDatabase database;
-      database.Open();
-      int iShowId = database.GetTvShowId(item.GetVideoInfoTag()->m_strPath);
       CStdString showPath;
-      database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
+      if (!item.GetVideoInfoTag()->m_strShowPath.IsEmpty())
+        showPath = item.GetVideoInfoTag()->m_strShowPath;
+      else
+      {
+        CVideoDatabase database;
+        database.Open();
+        int iShowId = item.GetVideoInfoTag()->m_iIdShow;
+        if (iShowId <= 0)
+          iShowId = database.GetTvShowId(item.GetVideoInfoTag()->m_strPath);
+        CStdString showPath;
+        database.GetFilePathById(iShowId,showPath,VIDEODB_CONTENT_TVSHOWS);
+      }
       return GetThumb(showPath,g_settings.GetVideoFanartFolder());
     }
     return GetThumb(item.m_bIsFolder ? item.GetVideoInfoTag()->m_strPath : item.GetVideoInfoTag()->m_strFileNameAndPath,g_settings.GetVideoFanartFolder());

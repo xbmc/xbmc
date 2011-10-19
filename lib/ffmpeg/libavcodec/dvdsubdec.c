@@ -28,7 +28,7 @@
 typedef struct DVDSubContext
 {
   uint8_t  colormap[4];
-  uint8_t  alpha[4];
+  uint8_t  alpha[256];
   uint32_t palette[16];
   int      has_palette;
 } DVDSubContext;

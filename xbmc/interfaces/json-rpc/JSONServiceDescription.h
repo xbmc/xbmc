@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include <limits>
 #include "JSONUtils.h"
 
 namespace JSONRPC
@@ -39,7 +40,11 @@ namespace JSONRPC
   typedef struct JSONSchemaTypeDefinition
   {
     JSONSchemaTypeDefinition()
-      : type(AnyValue), minLength(-1), maxLength(-1)
+      : type(AnyValue), minimum(std::numeric_limits<double>::min()), maximum(std::numeric_limits<double>::max()),
+        exclusiveMinimum(false), exclusiveMaximum(false), divisibleBy(0),
+        minLength(-1), maxLength(-1),
+        minItems(0), maxItems(0), uniqueItems(false),
+        hasAdditionalProperties(false), additionalProperties(NULL)
     { }
 
     /*!
@@ -143,12 +148,12 @@ namespace JSONRPC
     /*!
      \brief Minimum amount of items in the array
      */
-    unsigned minItems;
+    unsigned int minItems;
 
     /*!
      \brief Maximum amount of items in the array
      */
-    unsigned maxItems;
+    unsigned int maxItems;
 
     /*!
      \brief Whether every value in the array
@@ -347,7 +352,7 @@ namespace JSONRPC
      actual C/C++ implementation of the method to the "methodCall" parameter and checks the
      given parameters from the request against the json schema description for the given method.
      */
-    static JSON_STATUS CheckCall(const char* const method, const CVariant &requestParameters, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
+    static JSON_STATUS CheckCall(const char* const method, const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
 
   private:
     static bool prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name);

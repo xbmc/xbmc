@@ -40,6 +40,6 @@ extern int          g_iPriority;          ///< The Priority this client have in 
 extern bool         g_bCharsetConv;       ///< Convert VDR's incoming strings to UTF8 character set
 extern bool         g_bHandleMessages;    ///< Send VDR's OSD status messages to XBMC OSD
 
-extern CHelper_libXBMC_addon *XBMC;
+extern ADDON::CHelper_libXBMC_addon *XBMC;
 extern CHelper_libXBMC_gui   *GUI;
 extern CHelper_libXBMC_pvr   *PVR;

@@ -34,6 +34,7 @@
 #endif
 
 using namespace std;
+using namespace ADDON;
 
 /************************************************************/
 /** Class interface */

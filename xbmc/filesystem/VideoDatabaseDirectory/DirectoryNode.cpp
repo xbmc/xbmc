@@ -50,6 +50,7 @@
 #include "filesystem/File.h"
 #include "utils/StringUtils.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/Variant.h"
 
 using namespace std;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
@@ -304,8 +305,8 @@ void CDirectoryNode::AddQueuingFolder(CFileItemList& items) const
         for (int i = 0; i < items.Size(); i++)
         {
           CFileItemPtr item = items[i];
-          watched += item->GetPropertyInt("watchedepisodes");
-          unwatched += item->GetPropertyInt("unwatchedepisodes");
+          watched += (int)item->GetProperty("watchedepisodes").asInteger();
+          unwatched += (int)item->GetProperty("unwatchedepisodes").asInteger();
         }
         pItem->SetProperty("totalepisodes", watched + unwatched);
         pItem->SetProperty("numepisodes", watched + unwatched); // will be changed later to reflect watchmode setting

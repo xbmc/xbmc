@@ -24,6 +24,7 @@
 #include "Socket.h"
 
 using namespace std;
+using namespace ADDON;
 
 namespace MPTV
 {

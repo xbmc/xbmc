@@ -23,6 +23,7 @@
 #include "uri.h"
 
 using namespace std;
+using namespace ADDON;
 
 /* User adjustable settings are saved here.
  * Default values are defined inside client.h

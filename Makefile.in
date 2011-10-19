@@ -83,7 +83,11 @@ BIN_DIRS=	\
 	xbmc/input/linux \
 	xbmc/osx \
 	xbmc/threads \
-	xbmc/windowing
+	xbmc/windowing \
+	xbmc/peripherals \
+	xbmc/peripherals/bus \
+	xbmc/peripherals/devices \
+	xbmc/peripherals/dialogs \
 
 ifeq (@USE_OPENGL@,1)
 BIN_DIRS += xbmc/rendering/gl
@@ -120,6 +124,93 @@ DVDPLAYER_ARCHIVES=xbmc/cores/dvdplayer/DVDPlayer.a \
                    xbmc/cores/dvdplayer/DVDDemuxers/DVDDemuxers.a \
                    xbmc/cores/dvdplayer/DVDInputStreams/DVDInputStreams.a \
                    xbmc/cores/dvdplayer/DVDSubtitles/DVDSubtitles.a
+
+DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
+                   lib/SlingboxLib/SlingboxLib.a \
+                   lib/UnrarXLib/UnrarXLib.a \
+                   lib/libRTV/librtv.a \
+                   lib/libUPnP/libupnp.a \
+                   lib/libXDAAP/libxdaap.a \
+                   lib/libhts/libhts.a \
+                   lib/libsquish/libsquish.a \
+                   lib/libTcpSocket/libTcpSocket.a \
+                   lib/tinyXML/tinyxml.a \
+                   lib/xbmc-dll-symbols/dll-symbols.a \
+                   xbmc/addons/addons.a \
+                   xbmc/cdrip/cdrip.a \
+                   xbmc/cores/AudioRenderers/audiorenderers.a \
+                   xbmc/cores/DllLoader/dllloader.a \
+                   xbmc/cores/DllLoader/exports/exports.a \
+                   xbmc/cores/DllLoader/exports/util/exports_utils.a \
+                   xbmc/cores/ExternalPlayer/ExternalPlayer.a \
+                   xbmc/cores/VideoRenderers/VideoRenderer.a \
+                   xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a \
+                   xbmc/cores/cores.a \
+                   xbmc/cores/paplayer/paplayer.a \
+                   xbmc/cores/playercorefactory/playercorefactory.a \
+                   xbmc/dbwrappers/dbwrappers.a \
+                   xbmc/dialogs/dialogs.a \
+                   xbmc/epg/epg.a \
+                   xbmc/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a \
+                   xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a \
+                   xbmc/filesystem/filesystem.a \
+                   xbmc/guilib/guilib.a \
+                   xbmc/input/input.a \
+                   xbmc/input/linux/input_linux.a \
+                   xbmc/interfaces/http-api/http-api.a \
+                   xbmc/interfaces/info/info.a \
+                   xbmc/interfaces/interfaces.a \
+                   xbmc/interfaces/json-rpc/json-rpc.a \
+                   xbmc/interfaces/python/python.a \
+                   xbmc/interfaces/python/xbmcmodule/xbmcmodule.a \
+                   xbmc/linux/linux.a \
+                   xbmc/music/dialogs/musicdialogs.a \
+                   xbmc/music/infoscanner/musicscanner.a \
+                   xbmc/music/karaoke/karaoke.a \
+                   xbmc/music/music.a \
+                   xbmc/music/tags/musictags.a \
+                   xbmc/music/windows/musicwindows.a \
+                   xbmc/network/libscrobbler/scrobbler.a \
+                   xbmc/network/linux/network_linux.a \
+                   xbmc/network/network.a \
+                   xbmc/osx/osx.a \
+                   xbmc/peripherals/bus/peripheral-bus.a \
+                   xbmc/peripherals/devices/peripheral-devices.a \
+                   xbmc/peripherals/dialogs/peripheral-dialogs.a \
+                   xbmc/peripherals/peripherals.a \
+                   xbmc/pictures/pictures.a \
+                   xbmc/playlists/playlists.a \
+                   xbmc/powermanagement/linux/powermanagement_linux.a \
+                   xbmc/powermanagement/osx/powermanagement.a \
+                   xbmc/powermanagement/powermanagement.a \
+                   xbmc/programs/programs.a \
+                   xbmc/pvr/addons/pvraddons.a \
+                   xbmc/pvr/channels/pvrchannels.a \
+                   xbmc/pvr/dialogs/pvrdialogs.a \
+                   xbmc/pvr/pvr.a \
+                   xbmc/pvr/recordings/pvrrecordings.a \
+                   xbmc/pvr/timers/pvrtimers.a \
+                   xbmc/pvr/windows/pvrwindows.a \
+                   xbmc/pvrclients/pvrclient.a \
+                   xbmc/rendering/gl/rendering_gl.a \
+                   xbmc/rendering/gles/rendering_gles.a \
+                   xbmc/rendering/rendering.a \
+                   xbmc/settings/settings.a \
+                   xbmc/storage/linux/storage_linux.a \
+                   xbmc/storage/osx/storage.a \
+                   xbmc/storage/storage.a \
+                   xbmc/threads/threads.a \
+                   xbmc/utils/utils.a \
+                   xbmc/video/dialogs/videodialogs.a \
+                   xbmc/video/video.a \
+                   xbmc/video/windows/videowindows.a \
+                   xbmc/windowing/X11/windowing_X11.a \
+                   xbmc/windowing/egl/windowing_egl.a \
+                   xbmc/windowing/osx/windowing_osx.a \
+                   xbmc/windowing/windowing.a \
+                   xbmc/windows/windows.a \
+                   xbmc/xbmc.a \
+
 
 PAPCODECS_DIRS= \
 	lib/xbadpcm \
@@ -178,9 +269,12 @@ LIBADDON_DIRS=\
 	lib/addons/library.xbmc.gui \
 
 CONFLUENCE_MEDIA=addons/skin.confluence/media
+SKIN_DIRS=$(CONFLUENCE_MEDIA)
 
-SKIN_DIRS=\
-	$(CONFLUENCE_MEDIA)
+ifeq (@USE_SKIN_TOUCHED@,1)
+TOUCHED_MEDIA=addons/skin.touched/media
+SKIN_DIRS+=$(TOUCHED_MEDIA)
+endif
 
 DIRS= $(BIN_DIRS) $(EC_DIRS) $(XBMCTEX_DIRS) $(DVDPCODECS_DIRS) $(PAPCODECS_DIRS) \
 	$(LIB_DIRS) $(SS_DIRS) $(VIS_DIRS) $(PVR_DIRS) $(LIBADDON_DIRS) $(SKIN_DIRS)
@@ -198,6 +292,9 @@ DISTCLEAN_FILES=config.h config.log config.status tools/Linux/xbmc.sh \
         system/libcpluff-@ARCH@.so
 
 all : Makefile externals xbmc.bin xbmc-xrandr skins
+	@echo '-----------------------'
+	@echo 'XBMC built successfully'
+	@echo '-----------------------'
 
 include Makefile.include
 
@@ -223,173 +320,20 @@ configure: configure.in
 ifeq (@USE_TEXTUREPACKER@,1)
 skins: tools/TexturePacker/TexturePacker force
 	 $(MAKE) -C $(CONFLUENCE_MEDIA)
+ifeq (@USE_SKIN_TOUCHED@,1)
+	 $(MAKE) -C $(TOUCHED_MEDIA)
+endif
 else
 skins:
 endif
 
+# Setup some dependencies for subdir makes
+xbmc/cores/paplayer/paplayer.a: papcodecs
+$(DVDPLAYER_ARCHIVES)         : dvdpcodecs
 
-xbmc/guilib/guilib.a: force
-	$(MAKE) -C xbmc/guilib
-lib/tinyXML/tinyxml.a: force
-	$(MAKE) -C lib/tinyXML
-xbmc/xbmc.a: force
-	$(MAKE) -C xbmc
-xbmc/cdrip/cdrip.a: force
-	$(MAKE) -C xbmc/cdrip
-xbmc/cores/cores.a: force
-	$(MAKE) -C xbmc/cores
-xbmc/cores/DllLoader/dllloader.a: force
-	$(MAKE) -C xbmc/cores/DllLoader/
-xbmc/cores/DllLoader/exports/exports.a: force
-	$(MAKE) -C xbmc/cores/DllLoader/exports
-xbmc/cores/DllLoader/exports/util/exports_utils.a: force
-	$(MAKE) -C xbmc/cores/DllLoader/exports/util
-$(DVDPLAYER_ARCHIVES): force dvdpcodecs
-	$(MAKE) -C $(@D)
-xbmc/cores/paplayer/paplayer.a: force papcodecs
-	$(MAKE) -C xbmc/cores/paplayer
-xbmc/cores/AudioRenderers/audiorenderers.a: force
-	$(MAKE) -C xbmc/cores/AudioRenderers
-xbmc/cores/VideoRenderers/VideoRenderer.a: force
-	$(MAKE) -C xbmc/cores/VideoRenderers
-xbmc/cores/VideoRenderers/VideoShaders/VideoShaders.a: force
-	$(MAKE) -C xbmc/cores/VideoRenderers/VideoShaders
-xbmc/cores/ExternalPlayer/ExternalPlayer.a: force
-	$(MAKE) -C xbmc/cores/ExternalPlayer
-xbmc/cores/playercorefactory/playercorefactory.a: force
-	$(MAKE) -C xbmc/cores/playercorefactory
-xbmc/filesystem/filesystem.a: force
-	$(MAKE) -C xbmc/filesystem
-xbmc/filesystem/MusicDatabaseDirectory/musicdatabasedirectory.a: force
-	$(MAKE) -C xbmc/filesystem/MusicDatabaseDirectory
-xbmc/filesystem/VideoDatabaseDirectory/videodatabasedirectory.a: force
-	$(MAKE) -C xbmc/filesystem/VideoDatabaseDirectory
-xbmc/input/input.a: force
-	$(MAKE) -C xbmc/input
-xbmc/input/linux/input_linux.a: force
-	$(MAKE) -C xbmc/input/linux
-xbmc/music/karaoke/karaoke.a: force
-	$(MAKE) -C xbmc/music/karaoke
-xbmc/network/network.a: force
-	$(MAKE) -C xbmc/network
-xbmc/network/osx/network.a: force
-	$(MAKE) -C xbmc/network/osx
-xbmc/pictures/pictures.a: force
-	$(MAKE) -C xbmc/pictures
-xbmc/programs/programs.a: force
-	$(MAKE) -C xbmc/programs
-xbmc/network/linux/network_linux.a: force
-	$(MAKE) -C xbmc/network/linux
-xbmc/playlists/playlists.a: force
-	$(MAKE) -C xbmc/playlists
-xbmc/powermanagement/powermanagement.a: force
-	$(MAKE) -C xbmc/powermanagement
-xbmc/powermanagement/linux/powermanagement_linux.a: force
-	$(MAKE) -C xbmc/powermanagement/linux
-xbmc/powermanagement/osx/powermanagement.a: force
-	$(MAKE) -C xbmc/powermanagement/osx
-xbmc/rendering/rendering.a: force
-	$(MAKE) -C xbmc/rendering
-xbmc/rendering/gl/rendering_gl.a: force
-	$(MAKE) -C xbmc/rendering/gl
-xbmc/rendering/gles/rendering_gles.a: force
-	$(MAKE) -C xbmc/rendering/gles
-xbmc/windowing/windowing.a: force
-	$(MAKE) -C xbmc/windowing
-xbmc/windowing/egl/windowing_egl.a: force
-	$(MAKE) -C xbmc/windowing/egl
-xbmc/windowing/osx/windowing_osx.a: force
-	$(MAKE) -C xbmc/windowing/osx
-xbmc/windowing/X11/windowing_X11.a: force
-	$(MAKE) -C xbmc/windowing/X11
-xbmc/storage/storage.a: force
-	$(MAKE) -C xbmc/storage
-xbmc/storage/linux/storage_linux.a: force
-	$(MAKE) -C xbmc/storage/linux
-xbmc/storage/osx/storage.a: force
-	$(MAKE) -C xbmc/storage/osx
-xbmc/threads/threads.a: force
-	$(MAKE) -C xbmc/threads
-xbmc/music/music.a: force
-	$(MAKE) -C xbmc/music
-xbmc/music/tags/musictags.a: force
-	$(MAKE) -C xbmc/music/tags
-xbmc/music/dialogs/musicdialogs.a: force
-	$(MAKE) -C xbmc/music/dialogs
-xbmc/music/windows/musicwindows.a: force
-	$(MAKE) -C xbmc/music/windows
-xbmc/music/infoscanner/musicscanner.a: force
-	$(MAKE) -C xbmc/music/infoscanner
-xbmc/video/video.a: force
-	$(MAKE) -C xbmc/video
-xbmc/video/dialogs/videodialogs.a: force
-	$(MAKE) -C xbmc/video/dialogs
-xbmc/video/windows/videowindows.a: force
-	$(MAKE) -C xbmc/video/windows
-xbmc/dialogs/dialogs.a: force
-	$(MAKE) -C xbmc/dialogs
-xbmc/windows/windows.a: force
-	$(MAKE) -C xbmc/windows
-lib/libTcpSocket/libTcpSocket.a: force
-	$(MAKE) -C lib/libTcpSocket
-lib/libhts/libhts.a: force
-	$(MAKE) -C lib/libhts
-xbmc/interfaces/interfaces.a: force
-	$(MAKE) -C xbmc/interfaces
-xbmc/interfaces/info/info.a: force
-	$(MAKE) -C xbmc/interfaces/info
-xbmc/interfaces/python/python.a: force
-	$(MAKE) -C xbmc/interfaces/python
-xbmc/interfaces/python/xbmcmodule/xbmcmodule.a: force
-	$(MAKE) -C xbmc/interfaces/python/xbmcmodule
-xbmc/network/libscrobbler/scrobbler.a: force
-	$(MAKE) -C xbmc/network/libscrobbler
-lib/libRTV/librtv.a: force
-	$(MAKE) -C lib/libRTV
-lib/libUPnP/libupnp.a: force
-	$(MAKE) -C lib/libUPnP
-lib/libXDAAP/libxdaap.a: force
-	$(MAKE) -C lib/libXDAAP
-xbmc/interfaces/http-api/http-api.a: force
-	$(MAKE) -C xbmc/interfaces/http-api
-xbmc/interfaces/json-rpc/json-rpc.a: force
-	$(MAKE) -C xbmc/interfaces/json-rpc
-xbmc/dbwrappers/dbwrappers.a: force
-	$(MAKE) -C xbmc/dbwrappers
-lib/UnrarXLib/UnrarXLib.a: force
-	$(MAKE) -C lib/UnrarXLib
-lib/libsquish/libsquish.a: force
-	$(MAKE) -C lib/libsquish
-lib/SlingboxLib/SlingboxLib.a: force
-	$(MAKE) -C lib/SlingboxLib
-xbmc/linux/linux.a: force
-	$(MAKE) -C xbmc/linux
-xbmc/addons/addons.a: force
-	$(MAKE) -C xbmc/addons
-xbmc/settings/settings.a: force
-	$(MAKE) -C xbmc/settings
-xbmc/utils/utils.a: force
-	$(MAKE) -C xbmc/utils
-xbmc/epg/epg.a: force
-	$(MAKE) -C xbmc/epg
-xbmc/pvr/pvr.a: force
-	$(MAKE) -C xbmc/pvr
-xbmc/pvr/addons/pvraddons.a: force
-	$(MAKE) -C xbmc/pvr/addons
-xbmc/pvr/channels/pvrchannels.a: force
-	$(MAKE) -C xbmc/pvr/channels
-xbmc/pvr/dialogs/pvrdialogs.a: force
-	$(MAKE) -C xbmc/pvr/dialogs
-xbmc/pvr/recordings/pvrrecordings.a: force
-	$(MAKE) -C xbmc/pvr/recordings
-xbmc/pvr/timers/pvrtimers.a: force
-	$(MAKE) -C xbmc/pvr/timers
-xbmc/pvr/windows/pvrwindows.a: force
-	$(MAKE) -C xbmc/pvr/windows
-xbmc/pvrclients/pvrclient.a: force
-	$(MAKE) -C xbmc/pvrclients
-xbmc/osx/osx.a: force
-	$(MAKE) -C xbmc/osx
+$(DIRECTORY_ARCHIVES): force
+	@$(MAKE) -C $(@D)
+
 lib/libapetag/.libs/libapetag.a: force
 	$(MAKE) -C lib/libapetag
 lib/cpluff/libcpluff/.libs/libcpluff.a: force
@@ -404,8 +348,6 @@ ifeq ($(findstring osx,@ARCH@), osx)
 else
 	cp lib/cpluff/libcpluff/.libs/libcpluff.so $@
 endif
-lib/xbmc-dll-symbols/dll-symbols.a: force
-	$(MAKE) -C lib/xbmc-dll-symbols
 
 exports: xbmc/cores/DllLoader/exports/exports.a xbmc/cores/DllLoader/exports/util/exports_utils.a
 	$(MAKE) -C xbmc/cores/DllLoader/exports wrapper.def
@@ -541,7 +483,11 @@ OBJSXBMC=	\
 	lib/xbmc-dll-symbols/dll-symbols.a \
 	xbmc/rendering/rendering.a \
 	xbmc/windowing/windowing.a \
-	lib/libTcpSocket/libTcpSocket.a
+	lib/libTcpSocket/libTcpSocket.a \
+	xbmc/peripherals/peripherals.a \
+	xbmc/peripherals/bus/peripheral-bus.a \
+	xbmc/peripherals/devices/peripheral-devices.a \
+	xbmc/peripherals/dialogs/peripheral-dialogs.a 
 
 ifeq (@USE_OPENGL@,1)
 OBJSXBMC += xbmc/rendering/gl/rendering_gl.a
@@ -692,33 +638,6 @@ uninstall:
 	@rm -rf $(libdir)/libXBMC_*
 	@rm -rf $(prefix)/include/xbmc
 	@echo "Done!"
-
-reallyclean:
-	@echo " This will delete ALL unversioned files in"; \
-	 echo " your XBMC source tree. If you aren't sure"; \
-	 echo " you want to do this, answer anything but"; \
-	 echo " 'Y' (case sensitive) to the following."; \
-	 echo " DISCLAIMER: Team XBMC is NOT responsible"; \
-	 echo " for ANYTHING lost if you execute this command!"; \
-	 echo -n " Damnserious? (Y/*) "; \
-	 read -n1 PROMPT; \
-	 if [[ "$$PROMPT" = "Y" ]]; then \
-		SVNV=$$(svnversion -n | cut -d':' -f1); _IFS=$$IFS; IFS=$$'\t\n'; \
-		for i in `svn st --no-ignore | grep ^[I\?] | cut -d' ' -f7-`; do \
-			if [[ $${i:(-4)} != "diff" && $${i:(-5)} != "patch" ]]; then \
-				echo "  Deleting $$i"; \
-				rm -rf "$$i"; \
-			fi; \
-		done; \
-		IFS=$$_IFS; \
-		echo " Recovering any missing files."; \
-		svn up -r $${SVNV/M/} | sed -e "s/.*'\(.*\)'/  \1/p" -e d; \
-		echo " Done."; \
-		echo " The following files may need reverted (svn revert <file>)"; \
-		svn st | sed -e "s/^M */  /p" -e d; \
-	 else \
-		echo; \
-	 fi
 
 clean-xbmc.bin:
 	rm -f xbmc.bin

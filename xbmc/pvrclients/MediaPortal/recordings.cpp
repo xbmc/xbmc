@@ -27,6 +27,8 @@ using namespace std;
 #include "timers.h"
 #include "client.h"
 
+using namespace ADDON;
+
 cRecording::cRecording()
 {
   m_StartTime       = 0;

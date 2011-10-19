@@ -171,7 +171,7 @@ MediaLibrary.prototype = {
 					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Input.Home", "id": 1}', function(data){$('#spinner').hide();}, 'json');
 					return;
 				case 'mute':
-					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.ToggleMute", "id": 1}', function(data){$('#spinner').hide();}, 'json');
+					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetMute", "params": { "mute": "toggle" }, "id": 1}', function(data){$('#spinner').hide();}, 'json');
 					return;
 				case 'power':
 					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "System.Shutdown", "id": 1}', function(data){$('#spinner').hide();}, 'json');
@@ -179,7 +179,7 @@ MediaLibrary.prototype = {
 				case 'volumeup':
         jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume" ] }, "id": 1}', function(data){
 						var volume = data.result.volume + 1;
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "value": '+volume+' }, "id": 1}', function(data){
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": '+volume+' }, "id": 1}', function(data){
 					
 						$('#spinner').hide();
 			  			 }, 'json');
@@ -188,7 +188,7 @@ MediaLibrary.prototype = {
 				case 'volumedown':
 					jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume" ] }, "id": 1}', function(data){
 						var volume = data.result.volume - 1;
-						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "value": '+volume+' }, "id": 1}', function(data){
+						jQuery.post(JSON_RPC + '?SendRemoteKey', '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": '+volume+' }, "id": 1}', function(data){
 					
 						$('#spinner').hide();
 			  			 }, 'json');
@@ -265,7 +265,7 @@ MediaLibrary.prototype = {
 				libraryContainer.attr('id', 'libraryContainer')
 								.addClass('contentContainer');
 				$('#content').append(libraryContainer);
-				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "limits": { "start": 0 }, "fields": ["description", "theme", "mood", "style", "type", "label", "artist", "genre", "rating", "title", "year", "thumbnail"], "sort": { "method": "artist" } }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetAlbums', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "limits": { "start": 0 }, "properties": ["description", "theme", "mood", "style", "type", "albumlabel", "artist", "genre", "rating", "title", "year", "thumbnail"], "sort": { "method": "artist" } }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.albums) {
 						this.albumList = data.result.albums;
 						$.each($(this.albumList), jQuery.proxy(function(i, item) {
@@ -370,7 +370,7 @@ MediaLibrary.prototype = {
 			$('#topScrollFade').hide();
 			if (!albumDetailsContainer || albumDetailsContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetSongs', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "fields": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetSongs', '{"jsonrpc": "2.0", "method": "AudioLibrary.GetSongs", "params": { "properties": ["title", "artist", "genre", "track", "duration", "year", "rating", "playcount"], "albumid" : ' + event.data.album.albumid + ' }, "id": 1}', jQuery.proxy(function(data) {
 					albumDetailsContainer = $('<div>');
 					albumDetailsContainer.attr('id', 'albumDetails' + event.data.album.albumid)
 										 .addClass('contentContainer')
@@ -480,7 +480,7 @@ MediaLibrary.prototype = {
 			toggle=this.toggle.detach();	
 			if (!tvshowDetailsContainer || tvshowDetailsContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetTVShowSeasons', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": { "fields": [ "season", "showtitle", "playcount", "episode", "thumbnail","fanart" ], "tvshowid" : ' + event.data.tvshow.tvshowid + ' }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetTVShowSeasons', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetSeasons", "params": { "properties": [ "season", "showtitle", "playcount", "episode", "thumbnail","fanart" ], "tvshowid" : ' + event.data.tvshow.tvshowid + ' }, "id": 1}', jQuery.proxy(function(data) {
 					tvshowDetailsContainer = $('<div>');
 					tvshowDetailsContainer.attr('id', 'tvShowDetails' + event.data.tvshow.tvshowid)
 										  .css('display', 'none')
@@ -547,7 +547,7 @@ MediaLibrary.prototype = {
 			//Update ActiveSeason
 			this.tvActiveSeason = selectedVal;			
 			//Populate new listings
-			jQuery.post(JSON_RPC + '?GetTVSeasonEpisodes', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "fields": [ "title", "thumbnail","episode","plot","season"], "season" : ' + seasons[selectedVal].season + ', "tvshowid" : ' + event.data.tvshow + ' }, "id": 1}', jQuery.proxy(function(data) {
+			jQuery.post(JSON_RPC + '?GetTVSeasonEpisodes', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetEpisodes", "params": { "properties": [ "title", "thumbnail","episode","plot","season"], "season" : ' + seasons[selectedVal].season + ', "tvshowid" : ' + event.data.tvshow + ' }, "id": 1}', jQuery.proxy(function(data) {
 				var episodeListingsContainer = $('<div>').addClass('episodeListingsContainer');
 				var episodeTable= $('<table>').addClass('seasonView').html('<thead><tr class="headerRow"><th class="thumbHeader">N&deg;</th><th>Title</th><th class="thumbHeader">Thumb</th><th class="thumbHeader">Details</th></tr></thead><tbody class="resultSet"></tbody>');	
 				$.each($(data.result.episodes), jQuery.proxy(function(i, item) {
@@ -675,7 +675,7 @@ MediaLibrary.prototype = {
 				//check that clear worked.
 				jQuery.post(JSON_RPC + '?AddAlbumToPlaylist', '{"jsonrpc": "2.0", "method": "Playlist.Add", "params": { "playlistid": ' + this.playlists["audio"] + ', "item": { "albumid": ' + event.data.album.albumid + ' } }, "id": 1}', jQuery.proxy(function(data) {
 					//play specific song in playlist
-					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "playlist": { "playlistid": ' + this.playlists["audio"] + ', "position": '+ event.data.itmnbr + ' } }, "id": 1}', function() {}, 'json');
+					jQuery.post(JSON_RPC + '?PlaylistItemPlay', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "playlistid": ' + this.playlists["audio"] + ', "position": '+ event.data.itmnbr + ' } }, "id": 1}', function() {}, 'json');
 				}, this), 'json');
 			}, this), 'json');
 		},
@@ -686,7 +686,7 @@ MediaLibrary.prototype = {
 			var libraryContainer = $('#movieLibraryContainer');
 			if (!libraryContainer || libraryContainer.length == 0) {
 				$('#spinner').show();
-				jQuery.post(JSON_RPC + '?GetMovies', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "limits": { "start": 0 }, "fields": [ "genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "runtime", "year", "playcount", "rating", "thumbnail", "file" ], "sort": { "method": "sorttitle", "ignorearticle": true } }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetMovies', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "limits": { "start": 0 }, "properties": [ "genre", "director", "trailer", "tagline", "plot", "plotoutline", "title", "originaltitle", "lastplayed", "runtime", "year", "playcount", "rating", "thumbnail", "file" ], "sort": { "method": "sorttitle", "ignorearticle": true } }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.movies) {
 							libraryContainer = $('<div>');
 							libraryContainer.attr('id', 'movieLibraryContainer')
@@ -736,7 +736,7 @@ MediaLibrary.prototype = {
 							.bind('click',{mode: 'landscape'},jQuery.proxy(this.togglePosterView,this));
 				toggle.append(toggleBanner).append(' | ').append(togglePoster).append(' | ').append(toggleLandscape);
 				this.toggle=toggle;				
-				jQuery.post(JSON_RPC + '?GetTVShows', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "fields": ["genre", "plot", "title", "lastplayed", "episode", "year", "playcount", "rating", "thumbnail", "studio", "mpaa", "premiered"] }, "id": 1}', jQuery.proxy(function(data) {
+				jQuery.post(JSON_RPC + '?GetTVShows', '{"jsonrpc": "2.0", "method": "VideoLibrary.GetTVShows", "params": { "properties": ["genre", "plot", "title", "lastplayed", "episode", "year", "playcount", "rating", "thumbnail", "studio", "mpaa", "premiered"] }, "id": 1}', jQuery.proxy(function(data) {
 					if (data && data.result && data.result.tvshows) {
 							libraryContainer = $('<div>');									
 							libraryContainer.append(toggle);
@@ -782,7 +782,7 @@ MediaLibrary.prototype = {
 			}
 		},
 		startSlideshow: function(event) {
-			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "slideshow": { "recursive" : "true", "random":"true", "directory" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" } }, "id": 1}', null, 'json');
+			jQuery.post(JSON_RPC + '?StartSlideshow', '{"jsonrpc": "2.0", "method": "Player.Open", "params": { "item": { "recursive" : "true", "random":"true", "path" : "' + this.replaceAll(event.data.directory.file, "\\", "\\\\") + '" } }, "id": 1}', null, 'json');
 		},
 		showDirectory: function(event) {
 			var directory = event.data.directory.file;

@@ -43,9 +43,9 @@ CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
 
 CGUIWindowPVRRecordings::~CGUIWindowPVRRecordings(void)
 {
-  if (g_PVRRecordings)
+  if(g_PVRRecordings)
     g_PVRRecordings->UnregisterObserver(this);
-  if (g_PVRTimers)
+  if(g_PVRTimers)
     g_PVRTimers->UnregisterObserver(this);
   g_infoManager.UnregisterObserver(this);
 }
@@ -70,7 +70,8 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
 //buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 12022);
   buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
   buttons.Add(CONTEXT_BUTTON_DELETE, 117);      /* Delete this recording */
-
+  buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* sort by name */
+  buttons.Add(CONTEXT_BUTTON_SORTBY_DATE, 104);       /* sort by date */
   // Update sort by button
 //if (m_guiState->GetSortMethod()!=SORT_METHOD_NONE)
 //{

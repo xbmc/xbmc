@@ -33,7 +33,6 @@
 
 #include "system.h"
 
-#if defined(HAS_FILESYSTEM_SMB)
 #include "SMBDirectory.h"
 #include "Util.h"
 #include "guilib/LocalizeStrings.h"
@@ -501,5 +500,3 @@ CStdString CSMBDirectory::GetMountPoint(const CStdString &strType, const CStdStr
   return XBMC_SMB_MOUNT_PATH + strPath;
 #endif
 }
-
-#endif

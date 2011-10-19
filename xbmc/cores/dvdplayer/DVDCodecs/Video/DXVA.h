@@ -29,6 +29,7 @@
 #include <deque>
 #include <vector>
 #include "settings/VideoSettings.h"
+#include "guilib/Geometry.h"
 
 namespace DXVA {
 
@@ -123,7 +124,7 @@ public:
   bool           Open(UINT width, UINT height, unsigned int flags, unsigned int format);
   void           Close();
   REFERENCE_TIME Add(DVDVideoPicture* picture);
-  bool           Render(RECT src, RECT dst, IDirect3DSurface9* target, const REFERENCE_TIME time, DWORD flags);
+  bool           Render(CRect src, CRect dst, IDirect3DSurface9* target, const REFERENCE_TIME time, DWORD flags);
   unsigned       Size() { if (m_service) return m_size; return 0; }
 
   virtual void OnCreateDevice()  {}
@@ -153,10 +154,10 @@ protected:
   unsigned         m_max_back_refs;
   unsigned         m_max_fwd_refs;
   EDEINTERLACEMODE m_deinterlace_mode;
+  EINTERLACEMETHOD m_interlace_methodGUI;
   EINTERLACEMETHOD m_interlace_method;
   bool             m_progressive; // true for progressive source or to force ignoring interlacing flags.
   unsigned         m_index;
-  unsigned         m_last_field_rendered;
 
   struct SVideoSample
   {

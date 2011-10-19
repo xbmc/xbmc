@@ -1071,6 +1071,13 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
  
+    if (hints.profile == 77 && hints.level == 32)
+    {
+      // Main@L3.2, VTB cannot handle it
+      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode.", __FUNCTION__);
+      return false;
+    }
+ 
     switch (hints.codec)
     {
       case CODEC_ID_MPEG4:

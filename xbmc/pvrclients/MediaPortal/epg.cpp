@@ -27,6 +27,8 @@ using namespace std;
 #include "utils.h"
 #include "client.h"
 
+using namespace ADDON;
+
 cEpg::cEpg()
 {
   m_genremap        = NULL;

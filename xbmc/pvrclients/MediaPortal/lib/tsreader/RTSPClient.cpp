@@ -23,6 +23,8 @@
 #include "MemorySink.h"
 #include "client.h"
 
+using namespace ADDON;
+
 CRTSPClient::CRTSPClient()
 {
   XBMC->Log(LOG_DEBUG, "CRTSPClient::CRTSPClient()");

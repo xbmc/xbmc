@@ -42,5 +42,5 @@ extern unsigned int              g_iPacketSequence;
 extern bool                      g_bShowTimerNotifications;
 extern std::string               g_szUserPath;
 extern std::string               g_szClientPath;
-extern CHelper_libXBMC_addon *   XBMC;
+extern ADDON::CHelper_libXBMC_addon *   XBMC;
 extern CHelper_libXBMC_pvr *     PVR;

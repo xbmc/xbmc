@@ -315,7 +315,7 @@ void CGUIWindowMusicSongs::GetContextButtons(int itemNumber, CContextButtons &bu
     else
     {
       CGUIWindowMusicBase::GetContextButtons(itemNumber, buttons);
-      if (item->GetPropertyBOOL("pluginreplacecontextitems"))
+      if (item->GetProperty("pluginreplacecontextitems").asBoolean())
         return;
       if (!item->IsPlayList())
       {

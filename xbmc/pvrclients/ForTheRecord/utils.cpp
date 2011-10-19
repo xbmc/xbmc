@@ -25,6 +25,8 @@
 #include <string>
 #include <algorithm> // sort
 
+using namespace ADDON;
+
 namespace Json
 {
   void printValueTree( const Json::Value& value, const std::string& path)
