@@ -155,6 +155,9 @@ namespace PERIPHERALS
 
     bool                                 m_bInitialised;
     bool                                 m_bIsStarted;
+#if !defined(HAVE_LIBCEC)
+    bool                                 m_bMissingLibCecWarningDisplayed;
+#endif
     std::vector<CPeripheralBus *>        m_busses;
     std::vector<PeripheralDeviceMapping> m_mappings;
     CSettingsCategory *                  m_settings;
