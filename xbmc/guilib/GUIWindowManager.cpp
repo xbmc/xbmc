@@ -553,6 +553,7 @@ bool CGUIWindowManager::Render()
   {
     RenderPass();
     hasRendered = true;
+    m_tracker.CleanMarkedRegions(0);
   }
   else if (g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE)
   {
@@ -560,6 +561,9 @@ bool CGUIWindowManager::Render()
     {
       RenderPass();
       hasRendered = true;
+
+      //Rendering the entire screen, so expire all currently marked regions
+      m_tracker.CleanMarkedRegions(0);
     }
   }
   else
@@ -574,6 +578,7 @@ bool CGUIWindowManager::Render()
       hasRendered = true;
     }
     g_graphicsContext.ResetScissors();
+    m_tracker.CleanMarkedRegions();
   }
 
   if (g_advancedSettings.m_guiVisualizeDirtyRegions)
@@ -585,8 +590,6 @@ bool CGUIWindowManager::Render()
     for (CDirtyRegionList::const_iterator i = dirtyRegions.begin(); i != dirtyRegions.end(); i++)
       CGUITexture::DrawQuad(*i, 0x4c00ff00);
   }
-
-  m_tracker.CleanMarkedRegions();
 
   return hasRendered;
 }
