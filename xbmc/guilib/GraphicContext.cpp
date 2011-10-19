@@ -388,6 +388,7 @@ void CGraphicContext::SetVideoResolution(RESOLUTION res, bool forceUpdate)
   // update anyone that relies on sizing information
   g_renderManager.Recover();
   g_Mouse.SetResolution(m_iScreenWidth, m_iScreenHeight, 1, 1);
+  SetViewWindow(0,0,m_iScreenWidth, m_iScreenHeight);
   g_windowManager.SendMessage(GUI_MSG_NOTIFY_ALL, 0, 0, GUI_MSG_WINDOW_RESIZE);
 
   Unlock();
