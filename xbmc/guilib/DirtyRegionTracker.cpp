@@ -24,9 +24,8 @@
 #include "utils/log.h"
 #include <stdio.h>
 
-CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
+CDirtyRegionTracker::CDirtyRegionTracker()
 {
-  m_buffering = buffering;
   m_solver = NULL;
 }
 
@@ -78,9 +77,9 @@ CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions()
   return output;
 }
 
-void CDirtyRegionTracker::CleanMarkedRegions()
+void CDirtyRegionTracker::CleanMarkedRegions(int buffering)
 {
-  int buffering = g_advancedSettings.m_guiVisualizeDirtyRegions ? 20 : m_buffering;
+  buffering = g_advancedSettings.m_guiVisualizeDirtyRegions ? 20 : buffering;
   int i = m_markedRegions.size() - 1;
   while (i >= 0)
 	{
