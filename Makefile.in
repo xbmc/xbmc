@@ -79,7 +79,6 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/pvr/recordings/pvrrecordings.a \
                    xbmc/pvr/timers/pvrtimers.a \
                    xbmc/pvr/windows/pvrwindows.a \
-                   xbmc/pvrclients/pvrclient.a \
                    xbmc/rendering/rendering.a \
                    xbmc/settings/settings.a \
                    xbmc/storage/storage.a \
