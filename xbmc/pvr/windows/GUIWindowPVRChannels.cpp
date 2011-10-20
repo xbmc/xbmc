@@ -54,20 +54,20 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio)
   m_bShowHiddenChannels = false;
 }
 
-CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
-{
-  g_EpgContainer.UnregisterObserver(this);
-  if(g_PVRTimers)
-    g_PVRTimers->UnregisterObserver(this);
-  g_infoManager.UnregisterObserver(this);
-}
-
 void CGUIWindowPVRChannels::ResetObservers(void)
 {
   CSingleLock lock(m_critSection);
   g_EpgContainer.RegisterObserver(this);
   g_PVRTimers->RegisterObserver(this);
   g_infoManager.RegisterObserver(this);
+}
+
+void CGUIWindowPVRChannels::UnregisterObservers(void)
+{
+  CSingleLock lock(m_critSection);
+  g_EpgContainer.UnregisterObserver(this);
+  g_PVRTimers->UnregisterObserver(this);
+  g_infoManager.UnregisterObserver(this);
 }
 
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons) const

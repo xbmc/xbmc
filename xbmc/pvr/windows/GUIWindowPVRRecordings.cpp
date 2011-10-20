@@ -41,12 +41,11 @@ CGUIWindowPVRRecordings::CGUIWindowPVRRecordings(CGUIWindowPVR *parent) :
   m_strSelectedPath = "pvr://recordings/";
 }
 
-CGUIWindowPVRRecordings::~CGUIWindowPVRRecordings(void)
+void CGUIWindowPVRRecordings::UnregisterObservers(void)
 {
-  if(g_PVRRecordings)
-    g_PVRRecordings->UnregisterObserver(this);
-  if(g_PVRTimers)
-    g_PVRTimers->UnregisterObserver(this);
+  CSingleLock lock(m_critSection);
+  g_PVRRecordings->UnregisterObserver(this);
+  g_PVRTimers->UnregisterObserver(this);
   g_infoManager.UnregisterObserver(this);
 }
 
