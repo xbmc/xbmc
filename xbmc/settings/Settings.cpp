@@ -680,7 +680,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     int deinterlaceMode;
     bool deinterlaceModePresent = GetInteger(pElement, "deinterlacemode", deinterlaceMode, VS_DEINTERLACEMODE_OFF, VS_DEINTERLACEMODE_OFF, VS_DEINTERLACEMODE_FORCE);
     int interlaceMethod;
-    bool interlaceMethodPresent = GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_AUTO, VS_INTERLACEMETHOD_AUTO, VS_INTERLACEMETHOD_AUTO_ION);
+    bool interlaceMethodPresent = GetInteger(pElement, "interlacemethod", interlaceMethod, VS_INTERLACEMETHOD_AUTO, VS_INTERLACEMETHOD_AUTO, VS_INTERLACEMETHOD_MAX);
     // For smooth conversion of settings stored before the deinterlaceMode existed
     if (!deinterlaceModePresent && interlaceMethodPresent)
     {
@@ -701,7 +701,7 @@ bool CSettings::LoadSettings(const CStdString& strSettingsFile)
     m_defaultVideoSettings.m_DeinterlaceMode = (EDEINTERLACEMODE)deinterlaceMode;
     m_defaultVideoSettings.m_InterlaceMethod = (EINTERLACEMETHOD)interlaceMethod;
     int scalingMethod;
-    GetInteger(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_LINEAR, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_SPLINE36);
+    GetInteger(pElement, "scalingmethod", scalingMethod, VS_SCALINGMETHOD_LINEAR, VS_SCALINGMETHOD_NEAREST, VS_SCALINGMETHOD_MAX);
     m_defaultVideoSettings.m_ScalingMethod = (ESCALINGMETHOD)scalingMethod;
 
     GetInteger(pElement, "viewmode", m_defaultVideoSettings.m_ViewMode, VIEW_MODE_NORMAL, VIEW_MODE_NORMAL, VIEW_MODE_CUSTOM);

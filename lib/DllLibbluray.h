@@ -135,9 +135,6 @@ class DllLibbluray : public DllDynamic, DllLibblurayInterface
     RESOLVE_METHOD_RENAME(bd_tell_time,         bd_tell_time)
     RESOLVE_METHOD_RENAME(bd_register_file,     bd_register_file)
     RESOLVE_METHOD_RENAME(bd_register_dir,      bd_register_dir)
-    RESOLVE_METHOD(bd_set_debug_handler)
-    RESOLVE_METHOD(bd_set_debug_mask)
-    RESOLVE_METHOD(bd_get_debug_mask)
 #ifndef HAVE_LIBBLURAY_NOLOGCONTROL
     RESOLVE_METHOD(bd_set_debug_handler)
     RESOLVE_METHOD(bd_set_debug_mask)

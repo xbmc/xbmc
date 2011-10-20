@@ -155,6 +155,12 @@ AC_ARG_WITH([cpu],
   [use_cpu=$withval],
   [use_cpu=no])
 
+AC_ARG_ENABLE([neon],
+  [AS_HELP_STRING([--enable-neon],
+  [enable neon passing to ffmpeg (default is no)])],
+  [use_neon=$enableval],
+  [use_neon=no])
+
 AC_ARG_ENABLE([optimizations],
   [AS_HELP_STRING([--enable-optimizations],
   [enable optimization (default is yes)])],
@@ -579,10 +585,14 @@ elif test "$use_arch" = "arm"; then
         CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"    
         use_cpu=cortex-a8])
   else
-    # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
-    CFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
-    CXXFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
-    FFMPEG_EXTRACFLAGS+=" -mfpu=neon"
+    # Compile for ARMv7a architecture, CortexA8 cpu and check for enabled NEON coprocessor
+    CFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8"
+    CXXFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8"
+    if test "$use_neon" = "yes"; then 
+      CFLAGS+=" -mfpu=neon -mvectorize-with-neon-quad"
+      CXXFLAGS+=" -mfpu=neon -mvectorize-with-neon-quad"
+      FFMPEG_EXTRACFLAGS+=" -mfpu=neon"
+    fi
   fi
 fi
 
@@ -1111,7 +1121,7 @@ if test "$host_vendor" = "apple" ; then
   AC_MSG_NOTICE($libusb_disabled)
 else
   # we can use either libudev or libusb but not both.
-  if test "x$use_libusb" != "xno" && "x$use_libudev" == "xno"; then
+  if test "x$use_libusb" != "xno" && test "x$use_libudev" == "xno"; then
     if test "$host_vendor" = "apple" ; then
       use_libusb="no"
       AC_MSG_NOTICE($libusb_disabled)
@@ -1139,14 +1149,13 @@ if test "x$use_libcec" != "xno"; then
   # libcec is dyloaded, so we need to check for its headers and link any depends.
   PKG_CHECK_MODULES([CEC],[libcec = 0.7.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
   if test "x$use_libcec" != "xno" && test "$host_vendor" != "apple"; then
-    # libcec has libudev as depends under linux and we also need usb headers.
-    PKG_CHECK_MODULES([USB],[libusb],,[use_libcec="no";AC_MSG_RESULT($libusb_not_found)])
+    # libcec has libudev as depends under linux.
     PKG_CHECK_MODULES([UDEV],[libudev],,[use_libcec="no";AC_MSG_RESULT($libudev_not_found)])
   fi
   if test "x$use_libcec" != "xno"; then
     if test "$host_vendor" != "apple"; then
-      # if linux, bring in usb and udev cflags but only udev as lib.
-      INCLUDES="$INCLUDES $USB_CFLAGS $UDEV_CFLAGS";LIBS="$LIBS $UDEV_LIBS"
+      # if linux, bring in udev cflags and add lib.
+      INCLUDES="$INCLUDES $UDEV_CFLAGS";LIBS="$LIBS $UDEV_LIBS"
       USE_LIBUDEV=1;AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"])
     fi
     INCLUDES="$INCLUDES $CEC_CFLAGS"
@@ -1998,11 +2007,12 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "$use_arch" != "no"; then echo --enable-cross-compile; fi` \
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
       `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
+      `if test "$use_arch" = "arm"; then echo --enable-pic; fi`\
+      `if test "$use_neon" = "yes"; then echo --enable-neon; else echo --disable-neon; fi`\
       --target-os=$(tolower $(uname -s)) \
       --disable-amd3dnow \
       --disable-armv5te \
       --disable-armv6t2 \
-      `if test "$use_arch" != "yes"; then echo --enable-neon; fi`\
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
@@ -2043,6 +2053,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
       `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
+      `if test "$use_neon" = "yes"; then echo --enable-neon; else echo --disable-neon; fi`\
       --target-os=$(tolower $(uname -s)) \
       --disable-muxers \
       --enable-muxer=spdif \

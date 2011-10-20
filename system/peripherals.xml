@@ -1,6 +1,6 @@
 <peripherals>
   <peripheral vendor="1915" product="003B" bus="usb" name="Motorola Nyxboard Hybrid" mapTo="nyxboard">
-    <setting key="keymap_enabled" type="bool" value="1" label="35008" configurable="0" />
+    <setting key="keymap_enabled" type="bool" value="0" label="35008" />
     <setting key="keymap" value="Motorola Nyxboard Hybrid" label="35007" configurable="0" />
     <setting key="enable_flip_commands" type="bool" value="1" label="36005" />
     <setting key="flip_keyboard" value="XBMC.VideoLibrary.Search" label="36002" />
@@ -8,7 +8,7 @@
     <setting key="key_user" value="" label="36004" />
   </peripheral>
   <peripheral vendor="22B8" product="003B" bus="usb" name="Motorola Nyxboard Hybrid" mapTo="nyxboard">
-    <setting key="keymap_enabled" type="bool" value="1" label="35008" configurable="0" />
+    <setting key="keymap_enabled" type="bool" value="0" label="35008" />
     <setting key="keymap" value="Motorola Nyxboard Hybrid" label="35007" configurable="0" />
     <setting key="enable_flip_commands" type="bool" value="1" label="36005" />
     <setting key="flip_keyboard" value="XBMC.VideoLibrary.Search" label="36002" />

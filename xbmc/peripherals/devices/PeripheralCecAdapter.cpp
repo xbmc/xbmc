@@ -406,6 +406,23 @@ void CPeripheralCecAdapter::ProcessNextCommand(void)
         SetMenuLanguage(strNewLanguage);
       }
       break;
+    case CEC_OPCODE_DECK_CONTROL:
+      if (command.initiator == CECDEVICE_TV &&
+          command.parameters.size == 1 &&
+          command.parameters[0] == CEC_DESK_CONTROL_MODE_STOP)
+      {
+        g_application.getApplicationMessenger().MediaStop();
+      }
+      break;
+    case CEC_OPCODE_PLAY:
+      if (command.initiator == CECDEVICE_TV &&
+          command.parameters.size == 1)
+      {
+        if (command.parameters[0] == CEC_PLAY_MODE_PLAY_FORWARD ||
+            command.parameters[0] == CEC_PLAY_MODE_PLAY_STILL)
+          g_application.getApplicationMessenger().MediaPause();
+      }
+      break;
     default:
       break;
     }

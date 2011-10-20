@@ -400,13 +400,14 @@ void CMPCOutputThread::DoFrameRateTracking(double timestamp)
     if (m_framerate_cnt == 0 && timestamp > 250000.0)
       m_is_live_stream = true;
     
-    // cnt count has to be done here, cause we miss frames
-    // if framerate was not valid calculated
-    m_framerate_cnt++;
     duration = timestamp - m_framerate_timestamp;
     if (duration > 0.0)
     {
       double framerate;
+      // cnt count has to be done here, cause we miss frames
+      // if framerate will not calculated correctly and
+      // duration has to be > 0.0 so we do not calc images twice
+      m_framerate_cnt++;
 
       m_framerate_timestamp += duration;
       framerate = DVD_TIME_BASE / duration;

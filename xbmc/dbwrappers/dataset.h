@@ -80,7 +80,7 @@ public:
   virtual ~Database();
   virtual Dataset *CreateDataset() const = 0;
 /* sets a new host name */
-  void setHostName(const char *newHost) { host = newHost; }
+  virtual void setHostName(const char *newHost) { host = newHost; }
 /* gets a host name */
   const char *getHostName(void) const { return host.c_str(); }
 /* sets a new port */
@@ -88,7 +88,7 @@ public:
 /* gets a port */
   const char *getPort(void) const { return port.c_str(); }
 /* sets a new database name */
-  void setDatabase(const char *newDb) { db = newDb; }
+  virtual void setDatabase(const char *newDb) { db = newDb; }
 /* gets a database name */
   const char *getDatabase(void) const { return db.c_str(); }
 /* sets a new login to database */
@@ -123,6 +123,9 @@ public:
   virtual int create(void) { return DB_COMMAND_OK; }
   virtual int drop(void) { return DB_COMMAND_OK; }
   virtual long nextid(const char* seq_name)=0;
+
+/* \brief copy database */
+  virtual int copy(const char *new_name) { return -1; }
 
   virtual bool exists(void) { return false; }
 

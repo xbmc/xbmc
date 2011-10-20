@@ -3,16 +3,6 @@ ARCH=@ARCH@
 SRCS = AnnouncementManager.cpp \
        Builtins.cpp \
 
-ifeq ($(findstring linux,$(ARCH)), linux)
-SRCS+=  DbusServer.cpp \
-
-endif
-
-ifeq ($(findstring arm,$(ARCH)), arm)
-SRCS+=  DbusServer.cpp \
-
-endif
-
 LIB=interfaces.a
 
 include @abs_top_srcdir@/Makefile.include
