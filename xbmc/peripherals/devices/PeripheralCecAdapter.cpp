@@ -411,7 +411,7 @@ void CPeripheralCecAdapter::ProcessNextCommand(void)
           command.parameters.size == 1 &&
           command.parameters[0] == CEC_DESK_CONTROL_MODE_STOP)
       {
-        g_application.getApplicationMessenger().MediaStop(false);
+        g_application.getApplicationMessenger().MediaStop();
       }
       break;
     case CEC_OPCODE_PLAY:
