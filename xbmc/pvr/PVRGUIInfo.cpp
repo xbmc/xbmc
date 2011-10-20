@@ -76,6 +76,11 @@ void CPVRGUIInfo::ResetProperties(void)
   m_iTimerInfoToggleCurrent     = 0;
   m_iToggleShowInfo             = 0;
   m_iDuration                   = 0;
+  m_bHasNonRecordingTimers      = false;
+  m_bIsPlayingTV                = false;
+  m_bIsPlayingRadio             = false;
+  m_bIsPlayingRecording         = false;
+  m_bIsPlayingEncryptedStream   = false;
   m_playingEpgTag               = NULL;
   g_PVRClients->GetQualityData(&m_qualityInfo);
 }
@@ -213,50 +218,121 @@ void CPVRGUIInfo::UpdateQualityData(void)
 void CPVRGUIInfo::UpdateMisc(void)
 {
   CSingleLock lock(m_critSection);
+  bool bStarted = g_PVRManager.IsStarted();
 
-  m_strPlayingClientName = g_PVRClients->GetPlayingClientName();
-  m_bHasRecordings = g_PVRRecordings->GetNumRecordings() > 0;
+  m_strPlayingClientName      = bStarted ? g_PVRClients->GetPlayingClientName() : "";
+  m_bHasRecordings            = bStarted && g_PVRRecordings->GetNumRecordings() > 0;
+  m_bHasNonRecordingTimers    = bStarted && m_iTimerAmount - m_iRecordingTimerAmount > 0;
+  m_bIsPlayingTV              = bStarted && g_PVRClients->IsPlayingTV();
+  m_bIsPlayingRadio           = bStarted && g_PVRClients->IsPlayingRadio();
+  m_bIsPlayingRecording       = bStarted && g_PVRClients->IsPlayingRecording();
+  m_bIsPlayingEncryptedStream = bStarted && g_PVRClients->IsEncrypted();
 }
 
 bool CPVRGUIInfo::TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const
 {
   bool bReturn(true);
+  CSingleLock lock(m_critSection);
 
-  if      (dwInfo == PVR_NOW_RECORDING_TITLE)     CharInfoActiveTimerTitle(strValue);
-  else if (dwInfo == PVR_NOW_RECORDING_CHANNEL)   CharInfoActiveTimerChannelName(strValue);
-  else if (dwInfo == PVR_NOW_RECORDING_CHAN_ICO)  CharInfoActiveTimerChannelIcon(strValue);
-  else if (dwInfo == PVR_NOW_RECORDING_DATETIME)  CharInfoActiveTimerDateTime(strValue);
-  else if (dwInfo == PVR_NEXT_RECORDING_TITLE)    CharInfoNextTimerTitle(strValue);
-  else if (dwInfo == PVR_NEXT_RECORDING_CHANNEL)  CharInfoNextTimerChannelName(strValue);
-  else if (dwInfo == PVR_NEXT_RECORDING_CHAN_ICO) CharInfoNextTimerChannelIcon(strValue);
-  else if (dwInfo == PVR_NEXT_RECORDING_DATETIME) CharInfoNextTimerDateTime(strValue);
-  else if (dwInfo == PVR_PLAYING_DURATION)        CharInfoPlayingDuration(strValue);
-  else if (dwInfo == PVR_PLAYING_TIME)            CharInfoPlayingTime(strValue);
-  else if (dwInfo == PVR_NEXT_TIMER)              CharInfoNextTimer(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_VIDEO_BR)  CharInfoVideoBR(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_AUDIO_BR)  CharInfoAudioBR(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_DOLBY_BR)  CharInfoDolbyBR(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_SIG)       CharInfoSignal(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_SNR)       CharInfoSNR(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_BER)       CharInfoBER(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_UNC)       CharInfoUNC(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_CLIENT)    CharInfoPlayingClientName(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_DEVICE)    CharInfoFrontendName(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_STATUS)    CharInfoFrontendStatus(strValue);
-  else if (dwInfo == PVR_ACTUAL_STREAM_CRYPTION)  CharInfoEncryption(strValue);
-  else if (dwInfo == PVR_BACKEND_NAME)            CharInfoBackendName(strValue);
-  else if (dwInfo == PVR_BACKEND_VERSION)         CharInfoBackendVersion(strValue);
-  else if (dwInfo == PVR_BACKEND_HOST)            CharInfoBackendHost(strValue);
-  else if (dwInfo == PVR_BACKEND_DISKSPACE)       CharInfoBackendDiskspace(strValue);
-  else if (dwInfo == PVR_BACKEND_CHANNELS)        CharInfoBackendChannels(strValue);
-  else if (dwInfo == PVR_BACKEND_TIMERS)          CharInfoBackendTimers(strValue);
-  else if (dwInfo == PVR_BACKEND_RECORDINGS)      CharInfoBackendRecordings(strValue);
-  else if (dwInfo == PVR_BACKEND_NUMBER)          CharInfoBackendNumber(strValue);
-  else if (dwInfo == PVR_TOTAL_DISKSPACE)         CharInfoTotalDiskSpace(strValue);
-  else
+  switch(dwInfo)
   {
+  case PVR_NOW_RECORDING_TITLE:
+    CharInfoActiveTimerTitle(strValue);
+    break;
+  case PVR_NOW_RECORDING_CHANNEL:
+    CharInfoActiveTimerChannelName(strValue);
+    break;
+  case PVR_NOW_RECORDING_CHAN_ICO:
+    CharInfoActiveTimerChannelIcon(strValue);
+    break;
+  case PVR_NOW_RECORDING_DATETIME:
+    CharInfoActiveTimerDateTime(strValue);
+    break;
+  case PVR_NEXT_RECORDING_TITLE:
+    CharInfoNextTimerTitle(strValue);
+    break;
+  case PVR_NEXT_RECORDING_CHANNEL:
+    CharInfoNextTimerChannelName(strValue);
+    break;
+  case PVR_NEXT_RECORDING_CHAN_ICO:
+    CharInfoNextTimerChannelIcon(strValue);
+    break;
+  case PVR_NEXT_RECORDING_DATETIME:
+    CharInfoNextTimerDateTime(strValue);
+    break;
+  case PVR_PLAYING_DURATION:
+    CharInfoPlayingDuration(strValue);
+    break;
+  case PVR_PLAYING_TIME:
+    CharInfoPlayingTime(strValue);
+    break;
+  case PVR_NEXT_TIMER:
+    CharInfoNextTimer(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_VIDEO_BR:
+    CharInfoVideoBR(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_AUDIO_BR:
+    CharInfoAudioBR(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_DOLBY_BR:
+    CharInfoDolbyBR(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_SIG:
+    CharInfoSignal(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_SNR:
+    CharInfoSNR(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_BER:
+    CharInfoBER(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_UNC:
+    CharInfoUNC(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_CLIENT:
+    CharInfoPlayingClientName(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_DEVICE:
+    CharInfoFrontendName(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_STATUS:
+    CharInfoFrontendStatus(strValue);
+    break;
+  case PVR_ACTUAL_STREAM_CRYPTION:
+    CharInfoEncryption(strValue);
+    break;
+  case PVR_BACKEND_NAME:
+    CharInfoBackendName(strValue);
+    break;
+  case PVR_BACKEND_VERSION:
+    CharInfoBackendVersion(strValue);
+    break;
+  case PVR_BACKEND_HOST:
+    CharInfoBackendHost(strValue);
+    break;
+  case PVR_BACKEND_DISKSPACE:
+    CharInfoBackendDiskspace(strValue);
+    break;
+  case PVR_BACKEND_CHANNELS:
+    CharInfoBackendChannels(strValue);
+    break;
+  case PVR_BACKEND_TIMERS:
+    CharInfoBackendTimers(strValue);
+    break;
+  case PVR_BACKEND_RECORDINGS:
+    CharInfoBackendRecordings(strValue);
+    break;
+  case PVR_BACKEND_NUMBER:
+    CharInfoBackendNumber(strValue);
+    break;
+  case PVR_TOTAL_DISKSPACE:
+    CharInfoTotalDiskSpace(strValue);
+    break;
+  default:
     strValue = "";
     bReturn = false;
+    break;
   }
 
   return bReturn;
@@ -267,20 +343,32 @@ bool CPVRGUIInfo::TranslateBoolInfo(DWORD dwInfo) const
   bool bReturn(false);
   CSingleLock lock(m_critSection);
 
-  if (dwInfo == PVR_IS_RECORDING)
-    bReturn = g_PVRManager.IsStarted() && IsRecording();
-  else if (dwInfo == PVR_HAS_TIMER)
-    bReturn = g_PVRManager.IsStarted() && HasTimers();
-  else if (dwInfo == PVR_HAS_NONRECORDING_TIMER)
-    bReturn = g_PVRManager.IsStarted() && HasNonRecordingTimers();
-  else if (dwInfo == PVR_IS_PLAYING_TV)
-    bReturn = g_PVRManager.IsStarted() && g_PVRClients->IsPlayingTV();
-  else if (dwInfo == PVR_IS_PLAYING_RADIO)
-    bReturn = g_PVRManager.IsStarted() && g_PVRClients->IsPlayingRadio();
-  else if (dwInfo == PVR_IS_PLAYING_RECORDING)
-    bReturn = g_PVRManager.IsStarted() && g_PVRClients->IsPlayingRecording();
-  else if (dwInfo == PVR_ACTUAL_STREAM_ENCRYPTED)
-    bReturn = g_PVRManager.IsStarted() && g_PVRClients->IsEncrypted();
+  switch (dwInfo)
+  {
+  case PVR_IS_RECORDING:
+    bReturn = m_iRecordingTimerAmount > 0;
+    break;
+  case PVR_HAS_TIMER:
+    bReturn = m_iTimerAmount > 0;
+    break;
+  case PVR_HAS_NONRECORDING_TIMER:
+    bReturn = m_bHasNonRecordingTimers;
+    break;
+  case PVR_IS_PLAYING_TV:
+    bReturn = m_bIsPlayingTV;
+    break;
+  case PVR_IS_PLAYING_RADIO:
+    bReturn = m_bIsPlayingRadio;
+    break;
+  case PVR_IS_PLAYING_RECORDING:
+    bReturn = m_bIsPlayingRecording;
+    break;
+  case PVR_ACTUAL_STREAM_ENCRYPTED:
+    bReturn = m_bIsPlayingEncryptedStream;
+    break;
+  default:
+    break;
+  }
 
   return bReturn;
 }
@@ -291,85 +379,72 @@ int CPVRGUIInfo::TranslateIntInfo(DWORD dwInfo) const
   CSingleLock lock(m_critSection);
 
   if (dwInfo == PVR_PLAYING_PROGRESS)
-    iReturn = (int) ((float) GetStartTime() / GetDuration() * 100);
+    iReturn = (int) ((float) GetStartTime() / m_iDuration * 100);
   else if (dwInfo == PVR_ACTUAL_STREAM_SIG_PROGR)
-    iReturn = g_PVRClients->GetSignalLevel();
+    iReturn = (int) ((float) m_qualityInfo.iSignal / 0xFFFF * 100);
   else if (dwInfo == PVR_ACTUAL_STREAM_SNR_PROGR)
-    iReturn = g_PVRClients->GetSNR();
+    iReturn = (int) ((float) m_qualityInfo.iSNR / 0xFFFF * 100);
 
   return iReturn;
 }
 
 void CPVRGUIInfo::CharInfoActiveTimerTitle(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strActiveTimerTitle);
 }
 
 void CPVRGUIInfo::CharInfoActiveTimerChannelName(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strActiveTimerChannelName);
 }
 
 void CPVRGUIInfo::CharInfoActiveTimerChannelIcon(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strActiveTimerChannelIcon);
 }
 
 void CPVRGUIInfo::CharInfoActiveTimerDateTime(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strActiveTimerTime);
 }
 
 void CPVRGUIInfo::CharInfoNextTimerTitle(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strNextRecordingTitle);
 }
 
 void CPVRGUIInfo::CharInfoNextTimerChannelName(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strNextRecordingChannelName);
 }
 
 void CPVRGUIInfo::CharInfoNextTimerChannelIcon(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strNextRecordingChannelIcon);
 }
 
 void CPVRGUIInfo::CharInfoNextTimerDateTime(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strNextRecordingTime);
 }
 
 void CPVRGUIInfo::CharInfoPlayingDuration(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-  strValue.Format("%s", StringUtils::SecondsToTimeString(GetDuration() / 1000, TIME_FORMAT_GUESS));
+  strValue.Format("%s", StringUtils::SecondsToTimeString(m_iDuration / 1000, TIME_FORMAT_GUESS));
 }
 
 void CPVRGUIInfo::CharInfoPlayingTime(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", StringUtils::SecondsToTimeString(GetStartTime()/1000, TIME_FORMAT_GUESS));
 }
 
 void CPVRGUIInfo::CharInfoNextTimer(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strNextTimerInfo);
 }
 
 void CPVRGUIInfo::CharInfoBackendNumber(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (m_iActiveClients > 0)
     strValue.Format("%u %s %u", m_iAddonInfoToggleCurrent+1, g_localizeStrings.Get(20163), m_iActiveClients);
   else
@@ -378,56 +453,46 @@ void CPVRGUIInfo::CharInfoBackendNumber(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoTotalDiskSpace(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%s", m_strTotalDiskspace);
 }
 
 void CPVRGUIInfo::CharInfoVideoBR(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%.2f Mbit/s", m_qualityInfo.dVideoBitrate);
 }
 
 void CPVRGUIInfo::CharInfoAudioBR(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%.0f kbit/s", m_qualityInfo.dAudioBitrate);
 }
 
 void CPVRGUIInfo::CharInfoDolbyBR(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%.0f kbit/s", m_qualityInfo.dDolbyBitrate);
 }
 
 void CPVRGUIInfo::CharInfoSignal(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%d %%", m_qualityInfo.iSignal / 655);
 }
 
 void CPVRGUIInfo::CharInfoSNR(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%d %%", m_qualityInfo.iSNR / 655);
 }
 
 void CPVRGUIInfo::CharInfoBER(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%08X", m_qualityInfo.iBER);
 }
 
 void CPVRGUIInfo::CharInfoUNC(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
   strValue.Format("%08X", m_qualityInfo.iUNC);
 }
 
 void CPVRGUIInfo::CharInfoFrontendName(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (!strcmp(m_qualityInfo.strAdapterName, ""))
     strValue.Format("%s", g_localizeStrings.Get(13205));
   else
@@ -436,8 +501,6 @@ void CPVRGUIInfo::CharInfoFrontendName(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoFrontendStatus(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (!strcmp(m_qualityInfo.strAdapterStatus, ""))
     strValue.Format("%s", g_localizeStrings.Get(13205));
   else
@@ -446,8 +509,6 @@ void CPVRGUIInfo::CharInfoFrontendStatus(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoBackendName(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (m_strBackendName.Equals(""))
     strValue.Format("%s", g_localizeStrings.Get(13205));
   else
@@ -456,8 +517,6 @@ void CPVRGUIInfo::CharInfoBackendName(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoBackendVersion(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (m_strBackendVersion.Equals(""))
     strValue.Format("%s", g_localizeStrings.Get(13205));
   else
@@ -466,8 +525,6 @@ void CPVRGUIInfo::CharInfoBackendVersion(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoBackendHost(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (m_strBackendHost.Equals(""))
     strValue.Format("%s", g_localizeStrings.Get(13205));
   else
@@ -476,8 +533,6 @@ void CPVRGUIInfo::CharInfoBackendHost(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoBackendDiskspace(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (m_strBackendDiskspace.Equals(""))
     strValue.Format("%s", g_localizeStrings.Get(13205));
   else
@@ -486,8 +541,6 @@ void CPVRGUIInfo::CharInfoBackendDiskspace(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoBackendChannels(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (m_strBackendChannels.Equals(""))
     strValue.Format("%s", g_localizeStrings.Get(13205));
   else
@@ -496,8 +549,6 @@ void CPVRGUIInfo::CharInfoBackendChannels(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoBackendTimers(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (m_strBackendTimers.Equals(""))
     strValue.Format("%s", g_localizeStrings.Get(13205));
   else
@@ -506,8 +557,6 @@ void CPVRGUIInfo::CharInfoBackendTimers(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoBackendRecordings(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (m_strBackendRecordings.Equals(""))
     strValue.Format("%s", g_localizeStrings.Get(13205));
   else
@@ -516,19 +565,14 @@ void CPVRGUIInfo::CharInfoBackendRecordings(CStdString &strValue) const
 
 void CPVRGUIInfo::CharInfoPlayingClientName(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   if (m_strPlayingClientName.Equals(""))
     strValue.Format("%s", g_localizeStrings.Get(13205));
   else
     strValue.Format("%s", m_strPlayingClientName);
 }
 
-
 void CPVRGUIInfo::CharInfoEncryption(CStdString &strValue) const
 {
-  CSingleLock lock(m_critSection);
-
   CPVRChannel channel;
   if (g_PVRClients->GetPlayingChannel(&channel))
     strValue.Format("%s", channel.EncryptionName());
@@ -717,25 +761,3 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
     m_iDuration = recording.GetDuration() * 1000;
   }
 }
-
-bool CPVRGUIInfo::IsRecording(void) const
-{
-  CSingleLock lock(m_critSection);
-
-  return m_iRecordingTimerAmount > 0;
-}
-
-bool CPVRGUIInfo::HasTimers(void) const
-{
-  CSingleLock lock(m_critSection);
-
-  return m_iTimerAmount > 0;
-}
-
-bool CPVRGUIInfo::HasNonRecordingTimers(void) const
-{
-  CSingleLock lock(m_critSection);
-
-  return m_iTimerAmount - m_iRecordingTimerAmount > 0;
-}
-

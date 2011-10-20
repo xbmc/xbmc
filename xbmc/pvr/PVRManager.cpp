@@ -911,26 +911,6 @@ int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
   return !m_guiInfo ? 0 : m_guiInfo->TranslateIntInfo(dwInfo);
 }
 
-bool CPVRManager::HasTimer(void) const
-{
-  CSingleLock lock(m_critSection);
-  if (!m_bLoaded)
-    return false;
-  lock.Leave();
-
-  return !m_guiInfo ? false : m_guiInfo->HasTimers();
-}
-
-bool CPVRManager::IsRecording(void) const
-{
-  CSingleLock lock(m_critSection);
-  if (!m_bLoaded)
-    return false;
-  lock.Leave();
-
-  return !m_guiInfo ? false : m_guiInfo->IsRecording();
-}
-
 void CPVRManager::ShowPlayerInfo(int iTimeout)
 {
   CSingleLock lock(m_critSection);
