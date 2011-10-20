@@ -60,7 +60,7 @@ public:
   operator color_t() const { return m_color; };
 
   bool Update();
-  void Parse(const CStdString &label);
+  void Parse(const CStdString &label, int context);
 
 private:
   color_t GetColor() const;

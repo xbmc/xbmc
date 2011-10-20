@@ -100,12 +100,21 @@ bool CGUIInfoColor::Update()
     return false;
 }
 
-void CGUIInfoColor::Parse(const CStdString &label)
+void CGUIInfoColor::Parse(const CStdString &label, int context)
 {
   // Check for the standard $INFO[] block layout, and strip it if present
   CStdString label2 = label;
   if (label.Equals("-", false))
     return;
+
+  if (label.Left(4).Equals("$VAR", false))
+  {
+    label2 = label.Mid(5, label.length() - 6);
+    m_info = g_infoManager.TranslateSkinVariableString(label2, context);
+    if (!m_info)
+      m_info = g_infoManager.RegisterSkinVariableString(g_SkinInfo->CreateSkinVariable(label2, context));
+    return;
+  }
 
   if (label.Left(5).Equals("$INFO", false))
     label2 = label.Mid(6, label.length()-7);

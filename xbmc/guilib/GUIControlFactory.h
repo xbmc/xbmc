@@ -94,7 +94,7 @@ public:
   static void GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel, int parentID);
   static void GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, std::vector<CGUIInfoLabel> &infoLabels, int parentID);
   static bool GetColor(const TiXmlNode* pRootNode, const char* strTag, color_t &value);
-  static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value);
+  static bool GetInfoColor(const TiXmlNode* pRootNode, const char* strTag, CGUIInfoColor &value, int parentID);
   static CStdString FilterLabel(const CStdString &label);
   static bool GetConditionalVisibility(const TiXmlNode* control, CStdString &condition);
   static bool GetActions(const TiXmlNode* pRootNode, const char* strTag, CGUIAction& actions);
