@@ -1053,10 +1053,11 @@ void CDVDPlayer::Process()
         break;
       }
 
+      OpenDefaultStreams();
+
       if (CachePVRStream())
         SetCaching(CACHESTATE_PVR);
 
-      OpenDefaultStreams();
       UpdateApplication(0);
       UpdatePlayState(0);
     }
