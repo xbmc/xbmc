@@ -514,6 +514,7 @@ retry:
     g_settings.m_currentVideoSettings.m_SubtitleCached = true;
   }
 
+  CUtil::ClearTempFonts();
   SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
   SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
   m_clock.Reset();
