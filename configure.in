@@ -155,6 +155,12 @@ AC_ARG_WITH([cpu],
   [use_cpu=$withval],
   [use_cpu=no])
 
+AC_ARG_ENABLE([neon],
+  [AS_HELP_STRING([--enable-neon],
+  [enable neon passing to ffmpeg (default is no)])],
+  [use_neon=$enableval],
+  [use_neon=no])
+
 AC_ARG_ENABLE([optimizations],
   [AS_HELP_STRING([--enable-optimizations],
   [enable optimization (default is yes)])],
@@ -579,10 +585,14 @@ elif test "$use_arch" = "arm"; then
         CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"    
         use_cpu=cortex-a8])
   else
-    # Compile for ARMv7a architecture, CortexA8 cpu and NEON coprocessor
-    CFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
-    CXXFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8 -mfpu=neon -mvectorize-with-neon-quad"
-    FFMPEG_EXTRACFLAGS+=" -mfpu=neon"
+    # Compile for ARMv7a architecture, CortexA8 cpu and check for enabled NEON coprocessor
+    CFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8"
+    CXXFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8"
+    if test "$use_neon" = "yes"; then 
+      CFLAGS+=" -mfpu=neon -mvectorize-with-neon-quad"
+      CXXFLAGS+=" -mfpu=neon -mvectorize-with-neon-quad"
+      FFMPEG_EXTRACFLAGS+=" -mfpu=neon"
+    fi
   fi
 fi
 
@@ -1989,11 +1999,12 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "$use_arch" != "no"; then echo --enable-cross-compile; fi` \
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
       `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
+      `if test "$use_arch" = "arm"; then echo --enable-pic; fi`\
+      `if test "$use_neon" = "yes"; then echo --enable-neon; else echo --disable-neon; fi`\
       --target-os=$(tolower $(uname -s)) \
       --disable-amd3dnow \
       --disable-armv5te \
       --disable-armv6t2 \
-      `if test "$use_arch" != "yes"; then echo --enable-neon; fi`\
       --disable-static \
       `if test "$use_debug" = "no"; then echo --disable-debug; fi` \
       --disable-muxers \
@@ -2034,6 +2045,7 @@ XB_CONFIG_MODULE([lib/ffmpeg], [
       `if test "$cross_compiling" = "yes"; then echo --enable-cross-compile; fi` \
       `if test "$use_arch" != "no"; then echo --arch=$use_arch; fi`\
       `if test "$use_cpu" != "no"; then echo --cpu=$use_cpu; fi`\
+      `if test "$use_neon" = "yes"; then echo --enable-neon; else echo --disable-neon; fi`\
       --target-os=$(tolower $(uname -s)) \
       --disable-muxers \
       --enable-muxer=spdif \
