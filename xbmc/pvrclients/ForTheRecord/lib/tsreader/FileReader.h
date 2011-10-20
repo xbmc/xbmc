@@ -31,8 +31,10 @@
 
 #include "libPlatform/os-dependent.h"
 #if !defined(TARGET_WINDOWS)
-#define S_OK 0x0
-#define S_FALSE 0x1
+#include "File.h"
+#undef S_OK
+#define S_OK 0x0L
+#define S_FALSE 0x1L
 #endif
 
 class FileReader
@@ -56,6 +58,7 @@ class FileReader
     long GetInfoFileSize(int64_t *lpllsize);
     long GetStartPosition(int64_t *lpllpos);
     virtual bool IsFileInvalid();
+    virtual bool IsInfoFileInvalid();
     virtual unsigned long SetFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
     virtual int64_t GetFilePointer();
     virtual unsigned long setFilePointer(int64_t llDistanceToMove, unsigned long dwMoveMethod);
@@ -75,8 +78,8 @@ class FileReader
     HANDLE   m_hFile;               // Handle to file for streaming
     HANDLE   m_hInfoFile;           // Handle to Infofile for filesize from FileWriter
 #elif defined(TARGET_LINUX)
-    int      m_hFile;               // Handle to file for streaming
-    int      m_hInfoFile;           // Handle to Infofile for filesize from FileWriter
+    XFILE::CFile m_hFile;           // Handle to file for streaming
+    XFILE::CFile m_hInfoFile;       // Handle to Infofile for filesize from FileWriter
 #endif
     char*    m_pFileName;           // The filename where we stream
     bool     m_bReadOnly;

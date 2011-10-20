@@ -31,6 +31,7 @@ SRCS   = utils.cpp \
 		lib/tsreader/MemoryReader.cpp \
 		lib/tsreader/FileReader.cpp \
 		lib/tsreader/MultiFileReader.cpp \
+		lib/tsreader/TSReader.cpp \
         KeepAliveThread.cpp \
         fortherecordrpc.cpp \
         pvrclient-fortherecord.cpp \
@@ -39,6 +40,7 @@ SRCS   = utils.cpp \
 include ../Makefile.include
 
 INCLUDES += -Ilib/jsoncpp/include/
+INCLUDES += -I@abs_top_srcdir@/xbmc/filesystem
 
 CXXFLAGS += -DTSREADER -DTARGET_LINUX
 
