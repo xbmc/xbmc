@@ -95,7 +95,7 @@
   // and there is an overlap of some UIKit and AppleTV methods.
   // This voodoo seems to clear up the wonkiness. :)
   Class cls = NSClassFromString(@"ATVVersionInfo");
-  if (cls != nil && [[cls currentOSVersion] isEqualToString:@"5.0"])
+  if (cls != nil && [[cls currentOSVersion] rangeOfString:@"5."].location != NSNotFound)
   {
     id cd = nil;
 
