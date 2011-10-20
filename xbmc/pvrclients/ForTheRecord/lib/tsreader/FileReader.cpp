@@ -34,17 +34,16 @@
 #if !defined(TARGET_WINDOWS)
 #include "PlatformInclude.h"
 #include "limits.h"
-#undef INVALID_HANDLE_VALUE
-#define INVALID_HANDLE_VALUE (-1)
 #define ERROR_FILENAME_EXCED_RANGE (206)
 #define ERROR_INVALID_NAME (123)
+using namespace XFILE;
 #endif
 
 using namespace ADDON;
 
 FileReader::FileReader() :
-  m_hFile(INVALID_HANDLE_VALUE),
-  m_hInfoFile(INVALID_HANDLE_VALUE),
+  m_hFile(),
+  m_hInfoFile(),
   m_pFileName(0),
   m_bReadOnly(false),
   m_bDelay(false),
@@ -104,7 +103,8 @@ long FileReader::OpenFile()
   //char *pFileName = NULL;
   int Tmo=25 ; //5 in MediaPortal
   // Is the file already opened
-  if (m_hFile != INVALID_HANDLE_VALUE) 
+  if (!IsFileInvalid())
+
   {
     XBMC->Log(LOG_DEBUG, "FileReader::OpenFile() file already open");
     return NOERROR;
@@ -135,7 +135,7 @@ long FileReader::OpenFile()
              NULL);                            // Template
 
       m_bReadOnly = FALSE;
-      if (m_hFile != INVALID_HANDLE_VALUE) break;
+      if (!IsFileInvalid()) break;
     }
 
     //Test incase file is being recorded to
@@ -153,13 +153,32 @@ long FileReader::OpenFile()
               NULL);                            // Template
 #elif defined(TARGET_LINUX)
     // Try to open the file
-    m_hFile = open64(m_pFileName,              // The filename
-              O_RDONLY);                     // File access
+    // IFile* myFile = CFileFactory::CreateLoader(m_pFileName);
+    bool blup = CFile::Exists(m_pFileName);
+    if (blup)
+    {
+        XBMC->Log(LOG_DEBUG, "CFile::Exists(%s) succeeded.", m_pFileName);
+    }
+    else
+    {
+        XBMC->Log(LOG_DEBUG, "CFile::Exists(%s) failed.", m_pFileName);
+    }
+    std::string known = "smb://Guest@MADCAT/Recordings/Bones/2011-10-10_21-25_RTL 4_Bones.ts";
+    blup = CFile::Exists(known);
+    if (blup)
+    {
+        XBMC->Log(LOG_DEBUG, "CFile::Exists(%s) succeeded.", known.c_str());
+    }
+    else
+    {
+        XBMC->Log(LOG_DEBUG, "CFile::Exists(%s) failed.", known.c_str());
+    }
+    m_hFile.Open(m_pFileName);        // Open in readonly mode with this filename
 #else
 #error FIXME: Add an OpenFile() implementation for your OS
 #endif
     m_bReadOnly = TRUE;
-    if (m_hFile != INVALID_HANDLE_VALUE) break;
+    if (!IsFileInvalid()) break;
 
     Sleep(20) ;
   }
@@ -181,7 +200,13 @@ long FileReader::OpenFile()
 #endif
   }
 
+#if defined(TARGET_WINDOWS)
   XBMC->Log(LOG_DEBUG, "FileReader::OpenFile() handle %i %s", m_hFile, m_pFileName );
+#elif defined(TARGET_LINUX)
+  XBMC->Log(LOG_DEBUG, "FileReader::OpenFile() handle %p %s", m_hFile.GetImplemenation(), m_pFileName );
+#else
+#error FIXME: Add an debug log implementation for your OS
+#endif
 
   char infoName[512];
   strncpy(infoName, m_pFileName, 512);
@@ -201,8 +226,7 @@ long FileReader::OpenFile()
 //      FILE_FLAG_RANDOM_ACCESS,          // More flags
       NULL);
 #elif defined TARGET_LINUX
-  m_hInfoFile = open64(infoName,            // The filename
-                O_RDONLY);
+  m_hInfoFile.Open(infoName);			  // open readonly with this filename
 #else
 #error FIXME: Add an OpenFile() implementation for your OS
 #endif
@@ -226,7 +250,7 @@ long FileReader::CloseFile()
   // Must lock this section to prevent problems related to
   // closing the file while still receiving data in Receive()
 
-  if (m_hFile == INVALID_HANDLE_VALUE) 
+  if (IsFileInvalid())
   {
     //XBMC->Log(LOG_DEBUG, "FileReader::CloseFile() no open file");
     return S_OK;
@@ -239,26 +263,26 @@ long FileReader::CloseFile()
 
 #if defined(TARGET_WINDOWS)
   ::CloseHandle(m_hFile);
+  m_hFile = INVALID_HANDLE_VALUE; // Invalidate the file
 #elif defined(TARGET_LINUX)
-  close(m_hFile);
+  m_hFile.Close();
 #else
 #error FIXME: Add a CloseFile() implementation for your OS
 #endif
 
-  m_hFile = INVALID_HANDLE_VALUE; // Invalidate the file
 
-  if (m_hInfoFile != INVALID_HANDLE_VALUE)
+  if (!IsInfoFileInvalid())
   {
 #if defined(TARGET_WINDOWS)
     ::CloseHandle(m_hInfoFile);
+    m_hInfoFile = INVALID_HANDLE_VALUE; // Invalidate the file
 #elif defined(TARGET_LINUX)
-    close(m_hInfoFile);
+    m_hInfoFile.Close();
 #else
 #error FIXME: Add a CloseFile() implementation for your OS
 #endif
   }
 
-  m_hInfoFile = INVALID_HANDLE_VALUE; // Invalidate the file
 
   m_llBufferPointer = 0;
   return NOERROR;
@@ -267,7 +291,24 @@ long FileReader::CloseFile()
 
 bool FileReader::IsFileInvalid()
 {
+#if defined(TARGET_WINDOWS)
   return (m_hFile == INVALID_HANDLE_VALUE);
+#elif defined(TARGET_LINUX)
+  return (m_hFile.GetImplemenation() == NULL);
+#else
+#error FIXME: Add an IsFileInvalid implementation for your OS
+#endif
+}
+
+bool FileReader::IsInfoFileInvalid()
+{
+#if defined(TARGET_WINDOWS)
+  return (m_hInfoFile == INVALID_HANDLE_VALUE);
+#elif defined(TARGET_LINUX)
+  return (m_hInfoFile.GetImplemenation() == NULL);
+#else
+#error FIXME: Add an IsFileInvalid implementation for your OS
+#endif
 }
 
 long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
@@ -283,7 +324,7 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
   //Do not get file size if static file or first time 
   if (m_bReadOnly || !m_fileSize) {
     
-    if (m_hInfoFile != INVALID_HANDLE_VALUE)
+    if (!IsInfoFileInvalid())
     {
       int64_t length = -1;
       unsigned long read = 0;
@@ -319,11 +360,11 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
   int64_t length = -1;
   if (m_bReadOnly || !m_fileSize)
   {
-    if (m_hInfoFile != INVALID_HANDLE_VALUE)
+    if (!IsInfoFileInvalid())
     {
-      if (lseek64(m_hInfoFile, 0, SEEK_SET) != (off64_t) -1)
+      if (m_hInfoFile.Seek(0, SEEK_SET) != -1)
       {
-        if (read(m_hInfoFile, &length, sizeof(int64_t)) != -1)
+        if (m_hInfoFile.Read(&length, sizeof(int64_t)) == sizeof(int64_t))
         {
         	m_fileSize = length;
         	*pLength = length;
@@ -334,9 +375,9 @@ long FileReader::GetFileSize(int64_t *pStartPosition, int64_t *pLength)
 
     struct stat64 filestatus;
 
-    if(fstat64(m_hFile, &filestatus) < 0)
+    if(m_hFile.Stat(&filestatus) < 0)
     {
-      XBMC->Log(LOG_DEBUG, "%s: fstat64(%s) failed. Error %d: %s", __FUNCTION__, m_hInfoFile, errno, strerror(errno));
+      XBMC->Log(LOG_DEBUG, "%s: fstat64(File) failed. Error %d: %s", __FUNCTION__, errno, strerror(errno));
       return E_FAIL;
     }
 
@@ -374,9 +415,9 @@ long FileReader::GetInfoFileSize(int64_t *lpllsize)
   if (m_bReadOnly || !m_infoFileSize) {
     struct stat64 filestatus;
 
-    if (fstat64(m_hInfoFile, &filestatus) < 0)
+    if (m_hInfoFile.Stat(&filestatus) < 0)
     {
-      XBMC->Log(LOG_DEBUG, "%s: fstat64(%s) failed. Error %d: %s", __FUNCTION__, m_hInfoFile, errno, strerror(errno));
+      XBMC->Log(LOG_DEBUG, "%s: fstat64(InfoFile) failed. Error %d: %s", __FUNCTION__, errno, strerror(errno));
       return E_FAIL;
     }
 
@@ -394,7 +435,7 @@ long FileReader::GetStartPosition(int64_t *lpllpos)
   //Do not get file size if static file unless first time 
   if (m_bReadOnly || !m_fileStartPos) {
     
-    if (m_hInfoFile != INVALID_HANDLE_VALUE)
+    if (!IsInfoFileInvalid())
     {
       int64_t size = 0;
       GetInfoFileSize(&size);
@@ -410,11 +451,11 @@ long FileReader::GetStartPosition(int64_t *lpllpos)
         ::SetFilePointer(m_hInfoFile, li.LowPart, &li.HighPart, FILE_BEGIN);
         ::ReadFile(m_hInfoFile, (void*)&length, (DWORD)sizeof(int64_t), &read, NULL);
 #elif defined(TARGET_LINUX)
-        lseek64(m_hInfoFile, sizeof(int64_t), SEEK_SET);
-        ssize_t rc = read(m_hInfoFile, &length, sizeof(int64_t));
+        m_hInfoFile.Seek(sizeof(int64_t), SEEK_SET);
+        ssize_t rc = m_hInfoFile.Read(&length, sizeof(int64_t));
         if (rc < 0)
         {
-          XBMC->Log(LOG_DEBUG, "%s: fstat64(%s) failed. Error %d: %s", __FUNCTION__, m_hInfoFile, errno, strerror(errno));
+          XBMC->Log(LOG_DEBUG, "%s: read(InfoFile) failed. Error %d: %s", __FUNCTION__, errno, strerror(errno));
           return E_FAIL;
         }
 #else
@@ -441,7 +482,7 @@ unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long
 #if defined(TARGET_WINDOWS)
   LARGE_INTEGER li;
 
-  if (dwMoveMethod == FILE_END && m_hInfoFile != INVALID_HANDLE_VALUE)
+  if (dwMoveMethod == FILE_END && !IsInfoFileInvalid())
   {
     int64_t startPos = 0;
     GetStartPosition(&startPos);
@@ -507,7 +548,7 @@ unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long
 	  dwMoveMethod = SEEK_SET;
   }
   off64_t myOffset;
-  if (dwMoveMethod == SEEK_END && m_hInfoFile != INVALID_HANDLE_VALUE)
+  if (dwMoveMethod == SEEK_END && !IsInfoFileInvalid())
   {
     int64_t startPos = 0;
     GetStartPosition(&startPos);
@@ -525,7 +566,7 @@ unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long
       else
         myOffset = filePos;
 
-      return lseek64(m_hFile, myOffset, SEEK_SET);
+      return m_hFile.Seek(myOffset, SEEK_SET);
     }
 
     int64_t start = 0;
@@ -556,12 +597,12 @@ unsigned long FileReader::SetFilePointer(int64_t llDistanceToMove, unsigned long
       else
         myOffset = filePos;
 
-      return lseek64(m_hFile, myOffset, dwMoveMethod);
+      return m_hFile.Seek(myOffset, dwMoveMethod);
     }
     myOffset = llDistanceToMove;
   }
 
-  return lseek64(m_hFile, myOffset, dwMoveMethod);
+  return m_hFile.Seek(myOffset, dwMoveMethod);
 #else
   //lseek (or fseek for fopen)
 #error FIXME: Add a SetFilePointer() implementation for your OS
@@ -594,7 +635,7 @@ int64_t FileReader::GetFilePointer()
   return li.QuadPart;
 #elif defined(TARGET_LINUX)
   off64_t myOffset;
-  myOffset = lseek64(m_hFile, 0, SEEK_CUR);
+  myOffset = m_hFile.Seek(0, SEEK_CUR);
 
   int64_t start;
   int64_t length = 0;
@@ -621,7 +662,7 @@ int64_t FileReader::GetFilePointer()
 long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned long *dwReadBytes)
 {
   // If the file has already been closed, don't continue
-  if (m_hFile == INVALID_HANDLE_VALUE)
+  if (IsFileInvalid())
   {
     XBMC->Log(LOG_DEBUG, "FileReader::Read() no open file");
     return E_FAIL;
@@ -643,7 +684,7 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
   }
   int64_t m_filecurrent = li.QuadPart;
 
-  if (m_hInfoFile != INVALID_HANDLE_VALUE)
+  if (!IsInfoFileInvalid())
   {
     int64_t startPos = 0;
     GetStartPosition(&startPos);
@@ -724,7 +765,7 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
   long hr;
 
   //Get File Position
-  off64_t myOffset = lseek64(m_hFile, 0, SEEK_CUR);
+  off64_t myOffset = m_hFile.Seek(0, SEEK_CUR);
   if (myOffset == (off64_t)-1)
   {
     XBMC->Log(LOG_DEBUG, "FileReader::Read() seek failed");
@@ -732,7 +773,7 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
   }
   int64_t m_filecurrent = myOffset;
 
-  if (m_hInfoFile != INVALID_HANDLE_VALUE)
+  if (!IsInfoFileInvalid())
   {
     int64_t startPos = 0;
     GetStartPosition(&startPos);
@@ -745,11 +786,11 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
 
       if (length < (int64_t)(m_filecurrent + (int64_t)lDataLength) && m_filecurrent > startPos)
       {
-        hr = read(m_hFile, (void*)pbData, (length - m_filecurrent) > 0 ? (length - m_filecurrent) : 0 );
+        hr = m_hFile.Read((void*)pbData, (length - m_filecurrent) > 0 ? (length - m_filecurrent) : 0 );
         if (hr == -1)
           return E_FAIL;
 
-        off64_t myOffset = lseek64(m_hFile, 0, SEEK_SET);
+        off64_t myOffset = m_hFile.Seek(0, SEEK_SET);
         if (myOffset == (off64_t) -1)
         {
           return E_FAIL;
@@ -757,7 +798,7 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
 
         unsigned long dwRead = 0;
 
-        hr = read(m_hFile,
+        hr = m_hFile.Read(
           (void*)(pbData + (length - m_filecurrent) > 0 ? (length - m_filecurrent) : 0),
           ((int64_t)lDataLength -(int64_t)(length - m_filecurrent)) > 0 ? ((int64_t)lDataLength -(int64_t)(length - m_filecurrent)) : 0);
 
@@ -765,10 +806,10 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
 
       }
       else if (startPos < (int64_t)(m_filecurrent + (int64_t)lDataLength) && m_filecurrent < startPos)
-        hr = read(m_hFile, (void*)pbData, (startPos - m_filecurrent) > 0 ? (startPos - m_filecurrent) : 0);
+        hr = m_hFile.Read((void*)pbData, (startPos - m_filecurrent) > 0 ? (startPos - m_filecurrent) : 0);
 
       else
-        hr = read(m_hFile, (void*)pbData, (DWORD)lDataLength);
+        hr = m_hFile.Read((void*)pbData, (DWORD)lDataLength);
 
       if (hr == -1)
         return S_FALSE;
@@ -785,12 +826,12 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
     int64_t length = 0;
     GetFileSize(&start, &length);
     if (length < (int64_t)(m_filecurrent + (int64_t)lDataLength))
-      hr = read(m_hFile, (void*)pbData, (length - m_filecurrent) > 0 ? (length - m_filecurrent) : 0);
+      hr = m_hFile.Read((void*)pbData, (length - m_filecurrent) > 0 ? (length - m_filecurrent) : 0);
     else
-      hr = read(m_hFile, (void*)pbData, (DWORD)lDataLength);
+      hr = m_hFile.Read((void*)pbData, (DWORD)lDataLength);
   }
   else
-    hr = read(m_hFile, (void*)pbData, (DWORD)lDataLength);//Read file data into buffer
+    hr = m_hFile.Read((void*)pbData, (DWORD)lDataLength);//Read file data into buffer
 
   if (hr == -1)
   {

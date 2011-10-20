@@ -884,6 +884,18 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
     }
     int retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), filename);
 
+#if defined(TARGET_LINUX)
+    std::string CIFSname = filename;
+    size_t found;
+    while ((found = CIFSname.find("\\")) != std::string::npos)
+    {
+      CIFSname.replace(found, 1, "/");
+    }
+    CIFSname.erase(0,2);
+    CIFSname.insert(0, "smb://Guest@");
+    filename = CIFSname;
+#endif
+
     if (retval < 0 || filename.length() == 0)
     {
       XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel %i (%s)", channelinfo.iUniqueId, channel->Guid().c_str());
