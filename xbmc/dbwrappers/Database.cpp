@@ -291,7 +291,7 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   while (version >= 0)
   {
     if (version)
-      dbSettings.name.Format("%s%d", baseDBName, version);
+      dbSettings.name.Format("%s%d", GetBaseDBName(), version);
     else
       dbSettings.name.Format("%s", baseDBName);
 
@@ -302,14 +302,22 @@ bool CDatabase::Open(const DatabaseSettings &settings)
       {
         CLog::Log(LOGNOTICE, "Old database found - updating from version %i to %i", version, GetMinVersion());
 
-        if ( ! m_pDB->copy(latestDb) )
+        bool copy_fail = false;
+
+        try
+        {
+          m_pDB->copy(latestDb);
+        }
+        catch(...)
         {
           CLog::Log(LOGERROR, "Unable to copy old database %s to new version %s", dbSettings.name.c_str(), latestDb.c_str());
-          Close();
-          return false;
+          copy_fail = true;
         }
 
         Close();
+
+        if ( copy_fail )
+          return false;
 
         dbSettings.name = latestDb;
         if (!Connect(dbSettings, false))
@@ -331,20 +339,22 @@ bool CDatabase::Open(const DatabaseSettings &settings)
     version--;
   }
 
+
+  // unable to open any version fall through to create a new one
+  dbSettings.name = latestDb;
+
+  if (Connect(dbSettings, true) && UpdateVersion(dbSettings.name))
+  {
+    return true;
+  }
   // safely fall back to sqlite as appropriate
-  if ( ! m_sqlite )
+  else if ( ! m_sqlite )
   {
     CLog::Log(LOGDEBUG, "Falling back to sqlite.");
     dbSettings = settings;
     dbSettings.type = "sqlite3";
     return Open(dbSettings);
   }
-
-  // unable to open any version fall through to create a new one
-  dbSettings.name = latestDb;
-
-  if (Connect(dbSettings, true) && UpdateVersion(dbSettings.name))
-    return true;
 
   // failed to update or open the database
   Close();
