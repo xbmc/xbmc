@@ -49,6 +49,7 @@ CPVRChannelGroups::~CPVRChannelGroups(void)
 
 void CPVRChannelGroups::Clear(void)
 {
+  CSingleLock lock(m_critSection);
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
     delete at(iGroupPtr);
 
@@ -66,6 +67,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
 
 bool CPVRChannelGroups::UpdateFromClient(const CPVRChannelGroup &group)
 {
+  CSingleLock lock(m_critSection);
   CPVRChannelGroup *newGroup = new CPVRChannelGroup(group.IsRadio(), -1, group.GroupName());
   push_back(newGroup);
 
@@ -125,6 +127,7 @@ const CPVRChannelGroup *CPVRChannelGroups::GetById(int iGroupId) const
 const CPVRChannelGroup *CPVRChannelGroups::GetByName(const CStdString &strName) const
 {
   CPVRChannelGroup *group = NULL;
+  CSingleLock lock(m_critSection);
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
@@ -141,6 +144,7 @@ const CPVRChannelGroup *CPVRChannelGroups::GetByName(const CStdString &strName) 
 int CPVRChannelGroups::GetIndexForGroupID(int iGroupId) const
 {
   int iReturn = -1;
+  CSingleLock lock(m_critSection);
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
@@ -157,6 +161,7 @@ int CPVRChannelGroups::GetIndexForGroupID(int iGroupId) const
 int CPVRChannelGroups::GetIndexForGroupName(const CStdString &strName) const
 {
   int iReturn = -1;
+  CSingleLock lock(m_critSection);
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
@@ -172,6 +177,7 @@ int CPVRChannelGroups::GetIndexForGroupName(const CStdString &strName) const
 
 void CPVRChannelGroups::RemoveFromAllGroups(CPVRChannel *channel)
 {
+  CSingleLock lock(m_critSection);
   /* start at position 2 because channels are only deleted from non-system groups.
    system groups are entries 0 and 1 */
   for (unsigned int iGroupPtr = 2; iGroupPtr < size(); iGroupPtr++)
@@ -188,6 +194,8 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
   if (!bChannelsOnly)
     GetGroupsFromClients();
 
+  CSingleLock lock(m_critSection);
+
   /* only update the internal group if group syncing is disabled */
   unsigned int iUpdateGroups = !bChannelsOnly && g_guiSettings.GetBool("pvrmanager.syncchannelgroups") ? size() : 1;
 
@@ -203,6 +211,7 @@ bool CPVRChannelGroups::Update(bool bChannelsOnly /* = false */)
 
 bool CPVRChannelGroups::UpdateGroupsEntries(const CPVRChannelGroups &groups)
 {
+  CSingleLock lock(m_critSection);
   /* go through the groups list and check for new groups */
   for (unsigned int iGroupPtr = 0; iGroupPtr < groups.size(); iGroupPtr++)
   {
@@ -227,6 +236,8 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
   if (!database)
     return false;
 
+  CSingleLock lock(m_critSection);
+
   /* load the other groups from the database */
   int iSize = size();
   database->Get(*this);
@@ -247,6 +258,7 @@ bool CPVRChannelGroups::LoadUserDefinedChannelGroups(void)
 
 bool CPVRChannelGroups::Load(void)
 {
+  CSingleLock lock(m_critSection);
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - loading all %s channel groups",
       __FUNCTION__, m_bRadio ? "radio" : "TV");
 
@@ -269,7 +281,7 @@ bool CPVRChannelGroups::Load(void)
 bool CPVRChannelGroups::PersistAll(void)
 {
   bool bReturn = true;
-
+  CSingleLock lock(m_critSection);
   CLog::Log(LOGDEBUG, "CPVRChannelGroups - %s - persisting all changes in channel groups", __FUNCTION__);
 
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
@@ -280,6 +292,7 @@ bool CPVRChannelGroups::PersistAll(void)
 
 CPVRChannelGroupInternal *CPVRChannelGroups::GetGroupAll(void) const
 {
+  CSingleLock lock(m_critSection);
   if (size() > 0)
     return (CPVRChannelGroupInternal *) at(0);
   else
@@ -289,6 +302,7 @@ CPVRChannelGroupInternal *CPVRChannelGroups::GetGroupAll(void) const
 int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
 {
   int iReturn = 0;
+  CSingleLock lock(m_critSection);
 
   CStdString strPath;
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
@@ -328,6 +342,7 @@ int CPVRChannelGroups::GetPreviousGroupID(int iGroupId) const
 const CPVRChannelGroup *CPVRChannelGroups::GetPreviousGroup(const CPVRChannelGroup &group) const
 {
   const CPVRChannelGroup *returnGroup = NULL;
+  CSingleLock lock(m_critSection);
 
   int iCurrentGroupIndex = GetIndexForGroupID(group.GroupID());
   if (iCurrentGroupIndex - 1 < 0)
@@ -353,6 +368,7 @@ int CPVRChannelGroups::GetNextGroupID(int iGroupId) const
 CPVRChannelGroup *CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &group) const
 {
   CPVRChannelGroup *returnGroup = NULL;
+  CSingleLock lock(m_critSection);
 
   int iCurrentGroupIndex = GetIndexForGroupID(group.GroupID());
   if (iCurrentGroupIndex + 1 >= (int)size())
@@ -369,6 +385,7 @@ CPVRChannelGroup *CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &group)
 bool CPVRChannelGroups::AddGroup(const CStdString &strName)
 {
   bool bReturn = false;
+  CSingleLock lock(m_critSection);
 
   CPVRChannelGroup *group = (CPVRChannelGroup *) GetByName(strName);
   if (!group)
@@ -390,6 +407,7 @@ bool CPVRChannelGroups::AddGroup(const CStdString &strName)
 bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
 {
   bool bReturn = false;
+  CSingleLock lock(m_critSection);
 
   if (group.IsInternalGroup())
   {
@@ -429,6 +447,7 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
 
 const CStdString &CPVRChannelGroups::GetGroupName(int iGroupId) const
 {
+  CSingleLock lock(m_critSection);
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
     if (iGroupId == at(iGroupPtr)->GroupID())
@@ -440,6 +459,7 @@ const CStdString &CPVRChannelGroups::GetGroupName(int iGroupId) const
 
 int CPVRChannelGroups::GetGroupId(CStdString strGroupName) const
 {
+  CSingleLock lock(m_critSection);
   for (unsigned int iGroupPtr = 0; iGroupPtr < size(); iGroupPtr++)
   {
     if (strGroupName == at(iGroupPtr)->GroupName())
@@ -451,6 +471,7 @@ int CPVRChannelGroups::GetGroupId(CStdString strGroupName) const
 bool CPVRChannelGroups::AddChannelToGroup(CPVRChannel *channel, int iGroupId)
 {
   bool bReturn = false;
+  CSingleLock lock(m_critSection);
   CPVRChannelGroup *group = (CPVRChannelGroup *) GetById(iGroupId);
   if (group)
   {
