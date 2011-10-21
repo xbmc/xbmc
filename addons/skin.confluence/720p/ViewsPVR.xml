@@ -831,24 +831,36 @@
 						<label>$INFO[ListItem.Label]</label>
 					</control>
 				</rulerlayout>
-				<channellayout height="52" width="230">
+				<channellayout height="52" width="280">
 					<animation effect="fade" start="110" time="200">UnFocus</animation>
 					<control type="image" id="1">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>220</width>
+						<width>270</width>
 						<height>52</height>
 						<texture border="5">button-nofocus.png</texture>
 					</control>
-					<control type="image">
+					<control type="label">
 						<posx>5</posx>
+						<posy>5</posy>
+						<width>40</width>
+						<height>35</height>
+						<font>font12</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textcolor>grey</textcolor>
+						<selectedcolor>grey</selectedcolor>
+						<info>ListItem.ChannelNumber</info>
+					</control>
+					<control type="image">
+						<posx>45</posx>
 						<posy>4</posy>
 						<width>45</width>
 						<height>44</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="label" id="1">
-						<posx>54</posx>
+						<posx>94</posx>
 						<posy>0</posy>
 						<width>160</width>
 						<height>52</height>
@@ -859,24 +871,36 @@
 						<label>$INFO[ListItem.ChannelName]</label>
 					</control>
 				</channellayout>
-				<focusedchannellayout height="52" width="230">
+				<focusedchannellayout height="52" width="280">
 					<animation effect="fade" start="110" time="200">OnFocus</animation>
 					<control type="image" id="1">
 						<posx>0</posx>
 						<posy>0</posy>
-						<width>220</width>
+						<width>270</width>
 						<height>52</height>
 						<texture border="5">button-focus.png</texture>
 					</control>
-					<control type="image">
+					<control type="label">
 						<posx>5</posx>
+						<posy>5</posy>
+						<width>40</width>
+						<height>35</height>
+						<font>font12</font>
+						<align>left</align>
+						<aligny>center</aligny>
+						<textcolor>grey</textcolor>
+						<selectedcolor>grey</selectedcolor>
+						<info>ListItem.ChannelNumber</info>
+					</control>
+					<control type="image">
+						<posx>45</posx>
 						<posy>4</posy>
 						<width>45</width>
 						<height>44</height>
 						<texture>$INFO[ListItem.Icon]</texture>
 					</control>
 					<control type="label" id="1">
-						<posx>54</posx>
+						<posx>94</posx>
 						<posy>0</posy>
 						<width>160</width>
 						<height>52</height>
