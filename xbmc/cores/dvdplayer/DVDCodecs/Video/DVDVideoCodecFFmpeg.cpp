@@ -278,6 +278,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   if(m_pHardware)
     m_name += "-" + m_pHardware->Name();
 
+  m_pCodec = pCodec;
+
   return true;
 }
 
@@ -404,6 +406,9 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
     else
       result = m_pHardware->Decode(m_pCodecContext, NULL);
 
+    if (result & VC_FLUSHED)
+      ReopenCodec();
+
     if(result)
       return result;
   }
@@ -515,7 +520,11 @@ int CDVDVideoCodecFFmpeg::Decode(BYTE* pData, int iSize, double dts, double pts)
 
   int result;
   if(m_pHardware)
+  {
     result = m_pHardware->Decode(m_pCodecContext, m_pFrame);
+    if (result & VC_FLUSHED)
+      ReopenCodec();
+  }
   else if(m_pFilterGraph)
     result = FilterProcess(m_pFrame);
   else
@@ -854,4 +863,15 @@ unsigned CDVDVideoCodecFFmpeg::GetConvergeCount()
     return m_iLastKeyframe;
   else
     return 0;
+}
+
+void CDVDVideoCodecFFmpeg::ReopenCodec()
+{
+  CLog::Log(LOGNOTICE, "CDVDVideoCodecFFmpeg::ReopenCodec()");
+
+  m_dllAvCodec.avcodec_close(m_pCodecContext);
+  if (m_dllAvCodec.avcodec_open(m_pCodecContext, m_pCodec) < 0)
+  {
+    CLog::Log(LOGERROR,"CDVDVideoCodecFFmpeg::ReopenCodec() Unable to open codec");
+  }
 }
