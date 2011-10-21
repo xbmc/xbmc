@@ -101,11 +101,14 @@ int CPVRChannelGroup::Load(void)
   CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels loaded from the database for group '%s'",
         __FUNCTION__, iChannelCount, m_strGroupName.c_str());
 
-  Update();
-  if (size() - iChannelCount > 0)
+  if (g_guiSettings.GetBool("pvrmanager.syncchannelgroups"))
   {
-    CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels added from clients to group '%s'",
-        __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
+    Update();
+    if (size() - iChannelCount > 0)
+    {
+      CLog::Log(LOGDEBUG, "PVRChannelGroup - %s - %d channels added from clients to group '%s'",
+          __FUNCTION__, (int) size() - iChannelCount, m_strGroupName.c_str());
+    }
   }
 
   SortByChannelNumber();
@@ -544,8 +547,7 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
   CSingleLock lock(m_critSection);
 
   /* check for deleted channels */
-  unsigned int iSize = size();
-  for (unsigned int iChannelPtr = 0; iChannelPtr < iSize; iChannelPtr++)
+  for (int iChannelPtr = size() - 1; iChannelPtr >= 0; iChannelPtr--)
   {
     CPVRChannel *channel = at(iChannelPtr).channel;
     if (!channel)
@@ -561,17 +563,17 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
       if (IsInternalGroup())
       {
         g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups(channel);
-        CPVRChannelGroup::RemoveFromGroup(*channel);
 
         /* since it was not found in the internal group, it was deleted from the backend */
         channel->Delete();
       }
       else
-        RemoveFromGroup(*channel);
+      {
+        erase(begin() + ptr);
+      }
 
+      m_bChanged = true;
       bReturn = true;
-      iChannelPtr--;
-      iSize--;
     }
   }
 
@@ -623,8 +625,10 @@ bool CPVRChannelGroup::UpdateGroupEntries(const CPVRChannelGroup &channels)
 
 void CPVRChannelGroup::RemoveInvalidChannels(void)
 {
+  bool bDelete(false);
   for (unsigned int ptr = 0; ptr < size(); ptr--)
   {
+    bDelete = false;
     CPVRChannel *channel = at(ptr).channel;
     if (channel->IsVirtual())
       continue;
@@ -633,20 +637,29 @@ void CPVRChannelGroup::RemoveInvalidChannels(void)
     {
       CLog::Log(LOGERROR, "PVRChannelGroup - %s - removing invalid channel '%s' from client '%i': no valid client channel number",
           __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
-      erase(begin() + ptr);
-      ptr--;
-      m_bChanged = true;
-      continue;
+      bDelete = true;
     }
 
-    if (channel->UniqueID() <= 0)
+    if (!bDelete && channel->UniqueID() <= 0)
     {
       CLog::Log(LOGERROR, "PVRChannelGroup - %s - removing invalid channel '%s' from client '%i': no valid unique ID",
           __FUNCTION__, channel->ChannelName().c_str(), channel->ClientID());
-      erase(begin() + ptr);
-      ptr--;
+      bDelete = true;
+    }
+
+    /* remove this channel from all non-system groups if this is the internal group */
+    if (bDelete)
+    {
+      if (IsInternalGroup())
+      {
+        g_PVRChannelGroups->Get(m_bRadio)->RemoveFromAllGroups(channel);
+        channel->Delete();
+      }
+      else
+      {
+        erase(begin() + ptr);
+      }
       m_bChanged = true;
-      continue;
     }
   }
 }
