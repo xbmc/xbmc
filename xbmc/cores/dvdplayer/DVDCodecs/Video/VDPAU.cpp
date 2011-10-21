@@ -73,12 +73,6 @@ static struct SInterlaceMapping
 , {VS_INTERLACEMETHOD_NONE                       , (VdpVideoMixerFeature)-1}
 };
 
-#define CHECK_VDPAU_RETURN(vdp, value) \
-        do { \
-          if(CheckStatus(vdp, __LINE__)) \
-            return value; \
-        } while(0);
-
 //since libvdpau 0.4, vdp_device_create_x11() installs a callback on the Display*,
 //if we unload libvdpau with dlclose(), we segfault on XCloseDisplay,
 //so we just keep a static handle to libvdpau around
@@ -99,7 +93,6 @@ CVDPAU::CVDPAU()
 
   m_glPixmap = 0;
   m_Pixmap = 0;
-  m_glContext = 0;
   if (!glXBindTexImageEXT)
     glXBindTexImageEXT    = (PFNGLXBINDTEXIMAGEEXTPROC)glXGetProcAddress((GLubyte *) "glXBindTexImageEXT");
   if (!glXReleaseTexImageEXT)
@@ -230,13 +223,6 @@ void CVDPAU::Close()
     XFreePixmap(m_Display, m_Pixmap);
     m_Pixmap = NULL;
   }
-
-  if (m_glContext)
-  {
-    CLog::Log(LOGINFO, "GLX: Destroying glContext");
-    glXDestroyContext(m_Display, m_glContext);
-    m_glContext = NULL;
-  }
 }
 
 bool CVDPAU::MakePixmapGL()
@@ -284,36 +270,9 @@ bool CVDPAU::MakePixmapGL()
     XFree(fbConfigs);
     return false;
   }
-
-  /* to make the pixmap usable, it needs to have any context associated with it */
-  GLXContext  lastctx = glXGetCurrentContext();
-  GLXDrawable lastdrw = glXGetCurrentDrawable();
-
-  XVisualInfo *visInfo;
-  visInfo = glXGetVisualFromFBConfig(m_Display, fbConfigs[fbConfigIndex]);
-  if (!visInfo)
-  {
-    CLog::Log(LOGINFO, "GLX Error: Could not obtain X Visual Info for pixmap");
-    XFree(fbConfigs);
-    return false;
-  }
   XFree(fbConfigs);
 
-  CLog::Log(LOGINFO, "GLX: Creating Pixmap context");
-  m_glContext = glXCreateContext(m_Display, visInfo, NULL, True);
-  XFree(visInfo);
-
-  if (!glXMakeCurrent(m_Display, m_glPixmap, m_glContext))
-  {
-    CLog::Log(LOGINFO, "GLX Error: Could not make Pixmap current");
-    return false;
-  }
-
-  /* restore what thread had before */
-  glXMakeCurrent(m_Display, lastdrw, lastctx);
-
   return true;
-
 }
 
 bool CVDPAU::MakePixmap(int width, int height)
@@ -798,17 +757,26 @@ void CVDPAU::InitVDPAUProcs()
   
 #undef VDP_PROC
 
-  vdp_st = vdp_preemption_callback_register(vdp_device,
-                                   &VDPPreemptionCallbackFunction,
-                                   (void*)this);
-  CheckStatus(vdp_st, __LINE__);
-
   CSingleLock lock(m_DisplaySection);
   m_DisplayState = VDPAU_OPEN;
+  vdpauConfigured = false;
 }
 
 void CVDPAU::FiniVDPAUProcs()
 {
+  while (!m_videoSurfaces.empty())
+  {
+    vdpau_render_state *render = m_videoSurfaces.back();
+    m_videoSurfaces.pop_back();
+    if (render->bitstream_buffers_allocated)
+      m_dllAvUtil.av_freep(&render->bitstream_buffers);
+    render->bitstream_buffers_allocated = 0;
+    free(render);
+  }
+
+  while (!m_DVDVideoPics.empty())
+    m_DVDVideoPics.pop();
+
   if (vdp_device == VDP_INVALID_HANDLE) return;
 
   VdpStatus vdp_st;
@@ -841,15 +809,18 @@ void CVDPAU::FiniVDPAUOutput()
   VdpStatus vdp_st;
 
   vdp_st = vdp_decoder_destroy(decoder);
-  CheckStatus(vdp_st, __LINE__);
+  if (CheckStatus(vdp_st, __LINE__))
+    return;
   decoder = VDP_INVALID_HANDLE;
 
   vdp_st = vdp_presentation_queue_destroy(vdp_flip_queue);
-  CheckStatus(vdp_st, __LINE__);
+  if (CheckStatus(vdp_st, __LINE__))
+    return;
   vdp_flip_queue = VDP_INVALID_HANDLE;
 
   vdp_st = vdp_presentation_queue_target_destroy(vdp_flip_target);
-  CheckStatus(vdp_st, __LINE__);
+  if (CheckStatus(vdp_st, __LINE__))
+    return;
   vdp_flip_target = VDP_INVALID_HANDLE;
 
   outputSurface = presentSurface = VDP_INVALID_HANDLE;
@@ -857,23 +828,30 @@ void CVDPAU::FiniVDPAUOutput()
   for (int i = 0; i < totalAvailableOutputSurfaces; i++)
   {
     vdp_st = vdp_output_surface_destroy(outputSurfaces[i]);
-    CheckStatus(vdp_st, __LINE__);
+    if (CheckStatus(vdp_st, __LINE__))
+      return;
     outputSurfaces[i] = VDP_INVALID_HANDLE;
   }
 
   vdp_st = vdp_video_mixer_destroy(videoMixer);
-  CheckStatus(vdp_st, __LINE__);
+  if (CheckStatus(vdp_st, __LINE__))
+    return;
   videoMixer = VDP_INVALID_HANDLE;
 
-  for(unsigned int i = 0; i < m_videoSurfaces.size(); i++)
+  while (!m_videoSurfaces.empty())
   {
-    vdp_st = vdp_video_surface_destroy(m_videoSurfaces[i]->surface);
-    CheckStatus(vdp_st, __LINE__);
-    m_videoSurfaces[i]->surface = VDP_INVALID_HANDLE;
-    m_dllAvUtil.av_freep(&m_videoSurfaces[i]->bitstream_buffers);
-    free(m_videoSurfaces[i]);
+    vdpau_render_state *render = m_videoSurfaces.back();
+    m_videoSurfaces.pop_back();
+    if (render->bitstream_buffers_allocated)
+      m_dllAvUtil.av_freep(&render->bitstream_buffers);
+    render->bitstream_buffers_allocated = 0;
+    vdp_st = vdp_video_surface_destroy(render->surface);
+    render->surface = VDP_INVALID_HANDLE;
+    free(render);
+    if (CheckStatus(vdp_st, __LINE__))
+      return;
   }
-  m_videoSurfaces.clear();
+
   while (!m_DVDVideoPics.empty())
     m_DVDVideoPics.pop();
 }
@@ -947,17 +925,20 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
                               vid_height,
                               max_references,
                               &decoder);
-  CHECK_VDPAU_RETURN(vdp_st, false);
+  if (CheckStatus(vdp_st, __LINE__))
+    return false;
 
   vdp_st = vdp_presentation_queue_target_create_x11(vdp_device,
                                                     m_Pixmap, //x_window,
                                                     &vdp_flip_target);
-  CHECK_VDPAU_RETURN(vdp_st, false);
+  if (CheckStatus(vdp_st, __LINE__))
+    return false;
 
   vdp_st = vdp_presentation_queue_create(vdp_device,
                                          vdp_flip_target,
                                          &vdp_flip_queue);
-  CHECK_VDPAU_RETURN(vdp_st, false);
+  if (CheckStatus(vdp_st, __LINE__))
+    return false;
 
   totalAvailableOutputSurfaces = 0;
 
@@ -973,7 +954,8 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
                                        OutWidth,
                                        OutHeight,
                                        &outputSurfaces[i]);
-    CHECK_VDPAU_RETURN(vdp_st, false);
+    if (CheckStatus(vdp_st, __LINE__))
+      return false;
     totalAvailableOutputSurfaces++;
   }
   CLog::Log(LOGNOTICE, " (VDPAU) Total Output Surfaces Available: %i of a max (tmp: %i const: %i)",
@@ -983,8 +965,10 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   surfaceNum = presentSurfaceNum = 0;
   outputSurface = outputSurfaces[surfaceNum];
+  outputSurface = presentSurface = VDP_INVALID_HANDLE;
+  videoMixer = VDP_INVALID_HANDLE;
 
-vdpauConfigured = true;
+  vdpauConfigured = true;
   return true;
 }
 
@@ -1152,7 +1136,7 @@ void CVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
   }
   if (!found)
   {
-    CLog::Log(LOGDEBUG, "CVDPAU::FFReleaseBuffer - buffer not found");
+    CLog::Log(LOGDEBUG, "CVDPAU::FFReleaseBuffer - ignoring invalid buffer");
     return;
   }
 
@@ -1187,6 +1171,22 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   if(!render)
   {
     CLog::Log(LOGERROR, "CVDPAU::FFDrawSlice - invalid context handle provided");
+    return;
+  }
+
+  // ffmpeg vc-1 decoder does not flush, make sure the data buffer is still valid
+  bool found(false);
+  for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); ++i)
+  {
+    if(vdp->m_videoSurfaces[i] == render)
+    {
+      found = true;
+      break;
+    }
+  }
+  if (!found)
+  {
+    CLog::Log(LOGWARNING, "CVDPAU::FFDrawSlice - ignoring invalid buffer");
     return;
   }
 
@@ -1249,6 +1249,22 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
       render = (vdpau_render_state*)pFrame->data[0];
     if(!render)
       return VC_ERROR;
+
+    // ffmpeg vc-1 decoder does not flush, make sure the data buffer is still valid
+    bool found(false);
+    for(unsigned int i = 0; i < m_videoSurfaces.size(); ++i)
+    {
+      if(m_videoSurfaces[i] == render)
+      {
+        found = true;
+        break;
+      }
+    }
+    if (!found)
+    {
+      CLog::Log(LOGWARNING, "CVDPAU::Decode - ignoring invalid buffer");
+      return VC_BUFFER;
+    }
 
     render->state |= FF_VDPAU_STATE_USED_FOR_RENDER;
 
@@ -1464,35 +1480,19 @@ void CVDPAU::Present()
   CheckStatus(vdp_st, __LINE__);
 }
 
-void CVDPAU::VDPPreemptionCallbackFunction(VdpDevice device, void* context)
-{
-  CLog::Log(LOGDEBUG,"VDPAU Device Preempted - attempting recovery");
-  CVDPAU* pCtx = (CVDPAU*)context;
-
-  { CSingleLock lock(pCtx->m_DisplaySection);
-    if(pCtx->m_DisplayState == VDPAU_OPEN)
-      pCtx->m_DisplayState = VDPAU_RESET;
-  }
-}
-
 bool CVDPAU::CheckStatus(VdpStatus vdp_st, int line)
 {
   CSingleLock lock(m_DisplaySection);
 
-  if (vdp_st == VDP_STATUS_HANDLE_DEVICE_MISMATCH
-  ||  vdp_st == VDP_STATUS_DISPLAY_PREEMPTED)
-    if(m_DisplayState == VDPAU_OPEN)
-      m_DisplayState = VDPAU_RESET;
-
-  // no need to log errors about this case, as it will happen on cleanup
-  if (vdp_st == VDP_STATUS_INVALID_HANDLE && (m_DisplayState != VDPAU_OPEN) && vdpauConfigured)
-    return false;
-
   if (vdp_st != VDP_STATUS_OK)
   {
     CLog::Log(LOGERROR, " (VDPAU) Error: %s(%d) at %s:%d\n", vdp_get_error_string(vdp_st), vdp_st, __FILE__, line);
+
+    vdp_device = VDP_INVALID_HANDLE;
+
     if(m_DisplayState == VDPAU_OPEN)
       m_DisplayState = VDPAU_RESET;
+
     return true;
   }
   return false;

@@ -87,15 +87,12 @@ public:
   PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT;
   GLXPixmap  m_glPixmap;
   Pixmap  m_Pixmap;
-  GLXContext m_glContext;
 
   static void             FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
   static void             FFDrawSlice(struct AVCodecContext *s,
                                const AVFrame *src, int offset[4],
                                int y, int type, int height);
   static int              FFGetBuffer(AVCodecContext *avctx, AVFrame *pic);
-
-  static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
 
   void Present();
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
