@@ -174,7 +174,7 @@ void CEpgContainer::Process(void)
   bool bUpdateEpg(true);
   while (!m_bStop && !g_application.m_bStop)
   {
-    CDateTime::GetCurrentDateTime().GetAsTime(iNow);
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
     lock.Enter();
     bUpdateEpg = (iNow >= m_iNextEpgUpdate || !bLoaded);
     lock.Leave();
@@ -474,7 +474,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   {
     /* the update has been interrupted. try again later */
     time_t iNow;
-    CDateTime::GetCurrentDateTime().GetAsTime(iNow);
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
     m_iNextEpgUpdate = iNow + g_advancedSettings.m_iEpgRetryInterruptedUpdateInterval;
   }
   lock.Leave();
