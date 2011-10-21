@@ -415,6 +415,9 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   {
     if (at(iGroupPtr)->GroupID() == group.GroupID())
     {
+      if (g_PVRManager.IsSelectedGroup(group))
+        g_PVRManager.SetPlayingGroup(GetGroupAll());
+
       delete at(iGroupPtr);
       erase(begin() + iGroupPtr);
       break;

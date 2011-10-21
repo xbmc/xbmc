@@ -569,7 +569,7 @@ bool CPVRChannelGroup::RemoveDeletedChannels(const CPVRChannelGroup &channels)
       }
       else
       {
-        erase(begin() + ptr);
+        erase(begin() + iChannelPtr);
       }
 
       m_bChanged = true;
