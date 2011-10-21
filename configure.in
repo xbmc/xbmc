@@ -123,8 +123,10 @@ libudev_not_found="== Could not find libudev. Will use polling to check for devi
 libudev_disabled="== udev support disabled. Will use polling to check for device changes. =="
 libusb_not_found="== Could not find libusb. Plug and play USB device support will not be available. =="
 libusb_disabled="== libusb disabled. Plug and play USB device support will not be available. =="
+libusb_disabled_udev_found="== libusb disabled. =="
 libcec_enabled="== libcec enabled. =="
 libcec_disabled="== libcec disabled. CEC adapter support will not be available. =="
+libcec_disabled_missing_libs="== libcec disabled because both libudev and libusb are not available. CEC adapter support will not be available. =="
 
 # External library message strings
 external_libraries_enabled="== Use of all supported external libraries enabled. =="
@@ -1105,66 +1107,69 @@ else
     PKG_CHECK_MODULES([UDEV],[libudev],,[use_libudev="no";AC_MSG_RESULT($libudev_not_found)])
   elif test "$use_libudev" = "yes" ; then
     PKG_CHECK_MODULES([UDEV],[libudev],,[use_libudev="no";AC_MSG_ERROR($libudev_not_found)])
+  else
+    AC_MSG_NOTICE($libudev_disabled)
   fi
+
   if test "x$use_libudev" != "xno"; then
     USE_LIBUDEV=1;INCLUDES="$INCLUDES $UDEV_CFLAGS";LIBS="$LIBS $UDEV_LIBS"
     AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"])
-  else
-     AC_MSG_NOTICE($libudev_disabled)
   fi
 fi
 
 # libusb
 USE_LIBUSB=0
-if test "$host_vendor" = "apple" ; then
+
+# if libudev is available, we don't need libusb
+if test "x$use_libudev" != "xno"; then
   use_libusb="no"
-  AC_MSG_NOTICE($libusb_disabled)
+  AC_MSG_NOTICE($libusb_disabled_udev_found)
 else
-  # we can use either libudev or libusb but not both.
-  if test "x$use_libusb" != "xno" && test "x$use_libudev" == "xno"; then
-    if test "$host_vendor" = "apple" ; then
-      use_libusb="no"
-      AC_MSG_NOTICE($libusb_disabled)
+  if test "$host_vendor" = "apple" ; then
+    use_libusb="no"
+    AC_MSG_NOTICE($libusb_disabled)
+  else
+    if test "$use_libusb" = "auto"; then
+      PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_RESULT($libusb_not_found)])
+    elif test "$use_libusb" = "yes"; then
+      PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_ERROR($libusb_not_found)])
     else
-      if test "$use_libusb" = "auto"; then
-        PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_RESULT($libusb_not_found)])
-      elif test "$use_libusb" = "yes"; then
-        PKG_CHECK_MODULES([USB],[libusb],,[use_libusb="no";AC_MSG_ERROR($libusb_not_found)])
-      fi
+      AC_MSG_NOTICE($libusb_disabled)
     fi
+  
     if test "x$use_libusb" != "xno"; then
       USE_LIBUSB=1;INCLUDES="$INCLUDES $USB_CFLAGS";LIBS="$LIBS $USB_LIBS"
       AC_DEFINE([HAVE_LIBUSB],[1],["Define to 1 if libusb is installed"])
-    else
-       AC_MSG_NOTICE($libusb_disabled)
     fi
-  else
-    use_libusb="no"
   fi
 fi
 
 # libcec
 USE_LIBCEC=0
 if test "x$use_libcec" != "xno"; then
-  # libcec is dyloaded, so we need to check for its headers and link any depends.
-  PKG_CHECK_MODULES([CEC],[libcec = 0.7.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
-  if test "x$use_libcec" != "xno" && test "$host_vendor" != "apple"; then
-    # libcec has libudev as depends under linux.
-    PKG_CHECK_MODULES([UDEV],[libudev],,[use_libcec="no";AC_MSG_RESULT($libudev_not_found)])
-  fi
-  if test "x$use_libcec" != "xno"; then
-    if test "$host_vendor" != "apple"; then
-      # if linux, bring in udev cflags and add lib.
-      INCLUDES="$INCLUDES $UDEV_CFLAGS";LIBS="$LIBS $UDEV_LIBS"
-      USE_LIBUDEV=1;AC_DEFINE([HAVE_LIBUDEV],[1],["Define to 1 if libudev is installed"])
+  # libcec needs libudev or libusb under linux, or the device will never be detected.
+  if test "$host_vendor" != "apple" && test "$use_libusb" = "no" && test "$use_libudev" = "no"; then
+    if test "x$use_libcec" != "xauto"; then
+      AC_MSG_ERROR($libcec_disabled_missing_libs)
+    else
+      use_libcec="no"
+      AC_MSG_NOTICE($libcec_disabled_missing_libs)
     fi
-    INCLUDES="$INCLUDES $CEC_CFLAGS"
-    USE_LIBCEC=1;AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libcec is installed"])
-    XB_FIND_SONAME([LIBCEC],[cec],[use_libcec])
-    AC_MSG_NOTICE($libcec_enabled)
-  else
-    use_libcec="no"
-    AC_MSG_NOTICE($libcec_disabled)
+  fi
+
+  # libcec is dyloaded, so we need to check for its headers and link any depends.
+  if test "x$use_libcec" != "xno"; then
+    PKG_CHECK_MODULES([CEC],[libcec = 0.7.0],,[use_libcec="no";AC_MSG_RESULT($libcec_disabled)])
+
+    if test "x$use_libcec" != "xno"; then
+      INCLUDES="$INCLUDES $CEC_CFLAGS"
+      USE_LIBCEC=1;AC_DEFINE([HAVE_LIBCEC],[1],["Define to 1 if libcec is installed"])
+      XB_FIND_SONAME([LIBCEC],[cec],[use_libcec])
+      AC_MSG_NOTICE($libcec_enabled)
+    else
+      use_libcec="no"
+      AC_MSG_NOTICE($libcec_disabled)
+    fi
   fi
 else
   use_libcec="no"
