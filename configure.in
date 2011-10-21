@@ -581,19 +581,19 @@ elif test "$use_arch" = "arm"; then
       [AC_LANG_SOURCE([int foo;])],
       [ CFLAGS="$SAVE_CFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
         CXXFLAGS="$CXXFLAGS -Wno-psabi -Wa,-march=armv7a -mtune=cortex-a9 -mfpu=vfpv3-d16 -mthumb-interwork"
-        FFMPEG_EXTRACFLAGS+=" -mtune=cortex-a9 -mfpu=vfpv3-d16"
+        FFMPEG_EXTRACFLAGS="$FFMPEG_EXTRACFLAGS -mtune=cortex-a9 -mfpu=vfpv3-d16"
         use_cpu=cortex-a9],
       [ CFLAGS="$SAVE_CFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"
         CXXFLAGS="$CXXFLAGS -Wa,-march=armv6 -mtune=cortex-a8 -mthumb-interwork"    
         use_cpu=cortex-a8])
   else
     # Compile for ARMv7a architecture, CortexA8 cpu and check for enabled NEON coprocessor
-    CFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8"
-    CXXFLAGS+=" -Wa,-march=armv7a -mcpu=cortex-a8"
+    CFLAGS="$CFLAGS -Wa,-march=armv7a -mcpu=cortex-a8"
+    CXXFLAGS="$CXXFLAGS -Wa,-march=armv7a -mcpu=cortex-a8"
     if test "$use_neon" = "yes"; then 
-      CFLAGS+=" -mfpu=neon -mvectorize-with-neon-quad"
-      CXXFLAGS+=" -mfpu=neon -mvectorize-with-neon-quad"
-      FFMPEG_EXTRACFLAGS+=" -mfpu=neon"
+      CFLAGS="$CFLAGS -mfpu=neon -mvectorize-with-neon-quad"
+      CXXFLAGS="$CXXFLAGS -mfpu=neon -mvectorize-with-neon-quad"
+      FFMPEG_EXTRACFLAGS="$FFMPEG_EXTRACFLAGS -mfpu=neon"
     fi
   fi
 fi
@@ -1888,7 +1888,7 @@ OUTPUT_FILES="Makefile \
     xbmc/peripherals/devices/Makefile"
 
 if test "$use_skin_touched" = "yes"; then
-OUTPUT_FILES+=" addons/skin.touched/media/Makefile"
+OUTPUT_FILES="$OUTPUT_FILES addons/skin.touched/media/Makefile"
 fi
 
 # Line below is used so we can use AM_INIT_AUTOMAKE. The corresponding
