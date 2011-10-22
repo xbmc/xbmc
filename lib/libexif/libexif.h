@@ -48,6 +48,7 @@ extern "C" {
 #define MAX_IPTC_STRING 256
 
 typedef struct {
+  char RecordVersion[MAX_IPTC_STRING];
   char SupplementalCategories[MAX_IPTC_STRING];
   char Keywords[MAX_IPTC_STRING];
   char Caption[MAX_IPTC_STRING];
@@ -69,6 +70,9 @@ typedef struct {
   char Copyright[MAX_IPTC_STRING];
   char ReferenceService[MAX_IPTC_STRING];
   char CountryCode[MAX_IPTC_STRING];
+  char TimeCreated[MAX_IPTC_STRING];
+  char SubLocation[MAX_IPTC_STRING];
+  char ImageType[MAX_IPTC_STRING];
 } IPTCInfo_t;
 
 #define MAX_COMMENT 2000
@@ -98,6 +102,7 @@ typedef struct {
     int   ISOequivalent;
     int   LightSource;
     char  Comments[MAX_COMMENT];
+    char  Description[MAX_COMMENT];
 
     unsigned ThumbnailOffset;          // Exif offset to thumbnail
     unsigned ThumbnailSize;            // Size of thumbnail.

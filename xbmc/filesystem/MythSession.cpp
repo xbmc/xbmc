@@ -210,7 +210,9 @@ void CMythSession::SetFileItemMetaData(CFileItem &item, cmyth_proginfo_t program
      * within the OSD.
      */
     CStdString name = GetValue(m_dll->proginfo_chansign(program));
-    if (!name.IsEmpty())
+    if (tag->m_strTitle.IsEmpty())
+      tag->m_strTitle += name; 
+    else if (!name.IsEmpty())
       tag->m_strTitle += " - " + name;
 
     /*

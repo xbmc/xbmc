@@ -14,6 +14,8 @@ SRCS=ConvUtils.cpp \
      XFileUtils.cpp \
      XHandle.cpp \
      XLCDproc.cpp \
+	 XLCDProc_imon.cpp \
+	 XLCDProc_mdm166a.cpp \
      XMemUtils.cpp \
      XSyncUtils.cpp \
      XTimeUtils.cpp \

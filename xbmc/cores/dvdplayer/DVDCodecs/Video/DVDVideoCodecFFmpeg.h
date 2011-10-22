@@ -77,6 +77,7 @@ protected:
   int  FilterOpen(const CStdString& filters);
   void FilterClose();
   int  FilterProcess(AVFrame* frame);
+  void ReopenCodec();
 
   AVFrame* m_pFrame;
   AVCodecContext* m_pCodecContext;
@@ -88,6 +89,7 @@ protected:
   AVFilterContext* m_pFilterIn;
   AVFilterContext* m_pFilterOut;
   AVFilterLink*    m_pFilterLink;
+  AVCodec*         m_pCodec;
 
   int m_iPictureWidth;
   int m_iPictureHeight;

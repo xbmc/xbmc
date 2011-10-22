@@ -27,6 +27,36 @@
 				<label>31043</label>
 			</control>
 		</control>
+
+		<!-- Picture infos -->
+		<control type="label">
+			<description>caption</description>
+			<posx>10r</posx>
+			<posy>88r</posy>
+			<width>1000</width>
+			<height>25</height>
+			<align>right</align>
+			<aligny>bottom</aligny>
+			<font>font13</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<label>$INFO[slideshow.exifdescription]$INFO[slideshow.city,[CR]]</label>
+		</control>
+
+		<control type="label">
+			<description>exif info</description>
+			<posx>10r</posx>
+			<posy>35r</posy>
+			<width>1000</width>
+			<height>25</height>
+			<align>right</align>
+			<aligny>bottom</aligny>
+			<font>font10</font>
+			<textcolor>white</textcolor>
+			<shadowcolor>black</shadowcolor>
+			<label>$INFO[slideshow.exposuretime] | $INFO[slideshow.apreture,f ] | $INFO[slideshow.isoequivalence,ISO ] | $INFO[slideshow.focallength] | $INFO[slideshow.filename]</label>
+		</control>
+
 		<!-- media infos -->
 		<control type="group">
 			<posx>20</posx>

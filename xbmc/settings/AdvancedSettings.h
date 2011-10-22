@@ -147,6 +147,8 @@ class CAdvancedSettings
     bool m_lcdDimOnScreenSave;
     int m_lcdScrolldelay;
     CStdString m_lcdHostName;
+    bool m_lcdSpectrumAnalyzer;
+    int m_lcdRefreshRate;
 
     int m_autoDetectPingTime;
 

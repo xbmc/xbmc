@@ -76,6 +76,7 @@ class CGUIWindow;
 #define TMSG_MINIMIZE             309
 #define TMSG_TOGGLEFULLSCREEN     310
 #define TMSG_SETLANGUAGE          311
+#define TMSG_RENDERER_FLUSH       312
 
 #define TMSG_HTTPAPI              400
 

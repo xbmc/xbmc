@@ -31,6 +31,10 @@
 #include <dlfcn.h>
 #include "filesystem/SpecialProtocol.h"
 #endif
+#ifdef HAS_LCD
+#include "settings/AdvancedSettings.h"
+#include "utils/LCDFactory.h"
+#endif
 
 using namespace std;
 using namespace MUSIC_INFO;
@@ -313,10 +317,22 @@ void CVisualisation::OnAudioData(const unsigned char* pAudioData, int iAudioData
 
     // Transfer data to our visualisation
     AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
+#ifdef HAS_LCD
+    if (g_advancedSettings.m_lcdSpectrumAnalyzer)
+    {
+      g_lcd->SetSpectrumAnalyzerAudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, m_fFreq, AUDIO_BUFFER_SIZE);
+    }
+#endif
   }
   else
   { // Transfer data to our visualisation
     AudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
+#ifdef HAS_LCD
+    if (g_advancedSettings.m_lcdSpectrumAnalyzer)
+    {
+      g_lcd->SetSpectrumAnalyzerAudioData(ptrAudioBuffer->Get(), AUDIO_BUFFER_SIZE, NULL, 0);
+    }
+#endif
   }
   return ;
 }

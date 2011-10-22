@@ -881,12 +881,18 @@
   <string id="10019">Einstellungen-&gt;Darstellung</string>
   <string id="10020">Skripte</string>
   <string id="10021">Webbrowser</string>
+  <string id="10022">Videos/Schauspieler</string>
+  <string id="10023">Videos/Jahr</string>
+  <string id="10024">Videos/Dateien</string>
+  <string id="10025">Videos/Datenbank</string>
 
   <string id="10028">Videos/Playlisten</string>
   <string id="10034">Einstellungen-&gt;Profile</string>
 
   <string id="10100">Ja/Nein Dialog</string>
   <string id="10101">Fortschrittsanzeige</string>
+  
+  <string id="10106">Entscheidung</string>
 
   <string id="10210">Suche nach Untertiteln...</string>
   <string id="10211">Zwischenspeichern der Untertitel...</string>

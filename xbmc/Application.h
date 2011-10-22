@@ -279,6 +279,7 @@ public:
   bool IsPresentFrame();
 
   void Minimize();
+  float NavigationIdleTime();
   bool ToggleDPMS(bool manual);
 
   float GetDimScreenSaverLevel() const;
@@ -362,7 +363,6 @@ protected:
   bool ProcessHTTPApiButtons();
   bool ProcessJoystickEvent(const std::string& joystickName, int button, bool isAxis, float fAmount);
 
-  float NavigationIdleTime();
   static bool AlwaysProcess(const CAction& action);
 
   void SaveCurrentFileSettings();
