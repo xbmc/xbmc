@@ -361,6 +361,8 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     g_renderManager.PreInit();
 #endif
 	
+    CUtil::ClearTempFonts();
+
     Create();
     if(!m_ready.WaitMSec(100))
     {
