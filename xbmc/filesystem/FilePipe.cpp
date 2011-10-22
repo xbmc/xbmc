@@ -123,8 +123,8 @@ void CFilePipe::Close()
 {
   if (m_pipe)
   {
-    PipesManager::GetInstance().ClosePipe(m_pipe);
     m_pipe->RemoveListener(this);
+    PipesManager::GetInstance().ClosePipe(m_pipe);    
   }
   m_pipe = NULL;
 }
