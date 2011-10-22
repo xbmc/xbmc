@@ -134,6 +134,8 @@ public:
   void      InitVDPAUProcs();
   void      FiniVDPAUProcs();
   void      FiniVDPAUOutput();
+  bool      ConfigOutputMethod(AVCodecContext *avctx, AVFrame *pFrame);
+  bool      FiniOutputMethod();
 
   VdpDevice                            vdp_device;
   VdpGetProcAddress *                  vdp_get_proc_address;
@@ -222,6 +224,15 @@ public:
 
   std::vector<vdpau_render_state*> m_videoSurfaces;
   DllAvUtil   m_dllAvUtil;
+
+  enum VDPAUOutputMethod
+  {
+    OUTPUT_NONE,
+    OUTPUT_PIXMAP,
+    OUTPUT_GL_INTEROP_RGB,
+    OUTPUT_GL_INTEROP_YUV
+  };
+  VDPAUOutputMethod m_vdpauOutputMethod;
 
   // OnLostDevice triggers transition from all states to LOST
   // internal errors trigger transition from OPEN to RESET
