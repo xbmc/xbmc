@@ -119,6 +119,7 @@ static void StreamLatencyUpdateCallback(pa_stream *s, void *userdata)
 
 struct SinkInfoStruct
 {
+  bool passthrough;
   AudioSinkList *list;
   pa_threaded_mainloop *mainloop;
 };
@@ -126,13 +127,36 @@ struct SinkInfoStruct
 static void SinkInfo(pa_context *c, const pa_sink_info *i, int eol, void *userdata)
 {
   SinkInfoStruct *sinkStruct = (SinkInfoStruct *)userdata;
+
   if (i && i->name)
   {
-    CStdString descr = i->description + CStdString(" (PulseAudio)");
-    CStdString sink;
-    sink.Format("pulse:%s@default", i->name);
-    sinkStruct->list->push_back(AudioSink(descr, sink));
-    CLog::Log(LOGDEBUG, "PulseAudio: Found %s with devicestring %s", descr.c_str(), sink.c_str());
+    bool       add  = false;
+    if(sinkStruct->passthrough)
+    {
+#if PA_CHECK_VERSION(1,0,0)
+      for(int idx = 0; idx < i->n_formats; ++idx)
+      {
+        if(!pa_format_info_is_pcm(i->formats[idx]))
+        {
+          add = true;
+          break;
+        }
+      }
+#endif
+    }
+    else
+      add = true;
+
+    if(add)
+    {
+      CStdString desc, sink;
+      if(sinkStruct->list->size() == 0)
+        sinkStruct->list->push_back(AudioSink(g_localizeStrings.Get(409) + " (PulseAudio)", "pulse:default@default"));
+      desc.Format("%s  (PulseAudio)", i->description);
+      sink.Format("pulse:%s@default", i->name);
+      sinkStruct->list->push_back(AudioSink(desc, sink));
+      CLog::Log(LOGDEBUG, "PulseAudio: Found %s with devicestring %s", desc.c_str(), sink.c_str());
+    }
   }
 
   pa_threaded_mainloop_signal(sinkStruct->mainloop, 0);
@@ -651,18 +675,15 @@ void CPulseAudioDirectSound::EnumerateAudioSinks(AudioSinkList& vAudioSinks, boo
     return;
   }
 
-  if (!passthrough)
-  {
     pa_threaded_mainloop_lock(mainloop);
 
     SinkInfoStruct sinkStruct;
+    sinkStruct.passthrough = passthrough;
     sinkStruct.mainloop = mainloop;
     sinkStruct.list = &vAudioSinks;
-    vAudioSinks.push_back(AudioSink(g_localizeStrings.Get(409) + " (PulseAudio)", "pulse:default@default"));
     WaitForOperation(pa_context_get_sink_info_list(context,	SinkInfo, &sinkStruct), mainloop, "EnumerateAudioSinks");
 
     pa_threaded_mainloop_unlock(mainloop);
-  }
 
   if (mainloop)
     pa_threaded_mainloop_stop(mainloop);
