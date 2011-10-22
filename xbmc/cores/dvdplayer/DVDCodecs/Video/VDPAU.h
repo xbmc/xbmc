@@ -33,6 +33,7 @@
 #include <GL/glx.h>
 #include <queue>
 #include "threads/CriticalSection.h"
+#include "threads/SharedSection.h"
 #include "settings/VideoSettings.h"
 #include "guilib/DispResource.h"
 #include "threads/Event.h"
@@ -134,6 +135,8 @@ public:
   void      InitVDPAUProcs();
   void      FiniVDPAUProcs();
   void      FiniVDPAUOutput();
+  bool      ConfigOutputMethod(AVCodecContext *avctx, AVFrame *pFrame);
+  bool      FiniOutputMethod();
 
   VdpDevice                            vdp_device;
   VdpGetProcAddress *                  vdp_get_proc_address;
@@ -223,6 +226,15 @@ public:
   std::vector<vdpau_render_state*> m_videoSurfaces;
   DllAvUtil   m_dllAvUtil;
 
+  enum VDPAUOutputMethod
+  {
+    OUTPUT_NONE,
+    OUTPUT_PIXMAP,
+    OUTPUT_GL_INTEROP_RGB,
+    OUTPUT_GL_INTEROP_YUV
+  };
+  VDPAUOutputMethod m_vdpauOutputMethod;
+
   // OnLostDevice triggers transition from all states to LOST
   // internal errors trigger transition from OPEN to RESET
   // OnResetDevice triggers transition from LOST to RESET
@@ -231,8 +243,9 @@ public:
   , VDPAU_RESET
   , VDPAU_LOST
   } m_DisplayState;
-  CCriticalSection m_DisplaySection;
-  CEvent           m_DisplayEvent;
+  CSharedSection m_DecoderSection;
+  CSharedSection m_DisplaySection;
+  CEvent         m_DisplayEvent;
   virtual void OnLostDevice();
   virtual void OnResetDevice();
 };

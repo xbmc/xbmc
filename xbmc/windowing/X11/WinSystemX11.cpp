@@ -508,13 +508,13 @@ void CWinSystemX11::OnLostDevice()
 {
   CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
 
+  // make sure renderer has no invalid references
+  g_renderManager.Flush();
+
   { CSingleLock lock(m_resourceSection);
     for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
       (*i)->OnLostDevice();
   }
-
-  // make sure renderer has no invalid references
-  g_renderManager.Flush();
 
   // fail safe timer
   m_dpyLostTime = CurrentHostCounter();
