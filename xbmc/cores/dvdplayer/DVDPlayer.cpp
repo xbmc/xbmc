@@ -361,6 +361,8 @@ bool CDVDPlayer::OpenFile(const CFileItem& file, const CPlayerOptions &options)
     g_renderManager.PreInit();
 #endif
 	
+    CUtil::ClearTempFonts();
+
     Create();
     if(!m_ready.WaitMSec(100))
     {
@@ -514,7 +516,6 @@ retry:
     g_settings.m_currentVideoSettings.m_SubtitleCached = true;
   }
 
-  CUtil::ClearTempFonts();
   SetAVDelay(g_settings.m_currentVideoSettings.m_AudioDelay);
   SetSubTitleDelay(g_settings.m_currentVideoSettings.m_SubtitleDelay);
   m_clock.Reset();
