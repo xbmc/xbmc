@@ -252,9 +252,9 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
     }
   }
   else
-    pa_channel_map_init_auto(&map, m_SampleSpec.channels, PA_CHANNEL_MAP_ALSA); 
+    pa_channel_map_init_auto(&map, m_uiChannels, PA_CHANNEL_MAP_ALSA);
 
-  pa_cvolume_reset(&m_Volume, m_SampleSpec.channels);
+  pa_cvolume_reset(&m_Volume, m_uiChannels);
 
   if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
   {
@@ -478,9 +478,9 @@ bool CPulseAudioDirectSound::SetCurrentVolume(long nVolume)
   pa_threaded_mainloop_lock(m_MainLoop);
   pa_volume_t volume = pa_sw_volume_from_dB((float)nVolume*1.5f / 200.0f);
   if ( nVolume <= VOLUME_MINIMUM )
-    pa_cvolume_mute(&m_Volume, m_SampleSpec.channels);
+    pa_cvolume_mute(&m_Volume, m_uiChannels);
   else
-    pa_cvolume_set(&m_Volume, m_SampleSpec.channels, volume);
+    pa_cvolume_set(&m_Volume, m_uiChannels, volume);
   pa_operation *op = pa_context_set_sink_input_volume(m_Context, pa_stream_get_index(m_Stream), &m_Volume, NULL, NULL);
   if (op == NULL)
     CLog::Log(LOGERROR, "PulseAudio: Failed to set volume");
