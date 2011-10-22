@@ -91,7 +91,6 @@ private:
   bool m_bPassthrough;
 
   pa_stream *m_Stream;
-  pa_sample_spec m_SampleSpec;
   pa_cvolume m_Volume;
 
   pa_context *m_Context;

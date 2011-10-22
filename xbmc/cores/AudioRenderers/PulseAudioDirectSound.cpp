@@ -188,12 +188,14 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
   m_dwNumPackets = 16;
 
+#if !PA_CHECK_VERSION(1,0,0)
   /* Open the device */
   if (m_bPassthrough)
   {
     CLog::Log(LOGWARNING, "PulseAudio: Does not support passthrough");
     return false;
   }
+#endif
 
   std::vector<CStdString> hostdevice;
   CUtil::Tokenize(device, hostdevice, "@");
@@ -208,18 +210,8 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
 
   pa_threaded_mainloop_lock(m_MainLoop);
 
+
   struct pa_channel_map map;
-
-  m_SampleSpec.channels = iChannels;
-  m_SampleSpec.rate = uiSamplesPerSec;
-  m_SampleSpec.format = PA_SAMPLE_S16NE;
-
-  if (!pa_sample_spec_valid(&m_SampleSpec))
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
-    Deinitialize();
-    return false;
-  }
 
   // Build the channel map, we dont need to remap, but we still need PCMRemap to handle mono to dual mono stereo
   map.channels = iChannels;
@@ -256,7 +248,45 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
 
   pa_cvolume_reset(&m_Volume, m_uiChannels);
 
-  if ((m_Stream = pa_stream_new(m_Context, "audio stream", &m_SampleSpec, &map)) == NULL)
+  if(m_bPassthrough)
+  {
+#if PA_CHECK_VERSION(1,0,0)
+    pa_format_info *info[1];
+    info[0] = pa_format_info_new();
+    switch(encoded)
+    {
+      case ENCODED_IEC61937_AC3 : info[0]->encoding = PA_ENCODING_AC3_IEC61937 ; break;
+      case ENCODED_IEC61937_DTS : info[0]->encoding = PA_ENCODING_DTS_IEC61937 ; break;
+      case ENCODED_IEC61937_EAC3: info[0]->encoding = PA_ENCODING_EAC3_IEC61937; break;
+      case ENCODED_IEC61937_MPEG: info[0]->encoding = PA_ENCODING_MPEG_IEC61937; break;
+      default:                    info[0]->encoding = PA_ENCODING_INVALID      ; break;
+    }
+    pa_format_info_set_rate(info[0], m_uiSamplesPerSec);
+    pa_format_info_set_channels(info[0], m_uiChannels);
+    pa_format_info_set_sample_format(info[0], PA_SAMPLE_S16NE);
+    m_Stream = pa_stream_new_extended(m_Context, "audio stream", info, 1, NULL);
+    pa_format_info_free(info[0]);
+#endif
+  }
+  else
+  {
+
+    pa_sample_spec spec;
+    spec.channels = iChannels;
+    spec.rate     = uiSamplesPerSec;
+    spec.format   = PA_SAMPLE_S16NE;
+
+    if (!pa_sample_spec_valid(&spec))
+    {
+      CLog::Log(LOGERROR, "PulseAudio: Invalid sample spec");
+      Deinitialize();
+      return false;
+    }
+
+    m_Stream = pa_stream_new(m_Context, "audio stream", &spec, &map);
+  }
+
+  if (m_Stream == NULL)
   {
     CLog::Log(LOGERROR, "PulseAudio: Could not create a stream");
     pa_threaded_mainloop_unlock(m_MainLoop);
