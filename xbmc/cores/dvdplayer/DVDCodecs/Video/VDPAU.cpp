@@ -387,8 +387,10 @@ int CVDPAU::Check(AVCodecContext* avctx)
 
   if (state == VDPAU_LOST)
   {
+    CLog::Log(LOGNOTICE,"------------ clear down");
     FiniVDPAUOutput();
     FiniVDPAUProcs();
+    CLog::Log(LOGNOTICE,"------------ enter wait");
     if (!m_DisplayEvent.WaitMSec(2000))
     {
       CLog::Log(LOGERROR, "CVDPAU::Check - device didn't reset in reasonable time");
