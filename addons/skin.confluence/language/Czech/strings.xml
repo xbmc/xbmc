@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--Translator: ezechiel1917-->
 <!--Date of translation: 26/09/2010-->
+<!--updated 22/10/2011 by mirek-->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Změnit</string>
@@ -8,9 +9,10 @@
   <string id="31002">Nesnášet</string>
   <string id="31003">Napájení</string>
   <string id="31004">Pracuji...</string>
-  <string id="31005">Skrýt INFO</string>
-
+  <string id="31005">Skrýt Info</string>
+  <string id="31006">Zobrazit možnosti</string>
   <string id="31007">Pluginy</string>
+  <string id="31008">Celá obrazovka</string>
 
   <string id="31020">Nejnovější položky</string>
   <string id="31021">Video - Soubory</string>
@@ -24,7 +26,7 @@
   <!-- View Type labels -->
   <string id="31028">Obaly</string>
   <string id="31029">Fanart</string>
-  <string id="31030">Seznam I</string>
+  <string id="31030">Seznam</string>
   <string id="31031">Náhledy</string>
   <string id="31032">Obrázky</string>
   <string id="31033">Info</string>
@@ -40,6 +42,8 @@
   <string id="31047">Akutální předvolba</string>
   <string id="31048">Předvolby vizualizace</string>
   <string id="31049">Čas ukončení</string>
+  <string id="31050">Seřadit: vzestupně</string>
+  <string id="31051">Seřadit: sestupně</string>
 
 
   <!-- Playlist Editor labels -->
@@ -55,9 +59,9 @@
   <string id="31100"></string>
   <string id="31101">Informace na Úvodní obrazovce</string>
   <string id="31102">Pozadí</string>
-  <string id="31103">Zobrazovat "POZASTAVENO" při prezentaci obrázků</string>
+  <string id="31103">Zobrazovat "Pozastaveno" při prezentaci obrázků</string>
   <string id="31104">Přehrávat upoutávky v okně [COLOR=grey3](pouze z okna Informace o videu)[/COLOR]</string>
-  <string id="31105"></string>
+  <string id="31105">V nabídce "Video" vždy zobrazit "Soubory"</string>
   <string id="31106">Různé</string>
   <string id="31107">Nezobrazovat ikony zdroje videí [COLOR=grey3](Blu-ray, HD-DVD)[/COLOR]</string>
   <string id="31108">Zobrazení sekcí úvodní obrazovky</string>
@@ -65,25 +69,32 @@
   <string id="31110">Změnit pozadí úvodní obrazovky - sekce</string>
   <string id="31111">Skrýt</string>
   <string id="31112">Možnosti</string>
-  <string id="31113">1 obrázek</string>
+  <string id="31113">Jeden obrázek</string>
   <string id="31114">Více obrázků</string>
   <string id="31115">Přizpůsobení</string>
   <string id="31116"></string>
   <string id="31117">Zobrazovat Nejnovější filmy a epizody</string>
-  <string id="31118">Úvodní obrazovka</string>
-  <string id="31119"></string>
+  <string id="31118">Úvodní obrazovka - nabídka Programy</string>
+  <string id="31119">Skrýt Fanart na pozadí</string>
   <string id="31120">NÁZEV POLOŽKY</string>
   <string id="31121"></string>
   <string id="31122">Počasí</string>
-  <string id="31123">Použít u TV seriálů klasické náhledy místo širokoúhlých</string>
+  <string id="31123">Použít u TV seriálů klasické náhledy místo bannerů</string>
   <string id="31124">Zobrazovat na pozadí právě přehrávané video</string>
   <string id="31125">Zobrazovat na pozadí vizualizaci</string>
 
-  <string id="31126"></string>
-  <string id="31127"></string>
+  <string id="31126">Přehrát znělky v knihovně videí (doplněk TvTunes)</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">Texty skladeb</string>
   <string id="31129"></string>
   <string id="31130"></string>
+  
+  <string id="31131"></string>
+  <string id="31132">Doplněk Texty skladeb</string>
+  <string id="31133">Doplněk Titulky</string>
+  <string id="31134">Úvodní strana - podmenu Videa</string>
+  <string id="31135">Úvodní strana - podmenu Hudba</string>
+  <string id="31136">Úvodní strana - podmenu Obrázky</string>
 
   <string id="31140">Hudební OSD</string>
   <string id="31141">Video OSD</string>
@@ -97,7 +108,7 @@
   <string id="31205">Zdroj textu skladeb</string>
 
   <!-- Extra labels -->
-  <string id="31300">Aktuální teplota</string>
+  <string id="31300">Aktuální počasí</string>
   <string id="31301">Naposledy aktualizováno</string>
   <string id="31302">Menu</string>
   <string id="31303"></string>
@@ -108,7 +119,7 @@
   <string id="31308">Detaily o filmu</string>
   <string id="31309">Využitá paměť:</string>
   <string id="31310">Číslo stopy</string>
-  <string id="31311">POZADÍ FANART[CR][CR]NENÍ K DISPOZICI[CR][CR] NASTAVTE HO STISKNUTÍM TLAČÍTKA</string>
+  <string id="31311">Fanart[CR][CR]není k dispozici[CR][CR] Nastavte ho stisknutím tlačítka</string>
   <string id="31312">Současný stahovač</string>
   <string id="31313">Změnit stahovač</string>
   <string id="31314">Možnosti vyhledávání obsahu</string>
@@ -126,8 +137,9 @@
   <string id="31326">Vytvořeno</string>
   <string id="31327">Rozlišení</string>
   <string id="31328">Nejnovější položky</string>
-  <string id="31329">[B]ČASOVAČ BYL NASTAVEN![/B] [COLOR=grey2] - SYSTÉM SE AUTOMATICKY VYPNE ZA[/COLOR]</string>
+  <string id="31329">[B]Časovač byl nastaven![/B] [COLOR=grey2] - Systém se automaticky vypne za[/COLOR]</string>
   <string id="31330">Pro přehrání upoutávky[CR][CR]stiskněte tlačítko</string>
+  <string id="31331">Detaily o albu</string>
 
   <!-- Video and Music OSD Labels  -->
   <string id="31351">Pozastavit</string>
@@ -137,6 +149,11 @@
   <string id="31355">Nabídka filmu</string>
   <string id="31356">Stáhnout titulky</string>
   <string id="31357"></string>
+
+  <!-- Skin Fontsets -->
+  <string id="31390">Výchozí vzhled</string>
+  <string id="31391">Výchozí vzhled bez velkých písmen</string>
+  <string id="31392">Písmo Arial</string>
 
   <!-- Description Labels  -->
   <string id="31400">[B]MOŽNOSTI PROSTŘEDÍ[/B][CR][CR]Změna vzhledu · Výběr jazyka a oblasti · Možnosti zobrazení souborů[CR]Nastavení spořiče obrazovky</string>
@@ -150,4 +167,17 @@
   <string id="31408">[B]MOŽNOSTI DOPLŇKŮ[/B][CR][CR]Správa nainstalovaných doplňků · Vyhledávání a instalace doplňků z xbmc.org[CR]Nastavení doplňků</string>
 
   <string id="31421">Přihlášení uživatele[CR]Pokračujte výběrem profilu</string>
-</strings>
+  
+  <!-- Weather plugin -->
+  <string id="31900">Mapy počasí</string>
+  <string id="31901">Předpověď na 36 hodin</string>
+  <string id="31902">Hodinová předpověď</string>
+  <string id="31903">Předpověď na víkend</string>
+  <string id="31904">Předpověď na 10 dní</string>
+  <string id="31905">Předpověď</string>
+  <string id="31906">Mapy a Video</string>
+  <string id="31907">Video předpověď [COLOR=grey2](Přehrávání na celé obrazovce)[/COLOR]</string>
+  <string id="31908">Pravděpodobnost srážek</string>
+  <string id="31909">Načítání informací o předpovědi...</string>
+
+  </strings>
