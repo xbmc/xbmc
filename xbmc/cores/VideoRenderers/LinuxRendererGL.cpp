@@ -1049,6 +1049,8 @@ void CLinuxRendererGL::UnInit()
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
 
+  glFinish();
+
   if (m_rgbPbo)
   {
     glDeleteBuffersARB(1, &m_rgbPbo);
