@@ -112,6 +112,7 @@ protected:
 
   virtual bool Open();
   virtual bool CreateTables();
+  virtual void CreateViews() {};
   virtual bool UpdateOldVersion(int version) { return true; };
 
   virtual int GetMinVersion() const=0;
