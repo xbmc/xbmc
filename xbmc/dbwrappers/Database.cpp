@@ -454,6 +454,12 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
     CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
     return false;
   }
+  else//versions are same - but we where called. 
+      //This normally happens after copying a DB from custom name to new versioned DB name sheme.
+      //In that case recreate views because they don't get copied...
+  {
+    CreateViews();
+  }
   return true;
 }
 

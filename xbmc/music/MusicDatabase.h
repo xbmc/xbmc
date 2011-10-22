@@ -231,7 +231,7 @@ protected:
 private:
   /*! \brief (Re)Create the generic database views for songs and albums
    */
-  void CreateViews();
+  virtual void CreateViews();
 
   void SplitString(const CStdString &multiString, std::vector<CStdString> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
