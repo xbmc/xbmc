@@ -113,7 +113,6 @@ void CSkinInfo::Start(const CStdString &strBaseDir)
         m_resolutions.push_back(res);
     }
   }
-  LoadIncludes();
 }
 
 struct closestRes
@@ -255,6 +254,11 @@ bool CSkinInfo::IsInUse() const
 {
   // Could extend this to prompt for reverting to the standard skin perhaps
   return g_guiSettings.GetString("lookandfeel.skin") == ID();
+}
+
+const INFO::CSkinVariableString* CSkinInfo::CreateSkinVariable(const CStdString& name, int context)
+{
+  return m_includes.CreateSkinVariable(name, context);
 }
 
 } /*namespace ADDON*/

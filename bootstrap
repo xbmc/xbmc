@@ -5,6 +5,7 @@ set -e
 autoreconf -vif
 autoreconf -vif lib/libid3tag/libid3tag
 autoreconf -vif xbmc/screensavers/rsxs-0.9
+autoreconf -vif xbmc/visualizations/Goom/goom2k4-0
 autoreconf -vif lib/libapetag
 autoreconf -vif lib/cpluff
 # order matters with libdvd and friends

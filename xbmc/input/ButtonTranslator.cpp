@@ -309,7 +309,9 @@ static const ActionMapping windows[] =
         {"musicoverlay"             , WINDOW_DIALOG_MUSIC_OVERLAY},
         {"videooverlay"             , WINDOW_DIALOG_VIDEO_OVERLAY},
         {"startwindow"              , WINDOW_START},
-        {"startup"                  , WINDOW_STARTUP_ANIM}};
+        {"startup"                  , WINDOW_STARTUP_ANIM},
+        {"peripherals"              , WINDOW_DIALOG_PERIPHERAL_MANAGER},
+        {"peripheralsettings"       , WINDOW_DIALOG_PERIPHERAL_SETTINGS}};
 
 static const ActionMapping mousecommands[] =
 {

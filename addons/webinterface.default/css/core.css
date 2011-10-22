@@ -567,7 +567,7 @@ div.imgWrapper div.inner {
 #nowPlayingPlaylist,
 #nextTrack {
 	width: 416px;
-	float: right;
+	float: left;
 	cursor: pointer;
 	z-index: 1000;
 	}

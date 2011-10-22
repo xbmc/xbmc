@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: Michal Iro-->
 <!--Email: mixo@frco.sk-->
-<!--Date of translation: 08/21/2011-->
+<!--Date of translation: 09/21/2011-->
 <!--$Revision$-->
 <strings>
   <string id="0">Programy</string>
@@ -80,10 +80,10 @@
   <string id="86">SSZ</string>
   <string id="87">premenlivé</string>
 
-  <string id="98">Pohľad: Auto</string>
-  <string id="99">Pohľad: Auto veľké</string>
-  <string id="100">Pohľad: Ikony</string>
-  <string id="101">Pohľad: Zoznam</string>
+  <string id="98">Zobrazenie: Auto</string>
+  <string id="99">Zobrazenie: Auto veľké</string>
+  <string id="100">Zobrazenie: Ikony</string>
+  <string id="101">Zobrazenie: Zoznam</string>
   <string id="102">Prezrieť</string>
   <string id="103">Usporiadať: Názov</string>
 
@@ -115,17 +115,17 @@
   <string id="126">Stav</string>
   <string id="127">Objekty</string>
 
-  <string id="128">Všeobecný</string>
+  <string id="128">Všeobecné</string>
   <string id="129">Prezentácia</string>
   <string id="130">Systémové informácie</string>
   <string id="131">Obrazovka</string>
-  <string id="132">Albumy</string>
-  <string id="133">Interpréti</string>
+  <string id="132">Album</string>
+  <string id="133">Interprét</string>
 
-  <string id="134">Skladby</string>
-  <string id="135">Štýly</string>
+  <string id="134">Skladba</string>
+  <string id="135">Štýl/Žáner</string>
   <string id="136">Playlist-y</string>
-  <string id="137">Hľadanie</string>
+  <string id="137">Hľadať</string>
   <string id="138">SYSTÉMOVÉ INFORMÁCIE</string>
   <string id="139">Teploty:</string>
 
@@ -161,10 +161,10 @@
   <string id="165">Disk dostupný</string>
   <string id="166">Vzhľad</string>
   <string id="169">Rozlíšenie</string>
-  <string id="170">Prispôsobovať obnovovaciu frekvenciu obrazovky k videu</string>
+  <string id="170">Prispôsobiť obnovovaciu frekvenciu obrazovky k videu</string>
   <string id="172">Dátum vydania:</string>
 
-  <string id="173">Zobraz 4:3 videá ako</string>
+  <string id="173">Zobrazenie 4:3 videa</string>
   <string id="175">Charakter:</string>
   <string id="176">Štýly</string>
   <string id="179">Skladba</string>
@@ -186,7 +186,7 @@
   <string id="193">Prehľadať</string>
 
   <string id="194">Vyhľadávam...</string>
-  <string id="195">Nenašiel som informácie!</string>
+  <string id="195">Bez informácií!</string>
   <string id="196">Výber filmu:</string>
   <string id="197">Zisťujem informácie o %s</string>
   <string id="198">Načítanie detailov o filme</string>
@@ -194,9 +194,9 @@
 
   <string id="202">Obsah</string>
   <string id="203">Popis</string>
-  <string id="205">Hlasov:</string>
-  <string id="206">Hrajú</string>
-  <string id="207">Popis</string>
+  <string id="205">Hlasov</string>
+  <string id="206">Herci</string>
+  <string id="207">Obsah</string>
   <string id="208">Prehrať</string>
 
   <string id="209">Ďalší</string>
@@ -211,17 +211,17 @@
   <string id="219">Prosím vložte disk</string>
   <string id="220">Vzdialené zdieľanie</string>
   <string id="221">Sieť nie je pripojená</string>
-  <string id="222">Prerušiť</string>
+  <string id="222">Zrušiť</string>
 
   <string id="224">Rýchlosť</string>
-  <string id="225">Vertikálne posunutie</string>
+  <string id="225">Vertikálny posun</string>
   <string id="226">Testovací obraz...</string>
   <string id="227">Vyhľadať audio CD na freedb</string>
   <string id="228">Nahodný playlist pri otvorení</string>
   <string id="229">Zastaviť disk</string>
 
   <string id="230">Video filtre</string>
-  <string id="231">Žiadny</string>
+  <string id="231">Žiadne</string>
   <string id="232">Bodový</string>
   <string id="233">Lineárny</string>
   <string id="234">Anizotropický</string>
@@ -231,7 +231,7 @@
   <string id="237">Zmenšenie</string>
   <string id="238">Zväčšenie</string>
   <string id="239">Vymazať playlist pri ukončení</string>
-  <string id="240">Display mód / zobrazenie</string>
+  <string id="240">Vybrať zobrazenie</string>
   <string id="241">Celá obrazovka #%d</string>
 
   <string id="242">Okno</string>
@@ -244,7 +244,7 @@
   <string id="249">Hudba</string>
   <string id="250">Vizualizácie</string>
   <string id="251">Nastaviť cieľový adresár</string>
-  <string id="252">Výstup stereo do všetkých reproduktorov</string>
+  <string id="252">Stereo výstup do všetkých reproduktorov</string>
   <string id="253">Počet kanálov</string>
   <string id="254">- DTS kompatibilný receiver</string>
 
@@ -257,7 +257,7 @@
 
   <string id="261">Čakanie na štart...</string>
   <string id="262">Výstup skript</string>
-  <string id="263">Povoliť web server</string>
+  <string id="263">Povoliť ovládanie XBMC cez HTTP</string>
   <string id="264">Nahrávanie</string>
   <string id="265">Stop Náhr.</string>
   <string id="266">Usporiadať: Stopa</string>
@@ -302,11 +302,11 @@
   <string id="302">- MP3 kompatibilný receiver</string>
   <string id="303">Oneskorenie</string>
   <string id="304">Jazyk</string>
-  <string id="305">Povolený</string>
+  <string id="305">Aktivované</string>
 
   <string id="306">Neprekladaný</string>
   <string id="312">(0=auto)</string>
-  <string id="313">Vyčistenie databázy</string>
+  <string id="313">Čistenie databázy</string>
   <string id="314">Pripravujem...</string>
   <string id="315">Chyba databázy</string>
   <string id="316">Vyhľadávam skladby...</string>
@@ -339,10 +339,10 @@
   <string id="339">Digitálny</string>
   <string id="340">Rôzny interpréti</string>
 
-  <string id="341">Prehrať disk</string>
+  <string id="341">CD/DVD</string>
   <string id="342">Filmy</string>
   <string id="343">Prispôsobenie snímkovania</string>
-  <string id="344">Herci</string>
+  <string id="344">Herec</string>
   <string id="345">Rok</string>
   <string id="346">Zvyšovať hlasitosť pri downmixe</string>
 
@@ -353,7 +353,7 @@
   <string id="354">Matrix Trails</string>
   <string id="355">Čas nečinnosti pre šetrič obrazovky</string>
 
-  <string id="356">Mód šetriča obrazovky</string>
+  <string id="356">Šetrič obrazovky</string>
   <string id="357">Čas nečinnosti pre vypnutie</string>
   <string id="358">Všetky albumy</string>
   <string id="359">Nedávno pridané albumy</string>
@@ -421,7 +421,7 @@
   <string id="414">Pre tento album nie je žiadna recenzia</string>
   <string id="415">Sťahujem náhľad...</string>
   <string id="416">Nie je prístupné</string>
-  <string id="417">Pohľad: Veľké ikony</string>
+  <string id="417">Zobrazenie: Veľké ikony</string>
 
   <string id="418">Povoliť knižnicu</string>
   <string id="419">Vysoké</string>
@@ -465,11 +465,11 @@
   <string id="455">Riadky</string>
   <string id="456">Mód</string>
 
-  <string id="457">Prepnúť pohľad</string>
+  <string id="457">Prepnúť zobrazenie</string>
   <string id="459">Titulky</string>
-  <string id="460">Audio stream</string>
+  <string id="460">Zvuková stopa</string>
   <string id="461">[aktívny]</string>
-  <string id="462">Titulok</string>
+  <string id="462">Titulky</string>
   <string id="463">Podsvietenie</string>
 
   <string id="464">Jas</string>
@@ -496,7 +496,7 @@
   <string id="486">Opakovať</string>
   <string id="487">Opakovať jeden</string>
   <string id="488">Opakovať priečinok</string>
-  <string id="489">Automaticky prehrať ďalšiu položku</string>
+  <string id="489">Automaticky prehrať ďalšiu skladbu</string>
   <string id="491">- Použiť veľké ikony</string>
   <string id="492">Velkosť vobsubs</string>
 
@@ -620,7 +620,7 @@
   <string id="605">Sťahujem...</string>
 
   <string id="607">Do:</string>
-  <string id="608">Nemôžem stiahnuť CD alebo stopu</string>
+  <string id="608">Nie je možné stiahnuť CD alebo stopu</string>
   <string id="609">CDDA cesta nie je nastavená.</string>
   <string id="610">Stiahnuť audio stopu</string>
   <string id="611">Zadaj číslo</string>
@@ -634,7 +634,7 @@
   <string id="624">Zahrnúť číslo stopy</string>
 
   <string id="625">Všetky skladby od</string>
-  <string id="629">Prezerací mód</string>
+  <string id="629">Režim obrazu</string>
   <string id="630">Normálne</string>
   <string id="631">Zväčšiť</string>
   <string id="632">Natiahnuť 4:3</string>
@@ -682,8 +682,8 @@
   <string id="702">Táto cesta bola už skenovaná</string>
   <string id="705">Sieť</string>
 
-  <string id="706">HTTP proxy host</string>
-  <string id="708">Povoliť HTTP proxy</string>
+  <string id="706">- Server</string>
+  <string id="708">Použiť HTTP proxy server pre prístup na internet</string>
   <string id="711">Internet protokol (IP)</string>
   <string id="712">Nesprávny port. Hodnota musí byť medzi 1 a 65535.</string>
   <string id="713">HTTP Proxy</string>
@@ -703,9 +703,9 @@
   <string id="727">Web server</string>
   <string id="728">FTP server</string>
 
-  <string id="730">Web server port</string>
+  <string id="730">- Port</string>
   <string id="732">Uložiť a použiť</string>
-  <string id="733">Web server heslo</string>
+  <string id="733">- Heslo</string>
   <string id="734">Žiadne heslo</string>
   <string id="735">- Písmo</string>
   <string id="736">- Štýl</string>
@@ -719,20 +719,20 @@
 
   <string id="743">Žlté</string>
   <string id="744">Súbory</string>
-  <string id="745">Žiadna zoskenovaná informácia pre tento pohľad</string>
-  <string id="746">Prepnúť do súborového pohľadu</string>
-  <string id="747">Chyba pri načítanií obrázku</string>
+  <string id="745">Žiadna zoskenovaná informácia pre toto zobrazenie</string>
+  <string id="746">Prepnúť do súborového zobrazenia</string>
+  <string id="747">Chyba pri načítaní obrázku</string>
   <string id="748">Upraviť cestu</string>
 
   <string id="749">Otočiť</string>
   <string id="750">Ste si istý?</string>
-  <string id="751">Odstrániť zdieľanie</string>
+  <string id="751">Odstraňovanie zdroju</string>
   <string id="754">Pridať zástupcu programu</string>
   <string id="755">Upraviť cestu programu</string>
   <string id="756">Upraviť názov programu</string>
 
   <string id="757">Upraviť hĺbku pre cestu</string>
-  <string id="759">Pohľad: Veľké ikony</string>
+  <string id="759">Zobrazenie: Veľké ikony</string>
   <string id="760">Žltá</string>
   <string id="761">Biela</string>
   <string id="762">Modrá</string>
@@ -764,11 +764,11 @@
   <string id="787">Rozhranie zakázané</string>
   <string id="788">Sieťové rozhranie bolo zakázané.</string>
   <string id="789">Názov bezdrôtovej siete (ESSID)</string>
-  <string id="791">Povoliť diaľkové ovládanie</string>
+  <string id="791">Povoliť ovládanie XBMC aplikáciami na tomto systéme</string>
 
-  <string id="792">Port diaľkového ovládania</string>
-  <string id="793">Rozsah portov pre diaľkové ovládanie</string>
-  <string id="794">Povoliť ovládanie z iných počítačov</string>
+  <string id="792">Port</string>
+  <string id="793">Rozsah portov</string>
+  <string id="794">Povoliť ovládanie XBMC aplikáciami z iného systému</string>   
   <string id="795">Oneskorenie odozvy pre prvý stisk (ms)</string>
   <string id="796">Oneskorenie odozvy pre dlhý stisk (ms)</string>
   <string id="797">Maximálny počet klientov</string>
@@ -803,12 +803,12 @@
 
   <string id="1019">Napíšte meno</string>
   <string id="1020">Pridať %s zdroj</string>
-  <string id="1021">Vložte cesty, alebo vybrte média lokality.</string>
+  <string id="1021">Vložte cestu, alebo vyberte lokalitu média.</string>
   <string id="1022">Napíšte názov pre tento média zdroj.</string>
   <string id="1023">Vybrať nové zdieľanie</string>
   <string id="1024">Vybrať</string>
 
-  <string id="1025">Nemôžem načítať informácie pre priečinok.</string>
+  <string id="1025">Nie je možné načítať informácie priečinku.</string>
   <string id="1026">Pridať zdroj</string>
   <string id="1027">Upraviť zdroj</string>
   <string id="1028">Upraviť %s zdroj</string>
@@ -822,16 +822,16 @@
   <string id="1035">Povoliť tlačítka podmenu</string>
   <string id="1036">Obľúbené</string>
 
-  <string id="1037">Plugin video</string>
-  <string id="1038">Plugin hudba</string>
-  <string id="1039">Plugin obrázky</string>
+  <string id="1037">Doplnky - Video</string>
+  <string id="1038">Doplnky - Hudba</string>
+  <string id="1039">Doplnky - Obrázky</string>
   <string id="1040">Prebieha načítanie priečinku</string>
   <string id="1041">Načítaných %i položiek</string>
   <string id="1042">Načítaných %i z %i položiek</string>
 
-  <string id="1043">Plugin programy</string>
-  <string id="1044">Nastavenie náhľadu pluginu</string>
-  <string id="1045">Nastavenie pluginu</string>
+  <string id="1043">Doplnky - Programy</string>
+  <string id="1044">Nastavenie náhľadu doplnku</string>
+  <string id="1045">Nastavenie doplnku</string>
   <string id="1046">Prístupové body (AP)</string>
   <string id="1047">Ostatné ...</string>
   <string id="1048">- Užívateľské meno</string>
@@ -882,7 +882,10 @@
   <string id="1255">Poslať FTP meno a heslo</string>
   <string id="1256">Ping interval</string>
   <string id="1257">Chcete sa pripojiť na autodetekovaný system?</string>
-  <string id="1260">Oznamovať tieto služby ďaľším počítačom cez Zeroconf</string>
+  <string id="1260">Oznamovať tieto služby ďalším počítačom cez Zeroconf</string>
+  <string id="1270">Povoliť XBMC príjem AirPlay obsahu</string>
+  <string id="1271">Názov zariadenia</string>
+  <string id="1272">- Použiť ochranu heslom</string>
   <string id="1300">Vlastné zariadenie pre výstup audia</string>
 
   <string id="1301">Vlastné zariadenie pre passthrough zvuku</string>
@@ -920,7 +923,7 @@
   <string id="1423">Hmla</string>
   <string id="1450">Aktivovať úsporný režim pri nečinnosti</string>
 
-  <string id="2050">Dĺžka:</string>
+  <string id="2050">Dĺžka</string>
   <string id="2100">Chyba skriptu! : %s</string>
   <string id="2101">Je vyžadovaná novšia verzia - Viac informácií v logu</string>
   <string id="4501">Typ LCD</string>
@@ -955,8 +958,8 @@
   <string id="10100">Áno/Nie dialog</string>
   <string id="10101">Dialóg spracovania</string>
 
-  <string id="10210">Prebieha vyhľadávanie tituliek...</string>
-  <string id="10211">Prebieha načítavanie tituliek...</string>
+  <string id="10210">Prebieha vyhľadávanie titulkov...</string>
+  <string id="10211">Prebieha načítavanie titulkov...</string>
   <string id="10212">prerušenie</string>
   <string id="10213">načítanie do medzipamäte</string>
   <string id="10214">Otváranie streamu</string>
@@ -1154,7 +1157,7 @@
   <string id="13213">%2.0fm</string>
   <string id="13214">%2.0fs</string>
   <string id="13249">Hľadať titulky v RARoch</string>
-  <string id="13250">Vybrať titulky...</string>
+  <string id="13250">Hľadať titulky...</string>
   <string id="13251">Presunúť položku</string>
   <string id="13252">Presunúť položku sem</string>
 
@@ -1275,14 +1278,14 @@
   <string id="13393">Vypočítať veľkosť</string>
   <string id="13394">Počítanie veľkosti priečinka</string>
   <string id="13395">Nastavenia videa</string>
-  <string id="13396">Nastavenie hudby a tituliek</string>
+  <string id="13396">Nastavenie hudby a titulkov</string>
 
   <string id="13397">Povoliť titulky</string>
   <string id="13398">Záložky</string>
   <string id="13399">Ignorovať "The" pri usporiadaní</string>
   <string id="13400">Stišovať stopy</string>
   <string id="13401">Vybrať pre %s</string>
-  <string id="13402">Ukázať pozíciu stopy</string>
+  <string id="13402">Zobraziť pozíciu stopy</string>
 
   <string id="13403">Vymazať predvolené</string>
   <string id="13404">Pokračovať</string>
@@ -1330,7 +1333,7 @@
   <string id="13507">Stredná</string>
   <string id="13508">Vysoká</string>
   <string id="13509">Veľmi vysoká (pomalé!)</string>
-  <string id="13510">Synchronizovať prehrávanie videa k frekvencii obrazovky</string>
+  <string id="13510">Synchronizovať prehrávanie videa k obrazovke</string>
   <string id="13550">Pozastaviť prehrávanie pri zmene obnovovacej frekvencie</string>
 
   <string id="13551">Vypnuté</string>
@@ -1347,7 +1350,7 @@
   <string id="13620">Ovládač pre ovládanie Apple je nainštalovaný.</string>
   <string id="13621">Podporu pre ovládanie Apple nie je možné povoliť.</string>
 
-  <string id="14000">Dokopy</string>
+  <string id="14000">Spolu</string>
   <string id="14001">Samostatne</string>
   <string id="14003">Sťahujem playlist súbor...</string>
   <string id="14004">Sťahujem zoznam streamov...</string>
@@ -1365,7 +1368,7 @@
   <string id="14015">Žiadne súbory a najmenej jeden náhľad</string>
   <string id="14016">Aspoň jeden súbor a jeden náhľad</string>
   <string id="14017">Podiel náhľadov</string>
-  <string id="14018">Pohľad</string>
+  <string id="14018">Zobrazenie</string>
   <string id="14019">Zmeniť kód oblasti 1</string>
 
   <string id="14020">Zmeniť kód oblasti 2</string>
@@ -1389,7 +1392,7 @@
   <string id="14039">XBMC vyžaduje reštart pre zmenu</string>
   <string id="14040">sieťových nastavení. Reštartovať?</string>
 
-  <string id="14041">Post Processing</string>
+  <string id="14041">Limitovať rýchlosť internetového pripojenia</string>
   <string id="14043">- Vypínanie počas prehrávania</string>
   <string id="14044">%i min</string>
   <string id="14045">%i sek</string>
@@ -1405,7 +1408,7 @@
 
   <string id="14055">Používať skenovanie na pozadí</string>
   <string id="14056">Zastaviť skenovanie</string>
-  <string id="14057">Nie je možne zoskenovať informácie pre média</string>
+  <string id="14057">Nie je možne zoskenovať informácie pre médiá</string>
   <string id="14058">Krupicový efekt na film</string>
   <string id="14059">Hľadať náhľady na vzdialených zložkách</string>
   <string id="14060">Medzipamäť - Ostatné - Internet</string>
@@ -1443,7 +1446,7 @@
   <string id="14089">Font pre textové titulky</string>
   <string id="14090">Oblasť a jazyk</string>
   <string id="14091">Znaková sada</string>
-  <string id="14092">Ladenie</string>
+  <string id="14092">Ladenie / Debug</string>
 
   <string id="14093">Bezpečnosť</string>
   <string id="14094">Vstupné zariadenia</string>
@@ -1526,7 +1529,7 @@
   <string id="15277">Počúvať %name% osobný Last.FM radiu</string>
   <string id="15278">Počúvať %name% obľúbene piesne Last.FM radiu</string>
   <string id="15279">Sťahujem zoznam z Last.FM...</string>
-  <string id="15280">Nemôžem stiahnuť zoznam z Last.FM...</string>
+  <string id="15280">Nie je možné stiahnuť zoznam z Last.FM...</string>
   <string id="15281">Napíšte meno interpréta pre hľadanie podobných</string>
 
   <string id="15282">Napíšte značku pre hľadanie podobných</string>
@@ -1558,7 +1561,7 @@
   <string id="16002">Hľadanie CDDB</string>
 
   <string id="16003">Prehrávač</string>
-  <string id="16004">Prehrať média z disku</string>
+  <string id="16004">Prehrať médiá z disku</string>
   <string id="16008">Zadajte nový názov</string>
   <string id="16009">Napíšte názov filmu</string>
   <string id="16010">Napíšte názov profilu</string>
@@ -1573,7 +1576,7 @@
 
   <string id="16018">Žiadne</string>
   <string id="16019">Auto Výber</string>
-  <string id="16020">Deinterlace</string>
+  <string id="16020">Deinterlácia</string>
   <string id="16021">Bob</string>
   <string id="16022">Bob (Opačný)</string>
   <string id="16023">Prekladaný materiál /Interlaced Handling</string>
@@ -1592,7 +1595,12 @@
   <string id="16034">Nedajú sa načítať skladby z databázy.</string>
   <string id="16035">Párty mód playlist</string>
 
-  <string id="16036">De-interlace (Polovičné)</string>
+  <string id="16036">De-interlácia (Polovičná)</string>
+  <string id="16037">Deinterlácia videa</string>
+  <string id="16038">Spôsob deinterlácie</string>
+  <string id="16039">Vypnuté</string>
+  <string id="16040">Automaticky</string>
+  <string id="16041">Zapnuté</string>
   <string id="16100">Všetky Videá</string>
   <string id="16101">Nevidené</string>
   <string id="16102">Videné</string>
@@ -1631,6 +1639,10 @@
   <string id="16317">Dočasný (Polovičný)</string>
   <string id="16318">Dočasný/Spatial (polovičný)</string>
   <string id="16319">DXVA</string>
+  <string id="16320">DXVA Bob</string>
+  <string id="16321">DXVA Best</string>
+  <string id="16322">Spline36</string>
+  <string id="16323">Spline36 optimalizovaná</string>
   <string id="16400">Post-processing</string>
   <string id="17500">Zobraziť odpočet do uspania</string>
 
@@ -1686,7 +1698,7 @@
   <string id="20055">Allmusic.com náhľad</string>
   <string id="20057">Odstrániť náhľad</string>
   <string id="20058">Pridať profil...</string>
-  <string id="20059">Stiahnúť informácie pre všetky albumy</string>
+  <string id="20059">Stiahnuť informácie pre všetky albumy</string>
   <string id="20060">Informácie o médiu</string>
   <string id="20061">Oddelený</string>
 
@@ -1698,7 +1710,7 @@
   <string id="20067">Upraviť profil</string>
 
   <string id="20068">Zamknutie profilu</string>
-  <string id="20069">Nemôžem vytvoriť priečinok</string>
+  <string id="20069">Priečinok nie je možné vytvoriť</string>
   <string id="20070">Adresár profilov</string>
   <string id="20071">Štartovať s čistými zdrojmi médií</string>
   <string id="20072">Ubezpečte sa, že zvolený priečinok je zapisovateľný</string>
@@ -1706,7 +1718,7 @@
 
   <string id="20074">MPAA Hodnotenie:</string>
   <string id="20075">Napíšte hlavný kód</string>
-  <string id="20076">Pýtať sa pri štarte na hlavný kód</string>
+  <string id="20076">Pýtať sa na hlavný kód pri štarte</string>
   <string id="20077">Nastavenie vzhľadu</string>
   <string id="20078">- žiadny link -</string>
   <string id="20079">Povoliť animácie</string>
@@ -1714,7 +1726,7 @@
   <string id="20080">Zakázať RSS počas hudby</string>
   <string id="20081">Povoliť záložkové tlačítka</string>
   <string id="20082">Zobraziť XLink Kai informácie</string>
-  <string id="20083">Zobraziť hudobné informácie</string>
+  <string id="20083">Zobraziť informácie o hudbe</string>
   <string id="20084">Zobraziť informácie o počasí</string>
   <string id="20085">Zobraziť systémové informácie</string>
 
@@ -1733,7 +1745,7 @@
   <string id="20097">Získavam informácie o albume</string>
 
   <string id="20098">Získavam informácie pre albume</string>
-  <string id="20099">Nemôžem stiahnúť CD alebo stopu počas prehrávania CD</string>
+  <string id="20099">Nie je možné stiahnuť CD alebo stopu počas prehrávania CD</string>
   <string id="20100">Hlavný kód a nastavenia</string>
   <string id="20101">Vloženie hlavného kódu vždy povolí admin mód</string>
   <string id="20102">alebo kopírovať z predvoleného?</string>
@@ -1837,9 +1849,9 @@
   <string id="20189">Povoliť automatické rolovanie obsahu a recenzie</string>
   <string id="20190">Vlastné</string>
 
-  <string id="20191">Povoliť ladenie</string>
-  <string id="20192">Získať informácie o albume keď sa pridáva do knižnice</string>
-  <string id="20193">Získať informácie o interprétovy keď sa pridáva do knižnice</string>
+  <string id="20191">Povoliť ladenie / debug log</string>
+  <string id="20192">Získať informácie o albume, keď sa pridáva do knižnice</string>
+  <string id="20193">Získať informácie o interprétovy, keď sa pridáva do knižnice</string>
   <string id="20194">Predvolený sťahovač pre hudbu</string>
   <string id="20195">Zmeniť Sťahovač</string>
   <string id="20196">Export knižnice hudby</string>
@@ -1860,6 +1872,7 @@
 
   <string id="20259">Sieťový Systém Súborov (NFS)</string>
   <string id="20260">Secure Shell (SSH/SFTP)</string>
+  <string id="20261">Protokol súboru Apple (AFP)</string>
   <string id="20300">Web server zložka (HTTP)</string>
   <string id="20301">Web server zložka (HTTPS)</string>
   <string id="20302">Nie je možné zapísať do priečinka:</string>
@@ -1902,13 +1915,13 @@
 
   <string id="20346">Vyhľadávať v podpriečinkoch</string>
   <string id="20347">ako</string>
-  <string id="20348">Režiséri</string>
+  <string id="20348">Režisér</string>
   <string id="20349">Na tejto ceste nebol nájdený žiadny video súbor!</string>
   <string id="20350">hlasov</string>
-  <string id="20351">Informácie o seriále</string>
+  <string id="20351">Informácie o seriáli</string>
 
   <string id="20352">Informácie o epizóde</string>
-  <string id="20353">Načítanie detailov o seriále</string>
+  <string id="20353">Načítanie detailov o seriáli</string>
   <string id="20354">Získavanie informácií o epizódach</string>
   <string id="20355">Načítanie informácií o epizódach v priečinku</string>
   <string id="20356">Vyberte seriál:</string>
@@ -1926,7 +1939,7 @@
   <string id="20366">* Všetky sezóny</string>
   <string id="20367">Schovať sledované</string>
   <string id="20368">Kód produkcie</string>
-  <string id="20369">Schovať obsah pre nesledované položky</string>
+  <string id="20369">Zobraziť obsah pre nevidené videá</string>
 
   <string id="20370">* nezobrazené pre spoilery *</string>
   <string id="20371">Priradiť náhľad k sezóne</string>
@@ -1936,7 +1949,7 @@
   <string id="20375">Odobrať obsah</string>
 
   <string id="20376">Pôvodný názov</string>
-  <string id="20377">Obnoviť informácie o seriále</string>
+  <string id="20377">Obnoviť informácie o seriáli</string>
   <string id="20378">Obnoviť informácie pre všetky epizódy?</string>
   <string id="20379">Priečinok obsahuje jeden seriál</string>
   <string id="20380">Vylúčiť priečinok z prehľadávania</string>
@@ -1949,7 +1962,7 @@
   <string id="20386">Naposledy pridané filmy</string>
   <string id="20387">Naposledy pridané epizódy</string>
 
-  <string id="20388">Štúdia</string>
+  <string id="20388">Štúdio</string>
   <string id="20389">Videoklipy</string>
   <string id="20390">Naposledy pridané videoklipy</string>
   <string id="20391">Videoklip</string>
@@ -1965,26 +1978,26 @@
 
   <string id="20400">Prejsť na videoklipy od interpréta</string>
   <string id="20401">Prehrať videoklip</string>
-  <string id="20402">Automaticky sťiahnuť náhľad interpréta</string>
-  <string id="20403">Nastaviť náhľad interpréta</string>
+  <string id="20402">Automaticky stiahnuť náhľady hercov</string>
+  <string id="20403">Nastaviť náhľad hercov</string>
   <string id="20405">Odstrániť záložku epizódy</string>
   <string id="20406">Nastaviť záložku epizódy</string>
 
   <string id="20407">Nastavenie Sťahovača</string>
   <string id="20408">Sťahujem informácie o videoklipe</string>
-  <string id="20409">Sťahujem informácie o seriále</string>
+  <string id="20409">Sťahujem informácie o seriáli</string>
   <string id="20410">Ukážka</string>
   <string id="20411">Jednoduchý mód</string>
   <string id="20412">Zobraziť TV seriály zjednodušene</string>
 
   <string id="20413">FanArt-y</string>
   <string id="20414">Zobraziť FanArt vo video knižnici</string>
-  <string id="20415">Hľadať nový obsah</string>
+  <string id="20415">Hľadá sa nový obsah</string>
   <string id="20416">Premiéra</string>
   <string id="20417">Autor</string>
   <string id="20418"></string>
 
-  <string id="20419">Ukázať metadata v súboroch</string>
+  <string id="20419">Zobraziť metadata v súboroch</string>
   <string id="20420">Nikdy</string>
   <string id="20421">Iba ak jedna sezóna</string>
   <string id="20422">Vždy</string>
@@ -2021,13 +2034,14 @@
 
   <string id="20449">Server je pravdepodobne nedostupný</string>
   <string id="20450">Chcete pokračovať v aktualizácii?</string>
-  <string id="20451">Krajiny</string>
+  <string id="20451">Krajina</string>
   <string id="20452">epizóda</string>
   <string id="20453">epizódy</string>
   <string id="20454">Poslucháč</string>
 
   <string id="20455">Poslucháči</string>
   <string id="20456">Nastaviť fanart setu filmov</string>
+  <string id="20457">Set filmov</string>
   <string id="21330">Zobraziť skryté súbory a priečinky</string>
   <string id="21331">TuxBox klient</string>
   <string id="21332">POZOR: CieľovéTuxBox zariadenie je v nahrávacom móde!</string>
@@ -2037,18 +2051,18 @@
   <string id="21335">Chcete spustiť stream?</string>
   <string id="21336">Pripájam k: %s</string>
   <string id="21337">TuxBox zariadenie</string>
-  <string id="21359">Pridať zdieľané média...</string>
-  <string id="21360">Povoliť UPnP server</string>
+  <string id="21359">Pridať zdieľané médiá...</string>
+  <string id="21360">Zdielať video a hudobné knižnice pomocou UPnP</string>
 
   <string id="21364">Upraviť zdieľanie média</string>
   <string id="21365">Odstrániť zdieľanie média</string>
-  <string id="21366">Vlastný priečinok s titulkami</string>
-  <string id="21367">Film a ostatné priečinky s titulkami</string>
+  <string id="21366">Priečinok s titulkami</string>
+  <string id="21367">Film a alternatívny priečinok s titulkami</string>
   <string id="21369">Povoliť myš</string>
   <string id="21370">Hrať zvuky navigácie počas prehrávania média</string>
 
   <string id="21371">Náhľad</string>
-  <string id="21372">Vnútiť prehrávaču DVD region</string>
+  <string id="21372">Vnútiť prehrávaču DVD región</string>
   <string id="21373">Video zariadenie</string>
   <string id="21374">Video vzhľad</string>
   <string id="21375">Normálny</string>
@@ -2098,7 +2112,7 @@
 
   <string id="21413">Predvolený sťahovač pre filmy</string>
   <string id="21414">Predvolený sťahovač pre TV seriály</string>
-  <string id="21415">Predvolený sťahovač pre hudobné klipy</string>
+  <string id="21415">Predvolený sťahovač pre klipy</string>
   <string id="21416">Povoliť odpoveď na základe jazyka sťahovača</string>
   <string id="21417">- Nastavenia</string>
   <string id="21418">Viacjazyčný</string>
@@ -2143,9 +2157,17 @@
   <string id="21451">Je vyžadované internetové pripojenie.</string>
   <string id="21452">Získať Viac...</string>
   <string id="21453">Koreňový adresár súborového systému</string>
+  
+  <string id="21460">Umiestnenie titulkov</string>
+  <string id="21461">Fixné</string>
+  <string id="21462">V spodnej časti videa</string>
+  <string id="21463">Pod videom</string>
+  <string id="21464">V hornej časti videa</string>
+  <string id="21465">Nad videom</string>
+  
   <string id="21800">Názov súboru</string>
 
-  <string id="21801">Cesta súboru</string>
+  <string id="21801">Cesta k súboru</string>
   <string id="21802">Veľkosť súboru</string>
   <string id="21803">Dátum/čas súboru</string>
   <string id="21804">Číslo stránky</string>
@@ -2182,7 +2204,7 @@
 
   <string id="21842">GPS výška</string>
   <string id="21843">Orientácia</string>
-  <string id="21860">Doplnková kategória</string>
+  <string id="21860">Doplnkové kategórie</string>
   <string id="21861">Kľučové slová</string>
   <string id="21862">Titul</string>
   <string id="21863">Autor</string>
@@ -2191,7 +2213,7 @@
   <string id="21865">Špeciálne inštrukcie</string>
   <string id="21866">Kategória</string>
   <string id="21867">Podtitul</string>
-  <string id="21868">Podtitul titul</string>
+  <string id="21868">Podtitul titulu</string>
   <string id="21869">Hodnotenie</string>
 
   <string id="21870">Zdroj</string>
@@ -2206,7 +2228,7 @@
   <string id="21878">Označenie autorských práv</string>
   <string id="21879">Kód krajiny</string>
   <string id="21880">Referenčná služba</string>
-  <string id="21881">Povoliť UPnP vykresľovanie</string>
+  <string id="21881">Povoliť ovládanie XBMC cez UPnP</string>
 
   <string id="21882">Pokus o preskočenie úvodu pred DVD menu</string>
   <string id="21883">Skopírované audio CD</string>
@@ -2233,11 +2255,11 @@
   <string id="22000">Aktualizovať knižnicu pri štarte</string>
   <string id="22001">Vždy aktualizovať knižnicu na pozadí</string>
   <string id="22002">- DNS prípona</string>
-  <string id="22003">Povoliť úpravu a rozhodnutie zoznamov</string>
-  <string id="22004">Oneskorený o %2.3fs</string>
+  <string id="22003">%2.3fs</string>
+  <string id="22004">Oneskorené o %2.3fs</string>
 
   <string id="22005">Vpredu o %2.3fs</string>
-  <string id="22006">Ofset tituliek</string>
+  <string id="22006">Oneskorenie titulkov</string>
   <string id="22007">OpenGL výrobca:</string>
   <string id="22008">OpenGL karta:</string>
   <string id="22009">OpenGL verzia:</string>
@@ -2307,9 +2329,9 @@
   <string id="24013">Texty skladieb</string>
 
   <string id="24014">Informácie o TV seriáli</string>
-  <string id="24015">Informácie o hudobnom videu</string>
+  <string id="24015">Informácie o klipe</string>
   <string id="24016">Informácie o albume</string>
-  <string id="24017">Infromácie o interprétovy</string>
+  <string id="24017">Informácie o interprétovy</string>
   <string id="24018">Služby</string>
   <string id="24020">Nastavenie</string>
 
@@ -2366,6 +2388,7 @@
   <string id="24073">Nedá sa pripojiť</string>
   <string id="24074">Je vyžadovaný reštart</string>
   <string id="24075">Deaktivovať</string>
+  <string id="24076">Potrebný doplnok</string>
   <string id="24080">Pokúsiť sa o opätovné pripojenie?</string>
   <string id="24089">Doplnok sa reštartuje</string>
 
@@ -2377,16 +2400,18 @@
   <string id="24098">Nefunkčný</string>
 
   <string id="24099">Želáte si použiť tento skin?</string>
+  <string id="24100">Pre použite tejto funkcie potrebujete stiahnuť Doplnok:</string>
+  <string id="24101">Želáte si stiahnuť tento doplnok?</string>
   <string id="25000">Notifikácie</string>
   <string id="29800">Knižničný mód</string>
   <string id="29801">QWERTY klávesnica</string>
   <string id="29802">Audio je preposielané receiveru</string>
   <string id="33001">Kvalita traileru</string>
 
-  <string id="33002">Stremovať</string>
-  <string id="33003">Stiahnúť</string>
-  <string id="33004">Stiahnúť a prehrať</string>
-  <string id="33005">Stiahnúť a uložiť</string>
+  <string id="33002">Streamovať</string>
+  <string id="33003">Stiahnuť</string>
+  <string id="33004">Stiahnuť a prehrať</string>
+  <string id="33005">Stiahnuť a uložiť</string>
   <string id="33006">Dnes</string>
   <string id="33007">Zajtra</string>
 
@@ -2400,7 +2425,7 @@
   <string id="33014">Použiť DVD prehrávač namiesto bežného prehrávača</string>
   <string id="33015">Pred prehrávaním videa sa spýtať na jeho stiahnutie</string>
   <string id="33016">Klipy</string>
-  <string id="33017">Pre aktiváciu reštartujte plugin</string>
+  <string id="33017">Pre aktiváciu reštartujte doplnok</string>
   <string id="33018">Dnes večer</string>
   <string id="33019">Zajtra večer</string>
 
@@ -2458,7 +2483,7 @@
   <string id="33075">XBMC revízia %s alebo vyššia.</string>
   <string id="33076">Prosím aktualizujte XBMC.</string>
   <string id="33077">Žiadne dáta neboly nájdené!</string>
-  <string id="33078">Ďaľšia strana</string>
+  <string id="33078">Ďalšia strana</string>
 
   <string id="33079">Milovať</string>
   <string id="33080">Nenávidieť</string>
@@ -2490,6 +2515,6 @@
 
   <string id="34109">7.0</string>
   <string id="34110">7.1</string>
-  <string id="34201">Nie je možné nájsť ďaľšiu položku pre prehratie</string>
+  <string id="34201">Nie je možné nájsť ďalšiu položku pre prehratie</string>
   <string id="34202">Nie je možné nájsť predošlú položku pre prehratie</string>
 </strings>

@@ -314,10 +314,17 @@ case TMSG_POWERDOWN:
               }
             }
 
-            g_playlistPlayer.ClearPlaylist(playlist);
-            g_playlistPlayer.Add(playlist, (*list));
-            g_playlistPlayer.SetCurrentPlaylist(playlist);
-            g_playlistPlayer.Play(pMsg->dwParam1);
+            //For single item lists try PlayMedia. This covers some more cases where a playlist is not appropriate
+            //It will fall through to PlayFile
+            if (list->Size() == 1 && !(*list)[0]->IsPlayList())
+              g_application.PlayMedia(*((*list)[0]), playlist);
+            else
+            {
+              g_playlistPlayer.ClearPlaylist(playlist);
+              g_playlistPlayer.Add(playlist, (*list));
+              g_playlistPlayer.SetCurrentPlaylist(playlist);
+              g_playlistPlayer.Play(pMsg->dwParam1);
+            }
           }
 
           delete list;
@@ -420,6 +427,9 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_SETLANGUAGE:
+      g_guiSettings.SetLanguage(pMsg->strParam);
+      break;
     case TMSG_MEDIA_STOP:
       {
         // restore to previous window if needed
@@ -706,6 +716,7 @@ case TMSG_POWERDOWN:
       {
         CMediaSource share;
         share.strStatus = g_mediaManager.GetDiskLabel(share.strPath);
+        share.strDiskUniqueId = g_mediaManager.GetDiskUniqueId(share.strPath);
         share.strPath = pMsg->strParam;
         if(g_mediaManager.IsAudio(share.strPath))
           share.strStatus = "Audio-CD";
@@ -987,6 +998,13 @@ void CApplicationMessenger::PictureSlideShow(string pathname, bool bScreensaver 
   ThreadMessage tMsg = {dwMessage};
   tMsg.strParam = pathname;
   tMsg.dwParam1 = addTBN ? 1 : 0;
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::SetGUILanguage(const std::string &strLanguage)
+{
+  ThreadMessage tMsg = {TMSG_SETLANGUAGE};
+  tMsg.strParam = strLanguage;
   SendMessage(tMsg);
 }
 

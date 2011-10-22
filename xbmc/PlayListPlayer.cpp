@@ -133,7 +133,7 @@ int CPlayListPlayer::GetNextSong()
   if (RepeatedOne(m_iCurrentPlayList))
   {
     // otherwise immediately abort playback
-    if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size() && playlist[m_iCurrentSong]->GetPropertyBOOL("unplayable"))
+    if (m_iCurrentSong >= 0 && m_iCurrentSong < playlist.size() && playlist[m_iCurrentSong]->GetProperty("unplayable").asBoolean())
     {
       CLog::Log(LOGERROR,"Playlist Player: RepeatOne stuck on unplayable item: %i, path [%s]", m_iCurrentSong, playlist[m_iCurrentSong]->GetPath().c_str());
       CGUIMessage msg(GUI_MSG_PLAYLISTPLAYER_STOPPED, 0, 0, m_iCurrentPlayList, m_iCurrentSong);
@@ -583,6 +583,8 @@ void CPlayListPlayer::Insert(int iPlaylist, CPlayList& playlist, int iIndex)
   list.Insert(playlist, iIndex);
   if (list.IsShuffled())
     ReShuffle(iPlaylist, iSize);
+  else if (m_iCurrentPlayList == iPlaylist && m_iCurrentSong >= iIndex)
+    m_iCurrentSong++;
 }
 
 void CPlayListPlayer::Insert(int iPlaylist, const CFileItemPtr &pItem, int iIndex)
@@ -594,6 +596,8 @@ void CPlayListPlayer::Insert(int iPlaylist, const CFileItemPtr &pItem, int iInde
   list.Insert(pItem, iIndex);
   if (list.IsShuffled())
     ReShuffle(iPlaylist, iSize);
+  else if (m_iCurrentPlayList == iPlaylist && m_iCurrentSong >= iIndex)
+    m_iCurrentSong++;
 }
 
 void CPlayListPlayer::Insert(int iPlaylist, CFileItemList& items, int iIndex)
@@ -605,6 +609,8 @@ void CPlayListPlayer::Insert(int iPlaylist, CFileItemList& items, int iIndex)
   list.Insert(items, iIndex);
   if (list.IsShuffled())
     ReShuffle(iPlaylist, iSize);
+  else if (m_iCurrentPlayList == iPlaylist && m_iCurrentSong >= iIndex)
+    m_iCurrentSong++;
 }
 
 void CPlayListPlayer::Remove(int iPlaylist, int iPosition)
@@ -613,6 +619,8 @@ void CPlayListPlayer::Remove(int iPlaylist, int iPosition)
     return;
   CPlayList& list = GetPlaylist(iPlaylist);
   list.Remove(iPosition);
+  if (m_iCurrentPlayList == iPlaylist && m_iCurrentSong >= iPosition)
+    m_iCurrentSong--;
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);

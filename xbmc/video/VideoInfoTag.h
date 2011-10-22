@@ -51,6 +51,13 @@ public:
   bool HasStreamDetails() const;
   bool IsEmpty() const;
 
+  const CStdString& GetPath() const
+  {
+    if (m_strFileNameAndPath.IsEmpty())
+      return m_strPath;
+    return m_strFileNameAndPath;
+  };
+
   CStdString m_basePath; // the base path of the video, for folder-based lookups
   int m_parentPathID;      // the parent path id where the base path of the video lies
   CStdString m_strDirector;
@@ -87,6 +94,7 @@ public:
   CStdString m_strAlbum;
   CStdString m_lastPlayed;
   CStdString m_strShowLink;
+  CStdString m_strShowPath;
   int m_playCount;
   int m_iTop250;
   int m_iYear;

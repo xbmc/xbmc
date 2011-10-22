@@ -102,6 +102,24 @@ namespace JSONRPC
    json rpc method calls.*/
   class CJSONUtils
   {
+  public:
+    static void MillisecondsToTimeObject(int time, CVariant &result)
+    {
+      int ms = time % 1000;
+      result["milliseconds"] = ms;
+      time = (time - ms) / 1000;
+
+      int s = time % 60;
+      result["seconds"] = s;
+      time = (time - s) / 60;
+
+      int m = time % 60;
+      result["minutes"] = m;
+      time = (time -m) / 60;
+
+      result["hours"] = time;
+    }
+
   protected:
     /*!
      \brief Checks if the given object contains a parameter
@@ -242,8 +260,10 @@ namespace JSONRPC
     {
       if (transport.compare("Announcing") == 0)
         return Announcing;
-      if (transport.compare("FileDownload") == 0)
-        return FileDownload;
+      if (transport.compare("FileDownloadDirect") == 0)
+        return FileDownloadDirect;
+      if (transport.compare("FileDownloadRedirect") == 0)
+        return FileDownloadRedirect;
 
       return Response;
     }

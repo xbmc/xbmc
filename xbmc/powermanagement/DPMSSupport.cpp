@@ -211,8 +211,9 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
   case STANDBY:
     // Set display to low power
     return SendMessage(g_Windowing.GetHwnd(), WM_SYSCOMMAND, SC_MONITORPOWER, (LPARAM) 1) == 0;
+  default:
+    return true;
   }
-  return true;
 }
 
 bool DPMSSupport::PlatformSpecificDisablePowerSaving()
@@ -254,6 +255,9 @@ bool DPMSSupport::PlatformSpecificEnablePowerSaving(PowerSavingMode mode)
   case STANDBY:
     // Set display to low power
     status = (IORegistryEntrySetCFProperty(r, CFSTR("IORequestIdle"), kCFBooleanTrue) == 0);
+    break;
+  default:
+    status = false;
     break;
   }
   return status;

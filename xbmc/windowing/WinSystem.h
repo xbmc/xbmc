@@ -71,6 +71,8 @@ public:
   virtual void NotifyAppActiveChange(bool bActivated) {}
   virtual void ShowOSMouse(bool show) {};
   virtual bool HasCursor(){ return true; }
+  //some plattforms have api for gesture inertial scrolling - default to false and use the InertialScrollingHandler
+  virtual bool HasInertialGestures(){ return false; }
 
   virtual bool Minimize() { return false; }
   virtual bool Restore() { return false; }

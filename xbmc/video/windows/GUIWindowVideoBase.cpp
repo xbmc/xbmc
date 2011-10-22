@@ -62,7 +62,7 @@
 #include "utils/log.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
-
+#include "GUIUserMessages.h"
 #include "addons/Skin.h"
 
 using namespace std;
@@ -217,6 +217,9 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       }
     }
     break;
+  case GUI_MSG_SEARCH:
+    OnSearch();
+    break;
   }
   return CGUIMediaWindow::OnMessage(message);
 }
@@ -263,10 +266,7 @@ void CGUIWindowVideoBase::OnInfo(CFileItem* pItem, const ADDON::ScraperPtr& scra
   CFileItem item(*pItem);
   if (item.IsVideoDb() && item.HasVideoInfoTag())
   {
-    if (item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
-      item.SetPath(item.GetVideoInfoTag()->m_strPath);
-    else
-      item.SetPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
+    item.SetPath(item.GetVideoInfoTag()->GetPath());
   }
   else
   {
@@ -699,7 +699,8 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 
 void CGUIWindowVideoBase::OnQueueItem(int iItem)
 {
-  if ( iItem < 0 || iItem >= m_vecItems->Size() ) return ;
+  // don't re-queue items from playlist window
+  if ( iItem < 0 || iItem >= m_vecItems->Size() || GetID() == WINDOW_VIDEO_PLAYLIST ) return ;
 
   // we take a copy so that we can alter the queue state
   CFileItemPtr item(new CFileItem(*m_vecItems->Get(iItem)));
@@ -721,6 +722,7 @@ void CGUIWindowVideoBase::OnQueueItem(int iItem)
   }
 
   g_playlistPlayer.Add(PLAYLIST_VIDEO, queuedItems);
+  g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_VIDEO);
   // video does not auto play on queue like music
   m_viewControl.SetSelectedItem(iItem + 1);
 }
@@ -1071,7 +1073,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
     item = m_vecItems->Get(itemNumber);
 
   // contextual buttons
-  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
+  if (item && !item->GetProperty("pluginreplacecontextitems").asBoolean())
   {
     if (!item->IsParentFolder())
     {
@@ -1089,7 +1091,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
         }
 
         if (!m_vecItems->GetPath().IsEmpty() && !item->GetPath().Left(19).Equals("newsmartplaylist://")
-            && !m_vecItems->GetPath().Left(10).Equals("sources://"))
+            && !m_vecItems->IsSourcesPath())
         {
           buttons.Add(CONTEXT_BUTTON_QUEUE_ITEM, 13347);      // Add to Playlist
         }

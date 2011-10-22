@@ -90,7 +90,7 @@ public:
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
   static void ThumbCacheClear();
-  static void PlayDVD(const CStdString& strProtocol = "dvd", bool restart = false);
+  static void PlayDVD(const CStdString& strProtocol = "dvd", bool startFromBeginning = false);
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static CStdString GetNextPathname(const CStdString &path_template, int max);
   static void TakeScreenshot();
@@ -140,7 +140,6 @@ public:
   static void DeleteVideoDatabaseDirectoryCache();
   static CStdString MusicPlaylistsLocation();
   static CStdString VideoPlaylistsLocation();
-  static CStdString SubstitutePath(const CStdString& strFileName);
 
   static bool SetSysDateTimeYear(int iYear, int iMonth, int iDay, int iHour, int iMinute);
   static int GMTZoneCalc(int iRescBiases, int iHour, int iMinute, int &iMinuteNew);

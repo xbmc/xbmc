@@ -287,7 +287,7 @@
 
 #define ACTION_GESTURE_NOTIFY         221
 #define ACTION_GESTURE_BEGIN          222
-#define ACTION_GESTURE_ZOOM           223
+#define ACTION_GESTURE_ZOOM           223 //sendaction with point and currentPinchScale (fingers together < 1.0 -> fingers apart > 1.0)
 #define ACTION_GESTURE_ROTATE         224
 #define ACTION_GESTURE_PAN            225
 #define ACTION_GESTURE_END            226
@@ -381,6 +381,8 @@
 #define WINDOW_DIALOG_ADDON_INFO          10146
 #define WINDOW_DIALOG_TEXT_VIEWER         10147
 #define WINDOW_DIALOG_PLAY_EJECT          10148
+#define WINDOW_DIALOG_PERIPHERAL_MANAGER  10149
+#define WINDOW_DIALOG_PERIPHERAL_SETTINGS 10150
 
 #define WINDOW_MUSIC_PLAYLIST             10500
 #define WINDOW_MUSIC_FILES                10501

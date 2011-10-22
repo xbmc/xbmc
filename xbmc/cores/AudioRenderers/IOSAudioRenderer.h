@@ -49,6 +49,7 @@ class CIOSAudioRenderer : public IAudioRenderer
     virtual long GetCurrentVolume() const;
     virtual void Mute(bool bMute);
     virtual bool SetCurrentVolume(long nVolume);
+    virtual void SetDynamicRangeCompression(long drc) { m_drc = drc; }
     virtual void WaitCompletion();
 
     // Unimplemented IAudioRenderer methods
@@ -92,6 +93,8 @@ class CIOSAudioRenderer : public IAudioRenderer
     unsigned int m_DataChannels;
     unsigned int m_Channels;
     bool m_Passthrough;
+
+    long m_drc;
 
   };
 

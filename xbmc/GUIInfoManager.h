@@ -32,6 +32,7 @@
 #include "guilib/IMsgTargetCallback.h"
 #include "inttypes.h"
 #include "XBDateTime.h"
+#include "interfaces/info/SkinVariable.h"
 
 #include <list>
 #include <map>
@@ -182,7 +183,7 @@ namespace INFO
 #define NETWORK_MAC_ADDRESS         191
 #define NETWORK_IS_DHCP             192
 #define NETWORK_LINK_STATE          193
-#define NETWORK_SUBNET_ADDRESS      194
+#define NETWORK_SUBNET_MASK         194
 #define NETWORK_GATEWAY_ADDRESS     195
 #define NETWORK_DNS1_ADDRESS        196
 #define NETWORK_DNS2_ADDRESS        197
@@ -370,6 +371,7 @@ namespace INFO
 #define SYSTEM_ADDON_ICON           713
 #define SYSTEM_BATTERY_LEVEL        714
 #define SYSTEM_IDLE_TIME            715
+#define SYSTEM_FRIENDLY_NAME        716
 
 #define LIBRARY_HAS_MUSIC           720
 #define LIBRARY_HAS_VIDEO           721
@@ -384,6 +386,9 @@ namespace INFO
 #define SYSTEM_PLATFORM_LINUX       741
 #define SYSTEM_PLATFORM_WINDOWS     742
 #define SYSTEM_PLATFORM_OSX         743
+#define SYSTEM_PLATFORM_DARWIN_OSX  744
+#define SYSTEM_PLATFORM_DARWIN_IOS  745
+#define SYSTEM_PLATFORM_DARWIN_ATV2 746
 
 #define SYSTEM_CAN_POWERDOWN        750
 #define SYSTEM_CAN_SUSPEND          751
@@ -392,6 +397,7 @@ namespace INFO
 
 #define SLIDESHOW_ISPAUSED          800
 #define SLIDESHOW_ISRANDOM          801
+#define SLIDESHOW_ISACTIVE          802
 
 #define SLIDE_INFO_START            900
 #define SLIDE_INFO_END              980
@@ -415,9 +421,9 @@ namespace INFO
 #define CONTROL_GROUP_HAS_FOCUS     29999
 #define CONTROL_HAS_FOCUS           30000
 
-// Version string MUST NOT contain spaces.  It is used
-// in the HTTP request user agent.
-#define VERSION_STRING "PRE-11.0"
+#define VERSION_MAJOR 11
+#define VERSION_MINOR 0
+#define VERSION_TAG "PRE-"
 
 #define LISTITEM_START              35000
 #define LISTITEM_THUMB              (LISTITEM_START)
@@ -489,6 +495,9 @@ namespace INFO
 #define LISTITEM_END                (LISTITEM_PROPERTY_END)
 
 #define MUSICPLAYER_PROPERTY_OFFSET 900 // last 100 id's reserved for musicplayer props.
+
+#define CONDITIONAL_LABEL_START       LISTITEM_END + 1 // 36001
+#define CONDITIONAL_LABEL_END         37000
 
 // the multiple information vector
 #define MULTI_INFO_START              40000
@@ -610,12 +619,12 @@ public:
   const CVideoInfoTag* GetCurrentMovieTag() const;
 
   CStdString GetMusicLabel(int item);
-  CStdString GetMusicTagLabel(int info, const CFileItem *item) const;
+  CStdString GetMusicTagLabel(int info, const CFileItem *item);
   CStdString GetVideoLabel(int item);
   CStdString GetPlaylistLabel(int item) const;
   CStdString GetMusicPartyModeLabel(int item);
-  const CStdString GetMusicPlaylistInfo(const GUIInfo& info) const;
-  CStdString GetPictureLabel(int item) const;
+  const CStdString GetMusicPlaylistInfo(const GUIInfo& info);
+  CStdString GetPictureLabel(int item);
 
   __int64 GetPlayTime() const;  // in ms
   CStdString GetCurrentPlayTime(TIME_FORMAT format = TIME_FORMAT_GUESS) const;
@@ -646,8 +655,8 @@ public:
 
   void ResetCache();
   bool GetItemInt(int &value, const CGUIListItem *item, int info) const;
-  CStdString GetItemLabel(const CFileItem *item, int info) const;
-  CStdString GetItemImage(const CFileItem *item, int info) const;
+  CStdString GetItemLabel(const CFileItem *item, int info);
+  CStdString GetItemImage(const CFileItem *item, int info);
 
   // Called from tuxbox service thread to update current status
   void UpdateFromTuxBox();
@@ -670,6 +679,9 @@ public:
 
   int TranslateSingleString(const CStdString &strCondition);
 
+  int RegisterSkinVariableString(const INFO::CSkinVariableString* info);
+  int TranslateSkinVariableString(const CStdString& name, int context);
+  CStdString GetSkinVariableString(int info, bool preferImage = false, const CGUIListItem *item=NULL);
 protected:
   friend class INFO::InfoSingle;
   bool GetBool(int condition, int contextWindow = 0, const CGUIListItem *item=NULL);
@@ -695,7 +707,7 @@ protected:
 
   bool GetMultiInfoBool(const GUIInfo &info, int contextWindow = 0, const CGUIListItem *item = NULL);
   bool GetMultiInfoInt(int &value, const GUIInfo &info, int contextWindow = 0) const;
-  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0) const;
+  CStdString GetMultiInfoLabel(const GUIInfo &info, int contextWindow = 0);
   int TranslateListItem(const Property &info);
   int TranslateMusicPlayerString(const CStdString &info) const;
   TIME_FORMAT TranslateTimeFormat(const CStdString &format);
@@ -761,6 +773,7 @@ protected:
   int m_prevWindowID;
 
   std::vector<INFO::InfoBool*> m_bools;
+  std::vector<INFO::CSkinVariableString> m_skinVariableStrings;
   unsigned int m_updateTime;
 
   int m_libraryHasMusic;

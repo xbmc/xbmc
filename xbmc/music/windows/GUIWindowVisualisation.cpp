@@ -208,7 +208,6 @@ EVENT_RESULT CGUIWindowVisualisation::OnMouseEvent(const CPoint &point, const CM
 
 void CGUIWindowVisualisation::FrameMove()
 {
-  g_application.ResetScreenSaver(); //why here?
   // check for a tag change
   const CMusicInfoTag* tag = g_infoManager.GetCurrentSongTag();
   if (tag && *tag != m_tag)

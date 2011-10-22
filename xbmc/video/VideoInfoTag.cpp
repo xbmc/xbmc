@@ -36,34 +36,34 @@ using namespace std;
 
 void CVideoInfoTag::Reset()
 {
-  m_strDirector = "";
-  m_strWritingCredits = "";
-  m_strGenre = "";
-  m_strCountry = "";
-  m_strTagLine = "";
-  m_strPlotOutline = "";
-  m_strPlot = "";
+  m_strDirector.clear();
+  m_strWritingCredits.clear();
+  m_strGenre.clear();
+  m_strCountry.clear();
+  m_strTagLine.clear();
+  m_strPlotOutline.clear();
+  m_strPlot.clear();
   m_strPictureURL.Clear();
-  m_strTitle = "";
-  m_strShowTitle = "";
-  m_strOriginalTitle = "";
-  m_strSortTitle = "";
-  m_strVotes = "";
+  m_strTitle.clear();
+  m_strShowTitle.clear();
+  m_strOriginalTitle.clear();
+  m_strSortTitle.clear();
+  m_strVotes.clear();
   m_cast.clear();
   m_set.clear();
   m_setId.clear();
-  m_strFile = "";
-  m_strPath = "";
-  m_strIMDBNumber = "";
-  m_strMPAARating = "";
-  m_strPremiered= "";
-  m_strStatus= "";
-  m_strProductionCode= "";
-  m_strFirstAired= "";
-  m_strStudio = "";
-  m_strAlbum = "";
-  m_strArtist = "";
-  m_strTrailer = "";
+  m_strFile.clear();
+  m_strPath.clear();
+  m_strIMDBNumber.clear();
+  m_strMPAARating.clear();
+  m_strPremiered.clear();
+  m_strStatus.clear();
+  m_strProductionCode.clear();
+  m_strFirstAired.clear();
+  m_strStudio.clear();
+  m_strAlbum.clear();
+  m_strArtist.clear();
+  m_strTrailer.clear();
   m_iTop250 = 0;
   m_iYear = 0;
   m_iSeason = -1;
@@ -75,18 +75,19 @@ void CVideoInfoTag::Reset()
   m_iFileId = -1;
   m_iBookmarkId = -1;
   m_iTrack = -1;
-  m_fanart.m_xml = "";
-  m_strRuntime = "";
-  m_lastPlayed = "";
-  m_strShowLink = "";
+  m_fanart.m_xml.clear();
+  m_strRuntime.clear();
+  m_lastPlayed.clear();
+  m_strShowLink.clear();
   m_streamDetails.Reset();
   m_playCount = 0;
   m_fEpBookmark = 0;
-  m_basePath = "";
+  m_basePath.clear();
   m_parentPathID = -1;
   m_resumePoint.Reset();
   m_resumePoint.type = CBookmark::RESUME;
   m_iIdShow = -1;
+  m_strShowPath.clear();
 }
 
 bool CVideoInfoTag::Save(TiXmlNode *node, const CStdString &tag, bool savePathInfo)
@@ -332,6 +333,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar << m_resumePoint.timeInSeconds;
     ar << m_resumePoint.totalTimeInSeconds;
     ar << m_iIdShow;
+    ar << m_strShowPath;
   }
   else
   {
@@ -420,6 +422,7 @@ void CVideoInfoTag::Archive(CArchive& ar)
     ar >> m_resumePoint.timeInSeconds;
     ar >> m_resumePoint.totalTimeInSeconds;
     ar >> m_iIdShow;
+    ar >> m_strShowPath;
   }
 }
 
@@ -486,6 +489,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   resume["total"] = (float)m_resumePoint.totalTimeInSeconds;
   value["resume"] = resume;
   value["tvshowid"] = m_iIdShow;
+  value["tvshowpath"] = m_strShowPath;
 }
 
 const CStdString CVideoInfoTag::GetCast(bool bIncludeRole /*= false*/) const

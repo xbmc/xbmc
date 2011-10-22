@@ -104,6 +104,7 @@ public:
   bool IsPlugin() const;
   bool IsScript() const;
   bool IsAddonsPath() const;
+  bool IsSourcesPath() const;
   bool IsShortCut() const;
   bool IsNFO() const;
   bool IsDVDImage() const;
@@ -121,6 +122,7 @@ public:
   bool IsOnLAN() const;
   bool IsHD() const;
   bool IsNfs() const;  
+  bool IsAfp() const;    
   bool IsRemote() const;
   bool IsSmb() const;
   bool IsURL() const;
@@ -243,6 +245,10 @@ public:
    \return the base movie folder
    */
   CStdString GetBaseMoviePath(bool useFolderNames) const;
+
+#ifdef UNIT_TESTING
+  static bool testGetBaseMoviePath();
+#endif
 
   // Gets the user thumb, if it exists
   CStdString GetUserVideoThumb() const;

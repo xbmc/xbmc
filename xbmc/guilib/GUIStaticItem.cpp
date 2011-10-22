@@ -23,6 +23,7 @@
 #include "utils/XMLUtils.h"
 #include "GUIControlFactory.h"
 #include "GUIInfoManager.h"
+#include "utils/Variant.h"
 
 using namespace std;
 
@@ -38,10 +39,10 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
   if (click && click->FirstChild())
   {
     CGUIInfoLabel label, label2, thumb, icon;
-    CGUIControlFactory::GetInfoLabel(item, "label", label);
-    CGUIControlFactory::GetInfoLabel(item, "label2", label2);
-    CGUIControlFactory::GetInfoLabel(item, "thumb", thumb);
-    CGUIControlFactory::GetInfoLabel(item, "icon", icon);
+    CGUIControlFactory::GetInfoLabel(item, "label", label, parentID);
+    CGUIControlFactory::GetInfoLabel(item, "label2", label2, parentID);
+    CGUIControlFactory::GetInfoLabel(item, "thumb", thumb, parentID);
+    CGUIControlFactory::GetInfoLabel(item, "icon", icon, parentID);
     const char *id = item->Attribute("id");
     CStdString condition;
     CGUIControlFactory::GetConditionalVisibility(item, condition);
@@ -62,9 +63,9 @@ CGUIStaticItem::CGUIStaticItem(const TiXmlElement *item, int parentID) : CFileIt
     {
       CStdString name = property->Attribute("name");
       CGUIInfoLabel prop;
-      if (!name.IsEmpty() && CGUIControlFactory::GetInfoLabelFromElement(property, prop))
+      if (!name.IsEmpty() && CGUIControlFactory::GetInfoLabelFromElement(property, prop, parentID))
       {
-        SetProperty(name, prop.GetLabel(parentID, true));
+        SetProperty(name, prop.GetLabel(parentID, true).c_str());
         if (!prop.IsConstant())
           m_info.push_back(make_pair(prop, name));
       }
@@ -105,7 +106,7 @@ void CGUIStaticItem::UpdateProperties(int contextWindow)
     else if (name.Equals("icon"))
       SetIconImage(value);
     else
-      SetProperty(name, value);
+      SetProperty(name, value.c_str());
   }
 }
 

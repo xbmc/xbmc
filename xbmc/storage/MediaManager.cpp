@@ -25,9 +25,9 @@
 #include "IoSupport.h"
 #include "URL.h"
 #include "Util.h"
+#include "utils/URIUtils.h"
 #ifdef _WIN32
 #include "WIN32Util.h"
-#include "utils/URIUtils.h"
 #endif
 #include "guilib/GUIWindowManager.h"
 #ifdef HAS_DVD_DRIVE
@@ -48,6 +48,12 @@
 #include "AutorunMediaJob.h"
 #include "settings/GUISettings.h"
 
+#include "FileItem.h"
+#include "filesystem/File.h"
+#include "filesystem/FactoryDirectory.h"
+#include "filesystem/Directory.h"
+#include "utils/Crc32.h"
+
 #ifdef __APPLE__
 #include "osx/DarwinStorageProvider.h"
 #elif defined(_LINUX)
@@ -57,6 +63,7 @@
 #endif
 
 using namespace std;
+using namespace XFILE;
 
 const char MEDIA_SOURCES_XML[] = { "special://profile/mediasources.xml" };
 
@@ -303,8 +310,10 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
   else
     return false;
 #else
-  // TODO: switch all ports to use auto sources
-  return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();
+  if(URIUtils::IsDVD(devicePath))
+    return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();   // TODO: switch all ports to use auto sources
+  else
+    return true; // Assume other paths to be mounted already
 #endif
 #else
   return false;
@@ -434,6 +443,111 @@ CStdString CMediaManager::GetDiskLabel(const CStdString& devicePath)
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDLabel();
 #endif
 }
+
+CStdString CMediaManager::GetDiskUniqueId(const CStdString& devicePath)
+{
+  CStdString strDevice = devicePath;
+
+  if (strDevice.IsEmpty()) // if no value passed, use the current default disc path.
+    strDevice = GetDiscPath();    // in case of non-Windows we must obtain the disc path
+
+#ifdef _WIN32
+  if (!m_bhasoptical)
+    return "";
+  strDevice = TranslateDevicePath(strDevice);
+  URIUtils::AddSlashAtEnd(strDevice);
+#endif
+
+  CStdString strDrive = g_mediaManager.TranslateDevicePath(strDevice);
+
+#ifndef _WIN32
+  {
+    CSingleLock waitLock(m_muAutoSource);  
+    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
+    if ( pInfo  )
+    {
+      if (pInfo->IsISOUDF(1) || pInfo->IsISOHFS(1) || pInfo->IsIso9660(1) || pInfo->IsIso9660Interactive(1))
+        strDrive = "iso9660://";
+      else
+        strDrive = "D:\\";
+    }
+    else
+    {
+      CLog::Log(LOGERROR, "GetDiskUniqueId: Failed getting CD info");
+      return "";
+    }
+  }
+#endif
+
+  CStdString pathVideoTS = URIUtils::AddFileToFolder(strDrive, "VIDEO_TS");
+  if(! CDirectory::Exists(pathVideoTS) )
+    return ""; // return empty
+
+  CLog::Log(LOGDEBUG, "GetDiskUniqueId: Trying to retrieve ID for path %s", pathVideoTS.c_str());
+  uint32_t dvdcrc = 0;
+  CStdString strID;
+
+  if (HashDVD(pathVideoTS, dvdcrc))
+  {
+    strID.Format("removable://%s_%08x", GetDiskLabel(devicePath), dvdcrc);
+    CLog::Log(LOGDEBUG, "GetDiskUniqueId: Got ID %s for DVD disk", strID.c_str());
+  }
+
+  return strID;
+}
+
+bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
+{
+  CFileItemList vecItemsTS;
+  bool success = false;
+
+  // first try to open the VIDEO_TS folder of the DVD
+  if (!CDirectory::GetDirectory( dvdpath, vecItemsTS, ".ifo" ))
+  {
+    CLog::Log(LOGERROR, "%s - Cannot open dvd VIDEO_TS folder -- ABORTING", __FUNCTION__);
+    return false;
+  }
+
+  Crc32 crc32;
+  bool dataRead = false;
+
+  vecItemsTS.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+  for (int i = 0; i < vecItemsTS.Size(); i++) 
+  {
+    CFileItemPtr videoTSItem = vecItemsTS[i];
+    success = true;
+
+    // get the file name for logging purposes
+    CStdString fileName = URIUtils::GetFileName(videoTSItem->GetPath());
+    CLog::Log(LOGDEBUG, "%s - Adding file content for dvd file: %s", __FUNCTION__, fileName.c_str());
+    CFile file;
+    if(!file.Open(videoTSItem->GetPath()))
+    {
+      CLog::Log(LOGERROR, "%s - Cannot open dvd file: %s -- ABORTING", __FUNCTION__, fileName.c_str());
+      return false;
+    }
+    int res;
+    char buf[2048];
+    while( (res = file.Read(buf, sizeof(buf))) > 0) 
+    {
+      dataRead = true;
+      crc32.Compute(buf, res);
+    }
+    file.Close();
+  }
+
+  if (!dataRead)
+  {
+    CLog::Log(LOGERROR, "%s - Did not read any data from the IFO files -- ABORTING", __FUNCTION__);
+    return false;
+  }
+
+  // put result back in reference parameter
+  crc = (uint32_t) crc32;
+
+  return success;
+}
+
 
 CStdString CMediaManager::GetDiscPath()
 {

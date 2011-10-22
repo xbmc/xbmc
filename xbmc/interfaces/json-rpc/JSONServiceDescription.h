@@ -22,6 +22,7 @@
 
 #include <string>
 #include <vector>
+#include <limits>
 #include "JSONUtils.h"
 
 namespace JSONRPC
@@ -38,6 +39,14 @@ namespace JSONRPC
    */
   typedef struct JSONSchemaTypeDefinition
   {
+    JSONSchemaTypeDefinition()
+      : type(AnyValue), minimum(std::numeric_limits<double>::min()), maximum(std::numeric_limits<double>::max()),
+        exclusiveMinimum(false), exclusiveMaximum(false), divisibleBy(0),
+        minLength(-1), maxLength(-1),
+        minItems(0), maxItems(0), uniqueItems(false),
+        hasAdditionalProperties(false), additionalProperties(NULL)
+    { }
+
     /*!
      \brief Name of the parameter (for 
      by-name calls)
@@ -53,6 +62,12 @@ namespace JSONRPC
     std::string ID;
 
     /*!
+     \brief Array of reference types
+     which are extended by this type.
+     */
+    std::vector<JSONSchemaTypeDefinition> extends;
+
+    /*!
      \brief Description of the parameter
      */
     std::string description;
@@ -61,6 +76,12 @@ namespace JSONRPC
      \brief JSON schema type of the parameter's value
      */
     JSONSchemaType type;
+
+    /*!
+     \brief JSON schema type definitions in case
+     of a union type
+     */
+    std::vector<JSONSchemaTypeDefinition> unionTypes;
 
     /*!
      \brief Whether or not the parameter is
@@ -104,6 +125,16 @@ namespace JSONRPC
     unsigned int divisibleBy;
 
     /*!
+     \brief Minimum length for String types
+     */
+    int minLength;
+
+    /*!
+     \brief Maximum length for String types
+     */
+    int maxLength;
+
+    /*!
      \brief (Optional) List of allowed values
      for the type
      */
@@ -117,12 +148,12 @@ namespace JSONRPC
     /*!
      \brief Minimum amount of items in the array
      */
-    unsigned minItems;
+    unsigned int minItems;
 
     /*!
      \brief Maximum amount of items in the array
      */
-    unsigned maxItems;
+    unsigned int maxItems;
 
     /*!
      \brief Whether every value in the array
@@ -162,6 +193,17 @@ namespace JSONRPC
      parameter is an object)
      */
     CJsonSchemaPropertiesMap properties;
+
+    /*!
+     \brief Whether the type can have additional properties
+     or not
+     */
+    bool hasAdditionalProperties;
+
+    /*!
+     \brief Type definition for additional properties
+     */
+    JSONSchemaTypeDefinition* additionalProperties;
   } JSONSchemaTypeDefinition;
 
   /*! 
@@ -310,7 +352,7 @@ namespace JSONRPC
      actual C/C++ implementation of the method to the "methodCall" parameter and checks the
      given parameters from the request against the json schema description for the given method.
      */
-    static JSON_STATUS CheckCall(const char* const method, const CVariant &requestParameters, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
+    static JSON_STATUS CheckCall(const char* const method, const CVariant &requestParameters, ITransportLayer *transport, IClient *client, bool notification, MethodCall &methodCall, CVariant &outputParameters);
 
   private:
     static bool prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name);
@@ -323,7 +365,7 @@ namespace JSONRPC
     static bool parseParameter(CVariant &value, JSONSchemaTypeDefinition &parameter);
     static bool parseTypeDefinition(const CVariant &value, JSONSchemaTypeDefinition &type, bool isParameter);
     static void parseReturn(const CVariant &value, JSONSchemaTypeDefinition &returns);
-    static JSONSchemaType parseJSONSchemaType(const CVariant &value);
+    static JSONSchemaType parseJSONSchemaType(const CVariant &value, std::vector<JSONSchemaTypeDefinition>& typeDefinitions);
     static void addReferenceTypeDefinition(JSONSchemaTypeDefinition &typeDefinition);
 
     static void getReferencedTypes(const JSONSchemaTypeDefinition &type, std::vector<std::string> &referencedTypes);

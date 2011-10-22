@@ -29,6 +29,8 @@
 //on osx use the native implementation
 #include "osx/ZeroconfOSX.h"
 #endif
+#elif defined(TARGET_WINDOWS)
+#include "windows/ZeroconfWIN.h"
 #endif
 
 #include "threads/CriticalSection.h"
@@ -128,6 +130,8 @@ CZeroconf*  CZeroconf::GetInstance()
     smp_instance = new CZeroconfOSX;
 #elif defined(_LINUX)
     smp_instance  = new CZeroconfAvahi;
+#elif defined(TARGET_WINDOWS)
+    smp_instance  = new CZeroconfWIN;
 #endif
 #endif
   }

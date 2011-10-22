@@ -152,13 +152,13 @@ protected:
     unsigned int dwidth;
     unsigned int dheight;
     unsigned int color_format;
+    unsigned int extended_format;
     unsigned int color_matrix : 4;
     unsigned int color_range  : 1;
     unsigned int chroma_position;
     unsigned int color_primaries;
     unsigned int color_transfer;
     double       framerate;
-    bool         inited;
   } m_output; //holds currently configured output
 
   bool m_bAllowFullscreen;

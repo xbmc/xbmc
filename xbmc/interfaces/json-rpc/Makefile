@@ -1,12 +1,9 @@
 SRCS=ApplicationOperations.cpp \
      AudioLibrary.cpp \
-     AVPlayerOperations.cpp \
-     AVPlaylistOperations.cpp \
      FileItemHandler.cpp \
      FileOperations.cpp \
      JSONRPC.cpp \
      JSONServiceDescription.cpp \
-     PicturePlayerOperations.cpp \
      PlayerOperations.cpp \
      PlaylistOperations.cpp \
      SystemOperations.cpp \

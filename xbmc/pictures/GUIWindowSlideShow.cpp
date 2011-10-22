@@ -53,6 +53,7 @@ using namespace XFILE;
 
 #define PICTURE_MOVE_AMOUNT              0.02f
 #define PICTURE_MOVE_AMOUNT_ANALOG       0.01f
+#define PICTURE_MOVE_AMOUNT_TOUCH        0.002f
 #define PICTURE_VIEW_BOX_COLOR      0xffffff00 // YELLOW
 #define PICTURE_VIEW_BOX_BACKGROUND 0xff000000 // BLACK
 
@@ -255,6 +256,12 @@ void CGUIWindowSlideShow::Select(const CStdString& strPicture)
 const CFileItemList &CGUIWindowSlideShow::GetSlideShowContents()
 {
   return *m_slides;
+}
+
+void CGUIWindowSlideShow::GetSlideShowContents(CFileItemList &list)
+{
+  for (int index = 0; index < m_slides->Size(); index++)
+    list.Add(CFileItemPtr(new CFileItem(*m_slides->Get(index))));
 }
 
 const CFileItemPtr CGUIWindowSlideShow::GetCurrentSlide()
@@ -500,6 +507,67 @@ int CGUIWindowSlideShow::GetNextSlide()
     return (m_iCurrentSlide - 1 + m_slides->Size()) % m_slides->Size();
 }
 
+EVENT_RESULT CGUIWindowSlideShow::OnMouseEvent(const CPoint &point, const CMouseEvent &event)
+{
+  if (event.m_id == ACTION_GESTURE_NOTIFY)
+  {
+    if( m_iZoomFactor == 1)//zoomed out - no inertial scrolling
+    {
+      return EVENT_RESULT_PAN_HORIZONTAL_WITHOUT_INERTIA;
+    }
+    else//zoomed in - with inertia 
+    {
+      return EVENT_RESULT_PAN_HORIZONTAL;
+    }
+  }  
+  else if (event.m_id == ACTION_GESTURE_BEGIN)
+  {
+    m_firstGesturePoint = point;
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_PAN)
+  { // on zoomlevel 1 just detect swipe left and right
+    if( m_iZoomFactor == 1 )
+    {   
+      if( m_firstGesturePoint.x > 0 && fabs(point.x - m_firstGesturePoint.x) > 100 )
+      {
+        if( point.x < m_firstGesturePoint.x )
+        {
+          OnAction(CAction(ACTION_NEXT_PICTURE));
+        }
+        else 
+        {
+          OnAction(CAction(ACTION_PREV_PICTURE));
+        }
+        m_firstGesturePoint.x = 0;
+      }
+    }
+    else//zoomed in - free move mode
+    {
+      Move(PICTURE_MOVE_AMOUNT_TOUCH/m_iZoomFactor*(m_firstGesturePoint.x-point.x),PICTURE_MOVE_AMOUNT_TOUCH/m_iZoomFactor*(m_firstGesturePoint.y-point.y));
+      m_firstGesturePoint = point;
+    }
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_END)
+  {
+    return EVENT_RESULT_HANDLED;
+  }
+  else if (event.m_id == ACTION_GESTURE_ZOOM)
+  {
+    if( event.m_offsetX > 1)
+    {
+      Zoom((int)event.m_offsetX);
+    }
+    else 
+    {
+      Zoom(m_iZoomFactor - event.m_offsetX);
+    }
+    return EVENT_RESULT_HANDLED;    
+  }
+  return EVENT_RESULT_UNHANDLED;
+}
+
 bool CGUIWindowSlideShow::OnAction(const CAction &action)
 {
   if (m_bScreensaver)
@@ -526,11 +594,9 @@ bool CGUIWindowSlideShow::OnAction(const CAction &action)
     g_windowManager.PreviousWindow();
     break;
   case ACTION_NEXT_PICTURE:
-//    if (m_iZoomFactor == 1)
       ShowNext();
     break;
   case ACTION_PREV_PICTURE:
-//    if (m_iZoomFactor == 1)
       ShowPrevious();
     break;
   case ACTION_MOVE_RIGHT:

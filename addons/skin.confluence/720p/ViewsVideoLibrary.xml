@@ -17,8 +17,8 @@
 				<posy>0</posy>
 				<width>1526</width>
 				<height>390</height>
-				<onleft>57</onleft>
-				<onright>57</onright>
+				<onleft>501</onleft>
+				<onright>501</onright>
 				<onup>2</onup>
 				<ondown>60</ondown>
 				<viewtype label="31028">bigwrap</viewtype>

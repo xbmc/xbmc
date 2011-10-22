@@ -25,6 +25,7 @@
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
 #include "FileItem.h"
+#include "utils/Variant.h"
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
@@ -75,7 +76,7 @@ bool CDirectoryNodeSeasons::GetContent(CFileItemList& items) const
     int count = 0;
     for(int i = 0; i < items.Size(); i++) 
     {
-      if (items[i]->GetPropertyInt("unwatchedepisodes") != 0 && items[i]->GetVideoInfoTag()->m_iSeason != 0)
+      if (items[i]->GetProperty("unwatchedepisodes").asInteger() != 0 && items[i]->GetVideoInfoTag()->m_iSeason != 0)
         count++;
     }
     bFlatten = (count < 2); // flatten if there is only 1 unwatched season (not counting specials)

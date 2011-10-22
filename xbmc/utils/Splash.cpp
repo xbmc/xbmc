@@ -56,11 +56,11 @@ void CSplash::Show()
   g_graphicsContext.SetRenderingResolution(res, true);  
   CGUIImage* image = new CGUIImage(0, 0, 0, 0, 1280, 720, m_ImageName);  
   image->SetAspectRatio(CAspectRatio::AR_CENTER);  
-  image->AllocResources();
 
   //render splash image
   g_Windowing.BeginRender();
 
+  image->AllocResources();
   image->Render();
   image->FreeResources();
   delete image;

@@ -93,7 +93,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
     if(!channelMap)
       channelMap = (PCMChannels *)dsound_default_channel_layout[iChannels - 1];
 
-    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8);
+    PCMChannels *outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
 
     for(iChannels = 0; outLayout[iChannels] != PCM_INVALID;) ++iChannels;
 
@@ -118,6 +118,7 @@ bool CWin32DirectSound::Initialize(IAudioCallback* pCallback, const CStdString& 
   m_Passthrough = bAudioPassthrough;
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
+  m_drc = 0;
 
   WAVEFORMATEXTENSIBLE wfxex = {0};
 
@@ -348,7 +349,7 @@ unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
 
     // Remap the data to the correct channels into the buffer
     if (m_remap.CanRemap())
-      m_remap.Remap((void*)pBuffer, start, size / m_uiBytesPerFrame);
+      m_remap.Remap((void*)pBuffer, start, size / m_uiBytesPerFrame, m_drc);
     else
       memcpy(start, pBuffer, size);
 
@@ -360,7 +361,7 @@ unsigned int CWin32DirectSound::AddPackets(const void* data, unsigned int len)
     {
       // Remap the data to the correct channels into the buffer
       if (m_remap.CanRemap())
-        m_remap.Remap((void*)pBuffer, startWrap, sizeWrap / m_uiBytesPerFrame);
+        m_remap.Remap((void*)pBuffer, startWrap, sizeWrap / m_uiBytesPerFrame, m_drc);
       else
         memcpy(startWrap, pBuffer, sizeWrap);
       m_BufferOffset = sizeWrap;

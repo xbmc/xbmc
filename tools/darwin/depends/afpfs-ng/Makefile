@@ -23,6 +23,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	cd $(SOURCE); patch -p1 <../fix_afpfs-ng_includes.patch
 	cd $(SOURCE); patch -p1 <../01-gcrypt.patch
 	cd $(SOURCE); patch -p1 <../02-pointer.patch
 	cd $(SOURCE); patch -p1 <../04-boxee1.patch
@@ -30,8 +31,8 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); patch -p1 <../06-boxee3.patch
 	cd $(SOURCE); patch -p1 <../07-boxee4.patch
 	cd $(SOURCE); patch -p1 <../08-boxee5.patch
-	cd $(SOURCE); patch -p1 <../09-boxee6.patch
 	cd $(SOURCE); patch -p1 <../10-fix-errno.patch
+	cd $(SOURCE); patch -p1 <../11-fix-stat.patch
 	cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); $(CONFIGURE)
 
@@ -40,7 +41,6 @@ $(LIBDYLIB): $(SOURCE)
 
 .installed:
 	make -C $(SOURCE) install
-	patch -p1 $(PREFIX)/include/afp/afp.h 03-include.patch
 	touch $@
 
 clean:

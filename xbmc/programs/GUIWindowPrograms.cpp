@@ -128,7 +128,7 @@ void CGUIWindowPrograms::GetContextButtons(int itemNumber, CContextButtons &butt
   if (itemNumber < 0 || itemNumber >= m_vecItems->Size())
     return;
   CFileItemPtr item = m_vecItems->Get(itemNumber);
-  if (item && !item->GetPropertyBOOL("pluginreplacecontextitems"))
+  if (item && !item->GetProperty("pluginreplacecontextitems").asBoolean())
   {
     if ( m_vecItems->IsVirtualDirectoryRoot() )
     {
@@ -260,7 +260,7 @@ bool CGUIWindowPrograms::GetDirectory(const CStdString &strDirectory, CFileItemL
   {
     for (int i=0;i<items.Size();++i)
     {
-      items[i]->SetLabel2(items[i]->GetProperty("Addon.Version"));
+      items[i]->SetLabel2(items[i]->GetProperty("Addon.Version").asString());
       items[i]->SetLabelPreformated(true);
     }
   }

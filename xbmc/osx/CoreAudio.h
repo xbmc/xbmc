@@ -155,6 +155,7 @@ protected:
 class ICoreAudioSource
 {
 public:
+  virtual ~ICoreAudioSource() {};
   // Function to request rendered data from a data source
   virtual OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList) = 0;
 };
@@ -241,6 +242,62 @@ public:
   Float32 GetOutputVolume(UInt32 element);
   bool SetOutputVolume(UInt32 element, Float32 vol);
 protected:
+};
+
+class CAUMultibandCompressor : public CAUGenericSource
+{
+public:
+  CAUMultibandCompressor();
+  virtual ~CAUMultibandCompressor();
+
+  bool Open(OSType type, OSType subType, OSType manufacturer);
+  bool Open();
+
+  OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList);
+  bool Initialize();
+  
+  bool SetPostGain(Float32 gain);
+  Float32 GetPostGain();
+  bool SetPreGain(Float32 gain);
+  Float32 GetPreGain();
+  bool SetAttackTime(Float32 time);
+  Float32 GetAttackTime();
+  bool SetReleaseTime(Float32 time);
+  Float32 GetReleaseTime();
+  
+protected:  
+};
+
+class CAUDynamicsProcessor : public CAUGenericSource
+{
+public:
+  CAUDynamicsProcessor();
+  virtual ~CAUDynamicsProcessor();
+  
+  bool Open(OSType type, OSType subType, OSType manufacturer);
+  bool Open();
+  
+  OSStatus Render(AudioUnitRenderActionFlags* actionFlags, const AudioTimeStamp* pTimeStamp, UInt32 busNumber, UInt32 frameCount, AudioBufferList* pBufList);
+  bool Initialize();
+  
+  bool SetCompressionThreshold(Float32 db) {return SetFloatParam(kDynamicsProcessorParam_Threshold, 0, db);}
+  Float32 SetCompressionThreshold() {return GetFloatParam(kDynamicsProcessorParam_Threshold, 0);}
+  bool SetHeadroom(Float32 db) {return SetFloatParam(kDynamicsProcessorParam_HeadRoom, 0, db);}
+  Float32 GetHeadroom() {return GetFloatParam(kDynamicsProcessorParam_HeadRoom, 0);}
+  bool SetExpansionRatio(Float32 ratio) {return SetFloatParam(kDynamicsProcessorParam_ExpansionRatio, 0, ratio);}
+  Float32 GetExpansionRatio() {return GetFloatParam(kDynamicsProcessorParam_ExpansionRatio, 0);}
+  bool SetExpansionThreshold(Float32 ratio) {return SetFloatParam(kDynamicsProcessorParam_ExpansionThreshold, 0, ratio);}
+  Float32 GetExpansionThreshold() {return GetFloatParam(kDynamicsProcessorParam_ExpansionThreshold, 0);}
+  bool SetAttackTime(Float32 time) {return SetFloatParam(kDynamicsProcessorParam_AttackTime, 0, time);}
+  Float32 GetAttackTime() {return GetFloatParam(kDynamicsProcessorParam_AttackTime, 0);}
+  bool SetReleaseTime(Float32 time) {return SetFloatParam(kDynamicsProcessorParam_ReleaseTime, 0, time);}
+  Float32 GetReleaseTime() {return GetFloatParam(kDynamicsProcessorParam_ReleaseTime, 0);}
+  bool SetMasterGain(Float32 gain) {return SetFloatParam(kDynamicsProcessorParam_MasterGain, 0, gain);}
+  Float32 GetMasterGain() {return GetFloatParam(kDynamicsProcessorParam_MasterGain, 0);}
+  
+protected:
+  bool SetFloatParam(UInt32 param, UInt32 element, Float32 val);
+  Float32 GetFloatParam(UInt32 param, UInt32 element);
 };
 
 // Helper Functions

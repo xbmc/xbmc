@@ -23,6 +23,7 @@
 
 #if defined(HAVE_CONFIG_H) && !defined(TARGET_WINDOWS)
 #include "config.h"
+#define DECLARE_UNUSED(a,b) a __attribute__(unused) b;
 #endif
 
 /*****************
@@ -52,7 +53,6 @@
 #endif
 
 #define HAS_FILESYSTEM
-#define HAS_FILESYSTEM_SMB
 #define HAS_FILESYSTEM_CDDA
 #define HAS_FILESYSTEM_RTV
 #define HAS_FILESYSTEM_DAAP
@@ -60,10 +60,25 @@
 #define HAS_FILESYSTEM_VTP
 #define HAS_FILESYSTEM_HTSP
 
+#ifdef HAVE_LIBSMBCLIENT
+  #define HAS_FILESYSTEM_SMB
+#endif
+
 #ifdef HAVE_LIBNFS
   #define HAS_FILESYSTEM_NFS
 #endif
 
+#ifdef HAVE_LIBAFPCLIENT
+  #define HAS_FILESYSTEM_AFP
+#endif
+
+#ifdef HAVE_LIBPLIST
+  #define HAS_AIRPLAY
+#endif
+
+#ifdef HAVE_LIBSHAIRPORT
+  #define HAS_AIRTUNES
+#endif
 
 /**********************
  * Non-free Components
@@ -96,6 +111,13 @@
 #define HAVE_LIBBLURAY
 #define HAS_ASAP_CODEC
 #define HAVE_YAJL_YAJL_VERSION_H
+#define HAS_FILESYSTEM_SMB
+#define HAS_FILESYSTEM_NFS
+#define HAS_ZEROCONF
+#define HAS_AIRPLAY
+#define HAVE_LIBCEC
+
+#define DECLARE_UNUSED(a,b) a b;
 #endif
 
 /*****************
@@ -112,7 +134,6 @@
   #endif
   #define HAS_ZEROCONF
   #define HAS_LINUX_NETWORK
-  #define HAS_AIRPLAY
 #endif
 
 /*****************
@@ -127,7 +148,6 @@
 #define HAS_LCD
 #ifdef HAVE_DBUS
 #define HAS_DBUS
-#define HAS_DBUS_SERVER
 #endif
 #define HAS_GL
 #ifdef HAVE_X11
@@ -149,7 +169,6 @@
 #ifdef HAVE_LIBXRANDR
 #define HAS_XRANDR
 #endif
-#define HAS_AIRPLAY
 #endif
 
 #ifdef HAVE_LIBSSH
