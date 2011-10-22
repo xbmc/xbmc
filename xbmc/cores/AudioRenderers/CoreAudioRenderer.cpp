@@ -439,7 +439,7 @@ CCoreAudioRenderer::~CCoreAudioRenderer()
 if (!m_Initialized) \
 return x
 
-bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic /*Useless Legacy Parameter*/, bool bPassthrough)
+bool CCoreAudioRenderer::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic /*Useless Legacy Parameter*/, EEncoded bPassthrough)
 {
   // Have to clean house before we start again.
   // TODO: Should we return failure instead?

@@ -144,13 +144,13 @@ CPulseAudioDirectSound::CPulseAudioDirectSound()
 {
 }
 
-bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, bool bPassthrough)
+bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels* channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic, EEncoded encoded)
 {
   m_remap.Reset();
   m_uiDataChannels = iChannels;
   enum PCMChannels* outLayout = NULL;
 
-  if (!bPassthrough && channelMap)
+  if (encoded == ENCODED_NONE && channelMap)
   {
     /* set the input format, and get the channel layout so we know what we need to open */
     outLayout = m_remap.SetInputFormat(iChannels, channelMap, uiBitsPerSample / 8, uiSamplesPerSec);
@@ -179,7 +179,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_uiSamplesPerSec = uiSamplesPerSec;
   m_uiBufferSize = 0;
   m_uiBitsPerSample = uiBitsPerSample;
-  m_bPassthrough = bPassthrough;
+  m_bPassthrough = encoded == ENCODED_NONE ? false : true;
   m_uiBytesPerSecond = uiSamplesPerSec * (uiBitsPerSample / 8) * iChannels;
   m_drc = 0;
 
