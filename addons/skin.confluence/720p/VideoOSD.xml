@@ -201,7 +201,7 @@
 				<onup>1000</onup>
 				<ondown>1000</ondown>
 				<onclick>PlayerControl(Play)</onclick>
-				<visible>False</visible>
+				<visible>true</visible>
 			</control>
 			<control type="button" id="603">
 				<posx>135</posx>
