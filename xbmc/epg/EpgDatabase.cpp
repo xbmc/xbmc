@@ -331,7 +331,7 @@ bool CEpgDatabase::GetLastEpgScanTime(int iEpgId, CDateTime *lastScan)
 bool CEpgDatabase::PersistLastEpgScanTime(int iEpgId /* = 0 */, bool bQueueWrite /* = false */)
 {
   CStdString strQuery = FormatSQL("REPLACE INTO lastepgscan(idEpg, sLastScan) VALUES (%u, '%s');",
-      iEpgId, CDateTime::GetCurrentDateTime().GetAsDBDateTime().c_str());
+      iEpgId, CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsDBDateTime().c_str());
 
   CSingleLock lock(m_critSection);
   return bQueueWrite ? QueueInsertQuery(strQuery) : ExecuteQuery(strQuery);

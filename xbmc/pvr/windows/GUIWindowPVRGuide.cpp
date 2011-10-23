@@ -46,8 +46,9 @@ CGUIWindowPVRGuide::CGUIWindowPVRGuide(CGUIWindowPVR *parent) :
 {
 }
 
-CGUIWindowPVRGuide::~CGUIWindowPVRGuide(void)
+void CGUIWindowPVRGuide::UnregisterObservers(void)
 {
+  CSingleLock lock(m_critSection);
   g_EpgContainer.UnregisterObserver(this);
 }
 

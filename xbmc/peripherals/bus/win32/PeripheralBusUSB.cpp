@@ -40,16 +40,10 @@ CPeripheralBusUSB::CPeripheralBusUSB(CPeripherals *manager) :
 
 bool CPeripheralBusUSB::PerformDeviceScan(PeripheralScanResults &results)
 {
-  bool bReturn(true);
-
-  /* add device scans for non-generic devices here */
-
-  bReturn |= PerformDeviceScan(&USB_HID_GUID, PERIPHERAL_HID, results);
-  //disabled scanning for disks, since nothing is being done with them
-  // bReturn |= PerformDeviceScan(&USB_DISK_GUID, PERIPHERAL_DISK, results);
-  bReturn |= PerformDeviceScan(&USB_RAW_GUID, PERIPHERAL_UNKNOWN, results);
-
-  return bReturn;
+  /* XXX we'll just scan the RAW guid and find all devices. they'll show up as type 'unknown' in the UI,
+     but the other option is that they're detected more than once, because RAW will return all devices.
+     we have to scan the RAW guid here, because not every device is found by it's GUID correctly, e.g. CDC adapters. */
+  return PerformDeviceScan(&USB_RAW_GUID, PERIPHERAL_UNKNOWN, results);
 }
 
 bool CPeripheralBusUSB::PerformDeviceScan(const GUID *guid, const PeripheralType type, PeripheralScanResults &results)

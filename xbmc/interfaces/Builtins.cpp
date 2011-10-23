@@ -551,6 +551,9 @@ int CBuiltins::Execute(const CStdString& execString)
       askToResume = false;
     }
 
+    if (params.size() == 2 && params[1].Left(11).Equals("playoffset="))
+      item.SetProperty("playlist_starting_track",atoi(params[1].Mid(11))-1);
+
     if ((params.size() == 2 && params[1].Equals("noresume")) || (params.size() == 3 && params[2].Equals("noresume")))
     {
       // force the item to start at the beginning (m_lStartOffset is initialized to 0)

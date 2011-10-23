@@ -85,6 +85,7 @@ void CGUIIncludes::ClearIncludes()
   m_includes.clear();
   m_defaults.clear();
   m_constants.clear();
+  m_skinvariables.clear();
   m_files.clear();
 }
 
@@ -153,7 +154,16 @@ bool CGUIIncludes::LoadIncludesFromXML(const TiXmlElement *root)
     node = node->NextSiblingElement("constant");
   }
 
-  INFO::CSkinVariable::LoadFromXML(root);
+  node = root->FirstChildElement("variable");
+  while (node)
+  {
+    if (node->Attribute("name") && node->FirstChild())
+    {
+      CStdString tagName = node->Attribute("name");
+      m_skinvariables.insert(make_pair(tagName, *node));
+    }
+    node = node->NextSiblingElement("variable");
+  }
 
   return true;
 }
@@ -272,4 +282,12 @@ CStdString CGUIIncludes::ResolveConstant(const CStdString &constant) const
   CStdString value;
   StringUtils::JoinString(values, ",", value);
   return value;
+}
+
+const INFO::CSkinVariableString* CGUIIncludes::CreateSkinVariable(const CStdString& name, int context)
+{
+  map<CStdString, TiXmlElement>::const_iterator it = m_skinvariables.find(name);
+  if (it != m_skinvariables.end())
+    return INFO::CSkinVariable::CreateFromXML(it->second, context);
+  return NULL;
 }

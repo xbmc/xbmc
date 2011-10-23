@@ -67,6 +67,9 @@ public:
 /* check if database exists (ie has tables/views defined) */
   virtual bool exists();
 
+/* \brief copy database */
+  virtual int copy(const char *backup_name);
+
   virtual long nextid(const char* seq_name);
 
 /* virtual methods for transaction */

@@ -652,7 +652,7 @@ bool CGUIWindowFileManager::HaveDiscOrConnection( CStdString& strPath, int iDriv
 {
   if ( iDriveType == CMediaSource::SOURCE_TYPE_DVD )
   {
-    if ( !g_mediaManager.IsDiscInDrive() )
+    if ( !g_mediaManager.IsDiscInDrive(strPath) )
     {
       CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       int iList = GetFocusedList();

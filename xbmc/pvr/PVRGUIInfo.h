@@ -51,10 +51,6 @@ namespace PVR
     bool TranslateCharInfo(DWORD dwInfo, CStdString &strValue) const;
     int TranslateIntInfo(DWORD dwInfo) const;
 
-    bool IsRecording(void) const;
-    bool HasTimers(void) const;
-    bool HasNonRecordingTimers(void) const;
-
     /*!
      * @brief Get the total duration of the currently playing LiveTV item.
      * @return The total duration in milliseconds or NULL if no channel is playing.
@@ -148,6 +144,12 @@ namespace PVR
     CStdString                      m_strBackendChannels;
     CStdString                      m_strTotalDiskspace;
     unsigned int                    m_iDuration;
+
+    bool                            m_bHasNonRecordingTimers;
+    bool                            m_bIsPlayingTV;
+    bool                            m_bIsPlayingRadio;
+    bool                            m_bIsPlayingRecording;
+    bool                            m_bIsPlayingEncryptedStream;
     //@}
 
     PVR_SIGNAL_STATUS               m_qualityInfo;       /*!< stream quality information */

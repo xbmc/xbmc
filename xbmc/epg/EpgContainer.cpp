@@ -163,6 +163,7 @@ void CEpgContainer::LoadFromDB(void)
 
 void CEpgContainer::Process(void)
 {
+  bool bLoaded(false);
   time_t iNow       = 0;
   m_iNextEpgUpdate  = 0;
   m_iNextEpgActiveTagCheck = 0;
@@ -173,9 +174,9 @@ void CEpgContainer::Process(void)
   bool bUpdateEpg(true);
   while (!m_bStop && !g_application.m_bStop)
   {
-    CDateTime::GetCurrentDateTime().GetAsTime(iNow);
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
     lock.Enter();
-    bUpdateEpg = (iNow >= m_iNextEpgUpdate);
+    bUpdateEpg = (iNow >= m_iNextEpgUpdate || !bLoaded);
     lock.Leave();
 
     /* load or update the EPG */
@@ -189,6 +190,8 @@ void CEpgContainer::Process(void)
     /* check for updated active tag */
     if (!m_bStop)
       CheckPlayingEvents();
+
+    bLoaded = true;
 
     Sleep(1000);
   }
@@ -457,7 +460,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   if (!bInterrupted)
   {
     lock.Enter();
-    CDateTime::GetCurrentDateTime().GetAsTime(m_iNextEpgUpdate);
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
     m_iNextEpgUpdate += g_advancedSettings.m_iEpgUpdateCheckInterval;
     lock.Leave();
   }
@@ -471,7 +474,7 @@ bool CEpgContainer::UpdateEPG(bool bShowProgress /* = false */)
   {
     /* the update has been interrupted. try again later */
     time_t iNow;
-    CDateTime::GetCurrentDateTime().GetAsTime(iNow);
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
     m_iNextEpgUpdate = iNow + g_advancedSettings.m_iEpgRetryInterruptedUpdateInterval;
   }
   lock.Leave();
