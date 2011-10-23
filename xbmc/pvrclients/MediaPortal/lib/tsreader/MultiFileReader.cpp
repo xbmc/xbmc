@@ -431,7 +431,7 @@ long MultiFileReader::RefreshTSBufferFile()
 
       if (m_bDebugOutput)
       {
-        XBMC->Log(LOG_DEBUG, "MultiFileReader: Removing file %s\n", file->filename);
+        XBMC->Log(LOG_DEBUG, "MultiFileReader: Removing file %s\n", file->filename.c_str());
       }
       
       delete file;
@@ -482,7 +482,7 @@ long MultiFileReader::RefreshTSBufferFile()
       // Convert the current filename (wchar to normal char)
       char* wide2normal = new char[length + 1];
       wcstombs( wide2normal, pwCurrFile, length );
-      wide2normal[length] = NULL;
+      wide2normal[length] = '\0';
       std::string sCurrFile = wide2normal;
       delete[] wide2normal;
 
