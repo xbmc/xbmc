@@ -454,11 +454,6 @@ bool CDatabase::UpdateVersion(const CStdString &dbName)
     CLog::Log(LOGERROR, "Can't open the database %s as it is a NEWER version than what we were expecting?", dbName.c_str());
     return false;
   }
-  else
-  {
-    // we're at the same version so we need to recreate views which are not copied for mysql
-    CreateViews();
-  }
   return true;
 }
 
