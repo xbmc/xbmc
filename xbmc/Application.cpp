@@ -509,7 +509,7 @@ bool CApplication::Create()
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
 #if defined(TARGET_DARWIN_OSX)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Darwin OSX (%s). Built on %s (Git:%s)", g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
-#if defined(TARGET_DARWIN_IOS)
+#elif defined(TARGET_DARWIN_IOS)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Darwin iOS (%s). Built on %s (Git:%s)", g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
 #elif defined(__FreeBSD__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: FreeBSD (%s). Built on %s (Git:%s)", g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
