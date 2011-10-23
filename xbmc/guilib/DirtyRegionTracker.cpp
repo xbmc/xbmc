@@ -24,9 +24,8 @@
 #include "utils/log.h"
 #include <stdio.h>
 
-CDirtyRegionTracker::CDirtyRegionTracker(int buffering)
+CDirtyRegionTracker::CDirtyRegionTracker()
 {
-  m_buffering = buffering;
   m_solver = NULL;
 }
 
@@ -41,20 +40,30 @@ void CDirtyRegionTracker::SelectAlgorithm()
 
   switch (g_advancedSettings.m_guiAlgorithmDirtyRegions)
   {
-    case DIRTYREGION_SOLVER_UNION:
-      m_solver = new CUnionDirtyRegionSolver();
-      CLog::Log(LOGDEBUG, "guilib: Union as algorithm for solving rendering passes");
+    case DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE:
+      CLog::Log(LOGDEBUG, "guilib: Fill viewport on change for solving rendering passes");
+      m_solver = new CFillViewportOnChangeRegionSolver();
       break;
     case DIRTYREGION_SOLVER_COST_REDUCTION:
       CLog::Log(LOGDEBUG, "guilib: Cost reduction as algorithm for solving rendering passes");
       m_solver = new CGreedyDirtyRegionSolver();
       break;
-    case DIRTYREGION_SOLVER_NONE:
+    case DIRTYREGION_SOLVER_UNION:
+      m_solver = new CUnionDirtyRegionSolver();
+      CLog::Log(LOGDEBUG, "guilib: Union as algorithm for solving rendering passes");
+      break;
+    case DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS:
     default:
-      CLog::Log(LOGDEBUG, "guilib: No algorithm for solving rendering passes");
-      m_solver = new CFillViewportRegionSolver();
+      CLog::Log(LOGDEBUG, "guilib: Fill viewport always for solving rendering passes");
+      m_solver = new CFillViewportAlwaysRegionSolver();
       break;
   }
+  if (g_advancedSettings.m_guiAlgorithmDirtyRegions > 0 && g_advancedSettings.m_guiDirtyRegionNoFlipTimeout != 0)
+  {
+    //  Flipping while not rendering
+    CLog::Log(LOGWARNING, "CDirtyRegionTracker: Unsupported configuration. If the display is incorrect, set nofliptimeout to 0.");
+  }
+
 }
 
 void CDirtyRegionTracker::MarkDirtyRegion(const CDirtyRegion &region)
@@ -78,9 +87,9 @@ CDirtyRegionList CDirtyRegionTracker::GetDirtyRegions()
   return output;
 }
 
-void CDirtyRegionTracker::CleanMarkedRegions()
+void CDirtyRegionTracker::CleanMarkedRegions(int buffering)
 {
-  int buffering = g_advancedSettings.m_guiVisualizeDirtyRegions ? 20 : m_buffering;
+  buffering = g_advancedSettings.m_guiVisualizeDirtyRegions ? 20 : buffering;
   int i = m_markedRegions.size() - 1;
   while (i >= 0)
 	{

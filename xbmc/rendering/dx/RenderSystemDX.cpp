@@ -242,7 +242,12 @@ void CRenderSystemDX::BuildPresentParameters()
 
   ZeroMemory( &m_D3DPP, sizeof(D3DPRESENT_PARAMETERS) );
   m_D3DPP.Windowed           = m_useWindowedDX;
-  m_D3DPP.SwapEffect         = D3DSWAPEFFECT_FLIP;
+  // Use the most efficient flip mode for the dirty region algorithms that do not require backbuffers to be preserved.
+  if (   g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ALWAYS
+      || g_advancedSettings.m_guiAlgorithmDirtyRegions == DIRTYREGION_SOLVER_FILL_VIEWPORT_ON_CHANGE)
+    m_D3DPP.SwapEffect       = D3DSWAPEFFECT_DISCARD;
+  else
+    m_D3DPP.SwapEffect       = D3DSWAPEFFECT_FLIP;
   m_D3DPP.BackBufferCount    = 2;
 
   if(m_useD3D9Ex && (osvi.dwMajorVersion == 6 && osvi.dwMinorVersion >= 1 || osvi.dwMajorVersion > 6))
