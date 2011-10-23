@@ -787,6 +787,8 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
   if (XbmcThreads::SystemClockMillis() - m_LastChannelChanged >= (unsigned int) g_guiSettings.GetInt("pvrplayback.channelentrytimeout") && m_LastChannel != m_PreviousChannel[m_PreviousChannelIndex])
      m_PreviousChannel[m_PreviousChannelIndex ^= 1] = m_LastChannel;
+  else
+    m_LastChannelChanged = XbmcThreads::SystemClockMillis();
 
   return false;
 }
