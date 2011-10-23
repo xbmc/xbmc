@@ -267,11 +267,6 @@ void CPVRManager::Process(void)
   if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
 
-  /* signal to window that clients are loaded */
-  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
-  if (pWindow)
-    pWindow->UnlockWindow();
-
   /* check whether all channel icons are cached */
   m_channelGroups->GetGroupAllRadio()->CacheIcons();
   m_channelGroups->GetGroupAllTV()->CacheIcons();
