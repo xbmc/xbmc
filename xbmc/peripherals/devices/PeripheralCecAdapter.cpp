@@ -400,9 +400,10 @@ void CPeripheralCecAdapter::ProcessNextCommand(void)
     case CEC_OPCODE_SET_MENU_LANGUAGE:
       if (command.initiator == CECDEVICE_TV && command.parameters.size == 3)
       {
-        char strNewLanguage[3];
+        char strNewLanguage[4];
         for (int iPtr = 0; iPtr < 3; iPtr++)
           strNewLanguage[iPtr] = command.parameters[iPtr];
+        strNewLanguage[3] = 0;
         SetMenuLanguage(strNewLanguage);
       }
       break;

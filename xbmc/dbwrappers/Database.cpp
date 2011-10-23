@@ -286,12 +286,12 @@ bool CDatabase::Open(const DatabaseSettings &settings)
   int version = GetMinVersion();
   CStdString baseDBName = (dbSettings.name.IsEmpty() ? GetBaseDBName() : dbSettings.name.c_str());
   CStdString latestDb;
-  latestDb.Format("%s%d", GetBaseDBName(), version);
+  latestDb.Format("%s%d", baseDBName, version);
 
   while (version >= 0)
   {
     if (version)
-      dbSettings.name.Format("%s%d", GetBaseDBName(), version);
+      dbSettings.name.Format("%s%d", baseDBName, version);
     else
       dbSettings.name.Format("%s", baseDBName);
 

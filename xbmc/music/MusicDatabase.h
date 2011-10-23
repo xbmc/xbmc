@@ -214,7 +214,7 @@ protected:
   std::map<CStdString, CAlbumCache> m_albumCache;
 
   virtual bool CreateTables();
-  virtual int GetMinVersion() const { return 17; };
+  virtual int GetMinVersion() const { return 18; };
   const char *GetBaseDBName() const { return "MyMusic"; };
 
   int AddAlbum(const CStdString& strAlbum1, int idArtist, const CStdString &extraArtists, const CStdString &strArtist1, int idThumb, int idGenre, const CStdString &extraGenres, int year);
@@ -231,7 +231,7 @@ protected:
 private:
   /*! \brief (Re)Create the generic database views for songs and albums
    */
-  void CreateViews();
+  virtual void CreateViews();
 
   void SplitString(const CStdString &multiString, std::vector<CStdString> &vecStrings, CStdString &extraStrings);
   CSong GetSongFromDataset(bool bWithMusicDbPath=false);
