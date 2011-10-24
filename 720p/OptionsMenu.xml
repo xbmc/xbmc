@@ -206,7 +206,7 @@
 				<control type="image" id="9110">
 					<description>Pictures Thumb</description>
 					<texture>ViewThumbPictures.png</texture>
-					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(911) + [Window.IsActive(2)]</visible>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(912) + [Window.IsActive(2)]</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9110">
@@ -294,22 +294,14 @@
 					<onclick>SetFocus(57)</onclick>
 					<include>OMButtonItem</include>
 				</control>
-				<control type="button" id="911">
+				<control type="button" id="912">
 					<description>Pictures view button</description>
 					<label>$LOCALIZE[1]</label>
 					<onclick>Container.SetViewMode(561)</onclick>
 					<onclick>SetFocus(561)</onclick>
 					<include>OMButtonItem</include>
 				</control>
-				<!--><control type="button" id="980">
-					<description>Plugin Stream pics button</description>
-					<visible>Container.Content(Plugins) + [!Control.IsVisible(561) + !Control.IsVisible(57)]</visible>
-					<label>$LOCALIZE[31722]</label>
-					<onclick>Container.SetViewMode(591)</onclick>
-					<onclick>SetFocus(591)</onclick>
-					<include>OMButtonItem</include>
-				</control>-->
-				<control type="button" id="912">
+				<control type="button" id="913">
 					<visible>Container.Content(Secondary)</visible>
 					<description>Info List view button</description>
 					<label>$LOCALIZE[31711]</label>

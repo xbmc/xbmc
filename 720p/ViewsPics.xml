@@ -31,6 +31,7 @@
 				<include>MediaViewBGOverlay</include>
 			</control>
 			<control type="group">
+				<visible>Control.IsVisible(561)</visible>
 				<posx>20</posx>
 				<posy>240</posy>
 				<include>MediaViewFade</include>
@@ -43,6 +44,7 @@
 					<ondown>561</ondown>
 					<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 					<onright>9009</onright>
+					<onright>SetFocus(912)</onright>
 					<orientation>vertical</orientation>
 					<itemlayout width="114" height="110">
 						<control type="image">
@@ -267,10 +269,12 @@
 			</control>
 			<control type="group">
 				<posy>500</posy>
+				<visible>Control.IsVisible(57)</visible>
 				<!--><include>ImageStreamVisible</include>-->
 				<include>MediaViewFade</include>
 				<control type="wraplist" id="57">
-					<visible>!Container.Content(Plugins)</visible>
+					
+					<!--><visible>!Container.Content(Plugins)</visible>-->
 					<viewtype label="Image Stream">wraplist</viewtype>
 					<posx>10</posx>
 					<width>1260</width>
@@ -334,17 +338,18 @@
 			</control>
 		</control>
 	</include>
-	<include name="InfoListPics">
+	
+	<include name="InfoListPics_">
 		<control type="group">
 			<control type="group">
 				<visible>Control.IsVisible(56)</visible>
 				<include>MediaViewBGOverlay</include>
 			</control>
 			<control type="group">
+				<visible>Control.IsVisible(56)</visible>
 				<include>MediaViewFade</include>
 				<control type="list" id="56">
 					<viewtype label="InfoList">list</viewtype>
-					<visible>!Container.Content(plugincontent)</visible>
 					<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 					<posx>-34</posx>
 					<posy>235</posy>
@@ -353,7 +358,7 @@
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
 					<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-					<onright>9009</onright>
+					<onright>-</onright>
 					<onup>56</onup>
 					<ondown>56</ondown>
 					<itemlayout height="45" width="530">
@@ -429,6 +434,7 @@
 			</control>
 		</control>
 	</include>
+	
 	<include name="PluginStreamPics">
 		<control type="group">
 			<visible>Control.IsVisible(591)</visible>
