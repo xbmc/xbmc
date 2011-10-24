@@ -191,7 +191,7 @@ void CGUIWindowPVRChannels::UpdateData(void)
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
 
-  const CPVRChannelGroup *currentGroup = SelectedGroup();
+  const CPVRChannelGroup *currentGroup = g_PVRManager.GetPlayingGroup(m_bRadio);
   if (!currentGroup)
     return;
 

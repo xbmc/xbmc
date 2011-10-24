@@ -318,18 +318,6 @@ int CPVRChannelGroups::GetGroupList(CFileItemList* results) const
   return iReturn;
 }
 
-int CPVRChannelGroups::GetFirstChannelForGroupID(int iGroupId) const
-{
-  int iReturn = 1;
-
-  const CPVRChannelGroup *group = GetById(iGroupId);
-
-  if (group)
-    iReturn = group->GetFirstChannel()->ChannelID();
-
-  return iReturn;
-}
-
 int CPVRChannelGroups::GetPreviousGroupID(int iGroupId) const
 {
   const CPVRChannelGroup *currentGroup = GetById(iGroupId);

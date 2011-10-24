@@ -94,13 +94,6 @@ namespace PVR
     int GetGroupList(CFileItemList* results) const;
 
     /*!
-     * @brief Get the ID of the first channel in a group.
-     * @param iGroupId The ID of the group.
-     * @return The ID of the first channel or 1 if it wasn't found.
-     */
-    int GetFirstChannelForGroupID(int iGroupId) const;
-
-    /*!
      * @brief Get the ID of the previous group in this container.
      * @param iGroupId The ID of the current group.
      * @return The ID of the previous group or the ID of the group containing all channels if it wasn't found.
