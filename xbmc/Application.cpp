@@ -105,6 +105,9 @@
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/FileNFS.h"
 #endif
+#ifdef HAS_FILESYSTEM_AFP
+#include "filesystem/FileAFP.h"
+#endif
 #ifdef HAS_FILESYSTEM_SFTP
 #include "filesystem/FileSFTP.h"
 #endif
@@ -4816,6 +4819,10 @@ void CApplication::ProcessSlow()
   
 #ifdef HAS_FILESYSTEM_NFS
   gNfsConnection.CheckIfIdle();
+#endif
+
+#ifdef HAS_FILESYSTEM_AFP
+  gAfpConnection.CheckIfIdle();
 #endif
 
 #ifdef HAS_FILESYSTEM_SFTP
