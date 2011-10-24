@@ -75,8 +75,8 @@ long CTsReader::Open(const char* pszFileName)//, const AM_MEDIA_TYPE *pmt)
     FILE* fd = fopen(url, "rb");
     if (fd == NULL)
       return E_FAIL;
-    fread(url, 1, 100, fd);
-    int bytesRead = fread(url, 1, sizeof(url), fd);
+    int bytesRead = fread(url, 1, 100, fd);
+    bytesRead = fread(url, 1, sizeof(url), fd);
     if (bytesRead >= 0) url[bytesRead] = 0;
     fclose(fd);
 
