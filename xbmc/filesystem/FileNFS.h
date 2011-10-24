@@ -100,7 +100,7 @@ private:
   CCriticalSection keepAliveLock;
  
   void clearMembers();
-  bool getNewContext();//clear old nfs context and init new context
+  bool getNewContext();//init new context and add to open contexts map
   void destroyOpenContexts();
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
   void keepAlive(struct nfsfh  *_pFileHandle);
