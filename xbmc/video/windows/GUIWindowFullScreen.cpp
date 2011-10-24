@@ -807,7 +807,7 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
               CLog::Log(LOGDEBUG, "%s - channel '%s' is not a member of '%s', switching to channel 1 of the new group", __FUNCTION__, playingChannel.ChannelName().c_str(), selectedGroup->GroupName().c_str());
               const CPVRChannel *switchChannel = selectedGroup->GetByChannelNumber(1);
               if (switchChannel)
-                OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) switchChannel->ChannelID()));
+                OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) switchChannel->ChannelNumber()));
               else
               {
                 CLog::Log(LOGERROR, "%s - cannot find channel '1' in group %s", __FUNCTION__, selectedGroup->GroupName().c_str());
