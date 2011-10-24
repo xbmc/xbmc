@@ -165,7 +165,7 @@
 		</font>
 		<font>
 			<name>AltDefaultFont</name>
-			<filename>HelveticaNeue</filename>
+			<filename>Helvetica</filename>
 			<variant>Regular</variant>
 			<size>16</size>
 		</font>
@@ -177,7 +177,7 @@
 		</font>
 		<font>
 			<name>SmallDefaultFont</name>
-			<filename>HelveticaNeue</filename>
+			<filename>Helvetica</filename>
 			<variant>Regular</variant>
 			<size>14</size>
 		</font>

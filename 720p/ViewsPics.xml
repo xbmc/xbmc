@@ -35,7 +35,6 @@
 				<posy>240</posy>
 				<include>MediaViewFade</include>
 				<control type="panel" id="561">
-					<visible>!Container.Content(Plugins)</visible>
 					<viewtype label="Pictures">panel</viewtype>
 					<width>600</width>
 					<height>440</height>
@@ -278,7 +277,7 @@
 					<height>180</height>
 					<onleft>57</onleft>
 					<onright>57</onright>
-					<onup>911</onup>
+					<onup>9009</onup>
 					<ondown>-</ondown>
 					<scrolltime>200</scrolltime>
 					<pagecontrol>-</pagecontrol>
@@ -344,8 +343,8 @@
 			<control type="group">
 				<include>MediaViewFade</include>
 				<control type="list" id="56">
-					<visible>Container.Content(Secondary)</visible>
 					<viewtype label="InfoList">list</viewtype>
+					<visible>!Container.Content(plugincontent)</visible>
 					<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 					<posx>-34</posx>
 					<posy>235</posy>
@@ -354,7 +353,7 @@
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
 					<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
-					<onright>-</onright>
+					<onright>9009</onright>
 					<onup>56</onup>
 					<ondown>56</ondown>
 					<itemlayout height="45" width="530">

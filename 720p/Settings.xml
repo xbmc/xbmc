@@ -8,7 +8,7 @@
 			<posx>0</posx>
 			<posy>0</posy>
 			<width>1280</width>
-			<height>269</height>
+			<height>720</height>
 			<texture>CreditsBG.png</texture>
 		</control>
 		<control type="image">
@@ -34,7 +34,7 @@
 				<posx>30</posx>
 				<posy>380</posy>
 				<width>1200</width>
-				<font>AltDefaultFont</font>
+				<font>SmallDefaultFont</font>
 				<textcolor>Focused</textcolor>
 				<label>$LOCALIZE[31851]</label>
 				<wrapmultiline>true</wrapmultiline>
@@ -43,7 +43,7 @@
 				<label>$LOCALIZE[31852]</label>
 				<posx>30</posx>
 				<posy>460</posy>
-				<font>AltDefaultFont</font>
+				<font>SmallDefaultFont</font>
 			</control>
 			<control type="group">
 				<posx>60</posx>
@@ -51,7 +51,7 @@
 				<control type="image">
 					<texture>bullet.png</texture>
 					<posx>0</posx>
-					<posy>4</posy>
+					<posy>6</posy>
 				</control>
 				<control type="label">
 					<label>$LOCALIZE[31853]</label>
@@ -62,7 +62,7 @@
 				<control type="image">
 					<texture>bullet.png</texture>
 					<posx>0</posx>
-					<posy>26</posy>
+					<posy>28</posy>
 				</control>
 				<control type="label">
 					<label>$LOCALIZE[31854]</label>
@@ -73,7 +73,7 @@
 				<control type="image">
 					<texture>bullet.png</texture>
 					<posx>0</posx>
-					<posy>48</posy>
+					<posy>50</posy>
 				</control>
 				<control type="label">
 					<label>$LOCALIZE[31855]</label>
@@ -84,7 +84,7 @@
 				<control type="image">
 					<texture>bullet.png</texture>
 					<posx>0</posx>
-					<posy>70</posy>
+					<posy>72</posy>
 				</control>
 				<control type="label">
 					<label>$LOCALIZE[31856]</label>
@@ -95,7 +95,7 @@
 				<control type="image">
 					<texture>bullet.png</texture>
 					<posx>0</posx>
-					<posy>92</posy>
+					<posy>94</posy>
 				</control>
 				<control type="label">
 					<label>$LOCALIZE[31857]</label>
@@ -106,7 +106,7 @@
 				<control type="image">
 					<texture>bullet.png</texture>
 					<posx>0</posx>
-					<posy>114</posy>
+					<posy>116</posy>
 				</control>
 				<control type="label">
 					<label>$LOCALIZE[31858]</label>
@@ -117,7 +117,7 @@
 				<control type="image">
 					<texture>bullet.png</texture>
 					<posx>0</posx>
-					<posy>136</posy>
+					<posy>138</posy>
 				</control>
 				<control type="label">
 					<label>$LOCALIZE[31859]</label>
@@ -126,18 +126,18 @@
 					<font>SmallDefaultFont</font>
 				</control>
 			</control>
-			<control type="label">
+			<!--><control type="label">
 				<label>$LOCALIZE[31860]</label>
 				<posx>30</posx>
 				<posy>660</posy>
 				<font>AltDefaultFont</font>
-			</control>
+			</control>-->
 			<control type="button" id="9000">
 				<description>OK</description>
 				<posx>1120</posx>
 				<posy>650</posy>
 				<label>$LOCALIZE[186]</label>
-				<include>SetContentDialogButton</include>
+				<include>CreditsButton</include>
 				<onclick>ActivateWindow(0)</onclick>
 			</control>
 		</control>

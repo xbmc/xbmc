@@ -233,6 +233,14 @@
 		<aligny>center</aligny>
 		<include>DialogTextColors</include>
 	</include>
+	<include name="CreditsButton">
+		<width>136</width>
+		<height>44</height>
+		<font>MediumSmallDefaultCapsFont</font>
+		<align>center</align>
+		<aligny>center</aligny>
+		<include>DialogTextColors</include>
+	</include>
 	<include name="SetContentDialogThumb">
 		<width>InfoDialogLargeThumbWidth</width>
 		<height>170</height>
@@ -1792,6 +1800,17 @@
 				<height>25</height>
 				<texture border="10">whitewiderounded.png</texture>
 				<colordiffuse>FF000000</colordiffuse>
+				<visible>!IsEmpty(ListItem.Overlay)</visible>
+				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
+			</control>
+			<control type="image">
+				<posx>60</posx>
+				<posy>120</posy>
+				<width>290</width>
+				<height>25</height>
+				<texture border="10">whitewiderounded.png</texture>
+				<colordiffuse>FF000000</colordiffuse>
+				<visible>IsEmpty(ListItem.Overlay)</visible>
 				<animation effect="fade" start="0" end="20" time="400" condition="true">Conditional</animation>
 			</control>
 			<control type="label">
@@ -2295,11 +2314,11 @@
 		<!-- new "transparency" overlay for fanart -->
 		<control type="largeimage">
 			<visible>!Window.IsVisible(2)</visible>
-			<posy>219</posy>
+			<posy>0</posy>
 			<posx>0</posx>
 			<width>1280</width>
-			<height>502</height>
-			<aspectratio aligny="bottom">scale</aspectratio>
+			<height>720</height>
+			<aspectratio>scale</aspectratio>
 			<texture background="true">$INFO[ListItem.Property(Fanart_Image)]</texture>
 			<visible>true</visible>
 			<animation effect="fade" start="0" end="5" time="0" condition="true">Conditional</animation>

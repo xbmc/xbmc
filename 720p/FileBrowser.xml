@@ -9,24 +9,24 @@
 			<include>InfoDialogBG</include>
 			<control type="group">
 				<posx>InfoDialogLargeThumbPosX</posx>
-				<posy>54</posy>
+				<posy>114</posy>
 				<control type="image">
 					<description>Thumb</description>
-					<width>InfoDialogLargeThumbWidth</width>
-					<height>500</height>
+					<height>380</height>
+					<width>300</width>
 					<info>ListItem.Thumb</info>
 					<aspectratio>keep</aspectratio>
-					<bordertexture border="14">ThumbShadow.png</bordertexture>
-					<bordersize>8</bordersize>
+					<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+					<bordersize>9</bordersize>
 				</control>
 				<control type="image">
 					<description>Icon</description>
-					<width>InfoDialogLargeThumbWidth</width>
-					<height>500</height>
+					<height>380</height>
+					<width>300</width>
 					<info>ListItem.Icon</info>
 					<aspectratio>keep</aspectratio>
-					<bordertexture border="14">ThumbShadow.png</bordertexture>
-					<bordersize>8</bordersize>
+					<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+					<bordersize>9</bordersize>
 					<visible>IsEmpty(ListItem.Thumb)</visible>
 				</control>
 				<control type="label" id="412">
@@ -40,6 +40,7 @@
 				</control>
 			</control>
 			<control type="group">
+				<posy>15</posy>
 				<posx>InfoDialogTitleXOffset</posx>
 				<control type="label" id="411">
 					<description>Heading</description>
@@ -50,18 +51,20 @@
 					<posy>InfoDialogTopButtonsPosY</posy>
 					<control type="button" id="413">
 						<description>Ok Button</description>
-						<onleft>415</onleft>
+						<onleft>450</onleft>
 						<onright>414</onright>
+						<textoffsety>3</textoffsety>
 						<label>$LOCALIZE[186]</label>
-						<include>FileBrowserButton</include>
+						<include>VideoInfoButton</include>
 					</control>
 					<control type="button" id="414">
 						<description>Cancel Button</description>
 						<posx>154</posx>
 						<onleft>413</onleft>
-						<onright>415</onright>
+						<onright>450</onright>
+						<textoffsety>3</textoffsety>
 						<label>$LOCALIZE[222]</label>
-						<include>FileBrowserButton</include>
+						<include>VideoInfoButton</include>
 					</control>
 					<!--
   				<control type="button" id="415">
@@ -106,6 +109,8 @@
 							<height>40</height>
 							<info>ListItem.Icon</info>
 							<aspectratio aligny="center">keep</aspectratio>
+							<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+							<bordersize>9</bordersize>
 						</control>
 						<control type="label">
 							<posx>45</posx>
@@ -132,21 +137,25 @@
 							<colordiffuse>66999999</colordiffuse>
 							<aspectratio aligny="center" align="center">keep</aspectratio>
 						</control>
-						<control type="label">
+						<!--><control type="label">
 							<include>DialogTextColors</include>
 							<include>FileBrowserThumbLabel</include>
-						</control>
+						</control>-->
 					</itemlayout>
 					<focusedlayout height="150" width="220">
 						<control type="image">
-							<width>200</width>
-							<height>120</height>
+							<posx>-9</posx>
+							<posy>-9</posy>
+							<width>218</width>
+							<height>138</height>
 							<info>ListItem.Icon</info>
 							<aspectratio aligny="center">keep</aspectratio>
+							<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+							<bordersize>9</bordersize>
 						</control>
-						<control type="label">
+						<!--><control type="label">
 							<include>FileBrowserThumbLabel</include>
-						</control>
+						</control>-->
 					</focusedlayout>
 				</control>
 			</control>

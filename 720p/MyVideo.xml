@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <window id="6">
-	<defaultcontrol>51</defaultcontrol>
+	<defaultcontrol>56</defaultcontrol>
 	<allowoverlay>yes</allowoverlay>
 	<controls>
 		<include>Background</include>

@@ -265,12 +265,11 @@
 					<height>450</height>
 					<scrolltime>200</scrolltime>
 					<pagecontrol>61</pagecontrol>
-					<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 					<onright>9009</onright>
 					<onup>56</onup>
 					<ondown>56</ondown>
 					<!-- generic -->
-					<itemlayout height="45" width="530" condition="!Container.Content(Secondary) + ![Container.Content(songs) | Container.Content(albums) | Container.Content(plugincontent)])">
+					<itemlayout height="45" width="530" condition="!Container.Content(Secondary) + ![Container.Content(songs) | Container.Content(albums)])">
 						<!-- horiz separator -->
 						<control type="image">
 							<posx>0</posx>
@@ -378,7 +377,7 @@
 							<textcolor>Unfocused</textcolor>
 						</control>
 					</itemlayout>
-					<focusedlayout height="45" width="530" condition="!Container.Content(Secondary) + ![Container.Content(songs) | Container.Content(albums) | Container.Content(plugincontent)]">
+					<focusedlayout height="45" width="530" condition="!Container.Content(Secondary) + ![Container.Content(songs) | Container.Content(albums)]">
 						<control type="image">
 							<posx>0</posx>
 							<posy>0</posy>
@@ -839,7 +838,7 @@
 						<!-- generic big thumb  -->
 						<control type="image">
 							<description>Thumb image</description>
-							<visible>[Container.Content(movies) | Container.Content(tvshows)]</visible>
+							<visible>[Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)]</visible>
 							<posy>-6</posy>
 							<posx>20</posx>
 							<width>256</width>
@@ -849,7 +848,7 @@
 						</control>
 						<control type="image">
 							<description>Thumb image</description>
-							<visible>[Container.Content(movies) | Container.Content(tvshows)]</visible>
+							<visible>[Container.Content(movies) | Container.Content(tvshows) | Container.Content(seasons)]</visible>
 							<posy>3</posy>
 							<posx>28</posx>
 							<width>238</width>
@@ -1654,7 +1653,7 @@
 						<control type="textbox">
 							<description>Plot</description>
 							<width>650</width>
-							<height>150</height>
+							<height>110</height>
 							<info>ListItem.Plot</info>
 							<visible>Container.Content(clip)</visible>
 						</control>
@@ -2062,8 +2061,8 @@
 						<description>Title</description>
 						<width>PanelStreamDetailTextWidth</width>
 						<label>$INFO[ListItem.Label]</label>
-						<scroll>false</scroll>
-						<wrapmultiline>true</wrapmultiline>
+						<scroll>true</scroll>
+						<wrapmultiline>false</wrapmultiline>
 						<font>MediumTitleFont</font>
 					</control>
 					<control type="grouplist">
@@ -2535,6 +2534,7 @@
 	</include>
 	<include name="PluginStream">
 		<control type="group">
+			<visible>Control.IsVisible(59)</visible>
 			<control type="group">
 				<control type="largeimage">
 					<posy>0</posy>
@@ -2567,7 +2567,7 @@
 					<onup>59</onup>
 					<ondown>59</ondown>
 					<onleft>59</onleft>
-					<onright>59</onright>
+					<onright>9009</onright>
 					<orientation>vertical</orientation>
 					<posx>10</posx>
 					<posy>34</posy>

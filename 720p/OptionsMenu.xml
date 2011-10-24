@@ -32,7 +32,7 @@
 		<include>OptionsMenuUI</include>
 	</include>
 	<include name="OptionsMenuVisible">
-		<visible allowhiddenfocus="true">ControlGroup(9009).HasFocus() + !Window.IsActive(501)</visible>
+		<visible allowhiddenfocus="true">ControlGroup(9009).HasFocus()</visible>
 	</include>
 	<include name="OMTitleItem">
 		<align>center</align>
@@ -134,7 +134,7 @@
 				<control type="image" id="9104">
 					<description>TV Seasons Thumb</description>
 					<texture>ViewThumbSeasons.png</texture>
-					<visible>Control.IsVisible(57) + Window.IsActive(24) + Container.Content(seasons)</visible>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(926) + Container.Content(seasons)</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9104">
@@ -182,7 +182,7 @@
 				<control type="image" id="9108">
 					<description>Image Stream Thumb</description>
 					<texture>ViewThumbImageStream.png</texture>
-					<visible>Control.IsVisible(561)</visible>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(910) + [Window.IsActive(2)]</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9108">
@@ -206,7 +206,7 @@
 				<control type="image" id="9110">
 					<description>Pictures Thumb</description>
 					<texture>ViewThumbPictures.png</texture>
-					<visible>Control.IsVisible(57) + [Window.IsActive(2)]</visible>
+					<visible>ControlGroup(9009).HasFocus() + Control.HasFocus(911) + [Window.IsActive(2)]</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9110">
@@ -253,8 +253,8 @@
 				</control>
 				<control type="image" id="9115">
 					<description>Plugin Stream Thumb</description>
-					<texture>ViewThumbWallStream.png</texture>
-					<visible>Control.IsVisible(59)</visible>
+					<texture>ViewThumbPluginStream.png</texture>
+					<visible>ControlGroup(9009).HasFocus() + [Control.HasFocus(960) | Control.HasFocus(980)]</visible>
 					<include>OMViewThumb</include>
 				</control>
 				<control type="label" id="9115">
@@ -267,6 +267,12 @@
 					<description>Plugin Stream view button</description>
 					<label>$LOCALIZE[31715]</label>
 					<visible>Control.IsVisible(59) + [Container.Content(Songs) | Container.Content(Albums) | Container.Content(Artists)]</visible>
+					<include>OMViewLabelItem</include>
+				</control>
+				<control type="label" id="9115">
+					<description>Plugin Stream view button</description>
+					<label>$LOCALIZE[31715]</label>
+					<visible>Control.IsVisible(591)</visible>
 					<include>OMViewLabelItem</include>
 				</control>
 			</control>
@@ -282,7 +288,6 @@
 				<onleft>57</onleft>
 				<include>OMNoViewThumbSlide</include>
 				<control type="button" id="910">
-					<visible>!Control.IsVisible(57)</visible>
 					<description>Image Stream view button</description>
 					<label>$LOCALIZE[31712]</label>
 					<onclick>Container.SetViewMode(57)</onclick>
@@ -290,21 +295,28 @@
 					<include>OMButtonItem</include>
 				</control>
 				<control type="button" id="911">
-					<visible>!Control.IsVisible(561)</visible>
 					<description>Pictures view button</description>
 					<label>$LOCALIZE[1]</label>
 					<onclick>Container.SetViewMode(561)</onclick>
 					<onclick>SetFocus(561)</onclick>
 					<include>OMButtonItem</include>
 				</control>
-				<!--><control type="button" id="912">
+				<!--><control type="button" id="980">
+					<description>Plugin Stream pics button</description>
+					<visible>Container.Content(Plugins) + [!Control.IsVisible(561) + !Control.IsVisible(57)]</visible>
+					<label>$LOCALIZE[31722]</label>
+					<onclick>Container.SetViewMode(591)</onclick>
+					<onclick>SetFocus(591)</onclick>
+					<include>OMButtonItem</include>
+				</control>-->
+				<control type="button" id="912">
 					<visible>Container.Content(Secondary)</visible>
 					<description>Info List view button</description>
 					<label>$LOCALIZE[31711]</label>
 					<onclick>Container.SetViewMode(56)</onclick>
 					<onclick>SetFocus(56)</onclick>
 					<include>OMButtonItem</include>
-				</control>-->
+				</control>
 			</control>
 			<!-- non-photos views -->
 			<control type="grouplist" id="9011">
@@ -327,7 +339,6 @@
 					<include>OMButtonItem</include>
 				</control>
 				<control type="button" id="912">
-					<visible>!Control.IsVisible(56) + [Container.Content(secondary) | Window.IsActive(1)]</visible>
 					<description>Info List view button</description>
 					<label>$LOCALIZE[31711]</label>
 					<onclick>Container.SetViewMode(56)</onclick>
@@ -336,7 +347,7 @@
 				</control>
 				<control type="button" id="915">
 					<description>Media Preview button</description>
-					<visible>!Control.IsVisible(51) + ![Container.Content(Seasons)  | Container.Content(Albums) | Container.Content(Artists) | Container.Content(Songs)  | Container.Content(Plugins) | Container.Content(plugincontent) | Container.Content(secondary)]</visible>
+					<visible>![Container.Content(Seasons) | Container.Content(Albums) | Container.Content(Artists) | Container.Content(Songs) | Container.Content(Plugins) | Container.Content(plugincontent) | Container.Content(Secondary)]</visible>
 					<label>$LOCALIZE[31707]</label>
 					<onclick>Container.SetViewMode(51)</onclick>
 					<onclick>SetFocus(51)</onclick>
@@ -344,7 +355,7 @@
 				</control>
 				<control type="button" id="925">
 					<description>TV Wide view button</description>
-					<visible>!Control.IsVisible(57) + Container.Content(tvshows)</visible>
+					<visible>Container.Content(tvshows) + !Container.Content(Secondary)</visible>
 					<label>$LOCALIZE[539]</label>
 					<onclick>Container.SetViewMode(57)</onclick>
 					<onclick>SetFocus(57)</onclick>
@@ -352,7 +363,7 @@
 				</control>
 				<control type="button" id="926">
 					<description>TV Seasons view button</description>
-					<visible>!Control.IsVisible(57) + Container.Content(seasons)</visible>
+					<visible>Container.Content(seasons) + !Container.Content(Secondary)</visible>
 					<label>$LOCALIZE[31703]</label>
 					<onclick>Container.SetViewMode(57)</onclick>
 					<onclick>SetFocus(57)</onclick>
@@ -376,7 +387,7 @@
 				</control>-->
 				<control type="button" id="957">
 					<description>Panel Stream view button</description>
-					<visible>!Control.IsVisible(52) + !Container.Content(Secondary) + ![Window.IsVisible(501) | Window.IsVisible(MyPictures)]</visible>
+					<visible>!Container.Content(Secondary) + ![Window.IsVisible(501) | Window.IsVisible(MyPictures) | Container.Content(plugincontent) | Container.Content(plugins)]</visible>
 					<label>$LOCALIZE[31715]</label>
 					<onclick>Container.SetViewMode(52)</onclick>
 					<onclick>SetFocus(52)</onclick>
@@ -400,7 +411,7 @@
 				</control>-->
 				<control type="button" id="960">
 					<description>Plugin Stream view button</description>
-					<visible>!Control.IsVisible(59) + Container.Content(Plugins)</visible>
+					<visible>![Container.Content(Plugincontent) | Container.Content(episodes) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(artists) | Container.Content(albums) | Container.Content(songs) | Container.Content(movies) | Container.Content(photos) | Window.IsActive(6) | Container.Content(Secondary)]</visible>
 					<label>$LOCALIZE[31722]</label>
 					<onclick>Container.SetViewMode(59)</onclick>
 					<onclick>SetFocus(59)</onclick>

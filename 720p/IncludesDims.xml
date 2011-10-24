@@ -40,7 +40,7 @@
 		<posy>0</posy>
 		<width>1280</width>
 		<height>720</height>
-		<aspectratio>stretch</aspectratio>
+		<aspectratio>scale</aspectratio>
 	</include>
 	<include name="FullScreenOverlayDims">
 		<include>FullScreenBGImageDims</include>
@@ -245,12 +245,12 @@
 		<width>1005</width>
 		<height>601</height>
 	</include>
-	<constant name="InfoDialogTitleXOffset">506</constant>
+	<constant name="InfoDialogTitleXOffset">428</constant>
 	<include name="InfoDialogTitleDims">
-		<posy>23</posy>
+		<posy>20</posy>
 		<width>470</width>
 	</include>
-	<constant name="InfoDialogLargeThumbPosX">40</constant>
+	<constant name="InfoDialogLargeThumbPosX">50</constant>
 	<constant name="InfoDialogLargeThumbWidth">426</constant>
 	<constant name="InfoDialogLargeThumbTextWidth">410</constant>
 	<constant name="InfoDialogTopButtonsPosY">64</constant>
