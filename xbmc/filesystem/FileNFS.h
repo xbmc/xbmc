@@ -72,7 +72,6 @@ public:
   void AddActiveConnection();
   void AddIdleConnection();
   void CheckIfIdle();
-  void SetActivityTime();
   void Deinit();
   bool HandleDyLoad();//loads the lib if needed
   //adds the filehandle to the keep alive list or resets
