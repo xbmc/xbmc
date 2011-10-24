@@ -305,14 +305,14 @@
 				<control type="group">
 					<posx>InfoDialogTitleXOffset</posx>
 					<control type="label">
-						<posx>-77</posx>
+						<posx>0</posx>
 						<posy>35</posy>
 						<description>TV Show title</description>
 						<label>$INFO[ListItem.TVShowTitle]</label>
 						<include>InfoDialogTitle</include>
 					</control>
 					<control type="group">
-						<posx>-77</posx>
+						<posx>0</posx>
 						<posy>120</posy>
 						<control type="group">
 							<description>Episode Title</description>
