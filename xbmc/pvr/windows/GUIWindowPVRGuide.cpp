@@ -216,6 +216,7 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
   g_PVRManager.GetPlayingGroup(bRadio)->GetEPGAll(*m_parent->m_vecItems);
+  m_parent->m_vecItems->RemoveDiscCache(m_parent->GetID());
 
   m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
