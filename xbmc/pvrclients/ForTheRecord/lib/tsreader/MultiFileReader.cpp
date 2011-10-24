@@ -36,9 +36,9 @@
 #if !defined(TARGET_WINDOWS)
 #include <sys/time.h>
 #include "PlatformInclude.h"
+#include "File.h"
 #define SUCCEEDED(hr) (((HRESULT)(hr)) >= 0)
-#undef INVALID_HANDLE_VALUE
-#define INVALID_HANDLE_VALUE (-1)
+using namespace XFILE;
 #endif
 
 using namespace ADDON;
@@ -383,7 +383,13 @@ long MultiFileReader::RefreshTSBufferFile()
 
     result=m_TSBufferFile.Read((unsigned char*)pBuffer, (ULONG)remainingLength, &bytesRead);
     if (!SUCCEEDED(result)||  bytesRead != remainingLength) Error=0x20;
-	
+
+    unsigned char* pb = (unsigned char*) pBuffer;
+    for (unsigned long i = 0; i < bytesRead; i++)
+    {
+      XBMC->Log(LOG_DEBUG, "%s: pBuffer byte[%d] == %x.", __FUNCTION__, i, pb[i]);
+    }
+
     readLength = sizeof(filesAdded) + sizeof(filesRemoved);
 
     readBuffer = new unsigned char[readLength];
@@ -401,11 +407,12 @@ long MultiFileReader::RefreshTSBufferFile()
 
     delete[] readBuffer;
 
+    XBMC->Log(LOG_DEBUG, "%s: filesAdded %d, filesAdded2 %d, filesRemoved %d, filesRemoved2 %d.", __FUNCTION__, filesAdded, filesAdded2, filesRemoved, filesRemoved2);
     if ((filesAdded2 != filesAdded) || (filesRemoved2 != filesRemoved))
     {
-      Error = 0x80;
+      Error |= 0x80;
 
-      XBMC->Log(LOG_DEBUG, "MultiFileReader has error 0x80 in Loop %d. Try to clear SMB Cache.", 10-Loop);
+      XBMC->Log(LOG_DEBUG, "MultiFileReader has error 0x%x in Loop %d. Try to clear SMB Cache.", Error, 10-Loop);
 
       // try to clear local / remote SMB file cache. This should happen when we close the filehandle
       m_TSBufferFile.CloseFile();
@@ -498,16 +505,27 @@ long MultiFileReader::RefreshTSBufferFile()
     std::vector<std::string> filenames;
 
     wchar_t* pwCurrFile = pBuffer;    //Get a pointer to the first wchar filename string in pBuffer
-    long length = wcslen(pwCurrFile); 
+    long length = WcsLen(pwCurrFile);
 
-    while (length > 0)
+    XBMC->Log(LOG_DEBUG, "%s: WcsLen(%d), sizeof(wchar_t) == %d.", __FUNCTION__, length, sizeof(wchar_t));
+
+    while(length > 0)
     {
       // Convert the current filename (wchar to normal char)
       char* wide2normal = new char[length + 1];
-      wcstombs( wide2normal, pwCurrFile, length );
+      size_t rc = WcsToMbs( wide2normal, pwCurrFile, length );
+      XBMC->Log(LOG_DEBUG, "%s: wcstombs(%d).", __FUNCTION__, rc);
       wide2normal[length] = '\0';
+      unsigned char* pb = (unsigned char*) wide2normal;
+      for (unsigned long i = 0; i < rc; i++)
+      {
+        XBMC->Log(LOG_DEBUG, "%s: pBuffer byte[%d] == %x.", __FUNCTION__, i, pb[i]);
+      }
+
       std::string sCurrFile = wide2normal;
+      XBMC->Log(LOG_DEBUG, "%s: filename %s (%s).", __FUNCTION__, wide2normal, sCurrFile.c_str());
       delete[] wide2normal;
+
 
       // Modify filename path here to include the real (local) path
       pos = sCurrFile.find_last_of(92);
@@ -525,7 +543,7 @@ long MultiFileReader::RefreshTSBufferFile()
       
       // Move the wchar buffer pointer to the next wchar string
       pwCurrFile += (length + 1);
-      length = wcslen(pwCurrFile);
+      length = WcsLen(pwCurrFile);
     }
 
     // Go through files
@@ -652,12 +670,12 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
   length = 0;
 
   // Try to open the file
-  int hFile = open64(pFilename, O_RDONLY) ;
-  if (hFile != INVALID_HANDLE_VALUE)
+  CFile hFile;
+  struct stat64 filestatus;
+  if (hFile.Open(pFilename) && hFile.Stat(&filestatus) >= 0)
   {
-    off64_t myOffset = lseek64(hFile, 0, SEEK_END);
-    close(hFile);
-    length = myOffset;
+    length = filestatus.st_size;
+    hFile.Close();
   }
   else
   {
@@ -749,5 +767,40 @@ void MultiFileReader::RefreshFileSize()
     fileLength+=file->length;
   }
   m_cachedFileSize= fileLength;
+}
+
+// The ts.tsbuffer file will contain 'Windows' wchars which are
+// 16 bit each
+size_t MultiFileReader::WcsLen(const void *str)
+{
+#if defined(TARGET_WINDOWS)
+  return wcslen((const wchar_t *)str);
+#elif defined(TARGET_LINUX)
+  const unsigned short *eos = (const unsigned short*)str;
+  while( *eos++ ) ;
+  return( (size_t)(eos - (const unsigned short*)str) );
+#else
+#endif
+}
+
+// The ts.tsbuffer file will contain 'Windows' wchars which are
+// 16 bit each
+size_t MultiFileReader::WcsToMbs(char *s, const void *w, size_t n)
+{
+#if defined(TARGET_WINDOWS)
+  return wcstombs(s, (const wchar_t *)w, n);
+#elif defined(TARGET_LINUX)
+  size_t i = 0;
+  const unsigned short *wc = (const unsigned short*) w;
+  while(wc[i] && (i < n - 1))
+  {
+    s[i] = wc[i];
+    ++i;
+  }
+  s[i] = '\0';
+
+  return (i);
+#else
+#endif
 }
 #endif //TSREADER
