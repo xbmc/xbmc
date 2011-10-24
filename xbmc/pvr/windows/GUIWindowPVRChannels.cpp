@@ -159,8 +159,12 @@ void CGUIWindowPVRChannels::Notify(const Observable &obs, const CStdString& msg)
 CPVRChannelGroup *CGUIWindowPVRChannels::SelectNextGroup(void)
 {
   const CPVRChannelGroup *currentGroup = SelectedGroup();
-  CPVRChannelGroup *nextGroup = g_PVRChannelGroups->Get(m_bRadio)->GetNextGroup(*currentGroup);
-  if (nextGroup && *nextGroup != *currentGroup)
+  CPVRChannelGroup *nextGroup = currentGroup->GetNextGroup();
+  while (nextGroup && *nextGroup != *currentGroup && nextGroup->Size() == 0)
+    nextGroup = nextGroup->GetNextGroup();
+
+  /* always update so users can reset the list */
+  if (nextGroup)
   {
     SetSelectedGroup(nextGroup);
     UpdateData();

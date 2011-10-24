@@ -480,6 +480,11 @@ int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* =
   return results.Size() - iOrigSize;
 }
 
+CPVRChannelGroup *CPVRChannelGroup::GetNextGroup(void) const
+{
+  return g_PVRChannelGroups->Get(m_bRadio)->GetNextGroup(*this);
+}
+
 /********** private methods **********/
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
