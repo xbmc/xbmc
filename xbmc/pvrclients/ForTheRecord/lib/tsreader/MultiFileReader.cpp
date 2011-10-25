@@ -226,7 +226,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
       break;
   };
 
-  XBMC->Log(LOG_INFO, "%s: reading %ld bytes. File %s, start %d, current %d, end %d.", __FUNCTION__, lDataLength, file->filename.c_str(), m_startPosition, m_currentPosition, m_endPosition);
+  XBMC->Log(LOG_DEBUG, "%s: reading %ld bytes. File %s, start %d, current %d, end %d.", __FUNCTION__, lDataLength, file->filename.c_str(), m_startPosition, m_currentPosition, m_endPosition);
 
 
   if(!file)
@@ -295,6 +295,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
     *dwReadBytes = 0;
   }
 
+  XBMC->Log(LOG_DEBUG, "%s: read %ld bytes. File %s, start %d, current %d, end %d.", __FUNCTION__, *dwReadBytes, file->filename.c_str(), m_startPosition, m_currentPosition, m_endPosition);
   return S_OK;
 }
 
@@ -631,6 +632,10 @@ long MultiFileReader::RefreshTSBufferFile()
       int64_t curPos = m_currentPosition;
       XBMC->Log(LOG_DEBUG, "StartPosition %lli, EndPosition %lli, CurrentPosition %lli\n", stPos, endPos, curPos);
     }
+    int64_t stPos = m_startPosition;
+    int64_t endPos = m_endPosition;
+    int64_t curPos = m_currentPosition;
+    XBMC->Log(LOG_DEBUG, "StartPosition %lli, EndPosition %lli, CurrentPosition %lli\n", stPos, endPos, curPos);
   }
   else
   {
@@ -781,6 +786,7 @@ void MultiFileReader::RefreshFileSize()
     fileLength+=file->length;
   }
   m_cachedFileSize= fileLength;
+  XBMC->Log(LOG_DEBUG, "%s: m_cachedFileSize %d.", __FUNCTION__, m_cachedFileSize);
 }
 
 // The ts.tsbuffer file will contain 'Windows' wchars which are

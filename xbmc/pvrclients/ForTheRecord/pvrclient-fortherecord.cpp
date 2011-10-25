@@ -954,7 +954,7 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
   static int read_timeouts  = 0;
   unsigned char* bufptr = pBuffer;
 
-  //XBMC->Log(LOG_DEBUG, "->ReadLiveStream(buf_size=%i)", buf_size);
+  XBMC->Log(LOG_DEBUG, "->ReadLiveStream(buf_size=%i)", iBufferSize);
   if (!m_tsreader)
     return -1;
 
@@ -984,6 +984,7 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
       usleep(40000);
     }
   }
+  XBMC->Log(LOG_DEBUG, "ReadLiveStream(buf_size=%i), %d timeouts", iBufferSize, read_timeouts);
   read_timeouts = 0;
   return read_done;
 #else
