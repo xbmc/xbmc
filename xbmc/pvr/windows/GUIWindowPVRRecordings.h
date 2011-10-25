@@ -36,6 +36,8 @@ namespace PVR
     CGUIWindowPVRRecordings(CGUIWindowPVR *parent);
     virtual ~CGUIWindowPVRRecordings(void) {};
 
+    static CStdString GetResumeString(CFileItem item);
+
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     virtual bool OnAction(const CAction &action);
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
@@ -46,6 +48,7 @@ namespace PVR
     virtual void ResetObservers(void);
 
   private:
+
     virtual bool OnClickButton(CGUIMessage &message);
     virtual bool OnClickList(CGUIMessage &message);
 
