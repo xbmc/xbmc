@@ -78,13 +78,14 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   //Setting default font to the Arial in \media\fonts (used if FontConfig fails)
   strPath = "special://xbmc/media/Fonts/";
   strPath += g_guiSettings.GetString("subtitles.font");
+  int fc = !g_guiSettings.GetBool("subtitles.overrideassfonts");
 
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
   m_dll.ass_set_use_margins(m_renderer, 0);
   m_dll.ass_set_font_scale(m_renderer, 1);
   // libass uses fontconfig (system lib) which is not wrapped
   //  so translate the path before calling into libass
-  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "", 1, NULL, 0);
+  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "", fc, NULL, 0);
 }
 
 
