@@ -50,11 +50,16 @@ CGUIWindowPVR::~CGUIWindowPVR(void)
 {
   if (m_bViewsCreated)
   {
+    m_windowChannelsRadio->UnregisterObservers();
     delete m_windowChannelsRadio;
+    m_windowChannelsTV->UnregisterObservers();
     delete m_windowChannelsTV;
+    m_windowGuide->UnregisterObservers();
     delete m_windowGuide;
+    m_windowRecordings->UnregisterObservers();
     delete m_windowRecordings;
     delete m_windowSearch;
+    m_windowTimers->UnregisterObservers();
     delete m_windowTimers;
   }
 }
