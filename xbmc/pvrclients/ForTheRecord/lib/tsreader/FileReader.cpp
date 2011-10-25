@@ -473,14 +473,6 @@ long FileReader::Read(unsigned char* pbData, unsigned long lDataLength, unsigned
   }
   return S_OK;
 #elif defined(TARGET_LINUX)
-  //Get File Position
-  off64_t myOffset = m_hFile.Seek(0, SEEK_CUR);
-  if (myOffset == (off64_t)-1)
-  {
-    XBMC->Log(LOG_ERROR, "FileReader::Read() seek failed");
-    return E_FAIL;
-  }
-
   *dwReadBytes = m_hFile.Read((void*)pbData, (DWORD)lDataLength);//Read file data into buffer
   //XBMC->Log(LOG_DEBUG, "%s: requested read length %d actually read %d.", __FUNCTION__, lDataLength, *dwReadBytes);
 
