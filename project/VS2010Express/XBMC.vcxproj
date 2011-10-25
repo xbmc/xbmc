@@ -673,6 +673,9 @@
     <ClCompile Include="..\..\xbmc\network\UdpClient.cpp" />
     <ClCompile Include="..\..\xbmc\network\UPnP.cpp" />
     <ClCompile Include="..\..\xbmc\network\WebServer.cpp" />
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocket.cpp" />
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketManager.cpp" />
+    <ClCompile Include="..\..\xbmc\network\websocket\WebSocketV8.cpp" />
     <ClCompile Include="..\..\xbmc\network\windows\NetworkWin32.cpp" />
     <ClCompile Include="..\..\xbmc\network\windows\ZeroconfWIN.cpp" />
     <ClCompile Include="..\..\xbmc\network\Zeroconf.cpp" />
@@ -759,6 +762,9 @@
     <ClInclude Include="..\..\xbmc\cores\paplayer\PCMCodec.h" />
     <ClInclude Include="..\..\xbmc\filesystem\FileUPnP.h" />
     <ClInclude Include="..\..\xbmc\interfaces\python\xbmcmodule\pythreadstate.h" />
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocket.h" />
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketManager.h" />
+    <ClInclude Include="..\..\xbmc\network\websocket\WebSocketV8.h" />
     <ClInclude Include="..\..\xbmc\threads\platform\win\Implementation.cpp" />
     <ClCompile Include="..\..\xbmc\threads\SystemClock.cpp" />
     <ClCompile Include="..\..\xbmc\threads\Thread.cpp" />
