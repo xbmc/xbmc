@@ -42,7 +42,12 @@ include ../Makefile.include
 INCLUDES += -Ilib/jsoncpp/include/
 INCLUDES += -I@abs_top_srcdir@/xbmc/filesystem
 
-CXXFLAGS += -DTSREADER -DTARGET_LINUX
+CXXFLAGS += -DTSREADER
+ifeq ($(findstring osx,@ARCH@),osx)
+CXXFLAGS += -DTARGET_OSX
+else
+CXXFLAGS += -DTARGET_LINUX
+endif
 
 clean:
 	-rm -f $(OBJS) $(LIB) *.P *~
