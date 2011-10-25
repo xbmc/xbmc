@@ -18,12 +18,8 @@
  */
 #ifdef TSREADER
 
-#ifdef LIVE555
-#include "RTSPClient.h"
-#endif
 #include "client.h"
 #include "FileReader.h"
-#include "MemoryBuffer.h"
 #include "utils/StdString.h"
 
 class CTsReader
@@ -40,13 +36,7 @@ private:
   bool            m_bTimeShifting;
   bool            m_bRecording;
   bool            m_bLiveTv;
-  bool            m_bIsRTSP;
   CStdString      m_fileName;
   FileReader*     m_fileReader;
-  FileReader*     m_fileDuration;
-#ifdef LIVE555
-  CRTSPClient     m_rtspClient;
-#endif
-  CMemoryBuffer   m_buffer;
 };
 #endif //TSREADER

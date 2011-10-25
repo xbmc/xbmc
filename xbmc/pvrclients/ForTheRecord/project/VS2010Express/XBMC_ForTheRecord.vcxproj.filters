@@ -80,22 +80,10 @@
     <ClCompile Include="..\..\lib\tsreader\FileReader.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\tsreader\MemoryBuffer.cpp">
-      <Filter>Source Files\tsreader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\tsreader\MemoryReader.cpp">
-      <Filter>Source Files\tsreader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\tsreader\MemorySink.cpp">
-      <Filter>Source Files\tsreader</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\lib\tsreader\MultiFileReader.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
     <ClCompile Include="..\..\lib\tsreader\TSReader.cpp">
-      <Filter>Source Files\tsreader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\tsreader\WaitEvent.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
     <ClCompile Include="..\..\thread.cpp">
@@ -160,22 +148,10 @@
     <ClInclude Include="..\..\lib\tsreader\FileReader.h">
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\lib\tsreader\MemoryBuffer.h">
-      <Filter>Header Files\tsreader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\tsreader\MemoryReader.h">
-      <Filter>Header Files\tsreader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\tsreader\MemorySink.h">
-      <Filter>Header Files\tsreader</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\lib\tsreader\MultiFileReader.h">
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>
     <ClInclude Include="..\..\lib\tsreader\TSReader.h">
-      <Filter>Header Files\tsreader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\lib\tsreader\WaitEvent.h">
       <Filter>Header Files\tsreader</Filter>
     </ClInclude>
     <ClInclude Include="..\..\thread.h">

@@ -127,12 +127,8 @@
     <ClCompile Include="..\..\guideprogram.cpp" />
     <ClCompile Include="..\..\KeepAliveThread.cpp" />
     <ClCompile Include="..\..\lib\tsreader\FileReader.cpp" />
-    <ClCompile Include="..\..\lib\tsreader\MemoryBuffer.cpp" />
-    <ClCompile Include="..\..\lib\tsreader\MemoryReader.cpp" />
-    <ClCompile Include="..\..\lib\tsreader\MemorySink.cpp" />
     <ClCompile Include="..\..\lib\tsreader\MultiFileReader.cpp" />
     <ClCompile Include="..\..\lib\tsreader\TSReader.cpp" />
-    <ClCompile Include="..\..\lib\tsreader\WaitEvent.cpp" />
     <ClCompile Include="..\..\pvrclient-fortherecord.cpp" />
     <ClCompile Include="..\..\recording.cpp" />
     <ClCompile Include="..\..\recordinggroup.cpp" />
@@ -157,12 +153,8 @@
     <ClInclude Include="..\..\guideprogram.h" />
     <ClInclude Include="..\..\KeepAliveThread.h" />
     <ClInclude Include="..\..\lib\tsreader\FileReader.h" />
-    <ClInclude Include="..\..\lib\tsreader\MemoryBuffer.h" />
-    <ClInclude Include="..\..\lib\tsreader\MemoryReader.h" />
-    <ClInclude Include="..\..\lib\tsreader\MemorySink.h" />
     <ClInclude Include="..\..\lib\tsreader\MultiFileReader.h" />
     <ClInclude Include="..\..\lib\tsreader\TSReader.h" />
-    <ClInclude Include="..\..\lib\tsreader\WaitEvent.h" />
     <ClInclude Include="..\..\pvrclient-fortherecord.h" />
     <ClInclude Include="..\..\recording.h" />
     <ClInclude Include="..\..\recordinggroup.h" />
