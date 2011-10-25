@@ -480,6 +480,11 @@ int CPVRChannelGroup::GetMembers(CFileItemList &results, bool bGroupMembers /* =
   return results.Size() - iOrigSize;
 }
 
+CPVRChannelGroup *CPVRChannelGroup::GetNextGroup(void) const
+{
+  return g_PVRChannelGroups->Get(m_bRadio)->GetNextGroup(*this);
+}
+
 /********** private methods **********/
 
 int CPVRChannelGroup::LoadFromDb(bool bCompress /* = false */)
@@ -827,20 +832,21 @@ bool CPVRChannelGroup::Renumber(void)
 
   for (unsigned int iChannelPtr = 0; iChannelPtr < size();  iChannelPtr++)
   {
+    unsigned int iCurrentChannelNumber;
     if (at(iChannelPtr).channel->IsHidden())
-      iChannelNumber = 0;
+      iCurrentChannelNumber = 0;
     else if (bUseBackendChannelNumbers)
-      iChannelNumber = at(iChannelPtr).channel->ClientChannelNumber();
+      iCurrentChannelNumber = at(iChannelPtr).channel->ClientChannelNumber();
     else
-      ++iChannelNumber;
+      iCurrentChannelNumber = ++iChannelNumber;
 
-    if (at(iChannelPtr).iChannelNumber != iChannelNumber)
+    if (at(iChannelPtr).iChannelNumber != iCurrentChannelNumber)
     {
       bReturn = true;
       m_bChanged = true;
     }
 
-    at(iChannelPtr).iChannelNumber = iChannelNumber;
+    at(iChannelPtr).iChannelNumber = iCurrentChannelNumber;
   }
 
   SortByChannelNumber();

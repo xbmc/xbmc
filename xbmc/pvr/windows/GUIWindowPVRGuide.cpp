@@ -166,7 +166,7 @@ void CGUIWindowPVRGuide::UpdateViewNow(void)
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19030));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19030));
 
-  if (g_PVRChannelGroups->GetGroupAll(bRadio)->GetEPGNow(*m_parent->m_vecItems) == 0)
+  if (g_PVRManager.GetPlayingGroup(bRadio)->GetEPGNow(*m_parent->m_vecItems) == 0)
   {
     CFileItemPtr item;
     item.reset(new CFileItem("pvr://guide/now/empty.epg", false));
@@ -189,7 +189,7 @@ void CGUIWindowPVRGuide::UpdateViewNext(void)
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19031));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19031));
 
-  if (g_PVRChannelGroups->GetGroupAll(bRadio)->GetEPGNext(*m_parent->m_vecItems) == 0)
+  if (g_PVRManager.GetPlayingGroup(bRadio)->GetEPGNext(*m_parent->m_vecItems) == 0)
   {
     CFileItemPtr item;
     item.reset(new CFileItem("pvr://guide/next/empty.epg", false));
@@ -215,7 +215,8 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   m_parent->SetLabel(m_iControlButton, g_localizeStrings.Get(19222) + ": " + g_localizeStrings.Get(19032));
   m_parent->SetLabel(CONTROL_LABELGROUP, g_localizeStrings.Get(19032));
 
-  g_PVRChannelGroups->GetGroupAll(bRadio)->GetEPGAll(*m_parent->m_vecItems);
+  g_PVRManager.GetPlayingGroup(bRadio)->GetEPGAll(*m_parent->m_vecItems);
+  m_parent->m_vecItems->RemoveDiscCache(m_parent->GetID());
 
   m_parent->m_guideGrid->SetStartEnd(firstDate > gridStart ? firstDate : gridStart, lastDate);
   m_parent->m_viewControl.SetCurrentView(CONTROL_LIST_TIMELINE);
