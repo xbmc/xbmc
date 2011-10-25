@@ -259,11 +259,15 @@ void CMusicDatabase::AddSong(CSong& song, bool bCheck)
 
     // add the primary artist/genre
     // SplitString returns >= 1 so no worries referencing the first item here
-    int idArtist = AddArtist(song.artist[0]);
-    int idGenre = AddGenre(song.genre[0]);
+    int idArtist = -1;
+    int idGenre = -1;
+    if (!song.artist.empty())
+      idArtist = AddArtist(song.artist[0]);
+    if (!song.genre.empty())
+      idGenre = AddGenre(song.genre[0]);
     // and also the primary album artist (if applicable)
     int idAlbumArtist = -1;
-    if (!song.albumArtist[0].empty())
+    if (!song.albumArtist.empty() && !song.albumArtist[0].empty())
       idAlbumArtist = AddArtist(song.albumArtist[0]);
 
     int idPath = AddPath(strPath);
@@ -1749,7 +1753,9 @@ int CMusicDatabase::SetAlbumInfo(int idAlbum, const CAlbum& album, const VECSONG
       extraGenres.push_back(album.genre.at(index));
     CStdString strExtraGenres = StringUtils::Join(extraGenres, g_advancedSettings.m_musicItemSeparator);
 
-    int idGenre = AddGenre(album.genre[0]);
+    int idGenre = -1;
+    if (!album.genre.empty())
+      idGenre = AddGenre(album.genre[0]);
 
     // delete any album info we may have
     strSQL=PrepareSQL("delete from albuminfo where idAlbum=%i", idAlbum);
@@ -4752,28 +4758,38 @@ int CMusicDatabase::GetKaraokeSongsCount()
 
 void CMusicDatabase::SetPropertiesFromArtist(CFileItem& item, const CArtist& artist)
 {
-  item.SetProperty("artist_instrument", artist.instruments);
-  item.SetProperty("artist_style", artist.styles);
-  item.SetProperty("artist_mood", artist.moods);
+  item.SetProperty("artist_instrument", StringUtils::Join(artist.instruments, g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("artist_instrument_array", artist.instruments);
+  item.SetProperty("artist_style", StringUtils::Join(artist.styles, g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("artist_style_array", artist.styles);
+  item.SetProperty("artist_mood", StringUtils::Join(artist.moods, g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("artist_mood_array", artist.moods);
   item.SetProperty("artist_born", artist.strBorn);
   item.SetProperty("artist_formed", artist.strFormed);
   item.SetProperty("artist_description", artist.strBiography);
-  item.SetProperty("artist_genre", artist.genre);
+  item.SetProperty("artist_genre", StringUtils::Join(artist.genre, g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("artist_genre_array", artist.genre);
   item.SetProperty("artist_died", artist.strDied);
   item.SetProperty("artist_disbanded", artist.strDisbanded);
-  item.SetProperty("artist_yearsactive", artist.yearsActive);
+  item.SetProperty("artist_yearsactive", StringUtils::Join(artist.yearsActive, g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("artist_yearsactive_array", artist.yearsActive);
 }
 
 void CMusicDatabase::SetPropertiesFromAlbum(CFileItem& item, const CAlbum& album)
 {
   item.SetProperty("album_description", album.strReview);
-  item.SetProperty("album_theme", album.themes);
-  item.SetProperty("album_mood", album.moods);
-  item.SetProperty("album_style", album.styles);
+  item.SetProperty("album_theme", StringUtils::Join(album.themes, g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("album_theme_array", album.themes);
+  item.SetProperty("album_mood", StringUtils::Join(album.moods, g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("album_mood_array", album.moods);
+  item.SetProperty("album_style", StringUtils::Join(album.styles, g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("album_style_array", album.styles);
   item.SetProperty("album_type", album.strType);
   item.SetProperty("album_label", album.strLabel);
-  item.SetProperty("album_artist", album.artist);
-  item.SetProperty("album_genre", album.genre);
+  item.SetProperty("album_artist", StringUtils::Join(album.artist, g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("album_artist_array", album.artist);
+  item.SetProperty("album_genre", StringUtils::Join(album.genre, g_advancedSettings.m_musicItemSeparator));
+  item.SetProperty("album_genre_array", album.genre);
   item.SetProperty("album_title", album.strAlbum);
   if (album.iRating > 0)
     item.SetProperty("album_rating", album.iRating);
