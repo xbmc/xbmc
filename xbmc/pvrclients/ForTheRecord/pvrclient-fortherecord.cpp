@@ -922,6 +922,7 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
       // TODO: rtsp support
       XBMC->Log(LOG_DEBUG, "Open TsReader");
       m_tsreader->Open(filename.c_str());
+      usleep(10000000);
     }
 
 #endif
@@ -954,7 +955,7 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
   static int read_timeouts  = 0;
   unsigned char* bufptr = pBuffer;
 
-  XBMC->Log(LOG_DEBUG, "->ReadLiveStream(buf_size=%i)", iBufferSize);
+  // XBMC->Log(LOG_DEBUG, "->ReadLiveStream(buf_size=%i)", iBufferSize);
   if (!m_tsreader)
     return -1;
 
@@ -984,7 +985,7 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
       usleep(40000);
     }
   }
-  XBMC->Log(LOG_DEBUG, "ReadLiveStream(buf_size=%i), %d timeouts", iBufferSize, read_timeouts);
+  // XBMC->Log(LOG_DEBUG, "ReadLiveStream(buf_size=%i), %d timeouts", iBufferSize, read_timeouts);
   read_timeouts = 0;
   return read_done;
 #else
