@@ -19,14 +19,12 @@
 *
 */
 
-
-#include "system.h"
+#include "RenderSystemGL.h"
 
 #ifdef HAS_GL
 
 #include "guilib/GraphicContext.h"
 #include "settings/AdvancedSettings.h"
-#include "RenderSystemGL.h"
 #include "utils/log.h"
 #include "utils/GLUtils.h"
 #include "utils/TimeUtils.h"
@@ -445,7 +443,22 @@ void CRenderSystemGL::SetCameraPosition(const CPoint &camera, int screenWidth, i
   glFrustum( (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   glMatrixMode(GL_MODELVIEW);
 
+  glGetIntegerv(GL_VIEWPORT, m_viewPort);
+  glGetDoublev(GL_MODELVIEW_MATRIX, m_view);
+  glGetDoublev(GL_PROJECTION_MATRIX, m_projection);
+
   g_graphicsContext.EndPaint();
+}
+
+void CRenderSystemGL::Project(float &x, float &y, float &z)
+{
+  GLdouble coordX, coordY, coordZ;
+  if (gluProject(x, y, z, m_view, m_projection, m_viewPort, &coordX, &coordY, &coordZ) == GLU_TRUE)
+  {
+    x = (float)coordX;
+    y = (float)(m_viewPort[3] - coordY);
+    z = 0;
+  }
 }
 
 bool CRenderSystemGL::TestRender()
