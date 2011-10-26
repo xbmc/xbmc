@@ -24,6 +24,7 @@
 
 #pragma once
 
+#include "system.h"
 #include "rendering/RenderSystem.h"
 
 class CRenderSystemGL : public CRenderSystemBase
@@ -60,6 +61,8 @@ public:
 
   virtual bool TestRender();
 
+  virtual void Project(float &x, float &y, float &z);
+
   virtual void GetGLSLVersion(int& major, int& minor);
 
   virtual void ResetGLErrors();
@@ -82,6 +85,12 @@ protected:
 
   int        m_glslMajor;
   int        m_glslMinor;
+  
+#ifdef HAS_GL
+  GLdouble   m_view[16];
+  GLdouble   m_projection[16];
+  GLint      m_viewPort[4];
+#endif
 };
 
 #endif // RENDER_SYSTEM_H
