@@ -167,7 +167,7 @@ long FileReader::OpenFile()
     {
         XBMC->Log(LOG_DEBUG, "CFile::Exists(%s) failed.", m_pFileName);
     }
-    m_hFile.Open(m_pFileName);        // Open in readonly mode with this filename
+    m_hFile.Open(m_pFileName, READ_NO_CACHE);        // Open in readonly mode with this filename
 #else
 #error FIXME: Add an OpenFile() implementation for your OS
 #endif

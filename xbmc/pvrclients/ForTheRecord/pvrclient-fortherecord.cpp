@@ -922,7 +922,7 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
       // TODO: rtsp support
       XBMC->Log(LOG_DEBUG, "Open TsReader");
       m_tsreader->Open(filename.c_str());
-      usleep(10000000);
+      usleep(5000000);
     }
 
 #endif

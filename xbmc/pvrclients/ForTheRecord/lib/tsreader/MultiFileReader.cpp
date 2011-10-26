@@ -295,7 +295,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
     *dwReadBytes = 0;
   }
 
-  // XBMC->Log(LOG_DEBUG, "%s: read %ld bytes. File %s, start %d, current %d, end %d.", __FUNCTION__, *dwReadBytes, file->filename.c_str(), m_startPosition, m_currentPosition, m_endPosition);
+  XBMC->Log(LOG_DEBUG, "%s: read %lu bytes. start %lli, current %lli, end %lli.", __FUNCTION__, *dwReadBytes, m_startPosition, m_currentPosition, m_endPosition);
   return S_OK;
 }
 
