@@ -111,6 +111,9 @@ void CPeripherals::Clear(void)
   /* reset class state */
   m_bIsStarted   = false;
   m_bInitialised = false;
+#if !defined(HAVE_LIBCEC)
+  m_bMissingLibCecWarningDisplayed = false;
+#endif
 }
 
 void CPeripherals::TriggerDeviceScan(const PeripheralBusType type /* = PERIPHERAL_BUS_UNKNOWN */)
@@ -263,8 +266,12 @@ CPeripheral *CPeripherals::CreatePeripheral(CPeripheralBus &bus, const Periphera
 #if defined(HAVE_LIBCEC)
     peripheral = new CPeripheralCecAdapter(type, bus.Type(), strLocation, strDeviceName, iVendorId, iProductId);
 #else
-    CLog::Log(LOGWARNING, "%s - libCEC support has not been compiled in, so the CEC adapter cannot be used.", __FUNCTION__);
-    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(36000), g_localizeStrings.Get(36017));
+    if (!m_bMissingLibCecWarningDisplayed)
+    {
+      m_bMissingLibCecWarningDisplayed = true;
+      CLog::Log(LOGWARNING, "%s - libCEC support has not been compiled in, so the CEC adapter cannot be used.", __FUNCTION__);
+      CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning, g_localizeStrings.Get(36000), g_localizeStrings.Get(36017));
+    }
 #endif
     break;
 
@@ -324,7 +331,10 @@ int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const Periphera
 
     if (bBusMatch && bVendorMatch && bProductMatch && bClassMatch)
     {
-      CLog::Log(LOGDEBUG, "%s - device (%s:%s) mapped to %s (type = %s)", __FUNCTION__, PeripheralTypeTranslator::IntToHexString(iVendorId), PeripheralTypeTranslator::IntToHexString(iProductId), mapping.m_strDeviceName.c_str(), PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
+      CStdString strVendorId, strProductId;
+      PeripheralTypeTranslator::FormatHexString(iVendorId, strVendorId);
+      PeripheralTypeTranslator::FormatHexString(iProductId, strProductId);
+      CLog::Log(LOGDEBUG, "%s - device (%s:%s) mapped to %s (type = %s)", __FUNCTION__, strVendorId.c_str(), strProductId.c_str(), mapping.m_strDeviceName.c_str(), PeripheralTypeTranslator::TypeToString(mapping.m_mappedTo));
       return iMappingPtr;
     }
   }

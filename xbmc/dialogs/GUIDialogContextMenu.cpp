@@ -94,6 +94,17 @@ bool CGUIDialogContextMenu::OnMessage(CGUIMessage &message)
   return CGUIDialog::OnMessage(message);
 }
 
+bool CGUIDialogContextMenu::OnAction(const CAction& action)
+{
+  if (action.GetID() == ACTION_CONTEXT_MENU)
+  {
+    Close();
+    return true;
+  }
+
+  return CGUIDialog::OnAction(action);
+}
+
 void CGUIDialogContextMenu::OnInitWindow()
 {
   m_clickedButton = -1;

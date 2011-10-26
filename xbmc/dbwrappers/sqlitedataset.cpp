@@ -267,7 +267,8 @@ int SqliteDatabase::create() {
 }
 
 int SqliteDatabase::copy(const char *backup_name) {
-  if (active == false) throw DbErrors("Can't copy database: no active connection...");
+  if (active == false)
+    throw DbErrors("Can't copy database: no active connection...");
 
   CLog::Log(LOGDEBUG, "Copying from %s to %s at %s", backup_name, db.c_str(), host.c_str());
 
@@ -304,6 +305,9 @@ int SqliteDatabase::copy(const char *backup_name) {
   }
 
   (void)sqlite3_close(pFile);
+
+  if( rc != SQLITE_OK )
+    throw DbErrors("Can't copy database. (%d)", rc);
 
   return rc;
 }

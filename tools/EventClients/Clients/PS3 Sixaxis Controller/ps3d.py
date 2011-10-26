@@ -22,30 +22,27 @@ import traceback
 import time
 import struct
 import threading
+import os
 
-sys.path.append("../PS3 BD Remote")
-
-try:
-    # try loading modules from source directory
+if os.path.exists("../../lib/python"):
+    sys.path.append("../PS3 BD Remote")
     sys.path.append("../../lib/python")
     from bt.hid import HID
     from bt.bt import bt_lookup_name
     from xbmcclient import XBMCClient
     from ps3 import sixaxis
-    from ps3.keymaps import keymap_sixaxis
     from ps3_remote import process_keys as process_remote
     try:
         import zeroconf
     except:
         zeroconf = None
     ICON_PATH = "../../icons/"
-except:
+else:
     # fallback to system wide modules
     from xbmc.bt.hid import HID
     from xbmc.bt.bt import bt_lookup_name
     from xbmc.xbmcclient import XBMCClient
     from xbmc.ps3 import sixaxis
-    from xbmc.ps3.keymaps import keymap_sixaxis
     from xbmc.ps3_remote import process_keys as process_remote
     from xbmc.defs import *
     try:
@@ -110,21 +107,6 @@ class StoppableThread ( threading.Thread ):
         else:
             return False
 
-# to make sure all combination keys are checked first
-# we sort the keymap's button codes in reverse order
-# this guranties that any bit combined button code
-# will be processed first
-keymap_sixaxis_keys = keymap_sixaxis.keys()
-keymap_sixaxis_keys.sort()
-keymap_sixaxis_keys.reverse()
-
-def getkeys(bflags):
-    keys = [];
-    for k in keymap_sixaxis_keys:
-        if (k & bflags) == k:
-            keys.append(k)
-            bflags = bflags & ~k
-    return keys;
 
 class PS3SixaxisThread ( StoppableThread ):
     def __init__(self, csock, isock, ipaddr="127.0.0.1"):
@@ -135,86 +117,26 @@ class PS3SixaxisThread ( StoppableThread ):
         self.set_timeout(600)
 
     def run(self):
-        sixaxis.initialize(self.csock, self.isock)
+        six = sixaxis.sixaxis(self.xbmc, self.csock, self.isock)
         self.xbmc.connect()
-        bflags = 0
-        released = set()
-        pressed  = set()
-        pending  = set()
-        held     = set()
-        psflags = 0
-        psdown = 0
-        toggle_mouse = 0
         self.reset_timeout()
         try:
             while not self.stop():
+
                 if self.timed_out():
-
-                    for key in (held | pressed):
-                        (mapname, action, amount, axis) = keymap_sixaxis[key]
-                        self.xbmc.send_button_state(map=mapname, button=action, amount=0, down=0, axis=axis)
-
                     raise Exception("PS3 Sixaxis powering off, timed out")
                 if self.idle_time() > 50:
                     self.xbmc.connect()
                 try:
-                    data = sixaxis.read_input(self.isock)
+                    if six.process_socket(self.isock):
+                        self.reset_timeout()
                 except Exception, e:
-                    print str(e)
+                    print e
                     break
-                if not data:
-                    continue
-
-                (bflags, psflags, pressure, analog) = sixaxis.process_input(data, self.xbmc, toggle_mouse)
-
-                if analog:
-                    self.reset_timeout()
-
-                if psflags:
-                    self.reset_timeout()
-                    if psdown:
-                        if (time.time() - psdown) > 5:
-
-                            for key in (held | pressed):
-                                (mapname, action, amount, axis) = keymap_sixaxis[key]
-                                self.xbmc.send_button_state(map=mapname, button=action, amount=0, down=0, axis=axis)
-
-                            raise Exception("PS3 Sixaxis powering off, user request")
-                    else:
-                        psdown = time.time()
-                else:
-                    if psdown:
-                        toggle_mouse = 1 - toggle_mouse
-                    psdown = 0
-
-                keys = set(getkeys(bflags))
-                released = (pressed | held) - keys
-                held     = (pressed | held) - released
-                pressed  = (keys - held) & pending
-                pending  = (keys - held)
-
-                for key in released:
-                    (mapname, action, amount, axis) = keymap_sixaxis[key]
-                    self.xbmc.send_button_state(map=mapname, button=action, amount=0, down=0, axis=axis)
-
-                for key in held:
-                    (mapname, action, amount, axis) = keymap_sixaxis[key]
-                    if amount > 0:
-                        amount = pressure[amount-1] * 256
-                        self.xbmc.send_button_state(map=mapname, button=action, amount=amount, down=1, axis=axis)
-
-                for key in pressed:
-                    (mapname, action, amount, axis) = keymap_sixaxis[key]
-                    if amount > 0:
-                        amount = pressure[amount-1] * 256
-                    self.xbmc.send_button_state(map=mapname, button=action, amount=amount, down=1, axis=axis)
-
-                if keys:
-                    self.reset_timeout()
-
 
         except Exception, e:
             printerr()
+        six.close()
         self.close_sockets()
 
 
@@ -229,7 +151,6 @@ class PS3RemoteThread ( StoppableThread ):
         self.current_xbmc = 0
 
     def run(self):
-        sixaxis.initialize(self.csock, self.isock)
         self.xbmc.connect()
         try:
             # start the zeroconf thread if possible

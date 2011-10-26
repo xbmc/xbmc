@@ -143,7 +143,7 @@ bool CGUIWindow::Load(TiXmlDocument &xmlDoc)
   // now load in the skin file
   SetDefaults();
 
-  CGUIControlFactory::GetInfoColor(pRootElement, "backgroundcolor", m_clearBackground);
+  CGUIControlFactory::GetInfoColor(pRootElement, "backgroundcolor", m_clearBackground, GetID());
   CGUIControlFactory::GetActions(pRootElement, "onload", m_loadActions);
   CGUIControlFactory::GetActions(pRootElement, "onunload", m_unloadActions);
   CGUIControlFactory::GetHitRect(pRootElement, m_hitRect);

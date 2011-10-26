@@ -45,9 +45,9 @@ namespace PERIPHERALS
     const CStdString &FileLocation(void) const     { return m_strFileLocation; }
     const CStdString &Location(void) const         { return m_strLocation; }
     int VendorId(void) const                       { return m_iVendorId; }
-    const char *VendorIdAsString(void) const       { return m_strVendorId; }
+    const char *VendorIdAsString(void) const       { return m_strVendorId.c_str(); }
     int ProductId(void) const                      { return m_iProductId; }
-    const char *ProductIdAsString(void) const      { return m_strProductId; }
+    const char *ProductIdAsString(void) const      { return m_strProductId.c_str(); }
     const PeripheralType Type(void) const          { return m_type; }
     const PeripheralBusType GetBusType(void) const { return m_busType; };
     const CStdString &DeviceName(void) const       { return m_strDeviceName; }
@@ -159,9 +159,9 @@ namespace PERIPHERALS
     CStdString                       m_strSettingsFile;
     CStdString                       m_strFileLocation;
     int                              m_iVendorId;
-    char *                           m_strVendorId;
+    CStdString                       m_strVendorId;
     int                              m_iProductId;
-    char *                           m_strProductId;
+    CStdString                       m_strProductId;
     bool                             m_bInitialised;
     bool                             m_bHidden;
     bool                             m_bError;

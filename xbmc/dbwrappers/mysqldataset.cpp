@@ -139,13 +139,13 @@ int MysqlDatabase::connect(bool create_new) {
       }
       else if (create_new)
       {
-        CLog::Log(LOGDEBUG, "Creating new db becuase you asked me.");
-
         char sqlcmd[512];
+        int ret;
+
         sprintf(sqlcmd, "CREATE DATABASE `%s`", db.c_str());
-        if ( query_with_reconnect(sqlcmd) )
+        if ( (ret=query_with_reconnect(sqlcmd)) != MYSQL_OK )
         {
-          throw DbErrors("Can't create database: '%s'\nError: %s", db.c_str(), strerror(errno));
+          throw DbErrors("Can't create new database: '%s' (%d)", db.c_str(), ret);
         }
       }
 
@@ -197,10 +197,11 @@ int MysqlDatabase::drop() {
   if (!active)
     throw DbErrors("Can't drop database: no active connection...");
   char sqlcmd[512];
+  int ret;
   sprintf(sqlcmd,"DROP DATABASE `%s`", db.c_str());
-  if ( query_with_reconnect(sqlcmd) )
+  if ( (ret=query_with_reconnect(sqlcmd)) != MYSQL_OK )
   {
-    throw DbErrors("Can't drop database: '%s'\nError: %s", db.c_str(), strerror(errno));
+    throw DbErrors("Can't drop database: '%s' (%d)", db.c_str(), ret);
   }
   disconnect();
   return DB_COMMAND_OK;
@@ -211,20 +212,16 @@ int MysqlDatabase::copy(const char *backup_name) {
     throw DbErrors("Can't copy database: no active connection...");
 
   char sql[512];
-
-  // create the new database
-  sprintf(sql, "CREATE DATABASE `%s`", backup_name);
-  if ( query_with_reconnect(sql) )
-    throw DbErrors("Can't create database for copy: '%s'\nError: %s", db.c_str(), strerror(errno));
+  int ret;
 
   // ensure we're connected to the db we are about to copy
-  if (mysql_select_db(conn, db.c_str()))
-    throw DbErrors("Can't connect to master database: '%s'",db.c_str());
+  if ( (ret=mysql_select_db(conn, db.c_str())) != MYSQL_OK )
+    throw DbErrors("Can't connect to source database: '%s'",db.c_str());
 
   // grab a list of base tables only (no views)
   sprintf(sql, "SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'");
-  if ( query_with_reconnect(sql) )
-    throw DbErrors("Can't determine base tables");
+  if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+    throw DbErrors("Can't determine base tables for copy.");
 
   // get list of all tables from old DB
   MYSQL_RES* res = mysql_store_result(conn);
@@ -234,8 +231,13 @@ int MysqlDatabase::copy(const char *backup_name) {
     if (mysql_num_rows(res) == 0)
     {
       mysql_free_result(res);
-      return -1; // EMPTY DB
+      throw DbErrors("The source database was unexpectedly empty.");
     }
+
+    // create the new database
+    sprintf(sql, "CREATE DATABASE `%s`", backup_name);
+    if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+      throw DbErrors("Can't create database for copy: '%s' (%d)", db.c_str(), ret);
 
     MYSQL_ROW row;
 
@@ -246,15 +248,15 @@ int MysqlDatabase::copy(const char *backup_name) {
       sprintf(sql, "CREATE TABLE %s.%s LIKE %s",
               backup_name, row[0], row[0]);
 
-      if (query_with_reconnect(sql))
-        throw DbErrors("Can't copy schema for table '%s'\nError: %s", db.c_str(), strerror(errno));
+      if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+        throw DbErrors("Can't copy schema for table '%s'\nError: %s", db.c_str(), ret);
 
       // copy the table data
       sprintf(sql, "INSERT INTO %s.%s SELECT * FROM %s",
               backup_name, row[0], row[0]);
 
-      if (query_with_reconnect(sql))
-        throw DbErrors("Can't copy data for table '%s'\nError: %s", db.c_str(), strerror(errno));
+      if ( (ret=query_with_reconnect(sql)) != MYSQL_OK )
+        throw DbErrors("Can't copy data for table '%s'\nError: %s", db.c_str(), ret);
     }
   }
 

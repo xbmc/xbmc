@@ -4583,6 +4583,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_strGenre = it->second.genre;
         pItem->GetVideoInfoTag()->m_strStudio = showStudio;
         pItem->GetVideoInfoTag()->m_strMPAARating = showMPAARating;
+        pItem->GetVideoInfoTag()->m_iIdShow = idShow;
         pItem->GetVideoInfoTag()->m_strShowTitle = showTitle;
         pItem->GetVideoInfoTag()->m_iEpisode = it->second.numEpisodes;
         pItem->SetProperty("totalepisodes", it->second.numEpisodes);
@@ -4618,6 +4619,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_strGenre = m_pDS->fv(3).get_asString();
         pItem->GetVideoInfoTag()->m_strStudio = showStudio;
         pItem->GetVideoInfoTag()->m_strMPAARating = showMPAARating;
+        pItem->GetVideoInfoTag()->m_iIdShow = idShow;
         pItem->GetVideoInfoTag()->m_strShowTitle = showTitle;
         int totalEpisodes = m_pDS->fv(6).get_asInt();
         int watchedEpisodes = m_pDS->fv(7).get_asInt();

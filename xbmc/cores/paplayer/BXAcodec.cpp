@@ -102,7 +102,8 @@ int BXACodec::ReadPCM(BYTE *pBuffer, int size, int *actualsize)
     return READ_SUCCESS;
   }
 
-  return READ_ERROR;
+  *actualsize = 0;
+  return READ_EOF;
 }
 
 bool BXACodec::CanInit()
