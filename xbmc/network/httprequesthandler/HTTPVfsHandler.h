@@ -28,7 +28,8 @@ class CHTTPVfsHandler : public IHTTPRequestHandler
 {
 public:
   CHTTPVfsHandler() { };
-
+  
+  virtual IHTTPRequestHandler* GetInstance() { return new CHTTPVfsHandler(); }
   virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
 
 #if (MHD_VERSION >= 0x00040001)

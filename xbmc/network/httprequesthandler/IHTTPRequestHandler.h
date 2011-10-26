@@ -56,6 +56,7 @@ class IHTTPRequestHandler
 public:
   virtual ~IHTTPRequestHandler() { }
 
+  virtual IHTTPRequestHandler* GetInstance() = 0;
   virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version) = 0;
 
 #if (MHD_VERSION >= 0x00040001)

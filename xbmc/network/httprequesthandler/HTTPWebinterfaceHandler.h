@@ -27,7 +27,8 @@ class CHTTPWebinterfaceHandler : public IHTTPRequestHandler
 {
 public:
   CHTTPWebinterfaceHandler() { };
-
+  
+  virtual IHTTPRequestHandler* GetInstance() { return new CHTTPWebinterfaceHandler(); }
   virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
 
 #if (MHD_VERSION >= 0x00040001)

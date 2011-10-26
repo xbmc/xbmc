@@ -117,17 +117,22 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 
   for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
   {
-    IHTTPRequestHandler *handler = *it;
-    if (handler->CheckHTTPRequest(connection, url, methodType, version))
+    IHTTPRequestHandler *requestHandler = *it;
+    if (requestHandler->CheckHTTPRequest(connection, url, methodType, version))
     {
+      IHTTPRequestHandler *handler = requestHandler->GetInstance();
       int ret = handler->HandleHTTPRequest(server, connection, url, methodType, version, upload_data, upload_data_size, con_cls);
       if (ret != MHD_YES)
+      {
+        delete handler;
         return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
+      }
 
       struct MHD_Response *response = NULL;
       switch (handler->GetHTTPResponseType())
       {
         case HTTPNone:
+          delete handler;
           return MHD_YES;
 
         case HTTPRedirect:
@@ -159,12 +164,16 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
           break;
 
         default:
+          delete handler;
           return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
           break;
       }
 
       if (ret == MHD_NO)
+      {
+        delete handler;
         return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
+      }
 
       map<string, string> header = handler->GetHTTPResponseHeaderFields();
       for (map<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
@@ -172,6 +181,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 
       ret = MHD_queue_response(connection, handler->GetHTTPResonseCode(), response);
       MHD_destroy_response(response);
+      delete handler;
 
       return ret;
     }
