@@ -12,9 +12,7 @@ passed_value = 0x03f5
 def find_sixaxes():
   res = []
   for bus in usb.busses():
-    print bus.dirname
     for dev in bus.devices:
-      print "-" + dev.filename
       if dev.idVendor == vendor and dev.idProduct == product:
         res.append(dev)
   return res
@@ -92,10 +90,24 @@ def update_pair(dev, mac):
 
 if __name__=="__main__":
     devs = find_sixaxes()
+
+    mac = None
+    if len(sys.argv) > 1:
+      try:
+        mac = sys.argv[1].split(':')
+        mac = tuple([int(x, 16) for x in mac])
+        if len(mac) != 6:
+          print "Invalid length of HCI address, should be 6 parts"
+          mac = None
+      except:
+        print "Failed to parse HCI address"
+        mac = None
     
     for dev in devs:
-      msg = get_pair(dev)
-      print "Found sixaxis paired to: %02x:%02x:%02x:%02x:%02x:%02x" % (msg[0], msg[1], msg[2], msg[3], msg[4], msg[5]); msg
+      if mac:
+        update_pair(dev, mac)
+      else:
+        print "Found sixaxis paired to: " + mac_to_string(get_pair(dev))
 
 
 
