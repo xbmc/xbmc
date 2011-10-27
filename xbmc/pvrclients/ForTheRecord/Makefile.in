@@ -25,13 +25,9 @@ SRCS   = utils.cpp \
         lib/jsoncpp/src/lib_json/json_reader.cpp \
         lib/jsoncpp/src/lib_json/json_writer.cpp \
         lib/jsoncpp/src/lib_json/json_value.cpp \
-		lib/tsreader/MemoryBuffer.cpp \
-		lib/tsreader/WaitEvent.cpp \
-		lib/tsreader/MemorySink.cpp \
-		lib/tsreader/MemoryReader.cpp \
-		lib/tsreader/FileReader.cpp \
-		lib/tsreader/MultiFileReader.cpp \
-		lib/tsreader/TSReader.cpp \
+	lib/tsreader/FileReader.cpp \
+	lib/tsreader/MultiFileReader.cpp \
+	lib/tsreader/TSReader.cpp \
         KeepAliveThread.cpp \
         fortherecordrpc.cpp \
         pvrclient-fortherecord.cpp \

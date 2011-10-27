@@ -105,7 +105,7 @@ long MultiFileReader::OpenFile()
   //For radio the buffer sometimes needs some time to become available, so wait try it more than once
 #if defined(TARGET_WINDOWS)
   unsigned long tc=GetTickCount();
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
   struct timeval tstart;
   gettimeofday(&tstart, NULL);
 #else
@@ -115,7 +115,7 @@ long MultiFileReader::OpenFile()
   {
 #if defined(TARGET_WINDOWS)
     if (GetTickCount()-tc>MAX_BUFFER_TIMEOUT)
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
     struct timeval tnow, tdelta;
     gettimeofday(&tnow, NULL);
     timersub(&tnow, &tstart, &tdelta);
@@ -558,7 +558,7 @@ long MultiFileReader::RefreshTSBufferFile()
       // Move the wchar buffer pointer to the next wchar string
 #if defined(TARGET_WINDOWS)
       pwCurrFile += (length + 1);
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
       unsigned short *pus = (unsigned short *) pwCurrFile;
       pus += (length + 1);
       pwCurrFile = (wchar_t *) pus;
@@ -690,7 +690,7 @@ long MultiFileReader::GetFileLength(const char* pFilename, int64_t &length)
     return HRESULT_FROM_WIN32(dwErr);
   }
   return S_OK;
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
   //USES_CONVERSION;
 
   length = 0;
@@ -802,7 +802,7 @@ size_t MultiFileReader::WcsLen(const void *str)
 {
 #if defined(TARGET_WINDOWS)
   return wcslen((const wchar_t *)str);
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
   const unsigned short *eos = (const unsigned short*)str;
   while( *eos++ ) ;
   return( (size_t)(eos - (const unsigned short*)str) -1);
@@ -816,7 +816,7 @@ size_t MultiFileReader::WcsToMbs(char *s, const void *w, size_t n)
 {
 #if defined(TARGET_WINDOWS)
   return wcstombs(s, (const wchar_t *)w, n);
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
   size_t i = 0;
   const unsigned short *wc = (const unsigned short*) w;
   while(wc[i] && (i < n))

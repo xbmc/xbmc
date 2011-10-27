@@ -884,7 +884,7 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
     }
     int retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), filename);
 
-#if defined(TARGET_LINUX)
+#if defined(TARGET_LINUX) || defined(TARGET_OSX)
     std::string CIFSname = filename;
     size_t found;
     while ((found = CIFSname.find("\\")) != std::string::npos)
