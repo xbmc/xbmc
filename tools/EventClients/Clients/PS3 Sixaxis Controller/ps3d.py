@@ -33,6 +33,12 @@ if os.path.exists("../../lib/python"):
     from ps3 import sixaxis
     from ps3_remote import process_keys as process_remote
     try:
+        from ps3 import sixwatch
+    except Exception, e:
+        print "Failed to import sixwatch now disabled: " + str(e)
+        sixwatch = None
+
+    try:
         import zeroconf
     except:
         zeroconf = None
@@ -45,6 +51,11 @@ else:
     from xbmc.ps3 import sixaxis
     from xbmc.ps3_remote import process_keys as process_remote
     from xbmc.defs import *
+    try:
+        from xbmc.ps3 import sixwatch
+    except Exception, e:
+        print "Failed to import sixwatch now disabled: " + str(e)
+        sixwatch = None
     try:
         import xbmc.zeroconf as zeroconf
     except:
@@ -235,6 +246,18 @@ class PS3RemoteThread ( StoppableThread ):
                 pass
         return
 
+class SixWatch(threading.Thread):
+    def __init__(self, mac):
+        threading.Thread.__init__(self)
+        self.mac = mac
+        self.daemon = True
+        self.start()
+    def run(self):
+        try:
+            sixwatch.main(self.mac)
+        except Exception, e:
+            print "Exception caught in sixwatch, aborting: " + str(e)
+            pass
 
 class ZeroconfThread ( threading.Thread ):
     """
@@ -294,6 +317,15 @@ def start_hidd(bdaddr=None, ipaddr="127.0.0.1"):
     devices = [ 'PLAYSTATION(R)3 Controller',
                 'BD Remote Control' ]
     hid = HID(bdaddr)
+    watch = None
+    if sixwatch:
+        try:
+            print "Starting USB sixwatch"
+            watch = SixWatch(hid.get_local_address())
+        except Exception, e:
+            print "Failed to initialize sixwatch" + str(e)
+            pass
+
     while True:
         if hid.listen():
             (csock, addr) = hid.get_control_socket()
