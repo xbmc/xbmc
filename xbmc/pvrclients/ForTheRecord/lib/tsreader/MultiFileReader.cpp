@@ -265,6 +265,7 @@ long MultiFileReader::Read(unsigned char* pbData, unsigned long lDataLength, uns
     int64_t bytesToRead = file->length - seekPosition;
     if (lDataLength > bytesToRead)
     {
+      XBMC->Log(LOG_DEBUG, "%s: datalength %lu bytesToRead %lli.", __FUNCTION__, lDataLength, bytesToRead);
       hr = m_TSFile.Read(pbData, (unsigned long)bytesToRead, &bytesRead);
       if (FAILED(hr))
       {
