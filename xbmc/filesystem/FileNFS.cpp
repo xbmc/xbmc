@@ -158,7 +158,8 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
 {
     bool ret = false;
     
-    if(m_exportList.empty())
+    //refresh exportlist if empty or hostname change
+    if(m_exportList.empty() || !url.GetHostName().Equals(m_hostName,false))
     {
       m_exportList = GetExportList(url);
     }
