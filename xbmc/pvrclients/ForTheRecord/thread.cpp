@@ -332,7 +332,7 @@ void cThread::Cancel(int WaitSeconds)
           return;
         cCondWait::SleepMs(10);
       }
-      XBMC->Log(LOG_ERROR, "ERROR: %s thread %d won't end (waited %d seconds) - canceling it...", description ? description : "", childThreadId, WaitSeconds);
+      XBMC->Log(LOG_INFO, "%s thread %d won't end (waited %d seconds) - canceling it...", description ? description : "", childThreadId, WaitSeconds);
     }
     pthread_cancel(childTid);
 #if !defined(__WINDOWS__)

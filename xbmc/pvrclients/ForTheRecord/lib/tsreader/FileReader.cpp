@@ -157,17 +157,8 @@ long FileReader::OpenFile()
               NULL);                            // Template
 #elif defined(TARGET_LINUX)
     // Try to open the file
-    // IFile* myFile = CFileFactory::CreateLoader(m_pFileName);
-    bool blup = CFile::Exists(m_pFileName);
-    if (blup)
-    {
-        XBMC->Log(LOG_DEBUG, "CFile::Exists(%s) succeeded.", m_pFileName);
-    }
-    else
-    {
-        XBMC->Log(LOG_DEBUG, "CFile::Exists(%s) failed.", m_pFileName);
-    }
-    m_hFile.Open(m_pFileName, READ_NO_CACHE);        // Open in readonly mode with this filename
+    XBMC->Log(LOG_INFO, "FileReader::OpenFile() %s %s.", m_pFileName, CFile::Exists(m_pFileName) ? "exists" : "not found");
+    m_hFile.Open(m_pFileName, READ_CHUNKED);        // Open in readonly mode with this filename
 #else
 #error FIXME: Add an OpenFile() implementation for your OS
 #endif
@@ -410,12 +401,9 @@ int64_t FileReader::GetFilePointer()
   off64_t myOffset;
   myOffset = m_hFile.Seek(0, SEEK_CUR);
 
-  int64_t start;
-  int64_t length = 0;
-  GetFileSize(&start, &length);
-
   int64_t startPos = 0;
-  GetStartPosition(&startPos);
+  int64_t length = 0;
+  GetFileSize(&startPos, &length);
 
   if (startPos > 0)
   {

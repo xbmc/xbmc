@@ -915,14 +915,14 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
     {
       XBMC->Log(LOG_DEBUG, "Re-using existing TsReader...");
       m_tsreader->OnZap();
-      usleep(100000);
+      usleep(200000);
     } else {
       m_tsreader = new CTsReader();
       // Open Timeshift buffer
       // TODO: rtsp support
       XBMC->Log(LOG_DEBUG, "Open TsReader");
       m_tsreader->Open(filename.c_str());
-      usleep(5000000);
+      usleep(200000);
     }
 
 #endif
