@@ -396,13 +396,16 @@ void CRenderSystemGLES::SetCameraPosition(const CPoint &camera, int screenWidth,
   g_matrices.MatrixMode(MM_MODELVIEW);
 
   glGetIntegerv(GL_VIEWPORT, m_viewPort);
-  glGetFloatv(GL_MODELVIEW_MATRIX, m_view);
-  glGetFloatv(GL_PROJECTION_MATRIX, m_projection);
+  GLfloat* matx;
+  matx = g_matrices.GetMatrix(MM_MODELVIEW);
+  memcpy(m_view, matx, 16 * sizeof(GLfloat));
+  matx = g_matrices.GetMatrix(MM_PROJECTION);
+  memcpy(m_projection, matx, 16 * sizeof(GLfloat));
 
   g_graphicsContext.EndPaint();
 }
 
-void CRenderSystemGLES::Platform(float &x, float &y, float &z)
+void CRenderSystemGLES::Project(float &x, float &y, float &z)
 {
   GLfloat coordX, coordY, coordZ;
   if (g_matrices.Project(x, y, z, m_view, m_projection, m_viewPort, &coordX, &coordY, &coordZ))
