@@ -35,7 +35,7 @@ namespace PVR
 
   public:
     CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio);
-    virtual ~CGUIWindowPVRChannels(void);
+    virtual ~CGUIWindowPVRChannels(void) {};
 
     virtual void GetContextButtons(int itemNumber, CContextButtons &buttons) const;
     virtual bool OnContextButton(int itemNumber, CONTEXT_BUTTON button);
@@ -45,6 +45,7 @@ namespace PVR
     virtual void UpdateData(void);
     virtual void Notify(const Observable &obs, const CStdString& msg);
     virtual void ResetObservers(void);
+    virtual void UnregisterObservers(void);
 
   private:
     virtual bool OnClickButton(CGUIMessage &message);

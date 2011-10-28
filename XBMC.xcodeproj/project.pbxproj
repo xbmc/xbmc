@@ -9740,6 +9740,7 @@
 					lib,
 					lib/ffmpeg,
 					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/python2.6,
@@ -9786,7 +9787,7 @@
 					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/osx-10.4_i386";
 				ZERO_LINK = NO;
 			};
@@ -9836,6 +9837,7 @@
 					lib,
 					lib/ffmpeg,
 					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/python2.6,
@@ -9883,7 +9885,7 @@
 					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/osx-10.4_i386";
 				ZERO_LINK = NO;
 			};
@@ -9991,6 +9993,7 @@
 					lib,
 					lib/ffmpeg,
 					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/python2.6,
@@ -10039,7 +10042,7 @@
 					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				VALID_ARCHS = ppc;
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/osx-10.4_ppc";
 				ZERO_LINK = NO;
@@ -10090,6 +10093,7 @@
 					lib,
 					lib/ffmpeg,
 					$XBMC_DEPENDS/include,
+					$XBMC_DEPENDS/include/libcec,
 					$XBMC_DEPENDS/include/mysql,
 					$XBMC_DEPENDS/include/freetype2,
 					$XBMC_DEPENDS/include/python2.6,
@@ -10138,7 +10142,7 @@
 					"-lmysqlclient",
 				);
 				PRODUCT_NAME = XBMC;
-				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
+				USER_HEADER_SEARCH_PATHS = "$XBMC_DEPENDS/include $XBMC_DEPENDS/include/libcec $XBMC_DEPENDS/include/mysql $XBMC_DEPENDS/include/freetype2 $XBMC_DEPENDS/include/python2.6";
 				VALID_ARCHS = ppc;
 				XBMC_DEPENDS = "/Users/Shared/xbmc-depends/osx-10.4_ppc";
 				ZERO_LINK = NO;

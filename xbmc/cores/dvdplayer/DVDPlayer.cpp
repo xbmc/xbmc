@@ -1053,10 +1053,11 @@ void CDVDPlayer::Process()
         break;
       }
 
+      OpenDefaultStreams();
+
       if (CachePVRStream())
         SetCaching(CACHESTATE_PVR);
 
-      OpenDefaultStreams();
       UpdateApplication(0);
       UpdatePlayState(0);
     }
@@ -1490,13 +1491,13 @@ void CDVDPlayer::HandlePlaySpeed()
     bool bGotVideo(m_pDemuxer->GetNrOfVideoStreams() > 0);
     bool bAudioLevelOk(m_dvdPlayerAudio.m_messageQueue.GetLevel() > g_advancedSettings.m_iPVRMinAudioCacheLevel);
     bool bVideoLevelOk(m_dvdPlayerVideo.m_messageQueue.GetLevel() > g_advancedSettings.m_iPVRMinVideoCacheLevel);
-    bool bAudioFullNotStarted(!m_dvdPlayerAudio.AcceptsData() && !m_CurrentVideo.started);
-    bool bVideoFullNotStarted(!m_dvdPlayerVideo.AcceptsData() && !m_CurrentAudio.started);
+    bool bAudioFull(!m_dvdPlayerAudio.AcceptsData());
+    bool bVideoFull(!m_dvdPlayerVideo.AcceptsData());
 
     if (/* if all streams got at least g_advancedSettings.m_iPVRMinCacheLevel in their buffers, we're done */
         ((bGotVideo || bGotAudio) && (!bGotAudio || bAudioLevelOk) && (!bGotVideo || bVideoLevelOk)) ||
-        /* or if one of the buffers is full but the stream hasn't been started */
-        ((bAudioFullNotStarted || bVideoFullNotStarted)))
+        /* or if one of the buffers is full */
+        (bAudioFull || bVideoFull))
     {
       CLog::Log(LOGDEBUG, "set caching from pvr to done. audio (%d) = %d. video (%d) = %d",
           bGotAudio, m_dvdPlayerAudio.m_messageQueue.GetLevel(),

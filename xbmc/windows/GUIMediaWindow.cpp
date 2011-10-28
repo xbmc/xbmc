@@ -907,7 +907,7 @@ bool CGUIMediaWindow::OnClick(int iItem)
         if (!strLockType.IsEmpty() && !g_passwordManager.IsItemUnlocked(pItem.get(), strLockType))
             return true;
 
-      if (!HaveDiscOrConnection(pItem->m_iDriveType))
+      if (!HaveDiscOrConnection(pItem->GetPath(), pItem->m_iDriveType))
         return true;
     }
 
@@ -1003,11 +1003,11 @@ bool CGUIMediaWindow::OnSelect(int item)
 
 // \brief Checks if there is a disc in the dvd drive and whether the
 // network is connected or not.
-bool CGUIMediaWindow::HaveDiscOrConnection(int iDriveType)
+bool CGUIMediaWindow::HaveDiscOrConnection(const CStdString& strPath, int iDriveType)
 {
   if (iDriveType==CMediaSource::SOURCE_TYPE_DVD)
   {
-    if (!g_mediaManager.IsDiscInDrive())
+    if (!g_mediaManager.IsDiscInDrive(strPath))
     {
       CGUIDialogOK::ShowAndGetInput(218, 219, 0, 0);
       return false;

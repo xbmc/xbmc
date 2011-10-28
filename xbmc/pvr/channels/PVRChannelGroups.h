@@ -38,30 +38,6 @@ namespace PVR
   {
     friend class CPVRChannelGroupsContainer;
 
-  private:
-    bool             m_bRadio;      /*!< true if this is a container for radio channels, false if it is for tv channels */
-    CCriticalSection m_critSection;
-
-    /*!
-     * @brief Get the index in this container of the channel group with the given ID.
-     * @param iGroupId The ID to find.
-     * @return The index or -1 if it wasn't found.
-     */
-    int GetIndexForGroupID(int iGroupId) const;
-    int GetIndexForGroupName(const CStdString &strName) const;
-    bool LoadUserDefinedChannelGroups(void);
-    bool GetGroupsFromClients(void);
-
-  protected:
-    /*!
-     * @brief Update the contents of the groups in this container.
-     * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
-     * @return True if the update was successful, false otherwise.
-     */
-    bool Update(bool bChannelsOnly = false);
-
-    bool UpdateGroupsEntries(const CPVRChannelGroups &groups);
-
   public:
     /*!
      * @brief Create a new group container.
@@ -116,13 +92,6 @@ namespace PVR
      * @return The amount of items that were added.
      */
     int GetGroupList(CFileItemList* results) const;
-
-    /*!
-     * @brief Get the ID of the first channel in a group.
-     * @param iGroupId The ID of the group.
-     * @return The ID of the first channel or 1 if it wasn't found.
-     */
-    int GetFirstChannelForGroupID(int iGroupId) const;
 
     /*!
      * @brief Get the ID of the previous group in this container.
@@ -201,5 +170,29 @@ namespace PVR
     bool PersistAll(void);
 
     bool IsRadio(void) const { return m_bRadio; }
+
+  protected:
+    /*!
+     * @brief Update the contents of the groups in this container.
+     * @param bChannelsOnly Set to true to only update channels, not the groups themselves.
+     * @return True if the update was successful, false otherwise.
+     */
+    bool Update(bool bChannelsOnly = false);
+
+    bool UpdateGroupsEntries(const CPVRChannelGroups &groups);
+
+  private:
+    bool             m_bRadio;      /*!< true if this is a container for radio channels, false if it is for tv channels */
+    CCriticalSection m_critSection;
+
+    /*!
+     * @brief Get the index in this container of the channel group with the given ID.
+     * @param iGroupId The ID to find.
+     * @return The index or -1 if it wasn't found.
+     */
+    int GetIndexForGroupID(int iGroupId) const;
+    int GetIndexForGroupName(const CStdString &strName) const;
+    bool LoadUserDefinedChannelGroups(void);
+    bool GetGroupsFromClients(void);
   };
 }

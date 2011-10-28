@@ -32,6 +32,7 @@
 #include "cores/paplayer/BXAcodec.h"
 #include "music/tags/MusicInfoTag.h"
 #include "FileItem.h"
+#include "GUIInfoManager.h"
 #include "utils/Variant.h"
 #include "settings/AdvancedSettings.h"
 
@@ -236,7 +237,7 @@ bool CAirTunesServer::StartServer(int port, bool nonlocal, bool usePassword, con
   if (success)
   {
     CStdString appName;
-    appName.Format("%s@XBMC", m_macAddress.c_str());
+    appName.Format("%s@%s", m_macAddress.c_str(), g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME).c_str());
 
     std::map<std::string, std::string> txt;
     txt["cn"] = "0,1";

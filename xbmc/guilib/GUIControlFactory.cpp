@@ -233,11 +233,11 @@ bool CGUIControlFactory::GetAspectRatio(const TiXmlNode* pRootNode, const char* 
   return true;
 }
 
-bool CGUIControlFactory::GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info)
+bool CGUIControlFactory::GetInfoTexture(const TiXmlNode* pRootNode, const char* strTag, CTextureInfo &image, CGUIInfoLabel &info, int parentID)
 {
   GetTexture(pRootNode, strTag, image);
   image.filename = "";
-  GetInfoLabel(pRootNode, strTag, info);
+  GetInfoLabel(pRootNode, strTag, info, parentID);
   return true;
 }
 
@@ -449,26 +449,26 @@ bool CGUIControlFactory::GetColor(const TiXmlNode *control, const char *strTag, 
   return false;
 }
 
-bool CGUIControlFactory::GetInfoColor(const TiXmlNode *control, const char *strTag, CGUIInfoColor &value)
+bool CGUIControlFactory::GetInfoColor(const TiXmlNode *control, const char *strTag, CGUIInfoColor &value,int parentID)
 {
   const TiXmlElement* node = control->FirstChildElement(strTag);
   if (node && node->FirstChild())
   {
-    value.Parse(node->FirstChild()->Value());
+    value.Parse(node->FirstChild()->Value(), parentID);
     return true;
   }
   return false;
 }
 
-void CGUIControlFactory::GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel)
+void CGUIControlFactory::GetInfoLabel(const TiXmlNode *pControlNode, const CStdString &labelTag, CGUIInfoLabel &infoLabel, int parentID)
 {
   vector<CGUIInfoLabel> labels;
-  GetInfoLabels(pControlNode, labelTag, labels);
+  GetInfoLabels(pControlNode, labelTag, labels, parentID);
   if (labels.size())
     infoLabel = labels[0];
 }
 
-bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CGUIInfoLabel &infoLabel)
+bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CGUIInfoLabel &infoLabel, int parentID)
 {
   if (!element || !element->FirstChild())
     return false;
@@ -486,11 +486,11 @@ bool CGUIControlFactory::GetInfoLabelFromElement(const TiXmlElement *element, CG
     fallback = g_localizeStrings.Get(atoi(fallback));
   else
     g_charsetConverter.unknownToUTF8(fallback);
-  infoLabel.SetLabel(label, fallback);
+  infoLabel.SetLabel(label, fallback, parentID);
   return true;
 }
 
-void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, vector<CGUIInfoLabel> &infoLabels)
+void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStdString &labelTag, vector<CGUIInfoLabel> &infoLabels, int parentID)
 {
   // we can have the following infolabels:
   // 1.  <number>1234</number> -> direct number
@@ -509,7 +509,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
   while (labelNode)
   {
     CGUIInfoLabel label;
-    if (GetInfoLabelFromElement(labelNode, label))
+    if (GetInfoLabelFromElement(labelNode, label, parentID))
       infoLabels.push_back(label);
     labelNode = labelNode->NextSiblingElement(labelTag);
   }
@@ -526,7 +526,7 @@ void CGUIControlFactory::GetInfoLabels(const TiXmlNode *pControlNode, const CStd
       {
         CStdString info;
         info.Format("$INFO[%s]", infoNode->FirstChild()->Value());
-        infoLabels.push_back(CGUIInfoLabel(info, fallback));
+        infoLabels.push_back(CGUIInfoLabel(info, fallback, parentID));
       }
       infoNode = infoNode->NextSibling("info");
     }
@@ -742,7 +742,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   }
   XMLUtils::GetInt(pControlNode, "pagecontrol", pageControl);
 
-  GetInfoColor(pControlNode, "colordiffuse", colorDiffuse);
+  GetInfoColor(pControlNode, "colordiffuse", colorDiffuse, parentID);
 
   GetConditionalVisibility(pControlNode, visibleCondition, allowHiddenFocus);
   XMLUtils::GetString(pControlNode, "enable", enableCondition);
@@ -750,11 +750,11 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   CRect animRect(posX, posY, posX + width, posY + height);
   GetAnimations(pControlNode, animRect, parentID, animations);
 
-  GetInfoColor(pControlNode, "textcolor", labelInfo.textColor);
-  GetInfoColor(pControlNode, "focusedcolor", labelInfo.focusedColor);
-  GetInfoColor(pControlNode, "disabledcolor", labelInfo.disabledColor);
-  GetInfoColor(pControlNode, "shadowcolor", labelInfo.shadowColor);
-  GetInfoColor(pControlNode, "selectedcolor", labelInfo.selectedColor);
+  GetInfoColor(pControlNode, "textcolor", labelInfo.textColor, parentID);
+  GetInfoColor(pControlNode, "focusedcolor", labelInfo.focusedColor, parentID);
+  GetInfoColor(pControlNode, "disabledcolor", labelInfo.disabledColor, parentID);
+  GetInfoColor(pControlNode, "shadowcolor", labelInfo.shadowColor, parentID);
+  GetInfoColor(pControlNode, "selectedcolor", labelInfo.selectedColor, parentID);
   XMLUtils::GetFloat(pControlNode, "textoffsetx", labelInfo.offsetX);
   XMLUtils::GetFloat(pControlNode, "textoffsety", labelInfo.offsetY);
   int angle = 0;  // use the negative angle to compensate for our vertically flipped cartesian plane
@@ -800,7 +800,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetTexture(pControlNode, "textureleftfocus", textureLeftFocus);
   GetTexture(pControlNode, "texturerightfocus", textureRightFocus);
 
-  GetInfoColor(pControlNode, "spincolor", spinInfo.textColor);
+  GetInfoColor(pControlNode, "spincolor", spinInfo.textColor, parentID);
   if (XMLUtils::GetString(pControlNode, "spinfont", strFont))
     spinInfo.font = g_fontManager.GetFont(strFont);
   if (!spinInfo.font) spinInfo.font = labelInfo.font;
@@ -829,8 +829,8 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   XMLUtils::GetString(pControlNode, "title", strTitle);
   XMLUtils::GetString(pControlNode, "tagset", strRSSTags);
-  GetInfoColor(pControlNode, "headlinecolor", headlineColor);
-  GetInfoColor(pControlNode, "titlecolor", textColor3);
+  GetInfoColor(pControlNode, "headlinecolor", headlineColor, parentID);
+  GetInfoColor(pControlNode, "titlecolor", textColor3, parentID);
 
   if (XMLUtils::GetString(pControlNode, "subtype", strSubType))
   {
@@ -861,7 +861,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   GetTexture(pControlNode, "overlaytexture", textureOverlay);
 
   // the <texture> tag can be overridden by the <info> tag
-  GetInfoTexture(pControlNode, "texture", texture, textureFile);
+  GetInfoTexture(pControlNode, "texture", texture, textureFile, parentID);
 #ifdef PRE_SKIN_VERSION_9_10_COMPATIBILITY
   if (type == CGUIControl::GUICONTROL_IMAGE && insideContainer && textureFile.IsConstant())
     aspect.ratio = CAspectRatio::AR_STRETCH;
@@ -874,7 +874,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
 
   // fade label can have a whole bunch, but most just have one
   vector<CGUIInfoLabel> infoLabels;
-  GetInfoLabels(pControlNode, "label", infoLabels);
+  GetInfoLabels(pControlNode, "label", infoLabels, parentID);
 
   GetString(pControlNode, "label", strLabel);
   GetString(pControlNode, "altlabel", altLabel);
@@ -896,7 +896,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
   XMLUtils::GetInt(pControlNode, "timeblocks", timeBlocks);
   XMLUtils::GetInt(pControlNode, "rulerunit", rulerUnit);
 
-  GetInfoTexture(pControlNode, "imagepath", texture, texturePath);
+  GetInfoTexture(pControlNode, "imagepath", texture, texturePath, parentID);
 
   XMLUtils::GetUInt(pControlNode,"timeperimage", timePerImage);
   XMLUtils::GetUInt(pControlNode,"fadetime", fadeTime);
@@ -1039,7 +1039,7 @@ CGUIControl* CGUIControlFactory::Create(int parentID, const CRect &rect, TiXmlEl
       labelInfo, strLabel);
 
     CGUIInfoLabel hint_text;
-    GetInfoLabel(pControlNode, "hinttext", hint_text);
+    GetInfoLabel(pControlNode, "hinttext", hint_text, parentID);
     ((CGUIEditControl *) control)->SetHint(hint_text);
 
     if (bPassword)

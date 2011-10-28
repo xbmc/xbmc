@@ -38,9 +38,10 @@ CGUIWindowPVRTimers::CGUIWindowPVRTimers(CGUIWindowPVR *parent) :
 {
 }
 
-CGUIWindowPVRTimers::~CGUIWindowPVRTimers(void)
+void CGUIWindowPVRTimers::UnregisterObservers(void)
 {
-  if(g_PVRTimers)
+  CSingleLock lock(m_critSection);
+  if (g_PVRTimers)
     g_PVRTimers->UnregisterObserver(this);
 }
 

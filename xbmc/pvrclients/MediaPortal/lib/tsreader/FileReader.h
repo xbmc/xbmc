@@ -67,10 +67,10 @@ class FileReader
     virtual int HasData(){return 0; } ;
 
   protected:
-#ifdef _WIN32
+#if defined(TARGET_WINDOWS)
     HANDLE   m_hFile;               // Handle to file for streaming
     HANDLE   m_hInfoFile;           // Handle to Infofile for filesize from FileWriter
-#elif defined _LINUX
+#elif defined(TARGET_LINUX)
     int      m_hFile;               // Handle to file for streaming
     int      m_hInfoFile;           // Handle to Infofile for filesize from FileWriter
 #endif

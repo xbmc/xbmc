@@ -37,13 +37,13 @@ CPeripheral::CPeripheral(const PeripheralType type, const PeripheralBusType busT
   m_strDeviceName(strDeviceName),
   m_strFileLocation(StringUtils::EmptyString),
   m_iVendorId(iVendorId),
-  m_strVendorId(PeripheralTypeTranslator::IntToHexString(iVendorId)),
   m_iProductId(iProductId),
-  m_strProductId(PeripheralTypeTranslator::IntToHexString(iProductId)),
   m_bInitialised(false),
   m_bHidden(false),
   m_bError(false)
 {
+  PeripheralTypeTranslator::FormatHexString(iVendorId, m_strVendorId);
+  PeripheralTypeTranslator::FormatHexString(iProductId, m_strProductId);
   m_strFileLocation.Format("peripherals://%s/%s.dev", PeripheralTypeTranslator::BusTypeToString(busType), strLocation.c_str());
 }
 
@@ -54,9 +54,9 @@ CPeripheral::CPeripheral(void) :
   m_strDeviceName(StringUtils::EmptyString),
   m_strFileLocation(StringUtils::EmptyString),
   m_iVendorId(0),
-  m_strVendorId(PeripheralTypeTranslator::IntToHexString(0)),
+  m_strVendorId("0000"),
   m_iProductId(0),
-  m_strProductId(PeripheralTypeTranslator::IntToHexString(0)),
+  m_strProductId("0000"),
   m_bInitialised(false),
   m_bHidden(false)
 {
@@ -135,7 +135,7 @@ bool CPeripheral::Initialise(void)
     return bReturn;
 
   g_peripherals.GetSettingsFromMapping(*this);
-  m_strSettingsFile.Format("special://profile/peripheral_data/%s_%s_%s.xml", PeripheralTypeTranslator::BusTypeToString(m_busType), m_strVendorId, m_strProductId);
+  m_strSettingsFile.Format("special://profile/peripheral_data/%s_%s_%s.xml", PeripheralTypeTranslator::BusTypeToString(m_busType), m_strVendorId.c_str(), m_strProductId.c_str());
   LoadPersistedSettings();
 
   for (unsigned int iFeaturePtr = 0; iFeaturePtr < m_features.size(); iFeaturePtr++)

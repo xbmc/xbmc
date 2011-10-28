@@ -276,11 +276,6 @@ void CPVRManager::Process(void)
   if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
 
-  /* signal to window that clients are loaded */
-  CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
-  if (pWindow)
-    pWindow->UnlockWindow();
-
   /* check whether all channel icons are cached */
   m_channelGroups->GetGroupAllRadio()->CacheIcons();
   m_channelGroups->GetGroupAllTV()->CacheIcons();
@@ -796,6 +791,8 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
   if (XbmcThreads::SystemClockMillis() - m_LastChannelChanged >= (unsigned int) g_guiSettings.GetInt("pvrplayback.channelentrytimeout") && m_LastChannel != m_PreviousChannel[m_PreviousChannelIndex])
      m_PreviousChannel[m_PreviousChannelIndex ^= 1] = m_LastChannel;
+  else
+    m_LastChannelChanged = XbmcThreads::SystemClockMillis();
 
   return false;
 }
@@ -918,26 +915,6 @@ int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
   lock.Leave();
 
   return !m_guiInfo ? 0 : m_guiInfo->TranslateIntInfo(dwInfo);
-}
-
-bool CPVRManager::HasTimer(void) const
-{
-  CSingleLock lock(m_critSection);
-  if (!m_bLoaded)
-    return false;
-  lock.Leave();
-
-  return !m_guiInfo ? false : m_guiInfo->HasTimers();
-}
-
-bool CPVRManager::IsRecording(void) const
-{
-  CSingleLock lock(m_critSection);
-  if (!m_bLoaded)
-    return false;
-  lock.Leave();
-
-  return !m_guiInfo ? false : m_guiInfo->IsRecording();
 }
 
 void CPVRManager::ShowPlayerInfo(int iTimeout)

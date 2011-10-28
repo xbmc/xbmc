@@ -792,24 +792,45 @@ bool CGUIWindowFullScreen::OnMessage(CGUIMessage& message)
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED, GetID(), iControl);
         OnMessage(msg);
         CStdString strLabel = msg.GetLabel();
-        if (msg.GetParam1() != 0)
-        {
-          const CPVRChannelGroups *groups = g_PVRChannelGroups->Get(g_PVRManager.IsPlayingRadio());
-          CPVRChannelGroup *selectedGroup = (CPVRChannelGroup *) groups->GetByName(strLabel);
 
-          // Switch to the first channel of the new group if the new group ID is
-          // different from the current one.
-          if (selectedGroup && *selectedGroup != *g_PVRManager.GetPlayingGroup(selectedGroup->IsRadio()))
+        CPVRChannel playingChannel;
+        if (g_PVRManager.GetCurrentChannel(&playingChannel))
+        {
+          CPVRChannelGroup *selectedGroup = (CPVRChannelGroup *) g_PVRChannelGroups->Get(playingChannel.IsRadio())->GetByName(strLabel);
+          if (selectedGroup)
           {
             g_PVRManager.SetPlayingGroup(selectedGroup);
-            OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) groups->GetFirstChannelForGroupID(selectedGroup->GroupID())));
-          }
+            CLog::Log(LOGDEBUG, "%s - switched to group '%s'", __FUNCTION__, selectedGroup->GroupName().c_str());
 
-          // hide the control and reset focus
-          m_bGroupSelectShow = false;
-          SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
-//        SET_CONTROL_FOCUS(0, 0);
+            if (!selectedGroup->IsGroupMember(playingChannel))
+            {
+              CLog::Log(LOGDEBUG, "%s - channel '%s' is not a member of '%s', switching to channel 1 of the new group", __FUNCTION__, playingChannel.ChannelName().c_str(), selectedGroup->GroupName().c_str());
+              const CPVRChannel *switchChannel = selectedGroup->GetByChannelNumber(1);
+              if (switchChannel)
+                OnAction(CAction(ACTION_CHANNEL_SWITCH, (float) switchChannel->ChannelNumber()));
+              else
+              {
+                CLog::Log(LOGERROR, "%s - cannot find channel '1' in group %s", __FUNCTION__, selectedGroup->GroupName().c_str());
+                g_application.getApplicationMessenger().MediaStop(false);
+              }
+            }
+          }
+          else
+          {
+            CLog::Log(LOGERROR, "%s - could not switch to group '%s'", __FUNCTION__, selectedGroup->GroupName().c_str());
+            g_application.getApplicationMessenger().MediaStop(false);
+          }
         }
+        else
+        {
+          CLog::Log(LOGERROR, "%s - cannot find the current channel", __FUNCTION__);
+          g_application.getApplicationMessenger().MediaStop(false);
+        }
+
+        // hide the control and reset focus
+        m_bGroupSelectShow = false;
+        SET_CONTROL_HIDDEN(CONTROL_GROUP_CHOOSER);
+//      SET_CONTROL_FOCUS(0, 0);
 
         return true;
       }
@@ -1243,20 +1264,24 @@ void CGUIWindowFullScreen::FillInTVGroups()
   g_windowManager.SendMessage(msgReset);
 
   const CPVRChannelGroups *groups = g_PVRChannelGroups->Get(g_PVRManager.IsPlayingRadio());
-
-  int iGroup        = 0;
-  int iCurrentGroup = 0;
   const CPVRChannelGroup *currentGroup = g_PVRManager.GetPlayingGroup(false);
-  for (int i = 0; i < (int) groups->size(); ++i)
-  {
-    if (*groups->at(i) == *currentGroup)
-      iCurrentGroup = iGroup;
 
-    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_CHOOSER, iGroup++);
-    msg.SetLabel(groups->at(i)->GroupName());
+  int iListGroupPtr    = 0;
+  int iCurrentGroupPtr = 0;
+  for (int iGroupPtr = 0; iGroupPtr < (int) groups->size(); iGroupPtr++)
+  {
+    /* skip empty groups */
+    if (groups->at(iGroupPtr)->Size() == 0)
+      continue;
+
+    if (*groups->at(iGroupPtr) == *currentGroup)
+      iCurrentGroupPtr = iListGroupPtr;
+
+    CGUIMessage msg(GUI_MSG_LABEL_ADD, GetID(), CONTROL_GROUP_CHOOSER, iListGroupPtr++);
+    msg.SetLabel(groups->at(iGroupPtr)->GroupName());
     g_windowManager.SendMessage(msg);
   }
-  CGUIMessage msgSel(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_GROUP_CHOOSER, iCurrentGroup);
+  CGUIMessage msgSel(GUI_MSG_ITEM_SELECT, GetID(), CONTROL_GROUP_CHOOSER, iCurrentGroupPtr);
   g_windowManager.SendMessage(msgSel);
 }
 

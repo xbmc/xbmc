@@ -1536,8 +1536,8 @@
   <string id="16322">Spline36</string>
   <string id="16323">Spline36 optimized</string>
 
-  <string id="16324">Auto - ION Optimized</string>
-  <string id="16325">Software Blend</string>
+  <string id="16324">Software Blend</string>
+  <string id="16325">Auto - ION Optimized</string>
   
   <string id="16400">Post-processing</string>
 
@@ -2819,7 +2819,7 @@
   <string id="36004">Press "user" button command</string>
   <string id="36005">Enable switch side commands</string>
   <string id="36006">Could not open the adapter</string>
-  <string id="36007">Power on devices when starting XBMC</string>
+  <string id="36007">Power on the TV when starting XBMC</string>
   <string id="36008">Power off devices when stopping XBMC</string>
   <string id="36009">Put devices in standby mode when activating screensaver</string>
   <string id="36010">Set as inactive source when stopping XBMC</string>
@@ -2829,4 +2829,5 @@
   <string id="36014">Put this PC in standby mode when the TV is switched off</string>
   <string id="36015">HDMI port number</string>
   <string id="36016">XBMC connected</string>
+  <string id="36017">Adapter found, but libcec is not available</string>
 </strings>

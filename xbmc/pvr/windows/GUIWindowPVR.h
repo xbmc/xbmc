@@ -59,8 +59,6 @@ namespace PVR
     virtual void OnWindowUnload(void);
     virtual void Reset(void);
 
-    void UnlockWindow();
-
     EPG::CGUIEPGGridContainer *m_guideGrid;
 
   protected:
@@ -86,6 +84,5 @@ namespace PVR
 
     bool                     m_bViewsCreated;
     CCriticalSection         m_critSection;
-    bool                     m_bDialogOKActive;
   };
 }

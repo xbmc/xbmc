@@ -73,7 +73,7 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
       }
     }
 
-    CLog::Log(LOGDEBUG, "%s - initialised HID device (%s:%s)", __FUNCTION__, m_strVendorId, m_strProductId);
+    CLog::Log(LOGDEBUG, "%s - initialised HID device (%s:%s)", __FUNCTION__, m_strVendorId.c_str(), m_strProductId.c_str());
   }
 
   return CPeripheral::InitialiseFeature(feature);
