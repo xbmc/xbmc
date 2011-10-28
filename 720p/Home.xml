@@ -523,6 +523,13 @@
 						<visible>!Skin.HasSetting(HidePrograms)</visible>
 						<onclick>XBMC.ActivateWindow(1)</onclick>
 					</item>
+					<item id="12">
+						<description>Channel Directory</description>
+						<label> $LOCALIZE[31952]</label>
+						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/plexonline,return)</onclick>
+						<visible>!Skin.HasSetting(HideAppStore)</visible>
+						<textcolor>50FFFFFF</textcolor>
+					</item>
 					<item id="6">
 						<description>Preferences</description>
 						<label>$LOCALIZE[31955]</label>
@@ -556,12 +563,6 @@
 						<label>$LOCALIZE[31954]</label>
 						<visible>!Skin.HasSetting(HideHelp)</visible>
 						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/help,return)</onclick>
-					</item>
-					<item id="12">
-						<description>Channel Directory</description>
-						<label> $LOCALIZE[31952]</label>
-						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/plexonline,return)</onclick>
-						<visible>!Skin.HasSetting(HideAppStore)</visible>
 					</item>
 					<item id="2">
 						<description>Music Plug-ins</description>
