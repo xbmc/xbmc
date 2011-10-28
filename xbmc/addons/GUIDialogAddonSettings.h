@@ -29,6 +29,7 @@ public:
   CGUIDialogAddonSettings(void);
   virtual ~CGUIDialogAddonSettings(void);
   virtual bool OnMessage(CGUIMessage& message);
+  virtual bool OnAction(const CAction& action);
   /*! \brief Show the addon settings dialog, allowing the user to configure an addon
    \param addon the addon to configure
    \param saveToDisk whether the changes should be saved to disk or just made local to the addon.  Defaults to true
