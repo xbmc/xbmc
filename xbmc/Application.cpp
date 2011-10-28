@@ -1305,7 +1305,15 @@ void CApplication::StartAirplayServer()
     {
       CAirPlayServer::SetCredentials(usePassword, password);
       std::map<std::string, std::string> txt;
-      txt["deviceid"] = m_network.GetFirstConnectedInterface()->GetMacAddress();
+      CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+      if (iface)
+      {
+        txt["deviceid"] = iface->GetMacAddress();
+      }
+      else
+      {
+        txt["deviceid"] = "FF:FF:FF:FF:FF:F2";
+      }
       txt["features"] = "0x77";
       txt["model"] = "AppleTV2,1";
       txt["srcvers"] = "101.28";
