@@ -2768,7 +2768,7 @@
 		<include>Clock</include>
 		<control type="label">
 	    	<posx>20r</posx>
-			<posy>20</posy>
+			<posy>15</posy>
 			<width>200</width>
 			<align>right</align>
 			<label>$INFO[System.SelectedPlexMediaServer]</label>
