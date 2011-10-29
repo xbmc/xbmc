@@ -887,7 +887,20 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
 #if defined(TARGET_LINUX) || defined(TARGET_OSX)
     // TODO FHo: merge this code and the code that translates names from recordings
     std::string CIFSname = filename;
-    std::string SMBPrefix = "smb://" + g_szUser + ":" + g_szPass;
+    std::string SMBPrefix = "smb://";
+    if (g_szUser.length() > 0)
+    {
+      SMBPrefix += g_szUser;
+      if (g_szPass.length() > 0)
+      {
+        SMBPrefix += ":" + g_szPass;
+      }
+    }
+    else
+    {
+      SMBPrefix += "Guest";
+    }
+    SMBPrefix += "@";
     size_t found;
     while ((found = CIFSname.find("\\")) != std::string::npos)
     {
@@ -916,8 +929,8 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
     if (m_tsreader != NULL)
     {
       XBMC->Log(LOG_DEBUG, "Re-using existing TsReader...");
-      m_tsreader->OnZap();
       usleep(200000);
+      m_tsreader->OnZap();
     } else {
       m_tsreader = new CTsReader();
       // Open Timeshift buffer

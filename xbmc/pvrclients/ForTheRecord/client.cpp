@@ -260,12 +260,12 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
   }
   else if (str == "user")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'user' from %s to %s", g_szUser, (const char*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'user' from %s to %s", g_szUser.c_str(), (const char*) settingValue);
     g_szUser = (const char*) settingValue;
   }
   else if (str == "pass")
   {
-    XBMC->Log(LOG_INFO, "Changed Setting 'pass' from %s to %s", g_szPass, (const char*) settingValue);
+    XBMC->Log(LOG_INFO, "Changed Setting 'pass' from %s to %s", g_szPass.c_str(), (const char*) settingValue);
     g_szPass = (const char*) settingValue;
   }
 
