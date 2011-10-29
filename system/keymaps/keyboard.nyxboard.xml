@@ -45,6 +45,7 @@
       <s>ActivateWindow(shutdownmenu)</s>
       <escape>PreviousMenu</escape>
       <i>Info</i>
+      <d mod="ctrl">Info</d>
       <f9>Info</f9>
       <menu>ContextMenu</menu>
       <c>ContextMenu</c>
