@@ -690,6 +690,7 @@
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPVfsHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceAddonsHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\httprequesthandler\HTTPWebinterfaceHandler.cpp" />
+    <ClCompile Include="..\..\xbmc\network\httprequesthandler\IHTTPRequestHandler.cpp" />
     <ClCompile Include="..\..\xbmc\network\libscrobbler\lastfmscrobbler.cpp" />
     <ClCompile Include="..\..\xbmc\network\libscrobbler\librefmscrobbler.cpp" />
     <ClCompile Include="..\..\xbmc\network\libscrobbler\scrobbler.cpp" />

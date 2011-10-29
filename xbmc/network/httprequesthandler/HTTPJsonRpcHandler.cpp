@@ -33,64 +33,56 @@ using namespace JSONRPC;
 
 bool CHTTPJsonRpcHandler::CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
 {
-  return (url.find("/jsonrpc") == url.size() - 8);
+  return (url.compare("/jsonrpc") == 0);
 }
 
 #if (MHD_VERSION >= 0x00040001)
-int CHTTPJsonRpcHandler::HandleHTTPRequest(CWebServer *server, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
-                            const char *upload_data, size_t *upload_data_size, void **con_cls)
+int CHTTPJsonRpcHandler::HandleHTTPRequest(CWebServer *server, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
 #else
-int CHTTPJsonRpcHandler::HandleHTTPRequest(CWebServer *server, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
-                            const char *upload_data, unsigned int *upload_data_size, void **con_cls)
+int CHTTPJsonRpcHandler::HandleHTTPRequest(CWebServer *server, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
 #endif
 {
   if (method == POST)
   {
-    m_responseType = HTTPNone;
-
-    if ((*con_cls) == NULL)
+    // The content-type of the request must be application/json
+    if (CWebServer::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE).compare("application/json") != 0)
     {
-      *con_cls = new string();
-
+      m_responseType = HTTPError;
+      m_responseCode = MHD_HTTP_UNSUPPORTED_MEDIA_TYPE;
       return MHD_YES;
     }
-    if (*upload_data_size) 
-    {
-      string *post = (string *)(*con_cls);
-      if (*upload_data_size + post->size() > MAX_STRING_POST_SIZE)
-      {
-        CLog::Log(LOGERROR, "WebServer: Stopped uploading post since it exceeded size limitations");
-        return MHD_NO;
-      }
-      else
-      {
-        post->append(upload_data, *upload_data_size);
-        *upload_data_size = 0;
-        return MHD_YES;
-      }
-    }
-    else
-    {
-      string *jsoncall = (string *)(*con_cls);
 
-      CHTTPClient client;
-      m_response = CJSONRPC::MethodCall(*jsoncall, server, &client);
+    CHTTPClient client;
+    m_response = CJSONRPC::MethodCall(m_request, server, &client);
 
-      m_responseHeaderFields["Content-Type"] = "application/json";
-      m_responseType = HTTPMemoryDownloadNoFreeCopy;
+    m_responseHeaderFields["Content-Type"] = "application/json";
 
-      delete jsoncall;
-    }
+    m_request.clear();
   }
   else
-  {
     m_response = PAGE_JSONRPC_INFO;
-    m_responseType = HTTPMemoryDownloadNoFreeNoCopy;
-  }
-
+  
+  m_responseType = HTTPMemoryDownloadNoFreeCopy;
   m_responseCode = MHD_HTTP_OK;
 
   return MHD_YES;
+}
+
+#if (MHD_VERSION >= 0x00040001)
+bool CHTTPJsonRpcHandler::appendPostData(const char *data, size_t size)
+#else
+bool CHTTPJsonRpcHandler::appendPostData(const char *data, unsigned int size)
+#endif
+{
+  if (m_request.size() + size > MAX_STRING_POST_SIZE)
+  {
+    CLog::Log(LOGERROR, "WebServer: Stopped uploading post since it exceeded size limitations");
+    return false;
+  }
+
+  m_request.append(data, size);
+
+  return true;
 }
 
 int CHTTPJsonRpcHandler::CHTTPClient::GetPermissionFlags()

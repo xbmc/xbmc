@@ -32,11 +32,9 @@ bool CHTTPVfsHandler::CheckHTTPRequest(struct MHD_Connection *connection, const 
 }
 
 #if (MHD_VERSION >= 0x00040001)
-int CHTTPVfsHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
-                            const char *upload_data, size_t *upload_data_size, void **con_cls)
+int CHTTPVfsHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
 #else
-int CHTTPVfsHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
-                            const char *upload_data, unsigned int *upload_data_size, void **con_cls)
+int CHTTPVfsHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
 #endif
 {
   bool ok = false;

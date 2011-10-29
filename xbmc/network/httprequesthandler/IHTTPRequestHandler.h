@@ -60,11 +60,9 @@ public:
   virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version) = 0;
 
 #if (MHD_VERSION >= 0x00040001)
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
-                                const char *upload_data, size_t *upload_data_size, void **con_cls) = 0;
+  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version) = 0;
 #else
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
-                                const char *upload_data, unsigned int *upload_data_size, void **con_cls) = 0;
+  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version) = 0;
 #endif
   
   virtual void* GetHTTPResponseData() const { return NULL; };
@@ -75,12 +73,28 @@ public:
   // The higher the more important
   virtual int GetPriority() const { return 0; }
 
+  void AddPostField(const std::string &key, const std::string &value);
+#if (MHD_VERSION >= 0x00040001)
+  bool AddPostData(const char *data, size_t size);
+#else
+  bool AddPostData(const char *data, unsigned int size);
+#endif
+
   int GetHTTPResonseCode() const { return m_responseCode; }
   HTTPResponseType GetHTTPResponseType() const { return m_responseType; }
   const std::map<std::string, std::string>& GetHTTPResponseHeaderFields() const { return m_responseHeaderFields; };
 
 protected:
+#if (MHD_VERSION >= 0x00040001)
+  virtual bool appendPostData(const char *data, size_t size)
+#else
+  virtual bool appendPostData(const char *data, unsigned int size)
+#endif
+  { return true; }
+
   int m_responseCode;
   HTTPResponseType m_responseType;
   std::map<std::string, std::string> m_responseHeaderFields;
+
+  std::map<std::string, std::string> m_postFields;
 };

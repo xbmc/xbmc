@@ -33,6 +33,8 @@
 #pragma comment(lib, "libmicrohttpd.dll.lib")
 #endif
 
+#define MAX_POST_BUFFER_SIZE 2048
+
 #define PAGE_FILE_NOT_FOUND "<html><head><title>File not found</title></head><body>File not found</body></html>"
 #define NOT_SUPPORTED       "<html><head><title>Not Supported</title></head><body>The method you are trying to use is not supported by this server</body></html>"
 
@@ -111,83 +113,212 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 {
   CWebServer *server = (CWebServer *)cls;
   HTTPMethod methodType = GetMethod(method);
-  
+
   if (!IsAuthenticated(server, connection)) 
     return AskForAuthentication(connection);
 
-  for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
+  // Check if this is the first call to
+  // AnswerToConnection for this request
+  if (*con_cls == NULL)
   {
-    IHTTPRequestHandler *requestHandler = *it;
-    if (requestHandler->CheckHTTPRequest(connection, url, methodType, version))
+    // Look for a IHTTPRequestHandler which can
+    // take care of the current request
+    for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
     {
-      IHTTPRequestHandler *handler = requestHandler->GetInstance();
-      int ret = handler->HandleHTTPRequest(server, connection, url, methodType, version, upload_data, upload_data_size, con_cls);
-      if (ret != MHD_YES)
+      IHTTPRequestHandler *requestHandler = *it;
+      if (requestHandler->CheckHTTPRequest(connection, url, methodType, version))
       {
-        delete handler;
-        return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
-      }
+        // We found a matching IHTTPRequestHandler
+        // so let's get a new instance for this request
+        IHTTPRequestHandler *handler = requestHandler->GetInstance();
 
-      struct MHD_Response *response = NULL;
-      switch (handler->GetHTTPResponseType())
-      {
-        case HTTPNone:
-          delete handler;
+        // If we got a POST request we need to take
+        // care of the POST data
+        if (methodType == POST)
+        {
+          ConnectionHandler *conHandler = new ConnectionHandler();
+          conHandler->requestHandler = handler;
+
+          // Get the content-type of the POST data
+          const char *contentType = MHD_lookup_connection_value(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE);
+          // If the content-type is application/x-ww-form-urlencoded or multipart/form-data
+          // we can use MHD's POST processor
+          if (contentType != NULL && 
+             (stricmp(contentType, MHD_HTTP_POST_ENCODING_FORM_URLENCODED) == 0 || stricmp(contentType, MHD_HTTP_POST_ENCODING_MULTIPART_FORMDATA) == 0))
+          {
+            // Get a new MHD_PostProcessor
+            conHandler->postprocessor = MHD_create_post_processor(connection, MAX_POST_BUFFER_SIZE, &CWebServer::HandlePostField, (void*)conHandler);
+
+            // MHD doesn't seem to be able to handle
+            // this post request
+            if (conHandler->postprocessor == NULL)
+            {
+              delete conHandler->requestHandler;
+              delete conHandler;
+
+              return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
+            }
+          }
+          // otherwise we need to handle the POST data ourselves
+          // which is done in the next call to AnswerToConnection
+
+          *con_cls = (void*)conHandler;
           return MHD_YES;
-
-        case HTTPRedirect:
-          ret = CreateRedirect(connection, handler->GetHTTPRedirectUrl(), response);
-          break;
-
-        case HTTPFileDownload:
-          ret = CreateFileDownloadResponse(connection, handler->GetHTTPResponseFile(), methodType, response);
-          break;
-
-        case HTTPMemoryDownloadNoFreeNoCopy:
-          ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, false, response);
-          break;
-
-        case HTTPMemoryDownloadNoFreeCopy:
-          ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, true, response);
-          break;
-
-        case HTTPMemoryDownloadFreeNoCopy:
-          ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, false, response);
-          break;
-
-        case HTTPMemoryDownloadFreeCopy:
-          ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, true, response);
-          break;
-
-        case HTTPError:
-          ret = CreateErrorResponse(connection, handler->GetHTTPResonseCode(), methodType, response);
-          break;
-
-        default:
-          delete handler;
-          return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
-          break;
+        }
+        // No POST request so nothing special to handle
+        else
+          return HandleRequest(handler, server, connection, url, methodType, version);
       }
-
-      if (ret == MHD_NO)
-      {
-        delete handler;
+    }
+  }
+  // This is a subsequent call to
+  // AnswerToConnection for this request
+  else
+  {
+    // Again we need to take special care
+    // of the POST data
+    if (methodType == POST)
+    {
+      ConnectionHandler *conHandler = (ConnectionHandler *)*con_cls;
+      if (conHandler->requestHandler == NULL)
         return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, methodType);
+
+      // We only need to handle POST data
+      // if there actually is data left to handle
+      if (*upload_data_size > 0)
+      {
+        // Either use MHD's POST processor
+        if (conHandler->postprocessor != NULL)
+          MHD_post_process(conHandler->postprocessor, upload_data, *upload_data_size);
+        // or simply copy the data to the handler
+        else
+          conHandler->requestHandler->AddPostData(upload_data, *upload_data_size);
+
+        // Signal that we have handled the data
+        *upload_data_size = 0;
+
+        return MHD_YES;
       }
+      // We have handled all POST data
+      // so it's time to invoke the IHTTPRequestHandler
+      else
+      {
+        if (conHandler->postprocessor != NULL)
+          MHD_destroy_post_processor(conHandler->postprocessor);
+        *con_cls = NULL;
 
-      map<string, string> header = handler->GetHTTPResponseHeaderFields();
-      for (map<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
-        MHD_add_response_header(response, it->first.c_str(), it->second.c_str());
-
-      ret = MHD_queue_response(connection, handler->GetHTTPResonseCode(), response);
-      MHD_destroy_response(response);
-      delete handler;
-
-      return ret;
+        int ret = HandleRequest(conHandler->requestHandler, server, connection, url, methodType, version);
+        delete conHandler;
+        return ret;
+      }
+    }
+    // It's unusual to get more than one call
+    // to AnswerToConnection for none-POST
+    // requests, but let's handle it anyway
+    else
+    {
+      for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
+      {
+        IHTTPRequestHandler *requestHandler = *it;
+        if (requestHandler->CheckHTTPRequest(connection, url, methodType, version))
+          return HandleRequest(requestHandler->GetInstance(), server, connection, url, methodType, version);
+      }
     }
   }
 
   return SendErrorResponse(connection, MHD_HTTP_NOT_FOUND, methodType);
+}
+
+#if (MHD_VERSION >= 0x00040001)
+int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
+                                const char *filename, const char *content_type,
+                                const char *transfer_encoding, const char *data, uint64_t off,
+                                size_t size)
+#else
+int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
+                                const char *filename, const char *content_type,
+                                const char *transfer_encoding, const char *data, uint64_t off,
+                                unsigned int size)
+#endif
+{
+  ConnectionHandler *conHandler = (ConnectionHandler *)cls;
+
+  if (conHandler == NULL || conHandler->requestHandler == NULL || size == 0)
+    return MHD_NO;
+
+  conHandler->requestHandler->AddPostField(key, string(data, size));
+  return MHD_YES;
+}
+
+int CWebServer::HandleRequest(IHTTPRequestHandler *handler, CWebServer *webserver, struct MHD_Connection *connection,
+                              const std::string &url, HTTPMethod method, const std::string &version)
+{
+  if (handler == NULL)
+    return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, method);
+
+  int ret = handler->HandleHTTPRequest(webserver, connection, url, method, version);
+  if (ret != MHD_YES)
+  {
+    delete handler;
+    return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, method);
+  }
+
+  struct MHD_Response *response = NULL;
+  switch (handler->GetHTTPResponseType())
+  {
+    case HTTPNone:
+      delete handler;
+      return MHD_YES;
+
+    case HTTPRedirect:
+      ret = CreateRedirect(connection, handler->GetHTTPRedirectUrl(), response);
+      break;
+
+    case HTTPFileDownload:
+      ret = CreateFileDownloadResponse(connection, handler->GetHTTPResponseFile(), method, response);
+      break;
+
+    case HTTPMemoryDownloadNoFreeNoCopy:
+      ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, false, response);
+      break;
+
+    case HTTPMemoryDownloadNoFreeCopy:
+      ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, true, response);
+      break;
+
+    case HTTPMemoryDownloadFreeNoCopy:
+      ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, false, response);
+      break;
+
+    case HTTPMemoryDownloadFreeCopy:
+      ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, true, response);
+      break;
+
+    case HTTPError:
+      ret = CreateErrorResponse(connection, handler->GetHTTPResonseCode(), method, response);
+      break;
+
+    default:
+      delete handler;
+      return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, method);
+      break;
+  }
+
+  if (ret == MHD_NO)
+  {
+    delete handler;
+    return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, method);
+  }
+
+  map<string, string> header = handler->GetHTTPResponseHeaderFields();
+  for (map<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
+    MHD_add_response_header(response, it->first.c_str(), it->second.c_str());
+
+  ret = MHD_queue_response(connection, handler->GetHTTPResonseCode(), response);
+  MHD_destroy_response(response);
+  delete handler;
+
+  return ret;
 }
 
 HTTPMethod CWebServer::GetMethod(const char *method)
@@ -468,6 +599,14 @@ void CWebServer::UnregisterRequestHandler(IHTTPRequestHandler *handler)
       return;
     }
   }
+}
+
+std::string CWebServer::GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key)
+{
+  if (connection == NULL)
+    return "";
+
+  return MHD_lookup_connection_value(connection, kind, key.c_str());
 }
 
 int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues)

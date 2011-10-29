@@ -31,11 +31,9 @@ public:
   virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
 
 #if (MHD_VERSION >= 0x00040001)
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
-                                const char *upload_data, size_t *upload_data_size, void **con_cls);
+  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
 #else
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
-                                const char *upload_data, unsigned int *upload_data_size, void **con_cls);
+  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
 #endif
 
   virtual void* GetHTTPResponseData() const { return (void *)m_response.c_str(); };

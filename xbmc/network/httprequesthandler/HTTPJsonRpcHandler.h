@@ -32,11 +32,9 @@ public:
   virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
 
 #if (MHD_VERSION >= 0x00040001)
-  virtual int HandleHTTPRequest(CWebServer *server, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
-                                const char *upload_data, size_t *upload_data_size, void **con_cls);
+  virtual int HandleHTTPRequest(CWebServer *server, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
 #else
-  virtual int HandleHTTPRequest(CWebServer *server, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version,
-                                const char *upload_data, unsigned int *upload_data_size, void **con_cls);
+  virtual int HandleHTTPRequest(CWebServer *server, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
 #endif
 
   virtual void* GetHTTPResponseData() const { return (void *)m_response.c_str(); };
@@ -44,7 +42,15 @@ public:
 
   virtual int GetPriority() const { return 2; }
 
+protected:
+#if (MHD_VERSION >= 0x00040001)
+  virtual bool appendPostData(const char *data, size_t size);
+#else
+  virtual bool appendPostData(const char *data, unsigned int size);
+#endif
+
 private:
+  std::string m_request;
   std::string m_response;
 
   class CHTTPClient : public JSONRPC::IClient

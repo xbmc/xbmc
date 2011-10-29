@@ -50,6 +50,7 @@ public:
   static void RegisterRequestHandler(IHTTPRequestHandler *handler);
   static void UnregisterRequestHandler(IHTTPRequestHandler *handler);
 
+  static std::string GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues);
 private:
   struct MHD_Daemon* StartMHD(unsigned int flags, int port);
@@ -69,21 +70,31 @@ private:
                         const char *url, const char *method,
                         const char *version, const char *upload_data,
                         size_t *upload_data_size, void **con_cls);
+  static int HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
+                             const char *filename, const char *content_type,
+                             const char *transfer_encoding, const char *data, uint64_t off,
+                             size_t size);
 #else   //libmicrohttpd < 0.4.0
   static int AnswerToConnection (void *cls, struct MHD_Connection *connection,
                         const char *url, const char *method,
                         const char *version, const char *upload_data,
                         unsigned int *upload_data_size, void **con_cls);
+  static int HandlePostField(void *cls, enum MHD_ValueKind kind, const char *key,
+                             const char *filename, const char *content_type,
+                             const char *transfer_encoding, const char *data, uint64_t off,
+                             unsigned int size);
 #endif
+  static int HandleRequest(IHTTPRequestHandler *handler, CWebServer *webserver, struct MHD_Connection *connection,
+                           const std::string &url, HTTPMethod method, const std::string &version);
   static void ContentReaderFreeCallback (void *cls);
-  static HTTPMethod GetMethod(const char *method);
   static int CreateRedirect(struct MHD_Connection *connection, const std::string &strURL, struct MHD_Response *&response);
   static int CreateFileDownloadResponse(struct MHD_Connection *connection, const std::string &strURL, HTTPMethod methodType, struct MHD_Response *&response);
   static int CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response);
   static int CreateMemoryDownloadResponse(struct MHD_Connection *connection, void *data, size_t size, bool free, bool copy, struct MHD_Response *&response);
 
   static int SendErrorResponse(struct MHD_Connection *connection, int errorType, HTTPMethod method);
-
+  
+  static HTTPMethod GetMethod(const char *method);
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
 
   static const char *CreateMimeTypeFromExtension(const char *ext);
@@ -93,5 +104,11 @@ private:
   std::string m_Credentials64Encoded;
   CCriticalSection m_critSection;
   static std::vector<IHTTPRequestHandler *> m_requestHandlers;
+
+  typedef struct ConnectionHandler
+  {
+    IHTTPRequestHandler *requestHandler;
+    struct MHD_PostProcessor *postprocessor;
+  } ConnectionHandler;
 };
 #endif

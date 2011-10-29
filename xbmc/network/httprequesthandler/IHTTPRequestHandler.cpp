@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2011 Team XBMC
  *      http://www.xbmc.org
@@ -22,25 +21,26 @@
 
 #include "IHTTPRequestHandler.h"
 
-class CHTTPApiHandler : public IHTTPRequestHandler
+void IHTTPRequestHandler::AddPostField(const std::string &key, const std::string &value)
 {
-public:
-  CHTTPApiHandler() { };
+  if (key.empty())
+    return;
 
-  virtual IHTTPRequestHandler* GetInstance() { return new CHTTPApiHandler(); }
-  virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
+  std::map<std::string, std::string>::iterator field = m_postFields.find(key);
+  if (field == m_postFields.end())
+    m_postFields[key] = value;
+  else
+    m_postFields[key].append(value);
+}
 
 #if (MHD_VERSION >= 0x00040001)
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
+bool IHTTPRequestHandler::AddPostData(const char *data, size_t size)
 #else
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
+bool IHTTPRequestHandler::AddPostData(const char *data, unsigned int size)
 #endif
-
-  virtual void* GetHTTPResponseData() const { return (void *)m_response.c_str(); };
-  virtual size_t GetHTTPResonseDataLength() const { return m_response.size(); }
-
-  virtual int GetPriority() const { return 2; }
-
-private:
-  std::string m_response;
-};
+{
+  if (size > 0)
+    return appendPostData(data, size);
+  
+  return true;
+}
