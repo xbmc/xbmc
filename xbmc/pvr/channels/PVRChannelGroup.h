@@ -304,6 +304,11 @@ namespace PVR
     virtual int GetMembers(CFileItemList &results, bool bGroupMembers = true) const;
 
     /*!
+     * @return The next channel group.
+     */
+    virtual CPVRChannelGroup *GetNextGroup(void) const;
+
+    /*!
      * @brief The amount of hidden channels in this container.
      * @return The amount of hidden channels in this container.
      */

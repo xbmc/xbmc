@@ -352,7 +352,10 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
 
         CLog::Log(LOGDEBUG, "PVRDB - %s - channel '%s' (id: %i) loaded from the database (client id: %i channel uid: %i channel nr: %i)",
             __FUNCTION__, channel->m_strChannelName.c_str(), channel->m_iChannelId, channel->m_iClientId, channel->m_iUniqueId, channel->m_iClientChannelNumber);
-        results.InsertInGroup(*channel, m_pDS->fv("iChannelNumber").get_asInt(), false);
+
+        PVRChannelGroupMember newMember = { channel, m_pDS->fv("iChannelNumber").get_asInt() };
+        results.push_back(newMember);
+
         m_pDS->next();
         ++iReturn;
       }

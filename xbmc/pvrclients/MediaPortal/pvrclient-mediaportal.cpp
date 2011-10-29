@@ -44,13 +44,13 @@ using namespace ADDON;
 int g_iTVServerXBMCBuild = 0;
 
 /* PVR client version (don't forget to update also the addon.xml and the Changelog.txt files) */
-#define PVRCLIENT_MEDIAPORTAL_VERSION_STRING    "1.2.1.108"
+#define PVRCLIENT_MEDIAPORTAL_VERSION_STRING    "1.2.1.109"
 
 /* TVServerXBMC plugin supported versions */
 #define TVSERVERXBMC_MIN_VERSION_STRING         "1.1.0.70"
 #define TVSERVERXBMC_MIN_VERSION_BUILD          70
-#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.107"
-#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  107
+#define TVSERVERXBMC_RECOMMENDED_VERSION_STRING "1.1.x.109 or 1.2.1.109"
+#define TVSERVERXBMC_RECOMMENDED_VERSION_BUILD  109
 
 /************************************************************/
 /** Class interface */
@@ -204,7 +204,7 @@ bool cPVRClientMediaPortal::Connect()
       // Check for the minimal requirement: 1.1.0.70
       if( g_iTVServerXBMCBuild < TVSERVERXBMC_MIN_VERSION_BUILD ) //major < 1 || minor < 1 || revision < 0 || build < 70
       {
-        XBMC->Log(LOG_ERROR, "Your TVServerXBMC version v%s is too old. Please upgrade to v%s or higher!", fields[1].c_str(), TVSERVERXBMC_MIN_VERSION_STRING);
+        XBMC->Log(LOG_ERROR, "Your TVServerXBMC version '%s' is too old. Please upgrade to '%s' or higher!", fields[1].c_str(), TVSERVERXBMC_MIN_VERSION_STRING);
         XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30050), fields[1].c_str(), TVSERVERXBMC_MIN_VERSION_STRING);
         return false;
       }
@@ -215,13 +215,13 @@ bool cPVRClientMediaPortal::Connect()
         // Advice to upgrade:
         if( g_iTVServerXBMCBuild < TVSERVERXBMC_RECOMMENDED_VERSION_BUILD )
         {
-          XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version v%s to v%s or higher!", fields[1].c_str(), TVSERVERXBMC_RECOMMENDED_VERSION_STRING);
+          XBMC->Log(LOG_INFO, "It is adviced to upgrade your TVServerXBMC version '%s' to '%s' or higher!", fields[1].c_str(), TVSERVERXBMC_RECOMMENDED_VERSION_STRING);
         }
       }
     }
     else
     {
-      XBMC->Log(LOG_ERROR, "Your TVServerXBMC version is too old. Please upgrade to v%s or higher!", TVSERVERXBMC_MIN_VERSION_STRING);
+      XBMC->Log(LOG_ERROR, "Your TVServerXBMC version is too old. Please upgrade to '%s' or higher!", TVSERVERXBMC_MIN_VERSION_STRING);
       XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30051), TVSERVERXBMC_MIN_VERSION_STRING);
       return false;
     }
@@ -1173,6 +1173,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
   string result;
   char   command[256] = "";
   const char* sResolveRTSPHostname = booltostring(g_bResolveRTSPHostname);
+  vector<string> timeshiftfields;
 
   XBMC->Log(LOG_DEBUG, "->OpenLiveStream(uid=%i)", channelinfo.iUniqueId);
   if (!IsUp())
@@ -1202,23 +1203,58 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
   if (result.find("ERROR") != std::string::npos || result.length() == 0)
   {
     XBMC->Log(LOG_ERROR, "Could not start the timeshift for channel uid=%i. %s", channelinfo.iUniqueId, result.c_str());
-    if (result.find("[ERROR]: TVServer answer: ") != std::string::npos)
+    if (g_iTVServerXBMCBuild>=109)
     {
-      //Skip first part: "[ERROR]: TVServer answer: "
-      XBMC->QueueNotification(QUEUE_ERROR, "TVServer: %s", result.substr(26).c_str());
+      int tvresult;
+
+      Tokenize(result, timeshiftfields, "|");
+      //[0] = string error message
+      //[1] = TvResult
+
+      //For TVServer 1.2.1:
+      //enum TvResult
+      //{
+      //  Succeeded = 0, (this is not an error)
+      //  AllCardsBusy = 1,
+      //  ChannelIsScrambled = 2,
+      //  NoVideoAudioDetected = 3,
+      //  NoSignalDetected = 4,
+      //  UnknownError = 5,
+      //  UnableToStartGraph = 6,
+      //  UnknownChannel = 7,
+      //  NoTuningDetails = 8,
+      //  ChannelNotMappedToAnyCard = 9,
+      //  CardIsDisabled = 10,
+      //  ConnectionToSlaveFailed = 11,
+      //  NotTheOwner = 12,
+      //  GraphBuildingFailed = 13,
+      //  SWEncoderMissing = 14,
+      //  NoFreeDiskSpace = 15,
+      //  NoPmtFound = 16,
+      //};
+
+      tvresult = atoi(timeshiftfields[1].c_str());
+      // Display one of the localized error messages 30060-30075
+      XBMC->QueueNotification(QUEUE_ERROR, XBMC->GetLocalizedString(30059 + (int) tvresult));
     }
     else
     {
-      //Skip first part: "[ERROR]: "
-      XBMC->QueueNotification(QUEUE_ERROR, result.substr(7).c_str());
+      if (result.find("[ERROR]: TVServer answer: ") != std::string::npos)
+      {
+        //Skip first part: "[ERROR]: TVServer answer: "
+        XBMC->QueueNotification(QUEUE_ERROR, "TVServer: %s", result.substr(26).c_str());
+      }
+      else
+      {
+        //Skip first part: "[ERROR]: "
+        XBMC->QueueNotification(QUEUE_ERROR, result.substr(7).c_str());
+      }
     }
     m_iCurrentChannel = -1;
     return false;
   }
   else
   {
-    vector<string> timeshiftfields;
-
     Tokenize(result, timeshiftfields, "|");
 
     //[0] = rtsp url

@@ -28,6 +28,10 @@
 
 // forward definitions
 class TiXmlElement;
+namespace INFO
+{
+  class CSkinVariableString;
+}
 
 class CGUIIncludes
 {
@@ -45,6 +49,7 @@ public:
    \param node an XML Element - all child elements are traversed.
    */
   void ResolveIncludes(TiXmlElement *node);
+  const INFO::CSkinVariableString* CreateSkinVariable(const CStdString& name, int context);
 
 private:
   void ResolveIncludesForNode(TiXmlElement *node);
@@ -52,6 +57,7 @@ private:
   bool HasIncludeFile(const CStdString &includeFile) const;
   std::map<CStdString, TiXmlElement> m_includes;
   std::map<CStdString, TiXmlElement> m_defaults;
+  std::map<CStdString, TiXmlElement> m_skinvariables;
   std::map<CStdString, CStdString> m_constants;
   std::vector<CStdString> m_files;
   typedef std::vector<CStdString>::const_iterator iFiles;

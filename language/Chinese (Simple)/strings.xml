@@ -2372,7 +2372,7 @@
   <string id="36004">按“user”键指令</string>
   <string id="36005">启用指令模式切换</string>
   <string id="36006">无法打开适配器</string>
-  <string id="36007">启动XBMC时开启设备</string>
+  <string id="36007">启动XBMC时开启电视</string>
   <string id="36008">退出XBMC时关闭设备</string>
   <string id="36009">激活屏幕保护程序时设备进入待机状态</string>
   <string id="36010">退出XBMC时设为禁用资源</string>
@@ -2380,4 +2380,7 @@
   <string id="36012">未检测到 CEC 适配器。</string>
   <string id="36013">不支持的 libcec 界面版本。%d 高于 XBMC 支持的版本（%d）</string>
   <string id="36014">电视关闭时本计算机进入待机状态</string>
+  <string id="36015">HDMI 端口号</string>
+  <string id="36016">XBMC 已连接</string>
+  <string id="36017">发现适配器，但 libcec 不可用</string>
 </strings>

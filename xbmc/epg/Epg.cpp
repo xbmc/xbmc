@@ -514,7 +514,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   FixOverlappingEvents(false);
 
   /* update the last scan time of this table */
-  m_lastScanTime = CDateTime::GetCurrentDateTime();
+  m_lastScanTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
 
   /* update the first and last date */
   UpdateFirstAndLastDates();
@@ -593,7 +593,7 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
   /* check if we have to update */
   time_t iNow = 0;
   time_t iLastUpdate = 0;
-  CDateTime::GetCurrentDateTime().GetAsTime(iNow);
+  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
   lastScanTime.GetAsTime(iLastUpdate);
   bUpdate = (iNow > iLastUpdate + iUpdateTime);
 

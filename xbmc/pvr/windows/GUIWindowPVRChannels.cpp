@@ -54,20 +54,21 @@ CGUIWindowPVRChannels::CGUIWindowPVRChannels(CGUIWindowPVR *parent, bool bRadio)
   m_bShowHiddenChannels = false;
 }
 
-CGUIWindowPVRChannels::~CGUIWindowPVRChannels(void)
-{
-  g_EpgContainer.UnregisterObserver(this);
-  if (g_PVRTimers)
-    g_PVRTimers->UnregisterObserver(this);
-  g_infoManager.UnregisterObserver(this);
-}
-
 void CGUIWindowPVRChannels::ResetObservers(void)
 {
   CSingleLock lock(m_critSection);
   g_EpgContainer.RegisterObserver(this);
   g_PVRTimers->RegisterObserver(this);
   g_infoManager.RegisterObserver(this);
+}
+
+void CGUIWindowPVRChannels::UnregisterObservers(void)
+{
+  CSingleLock lock(m_critSection);
+  g_EpgContainer.UnregisterObserver(this);
+  if (g_PVRTimers)
+    g_PVRTimers->UnregisterObserver(this);
+  g_infoManager.UnregisterObserver(this);
 }
 
 void CGUIWindowPVRChannels::GetContextButtons(int itemNumber, CContextButtons &buttons) const
@@ -159,8 +160,12 @@ void CGUIWindowPVRChannels::Notify(const Observable &obs, const CStdString& msg)
 CPVRChannelGroup *CGUIWindowPVRChannels::SelectNextGroup(void)
 {
   const CPVRChannelGroup *currentGroup = SelectedGroup();
-  CPVRChannelGroup *nextGroup = g_PVRChannelGroups->Get(m_bRadio)->GetNextGroup(*currentGroup);
-  if (nextGroup && *nextGroup != *currentGroup)
+  CPVRChannelGroup *nextGroup = currentGroup->GetNextGroup();
+  while (nextGroup && *nextGroup != *currentGroup && nextGroup->Size() == 0)
+    nextGroup = nextGroup->GetNextGroup();
+
+  /* always update so users can reset the list */
+  if (nextGroup)
   {
     SetSelectedGroup(nextGroup);
     UpdateData();
@@ -191,7 +196,7 @@ void CGUIWindowPVRChannels::UpdateData(void)
   m_parent->m_vecItems->Clear();
   m_parent->m_viewControl.SetCurrentView(m_iControlList);
 
-  const CPVRChannelGroup *currentGroup = SelectedGroup();
+  const CPVRChannelGroup *currentGroup = g_PVRManager.GetPlayingGroup(m_bRadio);
   if (!currentGroup)
     return;
 

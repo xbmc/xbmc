@@ -60,14 +60,14 @@ bool CWaitEvent::Wait()
 
 CWaitEvent::CWaitEvent(LPSECURITY_ATTRIBUTES lpEventAttributes, int bManualReset, int bInitialState, const char* lpName)
 {
-  int retCode = sem_init(&m_waitevent,   // handle to the event semaphore
+  sem_init(&m_waitevent,   // handle to the event semaphore
                          0,       // not shared
                          0);      // initially set to non signaled state
 }
 
 CWaitEvent::~CWaitEvent(void)
 {
-  int retCode = sem_destroy(&m_waitevent);   // Event semaphore handle
+  sem_destroy(&m_waitevent);   // Event semaphore handle
 }
 
 void CWaitEvent::SetEvent()

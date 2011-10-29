@@ -31,8 +31,8 @@
 #include "pvr/addons/PVRClients.h"
 #include "guilib/GUIMessage.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogOK.h"
 #include "dialogs/GUIDialogBusy.h"
+#include "dialogs/GUIDialogKaiToast.h"
 #include "threads/SingleLock.h"
 
 using namespace PVR;
@@ -44,18 +44,22 @@ CGUIWindowPVR::CGUIWindowPVR(void) :
   m_bViewsCreated    = false;
   m_currentSubwindow = NULL;
   m_savedSubwindow   = NULL;
-  m_bDialogOKActive  = false;
 }
 
 CGUIWindowPVR::~CGUIWindowPVR(void)
 {
   if (m_bViewsCreated)
   {
+    m_windowChannelsRadio->UnregisterObservers();
     delete m_windowChannelsRadio;
+    m_windowChannelsTV->UnregisterObservers();
     delete m_windowChannelsTV;
+    m_windowGuide->UnregisterObservers();
     delete m_windowGuide;
+    m_windowRecordings->UnregisterObservers();
     delete m_windowRecordings;
     delete m_windowSearch;
+    m_windowTimers->UnregisterObservers();
     delete m_windowTimers;
   }
 }
@@ -114,10 +118,10 @@ void CGUIWindowPVR::OnInitWindow(void)
 {
   if (!g_PVRManager.IsStarted() || !g_PVRClients->HasConnectedClients())
   {
-    m_bDialogOKActive = true;
     g_windowManager.PreviousWindow();
-    CGUIDialogOK::ShowAndGetInput(19033,0,19045,19044);
-    m_bDialogOKActive = false;
+    CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Warning,
+        g_localizeStrings.Get(19045),
+        g_localizeStrings.Get(19044));
     return;
   }
 
@@ -252,19 +256,6 @@ void CGUIWindowPVR::CreateViews(void)
   }
 }
 
-void CGUIWindowPVR::UnlockWindow(void)
-{
-  if (m_bDialogOKActive)
-  {
-    CGUIDialogOK *dialog = (CGUIDialogOK *)g_windowManager.GetWindow(WINDOW_DIALOG_OK);
-    if (dialog)
-    {
-      dialog->Close();
-      g_windowManager.ActivateWindow(WINDOW_PVR);
-    }
-  }
-}
-
 void CGUIWindowPVR::Reset(void)
 {
   CSingleLock graphicsLock(g_graphicsContext);
@@ -272,11 +263,21 @@ void CGUIWindowPVR::Reset(void)
 
   if (m_bViewsCreated)
   {
+    m_windowChannelsRadio->UnregisterObservers();
     delete m_windowChannelsRadio;
+
+    m_windowChannelsTV->UnregisterObservers();
     delete m_windowChannelsTV;
+
+    m_windowGuide->UnregisterObservers();
     delete m_windowGuide;
+
+    m_windowRecordings->UnregisterObservers();
     delete m_windowRecordings;
+
     delete m_windowSearch;
+
+    m_windowTimers->UnregisterObservers();
     delete m_windowTimers;
     m_bViewsCreated = false;
   }

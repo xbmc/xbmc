@@ -1214,7 +1214,8 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
       ||  method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
       ||  method == VS_INTERLACEMETHOD_VDPAU_INVERSE_TELECINE ))
       {
-        if(method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
+        if((method == VS_INTERLACEMETHOD_AUTO_ION && vid_height > 576)
+        || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_HALF
         || method == VS_INTERLACEMETHOD_VDPAU_TEMPORAL_SPATIAL_HALF
         || avctx->skip_frame == AVDISCARD_NONREF)
           m_mixerstep = 0;

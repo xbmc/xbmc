@@ -129,8 +129,8 @@
 #ifdef HAS_EVENT_SERVER
 #include "network/EventServer.h"
 #endif
-#ifdef HAS_DBUS_SERVER
-#include "interfaces/DbusServer.h"
+#ifdef HAS_DBUS
+#include <dbus/dbus.h>
 #endif
 #ifdef HAS_HTTPAPI
 #include "interfaces/http-api/XBMChttp.h"
@@ -325,9 +325,6 @@ using namespace VIDEO;
 using namespace MUSIC_INFO;
 #ifdef HAS_EVENT_SERVER
 using namespace EVENTSERVER;
-#endif
-#ifdef HAS_DBUS_SERVER
-using namespace DBUSSERVER;
 #endif
 #ifdef HAS_JSONRPC
 using namespace JSONRPC;
@@ -1249,6 +1246,10 @@ bool CApplication::Initialize()
   CCrystalHD::GetInstance();
 #endif
 
+#ifdef HAS_JSONRPC
+  CJSONRPC::Initialize();
+#endif
+
   CAddonMgr::Get().StartServices(false);
 
   CLog::Log(LOGNOTICE, "initialize done");
@@ -1339,7 +1340,7 @@ void CApplication::StartAirplayServer()
       txt["features"] = "0x77";
       txt["model"] = "AppleTV2,1";
       txt["srcvers"] = "101.28";
-      CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", "XBMC", listenPort, txt);
+      CZeroconf::GetInstance()->PublishService("servers.airplay", "_airplay._tcp", g_infoManager.GetLabel(SYSTEM_FRIENDLY_NAME), listenPort, txt);
     }
   }
 #endif
@@ -1374,8 +1375,6 @@ bool CApplication::StartJSONRPCServer()
 #ifdef HAS_JSONRPC
   if (g_guiSettings.GetBool("services.esenabled"))
   {
-    CJSONRPC::Initialize();
-
     if (CTCPServer::StartServer(g_advancedSettings.m_jsonTcpPort, g_guiSettings.GetBool("services.esallinterfaces")))
     {
       std::map<std::string, std::string> txt;  
@@ -1482,34 +1481,6 @@ void CApplication::RefreshEventServer()
     CEventServer::GetInstance()->RefreshSettings();
   }
 #endif
-}
-
-void CApplication::StartDbusServer()
-{
-#ifdef HAS_DBUS_SERVER
-  CDbusServer* serverDbus = CDbusServer::GetInstance();
-  if (!serverDbus)
-  {
-    CLog::Log(LOGERROR, "DS: Out of memory");
-    return;
-  }
-  CLog::Log(LOGNOTICE, "DS: Starting dbus server");
-  serverDbus->StartServer( this );
-#endif
-}
-
-bool CApplication::StopDbusServer(bool bWait)
-{
-#ifdef HAS_DBUS_SERVER
-  CDbusServer* serverDbus = CDbusServer::GetInstance();
-  if (!serverDbus)
-  {
-    CLog::Log(LOGERROR, "DS: Out of memory");
-    return false;
-  }
-  CDbusServer::GetInstance()->StopServer(bWait);
-#endif
-  return true;
 }
 
 void CApplication::StartUPnPRenderer()
@@ -3298,9 +3269,6 @@ bool CApplication::Cleanup()
 #ifdef HAS_EVENT_SERVER
     CEventServer::RemoveInstance();
 #endif
-#ifdef HAS_DBUS_SERVER
-    CDbusServer::RemoveInstance();
-#endif
     DllLoaderContainer::Clear();
     g_playlistPlayer.Clear();
     g_settings.Clear();
@@ -3524,7 +3492,12 @@ bool CApplication::PlayMedia(const CFileItem& item, int iPlaylist)
     {
 
       if (iPlaylist != PLAYLIST_NONE)
-        return ProcessAndStartPlaylist(item.GetPath(), *pPlayList, iPlaylist);
+      {
+        int track=0;
+        if (item.HasProperty("playlist_starting_track"))
+          track = item.GetProperty("playlist_starting_track").asInteger();
+        return ProcessAndStartPlaylist(item.GetPath(), *pPlayList, iPlaylist, track);
+      }
       else
       {
         CLog::Log(LOGWARNING, "CApplication::PlayMedia called to play a playlist %s but no idea which playlist to use, playing first item", item.GetPath().c_str());
@@ -5411,7 +5384,7 @@ void CApplication::CheckPlayingProgress()
   }
 }
 
-bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist)
+bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayList& playlist, int iPlaylist, int track)
 {
   CLog::Log(LOGDEBUG,"CApplication::ProcessAndStartPlaylist(%s, %i)",strPlayList.c_str(), iPlaylist);
 
@@ -5440,7 +5413,7 @@ bool CApplication::ProcessAndStartPlaylist(const CStdString& strPlayList, CPlayL
     // start playing it
     g_playlistPlayer.SetCurrentPlaylist(iPlaylist);
     g_playlistPlayer.Reset();
-    g_playlistPlayer.Play();
+    g_playlistPlayer.Play(track);
     return true;
   }
   return false;
