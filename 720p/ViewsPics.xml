@@ -338,13 +338,39 @@
 		<control type="group">
 			<control type="group">
 				<visible>Control.IsVisible(56)</visible>
+				<control type="image" id="579">
+					<description>Background</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1280</width>
+					<height>720</height>
+					<aspectratio aligny="top">scale</aspectratio>
+					<texture background="true">grainy_black_bg.png</texture>
+					<align>center</align>
+				</control>
+				<control type="largeimage">
+					<description>Background</description>
+					<posx>0</posx>
+					<posy>0</posy>
+					<width>1280</width>
+					<height>720</height>
+					<fadetime>400</fadetime>
+					<animation effect="fade" end="100" time="100" delay="0">Visible</animation>
+					<animation effect="fade" end="0" time="100" delay="0">Hidden</animation>
+					<aspectratio aligny="top">scale</aspectratio>
+					<texture background="true">$INFO[ListItem.Thumb]</texture>
+					<align>center</align>
+					<animation effect="fade" start="0" end="15" time="0" condition="true">Conditional</animation>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Control.IsVisible(56)</visible>
 				<include>MediaViewBGOverlay</include>
 			</control>
 			<control type="group">
 				<include>MediaViewFade</include>
 				<control type="list" id="56">
 					<viewtype label="InfoList">list</viewtype>
-					<visible>!Container.Content(plugincontent)</visible>
 					<onleft>Skin.ToggleSetting(HideNowPlayingMusicInfo)</onleft>
 					<posx>-34</posx>
 					<posy>235</posy>
@@ -425,6 +451,122 @@
 					<onright>9009</onright>
 					<showonepage>true</showonepage>
 					<visible>!IsEmpty(ListItem.Title) | !IsEmpty(ListItem.Label)</visible>
+				</control>
+			</control>
+			<control type="group">
+				<visible>Control.IsVisible(56)</visible>
+				<description>Picture Details</description>
+				<posx>595</posx>
+				<posy>235</posy>
+				<control type="group">
+					<description>Large Picture Thumb</description>
+					<posy>-5</posy>
+					<!-- compressed thumb when no HQ file available -->
+					<control type="largeimage">
+						<visible>![Container(56).OnNext | Container(56).OnPrevious] + !IsEmpty(ListItem.Plot)</visible>
+						<animation effect="fade" start="0" end="100" time="1000" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
+						<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
+						<animation effect="fade" start="100" end="0" time="500">Hidden</animation>
+						<animation effect="fade" start="0" end="100" time="500">Visible</animation>
+						<description>Preview thumb</description>
+						<width>656</width>
+						<height>393</height>
+						<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
+						<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+						<bordersize>9</bordersize>
+						<texture background="true">$INFO[ListItem.Thumb]</texture>
+						<align>center</align>
+					</control>
+					<!-- HQ preview image -->
+					<control type="largeimage">
+						<visible>![Container(56).OnNext | Container(56).OnPrevious] + !IsEmpty(ListItem.Plot)</visible>
+						<animation effect="fade" start="0" end="100" time="1000" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
+						<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
+						<animation effect="fade" start="100" end="0" time="500">Hidden</animation>
+						<animation effect="fade" start="0" end="100" time="500">Visible</animation>
+						<description>Preview thumb</description>
+						<width>656</width>
+						<height>393</height>
+						<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
+						<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+						<bordersize>9</bordersize>
+						<texture background="true">$INFO[ListItem.FileNameAndPath]</texture>
+						<align>center</align>
+						<visible>!IsEmpty(ListItem.FileNameAndPath)</visible>
+					</control>
+					<!-- compressed thumb when no HQ file available -->
+					<control type="largeimage">
+						<visible>![Container(56).OnNext | Container(56).OnPrevious] + IsEmpty(ListItem.Plot)</visible>
+						<animation effect="fade" start="0" end="100" time="1000" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
+						<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
+						<animation effect="fade" start="100" end="0" time="500">Hidden</animation>
+						<animation effect="fade" start="0" end="100" time="500">Visible</animation>
+						<description>Preview thumb</description>
+						<width>656</width>
+						<height>460</height>
+						<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
+						<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+						<bordersize>9</bordersize>
+						<texture background="true">$INFO[ListItem.Thumb]</texture>
+						<align>center</align>
+					</control>
+					<!-- HQ preview image -->
+					<control type="largeimage">
+						<visible>![Container(56).OnNext | Container(56).OnPrevious] + IsEmpty(ListItem.Plot)</visible>
+						<animation effect="fade" start="0" end="100" time="1000" delay="300" condition="Control.HasFocus(56)" reversible="false">Conditional</animation>
+						<animation effect="fade" start="0" end="100" time="2000" delay="0">WindowOpen</animation>
+						<animation effect="fade" start="100" end="0" time="500">Hidden</animation>
+						<animation effect="fade" start="0" end="100" time="500">Visible</animation>
+						<description>Preview thumb</description>
+						<width>656</width>
+						<height>460</height>
+						<aspectratio scalediffuse="false" aligny="top">scale</aspectratio>
+						<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
+						<bordersize>9</bordersize>
+						<texture background="true">$INFO[ListItem.FileNameAndPath]</texture>
+						<align>center</align>
+						<visible>!IsEmpty(ListItem.FileNameAndPath)</visible>
+					</control>
+				</control>
+				<control type="group">
+					<posx>8</posx>
+					<posy>390</posy>
+					<control type="image">
+						<width>639</width>
+						<height>60</height>
+						<texture border="10">whitewiderounded.png</texture>
+						<colordiffuse>FF555555</colordiffuse>
+						<animation effect="fade" start="0" end="15" time="400" condition="true">Conditional</animation>
+						<visible>!IsEmpty(ListItem.Plot)</visible>
+					</control>					
+					<control type="textbox">
+						<posy>5</posy>
+						<posx>10</posx>
+						<description>Name</description>
+						<width>610</width>
+						<height>44</height>
+						<align>center</align>
+						<font>MediumSmallTitleFont2</font>
+						<info>ListItem.Plot</info>
+						<visible>!IsEmpty(ListItem.Plot)</visible>
+					</control>
+					<!-- placeholder for photos media flags -->
+					<!--<control type="image">
+						<posy>40</posy>
+						<width>635</width>
+						<height>30</height>
+						<texture border="10">whitewiderounded.png</texture>
+						<colordiffuse>FF555555</colordiffuse>
+						<animation effect="fade" start="0" end="15" time="400" condition="true">Conditional</animation>
+					</control>
+					<control type="label">
+						<posy>41</posy>
+						<description>Name</description>
+						<width>615</width>
+						<align>center</align>
+						<font>MediumSmallTitleFont2</font>
+						<label>- photo flags will go here -</label>
+					</control>-->
 				</control>
 			</control>
 		</control>
