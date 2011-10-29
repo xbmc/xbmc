@@ -394,6 +394,7 @@
   <MovieInformation>
     <keyboard name="Motorola Nyxboard Hybrid">
       <i>Back</i>
+      <d mod="ctrl">Back</d>
     </keyboard>
   </MovieInformation>
   <PictureInfo>
@@ -406,6 +407,12 @@
       <space>Pause</space>
     </keyboard>
   </PictureInfo>
+  <AddonInformation>
+    <keyboard>
+      <i>Back</i>
+      <d mod="ctrl">Back</d>
+    </keyboard>
+  </AddonInformation>
   <Teletext>
     <keyboard name="Motorola Nyxboard Hybrid">
       <v>Back</v>
