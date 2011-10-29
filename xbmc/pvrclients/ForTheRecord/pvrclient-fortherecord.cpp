@@ -885,14 +885,16 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
     int retval = ForTheRecord::TuneLiveStream(channel->Guid(), channel->Type(), filename);
 
 #if defined(TARGET_LINUX) || defined(TARGET_OSX)
+    // TODO FHo: merge this code and the code that translates names from recordings
     std::string CIFSname = filename;
+    std::string SMBPrefix = "smb://" + g_szUser + ":" + g_szPass;
     size_t found;
     while ((found = CIFSname.find("\\")) != std::string::npos)
     {
       CIFSname.replace(found, 1, "/");
     }
     CIFSname.erase(0,2);
-    CIFSname.insert(0, "smb://Guest@");
+    CIFSname.insert(0, SMBPrefix.c_str());
     filename = CIFSname;
 #endif
 

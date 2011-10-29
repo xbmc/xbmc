@@ -5,4 +5,6 @@
     <string id="30001">ForTheRecord webserver port</string>
     <string id="30002">Include Radio</string>
     <string id="30003">Connect timeout (s)</string>
+    <string id="30004">Windows user account</string>
+    <string id="30005">Password</string>
 </strings>

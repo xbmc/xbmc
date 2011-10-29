@@ -4,4 +4,6 @@
     <setting id="port" type="number" label="30001" default="49943" />
     <setting id="useradio" type="bool" label="30002" default="true" />
     <setting id="timeout" type="enum" label="30003" values="0|1|2|3|4|5|6|7|8|9|10|11|12|13|14|15" default="6"/>
+    <setting id="user" type="text" label="30004" default="Guest" />
+    <setting id="pass" type="text" label="30005" option="hidden" default="" />
 </settings>
