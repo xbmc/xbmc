@@ -5,4 +5,6 @@
     <string id="30001">ForTheRecord webserver poort</string>
     <string id="30002">Toon radio</string>
     <string id="30003">Verbindingstimeout (s)</string>
+    <string id="30004">Windows gebruikersaccount</string>
+    <string id="30005">Wachtwoord</string>
 </strings>

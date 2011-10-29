@@ -30,7 +30,9 @@
 #define DEFAULT_HOST                  "127.0.0.1"
 #define DEFAULT_PORT                  49943
 #define DEFAULT_RADIO                 true
-#define DEFAULT_TIMEOUT               6
+#define DEFAULT_TIMEOUT               10
+#define DEFAULT_USER                  "Guest"
+#define DEFAULT_PASS                  ""
 
 extern bool         g_bCreated;           ///< Shows that the Create function was successfully called
 extern int          g_iClientID;          ///< The PVR client ID used by XBMC for this driver
@@ -42,6 +44,8 @@ extern std::string  g_szHostname;
 extern int          g_iPort;
 extern int          g_iConnectTimeout;
 extern bool         g_bRadioEnabled;
+extern std::string  g_szUser;
+extern std::string  g_szPass;
 
 extern std::string  g_szBaseURL;
 
