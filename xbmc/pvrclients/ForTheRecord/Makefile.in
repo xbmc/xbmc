@@ -6,8 +6,8 @@
 #
 
 LIBS   = -ldl -lpthread -lcurl
-LIBDIR = @abs_top_srcdir@/addons/pvr.fortherecord.argus-rtsp
-LIB    = @abs_top_srcdir@/addons/pvr.fortherecord.argus-rtsp/XBMC_ForTheRecord.pvr
+LIBDIR = @abs_top_srcdir@/addons/pvr.fortherecord.argus
+LIB    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord.pvr
 
 SRCS   = utils.cpp \
         activerecording.cpp \
