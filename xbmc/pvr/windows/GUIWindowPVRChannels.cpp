@@ -66,7 +66,8 @@ void CGUIWindowPVRChannels::UnregisterObservers(void)
 {
   CSingleLock lock(m_critSection);
   g_EpgContainer.UnregisterObserver(this);
-  g_PVRTimers->UnregisterObserver(this);
+  if (g_PVRTimers)
+    g_PVRTimers->UnregisterObserver(this);
   g_infoManager.UnregisterObserver(this);
 }
 

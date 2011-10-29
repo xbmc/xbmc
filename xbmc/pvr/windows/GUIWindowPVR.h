@@ -58,6 +58,7 @@ namespace PVR
     virtual void OnWindowLoaded(void);
     virtual void OnWindowUnload(void);
     virtual void Reset(void);
+    virtual void Cleanup(void);
 
     EPG::CGUIEPGGridContainer *m_guideGrid;
 
