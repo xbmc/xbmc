@@ -42,6 +42,7 @@
 #include "guilib/GUIDialog.h"
 #include "windowing/WindowingFactory.h"
 #include "GUIInfoManager.h"
+#include "utils/Splash.h"
 
 #include "powermanagement/PowerManager.h"
 
@@ -748,6 +749,11 @@ case TMSG_POWERDOWN:
         CAction action((int)pMsg->dwParam1);
         g_application.ShowVolumeBar(&action);
       }
+    case TMSG_SPLASH_MESSAGE:
+      {
+        if (g_application.m_splash)
+          g_application.m_splash->Show(pMsg->strParam);
+      }
   }
 }
 
@@ -1172,4 +1178,16 @@ void CApplicationMessenger::ShowVolumeBar(bool up)
   ThreadMessage tMsg = {TMSG_VOLUME_SHOW};
   tMsg.dwParam1 = up ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN;
   SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::SetSplashMessage(const CStdString& message)
+{
+  ThreadMessage tMsg = {TMSG_SPLASH_MESSAGE};
+  tMsg.strParam = message;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::SetSplashMessage(int stringID)
+{
+  SetSplashMessage(g_localizeStrings.Get(stringID));
 }
