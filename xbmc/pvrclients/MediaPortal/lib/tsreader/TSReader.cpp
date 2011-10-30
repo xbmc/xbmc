@@ -229,6 +229,7 @@ void CTsReader::Close()
 
 bool CTsReader::OnZap(const char* pszFileName)
 {
+#ifdef TARGET_WINDOWS
   string newFileName;
   long result;
 
@@ -253,6 +254,9 @@ bool CTsReader::OnZap(const char* pszFileName)
     }
     return S_FALSE;
   }
+#else
+  return S_OK;
+#endif
 }
 
 void CTsReader::SetCardSettings(CCards* cardSettings)

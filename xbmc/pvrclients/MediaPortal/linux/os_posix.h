@@ -43,6 +43,16 @@
 #define THREAD_PRIORITY_TIME_CRITICAL   THREAD_BASE_PRIORITY_LOWRT
 #define THREAD_PRIORITY_IDLE            THREAD_BASE_PRIORITY_IDLE
 
+#ifdef TARGET_LINUX
+#include <limits.h>
+#define MAX_PATH PATH_MAX
+#else
+#define MAX_PATH 256
+#endif
+
+#include <string.h>
+#define strnicmp(X,Y,N) strncasecmp(X,Y,N)
+
 typedef pthread_mutex_t criticalsection_t;
 typedef sem_t wait_event_t;
 typedef unsigned char byte;

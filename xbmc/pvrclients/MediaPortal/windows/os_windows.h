@@ -22,6 +22,7 @@
 
 #define WIN32_LEAN_AND_MEAN           // Enable LEAN_AND_MEAN support
 #include <windows.h>
+#include <process.h>
 
 typedef HANDLE wait_event_t;
 typedef CRITICAL_SECTION criticalsection_t;

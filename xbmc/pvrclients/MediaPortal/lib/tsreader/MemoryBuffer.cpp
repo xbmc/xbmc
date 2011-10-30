@@ -34,7 +34,7 @@ CMemoryBuffer::CMemoryBuffer(void) :m_event(NULL,FALSE,FALSE,NULL)
   m_BytesInBuffer=0;
   m_pcallback=NULL;
 #ifndef TARGET_WINDOWS
-  m_mutex.Initialize(); //workaround for pthread mutex crash
+  m_BufferLock.Initialize(); //workaround for pthread mutex crash
 #endif
 }
 
