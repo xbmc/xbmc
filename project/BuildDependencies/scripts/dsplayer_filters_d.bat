@@ -10,6 +10,6 @@ cd %TMP_PATH%
 
 del "%OUTDIR%\*.ax"
 
-xcopy standalone_filters-1.5.3.3585_x86\*.ax "%OUTDIR%" /E /Q /I /Y
+xcopy standalone_filters-1.5.3.3757_x86\*.ax "%OUTDIR%" /E /Q /I /Y
 
 cd %LOC_PATH%
