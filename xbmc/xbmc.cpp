@@ -101,6 +101,7 @@ int main(int argc, char* argv[])
   return status;
 }
 
+#ifndef USE_EXTERNAL_FFMPEG
 extern "C"
 {
   void mp_msg( int x, int lev, const char *format, ... )
@@ -119,3 +120,4 @@ extern "C"
     OutputDebugString(tmp);
   }
 }
+#endif
