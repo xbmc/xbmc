@@ -72,6 +72,9 @@ cPVRClientMediaPortal::cPVRClientMediaPortal()
   m_bPlayingNoSignal       = false;
   m_tsreader               = NULL;
 #endif
+#ifndef TARGET_WINDOWS
+  m_mutex.Initialize(); //workaround for pthread mutex crash.
+#endif
 }
 
 cPVRClientMediaPortal::~cPVRClientMediaPortal()
