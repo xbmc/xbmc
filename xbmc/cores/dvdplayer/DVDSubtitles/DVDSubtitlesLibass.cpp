@@ -79,15 +79,6 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
   strPath = "special://xbmc/media/Fonts/";
   strPath += g_guiSettings.GetString("subtitles.font");
   int fc = !g_guiSettings.GetBool("subtitles.overrideassfonts");
-  // Calling ass_set_fonts with update = 1 is the correct usage. However font problems were only
-  // reported on Windows and not tested properly on all platforms, so restrict the change to Windows
-  // at this time.
-  int update;
-#ifdef TARGET_WINDOWS
-  update = 1;
-#else
-  update = 0;
-#endif
 
   m_dll.ass_set_margins(m_renderer, 0, 0, 0, 0);
   m_dll.ass_set_use_margins(m_renderer, 0);
@@ -95,7 +86,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 
   // libass uses fontconfig (system lib) which is not wrapped
   //  so translate the path before calling into libass
-  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "Arial", fc, NULL, update);
+  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "Arial", fc, NULL, 1);
 }
 
 
