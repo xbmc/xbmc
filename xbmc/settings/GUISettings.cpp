@@ -699,6 +699,7 @@ void CGUISettings::Initialize()
 #ifdef HAS_DS_PLAYER
   AddString(sub, "subtitles.ds.font", 55056, "Arial", BUTTON_CONTROL_STANDARD);
 #endif
+  AddBool(sub,"subtitles.overrideassfonts", 21368, false);
   AddSeparator(sub, "subtitles.sep1");
   AddPath(sub, "subtitles.custompath", 21366, "", BUTTON_CONTROL_PATH_INPUT, false, 657);
 

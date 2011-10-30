@@ -73,6 +73,8 @@ public:
   virtual void RestoreHardwareTransform();
 
   virtual bool TestRender();
+
+  virtual void Project(float &x, float &y, float &z);
   
   void InitialiseGUIShader();
   void EnableGUIShader(ESHADERMETHOD method);
@@ -101,6 +103,10 @@ protected:
 
   CGUIShader  **m_pGUIshader;  // One GUI shader for each method
   ESHADERMETHOD m_method;      // Current GUI Shader method
+
+  GLfloat    m_view[16];
+  GLfloat    m_projection[16];
+  GLint      m_viewPort[4];
 };
 
 #endif // RENDER_SYSTEM_H

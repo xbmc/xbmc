@@ -81,6 +81,8 @@ public:
   virtual bool TestRender();
 
   HRESULT           GetDeviceStatus() { return m_nDeviceStatus; }
+  virtual void Project(float &x, float &y, float &z);
+
   LPDIRECT3DDEVICE9 Get3DDevice() { return m_pD3DDevice; }
   LPDIRECT3D9       Get3DObject() { return m_pD3D; }
   UINT              GetCurrentAdapter() { return m_adapter; }
@@ -161,6 +163,11 @@ protected:
   std::vector<ID3DResource*>  m_resources;
 
   bool                        m_inScene; ///< True if we're in a BeginScene()/EndScene() block
+
+  D3DVIEWPORT9                m_viewPort;
+  D3DXMATRIX                  m_projection;
+  D3DXMATRIX                  m_view;
+  D3DXMATRIX                  m_world;
 };
 
 #endif
