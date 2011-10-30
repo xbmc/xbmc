@@ -1267,7 +1267,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
     m_PlaybackURL = timeshiftfields[0];
     XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", m_PlaybackURL.c_str(), timeshiftfields[2].c_str());
-    m_iCurrentChannel = channelinfo.iUniqueId;
+    m_iCurrentChannel = (int) channelinfo.iUniqueId;
 
     if (g_iSleepOnRTSPurl > 0)
     {
