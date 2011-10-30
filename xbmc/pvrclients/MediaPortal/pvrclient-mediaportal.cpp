@@ -1182,7 +1182,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
     return false;
   }
 
-  if (channelinfo.iUniqueId == m_iCurrentChannel)
+  if (((int)channelinfo.iUniqueId) == m_iCurrentChannel)
     return true;
 
   // Start the timeshift
@@ -1420,7 +1420,7 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
 
 bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channel)
 {
-  if (channel.iUniqueId == m_iCurrentChannel)
+  if (((int)channel.iUniqueId) == m_iCurrentChannel)
     return true;
 
 #ifdef TSREADER
@@ -1660,7 +1660,6 @@ int cPVRClientMediaPortal::ReadRecordedStream(unsigned char *pBuffer, unsigned i
 const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
   string result;
-  char   command[256] = "";
 
   XBMC->Log(LOG_DEBUG, "->GetLiveStreamURL(uid=%i)", channelinfo.iUniqueId);
 
