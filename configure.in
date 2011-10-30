@@ -455,6 +455,7 @@ case $host in
      ;;
   arm-apple-darwin*)
      use_joystick=no
+     use_neon=yes
      use_libcec=no
      use_crystalhd=no
      use_vdadecoder=no
