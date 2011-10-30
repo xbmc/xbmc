@@ -20,9 +20,6 @@
 
 CCriticalSection::CCriticalSection(void)
 {
-#ifndef TARGET_WINDOWS
-  m_CriticalSection = NULL;
-#endif
   Initialize();
 }
 

@@ -72,6 +72,9 @@ cPVRClientMediaPortal::cPVRClientMediaPortal()
   m_bPlayingNoSignal       = false;
   m_tsreader               = NULL;
 #endif
+#ifndef TARGET_WINDOWS
+  m_mutex.Initialize(); //workaround for pthread mutex crash.
+#endif
 }
 
 cPVRClientMediaPortal::~cPVRClientMediaPortal()
@@ -1182,7 +1185,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
     return false;
   }
 
-  if (channelinfo.iUniqueId == m_iCurrentChannel)
+  if (((int)channelinfo.iUniqueId) == m_iCurrentChannel)
     return true;
 
   // Start the timeshift
@@ -1264,7 +1267,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
     m_PlaybackURL = timeshiftfields[0];
     XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", m_PlaybackURL.c_str(), timeshiftfields[2].c_str());
-    m_iCurrentChannel = channelinfo.iUniqueId;
+    m_iCurrentChannel = (int) channelinfo.iUniqueId;
 
     if (g_iSleepOnRTSPurl > 0)
     {
@@ -1420,7 +1423,7 @@ void cPVRClientMediaPortal::CloseLiveStream(void)
 
 bool cPVRClientMediaPortal::SwitchChannel(const PVR_CHANNEL &channel)
 {
-  if (channel.iUniqueId == m_iCurrentChannel)
+  if (((int)channel.iUniqueId) == m_iCurrentChannel)
     return true;
 
 #ifdef TSREADER
@@ -1660,7 +1663,6 @@ int cPVRClientMediaPortal::ReadRecordedStream(unsigned char *pBuffer, unsigned i
 const char* cPVRClientMediaPortal::GetLiveStreamURL(const PVR_CHANNEL &channelinfo)
 {
   string result;
-  char   command[256] = "";
 
   XBMC->Log(LOG_DEBUG, "->GetLiveStreamURL(uid=%i)", channelinfo.iUniqueId);
 
