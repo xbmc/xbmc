@@ -95,7 +95,7 @@ CDVDSubtitlesLibass::CDVDSubtitlesLibass()
 
   // libass uses fontconfig (system lib) which is not wrapped
   //  so translate the path before calling into libass
-  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "", fc, NULL, update);
+  m_dll.ass_set_fonts(m_renderer, _P(strPath).c_str(), "Arial", fc, NULL, update);
 }
 
 
