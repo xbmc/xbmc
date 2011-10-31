@@ -199,7 +199,7 @@ public:
   int GetControlIdLeft() const { return m_actionLeft.GetNavigation(); };
   int GetControlIdRight() const { return m_actionRight.GetNavigation(); };
   int GetControlIdBack() const { return m_actionBack.GetNavigation(); };
-  virtual int GetNextControl(int direction) const;
+  bool GetNavigationAction(int direction, CGUIAction& action) const;
   virtual void SetFocus(bool focus);
   virtual void SetWidth(float width);
   virtual void SetHeight(float height);

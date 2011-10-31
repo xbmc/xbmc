@@ -890,22 +890,27 @@ bool CGUIControl::IsAnimating(ANIMATION_TYPE animType)
   return false;
 }
 
-int CGUIControl::GetNextControl(int direction) const
+bool CGUIControl::GetNavigationAction(int direction, CGUIAction& action) const
 {
   switch (direction)
   {
   case ACTION_MOVE_UP:
-    return m_actionUp.GetNavigation();
+    action = m_actionUp;
+    return true;
   case ACTION_MOVE_DOWN:
-    return m_actionDown.GetNavigation();
+    action = m_actionDown;
+    return true;
   case ACTION_MOVE_LEFT:
-    return m_actionLeft.GetNavigation();
+    action = m_actionLeft;
+    return true;
   case ACTION_MOVE_RIGHT:
-    return m_actionRight.GetNavigation();
+    action = m_actionRight;
+    return true;
   case ACTION_NAV_BACK:
-    return m_actionBack.GetNavigation();
+    action = m_actionBack;
+    return true;
   default:
-    return -1;
+    return false;
   }
 }
 
