@@ -2388,4 +2388,5 @@
   <string id="36015">HDMI port number</string>
   <string id="36016">XBMC connected</string>
   <string id="36017">Adapter found, but libcec is not available</string>
+  <string id="36018">Use the TV's language setting</string>
 </strings>

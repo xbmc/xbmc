@@ -41,7 +41,7 @@ using namespace CEC;
 
 #define CEC_LIB_SUPPORTED_VERSION 1
 
-/* time in seconds to ignore standby commands from devices */
+/* time in seconds to ignore standby commands from devices after the screensaver has been activated */
 #define SCREENSAVER_TIMEOUT       10
 
 class DllLibCECInterface
@@ -225,7 +225,7 @@ void CPeripheralCecAdapter::Process(void)
   if (strPort.empty())
     return;
 
-  // set the correct physical address
+  // set correct physical address from peripheral settings
   int iHdmiPort = GetSettingInt("cec_hdmi_port");
   if (iHdmiPort <= 0 || iHdmiPort > 16)
     iHdmiPort = 1;
@@ -261,11 +261,14 @@ void CPeripheralCecAdapter::Process(void)
   m_cecAdapter->SetActiveView();
   FlushLog();
 
-  m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, g_localizeStrings.Get(36016).c_str());
+  if (GetSettingBool("use_tv_menu_language"))
+  {
+    cec_menu_language language;
+    if (m_cecAdapter->GetDeviceMenuLanguage(CECDEVICE_TV, &language))
+      SetMenuLanguage(language.language);
+  }
 
-  cec_menu_language language;
-  if (m_cecAdapter->GetDeviceMenuLanguage(CECDEVICE_TV, &language))
-    SetMenuLanguage(language.language);
+  m_cecAdapter->SetOSDString(CECDEVICE_TV, CEC_DISPLAY_CONTROL_DISPLAY_FOR_DEFAULT_TIME, g_localizeStrings.Get(36016).c_str());
 
   while (!m_bStop)
   {
@@ -427,7 +430,7 @@ void CPeripheralCecAdapter::ProcessNextCommand(void)
       }
       break;
     case CEC_OPCODE_SET_MENU_LANGUAGE:
-      if (command.initiator == CECDEVICE_TV && command.parameters.size == 3)
+      if (GetSettingBool("use_tv_menu_language") && command.initiator == CECDEVICE_TV && command.parameters.size == 3)
       {
         char strNewLanguage[4];
         for (int iPtr = 0; iPtr < 3; iPtr++)
