@@ -700,7 +700,7 @@ bool CGUIBaseContainer::OnClick(int actionID)
       if (selected >= 0 && selected < (int)m_items.size())
       {
         CGUIStaticItemPtr item = boost::static_pointer_cast<CGUIStaticItem>(m_items[selected]);
-        item->GetClickActions().Execute(GetID(), GetParentID());
+        item->GetClickActions().ExecuteActions(GetID(), GetParentID());
       }
       return true;
     }

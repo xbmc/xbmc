@@ -35,9 +35,9 @@ public:
   CGUIAction(int controlID);
 
   /**
-   * Execute actions, if action is paired with condition - evaluate condition first
+   * Execute actions (no navigation paths), if action is paired with condition - evaluate condition first
    */
-  bool Execute(int controlID, int parentID, int direction = 0) const;
+  bool ExecuteActions(int controlID, int parentID) const;
   /**
    * Check if there is any action that meet its condition
    */

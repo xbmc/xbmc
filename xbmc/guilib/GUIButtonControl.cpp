@@ -307,17 +307,17 @@ void CGUIButtonControl::OnClick()
   CGUIMessage msg(GUI_MSG_CLICKED, controlID, parentID, 0);
   SendWindowMessage(msg);
 
-  clickActions.Execute(controlID, parentID);
+  clickActions.ExecuteActions(controlID, parentID);
 }
 
 void CGUIButtonControl::OnFocus()
 {
-  m_focusActions.Execute(GetID(), GetParentID());
+  m_focusActions.ExecuteActions(GetID(), GetParentID());
 }
 
 void CGUIButtonControl::OnUnFocus()
 {
-  m_unfocusActions.Execute(GetID(), GetParentID());
+  m_unfocusActions.ExecuteActions(GetID(), GetParentID());
 }
 
 void CGUIButtonControl::SetSelected(bool bSelected)

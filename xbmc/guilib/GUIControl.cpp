@@ -224,46 +224,50 @@ bool CGUIControl::OnAction(const CAction &action)
   return false;
 }
 
+bool CGUIControl::Navigate(int direction)
+{
+  if (HasFocus())
+  {
+    CGUIMessage msg(GUI_MSG_MOVE, GetParentID(), GetID(), direction);
+    return SendWindowMessage(msg);
+  }
+  return false;
+}
+
 // Movement controls (derived classes can override)
 void CGUIControl::OnUp()
 {
-  if (HasFocus())
-    m_actionUp.Execute(GetID(), GetParentID(), ACTION_MOVE_UP);
+  Navigate(ACTION_MOVE_UP);
 }
 
 void CGUIControl::OnDown()
 {
-  if (HasFocus())
-    m_actionDown.Execute(GetID(), GetParentID(), ACTION_MOVE_DOWN);
+  Navigate(ACTION_MOVE_DOWN);
 }
 
 void CGUIControl::OnLeft()
 {
-  if (HasFocus())
-    m_actionLeft.Execute(GetID(), GetParentID(), ACTION_MOVE_LEFT);
+  Navigate(ACTION_MOVE_LEFT);
 }
 
 void CGUIControl::OnRight()
 {
-  if (HasFocus())
-    m_actionRight.Execute(GetID(), GetParentID(), ACTION_MOVE_RIGHT);
+  Navigate(ACTION_MOVE_RIGHT);
 }
 
 bool CGUIControl::OnBack()
 {
-  return HasFocus() ? m_actionBack.Execute(GetID(), GetParentID(), ACTION_NAV_BACK) : false;
+  return Navigate(ACTION_NAV_BACK);
 }
 
 void CGUIControl::OnNextControl()
 {
-  if (HasFocus())
-    m_actionNext.Execute(GetID(), GetParentID(), ACTION_NEXT_CONTROL);
+  Navigate(ACTION_NEXT_CONTROL);
 }
 
 void CGUIControl::OnPrevControl()
 {
-  if (HasFocus())
-    m_actionPrev.Execute(GetID(), GetParentID(), ACTION_PREV_CONTROL);
+  Navigate(ACTION_PREV_CONTROL);
 }
 
 bool CGUIControl::SendWindowMessage(CGUIMessage &message)

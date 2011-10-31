@@ -836,6 +836,7 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
     CGUIAction action;
     if (!control->GetNavigationAction(moveAction, action))
       return false;
+    action.ExecuteActions(nextControl, GetParentID());
     nextControl = action.GetNavigation();
     if (!nextControl) // 0 isn't valid control id
       return false;
@@ -956,12 +957,12 @@ void CGUIWindow::SetRunActionsManually()
 
 void CGUIWindow::RunLoadActions()
 {
-  m_loadActions.Execute(GetID(), GetParentID());
+  m_loadActions.ExecuteActions(GetID(), GetParentID());
 }
 
 void CGUIWindow::RunUnloadActions()
 {
-  m_unloadActions.Execute(GetID(), GetParentID());
+  m_unloadActions.ExecuteActions(GetID(), GetParentID());
 }
 
 void CGUIWindow::ClearBackground()

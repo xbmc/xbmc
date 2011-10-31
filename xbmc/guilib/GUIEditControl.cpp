@@ -306,7 +306,7 @@ void CGUIEditControl::UpdateText(bool sendUpdate)
   {
     SEND_CLICK_MESSAGE(GetID(), GetParentID(), 0);
 
-    m_textChangeActions.Execute(GetID(), GetParentID());
+    m_textChangeActions.ExecuteActions(GetID(), GetParentID());
   }
   SetInvalid();
 }
