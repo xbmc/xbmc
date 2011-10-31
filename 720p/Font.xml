@@ -1,9 +1,16 @@
 <fonts>
 	<aliases>
-		<alias font="HelveticaNeue" variant="Condensed Bold" alias="Arial" aliasStyle="bold" />
-	</aliases>
+    <alias font="HelveticaNeue" variant="Condensed Bold" alias="Arial" aliasStyle="bold" />
+    <alias font="HelveticaNeue" variant="Medium" alias="Arial" aliasStyle="normal" />
+    <alias font="HelveticaNeue" variant="Regular" alias="Arial" aliasStyle="normal" />
+    <alias font="HelveticaNeue" variant="Bold" alias="Arial" aliasStyle="bold" />
+    <alias font="HelveticaNeue" variant="" alias="Arial" aliasStyle="normal" />
+    <alias font="Helvetica" variant="Condensed Bold" alias="Arial" aliasStyle="bold" />
+    <alias font="Helvetica" variant="Bold" alias="Arial" aliasStyle="bold" />
+    <alias font="Helvetica" variant="Regular" alias="Arial" aliasStyle="normal" />
+  </aliases>
 
-	<fontset id="Default" unicode="false">
+  <fontset id="Default" unicode="false">
 		<!-- -->
 		<font>
 			<name>LanguageString</name>
