@@ -837,6 +837,8 @@ bool CGUIWindow::OnMove(int fromControl, int moveAction)
     if (!control->GetNavigationAction(moveAction, action))
       return false;
     nextControl = action.GetNavigation();
+    if (!nextControl) // 0 isn't valid control id
+      return false;
     // check our history - if the nextControl is in it, we can't focus it
     for (unsigned int i = 0; i < moveHistory.size(); i++)
     {
