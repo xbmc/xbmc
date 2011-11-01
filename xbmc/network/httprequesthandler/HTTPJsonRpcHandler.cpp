@@ -55,7 +55,7 @@ int CHTTPJsonRpcHandler::HandleHTTPRequest(CWebServer *server, struct MHD_Connec
     CHTTPClient client;
     m_response = CJSONRPC::MethodCall(m_request, server, &client);
 
-    m_responseHeaderFields["Content-Type"] = "application/json";
+    m_responseHeaderFields.insert(pair<string, string>("Content-Type", "application/json"));
 
     m_request.clear();
   }

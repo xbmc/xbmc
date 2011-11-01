@@ -59,6 +59,13 @@ int CWebServer::FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *
   return MHD_YES; 
 }
 
+int CWebServer::FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value) 
+{
+  multimap<string, string> *arguments = (multimap<string, string> *)cls;
+  arguments->insert(pair<string,string>(key,value));
+  return MHD_YES; 
+}
+
 int CWebServer::AskForAuthentication(struct MHD_Connection *connection)
 {
   int ret;
@@ -310,8 +317,8 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler, CWebServer *webserve
     return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, method);
   }
 
-  map<string, string> header = handler->GetHTTPResponseHeaderFields();
-  for (map<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
+  multimap<string, string> header = handler->GetHTTPResponseHeaderFields();
+  for (multimap<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
     MHD_add_response_header(response, it->first.c_str(), it->second.c_str());
 
   ret = MHD_queue_response(connection, handler->GetHTTPResonseCode(), response);
@@ -615,6 +622,14 @@ int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum M
     return -1;
 
   return MHD_get_connection_values(connection, kind, FillArgumentMap, &headerValues);
+}
+
+int CWebServer::GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::multimap<std::string, std::string> &headerValues)
+{
+  if (connection == NULL)
+    return -1;
+
+  return MHD_get_connection_values(connection, kind, FillArgumentMultiMap, &headerValues);
 }
 
 const char *CWebServer::CreateMimeTypeFromExtension(const char *ext)

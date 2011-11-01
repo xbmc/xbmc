@@ -82,7 +82,7 @@ public:
 
   int GetHTTPResonseCode() const { return m_responseCode; }
   HTTPResponseType GetHTTPResponseType() const { return m_responseType; }
-  const std::map<std::string, std::string>& GetHTTPResponseHeaderFields() const { return m_responseHeaderFields; };
+  const std::multimap<std::string, std::string>& GetHTTPResponseHeaderFields() const { return m_responseHeaderFields; };
 
 protected:
 #if (MHD_VERSION >= 0x00040001)
@@ -94,7 +94,7 @@ protected:
 
   int m_responseCode;
   HTTPResponseType m_responseType;
-  std::map<std::string, std::string> m_responseHeaderFields;
+  std::multimap<std::string, std::string> m_responseHeaderFields;
 
   std::map<std::string, std::string> m_postFields;
 };

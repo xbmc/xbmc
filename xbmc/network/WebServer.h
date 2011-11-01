@@ -52,6 +52,7 @@ public:
 
   static std::string GetRequestHeaderValue(struct MHD_Connection *connection, enum MHD_ValueKind kind, const std::string &key);
   static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::map<std::string, std::string> &headerValues);
+  static int GetRequestHeaderValues(struct MHD_Connection *connection, enum MHD_ValueKind kind, std::multimap<std::string, std::string> &headerValues);
 private:
   struct MHD_Daemon* StartMHD(unsigned int flags, int port);
   static int AskForAuthentication (struct MHD_Connection *connection);
@@ -96,6 +97,7 @@ private:
   
   static HTTPMethod GetMethod(const char *method);
   static int FillArgumentMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
+  static int FillArgumentMultiMap(void *cls, enum MHD_ValueKind kind, const char *key, const char *value);
 
   static const char *CreateMimeTypeFromExtension(const char *ext);
 
