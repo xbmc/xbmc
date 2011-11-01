@@ -48,15 +48,7 @@ CGUIWindowPVR::CGUIWindowPVR(void) :
 
 CGUIWindowPVR::~CGUIWindowPVR(void)
 {
-  if (m_bViewsCreated)
-  {
-    delete m_windowChannelsRadio;
-    delete m_windowChannelsTV;
-    delete m_windowGuide;
-    delete m_windowRecordings;
-    delete m_windowSearch;
-    delete m_windowTimers;
-  }
+  Cleanup();
 }
 
 CGUIWindowPVRCommon *CGUIWindowPVR::GetActiveView(void) const
@@ -256,6 +248,23 @@ void CGUIWindowPVR::Reset(void)
   CSingleLock graphicsLock(g_graphicsContext);
   CSingleLock lock(m_critSection);
 
+  Cleanup();
+  CreateViews();
+
+  m_windowChannelsRadio->ResetObservers();
+  m_windowChannelsTV->ResetObservers();
+  m_windowGuide->ResetObservers();
+  m_windowRecordings->ResetObservers();
+  m_windowTimers->ResetObservers();
+
+  m_currentSubwindow = NULL;
+  m_savedSubwindow = NULL;
+  ClearFileItems();
+  FreeResources();
+}
+
+void CGUIWindowPVR::Cleanup(void)
+{
   if (m_bViewsCreated)
   {
     m_windowChannelsRadio->UnregisterObservers();
@@ -276,17 +285,4 @@ void CGUIWindowPVR::Reset(void)
     delete m_windowTimers;
     m_bViewsCreated = false;
   }
-
-  CreateViews();
-
-  m_windowChannelsRadio->ResetObservers();
-  m_windowChannelsTV->ResetObservers();
-  m_windowGuide->ResetObservers();
-  m_windowRecordings->ResetObservers();
-  m_windowTimers->ResetObservers();
-
-  m_currentSubwindow = NULL;
-  m_savedSubwindow = NULL;
-  ClearFileItems();
-  FreeResources();
 }
