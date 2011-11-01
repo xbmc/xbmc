@@ -863,7 +863,7 @@
 							<texture>HomeBGPicturesRight.jpg</texture>
 						</control>
 					</control>
-					<include>CustomPicturesBackground</include>
+					<!--<include>CustomPicturesBackground</include>-->
 				</control>
 				<control type="largeimage">
 					<description>Fanart background</description>

@@ -608,7 +608,6 @@
 				</control>
 				<control type="label">
 					<info>Container(300).ListItem(0).Label2</info>
-					<include>HomeMainMenuFOCaption</include>
 					<include>HomeMainMenuOverFade</include>
 				</control>
 			</control>
@@ -635,7 +634,6 @@
 				</control>
 				<control type="label">
 					<info>Container(300).ListItem(0).Label2</info>
-					<include>HomeMainMenuFOCaption</include>
 					<include>HomeMainMenuOverFade</include>
 					<textcolor>orange</textcolor>
 				</control>
