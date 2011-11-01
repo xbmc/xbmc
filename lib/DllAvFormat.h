@@ -98,7 +98,7 @@ public:
   virtual void put_be32(AVIOContext *s, unsigned int val)=0;
   virtual void put_be16(AVIOContext *s, unsigned int val)=0;
   virtual AVFormatContext *avformat_alloc_context(void)=0;
-  virtual AVStream *av_new_stream(AVFormatContext *s, int id)=0;
+  virtual AVStream *avformat_new_stream(AVFormatContext *s, AVCodec *c)=0;
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type)=0;
   virtual int av_set_parameters(AVFormatContext *s, AVFormatParameters *ap)=0;
   virtual AVIOContext *av_alloc_put_byte(unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
@@ -146,7 +146,7 @@ public:
   }
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb) { ::url_set_interrupt_cb(interrupt_cb); }
   virtual int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputFormat *fmt, AVDictionary **options)
-  { return ::avformat_open_input(ps, filename, fmt, opt, ap); }
+  { return ::avformat_open_input(ps, filename, fmt, options); }
   virtual int init_put_byte(AVIOContext *s, unsigned char *buffer, int buffer_size, int write_flag, void *opaque,
                             int (*read_packet)(void *opaque, uint8_t *buf, int buf_size),
                             int (*write_packet)(void *opaque, uint8_t *buf, int buf_size),
@@ -174,7 +174,7 @@ public:
   virtual void put_be32(AVIOContext *s, unsigned int val) { ::put_be32(s, val); }
   virtual void put_be16(AVIOContext *s, unsigned int val) { ::put_be16(s, val); }
   virtual AVFormatContext *avformat_alloc_context() { return ::avformat_alloc_context(); }
-  virtual AVStream *av_new_stream(AVFormatContext *s, int id) { return ::av_new_stream(s, id); }
+  virtual AVStream *avformat_new_stream(AVFormatContext *s, AVCodec *c) { return ::avformat_new_stream(s, c); }
 #if LIBAVFORMAT_VERSION_INT < (52<<16 | 45<<8)
   virtual AVOutputFormat *av_guess_format(const char *short_name, const char *filename, const char *mime_type) { return ::guess_format(short_name, filename, mime_type); }
 #else
@@ -251,7 +251,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD2(int, url_close_dyn_buf, (AVIOContext *p1, uint8_t **p2))
   DEFINE_METHOD3(offset_t, url_fseek, (AVIOContext *p1, offset_t p2, int p3))
   DEFINE_METHOD0(AVFormatContext *, avformat_alloc_context)
-  DEFINE_METHOD2(AVStream *, av_new_stream, (AVFormatContext *p1, int p2))
+  DEFINE_METHOD2(AVStream *, avformat_new_stream, (AVFormatContext *p1, AVCodec *p2))
 #if LIBAVFORMAT_VERSION_INT < (52<<16 | 45<<8)
   DEFINE_METHOD3(AVOutputFormat *, guess_format, (const char *p1, const char *p2, const char *p3))
 #else
@@ -300,7 +300,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(put_be32)
     RESOLVE_METHOD(put_be16)
     RESOLVE_METHOD(avformat_alloc_context)
-    RESOLVE_METHOD(av_new_stream)
+    RESOLVE_METHOD(avformat_new_stream)
 #if LIBAVFORMAT_VERSION_INT < (52<<16 | 45<<8)
     RESOLVE_METHOD(guess_format)
 #else

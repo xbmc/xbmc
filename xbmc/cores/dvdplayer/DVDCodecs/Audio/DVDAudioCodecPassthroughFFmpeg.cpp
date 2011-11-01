@@ -149,7 +149,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   }
 
   /* add a stream to it */
-  muxer.m_pStream = m_dllAvFormat.av_new_stream(muxer.m_pFormat, 1);
+  muxer.m_pStream = m_dllAvFormat.avformat_new_stream(muxer.m_pFormat, NULL);
   if (!muxer.m_pStream)
   {
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to allocate AVStream context");
