@@ -63,8 +63,6 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
 
   m_dllAvCodec.avcodec_register_all();
-  m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
-  m_dllAvCodec.avcodec_get_context_defaults(m_pCodecContext);
 
   pCodec = m_dllAvCodec.avcodec_find_decoder(hints.codec);
   if (!pCodec)
@@ -73,6 +71,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     return false;
   }
 
+  m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);
   m_pCodecContext->debug_mv = 0;
   m_pCodecContext->debug = 0;
   m_pCodecContext->workaround_bugs = 1;
@@ -97,7 +96,7 @@ bool CDVDAudioCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     memcpy(m_pCodecContext->extradata, hints.extradata, hints.extrasize);
   }
 
-  if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
+  if (m_dllAvCodec.avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDAudioCodecFFmpeg::Open() Unable to open codec");
     Dispose();

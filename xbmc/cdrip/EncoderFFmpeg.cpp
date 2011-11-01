@@ -103,7 +103,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
   }
 
   /* add a stream to it */
-  m_Stream = m_dllAvFormat.av_new_stream(m_Format, 1);
+  m_Stream = m_dllAvFormat.avformat_new_stream(m_Format, codec);
   if (!m_Stream)
   {
     m_dllAvUtil.av_freep(&m_Format->pb);
@@ -144,7 +144,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
       return false;
   }
 
-  if (m_dllAvCodec.avcodec_open(m_CodecCtx, codec))
+  if (m_dllAvCodec.avcodec_open2(m_CodecCtx, codec, NULL))
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Failed to open the codec");
     m_dllAvUtil.av_freep(&m_Stream);

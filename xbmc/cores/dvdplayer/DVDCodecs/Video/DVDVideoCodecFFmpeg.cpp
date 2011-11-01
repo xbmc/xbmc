@@ -163,9 +163,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_dllAvFilter.avfilter_register_all();
 
   m_bSoftware     = hints.software;
-  m_pCodecContext = m_dllAvCodec.avcodec_alloc_context();
 
   pCodec = NULL;
+  m_pCodecContext = NULL;
 
   if (hints.codec == CODEC_ID_H264)
   {
@@ -196,6 +196,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
 
         CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Creating VDPAU(%ix%i, %d)",hints.width, hints.height, hints.codec);
         CVDPAU* vdp = new CVDPAU();
+        m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);
         m_pCodecContext->codec_id = hints.codec;
         m_pCodecContext->width    = hints.width;
         m_pCodecContext->height   = hints.height;
@@ -207,7 +208,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
           m_pCodecContext->codec_id = CODEC_ID_NONE; // ffmpeg will complain if this has been set
           break;
         }
-        m_pCodecContext->codec_id = CODEC_ID_NONE; // ffmpeg will complain if this has been set
+        m_dllAvUtil.av_freep(&m_pCodecContext);
         CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Failed to get VDPAU device");
         vdp->Release();
       }
@@ -225,6 +226,9 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   }
 
   CLog::Log(LOGNOTICE,"CDVDVideoCodecFFmpeg::Open() Using codec: %s",pCodec->long_name ? pCodec->long_name : pCodec->name);
+
+  if(m_pCodecContext == NULL)
+    m_pCodecContext = m_dllAvCodec.avcodec_alloc_context3(pCodec);
 
   m_pCodecContext->opaque = (void*)this;
   m_pCodecContext->debug_mv = 0;
@@ -281,7 +285,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
     || pCodec->id == CODEC_ID_MPEG4 ))
     m_pCodecContext->thread_count = num_threads;
 
-  if (m_dllAvCodec.avcodec_open(m_pCodecContext, pCodec) < 0)
+  if (m_dllAvCodec.avcodec_open2(m_pCodecContext, pCodec, NULL) < 0)
   {
     CLog::Log(LOGDEBUG,"CDVDVideoCodecFFmpeg::Open() Unable to open codec");
     return false;
