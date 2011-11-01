@@ -239,7 +239,6 @@ function idct_col4_st8_neon
         bx              lr
 endfunc
 
-        .section .rodata
         .align 4
 idct_coeff_neon:
         .short W1, W2, W3, W4, W5, W6, W7, W4c
@@ -249,7 +248,7 @@ idct_coeff_neon:
         pld             [\data]
         pld             [\data, #64]
         vpush           {d8-d15}
-        movrel          r3,  idct_coeff_neon
+        adr             r3,  idct_coeff_neon
         vld1.64         {d0,d1}, [r3,:128]
         .endm
 

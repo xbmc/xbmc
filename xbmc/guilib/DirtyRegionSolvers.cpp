@@ -33,10 +33,16 @@ void CUnionDirtyRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionL
     output.push_back(unifiedRegion);
 }
 
-void CFillViewportRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
+void CFillViewportAlwaysRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
 {
   CDirtyRegion unifiedRegion(g_graphicsContext.GetViewWindow());
   output.push_back(unifiedRegion);
+}
+
+void CFillViewportOnChangeRegionSolver::Solve(const CDirtyRegionList &input, CDirtyRegionList &output)
+{
+  if (input.size() > 0)
+    output.assign(1,g_graphicsContext.GetViewWindow());
 }
 
 CGreedyDirtyRegionSolver::CGreedyDirtyRegionSolver()

@@ -147,6 +147,7 @@ public:
   CGUIDialogContextMenu(void);
   virtual ~CGUIDialogContextMenu(void);
   virtual bool OnMessage(CGUIMessage &message);
+  virtual bool OnAction(const CAction& action);
   virtual void SetPosition(float posX, float posY);
 
   static bool SourcesMenu(const CStdString &strType, const CFileItemPtr item, float posX, float posY);
