@@ -311,14 +311,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
     if( iformat == NULL )
     {
-#if defined(USE_EXTERNAL_FFMPEG) && LIBAVFORMAT_VERSION_INT < AV_VERSION_INT(52,98,0)
-      // API added on: 2011-02-09
-      // Old versions of ffmpeg do not have av_probe_input_format, so we need
-      // to always probe using the lower-level functions as well.
-      const bool legacyProbing = true;
-#else
-      const bool legacyProbing = false;
-#endif
       // let ffmpeg decide which demuxer we have to open
 
       bool trySPDIFonly = (m_pInput->GetContent() == "audio/x-spdif-compressed");
@@ -331,7 +323,7 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
       // want to probe for spdif (DTS or IEC 61937) compressed audio
       // specifically, or in case the file is a wav which may contain DTS or
       // IEC 61937 (e.g. ac3-in-wav) and we want to check for those formats.
-      if (legacyProbing || trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0))
+      if (trySPDIFonly || (iformat && strcmp(iformat->name, "wav") == 0))
       {
         AVProbeData pd;
         BYTE probe_buffer[FFMPEG_FILE_BUFFER_SIZE + AVPROBE_PADDING_SIZE];
@@ -351,9 +343,6 @@ bool CDVDDemuxFFmpeg::Open(CDVDInputStream* pInput)
 
         // restore position again
         m_dllAvFormat.url_fseek(m_ioContext , 0, SEEK_SET);
-
-        if (legacyProbing && !trySPDIFonly)
-          iformat = m_dllAvFormat.av_probe_input_format(&pd, 1);
 
         // the advancedsetting is for allowing the user to force outputting the
         // 44.1 kHz DTS wav file as PCM, so that an A/V receiver can decode

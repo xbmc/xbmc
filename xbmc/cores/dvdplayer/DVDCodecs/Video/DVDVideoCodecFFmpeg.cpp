@@ -242,9 +242,7 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
   m_pCodecContext->flags &= CODEC_FLAG_EMU_EDGE;
 #else
   if (pCodec->id != CODEC_ID_H264 && pCodec->capabilities & CODEC_CAP_DR1
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,69,0)
       && pCodec->id != CODEC_ID_VP8
-#endif
      )
     m_pCodecContext->flags |= CODEC_FLAG_EMU_EDGE;
 #endif
@@ -600,11 +598,7 @@ bool CDVDVideoCodecFFmpeg::GetPictureCommon(DVDVideoPicture* pDvdVideoPicture)
   /* use variable in the frame */
   AVRational pixel_aspect = m_pCodecContext->sample_aspect_ratio;
   if (m_pFilterLink)
-#ifdef HAVE_AVFILTERBUFFERREFVIDEOPROPS_SAMPLE_ASPECT_RATIO
     pixel_aspect = m_pFilterLink->cur_buf->video->sample_aspect_ratio;
-#else
-    pixel_aspect = m_pFilterLink->cur_buf->video->pixel_aspect;
-#endif
 
   if (pixel_aspect.num == 0)
     aspect_ratio = 0;
@@ -814,16 +808,7 @@ int CDVDVideoCodecFFmpeg::FilterProcess(AVFrame* frame)
 
   if (frame)
   {
-#if LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,13,0)
     result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, 0);
-#elif LIBAVFILTER_VERSION_INT >= AV_VERSION_INT(2,7,0)
-    result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame);
-#elif LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(53,3,0)
-    result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, frame->pts);
-#else
-    result = m_dllAvFilter.av_vsrc_buffer_add_frame(m_pFilterIn, frame, frame->pts, m_pCodecContext->sample_aspect_ratio);
-#endif
-
     if (result < 0)
     {
       CLog::Log(LOGERROR, "CDVDVideoCodecFFmpeg::FilterProcess - av_vsrc_buffer_add_frame");
