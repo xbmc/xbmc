@@ -225,12 +225,6 @@ void CPeripheralCecAdapter::Process(void)
   if (strPort.empty())
     return;
 
-  // set correct physical address from peripheral settings
-  int iHdmiPort = GetSettingInt("cec_hdmi_port");
-  if (iHdmiPort <= 0 || iHdmiPort > 16)
-    iHdmiPort = 1;
-  m_cecAdapter->SetPhysicalAddress((uint16_t) (iHdmiPort << 12));
-
   // open the CEC adapter
   CLog::Log(LOGDEBUG, "%s - opening a connection to the CEC adapter: %s", __FUNCTION__, strPort.c_str());
 
@@ -246,6 +240,12 @@ void CPeripheralCecAdapter::Process(void)
   CLog::Log(LOGDEBUG, "%s - connection to the CEC adapter opened", __FUNCTION__);
   m_bIsReady = true;
   CAnnouncementManager::AddAnnouncer(this);
+
+  // set correct physical address from peripheral settings
+  int iHdmiPort = GetSettingInt("cec_hdmi_port");
+  if (iHdmiPort <= 0 || iHdmiPort > 16)
+    iHdmiPort = 1;
+  m_cecAdapter->SetPhysicalAddress((uint16_t) (iHdmiPort << 12));
 
   FlushLog();
 
@@ -276,7 +276,7 @@ void CPeripheralCecAdapter::Process(void)
     if (!m_bStop)
       ProcessNextCommand();
     if (!m_bStop)
-      Sleep(50);
+      Sleep(5);
   }
 
   m_cecAdapter->Close();
