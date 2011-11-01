@@ -162,7 +162,7 @@
 			<name>MediumSmallDefaultCapsFont</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Regular</variant>
-			<size>18</size>
+			<size>20</size>
 		</font>
 		<font>
 			<name>DefaultFont</name>
