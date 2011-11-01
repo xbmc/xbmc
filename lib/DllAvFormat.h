@@ -72,7 +72,7 @@ public:
   virtual int av_read_pause(AVFormatContext *s)=0;
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags)=0;
 #if (!defined USE_EXTERNAL_FFMPEG)
-  virtual int av_find_stream_info_dont_call(AVFormatContext *ic)=0;
+  virtual int avformat_find_stream_info_dont_call(AVFormatContext *ic, AVDictionary **options)=0;
 #endif
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb)=0;
   virtual int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputFormat *fmt, AVDictionary **options)=0;
@@ -139,10 +139,10 @@ public:
   virtual int av_read_play(AVFormatContext *s) { return ::av_read_play(s); }
   virtual int av_read_pause(AVFormatContext *s) { return ::av_read_pause(s); }
   virtual int av_seek_frame(AVFormatContext *s, int stream_index, int64_t timestamp, int flags) { return ::av_seek_frame(s, stream_index, timestamp, flags); }
-  virtual int av_find_stream_info(AVFormatContext *ic)
+  virtual int avformat_find_stream_info(AVFormatContext *ic, AVDictionary **options)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
-    return ::av_find_stream_info(ic);
+    return ::avformat_find_stream_info(ic, options);
   }
   virtual void url_set_interrupt_cb(URLInterruptCB *interrupt_cb) { ::url_set_interrupt_cb(interrupt_cb); }
   virtual int avformat_open_input(AVFormatContext **ps, const char *filename, AVInputFormat *fmt, AVDictionary **options)
@@ -226,7 +226,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
   DEFINE_METHOD1(void, av_read_frame_flush, (AVFormatContext *p1))
   DEFINE_FUNC_ALIGNED2(int, __cdecl, av_read_frame, AVFormatContext *, AVPacket *)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, av_seek_frame, AVFormatContext*, int, int64_t, int)
-  DEFINE_FUNC_ALIGNED1(int, __cdecl, av_find_stream_info_dont_call, AVFormatContext*)
+  DEFINE_FUNC_ALIGNED2(int, __cdecl, avformat_find_stream_info_dont_call, AVFormatContext*, AVDictionary **)
   DEFINE_FUNC_ALIGNED4(int, __cdecl, avformat_open_input, AVFormatContext **, const char *, AVInputFormat *, AVDictionary **)
   DEFINE_FUNC_ALIGNED2(AVInputFormat*, __cdecl, av_probe_input_format, AVProbeData*, int)
   DEFINE_FUNC_ALIGNED3(AVInputFormat*, __cdecl, av_probe_input_format2, AVProbeData*, int, int*)
@@ -278,7 +278,7 @@ class DllAvFormat : public DllDynamic, DllAvFormatInterface
     RESOLVE_METHOD(av_read_pause)
     RESOLVE_METHOD(av_read_frame_flush)
     RESOLVE_METHOD(av_seek_frame)
-    RESOLVE_METHOD_RENAME(av_find_stream_info, av_find_stream_info_dont_call)
+    RESOLVE_METHOD_RENAME(avformat_find_stream_info, avformat_find_stream_info_dont_call)
     RESOLVE_METHOD(url_set_interrupt_cb)
     RESOLVE_METHOD(avformat_open_input)
     RESOLVE_METHOD(init_put_byte)
@@ -324,10 +324,10 @@ public:
     CSingleLock lock(DllAvCodec::m_critSection);
     av_register_all_dont_call();
   }
-  int av_find_stream_info(AVFormatContext *ic)
+  int avformat_find_stream_info(AVFormatContext *ic, AVDictionary **options)
   {
     CSingleLock lock(DllAvCodec::m_critSection);
-    return(av_find_stream_info_dont_call(ic));
+    return avformat_find_stream_info_dont_call(ic, options);
   }
 
   virtual bool Load()
