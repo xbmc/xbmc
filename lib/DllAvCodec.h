@@ -76,28 +76,6 @@ extern "C" {
 #endif
 }
 
-/* Some convenience macros introduced at this particular revision of libavcodec.
- */
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(52,25,0)
-#define CH_LAYOUT_5POINT0_BACK      (CH_LAYOUT_SURROUND|CH_BACK_LEFT|CH_BACK_RIGHT)
-#define CH_LAYOUT_5POINT1_BACK      (CH_LAYOUT_5POINT0_BACK|CH_LOW_FREQUENCY)
-#undef CH_LAYOUT_7POINT1_WIDE
-#define CH_LAYOUT_7POINT1_WIDE      (CH_LAYOUT_5POINT1_BACK|\
-                                           CH_FRONT_LEFT_OF_CENTER|CH_FRONT_RIGHT_OF_CENTER)
-#endif
-
-#if LIBAVCODEC_VERSION_INT < AV_VERSION_INT(52,64,0)
-// API added on: 2010-03-31
-#define AVMediaType		CodecType
-#define AVMEDIA_TYPE_UNKNOWN    CODEC_TYPE_UNKNOWN
-#define AVMEDIA_TYPE_VIDEO      CODEC_TYPE_VIDEO
-#define AVMEDIA_TYPE_AUDIO      CODEC_TYPE_AUDIO
-#define AVMEDIA_TYPE_DATA       CODEC_TYPE_DATA
-#define AVMEDIA_TYPE_SUBTITLE   CODEC_TYPE_SUBTITLE
-#define AVMEDIA_TYPE_ATTACHMENT CODEC_TYPE_ATTACHMENT
-#define AVMEDIA_TYPE_NB         CODEC_TYPE_NB
-#endif
-
 #include "threads/SingleLock.h"
 
 class DllAvCodecInterface
@@ -181,16 +159,9 @@ public:
   }
   virtual AVFrame *avcodec_alloc_frame() { return ::avcodec_alloc_frame(); }
   virtual int avpicture_fill(AVPicture *picture, uint8_t *ptr, PixelFormat pix_fmt, int width, int height) { return ::avpicture_fill(picture, ptr, pix_fmt, width, height); }
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,23,0)
-  // API added on: 2009-04-07
   virtual int avcodec_decode_video2(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, AVPacket *avpkt) { return ::avcodec_decode_video2(avctx, picture, got_picture_ptr, avpkt); }
   virtual int avcodec_decode_audio3(AVCodecContext *avctx, int16_t *samples, int *frame_size_ptr, AVPacket *avpkt) { return ::avcodec_decode_audio3(avctx, samples, frame_size_ptr, avpkt); }
   virtual int avcodec_decode_subtitle2(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, AVPacket *avpkt) { return ::avcodec_decode_subtitle2(avctx, sub, got_sub_ptr, avpkt); }
-#else
-  virtual int avcodec_decode_video2(AVCodecContext *avctx, AVFrame *picture, int *got_picture_ptr, AVPacket *avpkt) { return ::avcodec_decode_video(avctx, picture, got_picture_ptr, avpkt->data, avpkt->size); }
-  virtual int avcodec_decode_audio3(AVCodecContext *avctx, int16_t *samples, int *frame_size_ptr, AVPacket *avpkt) { return ::avcodec_decode_audio2(avctx, samples, frame_size_ptr, avpkt->data, avpkt->size); }
-  virtual int avcodec_decode_subtitle2(AVCodecContext *avctx, AVSubtitle *sub, int *got_sub_ptr, AVPacket *avpkt) { return ::avcodec_decode_subtitle(avctx, sub, got_sub_ptr, avpkt->data, avpkt->size); }
-#endif
   virtual int avcodec_encode_audio(AVCodecContext *avctx, uint8_t *buf, int buf_size, const short *samples) { return ::avcodec_encode_audio(avctx, buf, buf_size, samples); }
   virtual int avpicture_get_size(PixelFormat pix_fmt, int width, int height) { return ::avpicture_get_size(pix_fmt, width, height); }
   virtual AVCodecContext *avcodec_alloc_context3(AVCodec *codec) { return ::avcodec_alloc_context3(codec); }
@@ -202,12 +173,7 @@ public:
                     const uint8_t *buf, int buf_size,
                     int64_t pts, int64_t dts, int64_t pos)
   {
-#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,21,0)
-    // API added on : 2009-03-05
     return ::av_parser_parse2(s, avctx, poutbuf, poutbuf_size, buf, buf_size, pts, dts, pos);
-#else
-    return ::av_parser_parse(s, avctx, poutbuf, poutbuf_size, buf, buf_size, pts, dts);
-#endif
   }
   virtual void av_parser_close(AVCodecParserContext *s) { ::av_parser_close(s); }
 

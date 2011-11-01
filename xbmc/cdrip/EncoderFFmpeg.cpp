@@ -59,11 +59,7 @@ bool CEncoderFFmpeg::Init(const char* strFile, int iInChannels, int iInRate, int
 
   CStdString filename = URIUtils::GetFileName(strFile);
   AVOutputFormat *fmt = NULL;
-#if LIBAVFORMAT_VERSION_MAJOR < 52
-  fmt = m_dllAvFormat.guess_format(NULL, filename.c_str(), NULL);
-#else
   fmt = m_dllAvFormat.av_guess_format(NULL, filename.c_str(), NULL);
-#endif
   if (!fmt)
   {
     CLog::Log(LOGERROR, "CEncoderFFmpeg::Init - Unable to guess the output format for the file %s", filename.c_str());

@@ -79,11 +79,7 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
   /* get the muxer */
   AVOutputFormat *fOut = NULL;
 
-#if LIBAVFORMAT_VERSION_MAJOR < 52
-  fOut = m_dllAvFormat.guess_format(muxerName.c_str(), NULL, NULL);
-#else
   fOut = m_dllAvFormat.av_guess_format(muxerName.c_str(), NULL, NULL);
-#endif
   if (!fOut)
   {
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Failed to get the FFmpeg %s muxer", muxerName.c_str());
@@ -124,8 +120,6 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
     return false;
   }
 
-#if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,92,0)
-  // API added on: 2011-01-02
 
   /* While this is strictly only needed on big-endian systems, we do it on
    * both to avoid as much dead code as possible.
@@ -139,7 +133,6 @@ bool CDVDAudioCodecPassthroughFFmpeg::SetupMuxer(CDVDStreamInfo &hints, CStdStri
 
   /* request output of wanted endianness */
   if (!fOut->priv_class || m_dllAvUtil.av_set_string3(muxer.m_pFormat->priv_data, "spdif_flags", spdifFlags, 0, NULL) != 0)
-#endif
   {
 #if defined(WORDS_BIGENDIAN) && !defined(__APPLE__)
     CLog::Log(LOGERROR, "CDVDAudioCodecPassthroughFFmpeg::SetupMuxer - Unable to set big-endian stream mode (FFmpeg too old?), disabling passthrough");
