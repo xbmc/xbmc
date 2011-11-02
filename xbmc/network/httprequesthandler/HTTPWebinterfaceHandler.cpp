@@ -32,18 +32,14 @@ using namespace std;
 using namespace ADDON;
 using namespace XFILE;
 
-bool CHTTPWebinterfaceHandler::CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
+bool CHTTPWebinterfaceHandler::CheckHTTPRequest(const HTTPRequest &request)
 {
   return true;
 }
 
-#if (MHD_VERSION >= 0x00040001)
-int CHTTPWebinterfaceHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
-#else
-int CHTTPWebinterfaceHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
-#endif
+int CHTTPWebinterfaceHandler::HandleHTTPRequest(const HTTPRequest &request)
 {
-  m_responseCode = ResolveUrl(url, m_url);
+  m_responseCode = ResolveUrl(request.url, m_url);
   if (m_responseCode != MHD_HTTP_OK)
   {
     if (m_responseCode == MHD_HTTP_FOUND)

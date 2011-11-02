@@ -28,13 +28,8 @@ public:
   CHTTPWebinterfaceAddonsHandler() { };
   
   virtual IHTTPRequestHandler* GetInstance() { return new CHTTPWebinterfaceAddonsHandler(); }
-  virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
-
-#if (MHD_VERSION >= 0x00040001)
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
-#else
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
-#endif
+  virtual bool CheckHTTPRequest(const HTTPRequest &request);
+  virtual int HandleHTTPRequest(const HTTPRequest &request);
 
   virtual void* GetHTTPResponseData() const { return (void *)m_response.c_str(); };
   virtual size_t GetHTTPResonseDataLength() const { return m_response.size(); }

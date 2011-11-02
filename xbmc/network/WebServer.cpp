@@ -120,6 +120,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
 {
   CWebServer *server = (CWebServer *)cls;
   HTTPMethod methodType = GetMethod(method);
+  HTTPRequest request = { connection, url, methodType, version, server };
 
   if (!IsAuthenticated(server, connection)) 
     return AskForAuthentication(connection);
@@ -133,7 +134,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
     for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
     {
       IHTTPRequestHandler *requestHandler = *it;
-      if (requestHandler->CheckHTTPRequest(connection, url, methodType, version))
+      if (requestHandler->CheckHTTPRequest(request))
       {
         // We found a matching IHTTPRequestHandler
         // so let's get a new instance for this request
@@ -174,7 +175,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
         }
         // No POST request so nothing special to handle
         else
-          return HandleRequest(handler, server, connection, url, methodType, version);
+          return HandleRequest(handler, request);
       }
     }
   }
@@ -214,7 +215,7 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
           MHD_destroy_post_processor(conHandler->postprocessor);
         *con_cls = NULL;
 
-        int ret = HandleRequest(conHandler->requestHandler, server, connection, url, methodType, version);
+        int ret = HandleRequest(conHandler->requestHandler, request);
         delete conHandler;
         return ret;
       }
@@ -227,8 +228,8 @@ int CWebServer::AnswerToConnection(void *cls, struct MHD_Connection *connection,
       for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
       {
         IHTTPRequestHandler *requestHandler = *it;
-        if (requestHandler->CheckHTTPRequest(connection, url, methodType, version))
-          return HandleRequest(requestHandler->GetInstance(), server, connection, url, methodType, version);
+        if (requestHandler->CheckHTTPRequest(request))
+          return HandleRequest(requestHandler->GetInstance(), request);
       }
     }
   }
@@ -257,17 +258,16 @@ int CWebServer::HandlePostField(void *cls, enum MHD_ValueKind kind, const char *
   return MHD_YES;
 }
 
-int CWebServer::HandleRequest(IHTTPRequestHandler *handler, CWebServer *webserver, struct MHD_Connection *connection,
-                              const std::string &url, HTTPMethod method, const std::string &version)
+int CWebServer::HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &request)
 {
   if (handler == NULL)
-    return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, method);
+    return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
 
-  int ret = handler->HandleHTTPRequest(webserver, connection, url, method, version);
-  if (ret != MHD_YES)
+  int ret = handler->HandleHTTPRequest(request);
+  if (ret == MHD_NO)
   {
     delete handler;
-    return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, method);
+    return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
   struct MHD_Response *response = NULL;
@@ -275,57 +275,56 @@ int CWebServer::HandleRequest(IHTTPRequestHandler *handler, CWebServer *webserve
   {
     case HTTPNone:
       delete handler;
-      return MHD_YES;
+      return MHD_NO;
 
     case HTTPRedirect:
-      ret = CreateRedirect(connection, handler->GetHTTPRedirectUrl(), response);
+      ret = CreateRedirect(request.connection, handler->GetHTTPRedirectUrl(), response);
       break;
 
     case HTTPFileDownload:
-      ret = CreateFileDownloadResponse(connection, handler->GetHTTPResponseFile(), method, response);
+      ret = CreateFileDownloadResponse(request.connection, handler->GetHTTPResponseFile(), request.method, response);
       break;
 
     case HTTPMemoryDownloadNoFreeNoCopy:
-      ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, false, response);
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, false, response);
       break;
 
     case HTTPMemoryDownloadNoFreeCopy:
-      ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, true, response);
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), false, true, response);
       break;
 
     case HTTPMemoryDownloadFreeNoCopy:
-      ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, false, response);
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, false, response);
       break;
 
     case HTTPMemoryDownloadFreeCopy:
-      ret = CreateMemoryDownloadResponse(connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, true, response);
+      ret = CreateMemoryDownloadResponse(request.connection, handler->GetHTTPResponseData(), handler->GetHTTPResonseDataLength(), true, true, response);
       break;
 
     case HTTPError:
-      ret = CreateErrorResponse(connection, handler->GetHTTPResonseCode(), method, response);
+      ret = CreateErrorResponse(request.connection, handler->GetHTTPResonseCode(), request.method, response);
       break;
 
     default:
       delete handler;
-      return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, method);
-      break;
+      return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
   if (ret == MHD_NO)
   {
     delete handler;
-    return SendErrorResponse(connection, MHD_HTTP_INTERNAL_SERVER_ERROR, method);
+    return SendErrorResponse(request.connection, MHD_HTTP_INTERNAL_SERVER_ERROR, request.method);
   }
 
   multimap<string, string> header = handler->GetHTTPResponseHeaderFields();
   for (multimap<string, string>::const_iterator it = header.begin(); it != header.end(); it++)
     MHD_add_response_header(response, it->first.c_str(), it->second.c_str());
 
-  ret = MHD_queue_response(connection, handler->GetHTTPResonseCode(), response);
+  MHD_queue_response(request.connection, handler->GetHTTPResonseCode(), response);
   MHD_destroy_response(response);
   delete handler;
 
-  return ret;
+  return MHD_YES;
 }
 
 HTTPMethod CWebServer::GetMethod(const char *method)
@@ -353,7 +352,6 @@ int CWebServer::CreateRedirect(struct MHD_Connection *connection, const string &
 
 int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, const string &strURL, HTTPMethod methodType, struct MHD_Response *&response)
 {
-  int ret = MHD_NO;
   CFile *file = new CFile();
 
   if (file->Open(strURL, READ_NO_CACHE))
@@ -401,7 +399,6 @@ int CWebServer::CreateFileDownloadResponse(struct MHD_Connection *connection, co
 
 int CWebServer::CreateErrorResponse(struct MHD_Connection *connection, int responseType, HTTPMethod method, struct MHD_Response *&response)
 {
-  int ret = MHD_NO;
   size_t payloadSize = 0;
   void *payload = NULL;
 
@@ -488,7 +485,7 @@ struct MHD_Daemon* CWebServer::StartMHD(unsigned int flags, int port)
                           &CWebServer::AnswerToConnection,
                           this,
 #if (MHD_VERSION >= 0x00040002)
-                          MHD_OPTION_THREAD_POOL_SIZE, 1,
+                          MHD_OPTION_THREAD_POOL_SIZE, 4,
 #endif
                           MHD_OPTION_CONNECTION_LIMIT, 512,
                           MHD_OPTION_CONNECTION_TIMEOUT, timeout,

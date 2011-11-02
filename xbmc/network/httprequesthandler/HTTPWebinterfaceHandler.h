@@ -29,13 +29,8 @@ public:
   CHTTPWebinterfaceHandler() { };
   
   virtual IHTTPRequestHandler* GetInstance() { return new CHTTPWebinterfaceHandler(); }
-  virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
-
-#if (MHD_VERSION >= 0x00040001)
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
-#else
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version);
-#endif
+  virtual bool CheckHTTPRequest(const HTTPRequest &request);
+  virtual int HandleHTTPRequest(const HTTPRequest &request);
 
   virtual std::string GetHTTPRedirectUrl() const { return m_url; }
   virtual std::string GetHTTPResponseFile() const { return m_url; }

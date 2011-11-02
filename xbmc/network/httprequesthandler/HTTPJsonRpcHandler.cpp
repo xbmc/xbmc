@@ -31,21 +31,17 @@
 using namespace std;
 using namespace JSONRPC;
 
-bool CHTTPJsonRpcHandler::CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
+bool CHTTPJsonRpcHandler::CheckHTTPRequest(const HTTPRequest &request)
 {
-  return (url.compare("/jsonrpc") == 0);
+  return (request.url.compare("/jsonrpc") == 0);
 }
 
-#if (MHD_VERSION >= 0x00040001)
-int CHTTPJsonRpcHandler::HandleHTTPRequest(CWebServer *server, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
-#else
-int CHTTPJsonRpcHandler::HandleHTTPRequest(CWebServer *server, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
-#endif
+int CHTTPJsonRpcHandler::HandleHTTPRequest(const HTTPRequest &request)
 {
-  if (method == POST)
+  if (request.method == POST)
   {
     // The content-type of the request must be application/json
-    if (CWebServer::GetRequestHeaderValue(connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE).compare("application/json") != 0)
+    if (CWebServer::GetRequestHeaderValue(request.connection, MHD_HEADER_KIND, MHD_HTTP_HEADER_CONTENT_TYPE).compare("application/json") != 0)
     {
       m_responseType = HTTPError;
       m_responseCode = MHD_HTTP_UNSUPPORTED_MEDIA_TYPE;
@@ -53,7 +49,7 @@ int CHTTPJsonRpcHandler::HandleHTTPRequest(CWebServer *server, struct MHD_Connec
     }
 
     CHTTPClient client;
-    m_response = CJSONRPC::MethodCall(m_request, server, &client);
+    m_response = CJSONRPC::MethodCall(m_request, request.webserver, &client);
 
     m_responseHeaderFields.insert(pair<string, string>("Content-Type", "application/json"));
 

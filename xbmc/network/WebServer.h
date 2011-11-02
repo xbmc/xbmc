@@ -29,6 +29,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <vector>
 #include "interfaces/json-rpc/ITransportLayer.h"
 #include "threads/CriticalSection.h"
 #include "httprequesthandler/IHTTPRequestHandler.h"
@@ -37,6 +38,7 @@ class CWebServer : public JSONRPC::ITransportLayer
 {
 public:
   CWebServer();
+  virtual ~CWebServer() { }
 
   bool Start(int port, const std::string &username, const std::string &password);
   bool Stop();
@@ -85,8 +87,7 @@ private:
                              const char *transfer_encoding, const char *data, uint64_t off,
                              unsigned int size);
 #endif
-  static int HandleRequest(IHTTPRequestHandler *handler, CWebServer *webserver, struct MHD_Connection *connection,
-                           const std::string &url, HTTPMethod method, const std::string &version);
+  static int HandleRequest(IHTTPRequestHandler *handler, const HTTPRequest &request);
   static void ContentReaderFreeCallback (void *cls);
   static int CreateRedirect(struct MHD_Connection *connection, const std::string &strURL, struct MHD_Response *&response);
   static int CreateFileDownloadResponse(struct MHD_Connection *connection, const std::string &strURL, HTTPMethod methodType, struct MHD_Response *&response);

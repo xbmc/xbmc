@@ -28,16 +28,12 @@
 using namespace std;
 using namespace ADDON;
 
-bool CHTTPWebinterfaceAddonsHandler::CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
+bool CHTTPWebinterfaceAddonsHandler::CheckHTTPRequest(const HTTPRequest &request)
 {
-  return (url.compare("/addons") == 0 || url.compare("/addons/") == 0);
+  return (request.url.compare("/addons") == 0 || request.url.compare("/addons/") == 0);
 }
 
-#if (MHD_VERSION >= 0x00040001)
-int CHTTPWebinterfaceAddonsHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
-#else
-int CHTTPWebinterfaceAddonsHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
-#endif
+int CHTTPWebinterfaceAddonsHandler::HandleHTTPRequest(const HTTPRequest &request)
 {
   m_response = ADDON_HEADER;
   VECADDONS addons;

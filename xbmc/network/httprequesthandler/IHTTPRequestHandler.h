@@ -51,19 +51,23 @@ enum HTTPResponseType
   HTTPMemoryDownloadFreeCopy
 };
 
+typedef struct HTTPRequest
+{
+  struct MHD_Connection *connection;
+  std::string url;
+  HTTPMethod method;
+  std::string version;
+  CWebServer *webserver;
+} HTTPRequest;
+
 class IHTTPRequestHandler
 {
 public:
   virtual ~IHTTPRequestHandler() { }
 
   virtual IHTTPRequestHandler* GetInstance() = 0;
-  virtual bool CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version) = 0;
-
-#if (MHD_VERSION >= 0x00040001)
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version) = 0;
-#else
-  virtual int HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version) = 0;
-#endif
+  virtual bool CheckHTTPRequest(const HTTPRequest &request) = 0;
+  virtual int HandleHTTPRequest(const HTTPRequest &request) = 0;
   
   virtual void* GetHTTPResponseData() const { return NULL; };
   virtual size_t GetHTTPResonseDataLength() const { return 0; }

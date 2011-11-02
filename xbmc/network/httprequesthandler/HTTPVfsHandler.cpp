@@ -26,21 +26,17 @@
 
 using namespace std;
 
-bool CHTTPVfsHandler::CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
+bool CHTTPVfsHandler::CheckHTTPRequest(const HTTPRequest &request)
 {
-  return (url.find("/vfs") == 0);
+  return (request.url.find("/vfs") == 0);
 }
 
-#if (MHD_VERSION >= 0x00040001)
-int CHTTPVfsHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
-#else
-int CHTTPVfsHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
-#endif
+int CHTTPVfsHandler::HandleHTTPRequest(const HTTPRequest &request)
 {
   bool ok = false;
-  if (url.size() > 5)
+  if (request.url.size() > 5)
   {
-    m_path = url.substr(5);
+    m_path = request.url.substr(5);
 
     if (XFILE::CFile::Exists(m_path))
     {

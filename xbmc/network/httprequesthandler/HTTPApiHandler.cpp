@@ -27,19 +27,15 @@
 
 using namespace std;
 
-bool CHTTPApiHandler::CheckHTTPRequest(struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
+bool CHTTPApiHandler::CheckHTTPRequest(const HTTPRequest &request)
 {
-  return ((method == GET || method == POST) && url.find("/xbmcCmds/xbmcHttp") == 0);
+  return ((request.method == GET || request.method == POST) && request.url.find("/xbmcCmds/xbmcHttp") == 0);
 }
 
-#if (MHD_VERSION >= 0x00040001)
-int CHTTPApiHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
-#else
-int CHTTPApiHandler::HandleHTTPRequest(CWebServer *webserver, struct MHD_Connection *connection, const std::string &url, HTTPMethod method, const std::string &version)
-#endif
+int CHTTPApiHandler::HandleHTTPRequest(const HTTPRequest &request)
 {
   map<string, string> arguments;
-  if (CWebServer::GetRequestHeaderValues(connection, MHD_GET_ARGUMENT_KIND, arguments) > 0)
+  if (CWebServer::GetRequestHeaderValues(request.connection, MHD_GET_ARGUMENT_KIND, arguments) > 0)
   {
     m_responseCode = MHD_HTTP_OK;
     m_responseType = HTTPMemoryDownloadNoFreeCopy;
