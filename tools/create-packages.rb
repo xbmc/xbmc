@@ -180,12 +180,10 @@ class UpdateScriptGenerator
 
 	def deps_to_xml()
 		deps_elem = REXML::Element.new("dependencies")
-		deps = @config.updater_binary
-		deps.each do |dependency|
-			dep_elem = REXML::Element.new("file")
-			dep_elem.text = dependency
-			deps_elem.add_element dep_elem
-		end
+		dependency = @config.updater_binary
+		dep_elem = REXML::Element.new("file")
+		dep_elem.text = dependency
+		deps_elem.add_element dep_elem
 		return deps_elem
 	end
 
