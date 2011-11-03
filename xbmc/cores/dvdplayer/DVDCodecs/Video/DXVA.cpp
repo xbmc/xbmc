@@ -362,6 +362,7 @@ void CDecoder::Close()
     m_buffer[i].Clear();
   m_buffer_count = 0;
   memset(&m_format, 0, sizeof(m_format));
+  m_dllAvUtil.Unload();
 }
 
 #define CHECK(a) \
@@ -448,8 +449,31 @@ static bool CheckCompatibility(AVCodecContext *avctx)
   return true;
 }
 
+void CDecoder::UpdateDecoderSurfaceSize(AVCodecContext *avctx)
+{
+  m_format.SampleWidth  = avctx->width;
+  m_format.SampleHeight = avctx->height;
+
+  if(avctx->codec_id == CODEC_ID_H264
+  && avctx->codec
+  && avctx->codec->priv_class == *(AVClass**)avctx->priv_data // ensure the ffmpeg version supports AVOption for AVCodec
+  && avctx->priv_data)
+  {
+    int mb_width  = m_dllAvUtil.av_get_int(avctx->priv_data, "mb_width", NULL);
+    int mb_height = m_dllAvUtil.av_get_int(avctx->priv_data, "mb_height", NULL);
+
+    if (mb_width > 0)
+      m_format.SampleWidth = 16 * mb_width;
+    if (mb_height > 0)
+      m_format.SampleHeight = 16 * mb_height;
+  }
+}
+
 bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int surfaces)
 {
+  if (!m_dllAvUtil.Load())
+    return false;
+
   if (!CheckCompatibility(avctx))
     return false;
 
@@ -506,8 +530,7 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
     return false;
   }
 
-  m_format.SampleWidth  = avctx->width;
-  m_format.SampleHeight = avctx->height;
+  UpdateDecoderSurfaceSize(avctx);
   m_format.SampleFormat.SampleFormat           = DXVA2_SampleProgressiveFrame;
   m_format.SampleFormat.VideoLighting          = DXVA2_VideoLighting_dim;
 
@@ -875,8 +898,14 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   CSingleLock lock(m_section);
-  if(avctx->width  != m_format.SampleWidth
-  || avctx->height != m_format.SampleHeight)
+
+  int current_width  = m_format.SampleWidth;
+  int current_height = m_format.SampleHeight;
+
+  UpdateDecoderSurfaceSize(avctx);
+
+  if(m_format.SampleWidth  != current_width
+  || m_format.SampleHeight != current_height)
   {
     Close();
     if(!Open(avctx, avctx->pix_fmt, m_shared))

@@ -30,6 +30,7 @@
 #include <vector>
 #include "settings/VideoSettings.h"
 #include "guilib/Geometry.h"
+#include "DllAvUtil.h"
 
 namespace DXVA {
 
@@ -80,6 +81,8 @@ protected:
   virtual void OnLostDevice()    { CSingleLock lock(m_section); m_state = DXVA_LOST;  m_event.Reset(); }
   virtual void OnResetDevice()   { CSingleLock lock(m_section); m_state = DXVA_RESET; m_event.Set();   }
 
+  virtual void UpdateDecoderSurfaceSize(AVCodecContext *avctx);
+
   struct SVideoBuffer
   {
     SVideoBuffer();
@@ -110,6 +113,7 @@ protected:
 
   CCriticalSection             m_section;
   CEvent                       m_event;
+  DllAvUtil                    m_dllAvUtil;
 };
 
 class CProcessor
