@@ -38,6 +38,8 @@
 class CTsReader;
 #endif
 
+#undef FTR_DUMPTS
+
 class cPVRClientForTheRecord
 {
 public:
@@ -126,5 +128,9 @@ private:
   CTsReader*              m_tsreader;
 #endif //TSREADER
   CKeepAliveThread        m_keepalive;
+#if defined(FTR_DUMPTS)
+  char ofn[25];
+  int ofd;
+#endif
 
 };
