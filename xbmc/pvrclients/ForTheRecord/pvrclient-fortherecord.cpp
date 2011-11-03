@@ -338,7 +338,7 @@ PVR_ERROR cPVRClientForTheRecord::GetChannels(PVR_HANDLE handle, bool bRadio)
         //Use OpenLiveStream to read from the timeshift .ts file or an rtsp stream
 #ifdef TSREADER
         tag.strStreamURL = "";
-        tag.strInputFormat = "mpegts";
+        tag.strInputFormat = "video/x-mpegts";
 #else
         //Use GetLiveStreamURL to fetch an rtsp stream
         if(bRadio)
@@ -945,8 +945,13 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
 #ifdef TSREADER
     if (m_tsreader != NULL)
     {
-      XBMC->Log(LOG_DEBUG, "Re-using existing TsReader...");
-      usleep(200000);
+      //XBMC->Log(LOG_DEBUG, "Re-using existing TsReader...");
+      //usleep(5000000);
+      //m_tsreader->OnZap();
+      XBMC->Log(LOG_DEBUG, "Close existing and open new TsReader...");
+      m_tsreader->Close();
+      m_tsreader = new CTsReader();
+      m_tsreader->Open(filename.c_str());
       m_tsreader->OnZap();
     } else {
       m_tsreader = new CTsReader();
@@ -954,7 +959,7 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
       // TODO: rtsp support
       XBMC->Log(LOG_DEBUG, "Open TsReader");
       m_tsreader->Open(filename.c_str());
-      usleep(200000);
+      //usleep(200000);
     }
 
 #endif
@@ -1000,6 +1005,7 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
     {
       usleep(400000);
       read_timeouts++;
+      XBMC->Log(LOG_NOTICE, "ReadLiveStream requested %d but only read %d bytes.", iBufferSize, read_wanted);
       return read_wanted;
     }
     read_done += read_wanted;
