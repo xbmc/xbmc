@@ -640,6 +640,7 @@ bool CPeripheralCecAdapter::GetNextKey(void)
   case CEC_USER_CONTROL_CODE_F5:
   case CEC_USER_CONTROL_CODE_DATA:
   case CEC_USER_CONTROL_CODE_UNKNOWN:
+  default:
     m_bHasButton = false;
     return false;
   }
