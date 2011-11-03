@@ -52,6 +52,10 @@ cPVRClientForTheRecord::cPVRClientForTheRecord()
   m_channel_id_offset      = 0;
   m_epg_id_offset          = 0;
   m_iCurrentChannel        = 0;
+#if defined(FTR_DUMPTS)
+  strncpy(ofn, "/tmp/ftr.XXXXXX", sizeof(ofn));
+  ofd = -1;
+#endif
 }
 
 cPVRClientForTheRecord::~cPVRClientForTheRecord()
@@ -925,6 +929,19 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
       XBMC->Log(LOG_ERROR, "Start keepalive thread failed.");
     }
 
+#if defined(FTR_DUMPTS)
+    if (ofd != -1) close(ofd);
+    strncpy(ofn, "/tmp/ftr.XXXXXX", sizeof(ofn));
+    if ((ofd = mkostemp(ofn, O_CREAT|O_TRUNC)) == -1)
+    {
+      XBMC->Log(LOG_ERROR, "couldn't open dumpfile %s (error %d: %s).", ofn, errno, strerror(errno));
+    }
+    else
+    {
+      XBMC->Log(LOG_INFO, "opened dumpfile %s.", ofn);
+    }
+#endif
+
 #ifdef TSREADER
     if (m_tsreader != NULL)
     {
@@ -1000,6 +1017,12 @@ int cPVRClientForTheRecord::ReadLiveStream(unsigned char* pBuffer, unsigned int 
       usleep(40000);
     }
   }
+#if defined(FTR_DUMPTS)
+  if (write(ofd, pBuffer, read_done) < 0)
+  {
+    XBMC->Log(LOG_ERROR, "couldn't write %d bytes to dumpfile %s (error %d: %s).", read_done, ofn, errno, strerror(errno));
+  }
+#endif
   // XBMC->Log(LOG_DEBUG, "ReadLiveStream(buf_size=%i), %d timeouts", iBufferSize, read_timeouts);
   read_timeouts = 0;
   return read_done;
@@ -1021,6 +1044,17 @@ void cPVRClientForTheRecord::CloseLiveStream()
       XBMC->Log(LOG_ERROR, "Stop keepalive thread failed with %x.", hr);
     }
   } 
+
+#if defined(FTR_DUMPTS)
+  if (ofd != -1)
+  {
+    if (close(ofd) == -1)
+    {
+      XBMC->Log(LOG_ERROR, "couldn't close dumpfile %s (error %d: %s).", ofn, errno, strerror(errno));
+    }
+    ofd = -1;
+  }
+#endif
 
   if (m_bTimeShiftStarted)
   {
