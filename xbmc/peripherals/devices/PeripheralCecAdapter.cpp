@@ -238,6 +238,10 @@ void CPeripheralCecAdapter::Process(void)
   }
 
   CLog::Log(LOGDEBUG, "%s - connection to the CEC adapter opened", __FUNCTION__);
+
+  /* get the vendor id directly after connecting, because the TV might be using a non-standard CEC implementation */
+  m_cecAdapter->GetDeviceVendorId(CECDEVICE_TV);
+
   m_bIsReady = true;
   CAnnouncementManager::AddAnnouncer(this);
 
