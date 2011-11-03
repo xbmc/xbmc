@@ -3408,6 +3408,8 @@ static const AVProfile profiles[] = {
 static const AVOption h264_options[] = {
     {"is_avc", "is avc", offsetof(H264Context, is_avc), FF_OPT_TYPE_INT, 0, 0, 1, 0},
     {"nal_length_size", "nal_length_size", offsetof(H264Context, nal_length_size), FF_OPT_TYPE_INT, 0, 0, 4, 0},
+    {"mb_width", "mb_width", offsetof(H264Context, s.mb_width), FF_OPT_TYPE_INT, 0, 0, 0, 0},
+    {"mb_height", "mb_height", offsetof(H264Context, s.mb_height), FF_OPT_TYPE_INT, 0, 0, 0, 0},
     {NULL}
 };
 
