@@ -329,6 +329,13 @@ case TMSG_POWERDOWN:
 
           delete list;
         }
+        else if (pMsg->dwParam1 == PLAYLIST_MUSIC || pMsg->dwParam1 == PLAYLIST_VIDEO)
+        {
+          if (g_playlistPlayer.GetCurrentPlaylist() != pMsg->dwParam1)
+            g_playlistPlayer.SetCurrentPlaylist(pMsg->dwParam1);
+
+          PlayListPlayerPlay(pMsg->dwParam2);
+        }
       }
       break;
 
@@ -835,6 +842,15 @@ void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
   tMsg.lpVoid = (void*)listcopy;
   tMsg.dwParam1 = song;
   tMsg.dwParam2 = 1;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MediaPlay(int playlistid, int song /* = -1 */)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
+  tMsg.lpVoid = NULL;
+  tMsg.dwParam1 = playlistid;
+  tMsg.dwParam2 = song;
   SendMessage(tMsg, true);
 }
 
