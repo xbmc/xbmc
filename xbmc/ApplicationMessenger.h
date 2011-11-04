@@ -143,6 +143,7 @@ public:
   void MediaPlay(std::string filename);
   void MediaPlay(const CFileItem &item);
   void MediaPlay(const CFileItemList &item, int song = 0);
+  void MediaPlay(int playlistid, int song = -1);
   void MediaStop(bool bWait = true);
   void MediaPause();
   void MediaRestart(bool bWait);

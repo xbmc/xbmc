@@ -182,7 +182,22 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
     }
 
     if (hasThumbnailField)
-      object["thumbnail"] = item->GetThumbnailImage().c_str();
+    {
+      if (item->HasThumbnail())
+        object["thumbnail"] = item->GetThumbnailImage().c_str();
+      else if (item->HasVideoInfoTag())
+      {
+        CStdString strPath, strFileName;
+        URIUtils::Split(item->GetCachedVideoThumb(), strPath, strFileName);
+        CStdString cachedThumb = strPath + "auto-" + strFileName;
+
+        if (CFile::Exists(cachedThumb))
+          object["thumbnail"] = cachedThumb;
+      }
+
+      if (!object.isMember("thumbnail"))
+        object["thumbnail"] = "";
+    }
 
     if (item->HasVideoInfoTag())
       FillDetails(item->GetVideoInfoTag(), item, validFields, object);
