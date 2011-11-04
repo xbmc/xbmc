@@ -27,7 +27,6 @@
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include <queue>
-
 #include <cectypes.h>
 
 class DllLibCEC;
@@ -69,6 +68,7 @@ namespace PERIPHERALS
 
   protected:
     virtual void FlushLog(void);
+    virtual bool GetNextCecKey(CEC::cec_keypress &key);
     virtual bool GetNextKey(void);
     virtual bool InitialiseFeature(const PeripheralFeature feature);
     virtual void Process(void);
@@ -77,17 +77,17 @@ namespace PERIPHERALS
     static bool FindConfigLocation(CStdString &strString);
     static bool TranslateComPort(CStdString &strPort);
 
-    DllLibCEC*        m_dll;
-    CEC::ICECAdapter* m_cecAdapter;
-    bool              m_bStarted;
-    bool              m_bHasButton;
-    bool              m_bIsReady;
-    CStdString        m_strMenuLanguage;
-    CDateTime         m_screensaverLastActivated;
-    CecButtonPress    m_button;
-    CCriticalSection  m_critSection;
+    DllLibCEC*                    m_dll;
+    CEC::ICECAdapter*             m_cecAdapter;
+    bool                          m_bStarted;
+    bool                          m_bHasButton;
+    bool                          m_bIsReady;
+    CStdString                    m_strMenuLanguage;
+    CDateTime                     m_screensaverLastActivated;
+    CecButtonPress                m_button;
+    std::queue<CEC::cec_keypress> m_buttonQueue;
+    CCriticalSection              m_critSection;
   };
 }
 
 #endif
-

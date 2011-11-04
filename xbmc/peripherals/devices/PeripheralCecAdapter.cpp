@@ -448,22 +448,57 @@ void CPeripheralCecAdapter::ProcessNextCommand(void)
           command.parameters.size == 1 &&
           command.parameters[0] == CEC_DESK_CONTROL_MODE_STOP)
       {
-        g_application.getApplicationMessenger().MediaStop();
+        CSingleLock lock(m_critSection);
+        cec_keypress key;
+        key.duration = 500;
+        key.keycode = CEC_USER_CONTROL_CODE_STOP;
+        m_buttonQueue.push(key);
       }
       break;
     case CEC_OPCODE_PLAY:
       if (command.initiator == CECDEVICE_TV &&
           command.parameters.size == 1)
       {
-        if (command.parameters[0] == CEC_PLAY_MODE_PLAY_FORWARD ||
-            command.parameters[0] == CEC_PLAY_MODE_PLAY_STILL)
-          g_application.getApplicationMessenger().MediaPause();
+        if (command.parameters[0] == CEC_PLAY_MODE_PLAY_FORWARD)
+        {
+          CSingleLock lock(m_critSection);
+          cec_keypress key;
+          key.duration = 500;
+          key.keycode = CEC_USER_CONTROL_CODE_PLAY;
+          m_buttonQueue.push(key);
+        }
+        else if (command.parameters[0] == CEC_PLAY_MODE_PLAY_STILL)
+        {
+          CSingleLock lock(m_critSection);
+          cec_keypress key;
+          key.duration = 500;
+          key.keycode = CEC_USER_CONTROL_CODE_PAUSE;
+          m_buttonQueue.push(key);
+        }
       }
       break;
     default:
       break;
     }
   }
+}
+
+bool CPeripheralCecAdapter::GetNextCecKey(cec_keypress &key)
+{
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
+  if (!m_buttonQueue.empty())
+  {
+    key = m_buttonQueue.front();
+    m_buttonQueue.pop();
+    bReturn = true;
+  }
+  else if (m_cecAdapter->GetNextKeypress(&key))
+  {
+    bReturn = true;
+  }
+
+  return bReturn;
 }
 
 bool CPeripheralCecAdapter::GetNextKey(void)
@@ -473,7 +508,7 @@ bool CPeripheralCecAdapter::GetNextKey(void)
     return false;
 
   cec_keypress key;
-  if (!m_bIsReady || !m_cecAdapter->GetNextKeypress(&key))
+  if (!m_bIsReady || !GetNextCecKey(key))
     return false;
 
   CLog::Log(LOGDEBUG, "%s - received key %2x", __FUNCTION__, key.keycode);
@@ -649,7 +684,7 @@ bool CPeripheralCecAdapter::GetNextKey(void)
     return false;
   }
 
-  if (!m_bHasButton && iButton == m_button.iButton && key.duration > 0)
+  if (!m_bHasButton && iButton == m_button.iButton && m_button.iDuration == 0 && key.duration > 0)
   {
     /* released button of the previous keypress */
     m_bHasButton = false;
