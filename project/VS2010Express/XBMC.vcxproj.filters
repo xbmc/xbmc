@@ -2144,6 +2144,9 @@
     <ClCompile Include="..\..\xbmc\utils\POUtils.cpp">
       <Filter>utils</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbmc\utils\StubUtil.cpp">
+      <Filter>utils</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\xbmc\XbmcContext.cpp" />
     <ClCompile Include="..\..\xbmc\network\ZeroconfBrowser.cpp">
       <Filter>network</Filter>
@@ -5112,6 +5115,9 @@
       <Filter>network\httprequesthandler</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\utils\POUtils.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\StubUtil.h">
       <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="..\..\xbmc\network\ZeroconfBrowser.h">

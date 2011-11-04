@@ -1279,7 +1279,10 @@ msgctxt "#294"
 msgid "Create bookmark"
 msgstr ""
 
-#empty string with id 295
+#: xbmc/dialogs/GUIDialogPlayEject.cpp
+msgctxt "#295"
+msgid "Please attach storage device"
+msgstr ""
 
 msgctxt "#296"
 msgid "Clear bookmarks"
@@ -2062,7 +2065,14 @@ msgctxt "#470"
 msgid "Credits"
 msgstr ""
 
-#empty strings from id 471 to 473
+#empty string with id 471
+
+#: xbmc/dialogs/GUIDialogPlayEject.cpp
+msgctxt "#472"
+msgid "Please insert the following hard drive:"
+msgstr ""
+
+#empty string with id 473
 
 msgctxt "#474"
 msgid "Off"
@@ -6545,7 +6555,12 @@ msgctxt "#13459"
 msgid "Use OMXPlayer for decoding of video files."
 msgstr ""
 
-#empty strings from id 13460 to 13504
+#: xbmc/dialogs/GUIDialogPlayEject.cpp
+msgctxt "#13460"
+msgid "Close"
+msgstr ""
+
+#empty strings from id 13461 to 13504
 
 #: system/settings/settings.xml
 msgctxt "#13505"

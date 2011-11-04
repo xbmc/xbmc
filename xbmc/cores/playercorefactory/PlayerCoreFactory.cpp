@@ -31,6 +31,7 @@
 #include "PlayerCoreConfig.h"
 #include "PlayerSelectionRule.h"
 #include "guilib/LocalizeStrings.h"
+#include "utils/StubUtil.h"
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 
@@ -162,9 +163,13 @@ void CPlayerCoreFactory::GetPlayers( VECPLAYERCORES &vecCores, const bool audio,
 
 void CPlayerCoreFactory::GetPlayers( const CFileItem& item, VECPLAYERCORES &vecCores) const
 {
-  CURL url(item.GetPath());
+  std::string path = item.GetPath();
+  if (item.IsEfileStub())
+    g_stubutil.GetXMLString(item.GetPath(), "efilestub", "path", path);
 
-  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", CURL::GetRedacted(item.GetPath()).c_str());
+  CURL url(path);
+
+  CLog::Log(LOGDEBUG, "CPlayerCoreFactory::GetPlayers(%s)", CURL::GetRedacted(path).c_str());
 
   // Process rules
   for(unsigned int i = 0; i < m_vecCoreSelectionRules.size(); i++)

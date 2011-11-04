@@ -4749,16 +4749,7 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 
 void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CDateTime &date)
 {
-  int id;
-  if (item.HasProperty("original_listitem_url") &&
-      URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
-  {
-    CFileItem item2(item);
-    item2.SetPath(item.GetProperty("original_listitem_url").asString());
-    id = AddFile(item2);
-  }
-  else
-    id = AddFile(item);
+  int id = AddFile(item);
   if (id < 0)
     return;
 

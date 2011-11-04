@@ -1046,8 +1046,6 @@ bool GetResource(const PLT_MediaObject* entry, CFileItem& item)
 {
   PLT_MediaItemResource resource;
 
-  // store original path so we remember it
-  item.SetProperty("original_listitem_url",  item.GetPath());
   item.SetProperty("original_listitem_mime", item.GetMimeType());
 
   // get a sorted list based on our preference

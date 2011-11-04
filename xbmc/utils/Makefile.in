@@ -63,6 +63,7 @@ SRCS += StreamDetails.cpp
 SRCS += StreamUtils.cpp
 SRCS += StringUtils.cpp
 SRCS += StringValidation.cpp
+SRCS += StubUtil.cpp
 SRCS += SystemInfo.cpp
 SRCS += Temperature.cpp
 SRCS += TextSearch.cpp
