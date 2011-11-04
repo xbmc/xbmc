@@ -1114,13 +1114,14 @@ bool CPVRClients::InitialiseClient(AddonPtr client)
 
   /* load and initialise the client libraries */
   boost::shared_ptr<CPVRClient> addon = boost::dynamic_pointer_cast<CPVRClient>(client);
-  if (addon && addon->Create(iClientId))
+  if (addon)
   {
     {
       CSingleLock lock(m_critSection);
+      addon->Create(iClientId);
       m_clientMap.insert(std::make_pair(iClientId, addon));
     }
-    bReturn = true;
+    bReturn = addon->ReadyToUse();
   }
   else
   {
@@ -1143,13 +1144,19 @@ bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = fal
     if (!clientAddon->Enabled() && IsKnownClient(clientAddon))
     {
       /* stop the client and remove it from the db */
-      bReturn = StopClient(clientAddon, false) && bReturn;
+      bReturn &= StopClient(clientAddon, false) && bReturn;
     }
     else if (clientAddon->Enabled() && (bInitialiseAllClients || !IsKnownClient(clientAddon)))
     {
       /* register the new client and initialise it */
-      bReturn = InitialiseClient(clientAddon) && bReturn;
+      bReturn &= InitialiseClient(clientAddon) && bReturn;
     }
+  }
+
+  for (CLIENTMAPITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
+  {
+    if (!m_clientMap[(*itr).first]->ReadyToUse())
+      m_clientMap[(*itr).first]->Create((*itr).first);
   }
 
   /* check whether all clients are (still) connected */
