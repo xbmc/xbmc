@@ -684,7 +684,7 @@ bool CPeripheralCecAdapter::GetNextKey(void)
     return false;
   }
 
-  if (!m_bHasButton && iButton == m_button.iButton && key.duration > 0)
+  if (!m_bHasButton && iButton == m_button.iButton && m_button.iDuration == 0 && key.duration > 0)
   {
     /* released button of the previous keypress */
     m_bHasButton = false;
