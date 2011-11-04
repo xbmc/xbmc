@@ -146,7 +146,7 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
       if (m_pDlgProgress)
       {
         CURL url(SrcArc->FileName);
-        m_pDlgProgress->SetLine(2,url.GetWithoutUserDetails()); // update currently extracted rar file
+        m_pDlgProgress->SetLine(0,url.GetWithoutUserDetails()); // update currently extracted rar file
         m_pDlgProgress->Progress();
       }
     }
