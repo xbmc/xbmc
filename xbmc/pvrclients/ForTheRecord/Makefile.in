@@ -7,7 +7,15 @@
 
 LIBS   = -ldl -lpthread -lcurl
 LIBDIR = @abs_top_srcdir@/addons/pvr.fortherecord.argus
-LIB    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord.pvr
+ifeq ($(findstring osx,@ARCH@),osx)
+ifeq ($(findstring x86-osx,@ARCH@),x86-osx)
+LIB    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord_osx.pvr
+else
+LIB    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord_ios.pvr
+endif
+else
+LIB    = @abs_top_srcdir@/addons/pvr.fortherecord.argus/XBMC_ForTheRecord_linux.pvr
+endif
 
 SRCS   = utils.cpp \
         activerecording.cpp \

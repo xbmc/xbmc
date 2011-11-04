@@ -9,8 +9,8 @@
   </requires>
   <extension
     point="xbmc.pvrclient"
-    library_linux="XBMC_ForTheRecord.pvr"
-    library_osx="XBMC_ForTheRecord.pvr"
+    library_linux="XBMC_ForTheRecord_linux.pvr"
+    library_osx="XBMC_ForTheRecord_osx.pvr"
     library_wingl="XBMC_ForTheRecord_win32.pvr"
     library_windx="XBMC_ForTheRecord_win32.pvr"/>
   <extension point="xbmc.addon.metadata">
