@@ -427,7 +427,7 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelUpDown(const CPVRChannel &chann
     else
       iChannelIndex--;
 
-    if (iChannelIndex >= size())
+    if (iChannelIndex >= (int)size())
       iChannelIndex = 0;
     else if (iChannelIndex < 0)
       iChannelIndex = size() - 1;
