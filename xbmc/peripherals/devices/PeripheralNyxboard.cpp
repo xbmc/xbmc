@@ -23,7 +23,7 @@
 #include "PeripheralHID.h"
 #include "guilib/Key.h"
 #include "utils/log.h"
-#include "interfaces/Builtins.h"
+#include "Application.h"
 
 using namespace PERIPHERALS;
 using namespace std;
@@ -59,11 +59,12 @@ bool CPeripheralNyxboard::LookupSymAndUnicode(XBMC_keysym &keysym, uint8_t *key,
   if (!strCommand.IsEmpty())
   {
     CLog::Log(LOGDEBUG, "%s - executing command '%s'", __FUNCTION__, strCommand.c_str());
-    CBuiltins::Execute(strCommand);
-
-    *key = 0;
-    *unicode = (char) 0;
-    return true;
+    if (g_application.ExecuteXBMCAction(strCommand))
+    {
+      *key = 0;
+      *unicode = (char) 0;
+      return true;
+    }
   }
 
   return false;
