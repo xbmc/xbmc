@@ -96,6 +96,7 @@ class CGUIWindow;
 #define TMSG_CALLBACK             800
 
 #define TMSG_VOLUME_SHOW          900
+#define TMSG_SPLASH_MESSAGE       901
 
 typedef struct
 {
@@ -199,6 +200,9 @@ public:
   void OpticalUnMount(CStdString device);
 
   void ShowVolumeBar(bool up);
+
+  void SetSplashMessage(const CStdString& message);
+  void SetSplashMessage(int stringID);
 
 private:
   void ProcessMessage(ThreadMessage *pMsg);
