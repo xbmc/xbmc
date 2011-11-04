@@ -1101,6 +1101,7 @@ void CGUIWindowVideoBase::GetContextButtons(int itemNumber, CContextButtons &but
            !g_advancedSettings.m_playlistAsFolders))
         {
           buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 208);
+          buttons.Add(CONTEXT_BUTTON_PLAY_UNWATCHED_ITEMS, 36019);
         }
       }
       if (!item->m_bIsFolder && !(item->IsPlayList() && !g_advancedSettings.m_playlistAsFolders))
@@ -1147,6 +1148,7 @@ void CGUIWindowVideoBase::GetNonContextButtons(int itemNumber, CContextButtons &
 
 bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 {
+  int watchMode;
   CFileItemPtr item;
   if (itemNumber >= 0 && itemNumber < m_vecItems->Size())
     item = m_vecItems->Get(itemNumber);
@@ -1194,6 +1196,14 @@ bool CGUIWindowVideoBase::OnContextButton(int itemNumber, CONTEXT_BUTTON button)
 
   case CONTEXT_BUTTON_PLAY_ITEM:
     PlayItem(itemNumber);
+    return true;
+
+  case CONTEXT_BUTTON_PLAY_UNWATCHED_ITEMS:
+    // hide watched files, start playing, restore old state
+    watchMode = g_settings.GetWatchMode(m_vecItems->GetContent());
+    g_settings.SetWatchMode(m_vecItems->GetContent(), VIDEO_SHOW_UNWATCHED);
+    PlayItem(itemNumber);
+    g_settings.SetWatchMode(m_vecItems->GetContent(), watchMode);
     return true;
 
   case CONTEXT_BUTTON_PLAY_WITH:
