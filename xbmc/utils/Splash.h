@@ -24,6 +24,9 @@
 #include "StdString.h"
 #include "threads/Thread.h"
 
+class CGUITextLayout;
+class CGUIImage;
+
 class CSplash : public CThread
 {
 public:
@@ -36,6 +39,7 @@ public:
 
   // In case you don't want to use another thread
   void Show();
+  void Show(const CStdString& message);
   void Hide();
 
 private:
@@ -45,6 +49,10 @@ private:
 
   float fade;
   CStdString m_ImageName;
+
+  CGUITextLayout* m_messageLayout;
+  CGUIImage* m_image;
+  bool m_layoutWasLoading;
 #ifdef HAS_DX
   D3DGAMMARAMP newRamp;
   D3DGAMMARAMP oldRamp;
