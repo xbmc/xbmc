@@ -22,6 +22,7 @@
 
 #include "threads/CriticalSection.h"
 #include "threads/Thread.h"
+#include "utils/Observer.h"
 #include "PVRClient.h"
 
 #include <vector>
@@ -43,6 +44,7 @@ namespace PVR
   #define XBMC_VIRTUAL_CLIENTID -1
 
   class CPVRClients : public ADDON::IAddonMgrCallback,
+                      public Observer,
                       private CThread
   {
     friend class CPVRGUIInfo;
@@ -565,7 +567,14 @@ namespace PVR
 
     //@}
 
+    void Notify(const Observable &obs, const CStdString& msg);
   private:
+    /*!
+     * @brief Update add-ons from the AddonManager
+     * @return True when updated, false otherwise
+     */
+    bool UpdateAddons(void);
+
     /*!
      * @brief Register a client in the db if it's not been registered yet.
      * @param client The client to register.
@@ -654,6 +663,7 @@ namespace PVR
     const CPVRRecording * m_currentRecording;         /*!< the recording that is currently playing or NULL if nothing is playing */
     DWORD                 m_scanStart;                /*!< scan start time to check for non present streams */
     CStdString            m_strPlayingClientName;     /*!< the name client that is currenty playing a stream or an empty string if nothing is playing */
+    ADDON::VECADDONS      m_addons;
     CLIENTMAP             m_clientMap;                /*!< a map of all known clients */
     PVR_SIGNAL_STATUS     m_qualityInfo;              /*!< stream quality information */
     STREAMPROPS           m_streamProps;              /*!< the current stream's properties */
