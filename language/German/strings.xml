@@ -848,7 +848,7 @@
   <string id="1422">Windig</string>
   <string id="1423">Dunst</string>
 
-  <string id="1450">Aktiviere Energiesparmodus bei Leerlauf</string>
+  <string id="1450">Energiesparmodus des Bildschirms aktivieren</string>
 
   <string id="2050">Länge</string>
 
@@ -2386,4 +2386,5 @@
   <string id="36015">HDMI Port Nummer</string>
   <string id="36016">XBMC verbunden</string>
   <string id="36017">CEC Adapter gefunden, aber libcec ist nicht verfügbar</string>
+  <string id="36018">Spracheinstellung des Fernsehers in XBMC nutzen</string>
 </strings>

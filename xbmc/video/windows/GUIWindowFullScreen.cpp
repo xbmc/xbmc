@@ -394,6 +394,9 @@ bool CGUIWindowFullScreen::OnAction(const CAction &action)
       if (g_application.m_pPlayer->GetAudioStreamCount() == 1)
         return true;
 
+      if(g_settings.m_currentVideoSettings.m_AudioStream < 0)
+        g_settings.m_currentVideoSettings.m_AudioStream = g_application.m_pPlayer->GetAudioStream();
+
       g_settings.m_currentVideoSettings.m_AudioStream++;
       if (g_settings.m_currentVideoSettings.m_AudioStream >= g_application.m_pPlayer->GetAudioStreamCount())
         g_settings.m_currentVideoSettings.m_AudioStream = 0;

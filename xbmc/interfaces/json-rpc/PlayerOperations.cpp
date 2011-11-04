@@ -438,12 +438,15 @@ JSON_STATUS CPlayerOperations::Open(const CStdString &method, ITransportLayer *t
     switch (playlistid)
     {
       case PLAYLIST_MUSIC:
-      case PLAYLIST_VIDEO:
         if (g_playlistPlayer.GetCurrentPlaylist() != playlistid)
           g_playlistPlayer.SetCurrentPlaylist(playlistid);
 
         g_application.getApplicationMessenger().PlayListPlayerPlay((int)parameterObject["item"]["position"].asInteger());
+        OnPlaylistChanged();
+        break;
 
+      case PLAYLIST_VIDEO:
+        g_application.getApplicationMessenger().MediaPlay(playlistid, (int)parameterObject["item"]["position"].asInteger());
         OnPlaylistChanged();
         break;
 

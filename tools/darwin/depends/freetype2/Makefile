@@ -2,7 +2,7 @@ include ../Makefile.include
 
 # lib name, version
 LIBNAME=freetype
-VERSION=2.3.9
+VERSION=2.4.7
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.bz2
 
