@@ -30,12 +30,13 @@
 #ifdef TSREADER
 
 #include "os-dependent.h"
+#include <string>
 
-class TSThread
+class CThread
 {
   public:
-    TSThread();
-    virtual ~TSThread();
+    CThread(const char* ThreadName);
+    virtual ~CThread();
 
     virtual void ThreadProc() = 0;
     long StartThread();
@@ -59,6 +60,7 @@ class TSThread
     pthread_t m_ThreadHandle;
     static int thread_function(void* p);
 #endif
+    std::string m_ThreadName;
 };
 
 #endif //TSREADER

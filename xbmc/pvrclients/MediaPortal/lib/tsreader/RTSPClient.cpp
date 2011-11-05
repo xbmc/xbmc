@@ -25,7 +25,7 @@
 
 using namespace ADDON;
 
-CRTSPClient::CRTSPClient()
+CRTSPClient::CRTSPClient(): CThread("RTSPClient")
 {
   XBMC->Log(LOG_DEBUG, "CRTSPClient::CRTSPClient()");
   allowProxyServers = False;
