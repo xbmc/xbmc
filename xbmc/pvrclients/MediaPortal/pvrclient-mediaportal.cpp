@@ -30,7 +30,7 @@
 #include "epg.h"
 #include "utils.h"
 #include "pvrclient-mediaportal.h"
-#include "AutoLock.h"
+#include "SingleLock.h"
 #include "lib/tinyxml/tinyxml.h"
 
 #ifdef TSREADER
@@ -89,7 +89,7 @@ string cPVRClientMediaPortal::SendCommand(string command)
 {
   int code;
   vector<string> lines;
-  CAutoLock critsec(&m_mutex);
+  CSingleLock critsec(m_mutex);
 
   if ( !m_tcpclient->send(command) )
   {
@@ -119,7 +119,7 @@ string cPVRClientMediaPortal::SendCommand(string command)
 
 bool cPVRClientMediaPortal::SendCommand2(string command, int& code, vector<string>& lines)
 {
-  CAutoLock critsec(&m_mutex);
+  CSingleLock critsec(m_mutex);
 
   if ( !m_tcpclient->send(command) )
   {

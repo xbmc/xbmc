@@ -55,7 +55,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>.;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;.;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;_WIN32;_DEBUG;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -87,7 +87,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>.;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\;.;..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;_WIN32;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -117,7 +117,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\AutoLock.cpp" />
     <ClCompile Include="..\..\Cards.cpp" />
     <ClCompile Include="..\..\channels.cpp" />
     <ClCompile Include="..\..\client.cpp" />
@@ -129,6 +128,7 @@
     <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
     <ClCompile Include="..\..\recordings.cpp" />
+    <ClCompile Include="..\..\SingleLock.cpp" />
     <ClCompile Include="..\..\Socket.cpp" />
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />
@@ -136,7 +136,6 @@
     <ClCompile Include="..\..\windows\CriticalSection.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\AutoLock.h" />
     <ClInclude Include="..\..\Cards.h" />
     <ClInclude Include="..\..\channels.h" />
     <ClInclude Include="..\..\client.h" />
@@ -145,9 +144,11 @@
     <ClInclude Include="..\..\epg.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinystr.h" />
     <ClInclude Include="..\..\lib\tinyxml\tinyxml.h" />
+    <ClInclude Include="..\..\NonCopyable.h" />
     <ClInclude Include="..\..\os-dependent.h" />
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />
     <ClInclude Include="..\..\recordings.h" />
+    <ClInclude Include="..\..\SingleLock.h" />
     <ClInclude Include="..\..\Socket.h" />
     <ClInclude Include="..\..\timers.h" />
     <ClInclude Include="..\..\uri.h" />

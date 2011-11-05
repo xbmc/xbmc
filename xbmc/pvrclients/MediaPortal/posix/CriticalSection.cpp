@@ -18,7 +18,7 @@
 
 #include "CriticalSection.h"
 
-CCriticalSection::CCriticalSection(void)
+CCriticalSection::CCriticalSection(void) : locked(0)
 {
   Initialize();
 }
@@ -39,16 +39,21 @@ CCriticalSection::~CCriticalSection(void)
   pthread_mutex_destroy(&m_CriticalSection);
 }
 
-void CCriticalSection::Lock(void)
+void CCriticalSection::lock(void)
 {
   pthread_mutex_lock(&m_CriticalSection);
   locked++;
 }
 
-void CCriticalSection::Unlock(void)
+void CCriticalSection::unlock(void)
 {
   if (!--locked)
   {
     pthread_mutex_unlock(&m_CriticalSection);
   }
+}
+
+bool CCriticalSection::try_lock(void)
+{
+  return (pthread_mutex_trylock(&m_CriticalSection) == 0) ? locked++, true : false;
 }

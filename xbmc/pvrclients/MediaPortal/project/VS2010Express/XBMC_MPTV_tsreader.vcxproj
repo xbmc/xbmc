@@ -117,7 +117,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\AutoLock.cpp" />
     <ClCompile Include="..\..\Cards.cpp" />
     <ClCompile Include="..\..\channels.cpp" />
     <ClCompile Include="..\..\client.cpp" />
@@ -138,6 +137,7 @@
     <ClCompile Include="..\..\lib\tsreader\WaitEvent.cpp" />
     <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
     <ClCompile Include="..\..\recordings.cpp" />
+    <ClCompile Include="..\..\SingleLock.cpp" />
     <ClCompile Include="..\..\Socket.cpp" />
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />
@@ -145,7 +145,6 @@
     <ClCompile Include="..\..\windows\CriticalSection.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\AutoLock.h" />
     <ClInclude Include="..\..\Cards.h" />
     <ClInclude Include="..\..\channels.h" />
     <ClInclude Include="..\..\client.h" />
@@ -162,7 +161,9 @@
     <ClInclude Include="..\..\lib\tsreader\TSReader.h" />
     <ClInclude Include="..\..\lib\tsreader\TSThread.h" />
     <ClInclude Include="..\..\lib\tsreader\WaitEvent.h" />
+    <ClInclude Include="..\..\NonCopyable.h" />
     <ClInclude Include="..\..\os-dependent.h" />
+    <ClInclude Include="..\..\SingleLock.h" />
     <ClInclude Include="..\..\uri.h" />
     <ClInclude Include="..\..\windows\os_windows.h" />
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />

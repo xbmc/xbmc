@@ -18,7 +18,7 @@
 
 #include "CriticalSection.h"
 
-CCriticalSection::CCriticalSection(void)
+CCriticalSection::CCriticalSection(void): locked(0)
 {
   Initialize();
 }
@@ -34,16 +34,21 @@ CCriticalSection::~CCriticalSection(void)
   DeleteCriticalSection(&m_CriticalSection);
 }
 
-void CCriticalSection::Lock(void)
+void CCriticalSection::lock(void)
 {
   EnterCriticalSection(&m_CriticalSection);
   locked++;
 }
 
-void CCriticalSection::Unlock(void)
+void CCriticalSection::unlock(void)
 {
   if (!--locked)
   {
     LeaveCriticalSection(&m_CriticalSection);
   }
+}
+
+bool CCriticalSection::try_lock()
+{
+  return TryEnterCriticalSection(&m_CriticalSection) ?  locked++, true : false;
 }

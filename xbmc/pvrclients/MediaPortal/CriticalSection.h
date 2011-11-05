@@ -26,8 +26,9 @@ class CCriticalSection
     virtual ~CCriticalSection();
 
     void Initialize(void);
-    void Lock(void);
-    void Unlock(void);
+    void lock(void);
+    void unlock(void);
+    bool try_lock(void);
 
   protected:
      criticalsection_t m_CriticalSection;
