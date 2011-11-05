@@ -739,6 +739,19 @@ void CUtil::ClearSubtitles()
   }
 }
 
+void CUtil::ClearTempFonts()
+{
+  CFileItemList items;
+  CDirectory::GetDirectory("special://temp/fonts/", items, "", false, false, XFILE::DIR_CACHE_NEVER);
+
+  for (int i=0; i<items.Size(); ++i)
+  {
+    if (items[i]->m_bIsFolder)
+      continue;
+    CFile::Delete(items[i]->GetPath());
+  }
+}
+
 static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", NULL};
 
 int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
