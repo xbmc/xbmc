@@ -26,6 +26,7 @@
  */
 
 #include "libavcore/imgutils.h"
+#include "libavutil/opt.h"
 #include "internal.h"
 #include "dsputil.h"
 #include "avcodec.h"
@@ -3404,6 +3405,28 @@ static const AVProfile profiles[] = {
     { FF_PROFILE_UNKNOWN },
 };
 
+static const AVOption h264_options[] = {
+    {"is_avc", "is avc", offsetof(H264Context, is_avc), FF_OPT_TYPE_INT, 0, 0, 1, 0},
+    {"nal_length_size", "nal_length_size", offsetof(H264Context, nal_length_size), FF_OPT_TYPE_INT, 0, 0, 4, 0},
+    {"mb_width", "mb_width", offsetof(H264Context, s.mb_width), FF_OPT_TYPE_INT, 0, 0, 0, 0},
+    {"mb_height", "mb_height", offsetof(H264Context, s.mb_height), FF_OPT_TYPE_INT, 0, 0, 0, 0},
+    {NULL}
+};
+
+static const AVClass h264_class = {
+    "H264 Decoder",
+    av_default_item_name,
+    h264_options,
+    LIBAVUTIL_VERSION_INT,
+};
+
+static const AVClass h264_vdpau_class = {
+    "H264 VDPAU Decoder",
+    av_default_item_name,
+    h264_options,
+    LIBAVUTIL_VERSION_INT,
+};
+
 AVCodec ff_h264_decoder = {
     "h264",
     AVMEDIA_TYPE_VIDEO,
@@ -3417,6 +3440,7 @@ AVCodec ff_h264_decoder = {
     .flush= flush_dpb,
     .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10"),
     .profiles = NULL_IF_CONFIG_SMALL(profiles),
+    .priv_class     = &h264_class,
 };
 
 #if CONFIG_H264_VDPAU_DECODER
@@ -3434,5 +3458,6 @@ AVCodec ff_h264_vdpau_decoder = {
     .long_name = NULL_IF_CONFIG_SMALL("H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10 (VDPAU acceleration)"),
     .pix_fmts = (const enum PixelFormat[]){PIX_FMT_VDPAU_H264, PIX_FMT_NONE},
     .profiles = NULL_IF_CONFIG_SMALL(profiles),
+    .priv_class     = &h264_vdpau_class,
 };
 #endif
