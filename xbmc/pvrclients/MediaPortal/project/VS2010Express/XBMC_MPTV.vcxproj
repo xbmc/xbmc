@@ -122,7 +122,6 @@
     <ClCompile Include="..\..\channels.cpp" />
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
-    <ClCompile Include="..\..\CriticalSection.cpp" />
     <ClCompile Include="..\..\epg.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinystr.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinyxml.cpp" />
@@ -134,6 +133,7 @@
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />
     <ClCompile Include="..\..\utils.cpp" />
+    <ClCompile Include="..\..\windows\CriticalSection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\AutoLock.h" />

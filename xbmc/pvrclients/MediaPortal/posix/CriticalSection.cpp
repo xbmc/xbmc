@@ -1,4 +1,3 @@
-#pragma once
 /*
  *      Copyright (C) 2005-2011 Team XBMC
  *      http://www.xbmc.org
@@ -17,21 +16,39 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "os-dependent.h"
+#include "CriticalSection.h"
 
-class CCriticalSection
+CCriticalSection::CCriticalSection(void)
 {
-  public:
-    CCriticalSection();
-    virtual ~CCriticalSection();
+  Initialize();
+}
 
-    void Initialize(void);
-    void Lock(void);
-    void Unlock(void);
+void CCriticalSection::Initialize(void)
+{
+  pthread_mutexattr_t attr;
+  pthread_mutexattr_init(&attr);
+  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
+  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+  pthread_mutex_init(&m_CriticalSection, &attr);
+  pthread_mutexattr_destroy(&attr);
+  locked = 0;
+}
 
-  protected:
-     criticalsection_t m_CriticalSection;
+CCriticalSection::~CCriticalSection(void)
+{
+  pthread_mutex_destroy(&m_CriticalSection);
+}
 
-  private:
-     int locked;
-};
+void CCriticalSection::Lock(void)
+{
+  pthread_mutex_lock(&m_CriticalSection);
+  locked++;
+}
+
+void CCriticalSection::Unlock(void)
+{
+  if (!--locked)
+  {
+    pthread_mutex_unlock(&m_CriticalSection);
+  }
+}

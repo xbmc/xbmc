@@ -25,41 +25,25 @@ CCriticalSection::CCriticalSection(void)
 
 void CCriticalSection::Initialize(void)
 {
-#ifdef TARGET_WINDOWS
   InitializeCriticalSection(&m_CriticalSection);
-#else
-  pthread_mutexattr_t attr;
-  pthread_mutexattr_init(&attr);
-  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE_NP);
-  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-  pthread_mutex_init(&m_CriticalSection, &attr);
-  pthread_mutexattr_destroy(&attr);
-#endif
+  locked = 0;
 }
 
 CCriticalSection::~CCriticalSection(void)
 {
-#ifdef TARGET_WINDOWS
   DeleteCriticalSection(&m_CriticalSection);
-#else
-  pthread_mutex_destroy(&m_CriticalSection);
-#endif
 }
 
 void CCriticalSection::Lock(void)
 {
-#ifdef TARGET_WINDOWS
   EnterCriticalSection(&m_CriticalSection);
-#else
-  pthread_mutex_lock(&m_CriticalSection);
-#endif
+  locked++;
 }
 
 void CCriticalSection::Unlock(void)
 {
-#ifdef TARGET_WINDOWS
-  LeaveCriticalSection(&m_CriticalSection);
-#else
-  pthread_mutex_unlock(&m_CriticalSection);
-#endif
+  if (!--locked)
+  {
+    LeaveCriticalSection(&m_CriticalSection);
+  }
 }

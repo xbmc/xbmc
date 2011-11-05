@@ -71,9 +71,6 @@
     <ClCompile Include="..\..\lib\tsreader\TSReader.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\tsreader\TSThread.cpp">
-      <Filter>Source Files\tsreader</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\lib\tsreader\WaitEvent.cpp">
       <Filter>Source Files\tsreader</Filter>
     </ClCompile>
@@ -95,10 +92,13 @@
     <ClCompile Include="..\..\lib\tinyxml\tinyxmlparser.cpp">
       <Filter>Source Files\tinyXML</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\CriticalSection.cpp">
+    <ClCompile Include="..\..\AutoLock.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\AutoLock.cpp">
+    <ClCompile Include="..\..\lib\tsreader\TSThread.cpp">
+      <Filter>Source Files\tsreader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\windows\CriticalSection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
