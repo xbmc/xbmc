@@ -393,10 +393,10 @@ bool CGUIDialogContextMenu::OnContextButton(const CStdString &type, const CFileI
 
 #ifdef HAS_DVD_DRIVE
   case CONTEXT_BUTTON_PLAY_DISC:
-    return MEDIA_DETECT::CAutorun::PlayDisc(true); // restart
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), true); // restart
 
   case CONTEXT_BUTTON_RESUME_DISC:
-    return MEDIA_DETECT::CAutorun::PlayDisc(false);// resume
+    return MEDIA_DETECT::CAutorun::PlayDisc(item->GetPath(), false);// resume
 
   case CONTEXT_BUTTON_EJECT_DISC:
 #ifdef _WIN32

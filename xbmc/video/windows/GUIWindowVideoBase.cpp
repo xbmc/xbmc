@@ -64,6 +64,7 @@
 #include "utils/URIUtils.h"
 #include "GUIUserMessages.h"
 #include "addons/Skin.h"
+#include "storage/MediaManager.h"
 
 using namespace std;
 using namespace XFILE;
@@ -142,7 +143,7 @@ bool CGUIWindowVideoBase::OnMessage(CGUIMessage& message)
       else if (iControl == CONTROL_PLAY_DVD)
       {
         // play movie...
-        CUtil::PlayDVD();
+        MEDIA_DETECT::CAutorun::PlayDiscAskResume(g_mediaManager.TranslateDevicePath(""));
       }
       else if (iControl == CONTROL_BTNTYPE)
       {

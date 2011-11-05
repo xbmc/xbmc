@@ -944,7 +944,7 @@ int CBuiltins::Execute(const CStdString& execString)
     bool restart = false;
     if (params.size() > 0 && params[0].CompareNoCase("restart") == 0)
       restart = true;
-    CAutorun::PlayDisc(restart);
+    CAutorun::PlayDisc(g_mediaManager.GetDiscPath(), restart);
 #endif
   }
   else if (execute.Equals("ripcd"))

@@ -783,24 +783,6 @@ bool CUtil::ThumbCached(const CStdString& strFileName)
   return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
 }
 
-void CUtil::PlayDVD(const CStdString& strProtocol, bool startFromBeginning)
-{
-#if defined(HAS_DVDPLAYER) && defined(HAS_DVD_DRIVE)
-  CIoSupport::Dismount("Cdrom0");
-  CIoSupport::RemapDriveLetter('D', "Cdrom0");
-  CStdString strPath;
-  strPath.Format("%s://1", strProtocol.c_str());
-  CFileItem item(strPath, false);
-  item.SetLabel(g_mediaManager.GetDiskLabel());
-  item.GetVideoInfoTag()->m_strFileNameAndPath = g_mediaManager.GetDiskUniqueId();
-
-  if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) 
-    item.m_lStartOffset = STARTOFFSET_RESUME;
-
-  g_application.PlayFile(item, false);
-#endif
-}
-
 CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
 {
   if (!fn_template.Find("%03d"))

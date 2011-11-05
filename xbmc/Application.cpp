@@ -3567,7 +3567,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #ifdef HAS_DVD_DRIVE
     // Display the Play Eject dialog
     if (CGUIDialogPlayEject::ShowAndGetInput(item))
-      return MEDIA_DETECT::CAutorun::PlayDisc(!MEDIA_DETECT::CAutorun::CanResumePlayDVD() || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
+      return MEDIA_DETECT::CAutorun::PlayDiscAskResume(item.GetPath());
 #endif
     return true;
   }
