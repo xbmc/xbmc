@@ -230,6 +230,9 @@ namespace PYXBMC
   {
     char *cLine = NULL;
     if (!PyArg_ParseTuple(args, (char*)"s", &cLine)) return NULL;
+
+    CPyThreadState pyLock;
+
     if (!m_pXbmcHttp)
       m_pXbmcHttp = new CXbmcHttp();
     CStdString method = cLine;
@@ -249,12 +252,17 @@ namespace PYXBMC
         execute = cmd.Left(open);
       }
       else //open bracket but no close
+      {
+        pyLock.Restore();
         return PyString_FromString("");
+      }
     }
     else //no parameters
       execute = cmd;
 
     CURL::Decode(parameter);
+
+    pyLock.Restore();
     return PyString_FromString(CHttpApi::MethodCall(execute, parameter).c_str());
   }
 #endif
