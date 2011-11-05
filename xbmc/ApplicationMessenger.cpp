@@ -332,7 +332,7 @@ case TMSG_POWERDOWN:
         }
         else if (pMsg->dwParam1 == PLAYLIST_MUSIC || pMsg->dwParam1 == PLAYLIST_VIDEO)
         {
-          if (g_playlistPlayer.GetCurrentPlaylist() != pMsg->dwParam1)
+          if (g_playlistPlayer.GetCurrentPlaylist() != (int)pMsg->dwParam1)
             g_playlistPlayer.SetCurrentPlaylist(pMsg->dwParam1);
 
           PlayListPlayerPlay(pMsg->dwParam2);
