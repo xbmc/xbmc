@@ -20,11 +20,14 @@
  *
  */
 
+#if defined(HAVE_LIBCEC)
+
 #include "PeripheralHID.h"
 #include "interfaces/AnnouncementManager.h"
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include <queue>
+#include <cectypes.h>
 
 class DllLibCEC;
 
@@ -49,8 +52,8 @@ namespace PERIPHERALS
     virtual ~CPeripheralCecAdapter(void);
 
     virtual void Announce(ANNOUNCEMENT::EAnnouncementFlag flag, const char *sender, const char *message, const CVariant &data);
-    virtual bool PowerOnCecDevices(void);
-    virtual bool StandbyCecDevices(void);
+    virtual bool PowerOnCecDevices(CEC::cec_logical_address iLogicalAddress);
+    virtual bool StandbyCecDevices(CEC::cec_logical_address iLogicalAddress);
 
     virtual bool SendPing(void);
     virtual bool StartBootloader(void);
@@ -61,9 +64,11 @@ namespace PERIPHERALS
     virtual WORD GetButton(void);
     virtual unsigned int GetHoldTime(void);
     virtual void ResetButton(void);
+    virtual CStdString GetComPort(void);
 
   protected:
     virtual void FlushLog(void);
+    virtual bool GetNextCecKey(CEC::cec_keypress &key);
     virtual bool GetNextKey(void);
     virtual bool InitialiseFeature(const PeripheralFeature feature);
     virtual void Process(void);
@@ -72,13 +77,17 @@ namespace PERIPHERALS
     static bool FindConfigLocation(CStdString &strString);
     static bool TranslateComPort(CStdString &strPort);
 
-    DllLibCEC*        m_dll;
-    CEC::ICECAdapter* m_cecAdapter;
-    bool              m_bStarted;
-    bool              m_bHasButton;
-    bool              m_bIsReady;
-    CDateTime         m_screensaverLastActivated;
-    CecButtonPress    m_button;
-    CCriticalSection  m_critSection;
+    DllLibCEC*                    m_dll;
+    CEC::ICECAdapter*             m_cecAdapter;
+    bool                          m_bStarted;
+    bool                          m_bHasButton;
+    bool                          m_bIsReady;
+    CStdString                    m_strMenuLanguage;
+    CDateTime                     m_screensaverLastActivated;
+    CecButtonPress                m_button;
+    std::queue<CEC::cec_keypress> m_buttonQueue;
+    CCriticalSection              m_critSection;
   };
 }
+
+#endif

@@ -98,6 +98,11 @@ public:
 
   virtual bool TestRender() = 0;
 
+  /**
+   * Project (x,y,z) 3d scene coordinates to (x,y) 2d screen coordinates
+   */
+  virtual void Project(float &x, float &y, float &z) { }
+
   void GetRenderVersion(unsigned int& major, unsigned int& minor) const;
   const CStdString& GetRenderVendor() const { return m_RenderVendor; }
   const CStdString& GetRenderRenderer() const { return m_RenderRenderer; }

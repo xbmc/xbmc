@@ -54,6 +54,7 @@ typedef enum {
 
 typedef struct {
     MMSContext mms;
+    uint8_t location[1024];
     int request_seq;  ///< request packet sequence
     int chunk_seq;    ///< data packet sequence
 } MMSHContext;
@@ -210,10 +211,10 @@ static int get_http_header_data(MMSHContext *mmsh)
     return 0;
 }
 
-static int mmsh_open(URLContext *h, const char *uri, int flags)
+static int mmsh_open_internal(URLContext *h, const char *uri, int flags, int timestamp, int64_t pos)
 {
     int i, port, err;
-    char httpname[256], path[256], host[128], location[1024];
+    char httpname[256], path[256], host[128];
     char *stream_selection = NULL;
     char headers[1024];
     MMSHContext *mmsh;
@@ -224,10 +225,10 @@ static int mmsh_open(URLContext *h, const char *uri, int flags)
         return AVERROR(ENOMEM);
     mmsh->request_seq = h->is_streamed = 1;
     mms = &mmsh->mms;
-    av_strlcpy(location, uri, sizeof(location));
+    av_strlcpy(mmsh->location, uri, sizeof(mmsh->location));
 
     av_url_split(NULL, 0, NULL, 0,
-        host, sizeof(host), &port, path, sizeof(path), location);
+        host, sizeof(host), &port, path, sizeof(path), mmsh->location);
     if (port<0)
         port = 80; // default mmsh protocol port
     ff_url_join(httpname, sizeof(httpname), "http", NULL, host, port, path);
@@ -283,8 +284,9 @@ static int mmsh_open(URLContext *h, const char *uri, int flags)
                    CLIENTGUID
                    "Pragma: stream-switch-count=%d\r\n"
                    "Pragma: stream-switch-entry=%s\r\n"
+                   "Pragma: no-cache,rate)1.000000,stream-time=%u"
                    "Connection: Close\r\n\r\n",
-                   host, port, mmsh->request_seq++, mms->stream_num, stream_selection);
+                   host, port, mmsh->request_seq++, mms->stream_num, stream_selection, timestamp);
     av_freep(&stream_selection);
     if (err < 0) {
         av_log(NULL, AV_LOG_ERROR, "Build play request failed!\n");
@@ -311,6 +313,11 @@ fail:
     mmsh_close(h);
     av_dlog(NULL, "Connection failed with error %d\n", err);
     return err;
+}
+
+static int mmsh_open(URLContext *h, const char *uri, int flags)
+{
+    return mmsh_open_internal(h, uri, flags, 0, 0);
 }
 
 static int handle_chunk_type(MMSHContext *mmsh)
@@ -359,11 +366,45 @@ static int mmsh_read(URLContext *h, uint8_t *buf, int size)
     return res;
 }
 
+static int64_t mmsh_read_seek(URLContext *h, int stream_index,
+                        int64_t timestamp, int flags)
+{
+    MMSHContext *mmsh = h->priv_data;
+    MMSContext *mms   = &mmsh->mms;
+    int ret;
+
+    ret= mmsh_open_internal(h, mmsh->location, 0, FFMAX(timestamp, 0), 0);
+
+    if(ret>=0){
+        if (mms->mms_hd)
+            url_close(mms->mms_hd);
+        av_freep(&mms->streams);
+        av_freep(&mms->asf_header);
+        av_free(mmsh);
+        mmsh = h->priv_data;
+        mms   = &mmsh->mms;
+        mms->asf_header_read_size= mms->asf_header_size;
+    }else
+        h->priv_data= mmsh;
+    return ret;
+}
+
+static int64_t mmsh_seek(URLContext *h, int64_t pos, int whence)
+{
+    MMSHContext *mmsh = h->priv_data;
+    MMSContext *mms   = &mmsh->mms;
+
+    if(pos == 0 && whence == SEEK_CUR)
+        return mms->asf_header_read_size + mms->remaining_in_len + mmsh->chunk_seq * mms->asf_packet_len;
+    return AVERROR(ENOSYS);
+}
+
 URLProtocol ff_mmsh_protocol = {
     .name      = "mmsh",
     .url_open  = mmsh_open,
     .url_read  = mmsh_read,
     .url_write = NULL,
-    .url_seek  = NULL,
+    .url_seek  = mmsh_seek,
     .url_close = mmsh_close,
+    .url_read_seek  = mmsh_read_seek,
 };

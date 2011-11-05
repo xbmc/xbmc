@@ -538,4 +538,9 @@
       <back>PreviousMenu</back>
     </remote>
   </MyTVSettings>
+  <AddonSettings>
+    <remote>
+      <clear>Delete</clear>
+    </remote>
+  </AddonSettings>
 </keymap>

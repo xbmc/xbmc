@@ -523,4 +523,9 @@
       <i>Back</i>
     </keyboard>
   </AddonInformation>
+  <AddonSettings>
+    <keyboard>
+      <delete>Delete</delete>
+    </keyboard>
+  </AddonSettings>
 </keymap>
