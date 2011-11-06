@@ -2280,7 +2280,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     StringUtils::SplitString( strPath, "\\", directories );
   
   // if it's inside a cdX dir, add parent path
-  if (directories[directories.size()-2].size() == 3 && directories[directories.size()-2].Left(2).Equals("cd")) // SplitString returns empty token as last item, hence size-2
+  if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && directories[directories.size()-2].Left(2).Equals("cd")) // SplitString returns empty token as last item, hence size-2
   {
     CStdString strPath2;
     URIUtils::GetParentPath(strPath,strPath2);
