@@ -119,6 +119,11 @@ JSONRPC_STATUS CInputOperations::ContextMenu(const CStdString &method, ITranspor
   return sendAction(ACTION_CONTEXT_MENU);
 }
 
+JSONRPC_STATUS CInputOperations::Info(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return sendAction(ACTION_SHOW_INFO);
+}
+
 JSONRPC_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return activateWindow(WINDOW_HOME);

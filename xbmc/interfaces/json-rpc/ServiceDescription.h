@@ -1977,6 +1977,14 @@ namespace JSONRPC
       "\"params\": [],"
       "\"returns\": \"string\""
     "}",
+    "\"Input.Info\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Shows the information dialog\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
     "\"Input.Home\": {"
       "\"type\": \"method\","
       "\"description\": \"Goes to home window in GUI\","
