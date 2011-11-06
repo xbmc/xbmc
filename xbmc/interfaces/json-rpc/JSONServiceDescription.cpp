@@ -179,6 +179,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "Input.Up",                                     CInputOperations::Up },
   { "Input.Select",                                 CInputOperations::Select },
   { "Input.Back",                                   CInputOperations::Back },
+  { "Input.ContextMenu",                            CInputOperations::ContextMenu },
   { "Input.Home",                                   CInputOperations::Home },
 
 // Application operations

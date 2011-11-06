@@ -114,6 +114,11 @@ JSONRPC_STATUS CInputOperations::Back(const CStdString &method, ITransportLayer 
   return sendKey(XBMCVK_BACK);
 }
 
+JSONRPC_STATUS CInputOperations::ContextMenu(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  return sendAction(ACTION_CONTEXT_MENU);
+}
+
 JSONRPC_STATUS CInputOperations::Home(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   return activateWindow(WINDOW_HOME);

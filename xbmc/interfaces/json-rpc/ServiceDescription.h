@@ -1969,6 +1969,14 @@ namespace JSONRPC
       "\"params\": [],"
       "\"returns\": \"string\""
     "}",
+    "\"Input.ContextMenu\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Shows the context menu\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"Navigate\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
+    "}",
     "\"Input.Home\": {"
       "\"type\": \"method\","
       "\"description\": \"Goes to home window in GUI\","
