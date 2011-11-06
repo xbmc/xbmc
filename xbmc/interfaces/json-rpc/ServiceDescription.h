@@ -742,7 +742,7 @@ namespace JSONRPC
     "}",
     "\"GUI.Property.Name\": {"
       "\"type\": \"string\","
-      "\"enum\": [ \"currentwindow\", \"currentcontrol\", \"skin\" ]"
+      "\"enum\": [ \"currentwindow\", \"currentcontrol\", \"skin\", \"fullscreen\" ]"
     "}",
     "\"GUI.Property.Value\": {"
       "\"type\": \"object\","
@@ -763,7 +763,8 @@ namespace JSONRPC
             "\"id\": { \"type\": \"string\", \"required\": true, \"minLength\": 1 },"
             "\"name\": { \"type\": \"string\" }"
           "}"
-        "}"
+        "},"
+        "\"fullscreen\": { \"type\": \"boolean\" }"
       "}"
     "}",
     "\"System.Property.Name\": {"

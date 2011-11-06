@@ -20,6 +20,7 @@
  */
 
 #include "GUIOperations.h"
+#include "Application.h"
 #include "GUIInfoManager.h"
 #include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
@@ -88,6 +89,8 @@ JSONRPC_STATUS CGUIOperations::GetPropertyValue(const CStdString &property, CVar
     if (addon.get())
       result["name"] = addon->Name();
   }
+  else if (property.Equals("fullscreen"))
+    result = g_application.IsFullScreen();
   else
     return InvalidParams;
 
