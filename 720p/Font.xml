@@ -162,7 +162,7 @@
 			<name>MediumSmallDefaultCapsFont</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Regular</variant>
-			<size>18</size>
+			<size>20</size>
 		</font>
 		<font>
 			<name>DefaultFont</name>
@@ -255,7 +255,7 @@
 			<name>HomeScreenUnselectedItems</name>
 			<filename>HelveticaNeue</filename>
 			<variant>Condensed Bold</variant>
-			<size>22</size>
+			<size>24</size>
 		</font>
 		<!-- InfoList titles -->
 		<font>
@@ -513,7 +513,7 @@
 		<font>
 			<name>MediumSmallDefaultCapsFont</name>
 			<filename>Arial.ttf</filename>
-			<size>18</size>
+			<size>19</size>
 		</font>
 		<font>
 			<name>DefaultFont</name>
@@ -584,7 +584,7 @@
 		<font>
 			<name>HomeScreenUnselectedItems</name>
 			<filename>Arial.ttf</filename>
-			<size>28</size>
+			<size>29</size>
 		</font>
 		<font>
 			<name>MediumLargeTitleCapsFont</name>
