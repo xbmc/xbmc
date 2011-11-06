@@ -853,6 +853,7 @@
 							<posx>28</posx>
 							<width>238</width>
 							<height>360</height>
+							<fadetime>200</fadetime>
 							<texture background="true" diffuse="bigPosterMask.png">$INFO[ListItem.Thumb]</texture>
 							<aspectratio scalediffuse="false" align="center" aligny="top">scale</aspectratio>
 						</control>

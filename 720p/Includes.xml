@@ -911,7 +911,8 @@
 					<description>Fanart background (from directory)</description>
 					<include>FullScreenBGImage</include>
 					<visible>IsEmpty(ListItem.Property(fanart_image)) + !IsEmpty(FanArt.Image)</visible>
-					<info>FanArt.Image</info>
+					<info background="true">FanArt.Image</info>
+					<fadetime>200</fadetime>
 					<include>BackgroundFade</include>
 				</control>
 			</control>
