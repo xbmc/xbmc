@@ -20,11 +20,35 @@
  */
 
 #include "GUIOperations.h"
+#include "GUIInfoManager.h"
+#include "guilib/GUIWindowManager.h"
 #include "dialogs/GUIDialogKaiToast.h"
+#include "addons/AddonManager.h"
+#include "settings/GUISettings.h"
 #include "utils/Variant.h"
 
 using namespace std;
 using namespace JSONRPC;
+using namespace ADDON;
+
+JSONRPC_STATUS CGUIOperations::GetProperties(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  CVariant properties = CVariant(CVariant::VariantTypeObject);
+  for (unsigned int index = 0; index < parameterObject["properties"].size(); index++)
+  {
+    CStdString propertyName = parameterObject["properties"][index].asString();
+    CVariant property;
+    JSONRPC_STATUS ret;
+    if ((ret = GetPropertyValue(propertyName, property)) != OK)
+      return ret;
+
+    properties[propertyName] = property;
+  }
+
+  result = properties;
+
+  return OK;
+}
 
 JSONRPC_STATUS CGUIOperations::ShowNotification(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
@@ -43,4 +67,29 @@ JSONRPC_STATUS CGUIOperations::ShowNotification(const CStdString &method, ITrans
     CGUIDialogKaiToast::QueueNotification(image, title, message, displaytime);
 
   return ACK;
+}
+
+JSONRPC_STATUS CGUIOperations::GetPropertyValue(const CStdString &property, CVariant &result)
+{
+  if (property.Equals("currentwindow"))
+  {
+    result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentWindow"));
+    result["id"] = g_windowManager.GetFocusedWindow();
+  }
+  else if (property.Equals("currentcontrol"))
+    result["label"] = g_infoManager.GetLabel(g_infoManager.TranslateString("System.CurrentControl"));
+  else if (property.Equals("skin"))
+  {
+    CStdString skinId = g_guiSettings.GetString("lookandfeel.skin");
+    AddonPtr addon;
+    CAddonMgr::Get().GetAddon(skinId, addon, ADDON_SKIN);
+
+    result["id"] = skinId;
+    if (addon.get())
+      result["name"] = addon->Name();
+  }
+  else
+    return InvalidParams;
+
+  return OK;
 }

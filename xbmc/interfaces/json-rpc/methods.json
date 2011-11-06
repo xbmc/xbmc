@@ -1121,6 +1121,16 @@
     ],
     "returns":  { "$ref": "System.Property.Value", "required": true }
   },
+  "GUI.GetProperties": {
+    "type": "method",
+    "description": "Retrieves the values of the given properties",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [
+      { "name": "properties", "type": "array", "uniqueItems": true, "required": true, "items": { "$ref": "GUI.Property.Name" } }
+    ],
+    "returns":  { "$ref": "GUI.Property.Value", "required": true }
+  },
   "System.GetProperties": {
     "type": "method",
     "description": "Retrieves the values of the given properties",

@@ -712,6 +712,32 @@
       }
     }
   },
+  "GUI.Property.Name": {
+    "type": "string",
+    "enum": [ "currentwindow", "currentcontrol", "skin" ]
+  },
+  "GUI.Property.Value": {
+    "type": "object",
+    "properties": {
+      "currentwindow": { "type": "object",
+        "properties": {
+          "id": { "type": "integer", "required": true },
+          "label": { "type": "string", "required": true }
+        }
+      },
+      "currentcontrol": { "type": "object",
+        "properties": {
+          "label": { "type": "string", "required": true }
+        }
+      },
+      "skin": { "type": "object",
+        "properties": {
+          "id": { "type": "string", "required": true, "minLength": 1 },
+          "name": { "type": "string" }
+        }
+      }
+    }
+  },
   "System.Property.Name": {
     "type": "string",
     "enum": [ "canshutdown", "cansuspend", "canhibernate", "canreboot" ]

@@ -167,6 +167,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
 
 // GUI operations
+  { "GUI.GetProperties",                            CGUIOperations::GetProperties },
   { "GUI.ShowNotification",                         CGUIOperations::ShowNotification },
 
 // System operations
