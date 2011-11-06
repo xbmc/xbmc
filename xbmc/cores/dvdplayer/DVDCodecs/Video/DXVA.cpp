@@ -376,8 +376,8 @@ do { \
 
 static bool CheckH264L41(AVCodecContext *avctx)
 {
-    unsigned widthmbs  = (avctx->width + 15) / 16;  // width in macroblocks
-    unsigned heightmbs = (avctx->height + 15) / 16; // height in macroblocks
+    unsigned widthmbs  = (avctx->coded_width + 15) / 16;  // width in macroblocks
+    unsigned heightmbs = (avctx->coded_height + 15) / 16; // height in macroblocks
     unsigned maxdpbmbs = 32768;                     // Decoded Picture Buffer (DPB) capacity in macroblocks for L4.1
 
     return (avctx->refs * widthmbs * heightmbs <= maxdpbmbs);
@@ -405,7 +405,7 @@ static bool HasVP3WidthBug(AVCodecContext *avctx)
   D3DADAPTER_IDENTIFIER9 AIdentifier = g_Windowing.GetAIdentifier();
 
   if(AIdentifier.VendorId == PCIV_nVidia
-  && !CDVDCodecUtils::IsVP3CompatibleWidth(avctx->width))
+  && !CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
   {
     // Find the card in a known list of problematic VP3 hardware
     for (unsigned idx = 0; VP3DeviceID[idx] != 0; idx++)
@@ -424,7 +424,7 @@ static bool CheckCompatibility(AVCodecContext *avctx)
   // Macroblock width incompatibility
   if (HasVP3WidthBug(avctx))
   {
-    CLog::Log(LOGWARNING,"DXVA - width %i is not supported with nVidia VP3 hardware. DXVA will not be used", avctx->width);
+    CLog::Log(LOGWARNING,"DXVA - width %i is not supported with nVidia VP3 hardware. DXVA will not be used", avctx->coded_width);
     return false;
   }
 
@@ -506,8 +506,8 @@ bool CDecoder::Open(AVCodecContext *avctx, enum PixelFormat fmt, unsigned int su
     return false;
   }
 
-  m_format.SampleWidth  = avctx->width;
-  m_format.SampleHeight = avctx->height;
+  m_format.SampleWidth  = avctx->coded_width;
+  m_format.SampleHeight = avctx->coded_height;
   m_format.SampleFormat.SampleFormat           = DXVA2_SampleProgressiveFrame;
   m_format.SampleFormat.VideoLighting          = DXVA2_VideoLighting_dim;
 
@@ -875,8 +875,8 @@ void CDecoder::RelBuffer(AVCodecContext *avctx, AVFrame *pic)
 int CDecoder::GetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   CSingleLock lock(m_section);
-  if(avctx->width  != m_format.SampleWidth
-  || avctx->height != m_format.SampleHeight)
+  if(avctx->coded_width  != m_format.SampleWidth
+  || avctx->coded_height != m_format.SampleHeight)
   {
     Close();
     if(!Open(avctx, avctx->pix_fmt, m_shared))
