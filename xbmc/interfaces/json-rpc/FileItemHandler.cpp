@@ -84,6 +84,12 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
 
         continue;
       }
+
+      if (field == "lastmodified" && item->m_dateTime.IsValid())
+      {
+        result[field] = item->m_dateTime.GetAsLocalizedDateTime();
+        continue;
+      }
     }
 
     if (serialization.isMember(field) && !result.isMember(field))
@@ -213,6 +219,8 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
       if (!object.isMember("thumbnail"))
         object["thumbnail"] = "";
     }
+
+    FillDetails(item.get(), item, validFields, object);
 
     if (item->HasVideoInfoTag())
       FillDetails(item->GetVideoInfoTag(), item, validFields, object);

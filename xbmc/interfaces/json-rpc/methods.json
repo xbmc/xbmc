@@ -561,7 +561,7 @@
     "params": [
       { "name": "directory", "type": "string", "required": true },
       { "name": "media", "$ref": "Files.Media", "default": "files" },
-      { "name": "properties", "$ref": "List.Fields.All" },
+      { "name": "properties", "$ref": "List.Fields.Files" },
       { "name": "sort", "$ref": "List.Sort" }
     ],
     "returns": {
