@@ -819,7 +819,8 @@ namespace JSONRPC
           "\"UpdateData\": { \"type\": \"boolean\", \"required\": true },"
           "\"RemoveData\": { \"type\": \"boolean\", \"required\": true },"
           "\"Navigate\": { \"type\": \"boolean\", \"required\": true },"
-          "\"WriteFile\": { \"type\": \"boolean\", \"required\": true }"
+          "\"WriteFile\": { \"type\": \"boolean\", \"required\": true },"
+          "\"ControlSystem\": { \"type\": \"boolean\", \"required\": true }"
         "}"
       "}"
     "}",
@@ -1888,6 +1889,14 @@ namespace JSONRPC
         "{ \"name\": \"properties\", \"type\": \"array\", \"uniqueItems\": true, \"required\": true, \"items\": { \"$ref\": \"System.Property.Name\" } }"
       "],"
       "\"returns\":  { \"$ref\": \"System.Property.Value\", \"required\": true }"
+    "}",
+    "\"System.EjectOpticalDrive\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Ejects or closes the optical disc drive (if available)\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ControlSystem\","
+      "\"params\": [ ],"
+      "\"returns\":  \"string\""
     "}",
     "\"System.Shutdown\": {"
       "\"type\": \"method\","

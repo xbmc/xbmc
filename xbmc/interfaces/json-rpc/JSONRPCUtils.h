@@ -69,12 +69,13 @@ namespace JSONRPC
     UpdateData      =  0x10,
     RemoveData      =  0x20,
     Navigate        =  0x40,
-    WriteFile       =  0x80
+    WriteFile       =  0x80,
+    ControlSystem   = 0x100
   };
 
-  const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
+  const int OPERATION_PERMISSION_ALL = (ReadData | ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile | ControlSystem);
 
-  const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile);
+  const int OPERATION_PERMISSION_NOTIFICATION = (ControlPlayback | ControlNotify | ControlPower | UpdateData | RemoveData | Navigate | WriteFile | ControlSystem);
 
   /*!
     \brief Returns a string representation for the 
@@ -102,6 +103,8 @@ namespace JSONRPC
       return "Navigate";
     case WriteFile:
       return "WriteFile";
+    case ControlSystem:
+      return "ControlSystem";
     default:
       return "Unknown";
     }
@@ -129,6 +132,8 @@ namespace JSONRPC
       return Navigate;
     if (permission.compare("WriteFile") == 0)
       return WriteFile;
+    if (permission.compare("ControlSystem") == 0)
+      return ControlSystem;
 
     return ReadData;
   }

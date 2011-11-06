@@ -167,6 +167,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 
 // System operations
   { "System.GetProperties",                         CSystemOperations::GetProperties },
+  { "System.EjectOpticalDrive",                     CSystemOperations::EjectOpticalDrive },
   { "System.Shutdown",                              CSystemOperations::Shutdown },
   { "System.Suspend",                               CSystemOperations::Suspend },
   { "System.Hibernate",                             CSystemOperations::Hibernate },
