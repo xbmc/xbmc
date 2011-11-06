@@ -1171,6 +1171,20 @@
     ],
     "returns":  { "$ref": "GUI.Property.Value", "required": true }
   },
+  "GUI.SetFullscreen": {
+    "type": "method",
+    "description": "Toggle fullscreen/GUI",
+    "transport": "Response",
+    "permission": "ControlGUI",
+    "params": [
+      { "name": "fullscreen", "required": true, "type": [
+          { "type": "boolean", "required": true },
+          { "type": "string", "enum": [ "toggle" ], "required": true }
+        ]
+      }
+    ],
+    "returns": { "type": "boolean", "description": "Fullscreen state" }
+  },
   "System.GetProperties": {
     "type": "method",
     "description": "Retrieves the values of the given properties",

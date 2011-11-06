@@ -171,6 +171,7 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
 // GUI operations
   { "GUI.GetProperties",                            CGUIOperations::GetProperties },
   { "GUI.ShowNotification",                         CGUIOperations::ShowNotification },
+  { "GUI.SetFullscreen",                            CGUIOperations::SetFullscreen },
 
 // System operations
   { "System.GetProperties",                         CSystemOperations::GetProperties },

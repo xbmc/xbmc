@@ -70,6 +70,19 @@ JSONRPC_STATUS CGUIOperations::ShowNotification(const CStdString &method, ITrans
   return ACK;
 }
 
+JSONRPC_STATUS CGUIOperations::SetFullscreen(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  if ((parameterObject["fullscreen"].isString() &&
+       parameterObject["fullscreen"].asString().compare("toggle") == 0) ||
+      (parameterObject["fullscreen"].isBoolean() &&
+       parameterObject["fullscreen"].asBoolean() != g_application.IsFullScreen()))
+    g_application.getApplicationMessenger().SendAction(CAction(ACTION_SHOW_GUI));
+  else if (!parameterObject["fullscreen"].isBoolean() && !parameterObject["fullscreen"].isString())
+    return InvalidParams;
+
+  return GetPropertyValue("fullscreen", result);
+}
+
 JSONRPC_STATUS CGUIOperations::GetPropertyValue(const CStdString &property, CVariant &result)
 {
   if (property.Equals("currentwindow"))
