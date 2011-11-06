@@ -49,7 +49,7 @@ public:
 
   virtual bool          Delete(const CURL& url);
   virtual bool          Rename(const CURL& url, const CURL& urlnew);
-  virtual bool          Exists(const CURL& url)                        { return false; }
+  virtual bool          Exists(const CURL& url);
 
   virtual ILiveTVInterface* GetLiveTV() {return (ILiveTVInterface*)this;}
 
