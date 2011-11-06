@@ -185,8 +185,6 @@ void CPVRRecording::UpdatePath(void)
   else
     m_strFileNameAndPath.Format("pvr://recordings/%s/%s.pvr",
         strDatetime.c_str(), strTitle.c_str());
-  
-  CLog::Log(LOGINFO, "UpdatePath: '%s' [%s]", m_strFileNameAndPath.c_str(), m_strPlotOutline.c_str());
 }
 
 const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
