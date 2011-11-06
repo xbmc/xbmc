@@ -119,28 +119,37 @@ void CNfsConnection::clearMembers()
     m_writeChunkSize = 0;
     m_readChunkSize = 0;  
     m_pNfsContext = NULL;
-    m_KeepAliveTimeouts.clear();    
+    m_KeepAliveTimeouts.clear();
 }
 
-bool CNfsConnection::resetContext()
+void CNfsConnection::destroyOpenContexts()
+{
+  for( tOpenContextMap::iterator it = m_openContextMap.begin();it!=m_openContextMap.end();it++)
+  {
+    m_pLibNfs->nfs_destroy_context(it->first);
+  }
+  m_openContextMap.clear();
+}
+
+bool CNfsConnection::getNewContext()
 {
   bool ret = HandleDyLoad(); 
     
   if(ret)
   {
-    if(m_pNfsContext)
-    {
-      m_pLibNfs->nfs_destroy_context(m_pNfsContext);
-    }
-
     clearMembers();  
     m_pNfsContext = m_pLibNfs->nfs_init_context();
     
     if (!m_pNfsContext) 
     {
-      CLog::Log(LOGERROR,"NFS: Error initcontext in resetContext.");
+      CLog::Log(LOGERROR,"NFS: Error initcontext in getNewContext.");
       ret = false;
     }
+    else 
+    {
+      m_openContextMap[m_pNfsContext] = 0; //add context to list of all contexts      
+    }
+
   }
   return ret;
 }
@@ -149,7 +158,8 @@ bool CNfsConnection::splitUrlIntoExportAndPath(const CURL& url, CStdString &expo
 {
     bool ret = false;
     
-    if(m_exportList.empty())
+    //refresh exportlist if empty or hostname change
+    if(m_exportList.empty() || !url.GetHostName().Equals(m_hostName,false))
     {
       m_exportList = GetExportList(url);
     }
@@ -198,7 +208,7 @@ bool CNfsConnection::Connect(const CURL& url, CStdString &relativePath)
   
   if(ret && (!exportPath.Equals(m_exportPath,true) || !url.GetHostName().Equals(m_hostName,false)) )
   {
-    if(!resetContext())//we need a new context because sharename or hostname has changed - old context will be freed
+    if(!getNewContext())//we need a new context because sharename or hostname has changed
     {
       return false;
     }
@@ -227,7 +237,8 @@ void CNfsConnection::Deinit()
 {
   if(m_pNfsContext && m_pLibNfs->IsLoaded())
   {
-    m_pLibNfs->nfs_destroy_context(m_pNfsContext);
+    destroyOpenContexts();
+    m_pNfsContext = NULL;
     m_pLibNfs->Unload();    
   }        
   clearMembers();
@@ -368,6 +379,7 @@ CNfsConnection gNfsConnection;
 CFileNFS::CFileNFS()
 : m_fileSize(0)
 , m_pFileHandle(NULL)
+, m_pNfsContext(NULL)
 {
   gNfsConnection.AddActiveConnection();
 }
@@ -420,11 +432,13 @@ bool CFileNFS::Open(const CURL& url)
   if(!gNfsConnection.Connect(url, filename))
     return false;
   
-  ret = gNfsConnection.GetImpl()->nfs_open(gNfsConnection.GetNfsContext(), filename.c_str(), O_RDONLY, &m_pFileHandle);
+  m_pNfsContext = gNfsConnection.GetNfsContext(); 
+  
+  ret = gNfsConnection.GetImpl()->nfs_open(m_pNfsContext, filename.c_str(), O_RDONLY, &m_pFileHandle);
   
   if (ret != 0) 
   {
-    CLog::Log(LOGINFO, "CFileNFS::Open: Unable to open file : '%s'  error : '%s'", url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::Log(LOGINFO, "CFileNFS::Open: Unable to open file : '%s'  error : '%s'", url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
     return false;
   } 
   
@@ -503,9 +517,9 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
   int numberOfBytesRead = 0;
   CSingleLock lock(gNfsConnection);
   
-  if (m_pFileHandle == NULL || gNfsConnection.GetNfsContext()==NULL ) return 0;
+  if (m_pFileHandle == NULL || m_pNfsContext == NULL ) return 0;
 
-  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(gNfsConnection.GetNfsContext(), m_pFileHandle, uiBufSize, (char *)lpBuf);  
+  numberOfBytesRead = gNfsConnection.GetImpl()->nfs_read(m_pNfsContext, m_pFileHandle, uiBufSize, (char *)lpBuf);  
 
   lock.Leave();//no need to keep the connection lock after that
   
@@ -514,7 +528,7 @@ unsigned int CFileNFS::Read(void *lpBuf, int64_t uiBufSize)
   //something went wrong ...
   if (numberOfBytesRead < 0) 
   {
-    CLog::Log(LOGERROR, "%s - Error( %d, %s )", __FUNCTION__, numberOfBytesRead, gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::Log(LOGERROR, "%s - Error( %d, %s )", __FUNCTION__, numberOfBytesRead, gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
     return 0;
   }
   return (unsigned int)numberOfBytesRead;
@@ -526,13 +540,13 @@ int64_t CFileNFS::Seek(int64_t iFilePosition, int iWhence)
   off_t offset = 0;
 
   CSingleLock lock(gNfsConnection);  
-  if (m_pFileHandle == NULL || gNfsConnection.GetNfsContext()==NULL) return -1;
+  if (m_pFileHandle == NULL || m_pNfsContext == NULL) return -1;
   
  
-  ret = (int)gNfsConnection.GetImpl()->nfs_lseek(gNfsConnection.GetNfsContext(), m_pFileHandle, iFilePosition, iWhence, &offset);
+  ret = (int)gNfsConnection.GetImpl()->nfs_lseek(m_pNfsContext, m_pFileHandle, iFilePosition, iWhence, &offset);
   if (ret < 0) 
   {
-    CLog::Log(LOGERROR, "%s - Error( seekpos: %"PRId64", whence: %i, fsize: %"PRId64", %s)", __FUNCTION__, iFilePosition, iWhence, m_fileSize, gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+    CLog::Log(LOGERROR, "%s - Error( seekpos: %"PRId64", whence: %i, fsize: %"PRId64", %s)", __FUNCTION__, iFilePosition, iWhence, m_fileSize, gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
     return -1;
   }
   return (int64_t)offset;
@@ -542,18 +556,19 @@ void CFileNFS::Close()
 {
   CSingleLock lock(gNfsConnection);
   
-  if (m_pFileHandle != NULL && gNfsConnection.GetNfsContext()!=NULL)
+  if (m_pFileHandle != NULL && m_pNfsContext != NULL)
   {
     int ret = 0;
     CLog::Log(LOGDEBUG,"CFileNFS::Close closing file %s", m_url.GetFileName().c_str());
-    ret = gNfsConnection.GetImpl()->nfs_close(gNfsConnection.GetNfsContext(), m_pFileHandle);
+    ret = gNfsConnection.GetImpl()->nfs_close(m_pNfsContext, m_pFileHandle);
     gNfsConnection.removeFromKeepAliveList(m_pFileHandle);
         
 	  if (ret < 0) 
     {
-      CLog::Log(LOGERROR, "Failed to close(%s) - %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));
+      CLog::Log(LOGERROR, "Failed to close(%s) - %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));
     }
-    m_pFileHandle=NULL;
+    m_pFileHandle = NULL;
+    m_pNfsContext = NULL;    
     m_fileSize = 0;
   }
 }
@@ -570,7 +585,7 @@ int CFileNFS::Write(const void* lpBuf, int64_t uiBufSize)
   
   CSingleLock lock(gNfsConnection);
   
-  if (m_pFileHandle == NULL || gNfsConnection.GetNfsContext() == NULL) return -1;
+  if (m_pFileHandle == NULL || m_pNfsContext == NULL) return -1;
   
   //write as long as some bytes are left to be written
   while( leftBytes )
@@ -581,7 +596,7 @@ int CFileNFS::Write(const void* lpBuf, int64_t uiBufSize)
       chunkSize = leftBytes;//write last chunk with correct size
     }
     //write chunk
-    writtenBytes = gNfsConnection.GetImpl()->nfs_write(gNfsConnection.GetNfsContext(), 
+    writtenBytes = gNfsConnection.GetImpl()->nfs_write(m_pNfsContext,
                                   m_pFileHandle, 
                                   (size_t)chunkSize, 
                                   (char *)lpBuf + numberOfBytesWritten);
@@ -593,7 +608,7 @@ int CFileNFS::Write(const void* lpBuf, int64_t uiBufSize)
     //danger - something went wrong
     if (writtenBytes < 0) 
     {
-      CLog::Log(LOGERROR, "Failed to pwrite(%s) %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(gNfsConnection.GetNfsContext()));        
+      CLog::Log(LOGERROR, "Failed to pwrite(%s) %s\n", m_url.GetFileName().c_str(), gNfsConnection.GetImpl()->nfs_get_error(m_pNfsContext));        
       break;
     }     
   }
@@ -656,19 +671,21 @@ bool CFileNFS::OpenForWrite(const CURL& url, bool bOverWrite)
   if(!gNfsConnection.Connect(url,filename))
     return false;
   
+  m_pNfsContext = gNfsConnection.GetNfsContext();
+  
   if (bOverWrite)
   {
     CLog::Log(LOGWARNING, "FileNFS::OpenForWrite() called with overwriting enabled! - %s", filename.c_str());
     //create file with proper permissions
-    ret = gNfsConnection.GetImpl()->nfs_creat(gNfsConnection.GetNfsContext(), filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);    
+    ret = gNfsConnection.GetImpl()->nfs_creat(m_pNfsContext, filename.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH, &m_pFileHandle);    
     //if file was created the file handle isn't valid ... so close it and open later
     if(ret == 0)
     {
-      gNfsConnection.GetImpl()->nfs_close(gNfsConnection.GetNfsContext(),m_pFileHandle);
+      gNfsConnection.GetImpl()->nfs_close(m_pNfsContext,m_pFileHandle);
     }
   }
 
-  ret = gNfsConnection.GetImpl()->nfs_open(gNfsConnection.GetNfsContext(), filename.c_str(), O_RDWR, &m_pFileHandle);
+  ret = gNfsConnection.GetImpl()->nfs_open(m_pNfsContext, filename.c_str(), O_RDWR, &m_pFileHandle);
   
   if (ret || m_pFileHandle == NULL)
   {

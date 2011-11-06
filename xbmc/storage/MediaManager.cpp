@@ -310,7 +310,7 @@ bool CMediaManager::IsDiscInDrive(const CStdString& devicePath)
   else
     return false;
 #else
-  if(URIUtils::IsDVD(devicePath))
+  if(URIUtils::IsDVD(devicePath) || devicePath.IsEmpty())
     return MEDIA_DETECT::CDetectDVDMedia::IsDiscInDrive();   // TODO: switch all ports to use auto sources
   else
     return true; // Assume other paths to be mounted already

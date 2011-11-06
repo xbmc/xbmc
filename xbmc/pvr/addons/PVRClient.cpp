@@ -89,9 +89,8 @@ void CPVRClient::ResetAddonCapabilities(void)
   m_addonCapabilities.bHandlesDemuxing         = false;
 }
 
-bool CPVRClient::Create(int iClientId)
+void CPVRClient::Create(int iClientId)
 {
-  bool bReturn(false);
   CLog::Log(LOGDEBUG, "PVR - %s - creating PVR add-on instance '%s'", __FUNCTION__, Name().c_str());
 
   /* initialise members */
@@ -106,14 +105,11 @@ bool CPVRClient::Create(int iClientId)
   /* initialise the add-on */
   if (CAddonDll<DllPVRClient, PVRClient, PVR_PROPERTIES>::Create())
   {
+    SetAddonCapabilities();
     m_strHostName = m_pStruct->GetConnectionString();
     m_bReadyToUse = true;
-    bReturn       = true;
-    SetAddonCapabilities();
   }
   /* don't log failed inits here because it will spam the log file as this is called in a loop */
-
-  return bReturn;
 }
 
 void CPVRClient::Destroy(void)
@@ -135,11 +131,11 @@ void CPVRClient::Destroy(void)
   }
 }
 
-bool CPVRClient::ReCreate(void)
+void CPVRClient::ReCreate(void)
 {
   int clientID = m_pInfo->iClientId;
   Destroy();
-  return Create(clientID);
+  Create(clientID);
 }
 
 bool CPVRClient::ReadyToUse(void) const

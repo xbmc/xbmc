@@ -30,11 +30,6 @@ cd ../BasicUsageEnvironment
 cat Makefile.head ../config.$1 Makefile.tail > Makefile
 chmod a-w Makefile
 
-cd ../testProgs
-/bin/rm -f Makefile
-cat Makefile.head ../config.$1 Makefile.tail > Makefile
-chmod a-w Makefile
-
 cd ../mediaServer
 /bin/rm -f Makefile
 cat Makefile.head ../config.$1 Makefile.tail > Makefile

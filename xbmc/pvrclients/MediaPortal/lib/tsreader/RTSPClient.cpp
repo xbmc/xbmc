@@ -48,7 +48,7 @@ CRTSPClient::CRTSPClient()
   m_session=NULL;
   m_ourClient=NULL;
   m_bPaused=false;
-  m_outFileName[0] = NULL;
+  m_outFileName[0] = '\0';
   m_buffer=NULL;
 }
 
@@ -518,10 +518,13 @@ void CRTSPClient::FillBuffer(unsigned long byteCount)
 
 void CRTSPClient::ThreadProc()
 {
-  //HRESULT hr = S_OK;
   m_BufferThreadActive = TRUE;
   m_bRunning=true;
+#ifdef TARGET_WINDOWS
   this->SetPriority(THREAD_PRIORITY_ABOVE_NORMAL);
+#else
+#warning TODO: add setpriority for your OS
+#endif
   XBMC->Log(LOG_DEBUG, "CRTSPClient:: thread started: %d", (unsigned long) this->ThreadId());
   while (m_env!=NULL && !ThreadIsStopping(0))
   {

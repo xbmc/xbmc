@@ -666,6 +666,7 @@ void CFileItem::Archive(CArchive& ar)
     SetInvalid();
   }
 }
+
 void CFileItem::Serialize(CVariant& value)
 {
   //CGUIListItem::Serialize(value["CGUIListItem"]);
@@ -687,6 +688,7 @@ void CFileItem::Serialize(CVariant& value)
   if (m_pictureInfoTag)
     (*m_pictureInfoTag).Serialize(value["pictureInfoTag"]);
 }
+
 bool CFileItem::Exists(bool bUseCache /* = true */) const
 {
   if (m_strPath.IsEmpty()
@@ -857,12 +859,12 @@ bool CFileItem::IsLastFM() const
   return URIUtils::IsLastFM(m_strPath);
 }
 
-bool CFileItem::IsInternetStream() const
+bool CFileItem::IsInternetStream(const bool bStrictCheck /* = false */) const
 {
   if (HasProperty("IsHTTPDirectory"))
     return false;
 
-  return URIUtils::IsInternetStream(m_strPath);
+  return URIUtils::IsInternetStream(m_strPath, bStrictCheck);
 }
 
 bool CFileItem::IsFileFolder() const
@@ -2318,8 +2320,7 @@ void CFileItemList::StackFolders()
   }
 
   // stack folders
-  int i = 0;
-  for (i = 0; i < Size(); ++i)
+  for (int i = 0; i < Size(); i++)
   {
     CFileItemPtr item = Get(i);
     // combined the folder checks

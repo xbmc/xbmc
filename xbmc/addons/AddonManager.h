@@ -22,6 +22,7 @@
 #include "Addon.h"
 #include "threads/CriticalSection.h"
 #include "utils/StdString.h"
+#include "utils/Observer.h"
 #include <vector>
 #include <map>
 #include <deque>
@@ -68,7 +69,7 @@ namespace ADDON
   * otherwise. Services the generic callbacks available
   * to all addon variants.
   */
-  class CAddonMgr
+  class CAddonMgr : public Observable
   {
   public:
     static CAddonMgr &Get();

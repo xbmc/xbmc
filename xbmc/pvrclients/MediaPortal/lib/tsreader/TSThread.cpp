@@ -31,7 +31,6 @@
 #ifdef TSREADER
 
 #include "TSThread.h"
-#include <process.h>
 
 TSThread::TSThread()
 {

@@ -116,7 +116,7 @@ cmyth_dbg(int level, char *fmt, ...)
 }
 
 void
-cmyth_set_dbg_msgcallback(void (*msgcb)(char *))
+cmyth_set_dbg_msgcallback(void (*msgcb)(int level,char *))
 {
 	cmyth_debug_ctx.msg_callback = msgcb;
 }

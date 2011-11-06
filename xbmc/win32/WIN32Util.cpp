@@ -1452,6 +1452,15 @@ void CWIN32Util::CropSource(CRect& src, CRect& dst, CRect target)
             / (dst.y2 - dst.y1);
     dst.y2  = target.y2;
   }
+  // Callers expect integer coordinates.
+  src.x1 = floor(src.x1);
+  src.y1 = floor(src.y1);
+  src.x2 = ceil(src.x2);
+  src.y2 = ceil(src.y2);
+  dst.x1 = floor(dst.x1);
+  dst.y1 = floor(dst.y1);
+  dst.x2 = ceil(dst.x2);
+  dst.y2 = ceil(dst.y2);
 }
 
 void CWinIdleTimer::StartZero()

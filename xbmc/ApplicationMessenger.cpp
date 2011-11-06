@@ -42,6 +42,7 @@
 #include "guilib/GUIDialog.h"
 #include "windowing/WindowingFactory.h"
 #include "GUIInfoManager.h"
+#include "utils/Splash.h"
 
 #include "powermanagement/PowerManager.h"
 
@@ -330,6 +331,13 @@ case TMSG_POWERDOWN:
           }
 
           delete list;
+        }
+        else if (pMsg->dwParam1 == PLAYLIST_MUSIC || pMsg->dwParam1 == PLAYLIST_VIDEO)
+        {
+          if (g_playlistPlayer.GetCurrentPlaylist() != pMsg->dwParam1)
+            g_playlistPlayer.SetCurrentPlaylist(pMsg->dwParam1);
+
+          PlayListPlayerPlay(pMsg->dwParam2);
         }
       }
       break;
@@ -759,6 +767,11 @@ case TMSG_POWERDOWN:
         CAction action((int)pMsg->dwParam1);
         g_application.ShowVolumeBar(&action);
       }
+    case TMSG_SPLASH_MESSAGE:
+      {
+        if (g_application.m_splash)
+          g_application.m_splash->Show(pMsg->strParam);
+      }
   }
 }
 
@@ -846,6 +859,15 @@ void CApplicationMessenger::MediaPlay(const CFileItemList &list, int song)
   tMsg.lpVoid = (void*)listcopy;
   tMsg.dwParam1 = song;
   tMsg.dwParam2 = 1;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::MediaPlay(int playlistid, int song /* = -1 */)
+{
+  ThreadMessage tMsg = {TMSG_MEDIA_PLAY};
+  tMsg.lpVoid = NULL;
+  tMsg.dwParam1 = playlistid;
+  tMsg.dwParam2 = song;
   SendMessage(tMsg, true);
 }
 
@@ -1183,4 +1205,16 @@ void CApplicationMessenger::ShowVolumeBar(bool up)
   ThreadMessage tMsg = {TMSG_VOLUME_SHOW};
   tMsg.dwParam1 = up ? ACTION_VOLUME_UP : ACTION_VOLUME_DOWN;
   SendMessage(tMsg, false);
+}
+
+void CApplicationMessenger::SetSplashMessage(const CStdString& message)
+{
+  ThreadMessage tMsg = {TMSG_SPLASH_MESSAGE};
+  tMsg.strParam = message;
+  SendMessage(tMsg, true);
+}
+
+void CApplicationMessenger::SetSplashMessage(int stringID)
+{
+  SetSplashMessage(g_localizeStrings.Get(stringID));
 }

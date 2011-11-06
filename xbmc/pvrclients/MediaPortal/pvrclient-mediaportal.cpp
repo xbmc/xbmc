@@ -494,7 +494,7 @@ PVR_ERROR cPVRClientMediaPortal::GetEpg(PVR_HANDLE handle, const PVR_CHANNEL &ch
   {
     if( result.length() != 0)
     {
-      memset(&broadcast, NULL, sizeof(EPG_TAG));
+      memset(&broadcast, 0, sizeof(EPG_TAG));
       epg.SetGenreMap(&m_genremap);
 
       Tokenize(result, lines, ",");
@@ -619,7 +619,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
   if( !SendCommand2(command.c_str(), code, lines) )
     return PVR_ERROR_SERVER_ERROR;
 
-  memset(&tag, NULL, sizeof(PVR_CHANNEL));
+  memset(&tag, 0, sizeof(PVR_CHANNEL));
 
   for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
   {
@@ -733,7 +733,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroups(PVR_HANDLE handle, bool bRadio
       return PVR_ERROR_SERVER_ERROR;
   }
 
-  memset(&tag, 0 , sizeof(PVR_CHANNEL_GROUP));
+  memset(&tag, 0, sizeof(PVR_CHANNEL_GROUP));
 
   for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
   {
@@ -792,7 +792,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannelGroupMembers(PVR_HANDLE handle, const
   if (!SendCommand2(command.c_str(), code, lines))
     return PVR_ERROR_SERVER_ERROR;
 
-  memset(&tag,0 , sizeof(PVR_CHANNEL_GROUP_MEMBER));
+  memset(&tag, 0, sizeof(PVR_CHANNEL_GROUP_MEMBER));
 
   for (vector<string>::iterator it = lines.begin(); it < lines.end(); it++)
   {
@@ -871,7 +871,7 @@ PVR_ERROR cPVRClientMediaPortal::GetRecordings(PVR_HANDLE handle)
 
   Tokenize(result, lines, ",");
 
-  memset(&tag, NULL, sizeof(PVR_RECORDING));
+  memset(&tag, 0, sizeof(PVR_RECORDING));
 
   for (vector<string>::iterator it = lines.begin(); it != lines.end(); it++)
   {

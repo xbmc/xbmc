@@ -86,6 +86,11 @@ echo "else"                                       >> $DIRNAME/$PACKAGE/DEBIAN/po
 echo "  ln -sf /Applications/XBMC.frappliance /Applications/AppleTV.app/Appliances/XBMC.frappliance" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "  killall AppleTV"                          >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 echo "fi"                                         >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "FILE=/var/mobile/Media/Photos/seas0nTV.png" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "if [ -f \$FILE ]; then"                     >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "   echo \"File \$FILE exists. removing...\"" >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "   rm \$FILE"                               >> $DIRNAME/$PACKAGE/DEBIAN/postinst
+echo "fi"                                         >> $DIRNAME/$PACKAGE/DEBIAN/postinst
 chmod +x $DIRNAME/$PACKAGE/DEBIAN/postinst
 
 # prep XBMC.frappliance

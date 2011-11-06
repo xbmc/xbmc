@@ -473,7 +473,7 @@ void CVideoInfoTag::Serialize(CVariant& value)
   value["album"] = m_strAlbum;
   value["artist"] = m_strArtist;
   value["playcount"] = m_playCount;
-  value["lastPlayed"] = m_lastPlayed;
+  value["lastplayed"] = m_lastPlayed;
   value["top250"] = m_iTop250;
   value["year"] = m_iYear;
   value["season"] = m_iSeason;
