@@ -30,6 +30,7 @@
 #include "FileOperations.h"
 #include "AudioLibrary.h"
 #include "VideoLibrary.h"
+#include "GUIOperations.h"
 #include "SystemOperations.h"
 #include "InputOperations.h"
 #include "XBMCOperations.h"
@@ -164,6 +165,9 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.Scan",                            CVideoLibrary::Scan },
   { "VideoLibrary.Export",                          CVideoLibrary::Export },
   { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
+
+// GUI operations
+  { "GUI.ShowNotification",                         CGUIOperations::ShowNotification },
 
 // System operations
   { "System.GetProperties",                         CSystemOperations::GetProperties },
