@@ -70,6 +70,7 @@ DIRECTORY_ARCHIVES=$(DVDPLAYER_ARCHIVES) \
                    xbmc/profiles/profiles.a \
                    xbmc/profiles/dialogs/profiles_dialogs.a \
                    xbmc/profiles/windows/profiles_windows.a \
+                   xbmc/bluetooth/bluetooth.a \
                    xbmc/programs/programs.a \
                    xbmc/pvr/addons/pvraddons.a \
                    xbmc/pvr/channels/pvrchannels.a \
@@ -142,6 +143,7 @@ else
 DIRECTORY_ARCHIVES += xbmc/input/linux/input_linux.a
 DIRECTORY_ARCHIVES += xbmc/network/linux/network_linux.a
 DIRECTORY_ARCHIVES += xbmc/powermanagement/linux/powermanagement_linux.a
+DIRECTORY_ARCHIVES += xbmc/bluetooth/linux/bluetooth_linux.a
 DIRECTORY_ARCHIVES += xbmc/storage/linux/storage_linux.a
 DIRECTORY_ARCHIVES += xbmc/windowing/X11/windowing_X11.a
 endif

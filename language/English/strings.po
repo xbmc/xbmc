@@ -6854,6 +6854,46 @@ msgctxt "#16400"
 msgid "Post-processing"
 msgstr ""
 
+msgctxt "#16500"
+msgid "Bluetooth"
+msgstr ""
+
+msgctxt "#16501"
+msgid "Bluetooth audio"
+msgstr ""
+
+msgctxt "#16502"
+msgid "Settings - Bluetooth"
+msgstr ""
+
+msgctxt "#16503"
+msgid "Connect"
+msgstr ""
+
+msgctxt "#16504"
+msgid "Disconnect"
+msgstr ""
+
+msgctxt "#16505"
+msgid "Do you want to pair with this device?"
+msgstr ""
+
+msgctxt "#16506"
+msgid "Please enter the PIN"
+msgstr ""
+
+msgctxt "#16507"
+msgid "Please enter the PIN on the remote device"
+msgstr ""
+
+msgctxt "#16508"
+msgid "and press Enter key"
+msgstr ""
+
+msgctxt "#16509"
+msgid "Disconnected"
+msgstr ""
+
 #empty strings from id 16401 to 17499
 
 msgctxt "#17500"

@@ -136,3 +136,6 @@
 // Sent to text field to support 'input method'
 #define GUI_MSG_INPUT_TEXT            GUI_MSG_USER + 37
 #define GUI_MSG_INPUT_TEXT_EDIT       GUI_MSG_USER + 38
+
+// Message sent to tell the GUI to remove a single item
+#define GUI_MSG_REMOVE_ITEM           GUI_MSG_USER + 39

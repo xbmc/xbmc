@@ -448,6 +448,14 @@ msgctxt "#31331"
 msgid "Album Details"
 msgstr ""
 
+msgctxt "#31341"
+msgid "Selected Device"
+msgstr ""
+
+msgctxt "#31342"
+msgid "Hardware Address"
+msgstr ""
+
 #empty strings from id 31332 to 31350
 #Video and Music OSD Labels
 
