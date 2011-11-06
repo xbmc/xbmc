@@ -97,6 +97,7 @@ class CGUIWindow;
 #define TMSG_CALLBACK             800
 
 #define TMSG_VOLUME_SHOW          900
+#define TMSG_SPLASH_MESSAGE       901
 
 typedef struct
 {
@@ -143,6 +144,7 @@ public:
   void MediaPlay(std::string filename);
   void MediaPlay(const CFileItem &item);
   void MediaPlay(const CFileItemList &item, int song = 0);
+  void MediaPlay(int playlistid, int song = -1);
   void MediaStop(bool bWait = true);
   void MediaPause();
   void MediaRestart(bool bWait);
@@ -199,6 +201,9 @@ public:
   void OpticalUnMount(CStdString device);
 
   void ShowVolumeBar(bool up);
+
+  void SetSplashMessage(const CStdString& message);
+  void SetSplashMessage(int stringID);
 
 private:
   void ProcessMessage(ThreadMessage *pMsg);

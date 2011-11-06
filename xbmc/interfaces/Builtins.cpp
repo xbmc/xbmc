@@ -1139,6 +1139,7 @@ int CBuiltins::Execute(const CStdString& execString)
     }
     else // execute.Equals("skin.setpath"))
     {
+      g_mediaManager.GetNetworkLocations(localShares);
       if (CGUIDialogFileBrowser::ShowAndGetDirectory(localShares, g_localizeStrings.Get(1031), value))
         g_settings.SetSkinString(string, value);
     }

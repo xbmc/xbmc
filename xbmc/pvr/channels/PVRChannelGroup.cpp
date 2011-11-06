@@ -413,24 +413,45 @@ const CPVRChannel *CPVRChannelGroup::GetByChannelNumber(unsigned int iChannelNum
   return channel;
 }
 
+const CPVRChannel *CPVRChannelGroup::GetByChannelUpDown(const CPVRChannel &channel, bool bChannelUp) const
+{
+  const CPVRChannel *retVal(NULL);
+  bool bGotChannel(false);
+  CSingleLock lock(m_critSection);
+  int iChannelIndex = GetIndex(channel);
+
+  while (!bGotChannel && !(retVal && *retVal == channel))
+  {
+    if (bChannelUp)
+      iChannelIndex++;
+    else
+      iChannelIndex--;
+
+    if (iChannelIndex >= (int)size())
+      iChannelIndex = 0;
+    else if (iChannelIndex < 0)
+      iChannelIndex = size() - 1;
+
+    retVal = GetByIndex(iChannelIndex);
+    if (!retVal->IsHidden())
+      bGotChannel = true;
+  }
+
+  return retVal;
+}
+
 const CPVRChannel *CPVRChannelGroup::GetByChannelUp(const CPVRChannel &channel) const
 {
-  CSingleLock lock(m_critSection);
-  unsigned int iChannelIndex = GetIndex(channel) + 1;
-  if (iChannelIndex >= size())
-    iChannelIndex = 0;
-
-  return GetByIndex(iChannelIndex);
+  const CPVRChannel *retVal(NULL);
+  retVal = GetByChannelUpDown(channel, true);
+  return retVal;
 }
 
 const CPVRChannel *CPVRChannelGroup::GetByChannelDown(const CPVRChannel &channel) const
 {
-  CSingleLock lock(m_critSection);
-  int iChannelIndex = GetIndex(channel) - 1;
-  if (iChannelIndex < 0)
-    iChannelIndex = size() - 1;
-
-  return GetByIndex(iChannelIndex);
+  const CPVRChannel *retVal(NULL);
+  retVal = GetByChannelUpDown(channel, false);
+  return retVal;
 }
 
 const CPVRChannel *CPVRChannelGroup::GetByIndex(unsigned int iIndex) const

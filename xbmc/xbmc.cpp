@@ -100,22 +100,3 @@ int main(int argc, char* argv[])
 
   return status;
 }
-
-extern "C"
-{
-  void mp_msg( int x, int lev, const char *format, ... )
-  {
-    va_list va;
-    static char tmp[2048];
-    va_start(va, format);
-#ifndef _LINUX
-    _vsnprintf(tmp, 2048, format, va);
-#else
-    vsnprintf(tmp, 2048, format, va);
-#endif
-    va_end(va);
-    tmp[2048 - 1] = 0;
-
-    OutputDebugString(tmp);
-  }
-}

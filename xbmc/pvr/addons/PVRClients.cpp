@@ -1114,13 +1114,14 @@ bool CPVRClients::InitialiseClient(AddonPtr client)
 
   /* load and initialise the client libraries */
   boost::shared_ptr<CPVRClient> addon = boost::dynamic_pointer_cast<CPVRClient>(client);
-  if (addon && addon->Create(iClientId))
+  if (addon)
   {
     {
       CSingleLock lock(m_critSection);
+      addon->Create(iClientId);
       m_clientMap.insert(std::make_pair(iClientId, addon));
     }
-    bReturn = true;
+    bReturn = addon->ReadyToUse();
   }
   else
   {
@@ -1133,39 +1134,33 @@ bool CPVRClients::InitialiseClient(AddonPtr client)
 
 bool CPVRClients::UpdateAndInitialiseClients(bool bInitialiseAllClients /* = false */)
 {
-  bool bReturn(false);
+  bool bReturn(true);
 
-  /* make sure that the callback is registered */
-  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
-
-  /* get all PVR addons from the add-on manager */
-  VECADDONS addons;
-  if (CAddonMgr::Get().GetAddons(ADDON_PVRDLL, addons, true))
+  CSingleLock lock(m_critSection);
+  for (unsigned iClientPtr = 0; iClientPtr < m_addons.size(); iClientPtr++)
   {
-    bReturn = true;
+    const AddonPtr clientAddon = m_addons.at(iClientPtr);
 
-    for (unsigned iClientPtr = 0; iClientPtr < addons.size(); iClientPtr++)
+    if (!clientAddon->Enabled() && IsKnownClient(clientAddon))
     {
-      const AddonPtr clientAddon = addons.at(iClientPtr);
-
-      if (!clientAddon->Enabled() && IsKnownClient(clientAddon))
-      {
-        /* stop the client and remove it from the db */
-        bReturn = StopClient(clientAddon, false) && bReturn;
-      }
-      else if (clientAddon->Enabled() && (bInitialiseAllClients || !IsKnownClient(clientAddon)))
-      {
-        /* register the new client and initialise it */
-        bReturn = InitialiseClient(clientAddon) && bReturn;
-      }
+      /* stop the client and remove it from the db */
+      bReturn &= StopClient(clientAddon, false) && bReturn;
+    }
+    else if (clientAddon->Enabled() && (bInitialiseAllClients || !IsKnownClient(clientAddon)))
+    {
+      /* register the new client and initialise it */
+      bReturn &= InitialiseClient(clientAddon) && bReturn;
     }
   }
 
-  /* check whether all clients are (still) connected */
+  for (CLIENTMAPITR itr = m_clientMap.begin(); itr != m_clientMap.end(); itr++)
   {
-    CSingleLock lock(m_critSection);
-    m_bAllClientsConnected = (ConnectedClientAmount() == EnabledClientAmount());
+    if (!m_clientMap[(*itr).first]->ReadyToUse())
+      m_clientMap[(*itr).first]->Create((*itr).first);
   }
+
+  /* check whether all clients are (still) connected */
+  m_bAllClientsConnected = (ConnectedClientAmount() == EnabledClientAmount());
 
   return bReturn;
 }
@@ -1206,6 +1201,12 @@ int CPVRClients::ReadRecordedStream(void* lpBuf, int64_t uiBufSize)
 void CPVRClients::Process(void)
 {
   bool bCheckedEnabledClientsOnStartup(false);
+
+  CAddonMgr::Get().RegisterAddonMgrCallback(ADDON_PVRDLL, this);
+  CAddonMgr::Get().RegisterObserver(this);
+
+  if (!UpdateAddons())
+    return;
 
   while (!g_application.m_bStop && !m_bStop)
   {
@@ -1317,6 +1318,7 @@ void CPVRClients::LoadCurrentChannelSettings(void)
     g_settings.m_currentVideoSettings.m_CustomNonLinStretch = loadedChannelSettings.m_CustomNonLinStretch;
     g_settings.m_currentVideoSettings.m_ScalingMethod       = loadedChannelSettings.m_ScalingMethod;
     g_settings.m_currentVideoSettings.m_PostProcess         = loadedChannelSettings.m_PostProcess;
+    g_settings.m_currentVideoSettings.m_DeinterlaceMode     = loadedChannelSettings.m_DeinterlaceMode;
 
     /* only change the view mode if it's different */
     if (g_settings.m_currentVideoSettings.m_ViewMode != loadedChannelSettings.m_ViewMode)
@@ -1347,5 +1349,25 @@ void CPVRClients::LoadCurrentChannelSettings(void)
 
     /* settings can be saved on next channel switch */
     m_bIsValidChannelSettings = true;
+  }
+}
+
+bool CPVRClients::UpdateAddons(void)
+{
+  bool bReturn(false);
+  CSingleLock lock(m_critSection);
+
+  if ((bReturn = CAddonMgr::Get().GetAddons(ADDON_PVRDLL, m_addons, true)) == false)
+    CLog::Log(LOGERROR, "%s - failed to get add-ons from the add-on manager", __FUNCTION__);
+
+  return bReturn;
+}
+
+void CPVRClients::Notify(const Observable &obs, const CStdString& msg)
+{
+  if (msg.Equals("addons"))
+  {
+    UpdateAddons();
+    UpdateAndInitialiseClients();
   }
 }

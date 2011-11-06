@@ -47,10 +47,12 @@ using namespace std;
 
 CAFPDirectory::CAFPDirectory(void)
 {
+  gAfpConnection.AddActiveConnection();
 }
 
 CAFPDirectory::~CAFPDirectory(void)
 {
+  gAfpConnection.AddIdleConnection();
 }
 
 bool CAFPDirectory::ResolveSymlink( const CStdString &dirName, const CStdString &fileName, 

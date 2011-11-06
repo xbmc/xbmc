@@ -20,11 +20,8 @@
 
 #include "asm.S"
 
-.section .rodata
+.text
 .align 4
-
-vp3_idct_constants:
-.short 64277, 60547, 54491, 46341, 36410, 25080, 12785
 
 #define xC1S7 d0[0]
 #define xC2S6 d0[1]
@@ -33,8 +30,6 @@ vp3_idct_constants:
 #define xC5S3 d1[0]
 #define xC6S2 d1[1]
 #define xC7S1 d1[2]
-
-.text
 
 .macro vp3_loop_filter
     vsubl.u8        q3,  d18, d17
@@ -109,10 +104,14 @@ function ff_vp3_h_loop_filter_neon, export=1
     bx              lr
 endfunc
 
+.align 4
+vp3_idct_constants:
+.short 64277, 60547, 54491, 46341, 36410, 25080, 12785
+.align 4
 
 function vp3_idct_start_neon
     vpush           {d8-d15}
-    movrel          r3,  vp3_idct_constants
+    adr             r3,  vp3_idct_constants
     vld1.64         {d0-d1},   [r3,:128]
     vld1.64         {d16-d19}, [r2,:128]!
     vld1.64         {d20-d23}, [r2,:128]!

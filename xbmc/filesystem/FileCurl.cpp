@@ -1135,8 +1135,8 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
 
   if(buffer)
   {
-    char content[255];
-    if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, content))
+    char *content;
+    if (CURLE_OK != g_curlInterface.easy_getinfo(m_state->m_easyHandle, CURLINFO_CONTENT_TYPE, &content))
     {
       g_curlInterface.easy_release(&m_state->m_easyHandle, NULL);
       errno = ENOENT;
@@ -1146,7 +1146,7 @@ int CFileCurl::Stat(const CURL& url, struct __stat64* buffer)
     {
       memset(buffer, 0, sizeof(struct __stat64));
       buffer->st_size = (int64_t)length;
-      if(strstr(content, "text/html")) //consider html files directories
+      if(content && strstr(content, "text/html")) //consider html files directories
         buffer->st_mode = _S_IFDIR;
       else
         buffer->st_mode = _S_IFREG;

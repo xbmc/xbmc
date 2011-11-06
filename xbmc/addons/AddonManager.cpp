@@ -462,15 +462,25 @@ CStdString CAddonMgr::GetString(const CStdString &id, const int number)
 
 void CAddonMgr::FindAddons()
 {
-  CSingleLock lock(m_critSection);
-  if (m_cpluff && m_cp_context)
-    m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
+  {
+    CSingleLock lock(m_critSection);
+    if (m_cpluff && m_cp_context)
+    {
+      m_cpluff->scan_plugins(m_cp_context, CP_SP_UPGRADE);
+      SetChanged();
+    }
+  }
+  NotifyObservers("addons");
 }
 
 void CAddonMgr::RemoveAddon(const CStdString& ID)
 {
   if (m_cpluff && m_cp_context)
+  {
     m_cpluff->uninstall_plugin(m_cp_context,ID.c_str());
+    SetChanged();
+    NotifyObservers("addons");
+  }
 }
 
 const char *CAddonMgr::GetTranslatedString(const cp_cfg_element_t *root, const char *tag)

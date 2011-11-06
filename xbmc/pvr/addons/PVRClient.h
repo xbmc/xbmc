@@ -60,9 +60,8 @@ namespace PVR
     /*!
      * @brief Initialise the instance of this add-on.
      * @param iClientId The ID of this add-on.
-     * @return True if it was created successfully, false otherwise.
      */
-    bool Create(int iClientId);
+    void Create(int iClientId);
 
     /*!
      * @brief Destroy the instance of this add-on.
@@ -71,9 +70,8 @@ namespace PVR
 
     /*!
      * @brief Destroy and recreate this add-on.
-     * @return True if the add-on was reinitialised successfully.
      */
-    bool ReCreate(void);
+    void ReCreate(void);
 
     /*!
      * @return True if this instance is initialised, false otherwise.

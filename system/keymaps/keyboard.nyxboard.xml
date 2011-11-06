@@ -1,18 +1,19 @@
+<?xml version="1.0"?>
 <keymap>
   <global>
-	<appcommand name="Motorola Nyxboard Hybrid">
-	  <volume_mute>Mute</volume_mute>
-	  <volume_down>VolumeDown</volume_down>
+    <appcommand name="Motorola Nyxboard Hybrid">
+      <volume_mute>Mute</volume_mute>
+      <volume_down>VolumeDown</volume_down>
       <volume_up>VolumeUp</volume_up>
-	  <next_track>SkipNext</next_track>
-	  <prev_track>SkipPrevious</prev_track>
-	  <stop>Stop</stop>
-	  <play_pause>Play</play_pause>
-	  <play>Play</play>
-	  <pause>Pause</pause>
-	  <fastforward>FastForward</fastforward>
-	  <rewind>Rewind</rewind>
-	</appcommand>
+      <next_track>SkipNext</next_track>
+      <prev_track>SkipPrevious</prev_track>
+      <stop>Stop</stop>
+      <play_pause>Play</play_pause>
+      <play>Play</play>
+      <pause>Pause</pause>
+      <fastforward>FastForward</fastforward>
+      <rewind>Rewind</rewind>
+    </appcommand>
     <mouse name="Motorola Nyxboard Hybrid">
       <leftclick>leftclick</leftclick>
       <middleclick>middleclick</middleclick>
@@ -23,7 +24,7 @@
       <mousedrag>mousedrag</mousedrag>
       <mousemove>mousemove</mousemove>
     </mouse>
-	<keyboard name="Motorola Nyxboard Hybrid">
+    <keyboard name="Motorola Nyxboard Hybrid">
       <p>Play</p>
       <q>Queue</q>
       <f mod="ctrl,shift">FastForward</f>
@@ -39,12 +40,13 @@
       <return>Select</return>
       <enter>Select</enter>
       <backspace>Back</backspace>
-      <key id='65446'>Back</key>
+      <key id="65446">Back</key>
       <m>ActivateWindow(PlayerControls)</m>
       <s>ActivateWindow(shutdownmenu)</s>
       <escape>PreviousMenu</escape>
       <i>Info</i>
-	  <f9>Info</f9>
+      <d mod="ctrl">Info</d>
+      <f9>Info</f9>
       <menu>ContextMenu</menu>
       <c>ContextMenu</c>
       <space>Pause</space>
@@ -87,7 +89,7 @@
       <prev_track>SkipPrevious</prev_track>
       <stop>Stop</stop>
       <play_pause>Pause</play_pause>
-	  <!--
+      <!--
 	  <f3>RED</f3>
 	  <f4>GREEN</f4>
 	  <f5>YELLOW</f5>
@@ -96,7 +98,7 @@
 	  <f12>ActivateSearch</f12>
 	  <f11>CloseSearch</f11>
 	  -->
-	  <f10>ContextMenu</f10>
+      <f10>ContextMenu</f10>
     </keyboard>
   </global>
   <LoginScreen>
@@ -107,7 +109,7 @@
   <Home>
     <keyboard name="Motorola Nyxboard Hybrid">
       <i>info</i>
-	  <home>noop</home>
+      <home>noop</home>
       <end>XBMC.ShutDown()</end>
     </keyboard>
   </Home>
@@ -217,7 +219,8 @@
       <left>SkipPrevious</left>
       <right>SkipNext</right>
       <up>IncreaseRating</up>
-      <down>DecreaseRating</down>      <!--<back>NextPreset</back>!-->
+      <down>DecreaseRating</down>
+      <!--<back>NextPreset</back>!-->
       <o>CodecInfo</o>
       <l>LockPreset</l>
       <escape>FullScreen</escape>
@@ -304,7 +307,8 @@
   <VideoOSD>
     <keyboard name="Motorola Nyxboard Hybrid">
       <m>Back</m>
-      <g mod="ctrl">Back</g> <!-- MCE Guide button -->
+      <g mod="ctrl">Back</g>
+      <!-- MCE Guide button -->
       <i>Info</i>
       <o>CodecInfo</o>
     </keyboard>
@@ -322,7 +326,8 @@
       <a>AudioDelay</a>
       <escape>Fullscreen</escape>
       <return>Select</return>
-      <enter>Select</enter>      <!-- backspace>Fullscreen</backspace -->
+      <enter>Select</enter>
+      <!-- backspace>Fullscreen</backspace -->
     </keyboard>
   </VideoMenu>
   <OSDVideoSettings>
@@ -382,7 +387,7 @@
   </Scripts>
   <shutdownmenu>
     <keyboard name="Motorola Nyxboard Hybrid">
-      <s>Back</s>  
+      <s>Back</s>
     </keyboard>
   </shutdownmenu>
   <MusicInformation>
@@ -394,6 +399,7 @@
   <MovieInformation>
     <keyboard name="Motorola Nyxboard Hybrid">
       <i>Back</i>
+      <d mod="ctrl">Back</d>
     </keyboard>
   </MovieInformation>
   <PictureInfo>
@@ -406,6 +412,12 @@
       <space>Pause</space>
     </keyboard>
   </PictureInfo>
+  <AddonInformation>
+    <keyboard>
+      <i>Back</i>
+      <d mod="ctrl">Back</d>
+    </keyboard>
+  </AddonInformation>
   <Teletext>
     <keyboard name="Motorola Nyxboard Hybrid">
       <v>Back</v>

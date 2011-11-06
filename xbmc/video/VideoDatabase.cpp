@@ -4583,6 +4583,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_strGenre = it->second.genre;
         pItem->GetVideoInfoTag()->m_strStudio = showStudio;
         pItem->GetVideoInfoTag()->m_strMPAARating = showMPAARating;
+        pItem->GetVideoInfoTag()->m_iIdShow = idShow;
         pItem->GetVideoInfoTag()->m_strShowTitle = showTitle;
         pItem->GetVideoInfoTag()->m_iEpisode = it->second.numEpisodes;
         pItem->SetProperty("totalepisodes", it->second.numEpisodes);
@@ -4618,6 +4619,7 @@ bool CVideoDatabase::GetSeasonsNav(const CStdString& strBaseDir, CFileItemList& 
         pItem->GetVideoInfoTag()->m_strGenre = m_pDS->fv(3).get_asString();
         pItem->GetVideoInfoTag()->m_strStudio = showStudio;
         pItem->GetVideoInfoTag()->m_strMPAARating = showMPAARating;
+        pItem->GetVideoInfoTag()->m_iIdShow = idShow;
         pItem->GetVideoInfoTag()->m_strShowTitle = showTitle;
         int totalEpisodes = m_pDS->fv(6).get_asInt();
         int watchedEpisodes = m_pDS->fv(7).get_asInt();
@@ -6643,8 +6645,8 @@ void CVideoDatabase::CleanDatabase(IVideoInfoScannerObserver* pObserver, const v
       m_pDS->exec(sql.c_str());
     }
 
-    CLog::Log(LOGDEBUG, "%s: Cleaning paths that don't exist and don't have content set...", __FUNCTION__);
-    sql = "select * from path where strContent not like ''";
+    CLog::Log(LOGDEBUG, "%s: Cleaning paths that don't exist and have content set...", __FUNCTION__);
+    sql = "select * from path where strContent != ''";
     m_pDS->query(sql.c_str());
     CStdString strIds;
     while (!m_pDS->eof())
