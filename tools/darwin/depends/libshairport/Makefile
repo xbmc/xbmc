@@ -28,6 +28,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	cd $(SOURCE); patch -p0 < ../004_fix_bad_access.patch
 	cd $(SOURCE); patch -p0 < ../005_fix_shutdown.patch
 	cd $(SOURCE); patch -p0 < ../006_no_printf.patch
+	cd $(SOURCE); patch -p0 < ../007_fix_syslog_defines.patch
 	cd $(SOURCE); autoreconf -vif
 	cd $(SOURCE); $(CONFIGURE)
 
