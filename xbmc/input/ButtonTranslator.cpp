@@ -201,6 +201,8 @@ static const ActionMapping actions[] =
         {"blue"              , ACTION_TELETEXT_BLUE},
         {"increasepar"       , ACTION_INCREASE_PAR},
         {"decreasepar"       , ACTION_DECREASE_PAR},
+        {"volampup"          , ACTION_VOLAMP_UP},
+        {"volampdown"        , ACTION_VOLAMP_DOWN},
 
         // Mouse actions
         {"leftclick"         , ACTION_MOUSE_LEFT_CLICK},
