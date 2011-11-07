@@ -1077,6 +1077,21 @@ void CVDPAU::SpewHardwareAvailable()  //Copyright (c) 2008 Wladimir J. van der L
 
 }
 
+bool CVDPAU::IsSurfaceValid(vdpau_render_state *render)
+{
+  // find render state in queue
+  bool found(false);
+  for(unsigned int i = 0; i < m_videoSurfaces.size(); ++i)
+  {
+    if(m_videoSurfaces[i] == render)
+    {
+      found = true;
+      break;
+    }
+  }
+  return found;
+}
+
 int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
 {
   //CLog::Log(LOGNOTICE,"%s",__FUNCTION__);
@@ -1185,16 +1200,7 @@ void CVDPAU::FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic)
     pic->data[i]= NULL;
 
   // find render state in queue
-  bool found(false);
-  for(i = 0; i < vdp->m_videoSurfaces.size(); ++i)
-  {
-    if(vdp->m_videoSurfaces[i] == render)
-    {
-      found = true;
-      break;
-    }
-  }
-  if (!found)
+  if (!vdp->IsSurfaceValid(render))
   {
     CLog::Log(LOGDEBUG, "CVDPAU::FFReleaseBuffer - ignoring invalid buffer");
     return;
@@ -1320,16 +1326,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
       return VC_ERROR;
 
     // ffmpeg vc-1 decoder does not flush, make sure the data buffer is still valid
-    bool found(false);
-    for(unsigned int i = 0; i < m_videoSurfaces.size(); ++i)
-    {
-      if(m_videoSurfaces[i] == render)
-      {
-        found = true;
-        break;
-      }
-    }
-    if (!found)
+    if (!IsSurfaceValid(render))
     {
       CLog::Log(LOGWARNING, "CVDPAU::Decode - ignoring invalid buffer");
       return VC_BUFFER;

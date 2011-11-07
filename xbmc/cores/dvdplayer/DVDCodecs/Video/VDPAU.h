@@ -100,6 +100,7 @@ public:
   void SpewHardwareAvailable();
   void InitCSCMatrix(int Height);
   bool CheckStatus(VdpStatus vdp_st, int line);
+  bool IsSurfaceValid(vdpau_render_state *render);
 
   void CheckFeatures();
   void SetColor();
