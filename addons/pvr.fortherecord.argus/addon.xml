@@ -3,7 +3,7 @@
   id="pvr.fortherecord.argus"
   version="0.0.1.120"
   name="ForTheRecord PVR client"
-  provider-name="Marcel Groothuis, Fred Hoogduin">
+  provider-name="Fred Hoogduin, Marcel Groothuis">
   <requires>
     <c-pluff version="0.1"/>
   </requires>
