@@ -1,4 +1,8 @@
-v0.0.1.117 (unfinished)
+v0.0.1.120 (07-11-2011)
+- Windows, Linux and OSX version using TsReader
+- Reliable switching between channels with HD and SD content
+- TsReader streamlined
+v0.0.1.117 (unreleased)
 - Adaptation to many changes within XBMC
 v0.0.1.116 (16-06-2011)
 - Greatly improved channel zapping
