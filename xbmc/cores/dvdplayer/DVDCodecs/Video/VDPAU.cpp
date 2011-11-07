@@ -99,6 +99,8 @@ CVDPAU::CVDPAU()
 
   totalAvailableOutputSurfaces = 0;
   outputSurface = presentSurface = VDP_INVALID_HANDLE;
+  vdp_flip_target = VDP_INVALID_HANDLE;
+  vdp_flip_queue = VDP_INVALID_HANDLE;
   vid_width = vid_height = OutWidth = OutHeight = 0;
   memset(&outRect, 0, sizeof(VdpRect));
   memset(&outRectVid, 0, sizeof(VdpRect));
@@ -120,8 +122,8 @@ CVDPAU::CVDPAU()
 
 bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int surfaces)
 {
-  if(avctx->width  == 0
-  || avctx->height == 0)
+  if(avctx->coded_width  == 0
+  || avctx->coded_height == 0)
   {
     CLog::Log(LOGWARNING,"(VDPAU) no width/height available, can't init");
     return false;
@@ -161,12 +163,12 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int su
 #endif
     if(profile)
     {
-      if (!CDVDCodecUtils::IsVP3CompatibleWidth(avctx->width))
+      if (!CDVDCodecUtils::IsVP3CompatibleWidth(avctx->coded_width))
         CLog::Log(LOGWARNING,"(VDPAU) width %i might not be supported because of hardware bug", avctx->width);
    
       /* attempt to create a decoder with this width/height, some sizes are not supported by hw */
       VdpStatus vdp_st;
-      vdp_st = vdp_decoder_create(vdp_device, profile, avctx->width, avctx->height, 5, &decoder);
+      vdp_st = vdp_decoder_create(vdp_device, profile, avctx->coded_width, avctx->coded_height, 5, &decoder);
 
       if(vdp_st != VDP_STATUS_OK)
       {
@@ -179,7 +181,7 @@ bool CVDPAU::Open(AVCodecContext* avctx, const enum PixelFormat, unsigned int su
       CheckStatus(vdp_st, __LINE__);
     }
 
-    InitCSCMatrix(avctx->height);
+    InitCSCMatrix(avctx->coded_height);
 
     /* finally setup ffmpeg */
     avctx->get_buffer      = CVDPAU::FFGetBuffer;
@@ -447,8 +449,8 @@ void CVDPAU::CheckFeatures()
     };
 
     void const * parameter_values[] = {
-      &vid_width,
-      &vid_height,
+      &surface_width,
+      &surface_height,
       &vdp_chroma_type
     };
 
@@ -887,10 +889,12 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
   VdpDecoderProfile vdp_decoder_profile;
   vid_width = avctx->width;
   vid_height = avctx->height;
+  surface_width = avctx->coded_width;
+  surface_height = avctx->coded_height;
 
   past[1] = past[0] = current = future = NULL;
-  CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i",OutWidth,vid_width);
-  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i",OutHeight,vid_height);
+  CLog::Log(LOGNOTICE, " (VDPAU) screenWidth:%i vidWidth:%i surfaceWidth:%i",OutWidth,vid_width,surface_width);
+  CLog::Log(LOGNOTICE, " (VDPAU) screenHeight:%i vidHeight:%i surfaceHeight:%i",OutHeight,vid_height,surface_height);
   ReadFormatOf(avctx->pix_fmt, vdp_decoder_profile, vdp_chroma_type);
 
   if(avctx->pix_fmt == PIX_FMT_VDPAU_H264)
@@ -904,8 +908,8 @@ bool CVDPAU::ConfigVDPAU(AVCodecContext* avctx, int ref_frames)
 
   vdp_st = vdp_decoder_create(vdp_device,
                               vdp_decoder_profile,
-                              vid_width,
-                              vid_height,
+                              surface_width,
+                              surface_height,
                               max_references,
                               &decoder);
   if (CheckStatus(vdp_st, __LINE__))
@@ -1137,8 +1141,8 @@ int CVDPAU::FFGetBuffer(AVCodecContext *avctx, AVFrame *pic)
     }
     vdp_st = vdp->vdp_video_surface_create(vdp->vdp_device,
                                            vdp->vdp_chroma_type,
-                                           avctx->width,
-                                           avctx->height,
+                                           avctx->coded_width,
+                                           avctx->coded_height,
                                            &render->surface);
     vdp->CheckStatus(vdp_st, __LINE__);
     if (vdp_st != VDP_STATUS_OK)
@@ -1446,6 +1450,8 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
 
   vdp_st = vdp_presentation_queue_block_until_surface_idle(vdp_flip_queue,outputSurface,&time);
 
+  VdpRect sourceRect = {0,0,vid_width, vid_height};
+
   vdp_st = vdp_video_mixer_render(videoMixer,
                                   VDP_INVALID_HANDLE,
                                   0, 
@@ -1455,7 +1461,7 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
                                   current->surface,
                                   1,
                                   futu_surfaces,
-                                  NULL,
+                                  &sourceRect,
                                   outputSurface,
                                   &(outRectVid),
                                   &(outRectVid),
