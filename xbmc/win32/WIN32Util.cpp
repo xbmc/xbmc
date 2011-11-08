@@ -1511,9 +1511,6 @@ bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
 {
   CStdStringW strWDevicePath;
   strWDevicePath.Format(L"\\\\.\\%s",strWdrive.Left(2));
-
- /* wchar_t volumeAccessPath[] = L"\\\\.\\X:";
-  volumeAccessPath[4] = strWdrive.Left(1).c_str();*/
  
   HANDLE deviceHandle = CreateFileW(
     strWDevicePath.c_str(),
@@ -1524,6 +1521,9 @@ bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
    OPEN_EXISTING,    // disposition
    0,                // file attributes
    NULL);            // do not copy file attributes
+
+  if(deviceHandle == INVALID_HANDLE_VALUE)
+    return false;
  
   // setup query
   STORAGE_PROPERTY_QUERY query;
