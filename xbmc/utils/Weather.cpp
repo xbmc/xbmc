@@ -79,8 +79,10 @@ using namespace XFILE;
 #define CONTROL_LABELD0GEN  34
 #define CONTROL_IMAGED0IMG  35
 
-#define PARTNER_ID    "1004124588"   //weather.com partner id
-#define PARTNER_KEY    "079f24145f208494"  //weather.com partner key
+// partner data taken from 
+// http://code.google.com/p/python-weather-api/
+#define PARTNER_ID    "1138276742"
+#define PARTNER_KEY    "15ee9c789ccd70f5"
 
 #define LOCALIZED_TOKEN_FIRSTID    370
 #define LOCALIZED_TOKEN_LASTID     395
