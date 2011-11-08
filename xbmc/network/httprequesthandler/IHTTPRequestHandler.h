@@ -71,6 +71,9 @@ public:
   virtual std::string GetHTTPRedirectUrl() const { return ""; }
   virtual std::string GetHTTPResponseFile() const { return ""; }
 
+  // The higher the more important
+  virtual int GetPriority() const { return 0; }
+
   int GetHTTPResonseCode() const { return m_responseCode; }
   HTTPResponseType GetHTTPResponseType() const { return m_responseType; }
   const std::map<std::string, std::string>& GetHTTPResponseHeaderFields() const { return m_responseHeaderFields; };

@@ -41,6 +41,8 @@ public:
 
   virtual std::string GetHTTPResponseFile() const { return m_path; }
 
+  virtual int GetPriority() const { return 2; }
+
 private:
   CStdString m_path;
 };

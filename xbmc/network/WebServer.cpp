@@ -430,10 +430,16 @@ void CWebServer::RegisterRequestHandler(IHTTPRequestHandler *handler)
   if (handler == NULL)
     return;
 
-  for (vector<IHTTPRequestHandler *>::const_iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
+  for (vector<IHTTPRequestHandler *>::iterator it = m_requestHandlers.begin(); it != m_requestHandlers.end(); it++)
   {
     if (*it == handler)
       return;
+
+    if ((*it)->GetPriority() < handler->GetPriority())
+    {
+      m_requestHandlers.insert(it, handler);
+      return;
+    }
   }
 
   m_requestHandlers.push_back(handler);

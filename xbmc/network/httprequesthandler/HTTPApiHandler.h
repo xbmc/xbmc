@@ -40,6 +40,8 @@ public:
   virtual void* GetHTTPResponseData() const { return (void *)m_response.c_str(); };
   virtual size_t GetHTTPResonseDataLength() const { return m_response.size(); }
 
+  virtual int GetPriority() const { return 2; }
+
 private:
   std::string m_response;
 };

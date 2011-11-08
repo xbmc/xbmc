@@ -1111,7 +1111,6 @@ bool CApplication::Initialize()
 #endif
 #ifdef HAS_WEB_INTERFACE
   CWebServer::RegisterRequestHandler(&m_httpWebinterfaceAddonsHandler);
-  // Must always be registered as the last HTTP handler as it is the default handler
   CWebServer::RegisterRequestHandler(&m_httpWebinterfaceHandler);
 #endif
 #endif
