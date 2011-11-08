@@ -22,7 +22,14 @@
 
 #include <string>
 #include <map>
+
+#include <sys/types.h>
+#include <sys/select.h>
 #include <sys/socket.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdint.h>
 #ifdef __APPLE__
 #include "lib/libmicrohttpd/src/include/microhttpd.h"
 #else

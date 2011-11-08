@@ -33,7 +33,6 @@ bool CHTTPVfsHandler::CheckHTTPRequest(const HTTPRequest &request)
 
 int CHTTPVfsHandler::HandleHTTPRequest(const HTTPRequest &request)
 {
-  bool ok = false;
   if (request.url.size() > 5)
   {
     m_path = request.url.substr(5);

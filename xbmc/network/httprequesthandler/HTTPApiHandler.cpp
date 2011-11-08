@@ -39,7 +39,9 @@ int CHTTPApiHandler::HandleHTTPRequest(const HTTPRequest &request)
   {
     m_responseCode = MHD_HTTP_OK;
     m_responseType = HTTPMemoryDownloadNoFreeCopy;
-    m_response = CHttpApi::WebMethodCall(CStdString(arguments["command"]), CStdString(arguments["parameter"]));
+    CStdString command = arguments["command"];
+    CStdString parameter = arguments["parameter"];
+    m_response = CHttpApi::WebMethodCall(command, parameter);
 
     return MHD_YES;
   }
