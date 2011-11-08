@@ -867,12 +867,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("screensaver.xbmc.builtin.dim"))
         pControl->SetEnabled(false);
     }
-    else if (strSetting.Left(16).Equals("weather.areacode"))
-    {
-      CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetLabel2(CWeather::GetAreaCity(pSetting->GetData()));
-    }
     else if (strSetting.Equals("musicfiles.trackformat"))
     {
       if (m_strOldTrackFormat != g_guiSettings.GetString("musicfiles.trackformat"))
@@ -983,24 +977,7 @@ void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 {
   CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-  if (strSetting.Left(16).Equals("weather.areacode"))
-  {
-    CStdString strSearch;
-    if (CGUIDialogKeyboard::ShowAndGetInput(strSearch, g_localizeStrings.Get(14024), false))
-    {
-      strSearch.Replace(" ", "+");
-      CStdString strResult = ((CSettingString *)pSettingControl->GetSetting())->GetData();
-      if (g_weatherManager.GetSearchResults(strSearch, strResult))
-      {
-        ((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
-        // Update the labels on the location spinner
-        g_weatherManager.Reset();
-        // Refresh the weather using the new location
-        g_weatherManager.Refresh();
-      }
-    }
-  }
-  else if (strSetting.Equals("weather.scriptsettings"))
+  if (strSetting.Equals("weather.scriptsettings"))
   {
     CStdString name = g_guiSettings.GetString("weather.script");
     AddonPtr addon;

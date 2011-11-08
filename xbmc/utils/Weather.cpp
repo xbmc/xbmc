@@ -46,9 +46,13 @@
 #include "filesystem/Directory.h"
 #include "utils/TimeUtils.h"
 #include "StringUtils.h"
+#include "URIUtils.h"
 #include "log.h"
+#include "addons/AddonManager.h"
+#include "interfaces/python/XBPython.h"
 
 using namespace std;
+using namespace ADDON;
 using namespace XFILE;
 
 #define CONTROL_BTNREFRESH  2
@@ -111,9 +115,9 @@ FIXME'S
 
 bool CWeatherJob::m_imagesOkay = false;
 
-CWeatherJob::CWeatherJob(const CStdString &areaCode)
+CWeatherJob::CWeatherJob(int location)
 {
-  m_areaCode = areaCode;
+  m_location = location;
 }
 
 bool CWeatherJob::DoWork()
@@ -122,17 +126,29 @@ bool CWeatherJob::DoWork()
   if (!g_application.getNetwork().IsAvailable(true))
     return false;
 
+  AddonPtr addon;
+  if (!ADDON::CAddonMgr::Get().GetAddon(g_guiSettings.GetString("weather.script"), addon, ADDON_SCRIPT_WEATHER))
+    return false;
+
+  // initialize our sys.argv variables
+  std::vector<CStdString> argv;
+  argv.push_back(addon->LibPath());
+
+  CStdString strSetting;
+  strSetting.Format("%i", m_location);
+  argv.push_back(strSetting);
+
   // Download our weather
   CLog::Log(LOGINFO, "WEATHER: Downloading weather");
-  XFILE::CFileCurl httpUtil;
-  CStdString strURL;
-
-  strURL.Format("http://xoap.weather.com/weather/local/%s?cc=*&unit=m&dayf=4&prod=xoap&link=xoap&par=%s&key=%s",
-                m_areaCode.c_str(), PARTNER_ID, PARTNER_KEY);
-  CStdString xml;
-  if (httpUtil.Get(strURL, xml))
+  // call our script, passing the areacode
+  if (g_pythonParser.evalFile(argv[0], argv,addon))
   {
-    CLog::Log(LOGINFO, "WEATHER: Weather download successful");
+    while (true)
+    {
+      if (!g_pythonParser.isRunning(g_pythonParser.getScriptId(addon->LibPath().c_str())))
+        break;
+      Sleep(100);
+    }
     if (!m_imagesOkay)
     {
       CDirectory::Create(WEATHER_BASE_PATH);
@@ -144,7 +160,9 @@ bool CWeatherJob::DoWork()
 #endif
       m_imagesOkay = true;
     }
-    LoadWeather(xml);
+
+    SetFromProperties();
+
     // and send a message that we're done
     CGUIMessage msg(GUI_MSG_NOTIFY_ALL,0,0,GUI_MSG_WEATHER_FETCHED);
     g_windowManager.SendThreadMessage(msg);
@@ -485,6 +503,62 @@ void CWeatherJob::LoadLocalizedToken()
   }
 }
 
+void CWeatherJob::SetFromProperties()
+{
+  // Load in our tokens if necessary
+  if (!m_localizedTokens.size())
+    LoadLocalizedToken();
+
+  CGUIWindow* window        = g_windowManager.GetWindow(WINDOW_WEATHER);
+  CDateTime time=CDateTime::GetCurrentDateTime();
+  m_info.lastUpdateTime     = time.GetAsLocalizedDateTime(false, false);
+  m_info.currentConditions  = window->GetProperty("Current.Condition").asString();
+  m_info.currentIcon = URIUtils::AddFileToFolder(WEATHER_BASE_PATH,
+                              "128x128/"+window->GetProperty("Current.OutlookIcon").asString());
+  LocalizeOverview(m_info.currentConditions);
+  FormatTemperature(m_info.currentTemperature,
+      strtol(window->GetProperty("Current.Temperature").asString().c_str(),0,10));
+  FormatTemperature(m_info.currentFeelsLike,
+      strtol(window->GetProperty("Current.FeelsLike").asString().c_str(),0,10));
+  m_info.currentUVIndex     = window->GetProperty("Current.UVIndex").asString();
+  LocalizeOverview(m_info.currentUVIndex);
+  int speed = ConvertSpeed(strtol(window->GetProperty("Current.Wind").asString().c_str(),0,10));
+  CStdString direction = window->GetProperty("Current.WindDirection").asString();
+  if (direction ==  "CALM")
+    m_info.currentWind = g_localizeStrings.Get(1410);
+  else
+  {
+    LocalizeOverviewToken(direction);
+    m_info.currentWind.Format(g_localizeStrings.Get(434).c_str(),
+        direction, speed, g_langInfo.GetSpeedUnitString().c_str());
+  }
+  FormatTemperature(m_info.currentDewPoint,
+      strtol(window->GetProperty("Current.DewPoint").asString().c_str(),0,10));
+  m_info.currentHumidity.Format("%s%%",window->GetProperty("Current.Humidity").asString().c_str());
+  m_info.location           = window->GetProperty("Current.Location").asString();
+  for (int i=0;i<4;++i)
+  {
+    CStdString strDay;
+    strDay.Format("Day%i.Title",i);
+    m_info.forecast[i].m_day = window->GetProperty(strDay).asString();
+    LocalizeOverviewToken(m_info.forecast[i].m_day);
+    strDay.Format("Day%i.HighTemp",i);
+    FormatTemperature(m_info.forecast[i].m_high,
+                  strtol(window->GetProperty(strDay).asString().c_str(),0,10));
+    strDay.Format("Day%i.LowTemp",i);
+    FormatTemperature(m_info.forecast[i].m_low,
+                  strtol(window->GetProperty(strDay).asString().c_str(),0,10));
+    strDay.Format("Day%i.OutlookIcon",i);
+    if (window->GetProperty(strDay).asString() == "N/A")
+      m_info.forecast[i].m_icon = URIUtils::AddFileToFolder(WEATHER_BASE_PATH,"128x128/na.png");
+    else
+      m_info.forecast[i].m_icon = URIUtils::AddFileToFolder(WEATHER_BASE_PATH,
+                                                 "128x128/"+window->GetProperty(strDay).asString());
+    strDay.Format("Day%i.Outlook",i);
+    m_info.forecast[i].m_overview = window->GetProperty(strDay).asString();
+    LocalizeOverview(m_info.forecast[i].m_overview);
+  }
+}
 
 CWeather::CWeather(void) : CInfoLoader(30 * 60 * 1000) // 30 minutes
 {
@@ -662,20 +736,15 @@ CStdString CWeather::GetAreaCode(const CStdString &codeAndCity)
  */
 CStdString CWeather::GetLocation(int iLocation)
 {
-  if (m_location[iLocation - 1].IsEmpty())
-  {
-    CStdString setting;
-    setting.Format("weather.areacode%i", iLocation);
-    m_location[iLocation - 1] = GetAreaCity(g_guiSettings.GetString(setting));
-  }
-  return m_location[iLocation - 1];
+  CGUIWindow* window = g_windowManager.GetWindow(WINDOW_WEATHER);
+  CStdString setting;
+  setting.Format("Location%i", iLocation);
+  return window->GetProperty(setting).asString();
 }
 
 void CWeather::Reset()
 {
   m_info.Reset();
-  for (int i = 0; i < MAX_LOCATION; i++)
-    m_location[i] = "";
 }
 
 bool CWeather::IsFetched()
@@ -712,9 +781,7 @@ int CWeather::GetArea() const
 
 CJob *CWeather::GetJob() const
 {
-  CStdString strSetting;
-  strSetting.Format("weather.areacode%i", GetArea());
-  return new CWeatherJob(GetAreaCode(g_guiSettings.GetString(strSetting)));
+  return new CWeatherJob(GetArea());
 }
 
 void CWeather::OnJobComplete(unsigned int jobID, bool success, CJob *job)

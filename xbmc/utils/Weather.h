@@ -39,8 +39,6 @@ class TiXmlElement;
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
 
-#define MAX_LOCATION 3
-
 struct day_forecast
 {
   CStdString m_icon;
@@ -96,7 +94,7 @@ public:
 class CWeatherJob : public CJob
 {
 public:
-  CWeatherJob(const CStdString &areaCode);
+  CWeatherJob(int location);
 
   virtual bool DoWork();
 
@@ -110,6 +108,8 @@ private:
   void LoadLocalizedToken();
   int ConvertSpeed(int speed);
 
+  void SetFromProperties();
+
   /*! \brief Formats a celcius temperature into a string based on the users locale
    \param text the string to format
    \param temp the temperature (in degrees celcius).
@@ -120,7 +120,7 @@ private:
   typedef std::map<CStdString, int>::const_iterator ilocalizedTokens;
 
   CWeatherInfo m_info;
-  CStdString m_areaCode;
+  int m_location;
 
   static bool m_imagesOkay;
 };
@@ -151,8 +151,6 @@ protected:
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
 private:
-
-  CStdString m_location[MAX_LOCATION];
 
   CWeatherInfo m_info;
 };

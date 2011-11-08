@@ -88,10 +88,6 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
       }
       else if (iControl == CONTROL_SELECTLOCATION)
       {
-        // stop the script timer here, so the user has a full second
-        if (m_scriptTimer.IsRunning())
-          m_scriptTimer.Stop();
-
         CGUIMessage msg(GUI_MSG_ITEM_SELECTED,GetID(),CONTROL_SELECTLOCATION);
         g_windowManager.SendMessage(msg);
 
@@ -109,20 +105,6 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     {
       UpdateLocations();
       SetProperties();
-      if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER)
-        m_scriptTimer.StartZero();
-      else
-        CallScript();
-    }
-    break;
-  case GUI_MSG_WINDOW_INIT:
-    {
-      if (!g_sysinfo.HasInternet())
-      {
-        CGUIDialogOK::ShowAndGetInput(8,21451,20022,20022);
-        g_windowManager.PreviousWindow();
-        return true;
-      }
     }
     break;
   case GUI_MSG_ITEM_SELECT:
@@ -138,9 +120,9 @@ bool CGUIWindowWeather::OnMessage(CGUIMessage& message)
     {
       if (message.GetSenderId() == 0) //handle only message from builtin
       {
-        // Clamp location between 1 and MAX_LOCATION
-        int v = (g_weatherManager.GetArea() + message.GetParam1() - 1) % MAX_LOCATION + 1;
-        if (v < 1) v += MAX_LOCATION;
+        // Clamp location between 1 and m_maxLocation 
+        int v = (g_weatherManager.GetArea() + message.GetParam1() - 1) % m_maxLocation + 1;
+        if (v < 1) v += m_maxLocation;
         SetLocation(v);
         return true;
       }
@@ -157,6 +139,7 @@ void CGUIWindowWeather::OnInitWindow()
 {
   // call UpdateButtons() so that we start with our initial stuff already present
   UpdateButtons();
+  m_maxLocation = strtol(GetProperty("Locations").asString().c_str(),0,10);
   UpdateLocations();
   CGUIWindow::OnInitWindow();
 }
@@ -171,7 +154,7 @@ void CGUIWindowWeather::UpdateLocations()
 
   unsigned int iCurWeather = g_weatherManager.GetArea();
 
-  for (unsigned int i = 1; i <= MAX_LOCATION; i++)
+  for (unsigned int i = 1; i <= m_maxLocation; i++)
   {
     CStdString strLabel = g_weatherManager.GetLocation(i);
     if (strLabel.size() > 1) //got the location string yet?
@@ -245,13 +228,6 @@ void CGUIWindowWeather::FrameMove()
   // update our controls
   UpdateButtons();
 
-  // call weather script
-  if (m_scriptTimer.IsRunning() && m_scriptTimer.GetElapsedMilliseconds() > timeToCallScript)
-  {
-    m_scriptTimer.Stop();
-    CallScript();
-  }
-
   CGUIWindow::FrameMove();
 }
 
@@ -261,7 +237,7 @@ void CGUIWindowWeather::FrameMove()
  */
 void CGUIWindowWeather::SetLocation(int loc)
 {
-  if (loc < 1 || loc > MAX_LOCATION)
+  if (loc < 1 || loc > (int)m_maxLocation)
     return;
   // Avoid a settings write if old location == new location
   if (g_weatherManager.GetArea() != loc)
@@ -282,9 +258,6 @@ void CGUIWindowWeather::SetProperties()
   int iCurWeather = g_weatherManager.GetArea();
   SetProperty("Location", g_weatherManager.GetLocation(iCurWeather));
   SetProperty("LocationIndex", iCurWeather);
-  CStdString strSetting;
-  strSetting.Format("weather.areacode%i", iCurWeather);
-  SetProperty("AreaCode", CWeather::GetAreaCode(g_guiSettings.GetString(strSetting)));
   SetProperty("Updated", g_weatherManager.GetLastUpdateTime());
   SetProperty("Current.ConditionIcon", g_weatherManager.GetInfo(WEATHER_IMAGE_CURRENT_ICON));
   SetProperty("Current.Condition", g_weatherManager.GetInfo(WEATHER_LABEL_CURRENT_COND));
