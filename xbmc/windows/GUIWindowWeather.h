@@ -38,9 +38,7 @@ protected:
   void UpdateButtons();
   void UpdateLocations();
   void SetProperties();
-  void CallScript();
   void SetLocation(int loc);
 
-  CStopWatch m_scriptTimer;
   unsigned int m_maxLocation;
 };

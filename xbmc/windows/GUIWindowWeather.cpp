@@ -60,11 +60,9 @@ using namespace ADDON;
 #define LOCALIZED_TOKEN_FIRSTID      370
 #define LOCALIZED_TOKEN_LASTID       395
 
-unsigned int timeToCallScript = 1000;
 /*
 FIXME'S
 >strings are not centered
->weather.com dev account is mine not a general xbmc one
 */
 
 CGUIWindowWeather::CGUIWindowWeather(void)
@@ -286,41 +284,4 @@ void CGUIWindowWeather::SetProperties()
     URIUtils::RemoveExtension(fanartcode);
     SetProperty(day + "FanartCode", fanartcode);
   }
-}
-
-void CGUIWindowWeather::CallScript()
-{
-#ifdef HAS_PYTHON
-  if (!g_guiSettings.GetString("weather.script").Equals(DEFAULT_WEATHER_ADDON))
-  {
-    AddonPtr addon;
-    if (!ADDON::CAddonMgr::Get().GetAddon(g_guiSettings.GetString("weather.script"), addon, ADDON_SCRIPT_WEATHER))
-      return;
-
-    // initialize our sys.argv variables
-    std::vector<CStdString> argv;
-    argv.push_back(addon->LibPath());
-
-    // if script is running we wait for another timeout only when in weather window
-    if (g_windowManager.GetActiveWindow() == WINDOW_WEATHER)
-    {
-      int id = g_pythonParser.getScriptId(argv[0]);
-      if (id != -1 && g_pythonParser.isRunning(id))
-      {
-        m_scriptTimer.StartZero();
-        return;
-      }
-    }
-
-    // get the current locations area code
-    CStdString strSetting;
-    strSetting.Format("weather.areacode%i", g_weatherManager.GetArea());
-    argv.push_back(CWeather::GetAreaCode(g_guiSettings.GetString(strSetting)));
-
-    // call our script, passing the areacode
-    g_pythonParser.evalFile(argv[0], argv,addon);
-
-    CLog::Log(LOGDEBUG, "%s - Weather script called: %s (%s)", __FUNCTION__, argv[0].c_str(), argv[1].c_str());
-  }
-#endif
 }

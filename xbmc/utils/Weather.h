@@ -100,9 +100,6 @@ public:
 
   const CWeatherInfo &GetInfo() const;
 private:
-  bool LoadWeather(const CStdString& strWeatherFile); //parse strWeatherFile
-  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue);
-  void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
   void LocalizeOverview(CStdString &str);
   void LocalizeOverviewToken(CStdString &str);
   void LoadLocalizedToken();
@@ -140,10 +137,6 @@ public:
 
   void SetArea(int iLocation);
   int GetArea() const;
-
-  static CStdString GetAreaCode(const CStdString &codeAndCity);
-  static CStdString GetAreaCity(const CStdString &codeAndCity);
-
 protected:
   virtual CJob *GetJob() const;
   virtual CStdString TranslateInfo(int info) const;
