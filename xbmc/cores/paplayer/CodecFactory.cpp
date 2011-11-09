@@ -72,15 +72,14 @@ ICodec* CodecFactory::CreateCodec(const CStdString& strFileType)
            strFileType.Equals("dsm")  ||  strFileType.Equals("far") ||
            strFileType.Equals("it")   ||  strFileType.Equals("j2b") ||
            strFileType.Equals("mdl")  ||  strFileType.Equals("med") ||
-           strFileType.Equals("mid")  ||  strFileType.Equals("mod") ||
+           strFileType.Equals("mod")  ||  strFileType.Equals("itgz")||
            strFileType.Equals("mt2")  ||  strFileType.Equals("mtm") ||
            strFileType.Equals("okt")  ||  strFileType.Equals("pat") ||
            strFileType.Equals("psm")  ||  strFileType.Equals("ptm") ||
            strFileType.Equals("s3m")  ||  strFileType.Equals("stm") ||
            strFileType.Equals("ult")  ||  strFileType.Equals("umx") ||
            strFileType.Equals("xm")   || strFileType.Equals("mdgz") ||
-           strFileType.Equals("s3gz") || strFileType.Equals("xmgz") ||
-           strFileType.Equals("itgz"))
+           strFileType.Equals("s3gz") || strFileType.Equals("xmgz"))
     return new ModplugCodec();
   else if (strFileType.Equals("nsf") || strFileType.Equals("nsfstream"))
     return new NSFCodec();

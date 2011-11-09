@@ -79,6 +79,7 @@ public:
   static bool GetDirectoryName(const CStdString& strFileName, CStdString& strDescription);
   static void GetDVDDriveIcon( const CStdString& strPath, CStdString& strIcon );
   static void RemoveTempFiles();
+  static void ClearTempFonts();
 
   static void ClearSubtitles();
   static void ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CStdString>& vecSubtitles );
@@ -90,7 +91,6 @@ public:
   static bool ThumbCached(const CStdString& strFileName);
   static void ThumbCacheAdd(const CStdString& strFileName, bool bFileExists);
   static void ThumbCacheClear();
-  static void PlayDVD(const CStdString& strProtocol = "dvd", bool startFromBeginning = false);
   static CStdString GetNextFilename(const CStdString &fn_template, int max);
   static CStdString GetNextPathname(const CStdString &path_template, int max);
   static void TakeScreenshot();

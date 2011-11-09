@@ -70,6 +70,11 @@ public:
   //it uses the same global server connection
   //but its own volume
   int                   stat(const CURL &url, struct stat *statbuff);
+  
+  void AddActiveConnection();
+  void AddIdleConnection();
+  void CheckIfIdle();  
+  void Deinit();  
 
 private:
   bool                  initLib(void);
@@ -78,7 +83,7 @@ private:
   CStdString            getAuthenticatedPath(const CURL &url);
 
   int                   m_OpenConnections;
-  int                   m_LastActive;
+  int                   m_IdleTimeout;
   struct afp_server     *m_pAfpServer;
   struct afp_volume     *m_pAfpVol;
   struct afp_url        *m_pAfpUrl;
@@ -125,6 +130,7 @@ protected:
   int64_t               m_fileSize;
   off_t                 m_fileOffset; // current SEEK pointer
   struct afp_file_info *m_pFp;
+  struct afp_volume    *m_pAfpVol;  
 };
 }
 #endif // _LINUX

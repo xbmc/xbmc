@@ -578,7 +578,7 @@ std::vector<CScraperUrl> CScraper::FindMovie(XFILE::CFileCurl &fcurl, const CStd
     throw CScraperError();  // scraper aborted
 
   if (fSort)
-    std::sort(vcscurl.begin(), vcscurl.end(), RelevanceSortFunction);
+    std::stable_sort(vcscurl.begin(), vcscurl.end(), RelevanceSortFunction);
 
   return vcscurl;
 }

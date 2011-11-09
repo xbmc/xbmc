@@ -41,7 +41,7 @@ void CGUIWrappingListContainer::UpdatePageControl(int offset)
 {
   if (m_pageControl)
   { // tell our pagecontrol (scrollbar or whatever) to update (offset it by our cursor position)
-    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, CorrectOffset(offset, GetCursor()) % GetNumItems());
+    CGUIMessage msg(GUI_MSG_ITEM_SELECT, GetID(), m_pageControl, GetNumItems() ? CorrectOffset(offset, GetCursor()) % GetNumItems() : 0);
     SendWindowMessage(msg);
   }
 }

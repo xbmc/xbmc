@@ -19,9 +19,12 @@
  *
  */
 
+#include "pyrendercapture.h"
+
+#ifdef HAS_PYRENDERCAPTURE
+
 #include "pyutil.h"
 #include "pythreadstate.h"
-#include "pyrendercapture.h"
 #include "cores/VideoRenderers/RenderManager.h"
 
 #ifdef __cplusplus
@@ -223,4 +226,6 @@ namespace PYXBMC
 #ifdef __cplusplus
 }
 #endif
+
+#endif //HAS_PYRENDERCAPTURE
 

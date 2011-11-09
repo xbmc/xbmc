@@ -96,7 +96,7 @@ public:
   bool IsKaraoke() const;
   bool IsCUESheet() const;
   bool IsLastFM() const;
-  bool IsInternetStream() const;
+  bool IsInternetStream(const bool bStrictCheck = false) const;
   bool IsPlayList() const;
   bool IsSmartPlayList() const;
   bool IsPythonScript() const;

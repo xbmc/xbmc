@@ -329,6 +329,8 @@
       <comma>PreviousPicture</comma>
       <plus>ZoomIn</plus>
       <minus>ZoomOut</minus>
+      <return>Rotate</return>
+      <enter>Rotate</enter>
       <r>Rotate</r>
     </keyboard>
   </SlideShow>
@@ -467,4 +469,9 @@
       <i>Back</i>
     </keyboard>
   </AddonInformation>
+  <AddonSettings>
+    <keyboard>
+      <delete>Delete</delete>
+    </keyboard>
+  </AddonSettings>
 </keymap>

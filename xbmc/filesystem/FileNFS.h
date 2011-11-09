@@ -52,6 +52,7 @@ class CNfsConnection : public CCriticalSection
 {     
 public:
   typedef std::map<struct nfsfh  *, unsigned int> tFileKeepAliveMap;  
+  typedef std::map<struct nfs_context *, unsigned int> tOpenContextMap;    
   
   CNfsConnection();
   ~CNfsConnection();
@@ -72,7 +73,6 @@ public:
   void AddActiveConnection();
   void AddIdleConnection();
   void CheckIfIdle();
-  void SetActivityTime();
   void Deinit();
   bool HandleDyLoad();//loads the lib if needed
   //adds the filehandle to the keep alive list or resets
@@ -94,12 +94,14 @@ private:
   int m_OpenConnections;//number of open connections
   unsigned int m_IdleTimeout;//timeout for idle connection close and dyunload
   tFileKeepAliveMap m_KeepAliveTimeouts;//mapping filehandles to its idle timeout
+  tOpenContextMap m_openContextMap;//unique map for tracking all open contexts
   DllLibNfs *m_pLibNfs;//the lib
   std::list<CStdString> m_exportList;//list of exported pathes of current connected servers
   CCriticalSection keepAliveLock;
  
   void clearMembers();
-  bool resetContext();//clear old nfs context and init new context
+  bool getNewContext();//init new context and add to open contexts map
+  void destroyOpenContexts();
   void resolveHost(const CURL &url);//resolve hostname by dnslookup
   void keepAlive(struct nfsfh  *_pFileHandle);
 };
@@ -136,6 +138,7 @@ namespace XFILE
     bool IsValidFile(const CStdString& strFileName);
     int64_t m_fileSize;
     struct nfsfh  *m_pFileHandle;
+    struct nfs_context *m_pNfsContext;//current nfs context    
   };
 }
 #endif // FILENFS_H_

@@ -388,4 +388,9 @@
       <teletext>Back</teletext>
     </remote>
   </Teletext>
+  <AddonSettings>
+    <remote>
+      <clear>Delete</clear>
+    </remote>
+  </AddonSettings>
 </keymap>

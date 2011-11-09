@@ -97,7 +97,7 @@ function ff_h264_idct_add16_neon, export=1
         mov             r1,  r2
         mov             r2,  r3
         ldr             r6,  [sp, #24]
-        movrel          r7,  scan8
+        adr             r7,  scan8
         mov             ip,  #16
 1:      ldrb            r8,  [r7], #1
         ldr             r0,  [r5], #4
@@ -117,6 +117,16 @@ function ff_h264_idct_add16_neon, export=1
         pop             {r4-r8,pc}
 endfunc
 
+        .align
+scan8:  .byte           4+1*8, 5+1*8, 4+2*8, 5+2*8
+        .byte           6+1*8, 7+1*8, 6+2*8, 7+2*8
+        .byte           4+3*8, 5+3*8, 4+4*8, 5+4*8
+        .byte           6+3*8, 7+3*8, 6+4*8, 7+4*8
+        .byte           1+1*8, 2+1*8
+        .byte           1+2*8, 2+2*8
+        .byte           1+4*8, 2+4*8
+        .byte           1+5*8, 2+5*8
+
 function ff_h264_idct_add16intra_neon, export=1
         push            {r4-r8,lr}
         mov             r4,  r0
@@ -124,7 +134,7 @@ function ff_h264_idct_add16intra_neon, export=1
         mov             r1,  r2
         mov             r2,  r3
         ldr             r6,  [sp, #24]
-        movrel          r7,  scan8
+        adr             r7,  scan8
         mov             ip,  #16
 1:      ldrb            r8,  [r7], #1
         ldr             r0,  [r5], #4
@@ -149,7 +159,7 @@ function ff_h264_idct_add8_neon, export=1
         add             r1,  r2,  #16*32
         mov             r2,  r3
         ldr             r6,  [sp, #32]
-        movrel          r7,  scan8+16
+        adr             r7,  scan8+16
         mov             ip,  #7
 1:      ldrb            r8,  [r7], #1
         ldr             r0,  [r5], #4
@@ -353,7 +363,7 @@ function ff_h264_idct8_add4_neon, export=1
         mov             r1,  r2
         mov             r2,  r3
         ldr             r6,  [sp, #24]
-        movrel          r7,  scan8
+        adr             r7,  scan8
         mov             r12, #16
 1:      ldrb            r8,  [r7], #4
         ldr             r0,  [r5], #16
@@ -372,13 +382,3 @@ function ff_h264_idct8_add4_neon, export=1
         bne             1b
         pop             {r4-r8,pc}
 endfunc
-
-        .section .rodata
-scan8:  .byte           4+1*8, 5+1*8, 4+2*8, 5+2*8
-        .byte           6+1*8, 7+1*8, 6+2*8, 7+2*8
-        .byte           4+3*8, 5+3*8, 4+4*8, 5+4*8
-        .byte           6+3*8, 7+3*8, 6+4*8, 7+4*8
-        .byte           1+1*8, 2+1*8
-        .byte           1+2*8, 2+2*8
-        .byte           1+4*8, 2+4*8
-        .byte           1+5*8, 2+5*8

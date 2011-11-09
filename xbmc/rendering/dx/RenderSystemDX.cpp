@@ -806,6 +806,22 @@ void CRenderSystemDX::SetCameraPosition(const CPoint &camera, int screenWidth, i
   D3DXMATRIX mtxProjection;
   D3DXMatrixPerspectiveOffCenterLH(&mtxProjection, (-w - offset.x)*0.5f, (w - offset.x)*0.5f, (-h + offset.y)*0.5f, (h + offset.y)*0.5f, h, 100*h);
   m_pD3DDevice->SetTransform(D3DTS_PROJECTION, &mtxProjection);
+
+  m_world = mtxWorld;
+  m_view = mtxView;
+  m_projection = mtxProjection;
+  m_viewPort = viewport;
+}
+
+void CRenderSystemDX::Project(float &x, float &y, float &z)
+{
+  D3DXVECTOR3 vScreenCoord;
+  D3DXVECTOR3 vLocation(x, y, z);
+
+  D3DXVec3Project(&vScreenCoord, &vLocation, &m_viewPort, &m_projection, &m_view, &m_world);
+  x = vScreenCoord.x;
+  y = vScreenCoord.y;
+  z = 0;
 }
 
 bool CRenderSystemDX::TestRender()

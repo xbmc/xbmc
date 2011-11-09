@@ -130,6 +130,34 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
   return CGUIDialogBoxBase::OnMessage(message);
 }
 
+bool CGUIDialogAddonSettings::OnAction(const CAction& action)
+{
+  if (action.GetID() == ACTION_DELETE_ITEM)
+  {
+    int iControl = GetFocusedControl()->GetID();
+    int controlId = CONTROL_START_SETTING;
+    const TiXmlElement* setting = GetFirstSetting();
+    UpdateFromControls();
+    while (setting)
+    {
+      if (controlId == iControl)
+      {
+        const char* id = setting->Attribute("id");
+        const char* value = setting->Attribute("default");
+        m_settings[id] = value;
+        CreateControls();
+        CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
+        OnMessage(msg);
+        return true;
+      }
+      setting = setting->NextSiblingElement("setting");
+      controlId++;
+    }
+  }
+
+  return CGUIDialogBoxBase::OnAction(action);
+}
+
 void CGUIDialogAddonSettings::OnInitWindow()
 {
   m_currentSection = 0;

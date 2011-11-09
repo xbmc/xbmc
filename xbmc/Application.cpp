@@ -105,6 +105,9 @@
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/FileNFS.h"
 #endif
+#ifdef HAS_FILESYSTEM_AFP
+#include "filesystem/FileAFP.h"
+#endif
 #ifdef HAS_FILESYSTEM_SFTP
 #include "filesystem/FileSFTP.h"
 #endif
@@ -507,8 +510,10 @@ bool CApplication::Create()
   g_settings.LoadProfiles(PROFILES_FILE);
 
   CLog::Log(LOGNOTICE, "-----------------------------------------------------------------------");
-#if defined(__APPLE__)
-  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Mac OS X (%s). Built on %s (Git:%s)", g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
+#if defined(TARGET_DARWIN_OSX)
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Darwin OSX (%s). Built on %s (Git:%s)", g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
+#elif defined(TARGET_DARWIN_IOS)
+  CLog::Log(LOGNOTICE, "Starting XBMC, Platform: Darwin iOS (%s). Built on %s (Git:%s)", g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
 #elif defined(__FreeBSD__)
   CLog::Log(LOGNOTICE, "Starting XBMC, Platform: FreeBSD (%s). Built on %s (Git:%s)", g_sysinfo.GetUnameVersion().c_str(), __DATE__, GIT_REV);
 #elif defined(_LINUX)
@@ -1300,7 +1305,15 @@ void CApplication::StartAirplayServer()
     {
       CAirPlayServer::SetCredentials(usePassword, password);
       std::map<std::string, std::string> txt;
-      txt["deviceid"] = m_network.GetFirstConnectedInterface()->GetMacAddress();
+      CNetworkInterface* iface = g_application.getNetwork().GetFirstConnectedInterface();
+      if (iface)
+      {
+        txt["deviceid"] = iface->GetMacAddress();
+      }
+      else
+      {
+        txt["deviceid"] = "FF:FF:FF:FF:FF:F2";
+      }
       txt["features"] = "0x77";
       txt["model"] = "AppleTV2,1";
       txt["srcvers"] = "101.28";
@@ -2026,6 +2039,7 @@ void CApplication::Render()
   if(!g_Windowing.BeginRender())
     return;
 
+  CDirtyRegionList dirtyRegions = g_windowManager.GetDirty();
   if (RenderNoPresent())
     hasRendered = true;
 
@@ -2065,7 +2079,7 @@ void CApplication::Render()
   m_lastFrameTime = XbmcThreads::SystemClockMillis();
 
   if (flip)
-    g_graphicsContext.Flip(g_windowManager.GetDirty());
+    g_graphicsContext.Flip(dirtyRegions);
   CTimeUtils::UpdateFrameTime(flip);
 
   g_renderManager.UpdateResolution();
@@ -3553,7 +3567,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
 #ifdef HAS_DVD_DRIVE
     // Display the Play Eject dialog
     if (CGUIDialogPlayEject::ShowAndGetInput(item))
-      return MEDIA_DETECT::CAutorun::PlayDisc(!MEDIA_DETECT::CAutorun::CanResumePlayDVD() || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
+      return MEDIA_DETECT::CAutorun::PlayDiscAskResume(item.GetPath());
 #endif
     return true;
   }
@@ -3682,7 +3696,7 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
   // this really aught to be inside !bRestart, but since PlayStack
   // uses that to init playback, we have to keep it outside
   int playlist = g_playlistPlayer.GetCurrentPlaylist();
-  if (playlist == PLAYLIST_VIDEO && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
+  if (item.IsVideo() && g_playlistPlayer.GetPlaylist(playlist).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !g_playlistPlayer.HasPlayedFirstFile() && g_advancedSettings.m_fullScreenOnMovieStart && !g_settings.m_bStartVideoWindowed;
@@ -4813,6 +4827,10 @@ void CApplication::ProcessSlow()
   
 #ifdef HAS_FILESYSTEM_NFS
   gNfsConnection.CheckIfIdle();
+#endif
+
+#ifdef HAS_FILESYSTEM_AFP
+  gAfpConnection.CheckIfIdle();
 #endif
 
 #ifdef HAS_FILESYSTEM_SFTP

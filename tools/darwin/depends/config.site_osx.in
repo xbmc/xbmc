@@ -19,10 +19,10 @@ platform_os_cflags="-arch @use_arch@ -no_compact_linkedit"
 platform_os_ldflags="-arch @use_arch@ -Wl,-arch,@use_arch@ -no_compact_linkedit"
 platform_sdk_path="${platform_path}/SDKs/MacOSX${platform_sdk_version}.sdk"
 
-export NM=/usr/bin/nm
-export CPP=/usr/bin/cpp-${platform_gcc_version}
+export NM=${platform_path}/usr/bin/nm
+export CPP=${platform_path}/usr/bin/cpp-${platform_gcc_version}
 export CXXCPP=${CPP}
-export CPPFLAGS="${CPPFLAGS} -no-cpp-precomp -I${prefix}/include"
+export CPPFLAGS="${CPPFLAGS} -no-cpp-precomp -I${prefix}/include -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
 export CC=/usr/bin/gcc-${platform_gcc_version}
 export CFLAGS="${CFLAGS} -std=gnu89 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
 export LD=${platform_path}/usr/bin/ld
@@ -34,7 +34,7 @@ export AS=${platform_path}/usr/bin/as
 export M4=@use_toolchain@/bin/m4
 export STRIP=${platform_path}/usr/bin/strip
 export RANLIB=${platform_path}/usr/bin/ranlib
-export ACLOCAL="@use_toolchain@/aclocal -I ${prefix}/share/aclocal -I @use_toolchain@/share/aclocal -I /Developer/usr/share/aclocal"
+export ACLOCAL="@use_toolchain@/bin/aclocal -I ${prefix}/share/aclocal -I @use_toolchain@/share/aclocal -I /Developer/usr/share/aclocal"
 export LIBTOOL=@use_toolchain@/bin/glibtool
 export LIBTOOLIZE=@use_toolchain@/bin/glibtoolize
 export PKG_CONFIG_PATH=${prefix}/lib/pkgconfig:${platform_sdk_path}/usr/lib/pkgconfig
