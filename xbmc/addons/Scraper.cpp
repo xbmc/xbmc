@@ -898,6 +898,9 @@ bool CScraper::GetAlbumDetails(CFileCurl &fcurl, const CScraperUrl &scurl, CAlbu
 bool CScraper::GetArtistDetails(CFileCurl &fcurl, const CScraperUrl &scurl,
   const CStdString &sSearch, CArtist &artist)
 {
+  if (!scurl.m_url.size())
+    return false;
+
   CLog::Log(LOGDEBUG, "%s: Reading '%s' ('%s') using %s scraper "
     "(file: '%s', content: '%s', version: '%s')", __FUNCTION__,
     scurl.m_url[0].m_url.c_str(), sSearch.c_str(), Name().c_str(), Path().c_str(),
