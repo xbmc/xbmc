@@ -92,7 +92,7 @@
       <numpadeight>Number8</numpadeight>
       <numpadnine>Number9</numpadnine>
       <backslash>ToggleFullScreen</backslash>
-      <home>XBMC.ActivateWindow(Home)</home>
+      <home>FirstPage</home>
       <end>LastPage</end>
       <!-- Multimedia keyboard keys -->
       <browser_back>Back</browser_back>
