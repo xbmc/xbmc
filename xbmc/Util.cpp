@@ -741,8 +741,13 @@ void CUtil::ClearSubtitles()
 
 void CUtil::ClearTempFonts()
 {
+  CStdString searchPath = "special://temp/fonts/";
+
+  if (!CFile::Exists(searchPath))
+    return;
+
   CFileItemList items;
-  CDirectory::GetDirectory("special://temp/fonts/", items, "", false, false, XFILE::DIR_CACHE_NEVER);
+  CDirectory::GetDirectory(searchPath, items, "", false, false, XFILE::DIR_CACHE_NEVER);
 
   for (int i=0; i<items.Size(); ++i)
   {
