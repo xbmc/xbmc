@@ -294,6 +294,11 @@ bool CPVRFile::Rename(const CURL& url, const CURL& urlnew)
   return false;
 }
 
+bool CPVRFile::Exists(const CURL& url)
+{
+  return g_PVRRecordings->GetByPath(url.Get()) != NULL;
+}
+
 int CPVRFile::IoControl(EIoControl request, void *param)
 {
   if (request == IOCTRL_SEEK_POSSIBLE)

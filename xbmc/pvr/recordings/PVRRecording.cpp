@@ -155,20 +155,36 @@ void CPVRRecording::Update(const CPVRRecording &tag)
   m_strChannelName = tag.m_strChannelName;
   m_strGenre       = tag.m_strGenre;
 
+  CStdString strShow;
+  strShow.Format("%s - ", g_localizeStrings.Get(20364).c_str());
+  if (m_strPlotOutline.Left(strShow.size()).Equals(strShow))
+  {
+    CStdString strEpisode = m_strPlotOutline;
+    CStdString strTitle = m_strDirectory;
+    
+    int pos = strTitle.ReverseFind('/');
+    strTitle.erase(0, pos + 1);
+    strEpisode.erase(0, strShow.size());
+    m_strTitle.Format("%s - %s", strTitle.c_str(), strEpisode);
+    pos = strEpisode.Find('-');
+    strEpisode.erase(0, pos + 2);
+    m_strPlotOutline = strEpisode;
+  }
   UpdatePath();
 }
 
 void CPVRRecording::UpdatePath(void)
 {
   CStdString strTitle = m_strTitle;
+  CStdString strDatetime = m_recordingTime.GetAsSaveString();
   strTitle.Replace('/','-');
 
   if (m_strDirectory != "")
-    m_strFileNameAndPath.Format("pvr://recordings/client_%04i/%s/%s.pvr",
-        m_iClientId, m_strDirectory.c_str(), strTitle.c_str());
+    m_strFileNameAndPath.Format("pvr://recordings/%s/%s/%s.pvr",
+        m_strDirectory.c_str(), strDatetime.c_str(), strTitle.c_str());
   else
-    m_strFileNameAndPath.Format("pvr://recordings/client_%04i/%s.pvr",
-        m_iClientId, strTitle.c_str());
+    m_strFileNameAndPath.Format("pvr://recordings/%s/%s.pvr",
+        strDatetime.c_str(), strTitle.c_str());
 }
 
 const CDateTime &CPVRRecording::RecordingTimeAsLocalTime(void) const
