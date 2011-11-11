@@ -31,7 +31,9 @@
 #include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "utils/log.h"
+#include "utils/StringUtils.h"
 #include "threads/SingleLock.h"
+#include "video/VideoDatabase.h"
 
 using namespace PVR;
 
@@ -59,6 +61,24 @@ void CGUIWindowPVRRecordings::ResetObservers(void)
   g_infoManager.RegisterObserver(this);
 }
 
+CStdString CGUIWindowPVRRecordings::GetResumeString(CFileItem item)
+{
+  CStdString resumeString;
+  if (item.IsPVRRecording())
+  {
+    CVideoDatabase db;
+    if (db.Open())
+    {
+      CBookmark bookmark;
+      CStdString itemPath(item.GetPVRRecordingInfoTag()->m_strStreamURL);
+      if (db.GetResumeBookMark(itemPath, bookmark) )
+        resumeString.Format(g_localizeStrings.Get(12022).c_str(), StringUtils::SecondsToTimeString(lrint(bookmark.timeInSeconds)).c_str());
+      db.Close();
+    }
+  }
+  return resumeString;
+}
+
 void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons &buttons) const
 {
   if (itemNumber < 0 || itemNumber >= m_parent->m_vecItems->Size())
@@ -68,7 +88,11 @@ void CGUIWindowPVRRecordings::GetContextButtons(int itemNumber, CContextButtons 
   buttons.Add(CONTEXT_BUTTON_INFO, 19053);      /* Get Information of this recording */
   buttons.Add(CONTEXT_BUTTON_FIND, 19003);      /* Find similar program */
   buttons.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021); /* Play this recording */
-//buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, 12022);
+  CStdString resumeString = GetResumeString(*pItem);
+  if (!resumeString.IsEmpty())
+  {
+    buttons.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
+  }
   buttons.Add(CONTEXT_BUTTON_RENAME, 118);      /* Rename this recording */
   buttons.Add(CONTEXT_BUTTON_DELETE, 117);      /* Delete this recording */
   buttons.Add(CONTEXT_BUTTON_SORTBY_NAME, 103);       /* sort by name */
@@ -201,7 +225,21 @@ bool CGUIWindowPVRRecordings::OnClickList(CGUIMessage &message)
 
     /* process actions */
     if (iAction == ACTION_SELECT_ITEM || iAction == ACTION_MOUSE_LEFT_CLICK || iAction == ACTION_PLAY)
-      bReturn = PlayFile(pItem.get(), false);
+    {
+      int choice = CONTEXT_BUTTON_PLAY_ITEM;
+      CStdString resumeString = GetResumeString(*pItem);
+      if (!resumeString.IsEmpty())
+      {
+        CContextButtons choices;
+        choices.Add(CONTEXT_BUTTON_RESUME_ITEM, resumeString);
+        choices.Add(CONTEXT_BUTTON_PLAY_ITEM, 12021);
+        choice = CGUIDialogContextMenu::ShowAndGetChoice(choices);
+      }
+      if (choice < 0)
+        bReturn = true;
+      else
+        bReturn = OnContextButtonPlay(pItem.get(), (CONTEXT_BUTTON)choice);
+    }
     else if (iAction == ACTION_CONTEXT_MENU || iAction == ACTION_MOUSE_RIGHT_CLICK)
       m_parent->OnPopupMenu(iItem);
     else if (iAction == ACTION_SHOW_INFO)
@@ -258,8 +296,14 @@ bool CGUIWindowPVRRecordings::OnContextButtonPlay(CFileItem *item, CONTEXT_BUTTO
 {
   bool bReturn = false;
 
-  if (button == CONTEXT_BUTTON_PLAY_ITEM)
+  if ((button == CONTEXT_BUTTON_PLAY_ITEM) ||
+      (button == CONTEXT_BUTTON_RESUME_ITEM))
   {
+    if (button == CONTEXT_BUTTON_RESUME_ITEM)
+    {
+      item->m_lStartOffset = STARTOFFSET_RESUME;
+    }
+
     bReturn = true;
     PlayFile(item, false); /* play recording */
   }
