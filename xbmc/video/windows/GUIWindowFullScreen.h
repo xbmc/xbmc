@@ -46,7 +46,6 @@ public:
   virtual void OnSliderChange(void *data, CGUISliderControl *slider);
 protected:
   virtual EVENT_RESULT OnMouseEvent(const CPoint &point, const CMouseEvent &event);
-  virtual void OnDeinitWindow(int nextWindow) {}; // no out window animation for fullscreen video
 
 private:
   void RenderTTFSubtitles();
