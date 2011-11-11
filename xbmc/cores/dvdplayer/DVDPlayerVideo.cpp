@@ -919,13 +919,14 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
   DVDVideoPicture* pPicture = &picture;
 
 #ifdef HAS_VIDEO_PLAYBACK
+  double config_framerate = m_bFpsInvalid ? 0.0 : m_fFrameRate;
   /* check so that our format or aspect has changed. if it has, reconfigure renderer */
   if (!g_renderManager.IsConfigured()
    || m_output.width != pPicture->iWidth
    || m_output.height != pPicture->iHeight
    || m_output.dwidth != pPicture->iDisplayWidth
    || m_output.dheight != pPicture->iDisplayHeight
-   || m_output.framerate != m_fFrameRate
+   || m_output.framerate != config_framerate
    || m_output.color_format != (unsigned int)pPicture->format
    || m_output.extended_format != pPicture->extended_format
    || ( m_output.color_matrix != pPicture->color_matrix && pPicture->color_matrix != 0 ) // don't reconfigure on unspecified
@@ -935,7 +936,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
    || m_output.color_range != pPicture->color_range)
   {
     CLog::Log(LOGNOTICE, " fps: %f, pwidth: %i, pheight: %i, dwidth: %i, dheight: %i",
-      m_fFrameRate, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
+      config_framerate, pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight);
     unsigned flags = 0;
     if(pPicture->color_range == 1)
       flags |= CONF_FLAGS_YUV_FULLRANGE;
@@ -1055,8 +1056,8 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
       m_bAllowFullscreen = false; // only allow on first configure
     }
 
-    CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, m_bFpsInvalid ? 0.0 : m_fFrameRate, formatstr.c_str());
-    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, m_bFpsInvalid ? 0.0 : m_fFrameRate, flags, pPicture->extended_format))
+    CLog::Log(LOGDEBUG,"%s - change configuration. %dx%d. framerate: %4.2f. format: %s",__FUNCTION__,pPicture->iWidth, pPicture->iHeight, config_framerate, formatstr.c_str());
+    if(!g_renderManager.Configure(pPicture->iWidth, pPicture->iHeight, pPicture->iDisplayWidth, pPicture->iDisplayHeight, config_framerate, flags, pPicture->extended_format))
     {
       CLog::Log(LOGERROR, "%s - failed to configure renderer", __FUNCTION__);
       return EOS_ABORT;
@@ -1066,7 +1067,7 @@ int CDVDPlayerVideo::OutputPicture(const DVDVideoPicture* src, double pts)
     m_output.height = pPicture->iHeight;
     m_output.dwidth = pPicture->iDisplayWidth;
     m_output.dheight = pPicture->iDisplayHeight;
-    m_output.framerate = m_fFrameRate;
+    m_output.framerate = config_framerate;
     m_output.color_format = pPicture->format;
     m_output.extended_format = pPicture->extended_format;
     m_output.color_matrix = pPicture->color_matrix;
@@ -1524,10 +1525,11 @@ void CDVDPlayerVideo::CalcFrameRate()
     if (m_iFrameRateCount >= MathUtils::round_int(framerate) * m_iFrameRateLength)
     {
       //store the calculated framerate if it differs too much from m_fFrameRate
-      if (fabs(m_fFrameRate - (m_fStableFrameRate / m_iFrameRateCount)) > MAXFRAMERATEDIFF)
+      if (fabs(m_fFrameRate - (m_fStableFrameRate / m_iFrameRateCount)) > MAXFRAMERATEDIFF || m_bFpsInvalid)
       {
         CLog::Log(LOGDEBUG,"%s framerate was:%f calculated:%f", __FUNCTION__, m_fFrameRate, m_fStableFrameRate / m_iFrameRateCount);
         m_fFrameRate = m_fStableFrameRate / m_iFrameRateCount;
+        m_bFpsInvalid = false;
       }
 
       //reset the stored framerates

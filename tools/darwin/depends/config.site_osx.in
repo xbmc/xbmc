@@ -19,10 +19,10 @@ platform_os_cflags="-arch @use_arch@ -no_compact_linkedit"
 platform_os_ldflags="-arch @use_arch@ -Wl,-arch,@use_arch@ -no_compact_linkedit"
 platform_sdk_path="${platform_path}/SDKs/MacOSX${platform_sdk_version}.sdk"
 
-export NM=/usr/bin/nm
-export CPP=/usr/bin/cpp-${platform_gcc_version}
+export NM=${platform_path}/usr/bin/nm
+export CPP=${platform_path}/usr/bin/cpp-${platform_gcc_version}
 export CXXCPP=${CPP}
-export CPPFLAGS="${CPPFLAGS} -no-cpp-precomp -I${prefix}/include"
+export CPPFLAGS="${CPPFLAGS} -no-cpp-precomp -I${prefix}/include -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
 export CC=/usr/bin/gcc-${platform_gcc_version}
 export CFLAGS="${CFLAGS} -std=gnu89 -no-cpp-precomp -m${platform_min_version} -isysroot ${platform_sdk_path} ${platform_os_cflags}"
 export LD=${platform_path}/usr/bin/ld

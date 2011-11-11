@@ -850,7 +850,7 @@
 
   <string id="1450">Energiesparmodus des Bildschirms aktivieren</string>
 
-  <string id="2050">Länge</string>
+  <string id="2050">Laufzeit</string>
 
   <string id="2100">Script-Fehler! : %s</string>
   <string id="2101">Neuere Version benötigt - Siehe Logfile</string>
@@ -2806,7 +2806,7 @@
   <string id="36005">Seitenwechsel Befehle aktivieren</string>
   <string id="36006">Der Adapter konnte nicht geöffnet werden</string>
   <string id="36007">Geräte anschalten wenn XBMC startet</string>
-  <string id="36008">Geräe ausschalten wenn XBMC beendet wird</string>
+  <string id="36008">Geräte ausschalten wenn XBMC beendet wird</string>
   <string id="36009">Geräte in den Standby versetzen wenn der Bilschirmschoner aktiviert wird</string>
   <string id="36010">Als inaktiv markieren wenn XBMC beendet wird</string>
   <string id="36011">Der CEC Port konnte nicht gefunden werden. Manuell einstellen.</string>

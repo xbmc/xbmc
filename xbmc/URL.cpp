@@ -160,6 +160,7 @@ void CURL::Parse(const CStdString& strURL1)
   //TODO fix all Addon paths
   CStdString strProtocol2 = GetTranslatedProtocol();
   if(m_strProtocol.Equals("rss") ||
+     m_strProtocol.Equals("rar") ||
      m_strProtocol.Equals("addons"))
     sep = "?";
   else

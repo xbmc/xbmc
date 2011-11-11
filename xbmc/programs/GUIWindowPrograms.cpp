@@ -30,7 +30,6 @@
 #include "utils/LabelFormatter.h"
 #include "Autorun.h"
 #include "guilib/GUIWindowManager.h"
-#include "dialogs/GUIDialogYesNo.h"
 #include "dialogs/GUIDialogKeyboard.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
@@ -236,7 +235,7 @@ bool CGUIWindowPrograms::OnPlayMedia(int iItem)
 
 #ifdef HAS_DVD_DRIVE
   if (pItem->IsDVD())
-    return MEDIA_DETECT::CAutorun::PlayDisc(!MEDIA_DETECT::CAutorun::CanResumePlayDVD() || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
+    return MEDIA_DETECT::CAutorun::PlayDiscAskResume(m_vecItems->Get(iItem)->GetPath());
 #endif
 
   if (pItem->m_bIsFolder) return false;

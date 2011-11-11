@@ -27,6 +27,7 @@
 
 #import "HotKeyController.h"
 #import <IOKit/hidsystem/ev_keymap.h>
+#import <sys/sysctl.h>
 
 #if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5
 #if __LP64__ || NS_BUILD_32_LIKE_64
@@ -132,6 +133,36 @@ NSString* const MediaKeyPreviousNotification  = @"MediaKeyPreviousNotification";
   return m_active;
 }
 
+- (BOOL)getDebuggerActive
+{
+  // Technical Q&A QA1361
+  // returns true if the current process is being debugged (either 
+  // running under the debugger or has a debugger attached post facto).
+  int                 junk;
+  int                 mib[4];
+  struct kinfo_proc   info;
+  size_t              size;
+
+  // initialize the flags so that, if sysctl fails for some bizarre 
+  // reason, we get a predictable result.
+  info.kp_proc.p_flag = 0;
+
+  // initialize mib, which tells sysctl the info we want, in this case
+  // we are looking for information about a specific process ID.
+  mib[0] = CTL_KERN;
+  mib[1] = KERN_PROC;
+  mib[2] = KERN_PROC_PID;
+  mib[3] = getpid();
+
+  // Call sysctl.
+  size = sizeof(info);
+  junk = sysctl(mib, sizeof(mib) / sizeof(*mib), &info, &size, NULL, 0);
+  assert(junk == 0);
+
+  // we are being debugged if the P_TRACED flag is set.
+  return ( (info.kp_proc.p_flag & P_TRACED) != 0 );
+}
+
 // WARNING: do not debugger breakpoint in this routine.
 // It's a system level call back that taps ALL Events
 // and you WILL lose all key control :)
@@ -141,7 +172,8 @@ static CGEventRef tapEventCallback2(CGEventTapProxy proxy, CGEventType type, CGE
 
   if (type == kCGEventTapDisabledByTimeout)
   {
-    CGEventTapEnable([hot_key_controller eventPort], TRUE);
+    if ([hot_key_controller getActive])
+      CGEventTapEnable([hot_key_controller eventPort], TRUE);
     return NULL;
   }
   
@@ -248,16 +280,23 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
 
 -(void)eventTapThread
 {
-  CFRunLoopSourceRef runLoopSource;
-
-  runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorSystemDefault, m_eventPort, 0);
-  CFRunLoopAddSource(CFRunLoopGetCurrent(), runLoopSource, kCFRunLoopCommonModes);
+  m_runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorSystemDefault, m_eventPort, 0);
+  CFRunLoopAddSource(CFRunLoopGetCurrent(), m_runLoopSource, kCFRunLoopCommonModes);
   // Enable the event tap.
   CGEventTapEnable(m_eventPort, TRUE);
 
   CFRunLoopRun();
-  CFRelease(runLoopSource);
-  CFRelease(m_eventPort);
+
+  [self setActive:NO];
+  // Disable the event tap.
+  if (m_eventPort)
+    CGEventTapEnable(m_eventPort, FALSE);
+
+  if (m_runLoopSource)
+    CFRelease(m_runLoopSource);
+  m_runLoopSource = NULL;
+  if (m_eventPort)
+    CFRelease(m_eventPort);
   m_eventPort = NULL;
 }
 
@@ -266,34 +305,48 @@ static CGEventRef tapEventCallback(CGEventTapProxy proxy, CGEventType type, CGEv
   if (self = [super init])
   {
     m_active = NO;
+    m_eventPort = NULL;
+    m_runLoopSource = NULL;
     m_controlSysPower = NO;
     m_controlSysVolume = NO;
-    
-    if (floor(NSAppKitVersionNumber) < 949)
-    {
-      // check runtime, we only allow this on 10.5+
-      m_eventPort = NULL;
-    }
-    else
-    {
-      m_eventPort = CGEventTapCreate(kCGSessionEventTap,
-        kCGHeadInsertEventTap, kCGEventTapOptionDefault,
-        CGEventMaskBit(NX_SYSDEFINED), tapEventCallback, self);
-      if (m_eventPort != NULL)
-      {
-        // Run this in a separate thread so that a slow app
-        // doesn't lag the event tap
-        [NSThread detachNewThreadSelector:@selector(eventTapThread) toTarget:self withObject:nil];
-      }
-    }
   }
   return self;
 }
 
-- (void)dealloc
+- (void)enableTap
 {
-  if (m_eventPort)
-    CFRelease(m_eventPort);
-  [super dealloc];
+  if (![self getDebuggerActive] && ![self getActive] && floor(NSAppKitVersionNumber) >= 949)
+  {
+    // check runtime, we only allow this on 10.5+
+    m_eventPort = CGEventTapCreate(kCGSessionEventTap,
+      kCGHeadInsertEventTap, kCGEventTapOptionDefault,
+      CGEventMaskBit(NX_SYSDEFINED), tapEventCallback, self);
+    if (m_eventPort != NULL)
+    {
+      // Run this in a separate thread so that a slow app
+      // doesn't lag the event tap
+      [NSThread detachNewThreadSelector:@selector(eventTapThread) toTarget:self withObject:nil];
+      [self setActive:YES];
+    }
+  }
+}
+
+- (void)disableTap
+{
+  if ([self getActive])
+  {
+    [self setActive:NO];
+
+    // Disable the event tap.
+    if (m_eventPort)
+      CGEventTapEnable(m_eventPort, FALSE);
+
+    if (m_runLoopSource)
+      CFRelease(m_runLoopSource);
+    m_runLoopSource = NULL;
+    if (m_eventPort)
+      CFRelease(m_eventPort);
+    m_eventPort = NULL;
+  }
 }
 @end

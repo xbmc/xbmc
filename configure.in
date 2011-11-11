@@ -763,9 +763,9 @@ AS_CASE([x$use_libbluray],
 
       , AC_MSG_CHECKING([libbluray version])
         AC_COMPILE_IFELSE(
-            AC_LANG_PROGRAM(
+            [AC_LANG_PROGRAM(
                 [#include <libbluray/bluray.h>]
-               ,[bd_get_playlist_info(0, 0)])
+               ,[bd_get_playlist_info(0, 0)])]
           ,[AC_MSG_RESULT(version has old angle api)
             AC_DEFINE([HAVE_LIBBLURAY_NOANGLE],[],[System has an old api libbluray without angle support])]
           ,[AC_MSG_RESULT(normal)]
@@ -773,10 +773,10 @@ AS_CASE([x$use_libbluray],
 
         AC_MSG_CHECKING([for libbluray log control])
         AC_LINK_IFELSE(
-            AC_LANG_PROGRAM(
+            [AC_LANG_PROGRAM(
                [#include <libbluray/bluray.h>
                 #include <libbluray/log_control.h>]
-              ,[bd_set_debug_mask(0)])
+              ,[bd_set_debug_mask(0)])]
           , AC_MSG_RESULT(yes)
           ,[AC_MSG_RESULT(no)
             AC_DEFINE([HAVE_LIBBLURAY_NOLOGCONTROL],[],[System has an old api libbluray without log support])]

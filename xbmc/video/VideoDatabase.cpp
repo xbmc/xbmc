@@ -3563,8 +3563,14 @@ bool CVideoDatabase::GetPlayCounts(const CStdString &strPath, CFileItemList &ite
 
     return ret;
   }
-
-  int pathID = GetPathId(strPath);
+  int pathID;
+  if (URIUtils::IsPlugin(strPath))
+  {
+    CURL url(strPath);
+    pathID = GetPathId(url.GetWithoutFilename());
+  }
+  else
+    pathID = GetPathId(strPath);
   if (pathID < 0)
     return false; // path (and thus files) aren't in the database
 
@@ -3657,7 +3663,15 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 
 void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdString &date)
 {
-  int id = AddFile(item);
+  int id;
+  if (item.HasProperty("original_listitem_url"))
+  {
+    CFileItem item2(item);
+    item2.SetPath(item.GetProperty("original_listitem_url").asString());
+    id = AddFile(item2);
+  }
+  else
+    id = AddFile(item);
   if (id < 0)
     return;
 
@@ -7671,7 +7685,8 @@ bool CVideoDatabase::ArbitraryExec(const CStdString& strExec)
 
 void CVideoDatabase::ConstructPath(CStdString& strDest, const CStdString& strPath, const CStdString& strFileName)
 {
-  if (URIUtils::IsStack(strFileName) || URIUtils::IsInArchive(strFileName))
+  if (URIUtils::IsStack(strFileName) || 
+      URIUtils::IsInArchive(strFileName) || URIUtils::IsPlugin(strPath))
     strDest = strFileName;
   else
     URIUtils::AddFileToFolder(strPath, strFileName, strDest);
@@ -7682,6 +7697,12 @@ void CVideoDatabase::SplitPath(const CStdString& strFileNameAndPath, CStdString&
   if (URIUtils::IsStack(strFileNameAndPath) || strFileNameAndPath.Mid(0,6).Equals("rar://") || strFileNameAndPath.Mid(0,6).Equals("zip://"))
   {
     URIUtils::GetParentPath(strFileNameAndPath,strPath);
+    strFileName = strFileNameAndPath;
+  }
+  else if (URIUtils::IsPlugin(strFileNameAndPath))
+  {
+    CURL url(strFileNameAndPath);
+    strPath = url.GetWithoutFilename();
     strFileName = strFileNameAndPath;
   }
   else

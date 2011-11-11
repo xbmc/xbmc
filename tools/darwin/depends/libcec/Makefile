@@ -2,7 +2,7 @@ include ../Makefile.include
 
 # lib name, version
 LIBNAME=libcec
-VERSION=0.7
+VERSION=1.0.0
 SOURCE=$(LIBNAME)-$(VERSION)
 ARCHIVE=$(SOURCE).tar.gz
 

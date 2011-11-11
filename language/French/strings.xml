@@ -33,13 +33,13 @@
   <string id="31">Novembre</string>
   <string id="32">Décembre</string>
   
-  <string id="41">Lun.</string>
-  <string id="42">Mar.</string>
-  <string id="43">Mer.</string>
-  <string id="44">Jeu.</string>
-  <string id="45">Ven.</string>
-  <string id="46">Sam.</string>
-  <string id="47">Dim.</string>
+  <string id="41">Lun</string>
+  <string id="42">Mar</string>
+  <string id="43">Mer</string>
+  <string id="44">Jeu</string>
+  <string id="45">Ven</string>
+  <string id="46">Sam</string>
+  <string id="47">Dim</string>
   
   <string id="51">Jan</string>
   <string id="52">Fev</string>
@@ -63,13 +63,13 @@
   <string id="77">SE</string>
   <string id="78">SSE</string>
   <string id="79">S</string>
-  <string id="80">SSW</string>
-  <string id="81">SW</string>
-  <string id="82">WSW</string>
-  <string id="83">W</string>
-  <string id="84">WNW</string>
-  <string id="85">NW</string>
-  <string id="86">NNW</string>
+  <string id="80">SSO</string>
+  <string id="81">SO</string>
+  <string id="82">OSO</string>
+  <string id="83">O</string>
+  <string id="84">ONO</string>
+  <string id="85">NO</string>
+  <string id="86">NNO</string>
   <string id="87">VAR</string>
   
   <string id="98">Vue : Auto</string>
@@ -591,7 +591,7 @@
   <string id="650">Exportation</string>
   <string id="651">Rechercher une médiathèque</string>
   <string id="652">Années</string>
-  <string id="653">MAJ la médiathèque</string>
+  <string id="653">Actualiser la médiathèque</string>
   <string id="654">Voir les infos debug</string>
   <string id="655">Recherche d'exécutable</string>
   <string id="656">Recherche d'une playliste</string>
