@@ -225,6 +225,28 @@ static void setupWindowMenu(void)
 
 - (void) applicationWillTerminate: (NSNotification *) note
 {
+  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self
+    name:NSWorkspaceDidMountNotification object:nil];
+
+  [[[NSWorkspace sharedWorkspace] notificationCenter] removeObserver:self
+    name:NSWorkspaceDidUnmountNotification object:nil];
+
+  NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+
+  [center removeObserver:self name:NSWindowDidMoveNotification object:nil];
+  [center removeObserver:self name:NSWindowDidResizeNotification object:nil];
+
+  [center removeObserver:self name:MediaKeyPower object:nil];
+  [center removeObserver:self name:MediaKeySoundMute object:nil];
+  [center removeObserver:self name:MediaKeySoundUp object:nil];
+  [center removeObserver:self name:MediaKeySoundDown object:nil];
+  [center removeObserver:self name:MediaKeyPlayPauseNotification object:nil];
+  [center removeObserver:self name:MediaKeyFastNotification object:nil];
+  [center removeObserver:self name:MediaKeyRewindNotification object:nil];
+  [center removeObserver:self name:MediaKeyNextNotification object:nil];
+  [center removeObserver:self name:MediaKeyPreviousNotification object:nil];
+
+  [[HotKeyController sharedController] disableTap];
 }
 
 - (void) applicationWillResignActive:(NSNotification *) note
@@ -282,7 +304,7 @@ static void setupWindowMenu(void)
     name:NSWindowDidResizeNotification object:nil];
 
   // create media key handler singlton
-  [HotKeyController sharedController];
+  [[HotKeyController sharedController] enableTap];
   // add media key notifications
   [center addObserver:self
     selector:@selector(powerKeyNotification)
@@ -590,6 +612,7 @@ int main(int argc, char *argv[])
   int status;
   status = SDL_main(gArgc, gArgv);
 
+  [xbmc_delegate applicationWillTerminate:NULL];
   [xbmc_delegate release];
   [pool drain];
 

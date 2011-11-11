@@ -134,7 +134,42 @@ bool CRecentlyAddedJob::UpdateVideo()
     home->SetProperty("LatestEpisode." + value + ".Thumb"         , "");
     home->SetProperty("LatestEpisode." + value + ".Fanart"        , "");
   }  
-  
+
+  i = 0;
+  CFileItemList MusicVideoItems;
+
+  if (videodatabase.GetRecentlyAddedMusicVideosNav("videodb://1/", MusicVideoItems, NUM_ITEMS))
+  {
+    for (; i < MusicVideoItems.Size(); ++i)
+    {
+      CFileItemPtr item = MusicVideoItems.Get(i);
+      CStdString   value;
+      value.Format("%i", i + 1);
+
+      home->SetProperty("LatestMusicVideo." + value + ".Title"       , item->GetLabel());
+      home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , item->GetThumbnailImage());
+      home->SetProperty("LatestMusicVideo." + value + ".Year"        , item->GetVideoInfoTag()->m_iYear);
+      home->SetProperty("LatestMusicVideo." + value + ".Plot"        , item->GetVideoInfoTag()->m_strPlot);
+      home->SetProperty("LatestMusicVideo." + value + ".RunningTime" , item->GetVideoInfoTag()->m_strRuntime);
+      home->SetProperty("LatestMusicVideo." + value + ".Path"        , item->GetVideoInfoTag()->m_strFileNameAndPath);
+      home->SetProperty("LatestMusicVideo." + value + ".Artist"      , item->GetVideoInfoTag()->m_strArtist);
+      home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , item->GetCachedFanart());
+    }
+  }
+  for (; i < NUM_ITEMS; ++i)
+  {
+    CStdString value;
+    value.Format("%i", i + 1);
+    home->SetProperty("LatestMusicVideo." + value + ".Title"       , "");
+    home->SetProperty("LatestMusicVideo." + value + ".Thumb"       , "");
+    home->SetProperty("LatestMusicVideo." + value + ".Year"        , "");
+    home->SetProperty("LatestMusicVideo." + value + ".Plot"        , "");
+    home->SetProperty("LatestMusicVideo." + value + ".RunningTime" , "");
+    home->SetProperty("LatestMusicVideo." + value + ".Path"        , "");
+    home->SetProperty("LatestMusicVideo." + value + ".Artist"      , "");
+    home->SetProperty("LatestMusicVideo." + value + ".Fanart"      , "");
+  }
+
   videodatabase.Close();
   return true;
 }
