@@ -1562,18 +1562,19 @@ void CGUIWindowSettingsCategory::OnSettingChanged(CBaseSettingControl *pSettingC
     CStdString path = g_guiSettings.GetString(strSetting,false);
     VECSOURCES shares;
 
-    g_mediaManager.GetNetworkLocations(shares);
-    g_mediaManager.GetLocalDrives(shares);
-
-    UpdateSettings();
     bool bWriteOnly = true;
 
     if (strSetting.Equals("subtitles.custompath"))
     {
       bWriteOnly = false;
       shares = g_settings.m_videoSources;
-      g_mediaManager.GetLocalDrives(shares);
     }
+
+    g_mediaManager.GetNetworkLocations(shares);
+    g_mediaManager.GetLocalDrives(shares);
+
+    UpdateSettings();
+
     if (CGUIDialogFileBrowser::ShowAndGetDirectory(shares, g_localizeStrings.Get(pSettingString->m_iHeadingString), path, bWriteOnly))
     {
       pSettingString->SetData(path);
