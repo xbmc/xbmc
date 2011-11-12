@@ -931,10 +931,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(enabled);
       }
     }
-    else if (strSetting.Equals("weather.scriptsettings"))
+    else if (strSetting.Equals("weather.addonsettings"))
     {
       AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("weather.script"), addon, ADDON_SCRIPT_WEATHER))
+      if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("weather.addon"), addon, ADDON_SCRIPT_WEATHER))
       {
         CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
         if (pControl)
@@ -977,9 +977,9 @@ void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 {
   CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-  if (strSetting.Equals("weather.scriptsettings"))
+  if (strSetting.Equals("weather.addonsettings"))
   {
-    CStdString name = g_guiSettings.GetString("weather.script");
+    CStdString name = g_guiSettings.GetString("weather.addon");
     AddonPtr addon;
     if (CAddonMgr::Get().GetAddon(name, addon, ADDON_SCRIPT_WEATHER))
     { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
