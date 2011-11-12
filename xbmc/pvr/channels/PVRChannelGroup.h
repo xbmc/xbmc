@@ -367,18 +367,6 @@ namespace PVR
      */
     virtual int GetEPGNext(CFileItemList &results);
 
-    /*!
-     * @brief Get the start time of the first entry.
-     * @return The start time.
-     */
-    virtual const CDateTime GetFirstEPGDate(void);
-
-    /*!
-      * @brief Get the end time of the last entry.
-      * @return The end time.
-      */
-    virtual const CDateTime GetLastEPGDate(void);
-
   protected:
     /*!
      * @brief Load the channels stored in the database.

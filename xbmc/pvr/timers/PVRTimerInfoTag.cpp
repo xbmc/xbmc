@@ -360,9 +360,9 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
       return;
 
     /* try to set the timer on the epg tag that matches with a 2 minute margin */
-    m_epgInfo = (CEpgInfoTag *) epg->GetTagBetween(StartAsLocalTime() - CDateTimeSpan(0, 0, 2, 0), EndAsLocalTime() + CDateTimeSpan(0, 0, 2, 0));
+    m_epgInfo = (CEpgInfoTag *) epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
     if (!m_epgInfo)
-      m_epgInfo = (CEpgInfoTag *) epg->GetTagAround(StartAsLocalTime());
+      m_epgInfo = (CEpgInfoTag *) epg->GetTagAround(StartAsUTC());
 
     if (m_epgInfo)
       m_epgInfo->SetTimer(this);
