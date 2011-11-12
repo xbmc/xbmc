@@ -56,7 +56,6 @@ namespace PERIPHERALS
     virtual bool StandbyCecDevices(CEC::cec_logical_address iLogicalAddress);
 
     virtual bool SendPing(void);
-    virtual bool StartBootloader(void);
     virtual bool SetHdmiPort(int iHdmiPort);
 
     virtual void OnSettingChanged(const CStdString &strChangedSetting);
