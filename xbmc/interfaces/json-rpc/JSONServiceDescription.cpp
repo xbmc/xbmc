@@ -782,14 +782,14 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
   // Let's check the type of the provided parameter
   if (!IsType(value, type.type))
   {
-    CLog::Log(LOGWARNING, "JSONRPC: Type mismatch in type %s", type.name.c_str());
+    CLog::Log(LOGDEBUG, "JSONRPC: Type mismatch in type %s", type.name.c_str());
     errorMessage.Format("Invalid type %s received", ValueTypeToString(value.type()));
     errorData["message"] = errorMessage.c_str();
     return InvalidParams;
   }
   else if (value.isNull() && !HasType(type.type, NullValue))
   {
-    CLog::Log(LOGWARNING, "JSONRPC: Value is NULL in type %s", type.name.c_str());
+    CLog::Log(LOGDEBUG, "JSONRPC: Value is NULL in type %s", type.name.c_str());
     errorData["message"] = "Received value is null";
     return InvalidParams;
   }
@@ -812,7 +812,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
 
     if (!ok)
     {
-      CLog::Log(LOGWARNING, "JSONRPC: Value in type %s does not match any of the union type definitions", type.name.c_str());
+      CLog::Log(LOGDEBUG, "JSONRPC: Value in type %s does not match any of the union type definitions", type.name.c_str());
       errorData["message"] = "Received value does not match any of the union type definitions";
       return InvalidParams;
     }
@@ -829,7 +829,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
 
       if (status != OK)
       {
-        CLog::Log(LOGWARNING, "JSONRPC: Value does not match extended type %s of type %s", type.extends.at(extendsIndex).ID.c_str(), type.name.c_str());
+        CLog::Log(LOGDEBUG, "JSONRPC: Value does not match extended type %s of type %s", type.extends.at(extendsIndex).ID.c_str(), type.name.c_str());
         errorMessage.Format("value does not match extended type %s", type.extends.at(extendsIndex).ID.c_str(), type.name.c_str());
         errorData["message"] = errorMessage.c_str();
         return status;
@@ -846,7 +846,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
     // Check the number of items against minItems and maxItems
     if ((type.minItems > 0 && value.size() < type.minItems) || (type.maxItems > 0 && value.size() > type.maxItems))
     {
-      CLog::Log(LOGWARNING, "JSONRPC: Number of array elements does not match minItems and/or maxItems in type %s", type.name.c_str());
+      CLog::Log(LOGDEBUG, "JSONRPC: Number of array elements does not match minItems and/or maxItems in type %s", type.name.c_str());
       if (type.minItems > 0 && type.maxItems > 0)
         errorMessage.Format("Between %d and %d array items expected but %d received", type.minItems, type.maxItems, value.size());
       else if (type.minItems > 0)
@@ -873,7 +873,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
         outputValue.push_back(temp);
         if (status != OK)
         {
-          CLog::Log(LOGWARNING, "JSONRPC: Array element at index %u does not match in type %s", arrayIndex, type.name.c_str());
+          CLog::Log(LOGDEBUG, "JSONRPC: Array element at index %u does not match in type %s", arrayIndex, type.name.c_str());
           errorMessage.Format("array element at index %u does not match", arrayIndex);
           errorData["message"] = errorMessage.c_str();
           return status;
@@ -893,7 +893,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
       // allowed there is no need to check every element
       if (value.size() < type.items.size() || (value.size() != type.items.size() && type.additionalItems.size() == 0))
       {
-        CLog::Log(LOGWARNING, "JSONRPC: One of the array elements does not match in type %s", type.name.c_str());
+        CLog::Log(LOGDEBUG, "JSONRPC: One of the array elements does not match in type %s", type.name.c_str());
         errorMessage.Format("%d array elements expected but %d received", type.items.size(), value.size());
         errorData["message"] = errorMessage.c_str();
         return InvalidParams;
@@ -908,7 +908,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
         JSON_STATUS status = checkType(value[arrayIndex], type.items.at(arrayIndex), outputValue[arrayIndex], errorData["property"]);
         if (status != OK)
         {
-          CLog::Log(LOGWARNING, "JSONRPC: Array element at index %u does not match with items schema in type %s", arrayIndex, type.name.c_str());
+          CLog::Log(LOGDEBUG, "JSONRPC: Array element at index %u does not match with items schema in type %s", arrayIndex, type.name.c_str());
           return status;
         }
       }
@@ -933,7 +933,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
 
           if (!ok)
           {
-            CLog::Log(LOGWARNING, "JSONRPC: Array contains non-conforming additional items in type %s", type.name.c_str());
+            CLog::Log(LOGDEBUG, "JSONRPC: Array contains non-conforming additional items in type %s", type.name.c_str());
             errorMessage.Format("Array element at index %u does not match the \"additionalItems\" schema", arrayIndex);
             errorData["message"] = errorMessage.c_str();
             return InvalidParams;
@@ -952,7 +952,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
           // If two elements are the same they are not unique
           if (outputValue[checkingIndex] == outputValue[checkedIndex])
           {
-            CLog::Log(LOGWARNING, "JSONRPC: Not unique array element at index %u and %u in type %s", checkingIndex, checkedIndex, type.name.c_str());
+            CLog::Log(LOGDEBUG, "JSONRPC: Not unique array element at index %u and %u in type %s", checkingIndex, checkedIndex, type.name.c_str());
             errorMessage.Format("Array element at index %u is not unique (same as array element at index %u)", checkingIndex, checkedIndex);
             errorData["message"] = errorMessage.c_str();
             return InvalidParams;
@@ -978,7 +978,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
         JSON_STATUS status = checkType(value[propertiesIterator->second.name], propertiesIterator->second, outputValue[propertiesIterator->second.name], errorData["property"]);
         if (status != OK)
         {
-          CLog::Log(LOGWARNING, "JSONRPC: Invalid property \"%s\" in type %s", propertiesIterator->second.name.c_str(), type.name.c_str());
+          CLog::Log(LOGDEBUG, "JSONRPC: Invalid property \"%s\" in type %s", propertiesIterator->second.name.c_str(), type.name.c_str());
           return status;
         }
         handled++;
@@ -987,7 +987,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
         outputValue[propertiesIterator->second.name] = propertiesIterator->second.defaultValue;
       else
       {
-        CLog::Log(LOGWARNING, "JSONRPC: Missing property \"%s\" in type %s", propertiesIterator->second.name.c_str(), type.name.c_str());
+        CLog::Log(LOGDEBUG, "JSONRPC: Missing property \"%s\" in type %s", propertiesIterator->second.name.c_str(), type.name.c_str());
         errorData["property"]["name"] = propertiesIterator->second.name.c_str();
         errorData["property"]["type"] = SchemaValueTypeToString(propertiesIterator->second.type);
         errorData["message"] = "Missing property";
@@ -1021,7 +1021,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
           JSON_STATUS status = checkType(value[iter->first], *(type.additionalProperties), outputValue[iter->first], errorData["property"]);
           if (status != OK)
           {
-            CLog::Log(LOGWARNING, "JSONRPC: Invalid additional property \"%s\" in type %s", iter->first.c_str(), type.name.c_str());
+            CLog::Log(LOGDEBUG, "JSONRPC: Invalid additional property \"%s\" in type %s", iter->first.c_str(), type.name.c_str());
             return status;
           }
         }
@@ -1057,7 +1057,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
 
     if (!valid)
     {
-      CLog::Log(LOGWARNING, "JSONRPC: Value does not match any of the enum values in type %s", type.name.c_str());
+      CLog::Log(LOGDEBUG, "JSONRPC: Value does not match any of the enum values in type %s", type.name.c_str());
       errorData["message"] = "Received value does not match any of the defined enum values";
       return InvalidParams;
     }
@@ -1077,7 +1077,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
     // Check maximum
         (type.exclusiveMaximum && numberValue >= type.maximum) || (!type.exclusiveMaximum && numberValue > type.maximum))        
     {
-      CLog::Log(LOGWARNING, "JSONRPC: Value does not lay between minimum and maximum in type %s", type.name.c_str());
+      CLog::Log(LOGDEBUG, "JSONRPC: Value does not lay between minimum and maximum in type %s", type.name.c_str());
       if (value.isDouble())
         errorMessage.Format("Value between %f (%s) and %f (%s) expected but %f received", 
           type.minimum, type.exclusiveMinimum ? "exclusive" : "inclusive", type.maximum, type.exclusiveMaximum ? "exclusive" : "inclusive", numberValue);
@@ -1090,7 +1090,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
     // Check divisibleBy
     if ((HasType(type.type, IntegerValue) && type.divisibleBy > 0 && ((int)numberValue % type.divisibleBy) != 0))
     {
-      CLog::Log(LOGWARNING, "JSONRPC: Value does not meet divisibleBy requirements in type %s", type.name.c_str());
+      CLog::Log(LOGDEBUG, "JSONRPC: Value does not meet divisibleBy requirements in type %s", type.name.c_str());
       errorMessage.Format("Value should be divisible by %d but %d received", type.divisibleBy, (int)numberValue);
       errorData["message"] = errorMessage.c_str();
       return InvalidParams;
@@ -1103,7 +1103,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
     int size = value.asString().size();
     if (size < type.minLength)
     {
-      CLog::Log(LOGWARNING, "JSONRPC: Value does not meet minLength requirements in type %s", type.name.c_str());
+      CLog::Log(LOGDEBUG, "JSONRPC: Value does not meet minLength requirements in type %s", type.name.c_str());
       errorMessage.Format("Value should have a minimum length of %d but has a length of %d", type.minLength, size);
       errorData["message"] = errorMessage.c_str();
       return InvalidParams;
@@ -1111,7 +1111,7 @@ JSON_STATUS CJSONServiceDescription::checkType(const CVariant &value, const JSON
 
     if (type.maxLength >= 0 && size > type.maxLength)
     {
-      CLog::Log(LOGWARNING, "JSONRPC: Value does not meet maxLength requirements in type %s", type.name.c_str());
+      CLog::Log(LOGDEBUG, "JSONRPC: Value does not meet maxLength requirements in type %s", type.name.c_str());
       errorMessage.Format("Value should have a maximum length of %d but has a length of %d", type.maxLength, size);
       errorData["message"] = errorMessage.c_str();
       return InvalidParams;
@@ -1165,7 +1165,7 @@ bool CJSONServiceDescription::parseMethod(const CVariant &value, JsonRpcMethod &
          (parameter.isMember("$ref") && !parameter["$ref"].isString()) ||
          (parameter.isMember("extends") && !parameter["extends"].isString() && !parameter["extends"].isArray()))
       {
-        CLog::Log(LOGWARNING, "JSONRPC: Method %s has a badly defined parameter", method.name.c_str());
+        CLog::Log(LOGDEBUG, "JSONRPC: Method %s has a badly defined parameter", method.name.c_str());
         return false;
       }
 
@@ -1207,7 +1207,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
     std::map<std::string, JSONSchemaTypeDefinition>::const_iterator iter = m_types.find(refType);
     if (refType.length() <= 0 || iter == m_types.end())
     {
-      CLog::Log(LOGWARNING, "JSONRPC: JSON schema type %s references an unknown type %s", type.name.c_str(), refType.c_str());
+      CLog::Log(LOGDEBUG, "JSONRPC: JSON schema type %s references an unknown type %s", type.name.c_str(), refType.c_str());
       return false;
     }
     
@@ -1364,11 +1364,11 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
           type.hasAdditionalProperties = false;
           delete type.additionalProperties;
           type.additionalProperties = NULL;
-          CLog::Log(LOGWARNING, "JSONRPC: Invalid additionalProperties schema definition in type %s", type.name.c_str());
+          CLog::Log(LOGDEBUG, "JSONRPC: Invalid additionalProperties schema definition in type %s", type.name.c_str());
         }
       }
       else
-        CLog::Log(LOGWARNING, "JSONRPC: Invalid additionalProperties definition in type %s", type.name.c_str());
+        CLog::Log(LOGDEBUG, "JSONRPC: Invalid additionalProperties definition in type %s", type.name.c_str());
     }
   }
 
@@ -1408,7 +1408,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
       // If it is not a (array of) schema and not a bool (default value is false)
       // it has an invalid value
       else if (!value["additionalItems"].isBoolean())
-        CLog::Log(LOGWARNING, "Invalid \"additionalItems\" value for type %s", type.name.c_str());
+        CLog::Log(LOGDEBUG, "Invalid \"additionalItems\" value for type %s", type.name.c_str());
     }
 
     // If the "items" field is a single object
@@ -1523,7 +1523,7 @@ bool CJSONServiceDescription::parseTypeDefinition(const CVariant &value, JSONSch
       // If the type of the default value definition does not
       // match the type of the parameter we have to log this
       if (value.isMember("default") && !IsType(value["default"], type.type))
-        CLog::Log(LOGWARNING, "JSONRPC: Parameter %s has an invalid default value", type.name.c_str());
+        CLog::Log(LOGDEBUG, "JSONRPC: Parameter %s has an invalid default value", type.name.c_str());
       
       // If the type contains an "enum" we need to get the
       // default value from the first enum value
