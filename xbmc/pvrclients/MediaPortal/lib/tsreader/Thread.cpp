@@ -58,7 +58,7 @@ bool CThread::IsThreadRunning()
 long CThread::StartThread()
 {
   ResetEvent(m_hStopEvent);
-  m_ThreadHandle = (HANDLE) _beginthread(&CThread::thread_function, 0, (void *) this);
+  m_ThreadHandle = (HANDLE) _beginthread(&CThread::staticThread, 0, (void *) this);
   if (m_ThreadHandle == INVALID_HANDLE_VALUE)
     return E_FAIL;
 
@@ -95,13 +95,13 @@ bool CThread::ThreadIsStopping(unsigned long dwTimeoutMilliseconds)
   return (result != WAIT_TIMEOUT);
 }
 
-void CThread::InternalThreadProc()
+void CThread::Process()
 {
   ResetEvent(m_hDoneEvent);
   m_bThreadRunning=TRUE;
   try
   {
-    ThreadProc();
+    Run();
   }
   catch (LPWSTR pStr)
   {
@@ -111,10 +111,10 @@ void CThread::InternalThreadProc()
   m_bThreadRunning=FALSE;
 }
 
-void CThread::thread_function(void* p)
+THREADFUNC CThread::staticThread(void* data)
 {
-  CThread *thread = reinterpret_cast<CThread *>(p);
-  thread->InternalThreadProc();
+  CThread *thread = reinterpret_cast<CThread *>(data);
+  thread->Process();
 }
 
 tThreadId CThread::ThreadId(void)

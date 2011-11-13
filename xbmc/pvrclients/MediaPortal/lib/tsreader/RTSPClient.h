@@ -39,7 +39,6 @@ public:
   void Stop();
   bool IsRunning();
   long Duration();
-  bool Run();
   bool Pause();
   bool IsPaused();
   void Continue();
@@ -90,7 +89,7 @@ public:
   //thread
   void StartBufferThread();
   void StopBufferThread();
-  virtual void ThreadProc();
+  virtual void Run();
   bool m_BufferThreadActive;
   long m_duration;
   double m_fStart;
