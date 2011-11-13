@@ -95,7 +95,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel,
 
   if (timer.iEpgUid > 0)
   {
-    m_epgInfo = channel->GetEPG()->GetTag(timer.iEpgUid, m_StartTime);
+    if (channel && channel->GetEPG())
+      m_epgInfo = channel->GetEPG()->GetTag(timer.iEpgUid, m_StartTime);
     if (m_epgInfo)
     {
       m_strGenre = m_epgInfo->Genre();
