@@ -972,18 +972,6 @@ bool CPVRPersistGroupJob::DoWork(void)
   return m_group->Persist();
 }
 
-const CDateTime CPVRChannelGroup::GetFirstEPGDate(void)
-{
-  // TODO should use two separate containers, one for radio, one for tv
-  return g_EpgContainer.GetFirstEPGDate();
-}
-
-const CDateTime CPVRChannelGroup::GetLastEPGDate(void)
-{
-  // TODO should use two separate containers, one for radio, one for tv
-  return g_EpgContainer.GetLastEPGDate();
-}
-
 int CPVRChannelGroup::GetEPGSearch(CFileItemList &results, const EpgSearchFilter &filter)
 {
   int iInitialSize = results.Size();

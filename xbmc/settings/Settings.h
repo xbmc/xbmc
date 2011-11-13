@@ -59,7 +59,7 @@
 #define VOLUME_MINIMUM -6000  // -60dB
 #define VOLUME_MAXIMUM 0      // 0dB
 #define VOLUME_DRC_MINIMUM 0    // 0dB
-#define VOLUME_DRC_MAXIMUM 3000 // 30dB
+#define VOLUME_DRC_MAXIMUM 6000 // 60dB
 
 #define VIEW_MODE_NORMAL        0
 #define VIEW_MODE_ZOOM          1

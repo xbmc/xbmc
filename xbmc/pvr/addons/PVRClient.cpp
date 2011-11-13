@@ -211,6 +211,8 @@ inline void PVRWriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER
   addonTimer.strSummary        = xbmcTimer.m_strSummary.c_str();
   addonTimer.iMarginStart      = xbmcTimer.m_iMarginStart;
   addonTimer.iMarginEnd        = xbmcTimer.m_iMarginEnd;
+  addonTimer.iGenreType        = xbmcTimer.m_iGenreType;
+  addonTimer.iGenreSubType     = xbmcTimer.m_iGenreSubType;
 }
 
 /*!

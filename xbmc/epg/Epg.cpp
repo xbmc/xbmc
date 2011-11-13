@@ -268,12 +268,12 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
 
   if (!m_nowActive || !m_nowActive->IsActive())
   {
-    CDateTime now = CDateTime::GetCurrentDateTime();
+    CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
     /* one of the first items will always match if the list is sorted */
     for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
     {
       CEpgInfoTag *tag = at(iTagPtr);
-      if (tag->StartAsLocalTime() <= now && tag->EndAsLocalTime() > now)
+      if (tag->StartAsUTC() <= now && tag->EndAsUTC() > now)
       {
         m_nowActive = tag;
         break;
@@ -295,10 +295,10 @@ const CEpgInfoTag *CEpg::InfoTagNext(void) const
   }
   else if (size() >  0)
   {
-    CDateTime now = CDateTime::GetCurrentDateTime();
+    CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
     for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
     {
-      if (at(iTagPtr)->StartAsLocalTime() > now)
+      if (at(iTagPtr)->StartAsUTC() > now)
         return at(iTagPtr);
     }
   }
@@ -367,7 +367,7 @@ const CEpgInfoTag *CEpg::GetTagBetween(const CDateTime &beginTime, const CDateTi
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
     CEpgInfoTag *tag = at(iTagPtr);
-    if (tag->StartAsLocalTime() >= beginTime && tag->EndAsLocalTime() <= endTime)
+    if (tag->StartAsUTC() >= beginTime && tag->EndAsUTC() <= endTime)
     {
       returnTag = tag;
       break;
@@ -386,7 +386,7 @@ const CEpgInfoTag *CEpg::GetTagAround(const CDateTime &time) const
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
   {
     CEpgInfoTag *tag = at(iTagPtr);
-    if ((tag->StartAsLocalTime() <= time) && (tag->EndAsLocalTime() >= time))
+    if ((tag->StartAsUTC() <= time) && (tag->EndAsUTC() >= time))
     {
       returnTag = tag;
       break;
@@ -477,8 +477,8 @@ void CEpg::UpdateFirstAndLastDates(void)
   /* update the first and last date */
   if (size() > 0)
   {
-    m_firstDate = at(0)->StartAsLocalTime();
-    m_lastDate = at(size() - 1)->EndAsLocalTime();
+    m_firstDate = at(0)->StartAsUTC();
+    m_lastDate = at(size() - 1)->EndAsUTC();
   }
   else
   {
@@ -493,7 +493,7 @@ bool CEpg::UpdateEntries(const CEpg &epg, bool bStoreInDb /* = true */)
   CSingleLock lock(m_critSection);
 
   /* remove tags from the current list that will be replaced */
-  RemoveTagsBetween(epg.GetFirstDate().GetAsUTCDateTime(), epg.GetLastDate().GetAsUTCDateTime(), bStoreInDb);
+  RemoveTagsBetween(epg.GetFirstDate(), epg.GetLastDate(), bStoreInDb);
 
   /* copy over tags */
   for (unsigned int iTagPtr = 0; iTagPtr < epg.size(); iTagPtr++)

@@ -345,6 +345,8 @@
       <comma>PreviousPicture</comma>
       <plus>ZoomIn</plus>
       <minus>ZoomOut</minus>
+      <return>Rotate</return>
+      <enter>Rotate</enter>
       <r>Rotate</r>
     </keyboard>
   </SlideShow>

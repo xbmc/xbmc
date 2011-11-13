@@ -169,15 +169,15 @@ namespace EPG
 
     /*!
      * @brief Get the event that occurs at the given time.
-     * @param time The time to find the event for.
+     * @param time The time in UTC to find the event for.
      * @return The found tag or NULL if it wasn't found.
      */
     virtual const CEpgInfoTag *GetTagAround(const CDateTime &time) const;
 
     /*!
      * Get the event that occurs between the given begin and end time.
-     * @param beginTime Minimum start time of the event.
-     * @param endTime Maximum end time of the event.
+     * @param beginTime Minimum start time in UTC of the event.
+     * @param endTime Maximum end time in UTC of the event.
      * @return The found tag or NULL if it wasn't found.
      */
     virtual const CEpgInfoTag *GetTagBetween(const CDateTime &beginTime, const CDateTime &endTime) const;
@@ -189,7 +189,7 @@ namespace EPG
      * If it wasn't found, try finding the event with the given start time
      *
      * @param uniqueID The unique ID of the event to find.
-     * @param beginTime The start time of the event to find if it wasn't found by it's unique ID.
+     * @param beginTime The start time in UTC of the event to find if it wasn't found by it's unique ID.
      * @return The found tag or NULL if it wasn't found.
      */
     virtual CEpgInfoTag *GetTag(int uniqueID, const CDateTime &beginTime) const;
@@ -236,13 +236,13 @@ namespace EPG
 
     /*!
      * @brief Get the start time of the first entry in this table.
-     * @return The first date.
+     * @return The first date in UTC.
      */
     virtual const CDateTime &GetFirstDate(void) const;
 
     /*!
      * @brief Get the end time of the last entry in this table.
-     * @return The last date.
+     * @return The last date in UTC.
      */
     virtual const CDateTime &GetLastDate(void) const;
 

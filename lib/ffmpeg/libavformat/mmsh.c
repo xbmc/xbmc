@@ -284,7 +284,7 @@ static int mmsh_open_internal(URLContext *h, const char *uri, int flags, int tim
                    CLIENTGUID
                    "Pragma: stream-switch-count=%d\r\n"
                    "Pragma: stream-switch-entry=%s\r\n"
-                   "Pragma: no-cache,rate)1.000000,stream-time=%u"
+                   "Pragma: no-cache,rate=1.000000,stream-time=%u"
                    "Connection: Close\r\n\r\n",
                    host, port, mmsh->request_seq++, mms->stream_num, stream_selection, timestamp);
     av_freep(&stream_selection);

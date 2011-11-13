@@ -58,6 +58,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(void)
   m_iMarginStart       = g_guiSettings.GetInt("pvrrecord.marginstart");
   m_iMarginEnd         = g_guiSettings.GetInt("pvrrecord.marginend");
   m_strGenre           = "";
+  m_iGenreType         = 0;
+  m_iGenreSubType      = 0;
   m_StartTime          = CDateTime::GetUTCDateTime();
   m_StopTime           = m_StartTime;
   m_state              = PVR_TIMER_STATE_SCHEDULED;
@@ -83,6 +85,8 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel,
   m_iMarginStart       = timer.iMarginStart;
   m_iMarginEnd         = timer.iMarginEnd;
   m_strGenre           = CEpg::ConvertGenreIdToString(timer.iGenreType, timer.iGenreSubType);
+  m_iGenreType         = timer.iGenreType;
+  m_iGenreSubType      = timer.iGenreSubType;
   m_epgInfo            = NULL;
   m_channel            = channel;
   m_bIsRadio           = channel && channel->IsRadio();
@@ -93,7 +97,11 @@ CPVRTimerInfoTag::CPVRTimerInfoTag(const PVR_TIMER &timer, CPVRChannel *channel,
   {
     m_epgInfo = channel->GetEPG()->GetTag(timer.iEpgUid, m_StartTime);
     if (m_epgInfo)
+    {
       m_strGenre = m_epgInfo->Genre();
+      m_iGenreType = m_epgInfo->GenreType();
+      m_iGenreSubType = m_epgInfo->GenreSubType();
+    }
   }
 
   UpdateSummary();
@@ -308,12 +316,15 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
   m_iMarginEnd        = tag.m_iMarginEnd;
   m_epgInfo           = tag.m_epgInfo;
   m_strGenre          = tag.m_strGenre;
-
+  m_iGenreType        = tag.m_iGenreType;
+  m_iGenreSubType     = tag.m_iGenreSubType;
   /* try to find an epg event */
   UpdateEpgEvent();
   if (m_epgInfo != NULL)
   {
     m_strGenre = m_epgInfo->Genre();
+    m_iGenreType = m_epgInfo->GenreType();
+    m_iGenreSubType = m_epgInfo->GenreSubType();
     m_epgInfo->SetTimer(this);
   }
 
@@ -349,9 +360,9 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
       return;
 
     /* try to set the timer on the epg tag that matches with a 2 minute margin */
-    m_epgInfo = (CEpgInfoTag *) epg->GetTagBetween(StartAsLocalTime() - CDateTimeSpan(0, 0, 2, 0), EndAsLocalTime() + CDateTimeSpan(0, 0, 2, 0));
+    m_epgInfo = (CEpgInfoTag *) epg->GetTagBetween(StartAsUTC() - CDateTimeSpan(0, 0, 2, 0), EndAsUTC() + CDateTimeSpan(0, 0, 2, 0));
     if (!m_epgInfo)
-      m_epgInfo = (CEpgInfoTag *) epg->GetTagAround(StartAsLocalTime());
+      m_epgInfo = (CEpgInfoTag *) epg->GetTagAround(StartAsUTC());
 
     if (m_epgInfo)
       m_epgInfo->SetTimer(this);
@@ -471,6 +482,8 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
   newTag->m_iClientChannelUid = channel->UniqueID();
   newTag->m_iClientId         = channel->ClientID();
   newTag->m_bIsRadio          = channel->IsRadio();
+  newTag->m_iGenreType        = tag.GenreType();
+  newTag->m_iGenreSubType     = tag.GenreSubType();
   newTag->SetStartFromUTC(newStart);
   newTag->SetEndFromUTC(newEnd);
 

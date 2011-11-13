@@ -1308,7 +1308,7 @@ namespace JSONRPC
         "\"type\": \"object\","
         "\"properties\": {"
           "\"protocol\": { \"type\": \"string\", \"enum\": [ \"http\" ], \"required\": true },"
-          "\"id\": { \"type\": \"string\", \"required\": true },"
+          "\"details\": { \"type\": \"any\", \"required\": true, \"description\": \"Transport specific details on how/from where to download the given file\" },"
           "\"mode\": { \"type\": \"string\", \"enum\": [ \"redirect\", \"direct\" ], \"required\": true, \"description\": \"Direct mode allows using Files.Download whereas redirect mode requires the usage of a different protocol\" }"
         "}"
       "}"

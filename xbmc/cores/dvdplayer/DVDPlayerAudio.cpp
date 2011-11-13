@@ -386,12 +386,18 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
 
     CDVDMsg* pMsg;
     int priority = (m_speed == DVD_PLAYSPEED_PAUSE && m_started) ? 1 : 0;
-
     int timeout;
-    if(m_duration > 0)
-      timeout = (int)(1000 * (m_duration / DVD_TIME_BASE + m_dvdAudio.GetCacheTime()));
+
+    double cached = m_dvdAudio.GetCacheTime();
+    if(cached > 0.0)
+    {
+      if(cached > 0.2)
+        timeout = (int)(1000 * (cached - 0.2));
+      else
+        timeout = 0;    /* in a hurry, try to fill with something as soon as possible */
+    }
     else
-      timeout = 1000;
+      timeout = 1000;   /* if nothing cached, we can just as well wait for a while */
 
     // read next packet and return -1 on error
     MsgQueueReturnCode ret = m_messageQueue.Get(&pMsg, timeout, priority);
@@ -550,9 +556,9 @@ void CDVDPlayerAudio::Process()
     {
       m_stalled = true;
 
-      // Flush as the audio output may keep looping if we don't
+      // Add some silence to keep renderer from draining
       if(m_speed == DVD_PLAYSPEED_NORMAL)
-        m_dvdAudio.Flush();
+        m_dvdAudio.AddSilence(0.5);
 
       continue;
     }
@@ -904,7 +910,7 @@ string CDVDPlayerAudio::GetPlayerInfo()
   if (m_synctype == SYNC_RESAMPLE)
     s << ", rr:" << fixed << setprecision(5) << 1.0 / m_resampleratio;
 
-  s << ", att:" << fixed << setprecision(1) << log(GetCurrentAttenuation()) * 10.0f << " dB";
+  s << ", att:" << fixed << setprecision(1) << log(GetCurrentAttenuation()) * 20.0f << " dB";
 
   return s.str();
 }
