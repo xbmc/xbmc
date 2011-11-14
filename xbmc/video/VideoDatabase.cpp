@@ -3664,7 +3664,8 @@ void CVideoDatabase::UpdateFanart(const CFileItem &item, VIDEODB_CONTENT_TYPE ty
 void CVideoDatabase::SetPlayCount(const CFileItem &item, int count, const CStdString &date)
 {
   int id;
-  if (item.HasProperty("original_listitem_url"))
+  if (item.HasProperty("original_listitem_url") &&
+      URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
   {
     CFileItem item2(item);
     item2.SetPath(item.GetProperty("original_listitem_url").asString());
