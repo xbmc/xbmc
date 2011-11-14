@@ -141,6 +141,15 @@
       <a mod="ctrl">Notification(MCEKeypress, Radio, 3)</a>
       <u mod="ctrl">Notification(MCEKeypress, DVD subtitle, 3)</u>
       <a mod="ctrl,shift">Notification(MCEKeypress, DVD audio, 3)</a>
+      <!-- Nyxboard remote keys -->
+      <f3>OSD</f3>         <!-- EPG: same as Guide (ctrl-G) on MCE remote -->
+      <f4>ContextMenu</f4> <!-- User -->
+      <f3 mod="shift">ActivateWindow(video)</f3>    <!-- Red -->
+      <f4 mod="shift">ActivateWindow(music)</f4>    <!-- Green -->
+      <f5 mod="shift">ActivateWindow(pictures)</f5> <!-- Yellow -->
+      <f6 mod="shift">ActivateWindow(programs)</f6> <!-- Blue -->
+      <f7>noop</f7>            <!-- Keyboard side uppermost -->
+      <f7 mod="ctrl">noop</f7> <!-- Remote side uppermost -->
     </keyboard>
   </global>
   <LoginScreen>
