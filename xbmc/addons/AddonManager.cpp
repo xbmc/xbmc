@@ -81,11 +81,23 @@ AddonPtr CAddonMgr::Factory(const cp_extension_t *props)
       return AddonPtr(new CPluginSource(props));
     case ADDON_SCRIPT_LIBRARY:
     case ADDON_SCRIPT_LYRICS:
-    case ADDON_SCRIPT_WEATHER:
     case ADDON_SCRIPT_SUBTITLES:
     case ADDON_SCRIPT_MODULE:
     case ADDON_WEB_INTERFACE:
       return AddonPtr(new CAddon(props));
+    case ADDON_SCRIPT_WEATHER:
+      {
+        // Eden (API v2.0) broke old weather add-ons
+        AddonPtr result(new CAddon(props));
+        AddonVersion ver1 = AddonVersion(GetXbmcApiVersionDependency(result));
+        AddonVersion ver2 = AddonVersion("2.0");
+        if (ver1 < ver2)
+        {
+          CLog::Log(LOGINFO,"%s: Weather add-ons for api < 2.0 unsupported (%s)",__FUNCTION__,result->ID().c_str());
+          return AddonPtr();
+        }
+        return result;
+      }
     case ADDON_SERVICE:
       return AddonPtr(new CService(props));
     case ADDON_SCRAPER_ALBUMS:
