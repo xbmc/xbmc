@@ -1327,14 +1327,20 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
         m_tsreader->SetDirectory(g_szTimeshiftDir);
       }
       if ( m_tsreader->Open(timeshiftfields[2].c_str()) != S_OK )
+      {
+        SAFE_DELETE(m_tsreader);
         return false;
+      }
     }
     else
 #endif //TARGET_WINDOWS
     {
       // use the RTSP url and live555
       if ( m_tsreader->Open(timeshiftfields[0].c_str()) != S_OK)
+      {
+        SAFE_DELETE(m_tsreader);
         return false;
+      }
       usleep(400000);
     }
 #endif //TSREADER
