@@ -1301,7 +1301,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 #endif //TARGET_WINDOWS
         {
           // RTSP url
-          return m_tsreader->OnZap(timeshiftfields[0].c_str());
+          return true; //Fast forward seek (OnZap) does not for RTSP
         }
       }
       else
