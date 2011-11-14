@@ -1187,6 +1187,8 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
   if (((int)channelinfo.iUniqueId) == m_iCurrentChannel)
     return true;
+  else
+    m_iCurrentChannel = -1; // make sure that it is not a valid channel nr in case it will fail lateron
 
   // Start the timeshift
   if (g_iTVServerXBMCBuild>=90)
@@ -1267,7 +1269,6 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
     m_PlaybackURL = timeshiftfields[0];
     XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", m_PlaybackURL.c_str(), timeshiftfields[2].c_str());
-    m_iCurrentChannel = (int) channelinfo.iUniqueId;
 
     if (g_iSleepOnRTSPurl > 0)
     {
@@ -1338,6 +1339,8 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
     }
 #endif //TSREADER
 
+    // at this point everything is ready for playback
+    m_iCurrentChannel = (int) channelinfo.iUniqueId;
     if (g_iTVServerXBMCBuild>=106)
     {
       m_iCurrentCard = atoi(timeshiftfields[3].c_str());
