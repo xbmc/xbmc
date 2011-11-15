@@ -2386,7 +2386,7 @@
   <string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>
   <string id="36014">Put this PC in standby mode when the TV is switched off</string>
   <string id="36015">HDMI port number</string>
-  <string id="36016">Connected</string> <!- max. 13 characters -->
+  <string id="36016">Connected</string> <!-- max. 13 characters -->
   <string id="36017">Adapter found, but libcec is not available</string>
   <string id="36018">Use the TV's language setting</string>
 </strings>
