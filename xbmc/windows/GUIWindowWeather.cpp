@@ -137,7 +137,6 @@ void CGUIWindowWeather::OnInitWindow()
 {
   // call UpdateButtons() so that we start with our initial stuff already present
   UpdateButtons();
-  m_maxLocation = strtol(GetProperty("Locations").asString().c_str(),0,10);
   UpdateLocations();
   CGUIWindow::OnInitWindow();
 }
@@ -145,6 +144,7 @@ void CGUIWindowWeather::OnInitWindow()
 void CGUIWindowWeather::UpdateLocations()
 {
   if (!IsActive()) return;
+  m_maxLocation = strtol(GetProperty("Locations").asString().c_str(),0,10);
 
   CGUIMessage msg(GUI_MSG_LABEL_RESET,GetID(),CONTROL_SELECTLOCATION);
   g_windowManager.SendMessage(msg);
