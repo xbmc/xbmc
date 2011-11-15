@@ -72,9 +72,9 @@
 				<posy>65</posy>
 				<width>550</width>
 				<height>510</height>
-				<onup>6</onup>
-				<ondown>6</ondown>
-				<onleft>5</onleft>
+				<onup>20</onup>
+				<ondown>20</ondown>
+				<onleft>10</onleft>
 				<onright>61</onright>
 				<pagecontrol>61</pagecontrol>
 				<scrolltime>200</scrolltime>
@@ -192,8 +192,8 @@
 				<texturesliderbarfocus border="0,14,0,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
 				<textureslidernib>ScrollBarNib.png</textureslidernib>
 				<textureslidernibfocus>ScrollBarNib.png</textureslidernibfocus>
-				<onleft>3</onleft>
-				<onright>3</onright>
+				<onleft>20</onleft>
+				<onright>10</onright>
 				<ondown>61</ondown>
 				<onup>61</onup>
 				<showonepage>false</showonepage>
@@ -213,7 +213,7 @@
 				<label>([COLOR=blue]$INFO[Container(20).NumItems][/COLOR]) $LOCALIZE[31025] - $LOCALIZE[31024] ([COLOR=blue]$INFO[Container(20).CurrentPage]/$INFO[Container(20).NumPages][/COLOR])</label>
 			</control>
 			<control type="button" id="10">
-				<description>Close button</description>
+				<description>OK button</description>
 				<posx>20</posx>
 				<posy>585</posy>
 				<width>200</width>

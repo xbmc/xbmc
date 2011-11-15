@@ -39,8 +39,6 @@ class TiXmlElement;
 #define WEATHER_LABEL_CURRENT_DEWP 27
 #define WEATHER_LABEL_CURRENT_HUMI 28
 
-#define MAX_LOCATION 3
-
 struct day_forecast
 {
   CStdString m_icon;
@@ -96,19 +94,18 @@ public:
 class CWeatherJob : public CJob
 {
 public:
-  CWeatherJob(const CStdString &areaCode);
+  CWeatherJob(int location);
 
   virtual bool DoWork();
 
   const CWeatherInfo &GetInfo() const;
 private:
-  bool LoadWeather(const CStdString& strWeatherFile); //parse strWeatherFile
-  void GetString(const TiXmlElement* pRootElement, const CStdString& strTagName, CStdString &value, const CStdString& strDefaultValue);
-  void GetInteger(const TiXmlElement* pRootElement, const CStdString& strTagName, int& iValue);
   void LocalizeOverview(CStdString &str);
   void LocalizeOverviewToken(CStdString &str);
   void LoadLocalizedToken();
   int ConvertSpeed(int speed);
+
+  void SetFromProperties();
 
   /*! \brief Formats a celcius temperature into a string based on the users locale
    \param text the string to format
@@ -120,7 +117,7 @@ private:
   typedef std::map<CStdString, int>::const_iterator ilocalizedTokens;
 
   CWeatherInfo m_info;
-  CStdString m_areaCode;
+  int m_location;
 
   static bool m_imagesOkay;
 };
@@ -140,10 +137,6 @@ public:
 
   void SetArea(int iLocation);
   int GetArea() const;
-
-  static CStdString GetAreaCode(const CStdString &codeAndCity);
-  static CStdString GetAreaCity(const CStdString &codeAndCity);
-
 protected:
   virtual CJob *GetJob() const;
   virtual CStdString TranslateInfo(int info) const;
@@ -151,8 +144,6 @@ protected:
   virtual void OnJobComplete(unsigned int jobID, bool success, CJob *job);
 
 private:
-
-  CStdString m_location[MAX_LOCATION];
 
   CWeatherInfo m_info;
 };

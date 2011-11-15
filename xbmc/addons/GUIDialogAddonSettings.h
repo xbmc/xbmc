@@ -38,6 +38,7 @@ public:
   static bool ShowAndGetInput(const ADDON::AddonPtr &addon, bool saveToDisk = true);
   virtual void DoProcess(unsigned int currentTime, CDirtyRegionList &dirtyregions);
 
+  CStdString GetCurrentID() const;
 protected:
   virtual void OnInitWindow();
 

@@ -2889,7 +2889,7 @@
   <string id="36013">Versie %d van de libcec interface version wordt niet ondersteund door XBMC (> %d)</string>
   <string id="36014">Zet XBMC in standby wanneer de TV uitgeschakeld wordt</string>
   <string id="36015">HDMI poort nummer</string>
-  <string id="36016">Verbonden</string> <!- max. 13 characters -->
+  <string id="36016">Verbonden</string> <!-- max. 13 characters -->
   <string id="36017">Adapter gevonden, maar libcec is niet beschikbaar</string>
   <string id="36018">Gebruik de taalinstelling van de TV</string>
 </strings>

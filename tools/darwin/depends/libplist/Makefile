@@ -31,7 +31,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	  -DCMAKE_FIND_ROOT_PATH=$(platform_sdk_path) ..
 
 $(LIBDYLIB): $(SOURCE)
-	make -j $(MAKE_JOBS) -C $(SOURCE)/build
+	make -j 1 -C $(SOURCE)/build
 
 .installed:
 	make -C $(SOURCE)/build install
