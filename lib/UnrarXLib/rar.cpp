@@ -345,6 +345,13 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
               if (!*ppList)
                 *ppList = pCurr;
               pCurr->item.NameSize = strlen(pArc->NewLhd.FileName);
+              // sanity check - if it fails the archive is likely corrupt
+              if (pCurr->item.NameSize > NM)
+              {
+                File::RemoveCreated();
+                return 0;
+              }
+
               pCurr->item.Name = (char *)malloc(pCurr->item.NameSize + 1);
               strcpy(pCurr->item.Name, pArc->NewLhd.FileName);
               pCurr->item.NameW = (wchar *)malloc((pCurr->item.NameSize + 1)*sizeof(wchar));
@@ -365,6 +372,11 @@ int urarlib_list(char *rarfile, ArchiveList_struct **ppList, char *libpassword, 
                 break;
             }
             iOffset = pArc->NextBlockPos;
+            if (iOffset > pArc->FileLength())
+            {
+              File::RemoveCreated();
+              return 0;
+            }
             pArc->SeekToNext();
           }
           if (pCmd->VolSize!=0 && ((pArc->NewLhd.Flags & LHD_SPLIT_AFTER) || (pArc->GetHeaderType()==ENDARC_HEAD && (pArc->EndArcHead.Flags & EARC_NEXT_VOLUME)!=0)))
