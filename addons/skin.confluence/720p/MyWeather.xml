@@ -64,9 +64,23 @@
 					<shadowcolor>black</shadowcolor>
 				</control>
 				<control type="label">
+					<description>Provider Text</description>
+					<posx>20</posx>
+					<posy>50</posy>
+					<width>460</width>
+					<height>35</height>
+					<font>font12</font>
+					<textcolor>white</textcolor>
+					<scroll>true</scroll>
+					<align>center</align>
+					<aligny>center</aligny>
+					<label>$LOCALIZE[31303] : [COLOR=orange]$INFO[Window.Property(WeatherProvider)][/COLOR]</label>
+					<include>Window_OpenClose_Animation</include>
+				</control>
+				<control type="label">
 					<description>weather location label</description>
 					<posx>20</posx>
-					<posy>60</posy>
+					<posy>80</posy>
 					<width>460</width>
 					<height>30</height>
 					<font>font13_title</font>
@@ -79,7 +93,7 @@
 				<control type="label">
 					<description>update label</description>
 					<posx>20</posx>
-					<posy>80</posy>
+					<posy>100</posy>
 					<width>460</width>
 					<height>35</height>
 					<font>font12</font>

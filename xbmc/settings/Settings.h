@@ -29,7 +29,6 @@
 #define DEFAULT_SKIN          "skin.confluence"
 #endif
 #define DEFAULT_FANART_HEIGHT 0
-#define DEFAULT_WEATHER_ADDON "weather.xbmc.builtin"
 #define DEFAULT_WEB_INTERFACE "webinterface.default"
 #ifdef MID
 #define DEFAULT_VSYNC       VSYNC_DISABLED

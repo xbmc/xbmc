@@ -1350,7 +1350,10 @@ bool CGUIWindowVideoBase::OnPlayMedia(int iItem)
 
   CFileItem item(*pItem);
   if (pItem->IsVideoDb())
+  {
     item.SetPath(pItem->GetVideoInfoTag()->m_strFileNameAndPath);
+    item.SetProperty("original_listitem_url", pItem->GetPath());
+  }
 
   PlayMovie(&item);
 

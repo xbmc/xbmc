@@ -127,3 +127,6 @@
 
 // Sent to tell window to initiate a search dialog
 #define GUI_MSG_SEARCH                GUI_MSG_USER + 34
+
+// Sent to the AddonSetting dialogs from addons if they updated a setting
+#define GUI_MSG_SETTING_UPDATED       GUI_MSG_USER + 35

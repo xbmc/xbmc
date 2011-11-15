@@ -2384,7 +2384,7 @@
   <string id="36013">Nicht unterstützte libcec Version. %d ist größer als die von XBMC unterstützte Version (%d)</string>
   <string id="36014">PC in den Standby versetzen wenn der Fernseher ausgeschaltet wird</string>
   <string id="36015">HDMI Port Nummer</string>
-  <string id="36016">Verbunden</string> <!- max. 13 characters -->
+  <string id="36016">Verbunden</string> <!-- max. 13 characters -->
   <string id="36017">CEC Adapter gefunden, aber libcec ist nicht verfügbar</string>
   <string id="36018">Spracheinstellung des Fernsehers in XBMC nutzen</string>
 </strings>

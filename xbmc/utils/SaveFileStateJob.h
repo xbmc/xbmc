@@ -24,7 +24,8 @@ public:
 bool CSaveFileStateJob::DoWork()
 {
   CStdString progressTrackingFile = m_item.GetPath();
-  if (m_item.HasProperty("original_listitem_url"))
+  if (m_item.HasProperty("original_listitem_url") && 
+      URIUtils::IsPlugin(m_item.GetProperty("original_listitem_url").asString()))
     progressTrackingFile = m_item.GetProperty("original_listitem_url").asString();
 
   if (m_item.IsDVD()) 

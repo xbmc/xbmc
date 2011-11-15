@@ -24,6 +24,8 @@
 #include "pythreadstate.h"
 #include "addons/AddonManager.h"
 #include "addons/GUIDialogAddonSettings.h"
+#include "guilib/GUIWindowManager.h"
+#include "GUIUserMessages.h"
 #include "utils/log.h"
 
 namespace PYXBMC
@@ -245,8 +247,27 @@ namespace PYXBMC
 
     AddonPtr addon(self->pAddon);
     CPyThreadState pyState;
-    addon->UpdateSetting(id, value);
-    addon->SaveSettings();
+    bool save=true;
+    if (g_windowManager.IsWindowActive(WINDOW_DIALOG_ADDON_SETTINGS))
+    {
+      CGUIDialogAddonSettings* dialog = (CGUIDialogAddonSettings*)g_windowManager.GetWindow(WINDOW_DIALOG_ADDON_SETTINGS);
+      if (dialog->GetCurrentID() == addon->ID())
+      {
+        CGUIMessage message(GUI_MSG_SETTING_UPDATED,0,0);
+        std::vector<CStdString> params;
+        params.push_back(id);
+        params.push_back(value);
+        message.SetStringParams(params);
+        g_windowManager.SendThreadMessage(message,WINDOW_DIALOG_ADDON_SETTINGS);
+        save=false;
+      }
+    }
+    if (save)
+    {
+      addon->UpdateSetting(id, value);
+      addon->SaveSettings();
+    }
+
     pyState.Restore();
 
     Py_INCREF(Py_None);
