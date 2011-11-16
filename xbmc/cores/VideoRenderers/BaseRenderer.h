@@ -64,6 +64,7 @@ public:
   float GetAspectRatio() const;
 
   virtual bool AddVideoPicture(DVDVideoPicture* picture) { return false; }
+  virtual void Flush() {};
 
   virtual unsigned int GetProcessorSize() { return 0; }
 
