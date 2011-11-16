@@ -140,6 +140,7 @@ public:
   virtual unsigned int PreInit();
   virtual void         UnInit();
   virtual void         Reset(); /* resets renderer after seek for example */
+  virtual void         Flush();
 
 #ifdef HAVE_LIBVDPAU
   virtual void         AddProcessor(CVDPAU* vdpau);

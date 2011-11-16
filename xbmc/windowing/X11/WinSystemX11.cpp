@@ -27,9 +27,18 @@
 #include "WinSystemX11.h"
 #include "settings/Settings.h"
 #include "guilib/Texture.h"
+#include "guilib/DispResource.h"
 #include "utils/log.h"
 #include "XRandR.h"
 #include <vector>
+#include "threads/SingleLock.h"
+#include <X11/Xlib.h>
+#include "cores/VideoRenderers/RenderManager.h"
+#include "utils/TimeUtils.h"
+
+#if defined(HAS_XRANDR)
+#include <X11/extensions/Xrandr.h>
+#endif
 
 using namespace std;
 
@@ -42,6 +51,7 @@ CWinSystemX11::CWinSystemX11() : CWinSystemBase()
   m_glWindow = 0;
   m_wmWindow = 0;
   m_bWasFullScreenBeforeMinimize = false;
+  m_dpyLostTime = 0;
 }
 
 CWinSystemX11::~CWinSystemX11()
@@ -126,6 +136,13 @@ bool CWinSystemX11::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   SDL_WM_SetIcon(SDL_CreateRGBSurfaceFrom(iconTexture.GetPixels(), iconTexture.GetWidth(), iconTexture.GetHeight(), 32, iconTexture.GetPitch(), 0xff0000, 0x00ff00, 0x0000ff, 0xff000000L), NULL);
   SDL_WM_SetCaption("XBMC Media Center", NULL);
 
+  // register XRandR Events
+#if defined(HAS_XRANDR)
+  int iReturn;
+  XRRQueryExtension(m_dpy, &m_RREventBase, &iReturn);
+  XRRSelectInput(m_dpy, m_wmWindow, RRScreenChangeNotifyMask);
+#endif
+
   m_bWindowCreated = true;
   return true;
 }
@@ -175,7 +192,10 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   mode.id  = res.strId;
  
   if(m_bFullScreen)
+  {
+    OnLostDevice();
     g_xrandr.SetMode(out, mode);
+  }
   else
     g_xrandr.RestoreState();
 #endif
@@ -444,4 +464,74 @@ bool CWinSystemX11::Show(bool raise)
   XSync(m_dpy, False);
   return true;
 }
+
+void CWinSystemX11::CheckDisplayEvents()
+{
+#if defined(HAS_XRANDR)
+  bool bGotEvent(false);
+  bool bTimeout(false);
+  XEvent Event;
+  while (XCheckTypedEvent(m_dpy, m_RREventBase + RRScreenChangeNotify, &Event))
+  {
+    if (Event.type == m_RREventBase + RRScreenChangeNotify)
+    {
+      CLog::Log(LOGDEBUG, "%s: Received RandR event %i", __FUNCTION__, Event.type);
+      bGotEvent = true;
+    }
+    XRRUpdateConfiguration(&Event);
+  }
+
+  // check fail safe timer
+  if (m_dpyLostTime && CurrentHostCounter() - m_dpyLostTime > (uint64_t)3 * CurrentHostFrequency())
+  {
+    CLog::Log(LOGERROR, "%s - no display event after 3 seconds", __FUNCTION__);
+    bTimeout = true;
+  }
+
+  if (bGotEvent || bTimeout)
+  {
+    CLog::Log(LOGDEBUG, "%s - notify display reset event", __FUNCTION__);
+
+    CSingleLock lock(m_resourceSection);
+
+    // tell any shared resources
+    for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+      (*i)->OnResetDevice();
+
+    // reset fail safe timer
+    m_dpyLostTime = 0;
+  }
+#endif
+}
+
+void CWinSystemX11::OnLostDevice()
+{
+  CLog::Log(LOGDEBUG, "%s - notify display change event", __FUNCTION__);
+
+  // make sure renderer has no invalid references
+  g_renderManager.Flush();
+
+  { CSingleLock lock(m_resourceSection);
+    for (vector<IDispResource *>::iterator i = m_resources.begin(); i != m_resources.end(); i++)
+      (*i)->OnLostDevice();
+  }
+
+  // fail safe timer
+  m_dpyLostTime = CurrentHostCounter();
+}
+
+void CWinSystemX11::Register(IDispResource *resource)
+{
+  CSingleLock lock(m_resourceSection);
+  m_resources.push_back(resource);
+}
+
+void CWinSystemX11::Unregister(IDispResource* resource)
+{
+  CSingleLock lock(m_resourceSection);
+  vector<IDispResource*>::iterator i = find(m_resources.begin(), m_resources.end(), resource);
+  if (i != m_resources.end())
+    m_resources.erase(i);
+}
+
 #endif

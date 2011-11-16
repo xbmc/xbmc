@@ -181,6 +181,8 @@ bool CDVDVideoCodecFFmpeg::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options
         m_pCodecContext->codec_id = hints.codec;
         m_pCodecContext->width    = hints.width;
         m_pCodecContext->height   = hints.height;
+        m_pCodecContext->coded_width   = hints.width;
+        m_pCodecContext->coded_height  = hints.height;
         if(vdp->Open(m_pCodecContext, pCodec->pix_fmts ? pCodec->pix_fmts[0] : PIX_FMT_NONE))
         {
           m_pHardware = vdp;

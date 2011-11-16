@@ -76,6 +76,7 @@ public:
   void FlipPage(volatile bool& bStop, double timestamp = 0.0, int source = -1, EFIELDSYNC sync = FS_NONE);
   unsigned int PreInit();
   void UnInit();
+  bool Flush();
 
   void AddOverlay(CDVDOverlay* o, double pts)
   {
@@ -227,6 +228,7 @@ protected:
   EPRESENTSTEP     m_presentstep;
   int        m_presentsource;
   CEvent     m_presentevent;
+  CEvent     m_flushEvent;
 
 
   OVERLAY::CRenderer m_overlays;
