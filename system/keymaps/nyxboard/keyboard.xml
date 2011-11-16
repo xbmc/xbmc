@@ -1,0 +1,8 @@
+<!-- Mappings for the Motorola Nyxboard remote -->
+<keymap>
+  <global>
+    <keyboard>
+      <home>XBMC.ActivateWindow(Home)</home>
+    </keyboard>
+  </global>
+</keymap>
