@@ -790,11 +790,11 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
 
       // usb hard drives are reported as DRIVE_FIXED and won't be returned by queries with REMOVABLE_DRIVES set
       // so test for usb hard drives
-      if(uDriveType == DRIVE_FIXED)
+      /*if(uDriveType == DRIVE_FIXED)
       {
         if(IsUsbDevice(strWdrive))
           uDriveType = DRIVE_REMOVABLE;
-      }
+      }*/
 
       share.strPath= share.strName= "";
 

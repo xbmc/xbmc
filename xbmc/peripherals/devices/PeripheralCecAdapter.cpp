@@ -48,7 +48,7 @@ class DllLibCECInterface
 {
 public:
   virtual ~DllLibCECInterface() {}
-  virtual ICECAdapter* CECCreate(const char *interfaceName, uint8_t logicalAddress, uint16_t physicalAddress)=0;
+  virtual ICECAdapter* CECInit(const char *interfaceName, cec_device_type_list types)=0;
   virtual void* CECDestroy(ICECAdapter *adapter)=0;
 };
 
@@ -56,11 +56,11 @@ class DllLibCEC : public DllDynamic, DllLibCECInterface
 {
   DECLARE_DLL_WRAPPER(DllLibCEC, DLL_PATH_LIBCEC)
 
-  DEFINE_METHOD3(ICECAdapter*, CECCreate,   (const char *p1, uint8_t p2, uint16_t p3))
+  DEFINE_METHOD2(ICECAdapter*, CECInit,   (const char *p1, cec_device_type_list p2))
   DEFINE_METHOD1(void*       , CECDestroy,  (ICECAdapter *p1))
 
   BEGIN_METHOD_RESOLVE()
-    RESOLVE_METHOD_RENAME(CECCreate,  CECCreate)
+    RESOLVE_METHOD_RENAME(CECInit,  CECInit)
     RESOLVE_METHOD_RENAME(CECDestroy, CECDestroy)
   END_METHOD_RESOLVE()
 };
@@ -78,7 +78,12 @@ CPeripheralCecAdapter::CPeripheralCecAdapter(const PeripheralType type, const Pe
   m_screensaverLastActivated.SetValid(false);
   m_dll = new DllLibCEC;
   if (m_dll->Load() && m_dll->IsLoaded())
-    m_cecAdapter = m_dll->CECCreate("XBMC", CECDEVICE_PLAYBACKDEVICE1, CEC_DEFAULT_PHYSICAL_ADDRESS);
+  {
+    cec_device_type_list typeList;
+    typeList.clear();
+    typeList.add(CEC_DEVICE_TYPE_PLAYBACK_DEVICE);
+    m_cecAdapter = m_dll->CECInit("XBMC", typeList);
+  }
   else
     m_cecAdapter = NULL;
 
@@ -167,6 +172,21 @@ void CPeripheralCecAdapter::Announce(EAnnouncementFlag flag, const char *sender,
         m_cecAdapter->SetActiveView();
       }
     }
+  }
+  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnStop"))
+  {
+    m_cecAdapter->SetDeckControlMode(CEC_DECK_CONTROL_MODE_STOP, false);
+    m_cecAdapter->SetDeckInfo(CEC_DECK_INFO_STOP);
+  }
+  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPause"))
+  {
+    m_cecAdapter->SetDeckControlMode(CEC_DECK_CONTROL_MODE_SKIP_FORWARD_WIND, false);
+    m_cecAdapter->SetDeckInfo(CEC_DECK_INFO_STILL);
+  }
+  else if (flag == Player && !strcmp(sender, "xbmc") && !strcmp(message, "OnPlay"))
+  {
+    m_cecAdapter->SetDeckControlMode(CEC_DECK_CONTROL_MODE_SKIP_FORWARD_WIND, false);
+    m_cecAdapter->SetDeckInfo(CEC_DECK_INFO_PLAY);
   }
 }
 
@@ -327,18 +347,6 @@ bool CPeripheralCecAdapter::SendPing(void)
   return bReturn;
 }
 
-bool CPeripheralCecAdapter::StartBootloader(void)
-{
-  bool bReturn(false);
-  if (m_cecAdapter && m_bIsReady)
-  {
-    CLog::Log(LOGDEBUG, "%s - starting the bootloader", __FUNCTION__);
-    bReturn = m_cecAdapter->StartBootloader();
-  }
-
-  return bReturn;
-}
-
 bool CPeripheralCecAdapter::SetHdmiPort(int iHdmiPort)
 {
   bool bReturn(false);
@@ -446,7 +454,7 @@ void CPeripheralCecAdapter::ProcessNextCommand(void)
     case CEC_OPCODE_DECK_CONTROL:
       if (command.initiator == CECDEVICE_TV &&
           command.parameters.size == 1 &&
-          command.parameters[0] == CEC_DESK_CONTROL_MODE_STOP)
+          command.parameters[0] == CEC_DECK_CONTROL_MODE_STOP)
       {
         CSingleLock lock(m_critSection);
         cec_keypress key;

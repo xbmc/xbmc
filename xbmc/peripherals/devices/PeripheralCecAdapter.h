@@ -27,6 +27,11 @@
 #include "threads/Thread.h"
 #include "threads/CriticalSection.h"
 #include <queue>
+
+// undefine macro isset, it collides with function in cectypes.h
+#ifdef isset
+#undef isset
+#endif
 #include <cectypes.h>
 
 class DllLibCEC;
@@ -56,7 +61,6 @@ namespace PERIPHERALS
     virtual bool StandbyCecDevices(CEC::cec_logical_address iLogicalAddress);
 
     virtual bool SendPing(void);
-    virtual bool StartBootloader(void);
     virtual bool SetHdmiPort(int iHdmiPort);
 
     virtual void OnSettingChanged(const CStdString &strChangedSetting);

@@ -138,7 +138,10 @@ bool CGUIDialogPeripheralManager::OnMessage(CGUIMessage& message)
     case GUI_MSG_ITEM_SELECT:
       return true;
     case GUI_MSG_WINDOW_INIT:
-      return OnMessageInit(message);
+      {
+        OnMessageInit(message);
+        break;
+      }
     case GUI_MSG_CLICKED:
       return OnMessageClick(message);
   }

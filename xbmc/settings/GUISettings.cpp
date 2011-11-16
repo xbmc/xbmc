@@ -259,12 +259,8 @@ void CGUISettings::Initialize()
   AddGroup(2, 8);
   CSettingsCategory* wea = AddCategory(2, "weather", 16000);
   AddInt(NULL, "weather.currentlocation", 0, 1, 1, 1, 3, SPIN_CONTROL_INT_PLUS);
-  AddString(wea, "weather.areacode1", 14019, "USNY0996 - New York, NY", BUTTON_CONTROL_STANDARD);
-  AddString(wea, "weather.areacode2", 14020, "UKXX0085 - London, United Kingdom", BUTTON_CONTROL_STANDARD);
-  AddString(wea, "weather.areacode3", 14021, "JAXX0085 - Tokyo, Japan", BUTTON_CONTROL_STANDARD);
-  AddSeparator(wea, "weather.sep1");
-  AddDefaultAddon(wea, "weather.script", 24027, DEFAULT_WEATHER_ADDON, ADDON_SCRIPT_WEATHER);
-  AddString(wea, "weather.scriptsettings", 21417, "", BUTTON_CONTROL_STANDARD, true);
+  AddDefaultAddon(wea, "weather.addon", 24027, "", ADDON_SCRIPT_WEATHER);
+  AddString(wea, "weather.addonsettings", 21417, "", BUTTON_CONTROL_STANDARD, true);
 
   // My Music Settings
   AddGroup(3, 2);

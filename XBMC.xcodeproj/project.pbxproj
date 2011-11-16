@@ -9029,10 +9029,9 @@
 					"$(SRCROOT)/lib/cmyth/librefmem",
 					"$(SRCROOT)/lib/libapetag/.libs",
 					"$(SRCROOT)/lib/libsquish",
+					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/lib/SlingboxLib\"",
-					"\"$(SRCROOT)/lib/shairport\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9052,6 +9051,8 @@
 					"-lmicrohttpd",
 					"-lyajl",
 					"-ljpeg",
+					"-lcrypto",
+					"-lgcrypt",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
@@ -9126,10 +9127,9 @@
 					"$(SRCROOT)/lib/cmyth/librefmem",
 					"$(SRCROOT)/lib/libapetag/.libs",
 					"$(SRCROOT)/lib/libsquish",
-					"$(SRCROOT)/lib/jsoncpp/src/lib_json",
+					"$(SRCROOT)/lib/SlingboxLib",
 					"$(SRCROOT)/xbmc/interfaces/http-api",
 					"$(SRCROOT)/xbmc/interfaces/json-rpc",
-					"\"$(SRCROOT)/lib/SlingboxLib\"",
 				);
 				LINK_WITH_STANDARD_LIBRARIES = YES;
 				OTHER_LDFLAGS = (
@@ -9149,6 +9149,8 @@
 					"-lmicrohttpd",
 					"-lyajl",
 					"-ljpeg",
+					"-lcrypto",
+					"-lgcrypt",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
@@ -9307,12 +9309,13 @@
 					"-lmicrohttpd",
 					"-lyajl",
 					"-ljpeg",
+					"-lcrypto",
+					"-lgcrypt",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
-					"-lboost_thread",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -9407,12 +9410,13 @@
 					"-lmicrohttpd",
 					"-lyajl",
 					"-ljpeg",
+					"-lcrypto",
+					"-lgcrypt",
 					"-lGLEW",
 					"-lSDL",
 					"-lSDL_mixer",
 					"-lsmbclient",
 					"-lpython2.6",
-					"-lboost_thread",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);

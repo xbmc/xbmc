@@ -324,6 +324,12 @@ void CAddonInstaller::UpdateRepos(bool force, bool wait)
   }
 }
 
+bool CAddonInstaller::HasJob(const CStdString& ID) const
+{
+  CSingleLock lock(m_critSection);
+  return m_downloadJobs.find(ID) != m_downloadJobs.end();
+}
+
 CAddonInstallJob::CAddonInstallJob(const AddonPtr &addon, const CStdString &hash, bool update, const CStdString &referer)
 : m_addon(addon), m_hash(hash), m_update(update), m_referer(referer)
 {
@@ -459,8 +465,18 @@ bool CAddonInstallJob::Install(const CStdString &installFrom)
     AddonPtr dependency;
     if (!CAddonMgr::Get().GetAddon(it->first,dependency) || dependency->Version() < it->second.first)
     {
+      bool force=(dependency != NULL);
+      // dependency is already queued up for install - ::Install will fail
+      // instead we wait until the Job has finished. note that we
+      // recall install on purpose in case prior installation failed
+      if (CAddonInstaller::Get().HasJob(it->first))
+      {
+        while (CAddonInstaller::Get().HasJob(it->first))
+          Sleep(50);
+        force = false;
+      }
       // don't have the addon or the addon isn't new enough - grab it (no new job for these)
-      if (!CAddonInstaller::Get().Install(it->first, dependency != NULL, referer, false))
+      if (!CAddonInstaller::Get().Install(it->first, force, referer, false))
       {
         DeleteAddon(addonFolder);
         return false;

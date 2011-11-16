@@ -599,6 +599,10 @@ bool CApplication::Create()
     CLog::Log(LOGFATAL, "XBAppEx: Unable to initialize SDL: %s", SDL_GetError());
     return false;
   }
+  #if defined(TARGET_DARWIN)
+  // SDL_Init will install a handler for segfaults, restore the default handler.
+  signal(SIGSEGV, SIG_DFL);
+  #endif
 #endif
 
   // for python scripts that check the OS
