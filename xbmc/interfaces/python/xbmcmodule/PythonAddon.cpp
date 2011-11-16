@@ -205,6 +205,8 @@ namespace PYXBMC
     {
       return NULL;
     };
+    
+    self->pAddon->ReloadSettings();
 
     return Py_BuildValue((char*)"s", self->pAddon->GetSetting(id).c_str());
   }

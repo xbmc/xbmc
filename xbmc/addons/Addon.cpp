@@ -368,9 +368,9 @@ bool CAddon::HasSettings()
   return LoadSettings();
 }
 
-bool CAddon::LoadSettings()
+bool CAddon::LoadSettings(bool bForce /* = false*/)
 {
-  if (m_settingsLoaded)
+  if (m_settingsLoaded && !bForce)
     return true;
   if (!m_hasSettings)
     return false;
@@ -403,6 +403,11 @@ bool CAddon::HasUserSettings()
     return false;
 
   return m_userSettingsLoaded;
+}
+
+bool CAddon::ReloadSettings()
+{
+  return LoadSettings(true);
 }
 
 bool CAddon::LoadUserSettings()
