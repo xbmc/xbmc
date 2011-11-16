@@ -1248,16 +1248,7 @@ void CVDPAU::FFDrawSlice(struct AVCodecContext *s,
   }
 
   // ffmpeg vc-1 decoder does not flush, make sure the data buffer is still valid
-  bool found(false);
-  for(unsigned int i = 0; i < vdp->m_videoSurfaces.size(); ++i)
-  {
-    if(vdp->m_videoSurfaces[i] == render)
-    {
-      found = true;
-      break;
-    }
-  }
-  if (!found)
+  if (!vdp->IsSurfaceValid(render))
   {
     CLog::Log(LOGWARNING, "CVDPAU::FFDrawSlice - ignoring invalid buffer");
     return;
