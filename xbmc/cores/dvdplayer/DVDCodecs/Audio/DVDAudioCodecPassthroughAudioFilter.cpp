@@ -31,7 +31,7 @@
 
 //These values are forced to allow spdif out
 const int OUT_SAMPLESIZE(16);
-const int OUT_CHANNELS(2);
+const int OUT_CHANNELS(8);
 
 CDVDAudioCodecPassthroughAudioFilter::CDVDAudioCodecPassthroughAudioFilter(void)
   : m_Mhp(new AudioFilter::MultiHeaderParser())
