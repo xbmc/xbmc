@@ -390,7 +390,7 @@ bool CPulseAudioDirectSound::InitializePassthrough(IAudioCallback* pCallback
                                                                                       // should be close enough
 
   m_nCurrentVolume = g_settings.m_nVolumeLevel;
-  m_dwPacketSize = 4096; // 4096 max packet size for passthrough
+  m_dwPacketSize = 16384; // max packet size for passthrough
   m_dwNumPackets = 16;
 
   CLog::Log(LOGDEBUG,

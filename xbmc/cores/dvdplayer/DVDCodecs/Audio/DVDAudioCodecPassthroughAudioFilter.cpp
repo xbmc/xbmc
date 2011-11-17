@@ -35,7 +35,7 @@ const int OUT_CHANNELS(2);
 
 CDVDAudioCodecPassthroughAudioFilter::CDVDAudioCodecPassthroughAudioFilter(void)
   : m_Mhp(new AudioFilter::MultiHeaderParser())
-  , m_Spdif(m_Mhp)
+  , m_Spdif(m_Mhp,16)
   , m_OutputBuffer(0)
   , m_OutputSize(0)
   , m_iSourceSampleRate(0)
