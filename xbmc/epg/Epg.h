@@ -131,13 +131,6 @@ namespace EPG
     virtual bool HasPVRChannel(void) const { return !(m_Channel == NULL); }
 
     /*!
-     * @brief Delete an infotag from this EPG.
-     * @param tag The tag to delete.
-     * @return True if it was deleted successfully, false if not.
-     */
-    virtual bool DeleteInfoTag(CEpgInfoTag *tag);
-
-    /*!
      * @brief Remove all entries from this EPG that finished before the given time
      *        and that have no timers set.
      * @param Time Delete entries with an end time before this time in UTC.

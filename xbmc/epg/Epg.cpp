@@ -117,39 +117,6 @@ bool CEpg::HasValidEntries(void) const
           at(size()-1)->EndAsUTC() >= CDateTime::GetCurrentDateTime().GetAsUTCDateTime()); /* the last end time hasn't passed yet */
 }
 
-bool CEpg::DeleteInfoTag(CEpgInfoTag *tag)
-{
-  bool bReturn = false;
-
-  /* check if we're the "owner" of this tag */
-  if (*tag->m_Epg != *this)
-    return bReturn;
-
-  CSingleLock lock(m_critSection);
-
-  /* remove the tag */
-  for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
-  {
-    CEpgInfoTag *entry = at(iTagPtr);
-    if (entry == tag)
-    {
-      /* fix previous and next pointers */
-      const CEpgInfoTag *previousTag = (iTagPtr > 0) ? at(iTagPtr - 1) : NULL;
-      const CEpgInfoTag *nextTag = (iTagPtr < size() - 1) ? at(iTagPtr + 1) : NULL;
-      if (previousTag)
-        previousTag->m_nextEvent = nextTag;
-      if (nextTag)
-        nextTag->m_previousEvent = previousTag;
-
-      erase(begin() + iTagPtr);
-      bReturn = true;
-      break;
-    }
-  }
-
-  return bReturn;
-}
-
 void CEpg::Sort(void)
 {
   CSingleLock lock(m_critSection);
