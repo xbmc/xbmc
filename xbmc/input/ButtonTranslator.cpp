@@ -387,10 +387,12 @@ bool CButtonTranslator::Load(const char* szDevice)
     {
       CFileItemList files;
       XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, "*.xml");
-      //sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+      // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
       files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+      // In (at least) Windows the GetDirectory returns all files not just *.xml files
       for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-        success |= LoadKeymap(files[fileIndex]->GetPath());
+        if (files[fileIndex]->GetPath().Right(4) == ".xml")
+          success |= LoadKeymap(files[fileIndex]->GetPath());
     }
   }
 
@@ -438,10 +440,12 @@ bool CButtonTranslator::Load(const char* szDevice)
       {
         CFileItemList files;
         XFILE::CDirectory::GetDirectory(devicedir, files, "*.xml");
-        //sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+        // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
         files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+        // In (at least) Windows the GetDirectory returns all files not just *.xml files
         for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-          success |= LoadKeymap(files[fileIndex]->GetPath());
+          if (files[fileIndex]->GetPath().Right(4) == ".xml")
+            success |= LoadKeymap(files[fileIndex]->GetPath());
       }
     }
   }
