@@ -65,7 +65,7 @@ public:
   static CButtonTranslator& GetInstance();
 
   /// loads Lircmap.xml/IRSSmap.xml (if enabled) and Keymap.xml
-  bool Load(const char* Device = NULL);
+  bool Load(const char* szDevice = NULL);
   /// clears the maps
   void Clear();
   /// map has been loaded

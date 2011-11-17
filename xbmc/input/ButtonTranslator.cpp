@@ -367,7 +367,7 @@ CButtonTranslator::CButtonTranslator()
 CButtonTranslator::~CButtonTranslator()
 {}
 
-bool CButtonTranslator::Load(const char* Device)
+bool CButtonTranslator::Load(const char* szDevice)
 {
   translatorMap.clear();
 
@@ -387,7 +387,7 @@ bool CButtonTranslator::Load(const char* Device)
     {
       CFileItemList files;
       XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, "*.xml");
-      //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+      //sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
       files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
       for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
         success |= LoadKeymap(files[fileIndex]->GetPath());
@@ -427,24 +427,21 @@ bool CButtonTranslator::Load(const char* Device)
 #endif
 
   // If we were called with a device name try loading mappings for that device now
-  if (Device)
+  if (szDevice && strlen(szDevice) != 0)
   {
-    if (strlen(Device) != 0)
+    for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex)
     {
-      for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex)
+      CStdString devicedir = DIRS_TO_CHECK[dirIndex];
+      devicedir.append(szDevice);
+      devicedir.append("/");
+      if( XFILE::CDirectory::Exists(devicedir) )
       {
-        CStdString devicedir = DIRS_TO_CHECK[dirIndex];
-        devicedir.append(Device);
-        devicedir.append("/");
-        if( XFILE::CDirectory::Exists(devicedir) )
-        {
-          CFileItemList files;
-          XFILE::CDirectory::GetDirectory(devicedir, files, "*.xml");
-          //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
-          files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
-          for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-            success |= LoadKeymap(files[fileIndex]->GetPath());
-        }
+        CFileItemList files;
+        XFILE::CDirectory::GetDirectory(devicedir, files, "*.xml");
+        //sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+        files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+        for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
+          success |= LoadKeymap(files[fileIndex]->GetPath());
       }
     }
   }
