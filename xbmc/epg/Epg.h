@@ -334,6 +334,8 @@ namespace EPG
      */
     virtual bool UpdateEntries(const CEpg &epg, bool bStoreInDb = true);
 
+    virtual void UpdatePreviousAndNextPointers(void);
+
     /*!
      * @brief Update the cached first and last date.
      */

@@ -128,6 +128,11 @@ void CEpg::Sort(void)
   sort(begin(), end(), sortEPGbyDate());
 
   /* reset the previous and next pointers on each tag */
+  UpdatePreviousAndNextPointers();
+}
+
+void CEpg::UpdatePreviousAndNextPointers(void)
+{
   int iTagAmount = size();
   for (int ptr = 0; ptr < iTagAmount; ptr++)
   {
@@ -135,18 +140,22 @@ void CEpg::Sort(void)
 
     if (ptr == 0)
     {
+      /* first tag has no previous event */
       tag->SetPreviousEvent(NULL);
     }
-
-    if (ptr > 0)
+    else
     {
+      /* set the next event in the previous tag */
       CEpgInfoTag *previousTag = at(ptr-1);
       previousTag->SetNextEvent(tag);
+
+      /* set the previous event in this tag */
       tag->SetPreviousEvent(previousTag);
     }
 
     if (ptr == iTagAmount - 1)
     {
+      /* ensure that the next event for the last tag is set to NULL */
       tag->SetNextEvent(NULL);
     }
   }
