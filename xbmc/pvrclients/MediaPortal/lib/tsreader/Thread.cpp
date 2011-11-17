@@ -30,39 +30,42 @@
 
 #ifdef TSREADER
 
-#include "TSThread.h"
+#include "Thread.h"
 
-TSThread::TSThread()
+CThread::CThread(const char* ThreadName)
 {
   m_hStopEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
   m_hDoneEvent = CreateEvent(NULL, TRUE, TRUE, NULL);
   m_ThreadHandle = INVALID_HANDLE_VALUE;
   m_bThreadRunning=FALSE;
+
+  if (ThreadName)
+    m_ThreadName = ThreadName;
 }
 
-TSThread::~TSThread()
+CThread::~CThread()
 {
   StopThread();
   CloseHandle(m_hStopEvent);
   CloseHandle(m_hDoneEvent);
 }
 
-bool TSThread::IsThreadRunning()
+bool CThread::IsThreadRunning()
 {
   return m_bThreadRunning;
 }
 
-long TSThread::StartThread()
+long CThread::StartThread()
 {
   ResetEvent(m_hStopEvent);
-  m_ThreadHandle = (HANDLE) _beginthread(&TSThread::thread_function, 0, (void *) this);
+  m_ThreadHandle = (HANDLE) _beginthread(&CThread::staticThread, 0, (void *) this);
   if (m_ThreadHandle == INVALID_HANDLE_VALUE)
     return E_FAIL;
 
   return S_OK;
 }
 
-long TSThread::StopThread(unsigned long dwTimeoutMilliseconds)
+long CThread::StopThread(unsigned long dwTimeoutMilliseconds)
 {
   long hr = S_OK;
 
@@ -86,19 +89,19 @@ long TSThread::StopThread(unsigned long dwTimeoutMilliseconds)
   return hr;
 }
 
-bool TSThread::ThreadIsStopping(unsigned long dwTimeoutMilliseconds)
+bool CThread::ThreadIsStopping(unsigned long dwTimeoutMilliseconds)
 {
   DWORD result = WaitForSingleObject(m_hStopEvent, dwTimeoutMilliseconds);
   return (result != WAIT_TIMEOUT);
 }
 
-void TSThread::InternalThreadProc()
+void CThread::Process()
 {
   ResetEvent(m_hDoneEvent);
   m_bThreadRunning=TRUE;
   try
   {
-    ThreadProc();
+    Run();
   }
   catch (LPWSTR pStr)
   {
@@ -108,13 +111,13 @@ void TSThread::InternalThreadProc()
   m_bThreadRunning=FALSE;
 }
 
-void TSThread::thread_function(void* p)
+THREADFUNC CThread::staticThread(void* data)
 {
-  TSThread *thread = reinterpret_cast<TSThread *>(p);
-  thread->InternalThreadProc();
+  CThread *thread = reinterpret_cast<CThread *>(data);
+  thread->Process();
 }
 
-tThreadId TSThread::ThreadId(void)
+tThreadId CThread::ThreadId(void)
 {
 #ifdef __APPLE__
     return (int)pthread_self();
@@ -127,7 +130,7 @@ tThreadId TSThread::ThreadId(void)
 #endif
 }
 
-bool TSThread::SetPriority(const int iPriority)
+bool CThread::SetPriority(const int iPriority)
 // Set thread priority
 // Return true for success
 {

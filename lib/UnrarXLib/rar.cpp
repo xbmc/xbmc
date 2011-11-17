@@ -202,8 +202,10 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
 
           if (bShowProgress)
           {
-            // temporary workaround to avoid deadlocks caused by dvdplayer halting app thread
-            pExtract->GetDataIO().m_pDlgProgress = NULL;//(CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+            pExtract->GetDataIO().m_pDlgProgress = (CGUIDialogProgress*)g_windowManager.GetWindow(WINDOW_DIALOG_PROGRESS);
+            pExtract->GetDataIO().m_pDlgProgress->SetHeading(fileToExtract);
+            pExtract->GetDataIO().m_pDlgProgress->SetCanCancel(false);
+            pExtract->GetDataIO().m_pDlgProgress->StartModal();
           }
 
           int64_t iOff=0;
@@ -232,6 +234,7 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
             
             if (pExtract->GetDataIO().bQuit) 
             {
+              pExtract->GetDataIO().m_pDlgProgress->Close();
               bRes = 2;
               break;
             }
@@ -265,6 +268,8 @@ int urarlib_get(char *rarfile, char *targetPath, char *fileToExtract, char *libp
           if (pExtract->GetDataIO().m_pDlgProgress)
             pExtract->GetDataIO().m_pDlgProgress->ShowProgressBar(false);
         }
+        if (bShowProgress)
+          pExtract->GetDataIO().m_pDlgProgress->Close();
       }
     }
   }

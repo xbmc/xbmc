@@ -206,8 +206,8 @@ void CGUIWindowPVRGuide::UpdateViewTimeline(void)
   bool bGotCurrentChannel = g_PVRManager.GetCurrentChannel(&CurrentChannel);
   bool bRadio = bGotCurrentChannel ? CurrentChannel.IsRadio() : false;
   CDateTime gridStart = CDateTime::GetCurrentDateTime();
-  CDateTime firstDate = g_EpgContainer.GetFirstEPGDate();
-  CDateTime lastDate = g_EpgContainer.GetLastEPGDate();
+  CDateTime firstDate; firstDate.SetFromUTCDateTime(g_EpgContainer.GetFirstEPGDate());
+  CDateTime lastDate;  lastDate.SetFromUTCDateTime(g_EpgContainer.GetLastEPGDate());
   m_parent->m_guideGrid = (CGUIEPGGridContainer*) m_parent->GetControl(CONTROL_LIST_TIMELINE);
   if (!m_parent->m_guideGrid)
     return;

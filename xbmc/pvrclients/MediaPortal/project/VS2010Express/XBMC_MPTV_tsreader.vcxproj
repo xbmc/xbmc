@@ -88,7 +88,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\;..\..\tsreader;..\..\lib\live555\liveMedia\include;..\..\lib\live555\BasicUsageEnvironment\include;..\..\lib\live555\UsageEnvironment\include;..\..\lib\live555\groupsock\include;..\..\..\..\..\lib;..\..\..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\addons\library.xbmc.addon;..\..\..\..\..\addons\library.xbmc.pvr;..\..\..\..\addons\include;..\..\tsreader;..\..\lib\live555\liveMedia\include;..\..\lib\live555\BasicUsageEnvironment\include;..\..\lib\live555\UsageEnvironment\include;..\..\lib\live555\groupsock\include;..\..\..\..\..\lib;..\..\..\..\;..\..\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>TARGET_WINDOWS;_WIN32;_WINDOWS;MPTV_EXPORTS;_WIN32PC;_WINSOCKAPI_;_USE_32BIT_TIME_T;TSREADER;LIVE555;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -117,12 +117,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\AutoLock.cpp" />
     <ClCompile Include="..\..\Cards.cpp" />
     <ClCompile Include="..\..\channels.cpp" />
     <ClCompile Include="..\..\client.cpp" />
     <ClCompile Include="..\..\..\..\..\addons\library.xbmc.addon\dlfcn-win32.cpp" />
-    <ClCompile Include="..\..\CriticalSection.cpp" />
     <ClCompile Include="..\..\epg.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinystr.cpp" />
     <ClCompile Include="..\..\lib\tinyxml\tinyxml.cpp" />
@@ -134,18 +132,19 @@
     <ClCompile Include="..\..\lib\tsreader\MemorySink.cpp" />
     <ClCompile Include="..\..\lib\tsreader\MultiFileReader.cpp" />
     <ClCompile Include="..\..\lib\tsreader\RTSPClient.cpp" />
+    <ClCompile Include="..\..\lib\tsreader\Thread.cpp" />
     <ClCompile Include="..\..\lib\tsreader\TSReader.cpp" />
-    <ClCompile Include="..\..\lib\tsreader\TSThread.cpp" />
     <ClCompile Include="..\..\lib\tsreader\WaitEvent.cpp" />
     <ClCompile Include="..\..\pvrclient-mediaportal.cpp" />
     <ClCompile Include="..\..\recordings.cpp" />
+    <ClCompile Include="..\..\SingleLock.cpp" />
     <ClCompile Include="..\..\Socket.cpp" />
     <ClCompile Include="..\..\timers.cpp" />
     <ClCompile Include="..\..\uri.cpp" />
     <ClCompile Include="..\..\utils.cpp" />
+    <ClCompile Include="..\..\windows\CriticalSection.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\AutoLock.h" />
     <ClInclude Include="..\..\Cards.h" />
     <ClInclude Include="..\..\channels.h" />
     <ClInclude Include="..\..\client.h" />
@@ -159,10 +158,12 @@
     <ClInclude Include="..\..\lib\tsreader\MemorySink.h" />
     <ClInclude Include="..\..\lib\tsreader\MultiFileReader.h" />
     <ClInclude Include="..\..\lib\tsreader\RTSPClient.h" />
+    <ClInclude Include="..\..\lib\tsreader\Thread.h" />
     <ClInclude Include="..\..\lib\tsreader\TSReader.h" />
-    <ClInclude Include="..\..\lib\tsreader\TSThread.h" />
     <ClInclude Include="..\..\lib\tsreader\WaitEvent.h" />
+    <ClInclude Include="..\..\NonCopyable.h" />
     <ClInclude Include="..\..\os-dependent.h" />
+    <ClInclude Include="..\..\SingleLock.h" />
     <ClInclude Include="..\..\uri.h" />
     <ClInclude Include="..\..\windows\os_windows.h" />
     <ClInclude Include="..\..\pvrclient-mediaportal.h" />

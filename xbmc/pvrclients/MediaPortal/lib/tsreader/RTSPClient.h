@@ -20,7 +20,7 @@
 #if defined TSREADER && defined LIVE555
 
 //#include "os-dependent.h"
-#include "TSThread.h"
+#include "Thread.h"
 
 #include "liveMedia.hh"
 #include "BasicUsageEnvironment.hh"
@@ -28,7 +28,7 @@
 
 #include "MemoryBuffer.h"
 
-class CRTSPClient: public TSThread
+class CRTSPClient: public CThread
 {
 public:
   CRTSPClient();
@@ -39,7 +39,6 @@ public:
   void Stop();
   bool IsRunning();
   long Duration();
-  bool Run();
   bool Pause();
   bool IsPaused();
   void Continue();
@@ -90,7 +89,7 @@ public:
   //thread
   void StartBufferThread();
   void StopBufferThread();
-  virtual void ThreadProc();
+  virtual void Run();
   bool m_BufferThreadActive;
   long m_duration;
   double m_fStart;

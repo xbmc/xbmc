@@ -3,7 +3,7 @@ SRCS=TSReader.cpp \
     MemoryBuffer.cpp \
     MemoryReader.cpp \
     MemorySink.cpp \
-    TSThread.cpp \
+    Thread.cpp \
     WaitEvent.cpp
 LIB=tsreader.a
 

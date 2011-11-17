@@ -39,12 +39,17 @@ extern NSString* const MediaKeyPreviousNotification;
 @interface HotKeyController : NSObject
 {
   CFMachPortRef m_eventPort;
+  CFRunLoopSourceRef m_runLoopSource;
   BOOL          m_active;
   BOOL          m_controlSysVolume;
   BOOL          m_controlSysPower;
 }
 
 + (HotKeyController*)sharedController;
+
+- (void)enableTap;
+- (void)disableTap;
+
 - (CFMachPortRef)eventPort;
 
 - (void)sysPower:  (BOOL)enable;

@@ -25,7 +25,7 @@
 
 using namespace ADDON;
 
-CRTSPClient::CRTSPClient()
+CRTSPClient::CRTSPClient(): CThread("RTSPClient")
 {
   XBMC->Log(LOG_DEBUG, "CRTSPClient::CRTSPClient()");
   allowProxyServers = False;
@@ -516,7 +516,7 @@ void CRTSPClient::FillBuffer(unsigned long byteCount)
   XBMC->Log(LOG_DEBUG, "CRTSPClient::Fillbuffer...%d/%d\n", byteCount, m_buffer->Size() );
 }
 
-void CRTSPClient::ThreadProc()
+void CRTSPClient::Run()
 {
   m_BufferThreadActive = TRUE;
   m_bRunning=true;
@@ -542,12 +542,6 @@ void CRTSPClient::ThreadProc()
   return;
 }
 
-bool CRTSPClient::Run()
-{
-  XBMC->Log(LOG_DEBUG, "CRTSPClient::Run()");
-
-  return true;
-}
 void CRTSPClient::Continue()
 {
   if (m_ourClient!=NULL && m_session!=NULL)

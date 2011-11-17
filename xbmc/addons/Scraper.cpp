@@ -657,6 +657,9 @@ std::vector<CMusicAlbumInfo> CScraper::FindAlbum(CFileCurl &fcurl, const CStdStr
         for ( ; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
           scurlAlbum.ParseElement(pxeLink);
 
+        if (!scurlAlbum.m_url.size())
+          continue;
+
         CMusicAlbumInfo ali(sTitle, sArtist, sAlbumName, scurlAlbum);
 
         TiXmlElement* pxeRel = pxeAlbum->FirstChildElement("relevance");
@@ -734,6 +737,9 @@ std::vector<CMusicArtistInfo> CScraper::FindArtist(CFileCurl &fcurl,
           scurlArtist.ParseString(scurl.m_xml);
         for ( ; pxeLink && pxeLink->FirstChild(); pxeLink = pxeLink->NextSiblingElement("url"))
           scurlArtist.ParseElement(pxeLink);
+
+        if (!scurlArtist.m_url.size())
+          continue;
 
         CMusicArtistInfo ari(pxnTitle->FirstChild()->Value(), scurlArtist);
         XMLUtils::GetString(pxeArtist, "genre", ari.GetArtist().strGenre);
@@ -898,6 +904,9 @@ bool CScraper::GetAlbumDetails(CFileCurl &fcurl, const CScraperUrl &scurl, CAlbu
 bool CScraper::GetArtistDetails(CFileCurl &fcurl, const CScraperUrl &scurl,
   const CStdString &sSearch, CArtist &artist)
 {
+  if (!scurl.m_url.size())
+    return false;
+
   CLog::Log(LOGDEBUG, "%s: Reading '%s' ('%s') using %s scraper "
     "(file: '%s', content: '%s', version: '%s')", __FUNCTION__,
     scurl.m_url[0].m_url.c_str(), sSearch.c_str(), Name().c_str(), Path().c_str(),

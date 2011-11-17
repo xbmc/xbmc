@@ -32,6 +32,7 @@
 #include "filesystem/StackDirectory.h"
 #include "filesystem/Directory.h"
 #include "filesystem/FactoryDirectory.h"
+#include "filesystem/File.h"
 #include "settings/GUISettings.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -39,6 +40,8 @@
 #include "guilib/GUIWindowManager.h"
 #include "storage/MediaManager.h"
 #include "video/VideoDatabase.h"
+#include "dialogs/GUIDialogYesNo.h"
+#include "utils/URIUtils.h"
 
 using namespace std;
 using namespace XFILE;
@@ -174,10 +177,20 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
       if (pItem->m_bIsFolder && pItem->GetPath() != "." && pItem->GetPath() != "..")
       {
         // Check if the current foldername indicates a DVD structure (name is "VIDEO_TS")
-        if (pItem->GetPath().Find( "VIDEO_TS" ) != -1 && bAllowVideo
+        if (URIUtils::GetFileName(pItem->GetPath()).Equals("VIDEO_TS") && bAllowVideo
         && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
-          CUtil::PlayDVD("dvd", startFromBeginning);
+          CStdString path = URIUtils::AddFileToFolder(pItem->GetPath(), "VIDEO_TS.IFO");
+          if(!CFile::Exists(path))
+            path = URIUtils::AddFileToFolder(pItem->GetPath(), "video_ts.ifo");
+          CFileItem item(path, false);
+          item.SetLabel(g_mediaManager.GetDiskLabel(strDrive));
+          item.GetVideoInfoTag()->m_strFileNameAndPath = g_mediaManager.GetDiskUniqueId(strDrive);
+
+          if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+            item.m_lStartOffset = STARTOFFSET_RESUME;
+
+          g_application.PlayFile(item, false);
           bPlaying = true;
           return true;
         }
@@ -185,10 +198,17 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
         // Check if the current foldername indicates a Blu-Ray structure (default is "BDMV").
         // A BR should also include an "AACS" folder for encryption, Sony-BRs can also include update folders for PS3 (PS3_UPDATE / PS3_VPRM).
         // ToDo: for the time beeing, the DVD autorun settings are used to determine if the BR should be started automatically.
-        if (pItem->GetPath().Find( "BDMV" ) != -1 && bAllowVideo
+        if (URIUtils::GetFileName(pItem->GetPath()).Equals("BDMV") && bAllowVideo
         && (bypassSettings || g_guiSettings.GetBool("dvds.autorun")))
         {
-          CUtil::PlayDVD("bd", startFromBeginning);
+          CFileItem item(URIUtils::AddFileToFolder(pItem->GetPath(), "index.bdmv"), false);
+          item.SetLabel(g_mediaManager.GetDiskLabel(strDrive));
+          item.GetVideoInfoTag()->m_strFileNameAndPath = g_mediaManager.GetDiskUniqueId(strDrive);
+
+          if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty())
+            item.m_lStartOffset = STARTOFFSET_RESUME;
+
+          g_application.PlayFile(item, false);
           bPlaying = true;
           return true;
         }
@@ -364,15 +384,21 @@ bool CAutorun::IsEnabled() const
   return m_bEnable;
 }
 
-bool CAutorun::PlayDisc(bool startFromBeginning)
+bool CAutorun::PlayDisc(const CStdString& path, bool startFromBeginning)
 {
-  ExecuteAutorun(true,true, startFromBeginning);
-  return true;
+  int nAddedToPlaylist = 0;
+  auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( path ));
+  return RunDisc(pDir.get(), path, nAddedToPlaylist, true, true, startFromBeginning);
 }
 
-bool CAutorun::CanResumePlayDVD()
+bool CAutorun::PlayDiscAskResume(const CStdString& path)
 {
-  CStdString strUniqueId = g_mediaManager.GetDiskUniqueId();
+  return PlayDisc(path, !CanResumePlayDVD(path) || CGUIDialogYesNo::ShowAndGetInput(341, -1, -1, -1, 13404, 12021));
+}
+
+bool CAutorun::CanResumePlayDVD(const CStdString& path)
+{
+  CStdString strUniqueId = g_mediaManager.GetDiskUniqueId(path);
   if (!strUniqueId.IsEmpty())
   {
     CVideoDatabase dbs;

@@ -20,7 +20,7 @@ SRCS   = channels.cpp \
 	uri.cpp \
 	utils.cpp \
 	CriticalSection.cpp \
-	AutoLock.cpp \
+	SingleLock.cpp \
 	Cards.cpp
 
 include ../Makefile.include

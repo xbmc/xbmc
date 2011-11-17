@@ -517,7 +517,7 @@ void CPCMRemap::Remap(void *data, void *out, unsigned int samples, long drc)
 {
   float gain = 1.0f;
   if (drc > 0)
-    gain = pow(10.0f, (float)drc / 1000.0f);
+    gain = pow(10.0f, (float)drc / 2000.0f);
 
   Remap(data, out, samples, gain);
 }

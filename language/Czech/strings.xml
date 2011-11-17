@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: ezechiel1917-->
 <!--Date of translation: 26/09/2010-->
-<!--updated 22/10/2011 by mirek-->
+<!--updated 7/11/2011 by mirek-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Obrázky</string>
@@ -80,9 +80,9 @@
   <string id="100">Zobrazení: ikony</string>
   <string id="101">Zobrazení: seznam</string>
   <string id="102">Prohledat</string>
-  <string id="103">Řadit dle: názvu</string>
-  <string id="104">Řadit dle: data</string>
-  <string id="105">Řadit dle: velikosti</string>
+  <string id="103">Dle názvu</string>
+  <string id="104">Dle data</string>
+  <string id="105">Dle velikosti</string>
   <string id="106">Ne</string>
   <string id="107">Ano</string>
   <string id="108">Prezentace</string>
@@ -391,7 +391,7 @@
   <string id="427">Disk</string>
   <string id="428">Vložte správné CD/DVD</string>
   <string id="429">Vložte prosím disk s označením:</string>
-  <string id="430">Dle: DVD#</string>
+  <string id="430">Dle DVD#</string>
   <string id="431">Nepoužívat mezipaměť</string>
   <string id="432">Odebrat film z knihovny</string>
   <string id="433">Opravdu chcete odebrat '%s'?</string>
@@ -1199,7 +1199,7 @@
   <string id="13396">Nastavení zvuku/titulků</string>
   <string id="13397">Zobrazovat titulky</string>
   <string id="13398">Záložky</string>
-  <string id="13399">Při řazení ignorovat "členy" na začátku názvu (např. "the")</string>
+  <string id="13399">Při řazení ignorovat "členy" na začátku názvu ("the")</string>
   <string id="13400">Plynule přecházet mezi skladbami ze stejného alba</string>
   <string id="13401">Hledat %s</string>
   <string id="13402">Zobrazovat pozici stopy</string>
@@ -1721,7 +1721,7 @@
   <string id="20180">Symboly</string>
   <string id="20181">Smazat</string>
   <string id="20182">Mezera</string>
-  <string id="20183">Obnovit motiv</string>
+  <string id="20183">Obnovit motiv vzhledu</string>
   <string id="20184">Otáčet obrázky pomocí informací z EXIFu</string>
   <string id="20185">Použít styl plakátů u TV Seriálů</string>
   <string id="20186">Vyčkejte</string>
@@ -1925,7 +1925,8 @@
   <string id="21365">Odebrat sdílení</string>
   <string id="21366">Složka s titulky</string>
   <string id="21367">Video a alternativní složka s titulky</string>
-
+  <string id="21368">Přepsat písmo v ASS/SSA titulcích</string>
+  
   <string id="21369">Povolit kurzor myši</string>
   <string id="21370">Přehrávat zvuky při přehrávání multimediálních souborů</string>
   <string id="21371">Náhledy</string>
@@ -2390,4 +2391,5 @@
   <string id="36015">HDMI port</string>
   <string id="36016">XBMC připojeno</string>
   <string id="36017">Adaptér byl nalezen, ale libcec není k dispozici</string>
+  <string id="36018">Použít nastavení jazyka v TV</string>
 </strings>
