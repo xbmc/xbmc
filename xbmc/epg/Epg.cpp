@@ -685,7 +685,7 @@ const CDateTime &CEpg::GetLastDate(void) const
 /** @name Protected methods */
 //@{
 
-bool CEpg::Update(const CEpg &epg, bool bUpdateDb /* = false */)
+bool CEpg::UpdateMetadata(const CEpg &epg, bool bUpdateDb /* = false */)
 {
   bool bReturn = true;
   CSingleLock lock(m_critSection);

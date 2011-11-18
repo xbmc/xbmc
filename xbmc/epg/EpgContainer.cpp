@@ -251,7 +251,7 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
       InsertEpg(epg);
   }
 
-  bReturn = epg ? epg->Update(entry, bUpdateDatabase) : false;
+  bReturn = epg ? epg->UpdateMetadata(entry, bUpdateDatabase) : false;
   m_bPreventUpdates = false;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
   lock.Leave();

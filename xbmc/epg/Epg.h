@@ -69,7 +69,7 @@ namespace EPG
      * @param bUpdateDb If true, persist the changes.
      * @return True if the update was successful, false otherwise.
      */
-    virtual bool Update(const CEpg &epg, bool bUpdateDb = false);
+    virtual bool UpdateMetadata(const CEpg &epg, bool bUpdateDb = false);
 
     /*!
      * @brief Load all entries for this table from the database.
