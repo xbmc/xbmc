@@ -979,7 +979,7 @@ bool CPVRManager::IsJobPending(const char *strJobName) const
 
   for (unsigned int iJobPtr = 0; iJobPtr < m_pendingUpdates.size(); iJobPtr++)
   {
-    if (!strcmp(m_pendingUpdates.at(iJobPtr)->GetType(), "pvr-update-recordings"))
+    if (!strcmp(m_pendingUpdates.at(iJobPtr)->GetType(), strJobName))
     {
       bReturn = true;
       break;
