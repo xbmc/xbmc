@@ -207,9 +207,11 @@ void CEpg::RemoveTagsBetween(time_t start, time_t end, bool bRemoveFromDb /* = f
 {
   CSingleLock lock(m_critSection);
 
+  /* sort the list before deleting */
   Sort();
   m_nowActive = NULL;
 
+  /* delete the tags */
   time_t tagBegin, tagEnd;
   for (int iTagPtr = (int) size() - 1; iTagPtr >= 0; iTagPtr--)
   {
@@ -218,12 +220,16 @@ void CEpg::RemoveTagsBetween(time_t start, time_t end, bool bRemoveFromDb /* = f
 
     if ((start > 0 && tagBegin >= start) ||
         (end > 0 && tagEnd <= end))
+    {
+      delete at(iTagPtr);
       erase(begin() + iTagPtr);
+    }
   }
 
-  Sort();
+  UpdatePreviousAndNextPointers();
   UpdateFirstAndLastDates();
 
+  /* delete the tags from the database */
   if (bRemoveFromDb)
   {
     CEpgDatabase *database = g_EpgContainer.GetDatabase();
