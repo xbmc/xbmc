@@ -61,9 +61,7 @@ CPVRManager::CPVRManager(void) :
     m_bFirstStart(true),
     m_bLoaded(false),
     m_bIsStopping(false),
-    m_loadingProgressDialog(NULL),
-    m_currentRadioGroup(NULL),
-    m_currentTVGroup(NULL)
+    m_loadingProgressDialog(NULL)
 {
   ResetProperties();
 }
@@ -367,8 +365,6 @@ void CPVRManager::ResetProperties(void)
   }
 
   m_currentFile           = NULL;
-  m_currentRadioGroup     = NULL;
-  m_currentTVGroup        = NULL;
   m_PreviousChannel[0]    = -1;
   m_PreviousChannel[1]    = -1;
   m_PreviousChannelIndex  = 0;
@@ -581,48 +577,12 @@ void CPVRManager::LoadCurrentChannelSettings()
 
 void CPVRManager::SetPlayingGroup(CPVRChannelGroup *group)
 {
-  CSingleLock lock(m_critSection);
-
-  if (group == NULL)
-    return;
-
-  bool bChanged(false);
-  if (group->IsRadio())
-  {
-    bChanged = m_currentRadioGroup == NULL || *m_currentRadioGroup != *group;
-    m_currentRadioGroup = group;
-  }
-  else
-  {
-    bChanged = m_currentTVGroup == NULL || *m_currentTVGroup != *group;
-    m_currentTVGroup = group;
-  }
-
-  /* set this group as selected group and set channel numbers */
-  if (bChanged)
-    group->SetSelectedGroup();
+  m_channelGroups->Get(group->IsRadio())->SetSelectedGroup(group);
 }
 
 CPVRChannelGroup *CPVRManager::GetPlayingGroup(bool bRadio /* = false */)
 {
-  CSingleTryLock tryLock(m_critSection);
-  if(tryLock.IsOwner())
-  {
-    if (bRadio && !m_currentRadioGroup)
-      SetPlayingGroup((CPVRChannelGroup *) m_channelGroups->GetGroupAllRadio());
-    else if (!bRadio &&!m_currentTVGroup)
-      SetPlayingGroup((CPVRChannelGroup *) m_channelGroups->GetGroupAllTV());
-  }
-
-  return bRadio ? m_currentRadioGroup : m_currentTVGroup;
-}
-
-bool CPVRManager::IsSelectedGroup(const CPVRChannelGroup &group) const
-{
-  CSingleLock lock(m_critSection);
-
-  return (group.IsRadio() && m_currentRadioGroup && *m_currentRadioGroup == group) ||
-      (!group.IsRadio() && m_currentTVGroup && *m_currentTVGroup == group);
+  return m_channelGroups->GetSelectedGroup(bRadio);
 }
 
 bool CPVRRecordingsUpdateJob::DoWork(void)

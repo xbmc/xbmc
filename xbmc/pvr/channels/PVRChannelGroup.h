@@ -209,7 +209,6 @@ namespace PVR
 
     //@}
 
-    virtual void SetSelectedGroup(void);
     virtual void ResetChannelNumbers(void);
 
     virtual void Notify(const Observable &obs, const CStdString& msg);

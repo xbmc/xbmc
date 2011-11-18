@@ -386,13 +386,6 @@ namespace PVR
     void SearchMissingChannelIcons(void);
 
     /*!
-     * @brief Check whether a group is selected.
-     * @param group The group to check.
-     * @return True if it's selected, false otherwise.
-     */
-    bool IsSelectedGroup(const CPVRChannelGroup &group) const;
-
-    /*!
      * @brief Persist the current channel settings in the database.
      */
     void SaveCurrentChannelSettings(void);
@@ -531,8 +524,6 @@ namespace PVR
     bool                            m_bIsStopping;                 /*!< true while the pvrmanager is being unloaded */
     bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */
     CGUIDialogExtendedProgressBar * m_loadingProgressDialog;       /*!< progress dialog that is displayed while the pvrmanager is loading */
-    CPVRChannelGroup *              m_currentRadioGroup;           /*!< the currently selected radio channel group list */
-    CPVRChannelGroup *              m_currentTVGroup;              /*!< the currently selected TV channel group list */
 
     int                             m_PreviousChannel[2];
     int                             m_PreviousChannelIndex;

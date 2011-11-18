@@ -157,6 +157,13 @@ namespace PVR
     virtual int GetNumChannelsFromAll(void);
 
     /*!
+     * @brief Get the group that is currently selected in the UI.
+     * @param bRadio True to get the selected radio group, false to get the selected TV group.
+     * @return The selected group.
+     */
+    virtual CPVRChannelGroup *GetSelectedGroup(bool bRadio) const;
+
+    /*!
      * @brief Get a channel given it's channel ID from all containers.
      * @param iClientChannelNumber The channel number on the client.
      * @param iClientID The ID of the client.
