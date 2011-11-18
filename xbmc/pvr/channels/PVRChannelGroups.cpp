@@ -273,6 +273,8 @@ bool CPVRChannelGroups::Load(void)
   /* load the other groups from the database */
   LoadUserDefinedChannelGroups();
 
+  SetSelectedGroup(internalChannels);
+
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d %s channel groups loaded",
       __FUNCTION__, (int) size(), m_bRadio ? "radio" : "TV");
 
