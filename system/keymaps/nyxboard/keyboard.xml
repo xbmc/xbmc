@@ -4,7 +4,6 @@
     <keyboard>
       <home>XBMC.ActivateWindow(Home)</home>
       <f3>OSD</f3>         <!-- EPG: same as Guide (ctrl-G) on MCE remote -->
-      <f4>ContextMenu</f4> <!-- User -->
       <f3 mod="shift">ActivateWindow(video)</f3>    <!-- Red -->
       <f4 mod="shift">ActivateWindow(music)</f4>    <!-- Green -->
       <f5 mod="shift">ActivateWindow(pictures)</f5> <!-- Yellow -->
