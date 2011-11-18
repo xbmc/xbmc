@@ -656,16 +656,10 @@ void CPVRGUIInfo::UpdateTimersCache(void)
 
 void CPVRGUIInfo::UpdateNextTimer(void)
 {
-  CSingleLock lock(m_critSection);
-  m_strNextRecordingTitle       = "";
-  m_strNextRecordingChannelName = "";
-  m_strNextRecordingChannelIcon = "";
-  m_strNextRecordingTime        = "";
-  m_strNextTimerInfo            = "";
-
   CPVRTimerInfoTag tag;
   if (g_PVRTimers->GetNextActiveTimer(&tag))
   {
+    CSingleLock lock(m_critSection);
     m_strNextRecordingTitle.Format("%s",       tag.m_strTitle);
     m_strNextRecordingChannelName.Format("%s", tag.ChannelName());
     m_strNextRecordingChannelIcon.Format("%s", tag.ChannelIcon());
@@ -676,6 +670,14 @@ void CPVRGUIInfo::UpdateNextTimer(void)
         tag.StartAsLocalTime().GetAsLocalizedDate(true),
         g_localizeStrings.Get(19107),
         tag.StartAsLocalTime().GetAsLocalizedTime("HH:mm", false));
+  }
+  else
+  {
+    m_strNextRecordingTitle       = "";
+    m_strNextRecordingChannelName = "";
+    m_strNextRecordingChannelIcon = "";
+    m_strNextRecordingTime        = "";
+    m_strNextTimerInfo            = "";
   }
 }
 

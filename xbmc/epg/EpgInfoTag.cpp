@@ -25,6 +25,7 @@
 #include "EpgContainer.h"
 #include "EpgDatabase.h"
 #include "pvr/channels/PVRChannel.h"
+#include "pvr/timers/PVRTimerInfoTag.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "addons/include/xbmc_pvr_types.h"
@@ -114,9 +115,8 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
 
 CEpgInfoTag::~CEpgInfoTag()
 {
-  m_Epg           = NULL;
-  m_nextEvent     = NULL;
-  m_previousEvent = NULL;
+  if (m_Timer)
+    m_Timer->m_epgInfo = NULL;
 }
 
 bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const

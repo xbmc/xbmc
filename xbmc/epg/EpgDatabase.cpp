@@ -171,10 +171,10 @@ bool CEpgDatabase::Delete(const CEpg &table, const time_t start /* = 0 */, const
   strWhereClause = FormatSQL("idEpg = %u", table.EpgID());
 
   if (start != 0)
-    strWhereClause.append(FormatSQL(" AND iStartTime < %u", start).c_str());
+    strWhereClause.append(FormatSQL(" AND iStartTime >= %u", start).c_str());
 
   if (end != 0)
-    strWhereClause.append(FormatSQL(" AND iEndTime > %u", end).c_str());
+    strWhereClause.append(FormatSQL(" AND iEndTime <= %u", end).c_str());
 
   CSingleLock lock(m_critSection);
   return DeleteValues("epgtags", strWhereClause);
