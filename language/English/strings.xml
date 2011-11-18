@@ -1793,11 +1793,11 @@
   <string id="19242">enabled PVR add-on. Enable at least one add-on</string>
   <string id="19243">in order to use the PVR functionality.</string>
   
-  <string id="19245">Backend idle time</string>  
-  <string id="19247">Set wakup command (cmd [timestamp])</string>
-  <string id="19248">Wakup before recording</string>
-  <string id="19249">Daily wakeup</string>
-  <string id="19250">Daily wakeup time (HH:MM:SS)</string>
+  <string id="19244">Backend idle time</string>  
+  <string id="19245">Set wakup command (cmd [timestamp])</string>
+  <string id="19246">Wakup before recording</string>
+  <string id="19247">Daily wakeup</string>
+  <string id="19248">Daily wakeup time (HH:MM:SS)</string>
   
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>

@@ -1810,11 +1810,11 @@
   <string id="19233">Zeige eine Benachrichtigung bei Timer Aktualisierungen</string>
   <string id="19234">Verwenden Backend Kanal Nummerierung (funktioniert nur mit 1 aktiv PVR Addons)</string>
   
-  <string id="19245">Backend Inaktivität</string>
-  <string id="19247">Aufwachzeit Kommando (cmd [timestamp])</string>
-  <string id="19248">Vor Aufnahmebeginn aufwachen</string>
-  <string id="19249">Tägliches aufwachen</string>
-  <string id="19250">Tägliche Aufwachzeit (HH:MM:SS)</string>
+  <string id="19244">Backend Inaktivität</string>
+  <string id="19245">Aufwachzeit Kommando (cmd [timestamp])</string>
+  <string id="19246">Vor Aufnahmebeginn aufwachen</string>
+  <string id="19247">Tägliches aufwachen</string>
+  <string id="19248">Tägliche Aufwachzeit (HH:MM:SS)</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>
