@@ -554,6 +554,20 @@ void CLinuxRendererGL::Reset()
   }
 }
 
+void CLinuxRendererGL::Flush()
+{
+  if (!m_bValidated)
+    return;
+
+  glFinish();
+
+  for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+    (this->*m_textureDelete)(i);
+
+  glFinish();
+  m_bValidated = false;
+}
+
 void CLinuxRendererGL::Update(bool bPauseDrawing)
 {
   if (!m_bConfigured) return;
@@ -1034,6 +1048,8 @@ void CLinuxRendererGL::UnInit()
 {
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
+
+  glFinish();
 
   if (m_rgbPbo)
   {
