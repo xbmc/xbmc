@@ -126,19 +126,8 @@ void CPVRManager::Stop(void)
   /* stop all update threads */
   StopUpdateThreads();
 
-  const CStdString wakeupcmd = g_guiSettings.GetString("pvrpowermanagement.setwakeupcmd", false);
-  if (!wakeupcmd.IsEmpty())
-  {
-    time_t wakeuptime;
-    const CDateTime next = CalcNextEventTime();
-    next.GetAsTime(wakeuptime);
-
-	  CStdString cmdstr;
-	  cmdstr.Format("%s %d", wakeupcmd, wakeuptime);
-
-	  const int ret = system(cmdstr.c_str());
-	  if (ret!=0) { CLog::Log(LOGERROR, "Failed setting wakup time: '%s' returned %d", cmdstr.c_str(), ret); }
-  }
+  /* executes the set wakeup command */
+  SetWakeupCommand();
 
   /* unload all data */
   lock.Enter();
@@ -149,6 +138,31 @@ void CPVRManager::Stop(void)
   m_channelGroups->Unload();
   m_addons->Unload();
   m_bIsStopping = false;
+}
+
+bool CPVRManager::SetWakeupCommand(void)
+{
+  if (!g_guiSettings.GetBool("pvrpowermanagement.enabled"))
+    return false;
+
+  const CStdString strWakeupCommand = g_guiSettings.GetString("pvrpowermanagement.setwakeupcmd", false);
+  if (!strWakeupCommand.IsEmpty())
+  {
+    time_t iWakeupTime;
+    const CDateTime nextEvent = CalcNextEventTime();
+    nextEvent.GetAsTime(iWakeupTime);
+
+    CStdString strExecCommand;
+    strExecCommand.Format("%s %d", strWakeupCommand, iWakeupTime);
+
+    const int iReturn = system(strExecCommand.c_str());
+    if (iReturn != 0)
+      CLog::Log(LOGERROR, "%s - failed to execute wakeup command '%s': %s (%d)", __FUNCTION__, strExecCommand.c_str(), strerror(iReturn), iReturn);
+
+    return iReturn == 0;
+  }
+
+  return false;
 }
 
 bool CPVRManager::StartUpdateThreads(void)

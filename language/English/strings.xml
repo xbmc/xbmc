@@ -1792,7 +1792,7 @@
   <string id="19241">The PVR manager has been enabled without any</string>
   <string id="19242">enabled PVR add-on. Enable at least one add-on</string>
   <string id="19243">in order to use the PVR functionality.</string>
-  <string id="19244">Consider local backend</string>
+  
   <string id="19245">Backend idle time</string>  
   <string id="19247">Set wakup command (cmd [timestamp])</string>
   <string id="19248">Wakup before recording</string>

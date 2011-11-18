@@ -918,7 +918,7 @@ void CGUISettings::Initialize()
   AddBool(pvr, "pvrrecord.timernotifications", 19233, true);
 
   CSettingsCategory* pvrpwr = AddCategory(8, "pvrpowermanagement", 14095);
-  AddBool(pvrpwr, "pvrpowermanagement.localbackend", 19244, false);
+  AddBool(pvrpwr, "pvrpowermanagement.enabled", 305, false);
   AddSeparator(pvrpwr, "pvrpowermanagement.sep1");
   AddInt(pvrpwr, "pvrpowermanagement.backendidletime", 19245, 15, 0, 5, 360, SPIN_CONTROL_INT_PLUS, MASK_MINS, TEXT_OFF);
   AddString(pvrpwr, "pvrpowermanagement.setwakeupcmd", 19247, "/usr/bin/setwakeup.sh", EDIT_CONTROL_INPUT, true);
