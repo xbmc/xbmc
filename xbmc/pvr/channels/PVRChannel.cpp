@@ -80,7 +80,6 @@ CPVRChannel::CPVRChannel(bool bRadio /* = false */)
   m_strStreamURL            = "";
   m_strFileNameAndPath      = "";
   m_iClientEncryptionSystem = -1;
-  m_bIsCachingIcon          = false;
 }
 
 CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
@@ -106,7 +105,6 @@ CPVRChannel::CPVRChannel(const PVR_CHANNEL &channel, unsigned int iClientId)
   m_iEpgId                  = -1;
   m_bEPGCreated             = false;
   m_bChanged                = false;
-  m_bIsCachingIcon          = false;
 
   if (m_strChannelName.IsEmpty())
     m_strChannelName.Format("%s %d", g_localizeStrings.Get(19029), m_iUniqueId);
@@ -146,49 +144,6 @@ CPVRChannel &CPVRChannel::operator=(const CPVRChannel &channel)
   UpdateEncryptionName();
 
   return *this;
-}
-
-bool CPVRChannel::CheckCachedIcon(void)
-{
-  bool bReturn(false);
-  CSingleLock lock(m_critSection);
-
-  if (m_bIsCachingIcon)
-    return bReturn;
-
-  if (URIUtils::IsInternetStream(m_strIconPath, true))
-  {
-    m_bIsCachingIcon = true;
-    CJobManager::GetInstance().AddJob(new CPVRChannelIconCacheJob(this), this);
-    bReturn = true;
-  }
-
-  return false;
-}
-
-bool CPVRChannel::CacheIcon(void)
-{
-  bool bReturn(false);
-
-  CSingleLock lock(m_critSection);
-  if (!m_bIsCachingIcon)
-    return bReturn;
-
-  CStdString strIconPath(m_strIconPath);
-  lock.Leave();
-
-  strIconPath = CTextureCache::Get().CheckAndCacheImage(strIconPath);
-
-  lock.Enter();
-  if (!m_strIconPath.Equals(strIconPath))
-  {
-    m_strIconPath = strIconPath;
-    m_bChanged = true;
-    SetChanged();
-    bReturn = true;
-  }
-
-  return bReturn;
 }
 
 /********** XBMC related channel methods **********/
@@ -823,24 +778,4 @@ void CPVRChannel::SetCachedChannelNumber(unsigned int iChannelNumber)
 {
   CSingleLock lock(m_critSection);
   m_iCachedChannelNumber = iChannelNumber;
-}
-
-void CPVRChannel::OnJobComplete(unsigned int jobID, bool success, CJob* job)
-{
-  if (!strcmp(job->GetType(), "pvr-channel-icon-update"))
-  {
-    CSingleLock lock(m_critSection);
-    m_bIsCachingIcon = false;
-  }
-}
-
-bool CPVRChannelIconCacheJob::DoWork(void)
-{
-  if (m_channel->CacheIcon())
-  {
-    m_channel->Persist(false);
-    return true;
-  }
-
-  return false;
 }

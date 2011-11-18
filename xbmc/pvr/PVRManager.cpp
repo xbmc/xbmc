@@ -267,10 +267,6 @@ void CPVRManager::Process(void)
   if (!m_bStop && m_bFirstStart && g_guiSettings.GetInt("pvrplayback.startlast") != START_LAST_CHANNEL_OFF)
     ContinueLastChannel();
 
-  /* check whether all channel icons are cached */
-  m_channelGroups->GetGroupAllRadio()->CacheIcons();
-  m_channelGroups->GetGroupAllTV()->CacheIcons();
-
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
 
   /* main loop */

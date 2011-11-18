@@ -118,11 +118,6 @@ namespace PVR
      */
     virtual bool CreateChannelEpgs(bool bForce = false);
 
-    /*!
-     * @return Cache all channel icons in this group.
-     */
-    virtual void CacheIcons(void);
-
   protected:
     /*!
      * @brief Load all channels from the database.
