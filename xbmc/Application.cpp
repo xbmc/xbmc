@@ -245,6 +245,7 @@
 
 /* PVR related include Files */
 #include "pvr/PVRManager.h"
+#include "pvr/timers/PVRTimers.h"
 #include "pvr/windows/GUIWindowPVR.h"
 #include "pvr/dialogs/GUIDialogPVRChannelManager.h"
 #include "pvr/dialogs/GUIDialogPVRChannelsOSD.h"
@@ -350,6 +351,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
 {
   m_iPlaySpeed = 1;
   m_pPlayer = NULL;
+  m_bInhibitIdleShutdown = false;
   m_bScreenSave = false;
   m_dpms = NULL;
   m_dpmsIsActive = false;
@@ -4503,7 +4505,8 @@ void CApplication::CheckShutdown()
   CGUIDialogVideoScan *pVideoScan = (CGUIDialogVideoScan *)g_windowManager.GetWindow(WINDOW_DIALOG_VIDEO_SCAN);
 
   // first check if we should reset the timer
-  bool resetTimer = false;
+  bool resetTimer = m_bInhibitIdleShutdown;
+
   if (IsPlaying() || IsPaused()) // is something playing?
     resetTimer = true;
 
@@ -4514,6 +4517,9 @@ void CApplication::CheckShutdown()
     resetTimer = true;
 
   if (g_windowManager.IsWindowActive(WINDOW_DIALOG_PROGRESS)) // progress dialog is onscreen
+    resetTimer = true;
+
+  if (g_guiSettings.GetBool("pvrmanager.enabled") &&  !g_PVRManager.IsIdle())
     resetTimer = true;
 
   if (resetTimer)
@@ -4530,6 +4536,16 @@ void CApplication::CheckShutdown()
     // Sleep the box
     getApplicationMessenger().Shutdown();
   }
+}
+
+void CApplication::InhibitIdleShutdown(bool inhibit)
+{
+  m_bInhibitIdleShutdown = inhibit;
+}
+
+bool CApplication::IsIdleShutdownInhibited() const
+{
+  return m_bInhibitIdleShutdown;
 }
 
 bool CApplication::OnMessage(CGUIMessage& message)

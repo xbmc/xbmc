@@ -1024,6 +1024,8 @@
   <string id="13014">Minimieren</string>
   <string id="13015">Power-Button Aktion</string>
   <string id="13016">Herunterfahren</string>
+  <string id="13017">Blockiere Herunterfahren</string>
+  <string id="13018">Erlaube Herunterfahren</string>
 
   <string id="13020">Ist noch eine weitere Sitzung aktiv (evtl. SSH)? </string>
   <string id="13021">Wechselfestplatte wurde angeschlossen</string>
@@ -1807,6 +1809,14 @@
   <string id="19231">Immer die Kanalreihenfolge der Backends verwenden</string>
   <string id="19233">Zeige eine Benachrichtigung bei Timer Aktualisierungen</string>
   <string id="19234">Verwenden Backend Kanal Nummerierung (funktioniert nur mit 1 aktiv PVR Addons)</string>
+  
+  <string id="19244">Lokales Backend berücksichtigen</string>
+  <string id="19245">Backend Inaktivität</string>
+    
+  <string id="19247">Aufwachzeit Kommando (cmd [timestamp])</string>
+  <string id="19248">Vor Aufnahmebeginn aufwachen</string>
+  <string id="19249">Tägliches aufwachen</string>
+  <string id="19250">Tägliche Aufwachzeit (HH:MM:SS)</string>
 
   <string id="19499">Andere/Unbekannt</string>
   <string id="19500">Movie/Drama</string>
