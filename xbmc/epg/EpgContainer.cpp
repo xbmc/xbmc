@@ -169,6 +169,7 @@ void CEpgContainer::Process(void)
   m_iNextEpgActiveTagCheck = 0;
   CSingleLock lock(m_critSection);
   LoadFromDB();
+  CheckPlayingEvents();
   lock.Leave();
 
   bool bUpdateEpg(true);

@@ -139,6 +139,29 @@ bool CPVRTimerInfoTag::operator ==(const CPVRTimerInfoTag& right) const
           bChannelsMatch);
 }
 
+CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
+{
+  m_channel            = orig.m_channel;
+  m_iClientIndex       = orig.m_iClientIndex;
+  m_strSummary         = orig.m_strSummary;
+  m_iClientChannelUid  = orig.m_iClientChannelUid;
+  m_bIsRepeating       = orig.m_bIsRepeating;
+  m_StartTime          = orig.m_StartTime;
+  m_StopTime           = orig.m_StopTime;
+  m_FirstDay           = orig.m_FirstDay;
+  m_iWeekdays          = orig.m_iWeekdays;
+  m_iPriority          = orig.m_iPriority;
+  m_iLifetime          = orig.m_iLifetime;
+  m_strFileNameAndPath = orig.m_strFileNameAndPath;
+  m_strTitle           = orig.m_strTitle;
+  m_iClientId          = orig.m_iClientId;
+  m_iMarginStart       = orig.m_iMarginStart;
+  m_iMarginEnd         = orig.m_iMarginEnd;
+  m_state              = orig.m_state;
+
+  return *this;
+}
+
 CPVRTimerInfoTag::~CPVRTimerInfoTag(void)
 {
   if (m_epgInfo)
@@ -157,6 +180,7 @@ bool CPVRTimerInfoTag::operator !=(const CPVRTimerInfoTag& right) const
 
 int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const
 {
+  CSingleLock lock(m_critSection);
   int iTimerDelta = 0;
   if (StartAsUTC() != timer.StartAsUTC())
   {
@@ -172,6 +196,7 @@ int CPVRTimerInfoTag::Compare(const CPVRTimerInfoTag &timer) const
 
 void CPVRTimerInfoTag::UpdateSummary(void)
 {
+  CSingleLock lock(m_critSection);
   m_strSummary.clear();
 
   if (!m_bIsRepeating)
@@ -222,6 +247,7 @@ void CPVRTimerInfoTag::UpdateSummary(void)
  */
 const CStdString &CPVRTimerInfoTag::GetStatus() const
 {
+  CSingleLock lock(m_critSection);
   if (m_strFileNameAndPath == "pvr://timers/add.timer")
     return g_localizeStrings.Get(19026);
   else if (m_state == PVR_TIMER_STATE_CANCELLED || m_state == PVR_TIMER_STATE_ABORTED)
@@ -234,6 +260,7 @@ const CStdString &CPVRTimerInfoTag::GetStatus() const
 
 bool CPVRTimerInfoTag::AddToClient(void)
 {
+  CSingleLock lock(m_critSection);
   UpdateEpgEvent();
   PVR_ERROR error;
   if (!g_PVRClients->AddTimer(*this, &error))
@@ -250,6 +277,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */)
   bool bRemoved = false;
   PVR_ERROR error;
 
+  CSingleLock lock(m_critSection);
   bRemoved = g_PVRClients->DeleteTimer(*this, bForce, &error);
   if (!bRemoved && error == PVR_ERROR_RECORDING_RUNNING)
   {
@@ -277,6 +305,7 @@ bool CPVRTimerInfoTag::DeleteFromClient(bool bForce /* = false */)
 bool CPVRTimerInfoTag::RenameOnClient(const CStdString &strNewName)
 {
   PVR_ERROR error;
+  CSingleLock lock(m_critSection);
   m_strTitle.Format("%s", strNewName);
   if (!g_PVRClients->RenameTimer(*this, m_strTitle, &error))
   {
@@ -292,6 +321,7 @@ bool CPVRTimerInfoTag::RenameOnClient(const CStdString &strNewName)
 
 bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
 {
+  CSingleLock lock(m_critSection);
   if (m_epgInfo)
   {
     m_epgInfo->SetTimer(NULL);
@@ -336,6 +366,7 @@ bool CPVRTimerInfoTag::UpdateEntry(const CPVRTimerInfoTag &tag)
 
 void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
 {
+  CSingleLock lock(m_critSection);
   if (bClear)
   {
     if (m_epgInfo)
@@ -372,6 +403,7 @@ void CPVRTimerInfoTag::UpdateEpgEvent(bool bClear /* = false */)
 
 bool CPVRTimerInfoTag::UpdateOnClient()
 {
+  CSingleLock lock(m_critSection);
   UpdateEpgEvent();
   PVR_ERROR error;
   if (!g_PVRClients->UpdateTimer(*this, &error))
@@ -395,12 +427,11 @@ void CPVRTimerInfoTag::DisplayError(PVR_ERROR err) const
     CGUIDialogOK::ShowAndGetInput(19033,19109,0,19067); /* print info dialog */
   else
     CGUIDialogOK::ShowAndGetInput(19033,19147,19110,0); /* print info dialog "Unknown error!" */
-
-  return;
 }
 
 void CPVRTimerInfoTag::SetEpgInfoTag(CEpgInfoTag *tag)
 {
+  CSingleLock lock(m_critSection);
   if (m_epgInfo != tag)
   {
     if (tag)
@@ -413,6 +444,7 @@ void CPVRTimerInfoTag::SetEpgInfoTag(CEpgInfoTag *tag)
 
 int CPVRTimerInfoTag::ChannelNumber() const
 {
+  CSingleLock lock(m_critSection);
   const CPVRChannel *channeltag = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
   if (channeltag)
     return channeltag->ChannelNumber();
@@ -422,6 +454,7 @@ int CPVRTimerInfoTag::ChannelNumber() const
 
 CStdString CPVRTimerInfoTag::ChannelName() const
 {
+  CSingleLock lock(m_critSection);
   const CPVRChannel *channeltag = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
   if (channeltag)
     return channeltag->ChannelName();
@@ -431,6 +464,7 @@ CStdString CPVRTimerInfoTag::ChannelName() const
 
 CStdString CPVRTimerInfoTag::ChannelIcon() const
 {
+  CSingleLock lock(m_critSection);
   const CPVRChannel *channeltag = g_PVRChannelGroups->GetByUniqueID(m_iClientChannelUid, m_iClientId);
   if (channeltag)
     return channeltag->IconPath();
@@ -440,6 +474,7 @@ CStdString CPVRTimerInfoTag::ChannelIcon() const
 
 bool CPVRTimerInfoTag::SetDuration(int iDuration)
 {
+  CSingleLock lock(m_critSection);
   if (m_StartTime.IsValid())
   {
     m_StopTime = m_StartTime + CDateTimeSpan(0, iDuration / 60, iDuration % 60, 0);
@@ -515,6 +550,7 @@ CPVRTimerInfoTag *CPVRTimerInfoTag::CreateFromEpg(const CEpgInfoTag &tag)
 const CDateTime &CPVRTimerInfoTag::StartAsLocalTime(void) const
 {
   static CDateTime tmp;
+  CSingleLock lock(m_critSection);
   tmp.SetFromUTCDateTime(m_StartTime);
 
   return tmp;
@@ -523,6 +559,7 @@ const CDateTime &CPVRTimerInfoTag::StartAsLocalTime(void) const
 const CDateTime &CPVRTimerInfoTag::EndAsLocalTime(void) const
 {
   static CDateTime tmp;
+  CSingleLock lock(m_critSection);
   tmp.SetFromUTCDateTime(m_StopTime);
 
   return tmp;
@@ -531,6 +568,7 @@ const CDateTime &CPVRTimerInfoTag::EndAsLocalTime(void) const
 const CDateTime &CPVRTimerInfoTag::FirstDayAsLocalTime(void) const
 {
   static CDateTime tmp;
+  CSingleLock lock(m_critSection);
   tmp.SetFromUTCDateTime(m_FirstDay);
 
   return tmp;
@@ -538,6 +576,7 @@ const CDateTime &CPVRTimerInfoTag::FirstDayAsLocalTime(void) const
 
 void CPVRTimerInfoTag::GetNotificationText(CStdString &strText) const
 {
+  CSingleLock lock(m_critSection);
   switch (m_state)
   {
   case PVR_TIMER_STATE_ABORTED:

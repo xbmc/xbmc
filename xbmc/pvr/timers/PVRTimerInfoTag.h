@@ -97,6 +97,8 @@ namespace PVR
 
     bool operator ==(const CPVRTimerInfoTag& right) const;
     bool operator !=(const CPVRTimerInfoTag& right) const;
+    CPVRTimerInfoTag &operator=(const CPVRTimerInfoTag &orig);
+
     int Compare(const CPVRTimerInfoTag &timer) const;
 
     void UpdateSummary(void);
@@ -160,6 +162,7 @@ namespace PVR
     bool UpdateOnClient();
 
   private:
+    CCriticalSection m_critSection;
     CDateTime m_StartTime; /* start time */
     CDateTime m_StopTime;  /* stop time */
     CDateTime m_FirstDay;  /* if it is a repeating timer the first date it starts */
