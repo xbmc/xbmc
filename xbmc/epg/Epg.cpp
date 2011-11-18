@@ -752,7 +752,7 @@ bool CEpg::FixOverlappingEvents(bool bStore /* = true */)
       previousTag->SetEndFromUTC(currentTag->StartAsUTC());
 
       if (bStore)
-        bReturn = previousTag->Persist(false, false) && bReturn;
+        bReturn = previousTag->Persist(false) && bReturn;
     }
 
     previousTag = at(ptr);

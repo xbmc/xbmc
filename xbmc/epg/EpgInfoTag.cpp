@@ -480,7 +480,7 @@ bool CEpgInfoTag::IsActive(void) const
   return (m_startTime <= now && m_endTime > now);
 }
 
-bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
+bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */)
 {
   bool bReturn = false;
 
@@ -494,7 +494,7 @@ bool CEpgInfoTag::Persist(bool bSingleUpdate /* = true */, bool bLastUpdate /* =
     return bReturn;
   }
 
-  int iId = database->Persist(*this, bSingleUpdate, bLastUpdate);
+  int iId = database->Persist(*this, bSingleUpdate);
   if (iId >= 0)
   {
     bReturn = true;

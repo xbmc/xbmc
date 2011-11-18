@@ -364,7 +364,7 @@ int CEpgDatabase::Persist(const CEpg &epg, bool bQueueWrite /* = false */)
   return iReturn;
 }
 
-int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true */, bool bLastUpdate /* = false */)
+int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true */)
 {
   int iReturn(-1);
 
@@ -442,10 +442,6 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
   else
   {
     QueueInsertQuery(strQuery);
-
-    if (bLastUpdate)
-      CommitInsertQueries();
-
     iReturn = 0;
   }
 

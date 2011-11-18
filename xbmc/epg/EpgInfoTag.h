@@ -347,10 +347,9 @@ namespace EPG
     /*!
      * @brief Persist this tag in the database.
      * @param bSingleUpdate True if this is a single update, false if more updates will follow.
-     * @param bLastUpdate True to commit a batch of changes, false otherwise.
      * @return True if the tag was persisted correctly, false otherwise.
      */
-    virtual bool Persist(bool bSingleUpdate = true, bool bLastUpdate = false);
+    virtual bool Persist(bool bSingleUpdate = true);
 
     /*!
      * @return The current progress of this tag.

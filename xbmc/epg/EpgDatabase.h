@@ -136,10 +136,9 @@ namespace EPG
      * @brief Persist an infotag.
      * @param tag The tag to persist.
      * @param bSingleUpdate If true, this is a single update and the query will be executed immediately.
-     * @param bLastUpdate If multiple updates were sent, set this to true on the last update to execute the queries.
      * @return The database ID of this entry or 0 if bSingleUpdate is false and the query was queued.
      */
-    virtual int Persist(const CEpgInfoTag &tag, bool bSingleUpdate = true, bool bLastUpdate = false);
+    virtual int Persist(const CEpgInfoTag &tag, bool bSingleUpdate = true);
 
     //@}
 
