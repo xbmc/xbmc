@@ -794,6 +794,9 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
     // TODO: Add Support for Web EPG Scrapers here
   }
 
+  if (bGrabSuccess)
+    Sort();
+
   return bGrabSuccess;
 }
 
