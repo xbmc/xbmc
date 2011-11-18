@@ -878,14 +878,14 @@ int CPVRManager::TranslateIntInfo(DWORD dwInfo) const
   return !m_guiInfo ? 0 : m_guiInfo->TranslateIntInfo(dwInfo);
 }
 
-bool CPVRManager::HasTimer(void) const
+bool CPVRManager::HasTimers(void) const
 {
   CSingleLock lock(m_critSection);
   if (!m_bLoaded)
     return false;
   lock.Leave();
 
-  return !m_guiInfo ? false : m_guiInfo->HasTimers();
+  return m_timers ? m_timers->GetNumTimers() > 0 : false;
 }
 
 bool CPVRManager::IsRecording(void) const
@@ -895,7 +895,7 @@ bool CPVRManager::IsRecording(void) const
     return false;
   lock.Leave();
 
-  return !m_guiInfo ? false : m_guiInfo->IsRecording();
+  return m_recordings ? m_recordings->GetNumRecordings() > 0 : false;
 }
 
 bool CPVRManager::IsIdle(void) const

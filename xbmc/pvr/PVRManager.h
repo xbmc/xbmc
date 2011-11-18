@@ -250,7 +250,7 @@ namespace PVR
      * @brief Check whether there are active timers.
      * @return True if there are active timers, false otherwise.
      */
-    bool HasTimer(void) const;
+    bool HasTimers(void) const;
 
     /*!
      * @brief Check whether there are active recordings.
