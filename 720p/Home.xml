@@ -558,12 +558,14 @@
 						<onclick>Plex.Powerdown</onclick>
 						<visible>!Skin.HasSetting(HidePower) + !Skin.HasSetting(ShowSleep) + Skin.HasSetting(ShowShutDown)</visible>
 					</item>
+					<!--
 					<item id="13">
 						<description>Help</description>
 						<label>$LOCALIZE[31954]</label>
 						<visible>!Skin.HasSetting(HideHelp)</visible>
 						<onclick>Plex.ActivateWindow(1,plex://127.0.0.1/system/help,return)</onclick>
 					</item>
+					-->
 					<item id="2">
 						<description>Music Plug-ins</description>
 						<label>$LOCALIZE[31972]</label>
