@@ -683,9 +683,9 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
 {
   bool bGrabSuccess = false;
 
-  if (HasPVRChannel() && m_Channel->EPGEnabled() && ScraperName() == "client")
+  if (g_PVRManager.IsRunning() && HasPVRChannel() && m_Channel->EPGEnabled() && ScraperName() == "client")
   {
-    if (g_PVRClients->GetAddonCapabilities(m_Channel->ClientID()).bSupportsEPG)
+    if (g_PVRClients && g_PVRClients->GetAddonCapabilities(m_Channel->ClientID()).bSupportsEPG)
     {
       CLog::Log(LOGINFO, "%s - updating EPG for channel '%s' from client '%i'",
           __FUNCTION__, m_Channel->ChannelName().c_str(), m_Channel->ClientID());
