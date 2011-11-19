@@ -89,10 +89,7 @@ bool CPVRDatabase::CreateTables()
           "idEpg                integer"
         ");"
     );
-    m_pDS->exec("CREATE INDEX idx_channels_iClientId on channels(iClientId);");
-    m_pDS->exec("CREATE INDEX idx_channels_iLastWatched on channels(iLastWatched);");
-    m_pDS->exec("CREATE INDEX idx_channels_bIsRadio on channels(bIsRadio);");
-    m_pDS->exec("CREATE INDEX idx_channels_bIsHidden on channels(bIsHidden);");
+    m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
 
     // TODO use a mapping table so multiple backends per channel can be implemented
     //    CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'map_channels_clients'", __FUNCTION__);
@@ -126,8 +123,7 @@ bool CPVRDatabase::CreateTables()
           "iChannelNumber integer"
         ");"
     );
-    m_pDS->exec("CREATE UNIQUE INDEX idx_idChannel_idGroup on map_channelgroups_channels(idChannel, idGroup);");
-    m_pDS->exec("CREATE INDEX idx_idGroup_iChannelNumber on map_channelgroups_channels(idGroup, iChannelNumber);");
+    m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
 
     CLog::Log(LOGDEBUG, "PVRDB - %s - creating table 'channelsettings'", __FUNCTION__);
     m_pDS->exec(
@@ -215,6 +211,17 @@ bool CPVRDatabase::UpdateOldVersion(int iVersion)
         m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 2 WHERE iInterlaceMethod NOT IN (0,1)"); // anything other than none: method auto => mode force
         m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 1 WHERE iInterlaceMethod = 1"); // method auto => mode auto
         m_pDS->exec("UPDATE channelsettings SET iDeinterlaceMode = 0, iInterlaceMethod = 1 WHERE iInterlaceMethod = 0"); // method none => mode off, method auto
+      }
+      if (iVersion < 18)
+      {
+        m_pDS->exec("DROP INDEX idx_channels_iClientId;");
+        m_pDS->exec("DROP INDEX idx_channels_iLastWatched;");
+        m_pDS->exec("DROP INDEX idx_channels_bIsRadio;");
+        m_pDS->exec("DROP INDEX idx_channels_bIsHidden;");
+        m_pDS->exec("DROP INDEX idx_idChannel_idGroup;");
+        m_pDS->exec("DROP INDEX idx_idGroup_iChannelNumber;");
+        m_pDS->exec("CREATE UNIQUE INDEX idx_channels_iClientId_iUniqueId on channels(iClientId, iUniqueId);");
+        m_pDS->exec("CREATE UNIQUE INDEX idx_idGroup_idChannel on map_channelgroups_channels(idGroup, idChannel);");
       }
     }
   }
@@ -331,8 +338,7 @@ int CPVRDatabase::Get(CPVRChannelGroupInternal &results)
       "channels.iClientChannelNumber, channels.sInputFormat, channels.sInputFormat, channels.sStreamURL, channels.iEncryptionSystem, map_channelgroups_channels.iChannelNumber, channels.idEpg "
       "FROM map_channelgroups_channels "
       "LEFT JOIN channels ON channels.idChannel = map_channelgroups_channels.idChannel "
-      "WHERE map_channelgroups_channels.idGroup = %u "
-      "ORDER BY map_channelgroups_channels.iChannelNumber ASC", results.IsRadio() ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV);
+      "WHERE map_channelgroups_channels.idGroup = %u", results.IsRadio() ? XBMC_INTERNAL_GROUP_RADIO : XBMC_INTERNAL_GROUP_TV);
   if (ResultQuery(strQuery))
   {
     try
@@ -609,7 +615,7 @@ bool CPVRDatabase::Delete(const CPVRChannelGroup &group)
 bool CPVRDatabase::Get(CPVRChannelGroups &results)
 {
   bool bReturn = false;
-  CStdString strQuery = FormatSQL("SELECT * from channelgroups WHERE bIsRadio = %u ORDER BY idGroup;", results.IsRadio());
+  CStdString strQuery = FormatSQL("SELECT * from channelgroups WHERE bIsRadio = %u;", results.IsRadio());
 
   if (ResultQuery(strQuery))
   {
@@ -653,7 +659,7 @@ int CPVRDatabase::GetGroupMembers(CPVRChannelGroup &group)
     return -1;
   }
 
-  CStdString strQuery = FormatSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u ORDER BY iChannelNumber", group.GroupID());
+  CStdString strQuery = FormatSQL("SELECT idChannel, iChannelNumber FROM map_channelgroups_channels WHERE idGroup = %u", group.GroupID());
   if (ResultQuery(strQuery))
   {
     iReturn = 0;
