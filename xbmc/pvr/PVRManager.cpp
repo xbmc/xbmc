@@ -57,7 +57,7 @@ CPVRManager::CPVRManager(void) :
     m_guiInfo(NULL),
     m_triggerEvent(true),
     m_currentFile(NULL),
-    m_database(NULL),
+    m_database(new CPVRDatabase),
     m_bFirstStart(true),
     m_bLoaded(false),
     m_bIsStopping(false),
@@ -71,6 +71,8 @@ CPVRManager::~CPVRManager(void)
   Stop();
   Cleanup();
 
+  if (m_database)
+    delete m_database;
   CLog::Log(LOGDEBUG,"PVRManager - destroyed");
 }
 
@@ -193,7 +195,6 @@ void CPVRManager::Cleanup(void)
   if (m_timers)        delete m_timers;        m_timers = NULL;
   if (m_recordings)    delete m_recordings;    m_recordings = NULL;
   if (m_channelGroups) delete m_channelGroups; m_channelGroups = NULL;
-  if (m_database)      delete m_database;      m_database = NULL;
   m_triggerEvent.Set();
 }
 
@@ -384,7 +385,6 @@ void CPVRManager::ResetProperties(void)
 {
   if (!g_application.m_bStop)
   {
-    if (!m_database)      m_database      = new CPVRDatabase;
     if (!m_addons)        m_addons        = new CPVRClients;
     if (!m_channelGroups) m_channelGroups = new CPVRChannelGroupsContainer;
     if (!m_recordings)    m_recordings    = new CPVRRecordings;
@@ -421,7 +421,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
     pDlgProgress->Progress();
   }
 
-  if (m_addons->IsPlaying())
+  if (m_addons && m_addons->IsPlaying())
   {
     CLog::Log(LOGNOTICE,"PVRManager - %s - stopping playback", __FUNCTION__);
     g_application.getApplicationMessenger().MediaStop();
@@ -443,7 +443,7 @@ void CPVRManager::ResetDatabase(bool bShowProgress /* = true */)
     pDlgProgress->Progress();
   }
 
-  if (m_database->Open())
+  if (m_database && m_database->Open())
   {
     /* clean the EPG database */
     g_EpgContainer.Clear(true);
