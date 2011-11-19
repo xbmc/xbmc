@@ -730,6 +730,7 @@ bool CFileItem::IsVideo() const
   if (HasVideoInfoTag()) return true;
   if (HasMusicInfoTag()) return false;
   if (HasPictureInfoTag()) return false;
+  if (IsPVRRecording())  return true;
 
   if (IsHDHomeRun() || IsTuxBox() || URIUtils::IsDVD(m_strPath) || IsSlingbox())
     return true;

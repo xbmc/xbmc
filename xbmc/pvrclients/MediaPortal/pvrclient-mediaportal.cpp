@@ -30,7 +30,7 @@
 #include "epg.h"
 #include "utils.h"
 #include "pvrclient-mediaportal.h"
-#include "AutoLock.h"
+#include "SingleLock.h"
 #include "lib/tinyxml/tinyxml.h"
 
 #ifdef TSREADER
@@ -89,7 +89,7 @@ string cPVRClientMediaPortal::SendCommand(string command)
 {
   int code;
   vector<string> lines;
-  CAutoLock critsec(&m_mutex);
+  CSingleLock critsec(m_mutex);
 
   if ( !m_tcpclient->send(command) )
   {
@@ -119,7 +119,7 @@ string cPVRClientMediaPortal::SendCommand(string command)
 
 bool cPVRClientMediaPortal::SendCommand2(string command, int& code, vector<string>& lines)
 {
-  CAutoLock critsec(&m_mutex);
+  CSingleLock critsec(m_mutex);
 
   if ( !m_tcpclient->send(command) )
   {
@@ -1187,6 +1187,8 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
   if (((int)channelinfo.iUniqueId) == m_iCurrentChannel)
     return true;
+  else
+    m_iCurrentChannel = -1; // make sure that it is not a valid channel nr in case it will fail lateron
 
   // Start the timeshift
   if (g_iTVServerXBMCBuild>=90)
@@ -1267,7 +1269,6 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 
     m_PlaybackURL = timeshiftfields[0];
     XBMC->Log(LOG_INFO, "Channel stream URL: %s, timeshift buffer: %s", m_PlaybackURL.c_str(), timeshiftfields[2].c_str());
-    m_iCurrentChannel = (int) channelinfo.iUniqueId;
 
     if (g_iSleepOnRTSPurl > 0)
     {
@@ -1300,7 +1301,7 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
 #endif //TARGET_WINDOWS
         {
           // RTSP url
-          return m_tsreader->OnZap(timeshiftfields[0].c_str());
+          return true; //Fast forward seek (OnZap) does not for RTSP
         }
       }
       else
@@ -1326,18 +1327,26 @@ bool cPVRClientMediaPortal::OpenLiveStream(const PVR_CHANNEL &channelinfo)
         m_tsreader->SetDirectory(g_szTimeshiftDir);
       }
       if ( m_tsreader->Open(timeshiftfields[2].c_str()) != S_OK )
+      {
+        SAFE_DELETE(m_tsreader);
         return false;
+      }
     }
     else
 #endif //TARGET_WINDOWS
     {
       // use the RTSP url and live555
       if ( m_tsreader->Open(timeshiftfields[0].c_str()) != S_OK)
+      {
+        SAFE_DELETE(m_tsreader);
         return false;
+      }
       usleep(400000);
     }
 #endif //TSREADER
 
+    // at this point everything is ready for playback
+    m_iCurrentChannel = (int) channelinfo.iUniqueId;
     if (g_iTVServerXBMCBuild>=106)
     {
       m_iCurrentCard = atoi(timeshiftfields[3].c_str());

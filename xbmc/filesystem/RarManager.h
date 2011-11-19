@@ -38,6 +38,7 @@ class CFileItemList;
 #define EXFILE_OVERWRITE 1
 #define EXFILE_AUTODELETE 2
 #define EXFILE_UNIXPATH 4
+#define EXFILE_NOCACHE 8
 #define RAR_DEFAULT_CACHE "special://temp/"
 #define RAR_DEFAULT_PASSWORD ""
 

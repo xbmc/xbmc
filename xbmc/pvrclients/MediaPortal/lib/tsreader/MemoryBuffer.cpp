@@ -20,7 +20,7 @@
 
 #include "os-dependent.h"
 #include "MemoryBuffer.h"
-#include "AutoLock.h"
+#include "SingleLock.h"
 #include "client.h"
 
 using namespace ADDON;
@@ -52,7 +52,7 @@ bool CMemoryBuffer::IsRunning()
 void CMemoryBuffer::Clear()
 {
   //XBMC->Log(LOG_DEBUG, "memorybuffer: Clear() %d",m_Array.size());
-  CAutoLock BufferLock(&m_BufferLock);
+  CSingleLock BufferLock(m_BufferLock);
   std::vector<BUFFERITEM *>::iterator it = m_Array.begin();
   for ( ; it != m_Array.end() ; it++ )
   {
@@ -99,7 +99,7 @@ unsigned long CMemoryBuffer::ReadFromBuffer(unsigned char *pbData, long lDataLen
 
   //Log("get..%d/%d",lDataLength,m_BytesInBuffer);
   long bytesWritten = 0;
-  CAutoLock BufferLock(&m_BufferLock);
+  CSingleLock BufferLock(m_BufferLock);
   while (bytesWritten < lDataLength)
   {
     if(!m_Array.size() || m_Array.size() <= 0)
@@ -146,7 +146,7 @@ long CMemoryBuffer::PutBuffer(unsigned char *pbData, long lDataLength)
   memcpy(item->data, pbData, lDataLength);
   bool sleep=false;
   {
-    CAutoLock BufferLock(&m_BufferLock);
+    CSingleLock BufferLock(m_BufferLock);
     m_Array.push_back(item);
     m_BytesInBuffer+=lDataLength;
 

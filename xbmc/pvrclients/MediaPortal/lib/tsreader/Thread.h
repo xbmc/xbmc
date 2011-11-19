@@ -30,14 +30,29 @@
 #ifdef TSREADER
 
 #include "os-dependent.h"
+#include <string>
 
-class TSThread
+#ifdef TARGET_WINDOWS
+#define THREADFUNC void __cdecl
+#define THREADHANDLE HANDLE
+#else
+#define THREADFUNC int
+#define THREADHANDLE pthread_t
+#endif
+
+class IRunnable
+{
+public:
+  virtual void Run()=0;
+  virtual ~IRunnable() {}
+};
+
+class CThread: public IRunnable
 {
   public:
-    TSThread();
-    virtual ~TSThread();
+    CThread(const char* ThreadName);
+    virtual ~CThread();
 
-    virtual void ThreadProc() = 0;
     long StartThread();
     long StopThread(unsigned long dwTimeoutMilliseconds = 1000);
 
@@ -46,19 +61,16 @@ class TSThread
     tThreadId ThreadId(void);
   protected:
     bool SetPriority(const int iPriority);
-    virtual void InternalThreadProc();
+    virtual void Process();
     wait_event_t m_hDoneEvent;
     wait_event_t m_hStopEvent;
 
   private:
     bool   m_bThreadRunning;
-#ifdef TARGET_WINDOWS
-    HANDLE m_ThreadHandle;
-    static void __cdecl thread_function(void* p);
-#else
-    pthread_t m_ThreadHandle;
-    static int thread_function(void* p);
-#endif
+    IRunnable* m_pRunnable;
+    static THREADFUNC staticThread(void *data);
+    THREADHANDLE m_ThreadHandle;
+    std::string m_ThreadName;
 };
 
 #endif //TSREADER

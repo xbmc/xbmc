@@ -773,6 +773,24 @@ void CUtil::ClearSubtitles()
   }
 }
 
+void CUtil::ClearTempFonts()
+{
+  CStdString searchPath = "special://temp/fonts/";
+
+  if (!CFile::Exists(searchPath))
+    return;
+
+  CFileItemList items;
+  CDirectory::GetDirectory(searchPath, items, "", false, false, XFILE::DIR_CACHE_NEVER);
+
+  for (int i=0; i<items.Size(); ++i)
+  {
+    if (items[i]->m_bIsFolder)
+      continue;
+    CFile::Delete(items[i]->GetPath());
+  }
+}
+
 static const char * sub_exts[] = { ".utf", ".utf8", ".utf-8", ".sub", ".srt", ".smi", ".rt", ".txt", ".ssa", ".aqt", ".jss", ".ass", ".idx", NULL};
 
 int64_t CUtil::ToInt64(uint32_t high, uint32_t low)
@@ -802,24 +820,6 @@ void CUtil::ThumbCacheClear()
 bool CUtil::ThumbCached(const CStdString& strFileName)
 {
   return CThumbnailCache::GetThumbnailCache()->IsCached(strFileName);
-}
-
-void CUtil::PlayDVD(const CStdString& strProtocol, bool startFromBeginning)
-{
-#if defined(HAS_DVDPLAYER) && defined(HAS_DVD_DRIVE)
-  CIoSupport::Dismount("Cdrom0");
-  CIoSupport::RemapDriveLetter('D', "Cdrom0");
-  CStdString strPath;
-  strPath.Format("%s://1", strProtocol.c_str());
-  CFileItem item(strPath, false);
-  item.SetLabel(g_mediaManager.GetDiskLabel());
-  item.GetVideoInfoTag()->m_strFileNameAndPath = g_mediaManager.GetDiskUniqueId();
-
-  if (!startFromBeginning && !item.GetVideoInfoTag()->m_strFileNameAndPath.IsEmpty()) 
-    item.m_lStartOffset = STARTOFFSET_RESUME;
-
-  g_application.PlayFile(item, false);
-#endif
 }
 
 CStdString CUtil::GetNextFilename(const CStdString &fn_template, int max)
@@ -2321,7 +2321,7 @@ void CUtil::ScanForExternalSubtitles(const CStdString& strMovie, std::vector<CSt
     StringUtils::SplitString( strPath, "\\", directories );
   
   // if it's inside a cdX dir, add parent path
-  if (directories[directories.size()-2].size() == 3 && directories[directories.size()-2].Left(2).Equals("cd")) // SplitString returns empty token as last item, hence size-2
+  if (directories.size() >= 2 && directories[directories.size()-2].size() == 3 && directories[directories.size()-2].Left(2).Equals("cd")) // SplitString returns empty token as last item, hence size-2
   {
     CStdString strPath2;
     URIUtils::GetParentPath(strPath,strPath2);

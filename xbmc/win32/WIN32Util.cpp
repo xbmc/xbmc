@@ -787,6 +787,15 @@ void CWIN32Util::GetDrivesByType(VECSOURCES &localDrives, Drive_Types eDriveType
         iPos += (wcslen( pcBuffer + iPos) + 1 );
         continue;
       }
+
+      // usb hard drives are reported as DRIVE_FIXED and won't be returned by queries with REMOVABLE_DRIVES set
+      // so test for usb hard drives
+      if(uDriveType == DRIVE_FIXED)
+      {
+        if(IsUsbDevice(strWdrive))
+          uDriveType = DRIVE_REMOVABLE;
+      }
+
       share.strPath= share.strName= "";
 
       bool bUseDCD= false;
@@ -1494,3 +1503,49 @@ extern "C"
     return NULL;
   }
 }
+
+// detect if a drive is a usb device
+// code taken from http://banderlogi.blogspot.com/2011/06/enum-drive-letters-attached-for-usb.html
+
+bool CWIN32Util::IsUsbDevice(const CStdStringW &strWdrive)
+{
+  CStdStringW strWDevicePath;
+  strWDevicePath.Format(L"\\\\.\\%s",strWdrive.Left(2));
+ 
+  HANDLE deviceHandle = CreateFileW(
+    strWDevicePath.c_str(),
+   0,                // no access to the drive
+   FILE_SHARE_READ | // share mode
+   FILE_SHARE_WRITE,
+   NULL,             // default security attributes
+   OPEN_EXISTING,    // disposition
+   0,                // file attributes
+   NULL);            // do not copy file attributes
+
+  if(deviceHandle == INVALID_HANDLE_VALUE)
+    return false;
+ 
+  // setup query
+  STORAGE_PROPERTY_QUERY query;
+  memset(&query, 0, sizeof(query));
+  query.PropertyId = StorageDeviceProperty;
+  query.QueryType = PropertyStandardQuery;
+   
+  // issue query
+  DWORD bytes;
+  STORAGE_DEVICE_DESCRIPTOR devd;
+  STORAGE_BUS_TYPE busType = BusTypeUnknown;
+ 
+  if (DeviceIoControl(deviceHandle,
+   IOCTL_STORAGE_QUERY_PROPERTY,
+   &query, sizeof(query),
+   &devd, sizeof(devd),
+   &bytes, NULL))
+  {
+   busType = devd.BusType;
+  }
+   
+  CloseHandle(deviceHandle);
+ 
+  return BusTypeUsb == busType;
+ }

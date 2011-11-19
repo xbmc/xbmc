@@ -552,8 +552,18 @@ bool CMediaManager::HashDVD(const CStdString& dvdpath, uint32_t& crc)
 CStdString CMediaManager::GetDiscPath()
 {
 #ifdef _WIN32
-  return "";
+  return g_mediaManager.TranslateDevicePath("");
 #else
+
+  CSingleLock lock(m_CritSecStorageProvider);
+  VECSOURCES drives;
+  m_platformStorage->GetRemovableDrives(drives);
+  for(unsigned i = 0; i < drives.size(); ++i)
+  {
+    if(drives[i].m_iDriveType == CMediaSource::SOURCE_TYPE_DVD)
+      return drives[i].strPath;
+  }
+
   // iso9660://, cdda://local/ or D:\ depending on disc type
   return MEDIA_DETECT::CDetectDVDMedia::GetDVDPath();
 #endif

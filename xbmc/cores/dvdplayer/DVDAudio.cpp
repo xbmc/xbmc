@@ -230,6 +230,31 @@ DWORD CDVDAudio::AddPackets(const DVDAudioFrame &audioframe)
   return total;
 }
 
+double CDVDAudio::AddSilence(double delay)
+{
+  CLog::Log(LOGDEBUG, "CDVDAudio::AddSilence - %f seconds", delay);
+  DVDAudioFrame audioframe;
+  audioframe.passthrough     = m_bPassthrough;
+  audioframe.channels        = m_iChannels;
+  audioframe.sample_rate     = m_iBitrate;
+  audioframe.bits_per_sample = m_iBitsPerSample;
+  audioframe.size            = m_iChannels * (m_iBitsPerSample>>3);
+  audioframe.data            = (BYTE*)calloc(1, audioframe.size);
+  if(audioframe.data == NULL)
+    return 0.0;
+  unsigned samples = m_iBitrate * delay;
+  unsigned added = 0;
+  for(; added < samples; added++)
+  {
+    if(AddPackets(audioframe) != audioframe.size)
+      break;
+  }
+  if(added < samples)
+    CLog::Log(LOGDEBUG, "CDVDAudio::AddSilence - failed to %d silence samples of %u", samples - added, samples);
+  free(audioframe.data);
+  return (double)added / m_iBitrate;
+}
+
 void CDVDAudio::Finish()
 {
   CSingleLock lock (m_critSection);

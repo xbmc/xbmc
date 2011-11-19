@@ -183,6 +183,9 @@ bool CFileRar::Open(const CURL& url)
     }
     else
     {
+      CFileInfo* info = g_RarManager.GetFileInRar(m_strRarPath,m_strPathInRar);
+      if ((!info || !CFile::Exists(info->m_strCachedPath)) && m_bFileOptions & EXFILE_NOCACHE)
+        return false;
       m_bUseFile = true;
       CStdString strPathInCache;
 

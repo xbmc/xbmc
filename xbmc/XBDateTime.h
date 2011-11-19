@@ -183,6 +183,7 @@ public:
   void GetAsTimeStamp(FILETIME& time) const;
 
   CDateTime GetAsUTCDateTime() const;
+  CStdString GetAsSaveString() const;
   CStdString GetAsDBDateTime() const;
   CStdString GetAsDBDate() const;
   CStdString GetAsLocalizedDate(bool longDate=false, bool withShortNames=true) const;

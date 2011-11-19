@@ -40,7 +40,7 @@
     <None Include="..\..\README" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>pvrclient_vnsi</ProjectName>
+    <ProjectName>pvrclient_vdr_vnsi</ProjectName>
     <ProjectGuid>{3AD3147B-8E7F-4C70-B049-19FA1916BF12}</ProjectGuid>
     <RootNamespace>XBMC_VDR_vnsi</RootNamespace>
     <Keyword>Win32Proj</Keyword>

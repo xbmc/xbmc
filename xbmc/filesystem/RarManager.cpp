@@ -35,6 +35,9 @@
 #include "utils/log.h"
 #include "filesystem/File.h"
 
+#include "dialogs/GUIDialogYesNo.h"
+#include "guilib/GUIWindowManager.h"
+
 #include <set>
 
 #define EXTRACTION_WARN_SIZE 50*1024*1024
@@ -99,9 +102,6 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
   }
 
   int iRes = 0;
-#if 0 // temporary workaround. disable dialogs as they cause deadlocks since we cannot render
-      // from spawned threads and dvdplayer stalls the app thread during startup
-  //Extract archived file, using existing local copy or overwriting if wanted...
   if (iSize > EXTRACTION_WARN_SIZE)
   {
     CGUIDialogYesNo* pDialog = (CGUIDialogYesNo*)g_windowManager.GetWindow(WINDOW_DIALOG_YES_NO);
@@ -116,7 +116,6 @@ bool CRarManager::CacheRarredFile(CStdString& strPathInCache, const CStdString& 
         iRes = 2; // pretend to be canceled
     }
   }
-#endif
   if (CheckFreeSpace(strDir) < iSize && iRes != 2)
   {
     ClearCache();
