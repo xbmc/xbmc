@@ -1280,11 +1280,11 @@ int CVDPAU::Decode(AVCodecContext *avctx, AVFrame *pFrame)
   VdpStatus vdp_st;
   VdpTime time;
 
-  CSharedLock lock(m_DecoderSection);
-
   int result = Check(avctx);
   if (result)
     return result;
+
+  CSharedLock lock(m_DecoderSection);
 
   if (!vdpauConfigured)
     return VC_ERROR;
