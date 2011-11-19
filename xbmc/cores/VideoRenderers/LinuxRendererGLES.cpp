@@ -1259,9 +1259,6 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   if (!m_bValidated)
     return false;
 
-  // get our screen rect
-  const CRect rv = g_graphicsContext.GetViewWindow();
-
   // save current video rect
   CRect saveSize = m_destRect;
 
@@ -1280,7 +1277,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
 
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
   // read pixels
-  glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+  glReadPixels(0, g_graphicsContext.GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_RGBA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
 
   // OpenGLES returns in RGBA order but CRenderCapture needs BGRA order
