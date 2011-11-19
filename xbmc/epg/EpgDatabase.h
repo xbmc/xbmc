@@ -55,7 +55,7 @@ namespace EPG
      * @brief Get the minimal database version that is required to operate correctly.
      * @return The minimal database version.
      */
-    virtual int GetMinVersion(void) const { return 5; };
+    virtual int GetMinVersion(void) const { return 6; };
 
     /*!
      * @brief Get the default sqlite database filename.
