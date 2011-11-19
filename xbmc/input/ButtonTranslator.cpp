@@ -791,20 +791,32 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   return action;
 }
 
-const std::map<int, CButtonTranslator::buttonMap> &CButtonTranslator::GetDeviceMap() const
+const std::map<int, CButtonTranslator::buttonMap> &CButtonTranslator::GetDeviceMap(const CStdString& context) const
 {
-  std::map<CStdString, std::map<int, buttonMap> >::const_iterator activeMapIt = deviceMappings.find(g_settings.m_activeKeyboardMapping);
+  std::map<CStdString, std::map<int, buttonMap> >::const_iterator activeMapIt = deviceMappings.find(context);
   if (activeMapIt == deviceMappings.end())
     return deviceMappings.find("default")->second;
   return activeMapIt->second;
 }
 
-int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &strAction) const
+int CButtonTranslator::GetActionCode(int window, const CKey &key,
+                                     CStdString &strAction, 
+                                     const CStdString& context) const
 {
   uint32_t code = key.GetButtonCode();
+  // this is needed due to the fact that if we have an active context
+  // the context only holds mapping for the particular peripheral.
+  // we need to fallback to the default for the other, general devices
+  CStdString context2(context);
+  if (context2.IsEmpty())
+    context2 = g_settings.m_activeKeyboardMapping;
+  if (context2.IsEmpty())
+    context2 = "default";
 
-  const std::map<int, buttonMap> &deviceMap = GetDeviceMap();
+  const std::map<int, buttonMap> &deviceMap = GetDeviceMap(context2);
   map<int, buttonMap>::const_iterator it = deviceMap.find(window);
+  if (it == deviceMap.end() && context2 != "default") // current context failed - try default
+    return GetActionCode(window,key,strAction,"default");
   if (it == deviceMap.end())
     return 0;
   buttonMap::const_iterator it2 = (*it).second.find(code);
@@ -830,6 +842,9 @@ int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &st
     }
   }
 #endif
+  if (action == 0 && context2 != "default") // current context failed - try default
+    return GetActionCode(window,key,strAction,"default");
+
   return action;
 }
 
