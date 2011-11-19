@@ -261,6 +261,7 @@ int CPVRChannelGroupInternal::LoadFromClients(void)
 
 bool CPVRChannelGroupInternal::Renumber(void)
 {
+  CSingleLock lock(m_critSection);
   bool bReturn(CPVRChannelGroup::Renumber());
 
   m_iHiddenChannels = 0;
