@@ -167,6 +167,7 @@ void CEpg::Clear(void)
 {
   CSingleLock lock(m_critSection);
 
+  m_nowActive = NULL;
   for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
     delete at(iTagPtr);
   erase(begin(), end());
@@ -186,6 +187,9 @@ void CEpg::Cleanup(const CDateTime &Time)
   {
     if (at(iPtr)->EndAsUTC() < Time)
     {
+      if (m_nowActive && *m_nowActive == *at(iPtr))
+        m_nowActive = NULL;
+
       delete at(iPtr);
       erase(begin() + iPtr);
       m_bTagsChanged = true;
@@ -660,6 +664,9 @@ bool CEpg::FixOverlappingEvents(void)
 
     if (previousTag->StartAsUTC() <= currentTag->StartAsUTC())
     {
+      if (m_nowActive && *m_nowActive == *currentTag)
+        m_nowActive = NULL;
+
       delete currentTag;
       erase(begin() + iPtr);
       bReturn = true;
