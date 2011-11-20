@@ -81,8 +81,6 @@ void CPVRManager::Cleanup(void)
 {
   CSingleLock lock(m_critSection);
 
-  g_EpgContainer.UnregisterObserver(this);
-
   if (m_addons)        delete m_addons;        m_addons = NULL;
   if (m_guiInfo)       delete m_guiInfo;       m_guiInfo = NULL;
   if (m_timers)        delete m_timers;        m_timers = NULL;
@@ -263,16 +261,9 @@ void CPVRManager::StopUpdateThreads(void)
   StopThread();
 
   CSingleLock lock(m_critSection);
-  g_EpgContainer.UnregisterObserver(this);
   m_guiInfo->Stop();
   m_addons->Stop();
   m_managerState = ManagerStateInterrupted;
-}
-
-
-void CPVRManager::Notify(const Observable &obs, const CStdString& msg)
-{
-  // TODO process notifications from the EPG
 }
 
 bool CPVRManager::Load(void)
@@ -313,7 +304,6 @@ bool CPVRManager::Load(void)
   /* start the other pvr related update threads */
   ShowProgressDialog(g_localizeStrings.Get(19239), 85);
   m_guiInfo->Start();
-  g_EpgContainer.RegisterObserver(this);
 
   /* close the progess dialog */
   HideProgressDialog();

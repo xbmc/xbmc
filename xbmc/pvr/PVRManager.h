@@ -60,7 +60,7 @@ namespace PVR
   #define g_PVRRecordings    g_PVRManager.Recordings()
   #define g_PVRClients       g_PVRManager.Clients()
 
-  class CPVRManager : public Observer, private CThread
+  class CPVRManager : private CThread
   {
     friend class CPVRClients;
 
@@ -71,13 +71,6 @@ namespace PVR
     CPVRManager(void);
 
   public:
-    /*!
-     * @brief Process a message from an observable.
-     * @param obs The observable that sends the message.
-     * @param msg The message.
-     */
-    void Notify(const Observable &obs, const CStdString& msg);
-
     /*!
      * @brief Stop the PVRManager and destroy all objects it created.
      */
