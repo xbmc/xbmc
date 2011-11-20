@@ -89,9 +89,9 @@ namespace PVR
      * The timer that will be active next.
      * Returns false if there is none.
      */
-    bool GetNextActiveTimer(CPVRTimerInfoTag *tag);
+    bool GetNextActiveTimer(CPVRTimerInfoTag *tag) const;
 
-    int GetActiveTimers(std::vector<CPVRTimerInfoTag *> *tags);
+    int GetActiveTimers(std::vector<CPVRTimerInfoTag *> *tags) const;
 
     /**
      * The amount of timers in this container.
@@ -132,6 +132,11 @@ namespace PVR
      * @return The new timer or NULL if it couldn't be created.
      */
     CPVRTimerInfoTag *InstantTimer(CPVRChannel *channel, bool bStartTimer = true);
+
+    /*!
+     * @return Next event time (timer or daily wake up)
+     */
+    CDateTime GetNextEventTime(void) const;
 
     /********** static methods **********/
 

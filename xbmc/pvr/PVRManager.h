@@ -451,11 +451,6 @@ namespace PVR
     void UpdateTimers(void);
 
     /*!
-     * @brief Calculate next event time (timer or daily wake up)
-     */
-    CDateTime CalcNextEventTime(void) const;
-
-    /*!
      * @brief Update all channels.
      */
     void UpdateChannels(void);

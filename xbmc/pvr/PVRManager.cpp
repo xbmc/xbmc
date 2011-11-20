@@ -226,10 +226,10 @@ bool CPVRManager::SetWakeupCommand(void)
     return false;
 
   const CStdString strWakeupCommand = g_guiSettings.GetString("pvrpowermanagement.setwakeupcmd", false);
-  if (!strWakeupCommand.IsEmpty())
+  if (!strWakeupCommand.IsEmpty() && m_timers)
   {
     time_t iWakeupTime;
-    const CDateTime nextEvent = CalcNextEventTime();
+    const CDateTime nextEvent = m_timers->GetNextEventTime();
     nextEvent.GetAsTime(iWakeupTime);
 
     CStdString strExecCommand;
@@ -893,16 +893,16 @@ bool CPVRManager::IsIdle(void) const
   if (!IsStarted())
     return true;
 
-  if (IsRecording()) // pvr recording?
+  if (IsRecording() || IsPlaying()) // pvr recording or playing?
   {
     return false;
   }
-  else // has active timers, etc.?
+  else if (m_timers) // has active timers, etc.?
   {
     const CDateTime now = CDateTime::GetUTCDateTime();
     const CDateTimeSpan idle(0, 0, g_guiSettings.GetInt("pvrpowermanagement.backendidletime"), 0);
 
-    const CDateTime next = CalcNextEventTime();
+    const CDateTime next = m_timers->GetNextEventTime();
     const CDateTimeSpan delta = next - now;
 
     if (delta < idle)
@@ -1072,52 +1072,6 @@ void CPVRManager::ExecutePendingJobs(void)
   }
 
   m_triggerEvent.Reset();
-}
-
-CDateTime CPVRManager::CalcNextEventTime(void) const
-{
-  const CStdString wakeupcmd = g_guiSettings.GetString("pvrpowermanagement.setwakeupcmd", false);
-  const bool dailywakup = g_guiSettings.GetBool("pvrpowermanagement.dailywakeup");
-  const CDateTime now = CDateTime::GetUTCDateTime();
-  const CDateTimeSpan prewakeup(0, 0, g_guiSettings.GetInt("pvrpowermanagement.prewakeup"), 0);
-  const CDateTimeSpan idle(0, 0, g_guiSettings.GetInt("pvrpowermanagement.backendidletime"), 0);
-
-  CDateTime timerwakeuptime;
-  CDateTime dailywakeuptime;
-
-  /* Check next active time */
-  CPVRTimerInfoTag timer;
-  if (Timers()->GetNextActiveTimer(&timer))
-  {
-    const CDateTime start = timer.StartAsUTC();
-
-    if ((start - idle) > now) {
-      timerwakeuptime = start - prewakeup;
-    } else {
-      timerwakeuptime = now + idle;
-    }
-  }
-
-  /* check daily wake up */
-  if (dailywakup)
-  {
-    dailywakeuptime.SetFromDBTime(g_guiSettings.GetString("pvrpowermanagement.dailywakeuptime", false));
-    dailywakeuptime = dailywakeuptime.GetAsUTCDateTime();
-
-    dailywakeuptime.SetDateTime(
-      now.GetYear(), now.GetMonth(), now.GetDay(),
-      dailywakeuptime.GetHour(), dailywakeuptime.GetMinute(), dailywakeuptime.GetSecond()
-    );
-
-    if ((dailywakeuptime - idle) < now)
-    {
-      const CDateTimeSpan oneDay(1,0,0,0);
-      dailywakeuptime += oneDay;
-    }
-  }
-
-  const CDateTime retVal((dailywakeuptime < timerwakeuptime) ? dailywakeuptime : timerwakeuptime);
-  return retVal;
 }
 
 bool CPVRManager::IsStarted(void) const
