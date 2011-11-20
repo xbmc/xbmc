@@ -66,6 +66,7 @@ public:
   IHardwareDecoder * GetHardware()                           { return m_pHardware; };
   void               SetHardware(IHardwareDecoder* hardware) 
   {
+    SAFE_RELEASE(m_pHardware);
     m_pHardware = hardware;
     m_name += "-";
     m_name += m_pHardware->Name();

@@ -1,5 +1,3 @@
-#pragma once
-
 /*
  *      Copyright (C) 2005-2008 Team XBMC
  *      http://www.xbmc.org
@@ -21,24 +19,23 @@
  *
  */
 
-#include "guilib/GUIWindow.h"
-#include "utils/Stopwatch.h"
+#pragma once
 
-class CGUIWindowWeather : public CGUIWindow
+#include "utils/GlobalsHandling.h"
+#include "threads/CriticalSection.h"
+
+class CryptThreadingInitializer
 {
+  CCriticalSection** locks;
+  int numlocks;
+  CCriticalSection locksLock;
+
 public:
-  CGUIWindowWeather(void);
-  virtual ~CGUIWindowWeather(void);
-  virtual bool OnMessage(CGUIMessage& message);
-  virtual void FrameMove();
+  CryptThreadingInitializer();
+  ~CryptThreadingInitializer();
 
-protected:
-  virtual void OnInitWindow();
-
-  void UpdateButtons();
-  void UpdateLocations();
-  void SetProperties();
-  void SetLocation(int loc);
-
-  unsigned int m_maxLocation;
+  CCriticalSection* get_lock(int index);
 };
+
+XBMC_GLOBAL_REF(CryptThreadingInitializer,g_cryptThreadingInitializer);
+#define g_cryptThreadingInitializer XBMC_GLOBAL_USE(CryptThreadingInitializer)

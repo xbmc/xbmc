@@ -128,6 +128,7 @@ void CEpgContainer::Start(void)
 {
   CSingleLock lock(m_critSection);
 
+  m_bIsInitialising = true;
   m_bStop = false;
   g_guiSettings.RegisterObserver(this);
   LoadSettings();
@@ -140,7 +141,6 @@ void CEpgContainer::Start(void)
 bool CEpgContainer::Stop(void)
 {
   StopThread();
-
   return true;
 }
 
@@ -169,6 +169,7 @@ void CEpgContainer::Process(void)
   m_iNextEpgActiveTagCheck = 0;
   CSingleLock lock(m_critSection);
   LoadFromDB();
+  CheckPlayingEvents();
   lock.Leave();
 
   bool bUpdateEpg(true);
@@ -251,7 +252,7 @@ bool CEpgContainer::UpdateEntry(const CEpg &entry, bool bUpdateDatabase /* = fal
       InsertEpg(epg);
   }
 
-  bReturn = epg ? epg->Update(entry, bUpdateDatabase) : false;
+  bReturn = epg ? epg->UpdateMetadata(entry, bUpdateDatabase) : false;
   m_bPreventUpdates = false;
   CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgUpdate);
   lock.Leave();

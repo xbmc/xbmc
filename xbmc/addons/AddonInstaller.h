@@ -72,6 +72,13 @@ public:
    \param force whether we should run an update regardless of the normal update cycle. Defaults to false.
    \param wait whether we should busy wait for the updates to be performed. Defaults to false.
    */
+
+  /*! \brief Check if an installation job for a given add-on is already queued up
+   *  \param ID The ID of the add-on
+   *  \return true if a job exists, false otherwise
+   */
+  bool HasJob(const CStdString& ID) const;
+
   void UpdateRepos(bool force = false, bool wait = false);
 
   void OnJobComplete(unsigned int jobID, bool success, CJob* job);

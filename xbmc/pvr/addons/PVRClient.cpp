@@ -193,6 +193,7 @@ inline void PVRWriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER
   xbmcTimer.StartAsUTC().GetAsTime(start);
   xbmcTimer.EndAsUTC().GetAsTime(end);
   xbmcTimer.FirstDayAsUTC().GetAsTime(firstDay);
+  CEpgInfoTag *epgTag = xbmcTimer.GetEpgInfoTag();
 
   addonTimer.iClientIndex      = xbmcTimer.m_iClientIndex;
   addonTimer.state             = xbmcTimer.m_state;
@@ -207,7 +208,7 @@ inline void PVRWriteClientTimerInfo(const CPVRTimerInfoTag &xbmcTimer, PVR_TIMER
   addonTimer.startTime         = start - g_advancedSettings.m_iPVRTimeCorrection;
   addonTimer.endTime           = end - g_advancedSettings.m_iPVRTimeCorrection;
   addonTimer.firstDay          = firstDay - g_advancedSettings.m_iPVRTimeCorrection;
-  addonTimer.iEpgUid           = xbmcTimer.m_epgInfo ? xbmcTimer.m_epgInfo->UniqueBroadcastID() : -1;
+  addonTimer.iEpgUid           = epgTag ? epgTag->UniqueBroadcastID() : -1;
   addonTimer.strSummary        = xbmcTimer.m_strSummary.c_str();
   addonTimer.iMarginStart      = xbmcTimer.m_iMarginStart;
   addonTimer.iMarginEnd        = xbmcTimer.m_iMarginEnd;

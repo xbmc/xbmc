@@ -43,6 +43,7 @@
 #include "windowing/WindowingFactory.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 #include "powermanagement/PowerManager.h"
 
@@ -234,11 +235,15 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
           case POWERSTATE_MINIMIZE:
             Minimize();
             break;
+
+          case TMSG_RENDERER_FLUSH:
+            g_renderManager.Flush();
+            break;
         }
       }
       break;
 
-case TMSG_POWERDOWN:
+    case TMSG_POWERDOWN:
       {
         g_application.Stop(EXITCODE_POWERDOWN);
         g_powerManager.Powerdown();
@@ -277,6 +282,12 @@ case TMSG_POWERDOWN:
         g_application.Stop(EXITCODE_RESTARTAPP);
 #endif
         // TODO
+      }
+      break;
+
+    case TMSG_INHIBITIDLESHUTDOWN:
+      {
+        g_application.InhibitIdleShutdown((bool)pMsg->dwParam1);
       }
       break;
 
@@ -1086,6 +1097,12 @@ void CApplicationMessenger::Reset()
 void CApplicationMessenger::RestartApp()
 {
   ThreadMessage tMsg = {TMSG_RESTARTAPP};
+  SendMessage(tMsg);
+}
+
+void CApplicationMessenger::InhibitIdleShutdown(bool inhibit)
+{
+  ThreadMessage tMsg = {TMSG_INHIBITIDLESHUTDOWN, (DWORD)inhibit};
   SendMessage(tMsg);
 }
 

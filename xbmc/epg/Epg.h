@@ -69,7 +69,7 @@ namespace EPG
      * @param bUpdateDb If true, persist the changes.
      * @return True if the update was successful, false otherwise.
      */
-    virtual bool Update(const CEpg &epg, bool bUpdateDb = false);
+    virtual bool UpdateMetadata(const CEpg &epg, bool bUpdateDb = false);
 
     /*!
      * @brief Load all entries for this table from the database.
@@ -129,13 +129,6 @@ namespace EPG
      * @return True if this EPG has a PVR channel set, false otherwise.
      */
     virtual bool HasPVRChannel(void) const { return !(m_Channel == NULL); }
-
-    /*!
-     * @brief Delete an infotag from this EPG.
-     * @param tag The tag to delete.
-     * @return True if it was deleted successfully, false if not.
-     */
-    virtual bool DeleteInfoTag(CEpgInfoTag *tag);
 
     /*!
      * @brief Remove all entries from this EPG that finished before the given time
@@ -228,11 +221,10 @@ namespace EPG
 
     /*!
      * @brief Persist this table in the database.
-     * @param bPersistTags Set to true to persist all changed tags in this container.
-     * @param bQueueWrite Don't execute the query immediately but queue it if true.
+     * @param bUpdateLastScanTime True to update the last scan time in the db, false otherwise.
      * @return True if the table was persisted, false otherwise.
      */
-    virtual bool Persist(bool bPersistTags = false, bool bQueueWrite = false);
+    virtual bool Persist(bool bUpdateLastScanTime = false);
 
     /*!
      * @brief Get the start time of the first entry in this table.
@@ -289,17 +281,15 @@ namespace EPG
 
     /*!
      * @brief Persist all tags in this container.
-     * @param bQueueWrite Don't execute the query immediately but queue it if true.
      * @return True if all tags were persisted, false otherwise.
      */
-    virtual bool PersistTags(bool bQueueWrite = false) const;
+    virtual bool PersistTags(void) const;
 
     /*!
      * @brief Fix overlapping events from the tables.
-     * @param bStore Store in the database if true.
-     * @return True if the events were fixed successfully, false otherwise.
+     * @return True if anything changed, false otherwise.
      */
-    virtual bool FixOverlappingEvents(bool bStore = true);
+    virtual bool FixOverlappingEvents(void);
 
     /*!
      * @brief Sort all entries in this EPG by date.
@@ -311,19 +301,6 @@ namespace EPG
      * @param tag The tag to add.
      */
     virtual void AddEntry(const CEpgInfoTag &tag);
-
-    /*!
-     * @brief Remove all tags between begin and end from this table.
-     * @param begin Remove all entries after this start time. Use 0 to remove all entries before "end".
-     * @param end Remove all entries before this end time. Use 0 to remove all before after "begin". If both "begin" and "end" are 0, all entries will be removed.
-     * @param bRemoveFromDb Set to true to remove these entries from the database too.
-     */
-    virtual void RemoveTagsBetween(time_t begin, time_t end, bool bRemoveFromDb = false);
-
-    /*!
-     * @see RemoveTagsBetween(time_t begin, time_t end, bool bRemoveFromDb = false)
-     */
-    virtual void RemoveTagsBetween(const CDateTime &begin, const CDateTime &end, bool bRemoveFromDb = false);
 
     /*!
      * @brief Load all EPG entries from clients into a temporary table and update this table with the contents of that temporary table.
@@ -341,6 +318,8 @@ namespace EPG
      */
     virtual bool UpdateEntries(const CEpg &epg, bool bStoreInDb = true);
 
+    virtual void UpdatePreviousAndNextPointers(void);
+
     /*!
      * @brief Update the cached first and last date.
      */
@@ -349,6 +328,7 @@ namespace EPG
     virtual bool IsRemovableTag(const EPG::CEpgInfoTag *tag) const;
 
     bool                       m_bChanged;        /*!< true if anything changed that needs to be persisted, false otherwise */
+    bool                       m_bTagsChanged;    /*!< true when any tags are changed and not persisted, false otherwise */
     bool                       m_bInhibitSorting; /*!< don't sort the table if this is true */
     bool                       m_bLoaded;         /*!< true when the initial entries have been loaded */
     int                        m_iEpgID;          /*!< the database ID of this table */

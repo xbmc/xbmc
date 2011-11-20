@@ -698,6 +698,18 @@ AC_CHECK_HEADER([vorbis/vorbisenc.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([libmodplug/modplug.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([curl/curl.h],, AC_MSG_ERROR($missing_library))
 AC_CHECK_HEADER([FLAC/stream_decoder.h],, AC_MSG_ERROR($missing_library))
+
+# we need to check for the header because if it exists we set the openssl
+# and gcrypt MT callback hooks. This is mostly so that libcurl operates 
+# in MT manner correctly.
+AC_CHECK_HEADER([openssl/crypto.h], AC_DEFINE([HAVE_OPENSSL],[1],[Define if we have openssl]),)
+AC_CHECK_HEADER([gcrypt.h], gcrypt_headers_available=yes,gcrypt_headers_available=no)
+if test "$gcrypt_headers_available" = "yes"; then
+   # if we have the headers then we must have the lib
+   AC_CHECK_LIB([gcrypt],[gcry_control],, AC_MSG_ERROR($missing_library))
+   AC_DEFINE([HAVE_GCRYPT],[1],[Define if we have gcrypt])
+fi
+
 AC_CHECK_LIB([bz2],         [main],, AC_MSG_ERROR($missing_library))
 AC_CHECK_LIB([jpeg],        [main],, AC_MSG_ERROR($missing_library)) # check for cximage
 AC_CHECK_LIB([tiff],        [main],, AC_MSG_ERROR($missing_library))

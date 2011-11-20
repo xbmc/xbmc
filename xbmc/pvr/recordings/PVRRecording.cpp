@@ -178,6 +178,7 @@ void CPVRRecording::UpdatePath(void)
   CStdString strTitle = m_strTitle;
   CStdString strDatetime = m_recordingTime.GetAsSaveString();
   strTitle.Replace('/','-');
+  strTitle.Remove('?');
 
   if (m_strDirectory != "")
     m_strFileNameAndPath.Format("pvr://recordings/%s/%s/%s.pvr",

@@ -878,9 +878,15 @@ bool CPVRChannelGroup::Renumber(void)
 
 void CPVRChannelGroup::ResetChannelNumberCache(void)
 {
+  CSingleLock lock(m_critSection);
+
   /* reset the channel number cache */
-  if (g_PVRManager.IsSelectedGroup(*this))
-    SetSelectedGroup();
+  if (!IsInternalGroup())
+    g_PVRChannelGroups->GetGroupAll(m_bRadio)->ResetChannelNumbers();
+
+  /* set all channel numbers on members of this group */
+  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
+    at(iChannelPtr).channel->SetCachedChannelNumber(at(iChannelPtr).iChannelNumber);
 }
 
 bool CPVRChannelGroup::HasChangedChannels(void) const
@@ -928,18 +934,6 @@ void CPVRChannelGroup::ResetChannelNumbers(void)
   CSingleLock lock(m_critSection);
   for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
     at(iChannelPtr).channel->SetCachedChannelNumber(0);
-}
-
-void CPVRChannelGroup::SetSelectedGroup(void)
-{
-  CSingleLock lock(m_critSection);
-
-  if (!IsInternalGroup())
-    g_PVRChannelGroups->GetGroupAll(m_bRadio)->ResetChannelNumbers();
-
-  /* set all channel numbers on members of this group */
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
-    at(iChannelPtr).channel->SetCachedChannelNumber(at(iChannelPtr).iChannelNumber);
 }
 
 void CPVRChannelGroup::Notify(const Observable &obs, const CStdString& msg)

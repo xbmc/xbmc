@@ -74,8 +74,8 @@
   <string id="31123">Verwende "Posters" anstelle von "Banners" für TV Shows</string>
   <string id="31124">Zeige Hintergrund "Aktuell abgespielt" Video</string>
   <string id="31125">Zeige Hintergrund "Aktuell abgespielt" Visualisierung</string>
-  <string id="31126"></string>
-  <string id="31127"></string>
+  <string id="31126">Spiele TV Themes in der Video Datenbank (TvTunes Ad-on)</string>
+  <string id="31127">TvTunes</string>
   <string id="31128">Lyrics</string>
   <string id="31129"></string>
   <string id="31130"></string>
@@ -102,7 +102,7 @@
   <string id="31300">Aktuelle Temperatur</string>
   <string id="31301">Letztes Update</string>
   <string id="31302">Menü</string>
-  <string id="31303"></string>
+  <string id="31303">Quelle</string>
   <string id="31304">Bild</string>
   <string id="31305">Keine Disk vorhanden</string>
   <string id="31306">Auswerfen</string>
@@ -130,6 +130,7 @@
   <string id="31328">Kürzlich Hinzugefügt</string>
   <string id="31329">[B]TIMER SET![/B] [COLOR=grey2] - SYSTEM AUTO SHUTDOWN IN[/COLOR]</string>
   <string id="31330">Starte[CR][CR]Filmtrailer</string>
+  <string id="31331">Album Details</string>
 
   <string id="31351">Pause</string>
   <string id="31352">Stop</string>
@@ -166,4 +167,15 @@
   <string id="31509">Kanalgruppe</string>
   <string id="31510">Timer Set</string>
   <string id="31511">Kanal Optionen</string>
+
+  <string id="31900">Wetterkarten</string>
+  <string id="31901">36 Stunden Prognose</string>
+  <string id="31902">Stündliche Prognose</string>
+  <string id="31903">Wochenend Prognose</string>
+  <string id="31904">10 Tage Prognose</string>
+  <string id="31905">Prognose</string>
+  <string id="31906">Karten &amp; Video</string>
+  <string id="31907">Video Prognose [COLOR=grey2](Vollbild Wiedergabe)[/COLOR]</string>
+  <string id="31908">Niederschlagswahrscheinlichkeit</string>
+  <string id="31909">Lade Wetterbericht...</string>
 </strings>

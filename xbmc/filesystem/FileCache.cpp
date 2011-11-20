@@ -395,7 +395,7 @@ int64_t CFileCache::Seek(int64_t iFilePosition, int iWhence)
 
     m_seekPos = iTarget;
     m_seekEvent.Set();
-    if (!m_seekEnded.WaitMSec(INFINITE))
+    if (!m_seekEnded.Wait())
     {
       CLog::Log(LOGWARNING,"%s - seek to %"PRId64" failed.", __FUNCTION__, m_seekPos);
       return -1;

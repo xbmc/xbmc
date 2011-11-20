@@ -35,10 +35,13 @@
 #include "settings/AdvancedSettings.h"
 
 using namespace PVR;
+using namespace EPG;
 
 CPVRGUIInfo::CPVRGUIInfo(void) :
-    CThread("PVR GUI info updater")
+    CThread("PVR GUI info updater"),
+    m_playingEpgTag(NULL)
 {
+  ResetProperties();
 }
 
 CPVRGUIInfo::~CPVRGUIInfo(void)
@@ -81,8 +84,20 @@ void CPVRGUIInfo::ResetProperties(void)
   m_bIsPlayingRadio             = false;
   m_bIsPlayingRecording         = false;
   m_bIsPlayingEncryptedStream   = false;
+
+  if (m_playingEpgTag)
+    delete m_playingEpgTag;
   m_playingEpgTag               = NULL;
-  g_PVRClients->GetQualityData(&m_qualityInfo);
+
+  strncpy(m_qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), 1024);
+  strncpy(m_qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), 1024);
+  m_qualityInfo.iSNR          = 0;
+  m_qualityInfo.iSignal       = 0;
+  m_qualityInfo.iSNR          = 0;
+  m_qualityInfo.iUNC          = 0;
+  m_qualityInfo.dVideoBitrate = 0;
+  m_qualityInfo.dAudioBitrate = 0;
+  m_qualityInfo.dDolbyBitrate = 0;
 }
 
 void CPVRGUIInfo::Start(void)
@@ -656,16 +671,10 @@ void CPVRGUIInfo::UpdateTimersCache(void)
 
 void CPVRGUIInfo::UpdateNextTimer(void)
 {
-  CSingleLock lock(m_critSection);
-  m_strNextRecordingTitle       = "";
-  m_strNextRecordingChannelName = "";
-  m_strNextRecordingChannelIcon = "";
-  m_strNextRecordingTime        = "";
-  m_strNextTimerInfo            = "";
-
   CPVRTimerInfoTag tag;
   if (g_PVRTimers->GetNextActiveTimer(&tag))
   {
+    CSingleLock lock(m_critSection);
     m_strNextRecordingTitle.Format("%s",       tag.m_strTitle);
     m_strNextRecordingChannelName.Format("%s", tag.ChannelName());
     m_strNextRecordingChannelIcon.Format("%s", tag.ChannelIcon());
@@ -676,6 +685,14 @@ void CPVRGUIInfo::UpdateNextTimer(void)
         tag.StartAsLocalTime().GetAsLocalizedDate(true),
         g_localizeStrings.Get(19107),
         tag.StartAsLocalTime().GetAsLocalizedTime("HH:mm", false));
+  }
+  else
+  {
+    m_strNextRecordingTitle       = "";
+    m_strNextRecordingChannelName = "";
+    m_strNextRecordingChannelIcon = "";
+    m_strNextRecordingTime        = "";
+    m_strNextTimerInfo            = "";
   }
 }
 
@@ -736,6 +753,8 @@ void CPVRGUIInfo::ResetPlayingTag(void)
 {
   CSingleLock lock(m_critSection);
 
+  if (m_playingEpgTag)
+    delete m_playingEpgTag;
   m_playingEpgTag = NULL;
 }
 
@@ -750,13 +769,21 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
     if (!m_playingEpgTag || !m_playingEpgTag->IsActive() ||
         (*m_playingEpgTag->ChannelTag() != currentChannel))
     {
-      m_playingEpgTag = currentChannel.GetEPGNow();
+      if (m_playingEpgTag)
+        delete m_playingEpgTag;
+
+      const CEpgInfoTag *newTag = currentChannel.GetEPGNow();
+      if (newTag)
+        m_playingEpgTag = new CEpgInfoTag(*newTag);
+
       m_iDuration = m_playingEpgTag ? m_playingEpgTag->GetDuration() * 1000 : 0;
       g_PVRManager.UpdateCurrentFile();
     }
   }
   else if (g_PVRClients->GetPlayingRecording(&recording))
   {
+    if (m_playingEpgTag)
+      delete m_playingEpgTag;
     m_playingEpgTag = NULL;
     m_iDuration = recording.GetDuration() * 1000;
   }

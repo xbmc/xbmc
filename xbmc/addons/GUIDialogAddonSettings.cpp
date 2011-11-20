@@ -44,6 +44,7 @@
 #include "FileItem.h"
 #include "settings/Settings.h"
 #include "GUIInfoManager.h"
+#include "GUIUserMessages.h"
 #include "dialogs/GUIDialogSelect.h"
 #include "GUIWindowAddonBrowser.h"
 #include "utils/log.h"
@@ -125,6 +126,17 @@ bool CGUIDialogAddonSettings::OnMessage(CGUIMessage& message)
         m_currentSection = focusedControl - CONTROL_START_SECTION;
         CreateControls();
       }
+      return true;
+    }
+    case GUI_MSG_SETTING_UPDATED:
+    {
+      CStdString      id = message.GetStringParam(0);
+      CStdString value   = message.GetStringParam(1);
+      m_settings[id] = value;
+      int iControl = GetFocusedControl()->GetID();
+      CreateControls();
+      CGUIMessage msg(GUI_MSG_SETFOCUS,GetID(),iControl);
+      OnMessage(msg);
       return true;
     }
   }
@@ -1155,4 +1167,11 @@ void CGUIDialogAddonSettings::DoProcess(unsigned int currentTime, CDirtyRegionLi
     else
       ((CGUIButtonControl *)control)->SetSelected(false);
   }
+}
+
+CStdString CGUIDialogAddonSettings::GetCurrentID() const
+{
+  if (m_addon)
+    return m_addon->ID();
+  return "";
 }

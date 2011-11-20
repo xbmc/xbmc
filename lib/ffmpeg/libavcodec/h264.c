@@ -1464,7 +1464,7 @@ static void implicit_weight_table(H264Context *h, int field){
  */
 static void idr(H264Context *h){
     ff_h264_remove_all_refs(h);
-    h->prev_frame_num= 0;
+    h->prev_frame_num= -1;
     h->prev_frame_num_offset= 0;
     h->prev_poc_msb=
     h->prev_poc_lsb= 0;
@@ -1892,7 +1892,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     h->mb_field_decoding_flag= s->picture_structure != PICT_FRAME;
 
     if(h0->current_slice == 0){
-        while(h->frame_num !=  h->prev_frame_num &&
+        while(h->frame_num !=  h->prev_frame_num && h->prev_frame_num >= 0 &&
               h->frame_num != (h->prev_frame_num+1)%(1<<h->sps.log2_max_frame_num)){
             Picture *prev = h->short_ref_count ? h->short_ref[0] : NULL;
             av_log(h->s.avctx, AV_LOG_DEBUG, "Frame num gap %d %d\n", h->frame_num, h->prev_frame_num);
@@ -1936,11 +1936,9 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
                 s0->first_field = FIELD_PICTURE;
 
             } else {
-                if (h->nal_ref_idc &&
-                        s0->current_picture_ptr->reference &&
-                        s0->current_picture_ptr->frame_num != h->frame_num) {
+                if (s0->current_picture_ptr->frame_num != h->frame_num) {
                     /*
-                     * This and previous field were reference, but had
+                     * This and previous field had
                      * different frame_nums. Consider this field first in
                      * pair. Throw away previous field except for reference
                      * purposes.

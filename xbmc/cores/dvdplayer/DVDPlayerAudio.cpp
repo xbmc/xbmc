@@ -389,7 +389,7 @@ int CDVDPlayerAudio::DecodeFrame(DVDAudioFrame &audioframe, bool bDropPacket)
     int timeout;
 
     double cached = m_dvdAudio.GetCacheTime();
-    if(cached > 0.0)
+    if(cached > 0.0 && m_speed == DVD_PLAYSPEED_NORMAL)
     {
       if(cached > 0.2)
         timeout = (int)(1000 * (cached - 0.2));

@@ -882,12 +882,6 @@ void CGUIWindowSettingsCategory::UpdateSettings()
       if (strSetting.Equals("screensaver.usedimonpause") && g_guiSettings.GetString("screensaver.mode").Equals("screensaver.xbmc.builtin.dim"))
         pControl->SetEnabled(false);
     }
-    else if (strSetting.Left(16).Equals("weather.areacode"))
-    {
-      CSettingString *pSetting = (CSettingString *)GetSetting(strSetting)->GetSetting();
-      CGUIButtonControl *pControl = (CGUIButtonControl *)GetControl(GetSetting(strSetting)->GetID());
-      pControl->SetLabel2(CWeather::GetAreaCity(pSetting->GetData()));
-    }
     else if (strSetting.Equals("musicfiles.trackformat"))
     {
       if (m_strOldTrackFormat != g_guiSettings.GetString("musicfiles.trackformat"))
@@ -952,10 +946,10 @@ void CGUIWindowSettingsCategory::UpdateSettings()
         pControl->SetEnabled(enabled);
       }
     }
-    else if (strSetting.Equals("weather.scriptsettings"))
+    else if (strSetting.Equals("weather.addonsettings"))
     {
       AddonPtr addon;
-      if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("weather.script"), addon, ADDON_SCRIPT_WEATHER))
+      if (CAddonMgr::Get().GetAddon(g_guiSettings.GetString("weather.addon"), addon, ADDON_SCRIPT_WEATHER))
       {
         CGUIControl *pControl = (CGUIControl *)GetControl(pSettingControl->GetID());
         if (pControl)
@@ -1001,26 +995,9 @@ void CGUIWindowSettingsCategory::UpdateRealTimeSettings()
 void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
 {
   CStdString strSetting = pSettingControl->GetSetting()->GetSetting();
-  if (strSetting.Left(16).Equals("weather.areacode"))
+  if (strSetting.Equals("weather.addonsettings"))
   {
-    CStdString strSearch;
-    if (CGUIDialogKeyboard::ShowAndGetInput(strSearch, g_localizeStrings.Get(14024), false))
-    {
-      strSearch.Replace(" ", "+");
-      CStdString strResult = ((CSettingString *)pSettingControl->GetSetting())->GetData();
-      if (g_weatherManager.GetSearchResults(strSearch, strResult))
-      {
-        ((CSettingString *)pSettingControl->GetSetting())->SetData(strResult);
-        // Update the labels on the location spinner
-        g_weatherManager.Reset();
-        // Refresh the weather using the new location
-        g_weatherManager.Refresh();
-      }
-    }
-  }
-  else if (strSetting.Equals("weather.scriptsettings"))
-  {
-    CStdString name = g_guiSettings.GetString("weather.script");
+    CStdString name = g_guiSettings.GetString("weather.addon");
     AddonPtr addon;
     if (CAddonMgr::Get().GetAddon(name, addon, ADDON_SCRIPT_WEATHER))
     { // TODO: maybe have ShowAndGetInput return a bool if settings changed, then only reset weather if true.
@@ -1044,7 +1021,7 @@ void CGUIWindowSettingsCategory::OnClick(CBaseSettingControl *pSettingControl)
   { // prompt for the addon
     CSettingAddon *setting = (CSettingAddon *)pSettingControl->GetSetting();
     CStdString addonID = setting->GetData();
-    if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID, setting->m_type == ADDON_SCREENSAVER || setting->m_type == ADDON_VIZ) == 1)
+    if (CGUIWindowAddonBrowser::SelectAddonID(setting->m_type, addonID, setting->m_type == ADDON_SCREENSAVER || setting->m_type == ADDON_VIZ || setting->m_type == ADDON_SCRIPT_WEATHER) == 1)
       setting->SetData(addonID);
     else
       return;

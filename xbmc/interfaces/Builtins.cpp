@@ -111,6 +111,8 @@ const BUILT_IN commands[] = {
   { "Quit",                       false,  "Quit XBMC" },
   { "Hibernate",                  false,  "Hibernates the system" },
   { "Suspend",                    false,  "Suspends the system" },
+  { "InhibitIdleShutdown",        false,  "Inhibit idle shutdown" },
+  { "AllowIdleShutdown",          false,  "Allow idle shutdown" },
   { "RestartApp",                 false,  "Restart XBMC" },
   { "Minimize",                   false,  "Minimize XBMC" },
   { "Reset",                      false,  "Reset the xbox (warm reboot)" },
@@ -271,6 +273,11 @@ int CBuiltins::Execute(const CStdString& execString)
   else if (execute.Equals("quit"))
   {
     g_application.getApplicationMessenger().Quit();
+  }
+  else if (execute.Equals("inhibitidleshutdown"))
+  {
+    bool inhibit = (params.size() == 1 && params[0].Equals("true"));
+    g_application.getApplicationMessenger().InhibitIdleShutdown(inhibit);
   }
   else if (execute.Equals("minimize"))
   {

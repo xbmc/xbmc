@@ -262,7 +262,9 @@ const infomap system_labels[] =  {{ "hasnetwork",       SYSTEM_ETHERNET_LINK_ACT
                                   { "progressbar",      SYSTEM_PROGRESS_BAR },
                                   { "batterylevel",     SYSTEM_BATTERY_LEVEL },
                                   { "friendlyname",     SYSTEM_FRIENDLY_NAME },
-                                  { "alarmpos",         SYSTEM_ALARM_POS }};
+                                  { "alarmpos",         SYSTEM_ALARM_POS },
+                                  { "isinhibit",        SYSTEM_ISINHIBIT },
+                                  { "hasshutdown",      SYSTEM_HAS_SHUTDOWN }};
 
 const infomap system_param[] =   {{ "hasalarm",         SYSTEM_HAS_ALARM },
                                   { "getbool",          SYSTEM_GET_BOOL },
@@ -1231,7 +1233,7 @@ CStdString CGUIInfoManager::GetLabel(int info, int contextWindow)
     URIUtils::RemoveExtension(strLabel);
     break;
   case WEATHER_PLUGIN:
-    strLabel = g_guiSettings.GetString("weather.script");
+    strLabel = g_guiSettings.GetString("weather.addon");
     break;
   case SYSTEM_DATE:
     strLabel = GetDate();
@@ -2013,7 +2015,7 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
 #endif
   else if (condition == SYSTEM_PLATFORM_OSX)
   // TODO: rename SYSTEM_PLATFORM_OSX to SYSTEM_PLATFORM_DARWIN after eden release.
-#ifdef TARGET_OS_DARWIN
+#ifdef TARGET_DARWIN
     bReturn = true;
 #else
     bReturn = false;
@@ -2073,6 +2075,10 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     bReturn = g_Windowing.IsFullScreen();
   else if (condition == SYSTEM_ISSTANDALONE)
     bReturn = g_application.IsStandAlone();
+  else if (condition == SYSTEM_ISINHIBIT)
+    bReturn = g_application.IsIdleShutdownInhibited();
+  else if (condition == SYSTEM_HAS_SHUTDOWN)
+    bReturn = (g_guiSettings.GetInt("powermanagement.shutdowntime") > 0);
   else if (condition == SYSTEM_LOGGEDON)
     bReturn = !(g_windowManager.GetActiveWindow() == WINDOW_LOGIN_SCREEN);
   else if (condition == SYSTEM_SHOW_EXIT_BUTTON)
