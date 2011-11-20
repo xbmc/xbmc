@@ -520,7 +520,10 @@ bool CEpg::Update(const time_t start, const time_t end, int iUpdateTime)
     bGrabSuccess = LoadFromClients(start, end);
 
   if (bGrabSuccess)
+  {
+    g_PVRManager.ResetPlayingTag();
     m_bLoaded = true;
+  }
   else
     CLog::Log(LOGERROR, "EPG - %s - failed to update table '%s'", __FUNCTION__, Name().c_str());
 

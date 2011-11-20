@@ -207,6 +207,11 @@ namespace PVR
     bool IsStarted(void) const { return m_bLoaded; }
 
     /*!
+     * @brief Reset the playing EPG tag.
+     */
+    void ResetPlayingTag(void);
+
+    /*!
      * @brief Switch to the given channel.
      * @param channel The channel to switch to.
      * @param bPreview True to show a preview, false otherwise.

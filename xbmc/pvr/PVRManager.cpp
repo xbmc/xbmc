@@ -545,6 +545,12 @@ int CPVRManager::GetCurrentEpg(CFileItemList &results) const
   return iReturn;
 }
 
+void CPVRManager::ResetPlayingTag(void)
+{
+  if (m_bLoaded && m_guiInfo)
+    m_guiInfo->ResetPlayingTag();
+}
+
 int CPVRManager::GetPreviousChannel(void)
 {
   //XXX this must be the craziest way to store the last channel

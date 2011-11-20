@@ -35,6 +35,7 @@
 #include "settings/AdvancedSettings.h"
 
 using namespace PVR;
+using namespace EPG;
 
 CPVRGUIInfo::CPVRGUIInfo(void) :
     CThread("PVR GUI info updater")
@@ -81,6 +82,9 @@ void CPVRGUIInfo::ResetProperties(void)
   m_bIsPlayingRadio             = false;
   m_bIsPlayingRecording         = false;
   m_bIsPlayingEncryptedStream   = false;
+
+  if (m_playingEpgTag)
+    delete m_playingEpgTag;
   m_playingEpgTag               = NULL;
   g_PVRClients->GetQualityData(&m_qualityInfo);
 }
@@ -738,6 +742,8 @@ void CPVRGUIInfo::ResetPlayingTag(void)
 {
   CSingleLock lock(m_critSection);
 
+  if (m_playingEpgTag)
+    delete m_playingEpgTag;
   m_playingEpgTag = NULL;
 }
 
@@ -752,13 +758,21 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
     if (!m_playingEpgTag || !m_playingEpgTag->IsActive() ||
         (*m_playingEpgTag->ChannelTag() != currentChannel))
     {
-      m_playingEpgTag = currentChannel.GetEPGNow();
+      if (m_playingEpgTag)
+        delete m_playingEpgTag;
+
+      const CEpgInfoTag *newTag = currentChannel.GetEPGNow();
+      if (newTag)
+        m_playingEpgTag = new CEpgInfoTag(*newTag);
+
       m_iDuration = m_playingEpgTag ? m_playingEpgTag->GetDuration() * 1000 : 0;
       g_PVRManager.UpdateCurrentFile();
     }
   }
   else if (g_PVRClients->GetPlayingRecording(&recording))
   {
+    if (m_playingEpgTag)
+      delete m_playingEpgTag;
     m_playingEpgTag = NULL;
     m_iDuration = recording.GetDuration() * 1000;
   }

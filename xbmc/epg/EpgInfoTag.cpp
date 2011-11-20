@@ -113,6 +113,32 @@ CEpgInfoTag::CEpgInfoTag(const EPG_TAG &data) :
   Update(data);
 }
 
+CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
+    m_bNotify(tag.m_bNotify),
+    m_bChanged(tag.m_bChanged),
+    m_iBroadcastId(tag.m_iBroadcastId),
+    m_iGenreType(tag.m_iGenreType),
+    m_iGenreSubType(tag.m_iGenreSubType),
+    m_iParentalRating(tag.m_iParentalRating),
+    m_iStarRating(tag.m_iStarRating),
+    m_iSeriesNumber(tag.m_iSeriesNumber),
+    m_iEpisodeNumber(tag.m_iEpisodeNumber),
+    m_iEpisodePart(tag.m_iEpisodePart),
+    m_iUniqueBroadcastID(tag.m_iUniqueBroadcastID),
+    m_strTitle(tag.m_strTitle),
+    m_strPlotOutline(tag.m_strPlotOutline),
+    m_strPlot(tag.m_strPlot),
+    m_strGenre(tag.m_strGenre),
+    m_strEpisodeName(tag.m_strEpisodeName),
+    m_strIconPath(tag.m_strIconPath),
+    m_strFileNameAndPath(tag.m_strFileNameAndPath),
+    m_nextEvent(NULL),
+    m_previousEvent(NULL),
+    m_Timer(NULL),
+    m_Epg(NULL)
+{
+}
+
 CEpgInfoTag::~CEpgInfoTag()
 {
   SetTimer(NULL);

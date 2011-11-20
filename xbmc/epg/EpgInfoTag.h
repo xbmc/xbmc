@@ -50,13 +50,19 @@ namespace EPG
     /*!
      * @brief Create a new empty event without a unique ID.
      */
-    CEpgInfoTag();
+    CEpgInfoTag(void);
 
     /*!
      * @brief Create a new EPG infotag with 'data' as content.
      * @param data The tag's content.
      */
     CEpgInfoTag(const EPG_TAG &data);
+
+    /*!
+     * @brief Create a new EPG infotag with 'tag' as content.
+     * @param tag The tag's content.
+     */
+    CEpgInfoTag(const CEpgInfoTag &tag);
 
     /*!
      * @brief Destroy this instance.
