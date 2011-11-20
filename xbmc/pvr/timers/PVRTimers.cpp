@@ -194,7 +194,7 @@ bool CPVRTimers::UpdateEntries(CPVRTimers *timers)
         timerNotifications.push_back(strMessage);
       }
 
-      CEpgInfoTag *epgTag = at(iTimerPtr)->m_epgInfo;
+      CEpgInfoTag *epgTag = at(iTimerPtr)->GetEpgInfoTag();
       if (epgTag)
         epgTag->SetTimer(NULL);
 

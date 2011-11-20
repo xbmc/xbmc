@@ -608,3 +608,9 @@ void CPVRTimerInfoTag::QueueNotification(void) const
       CGUIDialogKaiToast::QueueNotification(CGUIDialogKaiToast::Info, g_localizeStrings.Get(19166), strMessage);
   }
 }
+
+EPG::CEpgInfoTag *CPVRTimerInfoTag::GetEpgInfoTag(void) const
+{
+  CSingleLock lock(m_critSection);
+  return m_epgInfo;
+}

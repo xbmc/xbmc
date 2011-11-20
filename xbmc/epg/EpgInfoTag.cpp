@@ -643,7 +643,7 @@ void CEpgInfoTag::SetTimer(CPVRTimerInfoTag *newTimer)
 {
   CSingleLock lock(m_critSection);
   if (m_Timer)
-    m_Timer->m_epgInfo = NULL;
+    m_Timer->SetEpgInfoTag(NULL);
   m_Timer = newTimer;
 }
 
