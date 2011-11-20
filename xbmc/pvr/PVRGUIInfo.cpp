@@ -38,8 +38,10 @@ using namespace PVR;
 using namespace EPG;
 
 CPVRGUIInfo::CPVRGUIInfo(void) :
-    CThread("PVR GUI info updater")
+    CThread("PVR GUI info updater"),
+    m_playingEpgTag(NULL)
 {
+  ResetProperties();
 }
 
 CPVRGUIInfo::~CPVRGUIInfo(void)
@@ -86,7 +88,16 @@ void CPVRGUIInfo::ResetProperties(void)
   if (m_playingEpgTag)
     delete m_playingEpgTag;
   m_playingEpgTag               = NULL;
-  g_PVRClients->GetQualityData(&m_qualityInfo);
+
+  strncpy(m_qualityInfo.strAdapterName, g_localizeStrings.Get(13106).c_str(), 1024);
+  strncpy(m_qualityInfo.strAdapterStatus, g_localizeStrings.Get(13106).c_str(), 1024);
+  m_qualityInfo.iSNR          = 0;
+  m_qualityInfo.iSignal       = 0;
+  m_qualityInfo.iSNR          = 0;
+  m_qualityInfo.iUNC          = 0;
+  m_qualityInfo.dVideoBitrate = 0;
+  m_qualityInfo.dAudioBitrate = 0;
+  m_qualityInfo.dDolbyBitrate = 0;
 }
 
 void CPVRGUIInfo::Start(void)
