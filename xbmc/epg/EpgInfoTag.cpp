@@ -26,6 +26,7 @@
 #include "EpgDatabase.h"
 #include "pvr/channels/PVRChannel.h"
 #include "pvr/timers/PVRTimerInfoTag.h"
+#include "pvr/PVRManager.h"
 #include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 #include "addons/include/xbmc_pvr_types.h"
@@ -668,7 +669,7 @@ CStdString CEpgInfoTag::Path(void) const
 void CEpgInfoTag::SetTimer(CPVRTimerInfoTag *newTimer)
 {
   CSingleLock lock(m_critSection);
-  if (m_Timer)
+  if (g_PVRManager.IsStarted() && m_Timer)
     m_Timer->SetEpgInfoTag(NULL);
   m_Timer = newTimer;
 }
