@@ -44,6 +44,16 @@ namespace PVR
   class CPVRGUIInfo;
   class CPVRDatabase;
 
+  enum ManagerState
+  {
+    ManagerStateError = 0,
+    ManagerStateStopped,
+    ManagerStateStarting,
+    ManagerStateStopping,
+    ManagerStateInterrupted,
+    ManagerStateStarted
+  };
+
   #define g_PVRManager       CPVRManager::Get()
   #define g_PVRChannelGroups g_PVRManager.ChannelGroups()
   #define g_PVRTimers        g_PVRManager.Timers()
@@ -177,11 +187,6 @@ namespace PVR
     bool IsPlaying(void) const;
 
     /*!
-     * @return True if the thread is stopped, false otherwise.
-     */
-    bool IsRunning(void) const;
-
-    /*!
      * @return True while the PVRManager is initialising.
      */
     bool IsInitialising(void) const;
@@ -204,7 +209,7 @@ namespace PVR
      * @brief Check whether the PVRManager has fully started.
      * @return True if started, false otherwise.
      */
-    bool IsStarted(void) const { return m_bLoaded; }
+    bool IsStarted(void) const;
 
     /*!
      * @brief Reset the playing EPG tag.
@@ -536,6 +541,8 @@ namespace PVR
 
     bool IsJobPending(const char *strJobName) const;
 
+    ManagerState GetState(void) const;
+
     /** @name containers */
     //@{
     CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */
@@ -553,8 +560,6 @@ namespace PVR
     CPVRDatabase *                  m_database;                    /*!< the database for all PVR related data */
     CCriticalSection                m_critSection;                 /*!< critical section for all changes to this class, except for changes to triggers */
     bool                            m_bFirstStart;                 /*!< true when the PVR manager was started first, false otherwise */
-    bool                            m_bLoaded;                     /*!< true if the pvrmanager has been loaded and can be used */
-    bool                            m_bIsStopping;                 /*!< true while the pvrmanager is being unloaded */
     bool                            m_bIsSwitchingChannels;        /*!< true while switching channels */
     CGUIDialogExtendedProgressBar * m_loadingProgressDialog;       /*!< progress dialog that is displayed while the pvrmanager is loading */
 
@@ -562,6 +567,8 @@ namespace PVR
     int                             m_PreviousChannelIndex;
     int                             m_LastChannel;
     unsigned int                    m_LastChannelChanged;
+
+    ManagerState                    m_managerState;
   };
 
   class CPVRRecordingsUpdateJob : public CJob

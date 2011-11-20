@@ -693,7 +693,7 @@ bool CEpg::UpdateFromScraper(time_t start, time_t end)
 {
   bool bGrabSuccess = false;
 
-  if (g_PVRManager.IsRunning() && HasPVRChannel() && m_Channel->EPGEnabled() && ScraperName() == "client")
+  if (g_PVRManager.IsStarted() && HasPVRChannel() && m_Channel->EPGEnabled() && ScraperName() == "client")
   {
     if (g_PVRClients && g_PVRClients->GetAddonCapabilities(m_Channel->ClientID()).bSupportsEPG)
     {
