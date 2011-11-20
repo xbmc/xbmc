@@ -175,6 +175,8 @@ ManagerState CPVRManager::GetState(void) const
 
 void CPVRManager::Process(void)
 {
+  g_EpgContainer.Stop();
+
   /* load the pvr data from the db and clients if it's not already loaded */
   if (!Load())
   {
@@ -194,6 +196,7 @@ void CPVRManager::Process(void)
 
   /* main loop */
   CLog::Log(LOGDEBUG, "PVRManager - %s - entering main loop", __FUNCTION__);
+  g_EpgContainer.Start();
 
   while (GetState() == ManagerStateStarted && m_addons && m_addons->HasConnectedClients())
   {

@@ -128,6 +128,7 @@ void CEpgContainer::Start(void)
 {
   CSingleLock lock(m_critSection);
 
+  m_bIsInitialising = true;
   m_bStop = false;
   g_guiSettings.RegisterObserver(this);
   LoadSettings();
@@ -140,7 +141,6 @@ void CEpgContainer::Start(void)
 bool CEpgContainer::Stop(void)
 {
   StopThread();
-
   return true;
 }
 
