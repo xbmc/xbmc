@@ -94,6 +94,7 @@ void CAppParamParser::DisplayHelp()
   printf("  -d <n>\t\tdelay <n> seconds before starting\n");
   printf("  -fs\t\t\tRuns XBMC in full screen\n");
   printf("  --standalone\t\tXBMC runs in a stand alone environment without a window \n");
+  printf("  -s or --server\t\tXBMC runs in a server mode i.e. without a gui \n");
   printf("\t\t\tmanager and supporting applications. For example, that\n");
   printf("\t\t\tenables network settings.\n");
   printf("  -p or --portable\tXBMC will look for configurations in install folder instead of ~/.xbmc\n");
@@ -125,6 +126,8 @@ void CAppParamParser::ParseArg(const CStdString &arg)
     DisplayHelp();
   else if (arg == "-v" || arg == "--version")
     DisplayVersion();
+  else if (arg == "-s" || arg == "--server")
+    g_application.SetServerMode(true);
   else if (arg == "--standalone")
     g_application.SetStandAlone(true);
   else if (arg == "-p" || arg  == "--portable")

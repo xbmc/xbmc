@@ -361,6 +361,7 @@ CApplication::CApplication(void) : m_itemCurrentFile(new CFileItem), m_progressT
   m_bPlatformDirectories = true;
 
   m_bStandalone = false;
+  m_bServerMode = false;
   m_bEnableLegacyRes = false;
   m_bSystemScreenSaverEnable = false;
   m_pInertialScrollingHandler = new CInertialScrollingHandler();
@@ -467,7 +468,10 @@ bool CApplication::Create()
 {
   g_settings.Initialize(); //Initialize default AdvancedSettings
 
-  m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
+  if (!g_application.IsServerMode())
+  {
+    m_bSystemScreenSaverEnable = g_Windowing.IsSystemScreenSaverEnabled();
+  }
   g_Windowing.EnableSystemScreenSaver(false);
 
 #ifdef _LINUX
@@ -550,38 +554,42 @@ bool CApplication::Create()
   }
 
 #ifdef HAS_XRANDR
-  g_xrandr.LoadCustomModeLinesToAllOutputs();
+  if (!g_application.IsServerMode())
+  {
+    g_xrandr.LoadCustomModeLinesToAllOutputs();
+  }
 #endif
 
   // Init our DllLoaders emu env
   init_emu_environ();
 
-
 #ifdef HAS_SDL
-  CLog::Log(LOGNOTICE, "Setup SDL");
+  if (!g_application.IsServerMode())
+  {
+    CLog::Log(LOGNOTICE, "Setup SDL");
 
-  /* Clean up on exit, exit on window close and interrupt */
-  atexit(SDL_Quit);
+    /* Clean up on exit, exit on window close and interrupt */
+    atexit(SDL_Quit);
 
-  uint32_t sdlFlags = 0;
+    uint32_t sdlFlags = 0;
 
 #if defined(HAS_SDL_OPENGL) || (HAS_GLES == 2)
-  sdlFlags |= SDL_INIT_VIDEO;
+    sdlFlags |= SDL_INIT_VIDEO;
 #endif
 
 #ifdef HAS_SDL_AUDIO
-  sdlFlags |= SDL_INIT_AUDIO;
+    sdlFlags |= SDL_INIT_AUDIO;
 #endif
 
 #ifdef HAS_SDL_JOYSTICK
-  sdlFlags |= SDL_INIT_JOYSTICK;
+    sdlFlags |= SDL_INIT_JOYSTICK;
 #endif
 
   //depending on how it's compiled, SDL periodically calls XResetScreenSaver when it's fullscreen
   //this might bring the monitor out of standby, so we have to disable it explicitly
   //by passing 0 for overwrite to setsenv, the user can still override this by setting the environment variable
 #if defined(_LINUX) && !defined(__APPLE__)
-  setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", 0);
+    setenv("SDL_VIDEO_ALLOW_SCREENSAVER", "1", 0);
 #endif
 
 #endif // HAS_SDL
@@ -604,6 +612,7 @@ bool CApplication::Create()
   signal(SIGSEGV, SIG_DFL);
   #endif
 #endif
+}
 
   // for python scripts that check the OS
 #ifdef __APPLE__
@@ -613,34 +622,41 @@ bool CApplication::Create()
 #elif defined(_WIN32)
   SetEnvironmentVariable("OS","win32");
 #endif
-
-  // Initialize core peripheral port support. Note: If these parameters
-  // are 0 and NULL, respectively, then the default number and types of
-  // controllers will be initialized.
-  if (!g_Windowing.InitWindowSystem())
+  if (!g_application.IsServerMode())
   {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to init windowing system");
-    return false;
-  }
+    // Initialize core peripheral port support. Note: If these parameters
+    // are 0 and NULL, respectively, then the default number and types of
+    // controllers will be initialized.
+    if (!g_Windowing.InitWindowSystem())
+    {
+      CLog::Log(LOGFATAL, "CApplication::Create: Unable to init windowing system");
+      return false;
+    }
+  }  
 
   g_powerManager.Initialize();
-
   CLog::Log(LOGNOTICE, "load settings...");
-
   g_guiSettings.Initialize();  // Initialize default Settings - don't move
   g_powerManager.SetDefaults();
+  
   if (!g_settings.Load())
     FatalErrorHandler(true, true, true);
 
   CLog::Log(LOGINFO, "creating subdirectories");
   CLog::Log(LOGINFO, "userdata folder: %s", g_settings.GetProfileUserDataFolder().c_str());
-  CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
-  CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
+  if (!g_application.IsServerMode())
+  {
+    CLog::Log(LOGINFO, "recording folder:%s", g_guiSettings.GetString("audiocds.recordingpath",false).c_str());
+    CLog::Log(LOGINFO, "screenshots folder:%s", g_guiSettings.GetString("debug.screenshotpath",false).c_str());
+  }
   CDirectory::Create(g_settings.GetUserDataFolder());
   CDirectory::Create(g_settings.GetProfileUserDataFolder());
   g_settings.CreateProfileFolders();
 
-  update_emu_environ();//apply the GUI settings
+  if (!g_application.IsServerMode())
+  {
+    update_emu_environ();//apply the GUI settings
+  }
 
   // initialize our charset converter
   g_charsetConverter.reset();
@@ -672,91 +688,98 @@ bool CApplication::Create()
 
   g_peripherals.Initialise();
 
-  // Create the Mouse, Keyboard, Remote, and Joystick devices
-  // Initialize after loading settings to get joystick deadzone setting
-  g_Mouse.Initialize();
-  g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
+  if (!g_application.IsServerMode())
+  {
+    // Create the Mouse, Keyboard, Remote, and Joystick devices
+    // Initialize after loading settings to get joystick deadzone setting
+    g_Mouse.Initialize();
+    g_Mouse.SetEnabled(g_guiSettings.GetBool("input.enablemouse"));
 
-  g_Keyboard.Initialize();
+    g_Keyboard.Initialize();
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
-  g_RemoteControl.Initialize();
+    g_RemoteControl.Initialize();
 #endif
 #ifdef HAS_SDL_JOYSTICK
-  g_Joystick.Initialize();
+    g_Joystick.Initialize();
 #endif
+  }
 
 #if defined(__APPLE__) && !defined(__arm__)
   // Configure and possible manually start the helper.
   XBMCHelper::GetInstance().Configure();
 #endif
-
-  // update the window resolution
-  g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
-
-  if (g_advancedSettings.m_startFullScreen && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
-    g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
-
-  if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+  if (!g_application.IsServerMode())
   {
-    // Oh uh - doesn't look good for starting in their wanted screenmode
-    CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
-    g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
-  }
+    // update the window resolution
+    g_Windowing.SetWindowResolution(g_guiSettings.GetInt("window.width"), g_guiSettings.GetInt("window.height"));
+
+    if (g_advancedSettings.m_startFullScreen && g_guiSettings.m_LookAndFeelResolution == RES_WINDOW)
+      g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
+
+    if (!g_graphicsContext.IsValidResolution(g_guiSettings.m_LookAndFeelResolution))
+    {
+      // Oh uh - doesn't look good for starting in their wanted screenmode
+      CLog::Log(LOGERROR, "The screen resolution requested is not valid, resetting to a valid mode");
+      g_guiSettings.m_LookAndFeelResolution = RES_DESKTOP;
+    }
 
 #ifdef __APPLE__
-  // force initial window creation to be windowed, if fullscreen, it will switch to it below
-  // fixes the white screen of death if starting fullscreen and switching to windowed.
-  bool bFullScreen = false;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
-    return false;
-  }
+    // force initial window creation to be windowed, if fullscreen, it will switch to it below
+    // fixes the white screen of death if starting fullscreen and switching to windowed.
+    bool bFullScreen = false;
+    if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[RES_WINDOW], OnEvent))
+    {
+      CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
+      return false;
+    }
 #else
-  bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
-  if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
-    return false;
-  }
+    bool bFullScreen = g_guiSettings.m_LookAndFeelResolution != RES_WINDOW;
+    if (!g_Windowing.CreateNewWindow("XBMC", bFullScreen, g_settings.m_ResInfo[g_guiSettings.m_LookAndFeelResolution], OnEvent))
+    {
+      CLog::Log(LOGFATAL, "CApplication::Create: Unable to create window");
+      return false;
+    }
 #endif
 
-  if (!g_Windowing.InitRenderSystem())
-  {
-    CLog::Log(LOGFATAL, "CApplication::Create: Unable to init rendering system");
-    return false;
+    if (!g_Windowing.InitRenderSystem())
+    {
+      CLog::Log(LOGFATAL, "CApplication::Create: Unable to init rendering system");
+      return false;
+    }
+
+    // set GUI res and force the clear of the screen
+    g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
+
+    if (g_advancedSettings.m_splashImage)
+    {
+      CStdString strUserSplash = "special://home/media/Splash.png";
+      if (CFile::Exists(strUserSplash))
+      {
+        CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strUserSplash).c_str());
+        m_splash = new CSplash(strUserSplash);
+      }
+      else
+      {
+        CLog::Log(LOGINFO, "load default splash image: %s", CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png").c_str());
+        m_splash = new CSplash("special://xbmc/media/Splash.png");
+      }
+      m_splash->Show();
+    }
   }
 
-  // set GUI res and force the clear of the screen
-  g_graphicsContext.SetVideoResolution(g_guiSettings.m_LookAndFeelResolution);
-
-  if (g_advancedSettings.m_splashImage)
-  {
-    CStdString strUserSplash = "special://home/media/Splash.png";
-    if (CFile::Exists(strUserSplash))
-    {
-      CLog::Log(LOGINFO, "load user splash image: %s", CSpecialProtocol::TranslatePath(strUserSplash).c_str());
-      m_splash = new CSplash(strUserSplash);
-    }
-    else
-    {
-      CLog::Log(LOGINFO, "load default splash image: %s", CSpecialProtocol::TranslatePath("special://xbmc/media/Splash.png").c_str());
-      m_splash = new CSplash("special://xbmc/media/Splash.png");
-    }
-    m_splash->Show();
-  }
-
-  // The key mappings may already have been loaded by a peripheral
   CLog::Log(LOGINFO, "load keymapping");
-  if (!CButtonTranslator::GetInstance().Loaded() && !CButtonTranslator::GetInstance().Load())
-      FatalErrorHandler(false, false, true);
+  if (!CButtonTranslator::GetInstance().Load())
+    FatalErrorHandler(false, false, true);
 
-  int iResolution = g_graphicsContext.GetVideoResolution();
-  CLog::Log(LOGINFO, "GUI format %ix%i %s",
-            g_settings.m_ResInfo[iResolution].iWidth,
-            g_settings.m_ResInfo[iResolution].iHeight,
-            g_settings.m_ResInfo[iResolution].strMode.c_str());
-  g_windowManager.Initialize();
+  if (!g_application.IsServerMode())
+  {
+    int iResolution = g_graphicsContext.GetVideoResolution();
+    CLog::Log(LOGINFO, "GUI format %ix%i %s",
+              g_settings.m_ResInfo[iResolution].iWidth,
+              g_settings.m_ResInfo[iResolution].iHeight,
+              g_settings.m_ResInfo[iResolution].strMode.c_str());
+    g_windowManager.Initialize();
+  }
 
   CUtil::InitRandomSeed();
 
@@ -1061,6 +1084,9 @@ bool CApplication::Initialize()
 
   // Init DPMS, before creating the corresponding setting control.
   m_dpms = new DPMSSupport();
+
+  if (!g_application.IsServerMode())
+  {
   g_guiSettings.GetSetting("powermanagement.displaysoff")->SetVisible(m_dpms->IsSupported());
 
   g_windowManager.Add(new CGUIWindowHome);                     // window id = 0
@@ -1185,16 +1211,17 @@ bool CApplication::Initialize()
     g_windowManager.ActivateWindow(WINDOW_LOGIN_SCREEN);
   else
     g_windowManager.ActivateWindow(g_SkinInfo->GetFirstWindow());
-
+  }
   g_sysinfo.Refresh();
 
   CLog::Log(LOGINFO, "removing tempfiles");
   CUtil::RemoveTempFiles();
-
+  if (!g_application.IsServerMode())
+  {
   //  Show mute symbol
   if (g_settings.m_bMute)
     Mute();
-
+  }
   // if the user shutoff the xbox during music scan
   // restore the settings
   if (g_settings.m_bMyMusicIsScanning)
@@ -2101,6 +2128,11 @@ void CApplication::Render()
 void CApplication::SetStandAlone(bool value)
 {
   g_advancedSettings.m_handleMounting = m_bStandalone = value;
+}
+
+void CApplication::SetServerMode(bool value)
+{
+  g_advancedSettings.m_serverMode = m_bServerMode = value;
 }
 
 // OnKey() translates the key into a CAction which is sent on to our Window Manager.
