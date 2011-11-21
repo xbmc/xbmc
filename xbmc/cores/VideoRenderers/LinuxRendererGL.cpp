@@ -554,6 +554,20 @@ void CLinuxRendererGL::Reset()
   }
 }
 
+void CLinuxRendererGL::Flush()
+{
+  if (!m_bValidated)
+    return;
+
+  glFinish();
+
+  for (int i = 0 ; i < m_NumYV12Buffers ; i++)
+    (this->*m_textureDelete)(i);
+
+  glFinish();
+  m_bValidated = false;
+}
+
 void CLinuxRendererGL::Update(bool bPauseDrawing)
 {
   if (!m_bConfigured) return;
@@ -1034,6 +1048,8 @@ void CLinuxRendererGL::UnInit()
 {
   CLog::Log(LOGDEBUG, "LinuxRendererGL: Cleaning up GL resources");
   CSingleLock lock(g_graphicsContext);
+
+  glFinish();
 
   if (m_rgbPbo)
   {
@@ -1619,9 +1635,6 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
   if (!m_bValidated)
     return false;
 
-  // get our screen rect
-  const CRect rv = g_graphicsContext.GetViewWindow();
-
   // save current video rect
   CRect saveSize = m_destRect;
 
@@ -1640,7 +1653,7 @@ bool CLinuxRendererGL::RenderCapture(CRenderCapture* capture)
 
   Render(RENDER_FLAG_NOOSD, m_iYV12RenderBuffer);
   // read pixels
-  glReadPixels(0, rv.y2 - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
+  glReadPixels(0, g_graphicsContext.GetHeight() - capture->GetHeight(), capture->GetWidth(), capture->GetHeight(),
                GL_BGRA, GL_UNSIGNED_BYTE, capture->GetRenderBuffer());
 
   capture->EndRender();

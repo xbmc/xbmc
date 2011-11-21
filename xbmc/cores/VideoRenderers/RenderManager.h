@@ -107,6 +107,7 @@ public:
   unsigned int PreInit();
 #endif
   void UnInit();
+  bool Flush();
 
   void AddOverlay(CDVDOverlay* o, double pts)
   {
@@ -270,6 +271,7 @@ protected:
   EPRESENTSTEP     m_presentstep;
   int        m_presentsource;
   CEvent     m_presentevent;
+  CEvent     m_flushEvent;
 
 
   OVERLAY::CRenderer m_overlays;

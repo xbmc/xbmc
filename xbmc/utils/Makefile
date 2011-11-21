@@ -7,6 +7,7 @@ SRCS=AlarmClock.cpp \
      CharsetConverter.cpp \
      CPUInfo.cpp \
      Crc32.cpp \
+     CryptThreading.cpp \
      DownloadQueue.cpp \
      DownloadQueueManager.cpp \
      Fanart.cpp \

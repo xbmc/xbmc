@@ -43,6 +43,7 @@
 #include "windowing/WindowingFactory.h"
 #include "GUIInfoManager.h"
 #include "utils/Splash.h"
+#include "cores/VideoRenderers/RenderManager.h"
 
 #include "powermanagement/PowerManager.h"
 
@@ -231,6 +232,10 @@ void CApplicationMessenger::ProcessMessage(ThreadMessage *pMsg)
 
           case POWERSTATE_MINIMIZE:
             Minimize();
+            break;
+
+          case TMSG_RENDERER_FLUSH:
+            g_renderManager.Flush();
             break;
         }
       }
