@@ -135,7 +135,6 @@ void CDVDAudioCodecPassthroughAudioFilter::SetupParser(BYTE *pData, int iSize)
       }
       else
       {
-        m_iSourceSampleRate = m_Spdif->getSpk().sample_rate / 4;
         delete m_Spdif;
         m_Spdif = new AudioFilter::SpdifWrapper(m_Mhp,4);
       }
