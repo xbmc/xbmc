@@ -452,12 +452,12 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
         newTimer->EndAsLocalTime().GetAsLocalizedTime("", false));
   }
 
-  CDateTime startTime;
+  CDateTime startTime(0);
   newTimer->SetStartFromUTC(startTime);
   newTimer->m_iMarginStart = 0; /* set the start margin to 0 for instant timers */
 
   int iDuration = g_guiSettings.GetInt("pvrrecord.instantrecordtime");
-  CDateTime endTime = CDateTime::GetCurrentDateTime().GetAsUTCDateTime() + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
+  CDateTime endTime = CDateTime::GetUTCDateTime() + CDateTimeSpan(0, 0, iDuration ? iDuration : 120, 0);
   newTimer->SetEndFromUTC(endTime);
 
   /* unused only for reference */
