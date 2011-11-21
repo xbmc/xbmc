@@ -186,7 +186,7 @@ void CGUIDialogVideoSettings::CreateSettings()
     entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_75     , 55009));
     entries.push_back(make_pair(DS_SCALINGMETHOD_BILINEAR_2_100    , 55010));
     
-    //m_scalingMethod = g_settings.m_currentVideoSettings.GetDSPlayerScalingMethod();
+    m_scalingMethod = g_settings.m_currentVideoSettings.GetDSPlayerScalingMethod();
     AddSpin(VIDEO_SETTINGS_SCALINGMETHOD, 16300, &m_scalingMethod, entries);
 
     entries.clear();
