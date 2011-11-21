@@ -143,11 +143,13 @@ namespace PYXBMC
       }
     }
 
+    CAddonMgr::Get().AddToUpdateableAddons(self->pAddon);
     return (PyObject*)self;
   }
 
   void Addon_Dealloc(Addon* self)
   {
+    CAddonMgr::Get().RemoveFromUpdateableAddons(self->pAddon);  
     self->ob_type->tp_free((PyObject*)self);
   }
 
