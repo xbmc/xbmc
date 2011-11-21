@@ -3670,6 +3670,8 @@ bool CApplication::PlayFile(const CFileItem& item, bool bRestart)
         CStdString path = item.GetPath();
         if (item.IsDVD()) 
           path = item.GetVideoInfoTag()->m_strFileNameAndPath;
+        if (item.HasProperty("original_listitem_url") && URIUtils::IsPlugin(item.GetProperty("original_listitem_url").asString()))
+          path = item.GetProperty("original_listitem_url").asString();
         if(dbs.GetResumeBookMark(path, bookmark))
         {
           options.starttime = bookmark.timeInSeconds;
