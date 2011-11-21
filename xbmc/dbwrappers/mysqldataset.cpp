@@ -182,10 +182,12 @@ int MysqlDatabase::connect(bool create_new) {
 }
 
 void MysqlDatabase::disconnect(void) {
-  if (!active || conn == NULL)
-    return;
-  mysql_close(conn);
-  conn = NULL;
+  if (conn != NULL)
+  {
+    mysql_close(conn);
+    conn = NULL;
+  }
+
   active = false;
 }
 

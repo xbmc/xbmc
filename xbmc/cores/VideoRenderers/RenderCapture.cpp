@@ -87,11 +87,7 @@ CRenderCaptureGL::~CRenderCaptureGL()
 
 int CRenderCaptureGL::GetCaptureFormat()
 {
-#ifdef HAS_GLES
-  return CAPTUREFORMAT_RGBA;
-#else
   return CAPTUREFORMAT_BGRA;
-#endif
 }
 
 void CRenderCaptureGL::BeginRender()
