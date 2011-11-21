@@ -18,12 +18,13 @@
 					<label>$LOCALIZE[1021]</label>
 					<include>SelectionDialogCaption</include>
 				</control>
+				<!-- source list -->
 				<control type="list" id="10">
 					<posx>0</posx>
 					<posy>28</posy>
 					<width>SelectionDialogShortTextWidth</width>
 					<height>140</height>
-					<onleft>12</onleft>
+					<onleft>10</onleft>
 					<onright>9000</onright>
 					<onup>10</onup>
 					<ondown>12</ondown>
@@ -37,32 +38,24 @@
 						</control>
 					</itemlayout>
 					<focusedlayout height="28">
-						<control type="label">
-							<posx>4</posx>
+						<control type="image">
+							<posx>-4</posx>
+							<posy>2</posy>
 							<width>SelectionDialogShortTextWidth</width>
-							<info>ListItem.Label</info>
-							<textcolor>Unfocused</textcolor>
-							<visible>!Control.HasFocus(10)</visible>
+							<height>28</height>
+							<texture>HomeBladeSubFO2.png</texture>
 						</control>
 						<control type="label">
 							<posx>4</posx>
 							<width>SelectionDialogShortTextWidth</width>
 							<info>ListItem.Label</info>
 							<textcolor>Focused</textcolor>
-							<visible>Control.HasFocus(10)</visible>
-						</control>
-						<control type="image">
-							<posx>-4</posx>
-							<width>SelectionDialogShortTextWidth</width>
-							<height>28</height>
-							<texture flipx="true">HomeBladeSubFO2.png</texture>
-							<visible>Control.HasFocus(10)</visible>
 						</control>
 					</focusedlayout>
 				</control>
 				<control type="grouplist" id="9000">
 					<posx>MediaSourceLocationButtonsGroupPosX</posx>
-					<posy>-6</posy>
+					<posy>0</posy>
 					<onleft>10</onleft>
 					<orientation>vertical</orientation>
 					<itemgap>8</itemgap>
@@ -90,10 +83,11 @@
 						<label>$LOCALIZE[1022]</label>
 						<include>SelectionDialogCaption</include>
 					</control>
+					<!-- name text field -->
 					<control type="button" id="12">
 						<description>Name Info</description>
 						<posx>-4</posx>
-						<posy>20</posy>
+						<posy>30</posy>
 						<width>SelectionDialogTextWidth</width>
 						<onup>10</onup>
 						<ondown>100</ondown>

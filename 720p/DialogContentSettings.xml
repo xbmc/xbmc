@@ -52,12 +52,16 @@
 				</control>
 			</control>
 			<control type="group">
+				<posy>10</posy>
 				<posx>InfoDialogTitleXOffset</posx>
 				<control type="label" id="1000">
 					<description>Heading</description>
 					<label>$LOCALIZE[20333]</label>
 					<include>InfoDialogTitle</include>
 				</control>
+				<control type="group">
+					<posy>10</posy>
+					<posx>-20</posx>
 				<control type="spincontrolex" id="3">
 					<description>Directory Content</description>
 					<onup>5</onup>
@@ -74,6 +78,7 @@
 					<texturedown>ArrowDownNF.png</texturedown>
 					<texturedownfocus>ArrowDownFO.png</texturedownfocus>
 					<include>DialogTopButton</include>
+				</control>
 				</control>
 				<control type="group" id="9001">
 					<control type="panel" id="4">
@@ -145,6 +150,7 @@
 						<aligny>center</aligny>
 						<font>MediumSmallDefaultCapsFont</font>
 						<textoffsetx>30</textoffsetx>
+						<textoffsety>-2</textoffsety>
 						<include>DialogTextControl</include>
 					</control>
 					<control type="grouplist" id="9002">
@@ -157,7 +163,7 @@
 							<onleft>29</onleft>
 							<onright>6</onright>
 							<label>$LOCALIZE[424]</label>
-							<include>SetContentDialogButton</include>
+							<include>MediaSourceDialogButton</include>
 						</control>
 						<control type="button" id="6">
 							<description>Settings button</description>
@@ -165,14 +171,14 @@
 							<onright>29</onright>
 							<label>$LOCALIZE[5]</label>
 							<width>170</width>
-							<include>SetContentDialogButton</include>
+							<include>MediaSourceDialogButton</include>
 						</control>
 						<control type="button" id="29">
 							<description>Cancel</description>
 							<onleft>6</onleft>
 							<onright>28</onright>
 							<label>$LOCALIZE[222]</label>
-							<include>SetContentDialogButton</include>
+							<include>MediaSourceDialogButton</include>
 						</control>
 					</control>
 				</control>

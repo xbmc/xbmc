@@ -66,6 +66,7 @@
 		<texturefocus flipx="true">HomeBladeSubFO2.png</texturefocus>
 		<texturenofocus>-</texturenofocus>
 		<textoffsetx>8</textoffsetx>
+		<textoffsety>-2</textoffsety>
 		<include>DialogTextColors</include>
 	</include>
 	<!-- Info Dialogs -->
@@ -114,7 +115,7 @@
 		<font>MediumTitleCapsFont</font>
 	</include>
 	<include name="SelectionDialogControlsPos">
-		<posx>18</posx>
+		<posx>23</posx>
 		<posy>80</posy>
 	</include>
 	<include name="SelectionDialogCaption">

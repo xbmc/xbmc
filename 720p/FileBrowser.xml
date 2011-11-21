@@ -10,7 +10,7 @@
 			<control type="group">
 				<posx>InfoDialogLargeThumbPosX</posx>
 				<posy>114</posy>
-				<control type="image">
+				<!--<control type="image">
 					<description>Thumb</description>
 					<height>380</height>
 					<width>300</width>
@@ -28,10 +28,18 @@
 					<bordertexture border="14">bigPosterFrameShadow.png</bordertexture>
 					<bordersize>9</bordersize>
 					<visible>IsEmpty(ListItem.Thumb)</visible>
+				</control>-->
+				<control type="image">
+					<description>default pms Icon</description>
+					<height>380</height>
+					<width>300</width>
+					<texture>pms.png</texture>
+					<aspectratio>keep</aspectratio>
 				</control>
 				<control type="label" id="412">
 					<description>Path</description>
-					<posy>500</posy>
+					<posy>420</posy>
+					<posx>-50</posx>
 					<width>InfoDialogLargeThumbTextWidth</width>
 					<font>VideoInfoFont</font>
 					<align>center</align>
@@ -78,17 +86,18 @@
   				</control>
 -->
 				</control>
+				<!-- browse list -->
 				<control type="list" id="450">
 					<posx>26</posx>
 					<posy>124</posy>
 					<width>440</width>
-					<height>450</height>
+					<height>410</height>
 					<onleft>413</onleft>
 					<onright>413</onright>
 					<onup>450</onup>
 					<ondown>450</ondown>
 					<orientation>vertical</orientation>
-					<itemlayout height="45" width="440">
+					<itemlayout height="40" width="440">
 						<control type="image">
 							<width>40</width>
 							<height>40</height>
@@ -103,7 +112,7 @@
 							<scroll>false</scroll>
 						</control>
 					</itemlayout>
-					<focusedlayout height="45" width="440">
+					<focusedlayout height="40" width="440">
 						<control type="image">
 							<width>40</width>
 							<height>40</height>

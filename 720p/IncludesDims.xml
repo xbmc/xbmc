@@ -219,10 +219,10 @@
 	</include>
 	<constant name="SelectionDialogTextWidth">580</constant>
 	<constant name="SelectionDialogShortTextWidth">494</constant>
-	<constant name="MediaSourceLocationButtonsGroupPosX">480</constant>
+	<constant name="MediaSourceLocationButtonsGroupPosX">470</constant>
 	<constant name="MediaSourceDialogButtonWidth">108</constant>
 	<include name="MediaSourceBottomBtnsDims">
-		<posx>95</posx>
+		<posx>170</posx>
 		<posy>232</posy>
 	</include>
 	<constant name="MediaSourceSetContentBtnWidth">180</constant>
