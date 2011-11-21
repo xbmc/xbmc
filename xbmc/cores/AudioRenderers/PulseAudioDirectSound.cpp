@@ -34,6 +34,33 @@
 #define PA_SUPPORTS_PASSTHROUGH 0
 #endif
 
+namespace { // anonymous namespace
+
+CStdString::size_type repl(CStdString &s, const CStdString &from, const CStdString &to)
+{
+  CStdString::size_type cnt(std::string::npos);
+
+  if( from != to && ! from.empty() )
+  {
+    CStdString::size_type pos1(0);
+    CStdString::size_type pos2(0);
+    CStdString::size_type from_len(from.size());
+    const CStdString::size_type to_len(to.size());
+    cnt = 0;
+
+    while((pos1 = s.find(from, pos2)) != CStdString::npos)
+    {
+      s.replace(pos1, from_len, to);
+      pos2 = pos1 + to_len;
+      ++cnt;
+    }
+  }
+
+  return cnt;
+}
+
+} // anonymous namespace
+
 static const char *ContextStateToString(pa_context_state s)
 {
   switch (s)
@@ -220,16 +247,10 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   m_dwPacketSize = iChannels*(uiBitsPerSample/8)*512;
   m_dwNumPackets = 16;
 
-  std::vector<CStdString> hostdevice;
-  CUtil::Tokenize(device, hostdevice, "@");
+  CStdString hostSink(ConfigureHostDevice(device, iChannels));
 
-  const char *host = (hostdevice.size() < 2 || hostdevice[1].Equals("default") ? NULL : hostdevice[1].c_str());
-  if (!SetupContext(host, &m_Context, &m_MainLoop))
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
-    Deinitialize();
+  if ( hostSink == "FAIL" )
     return false;
-  }
 
   pa_threaded_mainloop_lock(m_MainLoop);
 
@@ -293,7 +314,7 @@ bool CPulseAudioDirectSound::Initialize(IAudioCallback* pCallback, const CStdStr
   pa_stream_set_write_callback(m_Stream, StreamRequestCallback, m_MainLoop);
   pa_stream_set_latency_update_callback(m_Stream, StreamLatencyUpdateCallback, m_MainLoop);
 
-  const char *sink = hostdevice.size() < 1 || hostdevice[0].Equals("default") ? NULL : hostdevice[0].c_str();
+  const char *sink = hostSink.Equals("default") ? NULL : hostSink.c_str();
   if (pa_stream_connect_playback(m_Stream, sink, NULL, ((pa_stream_flags)(PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE)), &m_Volume, NULL) < 0)
   {
     CLog::Log(LOGERROR, "PulseAudio: Failed to connect stream to output");
@@ -397,18 +418,10 @@ bool CPulseAudioDirectSound::InitializePassthrough(IAudioCallback* pCallback
     "CPulseAudioDirectSound::InitializePassthrough - packet size:%u, packet count:%u"
     , m_dwPacketSize, m_dwNumPackets);
 
-  std::vector<CStdString> hostdevice;
-  CUtil::Tokenize(device, hostdevice, "@");
+  CStdString hostSink(ConfigureHostDevice(device, iChannels));
 
-  const char *host = ( hostdevice.size() < 2 || hostdevice[1].Equals("default" )
-                        ? 0 : hostdevice[1].c_str());
-
-  if ( ! SetupContext(host, &m_Context, &m_MainLoop) )
-  {
-    CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
-    Deinitialize();
+  if ( hostSink == "FAIL" )
     return false;
-  }
 
   pa_threaded_mainloop_lock(m_MainLoop);
 
@@ -440,8 +453,7 @@ bool CPulseAudioDirectSound::InitializePassthrough(IAudioCallback* pCallback
   pa_stream_set_write_callback(m_Stream, StreamRequestCallback, m_MainLoop);
   pa_stream_set_latency_update_callback(m_Stream, StreamLatencyUpdateCallback, m_MainLoop);
 
-  const char *sink = ( hostdevice.size() < 1 || hostdevice[0].Equals("default") )
-                        ? 0 : hostdevice[0].c_str();
+  const char *sink = hostSink.Equals("default") ? NULL : hostSink.c_str();
 
   pa_stream_flags paFlags =
     (pa_stream_flags)(PA_STREAM_PASSTHROUGH | PA_STREAM_INTERPOLATE_TIMING | PA_STREAM_AUTO_TIMING_UPDATE);
@@ -515,6 +527,65 @@ bool CPulseAudioDirectSound::InitializePassthrough(IAudioCallback* pCallback
   Resume();
   return true;
 #endif // ! PA_SUPPORTS_PASSTHROUGH
+}
+
+// returns the name of the sink to use, may be set to "default" or "FAIL"
+// "FAIL" is returned on error
+CStdString CPulseAudioDirectSound::ConfigureHostDevice(const CStdString &device, int iChannels)
+{
+  std::vector<CStdString> hostdevice;
+  CUtil::Tokenize(device, hostdevice, "@");
+
+  const char *host = ( hostdevice.size() < 2 || hostdevice[1].Equals("default") )
+                        ? 0 : hostdevice[1].c_str();
+
+  if ( ! SetupContext(host, &m_Context, &m_MainLoop) )
+  {
+    CLog::Log(LOGERROR, "PulseAudio: Failed to create context");
+    Deinitialize();
+    return "FAIL";
+  }
+
+  if ( hostdevice.size() >= 2
+      && hostdevice[0].find(CStdString("hdmi")) != CStdString::npos )
+  {
+    std::vector<CStdString> dottedHost;
+    CUtil::Tokenize(hostdevice[0], dottedHost, ".");
+
+    if ( dottedHost.size() >= 3 )
+    {
+      dottedHost.pop_back();
+      CStdString mode("hdmi-stereo");
+
+      if ( iChannels == 8 )
+      {
+        mode = "hdmi-surround-71";
+      }
+
+      CStdString profile("output:" + mode);
+
+      CStdString dev(dottedHost[0]);
+      CStdString cardName(dottedHost[0]);
+      repl(cardName, "_output", "_card");
+
+      for ( size_t i = 1; i < dottedHost.size(); ++i )
+      {
+        dev += ".";
+        dev += dottedHost[i];
+        cardName += ".";
+        cardName += dottedHost[i];
+      }
+
+      CLog::Log(LOGDEBUG, CStdString("PulseAudio: set_card_profile_by_name: " + cardName + " : " + profile));
+      if ( ! pa_context_set_card_profile_by_name(m_Context, cardName.c_str(), profile.c_str(), 0, 0) ) {
+        CLog::Log(LOGERROR, "PulseAudio: set_card_profile_by_name failed");
+      }
+
+      hostdevice[0] = dev + "." + mode;
+    }
+  }
+
+  return ( hostdevice.size() < 1 ) ? "default" : hostdevice[0];
 }
 
 bool CPulseAudioDirectSound::WaitForStreamReady()

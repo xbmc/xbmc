@@ -69,6 +69,7 @@ public:
   static void EnumerateAudioSinks(AudioSinkList& vAudioSinks, bool passthrough);
 private:
   bool InitializePassthrough(IAudioCallback* pCallback, const CStdString& device, int iChannels, enum PCMChannels *channelMap, unsigned int uiSamplesPerSec, unsigned int uiBitsPerSample, bool bResample, bool bIsMusic=false);
+  CStdString ConfigureHostDevice(const CStdString &device, int iChannels);
   bool WaitForStreamReady();
   static bool SetupContext(const char *host, pa_context **context, pa_threaded_mainloop **mainloop);
   bool Cork(bool cork);
