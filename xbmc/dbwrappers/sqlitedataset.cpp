@@ -32,6 +32,7 @@
 #include "sqlitedataset.h"
 #include "utils/log.h"
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
+#include "utils/URIUtils.h"
 
 #ifdef _WIN32
 #pragma comment(lib, "sqlite3.lib")
@@ -210,7 +211,9 @@ int SqliteDatabase::connect(bool create) {
 
   CLog::Log(LOGDEBUG, "Connecting to sqlite:%s:%s", host.c_str(), db.c_str());
 
-  string db_fullpath = host + "/" + db;
+  CStdString db_fullpath(host);
+  URIUtils::AddSlashAtEnd(db_fullpath);
+  db_fullpath.append(db);
 
   try
   {
