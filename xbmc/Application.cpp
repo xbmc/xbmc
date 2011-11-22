@@ -748,7 +748,7 @@ bool CApplication::Create()
 
   // The key mappings may already have been loaded by a peripheral
   CLog::Log(LOGINFO, "load keymapping");
-  if (!CButtonTranslator::GetInstance().Loaded() && !CButtonTranslator::GetInstance().Load())
+  if (!CButtonTranslator::GetInstance().Load())
       FatalErrorHandler(false, false, true);
 
   int iResolution = g_graphicsContext.GetVideoResolution();
