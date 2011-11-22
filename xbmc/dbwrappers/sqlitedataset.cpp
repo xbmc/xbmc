@@ -211,9 +211,8 @@ int SqliteDatabase::connect(bool create) {
 
   CLog::Log(LOGDEBUG, "Connecting to sqlite:%s:%s", host.c_str(), db.c_str());
 
-  CStdString db_fullpath(host);
-  URIUtils::AddSlashAtEnd(db_fullpath);
-  db_fullpath.append(db);
+  CStdString db_fullpath;
+  URIUtils::AddFileToFolder(host, db, db_fullpath);
 
   try
   {
