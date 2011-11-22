@@ -158,6 +158,7 @@ CPVRTimerInfoTag &CPVRTimerInfoTag::operator=(const CPVRTimerInfoTag &orig)
   m_iMarginStart       = orig.m_iMarginStart;
   m_iMarginEnd         = orig.m_iMarginEnd;
   m_state              = orig.m_state;
+  m_iChannelNumber     = orig.m_iChannelNumber;
 
   return *this;
 }
