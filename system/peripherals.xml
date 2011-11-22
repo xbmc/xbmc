@@ -1,9 +1,4 @@
 <peripherals>
-  <peripheral vendor="1241" product="E000" bus="usb" name="Speedlink SL-6399" mapTo="hid">
-    <setting key="keymap_enabled" type="bool" value="1" label="35008" />
-    <setting key="keymap" value="sl6399" label="35007" configurable="0" />
-  </peripheral>
-
   <peripheral vendor="1915" product="003B" bus="usb" name="Motorola Nyxboard Hybrid" mapTo="nyxboard">
     <setting key="keymap_enabled" type="bool" value="1" label="35008" />
     <setting key="keymap" value="nyxboard" label="35007" configurable="0" />
