@@ -502,7 +502,7 @@ int CBuiltins::Execute(const CStdString& execString)
 
     // ask if we need to check guisettings to resume
     bool askToResume = true;
-    for (int i = 1 ; i < params.size() ; i++)
+    for (unsigned int i = 1 ; i < params.size() ; i++)
     {
       if (params[i].Equals("isdir"))
         item.m_bIsFolder = true;
