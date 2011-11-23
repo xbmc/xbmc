@@ -64,12 +64,14 @@ public:
   ///access to singleton
   static CButtonTranslator& GetInstance();
 
+  // Add/remove a HID device with custom mappings
+  void AddDevice(CStdString& strDevice);
+  void RemoveDevice(CStdString& strDevice);
+
   /// loads Lircmap.xml/IRSSmap.xml (if enabled) and Keymap.xml
-  bool Load(const char* szDevice = NULL);
+  bool Load(void);
   /// clears the maps
   void Clear();
-  /// map has been loaded
-  inline bool Loaded(void) { return m_Loaded; }
 
   CAction GetAction(int window, const CKey &key, bool fallback = true);
 
@@ -98,7 +100,14 @@ public:
 
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
-  std::map<int, buttonMap> translatorMap;       // mapping of windows to button maps
+
+  // m_baseMap contains all the standard mappings
+  std::map<int, buttonMap> m_baseMap;
+  // m_translatorMap contains all mappings i.e. m_BaseMap + HID device mappings
+  std::map<int, buttonMap> m_translatorMap;
+  // m_deviceList contains the list of connected HID devices
+  std::list<CStdString> m_deviceList;
+
   int GetActionCode(int window, const CKey &key, CStdString &strAction) const;
 
   static uint32_t TranslateGamepadString(const char *szButton);
