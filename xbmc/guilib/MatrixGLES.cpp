@@ -50,6 +50,8 @@ CMatrixGLES::~CMatrixGLES()
   {
     while (!m_matrices[i].empty())
     {
+      GLfloat *matrix = m_matrices[i].back();
+      delete [] matrix;
       m_matrices[i].pop_back();
     }
   }
@@ -99,7 +101,11 @@ void CMatrixGLES::PopMatrix()
   if (MODE_WITHIN_RANGE(m_matrixMode))
   {
     if (m_matrices[m_matrixMode].size() > 1)
+    { 
+      GLfloat *matrix = m_matrices[m_matrixMode].back();
+      delete [] matrix;
       m_matrices[m_matrixMode].pop_back();
+    }
     m_pMatrix = m_matrices[m_matrixMode].back();
   }
 }
