@@ -5,7 +5,7 @@ cross_compiling=yes
 
 platform_min_version=iphoneos-version-min=4.1
 platform_path=/Developer/Platforms/iPhoneOS.platform/Developer
-platform_os_cflags=-arch @use_arch@ -mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp -pipe -Wno-trigraphs -fpascal-strings -Os -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2
+platform_os_cflags=-arch @use_arch@ -mcpu=cortex-a8 -mfpu=neon -ftree-vectorize -mfloat-abi=softfp -pipe -Wno-trigraphs -fpascal-strings -O3 -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2
 platform_os_ldflags=-arch @use_arch@ -mcpu=cortex-a8
 platform_sdk_path=${platform_path}/SDKs/iPhoneOS${platform_sdk_version}.sdk
 
