@@ -306,8 +306,38 @@ CStdString CID3Tag::GetGenre() const
 
 CStdString CID3Tag::GetComment() const
 {
+  // Multiple values are allowed per comment field, but storing different comment
+  // frames requires a different description for each frame. The first COMM frame
+  // encountered without a description will be used as the comment field.
+  // Source http://puddletag.sourceforge.net/source/id3.html
+
   id3_field_textencoding encoding=ID3_FIELD_TEXTENCODING_ISO_8859_1;
-  const id3_ucs4_t* ucs4=m_dll.id3_metadata_getcomment(m_tag, &encoding);
+  const id3_ucs4_t* ucs4 = 0;
+  struct id3_frame *frame;
+  union id3_field *field;
+
+  int i = 0;
+  while ((frame = m_dll.id3_tag_findframe(m_tag, "COMM", i++)))
+  {
+    // Skip in case the current frame does not contain 4 fields
+    // ID3v2.4.0 fields: encoding, language, short-description, full-text
+    if (frame->nfields != 4)
+      continue;
+
+    // Skip non-empty short-description
+    ucs4 = m_dll.id3_field_getstring(m_dll.id3_frame_field(frame, 2));
+    if (*ucs4)
+      continue;
+
+    field = m_dll.id3_frame_field(frame, 3);
+    if (!field || (field->type != ID3_FIELD_TYPE_STRINGFULL))
+      return "";
+
+    if (field && (m_dll.id3_field_type(field) == ID3_FIELD_TYPE_TEXTENCODING))
+      encoding = m_dll.id3_field_gettextencoding(field);
+
+    ucs4 = m_dll.id3_field_getfullstring(field);
+  }
   return ToStringCharset(ucs4, encoding);
 }
 
