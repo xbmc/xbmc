@@ -109,7 +109,7 @@ int MysqlDatabase::connect(bool create_new) {
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
 
-  CLog::Log(LOGDEBUG, "Connecting to mysql:%s:%s", host.c_str(), db.c_str());
+  //CLog::Log(LOGDEBUG, "Connecting to mysql:%s:%s", host.c_str(), db.c_str());
 
   try
   {
