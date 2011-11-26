@@ -36,7 +36,7 @@ CMatrixGLES::CMatrixGLES()
 {
   for (int i=0; i<(int)MM_MATRIXSIZE; i++)
   {
-    m_matrices[i].push_back(new GLfloat[16]);
+    m_matrices[i].push_back(MatrixWrapper());
     MatrixMode((EMATRIXMODE)i);
     LoadIdentity();
   }
@@ -46,17 +46,6 @@ CMatrixGLES::CMatrixGLES()
 
 CMatrixGLES::~CMatrixGLES()
 {
-  for (int i=0; i<(int)MM_MATRIXSIZE; i++)
-  {
-    while (!m_matrices[i].empty())
-    {
-      GLfloat *matrix = m_matrices[i].back();
-      delete [] matrix;
-      m_matrices[i].pop_back();
-    }
-  }
-  m_matrixMode = (EMATRIXMODE)-1;
-  m_pMatrix    = NULL;
 }
 
 GLfloat* CMatrixGLES::GetMatrix(EMATRIXMODE mode)
@@ -89,10 +78,8 @@ void CMatrixGLES::PushMatrix()
 {
   if (m_pMatrix && MODE_WITHIN_RANGE(m_matrixMode))
   {
-    GLfloat *matrix = new GLfloat[16];
-    memcpy(matrix, m_pMatrix, sizeof(GLfloat)*16);
-    m_matrices[m_matrixMode].push_back(matrix);
-    m_pMatrix = matrix;
+    m_matrices[m_matrixMode].push_back(MatrixWrapper(m_pMatrix));
+    m_pMatrix =  m_matrices[m_matrixMode].back();
   }
 }
 
@@ -102,8 +89,6 @@ void CMatrixGLES::PopMatrix()
   {
     if (m_matrices[m_matrixMode].size() > 1)
     { 
-      GLfloat *matrix = m_matrices[m_matrixMode].back();
-      delete [] matrix;
       m_matrices[m_matrixMode].pop_back();
     }
     m_pMatrix = m_matrices[m_matrixMode].back();
