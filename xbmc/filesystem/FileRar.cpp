@@ -81,6 +81,7 @@ void CFileRarExtractThread::OnStartup()
 
 void CFileRarExtractThread::OnExit()
 {
+  hRunning.Reset();
 }
 
 void CFileRarExtractThread::Process()
