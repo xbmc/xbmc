@@ -209,7 +209,7 @@ int SqliteDatabase::connect(bool create) {
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
 
-  CLog::Log(LOGDEBUG, "Connecting to sqlite:%s:%s", host.c_str(), db.c_str());
+  //CLog::Log(LOGDEBUG, "Connecting to sqlite:%s:%s", host.c_str(), db.c_str());
 
   CStdString db_fullpath;
   URIUtils::AddFileToFolder(host, db, db_fullpath);
