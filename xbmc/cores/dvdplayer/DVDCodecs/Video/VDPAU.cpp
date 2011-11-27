@@ -368,12 +368,10 @@ void CVDPAU::OnLostDevice()
 {
   CLog::Log(LOGNOTICE,"CVDPAU::OnLostDevice event");
 
-  { CExclusiveLock lock(m_DecoderSection);
-    FiniVDPAUOutput();
-    FiniVDPAUProcs();
-  }
+  CExclusiveLock lock(m_DecoderSection);
+  FiniVDPAUOutput();
+  FiniVDPAUProcs();
 
-  CExclusiveLock lock(m_DisplaySection);
   m_DisplayState = VDPAU_LOST;
   m_DisplayEvent.Reset();
 }
