@@ -546,6 +546,7 @@ void COverlayTextureGL::Render(SRenderState& state)
   GLint posLoc  = g_Windowing.GUIShaderGetPos();
   GLint colLoc  = g_Windowing.GUIShaderGetCol();
   GLint tex0Loc = g_Windowing.GUIShaderGetCoord0();
+  GLint uniColLoc= g_Windowing.GUIShaderGetUniCol();
 
   glVertexAttribPointer(posLoc,  2, GL_FLOAT, 0, 0, ver);
   glVertexAttribPointer(colLoc,  4, GL_FLOAT, 0, 0, col);
@@ -561,6 +562,7 @@ void COverlayTextureGL::Render(SRenderState& state)
     col[i][0] = col[i][1] = col[i][2] = col[i][3] = 1.0f;
   }
 
+  glUniform4f(uniColLoc,(col[0][0]), (col[0][1]), (col[0][2]), (col[0][3]));
   // Setup vertex position values
   ver[0][0] = ver[3][0] = rd.left;
   ver[0][1] = ver[1][1] = rd.top;

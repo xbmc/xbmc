@@ -38,6 +38,7 @@ CGUIShader::CGUIShader( const char *shader ) : CGLSLShaderProgram("guishader_ver
   m_hCol    = 0;
   m_hCord0  = 0;
   m_hCord1  = 0;
+  m_hUniCol = 0;
 
   m_proj   = NULL;
   m_model  = NULL;
@@ -50,6 +51,8 @@ void CGUIShader::OnCompiledAndLinked()
   // Variables passed directly to the Fragment shader
   m_hTex0   = glGetUniformLocation(ProgramHandle(), "m_samp0");
   m_hTex1   = glGetUniformLocation(ProgramHandle(), "m_samp1");
+  m_hUniCol   = glGetUniformLocation(ProgramHandle(), "m_unicol");
+
   // Variables passed directly to the Vertex shader
   m_hProj   = glGetUniformLocation(ProgramHandle(), "m_proj");
   m_hModel  = glGetUniformLocation(ProgramHandle(), "m_model");
@@ -62,6 +65,7 @@ void CGUIShader::OnCompiledAndLinked()
   glUseProgram( ProgramHandle() );
   glUniform1i(m_hTex0, 0);
   glUniform1i(m_hTex1, 1);
+  glUniform4f(m_hUniCol, 1.0, 1.0, 1.0, 1.0);
   glUseProgram( 0 );
 }
 
