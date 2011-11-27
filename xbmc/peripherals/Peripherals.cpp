@@ -385,16 +385,20 @@ bool CPeripherals::LoadMappings(void)
     return false;
   }
 
-  TiXmlElement *currentNode = pRootElement->FirstChildElement("peripheral");
-  while (currentNode)
+  for (TiXmlElement *currentNode = pRootElement->FirstChildElement("peripheral"); currentNode; currentNode = currentNode->NextSiblingElement("peripheral"))
   {
     CStdStringArray vpArray, idArray;
     PeripheralID id;
     PeripheralDeviceMapping mapping;
 
+    mapping.m_strDeviceName = currentNode->Attribute("name") ? CStdString(currentNode->Attribute("name")) : StringUtils::EmptyString;
+
     // If there is no vendor_product attribute ignore this entry
     if (!currentNode->Attribute("vendor_product"))
+    {
+      CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with missing vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
       continue;
+    }
 
     // The vendor_product attribute is a list of comma separated vendor:product pairs
     StringUtils::SplitString(currentNode->Attribute("vendor_product"), ",", vpArray);
@@ -402,7 +406,10 @@ bool CPeripherals::LoadMappings(void)
     {
       StringUtils::SplitString(vpArray[i], ":", idArray);
       if (idArray.size() != 2)
+      {
+        CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with invalid vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
         continue;
+      }
 
       id.m_iVendorId = PeripheralTypeTranslator::HexStringToInt(idArray[0]);
       id.m_iProductId = PeripheralTypeTranslator::HexStringToInt(idArray[1]);
@@ -413,12 +420,11 @@ bool CPeripherals::LoadMappings(void)
 
     mapping.m_busType       = PeripheralTypeTranslator::GetBusTypeFromString(currentNode->Attribute("bus"));
     mapping.m_class         = PeripheralTypeTranslator::GetTypeFromString(currentNode->Attribute("class"));
-    mapping.m_strDeviceName = currentNode->Attribute("name") ? CStdString(currentNode->Attribute("name")) : StringUtils::EmptyString;
     mapping.m_mappedTo      = PeripheralTypeTranslator::GetTypeFromString(currentNode->Attribute("mapTo"));
     GetSettingsFromMappingsFile(currentNode, mapping.m_settings);
 
     m_mappings.push_back(mapping);
-    currentNode = currentNode->NextSiblingElement("peripheral");
+    CLog::Log(LOGDEBUG, "%s - loaded node \"%s\"", __FUNCTION__, mapping.m_strDeviceName.c_str());
   }
 
   return true;
