@@ -1339,6 +1339,7 @@ void CApplication::StartAirplayServer()
     }
   }
 #endif
+CUtil::TakeScreenshot();
 }
 
 void CApplication::StopAirplayServer(bool bWait)

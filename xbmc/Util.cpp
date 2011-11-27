@@ -938,7 +938,7 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   {
 #ifdef HAS_GLES
     // we need to save in BGRA order so XOR Swap RGBA -> BGRA
-    unsigned char* swap_pixels = pixels;
+    unsigned char* swap_pixels = pixels + (height - y - 1) * stride;
     for (int x = 0; x < width; x++, swap_pixels+=4)
     {
       if (swap_pixels[0] != swap_pixels[2])
