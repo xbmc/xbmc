@@ -34,7 +34,7 @@ CMatrixGLES g_matrices;
 
 CMatrixGLES::CMatrixGLES()
 {
-  for (int i=0; i<(int)MM_MATRIXSIZE; i++)
+  for (unsigned int i=0; i < MM_MATRIXSIZE; i++)
   {
     m_matrices[i].push_back(MatrixWrapper());
     MatrixMode((EMATRIXMODE)i);
@@ -379,7 +379,7 @@ bool CMatrixGLES::Project(GLfloat objx, GLfloat objy, GLfloat objz, const GLfloa
 
 void CMatrixGLES::PrintMatrix(void)
 {
-  for (int i=0; i<(int)MM_MATRIXSIZE; i++)
+  for (unsigned int i=0; i < MM_MATRIXSIZE; i++)
   {
     GLfloat *m = GetMatrix((EMATRIXMODE)i);
     CLog::Log(LOGDEBUG, "MatrixGLES - Matrix:%d", i);
