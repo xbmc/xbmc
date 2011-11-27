@@ -232,8 +232,8 @@ void CPVRGUIInfo::UpdateQualityData(void)
 
 void CPVRGUIInfo::UpdateMisc(void)
 {
-  CSingleLock lock(m_critSection);
   bool bStarted = g_PVRManager.IsStarted();
+  CSingleLock lock(m_critSection);
 
   m_strPlayingClientName      = bStarted ? g_PVRClients->GetPlayingClientName() : "";
   m_bHasRecordings            = bStarted && g_PVRRecordings->GetNumRecordings() > 0;
