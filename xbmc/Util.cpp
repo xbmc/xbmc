@@ -941,13 +941,8 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
     unsigned char* swap_pixels = pixels + (height - y - 1) * stride;
     for (int x = 0; x < width; x++, swap_pixels+=4)
     {
-      if (swap_pixels[0] != swap_pixels[2])
-      {
-        swap_pixels[0] ^= swap_pixels[2];
-        swap_pixels[2] ^= swap_pixels[0];
-        swap_pixels[0] ^= swap_pixels[2];
-      }
-    }
+      std::swap(swap_pixels[0], swap_pixels[2]);
+    }   
 #endif
     memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
   }
