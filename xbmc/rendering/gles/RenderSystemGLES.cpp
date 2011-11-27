@@ -627,4 +627,12 @@ GLint CRenderSystemGLES::GUIShaderGetCoord1()
   return -1;
 }
 
+GLint CRenderSystemGLES::GUIShaderGetUniCol()
+{
+  if (m_pGUIshader[m_method])
+    return m_pGUIshader[m_method]->GetUniColLoc();
+
+  return -1;
+}
+
 #endif
