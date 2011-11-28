@@ -531,6 +531,7 @@ namespace PVR
 
     ManagerState GetState(void) const;
 
+    void SetState(ManagerState state);
     /** @name containers */
     //@{
     CPVRChannelGroupsContainer *    m_channelGroups;               /*!< pointer to the channel groups container */
