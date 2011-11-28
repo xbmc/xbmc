@@ -212,7 +212,7 @@ bool CJpegIO::Open(const CStdString &texturePath, unsigned int minx, unsigned in
         m_cinfo.scale_num--;
         break;
       }
-      if (m_cinfo.output_width >= m_minx || m_cinfo.output_height >= m_miny)
+      if (m_cinfo.output_width >= m_minx && m_cinfo.output_height >= m_miny)
         break;
     }
     jpeg_calc_output_dimensions(&m_cinfo);
