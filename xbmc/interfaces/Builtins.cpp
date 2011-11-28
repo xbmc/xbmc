@@ -487,11 +487,8 @@ int CBuiltins::Execute(const CStdString& execString)
     }
 
     CFileItem item(params[0], false);
-    if (URIUtils::HasSlashAtEnd(params[0]) || 
-       (params.size() == 2 && params[1].Equals("isdir")))
+    if (URIUtils::HasSlashAtEnd(params[0]))
       item.m_bIsFolder = true;
-    else if (item.IsPlugin())
-      item.SetProperty("IsPlayable", true);
 
     // restore to previous window if needed
     if( g_windowManager.GetActiveWindow() == WINDOW_SLIDESHOW ||
@@ -503,28 +500,31 @@ int CBuiltins::Execute(const CStdString& execString)
     g_application.ResetScreenSaver();
     g_application.WakeUpScreenSaverAndDPMS();
 
-    // set fullscreen or windowed
-    if ((params.size() >= 3 && params[2] == "1") ||
-       (params.size() == 2 && params[1] == "1"))
-      g_settings.m_bStartVideoWindowed = true;
-
     // ask if we need to check guisettings to resume
     bool askToResume = true;
-    if ((params.size() == 2 && params[1].Equals("resume")) || (params.size() == 3 && params[2].Equals("resume")))
+    for (unsigned int i = 1 ; i < params.size() ; i++)
     {
-      // force the item to resume (if applicable) (see CApplication::PlayMedia)
-      item.m_lStartOffset = STARTOFFSET_RESUME;
-      askToResume = false;
+      if (params[i].Equals("isdir"))
+        item.m_bIsFolder = true;
+      else if (params[i].Equals("1")) // set fullscreen or windowed
+        g_settings.m_bStartVideoWindowed = true;
+      else if (params[i].Equals("resume"))
+      {
+        // force the item to resume (if applicable) (see CApplication::PlayMedia)
+        item.m_lStartOffset = STARTOFFSET_RESUME;
+        askToResume = false;
+      }
+      else if (params[i].Equals("noresume"))
+      {
+        // force the item to start at the beginning (m_lStartOffset is initialized to 0)
+        askToResume = false;
+      }
+      else if (params[i].Left(11).Equals("playoffset="))
+        item.SetProperty("playlist_starting_track", params[i].Mid(11) - 1);
     }
 
-    if (params.size() == 2 && params[1].Left(11).Equals("playoffset="))
-      item.SetProperty("playlist_starting_track",atoi(params[1].Mid(11))-1);
-
-    if ((params.size() == 2 && params[1].Equals("noresume")) || (params.size() == 3 && params[2].Equals("noresume")))
-    {
-      // force the item to start at the beginning (m_lStartOffset is initialized to 0)
-      askToResume = false;
-    }
+    if (!item.m_bIsFolder && item.IsPlugin())
+      item.SetProperty("IsPlayable", true);
 
     if ( askToResume == true )
     {

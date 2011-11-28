@@ -228,12 +228,40 @@
 	</include>
 	<include name="AlbumWrapView2_Fanart">
 		<control type="group">
+			<posx>0</posx>
+			<posy>350</posy>
+			<visible>Control.IsVisible(509) + Skin.HasSetting(View509HideInfo)]</visible>
+			<include>VisibleFadeEffect</include>
+			<control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1280</width>
+				<height>270</height>
+				<texture>HomeNowPlayingBack.png</texture>
+			</control>
+			<control type="label">
+				<posx>40</posx>
+				<posy>70</posy>
+				<width>1200</width>
+				<height>20</height>
+				<font>font24_title</font>
+				<textcolor>white</textcolor>
+				<shadowcolor>black</shadowcolor>
+				<scroll>true</scroll>
+				<align>center</align>
+				<aligny>center</aligny>
+				<label>$INFO[ListItem.Label]</label>
+				<animation effect="slide" start="0,0" end="0,20" time="200" condition="!Control.HasFocus(509)">conditional</animation>
+			</control>
+		</control>
+		<control type="group">
 			<visible>Control.IsVisible(509)</visible>
 			<include>VisibleFadeEffect</include>
 			<posx>0</posx>
 			<posy>450</posy>
 			<control type="fixedlist" id="509">
 				<visible>Container.Content(Albums)</visible>
+				<hitrect x="0" y="-10" w="1280" h="190" />
 				<posx>-80</posx>
 				<posy>0</posy>
 				<width>1360</width>
@@ -334,7 +362,7 @@
 		<control type="group">
 			<posx>180</posx>
 			<posy>40</posy>
-			<visible>Control.IsVisible(509)</visible>
+			<visible>Control.IsVisible(509) + !Skin.HasSetting(View509HideInfo)</visible>
 			<include>VisibleFadeEffect</include>
 			<control type="image">
 				<posx>0</posx>
