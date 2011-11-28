@@ -33,6 +33,7 @@
 #include "threads/SingleLock.h"
 #include "windows/GUIWindowPVR.h"
 #include "utils/log.h"
+#include "threads/Atomics.h"
 
 #include "PVRManager.h"
 #include "PVRDatabase.h"
@@ -99,7 +100,7 @@ void CPVRManager::Cleanup(void)
     delete m_pendingUpdates.at(iJobPtr);
   m_pendingUpdates.clear();
 
-  m_managerState = ManagerStateStopped;
+  SetState(ManagerStateStopped);
 }
 
 void CPVRManager::ResetProperties(void)
@@ -129,7 +130,7 @@ void CPVRManager::Start(void)
     return;
 
   ResetProperties();
-  m_managerState = ManagerStateStarting;
+  SetState(ManagerStateStarting);
 
   /* create the supervisor thread to do all background activities */
   StartUpdateThreads();
@@ -138,13 +139,11 @@ void CPVRManager::Start(void)
 void CPVRManager::Stop(void)
 {
   /* check whether the pvrmanager is loaded */
-  CSingleLock lock(m_critSection);
-  if (m_managerState == ManagerStateStopping ||
-      m_managerState == ManagerStateStopped)
+  if (GetState() == ManagerStateStopping ||
+      GetState() == ManagerStateStopped)
     return;
 
-  m_managerState = ManagerStateStopping;
-  lock.Leave();
+  SetState(ManagerStateStopping);
 
   CLog::Log(LOGNOTICE, "PVRManager - stopping");
 
@@ -167,8 +166,15 @@ void CPVRManager::Stop(void)
 
 ManagerState CPVRManager::GetState(void) const
 {
-  CSingleLock lock(m_critSection);
-  return m_managerState;
+  return (ManagerState)cas((volatile long*)(&m_managerState), 0, 0);
+}
+
+void CPVRManager::SetState(ManagerState state) 
+{
+  long oldstate = m_managerState;
+  while(oldstate != cas((volatile long*)(&m_managerState), oldstate, state))
+    oldstate = m_managerState;
+  return;
 }
 
 void CPVRManager::Process(void)
@@ -184,8 +190,7 @@ void CPVRManager::Process(void)
 
   if (GetState() == ManagerStateStarting)
   {
-    CSingleLock lock(m_critSection);
-    m_managerState = ManagerStateStarted;
+    SetState(ManagerStateStarted);
   }
   else
   {
@@ -249,7 +254,7 @@ bool CPVRManager::StartUpdateThreads(void)
   CLog::Log(LOGNOTICE, "PVRManager - starting up");
 
   /* create the pvrmanager thread, which will ensure that all data will be loaded */
-  m_managerState = ManagerStateStarting;
+  SetState(ManagerStateStarting);
   Create();
   SetPriority(-1);
 
@@ -263,7 +268,7 @@ void CPVRManager::StopUpdateThreads(void)
   CSingleLock lock(m_critSection);
   m_guiInfo->Stop();
   m_addons->Stop();
-  m_managerState = ManagerStateInterrupted;
+  SetState(ManagerStateInterrupted);
 }
 
 bool CPVRManager::Load(void)
@@ -294,7 +299,7 @@ bool CPVRManager::Load(void)
   m_recordings->Load();
 
   CSingleLock lock(m_critSection);
-  if (m_managerState != ManagerStateStarting)
+  if (GetState() != ManagerStateStarting)
     return false;
 
   CGUIWindowPVR *pWindow = (CGUIWindowPVR *) g_windowManager.GetWindow(WINDOW_PVR);
@@ -922,8 +927,7 @@ void CPVRManager::LocalizationChanged(void)
 
 bool CPVRManager::IsInitialising(void) const
 {
-  CSingleLock lock(m_critSection);
-  return m_managerState == ManagerStateStarting;
+  return GetState() == ManagerStateStarting;
 }
 
 bool CPVRManager::IsPlayingTV(void) const
@@ -1066,6 +1070,5 @@ void CPVRManager::ExecutePendingJobs(void)
 
 bool CPVRManager::IsStarted(void) const
 {
-  CSingleLock lock(m_critSection);
-  return m_managerState == ManagerStateStarted;
+  return GetState() == ManagerStateStarted;
 }
