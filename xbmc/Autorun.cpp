@@ -69,38 +69,25 @@ void CAutorun::ExecuteAutorun( bool bypassSettings, bool ignoreplaying, bool sta
   g_application.ResetScreenSaver();
   g_application.WakeUpScreenSaverAndDPMS();  // turn off the screensaver if it's active
 
-  if ( pInfo->IsAudio( 1 ) )
-  {
-    if( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") )
-      return;
-
-    if (!g_passwordManager.IsMasterLockUnlocked(false))
-      if (g_settings.GetCurrentProfile().musicLocked())
-        return ;
-
-    RunCdda();
-  }
-  else
-  {
-    RunMedia(bypassSettings, startFromBeginning);
-  }
+  RunMedia(bypassSettings, startFromBeginning);
 }
 
-void CAutorun::RunCdda()
+bool CAutorun::RunCdda()
 {
   CFileItemList vecItems;
 
   auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( "cdda://local/" ) );
   if ( !pDir->GetDirectory( "cdda://local/", vecItems ) )
-    return ;
+    return false;
 
   if ( vecItems.Size() <= 0 )
-    return ;
+    return false;
 
   g_playlistPlayer.ClearPlaylist(PLAYLIST_MUSIC);
   g_playlistPlayer.Add(PLAYLIST_MUSIC, vecItems);
   g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
   g_playlistPlayer.Play();
+  return true;
 }
 
 void CAutorun::RunMedia(bool bypassSettings, bool startFromBeginning)
@@ -167,8 +154,22 @@ bool CAutorun::RunDisc(IDirectory* pDir, const CStdString& strDrive, int& nAdded
   // is this a root folder we have to check the content to determine a disc type
   if( bRoot )
   {
+    // check for audio cd first
+    CCdInfo* pInfo = g_mediaManager.GetCdInfo();
 
-    // check root folders first, for normal structured dvd's
+    if ( pInfo->IsAudio( 1 ) )
+    {
+      if( !bypassSettings && !g_guiSettings.GetBool("audiocds.autorun") )
+        return false;
+
+      if (!g_passwordManager.IsMasterLockUnlocked(false))
+        if (g_settings.GetCurrentProfile().musicLocked())
+          return false;
+      bPlaying = RunCdda();
+	  return bPlaying;
+    }
+
+    // check root folders next, for normal structured dvd's
     for (int i = 0; i < vecItems.Size(); i++)
     {
       CFileItemPtr pItem = vecItems[i];
@@ -390,9 +391,20 @@ bool CAutorun::IsEnabled() const
 
 bool CAutorun::PlayDisc(const CStdString& path, bool startFromBeginning)
 {
+  int nSize = g_playlistPlayer.GetPlaylist( PLAYLIST_MUSIC ).size();
   int nAddedToPlaylist = 0;
   auto_ptr<IDirectory> pDir ( CFactoryDirectory::Create( path ));
-  return RunDisc(pDir.get(), path, nAddedToPlaylist, true, true, startFromBeginning);
+  bool bPlaying = RunDisc(pDir.get(), path, nAddedToPlaylist, true, true, startFromBeginning);
+  if ( !bPlaying && nAddedToPlaylist > 0 )
+  {
+    CGUIMessage msg( GUI_MSG_PLAYLIST_CHANGED, 0, 0 );
+    g_windowManager.SendMessage( msg );
+    g_playlistPlayer.SetCurrentPlaylist(PLAYLIST_MUSIC);
+    // Start playing the items we inserted
+    g_playlistPlayer.Play(nSize);
+	bPlaying = true;
+  }
+  return bPlaying;
 }
 
 bool CAutorun::PlayDiscAskResume(const CStdString& path)
