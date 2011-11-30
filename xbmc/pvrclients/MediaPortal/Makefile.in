@@ -19,7 +19,7 @@ SRCS   = channels.cpp \
 	Socket.cpp \
 	uri.cpp \
 	utils.cpp \
-	CriticalSection.cpp \
+	posix/CriticalSection.cpp \
 	SingleLock.cpp \
 	Cards.cpp
 

@@ -28,7 +28,7 @@
 #if defined(TARGET_WINDOWS)
 #  include "windows/os_windows.h"
 #else
-#  include "linux/os_posix.h"
+#  include "posix/os_posix.h"
 #endif
 
 #if defined(TARGET_DARWIN)
