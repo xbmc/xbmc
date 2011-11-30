@@ -49,7 +49,7 @@ void CBaseRenderer::ChooseBestResolution(float fps)
   if (fps == 0.0) return;
 
   // Adjust refreshrate to match source fps
-#if !defined(__APPLE__)
+#if !defined(TARGET_DARWIN_IOS)
   if (g_guiSettings.GetBool("videoplayer.adjustrefreshrate"))
   {
     float weight;
