@@ -11,6 +11,18 @@ void TestFileUtils::testDirName()
 #endif
 }
 
+void TestFileUtils::testIsRelative()
+{
+#ifdef PLATFORM_WINDOWS
+	TEST_COMPARE(FileUtils::isRelative("temp"),true);
+	TEST_COMPARE(FileUtils::isRelative("D:/temp"),false);
+	TEST_COMPARE(FileUtils::isRelative("d:/temp"),false);
+#else
+	TEST_COMPARE(FileUtils::isRelative("/tmp"),false);
+	TEST_COMPARE(FileUtils::isRelative("tmp"),true);
+#endif
+}
+
 int main(int,char**)
 {
 	TestList<TestFileUtils> tests;

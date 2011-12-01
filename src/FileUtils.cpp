@@ -461,7 +461,7 @@ std::string FileUtils::tempPath()
 bool startsWithDriveLetter(const char* path)
 {
 	return strlen(path) >= 2 &&
-	      (path[0] >= 'A' && path[0] <= 'Z') &&
+	      (isalpha(path[0])) &&
 	       path[1] == ':';
 }
 
