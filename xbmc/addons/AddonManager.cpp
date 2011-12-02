@@ -299,6 +299,49 @@ bool CAddonMgr::GetAllAddons(VECADDONS &addons, bool enabled /*= true*/, bool al
   return !addons.empty();
 }
 
+void CAddonMgr::AddToUpdateableAddons(AddonPtr &pAddon)
+{
+  CSingleLock lock(m_critSection);
+  m_updateableAddons.push_back(pAddon);
+}
+
+void CAddonMgr::RemoveFromUpdateableAddons(AddonPtr &pAddon)
+{
+  CSingleLock lock(m_critSection);
+  VECADDONS::iterator it = std::find(m_updateableAddons.begin(), m_updateableAddons.end(), pAddon);
+  
+  if(it != m_updateableAddons.end())
+  {
+    m_updateableAddons.erase(it);
+  }
+}
+
+struct AddonIdFinder 
+{ 
+    AddonIdFinder(const CStdString& id)
+      : m_id(id)
+    {}
+    
+    bool operator()(const AddonPtr& addon) 
+    { 
+      return m_id.Equals(addon->ID()); 
+    }
+    private:
+    CStdString m_id;
+};
+
+bool CAddonMgr::ReloadSettings(const CStdString &id)
+{
+  CSingleLock lock(m_critSection);
+  VECADDONS::iterator it = std::find_if(m_updateableAddons.begin(), m_updateableAddons.end(), AddonIdFinder(id));
+  
+  if( it != m_updateableAddons.end())
+  {
+    return (*it)->ReloadSettings();
+  }
+  return false;
+}
+
 bool CAddonMgr::GetAllOutdatedAddons(VECADDONS &addons, bool enabled /*= true*/)
 {
   CSingleLock lock(m_critSection);

@@ -161,8 +161,6 @@ public:
 
   CStdString m_logFolder;
 
-  CStdString m_activeKeyboardMapping;
-
   bool m_bMyMusicSongInfoInVis;
   bool m_bMyMusicSongThumbInVis;
 
