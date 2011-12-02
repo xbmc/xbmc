@@ -121,24 +121,16 @@ int CDVDAudioCodecPassthroughAudioFilter::Decode(BYTE *pData, int iSize)
 
 void CDVDAudioCodecPassthroughAudioFilter::SetupParser(BYTE *pData, int iSize)
 {
-  m_Spdif = new AudioFilter::SpdifWrapper(m_Mhp,16);
+  m_Spdif = new AudioFilter::SpdifWrapper(m_Mhp);
+  m_Spdif->addChannelMap(8, 192000);
+  m_Spdif->addChannelMap(2, 192000);
+  m_Spdif->addChannelMap(2, 48000);
+  m_Spdif->addChannelMap(8, 48000);
 
   if ( m_Spdif->parseFrame(pData, iSize) )
   {
-    m_iSourceSampleRate = m_Spdif->getSpk().sample_rate;
-
-    if ( m_CodecId == CODEC_ID_DTS )
-    {
-      if( m_Spdif->getHeaderInfo().isHd() )
-      {
-        m_Channels = 8;
-      }
-      else
-      {
-        delete m_Spdif;
-        m_Spdif = new AudioFilter::SpdifWrapper(m_Mhp,4);
-      }
-    }
+    m_iSourceSampleRate = m_Spdif->getSpeakers().getSampleRate();
+	m_Channels = m_Spdif->getSpeakers().getChannelCount();
   }
 }
 
