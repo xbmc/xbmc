@@ -16,7 +16,6 @@
 				<height>34</height>
 				<texture>OMIndicUp.png</texture>
 				<visible>!Control.IsVisible(9008)</visible>
-				<include>OptionsMenuFade</include>
 			</control>
 			<control type="image" id="9008">
 				<description>Options menu (Press Right)</description>
@@ -25,8 +24,7 @@
 				<width>64</width>
 				<height>34</height>
 				<texture>OMIndicRight.png</texture>
-				<visible>Control.IsVisible(50) | Control.IsVisible(52) | Control.IsVisible(53) | Control.IsVisible(56) | Control.IsVisible(53) | [[Control.IsVisible(54) | Control.IsVisible(57)] + Window.IsActive(24)] | [[Control.IsVisible(51) | Control.IsVisible(57)] + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]] | [Control.IsVisible(56) + Window.IsVisible(MyPictures)]</visible>
-				<include>OptionsMenuFade</include>
+				<visible>Control.IsVisible(50) | Control.IsVisible(52) | Control.IsVisible(53) | Control.IsVisible(56) | Control.IsVisible(53) | [[Control.IsVisible(54) | Control.IsVisible(57)] + Window.IsActive(24)] | [[Control.IsVisible(51) | Control.IsVisible(57)] + [Window.IsVisible(MyMusicFiles) | Window.IsVisible(MyMusicLibrary)]] | [Control.IsVisible(561) + Window.IsVisible(MyPictures)]</visible>
 			</control>
 		</control>
 		<include>OptionsMenuUI</include>
