@@ -301,19 +301,9 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
           label.Format(g_localizeStrings.Get(20358), m_movieItem->GetVideoInfoTag()->m_iSeason);
         CFileItem season(label);
         season.m_bIsFolder = true;
-        // grab show path
-        CVideoDatabase db;
-        if (db.Open())
-        {
-          CFileItemList items;
-          CStdString where = db.PrepareSQL("where c%02d='%s'", VIDEODB_ID_TV_TITLE, m_movieItem->GetVideoInfoTag()->m_strShowTitle.c_str());
-          if (db.GetTvShowsByWhere("", where, items) && items.Size())
-            season.GetVideoInfoTag()->m_strPath = items[0]->GetVideoInfoTag()->m_strPath;
-          db.Close();
-        }
-        season.SetCachedSeasonThumb();
-        if (season.HasThumbnail())
-          m_movieItem->SetProperty("seasonthumb", season.GetThumbnailImage());
+        season.GetVideoInfoTag()->m_strPath = item->GetVideoInfoTag()->m_strShowPath;
+        if (CFile::Exists(season.GetCachedSeasonThumb()))
+          m_movieItem->SetProperty("seasonthumb", season.GetCachedSeasonThumb());
       }
     }
     else if (type == VIDEODB_CONTENT_MOVIES)
