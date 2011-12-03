@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="weather.wunderground" name="Weather Underground" version="0.0.2" provider-name="Team XBMC">
+	<requires>
+		<import addon="xbmc.python" version="2.0"/>
+		<import addon="script.module.simplejson" version="2.0.10"/>
+	</requires>
+	<extension point="xbmc.python.weather" library="default.py"/>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en">Weather forecast from wunderground.com</summary>
+		<description lang="en">Weather forecast provided by Weather Underground (http://www.wunderground.com/)</description>
+		<disclaimer lang="en">Use of this add-on implies that you have agreed to the Terms of Service located at http://www.wunderground.com/weather/api/d/terms.html</disclaimer>
+		<platform>all</platform>
+	</extension>
+</addon>
