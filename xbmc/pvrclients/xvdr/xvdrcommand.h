@@ -41,6 +41,7 @@
 #define XVDR_GETTIME               2
 #define XVDR_ENABLESTATUSINTERFACE 3
 #define XVDR_PING                  7
+#define XVDR_UPDATECHANNELS        8
 
 /* OPCODE 20 - 39: XVDR network functions for live streaming */
 #define XVDR_CHANNELSTREAM_OPEN    20

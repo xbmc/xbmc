@@ -199,6 +199,26 @@ bool cXVDRData::EnableStatusInterface(bool onOff)
   return ret == XVDR_RET_OK ? true : false;
 }
 
+bool cXVDRData::SetUpdateChannels(uint8_t method)
+{
+  cRequestPacket vrp;
+  if (!vrp.init(XVDR_UPDATECHANNELS)) return false;
+  if (!vrp.add_U8(method)) return false;
+
+  cResponsePacket* vresp = ReadResult(&vrp);
+  if (!vresp)
+  {
+    XBMC->Log(LOG_INFO, "Setting channel update method not supported by server. Consider updating the XVDR server.");
+    return false;
+  }
+
+  XBMC->Log(LOG_INFO, "Channel update method set to %i", method);
+
+  uint32_t ret = vresp->extract_U32();
+  delete vresp;
+  return ret == XVDR_RET_OK ? true : false;
+}
+
 int cXVDRData::GetChannelsCount()
 {
   cRequestPacket vrp;

@@ -2,6 +2,7 @@
 <strings>
     <!-- settings labels -->
     <string id="30000">VDR hostnaam of IP adres</string>
+    <string id="30001">Protocol Compressie</string>
     <string id="30002">Prioriteit</string>
     <string id="30003">Character Set Conversie</string>
     <string id="30004">Connectie timeout (s)</string>
@@ -18,16 +19,16 @@
     <string id="30015">Gecodeerde kanalen</string>
     <string id="30016">HD kanalen</string>
     <string id="30017">Land</string>
-    <string id="30018">Kabel Inversion</string>
+    <string id="30018">Kabel Inversie</string>
     <string id="30019">Kabel Symbolrate</string>
-    <string id="30020">Kabel modulation</string>
+    <string id="30020">Kabel modulatie</string>
     <string id="30021">Antenne Inversion</string>
-    <string id="30022">Sateliet</string>
+    <string id="30022">Satelliet</string>
     <string id="30023">ATSC type</string>
     <string id="30024">Terug</string>
     <string id="30025">Kanalen zoeken - bezig... %i %%</string>
     <string id="30026">Type:</string>
-    <string id="30027">Device:</string>
+    <string id="30027">Toestel:</string>
     <string id="30028">Scan: %i</string>
     <string id="30029">Signaal: %i %%</string>
     <string id="30030">Nieuwe kanalen: %i</string>
@@ -42,6 +43,28 @@
     <string id="30039">Bezig</string>
     <string id="30040">Gestopt</string>
     <string id="30041">Klaar</string>
-    <string id="30042">Kanalen scan - Geanuleerd</string>
+    <string id="30042">Kanalen scan - Geannuleerd</string>
     <string id="30043">Kanalen scan - Fout</string>
+    <string id="30044">Connectie verloren met VDR Server</string>
+    <string id="30045">Connectie met VDR Server hersteld</string>
+    <string id="30046">Automatische aanmaak kanaalgroepen</string>
+    <string id="30047">TV signaal verloren</string>
+    <string id="30048">TV signaal hersteld</string>
+    <string id="30049">Voorkeur Audiokanaal</string>
+    <string id="30050">Connectie</string>
+    <string id="30051">VDR</string>
+    <string id="30052">Kanaal update</string>
+    <string id="30053">Geen</string>
+    <string id="30054">Enkel namen</string>
+    <string id="30055">Enkel PIDS</string>
+    <string id="30056">Namen en PIDs</string>
+    <string id="30057">Nieuwe kanalen toevoegen</string>
+    <string id="30058">Nieuwe transponders toevoegen</string>
+    <string id="30059">Laag</string>
+    <string id="30060">Midden</string>
+    <string id="30061">Hoog</string>
+    <string id="30062">Opname bezig. Kan het kanaal niet veranderen</string>
+    <string id="30063">Alle ontvangers zijn bezig</string>
+    <string id="30064">Fout bij veranderen van kanaal</string>
+    <string id="30065">Kanaal '%s' ongekend</string>
 </strings>

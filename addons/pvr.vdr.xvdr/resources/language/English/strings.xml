@@ -63,4 +63,8 @@
     <string id="30059">Low</string>
     <string id="30060">Medium</string>
     <string id="30061">High</string>
+    <string id="30062">Active recording. Unable to switch channel</string>
+    <string id="30063">All receivers busy</string>
+    <string id="30064">Error on switching channel</string>
+    <string id="30065">Channel '%s' unknown</string>
 </strings>

@@ -49,6 +49,7 @@ int           g_iPriority               = DEFAULT_PRIORITY;     ///< The Priorit
 bool          g_bAutoChannelGroups      = DEFAULT_AUTOGROUPS;
 int           g_iCompression            = DEFAULT_COMPRESSION;
 int           g_iAudioType              = DEFAULT_AUDIOTYPE;
+int           g_iUpdateChannels         = DEFAULT_UPDATECHANNELS;
 
 CHelper_libXBMC_addon *XBMC   = NULL;
 CHelper_libXBMC_gui   *GUI    = NULL;
@@ -167,6 +168,14 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     g_iAudioType = DEFAULT_TIMEOUT;
   }
 
+  /* Read setting "updatechannels" from settings.xml */
+  if (!XBMC->GetSetting("updatechannels", &g_iUpdateChannels))
+  {
+    /* If setting is unknown fallback to defaults */
+    XBMC->Log(LOG_ERROR, "Couldn't get 'updatechannels' setting, falling back to type %i as default", DEFAULT_UPDATECHANNELS);
+    g_iUpdateChannels = DEFAULT_UPDATECHANNELS;
+  }
+
   XVDRData = new cXVDRData;
   if (!XVDRData->Open(g_szHostname, DEFAULT_PORT))
   {
@@ -191,6 +200,8 @@ ADDON_STATUS ADDON_Create(void* hdl, void* props)
     m_CurStatus = ADDON_STATUS_LOST_CONNECTION;
     return m_CurStatus;
   }
+
+  XVDRData->SetUpdateChannels(g_iUpdateChannels);
 
   m_CurStatus = ADDON_STATUS_OK;
   m_bCreated = true;
@@ -290,6 +301,13 @@ ADDON_STATUS ADDON_SetSetting(const char *settingName, const void *settingValue)
   {
     XBMC->Log(LOG_INFO, "Changed Setting 'audiotype' from %i to %i", g_iAudioType, *(int*) settingValue);
     g_iAudioType = *(bool*) settingValue;
+  }
+  else if (str == "updatechannels")
+  {
+    XBMC->Log(LOG_INFO, "Changed Setting 'updatechannels' from %i to %i", g_iUpdateChannels, *(int*) settingValue);
+    g_iUpdateChannels = *(bool*) settingValue;
+    if (XVDRData != NULL)
+      XVDRData->SetUpdateChannels(g_iUpdateChannels);
   }
 
   return ADDON_STATUS_OK;

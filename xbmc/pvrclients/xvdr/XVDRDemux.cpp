@@ -166,16 +166,37 @@ bool cXVDRDemux::SwitchChannel(const PVR_CHANNEL &channelinfo)
   XBMC->Log(LOG_DEBUG, "changing to channel %d", channelinfo.iChannelNumber);
 
   cRequestPacket vrp;
-  if (!vrp.init(XVDR_CHANNELSTREAM_OPEN) || !vrp.add_U32(channelinfo.iUniqueId) || !ReadSuccess(&vrp))
+  uint32_t rc = 0;
+  if (vrp.init(XVDR_CHANNELSTREAM_OPEN) && vrp.add_U32(channelinfo.iUniqueId) && ReadSuccess(&vrp, rc))
   {
-    XBMC->Log(LOG_ERROR, "%s - failed to set channel", __FUNCTION__);
-    return false;
+    m_channelinfo = channelinfo;
+    m_Streams.iStreamCount  = 0;
+
+    return !ConnectionLost();
   }
 
-  m_channelinfo = channelinfo;
-  m_Streams.iStreamCount  = 0;
+  switch (rc)
+  {
+    // active recording
+    case XVDR_RET_RECRUNNING:
+   	  XBMC->Log(LOG_INFO, XBMC->GetLocalizedString(30062));
+      break;
+    // all receivers busy
+    case XVDR_RET_DATALOCKED:
+   	  XBMC->Log(LOG_INFO, XBMC->GetLocalizedString(30063));
+      break;
+    // error on switching channel
+    case XVDR_RET_ERROR:
+   	  XBMC->Log(LOG_INFO, XBMC->GetLocalizedString(30064));
+      break;
+    // invalid channel
+    case XVDR_RET_DATAINVALID:
+      XBMC->Log(LOG_ERROR, XBMC->GetLocalizedString(30065), channelinfo.strChannelName);
+      break;
+  }
 
-  return !ConnectionLost();
+  XBMC->Log(LOG_ERROR, "%s - failed to set channel", __FUNCTION__);
+  return false;
 }
 
 bool cXVDRDemux::GetSignalStatus(PVR_SIGNAL_STATUS &qualityinfo)
@@ -324,18 +345,6 @@ void cXVDRDemux::StreamChange(cResponsePacket *resp)
       stream->iCodecType  = AVMEDIA_TYPE_SUBTITLE;
       stream->iCodecId    = CODEC_ID_DVB_SUBTITLE;
       stream->iIdentifier = (composition_id & 0xffff) | ((ancillary_id & 0xffff) << 16);
-
-      memcpy(stream->strLanguage, language, 3);
-      m_Streams.iStreamCount++;
-
-      delete[] language;
-    }
-    else if(!strcmp(type, "TEXTSUB"))
-    {
-      const char *language = resp->extract_String();
-
-      stream->iCodecType = AVMEDIA_TYPE_SUBTITLE;
-      stream->iCodecId   = CODEC_ID_TEXT;
 
       memcpy(stream->strLanguage, language, 3);
       m_Streams.iStreamCount++;

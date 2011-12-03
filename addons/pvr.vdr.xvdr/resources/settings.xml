@@ -14,6 +14,6 @@
     <category label="30051">
         <setting id="autochannelgroups" type="bool" label="30046" default="false" />
         <setting id="audiotype" type="enum" label="30049" values="MP2|AC3|EAC3|AAC" default="0" />
-        <setting id="updatechannels" type="enum" label="30052" lvalues="30053|30054|30055|30056|30057|30058" default="0" />
+        <setting id="updatechannels" type="enum" label="30052" lvalues="30053|30054|30055|30056|30057|30058" default="3" />
     </category>
 </settings>
