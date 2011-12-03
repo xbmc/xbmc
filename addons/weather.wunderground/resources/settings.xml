@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+	<category label="30101">
+		<setting id="Location1" label="30111" type="action" action="RunScript($ID,Location1)" default=""/>
+		<setting id="Location2" label="30112" type="action" action="RunScript($ID,Location2)" enable="!eq( -1,)" default=""/>
+		<setting id="Location3" label="30113" type="action" action="RunScript($ID,Location3)" enable="!eq( -1,)" default=""/>
+		<setting id="Location1id" type="text" visible="false" default=""/>
+		<setting id="Location2id" type="text" visible="false" default=""/>
+		<setting id="Location3id" type="text" visible="false" default=""/>
+	</category>
+</settings>
