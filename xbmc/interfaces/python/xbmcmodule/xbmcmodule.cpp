@@ -710,7 +710,11 @@ namespace PYXBMC
 
     strPath = CSpecialProtocol::TranslatePath(strText);
 
+#ifdef TARGET_WINDOWS
+    return PyUnicode_DecodeUTF8(strPath.c_str(), strPath.size(), "replace");
+#else
     return Py_BuildValue((char*)"s", strPath.c_str());
+#endif
   }
 
   // getcleanmovietitle function
