@@ -229,6 +229,12 @@ namespace ForTheRecord
    */
   int RequestChannelGroupMembers(const std::string& channelGroupId, Json::Value& response);
 
+  /*
+   * \brief Get the logo for a channel
+   * \param channelGUID GUID of the channel
+   */
+  std::string GetChannelLogo(const std::string& channelGUID);
+
   time_t WCFDateToTimeT(const std::string& wcfdate, int& offset);
   std::string TimeTToWCFDate(const time_t thetime);
 

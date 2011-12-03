@@ -25,6 +25,7 @@
  */
 
 #include <stdio.h>
+#include <sys\stat.h>
 #include "libPlatform/os-dependent.h"
 #include "curl/curl.h"
 #include "client.h"
@@ -122,26 +123,35 @@ namespace ForTheRecord
       chunk = curl_slist_append(chunk, "Accept: application/json; charset=UTF-8");
 
       /* Specify the URL */
-      curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-      curl_easy_setopt(curl, CURLOPT_TIMEOUT, g_iConnectTimeout);
-      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+      if ((res = curl_easy_setopt(curl, CURLOPT_URL, url.c_str())) != CURLE_OK)
+        XBMC->Log(LOG_NOTICE, "curl_easy_setop CURLOPT_URL returned %d (%s).\n", res, curl_easy_strerror(res));
+      if ((res = curl_easy_setopt(curl, CURLOPT_TIMEOUT, g_iConnectTimeout)) != CURLE_OK)
+        XBMC->Log(LOG_NOTICE, "curl_easy_setop CURLOPT_TIMEOUT returned %d (%s).\n", res, curl_easy_strerror(res));
+      if ((res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk)) != CURLE_OK)
+        XBMC->Log(LOG_NOTICE, "curl_easy_setop CURLOPT_HTTPHEADER returned %d (%s).\n", res, curl_easy_strerror(res));
       /* Now specify the POST data */
-      curl_easy_setopt(curl, CURLOPT_POSTFIELDS, arguments.c_str());
+      if ((res = curl_easy_setopt(curl, CURLOPT_POSTFIELDS, arguments.c_str())) != CURLE_OK)
+        XBMC->Log(LOG_NOTICE, "curl_easy_setop CURLOPT_POSTFIELDS returned %d (%s).\n", res, curl_easy_strerror(res));
       /* Define our callback to get called when there's data to be written */ 
-      curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_data); 
+      if ((res = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, curl_write_data)) != CURLE_OK)
+        XBMC->Log(LOG_NOTICE, "curl_easy_setop CURLOPT_WRITEFUNCTION returned %d (%s).\n", res, curl_easy_strerror(res));
       /* Set a pointer to our struct to pass to the callback */ 
       json_response = "";
-      curl_easy_setopt(curl, CURLOPT_WRITEDATA, &json_response);
+      if ((res = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &json_response)) != CURLE_OK)
+        XBMC->Log(LOG_NOTICE, "curl_easy_setop CURLOPT_WRITEDATA returned %d (%s).\n", res, curl_easy_strerror(res));
 
       /* debugging only */
       if (l_logCurl)
       {
-        curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, my_curl_debug_callback);
-        curl_easy_setopt(curl, CURLOPT_VERBOSE, 1);
+        if ((res = curl_easy_setopt(curl, CURLOPT_DEBUGFUNCTION, my_curl_debug_callback)) != CURLE_OK)
+          XBMC->Log(LOG_NOTICE, "curl_easy_setop CURLOPT_DEBUGFUNCTION returned %d (%s).\n", res, curl_easy_strerror(res));
+        if ((res = curl_easy_setopt(curl, CURLOPT_VERBOSE, 1)) != CURLE_OK)
+          XBMC->Log(LOG_NOTICE, "curl_easy_setop CURLOPT_VERBOSE returned %d (%s).\n", res, curl_easy_strerror(res));
       }
 
       /* Perform the request */
-      res = curl_easy_perform(curl);
+      if ((res = curl_easy_perform(curl)) != CURLE_OK)
+        XBMC->Log(LOG_NOTICE, "curl_easy_perform returned %d (%s).\n", res, curl_easy_strerror(res));
 
       /* always cleanup */
       curl_easy_cleanup(curl);
@@ -228,6 +238,29 @@ namespace ForTheRecord
     }
 
     return retval;
+  }
+
+  /*
+   * \brief Get the logo for a channel
+   * \param channelGUID GUID of the channel
+   */
+  std::string GetChannelLogo(const std::string& channelGUID)
+  {
+    char tmppath[MAX_PATH], path[MAX_PATH];
+    GetTempPath(MAX_PATH, tmppath);
+    snprintf(path, MAX_PATH, "%s%s.png", tmppath, channelGUID.c_str());
+    struct tm* modificationtime;
+    struct stat buf;
+    if (stat(path, &buf) != -1)
+    {
+      modificationtime = localtime(&buf.st_mtime);
+    }
+    else
+    {
+      time_t prehistoric = 0;
+      modificationtime = localtime(&prehistoric);
+    }
+    return "";
   }
 
   /*

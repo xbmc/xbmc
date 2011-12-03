@@ -331,7 +331,7 @@ PVR_ERROR cPVRClientForTheRecord::GetChannels(PVR_HANDLE handle, bool bRadio)
         }
         tag.iUniqueId = tag.iChannelNumber;
         tag.strChannelName = channel.Name();
-        tag.strIconPath = "";
+        tag.strIconPath = ForTheRecord::GetChannelLogo(channel.Guid()).c_str();
         tag.iEncryptionSystem = 0; //How to fetch this from ForTheRecord??
         tag.bIsRadio = (channel.Type() == ForTheRecord::Radio ? true : false);
         tag.bIsHidden = false;
