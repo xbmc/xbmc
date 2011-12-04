@@ -1,3 +1,5 @@
+v0.0.1.121 (04-12-2011)
+- Channel logo retrieval added
 v0.0.1.120 (07-11-2011)
 - Windows, Linux and OSX version using TsReader
 - Reliable switching between channels with HD and SD content
