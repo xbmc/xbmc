@@ -1525,44 +1525,48 @@ void CVideoDatabase::GetMusicVideosByArtist(const CStdString& strArtist, CFileIt
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie /* = -1 */)
+bool CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie /* = -1 */)
 {
   try
   {
     // TODO: Optimize this - no need for all the queries!
     if (idMovie < 0)
       idMovie = GetMovieId(strFilenameAndPath);
-    if (idMovie < 0) return ;
+    if (idMovie < 0) return false;
 
     CStdString sql = PrepareSQL("select * from movieview where idMovie=%i", idMovie);
     if (!m_pDS->query(sql.c_str()))
-      return;
+      return false;
     details = GetDetailsForMovie(m_pDS, true);
+    return !details.IsEmpty();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
+  return false;
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, int idTvShow /* = -1 */)
+bool CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, int idTvShow /* = -1 */)
 {
   try
   {
     if (idTvShow < 0)
       idTvShow = GetTvShowId(strPath);
-    if (idTvShow < 0) return ;
+    if (idTvShow < 0) return false;
 
     CStdString sql = PrepareSQL("SELECT * FROM tvshowview WHERE idShow=%i", idTvShow);
     if (!m_pDS->query(sql.c_str()))
-      return;
+      return false;
     details = GetDetailsForTvShow(m_pDS, true);
+    return !details.IsEmpty();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
   }
+  return false;
 }
 
 bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idEpisode /* = -1 */)
@@ -1578,7 +1582,7 @@ bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideo
     if (!m_pDS->query(sql.c_str()))
       return false;
     details = GetDetailsForEpisode(m_pDS, true);
-    return true;
+    return !details.IsEmpty();
   }
   catch (...)
   {
@@ -1587,46 +1591,50 @@ bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideo
   return false;
 }
 
-void CVideoDatabase::GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMVideo /* = -1 */)
+bool CVideoDatabase::GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMVideo /* = -1 */)
 {
   try
   {
     // TODO: Optimize this - no need for all the queries!
     if (idMVideo < 0)
       idMVideo = GetMusicVideoId(strFilenameAndPath);
-    if (idMVideo < 0) return ;
+    if (idMVideo < 0) return false;
 
     CStdString sql = PrepareSQL("select * from musicvideoview where idMVideo=%i", idMVideo);
     if (!m_pDS->query(sql.c_str()))
-      return;
+      return false;
     details = GetDetailsForMusicVideo(m_pDS);
+    return !details.IsEmpty();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
+  return false;
 }
 
-void CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details)
+bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details)
 {
   try
   {
     if (idSet < 0)
-      return;
+      return false;
 
     CStdString where = PrepareSQL("WHERE sets.idSet=%d", idSet);
     CFileItemList items;
     if (!GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES, where) ||
         items.Size() != 1 ||
         !items[0]->HasVideoInfoTag())
-      return;
+      return false;
 
     details = *(items[0]->GetVideoInfoTag());
+    return !details.IsEmpty();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idSet);
   }
+  return false;
 }
 
 void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, vector<int>& vecDirectors, vector<int>& vecGenres, vector<int>& vecStudios)
