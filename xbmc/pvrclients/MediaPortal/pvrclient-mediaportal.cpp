@@ -673,7 +673,7 @@ PVR_ERROR cPVRClientMediaPortal::GetChannels(PVR_HANDLE handle, bool bRadio)
       {
         //Use OpenLiveStream to read from the timeshift .ts file or an rtsp stream
         tag.strStreamURL = "";
-        tag.strInputFormat = "mpegts";
+        tag.strInputFormat = (!bRadio) ? "video/x-mpegts" : "";
       }
 #endif
       if( (!g_bOnlyFTA) || (tag.iEncryptionSystem==0))
