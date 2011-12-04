@@ -332,7 +332,7 @@ namespace ForTheRecord
 #if defined(TARGET_WINDOWS)
     char tmppath[MAX_PATH];
     GetTempPath(MAX_PATH, tmppath);
-#elif defined(TARGET_LINUX)
+#elif defined(TARGET_LINUX) || defined(TARGET_OSX)
     std::string tmppath = "/tmp/";
 #else
 #error implement for your OS!
@@ -363,6 +363,11 @@ namespace ForTheRecord
 
     long http_response;
     int retval = ForTheRecordRPCToFile(command, "", path, http_response);
+    if (retval != 0)
+    {
+      XBMC->Log(LOG_ERROR, "couldn't retrieve the temporary channel logo file %s.\n", path.c_str());
+      return "";
+    }
 
     if (http_response == 200)
     {
