@@ -165,7 +165,6 @@ void XBPyThread::Process()
 #ifdef TARGET_WINDOWS
   {
     CStdString strTmp(_P(addons[i]->LibPath()));
-    CStdString strDest;
     g_charsetConverter.utf8ToSystem(strTmp);
     path += PY_PATH_SEP + strTmp;
   }
