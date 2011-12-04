@@ -97,6 +97,15 @@ namespace ForTheRecord
   int ForTheRecordJSONRPC(const std::string& command, const std::string& arguments, Json::Value& json_response);
 
   /**
+   * \brief Send a REST command to 4TR, write the response to a file and return the filename
+   * \param command       The command string url (starting from "ForTheRecord/")
+   * \param newfilename   Reference to a std::string used to store the output file name
+   * \param htt_presponse Reference to a long used to store the HTTP response code
+   * \return 0 on ok, -1 on a failure
+   */
+  int ForTheRecordRPCToFile(const std::string& command, const std::string& arguments, std::string& newfilename, long& http_response);
+
+  /**
    * \brief Ping core service.
    * \param requestedApiVersion  The API version the client needs, pass in Constants.ForTheRecordRestApiVersion.
    * \return  0 if client and server are compatible, -1 if the client is too old, +1 if the client is newer than the server and -2 if the connection failed (server down?)
