@@ -25,7 +25,7 @@
  */
 
 #include <stdio.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
 #include "libPlatform/os-dependent.h"
 #include "curl/curl.h"
 #include "client.h"
@@ -329,8 +329,14 @@ namespace ForTheRecord
    */
   std::string GetChannelLogo(const std::string& channelGUID)
   {
+#if defined(TARGET_WINDOWS)
     char tmppath[MAX_PATH];
     GetTempPath(MAX_PATH, tmppath);
+#elif defined(TARGET_LINUX)
+    std::string tmppath = "/tmp/";
+#else
+#error implement for your OS!
+#endif
     std::string finalpath = tmppath;
     finalpath += channelGUID;
     std::string path = finalpath;
