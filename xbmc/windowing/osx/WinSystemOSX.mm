@@ -527,7 +527,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       if(windowedFullScreenwindow != NULL)
       {
         [windowedFullScreenwindow close];
-        [windowedFullScreenwindow release];
+        if ([windowedFullScreenwindow isReleasedWhenClosed] == NO)
+          [windowedFullScreenwindow release];
         windowedFullScreenwindow = NULL;
       }
       
