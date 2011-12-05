@@ -32,6 +32,7 @@
 #include "utils/log.h"
 #include "XBMCHelper.h"
 #include "utils/SystemInfo.h"
+#include "CocoaInterface.h"
 #undef BOOL
 
 #include <SDL/SDL_events.h>
@@ -190,25 +191,105 @@ void UnblankDisplays(void)
   }
 }
 
-CGDisplayFadeReservationToken DisplayFadeToBlack(void)
+CGDisplayFadeReservationToken DisplayFadeToBlack(bool fade)
 {
   // Fade to black to hide resolution-switching flicker and garbage.
   CGDisplayFadeReservationToken fade_token = kCGDisplayFadeReservationInvalidToken;
-  if (CGAcquireDisplayFadeReservation (5, &fade_token) == kCGErrorSuccess )
+  if (CGAcquireDisplayFadeReservation (5, &fade_token) == kCGErrorSuccess && fade)
     CGDisplayFade(fade_token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0.0, 0.0, 0.0, TRUE);
 
   return(fade_token);
 }
 
-void DisplayFadeFromBlack(CGDisplayFadeReservationToken fade_token)
+void DisplayFadeFromBlack(CGDisplayFadeReservationToken fade_token, bool fade)
 {
   if (fade_token != kCGDisplayFadeReservationInvalidToken) 
   {
-    CGDisplayFade(fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
+    if (fade)
+      CGDisplayFade(fade_token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, FALSE);
     CGReleaseDisplayFadeReservation(fade_token);
   }
 }
 
+NSString* screenNameForDisplay(CGDirectDisplayID displayID)
+{
+    NSString *screenName = nil;
+    
+    NSDictionary *deviceInfo = (NSDictionary *)IODisplayCreateInfoDictionary(CGDisplayIOServicePort(displayID), kIODisplayOnlyPreferredName);
+    NSDictionary *localizedNames = [deviceInfo objectForKey:[NSString stringWithUTF8String:kDisplayProductName]];
+    
+    if ([localizedNames count] > 0) {
+        screenName = [[localizedNames objectForKey:[[localizedNames allKeys] objectAtIndex:0]] retain];
+    }
+    
+    [deviceInfo release];
+    return [screenName autorelease];
+}
+
+void ShowHideNSWindow(NSWindow *wind, bool show)
+{
+  if (show)
+    [wind orderFront:nil];
+  else
+    [wind orderOut:nil];
+}
+
+static NSWindow *curtainWindow;
+void fadeInDisplay(NSScreen *theScreen, double fadeTime)
+{
+  int     fadeSteps     = 100;
+  double  fadeInterval  = (fadeTime / (double) fadeSteps);
+
+  if (curtainWindow != nil)
+  {
+    for (int step = 0; step < fadeSteps; step++)
+    {
+      double fade = 1.0 - (step * fadeInterval);
+      [curtainWindow setAlphaValue:fade];
+
+      NSDate *nextDate = [NSDate dateWithTimeIntervalSinceNow:fadeInterval];
+      [[NSRunLoop currentRunLoop] runUntilDate:nextDate];
+    }
+  }
+  [curtainWindow close];
+  curtainWindow = nil;
+
+  [NSCursor unhide];
+}
+
+void fadeOutDisplay(NSScreen *theScreen, double fadeTime)
+{
+  int     fadeSteps     = 100;
+  double  fadeInterval  = (fadeTime / (double) fadeSteps);
+
+  [NSCursor hide];
+
+  curtainWindow = [[NSWindow alloc]
+    initWithContentRect:[theScreen frame]
+    styleMask:NSBorderlessWindowMask
+    backing:NSBackingStoreBuffered
+    defer:YES
+    screen:theScreen];
+
+  [curtainWindow setAlphaValue:0.0];
+  [curtainWindow setBackgroundColor:[NSColor blackColor]];
+  [curtainWindow setLevel:NSScreenSaverWindowLevel];
+
+  [curtainWindow makeKeyAndOrderFront:nil];
+  [curtainWindow setFrame:[curtainWindow
+    frameRectForContentRect:[theScreen frame]]
+    display:YES
+    animate:NO];
+
+  for (int step = 0; step < fadeSteps; step++)
+  {
+    double fade = step * fadeInterval;
+    [curtainWindow setAlphaValue:fade];
+
+    NSDate *nextDate = [NSDate dateWithTimeIntervalSinceNow:fadeInterval];
+    [[NSRunLoop currentRunLoop] runUntilDate:nextDate];
+  }
+}
 
 //---------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------
@@ -356,6 +437,8 @@ bool CWinSystemOSX::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
   return true;
 }
 
+static bool needtoshowme = true;
+
 bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool blankOtherDisplays)
 {  
   static NSWindow* windowedFullScreenwindow = NULL;  
@@ -371,8 +454,11 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   // Recurse to reset fullscreen mode and then continue.
   if (was_fullscreen && fullScreen)
   {
+    needtoshowme = false;
+    ShowHideNSWindow([last_view window], needtoshowme);
     RESOLUTION_INFO& window = g_settings.m_ResInfo[RES_WINDOW];
     CWinSystemOSX::SetFullScreen(false, window, blankOtherDisplays);
+    needtoshowme = true;
   }
   
   m_nWidth      = res.iWidth;
@@ -397,7 +483,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     NSOpenGLContext* newContext = NULL;
   
     // Fade to black to hide resolution-switching flicker and garbage.
-    CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack();
+    CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack(needtoshowme);
     
     //switch videomode
     SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
@@ -504,13 +590,13 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // activate context
     [newContext makeCurrentContext];
     m_lastOwnedContext = newContext;
-    DisplayFadeFromBlack(fade_token);
+    DisplayFadeFromBlack(fade_token, needtoshowme);
   }
   else
   {
     // Windowed Mode
   	// Fade to black to hide resolution-switching flicker and garbage.
-    CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack();
+    CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack(needtoshowme);
     
     // exit fullscreen
     [cur_context clearDrawable];
@@ -572,9 +658,10 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     [newContext makeCurrentContext];
     m_lastOwnedContext = newContext;
     
-    DisplayFadeFromBlack(fade_token);
+    DisplayFadeFromBlack(fade_token, needtoshowme);
   }
 
+  ShowHideNSWindow([last_view window], needtoshowme);
   // need to make sure SDL tracks any window size changes
   ResizeWindow(m_nWidth, m_nHeight, -1, -1);
 
@@ -793,29 +880,15 @@ bool CWinSystemOSX::SwitchToVideoMode(int width, int height, double refreshrate,
   CGDisplayCapture(display_id);
   CGDisplayConfigRef cfg;
   CGBeginDisplayConfiguration(&cfg);
-  CGConfigureDisplayFadeEffect(cfg, 0.3f, 0.5f, 0, 0, 0);
+  // we don't need to do this, we are already faded.
+  //CGConfigureDisplayFadeEffect(cfg, 0.3f, 0.5f, 0, 0, 0);
   CGConfigureDisplayMode(cfg, display_id, dispMode);
   CGError err = CGCompleteDisplayConfiguration(cfg, kCGConfigureForAppOnly);
   CGDisplayRelease(display_id);
   
+  Cocoa_CVDisplayLinkUpdate();
+
   return (err == kCGErrorSuccess);
-}
-
-//BOOL interlaced = (CGDisplayModeGetIOFlags((CGDisplayModeRef)displayMode) & kDisplayModeInterlacedFlag);
-
-NSString* screenNameForDisplay(CGDirectDisplayID displayID)
-{
-    NSString *screenName = nil;
-    
-    NSDictionary *deviceInfo = (NSDictionary *)IODisplayCreateInfoDictionary(CGDisplayIOServicePort(displayID), kIODisplayOnlyPreferredName);
-    NSDictionary *localizedNames = [deviceInfo objectForKey:[NSString stringWithUTF8String:kDisplayProductName]];
-    
-    if ([localizedNames count] > 0) {
-        screenName = [[localizedNames objectForKey:[[localizedNames allKeys] objectAtIndex:0]] retain];
-    }
-    
-    [deviceInfo release];
-    return [screenName autorelease];
 }
 
 void CWinSystemOSX::FillInVideoModes()
