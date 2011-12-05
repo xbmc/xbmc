@@ -51,7 +51,7 @@ public:
   virtual const char* GetName()  { return "PassThroughAudioFilter"; }
 
 private:
-  void SetupParser(BYTE* pData, int iSize);
+  bool SetupParser(BYTE* pData, int iSize);
 
   AudioFilter::MultiHeaderParser *m_Mhp;
   AudioFilter::SpdifWrapper *m_Spdif;
