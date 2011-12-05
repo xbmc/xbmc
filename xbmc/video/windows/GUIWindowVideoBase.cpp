@@ -372,21 +372,13 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
 
     if (info->Content() == CONTENT_MOVIES)
     {
-      if (m_database.HasMovieInfo(item->GetPath()))
-      {
-        bHasInfo = true;
-        m_database.GetMovieInfo(item->GetPath(), movieDetails);
-      }
+      bHasInfo = m_database.GetMovieInfo(item->GetPath(), movieDetails);
     }
     if (info->Content() == CONTENT_TVSHOWS)
     {
       if (item->m_bIsFolder)
       {
-        if (m_database.HasTvShowInfo(item->GetPath()))
-        {
-          bHasInfo = true;
-          m_database.GetTvShowInfo(item->GetPath(), movieDetails);
-        }
+        bHasInfo = m_database.GetTvShowInfo(item->GetPath(), movieDetails);
       }
       else
       {
@@ -421,11 +413,7 @@ bool CGUIWindowVideoBase::ShowIMDB(CFileItem *item, const ScraperPtr &info2)
     }
     if (info->Content() == CONTENT_MUSICVIDEOS)
     {
-      if (m_database.HasMusicVideoInfo(item->GetPath()))
-      {
-        bHasInfo = true;
-        m_database.GetMusicVideoInfo(item->GetPath(), movieDetails);
-      }
+      bHasInfo = m_database.GetMusicVideoInfo(item->GetPath(), movieDetails);
     }
     m_database.Close();
   }

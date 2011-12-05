@@ -182,7 +182,8 @@ void UnblankDisplays(void)
     {
       // Get rid of the blanking windows we created.
       [blankingWindows[i] close];
-      [blankingWindows[i] release];
+      if ([blankingWindows[i] isReleasedWhenClosed] == NO)
+        [blankingWindows[i] release];
       blankingWindows[i] = 0;
     }
   }
@@ -243,6 +244,7 @@ bool CWinSystemOSX::DestroyWindowSystem()
   delete m_osx_events;
   m_osx_events = NULL;
 
+  UnblankDisplays();
   if (m_glContext)
   {
     NSOpenGLContext* oldContext = (NSOpenGLContext*)m_glContext;
@@ -383,7 +385,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   if(windowedFullScreenwindow != NULL)
   {
     [windowedFullScreenwindow close];
-    [windowedFullScreenwindow release];
+    if ([windowedFullScreenwindow isReleasedWhenClosed] == NO)
+      [windowedFullScreenwindow release];
     windowedFullScreenwindow = NULL;
   }
   
@@ -524,7 +527,8 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
       if(windowedFullScreenwindow != NULL)
       {
         [windowedFullScreenwindow close];
-        [windowedFullScreenwindow release];
+        if ([windowedFullScreenwindow isReleasedWhenClosed] == NO)
+          [windowedFullScreenwindow release];
         windowedFullScreenwindow = NULL;
       }
       

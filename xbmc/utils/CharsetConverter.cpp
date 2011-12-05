@@ -599,6 +599,13 @@ void CCharsetConverter::utf32ToStringCharset(const unsigned long* strSource, CSt
   }
 }
 
+void CCharsetConverter::utf8ToSystem(CStdStringA& strSourceDest)
+{
+  CStdString strDest;
+  g_charsetConverter.utf8To("", strSourceDest, strDest);
+  strSourceDest = strDest;
+}
+
 // Taken from RFC2640
 bool CCharsetConverter::isValidUtf8(const char *buf, unsigned int len)
 {
