@@ -35,6 +35,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	rm -rf $(SOURCE)
 	$(ARCHIVE_TOOL) $(ARCHIVE_TOOL_FLAGS) $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
+	cd $(SOURCE); patch -p0 < ../001_fix_hanewin.patch
 	cd $(SOURCE);./bootstrap;$(CONFIGURE)
 
 $(SO_NAME): $(SOURCE)

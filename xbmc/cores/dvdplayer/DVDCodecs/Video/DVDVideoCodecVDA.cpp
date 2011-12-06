@@ -815,6 +815,8 @@ bool CDVDVideoCodecVDA::Open(CDVDStreamInfo &hints, CDVDCodecOptions &options)
     OSType cvPixelFormatType = kCVPixelFormatType_422YpCbCr8;
     CFNumberRef pixelFormat  = CFNumberCreate(kCFAllocatorDefault, kCFNumberSInt32Type, &cvPixelFormatType);
     CFDictionarySetValue(destinationImageBufferAttributes, kCVPixelBufferPixelFormatTypeKey, pixelFormat);
+    // release the retained object refs, destinationImageBufferAttributes owns it now
+    CFRelease(pixelFormat);
 
     // create the VDADecoder object
     OSStatus status;
