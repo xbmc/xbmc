@@ -891,10 +891,7 @@ int CBuiltins::Execute(const CStdString& execString)
     else
     { // check if shutdown is specified in particular, and get the time for it
       CStdString strHeading;
-      CStdString command;
-      vector<CStdString> commandParams;
-      CUtil::SplitExecFunction(params[1], command, commandParams);
-      if (command.CompareNoCase("shutdown") == 0)
+      if (parameter.CompareNoCase("shutdowntimer") == 0)
         strHeading = g_localizeStrings.Get(20145);
       else
         strHeading = g_localizeStrings.Get(13209);
