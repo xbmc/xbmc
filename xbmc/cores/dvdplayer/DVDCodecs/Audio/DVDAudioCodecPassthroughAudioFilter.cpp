@@ -37,9 +37,7 @@ CDVDAudioCodecPassthroughAudioFilter::CDVDAudioCodecPassthroughAudioFilter(void)
   , m_Spdif(0)
   , m_OutputBuffer(0)
   , m_OutputSize(0)
-  , m_iSourceSampleRate(0)
   , m_CodecId(0)
-  , m_Channels(2)
 {
   m_Mhp->addParser(new AudioFilter::DtsHeaderParser());
   m_Mhp->addParser(new AudioFilter::Ac3HeaderParser());
@@ -101,17 +99,16 @@ void CDVDAudioCodecPassthroughAudioFilter::Dispose()
  */
 int CDVDAudioCodecPassthroughAudioFilter::Decode(BYTE *pData, int iSize)
 {
-  if ( (m_Spdif && m_Spdif->parseFrame(pData, iSize) )
-                || SetupParser(pData, iSize) )
+  if ( m_Spdif )
+    m_Spdif->parseFrame(pData, iSize);
+  else if ( ! SetupParser(pData, iSize) )
   {
-    m_OutputBuffer = m_Spdif->getRawData();
-    m_OutputSize = m_Spdif->getRawSize();
-  }
-  else
-  {
-    m_OutputSize = 0;
+    CLog::Log(LOGWARNING, "CDVDAudioCodecPassthroughAudioFilter::SetupParser:"
+				 " unable to parse initial frame");
   }
 
+  m_OutputBuffer = m_Spdif->getRawData();
+  m_OutputSize = m_Spdif->getRawSize();
   return iSize;
 }
 
@@ -129,20 +126,7 @@ bool CDVDAudioCodecPassthroughAudioFilter::SetupParser(BYTE *pData, int iSize)
   m_Spdif->addChannelMap(2, 48000);
   m_Spdif->addChannelMap(8, 48000);
 
-  if ( m_Spdif->parseFrame(pData, iSize) )
-  {
-    m_iSourceSampleRate = m_Spdif->getSpeakers().getSampleRate();
-    m_Channels = m_Spdif->getSpeakers().getChannelCount();
-    return true;
-  }
-
-  delete m_Spdif;
-  m_Spdif = 0;
-  m_iSourceSampleRate = 48000;
-  m_Channels = 2;
-  CLog::Log(LOGWARNING, "CDVDAudioCodecPassthroughAudioFilter::SetupParser:"
-				 " unable to parse initial frame default to 2x48000");
-  return false;
+  return m_Spdif->parseFrame(pData, iSize);
 }
 
 /* if there is a frame to read
@@ -170,12 +154,12 @@ void CDVDAudioCodecPassthroughAudioFilter::Reset()
 
 int CDVDAudioCodecPassthroughAudioFilter::GetChannels()
 {
-  return m_Channels;
+  return (m_Spdif) ? m_Spdif->getSpeakers().getChannelCount() : 2;
 }
 
 int CDVDAudioCodecPassthroughAudioFilter::GetSampleRate()
 {
-  return m_iSourceSampleRate;
+  return (m_Spdif) ? m_Spdif->getSpeakers().getSampleRate() : 48000;
 }
 
 int CDVDAudioCodecPassthroughAudioFilter::GetBitsPerSample()

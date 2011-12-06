@@ -58,8 +58,6 @@ private:
 
   BYTE *m_OutputBuffer;
   int m_OutputSize;
-  int m_iSourceSampleRate;
   int m_CodecId;
-  int m_Channels;
 };
 
