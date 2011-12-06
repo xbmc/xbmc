@@ -34,6 +34,7 @@
 #include "video/VideoDatabase.h"
 #include "filesystem/Directory.h"
 #include "filesystem/File.h"
+#include "TextureCache.h"
 
 using namespace MUSIC_INFO;
 using namespace JSONRPC;
@@ -195,6 +196,12 @@ void CFileItemHandler::HandleFileItem(const char *ID, bool allowFile, const char
 
         if (CFile::Exists(cachedThumb))
           object["thumbnail"] = cachedThumb;
+      }
+      else if (item->HasPictureInfoTag())
+      {
+        CStdString thumb = CTextureCache::Get().CheckAndCacheImage(CTextureCache::GetWrappedThumbURL(item->GetPath()));
+        if (!thumb.empty())
+          object["thumbnail"] = thumb;
       }
 
       if (!object.isMember("thumbnail"))
