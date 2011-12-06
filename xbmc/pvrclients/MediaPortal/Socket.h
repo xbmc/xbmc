@@ -42,7 +42,7 @@ namespace MPTV //Prevent name clash with Live555 Socket
   #ifndef port_t
     typedef unsigned short port_t;
   #endif
-#elif defined TARGET_LINUX
+#elif defined TARGET_LINUX || defined TARGET_DARWIN
   #include <sys/types.h>     /* for socket,connect */
   #include <sys/socket.h>    /* for socket,connect */
   #include <sys/un.h>        /* for Unix socket */
@@ -79,7 +79,7 @@ enum SocketFamily
 
 enum SocketDomain
 {
-  #if defined TARGET_LINUX
+  #if defined TARGET_LINUX || defined TARGET_DARWIN
     pf_unix  = PF_UNIX,
     pf_local = PF_LOCAL,
   #endif

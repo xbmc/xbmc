@@ -68,6 +68,7 @@ typedef struct _SECURITY_ATTRIBUTES {
 
 #define PATH_SEPARATOR_CHAR '/'
 
+#ifdef TARGET_LINUX
 // Retrieve the number of milliseconds that have elapsed since the system was started
 #include <time.h>
 inline unsigned long GetTickCount(void)
@@ -77,7 +78,16 @@ inline unsigned long GetTickCount(void)
   {
     return 0;
   }
-  return (unsigned long)( (ts.tv_sec * 1000) + (ts.tv_nsec / 1000) );
+  return (unsigned long)( (ts.tv_sec * 1000) + (ts.tv_nsec / 1000000) );
 };
+#else
+#include <time.h>
+inline unsigned long GetTickCount(void)
+{
+  struct timeval tv;
+  gettimeofday(&tv, NULL);
+  return (unsigned long)( (ts.tv_sec * 1000) + (ts.tv_usec / 1000) );
+};
+#endif /* TARGET_LINUX || TARGET_DARWIN */
 
 #endif
