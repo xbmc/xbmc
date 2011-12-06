@@ -73,9 +73,13 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
 
       if (field == "fanart" && !item->HasPictureInfoTag())
       {
-        CStdString cachedFanArt = item->GetCachedFanart();
-        if (!cachedFanArt.IsEmpty())
-          result["fanart"] = cachedFanArt.c_str();
+        CStdString fanart;
+        if (item->HasProperty("fanart_image"))
+          fanart = item->GetProperty("fanart_image").asString();
+        if (fanart.empty())
+          fanart = item->GetCachedFanart();
+        if (!fanart.empty())
+          result["fanart"] = fanart.c_str();
 
         continue;
       }
