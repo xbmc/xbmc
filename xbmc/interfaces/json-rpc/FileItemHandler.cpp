@@ -71,13 +71,11 @@ void CFileItemHandler::FillDetails(ISerializable* info, CFileItemPtr item, const
         continue;
       }
 
-      if (field == "fanart")
+      if (field == "fanart" && !item->HasPictureInfoTag())
       {
         CStdString cachedFanArt = item->GetCachedFanart();
         if (!cachedFanArt.IsEmpty())
-        {
           result["fanart"] = cachedFanArt.c_str();
-        }
 
         continue;
       }
