@@ -693,6 +693,27 @@ namespace ForTheRecord
     return stream;
   }
 
+  int SignalQuality(Json::Value& response)
+  {
+    if(!g_current_livestream.empty())
+    {
+      Json::StyledWriter writer;
+      std::string arguments = writer.write(g_current_livestream);
+
+      int retval = ForTheRecordJSONRPC("ForTheRecord/Control/GetLiveStreamTuningDetails", arguments, response);
+
+      //if (retval != E_FAILED)
+      //{
+      //  printValueTree(response);
+      //}
+
+      return retval;
+    }
+    else
+    {
+      return E_FAILED;
+    }
+  }
 
   bool KeepLiveStreamAlive()
   {

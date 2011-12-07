@@ -130,6 +130,11 @@ namespace ForTheRecord
   std::string GetLiveStreamURL(void);
 
   /**
+   * \brief Returns the Signal information of the current live stream
+   */
+  int SignalQuality(Json::Value& response);
+
+  /**
    * \brief Tell the recorder/tuner we are still showing this stream and to keep it alive. Call this every 30 seconds or so.
    */
   bool KeepLiveStreamAlive();
