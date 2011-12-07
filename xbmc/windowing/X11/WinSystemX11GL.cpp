@@ -149,8 +149,10 @@ void CWinSystemX11GL::SetVSyncImpl(bool enable)
       CLog::Log(LOGWARNING, "%s - glXSwapIntervalMESA failed", __FUNCTION__);
   }
 
-  if(m_glXGetSyncValuesOML && m_glXSwapBuffersMscOML && !m_iVSyncMode)
+  if(m_glXGetSyncValuesOML && m_glXSwapBuffersMscOML && m_glXSwapIntervalMESA && !m_iVSyncMode)
   {
+    m_glXSwapIntervalMESA(1);
+
     int64_t ust, msc, sbc;
     if(m_glXGetSyncValuesOML(m_dpy, m_glWindow, &ust, &msc, &sbc))
       m_iVSyncMode = 5;
