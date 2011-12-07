@@ -450,6 +450,9 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   bool was_fullscreen = m_bFullScreen;
   NSOpenGLContext* cur_context;
   
+  // Fade to black to hide resolution-switching flicker and garbage.
+  CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack(needtoshowme);
+  
   // If we're already fullscreen then we must be moving to a different display.
   // Recurse to reset fullscreen mode and then continue.
   if (was_fullscreen && fullScreen)
@@ -467,8 +470,11 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
 
   cur_context = [NSOpenGLContext currentContext];
   if (!cur_context)
+  {
+    DisplayFadeFromBlack(fade_token, needtoshowme);  
     return false;
-  
+  }
+
   if(windowedFullScreenwindow != NULL)
   {
     [windowedFullScreenwindow close];
@@ -481,10 +487,7 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   {
     // FullScreen Mode
     NSOpenGLContext* newContext = NULL;
-  
-    // Fade to black to hide resolution-switching flicker and garbage.
-    CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack(needtoshowme);
-    
+
     //switch videomode
     SwitchToVideoMode(res.iWidth, res.iHeight, res.fRefreshRate, res.iScreen);
     
@@ -590,14 +593,10 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // activate context
     [newContext makeCurrentContext];
     m_lastOwnedContext = newContext;
-    DisplayFadeFromBlack(fade_token, needtoshowme);
   }
   else
   {
     // Windowed Mode
-  	// Fade to black to hide resolution-switching flicker and garbage.
-    CGDisplayFadeReservationToken fade_token = DisplayFadeToBlack(needtoshowme);
-    
     // exit fullscreen
     [cur_context clearDrawable];
     
@@ -657,9 +656,9 @@ bool CWinSystemOSX::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
     // Activate context.
     [newContext makeCurrentContext];
     m_lastOwnedContext = newContext;
-    
-    DisplayFadeFromBlack(fade_token, needtoshowme);
   }
+
+  DisplayFadeFromBlack(fade_token, needtoshowme);  
 
   ShowHideNSWindow([last_view window], needtoshowme);
   // need to make sure SDL tracks any window size changes
