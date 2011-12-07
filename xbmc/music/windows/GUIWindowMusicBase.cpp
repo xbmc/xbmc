@@ -393,19 +393,19 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
     if (!bShowInfo)
       return;
 
-    CGUIDialogMusicInfo *pDlgAlbumInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
-    if (pDlgAlbumInfo)
+    CGUIDialogMusicInfo *pDlgArtistInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
+    if (pDlgArtistInfo)
     {
-      pDlgAlbumInfo->SetArtist(artistInfo, path);
+      pDlgArtistInfo->SetArtist(artistInfo, path);
 
       if (bShowInfo)
-        pDlgAlbumInfo->DoModal();
+        pDlgArtistInfo->DoModal();
       else
-        pDlgAlbumInfo->RefreshThumb();  // downloads the thumb if we don't already have one
+        pDlgArtistInfo->RefreshThumb();  // downloads the thumb if we don't already have one
 
-      if (!pDlgAlbumInfo->NeedRefresh())
+      if (!pDlgArtistInfo->NeedRefresh())
       {
-        if (pDlgAlbumInfo->HasUpdatedThumb())
+        if (pDlgArtistInfo->HasUpdatedThumb())
           Update(m_vecItems->GetPath());
 
         return;
@@ -439,14 +439,14 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
         m_dlgProgress->Close();
 
       // ok, show album info
-      CGUIDialogMusicInfo *pDlgAlbumInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
-      if (pDlgAlbumInfo)
+      CGUIDialogMusicInfo *pDlgArtistInfo = (CGUIDialogMusicInfo*)g_windowManager.GetWindow(WINDOW_DIALOG_MUSIC_INFO);
+      if (pDlgArtistInfo)
       {
-        pDlgAlbumInfo->SetArtist(info.GetArtist(), path);
+        pDlgArtistInfo->SetArtist(info.GetArtist(), path);
         if (bShowInfo)
-          pDlgAlbumInfo->DoModal();
+          pDlgArtistInfo->DoModal();
         else
-          pDlgAlbumInfo->RefreshThumb();  // downloads the thumb if we don't already have one
+          pDlgArtistInfo->RefreshThumb();  // downloads the thumb if we don't already have one
 
         CArtist artistInfo = info.GetArtist();
         artistInfo.idArtist = artist.idArtist;
@@ -456,7 +456,7 @@ void CGUIWindowMusicBase::ShowArtistInfo(const CArtist& artist, const CStdString
 */
         // just update for now
         Update(m_vecItems->GetPath());
-        if (pDlgAlbumInfo->NeedRefresh())
+        if (pDlgArtistInfo->NeedRefresh())
         {
           m_musicdatabase.DeleteArtistInfo(artistInfo.idArtist);
           ShowArtistInfo(artist, path, true, bShowInfo);
