@@ -37,9 +37,10 @@
 
 using namespace PVR;
 
-CPVRChannelGroups::CPVRChannelGroups(bool bRadio)
+CPVRChannelGroups::CPVRChannelGroups(bool bRadio) :
+    m_bRadio(bRadio),
+    m_iSelectedGroup(0)
 {
-  m_bRadio = bRadio;
 }
 
 CPVRChannelGroups::~CPVRChannelGroups(void)
@@ -272,6 +273,8 @@ bool CPVRChannelGroups::Load(void)
   /* load the other groups from the database */
   LoadUserDefinedChannelGroups();
 
+  SetSelectedGroup(internalChannels);
+
   CLog::Log(LOGDEBUG, "PVRChannelGroups - %s - %d %s channel groups loaded",
       __FUNCTION__, (int) size(), m_bRadio ? "radio" : "TV");
 
@@ -370,6 +373,24 @@ CPVRChannelGroup *CPVRChannelGroups::GetNextGroup(const CPVRChannelGroup &group)
   return returnGroup;
 }
 
+CPVRChannelGroup *CPVRChannelGroups::GetSelectedGroup(void) const
+{
+  CPVRChannelGroup *returnGroup = NULL;
+  CSingleLock lock(m_critSection);
+  if (m_iSelectedGroup > -1)
+    returnGroup = at(m_iSelectedGroup);
+
+  return returnGroup;
+}
+
+void CPVRChannelGroups::SetSelectedGroup(CPVRChannelGroup *group)
+{
+  CSingleLock lock(m_critSection);
+
+  m_iSelectedGroup = GetIndexForGroupID(group->GroupID());
+  group->Renumber();
+}
+
 bool CPVRChannelGroups::AddGroup(const CStdString &strName)
 {
   bool bReturn = false;
@@ -421,7 +442,8 @@ bool CPVRChannelGroups::DeleteGroup(const CPVRChannelGroup &group)
   {
     if (at(iGroupPtr)->GroupID() == group.GroupID())
     {
-      if (g_PVRManager.IsSelectedGroup(group))
+      CPVRChannelGroup *selectedGroup = GetSelectedGroup();
+      if (selectedGroup && *selectedGroup == group)
         g_PVRManager.SetPlayingGroup(GetGroupAll());
 
       delete at(iGroupPtr);

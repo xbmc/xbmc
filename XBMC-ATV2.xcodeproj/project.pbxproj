@@ -7378,10 +7378,9 @@
 					"\"$(SRCROOT)/lib/cmyth/librefmem\"",
 					"\"$(SRCROOT)/lib/libapetag/.libs\"",
 					"\"$(SRCROOT)/lib/libsquish\"",
-					"\"$(SRCROOT)/lib/jsoncpp/src/lib_json\"",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
-					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/pvrclients/mythtv/libmythxml\"",
 					"\"$(SRCROOT)/lib/libTcpSocket\"",
 				);
@@ -7407,6 +7406,8 @@
 					"-lboost_thread",
 					"-lyajl",
 					"-ljpeg",
+					"-lgcrypt",
+					"-lcrypto",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);
@@ -7476,10 +7477,9 @@
 					"\"$(SRCROOT)/lib/cmyth/librefmem\"",
 					"\"$(SRCROOT)/lib/libapetag/.libs\"",
 					"\"$(SRCROOT)/lib/libsquish\"",
-					"\"$(SRCROOT)/lib/jsoncpp/src/lib_json\"",
+					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/interfaces/json-rpc\"",
 					"\"$(SRCROOT)/xbmc/interfaces/http-api\"",
-					"\"$(SRCROOT)/lib/SlingboxLib\"",
 					"\"$(SRCROOT)/xbmc/pvrclients/mythtv/libmythxml\"",
 					"\"$(SRCROOT)/lib/libTcpSocket\"",
 				);
@@ -7504,6 +7504,8 @@
 					"-lpython2.6",
 					"-lyajl",
 					"-ljpeg",
+					"-lgcrypt",
+					"-lcrypto",
 					"-L$XBMC_DEPENDS/lib/mysql",
 					"-lmysqlclient",
 				);

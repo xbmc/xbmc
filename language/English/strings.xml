@@ -1006,6 +1006,8 @@
   <string id="13014">Minimize</string>
   <string id="13015">Power button action</string>
   <string id="13016">Power off System</string>
+  <string id="13017">Inhibit idle shutdown</string>
+  <string id="13018">Allow idle shutdown</string>
 
   <string id="13020">Is another session active, perhaps over ssh?</string>
   <string id="13021">Mounted removable harddrive</string>
@@ -1790,7 +1792,13 @@
   <string id="19241">The PVR manager has been enabled without any</string>
   <string id="19242">enabled PVR add-on. Enable at least one add-on</string>
   <string id="19243">in order to use the PVR functionality.</string>
-
+  
+  <string id="19244">Backend idle time</string>  
+  <string id="19245">Set wakup command (cmd [timestamp])</string>
+  <string id="19246">Wakup before recording</string>
+  <string id="19247">Daily wakeup</string>
+  <string id="19248">Daily wakeup time (HH:MM:SS)</string>
+  
   <string id="19499">Other/Unknown</string>
   <string id="19500">Movie/Drama</string>
   <string id="19501">Detective/Thriller</string>
@@ -2829,7 +2837,7 @@
   <string id="36013">Unsupported libcec interface version. %d is greater than the version XBMC supports (%d)</string>
   <string id="36014">Put this PC in standby mode when the TV is switched off</string>
   <string id="36015">HDMI port number</string>
-  <string id="36016">Connected</string> <!- max. 13 characters -->
+  <string id="36016">Connected</string> <!-- max. 13 characters -->
   <string id="36017">Adapter found, but libcec is not available</string>
   <string id="36018">Use the TV's language setting</string>
 </strings>

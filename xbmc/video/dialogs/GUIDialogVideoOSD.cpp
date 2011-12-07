@@ -60,6 +60,11 @@ bool CGUIDialogVideoOSD::OnAction(const CAction &action)
     if (g_application.m_pPlayer != NULL && g_application.m_pPlayer->OnAction(action))
       return true;
   }
+  if (action.GetID() == ACTION_SHOW_OSD)
+  {
+    Close();
+    return true;
+  }
 
   return CGUIDialog::OnAction(action);
 }

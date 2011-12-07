@@ -46,6 +46,7 @@ public:
 
   bool        SupportChannelScan();
   bool        EnableStatusInterface(bool onOff);
+  bool        SetUpdateChannels(uint8_t method);
   bool        GetDriveSpace(long long *total, long long *used);
 
   int         GetChannelsCount();

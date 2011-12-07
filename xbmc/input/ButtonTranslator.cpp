@@ -390,9 +390,9 @@ CButtonTranslator::CButtonTranslator()
 CButtonTranslator::~CButtonTranslator()
 {}
 
-bool CButtonTranslator::Load()
+bool CButtonTranslator::Load(const char* szDevice)
 {
-  deviceMappings.clear();
+  translatorMap.clear();
 
   //directories to search for keymaps
   //they're applied in this order,
@@ -410,10 +410,12 @@ bool CButtonTranslator::Load()
     {
       CFileItemList files;
       XFILE::CDirectory::GetDirectory(DIRS_TO_CHECK[dirIndex], files, "*.xml");
-      //sort the list for filesystem based prioties, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+      // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
       files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+      // In (at least) Windows the GetDirectory returns all files not just *.xml files
       for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
-        success |= LoadKeymap(files[fileIndex]->GetPath());
+        if (files[fileIndex]->GetPath().Right(4) == ".xml")
+          success |= LoadKeymap(files[fileIndex]->GetPath());
     }
   }
 
@@ -449,7 +451,30 @@ bool CButtonTranslator::Load()
 
 #endif
 
+  // If we were called with a device name try loading mappings for that device now
+  if (szDevice && strlen(szDevice) != 0)
+  {
+    for(unsigned int dirIndex = 0; dirIndex < sizeof(DIRS_TO_CHECK)/sizeof(DIRS_TO_CHECK[0]); ++dirIndex)
+    {
+      CStdString devicedir = DIRS_TO_CHECK[dirIndex];
+      devicedir.append(szDevice);
+      devicedir.append("/");
+      if( XFILE::CDirectory::Exists(devicedir) )
+      {
+        CFileItemList files;
+        XFILE::CDirectory::GetDirectory(devicedir, files, "*.xml");
+        // Sort the list for filesystem based priorities, e.g. 01-keymap.xml, 02-keymap-overrides.xml
+        files.Sort(SORT_METHOD_FILE, SORT_ORDER_ASC);
+        // In (at least) Windows the GetDirectory returns all files not just *.xml files
+        for(int fileIndex = 0; fileIndex<files.Size(); ++fileIndex)
+          if (files[fileIndex]->GetPath().Right(4) == ".xml")
+            success |= LoadKeymap(files[fileIndex]->GetPath());
+      }
+    }
+  }
+
   // Done!
+  m_Loaded = true;
   return true;
 }
 
@@ -814,21 +839,12 @@ CAction CButtonTranslator::GetAction(int window, const CKey &key, bool fallback)
   return action;
 }
 
-const std::map<int, CButtonTranslator::buttonMap> &CButtonTranslator::GetDeviceMap() const
-{
-  std::map<CStdString, std::map<int, buttonMap> >::const_iterator activeMapIt = deviceMappings.find(g_settings.m_activeKeyboardMapping);
-  if (activeMapIt == deviceMappings.end())
-    return deviceMappings.find("default")->second;
-  return activeMapIt->second;
-}
-
 int CButtonTranslator::GetActionCode(int window, const CKey &key, CStdString &strAction) const
 {
   uint32_t code = key.GetButtonCode();
 
-  const std::map<int, buttonMap> &deviceMap = GetDeviceMap();
-  map<int, buttonMap>::const_iterator it = deviceMap.find(window);
-  if (it == deviceMap.end())
+  map<int, buttonMap>::const_iterator it = translatorMap.find(window);
+  if (it == translatorMap.end())
     return 0;
   buttonMap::const_iterator it2 = (*it).second.find(code);
   int action = 0;
@@ -895,27 +911,15 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
     CStdString type(types[i]);
     if (HasDeviceType(pWindow, type))
     {
-      pDevice = pWindow->FirstChild(type);
-      TiXmlElement *pDeviceElement = pDevice->ToElement();
-      //check if exists, if not use "default"
-      CStdString deviceName = pDeviceElement->Attribute("name");
-      if (deviceName.empty())
-        deviceName = "default";
+      buttonMap map;
+      std::map<int, buttonMap>::iterator it = translatorMap.find(windowID);
+      if (it != translatorMap.end())
+      {
+        map = it->second;
+        translatorMap.erase(it);
+      }
 
-      std::map<CStdString, std::map<int, buttonMap> >::iterator deviceMapIt = deviceMappings.find(deviceName);
-      if (deviceMapIt == deviceMappings.end())
-      {
-        //First time encountering this device, lets initialise the buttonMap for it.
-        deviceMapIt = deviceMappings.insert(pair<CStdString, std::map<int, buttonMap> >(deviceName, std::map<int, buttonMap>())).first;
-      }
-      
-      std::map<int, buttonMap>::iterator windowIt = deviceMapIt->second.find(windowID);
-      if (windowIt == deviceMapIt->second.end())
-      {
-        //add it now
-        windowIt = deviceMapIt->second.insert(pair<int, buttonMap>(windowID, buttonMap())).first;
-      }
-      buttonMap& windowMap = windowIt->second;
+      pDevice = pWindow->FirstChild(type);
 
       TiXmlElement *pButton = pDevice->FirstChildElement();
 
@@ -936,9 +940,13 @@ void CButtonTranslator::MapWindowActions(TiXmlNode *pWindow, int windowID)
             buttonCode = TranslateAppCommand(pButton->Value());
 
         if (buttonCode && pButton->FirstChild())
-          MapAction(buttonCode, pButton->FirstChild()->Value(), windowMap);
+          MapAction(buttonCode, pButton->FirstChild()->Value(), map);
         pButton = pButton->NextSiblingElement();
       }
+
+      // add our map to our table
+      if (map.size() > 0)
+        translatorMap.insert(pair<int, buttonMap>( windowID, map));
     }
   }
 
@@ -1251,7 +1259,7 @@ uint32_t CButtonTranslator::TranslateMouseCommand(const char *szButton)
 
 void CButtonTranslator::Clear()
 {
-  deviceMappings.clear();
+  translatorMap.clear();
 #if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
   lircRemotesMap.clear();
 #endif
@@ -1261,4 +1269,6 @@ void CButtonTranslator::Clear()
   m_joystickAxisMap.clear();
   m_joystickHatMap.clear();
 #endif
+
+  m_Loaded = false;
 }

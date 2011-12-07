@@ -24,7 +24,6 @@
 #include "XBDateTime.h"
 #include "FileItem.h"
 #include "addons/include/xbmc_pvr_types.h"
-#include "utils/JobManager.h"
 #include "utils/Observer.h"
 #include "threads/CriticalSection.h"
 
@@ -43,7 +42,7 @@ namespace PVR
 
   /** PVR Channel class */
 
-  class CPVRChannel : public Observable, public IJobCallback
+  class CPVRChannel : public Observable
   {
     friend class CPVRChannelGroup;
     friend class CPVRChannelGroupInternal;
@@ -90,7 +89,6 @@ namespace PVR
     CStdString       m_strClientEncryptionName; /*!< the name of the encryption system used by this channel */
     //@}
 
-    bool             m_bIsCachingIcon;
     CCriticalSection m_critSection;
 
   public:
@@ -372,13 +370,6 @@ namespace PVR
     void UpdateEncryptionName(void);
 
     void SetCachedChannelNumber(unsigned int iChannelNumber);
-    bool CacheIcon(void);
-
-    /*!
-     * @brief Check whether an icon needs to be cached.
-     * @return True when a cache job has been scheduled, false otherwise.
-     */
-    bool CheckCachedIcon(void);
 
   public:
     /*!
@@ -508,20 +499,5 @@ namespace PVR
     bool SetEPGScraper(const CStdString &strScraper, bool bSaveInDb = false);
 
     //@}
-
-    void OnJobComplete(unsigned int jobID, bool success, CJob* job);
-  };
-
-  class CPVRChannelIconCacheJob : public CJob
-  {
-  public:
-    CPVRChannelIconCacheJob(CPVRChannel *channel) { m_channel = channel; }
-    virtual ~CPVRChannelIconCacheJob() {}
-    virtual const char *GetType() const { return "pvr-channel-icon-update"; }
-
-    virtual bool DoWork();
-
-  private:
-    CPVRChannel *m_channel;
   };
 }

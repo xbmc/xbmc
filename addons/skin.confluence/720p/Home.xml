@@ -868,7 +868,7 @@
 						<onclick>ActivateWindow(Weather)</onclick>
 						<icon>special://skin/backgrounds/weather.jpg</icon>
 						<thumb>$INFO[Skin.String(Home_Custom_Back_Weather_Folder)]</thumb>
-						<visible>!Skin.HasSetting(HomeMenuNoWeatherButton)</visible>
+						<visible>!Skin.HasSetting(HomeMenuNoWeatherButton)+!IsEmpty(Weather.Plugin)</visible>
 					</item>
 					<item id="4">
 						<label>1</label>
@@ -1248,12 +1248,31 @@
 				<onclick>ActivateWindow(ShutdownMenu)</onclick>
 				<texturefocus>home-power-FO.png</texturefocus>
 				<texturenofocus>home-power.png</texturenofocus>
-				<onleft>21</onleft>
+				<onleft>22</onleft>
 				<onright>21</onright>
-				<onup>9002</onup>
-				<ondown>9003</ondown>
+				<onup>21</onup>
+				<ondown>21</ondown>
+				<visible>!System.IsInhibit</visible>
 			</control>
 			<control type="button" id="21">
+				<description>Power push button</description>
+				<posx>55</posx>
+				<posy>15</posy>
+				<width>43</width>
+				<height>43</height>
+				<label>31003</label>
+				<font>-</font>
+				<aligny>-</aligny>
+				<onclick>ActivateWindow(ShutdownMenu)</onclick>
+				<texturefocus>home-power-inhibit-FO.png</texturefocus>
+				<texturenofocus>home-power-inhibit.png</texturenofocus>
+				<onleft>20</onleft>
+				<onright>22</onright>
+				<onup>9002</onup>
+				<ondown>9003</ondown>
+				<visible>System.IsInhibit</visible>
+			</control>
+			<control type="button" id="22">
 				<description>Favourites push button</description>
 				<posx>10</posx>
 				<posy>15</posy>
@@ -1265,7 +1284,7 @@
 				<onclick>ActivateWindow(Favourites)</onclick>
 				<texturefocus>home-favourites-FO.png</texturefocus>
 				<texturenofocus>home-favourites.png</texturenofocus>
-				<onleft>20</onleft>
+				<onleft>21</onleft>
 				<onright>20</onright>
 				<onup>9002</onup>
 				<ondown>9003</ondown>

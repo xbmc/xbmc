@@ -46,7 +46,8 @@ public:
   bool              SendMessage(cRequestPacket* vrp);
 
   cResponsePacket*  ReadResult(cRequestPacket* vrp);
-  bool              ReadSuccess(cRequestPacket* m);
+  bool              ReadSuccess(cRequestPacket* vrp, uint32_t& rc);
+  bool              ReadSuccess(cRequestPacket* vrp);
 
   int                GetProtocol()   { return m_protocol; }
   const std::string& GetServerName() { return m_server; }

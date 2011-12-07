@@ -23,6 +23,7 @@
 #include "utils/log.h"
 #include "settings/Settings.h"
 #include "guilib/LocalizeStrings.h"
+#include "input/ButtonTranslator.h"
 
 using namespace PERIPHERALS;
 using namespace std;
@@ -39,6 +40,7 @@ CPeripheralHID::~CPeripheralHID(void)
   if (!m_strKeymap.IsEmpty() && GetSettingBool("keymap_enabled") && g_settings.m_activeKeyboardMapping.Equals(m_strKeymap))
   {
     CLog::Log(LOGDEBUG, "%s - switching active keymapping to: default", __FUNCTION__);
+    CButtonTranslator::GetInstance().Load();
     g_settings.m_activeKeyboardMapping = "default";
   }
 }
@@ -64,11 +66,13 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
       if (bKeymapEnabled)
       {
         CLog::Log(LOGDEBUG, "%s - switching active keymapping to: %s", __FUNCTION__, m_strKeymap.c_str());
+        CButtonTranslator::GetInstance().Load(m_strKeymap.c_str());
         g_settings.m_activeKeyboardMapping = m_strKeymap;
       }
       else if (!bKeymapEnabled && g_settings.m_activeKeyboardMapping.Equals(m_strKeymap))
       {
         CLog::Log(LOGDEBUG, "%s - switching active keymapping to: default", __FUNCTION__);
+        CButtonTranslator::GetInstance().Load();
         g_settings.m_activeKeyboardMapping = "default";
       }
     }

@@ -65,9 +65,11 @@ public:
   static CButtonTranslator& GetInstance();
 
   /// loads Lircmap.xml/IRSSmap.xml (if enabled) and Keymap.xml
-  bool Load();
+  bool Load(const char* szDevice = NULL);
   /// clears the maps
   void Clear();
+  /// map has been loaded
+  inline bool Loaded(void) { return m_Loaded; }
 
   CAction GetAction(int window, const CKey &key, bool fallback = true);
 
@@ -96,9 +98,7 @@ public:
 
 private:
   typedef std::multimap<uint32_t, CButtonAction> buttonMap; // our button map to fill in
-  
-  std::map<CStdString, std::map<int, buttonMap> > deviceMappings;
-  const std::map<int, buttonMap> &GetDeviceMap() const;
+  std::map<int, buttonMap> translatorMap;       // mapping of windows to button maps
   int GetActionCode(int window, const CKey &key, CStdString &strAction) const;
 
   static uint32_t TranslateGamepadString(const char *szButton);
@@ -131,6 +131,8 @@ private:
   std::map<std::string, JoystickMap> m_joystickAxisMap;        // <joy name, axis map>
   std::map<std::string, JoystickMap> m_joystickHatMap;        // <joy name, hat map>
 #endif
+
+  bool m_Loaded;
 };
 
 #endif

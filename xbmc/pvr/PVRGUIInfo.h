@@ -70,11 +70,15 @@ namespace PVR
      */
     void ShowPlayerInfo(int iTimeout);
 
+    /*!
+     * @brief Clear the playing EPG tag.
+     */
+    void ResetPlayingTag(void);
+
   private:
     void ResetProperties(void);
     void Process(void);
 
-    void ResetPlayingTag(void);
     void UpdatePlayingTag(void);
     void UpdateTimersCache(void);
     void UpdateBackendCache(void);
@@ -158,7 +162,7 @@ namespace PVR
     unsigned int                    m_iTimerInfoToggleStart;
     unsigned int                    m_iTimerInfoToggleCurrent;
     unsigned int                    m_iToggleShowInfo;
-    mutable const EPG::CEpgInfoTag *m_playingEpgTag;
+    EPG::CEpgInfoTag *              m_playingEpgTag;
 
     CCriticalSection                m_critSection;
   };

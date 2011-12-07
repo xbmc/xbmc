@@ -122,6 +122,18 @@ namespace PVR
     CPVRChannelGroup *GetNextGroup(const CPVRChannelGroup &group) const;
 
     /*!
+     * @brief Get the group that is currently selected in the UI.
+     * @return The selected group.
+     */
+    virtual CPVRChannelGroup *GetSelectedGroup(void) const;
+
+    /*!
+     * @brief Change the selected group.
+     * @param group The group to select.
+     */
+    virtual void SetSelectedGroup(CPVRChannelGroup *group);
+
+    /*!
      * @brief Add a group to this container.
      * @param strName The name of the group.
      * @return True if the group was added, false otherwise.
@@ -183,6 +195,7 @@ namespace PVR
 
   private:
     bool             m_bRadio;      /*!< true if this is a container for radio channels, false if it is for tv channels */
+    int              m_iSelectedGroup; /*!< the index of the group that's currently selected in the UI */
     CCriticalSection m_critSection;
 
     /*!

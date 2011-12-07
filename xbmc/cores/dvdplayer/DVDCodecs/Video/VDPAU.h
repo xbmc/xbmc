@@ -21,6 +21,7 @@
  *
  */
 
+#include "DllAvUtil.h"
 #include "DVDVideoCodec.h"
 #include "DVDVideoCodecFFmpeg.h"
 #include "libavcodec/vdpau.h"
@@ -32,7 +33,10 @@
 #include <GL/glx.h>
 #include <queue>
 #include "threads/CriticalSection.h"
+#include "threads/SharedSection.h"
 #include "settings/VideoSettings.h"
+#include "guilib/DispResource.h"
+#include "threads/Event.h"
 namespace Surface { class CSurface; }
 
 #define NUM_OUTPUT_SURFACES                4
@@ -44,6 +48,7 @@ namespace Surface { class CSurface; }
 
 class CVDPAU
  : public CDVDVideoCodecFFmpeg::IHardwareDecoder
+ , public IDispResource
 {
 public:
 
@@ -69,13 +74,8 @@ public:
   virtual void Reset();
   virtual void Close();
 
-  virtual int  Check(AVCodecContext* avctx) 
-  { 
-    if(CheckRecover(false))
-      return VC_FLUSHED;
-    else
-      return 0;
-  }
+  virtual int  Check(AVCodecContext* avctx);
+
   virtual const std::string Name() { return "vdpau"; }
 
   bool MakePixmap(int width, int height);
@@ -88,7 +88,6 @@ public:
   PFNGLXRELEASETEXIMAGEEXTPROC glXReleaseTexImageEXT;
   GLXPixmap  m_glPixmap;
   Pixmap  m_Pixmap;
-  GLXContext m_glContext;
 
   static void             FFReleaseBuffer(AVCodecContext *avctx, AVFrame *pic);
   static void             FFDrawSlice(struct AVCodecContext *s,
@@ -96,15 +95,13 @@ public:
                                int y, int type, int height);
   static int              FFGetBuffer(AVCodecContext *avctx, AVFrame *pic);
 
-  static void             VDPPreemptionCallbackFunction(VdpDevice device, void* context);
-
   void Present();
   bool ConfigVDPAU(AVCodecContext *avctx, int ref_frames);
   void SpewHardwareAvailable();
   void InitCSCMatrix(int Height);
   bool CheckStatus(VdpStatus vdp_st, int line);
+  bool IsSurfaceValid(vdpau_render_state *render);
 
-  bool CheckRecover(bool force = false);
   void CheckFeatures();
   void SetColor();
   void SetNoiseReduction();
@@ -113,7 +110,6 @@ public:
   void SetHWUpscaling();
 
   pictureAge picAge;
-  bool       recover;
   vdpau_render_state *past[2], *current, *future;
   int        tmpDeintMode, tmpDeintGUI, tmpDeint;
   float      tmpNoiseReduction, tmpSharpness;
@@ -140,6 +136,8 @@ public:
   void      InitVDPAUProcs();
   void      FiniVDPAUProcs();
   void      FiniVDPAUOutput();
+  bool      ConfigOutputMethod(AVCodecContext *avctx, AVFrame *pFrame);
+  bool      FiniOutputMethod();
 
   VdpDevice                            vdp_device;
   VdpGetProcAddress *                  vdp_get_proc_address;
@@ -206,6 +204,7 @@ public:
   int      presentSurfaceNum;
   int      totalAvailableOutputSurfaces;
   uint32_t vid_width, vid_height;
+  int      surface_width, surface_height;
   uint32_t max_references;
   Display* m_Display;
   bool     vdpauConfigured;
@@ -227,4 +226,28 @@ public:
                           , VdpChromaType     &chroma_type);
 
   std::vector<vdpau_render_state*> m_videoSurfaces;
+  DllAvUtil   m_dllAvUtil;
+
+  enum VDPAUOutputMethod
+  {
+    OUTPUT_NONE,
+    OUTPUT_PIXMAP,
+    OUTPUT_GL_INTEROP_RGB,
+    OUTPUT_GL_INTEROP_YUV
+  };
+  VDPAUOutputMethod m_vdpauOutputMethod;
+
+  // OnLostDevice triggers transition from all states to LOST
+  // internal errors trigger transition from OPEN to RESET
+  // OnResetDevice triggers transition from LOST to RESET
+  enum EDisplayState
+  { VDPAU_OPEN
+  , VDPAU_RESET
+  , VDPAU_LOST
+  } m_DisplayState;
+  CSharedSection m_DecoderSection;
+  CSharedSection m_DisplaySection;
+  CEvent         m_DisplayEvent;
+  virtual void OnLostDevice();
+  virtual void OnResetDevice();
 };

@@ -261,6 +261,7 @@ int CPVRChannelGroupInternal::LoadFromClients(void)
 
 bool CPVRChannelGroupInternal::Renumber(void)
 {
+  CSingleLock lock(m_critSection);
   bool bReturn(CPVRChannelGroup::Renumber());
 
   m_iHiddenChannels = 0;
@@ -351,8 +352,6 @@ bool CPVRChannelGroupInternal::UpdateGroupEntries(const CPVRChannelGroup &channe
     SearchAndSetChannelIcons();
     Persist();
 
-    CacheIcons();
-
     bReturn = true;
   }
 
@@ -432,16 +431,4 @@ bool CPVRChannelGroupInternal::CreateChannelEpgs(bool bForce /* = false */)
     return Persist();
 
   return true;
-}
-
-void CPVRChannelGroupInternal::CacheIcons(void)
-{
-  bool bUpdated(false);
-  CSingleLock lock(m_critSection);
-  for (unsigned int iChannelPtr = 0; iChannelPtr < size(); iChannelPtr++)
-    bUpdated = at(iChannelPtr).channel->CheckCachedIcon() || bUpdated;
-
-  /* persist channels after the icons have been cached */
-  if (bUpdated)
-    CJobManager::GetInstance().AddJob(new CPVRPersistGroupJob(this), this);
 }

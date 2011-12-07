@@ -643,7 +643,13 @@ void CPlayListPlayer::Swap(int iPlaylist, int indexItem1, int indexItem2)
     return;
 
   CPlayList& list = GetPlaylist(iPlaylist);
-  list.Swap(indexItem1, indexItem2);
+  if (list.Swap(indexItem1, indexItem2) && iPlaylist == m_iCurrentPlayList)
+  {
+    if (m_iCurrentSong == indexItem1)
+      m_iCurrentSong = indexItem2;
+    else if (m_iCurrentSong == indexItem2)
+      m_iCurrentSong = indexItem1;
+  }
 
   // its likely that the playlist changed
   CGUIMessage msg(GUI_MSG_PLAYLIST_CHANGED, 0, 0);

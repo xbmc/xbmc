@@ -25,15 +25,16 @@
 #include "addons/library.xbmc.gui/libXBMC_gui.h"
 #include "addons/library.xbmc.pvr/libXBMC_pvr.h"
 
-#define DEFAULT_HOST          "127.0.0.1"
-#define DEFAULT_PORT          34891
-#define DEFAULT_CHARCONV      false
-#define DEFAULT_HANDLE_MSG    true
-#define DEFAULT_PRIORITY      99
-#define DEFAULT_TIMEOUT       3
-#define DEFAULT_AUTOGROUPS    false
-#define DEFAULT_COMPRESSION   6
-#define DEFAULT_AUDIOTYPE     0
+#define DEFAULT_HOST           "127.0.0.1"
+#define DEFAULT_PORT           34891
+#define DEFAULT_CHARCONV       false
+#define DEFAULT_HANDLE_MSG     true
+#define DEFAULT_PRIORITY       99
+#define DEFAULT_TIMEOUT        3
+#define DEFAULT_AUTOGROUPS     false
+#define DEFAULT_COMPRESSION    6
+#define DEFAULT_AUDIOTYPE      0
+#define DEFAULT_UPDATECHANNELS 3
 
 extern bool         m_bCreated;
 extern std::string  g_szHostname;         ///< hostname or ip-address of the server
@@ -43,6 +44,7 @@ extern bool         g_bCharsetConv;       ///< Convert VDR's incoming strings to
 extern bool         g_bHandleMessages;    ///< Send VDR's OSD status messages to XBMC OSD
 extern int          g_iCompression;       ///< Protocol Compression Level
 extern int          g_iAudioType;         ///< Preferred audio stream type
+extern int          g_iUpdateChannels;    ///< Channel scan method
 
 extern ADDON::CHelper_libXBMC_addon *XBMC;
 extern CHelper_libXBMC_gui   *GUI;

@@ -589,21 +589,24 @@ void CWinSystemOSX::UpdateResolutions()
   for (int i = 1; i < numDisplays; i++)
   {
     CFDictionaryRef mode = CGDisplayCurrentMode( GetDisplayID(i) );
-    w = GetDictionaryInt(mode, kCGDisplayWidth);
-    h = GetDictionaryInt(mode, kCGDisplayHeight);
-    fps = GetDictionaryDouble(mode, kCGDisplayRefreshRate);
-    if ((int)fps == 0)
+    if (mode)
     {
-      // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
-      fps = 60.0;
+      w = GetDictionaryInt(mode, kCGDisplayWidth);
+      h = GetDictionaryInt(mode, kCGDisplayHeight);
+      fps = GetDictionaryDouble(mode, kCGDisplayRefreshRate);
+      if ((int)fps == 0)
+      {
+        // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
+        fps = 60.0;
+      }
+      CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
+
+      RESOLUTION_INFO res;
+
+      UpdateDesktopResolution(res, i, w, h, fps);
+      g_graphicsContext.ResetOverscan(res);
+      g_settings.m_ResInfo.push_back(res);
     }
-    CLog::Log(LOGINFO, "Extra display %d is %dx%d\n", i, w, h);
-
-    RESOLUTION_INFO res;
-
-    UpdateDesktopResolution(res, i, w, h, fps);
-    g_graphicsContext.ResetOverscan(res);
-    g_settings.m_ResInfo.push_back(res);
   }
   
   //GetVideoModes();

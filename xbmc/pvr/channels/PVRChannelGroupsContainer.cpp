@@ -247,6 +247,11 @@ int CPVRChannelGroupsContainer::GetNumChannelsFromAll()
   return GetGroupAllTV()->Size() + GetGroupAllRadio()->Size();
 }
 
+CPVRChannelGroup *CPVRChannelGroupsContainer::GetSelectedGroup(bool bRadio) const
+{
+  return Get(bRadio)->GetSelectedGroup();
+}
+
 const CPVRChannel *CPVRChannelGroupsContainer::GetByUniqueID(int iClientChannelNumber, int iClientID)
 {
   const CPVRChannel *channel = NULL;

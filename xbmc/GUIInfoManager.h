@@ -144,7 +144,7 @@ namespace INFO
 #define SYSTEM_HASLOCKS             140
 #define SYSTEM_ISMASTER             141
 #define SYSTEM_TRAYOPEN             142
-#define SYSTEM_SHOW_EXIT_BUTTON		143
+#define SYSTEM_SHOW_EXIT_BUTTON     143
 #define SYSTEM_ALARM_POS            144
 #define SYSTEM_LOGGEDON             145
 #define SYSTEM_PROFILENAME          146
@@ -179,6 +179,8 @@ namespace INFO
 #define SYSTEM_PROFILECOUNT         181
 #define SYSTEM_ISFULLSCREEN         182
 #define SYSTEM_ISSTANDALONE         183
+#define SYSTEM_ISINHIBIT            184
+#define SYSTEM_HAS_SHUTDOWN         185
 
 #define NETWORK_IP_ADDRESS          190
 #define NETWORK_MAC_ADDRESS         191

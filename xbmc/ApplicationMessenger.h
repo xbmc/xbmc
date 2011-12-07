@@ -76,6 +76,8 @@ class CGUIWindow;
 #define TMSG_MINIMIZE             309
 #define TMSG_TOGGLEFULLSCREEN     310
 #define TMSG_SETLANGUAGE          311
+#define TMSG_RENDERER_FLUSH       312
+#define TMSG_INHIBITIDLESHUTDOWN  313
 
 #define TMSG_HTTPAPI              400
 
@@ -177,6 +179,7 @@ public:
   void Restart();
   void RestartApp();
   void Reset();
+  void InhibitIdleShutdown(bool inhibit);
   void SwitchToFullscreen(); //
   void Minimize(bool wait = false);
   void ExecOS(const CStdString command, bool waitExit = false);
