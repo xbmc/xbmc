@@ -123,6 +123,7 @@ private:
   std::vector<cChannel>   m_Channels; // Local channel cache list needed for id to guid conversion
   int                     m_channel_id_offset;
   int                     m_epg_id_offset;
+  int                     m_signalqualityInterval;
 //  CURL*                   m_curl;
 #ifdef TSREADER
   CTsReader*              m_tsreader;

@@ -1,3 +1,5 @@
+v0.0.1.122 (07-12-2011)
+- Signal quality retrieval implemented
 v0.0.1.121 (04-12-2011)
 - Channel logo retrieval added
 v0.0.1.120 (07-11-2011)

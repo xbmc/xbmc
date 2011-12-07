@@ -36,6 +36,8 @@
 using namespace std;
 using namespace ADDON;
 
+#define SIGNALQUALITY_INTERVAL 10
+
 /************************************************************/
 /** Class interface */
 
@@ -922,6 +924,9 @@ bool cPVRClientForTheRecord::_OpenLiveStream(const PVR_CHANNEL &channelinfo)
       return false;
     }
 
+    // reset the signal quality poll interval after tuning
+    m_signalqualityInterval = 0;
+
     XBMC->Log(LOG_INFO, "Live stream file: %s", filename.c_str());
     m_bTimeShiftStarted = true;
     m_iCurrentChannel = channelinfo.iUniqueId;
@@ -1105,6 +1110,23 @@ int cPVRClientForTheRecord::GetCurrentClientChannel()
 
 PVR_ERROR cPVRClientForTheRecord::SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 {
+  static PVR_SIGNAL_STATUS tag;
+
+  // Only do the REST call once out of five
+  if (m_signalqualityInterval-- <= 0)
+  {
+    m_signalqualityInterval = SIGNALQUALITY_INTERVAL;
+    Json::Value response;
+    ForTheRecord::SignalQuality(response);
+    memset(&tag, 0, sizeof(tag));
+    snprintf(tag.strAdapterName, 1024, "%s, provider %s, %s",
+      response["Name"].asString().c_str(),
+      response["ProviderName"].asString().c_str(),
+      response["IsFreeToAir"].asBool() ? "free to air" : "encrypted");
+    tag.iSNR = (int) (response["SignalQuality"].asInt() * 655.35);
+  }
+
+  signalStatus = tag;
   return PVR_ERROR_NO_ERROR;
 }
 
