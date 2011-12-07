@@ -936,7 +936,7 @@ void CWinSystemOSX::FillInVideoModes()
           // NOTE: The refresh rate will be REPORTED AS 0 for many DVI and notebook displays.
           refreshrate = 60.0;
         }
-        CLog::Log(LOGINFO, "Found possible refresh rate for display %d with %f Hz\n", disp, refreshrate);
+        CLog::Log(LOGINFO, "Found possible resolution for display %d with %d x %d @ %f Hz\n", disp, w, h, refreshrate);
         
         UpdateDesktopResolution(res, disp, w, h, refreshrate);
         g_graphicsContext.ResetOverscan(res);
