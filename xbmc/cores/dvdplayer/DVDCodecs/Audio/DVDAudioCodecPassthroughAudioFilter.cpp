@@ -27,6 +27,7 @@
 #include "DVDStreamInfo.h"
 #include "settings/GUISettings.h"
 #include "settings/Settings.h"
+#include "settings/AdvancedSettings.h"
 #include "utils/log.h"
 
 //These values are forced to allow spdif out
@@ -121,10 +122,30 @@ bool CDVDAudioCodecPassthroughAudioFilter::SetupParser(BYTE *pData, int iSize)
   }
 
   m_Spdif = new AudioFilter::SpdifWrapper(m_Mhp);
-  m_Spdif->addChannelMap(8, 192000);
-  m_Spdif->addChannelMap(2, 192000);
+  int maxBandwidth(g_advancedSettings.m_maxPassthroughBandwidth);
+
+  if ( maxBandwidth >= 768000 )
+  {
+    CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughAudioFilter::SetupParser: adding 8x192000 mapping");
+    m_Spdif->addChannelMap(8, 192000);
+  }
+
+  if ( maxBandwidth >= 192000 )
+  {
+	if ( maxBandwidth == 192001 ) // magic number to trigger 8 channel * 48k
+	{
+      CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughAudioFilter::SetupParser: adding 8x48000 mapping");
+      m_Spdif->addChannelMap(8, 48000);
+	}
+	else
+	{
+      CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughAudioFilter::SetupParser: adding 2x192000 mapping");
+      m_Spdif->addChannelMap(2, 192000);
+	}
+  }
+
+  CLog::Log(LOGDEBUG, "CDVDAudioCodecPassthroughAudioFilter::SetupParser: adding 2x48000 mapping");
   m_Spdif->addChannelMap(2, 48000);
-  m_Spdif->addChannelMap(8, 48000);
 
   return m_Spdif->parseFrame(pData, iSize);
 }
