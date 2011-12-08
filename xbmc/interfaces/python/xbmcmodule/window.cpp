@@ -382,7 +382,20 @@ namespace PYXBMC
     }
 
     if (self->bIsPythonWindow)
-      g_windowManager.Delete(self->pWindow->GetID());
+    {
+      if (self->pWindow && g_windowManager.IsWindowVisible(self->iWindowId))
+      {
+        // if window isn't closed - mark it to delete itself after deiniting
+        // and trigger window closing
+        if (self->bUsingXML)
+          ((CGUIPythonWindowXML*)self->pWindow)->SetDestroyAfterDeinit();
+        else
+          ((CGUIPythonWindow*)self->pWindow)->SetDestroyAfterDeinit();
+        Window_Close(self, NULL);
+      }
+      else
+        g_windowManager.Delete(self->iWindowId);
+    }
 
     lock.Leave();
     self->vecControls.clear();

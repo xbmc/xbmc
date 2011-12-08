@@ -94,7 +94,7 @@ void XBMCHelper::Start()
   int pid = GetProcessPid(XBMC_HELPER_PROGRAM);
   if (pid == -1)
   {
-    printf("Asking helper to start.\n");
+    //printf("Asking helper to start.\n");
     // use -x to have XBMCHelper read its configure file
     std::string cmd = "\"" + m_helperFile + "\" -x &";
     system(cmd.c_str());

@@ -41,10 +41,15 @@ namespace PYXBMC
     PyObject_HEAD_XBMC_WINDOW
   } WindowDialog;
 
-  typedef struct {
+  struct DialogProgress {
     PyObject_HEAD
     CGUIDialogProgress* dlg;
-  } DialogProgress;
+
+    DialogProgress()
+    {
+      dlg = 0;
+    }
+  };
 
   extern PyTypeObject WindowDialog_Type;
   extern PyTypeObject DialogProgress_Type;

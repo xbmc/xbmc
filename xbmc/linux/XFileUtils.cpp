@@ -275,7 +275,7 @@ if (errno == 20)
   HANDLE result = new CXHandle(CXHandle::HND_FILE);
   result->fd = fd;
 
-#ifdef HAS_DVD_DRIVE
+#if defined(TARGET_LINUX) && defined(HAS_DVD_DRIVE) 
   // special case for opening the cdrom device
   if (strcmp(lpFileName, MEDIA_DETECT::CLibcdio::GetInstance()->GetDeviceFileName())==0)
     result->m_bCDROM = true;

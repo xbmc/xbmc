@@ -302,14 +302,13 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
       {
         CLog::Log(LOGDEBUG, "WindowVideoNav::GetDirectory");
         // grab the show thumb
-        CStdString path;
-        m_database.GetFilePathById(params.GetTvShowId(),path,VIDEODB_CONTENT_TVSHOWS);
-        CFileItem showItem(path, true);
-        showItem.SetVideoThumb();
-        items.SetProperty("tvshowthumb", showItem.GetThumbnailImage());
-        // Grab fanart data
         CVideoInfoTag details;
-        m_database.GetTvShowInfo(showItem.GetPath(), details, params.GetTvShowId());
+        m_database.GetTvShowInfo("", details, params.GetTvShowId());
+        CFileItem showItem(details.m_strShowPath, true);
+        if (showItem.GetCachedVideoThumb())
+          items.SetProperty("tvshowthumb", showItem.GetCachedVideoThumb());
+
+        // Grab fanart data
         items.SetProperty("fanart_color1", details.m_fanart.GetColor(0));
         items.SetProperty("fanart_color2", details.m_fanart.GetColor(1));
         items.SetProperty("fanart_color3", details.m_fanart.GetColor(2));
@@ -371,6 +370,7 @@ bool CGUIWindowVideoNav::GetDirectory(const CStdString &strDirectory, CFileItemL
         }
       }
       else if (node == NODE_TYPE_TITLE_MOVIES ||
+               node == NODE_TYPE_SETS ||
                node == NODE_TYPE_RECENTLY_ADDED_MOVIES)
         items.SetContent("movies");
       else if (node == NODE_TYPE_TITLE_TVSHOWS)

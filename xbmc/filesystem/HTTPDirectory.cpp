@@ -29,6 +29,7 @@
 #include "utils/CharsetConverter.h"
 #include "utils/log.h"
 #include "utils/URIUtils.h"
+#include "utils/HTMLUtil.h"
 #include "climits"
 
 using namespace XFILE;
@@ -76,18 +77,26 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
 
       if (strNameTemp == strLinkTemp)
       {
+        CStdStringW wName, wLink, wConverted;
+
         g_charsetConverter.unknownToUTF8(strName);
+        g_charsetConverter.utf8ToW(strName, wName, false);
+        HTML::CHTMLUtil::ConvertHTMLToW(wName, wConverted);
+        g_charsetConverter.wToUTF8(wConverted, strName);
         URIUtils::RemoveSlashAtEnd(strName);
 
+        g_charsetConverter.unknownToUTF8(strLink);
+        g_charsetConverter.utf8ToW(strLink, wLink, false);
+        HTML::CHTMLUtil::ConvertHTMLToW(wLink, wConverted);
+        g_charsetConverter.wToUTF8(wConverted, strLink);
+
         CFileItemPtr pItem(new CFileItem(strName));
-        pItem->SetPath(strBasePath + strLink);
         pItem->SetProperty("IsHTTPDirectory", true);
+        url.SetFileName(strBasePath + strLink);
+        pItem->SetPath(url.Get());
 
         if(URIUtils::HasSlashAtEnd(pItem->GetPath()))
           pItem->m_bIsFolder = true;
-
-        url.SetFileName(pItem->GetPath());
-        pItem->SetPath(url.Get());
 
         if (!pItem->m_bIsFolder && g_advancedSettings.m_bHTTPDirectoryStatFilesize)
         {

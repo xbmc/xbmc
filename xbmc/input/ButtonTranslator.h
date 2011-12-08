@@ -129,7 +129,7 @@ private:
   bool LoadLircMap(const CStdString &lircmapPath);
   void MapRemote(TiXmlNode *pRemote, const char* szDevice);
   typedef std::map<CStdString, CStdString> lircButtonMap;
-  std::map<CStdString, lircButtonMap> lircRemotesMap;
+  std::map<CStdString, lircButtonMap*> lircRemotesMap;
 #endif
 
 #if defined(HAS_SDL_JOYSTICK) || defined(HAS_EVENT_SERVER)

@@ -369,7 +369,18 @@ CButtonTranslator::CButtonTranslator()
 }
 
 CButtonTranslator::~CButtonTranslator()
-{}
+{
+#if defined(HAS_LIRC) || defined(HAS_IRSERVERSUITE)
+  vector<lircButtonMap*> maps;
+  for (map<CStdString,lircButtonMap*>::iterator it  = lircRemotesMap.begin();
+                                                it != lircRemotesMap.end();++it)
+    maps.push_back(it->second);
+  sort(maps.begin(),maps.end());
+  vector<lircButtonMap*>::iterator itend = unique(maps.begin(),maps.end());
+  for (vector<lircButtonMap*>::iterator it = maps.begin(); it != itend;++it)
+    delete *it;
+#endif
+}
 
 // Add the supplied device name to the list of connected devices
 void CButtonTranslator::AddDevice(CStdString& strDevice)
@@ -595,14 +606,11 @@ bool CButtonTranslator::LoadLircMap(const CStdString &lircmapPath)
 void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
 {
   CLog::Log(LOGINFO, "* Adding remote mapping for device '%s'", szDevice);
-  lircButtonMap buttons;
   vector<string> RemoteNames;
-  map<CStdString, lircButtonMap>::iterator it = lircRemotesMap.find(szDevice);
-  if (it != lircRemotesMap.end())
-  {
-    buttons = it->second;
-    lircRemotesMap.erase(it);
-  }
+  map<CStdString, lircButtonMap*>::iterator it = lircRemotesMap.find(szDevice);
+  if (it == lircRemotesMap.end())
+    lircRemotesMap[szDevice] = new lircButtonMap;
+  lircButtonMap& buttons = *lircRemotesMap[szDevice];
 
   TiXmlElement *pButton = pRemote->FirstChildElement();
   while (pButton)
@@ -617,34 +625,24 @@ void CButtonTranslator::MapRemote(TiXmlNode *pRemote, const char* szDevice)
 
     pButton = pButton->NextSiblingElement();
   }
-
-  lircRemotesMap[szDevice] = buttons;
-  vector<string>::iterator itr = RemoteNames.begin();
-  while (itr!=RemoteNames.end())
+  for (vector<string>::iterator it  = RemoteNames.begin();
+                                it != RemoteNames.end();++it)
   {
-    it = lircRemotesMap.find(itr->c_str());
-    if (it != lircRemotesMap.end())
-    {
-      buttons = it->second;
-      lircRemotesMap.erase(it);
-    }
-    CLog::Log(LOGINFO, "* Linking remote mapping for '%s' to '%s'", szDevice, itr->c_str());
-    lircRemotesMap[itr->c_str()] = buttons;
-    itr++;
+    CLog::Log(LOGINFO, "* Linking remote mapping for '%s' to '%s'", szDevice, it->c_str());
+    lircRemotesMap[*it] = &buttons;
   }
-  RemoteNames.clear();
 }
 
 int CButtonTranslator::TranslateLircRemoteString(const char* szDevice, const char *szButton)
 {
   // Find the device
-  map<CStdString, lircButtonMap>::iterator it = lircRemotesMap.find(szDevice);
+  map<CStdString, lircButtonMap*>::iterator it = lircRemotesMap.find(szDevice);
   if (it == lircRemotesMap.end())
     return 0;
 
   // Find the button
-  lircButtonMap::iterator it2 = (*it).second.find(szButton);
-  if (it2 == (*it).second.end())
+  lircButtonMap::iterator it2 = (*it).second->find(szButton);
+  if (it2 == (*it).second->end())
     return 0;
 
   // Convert the button to code
