@@ -318,6 +318,7 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
         CStdString localTrailer = m_movieItem->FindTrailer();
         if (!localTrailer.IsEmpty())
         {
+          m_movieItem->GetVideoInfoTag()->m_strTrailer = localTrailer;
           CVideoDatabase database;
           if(database.Open())
           {
@@ -326,7 +327,6 @@ void CGUIDialogVideoInfo::SetMovie(const CFileItem *item)
                                VIDEODB_ID_TRAILER, VIDEODB_CONTENT_MOVIES);
             database.Close();
             CUtil::DeleteVideoDatabaseDirectoryCache();
-            m_movieItem->GetVideoInfoTag()->m_strTrailer = localTrailer;
           }
         }
       }
