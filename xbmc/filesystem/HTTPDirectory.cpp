@@ -109,7 +109,7 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         if (!pItem->m_bIsFolder && pItem->m_dwSize == 0)
         {
           CRegExp reSize;
-          reSize.RegComp(">([0-9.]+)(K|M|G)</td>");
+          reSize.RegComp(">*([0-9.]+)(K|M|G)</td>");
           if (reSize.RegFind(strBuffer.c_str()) >= 0)
           {
             double Size = atof(reSize.GetReplaceString("\\1"));
