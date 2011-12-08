@@ -130,6 +130,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
   }
   http.Close();
 
+  items.SetProperty("IsHTTPDirectory", true);
+
   return true;
 }
 
