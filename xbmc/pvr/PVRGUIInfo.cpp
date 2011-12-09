@@ -770,7 +770,10 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
         (*m_playingEpgTag->ChannelTag() != currentChannel))
     {
       if (m_playingEpgTag)
+      {
         delete m_playingEpgTag;
+        m_playingEpgTag = NULL;
+      }
 
       const CEpgInfoTag *newTag = currentChannel.GetEPGNow();
       if (newTag)
