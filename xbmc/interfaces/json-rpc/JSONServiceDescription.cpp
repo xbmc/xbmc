@@ -30,6 +30,7 @@
 #include "AudioLibrary.h"
 #include "VideoLibrary.h"
 #include "GUIOperations.h"
+#include "AddonsOperations.h"
 #include "SystemOperations.h"
 #include "InputOperations.h"
 #include "XBMCOperations.h"
@@ -148,6 +149,12 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "VideoLibrary.Scan",                            CVideoLibrary::Scan },
   { "VideoLibrary.Export",                          CVideoLibrary::Export },
   { "VideoLibrary.Clean",                           CVideoLibrary::Clean },
+  
+// Addon operations
+  { "Addons.GetAddons",                             CAddonsOperations::GetAddons },
+  { "Addons.GetAddonDetails",                       CAddonsOperations::GetAddonDetails },
+  { "Addons.SetAddonEnabled",                       CAddonsOperations::SetAddonEnabled },
+  { "Addons.ExecuteAddon",                          CAddonsOperations::ExecuteAddon },
 
 // GUI operations
   { "GUI.GetProperties",                            CGUIOperations::GetProperties },
