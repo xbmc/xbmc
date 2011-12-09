@@ -255,8 +255,7 @@ const CStdString &CPVRTimerInfoTag::GetStatus() const
     return g_localizeStrings.Get(13106);
   else if (m_state == PVR_TIMER_STATE_RECORDING)
     return g_localizeStrings.Get(19162);
-  else
-    return g_localizeStrings.Get(305);
+  return g_localizeStrings.Get(305);
 }
 
 bool CPVRTimerInfoTag::AddToClient(void)
