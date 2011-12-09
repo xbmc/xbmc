@@ -417,6 +417,11 @@ bool CWinSystemOSX::CreateNewWindow(const CStdString& name, bool fullScreen, RES
   if (!view)
     return false;
   
+  // if we are not starting up windowed, then hide the initial SDL window
+  // so we do not see it flash before the fade-out and switch to fullscreen.
+  if (g_guiSettings.m_LookAndFeelResolution != RES_WINDOW)
+    ShowHideNSWindow([view window], false);
+
   // disassociate view from context
   [cur_context clearDrawable];
   
