@@ -881,7 +881,7 @@ bool CPVRManager::HasTimers(void) const
 
 bool CPVRManager::IsRecording(void) const
 {
-  return IsStarted() && m_recordings ? m_recordings->GetNumRecordings() > 0 : false;
+  return IsStarted() && m_timers ? m_timers->GetNumActiveRecordings() > 0 : false;
 }
 
 bool CPVRManager::IsIdle(void) const
