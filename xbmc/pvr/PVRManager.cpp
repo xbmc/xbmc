@@ -258,12 +258,18 @@ bool CPVRManager::StartUpdateThreads(void)
 
 void CPVRManager::StopUpdateThreads(void)
 {
-  StopThread();
-
   CSingleLock lock(m_critSection);
-  m_guiInfo->Stop();
-  m_addons->Stop();
-  m_managerState = ManagerStateInterrupted;
+  if (m_managerState == ManagerStateStarting ||
+      m_managerState == ManagerStateStarted)
+  {
+    lock.Leave();
+    StopThread();
+    lock.Enter();
+
+    m_guiInfo->Stop();
+    m_addons->Stop();
+    m_managerState = ManagerStateInterrupted;
+  }
 }
 
 bool CPVRManager::Load(void)
