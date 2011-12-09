@@ -193,34 +193,42 @@ void CPVRGUIInfo::Process(void)
 
   while (!g_application.m_bStop && !m_bStop)
   {
-    ToggleShowInfo();
+    if (!m_bStop)
+      ToggleShowInfo();
     Sleep(0);
 
-    UpdateQualityData();
+    if (!m_bStop)
+      UpdateQualityData();
     Sleep(0);
 
-    UpdateMisc();
+    if (!m_bStop)
+      UpdateMisc();
     Sleep(0);
 
-    UpdatePlayingTag();
+    if (!m_bStop)
+      UpdatePlayingTag();
     Sleep(0);
 
-    UpdateTimersToggle();
+    if (!m_bStop)
+      UpdateTimersToggle();
     Sleep(0);
 
-    UpdateNextTimer();
+    if (!m_bStop)
+      UpdateNextTimer();
     Sleep(0);
 
-    if (mLoop % 10 == 0)
+    if (!m_bStop && mLoop % 10 == 0)
       UpdateBackendCache();    /* updated every 10 iterations */
 
     if (++mLoop == 1000)
       mLoop = 0;
 
-    Sleep(1000);
+    if (!m_bStop)
+      Sleep(1000);
   }
 
-  ResetPlayingTag();
+  if (!m_bStop)
+    ResetPlayingTag();
 }
 
 void CPVRGUIInfo::UpdateQualityData(void)
