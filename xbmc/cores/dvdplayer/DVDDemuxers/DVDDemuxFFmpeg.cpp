@@ -1275,7 +1275,7 @@ bool CDVDDemuxFFmpeg::SeekChapter(int chapter, double* startpts)
 
         AVChapter *ch = m_pFormatContext->chapters[chapter-1];
         double dts = ConvertTimestamp(ch->start, ch->time_base.den, ch->time_base.num);
-        return SeekTime(DVD_TIME_TO_MSEC(dts), false, startpts);
+        return SeekTime(DVD_TIME_TO_MSEC(dts), true, startpts);
     #else
         return false;
     #endif

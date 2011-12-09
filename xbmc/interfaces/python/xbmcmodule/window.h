@@ -71,6 +71,7 @@ namespace PYXBMC
 
   bool Window_CreateNewWindow(Window* pWindow, bool bAsDialog);
   void Window_Dealloc(Window* self);
+  PyObject* Window_Close(Window *self, PyObject *args);
 }
 
 #ifdef __cplusplus

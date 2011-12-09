@@ -18,10 +18,10 @@
 //#include "windows.h"
 
 int
-pgwin32_putenv(const char *envval)
+pgwin32_wputenv(const wchar_t *envval)
 {
-	char	   *envcpy;
-	char	   *cp;
+	wchar_t	   *envcpy;
+	wchar_t	   *cp;
 
 	/*
 	 * Each version of MSVCRT has its own _putenv() call in the runtime
@@ -37,7 +37,7 @@ pgwin32_putenv(const char *envval)
 	 * subprocesses.
 	 */
 #ifdef _MSC_VER
-	typedef int (_cdecl * PUTENVPROC) (const char *name);
+	typedef int (_cdecl * PUTENVPROC) (const wchar_t *name);
 	static struct
 	{
 		char	   *modulename;
@@ -85,7 +85,7 @@ pgwin32_putenv(const char *envval)
 				}
 				else
 				{
-					rtmodules[i].putenvFunc = (PUTENVPROC) GetProcAddress(rtmodules[i].hmodule, "_putenv");
+					rtmodules[i].putenvFunc = (PUTENVPROC) GetProcAddress(rtmodules[i].hmodule, "_wputenv");
 					if (rtmodules[i].putenvFunc == NULL)
 					{
 						CloseHandle(rtmodules[i].hmodule);
@@ -114,10 +114,10 @@ pgwin32_putenv(const char *envval)
 	 *
 	 * Need a copy of the string so we can modify it.
 	 */
-	envcpy = strdup(envval);
+	envcpy = wcsdup(envval);
 	if (!envcpy)
 		return -1;
-	cp = strchr(envcpy, '=');
+	cp = wcschr(envcpy, '=');
 	if (cp == NULL)
 	{
 		free(envcpy);
@@ -125,14 +125,14 @@ pgwin32_putenv(const char *envval)
 	}
 	*cp = '\0';
 	cp++;
-	if (strlen(cp))
+	if (wcslen(cp))
 	{
 		/*
 		 * Only call SetEnvironmentVariable() when we are adding a variable,
 		 * not when removing it. Calling it on both crashes on at least
 		 * certain versions of MingW.
 		 */
-		if (!SetEnvironmentVariable(envcpy, cp))
+		if (!SetEnvironmentVariableW(envcpy, cp))
 		{
 			free(envcpy);
 			return -1;
@@ -141,19 +141,28 @@ pgwin32_putenv(const char *envval)
 	free(envcpy);
 
 	/* Finally, update our "own" cache */
-	return _putenv(envval);
+	return _wputenv(envval);
+}
+
+/*takes utf8 encoding*/
+int pgwin32_putenv(const char *envval)
+{
+  int size_needed = MultiByteToWideChar(CP_UTF8, 0, envval, strlen(envval), NULL, 0);
+  std::wstring strTo(size_needed, 0);
+  MultiByteToWideChar(CP_UTF8, 0, envval, strlen(envval), &strTo[0], size_needed);
+  return pgwin32_wputenv(strTo.c_str());
 }
 
 void
-pgwin32_unsetenv(const char *name)
+pgwin32_unsetenv(const wchar_t *name)
 {
-	char	   *envbuf;
+	wchar_t	   *envbuf;
 
-	envbuf = (char *) malloc(strlen(name) + 2);
+	envbuf = (wchar_t *) malloc(wcslen(name) + 2);
 	if (!envbuf)
 		return;
 
-	sprintf(envbuf, "%s=", name);
-	pgwin32_putenv(envbuf);
+	wsprintfW(envbuf, L"%s=", name);
+	pgwin32_wputenv(envbuf);
 	free(envbuf);
 }

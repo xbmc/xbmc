@@ -140,8 +140,6 @@ void CSettings::Initialize()
   m_lastUsedProfile = 0;
   m_currentProfile = 0;
   m_nextIdProfile = 0;
-
-  m_activeKeyboardMapping = "default";
 }
 
 CSettings::~CSettings(void)

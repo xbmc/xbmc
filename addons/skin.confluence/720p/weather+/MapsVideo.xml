@@ -174,10 +174,22 @@
 				</focusedlayout>
 				<content>
 					<item>
-						<label>31907</label>
+						<label>$INFO[Window.Property(Video.1.title)]</label>
 						<icon>icon-video.png</icon>
-						<onclick>PlayMedia($INFO[Window.Property(Video)],1,noresume)</onclick>
-						<visible>!IsEmpty(Window.Property(Video))</visible>
+						<onclick>PlayMedia($INFO[Window.Property(Video.1)],noresume)</onclick>
+						<visible>!IsEmpty(Window.Property(Video.1))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Video.2.title)]</label>
+						<icon>icon-video.png</icon>
+						<onclick>PlayMedia($INFO[Window.Property(Video.2)],noresume)</onclick>
+						<visible>!IsEmpty(Window.Property(Video.2))</visible>
+					</item>
+					<item>
+						<label>$INFO[Window.Property(Video.3.title)]</label>
+						<icon>icon-video.png</icon>
+						<onclick>PlayMedia($INFO[Window.Property(Video.3)],noresume)</onclick>
+						<visible>!IsEmpty(Window.Property(Video.3))</visible>
 					</item>
 					<item>
 						<label>$INFO[Window.Property(MapList.1.MapLabel.1)]</label>

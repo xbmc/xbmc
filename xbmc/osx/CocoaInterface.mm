@@ -198,6 +198,8 @@ double Cocoa_GetCVDisplayLinkRefreshPeriod(void)
 
 void Cocoa_DoAppleScript(const char* scriptSource)
 {
+  CCocoaAutoPool pool;
+
   NSDictionary* errorDict;
   NSAppleEventDescriptor* returnDescriptor = NULL;
   NSAppleScript* scriptObject = [[NSAppleScript alloc] initWithSource:
@@ -265,6 +267,7 @@ const char* Cocoa_GetIconFromBundle(const char *_bundlePath, const char* _iconNa
 
 void Cocoa_MountPoint2DeviceName(char* path)
 {
+  CCocoaAutoPool pool;
   // if physical DVDs, libdvdnav wants "/dev/rdiskN" device name for OSX,
   // path will get realloc'ed and replaced IF this is a physical DVD.
   char* strDVDDevice;
@@ -295,6 +298,7 @@ void Cocoa_MountPoint2DeviceName(char* path)
 
 bool Cocoa_GetVolumeNameFromMountPoint(const char *mountPoint, CStdString &volumeName)
 {
+  CCocoaAutoPool pool;
   unsigned i, count = 0;
   struct statfs *buf = NULL;
   CStdString mountpoint, devicepath;

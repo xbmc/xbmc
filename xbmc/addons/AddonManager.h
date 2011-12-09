@@ -94,6 +94,9 @@ namespace ADDON
     bool HasAddons(const TYPE &type, bool enabled = true);
     bool GetAddons(const TYPE &type, VECADDONS &addons, bool enabled = true);
     bool GetAllAddons(VECADDONS &addons, bool enabled = true, bool allowRepos = false);
+    void AddToUpdateableAddons(AddonPtr &pAddon);
+    void RemoveFromUpdateableAddons(AddonPtr &pAddon);    
+    bool ReloadSettings(const CStdString &id);
     /*! \brief Get all addons with available updates
      \param addons List to fill with all outdated addons
      \param enabled Whether to get only enabled or disabled addons
@@ -174,6 +177,7 @@ namespace ADDON
     const cp_cfg_element_t *GetExtElement(cp_cfg_element_t *base, const char *path);
     cp_context_t *m_cp_context;
     DllLibCPluff *m_cpluff;
+    VECADDONS    m_updateableAddons;
 
     /*! \brief Fetch a (single) addon from a plugin descriptor.
      Assumes that there is a single (non-trivial) extension point per addon.

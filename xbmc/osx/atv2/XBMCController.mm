@@ -317,7 +317,7 @@ int           m_systemsleepTimeout;
 
 - (void)controlWasDeactivated
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"XBMC was forced by FrontRow to exit via controlWasDeactivated");
 
   [m_glView stopAnimation];
 
@@ -653,6 +653,9 @@ int           m_systemsleepTimeout;
 - (void)observeDefaultCenterStuff: (NSNotification *) notification
 {
   //NSLog(@"default: %@", [notification name]);
+
+  if ([notification name] == UIApplicationDidReceiveMemoryWarningNotification)
+    NSLog(@"XBMC: %@", [notification name]);
 
   //if ([notification name] == kBRScreenSaverActivated)
   //  [m_glView stopAnimation];

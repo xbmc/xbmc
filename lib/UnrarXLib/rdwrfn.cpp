@@ -82,7 +82,7 @@ int ComprDataIO::UnpRead(byte *Addr,uint Count)
             {
               if (CurUnpStart+MAXWINMEMSIZE>SrcArc->NewLhd.FullUnpSize)
               {
-                m_iSeekTo=SrcArc->NewLhd.FullUnpSize-iSeekTo+iStartOfFile; // back
+                m_iSeekTo=iStartOfFile;
                 UnpPackedSize = SrcArc->NewLhd.FullPackSize;
               }
               else 

@@ -2,7 +2,7 @@
 <!--Language file translated with Team XBMC Translator-->
 <!--Translator: ezechiel1917-->
 <!--Date of translation: 26/09/2010-->
-<!--updated 7/11/2011 by mirek-->
+<!--updated 3/12/2011 by mirek-->
 <strings>
   <string id="0">Programy</string>
   <string id="1">Obrázky</string>
@@ -2389,7 +2389,7 @@
   <string id="36013">Nepodporovaná verze libcec rozhraní. %d je vyšší než verze podporovaná XBMC (%d)</string>
   <string id="36014">Při vypnutí TV uspat tento počítač</string>
   <string id="36015">HDMI port</string>
-  <string id="36016">XBMC připojeno</string>
+  <string id="36016">Připojeno</string> <!-- maximálně 13 znaků -->
   <string id="36017">Adaptér byl nalezen, ale libcec není k dispozici</string>
   <string id="36018">Použít nastavení jazyka v TV</string>
 </strings>

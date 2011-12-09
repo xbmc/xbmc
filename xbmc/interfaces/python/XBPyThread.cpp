@@ -92,7 +92,7 @@ void XBPyThread::setSource(const CStdString &src)
 {
 #ifdef TARGET_WINDOWS
   CStdString strsrc = src;
-  g_charsetConverter.utf8ToStringCharset(strsrc);
+  g_charsetConverter.utf8ToSystem(strsrc);
   m_source  = new char[strsrc.GetLength()+1];
   strcpy(m_source, strsrc);
 #else
@@ -162,7 +162,15 @@ void XBPyThread::Process()
   ADDON::VECADDONS addons;
   ADDON::CAddonMgr::Get().GetAddons(ADDON::ADDON_SCRIPT_MODULE, addons);
   for (unsigned int i = 0; i < addons.size(); ++i)
+#ifdef TARGET_WINDOWS
+  {
+    CStdString strTmp(_P(addons[i]->LibPath()));
+    g_charsetConverter.utf8ToSystem(strTmp);
+    path += PY_PATH_SEP + strTmp;
+  }
+#else
     path += PY_PATH_SEP + _P(addons[i]->LibPath());
+#endif
 
   // and add on whatever our default path is
   path += PY_PATH_SEP;

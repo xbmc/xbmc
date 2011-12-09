@@ -62,10 +62,15 @@ namespace PERIPHERALS
     PERIPHERAL_TUNER
   };
 
+  struct PeripheralID
+  {
+    int m_iVendorId;
+    int m_iProductId;
+  };
+
   struct PeripheralDeviceMapping
   {
-    int                              m_iVendorId;
-    int                              m_iProductId;
+    std::vector<PeripheralID>        m_PeripheralID;
     PeripheralBusType                m_busType;
     PeripheralType                   m_class;
     CStdString                       m_strDeviceName;

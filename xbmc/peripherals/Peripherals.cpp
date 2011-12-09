@@ -324,12 +324,16 @@ int CPeripherals::GetMappingForDevice(const CPeripheralBus &bus, const Periphera
   for (unsigned int iMappingPtr = 0; iMappingPtr < m_mappings.size(); iMappingPtr++)
   {
     PeripheralDeviceMapping mapping = m_mappings.at(iMappingPtr);
+
+    bool bProductMatch = false;
+    for (unsigned int i = 0; i < mapping.m_PeripheralID.size(); i++)
+      if (mapping.m_PeripheralID[i].m_iVendorId == iVendorId && mapping.m_PeripheralID[i].m_iProductId == iProductId)
+        bProductMatch = true;
+
     bool bBusMatch = (mapping.m_busType == PERIPHERAL_BUS_UNKNOWN || mapping.m_busType == bus.Type());
-    bool bVendorMatch = (mapping.m_iVendorId == 0 || mapping.m_iVendorId == iVendorId);
-    bool bProductMatch = (mapping.m_iProductId == 0 || mapping.m_iProductId == iProductId);
     bool bClassMatch = (mapping.m_class == PERIPHERAL_UNKNOWN || mapping.m_class == classType);
 
-    if (bBusMatch && bVendorMatch && bProductMatch && bClassMatch)
+    if (bProductMatch && bBusMatch && bClassMatch)
     {
       CStdString strVendorId, strProductId;
       PeripheralTypeTranslator::FormatHexString(iVendorId, strVendorId);
@@ -348,12 +352,16 @@ void CPeripherals::GetSettingsFromMapping(CPeripheral &peripheral) const
   for (unsigned int iMappingPtr = 0; iMappingPtr < m_mappings.size(); iMappingPtr++)
   {
     const PeripheralDeviceMapping *mapping = &m_mappings.at(iMappingPtr);
+
+    bool bProductMatch = false;
+    for (unsigned int i = 0; i < mapping->m_PeripheralID.size(); i++)
+      if (mapping->m_PeripheralID[i].m_iVendorId == peripheral.VendorId() && mapping->m_PeripheralID[i].m_iProductId == peripheral.ProductId())
+        bProductMatch = true;
+
     bool bBusMatch = (mapping->m_busType == PERIPHERAL_BUS_UNKNOWN || mapping->m_busType == peripheral.GetBusType());
-    bool bVendorMatch = (mapping->m_iVendorId == 0 || mapping->m_iVendorId == peripheral.VendorId());
-    bool bProductMatch = (mapping->m_iProductId == 0 || mapping->m_iProductId == peripheral.ProductId());
     bool bClassMatch = (mapping->m_class == PERIPHERAL_UNKNOWN || mapping->m_class == peripheral.Type());
 
-    if (bBusMatch && bVendorMatch && bProductMatch && bClassMatch)
+    if (bBusMatch && bProductMatch && bClassMatch)
     {
       for (map<CStdString, CSetting *>::const_iterator itr = mapping->m_settings.begin(); itr != mapping->m_settings.end(); itr++)
         peripheral.AddSetting((*itr).first, (*itr).second);
@@ -377,21 +385,46 @@ bool CPeripherals::LoadMappings(void)
     return false;
   }
 
-  TiXmlElement *currentNode = pRootElement->FirstChildElement("peripheral");
-  while (currentNode)
+  for (TiXmlElement *currentNode = pRootElement->FirstChildElement("peripheral"); currentNode; currentNode = currentNode->NextSiblingElement("peripheral"))
   {
+    CStdStringArray vpArray, idArray;
+    PeripheralID id;
     PeripheralDeviceMapping mapping;
 
-    mapping.m_iVendorId     = currentNode->Attribute("vendor") ? PeripheralTypeTranslator::HexStringToInt(currentNode->Attribute("vendor")) : 0;
-    mapping.m_iProductId    = currentNode->Attribute("product") ? PeripheralTypeTranslator::HexStringToInt(currentNode->Attribute("product")) : 0;
+    mapping.m_strDeviceName = currentNode->Attribute("name") ? CStdString(currentNode->Attribute("name")) : StringUtils::EmptyString;
+
+    // If there is no vendor_product attribute ignore this entry
+    if (!currentNode->Attribute("vendor_product"))
+    {
+      CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with missing vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
+      continue;
+    }
+
+    // The vendor_product attribute is a list of comma separated vendor:product pairs
+    StringUtils::SplitString(currentNode->Attribute("vendor_product"), ",", vpArray);
+    for (unsigned int i = 0; i < vpArray.size(); i++)
+    {
+      StringUtils::SplitString(vpArray[i], ":", idArray);
+      if (idArray.size() != 2)
+      {
+        CLog::Log(LOGERROR, "%s - ignoring node \"%s\" with invalid vendor_product attribute", __FUNCTION__, mapping.m_strDeviceName.c_str());
+        continue;
+      }
+
+      id.m_iVendorId = PeripheralTypeTranslator::HexStringToInt(idArray[0]);
+      id.m_iProductId = PeripheralTypeTranslator::HexStringToInt(idArray[1]);
+      mapping.m_PeripheralID.push_back(id);
+    }
+    if (mapping.m_PeripheralID.size() == 0)
+      continue;
+
     mapping.m_busType       = PeripheralTypeTranslator::GetBusTypeFromString(currentNode->Attribute("bus"));
     mapping.m_class         = PeripheralTypeTranslator::GetTypeFromString(currentNode->Attribute("class"));
-    mapping.m_strDeviceName = currentNode->Attribute("name") ? CStdString(currentNode->Attribute("name")) : StringUtils::EmptyString;
     mapping.m_mappedTo      = PeripheralTypeTranslator::GetTypeFromString(currentNode->Attribute("mapTo"));
     GetSettingsFromMappingsFile(currentNode, mapping.m_settings);
 
     m_mappings.push_back(mapping);
-    currentNode = currentNode->NextSiblingElement("peripheral");
+    CLog::Log(LOGDEBUG, "%s - loaded node \"%s\"", __FUNCTION__, mapping.m_strDeviceName.c_str());
   }
 
   return true;
@@ -432,10 +465,10 @@ void CPeripherals::GetSettingsFromMappingsFile(TiXmlElement *xmlNode, map<CStdSt
     }
     else if (strSettingsType.Equals("float"))
     {
-      float fValue = currentNode->Attribute("value") ? atof(currentNode->Attribute("value")) : 0;
-      float fMin   = currentNode->Attribute("min") ? atof(currentNode->Attribute("min")) : 0;
-      float fStep  = currentNode->Attribute("step") ? atof(currentNode->Attribute("step")) : 0;
-      float fMax   = currentNode->Attribute("max") ? atof(currentNode->Attribute("max")) : 0;
+      float fValue = currentNode->Attribute("value") ? (float) atof(currentNode->Attribute("value")) : 0;
+      float fMin   = currentNode->Attribute("min") ? (float) atof(currentNode->Attribute("min")) : 0;
+      float fStep  = currentNode->Attribute("step") ? (float) atof(currentNode->Attribute("step")) : 0;
+      float fMax   = currentNode->Attribute("max") ? (float) atof(currentNode->Attribute("max")) : 0;
       setting = new CSettingFloat(0, strKey, iLabelId, fValue, fMin, fStep, fMax, SPIN_CONTROL_FLOAT);
     }
     else

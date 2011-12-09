@@ -969,7 +969,17 @@ void CUtil::TakeScreenshot(const CStdString &filename, bool sync)
   //make a new buffer and copy the read image to it with the Y axis inverted
   outpixels = new unsigned char[stride * height];
   for (int y = 0; y < height; y++)
+  {
+#ifdef HAS_GLES
+    // we need to save in BGRA order so XOR Swap RGBA -> BGRA
+    unsigned char* swap_pixels = pixels + (height - y - 1) * stride;
+    for (int x = 0; x < width; x++, swap_pixels+=4)
+    {
+      std::swap(swap_pixels[0], swap_pixels[2]);
+    }   
+#endif
     memcpy(outpixels + y * stride, pixels + (height - y - 1) * stride, stride);
+  }
 
   delete [] pixels;
 
