@@ -86,6 +86,7 @@ bool CEpgDatabase::CreateTables(void)
         ");"
     );
     m_pDS->exec("CREATE UNIQUE INDEX idx_epg_idEpg_iStartTime on epgtags(idEpg, iStartTime desc);");
+    m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
 
     CLog::Log(LOGDEBUG, "EpgDB - %s - creating table 'lastepgscan'", __FUNCTION__);
     m_pDS->exec("CREATE TABLE lastepgscan ("
@@ -131,6 +132,10 @@ bool CEpgDatabase::UpdateOldVersion(int iVersion)
       m_pDS->exec("DROP INDEX idx_epg_idEpg;");
       m_pDS->exec("DROP INDEX idx_epg_iStartTime;");
       m_pDS->exec("DROP INDEX idx_epg_iEndTime;");
+    }
+    if (iVersion < 7)
+    {
+      m_pDS->exec("CREATE INDEX idx_epg_iEndTime on epgtags(iEndTime);");
     }
   }
   catch (...)
