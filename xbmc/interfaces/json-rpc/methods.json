@@ -1272,7 +1272,7 @@
       { "name": "channelid", "type": "integer", "minimum": 0, "required": true }
     ],
     "returns": "string"
-  "}",
+  },
   "PVR.ChannelUp": {
     "type": "method",
     "description": "Switch channel up",
@@ -1280,7 +1280,7 @@
     "permission": "ControlPlayback",
     "params": [],
     "returns": "string"
-  "}",
+  },
   "PVR.ChannelDown": {
     "type": "method",
     "description": "Switch channel down",
@@ -1288,17 +1288,17 @@
     "permission": "ControlPlayback",
     "params": [],
     "returns": "string"
-  "}",
+  },
   "PVR.ScheduleRecording": {
     "type": "method",
     "description": "Schedule recording",
     "transport": "Response",
     "permission": "ControlPlayback",
     "params": [
-      { "name": "epgid", "type": "integer", "minimum": 0, "required": true }
-      { "name": "uniqueid", "type": "integer", "minimum": 0, "required": true }
-      { "name": "starttime", "type": "integer", "minimum": 0, "required": true},
+      { "name": "epgid", "type": "integer", "minimum": 0, "required": true },
+      { "name": "uniqueid", "type": "integer", "minimum": 0, "required": true },
+      { "name": "starttime", "type": "integer", "minimum": 0, "required": true}
     ],
     "returns": "string"
-  "}"
+  }
 }
