@@ -85,7 +85,7 @@ def location(string):
 
 def geoip():
     data = fetch(GEOIP_URL % aik[::-1])
-    if data != '':
+    if data != '' and data.has_key('location'):
         location = data['location']['l']
         __addon__.setSetting('Location1', data['location']['city'])
         __addon__.setSetting('Location1id', location)
