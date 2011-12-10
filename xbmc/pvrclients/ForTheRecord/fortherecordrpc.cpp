@@ -38,7 +38,6 @@
 using namespace ADDON;
 
 // Some version dependent API strings
-#define FTR_GETEPG_40 "ForTheRecord/Guide/Programs/%s/%i-%02i-%02iT%02i:%02i:%02i/%i-%02i-%02iT%02i:%02i:%02i"
 #define FTR_GETEPG_45 "ForTheRecord/Guide/FullPrograms/%s/%i-%02i-%02iT%02i:%02i:%02i/%i-%02i-%02iT%02i:%02i:%02i/false"
 
 
@@ -748,7 +747,7 @@ namespace ForTheRecord
       char command[256];
       
       //Format: ForTheRecord/Guide/Programs/{guideChannelId}/{lowerTime}/{upperTime}
-      snprintf(command, 256, backendversion == 45 ? FTR_GETEPG_45 : FTR_GETEPG_40 , 
+      snprintf(command, 256, FTR_GETEPG_45, 
                guidechannel_id.c_str(),
                epg_start.tm_year + 1900, epg_start.tm_mon + 1, epg_start.tm_mday,
                epg_start.tm_hour, epg_start.tm_min, epg_start.tm_sec,
