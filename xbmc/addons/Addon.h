@@ -26,10 +26,10 @@
 #include "Util.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
+#include "addons/AddonCallbacksAddon.h"
 
 class CURL;
 class TiXmlElement;
-class CAddonCallbacksAddon;
 
 typedef struct cp_plugin_info_t cp_plugin_info_t;
 typedef struct cp_extension_t cp_extension_t;
