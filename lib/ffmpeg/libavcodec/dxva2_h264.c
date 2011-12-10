@@ -431,6 +431,7 @@ static int end_frame(AVCodecContext *avctx)
     if (ctx_pic->slice_count <= 0 || ctx_pic->bitstream_size <= 0) {
         av_log(avctx, AV_LOG_ERROR, "h264_dxva2 failed to end_frame slicecount <- %d bitstreamsize <- %d \n", ctx_pic->slice_count, ctx_pic->bitstream_size);
         return -1;
+    }
 
     // Wait for an I-frame before start decoding. Workaround for ATI UVD and UVD+ GPUs
     if (!h->got_first_iframe) {
