@@ -173,8 +173,7 @@ bool CEpgInfoTag::operator ==(const CEpgInfoTag& right) const
           m_strIconPath        == right.m_strIconPath &&
           m_strFileNameAndPath == right.m_strFileNameAndPath &&
           m_startTime          == right.m_startTime &&
-          m_endTime            == right.m_endTime &&
-          m_firstAired         == right.m_firstAired);
+          m_endTime            == right.m_endTime);
 }
 
 bool CEpgInfoTag::operator !=(const CEpgInfoTag& right) const
@@ -194,7 +193,6 @@ CEpgInfoTag &CEpgInfoTag::operator =(const CEpgInfoTag &other)
   m_iGenreType         = other.m_iGenreType;
   m_iGenreSubType      = other.m_iGenreSubType;
   m_iParentalRating    = other.m_iParentalRating;
-  m_firstAired         = other.m_firstAired;
   m_iStarRating        = other.m_iStarRating;
   m_iSeriesNumber      = other.m_iSeriesNumber;
   m_iEpisodeNumber     = other.m_iEpisodeNumber;
