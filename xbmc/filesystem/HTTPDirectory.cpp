@@ -109,18 +109,20 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
         if (!pItem->m_bIsFolder && pItem->m_dwSize == 0)
         {
           CRegExp reSize;
-          reSize.RegComp(">([0-9.]+)(K|M|G)</td>");
+          reSize.RegComp(">*([0-9.]+)(B|K|M|G| )</td>");
           if (reSize.RegFind(strBuffer.c_str()) >= 0)
           {
             double Size = atof(reSize.GetReplaceString("\\1"));
             CStdString strUnit = reSize.GetReplaceString("\\2");
 
-            if (strUnit == "M")
+            if (strUnit == "K")
               Size = Size * 1024;
+            else if (strUnit == "M")
+              Size = Size * 1024 * 1024;
             else if (strUnit == "G")
-              Size = Size * 1000 * 1024;
+              Size = Size * 1000 * 1024 * 1024;
 
-            pItem->m_dwSize = (int64_t)(Size * 1024);
+            pItem->m_dwSize = (int64_t)Size;
           }
         }
 
@@ -129,6 +131,8 @@ bool CHTTPDirectory::GetDirectory(const CStdString& strPath, CFileItemList &item
     }
   }
   http.Close();
+
+  items.SetProperty("IsHTTPDirectory", true);
 
   return true;
 }

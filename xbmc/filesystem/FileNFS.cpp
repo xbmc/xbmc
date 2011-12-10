@@ -578,7 +578,8 @@ int CFileNFS::Write(const void* lpBuf, int64_t uiBufSize)
   int numberOfBytesWritten = 0;
   int writtenBytes = 0;
   int leftBytes = uiBufSize;
-  int chunkSize = gNfsConnection.GetMaxWriteChunkSize();
+  //clamp max write chunksize to 32kb - fixme - this might be superfluious with future libnfs versions
+  int chunkSize = gNfsConnection.GetMaxWriteChunkSize() > 32768 ? 32768 : gNfsConnection.GetMaxWriteChunkSize();
   
   CSingleLock lock(gNfsConnection);
   

@@ -326,17 +326,21 @@ CStdString CID3Tag::GetComment() const
 
     // Skip non-empty short-description
     ucs4 = m_dll.id3_field_getstring(m_dll.id3_frame_field(frame, 2));
-    if (*ucs4)
+    if (!ucs4 || *ucs4)
       continue;
 
     field = m_dll.id3_frame_field(frame, 3);
-    if (!field || (field->type != ID3_FIELD_TYPE_STRINGFULL))
+    if (!field || (m_dll.id3_field_type(field) != ID3_FIELD_TYPE_STRINGFULL))
       return "";
+      
+    ucs4 = m_dll.id3_field_getfullstring(field);
 
+    field = m_dll.id3_frame_field(frame, 0);
     if (field && (m_dll.id3_field_type(field) == ID3_FIELD_TYPE_TEXTENCODING))
       encoding = m_dll.id3_field_gettextencoding(field);
-
-    ucs4 = m_dll.id3_field_getfullstring(field);
+      
+    //when we are here - we found what we have looked for
+    break;
   }
   return ToStringCharset(ucs4, encoding);
 }
