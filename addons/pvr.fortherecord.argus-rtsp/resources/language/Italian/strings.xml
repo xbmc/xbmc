@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>
-    <!-- settings labels -->
-    <string id="30000">Nome del server ForTheRecord</string>
-    <string id="30001">Porta del webserver di ForTheRecord</string>
-    <string id="30002">Includi Radio</string>
-    <string id="30003">Timeout per la connessione (s)</string>
-</strings>

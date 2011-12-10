@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>
-    <!-- settings labels -->
-    <string id="30000">ForTheRecord hostnaam</string>
-    <string id="30001">ForTheRecord webserver poort</string>
-    <string id="30002">Toon radio</string>
-    <string id="30003">Verbindingstimeout (s)</string>
-</strings>
