@@ -152,13 +152,13 @@ namespace EPG
      * @brief Get the event that is occurring now.
      * @return The current event.
      */
-    virtual const CEpgInfoTag *InfoTagNow(void) const;
+    virtual bool InfoTagNow(CEpgInfoTag &tag) const;
 
     /*!
      * @brief Get the event that will occur next.
      * @return The next event.
      */
-    virtual const CEpgInfoTag *InfoTagNext(void) const;
+    virtual bool InfoTagNext(CEpgInfoTag &tag) const;
 
     /*!
      * @brief Get the event that occurs at the given time.

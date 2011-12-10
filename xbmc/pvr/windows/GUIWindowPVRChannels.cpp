@@ -207,6 +207,9 @@ void CGUIWindowPVRChannels::UpdateData(void)
 
   m_parent->m_vecItems->SetPath(strPath);
   m_parent->Update(m_parent->m_vecItems->GetPath());
+  m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
+  if (!SelectPlayingFile())
+    m_parent->m_viewControl.SetSelectedItem(m_iSelected);
 
   /* empty list */
   if (m_parent->m_vecItems->Size() == 0)
@@ -215,6 +218,7 @@ void CGUIWindowPVRChannels::UpdateData(void)
     {
       /* show the visible channels instead */
       m_bShowHiddenChannels = false;
+      m_bIsFocusing = false;
       graphicsLock.Leave();
       lock.Leave();
 
@@ -227,10 +231,6 @@ void CGUIWindowPVRChannels::UpdateData(void)
         return;
     }
   }
-
-  m_parent->m_viewControl.SetItems(*m_parent->m_vecItems);
-  if (!SelectPlayingFile())
-    m_parent->m_viewControl.SetSelectedItem(m_iSelected);
 
   m_parent->SetLabel(CONTROL_LABELHEADER, g_localizeStrings.Get(m_bRadio ? 19024 : 19023));
   if (m_bShowHiddenChannels)

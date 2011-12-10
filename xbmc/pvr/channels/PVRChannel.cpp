@@ -711,18 +711,18 @@ bool CPVRChannel::ClearEPG() const
   return true;
 }
 
-const CEpgInfoTag* CPVRChannel::GetEPGNow(void) const
+bool CPVRChannel::GetEPGNow(CEpgInfoTag &tag) const
 {
   CSingleLock lock(m_critSection);
   CEpg *epg = !m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0 ? g_EpgContainer.GetByChannel(*this) : NULL;
-  return epg ? epg->InfoTagNow() : NULL;
+  return epg ? epg->InfoTagNow(tag) : false;
 }
 
-const CEpgInfoTag* CPVRChannel::GetEPGNext(void) const
+bool CPVRChannel::GetEPGNext(CEpgInfoTag &tag) const
 {
   CSingleLock lock(m_critSection);
   CEpg *epg = !m_bIsHidden && m_bEPGEnabled && m_iEpgId > 0 ? g_EpgContainer.GetByChannel(*this) : NULL;
-  return epg ? epg->InfoTagNext() : NULL;
+  return epg ? epg->InfoTagNext(tag) : false;
 }
 
 bool CPVRChannel::SetEPGEnabled(bool bEPGEnabled /* = true */, bool bSaveInDb /* = false */)

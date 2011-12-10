@@ -450,7 +450,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel now.
      */
-    const EPG::CEpgInfoTag* GetEPGNow() const;
+    bool GetEPGNow(EPG::CEpgInfoTag &tag) const;
 
     /*!
      * @brief Get the EPG tag that is active on this channel next.
@@ -460,7 +460,7 @@ namespace PVR
      *
      * @return The EPG tag that is active on this channel next.
      */
-    const EPG::CEpgInfoTag* GetEPGNext() const;
+    bool GetEPGNext(EPG::CEpgInfoTag &tag) const;
 
     /*!
      * @brief Don't use an EPG for this channel if set to false.

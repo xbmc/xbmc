@@ -204,10 +204,9 @@ void CEpg::Cleanup(const CDateTime &Time)
   }
 }
 
-const CEpgInfoTag *CEpg::InfoTagNow(void) const
+bool CEpg::InfoTagNow(CEpgInfoTag &tag) const
 {
   CSingleLock lock(m_critSection);
-
   if (!m_nowActive || !m_nowActive->IsActive())
   {
     CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
@@ -223,45 +222,51 @@ const CEpgInfoTag *CEpg::InfoTagNow(void) const
     }
   }
 
-  return m_nowActive;
+  if (m_nowActive)
+    tag = *m_nowActive;
+  return m_nowActive != NULL;
 }
 
-const CEpgInfoTag *CEpg::InfoTagNext(void) const
+bool CEpg::InfoTagNext(CEpgInfoTag &tag) const
 {
-  CSingleLock lock(m_critSection);
-
-  const CEpgInfoTag *nowTag = InfoTagNow();
-  if (nowTag != NULL)
+  CEpgInfoTag nowTag;
+  if (InfoTagNow(nowTag))
   {
-    return nowTag->GetNextEvent();
+    const CEpgInfoTag *nextTag = nowTag.GetNextEvent();
+    if (nextTag)
+      tag = *nextTag;
+    return nextTag != NULL;
   }
-  else if (size() >  0)
+
+  CSingleLock lock(m_critSection);
+  if (size() >  0)
   {
     CDateTime now = CDateTime::GetCurrentDateTime().GetAsUTCDateTime();
     for (unsigned int iTagPtr = 0; iTagPtr < size(); iTagPtr++)
     {
       if (at(iTagPtr)->StartAsUTC() > now)
-        return at(iTagPtr);
+      {
+        tag = *at(iTagPtr);
+        return true;
+      }
     }
   }
 
-  return NULL;
+  return false;
 }
 
 bool CEpg::CheckPlayingEvent(void)
 {
-  bool bChanged(false);
+  bool bReturn(false);
   CSingleLock lock(m_critSection);
-  const CEpgInfoTag *currentEvent = m_nowActive;
-  const CEpgInfoTag *updatedEvent = InfoTagNow();
-
-  if ((!currentEvent && updatedEvent) || (currentEvent && !updatedEvent) || (currentEvent && *currentEvent != *updatedEvent))
+  const CEpgInfoTag *previousTag = m_nowActive;
+  CEpgInfoTag tag;
+  if (InfoTagNow(tag) && (!previousTag || *previousTag != tag))
   {
-    SetChanged();
     NotifyObservers("epg-current-event");
-    bChanged = true;
+    bReturn = true;
   }
-  return bChanged;
+  return bReturn;
 }
 
 CEpgInfoTag *CEpg::GetTag(int uniqueID, const CDateTime &StartTime) const

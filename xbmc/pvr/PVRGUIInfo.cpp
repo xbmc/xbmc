@@ -841,14 +841,13 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
     if (!bHasEpgTag || !epgTag.IsActive() ||
         !channel || *channel != currentChannel)
     {
-      const CEpgInfoTag *newTag = currentChannel.GetEPGNow();
-
+      CEpgInfoTag newTag;
       {
         CSingleLock lock(m_critSection);
         ResetPlayingTag();
-        if (newTag)
+        if (currentChannel.GetEPGNow(newTag))
         {
-          m_playingEpgTag = new CEpgInfoTag(*newTag);
+          m_playingEpgTag = new CEpgInfoTag(newTag);
           m_iDuration     = m_playingEpgTag->GetDuration() * 1000;
         }
       }

@@ -422,9 +422,9 @@ CPVRTimerInfoTag *CPVRTimers::InstantTimer(CPVRChannel *channel, bool bStartTime
   if (!channel)
     return NULL;
 
-  const CEpgInfoTag *epgTag = channel->GetEPGNow();
-
-  CPVRTimerInfoTag *newTimer = epgTag ? CPVRTimerInfoTag::CreateFromEpg(*epgTag) : NULL;
+  CEpgInfoTag epgTag;
+  bool bHasEpgNow = channel->GetEPGNow(epgTag);
+  CPVRTimerInfoTag *newTimer = bHasEpgNow ? CPVRTimerInfoTag::CreateFromEpg(epgTag) : NULL;
   if (!newTimer)
   {
     newTimer = new CPVRTimerInfoTag;
