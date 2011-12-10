@@ -170,6 +170,8 @@ public:
   
   virtual CStdString GetPlayingTitle() { return ""; };
 
+  virtual void DisplayChange(){};
+
 protected:
   IPlayerCallback& m_callback;
 };

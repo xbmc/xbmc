@@ -223,6 +223,8 @@ public:
 
   virtual CStdString GetPlayingTitle();
 
+  virtual void DisplayChange();
+
   enum ECacheState
   { CACHESTATE_DONE = 0
   , CACHESTATE_FULL     // player is filling up the demux queue
