@@ -819,7 +819,8 @@ namespace JSONRPC
           "\"UpdateData\": { \"type\": \"boolean\", \"required\": true },"
           "\"RemoveData\": { \"type\": \"boolean\", \"required\": true },"
           "\"Navigate\": { \"type\": \"boolean\", \"required\": true },"
-          "\"WriteFile\": { \"type\": \"boolean\", \"required\": true }"
+          "\"WriteFile\": { \"type\": \"boolean\", \"required\": true },"
+          "\"ManageRecordings\": { \"type\": \"boolean\", \"required\": true }"
         "}"
       "}"
     "}",
@@ -2070,7 +2071,7 @@ namespace JSONRPC
       "\"type\": \"method\","
       "\"description\": \"Schedule recording\","
       "\"transport\": \"Response\","
-      "\"permission\": \"ControlPlayback\","
+      "\"permission\": \"ManageRecordings\","
       "\"params\": ["
         "{ \"name\": \"epgid\", \"type\": \"integer\", \"minimum\": 0, \"required\": true },"
         "{ \"name\": \"uniqueid\", \"type\": \"integer\", \"minimum\": 0, \"required\": true },"
