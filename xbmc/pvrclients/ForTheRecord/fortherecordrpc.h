@@ -23,8 +23,11 @@
 #include <json/json.h>
 #include <cstdlib>
 
-#define FTR_REST_MINIMUM_API_VERSION 40
-#define FTR_REST_MAXIMUM_API_VERSION 45
+#define FTR_1_5_0_3 (40)
+#define FTR_1_6_0_1 (45)
+#define FTR_1_6_1_0 (48)
+#define FTR_REST_MINIMUM_API_VERSION FTR_1_6_0_1
+#define FTR_REST_MAXIMUM_API_VERSION FTR_1_6_1_0
 #define E_FAILED -1
 
 namespace ForTheRecord

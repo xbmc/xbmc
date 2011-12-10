@@ -335,7 +335,7 @@ PVR_ERROR cPVRClientForTheRecord::GetChannels(PVR_HANDLE handle, bool bRadio)
         tag.strChannelName = channel.Name();
         std::string logopath = ForTheRecord::GetChannelLogo(channel.Guid()).c_str();
         tag.strIconPath = logopath.c_str();
-        tag.iEncryptionSystem = 0; //How to fetch this from ForTheRecord??
+        tag.iEncryptionSystem = -1; //How to fetch this from ForTheRecord??
         tag.bIsRadio = (channel.Type() == ForTheRecord::Radio ? true : false);
         tag.bIsHidden = false;
         //Use OpenLiveStream to read from the timeshift .ts file or an rtsp stream
@@ -1112,18 +1112,49 @@ PVR_ERROR cPVRClientForTheRecord::SignalStatus(PVR_SIGNAL_STATUS &signalStatus)
 {
   static PVR_SIGNAL_STATUS tag;
 
-  // Only do the REST call once out of five
+  // Does the FTR version support this?
+  if (m_BackendVersion < FTR_1_6_1_0) return PVR_ERROR_NO_ERROR;
+
+  // Only do the REST call once out of N
   if (m_signalqualityInterval-- <= 0)
   {
     m_signalqualityInterval = SIGNALQUALITY_INTERVAL;
     Json::Value response;
     ForTheRecord::SignalQuality(response);
     memset(&tag, 0, sizeof(tag));
-    snprintf(tag.strAdapterName, 1024, "%s, provider %s, %s",
-      response["Name"].asString().c_str(),
+    std::string cardtype = "";
+    switch (response["CardType"].asInt())
+    {
+    case 0x80:
+      cardtype = "Analog";
+      break;
+    case 8:
+      cardtype = "ATSC";
+      break;
+    case 4:
+      cardtype = "DVB-C";
+      break;
+    case 0x10:
+      cardtype = "DVB-IP";
+      break;
+    case 1:
+      cardtype = "DVB-S";
+      break;
+    case 2:
+      cardtype = "DVB-T";
+      break;
+    default:
+      cardtype = "Unknown card type";
+      break;
+    }
+    snprintf(tag.strAdapterName, 1024, "Provider %s, %s",
       response["ProviderName"].asString().c_str(),
+      cardtype.c_str());
+    snprintf(tag.strAdapterStatus, 1024, "%s, %s",
+      response["Name"].asString().c_str(),
       response["IsFreeToAir"].asBool() ? "free to air" : "encrypted");
     tag.iSNR = (int) (response["SignalQuality"].asInt() * 655.35);
+    tag.iSignal = (int) (response["SignalStrength"].asInt() * 655.35);
   }
 
   signalStatus = tag;
