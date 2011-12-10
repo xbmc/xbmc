@@ -196,7 +196,11 @@ JsonRpcMethodMap CJSONServiceDescription::m_methodMaps[] = {
   { "PVR.ChannelSwitch",                            CPVROperations::ChannelSwitch },
   { "PVR.ChannelUp",                                CPVROperations::ChannelUp },
   { "PVR.ChannelDown",                              CPVROperations::ChannelDown },
-  { "PVR.ScheduleRecording",                        CPVROperations::ScheduleRecording }
+  { "PVR.ScheduleRecording",                        CPVROperations::ScheduleRecording },
+  { "PVR.IsAvailable",                              CPVROperations::IsAvailable },
+  { "PVR.IsScanningChannels",                       CPVROperations::IsScanningChannels },
+  { "PVR.IsRecording",                              CPVROperations::IsRecording },
+  { "PVR.ScanChannels",                             CPVROperations::ScanChannels }
 };
 
 bool CJSONServiceDescription::prepareDescription(std::string &description, CVariant &descriptionObject, std::string &name)

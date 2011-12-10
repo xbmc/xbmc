@@ -2078,6 +2078,38 @@ namespace JSONRPC
         "{ \"name\": \"starttime\", \"type\": \"integer\", \"minimum\": 0, \"required\": true }"
       "],"
       "\"returns\": \"string\""
+    "}",
+    "\"PVR.IsAvailable\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Checks whether PVR is available or not\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": [],"
+      "\"returns\": \"boolean\""
+    "}",
+    "\"PVR.IsScanningChannels\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Checks whether PVR is scanning channels\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": [],"
+      "\"returns\": \"boolean\""
+    "}",
+    "\"PVR.IsRecording\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Checks whether PVR is recording\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"ReadData\","
+      "\"params\": [],"
+      "\"returns\": \"boolean\""
+    "}",
+    "\"PVR.ScanChannels\": {"
+      "\"type\": \"method\","
+      "\"description\": \"Starts a channel scan\","
+      "\"transport\": \"Response\","
+      "\"permission\": \"UpdateData\","
+      "\"params\": [],"
+      "\"returns\": \"string\""
     "}"
   };
 

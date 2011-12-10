@@ -123,6 +123,45 @@ JSON_STATUS CPVROperations::ChannelRecording(const CStdString &method, ITranspor
   }
 }
 
+JSON_STATUS CPVROperations::IsAvailable(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+  result = g_PVRManager.IsStarted();
+
+  return OK;
+}
+
+JSON_STATUS CPVROperations::IsScanningChannels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+ if ( !g_PVRManager.IsStarted() )
+   return FailedToExecute;
+
+ result = g_PVRManager.IsRunningChannelScan();
+
+  return OK;
+}
+
+JSON_STATUS CPVROperations::IsRecording(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+ if ( !g_PVRManager.IsStarted() )
+   return FailedToExecute;
+
+ result = g_PVRManager.IsRecording();
+
+  return OK;
+}
+JSON_STATUS CPVROperations::ScanChannels(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
+{
+ if ( !g_PVRManager.IsStarted() )
+   return FailedToExecute;
+
+ if ( !g_PVRManager.IsRunningChannelScan() )
+   {
+     g_PVRManager.StartChannelScan();
+   }
+
+  return ACK;
+}
+
 JSON_STATUS CPVROperations::ScheduleRecording(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
   if ( g_PVRManager.IsStarted() )
