@@ -139,7 +139,7 @@ CEpgInfoTag::CEpgInfoTag(const CEpgInfoTag &tag) :
     m_nextEvent(NULL),
     m_previousEvent(NULL),
     m_Timer(NULL),
-    m_Epg(NULL)
+    m_Epg(tag.m_Epg)
 {
 }
 
