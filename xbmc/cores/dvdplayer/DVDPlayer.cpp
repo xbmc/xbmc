@@ -3853,6 +3853,11 @@ void CDVDPlayer::UpdatePlayState(double timeout)
       state.canrecord = static_cast<CDVDInputStreamTV*>(m_pInputStream)->CanRecord();
       state.recording = static_cast<CDVDInputStreamTV*>(m_pInputStream)->IsRecording();
     }
+    else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    {
+      state.canrecord = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->CanRecord();
+      state.recording = static_cast<CDVDInputStreamPVRManager*>(m_pInputStream)->IsRecording();
+    }
 
     CDVDInputStream::IDisplayTime* pDisplayTime = dynamic_cast<CDVDInputStream::IDisplayTime*>(m_pInputStream);
     if (pDisplayTime)
@@ -3875,16 +3880,20 @@ void CDVDPlayer::UpdatePlayState(double timeout)
     else
         state.player_state = "";
 
-    CDVDInputStream::IChannel* input = dynamic_cast<CDVDInputStream::IChannel*>(m_pInputStream);
-    if(input)
+    if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_TV))
     {
-      m_State.canrecord = input->CanRecord();
-      m_State.recording = input->IsRecording();
-
-      if(input->GetTotalTime() > 0 && input->GetStartTime() > 0)
+      if(((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime() > 0)
       {
         state.time      -= ((CDVDInputStreamTV*)m_pInputStream)->GetStartTime();
         state.time_total = ((CDVDInputStreamTV*)m_pInputStream)->GetTotalTime();
+      }
+    }
+    else if (m_pInputStream->IsStreamType(DVDSTREAM_TYPE_PVRMANAGER))
+    {
+      if(((CDVDInputStreamPVRManager*)m_pInputStream)->GetTotalTime() > 0)
+      {
+        state.time       = ((CDVDInputStreamPVRManager*)m_pInputStream)->GetStartTime();
+        state.time_total = ((CDVDInputStreamPVRManager*)m_pInputStream)->GetTotalTime();
       }
     }
   }

@@ -745,11 +745,13 @@ int CPVRGUIInfo::GetStartTime(void) const
     /* Calculate here the position we have of the running live TV event.
      * "position in ms" = ("current local time" - "event start local time") * 1000
      */
-    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - m_playingEpgTag->StartAsLocalTime();
-    return time.GetDays()    * 1000 * 60 * 60 * 24
-         + time.GetHours()   * 1000 * 60 * 60
-         + time.GetMinutes() * 1000 * 60
-         + time.GetSeconds() * 1000;
+    CDateTime current = CDateTime::GetCurrentDateTime();
+    CDateTime start = m_playingEpgTag->StartAsLocalTime();
+    CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
+    return (time.GetDays()   * 60 * 60 * 24
+         + time.GetHours()   * 60 * 60
+         + time.GetMinutes() * 60
+         + time.GetSeconds()) * 1000;
   }
   else
   {
@@ -775,6 +777,7 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
   if (g_PVRManager.GetCurrentChannel(&currentChannel))
   {
     if (!m_playingEpgTag || !m_playingEpgTag->IsActive() ||
+        !m_playingEpgTag->ChannelTag() ||
         (*m_playingEpgTag->ChannelTag() != currentChannel))
     {
       if (m_playingEpgTag)
