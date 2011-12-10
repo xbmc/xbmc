@@ -89,7 +89,9 @@ def geoip():
         location = data['location']['l']
         __addon__.setSetting('Location1', data['location']['city'])
         __addon__.setSetting('Location1id', location)
-        return location
+    else:
+        location = ''
+    return location
 
 def forecast(city):
     data = fetch(WEATHER_URL % (aik[::-1], city))
