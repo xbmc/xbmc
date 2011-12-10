@@ -3865,3 +3865,16 @@ CStdString CDVDPlayer::GetPlayingTitle()
 
   return "";
 }
+
+void CDVDPlayer::DisplayChange()
+{
+  CLog::Log(LOGDEBUG, "CDVDPlayer::DisplayChange");
+  // we are assume paused but check it.
+  if (IsPaused())
+    Pause();
+#if defined(TARGET_DARWIN)
+  // reselect audio stream to reinit it.
+  if (HasAudio())
+    SetAudioStream(GetAudioStream());
+#endif
+}

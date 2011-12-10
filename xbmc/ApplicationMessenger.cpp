@@ -477,6 +477,15 @@ case TMSG_POWERDOWN:
       }
       break;
 
+    case TMSG_MEDIA_DISPLAYCHANGE:
+      if (g_application.m_pPlayer)
+      {
+        g_application.ResetScreenSaver();
+        g_application.WakeUpScreenSaverAndDPMS();
+        g_application.m_pPlayer->DisplayChange();
+      }
+      break;
+
     case TMSG_SWITCHTOFULLSCREEN:
       if( g_windowManager.GetActiveWindow() != WINDOW_FULLSCREEN_VIDEO )
         g_application.SwitchToFullScreen();
