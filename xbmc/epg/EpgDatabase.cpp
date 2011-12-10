@@ -392,10 +392,7 @@ int CEpgDatabase::Persist(const CEpgInfoTag &tag, bool bSingleUpdate /* = true *
 
   if (bSingleUpdate)
   {
-    time_t start, end;
-    tag.StartAsUTC().GetAsTime(start);
-    tag.EndAsUTC().GetAsTime(end);
-    Delete(*tag.GetTable(), start, end);
+    Delete(*tag.GetTable(), iStartTime, iEndTime);
   }
 
   int iBroadcastId = tag.BroadcastId();
