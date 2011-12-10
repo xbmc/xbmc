@@ -52,8 +52,10 @@ public:
   void              SetCallbackWindow(void* state, void* object);
   virtual bool      OnClick(int iItem);
   void              SetProperty(const CStdString &strProperty, const CStdString &strValue);
+  void              SetDestroyAfterDeinit(bool destroy = true);
 
 protected:
+  virtual void     OnDeinitWindow(int nextWindowID = 0);
   virtual void     GetContextButtons(int itemNumber, CContextButtons &buttons);
   virtual bool     LoadXML(const CStdString &strPath, const CStdString &strPathLower);
   unsigned int     LoadScriptStrings();
@@ -66,5 +68,6 @@ protected:
   bool             m_bRunning;
   CStdString       m_scriptPath;
   CStdString       m_mediaDir;
+  bool             m_destroyAfterDeinit;
 };
 

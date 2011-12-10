@@ -611,10 +611,11 @@ int main(int argc, char *argv[])
   // see http://lists.libsdl.org/pipermail/sdl-libsdl.org/2008-September/066542.html
   int status;
   status = SDL_main(gArgc, gArgv);
+  SDL_Quit();
 
   [xbmc_delegate applicationWillTerminate:NULL];
   [xbmc_delegate release];
-  [pool drain];
+  [pool release];
 
   return status;
 }

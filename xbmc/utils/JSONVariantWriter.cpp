@@ -19,6 +19,8 @@
  *
  */
 
+#include <locale>
+
 #include "JSONVariantWriter.h"
 
 using namespace std;
@@ -36,6 +38,10 @@ string CJSONVariantWriter::Write(const CVariant &value, bool compact)
   yajl_gen g = yajl_gen_alloc(&conf, NULL);
 #endif
 
+  // Set locale to classic ("C") to ensure valid JSON numbers
+  std::string currentLocale = setlocale(LC_NUMERIC, NULL);
+  setlocale(LC_NUMERIC, "C");
+
   if (InternalWrite(g, value))
   {
     const unsigned char * buffer;
@@ -49,6 +55,9 @@ string CJSONVariantWriter::Write(const CVariant &value, bool compact)
 #endif
     output = string((const char *)buffer, length);
   }
+
+  // Re-set locale to what it was before using yajl
+  setlocale(LC_NUMERIC, currentLocale.c_str());
 
   yajl_gen_clear(g);
 

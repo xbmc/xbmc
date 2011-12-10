@@ -263,9 +263,8 @@ bool CPVRManager::StartUpdateThreads(void)
 
 void CPVRManager::StopUpdateThreads(void)
 {
-  StopThread();
-
   CSingleLock lock(m_critSection);
+  StopThread();
   m_guiInfo->Stop();
   m_addons->Stop();
   SetState(ManagerStateInterrupted);
@@ -724,7 +723,7 @@ bool CPVRManager::UpdateItem(CFileItem& item)
   }
 
   CSingleLock lock(m_critSection);
-  if (*m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag())
+  if ((m_currentFile == NULL) || (*m_currentFile->GetPVRChannelInfoTag() == *item.GetPVRChannelInfoTag()))
     return false;
 
   g_application.CurrentFileItem() = *m_currentFile;
@@ -880,7 +879,7 @@ bool CPVRManager::HasTimers(void) const
 
 bool CPVRManager::IsRecording(void) const
 {
-  return IsStarted() && m_recordings ? m_recordings->GetNumRecordings() > 0 : false;
+  return IsStarted() && m_timers ? m_timers->GetNumActiveRecordings() > 0 : false;
 }
 
 bool CPVRManager::IsIdle(void) const

@@ -68,6 +68,7 @@ private:
    \param string the string in question, which will be modified.
    */
   void RemoveWhiteSpace(CStdString &string);
+  void ConvertJSON(CStdString &string);
   void ClearBuffers();
   void GetBufferParams(bool* result, const char* attribute, bool defvalue);
   void InsertToken(CStdString& strOutput, int buf, const char* token);

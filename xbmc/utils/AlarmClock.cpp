@@ -55,7 +55,7 @@ void CAlarmClock::Start(const CStdString& strName, float n_secs, const CStdStrin
 
   CStdString strAlarmClock;
   CStdString strStarted;
-  if (event.m_strCommand.Equals("xbmc.shutdown") || event.m_strCommand.Equals("xbmc.shutdown()"))
+  if (strName.CompareNoCase("shutdowntimer") == 0)
   {
     strAlarmClock = g_localizeStrings.Get(20144);
     strStarted = g_localizeStrings.Get(20146);

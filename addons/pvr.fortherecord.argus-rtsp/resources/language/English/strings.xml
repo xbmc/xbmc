@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<strings>
-    <!-- settings labels -->
-    <string id="30000">ForTheRecord Hostname</string>
-    <string id="30001">ForTheRecord webserver port</string>
-    <string id="30002">Include Radio</string>
-    <string id="30003">Connect timeout (s)</string>
-</strings>

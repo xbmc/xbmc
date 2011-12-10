@@ -26,10 +26,10 @@
 #include "Util.h"
 #include "URL.h"
 #include "guilib/LocalizeStrings.h"
+#include "addons/AddonCallbacksAddon.h"
 
 class CURL;
 class TiXmlElement;
-class CAddonCallbacksAddon;
 
 typedef struct cp_plugin_info_t cp_plugin_info_t;
 typedef struct cp_extension_t cp_extension_t;
@@ -136,12 +136,6 @@ public:
    */
   virtual CStdString GetSetting(const CStdString& key);
 
-  /*! \brief Load the default settings and override these with any previously configured user settings
-   \return true if settings exist, false otherwise
-   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
-   */
-  virtual bool LoadSettings();
-
   TiXmlElement* GetSettingsXML();
   virtual CStdString GetString(uint32_t id);
 
@@ -175,6 +169,7 @@ public:
    \return true if  min_version <= version <= current_version, false otherwise.
    */
   bool MeetsVersion(const AddonVersion &version) const;
+  virtual bool ReloadSettings();
 
 protected:
   friend class CAddonCallbacksAddon;
@@ -183,6 +178,13 @@ protected:
   CAddon(const CAddon&, const AddonPtr&);
   const AddonPtr Parent() const { return m_parent; }
   virtual void BuildLibName(const cp_extension_t *ext = NULL);
+
+  /*! \brief Load the default settings and override these with any previously configured user settings
+   \param bForce force the load of settings even if they are already loaded (reload)
+   \return true if settings exist, false otherwise
+   \sa LoadUserSettings, SaveSettings, HasSettings, HasUserSettings, GetSetting, UpdateSetting
+   */
+  virtual bool LoadSettings(bool bForce = false);
 
   /*! \brief Load the user settings
    \return true if user settings exist, false otherwise

@@ -133,7 +133,9 @@ bool CGUIWindowLoginScreen::OnAction(const CAction &action)
   // this forces only navigation type actions to be performed.
   if (action.GetID() == ACTION_BUILT_IN_FUNCTION)
   {
-    if (action.GetName().Find("shutdown") != 1)
+    CStdString actionName = action.GetName();
+    actionName.ToLower();
+    if (actionName.Find("shutdown") != -1)
       CBuiltins::Execute(action.GetName());
     return true;
   }

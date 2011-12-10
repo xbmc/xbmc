@@ -213,6 +213,7 @@
 		<control type="button" id="90132">
 			<include>ButtonHomeSubCommonValues</include>
 			<label>13391</label>
+			<onclick>SetFocus(9000)</onclick>
 			<onclick>EjectTray()</onclick>
 		</control>
 		<control type="image" id="90126">

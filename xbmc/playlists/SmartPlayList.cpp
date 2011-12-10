@@ -677,7 +677,7 @@ CStdString CSmartPlaylistRule::GetDatabaseField(DATABASE_FIELD field, const CStd
     else if (field == FIELD_PATH) result = "strPath";
     else if (field == FIELD_RANDOM) result = "RANDOM()";      // only used for order clauses
     else if (field == FIELD_DATEADDED) result = "idMovie";       // only used for order clauses
-    else if (field == FIELD_SET) result = "strSet";
+    else if (field == FIELD_SET) result = "idSet";  // only used for order clauses
     return result;
   }
   else if (type == "musicvideos")

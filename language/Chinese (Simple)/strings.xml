@@ -1917,7 +1917,8 @@
   <string id="21364">编辑媒体共享</string>
   <string id="21365">移除媒体共享</string>
   <string id="21366">字幕目录</string>
-  <string id="21367">视频和相关字幕目录</string>
+  <string id="21367">视频和备用字幕目录</string>
+  <string id="21368">取代 ASS/SSA 字幕字体</string>
 
   <string id="21369">启用鼠标和触摸屏支持</string>
   <string id="21370">在播放媒体文件时播放导航声效</string>
@@ -2381,6 +2382,7 @@
   <string id="36013">不支持的 libcec 界面版本。%d 高于 XBMC 支持的版本（%d）</string>
   <string id="36014">电视关闭时本计算机进入待机状态</string>
   <string id="36015">HDMI 端口号</string>
-  <string id="36016">XBMC 已连接</string>
+  <string id="36016">XBMC 已连接</string> <!-- max. 13 characters -->
   <string id="36017">发现适配器，但 libcec 不可用</string>
+  <string id="36018">使用电视机语言设置</string>
 </strings>

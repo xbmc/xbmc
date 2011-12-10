@@ -994,6 +994,22 @@
 		F5AE4166134175520004BD79 /* XBMCOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE4159134175520004BD79 /* XBMCOperations.cpp */; };
 		F5AE4530134D2E3E0004BD79 /* JSONServiceDescription.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5AE452E134D2E3E0004BD79 /* JSONServiceDescription.cpp */; };
 		F5B13DCF1334490D0045076D /* DarwinUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = F5B13DCE1334490D0045076D /* DarwinUtils.mm */; };
+		F5BD034F148D496A001B5583 /* CryptThreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BD034D148D496A001B5583 /* CryptThreading.cpp */; };
+		F5CEE73013D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE72F13D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp */; };
+		F5E1127B14356C4600175026 /* pyrendercapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E1127A14356C4600175026 /* pyrendercapture.cpp */; };
+		F5E112DB143577A000175026 /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112B2143577A000175026 /* PeripheralBusUSB.cpp */; };
+		F5E112DC143577A000175026 /* PeripheralBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112B4143577A000175026 /* PeripheralBus.cpp */; };
+		F5E112E0143577A000175026 /* Peripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112BD143577A000175026 /* Peripheral.cpp */; };
+		F5E112E1143577A000175026 /* PeripheralBluetooth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112BF143577A000175026 /* PeripheralBluetooth.cpp */; };
+		F5E112E2143577A000175026 /* PeripheralCecAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112C1143577A000175026 /* PeripheralCecAdapter.cpp */; };
+		F5E112E3143577A000175026 /* PeripheralDisk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112C3143577A000175026 /* PeripheralDisk.cpp */; };
+		F5E112E4143577A000175026 /* PeripheralHID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112C5143577A000175026 /* PeripheralHID.cpp */; };
+		F5E112E5143577A000175026 /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112C7143577A000175026 /* PeripheralNIC.cpp */; };
+		F5E112E6143577A000175026 /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112C9143577A000175026 /* PeripheralNyxboard.cpp */; };
+		F5E112E7143577A000175026 /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112CB143577A000175026 /* PeripheralTuner.cpp */; };
+		F5E112E8143577A000175026 /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112CE143577A000175026 /* GUIDialogPeripheralManager.cpp */; };
+		F5E112E9143577A000175026 /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112D0143577A000175026 /* GUIDialogPeripheralSettings.cpp */; };
+		F5E112EC143577A000175026 /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E112D4143577A000175026 /* Peripherals.cpp */; };
 		F5E6209613E907E200D5F2CD /* InfoBool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5E6209413E907E200D5F2CD /* InfoBool.cpp */; };
 /* End PBXBuildFile section */
 
@@ -3097,6 +3113,40 @@
 		F5AE539813673FC70004BD79 /* IOSAudioRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOSAudioRingBuffer.h; path = AudioRenderers/IOSAudioRingBuffer.h; sourceTree = "<group>"; };
 		F5B13DCD1334490D0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13DCE1334490D0045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
+		F5BD034D148D496A001B5583 /* CryptThreading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CryptThreading.cpp; sourceTree = "<group>"; };
+		F5BD034E148D496A001B5583 /* CryptThreading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryptThreading.h; sourceTree = "<group>"; };
+		F5CEE72F13D3F9D100225F72 /* DVDOverlayCodecTX3G.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDOverlayCodecTX3G.cpp; sourceTree = "<group>"; };
+		F5CEE73113D3F9D800225F72 /* DVDOverlayCodecTX3G.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDOverlayCodecTX3G.h; sourceTree = "<group>"; };
+		F5E1127A14356C4600175026 /* pyrendercapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pyrendercapture.cpp; sourceTree = "<group>"; };
+		F5E1127C14356C4D00175026 /* pyrendercapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pyrendercapture.h; sourceTree = "<group>"; };
+		F5E112B2143577A000175026 /* PeripheralBusUSB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusUSB.cpp; sourceTree = "<group>"; };
+		F5E112B3143577A000175026 /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
+		F5E112B4143577A000175026 /* PeripheralBus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBus.cpp; sourceTree = "<group>"; };
+		F5E112B5143577A000175026 /* PeripheralBus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBus.h; sourceTree = "<group>"; };
+		F5E112B6143577A000175026 /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
+		F5E112BD143577A000175026 /* Peripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripheral.cpp; sourceTree = "<group>"; };
+		F5E112BE143577A000175026 /* Peripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Peripheral.h; sourceTree = "<group>"; };
+		F5E112BF143577A000175026 /* PeripheralBluetooth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBluetooth.cpp; sourceTree = "<group>"; };
+		F5E112C0143577A000175026 /* PeripheralBluetooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBluetooth.h; sourceTree = "<group>"; };
+		F5E112C1143577A000175026 /* PeripheralCecAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralCecAdapter.cpp; sourceTree = "<group>"; };
+		F5E112C2143577A000175026 /* PeripheralCecAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralCecAdapter.h; sourceTree = "<group>"; };
+		F5E112C3143577A000175026 /* PeripheralDisk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralDisk.cpp; sourceTree = "<group>"; };
+		F5E112C4143577A000175026 /* PeripheralDisk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralDisk.h; sourceTree = "<group>"; };
+		F5E112C5143577A000175026 /* PeripheralHID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralHID.cpp; sourceTree = "<group>"; };
+		F5E112C6143577A000175026 /* PeripheralHID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralHID.h; sourceTree = "<group>"; };
+		F5E112C7143577A000175026 /* PeripheralNIC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralNIC.cpp; sourceTree = "<group>"; };
+		F5E112C8143577A000175026 /* PeripheralNIC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralNIC.h; sourceTree = "<group>"; };
+		F5E112C9143577A000175026 /* PeripheralNyxboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralNyxboard.cpp; sourceTree = "<group>"; };
+		F5E112CA143577A000175026 /* PeripheralNyxboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralNyxboard.h; sourceTree = "<group>"; };
+		F5E112CB143577A000175026 /* PeripheralTuner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralTuner.cpp; sourceTree = "<group>"; };
+		F5E112CC143577A000175026 /* PeripheralTuner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTuner.h; sourceTree = "<group>"; };
+		F5E112CE143577A000175026 /* GUIDialogPeripheralManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralManager.cpp; sourceTree = "<group>"; };
+		F5E112CF143577A000175026 /* GUIDialogPeripheralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralManager.h; sourceTree = "<group>"; };
+		F5E112D0143577A000175026 /* GUIDialogPeripheralSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralSettings.cpp; sourceTree = "<group>"; };
+		F5E112D1143577A000175026 /* GUIDialogPeripheralSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralSettings.h; sourceTree = "<group>"; };
+		F5E112D4143577A000175026 /* Peripherals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripherals.cpp; sourceTree = "<group>"; };
+		F5E112D5143577A000175026 /* Peripherals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Peripherals.h; sourceTree = "<group>"; };
+		F5E112D6143577A000175026 /* PeripheralTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTypes.h; sourceTree = "<group>"; };
 		F5E6209413E907E200D5F2CD /* InfoBool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InfoBool.cpp; sourceTree = "<group>"; };
 		F5E6209513E907E200D5F2CD /* InfoBool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoBool.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -5899,6 +5949,10 @@
 				F56C8719131F42EC000AD0F6 /* CharsetConverter.h */,
 				F56C871A131F42EC000AD0F6 /* CPUInfo.cpp */,
 				F56C871B131F42EC000AD0F6 /* CPUInfo.h */,
+				F56C8705131F42EB000AD0F6 /* Crc32.cpp */,
+				F56C8706131F42EB000AD0F6 /* Crc32.h */,
+				F5BD034D148D496A001B5583 /* CryptThreading.cpp */,
+				F5BD034E148D496A001B5583 /* CryptThreading.h */,
 				F56C871C131F42EC000AD0F6 /* DownloadQueue.cpp */,
 				F56C871D131F42EC000AD0F6 /* DownloadQueue.h */,
 				F56C871E131F42EC000AD0F6 /* DownloadQueueManager.cpp */,
@@ -6317,7 +6371,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\nTARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -aq --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *x86-osx.so --exclude *.zlib --exclude *.a\"\n\n# rsync command for excluding pngs and jpgs as well. Note that if the skin itself is not compiled\n# using XBMCTex then excluding the pngs and jpgs will most likely make the skin unusable \nSYNCSKIN=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.* --exclude *.png --exclude *.jpg --exclude *.bat\"\n#SYNCSKIN=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence --exclude skin.touched --exclude screensaver.rsxs* --exclude visualization.*\"\n\n# binary name is XBMC but we build XBMC.bin so to get a clean binary each time\nmv $TARGET_BUILD_DIR/$TARGET_NAME/XBMC.bin $TARGET_BUILD_DIR/$TARGET_NAME/XBMC\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/tools/osx\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/addons/visualization.glspectrum\"  \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/addons/visualization.waveform\"    \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nif [ -f \"$SRCROOT/addons/skin.touched/addon.xml\" ]; then\n${SYNCSKIN} \"$SRCROOT/addons/skin.touched\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/addons/skin.touched/background\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.touched\"\n${SYNC} \"$SRCROOT/addons/skin.touched/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.touched\"\nfi\n${SYNCSKIN} \"$SRCROOT/addons/skin.confluence\" \t\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n\nfi";
+			shellScript = "#!/bin/bash\n\necho \"copy root files\"\n\nif [ \"$ACTION\" = build ] ; then\n\n# for external testing\nTARGET_NAME=$PRODUCT_NAME.$WRAPPER_EXTENSION\n#SRCROOT=/Users/Shared/xbmc_svn/XBMC\n#TARGET_BUILD_DIR=/Users/Shared/xbmc_svn/XBMC/build/Debug\n\n# rsync command with exclusions for items we don't want in the app package\nSYNC=\"rsync -aq --exclude .DS_Store* --exclude *.dll --exclude *.DLL --exclude *linux.* --exclude *x86-osx.so --exclude *.zlib --exclude *.a\"\n\n# rsync command for skins. jpg, png exclusion is handled during sync\n# if a Textures.xbt file is found \nSKINSYNC=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude *.dll  --exclude *.DLL --exclude *linux.*  --exclude *.bat\"\n\n# rsync command for including everything but the skins\nADDONSYNC=\"rsync -aq --exclude CVS* --exclude .svn* --exclude .cvsignore* --exclude .cvspass* --exclude .DS_Store* --exclude skin.confluence --exclude skin.touched --exclude screensaver.rsxs* --exclude visualization.*\"\n\n# binary name is XBMC but we build XBMC.bin so to get a clean binary each time\nmv $TARGET_BUILD_DIR/$TARGET_NAME/XBMC.bin $TARGET_BUILD_DIR/$TARGET_NAME/XBMC\n\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/language\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/sounds\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/system\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/userdata\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/media\"\nmkdir -p \"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/tools/darwin/runtime\"\n\n${SYNC} \"$SRCROOT/LICENSE.GPL\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${SYNC} \"$SRCROOT/xbmc/osx/Credits.html\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/\"\n${ADDONSYNC} \"$SRCROOT/addons\"\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/addons/visualization.glspectrum\"  \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/addons/visualization.waveform\"    \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/language\"\t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/media\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n\n# sync skin.touched if it exists\nif [ -f \"$SRCROOT/addons/skin.touched/addon.xml\" ]; then\nSYNCSKIN_A=${SKINSYNC}\nif [ -f \"$SRCROOT/addons/skin.touched/media/Textures.xbt\" ]; then\nSYNCSKIN_A=\"${SKINSYNC} --exclude *.png --exclude *.jpg\"\nfi\n${SYNCSKIN_A} \"$SRCROOT/addons/skin.touched\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/addons/skin.touched/background\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.touched\"\n${SYNC} \"$SRCROOT/addons/skin.touched/icon.png\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.touched\"\nfi\n\n# sync skin.confluence\nSYNCSKIN_B=${SKINSYNC}\nif [ -f \"$SRCROOT/addons/skin.confluence/media/Textures.xbt\" ]; then\nSYNCSKIN_B=\"${SKINSYNC} --exclude *.png --exclude *.jpg\"\nfi\n${SYNCSKIN_B} \"$SRCROOT/addons/skin.confluence\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/backgrounds\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n${SYNC} \"$SRCROOT/addons/skin.confluence/icon.png\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome/addons/skin.confluence\"\n\n${SYNC} \"$SRCROOT/sounds\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/system\" \t\t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n${SYNC} \"$SRCROOT/userdata\" \t\"$TARGET_BUILD_DIR/$TARGET_NAME/XBMCData/XBMCHome\"\n\nfi";
 			showEnvVarsInLog = 0;
 		};
 		F589B48D128A697C00D8079E /* copy frameworks */ = {
@@ -7270,38 +7324,35 @@
 				DF79147113D4A0E20018E92E /* Observer.cpp in Sources */,
 				DF79147413D4A0F60018E92E /* TextSearch.cpp in Sources */,
 				F5E6209613E907E200D5F2CD /* InfoBool.cpp in Sources */,
-				DFAC338A13EC693E0020DDC0 /* TimeSmoother.cpp in Sources */,
-				DFAC338B13EC69690020DDC0 /* DVDOverlayCodecTX3G.cpp in Sources */,
-				DFAC338E13EC698D0020DDC0 /* Implementation.cpp in Sources */,
-				DFAC339113EC69A30020DDC0 /* SystemClock.cpp in Sources */,
-				DF34881513FD721B0026A711 /* InertialScrollingHandler.cpp in Sources */,
-				DFB8A88914154BBB0075EAE6 /* AirPlayServer.cpp in Sources */,
-				DFB8A89A14154C190075EAE6 /* HttpParser.cpp in Sources */,
-				DFB8A89D14154C380075EAE6 /* GUIAction.cpp in Sources */,
-				DF07AEBA144CB92B00947926 /* AirTunesServer.cpp in Sources */,
-				DF07AEC5144CB95400947926 /* AFPDirectory.cpp in Sources */,
-				DF07AEC6144CB95400947926 /* FileAFP.cpp in Sources */,
-				DF07AEC7144CB95400947926 /* FilePipe.cpp in Sources */,
-				DF07AEC8144CB95400947926 /* FileUPnP.cpp in Sources */,
-				DF07AEC9144CB95400947926 /* PipesManager.cpp in Sources */,
-				DF07AED6144CB9A600947926 /* ApplicationOperations.cpp in Sources */,
-				DF07AEDD144CB9EC00947926 /* BXAcodec.cpp in Sources */,
-				DF07AEE2144CBA1300947926 /* JpegIO.cpp in Sources */,
-				DF07AEED144CBA9500947926 /* SkinVariable.cpp in Sources */,
-				DF07AEF2144CBACD00947926 /* pyrendercapture.cpp in Sources */,
-				DF07AF28144CBB7500947926 /* PeripheralBusUSB.cpp in Sources */,
-				DF07AF29144CBB7500947926 /* PeripheralBus.cpp in Sources */,
-				DF07AF2D144CBB7500947926 /* Peripheral.cpp in Sources */,
-				DF07AF2E144CBB7500947926 /* PeripheralBluetooth.cpp in Sources */,
-				DF07AF2F144CBB7500947926 /* PeripheralCecAdapter.cpp in Sources */,
-				DF07AF30144CBB7500947926 /* PeripheralDisk.cpp in Sources */,
-				DF07AF31144CBB7500947926 /* PeripheralHID.cpp in Sources */,
-				DF07AF32144CBB7500947926 /* PeripheralNIC.cpp in Sources */,
-				DF07AF33144CBB7500947926 /* PeripheralNyxboard.cpp in Sources */,
-				DF07AF34144CBB7500947926 /* PeripheralTuner.cpp in Sources */,
-				DF07AF35144CBB7500947926 /* GUIDialogPeripheralManager.cpp in Sources */,
-				DF07AF36144CBB7500947926 /* GUIDialogPeripheralSettings.cpp in Sources */,
-				DF07AF39144CBB7500947926 /* Peripherals.cpp in Sources */,
+				DFAB04B013F8383300B70BFB /* InertialScrollingHandler.cpp in Sources */,
+				DF3488F813FD961A0026A711 /* GUIAction.cpp in Sources */,
+				DFA6BE4313FECA010048CC11 /* AirPlayServer.cpp in Sources */,
+				DFA6BE7713FED09C0048CC11 /* HttpParser.cpp in Sources */,
+				18968DDE14155E01005BA742 /* ApplicationOperations.cpp in Sources */,
+				DFCFC52A1413F7D60004D0BF /* AFPDirectory.cpp in Sources */,
+				DFCFC52B1413F7D60004D0BF /* FileAFP.cpp in Sources */,
+				3291892B1423A9B700E878CD /* JpegIO.cpp in Sources */,
+				DF44856C140065C60069344B /* BXAcodec.cpp in Sources */,
+				DF448571140065E10069344B /* FilePipe.cpp in Sources */,
+				DF448572140065E10069344B /* PipesManager.cpp in Sources */,
+				DF4485751400662D0069344B /* AirTunesServer.cpp in Sources */,
+				DF98D9991434F49500A6EBE1 /* SkinVariable.cpp in Sources */,
+				F5E1127B14356C4600175026 /* pyrendercapture.cpp in Sources */,
+				F5E112DB143577A000175026 /* PeripheralBusUSB.cpp in Sources */,
+				F5E112DC143577A000175026 /* PeripheralBus.cpp in Sources */,
+				F5E112E0143577A000175026 /* Peripheral.cpp in Sources */,
+				F5E112E1143577A000175026 /* PeripheralBluetooth.cpp in Sources */,
+				F5E112E2143577A000175026 /* PeripheralCecAdapter.cpp in Sources */,
+				F5E112E3143577A000175026 /* PeripheralDisk.cpp in Sources */,
+				F5E112E4143577A000175026 /* PeripheralHID.cpp in Sources */,
+				F5E112E5143577A000175026 /* PeripheralNIC.cpp in Sources */,
+				F5E112E6143577A000175026 /* PeripheralNyxboard.cpp in Sources */,
+				F5E112E7143577A000175026 /* PeripheralTuner.cpp in Sources */,
+				F5E112E8143577A000175026 /* GUIDialogPeripheralManager.cpp in Sources */,
+				F5E112E9143577A000175026 /* GUIDialogPeripheralSettings.cpp in Sources */,
+				F5E112EC143577A000175026 /* Peripherals.cpp in Sources */,
+				DF6739E21443765F00A5A509 /* FileUPnP.cpp in Sources */,
+				F5BD034F148D496A001B5583 /* CryptThreading.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

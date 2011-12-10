@@ -31,6 +31,7 @@
 #include "settings/AdvancedSettings.h"
 #include "FileItem.h"
 #include "utils/log.h"
+#include "UnrarXLib/rar.hpp"
 
 #ifndef _LINUX
 #include <process.h>
@@ -90,7 +91,19 @@ void CFileRarExtractThread::Process()
     if (AbortableWait(hRestart,1) == WAIT_SIGNALED)
     {
       bool Repeat = false;
-      m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat);
+      try
+      {
+        m_pExtract->ExtractCurrentFile(m_pCmd,*m_pArc,m_iSize,Repeat);
+      }
+      catch (int rarErrCode)
+      {
+        CLog::Log(LOGERROR,"filerar CFileRarExtractThread::Process failed. CmdExtract::ExtractCurrentFile threw a UnrarXLib error code of %d",rarErrCode);
+      }
+      catch (...)
+      {
+        CLog::Log(LOGERROR,"filerar CFileRarExtractThread::Process failed. CmdExtract::ExtractCurrentFile threw an Unknown exception");
+      }
+
       hRunning.Reset();
     }
   }
@@ -533,40 +546,51 @@ void CFileRar::InitFromUrl(const CURL& url)
 void CFileRar::CleanUp()
 {
 #ifdef HAS_FILESYSTEM_RAR
-  if (m_pExtractThread)
+  try
   {
-    if (m_pExtractThread->hRunning.WaitMSec(1))
+    if (m_pExtractThread)
     {
-      m_pExtract->GetDataIO().hQuit->Set();
-      while (m_pExtractThread->hRunning.WaitMSec(1))
-        Sleep(1);
+      if (m_pExtractThread->hRunning.WaitMSec(1))
+      {
+        m_pExtract->GetDataIO().hQuit->Set();
+        while (m_pExtractThread->hRunning.WaitMSec(1))
+          Sleep(1);
+      }
+      delete m_pExtract->GetDataIO().hBufferFilled;
+      delete m_pExtract->GetDataIO().hBufferEmpty;
+      delete m_pExtract->GetDataIO().hSeek;
+      delete m_pExtract->GetDataIO().hSeekDone;
+      delete m_pExtract->GetDataIO().hQuit;
     }
-    delete m_pExtract->GetDataIO().hBufferFilled;
-    delete m_pExtract->GetDataIO().hBufferEmpty;
-    delete m_pExtract->GetDataIO().hSeek;
-    delete m_pExtract->GetDataIO().hSeekDone;
-    delete m_pExtract->GetDataIO().hQuit;
+    if (m_pExtract)
+    {
+      delete m_pExtract;
+      m_pExtract = NULL;
+    }
+    if (m_pArc)
+    {
+      delete m_pArc;
+      m_pArc = NULL;
+    }
+    if (m_pCmd)
+    {
+      delete m_pCmd;
+      m_pCmd = NULL;
+    }
+    if (m_szBuffer)
+    {
+      delete[] m_szBuffer;
+      m_szBuffer = NULL;
+      m_szStartOfBuffer = NULL;
+    }
   }
-  if (m_pExtract)
+  catch (int rarErrCode)
   {
-    delete m_pExtract;
-    m_pExtract = NULL;
+    CLog::Log(LOGERROR,"filerar failed in UnrarXLib while deleting CFileRar with an UnrarXLib error code of %d",rarErrCode);
   }
-  if (m_pArc)
+  catch (...)
   {
-    delete m_pArc;
-    m_pArc = NULL;
-  }
-  if (m_pCmd)
-  {
-    delete m_pCmd;
-    m_pCmd = NULL;
-  }
-  if (m_szBuffer)
-  {
-    delete[] m_szBuffer;
-    m_szBuffer = NULL;
-    m_szStartOfBuffer = NULL;
+    CLog::Log(LOGERROR,"filerar failed in UnrarXLib while deleting CFileRar with an Unknown exception");
   }
 #endif
 }
@@ -574,112 +598,125 @@ void CFileRar::CleanUp()
 bool CFileRar::OpenInArchive()
 {
 #ifdef HAS_FILESYSTEM_RAR
-  int iHeaderSize;
-
-  InitCRC();
-
-  m_pCmd = new CommandData;
-  if (!m_pCmd)
+  try
   {
-    CleanUp();
-    return false;
-  }
+    int iHeaderSize;
 
-  // Set the arguments for the extract command
-  strcpy(m_pCmd->Command, "X");
+    InitCRC();
 
-  m_pCmd->AddArcName(const_cast<char*>(m_strRarPath.c_str()),NULL);
-
-  strncpy(m_pCmd->ExtrPath, m_strCacheDir.c_str(), sizeof (m_pCmd->ExtrPath) - 2);
-  m_pCmd->ExtrPath[sizeof (m_pCmd->ExtrPath) - 2] = 0;
-  AddEndSlash(m_pCmd->ExtrPath);
-
-  // Set password for encrypted archives
-  if ((m_strPassword.size() > 0) &&
-      (m_strPassword.size() < sizeof (m_pCmd->Password)))
-  {
-    strcpy(m_pCmd->Password, m_strPassword.c_str());
-  }
-
-  m_pCmd->ParseDone();
-
-  // Open the archive
-  m_pArc = new Archive(m_pCmd);
-  if (!m_pArc)
-  {
-    CleanUp();
-    return false;
-  }
-  if (!m_pArc->WOpen(m_strRarPath.c_str(),NULL))
-  {
-    CleanUp();
-    return false;
-  }
-  if (!(m_pArc->IsOpened() && m_pArc->IsArchive(true)))
-  {
-    CleanUp();
-    return false;
-  }
-
-  m_pExtract = new CmdExtract;
-  if (!m_pExtract)
-  {
-    CleanUp();
-    return false;
-  }
-  m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,0);
-  m_pExtract->GetDataIO().SetCurrentCommand(*(m_pCmd->Command));
-  struct FindData FD;
-  if (FindFile::FastFind(m_strRarPath.c_str(),NULL,&FD))
-    m_pExtract->GetDataIO().TotalArcSize+=FD.Size;
-  m_pExtract->ExtractArchiveInit(m_pCmd,*m_pArc);
-
-  while (true)
-  {
-    if ((iHeaderSize = m_pArc->ReadHeader()) <= 0)
+    m_pCmd = new CommandData;
+    if (!m_pCmd)
     {
       CleanUp();
       return false;
     }
 
-    if (m_pArc->GetHeaderType() == FILE_HEAD)
+    // Set the arguments for the extract command
+    strcpy(m_pCmd->Command, "X");
+
+    m_pCmd->AddArcName(const_cast<char*>(m_strRarPath.c_str()),NULL);
+
+    strncpy(m_pCmd->ExtrPath, m_strCacheDir.c_str(), sizeof (m_pCmd->ExtrPath) - 2);
+    m_pCmd->ExtrPath[sizeof (m_pCmd->ExtrPath) - 2] = 0;
+    AddEndSlash(m_pCmd->ExtrPath);
+
+    // Set password for encrypted archives
+    if ((m_strPassword.size() > 0) &&
+        (m_strPassword.size() < sizeof (m_pCmd->Password)))
     {
-      CStdString strFileName;
-
-      if (m_pArc->NewLhd.FileNameW && wcslen(m_pArc->NewLhd.FileNameW) > 0)
-      {
-        g_charsetConverter.wToUTF8(m_pArc->NewLhd.FileNameW, strFileName);
-      }
-      else
-      {
-        g_charsetConverter.unknownToUTF8(m_pArc->NewLhd.FileName, strFileName);
-      }
-
-      /* replace back slashes into forward slashes */
-      /* this could get us into troubles, file could two different files, one with / and one with \ */
-      strFileName.Replace('\\', '/');
-
-      if (strFileName == m_strPathInRar)
-      {
-        break;
-      }
+      strcpy(m_pCmd->Password, m_strPassword.c_str());
     }
 
-    m_pArc->SeekToNext();
+    m_pCmd->ParseDone();
+
+    // Open the archive
+    m_pArc = new Archive(m_pCmd);
+    if (!m_pArc)
+    {
+      CleanUp();
+      return false;
+    }
+    if (!m_pArc->WOpen(m_strRarPath.c_str(),NULL))
+    {
+      CleanUp();
+      return false;
+    }
+    if (!(m_pArc->IsOpened() && m_pArc->IsArchive(true)))
+    {
+      CleanUp();
+      return false;
+    }
+
+    m_pExtract = new CmdExtract;
+    if (!m_pExtract)
+    {
+      CleanUp();
+      return false;
+    }
+    m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,0);
+    m_pExtract->GetDataIO().SetCurrentCommand(*(m_pCmd->Command));
+    struct FindData FD;
+    if (FindFile::FastFind(m_strRarPath.c_str(),NULL,&FD))
+      m_pExtract->GetDataIO().TotalArcSize+=FD.Size;
+    m_pExtract->ExtractArchiveInit(m_pCmd,*m_pArc);
+
+    while (true)
+    {
+      if ((iHeaderSize = m_pArc->ReadHeader()) <= 0)
+      {
+        CleanUp();
+        return false;
+      }
+
+      if (m_pArc->GetHeaderType() == FILE_HEAD)
+      {
+        CStdString strFileName;
+
+        if (m_pArc->NewLhd.FileNameW && wcslen(m_pArc->NewLhd.FileNameW) > 0)
+        {
+          g_charsetConverter.wToUTF8(m_pArc->NewLhd.FileNameW, strFileName);
+        }
+        else
+        {
+          g_charsetConverter.unknownToUTF8(m_pArc->NewLhd.FileName, strFileName);
+        }
+
+        /* replace back slashes into forward slashes */
+        /* this could get us into troubles, file could two different files, one with / and one with \ */
+        strFileName.Replace('\\', '/');
+
+        if (strFileName == m_strPathInRar)
+        {
+          break;
+        }
+      }
+
+      m_pArc->SeekToNext();
+    }
+
+    m_szBuffer = new byte[MAXWINMEMSIZE];
+    m_szStartOfBuffer = m_szBuffer;
+    m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,0);
+    m_iDataInBuffer = -1;
+    m_iFilePosition = 0;
+    m_iBufferStart = 0;
+
+    delete m_pExtractThread;
+    m_pExtractThread = new CFileRarExtractThread();
+    m_pExtractThread->Start(m_pArc,m_pCmd,m_pExtract,iHeaderSize);
+
+    return true;
   }
-
-  m_szBuffer = new byte[MAXWINMEMSIZE];
-  m_szStartOfBuffer = m_szBuffer;
-  m_pExtract->GetDataIO().SetUnpackToMemory(m_szBuffer,0);
-  m_iDataInBuffer = -1;
-  m_iFilePosition = 0;
-  m_iBufferStart = 0;
-
-  delete m_pExtractThread;
-  m_pExtractThread = new CFileRarExtractThread();
-  m_pExtractThread->Start(m_pArc,m_pCmd,m_pExtract,iHeaderSize);
-
-  return true;
+  catch (int rarErrCode)
+  {
+    CLog::Log(LOGERROR,"filerar failed in UnrarXLib while CFileRar::OpenInArchive with an UnrarXLib error code of %d",rarErrCode);
+    return false;
+  }
+  catch (...)
+  {
+    CLog::Log(LOGERROR,"filerar failed in UnrarXLib while CFileRar::OpenInArchive with an Unknown exception");
+    return false;
+  }
 #else
   return false;
 #endif

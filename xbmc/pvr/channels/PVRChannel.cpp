@@ -564,95 +564,100 @@ void CPVRChannel::UpdateEncryptionName(void)
     strName = g_localizeStrings.Get(19013); /* Free To Air */
   else if (m_iClientEncryptionSystem <  0x0000)
     strName = g_localizeStrings.Get(13205); /* Unknown */
-  else if (m_iClientEncryptionSystem >= 0x0001 &&
-           m_iClientEncryptionSystem <= 0x009F)
-    strName.Format("%s (%X)", g_localizeStrings.Get(19014).c_str(), m_iClientEncryptionSystem); /* Fixed */
-  else if (m_iClientEncryptionSystem >= 0x00A0 &&
-           m_iClientEncryptionSystem <= 0x00A1)
-    strName.Format("%s (%X)", g_localizeStrings.Get(338).c_str(), m_iClientEncryptionSystem); /* Analog */
-  else if (m_iClientEncryptionSystem >= 0x00A2 &&
-           m_iClientEncryptionSystem <= 0x00FF)
-    strName.Format("%s (%X)", g_localizeStrings.Get(19014).c_str(), m_iClientEncryptionSystem); /* Fixed */
-  else if (m_iClientEncryptionSystem >= 0x0100 &&
-           m_iClientEncryptionSystem <= 0x01FF)
-    strName.Format("%s (%X)", "SECA Mediaguard", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x0464)
-    strName.Format("%s (%X)", "EuroDec", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x0500 &&
-           m_iClientEncryptionSystem <= 0x05FF)
-    strName.Format("%s (%X)", "Viaccess", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x0600 &&
-           m_iClientEncryptionSystem <= 0x06FF)
-    strName.Format("%s (%X)", "Irdeto", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x0900 &&
-           m_iClientEncryptionSystem <= 0x09FF)
-    strName.Format("%s (%X)", "NDS Videoguard", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x0B00 &&
-           m_iClientEncryptionSystem <= 0x0BFF)
-    strName.Format("%s (%X)", "Conax", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x0D00 &&
-           m_iClientEncryptionSystem <= 0x0DFF)
-    strName.Format("%s (%X)", "CryptoWorks", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x0E00 &&
-           m_iClientEncryptionSystem <= 0x0EFF)
-    strName.Format("%s (%X)", "PowerVu", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x1000)
-    strName.Format("%s (%X)", "RAS", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x1200 &&
-           m_iClientEncryptionSystem <= 0x12FF)
-    strName.Format("%s (%X)", "NagraVision", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x1700 &&
-           m_iClientEncryptionSystem <= 0x17FF)
-    strName.Format("%s (%X)", "BetaCrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x1800 &&
-           m_iClientEncryptionSystem <= 0x18FF)
-    strName.Format("%s (%X)", "NagraVision", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x22F0)
-    strName.Format("%s (%X)", "Codicrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x2600)
-    strName.Format("%s (%X)", "BISS", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4347)
-    strName.Format("%s (%X)", "CryptOn", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4800)
-    strName.Format("%s (%X)", "Accessgate", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4900)
-    strName.Format("%s (%X)", "China Crypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4A10)
-    strName.Format("%s (%X)", "EasyCas", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4A20)
-    strName.Format("%s (%X)", "AlphaCrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4A70)
-    strName.Format("%s (%X)", "DreamCrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4A60)
-    strName.Format("%s (%X)", "SkyCrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4A61)
-    strName.Format("%s (%X)", "Neotioncrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4A62)
-    strName.Format("%s (%X)", "SkyCrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4A63)
-    strName.Format("%s (%X)", "Neotion SHL", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x4A64 &&
-           m_iClientEncryptionSystem <= 0x4A6F)
-    strName.Format("%s (%X)", "SkyCrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4A80)
-    strName.Format("%s (%X)", "ThalesCrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4AA1)
-    strName.Format("%s (%X)", "KeyFly", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4ABF)
-    strName.Format("%s (%X)", "DG-Crypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem >= 0x4AD0 &&
-           m_iClientEncryptionSystem <= 0x4AD1)
-    strName.Format("%s (%X)", "X-Crypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4AD4)
-    strName.Format("%s (%X)", "OmniCrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x4AE0)
-    strName.Format("%s (%X)", "RossCrypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x5500)
-    strName.Format("%s (%X)", "Z-Crypt", m_iClientEncryptionSystem);
-  else if (m_iClientEncryptionSystem == 0x5501)
-    strName.Format("%s (%X)", "Griffin", m_iClientEncryptionSystem);
   else
-    strName.Format("%s (%X)", g_localizeStrings.Get(19499).c_str(), m_iClientEncryptionSystem); /* Unknown */
+  {
+    if (     m_iClientEncryptionSystem >= 0x0001 &&
+             m_iClientEncryptionSystem <= 0x009F)
+      strName = g_localizeStrings.Get(19014); /* Fixed */
+    else if (m_iClientEncryptionSystem >= 0x00A0 &&
+             m_iClientEncryptionSystem <= 0x00A1)
+      strName = g_localizeStrings.Get(338); /* Analog */
+    else if (m_iClientEncryptionSystem >= 0x00A2 &&
+             m_iClientEncryptionSystem <= 0x00FF)
+      strName = g_localizeStrings.Get(19014); /* Fixed */
+    else if (m_iClientEncryptionSystem >= 0x0100 &&
+             m_iClientEncryptionSystem <= 0x01FF)
+      strName = "SECA Mediaguard";
+    else if (m_iClientEncryptionSystem == 0x0464)
+      strName = "EuroDec";
+    else if (m_iClientEncryptionSystem >= 0x0500 &&
+             m_iClientEncryptionSystem <= 0x05FF)
+      strName = "Viaccess";
+    else if (m_iClientEncryptionSystem >= 0x0600 &&
+             m_iClientEncryptionSystem <= 0x06FF)
+      strName = "Irdeto";
+    else if (m_iClientEncryptionSystem >= 0x0900 &&
+             m_iClientEncryptionSystem <= 0x09FF)
+      strName = "NDS Videoguard";
+    else if (m_iClientEncryptionSystem >= 0x0B00 &&
+             m_iClientEncryptionSystem <= 0x0BFF)
+      strName = "Conax";
+    else if (m_iClientEncryptionSystem >= 0x0D00 &&
+             m_iClientEncryptionSystem <= 0x0DFF)
+      strName = "CryptoWorks";
+    else if (m_iClientEncryptionSystem >= 0x0E00 &&
+             m_iClientEncryptionSystem <= 0x0EFF)
+      strName = "PowerVu";
+    else if (m_iClientEncryptionSystem == 0x1000)
+      strName = "RAS";
+    else if (m_iClientEncryptionSystem >= 0x1200 &&
+             m_iClientEncryptionSystem <= 0x12FF)
+      strName = "NagraVision";
+    else if (m_iClientEncryptionSystem >= 0x1700 &&
+             m_iClientEncryptionSystem <= 0x17FF)
+      strName = "BetaCrypt";
+    else if (m_iClientEncryptionSystem >= 0x1800 &&
+             m_iClientEncryptionSystem <= 0x18FF)
+      strName = "NagraVision";
+    else if (m_iClientEncryptionSystem == 0x22F0)
+      strName = "Codicrypt";
+    else if (m_iClientEncryptionSystem == 0x2600)
+      strName = "BISS";
+    else if (m_iClientEncryptionSystem == 0x4347)
+      strName = "CryptOn";
+    else if (m_iClientEncryptionSystem == 0x4800)
+      strName = "Accessgate";
+    else if (m_iClientEncryptionSystem == 0x4900)
+      strName = "China Crypt";
+    else if (m_iClientEncryptionSystem == 0x4A10)
+      strName = "EasyCas";
+    else if (m_iClientEncryptionSystem == 0x4A20)
+      strName = "AlphaCrypt";
+    else if (m_iClientEncryptionSystem == 0x4A70)
+      strName = "DreamCrypt";
+    else if (m_iClientEncryptionSystem == 0x4A60)
+      strName = "SkyCrypt";
+    else if (m_iClientEncryptionSystem == 0x4A61)
+      strName = "Neotioncrypt";
+    else if (m_iClientEncryptionSystem == 0x4A62)
+      strName = "SkyCrypt";
+    else if (m_iClientEncryptionSystem == 0x4A63)
+      strName = "Neotion SHL";
+    else if (m_iClientEncryptionSystem >= 0x4A64 &&
+             m_iClientEncryptionSystem <= 0x4A6F)
+      strName = "SkyCrypt";
+    else if (m_iClientEncryptionSystem == 0x4A80)
+      strName = "ThalesCrypt";
+    else if (m_iClientEncryptionSystem == 0x4AA1)
+      strName = "KeyFly";
+    else if (m_iClientEncryptionSystem == 0x4ABF)
+      strName = "DG-Crypt";
+    else if (m_iClientEncryptionSystem >= 0x4AD0 &&
+             m_iClientEncryptionSystem <= 0x4AD1)
+      strName = "X-Crypt";
+    else if (m_iClientEncryptionSystem == 0x4AD4)
+      strName = "OmniCrypt";
+    else if (m_iClientEncryptionSystem == 0x4AE0)
+      strName = "RossCrypt";
+    else if (m_iClientEncryptionSystem == 0x5500)
+      strName = "Z-Crypt";
+    else if (m_iClientEncryptionSystem == 0x5501)
+      strName = "Griffin";
+    else
+      strName = g_localizeStrings.Get(19499); /* Unknown */
+
+    strName.AppendFormat(" (%04X)", m_iClientEncryptionSystem);
+  }
 
   m_strClientEncryptionName = strName;
 }

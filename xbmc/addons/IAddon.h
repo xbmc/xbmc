@@ -111,10 +111,11 @@ namespace ADDON
     virtual CStdString GetString(uint32_t id) =0;
     virtual const ADDONDEPS &GetDeps() const =0;
     virtual bool MeetsVersion(const AddonVersion &version) const =0;
+    virtual bool ReloadSettings() =0;
 
   protected:
     virtual const AddonPtr Parent() const =0;
-    virtual bool LoadSettings() =0;
+    virtual bool LoadSettings(bool bForce = false) =0;
 
   private:
     friend class CAddonMgr;
