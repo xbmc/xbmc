@@ -598,7 +598,12 @@ bool CEpg::Persist(bool bUpdateLastScanTime /* = false */)
 
   if (m_bTagsChanged)
   {
+    m_bTagsChanged = false;
+    lock.Leave();
+
     bReturn = PersistTags();
+
+    lock.Enter();
     if (bReturn)
       m_bTagsChanged = false;
   }

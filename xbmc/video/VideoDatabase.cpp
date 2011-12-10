@@ -363,8 +363,21 @@ void CVideoDatabase::CreateViews()
 
   CLog::Log(LOGINFO, "create movieview");
   m_pDS->exec("DROP VIEW IF EXISTS movieview");
-  m_pDS->exec("create view movieview as select movie.*,files.strFileName as strFileName,path.strPath as strPath,files.playCount as playCount,files.lastPlayed as lastPlayed "
-              "from movie join files on files.idFile=movie.idFile join path on path.idPath=files.idPath");
+  CStdString movieview = PrepareSQL("CREATE VIEW movieview AS SELECT "
+                                    "movie.*,"
+                                    "files.strFileName AS strFileName,"
+                                    "path.strPath AS strPath,"
+                                    "files.playCount AS playCount,"
+                                    "files.lastPlayed AS lastPlayed,"
+                                    "  NULLIF(setlinkmovie.idSet, 0) AS idSet "
+                                    "FROM movie"
+                                    "  LEFT JOIN setlinkmovie ON"
+                                    "    setlinkmovie.idMovie=movie.idMovie"
+                                    "  LEFT JOIN files ON"
+                                    "    files.idFile=movie.idFile"
+                                    "  LEFT JOIN path ON"
+                                    "    path.idPath=files.idPath");
+  m_pDS->exec(movieview.c_str());
 }
 
 //********************************************************************************************************************************
@@ -1313,21 +1326,18 @@ void CVideoDatabase::AddCountryToMovie(int idMovie, int idCountry)
 //********************************************************************************************************************************
 bool CVideoDatabase::LoadVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details)
 {
-  if (HasMovieInfo(strFilenameAndPath))
+  if (GetMovieInfo(strFilenameAndPath, details))
   {
-    GetMovieInfo(strFilenameAndPath, details);
     CLog::Log(LOGDEBUG,"%s, got movie info!", __FUNCTION__);
     CLog::Log(LOGDEBUG,"  Title = %s", details.m_strTitle.c_str());
   }
-  else if (HasEpisodeInfo(strFilenameAndPath))
+  else if (GetEpisodeInfo(strFilenameAndPath, details))
   {
-    GetEpisodeInfo(strFilenameAndPath, details);
     CLog::Log(LOGDEBUG,"%s, got episode info!", __FUNCTION__);
     CLog::Log(LOGDEBUG,"  Title = %s", details.m_strTitle.c_str());
   }
-  else if (HasMusicVideoInfo(strFilenameAndPath))
+  else if (GetMusicVideoInfo(strFilenameAndPath, details))
   {
-    GetMusicVideoInfo(strFilenameAndPath, details);
     CLog::Log(LOGDEBUG,"%s, got music video info!", __FUNCTION__);
     CLog::Log(LOGDEBUG,"  Title = %s", details.m_strTitle.c_str());
   }
@@ -1512,44 +1522,48 @@ void CVideoDatabase::GetMusicVideosByArtist(const CStdString& strArtist, CFileIt
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie /* = -1 */)
+bool CVideoDatabase::GetMovieInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMovie /* = -1 */)
 {
   try
   {
     // TODO: Optimize this - no need for all the queries!
     if (idMovie < 0)
       idMovie = GetMovieId(strFilenameAndPath);
-    if (idMovie < 0) return ;
+    if (idMovie < 0) return false;
 
     CStdString sql = PrepareSQL("select * from movieview where idMovie=%i", idMovie);
     if (!m_pDS->query(sql.c_str()))
-      return;
+      return false;
     details = GetDetailsForMovie(m_pDS, true);
+    return !details.IsEmpty();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
+  return false;
 }
 
 //********************************************************************************************************************************
-void CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, int idTvShow /* = -1 */)
+bool CVideoDatabase::GetTvShowInfo(const CStdString& strPath, CVideoInfoTag& details, int idTvShow /* = -1 */)
 {
   try
   {
     if (idTvShow < 0)
       idTvShow = GetTvShowId(strPath);
-    if (idTvShow < 0) return ;
+    if (idTvShow < 0) return false;
 
     CStdString sql = PrepareSQL("SELECT * FROM tvshowview WHERE idShow=%i", idTvShow);
     if (!m_pDS->query(sql.c_str()))
-      return;
+      return false;
     details = GetDetailsForTvShow(m_pDS, true);
+    return !details.IsEmpty();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strPath.c_str());
   }
+  return false;
 }
 
 bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idEpisode /* = -1 */)
@@ -1565,7 +1579,7 @@ bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideo
     if (!m_pDS->query(sql.c_str()))
       return false;
     details = GetDetailsForEpisode(m_pDS, true);
-    return true;
+    return !details.IsEmpty();
   }
   catch (...)
   {
@@ -1574,46 +1588,50 @@ bool CVideoDatabase::GetEpisodeInfo(const CStdString& strFilenameAndPath, CVideo
   return false;
 }
 
-void CVideoDatabase::GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMVideo /* = -1 */)
+bool CVideoDatabase::GetMusicVideoInfo(const CStdString& strFilenameAndPath, CVideoInfoTag& details, int idMVideo /* = -1 */)
 {
   try
   {
     // TODO: Optimize this - no need for all the queries!
     if (idMVideo < 0)
       idMVideo = GetMusicVideoId(strFilenameAndPath);
-    if (idMVideo < 0) return ;
+    if (idMVideo < 0) return false;
 
     CStdString sql = PrepareSQL("select * from musicvideoview where idMVideo=%i", idMVideo);
     if (!m_pDS->query(sql.c_str()))
-      return;
+      return false;
     details = GetDetailsForMusicVideo(m_pDS);
+    return !details.IsEmpty();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%s) failed", __FUNCTION__, strFilenameAndPath.c_str());
   }
+  return false;
 }
 
-void CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details)
+bool CVideoDatabase::GetSetInfo(int idSet, CVideoInfoTag& details)
 {
   try
   {
     if (idSet < 0)
-      return;
+      return false;
 
     CStdString where = PrepareSQL("WHERE sets.idSet=%d", idSet);
     CFileItemList items;
     if (!GetSetsNav("videodb://1/7/", items, VIDEODB_CONTENT_MOVIES, where) ||
         items.Size() != 1 ||
         !items[0]->HasVideoInfoTag())
-      return;
+      return false;
 
     details = *(items[0]->GetVideoInfoTag());
+    return !details.IsEmpty();
   }
   catch (...)
   {
     CLog::Log(LOGERROR, "%s (%d) failed", __FUNCTION__, idSet);
   }
+  return false;
 }
 
 void CVideoDatabase::AddGenreAndDirectorsAndStudios(const CVideoInfoTag& details, vector<int>& vecDirectors, vector<int>& vecGenres, vector<int>& vecStudios)
@@ -2856,6 +2874,7 @@ CVideoInfoTag CVideoDatabase::GetDetailsForTvShow(auto_ptr<Dataset> &pDS, bool n
   details.m_strPath = pDS->fv(VIDEODB_DETAILS_TVSHOW_PATH).get_asString();
   details.m_iEpisode = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_EPISODES).get_asInt();
   details.m_playCount = m_pDS->fv(VIDEODB_DETAILS_TVSHOW_NUM_WATCHED).get_asInt();
+  details.m_strShowPath = details.m_strPath;
   details.m_strShowTitle = details.m_strTitle;
 
   movieTime += XbmcThreads::SystemClockMillis() - time; time = XbmcThreads::SystemClockMillis();

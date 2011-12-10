@@ -32,6 +32,7 @@
 #include "sqlitedataset.h"
 #include "utils/log.h"
 #include "system.h" // for Sleep(), OutputDebugString() and GetLastError()
+#include "utils/URIUtils.h"
 
 #ifdef _WIN32
 #pragma comment(lib, "sqlite3.lib")
@@ -208,9 +209,10 @@ int SqliteDatabase::connect(bool create) {
   if (host.empty() || db.empty())
     return DB_CONNECTION_NONE;
 
-  CLog::Log(LOGDEBUG, "Connecting to sqlite:%s:%s", host.c_str(), db.c_str());
+  //CLog::Log(LOGDEBUG, "Connecting to sqlite:%s:%s", host.c_str(), db.c_str());
 
-  string db_fullpath = host + "/" + db;
+  CStdString db_fullpath;
+  URIUtils::AddFileToFolder(host, db, db_fullpath);
 
   try
   {

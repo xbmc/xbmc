@@ -64,5 +64,5 @@ void CGUIPythonWindowXMLDialog::Show_Internal(bool show /* = true */)
 void CGUIPythonWindowXMLDialog::OnDeinitWindow(int nextWindowID)
 {
   g_windowManager.RemoveDialog(GetID());
-  CGUIWindow::OnDeinitWindow(nextWindowID);
+  CGUIPythonWindowXML::OnDeinitWindow(nextWindowID);
 }

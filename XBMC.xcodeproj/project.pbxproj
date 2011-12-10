@@ -40,6 +40,64 @@
 /* Begin PBXBuildFile section */
 		1830212813B8E2DC00770920 /* controledit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1830212713B8E2DC00770920 /* controledit.cpp */; };
 		1830212913B8E2DC00770920 /* controledit.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1830212713B8E2DC00770920 /* controledit.cpp */; };
+		1835C6501492A1F700ADD1BA /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C64E1492A1F700ADD1BA /* InertialScrollingHandler.cpp */; };
+		1835C6511492A1F700ADD1BA /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C64E1492A1F700ADD1BA /* InertialScrollingHandler.cpp */; };
+		1835C6581492A25800ADD1BA /* pyrendercapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6561492A25800ADD1BA /* pyrendercapture.cpp */; };
+		1835C6591492A25800ADD1BA /* pyrendercapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6561492A25800ADD1BA /* pyrendercapture.cpp */; };
+		1835C6631492A28800ADD1BA /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6611492A28800ADD1BA /* SkinVariable.cpp */; };
+		1835C6641492A28800ADD1BA /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6611492A28800ADD1BA /* SkinVariable.cpp */; };
+		1835C66C1492A2CC00ADD1BA /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6681492A2CC00ADD1BA /* AirPlayServer.cpp */; };
+		1835C66D1492A2CC00ADD1BA /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C66A1492A2CC00ADD1BA /* AirTunesServer.cpp */; };
+		1835C66E1492A2CC00ADD1BA /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6681492A2CC00ADD1BA /* AirPlayServer.cpp */; };
+		1835C66F1492A2CC00ADD1BA /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C66A1492A2CC00ADD1BA /* AirTunesServer.cpp */; };
+		1835C6761492A2FD00ADD1BA /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6741492A2FD00ADD1BA /* ApplicationOperations.cpp */; };
+		1835C6771492A2FD00ADD1BA /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6741492A2FD00ADD1BA /* ApplicationOperations.cpp */; };
+		1835C67E1492A32F00ADD1BA /* AFPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C67A1492A32F00ADD1BA /* AFPDirectory.cpp */; };
+		1835C67F1492A32F00ADD1BA /* FileAFP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C67C1492A32F00ADD1BA /* FileAFP.cpp */; };
+		1835C6801492A32F00ADD1BA /* AFPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C67A1492A32F00ADD1BA /* AFPDirectory.cpp */; };
+		1835C6811492A32F00ADD1BA /* FileAFP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C67C1492A32F00ADD1BA /* FileAFP.cpp */; };
+		1835C6881492A35C00ADD1BA /* FilePipe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6841492A35C00ADD1BA /* FilePipe.cpp */; };
+		1835C6891492A35C00ADD1BA /* FileUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6861492A35C00ADD1BA /* FileUPnP.cpp */; };
+		1835C68A1492A35C00ADD1BA /* FilePipe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6841492A35C00ADD1BA /* FilePipe.cpp */; };
+		1835C68B1492A35C00ADD1BA /* FileUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6861492A35C00ADD1BA /* FileUPnP.cpp */; };
+		1835C6931492A39F00ADD1BA /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6911492A39F00ADD1BA /* PipesManager.cpp */; };
+		1835C6941492A39F00ADD1BA /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6911492A39F00ADD1BA /* PipesManager.cpp */; };
+		1835C69B1492A3DA00ADD1BA /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6991492A3DA00ADD1BA /* GUIAction.cpp */; };
+		1835C69C1492A3DA00ADD1BA /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6991492A3DA00ADD1BA /* GUIAction.cpp */; };
+		1835C6A01492A3F700ADD1BA /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C69E1492A3F700ADD1BA /* JpegIO.cpp */; };
+		1835C6A11492A3F700ADD1BA /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C69E1492A3F700ADD1BA /* JpegIO.cpp */; };
+		1835C6B31492A45F00ADD1BA /* Peripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6A31492A45F00ADD1BA /* Peripheral.cpp */; };
+		1835C6B41492A45F00ADD1BA /* PeripheralBluetooth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6A51492A45F00ADD1BA /* PeripheralBluetooth.cpp */; };
+		1835C6B51492A45F00ADD1BA /* PeripheralCecAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6A71492A45F00ADD1BA /* PeripheralCecAdapter.cpp */; };
+		1835C6B61492A45F00ADD1BA /* PeripheralDisk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6A91492A45F00ADD1BA /* PeripheralDisk.cpp */; };
+		1835C6B71492A45F00ADD1BA /* PeripheralHID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6AB1492A45F00ADD1BA /* PeripheralHID.cpp */; };
+		1835C6B81492A45F00ADD1BA /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6AD1492A45F00ADD1BA /* PeripheralNIC.cpp */; };
+		1835C6B91492A45F00ADD1BA /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6AF1492A45F00ADD1BA /* PeripheralNyxboard.cpp */; };
+		1835C6BA1492A45F00ADD1BA /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6B11492A45F00ADD1BA /* PeripheralTuner.cpp */; };
+		1835C6BB1492A45F00ADD1BA /* Peripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6A31492A45F00ADD1BA /* Peripheral.cpp */; };
+		1835C6BC1492A45F00ADD1BA /* PeripheralBluetooth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6A51492A45F00ADD1BA /* PeripheralBluetooth.cpp */; };
+		1835C6BD1492A45F00ADD1BA /* PeripheralCecAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6A71492A45F00ADD1BA /* PeripheralCecAdapter.cpp */; };
+		1835C6BE1492A45F00ADD1BA /* PeripheralDisk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6A91492A45F00ADD1BA /* PeripheralDisk.cpp */; };
+		1835C6BF1492A45F00ADD1BA /* PeripheralHID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6AB1492A45F00ADD1BA /* PeripheralHID.cpp */; };
+		1835C6C01492A45F00ADD1BA /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6AD1492A45F00ADD1BA /* PeripheralNIC.cpp */; };
+		1835C6C11492A45F00ADD1BA /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6AF1492A45F00ADD1BA /* PeripheralNyxboard.cpp */; };
+		1835C6C21492A45F00ADD1BA /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6B11492A45F00ADD1BA /* PeripheralTuner.cpp */; };
+		1835C6CE1492A4A500ADD1BA /* PeripheralBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6CB1492A4A500ADD1BA /* PeripheralBus.cpp */; };
+		1835C6CF1492A4A500ADD1BA /* PeripheralBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6CB1492A4A500ADD1BA /* PeripheralBus.cpp */; };
+		1835C6D21492A4B600ADD1BA /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6D01492A4B600ADD1BA /* PeripheralBusUSB.cpp */; };
+		1835C6D31492A4B600ADD1BA /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6D01492A4B600ADD1BA /* PeripheralBusUSB.cpp */; };
+		1835C6DB1492A4FE00ADD1BA /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6D91492A4FE00ADD1BA /* HttpParser.cpp */; };
+		1835C6DC1492A4FE00ADD1BA /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6D91492A4FE00ADD1BA /* HttpParser.cpp */; };
+		1835C6E21492A52800ADD1BA /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6E01492A52800ADD1BA /* BXAcodec.cpp */; };
+		1835C6E31492A52800ADD1BA /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6E01492A52800ADD1BA /* BXAcodec.cpp */; };
+		1835C6EA1492A56500ADD1BA /* HotKeyController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6E91492A56500ADD1BA /* HotKeyController.m */; };
+		1835C6EB1492A56500ADD1BA /* HotKeyController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6E91492A56500ADD1BA /* HotKeyController.m */; };
+		1835C6F21492A5A700ADD1BA /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6EF1492A5A700ADD1BA /* Peripherals.cpp */; };
+		1835C6F31492A5A700ADD1BA /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6EF1492A5A700ADD1BA /* Peripherals.cpp */; };
+		1835C6FA1492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6F61492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp */; };
+		1835C6FB1492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6F81492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp */; };
+		1835C6FC1492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6F61492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp */; };
+		1835C6FD1492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1835C6F81492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp */; };
 		183C454D130C4D55006AA317 /* xbmcvfsmodule.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */; settings = {COMPILER_FLAGS = "-I$XBMC_DEPENDS/include/python2.6"; }; };
 		183FDF8A11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
 		183FDF8B11AF0B0500B81E9C /* PluginSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 183FDF8811AF0B0500B81E9C /* PluginSource.cpp */; };
@@ -615,64 +673,6 @@
 		C8EC5D0E1369519D00CCC10D /* XBMC_keytable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EC5D0C1369519D00CCC10D /* XBMC_keytable.cpp */; };
 		DF0DF15B13A3ADA7008ED511 /* FileNFS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15713A3ADA7008ED511 /* FileNFS.cpp */; };
 		DF0DF15C13A3ADA7008ED511 /* NFSDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */; };
-		DF34888313FD73A50026A711 /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34888113FD73A50026A711 /* InertialScrollingHandler.cpp */; };
-		DF34888413FD73A50026A711 /* InertialScrollingHandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF34888113FD73A50026A711 /* InertialScrollingHandler.cpp */; };
-		DF7143FB144DD968007E789D /* pyrendercapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7143F9144DD968007E789D /* pyrendercapture.cpp */; };
-		DF7143FC144DD968007E789D /* pyrendercapture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7143F9144DD968007E789D /* pyrendercapture.cpp */; };
-		DF7143FF144DD975007E789D /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7143FD144DD975007E789D /* SkinVariable.cpp */; };
-		DF714400144DD975007E789D /* SkinVariable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7143FD144DD975007E789D /* SkinVariable.cpp */; };
-		DF714405144DD986007E789D /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714401144DD986007E789D /* AirPlayServer.cpp */; };
-		DF714406144DD986007E789D /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714403144DD986007E789D /* AirTunesServer.cpp */; };
-		DF714407144DD986007E789D /* AirPlayServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714401144DD986007E789D /* AirPlayServer.cpp */; };
-		DF714408144DD986007E789D /* AirTunesServer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714403144DD986007E789D /* AirTunesServer.cpp */; };
-		DF71440B144DD99A007E789D /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714409144DD99A007E789D /* ApplicationOperations.cpp */; };
-		DF71440C144DD99A007E789D /* ApplicationOperations.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714409144DD99A007E789D /* ApplicationOperations.cpp */; };
-		DF714417144DD9CA007E789D /* AFPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF71440D144DD9CA007E789D /* AFPDirectory.cpp */; };
-		DF714418144DD9CA007E789D /* FileAFP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF71440F144DD9CA007E789D /* FileAFP.cpp */; };
-		DF714419144DD9CA007E789D /* FilePipe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714411144DD9CA007E789D /* FilePipe.cpp */; };
-		DF71441A144DD9CA007E789D /* FileUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714413144DD9CA007E789D /* FileUPnP.cpp */; };
-		DF71441B144DD9CA007E789D /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714415144DD9CA007E789D /* PipesManager.cpp */; };
-		DF71441C144DD9CA007E789D /* AFPDirectory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF71440D144DD9CA007E789D /* AFPDirectory.cpp */; };
-		DF71441D144DD9CA007E789D /* FileAFP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF71440F144DD9CA007E789D /* FileAFP.cpp */; };
-		DF71441E144DD9CA007E789D /* FilePipe.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714411144DD9CA007E789D /* FilePipe.cpp */; };
-		DF71441F144DD9CA007E789D /* FileUPnP.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714413144DD9CA007E789D /* FileUPnP.cpp */; };
-		DF714420144DD9CA007E789D /* PipesManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714415144DD9CA007E789D /* PipesManager.cpp */; };
-		DF714425144DD9F0007E789D /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714421144DD9F0007E789D /* GUIAction.cpp */; };
-		DF714426144DD9F0007E789D /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714423144DD9F0007E789D /* JpegIO.cpp */; };
-		DF714427144DD9F0007E789D /* GUIAction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714421144DD9F0007E789D /* GUIAction.cpp */; };
-		DF714428144DD9F0007E789D /* JpegIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714423144DD9F0007E789D /* JpegIO.cpp */; };
-		DF71447D144DDA46007E789D /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714457144DDA46007E789D /* PeripheralBusUSB.cpp */; };
-		DF71447E144DDA46007E789D /* PeripheralBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714459144DDA46007E789D /* PeripheralBus.cpp */; };
-		DF714480144DDA46007E789D /* Peripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714461144DDA46007E789D /* Peripheral.cpp */; };
-		DF714481144DDA46007E789D /* PeripheralBluetooth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714463144DDA46007E789D /* PeripheralBluetooth.cpp */; };
-		DF714482144DDA46007E789D /* PeripheralCecAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714465144DDA46007E789D /* PeripheralCecAdapter.cpp */; };
-		DF714483144DDA46007E789D /* PeripheralDisk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714467144DDA46007E789D /* PeripheralDisk.cpp */; };
-		DF714484144DDA46007E789D /* PeripheralHID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714469144DDA46007E789D /* PeripheralHID.cpp */; };
-		DF714485144DDA46007E789D /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF71446B144DDA46007E789D /* PeripheralNIC.cpp */; };
-		DF714486144DDA46007E789D /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF71446D144DDA46007E789D /* PeripheralNyxboard.cpp */; };
-		DF714487144DDA46007E789D /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF71446F144DDA46007E789D /* PeripheralTuner.cpp */; };
-		DF714488144DDA46007E789D /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714472144DDA46007E789D /* GUIDialogPeripheralManager.cpp */; };
-		DF714489144DDA46007E789D /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714474144DDA46007E789D /* GUIDialogPeripheralSettings.cpp */; };
-		DF71448C144DDA46007E789D /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714478144DDA46007E789D /* Peripherals.cpp */; };
-		DF71448F144DDA46007E789D /* PeripheralBusUSB.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714457144DDA46007E789D /* PeripheralBusUSB.cpp */; };
-		DF714490144DDA46007E789D /* PeripheralBus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714459144DDA46007E789D /* PeripheralBus.cpp */; };
-		DF714492144DDA46007E789D /* Peripheral.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714461144DDA46007E789D /* Peripheral.cpp */; };
-		DF714493144DDA46007E789D /* PeripheralBluetooth.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714463144DDA46007E789D /* PeripheralBluetooth.cpp */; };
-		DF714494144DDA46007E789D /* PeripheralCecAdapter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714465144DDA46007E789D /* PeripheralCecAdapter.cpp */; };
-		DF714495144DDA46007E789D /* PeripheralDisk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714467144DDA46007E789D /* PeripheralDisk.cpp */; };
-		DF714496144DDA46007E789D /* PeripheralHID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714469144DDA46007E789D /* PeripheralHID.cpp */; };
-		DF714497144DDA46007E789D /* PeripheralNIC.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF71446B144DDA46007E789D /* PeripheralNIC.cpp */; };
-		DF714498144DDA46007E789D /* PeripheralNyxboard.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF71446D144DDA46007E789D /* PeripheralNyxboard.cpp */; };
-		DF714499144DDA46007E789D /* PeripheralTuner.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF71446F144DDA46007E789D /* PeripheralTuner.cpp */; };
-		DF71449A144DDA46007E789D /* GUIDialogPeripheralManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714472144DDA46007E789D /* GUIDialogPeripheralManager.cpp */; };
-		DF71449B144DDA46007E789D /* GUIDialogPeripheralSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714474144DDA46007E789D /* GUIDialogPeripheralSettings.cpp */; };
-		DF71449E144DDA46007E789D /* Peripherals.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF714478144DDA46007E789D /* Peripherals.cpp */; };
-		DF7144AB144DE04D007E789D /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7144A9144DE04D007E789D /* HttpParser.cpp */; };
-		DF7144AC144DE04D007E789D /* HttpParser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7144A9144DE04D007E789D /* HttpParser.cpp */; };
-		DF7144AF144DE065007E789D /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7144AD144DE065007E789D /* BXAcodec.cpp */; };
-		DF7144B0144DE065007E789D /* BXAcodec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF7144AD144DE065007E789D /* BXAcodec.cpp */; };
-		DF7144B5144DE0A5007E789D /* HotKeyController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7144B4144DE0A5007E789D /* HotKeyController.m */; };
-		DF7144B6144DE0A5007E789D /* HotKeyController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF7144B4144DE0A5007E789D /* HotKeyController.m */; };
 		DF79158113D4A6940018E92E /* libTcpSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF79158013D4A6940018E92E /* libTcpSocket.a */; };
 		DF79158213D4A6940018E92E /* libTcpSocket.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DF79158013D4A6940018E92E /* libTcpSocket.a */; };
 		DF79158B13D4A6BC0018E92E /* AddonCallbacks.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DF79158313D4A6BC0018E92E /* AddonCallbacks.cpp */; };
@@ -1964,6 +1964,8 @@
 		F5B5D64D133FC2C1007A4B4C /* libsquish.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43352CED1071634600706B8A /* libsquish.a */; };
 		F5B5D64E133FC2E7007A4B4C /* librtv.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E256C0D263A1C00618676 /* librtv.a */; };
 		F5B5D650133FC312007A4B4C /* libxdaap.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E38E25680D2639F100618676 /* libxdaap.a */; };
+		F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */; };
+		F5BD02F7148D3A7E001B5583 /* CryptThreading.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */; };
 		F5BDB80C120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB80D120202F400F0B710 /* DVDSubtitleTagSami.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */; };
 		F5BDB81A1202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F5BDB8191202032400F0B710 /* DVDSubtitleTagMicroDVD.cpp */; };
@@ -2044,6 +2046,66 @@
 		1830212713B8E2DC00770920 /* controledit.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = controledit.cpp; sourceTree = "<group>"; };
 		18308CB41303370800AA309E /* stat_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stat_utf8.h; sourceTree = "<group>"; };
 		18308CB51303370800AA309E /* stdio_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stdio_utf8.h; sourceTree = "<group>"; };
+		1835C64E1492A1F700ADD1BA /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
+		1835C64F1492A1F700ADD1BA /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
+		1835C6561492A25800ADD1BA /* pyrendercapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pyrendercapture.cpp; sourceTree = "<group>"; };
+		1835C6571492A25800ADD1BA /* pyrendercapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pyrendercapture.h; sourceTree = "<group>"; };
+		1835C6611492A28800ADD1BA /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
+		1835C6621492A28800ADD1BA /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
+		1835C6681492A2CC00ADD1BA /* AirPlayServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayServer.cpp; sourceTree = "<group>"; };
+		1835C6691492A2CC00ADD1BA /* AirPlayServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirPlayServer.h; sourceTree = "<group>"; };
+		1835C66A1492A2CC00ADD1BA /* AirTunesServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirTunesServer.cpp; sourceTree = "<group>"; };
+		1835C66B1492A2CC00ADD1BA /* AirTunesServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirTunesServer.h; sourceTree = "<group>"; };
+		1835C6741492A2FD00ADD1BA /* ApplicationOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationOperations.cpp; sourceTree = "<group>"; };
+		1835C6751492A2FD00ADD1BA /* ApplicationOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationOperations.h; sourceTree = "<group>"; };
+		1835C67A1492A32F00ADD1BA /* AFPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPDirectory.cpp; sourceTree = "<group>"; };
+		1835C67B1492A32F00ADD1BA /* AFPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPDirectory.h; sourceTree = "<group>"; };
+		1835C67C1492A32F00ADD1BA /* FileAFP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileAFP.cpp; sourceTree = "<group>"; };
+		1835C67D1492A32F00ADD1BA /* FileAFP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileAFP.h; sourceTree = "<group>"; };
+		1835C6841492A35C00ADD1BA /* FilePipe.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FilePipe.cpp; sourceTree = "<group>"; };
+		1835C6851492A35C00ADD1BA /* FilePipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePipe.h; sourceTree = "<group>"; };
+		1835C6861492A35C00ADD1BA /* FileUPnP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUPnP.cpp; sourceTree = "<group>"; };
+		1835C6871492A35C00ADD1BA /* FileUPnP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUPnP.h; sourceTree = "<group>"; };
+		1835C6911492A39F00ADD1BA /* PipesManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PipesManager.cpp; sourceTree = "<group>"; };
+		1835C6921492A39F00ADD1BA /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
+		1835C6991492A3DA00ADD1BA /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
+		1835C69A1492A3DA00ADD1BA /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
+		1835C69E1492A3F700ADD1BA /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
+		1835C69F1492A3F700ADD1BA /* JpegIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JpegIO.h; sourceTree = "<group>"; };
+		1835C6A31492A45F00ADD1BA /* Peripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripheral.cpp; sourceTree = "<group>"; };
+		1835C6A41492A45F00ADD1BA /* Peripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Peripheral.h; sourceTree = "<group>"; };
+		1835C6A51492A45F00ADD1BA /* PeripheralBluetooth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBluetooth.cpp; sourceTree = "<group>"; };
+		1835C6A61492A45F00ADD1BA /* PeripheralBluetooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBluetooth.h; sourceTree = "<group>"; };
+		1835C6A71492A45F00ADD1BA /* PeripheralCecAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralCecAdapter.cpp; sourceTree = "<group>"; };
+		1835C6A81492A45F00ADD1BA /* PeripheralCecAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralCecAdapter.h; sourceTree = "<group>"; };
+		1835C6A91492A45F00ADD1BA /* PeripheralDisk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralDisk.cpp; sourceTree = "<group>"; };
+		1835C6AA1492A45F00ADD1BA /* PeripheralDisk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralDisk.h; sourceTree = "<group>"; };
+		1835C6AB1492A45F00ADD1BA /* PeripheralHID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralHID.cpp; sourceTree = "<group>"; };
+		1835C6AC1492A45F00ADD1BA /* PeripheralHID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralHID.h; sourceTree = "<group>"; };
+		1835C6AD1492A45F00ADD1BA /* PeripheralNIC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralNIC.cpp; sourceTree = "<group>"; };
+		1835C6AE1492A45F00ADD1BA /* PeripheralNIC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralNIC.h; sourceTree = "<group>"; };
+		1835C6AF1492A45F00ADD1BA /* PeripheralNyxboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralNyxboard.cpp; sourceTree = "<group>"; };
+		1835C6B01492A45F00ADD1BA /* PeripheralNyxboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralNyxboard.h; sourceTree = "<group>"; };
+		1835C6B11492A45F00ADD1BA /* PeripheralTuner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralTuner.cpp; sourceTree = "<group>"; };
+		1835C6B21492A45F00ADD1BA /* PeripheralTuner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTuner.h; sourceTree = "<group>"; };
+		1835C6CB1492A4A500ADD1BA /* PeripheralBus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBus.cpp; sourceTree = "<group>"; };
+		1835C6CC1492A4A500ADD1BA /* PeripheralBus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBus.h; sourceTree = "<group>"; };
+		1835C6CD1492A4A500ADD1BA /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
+		1835C6D01492A4B600ADD1BA /* PeripheralBusUSB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusUSB.cpp; sourceTree = "<group>"; };
+		1835C6D11492A4B600ADD1BA /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
+		1835C6D91492A4FE00ADD1BA /* HttpParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpParser.cpp; sourceTree = "<group>"; };
+		1835C6DA1492A4FE00ADD1BA /* HttpParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpParser.h; sourceTree = "<group>"; };
+		1835C6E01492A52800ADD1BA /* BXAcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BXAcodec.cpp; sourceTree = "<group>"; };
+		1835C6E11492A52800ADD1BA /* BXAcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BXAcodec.h; sourceTree = "<group>"; };
+		1835C6E81492A56500ADD1BA /* HotKeyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyController.h; sourceTree = "<group>"; };
+		1835C6E91492A56500ADD1BA /* HotKeyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyController.m; sourceTree = "<group>"; };
+		1835C6EF1492A5A700ADD1BA /* Peripherals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripherals.cpp; sourceTree = "<group>"; };
+		1835C6F01492A5A700ADD1BA /* Peripherals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Peripherals.h; sourceTree = "<group>"; };
+		1835C6F11492A5A700ADD1BA /* PeripheralTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTypes.h; sourceTree = "<group>"; };
+		1835C6F61492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralManager.cpp; sourceTree = "<group>"; };
+		1835C6F71492A5D100ADD1BA /* GUIDialogPeripheralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralManager.h; sourceTree = "<group>"; };
+		1835C6F81492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralSettings.cpp; sourceTree = "<group>"; };
+		1835C6F91492A5D100ADD1BA /* GUIDialogPeripheralSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralSettings.h; sourceTree = "<group>"; };
 		183FDF8811AF0B0500B81E9C /* PluginSource.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PluginSource.cpp; sourceTree = "<group>"; };
 		183FDF8911AF0B0500B81E9C /* PluginSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PluginSource.h; sourceTree = "<group>"; };
 		18404D9C1396C13500863BBA /* Slingbox.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Slingbox.cpp; sourceTree = "<group>"; };
@@ -2689,66 +2751,6 @@
 		DF0DF15813A3ADA7008ED511 /* FileNFS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileNFS.h; sourceTree = "<group>"; };
 		DF0DF15913A3ADA7008ED511 /* NFSDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = NFSDirectory.cpp; sourceTree = "<group>"; };
 		DF0DF15A13A3ADA7008ED511 /* NFSDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NFSDirectory.h; sourceTree = "<group>"; };
-		DF34888113FD73A50026A711 /* InertialScrollingHandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = InertialScrollingHandler.cpp; sourceTree = "<group>"; };
-		DF34888213FD73A50026A711 /* InertialScrollingHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InertialScrollingHandler.h; sourceTree = "<group>"; };
-		DF7143F9144DD968007E789D /* pyrendercapture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pyrendercapture.cpp; sourceTree = "<group>"; };
-		DF7143FA144DD968007E789D /* pyrendercapture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pyrendercapture.h; sourceTree = "<group>"; };
-		DF7143FD144DD975007E789D /* SkinVariable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SkinVariable.cpp; sourceTree = "<group>"; };
-		DF7143FE144DD975007E789D /* SkinVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SkinVariable.h; sourceTree = "<group>"; };
-		DF714401144DD986007E789D /* AirPlayServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirPlayServer.cpp; sourceTree = "<group>"; };
-		DF714402144DD986007E789D /* AirPlayServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirPlayServer.h; sourceTree = "<group>"; };
-		DF714403144DD986007E789D /* AirTunesServer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AirTunesServer.cpp; sourceTree = "<group>"; };
-		DF714404144DD986007E789D /* AirTunesServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AirTunesServer.h; sourceTree = "<group>"; };
-		DF714409144DD99A007E789D /* ApplicationOperations.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ApplicationOperations.cpp; sourceTree = "<group>"; };
-		DF71440A144DD99A007E789D /* ApplicationOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApplicationOperations.h; sourceTree = "<group>"; };
-		DF71440D144DD9CA007E789D /* AFPDirectory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AFPDirectory.cpp; sourceTree = "<group>"; };
-		DF71440E144DD9CA007E789D /* AFPDirectory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFPDirectory.h; sourceTree = "<group>"; };
-		DF71440F144DD9CA007E789D /* FileAFP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileAFP.cpp; sourceTree = "<group>"; };
-		DF714410144DD9CA007E789D /* FileAFP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileAFP.h; sourceTree = "<group>"; };
-		DF714411144DD9CA007E789D /* FilePipe.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FilePipe.cpp; sourceTree = "<group>"; };
-		DF714412144DD9CA007E789D /* FilePipe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FilePipe.h; sourceTree = "<group>"; };
-		DF714413144DD9CA007E789D /* FileUPnP.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUPnP.cpp; sourceTree = "<group>"; };
-		DF714414144DD9CA007E789D /* FileUPnP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUPnP.h; sourceTree = "<group>"; };
-		DF714415144DD9CA007E789D /* PipesManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PipesManager.cpp; sourceTree = "<group>"; };
-		DF714416144DD9CA007E789D /* PipesManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PipesManager.h; sourceTree = "<group>"; };
-		DF714421144DD9F0007E789D /* GUIAction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIAction.cpp; sourceTree = "<group>"; };
-		DF714422144DD9F0007E789D /* GUIAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIAction.h; sourceTree = "<group>"; };
-		DF714423144DD9F0007E789D /* JpegIO.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = JpegIO.cpp; sourceTree = "<group>"; };
-		DF714424144DD9F0007E789D /* JpegIO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JpegIO.h; sourceTree = "<group>"; };
-		DF714457144DDA46007E789D /* PeripheralBusUSB.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBusUSB.cpp; sourceTree = "<group>"; };
-		DF714458144DDA46007E789D /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
-		DF714459144DDA46007E789D /* PeripheralBus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBus.cpp; sourceTree = "<group>"; };
-		DF71445A144DDA46007E789D /* PeripheralBus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBus.h; sourceTree = "<group>"; };
-		DF71445B144DDA46007E789D /* PeripheralBusUSB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBusUSB.h; sourceTree = "<group>"; };
-		DF714461144DDA46007E789D /* Peripheral.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripheral.cpp; sourceTree = "<group>"; };
-		DF714462144DDA46007E789D /* Peripheral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Peripheral.h; sourceTree = "<group>"; };
-		DF714463144DDA46007E789D /* PeripheralBluetooth.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralBluetooth.cpp; sourceTree = "<group>"; };
-		DF714464144DDA46007E789D /* PeripheralBluetooth.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralBluetooth.h; sourceTree = "<group>"; };
-		DF714465144DDA46007E789D /* PeripheralCecAdapter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralCecAdapter.cpp; sourceTree = "<group>"; };
-		DF714466144DDA46007E789D /* PeripheralCecAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralCecAdapter.h; sourceTree = "<group>"; };
-		DF714467144DDA46007E789D /* PeripheralDisk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralDisk.cpp; sourceTree = "<group>"; };
-		DF714468144DDA46007E789D /* PeripheralDisk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralDisk.h; sourceTree = "<group>"; };
-		DF714469144DDA46007E789D /* PeripheralHID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralHID.cpp; sourceTree = "<group>"; };
-		DF71446A144DDA46007E789D /* PeripheralHID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralHID.h; sourceTree = "<group>"; };
-		DF71446B144DDA46007E789D /* PeripheralNIC.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralNIC.cpp; sourceTree = "<group>"; };
-		DF71446C144DDA46007E789D /* PeripheralNIC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralNIC.h; sourceTree = "<group>"; };
-		DF71446D144DDA46007E789D /* PeripheralNyxboard.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralNyxboard.cpp; sourceTree = "<group>"; };
-		DF71446E144DDA46007E789D /* PeripheralNyxboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralNyxboard.h; sourceTree = "<group>"; };
-		DF71446F144DDA46007E789D /* PeripheralTuner.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PeripheralTuner.cpp; sourceTree = "<group>"; };
-		DF714470144DDA46007E789D /* PeripheralTuner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTuner.h; sourceTree = "<group>"; };
-		DF714472144DDA46007E789D /* GUIDialogPeripheralManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralManager.cpp; sourceTree = "<group>"; };
-		DF714473144DDA46007E789D /* GUIDialogPeripheralManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralManager.h; sourceTree = "<group>"; };
-		DF714474144DDA46007E789D /* GUIDialogPeripheralSettings.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GUIDialogPeripheralSettings.cpp; sourceTree = "<group>"; };
-		DF714475144DDA46007E789D /* GUIDialogPeripheralSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUIDialogPeripheralSettings.h; sourceTree = "<group>"; };
-		DF714478144DDA46007E789D /* Peripherals.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Peripherals.cpp; sourceTree = "<group>"; };
-		DF714479144DDA46007E789D /* Peripherals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Peripherals.h; sourceTree = "<group>"; };
-		DF71447A144DDA46007E789D /* PeripheralTypes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PeripheralTypes.h; sourceTree = "<group>"; };
-		DF7144A9144DE04D007E789D /* HttpParser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = HttpParser.cpp; sourceTree = "<group>"; };
-		DF7144AA144DE04D007E789D /* HttpParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpParser.h; sourceTree = "<group>"; };
-		DF7144AD144DE065007E789D /* BXAcodec.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BXAcodec.cpp; sourceTree = "<group>"; };
-		DF7144AE144DE065007E789D /* BXAcodec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BXAcodec.h; sourceTree = "<group>"; };
-		DF7144B3144DE0A5007E789D /* HotKeyController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotKeyController.h; sourceTree = "<group>"; };
-		DF7144B4144DE0A5007E789D /* HotKeyController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotKeyController.m; sourceTree = "<group>"; };
 		DF79158013D4A6940018E92E /* libTcpSocket.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libTcpSocket.a; path = lib/libTcpSocket/libTcpSocket.a; sourceTree = "<group>"; };
 		DF79158313D4A6BC0018E92E /* AddonCallbacks.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AddonCallbacks.cpp; sourceTree = "<group>"; };
 		DF79158413D4A6BC0018E92E /* AddonCallbacks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddonCallbacks.h; sourceTree = "<group>"; };
@@ -4086,6 +4088,8 @@
 		F5B13C8B1334056B0045076D /* DarwinUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DarwinUtils.h; sourceTree = "<group>"; };
 		F5B13C8C1334056B0045076D /* DarwinUtils.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DarwinUtils.mm; sourceTree = "<group>"; };
 		F5B413131065900C0035D105 /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = CryptThreading.cpp; sourceTree = "<group>"; };
+		F5BD02F5148D3A7E001B5583 /* CryptThreading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CryptThreading.h; sourceTree = "<group>"; };
 		F5BDB80A120202F400F0B710 /* DVDSubtitleTagSami.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagSami.h; sourceTree = "<group>"; };
 		F5BDB80B120202F400F0B710 /* DVDSubtitleTagSami.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DVDSubtitleTagSami.cpp; sourceTree = "<group>"; };
 		F5BDB8181202032400F0B710 /* DVDSubtitleTagMicroDVD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DVDSubtitleTagMicroDVD.h; sourceTree = "<group>"; };
@@ -4333,10 +4337,6 @@
 		18B7C3AA1294219F009E7A26 /* guilib */ = {
 			isa = PBXGroup;
 			children = (
-				DF714421144DD9F0007E789D /* GUIAction.cpp */,
-				DF714422144DD9F0007E789D /* GUIAction.h */,
-				DF714423144DD9F0007E789D /* JpegIO.cpp */,
-				DF714424144DD9F0007E789D /* JpegIO.h */,
 				18B7C6F61294222D009E7A26 /* AnimatedGif.h */,
 				18B7C6F71294222D009E7A26 /* AudioContext.h */,
 				18B7C6F81294222D009E7A26 /* D3DResource.h */,
@@ -4349,6 +4349,8 @@
 				18B7C6FC1294222D009E7A26 /* Geometry.h */,
 				18B7C6FD1294222D009E7A26 /* GraphicContext.h */,
 				18B7C6FE1294222D009E7A26 /* gui3d.h */,
+				1835C6991492A3DA00ADD1BA /* GUIAction.cpp */,
+				1835C69A1492A3DA00ADD1BA /* GUIAction.h */,
 				18B7C7001294222D009E7A26 /* GUIAudioManager.h */,
 				18B7C7011294222D009E7A26 /* GUIBaseContainer.h */,
 				18B7C7021294222D009E7A26 /* GUIBorderedImage.h */,
@@ -4416,6 +4418,8 @@
 				18B7C7411294222D009E7A26 /* IMsgTargetCallback.h */,
 				18B7C7421294222D009E7A26 /* IWindowManagerCallback.h */,
 				18B7C7431294222D009E7A26 /* Key.h */,
+				1835C69E1492A3F700ADD1BA /* JpegIO.cpp */,
+				1835C69F1492A3F700ADD1BA /* JpegIO.h */,
 				18B7C7441294222D009E7A26 /* LocalizeStrings.h */,
 				18B7C7451294222E009E7A26 /* MatrixGLES.h */,
 				18B7C7461294222E009E7A26 /* Resolution.h */,
@@ -4614,10 +4618,10 @@
 		18B7C8C61294252E009E7A26 /* input */ = {
 			isa = PBXGroup;
 			children = (
+				1835C64E1492A1F700ADD1BA /* InertialScrollingHandler.cpp */,
+				1835C64F1492A1F700ADD1BA /* InertialScrollingHandler.h */,
 				18B7C8CB12942546009E7A26 /* ButtonTranslator.cpp */,
 				18B7C8CC12942546009E7A26 /* ButtonTranslator.h */,
-				DF34888113FD73A50026A711 /* InertialScrollingHandler.cpp */,
-				DF34888213FD73A50026A711 /* InertialScrollingHandler.h */,
 				18B7C8CD12942546009E7A26 /* KeyboardLayoutConfiguration.cpp */,
 				18B7C8CE12942546009E7A26 /* KeyboardLayoutConfiguration.h */,
 				18B7C8CF12942546009E7A26 /* KeyboardStat.cpp */,
@@ -4918,13 +4922,13 @@
 		431376F212D6449100680C15 /* network */ = {
 			isa = PBXGroup;
 			children = (
-				DF714401144DD986007E789D /* AirPlayServer.cpp */,
-				DF714402144DD986007E789D /* AirPlayServer.h */,
-				DF714403144DD986007E789D /* AirTunesServer.cpp */,
-				DF714404144DD986007E789D /* AirTunesServer.h */,
 				4313772B12D6474F00680C15 /* libscrobbler */,
 				432D7CE112D86D4900CE4C49 /* linux */,
 				4313772312D646E300680C15 /* osx */,
+				1835C6681492A2CC00ADD1BA /* AirPlayServer.cpp */,
+				1835C6691492A2CC00ADD1BA /* AirPlayServer.h */,
+				1835C66A1492A2CC00ADD1BA /* AirTunesServer.cpp */,
+				1835C66B1492A2CC00ADD1BA /* AirTunesServer.h */,
 				E38E16890D25F9FA00618676 /* DNSNameCache.cpp */,
 				E38E168A0D25F9FA00618676 /* DNSNameCache.h */,
 				E3E920010D8C622A002BF43D /* EventClient.cpp */,
@@ -5237,10 +5241,10 @@
 		7C89674213C03B21003631FE /* info */ = {
 			isa = PBXGroup;
 			children = (
-				DF7143FD144DD975007E789D /* SkinVariable.cpp */,
-				DF7143FE144DD975007E789D /* SkinVariable.h */,
 				7C89674313C03B22003631FE /* InfoBool.cpp */,
 				7C89674413C03B22003631FE /* InfoBool.h */,
+				1835C6611492A28800ADD1BA /* SkinVariable.cpp */,
+				1835C6621492A28800ADD1BA /* SkinVariable.h */,
 			);
 			path = info;
 			sourceTree = "<group>";
@@ -5270,9 +5274,9 @@
 				DF71444F144DDA46007E789D /* bus */,
 				DF71445F144DDA46007E789D /* devices */,
 				DF714471144DDA46007E789D /* dialogs */,
-				DF714478144DDA46007E789D /* Peripherals.cpp */,
-				DF714479144DDA46007E789D /* Peripherals.h */,
-				DF71447A144DDA46007E789D /* PeripheralTypes.h */,
+				1835C6EF1492A5A700ADD1BA /* Peripherals.cpp */,
+				1835C6F01492A5A700ADD1BA /* Peripherals.h */,
+				1835C6F11492A5A700ADD1BA /* PeripheralTypes.h */,
 			);
 			path = peripherals;
 			sourceTree = "<group>";
@@ -5281,9 +5285,9 @@
 			isa = PBXGroup;
 			children = (
 				DF714456144DDA46007E789D /* osx */,
-				DF714459144DDA46007E789D /* PeripheralBus.cpp */,
-				DF71445A144DDA46007E789D /* PeripheralBus.h */,
-				DF71445B144DDA46007E789D /* PeripheralBusUSB.h */,
+				1835C6CB1492A4A500ADD1BA /* PeripheralBus.cpp */,
+				1835C6CC1492A4A500ADD1BA /* PeripheralBus.h */,
+				1835C6CD1492A4A500ADD1BA /* PeripheralBusUSB.h */,
 			);
 			path = bus;
 			sourceTree = "<group>";
@@ -5291,8 +5295,8 @@
 		DF714456144DDA46007E789D /* osx */ = {
 			isa = PBXGroup;
 			children = (
-				DF714457144DDA46007E789D /* PeripheralBusUSB.cpp */,
-				DF714458144DDA46007E789D /* PeripheralBusUSB.h */,
+				1835C6D01492A4B600ADD1BA /* PeripheralBusUSB.cpp */,
+				1835C6D11492A4B600ADD1BA /* PeripheralBusUSB.h */,
 			);
 			path = osx;
 			sourceTree = "<group>";
@@ -5300,22 +5304,22 @@
 		DF71445F144DDA46007E789D /* devices */ = {
 			isa = PBXGroup;
 			children = (
-				DF714461144DDA46007E789D /* Peripheral.cpp */,
-				DF714462144DDA46007E789D /* Peripheral.h */,
-				DF714463144DDA46007E789D /* PeripheralBluetooth.cpp */,
-				DF714464144DDA46007E789D /* PeripheralBluetooth.h */,
-				DF714465144DDA46007E789D /* PeripheralCecAdapter.cpp */,
-				DF714466144DDA46007E789D /* PeripheralCecAdapter.h */,
-				DF714467144DDA46007E789D /* PeripheralDisk.cpp */,
-				DF714468144DDA46007E789D /* PeripheralDisk.h */,
-				DF714469144DDA46007E789D /* PeripheralHID.cpp */,
-				DF71446A144DDA46007E789D /* PeripheralHID.h */,
-				DF71446B144DDA46007E789D /* PeripheralNIC.cpp */,
-				DF71446C144DDA46007E789D /* PeripheralNIC.h */,
-				DF71446D144DDA46007E789D /* PeripheralNyxboard.cpp */,
-				DF71446E144DDA46007E789D /* PeripheralNyxboard.h */,
-				DF71446F144DDA46007E789D /* PeripheralTuner.cpp */,
-				DF714470144DDA46007E789D /* PeripheralTuner.h */,
+				1835C6A31492A45F00ADD1BA /* Peripheral.cpp */,
+				1835C6A41492A45F00ADD1BA /* Peripheral.h */,
+				1835C6A51492A45F00ADD1BA /* PeripheralBluetooth.cpp */,
+				1835C6A61492A45F00ADD1BA /* PeripheralBluetooth.h */,
+				1835C6A71492A45F00ADD1BA /* PeripheralCecAdapter.cpp */,
+				1835C6A81492A45F00ADD1BA /* PeripheralCecAdapter.h */,
+				1835C6A91492A45F00ADD1BA /* PeripheralDisk.cpp */,
+				1835C6AA1492A45F00ADD1BA /* PeripheralDisk.h */,
+				1835C6AB1492A45F00ADD1BA /* PeripheralHID.cpp */,
+				1835C6AC1492A45F00ADD1BA /* PeripheralHID.h */,
+				1835C6AD1492A45F00ADD1BA /* PeripheralNIC.cpp */,
+				1835C6AE1492A45F00ADD1BA /* PeripheralNIC.h */,
+				1835C6AF1492A45F00ADD1BA /* PeripheralNyxboard.cpp */,
+				1835C6B01492A45F00ADD1BA /* PeripheralNyxboard.h */,
+				1835C6B11492A45F00ADD1BA /* PeripheralTuner.cpp */,
+				1835C6B21492A45F00ADD1BA /* PeripheralTuner.h */,
 			);
 			path = devices;
 			sourceTree = "<group>";
@@ -5323,10 +5327,10 @@
 		DF714471144DDA46007E789D /* dialogs */ = {
 			isa = PBXGroup;
 			children = (
-				DF714472144DDA46007E789D /* GUIDialogPeripheralManager.cpp */,
-				DF714473144DDA46007E789D /* GUIDialogPeripheralManager.h */,
-				DF714474144DDA46007E789D /* GUIDialogPeripheralSettings.cpp */,
-				DF714475144DDA46007E789D /* GUIDialogPeripheralSettings.h */,
+				1835C6F61492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp */,
+				1835C6F71492A5D100ADD1BA /* GUIDialogPeripheralManager.h */,
+				1835C6F81492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp */,
+				1835C6F91492A5D100ADD1BA /* GUIDialogPeripheralSettings.h */,
 			);
 			path = dialogs;
 			sourceTree = "<group>";
@@ -5472,8 +5476,6 @@
 		E37D5CB40D3023BB0081D327 /* osx */ = {
 			isa = PBXGroup;
 			children = (
-				DF7144B3144DE0A5007E789D /* HotKeyController.h */,
-				DF7144B4144DE0A5007E789D /* HotKeyController.m */,
 				F57A1D1C1329B15300498CC7 /* AutoPool.h */,
 				F57A1D1D1329B15300498CC7 /* AutoPool.mm */,
 				6E2FACD20E26E92800DF79EA /* Info.plist */,
@@ -5485,6 +5487,8 @@
 				F5EA05C30F73381A005C2EC5 /* CocoaInterface.h */,
 				F5B13C8B1334056B0045076D /* DarwinUtils.h */,
 				F5B13C8C1334056B0045076D /* DarwinUtils.mm */,
+				1835C6E81492A56500ADD1BA /* HotKeyController.h */,
+				1835C6E91492A56500ADD1BA /* HotKeyController.m */,
 				E306D12C0DDF7B590052C2AD /* XBMCHelper.cpp */,
 				E306D12D0DDF7B590052C2AD /* XBMCHelper.h */,
 				F51CEEEE0F5C5D20004F4602 /* OSXGNUReplacements.c */,
@@ -5982,8 +5986,6 @@
 		E38E15D20D25F9FA00618676 /* paplayer */ = {
 			isa = PBXGroup;
 			children = (
-				DF7144AD144DE065007E789D /* BXAcodec.cpp */,
-				DF7144AE144DE065007E789D /* BXAcodec.h */,
 				88ACB01C0DCF409E0083CFDF /* ASAPCodec.cpp */,
 				88ACB01D0DCF409E0083CFDF /* ASAPCodec.h */,
 				E36578860D3AA7B40033CC1C /* DVDPlayerCodec.cpp */,
@@ -5992,6 +5994,8 @@
 				E38E15DC0D25F9FA00618676 /* ADPCMCodec.h */,
 				E38E15E30D25F9FA00618676 /* AudioDecoder.cpp */,
 				E38E15E40D25F9FA00618676 /* AudioDecoder.h */,
+				1835C6E01492A52800ADD1BA /* BXAcodec.cpp */,
+				1835C6E11492A52800ADD1BA /* BXAcodec.h */,
 				E38E15E50D25F9FA00618676 /* CachingCodec.h */,
 				E38E15E60D25F9FA00618676 /* CDDAcodec.cpp */,
 				E38E15E70D25F9FA00618676 /* CDDAcodec.h */,
@@ -6069,16 +6073,14 @@
 		E38E16940D25F9FA00618676 /* filesystem */ = {
 			isa = PBXGroup;
 			children = (
-				DF71440D144DD9CA007E789D /* AFPDirectory.cpp */,
-				DF71440E144DD9CA007E789D /* AFPDirectory.h */,
-				DF71440F144DD9CA007E789D /* FileAFP.cpp */,
-				DF714410144DD9CA007E789D /* FileAFP.h */,
-				DF714411144DD9CA007E789D /* FilePipe.cpp */,
-				DF714412144DD9CA007E789D /* FilePipe.h */,
-				DF714413144DD9CA007E789D /* FileUPnP.cpp */,
-				DF714414144DD9CA007E789D /* FileUPnP.h */,
-				DF714415144DD9CA007E789D /* PipesManager.cpp */,
-				DF714416144DD9CA007E789D /* PipesManager.h */,
+				1835C67A1492A32F00ADD1BA /* AFPDirectory.cpp */,
+				1835C67B1492A32F00ADD1BA /* AFPDirectory.h */,
+				1835C67C1492A32F00ADD1BA /* FileAFP.cpp */,
+				1835C67D1492A32F00ADD1BA /* FileAFP.h */,
+				1835C6841492A35C00ADD1BA /* FilePipe.cpp */,
+				1835C6851492A35C00ADD1BA /* FilePipe.h */,
+				1835C6861492A35C00ADD1BA /* FileUPnP.cpp */,
+				1835C6871492A35C00ADD1BA /* FileUPnP.h */,
 				DF79167F13D4AA710018E92E /* PVRDirectory.cpp */,
 				DF79168013D4AA710018E92E /* PVRDirectory.h */,
 				DF79168113D4AA710018E92E /* PVRFile.cpp */,
@@ -6211,6 +6213,8 @@
 				E38E173D0D25F9FA00618676 /* NSFFileDirectory.h */,
 				E38E173E0D25F9FA00618676 /* OGGFileDirectory.cpp */,
 				E38E173F0D25F9FA00618676 /* OGGFileDirectory.h */,
+				1835C6911492A39F00ADD1BA /* PipesManager.cpp */,
+				1835C6921492A39F00ADD1BA /* PipesManager.h */,
 				E38E17400D25F9FA00618676 /* PlaylistDirectory.cpp */,
 				E38E17410D25F9FA00618676 /* PlaylistDirectory.h */,
 				E38E17420D25F9FA00618676 /* PlaylistFileDirectory.cpp */,
@@ -6439,8 +6443,6 @@
 		E38E19DA0D25F9FB00618676 /* xbmcmodule */ = {
 			isa = PBXGroup;
 			children = (
-				DF7143F9144DD968007E789D /* pyrendercapture.cpp */,
-				DF7143FA144DD968007E789D /* pyrendercapture.h */,
 				189047D11301DEAB00C11012 /* xbmcvfsmodule.cpp */,
 				7CD2CCFE11B38B000009EFC1 /* PythonAddon.cpp */,
 				7CD2CCFF11B38B000009EFC1 /* PythonAddon.h */,
@@ -6484,6 +6486,8 @@
 				E38E19FE0D25F9FB00618676 /* player.h */,
 				E38E25940D263CE000618676 /* pyplaylist.cpp */,
 				E38E1A000D25F9FB00618676 /* pyplaylist.h */,
+				1835C6561492A25800ADD1BA /* pyrendercapture.cpp */,
+				1835C6571492A25800ADD1BA /* pyrendercapture.h */,
 				E38E25950D263CE000618676 /* PythonPlayer.cpp */,
 				E38E1A020D25F9FB00618676 /* PythonPlayer.h */,
 				E38E25960D263CE000618676 /* pyutil.cpp */,
@@ -7236,8 +7240,6 @@
 		E38E1E220D25F9FD00618676 /* utils */ = {
 			isa = PBXGroup;
 			children = (
-				DF7144A9144DE04D007E789D /* HttpParser.cpp */,
-				DF7144AA144DE04D007E789D /* HttpParser.h */,
 				DF79166F13D4A7950018E92E /* Observer.cpp */,
 				DF79167013D4A7950018E92E /* Observer.h */,
 				DF79167113D4A7950018E92E /* TextSearch.cpp */,
@@ -7273,6 +7275,10 @@
 				E38E1E2A0D25F9FD00618676 /* CharsetConverter.h */,
 				E38E1E2B0D25F9FD00618676 /* CPUInfo.cpp */,
 				E38E1E2C0D25F9FD00618676 /* CPUInfo.h */,
+				18B7C8E712942603009E7A26 /* Crc32.cpp */,
+				18B7C8E812942603009E7A26 /* Crc32.h */,
+				F5BD02F4148D3A7E001B5583 /* CryptThreading.cpp */,
+				F5BD02F5148D3A7E001B5583 /* CryptThreading.h */,
 				E38E1E310D25F9FD00618676 /* DownloadQueue.cpp */,
 				E38E1E320D25F9FD00618676 /* DownloadQueue.h */,
 				E38E1E330D25F9FD00618676 /* DownloadQueueManager.cpp */,
@@ -7293,6 +7299,8 @@
 				E38E1E430D25F9FD00618676 /* HTMLUtil.h */,
 				E38E1E460D25F9FD00618676 /* HttpHeader.cpp */,
 				E38E1E470D25F9FD00618676 /* HttpHeader.h */,
+				1835C6D91492A4FE00ADD1BA /* HttpParser.cpp */,
+				1835C6DA1492A4FE00ADD1BA /* HttpParser.h */,
 				E38E1E4C0D25F9FD00618676 /* InfoLoader.cpp */,
 				E38E1E4D0D25F9FD00618676 /* InfoLoader.h */,
 				E38E1E530D25F9FD00618676 /* LabelFormatter.cpp */,
@@ -7432,8 +7440,8 @@
 		F5AE407F13415D9E0004BD79 /* json-rpc */ = {
 			isa = PBXGroup;
 			children = (
-				DF714409144DD99A007E789D /* ApplicationOperations.cpp */,
-				DF71440A144DD99A007E789D /* ApplicationOperations.h */,
+				1835C6741492A2FD00ADD1BA /* ApplicationOperations.cpp */,
+				1835C6751492A2FD00ADD1BA /* ApplicationOperations.h */,
 				F5AE408013415D9E0004BD79 /* AudioLibrary.cpp */,
 				F5AE408113415D9E0004BD79 /* AudioLibrary.h */,
 				F5AE408613415D9E0004BD79 /* FileItemHandler.cpp */,
@@ -8683,35 +8691,36 @@
 				3802709A13D5A653009493DD /* SystemClock.cpp in Sources */,
 				7CEE2E5B13D6B71E000ABF2A /* TimeSmoother.cpp in Sources */,
 				7C89674613C03B22003631FE /* InfoBool.cpp in Sources */,
-				DF34888313FD73A50026A711 /* InertialScrollingHandler.cpp in Sources */,
-				DF7143FB144DD968007E789D /* pyrendercapture.cpp in Sources */,
-				DF7143FF144DD975007E789D /* SkinVariable.cpp in Sources */,
-				DF714405144DD986007E789D /* AirPlayServer.cpp in Sources */,
-				DF714406144DD986007E789D /* AirTunesServer.cpp in Sources */,
-				DF71440B144DD99A007E789D /* ApplicationOperations.cpp in Sources */,
-				DF714417144DD9CA007E789D /* AFPDirectory.cpp in Sources */,
-				DF714418144DD9CA007E789D /* FileAFP.cpp in Sources */,
-				DF714419144DD9CA007E789D /* FilePipe.cpp in Sources */,
-				DF71441A144DD9CA007E789D /* FileUPnP.cpp in Sources */,
-				DF71441B144DD9CA007E789D /* PipesManager.cpp in Sources */,
-				DF714425144DD9F0007E789D /* GUIAction.cpp in Sources */,
-				DF714426144DD9F0007E789D /* JpegIO.cpp in Sources */,
-				DF71447D144DDA46007E789D /* PeripheralBusUSB.cpp in Sources */,
-				DF71447E144DDA46007E789D /* PeripheralBus.cpp in Sources */,
-				DF714480144DDA46007E789D /* Peripheral.cpp in Sources */,
-				DF714481144DDA46007E789D /* PeripheralBluetooth.cpp in Sources */,
-				DF714482144DDA46007E789D /* PeripheralCecAdapter.cpp in Sources */,
-				DF714483144DDA46007E789D /* PeripheralDisk.cpp in Sources */,
-				DF714484144DDA46007E789D /* PeripheralHID.cpp in Sources */,
-				DF714485144DDA46007E789D /* PeripheralNIC.cpp in Sources */,
-				DF714486144DDA46007E789D /* PeripheralNyxboard.cpp in Sources */,
-				DF714487144DDA46007E789D /* PeripheralTuner.cpp in Sources */,
-				DF714488144DDA46007E789D /* GUIDialogPeripheralManager.cpp in Sources */,
-				DF714489144DDA46007E789D /* GUIDialogPeripheralSettings.cpp in Sources */,
-				DF71448C144DDA46007E789D /* Peripherals.cpp in Sources */,
-				DF7144AB144DE04D007E789D /* HttpParser.cpp in Sources */,
-				DF7144AF144DE065007E789D /* BXAcodec.cpp in Sources */,
-				DF7144B5144DE0A5007E789D /* HotKeyController.m in Sources */,
+				F5BD02F6148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
+				1835C6501492A1F700ADD1BA /* InertialScrollingHandler.cpp in Sources */,
+				1835C6581492A25800ADD1BA /* pyrendercapture.cpp in Sources */,
+				1835C6631492A28800ADD1BA /* SkinVariable.cpp in Sources */,
+				1835C66C1492A2CC00ADD1BA /* AirPlayServer.cpp in Sources */,
+				1835C66D1492A2CC00ADD1BA /* AirTunesServer.cpp in Sources */,
+				1835C6761492A2FD00ADD1BA /* ApplicationOperations.cpp in Sources */,
+				1835C67E1492A32F00ADD1BA /* AFPDirectory.cpp in Sources */,
+				1835C67F1492A32F00ADD1BA /* FileAFP.cpp in Sources */,
+				1835C6881492A35C00ADD1BA /* FilePipe.cpp in Sources */,
+				1835C6891492A35C00ADD1BA /* FileUPnP.cpp in Sources */,
+				1835C6931492A39F00ADD1BA /* PipesManager.cpp in Sources */,
+				1835C69B1492A3DA00ADD1BA /* GUIAction.cpp in Sources */,
+				1835C6A01492A3F700ADD1BA /* JpegIO.cpp in Sources */,
+				1835C6B31492A45F00ADD1BA /* Peripheral.cpp in Sources */,
+				1835C6B41492A45F00ADD1BA /* PeripheralBluetooth.cpp in Sources */,
+				1835C6B51492A45F00ADD1BA /* PeripheralCecAdapter.cpp in Sources */,
+				1835C6B61492A45F00ADD1BA /* PeripheralDisk.cpp in Sources */,
+				1835C6B71492A45F00ADD1BA /* PeripheralHID.cpp in Sources */,
+				1835C6B81492A45F00ADD1BA /* PeripheralNIC.cpp in Sources */,
+				1835C6B91492A45F00ADD1BA /* PeripheralNyxboard.cpp in Sources */,
+				1835C6BA1492A45F00ADD1BA /* PeripheralTuner.cpp in Sources */,
+				1835C6CE1492A4A500ADD1BA /* PeripheralBus.cpp in Sources */,
+				1835C6D21492A4B600ADD1BA /* PeripheralBusUSB.cpp in Sources */,
+				1835C6DB1492A4FE00ADD1BA /* HttpParser.cpp in Sources */,
+				1835C6E21492A52800ADD1BA /* BXAcodec.cpp in Sources */,
+				1835C6EA1492A56500ADD1BA /* HotKeyController.m in Sources */,
+				1835C6F21492A5A700ADD1BA /* Peripherals.cpp in Sources */,
+				1835C6FA1492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp in Sources */,
+				1835C6FB1492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -9652,35 +9661,36 @@
 				4308680D13E3F65700698436 /* Implementation.cpp in Sources */,
 				4308681213E3F66600698436 /* DVDOverlayCodecTX3G.cpp in Sources */,
 				7C89674813C03B22003631FE /* InfoBool.cpp in Sources */,
-				DF34888413FD73A50026A711 /* InertialScrollingHandler.cpp in Sources */,
-				DF7143FC144DD968007E789D /* pyrendercapture.cpp in Sources */,
-				DF714400144DD975007E789D /* SkinVariable.cpp in Sources */,
-				DF714407144DD986007E789D /* AirPlayServer.cpp in Sources */,
-				DF714408144DD986007E789D /* AirTunesServer.cpp in Sources */,
-				DF71440C144DD99A007E789D /* ApplicationOperations.cpp in Sources */,
-				DF71441C144DD9CA007E789D /* AFPDirectory.cpp in Sources */,
-				DF71441D144DD9CA007E789D /* FileAFP.cpp in Sources */,
-				DF71441E144DD9CA007E789D /* FilePipe.cpp in Sources */,
-				DF71441F144DD9CA007E789D /* FileUPnP.cpp in Sources */,
-				DF714420144DD9CA007E789D /* PipesManager.cpp in Sources */,
-				DF714427144DD9F0007E789D /* GUIAction.cpp in Sources */,
-				DF714428144DD9F0007E789D /* JpegIO.cpp in Sources */,
-				DF71448F144DDA46007E789D /* PeripheralBusUSB.cpp in Sources */,
-				DF714490144DDA46007E789D /* PeripheralBus.cpp in Sources */,
-				DF714492144DDA46007E789D /* Peripheral.cpp in Sources */,
-				DF714493144DDA46007E789D /* PeripheralBluetooth.cpp in Sources */,
-				DF714494144DDA46007E789D /* PeripheralCecAdapter.cpp in Sources */,
-				DF714495144DDA46007E789D /* PeripheralDisk.cpp in Sources */,
-				DF714496144DDA46007E789D /* PeripheralHID.cpp in Sources */,
-				DF714497144DDA46007E789D /* PeripheralNIC.cpp in Sources */,
-				DF714498144DDA46007E789D /* PeripheralNyxboard.cpp in Sources */,
-				DF714499144DDA46007E789D /* PeripheralTuner.cpp in Sources */,
-				DF71449A144DDA46007E789D /* GUIDialogPeripheralManager.cpp in Sources */,
-				DF71449B144DDA46007E789D /* GUIDialogPeripheralSettings.cpp in Sources */,
-				DF71449E144DDA46007E789D /* Peripherals.cpp in Sources */,
-				DF7144AC144DE04D007E789D /* HttpParser.cpp in Sources */,
-				DF7144B0144DE065007E789D /* BXAcodec.cpp in Sources */,
-				DF7144B6144DE0A5007E789D /* HotKeyController.m in Sources */,
+				F5BD02F7148D3A7E001B5583 /* CryptThreading.cpp in Sources */,
+				1835C6511492A1F700ADD1BA /* InertialScrollingHandler.cpp in Sources */,
+				1835C6591492A25800ADD1BA /* pyrendercapture.cpp in Sources */,
+				1835C6641492A28800ADD1BA /* SkinVariable.cpp in Sources */,
+				1835C66E1492A2CC00ADD1BA /* AirPlayServer.cpp in Sources */,
+				1835C66F1492A2CC00ADD1BA /* AirTunesServer.cpp in Sources */,
+				1835C6771492A2FD00ADD1BA /* ApplicationOperations.cpp in Sources */,
+				1835C6801492A32F00ADD1BA /* AFPDirectory.cpp in Sources */,
+				1835C6811492A32F00ADD1BA /* FileAFP.cpp in Sources */,
+				1835C68A1492A35C00ADD1BA /* FilePipe.cpp in Sources */,
+				1835C68B1492A35C00ADD1BA /* FileUPnP.cpp in Sources */,
+				1835C6941492A39F00ADD1BA /* PipesManager.cpp in Sources */,
+				1835C69C1492A3DA00ADD1BA /* GUIAction.cpp in Sources */,
+				1835C6A11492A3F700ADD1BA /* JpegIO.cpp in Sources */,
+				1835C6BB1492A45F00ADD1BA /* Peripheral.cpp in Sources */,
+				1835C6BC1492A45F00ADD1BA /* PeripheralBluetooth.cpp in Sources */,
+				1835C6BD1492A45F00ADD1BA /* PeripheralCecAdapter.cpp in Sources */,
+				1835C6BE1492A45F00ADD1BA /* PeripheralDisk.cpp in Sources */,
+				1835C6BF1492A45F00ADD1BA /* PeripheralHID.cpp in Sources */,
+				1835C6C01492A45F00ADD1BA /* PeripheralNIC.cpp in Sources */,
+				1835C6C11492A45F00ADD1BA /* PeripheralNyxboard.cpp in Sources */,
+				1835C6C21492A45F00ADD1BA /* PeripheralTuner.cpp in Sources */,
+				1835C6CF1492A4A500ADD1BA /* PeripheralBus.cpp in Sources */,
+				1835C6D31492A4B600ADD1BA /* PeripheralBusUSB.cpp in Sources */,
+				1835C6DC1492A4FE00ADD1BA /* HttpParser.cpp in Sources */,
+				1835C6E31492A52800ADD1BA /* BXAcodec.cpp in Sources */,
+				1835C6EB1492A56500ADD1BA /* HotKeyController.m in Sources */,
+				1835C6F31492A5A700ADD1BA /* Peripherals.cpp in Sources */,
+				1835C6FC1492A5D100ADD1BA /* GUIDialogPeripheralManager.cpp in Sources */,
+				1835C6FD1492A5D100ADD1BA /* GUIDialogPeripheralSettings.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

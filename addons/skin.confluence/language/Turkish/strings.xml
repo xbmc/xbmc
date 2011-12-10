@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 08/10/2011-->
-<!--Turkish strings based on English strings commit 52a14da027966458c44b1e7899f6c9f155ee1c44 -->
+<!--Date of translation: 25/11/2011-->
+<!--Turkish strings based on English strings commit 72696c450c -->
 <strings>
   <!-- Misc labels -->
   <string id="31000">Değiştir</string>
@@ -84,7 +84,7 @@
   <string id="31124">Arkaplanda Oynatılan Videoyu göster</string>
   <string id="31125">Arkaplanda Görsel Ögeyi göster</string>
 
-  <string id="31126">Play TV theme songs in video library (TvTunes eklentisi)</string>
+  <string id="31126">TV tema şarkılarını video kitaplığında çal (TvTunes eklentisi)</string>
   <string id="31127">TvTunes</string>
   <string id="31128">Şarkı Sözleri</string>
   <string id="31129"></string>  <!-- blanked 2010-11-12 -->
@@ -105,14 +105,14 @@
   <string id="31201">Kategoriler</string>
   <string id="31202">Oyuncuları Göster</string>
   <string id="31203">Şarkını Seç</string>
-  <string id="31204">Bölge Bağlantıları</string>
+  <string id="31204">Bölüm Bağlantıları</string>
   <string id="31205">Şarkı Sözleri Kaynağı</string>
 
   <!-- Extra labels -->
   <string id="31300">Mevcut Sıcaklık</string>
   <string id="31301">Son Güncelleme</string>
   <string id="31302">Menü</string>
-  <string id="31303"></string>
+  <string id="31303">Veri sağlayıcı</string>
   <string id="31304">Resim</string>
   <string id="31305">Disk Ortamı Algılanmadı</string>
   <string id="31306">Çıkart</string>

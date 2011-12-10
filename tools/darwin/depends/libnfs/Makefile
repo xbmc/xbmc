@@ -27,6 +27,7 @@ $(SOURCE): $(TARBALLS_LOCATION)/$(ARCHIVE)
 	echo $(SOURCE) > .gitignore
 	mkdir -p $(PREFIX)/include/rpc
 	install -c -m 644  $(RPC_HEADERS) $(PREFIX)/include/rpc/
+	cd $(SOURCE); patch -p0 < ../001_fix_hanewin.patch
 	cd $(SOURCE); ./bootstrap
 	cd $(SOURCE); $(CONFIGURE)
 

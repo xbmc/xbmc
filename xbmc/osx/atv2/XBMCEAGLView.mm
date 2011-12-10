@@ -238,7 +238,10 @@
     [self deinitDisplayLink];
 		animating = FALSE;
     if (!g_application.m_bStop)
-      g_application.Stop(0);
+    {
+      ThreadMessage tMsg = {TMSG_QUIT};
+      g_application.getApplicationMessenger().SendMessage(tMsg);
+    }
     // wait for animation thread to die
     if ([animationThread isFinished] == NO)
       [animationThreadLock lockWhenCondition:TRUE];
@@ -301,8 +304,8 @@
   // reload Lowtide/AppleTV, boo.
   [g_xbmcController enableScreenSaver];
   [g_xbmcController enableSystemSleep];
-  exit(0);
   //[g_xbmcController applicationDidExit];
+  exit(0);
 }
 
 //--------------------------------------------------------------

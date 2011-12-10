@@ -193,34 +193,42 @@ void CPVRGUIInfo::Process(void)
 
   while (!g_application.m_bStop && !m_bStop)
   {
-    ToggleShowInfo();
+    if (!m_bStop)
+      ToggleShowInfo();
     Sleep(0);
 
-    UpdateQualityData();
+    if (!m_bStop)
+      UpdateQualityData();
     Sleep(0);
 
-    UpdateMisc();
+    if (!m_bStop)
+      UpdateMisc();
     Sleep(0);
 
-    UpdatePlayingTag();
+    if (!m_bStop)
+      UpdatePlayingTag();
     Sleep(0);
 
-    UpdateTimersToggle();
+    if (!m_bStop)
+      UpdateTimersToggle();
     Sleep(0);
 
-    UpdateNextTimer();
+    if (!m_bStop)
+      UpdateNextTimer();
     Sleep(0);
 
-    if (mLoop % 10 == 0)
+    if (!m_bStop && mLoop % 10 == 0)
       UpdateBackendCache();    /* updated every 10 iterations */
 
     if (++mLoop == 1000)
       mLoop = 0;
 
-    Sleep(1000);
+    if (!m_bStop)
+      Sleep(1000);
   }
 
-  ResetPlayingTag();
+  if (!m_bStop)
+    ResetPlayingTag();
 }
 
 void CPVRGUIInfo::UpdateQualityData(void)
@@ -232,8 +240,8 @@ void CPVRGUIInfo::UpdateQualityData(void)
 
 void CPVRGUIInfo::UpdateMisc(void)
 {
-  bool bStarted = g_PVRManager.IsStarted();
   CSingleLock lock(m_critSection);
+  bool bStarted = g_PVRManager.IsStarted();
 
   m_strPlayingClientName      = bStarted ? g_PVRClients->GetPlayingClientName() : "";
   m_bHasRecordings            = bStarted && g_PVRRecordings->GetNumRecordings() > 0;
@@ -737,11 +745,13 @@ int CPVRGUIInfo::GetStartTime(void) const
     /* Calculate here the position we have of the running live TV event.
      * "position in ms" = ("current local time" - "event start local time") * 1000
      */
-    CDateTimeSpan time = CDateTime::GetCurrentDateTime() - m_playingEpgTag->StartAsLocalTime();
-    return time.GetDays()    * 1000 * 60 * 60 * 24
-         + time.GetHours()   * 1000 * 60 * 60
-         + time.GetMinutes() * 1000 * 60
-         + time.GetSeconds() * 1000;
+    CDateTime current = CDateTime::GetCurrentDateTime();
+    CDateTime start = m_playingEpgTag->StartAsLocalTime();
+    CDateTimeSpan time = current > start ? current - start : CDateTimeSpan(0, 0, 0, 0);
+    return (time.GetDays()   * 60 * 60 * 24
+         + time.GetHours()   * 60 * 60
+         + time.GetMinutes() * 60
+         + time.GetSeconds()) * 1000;
   }
   else
   {
@@ -767,10 +777,14 @@ void CPVRGUIInfo::UpdatePlayingTag(void)
   if (g_PVRManager.GetCurrentChannel(&currentChannel))
   {
     if (!m_playingEpgTag || !m_playingEpgTag->IsActive() ||
+        !m_playingEpgTag->ChannelTag() ||
         (*m_playingEpgTag->ChannelTag() != currentChannel))
     {
       if (m_playingEpgTag)
-        SAFE_DELETE(m_playingEpgTag);
+      {
+        delete m_playingEpgTag;
+        m_playingEpgTag = NULL;
+      }
 
       const CEpgInfoTag *newTag = currentChannel.GetEPGNow();
       if (newTag)

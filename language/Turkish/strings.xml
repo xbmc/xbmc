@@ -7,8 +7,8 @@
 <!--Date of translation: 22/04/2011-->
 <!--Translator: Özgür BASKIN (queeup)-->
 <!--Email: ozgur.baskin@gmail.com-->
-<!--Date of translation: 05/10/2011-->
-<!--Based on English strings commit e5c43fdb27ec6976d55ec3f2fcfcc717d59163ab -->
+<!--Date of translation: 25/11/2011-->
+<!--Based on English strings commit f0e75fab88 -->
 <strings>
   <string id="0">Programlar</string>
   <string id="1">Resimler</string>
@@ -521,7 +521,7 @@
   <string id="560">ID</string>
   <string id="561">Dosya</string>
   <string id="562">Yıl</string>
-  <string id="563">Derecelenirme</string>
+  <string id="563">Derecelendirme</string>
   <string id="564">Tür</string>
   <string id="565">Kullanım</string>
   <string id="566">Albüm sanatçısı</string>
@@ -1075,9 +1075,11 @@
 
   <string id="13200">Profiller</string>
   <string id="13201">'%s' profili silinsin mi?</string>
+  
   <string id="13204">En son yüklenen profil:</string>
   <string id="13205">Bilinmiyor</string>
-  <string id="13206">Kaydet</string>
+  <string id="13206">Üzerine yaz</string>
+  
   <string id="13208">Çalar saat</string>
   <string id="13209">Çalar saat aralığı (dakika şeklinde)</string>
   <string id="13210">Alarm Aktif: %idk</string>
@@ -1178,6 +1180,7 @@
   <string id="13359">Sanatçı küçük resmini ayarla</string>
   <string id="13360">Küçük resimleri otomatik olarak oluştur</string>
   <string id="13361">Sesi etkinleştir</string>
+  
   <string id="13375">Donanımı etkinleştir</string>
   <string id="13376">Ses Şiddeti</string>
   <string id="13377">Varsayılan görünüm modu</string>
@@ -1393,7 +1396,7 @@
   <string id="15210">%i şarkı önbellekte</string>
   <string id="15211">Gönderiyor...</string>
   <string id="15212">%i sn. dir gönderiyor</string>
-  <string id="15213">...Kullanarak Oynat</string>
+  <string id="15213">...Kullanarak oynat</string>
   <string id="15214">Düzgün Ses/Video senkronizasyonunu kullan</string>
   <string id="15215">Küçük resim görünümünde dosya isimlerini sakla</string>
   <string id="15216">Parti modunda çal</string>
@@ -1928,6 +1931,7 @@
   <string id="21365">Ortam paylaşımını kaldır</string>
   <string id="21366">Altyazı klasörü</string>
   <string id="21367">Film ve alternatif altyazı klasörü</string>
+  <string id="21368">ASS/SSA altyazı yazı tiplerini geçersiz kıl</string>
 
   <string id="21369">Fareyi etkinleştir</string>
   <string id="21370">Ortam oynatılırken kılavuz seslerini çal</string>
@@ -2382,12 +2386,16 @@
   <string id="36004">Press "user" button command</string>
   <string id="36005">Enable switch side commands</string>
   <string id="36006">Bağdaştırıcı açılamıyor</string>
-  <string id="36007">Power on devices when starting XBMC</string>
-  <string id="36008">Power off devices when stopping XBMC</string>
-  <string id="36009">Put devices in standby mode when activating screensaver</string>
-  <string id="36010">Set as inactive source when stopping XBMC</string>
+  <string id="36007">XBMC başlatılınca Televizyonu aç</string>
+  <string id="36008">XBMC durdurulunca aygıtı kapat</string>
+  <string id="36009">Ekran koruyucu devreye girince aygıtı bekleme moduna geçir</string>
+  <string id="36010">XBMC durdurulunca etkin olmayan kaynak olarak ayarla</string>
   <string id="36011">CEC portu algılanamadı. El ile ayarla.</string>
   <string id="36012">CEC bağdaştırıcısı algılanamadı.</string>
   <string id="36013">Desteklenmeyen libcec arabirim sürümü. %d is greater than the version XBMC supports (%d)</string>
-  <string id="36014">Put this PC in standby mode when the TV is switched off</string>
+  <string id="36014">Televizyon kapatılınca bilgisayarı bekleme moduna geçir</string>
+  <string id="36015">HDMI port numarası</string>
+  <string id="36016">Bağlandı</string> <!-- max. 13 characters -->
+  <string id="36017">Bağdaştırıcı bulundu, fakat libcec kullanılamıyor</string>
+  <string id="36018">Televizyonun dil ayarlarını kullan</string>
 </strings>

@@ -301,7 +301,7 @@ bool CEpgContainer::RemoveOldEntries(void)
   }
 
   CSingleLock lock(m_critSection);
-  CDateTime::GetCurrentDateTime().GetAsTime(m_iLastEpgCleanup);
+  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iLastEpgCleanup);
   m_iLastEpgCleanup += g_advancedSettings.m_iEpgCleanupInterval;
 
   return true;
@@ -560,7 +560,7 @@ bool CEpgContainer::CheckPlayingEvents(void)
   time_t iNow;
   CSingleLock lock(m_critSection);
 
-  CDateTime::GetCurrentDateTime().GetAsTime(iNow);
+  CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(iNow);
   if (iNow >= m_iNextEpgActiveTagCheck)
   {
     bool bFoundChanges(false);
@@ -568,7 +568,7 @@ bool CEpgContainer::CheckPlayingEvents(void)
 
     for (unsigned int iEpgPtr = 0; iEpgPtr < m_epgs.size(); iEpgPtr++)
       bFoundChanges = m_epgs[iEpgPtr]->CheckPlayingEvent() || bFoundChanges;
-    CDateTime::GetCurrentDateTime().GetAsTime(m_iNextEpgActiveTagCheck);
+    CDateTime::GetCurrentDateTime().GetAsUTCDateTime().GetAsTime(m_iNextEpgActiveTagCheck);
     m_iNextEpgActiveTagCheck += g_advancedSettings.m_iEpgActiveTagCheckInterval;
 
     if (bFoundChanges)

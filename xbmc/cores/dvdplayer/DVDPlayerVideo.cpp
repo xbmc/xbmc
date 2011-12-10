@@ -733,6 +733,9 @@ void CDVDPlayerVideo::Process()
     // all data is used by the decoder, we can safely free it now
     pMsg->Release();
   }
+
+  // we need to let decoder release any picture retained resources.
+  m_pVideoCodec->ClearPicture(&picture);
 }
 
 void CDVDPlayerVideo::OnExit()

@@ -69,7 +69,7 @@ bool CPVRChannelGroups::GetGroupsFromClients(void)
 bool CPVRChannelGroups::UpdateFromClient(const CPVRChannelGroup &group)
 {
   CSingleLock lock(m_critSection);
-  CPVRChannelGroup *newGroup = new CPVRChannelGroup(group.IsRadio(), -1, group.GroupName());
+  CPVRChannelGroup *newGroup = new CPVRChannelGroup(group.IsRadio(), 0, group.GroupName());
   push_back(newGroup);
 
   return true;

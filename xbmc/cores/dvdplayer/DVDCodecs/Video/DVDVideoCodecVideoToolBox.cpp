@@ -1071,13 +1071,6 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
     extrasize = hints.extrasize;
     extradata = (uint8_t*)hints.extradata;
  
-    if (hints.profile == 77 && hints.level == 32)
-    {
-      // Main@L3.2, VTB cannot handle it
-      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode.", __FUNCTION__);
-      return false;
-    }
- 
     switch (hints.codec)
     {
       case CODEC_ID_MPEG4:
@@ -1192,6 +1185,14 @@ bool CDVDVideoCodecVideoToolBox::Open(CDVDStreamInfo &hints, CDVDCodecOptions &o
       break;
     }
 
+    if (profile == 77 && level == 32 && m_max_ref_frames != 4)
+    {
+      // Main@L3.2, VTB cannot handle it if not 4 ref frames (ie. flash video)
+      CLog::Log(LOGNOTICE, "%s - Main@L3.2 detected, VTB cannot decode with %d ref frames",
+        __FUNCTION__, m_max_ref_frames);
+      return false;
+    }
+ 
     if(m_fmt_desc == NULL)
     {
       CLog::Log(LOGNOTICE, "%s - created avcC atom of failed", __FUNCTION__);

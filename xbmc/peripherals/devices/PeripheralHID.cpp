@@ -37,11 +37,10 @@ CPeripheralHID::CPeripheralHID(const PeripheralType type, const PeripheralBusTyp
 
 CPeripheralHID::~CPeripheralHID(void)
 {
-  if (!m_strKeymap.IsEmpty() && GetSettingBool("keymap_enabled") && g_settings.m_activeKeyboardMapping.Equals(m_strKeymap))
+  if (!m_strKeymap.IsEmpty() && GetSettingBool("keymap_enabled"))
   {
     CLog::Log(LOGDEBUG, "%s - switching active keymapping to: default", __FUNCTION__);
-    CButtonTranslator::GetInstance().Load();
-    g_settings.m_activeKeyboardMapping = "default";
+    CButtonTranslator::GetInstance().RemoveDevice(m_strKeymap);
   }
 }
 
@@ -65,15 +64,13 @@ bool CPeripheralHID::InitialiseFeature(const PeripheralFeature feature)
       bool bKeymapEnabled(GetSettingBool("keymap_enabled"));
       if (bKeymapEnabled)
       {
-        CLog::Log(LOGDEBUG, "%s - switching active keymapping to: %s", __FUNCTION__, m_strKeymap.c_str());
-        CButtonTranslator::GetInstance().Load(m_strKeymap.c_str());
-        g_settings.m_activeKeyboardMapping = m_strKeymap;
+        CLog::Log(LOGDEBUG, "%s - adding keymapping for: %s", __FUNCTION__, m_strKeymap.c_str());
+        CButtonTranslator::GetInstance().AddDevice(m_strKeymap);
       }
-      else if (!bKeymapEnabled && g_settings.m_activeKeyboardMapping.Equals(m_strKeymap))
+      else if (!bKeymapEnabled)
       {
-        CLog::Log(LOGDEBUG, "%s - switching active keymapping to: default", __FUNCTION__);
-        CButtonTranslator::GetInstance().Load();
-        g_settings.m_activeKeyboardMapping = "default";
+        CLog::Log(LOGDEBUG, "%s - removing keymapping for: %s", __FUNCTION__, m_strKeymap.c_str());
+        CButtonTranslator::GetInstance().RemoveDevice(m_strKeymap);
       }
     }
 

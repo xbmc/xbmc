@@ -1285,12 +1285,7 @@ bool CLinuxRendererGLES::RenderCapture(CRenderCapture* capture)
   unsigned char* pixels = (unsigned char*)capture->GetRenderBuffer();
   for (int i = 0; i < capture->GetWidth() * capture->GetHeight(); i++, pixels+=4)
   {
-    if (pixels[0] != pixels[2])
-    {
-      pixels[0] ^= pixels[2];
-      pixels[2] ^= pixels[0];
-      pixels[0] ^= pixels[2];
-    }
+    std::swap(pixels[0], pixels[2]);
   }
 
   capture->EndRender();

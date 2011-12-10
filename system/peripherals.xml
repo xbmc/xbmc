@@ -1,13 +1,5 @@
 <peripherals>
-  <peripheral vendor="1915" product="003B" bus="usb" name="Motorola Nyxboard Hybrid" mapTo="nyxboard">
-    <setting key="keymap_enabled" type="bool" value="1" label="35008" />
-    <setting key="keymap" value="nyxboard" label="35007" configurable="0" />
-    <setting key="enable_flip_commands" type="bool" value="1" label="36005" />
-    <setting key="flip_keyboard" value="XBMC.VideoLibrary.Search" label="36002" />
-    <setting key="flip_remote" value="Dialog.Close(virtualkeyboard)" label="36003" />
-    <setting key="key_user" value="" label="36004" />
-  </peripheral>
-  <peripheral vendor="22B8" product="003B" bus="usb" name="Motorola Nyxboard Hybrid" mapTo="nyxboard">
+  <peripheral vendor_product="1915:003B,22B8:003B" bus="usb" name="Motorola Nyxboard Hybrid" mapTo="nyxboard">
     <setting key="keymap_enabled" type="bool" value="1" label="35008" />
     <setting key="keymap" value="nyxboard" label="35007" configurable="0" />
     <setting key="enable_flip_commands" type="bool" value="1" label="36005" />
@@ -16,7 +8,7 @@
     <setting key="key_user" value="" label="36004" />
   </peripheral>
 
-  <peripheral vendor="2548" product="1001" bus="usb" name="Pulse-Eight CEC Adaptor" mapTo="cec">
+  <peripheral vendor_product="2548:1001" bus="usb" name="Pulse-Eight CEC Adaptor" mapTo="cec">
     <setting key="enabled" type="bool" value="1" label="305" />
     <setting key="port" type="string" value="" label="792" />
     <setting key="cec_hdmi_port" type="int" value="1" min="1" max="16" label="36015" />
