@@ -248,6 +248,7 @@
 			<control type="group" id="1">
 				<posx>330</posx>
 				<posy>85r</posy>
+				<visible>!VideoPlayer.Content(LiveTV) | [VideoPlayer.Content(LiveTV) + VideoPlayer.HasEpg]</visible>
 				<control type="label" id="1">
 					<posx>0</posx>
 					<posy>0</posy>
