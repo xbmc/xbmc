@@ -160,13 +160,14 @@ bool CWinSystemX11::ResizeWindow(int newWidth, int newHeight, int newLeft, int n
 
   m_nWidth  = newWidth;
   m_nHeight = newHeight;
-
+  Uint8 state;
   int options = SDL_OPENGL;
   if (m_bFullScreen)
     options |= SDL_FULLSCREEN;
   else
     options |= SDL_RESIZABLE;
 
+  X11Lock xlock(*this);
   if ((m_SDLSurface = SDL_SetVideoMode(m_nWidth, m_nHeight, 0, options)))
   {
     RefreshGlxContext();
@@ -181,6 +182,8 @@ bool CWinSystemX11::SetFullScreen(bool fullScreen, RESOLUTION_INFO& res, bool bl
   m_nWidth      = res.iWidth;
   m_nHeight     = res.iHeight;
   m_bFullScreen = fullScreen;
+
+  X11Lock xlock(*this);
 
 #if defined(HAS_XRANDR)
   XOutput out;
@@ -318,6 +321,9 @@ bool CWinSystemX11::RefreshGlxContext()
   bool retVal = false;
   SDL_SysWMinfo info;
   SDL_VERSION(&info.version);
+
+  X11Lock xlock(*this);
+
   if (SDL_GetWMInfo(&info) <= 0)
   {
     CLog::Log(LOGERROR, "Failed to get window manager info from SDL");
@@ -410,11 +416,15 @@ bool CWinSystemX11::RefreshGlxContext()
 
 void CWinSystemX11::ShowOSMouse(bool show)
 {
+  X11Lock xlock(*this);
+
   SDL_ShowCursor(show ? 1 : 0);
 }
 
 void CWinSystemX11::ResetOSScreensaver()
 {
+  X11Lock xlock(*this);
+
   if (m_bFullScreen)
   {
     //disallow the screensaver when we're fullscreen by periodically calling XResetScreenSaver(),
@@ -441,6 +451,8 @@ void CWinSystemX11::NotifyAppActiveChange(bool bActivated)
 }
 bool CWinSystemX11::Minimize()
 {
+  X11Lock xlock(*this);
+
   m_bWasFullScreenBeforeMinimize = g_graphicsContext.IsFullScreenRoot();
   if (m_bWasFullScreenBeforeMinimize)
     g_graphicsContext.ToggleFullScreenRoot();
@@ -454,12 +466,16 @@ bool CWinSystemX11::Restore()
 }
 bool CWinSystemX11::Hide()
 {
+  X11Lock xlock(*this);
+
   XUnmapWindow(m_dpy, m_wmWindow);
   XSync(m_dpy, False);
   return true;
 }
 bool CWinSystemX11::Show(bool raise)
 {
+  X11Lock xlock(*this);
+
   XMapWindow(m_dpy, m_wmWindow);
   XSync(m_dpy, False);
   return true;
@@ -471,6 +487,7 @@ void CWinSystemX11::CheckDisplayEvents()
   bool bGotEvent(false);
   bool bTimeout(false);
   XEvent Event;
+
   while (XCheckTypedEvent(m_dpy, m_RREventBase + RRScreenChangeNotify, &Event))
   {
     if (Event.type == m_RREventBase + RRScreenChangeNotify)

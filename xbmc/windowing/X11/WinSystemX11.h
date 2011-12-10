@@ -83,5 +83,14 @@ private:
   CStopWatch m_screensaverReset;
 };
 
+class X11Lock
+{
+public:
+  X11Lock(CWinSystemX11 &winX11) { dpy = winX11.GetDisplay(); if (dpy) XLockDisplay(dpy); };
+  virtual ~X11Lock() { if (dpy) XUnlockDisplay(dpy); };
+private:
+  Display *dpy;
+};
+
 #endif // WINDOW_SYSTEM_H
 
