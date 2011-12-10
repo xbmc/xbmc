@@ -240,6 +240,7 @@ int CEpgDatabase::Get(CEpgContainer &container)
               __FUNCTION__, iEpgID);
 
           CStdString strWhereClause = FormatSQL("idEpg = %u", iEpgID);
+          DeleteValues("lastepgscan", strWhereClause);
           DeleteValues("epgtags", strWhereClause);
           DeleteValues("epg", strWhereClause);
         }
