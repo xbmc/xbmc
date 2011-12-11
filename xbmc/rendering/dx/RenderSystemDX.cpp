@@ -172,6 +172,10 @@ void CRenderSystemDX::SetMonitor(HMONITOR monitor)
 
 bool CRenderSystemDX::ResetRenderSystem(int width, int height, bool fullScreen, float refreshRate)
 {
+  HMONITOR hMonitor = MonitorFromWindow(m_hDeviceWnd, MONITOR_DEFAULTTONULL);
+  if (hMonitor)
+    SetMonitor(hMonitor);
+
   SetRenderParams(width, height, fullScreen, refreshRate);
 
   CRect rc;
