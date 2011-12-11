@@ -42,7 +42,8 @@
         "UpdateData": { "type": "boolean", "required": true },
         "RemoveData": { "type": "boolean", "required": true },
         "Navigate": { "type": "boolean", "required": true },
-        "WriteFile": { "type": "boolean", "required": true }
+        "WriteFile": { "type": "boolean", "required": true },
+        "ControlPVR": { "type": "boolean", "required": true }
       }
     }
   },
@@ -1262,5 +1263,83 @@
       "type": "object",
       "description": "List of key-value pairs of the retrieved info booleans"
     }
+  },
+  "PVR.ChannelSwitch": {
+    "type": "method",
+    "description": "Switch channel to given channelid",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [
+      { "name": "channelid", "type": "integer", "minimum": 0, "required": true }
+    ],
+    "returns": "string"
+  },
+  "PVR.ChannelUp": {
+    "type": "method",
+    "description": "Switch channel up",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [],
+    "returns": "string"
+  },
+  "PVR.ChannelDown": {
+    "type": "method",
+    "description": "Switch channel down",
+    "transport": "Response",
+    "permission": "ControlPlayback",
+    "params": [],
+    "returns": "string"
+  },
+  "PVR.RecordCurrentChannel": {
+    "type": "method",
+    "description": "Toggles Recording of currently playing channel",
+    "transport": "Response",
+    "permission": "ControlPVR",
+    "params": [],
+    "returns": "string"
+  },
+  "PVR.ScheduleRecording": {
+    "type": "method",
+    "description": "Schedule recording",
+    "transport": "Response",
+    "permission": "ControlPVR",
+    "params": [
+      { "name": "epgid", "type": "integer", "minimum": 0, "required": true },
+      { "name": "uniqueid", "type": "integer", "minimum": 0, "required": true },
+      { "name": "starttime", "type": "integer", "minimum": 0, "required": true}
+    ],
+    "returns": "string"
+  },
+    "PVR.IsAvailable": {
+    "type": "method",
+    "description": "Checks whether PVR is available or not",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": "boolean"
+  },
+    "PVR.IsScanningChannels": {
+    "type": "method",
+    "description": "Checks whether PVR is scanning channels",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": "boolean"
+  },
+    "PVR.IsRecording": {
+    "type": "method",
+    "description": "Checks whether PVR is recording",
+    "transport": "Response",
+    "permission": "ReadData",
+    "params": [],
+    "returns": "boolean"
+  },
+    "PVR.ScanChannels": {
+    "type": "method",
+    "description": "Starts a channel scan",
+    "transport": "Response",
+    "permission": "ControlPVR",
+    "params": [],
+    "returns": "string"
   }
 }
