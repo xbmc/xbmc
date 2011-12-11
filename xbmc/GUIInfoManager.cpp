@@ -2352,7 +2352,8 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     case VIDEOPLAYER_HAS_EPG:
       if (m_currentFile->HasPVRChannelInfoTag())
       {
-        bReturn = m_currentFile->GetPVRChannelInfoTag()->GetEPGNow() ? true : false;
+        CEpgInfoTag epgTag;
+        bReturn = m_currentFile->GetPVRChannelInfoTag()->GetEPGNow(epgTag);
       }
     break;
     default: // default, use integer value different from 0 as true
@@ -4816,7 +4817,8 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
     {
       if (pItem->HasPVRChannelInfoTag())
       {
-        return pItem->GetPVRChannelInfoTag()->GetEPGNow() ? true : false;
+        CEpgInfoTag epgTag;
+        return pItem->GetPVRChannelInfoTag()->GetEPGNow(epgTag);
       }
       else
       {
