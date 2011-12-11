@@ -107,18 +107,17 @@ JSON_STATUS CPVROperations::ChannelDown(const CStdString &method, ITransportLaye
 
 JSON_STATUS CPVROperations::RecordCurrentChannel(const CStdString &method, ITransportLayer *transport, IClient *client, const CVariant &parameterObject, CVariant &result)
 {
-  if ( g_PVRManager.IsStarted() && g_PVRManager.IsPlaying() && g_application.m_pPlayer )
+  CPVRChannel currentChannel;
+  if (g_PVRManager.GetCurrentChannel(currentChannel))
   {
-    CPVRChannel channel;
-    g_PVRManager.GetCurrentChannel(&channel);
-    bool bOnOff = !channel.IsRecording();
+    bool bOnOff = !currentChannel.IsRecording();
     g_PVRManager.StartRecordingOnPlayingChannel(bOnOff);
-    CLog::Log(LOGDEBUG, "JSONRPC: Recording currently playing channel: %s", bOnOff ? "on" : "off" );
+    CLog::Log(LOGDEBUG, "JSONRPC: Recording currently paying channel: %s", bOnOff ? "on" : "off" );
     return ACK;
   }
   else
   {
-    CLog::Log(LOGDEBUG, "JSONRPC: PVR not started or no channel is currently playing.");
+    CLog::Log(LOGDEBUG, "JSONRPC: Faild to recording currently paying Channel");
     return FailedToExecute;
   }
 }
