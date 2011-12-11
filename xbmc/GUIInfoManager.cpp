@@ -401,6 +401,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "channelname",      VIDEOPLAYER_CHANNEL_NAME },
                                   { "channelnumber",    VIDEOPLAYER_CHANNEL_NUMBER },
                                   { "channelgroup",     VIDEOPLAYER_CHANNEL_GROUP },
+                                  { "hasepg",           VIDEOPLAYER_HAS_EPG },
                                   { "parentalrating",   VIDEOPLAYER_PARENTAL_RATING }};
 
 const infomap mediacontainer[] = {{ "hasfiles",         CONTAINER_HASFILES },
@@ -516,6 +517,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "channelname",      LISTITEM_CHANNEL_NAME },
                                   { "channelnumber",    LISTITEM_CHANNEL_NUMBER },
                                   { "channelgroup",     LISTITEM_CHANNEL_GROUP },
+                                  { "hasepg",           LISTITEM_HAS_EPG },
                                   { "hastimer",         LISTITEM_HASTIMER },
                                   { "isrecording",      LISTITEM_ISRECORDING },
                                   { "isencrypted",      LISTITEM_ISENCRYPTED },
@@ -2346,6 +2348,13 @@ bool CGUIInfoManager::GetBool(int condition1, int contextWindow, const CGUIListI
     break;
     case VISUALISATION_ENABLED:
       bReturn = !g_guiSettings.GetString("musicplayer.visualisation").IsEmpty();
+    break;
+    case VIDEOPLAYER_HAS_EPG:
+      if (m_currentFile->HasPVRChannelInfoTag())
+      {
+        CEpgInfoTag epgTag;
+        bReturn = m_currentFile->GetPVRChannelInfoTag()->GetEPGNow(epgTag);
+      }
     break;
     default: // default, use integer value different from 0 as true
       {
@@ -4802,6 +4811,18 @@ bool CGUIInfoManager::GetItemBool(const CGUIListItem *item, int condition) const
         CPVRTimerInfoTag *timer = g_PVRTimers->GetMatch(pItem);
         if (timer)
           return timer->IsActive();
+      }
+    }
+    else if (condition == LISTITEM_HAS_EPG)
+    {
+      if (pItem->HasPVRChannelInfoTag())
+      {
+        CEpgInfoTag epgTag;
+        return pItem->GetPVRChannelInfoTag()->GetEPGNow(epgTag);
+      }
+      else
+      {
+        return pItem->HasEPGInfoTag();
       }
     }
     else if (condition == LISTITEM_ISENCRYPTED)
